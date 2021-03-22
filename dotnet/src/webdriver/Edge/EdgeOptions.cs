@@ -50,7 +50,7 @@ namespace OpenQA.Selenium.Edge
 
         // Engine switching
         private const string UseChromiumCapability = "ms:edgeChromium";
-        private bool useChromium = false;
+        private bool useChromium = true;
 
         private const string EdgeOptionsCapabilityName = "edgeOptions";
 

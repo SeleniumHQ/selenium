@@ -1174,7 +1174,7 @@ namespace OpenQA.Selenium.Support.Events
         /// <summary>
         /// EventFiringWebElement allows you to have access to specific items that are found on the page
         /// </summary>
-        private class EventFiringWebElement : IWebElement, IWrapsElement, IWrapsDriver
+        private class EventFiringWebElement : ITakesScreenshot, IWebElement, IWrapsElement, IWrapsDriver
         {
             private IWebElement underlyingElement;
             private EventFiringWebDriver parentDriver;
@@ -1564,6 +1564,23 @@ namespace OpenQA.Selenium.Support.Events
                 }
 
                 return wrappedElementList.AsReadOnly();
+            }
+
+            /// <summary>
+            /// Gets a <see cref="Screenshot"/> object representing the image of the page on the screen.
+            /// </summary>
+            /// <returns>A <see cref="Screenshot"/> object containing the image.</returns>
+            public Screenshot GetScreenshot()
+            {
+                ITakesScreenshot screenshotDriver = this.underlyingElement as ITakesScreenshot;
+                if (this.underlyingElement == null)
+                {
+                    throw new NotSupportedException("Underlying element instance does not support taking screenshots");
+                }
+
+                Screenshot screen = null;
+                screen = screenshotDriver.GetScreenshot();
+                return screen;
             }
 
             /// <summary>

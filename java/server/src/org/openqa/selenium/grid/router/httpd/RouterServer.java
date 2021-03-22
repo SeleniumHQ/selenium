@@ -20,6 +20,7 @@ package org.openqa.selenium.grid.router.httpd;
 import com.google.auto.service.AutoService;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
+
 import org.openqa.selenium.BuildInfo;
 import org.openqa.selenium.cli.CliCommand;
 import org.openqa.selenium.grid.TemplateGridServerCommand;
@@ -63,6 +64,7 @@ import static org.openqa.selenium.grid.config.StandardGridRoles.ROUTER_ROLE;
 import static org.openqa.selenium.grid.config.StandardGridRoles.SESSION_MAP_ROLE;
 import static org.openqa.selenium.grid.config.StandardGridRoles.SESSION_QUEUER_ROLE;
 import static org.openqa.selenium.net.Urls.fromUri;
+import static org.openqa.selenium.remote.http.Route.combine;
 import static org.openqa.selenium.remote.http.Route.get;
 
 @AutoService(CliCommand.class)
@@ -143,10 +145,13 @@ public class RouterServer extends TemplateGridServerCommand {
       getServerVersion());
 
     Routable ui = new GridUiRoute();
+    Routable routerWithSpecChecks = new Router(tracer, clientFactory, sessions, queuer, distributor)
+      .with(networkOptions.getSpecComplianceChecks());
 
     Route handler = Route.combine(
       ui,
-      new Router(tracer, clientFactory, sessions, queuer, distributor).with(networkOptions.getSpecComplianceChecks()),
+      routerWithSpecChecks,
+      Route.prefix("/wd/hub").to(combine(routerWithSpecChecks)),
       Route.options("/graphql").to(() -> graphqlHandler),
       Route.post("/graphql").to(() -> graphqlHandler),
       get("/readyz").to(() -> req -> new HttpResponse().setStatus(HTTP_NO_CONTENT)));

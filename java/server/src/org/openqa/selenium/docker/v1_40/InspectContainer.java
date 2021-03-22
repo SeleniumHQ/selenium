@@ -57,14 +57,19 @@ class InspectContainer {
       LOG.warning("Unable to inspect container " + id);
     }
     Map<String, Object> rawInspectInfo = JSON.toType(Contents.string(res), MAP_TYPE);
-    Map<String, Object> networkSettings = (Map<String, Object>) rawInspectInfo.get("NetworkSettings");
-    String ip = (String) networkSettings.get("IPAddress");
+    Map<String, Object> networkSettings =
+      (Map<String, Object>) rawInspectInfo.get("NetworkSettings");
+    Map<String, Object> networks = (Map<String, Object>) networkSettings.get("Networks");
+    Map.Entry<String, Object> firstNetworkEntry = networks.entrySet().iterator().next();
+    Map<String, Object> networkValues = (Map<String, Object>) firstNetworkEntry.getValue();
+    String networkName = firstNetworkEntry.getKey();
+    String ip = networkValues.get("IPAddress").toString();
     ArrayList<Object> mounts = (ArrayList<Object>) rawInspectInfo.get("Mounts");
     List<Map<String, Object>> mountedVolumes = mounts
       .stream()
       .map(mount -> (Map<String, Object>) mount)
       .collect(Collectors.toList());
 
-    return new ContainerInfo(id, ip, mountedVolumes);
+    return new ContainerInfo(id, ip, mountedVolumes, networkName);
   }
 }

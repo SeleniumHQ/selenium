@@ -17,13 +17,6 @@
 
 package org.openqa.selenium.grid.docker;
 
-import static java.util.Optional.ofNullable;
-import static org.openqa.selenium.docker.ContainerConfig.image;
-import static org.openqa.selenium.remote.Dialect.W3C;
-import static org.openqa.selenium.remote.http.Contents.string;
-import static org.openqa.selenium.remote.http.HttpMethod.GET;
-import static org.openqa.selenium.remote.tracing.Tags.EXCEPTION;
-
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.ImmutableCapabilities;
@@ -32,6 +25,7 @@ import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.docker.Container;
+import org.openqa.selenium.docker.ContainerConfig;
 import org.openqa.selenium.docker.ContainerInfo;
 import org.openqa.selenium.docker.Docker;
 import org.openqa.selenium.docker.Image;
@@ -81,6 +75,13 @@ import java.util.TimeZone;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import static java.util.Optional.ofNullable;
+import static org.openqa.selenium.docker.ContainerConfig.image;
+import static org.openqa.selenium.remote.Dialect.W3C;
+import static org.openqa.selenium.remote.http.Contents.string;
+import static org.openqa.selenium.remote.http.HttpMethod.GET;
+import static org.openqa.selenium.remote.tracing.Tags.EXCEPTION;
+
 public class DockerSessionFactory implements SessionFactory {
 
   private static final Logger LOG = Logger.getLogger(DockerSessionFactory.class.getName());
@@ -93,6 +94,8 @@ public class DockerSessionFactory implements SessionFactory {
   private final Capabilities stereotype;
   private final Image videoImage;
   private final DockerAssetsPath assetsPath;
+  private final String networkName;
+  private final boolean runningInDocker;
 
   public DockerSessionFactory(
     Tracer tracer,
@@ -102,16 +105,20 @@ public class DockerSessionFactory implements SessionFactory {
     Image browserImage,
     Capabilities stereotype,
     Image videoImage,
-    DockerAssetsPath assetsPath) {
+    DockerAssetsPath assetsPath,
+    String networkName,
+    boolean runningInDocker) {
     this.tracer = Require.nonNull("Tracer", tracer);
     this.clientFactory = Require.nonNull("HTTP client", clientFactory);
     this.docker = Require.nonNull("Docker command", docker);
     this.dockerUri = Require.nonNull("Docker URI", dockerUri);
     this.browserImage = Require.nonNull("Docker browser image", browserImage);
+    this.networkName = Require.nonNull("Docker network name", networkName);
     this.stereotype = ImmutableCapabilities.copyOf(
       Require.nonNull("Stereotype", stereotype));
     this.videoImage = videoImage;
     this.assetsPath = assetsPath;
+    this.runningInDocker = runningInDocker;
   }
 
   @Override
@@ -127,26 +134,33 @@ public class DockerSessionFactory implements SessionFactory {
   @Override
   public Either<WebDriverException, ActiveSession> apply(CreateSessionRequest sessionRequest) {
     LOG.info("Starting session for " + sessionRequest.getCapabilities());
-    int port = PortProber.findFreePort();
-    URL remoteAddress = getUrl(port);
 
-    HttpClient client = clientFactory.createClient(remoteAddress);
+    int port = runningInDocker ? 4444 : PortProber.findFreePort();
     try (Span span = tracer.getCurrentContext().createSpan("docker_session_factory.apply")) {
       Map<String, EventAttributeValue> attributeMap = new HashMap<>();
       attributeMap.put(AttributeKey.LOGGER_CLASS.getKey(),
                        EventAttribute.setValue(this.getClass().getName()));
-      LOG.info("Creating container, mapping container port 4444 to " + port);
+      String logMessage = runningInDocker ? "Creating container..." :
+                          "Creating container, mapping container port 4444 to " + port;
+      LOG.info(logMessage);
       Container container = createBrowserContainer(port, sessionRequest.getCapabilities());
       container.start();
       ContainerInfo containerInfo = container.inspect();
 
+      String containerIp = containerInfo.getIp();
+      URL remoteAddress = getUrl(port, containerIp);
+      HttpClient client = clientFactory.createClient(remoteAddress);
+
       attributeMap.put("docker.browser.image", EventAttribute.setValue(browserImage.toString()));
       attributeMap.put("container.port", EventAttribute.setValue(port));
       attributeMap.put("container.id", EventAttribute.setValue(container.getId().toString()));
-      attributeMap.put("container.ip", EventAttribute.setValue(containerInfo.getIp()));
+      attributeMap.put("container.ip", EventAttribute.setValue(containerIp));
       attributeMap.put("docker.server.url", EventAttribute.setValue(remoteAddress.toString()));
 
-      LOG.info(String.format("Waiting for server to start (container id: %s)", container.getId()));
+      LOG.info(
+        String.format("Waiting for server to start (container id: %s, url %s)",
+                      container.getId(),
+                      remoteAddress));
       try {
         waitForServerToStart(client, Duration.ofMinutes(1));
       } catch (TimeoutException e) {
@@ -176,9 +190,8 @@ public class DockerSessionFactory implements SessionFactory {
       try {
         result = new ProtocolHandshake().createSession(client, command);
         response = result.createResponse();
-        attributeMap.put(
-          AttributeKey.DRIVER_RESPONSE.getKey(),
-          EventAttribute.setValue(response.toString()));
+        attributeMap.put(AttributeKey.DRIVER_RESPONSE.getKey(),
+                         EventAttribute.setValue(response.toString()));
       } catch (IOException | RuntimeException e) {
         span.setAttribute("error", true);
         span.setStatus(Status.CANCELLED);
@@ -207,7 +220,7 @@ public class DockerSessionFactory implements SessionFactory {
         String containerPath = path.get().getContainerPath(id);
         saveSessionCapabilities(mergedCapabilities, containerPath);
         String hostPath = path.get().getHostPath(id);
-        videoContainer = startVideoContainer(mergedCapabilities, containerInfo.getIp(), hostPath);
+        videoContainer = startVideoContainer(mergedCapabilities, containerIp, hostPath);
       }
 
       Dialect downstream = sessionRequest.getDownstreamDialects().contains(result.getDialect()) ?
@@ -242,15 +255,16 @@ public class DockerSessionFactory implements SessionFactory {
   }
 
   private Container createBrowserContainer(int port, Capabilities sessionCapabilities) {
-    Map<String, String> browserContainerEnvVars =
-      getBrowserContainerEnvVars(sessionCapabilities);
-    Map<String, String> devShmMount =
-      Collections.singletonMap("/dev/shm", "/dev/shm");
-    return docker.create(
-          image(browserImage)
-            .env(browserContainerEnvVars)
-            .bind(devShmMount)
-            .map(Port.tcp(4444), Port.tcp(port)));
+    Map<String, String> browserContainerEnvVars = getBrowserContainerEnvVars(sessionCapabilities);
+    Map<String, String> devShmMount = Collections.singletonMap("/dev/shm", "/dev/shm");
+    ContainerConfig containerConfig = image(browserImage)
+      .env(browserContainerEnvVars)
+      .bind(devShmMount)
+      .network(networkName);
+    if (!runningInDocker) {
+      containerConfig = containerConfig.map(Port.tcp(4444), Port.tcp(port));
+    }
+    return docker.create(containerConfig);
   }
 
   private Map<String, String> getBrowserContainerEnvVars(Capabilities sessionRequestCapabilities) {
@@ -275,7 +289,10 @@ public class DockerSessionFactory implements SessionFactory {
       sessionCapabilities,
       browserContainerIp);
     Map<String, String> volumeBinds = Collections.singletonMap(hostPath, "/videos");
-    Container videoContainer = docker.create(image(videoImage).env(envVars).bind(volumeBinds));
+    Container videoContainer = docker.create(image(videoImage)
+                                               .env(envVars)
+                                               .bind(volumeBinds)
+                                               .network(networkName));
     videoContainer.start();
     LOG.info(String.format("Video container started (id: %s)", videoContainer.getId()));
     return videoContainer;
@@ -359,11 +376,15 @@ public class DockerSessionFactory implements SessionFactory {
     });
   }
 
-  private URL getUrl(int port) {
+  private URL getUrl(int port, String containerIp) {
     try {
       String host = "localhost";
-      if (dockerUri.getScheme().startsWith("tcp") || dockerUri.getScheme().startsWith("http")) {
-        host = dockerUri.getHost();
+      if (runningInDocker) {
+        host = containerIp;
+      } else {
+        if (dockerUri.getScheme().startsWith("tcp") || dockerUri.getScheme().startsWith("http")) {
+          host = dockerUri.getHost();
+        }
       }
       return new URL(String.format("http://%s:%s/wd/hub", host, port));
     } catch (MalformedURLException e) {

@@ -206,6 +206,8 @@ def testExpectedConditionTextToBePresentInElementValue(driver, pages):
     assert 'Example Expected text' == driver.find_element(By.ID, 'inputRequired').get_attribute('value')
 
 
+# xfail can be removed after 23 March 2021
+@pytest.mark.xfail_firefox(reason="https://bugzilla.mozilla.org/show_bug.cgi?id=1691348")
 def testExpectedConditionFrameToBeAvailableAndSwitchToItByLocator(driver, pages):
     pages.load("blank.html")
     with pytest.raises(TimeoutException):
