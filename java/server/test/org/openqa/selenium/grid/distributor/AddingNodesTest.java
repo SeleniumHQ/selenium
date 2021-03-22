@@ -32,6 +32,7 @@ import org.openqa.selenium.grid.data.CreateSessionRequest;
 import org.openqa.selenium.grid.data.CreateSessionResponse;
 import org.openqa.selenium.grid.data.NodeId;
 import org.openqa.selenium.grid.data.NodeStatus;
+import org.openqa.selenium.grid.data.NodeHeartBeatEvent;
 import org.openqa.selenium.grid.data.NodeStatusEvent;
 import org.openqa.selenium.grid.data.Session;
 import org.openqa.selenium.grid.data.SessionClosedEvent;
@@ -184,7 +185,7 @@ public class AddingNodesTest {
         .build();
     handler.addHandler(node);
 
-    bus.fire(new NodeStatusEvent(node.getStatus()));
+    bus.fire(new NodeHeartBeatEvent(node.getStatus()));
 
     wait.until(obj -> distributor.getStatus().hasCapacity());
 
@@ -213,8 +214,8 @@ public class AddingNodesTest {
     handler.addHandler(firstNode);
     handler.addHandler(secondNode);
 
-    bus.fire(new NodeStatusEvent(firstNode.getStatus()));
-    bus.fire(new NodeStatusEvent(secondNode.getStatus()));
+    bus.fire(new NodeHeartBeatEvent(firstNode.getStatus()));
+    bus.fire(new NodeHeartBeatEvent(secondNode.getStatus()));
 
     wait.until(obj -> distributor.getStatus());
 
@@ -236,7 +237,7 @@ public class AddingNodesTest {
         .build();
     handler.addHandler(node);
 
-    bus.fire(new NodeStatusEvent(node.getStatus()));
+    bus.fire(new NodeHeartBeatEvent(node.getStatus()));
 
     // Start empty
     wait.until(obj -> distributor.getStatus().hasCapacity());

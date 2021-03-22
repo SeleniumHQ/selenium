@@ -28,7 +28,7 @@ import org.openqa.selenium.events.local.GuavaEventBus;
 import org.openqa.selenium.grid.data.CreateSessionResponse;
 import org.openqa.selenium.grid.data.DistributorStatus;
 import org.openqa.selenium.grid.data.NodeStatus;
-import org.openqa.selenium.grid.data.NodeStatusEvent;
+import org.openqa.selenium.grid.data.NodeHeartBeatEvent;
 import org.openqa.selenium.grid.data.Session;
 import org.openqa.selenium.grid.distributor.Distributor;
 import org.openqa.selenium.grid.node.Node;
@@ -147,7 +147,7 @@ public class LocalDistributorTest {
       queuer,
       secret,
       Duration.ofMinutes(5));
-    bus.fire(new NodeStatusEvent(localNode.getStatus()));
+    bus.fire(new NodeHeartBeatEvent(localNode.getStatus()));
     DistributorStatus status = secretDistributor.getStatus();
 
     //Check the size

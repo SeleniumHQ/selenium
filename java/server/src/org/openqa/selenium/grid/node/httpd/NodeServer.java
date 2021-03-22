@@ -42,6 +42,7 @@ import org.openqa.selenium.grid.config.MemoizedConfig;
 import org.openqa.selenium.grid.config.Role;
 import org.openqa.selenium.grid.data.NodeAddedEvent;
 import org.openqa.selenium.grid.data.NodeDrainComplete;
+import org.openqa.selenium.grid.data.NodeHeartBeatEvent;
 import org.openqa.selenium.grid.data.NodeStatusEvent;
 import org.openqa.selenium.grid.log.LoggingOptions;
 import org.openqa.selenium.grid.node.HealthCheck;
@@ -205,6 +206,7 @@ public class NodeServer extends TemplateGridServerCommand {
                 // Throw an exception to force another check sooner.
                 throw new UnsupportedOperationException("Node cannot be registered");
               }
+              bus.fire(new NodeHeartBeatEvent(node.getStatus()));
               bus.fire(new NodeStatusEvent(node.getStatus()));
               if (nodeRegistered.get()) {
                 throw new InterruptedException("Stopping registration thread.");

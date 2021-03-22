@@ -187,9 +187,9 @@ public class DistributorTest {
     AtomicBoolean heartbeatStarted = new AtomicBoolean();
     CountDownLatch latch = new CountDownLatch(1);
 
-    bus.addListener(NodeHeartBeatEvent.listener(nodeId -> {
+    bus.addListener(NodeHeartBeatEvent.listener(nodeStatus -> {
       latch.countDown();
-      if (node.getId().equals(nodeId)) {
+      if (node.getId().equals(nodeStatus.getId())) {
         heartbeatStarted.set(true);
       }
     }));
