@@ -18,8 +18,8 @@
 package org.openqa.selenium.docker.v1_40;
 
 import org.openqa.selenium.docker.Container;
-import org.openqa.selenium.docker.ContainerId;
 import org.openqa.selenium.docker.ContainerConfig;
+import org.openqa.selenium.docker.ContainerId;
 import org.openqa.selenium.docker.DockerException;
 import org.openqa.selenium.docker.DockerProtocol;
 import org.openqa.selenium.internal.Require;
@@ -69,11 +69,15 @@ class CreateContainer {
       ContainerId id = new ContainerId((String) rawContainer.get("Id"));
 
       if (rawContainer.get("Warnings") instanceof Collection) {
-        String allWarnings = ((Collection<?>) rawContainer.get("Warnings")).stream()
-          .map(String::valueOf)
-          .collect(Collectors.joining("\n", " * ", ""));
+        Collection<?> warnings = (Collection<?>) rawContainer.get("Warnings");
+        if (warnings.size() > 0) {
+          String allWarnings = warnings.stream()
+            .map(String::valueOf)
+            .collect(Collectors.joining("\n", " * ", ""));
 
-        LOG.info(String.format("Warnings while creating %s from %s: %s", id, info, allWarnings));
+          LOG.warning(
+            String.format("Warnings while creating %s from %s: %s", id, info, allWarnings));
+        }
       }
 
       return new Container(protocol, id);
