@@ -131,7 +131,6 @@ def java_selenium_test_suite(
         size = None,
         test_identifiers = ["Test.java"],
         deps = None,
-        data = [],
         jvm_flags = [],
         tags = [],
         **kwargs):
