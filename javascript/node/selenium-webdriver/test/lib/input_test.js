@@ -51,13 +51,13 @@ describe('input.Actions', function () {
       )
 
       await new input.Actions(executor).perform()
-      assert.deepEqual(executor.commands, [])
+      assert.deepStrictEqual(executor.commands, [])
 
       await new input.Actions(executor).pause().perform()
-      assert.deepEqual(executor.commands, [])
+      assert.deepStrictEqual(executor.commands, [])
 
       await new input.Actions(executor).pause(1).perform()
-      assert.deepEqual(executor.commands, [
+      assert.deepStrictEqual(executor.commands, [
         {
           name: command.Name.ACTIONS,
           parameters: {
@@ -81,7 +81,7 @@ describe('input.Actions', function () {
       executor.commands.length = 0
       let actions = new input.Actions(executor)
       await actions.pause(1, actions.keyboard()).perform()
-      assert.deepEqual(executor.commands, [
+      assert.deepStrictEqual(executor.commands, [
         {
           name: command.Name.ACTIONS,
           parameters: {
@@ -115,10 +115,10 @@ describe('input.Actions', function () {
       }
 
       await actions.perform()
-      assert.deepEqual(executor.commands, [expected])
+      assert.deepStrictEqual(executor.commands, [expected])
 
       await actions.perform()
-      assert.deepEqual(executor.commands, [expected, expected])
+      assert.deepStrictEqual(executor.commands, [expected, expected])
     })
   })
 
@@ -128,7 +128,7 @@ describe('input.Actions', function () {
 
       await new input.Actions(executor).pause(3).perform()
 
-      assert.deepEqual(executor.commands, [
+      assert.deepStrictEqual(executor.commands, [
         {
           name: command.Name.ACTIONS,
           parameters: {
@@ -155,7 +155,7 @@ describe('input.Actions', function () {
 
       await new input.Actions(executor).pause().pause(3).perform()
 
-      assert.deepEqual(executor.commands, [
+      assert.deepStrictEqual(executor.commands, [
         {
           name: command.Name.ACTIONS,
           parameters: {
@@ -192,7 +192,7 @@ describe('input.Actions', function () {
         .pause(100, actions.mouse())
         .perform()
 
-      assert.deepEqual(executor.commands, [
+      assert.deepStrictEqual(executor.commands, [
         {
           name: command.Name.ACTIONS,
           parameters: {
@@ -229,7 +229,7 @@ describe('input.Actions', function () {
         .pause(100, actions.mouse())
         .perform()
 
-      assert.deepEqual(executor.commands, [
+      assert.deepStrictEqual(executor.commands, [
         {
           name: command.Name.ACTIONS,
           parameters: {
@@ -257,7 +257,7 @@ describe('input.Actions', function () {
 
       await actions.pause(100, actions.keyboard(), actions.keyboard()).perform()
 
-      assert.deepEqual(executor.commands, [
+      assert.deepStrictEqual(executor.commands, [
         {
           name: command.Name.ACTIONS,
           parameters: {
@@ -282,7 +282,7 @@ describe('input.Actions', function () {
       let executor = new StubExecutor(Promise.resolve())
 
       await new input.Actions(executor).keyDown('\u0041\u030a').perform()
-      assert.deepEqual(executor.commands, [
+      assert.deepStrictEqual(executor.commands, [
         {
           name: command.Name.ACTIONS,
           parameters: {
@@ -313,7 +313,7 @@ describe('input.Actions', function () {
       let executor = new StubExecutor(Promise.resolve())
 
       await new input.Actions(executor).keyUp('\u0041\u030a').perform()
-      assert.deepEqual(executor.commands, [
+      assert.deepStrictEqual(executor.commands, [
         {
           name: command.Name.ACTIONS,
           parameters: {
@@ -345,7 +345,7 @@ describe('input.Actions', function () {
       const actions = new input.Actions(executor)
 
       await actions.sendKeys('a').perform()
-      assert.deepEqual(executor.commands, [
+      assert.deepStrictEqual(executor.commands, [
         {
           name: command.Name.ACTIONS,
           parameters: {
@@ -369,7 +369,7 @@ describe('input.Actions', function () {
       const actions = new input.Actions(executor)
 
       await actions.sendKeys('a', 'b').perform()
-      assert.deepEqual(executor.commands, [
+      assert.deepStrictEqual(executor.commands, [
         {
           name: command.Name.ACTIONS,
           parameters: {
@@ -395,7 +395,7 @@ describe('input.Actions', function () {
       const actions = new input.Actions(executor)
 
       await actions.sendKeys('a', 'bc', 'd').perform()
-      assert.deepEqual(executor.commands, [
+      assert.deepStrictEqual(executor.commands, [
         {
           name: command.Name.ACTIONS,
           parameters: {
@@ -425,7 +425,7 @@ describe('input.Actions', function () {
       const actions = new input.Actions(executor)
 
       await actions.sendKeys('ab').pause(100, actions.mouse()).perform()
-      assert.deepEqual(executor.commands, [
+      assert.deepStrictEqual(executor.commands, [
         {
           name: command.Name.ACTIONS,
           parameters: {
@@ -464,7 +464,7 @@ describe('input.Actions', function () {
       const actions = new input.Actions(executor, { async: true })
 
       await actions.sendKeys('ab').pause(100, actions.mouse()).perform()
-      assert.deepEqual(executor.commands, [
+      assert.deepStrictEqual(executor.commands, [
         {
           name: command.Name.ACTIONS,
           parameters: {
@@ -498,7 +498,7 @@ describe('input.Actions', function () {
       const actions = new input.Actions(executor)
 
       await actions.click().perform()
-      assert.deepEqual(executor.commands, [
+      assert.deepStrictEqual(executor.commands, [
         {
           name: command.Name.ACTIONS,
           parameters: {
@@ -525,7 +525,7 @@ describe('input.Actions', function () {
       const fakeElement = {}
 
       await actions.click(fakeElement).perform()
-      assert.deepEqual(executor.commands, [
+      assert.deepStrictEqual(executor.commands, [
         {
           name: command.Name.ACTIONS,
           parameters: {
@@ -559,7 +559,7 @@ describe('input.Actions', function () {
       const fakeElement = {}
 
       await actions.click(fakeElement).sendKeys('a').perform()
-      assert.deepEqual(executor.commands, [
+      assert.deepStrictEqual(executor.commands, [
         {
           name: command.Name.ACTIONS,
           parameters: {
@@ -609,7 +609,7 @@ describe('input.Actions', function () {
 
       await actions.dragAndDrop(e1, e2).perform()
 
-      assert.deepEqual(executor.commands, [
+      assert.deepStrictEqual(executor.commands, [
         {
           name: command.Name.ACTIONS,
           parameters: {
@@ -650,7 +650,7 @@ describe('input.Actions', function () {
 
       await actions.dragAndDrop(e1, { x: 30, y: 40 }).perform()
 
-      assert.deepEqual(executor.commands, [
+      assert.deepStrictEqual(executor.commands, [
         {
           name: command.Name.ACTIONS,
           parameters: {
@@ -781,7 +781,7 @@ describe('input.Actions', function () {
         .sendKeys('de')
         .perform()
 
-      assert.deepEqual(executor.commands, [
+      assert.deepStrictEqual(executor.commands, [
         {
           name: command.Name.ACTIONS,
           parameters: {
@@ -901,7 +901,7 @@ describe('input.Actions', function () {
           .release(input.Button.RIGHT)
           .perform()
 
-        assert.deepEqual(executor.commands, [
+        assert.deepStrictEqual(executor.commands, [
           {
             name: command.Name.ACTIONS,
             parameters: {
@@ -949,7 +949,7 @@ describe('input.Actions', function () {
 
         await actions.click().perform()
 
-        assert.deepEqual(executor.commands, [
+        assert.deepStrictEqual(executor.commands, [
           {
             name: command.Name.ACTIONS,
             parameters: {
@@ -986,7 +986,7 @@ describe('input.Actions', function () {
           .release(input.Button.RIGHT)
           .perform()
 
-        assert.deepEqual(executor.commands, [
+        assert.deepStrictEqual(executor.commands, [
           {
             name: command.Name.ACTIONS,
             parameters: {
@@ -1020,7 +1020,7 @@ describe('input.Actions', function () {
 
         await actions.contextClick().perform()
 
-        assert.deepEqual(executor.commands, [
+        assert.deepStrictEqual(executor.commands, [
           {
             name: command.Name.ACTIONS,
             parameters: {
@@ -1057,7 +1057,7 @@ describe('input.Actions', function () {
 
         await actions.click(element).perform()
 
-        assert.deepEqual(executor.commands, [
+        assert.deepStrictEqual(executor.commands, [
           {
             name: command.Name.ACTIONS,
             parameters: {
@@ -1120,7 +1120,7 @@ describe('input.Actions', function () {
           .release(input.Button.LEFT)
           .perform()
 
-        assert.deepEqual(executor.commands, [
+        assert.deepStrictEqual(executor.commands, [
           {
             name: command.Name.ACTIONS,
             parameters: {
@@ -1156,7 +1156,7 @@ describe('input.Actions', function () {
 
         await actions.doubleClick().perform()
 
-        assert.deepEqual(executor.commands, [
+        assert.deepStrictEqual(executor.commands, [
           {
             name: command.Name.ACTIONS,
             parameters: {
@@ -1193,7 +1193,7 @@ describe('input.Actions', function () {
 
         await actions.click().contextClick().perform()
 
-        assert.deepEqual(executor.commands, [
+        assert.deepStrictEqual(executor.commands, [
           {
             name: command.Name.ACTIONS,
             parameters: {
@@ -1236,7 +1236,7 @@ describe('input.Actions', function () {
 
         await actions.doubleClick(element).perform()
 
-        assert.deepEqual(executor.commands, [
+        assert.deepStrictEqual(executor.commands, [
           {
             name: command.Name.ACTIONS,
             parameters: {
@@ -1305,7 +1305,7 @@ describe('input.Actions', function () {
         .doubleClick()
         .perform()
 
-      assert.deepEqual(executor.commands, [
+      assert.deepStrictEqual(executor.commands, [
         {
           name: command.Name.ACTIONS,
           parameters: {
@@ -1387,7 +1387,7 @@ describe('input.Actions', function () {
 
       await actions.dragAndDrop(e1, e2).perform()
 
-      assert.deepEqual(executor.commands, [
+      assert.deepStrictEqual(executor.commands, [
         {
           name: command.Name.ACTIONS,
           parameters: {

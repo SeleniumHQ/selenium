@@ -24,11 +24,11 @@ import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebDriverInfo;
 import org.openqa.selenium.internal.Either;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.http.ClientConfig;
+import org.openqa.selenium.remote.http.DumpHttpExchangeFilter;
 import org.openqa.selenium.remote.http.Filter;
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpHandler;
@@ -355,7 +355,8 @@ public class RemoteWebDriverBuilder {
     HttpHandler handler = Require.nonNull("Http handler", client)
       .with(new CloseHttpClientFilter(client)
         .andThen(new AddWebDriverSpecHeaders())
-        .andThen(new ErrorFilter()));
+        .andThen(new ErrorFilter())
+        .andThen(new DumpHttpExchangeFilter()));
 
     Either<SessionNotCreatedException, ProtocolHandshake.Result> result = null;
     try {

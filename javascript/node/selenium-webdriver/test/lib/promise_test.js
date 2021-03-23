@@ -50,7 +50,7 @@ describe('promise', function () {
     if (promise.USE_PROMISE_MANAGER) {
       app.reset()
       promise.setDefaultFlow(new promise.ControlFlow())
-      assert.deepEqual(
+      assert.deepStrictEqual(
         [],
         uncaughtExceptions,
         'Did not expect any uncaught exceptions'
@@ -96,8 +96,8 @@ describe('promise', function () {
       var fn = function () {}
       var array = [true, fn, null, 123, '', undefined, 1]
       return promise.fullyResolved(array).then(function (resolved) {
-        assert.equal(array, resolved)
-        assert.deepEqual([true, fn, null, 123, '', undefined, 1], resolved)
+        assert.strictEqual(array, resolved)
+        assert.deepStrictEqual([true, fn, null, 123, '', undefined, 1], resolved)
       })
     })
 
@@ -105,9 +105,9 @@ describe('promise', function () {
       var fn = function () {}
       var array = [true, [fn, null, 123], '', undefined]
       return promise.fullyResolved(array).then(function (resolved) {
-        assert.equal(array, resolved)
-        assert.deepEqual([true, [fn, null, 123], '', undefined], resolved)
-        assert.deepEqual([fn, null, 123], resolved[1])
+        assert.strictEqual(array, resolved)
+        assert.deepStrictEqual([true, [fn, null, 123], '', undefined], resolved)
+        assert.deepStrictEqual([fn, null, 123], resolved[1])
       })
     })
 
@@ -115,7 +115,7 @@ describe('promise', function () {
       return promise
         .fullyResolved([Promise.resolve(123)])
         .then(function (resolved) {
-          assert.deepEqual([123], resolved)
+          assert.deepStrictEqual([123], resolved)
         })
     })
 
@@ -132,9 +132,9 @@ describe('promise', function () {
 
       var result = promise.fullyResolved(aPromise)
       return result.then(function (resolved) {
-        assert.equal(array, resolved)
-        assert.deepEqual([true, [fn, null, 123], '', undefined], resolved)
-        assert.deepEqual([fn, null, 123], resolved[1])
+        assert.strictEqual(array, resolved)
+        assert.deepStrictEqual([true, [fn, null, 123], '', undefined], resolved)
+        assert.deepStrictEqual([fn, null, 123], resolved[1])
       })
     })
 
@@ -142,7 +142,7 @@ describe('promise', function () {
       var nestedPromise = Promise.resolve(123)
       var aPromise = Promise.resolve([true, nestedPromise])
       return promise.fullyResolved(aPromise).then(function (resolved) {
-        assert.deepEqual([true, 123], resolved)
+        assert.deepStrictEqual([true, 123], resolved)
       })
     })
 
@@ -184,7 +184,7 @@ describe('promise', function () {
       var hash = { a: 123 }
       return promise.fullyResolved(hash).then(function (resolved) {
         assert.strictEqual(hash, resolved)
-        assert.deepEqual(hash, { a: 123 })
+        assert.deepStrictEqual(hash, { a: 123 })
       })
     })
 
@@ -194,7 +194,7 @@ describe('promise', function () {
 
       return promise.fullyResolved(hash).then(function (resolved) {
         assert.strictEqual(hash, resolved)
-        assert.deepEqual({ a: 123, b: { foo: 'bar' } }, resolved)
+        assert.deepStrictEqual({ a: 123, b: { foo: 'bar' } }, resolved)
         assert.strictEqual(nestedHash, resolved['b'])
       })
     })
@@ -216,7 +216,7 @@ describe('promise', function () {
       return promise.fullyResolved(aPromise).then(function (resolved) {
         assert.strictEqual(hash, resolved)
         assert.strictEqual(nestedHash, resolved['b'])
-        assert.deepEqual(hash, { a: 123, b: { foo: 'bar' } })
+        assert.deepStrictEqual(hash, { a: 123, b: { foo: 'bar' } })
       })
     })
 
@@ -226,7 +226,7 @@ describe('promise', function () {
       })
 
       return promise.fullyResolved(aPromise).then(function (resolved) {
-        assert.deepEqual({ a: 123 }, resolved)
+        assert.deepStrictEqual({ a: 123 }, resolved)
       })
     })
 
@@ -257,21 +257,21 @@ describe('promise', function () {
       var foo = new Foo()
 
       return promise.fullyResolved(foo).then(function (resolvedFoo) {
-        assert.equal(foo, resolvedFoo)
+        assert.strictEqual(foo, resolvedFoo)
         assert.ok(resolvedFoo instanceof Foo)
-        assert.deepEqual(new Foo(), resolvedFoo)
+        assert.deepStrictEqual(new Foo(), resolvedFoo)
       })
     })
 
     it('withEmptyArray', function () {
       return promise.fullyResolved([]).then(function (resolved) {
-        assert.deepEqual([], resolved)
+        assert.deepStrictEqual([], resolved)
       })
     })
 
     it('withEmptyHash', function () {
       return promise.fullyResolved({}).then(function (resolved) {
-        assert.deepEqual({}, resolved)
+        assert.deepStrictEqual({}, resolved)
       })
     })
 
@@ -280,7 +280,7 @@ describe('promise', function () {
       var array = [Promise.resolve(obj)]
 
       return promise.fullyResolved(array).then(function (resolved) {
-        assert.deepEqual(resolved, [obj])
+        assert.deepStrictEqual(resolved, [obj])
       })
     })
   })
@@ -334,7 +334,7 @@ describe('promise', function () {
 
     it('returned promise resolves with callback result', async () => {
       let value = await promise.finally(Promise.resolve(1), () => 2)
-      assert.equal(value, 2)
+      assert.strictEqual(value, 2)
     })
   })
 
@@ -359,7 +359,7 @@ describe('promise', function () {
         .checkedNodeCall(function (callback) {
           callback(null, success)
         })
-        .then((value) => assert.equal(success, value))
+        .then((value) => assert.strictEqual(success, value))
     })
 
     it('functionReturnsAndThrows', function () {
@@ -370,7 +370,7 @@ describe('promise', function () {
           callback(error)
           throw error2
         })
-        .then(assert.fail, (e) => assert.equal(error, e))
+        .then(assert.fail, (e) => assert.strictEqual(error, e))
     })
 
     it('functionThrowsAndReturns', function () {
@@ -381,7 +381,7 @@ describe('promise', function () {
           setTimeout(() => callback(error), 10)
           throw error2
         })
-        .then(assert.fail, (e) => assert.equal(error2, e))
+        .then(assert.fail, (e) => assert.strictEqual(error2, e))
     })
   })
 
@@ -390,12 +390,12 @@ describe('promise', function () {
       var a = [1, 2, 3]
       return promise
         .map(a, function (value, index, a2) {
-          assert.equal(a, a2)
-          assert.equal('number', typeof index, 'not a number')
+          assert.strictEqual(a, a2)
+          assert.strictEqual('number', typeof index, 'not a number')
           return value + 1
         })
         .then(function (value) {
-          assert.deepEqual([2, 3, 4], value)
+          assert.deepStrictEqual([2, 3, 4], value)
         })
     })
 
@@ -417,7 +417,7 @@ describe('promise', function () {
           return value * value
         })
         .then(function (value) {
-          assert.deepEqual(expected, value)
+          assert.deepStrictEqual(expected, value)
         })
     })
 
@@ -427,7 +427,7 @@ describe('promise', function () {
           return value + 1
         })
         .then(function (value) {
-          assert.deepEqual([], value)
+          assert.deepStrictEqual([], value)
         })
     })
 
@@ -438,7 +438,7 @@ describe('promise', function () {
       })
 
       var pair = callbackPair(function (value) {
-        assert.deepEqual([2, 3, 4], value)
+        assert.deepStrictEqual([2, 3, 4], value)
       })
       result = result.then(pair.callback, pair.errback)
 
@@ -458,7 +458,7 @@ describe('promise', function () {
       })
 
       var pair = callbackPair(function (value) {
-        assert.deepEqual(['a', 'b'], value)
+        assert.deepStrictEqual(['a', 'b'], value)
       })
       result = result.then(pair.callback, pair.errback)
 
@@ -494,13 +494,13 @@ describe('promise', function () {
       return promise
         .map([1, 2, 3, 4], function () {
           count++
-          if (count == 3) {
+          if (count === 3) {
             throw new StubError()
           }
         })
         .then(assert.fail, function (e) {
           assertIsStubError(e)
-          assert.equal(3, count)
+          assert.strictEqual(3, count)
         })
     })
 
@@ -518,7 +518,7 @@ describe('promise', function () {
         })
         .then(assert.fail, function (e) {
           assertIsStubError(e)
-          assert.equal(2, count)
+          assert.strictEqual(2, count)
         })
     })
 
@@ -529,7 +529,7 @@ describe('promise', function () {
       })
 
       var pair = callbackPair(function (value) {
-        assert.deepEqual([0, 1, 2, 3], value)
+        assert.deepStrictEqual([0, 1, 2, 3], value)
       })
       result = result.then(pair.callback, pair.errback)
 
@@ -550,12 +550,12 @@ describe('promise', function () {
       var a = [0, 1, 2, 3]
       return promise
         .filter(a, function (val, index, a2) {
-          assert.equal(a, a2)
-          assert.equal('number', typeof index, 'not a number')
+          assert.strictEqual(a, a2)
+          assert.strictEqual('number', typeof index, 'not a number')
           return val > 1
         })
         .then(function (val) {
-          assert.deepEqual([2, 3], val)
+          assert.deepStrictEqual([2, 3], val)
         })
     })
 
@@ -569,7 +569,7 @@ describe('promise', function () {
           return value > 1 && value < 6
         })
         .then(function (val) {
-          assert.deepEqual([2, 5], val)
+          assert.deepStrictEqual([2, 5], val)
         })
     })
 
@@ -578,14 +578,14 @@ describe('promise', function () {
 
       return promise
         .filter(a, function (_value, i, a2) {
-          assert.equal(a, a2)
+          assert.strictEqual(a, a2)
           // Even if a function modifies the input array, the original value
           // should be inserted into the new array.
           a2[i] = a2[i] - 1
           return a2[i] >= 1
         })
         .then(function (val) {
-          assert.deepEqual([2, 3], val)
+          assert.deepStrictEqual([2, 3], val)
         })
     })
 
@@ -596,7 +596,7 @@ describe('promise', function () {
       })
 
       var pair = callbackPair(function (value) {
-        assert.deepEqual([2], value)
+        assert.deepStrictEqual([2], value)
       })
       result = result.then(pair.callback, pair.errback)
       return NativePromise.resolve()
@@ -616,7 +616,7 @@ describe('promise', function () {
       })
 
       var pair = callbackPair(function (value) {
-        assert.deepEqual([2], value)
+        assert.deepStrictEqual([2], value)
       })
       result = result.then(pair.callback, pair.errback)
       return NativePromise.resolve()
@@ -645,13 +645,13 @@ describe('promise', function () {
       return promise
         .filter([1, 2, 3, 4], function () {
           count++
-          if (count == 3) {
+          if (count === 3) {
             throw new StubError()
           }
         })
         .then(assert.fail, function (e) {
           assertIsStubError(e)
-          assert.equal(3, count)
+          assert.strictEqual(3, count)
         })
     })
 
@@ -677,7 +677,7 @@ describe('promise', function () {
       })
 
       var pair = callbackPair(function (value) {
-        assert.deepEqual([1, 2], value)
+        assert.deepStrictEqual([1, 2], value)
       })
       result = result.then(pair.callback, pair.errback)
 

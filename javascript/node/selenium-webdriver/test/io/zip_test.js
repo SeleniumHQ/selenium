@@ -94,7 +94,7 @@ describe('io/zip', function () {
             return z.getFile('foo')
           })
           .then((buffer) =>
-            assert.equal(buffer.toString('utf8'), 'hello, world!')
+            assert.strictEqual(buffer.toString('utf8'), 'hello, world!')
           )
       })
 
