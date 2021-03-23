@@ -113,12 +113,12 @@ describe('HttpClient', function () {
 
     const client = new HttpClient(server.url(), agent)
     return client.send(request).then(function (response) {
-      assert.equal(200, response.status)
+      assert.strictEqual(200, response.status)
 
       const headers = JSON.parse(response.body)
-      assert.equal(headers['content-length'], '0')
-      assert.equal(headers['connection'], 'keep-alive')
-      assert.equal(headers['host'], server.host())
+      assert.strictEqual(headers['content-length'], '0')
+      assert.strictEqual(headers['connection'], 'keep-alive')
+      assert.strictEqual(headers['host'], server.host())
 
       const regex = /^selenium\/.* \(js (windows|mac|linux)\)$/
       assert.ok(
@@ -126,8 +126,8 @@ describe('HttpClient', function () {
         `${headers['user-agent']} does not match ${regex}`
       )
 
-      assert.equal(request.headers.get('Foo'), 'Bar')
-      assert.equal(
+      assert.strictEqual(request.headers.get('Foo'), 'Bar')
+      assert.strictEqual(
         request.headers.get('Accept'),
         'application/json; charset=utf-8'
       )

@@ -25,64 +25,64 @@ describe('by', function () {
     describe('className', function () {
       it('delegates to By.css', function () {
         let locator = by.By.className('foo')
-        assert.equal('css selector', locator.using)
-        assert.equal('.foo', locator.value)
+        assert.strictEqual('css selector', locator.using)
+        assert.strictEqual('.foo', locator.value)
       })
 
       it('escapes class name', function () {
         let locator = by.By.className('foo#bar')
-        assert.equal('css selector', locator.using)
-        assert.equal('.foo\\#bar', locator.value)
+        assert.strictEqual('css selector', locator.using)
+        assert.strictEqual('.foo\\#bar', locator.value)
       })
 
       it('translates compound class names', function () {
         let locator = by.By.className('a b')
-        assert.equal('css selector', locator.using)
-        assert.equal('.a.b', locator.value)
+        assert.strictEqual('css selector', locator.using)
+        assert.strictEqual('.a.b', locator.value)
 
         locator = by.By.className('  x   y   z-1  "g" ')
-        assert.equal('css selector', locator.using)
-        assert.equal('.x.y.z-1.\\"g\\"', locator.value)
+        assert.strictEqual('css selector', locator.using)
+        assert.strictEqual('.x.y.z-1.\\"g\\"', locator.value)
       })
     })
 
     describe('id', function () {
       it('delegates to By.css', function () {
         let locator = by.By.id('foo')
-        assert.equal('css selector', locator.using)
-        assert.equal('*[id="foo"]', locator.value)
+        assert.strictEqual('css selector', locator.using)
+        assert.strictEqual('*[id="foo"]', locator.value)
       })
 
       it('escapes the ID', function () {
         let locator = by.By.id('foo#bar')
-        assert.equal('css selector', locator.using)
-        assert.equal('*[id="foo\\#bar"]', locator.value)
+        assert.strictEqual('css selector', locator.using)
+        assert.strictEqual('*[id="foo\\#bar"]', locator.value)
       })
     })
 
     describe('name', function () {
       it('delegates to By.css', function () {
         let locator = by.By.name('foo')
-        assert.equal('css selector', locator.using)
-        assert.equal('*[name="foo"]', locator.value)
+        assert.strictEqual('css selector', locator.using)
+        assert.strictEqual('*[name="foo"]', locator.value)
       })
 
       it('escapes the name', function () {
         let locator = by.By.name('foo"bar"')
-        assert.equal('css selector', locator.using)
-        assert.equal('*[name="foo\\"bar\\""]', locator.value)
+        assert.strictEqual('css selector', locator.using)
+        assert.strictEqual('*[name="foo\\"bar\\""]', locator.value)
       })
 
       it('escapes the name when it starts with a number', function () {
         let locator = by.By.name('123foo"bar"')
-        assert.equal('css selector', locator.using)
-        assert.equal('*[name="\\31 23foo\\"bar\\""]', locator.value)
+        assert.strictEqual('css selector', locator.using)
+        assert.strictEqual('*[name="\\31 23foo\\"bar\\""]', locator.value)
       })
 
       it('escapes the name when it starts with a negative number', function () {
         let locator = by.By.name('-123foo"bar"')
-        assert.equal('css selector', locator.using)
-        assert.equal('*[name="-\\31 23foo\\"bar\\""]', locator.value)
+        assert.strictEqual('css selector', locator.using)
+        assert.strictEqual('*[name="-\\31 23foo\\"bar\\""]', locator.value)
       })
     })
   })
@@ -98,7 +98,7 @@ describe('by', function () {
           ],
         },
       }
-      assert.deepEqual(relative.marshall(), expected)
+      assert.deepStrictEqual(relative.marshall(), expected)
     })
   })
 
@@ -120,56 +120,56 @@ describe('by', function () {
       let fakeBy = { using: 'id', value: 'foo' }
       let locator = by.checkedLocator(fakeBy)
       assert.strictEqual(locator.constructor, by.By)
-      assert.equal(locator.using, 'id')
-      assert.equal(locator.value, 'foo')
+      assert.strictEqual(locator.using, 'id')
+      assert.strictEqual(locator.value, 'foo')
     })
 
     it('accepts class name', function () {
       let locator = by.checkedLocator({ className: 'foo' })
-      assert.equal('css selector', locator.using)
-      assert.equal('.foo', locator.value)
+      assert.strictEqual('css selector', locator.using)
+      assert.strictEqual('.foo', locator.value)
     })
 
     it('accepts css', function () {
       let locator = by.checkedLocator({ css: 'a > b' })
-      assert.equal('css selector', locator.using)
-      assert.equal('a > b', locator.value)
+      assert.strictEqual('css selector', locator.using)
+      assert.strictEqual('a > b', locator.value)
     })
 
     it('accepts id', function () {
       let locator = by.checkedLocator({ id: 'foobar' })
-      assert.equal('css selector', locator.using)
-      assert.equal('*[id="foobar"]', locator.value)
+      assert.strictEqual('css selector', locator.using)
+      assert.strictEqual('*[id="foobar"]', locator.value)
     })
 
     it('accepts linkText', function () {
       let locator = by.checkedLocator({ linkText: 'hello' })
-      assert.equal('link text', locator.using)
-      assert.equal('hello', locator.value)
+      assert.strictEqual('link text', locator.using)
+      assert.strictEqual('hello', locator.value)
     })
 
     it('accepts name', function () {
       let locator = by.checkedLocator({ name: 'foobar' })
-      assert.equal('css selector', locator.using)
-      assert.equal('*[name="foobar"]', locator.value)
+      assert.strictEqual('css selector', locator.using)
+      assert.strictEqual('*[name="foobar"]', locator.value)
     })
 
     it('accepts partialLinkText', function () {
       let locator = by.checkedLocator({ partialLinkText: 'hello' })
-      assert.equal('partial link text', locator.using)
-      assert.equal('hello', locator.value)
+      assert.strictEqual('partial link text', locator.using)
+      assert.strictEqual('hello', locator.value)
     })
 
     it('accepts tagName', function () {
       let locator = by.checkedLocator({ tagName: 'div' })
-      assert.equal('css selector', locator.using)
-      assert.equal('div', locator.value)
+      assert.strictEqual('css selector', locator.using)
+      assert.strictEqual('div', locator.value)
     })
 
     it('accepts xpath', function () {
       let locator = by.checkedLocator({ xpath: '//div[1]' })
-      assert.equal('xpath', locator.using)
-      assert.equal('//div[1]', locator.value)
+      assert.strictEqual('xpath', locator.using)
+      assert.strictEqual('//div[1]', locator.value)
     })
   })
 })

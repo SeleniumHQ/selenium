@@ -18,6 +18,7 @@
 package org.openqa.selenium.grid.distributor.local;
 
 import com.google.common.collect.ImmutableMap;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.Capabilities;

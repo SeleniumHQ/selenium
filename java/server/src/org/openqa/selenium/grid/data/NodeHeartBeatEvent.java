@@ -28,13 +28,13 @@ public class NodeHeartBeatEvent extends Event {
 
   private static final EventName NODE_HEARTBEAT = new EventName("node-heartbeat");
 
-  public NodeHeartBeatEvent(NodeId nodeId) {
-    super(NODE_HEARTBEAT, Require.nonNull("Node id", nodeId));
+  public NodeHeartBeatEvent(NodeStatus status) {
+    super(NODE_HEARTBEAT, Require.nonNull("Node status", status));
   }
 
-  public static EventListener<NodeId> listener(Consumer<NodeId> handler) {
+  public static EventListener<NodeStatus> listener(Consumer<NodeStatus> handler) {
     Require.nonNull("Handler", handler);
 
-    return new EventListener<NodeId>(NODE_HEARTBEAT, NodeId.class, handler);
+    return new EventListener<NodeStatus>(NODE_HEARTBEAT, NodeStatus.class, handler);
   }
 }

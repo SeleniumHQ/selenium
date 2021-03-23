@@ -73,12 +73,12 @@ _versions = {
     # Versions found by visiting https://ftp.mozilla.org/pub/firefox/releases/
     "firefox": {
         "linux": {
-            "url": "https://ftp.mozilla.org/pub/firefox/releases/85.0.2/linux-x86_64/en-US/firefox-85.0.2.tar.bz2",
-            "sha256": "98763f4b1526811967d71e1bbb9552a9a3fd877321ecb497083b9e313b528c31",
+            "url": "https://ftp.mozilla.org/pub/firefox/releases/88.0b1/linux-x86_64/en-US/firefox-88.0b1.tar.bz2",
+            "sha256": "c488102470ad8972755329a72d1ae736a7b7d223cec5fa3057546af76f53cb74",
         },
         "mac": {
-            "url": "https://ftp.mozilla.org/pub/firefox/releases/85.0.2/mac/en-US/Firefox%2085.0.2.dmg",
-            "sha256": "c6a7f39bc0a3c9df99c6c31aa13cb9d6d89d606c8961cb1de5e4b279c2b30273",
+            "url": "https://ftp.mozilla.org/pub/firefox/releases/88.0b1/mac/en-US/Firefox%2088.0b1.pkg",
+            "sha256": "e027bb2bf4feb4e1b5baf685a629fc7727b290dfdd61b081115e0d96ac91f241",
         },
         "windows": {
             "url": None,
@@ -172,11 +172,14 @@ def _firefox():
         build_file_content = "exports_files([\"geckodriver\"])",
     )
 
-    dmg_archive(
+    pkg_archive(
         name = "mac_firefox",
         url = _versions["firefox"]["mac"]["url"],
         sha256 = _versions["firefox"]["mac"]["sha256"],
         build_file_content = "exports_files([\"Firefox.app\"])",
+        move = {
+            "Firefox.tmp1.pkg/Payload/Firefox.app": "Firefox.app",
+        }
     )
 
     # TODO: figure out how to unpack the firefox exe on Windows

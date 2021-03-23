@@ -224,11 +224,11 @@ describe('logging', function () {
 
         root.addHandler(cb)
         root.info('hi')
-        assert.equal(1, cb.callCount)
+        assert.strictEqual(1, cb.callCount)
 
         assert(root.removeHandler(cb))
         root.info('bye')
-        assert.equal(1, cb.callCount)
+        assert.strictEqual(1, cb.callCount)
 
         assert(!root.removeHandler(cb))
       })
@@ -268,13 +268,13 @@ describe('logging', function () {
   describe('Preferences', function () {
     it('can be converted to JSON', function () {
       let prefs = new logging.Preferences()
-      assert.equal('{}', JSON.stringify(prefs))
+      assert.strictEqual('{}', JSON.stringify(prefs))
 
       prefs.setLevel('foo', logging.Level.DEBUG)
-      assert.equal('{"foo":"DEBUG"}', JSON.stringify(prefs))
+      assert.strictEqual('{"foo":"DEBUG"}', JSON.stringify(prefs))
 
       prefs.setLevel(logging.Type.BROWSER, logging.Level.FINE)
-      assert.equal('{"foo":"DEBUG","browser":"FINE"}', JSON.stringify(prefs))
+      assert.strictEqual('{"foo":"DEBUG","browser":"FINE"}', JSON.stringify(prefs))
     })
   })
 })
