@@ -28,13 +28,13 @@ describe('chrome.Options', function () {
   describe('addArguments', function () {
     it('takes var_args', function () {
       let options = new chrome.Options()
-      assert.deepEqual(options[symbols.serialize](), {
+      assert.deepStrictEqual(options[symbols.serialize](), {
         browserName: 'chrome',
         'goog:chromeOptions': {},
       })
 
       options.addArguments('a', 'b')
-      assert.deepEqual(options[symbols.serialize](), {
+      assert.deepStrictEqual(options[symbols.serialize](), {
         browserName: 'chrome',
         'goog:chromeOptions': {
           args: ['a', 'b'],
@@ -44,13 +44,13 @@ describe('chrome.Options', function () {
 
     it('flattens input arrays', function () {
       let options = new chrome.Options()
-      assert.deepEqual(options[symbols.serialize](), {
+      assert.deepStrictEqual(options[symbols.serialize](), {
         browserName: 'chrome',
         'goog:chromeOptions': {},
       })
 
       options.addArguments(['a', 'b'], 'c', [1, 2], 3)
-      assert.deepEqual(options[symbols.serialize](), {
+      assert.deepStrictEqual(options[symbols.serialize](), {
         browserName: 'chrome',
         'goog:chromeOptions': {
           args: ['a', 'b', 'c', 1, 2, 3],
@@ -65,7 +65,7 @@ describe('chrome.Options', function () {
       assert.strictEqual(options.options_.extensions, undefined)
 
       options.addExtensions('a', 'b')
-      assert.deepEqual(options.options_.extensions, ['a', 'b'])
+      assert.deepStrictEqual(options.options_.extensions, ['a', 'b'])
     })
 
     it('flattens input arrays', function () {
@@ -73,7 +73,7 @@ describe('chrome.Options', function () {
       assert.strictEqual(options.options_.extensions, undefined)
 
       options.addExtensions(['a', 'b'], 'c', [1, 2], 3)
-      assert.deepEqual(options.options_.extensions, ['a', 'b', 'c', 1, 2, 3])
+      assert.deepStrictEqual(options.options_.extensions, ['a', 'b', 'c', 1, 2, 3])
     })
   })
 
@@ -84,8 +84,8 @@ describe('chrome.Options', function () {
         .addExtensions(__filename)
         [symbols.serialize]()
 
-      assert.equal(wire['goog:chromeOptions'].extensions.length, 1)
-      assert.equal(await wire['goog:chromeOptions'].extensions[0], expected)
+      assert.strictEqual(wire['goog:chromeOptions'].extensions.length, 1)
+      assert.strictEqual(await wire['goog:chromeOptions'].extensions[0], expected)
     })
   })
 })
@@ -109,7 +109,7 @@ test.suite(
         var userAgent = await driver.executeScript(
           'return window.navigator.userAgent'
         )
-        assert.equal(userAgent, 'foo;bar')
+        assert.strictEqual(userAgent, 'foo;bar')
       })
     })
   },
