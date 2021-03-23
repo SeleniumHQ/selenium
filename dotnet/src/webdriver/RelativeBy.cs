@@ -31,8 +31,8 @@ namespace OpenQA.Selenium
     public class RelativeBy : By
     {
         private string wrappedAtom;
-        private object root;
-        private List<object> filters = new List<object>();
+        private static object root;
+        private static List<object> filters = new List<object>();
 
         /// <summary>
         /// Prevents a default instance of the <see cref="RelativeBy"/> class.
@@ -57,11 +57,11 @@ namespace OpenQA.Selenium
 
         private RelativeBy(object root, List<object> filters) : this()
         {
-            this.root = this.GetSerializableRoot(root);
+            root = this.GetSerializableRoot(root);
 
             if (filters != null && filters.Count > 0)
             {
-                this.filters.AddRange(filters);
+                filters.AddRange(filters);
             }
         }
 
@@ -107,8 +107,8 @@ namespace OpenQA.Selenium
             IJavaScriptExecutor js = GetExecutor(context);
             Dictionary<string, object> parameters = new Dictionary<string, object>();
             Dictionary<string, object> filterParameters = new Dictionary<string, object>();
-            filterParameters["root"] = this.GetSerializableObject(this.root);
-            filterParameters["filters"] = this.filters;
+            filterParameters["root"] = GetSerializableObject(root);
+            filterParameters["filters"] = filters;
             parameters["relative"] = filterParameters;
             object rawElements = js.ExecuteScript(wrappedAtom, parameters);
             ReadOnlyCollection<IWebElement> elements = rawElements as ReadOnlyCollection<IWebElement>; 
@@ -120,7 +120,7 @@ namespace OpenQA.Selenium
         /// </summary>
         /// <param name="element">The element to look above for elements.</param>
         /// <returns>A <see cref="RelativeBy"/> object for use in finding the elements.</returns>
-        public RelativeBy Above(IWebElement element)
+        public static RelativeBy Above(IWebElement element)
         {
             if (element == null)
             {
@@ -135,7 +135,7 @@ namespace OpenQA.Selenium
         /// </summary>
         /// <param name="locator">The locator describing the element to look above for elements.</param>
         /// <returns>A <see cref="RelativeBy"/> object for use in finding the elements.</returns>
-        public RelativeBy Above(By locator)
+        public static RelativeBy Above(By locator)
         {
             if (locator == null)
             {
@@ -150,7 +150,7 @@ namespace OpenQA.Selenium
         /// </summary>
         /// <param name="element">The element to look below for elements.</param>
         /// <returns>A <see cref="RelativeBy"/> object for use in finding the elements.</returns>
-        public RelativeBy Below(IWebElement element)
+        public static RelativeBy Below(IWebElement element)
         {
             if (element == null)
             {
@@ -165,7 +165,7 @@ namespace OpenQA.Selenium
         /// </summary>
         /// <param name="locator">The locator describing the element to look below for elements.</param>
         /// <returns>A <see cref="RelativeBy"/> object for use in finding the elements.</returns>
-        public RelativeBy Below(By locator)
+        public static RelativeBy Below(By locator)
         {
             if (locator == null)
             {
@@ -180,7 +180,7 @@ namespace OpenQA.Selenium
         /// </summary>
         /// <param name="element">The element to look to the left of for elements.</param>
         /// <returns>A <see cref="RelativeBy"/> object for use in finding the elements.</returns>
-        public RelativeBy LeftOf(IWebElement element)
+        public static RelativeBy LeftOf(IWebElement element)
         {
             if (element == null)
             {
@@ -195,7 +195,7 @@ namespace OpenQA.Selenium
         /// </summary>
         /// <param name="locator">The locator describing the element to look to the left of for elements.</param>
         /// <returns>A <see cref="RelativeBy"/> object for use in finding the elements.</returns>
-        public RelativeBy LeftOf(By locator)
+        public static RelativeBy LeftOf(By locator)
         {
             if (locator == null)
             {
@@ -210,7 +210,7 @@ namespace OpenQA.Selenium
         /// </summary>
         /// <param name="element">The element to look to the right of for elements.</param>
         /// <returns>A <see cref="RelativeBy"/> object for use in finding the elements.</returns>
-        public RelativeBy RightOf(IWebElement element)
+        public static RelativeBy RightOf(IWebElement element)
         {
             if (element == null)
             {
@@ -225,7 +225,7 @@ namespace OpenQA.Selenium
         /// </summary>
         /// <param name="locator">The locator describing the element to look to the right of for elements.</param>
         /// <returns>A <see cref="RelativeBy"/> object for use in finding the elements.</returns>
-        public RelativeBy RightOf(By locator)
+        public static RelativeBy RightOf(By locator)
         {
             if (locator == null)
             {
@@ -240,7 +240,7 @@ namespace OpenQA.Selenium
         /// </summary>
         /// <param name="element">The element to look near for elements.</param>
         /// <returns>A <see cref="RelativeBy"/> object for use in finding the elements.</returns>
-        public RelativeBy Near(IWebElement element)
+        public static RelativeBy Near(IWebElement element)
         {
             return Near(element, 50);
         }
@@ -251,7 +251,7 @@ namespace OpenQA.Selenium
         /// <param name="element">The element to look near for elements.</param>
         /// <param name="atMostDistanceInPixels">The maximum distance from the element to be considered "near."</param>
         /// <returns>A <see cref="RelativeBy"/> object for use in finding the elements.</returns>
-        public RelativeBy Near(IWebElement element, int atMostDistanceInPixels)
+        public static RelativeBy Near(IWebElement element, int atMostDistanceInPixels)
         {
             return Near((object)element, atMostDistanceInPixels);
         }
@@ -261,7 +261,7 @@ namespace OpenQA.Selenium
         /// </summary>
         /// <param name="locator">The locator describing the element to look near for elements.</param>
         /// <returns>A <see cref="RelativeBy"/> object for use in finding the elements.</returns>
-        public RelativeBy Near(By locator)
+        public static RelativeBy Near(By locator)
         {
             return Near(locator, 50);
         }
@@ -272,12 +272,12 @@ namespace OpenQA.Selenium
         /// <param name="locator">The locator describing the element to look near for elements.</param>
         /// <param name="atMostDistanceInPixels">The maximum distance from the element to be considered "near."</param>
         /// <returns>A <see cref="RelativeBy"/> object for use in finding the elements.</returns>
-        public RelativeBy Near(By locator, int atMostDistanceInPixels)
+        public static RelativeBy Near(By locator, int atMostDistanceInPixels)
         {
             return Near((object)locator, atMostDistanceInPixels);
         }
 
-        private RelativeBy Near(object locator, int atMostDistanceInPixels)
+        private static RelativeBy Near(object locator, int atMostDistanceInPixels)
         {
             if (locator == null)
             {
@@ -292,12 +292,12 @@ namespace OpenQA.Selenium
             Dictionary<string, object> filter = new Dictionary<string, object>();
             filter["kind"] = "near";
             filter["args"] = new List<object>() { GetSerializableObject(locator), "distance", atMostDistanceInPixels };
-            this.filters.Add(filter);
+            filters.Add(filter);
 
-            return new RelativeBy(this.root, this.filters);
+            return new RelativeBy(root, filters);
         }
 
-        private RelativeBy SimpleDirection(string direction, object locator)
+        private static RelativeBy SimpleDirection(string direction, object locator)
         {
             if (string.IsNullOrEmpty(direction))
             {
@@ -312,9 +312,9 @@ namespace OpenQA.Selenium
             Dictionary<string, object> filter = new Dictionary<string, object>();
             filter["kind"] = direction;
             filter["args"] = new List<object>() { GetSerializableObject(locator) };
-            this.filters.Add(filter);
+            filters.Add(filter);
 
-            return new RelativeBy(this.root, this.filters);
+            return new RelativeBy(root, filters);
         }
 
         private object GetSerializableRoot(object toSerialize)
@@ -345,7 +345,7 @@ namespace OpenQA.Selenium
             throw new WebDriverException("Serializable locator must be a By, an IWebElement, or a wrapped element using IWrapsElement");
         }
 
-        private object GetSerializableObject(object toSerialize)
+        private static object GetSerializableObject(object toSerialize)
         {
             if (toSerialize == null)
             {
