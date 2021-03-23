@@ -31,7 +31,6 @@ import org.openqa.selenium.events.EventBus;
 import org.openqa.selenium.events.local.GuavaEventBus;
 import org.openqa.selenium.grid.data.CreateSessionRequest;
 import org.openqa.selenium.grid.data.CreateSessionResponse;
-import org.openqa.selenium.grid.data.NodeHeartBeatEvent;
 import org.openqa.selenium.grid.data.NodeId;
 import org.openqa.selenium.grid.data.NodeStatus;
 import org.openqa.selenium.grid.data.NodeStatusEvent;
@@ -238,7 +237,7 @@ public class AddingNodesTest {
         .build();
     handler.addHandler(node);
 
-    bus.fire(new NodeHeartBeatEvent(node.getStatus()));
+    bus.fire(new NodeStatusEvent(node.getStatus()));
 
     // Start empty
     wait.until(obj -> distributor.getStatus().hasCapacity());
