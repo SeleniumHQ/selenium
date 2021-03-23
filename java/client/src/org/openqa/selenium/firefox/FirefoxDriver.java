@@ -17,35 +17,27 @@
 
 package org.openqa.selenium.firefox;
 
-import static java.net.HttpURLConnection.HTTP_OK;
-import static java.nio.charset.StandardCharsets.UTF_8;
-import static java.util.Collections.singletonMap;
-import static org.openqa.selenium.json.Json.MAP_TYPE;
-import static org.openqa.selenium.remote.CapabilityType.PROXY;
-import static org.openqa.selenium.remote.http.Contents.string;
-import static org.openqa.selenium.remote.http.HttpMethod.GET;
-
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
-
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.MutableCapabilities;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.Proxy;
 import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.devtools.CdpEndpointFinder;
 import org.openqa.selenium.devtools.CdpInfo;
 import org.openqa.selenium.devtools.CdpVersionFinder;
 import org.openqa.selenium.devtools.Connection;
 import org.openqa.selenium.devtools.DevTools;
+import org.openqa.selenium.devtools.DevToolsException;
 import org.openqa.selenium.devtools.HasDevTools;
 import org.openqa.selenium.devtools.noop.NoOpCdpInfo;
 import org.openqa.selenium.html5.LocalStorage;
 import org.openqa.selenium.html5.SessionStorage;
 import org.openqa.selenium.html5.WebStorage;
 import org.openqa.selenium.internal.Require;
-import org.openqa.selenium.json.Json;
 import org.openqa.selenium.remote.CommandInfo;
 import org.openqa.selenium.remote.FileDetector;
 import org.openqa.selenium.remote.RemoteWebDriver;
@@ -54,18 +46,19 @@ import org.openqa.selenium.remote.html5.RemoteWebStorage;
 import org.openqa.selenium.remote.http.ClientConfig;
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpMethod;
-import org.openqa.selenium.remote.http.HttpRequest;
-import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.remote.service.DriverCommandExecutor;
 import org.openqa.selenium.remote.service.DriverService;
 
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.file.Path;
-import java.util.Map;
 import java.util.ServiceLoader;
 import java.util.Set;
 import java.util.stream.StreamSupport;
+
+import static java.nio.charset.StandardCharsets.UTF_8;
+import static java.util.Collections.singletonMap;
+import static org.openqa.selenium.remote.CapabilityType.PROXY;
 
 /**
  * An implementation of the {#link WebDriver} interface that drives Firefox.
@@ -334,23 +327,14 @@ public class FirefoxDriver extends RemoteWebDriver
       if (debuggerAddress == null) {
         throw new WebDriverException("This version of Firefox or geckodriver does not support CDP");
       }
+
       try {
-        URI uri = new URI(String.format("http://%s", debuggerAddress));
-        ClientConfig config = ClientConfig.defaultConfig().baseUri(uri);
         HttpClient.Factory clientFactory = HttpClient.Factory.createDefault();
-        HttpClient client = clientFactory.createClient(config);
 
-        HttpResponse res = client.execute(new HttpRequest(GET, "/json/version"));
-        if (res.getStatus() != HTTP_OK) {
-          throw new WebDriverException("Could not obtain information about CDP version supported by the driver");
-        }
-        Map<String, Object> versionData = new Json().toType(string(res), MAP_TYPE);
-        Object debuggerUrl = versionData.get("webSocketDebuggerUrl");
-        if (!(debuggerUrl instanceof String)) {
-          throw new WebDriverException("The driver did not provide CDP endpoint");
-        }
+        URI uri = new URI(String.format("http://%s", debuggerAddress));
+        URI wsUri = CdpEndpointFinder.getCdpEndPoint(clientFactory, uri)
+          .orElseThrow(() -> new DevToolsException("Unable to determine URI to connect to from " + debuggerAddress));
 
-        URI wsUri = new URI((String) debuggerUrl);
         ClientConfig wsConfig = ClientConfig.defaultConfig().baseUri(wsUri);
         HttpClient wsClient = clientFactory.createClient(wsConfig);
 
