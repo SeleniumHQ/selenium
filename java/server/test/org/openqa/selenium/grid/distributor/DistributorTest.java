@@ -17,15 +17,6 @@
 
 package org.openqa.selenium.grid.distributor;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.fail;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.openqa.selenium.grid.data.Availability.DOWN;
-import static org.openqa.selenium.grid.data.Availability.UP;
-import static org.openqa.selenium.remote.http.Contents.utf8String;
-import static org.openqa.selenium.remote.http.HttpMethod.POST;
-
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 
@@ -45,8 +36,8 @@ import org.openqa.selenium.grid.data.Availability;
 import org.openqa.selenium.grid.data.CreateSessionRequest;
 import org.openqa.selenium.grid.data.CreateSessionResponse;
 import org.openqa.selenium.grid.data.DistributorStatus;
+import org.openqa.selenium.grid.data.NodeDrainComplete;
 import org.openqa.selenium.grid.data.NodeHeartBeatEvent;
-import org.openqa.selenium.grid.data.NodeRemovedEvent;
 import org.openqa.selenium.grid.data.NodeStatus;
 import org.openqa.selenium.grid.data.Session;
 import org.openqa.selenium.grid.data.Slot;
@@ -97,6 +88,15 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.openqa.selenium.grid.data.Availability.DOWN;
+import static org.openqa.selenium.grid.data.Availability.UP;
+import static org.openqa.selenium.remote.http.Contents.utf8String;
+import static org.openqa.selenium.remote.http.HttpMethod.POST;
 
 public class DistributorTest {
 
@@ -392,7 +392,7 @@ public class DistributorTest {
       .build();
 
     CountDownLatch latch = new CountDownLatch(1);
-    bus.addListener(NodeRemovedEvent.listener(ignored -> latch.countDown()));
+    bus.addListener(NodeDrainComplete.listener(ignored -> latch.countDown()));
 
     Distributor distributor = new LocalDistributor(
       tracer,
@@ -440,7 +440,7 @@ public class DistributorTest {
       .build();
 
     CountDownLatch latch = new CountDownLatch(1);
-    bus.addListener(NodeRemovedEvent.listener(ignored -> latch.countDown()));
+    bus.addListener(NodeDrainComplete.listener(ignored -> latch.countDown()));
 
     Distributor distributor = new LocalDistributor(
       tracer,
@@ -490,7 +490,7 @@ public class DistributorTest {
       .build();
 
     CountDownLatch latch = new CountDownLatch(1);
-    bus.addListener(NodeRemovedEvent.listener(ignored -> latch.countDown()));
+    bus.addListener(NodeDrainComplete.listener(ignored -> latch.countDown()));
 
     Distributor distributor = new LocalDistributor(
       tracer,
