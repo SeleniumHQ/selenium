@@ -137,10 +137,10 @@ public class LocalDistributor extends Distributor {
     this.healthcheckInterval = Require.nonNull("Health check interval", healthcheckInterval);
 
     bus.addListener(NodeStatusEvent.listener(this::register));
+    bus.addListener(NodeStatusEvent.listener(model::refresh));
     bus.addListener(NodeHeartBeatEvent.listener(nodeStatus -> {
       if (nodes.containsKey(nodeStatus.getId())) {
         model.touch(nodeStatus.getId());
-        model.refresh(nodeStatus);
       } else {
         register(nodeStatus);
       }
