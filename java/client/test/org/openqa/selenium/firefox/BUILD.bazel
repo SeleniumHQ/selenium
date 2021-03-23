@@ -17,6 +17,10 @@ java_test_suite(
     tags = [
         "requires-network",
     ],
+    data = [
+            "//third_party/firebug:firebug-1.5.0-fx.xpi",
+            "//third_party/firebug:mooltipass-1.1.87.xpi",
+    ],
     deps = [
         "//java/client/src/org/openqa/selenium/firefox",
         "//java/client/src/org/openqa/selenium/remote",
