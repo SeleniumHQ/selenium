@@ -25,11 +25,11 @@ import org.openqa.selenium.testing.JUnit4TestBase;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.openqa.selenium.support.locators.RelativeLocator.withTagName;
-import static org.openqa.selenium.support.locators.RelativeLocator.withXpath;
-import static org.openqa.selenium.support.locators.RelativeLocator.withCssSelector;
+import static org.openqa.selenium.By.cssSelector;
+import static org.openqa.selenium.By.tagName;
+import static org.openqa.selenium.By.xpath;
+import static org.openqa.selenium.support.locators.RelativeLocator.with;
 
 
 public class RelativeLocatorTest extends JUnit4TestBase {

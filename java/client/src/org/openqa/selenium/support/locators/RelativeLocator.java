@@ -100,21 +100,6 @@ public class RelativeLocator {
     return new RelativeBy(by);
   }
 
-  public static By tagName(String tagName) {
-    Require.nonNull("Tag name to look for", tagName);
-    return By.tagName(tagName);
-  }
-
-  public static By xpath(String xpathExpression) {
-    Require.nonNull("xpath to look for", xpathExpression);
-    return By.xpath(xpathExpression);
-  }
-
-  public static By cssSelector(String cssSelectorExpression) {
-    Require.nonNull("css selector  to look for", cssSelectorExpression);
-    return By.cssSelector(cssSelectorExpression);
-  }
-
   public static class RelativeBy extends By implements By.Remotable {
     private final Object root;
     private final List<Map<String, Object>> filters;
