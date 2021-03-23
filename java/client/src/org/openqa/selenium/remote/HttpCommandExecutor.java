@@ -81,8 +81,7 @@ public class HttpCommandExecutor implements CommandExecutor, NeedsLocalLogs {
    */
   public HttpCommandExecutor(
     Map<String, CommandInfo> additionalCommands,
-    URL addressOfRemoteServer)
-  {
+    URL addressOfRemoteServer) {
     this(Require.nonNull("Additional commands", additionalCommands),
       Require.nonNull("Server URL", addressOfRemoteServer),
       getDefaultClientFactory());
@@ -91,8 +90,7 @@ public class HttpCommandExecutor implements CommandExecutor, NeedsLocalLogs {
   public HttpCommandExecutor(
     Map<String, CommandInfo> additionalCommands,
     URL addressOfRemoteServer,
-    HttpClient.Factory httpClientFactory)
-  {
+    HttpClient.Factory httpClientFactory) {
     this(additionalCommands,
          ClientConfig.defaultConfig()
            .baseUrl(Require.nonNull("Server URL", addressOfRemoteServer)),
@@ -102,8 +100,7 @@ public class HttpCommandExecutor implements CommandExecutor, NeedsLocalLogs {
   public HttpCommandExecutor(
     Map<String, CommandInfo> additionalCommands,
     ClientConfig config,
-    HttpClient.Factory httpClientFactory)
-  {
+    HttpClient.Factory httpClientFactory) {
     remoteServer = Require.nonNull("HTTP client configuration", config).baseUrl();
     this.additionalCommands = Require.nonNull("Additional commands", additionalCommands);
     this.httpClientFactory = Require.nonNull("HTTP client factory", httpClientFactory);
