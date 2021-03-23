@@ -79,6 +79,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Queue;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -130,14 +131,20 @@ public class LocalDistributor extends Distributor {
     this.clientFactory = Require.nonNull("HTTP client factory", clientFactory);
     this.sessions = Require.nonNull("Session map", sessions);
     this.model = new GridModel(bus);
-    this.nodes = new HashMap<>();
+    this.nodes = new ConcurrentHashMap<>();
     this.sessionRequests = Require.nonNull("New Session Request Queue", sessionRequests);
     this.registrationSecret = Require.nonNull("Registration secret", registrationSecret);
     this.healthcheckInterval = Require.nonNull("Health check interval", healthcheckInterval);
 
     bus.addListener(NodeStatusEvent.listener(this::register));
     bus.addListener(NodeStatusEvent.listener(model::refresh));
-    bus.addListener(NodeHeartBeatEvent.listener(model::touch));
+    bus.addListener(NodeHeartBeatEvent.listener(nodeStatus -> {
+      if (nodes.containsKey(nodeStatus.getId())) {
+        model.touch(nodeStatus.getId());
+      } else {
+        register(nodeStatus);
+      }
+    }));
     bus.addListener(NodeDrainComplete.listener(this::remove));
     bus.addListener(NewSessionRequestEvent.listener(requestIds::offer));
 
