@@ -17,14 +17,6 @@
 
 package org.openqa.selenium.grid.node.httpd;
 
-import static java.net.HttpURLConnection.HTTP_INTERNAL_ERROR;
-import static java.net.HttpURLConnection.HTTP_NO_CONTENT;
-import static org.openqa.selenium.grid.config.StandardGridRoles.EVENT_BUS_ROLE;
-import static org.openqa.selenium.grid.config.StandardGridRoles.HTTPD_ROLE;
-import static org.openqa.selenium.grid.config.StandardGridRoles.NODE_ROLE;
-import static org.openqa.selenium.grid.data.Availability.DOWN;
-import static org.openqa.selenium.remote.http.Route.get;
-
 import com.google.auto.service.AutoService;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.net.MediaType;
@@ -42,7 +34,6 @@ import org.openqa.selenium.grid.config.MemoizedConfig;
 import org.openqa.selenium.grid.config.Role;
 import org.openqa.selenium.grid.data.NodeAddedEvent;
 import org.openqa.selenium.grid.data.NodeDrainComplete;
-import org.openqa.selenium.grid.data.NodeHeartBeatEvent;
 import org.openqa.selenium.grid.data.NodeStatusEvent;
 import org.openqa.selenium.grid.log.LoggingOptions;
 import org.openqa.selenium.grid.node.HealthCheck;
@@ -67,6 +58,14 @@ import java.util.Set;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Logger;
+
+import static java.net.HttpURLConnection.HTTP_INTERNAL_ERROR;
+import static java.net.HttpURLConnection.HTTP_NO_CONTENT;
+import static org.openqa.selenium.grid.config.StandardGridRoles.EVENT_BUS_ROLE;
+import static org.openqa.selenium.grid.config.StandardGridRoles.HTTPD_ROLE;
+import static org.openqa.selenium.grid.config.StandardGridRoles.NODE_ROLE;
+import static org.openqa.selenium.grid.data.Availability.DOWN;
+import static org.openqa.selenium.remote.http.Route.get;
 
 @AutoService(CliCommand.class)
 public class NodeServer extends TemplateGridServerCommand {
@@ -206,7 +205,6 @@ public class NodeServer extends TemplateGridServerCommand {
                 // Throw an exception to force another check sooner.
                 throw new UnsupportedOperationException("Node cannot be registered");
               }
-              bus.fire(new NodeHeartBeatEvent(node.getStatus()));
               bus.fire(new NodeStatusEvent(node.getStatus()));
               if (nodeRegistered.get()) {
                 throw new InterruptedException("Stopping registration thread.");

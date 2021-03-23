@@ -136,14 +136,15 @@ public class LocalDistributor extends Distributor {
     this.registrationSecret = Require.nonNull("Registration secret", registrationSecret);
     this.healthcheckInterval = Require.nonNull("Health check interval", healthcheckInterval);
 
+    bus.addListener(NodeStatusEvent.listener(this::register));
     bus.addListener(NodeHeartBeatEvent.listener(nodeStatus -> {
       if (nodes.containsKey(nodeStatus.getId())) {
         model.touch(nodeStatus.getId());
+        model.refresh(nodeStatus);
       } else {
         register(nodeStatus);
       }
     }));
-    bus.addListener(NodeStatusEvent.listener(model::refresh));
     bus.addListener(NodeDrainComplete.listener(this::remove));
     bus.addListener(NewSessionRequestEvent.listener(requestIds::offer));
 

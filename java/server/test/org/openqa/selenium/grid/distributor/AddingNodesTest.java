@@ -19,6 +19,7 @@ package org.openqa.selenium.grid.distributor;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.Capabilities;
@@ -30,9 +31,9 @@ import org.openqa.selenium.events.EventBus;
 import org.openqa.selenium.events.local.GuavaEventBus;
 import org.openqa.selenium.grid.data.CreateSessionRequest;
 import org.openqa.selenium.grid.data.CreateSessionResponse;
+import org.openqa.selenium.grid.data.NodeHeartBeatEvent;
 import org.openqa.selenium.grid.data.NodeId;
 import org.openqa.selenium.grid.data.NodeStatus;
-import org.openqa.selenium.grid.data.NodeHeartBeatEvent;
 import org.openqa.selenium.grid.data.NodeStatusEvent;
 import org.openqa.selenium.grid.data.Session;
 import org.openqa.selenium.grid.data.SessionClosedEvent;
@@ -185,7 +186,7 @@ public class AddingNodesTest {
         .build();
     handler.addHandler(node);
 
-    bus.fire(new NodeHeartBeatEvent(node.getStatus()));
+    bus.fire(new NodeStatusEvent(node.getStatus()));
 
     wait.until(obj -> distributor.getStatus().hasCapacity());
 
@@ -214,8 +215,8 @@ public class AddingNodesTest {
     handler.addHandler(firstNode);
     handler.addHandler(secondNode);
 
-    bus.fire(new NodeHeartBeatEvent(firstNode.getStatus()));
-    bus.fire(new NodeHeartBeatEvent(secondNode.getStatus()));
+    bus.fire(new NodeStatusEvent(firstNode.getStatus()));
+    bus.fire(new NodeStatusEvent(secondNode.getStatus()));
 
     wait.until(obj -> distributor.getStatus());
 
