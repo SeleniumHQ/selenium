@@ -20,12 +20,9 @@ package org.openqa.selenium.grid.distributor.local;
 import com.google.common.collect.ImmutableSet;
 import org.openqa.selenium.events.EventBus;
 import org.openqa.selenium.grid.data.Availability;
-import org.openqa.selenium.grid.data.NodeDrainComplete;
 import org.openqa.selenium.grid.data.NodeDrainStarted;
 import org.openqa.selenium.grid.data.NodeId;
-import org.openqa.selenium.grid.data.NodeRemovedEvent;
 import org.openqa.selenium.grid.data.NodeStatus;
-import org.openqa.selenium.grid.data.NodeStatusEvent;
 import org.openqa.selenium.grid.data.Session;
 import org.openqa.selenium.grid.data.SessionClosedEvent;
 import org.openqa.selenium.grid.data.Slot;
@@ -63,10 +60,6 @@ public class GridModel {
     this.events = Require.nonNull("Event bus", events);
 
     this.events.addListener(NodeDrainStarted.listener(nodeId -> setAvailability(nodeId, DRAINING)));
-    this.events.addListener(NodeDrainComplete.listener(this::remove));
-    this.events.addListener(NodeRemovedEvent.listener(this::remove));
-    this.events.addListener(NodeStatusEvent.listener(this::refresh));
-
     this.events.addListener(SessionClosedEvent.listener(this::release));
   }
 
