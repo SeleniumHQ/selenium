@@ -73,14 +73,7 @@ describe('chrome.Options', function () {
       assert.strictEqual(options.options_.extensions, undefined)
 
       options.addExtensions(['a', 'b'], 'c', [1, 2], 3)
-      assert.deepStrictEqual(options.options_.extensions, [
-        'a',
-        'b',
-        'c',
-        1,
-        2,
-        3,
-      ])
+      assert.deepStrictEqual(options.options_.extensions, ['a', 'b', 'c', 1, 2, 3])
     })
   })
 

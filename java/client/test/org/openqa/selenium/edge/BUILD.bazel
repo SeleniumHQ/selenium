@@ -14,7 +14,6 @@ java_test_suite(
     ),
     deps = [
         "//java/client/src/org/openqa/selenium/edge",
-        "//java/client/src/org/openqa/selenium/edgehtml",
         "//java/client/src/org/openqa/selenium/remote",
         "//java/client/test/org/openqa/selenium/testing:annotations",
         artifact("com.google.guava:guava"),
@@ -33,9 +32,6 @@ java_selenium_test_suite(
     ],
     data = [
         "//third_party/chrome_ext:backspace.crx",
-    ],
-    tags = [
-        "no-remote",
     ],
     deps = [
         "//java/client/src/org/openqa/selenium/edge",

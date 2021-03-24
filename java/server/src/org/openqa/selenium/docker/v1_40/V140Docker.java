@@ -18,8 +18,8 @@
 package org.openqa.selenium.docker.v1_40;
 
 import org.openqa.selenium.docker.Container;
-import org.openqa.selenium.docker.ContainerId;
 import org.openqa.selenium.docker.ContainerConfig;
+import org.openqa.selenium.docker.ContainerId;
 import org.openqa.selenium.docker.ContainerInfo;
 import org.openqa.selenium.docker.ContainerLogs;
 import org.openqa.selenium.docker.DockerException;
@@ -41,6 +41,7 @@ public class V140Docker implements DockerProtocol {
   private final CreateContainer createContainer;
   private final StartContainer startContainer;
   private final StopContainer stopContainer;
+  private final IsContainerPresent isContainerPresent;
   private final InspectContainer inspectContainer;
   private final GetContainerLogs containerLogs;
 
@@ -52,6 +53,7 @@ public class V140Docker implements DockerProtocol {
     createContainer = new CreateContainer(this, client);
     startContainer = new StartContainer(client);
     stopContainer = new StopContainer(client);
+    isContainerPresent = new IsContainerPresent(client);
     inspectContainer = new InspectContainer(client);
     containerLogs = new GetContainerLogs(client);
   }
@@ -89,16 +91,25 @@ public class V140Docker implements DockerProtocol {
   public Container create(ContainerConfig config) {
     Require.nonNull("Container config", config);
 
-    LOG.info("Creating container: " + config);
+    LOG.fine("Creating container: " + config);
 
     return createContainer.apply(config);
+  }
+
+  @Override
+  public boolean isContainerPresent(ContainerId id) throws DockerException {
+    Require.nonNull("Container id", id);
+
+    LOG.info("Checking if container is present: " + id);
+
+    return isContainerPresent.apply(id);
   }
 
   @Override
   public void startContainer(ContainerId id) throws DockerException {
     Require.nonNull("Container id", id);
 
-    LOG.info("Starting container: " + id);
+    LOG.fine("Starting container: " + id);
 
     startContainer.apply(id);
   }
@@ -108,7 +119,7 @@ public class V140Docker implements DockerProtocol {
     Require.nonNull("Container id", id);
     Require.nonNull("Timeout", timeout);
 
-    LOG.info("Stopping container: " + id);
+    LOG.fine("Stopping container: " + id);
 
     stopContainer.apply(id, timeout);
   }
@@ -117,7 +128,7 @@ public class V140Docker implements DockerProtocol {
   public ContainerInfo inspectContainer(ContainerId id) throws DockerException {
     Require.nonNull("Container id", id);
 
-    LOG.info("Inspecting container: " + id);
+    LOG.fine("Inspecting container: " + id);
 
     return inspectContainer.apply(id);
   }

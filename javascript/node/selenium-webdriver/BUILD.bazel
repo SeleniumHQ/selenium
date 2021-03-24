@@ -3,9 +3,11 @@ load("@npm//@bazel/jasmine:index.bzl", "jasmine_node_test")
 load("//common:defs.bzl", "copy_file")
 
 BROWSER_VERSIONS = [
-    "v84",
     "v85",
     "v86",
+    "v87",
+    "v88",
+    "v89",
 ]
 
 SRC_FILES = [

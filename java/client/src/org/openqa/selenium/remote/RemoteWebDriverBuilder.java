@@ -25,15 +25,18 @@ import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverInfo;
+import org.openqa.selenium.internal.Either;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.http.ClientConfig;
+import org.openqa.selenium.remote.http.DumpHttpExchangeFilter;
+import org.openqa.selenium.remote.http.Filter;
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.remote.service.DriverService;
 
-import java.io.ByteArrayInputStream;
+import java.io.Closeable;
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.net.URI;
@@ -53,9 +56,10 @@ import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
-import static java.nio.charset.StandardCharsets.UTF_8;
+import static java.util.logging.Level.WARNING;
 import static org.openqa.selenium.internal.Debug.getDebugLogLevel;
 import static org.openqa.selenium.remote.DriverCommand.QUIT;
+import static org.openqa.selenium.remote.http.HttpMethod.DELETE;
 
 /**
  * Create a new Selenium session using the W3C WebDriver protocol. This class will not generate any
@@ -92,7 +96,30 @@ public class RemoteWebDriverBuilder {
   private final List<Capabilities> requestedCapabilities = new ArrayList<>();
   private final Map<String, Object> additionalCapabilities = new TreeMap<>();
   private final Map<String, Object> metadata = new TreeMap<>();
-  private Function<ClientConfig, HttpHandler> handlerFactory = config -> HttpClient.Factory.createDefault().createClient(config);
+  private Function<ClientConfig, HttpHandler> handlerFactory =
+      config -> {
+        HttpClient.Factory factory = HttpClient.Factory.createDefault();
+        HttpClient client = factory.createClient(config);
+        return client.with(
+          next -> req -> {
+            try {
+              return client.execute(req);
+            } finally {
+              if (req.getMethod() == DELETE) {
+                HttpSessionId.getSessionId(req.getUri()).ifPresent(id -> {
+                  if (("/session/" + id).equals(req.getUri())) {
+                    try {
+                      client.close();
+                    } catch (UncheckedIOException e) {
+                      LOG.log(WARNING, "Swallowing exception while closing http client", e);
+                    }
+                    factory.cleanupIdleClients();
+                  }
+                });
+              }
+            }
+          });
+      };
   private ClientConfig clientConfig = ClientConfig.defaultConfig();
   private URI remoteHost = null;
   private DriverService driverService;
@@ -324,19 +351,26 @@ public class RemoteWebDriverBuilder {
       driverClientConfig = driverClientConfig.baseUri(baseUri);
     }
 
-    HttpHandler handler = Require.nonNull("Http handler", handlerFactory.apply(driverClientConfig))
-      .with(new AddWebDriverSpecHeaders().andThen(new ErrorFilter()));
+    HttpHandler client = handlerFactory.apply(driverClientConfig);
+    HttpHandler handler = Require.nonNull("Http handler", client)
+      .with(new CloseHttpClientFilter(client)
+        .andThen(new AddWebDriverSpecHeaders())
+        .andThen(new ErrorFilter())
+        .andThen(new DumpHttpExchangeFilter()));
 
-    byte[] payload = getPayloadUtf8Bytes();
-    Optional<ProtocolHandshake.Result> result = new ProtocolHandshake().createSession(
-      handler,
-      new ByteArrayInputStream(payload),
-      payload.length);
+    Either<SessionNotCreatedException, ProtocolHandshake.Result> result = null;
+    try {
+      result = new ProtocolHandshake().createSession(handler, getPayload());
+    } catch (IOException e) {
+      throw new SessionNotCreatedException("Unable to create new remote session.", e);
+    }
 
-    CommandExecutor executor = result.map(res -> createExecutor(handler, res))
-      .orElseThrow(() -> new SessionNotCreatedException("Unable to create a new session."));
-
-    return new RemoteWebDriver(executor, new ImmutableCapabilities());
+    if (result.isRight()) {
+      CommandExecutor executor = result.map(res -> createExecutor(handler, res));
+      return new RemoteWebDriver(executor, new ImmutableCapabilities());
+    } else {
+      throw result.left();
+    }
   }
 
   private URI getBaseUri() {
@@ -420,7 +454,7 @@ public class RemoteWebDriverBuilder {
       .collect(Collectors.toSet());
   }
 
-  private byte[] getPayloadUtf8Bytes() {
+  private NewSessionPayload getPayload() {
     Map<String, Object> roughPayload = new TreeMap<>(metadata);
 
     Map<String, Object> w3cCaps = new TreeMap<>();
@@ -429,13 +463,36 @@ public class RemoteWebDriverBuilder {
       w3cCaps.put("firstMatch", requestedCapabilities);
     }
     roughPayload.put("capabilities", w3cCaps);
+    return NewSessionPayload.create(roughPayload);
+  }
 
-    try (NewSessionPayload payload = NewSessionPayload.create(roughPayload)) {
-      StringBuilder json = new StringBuilder();
-      payload.writeTo(json);
-      return json.toString().getBytes(UTF_8);
-    } catch (IOException e) {
-      throw new SessionNotCreatedException("Unable to create session roughPayload", e);
+  private static class CloseHttpClientFilter implements Filter {
+
+    private final HttpHandler client;
+
+    CloseHttpClientFilter(HttpHandler client) {
+      this.client = Require.nonNull("Http client", client);
+    }
+
+    @Override
+    public HttpHandler apply(HttpHandler next) {
+      return req -> {
+        try {
+          return next.execute(req);
+        } finally {
+          if (req.getMethod() == DELETE && client instanceof Closeable) {
+            HttpSessionId.getSessionId(req.getUri()).ifPresent(id -> {
+              if (("/session/" + id).equals(req.getUri())) {
+                try {
+                  ((Closeable) client).close();
+                } catch (IOException e) {
+                  LOG.log(WARNING, "Exception swallowed while closing http client", e);
+                }
+              }
+            });
+          }
+        }
+      };
     }
   }
 }

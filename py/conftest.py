@@ -31,15 +31,15 @@ from test.selenium.webdriver.common.network import get_lan_ip
 from urllib.request import urlopen
 
 drivers = (
-    'Chrome',
-    'Edge',
-    'Firefox',
-    'Ie',
-    'Remote',
-    'Safari',
-    'WebKitGTK',
-    'ChromiumEdge',
-    'WPEWebKit',
+    'chrome',
+    'edge',
+    'firefox',
+    'ie',
+    'remote',
+    'safari',
+    'webkitgtk',
+    'chromiumedge',
+    'wpewebkit',
 )
 
 
@@ -74,15 +74,15 @@ def driver(request):
     kwargs = {}
 
     try:
-        driver_class = request.param
+        driver_class = request.param.capitalize()
     except AttributeError:
         raise Exception('This test requires a --driver to be specified.')
 
     # skip tests if not available on the platform
     _platform = platform.system()
     if driver_class == "Safari" and _platform != "Darwin":
-        pytest.skip("Safari tests can only run on an Apple OS")
-    if (driver_class == "Ie" or driver_class == "Edge") and _platform != "Windows":
+        pytest.skip("Safari tests can only rn on an Apple OS")
+    if (driver_class == "Ie") and _platform != "Windows":
         pytest.skip("IE and EdgeHTML Tests can only run on Windows")
     if "WebKit" in driver_class and _platform != "Linux":
         pytest.skip("Webkit tests can only run on Linux")
@@ -122,7 +122,7 @@ def driver(request):
             options = get_options('Firefox', request.config)
         if driver_class == 'WebKitGTK':
             options = get_options(driver_class, request.config)
-        if driver_class == 'ChromiumEdge':
+        if driver_class == 'Edge':
             options = get_options(driver_class, request.config)
         if driver_class == 'WPEWebKit':
             options = get_options(driver_class, request.config)
@@ -130,6 +130,7 @@ def driver(request):
             kwargs['executable_path'] = driver_path
         if options is not None:
             kwargs['options'] = options
+
         driver_instance = getattr(webdriver, driver_class)(**kwargs)
     yield driver_instance
 
@@ -198,7 +199,7 @@ def pages(driver, webserver):
 @pytest.fixture(autouse=True, scope='session')
 def server(request):
     drivers = request.config.getoption('drivers')
-    if drivers is None or 'Remote' not in drivers:
+    if drivers is None or 'remote' not in drivers:
         yield None
         return
 

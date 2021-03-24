@@ -66,6 +66,18 @@ public class DefaultNetworkInterfaceProvider implements NetworkInterfaceProvider
     while (interfaces.hasMoreElements()) {
       java.net.NetworkInterface jvmNic = interfaces.nextElement();
 
+      try {
+        // If the NIC isn't a loopback device and also lacks a hardware
+        // address, it's likely to be impossible to connect to. We see
+        // this with `utun` NICS on macOS. Skip these from the list of
+        // cached NICs.
+        if (!jvmNic.isLoopback() && jvmNic.getHardwareAddress() == null) {
+          continue;
+        }
+      } catch (SocketException e) {
+        continue;
+      }
+
       NetworkInterface nic = new NetworkInterface(jvmNic);
       result.add(nic);
 

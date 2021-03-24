@@ -44,7 +44,7 @@ public class OpenTelemetryContext implements TraceContext {
 
   @Override
   public String getId() {
-    return spanContext.getSpanIdAsHexString();
+    return spanContext.getSpanId();
   }
 
   @SuppressWarnings("MustBeClosedChecker")
@@ -99,8 +99,8 @@ public class OpenTelemetryContext implements TraceContext {
     return "OpenTelemetryContext{" +
       "tracer=" + tracer +
       ", context=" + this.context +
-      ", span id=" + spanContext.getSpanIdAsHexString() +
-      ", trace id=" + spanContext.getTraceIdAsHexString() +
+      ", span id=" + spanContext.getSpanId() +
+      ", trace id=" + spanContext.getTraceId() +
       '}';
   }
 }

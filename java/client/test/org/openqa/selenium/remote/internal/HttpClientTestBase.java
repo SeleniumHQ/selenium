@@ -157,16 +157,16 @@ abstract public class HttpClientTestBase {
     delegate = req -> new HttpResponse().setContent(Contents.utf8String("Hello, World!"));
 
     // This is a terrible choice of URL
-    HttpClient client = createFactory().createClient(new URL("http://example.com"));
+    try (HttpClient client = createFactory().createClient(new URL("http://example.com"))) {
 
-    URI uri = URI.create(server.whereIs("/"));
-    HttpRequest request = new HttpRequest(
-      GET,
-      String.format("http://%s:%s/hello", uri.getHost(), uri.getPort()));
+      URI uri = URI.create(server.whereIs("/"));
+      HttpRequest request =
+          new HttpRequest(GET, String.format("http://%s:%s/hello", uri.getHost(), uri.getPort()));
 
-    HttpResponse response = client.execute(request);
+      HttpResponse response = client.execute(request);
 
-    assertThat(string(response)).isEqualTo("Hello, World!");
+      assertThat(string(response)).isEqualTo("Hello, World!");
+    }
   }
 
   @Test
@@ -225,8 +225,9 @@ abstract public class HttpClientTestBase {
 
   private HttpResponse executeWithinServer(HttpRequest request, HttpHandler handler) {
     delegate = handler;
-    HttpClient client = createFactory().createClient(fromUri(URI.create(server.whereIs("/"))));
-    return client.execute(request);
+    try (HttpClient client = createFactory().createClient(fromUri(URI.create(server.whereIs("/"))))) {
+      return client.execute(request);
+    }
   }
 
   private HttpResponse executeWithinServer(HttpRequest request, HttpHandler handler, ClientConfig config) {

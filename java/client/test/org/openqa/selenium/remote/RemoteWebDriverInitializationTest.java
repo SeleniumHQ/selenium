@@ -72,7 +72,7 @@ public class RemoteWebDriverInitializationTest {
   public void constructorShouldThrowIfExecutorIsNull() {
     assertThatExceptionOfType(IllegalArgumentException.class)
       .isThrownBy(() -> new RemoteWebDriver((CommandExecutor) null, new ImmutableCapabilities()))
-      .withMessage("RemoteWebDriver cannot work without a command executor");
+      .withMessage("Command executor must be set");
   }
 
   @Test
@@ -206,7 +206,8 @@ public class RemoteWebDriverInitializationTest {
 
     CommandExecutor executor = new HttpCommandExecutor(
       emptyMap(),
-      ClientConfig.defaultConfig().readTimeout(Duration.ofSeconds(1)),
+      ClientConfig.defaultConfig()
+        .baseUrl(new URL("http://localhost:4444/")).readTimeout(Duration.ofSeconds(1)),
       factory);
 
     RemoteWebDriver driver = new RemoteWebDriver(executor, new ImmutableCapabilities());

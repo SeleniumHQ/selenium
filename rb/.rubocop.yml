@@ -17,7 +17,6 @@ Layout/EmptyLinesAroundModuleBody:
   Enabled: false
 
 Layout/LineLength:
-  Max: 130
   IgnoredPatterns:
       - '\s+# rubocop'
       - '^\s*#'
@@ -52,12 +51,13 @@ Metrics/BlockLength:
   Max: 18
   Exclude:
     - 'spec/**/*.rb'
-    - 'selenium-webdriver.gemspec'
+    - 'selenium-*.gemspec'
 
 Metrics/ClassLength:
   CountComments: false
   Max: 160
   Exclude:
+    - 'lib/selenium/webdriver/common/driver.rb'
     - 'lib/selenium/webdriver/remote/bridge.rb'
     - 'lib/selenium/webdriver/remote/capabilities.rb'
 
@@ -86,7 +86,7 @@ Metrics/ParameterLists:
 
 # TODO: Refactor Chrome::Bridge#create_capabilities
 Metrics/PerceivedComplexity:
-  Max: 9
+  Max: 10
   Exclude:
     - 'lib/selenium/webdriver/remote/capabilities.rb'
 
@@ -107,8 +107,7 @@ RSpec/AnyInstance:
   Enabled: false
 
 RSpec/BeforeAfterAll:
-  Exclude:
-    - 'spec/unit/selenium/webdriver/socket_poller_spec.rb'
+  Enabled: false
 
 RSpec/ContextWording:
   Enabled: false

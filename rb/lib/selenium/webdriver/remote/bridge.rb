@@ -57,6 +57,17 @@ module Selenium
           raise Error::WebDriverError, 'no sessionId in returned payload' unless @session_id
 
           @capabilities = Capabilities.json_create(capabilities)
+
+          case @capabilities[:browser_name]
+          when 'chrome'
+            extend(WebDriver::Chrome::Features)
+          when 'firefox'
+            extend(WebDriver::Firefox::Features)
+          when 'msedge'
+            extend(WebDriver::Edge::Features)
+          when 'Safari', 'Safari Technology Preview'
+            extend(WebDriver::Safari::Features)
+          end
         end
 
         #
@@ -70,7 +81,7 @@ module Selenium
         def browser
           @browser ||= begin
             name = @capabilities.browser_name
-            name ? name.tr(' ', '_').to_sym : 'unknown'
+            name ? name.tr(' ', '_').downcase.to_sym : 'unknown'
           end
         end
 
@@ -207,7 +218,10 @@ module Selenium
         end
 
         def window_size(handle = :current)
-          raise Error::UnsupportedOperationError, 'Switch to desired window before getting its size' unless handle == :current
+          unless handle == :current
+            raise Error::UnsupportedOperationError,
+                  'Switch to desired window before getting its size'
+          end
 
           data = execute :get_window_rect
           Dimension.new data['width'], data['height']
@@ -218,7 +232,10 @@ module Selenium
         end
 
         def maximize_window(handle = :current)
-          raise Error::UnsupportedOperationError, 'Switch to desired window before changing its size' unless handle == :current
+          unless handle == :current
+            raise Error::UnsupportedOperationError,
+                  'Switch to desired window before changing its size'
+          end
 
           execute :maximize_window
         end
@@ -305,22 +322,6 @@ module Selenium
 
         def session_storage_size
           execute_script('return sessionStorage.length')
-        end
-
-        def location
-          raise Error::UnsupportedOperationError, 'The W3C standard does not currently support getting location'
-        end
-
-        def set_location(_lat, _lon, _alt)
-          raise Error::UnsupportedOperationError, 'The W3C standard does not currently support setting location'
-        end
-
-        def network_connection
-          raise Error::UnsupportedOperationError, 'The W3C standard does not currently support getting network connection'
-        end
-
-        def network_connection=(_type)
-          raise Error::UnsupportedOperationError, 'The W3C standard does not currently support setting network connection'
         end
 
         #
@@ -436,14 +437,6 @@ module Selenium
                             'if (arguments[0].dispatchEvent(e)) { arguments[0].submit() }', form.as_json)
         end
 
-        def screen_orientation=(orientation)
-          execute :set_screen_orientation, {}, {orientation: orientation}
-        end
-
-        def screen_orientation
-          execute :get_screen_orientation
-        end
-
         #
         # element properties
         #
@@ -455,6 +448,10 @@ module Selenium
         def element_attribute(element, name)
           WebDriver.logger.info "Using script for :getAttribute of #{name}"
           execute_atom :getAttribute, element, name
+        end
+
+        def element_dom_attribute(element, name)
+          execute :get_element_attribute, id: element.ref, name: name
         end
 
         def element_property(element, name)

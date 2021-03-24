@@ -41,6 +41,7 @@ public class LocalNewSessionQueuer extends NewSessionQueuer {
 
   public final NewSessionQueue sessionRequests;
   private final EventBus bus;
+  private final GetNewSessionResponse getNewSessionResponse;
 
   public LocalNewSessionQueuer(
     Tracer tracer,
@@ -50,6 +51,8 @@ public class LocalNewSessionQueuer extends NewSessionQueuer {
     super(tracer, registrationSecret);
     this.bus = Require.nonNull("Event bus", bus);
     this.sessionRequests = Require.nonNull("New Session Request Queue", sessionRequests);
+
+    this.getNewSessionResponse  = new GetNewSessionResponse(tracer, bus, sessionRequests);
   }
 
   public static NewSessionQueuer create(Config config) {
@@ -72,8 +75,6 @@ public class LocalNewSessionQueuer extends NewSessionQueuer {
   @Override
   public HttpResponse addToQueue(HttpRequest request) {
     validateSessionRequest(request);
-    GetNewSessionResponse getNewSessionResponse =
-      new GetNewSessionResponse(tracer, bus, sessionRequests);
     return getNewSessionResponse.add(request);
   }
 

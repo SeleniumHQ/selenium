@@ -18,6 +18,7 @@
 package org.openqa.selenium.grid.distributor.local;
 
 import com.google.common.collect.ImmutableMap;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.Capabilities;
@@ -111,7 +112,8 @@ public class LocalDistributorTest {
       clientFactory,
       new LocalSessionMap(tracer, bus),
       queuer,
-      registrationSecret);
+      registrationSecret,
+      Duration.ofMinutes(5));
     distributor.add(localNode);
     DistributorStatus status = distributor.getStatus();
 
@@ -139,12 +141,13 @@ public class LocalDistributorTest {
       localNewSessionQueue,
       registrationSecret);
     Distributor secretDistributor = new LocalDistributor(
-        tracer,
-        bus,
-        clientFactory,
-        new LocalSessionMap(tracer, bus),
-        queuer,
-        secret);
+      tracer,
+      bus,
+      clientFactory,
+      new LocalSessionMap(tracer, bus),
+      queuer,
+      secret,
+      Duration.ofMinutes(5));
     bus.fire(new NodeStatusEvent(localNode.getStatus()));
     DistributorStatus status = secretDistributor.getStatus();
 
@@ -171,7 +174,8 @@ public class LocalDistributorTest {
       clientFactory,
       new LocalSessionMap(tracer, bus),
       queuer,
-      registrationSecret);
+      registrationSecret,
+      Duration.ofMinutes(5));
     distributor.add(localNode);
 
     //Check the size
@@ -204,7 +208,8 @@ public class LocalDistributorTest {
       clientFactory,
       new LocalSessionMap(tracer, bus),
       queuer,
-      registrationSecret);
+      registrationSecret,
+      Duration.ofMinutes(5));
     distributor.add(localNode);
     distributor.add(localNode);
     DistributorStatus status = distributor.getStatus();
@@ -232,7 +237,8 @@ public class LocalDistributorTest {
       clientFactory,
       new LocalSessionMap(tracer, bus),
       queuer,
-      registrationSecret);
+      registrationSecret,
+      Duration.ofMinutes(5));
 
     // Add one node to ensure that everything is created in that.
     Capabilities caps = new ImmutableCapabilities("browserName", "cheese");
@@ -311,7 +317,8 @@ public class LocalDistributorTest {
       clientFactory,
       new LocalSessionMap(tracer, bus),
       queuer,
-      registrationSecret);
+      registrationSecret,
+      Duration.ofMinutes(5));
     distributor.add(localNode);
     assertThat(localNode.isDraining()).isFalse();
 
@@ -351,7 +358,8 @@ public class LocalDistributorTest {
       clientFactory,
       new LocalSessionMap(tracer, bus),
       queuer,
-      registrationSecret);
+      registrationSecret,
+      Duration.ofMinutes(5));
     distributor.add(localNode);
 
     localNode.drain();

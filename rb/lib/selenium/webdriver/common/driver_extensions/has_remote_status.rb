@@ -22,6 +22,7 @@ module Selenium
     module DriverExtensions
       module HasRemoteStatus
         def remote_status
+          WebDriver.logger.deprecate('#remote_status', '#status')
           @bridge.status
         end
       end # HasRemoteStatus

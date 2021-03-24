@@ -17,11 +17,7 @@
 
 package org.openqa.selenium.firefox;
 
-import static org.openqa.selenium.firefox.FirefoxDriver.Capability.MARIONETTE;
-import static org.openqa.selenium.remote.CapabilityType.BROWSER_NAME;
-
 import com.google.auto.service.AutoService;
-
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.SessionNotCreatedException;
@@ -31,6 +27,9 @@ import org.openqa.selenium.WebDriverInfo;
 import org.openqa.selenium.remote.BrowserType;
 
 import java.util.Optional;
+
+import static org.openqa.selenium.firefox.FirefoxDriver.Capability.MARIONETTE;
+import static org.openqa.selenium.remote.CapabilityType.BROWSER_NAME;
 
 @AutoService(WebDriverInfo.class)
 public class GeckoDriverInfo implements WebDriverInfo {
@@ -56,9 +55,14 @@ public class GeckoDriverInfo implements WebDriverInfo {
     }
 
     return capabilities.asMap().keySet().stream()
-        .map(key -> key.startsWith("moz:"))
-        .reduce(Boolean::logicalOr)
-        .orElse(false);
+      .map(key -> key.startsWith("moz:"))
+      .reduce(Boolean::logicalOr)
+      .orElse(false);
+  }
+
+  @Override
+  public boolean isSupportingCdp() {
+    return false;
   }
 
   @Override

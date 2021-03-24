@@ -17,6 +17,7 @@
 
 package org.openqa.selenium.grid.sessionqueue.local;
 
+import org.openqa.selenium.concurrent.Regularly;
 import org.openqa.selenium.events.EventBus;
 import org.openqa.selenium.grid.config.Config;
 import org.openqa.selenium.grid.data.NewSessionErrorResponse;
@@ -73,12 +74,20 @@ public class LocalNewSessionQueue extends NewSessionQueue {
   private final ScheduledExecutorService executorService =
     Executors.newSingleThreadScheduledExecutor();
   private final Thread shutdownHook = new Thread(this::callExecutorShutdown);
+  private final String timedOutErrorMessage =
+    String.format( "New session request rejected after being in the queue for more than %s",
+      requestTimeout);
 
   public LocalNewSessionQueue(Tracer tracer, EventBus bus, Duration retryInterval,
                               Duration requestTimeout) {
     super(tracer, retryInterval, requestTimeout);
     this.bus = Require.nonNull("Event bus", bus);
     Runtime.getRuntime().addShutdownHook(shutdownHook);
+
+    Regularly regularly = new Regularly("New Session Queue Clean up");
+    regularly.submit(this::purgeTimedOutRequests, Duration.ofSeconds(60),
+      Duration.ofSeconds(30));
+
     new JMXHelper().register(this);
   }
 
@@ -138,8 +147,6 @@ public class LocalNewSessionQueue extends NewSessionQueue {
     Require.nonNull("New Session request", request);
 
     Span span = tracer.getCurrentContext().createSpan("local_sessionqueue.add");
-    boolean added = false;
-    SessionRequest sessionRequest = new SessionRequest(requestId, request);
 
     Lock writeLock = lock.writeLock();
     writeLock.lock();
@@ -148,63 +155,63 @@ public class LocalNewSessionQueue extends NewSessionQueue {
       attributeMap.put(AttributeKey.LOGGER_CLASS.getKey(),
         EventAttribute.setValue(getClass().getName()));
 
-      added = sessionRequests.offerLast(sessionRequest);
+      SessionRequest sessionRequest = new SessionRequest(requestId, request);
       addRequestHeaders(request, requestId);
+      boolean added = sessionRequests.offerLast(sessionRequest);
 
       attributeMap.put(
         AttributeKey.REQUEST_ID.getKey(), EventAttribute.setValue(requestId.toString()));
       attributeMap.put("request.added", EventAttribute.setValue(added));
       span.addEvent("Add new session request to the queue", attributeMap);
 
+      if (added) {
+        bus.fire(new NewSessionRequestEvent(requestId));
+      }
+
       return added;
     } finally {
       writeLock.unlock();
       span.close();
-      if (added) {
-        bus.fire(new NewSessionRequestEvent(requestId));
-      }
     }
   }
 
   @Override
   public boolean offerFirst(HttpRequest request, RequestId requestId) {
     Require.nonNull("New Session request", request);
-    boolean added = false;
-    SessionRequest sessionRequest = new SessionRequest(requestId, request);
-
     Lock writeLock = lock.writeLock();
     writeLock.lock();
     try {
-      added = sessionRequests.offerFirst(sessionRequest);
-      return added;
-    } finally {
-      writeLock.unlock();
+      SessionRequest sessionRequest = new SessionRequest(requestId, request);
+      boolean added = sessionRequests.offerFirst(sessionRequest);
       if (added) {
         executorService.schedule(() -> retryRequest(sessionRequest),
           super.retryInterval.getSeconds(), TimeUnit.SECONDS);
       }
+      return added;
+    } finally {
+      writeLock.unlock();
     }
   }
 
   private void retryRequest(SessionRequest sessionRequest) {
-    HttpRequest request = sessionRequest.getHttpRequest();
-    RequestId requestId = sessionRequest.getRequestId();
-    if (hasRequestTimedOut(request)) {
-      LOG.log(Level.INFO, "Request {0} timed out", requestId);
-      Lock writeLock = lock.writeLock();
-      writeLock.lock();
-      try {
+    Lock writeLock = lock.writeLock();
+    writeLock.lock();
+    try {
+      HttpRequest request = sessionRequest.getHttpRequest();
+      RequestId requestId = sessionRequest.getRequestId();
+      if (hasRequestTimedOut(request)) {
+        LOG.log(Level.INFO, "Request {0} timed out", requestId);
         sessionRequests.remove(sessionRequest);
-      } finally {
-        writeLock.unlock();
         bus.fire(new NewSessionRejectedEvent(
-          new NewSessionErrorResponse(requestId, "New session request timed out")));
+          new NewSessionErrorResponse(requestId, timedOutErrorMessage)));
+      } else {
+        LOG.log(Level.INFO,
+          "Adding request back to the queue. All slots are busy. Request: {0}",
+          requestId);
+        bus.fire(new NewSessionRequestEvent(requestId));
       }
-    } else {
-      LOG.log(Level.INFO,
-        "Adding request back to the queue. All slots are busy. Request: {0}",
-        requestId);
-      bus.fire(new NewSessionRequestEvent(requestId));
+    } finally {
+      writeLock.unlock();
     }
   }
 
@@ -236,10 +243,13 @@ public class LocalNewSessionQueue extends NewSessionQueue {
         }
       }
 
-      if (httpRequest.isPresent() && hasRequestTimedOut(httpRequest.get())) {
-        bus.fire(new NewSessionRejectedEvent(
-          new NewSessionErrorResponse(id, "New session request timed out")));
-        return Optional.empty();
+      if (httpRequest.isPresent()) {
+        HttpRequest request = httpRequest.get();
+        if (hasRequestTimedOut(request)) {
+          bus.fire(new NewSessionRejectedEvent(
+            new NewSessionErrorResponse(id, timedOutErrorMessage)));
+          return Optional.empty();
+        }
       }
       return httpRequest;
     } finally {
@@ -264,6 +274,24 @@ public class LocalNewSessionQueue extends NewSessionQueue {
         bus.fire(new NewSessionRejectedEvent(errorResponse));
       }
       return count;
+    } finally {
+      writeLock.unlock();
+    }
+  }
+
+  private void purgeTimedOutRequests() {
+    Lock writeLock = lock.writeLock();
+    writeLock.lock();
+    try {
+      Iterator<SessionRequest> iterator = sessionRequests.iterator();
+      while (iterator.hasNext()) {
+        SessionRequest sessionRequest = iterator.next();
+        if (hasRequestTimedOut(sessionRequest.getHttpRequest())) {
+          iterator.remove();
+          bus.fire(new NewSessionRejectedEvent(
+            new NewSessionErrorResponse(sessionRequest.getRequestId(), timedOutErrorMessage)));
+        }
+      }
     } finally {
       writeLock.unlock();
     }

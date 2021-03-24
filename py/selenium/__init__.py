@@ -16,4 +16,4 @@
 # under the License.
 
 
-__version__ = "4.0.0a7"
+__version__ = "4.0.0b2.post1"

@@ -34,7 +34,6 @@ import static org.openqa.selenium.remote.CapabilityType.BROWSER_NAME;
 
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.AbstractDriverOptions;
-import org.openqa.selenium.Beta;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.remote.BrowserType;
 
@@ -55,7 +54,6 @@ import java.util.stream.Stream;
  *
  *new InternetExplorerDriver(options);</pre>
  */
-@Beta
 public class InternetExplorerOptions extends AbstractDriverOptions<InternetExplorerOptions> {
 
   final static String IE_OPTIONS = "se:ieOptions";
@@ -66,24 +64,24 @@ public class InternetExplorerOptions extends AbstractDriverOptions<InternetExplo
   private static final String VALIDATE_COOKIE_DOCUMENT_TYPE = "ie.validateCookieDocumentType";
 
   private static final List<String> CAPABILITY_NAMES = Arrays.asList(
-      BROWSER_ATTACH_TIMEOUT,
-      ELEMENT_SCROLL_BEHAVIOR,
-      ENABLE_PERSISTENT_HOVERING,
-      FULL_PAGE_SCREENSHOT,
-      FORCE_CREATE_PROCESS,
-      FORCE_WINDOW_SHELL_API,
-      IE_ENSURE_CLEAN_SESSION,
-      IE_SWITCHES,
-      IE_USE_PER_PROCESS_PROXY,
-      IGNORE_ZOOM_SETTING,
-      INITIAL_BROWSER_URL,
-      INTRODUCE_FLAKINESS_BY_IGNORING_SECURITY_DOMAINS,
-      REQUIRE_WINDOW_FOCUS,
-      UPLOAD_DIALOG_TIMEOUT,
-      VALIDATE_COOKIE_DOCUMENT_TYPE,
-      NATIVE_EVENTS);
+    BROWSER_ATTACH_TIMEOUT,
+    ELEMENT_SCROLL_BEHAVIOR,
+    ENABLE_PERSISTENT_HOVERING,
+    FULL_PAGE_SCREENSHOT,
+    FORCE_CREATE_PROCESS,
+    FORCE_WINDOW_SHELL_API,
+    IE_ENSURE_CLEAN_SESSION,
+    IE_SWITCHES,
+    IE_USE_PER_PROCESS_PROXY,
+    IGNORE_ZOOM_SETTING,
+    INITIAL_BROWSER_URL,
+    INTRODUCE_FLAKINESS_BY_IGNORING_SECURITY_DOMAINS,
+    REQUIRE_WINDOW_FOCUS,
+    UPLOAD_DIALOG_TIMEOUT,
+    VALIDATE_COOKIE_DOCUMENT_TYPE,
+    NATIVE_EVENTS);
 
-  private Map<String, Object> ieOptions = new HashMap<>();
+  private final Map<String, Object> ieOptions = new HashMap<>();
 
   public InternetExplorerOptions() {
     setCapability(BROWSER_NAME, BrowserType.IE);
@@ -98,8 +96,12 @@ public class InternetExplorerOptions extends AbstractDriverOptions<InternetExplo
   @Override
   public InternetExplorerOptions merge(Capabilities extraCapabilities) {
     InternetExplorerOptions newInstance = new InternetExplorerOptions();
-    this.asMap().forEach(newInstance::setCapability);
-    extraCapabilities.asMap().forEach(newInstance::setCapability);
+    this.asMap().entrySet().stream()
+      .filter(entry -> !entry.getKey().equals(IE_OPTIONS))
+      .forEach(entry -> newInstance.setCapability(entry.getKey(), entry.getValue()));
+    extraCapabilities.asMap().entrySet().stream()
+      .filter(entry -> !entry.getKey().equals(IE_OPTIONS))
+      .forEach(entry -> newInstance.setCapability(entry.getKey(), entry.getValue()));
     return newInstance;
   }
 
@@ -155,11 +157,11 @@ public class InternetExplorerOptions extends AbstractDriverOptions<InternetExplo
     }
 
     return amend(
-        IE_SWITCHES,
-        Stream.concat((Stream<?>) ((List) raw).stream(), Stream.of(switches))
-            .filter(i -> i instanceof String)
-            .map(String.class::cast)
-            .collect(toList()));
+      IE_SWITCHES,
+      Stream.concat(((List<?>) raw).stream(), Stream.of(switches))
+        .filter(i -> i instanceof String)
+        .map(String.class::cast)
+        .collect(toList()));
   }
 
   /**
@@ -230,9 +232,9 @@ public class InternetExplorerOptions extends AbstractDriverOptions<InternetExplo
 
     if (IE_OPTIONS.equals(key)) {
       ieOptions.clear();
-      Map<?, ?> streamFrom;
+      Map<String, Object> streamFrom;
       if (value instanceof Map) {
-        streamFrom = (Map<?, ?>) value;
+        streamFrom = (Map<String, Object>) value;
       } else if (value instanceof Capabilities) {
         streamFrom = ((Capabilities) value).asMap();
       } else {
@@ -240,15 +242,15 @@ public class InternetExplorerOptions extends AbstractDriverOptions<InternetExplo
       }
 
       streamFrom.entrySet().stream()
-          .filter(e -> CAPABILITY_NAMES.contains(e.getKey()))
-          .filter(e -> e.getValue() != null)
-          .forEach(e -> {
-            if (IE_SWITCHES.equals(e.getKey())) {
-              setCapability((String) e.getKey(), Arrays.asList(((String) e.getValue()).split(" ")));
-            } else {
-              setCapability((String) e.getKey(), e.getValue());
-            }
-          });
+        .filter(e -> CAPABILITY_NAMES.contains(e.getKey()))
+        .filter(e -> e.getValue() != null)
+        .forEach(e -> {
+          if (IE_SWITCHES.equals(e.getKey())) {
+            setCapability(e.getKey(), Arrays.asList((e.getValue().toString()).split(" ")));
+          } else {
+            setCapability(e.getKey(), e.getValue());
+          }
+        });
     }
   }
 }

@@ -20,6 +20,7 @@ package org.openqa.selenium.grid.distributor;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.RetrySessionRequestException;
 import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.grid.data.CreateSessionRequest;
 import org.openqa.selenium.grid.data.CreateSessionResponse;
@@ -59,14 +60,12 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.function.Predicate;
-import java.util.function.Supplier;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
@@ -191,7 +190,7 @@ public abstract class Distributor implements HasReadyState, Predicate<HttpReques
         return Either.left(exception);
       }
 
-      Optional<Supplier<CreateSessionResponse>> selected;
+      Either<SessionNotCreatedException, CreateSessionResponse> selected;
       CreateSessionRequest firstRequest = new CreateSessionRequest(
         payload.getDownstreamDialects(),
         iterator.next(),
@@ -225,16 +224,22 @@ public abstract class Distributor implements HasReadyState, Predicate<HttpReques
         // Find a Node that supports the capabilities present in the new session
         Set<SlotId> slotIds = slotSelector.selectSlot(firstRequest.getCapabilities(), model);
         if (!slotIds.isEmpty()) {
-          selected = Optional.of(reserve(slotIds.iterator().next(), firstRequest));
+          selected = reserve(slotIds.iterator().next(), firstRequest);
         } else {
-          selected = Optional.empty();
+          String errorMessage =
+            String.format(
+              "Unable to find provider for session: %s",
+              payload.stream().map(Capabilities::toString)
+                .collect(Collectors.joining(", ")));
+          SessionNotCreatedException exception = new RetrySessionRequestException(errorMessage);
+          selected = Either.left(exception);
         }
       } finally {
         writeLock.unlock();
       }
 
-      if (selected.isPresent()) {
-        CreateSessionResponse sessionResponse = selected.get().get();
+      if (selected.isRight()) {
+        CreateSessionResponse sessionResponse = selected.right();
 
         sessions.add(sessionResponse.getSession());
         SessionId sessionId = sessionResponse.getSession().getId();
@@ -253,13 +258,7 @@ public abstract class Distributor implements HasReadyState, Predicate<HttpReques
         return Either.right(sessionResponse);
 
       } else {
-        String errorMessage =
-            String.format(
-                "Unable to find provider for session: %s",
-                payload.stream().map(Capabilities::toString)
-                  .collect(Collectors.joining(", ")));
-        SessionNotCreatedException exception = new RetrySessionRequestException(errorMessage);
-        return Either.left(exception);
+        return selected;
       }
     } catch (SessionNotCreatedException e) {
       span.setAttribute(AttributeKey.ERROR.getKey(), true);
@@ -269,8 +268,8 @@ public abstract class Distributor implements HasReadyState, Predicate<HttpReques
       attributeMap.put(AttributeKey.EXCEPTION_MESSAGE.getKey(),
         EventAttribute.setValue("Unable to create session: " + e.getMessage()));
       span.addEvent(AttributeKey.EXCEPTION_EVENT.getKey(), attributeMap);
-      SessionNotCreatedException exception = new RetrySessionRequestException(e.getMessage());
-      return Either.left(exception);
+
+      return Either.left(e);
     } catch (IOException e) {
       span.setAttribute(AttributeKey.ERROR.getKey(), true);
       span.setStatus(Status.UNKNOWN);
@@ -297,8 +296,8 @@ public abstract class Distributor implements HasReadyState, Predicate<HttpReques
 
   protected abstract Set<NodeStatus> getAvailableNodes();
 
-  protected abstract Supplier<CreateSessionResponse> reserve(SlotId slot,
-                                                             CreateSessionRequest request);
+  protected abstract Either<SessionNotCreatedException, CreateSessionResponse> reserve(SlotId slot,
+                                                                                       CreateSessionRequest request);
 
   @Override
   public boolean test(HttpRequest httpRequest) {

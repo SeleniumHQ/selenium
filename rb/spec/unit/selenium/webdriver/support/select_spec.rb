@@ -25,13 +25,13 @@ module Selenium
       describe Select do
         let(:select) do
           select_element = instance_double(Element, tag_name: 'select')
-          allow(select_element).to receive(:attribute).with(:multiple)
+          allow(select_element).to receive(:dom_attribute).with(:multiple)
           select_element
         end
 
         let(:multi_select) do
           select_element = instance_double(Element, tag_name: 'select')
-          allow(select_element).to receive(:attribute).with(:multiple).and_return 'multiple'
+          allow(select_element).to receive(:dom_attribute).with(:multiple).and_return 'multiple'
           select_element
         end
 
@@ -46,10 +46,10 @@ module Selenium
         it 'indicates whether a select is multiple correctly' do
           selects = Array.new(4) { instance_double(Element, tag_name: 'select') }
 
-          allow(selects[0]).to receive(:attribute).with(:multiple).and_return('false')
-          allow(selects[1]).to receive(:attribute).with(:multiple).and_return(nil)
-          allow(selects[2]).to receive(:attribute).with(:multiple).and_return('true')
-          allow(selects[3]).to receive(:attribute).with(:multiple).and_return('multiple')
+          allow(selects[0]).to receive(:dom_attribute).with(:multiple).and_return('false')
+          allow(selects[1]).to receive(:dom_attribute).with(:multiple).and_return(nil)
+          allow(selects[2]).to receive(:dom_attribute).with(:multiple).and_return('true')
+          allow(selects[3]).to receive(:dom_attribute).with(:multiple).and_return('multiple')
 
           expect(Select.new(selects[0])).not_to be_multiple
           expect(Select.new(selects[1])).not_to be_multiple
@@ -126,10 +126,10 @@ module Selenium
           first_option = instance_double(Element, selected?: true)
           second_option = instance_double(Element, selected?: false)
 
-          allow(first_option).to receive(:attribute).with(:index).and_return '0'
+          allow(first_option).to receive(:dom_attribute).with(:index).and_return '0'
           expect(first_option).not_to receive(:click)
 
-          allow(second_option).to receive(:attribute).with(:index).and_return '1'
+          allow(second_option).to receive(:dom_attribute).with(:index).and_return '1'
           expect(second_option).to receive(:click).once
 
           allow(multi_select).to receive(:find_elements)
@@ -137,8 +137,8 @@ module Selenium
             .and_return([first_option, second_option])
 
           Select.new(multi_select).select_by(:index, 1)
-          expect(first_option).to have_received(:attribute).with(:index)
-          expect(second_option).to have_received(:attribute).with(:index)
+          expect(first_option).to have_received(:dom_attribute).with(:index)
+          expect(second_option).to have_received(:dom_attribute).with(:index)
           expect(multi_select).to have_received(:find_elements).with(tag_name: 'option')
         end
 
@@ -198,8 +198,8 @@ module Selenium
             .with(tag_name: 'option')
             .and_return([first_option, second_option])
 
-          allow(first_option).to receive(:attribute).with(:index).and_return('2')
-          allow(second_option).to receive(:attribute).with(:index).and_return('1')
+          allow(first_option).to receive(:dom_attribute).with(:index).and_return('2')
+          allow(second_option).to receive(:dom_attribute).with(:index).and_return('1')
 
           expect(first_option).to receive(:click).once
           expect(second_option).not_to receive(:click)

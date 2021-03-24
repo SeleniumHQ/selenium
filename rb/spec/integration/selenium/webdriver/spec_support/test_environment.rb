@@ -28,6 +28,7 @@ module Selenium
           @create_driver_error_count = 0
 
           @driver = (ENV['WD_SPEC_DRIVER'] || :chrome).to_sym
+          @driver_instance = nil
         end
 
         def print_env
@@ -48,7 +49,7 @@ module Selenium
         end
 
         def driver_instance
-          @driver_instance ||= create_driver!
+          @driver_instance || create_driver!
         end
 
         def reset_driver!(time = 0)
@@ -153,7 +154,7 @@ module Selenium
               instance.quit
             end
           else
-            instance
+            @driver_instance = instance
           end
         rescue StandardError => e
           @create_driver_error = e
@@ -181,8 +182,8 @@ module Selenium
         def check_for_previous_error
           return unless @create_driver_error && @create_driver_error_count >= MAX_ERRORS
 
-          msg = "previous #{@create_driver_error_count} instantiations of driver #{driver.inspect} failed, not trying again"
-          msg += " (#{@create_driver_error.message})"
+          msg = "previous #{@create_driver_error_count} instantiations of driver #{driver.inspect} failed,"
+          msg += " not trying again (#{@create_driver_error.message})"
 
           raise DriverInstantiationError, msg, @create_driver_error.backtrace
         end
@@ -198,8 +199,14 @@ module Selenium
         end
 
         def create_firefox_driver(opt = {})
-          WebDriver::Firefox::Binary.path = ENV['FIREFOX_BINARY'] if ENV['FIREFOX_BINARY']
+          WebDriver::Firefox.path = ENV['FIREFOX_BINARY'] if ENV['FIREFOX_BINARY']
           WebDriver::Driver.for :firefox, opt
+        end
+
+        def create_firefox_nightly_driver(opt = {})
+          ENV['FIREFOX_BINARY'] = ENV['FIREFOX_NIGHTLY_BINARY']
+          opt[:capabilities] = WebDriver::Firefox::Options.new(debugger_address: true)
+          create_firefox_driver(opt)
         end
 
         def create_ie_driver(opt = {})
@@ -218,7 +225,7 @@ module Selenium
         end
 
         def create_edge_driver(opt = {})
-          WebDriver::EdgeChrome.path = ENV['EDGE_BINARY'] if ENV['EDGE_BINARY']
+          WebDriver::Edge.path = ENV['EDGE_BINARY'] if ENV['EDGE_BINARY']
           WebDriver::Driver.for :edge, opt
         end
       end

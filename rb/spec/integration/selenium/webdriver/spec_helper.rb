@@ -38,7 +38,7 @@ RSpec.configure do |c|
 
   c.before(:suite) do
     $DEBUG ||= ENV['DEBUG'] == 'true'
-    GlobalTestEnv.remote_server.start if GlobalTestEnv.driver == :remote
+    GlobalTestEnv.remote_server.start if GlobalTestEnv.driver == :remote && ENV['WD_REMOTE_URL'].nil?
     GlobalTestEnv.print_env
   end
 
@@ -49,15 +49,15 @@ RSpec.configure do |c|
   c.filter_run focus: true if ENV['focus']
 
   c.before do |example|
-    guards = WebDriver::SpecSupport::Guards.new(example)
+    guards = WebDriver::Support::Guards.new(example, bug_tracker: 'https://github.com/SeleniumHQ/selenium/issues')
+    guards.add_condition(:driver, GlobalTestEnv.driver)
+    guards.add_condition(:browser, GlobalTestEnv.browser)
+    guards.add_condition(:platform, WebDriver::Platform.os)
+    window_manager = !WebDriver::Platform.linux? || !ENV['DESKTOP_SESSION'].nil?
+    guards.add_condition(:window_manager, window_manager)
 
-    skip_guard = guards.exclusive.unsatisfied.first || guards.exclude.satisfied.first
-    skip skip_guard.message if skip_guard
-
-    matching_guard = guards.except.satisfied.first || guards.only.unsatisfied.first
-    if matching_guard
-      ENV['SKIP_PENDING'] ? skip(matching_guard.message) : pending(matching_guard.message)
-    end
+    results = guards.disposition
+    send(*results) if results
   end
 
   c.after do |example|

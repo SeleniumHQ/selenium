@@ -44,7 +44,7 @@ public class NewSessionQueuerFlags implements HasRoles {
     names = "--sessionqueuer-port",
     description = "Port on which the session queue server is listening.")
   @ConfigValue(section = "sessionqueuer", name = "port", example = "1234")
-  private int sessionQueueServerPort;
+  private Integer sessionQueueServerPort;
 
   @Parameter(
     names = "--sessionqueuer-host",

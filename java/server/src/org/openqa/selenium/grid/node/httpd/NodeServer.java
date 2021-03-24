@@ -20,8 +20,10 @@ package org.openqa.selenium.grid.node.httpd;
 import com.google.auto.service.AutoService;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.net.MediaType;
+
 import net.jodah.failsafe.Failsafe;
 import net.jodah.failsafe.RetryPolicy;
+
 import org.openqa.selenium.BuildInfo;
 import org.openqa.selenium.cli.CliCommand;
 import org.openqa.selenium.events.EventBus;
@@ -197,7 +199,6 @@ public class NodeServer extends TemplateGridServerCommand {
         Executors.newSingleThreadExecutor().submit(() -> {
           Failsafe.with(registrationPolicy).run(
             () -> {
-              LOG.fine("Sending registration event");
               HealthCheck.Result check = node.getHealthCheck().check();
               if (DOWN.equals(check.getAvailability())) {
                 LOG.severe("Node is not alive: " + check.getMessage());
@@ -208,6 +209,7 @@ public class NodeServer extends TemplateGridServerCommand {
               if (nodeRegistered.get()) {
                 throw new InterruptedException("Stopping registration thread.");
               }
+              LOG.info("Sending registration event...");
             }
           );
         });

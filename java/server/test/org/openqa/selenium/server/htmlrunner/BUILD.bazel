@@ -1,21 +1,26 @@
 load("@rules_jvm_external//:defs.bzl", "artifact")
 load("//java:defs.bzl", "java_test_suite")
+load("//java/private:selenium_test.bzl", "BROWSERS")
+
+firefox = BROWSERS["firefox"]
 
 java_test_suite(
     name = "MediumTests",
     size = "medium",
     srcs = glob(["*.java"]),
-    jvm_flags = [
+    data = firefox["data"],
+    jvm_flags = firefox["jvm_flags"] + [
         "-Dselenium.browser=*firefox",
     ],
     tags = [
         "no-sandbox",
     ],
     deps = [
+        "//java/client/src/org/openqa/selenium/chrome",
         "//java/client/src/org/openqa/selenium/remote",
         "//java/client/test/org/openqa/selenium/environment",
         "//java/server/src/org/openqa/selenium/server/htmlrunner",
         artifact("com.google.guava:guava"),
         artifact("junit:junit"),
-    ],
+    ] + firefox["deps"],
 )

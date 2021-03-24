@@ -58,12 +58,18 @@ import org.openqa.selenium.logging.LoggingPreferences;
 import org.openqa.selenium.logging.Logs;
 import org.openqa.selenium.logging.NeedsLocalLogs;
 import org.openqa.selenium.print.PrintOptions;
+import org.openqa.selenium.remote.http.ClientConfig;
+import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.internal.WebElementToJsonConverter;
+import org.openqa.selenium.remote.tracing.TracedHttpClient;
+import org.openqa.selenium.remote.tracing.Tracer;
+import org.openqa.selenium.remote.tracing.opentelemetry.OpenTelemetryTracer;
 import org.openqa.selenium.virtualauthenticator.Credential;
 import org.openqa.selenium.virtualauthenticator.HasVirtualAuthenticator;
 import org.openqa.selenium.virtualauthenticator.VirtualAuthenticator;
 import org.openqa.selenium.virtualauthenticator.VirtualAuthenticatorOptions;
 
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.time.Duration;
 import java.util.Base64;
@@ -82,7 +88,6 @@ import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.openqa.selenium.remote.CapabilityType.LOGGING_PREFS;
 import static org.openqa.selenium.remote.CapabilityType.PLATFORM;
@@ -129,20 +134,35 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor, HasInputD
     this.capabilities = init(new ImmutableCapabilities());
   }
 
+  private static URL getDefaultServerURL() {
+    try {
+      return new URL(System.getProperty("webdriver.remote.server", "http://localhost:4444/"));
+    } catch (MalformedURLException e) {
+      throw new WebDriverException(e);
+    }
+  }
+
   public RemoteWebDriver(Capabilities capabilities) {
-    this((URL) null, capabilities);
+    this(getDefaultServerURL(),
+         Require.nonNull("Capabilities", capabilities));
   }
 
   public RemoteWebDriver(URL remoteAddress, Capabilities capabilities) {
-    this(new HttpCommandExecutor(remoteAddress), capabilities);
+    this(createTracedExecutorWithTracedHttpClient(Require.nonNull("Server URL", remoteAddress)),
+         Require.nonNull("Capabilities", capabilities));
+  }
+
+  private static CommandExecutor createTracedExecutorWithTracedHttpClient(URL remoteAddress) {
+    Tracer tracer = OpenTelemetryTracer.getInstance();
+    CommandExecutor executor = new HttpCommandExecutor(
+      Collections.emptyMap(),
+      ClientConfig.defaultConfig().baseUrl(remoteAddress),
+      new TracedHttpClient.Factory(tracer, HttpClient.Factory.createDefault()));
+    return new TracedCommandExecutor(executor, tracer);
   }
 
   public RemoteWebDriver(CommandExecutor executor, Capabilities capabilities) {
-    if (executor == null) {
-      throw new IllegalArgumentException("RemoteWebDriver cannot work without a command executor");
-    }
-    this.executor = executor;
-
+    this.executor = Require.nonNull("Command executor", executor);
     capabilities = init(capabilities);
 
     if (executor instanceof NeedsLocalLogs) {
@@ -337,8 +357,7 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor, HasInputD
       String base64EncodedPng = (String) result;
       return outputType.convertFromBase64Png(base64EncodedPng);
     } else if (result instanceof byte[]) {
-      String base64EncodedPng = new String((byte[]) result, UTF_8);
-      return outputType.convertFromBase64Png(base64EncodedPng);
+      return outputType.convertFromPngBytes((byte[]) result);
     } else {
       throw new RuntimeException(String.format("Unexpected result for %s command: %s",
           DriverCommand.SCREENSHOT,
@@ -611,8 +630,12 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor, HasInputD
       log(sessionId, command.getName(), command, When.EXCEPTION);
       WebDriverException toThrow;
       if (command.getName().equals(DriverCommand.NEW_SESSION)) {
-        toThrow = new SessionNotCreatedException(
-          "Possible causes are invalid address of the remote server or browser start-up failure.", e);
+        if (e instanceof SessionNotCreatedException) {
+          toThrow = (WebDriverException) e;
+        } else {
+          toThrow = new SessionNotCreatedException(
+            "Possible causes are invalid address of the remote server or browser start-up failure.", e);
+        }
       } else if (e instanceof WebDriverException) {
         toThrow = (WebDriverException) e;
       } else {

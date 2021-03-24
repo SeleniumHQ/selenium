@@ -27,7 +27,6 @@ const fileServer = require('../../lib/test/fileserver')
 const io = require('../../io')
 const test = require('../../lib/test')
 const until = require('../../lib/until')
-const Server = require('../../lib/test/httpserver').Server
 
 test.suite(
   function (env) {
@@ -110,7 +109,7 @@ test.suite(
         await driver.onLogException(cdpConnection, function (event) {
           assert.strictEqual(
             event['exceptionDetails']['stackTrace']['callFrames'][0][
-              'functionName'
+            'functionName'
             ],
             'onmouseover'
           )
@@ -130,7 +129,7 @@ test.suite(
           assert.strictEqual(event['old_value'], 'display:none;')
         })
 
-        await driver.get(test.Pages.dynamicPage)
+        await driver.get(fileServer.Pages.dynamicPage)
 
         let element = driver.findElement({ id: 'reveal' })
         await element.click()
@@ -140,40 +139,12 @@ test.suite(
     })
 
     describe('Basic Auth Injection', function () {
-      const server = new Server(function (req, res) {
-        if (req.method == 'GET' && req.url == '/protected') {
-          const denyAccess = function () {
-            res.writeHead(401, { 'WWW-Authenticate': 'Basic realm="test"' })
-            res.end('Access denied')
-          }
-
-          const basicAuthRegExp = /^\s*basic\s+([a-z0-9\-._~+/]+)=*\s*$/i
-          const auth = req.headers.authorization
-          const match = basicAuthRegExp.exec(auth || '')
-          if (!match) {
-            denyAccess()
-            return
-          }
-
-          const userNameAndPass = Buffer.from(match[1], 'base64').toString()
-          const parts = userNameAndPass.split(':', 2)
-          if (parts[0] !== 'genie' && parts[1] !== 'bottle') {
-            denyAccess()
-            return
-          }
-
-          res.writeHead(200, { 'content-type': 'text/plain' })
-          res.end('Access granted!')
-        }
-      })
-
-      server.start()
 
       it('denies entry if username and password do not match', async function () {
         const pageCdpConnection = await driver.createCDPConnection('page')
 
         await driver.register('random', 'random', pageCdpConnection)
-        await driver.get(server.url() + '/protected')
+        await driver.get(fileServer.Pages.basicAuth)
         let source = await driver.getPageSource()
         assert.strictEqual(source.includes('Access granted!'), false)
       })
@@ -182,7 +153,7 @@ test.suite(
         const pageCdpConnection = await driver.createCDPConnection('page')
 
         await driver.register('genie', 'bottle', pageCdpConnection)
-        await driver.get(server.url() + '/protected')
+        await driver.get(fileServer.Pages.basicAuth)
         let source = await driver.getPageSource()
         assert.strictEqual(source.includes('Access granted!'), true)
         await server.stop()

@@ -41,13 +41,18 @@ public class OperaDriverInfo implements WebDriverInfo {
 
   @Override
   public Capabilities getCanonicalCapabilities() {
-    return new ImmutableCapabilities(BROWSER_NAME, BrowserType.OPERA_BLINK);
+    return new ImmutableCapabilities(BROWSER_NAME, BrowserType.OPERA);
   }
 
   @Override
   public boolean isSupporting(Capabilities capabilities) {
     return BrowserType.OPERA_BLINK.equals(capabilities.getBrowserName()) ||
-           BrowserType.OPERA.equals(capabilities.getBrowserName());
+      BrowserType.OPERA.equals(capabilities.getBrowserName());
+  }
+
+  @Override
+  public boolean isSupportingCdp() {
+    return false;
   }
 
   @Override

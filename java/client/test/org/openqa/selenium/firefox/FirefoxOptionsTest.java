@@ -99,7 +99,7 @@ public class FirefoxOptionsTest {
 
     FirefoxOptions options = new FirefoxOptions(caps);
 
-    assertThat(options.getProfile()).isSameAs(profile);
+    assertThat(options.getProfile()).isEqualTo(profile);
   }
 
   @Test
@@ -110,31 +110,28 @@ public class FirefoxOptionsTest {
   @Test
   public void shouldKeepRelativePathToBinaryAsIs() {
     FirefoxOptions options = new FirefoxOptions().setBinary("some/path");
-    assertThat(options.getCapability(BINARY)).isEqualTo("some/path");
-  }
-
-  @Test
-  public void shouldConvertPathToBinaryToUseForwardSlashes() {
-    FirefoxOptions options = new FirefoxOptions().setBinary("some\\path");
-    assertThat(options.getCapability(BINARY)).isEqualTo("some/path");
+    assertThat(options.getBinary())
+      .extracting(FirefoxBinary::getFile)
+      .extracting(String::valueOf)
+      .isEqualTo("some/path");
   }
 
   @Test
   public void shouldKeepWindowsDriveLetterInPathToBinary() {
     FirefoxOptions options = new FirefoxOptions().setBinary("F:\\some\\path");
-    assertThat(options.getCapability(BINARY)).isEqualTo("F:/some/path");
-  }
-
-  @Test
-  public void canUseForwardSlashesInWindowsPaths() {
-    FirefoxOptions options = new FirefoxOptions().setBinary("F:\\some\\path");
-    assertThat(options.getCapability(BINARY)).isEqualTo("F:/some/path");
+    assertThat(options.getBinary())
+      .extracting(FirefoxBinary::getFile)
+      .extracting(String::valueOf)
+      .isEqualTo("F:\\some\\path");
   }
 
   @Test
   public void shouldKeepWindowsNetworkFileSystemRootInPathToBinary() {
     FirefoxOptions options = new FirefoxOptions().setBinary("\\\\server\\share\\some\\path");
-    assertThat(options.getCapability(BINARY)).isEqualTo("//server/share/some/path");
+    assertThat(options.getBinary())
+      .extracting(FirefoxBinary::getFile)
+      .extracting(String::valueOf)
+      .isEqualTo("\\\\server\\share\\some\\path");
   }
 
   @Test
@@ -143,8 +140,7 @@ public class FirefoxOptionsTest {
     fakeExecutable.deleteOnExit();
     FirefoxBinary binary = new FirefoxBinary(fakeExecutable);
     FirefoxOptions options = new FirefoxOptions().setBinary(binary);
-    assertThat(options.getCapability(BINARY)).isEqualTo(binary);
-    assertThat(options.getBinary()).isEqualTo(binary);
+    assertThat(options.getBinary().getFile()).isEqualTo(binary.getFile());
   }
 
   @Test
@@ -176,7 +172,7 @@ public class FirefoxOptionsTest {
         Files.setPosixFilePermissions(binary, singleton(PosixFilePermission.OWNER_EXECUTE));
       }
       property.set(binary.toString());
-      FirefoxOptions options = new FirefoxOptions();
+      FirefoxOptions options = new FirefoxOptions().configureFromEnv();
 
       FirefoxBinary firefoxBinary =
         options.getBinaryOrNull().orElseThrow(() -> new AssertionError("No binary"));
@@ -194,15 +190,15 @@ public class FirefoxOptionsTest {
     try {
       // No value should default to using Marionette
       property.set(null);
-      FirefoxOptions options = new FirefoxOptions();
+      FirefoxOptions options = new FirefoxOptions().configureFromEnv();
       assertThat(options.isLegacy()).isFalse();
 
       property.set("false");
-      options = new FirefoxOptions();
+      options = new FirefoxOptions().configureFromEnv();
       assertThat(options.isLegacy()).isTrue();
 
       property.set("true");
-      options = new FirefoxOptions();
+      options = new FirefoxOptions().configureFromEnv();
       assertThat(options.isLegacy()).isFalse();
     } finally {
       property.reset();
@@ -217,7 +213,7 @@ public class FirefoxOptionsTest {
       Capabilities caps = new ImmutableCapabilities(MARIONETTE, true);
 
       property.set("false");
-      FirefoxOptions options = new FirefoxOptions().merge(caps);
+      FirefoxOptions options = new FirefoxOptions().configureFromEnv().merge(caps);
       assertThat(options.isLegacy()).isTrue();
     } finally {
       property.reset();
@@ -232,7 +228,7 @@ public class FirefoxOptionsTest {
     JreSystemProperty property = new JreSystemProperty(BROWSER_PROFILE);
     try {
       property.set("default");
-      FirefoxOptions options = new FirefoxOptions();
+      FirefoxOptions options = new FirefoxOptions().configureFromEnv();
       FirefoxProfile profile = options.getProfile();
 
       assertThat(profile).isNotNull();
@@ -249,9 +245,10 @@ public class FirefoxOptionsTest {
 
     JreSystemProperty property = new JreSystemProperty(BROWSER_PROFILE);
     try {
+      FirefoxOptions options = new FirefoxOptions();
       property.set(unlikelyProfileName);
       assertThatExceptionOfType(WebDriverException.class)
-        .isThrownBy(FirefoxOptions::new);
+        .isThrownBy(options::configureFromEnv);
     } finally {
       property.reset();
     }
@@ -305,13 +302,16 @@ public class FirefoxOptionsTest {
   }
 
   @Test
-  public void canConvertOptionsWithBinaryToCapabilitiesAndRestoreBack() {
+  public void canConvertOptionsWithBinaryToCapabilitiesAndRestoreBack() throws IOException {
+    // Don't assume Firefox is actually installed and available
+    Path tempFile = Files.createTempFile("firefoxoptions", "test");
+
     FirefoxOptions options = new FirefoxOptions(
-      new MutableCapabilities(new FirefoxOptions().setBinary(new FirefoxBinary())));
+      new MutableCapabilities(new FirefoxOptions().setBinary(new FirefoxBinary(tempFile.toFile()))));
     Object options2 = options.asMap().get(FirefoxOptions.FIREFOX_OPTIONS);
     assertThat(options2)
       .asInstanceOf(InstanceOfAssertFactories.MAP)
-      .containsEntry("binary", new FirefoxBinary().getPath().replaceAll("\\\\", "/"));
+      .containsEntry("binary", tempFile.toFile().getPath().replaceAll("\\\\", "/"));
   }
 
   @Test
@@ -329,7 +329,10 @@ public class FirefoxOptionsTest {
 
   @Test
   public void optionsAsMapShouldBeImmutable() {
-    Map<String, Object> options = new FirefoxOptions().asMap();
+    Map<String, Object> options = new FirefoxOptions()
+      .addPreference("alpha", "beta")
+      .addArguments("--cheese")
+      .asMap();
     assertThatExceptionOfType(UnsupportedOperationException.class)
       .isThrownBy(() -> options.put("browserName", "chrome"));
 

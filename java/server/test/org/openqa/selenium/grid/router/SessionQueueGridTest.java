@@ -116,7 +116,8 @@ public class SessionQueueGridTest {
       clientFactory,
       sessions,
       queuer,
-      registrationSecret);
+      registrationSecret,
+      Duration.ofMinutes(5));
     handler.addHandler(distributor);
 
     LocalNode localNode = LocalNode.builder(tracer, bus, nodeUri, nodeUri, registrationSecret)
@@ -244,7 +245,8 @@ public class SessionQueueGridTest {
         "capabilities", ImmutableMap.of(
           "alwaysMatch", caps))));
 
-    HttpClient client = clientFactory.createClient(server.getUrl());
-    return client.execute(request);
+    try (HttpClient client = clientFactory.createClient(server.getUrl())) {
+      return client.execute(request);
+    }
   }
 }

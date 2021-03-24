@@ -5,9 +5,9 @@ module CrazyFun
         def handle(_fun, dir, args)
           raise "no :gemspec for rubygem" unless args[:gemspec]
 
-          define_clean_task     dir, args
+          define_clean_task     dir, args[:name]
           define_build_task     dir, args
-          define_release_task   dir, args
+          define_release_task   dir, args[:name]
 
           define_gem_install_task dir, args
         end
@@ -18,7 +18,7 @@ module CrazyFun
           spec_dir = File.dirname(gemspec)
 
           desc "Build #{args[:gemspec]}"
-          task "//#{dir}:gem:build" => deps do
+          task "//#{dir}:gem:#{args[:name]}:build" => deps do
             require 'rubygems/package'
 
             file = Dir.chdir(spec_dir) do
@@ -30,16 +30,17 @@ module CrazyFun
           end
         end
 
-        def define_clean_task(dir, _args)
+        def define_clean_task(dir, name)
           desc 'Clean rubygem artifacts'
-          task "//#{dir}:gem:clean" do
+          task "//#{dir}:gem:#{name}:clean" do
             Dir['build/*.gem'].each { |gem| rm(gem) }
           end
         end
 
-        def define_release_task(dir, _args)
+        def define_release_task(dir, name)
           desc 'Build and release the ruby gem to Gemcutter'
-          task "//#{dir}:gem:release" => %W[//#{dir}:gem:clean //#{dir}:gem:build] do
+          task "//#{dir}:gem:#{name}:release" =>
+                 %W[//#{dir}:gem:#{name}:clean //#{dir}:gem:#{name}:build] do
             gem = Dir['build/*.gem'].first # safe as long as :clean does its job
             sh "gem", "push", gem
           end

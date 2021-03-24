@@ -174,6 +174,22 @@ def testGetImplicitAttribute(driver, pages):
         assert i == int(elem.get_attribute("index"))
 
 
+def testGetDomAttribute(driver, pages):
+    url = pages.url('formPage.html')
+    driver.get(url)
+    elem = driver.find_element(By.ID, "vsearchGadget")
+    attr = elem.get_dom_attribute("accesskey")
+    assert "4" == attr
+
+
+def testGetProperty(driver, pages):
+    url = pages.url('formPage.html')
+    driver.get(url)
+    elem = driver.find_element(By.ID, "withText")
+    prop = elem.get_property("value")
+    assert "Example text" == prop
+
+
 def testExecuteSimpleScript(driver, pages):
     pages.load("xhtmlTest.html")
     title = driver.execute_script("return document.title;")

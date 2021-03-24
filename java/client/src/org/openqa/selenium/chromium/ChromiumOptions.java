@@ -240,7 +240,11 @@ public class ChromiumOptions<T extends ChromiumOptions<?>> extends AbstractDrive
     capabilities.getCapabilityNames().forEach(name -> setCapability(name, capabilities.getCapability(name)));
     if (capabilities instanceof ChromiumOptions) {
       ChromiumOptions<?> options = (ChromiumOptions<?>) capabilities;
-      addArguments(options.args);
+      for (String arg : options.args) {
+        if (!args.contains(arg)) {
+          addArguments(arg);
+        }
+      }
       addExtensions(options.extensionFiles);
       addEncodedExtensions(options.extensions);
       if (options.binary != null) {

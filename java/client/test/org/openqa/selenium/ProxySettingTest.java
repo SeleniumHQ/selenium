@@ -56,7 +56,6 @@ import static java.util.Collections.singletonMap;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.openqa.selenium.remote.CapabilityType.PROXY;
 import static org.openqa.selenium.testing.drivers.Browser.CHROME;
-import static org.openqa.selenium.testing.drivers.Browser.EDGE_HTML;
 import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
 import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
 
@@ -79,7 +78,6 @@ public class ProxySettingTest extends JUnit4TestBase {
 
   @Test
   @Ignore(SAFARI)
-  @Ignore(EDGE_HTML)
   @NeedsLocalEnvironment
   @NoDriverBeforeTest
   @NoDriverAfterTest
@@ -94,7 +92,6 @@ public class ProxySettingTest extends JUnit4TestBase {
 
   @Test
   @Ignore(SAFARI)
-  @Ignore(EDGE_HTML)
   @NeedsLocalEnvironment
   @NoDriverBeforeTest
   @NoDriverAfterTest
@@ -113,7 +110,6 @@ public class ProxySettingTest extends JUnit4TestBase {
 
   @Test
   @Ignore(SAFARI)
-  @Ignore(EDGE_HTML)
   @NeedsLocalEnvironment
   @NoDriverBeforeTest
   @NoDriverAfterTest
@@ -139,7 +135,6 @@ public class ProxySettingTest extends JUnit4TestBase {
   @NeedsLocalEnvironment
   @NoDriverBeforeTest
   @NoDriverAfterTest
-  @Ignore(EDGE_HTML)
   @Ignore(value = FIREFOX, travis = true)
   @Ignore(value = CHROME, reason = "Flaky")
   public void canUsePACThatOnlyProxiesCertainHosts() {

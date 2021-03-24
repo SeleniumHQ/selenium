@@ -43,16 +43,6 @@ module Selenium
         }.freeze
         BROWSER = 'internet explorer'
 
-        CAPABILITIES.each_key do |key|
-          define_method key do
-            @options[key]
-          end
-
-          define_method "#{key}=" do |value|
-            @options[key] = value
-          end
-        end
-
         attr_reader :args
 
         #

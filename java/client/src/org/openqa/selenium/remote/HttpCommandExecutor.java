@@ -33,10 +33,8 @@ import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Map;
-import java.util.Optional;
 
 import static java.util.Collections.emptyMap;
 import static org.openqa.selenium.json.Json.JSON_UTF_8;
@@ -47,8 +45,6 @@ import static org.openqa.selenium.remote.HttpSessionId.getSessionId;
 
 public class HttpCommandExecutor implements CommandExecutor, NeedsLocalLogs {
 
-  private static final HttpClient.Factory defaultClientFactory = HttpClient.Factory.createDefault();
-
   private final URL remoteServer;
   private final HttpClient client;
   private final HttpClient.Factory httpClientFactory;
@@ -58,20 +54,22 @@ public class HttpCommandExecutor implements CommandExecutor, NeedsLocalLogs {
 
   private LocalLogs logs = LocalLogs.getNullLogger();
 
-  private static URL getDefaultServerURL() {
-    try {
-      return new URL(System.getProperty("webdriver.remote.server", "http://localhost:4444/"));
-    } catch (MalformedURLException e) {
-      throw new WebDriverException(e);
-    }
+  private static class DefaultClientFactoryHolder {
+    static HttpClient.Factory defaultClientFactory = HttpClient.Factory.createDefault();
+  }
+
+  public static HttpClient.Factory getDefaultClientFactory() {
+    return DefaultClientFactoryHolder.defaultClientFactory;
   }
 
   public HttpCommandExecutor(URL addressOfRemoteServer) {
-    this(emptyMap(), addressOfRemoteServer);
+    this(emptyMap(), Require.nonNull("Server URL", addressOfRemoteServer));
   }
 
   public HttpCommandExecutor(ClientConfig config) {
-    this(emptyMap(), config, defaultClientFactory);
+    this(emptyMap(),
+      Require.nonNull("HTTP client configuration", config),
+      getDefaultClientFactory());
   }
 
   /**
@@ -83,35 +81,30 @@ public class HttpCommandExecutor implements CommandExecutor, NeedsLocalLogs {
    */
   public HttpCommandExecutor(
     Map<String, CommandInfo> additionalCommands,
-    URL addressOfRemoteServer)
-  {
-    this(additionalCommands, addressOfRemoteServer, defaultClientFactory);
+    URL addressOfRemoteServer) {
+    this(Require.nonNull("Additional commands", additionalCommands),
+      Require.nonNull("Server URL", addressOfRemoteServer),
+      getDefaultClientFactory());
   }
 
   public HttpCommandExecutor(
     Map<String, CommandInfo> additionalCommands,
     URL addressOfRemoteServer,
-    HttpClient.Factory httpClientFactory)
-  {
+    HttpClient.Factory httpClientFactory) {
     this(additionalCommands,
          ClientConfig.defaultConfig()
-           .baseUrl(Optional.ofNullable(addressOfRemoteServer)
-                      .orElseGet(HttpCommandExecutor::getDefaultServerURL)),
+           .baseUrl(Require.nonNull("Server URL", addressOfRemoteServer)),
          httpClientFactory);
   }
 
   public HttpCommandExecutor(
     Map<String, CommandInfo> additionalCommands,
     ClientConfig config,
-    HttpClient.Factory httpClientFactory)
-  {
-    if (config.baseUri() == null) {
-      config = config.baseUrl(getDefaultServerURL());
-    }
-    remoteServer = config.baseUrl();
-    this.additionalCommands = additionalCommands;
-    this.httpClientFactory = httpClientFactory;
-    this.client = httpClientFactory.createClient(config);
+    HttpClient.Factory httpClientFactory) {
+    remoteServer = Require.nonNull("HTTP client configuration", config).baseUrl();
+    this.additionalCommands = Require.nonNull("Additional commands", additionalCommands);
+    this.httpClientFactory = Require.nonNull("HTTP client factory", httpClientFactory);
+    this.client = this.httpClientFactory.createClient(config);
   }
 
   /**

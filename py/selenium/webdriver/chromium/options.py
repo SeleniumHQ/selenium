@@ -121,7 +121,7 @@ class ChromiumOptions(ArgOptions):
         """
         return self._experimental_options
 
-    def add_experimental_option(self, name: str, value: Union[str, int]):
+    def add_experimental_option(self, name: str, value: Union[str, int, dict]):
         """
         Adds an experimental option which is passed to chromium.
 
@@ -172,7 +172,7 @@ class ChromiumOptions(ArgOptions):
         chrome_options["extensions"] = self.extensions
         if self.binary_location:
             chrome_options["binary"] = self.binary_location
-        chrome_options["args"] = self.arguments
+        chrome_options["args"] = self._arguments
         if self.debugger_address:
             chrome_options["debuggerAddress"] = self.debugger_address
 

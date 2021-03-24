@@ -24,27 +24,15 @@ import org.openqa.selenium.grid.config.Role;
 import java.io.File;
 import java.io.PrintStream;
 import java.io.PrintWriter;
-import java.io.UncheckedIOException;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.URLClassLoader;
-import java.security.AccessController;
-import java.security.PrivilegedAction;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.List;
 import java.util.ServiceLoader;
 import java.util.Set;
 import java.util.TreeSet;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import static java.util.Comparator.comparing;
 
 public class Main {
-
-  private static final Logger LOG = Logger.getLogger(Main.class.getName());
 
   private final PrintStream out;
   private final PrintStream err;
@@ -66,27 +54,7 @@ public class Main {
     if (args.length == 0) {
       showHelp(Main.class.getClassLoader());
     } else {
-      if ("--ext".equals(args[0])) {
-        if (args.length > 1) {
-          URLClassLoader loader = createExtendedClassLoader(args[1]);
-
-          // Ensure that we use our freshly minted classloader by default.
-          Thread.currentThread().setContextClassLoader(loader);
-
-          if (args.length > 2) {
-            String[] remainingArgs = new String[args.length - 2];
-            System.arraycopy(args, 2, remainingArgs, 0, args.length - 2);
-            launch(remainingArgs, loader);
-          } else {
-            showHelp(loader);
-          }
-        } else {
-          showHelp(Main.class.getClassLoader());
-        }
-
-      } else {
-        launch(args, Main.class.getClassLoader());
-      }
+      launch(args, Main.class.getClassLoader());
     }
   }
 
@@ -94,45 +62,6 @@ public class Main {
     Set<CliCommand> commands = new TreeSet<>(comparing(CliCommand::getName));
     ServiceLoader.load(CliCommand.class, loader).forEach(commands::add);
     return commands;
-  }
-
-  private static URLClassLoader createExtendedClassLoader(String ext) {
-    List<File> jars = new ArrayList<>();
-    for (String part : ext.split(File.pathSeparator)) {
-      File file = new File(part);
-      if (!file.exists()) {
-        LOG.warning("Extension file or directory does not exist: " + file);
-        continue;
-      }
-
-      if (file.isDirectory()) {
-        File[] files = file.listFiles();
-        if (files == null) {
-          LOG.warning("Cannot list files in directory: " + file);
-        } else {
-          for (File subdirFile : files) {
-            if (subdirFile.isFile() && subdirFile.getName().endsWith(".jar")) {
-              jars.add(subdirFile);
-            }
-          }
-        }
-      } else {
-        jars.add(file);
-      }
-    }
-
-    URL[] jarUrls = jars.stream().map(file -> {
-      try {
-        return file.toURI().toURL();
-      } catch (MalformedURLException e) {
-        LOG.log(Level.SEVERE, "Unable to find JAR file " + file, e);
-        throw new UncheckedIOException(e);
-      }
-    }).toArray(URL[]::new);
-
-    return AccessController.doPrivileged(
-        (PrivilegedAction<URLClassLoader>) () ->
-            new URLClassLoader(jarUrls, Main.class.getClassLoader()));
   }
 
   private void showHelp(ClassLoader loader) {

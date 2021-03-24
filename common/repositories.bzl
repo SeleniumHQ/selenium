@@ -3,7 +3,7 @@ load("//common/private:dmg_archive.bzl", "dmg_archive")
 load("//common/private:drivers.bzl", "local_drivers")
 load("//common/private:pkg_archive.bzl", "pkg_archive")
 
-_edge_version = "89.0.713.0"
+_edge_version = "89.0.774.54"
 
 _versions = {
     # The chrome version number is found by visiting http://omahaproxy.appspot.com,
@@ -47,8 +47,8 @@ _versions = {
             "sha256": None,
         },
         "mac": {
-            "url": "https://officecdn-microsoft-com.akamaized.net/pr/C1297A47-86C4-4C1F-97FA-950631F94777/MacAutoupdate/MicrosoftEdgeCanary-89.0.713.0.pkg?platform=Mac&Consent=0&channel=Canary",
-            "sha256": "25dfe56b00d5f0af1f9d7ed3d84442fd9d783aa2abe1be93c9ea8e7088f5e5c6",
+            "url": "https://officecdn-microsoft-com.akamaized.net/pr/C1297A47-86C4-4C1F-97FA-950631F94777/MacAutoupdate/MicrosoftEdge-%s.pkg?platform=Mac&Consent=0&channel=Stable" % _edge_version,
+            "sha256": "23541c9d9e31c5a4221957a56906749b4ddcb422a22d178b4dd5adf833230838",
         },
         "windows": {
             "url": None,
@@ -58,27 +58,27 @@ _versions = {
     # Versions found by visiting https://developer.microsoft.com/en-us/microsoft-edge/tools/webdriver/
     "edgedriver": {
         "linux": {
-            "url": None,
-            "sha256": "d498eaacc414adbaf638333b59390cdfea5d780f941f57f41fd90280df78b159",
+            "url": "",
+            "sha256": None,
         },
         "mac": {
             "url": "https://msedgedriver.azureedge.net/%s/edgedriver_mac64.zip" % _edge_version,
-            "sha256": "0282fa65d7f303f59fc4f8001b3d1ce25a44b0394a449f18291f68b6d0f9e691",
+            "sha256": "c8eab921ccaaec552f1380d3ca95f91e947fda1866c84d7f47da0198b9b52645",
         },
         "windows": {
-            "url": "https://msedgedriver.azureedge.net/87.0.669.0/edgedriver_win64.zip",
+            "url": "https://msedgedriver.azureedge.net/%s/edgedriver_win64.zip" % _edge_version,
             "sha256": None,
         },
     },
     # Versions found by visiting https://ftp.mozilla.org/pub/firefox/releases/
     "firefox": {
         "linux": {
-            "url": "https://ftp.mozilla.org/pub/firefox/releases/83.0/linux-x86_64/en-US/firefox-83.0.tar.bz2",
-            "sha256": "93ff827fdcba92ddb71851c46ac8192a727ed61402e896c6262943e382f92412",
+            "url": "https://ftp.mozilla.org/pub/firefox/releases/88.0b1/linux-x86_64/en-US/firefox-88.0b1.tar.bz2",
+            "sha256": "c488102470ad8972755329a72d1ae736a7b7d223cec5fa3057546af76f53cb74",
         },
         "mac": {
-            "url": "https://ftp.mozilla.org/pub/firefox/releases/83.0/mac/en-US/Firefox%2083.0.dmg",
-            "sha256": "7e527884e40039c6c97929591754b92394aa965fd61d42158fea5df075636ec6",
+            "url": "https://ftp.mozilla.org/pub/firefox/releases/88.0b1/mac/en-US/Firefox%2088.0b1.pkg",
+            "sha256": "e027bb2bf4feb4e1b5baf685a629fc7727b290dfdd61b081115e0d96ac91f241",
         },
         "windows": {
             "url": None,
@@ -145,7 +145,7 @@ def _edge():
         url = _versions["edge"]["mac"]["url"],
         sha256 = _versions["edge"]["mac"]["sha256"],
         move = {
-            "MicrosoftEdgeCanary-%s.pkg/Payload/Microsoft Edge Canary.app" % _edge_version: "Edge.app",
+            "MicrosoftEdge-%s.pkg/Payload/Microsoft Edge.app" % _edge_version: "Edge.app",
         },
         build_file_content = "exports_files([\"Edge.app\"])",
     )
@@ -172,11 +172,14 @@ def _firefox():
         build_file_content = "exports_files([\"geckodriver\"])",
     )
 
-    dmg_archive(
+    pkg_archive(
         name = "mac_firefox",
         url = _versions["firefox"]["mac"]["url"],
         sha256 = _versions["firefox"]["mac"]["sha256"],
         build_file_content = "exports_files([\"Firefox.app\"])",
+        move = {
+            "Firefox.tmp1.pkg/Payload/Firefox.app": "Firefox.app",
+        }
     )
 
     # TODO: figure out how to unpack the firefox exe on Windows

@@ -19,6 +19,7 @@ package org.openqa.selenium.firefox;
 
 import com.google.common.collect.ImmutableMap;
 
+import java.util.Collections;
 import java.util.Map;
 import java.util.logging.Level;
 
@@ -66,5 +67,13 @@ public enum FirefoxDriverLogLevel {
 
   public static FirefoxDriverLogLevel fromLevel(Level level) {
     return logLevelToGeckoLevelMap.getOrDefault(level, DEBUG);
+  }
+
+  Map<String, String> toJson() {
+    return Collections.singletonMap("level", toString());
+  }
+
+  static FirefoxDriverLogLevel fromJson(Map<String, String> json) {
+    return fromString(json.get("level"));
   }
 }

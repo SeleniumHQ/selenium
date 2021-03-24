@@ -16,7 +16,7 @@ def _dmg_archive_impl(repository_ctx):
 
     zip_name = dmg_name.replace(".dmg", ".zip")
     repository_ctx.execute([
-        repository_ctx.path(Label("//common/private:convert_dmg.sh")),
+        repository_ctx.path(Label("@selenium//common/private:convert_dmg.sh")),
         dmg_name,
         zip_name,
     ])

@@ -44,7 +44,6 @@ namespace OpenQA.Selenium.DevTools.V86
             this.fetch = fetch;
             fetch.AuthRequired += OnFetchAuthRequired;
             fetch.RequestPaused += OnFetchRequestPaused;
-            network.ResponseReceived += OnNetworkResponseReceived;
         }
 
         /// <summary>
@@ -85,7 +84,8 @@ namespace OpenQA.Selenium.DevTools.V86
             {
                 Patterns = new OpenQA.Selenium.DevTools.V86.Fetch.RequestPattern[]
                 {
-                    new OpenQA.Selenium.DevTools.V86.Fetch.RequestPattern() { UrlPattern = "*" }
+                    new OpenQA.Selenium.DevTools.V86.Fetch.RequestPattern() { UrlPattern = "*", RequestStage = RequestStage.Request },
+                    new OpenQA.Selenium.DevTools.V86.Fetch.RequestPattern() { UrlPattern = "*", RequestStage = RequestStage.Response }
                 },
                 HandleAuthRequests = true
             });
@@ -255,9 +255,9 @@ namespace OpenQA.Selenium.DevTools.V86
 
         private void OnFetchRequestPaused(object sender, Fetch.RequestPausedEventArgs e)
         {
-            RequestPausedEventArgs wrapped = new RequestPausedEventArgs();
             if (e.ResponseErrorReason == null && e.ResponseStatusCode == null)
             {
+                RequestPausedEventArgs wrapped = new RequestPausedEventArgs();
                 wrapped.RequestData = new HttpRequestData()
                 {
                     RequestId = e.RequestId,
@@ -266,32 +266,31 @@ namespace OpenQA.Selenium.DevTools.V86
                     PostData = e.Request.PostData,
                     Headers = new Dictionary<string, string>(e.Request.Headers)
                 };
+
+                this.OnRequestPaused(wrapped);
             }
-
-            this.OnRequestPaused(wrapped);
-        }
-
-        private void OnNetworkResponseReceived(object sender, Network.ResponseReceivedEventArgs e)
-        {
-            HttpResponseData responseData = new HttpResponseData()
+            else
             {
-                RequestId = e.RequestId,
-                StatusCode = e.Response.Status,
-                Url = e.Response.Url,
-                ResourceType = e.Type.ToString()
-            };
+                ResponsePausedEventArgs wrappedResponse = new ResponsePausedEventArgs();
+                wrappedResponse.ResponseData = new HttpResponseData()
+                {
+                    RequestId = e.RequestId,
+                    Url = e.Request.Url,
+                    ResourceType = e.ResourceType.ToString()
+                };
 
-            foreach(var header in e.Response.Headers)
-            {
-                responseData.Headers.Add(header.Key, header.Value);
+                if (e.ResponseStatusCode.HasValue)
+                {
+                    wrappedResponse.ResponseData.StatusCode = e.ResponseStatusCode.Value;
+                }
+
+                foreach (var header in e.ResponseHeaders)
+                {
+                    wrappedResponse.ResponseData.Headers.Add(header.Name, header.Value);
+                }
+
+                this.OnResponsePaused(wrappedResponse);
             }
-
-            ResponsePausedEventArgs wrapped = new ResponsePausedEventArgs()
-            {
-                ResponseData = responseData
-            };
-
-            this.OnResponsePaused(wrapped);
         }
     }
 }

@@ -17,6 +17,11 @@
 
 package org.openqa.selenium.grid.sessionqueue;
 
+import static java.net.HttpURLConnection.HTTP_INTERNAL_ERROR;
+import static java.util.Collections.singletonMap;
+import static org.openqa.selenium.remote.http.Contents.asJson;
+import static org.openqa.selenium.remote.http.Contents.bytes;
+
 import org.openqa.selenium.events.EventBus;
 import org.openqa.selenium.grid.data.NewSessionErrorResponse;
 import org.openqa.selenium.grid.data.NewSessionRejectedEvent;
@@ -34,21 +39,20 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReadWriteLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-import static java.net.HttpURLConnection.HTTP_INTERNAL_ERROR;
-import static java.util.Collections.singletonMap;
-import static org.openqa.selenium.remote.http.Contents.asJson;
-import static org.openqa.selenium.remote.http.Contents.bytes;
 
 public class GetNewSessionResponse {
 
   private static final Logger LOG = Logger.getLogger(GetNewSessionResponse.class.getName());
+  private static final Map<RequestId, NewSessionRequest> knownRequests = new ConcurrentHashMap<>();
   private final EventBus bus;
   private final Tracer tracer;
   private final NewSessionQueue sessionRequests;
-  private final Map<RequestId, NewSessionRequest> knownRequests = new ConcurrentHashMap<>();
+  private final ReadWriteLock lock = new ReentrantReadWriteLock(true);
 
   public GetNewSessionResponse(Tracer tracer, EventBus bus,
                                NewSessionQueue sessionRequests) {
@@ -56,51 +60,51 @@ public class GetNewSessionResponse {
     this.bus = Require.nonNull("Event bus", bus);
     this.sessionRequests = Require.nonNull("New Session Request Queue", sessionRequests);
 
-    this.bus.addListener(NewSessionResponseEvent.listener(sessionResponse -> {
-      try {
-        this.setResponse(sessionResponse);
-      } catch (Exception ignore) {
-        // Ignore any exception. Do not want to block the eventbus thread.
-      }
-    }));
+    this.bus.addListener(NewSessionResponseEvent.listener(this::setResponse));
 
-    this.bus.addListener(NewSessionRejectedEvent.listener(sessionResponse -> {
-      try {
-        this.setErrorResponse(sessionResponse);
-      } catch (Exception ignore) {
-        // Ignore any exception. Do not want to block the eventbus thread.
-      }
-    }));
+    this.bus.addListener(NewSessionRejectedEvent.listener(this::setErrorResponse));
   }
 
   private void setResponse(NewSessionResponse sessionResponse) {
-    // Each thread will get its own CountDownLatch and it is stored in the Map using request id as the key.
-    // EventBus thread will retrieve the same request and set it's response and unblock waiting request thread.
-    RequestId id = sessionResponse.getRequestId();
-    Optional<NewSessionRequest> sessionRequest = Optional.ofNullable(knownRequests.get(id));
+    Lock writeLock = lock.writeLock();
+    writeLock.lock();
+    try {
+      // Each thread will get its own CountDownLatch and it is stored in the Map using request id as the key.
+      // EventBus thread will retrieve the same request and set it's response and unblock waiting request thread.
+      RequestId id = sessionResponse.getRequestId();
+      Optional<NewSessionRequest> sessionRequest = Optional.ofNullable(knownRequests.get(id));
 
-    if (sessionRequest.isPresent()) {
-      NewSessionRequest request = sessionRequest.get();
-      request.setSessionResponse(
-        new HttpResponse().setContent(bytes(sessionResponse.getDownstreamEncodedResponse())));
-      request.getLatch().countDown();
+      if (sessionRequest.isPresent()) {
+        NewSessionRequest request = sessionRequest.get();
+        request.setSessionResponse(
+          new HttpResponse().setContent(bytes(sessionResponse.getDownstreamEncodedResponse())));
+        request.getLatch().countDown();
+      }
+    } finally {
+      writeLock.unlock();
     }
   }
 
   private void setErrorResponse(NewSessionErrorResponse sessionResponse) {
-    RequestId id = sessionResponse.getRequestId();
-    Optional<NewSessionRequest> sessionRequest = Optional.ofNullable(knownRequests.get(id));
+    Lock writeLock = lock.writeLock();
+    writeLock.lock();
+    try {
+      RequestId id = sessionResponse.getRequestId();
+      Optional<NewSessionRequest> sessionRequest = Optional.ofNullable(knownRequests.get(id));
 
-    // There could be a situation where the session request in the queue is scheduled for retry.
-    // Meanwhile the request queue is cleared.
-    // This will fire a error response event and remove the request id from the knownRequests map.
-    // Another error response event will be fired by the Distributor when the request is retried.
-    // Since a response is already provided for the request, the event listener should not take any action.
+      // There could be a situation where the session request in the queue is scheduled for retry.
+      // Meanwhile the request queue is cleared.
+      // This will fire a error response event and remove the request id from the knownRequests map.
+      // Another error response event will be fired by the Distributor when the request is retried.
+      // Since a response is already provided for the request, the event listener should not take any action.
 
-    if (sessionRequest.isPresent()) {
-      NewSessionRequest request = sessionRequest.get();
-      request.setSessionResponse(internalErrorResponse(sessionResponse.getMessage()));
-      request.getLatch().countDown();
+      if (sessionRequest.isPresent()) {
+        NewSessionRequest request = sessionRequest.get();
+        request.setSessionResponse(internalErrorResponse(sessionResponse.getMessage()));
+        request.getLatch().countDown();
+      }
+    } finally {
+      writeLock.unlock();
     }
   }
 
@@ -139,7 +143,7 @@ public class GetNewSessionResponse {
   private HttpResponse internalErrorResponse(String message) {
     return new HttpResponse()
       .setStatus(HTTP_INTERNAL_ERROR)
-      .setContent(asJson(singletonMap("message", message)));
+      .setContent(asJson(singletonMap("value", singletonMap("message", message))));
   }
 
   private void removeRequest(RequestId id) {

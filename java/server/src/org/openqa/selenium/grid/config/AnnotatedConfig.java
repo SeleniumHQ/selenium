@@ -22,12 +22,15 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSortedSet;
 import com.google.common.primitives.Primitives;
 
+import com.beust.jcommander.Parameter;
+
 import org.openqa.selenium.internal.Require;
 
 import java.lang.reflect.Field;
 import java.util.ArrayDeque;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Deque;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -52,6 +55,10 @@ public class AnnotatedConfig implements Config {
   private final Map<String, Map<String, List<String>>> config;
 
   public AnnotatedConfig(Object obj) {
+    this(obj, Collections.emptySet());
+  }
+
+  public AnnotatedConfig(Object obj, Set<String> cliArgs) {
     Map<String, Map<String, List<String>>> values = new HashMap<>();
 
     Deque<Field> allConfigValues = findConfigFields(obj.getClass());
@@ -70,9 +77,16 @@ public class AnnotatedConfig implements Config {
       }
 
       ConfigValue annotation = field.getAnnotation(ConfigValue.class);
+      Parameter cliAnnotation = field.getAnnotation(Parameter.class);
+      boolean containsCliArg = cliAnnotation != null &&
+                               Arrays.stream(cliAnnotation.names()).anyMatch(cliArgs::contains);
+      if (cliArgs.size() > 0 && !containsCliArg) {
+        // Only getting config values for args entered by the user.
+        continue;
+      }
       Map<String, List<String>> section = values.computeIfAbsent(
-          annotation.section(),
-          str -> new HashMap<>());
+        annotation.section(),
+        str -> new HashMap<>());
       List<String> all = section.computeIfAbsent(annotation.name(), str -> new LinkedList<>());
 
       if (value instanceof Collection) {
@@ -131,16 +145,16 @@ public class AnnotatedConfig implements Config {
       seen.add(clazz);
 
       Arrays.stream(clazz.getDeclaredFields())
-          .filter(field -> field.getAnnotation(ConfigValue.class) != null)
-          .forEach(toSet::addLast);
+        .filter(field -> field.getAnnotation(ConfigValue.class) != null)
+        .forEach(toSet::addLast);
 
       Class<?> toAdd = clazz.getSuperclass();
       if (toAdd != null && !Object.class.equals(toAdd) && !seen.contains(toAdd)) {
         toVisit.add(toAdd);
       }
       Arrays.stream(clazz.getInterfaces())
-          .filter(face -> !seen.contains(face))
-          .forEach(toVisit::add);
+        .filter(face -> !seen.contains(face))
+        .forEach(toVisit::add);
     }
 
     return toSet;

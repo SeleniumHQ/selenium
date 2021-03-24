@@ -19,11 +19,14 @@ package org.openqa.selenium.grid.distributor;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.NoSuchSessionException;
+import org.openqa.selenium.SessionNotCreatedException;
+import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.events.EventBus;
 import org.openqa.selenium.events.local.GuavaEventBus;
 import org.openqa.selenium.grid.data.CreateSessionRequest;
@@ -48,6 +51,7 @@ import org.openqa.selenium.grid.sessionqueue.local.LocalNewSessionQueuer;
 import org.openqa.selenium.grid.testing.TestSessionFactory;
 import org.openqa.selenium.grid.web.CombinedHandler;
 import org.openqa.selenium.grid.web.RoutableHttpClientFactory;
+import org.openqa.selenium.internal.Either;
 import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpRequest;
@@ -118,7 +122,8 @@ public class AddingNodesTest {
       clientFactory,
       sessions,
       queuer,
-      registrationSecret);
+      registrationSecret,
+      Duration.ofMinutes(5));
 
     handler.addHandler(local);
     distributor = new RemoteDistributor(tracer, clientFactory, externalUrl, registrationSecret);
@@ -254,6 +259,7 @@ public class AddingNodesTest {
           Optional.of(new Session(
             new SessionId(UUID.randomUUID()), sessionUri, CAPS, CAPS, Instant.now())))),
       UP,
+      Duration.ofSeconds(10),
       status.getVersion(),
       status.getOsInfo());
 
@@ -298,18 +304,18 @@ public class AddingNodesTest {
     }
 
     @Override
-    public Optional<CreateSessionResponse> newSession(CreateSessionRequest sessionRequest) {
+    public Either<WebDriverException, CreateSessionResponse> newSession(CreateSessionRequest sessionRequest) {
       Objects.requireNonNull(sessionRequest);
 
       if (running != null) {
-        return Optional.empty();
+        return Either.left(new SessionNotCreatedException("Session already exists"));
       }
       Session session = factory.apply(sessionRequest.getCapabilities());
       running = session;
-      return Optional.of(
-          new CreateSessionResponse(
-              session,
-              CapabilityResponseEncoder.getEncoder(W3C).apply(session)));
+      return Either.right(
+        new CreateSessionResponse(
+          session,
+          CapabilityResponseEncoder.getEncoder(W3C).apply(session)));
     }
 
     @Override
@@ -376,6 +382,7 @@ public class AddingNodesTest {
             Instant.now(),
             Optional.ofNullable(sess))),
         UP,
+        Duration.ofSeconds(10),
         getNodeVersion(),
         getOsInfo());
     }

@@ -23,19 +23,16 @@ module Selenium
       autoload :ConsoleEvent, 'selenium/webdriver/devtools/console_event'
       autoload :ExceptionEvent, 'selenium/webdriver/devtools/exception_event'
       autoload :MutationEvent, 'selenium/webdriver/devtools/mutation_event'
+      autoload :Request, 'selenium/webdriver/devtools/request'
 
-      SUPPORTED_VERSIONS = [84, 85, 86, 87].freeze
-
-      def initialize(url:, version:)
+      def initialize(url:)
         @messages = []
-        @uri = URI("http://#{url}")
+        @session_id = nil
+        @url = url
 
-        load_devtools_version(version)
         process_handshake
         attach_socket_listener
-
-        target.attach_to_target(target_id: page_target['id'])
-        target.set_auto_attach(auto_attach: true, wait_for_debugger_on_start: false)
+        start_session
       end
 
       def callbacks
@@ -44,7 +41,9 @@ module Selenium
 
       def send_cmd(method, **params)
         id = next_id
-        data = JSON.generate(id: id, method: method, params: params.reject { |_, v| v.nil? })
+        data = {id: id, method: method, params: params.reject { |_, v| v.nil? }}
+        data[:sessionId] = @session_id if @session_id
+        data = JSON.generate(data)
         WebDriver.logger.debug "DevTools -> #{data}"
 
         out_frame = WebSocket::Frame::Outgoing::Client.new(version: ws.version, data: data, type: 'text')
@@ -59,15 +58,25 @@ module Selenium
         message
       end
 
-      private
+      def method_missing(method, *_args)
+        desired_class = "Selenium::DevTools::V#{Selenium::DevTools.version}::#{method.capitalize}"
+        return unless Object.const_defined?(desired_class)
 
-      def load_devtools_version(version)
-        closest_version = SUPPORTED_VERSIONS.min_by { |v| (version - v).abs }
-        WebDriver.logger.info("Loading DevTools::V#{closest_version} for #{version}.")
-        Dir["#{__dir__}/devtools/v#{closest_version}/*"].sort.each do |f|
-          require f
+        self.class.class_eval do
+          define_method(method) do
+            Object.const_get(desired_class).new(self)
+          end
         end
+
+        send(method)
       end
+
+      def respond_to_missing?(method, *_args)
+        desired_class = "Selenium::DevTools::V#{Selenium::DevTools.version}::#{method.capitalize}"
+        Object.const_defined?(desired_class)
+      end
+
+      private
 
       def process_handshake
         socket.print(ws.to_s)
@@ -80,18 +89,29 @@ module Selenium
             incoming_frame << socket.readpartial(1024)
 
             while (frame = incoming_frame.next)
+              # Firefox will periodically fail on unparsable empty frame
+              break if frame.to_s.empty?
+
               message = JSON.parse(frame.to_s)
               @messages << message
               WebDriver.logger.debug "DevTools <- #{message}"
               next unless message['method']
 
               callbacks[message['method']].each do |callback|
-                Thread.new { callback.call(message['params']) }
+                params = message['params'] # take in current thread!
+                Thread.new { callback.call(params) }
               end
             end
           end
         end
         socket_listener.abort_on_exception = true
+      end
+
+      def start_session
+        targets = target.get_targets.dig('result', 'targetInfos')
+        page_target = targets.find { |target| target['type'] == 'page' }
+        session = target.attach_to_target(target_id: page_target['targetId'], flatten: true)
+        @session_id = session.dig('result', 'sessionId')
       end
 
       def incoming_frame
@@ -107,15 +127,7 @@ module Selenium
       end
 
       def ws
-        @ws ||= WebSocket::Handshake::Client.new(url: page_target['webSocketDebuggerUrl'])
-      end
-
-      def page_target
-        @page_target ||= begin
-          response = Net::HTTP.get(@uri.hostname, '/json', @uri.port)
-          targets = JSON.parse(response)
-          targets.find { |target| target['type'] == 'page' }
-        end
+        @ws ||= WebSocket::Handshake::Client.new(url: @url)
       end
 
       def next_id

@@ -22,8 +22,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.junit.Assume.assumeTrue;
 import static org.openqa.selenium.testing.drivers.Browser.CHROME;
-import static org.openqa.selenium.testing.drivers.Browser.EDGIUM;
-import static org.openqa.selenium.testing.drivers.Browser.EDGE_HTML;
+import static org.openqa.selenium.testing.drivers.Browser.EDGE;
 import static org.openqa.selenium.testing.drivers.Browser.HTMLUNIT;
 import static org.openqa.selenium.testing.drivers.Browser.IE;
 import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
@@ -156,7 +155,6 @@ public class ExecutingAsyncJavascriptTest extends JUnit4TestBase {
 
   @Test
   @NotYetImplemented(SAFARI)
-  @NotYetImplemented(EDGE_HTML)
   public void shouldTimeoutIfScriptDoesNotInvokeCallback() {
     driver.get(pages.ajaxyPage);
     // Script is expected to be async and explicitly callback, so this should timeout.
@@ -166,7 +164,6 @@ public class ExecutingAsyncJavascriptTest extends JUnit4TestBase {
 
   @Test
   @NotYetImplemented(SAFARI)
-  @NotYetImplemented(EDGE_HTML)
   public void shouldTimeoutIfScriptDoesNotInvokeCallbackWithAZeroTimeout() {
     driver.get(pages.ajaxyPage);
     assertThatExceptionOfType(ScriptTimeoutException.class)
@@ -175,7 +172,6 @@ public class ExecutingAsyncJavascriptTest extends JUnit4TestBase {
 
   @Test
   @Ignore(FIREFOX)
-  @NotYetImplemented(EDGE_HTML)
   public void shouldNotTimeoutIfScriptCallsbackInsideAZeroTimeout() {
     driver.get(pages.ajaxyPage);
     executor.executeAsyncScript(
@@ -185,7 +181,6 @@ public class ExecutingAsyncJavascriptTest extends JUnit4TestBase {
 
   @Test
   @NotYetImplemented(SAFARI)
-  @NotYetImplemented(EDGE_HTML)
   public void shouldTimeoutIfScriptDoesNotInvokeCallbackWithLongTimeout() {
     driver.manage().timeouts().setScriptTimeout(Duration.ofMillis(500));
     driver.get(pages.ajaxyPage);
@@ -223,12 +218,11 @@ public class ExecutingAsyncJavascriptTest extends JUnit4TestBase {
 
   @Test
   @Ignore(CHROME)
-  @Ignore(EDGIUM)
+  @Ignore(EDGE)
   @Ignore(IE)
   @NotYetImplemented(SAFARI)
   @Ignore(FIREFOX)
   @NotYetImplemented(HTMLUNIT)
-  @NotYetImplemented(EDGE_HTML)
   public void shouldCatchErrorsWithMessageAndStacktraceWhenExecutingInitialScript() {
     driver.get(pages.ajaxyPage);
     String js = "function functionB() { throw Error('errormessage'); };"
@@ -284,7 +278,6 @@ public class ExecutingAsyncJavascriptTest extends JUnit4TestBase {
 
   @Test
   @NeedsLocalEnvironment(reason = "Relies on timing")
-  @NotYetImplemented(EDGE_HTML)
   public void shouldBeAbleToMakeXMLHttpRequestsAndWaitForTheResponse() {
     String script =
         "var url = arguments[0];" +
@@ -318,9 +311,8 @@ public class ExecutingAsyncJavascriptTest extends JUnit4TestBase {
 
   @Test
   @Ignore(CHROME)
-  @Ignore(EDGIUM)
+  @Ignore(EDGE)
   @Ignore(IE)
-  @Ignore(EDGE_HTML)
   @Ignore(FIREFOX)
   @Ignore(value = SAFARI, reason = "Does not support alerts yet")
   @NeedsLocalEnvironment(reason = "Relies on timing")
@@ -336,9 +328,8 @@ public class ExecutingAsyncJavascriptTest extends JUnit4TestBase {
 
   @Test
   @Ignore(CHROME)
-  @Ignore(EDGIUM)
+  @Ignore(EDGE)
   @Ignore(IE)
-  @Ignore(EDGE_HTML)
   @Ignore(FIREFOX)
   @Ignore(value = SAFARI, reason = "Does not support alerts yet")
   @NeedsLocalEnvironment(reason = "Relies on timing")
@@ -353,12 +344,10 @@ public class ExecutingAsyncJavascriptTest extends JUnit4TestBase {
 
   @Test
   @Ignore(CHROME)
-  @Ignore(EDGIUM)
+  @Ignore(EDGE)
   @Ignore(IE)
-  @Ignore(EDGE_HTML)
   @Ignore(FIREFOX)
   @Ignore(value = SAFARI, reason = "Does not support alerts yet")
-  @NotYetImplemented(EDGE_HTML)
   @NeedsLocalEnvironment(reason = "Relies on timing")
   public void throwsIfScriptTriggersAlertWhichTimesOut() {
     driver.get(pages.simpleTestPage);
@@ -372,9 +361,8 @@ public class ExecutingAsyncJavascriptTest extends JUnit4TestBase {
 
   @Test
   @Ignore(CHROME)
-  @Ignore(EDGIUM)
+  @Ignore(EDGE)
   @Ignore(IE)
-  @Ignore(EDGE_HTML)
   @Ignore(FIREFOX)
   @Ignore(value = SAFARI, reason = "Does not support alerts yet")
   @NeedsLocalEnvironment(reason = "Relies on timing")
@@ -389,11 +377,10 @@ public class ExecutingAsyncJavascriptTest extends JUnit4TestBase {
 
   @Test
   @Ignore(CHROME)
-  @Ignore(EDGIUM)
+  @Ignore(EDGE)
   @Ignore(IE)
   @Ignore(FIREFOX)
   @Ignore(value = SAFARI, reason = "Does not support alerts yet")
-  @Ignore(EDGE_HTML)
   @NeedsLocalEnvironment(reason = "Relies on timing")
   public void includesAlertTextInUnhandledAlertException() {
     driver.manage().timeouts().setScriptTimeout(Duration.ofMillis(5000));

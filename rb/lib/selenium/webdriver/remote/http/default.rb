@@ -55,8 +55,7 @@ module Selenium
                 http.verify_mode = OpenSSL::SSL::VERIFY_NONE
               end
 
-              # Defaulting open_timeout to nil to be consistent with Ruby 2.2 and earlier.
-              http.open_timeout = open_timeout
+              http.open_timeout = open_timeout if open_timeout
               http.read_timeout = read_timeout if read_timeout
 
               start(http)
@@ -128,7 +127,10 @@ module Selenium
           def new_http_client
             if use_proxy?
               url = @proxy.http
-              raise Error::WebDriverError, "expected HTTP proxy, got #{@proxy.inspect}" unless proxy.respond_to?(:http) && url
+              unless proxy.respond_to?(:http) && url
+                raise Error::WebDriverError,
+                      "expected HTTP proxy, got #{@proxy.inspect}"
+              end
 
               proxy = URI.parse(url)
 

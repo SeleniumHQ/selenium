@@ -19,6 +19,7 @@ package org.openqa.selenium.docker;
 
 import org.openqa.selenium.internal.Require;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -28,11 +29,14 @@ public class ContainerInfo {
   private final String ip;
   private final ContainerId id;
   private final List<Map<String, Object>> mountedVolumes;
+  private final String networkName;
 
-  public ContainerInfo(ContainerId id, String ip, List<Map<String, Object>> mountedVolumes) {
+  public ContainerInfo(ContainerId id, String ip, List<Map<String, Object>> mountedVolumes,
+                       String networkName) {
     this.ip = Require.nonNull("Container ip address", ip);
     this.id = Require.nonNull("Container id", id);
     this.mountedVolumes = Require.nonNull("Mounted volumes", mountedVolumes);
+    this.networkName = Require.nonNull("Network name", networkName);
   }
 
   public String getIp() {
@@ -47,12 +51,18 @@ public class ContainerInfo {
     return mountedVolumes;
   }
 
+  public String getNetworkName() {
+    return networkName;
+  }
+
   @Override
   public String toString() {
     return "ContainerInfo{" +
-      "ip=" + ip +
-      ", id=" + id +
-      '}';
+           "ip=" + ip +
+           ", id=" + id +
+           ", networkName=" + networkName +
+           ", mountedVolumes=" + Arrays.toString(mountedVolumes.toArray()) +
+           '}';
   }
 
   @Override
@@ -61,12 +71,13 @@ public class ContainerInfo {
       return false;
     }
     ContainerInfo that = (ContainerInfo) o;
-    return Objects.equals(this.ip, that.ip) && Objects.equals(this.id, that.id);
+    return Objects.equals(this.ip, that.ip) && Objects.equals(this.id, that.id)
+           && Objects.equals(this.networkName, that.networkName);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(ip, id);
+    return Objects.hash(ip, id, networkName);
   }
 
 }

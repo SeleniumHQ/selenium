@@ -31,6 +31,8 @@ import org.zeromq.ZContext;
 
 import java.util.Collection;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Supplier;
 
@@ -102,5 +104,25 @@ public class EventBusTest {
     bus.fire(new Event(new EventName("cheese"), null));
 
     assertThat(count.get()).isEqualTo(0);
+  }
+
+  @Test
+  public void shouldBeAbleToFireEventsInParallel() throws InterruptedException {
+    int maxCount = 100;
+    EventName name = new EventName("cheese");
+
+    CountDownLatch count = new CountDownLatch(maxCount);
+    bus.addListener(new EventListener<>(name, Object.class, obj -> count.countDown()));
+
+    ExecutorService executor = Executors.newCachedThreadPool();
+    try {
+      for (int i = 0; i < maxCount; i++) {
+        executor.submit(() -> bus.fire(new Event(name, "")));
+      }
+
+      assertThat(count.await(20, SECONDS)).describedAs(count.toString()).isTrue();
+    } finally {
+      executor.shutdownNow();
+    }
   }
 }

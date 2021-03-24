@@ -333,7 +333,7 @@ suite(function (env) {
       })
 
       // IE only supports short version option[selected].
-      ignore(browsers(Browser.IE)).it(
+      ignore(browsers(Browser.INTERNET_EXPLORER)).it(
         'should be able to find element by boolean attribute',
         async function () {
           await driver.get(

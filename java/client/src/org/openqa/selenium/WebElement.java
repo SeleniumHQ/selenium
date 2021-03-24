@@ -108,8 +108,7 @@ public interface WebElement extends SearchContext, TakesScreenshot {
   }
 
   /**
-   * Get the value of the given attribute of the element. Will return the current value, even if
-   * this has been modified after the page has been loaded.
+   * Get the value of the given attribute of the element.
    * <p>
    * This method, unlike {@link #getAttribute(String)}, returns the value of the attribute with the
    * given name but not the property with the same name.
@@ -126,7 +125,7 @@ public interface WebElement extends SearchContext, TakesScreenshot {
    * for more details.
    *
    * @param name The name of the attribute.
-   * @return The attribute's current value or null if the value is not set.
+   * @return The attribute's value or null if the value is not set.
    */
   default String getDomAttribute(String name) {
     throw new UnsupportedOperationException();
@@ -158,9 +157,8 @@ public interface WebElement extends SearchContext, TakesScreenshot {
    * <li>If the given name is "readonly", the "readOnly" property is returned.
    * </ul>
    * <i>Note:</i> The reason for this behavior is that users frequently confuse attributes and
-   * properties. If you need to do something more precise, e.g., refer to an attribute even when a
-   * property of the same name exists, then you should evaluate Javascript to obtain the result
-   * you desire.
+   * properties. If you need to do something more precise, use {@link #getDomAttribute(String)}
+   * or {@link #getDomProperty(String)} to obtain the result you desire.
    * <p>
    * See <a href="https://w3c.github.io/webdriver/#get-element-attribute">W3C WebDriver specification</a>
    * for more details.

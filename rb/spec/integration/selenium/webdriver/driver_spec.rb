@@ -22,10 +22,7 @@ require_relative 'spec_helper'
 module Selenium
   module WebDriver
     describe Driver do
-      it_behaves_like 'driver that can be started concurrently', exclude: [{browser: %i[safari safari_preview]},
-                                                                           {driver: :remote,
-                                                                            platform: :linux,
-                                                                            reason: 8525}]
+      it_behaves_like 'driver that can be started concurrently', exclude: {browser: %i[safari safari_preview]}
 
       it 'creates default capabilities' do
         reset_driver! do |driver|
@@ -40,6 +37,11 @@ module Selenium
           expect(caps.page_load_timeout).to be == 300000
           expect(caps.script_timeout).to be == 30000
         end
+      end
+
+      it 'should get driver status' do
+        status = driver.status
+        expect(status).to include('ready', 'message')
       end
 
       it 'should get the page title' do
@@ -180,7 +182,7 @@ module Selenium
           expect(near.map { |e| e.attribute('id') }).to eq(%w[third ninth center second eighth])
         end
 
-        it 'should find near another within custom distance' do
+        it 'should find near another within custom distance', except: {browser: %i[safari safari_preview]} do
           driver.navigate.to url_for('relative_locators.html')
 
           near = driver.find_elements(relative: {tag_name: 'td', near: {id: 'sixth', distance: 100}})
@@ -265,7 +267,9 @@ module Selenium
 
         it 'should raise if the script is bad' do
           driver.navigate.to url_for('xhtmlTest.html')
-          expect { driver.execute_script('return squiggle();') }.to raise_error(Selenium::WebDriver::Error::JavascriptError)
+          expect {
+            driver.execute_script('return squiggle();')
+          }.to raise_error(Selenium::WebDriver::Error::JavascriptError)
         end
 
         it 'should return arrays' do

@@ -11,7 +11,7 @@ module CrazyFun
             copy_sources dir, args[:srcs]
             copy_resources dir, args[:resources], build_dir if args[:resources]
             require_source build_dir, args[:require]
-            create_output_dir build_dir, args[:output_dir]
+            create_output_dir build_dir, "#{args[:output_dir]}/#{args[:version]}"
             Dir.chdir(build_dir) { call_class(args[:klass], args) }
             remove_sources args[:srcs]
           end

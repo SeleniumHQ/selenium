@@ -92,13 +92,18 @@ module Selenium
       end
 
       #
-      # Get the value of a the given attribute of the element. Will return the current value, even if
-      # this has been modified after the page has been loaded. More exactly, this method will return
-      # the value of the given attribute, unless that attribute is not present, in which case the
-      # value of the property with the same name is returned. If neither value is set, nil is
-      # returned. The "style" attribute is converted as best can be to a text representation with a
-      # trailing semi-colon. The following are deemed to be "boolean" attributes, and will
-      # return either "true" or "false":
+      # This method attempts to provide the most likely desired current value for the attribute
+      # of the element, even when that desired value is actually a JavaScript property.
+      # It is implemented with a custom JavaScript atom. To obtain the exact value of the attribute or property,
+      # use #dom_attribute or #property methods respectively.
+      #
+      # More exactly, this method will return the value of the property with the given name,
+      # if it exists. If it does not, then the value of the attribute with the given name is returned.
+      # If neither exists, null is returned.
+      #
+      # The "style" attribute is converted as best can be to a text representation with a trailing semi-colon.
+      #
+      # The following are deemed to be "boolean" attributes, and will return either "true" or "false":
       #
       # async, autofocus, autoplay, checked, compact, complete, controls, declare, defaultchecked,
       # defaultselected, defer, disabled, draggable, ended, formnovalidate, hidden, indeterminate,
@@ -106,13 +111,16 @@ module Selenium
       # nowrap, open, paused, pubdate, readonly, required, reversed, scoped, seamless, seeking,
       # selected, spellcheck, truespeed, willvalidate
       #
-      # Finally, the following commonly mis-capitalized attribute/property names are evaluated as
-      # expected:
+      # Finally, the following commonly mis-capitalized attribute/property names are evaluated as expected:
       #
-      # class, readonly
+      # When the value of "class" is requested, the "className" property is returned.
+      # When the value of "readonly" is requested, the "readOnly" property is returned.
       #
       # @param [String] name attribute name
       # @return [String, nil] attribute value
+      #
+      # @see #dom_attribute
+      # @see #property
       #
 
       def attribute(name)
@@ -120,8 +128,29 @@ module Selenium
       end
 
       #
-      # Get the value of a the given property with the same name of the element. If the value is not
-      # set, nil is returned.
+      # Gets the value of a declared HTML attribute of this element.
+      #
+      # As opposed to the #attribute method, this method
+      # only returns attributes declared in the element's HTML markup.
+      #
+      # If the attribute is not set, nil is returned.
+      #
+      # @param [String] name attribute name
+      # @return [String, nil] attribute value
+      #
+      # @see #attribute
+      # @see #property
+      #
+
+      def dom_attribute(name)
+        bridge.element_dom_attribute self, name
+      end
+
+      #
+      # Gets the value of a JavaScript property of this element
+      # This will return the current value,
+      # even if this has been modified after the page has been loaded.
+      # If the value is not set, nil is returned.
       #
       # @param [String] name property name
       # @return [String, nil] property value

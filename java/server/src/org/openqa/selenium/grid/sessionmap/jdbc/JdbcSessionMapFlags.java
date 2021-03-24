@@ -17,8 +17,12 @@
 
 package org.openqa.selenium.grid.sessionmap.jdbc;
 
+import static org.openqa.selenium.grid.config.StandardGridRoles.SESSION_MAP_ROLE;
+
 import com.google.auto.service.AutoService;
+
 import com.beust.jcommander.Parameter;
+
 import org.openqa.selenium.grid.config.ConfigValue;
 import org.openqa.selenium.grid.config.HasRoles;
 import org.openqa.selenium.grid.config.Role;
@@ -26,22 +30,23 @@ import org.openqa.selenium.grid.config.Role;
 import java.util.Collections;
 import java.util.Set;
 
-import static org.openqa.selenium.grid.config.StandardGridRoles.SESSION_MAP_ROLE;
-
 
 @AutoService(HasRoles.class)
 public class JdbcSessionMapFlags implements HasRoles {
 
   @Parameter(
-      names = "--jdbc-url",
-      description = "Database URL for making a connection.")
-  @ConfigValue(section = "sessions", name = "jdbc-url", example = "\"jdbc:mysql://localhost:3306/TestDatabase\"")
+    names = "--jdbc-url",
+    description = "Database URL for making a connection.")
+  @ConfigValue(
+    section = "sessions",
+    name = "jdbc-url",
+    example = "\"jdbc:mysql://localhost:3306/TestDatabase\"")
   private String jdbcUrl;
 
   @Parameter(
-      names = "--jdbc-user",
-      description = "Username for the user to make a JDBC connection")
-  @ConfigValue(section = "sessions", name = "jdbc-user", example = "mytestUser")
+    names = "--jdbc-user",
+    description = "Username for the user to make a JDBC connection")
+  @ConfigValue(section = "sessions", name = "jdbc-user", example = "myTestUser")
   private String username;
 
   @Parameter(

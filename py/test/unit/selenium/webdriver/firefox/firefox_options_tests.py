@@ -71,6 +71,15 @@ def test_set_proxy(options):
     assert options._proxy == proxy
 
 
+def test_set_proxy_isnt_in_moz_prefix(options):
+    proxy = Proxy({'proxyType': ProxyType.MANUAL})
+    options.proxy = proxy
+
+    caps = options.to_capabilities()
+    assert caps["proxy"]["proxyType"] == "MANUAL"
+    assert caps.get("moz:firefoxOptions") is None
+
+
 def test_raises_exception_if_proxy_is_not_proxy_object(options):
     with pytest.raises(InvalidArgumentException):
         options.proxy = 'foo'

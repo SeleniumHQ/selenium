@@ -17,44 +17,21 @@
 
 package org.openqa.selenium.testing.drivers;
 
-import com.google.common.collect.ImmutableMap;
-
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.chrome.ChromeOptions;
-import org.openqa.selenium.edge.EdgeOptions;
-import org.openqa.selenium.edgehtml.EdgeHtmlOptions;
-import org.openqa.selenium.firefox.FirefoxDriver;
-import org.openqa.selenium.firefox.FirefoxOptions;
+import org.openqa.selenium.WebDriverInfo;
 import org.openqa.selenium.htmlunit.HtmlUnitDriver;
-import org.openqa.selenium.ie.InternetExplorerDriver;
-import org.openqa.selenium.ie.InternetExplorerOptions;
-import org.openqa.selenium.opera.OperaOptions;
-import org.openqa.selenium.remote.AbstractDriverOptions;
 import org.openqa.selenium.remote.BrowserType;
-import org.openqa.selenium.safari.SafariDriver;
-import org.openqa.selenium.safari.SafariOptions;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
-import java.util.Map;
+import java.util.ServiceLoader;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
 public class DefaultDriverSupplier implements Supplier<WebDriver> {
 
-  private static Map<Class<? extends AbstractDriverOptions>, Function<Capabilities, WebDriver>> driverConstructors =
-      new ImmutableMap.Builder<Class<? extends AbstractDriverOptions>, Function<Capabilities, WebDriver>>()
-          .put(ChromeOptions.class, TestChromeDriver::new)
-          .put(OperaOptions.class, TestOperaBlinkDriver::new)
-          .put(FirefoxOptions.class, FirefoxDriver::new)
-          .put(InternetExplorerOptions.class, InternetExplorerDriver::new)
-          .put(EdgeHtmlOptions.class, TestEdgeHtmlDriver::new)
-          .put(EdgeOptions.class, TestEdgeDriver::new)
-          .put(SafariOptions.class, SafariDriver::new)
-          .build();
-
-  private Capabilities capabilities;
+  private final Capabilities capabilities;
 
   DefaultDriverSupplier(Capabilities capabilities) {
     this.capabilities = capabilities;
@@ -65,12 +42,18 @@ public class DefaultDriverSupplier implements Supplier<WebDriver> {
     Function<Capabilities, WebDriver> driverConstructor;
 
     if (capabilities != null) {
-      driverConstructor = driverConstructors.getOrDefault(capabilities.getClass(), caps -> {
-        if (capabilities.getBrowserName().equals(BrowserType.HTMLUNIT)) {
-          return new HtmlUnitDriver();
-        }
-        throw new RuntimeException("No driver can be provided for capabilities " + caps);
-      });
+      if (capabilities.getBrowserName().equals(BrowserType.HTMLUNIT)) {
+        return new HtmlUnitDriver();
+      }
+
+      return ServiceLoader.load(WebDriverInfo.class).stream()
+        .map(ServiceLoader.Provider::get)
+        .filter(WebDriverInfo::isAvailable)
+        .filter(info -> info.isSupporting(capabilities))
+        .findFirst()
+        .orElseThrow(() -> new RuntimeException("No driver can be provided for capabilities " + capabilities))
+        .createDriver(capabilities)
+        .orElseThrow(() -> new RuntimeException("Unable to create driver"));
     } else {
       String className = System.getProperty("selenium.browser.class_name");
       try {

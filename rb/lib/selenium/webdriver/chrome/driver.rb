@@ -27,37 +27,31 @@ module Selenium
       #
 
       class Driver < WebDriver::Driver
-        include DriverExtensions::HasNetworkConditions
-        include DriverExtensions::HasWebStorage
-        include DriverExtensions::HasLocation
-        include DriverExtensions::DownloadsFiles
-        include DriverExtensions::HasDevTools
-        include DriverExtensions::HasAuthentication
-        include DriverExtensions::HasLogEvents
+        EXTENSIONS = [DriverExtensions::HasNetworkConditions,
+                      DriverExtensions::HasNetworkInterception,
+                      DriverExtensions::HasWebStorage,
+                      DriverExtensions::HasLocation,
+                      DriverExtensions::DownloadsFiles,
+                      DriverExtensions::HasDevTools,
+                      DriverExtensions::HasAuthentication,
+                      DriverExtensions::HasLogs,
+                      DriverExtensions::HasLogEvents,
+                      DriverExtensions::PrintsPage].freeze
 
         def browser
           :chrome
-        end
-
-        def bridge_class
-          Bridge
         end
 
         def execute_cdp(cmd, **params)
           @bridge.send_command(cmd: cmd, params: params)
         end
 
-        def print_page(**options)
-          options[:page_ranges] &&= Array(options[:page_ranges])
-
-          @bridge.print_page(options)
-        end
-
         private
 
-        def debugger_address
-          capabilities['goog:chromeOptions']['debuggerAddress']
+        def devtools_address
+          "http://#{capabilities['goog:chromeOptions']['debuggerAddress']}"
         end
+
       end # Driver
     end # Chrome
   end # WebDriver

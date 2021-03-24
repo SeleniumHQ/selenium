@@ -1,35 +1,64 @@
-import * as React from 'react';
-import {createStyles, makeStyles, Theme} from '@material-ui/core/styles';
-import LinearProgress from '@material-ui/core/LinearProgress';
-import {Box, Typography} from "@material-ui/core";
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
+//
+//   http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
 
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
+import React, { ReactNode } from 'react'
+import LinearProgress from '@material-ui/core/LinearProgress'
+import {
+  Box,
+  createStyles,
+  Theme,
+  Typography,
+  withStyles
+} from '@material-ui/core'
+import { StyleRules } from '@material-ui/core/styles'
+
+const useStyles = (theme: Theme): StyleRules => createStyles(
+  {
     root: {
       backgroundColor: theme.palette.secondary.main,
       height: '100%',
       paddingTop: theme.spacing(1),
       width: '100%',
-      justifyContent: "center",
-    },
-  }),
-);
+      justifyContent: 'center'
+    }
+  })
 
-export default function Loading() {
-  const classes = useStyles();
-
-  return (
-    <div className={classes.root}>
-      <Box mb={2}>
-        <Typography
-          align="center"
-          color="textPrimary"
-          variant="h3"
-        >
-          Loading...
-        </Typography>
-      </Box>
-      <LinearProgress/>
-    </div>
-  );
+interface LoadingProps {
+  classes: any
 }
+
+class Loading extends React.Component<LoadingProps, {}> {
+  render (): ReactNode {
+    const { classes } = this.props
+    return (
+      <div className={classes.root}>
+        <Box mb={2}>
+          <Typography
+            align='center'
+            color='textPrimary'
+            variant='h3'
+          >
+            Loading...
+          </Typography>
+        </Box>
+        <LinearProgress />
+      </div>
+    )
+  }
+}
+
+export default withStyles(useStyles)(Loading)

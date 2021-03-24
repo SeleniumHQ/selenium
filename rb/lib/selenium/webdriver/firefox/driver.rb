@@ -27,21 +27,21 @@ module Selenium
       #
 
       class Driver < WebDriver::Driver
-        include DriverExtensions::HasAddons
-        include DriverExtensions::HasWebStorage
+        EXTENSIONS = [DriverExtensions::HasAddons,
+                      DriverExtensions::HasDevTools,
+                      DriverExtensions::HasLogEvents,
+                      DriverExtensions::HasNetworkInterception,
+                      DriverExtensions::HasWebStorage,
+                      DriverExtensions::PrintsPage].freeze
 
         def browser
           :firefox
         end
 
-        def bridge_class
-          Bridge
-        end
+        private
 
-        def print_page(**options)
-          options[:page_ranges] &&= Array(options[:page_ranges])
-
-          @bridge.print_page(options)
+        def devtools_address
+          "http://#{capabilities['moz:debuggerAddress']}"
         end
       end # Driver
     end # Firefox

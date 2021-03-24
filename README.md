@@ -87,7 +87,7 @@ skipped silently if you are not building on Windows.
 ### Bazel
 
 [Bazel](https://bazel.build/) was built by the fine folks at Google. Bazel manages dependency
-downloads, generate the Selenium binaries, executes tests, and does it all rather quickly.
+downloads, generates the Selenium binaries, executes tests, and does it all rather quickly.
 
 More detailed instructions for getting Bazel running are below, but if you can successfully get
 the java and javascript folders to build without errors, you should be confident that you have the
@@ -242,8 +242,7 @@ The maven jars should now be in your local `~/.m2/repository`.
 
 ## Useful Resources
 
-Refer to the [Building Web
-Driver](https://github.com/SeleniumHQ/selenium/wiki/Building-WebDriver)
+Refer to the [Build Instructions](https://github.com/SeleniumHQ/selenium/wiki/Build-Instructions)
 wiki page for the last word on building the bits and pieces of Selenium.
 
 ## Running Browser Tests on Linux

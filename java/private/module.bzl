@@ -96,6 +96,7 @@ def _java_module_impl(ctx):
     name = _infer_name(ctx.attr.tags)
 
     all_infos = [dep[_GatheredModuleInfo] for dep in ctx.attr.deps] + [dep[_GatheredModuleInfo] for dep in ctx.attr.exports]
+
     included_jars = depset([ctx.file.target], transitive = [depset(info.jars) for info in all_infos])
 
     # Now that we have a single jar, derive the module info.
@@ -149,8 +150,10 @@ def _java_module_impl(ctx):
     # Create the merged source jar
     src_jar = java_common.pack_sources(
         actions = ctx.actions,
-        output_jar = module_jar,
-        source_jars = depset([module_info_jar], transitive = [info.source_jars for info in all_infos if not info.name]).to_list(),
+        output_source_jar = ctx.actions.declare_file("lib%s-src.jar" % ctx.attr.name),
+        source_jars = depset(
+            items = ctx.attr.target[JavaInfo].source_jars,
+            transitive = [info.source_jars for info in all_infos if not info.name]).to_list(),
         java_toolchain = ctx.attr._java_toolchain[java_common.JavaToolchainInfo],
         host_javabase = ctx.attr._javabase[java_common.JavaRuntimeInfo],
     )
@@ -165,8 +168,6 @@ def _java_module_impl(ctx):
         runtime_deps = [dep[JavaInfo] for dep in ctx.attr.deps],
     )
 
-    foo = depset(direct = [module_jar], transitive = [info.module_path for info in all_infos])
-
     return [
         DefaultInfo(files = depset([module_jar, src_jar])),
         JavaModuleInfo(
@@ -180,7 +181,6 @@ def _java_module_impl(ctx):
         ),
         java_info,
     ]
-
 
 java_module = rule(
     _java_module_impl,
@@ -208,8 +208,8 @@ java_module = rule(
                 [_GatheredModuleInfo, JavaInfo],
             ],
             aspects = [
-                  _java_module_aspect,
-              ],
+                _java_module_aspect,
+            ],
         ),
         "hides": attr.string_list(
             doc = "List of package names to hide",

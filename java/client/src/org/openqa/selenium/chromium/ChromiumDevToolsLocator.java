@@ -19,12 +19,8 @@ package org.openqa.selenium.chromium;
 
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.devtools.Connection;
-import org.openqa.selenium.internal.Require;
-import org.openqa.selenium.json.Json;
 import org.openqa.selenium.remote.http.ClientConfig;
 import org.openqa.selenium.remote.http.HttpClient;
-import org.openqa.selenium.remote.http.HttpRequest;
-import org.openqa.selenium.remote.http.HttpResponse;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -33,14 +29,10 @@ import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import static java.net.HttpURLConnection.HTTP_OK;
-import static org.openqa.selenium.json.Json.MAP_TYPE;
-import static org.openqa.selenium.remote.http.Contents.string;
-import static org.openqa.selenium.remote.http.HttpMethod.GET;
+import static org.openqa.selenium.devtools.CdpEndpointFinder.getCdpEndPoint;
 
 public class ChromiumDevToolsLocator {
 
-  private static final Json JSON = new Json();
   private static final Logger LOG = Logger.getLogger(ChromiumDevToolsLocator.class.getName());
 
   public static Optional<URI> getReportedUri(String capabilityKey, Capabilities caps) {
@@ -68,36 +60,6 @@ public class ChromiumDevToolsLocator {
       return Optional.of(uri);
     } catch (URISyntaxException e) {
       LOG.warning("Unable to create URI from: " + raw);
-      return Optional.empty();
-    }
-  }
-
-  public static Optional<URI> getCdpEndPoint(
-    HttpClient.Factory clientFactory,
-    URI reportedUri) {
-    Require.nonNull("HTTP client factory", clientFactory);
-    Require.nonNull("DevTools URI", reportedUri);
-
-    ClientConfig config = ClientConfig.defaultConfig().baseUri(reportedUri);
-    HttpClient client = clientFactory.createClient(config);
-
-    HttpResponse res = client.execute(new HttpRequest(GET, "/json/version"));
-    if (res.getStatus() != HTTP_OK) {
-      return Optional.empty();
-    }
-
-    Map<String, Object> versionData = JSON.toType(string(res), MAP_TYPE);
-    Object raw = versionData.get("webSocketDebuggerUrl");
-
-    if (!(raw instanceof String)) {
-      return Optional.empty();
-    }
-
-    String debuggerUrl = (String) raw;
-    try {
-      return Optional.of(new URI(debuggerUrl));
-    } catch (URISyntaxException e) {
-      LOG.warning("Invalid URI for endpoint " + raw);
       return Optional.empty();
     }
   }

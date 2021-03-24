@@ -24,8 +24,7 @@ import static org.openqa.selenium.support.ui.ExpectedConditions.alertIsPresent;
 import static org.openqa.selenium.support.ui.ExpectedConditions.presenceOfElementLocated;
 import static org.openqa.selenium.support.ui.ExpectedConditions.titleIs;
 import static org.openqa.selenium.testing.drivers.Browser.CHROME;
-import static org.openqa.selenium.testing.drivers.Browser.EDGIUM;
-import static org.openqa.selenium.testing.drivers.Browser.EDGE_HTML;
+import static org.openqa.selenium.testing.drivers.Browser.EDGE;
 import static org.openqa.selenium.testing.drivers.Browser.LEGACY_FIREFOX_XPI;
 import static org.openqa.selenium.testing.drivers.Browser.HTMLUNIT;
 import static org.openqa.selenium.testing.drivers.Browser.IE;
@@ -385,11 +384,10 @@ public class AlertsTest extends JUnit4TestBase {
 
   @Test
   @Ignore(value = CHROME, reason = "Hangs")
-  @Ignore(value = EDGIUM, reason = "Hangs")
+  @Ignore(value = EDGE, reason = "Hangs")
   @Ignore(LEGACY_FIREFOX_XPI)
   @Ignore(value = IE, reason = "Fails in versions 6 and 7")
   @Ignore(SAFARI)
-  @Ignore(EDGE_HTML)
   @NoDriverAfterTest
   public void testShouldNotHandleAlertInAnotherWindow() {
     String pageWithOnLoad = appServer.create(new Page()
@@ -411,8 +409,7 @@ public class AlertsTest extends JUnit4TestBase {
   @Ignore(value = LEGACY_FIREFOX_XPI, reason = "Non W3C conformant")
   @Ignore(value = HTMLUNIT, reason = "Non W3C conformant")
   @Ignore(value = CHROME, reason = "Non W3C conformant")
-  @Ignore(value = EDGIUM, reason = "Non W3C conformant")
-  @Ignore(EDGE_HTML)
+  @Ignore(value = EDGE, reason = "Non W3C conformant")
   public void testShouldImplicitlyHandleAlertOnPageBeforeUnload() {
     String blank = appServer.create(new Page().withTitle("Success"));
     driver.get(appServer.create(new Page()
@@ -430,7 +427,6 @@ public class AlertsTest extends JUnit4TestBase {
   @Ignore(value = HTMLUNIT, reason = "https://github.com/SeleniumHQ/htmlunit-driver/issues/57")
   @NotYetImplemented(value = FIREFOX,
       reason = "https://bugzilla.mozilla.org/show_bug.cgi?id=1279211")
-  @NotYetImplemented(EDGE_HTML)
   public void testIncludesAlertTextInUnhandledAlertException() {
     driver.get(alertPage("cheese"));
 

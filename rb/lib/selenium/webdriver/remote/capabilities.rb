@@ -82,21 +82,11 @@ module Selenium
           end
 
           def edge(opts = {})
-            edge_chrome(opts)
-          end
-
-          def edge_html(opts = {})
-            new({
-              browser_name: 'MicrosoftEdge',
-              platform_name: :windows
-            }.merge(opts))
-          end
-
-          def edge_chrome(opts = {})
             new({
               browser_name: 'MicrosoftEdge'
             }.merge(opts))
           end
+          alias_method :microsoftedge, :edge
 
           def firefox(opts = {})
             opts[:browser_version] = opts.delete(:version) if opts.key?(:version)
@@ -112,11 +102,8 @@ module Selenium
           alias_method :ff, :firefox
 
           def safari(opts = {})
-            browser = Selenium::WebDriver::Safari.technology_preview? ? "Safari Technology Preview" : 'safari'
-
             new({
-              browser_name: browser,
-              platform_name: :mac
+              browser_name: Selenium::WebDriver::Safari.technology_preview? ? "Safari Technology Preview" : 'safari'
             }.merge(opts))
           end
 
@@ -142,11 +129,10 @@ module Selenium
             data = data.dup
 
             caps = new
-            caps.browser_name = data.delete('browserName') if data.key?('browserName')
-            caps.browser_version = data.delete('browserVersion') if data.key?('browserVersion')
-            caps.platform_name = data.delete('platformName') if data.key?('platformName')
-            caps.accept_insecure_certs = data.delete('acceptInsecureCerts') if data.key?('acceptInsecureCerts')
-            caps.page_load_strategy = data.delete('pageLoadStrategy') if data.key?('pageLoadStrategy')
+            (KNOWN - %i[timeouts proxy]).each do |cap|
+              data_value = camel_case(cap)
+              caps[cap] = data.delete(data_value) if data.key?(data_value)
+            end
 
             process_timeouts(caps, data.delete('timeouts'))
 
@@ -156,12 +142,18 @@ module Selenium
             end
 
             # Remote Server Specific
-            caps[:remote_session_id] = data.delete('webdriver.remote.sessionid') if data.key?('webdriver.remote.sessionid')
+            if data.key?('webdriver.remote.sessionid')
+              caps[:remote_session_id] = data.delete('webdriver.remote.sessionid')
+            end
 
             # any remaining pairs will be added as is, with no conversion
             caps.merge!(data)
 
             caps
+          end
+
+          def camel_case(str_or_sym)
+            str_or_sym.to_s.gsub(/_([a-z])/) { Regexp.last_match(1).upcase }
           end
 
           private
@@ -236,15 +228,15 @@ module Selenium
             when :platform
               hash['platform'] = value.to_s.upcase
             when :proxy
-              if value
-                hash['proxy'] = value.as_json
-                hash['proxy']['proxyType'] &&= hash['proxy']['proxyType'].downcase
-                hash['proxy']['noProxy'] = hash['proxy']['noProxy'].split(', ') if hash['proxy']['noProxy'].is_a?(String)
-              end
+              next unless value
+
+              process_proxy(hash, value)
+            when :unhandled_prompt_behavior
+              hash['unhandledPromptBehavior'] = value.is_a?(Symbol) ? value.to_s.tr('_', ' ') : value
             when String
               hash[key.to_s] = value
             when Symbol
-              hash[camel_case(key.to_s)] = value
+              hash[self.class.camel_case(key)] = value
             else
               raise TypeError, "expected String or Symbol, got #{key.inspect}:#{key.class} / #{value.inspect}"
             end
@@ -271,10 +263,14 @@ module Selenium
 
         private
 
-        def camel_case(str)
-          str.gsub(/_([a-z])/) { Regexp.last_match(1).upcase }
-        end
+        def process_proxy(hash, value)
+          hash['proxy'] = value.as_json
+          hash['proxy']['proxyType'] &&= hash['proxy']['proxyType'].downcase
 
+          return unless hash['proxy']['noProxy'].is_a?(String)
+
+          hash['proxy']['noProxy'] = hash['proxy']['noProxy'].split(', ')
+        end
       end # Capabilities
     end # Remote
   end # WebDriver

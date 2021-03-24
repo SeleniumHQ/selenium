@@ -152,7 +152,7 @@ describe('WebDriver', function () {
 
       let next = expectations[0]
       let result = next.execute(command)
-      if (next.times_ != Infinity) {
+      if (next.times_ !== Infinity) {
         next.times_ -= 1
         if (!next.times_) {
           expectations.shift()
@@ -202,14 +202,20 @@ describe('WebDriver', function () {
       return driver.getSession().then((v) => assert.strictEqual(v, aSession))
     })
 
-    it('happyPathWithCapabilitiesInstance', function () {
+    it('happy Path With Capabilities Instance', function () {
       let aSession = new Session(SESSION_ID, { browserName: 'firefox' })
       let executor = new FakeExecutor()
         .expect(CName.NEW_SESSION)
         .withParameters({
-          desiredCapabilities: { browserName: 'firefox' },
+          desiredCapabilities: {
+            'moz:debuggerAddress': true,
+            browserName: 'firefox'
+          },
           capabilities: {
-            alwaysMatch: { browserName: 'firefox' },
+            alwaysMatch: {
+              'moz:debuggerAddress': true,
+              browserName: 'firefox'
+            },
           },
         })
         .andReturnSuccess(aSession)
@@ -327,7 +333,7 @@ describe('WebDriver', function () {
     let verifyError = expectedError(
       error.NoSuchSessionError,
       'This driver instance does not have a valid session ID ' +
-        '(did you call WebDriver.quit()?) and may no longer be used.'
+      '(did you call WebDriver.quit()?) and may no longer be used.'
     )
 
     let driver = executor.createDriver()
@@ -515,14 +521,14 @@ describe('WebDriver', function () {
       let executor = new FakeExecutor()
         .expect(CName.EXECUTE_SCRIPT)
         .withParameters({
-          script: 'return (' + function () {} + ').apply(null, arguments);',
+          script: 'return (' + function () { } + ').apply(null, arguments);',
           args: [],
         })
         .andReturnSuccess(null)
         .end()
 
       var driver = executor.createDriver()
-      return driver.executeScript(function () {})
+      return driver.executeScript(function () { })
     })
 
     it('simpleArgumentConversion', function () {
@@ -622,11 +628,11 @@ describe('WebDriver', function () {
       let executor = new FakeExecutor()
 
       var arg = Promise.reject(new StubError())
-      arg.catch(function () {}) // Suppress default handler.
+      arg.catch(function () { }) // Suppress default handler.
 
       var driver = executor.createDriver()
       return driver
-        .executeScript(function () {}, arg)
+        .executeScript(function () { }, arg)
         .then(fail, assertIsStubError)
     })
   })
@@ -634,11 +640,11 @@ describe('WebDriver', function () {
   describe('executeAsyncScript', function () {
     it('failsIfArgumentIsARejectedPromise', function () {
       var arg = Promise.reject(new StubError())
-      arg.catch(function () {}) // Suppress default handler.
+      arg.catch(function () { }) // Suppress default handler.
 
       var driver = new FakeExecutor().createDriver()
       return driver
-        .executeAsyncScript(function () {}, arg)
+        .executeAsyncScript(function () { }, arg)
         .then(fail, assertIsStubError)
     })
   })
@@ -1902,7 +1908,7 @@ describe('WebDriver', function () {
       })
 
       it('passes through function properties', function () {
-        function bar() {}
+        function bar() { }
         return runDeserializeTest(
           [{ foo: { bar: 123 }, func: bar }],
           [{ foo: { bar: 123 }, func: bar }]

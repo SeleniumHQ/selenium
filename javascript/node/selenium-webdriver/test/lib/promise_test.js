@@ -497,7 +497,7 @@ describe('promise', function () {
       return promise
         .map([1, 2, 3, 4], function () {
           count++
-          if (count == 3) {
+          if (count === 3) {
             throw new StubError()
           }
         })
@@ -648,7 +648,7 @@ describe('promise', function () {
       return promise
         .filter([1, 2, 3, 4], function () {
           count++
-          if (count == 3) {
+          if (count === 3) {
             throw new StubError()
           }
         })

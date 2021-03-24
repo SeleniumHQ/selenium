@@ -13,8 +13,8 @@ java_library(
         "//java/client/src/org/openqa/selenium:core",
         "//java/client/src/org/openqa/selenium/chrome",
         "//java/client/src/org/openqa/selenium/edge",
-        "//java/client/src/org/openqa/selenium/edgehtml",
         "//java/client/src/org/openqa/selenium/firefox",
+        "//java/client/src/org/openqa/selenium/firefox/xpi",
         "//java/client/src/org/openqa/selenium/ie",
         "//java/client/src/org/openqa/selenium/opera",
         "//java/client/src/org/openqa/selenium/remote",
@@ -30,6 +30,10 @@ java_library(
     ]) + [
         "OutOfProcessSeleniumServer.java",
         "WebDriverBuilder.java",
+    ],
+    javacopts = [
+        "--release",
+        "11",
     ],
     visibility = [
         "//java/client/test:__subpackages__",
@@ -47,7 +51,6 @@ java_library(
         "//java/client/src/org/openqa/selenium/devtools/v88",
         "//java/client/src/org/openqa/selenium/devtools/v89",
         "//java/client/src/org/openqa/selenium/edge",
-        "//java/client/src/org/openqa/selenium/edgehtml",
         "//java/client/src/org/openqa/selenium/firefox",
         "//java/client/src/org/openqa/selenium/ie",
         "//java/client/src/org/openqa/selenium/json",

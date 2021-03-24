@@ -50,12 +50,13 @@ public class GridModelTest {
     localNewSessionQueue,
     secret);
   private final Distributor distributor = new LocalDistributor(
-      tracer,
-      events,
-      clientFactory,
-      sessions,
-      queuer,
-      secret);
+    tracer,
+    events,
+    clientFactory,
+    sessions,
+    queuer,
+    secret,
+    Duration.ofMinutes(5));
 
   @Test
   public void shouldNotChangeTheStateOfANodeMarkedAsDownWhenNodeStatusEventFires() {

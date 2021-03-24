@@ -21,8 +21,7 @@ import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.openqa.selenium.testing.drivers.Browser.CHROME;
-import static org.openqa.selenium.testing.drivers.Browser.EDGIUM;
-import static org.openqa.selenium.testing.drivers.Browser.EDGE_HTML;
+import static org.openqa.selenium.testing.drivers.Browser.EDGE;
 import static org.openqa.selenium.testing.drivers.Browser.LEGACY_FIREFOX_XPI;
 import static org.openqa.selenium.testing.drivers.Browser.HTMLUNIT;
 import static org.openqa.selenium.testing.drivers.Browser.IE;
@@ -57,7 +56,7 @@ public class ElementDomAttributeTest extends JUnit4TestBase {
 
   @Test
   @NotYetImplemented(value = CHROME, reason = "It returns a property")
-  @NotYetImplemented(EDGIUM)
+  @NotYetImplemented(EDGE)
   public void testShouldReturnTheActualValueWhenGettingSrcAttributeOfAValidImgTag() {
     driver.get(pages.simpleTestPage);
     WebElement img = driver.findElement(By.id("validImgTag"));
@@ -67,7 +66,7 @@ public class ElementDomAttributeTest extends JUnit4TestBase {
 
   @Test
   @NotYetImplemented(value = CHROME, reason = "It returns a property")
-  @NotYetImplemented(EDGIUM)
+  @NotYetImplemented(EDGE)
   public void testShouldReturnTheActualValueWhenGettingHrefAttributeOfAValidAnchorTag() {
     driver.get(pages.simpleTestPage);
     WebElement img = driver.findElement(By.id("validAnchorTag"));
@@ -96,7 +95,7 @@ public class ElementDomAttributeTest extends JUnit4TestBase {
 
   @Test
   @NotYetImplemented(value = CHROME, reason = "It returns a property")
-  @NotYetImplemented(EDGIUM)
+  @NotYetImplemented(EDGE)
   public void testShouldNotReturnTheValueOfTheIndexAttributeIfItIsMissing() {
     driver.get(pages.formPage);
     WebElement multiSelect = driver.findElement(By.id("multi"));
@@ -185,7 +184,7 @@ public class ElementDomAttributeTest extends JUnit4TestBase {
 
   @Test
   @NotYetImplemented(value = CHROME, reason = "It returns a property")
-  @NotYetImplemented(EDGIUM)
+  @NotYetImplemented(EDGE)
   public void testShouldNotReturnTheContentsOfATextAreaAsItsValue() {
     driver.get(pages.formPage);
     String value = driver.findElement(By.id("withText")).getDomAttribute("value");
@@ -194,7 +193,7 @@ public class ElementDomAttributeTest extends JUnit4TestBase {
 
   @Test
   @NotYetImplemented(value = CHROME, reason = "It returns a property")
-  @NotYetImplemented(EDGIUM)
+  @NotYetImplemented(EDGE)
   public void testShouldNotReturnInnerHtmlProperty() {
     driver.get(pages.simpleTestPage);
     String html = driver.findElement(By.id("wrappingtext")).getDomAttribute("innerHTML");
@@ -218,7 +217,7 @@ public class ElementDomAttributeTest extends JUnit4TestBase {
 
   @Test
   @NotYetImplemented(value = CHROME, reason = "It returns a property")
-  @NotYetImplemented(EDGIUM)
+  @NotYetImplemented(EDGE)
   public void testShouldNotReturnTextContentProperty() {
     driver.get(pages.simpleTestPage);
     WebElement element = driver.findElement(By.id("hiddenline"));
@@ -282,7 +281,7 @@ public class ElementDomAttributeTest extends JUnit4TestBase {
 
   @Test
   @NotYetImplemented(value = CHROME, reason = "It returns a property")
-  @NotYetImplemented(EDGIUM)
+  @NotYetImplemented(EDGE)
   public void testCanRetrieveTheCurrentValueOfATextFormFieldWithPresetText() {
     driver.get(pages.formPage);
     WebElement element = driver.findElement(By.id("inputWithText"));
@@ -293,7 +292,7 @@ public class ElementDomAttributeTest extends JUnit4TestBase {
 
   @Test
   @NotYetImplemented(value = CHROME, reason = "It returns a property")
-  @NotYetImplemented(EDGIUM)
+  @NotYetImplemented(EDGE)
   public void testShouldNotReturnTextOfATextArea() {
     driver.get(pages.formPage);
     WebElement element = driver.findElement(By.id("withText"));
@@ -311,7 +310,7 @@ public class ElementDomAttributeTest extends JUnit4TestBase {
 
   @Test
   @NotYetImplemented(value = CHROME, reason = "It returns a property")
-  @NotYetImplemented(EDGIUM)
+  @NotYetImplemented(EDGE)
   @NotYetImplemented(FIREFOX)
   public void testShouldReturnEmptyStringForPresentBooleanAttributes() {
     driver.get(pages.booleanAttributes);
@@ -370,11 +369,10 @@ public class ElementDomAttributeTest extends JUnit4TestBase {
   @Test
   @NotYetImplemented(IE)
   @NotYetImplemented(CHROME)
-  @NotYetImplemented(EDGIUM)
+  @NotYetImplemented(EDGE)
   @Ignore(LEGACY_FIREFOX_XPI)
   @NotYetImplemented(HTMLUNIT)
   @NotYetImplemented(SAFARI)
-  @NotYetImplemented(EDGE_HTML)
   public void shouldTreatDraggableAsEnumeratedButNotBoolean() {
     checkEnumeratedAttribute("draggable", "true", "false", "yes", "no", "", "blabla");
   }

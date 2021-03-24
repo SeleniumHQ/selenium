@@ -34,15 +34,15 @@
       </roles>
     </developer>
     <developer>
-      <id>dawagner</id>
-      <name>Daniel Wagner-Hall</name>
+      <id>barancev</id>
+      <name>Alexei Barantsev</name>
       <roles>
         <role>Committer</role>
       </roles>
     </developer>
     <developer>
-      <id>eran.mes@gmail.com</id>
-      <name>Eran Mes</name>
+      <id>diemol</id>
+      <name>Diego Molina</name>
       <roles>
         <role>Committer</role>
       </roles>
@@ -55,20 +55,6 @@
       </roles>
     </developer>
     <developer>
-      <id>jari.bakken</id>
-      <name>Jari Bakken</name>
-      <roles>
-        <role>Committer</role>
-      </roles>
-    </developer>
-    <developer>
-      <id>michael.tamm2</id>
-      <name>Michael Tamm</name>
-      <roles>
-        <role>Committer</role>
-      </roles>
-    </developer>
-    <developer>
       <id>theautomatedtester</id>
       <name>David Burns</name>
       <roles>
@@ -76,22 +62,8 @@
       </roles>
     </developer>
     <developer>
-      <id>krosenvold</id>
-      <name>Kristian Rosenvold</name>
-      <roles>
-        <role>Committer</role>
-      </roles>
-    </developer>
-    <developer>
-      <id>lsemerau</id>
-      <name>Luke Inman-Semerau</name>
-      <roles>
-        <role>Committer</role>
-      </roles>
-    </developer>
-    <developer>
-      <id>barancev</id>
-      <name>Alexei Barantsev</name>
+      <id>titusfortner</id>
+      <name>Titus Fortner</name>
       <roles>
         <role>Committer</role>
       </roles>
