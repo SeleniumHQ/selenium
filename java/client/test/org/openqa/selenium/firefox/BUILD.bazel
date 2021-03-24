@@ -1,4 +1,5 @@
 load("@rules_jvm_external//:defs.bzl", "artifact")
+load("//common:defs.bzl", "copy_file")
 load("//java:defs.bzl", "java_selenium_test_suite", "java_test_suite")
 
 LARGE_TESTS = [
@@ -20,6 +21,7 @@ java_test_suite(
     data = [
             "//third_party/firebug:firebug-1.5.0-fx.xpi",
             "//third_party/firebug:mooltipass-1.1.87.xpi",
+            ":firebug_xpi"
     ],
     deps = [
         "//java/client/src/org/openqa/selenium/firefox",
@@ -64,3 +66,10 @@ java_selenium_test_suite(
         artifact("org.mockito:mockito-core"),
     ],
 )
+
+copy_file(
+    name = "firebug_xpi",
+    src = "//third_party/firebug:firebug-1.5.0-fx.xpi",
+    out = "firebug-1.5.0-fx.xpi",
+)
+
