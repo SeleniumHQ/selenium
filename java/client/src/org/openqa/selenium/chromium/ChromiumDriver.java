@@ -22,8 +22,11 @@ import org.openqa.selenium.BuildInfo;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.Credentials;
 import org.openqa.selenium.HasAuthentication;
+import org.openqa.selenium.ImmutableCapabilities;
+import org.openqa.selenium.PersistentCapabilities;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.devtools.CdpEndpointFinder;
 import org.openqa.selenium.devtools.CdpInfo;
 import org.openqa.selenium.devtools.CdpVersionFinder;
 import org.openqa.selenium.devtools.Connection;
@@ -47,6 +50,7 @@ import org.openqa.selenium.remote.RemoteTouchScreen;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.remote.html5.RemoteLocationContext;
 import org.openqa.selenium.remote.html5.RemoteWebStorage;
+import org.openqa.selenium.remote.http.ClientConfig;
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.mobile.RemoteNetworkConnection;
 
@@ -71,6 +75,8 @@ public class ChromiumDriver extends RemoteWebDriver implements
   WebStorage {
 
   private static final Logger LOG = Logger.getLogger(ChromiumDriver.class.getName());
+
+  private final Capabilities capabilities;
   private final RemoteLocationContext locationContext;
   private final RemoteWebStorage webStorage;
   private final TouchScreen touchScreen;
@@ -86,12 +92,15 @@ public class ChromiumDriver extends RemoteWebDriver implements
     networkConnection = new RemoteNetworkConnection(getExecuteMethod());
 
     HttpClient.Factory factory = HttpClient.Factory.createDefault();
-    connection = ChromiumDevToolsLocator.getChromeConnector(
-      factory,
-      getCapabilities(),
-      capabilityKey);
+    Capabilities originalCapabilities = super.getCapabilities();
+    Optional<URI> cdpUri = ChromiumDevToolsLocator.getReportedUri(capabilityKey, originalCapabilities)
+      .flatMap(uri -> CdpEndpointFinder.getCdpEndPoint(factory, uri));
 
-    CdpInfo cdpInfo = new CdpVersionFinder().match(getCapabilities().getBrowserVersion())
+    connection = cdpUri.map(uri -> new Connection(
+      factory.createClient(ClientConfig.defaultConfig().baseUri(uri)),
+      uri.toString()));
+
+    CdpInfo cdpInfo = new CdpVersionFinder().match(originalCapabilities.getBrowserVersion())
       .orElseGet(() -> {
         LOG.warning(
           String.format(
@@ -108,6 +117,18 @@ public class ChromiumDriver extends RemoteWebDriver implements
       });
 
     devTools = connection.map(conn -> new DevTools(cdpInfo::getDomains, conn));
+
+    this.capabilities = cdpUri.map(uri -> new ImmutableCapabilities(
+        new PersistentCapabilities(originalCapabilities)
+            .setCapability("se:cdp", uri.toString())
+            .setCapability(
+                "se:cdpVersion", originalCapabilities.getBrowserVersion())))
+        .orElse(new ImmutableCapabilities(originalCapabilities));
+  }
+
+  @Override
+  public Capabilities getCapabilities() {
+    return capabilities;
   }
 
   @Override

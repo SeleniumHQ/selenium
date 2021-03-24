@@ -18,18 +18,12 @@
 package org.openqa.selenium.chromium;
 
 import org.openqa.selenium.Capabilities;
-import org.openqa.selenium.devtools.Connection;
-import org.openqa.selenium.remote.http.ClientConfig;
-import org.openqa.selenium.remote.http.HttpClient;
 
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Map;
 import java.util.Optional;
-import java.util.logging.Level;
 import java.util.logging.Logger;
-
-import static org.openqa.selenium.devtools.CdpEndpointFinder.getCdpEndPoint;
 
 public class ChromiumDevToolsLocator {
 
@@ -60,23 +54,6 @@ public class ChromiumDevToolsLocator {
       return Optional.of(uri);
     } catch (URISyntaxException e) {
       LOG.warning("Unable to create URI from: " + raw);
-      return Optional.empty();
-    }
-  }
-
-  public static Optional<Connection> getChromeConnector(
-      HttpClient.Factory clientFactory,
-      Capabilities caps,
-      String capabilityKey) {
-
-    try {
-      return getReportedUri(capabilityKey, caps)
-        .flatMap(uri -> getCdpEndPoint(clientFactory, uri))
-        .map(uri -> new Connection(
-          clientFactory.createClient(ClientConfig.defaultConfig().baseUri(uri)),
-          uri.toString()));
-    } catch (Exception e) {
-      LOG.log(Level.WARNING, "Unable to create CDP connection", e);
       return Optional.empty();
     }
   }
