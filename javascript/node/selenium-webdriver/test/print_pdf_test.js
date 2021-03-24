@@ -41,7 +41,7 @@ test.suite(
       await driver.get(Pages.printPage)
       base64Code = await driver.printPage({ pageRanges: ['1-2'] })
       base64Code = base64Code.slice(startIndex, endIndex)
-      assert.equal(base64Code, pdfMagicNumber)
+      assert.strictEqual(base64Code, pdfMagicNumber)
     })
 
     it('Should Print pdf with total pages', async function () {
@@ -49,7 +49,7 @@ test.suite(
       await driver.get(Pages.printPage)
       base64Code = await driver.printPage()
       base64Code = base64Code.slice(startIndex, endIndex)
-      assert.equal(base64Code, pdfMagicNumber)
+      assert.strictEqual(base64Code, pdfMagicNumber)
     })
 
     it('Check with all valid params', async function () {
@@ -69,7 +69,7 @@ test.suite(
         pageRanges: ['1-2'],
       })
       base64Code = base64Code.slice(startIndex, endIndex)
-      assert.equal(base64Code, pdfMagicNumber)
+      assert.strictEqual(base64Code, pdfMagicNumber)
     })
 
     it('Check with page params', async function () {
@@ -77,7 +77,7 @@ test.suite(
       await driver.get(Pages.printPage)
       base64Code = await driver.printPage({ width: 30, height: 30 })
       base64Code = base64Code.slice(startIndex, endIndex)
-      assert.equal(base64Code, pdfMagicNumber)
+      assert.strictEqual(base64Code, pdfMagicNumber)
     })
 
     it('Check with margin params', async function () {
@@ -90,7 +90,7 @@ test.suite(
         right: 1,
       })
       base64Code = base64Code.slice(startIndex, endIndex)
-      assert.equal(base64Code, pdfMagicNumber)
+      assert.strictEqual(base64Code, pdfMagicNumber)
     })
   },
   { browsers: [Browser.FIREFOX] }
@@ -114,7 +114,7 @@ test.suite(
       await driver.get(Pages.printPage)
       base64Code = await driver.printPage({ pageRanges: ['1-2'] })
       base64Code = base64Code.slice(startIndex, endIndex)
-      assert.equal(base64Code, pdfMagicNumber)
+      assert.strictEqual(base64Code, pdfMagicNumber)
     })
 
     it('Should Print pdf with total pages', async function () {
@@ -122,7 +122,7 @@ test.suite(
       await driver.get(Pages.printPage)
       base64Code = await driver.printPage()
       base64Code = base64Code.slice(startIndex, endIndex)
-      assert.equal(base64Code, pdfMagicNumber)
+      assert.strictEqual(base64Code, pdfMagicNumber)
     })
   },
   { browsers: [Browser.CHROME] }

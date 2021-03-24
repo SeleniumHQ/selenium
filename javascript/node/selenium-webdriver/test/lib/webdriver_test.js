@@ -408,7 +408,10 @@ describe('WebDriver', function () {
 
       el.resolve(new WebElement(driver, { ELEMENT: 'foo' }))
       return Promise.all(steps).then(function () {
-        assert.deepStrictEqual(['element resolved', 'wire value resolved'], messages)
+        assert.deepStrictEqual(
+          ['element resolved', 'wire value resolved'],
+          messages
+        )
       })
     })
 
@@ -735,7 +738,10 @@ describe('WebDriver', function () {
         .findElement(By.js('return 123'))
         .then(assert.fail, function (e) {
           assertIsInstance(TypeError, e)
-          assert.strictEqual('Custom locator did not return a WebElement', e.message)
+          assert.strictEqual(
+            'Custom locator did not return a WebElement',
+            e.message
+          )
         })
     })
 
@@ -777,7 +783,10 @@ describe('WebDriver', function () {
         .findElement((_) => 1)
         .then(assert.fail, function (e) {
           assertIsInstance(TypeError, e)
-          assert.strictEqual('Custom locator did not return a WebElement', e.message)
+          assert.strictEqual(
+            'Custom locator did not return a WebElement',
+            e.message
+          )
         })
     })
   })
@@ -1041,7 +1050,7 @@ describe('WebDriver', function () {
         count++
         return true
       }
-      return driver.wait(condition, 1).then(() => assert.equal(1, count))
+      return driver.wait(condition, 1).then(() => assert.strictEqual(1, count))
     })
 
     it('on a simple counting condition', function () {
@@ -1051,7 +1060,9 @@ describe('WebDriver', function () {
       function condition() {
         return ++count === 3
       }
-      return driver.wait(condition, 250).then(() => assert.strictEqual(3, count))
+      return driver
+        .wait(condition, 250)
+        .then(() => assert.strictEqual(3, count))
     })
 
     it('on a condition that returns a promise that resolves to true after a short timeout', function () {
@@ -1320,7 +1331,7 @@ describe('WebDriver', function () {
               .then((els) => els.length > 0)
           }, 25)
           .then(fail, function (e) {
-            assert.equal(
+            assert.strictEqual(
               'Wait timed out after ',
               e.message.substring(0, 'Wait timed out after '.length)
             )
@@ -1867,7 +1878,7 @@ describe('WebDriver', function () {
           .end()
         let driver = executor.createDriver()
         return driver.getCurrentUrl().then(function (got) {
-          assert.deepEqual(got, want)
+          assert.deepStrictEqual(got, want)
         })
       }
 
@@ -1876,7 +1887,7 @@ describe('WebDriver', function () {
           runDeserializeTest(1, 1),
           runDeserializeTest('', ''),
           runDeserializeTest(true, true),
-          runDeserializeTest(undefined, undefined),
+          runDeserializeTest(undefined, null),
           runDeserializeTest(null, null),
         ])
       })

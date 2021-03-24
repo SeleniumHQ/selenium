@@ -44,8 +44,8 @@ describe('http', function () {
         '/session/:sessionId/element/:id/click',
         parameters
       )
-      assert.equal(finalPath, '/session/foo/element/bar/click')
-      assert.deepEqual(parameters, {})
+      assert.strictEqual(finalPath, '/session/foo/element/bar/click')
+      assert.deepStrictEqual(parameters, {})
     })
 
     it('throws if missing a parameter', function () {

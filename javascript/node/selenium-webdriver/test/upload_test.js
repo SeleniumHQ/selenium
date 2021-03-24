@@ -74,7 +74,7 @@ test.suite(function (env) {
 
       var frame = await driver.findElement(By.id('upload_target'))
       await driver.switchTo().frame(frame)
-      assert.equal(
+      assert.strictEqual(
         await driver.findElement(By.css('body')).getText(),
         LOREM_IPSUM_TEXT
       )

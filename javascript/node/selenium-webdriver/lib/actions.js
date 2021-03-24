@@ -342,7 +342,7 @@ class LegacyActionSequence {
    * @private
    */
   scheduleKeyboardAction_(description, keys) {
-    let cmd = new command.Command(
+    const cmd = new command.Command(
       command.Name.LEGACY_ACTION_SEND_KEYS
     ).setParameter('value', keys)
     this.schedule_(description, cmd)

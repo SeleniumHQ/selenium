@@ -41,7 +41,7 @@ test.suite(function (env) {
         await driver.get(Pages.javascriptPage)
 
         var toBeDeleted = await driver.findElement(By.id('deleted'))
-        assert.equal(await toBeDeleted.getTagName(), 'p')
+        assert.strictEqual(await toBeDeleted.getTagName(), 'p')
 
         await driver.findElement(By.id('delete')).click()
         await driver.wait(until.stalenessOf(toBeDeleted), 5000)

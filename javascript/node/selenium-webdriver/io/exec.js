@@ -121,9 +121,9 @@ class Command {
  * @return {!Command} The launched command.
  */
 module.exports = function exec(command, opt_options) {
-  var options = opt_options || {}
+  const options = opt_options || {}
 
-  var proc = childProcess.spawn(command, options.args || [], {
+  let proc = childProcess.spawn(command, options.args || [], {
     env: options.env || process.env,
     stdio: options.stdio || 'ignore',
   })
@@ -133,7 +133,7 @@ module.exports = function exec(command, opt_options) {
   proc.unref()
   process.once('exit', onProcessExit)
 
-  let result = new Promise((resolve) => {
+  const result = new Promise((resolve) => {
     proc.once('exit', (code, signal) => {
       proc = null
       process.removeListener('exit', onProcessExit)

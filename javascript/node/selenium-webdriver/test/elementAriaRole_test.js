@@ -35,21 +35,21 @@ test.suite(
         await driver.get(`data:text/html,<!DOCTYPE html>
   <div role='heading' aria-level='1'>Level 1 Header</div>`)
         let header = driver.findElement(By.css('div'))
-        assert.equal(await header.getAriaRole(), 'heading')
+        assert.strictEqual(await header.getAriaRole(), 'heading')
       })
 
       it('Should return implicit role defined by tagName', async function () {
         await driver.get(`data:text/html,<!DOCTYPE html>
   <h1> Level 1 Header</h1>`)
         let header = driver.findElement(By.css('h1'))
-        assert.equal(await header.getAriaRole(), 'heading')
+        assert.strictEqual(await header.getAriaRole(), 'heading')
       })
 
       it('Should return explicit role even if it contradicts TagName', async function () {
         await driver.get(`data:text/html,<!DOCTYPE html>
   <h1 role='alert'>Level 1 Header</h1>`)
         let header = driver.findElement(By.css('h1'))
-        assert.equal(await header.getAriaRole(), 'alert')
+        assert.strictEqual(await header.getAriaRole(), 'alert')
       })
     })
   },

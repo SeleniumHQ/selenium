@@ -210,7 +210,7 @@ class DriverService {
           }
 
           return resolveCommandLineFlags(this.args_).then((args) => {
-            var command = exec(self.executable_, {
+            const command = exec(self.executable_, {
               args: args,
               env: self.env_,
               stdio: self.stdio_,
@@ -218,8 +218,8 @@ class DriverService {
 
             resolveCommand(command)
 
-            var earlyTermination = command.result().then(function (result) {
-              var error =
+            const earlyTermination = command.result().then(function (result) {
+              const error =
                 result.code == null
                   ? Error('Server was killed with ' + result.signal)
                   : Error('Server terminated early with status ' + result.code)
@@ -229,7 +229,7 @@ class DriverService {
               throw error
             })
 
-            var hostname = self.hostname_
+            let hostname = self.hostname_
             if (!hostname) {
               hostname =
                 (!self.loopbackOnly_ && net.getAddress()) ||
@@ -338,9 +338,8 @@ DriverService.Builder = class {
    * @this {THIS}
    * @template THIS
    */
-  addArguments(var_args) { // eslint-disable-line
-    let args = Array.prototype.slice.call(arguments, 0)
-    this.options_.args = this.options_.args.concat(args)
+  addArguments(...arguments_) {
+    this.options_.args = this.options_.args.concat(arguments_)
     return this
   }
 

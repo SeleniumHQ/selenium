@@ -108,7 +108,10 @@ describe('Capabilities', function () {
         ['abc', 'def'],
       ])
       let caps = new Capabilities(m)
-      assert.deepStrictEqual({ one: 123, abc: 'def' }, caps[Symbols.serialize]())
+      assert.deepStrictEqual(
+        { one: 123, abc: 'def' },
+        caps[Symbols.serialize]()
+      )
     })
 
     it('does not omit capabilities set to a false-like value', function () {

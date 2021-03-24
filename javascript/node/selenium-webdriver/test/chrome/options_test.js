@@ -85,7 +85,10 @@ describe('chrome.Options', function () {
         [symbols.serialize]()
 
       assert.strictEqual(wire['goog:chromeOptions'].extensions.length, 1)
-      assert.strictEqual(await wire['goog:chromeOptions'].extensions[0], expected)
+      assert.strictEqual(
+        await wire['goog:chromeOptions'].extensions[0],
+        expected
+      )
     })
   })
 })

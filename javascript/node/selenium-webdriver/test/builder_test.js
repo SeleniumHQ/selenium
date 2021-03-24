@@ -53,7 +53,7 @@ test.suite(function (env) {
           driver instanceof want,
           `want ${want.name}, but got ${driver.name}`
         )
-        assert.equal(typeof driver.then, 'function')
+        assert.strictEqual(typeof driver.then, 'function')
 
         return (
           driver

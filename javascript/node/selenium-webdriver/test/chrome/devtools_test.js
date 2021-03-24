@@ -146,7 +146,7 @@ test.suite(
         await driver.register('random', 'random', pageCdpConnection)
         await driver.get(fileServer.Pages.basicAuth)
         let source = await driver.getPageSource()
-        assert.ok(!source.includes('Access granted!'), `The Source is \n ${source}`)
+        assert.strictEqual(source.includes('Access granted!'), false)
       })
 
       it('grants access if username and password are a match', async function () {
@@ -156,6 +156,7 @@ test.suite(
         await driver.get(fileServer.Pages.basicAuth)
         let source = await driver.getPageSource()
         assert.strictEqual(source.includes('Access granted!'), true)
+        await server.stop()
       })
     })
 

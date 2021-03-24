@@ -77,7 +77,11 @@ describe('until', function () {
       if (typeof expectedId === 'string') {
         expectedId = WebElement.buildId(expectedId)
       } else {
-        assert.strictEqual(typeof expectedId, 'number', 'must be string or number')
+        assert.strictEqual(
+          typeof expectedId,
+          'number',
+          'must be string or number'
+        )
       }
       return (cmd) => {
         assert.deepStrictEqual(

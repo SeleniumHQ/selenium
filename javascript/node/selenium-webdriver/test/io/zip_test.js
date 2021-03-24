@@ -120,7 +120,7 @@ describe('io/zip', function () {
             (e) => assert.strictEqual(e.constructor, InvalidArgumentError)
           )
           .then(() => z.getFile('foo/aFile'))
-          .then((b) => assert.equal(b.toString('utf8'), 'hello, world!'))
+          .then((b) => assert.strictEqual(b.toString('utf8'), 'hello, world!'))
       })
     })
   })

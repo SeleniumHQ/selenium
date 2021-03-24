@@ -82,7 +82,7 @@ describe('promise', function () {
       function runTest(value) {
         return promise
           .fullyResolved(value)
-          .then((resolved) => assert.equal(value, resolved))
+          .then((resolved) => assert.strictEqual(value, resolved))
       }
       return runTest(true)
         .then(() => runTest(function () {}))
@@ -97,7 +97,10 @@ describe('promise', function () {
       var array = [true, fn, null, 123, '', undefined, 1]
       return promise.fullyResolved(array).then(function (resolved) {
         assert.strictEqual(array, resolved)
-        assert.deepStrictEqual([true, fn, null, 123, '', undefined, 1], resolved)
+        assert.deepStrictEqual(
+          [true, fn, null, 123, '', undefined, 1],
+          resolved
+        )
       })
     })
 
@@ -122,7 +125,7 @@ describe('promise', function () {
     it('promiseResolvesToPrimitive', function () {
       return promise
         .fullyResolved(Promise.resolve(123))
-        .then((resolved) => assert.equal(123, resolved))
+        .then((resolved) => assert.strictEqual(123, resolved))
     })
 
     it('promiseResolvesToArray', function () {

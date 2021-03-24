@@ -110,8 +110,8 @@ describe('selenium-webdriver/http/util', function () {
         },
         function (err) {
           assert.ok(err instanceof error.WebDriverError)
-          assert.equal(err.code, error.WebDriverError.code)
-          assert.equal(err.message, value)
+          assert.strictEqual(err.code, error.WebDriverError.code)
+          assert.strictEqual(err.message, value)
         }
       )
     })

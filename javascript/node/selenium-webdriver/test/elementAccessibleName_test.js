@@ -35,14 +35,14 @@ test.suite(
         await driver.get(`data:text/html,<!DOCTYPE html>
           <h1>Level 1 Header</h1>`)
         let header = driver.findElement(By.css('h1'))
-        assert.equal(await header.getAccessibleName(), 'Level 1 Header')
+        assert.strictEqual(await header.getAccessibleName(), 'Level 1 Header')
       })
 
       it('Should return computed label for img', async function () {
         await driver.get(`data:text/html,<!DOCTYPE html>
           <img src="tequila.png" alt="Test Image">`)
         let imgLabel = driver.findElement(By.css('img'))
-        assert.equal(await imgLabel.getAccessibleName(), 'Test Image')
+        assert.strictEqual(await imgLabel.getAccessibleName(), 'Test Image')
       })
 
       it('Should return computed label for label', async function () {
@@ -50,14 +50,17 @@ test.suite(
           <input type="checkbox" id="label_test">
             <label for="label_test">Test Label</label>`)
         let computedLabel = driver.findElement(By.css('input'))
-        assert.equal(await computedLabel.getAccessibleName(), 'Test Label')
+        assert.strictEqual(
+          await computedLabel.getAccessibleName(),
+          'Test Label'
+        )
       })
 
       it('Should return computed label for aria-label', async function () {
         await driver.get(`data:text/html,<!DOCTYPE html>
           <button aria-label="Add sample button to cart">Add to cart</button>`)
         let computedAriaLabel = driver.findElement(By.css('button'))
-        assert.equal(
+        assert.strictEqual(
           await computedAriaLabel.getAccessibleName(),
           'Add sample button to cart'
         )
@@ -68,7 +71,10 @@ test.suite(
           <input type="search" aria-labelledby="this">
             <button id="this">Search</button>`)
         let computedAriaLabel = driver.findElement(By.css('input'))
-        assert.equal(await computedAriaLabel.getAccessibleName(), 'Search')
+        assert.strictEqual(
+          await computedAriaLabel.getAccessibleName(),
+          'Search'
+        )
       })
     })
   },

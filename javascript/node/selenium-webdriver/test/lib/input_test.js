@@ -490,6 +490,21 @@ describe('input.Actions', function () {
         },
       ])
     })
+
+    it('string length > 500', async function () {
+      const executor = new StubExecutor(Promise.resolve())
+      const actions = new input.Actions(executor, { async: true })
+      let str = ''
+      for (let i = 0; i < 501; i++) {
+        str += i
+      }
+      const executionResult = await actions
+        .sendKeys(str)
+        .perform()
+        .then(() => true)
+        .catch(() => false)
+      assert.strictEqual(executionResult, true)
+    })
   })
 
   describe('click()', function () {
@@ -859,7 +874,7 @@ describe('input.Actions', function () {
           .release(input.Button.LEFT)
           .perform()
 
-        assert.deepEqual(executor.commands, [
+        assert.deepStrictEqual(executor.commands, [
           {
             name: command.Name.ACTIONS,
             parameters: {

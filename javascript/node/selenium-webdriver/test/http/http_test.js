@@ -139,8 +139,8 @@ describe('HttpClient', function () {
 
     let client = new HttpClient(server.url())
     return client.send(request).then((response) => {
-      assert.equal(200, response.status)
-      assert.equal(response.body, '<!DOCTYPE html><h1>Hello, world!</h1>')
+      assert.strictEqual(200, response.status)
+      assert.strictEqual(response.body, '<!DOCTYPE html><h1>Hello, world!</h1>')
     })
   })
 
@@ -152,9 +152,9 @@ describe('HttpClient', function () {
     const client = new HttpClient(url.format(parsed))
     const request = new HttpRequest('GET', '/protected')
     return client.send(request).then(function (response) {
-      assert.equal(200, response.status)
-      assert.equal(response.headers.get('content-type'), 'text/plain')
-      assert.equal(response.body, 'Access granted!')
+      assert.strictEqual(200, response.status)
+      assert.strictEqual(response.headers.get('content-type'), 'text/plain')
+      assert.strictEqual(response.body, 'Access granted!')
     })
   })
 
@@ -162,8 +162,8 @@ describe('HttpClient', function () {
     const client = new HttpClient(server.url())
     const request = new HttpRequest('GET', '/protected')
     return client.send(request).then(function (response) {
-      assert.equal(401, response.status)
-      assert.equal(response.body, 'Access denied')
+      assert.strictEqual(401, response.status)
+      assert.strictEqual(response.body, 'Access denied')
     })
   })
 
@@ -171,9 +171,9 @@ describe('HttpClient', function () {
     const request = new HttpRequest('GET', '/redirect')
     const client = new HttpClient(server.url())
     return client.send(request).then(function (response) {
-      assert.equal(200, response.status)
-      assert.equal(response.headers.get('content-type'), 'text/plain')
-      assert.equal(response.body, 'hello, world!')
+      assert.strictEqual(200, response.status)
+      assert.strictEqual(response.headers.get('content-type'), 'text/plain')
+      assert.strictEqual(response.body, 'hello, world!')
     })
   })
 
@@ -197,9 +197,9 @@ describe('HttpClient', function () {
         server.url()
       )
       return client.send(request).then(function (response) {
-        assert.equal(200, response.status)
-        assert.equal(response.headers.get('host'), 'another.server.com')
-        assert.equal(
+        assert.strictEqual(200, response.status)
+        assert.strictEqual(response.headers.get('host'), 'another.server.com')
+        assert.strictEqual(
           response.headers.get('x-proxy-request-uri'),
           'http://another.server.com/proxy'
         )
@@ -214,9 +214,9 @@ describe('HttpClient', function () {
         server.url()
       )
       return client.send(request).then(function (response) {
-        assert.equal(200, response.status)
-        assert.equal(response.headers.get('host'), 'another.server.com')
-        assert.equal(
+        assert.strictEqual(200, response.status)
+        assert.strictEqual(response.headers.get('host'), 'another.server.com')
+        assert.strictEqual(
           response.headers.get('x-proxy-request-uri'),
           'http://another.server.com/proxy'
         )
@@ -231,9 +231,9 @@ describe('HttpClient', function () {
         server.url()
       )
       return client.send(request).then(function (response) {
-        assert.equal(200, response.status)
-        assert.equal(response.headers.get('host'), 'another.server.com')
-        assert.equal(
+        assert.strictEqual(200, response.status)
+        assert.strictEqual(response.headers.get('host'), 'another.server.com')
+        assert.strictEqual(
           response.headers.get('x-proxy-request-uri'),
           'http://another.server.com/proxy?foo#bar'
         )

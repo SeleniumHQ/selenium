@@ -37,7 +37,7 @@ test.suite(
         caps = caps.map_.get(ie.VENDOR_COMMAND_PREFIX)[
           ie.Key.FILE_UPLOAD_DIALOG_TIMEOUT
         ]
-        assert.equal(caps, timeOut)
+        assert.strictEqual(caps, timeOut)
         await driver.quit()
       })
 
@@ -51,7 +51,7 @@ test.suite(
         caps = caps.map_.get(ie.VENDOR_COMMAND_PREFIX)[
           ie.Key.BROWSER_ATTACH_TIMEOUT
         ]
-        assert.equal(caps, timeOut)
+        assert.strictEqual(caps, timeOut)
         await driver.quit()
       })
 
@@ -63,7 +63,7 @@ test.suite(
         caps = caps.map_.get(ie.VENDOR_COMMAND_PREFIX)[
           ie.Key.ELEMENT_SCROLL_BEHAVIOR
         ]
-        assert.equal(caps, ie.Behavior.TOP)
+        assert.strictEqual(caps, ie.Behavior.TOP)
         await driver.quit()
       })
 

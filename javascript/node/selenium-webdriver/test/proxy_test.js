@@ -136,8 +136,8 @@ test.suite(function (env) {
         )
 
         await driver.get(helloServer.url())
-        assert.equal(await driver.getTitle(), 'Proxy page')
-        assert.equal(
+        assert.strictEqual(await driver.getTitle(), 'Proxy page')
+        assert.strictEqual(
           await driver.findElement({ tagName: 'h3' }).getText(),
           'This is the proxy landing page'
         )
@@ -152,8 +152,8 @@ test.suite(function (env) {
         )
 
         await driver.get(helloServer.url())
-        assert.equal(await driver.getTitle(), 'Hello')
-        assert.equal(
+        assert.strictEqual(await driver.getTitle(), 'Hello')
+        assert.strictEqual(
           await driver.findElement({ tagName: 'h3' }).getText(),
           'Hello, world!'
         )
@@ -161,8 +161,8 @@ test.suite(function (env) {
         // For firefox the no proxy settings appear to match on hostname only.
         let url = goodbyeServer.url().replace(/127\.0\.0\.1/, 'localhost')
         await driver.get(url)
-        assert.equal(await driver.getTitle(), 'Proxy page')
-        assert.equal(
+        assert.strictEqual(await driver.getTitle(), 'Proxy page')
+        assert.strictEqual(
           await driver.findElement({ tagName: 'h3' }).getText(),
           'This is the proxy landing page'
         )
@@ -182,15 +182,15 @@ test.suite(function (env) {
         await createDriver(proxy.pac(proxyServer.url('/proxy.pac')))
 
         await driver.get(helloServer.url())
-        assert.equal(await driver.getTitle(), 'Proxy page')
-        assert.equal(
+        assert.strictEqual(await driver.getTitle(), 'Proxy page')
+        assert.strictEqual(
           await driver.findElement({ tagName: 'h3' }).getText(),
           'This is the proxy landing page'
         )
 
         await driver.get(goodbyeServer.url())
-        assert.equal(await driver.getTitle(), 'Goodbye')
-        assert.equal(
+        assert.strictEqual(await driver.getTitle(), 'Goodbye')
+        assert.strictEqual(
           await driver.findElement({ tagName: 'h3' }).getText(),
           'Goodbye, world!'
         )

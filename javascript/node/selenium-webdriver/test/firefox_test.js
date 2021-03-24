@@ -192,17 +192,17 @@ suite(
         })
 
         it('can get context', async function () {
-          assert.equal(await driver.getContext(), Context.CONTENT)
+          assert.strictEqual(await driver.getContext(), Context.CONTENT)
         })
 
         it('can set context', async function () {
           await driver.setContext(Context.CHROME)
           let ctxt = await driver.getContext()
-          assert.equal(ctxt, Context.CHROME)
+          assert.strictEqual(ctxt, Context.CHROME)
 
           await driver.setContext(Context.CONTENT)
           ctxt = await driver.getContext()
-          assert.equal(ctxt, Context.CONTENT)
+          assert.strictEqual(ctxt, Context.CONTENT)
         })
 
         it('throws on unknown context', function () {
@@ -233,14 +233,14 @@ suite(
         let userAgent = await driver.executeScript(
           'return window.navigator.userAgent'
         )
-        assert.equal(userAgent, 'foo;bar')
+        assert.strictEqual(userAgent, 'foo;bar')
       }
 
       async function verifyWebExtensionNotInstalled() {
         let found = await driver.findElements({
           id: 'webextensions-selenium-example',
         })
-        assert.equal(found.length, 0)
+        assert.strictEqual(found.length, 0)
       }
 
       async function verifyWebExtensionWasInstalled() {
@@ -248,7 +248,10 @@ suite(
           id: 'webextensions-selenium-example',
         })
         let text = await footer.getText()
-        assert.equal(text, 'Content injected by webextensions-selenium-example')
+        assert.strictEqual(
+          text,
+          'Content injected by webextensions-selenium-example'
+        )
       }
     })
   },

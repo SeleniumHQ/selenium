@@ -50,7 +50,7 @@ suite(function (env) {
         .manage()
         .getCookie(cookie.name)
         .then(function (actual) {
-          assert.equal(actual.value, cookie.value)
+          assert.strictEqual(actual.value, cookie.value)
         })
     })
 
@@ -178,10 +178,13 @@ suite(function (env) {
           .manage()
           .getCookie(cookie.name)
           .then(function (actual) {
-            assert.equal(actual.value, cookie.value)
+            assert.strictEqual(actual.value, cookie.value)
 
             // expiry times should be in seconds since January 1, 1970 UTC
-            assert.equal(actual.expiry, Math.floor(expiry.getTime() / 1000))
+            assert.strictEqual(
+              actual.expiry,
+              Math.floor(expiry.getTime() / 1000)
+            )
           })
 
         await driver.sleep(expirationDelay)
@@ -197,7 +200,7 @@ suite(function (env) {
         await driver.get(childUrl)
         await driver.manage().addCookie(cookie)
         const actual = await driver.manage().getCookie(cookie.name)
-        assert.equal(actual.sameSite, 'Strict')
+        assert.strictEqual(actual.sameSite, 'Strict')
       }
     )
 
@@ -209,7 +212,7 @@ suite(function (env) {
         await driver.get(childUrl)
         await driver.manage().addCookie(cookie)
         const actualCookie = await driver.manage().getCookie(cookie.name)
-        assert.equal(actualCookie.sameSite, 'Lax')
+        assert.strictEqual(actualCookie.sameSite, 'Lax')
       }
     )
 
@@ -294,7 +297,7 @@ suite(function (env) {
       .manage()
       .getCookies()
       .then(function (cookies) {
-        assert.equal(
+        assert.strictEqual(
           cookies.length,
           expected.length,
           'Wrong # of cookies.' +
@@ -306,7 +309,7 @@ suite(function (env) {
 
         const map = buildCookieMap(cookies)
         for (let i = 0; i < expected.length; ++i) {
-          assert.equal(expected[i].value, map[expected[i].name].value)
+          assert.strictEqual(expected[i].value, map[expected[i].name].value)
         }
       })
   }
