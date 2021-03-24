@@ -137,8 +137,9 @@ module Selenium
           value.each_with_object({}) do |(key, val), hash|
             next if val.respond_to?(:empty?) && val.empty?
 
-            key = convert_json_key(key, camelize: camelize_keys)
-            hash[key] = generate_as_json(val, camelize_keys: camelize?(key))
+            camelize = camelize_keys ? camelize?(key) : false
+            key = convert_json_key(key, camelize: camelize)
+            hash[key] = generate_as_json(val, camelize_keys: camelize)
           end
         elsif value.respond_to?(:as_json)
           value.as_json
