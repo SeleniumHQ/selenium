@@ -68,10 +68,12 @@ public class ImmutableCapabilities implements Capabilities {
   }
 
   public ImmutableCapabilities(Capabilities other) {
-    this(other.asMap());
+    Require.nonNull("Capabilities", other);
+    other.getCapabilityNames().forEach(name -> delegate.setCapability(name, other.getCapability(name)));
   }
 
   public ImmutableCapabilities(Map<?, ?> capabilities) {
+    Require.nonNull("Capabilities", capabilities);
     capabilities.forEach((key, value) -> {
       Require.argument("Key", key).instanceOf(String.class);
       delegate.setCapability(String.valueOf(key), value);
