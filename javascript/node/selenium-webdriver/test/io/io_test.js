@@ -39,7 +39,7 @@ describe('io', function () {
       return io.tmpFile().then(function (f) {
         return io.copy(path.join(tmpDir, 'foo'), f).then(function (p) {
           assert.strictEqual(p, f)
-          assert.strictEqual('Hello, world', fs.readFileSync(p))
+          assert.strictEqual('Hello, world', fs.readFileSync(p, 'utf-8'))
         })
       })
     })
@@ -57,7 +57,7 @@ describe('io', function () {
           .copy(path.join(tmpDir, 'symlinked-foo'), f)
           .then(function (p) {
             assert.strictEqual(p, f)
-            assert.strictEqual('Hello, world', fs.readFileSync(p))
+            assert.strictEqual('Hello, world', fs.readFileSync(p, 'utf-8'))
           })
       })
     })
@@ -93,11 +93,11 @@ describe('io', function () {
 
             assert.strictEqual(
               'hello',
-              fs.readFileSync(path.join(dst, 'file1'))
+              fs.readFileSync(path.join(dst, 'file1'), 'utf-8')
             )
             assert.strictEqual(
               'goodbye',
-              fs.readFileSync(path.join(dst, 'sub/folder/file2'))
+              fs.readFileSync(path.join(dst, 'sub/folder/file2'), 'utf-8')
             )
           })
         })
@@ -115,7 +115,7 @@ describe('io', function () {
         })
         .then(function (p) {
           assert.strictEqual('sub', path.basename(p))
-          assert.strictEqual('hi', fs.readFileSync(path.join(p, 'foo')))
+          assert.strictEqual('hi', fs.readFileSync(path.join(p, 'foo'), 'utf-8'))
         })
     })
 
@@ -135,9 +135,9 @@ describe('io', function () {
           })
         })
         .then(function (dir) {
-          assert.strictEqual('a', fs.readFileSync(path.join(dir, 'foo')))
-          assert.strictEqual('c', fs.readFileSync(path.join(dir, 'baz')))
-          assert.strictEqual('e', fs.readFileSync(path.join(dir, 'sub/quot')))
+          assert.strictEqual('a', fs.readFileSync(path.join(dir, 'foo'), 'utf-8'))
+          assert.strictEqual('c', fs.readFileSync(path.join(dir, 'baz'), 'utf-8'))
+          assert.strictEqual('e', fs.readFileSync(path.join(dir, 'sub/quot'), 'utf-8'))
 
           assert.ok(!fs.existsSync(path.join(dir, 'bar')))
           assert.ok(!fs.existsSync(path.join(dir, 'sub/quux')))
@@ -164,9 +164,9 @@ describe('io', function () {
           })
         })
         .then(function (dir) {
-          assert.strictEqual('b', fs.readFileSync(path.join(dir, 'bar')))
-          assert.strictEqual('c', fs.readFileSync(path.join(dir, 'baz')))
-          assert.strictEqual('d', fs.readFileSync(path.join(dir, 'sub/quux')))
+          assert.strictEqual('b', fs.readFileSync(path.join(dir, 'bar'), 'utf-8'))
+          assert.strictEqual('c', fs.readFileSync(path.join(dir, 'baz'), 'utf-8'))
+          assert.strictEqual('d', fs.readFileSync(path.join(dir, 'sub/quux'), 'utf-8'))
 
           assert.ok(!fs.existsSync(path.join(dir, 'foo')))
           assert.ok(!fs.existsSync(path.join(dir, 'sub/quot')))
