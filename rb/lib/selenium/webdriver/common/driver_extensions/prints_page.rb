@@ -21,8 +21,35 @@ module Selenium
   module WebDriver
     module DriverExtensions
       module PrintsPage
+        #
+        # Save a page as a PDF to the given path
+        #
+        # @example Save Printed Page
+        #   driver.save_print_page('../printed_page.pdf')
+        #
+        # @param [String] path to where the pdf should be saved
+        #
+        # @api public
+        #
+
+        def save_print_page(path, **options)
+          File.open(path, 'wb') do |file|
+            content = Base64.decode64 print_page(options)
+            file << content
+          end
+        end
+
+        #
+        # Return a Base64 encoded Print Page as a string
+        #
+        # @see https://w3c.github.io/webdriver/#print-page
+        #
+        # @api public
+        #
+
         def print_page(**options)
-          options[:page_ranges] &&= Array(options[:page_ranges])
+          options[:pageRanges] = Array(options.delete(:page_ranges)) || []
+          options[:shrinkToFit] = options.delete(:shrink_to_fit) { true }
 
           @bridge.print_page(options)
         end

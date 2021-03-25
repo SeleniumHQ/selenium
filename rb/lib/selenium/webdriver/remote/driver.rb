@@ -44,12 +44,6 @@ module Selenium
           super
         end
 
-        def print_page(**options)
-          options[:page_ranges] &&= Array(options[:page_ranges])
-
-          @bridge.print_page(options)
-        end
-
         private
 
         def devtools_address
