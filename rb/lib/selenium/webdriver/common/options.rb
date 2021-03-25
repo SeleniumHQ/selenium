@@ -134,13 +134,7 @@ module Selenium
 
       def generate_as_json(value, camelize_keys: true)
         if value.is_a?(Hash)
-          value.each_with_object({}) do |(key, val), hash|
-            next if val.respond_to?(:empty?) && val.empty?
-
-            camelize = camelize_keys ? camelize?(key) : false
-            key = convert_json_key(key, camelize: camelize)
-            hash[key] = generate_as_json(val, camelize_keys: camelize)
-          end
+          process_json_hash(value, camelize_keys)
         elsif value.respond_to?(:as_json)
           value.as_json
         elsif value.is_a?(Array)
@@ -149,6 +143,16 @@ module Selenium
           value.to_s
         else
           value
+        end
+      end
+
+      def process_json_hash(value, camelize_keys)
+        value.each_with_object({}) do |(key, val), hash|
+          next if val.respond_to?(:empty?) && val.empty?
+
+          camelize = camelize_keys ? camelize?(key) : false
+          key = convert_json_key(key, camelize: camelize)
+          hash[key] = generate_as_json(val, camelize_keys: camelize)
         end
       end
 
