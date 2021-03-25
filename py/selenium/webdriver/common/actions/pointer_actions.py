@@ -25,10 +25,16 @@ from selenium.webdriver.remote.webelement import WebElement
 
 class PointerActions(Interaction):
 
-    def __init__(self, source=None):
+    def __init__(self, source=None, duration=250):
+        """
+        Args:
+        - source: PointerInput instance
+        - duration: override the default 250 msecs of DEFAULT_MOVE_DURATION in source
+        """
         if not source:
             source = PointerInput(interaction.POINTER_MOUSE, "mouse")
         self.source = source
+        self._duration = duration
         super(PointerActions, self).__init__(source)
 
     def pointer_down(self, button=MouseButton.LEFT):
@@ -49,15 +55,15 @@ class PointerActions(Interaction):
         else:
             left = 0
             top = 0
-        self.source.create_pointer_move(origin=element, x=int(left), y=int(top))
+        self.source.create_pointer_move(origin=element, duration=self._duration, x=int(left), y=int(top))
         return self
 
     def move_by(self, x, y):
-        self.source.create_pointer_move(origin=interaction.POINTER, x=int(x), y=int(y))
+        self.source.create_pointer_move(origin=interaction.POINTER, duration=self._duration, x=int(x), y=int(y))
         return self
 
     def move_to_location(self, x, y):
-        self.source.create_pointer_move(origin='viewport', x=int(x), y=int(y))
+        self.source.create_pointer_move(origin='viewport', duration=self._duration, x=int(x), y=int(y))
         return self
 
     def click(self, element=None):
