@@ -17,13 +17,10 @@
 
 package org.openqa.selenium.grid.node.config;
 
-import static org.openqa.selenium.remote.RemoteTags.CAPABILITIES;
-import static org.openqa.selenium.remote.RemoteTags.CAPABILITIES_EVENT;
-import static org.openqa.selenium.remote.tracing.Tags.EXCEPTION;
-
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.PersistentCapabilities;
+import org.openqa.selenium.Platform;
 import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.chromium.ChromiumDevToolsLocator;
@@ -56,6 +53,10 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Predicate;
+
+import static org.openqa.selenium.remote.RemoteTags.CAPABILITIES;
+import static org.openqa.selenium.remote.RemoteTags.CAPABILITIES_EVENT;
+import static org.openqa.selenium.remote.tracing.Tags.EXCEPTION;
 
 public class DriverServiceSessionFactory implements SessionFactory {
 
@@ -97,18 +98,27 @@ public class DriverServiceSessionFactory implements SessionFactory {
     }
 
     try (Span span = tracer.getCurrentContext().createSpan("driver_service_factory.apply")) {
-      Map<String, EventAttributeValue> attributeMap = new HashMap<>();
+
       Capabilities capabilities = browserOptionsMutator.apply(sessionRequest.getCapabilities());
+
+      Optional<Platform> platformName = Optional.ofNullable(capabilities.getPlatformName());
+      if (platformName.isPresent()) {
+        capabilities = generalizePlatform(capabilities);
+      }
+
+      Map<String, EventAttributeValue> attributeMap = new HashMap<>();
       CAPABILITIES.accept(span, capabilities);
       CAPABILITIES_EVENT.accept(attributeMap, capabilities);
-      attributeMap.put(AttributeKey.LOGGER_CLASS.getKey(), EventAttribute.setValue(this.getClass().getName()));
+      attributeMap.put(AttributeKey.LOGGER_CLASS.getKey(),
+                       EventAttribute.setValue(this.getClass().getName()));
 
       DriverService service = builder.build();
       try {
         service.start();
 
         URL serviceURL = service.getUrl();
-        attributeMap.put(AttributeKey.DRIVER_URL.getKey(), EventAttribute.setValue(serviceURL.toString()));
+        attributeMap.put(AttributeKey.DRIVER_URL.getKey(),
+                         EventAttribute.setValue(serviceURL.toString()));
         HttpClient client = clientFactory.createClient(serviceURL);
 
         Command command = new Command(null, DriverCommand.NEW_SESSION(capabilities));
@@ -123,14 +133,22 @@ public class DriverServiceSessionFactory implements SessionFactory {
 
         Response response = result.createResponse();
 
-        attributeMap.put(AttributeKey.UPSTREAM_DIALECT.getKey(), EventAttribute.setValue(upstream.toString()));
-        attributeMap.put(AttributeKey.DOWNSTREAM_DIALECT.getKey(), EventAttribute.setValue(downstream.toString()));
-        attributeMap.put(AttributeKey.DRIVER_RESPONSE.getKey(), EventAttribute.setValue(response.toString()));
+        attributeMap.put(AttributeKey.UPSTREAM_DIALECT.getKey(),
+                         EventAttribute.setValue(upstream.toString()));
+        attributeMap.put(AttributeKey.DOWNSTREAM_DIALECT.getKey(),
+                         EventAttribute.setValue(downstream.toString()));
+        attributeMap.put(AttributeKey.DRIVER_RESPONSE.getKey(),
+                         EventAttribute.setValue(response.toString()));
 
         // TODO: This is a nasty hack. Try and make it elegant.
 
         Capabilities caps = new ImmutableCapabilities((Map<?, ?>) response.getValue());
-        Optional<URI> reportedUri = ChromiumDevToolsLocator.getReportedUri("goog:chromeOptions", caps);
+        if (platformName.isPresent()) {
+          caps = setInitialPlatform(caps, platformName.get());
+        }
+
+        Optional<URI> reportedUri =
+          ChromiumDevToolsLocator.getReportedUri("goog:chromeOptions", caps);
         if (reportedUri.isPresent()) {
           caps = addCdpCapability(caps, reportedUri.get());
         } else {
@@ -177,5 +195,15 @@ public class DriverServiceSessionFactory implements SessionFactory {
 
   private Capabilities addCdpCapability(Capabilities caps, URI uri) {
     return new PersistentCapabilities(caps).setCapability("se:cdp", uri);
+  }
+
+  // We set the platform to ANY before sending the caps to the driver because some drivers will
+  // reject session requests when they cannot parse the platform.
+  private Capabilities generalizePlatform(Capabilities caps) {
+    return new PersistentCapabilities(caps).setCapability("platformName", Platform.ANY);
+  }
+
+  private Capabilities setInitialPlatform(Capabilities caps, Platform platform) {
+    return new PersistentCapabilities(caps).setCapability("platformName", platform);
   }
 }
