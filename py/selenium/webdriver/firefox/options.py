@@ -107,11 +107,12 @@ class Options(ArgOptions):
         """
         :Returns: The Firefox profile to use.
         """
-        warnings.warn(
-            "Getting a profile has been deprecated.",
-            DeprecationWarning,
-            stacklevel=2
-        )
+        if self._profile:
+            warnings.warn(
+                "Getting a profile has been deprecated.",
+                DeprecationWarning,
+                stacklevel=2
+            )
         return self._profile
 
     @profile.setter
