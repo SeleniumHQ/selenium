@@ -27,12 +27,11 @@ module Selenium
       class Profile
         include ProfileHelper
 
-        attr_reader :directory
-
         def initialize(model = nil)
           @model = verify_model(model)
           @extensions = []
           @encoded_extensions = []
+          @directory = nil
         end
 
         def add_extension(path)
@@ -43,6 +42,10 @@ module Selenium
 
         def add_encoded_extension(encoded)
           @encoded_extensions << encoded
+        end
+
+        def directory
+          @directory || layout_on_disk
         end
 
         #
