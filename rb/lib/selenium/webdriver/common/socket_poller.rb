@@ -65,37 +65,26 @@ module Selenium
         arr << Errno::EALREADY if Platform.wsl?
       }.freeze
 
-      if Platform.jruby?
-        # we use a plain TCPSocket here since JRuby has issues closing socket
-        # see https://github.com/jruby/jruby/issues/5709
-        def listening?
-          TCPSocket.new(@host, @port).close
-          true
-        rescue *NOT_CONNECTED_ERRORS
-          false
-        end
-      else
-        def listening?
-          addr     = Socket.getaddrinfo(@host, @port, Socket::AF_INET, Socket::SOCK_STREAM)
-          sock     = Socket.new(Socket::AF_INET, Socket::SOCK_STREAM, 0)
-          sockaddr = Socket.pack_sockaddr_in(@port, addr[0][3])
+      def listening?
+        addr     = Socket.getaddrinfo(@host, @port, Socket::AF_INET, Socket::SOCK_STREAM)
+        sock     = Socket.new(Socket::AF_INET, Socket::SOCK_STREAM, 0)
+        sockaddr = Socket.pack_sockaddr_in(@port, addr[0][3])
 
-          begin
-            sock.connect_nonblock sockaddr
-          rescue Errno::EINPROGRESS
-            retry if socket_writable?(sock) && conn_completed?(sock)
-            raise Errno::ECONNREFUSED
-          rescue *CONNECTED_ERRORS
-            # yay!
-          end
-
-          sock.close
-          true
-        rescue *NOT_CONNECTED_ERRORS
-          sock&.close
-          WebDriver.logger.debug("polling for socket on #{[@host, @port].inspect}")
-          false
+        begin
+          sock.connect_nonblock sockaddr
+        rescue Errno::EINPROGRESS
+          retry if socket_writable?(sock) && conn_completed?(sock)
+          raise Errno::ECONNREFUSED
+        rescue *CONNECTED_ERRORS
+          # yay!
         end
+
+        sock.close
+        true
+      rescue *NOT_CONNECTED_ERRORS
+        sock&.close
+        WebDriver.logger.debug("polling for socket on #{[@host, @port].inspect}")
+        false
       end
 
       def socket_writable?(sock)
