@@ -63,6 +63,7 @@ public class NodeOptions {
   public static final int DEFAULT_SESSION_TIMEOUT = 300;
   static final String NODE_SECTION = "node";
   static final boolean DEFAULT_DETECT_DRIVERS = true;
+  static final boolean OVERRIDE_MAX_SESSIONS = false;
   static final int DEFAULT_REGISTER_CYCLE = 10;
   static final int DEFAULT_REGISTER_PERIOD = 120;
 
@@ -71,7 +72,6 @@ public class NodeOptions {
   private static final String DEFAULT_IMPL = "org.openqa.selenium.grid.node.local.LocalNodeFactory";
   private static final ImmutableCapabilities CURRENT_PLATFORM =
     new ImmutableCapabilities("platformName", Platform.getCurrent());
-
 
   private final Config config;
 
@@ -121,7 +121,18 @@ public class NodeOptions {
     /* Danger! Java stereotype ahead! */
     Function<Capabilities, Collection<SessionFactory>> factoryFactory) {
 
+    LOG.log(Level.INFO, "Detected {0} available processors", DEFAULT_MAX_SESSIONS);
     int maxSessions = getMaxSessions();
+    if (maxSessions > DEFAULT_MAX_SESSIONS) {
+      LOG.log(Level.WARNING,
+              "Overriding max recommended number of {0} concurrent sessions. "
+              + "Session stability and reliability might suffer!",
+              DEFAULT_MAX_SESSIONS);
+      LOG.warning("One browser session is recommended per available processor. IE and "
+                  + "Safari are always limited to 1 session per host.");
+      LOG.warning("Double check if enabling 'override-max-sessions' is really needed");
+      LOG.log(Level.WARNING, "Max sessions set to {0} ", maxSessions);
+    }
 
     Map<WebDriverInfo, Collection<SessionFactory>> allDrivers =
       discoverDrivers(maxSessions, factoryFactory);
@@ -138,9 +149,15 @@ public class NodeOptions {
   }
 
   public int getMaxSessions() {
-    return Math.min(
-      config.getInt(NODE_SECTION, "max-sessions").orElse(DEFAULT_MAX_SESSIONS),
-      DEFAULT_MAX_SESSIONS);
+    int maxSessions = config.getInt(NODE_SECTION, "max-sessions")
+      .orElse(DEFAULT_MAX_SESSIONS);
+    Require.positive("Driver max sessions", maxSessions);
+    boolean overrideMaxSessions = config.getBool(NODE_SECTION, "override-max-sessions")
+      .orElse(OVERRIDE_MAX_SESSIONS);
+    if (maxSessions > DEFAULT_MAX_SESSIONS && overrideMaxSessions) {
+      return maxSessions;
+    }
+    return Math.min(maxSessions, DEFAULT_MAX_SESSIONS);
   }
 
   public Duration getSessionTimeout() {
@@ -259,8 +276,8 @@ public class NodeOptions {
         builders.stream()
           .filter(builder -> builder.score(stereotype) > 0)
           .forEach(builder -> {
-            int maxSessions = Math.min(info.getMaximumSimultaneousSessions(), driverMaxSessions);
-            for (int i = 0; i < maxSessions; i++) {
+            int maxDriverSessions = getDriverMaxSessions(info, driverMaxSessions);
+            for (int i = 0; i < maxDriverSessions; i++) {
               driverConfigs.putAll(driverInfoConfig, factoryFactory.apply(stereotype));
             }
           });
@@ -376,7 +393,8 @@ public class NodeOptions {
       builders.stream()
         .filter(builder -> builder.score(caps) > 0)
         .forEach(builder -> {
-          for (int i = 0; i < Math.min(info.getMaximumSimultaneousSessions(), maxSessions); i++) {
+          int maxDriverSessions = getDriverMaxSessions(info, maxSessions);
+          for (int i = 0; i < maxDriverSessions; i++) {
             toReturn.putAll(info, factoryFactory.apply(caps));
           }
         });
@@ -424,6 +442,23 @@ public class NodeOptions {
         return Optional.empty();
       }
     };
+  }
+
+  private int getDriverMaxSessions(WebDriverInfo info, int desiredMaxSessions) {
+    // IE and Safari
+    if (info.getMaximumSimultaneousSessions() == 1) {
+      return info.getMaximumSimultaneousSessions();
+    }
+    if (desiredMaxSessions > info.getMaximumSimultaneousSessions()) {
+      String logMessage = String.format(
+        "Overriding max recommended number of %s concurrent sessions for %s, setting it to %s",
+        info.getMaximumSimultaneousSessions(),
+        info.getDisplayName(),
+        desiredMaxSessions);
+      LOG.log(Level.WARNING, logMessage);
+      return desiredMaxSessions;
+    }
+    return Math.min(info.getMaximumSimultaneousSessions(), desiredMaxSessions);
   }
 
   private void report(Map.Entry<WebDriverInfo, Collection<SessionFactory>> entry) {
