@@ -306,9 +306,12 @@ public interface WebElement extends SearchContext, TakesScreenshot {
 
   /**
    * Get the value of a given CSS property.
-   * Color values should be returned as rgba strings, so,
-   * for example if the "background-color" property is set as "green" in the
-   * HTML source, the returned value will be "rgba(0, 255, 0, 1)".
+   * Color values could be returned as rgba or rgb strings.
+   * This depends on whether the browser omits the implicit opacity value or not.
+   *
+   * For example if the "background-color" property is set as "green" in the
+   * HTML source, the returned value could be "rgba(0, 255, 0, 1)" if implicit opacity value is
+   * preserved or "rgb(0, 255, 0)" if it is omitted.
    *
    * Note that shorthand CSS properties (e.g. background, font, border, border-top, margin,
    * margin-top, padding, padding-top, list-style, outline, pause, cue) are not returned,
