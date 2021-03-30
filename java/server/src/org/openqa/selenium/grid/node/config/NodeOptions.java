@@ -98,6 +98,7 @@ public class NodeOptions {
     int seconds = Math.max(
       config.getInt(NODE_SECTION, "register-cycle").orElse(DEFAULT_REGISTER_CYCLE),
       1);
+
     return Duration.ofSeconds(seconds);
   }
 
@@ -106,6 +107,7 @@ public class NodeOptions {
     int seconds = Math.max(
       config.getInt(NODE_SECTION, "register-period").orElse(DEFAULT_REGISTER_PERIOD),
       1);
+
     return Duration.ofSeconds(seconds);
   }
 

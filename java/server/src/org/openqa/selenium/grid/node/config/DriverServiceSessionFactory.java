@@ -46,13 +46,16 @@ import org.openqa.selenium.remote.tracing.Status;
 import org.openqa.selenium.remote.tracing.Tracer;
 
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.time.Instant;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.stream.Stream;
 
 import static org.openqa.selenium.remote.RemoteTags.CAPABILITIES;
 import static org.openqa.selenium.remote.RemoteTags.CAPABILITIES_EVENT;
@@ -63,7 +66,7 @@ public class DriverServiceSessionFactory implements SessionFactory {
   private final Tracer tracer;
   private final HttpClient.Factory clientFactory;
   private final Predicate<Capabilities> predicate;
-  private final DriverService.Builder builder;
+  private final DriverService.Builder<?, ?> builder;
   private final Capabilities stereotype;
   private final BrowserOptionsMutator browserOptionsMutator;
 
@@ -72,7 +75,7 @@ public class DriverServiceSessionFactory implements SessionFactory {
       HttpClient.Factory clientFactory,
       Capabilities stereotype,
       Predicate<Capabilities> predicate,
-      DriverService.Builder builder) {
+      DriverService.Builder<?, ?> builder) {
     this.tracer = Require.nonNull("Tracer", tracer);
     this.clientFactory = Require.nonNull("HTTP client factory", clientFactory);
     this.stereotype = ImmutableCapabilities.copyOf(Require.nonNull("Stereotype", stereotype));
@@ -147,16 +150,7 @@ public class DriverServiceSessionFactory implements SessionFactory {
           caps = setInitialPlatform(caps, platformName.get());
         }
 
-        Optional<URI> reportedUri =
-          ChromiumDevToolsLocator.getReportedUri("goog:chromeOptions", caps);
-        if (reportedUri.isPresent()) {
-          caps = addCdpCapability(caps, reportedUri.get());
-        } else {
-          reportedUri = ChromiumDevToolsLocator.getReportedUri("ms:edgeOptions", caps);
-          if (reportedUri.isPresent()) {
-            caps = addCdpCapability(caps, reportedUri.get());
-          }
-        }
+        caps = readDevToolsEndpointAndVersion(caps);
 
         span.addEvent("Driver service created session", attributeMap);
         return Either.right(
@@ -193,8 +187,47 @@ public class DriverServiceSessionFactory implements SessionFactory {
     }
   }
 
-  private Capabilities addCdpCapability(Capabilities caps, URI uri) {
-    return new PersistentCapabilities(caps).setCapability("se:cdp", uri);
+  private Capabilities readDevToolsEndpointAndVersion(Capabilities caps) {
+    class DevToolsInfo {
+      public final URI cdpEndpoint;
+      public final String version;
+
+      public DevToolsInfo(URI cdpEndpoint, String version) {
+        this.cdpEndpoint = cdpEndpoint;
+        this.version = version;
+      }
+    }
+
+    Function<Capabilities, Optional<DevToolsInfo>> chrome = c ->
+      ChromiumDevToolsLocator.getReportedUri("goog:chromeOptions", c).map(uri -> new DevToolsInfo(uri, c.getBrowserVersion()));
+
+    Function<Capabilities, Optional<DevToolsInfo>> edge = c ->
+      ChromiumDevToolsLocator.getReportedUri("ms:edgeOptions", c).map(uri -> new DevToolsInfo(uri, c.getBrowserVersion()));
+
+    Function<Capabilities, Optional<DevToolsInfo>> firefox = c -> {
+      Object address = c.getCapability("moz:debuggerAddress");
+      return Optional.ofNullable(address).map(adr -> {
+        try {
+          URI uri = new URI(String.format("http://%s", adr));
+          return new DevToolsInfo(uri, "86");
+        } catch (URISyntaxException e) {
+          return null;
+        }
+      });
+    };
+
+    Optional<DevToolsInfo> maybeInfo = Stream.of(chrome, edge, firefox)
+      .map(finder -> finder.apply(caps))
+      .filter(Optional::isPresent)
+      .map(Optional::get)
+      .findFirst();
+    if (maybeInfo.isPresent()) {
+      DevToolsInfo info = maybeInfo.get();
+      return new PersistentCapabilities(caps)
+        .setCapability("se:cdp", info.cdpEndpoint)
+        .setCapability("se:cdpVersion", info.version);
+    }
+    return caps;
   }
 
   // We set the platform to ANY before sending the caps to the driver because some drivers will

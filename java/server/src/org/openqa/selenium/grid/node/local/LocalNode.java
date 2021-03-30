@@ -341,7 +341,10 @@ public class LocalNode extends Node {
 
         // The session we return has to look like it came from the node, since we might be dealing
         // with a webdriver implementation that only accepts connections from localhost
-        Session externalSession = createExternalSession(session, externalUri, slotToUse.isSupportingCdp());
+        Session externalSession = createExternalSession(
+          session,
+          externalUri,
+          slotToUse.isSupportingCdp() || caps.getCapability("se:cdp") != null);
         return Either.right(new CreateSessionResponse(
           externalSession,
           getEncoder(session.getDownstreamDialect()).apply(externalSession)));
