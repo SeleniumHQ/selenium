@@ -134,6 +134,18 @@ container_image(
     ],
 )
 
+container_image(
+    name = "session-queue-image",
+    base = ":grid-base",
+    entrypoint = ENTRY_POINT + ["sessionqueuer"],
+    ports = [
+        "5559/tcp",  # Web
+        "4442/tcp",  # ZeroMQ
+        "4443/tcp",
+    ],
+)
+
+
 container_layer(
     name = "grid-binary",
     directory = "/opt/selenium/bin",

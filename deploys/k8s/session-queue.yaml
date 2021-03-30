@@ -2,24 +2,24 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: distributor
+  name: session-queue
   labels:
-    app: distributor
+    app: session-queue
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: distributor
+      app: session-queue
   template:
     metadata:
       labels:
-        app: distributor
+        app: session-queue
     spec:
       containers:
-        - name: distributor
-          image: selenium/distributor:latest
+        - name: session-queue
+          image: selenium/session-queue:latest
           ports:
-            - containerPort: 5553
+            - containerPort: 5559
           env:
             - name: EVENTS_BIND
               value: "false"
@@ -27,37 +27,29 @@ spec:
               value: "tcp://event-bus:4442"
             - name: EVENTS_SUBSCRIBE
               value: "tcp://event-bus:4443"
-            - name: SESSIONS_HOSTNAME
-              value: "session-map"
-            - name: SESSIONS_PORT
-              value: "5556"
-            - name: SESSIONQUEUER_HOSTNAME
-              value: "session-queue"
-            - name: SESSIONQUEUER_PORT
-              value: "5559"
           resources:
             limits:
               memory: "512Mi"
               cpu: ".5"
           readinessProbe:
             httpGet:
-              port: 5553
+              port: 5559
               path: "/readyz"
-            initialDelaySeconds: 5
-            periodSeconds: 30
+            initialDelaySeconds: 2
+            periodSeconds: 60
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: distributor
+  name: session-queue
   labels:
-    run: distributor
+    run: session-queue
 spec:
   type: NodePort
   selector:
-    app: distributor
+    app: session-queue
   ports:
-    - port: 5553
-      targetPort: 5553
+    - port: 5559
+      targetPort: 5559
       protocol: TCP
       name: web
