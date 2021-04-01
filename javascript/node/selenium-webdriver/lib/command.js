@@ -177,21 +177,6 @@ const Name = {
 
   ACTIONS: 'actions',
   CLEAR_ACTIONS: 'clearActions',
-
-  LEGACY_ACTION_CLICK: 'legacyAction:click',
-  LEGACY_ACTION_DOUBLE_CLICK: 'legacyAction:doubleclick',
-  LEGACY_ACTION_MOUSE_DOWN: 'legacyAction:mouseDown',
-  LEGACY_ACTION_MOUSE_UP: 'legacyAction:mouseUp',
-  LEGACY_ACTION_MOUSE_MOVE: 'legacyAction:mouseMove',
-  LEGACY_ACTION_SEND_KEYS: 'legacyAction:sendKeys',
-  LEGACY_ACTION_TOUCH_DOWN: 'legacyAction:touchDown',
-  LEGACY_ACTION_TOUCH_UP: 'legacyAction:touchUp',
-  LEGACY_ACTION_TOUCH_MOVE: 'legacyAction:touchMove',
-  LEGACY_ACTION_TOUCH_SCROLL: 'legacyAction:touchScroll',
-  LEGACY_ACTION_TOUCH_LONG_PRESS: 'legacyAction:touchLongPress',
-  LEGACY_ACTION_TOUCH_FLICK: 'legacyAction:touchFlick',
-  LEGACY_ACTION_TOUCH_SINGLE_TAP: 'legacyAction:singleTap',
-  LEGACY_ACTION_TOUCH_DOUBLE_TAP: 'legacyAction:doubleTap',
 }
 
 /**
