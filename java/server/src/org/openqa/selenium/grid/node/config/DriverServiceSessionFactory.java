@@ -216,7 +216,7 @@ public class DriverServiceSessionFactory implements SessionFactory {
       });
     };
 
-    Optional<DevToolsInfo> maybeInfo = Stream.of(chrome, edge, firefox)
+    Optional<DevToolsInfo> maybeInfo = Stream.of(chrome, edge)
       .map(finder -> finder.apply(caps))
       .filter(Optional::isPresent)
       .map(Optional::get)
