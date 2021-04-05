@@ -603,6 +603,7 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor, HasInputD
    */
   public void setLogLevel(Level level) {
     this.level = level;
+    logger.setLevel(level);
   }
 
   protected Response execute(CommandPayload payload) {
