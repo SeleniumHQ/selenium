@@ -124,8 +124,9 @@ public class NodeOptions {
     Function<Capabilities, Collection<SessionFactory>> factoryFactory) {
 
     LOG.log(Level.INFO, "Detected {0} available processors", DEFAULT_MAX_SESSIONS);
-    int maxSessions = getMaxSessions();
-    if (maxSessions > DEFAULT_MAX_SESSIONS) {
+    boolean overrideMaxSessions = config.getBool(NODE_SECTION, "override-max-sessions")
+      .orElse(OVERRIDE_MAX_SESSIONS);
+    if (overrideMaxSessions) {
       LOG.log(Level.WARNING,
               "Overriding max recommended number of {0} concurrent sessions. "
               + "Session stability and reliability might suffer!",
@@ -133,6 +134,9 @@ public class NodeOptions {
       LOG.warning("One browser session is recommended per available processor. IE and "
                   + "Safari are always limited to 1 session per host.");
       LOG.warning("Double check if enabling 'override-max-sessions' is really needed");
+    }
+    int maxSessions = getMaxSessions();
+    if (maxSessions > DEFAULT_MAX_SESSIONS) {
       LOG.log(Level.WARNING, "Max sessions set to {0} ", maxSessions);
     }
 
@@ -451,13 +455,15 @@ public class NodeOptions {
     if (info.getMaximumSimultaneousSessions() == 1) {
       return info.getMaximumSimultaneousSessions();
     }
-    if (desiredMaxSessions > info.getMaximumSimultaneousSessions()) {
+    boolean overrideMaxSessions = config.getBool(NODE_SECTION, "override-max-sessions")
+      .orElse(OVERRIDE_MAX_SESSIONS);
+    if (desiredMaxSessions > info.getMaximumSimultaneousSessions() && overrideMaxSessions) {
       String logMessage = String.format(
         "Overriding max recommended number of %s concurrent sessions for %s, setting it to %s",
         info.getMaximumSimultaneousSessions(),
         info.getDisplayName(),
         desiredMaxSessions);
-      LOG.log(Level.WARNING, logMessage);
+      LOG.log(Level.FINE, logMessage);
       return desiredMaxSessions;
     }
     return Math.min(info.getMaximumSimultaneousSessions(), desiredMaxSessions);
