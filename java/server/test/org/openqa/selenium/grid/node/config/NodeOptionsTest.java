@@ -211,11 +211,11 @@ public class NodeOptionsTest {
       "detect-drivers = false",
       "[[node.driver-configuration]]",
       "name = \"Chrome Beta\"",
-      "max-sessions = 2",
+      "max-sessions = 1",
       String.format("stereotype = \"%s\"", chromeCaps.toString().replace("\"", "\\\"")),
       "[[node.driver-configuration]]",
       "name = \"Firefox Nightly\"",
-      "max-sessions = 3",
+      "max-sessions = 2",
       String.format("stereotype = \"%s\"", firefoxCaps.toString().replace("\"", "\\\""))
     };
     Config config = new TomlConfig(new StringReader(String.join("\n", rawConfig)));
@@ -237,7 +237,7 @@ public class NodeOptionsTest {
             .get("binary").equalsIgnoreCase(chromeLocation));
     assertThat(reported)
       .filteredOn(capabilities -> capabilities.asMap().containsKey(ChromeOptions.CAPABILITY))
-      .hasSize(2);
+      .hasSize(1);
 
     //noinspection unchecked
     assertThat(reported)
@@ -248,7 +248,7 @@ public class NodeOptionsTest {
             .get("binary").equalsIgnoreCase(firefoxLocation));
     assertThat(reported)
       .filteredOn(capabilities -> capabilities.asMap().containsKey(FirefoxOptions.FIREFOX_OPTIONS))
-      .hasSize(3);
+      .hasSize(2);
   }
 
   @Test
