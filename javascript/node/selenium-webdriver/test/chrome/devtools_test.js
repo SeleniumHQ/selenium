@@ -156,7 +156,6 @@ test.suite(
         await driver.get(fileServer.Pages.basicAuth)
         let source = await driver.getPageSource()
         assert.strictEqual(source.includes('Access granted!'), true)
-        await server.stop()
       })
     })
 
