@@ -46,7 +46,6 @@ import org.openqa.selenium.remote.tracing.Status;
 import org.openqa.selenium.remote.tracing.Tracer;
 
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.net.URL;
 import java.time.Instant;
 import java.util.HashMap;
@@ -206,17 +205,9 @@ public class DriverServiceSessionFactory implements SessionFactory {
       CdpEndpointFinder.getReportedUri("ms:edgeOptions", c)
         .map(uri -> new DevToolsInfo(uri, c.getBrowserVersion()));
 
-    Function<Capabilities, Optional<DevToolsInfo>> firefox = c -> {
-      Object address = c.getCapability("moz:debuggerAddress");
-      return Optional.ofNullable(address).map(adr -> {
-        try {
-          URI uri = new URI(String.format("http://%s", adr));
-          return new DevToolsInfo(uri, "86");
-        } catch (URISyntaxException e) {
-          return null;
-        }
-      });
-    };
+    Function<Capabilities, Optional<DevToolsInfo>> firefox = c ->
+      CdpEndpointFinder.getReportedUri("moz:debuggerAddress", c)
+        .map(uri -> new DevToolsInfo(uri, "86"));
 
     Optional<DevToolsInfo> maybeInfo = Stream.of(chrome, edge, firefox)
       .map(finder -> finder.apply(caps))
