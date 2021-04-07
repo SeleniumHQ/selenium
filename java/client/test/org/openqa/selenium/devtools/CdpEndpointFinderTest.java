@@ -15,7 +15,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.chromium;
+package org.openqa.selenium.devtools;
 
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -30,23 +30,36 @@ import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @Category(UnitTests.class)
-public class ChromiumDevToolsLocatorTest {
+public class CdpEndpointFinderTest {
 
   @Test
   public void shouldReturnEmptyIfNoDebuggerAddressIsGiven() {
-    Optional<URI> uri = ChromiumDevToolsLocator.getReportedUri("foo:options", new ImmutableCapabilities());
+    Optional<URI> uri = CdpEndpointFinder
+      .getReportedUri("foo:options", new ImmutableCapabilities());
 
     assertThat(uri).isEmpty();
   }
 
   @Test
   public void shouldReturnUriIfPresent() {
-    Capabilities caps = new Json().toType("{\"ms:edgeOptions\": { \"debuggerAddress\": \"localhost:55498\" }}",
-      Capabilities.class);
+    Capabilities caps = new Json()
+      .toType(
+        "{\"ms:edgeOptions\": { \"debuggerAddress\": \"localhost:55498\" }}",
+        Capabilities.class);
 
-    Optional<URI> uri = ChromiumDevToolsLocator.getReportedUri("ms:edgeOptions", caps);
+    Optional<URI> uri = CdpEndpointFinder.getReportedUri("ms:edgeOptions", caps);
 
     assertThat(uri.get()).isEqualTo(URI.create("http://localhost:55498"));
   }
 
+  @Test
+  public void shouldReturnUriIfPresentAndIsAtTopLevel() {
+    Capabilities caps = new Json().toType(
+      "{\"moz:debuggerAddress\": \"localhost:93487\" }",
+      Capabilities.class);
+
+    Optional<URI> uri = CdpEndpointFinder.getReportedUri("moz:debuggerAddress", caps);
+
+    assertThat(uri.get()).isEqualTo(URI.create("http://localhost:93487"));
+  }
 }
