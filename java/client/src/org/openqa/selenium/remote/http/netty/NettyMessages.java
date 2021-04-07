@@ -17,19 +17,22 @@
 
 package org.openqa.selenium.remote.http.netty;
 
+import static org.asynchttpclient.Dsl.request;
 import static org.openqa.selenium.remote.http.Contents.empty;
+import static org.openqa.selenium.remote.http.Contents.memoize;
 
+import com.google.common.base.Strings;
+
+import org.asynchttpclient.Dsl;
 import org.asynchttpclient.Request;
 import org.asynchttpclient.RequestBuilder;
 import org.asynchttpclient.Response;
-import org.openqa.selenium.remote.http.Contents;
+import org.openqa.selenium.remote.http.AddSeleniumUserAgent;
 import org.openqa.selenium.remote.http.HttpMethod;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 
 import java.net.URI;
-
-import static org.asynchttpclient.Dsl.request;
 
 class NettyMessages {
 
@@ -37,20 +40,14 @@ class NettyMessages {
     // Utility classes.
   }
 
-  protected static Request toNettyRequest(URI baseUrl, HttpRequest request) {
-    String rawUrl;
+  protected static Request toNettyRequest(URI baseUrl, int readTimeout, int requestTimeout,
+                                          HttpRequest request) {
 
-    if (request.getUri().startsWith("ws://")) {
-      rawUrl = "http://" + request.getUri().substring("ws://".length());
-    } else if (request.getUri().startsWith("wss://")) {
-      rawUrl = "https://" + request.getUri().substring("wss://".length());
-    } else if (request.getUri().startsWith("http://") || request.getUri().startsWith("https://")) {
-      rawUrl = request.getUri();
-    } else {
-      rawUrl = baseUrl.toString().replaceAll("/$", "") + request.getUri();
-    }
+    String rawUrl = getRawUrl(baseUrl, request.getUri());
 
-    RequestBuilder builder = request(request.getMethod().toString(), rawUrl);
+    RequestBuilder builder = request(request.getMethod().toString(), rawUrl)
+      .setReadTimeout(readTimeout)
+      .setRequestTimeout(requestTimeout);
 
     for (String name : request.getQueryParameterNames()) {
       for (String value : request.getQueryParameters(name)) {
@@ -62,6 +59,18 @@ class NettyMessages {
       for (String value : request.getHeaders(name)) {
         builder.addHeader(name, value);
       }
+    }
+    if (request.getHeader("User-Agent") == null) {
+      builder.addHeader("User-Agent", AddSeleniumUserAgent.USER_AGENT);
+    }
+
+    String info = baseUrl.getUserInfo();
+    if (!Strings.isNullOrEmpty(info)) {
+      String[] parts = info.split(":", 2);
+      String user = parts[0];
+      String pass = parts.length > 1 ? parts[1] : null;
+
+      builder.setRealm(Dsl.basicAuthRealm(user, pass).setUsePreemptiveAuth(true).build());
     }
 
     if (request.getMethod().equals(HttpMethod.POST)) {
@@ -76,13 +85,27 @@ class NettyMessages {
 
     toReturn.setStatus(response.getStatusCode());
 
-    toReturn.setContent(! response.hasResponseBody()
+    toReturn.setContent(!response.hasResponseBody()
                         ? empty()
-                        : Contents.memoize(response::getResponseBodyAsStream));
+                        : memoize(response::getResponseBodyAsStream));
 
     response.getHeaders().names().forEach(
-        name -> response.getHeaders(name).forEach(value -> toReturn.addHeader(name, value)));
+      name -> response.getHeaders(name).forEach(value -> toReturn.addHeader(name, value)));
 
     return toReturn;
+  }
+
+  private static String getRawUrl(URI baseUrl, String uri) {
+    String rawUrl;
+    if (uri.startsWith("ws://")) {
+      rawUrl = "http://" + uri.substring("ws://".length());
+    } else if (uri.startsWith("wss://")) {
+      rawUrl = "https://" + uri.substring("wss://".length());
+    } else if (uri.startsWith("http://") || uri.startsWith("https://")) {
+      rawUrl = uri;
+    } else {
+      rawUrl = baseUrl.toString().replaceAll("/$", "") + uri;
+    }
+    return rawUrl;
   }
 }

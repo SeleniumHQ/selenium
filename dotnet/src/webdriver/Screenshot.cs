@@ -17,7 +17,7 @@
 // </copyright>
 
 using System;
-#if NETCOREAPP2_0 || NETSTANDARD2_0
+#if NETCOREAPP2_0 || NETSTANDARD2_0 || NETCOREAPP2_1 || NETSTANDARD2_1 || NET5_0
 #else
 using System.Drawing;
 using System.Drawing.Imaging;
@@ -61,35 +61,14 @@ namespace OpenQA.Selenium
     /// Represents an image of the page currently loaded in the browser.
     /// </summary>
     [Serializable]
-    public class Screenshot
+    public class Screenshot : EncodedFile
     {
-        private string base64Encoded = string.Empty;
-        private byte[] byteArray;
-
         /// <summary>
         /// Initializes a new instance of the <see cref="Screenshot"/> class.
         /// </summary>
         /// <param name="base64EncodedScreenshot">The image of the page as a Base64-encoded string.</param>
-        public Screenshot(string base64EncodedScreenshot)
+        public Screenshot(string base64EncodedScreenshot) : base(base64EncodedScreenshot)
         {
-            this.base64Encoded = base64EncodedScreenshot;
-            this.byteArray = Convert.FromBase64String(this.base64Encoded);
-        }
-
-        /// <summary>
-        /// Gets the value of the screenshot image as a Base64-encoded string.
-        /// </summary>
-        public string AsBase64EncodedString
-        {
-            get { return this.base64Encoded; }
-        }
-
-        /// <summary>
-        /// Gets the value of the screenshot image as an array of bytes.
-        /// </summary>
-        public byte[] AsByteArray
-        {
-            get { return this.byteArray; }
         }
 
         /// <summary>
@@ -97,7 +76,7 @@ namespace OpenQA.Selenium
         /// file if it already exists.
         /// </summary>
         /// <param name="fileName">The full path and file name to save the screenshot to.</param>
-        public void SaveAsFile(string fileName)
+        public override void SaveAsFile(string fileName)
         {
             this.SaveAsFile(fileName, ScreenshotImageFormat.Png);
         }
@@ -110,18 +89,18 @@ namespace OpenQA.Selenium
         /// to save the image to.</param>
         public void SaveAsFile(string fileName, ScreenshotImageFormat format)
         {
-#if NETCOREAPP2_0 || NETSTANDARD2_0
+#if NETCOREAPP2_0 || NETSTANDARD2_0 || NETCOREAPP2_1 || NETSTANDARD2_1
             if (format != ScreenshotImageFormat.Png)
             {
                 throw new WebDriverException(".NET Core does not support image manipulation, so only Portable Network Graphics (PNG) format is supported");
             }
 #endif
 
-            using (MemoryStream imageStream = new MemoryStream(this.byteArray))
+            using (MemoryStream imageStream = new MemoryStream(this.AsByteArray))
             {
                 using (FileStream fileStream = new FileStream(fileName, FileMode.Create))
-                { 
-#if NETCOREAPP2_0 || NETSTANDARD2_0
+                {
+#if NETCOREAPP2_0 || NETSTANDARD2_0 || NETCOREAPP2_1 || NETSTANDARD2_1 || NET5_0
                     imageStream.WriteTo(fileStream);
 #else
                     using (Image screenshotImage = Image.FromStream(imageStream))
@@ -133,16 +112,7 @@ namespace OpenQA.Selenium
             }
         }
 
-        /// <summary>
-        /// Returns a <see cref="string">String</see> that represents the current <see cref="object">Object</see>.
-        /// </summary>
-        /// <returns>A <see cref="string">String</see> that represents the current <see cref="object">Object</see>.</returns>
-        public override string ToString()
-        {
-            return this.base64Encoded;
-        }
-
-#if NETCOREAPP2_0 || NETSTANDARD2_0
+#if NETCOREAPP2_0 || NETSTANDARD2_0 || NETCOREAPP2_1 || NETSTANDARD2_1 || NET5_0
 #else
         private static ImageFormat ConvertScreenshotImageFormat(ScreenshotImageFormat format)
         {

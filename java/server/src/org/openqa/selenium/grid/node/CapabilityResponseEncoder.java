@@ -23,13 +23,13 @@ import com.google.common.collect.ImmutableMap;
 
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.grid.data.Session;
+import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.remote.Dialect;
 import org.openqa.selenium.remote.ErrorCodes;
 import org.openqa.selenium.remote.SessionId;
 
 import java.util.Map;
-import java.util.Objects;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
@@ -80,13 +80,13 @@ public class CapabilityResponseEncoder {
     private final Dialect dialect;
 
     private Encoder(Dialect dialect) {
-      this.dialect = Objects.requireNonNull(dialect);
+      this.dialect = Require.nonNull("Dialect", dialect);
     }
 
     @Override
     public byte[] apply(Session session, Map<String, Object> metadata) {
-      Objects.requireNonNull(session);
-      Objects.requireNonNull(metadata);
+      Require.nonNull("Session", session);
+      Require.nonNull("Metadata", metadata);
 
       return encodeAsResponse(dialect, session.getId(), session.getCapabilities(), metadata);
     }

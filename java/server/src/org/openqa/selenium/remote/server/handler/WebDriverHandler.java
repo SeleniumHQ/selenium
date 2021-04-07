@@ -17,10 +17,9 @@
 
 package org.openqa.selenium.remote.server.handler;
 
-import com.google.common.base.Preconditions;
-
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WrapsDriver;
+import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.remote.server.KnownElements;
 import org.openqa.selenium.remote.server.Session;
@@ -72,6 +71,6 @@ public abstract class WebDriverHandler<T> implements RestishHandler<T>, Callable
     while (toReturn instanceof WrapsDriver) {
       toReturn = ((WrapsDriver) toReturn).getWrappedDriver();
     }
-    return Preconditions.checkNotNull(toReturn);
+    return Require.state("Unwrapped driver", toReturn).nonNull();
   }
 }

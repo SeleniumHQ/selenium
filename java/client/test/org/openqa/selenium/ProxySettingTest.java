@@ -17,16 +17,11 @@
 
 package org.openqa.selenium;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.openqa.selenium.remote.CapabilityType.PROXY;
-import static org.openqa.selenium.testing.drivers.Browser.CHROME;
-import static org.openqa.selenium.testing.drivers.Browser.EDGE;
-import static org.openqa.selenium.testing.drivers.Browser.MARIONETTE;
-import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
-
 import com.google.common.base.Joiner;
 import com.google.common.net.HostAndPort;
-
+import io.netty.channel.ChannelHandlerContext;
+import io.netty.handler.codec.http.HttpObject;
+import io.netty.handler.codec.http.HttpRequest;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -35,34 +30,38 @@ import org.littleshoot.proxy.HttpFiltersAdapter;
 import org.littleshoot.proxy.HttpFiltersSourceAdapter;
 import org.littleshoot.proxy.HttpProxyServer;
 import org.littleshoot.proxy.impl.DefaultHttpProxyServer;
+import org.openqa.selenium.grid.config.MapConfig;
+import org.openqa.selenium.grid.server.BaseServerOptions;
+import org.openqa.selenium.grid.server.Server;
+import org.openqa.selenium.jre.server.JreServer;
 import org.openqa.selenium.net.NetworkUtils;
 import org.openqa.selenium.net.PortProber;
+import org.openqa.selenium.remote.http.Contents;
+import org.openqa.selenium.remote.http.HttpHandler;
+import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.NeedsLocalEnvironment;
 import org.openqa.selenium.testing.NoDriverAfterTest;
 import org.openqa.selenium.testing.NoDriverBeforeTest;
-import org.eclipse.jetty.server.Handler;
-import org.eclipse.jetty.server.Request;
-import org.eclipse.jetty.server.Server;
-import org.eclipse.jetty.server.ServerConnector;
-import org.eclipse.jetty.server.handler.AbstractHandler;
+import org.openqa.selenium.testing.Safely;
+import org.openqa.selenium.testing.TearDownFixture;
 
-import io.netty.channel.ChannelHandlerContext;
-import io.netty.handler.codec.http.HttpObject;
-import io.netty.handler.codec.http.HttpRequest;
-import io.netty.handler.codec.http.HttpResponse;
-
-import java.io.IOException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import static java.nio.charset.StandardCharsets.US_ASCII;
+import static java.util.Collections.singletonMap;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.openqa.selenium.remote.CapabilityType.PROXY;
+import static org.openqa.selenium.testing.drivers.Browser.CHROME;
+import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
+import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
 
 public class ProxySettingTest extends JUnit4TestBase {
 
-  private final List<Runnable> tearDowns = new ArrayList<>();
+  private final List<TearDownFixture> tearDowns = new ArrayList<>();
 
   private ProxyServer proxyServer;
 
@@ -74,18 +73,11 @@ public class ProxySettingTest extends JUnit4TestBase {
 
   @After
   public void tearDown() {
-    for (Runnable tearDown : tearDowns) {
-      try {
-        tearDown.run();
-      } catch (Throwable t) {
-        t.printStackTrace();
-      }
-    }
+    tearDowns.forEach(Safely::safelyCall);
   }
 
   @Test
   @Ignore(SAFARI)
-  @Ignore(EDGE)
   @NeedsLocalEnvironment
   @NoDriverBeforeTest
   @NoDriverAfterTest
@@ -100,7 +92,6 @@ public class ProxySettingTest extends JUnit4TestBase {
 
   @Test
   @Ignore(SAFARI)
-  @Ignore(EDGE)
   @NeedsLocalEnvironment
   @NoDriverBeforeTest
   @NoDriverAfterTest
@@ -119,14 +110,13 @@ public class ProxySettingTest extends JUnit4TestBase {
 
   @Test
   @Ignore(SAFARI)
-  @Ignore(EDGE)
   @NeedsLocalEnvironment
   @NoDriverBeforeTest
   @NoDriverAfterTest
   public void canConfigureProxyThroughPACFile() {
-    Server helloServer = createSimpleHttpServer(
+    Server<?> helloServer = createSimpleHttpServer(
         "<!DOCTYPE html><title>Hello</title><h3>Hello, world!</h3>");
-    Server pacFileServer = createPacfileServer(Joiner.on('\n').join(
+    Server<?> pacFileServer = createPacfileServer(Joiner.on('\n').join(
         "function FindProxyForURL(url, host) {",
         "  return 'PROXY " + getHostAndPort(helloServer) + "';",
         "}"));
@@ -145,15 +135,14 @@ public class ProxySettingTest extends JUnit4TestBase {
   @NeedsLocalEnvironment
   @NoDriverBeforeTest
   @NoDriverAfterTest
-  @Ignore(EDGE)
-  @Ignore(value = MARIONETTE, travis = true)
+  @Ignore(value = FIREFOX, travis = true)
   @Ignore(value = CHROME, reason = "Flaky")
   public void canUsePACThatOnlyProxiesCertainHosts() {
-    Server helloServer = createSimpleHttpServer(
+    Server<?> helloServer = createSimpleHttpServer(
         "<!DOCTYPE html><title>Hello</title><h3>Hello, world!</h3>");
-    Server goodbyeServer = createSimpleHttpServer(
+    Server<?> goodbyeServer = createSimpleHttpServer(
         "<!DOCTYPE html><title>Goodbye</title><h3>Goodbye, world!</h3>");
-    Server pacFileServer = createPacfileServer(Joiner.on('\n').join(
+    Server<?> pacFileServer = createPacfileServer(Joiner.on('\n').join(
         "function FindProxyForURL(url, host) {",
         "  if (url.indexOf('" + getHostAndPort(helloServer) + "') != -1) {",
         "    return 'PROXY " + getHostAndPort(goodbyeServer) + "';",
@@ -173,65 +162,39 @@ public class ProxySettingTest extends JUnit4TestBase {
     assertThat(driver.findElement(By.tagName("h1")).getText()).isEqualTo("Heading");
   }
 
-  private Server createSimpleHttpServer(final String responseHtml) {
-    return createServer(new AbstractHandler() {
-      @Override
-      public void handle(String s, Request baseRequest, HttpServletRequest request,
-                         HttpServletResponse response) throws IOException {
-        response.setContentType("text/html; charset=utf-8");
-        response.setStatus(HttpServletResponse.SC_OK);
-        response.getWriter().println(responseHtml);
-        baseRequest.setHandled(true);
-      }
-    });
+  private Server<?> createSimpleHttpServer(final String responseHtml) {
+    return createServer(
+      req -> new HttpResponse()
+        .setHeader("Content-Type", "text/html; charset=utf-8")
+        .setContent(Contents.utf8String(responseHtml)));
   }
 
-  private Server createPacfileServer(final String pacFileContents) {
-    return createServer(new AbstractHandler() {
-      @Override
-      public void handle(String s, Request baseRequest, HttpServletRequest request,
-                         HttpServletResponse response) throws IOException {
-        response.setContentType("application/x-javascript-config; charset=us-ascii");
-        response.setStatus(HttpServletResponse.SC_OK);
-        response.getWriter().println(pacFileContents);
-        baseRequest.setHandled(true);
-      }
-    });
+  private Server<?> createPacfileServer(final String pacFileContents) {
+    return createServer(
+      req -> new HttpResponse()
+        .setHeader("Content-Type", "application/x-javascript-config; charset=us-ascii")
+        .setContent(Contents.bytes(pacFileContents.getBytes(US_ASCII))));
   }
 
-  private Server createServer(Handler handler) {
-    final Server server = new Server();
+  private Server<?> createServer(HttpHandler handler) {
+    Server<?> server = new JreServer(
+      new BaseServerOptions(new MapConfig(
+        singletonMap("server", singletonMap("port", PortProber.findFreePort())))),
+      handler)
+      .start();
 
-    ServerConnector http = new ServerConnector(server);
-    int port = PortProber.findFreePort();
-    http.setPort(port);
-    http.setIdleTimeout(500000);
-    server.addConnector(http);
+    tearDowns.add(server::stop);
 
-    server.setHandler(handler);
-
-    tearDowns.add(() -> {
-      try {
-        server.stop();
-      } catch (Exception e) {
-        throw new RuntimeException(e);
-      }
-    });
-
-    try {
-      server.start();
-    } catch (Exception e) {
-      throw new RuntimeException("Server failed to start", e);
-    }
     return server;
   }
 
-  private static HostAndPort getHostAndPort(Server server) {
-    return HostAndPort.fromParts(server.getURI().getHost(), server.getURI().getPort());
+  private static HostAndPort getHostAndPort(Server<?> server) {
+    URL url = server.getUrl();
+    return HostAndPort.fromParts(url.getHost(), url.getPort());
   }
 
   public static class ProxyServer {
-    private HttpProxyServer proxyServer;
+    private final HttpProxyServer proxyServer;
     private final String baseUrl;
     private final List<String> uris = new ArrayList<>();
 
@@ -247,7 +210,7 @@ public class ProxySettingTest extends JUnit4TestBase {
             public HttpFilters filterRequest(HttpRequest originalRequest, ChannelHandlerContext ctx) {
               return new HttpFiltersAdapter(originalRequest) {
                 @Override
-                public HttpResponse clientToProxyRequest(HttpObject httpObject) {
+                public io.netty.handler.codec.http.HttpResponse clientToProxyRequest(HttpObject httpObject) {
                   String uri = originalRequest.uri();
                   String[] parts = uri.split("/");
                   if (parts.length == 0) {
@@ -266,10 +229,6 @@ public class ProxySettingTest extends JUnit4TestBase {
             }
           })
           .start();
-    }
-
-    public String getBaseUrl() {
-      return baseUrl;
     }
 
     /**

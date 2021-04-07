@@ -30,12 +30,23 @@ module Selenium
             profile = Profile.new
             allow(profile).to receive(:encoded).and_return('encoded_profile')
 
-            opts = Options.new(args: %w[foo bar],
+            opts = Options.new(browser_version: '66',
+                               platform_name: 'win10',
+                               accept_insecure_certs: false,
+                               page_load_strategy: 'eager',
+                               unhandled_prompt_behavior: 'accept',
+                               strict_file_interactability: true,
+                               timeouts: {script: 40000,
+                                          page_load: 400000,
+                                          implicit: 1},
+                               set_window_rect: false,
+                               args: %w[foo bar],
                                binary: '/foo/bar',
                                prefs: {foo: 'bar'},
                                foo: 'bar',
                                profile: profile,
-                               log_level: :debug)
+                               log_level: :debug,
+                               'custom:options': {foo: 'bar'})
 
             expect(opts.args.to_a).to eq(%w[foo bar])
             expect(opts.binary).to eq('/foo/bar')
@@ -43,13 +54,33 @@ module Selenium
             expect(opts.instance_variable_get('@options')[:foo]).to eq('bar')
             expect(opts.profile).to eq(profile)
             expect(opts.log_level).to eq(:debug)
+            expect(opts.browser_name).to eq('firefox')
+            expect(opts.browser_version).to eq('66')
+            expect(opts.platform_name).to eq('win10')
+            expect(opts.accept_insecure_certs).to eq(false)
+            expect(opts.page_load_strategy).to eq('eager')
+            expect(opts.unhandled_prompt_behavior).to eq('accept')
+            expect(opts.strict_file_interactability).to eq(true)
+            expect(opts.timeouts).to eq(script: 40000, page_load: 400000, implicit: 1)
+            expect(opts.set_window_rect).to eq(false)
+            expect(opts.options[:'custom:options']).to eq(foo: 'bar')
           end
         end
 
-        describe '#binary=' do
+        describe 'accessors' do
+          it 'adds a command-line argument' do
+            options.args << 'foo'
+            expect(options.args).to eq(['foo'])
+          end
+
           it 'sets the binary path' do
             options.binary = '/foo/bar'
             expect(options.binary).to eq('/foo/bar')
+          end
+
+          it 'adds a preference' do
+            options.prefs[:foo] = 'bar'
+            expect(options.prefs[:foo]).to eq('bar')
           end
         end
 
@@ -73,8 +104,8 @@ module Selenium
             profile = Profile.new
             allow(profile).to receive(:encoded).and_return('encoded_profile')
 
-            expect(Profile).to receive(:from_name).with('foo').and_return(profile)
-            options.profile = 'foo'
+            allow(Profile).to receive(:from_name).with('custom_profile_name').and_return(profile)
+            options.profile = 'custom_profile_name'
             expect(options.profile).to eq(profile)
           end
         end
@@ -109,19 +140,29 @@ module Selenium
 
         describe '#as_json' do
           it 'returns empty options by default' do
-            expect(options.as_json).to eq("moz:firefoxOptions" => {})
+            expect(options.as_json).to eq("browserName" => "firefox", "moz:firefoxOptions" => {})
           end
 
           it 'returns added option' do
             options.add_option(:foo, 'bar')
-            expect(options.as_json).to eq("moz:firefoxOptions" => {"foo" => "bar"})
+            expect(options.as_json).to eq("browserName" => "firefox", "moz:firefoxOptions" => {"foo" => "bar"})
           end
 
           it 'converts to a json hash' do
             profile = Profile.new
-            expect(profile).to receive(:as_json).and_return('encoded_profile')
+            allow(profile).to receive(:as_json).and_return('encoded_profile')
 
-            opts = Options.new(args: %w[foo bar],
+            opts = Options.new(browser_version: '66',
+                               platform_name: 'win10',
+                               accept_insecure_certs: false,
+                               page_load_strategy: 'eager',
+                               unhandled_prompt_behavior: 'accept',
+                               strict_file_interactability: true,
+                               timeouts: {script: 40000,
+                                          page_load: 400000,
+                                          implicit: 1},
+                               set_window_rect: false,
+                               args: %w[foo bar],
                                binary: '/foo/bar',
                                prefs: {foo: 'bar'},
                                foo: 'bar',
@@ -129,7 +170,18 @@ module Selenium
                                log_level: :debug)
 
             key = 'moz:firefoxOptions'
-            expect(opts.as_json).to eq(key => {'args' => %w[foo bar],
+            expect(opts.as_json).to eq('browserName' => 'firefox',
+                                       'browserVersion' => '66',
+                                       'platformName' => 'win10',
+                                       'acceptInsecureCerts' => false,
+                                       'pageLoadStrategy' => 'eager',
+                                       'unhandledPromptBehavior' => 'accept',
+                                       'strictFileInteractability' => true,
+                                       'timeouts' => {'script' => 40000,
+                                                      'pageLoad' => 400000,
+                                                      'implicit' => 1},
+                                       'setWindowRect' => false,
+                                       key => {'args' => %w[foo bar],
                                                'binary' => '/foo/bar',
                                                'prefs' => {'foo' => 'bar'},
                                                'profile' => 'encoded_profile',

@@ -17,10 +17,9 @@
 
 package org.openqa.selenium.io;
 
-import org.openqa.selenium.WebDriverException;
-
 import java.io.File;
 import java.io.IOException;
+import java.io.UncheckedIOException;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.concurrent.locks.Lock;
@@ -30,14 +29,15 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 /**
  * A wrapper around temporary filesystem behaviour.
  */
-public class TemporaryFilesystem {
+public class
+TemporaryFilesystem {
 
   private final Set<File> temporaryFiles = new CopyOnWriteArraySet<>();
   private final File baseDir;
   // Thread safety reviewed
   private final Thread shutdownHook = new Thread(this::deleteTemporaryFiles);
 
-  private static File sysTemp = new File(System.getProperty("java.io.tmpdir"));
+  private static final File sysTemp = new File(System.getProperty("java.io.tmpdir"));
   private static final ReadWriteLock lock = new ReentrantReadWriteLock();
   private static TemporaryFilesystem instance = new TemporaryFilesystem(sysTemp);
 
@@ -72,10 +72,12 @@ public class TemporaryFilesystem {
     Runtime.getRuntime().addShutdownHook(shutdownHook);
 
     if (!baseDir.exists()) {
-      throw new WebDriverException("Unable to find tmp dir: " + baseDir.getAbsolutePath());
+      throw new UncheckedIOException(
+          new IOException("Unable to find tmp dir: " + baseDir.getAbsolutePath()));
     }
     if (!baseDir.canWrite()) {
-      throw new WebDriverException("Unable to write to tmp dir: " + baseDir.getAbsolutePath());
+      throw new UncheckedIOException(
+          new IOException("Unable to write to tmp dir: " + baseDir.getAbsolutePath()));
     }
 
   }
@@ -91,12 +93,16 @@ public class TemporaryFilesystem {
     try {
       // Create a tempfile, and delete it.
       File file = File.createTempFile(prefix, suffix, baseDir);
-      file.delete();
+
+      if (!file.delete()) {
+        throw new IOException("Unable to create temp file");
+      }
 
       // Create it as a directory.
       File dir = new File(file.getAbsolutePath());
       if (!dir.mkdirs()) {
-        throw new WebDriverException("Cannot create profile directory at " + dir.getAbsolutePath());
+        throw new UncheckedIOException(
+            new IOException("Cannot create profile directory at " + dir.getAbsolutePath()));
       }
 
       // Create the directory and mark it writable.
@@ -105,8 +111,8 @@ public class TemporaryFilesystem {
       temporaryFiles.add(dir);
       return dir;
     } catch (IOException e) {
-      throw new WebDriverException(
-          "Unable to create temporary file at " + baseDir.getAbsolutePath());
+      throw new UncheckedIOException(
+          new IOException("Unable to create temporary file at " + baseDir.getAbsolutePath()));
     }
   }
 
@@ -114,7 +120,6 @@ public class TemporaryFilesystem {
    * Delete a temporary directory that we were responsible for creating.
    *
    * @param file the file to delete
-   * @throws WebDriverException if interrupted
    */
   public void deleteTempDir(File file) {
     if (!shouldReap()) {
@@ -138,7 +143,7 @@ public class TemporaryFilesystem {
     for (File file : temporaryFiles) {
       try {
         FileHandler.delete(file);
-      } catch (WebDriverException e) {
+      } catch (UncheckedIOException ignore) {
         // ignore; an interrupt will already have been logged.
       }
     }
@@ -151,7 +156,7 @@ public class TemporaryFilesystem {
    */
   boolean shouldReap() {
     String reap = System.getProperty("webdriver.reap_profile", "true");
-    return Boolean.valueOf(reap);
+    return Boolean.parseBoolean(reap);
   }
 
   public boolean deleteBaseDir() {

@@ -30,9 +30,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.LogRecord;
+import java.util.logging.Logger;
 
 public class SessionLogsToFileRepository {
-  private Map<SessionId, LogFile> sessionToLogFileMap;
+  private static final Logger LOG = Logger.getLogger(SessionLogsToFileRepository.class.getName());
+  private final Map<SessionId, LogFile> sessionToLogFileMap;
 
   public SessionLogsToFileRepository() {
     sessionToLogFileMap = new HashMap<>();
@@ -64,7 +66,7 @@ public class SessionLogsToFileRepository {
    * @param records logRecords that need to be stored
    * @throws IOException file i/o exception can occur because of a temp file created
    */
-  synchronized public void flushRecordsToLogFile(SessionId sessionId,
+  public synchronized void flushRecordsToLogFile(SessionId sessionId,
       List<LogRecord> records) throws IOException {
     LogFile logFile = sessionToLogFileMap.get(sessionId);
 
@@ -125,7 +127,7 @@ public class SessionLogsToFileRepository {
   }
 
   static class LogFile {
-    private String logName;
+    private final String logName;
     private ObjectOutputStream logWriter;
     private ObjectInputStream logReader;
 
@@ -165,7 +167,9 @@ public class SessionLogsToFileRepository {
       if (logName != null) {
         closeLogReader();
         closeLogWriter();
-        new File(logName).delete();
+        if (!new File(logName).delete()) {
+          LOG.warning("Unable to delete " + logName);
+        }
       }
     }
   }

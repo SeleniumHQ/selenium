@@ -17,18 +17,9 @@
 
 package org.openqa.selenium.remote.tracing;
 
-import io.opentracing.Span;
-import io.opentracing.SpanContext;
-import io.opentracing.Tracer;
-import io.opentracing.propagation.Format;
-import io.opentracing.propagation.TextMap;
-import io.opentracing.tag.Tags;
+import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.http.HttpRequest;
 
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.Objects;
 import java.util.logging.Logger;
 
 public class HttpTracing {
@@ -39,61 +30,34 @@ public class HttpTracing {
     // Utility classes
   }
 
-  public static SpanContext extract(Tracer tracer, HttpRequest request) {
-    Objects.requireNonNull(tracer, "Tracer to use must be set.");
-    Objects.requireNonNull(request, "Request must be set.");
+  private static TraceContext extract(Tracer tracer, HttpRequest request) {
+    Require.nonNull("Tracer", tracer);
+    Require.nonNull("Request", request);
 
-    return tracer.extract(Format.Builtin.HTTP_HEADERS, new HttpRequestAdapter(request));
+    return tracer.getPropagator().extractContext(tracer.getCurrentContext(), request, (req, key) -> req.getHeader(key));
   }
 
-  public static void inject(Tracer tracer, Span span, HttpRequest request) {
-    if (span == null) {
+  public static Span newSpanAsChildOf(Tracer tracer, HttpRequest request, String name) {
+    Require.nonNull("Tracer", tracer);
+    Require.nonNull("Request", request);
+    Require.nonNull("Name", name);
+
+    TraceContext parent = extract(tracer, request);
+    return parent.createSpan(name);
+  }
+
+  public static void inject(Tracer tracer, TraceContext context, HttpRequest request) {
+    if (context == null) {
       // Do nothing.
       return;
     }
 
-    Objects.requireNonNull(tracer, "Tracer to use must be set.");
-    Objects.requireNonNull(request, "Request must be set.");
+    Require.nonNull("Tracer", tracer);
+    Require.nonNull("Request", request);
 
     StackTraceElement caller = Thread.currentThread().getStackTrace()[2];
-    LOG.info(String.format("Injecting %s into %s at %s:%d", request, span, caller.getClassName(), caller.getLineNumber()));
+    LOG.fine(String.format("Injecting %s into %s at %s:%d", request, context, caller.getClassName(), caller.getLineNumber()));
 
-    span.setTag(Tags.HTTP_METHOD.getKey(), request.getMethod().toString());
-    span.setTag(Tags.HTTP_URL.getKey(), request.getUri());
-
-    tracer.inject(span.context(), Format.Builtin.HTTP_HEADERS, new HttpRequestAdapter(request));
-  }
-
-  private static class HttpRequestAdapter implements TextMap {
-
-    private final HttpRequest request;
-
-    public HttpRequestAdapter(HttpRequest request) {
-      this.request = Objects.requireNonNull(request, "Request to use must be set.");
-    }
-
-    @Override
-    public void put(String key, String value) {
-      Objects.requireNonNull(key, "Key to use must be set.");
-      Objects.requireNonNull(value, "Value to use must be set.");
-      request.setHeader(key, value);
-    }
-
-    @Override
-    public Iterator<Map.Entry<String, String>> iterator() {
-      return asMap(request).entrySet().iterator();
-    }
-
-    private static Map<String, String> asMap(HttpRequest request) {
-      Map<String, String> entries = new LinkedHashMap<>();
-      request.getHeaderNames().forEach(name ->
-        request.getHeaders(name).forEach(value -> {
-          if (value != null) {
-            entries.put(name, value);
-          }
-        })
-      );
-      return entries;
-    }
+    tracer.getPropagator().inject(context, request, (req, key, value) -> req.setHeader(key, value));
   }
 }

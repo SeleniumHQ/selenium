@@ -109,4 +109,17 @@ public class ResourceHandlerTest {
     assertThat(Contents.string(res)).isEqualTo("delicious");
   }
 
+  @Test
+  public void shouldRedirectToIndexPageIfOneExists() throws IOException {
+    Path index = base.resolve("index.html");
+    Files.write(index, "Cheese".getBytes(UTF_8));
+
+    ResourceHandler handler = new ResourceHandler(new PathResource(base));
+    HttpResponse res = handler.execute(new HttpRequest(GET, "/"));
+
+    assertThat(res.isSuccessful()).isTrue();
+
+    String content = Contents.string(res);
+    assertThat(content).isEqualTo("Cheese");
+  }
 }

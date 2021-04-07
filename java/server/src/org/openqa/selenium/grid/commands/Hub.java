@@ -18,41 +18,64 @@
 package org.openqa.selenium.grid.commands;
 
 import com.google.auto.service.AutoService;
-
-import com.beust.jcommander.JCommander;
-import com.beust.jcommander.ParameterException;
+import com.google.common.collect.ImmutableSet;
 
 import org.openqa.selenium.BuildInfo;
 import org.openqa.selenium.cli.CliCommand;
 import org.openqa.selenium.events.EventBus;
-import org.openqa.selenium.grid.config.AnnotatedConfig;
-import org.openqa.selenium.grid.config.CompoundConfig;
-import org.openqa.selenium.grid.config.ConcatenatingConfig;
+import org.openqa.selenium.grid.TemplateGridServerCommand;
 import org.openqa.selenium.grid.config.Config;
-import org.openqa.selenium.grid.config.EnvConfig;
+import org.openqa.selenium.grid.config.Role;
 import org.openqa.selenium.grid.distributor.Distributor;
+import org.openqa.selenium.grid.distributor.config.DistributorOptions;
 import org.openqa.selenium.grid.distributor.local.LocalDistributor;
+import org.openqa.selenium.grid.graphql.GraphqlHandler;
 import org.openqa.selenium.grid.log.LoggingOptions;
+import org.openqa.selenium.grid.router.ProxyCdpIntoGrid;
 import org.openqa.selenium.grid.router.Router;
-import org.openqa.selenium.grid.server.BaseServerFlags;
+import org.openqa.selenium.grid.security.Secret;
+import org.openqa.selenium.grid.security.SecretOptions;
 import org.openqa.selenium.grid.server.BaseServerOptions;
-import org.openqa.selenium.grid.server.EventBusConfig;
-import org.openqa.selenium.grid.server.EventBusFlags;
-import org.openqa.selenium.grid.server.HelpFlags;
+import org.openqa.selenium.grid.server.EventBusOptions;
+import org.openqa.selenium.grid.server.NetworkOptions;
 import org.openqa.selenium.grid.server.Server;
 import org.openqa.selenium.grid.sessionmap.SessionMap;
 import org.openqa.selenium.grid.sessionmap.local.LocalSessionMap;
+import org.openqa.selenium.grid.sessionqueue.NewSessionQueue;
+import org.openqa.selenium.grid.sessionqueue.NewSessionQueuer;
+import org.openqa.selenium.grid.sessionqueue.config.NewSessionQueueOptions;
+import org.openqa.selenium.grid.sessionqueue.local.LocalNewSessionQueue;
+import org.openqa.selenium.grid.sessionqueue.local.LocalNewSessionQueuer;
 import org.openqa.selenium.grid.web.CombinedHandler;
+import org.openqa.selenium.grid.web.GridUiRoute;
 import org.openqa.selenium.grid.web.RoutableHttpClientFactory;
-import org.openqa.selenium.netty.server.NettyServer;
+import org.openqa.selenium.internal.Require;
+import org.openqa.selenium.remote.http.Contents;
 import org.openqa.selenium.remote.http.HttpClient;
+import org.openqa.selenium.remote.http.HttpHandler;
+import org.openqa.selenium.remote.http.HttpResponse;
+import org.openqa.selenium.remote.http.Routable;
+import org.openqa.selenium.remote.http.Route;
+import org.openqa.selenium.remote.tracing.Tracer;
 
-import io.opentracing.Tracer;
-
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.Collections;
+import java.util.Set;
 import java.util.logging.Logger;
 
+import static java.net.HttpURLConnection.HTTP_INTERNAL_ERROR;
+import static java.net.HttpURLConnection.HTTP_OK;
+import static org.openqa.selenium.grid.config.StandardGridRoles.DISTRIBUTOR_ROLE;
+import static org.openqa.selenium.grid.config.StandardGridRoles.EVENT_BUS_ROLE;
+import static org.openqa.selenium.grid.config.StandardGridRoles.HTTPD_ROLE;
+import static org.openqa.selenium.grid.config.StandardGridRoles.ROUTER_ROLE;
+import static org.openqa.selenium.grid.config.StandardGridRoles.SESSION_QUEUER_ROLE;
+import static org.openqa.selenium.grid.config.StandardGridRoles.SESSION_QUEUE_ROLE;
+import static org.openqa.selenium.remote.http.Route.combine;
+
 @AutoService(CliCommand.class)
-public class Hub implements CliCommand {
+public class Hub extends TemplateGridServerCommand {
 
   private static final Logger LOG = Logger.getLogger(Hub.class.getName());
 
@@ -67,71 +90,120 @@ public class Hub implements CliCommand {
   }
 
   @Override
-  public Executable configure(String... args) {
-    HelpFlags help = new HelpFlags();
-    BaseServerFlags baseFlags = new BaseServerFlags(4444);
-    EventBusFlags eventBusFlags = new EventBusFlags();
+  public Set<Role> getConfigurableRoles() {
+    return ImmutableSet.of(
+      DISTRIBUTOR_ROLE,
+      EVENT_BUS_ROLE,
+      HTTPD_ROLE,
+      SESSION_QUEUE_ROLE,
+      SESSION_QUEUER_ROLE,
+      ROUTER_ROLE);
+  }
 
-    JCommander commander = JCommander.newBuilder()
-        .programName("standalone")
-        .addObject(baseFlags)
-        .addObject(eventBusFlags)
-        .addObject(help)
-        .build();
+  @Override
+  public Set<Object> getFlagObjects() {
+    return Collections.emptySet();
+  }
 
-    return () -> {
-      try {
-        commander.parse(args);
-      } catch (ParameterException e) {
-        System.err.println(e.getMessage());
-        commander.usage();
-        return;
-      }
+  @Override
+  protected String getSystemPropertiesConfigPrefix() {
+    return "selenium";
+  }
 
-      if (help.displayHelp(commander, System.out)) {
-        return;
-      }
+  @Override
+  protected Config getDefaultConfig() {
+    return new DefaultHubConfig();
+  }
 
-      Config config = new CompoundConfig(
-          new EnvConfig(),
-          new ConcatenatingConfig("selenium", '.', System.getProperties()),
-          new AnnotatedConfig(help),
-          new AnnotatedConfig(eventBusFlags),
-          new AnnotatedConfig(baseFlags),
-          new DefaultHubConfig());
+  @Override
+  protected Handlers createHandlers(Config config) {
+    LoggingOptions loggingOptions = new LoggingOptions(config);
+    Tracer tracer = loggingOptions.getTracer();
 
-      LoggingOptions loggingOptions = new LoggingOptions(config);
-      loggingOptions.configureLogging();
-      Tracer tracer = loggingOptions.getTracer();
+    EventBusOptions events = new EventBusOptions(config);
+    EventBus bus = events.getEventBus();
 
-      EventBusConfig events = new EventBusConfig(config);
-      EventBus bus = events.getEventBus();
+    CombinedHandler handler = new CombinedHandler();
 
-      CombinedHandler handler = new CombinedHandler();
+    SessionMap sessions = new LocalSessionMap(tracer, bus);
+    handler.addHandler(sessions);
 
-      SessionMap sessions = new LocalSessionMap(tracer, bus);
-      handler.addHandler(sessions);
+    BaseServerOptions serverOptions = new BaseServerOptions(config);
+    SecretOptions secretOptions = new SecretOptions(config);
+    Secret secret = secretOptions.getRegistrationSecret();
 
-      BaseServerOptions serverOptions = new BaseServerOptions(config);
+    URL externalUrl;
+    try {
+      externalUrl = serverOptions.getExternalUri().toURL();
+    } catch (MalformedURLException e) {
+      throw new IllegalArgumentException(e);
+    }
 
-      HttpClient.Factory clientFactory = new RoutableHttpClientFactory(
-          serverOptions.getExternalUri().toURL(),
-          handler,
-          HttpClient.Factory.createDefault());
+    NetworkOptions networkOptions = new NetworkOptions(config);
+    HttpClient.Factory clientFactory = new RoutableHttpClientFactory(
+      externalUrl,
+      handler,
+      networkOptions.getHttpClientFactory(tracer));
 
-      Distributor distributor = new LocalDistributor(
-          tracer,
-          bus,
-          clientFactory,
-          sessions);
-      handler.addHandler(distributor);
-      Router router = new Router(tracer, clientFactory, sessions, distributor);
+    NewSessionQueueOptions newSessionQueueOptions = new NewSessionQueueOptions(config);
+    NewSessionQueue sessionRequests = new LocalNewSessionQueue(
+      tracer,
+      bus,
+      newSessionQueueOptions.getSessionRequestRetryInterval(),
+      newSessionQueueOptions.getSessionRequestTimeout());
+    NewSessionQueuer queuer = new LocalNewSessionQueuer(tracer, bus, sessionRequests, secret);
+    handler.addHandler(queuer);
 
-      Server<?> server = new NettyServer(serverOptions, router);
-      server.start();
+    DistributorOptions distributorOptions = new DistributorOptions(config);
+    Distributor distributor = new LocalDistributor(
+      tracer,
+      bus,
+      clientFactory,
+      sessions,
+      queuer,
+      secret,
+      distributorOptions.getHealthCheckInterval());
+    handler.addHandler(distributor);
 
-      BuildInfo info = new BuildInfo();
-      LOG.info(String.format("Started Selenium hub %s (revision %s)", info.getReleaseLabel(), info.getBuildRevision()));
+    Router router = new Router(tracer, clientFactory, sessions, queuer, distributor);
+    GraphqlHandler graphqlHandler = new GraphqlHandler(
+      tracer,
+      distributor,
+      queuer,
+      serverOptions.getExternalUri(),
+      getServerVersion());
+    HttpHandler readinessCheck = req -> {
+      boolean ready = router.isReady() && bus.isReady();
+      return new HttpResponse()
+        .setStatus(ready ? HTTP_OK : HTTP_INTERNAL_ERROR)
+        .setContent(Contents.utf8String("Router is " + ready));
     };
+
+    Routable ui = new GridUiRoute();
+    Routable routerWithSpecChecks = router.with(networkOptions.getSpecComplianceChecks());
+
+    HttpHandler httpHandler = combine(
+      ui,
+      routerWithSpecChecks,
+      Route.prefix("/wd/hub").to(combine(routerWithSpecChecks)),
+      Route.options("/graphql").to(() -> graphqlHandler),
+      Route.post("/graphql").to(() -> graphqlHandler),
+      Route.get("/readyz").to(() -> readinessCheck));
+
+    return new Handlers(httpHandler, new ProxyCdpIntoGrid(clientFactory, sessions));
+  }
+
+  @Override
+  protected void execute(Config config) {
+    Require.nonNull("Config", config);
+
+    Server<?> server = asServer(config).start();
+
+    LOG.info(String.format("Started Selenium Hub %s: %s", getServerVersion(), server.getUrl()));
+  }
+
+  private String getServerVersion() {
+    BuildInfo info = new BuildInfo();
+    return String.format("%s (revision %s)", info.getReleaseLabel(), info.getBuildRevision());
   }
 }

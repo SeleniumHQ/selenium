@@ -18,31 +18,64 @@
 package org.openqa.selenium.grid.config;
 
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.ImmutableSortedSet;
+
+import org.openqa.selenium.internal.Require;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 
 public class MapConfig implements Config {
 
-  private final Map<String, Object> raw;
+  private final Map<String, Map<String, Object>> raw;
 
   public MapConfig(Map<String, Object> raw) {
-    this.raw = raw;
+    Require.nonNull("Underlying map", raw);
+
+    ImmutableMap.Builder<String, Map<String, Object>> builder = ImmutableMap.builder();
+    for (Map.Entry<String, Object> entry : raw.entrySet()) {
+      if (!(entry.getValue() instanceof Map)) {
+        continue;
+      }
+
+      ImmutableMap<String, Object> values = ((Map<?, ?>) entry.getValue()).entrySet().stream()
+        .filter(e -> e.getKey() instanceof String)
+        .collect(ImmutableMap.toImmutableMap(e -> String.valueOf(e.getKey()), Map.Entry::getValue));
+
+      builder.put(entry.getKey(), values);
+    }
+
+    this.raw = builder.build();
   }
 
   @Override
   public Optional<List<String>> getAll(String section, String option) {
-    Objects.requireNonNull(section, "Section name not set");
-    Objects.requireNonNull(option, "Option name not set");
+    Require.nonNull("Section name", section);
+    Require.nonNull("Option name", option);
 
-    Object rawSection = raw.get(section);
-    if (!(rawSection instanceof Map)) {
+    Map<String, Object> rawSection = raw.get(section);
+    if (rawSection == null) {
       return Optional.empty();
     }
 
-    Object value = ((Map<?, ?>) rawSection).get(option);
+    Object value = rawSection.get(option);
     return value == null ? Optional.empty() : Optional.of(ImmutableList.of(String.valueOf(value)));
+  }
+
+  @Override
+  public Set<String> getSectionNames() {
+    return ImmutableSet.copyOf(raw.keySet());
+  }
+
+  @Override
+  public Set<String> getOptions(String section) {
+    Require.nonNull("Section name to get options for", section);
+
+    Map<String, Object> values = raw.getOrDefault(section, ImmutableMap.of());
+    return ImmutableSortedSet.copyOf(values.keySet());
   }
 }

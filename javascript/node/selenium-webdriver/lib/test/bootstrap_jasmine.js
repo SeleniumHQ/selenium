@@ -15,14 +15,14 @@
 // specific language governing permissions and limitations
 // under the License.
 
-'use strict';
+'use strict'
 
 /**
  * @fileoverview Defines necessary adapaters for jasmine to have an equivalent
  * API to mocha.
  */
 
-global.after = global.afterAll;
-global.before = global.beforeAll;
+global.after = global.afterAll
+global.before = global.beforeAll
 
-global.jasmine.DEFAULT_TIMEOUT_INTERVAL = 120 * 1000;
+global.jasmine.DEFAULT_TIMEOUT_INTERVAL = 120 * 1000

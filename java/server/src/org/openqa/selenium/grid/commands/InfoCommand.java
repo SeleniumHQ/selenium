@@ -19,20 +19,23 @@ package org.openqa.selenium.grid.commands;
 
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.ParameterException;
+import com.beust.jcommander.internal.DefaultConsole;
 import com.google.auto.service.AutoService;
 import com.google.common.io.Resources;
+import org.openqa.selenium.cli.CliCommand;
+import org.openqa.selenium.cli.WrappedPrintWriter;
+import org.openqa.selenium.grid.config.Role;
+import org.openqa.selenium.grid.server.HelpFlags;
 
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.StringReader;
-import java.nio.charset.StandardCharsets;
-import org.openqa.selenium.cli.CliCommand;
-import org.openqa.selenium.cli.WrappedPrintWriter;
-import org.openqa.selenium.grid.server.HelpFlags;
-
+import java.io.PrintStream;
 import java.io.PrintWriter;
+import java.io.StringReader;
+import java.io.UncheckedIOException;
+import java.nio.charset.StandardCharsets;
 import java.util.Collections;
-
+import java.util.Set;
 
 @AutoService(CliCommand.class)
 public class InfoCommand implements CliCommand {
@@ -45,7 +48,17 @@ public class InfoCommand implements CliCommand {
     return "Prints information for commands and topics.";
   }
 
-  public Executable configure(String... args) {
+  @Override
+  public Set<Role> getConfigurableRoles() {
+    return Collections.emptySet();
+  }
+
+  @Override
+  public Set<Object> getFlagObjects() {
+    return Collections.emptySet();
+  }
+
+  public Executable configure(PrintStream out, PrintStream err, String... args) {
     HelpFlags help = new HelpFlags();
     InfoFlags topic = new InfoFlags();
 
@@ -54,26 +67,27 @@ public class InfoCommand implements CliCommand {
       .addObject(help)
       .addObject(topic)
       .build();
+    commander.setConsole(new DefaultConsole(out));
 
     return () -> {
       try {
         commander.parse(args);
       } catch (ParameterException e) {
-        System.err.println(e.getMessage());
+        err.println(e.getMessage());
         commander.usage();
         return;
       }
 
-      if (help.displayHelp(commander, System.out)) {
+      if (help.displayHelp(commander, out)) {
         return;
       }
 
       String toDisplay;
       String title;
       switch (topic.topic) {
-        case "tracing":
-          title = "About Tracing";
-          toDisplay = "tracing.txt";
+        case "config":
+          title = "Configuring Selenium";
+          toDisplay = "config.txt";
           break;
 
         case "security":
@@ -81,21 +95,37 @@ public class InfoCommand implements CliCommand {
           toDisplay = "security.txt";
           break;
 
+        case "tracing":
+          title = "About Tracing";
+          toDisplay = "tracing.txt";
+          break;
+
+        case "sessionmap":
+          title = "About SessionMaps";
+          toDisplay = "sessionmaps.txt";
+          break;
+
         case "help":
+        case "info":
         default:
-          title = "Help";
-          toDisplay = "help.txt";
+          title = "Info";
+          toDisplay = "info.txt";
           break;
       }
 
       String path = getClass().getPackage().getName().replaceAll("\\.", "/") + "/" + toDisplay;
-      String content = readContent(path);
+      String content;
+      try {
+        content = readContent(path);
+      } catch (IOException e) {
+        throw new UncheckedIOException(e);
+      }
 
-      PrintWriter out = new WrappedPrintWriter(System.out, 72, 0);
-
-      out.printf("\n%s\n%s\n\n", title, String.join("", Collections.nCopies(title.length(), "=")));
-      out.print(content);
-      out.println("\n\n");
+      try (PrintWriter outWriter = new WrappedPrintWriter(out, 72, 0)) {
+        outWriter.printf("%n%s%n%s%n%n", title, String.join("", Collections.nCopies(title.length(), "=")));
+        outWriter.print(content);
+        outWriter.println("\n\n");
+      }
     };
   }
 
@@ -115,8 +145,13 @@ public class InfoCommand implements CliCommand {
         } else if ("```".equals(line)) {
           inCode = !inCode;
         } else {
+          if (line.startsWith("=")) {
+            formattedText.append("\n");
+          }
           formattedText.append(line);
-          if (inCode || line.startsWith("* ")) {
+          if (inCode ||
+            line.matches("^\\s*\\*.*") ||
+            line.matches("^\\s*\\d+\\..*")) {
             formattedText.append("\n");
           } else {
             formattedText.append(" ");

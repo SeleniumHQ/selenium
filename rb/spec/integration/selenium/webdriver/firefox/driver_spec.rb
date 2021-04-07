@@ -21,27 +21,28 @@ require_relative '../spec_helper'
 
 module Selenium
   module WebDriver
-    describe Firefox, only: {browser: %i[firefox]} do
-      it 'creates default capabilities' do
-        create_driver! do |driver|
-          caps = driver.capabilities
-          expect(caps.proxy).to be_nil
-          expect(caps.browser_version).to match(/^\d\d\./)
-          expect(caps.platform_name).not_to be_nil
+    module Firefox
+      describe Driver, exclusive: {browser: :firefox} do
+        describe '#print_options' do
+          let(:magic_number) { 'JVBER' }
 
-          expect(caps.accept_insecure_certs).to be == false
-          expect(caps.page_load_strategy).to be == 'normal'
-          expect(caps.implicit_timeout).to be_zero
-          expect(caps.page_load_timeout).to be == 300000
-          expect(caps.script_timeout).to be == 30000
+          before { driver.navigate.to url_for('printPage.html') }
+
+          it 'should return base64 for print command' do
+            expect(driver.print_page).to include(magic_number)
+          end
+
+          it 'should print with orientation' do
+            expect(driver.print_page(orientation: 'landscape')).to include(magic_number)
+          end
+
+          it 'should print with valid params' do
+            expect(driver.print_page(orientation: 'landscape',
+                                     page_ranges: ['1-2'],
+                                     page: {width: 30})).to include(magic_number)
+          end
         end
       end
-
-      it 'has remote session ID', only: {driver: :remote} do
-        create_driver! do |driver|
-          expect(driver.capabilities.remote_session_id).to be_truthy
-        end
-      end
-    end
+    end # Firefox
   end # WebDriver
 end # Selenium

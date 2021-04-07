@@ -1,0 +1,66 @@
+{
+  "name": "grid_ui",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "@apollo/client": "^3.3.13",
+    "@material-ui/core": "^4.11.3",
+    "@material-ui/icons": "^4.11.2",
+    "@types/react": "^17.0.1",
+    "@types/react-dom": "^17.0.0",
+    "@types/react-modal": "^3.12.0",
+    "@types/react-router-dom": "^5.1.7",
+    "graphql": "^15.5.0",
+    "graphql.macro": "^1.4.2",
+    "pretty-ms": "^7.0.1",
+    "react": "^17.0.1",
+    "react-dom": "^17.0.1",
+    "react-modal": "^3.12.1",
+    "react-router-dom": "^5.2.0",
+    "react-scripts": "^4.0.3",
+    "source-map-explorer": "^2.5.2"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build && python scripts/rmSourcemaps.py",
+    "analyze": "source-map-explorer 'build/static/js/*.js'",
+    "test": "react-scripts test --watchAll=false",
+    "eject": "react-scripts eject",
+    "lint": "ts-standard && eslint --ext '.js,.ts,.tsx' src"
+  },
+  "eslintConfig": {
+    "extends": "react-app"
+  },
+  "homepage": "/ui",
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "devDependencies": {
+    "@babel/preset-react": "^7.12.13",
+    "@testing-library/jest-dom": "^5.11.9",
+    "@testing-library/react": "^11.2.5",
+    "@testing-library/user-event": "^12.7.0",
+    "ts-standard": "^10.0.0",
+    "typescript": "^3.9.7"
+  },
+  "jest": {
+    "testMatch": [
+      "<rootDir>/src/tests/**/*.test.tsx"
+    ]
+  },
+  "ts-standard": {
+    "ignore": [
+      "src/react-app-env.d.ts"
+    ]
+  }
+}

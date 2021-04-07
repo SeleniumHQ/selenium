@@ -27,12 +27,21 @@ module Selenium
       #
 
       class Driver < WebDriver::Driver
-        include DriverExtensions::HasAddons
-        include DriverExtensions::HasWebStorage
-        include DriverExtensions::TakesScreenshot
+        EXTENSIONS = [DriverExtensions::HasAddons,
+                      DriverExtensions::HasDevTools,
+                      DriverExtensions::HasLogEvents,
+                      DriverExtensions::HasNetworkInterception,
+                      DriverExtensions::HasWebStorage,
+                      DriverExtensions::PrintsPage].freeze
 
         def browser
           :firefox
+        end
+
+        private
+
+        def devtools_address
+          "http://#{capabilities['moz:debuggerAddress']}"
         end
       end # Driver
     end # Firefox

@@ -17,18 +17,18 @@
 
 package org.openqa.selenium.json;
 
+import org.openqa.selenium.internal.Require;
+
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
 import java.util.stream.Collectors;
@@ -39,13 +39,17 @@ class InstanceCoercer extends TypeCoercer<Object> {
   private final JsonTypeCoercer coercer;
 
   InstanceCoercer(JsonTypeCoercer coercer) {
-    this.coercer = Objects.requireNonNull(coercer);
+    this.coercer = Require.nonNull("Coercer", coercer);
   }
 
   @Override
   public boolean test(Class aClass) {
-    // If the class doesn't have a no-arg constructor, abandon hope
-    return getConstructor(aClass) != null;
+    try {
+      getConstructor(aClass);
+      return true;
+    } catch (JsonException ex) {
+      return false;
+    }
   }
 
   @Override
@@ -72,8 +76,6 @@ class InstanceCoercer extends TypeCoercer<Object> {
 
         jsonInput.beginObject();
 
-        List<TypeAndWriter> usedWriters = new ArrayList<>();
-
         while (jsonInput.hasNext()) {
           String key = jsonInput.nextName();
 
@@ -82,7 +84,6 @@ class InstanceCoercer extends TypeCoercer<Object> {
             jsonInput.skipValue();
             continue;
           }
-          usedWriters.add(writer);
 
           Object value = coercer.coerce(jsonInput, writer.type, setter);
           writer.writer.accept(instance, value);
@@ -99,7 +100,7 @@ class InstanceCoercer extends TypeCoercer<Object> {
 
   private Map<String, TypeAndWriter> getFieldWriters(Constructor<?> constructor) {
     List<Field> fields = new LinkedList<>();
-    for (Class current = constructor.getDeclaringClass(); current != Object.class; current = current.getSuperclass()) {
+    for (Class<?> current = constructor.getDeclaringClass(); current != Object.class; current = current.getSuperclass()) {
       fields.addAll(Arrays.asList(current.getDeclaredFields()));
     }
 
@@ -111,9 +112,8 @@ class InstanceCoercer extends TypeCoercer<Object> {
             Collectors.toMap(
                 Field::getName,
                 field -> {
-                  TypeAndWriter tw = new TypeAndWriter();
-                  tw.type = field.getGenericType();
-                  tw.writer =
+                  Type type = field.getGenericType();
+                  BiConsumer<Object, Object> writer =
                       (instance, value) -> {
                         try {
                           field.set(instance, value);
@@ -121,7 +121,7 @@ class InstanceCoercer extends TypeCoercer<Object> {
                           throw new JsonException(e);
                         }
                       };
-                  return tw;
+                  return new TypeAndWriter(type, writer);
                 }));
   }
 
@@ -133,9 +133,8 @@ class InstanceCoercer extends TypeCoercer<Object> {
             Collectors.toMap(
                 SimplePropertyDescriptor::getName,
                 desc -> {
-                  TypeAndWriter tw = new TypeAndWriter();
-                  tw.type = desc.getWriteMethod().getGenericParameterTypes()[0];
-                  tw.writer = (instance, value) -> {
+                  Type type = desc.getWriteMethod().getGenericParameterTypes()[0];
+                  BiConsumer<Object, Object>writer = (instance, value) -> {
                       Method method = desc.getWriteMethod();
                       method.setAccessible(true);
                       try {
@@ -144,15 +143,15 @@ class InstanceCoercer extends TypeCoercer<Object> {
                         throw new JsonException(e);
                       }
                     };
-                  return tw;
+                  return new TypeAndWriter(type, writer);
                 }));
   }
 
   private Constructor<?> getConstructor(Type type) {
-    Class target = getClss(type);
+    Class<?> target = getClss(type);
 
     try {
-      @SuppressWarnings("unchecked") Constructor<?> constructor = target.getDeclaredConstructor();
+      Constructor<?> constructor = target.getDeclaredConstructor();
       constructor.setAccessible(true);
       return constructor;
     } catch (ReflectiveOperationException e) {
@@ -160,15 +159,15 @@ class InstanceCoercer extends TypeCoercer<Object> {
     }
   }
 
-  private Class getClss(Type type) {
-    Class target = null;
+  private static Class<?> getClss(Type type) {
+    Class<?> target = null;
 
     if (type instanceof Class) {
-      target = (Class) type;
+      target = (Class<?>) type;
     } else if (type instanceof ParameterizedType) {
       Type rawType = ((ParameterizedType) type).getRawType();
       if (rawType instanceof Class) {
-        target = (Class) rawType;
+        target = (Class<?>) rawType;
       }
     }
 
@@ -178,9 +177,14 @@ class InstanceCoercer extends TypeCoercer<Object> {
     return target;
   }
 
-  private class TypeAndWriter {
-    public Type type;
-    public BiConsumer<Object, Object> writer;
+  private static class TypeAndWriter {
+    private final Type type;
+    private final BiConsumer<Object, Object> writer;
+
+    public TypeAndWriter(Type type, BiConsumer<Object, Object> writer) {
+      this.type = type;
+      this.writer = writer;
+    }
   }
 
 }

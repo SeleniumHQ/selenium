@@ -65,9 +65,10 @@ module Selenium
 
         context 'when creating a pause' do
           it 'should create a pause action' do
-            expect(Pause).to receive(:new).with(device, 5).and_return(action)
+            allow(Pause).to receive(:new).with(device, 5).and_return(action)
 
             expect { device.create_pause(5) }.to change(device, :actions).from([]).to([action])
+            expect(Pause).to have_received(:new).with(device, 5)
           end
 
           it 'should add a pause action' do

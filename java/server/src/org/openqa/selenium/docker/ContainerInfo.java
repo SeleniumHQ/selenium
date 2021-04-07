@@ -17,51 +17,67 @@
 
 package org.openqa.selenium.docker;
 
-import com.google.common.collect.HashMultimap;
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.Multimap;
+import org.openqa.selenium.internal.Require;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
 public class ContainerInfo {
 
-  private final Image image;
-  // Port bindings, keyed on the container port, with values being host ports
-  private final Multimap<String, Map<String, Object>> portBindings;
+  private final String ip;
+  private final ContainerId id;
+  private final List<Map<String, Object>> mountedVolumes;
+  private final String networkName;
 
-  private ContainerInfo(Image image, Multimap<String, Map<String, Object>> portBindings) {
-    this.image = Objects.requireNonNull(image);
-    this.portBindings = Objects.requireNonNull(portBindings);
+  public ContainerInfo(ContainerId id, String ip, List<Map<String, Object>> mountedVolumes,
+                       String networkName) {
+    this.ip = Require.nonNull("Container ip address", ip);
+    this.id = Require.nonNull("Container id", id);
+    this.mountedVolumes = Require.nonNull("Mounted volumes", mountedVolumes);
+    this.networkName = Require.nonNull("Network name", networkName);
   }
 
-  public static ContainerInfo image(Image image) {
-    return new ContainerInfo(image, HashMultimap.create());
+  public String getIp() {
+    return ip;
   }
 
-  public ContainerInfo map(Port containerPort, Port hostPort) {
-    Objects.requireNonNull(containerPort);
-    Objects.requireNonNull(hostPort);
+  public ContainerId getId() {
+    return id;
+  }
 
-    if (!hostPort.getProtocol().equals(containerPort.getProtocol())) {
-      throw new DockerException(
-          String.format("Port protocols must match: %s -> %s", hostPort, containerPort));
+  public List<Map<String, Object>> getMountedVolumes() {
+    return mountedVolumes;
+  }
+
+  public String getNetworkName() {
+    return networkName;
+  }
+
+  @Override
+  public String toString() {
+    return "ContainerInfo{" +
+           "ip=" + ip +
+           ", id=" + id +
+           ", networkName=" + networkName +
+           ", mountedVolumes=" + Arrays.toString(mountedVolumes.toArray()) +
+           '}';
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (!(o instanceof ContainerInfo)) {
+      return false;
     }
-
-    Multimap<String, Map<String, Object>> updatedBindings = HashMultimap.create(portBindings);
-    updatedBindings.put(
-        containerPort.getPort() + "/" + containerPort.getProtocol(),
-        ImmutableMap.of("HostPort", String.valueOf(hostPort.getPort()), "HostIp", ""));
-
-    return new ContainerInfo(image, updatedBindings);
+    ContainerInfo that = (ContainerInfo) o;
+    return Objects.equals(this.ip, that.ip) && Objects.equals(this.id, that.id)
+           && Objects.equals(this.networkName, that.networkName);
   }
 
-  private Map<String, Object> toJson() {
-    Map<String, Object> hostConfig = ImmutableMap.of(
-        "PortBindings", portBindings.asMap());
-
-    return ImmutableMap.of(
-        "Image", image.getId(),
-        "HostConfig", hostConfig);
+  @Override
+  public int hashCode() {
+    return Objects.hash(ip, id, networkName);
   }
+
 }

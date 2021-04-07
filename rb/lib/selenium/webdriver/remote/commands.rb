@@ -117,6 +117,7 @@ module Selenium
 
           actions: [:post, 'session/:session_id/actions'],
           release_actions: [:delete, 'session/:session_id/actions'],
+          print_page: [:post, 'session/:session_id/print'],
 
           #
           # Element Operations

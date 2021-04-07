@@ -51,8 +51,7 @@ public class DeviceRotation {
    */
   public DeviceRotation(Map<String, Number> map) {
     if (map == null || !map.containsKey("x") || !map.containsKey("y") || !map.containsKey("z")) {
-      throw new IllegalArgumentException(
-          "Could not initialize DeviceRotation with map given: " + map.toString());
+      throw new IllegalArgumentException("Could not initialize DeviceRotation with map given: " + map);
     }
     this.x = map.get("x").intValue();
     this.y = map.get("y").intValue();
@@ -62,16 +61,11 @@ public class DeviceRotation {
 
   private void validateParameters(int x, int y, int z) {
     if (x < 0 || y < 0 || z < 0) {
-      throw new IllegalArgumentException(
-          "DeviceRotation requires positive axis values: \nx = " + x + "\ny = " + y + "\nz = " + z);
+      throw new IllegalArgumentException(String.format(
+          "DeviceRotation requires positive axis values: %nx = %s%ny = %s%nz = %s", x, y, z));
     } else if (x >= 360 || y >= 360 || z >= 360) {
-      throw new IllegalArgumentException(
-          "DeviceRotation requires positive axis values under 360: \nx = "
-              + x
-              + "\ny = "
-              + y
-              + "\nz = "
-              + z);
+      throw new IllegalArgumentException(String.format(
+          "DeviceRotation requires positive axis values  under 360: %nx = %s%ny = %s%nz = %s", x, y, z));
     }
   }
 

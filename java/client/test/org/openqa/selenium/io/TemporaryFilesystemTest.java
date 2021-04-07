@@ -18,24 +18,37 @@
 package org.openqa.selenium.io;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertTrue;
 
+import org.junit.After;
 import org.junit.Assume;
 import org.junit.Before;
 import org.junit.Test;
-import org.openqa.selenium.WebDriverException;
+import org.junit.experimental.categories.Category;
+import org.openqa.selenium.testing.UnitTests;
 
 import java.io.File;
 import java.io.IOException;
 
+@Category(UnitTests.class)
 public class TemporaryFilesystemTest {
+  private File baseForTest;
   private TemporaryFilesystem tmpFs;
 
   @Before
   public void setUp() {
-    File baseForTest = new File(System.getProperty("java.io.tmpdir"), "tmpTest");
+    baseForTest = new File(System.getProperty("java.io.tmpdir"), "tmpTest");
     baseForTest.mkdir();
 
     tmpFs = TemporaryFilesystem.getTmpFsBasedOn(baseForTest);
+  }
+
+  @After
+  public void tearDown() throws IOException {
+    if (baseForTest.exists()) {
+      tmpFs.deleteTemporaryFiles();
+      assertTrue(baseForTest.delete());
+    }
   }
 
   @Test
@@ -43,7 +56,7 @@ public class TemporaryFilesystemTest {
     File tmp = tmpFs.createTempDir("TemporaryFilesystem", "canCreate");
     try {
       assertThat(tmp).exists();
-    } catch (WebDriverException e) {
+    } catch (Throwable e) {
       tmp.delete();
       throw e;
     }
@@ -129,7 +142,7 @@ public class TemporaryFilesystemTest {
     otherTempDir.delete();
 
     // Reset to the default dir
-    TemporaryFilesystem.setTemporaryDirectory(new File(System.getProperty("java.io.tmpdir")));
+    TemporaryFilesystem.setTemporaryDirectory(baseForTest);
 
     assertThat(isInOtherDir).isTrue();
   }

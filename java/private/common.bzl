@@ -59,7 +59,7 @@ def _has_maven_deps_impl(target, ctx):
             artifact_jars = depset(target[JavaInfo].runtime_output_jars),
             source_jars = depset(target[JavaInfo].source_jars),
             transitive_maven_deps = transitive_maven_deps,
-            transitive_runtime_jars = depset(target[JavaInfo].transitive_runtime_jars.to_list(), transitive = [info.transitive_runtime_jars for info in all_infos])
+            transitive_runtime_jars = depset(target[JavaInfo].transitive_runtime_jars.to_list(), transitive = [info.transitive_runtime_jars for info in all_infos]),
         )
     else:
         info = MavenInfo(
@@ -68,7 +68,7 @@ def _has_maven_deps_impl(target, ctx):
             artifact_jars = artifact_jars,
             source_jars = source_jars,
             transitive_maven_deps = transitive_maven_deps,
-            transitive_runtime_jars = depset(target[JavaInfo].transitive_runtime_jars.to_list(), transitive = [info.transitive_runtime_jars for info in all_infos])
+            transitive_runtime_jars = depset(target[JavaInfo].transitive_runtime_jars.to_list(), transitive = [info.transitive_runtime_jars for info in all_infos]),
         )
     infos.append(info)
 
@@ -98,19 +98,22 @@ def combine_jars(ctx, singlejar, inputs, output):
 
 def explode_coordinates(coords):
     """Takes a maven coordinate and explodes it into a tuple of
-    (groupId, artifactId, version, type)
+    (groupId, artifactId, version, type, classifier)
     """
     if not coords:
         return None
 
     parts = coords.split(":")
     if len(parts) == 3:
-        return (parts[0], parts[1], parts[2], "jar")
+        return (parts[0], parts[1], parts[2], "jar", "jar")
     if len(parts) == 4:
         # Assume a buildr coordinate: groupId:artifactId:type:version
-        return (parts[0], parts[1], parts[3], parts[2])
+        return (parts[0], parts[1], parts[3], parts[2], "jar")
+    if len(parts) == 5:
+        # Assume groupId:artifactId:type:classifier:version
+        return (parts[0], parts[1], parts[4], parts[2], parts[3])
 
-    fail("Unparsed: %s" % coords)
+    fail("Unparsed: %s -> %s" % (coords, parts))
 
 def read_coordinates(tags):
     coordinates = []

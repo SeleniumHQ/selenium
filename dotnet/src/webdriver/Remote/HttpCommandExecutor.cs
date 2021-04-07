@@ -24,6 +24,7 @@ using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using OpenQA.Selenium.Internal;
 
@@ -38,6 +39,7 @@ namespace OpenQA.Selenium.Remote
         private const string PngMimeType = "image/png";
         private const string Utf8CharsetType = "utf-8";
         private const string RequestAcceptHeader = JsonMimeType + ", " + PngMimeType;
+        private const string RequestContentTypeHeader = JsonMimeType + "; charset=" + Utf8CharsetType;
         private const string UserAgentHeaderTemplate = "selenium/{0} (.net {1})";
         private Uri remoteServerUri;
         private TimeSpan serverResponseTimeout;
@@ -145,7 +147,15 @@ namespace OpenQA.Selenium.Remote
             HttpResponseInfo responseInfo = null;
             try
             {
-                responseInfo = this.MakeHttpRequest(requestInfo).GetAwaiter().GetResult();
+                // Use TaskFactory to avoid deadlock in multithreaded implementations.
+                responseInfo = new TaskFactory(CancellationToken.None,
+                        TaskCreationOptions.None,
+                        TaskContinuationOptions.None,
+                        TaskScheduler.Default)
+                    .StartNew(() => this.MakeHttpRequest(requestInfo))
+                    .Unwrap()
+                    .GetAwaiter()
+                    .GetResult();
             }
             catch (HttpRequestException ex)
             {
@@ -248,6 +258,10 @@ namespace OpenQA.Selenium.Remote
 
                 byte[] bytes = Encoding.UTF8.GetBytes(eventArgs.RequestBody);
                 requestMessage.Content = new ByteArrayContent(bytes, 0, bytes.Length);
+
+                MediaTypeHeaderValue contentTypeHeader = new MediaTypeHeaderValue(JsonMimeType);
+                contentTypeHeader.CharSet = Utf8CharsetType;
+                requestMessage.Content.Headers.ContentType = contentTypeHeader;
             }
 
             HttpResponseMessage responseMessage = await this.client.SendAsync(requestMessage);

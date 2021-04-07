@@ -21,11 +21,11 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 
 
-abstract class TypeToken<T> {
+public abstract class TypeToken<T> {
 
   private final Type type;
 
-  TypeToken() {
+  public TypeToken() {
     // This code is taken from Guava's TypeToken class.
     Type superclass = getClass().getGenericSuperclass();
     if (!(superclass instanceof ParameterizedType)) {

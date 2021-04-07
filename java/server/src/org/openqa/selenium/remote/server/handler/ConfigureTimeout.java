@@ -20,11 +20,11 @@ package org.openqa.selenium.remote.server.handler;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.remote.server.Session;
 
+import java.time.Duration;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 public class ConfigureTimeout extends WebDriverHandler<Void> {
@@ -68,7 +68,7 @@ public class ConfigureTimeout extends WebDriverHandler<Void> {
     if (timeouts.containsKey(IMPLICIT)) {
       try {
         getDriver().manage().timeouts().implicitlyWait(
-            ((Number) timeouts.get(IMPLICIT)).longValue(), TimeUnit.MILLISECONDS);
+            Duration.ofMillis(((Number) timeouts.get(IMPLICIT)).longValue()));
       } catch (ClassCastException ex) {
         throw new WebDriverException(
             "Illegal (non-numeric) timeout value passed: " + timeouts.get(IMPLICIT), ex);
@@ -77,7 +77,7 @@ public class ConfigureTimeout extends WebDriverHandler<Void> {
     if (timeouts.containsKey(PAGE_LOAD)) {
       try {
         getDriver().manage().timeouts().pageLoadTimeout(
-            ((Number) timeouts.get(PAGE_LOAD)).longValue(), TimeUnit.MILLISECONDS);
+            Duration.ofMillis(((Number) timeouts.get(PAGE_LOAD)).longValue()));
       } catch (ClassCastException ex) {
         throw new WebDriverException(
             "Illegal (non-numeric) timeout value passed: " + timeouts.get(PAGE_LOAD), ex);
@@ -86,7 +86,7 @@ public class ConfigureTimeout extends WebDriverHandler<Void> {
     if (timeouts.containsKey(SCRIPT)) {
       try {
         getDriver().manage().timeouts().setScriptTimeout(
-            ((Number) timeouts.get(SCRIPT)).longValue(), TimeUnit.MILLISECONDS);
+            Duration.ofMillis(((Number) timeouts.get(SCRIPT)).longValue()));
       } catch (ClassCastException ex) {
         throw new WebDriverException(
             "Illegal (non-numeric) timeout value passed: " + timeouts.get(SCRIPT), ex);

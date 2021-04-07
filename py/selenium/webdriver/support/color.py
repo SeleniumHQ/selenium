@@ -54,7 +54,7 @@ class Color(object):
 
             @property
             def groups(self):
-                return () if self.match_obj is None else self.match_obj.groups()
+                return () if not self.match_obj else self.match_obj.groups()
 
         m = Matcher()
 
@@ -82,18 +82,18 @@ class Color(object):
             raise ValueError("Could not convert %s into color" % str_)
 
     @staticmethod
-    def _from_hsl(h, s, l, a=1):
+    def _from_hsl(h, s, light, a=1):
         h = float(h) / 360
         s = float(s) / 100
-        l = float(l) / 100
+        _l = float(light) / 100
 
         if s == 0:
-            r = l
+            r = _l
             g = r
             b = r
         else:
-            luminocity2 = l * (1 + s) if l < 0.5 else l + s - l * s
-            luminocity1 = 2 * l - luminocity2
+            luminocity2 = _l * (1 + s) if _l < 0.5 else _l + s - _l * s
+            luminocity1 = 2 * _l - luminocity2
 
             def hue_to_rgb(lum1, lum2, hue):
                 if hue < 0.0:

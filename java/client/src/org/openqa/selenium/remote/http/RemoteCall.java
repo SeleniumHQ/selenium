@@ -17,14 +17,14 @@
 
 package org.openqa.selenium.remote.http;
 
-import java.util.Objects;
+import org.openqa.selenium.internal.Require;
 
 public abstract class RemoteCall implements HttpHandler {
 
   private final ClientConfig config;
 
   protected RemoteCall(ClientConfig config) {
-    this.config = Objects.requireNonNull(config, "HTTP configuration is required");
+    this.config = Require.nonNull("HTTP configuration", config);
   }
 
   public ClientConfig getConfig() {

@@ -128,7 +128,7 @@ public class InternalSelenseTestBase extends SeleneseTestBase {
 
   @BeforeClass
   public static void initializeServer() {
-    GlobalTestEnvironment.get(InProcessTestEnvironment.class);
+    GlobalTestEnvironment.getOrCreate(InProcessTestEnvironment::new);
   }
 
   public TestWatcher traceMethodName = new TestWatcher() {
@@ -175,18 +175,17 @@ public class InternalSelenseTestBase extends SeleneseTestBase {
         return new ChromeOptions();
 
       case EDGE:
-      case CHROMIUMEDGE:
         return new EdgeOptions();
 
       case IE:
         return new InternetExplorerOptions();
 
+      case LEGACY_FIREFOX_XPI:
       case FIREFOX:
-      case MARIONETTE:
         return new FirefoxOptions();
 
+      case LEGACY_OPERA:
       case OPERA:
-      case OPERABLINK:
         return new OperaOptions();
 
       case SAFARI:

@@ -17,57 +17,98 @@
 
 package org.openqa.selenium.grid.sessionmap.local;
 
-import io.opentracing.Tracer;
 import org.openqa.selenium.NoSuchSessionException;
 import org.openqa.selenium.events.EventBus;
+import org.openqa.selenium.grid.config.Config;
 import org.openqa.selenium.grid.data.Session;
+import org.openqa.selenium.grid.data.SessionClosedEvent;
+import org.openqa.selenium.grid.log.LoggingOptions;
+import org.openqa.selenium.grid.server.EventBusOptions;
 import org.openqa.selenium.grid.sessionmap.SessionMap;
+import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.SessionId;
+import org.openqa.selenium.remote.tracing.AttributeKey;
+import org.openqa.selenium.remote.tracing.EventAttribute;
+import org.openqa.selenium.remote.tracing.EventAttributeValue;
+import org.openqa.selenium.remote.tracing.Span;
+import org.openqa.selenium.remote.tracing.Tracer;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
+import java.util.logging.Logger;
 
-import static org.openqa.selenium.grid.data.SessionClosedEvent.SESSION_CLOSED;
+import static org.openqa.selenium.remote.RemoteTags.SESSION_ID;
+import static org.openqa.selenium.remote.RemoteTags.SESSION_ID_EVENT;
 
 public class LocalSessionMap extends SessionMap {
 
+  private static final Logger LOG = Logger.getLogger(LocalSessionMap.class.getName());
+
   private final EventBus bus;
-  private final Map<SessionId, Session> knownSessions = new HashMap<>();
+  private final Map<SessionId, Session> knownSessions = new ConcurrentHashMap<>();
   private final ReadWriteLock lock = new ReentrantReadWriteLock(/* be fair */ true);
 
   public LocalSessionMap(Tracer tracer, EventBus bus) {
     super(tracer);
 
-    this.bus = Objects.requireNonNull(bus);
+    this.bus = Require.nonNull("Event bus", bus);
 
-    bus.addListener(SESSION_CLOSED, event -> {
-      SessionId id = event.getData(SessionId.class);
-      knownSessions.remove(id);
-    });
+    bus.addListener(SessionClosedEvent.listener(id -> {
+      try (Span span = tracer.getCurrentContext().createSpan("local_sessionmap.remove")) {
+        Map<String, EventAttributeValue> attributeMap = new HashMap<>();
+        attributeMap.put(AttributeKey.LOGGER_CLASS.getKey(),
+                         EventAttribute.setValue(getClass().getName()));
+        SESSION_ID.accept(span, id);
+        SESSION_ID_EVENT.accept(attributeMap, id);
+        knownSessions.remove(id);
+        String sessionDeletedMessage = "Deleted session from local session map";
+        span.addEvent(sessionDeletedMessage, attributeMap);
+        LOG.info(String.format("%s, Id: %s", sessionDeletedMessage, id));
+      }
+    }));
+  }
+
+  public static SessionMap create(Config config) {
+    Tracer tracer = new LoggingOptions(config).getTracer();
+    EventBus bus = new EventBusOptions(config).getEventBus();
+
+    return new LocalSessionMap(tracer, bus);
+  }
+
+  @Override
+  public boolean isReady() {
+    return bus.isReady();
   }
 
   @Override
   public boolean add(Session session) {
-    Objects.requireNonNull(session, "Session has not been set");
+    Require.nonNull("Session", session);
 
     Lock writeLock = lock.writeLock();
     writeLock.lock();
-    try {
+    try (Span span = tracer.getCurrentContext().createSpan("local_sessionmap.add")) {
+      Map<String, EventAttributeValue> attributeMap = new HashMap<>();
+      attributeMap.put(AttributeKey.LOGGER_CLASS.getKey(),
+        EventAttribute.setValue(getClass().getName()));
+      SessionId id = session.getId();
+      SESSION_ID.accept(span, id);
+      SESSION_ID_EVENT.accept(attributeMap, id);
       knownSessions.put(session.getId(), session);
+      span.addEvent("Added session into local session map", attributeMap);
+
+      return true;
     } finally {
       writeLock.unlock();
     }
-
-    return true;
   }
 
   @Override
   public Session get(SessionId id) {
-    Objects.requireNonNull(id, "Session ID has not been set");
+    Require.nonNull("Session ID", id);
 
     Lock readLock = lock.readLock();
     readLock.lock();
@@ -85,7 +126,7 @@ public class LocalSessionMap extends SessionMap {
 
   @Override
   public void remove(SessionId id) {
-    Objects.requireNonNull(id, "Session ID has not been set");
+    Require.nonNull("Session ID", id);
 
     Lock writeLock = lock.writeLock();
     writeLock.lock();

@@ -58,14 +58,18 @@ namespace OpenQA.Selenium.Firefox
         private const string FirefoxArgumentsCapability = "args";
         private const string FirefoxLogCapability = "log";
         private const string FirefoxPrefsCapability = "prefs";
+        private const string FirefoxEnvCapability = "env";
         private const string FirefoxOptionsCapability = "moz:firefoxOptions";
+        private const string FirefoxEnableDevToolsProtocolCapability = "moz:debuggerAddress";
 
+        private bool enableDevToolsProtocol;
         private string browserBinaryLocation;
         private FirefoxDriverLogLevel logLevel = FirefoxDriverLogLevel.Default;
         private FirefoxProfile profile;
         private List<string> firefoxArguments = new List<string>();
         private Dictionary<string, object> profilePreferences = new Dictionary<string, object>();
         private Dictionary<string, object> additionalFirefoxOptions = new Dictionary<string, object>();
+        private Dictionary<string, object> environmentVariables = new Dictionary<string, object>();
 
         /// <summary>
         /// Initializes a new instance of the <see cref="FirefoxOptions"/> class.
@@ -80,9 +84,11 @@ namespace OpenQA.Selenium.Firefox
             this.AddKnownCapabilityName(FirefoxOptions.FirefoxBinaryCapability, "BrowserExecutableLocation property");
             this.AddKnownCapabilityName(FirefoxOptions.FirefoxArgumentsCapability, "AddArguments method");
             this.AddKnownCapabilityName(FirefoxOptions.FirefoxPrefsCapability, "SetPreference method");
+            this.AddKnownCapabilityName(FirefoxOptions.FirefoxEnvCapability, "SetEnvironmentVariable method");
             this.AddKnownCapabilityName(FirefoxOptions.FirefoxLogCapability, "LogLevel property");
             this.AddKnownCapabilityName(FirefoxOptions.FirefoxLegacyProfileCapability, "Profile property");
             this.AddKnownCapabilityName(FirefoxOptions.FirefoxLegacyBinaryCapability, "BrowserExecutableLocation property");
+            this.AddKnownCapabilityName(FirefoxOptions.FirefoxEnableDevToolsProtocolCapability, "EnableDevToolsProtocol property");
         }
 
         /// <summary>
@@ -120,6 +126,12 @@ namespace OpenQA.Selenium.Firefox
         {
             get { return this.logLevel; }
             set { this.logLevel = value; }
+        }
+
+        public bool EnableDevToolsProtocol
+        {
+            get { return this.enableDevToolsProtocol; }
+            set { this.enableDevToolsProtocol = value; }
         }
 
         /// <summary>
@@ -212,6 +224,26 @@ namespace OpenQA.Selenium.Firefox
         }
 
         /// <summary>
+        /// Sets an environment variable to be set in the operating system's environment under which the Firerox browser is launched.
+        /// </summary>
+        /// <param name="variableName">The name of the environment variable.</param>
+        /// <param name="variableValue">The value of the environment variable.</param>
+        public void SetEnvironmentVariable(string variableName, string variableValue)
+        {
+            if (string.IsNullOrEmpty(variableName))
+            {
+                throw new ArgumentException("Environment variable name cannot be null or an empty string");
+            }
+
+            if (variableValue == null)
+            {
+                variableValue = string.Empty;
+            }
+
+            this.environmentVariables[variableName] = variableValue;
+        }
+
+        /// <summary>
         /// Provides a means to add additional capabilities not yet added as type safe options
         /// for the Firefox driver.
         /// </summary>
@@ -295,6 +327,10 @@ namespace OpenQA.Selenium.Firefox
             IWritableCapabilities capabilities = GenerateDesiredCapabilities(true);
             Dictionary<string, object> firefoxOptions = this.GenerateFirefoxOptionsDictionary();
             capabilities.SetCapability(FirefoxOptionsCapability, firefoxOptions);
+            if (this.enableDevToolsProtocol)
+            {
+                capabilities.SetCapability(FirefoxEnableDevToolsProtocolCapability, true);
+            }
 
             return capabilities.AsReadOnly();
         }
@@ -334,6 +370,11 @@ namespace OpenQA.Selenium.Firefox
             if (this.profilePreferences.Count > 0)
             {
                 firefoxOptions[FirefoxPrefsCapability] = this.profilePreferences;
+            }
+
+            if (this.environmentVariables.Count > 0)
+            {
+                firefoxOptions[FirefoxEnvCapability] = this.environmentVariables;
             }
 
             foreach (KeyValuePair<string, object> pair in this.additionalFirefoxOptions)

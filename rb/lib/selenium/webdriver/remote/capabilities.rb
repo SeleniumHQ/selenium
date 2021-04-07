@@ -82,21 +82,11 @@ module Selenium
           end
 
           def edge(opts = {})
-            edge_html(opts)
-          end
-
-          def edge_html(opts = {})
-            new({
-              browser_name: 'MicrosoftEdge',
-              platform_name: :windows
-            }.merge(opts))
-          end
-
-          def edge_chrome(opts = {})
             new({
               browser_name: 'MicrosoftEdge'
             }.merge(opts))
           end
+          alias_method :microsoftedge, :edge
 
           def firefox(opts = {})
             opts[:browser_version] = opts.delete(:version) if opts.key?(:version)
@@ -113,8 +103,7 @@ module Selenium
 
           def safari(opts = {})
             new({
-              browser_name: 'safari',
-              platform_name: :mac
+              browser_name: Selenium::WebDriver::Safari.technology_preview? ? "Safari Technology Preview" : 'safari'
             }.merge(opts))
           end
 
@@ -132,6 +121,14 @@ module Selenium
           end
           alias_method :ie, :internet_explorer
 
+          def always_match(capabilities)
+            new(always_match: capabilities)
+          end
+
+          def first_match(*capabilities)
+            new(first_match: capabilities)
+          end
+
           #
           # @api private
           #
@@ -140,18 +137,12 @@ module Selenium
             data = data.dup
 
             caps = new
-            caps.browser_name = data.delete('browserName') if data.key?('browserName')
-            caps.browser_version = data.delete('browserVersion') if data.key?('browserVersion')
-            caps.platform_name = data.delete('platformName') if data.key?('platformName')
-            caps.accept_insecure_certs = data.delete('acceptInsecureCerts') if data.key?('acceptInsecureCerts')
-            caps.page_load_strategy = data.delete('pageLoadStrategy') if data.key?('pageLoadStrategy')
-
-            if data.key?('timeouts')
-              timeouts = data.delete('timeouts')
-              caps.implicit_timeout = timeouts['implicit'] if timeouts
-              caps.page_load_timeout = timeouts['pageLoad'] if timeouts
-              caps.script_timeout = timeouts['script'] if timeouts
+            (KNOWN - %i[timeouts proxy]).each do |cap|
+              data_value = camel_case(cap)
+              caps[cap] = data.delete(data_value) if data.key?(data_value)
             end
+
+            process_timeouts(caps, data.delete('timeouts'))
 
             if data.key?('proxy')
               proxy = data.delete('proxy')
@@ -159,12 +150,28 @@ module Selenium
             end
 
             # Remote Server Specific
-            caps[:remote_session_id] = data.delete('webdriver.remote.sessionid') if data.key?('webdriver.remote.sessionid')
+            if data.key?('webdriver.remote.sessionid')
+              caps[:remote_session_id] = data.delete('webdriver.remote.sessionid')
+            end
 
             # any remaining pairs will be added as is, with no conversion
             caps.merge!(data)
 
             caps
+          end
+
+          def camel_case(str_or_sym)
+            str_or_sym.to_s.gsub(/_([a-z])/) { Regexp.last_match(1).upcase }
+          end
+
+          private
+
+          def process_timeouts(caps, timeouts)
+            return if timeouts.nil?
+
+            caps.implicit_timeout = timeouts['implicit']
+            caps.page_load_timeout = timeouts['pageLoad']
+            caps.script_timeout = timeouts['script']
           end
         end
 
@@ -180,8 +187,9 @@ module Selenium
         #
 
         def initialize(opts = {})
-          @capabilities = opts
-          self.proxy = opts.delete(:proxy)
+          @capabilities = {}
+          self.proxy = opts.delete(:proxy) if opts[:proxy]
+          @capabilities.merge!(opts)
         end
 
         #
@@ -222,28 +230,9 @@ module Selenium
         #
 
         def as_json(*)
-          hash = {}
-
-          @capabilities.each do |key, value|
-            case key
-            when :platform
-              hash['platform'] = value.to_s.upcase
-            when :proxy
-              if value
-                hash['proxy'] = value.as_json
-                hash['proxy']['proxyType'] &&= hash['proxy']['proxyType'].downcase
-                hash['proxy']['noProxy'] = hash['proxy']['noProxy'].split(', ') if hash['proxy']['noProxy'].is_a?(String)
-              end
-            when String
-              hash[key.to_s] = value
-            when Symbol
-              hash[camel_case(key.to_s)] = value
-            else
-              raise TypeError, "expected String or Symbol, got #{key.inspect}:#{key.class} / #{value.inspect}"
-            end
+          @capabilities.each_with_object({}) do |(key, value), hash|
+            hash[convert_key(key)] = process_capabilities(key, value, hash)
           end
-
-          hash
         end
 
         def to_json(*)
@@ -264,10 +253,54 @@ module Selenium
 
         private
 
-        def camel_case(str)
-          str.gsub(/_([a-z])/) { Regexp.last_match(1).upcase }
+        def process_capabilities(key, value, hash)
+          case value
+          when Array
+            value.map { |v| process_capabilities(key, v, hash) }
+          when Hash
+            value.each_with_object({}) do |(k, v), h|
+              h[convert_key(k)] = process_capabilities(k, v, h)
+            end
+          when Capabilities, Options
+            value.as_json
+          else
+            convert_value(key, value)
+          end
         end
 
+        def convert_key(key)
+          case key
+          when String
+            key.to_s
+          when Symbol
+            self.class.camel_case(key)
+          else
+            raise TypeError, "expected String or Symbol, got #{key.inspect}:#{key.class}"
+          end
+        end
+
+        def convert_value(key, value)
+          case key
+          when :platform
+            value.to_s.upcase
+          when :proxy
+            convert_proxy(value)
+          when :unhandled_prompt_behavior
+            value.is_a?(Symbol) ? value.to_s.tr('_', ' ') : value
+          else
+            value
+          end
+        end
+
+        def convert_proxy(value)
+          return unless value
+
+          hash = value.as_json
+          hash['proxyType'] &&= hash['proxyType'].downcase
+          hash['noProxy'] = hash['noProxy'].split(', ') if hash['noProxy'].is_a?(String)
+
+          hash
+        end
       end # Capabilities
     end # Remote
   end # WebDriver

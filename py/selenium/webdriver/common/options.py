@@ -18,14 +18,15 @@
 from abc import ABCMeta, abstractmethod
 
 
-class BaseOptions(object):
+class BaseOptions(metaclass=ABCMeta):
     """
     Base class for individual browser options
     """
-    __metaclass__ = ABCMeta
 
     def __init__(self):
+        super(BaseOptions, self).__init__()
         self._caps = self.default_capabilities
+        self.set_capability("pageLoadStrategy", "normal")
 
     @property
     def capabilities(self):
@@ -37,12 +38,12 @@ class BaseOptions(object):
 
     @abstractmethod
     def to_capabilities(self):
-        return
+        """Convert options into capabilities dictionary."""
 
     @property
     @abstractmethod
     def default_capabilities(self):
-        return {}
+        """Return minimal capabilities necessary as a dictionary."""
 
 
 class ArgOptions(BaseOptions):
@@ -50,6 +51,7 @@ class ArgOptions(BaseOptions):
     def __init__(self):
         super(ArgOptions, self).__init__()
         self._arguments = []
+        self._ignore_local_proxy = False
 
     @property
     def arguments(self):
@@ -70,5 +72,15 @@ class ArgOptions(BaseOptions):
         else:
             raise ValueError('argument can not be null')
 
+    def ignore_local_proxy_environment_variables(self):
+        """
+            By calling this you will ignore HTTP_PROXY and HTTPS_PROXY from being picked up and used.
+        """
+        self._ignore_local_proxy = True
+
     def to_capabilities(self):
         return self._caps
+
+    @property
+    def default_capabilities(self):
+        return {}

@@ -27,6 +27,7 @@ import static org.openqa.selenium.remote.http.Contents.bytes;
 import com.google.common.collect.ImmutableMap;
 
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 import org.openqa.selenium.UnhandledAlertException;
 import org.openqa.selenium.UnsupportedCommandException;
 import org.openqa.selenium.WebDriverException;
@@ -34,11 +35,13 @@ import org.openqa.selenium.json.Json;
 import org.openqa.selenium.remote.ErrorCodes;
 import org.openqa.selenium.remote.Response;
 import org.openqa.selenium.remote.http.HttpResponse;
+import org.openqa.selenium.testing.UnitTests;
 
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
+@Category(UnitTests.class)
 public class W3CHttpResponseCodecTest {
 
   @Test
@@ -95,7 +98,7 @@ public class W3CHttpResponseCodecTest {
 
   @Test
   public void shouldPopulateTheAlertTextIfThrowingAnUnhandledAlertException() {
-    ImmutableMap<String, ImmutableMap<String, Serializable>> data = ImmutableMap.of(
+    Map<String, Map<String, Serializable>> data = ImmutableMap.of(
         "value", ImmutableMap.of(
             "error", "unexpected alert open",
             "message", "Modal dialog present",

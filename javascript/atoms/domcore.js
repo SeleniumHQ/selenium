@@ -54,7 +54,7 @@ goog.require('goog.dom.TagName');
  * @param {string} attributeName The name of the attribute to return.
  * @return {?string} The value of the attribute or "null" if entirely missing.
  */
-bot.dom.core.getAttribute = function(element, attributeName) {
+bot.dom.core.getAttribute = function (element, attributeName) {
   attributeName = attributeName.toLowerCase();
 
   // The style attribute should be a css text string that includes only what
@@ -68,7 +68,7 @@ bot.dom.core.getAttribute = function(element, attributeName) {
   // In IE doc mode < 8, the "value" attribute of an <input> is only accessible
   // as a property.
   if (bot.userAgent.IE_DOC_PRE8 && attributeName == 'value' &&
-      bot.dom.core.isElement(element, goog.dom.TagName.INPUT)) {
+    bot.dom.core.isElement(element, goog.dom.TagName.INPUT)) {
     return element['value'];
   }
 
@@ -98,10 +98,10 @@ bot.dom.core.getAttribute = function(element, attributeName) {
  * @const
  */
 bot.dom.core.SPLIT_STYLE_ATTRIBUTE_ON_SEMICOLONS_REGEXP_ =
-    new RegExp('[;]+' +
-               '(?=(?:(?:[^"]*"){2})*[^"]*$)' +
-               '(?=(?:(?:[^\']*\'){2})*[^\']*$)' +
-               '(?=(?:[^()]*\\([^()]*\\))*[^()]*$)');
+  new RegExp('[;]+' +
+    '(?=(?:(?:[^"]*"){2})*[^"]*$)' +
+    '(?=(?:(?:[^\']*\'){2})*[^\']*$)' +
+    '(?=(?:[^()]*\\([^()]*\\))*[^()]*$)');
 
 
 /**
@@ -113,11 +113,11 @@ bot.dom.core.SPLIT_STYLE_ATTRIBUTE_ON_SEMICOLONS_REGEXP_ =
  *     above applied.
  * @private
  */
-bot.dom.core.standardizeStyleAttribute_ = function(value) {
+bot.dom.core.standardizeStyleAttribute_ = function (value) {
   var styleArray = value.split(
-      bot.dom.core.SPLIT_STYLE_ATTRIBUTE_ON_SEMICOLONS_REGEXP_);
+    bot.dom.core.SPLIT_STYLE_ATTRIBUTE_ON_SEMICOLONS_REGEXP_);
   var css = [];
-  goog.array.forEach(styleArray, function(pair) {
+  goog.array.forEach(styleArray, function (pair) {
     var i = pair.indexOf(':');
     if (i > 0) {
       var keyValue = [pair.slice(0, i), pair.slice(i + 1)];
@@ -140,13 +140,13 @@ bot.dom.core.standardizeStyleAttribute_ = function(value) {
  * @param {string} propertyName The name of the property.
  * @return {*} The value of the property.
  */
-bot.dom.core.getProperty = function(element, propertyName) {
+bot.dom.core.getProperty = function (element, propertyName) {
   // When an <option>'s value attribute is not set, its value property should be
   // its text content, but IE < 8 does not adhere to that behavior, so fix it.
   // http://www.w3.org/TR/1999/REC-html401-19991224/interact/forms.html#adef-value-OPTION
   if (bot.userAgent.IE_DOC_PRE8 && propertyName == 'value' &&
-      bot.dom.core.isElement(element, goog.dom.TagName.OPTION) &&
-      goog.isNull(bot.dom.core.getAttribute(element, 'value'))) {
+    bot.dom.core.isElement(element, goog.dom.TagName.OPTION) &&
+    goog.isNull(bot.dom.core.getAttribute(element, 'value'))) {
     return goog.dom.getRawTextContent(element);
   }
   return element[propertyName];
@@ -164,13 +164,13 @@ bot.dom.core.getProperty = function(element, propertyName) {
  * @param {(goog.dom.TagName<!T>|string)=} opt_tagName Tag name to test the node for.
  * @return {boolean} Whether the node is an element with the given tag name.
  */
-bot.dom.core.isElement = function(node, opt_tagName) {
+bot.dom.core.isElement = function (node, opt_tagName) {
   // because we call this with deprecated tags such as SHADOW
   if (opt_tagName && (typeof opt_tagName !== 'string')) {
     opt_tagName = opt_tagName.toString();
   }
   return !!node && node.nodeType == goog.dom.NodeType.ELEMENT &&
-      (!opt_tagName || node.tagName.toUpperCase() == opt_tagName);
+    (!opt_tagName || node.tagName.toUpperCase() == opt_tagName);
 };
 
 
@@ -180,7 +180,7 @@ bot.dom.core.isElement = function(node, opt_tagName) {
  * @param {!Element} element The element to check.
  * @return {boolean} Whether the element could be checked or selected.
  */
-bot.dom.core.isSelectable = function(element) {
+bot.dom.core.isSelectable = function (element) {
   if (bot.dom.core.isElement(element, goog.dom.TagName.OPTION)) {
     return true;
   }
@@ -200,10 +200,10 @@ bot.dom.core.isSelectable = function(element) {
  * @param {!Element} element The element to check.
  * @return {boolean} Whether the element is checked or selected.
  */
-bot.dom.core.isSelected = function(element) {
+bot.dom.core.isSelected = function (element) {
   if (!bot.dom.core.isSelectable(element)) {
     throw new bot.Error(bot.ErrorCode.ELEMENT_NOT_SELECTABLE,
-        'Element is not selectable');
+      'Element is not selectable');
   }
 
   var propertyName = 'selected';

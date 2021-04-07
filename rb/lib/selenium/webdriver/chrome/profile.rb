@@ -27,12 +27,11 @@ module Selenium
       class Profile
         include ProfileHelper
 
-        attr_reader :directory
-
         def initialize(model = nil)
           @model = verify_model(model)
           @extensions = []
           @encoded_extensions = []
+          @directory = nil
         end
 
         def add_extension(path)
@@ -45,10 +44,14 @@ module Selenium
           @encoded_extensions << encoded
         end
 
+        def directory
+          @directory || layout_on_disk
+        end
+
         #
         # Set a preference in the profile.
         #
-        # See https://src.chromium.org/svn/trunk/src/chrome/common/pref_names.cc
+        # See https://src.chromium.org/viewvc/chrome/trunk/src/chrome/common/pref_names.cc
         #
 
         def []=(key, value)

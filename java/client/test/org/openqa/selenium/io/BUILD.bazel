@@ -6,7 +6,8 @@ java_test_suite(
     size = "small",
     srcs = glob(["*.java"]),
     deps = [
-        "//java/client/src/org/openqa/selenium/remote",
+        "//java/client/src/org/openqa/selenium/io",
+        "//java/client/test/org/openqa/selenium/testing:annotations",
         artifact("org.assertj:assertj-core"),
         artifact("junit:junit"),
     ],

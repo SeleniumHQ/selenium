@@ -15,6 +15,9 @@
 # specific language governing permissions and limitations
 # under the License.
 
+import pytest
+
+
 from selenium.common.exceptions import (
     ElementNotVisibleException,
     ElementNotInteractableException)
@@ -46,6 +49,7 @@ def testShouldCountElementsAsVisibleIfStylePropertyHasBeenSet(driver, pages):
     assert shown.is_displayed() is True
 
 
+@pytest.mark.xfail_safari
 def testShouldModifyTheVisibilityOfAnElementDynamically(driver, pages):
     pages.load("javascriptPage.html")
     element = driver.find_element(by=By.ID, value="hideMe")

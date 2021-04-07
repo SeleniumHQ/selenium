@@ -28,8 +28,7 @@ module Selenium
       #
 
       class Driver < WebDriver::Driver
-        include DriverExtensions::HasWebStorage
-        include DriverExtensions::TakesScreenshot
+        EXTENSIONS = [DriverExtensions::HasWebStorage].freeze
 
         def browser
           :internet_explorer

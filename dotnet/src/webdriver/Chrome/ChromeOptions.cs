@@ -52,16 +52,32 @@ namespace OpenQA.Selenium.Chrome
     /// </example>
     public class ChromeOptions : ChromiumOptions
     {
-        /// <summary>
-        /// Gets the name of the capability used to store Chrome options in
-        /// an <see cref="ICapabilities"/> object.
-        /// </summary>
-        public static readonly string Capability = "goog:chromeOptions";
+        private const string ChromeOptionsCapabilityName = "chromeOptions";
         private const string BrowserNameValue = "chrome";
 
-        public ChromeOptions() : base(BrowserNameValue, Capability)
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ChromeOptions"/> class.
+        /// </summary>
+        public ChromeOptions()
         {
+            this.BrowserName = BrowserNameValue;
         }
 
+        /// <summary>
+        /// Gets the vendor prefix to apply to Chromium-specific capability names.
+        /// </summary>
+        protected override string VendorPrefix
+        {
+            get { return "goog"; }
+        }
+
+        /// <summary>
+        /// Gets the name of the capability used to store Chromium options in
+        /// an <see cref="ICapabilities"/> object.
+        /// </summary>
+        public override string CapabilityName
+        {
+            get { return string.Format(CultureInfo.InvariantCulture, "{0}:{1}", this.VendorPrefix, ChromeOptionsCapabilityName); }
+        }
     }
 }

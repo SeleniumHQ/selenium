@@ -17,21 +17,22 @@
 
 package org.openqa.selenium.grid.distributor.config;
 
-import io.opentracing.Tracer;
 import org.openqa.selenium.grid.config.Config;
 import org.openqa.selenium.grid.config.ConfigException;
 import org.openqa.selenium.grid.distributor.Distributor;
-import org.openqa.selenium.grid.distributor.remote.RemoteDistributor;
-import org.openqa.selenium.remote.http.HttpClient;
 
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.net.URL;
+import java.time.Duration;
 import java.util.Optional;
 
-import static org.openqa.selenium.net.Urls.fromUri;
-
 public class DistributorOptions {
+
+  static final String DISTRIBUTOR_SECTION = "distributor";
+  static final String DEFAULT_DISTRIBUTOR_IMPLEMENTATION =
+    "org.openqa.selenium.grid.distributor.local.LocalDistributor";
+
+  public static final int DEFAULT_HEALTHCHECK_INTERVAL = 300;
 
   private final Config config;
 
@@ -40,7 +41,7 @@ public class DistributorOptions {
   }
 
   public URI getDistributorUri() {
-    Optional<URI> host = config.get("distributor", "host").map(str -> {
+    Optional<URI> host = config.get(DISTRIBUTOR_SECTION, "host").map(str -> {
       try {
         return new URI(str);
       } catch (URISyntaxException e) {
@@ -52,8 +53,8 @@ public class DistributorOptions {
       return host.get();
     }
 
-    Optional<Integer> port = config.getInt("distributor", "port");
-    Optional<String> hostname = config.get("distributor", "hostname");
+    Optional<Integer> port = config.getInt(DISTRIBUTOR_SECTION, "port");
+    Optional<String> hostname = config.get(DISTRIBUTOR_SECTION, "hostname");
 
     if (!(port.isPresent() && hostname.isPresent())) {
       throw new ConfigException("Unable to determine host and port for the distributor");
@@ -76,11 +77,19 @@ public class DistributorOptions {
     }
   }
 
-  public Distributor getDistributor(Tracer tracer, HttpClient.Factory clientFactory) {
-    URL distributorUrl = fromUri(getDistributorUri());
-    return new RemoteDistributor(
-        tracer,
-        clientFactory,
-        distributorUrl);
+  public Duration getHealthCheckInterval() {
+    // If the user sets 0s or less, we default to 10s.
+    int seconds = Math.max(
+      config.getInt(DISTRIBUTOR_SECTION, "healthcheck-interval").orElse(DEFAULT_HEALTHCHECK_INTERVAL),
+      10);
+    return Duration.ofSeconds(seconds);
+  }
+
+  public Distributor getDistributor() {
+    return config.getClass(
+      DISTRIBUTOR_SECTION,
+      "implementation",
+      Distributor.class,
+      DEFAULT_DISTRIBUTOR_IMPLEMENTATION);
   }
 }

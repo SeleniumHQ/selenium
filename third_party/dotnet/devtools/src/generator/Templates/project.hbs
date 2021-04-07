@@ -1,0 +1,21 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+    <PropertyGroup>
+        <TargetFrameworks>net45;net46;net47;netstandard2.0</TargetFrameworks>
+        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+        <Version>{{chromeVersion.BrowserVersion}}{{#if runtimeVersion}}-{{runtimeVersion}}{{/if}}</Version>
+        <Authors>Sean McLellan</Authors>
+        <Company>BaristaLabs, LLC</Company>
+        <RepositoryUrl>https://github.com/BaristaLabs/chrome-dev-tools-runtime.git</RepositoryUrl>
+        <RepositoryType>Git</RepositoryType>
+        <PackageTags>ChromeDevTools, .Net Core</PackageTags>
+        <PackageLicenseUrl>https://raw.githubusercontent.com/BaristaLabs/chrome-dev-tools-runtime/master/LICENSE</PackageLicenseUrl>
+        <Copyright>Copyright (c) 2017 BaristaLabs, LLC</Copyright>
+        <PackageProjectUrl>https://github.com/BaristaLabs/chrome-dev-tools-runtime</PackageProjectUrl>
+        <Description>.Net Core based runtime to interact with an running instance of Chrome via the ChromeDevTools protocol.</Description>
+        <PackageReleaseNotes>Chrome Version: {{chromeVersion.BrowserVersion}}; Protocol Version: {{chromeVersion.ProtocolVersion}};{{#if runtimeVersion}} Runtime Version: {{runtimeVersion}};{{/if}}</PackageReleaseNotes>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
+    </ItemGroup>
+</Project>

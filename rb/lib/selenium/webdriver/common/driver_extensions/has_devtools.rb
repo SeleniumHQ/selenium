@@ -29,7 +29,29 @@ module Selenium
         #
 
         def devtools
-          @devtools ||= DevTools.new(capabilities['goog:chromeOptions']['debuggerAddress'])
+          @devtools ||= begin
+            require 'selenium/devtools'
+            Selenium::DevTools.version ||= devtools_version
+            Selenium::DevTools.load_version
+            Selenium::WebDriver::DevTools.new(url: devtools_url)
+          end
+        end
+
+        private
+
+        def devtools_version
+          return Firefox::DEVTOOLS_VERSION if browser == :firefox
+
+          Integer(capabilities.browser_version.split('.').first)
+        end
+
+        def devtools_url
+          return devtools_address if devtools_address.include?('/session/')
+
+          uri = URI(devtools_address)
+          response = Net::HTTP.get(uri.hostname, '/json/version', uri.port)
+
+          JSON.parse(response)['webSocketDebuggerUrl']
         end
 
       end # HasDevTools

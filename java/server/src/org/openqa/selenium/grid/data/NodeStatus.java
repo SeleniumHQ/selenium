@@ -17,59 +17,136 @@
 
 package org.openqa.selenium.grid.data;
 
-import static com.google.common.collect.ImmutableList.toImmutableList;
-
-import com.google.common.base.Preconditions;
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.ImmutableSet;
-
 import org.openqa.selenium.Capabilities;
-import org.openqa.selenium.ImmutableCapabilities;
-import org.openqa.selenium.json.JsonException;
-import org.openqa.selenium.remote.SessionId;
+import org.openqa.selenium.internal.Require;
+import org.openqa.selenium.json.JsonInput;
+import org.openqa.selenium.json.TypeToken;
 
 import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.Collection;
-import java.util.List;
+import java.time.Duration;
+import java.time.Instant;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
-import java.util.UUID;
+import java.util.TreeMap;
+
+import static java.util.Collections.unmodifiableMap;
+import static java.util.Collections.unmodifiableSet;
 
 public class NodeStatus {
 
-  private final UUID nodeId;
+  private final NodeId nodeId;
   private final URI externalUri;
   private final int maxSessionCount;
-  private final Map<Capabilities, Integer> stereotypes;
-  private final Set<Active> snapshot;
+  private final Set<Slot> slots;
+  private final Availability availability;
+  private Duration heartbeatPeriod;
+  private final String version;
+  private final Map<String, String> osInfo;
+  private long touched = System.currentTimeMillis();
 
   public NodeStatus(
-      UUID nodeId,
-      URI externalUri,
-      int maxSessionCount,
-      Map<Capabilities, Integer> stereotypes,
-      Collection<Active> snapshot) {
-    this.nodeId = Objects.requireNonNull(nodeId);
-    this.externalUri = Objects.requireNonNull(externalUri);
-    Preconditions.checkArgument(maxSessionCount > 0, "Max session count must be greater than 0.");
-    this.maxSessionCount = maxSessionCount;
+    NodeId nodeId,
+    URI externalUri,
+    int maxSessionCount,
+    Set<Slot> slots,
+    Availability availability,
+    Duration heartbeatPeriod,
+    String version,
+    Map<String, String> osInfo) {
+    this.nodeId = Require.nonNull("Node id", nodeId);
+    this.externalUri = Require.nonNull("URI", externalUri);
+    this.maxSessionCount = Require.positive("Max session count",
+      maxSessionCount,
+      "Make sure that a driver is available on $PATH");
+    this.slots = unmodifiableSet(new HashSet<>(Require.nonNull("Slots", slots)));
+    this.availability = Require.nonNull("Availability", availability);
+    this.heartbeatPeriod = heartbeatPeriod;
+    this.version = Require.nonNull("Grid Node version", version);
+    this.osInfo = Require.nonNull("Node host OS info", osInfo);
+  }
 
-    this.stereotypes = ImmutableMap.copyOf(Objects.requireNonNull(stereotypes));
-    this.snapshot = ImmutableSet.copyOf(Objects.requireNonNull(snapshot));
+  public static NodeStatus fromJson(JsonInput input) {
+    NodeId nodeId = null;
+    URI uri = null;
+    int maxSessions = 0;
+    Set<Slot> slots = null;
+    Availability availability = null;
+    Duration heartbeatPeriod = null;
+    String version = null;
+    Map<String, String> osInfo = null;
+
+    input.beginObject();
+    while (input.hasNext()) {
+      switch (input.nextName()) {
+        case "availability":
+          availability = input.read(Availability.class);
+          break;
+
+        case "heartbeatPeriod":
+          heartbeatPeriod = Duration.ofMillis(input.read(Long.class));
+          break;
+
+        case "id":
+          nodeId = input.read(NodeId.class);
+          break;
+
+        case "maxSessions":
+          maxSessions = input.read(Integer.class);
+          break;
+
+        case "slots":
+          slots = input.read(new TypeToken<Set<Slot>>() {
+          }.getType());
+          break;
+
+        case "uri":
+          uri = input.read(URI.class);
+          break;
+
+        case "version":
+          version = input.read(String.class);
+          break;
+
+        case "osInfo":
+          osInfo = input.read(Map.class);
+          break;
+
+        default:
+          input.skipValue();
+          break;
+      }
+    }
+    input.endObject();
+
+    return new NodeStatus(
+      nodeId,
+      uri,
+      maxSessions,
+      slots,
+      availability,
+      heartbeatPeriod,
+      version,
+      osInfo);
+  }
+
+  public boolean hasCapability(Capabilities caps) {
+    return slots.stream().anyMatch(slot -> slot.isSupporting(caps));
   }
 
   public boolean hasCapacity() {
-    return !stereotypes.isEmpty();
+
+    return slots.stream().anyMatch(slot -> !slot.getSession().isPresent());
   }
 
   public boolean hasCapacity(Capabilities caps) {
-    return stereotypes.getOrDefault(caps, 0) > 0;
+
+    return slots.stream()
+      .anyMatch(slot -> !slot.getSession().isPresent() && slot.isSupporting(caps));
   }
 
-  public UUID getNodeId() {
+  public NodeId getId() {
     return nodeId;
   }
 
@@ -81,14 +158,49 @@ public class NodeStatus {
     return maxSessionCount;
   }
 
-  public Map<Capabilities, Integer> getStereotypes() {
-    return stereotypes;
+  public Set<Slot> getSlots() {
+    return slots;
   }
 
-  public Set<Active> getCurrentSessions() {
-    return snapshot;
+  public Availability getAvailability() {
+    return availability;
   }
 
+  public String getVersion() {
+    return version;
+  }
+
+  public Map<String, String> getOsInfo() {
+    return osInfo;
+  }
+
+  public float getLoad() {
+    float inUse = slots.parallelStream()
+      .filter(slot -> slot.getSession().isPresent())
+      .count();
+
+    return (inUse / (float) maxSessionCount) * 100f;
+  }
+
+  public long getLastSessionCreated() {
+      return slots.parallelStream()
+        .map(Slot::getLastStarted)
+        .mapToLong(Instant::toEpochMilli)
+        .max()
+        .orElse(0);
+  }
+
+  public Duration heartbeatPeriod() {
+    return heartbeatPeriod;
+  }
+
+  public void touch() {
+    touched = System.currentTimeMillis();
+  }
+
+  public long touched() {
+    return touched;
+  }
 
   @Override
   public boolean equals(Object o) {
@@ -100,122 +212,27 @@ public class NodeStatus {
     return Objects.equals(this.nodeId, that.nodeId) &&
            Objects.equals(this.externalUri, that.externalUri) &&
            this.maxSessionCount == that.maxSessionCount &&
-           Objects.equals(this.stereotypes, that.stereotypes) &&
-           Objects.equals(this.snapshot, that.snapshot);
+           Objects.equals(this.slots, that.slots) &&
+           Objects.equals(this.availability, that.availability) &&
+           Objects.equals(this.version, that.version);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(nodeId, externalUri, maxSessionCount, stereotypes, snapshot);
+    return Objects.hash(nodeId, externalUri, maxSessionCount, slots, version);
   }
 
   private Map<String, Object> toJson() {
-    return ImmutableMap.of(
-        "id", nodeId,
-        "uri", externalUri,
-        "maxSessions", maxSessionCount,
-        "stereotypes", asCapacity(stereotypes),
-        "sessions", snapshot);
-  }
+    Map<String, Object> toReturn = new TreeMap<>();
+    toReturn.put("id", nodeId);
+    toReturn.put("uri", externalUri);
+    toReturn.put("maxSessions", maxSessionCount);
+    toReturn.put("slots", slots);
+    toReturn.put("availability", availability);
+    toReturn.put("heartbeatPeriod", heartbeatPeriod.toMillis());
+    toReturn.put("version", version);
+    toReturn.put("osInfo", osInfo);
 
-  private List<Map<String, Object>> asCapacity(Map<Capabilities, Integer> toConvert) {
-    ImmutableList.Builder<Map<String, Object>> toReturn = ImmutableList.builder();
-    toConvert.forEach((caps, count) -> toReturn.add(ImmutableMap.of(
-        "capabilities", caps,
-        "count", count)));
-    return toReturn.build();
-  }
-
-  public static NodeStatus fromJson(Map<String, Object> raw) {
-    List<Active> sessions = ((Collection<?>) raw.get("sessions")).stream()
-        .map(item -> {
-          @SuppressWarnings("unchecked")
-          Map<String, Object> converted = (Map<String, Object>) item;
-          return converted;
-        })
-        .map(Active::fromJson)
-        .collect(toImmutableList());
-
-    try {
-      return new NodeStatus(
-          UUID.fromString((String) raw.get("id")),
-          new URI((String) raw.get("uri")),
-          ((Number) raw.get("maxSessions")).intValue(),
-          readCapacityNamed(raw, "stereotypes"),
-          sessions);
-    } catch (URISyntaxException e) {
-      throw new JsonException(e);
-    }
-  }
-
-  private static Map<Capabilities, Integer> readCapacityNamed(
-      Map<String, Object> raw,
-      String name) {
-    ImmutableMap.Builder<Capabilities, Integer> capacity = ImmutableMap.builder();
-    ((Collection<?>) raw.get(name)).forEach(obj -> {
-      Map<?, ?> cap = (Map<?, ?>) obj;
-      capacity.put(
-          new ImmutableCapabilities((Map<?, ?>) cap.get("capabilities")),
-          ((Number) cap.get("count")).intValue());
-    });
-
-    return capacity.build();
-  }
-
-  public static class Active {
-
-    private final Capabilities stereotype;
-    private final SessionId id;
-    private final Capabilities currentCapabilities;
-
-    public Active(Capabilities stereotype, SessionId id, Capabilities currentCapabilities) {
-      this.stereotype = ImmutableCapabilities.copyOf(Objects.requireNonNull(stereotype));
-      this.id = Objects.requireNonNull(id);
-      this.currentCapabilities =
-          ImmutableCapabilities.copyOf(Objects.requireNonNull(currentCapabilities));
-    }
-
-    public Capabilities getStereotype() {
-      return stereotype;
-    }
-
-    public SessionId getSessionId() {
-      return id;
-    }
-
-    public Capabilities getCurrentCapabilities() {
-      return currentCapabilities;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-      if (!(o instanceof Active)) {
-        return false;
-      }
-      Active that = (Active) o;
-      return Objects.equals(this.getStereotype(), that.getStereotype()) &&
-             Objects.equals(this.id, that.id) &&
-             Objects.equals(this.getCurrentCapabilities(), that.getCurrentCapabilities());
-    }
-
-    @Override
-    public int hashCode() {
-      return Objects.hash(getStereotype(), id, getCurrentCapabilities());
-    }
-
-    private Map<String, Object> toJson() {
-      return ImmutableMap.of(
-          "sessionId", getSessionId(),
-          "stereotype", getStereotype(),
-          "currentCapabilities", getCurrentCapabilities());
-    }
-
-    private static Active fromJson(Map<String, Object> raw) {
-      SessionId id = new SessionId((String) raw.get("sessionId"));
-      Capabilities stereotype = new ImmutableCapabilities((Map<?, ?>) raw.get("stereotype"));
-      Capabilities current = new ImmutableCapabilities((Map<?, ?>) raw.get("currentCapabilities"));
-
-      return new Active(stereotype, id, current);
-    }
+    return unmodifiableMap(toReturn);
   }
 }

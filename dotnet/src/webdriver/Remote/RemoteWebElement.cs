@@ -23,8 +23,10 @@ using System.Drawing;
 using System.Globalization;
 using System.IO;
 using System.IO.Compression;
+using System.Linq;
 using OpenQA.Selenium.Interactions.Internal;
 using OpenQA.Selenium.Internal;
+using System.Text;
 
 namespace OpenQA.Selenium.Remote
 {
@@ -33,7 +35,7 @@ namespace OpenQA.Selenium.Remote
     /// </summary>
     /// <seealso cref="IWebElement"/>
     /// <seealso cref="ILocatable"/>
-    public class RemoteWebElement : IWebElement, IFindsByLinkText, IFindsById, IFindsByName, IFindsByTagName, IFindsByClassName, IFindsByXPath, IFindsByPartialLinkText, IFindsByCssSelector, IWrapsDriver, ILocatable, ITakesScreenshot, IWebElementReference
+    public class RemoteWebElement : IWebElement, IFindsByLinkText, IFindsById, IFindsByName, IFindsByTagName, IFindsByClassName, IFindsByXPath, IFindsByPartialLinkText, IFindsByCssSelector, IFindsElement, IWrapsDriver, ILocatable, ITakesScreenshot, IWebElementReference
     {
         /// <summary>
         /// The property name that represents a web element in the wire protocol.
@@ -216,6 +218,38 @@ namespace OpenQA.Selenium.Remote
         }
 
         /// <summary>
+        /// Gets the computed accessible label of this element.
+        /// </summary>
+        public virtual string ComputedAccessibleLabel
+        {
+            get
+            {
+                Dictionary<string, object> parameters = new Dictionary<string, object>();
+                parameters.Add("id", this.Id);
+                Response commandResponse = this.Execute(DriverCommand.GetComputedAccessibleLabel, parameters);
+                return commandResponse.Value.ToString();
+            }
+        }
+
+        /// <summary>
+        /// Gets the computed ARIA role for this element.
+        /// </summary>
+        public virtual string ComputedAccessibleRole
+        {
+            get
+            {
+                // TODO: Returning this as a string is incorrect. The W3C WebDriver Specification
+                // needs to be updated to more throughly document the structure of what is returned
+                // by this command. Once that is done, a type-safe class will be created, and will
+                // be returned by this property.
+                Dictionary<string, object> parameters = new Dictionary<string, object>();
+                parameters.Add("id", this.Id);
+                Response commandResponse = this.Execute(DriverCommand.GetComputedAccessibleRole, parameters);
+                return commandResponse.Value.ToString();
+            }
+        }
+
+        /// <summary>
         /// Gets the coordinates identifying the location of this element using
         /// various frames of reference.
         /// </summary>
@@ -279,9 +313,15 @@ namespace OpenQA.Selenium.Remote
                 throw new ArgumentNullException("text", "text cannot be null");
             }
 
-            if (this.driver.FileDetector.IsFile(text))
+            var fileNames = text.Split('\n');
+            if (fileNames.All(this.driver.FileDetector.IsFile))
             {
-                text = this.UploadFile(text);
+                var uploadResults = new List<string>();
+                foreach (var fileName in fileNames)
+                {
+                    uploadResults.Add(this.UploadFile(fileName));
+                }
+                text = string.Join("\n", uploadResults);
             }
 
             // N.B. The Java remote server expects a CharSequence as the value input to
@@ -345,15 +385,15 @@ namespace OpenQA.Selenium.Remote
         }
 
         /// <summary>
-        /// Gets the value of the specified attribute for this element.
+        /// Gets the value of the specified attribute or property for this element.
         /// </summary>
-        /// <param name="attributeName">The name of the attribute.</param>
-        /// <returns>The attribute's current value. Returns a <see langword="null"/> if the
-        /// value is not set.</returns>
+        /// <param name="attributeName">The name of the attribute or property.</param>
+        /// <returns>The attribute's or property's current value. Returns a <see langword="null"/>
+        /// if the value is not set.</returns>
         /// <remarks>The <see cref="GetAttribute"/> method will return the current value
-        /// of the attribute, even if the value has been modified after the page has been
-        /// loaded. Note that the value of the following attributes will be returned even if
-        /// there is no explicit attribute on the element:
+        /// of the attribute or property, even if the value has been modified after the page
+        /// has been loaded. Note that the value of the following attributes will be returned
+        /// even if there is no explicit attribute on the element:
         /// <list type="table">
         /// <listheader>
         /// <term>Attribute name</term>
@@ -376,6 +416,9 @@ namespace OpenQA.Selenium.Remote
         /// <description>Input and other UI elements</description>
         /// </item>
         /// </list>
+        /// The method looks both in declared attributes in the HTML markup of the page, and
+        /// in the properties of the element as found when accessing the element's properties
+        /// via JavaScript.
         /// </remarks>
         /// <exception cref="StaleElementReferenceException">Thrown when the target element is no longer valid in the document DOM.</exception>
         public virtual string GetAttribute(string attributeName)
@@ -407,13 +450,59 @@ namespace OpenQA.Selenium.Remote
         }
 
         /// <summary>
+        /// Gets the value of a declared HTML attribute of this element.
+        /// </summary>
+        /// <param name="attributeName">The name of the HTML attribute to get the value of.</param>
+        /// <returns>The HTML attribute's current value. Returns a <see langword="null"/> if the
+        /// value is not set or the declared attribute does not exist.</returns>
+        /// <exception cref="StaleElementReferenceException">Thrown when the target element is no longer valid in the document DOM.</exception>
+        /// <remarks>
+        /// As opposed to the <see cref="GetAttribute(string)"/> method, this method
+        /// only returns attributes declared in the element's HTML markup. To access the value
+        /// of an IDL property of the element, either use the <see cref="GetAttribute(string)"/>
+        /// method or the <see cref="GetDomProperty(string)"/> method.
+        /// </remarks>
+        public virtual string GetDomAttribute(string attributeName)
+        {
+            string attributeValue = string.Empty;
+            Dictionary<string, object> parameters = new Dictionary<string, object>();
+            parameters.Add("id", this.Id);
+            parameters.Add("name", attributeName);
+
+            Response commandResponse = this.Execute(DriverCommand.GetElementAttribute, parameters);
+            if (commandResponse.Value == null)
+            {
+                attributeValue = null;
+            }
+            else
+            {
+                attributeValue = commandResponse.Value.ToString();
+            }
+
+            return attributeValue;
+        }
+
+        /// <summary>
         /// Gets the value of a JavaScript property of this element.
         /// </summary>
-        /// <param name="propertyName">The name JavaScript the JavaScript property to get the value of.</param>
+        /// <param name="propertyName">The name of the JavaScript property to get the value of.</param>
         /// <returns>The JavaScript property's current value. Returns a <see langword="null"/> if the
         /// value is not set or the property does not exist.</returns>
         /// <exception cref="StaleElementReferenceException">Thrown when the target element is no longer valid in the document DOM.</exception>
+        [Obsolete("Use the GetDomProperty method instead.")]
         public virtual string GetProperty(string propertyName)
+        {
+            return this.GetDomProperty(propertyName);
+        }
+
+        /// <summary>
+        /// Gets the value of a JavaScript property of this element.
+        /// </summary>
+        /// <param name="propertyName">The name of the JavaScript property to get the value of.</param>
+        /// <returns>The JavaScript property's current value. Returns a <see langword="null"/> if the
+        /// value is not set or the property does not exist.</returns>
+        /// <exception cref="StaleElementReferenceException">Thrown when the target element is no longer valid in the document DOM.</exception>
+        public virtual string GetDomProperty(string propertyName)
         {
             string propertyValue = string.Empty;
             Dictionary<string, object> parameters = new Dictionary<string, object>();
@@ -532,7 +621,7 @@ namespace OpenQA.Selenium.Remote
         /// </example>
         public virtual IWebElement FindElementById(string id)
         {
-            return this.FindElement("css selector", "#" + RemoteWebDriver.EscapeCssSelector(id));
+            return this.FindElement("css selector", "#" + By.EscapeCssSelector(id));
         }
 
         /// <summary>
@@ -548,7 +637,7 @@ namespace OpenQA.Selenium.Remote
         /// </example>
         public virtual ReadOnlyCollection<IWebElement> FindElementsById(string id)
         {
-            return this.FindElements("css selector", "#" + RemoteWebDriver.EscapeCssSelector(id));
+            return this.FindElements("css selector", "#" + By.EscapeCssSelector(id));
         }
 
         /// <summary>
@@ -628,7 +717,7 @@ namespace OpenQA.Selenium.Remote
         /// </example>
         public virtual IWebElement FindElementByClassName(string className)
         {
-            return this.FindElement("css selector", "." + RemoteWebDriver.EscapeCssSelector(className));
+            return this.FindElement("css selector", "." + By.EscapeCssSelector(className));
         }
 
         /// <summary>
@@ -644,7 +733,7 @@ namespace OpenQA.Selenium.Remote
         /// </example>
         public virtual ReadOnlyCollection<IWebElement> FindElementsByClassName(string className)
         {
-            return this.FindElements("css selector", "." + RemoteWebDriver.EscapeCssSelector(className));
+            return this.FindElements("css selector", "." + By.EscapeCssSelector(className));
         }
 
         /// <summary>
@@ -733,6 +822,38 @@ namespace OpenQA.Selenium.Remote
         }
 
         /// <summary>
+        /// Finds a child element matching the given mechanism and value.
+        /// </summary>
+        /// <param name="mechanism">The mechanism by which to find the element.</param>
+        /// <param name="value">The value to use to search for the element.</param>
+        /// <returns>The first <see cref="IWebElement"/> matching the given criteria.</returns>
+        public virtual IWebElement FindElement(string mechanism, string value)
+        {
+            Dictionary<string, object> parameters = new Dictionary<string, object>();
+            parameters.Add("id", this.elementId);
+            parameters.Add("using", mechanism);
+            parameters.Add("value", value);
+            Response commandResponse = this.Execute(DriverCommand.FindChildElement, parameters);
+            return this.driver.GetElementFromResponse(commandResponse);
+        }
+
+        /// <summary>
+        /// Finds all child elements matching the given mechanism and value.
+        /// </summary>
+        /// <param name="mechanism">The mechanism by which to find the elements.</param>
+        /// <param name="value">The value to use to search for the elements.</param>
+        /// <returns>A collection of all of the <see cref="IWebElement">IWebElements</see> matching the given criteria.</returns>
+        public virtual ReadOnlyCollection<IWebElement> FindElements(string mechanism, string value)
+        {
+            Dictionary<string, object> parameters = new Dictionary<string, object>();
+            parameters.Add("id", this.elementId);
+            parameters.Add("using", mechanism);
+            parameters.Add("value", value);
+            Response commandResponse = this.Execute(DriverCommand.FindChildElements, parameters);
+            return this.driver.GetElementsFromResponse(commandResponse);
+        }
+
+        /// <summary>
         /// Gets a <see cref="Screenshot"/> object representing the image of this element on the screen.
         /// </summary>
         /// <returns>A <see cref="Screenshot"/> object containing the image.</returns>
@@ -815,37 +936,6 @@ namespace OpenQA.Selenium.Remote
         }
 
         /// <summary>
-        /// Finds a child element matching the given mechanism and value.
-        /// </summary>
-        /// <param name="mechanism">The mechanism by which to find the element.</param>
-        /// <param name="value">The value to use to search for the element.</param>
-        /// <returns>The first <see cref="IWebElement"/> matching the given criteria.</returns>
-        protected virtual IWebElement FindElement(string mechanism, string value)
-        {
-            Dictionary<string, object> parameters = new Dictionary<string, object>();
-            parameters.Add("id", this.elementId);
-            parameters.Add("using", mechanism);
-            parameters.Add("value", value);
-            Response commandResponse = this.Execute(DriverCommand.FindChildElement, parameters);
-            return this.driver.GetElementFromResponse(commandResponse);
-        }
-
-        /// <summary>
-        /// Finds all child elements matching the given mechanism and value.
-        /// </summary>
-        /// <param name="mechanism">The mechanism by which to find the elements.</param>
-        /// <param name="value">The value to use to search for the elements.</param>
-        /// <returns>A collection of all of the <see cref="IWebElement">IWebElements</see> matching the given criteria.</returns>
-        protected virtual ReadOnlyCollection<IWebElement> FindElements(string mechanism, string value) {
-            Dictionary<string, object> parameters = new Dictionary<string, object>();
-            parameters.Add("id", this.elementId);
-            parameters.Add("using", mechanism);
-            parameters.Add("value", value);
-            Response commandResponse = this.Execute(DriverCommand.FindChildElements, parameters);
-            return this.driver.GetElementsFromResponse(commandResponse);
-        }
-
-        /// <summary>
         /// Executes a command on this element using the specified parameters.
         /// </summary>
         /// <param name="commandToExecute">The <see cref="DriverCommand"/> to execute against this element.</param>
@@ -882,8 +972,8 @@ namespace OpenQA.Selenium.Remote
                     {
                         string fileName = Path.GetFileName(localFile);
                         zipArchive.CreateEntryFromFile(localFile, fileName);
-                        base64zip = Convert.ToBase64String(fileUploadMemoryStream.ToArray());
                     }
+                    base64zip = Convert.ToBase64String(fileUploadMemoryStream.ToArray());
                 }
 
                 Dictionary<string, object> parameters = new Dictionary<string, object>();

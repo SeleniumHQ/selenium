@@ -38,6 +38,6 @@ public class IsSomethingSelected extends SeleneseCommand<Boolean> {
   protected Boolean handleSeleneseCommand(WebDriver driver, String selectLocator, String ignored) {
     Object value = library.executeScript(driver, script, selectLocator);
 
-    return Boolean.TRUE == value;
+    return Boolean.TRUE.equals(value);
   }
 }

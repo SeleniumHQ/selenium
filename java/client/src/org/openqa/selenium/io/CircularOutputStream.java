@@ -18,6 +18,7 @@
 package org.openqa.selenium.io;
 
 import java.io.OutputStream;
+import java.nio.charset.Charset;
 
 /**
  * Captures the last N bytes of output.
@@ -59,7 +60,7 @@ public class CircularOutputStream extends OutputStream {
     // Handle the partially filled array as a special case
     if (!filled) {
       System.arraycopy(buffer, 0, toReturn, 0, end);
-      return new String(toReturn);
+      return new String(toReturn, Charset.defaultCharset());
     }
 
     int copyStart = buffer.length - start;
@@ -69,6 +70,6 @@ public class CircularOutputStream extends OutputStream {
 
     System.arraycopy(buffer, start, toReturn, 0, copyStart);
     System.arraycopy(buffer, 0, toReturn, copyStart, end);
-    return new String(toReturn);
+    return new String(toReturn, Charset.defaultCharset());
   }
 }

@@ -5,6 +5,9 @@ java_test_suite(
     name = "SmallTests",
     size = "small",
     srcs = glob(["*Test.java"]),
+    resources = [
+        "packaged-file.txt",
+    ],
     tags = [
         "no-sandbox",
     ],
@@ -12,11 +15,12 @@ java_test_suite(
         "//java/client/src/org/openqa/selenium/json",
         "//java/client/src/org/openqa/selenium/remote",
         "//java/client/src/org/openqa/selenium/remote/http",
+        "//java/client/test/org/openqa/selenium/remote/tracing:tracing-support",
         "//java/server/src/org/openqa/selenium/grid/web",
         artifact("com.google.guava:guava"),
         artifact("junit:junit"),
         artifact("org.assertj:assertj-core"),
         artifact("org.mockito:mockito-core"),
-        artifact("io.opentracing:opentracing-noop"),
+        artifact("io.opentelemetry:opentelemetry-api"),
     ],
 )

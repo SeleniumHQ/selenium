@@ -24,6 +24,7 @@ import static org.openqa.selenium.Platform.ANDROID;
 import static org.openqa.selenium.support.ui.ExpectedConditions.not;
 import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOf;
 import static org.openqa.selenium.testing.drivers.Browser.HTMLUNIT;
+import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
 
 import org.junit.Test;
 import org.openqa.selenium.testing.JUnit4TestBase;
@@ -65,6 +66,7 @@ public class VisibilityTest extends JUnit4TestBase {
   }
 
   @Test
+  @NotYetImplemented(SAFARI)
   public void testShouldModifyTheVisibilityOfAnElementDynamically() {
     driver.get(pages.javascriptPage);
 
@@ -107,6 +109,7 @@ public class VisibilityTest extends JUnit4TestBase {
   }
 
   @Test
+  @NotYetImplemented(SAFARI)
   public void testZeroSizedDivIsShownIfDescendantHasSize() {
     driver.get(pages.javascriptPage);
 

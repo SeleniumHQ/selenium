@@ -14,6 +14,12 @@
 # KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
 # under the License.
+
+from typing import NoReturn
+from selenium.webdriver.common.options import BaseOptions
+from selenium.webdriver.common.service import Service
+from selenium.webdriver.edge.options import Options as EdgeOptions
+from selenium.webdriver.chrome.options import Options as ChromeOptions
 import warnings
 
 from selenium.webdriver.chromium.remote_connection import ChromiumRemoteConnection
@@ -21,6 +27,7 @@ from selenium.webdriver.remote.webdriver import WebDriver as RemoteWebDriver
 
 DEFAULT_PORT = 0
 DEFAULT_SERVICE_LOG_PATH = None
+DEFAULT_KEEP_ALIVE = None
 
 
 class ChromiumDriver(RemoteWebDriver):
@@ -28,28 +35,26 @@ class ChromiumDriver(RemoteWebDriver):
     Controls the WebDriver instance of ChromiumDriver and allows you to drive the browser.
     """
 
-    def __init__(self, executable_path="chromedriver", port=DEFAULT_PORT,
-                 options=None, service_args=None,
+    def __init__(self, browser_name, vendor_prefix,
+                 port=DEFAULT_PORT, options: BaseOptions = None, service_args=None,
                  desired_capabilities=None, service_log_path=DEFAULT_SERVICE_LOG_PATH,
-                 service=None, keep_alive=True):
+                 service: Service = None, keep_alive=DEFAULT_KEEP_ALIVE):
         """
         Creates a new WebDriver instance of the ChromiumDriver.
         Starts the service and then creates new WebDriver instance of ChromiumDriver.
 
         :Args:
-         - executable_path - Deprecated: path to the executable. If the default is used it assumes the executable is in the $PATH
+         - browser_name - Browser name used when matching capabilities.
+         - vendor_prefix - Company prefix to apply to vendor-specific WebDriver extension commands.
          - port - Deprecated: port you would like the service to run, if left as 0, a free port will be found.
          - options - this takes an instance of ChromiumOptions
          - service_args - Deprecated: List of args to pass to the driver service
          - desired_capabilities - Deprecated: Dictionary object with non-browser specific
            capabilities only, such as "proxy" or "loggingPref".
          - service_log_path - Deprecated: Where to log information from the driver.
-         - keep_alive - Whether to configure ChromiumRemoteConnection to use HTTP keep-alive.
+         - keep_alive - Deprecated: Whether to configure ChromiumRemoteConnection to use HTTP keep-alive.
         """
-        if executable_path != 'chromedriver':
-            warnings.warn('executable_path has been deprecated, please pass in a Service object',
-                          DeprecationWarning, stacklevel=2)
-        if desired_capabilities is not None:
+        if desired_capabilities:
             warnings.warn('desired_capabilities has been deprecated, please pass in a Service object',
                           DeprecationWarning, stacklevel=2)
         if port != DEFAULT_PORT:
@@ -59,18 +64,26 @@ class ChromiumDriver(RemoteWebDriver):
         if service_log_path != DEFAULT_SERVICE_LOG_PATH:
             warnings.warn('service_log_path has been deprecated, please pass in a Service object',
                           DeprecationWarning, stacklevel=2)
-
-        if options is None:
-            # desired_capabilities stays as passed in
-            if desired_capabilities is None:
-                desired_capabilities = self.create_options().to_capabilities()
+        if keep_alive != DEFAULT_KEEP_ALIVE and type(self) == __class__:
+            warnings.warn('keep_alive has been deprecated, please pass in a Service object',
+                          DeprecationWarning, stacklevel=2)
         else:
-            if desired_capabilities is None:
-                desired_capabilities = options.to_capabilities()
-            else:
-                desired_capabilities.update(options.to_capabilities())
+            keep_alive = True
 
-        if service is None:
+        self.vendor_prefix = vendor_prefix
+
+        _ignore_proxy = None
+        if not options:
+            options = self.create_options()
+
+        if desired_capabilities:
+            for key, value in desired_capabilities.items():
+                options.set_capability(key, value)
+
+        if options._ignore_local_proxy:
+            _ignore_proxy = options._ignore_local_proxy
+
+        if not service:
             raise AttributeError('service cannot be None')
 
         self.service = service
@@ -81,8 +94,10 @@ class ChromiumDriver(RemoteWebDriver):
                 self,
                 command_executor=ChromiumRemoteConnection(
                     remote_server_addr=self.service.service_url,
-                    keep_alive=keep_alive),
-                desired_capabilities=desired_capabilities)
+                    browser_name=browser_name, vendor_prefix=vendor_prefix,
+                    keep_alive=keep_alive, ignore_proxy=_ignore_proxy),
+                desired_capabilities=desired_capabilities,
+                options=options)
         except Exception:
             self.quit()
             raise
@@ -103,7 +118,7 @@ class ChromiumDriver(RemoteWebDriver):
         """
         return self.execute("getNetworkConditions")['value']
 
-    def set_network_conditions(self, **network_conditions):
+    def set_network_conditions(self, **network_conditions) -> NoReturn:
         """
         Sets Chromium network emulation settings.
 
@@ -125,7 +140,7 @@ class ChromiumDriver(RemoteWebDriver):
             'network_conditions': network_conditions
         })
 
-    def execute_cdp_cmd(self, cmd, cmd_args):
+    def execute_cdp_cmd(self, cmd: str, cmd_args: dict):
         """
         Execute Chrome Devtools Protocol command and get returned result
         The command and command args should follow chrome devtools protocol domains/commands, refer to link
@@ -144,7 +159,7 @@ class ChromiumDriver(RemoteWebDriver):
         """
         return self.execute("executeCdpCommand", {'cmd': cmd, 'params': cmd_args})['value']
 
-    def get_sinks(self):
+    def get_sinks(self) -> list:
         """
         :Returns: A list of sinks avaliable for Cast.
         """
@@ -156,7 +171,7 @@ class ChromiumDriver(RemoteWebDriver):
         """
         return self.execute('getIssueMessage')['value']
 
-    def set_sink_to_use(self, sink_name):
+    def set_sink_to_use(self, sink_name: str) -> str:
         """
         Sets a specific sink, using its name, as a Cast session receiver target.
 
@@ -165,7 +180,7 @@ class ChromiumDriver(RemoteWebDriver):
         """
         return self.execute('setSinkToUse', {'sinkName': sink_name})
 
-    def start_tab_mirroring(self, sink_name):
+    def start_tab_mirroring(self, sink_name: str) -> str:
         """
         Starts a tab mirroring session on a specific receiver target.
 
@@ -174,7 +189,7 @@ class ChromiumDriver(RemoteWebDriver):
         """
         return self.execute('startTabMirroring', {'sinkName': sink_name})
 
-    def stop_casting(self, sink_name):
+    def stop_casting(self, sink_name: str) -> str:
         """
         Stops the existing Cast session on a specific receiver target.
 
@@ -183,7 +198,7 @@ class ChromiumDriver(RemoteWebDriver):
         """
         return self.execute('stopCasting', {'sinkName': sink_name})
 
-    def quit(self):
+    def quit(self) -> NoReturn:
         """
         Closes the browser and shuts down the ChromiumDriver executable
         that is started when starting the ChromiumDriver
@@ -196,5 +211,8 @@ class ChromiumDriver(RemoteWebDriver):
         finally:
             self.service.stop()
 
-    def create_options(self):
-        pass
+    def create_options(self) -> BaseOptions:
+        if self.vendor_prefix == "ms":
+            return EdgeOptions()
+        else:
+            return ChromeOptions()

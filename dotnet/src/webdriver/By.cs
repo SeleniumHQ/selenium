@@ -17,7 +17,10 @@
 // </copyright>
 
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Globalization;
+using System.Text.RegularExpressions;
 using OpenQA.Selenium.Internal;
 
 namespace OpenQA.Selenium
@@ -33,7 +36,15 @@ namespace OpenQA.Selenium
     [Serializable]
     public class By
     {
+        private static readonly string CssSelectorMechanism = "css selector";
+        private static readonly string XPathSelectorMechanism = "xpath";
+        private static readonly string TagNameMechanism = "tag name";
+        private static readonly string LinkTextMechanism = "link text";
+        private static readonly string PartialLinkTextMechanism = "partial link text";
+
         private string description = "OpenQA.Selenium.By";
+        private string mechanism = string.Empty;
+        private string criteria = string.Empty;
         private Func<ISearchContext, IWebElement> findElementMethod;
         private Func<ISearchContext, ReadOnlyCollection<IWebElement>> findElementsMethod;
 
@@ -42,6 +53,23 @@ namespace OpenQA.Selenium
         /// </summary>
         protected By()
         {
+        }
+
+        /// <summary>
+        /// Intializes a new instance of the <see cref="By"/> class using the specified mechanism and critieria for finding elements.
+        /// </summary>
+        /// <param name="mechanism">The mechanism to use in finding elements.</param>
+        /// <param name="criteria">The criteria to use in finding elements.</param>
+        /// <remarks>
+        /// Customizing nothing else, instances using this constructor will attempt to find elemsnts
+        /// using the <see cref="IFindsElement.FindElement(string, string)"/> method, taking string arguments.
+        /// </remarks>
+        protected By(string mechanism, string criteria)
+        {
+            this.mechanism = mechanism;
+            this.criteria = criteria;
+            this.findElementMethod = (ISearchContext context) => ((IFindsElement)context).FindElement(this.mechanism, this.criteria);
+            this.findElementsMethod = (ISearchContext context) => ((IFindsElement)context).FindElements(this.mechanism, this.criteria);
         }
 
         /// <summary>
@@ -56,6 +84,22 @@ namespace OpenQA.Selenium
         {
             this.findElementMethod = findElementMethod;
             this.findElementsMethod = findElementsMethod;
+        }
+
+        /// <summary>
+        /// Gets the value of the mechanism for this <see cref="By"/> class instance.
+        /// </summary>
+        public string Mechanism
+        {
+            get { return this.mechanism; }
+        }
+
+        /// <summary>
+        /// Gets the value of the criteria for this <see cref="By"/> class instance.
+        /// </summary>
+        public string Criteria
+        {
+            get { return this.criteria; }
         }
 
         /// <summary>
@@ -131,11 +175,18 @@ namespace OpenQA.Selenium
                 throw new ArgumentNullException("idToFind", "Cannot find elements with a null id attribute.");
             }
 
-            By by = new By();
-            by.findElementMethod = (ISearchContext context) => ((IFindsById)context).FindElementById(idToFind);
-            by.findElementsMethod = (ISearchContext context) => ((IFindsById)context).FindElementsById(idToFind);
-
+            string selector = By.EscapeCssSelector(idToFind);
+            By by = new By(CssSelectorMechanism, "#" + selector);
             by.description = "By.Id: " + idToFind;
+            if (string.IsNullOrEmpty(selector))
+            {
+                // Finding multiple elements with an empty ID will return
+                // an empty list. However, finding by a CSS selector of '#'
+                // throws an exception, even in the multiple elements case,
+                // which means we need to short-circuit that behavior.
+                by.findElementsMethod = (ISearchContext context) => new List<IWebElement>().AsReadOnly();
+            }
+
             return by;
         }
 
@@ -151,12 +202,7 @@ namespace OpenQA.Selenium
                 throw new ArgumentNullException("linkTextToFind", "Cannot find elements when link text is null.");
             }
 
-            By by = new By();
-            by.findElementMethod =
-                (ISearchContext context) => ((IFindsByLinkText)context).FindElementByLinkText(linkTextToFind);
-            by.findElementsMethod =
-                (ISearchContext context) => ((IFindsByLinkText)context).FindElementsByLinkText(linkTextToFind);
-
+            By by = new By(LinkTextMechanism, linkTextToFind);
             by.description = "By.LinkText: " + linkTextToFind;
             return by;
         }
@@ -173,10 +219,8 @@ namespace OpenQA.Selenium
                 throw new ArgumentNullException("nameToFind", "Cannot find elements when name text is null.");
             }
 
-            By by = new By();
-            by.findElementMethod = (ISearchContext context) => ((IFindsByName)context).FindElementByName(nameToFind);
-            by.findElementsMethod = (ISearchContext context) => ((IFindsByName)context).FindElementsByName(nameToFind);
-
+            string selector = "*[name =\"" + By.EscapeCssSelector(nameToFind) + "\"]";
+            By by = new By(CssSelectorMechanism, selector);
             by.description = "By.Name: " + nameToFind;
             return by;
         }
@@ -196,11 +240,7 @@ namespace OpenQA.Selenium
                 throw new ArgumentNullException("xpathToFind", "Cannot find elements when the XPath expression is null.");
             }
 
-            By by = new By();
-            by.findElementMethod = (ISearchContext context) => ((IFindsByXPath)context).FindElementByXPath(xpathToFind);
-            by.findElementsMethod =
-                (ISearchContext context) => ((IFindsByXPath)context).FindElementsByXPath(xpathToFind);
-
+            By by = new By(XPathSelectorMechanism, xpathToFind);
             by.description = "By.XPath: " + xpathToFind;
             return by;
         }
@@ -220,12 +260,17 @@ namespace OpenQA.Selenium
                 throw new ArgumentNullException("classNameToFind", "Cannot find elements when the class name expression is null.");
             }
 
-            By by = new By();
-            by.findElementMethod =
-                (ISearchContext context) => ((IFindsByClassName)context).FindElementByClassName(classNameToFind);
-            by.findElementsMethod =
-                (ISearchContext context) => ((IFindsByClassName)context).FindElementsByClassName(classNameToFind);
+            string selector = "." + By.EscapeCssSelector(classNameToFind);
+            if (selector.Contains(" "))
+            {
+                // Finding elements by class name with whitespace is not allowed.
+                // However, converting the single class name to a valid CSS selector
+                // by prepending a '.' may result in a still-valid, but incorrect
+                // selector. Thus, we short-ciruit that behavior here.
+                throw new InvalidSelectorException("Compound class names not allowed. Cannot have whitespace in class name. Use CSS selectors instead.");
+            }
 
+            By by = new By(CssSelectorMechanism, selector);
             by.description = "By.ClassName[Contains]: " + classNameToFind;
             return by;
         }
@@ -237,14 +282,12 @@ namespace OpenQA.Selenium
         /// <returns>A <see cref="By"/> object the driver can use to find the elements.</returns>
         public static By PartialLinkText(string partialLinkTextToFind)
         {
-            By by = new By();
-            by.findElementMethod =
-                (ISearchContext context) =>
-                ((IFindsByPartialLinkText)context).FindElementByPartialLinkText(partialLinkTextToFind);
-            by.findElementsMethod =
-                (ISearchContext context) =>
-                ((IFindsByPartialLinkText)context).FindElementsByPartialLinkText(partialLinkTextToFind);
+            if (partialLinkTextToFind == null)
+            {
+                throw new ArgumentNullException("partialLinkTextToFind", "Cannot find elements when partial link text is null.");
+            }
 
+            By by = new By(PartialLinkTextMechanism, partialLinkTextToFind);
             by.description = "By.PartialLinkText: " + partialLinkTextToFind;
             return by;
         }
@@ -261,12 +304,7 @@ namespace OpenQA.Selenium
                 throw new ArgumentNullException("tagNameToFind", "Cannot find elements when name tag name is null.");
             }
 
-            By by = new By();
-            by.findElementMethod =
-                (ISearchContext context) => ((IFindsByTagName)context).FindElementByTagName(tagNameToFind);
-            by.findElementsMethod =
-                (ISearchContext context) => ((IFindsByTagName)context).FindElementsByTagName(tagNameToFind);
-
+            By by = new By(TagNameMechanism, tagNameToFind);
             by.description = "By.TagName: " + tagNameToFind;
             return by;
         }
@@ -283,12 +321,7 @@ namespace OpenQA.Selenium
                 throw new ArgumentNullException("cssSelectorToFind", "Cannot find elements when name CSS selector is null.");
             }
 
-            By by = new By();
-            by.findElementMethod =
-                (ISearchContext context) => ((IFindsByCssSelector)context).FindElementByCssSelector(cssSelectorToFind);
-            by.findElementsMethod =
-                (ISearchContext context) => ((IFindsByCssSelector)context).FindElementsByCssSelector(cssSelectorToFind);
-
+            By by = new By(CssSelectorMechanism, cssSelectorToFind);
             by.description = "By.CssSelector: " + cssSelectorToFind;
             return by;
         }
@@ -347,6 +380,22 @@ namespace OpenQA.Selenium
         public override int GetHashCode()
         {
             return this.description.GetHashCode();
+        }
+
+        /// <summary>
+        /// Escapes invalid characters in a CSS selector.
+        /// </summary>
+        /// <param name="selector">The selector to escape.</param>
+        /// <returns>The selector with invalid characters escaped.</returns>
+        internal static string EscapeCssSelector(string selector)
+        {
+            string escaped = Regex.Replace(selector, @"([ '""\\#.:;,!?+<>=~*^$|%&@`{}\-/\[\]\(\)])", @"\$1");
+            if (selector.Length > 0 && char.IsDigit(selector[0]))
+            {
+                escaped = @"\" + (30 + int.Parse(selector.Substring(0, 1), CultureInfo.InvariantCulture)).ToString(CultureInfo.InvariantCulture) + " " + selector.Substring(1);
+            }
+
+            return escaped;
         }
     }
 }

@@ -16,6 +16,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 -->
 <html>
+
 <head>
   <title>attribute_test.html</title>
   <script src="test_bootstrap.js"></script>
@@ -25,30 +26,31 @@ limitations under the License.
     goog.require('goog.events.EventType');
     goog.require('goog.testing.jsunit');
   </script>
+  <meta charset="UTF-8">
   <script type="text/javascript">
     function testCanFindNamedAttributes() {
-      var e = bot.locators.findElement({id: 'cheddar'});
+      var e = bot.locators.findElement({ id: 'cheddar' });
       assertAttributeEquals('cheese', e, 'name');
     }
 
     function testCanFindAttributesOnTheExpando() {
-      var e = bot.locators.findElement({id: 'cheddar'});
+      var e = bot.locators.findElement({ id: 'cheddar' });
       assertAttributeEquals('lovely', e, 'unknown');
     }
 
     function testShouldReturnClassAttribute() {
-      var e = bot.locators.findElement({id: 'cheddar'});
+      var e = bot.locators.findElement({ id: 'cheddar' });
       assertAttributeEquals('tasty', e, 'class');
     }
 
     function testShouldReturnNullForMissingAttributes() {
-      var e = bot.locators.findElement({id: 'checky'});
+      var e = bot.locators.findElement({ id: 'checky' });
       assertAttributeEquals(null, e, 'never_there');
       assertAttributeEquals(null, e, 'class');
     }
 
     function testShouldReturnAnEmptyStringWhenAttributesValueIsAnEmptyString() {
-      var e = bot.locators.findElement({id: 'cheddar'});
+      var e = bot.locators.findElement({ id: 'cheddar' });
       assertAttributeEquals('', e, 'empty');
     }
 
@@ -58,46 +60,52 @@ limitations under the License.
         assertEquals(String(elem.getAttribute(attr)), value);
       }
 
-      var e = bot.locators.findElement({id: 'selecty'});
+      var e = bot.locators.findElement({ id: 'selecty' });
       assertPresentBooleanAttr(e, 'selected');
 
-      var e = bot.locators.findElement({id: 'checky'});
+      var e = bot.locators.findElement({ id: 'checky' });
       assertPresentBooleanAttr(e, 'disabled');
       assertPresentBooleanAttr(e, 'readonly');
       assertPresentBooleanAttr(e, 'checked');
     }
 
     function testReturnNullForAbsentBooleanAttributes() {
-      var e = bot.locators.findElement({id: 'unselecty'});
+      var e = bot.locators.findElement({ id: 'unselecty' });
       assertAttributeEquals(null, e, 'selected');
 
-      var e = bot.locators.findElement({id: 'unchecky'});
+      var e = bot.locators.findElement({ id: 'unchecky' });
       assertAttributeEquals(null, e, 'disabled');
       assertAttributeEquals(null, e, 'readonly');
       assertAttributeEquals(null, e, 'checked');
     }
 
     function testCanGetValueAttributeFromInput() {
-      var input = bot.locators.findElement({id: 'unchecky'});
-      var option = bot.locators.findElement({id: 'unselecty'});
+      var input = bot.locators.findElement({ id: 'unchecky' });
+      var option = bot.locators.findElement({ id: 'unselecty' });
 
       assertAttributeEquals('unchecky', input, 'value');
       assertAttributeEquals('unselecty', option, 'value');
     }
 
     function testAttributeMatchesAreCaseInsensitive() {
-      var e = bot.locators.findElement({id: 'checky'});
+      var e = bot.locators.findElement({ id: 'checky' });
       assertAttributeEquals(bot.dom.getAttribute(e, 'readonly'), e, 'readOnly');
       assertAttributeEquals(bot.dom.getAttribute(e, 'name'), e, 'NaMe');
     }
 
+    function testAttributeDoesNotChangeTheTypeOfTheAttribute() {
+      var e = bot.locators.findElement({ id: 'aValue' });
+      assertAttributeEquals("4b273a33fbbd29013nN93dy4F1A~", e, "value");
+    }
+
     function assertAttributeEquals(expected, elem, attr) {
       assertEquals('Expected attribute "' + attr + '" to equal "' +
-          expected + '"', expected, bot.dom.getAttribute(elem, attr));
+        expected + '"', expected, bot.dom.getAttribute(elem, attr));
     }
 
   </script>
 </head>
+
 <body>
   <div id="cheddar" name="cheese" class="tasty" unknown="lovely" empty="">Cheddar</div>
 
@@ -107,8 +115,10 @@ limitations under the License.
       <option id="unselecty" value="unselecty">unselecty</option>
     </select>
     <!-- Setting checked="false" but getAttribute should be non-null. -->
-    <input id="checky" type="checkbox" disabled readonly="readonly" checked="false"/>
-    <input id="unchecky" type="checkbox" value="unchecky"/>
+    <input id="checky" type="checkbox" disabled readonly="readonly" checked="false" />
+    <input id="unchecky" type="checkbox" value="unchecky" />
   </form>
+  <li id=aValue value="4b273a33fbbd29013nN93dy4F1A~" class="cur"></li>
 </body>
+
 </html>

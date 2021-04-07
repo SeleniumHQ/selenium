@@ -17,8 +17,6 @@
 
 package org.openqa.selenium.io;
 
-import org.openqa.selenium.Platform;
-
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -48,7 +46,7 @@ public class FileHandler {
     String arch = Objects.requireNonNull(System.getProperty("os.arch")).toLowerCase() + "/";
     List<String> alternatives =
         Arrays.asList(name, "/" + name, arch + name, "/" + arch + name);
-    if (Platform.getCurrent().is(Platform.MAC)) {
+    if (System.getProperty("os.name").toLowerCase().contains("mac")) {
       alternatives.add("mac/" + name);
       alternatives.add("/mac/" + name);
     }

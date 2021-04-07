@@ -1080,12 +1080,5 @@ namespace OpenQA.Selenium
             IWebElement element = driver.FindElement(By.LinkText("link with \\ (backslash)"));
             Assert.AreEqual("backslash", element.GetAttribute("id"));
         }
-
-        private bool SupportsSelectorApi()
-        {
-            IJavaScriptExecutor javascriptDriver = driver as IJavaScriptExecutor;
-            IFindsByCssSelector cssSelectorDriver = driver as IFindsByCssSelector;
-            return (cssSelectorDriver != null) && (javascriptDriver != null);
-        }
     }
 }

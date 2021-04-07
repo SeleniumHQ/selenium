@@ -1,6 +1,6 @@
 {
   "name": "selenium-webdriver",
-  "version": "4.0.0-alpha.5",
+  "version": "4.0.0-beta.2",
   "description": "The official WebDriver JavaScript bindings from the Selenium project",
   "license": "Apache-2.0",
   "keywords": [
@@ -10,7 +10,7 @@
     "webdriver",
     "webdriverjs"
   ],
-  "homepage": "https://github.com/SeleniumHQ/selenium",
+  "homepage": "https://github.com/SeleniumHQ/selenium/tree/trunk/javascript/node/selenium-webdriver#readme",
   "bugs": {
     "url": "https://github.com/SeleniumHQ/selenium/issues"
   },
@@ -23,21 +23,28 @@
     "node": ">= 10.15.0"
   },
   "dependencies": {
-    "jszip": "^3.1.5",
-    "rimraf": "^2.6.3",
-    "tmp": "0.0.30",
-    "xml2js": "^0.4.19"
+    "jszip": "^3.5.0",
+    "rimraf": "^2.7.1",
+    "tmp": "^0.2.1",
+    "ws": "^7.3.1"
   },
   "devDependencies": {
-    "express": "^4.16.4",
-    "jasmine": "^3.3.1",
-    "mocha": "^5.2.0",
-    "multer": "^1.4.1",
+    "eslint": "^7.15.0",
+    "eslint-config-prettier": "^7.0.0",
+    "eslint-plugin-no-only-tests": "^2.4.0",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-prettier": "^3.2.0",
+    "express": "^4.17.1",
+    "jasmine": "^3.6.1",
+    "mocha": "^8.1.0",
+    "multer": "^1.4.2",
+    "prettier": "^2.2.1",
     "serve-index": "^1.9.1",
-    "sinon": "^7.2.3"
+    "sinon": "^7.5.0"
   },
   "scripts": {
-    "test": "mocha -t 600000 --recursive test",
+    "lint": "eslint --ignore-pattern node_modules --ignore-pattern generator --ext js lib/http.js \"**/*.js\"",
+    "test": "npm run lint && mocha -t 600000 --recursive test",
     "test-jasmine": "jasmine JASMINE_CONFIG_PATH=jasmine.json"
   },
   "mocha": {

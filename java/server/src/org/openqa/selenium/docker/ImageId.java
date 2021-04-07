@@ -17,6 +17,8 @@
 
 package org.openqa.selenium.docker;
 
+import org.openqa.selenium.internal.Require;
+
 import java.util.Objects;
 
 public class ImageId {
@@ -24,7 +26,7 @@ public class ImageId {
   private final String id;
 
   public ImageId(String id) {
-    this.id = Objects.requireNonNull(id);
+    this.id = Require.nonNull("Image id", id);
   }
 
   @Override

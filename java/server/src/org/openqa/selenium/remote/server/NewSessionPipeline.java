@@ -26,11 +26,11 @@ import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.grid.data.CreateSessionRequest;
 import org.openqa.selenium.grid.session.ActiveSession;
 import org.openqa.selenium.grid.session.SessionFactory;
+import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.NewSessionPayload;
 
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Function;
 
@@ -106,18 +106,18 @@ public class NewSessionPipeline {
     }
 
     public Builder add(SessionFactory factory) {
-      factories.add(Objects.requireNonNull(factory, "Factory must not be null"));
+      factories.add(Require.nonNull("Factory", factory));
       return this;
     }
 
     public Builder fallback(SessionFactory factory) {
-      fallback = Objects.requireNonNull(factory, "Fallback must not be null");
+      fallback = Require.nonNull("Fallback", factory);
       return this;
     }
 
     public Builder addCapabilitiesMutator(
         Function<Capabilities, Capabilities> mutator) {
-      mutators.add(Objects.requireNonNull(mutator, "Mutator must not be null"));
+      mutators.add(Require.nonNull("Mutator", mutator));
       return this;
     }
 

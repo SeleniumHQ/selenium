@@ -1,9 +1,12 @@
 {
-  "CaptureWebServerOutput": false,
-  "HideWebServerCommandPrompt": true,
   "DriverServiceLocation": "",
   "ActiveDriverConfig": "Chrome",
   "ActiveWebsiteConfig": "Default",
+  "TestWebServerConfig": {
+    "CaptureConsoleOutput": false,
+    "HideCommandPromptWindow": true,
+    "JavaHomeDirectory": ""
+  },
   "WebsiteConfigs": {
     "Default": {
       "Protocol": "http",

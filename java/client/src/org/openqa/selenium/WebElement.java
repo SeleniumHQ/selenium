@@ -94,6 +94,44 @@ public interface WebElement extends SearchContext, TakesScreenshot {
   String getTagName();
 
   /**
+   * Get the value of the given property of the element. Will return the current value, even if
+   * this has been modified after the page has been loaded.
+   * <p>
+   * See <a href="https://w3c.github.io/webdriver/#get-element-property">W3C WebDriver specification</a>
+   * for more details.
+   *
+   * @param name The name of the property.
+   * @return The property's current value or null if the value is not set.
+   */
+  default String getDomProperty(String name) {
+    throw new UnsupportedOperationException();
+  }
+
+  /**
+   * Get the value of the given attribute of the element.
+   * <p>
+   * This method, unlike {@link #getAttribute(String)}, returns the value of the attribute with the
+   * given name but not the property with the same name.
+   * <p>
+   * The following are deemed to be "boolean" attributes, and will return either "true" or null:
+   * <p>
+   * async, autofocus, autoplay, checked, compact, complete, controls, declare, defaultchecked,
+   * defaultselected, defer, disabled, draggable, ended, formnovalidate, hidden, indeterminate,
+   * iscontenteditable, ismap, itemscope, loop, multiple, muted, nohref, noresize, noshade,
+   * novalidate, nowrap, open, paused, pubdate, readonly, required, reversed, scoped, seamless,
+   * seeking, selected, truespeed, willvalidate
+   * <p>
+   * See <a href="https://w3c.github.io/webdriver/#get-element-attribute">W3C WebDriver specification</a>
+   * for more details.
+   *
+   * @param name The name of the attribute.
+   * @return The attribute's value or null if the value is not set.
+   */
+  default String getDomAttribute(String name) {
+    throw new UnsupportedOperationException();
+  }
+
+  /**
    * Get the value of the given attribute of the element. Will return the current value, even if
    * this has been modified after the page has been loaded.
    * <p>
@@ -119,9 +157,8 @@ public interface WebElement extends SearchContext, TakesScreenshot {
    * <li>If the given name is "readonly", the "readOnly" property is returned.
    * </ul>
    * <i>Note:</i> The reason for this behavior is that users frequently confuse attributes and
-   * properties. If you need to do something more precise, e.g., refer to an attribute even when a
-   * property of the same name exists, then you should evaluate Javascript to obtain the result
-   * you desire.
+   * properties. If you need to do something more precise, use {@link #getDomAttribute(String)}
+   * or {@link #getDomProperty(String)} to obtain the result you desire.
    * <p>
    * See <a href="https://w3c.github.io/webdriver/#get-element-attribute">W3C WebDriver specification</a>
    * for more details.
@@ -130,6 +167,30 @@ public interface WebElement extends SearchContext, TakesScreenshot {
    * @return The attribute/property's current value or null if the value is not set.
    */
   String getAttribute(String name);
+
+  /**
+   * Gets result of computing the WAI-ARIA role of element.
+   * <p>
+   * See <a href="https://www.w3.org/TR/webdriver/#get-computed-role">W3C WebDriver specification</a>
+   * for more details.
+   *
+   * @return the WAI-ARIA role of the element.
+   */
+  default String getAriaRole() {
+    throw new UnsupportedOperationException();
+  }
+
+  /**
+   * Gets result of a Accessible Name and Description Computation for the Accessible Name of the element.
+   * <p>
+   * See <a href="https://www.w3.org/TR/webdriver/#get-computed-label">W3C WebDriver specification</a>
+   * for more details.
+   *
+   * @return the accessible name of the element.
+   */
+  default String getAccessibleName() {
+    throw new UnsupportedOperationException();
+  }
 
   /**
    * Determine whether or not this element is selected or not. This operation only applies to input
@@ -245,9 +306,12 @@ public interface WebElement extends SearchContext, TakesScreenshot {
 
   /**
    * Get the value of a given CSS property.
-   * Color values should be returned as rgba strings, so,
-   * for example if the "background-color" property is set as "green" in the
-   * HTML source, the returned value will be "rgba(0, 255, 0, 1)".
+   * Color values could be returned as rgba or rgb strings.
+   * This depends on whether the browser omits the implicit opacity value or not.
+   *
+   * For example if the "background-color" property is set as "green" in the
+   * HTML source, the returned value could be "rgba(0, 255, 0, 1)" if implicit opacity value is
+   * preserved or "rgb(0, 255, 0)" if it is omitted.
    *
    * Note that shorthand CSS properties (e.g. background, font, border, border-top, margin,
    * margin-top, padding, padding-top, list-style, outline, pause, cue) are not returned,

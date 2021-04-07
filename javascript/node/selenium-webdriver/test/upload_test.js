@@ -15,64 +15,68 @@
 // specific language governing permissions and limitations
 // under the License.
 
-'use strict';
+'use strict'
 
-const assert = require('assert');
-const fs = require('fs');
+const assert = require('assert')
+const fs = require('fs')
+const io = require('../io')
+const remote = require('../remote')
+const test = require('../lib/test')
+const { Browser, By, until } = require('..')
 
-const io = require('../io');
-const remote = require('../remote');
-const test = require('../lib/test');
-const {Browser, By, until} = require('..');
+const Pages = test.Pages
 
-const Pages = test.Pages;
+test.suite(function (env) {
+  var LOREM_IPSUM_TEXT = 'lorem ipsum dolor sit amet'
+  var FILE_HTML = '<!DOCTYPE html><div>' + LOREM_IPSUM_TEXT + '</div>'
 
-test.suite(function(env) {
-  var LOREM_IPSUM_TEXT = 'lorem ipsum dolor sit amet';
-  var FILE_HTML = '<!DOCTYPE html><div>' + LOREM_IPSUM_TEXT + '</div>';
-
-  var fp;
-  before(function() {
-    return fp = io.tmpFile().then(function(fp) {
-      fs.writeFileSync(fp, FILE_HTML);
-      return fp;
-    });
+  var _fp
+  before(function () {
+    return (_fp = io.tmpFile().then(function (fp) {
+      fs.writeFileSync(fp, FILE_HTML)
+      return fp
+    }))
   })
 
-  var driver;
-  before(async function() {
-    driver = await env.builder().build();
-  });
+  var driver
+  before(async function () {
+    driver = await env.builder().build()
+  })
 
-  after(function() {
+  after(function () {
     if (driver) {
-      return driver.quit();
+      return driver.quit()
     }
-  });
+  })
 
-  test.ignore(env.browsers(Browser.SAFARI)).
-  it('can upload files', async function() {
-    driver.setFileDetector(new remote.FileDetector);
+  test
+    .ignore(env.browsers(Browser.SAFARI))
+    .it('can upload files', async function () {
+      driver.setFileDetector(new remote.FileDetector())
 
-    await driver.get(Pages.uploadPage);
+      await driver.get(Pages.uploadPage)
 
-    var fp = await io.tmpFile().then(function(fp) {
-      fs.writeFileSync(fp, FILE_HTML);
-      return fp;
-    });
+      var fp = await io.tmpFile().then(function (fp) {
+        fs.writeFileSync(fp, FILE_HTML)
+        return fp
+      })
 
-    await driver.findElement(By.id('upload')).sendKeys(fp);
-    await driver.findElement(By.id('go')).click();
+      await driver.findElement(By.id('upload')).sendKeys(fp)
+      await driver.findElement(By.id('go')).click()
 
-    // Uploading files across a network may take a while, even if they're small.
-    var label = await driver.findElement(By.id('upload_label'));
-    await driver.wait(until.elementIsNotVisible(label),
-        10 * 1000, 'File took longer than 10 seconds to upload!');
+      // Uploading files across a network may take a while, even if they're small.
+      var label = await driver.findElement(By.id('upload_label'))
+      await driver.wait(
+        until.elementIsNotVisible(label),
+        10 * 1000,
+        'File took longer than 10 seconds to upload!'
+      )
 
-    var frame = await driver.findElement(By.id('upload_target'));
-    await driver.switchTo().frame(frame);
-    assert.equal(
+      var frame = await driver.findElement(By.id('upload_target'))
+      await driver.switchTo().frame(frame)
+      assert.strictEqual(
         await driver.findElement(By.css('body')).getText(),
-        LOREM_IPSUM_TEXT);
-  });
-});
+        LOREM_IPSUM_TEXT
+      )
+    })
+})

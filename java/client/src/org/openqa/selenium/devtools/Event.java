@@ -17,9 +17,9 @@
 
 package org.openqa.selenium.devtools;
 
+import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.JsonInput;
 
-import java.util.Objects;
 import java.util.function.Function;
 
 public class Event<X> {
@@ -28,8 +28,8 @@ public class Event<X> {
   private final Function<JsonInput, X> mapper;
 
   public Event(String method, Function<JsonInput, X> mapper) {
-    this.method = Objects.requireNonNull(method, "Event method must be set.");
-    this.mapper = Objects.requireNonNull(mapper, "Result mapper must be set.");
+    this.method = Require.nonNull("Event method", method);
+    this.mapper = Require.nonNull("Result mapper", mapper);
   }
 
   public String getMethod() {

@@ -1,7 +1,7 @@
 load("@rules_jvm_external//:defs.bzl", "artifact")
+load("//common:defs.bzl", "copy_file")
 load("//java:defs.bzl", "java_export")
 load("//java:version.bzl", "SE_VERSION")
-load("//:copy_file.bzl", "copy_file")
 
 java_export(
     name = "firefox",
@@ -12,6 +12,8 @@ java_export(
     visibility = ["//visibility:public"],
     deps = [
         "//java:auto-service",
+        "//java/client/src/org/openqa/selenium/devtools",
+        "//java/client/src/org/openqa/selenium/devtools/v85",
         "//java/client/src/org/openqa/selenium/json",
         "//java/client/src/org/openqa/selenium/remote",
         artifact("com.google.guava:guava"),

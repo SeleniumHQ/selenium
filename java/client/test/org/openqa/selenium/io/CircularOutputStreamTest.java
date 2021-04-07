@@ -20,11 +20,14 @@ package org.openqa.selenium.io;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
+import org.openqa.selenium.testing.UnitTests;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.io.PrintWriter;
 
+@Category(UnitTests.class)
 public class CircularOutputStreamTest {
   @Test
   public void testShouldReturnTheEntireWrittenContentIfSmallerThanTheBufferSize() throws Exception {

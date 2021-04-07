@@ -17,53 +17,66 @@
 
 package org.openqa.selenium.devtools;
 
-import static java.util.concurrent.TimeUnit.MILLISECONDS;
-
-import org.openqa.selenium.devtools.log.Log;
-import org.openqa.selenium.devtools.target.Target;
-import org.openqa.selenium.devtools.target.model.SessionID;
-import org.openqa.selenium.devtools.target.model.TargetID;
-import org.openqa.selenium.devtools.target.model.TargetInfo;
+import org.openqa.selenium.devtools.idealized.Domains;
+import org.openqa.selenium.devtools.idealized.target.model.SessionID;
+import org.openqa.selenium.devtools.idealized.target.model.TargetID;
+import org.openqa.selenium.devtools.idealized.target.model.TargetInfo;
+import org.openqa.selenium.internal.Require;
 
 import java.io.Closeable;
 import java.time.Duration;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeoutException;
 import java.util.function.Consumer;
+import java.util.function.Function;
+
+import static java.util.concurrent.TimeUnit.MILLISECONDS;
 
 public class DevTools implements Closeable {
 
+  private final Domains protocol;
   private final Duration timeout = Duration.ofSeconds(10);
   private final Connection connection;
   private SessionID cdpSession = null;
 
-  public DevTools(Connection connection) {
-    this.connection = connection;
+  public DevTools(Function<DevTools, Domains> protocol, Connection connection) {
+    this.connection = Require.nonNull("WebSocket connection", connection);
+    this.protocol = Require.nonNull("CDP protocol", protocol).apply(this);
+  }
+
+  public Domains getDomains() {
+    return protocol;
   }
 
   @Override
   public void close() {
-    connection.sendAndWait(
-        cdpSession, Target.detachFromTarget(Optional.of(cdpSession), Optional.empty()), timeout);
+    if (cdpSession != null) {
+      SessionID id = cdpSession;
+      cdpSession = null;
+      connection.sendAndWait(
+        cdpSession, getDomains().target().detachFromTarget(Optional.of(id), Optional.empty()), timeout);
+    }
   }
 
   public <X> X send(Command<X> command) {
-    Objects.requireNonNull(command, "Command to send must be set.");
+    Require.nonNull("Command to send", command);
     return connection.sendAndWait(cdpSession, command, timeout);
   }
 
   public <X> void addListener(Event<X> event, Consumer<X> handler) {
-    Objects.requireNonNull(event, "Event to listen for must be set.");
-    Objects.requireNonNull(handler, "Handler to call must be set.");
+    Require.nonNull("Event to listen for", event);
+    Require.nonNull("Handler to call", handler);
 
     connection.addListener(event, handler);
   }
 
   public void clearListeners() {
+    // By removing all the listeners, we should also disable all the domains
+    getDomains().disableAll();
+
     connection.clearListeners();
   }
 
@@ -75,29 +88,32 @@ public class DevTools implements Closeable {
 
   public void createSession() {
     // Figure out the targets.
-    List<TargetInfo> infos = connection.sendAndWait(cdpSession, Target.getTargets(), timeout);
+    List<TargetInfo> infos = connection.sendAndWait(cdpSession, getDomains().target().getTargets(), timeout);
 
     // Grab the first "page" type, and glom on to that.
     // TODO: Find out which one might be the current one
     TargetID targetId = infos.stream()
-        .filter(info -> "page".equals(info.getType()))
-        .map(TargetInfo::getTargetId)
-        .findAny()
-        .orElseThrow(() -> new DevToolsException("Unable to find target id of a page"));
+      .filter(info -> "page".equals(info.getType()))
+      .map(TargetInfo::getTargetId)
+      .findAny()
+      .orElseThrow(() -> new DevToolsException("Unable to find target id of a page"));
 
     // Start the session.
-    cdpSession =
-        connection
-            .sendAndWait(cdpSession, Target.attachToTarget(targetId, Optional.of(true)), timeout);
+    cdpSession = connection
+      .sendAndWait(cdpSession, getDomains().target().attachToTarget(targetId), timeout);
 
     try {
       // We can do all of these in parallel, and we don't care about the result.
       CompletableFuture.allOf(
-          // Set auto-attach to true and run for the hills.
-          connection.send(cdpSession, Target.setAutoAttach(true, false, Optional.empty())),
-          // Clear the existing logs
-          connection.send(cdpSession, Log.clear()))
-          .get(timeout.toMillis(), MILLISECONDS);
+        // Set auto-attach to true and run for the hills.
+        connection.send(cdpSession, getDomains().target().setAutoAttach()),
+        // Clear the existing logs
+        connection.send(cdpSession, getDomains().log().clear())
+          .exceptionally(t -> {
+            t.printStackTrace();
+            return null;
+          })
+      ).get(timeout.toMillis(), MILLISECONDS);
     } catch (InterruptedException e) {
       Thread.currentThread().interrupt();
       throw new IllegalStateException("Thread has been interrupted", e);

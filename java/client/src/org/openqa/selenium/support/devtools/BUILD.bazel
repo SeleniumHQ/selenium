@@ -1,4 +1,5 @@
 load("@rules_jvm_external//:defs.bzl", "artifact")
+load("//java:defs.bzl", "java_library")
 
 java_library(
     name = "devtools",
@@ -7,9 +8,9 @@ java_library(
         "//java/client/src/org/openqa/selenium/support:__pkg__",
     ],
     deps = [
-        "//java/client/src/org/openqa/selenium/chrome",
         "//java/client/src/org/openqa/selenium/devtools",
-        "//java/client/src/org/openqa/selenium/remote",
         artifact("com.google.guava:guava"),
+        "//java/client/src/org/openqa/selenium:core",
+        "//java/client/src/org/openqa/selenium/remote/http",
     ],
 )

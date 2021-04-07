@@ -1,0 +1,83 @@
+name: Ruby workflow
+
+on:
+  push:
+    branches:
+      - trunk
+  pull_request:
+    branches:
+      - trunk
+
+jobs:
+  chrome-test:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        task: ['chrome-test', 'remote-chrome-test']
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-java@v1
+        with:
+          java-version: 11
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: 2.5
+      - uses: ./.github/actions/setup-bazelisk
+      - uses: ./.github/actions/setup-chrome
+      - run: Xvfb :99 &
+      - run: ./go //rb:${{ matrix.task }}
+        env:
+          DISPLAY: :99
+
+  firefox-test:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        task: ['firefox-test', 'remote-firefox-test']
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-java@v1
+        with:
+          java-version: 11
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: 2.5
+      - uses: ./.github/actions/setup-bazelisk
+      - uses: ./.github/actions/setup-firefox
+      - run: Xvfb :99 &
+      - run: ./go //rb:${{ matrix.task }}
+        env:
+          DISPLAY: :99
+
+  docs:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: 2.5
+      - run: ./go //rb:docs
+
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: 2.5
+      - run: ./go //rb:lint
+
+  unit-test:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        ruby: ['2.5', 'jruby-9.2.10.0']
+    steps:
+      - uses: actions/checkout@v2
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: ${{ matrix.ruby }}
+      - run: ./go //rb:unit-test

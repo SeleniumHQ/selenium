@@ -17,7 +17,6 @@ closure_js_library(
         "JSC_IMPLICITLY_NULLABLE_JSDOC",
         "JSC_MISSING_JSDOC",
         "JSC_MISSING_PARAMETER_JSDOC",
-        "JSC_MISSING_REQUIRE_STRICT_WARNING",
         "JSC_MISSING_RETURN_JSDOC",
         "JSC_MUST_BE_PRIVATE",
         "JSC_PREFER_BACKTICKS_TO_AT_SIGN_CODE",
@@ -25,6 +24,7 @@ closure_js_library(
         "JSC_STRICT_INEXISTENT_PROPERTY",
         "JSC_UNKNOWN_EXPR_TYPE",
         "JSC_UNUSED_LOCAL_ASSIGNMENT",
+        "JSC_USE_OF_GOOG_PROVIDE",
     ],
     deps = [
         "//javascript/atoms:action",

@@ -21,6 +21,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
+import org.openqa.selenium.testing.UnitTests;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -29,6 +31,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.Date;
 
+@Category(UnitTests.class)
 public class CookieTest {
 
   @Test
@@ -75,10 +78,21 @@ public class CookieTest {
   }
 
   @Test
+  public void testCookiesShouldAllowSameSiteToBeSet() {
+    Cookie cookie = new Cookie("name", "value", "", "/", new Date(), false, true, "Lax");
+    assertThat(cookie.getSameSite()).isEqualTo("Lax");
+    assertThat(cookie.toJson().get("sameSite")).isEqualTo("Lax");
+
+    Cookie builderCookie = new Cookie.Builder("name", "value").sameSite("Lax").build();
+    assertThat(builderCookie.getSameSite()).isEqualTo("Lax");
+    assertThat(builderCookie.toJson().get("sameSite")).isEqualTo("Lax");
+  }
+
+  @Test
   public void testCookieSerializes() throws IOException, ClassNotFoundException {
     ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
     ObjectOutputStream objectOutputStream = new ObjectOutputStream(byteArrayOutputStream);
-    Cookie cookieToSerialize = new Cookie("Fish", "cod", "", "", null, false);
+    Cookie cookieToSerialize = new Cookie("Fish", "cod", "", "", null, false, true, "Lax");
 
     objectOutputStream.writeObject(cookieToSerialize);
     byte[] serializedCookie = byteArrayOutputStream.toByteArray();

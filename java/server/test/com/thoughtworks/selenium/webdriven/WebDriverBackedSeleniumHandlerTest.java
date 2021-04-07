@@ -18,34 +18,28 @@
 package com.thoughtworks.selenium.webdriven;
 
 
-import static java.util.concurrent.TimeUnit.MINUTES;
-import static org.junit.Assert.assertTrue;
-import static org.openqa.selenium.remote.http.Route.combine;
-import static org.openqa.selenium.testing.Safely.safelyCall;
-
 import com.thoughtworks.selenium.DefaultSelenium;
 import com.thoughtworks.selenium.Selenium;
-
-import io.opentracing.noop.NoopTracer;
-import io.opentracing.noop.NoopTracerFactory;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.openqa.selenium.environment.webserver.JreAppServer;
-import org.openqa.selenium.grid.config.MapConfig;
-import org.openqa.selenium.grid.server.BaseServerOptions;
-import org.openqa.selenium.grid.server.Server;
-import org.openqa.selenium.jre.server.JreServer;
-import org.openqa.selenium.testing.Pages;
 import org.openqa.selenium.environment.GlobalTestEnvironment;
 import org.openqa.selenium.environment.InProcessTestEnvironment;
 import org.openqa.selenium.environment.TestEnvironment;
 import org.openqa.selenium.environment.webserver.AppServer;
+import org.openqa.selenium.grid.config.MapConfig;
+import org.openqa.selenium.grid.server.BaseServerOptions;
+import org.openqa.selenium.grid.server.Server;
+import org.openqa.selenium.jre.server.JreServer;
 import org.openqa.selenium.remote.server.ActiveSessions;
+import org.openqa.selenium.remote.tracing.DefaultTestTracer;
+import org.openqa.selenium.remote.tracing.Tracer;
+import org.openqa.selenium.testing.Pages;
 
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.Map;
+import static java.util.Collections.emptyMap;
+import static java.util.concurrent.TimeUnit.MINUTES;
+import static org.junit.Assert.assertTrue;
+import static org.openqa.selenium.testing.Safely.safelyCall;
 
 public class WebDriverBackedSeleniumHandlerTest {
 
@@ -55,14 +49,14 @@ public class WebDriverBackedSeleniumHandlerTest {
   private Pages pages;
 
   @Before
-  public void setUpServer() throws MalformedURLException {
-    NoopTracer tracer = NoopTracerFactory.create();
+  public void setUpServer() {
+    Tracer tracer = DefaultTestTracer.createTracer();
 
     // Register the emulator
     ActiveSessions sessions = new ActiveSessions(3, MINUTES);
 
     server = new JreServer(
-      new BaseServerOptions(new MapConfig(Map.of())),
+      new BaseServerOptions(new MapConfig(emptyMap())),
       new WebDriverBackedSeleniumHandler(tracer, sessions));
 
     // Wait until the server is actually started.
@@ -73,7 +67,7 @@ public class WebDriverBackedSeleniumHandlerTest {
 
   @Before
   public void prepTheEnvironment() {
-    TestEnvironment environment = GlobalTestEnvironment.get(InProcessTestEnvironment.class);
+    TestEnvironment environment = GlobalTestEnvironment.getOrCreate(InProcessTestEnvironment::new);
     appServer = environment.getAppServer();
 
     pages = new Pages(appServer);

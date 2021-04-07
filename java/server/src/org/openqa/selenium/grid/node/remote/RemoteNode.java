@@ -17,26 +17,47 @@
 
 package org.openqa.selenium.grid.node.remote;
 
+import static java.net.HttpURLConnection.HTTP_OK;
+import static org.openqa.selenium.grid.data.Availability.DOWN;
+import static org.openqa.selenium.grid.data.Availability.DRAINING;
+import static org.openqa.selenium.grid.data.Availability.UP;
+import static org.openqa.selenium.net.Urls.fromUri;
+import static org.openqa.selenium.remote.http.Contents.asJson;
+import static org.openqa.selenium.remote.http.Contents.reader;
+import static org.openqa.selenium.remote.http.HttpMethod.DELETE;
+import static org.openqa.selenium.remote.http.HttpMethod.GET;
+import static org.openqa.selenium.remote.http.HttpMethod.POST;
+
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
-import io.opentracing.Tracer;
+
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.NoSuchSessionException;
-import org.openqa.selenium.grid.component.HealthCheck;
+import org.openqa.selenium.RetrySessionRequestException;
+import org.openqa.selenium.SessionNotCreatedException;
+import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.grid.data.CreateSessionRequest;
 import org.openqa.selenium.grid.data.CreateSessionResponse;
+import org.openqa.selenium.grid.data.NodeId;
 import org.openqa.selenium.grid.data.NodeStatus;
 import org.openqa.selenium.grid.data.Session;
+import org.openqa.selenium.grid.node.HealthCheck;
 import org.openqa.selenium.grid.node.Node;
+import org.openqa.selenium.grid.security.AddSecretFilter;
+import org.openqa.selenium.grid.security.Secret;
 import org.openqa.selenium.grid.web.Values;
+import org.openqa.selenium.internal.Either;
+import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.json.JsonInput;
 import org.openqa.selenium.remote.SessionId;
+import org.openqa.selenium.remote.http.Filter;
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.remote.tracing.HttpTracing;
+import org.openqa.selenium.remote.tracing.Tracer;
 
 import java.io.IOException;
 import java.io.Reader;
@@ -47,15 +68,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
-import java.util.UUID;
-
-import static org.openqa.selenium.net.Urls.fromUri;
-import static org.openqa.selenium.remote.http.Contents.reader;
-import static org.openqa.selenium.remote.http.Contents.string;
-import static org.openqa.selenium.remote.http.Contents.utf8String;
-import static org.openqa.selenium.remote.http.HttpMethod.DELETE;
-import static org.openqa.selenium.remote.http.HttpMethod.GET;
-import static org.openqa.selenium.remote.http.HttpMethod.POST;
 
 public class RemoteNode extends Node {
 
@@ -64,20 +76,34 @@ public class RemoteNode extends Node {
   private final URI externalUri;
   private final Set<Capabilities> capabilities;
   private final HealthCheck healthCheck;
+  private final Filter addSecret;
 
   public RemoteNode(
       Tracer tracer,
       HttpClient.Factory clientFactory,
-      UUID id,
+      NodeId id,
       URI externalUri,
+      Secret registrationSecret,
       Collection<Capabilities> capabilities) {
-    super(tracer, id, externalUri);
-    this.externalUri = Objects.requireNonNull(externalUri);
+    super(tracer, id, externalUri, registrationSecret);
+    this.externalUri = Require.nonNull("External URI", externalUri);
     this.capabilities = ImmutableSet.copyOf(capabilities);
 
-    this.client = Objects.requireNonNull(clientFactory).createClient(fromUri(externalUri));
+    this.client = Require.nonNull("HTTP client factory", clientFactory).createClient(fromUri(externalUri));
 
     this.healthCheck = new RemoteCheck();
+
+    Require.nonNull("Registration secret", registrationSecret);
+    this.addSecret = new AddSecretFilter(registrationSecret);
+  }
+
+  @Override
+  public boolean isReady() {
+    try {
+      return client.execute(new HttpRequest(GET, "/readyz")).isSuccessful();
+    } catch (Exception e) {
+      return false;
+    }
   }
 
   @Override
@@ -91,38 +117,63 @@ public class RemoteNode extends Node {
   }
 
   @Override
-  public Optional<CreateSessionResponse> newSession(CreateSessionRequest sessionRequest) {
-    Objects.requireNonNull(sessionRequest, "Capabilities for session are not set");
+  public Either<WebDriverException, CreateSessionResponse> newSession(
+    CreateSessionRequest sessionRequest) {
+    Require.nonNull("Capabilities for session", sessionRequest);
 
     HttpRequest req = new HttpRequest(POST, "/se/grid/node/session");
-    HttpTracing.inject(tracer, tracer.scopeManager().activeSpan(), req);
-    req.setContent(utf8String(JSON.toJson(sessionRequest)));
+    HttpTracing.inject(tracer, tracer.getCurrentContext(), req);
+    req.setContent(asJson(sessionRequest));
 
-    HttpResponse res = client.execute(req);
+    HttpResponse httpResponse = client.with(addSecret).execute(req);
 
-    return Optional.ofNullable(Values.get(res, CreateSessionResponse.class));
+    Optional<Map<String, Object>> maybeResponse =
+      Optional.ofNullable(Values.get(httpResponse, Map.class));
+
+    if (maybeResponse.isPresent()) {
+      Map<String, Object> response = maybeResponse.get();
+
+      if (response.containsKey("sessionResponse")) {
+        String rawResponse = JSON.toJson(response.get("sessionResponse"));
+        CreateSessionResponse sessionResponse = JSON.toType(rawResponse, CreateSessionResponse.class);
+        return Either.right(sessionResponse);
+      } else {
+        String rawException = JSON.toJson(response.get("exception"));
+        Map<String, Object> exception = JSON.toType(rawException, Map.class);
+        String errorType = (String) exception.get("error");
+        String errorMessage = (String) exception.get("message");
+
+        if (RetrySessionRequestException.class.getName().contentEquals(errorType)) {
+          return Either.left(new RetrySessionRequestException(errorMessage));
+        } else {
+          return Either.left(new SessionNotCreatedException(errorMessage));
+        }
+      }
+    }
+
+    return Either.left(new SessionNotCreatedException("Error while mapping response from Node"));
   }
 
   @Override
-  protected boolean isSessionOwner(SessionId id) {
-    Objects.requireNonNull(id, "Session ID has not been set");
+  public boolean isSessionOwner(SessionId id) {
+    Require.nonNull("Session ID", id);
 
     HttpRequest req = new HttpRequest(GET, "/se/grid/node/owner/" + id);
-    HttpTracing.inject(tracer, tracer.scopeManager().activeSpan(), req);
+    HttpTracing.inject(tracer, tracer.getCurrentContext(), req);
 
-    HttpResponse res = client.execute(req);
+    HttpResponse res = client.with(addSecret).execute(req);
 
-    return Values.get(res, Boolean.class) == Boolean.TRUE;
+    return Boolean.TRUE.equals(Values.get(res, Boolean.class));
   }
 
   @Override
   public Session getSession(SessionId id) throws NoSuchSessionException {
-    Objects.requireNonNull(id, "Session ID has not been set");
+    Require.nonNull("Session ID", id);
 
     HttpRequest req = new HttpRequest(GET, "/se/grid/node/session/" + id);
-    HttpTracing.inject(tracer, tracer.scopeManager().activeSpan(), req);
+    HttpTracing.inject(tracer, tracer.getCurrentContext(), req);
 
-    HttpResponse res = client.execute(req);
+    HttpResponse res = client.with(addSecret).execute(req);
 
     return Values.get(res, Session.class);
   }
@@ -133,12 +184,17 @@ public class RemoteNode extends Node {
   }
 
   @Override
-  public void stop(SessionId id) throws NoSuchSessionException {
-    Objects.requireNonNull(id, "Session ID has not been set");
-    HttpRequest req = new HttpRequest(DELETE, "/se/grid/node/session/" + id);
-    HttpTracing.inject(tracer, tracer.scopeManager().activeSpan(), req);
+  public HttpResponse uploadFile(HttpRequest req, SessionId id) {
+    return client.execute(req);
+  }
 
-    HttpResponse res = client.execute(req);
+  @Override
+  public void stop(SessionId id) throws NoSuchSessionException {
+    Require.nonNull("Session ID", id);
+    HttpRequest req = new HttpRequest(DELETE, "/se/grid/node/session/" + id);
+    HttpTracing.inject(tracer, tracer.getCurrentContext(), req);
+
+    HttpResponse res = client.with(addSecret).execute(req);
 
     Values.get(res, Void.class);
   }
@@ -146,7 +202,7 @@ public class RemoteNode extends Node {
   @Override
   public NodeStatus getStatus() {
     HttpRequest req = new HttpRequest(GET, "/status");
-    HttpTracing.inject(tracer, tracer.scopeManager().activeSpan(), req);
+    HttpTracing.inject(tracer, tracer.getCurrentContext(), req);
 
     HttpResponse res = client.execute(req);
 
@@ -184,6 +240,18 @@ public class RemoteNode extends Node {
     return healthCheck;
   }
 
+  @Override
+  public void drain() {
+    HttpRequest req = new HttpRequest(POST, "/se/grid/node/drain");
+    HttpTracing.inject(tracer, tracer.getCurrentContext(), req);
+
+    HttpResponse res = client.with(addSecret).execute(req);
+
+    if(res.getStatus() == HTTP_OK) {
+      draining = true;
+    }
+  }
+
   private Map<String, Object> toJson() {
     return ImmutableMap.of(
         "id", getId(),
@@ -194,23 +262,25 @@ public class RemoteNode extends Node {
   private class RemoteCheck implements HealthCheck {
     @Override
     public Result check() {
-      HttpRequest req = new HttpRequest(GET, "/status");
-
       try {
-        HttpResponse res = client.execute(req);
+        NodeStatus status = getStatus();
 
-        if (res.getStatus() == 200) {
-          return new Result(true, externalUri + " is ok");
+        switch (status.getAvailability()) {
+          case DOWN:
+            return new Result(DOWN, externalUri + " is down");
+
+          case DRAINING:
+            return new Result(DRAINING, externalUri + " is draining");
+
+          case UP:
+            return new Result(UP, externalUri + " is ok");
+
+          default:
+            throw new IllegalStateException("Unknown node availability: " + status.getAvailability());
         }
-        return new Result(
-            false,
-            String.format(
-                "An error occurred reading the status of %s: %s",
-                externalUri,
-                string(res)));
       } catch (RuntimeException e) {
         return new Result(
-            false,
+            DOWN,
             "Unable to determine node status: " + e.getMessage());
       }
     }

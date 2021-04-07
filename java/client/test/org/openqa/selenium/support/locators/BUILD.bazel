@@ -6,12 +6,15 @@ java_selenium_test_suite(
     size = "medium",
     srcs = glob(["*Test.java"]),
     browsers = ["chrome"],
+    javacopts = [
+        "--release",
+        "11",
+    ],
     deps = [
         "//java/client/src/org/openqa/selenium:core",
         "//java/client/src/org/openqa/selenium/remote",
         "//java/client/src/org/openqa/selenium/support/locators",
         "//java/client/test/org/openqa/selenium/testing:test-base",
-        artifact("com.google.guava:guava"),
         artifact("junit:junit"),
         artifact("org.assertj:assertj-core"),
     ],

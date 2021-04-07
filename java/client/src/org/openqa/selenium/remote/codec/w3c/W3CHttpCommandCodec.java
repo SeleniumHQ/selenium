@@ -37,9 +37,13 @@ import static org.openqa.selenium.remote.DriverCommand.GET_AVAILABLE_LOG_TYPES;
 import static org.openqa.selenium.remote.DriverCommand.GET_CURRENT_WINDOW_HANDLE;
 import static org.openqa.selenium.remote.DriverCommand.GET_CURRENT_WINDOW_POSITION;
 import static org.openqa.selenium.remote.DriverCommand.GET_CURRENT_WINDOW_SIZE;
+import static org.openqa.selenium.remote.DriverCommand.GET_ELEMENT_ACCESSIBLE_NAME;
+import static org.openqa.selenium.remote.DriverCommand.GET_ELEMENT_ARIA_ROLE;
 import static org.openqa.selenium.remote.DriverCommand.GET_ELEMENT_ATTRIBUTE;
+import static org.openqa.selenium.remote.DriverCommand.GET_ELEMENT_DOM_ATTRIBUTE;
 import static org.openqa.selenium.remote.DriverCommand.GET_ELEMENT_LOCATION;
 import static org.openqa.selenium.remote.DriverCommand.GET_ELEMENT_LOCATION_ONCE_SCROLLED_INTO_VIEW;
+import static org.openqa.selenium.remote.DriverCommand.GET_ELEMENT_DOM_PROPERTY;
 import static org.openqa.selenium.remote.DriverCommand.GET_ELEMENT_RECT;
 import static org.openqa.selenium.remote.DriverCommand.GET_ELEMENT_SIZE;
 import static org.openqa.selenium.remote.DriverCommand.GET_LOCAL_STORAGE_ITEM;
@@ -53,6 +57,7 @@ import static org.openqa.selenium.remote.DriverCommand.GET_SESSION_STORAGE_SIZE;
 import static org.openqa.selenium.remote.DriverCommand.GET_WINDOW_HANDLES;
 import static org.openqa.selenium.remote.DriverCommand.IS_ELEMENT_DISPLAYED;
 import static org.openqa.selenium.remote.DriverCommand.MAXIMIZE_CURRENT_WINDOW;
+import static org.openqa.selenium.remote.DriverCommand.MINIMIZE_CURRENT_WINDOW;
 import static org.openqa.selenium.remote.DriverCommand.MOUSE_DOWN;
 import static org.openqa.selenium.remote.DriverCommand.MOUSE_UP;
 import static org.openqa.selenium.remote.DriverCommand.MOVE_TO;
@@ -67,6 +72,8 @@ import static org.openqa.selenium.remote.DriverCommand.SET_LOCAL_STORAGE_ITEM;
 import static org.openqa.selenium.remote.DriverCommand.SET_SESSION_STORAGE_ITEM;
 import static org.openqa.selenium.remote.DriverCommand.SET_TIMEOUT;
 import static org.openqa.selenium.remote.DriverCommand.SUBMIT_ELEMENT;
+import static org.openqa.selenium.remote.DriverCommand.UPLOAD_FILE;
+import static org.openqa.selenium.remote.DriverCommand.PRINT_PAGE;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
@@ -106,6 +113,8 @@ public class W3CHttpCommandCodec extends AbstractHttpCommandCodec {
   private final KeyInput keyboard = new KeyInput("keyboard");
 
   public W3CHttpCommandCodec() {
+    String sessionId = "/session/:sessionId";
+
     alias(GET_ELEMENT_ATTRIBUTE, EXECUTE_SCRIPT);
     alias(GET_ELEMENT_LOCATION, GET_ELEMENT_RECT);
     alias(GET_ELEMENT_LOCATION_ONCE_SCROLLED_INTO_VIEW, EXECUTE_SCRIPT);
@@ -113,8 +122,8 @@ public class W3CHttpCommandCodec extends AbstractHttpCommandCodec {
     alias(IS_ELEMENT_DISPLAYED, EXECUTE_SCRIPT);
     alias(SUBMIT_ELEMENT, EXECUTE_SCRIPT);
 
-    defineCommand(EXECUTE_SCRIPT, post("/session/:sessionId/execute/sync"));
-    defineCommand(EXECUTE_ASYNC_SCRIPT, post("/session/:sessionId/execute/async"));
+    defineCommand(EXECUTE_SCRIPT, post(sessionId + "/execute/sync"));
+    defineCommand(EXECUTE_ASYNC_SCRIPT, post(sessionId + "/execute/async"));
 
     alias(GET_PAGE_SOURCE, EXECUTE_SCRIPT);
     alias(CLEAR_LOCAL_STORAGE, EXECUTE_SCRIPT);
@@ -130,23 +139,36 @@ public class W3CHttpCommandCodec extends AbstractHttpCommandCodec {
     alias(GET_SESSION_STORAGE_ITEM, EXECUTE_SCRIPT);
     alias(GET_SESSION_STORAGE_SIZE, EXECUTE_SCRIPT);
 
-    defineCommand(MAXIMIZE_CURRENT_WINDOW, post("/session/:sessionId/window/maximize"));
-    defineCommand(GET_CURRENT_WINDOW_SIZE, get("/session/:sessionId/window/rect"));
-    defineCommand(SET_CURRENT_WINDOW_SIZE, post("/session/:sessionId/window/rect"));
+    String window = sessionId + "/window";
+    defineCommand(MAXIMIZE_CURRENT_WINDOW, post(window + "/maximize"));
+    defineCommand(MINIMIZE_CURRENT_WINDOW, post(window + "/minimize"));
+    defineCommand(GET_CURRENT_WINDOW_SIZE, get(window + "/rect"));
+    defineCommand(SET_CURRENT_WINDOW_SIZE, post(window + "/rect"));
     alias(GET_CURRENT_WINDOW_POSITION, GET_CURRENT_WINDOW_SIZE);
     alias(SET_CURRENT_WINDOW_POSITION, SET_CURRENT_WINDOW_SIZE);
-    defineCommand(GET_CURRENT_WINDOW_HANDLE, get("/session/:sessionId/window"));
-    defineCommand(GET_WINDOW_HANDLES, get("/session/:sessionId/window/handles"));
+    defineCommand(GET_CURRENT_WINDOW_HANDLE, get(window));
+    defineCommand(GET_WINDOW_HANDLES, get(window + "/handles"));
 
-    defineCommand(ACCEPT_ALERT, post("/session/:sessionId/alert/accept"));
-    defineCommand(DISMISS_ALERT, post("/session/:sessionId/alert/dismiss"));
-    defineCommand(GET_ALERT_TEXT, get("/session/:sessionId/alert/text"));
-    defineCommand(SET_ALERT_VALUE, post("/session/:sessionId/alert/text"));
+    String alert = sessionId + "/alert";
+    defineCommand(ACCEPT_ALERT, post(alert + "/accept"));
+    defineCommand(DISMISS_ALERT, post(alert + "/dismiss"));
+    defineCommand(GET_ALERT_TEXT, get(alert + "/text"));
+    defineCommand(SET_ALERT_VALUE, post(alert + "/text"));
 
-    defineCommand(GET_ACTIVE_ELEMENT, get("/session/:sessionId/element/active"));
+    defineCommand(PRINT_PAGE, post(sessionId + "/print"));
 
-    defineCommand(ACTIONS, post("/session/:sessionId/actions"));
-    defineCommand(CLEAR_ACTIONS_STATE, delete("/session/:sessionId/actions"));
+    defineCommand(UPLOAD_FILE, post(sessionId + "/se/file"));
+
+    defineCommand(GET_ACTIVE_ELEMENT, get(sessionId + "/element/active"));
+
+    defineCommand(ACTIONS, post(sessionId + "/actions"));
+    defineCommand(CLEAR_ACTIONS_STATE, delete(sessionId + "/actions"));
+
+    String elementId = sessionId + "/element/:id";
+    defineCommand(GET_ELEMENT_DOM_PROPERTY, get(elementId + "/property/:name"));
+    defineCommand(GET_ELEMENT_DOM_ATTRIBUTE, get(elementId + "/attribute/:name"));
+    defineCommand(GET_ELEMENT_ARIA_ROLE, get(elementId + "/computedrole"));
+    defineCommand(GET_ELEMENT_ACCESSIBLE_NAME, get(elementId + "/computedlabel"));
 
     // Emulate the old Actions API since everyone still likes to call these things.
     alias(CLICK, ACTIONS);
@@ -155,8 +177,8 @@ public class W3CHttpCommandCodec extends AbstractHttpCommandCodec {
     alias(MOUSE_UP, ACTIONS);
     alias(MOVE_TO, ACTIONS);
 
-    defineCommand(GET_LOG, post("/session/:sessionId/se/log"));
-    defineCommand(GET_AVAILABLE_LOG_TYPES, get("/session/:sessionId/se/log/types"));
+    defineCommand(GET_LOG, post(sessionId + "/se/log"));
+    defineCommand(GET_AVAILABLE_LOG_TYPES, get(sessionId + "/se/log/types"));
   }
 
   @Override
@@ -193,47 +215,29 @@ public class W3CHttpCommandCodec extends AbstractHttpCommandCodec {
       case FIND_ELEMENT:
       case FIND_ELEMENTS:
         String using = (String) parameters.get("using");
-        String value = (String) parameters.get("value");
+        Object value = parameters.get("value");
 
-        Map<String, Object> toReturn = new HashMap<>(parameters);
+        if (value instanceof String) {
+          String stringValue = (String) value;
+          switch (using) {
+            case "class name":
+              if (stringValue.matches(".*\\s.*")) {
+                throw new InvalidSelectorException("Compound class names not permitted");
+              }
+              return amendLocatorToCssSelector(parameters, "." + cssEscape(stringValue));
 
-        switch (using) {
-          case "class name":
-            if (value.matches(".*\\s.*")) {
-              throw new InvalidSelectorException("Compound class names not permitted");
-            }
-            toReturn.put("using", "css selector");
-            toReturn.put("value", "." + cssEscape(value));
-            break;
+            case "id":
+              return amendLocatorToCssSelector(parameters, "#" + cssEscape(stringValue));
 
-          case "id":
-            toReturn.put("using", "css selector");
-            toReturn.put("value", "#" + cssEscape(value));
-            break;
+            case "name":
+              return amendLocatorToCssSelector(parameters, "*[name='" + stringValue + "']");
 
-          case "link text":
-            // Do nothing
-            break;
-
-          case "name":
-            toReturn.put("using", "css selector");
-            toReturn.put("value", "*[name='" + value + "']");
-            break;
-
-          case "partial link text":
-            // Do nothing
-            break;
-
-          case "tag name":
-            toReturn.put("using", "css selector");
-            toReturn.put("value", cssEscape(value));
-            break;
-
-          case "xpath":
-            // Do nothing
-            break;
+            default:
+              // Do nothing
+              break;
+          }
         }
-        return toReturn;
+        return parameters;
 
       case GET_ELEMENT_ATTRIBUTE:
         // Read the atom, wrap it, execute it.
@@ -440,8 +444,15 @@ public class W3CHttpCommandCodec extends AbstractHttpCommandCodec {
   private String cssEscape(String using) {
     using = using.replaceAll("([\\s'\"\\\\#.:;,!?+<>=~*^$|%&@`{}\\-\\/\\[\\]\\(\\)])", "\\\\$1");
     if (using.length() > 0 && Character.isDigit(using.charAt(0))) {
-      using = "\\" + Integer.toString(30 + Integer.parseInt(using.substring(0,1))) + " " + using.substring(1);
+      using = "\\" + (30 + Integer.parseInt(using.substring(0,1))) + " " + using.substring(1);
     }
     return using;
+  }
+
+  private Map<String, ?> amendLocatorToCssSelector(Map<String, ?> parameters, String value) {
+    Map<String, Object> amended = new HashMap<>(parameters);
+    amended.put("using", "css selector");
+    amended.put("value", value);
+    return amended;
   }
 }

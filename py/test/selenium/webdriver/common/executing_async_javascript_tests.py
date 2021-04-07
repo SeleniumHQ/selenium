@@ -91,6 +91,7 @@ def testShouldBeAbleToReturnWebElementsFromAsyncScripts(driver, pages):
     assert "body" == result.tag_name.lower()
 
 
+@pytest.mark.xfail_safari
 def testShouldBeAbleToReturnArraysOfWebElementsFromAsyncScripts(driver, pages):
     pages.load("ajaxy_page.html")
 

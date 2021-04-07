@@ -1,4 +1,4 @@
-// <copyright file="ChromeDriver.cs" company="WebDriver Committers">
+// <copyright file="ChromiumDriver.cs" company="WebDriver Committers">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements. See the NOTICE file
 // distributed with this work for additional information
@@ -28,6 +28,9 @@ using OpenQA.Selenium.Remote;
 
 namespace OpenQA.Selenium.Chromium
 {
+    /// <summary>
+    /// Provides an abstract way to access Chromium-based browsers to run tests.
+    /// </summary>
     public abstract class ChromiumDriver : RemoteWebDriver, ISupportsLogs, IDevTools
     {
         /// <summary>
@@ -40,6 +43,9 @@ namespace OpenQA.Selenium.Chromium
         private const string DeleteNetworkConditionsCommand = "deleteNetworkConditions";
         private const string SendChromeCommand = "sendChromeCommand";
         private const string SendChromeCommandWithResult = "sendChromeCommandWithResult";
+
+        private readonly string optionsCapabilityName;
+        private DevToolsSession devToolsSession;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ChromiumDriver"/> class using the specified
@@ -56,17 +62,29 @@ namespace OpenQA.Selenium.Chromium
         /// Initializes a new instance of the <see cref="ChromiumDriver"/> class using the specified <see cref="ChromiumDriverService"/>.
         /// </summary>
         /// <param name="service">The <see cref="ChromiumDriverService"/> to use.</param>
-        /// <param name="options">The <see cref="ChromiumOptions"/> to be used with the Chrome driver.</param>
+        /// <param name="options">The <see cref="ChromiumOptions"/> to be used with the ChromiumDriver.</param>
         /// <param name="commandTimeout">The maximum amount of time to wait for each command.</param>
         public ChromiumDriver(ChromiumDriverService service, ChromiumOptions options, TimeSpan commandTimeout)
             : base(new DriverServiceCommandExecutor(service, commandTimeout), ConvertOptionsToCapabilities(options))
         {
+            this.optionsCapabilityName = options.CapabilityName;
+
             // Add the custom commands unique to Chrome
             this.AddCustomChromeCommand(GetNetworkConditionsCommand, CommandInfo.GetCommand, "/session/{sessionId}/chromium/network_conditions");
             this.AddCustomChromeCommand(SetNetworkConditionsCommand, CommandInfo.PostCommand, "/session/{sessionId}/chromium/network_conditions");
             this.AddCustomChromeCommand(DeleteNetworkConditionsCommand, CommandInfo.DeleteCommand, "/session/{sessionId}/chromium/network_conditions");
             this.AddCustomChromeCommand(SendChromeCommand, CommandInfo.PostCommand, "/session/{sessionId}/chromium/send_command");
             this.AddCustomChromeCommand(SendChromeCommandWithResult, CommandInfo.PostCommand, "/session/{sessionId}/chromium/send_command_and_get_result");
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ChromiumDriver"/> class
+        /// </summary>
+        /// <param name="commandExecutor">An <see cref="ICommandExecutor"/> object which executes commands for the driver.</param>
+        /// <param name="desiredCapabilities">An <see cref="ICapabilities"/> object containing the desired capabilities of the browser.</param>
+        protected ChromiumDriver(ICommandExecutor commandExecutor, ICapabilities desiredCapabilities)
+            : base(commandExecutor, desiredCapabilities)
+        {
         }
 
         /// <summary>
@@ -127,6 +145,12 @@ namespace OpenQA.Selenium.Chromium
             this.Execute(SendChromeCommand, parameters);
         }
 
+        /// <summary>
+        /// Executes a custom Chrome command.
+        /// </summary>
+        /// <param name="commandName">Name of the command to execute.</param>
+        /// <param name="commandParameters">Parameters of the command to execute.</param>
+        /// <returns>An object representing the result of the command.</returns>
         public object ExecuteChromeCommandWithResult(string commandName, Dictionary<string, object> commandParameters)
         {
             if (commandName == null)
@@ -144,59 +168,65 @@ namespace OpenQA.Selenium.Chromium
         /// <summary>
         /// Creates a session to communicate with a browser using the Chromium Developer Tools debugging protocol.
         /// </summary>
+        /// <param name="devToolsProtocolVersion">The version of the Chromium Developer Tools protocol to use. Defaults to autodetect the protocol version.</param>
         /// <returns>The active session to use to communicate with the Chromium Developer Tools debugging protocol.</returns>
-        public DevToolsSession CreateDevToolsSession()
+        public DevToolsSession GetDevToolsSession()
         {
-            if (!this.Capabilities.HasCapability(ChromiumOptions.DefaultCapability))
-            {
-                throw new WebDriverException("Cannot find " + ChromiumOptions.DefaultCapability + " capability for driver");
-            }
+            return GetDevToolsSession(DevToolsSession.AutoDetectDevToolsProtocolVersion);
+        }
 
-            Dictionary<string, object> options = this.Capabilities.GetCapability(ChromiumOptions.DefaultCapability) as Dictionary<string, object>;
-            if (options == null)
+        /// <summary>
+        /// Creates a session to communicate with a browser using the Chromium Developer Tools debugging protocol.
+        /// </summary>
+        /// <param name="devToolsProtocolVersion">The version of the Chromium Developer Tools protocol to use. Defaults to autodetect the protocol version.</param>
+        /// <returns>The active session to use to communicate with the Chromium Developer Tools debugging protocol.</returns>
+        public DevToolsSession GetDevToolsSession(int devToolsProtocolVersion)
+        {
+            if (this.devToolsSession == null)
             {
-                throw new WebDriverException("Found " + ChromiumOptions.DefaultCapability + " capability, but is not an object");
-            }
-
-            if (!options.ContainsKey("debuggerAddress"))
-            {
-                throw new WebDriverException("Did not find debuggerAddress capability in goog:chromeOptions");
-            }
-
-            string debuggerAddress = options["debuggerAddress"].ToString();
-            try
-            {
-                string debuggerUrl = string.Format(CultureInfo.InvariantCulture, "http://{0}/", debuggerAddress);
-                string rawDebuggerInfo = string.Empty;
-                using (HttpClient client = new HttpClient())
+                if (!this.Capabilities.HasCapability(this.optionsCapabilityName))
                 {
-                    client.BaseAddress = new Uri(debuggerUrl);
-                    rawDebuggerInfo = client.GetStringAsync("/json").ConfigureAwait(false).GetAwaiter().GetResult();
+                    throw new WebDriverException("Cannot find " + this.optionsCapabilityName + " capability for driver");
                 }
 
-                string webSocketUrl = null;
-                string targetId = null;
-                var sessions = JsonConvert.DeserializeObject<ICollection<DevToolsSessionInfo>>(rawDebuggerInfo);
-                foreach (var target in sessions)
+                Dictionary<string, object> options = this.Capabilities.GetCapability(this.optionsCapabilityName) as Dictionary<string, object>;
+                if (options == null)
                 {
-                    if (target.Type == "page")
-                    {
-                        targetId = target.Id;
-                        webSocketUrl = target.WebSocketDebuggerUrl;
-                        break;
-                    }
+                    throw new WebDriverException("Found " + this.optionsCapabilityName + " capability, but is not an object");
                 }
 
-                DevToolsSession session = new DevToolsSession(webSocketUrl);
-                var foo = session.Target.AttachToTarget(new DevTools.Target.AttachToTargetCommandSettings() { TargetId = targetId }).ConfigureAwait(false).GetAwaiter().GetResult();
-                var t1 = session.Target.SetAutoAttach(new DevTools.Target.SetAutoAttachCommandSettings() { AutoAttach = true, WaitForDebuggerOnStart = false }).ConfigureAwait(false).GetAwaiter().GetResult();
-                var t2 = session.Log.Clear().ConfigureAwait(false).GetAwaiter().GetResult();
-                return session;
+                if (!options.ContainsKey("debuggerAddress"))
+                {
+                    throw new WebDriverException("Did not find debuggerAddress capability in " + this.optionsCapabilityName);
+                }
+
+                string debuggerAddress = options["debuggerAddress"].ToString();
+                try
+                {
+                    DevToolsSession session = new DevToolsSession(debuggerAddress);
+                    session.Start(devToolsProtocolVersion).ConfigureAwait(false).GetAwaiter().GetResult();
+                    this.devToolsSession = session;
+                }
+                catch (Exception e)
+                {
+                    throw new WebDriverException("Unexpected error creating WebSocket DevTools session.", e);
+                }
             }
-            catch (Exception e)
+
+            return this.devToolsSession;
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
             {
-                throw new WebDriverException("Unexpected error creating WebSocket DevTools session.", e);
+                if (this.devToolsSession != null)
+                {
+                    this.devToolsSession.Dispose();
+                }
             }
+
+            base.Dispose(disposing);
         }
 
         private static ICapabilities ConvertOptionsToCapabilities(ChromiumOptions options)

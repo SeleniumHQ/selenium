@@ -1,52 +1,101 @@
-load("//java/private:common.bzl", "MAVEN_PREFIX")
+load(
+    "@rules_jvm_external//:defs.bzl",
+    "javadoc",
+    "pom_file",
+    _java_export = "java_export",
+)
+load("@rules_jvm_external//private/rules:maven_project_jar.bzl", "maven_project_jar")
+load("@rules_jvm_external//private/rules:maven_publish.bzl", "maven_publish")
 load("//java/private:module.bzl", "java_module")
-load("//java/private:maven_artifacts.bzl", "maven_artifacts")
-load("//java/private:pom.bzl", "pom_file")
 
 def java_export(
         name,
         maven_coordinates,
-        pom_template,
+        pom_template = None,
         hides = [],
         uses = [],
+        opens_to = [],
         exports = [],
+        tags = [],
         visibility = None,
         **kwargs):
-    tags = getattr(kwargs, "tags", [])
+    tags = tags + ["maven_coordinates=%s" % maven_coordinates]
+    lib_name = "%s-lib" % name
 
-    # Construct the java library, or something that looks like one
+    # Construct the java_library we'll export from here.
     native.java_library(
-        name = "generated-%s-lib" % name,
+        name = lib_name,
+        tags = tags,
         exports = exports,
         **kwargs
     )
 
-    # Construct a java_module
-    java_module(
-        name = name,
-        deps = [":generated-%s-lib" % name],
-        exports = exports,
-        hides = hides,
-        uses = uses,
-        tags = [
-            "maven_coordinates=%s" % maven_coordinates,
+    # Merge the jars to create the maven project jar
+    maven_project_jar(
+        name = "%s-project" % name,
+        target = ":%s" % lib_name,
+        tags = tags,
+    )
+
+    native.filegroup(
+        name = "%s-maven-artifact" % name,
+        srcs = [
+            ":%s-project" % name,
         ],
+        output_group = "maven_artifact",
+    )
+
+    native.filegroup(
+        name = "%s-maven-source" % name,
+        srcs = [
+            ":%s-project" % name,
+        ],
+        output_group = "maven_source",
+    )
+
+    java_module(
+        name = "%s-module" % name,
+        target = ":%s-project" % name,
+        deps = kwargs.get("deps", []) + kwargs.get("runtime_deps", []),
+        exports = exports,
+        opens_to = opens_to,
+        tags = tags,
+    )
+
+    native.filegroup(
+        name = "%s-maven-module" % name,
+        srcs = [
+            ":%s-module" % name,
+        ],
+        output_group = "module_jar",
+    )
+
+    javadoc(
+        name = "%s-docs" % name,
+        deps = [
+            ":%s-project" % name,
+        ],
+    )
+
+    pom_file(
+        name = "%s-pom" % name,
+        target = ":%s" % lib_name,
+        pom_template = pom_template,
+    )
+
+    maven_publish(
+        name = "%s.publish" % name,
+        coordinates = maven_coordinates,
+        pom = "%s-pom" % name,
+        javadocs = "%s-docs" % name,
+        artifact_jar = ":%s-maven-module" % name,
+        source_jar = ":%s-maven-source" % name,
         visibility = visibility,
     )
 
-    # Now create the pom file
-    pom_file(
-        name = "%s-pom" % name,
-        target = name,
-        out = "%s-pom.xml" % name,
-        template = pom_template,
-    )
-
-    # Build the maven artifacts.
-    maven_artifacts(
-        name = "%s-maven-artifacts" % name,
-        maven_coordinates = maven_coordinates,
-        target = name,
-        pom = "%s-pom" % name,
+    # Finally, alias the primary output
+    native.alias(
+        name = name,
+        actual = ":%s-module" % name,
         visibility = visibility,
     )

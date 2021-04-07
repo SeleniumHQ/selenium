@@ -17,18 +17,17 @@
 
 package org.openqa.selenium.grid.node;
 
+import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
-
-import java.util.Objects;
 
 class ForwardWebDriverCommand implements HttpHandler {
 
   private final Node node;
 
-  public ForwardWebDriverCommand(Node node) {
-    this.node = Objects.requireNonNull(node);
+  ForwardWebDriverCommand(Node node) {
+    this.node = Require.nonNull("Node", node);
   }
 
   @Override

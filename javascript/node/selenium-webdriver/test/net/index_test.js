@@ -15,46 +15,54 @@
 // specific language governing permissions and limitations
 // under the License.
 
-'use strict';
+'use strict'
 
-var assert = require('assert');
+var assert = require('assert')
+var net = require('../../net')
 
-var net = require('../../net');
+describe('net.splitHostAndPort', function () {
+  it('hostname with no port', function () {
+    assert.deepStrictEqual(net.splitHostAndPort('www.example.com'), {
+      host: 'www.example.com',
+      port: null,
+    })
+  })
 
-describe('net.splitHostAndPort', function() {
-  it('hostname with no port', function() {
-    assert.deepEqual(
-        net.splitHostAndPort('www.example.com'),
-        {host: 'www.example.com', port: null});
-  });
+  it('hostname with port', function () {
+    assert.deepStrictEqual(net.splitHostAndPort('www.example.com:80'), {
+      host: 'www.example.com',
+      port: 80,
+    })
+  })
 
-  it('hostname with port', function() {
-    assert.deepEqual(
-        net.splitHostAndPort('www.example.com:80'),
-        {host: 'www.example.com', port: 80});
-  });
+  it('IPv4 with no port', function () {
+    assert.deepStrictEqual(net.splitHostAndPort('127.0.0.1'), {
+      host: '127.0.0.1',
+      port: null,
+    })
+  })
 
-  it('IPv4 with no port', function() {
-    assert.deepEqual(
-        net.splitHostAndPort('127.0.0.1'),
-        {host: '127.0.0.1', port: null});
-  });
+  it('IPv4 with port', function () {
+    assert.deepStrictEqual(net.splitHostAndPort('127.0.0.1:1234'), {
+      host: '127.0.0.1',
+      port: 1234,
+    })
+  })
 
-  it('IPv4 with port', function() {
-    assert.deepEqual(
-        net.splitHostAndPort('127.0.0.1:1234'),
-        {host: '127.0.0.1', port: 1234});
-  });
+  it('IPv6 with no port', function () {
+    assert.deepStrictEqual(
+      net.splitHostAndPort('1234:0:1000:5768:1234:5678:90'),
+      {
+        host: '1234:0:1000:5768:1234:5678:90',
+        port: null,
+      }
+    )
+  })
 
-  it('IPv6 with no port', function() {
-    assert.deepEqual(
-        net.splitHostAndPort('1234:0:1000:5768:1234:5678:90'),
-        {host: '1234:0:1000:5768:1234:5678:90', port: null});
-  });
-
-  it('IPv6 with port', function() {
-    assert.deepEqual(
-        net.splitHostAndPort('[1234:0:1000:5768:1234:5678:90]:1234'),
-        {host: '1234:0:1000:5768:1234:5678:90', port: 1234});
-  });
-});
+  it('IPv6 with port', function () {
+    assert.deepStrictEqual(
+      net.splitHostAndPort('[1234:0:1000:5768:1234:5678:90]:1234'),
+      { host: '1234:0:1000:5768:1234:5678:90', port: 1234 }
+    )
+  })
+})
