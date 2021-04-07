@@ -17,22 +17,19 @@
 
 package org.openqa.selenium.support.ui;
 
-import static java.util.Objects.requireNonNull;
-
 import com.google.common.base.Throwables;
 import com.google.common.collect.ImmutableList;
 
 import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.internal.Require;
 
 import java.time.Clock;
 import java.time.Duration;
 import java.time.Instant;
-import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
@@ -70,13 +67,7 @@ import java.util.function.Supplier;
  */
 public class FluentWait<T> implements Wait<T> {
 
-  protected final static long DEFAULT_SLEEP_TIMEOUT = 500;
-
-  /**
-   * @deprecated use {@link #DEFAULT_WAIT_DURATION}
-   */
-  @Deprecated
-  public static final Duration FIVE_HUNDRED_MILLIS = Duration.ofMillis(DEFAULT_SLEEP_TIMEOUT);
+  protected static final long DEFAULT_SLEEP_TIMEOUT = 500;
 
   private static final Duration DEFAULT_WAIT_DURATION = Duration.ofMillis(DEFAULT_SLEEP_TIMEOUT);
 
@@ -103,25 +94,10 @@ public class FluentWait<T> implements Wait<T> {
    * @param sleeper Used to put the thread to sleep between evaluation loops.
    */
   public FluentWait(T input, java.time.Clock clock, Sleeper sleeper) {
-    this.input = requireNonNull(input);
-    this.clock = requireNonNull(clock);
-    this.sleeper = requireNonNull(sleeper);
+    this.input = Require.nonNull("Input", input);
+    this.clock = Require.nonNull("Clock", clock);
+    this.sleeper = Require.nonNull("Sleeper", sleeper);
   }
-
-  /**
-   * Sets how long to wait for the evaluated condition to be true. The default timeout is
-   * {@link #FIVE_HUNDRED_MILLIS}.
-   *
-   * @param duration The timeout duration.
-   * @param unit     The unit of time.
-   * @return A self reference.
-   * @deprecated use {@link #withTimeout(Duration)}
-   */
-  @Deprecated
-  public FluentWait<T> withTimeout(long duration, TimeUnit unit) {
-    return withTimeout(Duration.of(duration, toChronoUnit(unit)));
-  }
-
 
   /**
    * Sets how long to wait for the evaluated condition to be true. The default timeout is
@@ -155,23 +131,6 @@ public class FluentWait<T> implements Wait<T> {
   public FluentWait<T> withMessage(Supplier<String> messageSupplier) {
     this.messageSupplier = messageSupplier;
     return this;
-  }
-
-  /**
-   * Sets how often the condition should be evaluated.
-   *
-   * <p>
-   * In reality, the interval may be greater as the cost of actually evaluating a condition function
-   * is not factored in. The default polling interval is {@link #FIVE_HUNDRED_MILLIS}.
-   *
-   * @param duration The timeout duration.
-   * @param unit     The unit of time.
-   * @return A self reference.
-   * @deprecated use {@link #pollingEvery(Duration)}
-   */
-  @Deprecated
-  public FluentWait<T> pollingEvery(long duration, TimeUnit unit) {
-    return pollingEvery(Duration.of(duration, toChronoUnit(unit)));
   }
 
   /**
@@ -302,34 +261,5 @@ public class FluentWait<T> implements Wait<T> {
    */
   protected RuntimeException timeoutException(String message, Throwable lastException) {
     throw new TimeoutException(message, lastException);
-  }
-
-  /**
-   * Converts the {@code TimeUnit} to the equivalent {@code ChronoUnit}.
-   *
-   * This is a backport from Java 9, see https://bugs.openjdk.java.net/browse/JDK-8141452.
-   *
-   * @param timeUnit the TimeUnit to convert
-   * @return the converted equivalent ChronoUnit
-   */
-  private ChronoUnit toChronoUnit(TimeUnit timeUnit) {
-    switch (timeUnit) {
-      case NANOSECONDS:
-        return ChronoUnit.NANOS;
-      case MICROSECONDS:
-        return ChronoUnit.MICROS;
-      case MILLISECONDS:
-        return ChronoUnit.MILLIS;
-      case SECONDS:
-        return ChronoUnit.SECONDS;
-      case MINUTES:
-        return ChronoUnit.MINUTES;
-      case HOURS:
-        return ChronoUnit.HOURS;
-      case DAYS:
-        return ChronoUnit.DAYS;
-      default:
-        throw new IllegalArgumentException("No ChronoUnit equivalent for " + timeUnit);
-    }
   }
 }

@@ -33,71 +33,9 @@ import org.openqa.selenium.remote.service.DriverCommandExecutor;
 
 /**
  * A {@link WebDriver} implementation that controls a Blink-based Opera browser running on the local
- * machine. This class is provided as a convenience for easily testing the Chrome browser. The
- * control server which each instance communicates with will live and die with the instance.
+ * machine. It requires an <code>operadriver</code> executable to be available in PATH.
  *
- * To avoid unnecessarily restarting the OperaDriver server with each instance, use a
- * {@link RemoteWebDriver} coupled with the desired {@link OperaDriverService}, which is managed
- * separately. For example: <pre>{@code
- *
- * import static org.junit.Assert.assertEquals;
- *
- * import org.junit.*;
- * import org.junit.runner.RunWith;
- * import org.junit.runners.JUnit4;
- * import org.openqa.selenium.opera.OperaDriverService;
- * import org.openqa.selenium.remote.DesiredCapabilities;
- * import org.openqa.selenium.remote.RemoteWebDriver;
- *
- * {@literal @RunWith(JUnit4.class)}
- * public class OperaTest extends TestCase {
- *
- *   private static OperaDriverService service;
- *   private WebDriver driver;
- *
- *   {@literal @BeforeClass}
- *   public static void createAndStartService() {
- *     service = new OperaDriverService.Builder()
- *         .usingDriverExecutable(new File("path/to/my/operadriver.exe"))
- *         .usingAnyFreePort()
- *         .build();
- *     service.start();
- *   }
- *
- *   {@literal @AfterClass}
- *   public static void createAndStopService() {
- *     service.stop();
- *   }
- *
- *   {@literal @Before}
- *   public void createDriver() {
- *     driver = new RemoteWebDriver(service.getUrl(),
- *         DesiredCapabilities.opera());
- *   }
- *
- *   {@literal @After}
- *   public void quitDriver() {
- *     driver.quit();
- *   }
- *
- *   {@literal @Test}
- *   public void testGoogleSearch() {
- *     driver.get("http://www.google.com");
- *     WebElement searchBox = driver.findElement(By.name("q"));
- *     searchBox.sendKeys("webdriver");
- *     searchBox.quit();
- *     assertEquals("webdriver - Google Search", driver.getTitle());
- *   }
- * }
- * }</pre>
- *
- * Note that unlike OperaDriver, RemoteWebDriver doesn't directly implement
- * role interfaces such as {@link LocationContext} and {@link WebStorage}.
- * Therefore, to access that functionality, it needs to be
- * {@link org.openqa.selenium.remote.Augmenter augmented} and then cast
- * to the appropriate interface.
- *
- * @see OperaDriverService#createDefaultService
+ * @see <a href="https://github.com/operasoftware/operachromiumdriver">operadriver</a>
  */
 public class OperaDriver extends RemoteWebDriver
     implements LocationContext, WebStorage {

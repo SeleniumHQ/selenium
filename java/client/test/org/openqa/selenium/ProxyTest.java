@@ -29,13 +29,16 @@ import static org.openqa.selenium.remote.CapabilityType.PROXY;
 
 import org.junit.Ignore;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 import org.openqa.selenium.Proxy.ProxyType;
 import org.openqa.selenium.json.Json;
+import org.openqa.selenium.testing.UnitTests;
 
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
+@Category(UnitTests.class)
 public class ProxyTest {
 
   @Test
@@ -62,43 +65,43 @@ public class ProxyTest {
     proxy.setProxyType(DIRECT);
 
     assertThatExceptionOfType(IllegalStateException.class)
-        .isThrownBy(() -> proxy.setAutodetect(true));
+      .isThrownBy(() -> proxy.setAutodetect(true));
 
     assertThatExceptionOfType(IllegalStateException.class)
-        .isThrownBy(() -> proxy.setSocksPassword(""));
+      .isThrownBy(() -> proxy.setSocksPassword(""));
 
     assertThatExceptionOfType(IllegalStateException.class)
-        .isThrownBy(() -> proxy.setSocksUsername(""));
+      .isThrownBy(() -> proxy.setSocksUsername(""));
 
     assertThatExceptionOfType(IllegalStateException.class)
-        .isThrownBy(() -> proxy.setSocksProxy(""));
+      .isThrownBy(() -> proxy.setSocksProxy(""));
 
     assertThatExceptionOfType(IllegalStateException.class)
-        .isThrownBy(() -> proxy.setFtpProxy(""));
+      .isThrownBy(() -> proxy.setFtpProxy(""));
 
     assertThatExceptionOfType(IllegalStateException.class)
-        .isThrownBy(() -> proxy.setHttpProxy(""));
+      .isThrownBy(() -> proxy.setHttpProxy(""));
 
     assertThatExceptionOfType(IllegalStateException.class)
-        .isThrownBy(() -> proxy.setNoProxy(""));
+      .isThrownBy(() -> proxy.setNoProxy(""));
 
     assertThatExceptionOfType(IllegalStateException.class)
-        .isThrownBy(() -> proxy.setProxyAutoconfigUrl(""));
+      .isThrownBy(() -> proxy.setProxyAutoconfigUrl(""));
 
     assertThatExceptionOfType(IllegalStateException.class)
-        .isThrownBy(() -> proxy.setProxyType(SYSTEM));
+      .isThrownBy(() -> proxy.setProxyType(SYSTEM));
 
     assertThatExceptionOfType(IllegalStateException.class)
-        .isThrownBy(() -> proxy.setSslProxy(""));
+      .isThrownBy(() -> proxy.setSslProxy(""));
 
     final Proxy proxy2 = new Proxy();
     proxy2.setProxyType(AUTODETECT);
 
     assertThatExceptionOfType(IllegalStateException.class)
-        .isThrownBy(() -> proxy2.setProxyType(SYSTEM));
+      .isThrownBy(() -> proxy2.setProxyType(SYSTEM));
 
     assertThatExceptionOfType(IllegalStateException.class)
-        .isThrownBy(() -> proxy.setSocksVersion(5));
+      .isThrownBy(() -> proxy.setSocksVersion(5));
   }
 
   @Test
@@ -195,6 +198,25 @@ public class ProxyTest {
 
     assertThat(proxy.getProxyAutoconfigUrl()).isNull();
     assertThat(proxy.isAutodetect()).isFalse();
+  }
+
+  @Test
+  public void longSocksVersionFromMap() {
+    Map<String, Object> proxyData = new HashMap<>();
+    long l = 5;
+    proxyData.put("proxyType", "manual");
+    proxyData.put("httpProxy", "http.proxy:1234");
+    proxyData.put("ftpProxy", "ftp.proxy");
+    proxyData.put("sslProxy", "ssl.proxy");
+    proxyData.put("noProxy", "localhost,127.0.0.*");
+    proxyData.put("socksProxy", "socks.proxy:65555");
+    proxyData.put("socksVersion", l);
+    proxyData.put("socksUsername", "test1");
+    proxyData.put("socksPassword", "test2");
+
+    Proxy proxy = new Proxy(proxyData);
+
+    assertThat(proxy.getSocksVersion()).isEqualTo(Integer.valueOf(5));
   }
 
   @Test

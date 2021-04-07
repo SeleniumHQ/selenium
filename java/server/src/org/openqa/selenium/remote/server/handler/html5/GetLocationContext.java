@@ -28,7 +28,7 @@ public class GetLocationContext extends WebDriverHandler<Location> {
   }
 
   @Override
-  public Location call() throws Exception {
+  public Location call() {
     return Utils.getLocationContext(getUnwrappedDriver()).location();
   }
 

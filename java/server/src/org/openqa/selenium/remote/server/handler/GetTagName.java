@@ -26,7 +26,7 @@ public class GetTagName extends WebElementHandler<String> {
   }
 
   @Override
-  public String call() throws Exception {
+  public String call() {
     return getElement().getTagName();
   }
 

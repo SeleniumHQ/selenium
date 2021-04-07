@@ -18,14 +18,14 @@
 
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Globalization;
 using OpenQA.Selenium.Internal;
 
 namespace OpenQA.Selenium.Remote
 {
     /// <summary>
-    /// Class to Create the capabilities of the browser you require for <see cref="IWebDriver"/>.
-    /// If you wish to use default values use the static methods
+    /// Internal class to specify the requested capabilities of the browser for <see cref="IWebDriver"/>.
     /// </summary>
     [Obsolete("Use of DesiredCapabilities has been deprecated in favor of browser-specific Options classes")]
     internal class DesiredCapabilities : IWritableCapabilities, IHasCapabilitiesDictionary
@@ -182,7 +182,7 @@ namespace OpenQA.Selenium.Remote
         /// <summary>
         /// Gets the underlying Dictionary for a given set of capabilities.
         /// </summary>
-        Dictionary<string, object> IHasCapabilitiesDictionary.CapabilitiesDictionary
+        IDictionary<string, object> IHasCapabilitiesDictionary.CapabilitiesDictionary
         {
             get { return this.CapabilitiesDictionary; }
         }
@@ -190,9 +190,9 @@ namespace OpenQA.Selenium.Remote
         /// <summary>
         /// Gets the underlying Dictionary for a given set of capabilities.
         /// </summary>
-        internal Dictionary<string, object> CapabilitiesDictionary
+        internal IDictionary<string, object> CapabilitiesDictionary
         {
-            get { return this.capabilities; }
+            get { return new ReadOnlyDictionary<string, object>(this.capabilities); }
         }
 
         /// <summary>

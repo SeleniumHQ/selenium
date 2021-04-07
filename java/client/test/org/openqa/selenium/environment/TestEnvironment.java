@@ -19,9 +19,18 @@ package org.openqa.selenium.environment;
 
 import org.openqa.selenium.environment.webserver.AppServer;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 public interface TestEnvironment {
 
   AppServer getAppServer();
 
   void stop();
+
+  default void assertIsValid() {
+    String hostName = getAppServer().getHostName();
+    String alternateHostName = getAppServer().getAlternateHostName();
+
+    assertThat(hostName).isNotEqualTo(alternateHostName);
+  }
 }

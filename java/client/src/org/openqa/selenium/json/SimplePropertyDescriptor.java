@@ -24,7 +24,7 @@ import java.util.function.Function;
 
 public class SimplePropertyDescriptor {
 
-  private final static Function<Object, Object> GET_CLASS_NAME = obj -> {
+  private static final Function<Object, Object> GET_CLASS_NAME = obj -> {
     if (obj == null) {
       return null;
     }

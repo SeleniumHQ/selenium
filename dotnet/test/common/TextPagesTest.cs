@@ -19,8 +19,9 @@ namespace OpenQA.Selenium
         [Test]
         [IgnoreBrowser(Browser.IE, "IE allows addition of cookie on text pages")]
         [IgnoreBrowser(Browser.Chrome, "Chrome allows addition of cookie on text pages")]
-        [IgnoreBrowser(Browser.Firefox, "Firefox allows addition of cookie on text pages")]
         [IgnoreBrowser(Browser.Edge, "Edge allows addition of cookie on text pages")]
+        [IgnoreBrowser(Browser.Firefox, "Firefox allows addition of cookie on text pages")]
+        [IgnoreBrowser(Browser.EdgeLegacy, "Edge allows addition of cookie on text pages")]
         [IgnoreBrowser(Browser.Safari, "Safari allows addition of cookie on text pages")]
         [IgnoreBrowser(Browser.Opera, "Opera allows addition of cookie on text pages")]
         public void ShouldThrowExceptionWhenAddingCookieToAPageThatIsNotHtml()

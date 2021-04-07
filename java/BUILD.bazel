@@ -1,0 +1,48 @@
+load("@rules_jvm_external//:defs.bzl", "artifact")
+load("//java:defs.bzl", "spotbugs_config")
+
+exports_files(
+    srcs = [
+        "CHANGELOG",
+        "empty_test_template.txt",
+        "java_stub_template.txt",
+    ],
+    visibility = [
+        "//visibility:public",
+    ],
+)
+
+java_plugin(
+    name = "auto-service-plugin",
+    processor_class = "com.google.auto.service.processor.AutoServiceProcessor",
+    visibility = ["//visibility:private"],
+    deps = [
+        artifact("com.google.auto:auto-common"),
+        artifact("com.google.auto.service:auto-service"),
+        artifact("com.google.guava:guava"),
+    ],
+)
+
+java_library(
+    name = "auto-service",
+    exported_plugins = [
+        ":auto-service-plugin",
+    ],
+    visibility = [
+        "//java:__subpackages__",
+    ],
+    exports = [
+        artifact("com.google.auto.service:auto-service"),
+        artifact("com.google.auto.service:auto-service-annotations"),
+    ],
+)
+
+spotbugs_config(
+    name = "spotbugs-config",
+    effort = "default",
+    exclude_filter = "spotbugs-excludes.xml",
+    fail_on_warning = True,
+    visibility = [
+        "//visibility:public",
+    ],
+)

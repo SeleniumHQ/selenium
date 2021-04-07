@@ -52,7 +52,7 @@ public class Down extends WebElementHandler<Void> {
   }
 
   @Override
-  public Void call() throws Exception {
+  public Void call() {
     TouchScreen touchScreen = ((HasTouchScreen) getDriver()).getTouch();
 
     touchScreen.down(x, y);
@@ -62,6 +62,6 @@ public class Down extends WebElementHandler<Void> {
 
   @Override
   public String toString() {
-    return String.format("[Down]");
+    return "[Down]";
   }
 }

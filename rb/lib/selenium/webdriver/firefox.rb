@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Licensed to the Software Freedom Conservancy (SFC) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -19,41 +21,48 @@ require 'timeout'
 require 'socket'
 require 'rexml/document'
 
-require 'selenium/webdriver/firefox/driver'
-
-require 'selenium/webdriver/firefox/util'
-require 'selenium/webdriver/firefox/extension'
-require 'selenium/webdriver/firefox/binary'
-require 'selenium/webdriver/firefox/profiles_ini'
-require 'selenium/webdriver/firefox/profile'
-require 'selenium/webdriver/firefox/launcher'
-require 'selenium/webdriver/firefox/legacy/driver'
-
-require 'selenium/webdriver/firefox/marionette/bridge'
-require 'selenium/webdriver/firefox/marionette/driver'
-require 'selenium/webdriver/firefox/options'
-require 'selenium/webdriver/firefox/service'
-
 module Selenium
   module WebDriver
     module Firefox
+      autoload :Extension, 'selenium/webdriver/firefox/extension'
+      autoload :ProfilesIni, 'selenium/webdriver/firefox/profiles_ini'
+      autoload :Profile, 'selenium/webdriver/firefox/profile'
+      autoload :Features, 'selenium/webdriver/firefox/features'
+      autoload :Driver, 'selenium/webdriver/firefox/driver'
+      autoload :Options, 'selenium/webdriver/firefox/options'
+      autoload :Service, 'selenium/webdriver/firefox/service'
+
       DEFAULT_PORT = 7055
       DEFAULT_ENABLE_NATIVE_EVENTS = Platform.os == :windows
       DEFAULT_SECURE_SSL = false
       DEFAULT_ASSUME_UNTRUSTED_ISSUER = true
       DEFAULT_LOAD_NO_FOCUS_LIB = false
 
+      # Mozilla Automation Team asked to only support 85
+      # until WebDriver Bidi is available.
+      DEVTOOLS_VERSION = 85
+
       def self.driver_path=(path)
-        Platform.assert_executable path
-        @driver_path = path
+        WebDriver.logger.deprecate 'Selenium::WebDriver::Firefox#driver_path=',
+                                   'Selenium::WebDriver::Firefox::Service#driver_path=',
+                                   id: :driver_path
+        Selenium::WebDriver::Firefox::Service.driver_path = path
       end
 
       def self.driver_path
-        @driver_path ||= nil
+        WebDriver.logger.deprecate 'Selenium::WebDriver::Firefox#driver_path',
+                                   'Selenium::WebDriver::Firefox::Service#driver_path',
+                                   id: :driver_path
+        Selenium::WebDriver::Firefox::Service.driver_path
       end
 
       def self.path=(path)
-        Binary.path = path
+        Platform.assert_executable path
+        @path = path
+      end
+
+      def self.path
+        @path ||= nil
       end
     end # Firefox
   end # WebDriver

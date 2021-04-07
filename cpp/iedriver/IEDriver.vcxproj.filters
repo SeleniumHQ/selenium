@@ -303,6 +303,9 @@
     <ClCompile Include="cominterfaces.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="CommandHandlers\CreateNewWindowCommandHandler.cpp">
+      <Filter>Source Files\CommandHandlers</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Alert.h">
@@ -616,6 +619,12 @@
     </ClInclude>
     <ClInclude Include="cominterfaces.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="WebDriverConstants.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CommandHandlers\CreateNewWindowCommandHandler.h">
+      <Filter>Header Files\CommandHandlers</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

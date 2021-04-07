@@ -44,7 +44,7 @@ public class FindElement extends WebDriverHandler<Map<String, String>> {
   }
 
   @Override
-  public Map<String, String> call() throws Exception {
+  public Map<String, String> call() {
     try {
       WebElement element = getDriver().findElement(by);
       String elementId = getKnownElements().add(element);

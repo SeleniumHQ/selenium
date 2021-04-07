@@ -17,74 +17,58 @@
 
 package org.openqa.selenium.grid.distributor;
 
-import static org.openqa.selenium.json.Json.MAP_TYPE;
-
-import org.openqa.selenium.Capabilities;
-import org.openqa.selenium.ImmutableCapabilities;
+import org.openqa.selenium.grid.data.NodeStatus;
+import org.openqa.selenium.grid.data.Slot;
 import org.openqa.selenium.grid.node.Node;
 import org.openqa.selenium.grid.node.remote.RemoteNode;
-import org.openqa.selenium.grid.web.CommandHandler;
+import org.openqa.selenium.grid.security.Secret;
+import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.Json;
-import org.openqa.selenium.json.JsonException;
 import org.openqa.selenium.remote.http.HttpClient;
+import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
-import org.openqa.selenium.remote.tracing.DistributedTracer;
+import org.openqa.selenium.remote.tracing.Tracer;
 
-import java.io.IOException;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
-public class AddNode implements CommandHandler {
+import static org.openqa.selenium.remote.http.Contents.string;
 
-  private final DistributedTracer tracer;
+class AddNode implements HttpHandler {
+
+  private final Tracer tracer;
   private final Distributor distributor;
   private final Json json;
   private final HttpClient.Factory httpFactory;
+  private final Secret registrationSecret;
 
-  public AddNode(
-      DistributedTracer tracer,
+  AddNode(
+      Tracer tracer,
       Distributor distributor,
       Json json,
-      HttpClient.Factory httpFactory) {
-    this.tracer = Objects.requireNonNull(tracer);
-    this.distributor = Objects.requireNonNull(distributor);
-    this.json = Objects.requireNonNull(json);
-    this.httpFactory = Objects.requireNonNull(httpFactory);
+      HttpClient.Factory httpFactory,
+      Secret registrationSecret) {
+    this.tracer = Require.nonNull("Tracer", tracer);
+    this.distributor = Require.nonNull("Distributor", distributor);
+    this.json = Require.nonNull("Json converter", json);
+    this.httpFactory = Require.nonNull("HTTP Factory", httpFactory);
+    this.registrationSecret = Require.nonNull("Registration secret", registrationSecret);
   }
 
   @Override
-  public void execute(HttpRequest req, HttpResponse resp) throws IOException {
-    Map<String, Object> raw = json.toType(req.getContentString(), MAP_TYPE);
-
-    UUID id = UUID.fromString((String) raw.get("id"));
-    URI uri;
-    try {
-      uri = new URI((String) raw.get("uri"));
-    } catch (URISyntaxException e) {
-      throw new JsonException(e);
-    }
-    @SuppressWarnings("unchecked")
-    Collection<Map<String, Object>> rawCaps =
-        (Collection<Map<String, Object>>) raw.get("capabilities");
-
-    List<Capabilities> capabilities = rawCaps.stream()
-        .map(ImmutableCapabilities::new)
-        .collect(Collectors.toList());
+  public HttpResponse execute(HttpRequest req) {
+    NodeStatus status = json.toType(string(req), NodeStatus.class);
 
     Node node = new RemoteNode(
         tracer,
-        id,
-        uri,
-        capabilities,
-        httpFactory.createClient(uri.toURL()));
+        httpFactory,
+        status.getId(),
+        status.getUri(),
+        registrationSecret,
+        status.getSlots().stream().map(Slot::getStereotype).collect(Collectors.toSet()));
 
     distributor.add(node);
+
+    return new HttpResponse();
   }
 }

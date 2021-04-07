@@ -18,6 +18,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Globalization;
 using Newtonsoft.Json;
 using OpenQA.Selenium.Remote;
@@ -96,7 +97,7 @@ namespace OpenQA.Selenium.Internal
         /// <summary>
         /// Gets the underlying Dictionary for a given set of capabilities.
         /// </summary>
-        Dictionary<string, object> IHasCapabilitiesDictionary.CapabilitiesDictionary
+        IDictionary<string, object> IHasCapabilitiesDictionary.CapabilitiesDictionary
         {
             get { return this.CapabilitiesDictionary; }
         }
@@ -104,9 +105,9 @@ namespace OpenQA.Selenium.Internal
         /// <summary>
         /// Gets the internal capabilities dictionary.
         /// </summary>
-        internal Dictionary<string, object> CapabilitiesDictionary
+        internal IDictionary<string, object> CapabilitiesDictionary
         {
-            get { return this.capabilities; }
+            get { return new ReadOnlyDictionary<string, object>(this.capabilities); }
         }
 
         /// <summary>

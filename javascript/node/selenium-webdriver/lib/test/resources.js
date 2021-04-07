@@ -15,18 +15,13 @@
 // specific language governing permissions and limitations
 // under the License.
 
-'use strict';
+'use strict'
 
-var fs = require('fs'),
-    path = require('path');
-
-var resourceRoot = require('../devmode') ?
-    require('./build').projectRoot() :
-    path.join(__dirname, 'data');
-
+const fs = require('fs')
+const path = require('path')
+const { projectRoot } = require('./build')
 
 // PUBLIC API
-
 
 /**
  * Locates a test resource.
@@ -34,10 +29,10 @@ var resourceRoot = require('../devmode') ?
  * @return {string} The full path for the file, if it exists.
  * @throws {Error} If the file does not exist.
  */
-exports.locate = function(filePath) {
-  var fullPath = path.normalize(path.join(resourceRoot, filePath));
+exports.locate = function (filePath) {
+  const fullPath = path.normalize(path.join(projectRoot(), filePath))
   if (!fs.existsSync(fullPath)) {
-    throw Error('File does not exist: ' + filePath);
+    throw Error('File does not exist: ' + filePath)
   }
-  return fullPath;
-};
+  return fullPath
+}

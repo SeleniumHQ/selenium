@@ -20,7 +20,7 @@ namespace OpenQA.Selenium.Html5
             }
         }
 
-        [Test]
+        //[Test]
         [IgnoreBrowser(Browser.Firefox, "Firefox driver incorrectly reports capability of web storage")]
         public void SetGetStorage()
         {
@@ -34,7 +34,7 @@ namespace OpenQA.Selenium.Html5
             Assert.AreEqual(value, storage.GetItem(key));
         }
 
-        [Test]
+        //[Test]
         [IgnoreBrowser(Browser.Firefox, "Firefox driver incorrectly reports capability of web storage")]
         public void ClearStorage()
         {
@@ -49,7 +49,7 @@ namespace OpenQA.Selenium.Html5
             Assert.That(storage.GetItem(key), Is.Null);
         }
 
-        [Test]
+        //[Test]
         [IgnoreBrowser(Browser.Firefox, "Firefox driver incorrectly reports capability of web storage")]
         public void RemoveStorage()
         {
@@ -64,7 +64,7 @@ namespace OpenQA.Selenium.Html5
             Assert.That(storage.GetItem(key), Is.Null);
         }
 
-        [Test]
+        //[Test]
         [IgnoreBrowser(Browser.Firefox, "Firefox driver incorrectly reports capability of web storage")]
         public void GetAllStoredKeys()
         {
@@ -82,7 +82,7 @@ namespace OpenQA.Selenium.Html5
             Assert.That(storage.GetItem(key3), Is.Not.Null);
         }
 
-        [Test]
+        //[Test]
         [IgnoreBrowser(Browser.Firefox, "Firefox driver incorrectly reports capability of web storage")]
         public void GetStorageSize()
         {

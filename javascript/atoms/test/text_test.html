@@ -18,6 +18,7 @@ limitations under the License.
 <html>
 <head>
   <title>text_test.html</title>
+  <meta charset="UTF-8">
   <script src="test_bootstrap.js"></script>
   <script type="text/javascript">
     goog.require('bot.dom');
@@ -257,11 +258,28 @@ limitations under the License.
 
     function testGetVisibleTextShouldHandleTextTransformProperty() {
       var text = getVisibleTextByElementId("capitalized");
-      assertEquals("Hello, World! Bla-bla-BLA", text);
+      assertEquals("Hello, World! Bla-Bla-BLA", text);
       text = getVisibleTextByElementId("lowercased");
       assertEquals("hello, world! bla-bla-bla", text);
       text = getVisibleTextByElementId("uppercased");
       assertEquals("HELLO, WORLD! BLA-BLA-BLA", text);
+      
+      text = getVisibleTextByElementId("capitalized-1");
+      assertEquals("Äåìî", text);
+      text = getVisibleTextByElementId("capitalized-2");
+      assertEquals("Manipulowanie Przepływem", text);
+      text = getVisibleTextByElementId("capitalized-3");
+      assertEquals("Manipulowanie Przepływem", text);
+      text = getVisibleTextByElementId("capitalized-4");
+      assertEquals("Manipulowanie Pr0123z4epływem", text);
+      text = getVisibleTextByElementId("capitalized-5");
+      assertEquals("Lorem Ipsum Dolor Sit Amet, Consectetur Adipisicing Elit,", text);
+      text = getVisibleTextByElementId("capitalized-6");
+      assertEquals("Ⓐⓑⓒ (Ⓓⓔⓕ) —Ⓖⓗⓘ— Ⓙkl", text);
+      text = getVisibleTextByElementId("capitalized-7");
+      assertEquals('(This) “Is” [A] –Short– -Test- «For» *The* _Css_ ¿Capitalize? ?¡Transfor', text);
+      text = getVisibleTextByElementId("capitalized-8");
+      assertEquals('The Dutch Word: "Ijsland" Starts With A Digraph', text);
     }
 
     function getVisibleTextByElementId(id) {
@@ -398,9 +416,20 @@ limitations under the License.
   <span id="zerowidth">This line has a bunch of ze&#8203;ro-width&lrm; characters&rlm; in it.</span>
 
   <div>
-    <a id="capitalized" style="text-transform: capitalize">Hello, world! bla-bla-BLA</a><br/>
+    <a id="capitalized" style="text-transform: capitalize">hello, world! bla-bla-BLA</a><br/>
     <a id="lowercased" style="text-transform: lowercase">Hello, world! bla-bla-BLA</a><br/>
-    <a id="uppercased" style="text-transform: uppercase">Hello, world! bla-bla-BLA</a><br/>
+    <a id="uppercased" style="text-transform: uppercase">hello, world! bla-bla-BLA</a><br/>
+  </div>
+
+  <div>
+    <a lang="ru" id="capitalized-1" style="text-transform: capitalize">äåìî</a><br/>
+    <a id="capitalized-2" style="text-transform: capitalize">Manipulowanie przepływem</a><br/>
+    <a id="capitalized-3" style="text-transform: capitalize">manipulowanie przep&#x142ywem</a><br/>
+    <a id="capitalized-4" style="text-transform: capitalize">Manipulowanie pr0123z4epływem</a><br/>
+    <a id="capitalized-5" style="text-transform: capitalize">Lorem ipsum dolor sit amet, consectetur adipisicing elit,</a><br/>
+    <a id="capitalized-6" style="text-transform: capitalize">ⓐⓑⓒ (ⓓⓔⓕ) —ⓖⓗⓘ— ⓙkl</a><br/>
+    <a id="capitalized-7" style="text-transform: capitalize">(this) “is” [a] –short– -test- «for» *the* _css_ ¿capitalize? ?¡transfor</a><br/>
+    <a id="capitalized-8" style="text-transform: capitalize">The Dutch word: "ijsland" starts with a digraph</a><br/>
   </div>
 
 </body>

@@ -24,6 +24,7 @@ Safari 10 before testing.
 | Internet Explorer | [IEDriverServer.exe][release]      |
 | Edge              | [MicrosoftWebDriver.msi][edge]     |
 | Firefox           | [geckodriver(.exe)][geckodriver]   |
+| Opera             | [operadriver(.exe)][operadriver]   |
 | Safari            | [safaridriver]                     |
 
 ## Usage
@@ -117,13 +118,12 @@ Additional resources include
 
 - the #selenium channel on freenode IRC
 - the [selenium-users@googlegroups.com][users] list
-- [SeleniumHQ](http://www.seleniumhq.org/docs/) documentation
+- [SeleniumHQ](https://selenium.dev/documentation/) documentation
 
 ## Contributing
 
 Contributions are accepted either through [GitHub][gh] pull requests or patches
-via the [Selenium issue tracker][issues]. You must sign our
-[Contributor License Agreement][cla] before your changes will be accepted.
+via the [Selenium issue tracker][issues].
 
 ## Node Support Policy
 
@@ -217,7 +217,6 @@ under the License.
 [LTS]: https://github.com/nodejs/LTS
 [PATH]: http://en.wikipedia.org/wiki/PATH_%28variable%29
 [api]: http://seleniumhq.github.io/selenium/docs/api/javascript/module/selenium-webdriver/
-[cla]: http://goo.gl/qC50R
 [chrome]: http://chromedriver.storage.googleapis.com/index.html
 [gh]: https://github.com/SeleniumHQ/selenium/
 [issues]: https://github.com/SeleniumHQ/selenium/issues
@@ -227,3 +226,4 @@ under the License.
 [release]: http://selenium-release.storage.googleapis.com/index.html
 [users]: https://groups.google.com/forum/#!forum/selenium-users
 [safaridriver]: https://developer.apple.com/library/prerelease/content/releasenotes/General/WhatsNewInSafari/Articles/Safari_10_0.html#//apple_ref/doc/uid/TP40014305-CH11-DontLinkElementID_28
+[operadriver]: https://github.com/operasoftware/operachromiumdriver/releases

@@ -20,8 +20,6 @@ package org.openqa.selenium.lift.find;
 import static org.hamcrest.Matchers.equalTo;
 import static org.openqa.selenium.lift.match.AttributeMatcher.attribute;
 
-import org.hamcrest.Factory;
-
 /**
  * {@link Finder} for HTML div tags.
  */
@@ -37,7 +35,6 @@ public class DivFinder extends HtmlTagFinder {
     return "div";
   }
 
-  @Factory
   public static HtmlTagFinder div() {
     return new DivFinder();
   }

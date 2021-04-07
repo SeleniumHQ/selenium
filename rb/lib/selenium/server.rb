@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Licensed to the Software Freedom Conservancy (SFC) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -71,8 +73,8 @@ module Selenium
         return download_file_name if File.exist? download_file_name
 
         begin
-          open(download_file_name, 'wb') do |destination|
-            net_http.start('selenium-release.storage.googleapis.com') do |http|
+          File.open(download_file_name, 'wb') do |destination|
+            net_http_start('selenium-release.storage.googleapis.com') do |http|
               resp = http.request_get("/#{required_version[/(\d+\.\d+)\./, 1]}/#{download_file_name}") do |response|
                 total = response.content_length
                 progress = 0
@@ -83,7 +85,7 @@ module Selenium
                   segment_count += 1
 
                   if (segment_count % 15).zero?
-                    percent = (progress.to_f / total.to_f) * 100
+                    percent = progress.fdiv(total) * 100
                     print "#{CL_RESET}Downloading #{download_file_name}: #{percent.to_i}% (#{progress} / #{total})"
                     segment_count = 0
                   end
@@ -92,12 +94,10 @@ module Selenium
                 end
               end
 
-              unless resp.is_a? Net::HTTPSuccess
-                raise Error, "#{resp.code} for #{download_file_name}"
-              end
+              raise Error, "#{resp.code} for #{download_file_name}" unless resp.is_a? Net::HTTPSuccess
             end
           end
-        rescue
+        rescue StandardError
           FileUtils.rm download_file_name if File.exist? download_file_name
           raise
         end
@@ -111,7 +111,7 @@ module Selenium
 
       def latest
         require 'rexml/document'
-        net_http.start('selenium-release.storage.googleapis.com') do |http|
+        net_http_start('selenium-release.storage.googleapis.com') do |http|
           versions = REXML::Document.new(http.get('/').body).root.get_elements('//Contents/Key').map do |e|
             e.text[/selenium-server-standalone-(\d+\.\d+\.\d+)\.jar/, 1]
           end
@@ -120,43 +120,26 @@ module Selenium
         end
       end
 
-      def net_http
+      def net_http_start(address, &block)
         http_proxy = ENV['http_proxy'] || ENV['HTTP_PROXY']
 
         if http_proxy
           http_proxy = "http://#{http_proxy}" unless http_proxy.start_with?('http://')
           uri = URI.parse(http_proxy)
 
-          Net::HTTP::Proxy(uri.host, uri.port)
+          Net::HTTP.start(address, nil, uri.host, uri.port, &block)
         else
-          Net::HTTP
+          Net::HTTP.start(address, &block)
         end
       end
     end
 
     #
-    # The server port
+    # The Mode of the Server
+    # :standalone, #hub, #node
     #
 
-    attr_accessor :port
-
-    #
-    # The server timeout
-    #
-
-    attr_accessor :timeout
-
-    #
-    # Whether to launch the server in the background
-    #
-
-    attr_accessor :background
-
-    #
-    # Path to log file, or 'true' for stdout.
-    #
-
-    attr_accessor :log
+    attr_accessor :role, :port, :timeout, :background, :log
 
     #
     # @param [String] jar Path to the server jar.
@@ -175,11 +158,12 @@ module Selenium
 
       @jar        = jar
       @host       = '127.0.0.1'
+      @role       = opts.fetch(:role, 'standalone')
       @port       = opts.fetch(:port, 4444)
       @timeout    = opts.fetch(:timeout, 30)
       @background = opts.fetch(:background, false)
       @log        = opts[:log]
-
+      @log_file   = nil
       @additional_args = []
     end
 
@@ -199,7 +183,7 @@ module Selenium
       stop_process if @process
       poll_for_shutdown
 
-      @log_file.close if defined?(@log_file)
+      @log_file&.close
     end
 
     def webdriver_url
@@ -216,6 +200,10 @@ module Selenium
 
     private
 
+    def selenium4?
+      @jar.match?(/[^.]4\./) || @jar.include?('deploy')
+    end
+
     def stop_process
       return unless @process.alive?
 
@@ -231,10 +219,14 @@ module Selenium
     end
 
     def process
-      @process ||= (
+      @process ||= begin
         # extract any additional_args that start with -D as options
         properties = @additional_args.dup - @additional_args.delete_if { |arg| arg[/^-D/] }
-        server_command = ['java'] + properties + ['-jar', @jar, '-port', @port.to_s] + @additional_args
+        args = ['-jar', @jar]
+        args << @role if selenium4?
+        args << (selenium4? ? '--port' : '-port')
+        args << @port.to_s
+        server_command = ['java'] + properties + args + @additional_args
         cp = ChildProcess.build(*server_command)
         WebDriver.logger.debug("Executing Process #{server_command}")
 
@@ -250,16 +242,18 @@ module Selenium
         cp.detach = @background
 
         cp
-      )
+      end
     end
 
     def poll_for_service
       return if socket.connected?
+
       raise Error, "remote server not launched in #{@timeout} seconds"
     end
 
     def poll_for_shutdown
       return if socket.closed?
+
       raise Error, "remote server not stopped in #{@timeout} seconds"
     end
 

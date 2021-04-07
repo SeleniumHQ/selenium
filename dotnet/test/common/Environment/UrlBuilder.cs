@@ -76,6 +76,25 @@ namespace OpenQA.Selenium.Environment
             return location;
         }
 
+        public string WhereIsViaNonLoopbackAddress(string page)
+        {
+            string hostNameAsIPAddress = "127.0.0.1";
+            IPAddress[] addresses = Dns.GetHostAddresses(Dns.GetHostName());
+            foreach (IPAddress address in addresses)
+            {
+                if (address.AddressFamily == AddressFamily.InterNetwork && !IPAddress.IsLoopback(address))
+                {
+                    hostNameAsIPAddress = address.ToString();
+                    break;
+                }
+            }
+
+            string location = string.Empty;
+            location = "http://" + hostNameAsIPAddress + ":" + port + "/" + path + "/" + page;
+
+            return location;
+        }
+
         public string WhereIsSecure(string page)
         {
             string location = string.Empty;

@@ -27,7 +27,7 @@ public class GetSessionStorageSize extends WebDriverHandler<Integer> {
   }
 
   @Override
-  public Integer call() throws Exception {
+  public Integer call() {
     return Utils.getWebStorage(getUnwrappedDriver())
         .getSessionStorage().size();
   }

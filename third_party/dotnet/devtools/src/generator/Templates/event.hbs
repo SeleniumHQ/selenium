@@ -1,0 +1,29 @@
+﻿namespace {{rootNamespace}}.{{domain.Name}}
+{
+    using System;
+    using Newtonsoft.Json;
+
+    /// <summary>
+    /// {{xml-code-comment event.Description 1}}
+    /// </summary>
+    public sealed class {{className}}EventArgs : EventArgs
+    {
+    {{#each event.Parameters}}
+        {{#if Description}}
+        /// <summary>
+        /// {{xml-code-comment Description 2}}
+        /// </summary>
+        {{else}}
+        /// <summary>
+        /// Gets or sets the {{Name}}
+        /// </summary>
+        {{/if}}
+        [JsonProperty("{{Name}}"{{#if Optional}}, DefaultValueHandling = DefaultValueHandling.Ignore{{/if}})]
+        public {{typemap ../context}} {{dehumanize Name}}
+        {
+            get;
+            set;
+        }
+    {{/each}}
+    }
+}

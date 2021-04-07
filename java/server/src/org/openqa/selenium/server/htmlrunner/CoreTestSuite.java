@@ -46,6 +46,7 @@ public class CoreTestSuite {
       throw new SeleniumException("Unable to locate suite table: " + url);
     }
 
+    //noinspection unchecked
     List<String> allTestUrls = (List<String>) ((JavascriptExecutor) driver).executeScript(
       "var toReturn = [];\n" +
       "for (var i = 0; i < arguments[0].rows.length; i++) {\n" +

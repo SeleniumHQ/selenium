@@ -5,6 +5,7 @@ namespace OpenQA.Selenium
         All, 
         IE,
         Edge,
+        EdgeLegacy,
         Firefox, 
         Safari, 
         Chrome,

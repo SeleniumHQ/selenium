@@ -47,7 +47,7 @@ public class TestCssLocators extends InternalSelenseTestBase {
     // :indeterminate
     //
 
-    selenium.open("../tests/html/test_locators.html");
+    selenium.open("test_locators.html");
 
     boolean isIe = "true".equals(selenium.getEval("browserVersion.isIE;"));
 

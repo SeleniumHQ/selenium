@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Licensed to the Software Freedom Conservancy (SFC) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -54,64 +56,59 @@ module Selenium
 
       CONNECT_TIMEOUT = 5
 
-      NOT_CONNECTED_ERRORS = [Errno::ECONNREFUSED, Errno::ENOTCONN, SocketError]
-      NOT_CONNECTED_ERRORS << Errno::EPERM if Platform.cygwin?
+      NOT_CONNECTED_ERRORS = [Errno::ECONNREFUSED, Errno::ENOTCONN, SocketError].tap { |arr|
+        arr << Errno::EPERM if Platform.cygwin?
+      }.freeze
 
-      CONNECTED_ERRORS = [Errno::EISCONN]
-      CONNECTED_ERRORS << Errno::EINVAL if Platform.windows?
-      CONNECTED_ERRORS << Errno::EALREADY if Platform.wsl?
+      CONNECTED_ERRORS = [Errno::EISCONN].tap { |arr|
+        arr << Errno::EINVAL if Platform.windows?
+        arr << Errno::EALREADY if Platform.wsl?
+      }.freeze
 
-      if Platform.jruby?
-        # we use a plain TCPSocket here since JRuby has issues select()ing on a connecting socket
-        # see http://jira.codehaus.org/browse/JRUBY-5165
-        def listening?
-          TCPSocket.new(@host, @port).close
-          true
-        rescue *NOT_CONNECTED_ERRORS
-          false
+      def listening?
+        addr     = Socket.getaddrinfo(@host, @port, Socket::AF_INET, Socket::SOCK_STREAM)
+        sock     = Socket.new(Socket::AF_INET, Socket::SOCK_STREAM, 0)
+        sockaddr = Socket.pack_sockaddr_in(@port, addr[0][3])
+
+        begin
+          sock.connect_nonblock sockaddr
+        rescue Errno::EINPROGRESS
+          retry if socket_writable?(sock) && conn_completed?(sock)
+          raise Errno::ECONNREFUSED
+        rescue *CONNECTED_ERRORS
+          # yay!
         end
-      else
-        def listening?
-          addr     = Socket.getaddrinfo(@host, @port, Socket::AF_INET, Socket::SOCK_STREAM)
-          sock     = Socket.new(Socket::AF_INET, Socket::SOCK_STREAM, 0)
-          sockaddr = Socket.pack_sockaddr_in(@port, addr[0][3])
 
-          begin
-            sock.connect_nonblock sockaddr
-          rescue Errno::EINPROGRESS
-            retry if IO.select(nil, [sock], nil, CONNECT_TIMEOUT)
-            raise Errno::ECONNREFUSED
-          rescue *CONNECTED_ERRORS
-            # yay!
-          end
+        sock.close
+        true
+      rescue *NOT_CONNECTED_ERRORS
+        sock&.close
+        WebDriver.logger.debug("polling for socket on #{[@host, @port].inspect}")
+        false
+      end
 
-          sock.close
-          true
-        rescue *NOT_CONNECTED_ERRORS
-          sock.close if sock
-          WebDriver.logger.debug("polling for socket on #{[@host, @port].inspect}")
-          false
-        end
+      def socket_writable?(sock)
+        IO.select(nil, [sock], nil, CONNECT_TIMEOUT)
+      end
+
+      def conn_completed?(sock)
+        sock.getsockopt(Socket::SOL_SOCKET, Socket::SO_ERROR).int.zero?
       end
 
       def with_timeout
-        max_time = time_now + @timeout
+        max_time = current_time + @timeout
 
-        (
+        until current_time > max_time
           return true if yield
-          wait
-        ) until time_now > max_time
+
+          sleep @interval
+        end
 
         false
       end
 
-      def wait
-        sleep @interval
-      end
-
-      # for testability
-      def time_now
-        Time.now
+      def current_time
+        Process.clock_gettime(Process::CLOCK_MONOTONIC)
       end
     end # SocketPoller
   end # WebDriver

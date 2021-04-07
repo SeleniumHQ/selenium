@@ -25,7 +25,6 @@ import org.junit.Test;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.remote.SessionId;
-import org.openqa.selenium.remote.server.StubHandler;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.UndeclaredThrowableException;
@@ -40,7 +39,7 @@ public class ResultConfigTest {
   @Test
   public void testShouldNotAllowNullToBeUsedAsTheUrl() {
     assertThatExceptionOfType(IllegalArgumentException.class)
-        .isThrownBy(() -> new ResultConfig(null, StubHandler::new, null, logger));
+        .isThrownBy(() -> new ResultConfig(null, () -> () -> null, null, logger));
   }
 
   @Test
@@ -52,7 +51,7 @@ public class ResultConfigTest {
   @SuppressWarnings({"ThrowableResultOfMethodCallIgnored"})
   @Test
   public void testShouldGracefullyHandleNullInputs() {
-    ResultConfig config = new ResultConfig("/foo/:bar", StubHandler::new, null, logger
+    ResultConfig config = new ResultConfig("/foo/:bar", () -> () -> null, null, logger
     );
     assertNull(config.getRootExceptionCause(null));
   }
@@ -68,7 +67,7 @@ public class ResultConfigTest {
     ExecutionException execution = new ExecutionException("General WebDriver error",
         webdriverException);
 
-    ResultConfig config = new ResultConfig("/foo/:bar", StubHandler::new, null, logger
+    ResultConfig config = new ResultConfig("/foo/:bar", () -> () -> null, null, logger
     );
     Throwable toClient = config.getRootExceptionCause(execution);
     assertEquals(toClient, runtime);
@@ -82,7 +81,7 @@ public class ResultConfigTest {
     InvocationTargetException invocation = new InvocationTargetException(noElement);
     UndeclaredThrowableException undeclared = new UndeclaredThrowableException(invocation);
 
-    ResultConfig config = new ResultConfig("/foo/:bar", StubHandler::new, null, logger
+    ResultConfig config = new ResultConfig("/foo/:bar", () -> () -> null, null, logger
     );
     Throwable toClient = config.getRootExceptionCause(undeclared);
     assertEquals(noElement, toClient);

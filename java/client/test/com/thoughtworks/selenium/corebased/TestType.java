@@ -30,7 +30,7 @@ import java.nio.charset.StandardCharsets;
 public class TestType extends InternalSelenseTestBase {
   @Test
   public void testType() throws Exception {
-    selenium.open("../tests/html/test_type_page1.html");
+    selenium.open("test_type_page1.html");
     verifyEquals(selenium.getValue("username"), "");
     selenium.shiftKeyDown();
     selenium.type("username", "x");
@@ -48,7 +48,7 @@ public class TestType extends InternalSelenseTestBase {
     if (isAbleToUpdateFileElements()) {
       File tempFile = File.createTempFile("example", "upload");
       tempFile.deleteOnExit();
-      Files.write("I like cheese", tempFile, StandardCharsets.UTF_8);
+      Files.asCharSink(tempFile, StandardCharsets.UTF_8).write("I like cheese");
       selenium.type("file", tempFile.getAbsolutePath());
       selenium.click("submitButton");
       selenium.waitForPageToLoad("30000");

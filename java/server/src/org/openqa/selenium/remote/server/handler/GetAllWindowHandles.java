@@ -28,7 +28,7 @@ public class GetAllWindowHandles extends WebDriverHandler<Set<String>> {
   }
 
   @Override
-  public Set<String> call() throws Exception {
+  public Set<String> call() {
     return getDriver().getWindowHandles();
   }
 

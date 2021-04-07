@@ -110,7 +110,7 @@ public class DefaultSelenium implements Selenium {
       if (message != null && message.startsWith("Connection refused")) {
         throw new RuntimeException("Could not contact Selenium Server; have you started it on '" +
             commandProcessor.getRemoteControlServerLocation() +
-            "' ?\nRead more at http://seleniumhq.org/projects/remote-control/not-started.html\n" +
+            "' ?\nRead more at https://selenium.dev/documentation/en/legacy_docs/selenium_rc/#unable-to-connect-to-server\n" +
             e.getMessage());
       }
       throw new RuntimeException("Could not start Selenium session: " + e.getMessage(), e);
@@ -151,7 +151,6 @@ public class DefaultSelenium implements Selenium {
 
   @Override
   public void showContextualBanner() {
-
     try {
       StackTraceElement[] e = Thread.currentThread().getStackTrace();
 
@@ -167,7 +166,11 @@ public class DefaultSelenium implements Selenium {
         methodName = e[i].getMethodName();
         break;
       }
-      showContextualBanner(className, methodName);
+      if (className != null && methodName != null) {
+        showContextualBanner(className, methodName);
+      } else {
+        this.setContext("<unknown context>");
+      }
     } catch (Exception e) {
       this.setContext("<unknown context>");
     }

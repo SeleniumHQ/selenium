@@ -17,6 +17,10 @@
 
 package org.openqa.selenium.environment;
 
+import java.util.function.Supplier;
+
+import static org.assertj.core.api.Assertions.assertThat;
+
 /**
  * Used to hold a TestEnvironment in a static class-level field.
  */
@@ -32,21 +36,17 @@ public class GlobalTestEnvironment {
     return environment;
   }
 
-  public static void set(TestEnvironment environment) {
-    GlobalTestEnvironment.environment = environment;
-  }
-
-  @SuppressWarnings("unchecked")
-  public static synchronized <T extends TestEnvironment> T get(
-      Class<T> startThisIfNothingIsAlreadyRunning) {
+  public static synchronized TestEnvironment getOrCreate(
+      Supplier<TestEnvironment> startThisIfNothingIsAlreadyRunning) {
     if (environment == null) {
       try {
-        environment = startThisIfNothingIsAlreadyRunning.newInstance();
+        environment = startThisIfNothingIsAlreadyRunning.get();
+        environment.assertIsValid();
       } catch (Exception e) {
         throw new RuntimeException(e);
       }
     }
-    return (T) environment;
+    return environment;
   }
 
   public static void stop() {

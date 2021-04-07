@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Licensed to the Software Freedom Conservancy (SFC) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -30,6 +32,7 @@ module Selenium
         def fetch(key)
           return self[key] if key? key
           return yield(key) if block_given?
+
           raise KeyError, "missing key #{key.inspect}"
         end
 
@@ -40,7 +43,7 @@ module Selenium
         def each
           return enum_for(:each) unless block_given?
 
-          keys.each do |k| # rubocop:disable Performance/HashEachMethods
+          keys.each do |k|
             yield k, self[k]
           end
         end

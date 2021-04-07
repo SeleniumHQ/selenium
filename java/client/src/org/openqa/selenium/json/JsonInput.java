@@ -17,20 +17,23 @@
 
 package org.openqa.selenium.json;
 
+import org.openqa.selenium.internal.Require;
+
 import java.io.Closeable;
 import java.io.IOException;
+import java.io.Reader;
 import java.io.UncheckedIOException;
 import java.lang.reflect.Type;
 import java.math.BigDecimal;
+import java.time.Instant;
 import java.util.ArrayDeque;
 import java.util.Arrays;
 import java.util.Deque;
-import java.util.Objects;
 import java.util.function.Function;
 
 public class JsonInput implements Closeable {
 
-  private final Readable source;
+  private final Reader source;
   private volatile boolean readPerformed = false;
   private JsonTypeCoercer coercer;
   private PropertySetting setter;
@@ -39,19 +42,22 @@ public class JsonInput implements Closeable {
   // figuring out whether we're expecting a NAME properly.
   private Deque<Container> stack = new ArrayDeque<>();
 
-  JsonInput(Readable source, JsonTypeCoercer coercer, PropertySetting setter) {
-    this.source = Objects.requireNonNull(source);
-    this.coercer = Objects.requireNonNull(coercer);
+  JsonInput(Reader source, JsonTypeCoercer coercer, PropertySetting setter) {
+    this.source = Require.nonNull("Source", source);
+    this.coercer = Require.nonNull("Coercer", coercer);
     this.input = new Input(source);
-    this.setter = Objects.requireNonNull(setter);
+    this.setter = Require.nonNull("Setter", setter);
   }
 
-  public JsonInput propertySetting(PropertySetting setter) {
-    if (readPerformed) {
-      throw new JsonException("JsonInput has already been used and may not be modified");
-    }
-    this.setter = Objects.requireNonNull(setter);
-    return this;
+  /**
+   * Change how property setting is done. It's polite to set the value back once done processing.
+   * @param setter The new {@link PropertySetting} to use.
+   * @return The previous {@link PropertySetting} that has just been replaced.
+   */
+  public PropertySetting propertySetting(PropertySetting setter) {
+    PropertySetting previous = this.setter;
+    this.setter = Require.nonNull("Setter", setter);
+    return previous;
   }
 
   public JsonInput addCoercers(TypeCoercer<?>... coercers) {
@@ -72,12 +78,10 @@ public class JsonInput implements Closeable {
 
   @Override
   public void close() {
-    if (source instanceof Closeable) {
-      try {
-        ((Closeable) source).close();
-      } catch (IOException e) {
-        throw new UncheckedIOException(e);
-      }
+    try {
+      source.close();
+    } catch (IOException e) {
+      throw new UncheckedIOException(e);
     }
   }
 
@@ -183,6 +187,11 @@ public class JsonInput implements Closeable {
     return readString();
   }
 
+  public Instant nextInstant() {
+    Long time = read(Long.class);
+    return (null != time) ? Instant.ofEpochSecond(time) : null;
+  }
+
   public boolean hasNext() {
     if (stack.isEmpty()) {
       throw new JsonException(
@@ -280,6 +289,7 @@ public class JsonInput implements Closeable {
     return coercer.coerce(this, type, setter);
   }
 
+
   private boolean isReadingName() {
     return stack.peekFirst() == Container.MAP_NAME;
   }
@@ -334,21 +344,21 @@ public class JsonInput implements Closeable {
     input.read();  // Skip leading quote
 
     StringBuilder builder = new StringBuilder();
-    while (input.peek() != '"' && input.peek() != Input.EOF) {
-      char read = input.read();
-      if (read == '\\') {
-        readEscape(builder);
-      } else {
-        builder.append(read);
+    char c;
+    while (true) {
+      c = input.read();
+      switch (c) {
+        case Input.EOF:
+          throw new JsonException("Unterminated string: " + builder + ". " + input);
+        case '"': // terminate string
+          return builder.toString();
+        case '\\': // quoted char
+          readEscape(builder);
+          break;
+        default:
+          builder.append(c);
       }
     }
-
-    char last = input.read();// Skip trailing quote
-    if (last != '"') {
-      throw new JsonException("Unterminated string: " + builder + ". " + input);
-    }
-
-    return builder.toString();
   }
 
   private void readEscape(StringBuilder builder) {

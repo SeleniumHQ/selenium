@@ -21,6 +21,7 @@
 #include "../IECommandExecutor.h"
 #include "../Generated/atoms.h"
 #include "../Script.h"
+#include "../WebDriverConstants.h"
 
 namespace webdriver {
 

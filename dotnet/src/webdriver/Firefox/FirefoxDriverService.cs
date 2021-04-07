@@ -37,6 +37,7 @@ namespace OpenQA.Selenium.Firefox
         private int browserCommunicationPort = -1;
         private string browserBinaryPath = string.Empty;
         private string host = string.Empty;
+        private string browserCommunicationHost = string.Empty;
         private FirefoxDriverLogLevel loggingLevel = FirefoxDriverLogLevel.Default;
 
         /// <summary>
@@ -66,6 +67,16 @@ namespace OpenQA.Selenium.Firefox
         {
             get { return this.browserCommunicationPort; }
             set { this.browserCommunicationPort = value; }
+        }
+
+        /// <summary>
+        /// Gets or sets the value of the IP address of the host adapter used by the driver
+        /// executable to communicate with the browser.
+        /// </summary>
+        public string BrowserCommunicationHost
+        {
+            get { return this.browserCommunicationHost; }
+            set { this.browserCommunicationHost = value; }
         }
 
         /// <summary>
@@ -99,11 +110,18 @@ namespace OpenQA.Selenium.Firefox
         }
 
         /// <summary>
-        /// Gets a value indicating the time to wait for an initial connection before timing out.
+        /// Gets or sets the level at which log output is displayed.
         /// </summary>
-        protected override TimeSpan InitializationTimeout
+        /// <remarks>
+        /// This is largely equivalent to setting the <see cref="FirefoxOptions.LogLevel"/>
+        /// property, except the log level is set when the driver launches, instead of
+        /// when the browser is launched, meaning that initial driver logging before
+        /// initiation of a session can be controlled.
+        /// </remarks>
+        public FirefoxDriverLogLevel LogLevel
         {
-            get { return TimeSpan.FromSeconds(2); }
+            get { return this.loggingLevel; }
+            set { this.loggingLevel = value; }
         }
 
         /// <summary>
@@ -145,6 +163,11 @@ namespace OpenQA.Selenium.Firefox
                 if (this.browserCommunicationPort > 0)
                 {
                     argsBuilder.AppendFormat(CultureInfo.InvariantCulture, " --marionette-port {0}", this.browserCommunicationPort);
+                }
+
+                if (!string.IsNullOrEmpty(this.browserCommunicationHost))
+                {
+                    argsBuilder.AppendFormat(CultureInfo.InvariantCulture, " --marionette-host \"{0}\"", this.host);
                 }
 
                 if (this.Port > 0)

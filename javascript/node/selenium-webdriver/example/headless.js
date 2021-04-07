@@ -20,7 +20,7 @@
  *
  * To run with Chrome, ensure you have Chrome 59+ installed and that
  * chromedriver 2.30+ is present on your system PATH:
- * <https://sites.google.com/a/chromium.org/chromedriver/downloads>
+ * <https://chromedriver.chromium.org/downloads>
  *
  *     SELENIUM_BROWSER=chrome node selenium-webdriver/example/headless.js
  *
@@ -31,25 +31,33 @@
  *     SELENIUM_BROWSER=firefox node selenium-webdriver/example/headless.js
  */
 
-const chrome = require('../chrome');
-const firefox = require('../firefox');
-const {Builder, By, Key, until} = require('..');
+const chrome = require('../chrome')
+const firefox = require('../firefox')
+const { Builder, By, Key, until } = require('..')
 
-const width = 640;
-const height = 480;
+const width = 640
+const height = 480
 
 let driver = new Builder()
-    .forBrowser('chrome')
-    .setChromeOptions(
-        new chrome.Options().headless().windowSize({width, height}))
-    .setFirefoxOptions(
-        new firefox.Options().headless().windowSize({width, height}))
-    .build();
+  .forBrowser('chrome')
+  .setChromeOptions(
+    new chrome.Options().headless().windowSize({ width, height })
+  )
+  .setFirefoxOptions(
+    new firefox.Options().headless().windowSize({ width, height })
+  )
+  .build()
 
-driver.get('http://www.google.com/ncr')
-    .then(_ =>
-        driver.findElement(By.name('q')).sendKeys('webdriver', Key.RETURN))
-    .then(_ => driver.wait(until.titleIs('webdriver - Google Search'), 1000))
-    .then(
-        _ => driver.quit(),
-        e => driver.quit().then(() => { throw e; }));
+driver
+  .get('http://www.google.com/ncr')
+  .then((_) =>
+    driver.findElement(By.name('q')).sendKeys('webdriver', Key.RETURN)
+  )
+  .then((_) => driver.wait(until.titleIs('webdriver - Google Search'), 1000))
+  .then(
+    (_) => driver.quit(),
+    (e) =>
+      driver.quit().then(() => {
+        throw e
+      })
+  )

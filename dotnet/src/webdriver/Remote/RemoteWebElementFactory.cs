@@ -23,15 +23,25 @@ using System.Text;
 
 namespace OpenQA.Selenium.Remote
 {
+    /// <summary>
+    /// Object used to create <see cref="RemoteWebElement"/> objects for a remote driver instance.
+    /// </summary>
     public class RemoteWebElementFactory
     {
         private RemoteWebDriver driver;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="RemoteWebElementFactory"/> class.
+        /// </summary>
+        /// <param name="parentDriver">The <see cref="RemoteWebDriver"/> object used to locate the elements.</param>
         public RemoteWebElementFactory(RemoteWebDriver parentDriver)
         {
             this.driver = parentDriver;
         }
 
+        /// <summary>
+        /// Gets the <see cref="RemoteWebDriver"/> instance used to locate elements.
+        /// </summary>
         protected RemoteWebDriver ParentDriver
         {
             get { return this.driver; }
@@ -59,6 +69,11 @@ namespace OpenQA.Selenium.Remote
             return this.TryGetElementPropertyName(elementDictionary, out elementPropertyName);
         }
 
+        /// <summary>
+        /// Gets the internal ID associated with the element.
+        /// </summary>
+        /// <param name="elementDictionary">A dictionary containing the element reference.</param>
+        /// <returns>The internal ID associated with the element.</returns>
         public string GetElementId(Dictionary<string, object> elementDictionary)
         {
             string elementPropertyName = string.Empty;

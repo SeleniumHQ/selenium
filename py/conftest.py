@@ -16,34 +16,30 @@
 # under the License.
 
 import os
+import platform
 import socket
 import subprocess
-import sys
 import time
 
 import pytest
-from _pytest.skipping import MarkEvaluator
 
 from selenium import webdriver
 from selenium.webdriver import DesiredCapabilities
 from test.selenium.webdriver.common.webserver import SimpleWebServer
 from test.selenium.webdriver.common.network import get_lan_ip
 
-if sys.version_info[0] == 3:
-    from urllib.request import urlopen
-else:
-    from urllib import urlopen
+from urllib.request import urlopen
 
 drivers = (
-    'BlackBerry',
-    'Chrome',
-    'Edge',
-    'Firefox',
-    'Ie',
-    'Marionette',
-    'Remote',
-    'Safari',
-    'WebKitGTK',
+    'chrome',
+    'edge',
+    'firefox',
+    'ie',
+    'remote',
+    'safari',
+    'webkitgtk',
+    'chromiumedge',
+    'wpewebkit',
 )
 
 
@@ -57,6 +53,8 @@ def pytest_addoption(parser):
                      help='location of the service executable binary')
     parser.addoption('--browser-args', action='store', dest='args',
                      help='arguments to start the browser with')
+    parser.addoption('--headless', action='store', dest='headless',
+                     help="Allow tests to run in headless")
 
 
 def pytest_ignore_collect(path, config):
@@ -76,14 +74,32 @@ def driver(request):
     kwargs = {}
 
     try:
-        driver_class = request.param
+        driver_class = request.param.capitalize()
     except AttributeError:
         raise Exception('This test requires a --driver to be specified.')
 
+    # skip tests if not available on the platform
+    _platform = platform.system()
+    if driver_class == "Safari" and _platform != "Darwin":
+        pytest.skip("Safari tests can only rn on an Apple OS")
+    if (driver_class == "Ie") and _platform != "Windows":
+        pytest.skip("IE and EdgeHTML Tests can only run on Windows")
+    if "WebKit" in driver_class and _platform != "Linux":
+        pytest.skip("Webkit tests can only run on Linux")
+
     # conditionally mark tests as expected to fail based on driver
-    request.node._evalxfail = request.node._evalxfail or MarkEvaluator(
-        request.node, 'xfail_{0}'.format(driver_class.lower()))
-    if request.node._evalxfail.istrue():
+    marker = request.node.get_closest_marker('xfail_{0}'.format(driver_class.lower()))
+
+    if marker is not None:
+        if "run" in marker.kwargs:
+            if marker.kwargs["run"] is False:
+                pytest.skip()
+                yield
+                return
+        if "raises" in marker.kwargs:
+            marker.kwargs.pop("raises")
+        pytest.xfail(**marker.kwargs)
+
         def fin():
             global driver_instance
             if driver_instance is not None:
@@ -91,25 +107,14 @@ def driver(request):
             driver_instance = None
         request.addfinalizer(fin)
 
-    # skip driver instantiation if xfail(run=False)
-    if not request.config.getoption('runxfail'):
-        if request.node._evalxfail.istrue():
-            if request.node._evalxfail.get('run') is False:
-                yield
-                return
-
     driver_path = request.config.option.executable
     options = None
 
     global driver_instance
     if driver_instance is None:
-        if driver_class == 'BlackBerry':
-            kwargs.update({'device_password': 'password'})
         if driver_class == 'Firefox':
-            kwargs.update({'capabilities': {'marionette': False}})
             options = get_options(driver_class, request.config)
-        if driver_class == 'Marionette':
-            driver_class = 'Firefox'
+        if driver_class == 'Chrome':
             options = get_options(driver_class, request.config)
         if driver_class == 'Remote':
             capabilities = DesiredCapabilities.FIREFOX.copy()
@@ -117,22 +122,35 @@ def driver(request):
             options = get_options('Firefox', request.config)
         if driver_class == 'WebKitGTK':
             options = get_options(driver_class, request.config)
+        if driver_class == 'Edge':
+            options = get_options(driver_class, request.config)
+        if driver_class == 'WPEWebKit':
+            options = get_options(driver_class, request.config)
         if driver_path is not None:
             kwargs['executable_path'] = driver_path
         if options is not None:
             kwargs['options'] = options
+
         driver_instance = getattr(webdriver, driver_class)(**kwargs)
     yield driver_instance
-    if MarkEvaluator(request.node, 'no_driver_after_test').istrue():
+
+    if request.node.get_closest_marker("no_driver_after_test"):
         driver_instance = None
 
 
 def get_options(driver_class, config):
     browser_path = config.option.binary
     browser_args = config.option.args
+    headless = bool(config.option.headless)
     options = None
+
+    if driver_class == 'ChromiumEdge':
+        options = getattr(webdriver, 'EdgeOptions')()
+        options.use_chromium = True
+
     if browser_path or browser_args:
-        options = getattr(webdriver, '{}Options'.format(driver_class))()
+        if not options:
+            options = getattr(webdriver, '{}Options'.format(driver_class))()
         if driver_class == 'WebKitGTK':
             options.overlay_scrollbars_enabled = False
         if browser_path is not None:
@@ -140,6 +158,12 @@ def get_options(driver_class, config):
         if browser_args is not None:
             for arg in browser_args.split():
                 options.add_argument(arg)
+
+    if headless:
+        if not options:
+            options = getattr(webdriver, f"{driver_class}Options")()
+
+        options.headless = headless
     return options
 
 
@@ -175,13 +199,14 @@ def pages(driver, webserver):
 @pytest.fixture(autouse=True, scope='session')
 def server(request):
     drivers = request.config.getoption('drivers')
-    if drivers is None or 'Remote' not in drivers:
+    if drivers is None or 'remote' not in drivers:
         yield None
         return
 
     _host = 'localhost'
     _port = 4444
-    _path = '../buck-out/gen/java/server/src/org/openqa/grid/selenium/selenium.jar'
+    _path = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
+                         'java/server/src/org/openqa/selenium/grid/selenium_server_deploy.jar')
 
     def wait_for_server(url, timeout):
         start = time.time()
@@ -194,14 +219,14 @@ def server(request):
         return 0
 
     _socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    url = 'http://{}:{}/wd/hub'.format(_host, _port)
+    url = 'http://{}:{}/status'.format(_host, _port)
     try:
         _socket.connect((_host, _port))
         print('The remote driver server is already running or something else'
               'is using port {}, continuing...'.format(_port))
     except Exception:
         print('Starting the Selenium server')
-        process = subprocess.Popen(['java', '-jar', _path])
+        process = subprocess.Popen(['java', '-jar', _path, 'standalone', '--port', '4444'])
         print('Selenium server running as process: {}'.format(process.pid))
         assert wait_for_server(url, 10), 'Timed out waiting for Selenium server at {}'.format(url)
         print('Selenium server is ready')

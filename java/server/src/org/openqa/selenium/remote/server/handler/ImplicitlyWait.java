@@ -20,8 +20,8 @@ package org.openqa.selenium.remote.server.handler;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.remote.server.Session;
 
+import java.time.Duration;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 
 public class ImplicitlyWait extends WebDriverHandler<Void> {
 
@@ -42,8 +42,8 @@ public class ImplicitlyWait extends WebDriverHandler<Void> {
   }
 
   @Override
-  public Void call() throws Exception {
-    getDriver().manage().timeouts().implicitlyWait(millis, TimeUnit.MILLISECONDS);
+  public Void call() {
+    getDriver().manage().timeouts().implicitlyWait(Duration.ofMillis(millis));
 
     return null;
   }

@@ -26,16 +26,21 @@
 #include "BrowserFactory.h"
 #include "CustomTypes.h"
 #include "messages.h"
+#include "HookProcessor.h"
+#include "Script.h"
 #include "StringUtilities.h"
+#include "WebDriverConstants.h"
+#include "WindowUtilities.h"
 
 namespace webdriver {
 
-Browser::Browser(IWebBrowser2* browser, HWND hwnd, HWND session_handle) : DocumentHost(hwnd, session_handle) {
+Browser::Browser(IWebBrowser2* browser, HWND hwnd, HWND session_handle, bool is_edge_chromium) : DocumentHost(hwnd, session_handle) {
   LOG(TRACE) << "Entering Browser::Browser";
   this->is_explicit_close_requested_ = false;
   this->is_navigation_started_ = false;
   this->browser_ = browser;
   this->AttachEvents();
+  this->is_edge_chromium_ = is_edge_chromium;
 }
 
 Browser::~Browser(void) {
@@ -50,22 +55,57 @@ void __stdcall Browser::BeforeNavigate2(IDispatch* pObject,
                                         VARIANT* pvarHeaders,
                                         VARIANT_BOOL* pbCancel) {
   LOG(TRACE) << "Entering Browser::BeforeNavigate2";
+  std::wstring url(pvarUrl->bstrVal);
+
+  LOG(DEBUG) << "BeforeNavigate2: Url: " << LOGWSTRING(url) << ", TargetFrame: " << pvarTargetFrame->bstrVal;
 }
 
 void __stdcall Browser::OnQuit() {
   LOG(TRACE) << "Entering Browser::OnQuit";
   if (!this->is_explicit_close_requested_) {
-    LOG(WARN) << "This instance of Internet Explorer is exiting without an "
-              << "explicit request to close it. Unless you clicked a link "
-              << "that specifically attempts to close the page, that likely "
-              << "means a Protected Mode boundary has been crossed (either "
-              << "entering or exiting Protected Mode). It is highly likely "
-              << "that any subsequent commands to this driver instance will "
-              << "fail. THIS IS NOT A BUG IN THE IE DRIVER! Fix your code "
-              << "and/or browser configuration so that a Protected Mode "
-              << "boundary is not crossed.";
+    if (this->is_awaiting_new_process()) {
+      LOG(WARN) << "A new browser process was requested. This means a Protected "
+                << "Mode boundary has been crossed, and that future commands to "
+                << "the current browser instance will fail. The driver will "
+                << "attempt to reconnect to the newly created browser object, "
+                << "but there is no guarantee it will work.";
+      DWORD process_id;
+      HWND window_handle = this->GetBrowserWindowHandle();
+      ::GetWindowThreadProcessId(window_handle, &process_id);
+
+      BrowserReattachInfo* info = new BrowserReattachInfo;
+      info->browser_id = this->browser_id();
+      info->current_process_id = process_id;
+      info->known_process_ids = this->known_process_ids_;
+
+      this->DetachEvents();
+      this->browser_ = NULL;
+      ::PostMessage(this->executor_handle(),
+                    WD_BROWSER_REATTACH,
+                    NULL,
+                    reinterpret_cast<LPARAM>(info));
+      return;
+    } else {
+      LOG(WARN) << "This instance of Internet Explorer (" << this->browser_id()
+                << ") is exiting without an explicit request to close it. "
+                << "Unless you clicked a link that specifically attempts to "
+                << "close the page, that likely means a Protected Mode "
+                << "boundary has been crossed (either entering or exiting "
+                << "Protected Mode). It is highly likely that any subsequent "
+                << "commands to this driver instance will fail. THIS IS NOT A "
+                << "BUG IN THE IE DRIVER! Fix your code and/or browser "
+                << "configuration so that a Protected Mode boundary is not "
+                << "crossed.";
+    }
   }
   this->PostQuitMessage();
+}
+
+void __stdcall Browser::NewProcess(DWORD lCauseFlag,
+                                   IDispatch* pWB2,
+                                   VARIANT_BOOL* pbCancel) {
+  LOG(TRACE) << "Entering Browser::NewProcess";
+  this->InitiateBrowserReattach();
 }
 
 void __stdcall Browser::NewWindow3(IDispatch** ppDisp,
@@ -73,6 +113,12 @@ void __stdcall Browser::NewWindow3(IDispatch** ppDisp,
                                    DWORD dwFlags,
                                    BSTR bstrUrlContext,
                                    BSTR bstrUrl) {
+  if (this->is_edge_chromium_) {
+    LOG(TRACE) << "Entering Browser::NewWindow3 but early exiting due to edge mode";
+    // In Edge Chromium, we do not yet support attaching to new windows.
+    // Quit early and ignore that event.
+    return;
+  }
   LOG(TRACE) << "Entering Browser::NewWindow3";
   // Handle the NewWindow3 event to allow us to immediately hook
   // the events of the new browser window opened by the user action.
@@ -82,14 +128,15 @@ void __stdcall Browser::NewWindow3(IDispatch** ppDisp,
   // This will not allow us to handle windows created by the JavaScript
   // showModalDialog function().
   ::PostMessage(this->executor_handle(), WD_BEFORE_NEW_WINDOW, NULL, NULL);
+  std::wstring url = bstrUrl;
   IWebBrowser2* browser;
-  LPSTREAM message_payload;
+  NewWindowInfo info;
+  info.target_url = StringUtilities::ToString(url);
   LRESULT create_result = ::SendMessage(this->executor_handle(),
                                         WD_BROWSER_NEW_WINDOW,
                                         NULL,
-                                        reinterpret_cast<LPARAM>(&message_payload));
+                                        reinterpret_cast<LPARAM>(&info));
   if (create_result != 0) {
-
     // The new, blank IWebBrowser2 object was not created,
     // so we can't really do anything appropriate here.
     // Note this is "response method 2" of the aforementioned
@@ -102,7 +149,7 @@ void __stdcall Browser::NewWindow3(IDispatch** ppDisp,
 
   // We received a valid IWebBrowser2 pointer, so deserialize it onto this
   // thread, and pass the result back to the caller.
-  HRESULT hr = ::CoGetInterfaceAndReleaseStream(message_payload,
+  HRESULT hr = ::CoGetInterfaceAndReleaseStream(info.browser_stream,
                                                 IID_IWebBrowser2,
                                                 reinterpret_cast<void**>(&browser));
   if (FAILED(hr)) {
@@ -135,6 +182,24 @@ void __stdcall Browser::DocumentComplete(IDispatch* pDisp, VARIANT* URL) {
       this->SetFocusedFrameByElement(NULL);
     }
   }
+}
+
+void Browser::InitiateBrowserReattach() {
+  LOG(TRACE) << "Entering Browser::InitiateBrowserReattach";
+  LOG(DEBUG) << "Requesting browser reattach";
+  this->known_process_ids_.clear();
+  WindowUtilities::GetProcessesByName(L"iexplore.exe",
+                                      &this->known_process_ids_);
+  this->set_is_awaiting_new_process(true);
+  ::SendMessage(this->executor_handle(), WD_BEFORE_BROWSER_REATTACH, NULL, NULL);
+}
+
+void Browser::ReattachBrowser(IWebBrowser2* browser) {
+  LOG(TRACE) << "Entering Browser::ReattachBrowser";
+  this->browser_ = browser;
+  this->AttachEvents();
+  this->set_is_awaiting_new_process(false);
+  LOG(DEBUG) << "Reattach complete";
 }
 
 void Browser::GetDocument(IHTMLDocument2** doc) {
@@ -342,20 +407,27 @@ void Browser::Close() {
   // Closing the browser, so having focus on a frame doesn't
   // make any sense.
   this->SetFocusedFrameByElement(NULL);
-  HRESULT hr = this->browser_->Quit();
+
+  HRESULT hr = S_OK;
+  if (this->is_edge_chromium_) {
+    hr = PostMessage(GetTopLevelWindowHandle(), WM_CLOSE, 0, 0);
+  } else {
+    hr = this->browser_->Quit();
+  }
+
   if (FAILED(hr)) {
     LOGHR(WARN, hr) << "Call to IWebBrowser2::Quit failed";
   }
 }
 
-int Browser::NavigateToUrl(const std::string& url) {
+int Browser::NavigateToUrl(const std::string& url,
+                           std::string* error_message) {
   LOG(TRACE) << "Entring Browser::NavigateToUrl";
 
   std::wstring wide_url = StringUtilities::ToWString(url);
   CComVariant url_variant(wide_url.c_str());
   CComVariant dummy;
 
-  // TODO: check HRESULT for error
   HRESULT hr = this->browser_->Navigate2(&url_variant,
                                          &dummy,
                                          &dummy,
@@ -363,6 +435,12 @@ int Browser::NavigateToUrl(const std::string& url) {
                                          &dummy);
   if (FAILED(hr)) {
     LOGHR(WARN, hr) << "Call to IWebBrowser2::Navigate2 failed";
+    _com_error error(hr);
+    std::wstring formatted_message = StringUtilities::Format(
+        L"Received error: 0x%08x ['%s']",
+        hr,
+        error.ErrorMessage());
+    *error_message = StringUtilities::ToString(formatted_message);
     return EUNHANDLEDERROR;
   }
 
@@ -473,11 +551,15 @@ bool Browser::IsBusy() {
 
 bool Browser::Wait(const std::string& page_load_strategy) {
   LOG(TRACE) << "Entering Browser::Wait";
-  
+
   if (page_load_strategy == NONE_PAGE_LOAD_STRATEGY) {
     LOG(DEBUG) << "Page load strategy is 'none'. Aborting wait.";
     this->set_wait_required(false);
     return true;
+  }
+
+  if (this->is_awaiting_new_process()) {
+    return false;
   }
 
   bool is_navigating = true;
@@ -721,11 +803,27 @@ HWND Browser::GetBrowserWindowHandle() {
 }
 
 bool Browser::SetFullScreen(bool is_full_screen) {
-  if (is_full_screen) {
-    this->browser_->put_FullScreen(VARIANT_TRUE);
-  } else {
-    this->browser_->put_FullScreen(VARIANT_FALSE);
+  VARIANT_BOOL full_screen_value = VARIANT_TRUE;
+  std::wstring full_screen_script = L"window.fullScreen = true;";
+  if (!is_full_screen) {
+    full_screen_value = VARIANT_FALSE;
+    full_screen_script = L"delete window.fullScreen;";
   }
+  this->browser_->put_FullScreen(full_screen_value);
+
+  // IE does not support the W3C Fullscreen API (and likely never will).
+  // The prefixed version cannot be triggered via JavaScript outside of
+  // a user interaction, so we're going to cheat here and manually set
+  // the fullScreen property of the window object to the appropriate
+  // value. This may interfere with polyfills in use, and if that's
+  // the case, we'll revisit this hack.
+  CComPtr<IHTMLDocument2> doc;
+  this->GetDocument(true, &doc);
+  std::wstring script = ANONYMOUS_FUNCTION_START;
+  script += full_screen_script;
+  script += ANONYMOUS_FUNCTION_END;
+  Script script_wrapper(doc, script, 0);
+  script_wrapper.Execute();
   return true;
 }
 

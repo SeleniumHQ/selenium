@@ -22,7 +22,7 @@ import org.openqa.selenium.WebDriverException;
 /**
  * Indicates that the coordinates provided to an interactions operation are invalid. This, most
  * likely, means that a move operation was provided with invalid coordinates or that an action that
- * depends on mouse position (like click) was not preceeded by a move operation.
+ * depends on mouse position (like click) was not preceded by a move operation.
  */
 public class InvalidCoordinatesException extends WebDriverException {
 

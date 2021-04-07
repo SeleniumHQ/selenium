@@ -17,13 +17,15 @@
 
 package org.openqa.selenium.remote;
 
+import org.openqa.selenium.internal.Require;
+
 import java.util.Map;
 
 public class RemoteExecuteMethod implements ExecuteMethod {
   private final RemoteWebDriver driver;
 
   public RemoteExecuteMethod(RemoteWebDriver driver) {
-    this.driver = driver;
+    this.driver = Require.nonNull("Remote WebDriver", driver);
   }
 
   @Override

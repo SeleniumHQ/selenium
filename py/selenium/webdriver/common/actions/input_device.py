@@ -23,7 +23,7 @@ class InputDevice(object):
         Describes the input device being used for the action.
     """
     def __init__(self, name=None):
-        if name is None:
+        if not name:
             self.name = uuid.uuid4()
         else:
             self.name = name
@@ -39,5 +39,5 @@ class InputDevice(object):
     def clear_actions(self):
         self.actions = []
 
-    def create_pause(self, duraton=0):
+    def create_pause(self, duration=0):
         pass

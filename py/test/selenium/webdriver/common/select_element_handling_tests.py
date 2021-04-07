@@ -62,7 +62,7 @@ def testShouldBeAbleToSelectMoreThanOneOptionFromASelectWhichAllowsMultipleChoic
         assert option.is_selected() is True
 
 
-def testShouldSelectFirstOptionaultIfNoneIsSelecte(driver, pages):
+def testShouldSelectFirstOptionIfNoneIsSelected(driver, pages):
     pages.load("formPage.html")
     selectBox = driver.find_element(By.XPATH, "//select[@name='select-default']")
     options = selectBox.find_elements(By.TAG_NAME, "option")
@@ -83,7 +83,7 @@ def testCanSelectElementsInOptGroup(driver, pages):
     assert element.is_selected() is True
 
 
-def testCanGetValueFromOptionViaAttributeWhenAttributeDoesntExis(driver, pages):
+def testCanGetValueFromOptionViaAttributeWhenAttributeDoesntExist(driver, pages):
     pages.load("formPage.html")
     element = driver.find_element(By.CSS_SELECTOR, "select[name='select-default'] option")
     assert element.get_attribute("value") == "One"

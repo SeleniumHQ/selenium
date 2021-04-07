@@ -17,8 +17,6 @@
 
 package org.openqa.selenium.opera;
 
-import static org.openqa.selenium.remote.CapabilityType.BROWSER_NAME;
-
 import com.google.auto.service.AutoService;
 
 import org.openqa.selenium.Capabilities;
@@ -31,6 +29,8 @@ import org.openqa.selenium.remote.BrowserType;
 
 import java.util.Optional;
 
+import static org.openqa.selenium.remote.CapabilityType.BROWSER_NAME;
+
 @AutoService(WebDriverInfo.class)
 public class OperaDriverInfo implements WebDriverInfo {
 
@@ -41,13 +41,18 @@ public class OperaDriverInfo implements WebDriverInfo {
 
   @Override
   public Capabilities getCanonicalCapabilities() {
-    return new ImmutableCapabilities(BROWSER_NAME, BrowserType.OPERA_BLINK);
+    return new ImmutableCapabilities(BROWSER_NAME, BrowserType.OPERA);
   }
 
   @Override
   public boolean isSupporting(Capabilities capabilities) {
     return BrowserType.OPERA_BLINK.equals(capabilities.getBrowserName()) ||
-           BrowserType.OPERA.equals(capabilities.getBrowserName());
+      BrowserType.OPERA.equals(capabilities.getBrowserName());
+  }
+
+  @Override
+  public boolean isSupportingCdp() {
+    return false;
   }
 
   @Override
@@ -62,7 +67,7 @@ public class OperaDriverInfo implements WebDriverInfo {
 
   @Override
   public int getMaximumSimultaneousSessions() {
-    return Runtime.getRuntime().availableProcessors() + 1;
+    return Runtime.getRuntime().availableProcessors();
   }
 
   @Override

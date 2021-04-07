@@ -29,8 +29,6 @@
 #define WD_CLIENT_MIDDLE_MOUSE_BUTTON 1
 #define WD_CLIENT_RIGHT_MOUSE_BUTTON 2
 
-#include <vector>
-
 #include "ActionSimulator.h"
 
 namespace webdriver {

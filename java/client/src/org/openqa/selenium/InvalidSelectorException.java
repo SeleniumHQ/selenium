@@ -28,7 +28,7 @@ package org.openqa.selenium;
 public class InvalidSelectorException extends NoSuchElementException {
 
   private static final String SUPPORT_URL =
-    BASE_SUPPORT_URL + "invalid_selector_exception.html";
+    BASE_SUPPORT_URL + "#invalid_selector_exception";
 
   public InvalidSelectorException(String reason) {
     super(reason);

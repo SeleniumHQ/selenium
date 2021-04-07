@@ -17,61 +17,61 @@
 
 package org.openqa.selenium.remote.http;
 
-import static com.google.common.base.Preconditions.checkArgument;
-import static java.util.Objects.requireNonNull;
+import org.openqa.selenium.internal.Require;
 
-import org.openqa.selenium.BuildInfo;
-import org.openqa.selenium.Platform;
-import org.openqa.selenium.remote.internal.OkHttpClient;
-
-import java.io.IOException;
-import java.net.Proxy;
+import java.io.Closeable;
 import java.net.URL;
-import java.time.Duration;
-import java.util.Objects;
-import java.util.Locale;
+import java.util.ServiceLoader;
+import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
+
+import static org.openqa.selenium.remote.http.ClientConfig.defaultConfig;
 
 /**
  * Defines a simple client for making HTTP requests.
  */
-public interface HttpClient {
+public interface HttpClient extends Closeable, HttpHandler {
 
-  String USER_AGENT = String.format(
-      "selenium/%s (java %s)",
-      new BuildInfo().getReleaseLabel(),
-      (Platform.getCurrent().family() == null ?
-       Platform.getCurrent().toString().toLowerCase(Locale.US) :
-       Platform.getCurrent().family().toString().toLowerCase(Locale.US)));
+  WebSocket openSocket(HttpRequest request, WebSocket.Listener listener);
 
-  /**
-   * Executes the given request, following any redirects if necessary.
-   *
-   * @param request the request to execute.
-   * @return the final response.
-   * @throws IOException if an I/O error occurs.
-   */
-  HttpResponse execute(HttpRequest request) throws IOException;
+  default void close() {}
 
   interface Factory {
 
     /**
-     * Use the {@code webdriver.http.factory} system property to determine which implementation of
-     * {@link HttpClient} should be used.
+     * Creates a new instance of {@link HttpClient.Factory} with the given name. It uses
+     * {@link ServiceLoader} to find all available implementations and selects the class
+     * that has an {@link @HttpClientName} annotation with the given name as the value.
+     *
+     * @throws IllegalArgumentException if no implementation with the given name can be found
+     * @throws IllegalStateException if more than one implementation with the given name can be found
      */
-    static Factory createDefault() {
-      String defaultFactory = System.getProperty("webdriver.http.factory", "okhttp");
-      switch (defaultFactory) {
-        case "okhttp":
-        default:
-          return new OkHttpClient.Factory();
+    static Factory create(String name) {
+      ServiceLoader<HttpClient.Factory> loader = ServiceLoader.load(HttpClient.Factory.class);
+      Set<Factory> factories = StreamSupport.stream(loader.spliterator(), true)
+          .filter(p -> p.getClass().isAnnotationPresent(HttpClientName.class))
+          .filter(p -> name.equals(p.getClass().getAnnotation(HttpClientName.class).value()))
+          .collect(Collectors.toSet());
+      if (factories.isEmpty()) {
+        throw new IllegalArgumentException("Unknown HttpClient factory " + name);
       }
+      if (factories.size() > 1) {
+        throw new IllegalStateException(String.format(
+            "There are multiple HttpClient factories by name %s, check your classpath", name));
+      }
+      return factories.iterator().next();
     }
 
     /**
-     * By default {@link #createClient(URL)} will pick sensible defaults for the {@link HttpClient}
-     * to use, but if more control is needed, the {@link Builder} gives access to this.
+     * Use the {@code webdriver.http.factory} system property to determine which implementation of
+     * {@link HttpClient.Factory} should be used.
+     *
+     * {@see create}
      */
-    Builder builder();
+    static Factory createDefault() {
+      return create(System.getProperty("webdriver.http.factory", "netty"));
+    }
 
     /**
      * Creates a HTTP client that will send requests to the given URL.
@@ -79,58 +79,17 @@ public interface HttpClient {
      * @param url URL The base URL for requests.
      */
     default HttpClient createClient(URL url) {
-      return builder().createClient(url);
+      Require.nonNull("URL to use as base URL", url);
+      return createClient(defaultConfig().baseUrl(url));
     }
+
+    HttpClient createClient(ClientConfig config);
 
     /**
      * Closes idle clients.
      */
-    void cleanupIdleClients();
-  }
-
-  abstract class Builder {
-
-    protected Duration connectionTimeout = Duration.ofMinutes(2);
-    protected Duration readTimeout = Duration.ofHours(3);
-    protected Proxy proxy = null;
-
-    /**
-     * Set the connection timeout to a given value. Note that setting to negative values is not
-     * allowed, and that a timeout of {@code 0} results in unspecified behaviour.
-     */
-    public Builder connectionTimeout(Duration duration) {
-      requireNonNull(duration, "Connection time out must be set");
-      checkArgument(!duration.isNegative(), "Connection time out cannot be negative");
-
-      this.connectionTimeout = duration;
-
-      return this;
+    default void cleanupIdleClients() {
+      // do nothing by default.
     }
-
-    /**
-     * Set the read timeout to a given value. Note that setting to negative values is not
-     * allowed, and that a timeout of {@code 0} results in unspecified behaviour.
-     */
-    public Builder readTimeout(Duration duration) {
-      requireNonNull(duration, "Read time out must be set");
-      checkArgument(!duration.isNegative(), "Read time out cannot be negative");
-
-      this.readTimeout = duration;
-
-      return this;
-    }
-
-    /**
-     * Set the {@link Proxy} that should be used by the {@link HttpClient} (<b>not</b> the
-     * {@link org.openqa.selenium.WebDriver} instance!). If this is not set, then an implementation
-     * specific method for selecting a proxy will be used.
-     */
-    public Builder proxy(Proxy proxy) {
-      this.proxy = Objects.requireNonNull(proxy, "Proxy must be set");
-
-      return this;
-    }
-
-    public abstract HttpClient createClient(URL url);
   }
 }

@@ -18,6 +18,7 @@
 #define WEBDRIVER_IE_INPUTSTATE_H_
 
 #include <ctime>
+#include <string>
 
 namespace webdriver {
 

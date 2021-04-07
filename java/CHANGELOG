@@ -1,3 +1,230 @@
+v4.0.0-beta-2
+=============
+
+* Use `opera` for Blink-based Opera versions
+* Updated OpenTelemetry to 1.0.0
+* Use standard OpenTelemetry mechanisms for configuring tracing.
+* Make better use of `getDomAttribute` in `Select`
+* [cdp] Added support for Firefox Nightly
+* [cdp] Use `se:cdp` to report CDP endpoint
+* [grid] Close resources leaks caused by http client not being
+  properly closed.
+* [grid] Nodes will auto-detect their platform
+* [grid] Make health check interval a configurable option for
+  Distributor role (#9272)
+* [grid] Correctly propagate startup errors to the client
+* [grid] Make session timeout configurable option for Node role
+
+v4.0.0-beta-1
+=============
+
+* All `*Options` classes now serialise with w3c-safe keys. This means
+  that support for legacy options (eg. `firefox_binary` rather than
+  using the setting in `moz:firefoxOptions`) will need to be set
+  directly via a call to `setCapability`.
+* FirefoxDriver requires geckodriver 0.29.0 or later
+* Reworked `RemoteWebDriver.builder` to allow it to work as a primary
+  mechanism for creating a new `WebDriver` instance
+* DevTools support for Firefox added
+* Support multiple CDP versions simultaneously (currently v86-89)
+* New commands to Get Timeouts, Print to PDF, Get DOM Attribute, Get
+  DOM Property
+* Relative locators now return elements by proximity to last search
+  term.
+* Refreshed Grid UI
+* Legay XPI driver marked as deprecated
+* Removed reactor-netty httpclient
+* Reworked how custom element locators work. They will try to be
+  remoted directly, before using a local implementation if remoting
+  fails.
+* Allow `CustomLocator` instances to be bound to the server
+  automatically.
+* Ensured locators are converted to CSS locator consistently.
+* Ensure `Capabilities.merge` returns a new `Capabilities` instance
+  rather than modifying the existing one.
+* Add `--allow-cors` flag to enable CORS support in the server
+* Better declare services in our Java Module information
+* Removed obsolete browsers from BrowserType
+* Implemented the ability to get raw original message without
+  additional info from WebDriverException
+* Allow max-sessions to be configured per driver on the command line
+* Substantially improved javadocs for `WebDriverDecorator`
+* Distributor now uses a proper session queue
+* `FluentWait` performs waiting on the main thread to ensure
+  exceptions are thrown as expected.
+* Changing default timeouts for HTTP clients: connect timeout is 10s,
+  read timeout is 3 min
+* Moving to using immutable data structures where possible. `Point`
+  and `Rectangle` now have deprecated setters.
+* Added methods to get container logs from the Grid
+* Docker now mounts /dev/shm to browser containers.
+* Docker instances can now save videos of test runs
+* Docker containers now created with `autoRemoval` set to `true`
+
+v4.0.0-alpha-7
+==============
+
+* Started to add new Grid UI.
+* Add support for BASIC and DIGEST authentication.
+* Add listener for DOM mutations.
+* Add support for listening out for console log events.
+* Experimental support for script pinning.
+* Support multiple versions of CDP simultaneously.
+* Fix getText atom for unicode charater middle of word (#8736)
+* Include original stack trace when throwing TimeoutException.
+* Removed okhttp implementation of the http client.
+* Add experimental "reactor" http client.
+* [graphql] Add graphql query to retrieve session information for a
+  given session id.
+* [grid] Support remoting CDP over the Grid.
+* [grid] Record video only when `recordVideo` is sent in `se:options`.
+* [grid] Securing 0mq when user provides a certificate.
+* [grid] All messages on the 0mq event bus now have a secret.
+* [grid] Provide a command line flag for creating SessionFactory
+  instances: `--driver-factory`.
+* Added a JDBC-backed implementation of the SessionMap.
+* [grid] Added a "New Session Queue" component.
+* [grid] Added support for draining a Node. Once all sessions are
+  complete, the node will shutdown.
+* [grid] Added a "One Shot Node" which starts draining once a session.
+  is started. This is designed for use in environments which will
+  restart nodes as required.
+* [grid] Add a `/readyz` endpoint that conforms to k8s expectations
+  for an HTTP readiness probe.
+
+v4.0.0-alpha-6
+==============
+
+* Ability to proxy CDP commands from the local end through the
+  fully-distributed Grid. The end point to connect to is reported via
+  "se:options -> cdp"
+* Amended Augmenter to mixin `HasDevTools` if needed.
+* Very, very basic support for GraphQL
+* Ability to configure node on the command line by specifying
+  well-known browser names (eg. "-I firefox")
+* Ability to set maximum number of concurrent sessions on a node.
+* New reactor-based http client implementation. Set the
+  `webdriver.http.factory` system property to `reactor` try it out.
+* Bumped OpenTelemetry verison to 0.4.0
+* Selenium Standalone and Hub now also accept requests to `/wd/hub`
+* Implementing file uploading for distributed grid (and deleting
+  uploaded files when session is closed)
+* Fix potential NPE on DeviceRotation. Fixes #8183
+* Corrected the documentation for Protected Mode (#8163)
+* Fix comments on Java Actions.moveToElement (#6974)
+* Grid can be configured using TOML files.
+* Fixing sendKeys to handle newline characters properly. Fixes #7886
+* Added a `completion` command to generate a zsh autocompletion
+  file. This should be saved as `_selenium` on the `fpath`
+* New `config` section in the `info` command.
+
+v4.0.0-alpha-5
+==============
+
+* Implement "minimize window"
+* Add `SameSite` attribute to `Cookie`
+* Improve Docker support to use unix domain sockets and the
+  DOCKER_HOST env variable.
+* Minimum supported Docker protocol is v1.40. This matches the release
+  on all platforms at 2020-03-13
+* Stop driver server when session is over. Fixes #7989
+* Reuse the same HTTP client instead of creating a client per
+  session. Fixes #7989
+* Sending auth headers to the grid if username and password are
+  specified in the base URL. Fixes #8005
+* Replace OpenTracing with OpenTelemetry
+* Enabling IPv6 in the Grid, fixes #7541
+* Add response to RemoteWebDriver's client log level (#7925)
+* Add a command to run the message bus as a standalone component
+* Make "info help" less misleading
+
+v4.0.0-alpha-4
+==============
+
+* Added an "information" command to provide users with better
+  information about how to use features in Selenium.
+* Rename "friendly" locators to "relative"
+* Chrome Debugging Protocol commands now mirror latest CDP spec.
+* Strengthen java deps now rules_jvm_external has been updated.
+* Update EdgeOptions constructor to use new ms:edgeOptions capability
+  name (#7633)
+* Add support for creating and removing virtual authenticators (#7760)
+* Add support to debug virtual authenticators (#7842)
+* Improving error message if a remote side responses with code 405
+  Method Not Allowed.
+* Better traces via OpenTracing.
+* Added Netty-based HTTP client (-Dwebdriver.http.factory=netty)
+* Selenium server now uses Netty
+* [grid] https between components (#7767)
+* [grid] Added file upload endpoint to the new grid
+* [grid] Adding ability to discover and start Edge (both
+  chromium-based and legacy)
+* [grid] Only allow CORS when using a —allow-cors flag
+* [docker] Re-enable existing docker functionality for Grid Nodes
+* Checking for changes in frozen preferences in XPI-based
+  FirefoxDriver only
+
+v4.0.0-alpha-3
+==============
+
+* Add "relative" locators. The entry point is through the `RelativeLocator`.
+  Usage is like `driver.findElements(withTagName("p").above(lowest));`
+* Add chromedriver cast APIs to remote server (#7282)
+* `By` is now serializable over JSON.
+* Add ApplicationCache, Fetch, Network, Performance, Profiler,
+  ResourceTiming, Security and Target CDP domains.
+* Fixing Safari initialization code to be able to use Safari Technology
+  Preview.
+* Ensure that the protocol converter handles the new session responses
+  properly.
+* Expose devtools APIs from chromium derived drivers.
+* Expose presence of devtools support on a role-based interface
+* Move to new Grid, deleting the old standalone server and grid implementation.
+* Switch to using `HttpHandler` where possible. This will impact projects that
+  are extending Selenium Grid.
+* Respect "webdriver.firefox.logfile" system property in legacy Firefox driver.
+  Fixes #6649
+* Back out OpenCensus support: OpenTracing and OpenCensus are merging, so
+  settle on one for now.
+* Only allow CORS when using a —allow-cors flag in the Grid server
+* If you're using the Java Platform Module System, all modules
+  associated with the project are generated as "open" modules. This
+  will change in a future release.
+* The version of Jetty being used is unshadowed.
+
+v4.0.0.0-alpha-2
+================
+
+* Add Chromium-based Edge support. This involves adding a new Chromium driver to
+  the tree too.
+* Extra domains added for CDP: Network, Performance, Security, Target
+* Firefox: enable full page screenshots
+* Better support for Java 9+ modules
+* Start reworking HTTP abstractions. These should better support streaming, and
+  so will not require us to hold all requests in memory.
+
+v4.0.0.0-alpha-1
+================
+
+* Many deprecated methods and classes deleted.
+* Alpha version of new Grid Server, supports "standalone", "hub",
+  "node", and completely distributed usage.
+* Basic support for using Docker containers with the new Grid Server.
+* Basic support for CDP landed via the "DevTools" interface.
+* Basic support for OpenTracing landed. Use the "--ext" flag to the
+  new Grid Server to provide the classpath to an OpenTracing
+  implementation.
+* Added support for WebSockets to the HttpClient
+* Location of safari driver now configurable using
+  "webdriver.safari.driver" system property.
+* #6649: Legacy firefox driver respects "webdriver.firefox.logfile"
+   system property.
+* Added command to open a new window.
+* Element screenshotting now possible
+* Selenium Server now no longer includes HtmlUnit by default
+* New Grid can output logs in single-line json format to stdout
+* #6617 Implement equals() and hashCode() in `Select` element wrapper
+
 v3.141.59
 =========
 
@@ -12,7 +239,7 @@ v3.141.59
 v3.141.5
 ========
 
-* Default the number of threads assigned to the server to 200, 
+* Default the number of threads assigned to the server to 200,
   which is what it was in 3.13.0
 
 v3.141.0
@@ -245,7 +472,7 @@ v3.6.0
   artifacts.
 * All `*Option` classes now extend `MutableCapbilities`
   `new RemoteWebDriver(new ChromeOptions());`
-* Deprecating constructors that don't take strongly-typed `*Options`. 
+* Deprecating constructors that don't take strongly-typed `*Options`.
 * Improved exceptions when a `Wait` times out when using a
   `WrappedWebDriver`.
 * Added `Interactive` interface to EventFiringWebDriver. Fixes #4589

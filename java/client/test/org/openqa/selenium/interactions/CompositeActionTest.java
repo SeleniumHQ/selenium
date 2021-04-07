@@ -20,9 +20,12 @@ package org.openqa.selenium.interactions;
 import static org.mockito.Mockito.mock;
 
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 import org.mockito.InOrder;
 import org.mockito.Mockito;
+import org.openqa.selenium.testing.UnitTests;
 
+@Category(UnitTests.class)
 public class CompositeActionTest {
 
   @Test

@@ -24,7 +24,7 @@ import org.junit.Test;
 public class TestFocusOnBlur extends InternalSelenseTestBase {
   @Test
   public void testFocusOnBlur() {
-    selenium.open("../tests/html/test_focus_on_blur.html");
+    selenium.open("test_focus_on_blur.html");
     selenium.type("testInput", "test");
     selenium.fireEvent("testInput", "blur");
     verifyEquals(selenium.getAlert(), "Bad value");

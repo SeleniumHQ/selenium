@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Licensed to the Software Freedom Conservancy (SFC) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -20,35 +22,41 @@ require_relative 'spec_helper'
 module Selenium
   module WebDriver
     describe SearchContext do
-      class TestSearchContext
-        attr_reader :bridge, :ref
+      let(:test_search_context) do
+        Class.new do
+          attr_reader :bridge, :ref
 
-        include Selenium::WebDriver::SearchContext
+          include Selenium::WebDriver::SearchContext
 
-        def initialize(bridge)
-          @bridge = bridge
+          def initialize(bridge)
+            @bridge = bridge
+          end
         end
       end
 
-      let(:element)        { double(:Element) }
-      let(:bridge)         { double(:Bridge).as_null_object }
-      let(:search_context) { TestSearchContext.new(bridge) }
+      let(:element)        { instance_double(Element) }
+      let(:bridge)         { instance_double('Bridge').as_null_object }
+      let(:search_context) { test_search_context.new(bridge) }
 
       context 'finding a single element' do
         it 'accepts a hash' do
-          expect(bridge).to receive(:find_element_by).with('id', 'bar', nil).and_return(element)
+          allow(bridge).to receive(:find_element_by).with('id', 'bar', nil).and_return(element)
+
           expect(search_context.find_element(id: 'bar')).to eq(element)
+          expect(bridge).to have_received(:find_element_by).with('id', 'bar', nil)
         end
 
         it 'accepts two arguments' do
-          expect(bridge).to receive(:find_element_by).with('id', 'bar', nil).and_return(element)
-          expect(search_context.find_element(id: 'bar')).to eq(element)
+          allow(bridge).to receive(:find_element_by).with('id', 'bar', nil).and_return(element)
+
+          expect(search_context.find_element(:id, 'bar')).to eq(element)
+          expect(bridge).to have_received(:find_element_by).with('id', 'bar', nil)
         end
 
         it "raises an error if given an invalid 'by'" do
-          expect do
+          expect {
             search_context.find_element(foo: 'bar')
-          end.to raise_error(ArgumentError, 'cannot find element by :foo')
+          }.to raise_error(ArgumentError, 'cannot find element by :foo')
         end
 
         it 'does not modify the hash given' do
@@ -62,19 +70,23 @@ module Selenium
 
       context 'finding multiple elements' do
         it 'accepts a hash' do
-          expect(bridge).to receive(:find_elements_by).with('id', 'bar', nil).and_return([])
+          allow(bridge).to receive(:find_elements_by).with('id', 'bar', nil).and_return([])
+
           expect(search_context.find_elements(id: 'bar')).to eq([])
+          expect(bridge).to have_received(:find_elements_by).with('id', 'bar', nil)
         end
 
         it 'accepts two arguments' do
-          expect(bridge).to receive(:find_elements_by).with('id', 'bar', nil).and_return([])
-          expect(search_context.find_elements(id: 'bar')).to eq([])
+          allow(bridge).to receive(:find_elements_by).with('id', 'bar', nil).and_return([])
+
+          expect(search_context.find_elements(:id, 'bar')).to eq([])
+          expect(bridge).to have_received(:find_elements_by).with('id', 'bar', nil)
         end
 
         it "raises an error if given an invalid 'by'" do
-          expect do
+          expect {
             search_context.find_elements(foo: 'bar')
-          end.to raise_error(ArgumentError, 'cannot find elements by :foo')
+          }.to raise_error(ArgumentError, 'cannot find elements by :foo')
         end
       end
     end

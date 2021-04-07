@@ -14,10 +14,7 @@
 // KIND, either express or implied.  See the License for the
 // specific language governing permissions and limitations
 // under the License.
-
 package org.openqa.selenium.edge;
-
-import static org.openqa.selenium.remote.CapabilityType.BROWSER_NAME;
 
 import com.google.auto.service.AutoService;
 
@@ -27,12 +24,16 @@ import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebDriverInfo;
+import org.openqa.selenium.chromium.ChromiumDriverInfo;
 import org.openqa.selenium.remote.BrowserType;
 
+import java.util.Objects;
 import java.util.Optional;
 
+import static org.openqa.selenium.remote.CapabilityType.BROWSER_NAME;
+
 @AutoService(WebDriverInfo.class)
-public class EdgeDriverInfo implements WebDriverInfo {
+public class EdgeDriverInfo extends ChromiumDriverInfo {
 
   @Override
   public String getDisplayName() {
@@ -46,8 +47,17 @@ public class EdgeDriverInfo implements WebDriverInfo {
 
   @Override
   public boolean isSupporting(Capabilities capabilities) {
-    return BrowserType.EDGE.equals(capabilities.getBrowserName()) ||
-           capabilities.getCapability("edgeOptions") != null;
+    return (BrowserType.EDGE.equals(capabilities.getBrowserName())
+      || capabilities.getCapability("ms:edgeOptions") != null
+      || capabilities.getCapability("edgeOptions") != null)
+      &&
+      (capabilities.getCapability(EdgeOptions.USE_CHROMIUM) == null
+        || Objects.equals(capabilities.getCapability(EdgeOptions.USE_CHROMIUM), true));
+  }
+
+  @Override
+  public boolean isSupportingCdp() {
+    return true;
   }
 
   @Override
@@ -62,7 +72,7 @@ public class EdgeDriverInfo implements WebDriverInfo {
 
   @Override
   public int getMaximumSimultaneousSessions() {
-    return 1;
+    return Runtime.getRuntime().availableProcessors();
   }
 
   @Override

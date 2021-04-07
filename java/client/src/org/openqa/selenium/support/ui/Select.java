@@ -51,7 +51,7 @@ public class Select implements ISelect, WrapsElement {
 
     this.element = element;
 
-    String value = element.getAttribute("multiple");
+    String value = element.getDomAttribute("multiple");
 
     // The atoms normalize the returned value, but check for "false"
     isMulti = (value != null && !"false".equals(value));
@@ -133,8 +133,11 @@ public class Select implements ISelect, WrapsElement {
           element.findElements(By.xpath(".//option[contains(., " +
                                         Quotes.escape(subStringWithoutSpace) + ")]"));
       }
+
+      String trimmed = text.trim();
+
       for (WebElement option : candidates) {
-        if (text.equals(option.getText())) {
+        if (trimmed.equals(option.getText().trim())) {
           setSelected(option, true);
           if (!isMultiple()) {
             return;

@@ -15,56 +15,52 @@
 // specific language governing permissions and limitations
 // under the License.
 
-'use strict';
+'use strict'
 
-const spawn = require('child_process').spawn,
-    fs = require('fs'),
-    path = require('path');
+const fs = require('fs')
+const path = require('path')
+const { spawn } = require('child_process')
+const PROJECT_ROOT = path.normalize(path.join(__dirname, '../../../../..'))
+const WORKSPACE_FILE = path.join(PROJECT_ROOT, 'WORKSPACE')
 
-const isDevMode = require('../devmode');
-
-var projectRoot = path.normalize(path.join(__dirname, '../../../../..'));
-
-
-function checkIsDevMode() {
-  if (!isDevMode) {
-    throw Error('Cannot execute build; not running in dev mode');
-  }
+function isDevMode() {
+  return fs.existsSync(WORKSPACE_FILE)
 }
 
+function checkIsDevMode() {
+  if (!isDevMode()) {
+    throw Error('Cannot execute build; not running in dev mode')
+  }
+}
 
 /**
  * Targets that have been previously built.
  * @type {!Object}
  */
-var builtTargets = {};
-
+let builtTargets = {}
 
 /**
  * @param {!Array.<string>} targets The targets to build.
  * @throws {Error} If not running in dev mode.
  * @constructor
  */
-var Build = function(targets) {
-  checkIsDevMode();
-  this.targets_ = targets;
-};
-
+const Build = function (targets) {
+  checkIsDevMode()
+  this.targets_ = targets
+}
 
 /** @private {boolean} */
-Build.prototype.cacheResults_ = false;
-
+Build.prototype.cacheResults_ = false
 
 /**
  * Configures this build to only execute if it has not previously been
  * run during the life of the current process.
  * @return {!Build} A self reference.
  */
-Build.prototype.onlyOnce = function() {
-  this.cacheResults_ = true;
-  return this;
-};
-
+Build.prototype.onlyOnce = function () {
+  this.cacheResults_ = true
+  return this
+}
 
 /**
  * Executes the build.
@@ -72,62 +68,64 @@ Build.prototype.onlyOnce = function() {
  *     the build has completed.
  * @throws {Error} If no targets were specified.
  */
-Build.prototype.go = function() {
-  var targets = this.targets_;
+Build.prototype.go = function () {
+  let targets = this.targets_
   if (!targets.length) {
-    throw Error('No targets specified');
+    throw Error('No targets specified')
   }
 
   // Filter out cached results.
   if (this.cacheResults_) {
-    targets = targets.filter(function(target) {
-      return !builtTargets.hasOwnProperty(target);
-    });
+    targets = targets.filter(function (target) {
+      return !Object.prototype.hasOwnProperty.call(builtTargets, target)
+    })
 
     if (!targets.length) {
-      return Promise.resolve();
+      return Promise.resolve()
     }
   }
 
-  console.log('\nBuilding', targets.join(' '), '...');
+  console.log('\nBuilding', targets.join(' '), '...')
 
-  var cmd, args = targets;
+  let cmd,
+    args = targets
   if (process.platform === 'win32') {
-    cmd = 'cmd.exe';
-    args.unshift('/c', path.join(projectRoot, 'go.bat'));
+    cmd = 'cmd.exe'
+    args.unshift('/c', path.join(PROJECT_ROOT, 'go.bat'))
   } else {
-    cmd = path.join(projectRoot, 'go');
+    cmd = path.join(PROJECT_ROOT, 'go')
   }
 
   return new Promise((resolve, reject) => {
     spawn(cmd, args, {
-      cwd: projectRoot,
+      cwd: PROJECT_ROOT,
       env: process.env,
-      stdio: ['ignore', process.stdout, process.stderr]
-    }).on('exit', function(code, signal) {
+      stdio: ['ignore', process.stdout, process.stderr],
+    }).on('exit', function (code, signal) {
       if (code === 0) {
-        targets.forEach(function(target) {
-          builtTargets[target] = 1;
-        });
-        return resolve();
+        targets.forEach(function (target) {
+          builtTargets[target] = 1
+        })
+        return resolve()
       }
 
-      var msg = 'Unable to build artifacts';
-      if (code) {  // May be null.
-        msg += '; code=' + code;
+      let msg = 'Unable to build artifacts'
+      if (code) {
+        // May be null.
+        msg += '; code=' + code
       }
       if (signal) {
-        msg += '; signal=' + signal;
+        msg += '; signal=' + signal
       }
 
-      reject(Error(msg));
-    });
-  });
-};
-
+      reject(Error(msg))
+    })
+  })
+}
 
 // PUBLIC API
 
+exports.isDevMode = isDevMode
 
 /**
  * Creates a build of the listed targets.
@@ -135,17 +133,15 @@ Build.prototype.go = function() {
  * @return {!Build} The new build.
  * @throws {Error} If not running in dev mode.
  */
-exports.of = function(var_args) {
-  var targets = Array.prototype.slice.call(arguments, 0);
-  return new Build(targets);
-};
-
+exports.of = function (var_args) { // eslint-disable-line
+  let targets = Array.prototype.slice.call(arguments, 0)
+  return new Build(targets)
+}
 
 /**
  * @return {string} Absolute path of the project's root directory.
  * @throws {Error} If not running in dev mode.
  */
-exports.projectRoot = function() {
-  checkIsDevMode();
-  return projectRoot;
-};
+exports.projectRoot = function () {
+  return PROJECT_ROOT
+}

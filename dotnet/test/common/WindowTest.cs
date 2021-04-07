@@ -12,8 +12,8 @@ namespace OpenQA.Selenium
         [SetUp]
         public void GetBrowserWindowSize()
         {
+            driver.Manage().Window.Position = new Point(50, 50);
             this.originalWindowSize = driver.Manage().Window.Size;
-
         }
 
         [TearDown]
@@ -181,7 +181,7 @@ namespace OpenQA.Selenium
         //------------------------------------------------------------------
 
         [Test]
-        [IgnoreBrowser(Browser.Edge, "Edge driver does not implement the full screen command")]
+        [IgnoreBrowser(Browser.EdgeLegacy, "Edge driver does not implement the full screen command")]
         [IgnoreBrowser(Browser.Opera, "Not implemented in driver")]
         public void ShouldBeAbleToFullScreenTheCurrentWindow()
         {
@@ -200,6 +200,7 @@ namespace OpenQA.Selenium
 
         [Test]
         [IgnoreBrowser(Browser.Chrome, "Chrome window size does not report zero when minimized.")]
+        [IgnoreBrowser(Browser.Edge, "Edge window size does not report zero when minimized.")]
         [IgnoreBrowser(Browser.Opera, "Not implemented in driver")]
         public void ShouldBeAbleToMinimizeTheCurrentWindow()
         {

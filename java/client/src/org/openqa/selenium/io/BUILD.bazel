@@ -1,0 +1,14 @@
+load("//java:defs.bzl", "java_library")
+
+java_library(
+    name = "io",
+    srcs = glob(["*.java"]),
+    visibility = [
+        "//java/buildtools/src/dev/selenium/tools/jar:__pkg__",
+        "//java/buildtools/src/dev/selenium/tools/javadoc:__pkg__",
+        "//java/buildtools/src/dev/selenium/tools/modules:__pkg__",
+        "//java/client/src/org/openqa/selenium/os:__pkg__",
+        "//java/client/src/org/openqa/selenium/remote:__pkg__",
+        "//java/client/test/org/openqa/selenium/io:__pkg__",
+    ],
+)

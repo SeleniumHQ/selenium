@@ -38,7 +38,7 @@ public class SwitchToFrame extends WebDriverHandler<Void> {
   }
 
   @Override
-  public Void call() throws Exception {
+  public Void call() {
     if (id == null) {
       getDriver().switchTo().defaultContent();
     } else if (id instanceof Number) {

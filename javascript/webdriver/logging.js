@@ -57,7 +57,7 @@
  * **NOTE:** Only a few browsers support the remote logging API (notably
  * Firefox and Chrome). Firefox supports basic logging functionality, while
  * Chrome exposes robust
- * [performance logging](https://sites.google.com/a/chromium.org/chromedriver/logging)
+ * [performance logging](https://chromedriver.chromium.org/logging)
  * options. Remote logging is still considered a non-standard feature, and the
  * APIs exposed by this module for it are non-frozen. Once logging is officially
  * defined by the [W3C WebDriver spec](http://www.w3.org/TR/webdriver/), this

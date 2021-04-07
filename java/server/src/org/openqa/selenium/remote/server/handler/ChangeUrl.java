@@ -36,7 +36,7 @@ public class ChangeUrl extends WebDriverHandler<Void> {
   }
 
   @Override
-  public Void call() throws Exception {
+  public Void call() {
     getDriver().get(url);
 
     return null;

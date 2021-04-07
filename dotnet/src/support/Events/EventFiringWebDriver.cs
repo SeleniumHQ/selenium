@@ -884,6 +884,11 @@ namespace OpenQA.Selenium.Support.Events
                 get { return this.wrappedOptions.Logs; }
             }
 
+            public INetwork Network
+            {
+                get { return this.wrappedOptions.Network; }
+            }
+
             /// <summary>
             /// Provides access to the timeouts defined for this driver.
             /// </summary>
@@ -1007,6 +1012,31 @@ namespace OpenQA.Selenium.Support.Events
                 try
                 {
                     driver = this.wrappedLocator.Window(windowName);
+                }
+                catch (Exception ex)
+                {
+                    this.parentDriver.OnException(new WebDriverExceptionEventArgs(this.parentDriver, ex));
+                    throw;
+                }
+
+                return driver;
+            }
+
+            /// <summary>
+            /// Creates a new browser window and switches the focus for future commands
+            /// of this driver to the new window.
+            /// </summary>
+            /// <param name="typeHint">The type of new browser window to be created.
+            /// The created window is not guaranteed to be of the requested type; if
+            /// the driver does not support the requested type, a new browser window
+            /// will be created of whatever type the driver does support.</param>
+            /// <returns>An <see cref="IWebDriver"/> instance focused on the new browser.</returns>
+            public IWebDriver NewWindow(WindowType typeHint)
+            {
+                IWebDriver driver = null;
+                try
+                {
+                    driver = this.wrappedLocator.NewWindow(typeHint);
                 }
                 catch (Exception ex)
                 {
@@ -1144,7 +1174,7 @@ namespace OpenQA.Selenium.Support.Events
         /// <summary>
         /// EventFiringWebElement allows you to have access to specific items that are found on the page
         /// </summary>
-        private class EventFiringWebElement : IWebElement, IWrapsElement
+        private class EventFiringWebElement : ITakesScreenshot, IWebElement, IWrapsElement, IWrapsDriver
         {
             private IWebElement underlyingElement;
             private EventFiringWebDriver parentDriver;
@@ -1166,6 +1196,14 @@ namespace OpenQA.Selenium.Support.Events
             public IWebElement WrappedElement
             {
                 get { return this.underlyingElement; }
+            }
+
+            /// <summary>
+            /// Gets the underlying parent wrapped <see cref="IWebDriver"/>
+            /// </summary>
+            public IWebDriver WrappedDriver
+            {
+                get { return this.parentDriver; }
             }
 
             /// <summary>
@@ -1526,6 +1564,54 @@ namespace OpenQA.Selenium.Support.Events
                 }
 
                 return wrappedElementList.AsReadOnly();
+            }
+
+            /// <summary>
+            /// Gets a <see cref="Screenshot"/> object representing the image of the page on the screen.
+            /// </summary>
+            /// <returns>A <see cref="Screenshot"/> object containing the image.</returns>
+            public Screenshot GetScreenshot()
+            {
+                ITakesScreenshot screenshotDriver = this.underlyingElement as ITakesScreenshot;
+                if (this.underlyingElement == null)
+                {
+                    throw new NotSupportedException("Underlying element instance does not support taking screenshots");
+                }
+
+                Screenshot screen = null;
+                screen = screenshotDriver.GetScreenshot();
+                return screen;
+            }
+
+            /// <summary>
+            /// Determines whether the specified <see cref="EventFiringWebElement"/> is equal to the current <see cref="EventFiringWebElement"/>. 
+            /// </summary>
+            /// <param name="obj">The <see cref="EventFiringWebElement"/> to compare to the current <see cref="EventFiringWebElement"/>.</param>
+            /// <returns><see langword="true"/> if the specified <see cref="EventFiringWebElement"/> is equal to the current <see cref="EventFiringWebElement"/>; otherwise, <see langword="false"/>.</returns>
+            public override bool Equals(object obj)
+            {
+                IWebElement other = obj as IWebElement;
+                if (other == null)
+                {
+                    return false;
+                }
+                
+                IWrapsElement otherWrapper = other as IWrapsElement;
+                if (otherWrapper != null)
+                {
+                    other = otherWrapper.WrappedElement;
+                }
+
+                return underlyingElement.Equals(other);
+            }
+
+            /// <summary>
+            /// Return the hash code for this <see cref="EventFiringWebElement"/>.
+            /// </summary>
+            /// <returns>A 32-bit signed integer hash code.</returns>
+            public override int GetHashCode()
+            {
+                return this.underlyingElement.GetHashCode();
             }
         }
     }

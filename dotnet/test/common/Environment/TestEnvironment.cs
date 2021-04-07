@@ -11,6 +11,12 @@ namespace OpenQA.Selenium.Environment
     class TestEnvironment
     {
         [JsonProperty]
+        public bool CaptureWebServerOutput { get; set; }
+
+        [JsonProperty]
+        public bool HideWebServerCommandPrompt { get; set; }
+
+        [JsonProperty]
         public string DriverServiceLocation { get; set; }
 
         [JsonProperty]
@@ -24,5 +30,8 @@ namespace OpenQA.Selenium.Environment
 
         [JsonProperty]
         public Dictionary<string, DriverConfig> DriverConfigs { get; set; }
+
+        [JsonProperty]
+        public TestWebServerConfig TestWebServerConfig {get; set;}
     }
 }

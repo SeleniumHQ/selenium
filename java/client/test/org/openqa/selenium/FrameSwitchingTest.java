@@ -25,9 +25,10 @@ import static org.openqa.selenium.support.ui.ExpectedConditions.presenceOfElemen
 import static org.openqa.selenium.support.ui.ExpectedConditions.textToBe;
 import static org.openqa.selenium.support.ui.ExpectedConditions.titleIs;
 import static org.openqa.selenium.testing.drivers.Browser.CHROME;
+import static org.openqa.selenium.testing.drivers.Browser.EDGE;
 import static org.openqa.selenium.testing.drivers.Browser.HTMLUNIT;
 import static org.openqa.selenium.testing.drivers.Browser.IE;
-import static org.openqa.selenium.testing.drivers.Browser.MARIONETTE;
+import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
 import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
 
 import org.junit.After;
@@ -40,6 +41,8 @@ import org.openqa.selenium.testing.NotYetImplemented;
 import java.util.Random;
 
 public class FrameSwitchingTest extends JUnit4TestBase {
+
+  private Random random;
 
   @After
   public void tearDown() {
@@ -283,7 +286,7 @@ public class FrameSwitchingTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(value = MARIONETTE, issue = "https://github.com/mozilla/geckodriver/issues/614")
+  @Ignore(value = FIREFOX, issue = "https://github.com/mozilla/geckodriver/issues/614")
   @NotYetImplemented(SAFARI)
   public void testShouldFocusOnTheReplacementWhenAFrameFollowsALinkToA_TopTargetedPage() {
     driver.get(pages.framesetPage);
@@ -451,9 +454,10 @@ public class FrameSwitchingTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(CHROME)
+  @NotYetImplemented(value = CHROME, reason = "Throws NoSuchElementException")
+  @NotYetImplemented(value = EDGE, reason = "Throws NoSuchElementException")
   @Ignore(IE)
-  @Ignore(value = MARIONETTE, issue = "https://github.com/mozilla/geckodriver/issues/614")
+  @Ignore(value = FIREFOX, issue = "https://github.com/mozilla/geckodriver/issues/614")
   @NotYetImplemented(HTMLUNIT)
   @Ignore(SAFARI)
   public void testShouldNotBeAbleToDoAnythingTheFrameIsDeletedFromUnderUs() {
@@ -484,7 +488,6 @@ public class FrameSwitchingTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(value = CHROME, reason = "Unstable")
   public void testShouldNotSwitchMagicallyToTheTopWindow() {
     String baseUrl = appServer.whereIs("frame_switching_tests/");
     driver.get(baseUrl + "bug4876.html");
@@ -496,7 +499,8 @@ public class FrameSwitchingTest extends JUnit4TestBase {
         WebElement input = wait.until(presenceOfElementLocated(By.id("inputText")));
         WebElement submit = wait.until(presenceOfElementLocated(By.id("submitButton")));
         input.clear();
-        input.sendKeys("rand" + new Random().nextInt());
+        random = new Random();
+        input.sendKeys("rand" + random.nextInt());
         submit.click();
       } finally {
         String url = (String) ((JavascriptExecutor) driver).executeScript("return window.location.href");

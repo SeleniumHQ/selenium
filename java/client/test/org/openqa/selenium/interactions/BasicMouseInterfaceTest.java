@@ -28,10 +28,11 @@ import static org.openqa.selenium.support.ui.ExpectedConditions.not;
 import static org.openqa.selenium.support.ui.ExpectedConditions.titleIs;
 import static org.openqa.selenium.testing.drivers.Browser.ALL;
 import static org.openqa.selenium.testing.drivers.Browser.CHROME;
-import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
+import static org.openqa.selenium.testing.drivers.Browser.EDGE;
+import static org.openqa.selenium.testing.drivers.Browser.LEGACY_FIREFOX_XPI;
 import static org.openqa.selenium.testing.drivers.Browser.HTMLUNIT;
 import static org.openqa.selenium.testing.drivers.Browser.IE;
-import static org.openqa.selenium.testing.drivers.Browser.MARIONETTE;
+import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
 import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
 
 import org.junit.Test;
@@ -220,9 +221,10 @@ public class BasicMouseInterfaceTest extends JUnit4TestBase {
 
   @Test
   @Ignore(CHROME)
+  @Ignore(EDGE)
   @Ignore(IE)
+  @Ignore(LEGACY_FIREFOX_XPI)
   @Ignore(FIREFOX)
-  @Ignore(MARIONETTE)
   @NotYetImplemented(HTMLUNIT)
   @NotYetImplemented(SAFARI)
   public void testMousePositionIsNotPreservedInActionsChain() {
@@ -259,9 +261,10 @@ public class BasicMouseInterfaceTest extends JUnit4TestBase {
 
   @Test
   @Ignore(CHROME)
+  @Ignore(EDGE)
   @Ignore(IE)
+  @Ignore(LEGACY_FIREFOX_XPI)
   @Ignore(FIREFOX)
-  @Ignore(MARIONETTE)
   @Ignore(value = HTMLUNIT, reason="test should enable JavaScript")
   @NotYetImplemented(SAFARI)
   public void testMovingMouseBackAndForthPastViewPort() {
@@ -361,14 +364,13 @@ public class BasicMouseInterfaceTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(value = MARIONETTE, issue = "https://github.com/mozilla/geckodriver/issues/789")
   @NotYetImplemented(HTMLUNIT)
-  @NotYetImplemented(SAFARI)
   public void testMovingMouseToRelativeElementOffset() {
     driver.get(pages.mouseTrackerPage);
 
     WebElement trackerDiv = driver.findElement(By.id("mousetracker"));
-    new Actions(driver).moveToElement(trackerDiv, 95, 195).perform();
+    Dimension size = trackerDiv.getSize();
+    new Actions(driver).moveToElement(trackerDiv, 95 - size.getWidth() / 2, 195 - size.getHeight() / 2).perform();
 
     WebElement reporter = driver.findElement(By.id("status"));
 
@@ -376,9 +378,7 @@ public class BasicMouseInterfaceTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(value = MARIONETTE, issue = "https://github.com/mozilla/geckodriver/issues/789")
   @NotYetImplemented(HTMLUNIT)
-  @NotYetImplemented(SAFARI)
   public void testMovingMouseToRelativeZeroElementOffset() {
     driver.get(pages.mouseTrackerPage);
 
@@ -387,10 +387,11 @@ public class BasicMouseInterfaceTest extends JUnit4TestBase {
 
     WebElement reporter = driver.findElement(By.id("status"));
 
-    wait.until(fuzzyMatchingOfCoordinates(reporter, 0, 0));
+    Dimension size = trackerDiv.getSize();
+    wait.until(fuzzyMatchingOfCoordinates(reporter, size.getWidth() / 2, size.getHeight() / 2));
   }
 
-  @NeedsFreshDriver({IE, CHROME, MARIONETTE})
+  @NeedsFreshDriver({IE, CHROME, FIREFOX, EDGE})
   @Test
   @NotYetImplemented(HTMLUNIT)
   @NotYetImplemented(SAFARI)
@@ -409,7 +410,7 @@ public class BasicMouseInterfaceTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(value = MARIONETTE, issue = "https://github.com/mozilla/geckodriver/issues/789")
+  @Ignore(value = FIREFOX, issue = "https://github.com/mozilla/geckodriver/issues/789")
   @NotYetImplemented(HTMLUNIT)
   @NotYetImplemented(SAFARI)
   public void testMoveMouseByOffsetOverAndOutOfAnElement() {
@@ -422,15 +423,19 @@ public class BasicMouseInterfaceTest extends JUnit4TestBase {
     int shiftX = redboxPosition.getX() - greenboxPosition.getX();
     int shiftY = redboxPosition.getY() - greenboxPosition.getY();
 
-    new Actions(driver).moveToElement(greenbox, 2, 2).perform();
+    Dimension greenBoxSize = greenbox.getSize();
+    int xOffset = 2 - greenBoxSize.getWidth() / 2;
+    int yOffset = 2 - greenBoxSize.getHeight() / 2;
+
+    new Actions(driver).moveToElement(greenbox, xOffset, yOffset).perform();
 
     shortWait.until(attributeToBe(redbox, "background-color", Colors.GREEN.getColorValue().asRgba()));
 
-    new Actions(driver).moveToElement(greenbox, 2, 2)
+    new Actions(driver).moveToElement(greenbox, xOffset, yOffset)
       .moveByOffset(shiftX, shiftY).perform();
     shortWait.until(attributeToBe(redbox, "background-color", Colors.RED.getColorValue().asRgba()));
 
-    new Actions(driver).moveToElement(greenbox, 2, 2)
+    new Actions(driver).moveToElement(greenbox, xOffset, yOffset)
       .moveByOffset(shiftX, shiftY)
       .moveByOffset(-shiftX, -shiftY).perform();
 
@@ -438,7 +443,7 @@ public class BasicMouseInterfaceTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(value = MARIONETTE, issue = "https://github.com/mozilla/geckodriver/issues/789")
+  @Ignore(value = FIREFOX, issue = "https://github.com/mozilla/geckodriver/issues/789")
   @NotYetImplemented(HTMLUNIT)
   @NotYetImplemented(SAFARI)
   public void testCanMoveOverAndOutOfAnElement() {
@@ -446,9 +451,10 @@ public class BasicMouseInterfaceTest extends JUnit4TestBase {
 
     WebElement greenbox = driver.findElement(By.id("greenbox"));
     WebElement redbox = driver.findElement(By.id("redbox"));
-    Dimension size = redbox.getSize();
+    Dimension greenSize = greenbox.getSize();
+    Dimension redSize = redbox.getSize();
 
-    new Actions(driver).moveToElement(greenbox, 1, 1).perform();
+    new Actions(driver).moveToElement(greenbox, 1 - greenSize.getWidth() / 2, 1 - greenSize.getHeight() / 2).perform();
 
     assertThat(Color.fromString(redbox.getCssValue("background-color")))
         .isEqualTo(GREEN.getColorValue());
@@ -459,7 +465,7 @@ public class BasicMouseInterfaceTest extends JUnit4TestBase {
 
     // IE8 (and *only* IE8) requires a move of 2 pixels. All other browsers
     // would be happy with 1.
-    new Actions(driver).moveToElement(redbox, size.getWidth() + 2, size.getHeight() + 2)
+    new Actions(driver).moveToElement(redbox, redSize.getWidth() / 2 + 2, redSize.getHeight() / 2 + 2)
         .perform();
 
     wait.until(attributeToBe(redbox, "background-color", Colors.GREEN.getColorValue().asRgba()));

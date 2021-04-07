@@ -17,16 +17,15 @@
 
 package org.openqa.selenium.firefox;
 
-import static com.google.common.base.Preconditions.checkNotNull;
-import static java.util.concurrent.TimeUnit.SECONDS;
+import static java.util.Collections.unmodifiableList;
+import static java.util.concurrent.TimeUnit.MILLISECONDS;
 
 import com.google.auto.service.AutoService;
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
 import com.google.common.io.ByteStreams;
 
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.net.PortProber;
 import org.openqa.selenium.remote.BrowserType;
 import org.openqa.selenium.remote.service.DriverService;
@@ -34,7 +33,11 @@ import org.openqa.selenium.remote.service.DriverService;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.net.MalformedURLException;
+import java.time.Duration;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 /**
  * Manages the life and death of an GeckoDriver aka 'wires'.
@@ -57,9 +60,26 @@ public class GeckoDriverService extends FirefoxDriverService {
   public GeckoDriverService(
       File executable,
       int port,
-      ImmutableList<String> args,
-      ImmutableMap<String, String> environment) throws IOException {
-    super(executable, port, args, environment);
+      List<String> args,
+      Map<String, String> environment) throws IOException {
+    super(executable, port, DEFAULT_TIMEOUT, args, environment);
+  }
+
+  /**
+   * @param executable The GeckoDriver executable.
+   * @param port Which port to start the GeckoDriver on.
+   * @param timeout Timeout waiting for driver server to start.
+   * @param args The arguments to the launched server.
+   * @param environment The environment for the launched server.
+   * @throws IOException If an I/O error occurs.
+   */
+  public GeckoDriverService(
+      File executable,
+      int port,
+      Duration timeout,
+      List<String> args,
+      Map<String, String> environment) throws IOException {
+    super(executable, port, timeout, args, environment);
   }
 
   /**
@@ -77,7 +97,7 @@ public class GeckoDriverService extends FirefoxDriverService {
   static GeckoDriverService createDefaultService(Capabilities caps) {
     Builder builder = new Builder();
 
-    Object binary = caps.getCapability(FirefoxDriver.BINARY);
+    Object binary = caps.getCapability(FirefoxDriver.Capability.BINARY);
     if (binary != null) {
       FirefoxBinary actualBinary;
       if (binary instanceof FirefoxBinary) {
@@ -92,12 +112,12 @@ public class GeckoDriverService extends FirefoxDriverService {
       builder.usingFirefoxBinary(actualBinary);
     }
 
-    return new Builder().build();
+    return builder.build();
   }
 
   @Override
-  protected void waitUntilAvailable() throws MalformedURLException {
-    PortProber.waitForPortUp(getUrl().getPort(), 20, SECONDS);
+  protected void waitUntilAvailable() {
+    PortProber.waitForPortUp(getUrl().getPort(), (int) getTimeout().toMillis(), MILLISECONDS);
   }
 
   @Override
@@ -117,35 +137,25 @@ public class GeckoDriverService extends FirefoxDriverService {
     public Builder() {
     }
 
-    /**
-     * @param binary - A custom location where the Firefox binary is available.
-     *
-     * @deprecated Use method usingFirefoxBinary instead
-     */
-    @Deprecated
-    public Builder(FirefoxBinary binary) {
-      this.firefoxBinary = binary;
-    }
-
     @Override
     protected boolean isLegacy() {
       return false;
     }
 
     @Override
-    public int score(Capabilities capabilites) {
-      if (capabilites.getCapability(FirefoxDriver.MARIONETTE) != null
-          && ! capabilites.is(FirefoxDriver.MARIONETTE)) {
+    public int score(Capabilities capabilities) {
+      if (capabilities.getCapability(FirefoxDriver.Capability.MARIONETTE) != null
+          && ! capabilities.is(FirefoxDriver.Capability.MARIONETTE)) {
         return 0;
       }
 
       int score = 0;
 
-      if (BrowserType.FIREFOX.equals(capabilites.getBrowserName())) {
+      if (BrowserType.FIREFOX.equals(capabilities.getBrowserName())) {
         score++;
       }
 
-      if (capabilites.getCapability(FirefoxOptions.FIREFOX_OPTIONS) != null) {
+      if (capabilities.getCapability(FirefoxOptions.FIREFOX_OPTIONS) != null) {
         score++;
       }
 
@@ -159,7 +169,7 @@ public class GeckoDriverService extends FirefoxDriverService {
      * @return A self reference.
      */
     public Builder usingFirefoxBinary(FirefoxBinary firefoxBinary) {
-      checkNotNull(firefoxBinary);
+      Require.nonNull("Firefox binary", firefoxBinary);
       checkExecutable(firefoxBinary.getFile());
       this.firefoxBinary = firefoxBinary;
       return this;
@@ -180,37 +190,49 @@ public class GeckoDriverService extends FirefoxDriverService {
     }
 
     @Override
-    protected ImmutableList<String> createArgs() {
-      ImmutableList.Builder<String> argsBuilder = ImmutableList.builder();
-      argsBuilder.add(String.format("--port=%d", getPort()));
+    protected List<String> createArgs() {
+      List<String> args = new ArrayList<>();
+      args.add(String.format("--port=%d", getPort()));
       if (firefoxBinary != null) {
-        argsBuilder.add("-b");
-        argsBuilder.add(firefoxBinary.getPath());
-      } // else GeckoDriver will be responsible for finding Firefox on the PATH or via a capability.
-      return argsBuilder.build();
+        args.add("-b");
+        args.add(firefoxBinary.getPath());
+      } else {
+        // Read system property for Firefox binary and use those if they are set
+        Optional<Executable> executable = Optional.ofNullable(FirefoxBinary.locateFirefoxBinaryFromSystemProperty());
+        executable.ifPresent( e -> {
+          args.add("-b");
+          args.add(e.getPath());
+        });
+      }
+      // If the binary stays null, GeckoDriver will be responsible for finding Firefox on the PATH or via a capability.
+      return unmodifiableList(args);
     }
 
     @Override
     protected GeckoDriverService createDriverService(File exe, int port,
-                                                     ImmutableList<String> args,
-                                                     ImmutableMap<String, String> environment) {
+                                                     Duration timeout,
+                                                     List<String> args,
+                                                     Map<String, String> environment) {
       try {
-        GeckoDriverService service = new GeckoDriverService(exe, port, args, environment);
+        GeckoDriverService service = new GeckoDriverService(exe, port, timeout, args, environment);
         String firefoxLogFile = System.getProperty(FirefoxDriver.SystemProperty.BROWSER_LOGFILE);
         if (firefoxLogFile != null) { // System property has higher precedence
-          if ("/dev/stdout".equals(firefoxLogFile)) {
-            service.sendOutputTo(System.out);
-          } else if ("/dev/stderr".equals(firefoxLogFile)) {
-            service.sendOutputTo(System.err);
-          } else if ("/dev/null".equals(firefoxLogFile)) {
-            service.sendOutputTo(ByteStreams.nullOutputStream());
-          } else {
-            // TODO: The stream is leaked.
-            service.sendOutputTo(new FileOutputStream(firefoxLogFile));
+          switch (firefoxLogFile) {
+            case "/dev/stdout":
+              service.sendOutputTo(System.out);
+              break;
+            case "/dev/stderr":
+              service.sendOutputTo(System.err);
+              break;
+            case "/dev/null":
+              service.sendOutputTo(ByteStreams.nullOutputStream());
+              break;
+            default:
+              service.sendOutputTo(new FileOutputStream(firefoxLogFile));
+              break;
           }
         } else {
           if (getLogFile() != null) {
-            // TODO: This stream is leaked.
             service.sendOutputTo(new FileOutputStream(getLogFile()));
           } else {
             service.sendOutputTo(System.err);

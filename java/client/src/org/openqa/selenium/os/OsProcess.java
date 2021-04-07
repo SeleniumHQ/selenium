@@ -17,12 +17,9 @@
 
 package org.openqa.selenium.os;
 
-import static com.google.common.base.Preconditions.checkNotNull;
-import static com.google.common.collect.ImmutableMap.copyOf;
+import static java.util.Collections.unmodifiableMap;
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.openqa.selenium.Platform.WINDOWS;
-
-import com.google.common.annotations.VisibleForTesting;
 
 import org.apache.commons.exec.DaemonExecutor;
 import org.apache.commons.exec.DefaultExecuteResultHandler;
@@ -30,7 +27,9 @@ import org.apache.commons.exec.ExecuteWatchdog;
 import org.apache.commons.exec.Executor;
 import org.apache.commons.exec.PumpStreamHandler;
 import org.openqa.selenium.Platform;
+import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.io.CircularOutputStream;
 import org.openqa.selenium.io.MultiOutputStream;
 
@@ -38,6 +37,7 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.nio.charset.Charset;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -61,8 +61,8 @@ class OsProcess {
   private final Map<String, String> env = new ConcurrentHashMap<>();
 
   public OsProcess(String executable, String... args) {
-    String actualExe = checkNotNull(new ExecutableFinder().find(executable),
-        "Unable to find executable for: %s", executable);
+    String actualExe = new ExecutableFinder().find(executable);
+    Require.state("Actual executable", actualExe).nonNull("Unable to find executable for: %s", executable);
     cl = new org.apache.commons.exec.CommandLine(actualExe);
     cl.addArguments(args, false);
   }
@@ -78,9 +78,8 @@ class OsProcess {
     env.put(name, value);
   }
 
-  @VisibleForTesting
   public Map<String, String> getEnvironment() {
-    return copyOf(env);
+    return unmodifiableMap(new HashMap<>(env));
   }
 
   private Map<String, String> getMergedEnv() {
@@ -90,7 +89,7 @@ class OsProcess {
   }
 
   private ByteArrayInputStream getInputStream() {
-    return allInput != null ? new ByteArrayInputStream(allInput.getBytes()) : null;
+    return allInput != null ? new ByteArrayInputStream(allInput.getBytes(Charset.defaultCharset())) : null;
   }
 
   public void executeAsync() {
@@ -161,6 +160,9 @@ class OsProcess {
     long until = System.currentTimeMillis() + timeout;
     boolean timedOut = true;
     while (System.currentTimeMillis() < until) {
+      if (Thread.interrupted()) {
+        throw new InterruptedException();
+      }
       if (handler.hasResult()) {
         timedOut = false;
         break;
@@ -168,7 +170,7 @@ class OsProcess {
       Thread.sleep(50);
     }
     if (timedOut) {
-      throw new InterruptedException(
+      throw new TimeoutException(
           String.format("Process timed out after waiting for %d ms.", timeout));
     }
 
@@ -239,6 +241,7 @@ class OsProcess {
         try {
           Thread.sleep(50);
         } catch (InterruptedException e) {
+          Thread.currentThread().interrupt();
           throw new WebDriverException(e);
         }
       }
@@ -250,6 +253,7 @@ class OsProcess {
         try {
           Thread.sleep(50);
         } catch (InterruptedException e) {
+          Thread.currentThread().interrupt();
           throw new WebDriverException(e);
         }
       }
@@ -260,7 +264,7 @@ class OsProcess {
         Process awaitFor = this.process.destroyForcibly();
         awaitFor.waitFor(10, SECONDS);
       } catch (InterruptedException e) {
-        Thread.interrupted();
+        Thread.currentThread().interrupt();
         throw new RuntimeException(e);
       }
     }

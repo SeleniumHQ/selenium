@@ -289,7 +289,7 @@ namespace OpenQA.Selenium
             return this.firstMatchOptions[firstMatchIndex];
         }
 
-        private Dictionary<string, object> GetAlwaysMatchOptionsAsSerializableDictionary()
+        private IDictionary<string, object> GetAlwaysMatchOptionsAsSerializableDictionary()
         {
             return this.mustMatchDriverOptions.ToDictionary();
         }

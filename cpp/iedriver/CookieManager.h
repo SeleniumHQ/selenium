@@ -18,6 +18,7 @@
 #define WEBDRIVER_COOKIEMANAGER_H_
 
 #include <map>
+#include <string>
 #include <vector>
 
 namespace webdriver {

@@ -1,4 +1,4 @@
-// <copyright file="EdgeDriverService.cs" company="Microsoft">
+// <copyright file="EdgeDriverService.cs" company="WebDriver Committers">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements. See the NOTICE file
 // distributed with this work for additional information
@@ -20,19 +20,26 @@ using System;
 using System.Globalization;
 using System.Text;
 using OpenQA.Selenium.Internal;
+using OpenQA.Selenium.Chromium;
 
 namespace OpenQA.Selenium.Edge
 {
     /// <summary>
-    /// Exposes the service provided by the native MicrosoftWebDriver executable.
+    /// Exposes the service provided by the native WebDriver executable.
     /// </summary>
-    public sealed class EdgeDriverService : DriverService
+    public sealed class EdgeDriverService : ChromiumDriverService
     {
         private const string MicrosoftWebDriverServiceFileName = "MicrosoftWebDriver.exe";
-        private static readonly Uri MicrosoftWebDriverDownloadUrl = new Uri("http://go.microsoft.com/fwlink/?LinkId=619687");
+        private const string MSEdgeDriverServiceFileName = "msedgedriver";
+
+        private static readonly Uri MicrosoftWebDriverDownloadUrl = new Uri("https://developer.microsoft.com/en-us/microsoft-edge/tools/webdriver/");
+
+        // Engine switching
+        private readonly bool usingChromium;
+
+        // Legacy properties
         private string host;
         private string package;
-        private bool useVerboseLogging;
         private bool? useSpecCompliantProtocol;
 
         /// <summary>
@@ -41,9 +48,19 @@ namespace OpenQA.Selenium.Edge
         /// <param name="executablePath">The full path to the EdgeDriver executable.</param>
         /// <param name="executableFileName">The file name of the EdgeDriver executable.</param>
         /// <param name="port">The port on which the EdgeDriver executable should listen.</param>
-        private EdgeDriverService(string executablePath, string executableFileName, int port)
-            : base(executablePath, port, executableFileName, MicrosoftWebDriverDownloadUrl)
+        /// <param name="usingChromium">Whether to use the Legacy or Chromium EdgeDriver executable.</param>
+        private EdgeDriverService(string executablePath, string executableFileName, int port, bool usingChromium)
+            : base(executablePath, executableFileName, port, MicrosoftWebDriverDownloadUrl)
         {
+            this.usingChromium = usingChromium;
+        }
+
+        /// <summary>
+        /// Gets a value indicating whether the driver service is using Edge Chromium.
+        /// </summary>
+        public bool UsingChromium
+        {
+            get { return this.usingChromium; }
         }
 
         /// <summary>
@@ -69,8 +86,8 @@ namespace OpenQA.Selenium.Edge
         /// </summary>
         public bool UseVerboseLogging
         {
-            get { return this.useVerboseLogging; }
-            set { this.useVerboseLogging = value; }
+            get { return this.EnableVerboseLogging; }
+            set { this.EnableVerboseLogging = value; }
         }
 
         /// <summary>
@@ -80,7 +97,7 @@ namespace OpenQA.Selenium.Edge
         /// <remarks>
         /// Setting this property to a non-<see langword="null"/> value for driver
         /// executables matched to versions of Windows before the 2018 Fall Creators
-        /// Update will result in a the driver executable shutting down without
+        /// Update will result in the driver executable shutting down without
         /// execution, and all commands will fail. Do not set this property unless
         /// you are certain your version of the MicrosoftWebDriver.exe supports the
         /// --w3c and --jwp command-line arguments.
@@ -99,7 +116,7 @@ namespace OpenQA.Selenium.Edge
         {
             get
             {
-                if (this.useSpecCompliantProtocol.HasValue && !this.useSpecCompliantProtocol.Value)
+                if (this.usingChromium || (this.useSpecCompliantProtocol.HasValue && !this.useSpecCompliantProtocol.Value))
                 {
                     return base.HasShutdown;
                 }
@@ -119,7 +136,7 @@ namespace OpenQA.Selenium.Edge
             // gets us to the termination point much faster.
             get
             {
-                if (this.useSpecCompliantProtocol.HasValue && !this.useSpecCompliantProtocol.Value)
+                if (this.usingChromium || (this.useSpecCompliantProtocol.HasValue && !this.useSpecCompliantProtocol.Value))
                 {
                     return base.TerminationTimeout;
                 }
@@ -135,7 +152,15 @@ namespace OpenQA.Selenium.Edge
         {
             get
             {
-                StringBuilder argsBuilder = new StringBuilder(base.CommandLineArguments);
+                return this.usingChromium ? base.CommandLineArguments : LegacyCommandLineArguments;
+            }
+        }
+
+        private string LegacyCommandLineArguments
+        {
+            get
+            {
+                StringBuilder argsBuilder = new StringBuilder(string.Format(CultureInfo.InvariantCulture, "--port={0}", this.Port));
                 if (!string.IsNullOrEmpty(this.host))
                 {
                     argsBuilder.Append(string.Format(CultureInfo.InvariantCulture, " --host={0}", this.host));
@@ -146,7 +171,7 @@ namespace OpenQA.Selenium.Edge
                     argsBuilder.Append(string.Format(CultureInfo.InvariantCulture, " --package={0}", this.package));
                 }
 
-                if (this.useVerboseLogging)
+                if (this.UseVerboseLogging)
                 {
                     argsBuilder.Append(" --verbose");
                 }
@@ -173,47 +198,141 @@ namespace OpenQA.Selenium.Edge
         }
 
         /// <summary>
+        /// Creates an instance of the EdgeDriverService for Edge Chromium.
+        /// </summary>
+        /// <returns>A EdgeDriverService that implements default settings.</returns>
+        public static EdgeDriverService CreateChromiumService()
+        {
+            return CreateDefaultServiceFromOptions(new EdgeOptions() { UseChromium = true });
+        }
+
+        /// <summary>
+        /// Creates an instance of the EdgeDriverService for Edge Chromium using a specified path to the WebDriver executable.
+        /// </summary>
+        /// <param name="driverPath">The directory containing the WebDriver executable.</param>
+        /// <returns>A EdgeDriverService using a random port.</returns>
+        public static EdgeDriverService CreateChromiumService(string driverPath)
+        {
+            return CreateDefaultServiceFromOptions(driverPath, EdgeDriverServiceFileName(true), new EdgeOptions() { UseChromium = true });
+        }
+
+        /// <summary>
+        /// Creates an instance of the EdgeDriverService for Edge Chromium using a specified path to the WebDriver executable with the given name.
+        /// </summary>
+        /// <param name="driverPath">The directory containing the WebDriver executable.</param>
+        /// <param name="driverExecutableFileName">The name of the WebDriver executable file.</param>
+        /// <returns>A EdgeDriverService using a random port.</returns>
+        public static EdgeDriverService CreateChromiumService(string driverPath, string driverExecutableFileName)
+        {
+            return CreateDefaultServiceFromOptions(driverPath, driverExecutableFileName, new EdgeOptions() { UseChromium = true });
+        }
+
+        /// <summary>
+        /// Creates an instance of the EdgeDriverService for Edge Chromium using a specified path to the WebDriver executable with the given name and listening port.
+        /// </summary>
+        /// <param name="driverPath">The directory containing the WebDriver executable.</param>
+        /// <param name="driverExecutableFileName">The name of the WebDriver executable file</param>
+        /// <param name="port">The port number on which the driver will listen</param>
+        /// <returns>A EdgeDriverService using the specified port.</returns>
+        public static EdgeDriverService CreateChromiumService(string driverPath, string driverExecutableFileName, int port)
+        {
+            return CreateDefaultServiceFromOptions(driverPath, driverExecutableFileName, port, new EdgeOptions() { UseChromium = true });
+        }
+
+
+        /// <summary>
         /// Creates a default instance of the EdgeDriverService.
         /// </summary>
         /// <returns>A EdgeDriverService that implements default settings.</returns>
         public static EdgeDriverService CreateDefaultService()
         {
-            string serviceDirectory = DriverService.FindDriverServiceExecutable(MicrosoftWebDriverServiceFileName, MicrosoftWebDriverDownloadUrl);
-            EdgeDriverService service = CreateDefaultService(serviceDirectory);
-            return service;
+            return CreateDefaultServiceFromOptions(new EdgeOptions());
         }
 
         /// <summary>
-        /// Creates a default instance of the EdgeDriverService using a specified path to the EdgeDriver executable.
+        /// Creates a default instance of the EdgeDriverService using a specified path to the WebDriver executable.
         /// </summary>
-        /// <param name="driverPath">The directory containing the EdgeDriver executable.</param>
+        /// <param name="driverPath">The directory containing the WebDriver executable.</param>
         /// <returns>A EdgeDriverService using a random port.</returns>
         public static EdgeDriverService CreateDefaultService(string driverPath)
         {
-            return CreateDefaultService(driverPath, MicrosoftWebDriverServiceFileName);
+            return CreateDefaultServiceFromOptions(driverPath, EdgeDriverServiceFileName(false), new EdgeOptions());
         }
 
         /// <summary>
-        /// Creates a default instance of the EdgeDriverService using a specified path to the EdgeDriver executable with the given name.
+        /// Creates a default instance of the EdgeDriverService using a specified path to the WebDriver executable with the given name.
         /// </summary>
-        /// <param name="driverPath">The directory containing the EdgeDriver executable.</param>
-        /// <param name="driverExecutableFileName">The name of the EdgeDriver executable file.</param>
+        /// <param name="driverPath">The directory containing the WebDriver executable.</param>
+        /// <param name="driverExecutableFileName">The name of the WebDriver executable file.</param>
         /// <returns>A EdgeDriverService using a random port.</returns>
         public static EdgeDriverService CreateDefaultService(string driverPath, string driverExecutableFileName)
         {
-            return CreateDefaultService(driverPath, driverExecutableFileName, PortUtilities.FindFreePort());
+            return CreateDefaultServiceFromOptions(driverPath, driverExecutableFileName, new EdgeOptions());
         }
 
         /// <summary>
-        /// Creates a default instance of the EdgeDriverService using a specified path to the EdgeDriver executable with the given name and listening port.
+        /// Creates a default instance of the EdgeDriverService using a specified path to the WebDriver executable with the given name and listening port.
         /// </summary>
-        /// <param name="driverPath">The directory containing the EdgeDriver executable.</param>
-        /// <param name="driverExecutableFileName">The name of the EdgeDriver executable file</param>
+        /// <param name="driverPath">The directory containing the WebDriver executable.</param>
+        /// <param name="driverExecutableFileName">The name of the WebDriver executable file</param>
         /// <param name="port">The port number on which the driver will listen</param>
         /// <returns>A EdgeDriverService using the specified port.</returns>
         public static EdgeDriverService CreateDefaultService(string driverPath, string driverExecutableFileName, int port)
         {
-            return new EdgeDriverService(driverPath, driverExecutableFileName, port);
+            return CreateDefaultServiceFromOptions(driverPath, driverExecutableFileName, port, new EdgeOptions());
+        }
+
+
+        /// <summary>
+        /// Creates a default instance of the EdgeDriverService.
+        /// </summary>
+        /// <param name="options">An <see cref="EdgeOptions"/> object containing options for the service.</param>
+        /// <returns>A EdgeDriverService that implements default settings.</returns>
+        public static EdgeDriverService CreateDefaultServiceFromOptions(EdgeOptions options)
+        {
+            string serviceDirectory = DriverService.FindDriverServiceExecutable(EdgeDriverServiceFileName(options.UseChromium), MicrosoftWebDriverDownloadUrl);
+            return CreateDefaultServiceFromOptions(serviceDirectory, options);
+        }
+
+        /// <summary>
+        /// Creates a default instance of the EdgeDriverService using a specified path to the WebDriver executable.
+        /// </summary>
+        /// <param name="driverPath">The directory containing the WebDriver executable.</param>
+        /// <param name="options">An <see cref="EdgeOptions"/> object containing options for the service.</param>
+        /// <returns>A EdgeDriverService using a random port.</returns>
+        public static EdgeDriverService CreateDefaultServiceFromOptions(string driverPath, EdgeOptions options)
+        {
+            return CreateDefaultServiceFromOptions(driverPath, EdgeDriverServiceFileName(options.UseChromium), options);
+        }
+
+        /// <summary>
+        /// Creates a default instance of the EdgeDriverService using a specified path to the WebDriver executable with the given name.
+        /// </summary>
+        /// <param name="driverPath">The directory containing the WebDriver executable.</param>
+        /// <param name="driverExecutableFileName">The name of the WebDriver executable file.</param>
+        /// <param name="options">An <see cref="EdgeOptions"/> object containing options for the service.</param>
+        /// <returns>A EdgeDriverService using a random port.</returns>
+        public static EdgeDriverService CreateDefaultServiceFromOptions(string driverPath, string driverExecutableFileName, EdgeOptions options)
+        {
+            return CreateDefaultServiceFromOptions(driverPath, driverExecutableFileName, PortUtilities.FindFreePort(), options);
+        }
+
+        /// <summary>
+        /// Creates a default instance of the EdgeDriverService using a specified path to the WebDriver executable with the given name and listening port.
+        /// </summary>
+        /// <param name="driverPath">The directory containing the WebDriver executable.</param>
+        /// <param name="driverExecutableFileName">The name of the WebDriver executable file</param>
+        /// <param name="port">The port number on which the driver will listen</param>
+        /// <param name="options">An <see cref="EdgeOptions"/> object containing options for the service.</param>
+        /// <returns>A EdgeDriverService using the specified port.</returns>
+        public static EdgeDriverService CreateDefaultServiceFromOptions(string driverPath, string driverExecutableFileName, int port, EdgeOptions options)
+        {
+            return new EdgeDriverService(driverPath, driverExecutableFileName, port, options.UseChromium);
+        }
+
+        private static string EdgeDriverServiceFileName(bool useChromium)
+        {
+            return useChromium ? ChromiumDriverServiceFileName(MSEdgeDriverServiceFileName) : MicrosoftWebDriverServiceFileName;
         }
     }
 }

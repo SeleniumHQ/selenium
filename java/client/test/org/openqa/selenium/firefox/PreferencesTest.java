@@ -22,10 +22,13 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
+import org.openqa.selenium.testing.UnitTests;
 
 import java.io.Reader;
 import java.io.StringReader;
 
+@Category(UnitTests.class)
 public class PreferencesTest {
 
   private static final String emptyDefaults = "{\"mutable\": {}, \"frozen\": {}}";
@@ -107,9 +110,10 @@ public class PreferencesTest {
   public void cannotOverrideAFozenPrefence() {
     StringReader reader = new StringReader("{\"frozen\": {\"frozen.pref\": true }, \"mutable\": {}}");
     Preferences preferences = new Preferences(reader);
+    preferences.setPreference("frozen.pref", false);
 
-    assertThatExceptionOfType(IllegalArgumentException.class)
-        .isThrownBy(() -> preferences.setPreference("frozen.pref", false))
+    assertThatExceptionOfType(IllegalStateException.class)
+        .isThrownBy(preferences::checkForChangesInFrozenPreferences)
         .withMessage("Preference frozen.pref may not be overridden: frozen value=true, requested value=false");
   }
 
@@ -126,9 +130,10 @@ public class PreferencesTest {
   @Test
   public void canOverrideMaxScriptRuntimeIfGreaterThanDefaultValueOrSetToInfinity() {
     Preferences preferences = new Preferences(defaults);
+    preferences.setPreference("dom.max_script_run_time", 29);
 
-    assertThatExceptionOfType(IllegalArgumentException.class)
-        .isThrownBy(() -> preferences.setPreference("dom.max_script_run_time", 29))
+    assertThatExceptionOfType(IllegalStateException.class)
+        .isThrownBy(preferences::checkForChangesInFrozenPreferences)
         .withMessage("dom.max_script_run_time must be == 0 || >= 30");
 
     preferences.setPreference("dom.max_script_run_time", 31);

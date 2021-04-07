@@ -20,6 +20,8 @@ package org.openqa.selenium;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assume.assumeFalse;
 import static org.openqa.selenium.Platform.ANDROID;
+import static org.openqa.selenium.testing.drivers.Browser.CHROME;
+import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
 import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
 
 import org.junit.Test;
@@ -113,26 +115,28 @@ public class WindowTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(travis = true)
+  @Ignore(value = CHROME, travis = true)
+  @Ignore(value = FIREFOX, gitHubActions = true)
   public void testCanMaximizeTheWindow() {
     // Browser window cannot be resized or moved on ANDROID (and most mobile platforms
     // though others aren't defined in org.openqa.selenium.Platform).
     assumeFalse(TestUtilities.getEffectivePlatform(driver).is(ANDROID));
 
-    changeSizeTo(new Dimension(640, 273));
+    changeSizeTo(new Dimension(640, 323));
     enlargeBy(WebDriver.Window::maximize);
   }
 
   @SwitchToTopAfterTest
   @Test
-  @Ignore(travis = true)
+  @Ignore(value = CHROME, travis = true)
+  @Ignore(value = FIREFOX, gitHubActions = true)
   public void testCanMaximizeTheWindowFromFrame() {
     // Browser window cannot be resized or moved on ANDROID (and most mobile platforms
     // though others aren't defined in org.openqa.selenium.Platform).
     assumeFalse(TestUtilities.getEffectivePlatform(driver).is(ANDROID));
 
     driver.get(pages.framesetPage);
-    changeSizeTo(new Dimension(640, 274));
+    changeSizeTo(new Dimension(640, 324));
 
     driver.switchTo().frame("fourth");
     enlargeBy(WebDriver.Window::maximize);
@@ -140,34 +144,53 @@ public class WindowTest extends JUnit4TestBase {
 
   @SwitchToTopAfterTest
   @Test
-  @Ignore(travis = true)
+  @Ignore(value = CHROME, travis = true)
+  @Ignore(value = FIREFOX, gitHubActions = true)
   public void testCanMaximizeTheWindowFromIframe() {
     // Browser window cannot be resized or moved on ANDROID (and most mobile platforms
     // though others aren't defined in org.openqa.selenium.Platform).
     assumeFalse(TestUtilities.getEffectivePlatform(driver).is(ANDROID));
 
     driver.get(pages.iframePage);
-    changeSizeTo(new Dimension(640, 275));
+    changeSizeTo(new Dimension(640, 325));
 
     driver.switchTo().frame("iframe1-name");
     enlargeBy(WebDriver.Window::maximize);
   }
 
   @Test
-  @Ignore(travis = true)
+  @Ignore(travis = true, gitHubActions = true)
+  public void canMinimizeTheWindow() {
+    // Browser window cannot be resized or moved on ANDROID (and most mobile platforms
+    // though others aren't defined in org.openqa.selenium.Platform).
+    assumeFalse(TestUtilities.getEffectivePlatform(driver).is(ANDROID));
+
+    changeSizeTo(new Dimension(640, 323));
+    driver.manage().window().minimize();
+    // TODO: how to verify the result of this operation?
+  }
+
+  @Test
+  @Ignore(value = CHROME, travis = true)
+  @Ignore(value = FIREFOX, gitHubActions = true)
   @Ignore(SAFARI)
   public void canFullscreenTheWindow() {
     // Browser window cannot be resized or moved on ANDROID (and most mobile platforms
     // though others aren't defined in org.openqa.selenium.Platform).
     assumeFalse(TestUtilities.getEffectivePlatform(driver).is(ANDROID));
 
-    changeSizeTo(new Dimension(640, 273));
-    enlargeBy(WebDriver.Window::fullscreen);
+    try {
+      changeSizeTo(new Dimension(640, 323));
+      enlargeBy(WebDriver.Window::fullscreen);
+    } finally {
+      driver.manage().window().setSize(new Dimension(640, 323));
+    }
   }
 
   @SwitchToTopAfterTest
   @Test
-  @Ignore(travis = true)
+  @Ignore(value = CHROME, travis = true)
+  @Ignore(value = FIREFOX, gitHubActions = true)
   @Ignore(SAFARI)
   public void canFullscreenTheWindowFromFrame() {
     // Browser window cannot be resized or moved on ANDROID (and most mobile platforms
@@ -175,7 +198,7 @@ public class WindowTest extends JUnit4TestBase {
     assumeFalse(TestUtilities.getEffectivePlatform(driver).is(ANDROID));
 
     driver.get(pages.framesetPage);
-    changeSizeTo(new Dimension(640, 274));
+    changeSizeTo(new Dimension(640, 324));
 
     driver.switchTo().frame("fourth");
     enlargeBy(WebDriver.Window::fullscreen);
@@ -183,7 +206,8 @@ public class WindowTest extends JUnit4TestBase {
 
   @SwitchToTopAfterTest
   @Test
-  @Ignore(travis = true)
+  @Ignore(value = CHROME, travis = true)
+  @Ignore(value = FIREFOX, gitHubActions = true)
   @Ignore(SAFARI)
   public void canFullscreenTheWindowFromIframe() {
     // Browser window cannot be resized or moved on ANDROID (and most mobile platforms
@@ -191,7 +215,7 @@ public class WindowTest extends JUnit4TestBase {
     assumeFalse(TestUtilities.getEffectivePlatform(driver).is(ANDROID));
 
     driver.get(pages.iframePage);
-    changeSizeTo(new Dimension(640, 275));
+    changeSizeTo(new Dimension(640, 325));
 
     driver.switchTo().frame("iframe1-name");
     enlargeBy(WebDriver.Window::fullscreen);

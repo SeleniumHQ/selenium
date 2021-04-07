@@ -1,0 +1,31 @@
+load("@rules_jvm_external//:defs.bzl", "artifact")
+load("//java:defs.bzl", "java_library")
+
+java_library(
+    name = "server",
+    srcs = glob(["*.java"]),
+    visibility = [
+        "//java/client/test/org/openqa/selenium:__subpackages__",
+        "//java/server/src/org/openqa/selenium/grid:__subpackages__",
+        "//java/server/src/org/openqa/selenium/netty/server:__pkg__",
+        "//java/server/src/org/openqa/selenium/remote/server:__pkg__",
+        "//java/server/test/org/openqa/selenium:__subpackages__",
+    ],
+    exports = [
+        "//java/client/src/org/openqa/selenium/remote/http",
+        "//java/server/src/org/openqa/selenium/grid/server",
+    ],
+    deps = [
+        "//java/client/src/org/openqa/selenium:core",
+        "//java/client/src/org/openqa/selenium/remote",
+        "//java/client/src/org/openqa/selenium/remote/http",
+        "//java/server/src/org/openqa/selenium/grid/server",
+        "//java/server/src/org/openqa/selenium/grid/web",
+        artifact("com.google.guava:guava"),
+        artifact("io.netty:netty-buffer"),
+        artifact("io.netty:netty-codec-http"),
+        artifact("io.netty:netty-common"),
+        artifact("io.netty:netty-handler"),
+        artifact("io.netty:netty-transport"),
+    ],
+)

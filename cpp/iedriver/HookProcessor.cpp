@@ -34,6 +34,7 @@
 // Define a shared data segment.  Variables in this segment can be
 // shared across processes that load this DLL.
 #pragma data_seg("SHARED")
+bool flag = false;
 int event_count = 0;
 int data_buffer_size = MAX_BUFFER_SIZE;
 char data_buffer[MAX_BUFFER_SIZE];
@@ -319,6 +320,18 @@ int HookProcessor::PullData(std::vector<char>* data) {
     LOG(WARN) << "No connection received from browser via named pipe";
   }
   return static_cast<int>(data->size());
+}
+
+void HookProcessor::ResetFlag() {
+  flag = false;
+}
+
+bool HookProcessor::GetFlagValue(void) {
+  return flag;
+}
+
+void HookProcessor::SetFlagValue(bool flag_value) {
+  flag = flag_value;
 }
 
 int HookProcessor::GetEventCount() {

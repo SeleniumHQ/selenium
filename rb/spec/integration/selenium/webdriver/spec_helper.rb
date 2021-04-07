@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Licensed to the Software Freedom Conservancy (SFC) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -21,17 +23,22 @@ require 'rspec'
 
 require 'selenium-webdriver'
 require_relative 'spec_support'
+require_relative '../../../rspec_matchers'
 
-include Selenium
+include Selenium # rubocop:disable Style/MixinUsage
 
 GlobalTestEnv = WebDriver::SpecSupport::TestEnvironment.new
 
 RSpec.configure do |c|
+  c.define_derived_metadata do |meta|
+    meta[:aggregate_failures] = true
+  end
+
   c.include(WebDriver::SpecSupport::Helpers)
 
   c.before(:suite) do
     $DEBUG ||= ENV['DEBUG'] == 'true'
-    GlobalTestEnv.remote_server.start if GlobalTestEnv.driver == :remote
+    GlobalTestEnv.remote_server.start if GlobalTestEnv.driver == :remote && ENV['WD_REMOTE_URL'].nil?
     GlobalTestEnv.print_env
   end
 
@@ -42,12 +49,15 @@ RSpec.configure do |c|
   c.filter_run focus: true if ENV['focus']
 
   c.before do |example|
-    guards = WebDriver::SpecSupport::Guards.new(example)
-    if guards.exclude.any?
-      skip 'Bug Prevents Execution.'
-    elsif guards.except.satisfied.any? || guards.only.unsatisfied.any?
-      pending 'Guarded.'
-    end
+    guards = WebDriver::Support::Guards.new(example, bug_tracker: 'https://github.com/SeleniumHQ/selenium/issues')
+    guards.add_condition(:driver, GlobalTestEnv.driver)
+    guards.add_condition(:browser, GlobalTestEnv.browser)
+    guards.add_condition(:platform, WebDriver::Platform.os)
+    window_manager = !WebDriver::Platform.linux? || !ENV['DESKTOP_SESSION'].nil?
+    guards.add_condition(:window_manager, window_manager)
+
+    results = guards.disposition
+    send(*results) if results
   end
 
   c.after do |example|

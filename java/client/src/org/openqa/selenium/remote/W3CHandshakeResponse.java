@@ -54,12 +54,9 @@ class W3CHandshakeResponse implements HandshakeResponse {
       response.setStatus(
           new ErrorCodes().toStatus((String) rawError, Optional.of(tuple.getStatusCode())));
 
-      Class<? extends WebDriverException>
-          type =
-          new ErrorCodes().getExceptionType((String) rawError);
+      Class<? extends WebDriverException> type = new ErrorCodes().getExceptionType((String) rawError);
       try {
-        WebDriverException exception = type.getConstructor(String.class)
-            .newInstance((String) rawMessage);
+        WebDriverException exception = type.getConstructor(String.class).newInstance((String) rawMessage);
         exception.addInfo("remote stacktrace", (String) rawStackTrace);
         response.setValue(exception);
       } catch (ReflectiveOperationException e) {

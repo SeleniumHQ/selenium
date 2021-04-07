@@ -17,52 +17,70 @@
 
 package org.openqa.selenium.grid;
 
-import static java.util.Comparator.comparing;
-
 import org.openqa.selenium.cli.CliCommand;
-import org.openqa.selenium.cli.CliCommand.Executable;
 import org.openqa.selenium.cli.WrappedPrintWriter;
+import org.openqa.selenium.grid.config.Role;
 
+import java.io.File;
+import java.io.PrintStream;
 import java.io.PrintWriter;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.ServiceLoader;
 import java.util.Set;
 import java.util.TreeSet;
 
+import static java.util.Comparator.comparing;
+
 public class Main {
 
-  public static void main(String[] args) throws Exception {
-    Set<CliCommand> commands = new TreeSet<>(comparing(CliCommand::getName));
-    ServiceLoader.load(CliCommand.class).forEach(commands::add);
+  private final PrintStream out;
+  private final PrintStream err;
+  private final String[] args;
 
-    String commandName;
-    String[] remainingArgs;
+  public static void main(String[] args) {
+    new Main(System.out, System.err, args).go();
+  }
 
-    switch (args.length) {
-      case 0:
-        commandName = "help";
-        remainingArgs = new String[0];
-        break;
+  Main(PrintStream out, PrintStream err, String[] args) {
+    // It's not private to make it visible for tests
+    this.out = out;
+    this.err = err;
+    this.args = args;
+  }
 
-      case 1:
-        commandName = args[0];
-        remainingArgs = new String[0];
-        break;
-
-      default:
-        commandName = args[0];
-        remainingArgs = new String[args.length - 1];
-        System.arraycopy(args, 1, remainingArgs, 0, args.length - 1);
-        break;
+  void go() {
+    // It's not private to make it visible for tests
+    if (args.length == 0) {
+      showHelp(Main.class.getClassLoader());
+    } else {
+      launch(args, Main.class.getClassLoader());
     }
+  }
+
+  private static Set<CliCommand> loadCommands(ClassLoader loader) {
+    Set<CliCommand> commands = new TreeSet<>(comparing(CliCommand::getName));
+    ServiceLoader.load(CliCommand.class, loader).forEach(commands::add);
+    return commands;
+  }
+
+  private void showHelp(ClassLoader loader) {
+    new Help(loadCommands(loader)).configure(out, err).run();
+  }
+
+  private void launch(String[] args, ClassLoader loader) {
+    String commandName = args[0];
+    String[] remainingArgs = new String[args.length - 1];
+    System.arraycopy(args, 1, remainingArgs, 0, args.length - 1);
+
+    Set<CliCommand> commands = loadCommands(loader);
 
     CliCommand command = commands.parallelStream()
         .filter(cmd -> commandName.equals(cmd.getName()))
         .findFirst()
         .orElse(new Help(commands));
 
-    Executable primed = command.configure(remainingArgs);
-    primed.run();
+    command.configure(out, err, remainingArgs).run();
   }
 
   private static class Help implements CliCommand {
@@ -79,36 +97,53 @@ public class Main {
     }
 
     @Override
+    public Set<Role> getConfigurableRoles() {
+      return Collections.emptySet();
+    }
+
+    @Override
+    public Set<Object> getFlagObjects() {
+      return Collections.emptySet();
+    }
+
+    @Override
     public String getDescription() {
       return "A list of all the commands available. To use one, run `java -jar selenium.jar " +
              "commandName`.";
     }
 
     @Override
-    public Executable configure(String... args) {
+    public Executable configure(PrintStream out, PrintStream err, String... args) {
       return () -> {
         int longest = commands.stream()
+                          .filter(CliCommand::isShown)
                           .map(CliCommand::getName)
                           .max(Comparator.comparingInt(String::length))
                           .map(String::length)
                           .orElse(0) + 2;  // two space padding either side
 
-        PrintWriter out = new WrappedPrintWriter(System.out, 72, 0);
-        out.append(getName()).append("\n\n");
-        out.append(getDescription()).append("\n").append("\n");
+        PrintWriter outWriter = new WrappedPrintWriter(out, 72, 0);
+        outWriter.append(getName()).append("\n\n");
+        outWriter.append(getDescription()).append("\n").append("\n");
 
         int indent = Math.min(longest + 2, 25);
         String format = "  %-" + longest + "s";
 
-        PrintWriter indented = new WrappedPrintWriter(System.out, 72, indent);
-        commands.forEach(cmd -> {
-          indented.format(format, cmd.getName())
-              .append(cmd.getDescription())
-              .append("\n");
-        });
+        PrintWriter indented = new WrappedPrintWriter(out, 72, indent);
+        commands.stream()
+          .filter(CliCommand::isShown)
+          .forEach(cmd -> indented.format(format, cmd.getName())
+            .append(cmd.getDescription())
+            .append("\n"));
 
-        out.write("\nFor each command, run with `--help` for command-specific help\n");
-        System.out.println("\n");
+        outWriter.write("\nFor each command, run with `--help` for command-specific help\n");
+        outWriter.write("\nUse the `--ext` flag before the command name to specify an additional " +
+                  "classpath to use with the server (for example, to provide additional " +
+                  "commands, or to provide additional driver implementations). For example:\n");
+        outWriter.write(String.format(
+            "%n  java -jar selenium.jar --ext example.jar%sdir standalone --port 1234",
+            File.pathSeparator));
+        out.println("\n");
       };
     }
   }

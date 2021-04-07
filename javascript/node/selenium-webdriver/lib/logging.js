@@ -15,7 +15,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
-'use strict';
+'use strict'
 
 /**
  * @fileoverview Defines WebDriver's logging system. The logging system is
@@ -56,7 +56,7 @@
  * **NOTE:** Only a few browsers support the remote logging API (notably
  * Firefox and Chrome). Firefox supports basic logging functionality, while
  * Chrome exposes robust
- * [performance logging](https://sites.google.com/a/chromium.org/chromedriver/logging)
+ * [performance logging](https://chromedriver.chromium.org/logging)
  * options. Remote logging is still considered a non-standard feature, and the
  * APIs exposed by this module for it are non-frozen. This module will be
  * updated, possibly breaking backwards-compatibility, once logging is
@@ -76,29 +76,29 @@ class Level {
    */
   constructor(name, level) {
     if (level < 0) {
-      throw new TypeError('Level must be >= 0');
+      throw new TypeError('Level must be >= 0')
     }
 
     /** @private {string} */
-    this.name_ = name;
+    this.name_ = name
 
     /** @private {number} */
-    this.value_ = level;
+    this.value_ = level
   }
 
   /** This logger's name. */
   get name() {
-    return this.name_;
+    return this.name_
   }
 
   /** The numeric log level. */
   get value() {
-    return this.value_;
+    return this.value_
   }
 
   /** @override */
   toString() {
-    return this.name;
+    return this.name
   }
 }
 
@@ -106,66 +106,57 @@ class Level {
  * Indicates no log messages should be recorded.
  * @const
  */
-Level.OFF = new Level('OFF', Infinity);
-
+Level.OFF = new Level('OFF', Infinity)
 
 /**
  * Log messages with a level of `1000` or higher.
  * @const
  */
-Level.SEVERE = new Level('SEVERE', 1000);
-
+Level.SEVERE = new Level('SEVERE', 1000)
 
 /**
  * Log messages with a level of `900` or higher.
  * @const
  */
-Level.WARNING = new Level('WARNING', 900);
-
+Level.WARNING = new Level('WARNING', 900)
 
 /**
  * Log messages with a level of `800` or higher.
  * @const
  */
-Level.INFO = new Level('INFO', 800);
-
+Level.INFO = new Level('INFO', 800)
 
 /**
  * Log messages with a level of `700` or higher.
  * @const
  */
-Level.DEBUG = new Level('DEBUG', 700);
-
+Level.DEBUG = new Level('DEBUG', 700)
 
 /**
  * Log messages with a level of `500` or higher.
  * @const
  */
-Level.FINE = new Level('FINE', 500);
-
+Level.FINE = new Level('FINE', 500)
 
 /**
  * Log messages with a level of `400` or higher.
  * @const
  */
-Level.FINER = new Level('FINER', 400);
-
+Level.FINER = new Level('FINER', 400)
 
 /**
  * Log messages with a level of `300` or higher.
  * @const
  */
-Level.FINEST = new Level('FINEST', 300);
-
+Level.FINEST = new Level('FINEST', 300)
 
 /**
  * Indicates all log messages should be recorded.
  * @const
  */
-Level.ALL = new Level('ALL', 0);
+Level.ALL = new Level('ALL', 0)
 
-
-const ALL_LEVELS = /** !Set<Level> */new Set([
+const ALL_LEVELS = /** !Set<Level> */ new Set([
   Level.OFF,
   Level.SEVERE,
   Level.WARNING,
@@ -174,9 +165,8 @@ const ALL_LEVELS = /** !Set<Level> */new Set([
   Level.FINE,
   Level.FINER,
   Level.FINEST,
-  Level.ALL
-]);
-
+  Level.ALL,
+])
 
 const LEVELS_BY_NAME = /** !Map<string, !Level> */ new Map([
   [Level.OFF.name, Level.OFF],
@@ -187,9 +177,8 @@ const LEVELS_BY_NAME = /** !Map<string, !Level> */ new Map([
   [Level.FINE.name, Level.FINE],
   [Level.FINER.name, Level.FINER],
   [Level.FINEST.name, Level.FINEST],
-  [Level.ALL.name, Level.ALL]
-]);
-
+  [Level.ALL.name, Level.ALL],
+])
 
 /**
  * Converts a level name or value to a {@link Level} value. If the name/value
@@ -201,19 +190,18 @@ const LEVELS_BY_NAME = /** !Map<string, !Level> */ new Map([
  */
 function getLevel(nameOrValue) {
   if (typeof nameOrValue === 'string') {
-    return LEVELS_BY_NAME.get(nameOrValue) || Level.ALL;
+    return LEVELS_BY_NAME.get(nameOrValue) || Level.ALL
   }
   if (typeof nameOrValue !== 'number') {
-    throw new TypeError('not a string or number');
+    throw new TypeError('not a string or number')
   }
   for (let level of ALL_LEVELS) {
     if (nameOrValue >= level.value) {
-      return level;
+      return level
     }
   }
-  return Level.ALL;
+  return Level.ALL
 }
-
 
 /**
  * Describes a single log entry.
@@ -230,11 +218,11 @@ class Entry {
    * @param {string=} opt_type The log type, if known.
    */
   constructor(level, message, opt_timestamp, opt_type) {
-    this.level = level instanceof Level ? level : getLevel(level);
-    this.message = message;
+    this.level = level instanceof Level ? level : getLevel(level)
+    this.message = message
     this.timestamp =
-        typeof opt_timestamp === 'number' ? opt_timestamp : Date.now();
-    this.type = opt_type || '';
+      typeof opt_timestamp === 'number' ? opt_timestamp : Date.now()
+    this.type = opt_type || ''
   }
 
   /**
@@ -243,14 +231,13 @@ class Entry {
    */
   toJSON() {
     return {
-      'level': this.level.name,
-      'message': this.message,
-      'timestamp': this.timestamp,
-      'type': this.type
-    };
+      level: this.level.name,
+      message: this.message,
+      timestamp: this.timestamp,
+      type: this.type,
+    }
   }
 }
-
 
 /**
  * An object used to log debugging messages. Loggers use a hierarchical,
@@ -275,21 +262,21 @@ class Logger {
    */
   constructor(name, opt_level) {
     /** @private {string} */
-    this.name_ = name;
+    this.name_ = name
 
     /** @private {Level} */
-    this.level_ = opt_level || null;
+    this.level_ = opt_level || null
 
     /** @private {Logger} */
-    this.parent_ = null;
+    this.parent_ = null
 
     /** @private {Set<function(!Entry)>} */
-    this.handlers_ = null;
+    this.handlers_ = null
   }
 
   /** @return {string} the name of this logger. */
   getName() {
-    return this.name_;
+    return this.name_
   }
 
   /**
@@ -297,25 +284,25 @@ class Logger {
    *     should inherit its level from its parent logger.
    */
   setLevel(level) {
-    this.level_ = level;
+    this.level_ = level
   }
 
   /** @return {Level} the log level for this logger. */
   getLevel() {
-    return this.level_;
+    return this.level_
   }
 
   /**
    * @return {!Level} the effective level for this logger.
    */
   getEffectiveLevel() {
-    let logger = this;
-    let level;
+    let logger = this
+    let level
     do {
-      level = logger.level_;
-      logger = logger.parent_;
-    } while (logger && !level);
-    return level || Level.OFF;
+      level = logger.level_
+      logger = logger.parent_
+    } while (logger && !level)
+    return level || Level.OFF
   }
 
   /**
@@ -324,8 +311,10 @@ class Logger {
    *     by this instance.
    */
   isLoggable(level) {
-    return level.value !== Level.OFF.value
-        && level.value >= this.getEffectiveLevel().value;
+    return (
+      level.value !== Level.OFF.value &&
+      level.value >= this.getEffectiveLevel().value
+    )
   }
 
   /**
@@ -336,9 +325,9 @@ class Logger {
    */
   addHandler(handler) {
     if (!this.handlers_) {
-      this.handlers_ = new Set;
+      this.handlers_ = new Set()
     }
-    this.handlers_.add(handler);
+    this.handlers_.add(handler)
   }
 
   /**
@@ -349,9 +338,9 @@ class Logger {
    */
   removeHandler(handler) {
     if (!this.handlers_) {
-      return false;
+      return false
     }
-    return this.handlers_.delete(handler);
+    return this.handlers_.delete(handler)
   }
 
   /**
@@ -367,15 +356,18 @@ class Logger {
    */
   log(level, loggable) {
     if (!this.isLoggable(level)) {
-      return;
+      return
     }
-    let message = '[' + this.name_ + '] '
-        + (typeof loggable === 'function' ? loggable() : loggable);
-    let entry = new Entry(level, message, Date.now());
-    for (let logger = this; !!logger; logger = logger.parent_) {
+    let message =
+      '[' +
+      this.name_ +
+      '] ' +
+      (typeof loggable === 'function' ? loggable() : loggable)
+    let entry = new Entry(level, message, Date.now())
+    for (let logger = this; logger; logger = logger.parent_) {
       if (logger.handlers_) {
         for (let handler of logger.handlers_) {
-          handler(entry);
+          handler(entry)
         }
       }
     }
@@ -387,7 +379,7 @@ class Logger {
    *     function that will return the message.
    */
   severe(loggable) {
-    this.log(Level.SEVERE, loggable);
+    this.log(Level.SEVERE, loggable)
   }
 
   /**
@@ -396,7 +388,7 @@ class Logger {
    *     function that will return the message.
    */
   warning(loggable) {
-    this.log(Level.WARNING, loggable);
+    this.log(Level.WARNING, loggable)
   }
 
   /**
@@ -405,7 +397,7 @@ class Logger {
    *     function that will return the message.
    */
   info(loggable) {
-    this.log(Level.INFO, loggable);
+    this.log(Level.INFO, loggable)
   }
 
   /**
@@ -414,7 +406,7 @@ class Logger {
    *     function that will return the message.
    */
   debug(loggable) {
-    this.log(Level.DEBUG, loggable);
+    this.log(Level.DEBUG, loggable)
   }
 
   /**
@@ -423,7 +415,7 @@ class Logger {
    *     function that will return the message.
    */
   fine(loggable) {
-    this.log(Level.FINE, loggable);
+    this.log(Level.FINE, loggable)
   }
 
   /**
@@ -432,7 +424,7 @@ class Logger {
    *     function that will return the message.
    */
   finer(loggable) {
-    this.log(Level.FINER, loggable);
+    this.log(Level.FINER, loggable)
   }
 
   /**
@@ -441,10 +433,9 @@ class Logger {
    *     function that will return the message.
    */
   finest(loggable) {
-    this.log(Level.FINEST, loggable);
+    this.log(Level.FINEST, loggable)
   }
 }
-
 
 /**
  * Maintains a collection of loggers.
@@ -454,8 +445,8 @@ class Logger {
 class LogManager {
   constructor() {
     /** @private {!Map<string, !Logger>} */
-    this.loggers_ = new Map;
-    this.root_ = new Logger('', Level.OFF);
+    this.loggers_ = new Map()
+    this.root_ = new Logger('', Level.OFF)
   }
 
   /**
@@ -468,14 +459,14 @@ class LogManager {
    */
   getLogger(name) {
     if (!name) {
-      return this.root_;
+      return this.root_
     }
-    let parent = this.root_;
+    let parent = this.root_
     for (let i = name.indexOf('.'); i != -1; i = name.indexOf('.', i + 1)) {
-      let parentName = name.substr(0, i);
-      parent = this.createLogger_(parentName, parent);
+      let parentName = name.substr(0, i)
+      parent = this.createLogger_(parentName, parent)
     }
-    return this.createLogger_(name, parent);
+    return this.createLogger_(name, parent)
   }
 
   /**
@@ -488,18 +479,16 @@ class LogManager {
    */
   createLogger_(name, parent) {
     if (this.loggers_.has(name)) {
-      return /** @type {!Logger} */(this.loggers_.get(name));
+      return /** @type {!Logger} */ (this.loggers_.get(name))
     }
-    let logger = new Logger(name, null);
-    logger.parent_ = parent;
-    this.loggers_.set(name, logger);
-    return logger;
+    let logger = new Logger(name, null)
+    logger.parent_ = parent
+    this.loggers_.set(name, logger)
+    return logger
   }
 }
 
-
-const logManager = new LogManager;
-
+const logManager = new LogManager()
 
 /**
  * Retrieves a named logger, creating it in the process. This function will
@@ -513,9 +502,8 @@ const logManager = new LogManager;
  * @return {!Logger} the requested logger.
  */
 function getLogger(name) {
-  return logManager.getLogger(name);
+  return logManager.getLogger(name)
 }
-
 
 /**
  * Pads a number to ensure it has a minimum of two digits.
@@ -525,12 +513,11 @@ function getLogger(name) {
  */
 function pad(n) {
   if (n >= 10) {
-    return '' + n;
+    return '' + n
   } else {
-    return '0' + n;
+    return '0' + n
   }
 }
-
 
 /**
  * Logs all messages to the Console API.
@@ -538,30 +525,38 @@ function pad(n) {
  */
 function consoleHandler(entry) {
   if (typeof console === 'undefined' || !console) {
-    return;
+    return
   }
 
-  var timestamp = new Date(entry.timestamp);
+  var timestamp = new Date(entry.timestamp)
   var msg =
-      '[' + timestamp.getUTCFullYear() + '-' +
-      pad(timestamp.getUTCMonth() + 1) + '-' +
-      pad(timestamp.getUTCDate()) + 'T' +
-      pad(timestamp.getUTCHours()) + ':' +
-      pad(timestamp.getUTCMinutes()) + ':' +
-      pad(timestamp.getUTCSeconds()) + 'Z] ' +
-      '[' + entry.level.name + '] ' +
-      entry.message;
+    '[' +
+    timestamp.getUTCFullYear() +
+    '-' +
+    pad(timestamp.getUTCMonth() + 1) +
+    '-' +
+    pad(timestamp.getUTCDate()) +
+    'T' +
+    pad(timestamp.getUTCHours()) +
+    ':' +
+    pad(timestamp.getUTCMinutes()) +
+    ':' +
+    pad(timestamp.getUTCSeconds()) +
+    'Z] ' +
+    '[' +
+    entry.level.name +
+    '] ' +
+    entry.message
 
-  var level = entry.level.value;
+  var level = entry.level.value
   if (level >= Level.SEVERE.value) {
-    console.error(msg);
+    console.error(msg)
   } else if (level >= Level.WARNING.value) {
-    console.warn(msg);
+    console.warn(msg)
   } else {
-    console.log(msg);
+    console.log(msg)
   }
 }
-
 
 /**
  * Adds the console handler to the given logger. The console handler will log
@@ -571,10 +566,9 @@ function consoleHandler(entry) {
  *     to the root logger.
  */
 function addConsoleHandler(opt_logger) {
-  let logger = opt_logger || logManager.root_;
-  logger.addHandler(consoleHandler);
+  let logger = opt_logger || logManager.root_
+  logger.addHandler(consoleHandler)
 }
-
 
 /**
  * Removes the console log handler from the given logger.
@@ -584,18 +578,16 @@ function addConsoleHandler(opt_logger) {
  * @see exports.addConsoleHandler
  */
 function removeConsoleHandler(opt_logger) {
-  let logger = opt_logger || logManager.root_;
-  logger.removeHandler(consoleHandler);
+  let logger = opt_logger || logManager.root_
+  logger.removeHandler(consoleHandler)
 }
-
 
 /**
  * Installs the console log handler on the root logger.
  */
 function installConsoleHandler() {
-  addConsoleHandler(logManager.root_);
+  addConsoleHandler(logManager.root_)
 }
-
 
 /**
  * Common log types.
@@ -611,9 +603,8 @@ const Type = {
   /** Logs related to performance. */
   PERFORMANCE: 'performance',
   /** Logs from the remote server. */
-  SERVER: 'server'
-};
-
+  SERVER: 'server',
+}
 
 /**
  * Describes the log preferences for a WebDriver session.
@@ -623,7 +614,7 @@ const Type = {
 class Preferences {
   constructor() {
     /** @private {!Map<string, !Level>} */
-    this.prefs_ = new Map;
+    this.prefs_ = new Map()
   }
 
   /**
@@ -634,9 +625,9 @@ class Preferences {
    */
   setLevel(type, level) {
     if (typeof type !== 'string') {
-      throw TypeError('specified log type is not a string: ' + typeof type);
+      throw TypeError('specified log type is not a string: ' + typeof type)
     }
-    this.prefs_.set(type, level instanceof Level ? level : getLevel(level));
+    this.prefs_.set(type, level instanceof Level ? level : getLevel(level))
   }
 
   /**
@@ -645,17 +636,15 @@ class Preferences {
    *     preferences.
    */
   toJSON() {
-    let json = {};
+    let json = {}
     for (let key of this.prefs_.keys()) {
-      json[key] = this.prefs_.get(key).name;
+      json[key] = this.prefs_.get(key).name
     }
-    return json;
+    return json
   }
 }
 
-
 // PUBLIC API
-
 
 module.exports = {
   Entry: Entry,
@@ -668,5 +657,5 @@ module.exports = {
   getLevel: getLevel,
   getLogger: getLogger,
   installConsoleHandler: installConsoleHandler,
-  removeConsoleHandler: removeConsoleHandler
-};
+  removeConsoleHandler: removeConsoleHandler,
+}

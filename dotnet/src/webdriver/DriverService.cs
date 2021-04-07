@@ -40,6 +40,7 @@ namespace OpenQA.Selenium
         private bool hideCommandPromptWindow;
         private bool isDisposed;
         private Process driverServiceProcess;
+        private TimeSpan initializationTimeout = TimeSpan.FromSeconds(20);
 
         /// <summary>
         /// Initializes a new instance of the <see cref="DriverService"/> class.
@@ -72,7 +73,15 @@ namespace OpenQA.Selenium
             this.driverServicePort = port;
         }
 
+        /// <summary>
+        /// Occurs when the driver process is starting. 
+        /// </summary>
         public event EventHandler<DriverProcessStartingEventArgs> DriverProcessStarting;
+
+        /// <summary>
+        /// Occurs when the driver process has completely started. 
+        /// </summary>
+        public event EventHandler<DriverProcessStartedEventArgs> DriverProcessStarted;
 
         /// <summary>
         /// Gets the Uri of the service.
@@ -121,7 +130,6 @@ namespace OpenQA.Selenium
         /// </summary>
         public bool IsRunning
         {
-            [SecurityPermission(SecurityAction.Demand)]
             get { return this.driverServiceProcess != null && !this.driverServiceProcess.HasExited; }
         }
 
@@ -160,6 +168,15 @@ namespace OpenQA.Selenium
         }
 
         /// <summary>
+        /// Gets or sets a value indicating the time to wait for an initial connection before timing out.
+        /// </summary>
+        public TimeSpan InitializationTimeout
+        {
+            get { return this.initializationTimeout; }
+            set { this.initializationTimeout = value; }
+        }
+
+        /// <summary>
         /// Gets the executable file name of the driver service.
         /// </summary>
         protected string DriverServiceExecutableName
@@ -173,14 +190,6 @@ namespace OpenQA.Selenium
         protected virtual string CommandLineArguments
         {
             get { return string.Format(CultureInfo.InvariantCulture, "--port={0}", this.driverServicePort); }
-        }
-
-        /// <summary>
-        /// Gets a value indicating the time to wait for an initial connection before timing out.
-        /// </summary>
-        protected virtual TimeSpan InitializationTimeout
-        {
-            get { return TimeSpan.FromSeconds(20); }
         }
 
         /// <summary>
@@ -242,11 +251,15 @@ namespace OpenQA.Selenium
         }
 
         /// <summary>
-        /// Starts the DriverService.
+        /// Starts the DriverService if it is not already running.
         /// </summary>
-        [SecurityPermission(SecurityAction.Demand)]
         public void Start()
         {
+            if (this.driverServiceProcess != null)
+            {
+                return;
+            }
+
             this.driverServiceProcess = new Process();
             this.driverServiceProcess.StartInfo.FileName = Path.Combine(this.driverServicePath, this.driverServiceExecutableName);
             this.driverServiceProcess.StartInfo.Arguments = this.CommandLineArguments;
@@ -258,6 +271,8 @@ namespace OpenQA.Selenium
 
             this.driverServiceProcess.Start();
             bool serviceAvailable = this.WaitForServiceInitialization();
+            DriverProcessStartedEventArgs processStartedEventArgs = new DriverProcessStartedEventArgs(this.driverServiceProcess);
+            this.OnDriverProcessStarted(processStartedEventArgs);
 
             if (!serviceAvailable)
             {
@@ -321,9 +336,25 @@ namespace OpenQA.Selenium
         }
 
         /// <summary>
+        /// Raises the <see cref="DriverProcessStarted"/> event.
+        /// </summary>
+        /// <param name="eventArgs">A <see cref="DriverProcessStartedEventArgs"/> that contains the event data.</param>
+        protected void OnDriverProcessStarted(DriverProcessStartedEventArgs eventArgs)
+        {
+            if (eventArgs == null)
+            {
+                throw new ArgumentNullException("eventArgs", "eventArgs must not be null");
+            }
+
+            if (this.DriverProcessStarted != null)
+            {
+                this.DriverProcessStarted(this, eventArgs);
+            }
+        }
+
+        /// <summary>
         /// Stops the DriverService.
         /// </summary>
-        [SecurityPermission(SecurityAction.Demand)]
         private void Stop()
         {
             if (this.IsRunning)

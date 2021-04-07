@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Licensed to the Software Freedom Conservancy (SFC) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -15,7 +17,7 @@
 # specific language governing permissions and limitations
 # under the License.
 
-require File.expand_path('../../../spec_helper', __FILE__)
+require File.expand_path('../../spec_helper', __dir__)
 
 module Selenium
   module WebDriver
@@ -59,7 +61,8 @@ module Selenium
 
           it 'should contain an actions key with an array of actions' do
             allow(none).to receive(:no_actions?).and_return(false)
-            expect(none.actions).to receive(:map).and_return([1, 2, 3])
+            allow(none.actions).to receive(:map).and_return([1, 2, 3])
+
             expect(none.encode).to include(actions: [1, 2, 3])
           end
         end # when encoding

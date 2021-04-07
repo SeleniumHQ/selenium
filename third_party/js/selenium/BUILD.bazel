@@ -1,0 +1,26 @@
+load("//common:defs.bzl", "copy_file")
+
+licenses(["notice"])
+
+copy_file(
+    name = "webdriver_xpi",
+    src = "webdriver-3.141.59.xpi",
+    out = "webdriver.xpi",
+    visibility = [
+        "//java/client/src/org/openqa/selenium/firefox/xpi:__pkg__",
+        "//java/client/test/org/openqa/selenium/environment:__pkg__",
+    ],
+)
+
+copy_file(
+    name = "webdriver_json",
+    src = "webdriver.json",
+    out = "webdriver_prefs.json",
+    visibility = [
+        "//dotnet/src/webdriver:__pkg__",
+        "//dotnet/test:__subpackages__",
+        "//java/client/src/org/openqa/selenium/firefox:__pkg__",
+        "//java/client/test/org/openqa/selenium/environment:__pkg__",
+        "//py:__pkg__",
+    ],
+)

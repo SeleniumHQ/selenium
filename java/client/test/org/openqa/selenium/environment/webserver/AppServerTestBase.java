@@ -17,8 +17,10 @@
 
 package org.openqa.selenium.environment.webserver;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.openqa.selenium.remote.http.Contents.string;
 
 import org.junit.After;
 import org.junit.AfterClass;
@@ -27,7 +29,6 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpMethod;
 import org.openqa.selenium.remote.http.HttpRequest;
@@ -39,6 +40,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.nio.file.Files;
+import java.time.Duration;
 import java.util.stream.StreamSupport;
 
 public abstract class AppServerTestBase {
@@ -117,14 +119,15 @@ public abstract class AppServerTestBase {
 
   @Test
   public void manifestHasCorrectMimeType() throws IOException {
-    assertUrlHasContentType(server.whereIs("html5/test.appcache"), APPCACHE_MIME_TYPE);
-  }
+    String url = server.whereIs("html5/test.appcache");
+    HttpClient.Factory factory = HttpClient.Factory.createDefault();
+    HttpClient client = factory.createClient(new URL(url));
+    HttpResponse response = client.execute(new HttpRequest(HttpMethod.GET, url));
 
-  @Test
-  public void manifestHasCorrectMimeTypeUnderJavascript() throws IOException {
-    String appcacheUrl =
-        server.whereIs("/javascript/atoms/test/html5/testdata/with_fallback.appcache");
-    assertUrlHasContentType(appcacheUrl, APPCACHE_MIME_TYPE);
+    System.out.printf("Content for %s was %s%n", url, string(response));
+
+    assertTrue(StreamSupport.stream(response.getHeaders("Content-Type").spliterator(), false)
+        .anyMatch(header -> header.contains(APPCACHE_MIME_TYPE)));
   }
 
   @Test
@@ -132,26 +135,15 @@ public abstract class AppServerTestBase {
     String FILE_CONTENTS = "Uploaded file";
     File testFile = File.createTempFile("webdriver", "tmp");
     testFile.deleteOnExit();
-    Files.write(testFile.toPath(), FILE_CONTENTS.getBytes());
+    Files.write(testFile.toPath(), FILE_CONTENTS.getBytes(UTF_8));
 
     driver.get(server.whereIs("upload.html"));
     driver.findElement(By.id("upload")).sendKeys(testFile.getAbsolutePath());
     driver.findElement(By.id("go")).submit();
 
-    // Nasty. Sorry.
-    Thread.sleep(50);
-
     driver.switchTo().frame("upload_target");
-    new WebDriverWait(driver, 10).until(
+    new WebDriverWait(driver, Duration.ofSeconds(10)).until(
         d -> d.findElement(By.xpath("//body")).getText().equals(FILE_CONTENTS));
   }
 
-  private void assertUrlHasContentType(String url, String appcacheMimeType) throws IOException {
-    HttpClient.Factory factory = HttpClient.Factory.createDefault();
-    HttpClient client = factory.createClient(new URL(url));
-    HttpResponse response = client.execute(new HttpRequest(HttpMethod.GET, url));
-
-    assertTrue(StreamSupport.stream(response.getHeaders("Content-Type").spliterator(), false)
-        .anyMatch(header -> header.contains(appcacheMimeType)));
-  }
 }

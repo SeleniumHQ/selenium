@@ -43,7 +43,14 @@ public class StaticInitializerCoercer extends TypeCoercer<Object> {
     fromJson.setAccessible(true);
 
     return (jsonInput, setting) -> {
-      Object obj = jsonInput.read(fromJson.getGenericParameterTypes()[0]);
+      Type argType = fromJson.getGenericParameterTypes()[0];
+      Object obj;
+      if (JsonInput.class.equals(argType)) {
+        obj = jsonInput;
+      } else {
+        obj = jsonInput.read(argType);
+      }
+
       if (obj == null) {
         throw new JsonException("Unable to read value to convert for " + type);
       }

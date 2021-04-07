@@ -1,3 +1,203 @@
+Selenium 4 beta 2 Post 1
+
+* Fix Chrome instantiation
+
+Selenium 4 beta 2
+
+* Set up python for pinned browsers
+* Add Multiple file upload test
+* Fix using arguments in Chrome Option. Fixes  #9281
+* Deprecate arguments in remote webdriver instantiation
+* Improve proxy via options test for Firefox
+* Set Chromium Edge to be the default for Edge browsers
+* Move code so that it is reachable
+* Fix usage of options to RemoteWebDriver (#9240)
+* Deprecate using a Firefox profile in Options
+* use attribute endpoint to evaluate multiple selects
+* implement get_dom_attribute
+* Add attribute_to_be_include method to expected_conditions when the at… (#9200)
+* Additional Python type hints (#9192)
+* Correct Type Hinting on option method. Fixes #9210
+* Use a flat namespace for selenium options
+* remove unused imports
+* Add ARIA APIs for getting the role and label of an Element
+* Fix homepage attribute in wheel target
+* Avoid using bazel native python rules
+
+Selenium 4.0 Beta 1
+
+* Deprecate all but `Options` and `Service` arguments in driver instantiation. (#9125,#9128)
+* Upgrade Bazel rules_python to latest
+* Deprecate w3c checks in python bindings (#9109)
+* Remove legacy WebElement key `ELEMENT` (#9102, #9110)
+* Improve how desired_capabilities and options are merged
+* Use weakreferences for driver in switch and mobile classes (#2425)
+* Fix 'webview2' browser name for Edge py options. (#9090)
+* Add python type hinting
+* Improved alias for Keys (#9076)
+* Improve comment about using importlib_resources
+* Add mozdebugger capability to use CDP Features with Firefox
+* Refactor bidi APIs for logging to be on their own class
+* Make sure we are checking a string for local file detector
+* Add Ignored Exception to wait in Bidi Tests
+* Update tests
+* Adding Github Actions workflow for Python (#9031)
+* Fix WebDriver.start_session docstring to remove incorrect arguments (#9021)
+* Add Mutation Logging support
+* Pin Firefox bidi support to use the generated code for CDP 85
+* Fix handling of generated code put into wheels
+* Modernise the python code around imports and conditionals
+* Support for float types in text fields (#8936)
+* Add print page command to python binding (#8903)
+* Add Chrome v88 to bidi support
+* Fix pytest macro to allow --test_args to pass through
+* Remove thread.join in testing webserver due to chromedriver issue 3654
+* Fix grammar typos in exceptions.py (#8876)
+* Enforce python version in wheel when created. fixes #8863
+* Correct proxy tests
+* Include readme in Wheel so it's rendered on Pypi
+
+Selenium 4.0 Alpha 7
+
+* BREAKING CHANGE: Dropped support for python < 3.7
+
+* Remove support for XBL in Firefox.
+* Correct formatting with JS fragment
+* Add debugpy to requirements
+* Fix uploading multiple files on remote driver (#7472) (#8734)
+* Correct docstring around find_element and find_elements. Fixes #8806
+* Add the ability to ignore local proxys that are available
+* add script pinning to python bindings
+* Deprecate desired_capabilities property in favour of capabilities property
+* Update tests to use requirements file
+* Allow driver fixtures to be used in Chrome only tests
+* Update testing to use the latest pytest
+* do not update already set preference (#8692)
+* Added new argument creationflags in Service class for common, chrome, and firefox (#8647)
+* add se namespacing to file upload endpoint for all bindings (#8588)
+* Correct dependency management for code generator
+* Update host to connect to get a port. Fixes #8503
+* Poll quicker for the driver when starting up. Fixes #8477
+* Add support for DevTools APIs
+* Improve WebKitGTK and WPEWebKit support
+* Fix browserName typo for Edge WebView2
+* Fix wheel generation for multiple python versions
+
+Selenium 4.0 Alpha 6 Post 2
+
+* Correct usage of Abstract Base class in some instances
+* Correct build step for releasing
+
+Selenium 4.0 Alpha 6
+
+* Add Abstract Base Class to WebElement and WebDriver #7127 (#8348)
+* Copy `acceptInsecureCerts` to Options for Firefox. Fixes #8261
+* Correct check on DEFAULT_EXECUTABLE_PATH
+* Use ProxyManager instead of PoolManager in remote_connection (#8297)
+* Check offsets are cast to int. Fixes #7639
+* Fixes an issue where IE server port is set '0' by default (#8294)
+* Favor Python3 constructs and Python 2.7 compatibility (#8290)
+* Remove Unused Arguments from Firefox
+* Fixup Firefox deprecations
+* Delete support for Blackberry Driver
+* Delete PhantomJS capabilities
+* Delete Android Driver support
+* Remove python crazyfun references
+* Enable and update Safari tests
+* Use same port in remote executor and service (#8255)
+* Update tests and docs to not use deprecated methods
+* mark various tests as failing in Firefox
+* Use callback functions instead callable objects as expected conditions (#7765)
+* Fix error in webelemet not created, verifing if is str or dict. (#3481)
+* verify command_executor ssl certificate by default (#6536)
+* Correct documentation for ChromiumDriver
+* Deprecating find_element(s)_* calls in event firing webdriver
+* Fixing path to selenium server for remote tests
+* Fixing relative locator constructor
+* Changing environment variable we use to check if the tests are running on travis
+* Fixing HSL to RGBa color converter
+* Deprecate use of AppCache APIs
+
+Selenium 4.0 Alpha 5
+
+* Correct service usage in IE Binding. Fixes  #7749
+* Deprecate find_element(s)_by_* calls
+* Use a capability to switch engines for Edge (#8096)
+* Fix Flake8 errors
+* Add WPEWebKit driver (#6375)
+* update python_requires to only support python 2.7 and Python3.5+(#8085)
+* add the ability to generate a wheel via bazel
+* Add in support for page loading strategies for Options
+* Add the ability to get and set timeouts against a driver. Fixes #7738
+* Correct Docstring import in WebDriverWait example. Fixes #7780
+* Explicitly force timeout value to float in WebDriverWait. Fixes #8050
+* Add support for relative locators
+* Fix clear actions in ActionChains (#7943)
+* Automate RemoteConnection subclass selection  (#8010)
+* Fix capabilties to support macOS platform (#7980)
+* fix: DeprecationWarning of base64.encodestring() (#7446)
+* Build python code with Bazel
+* Parse python docstring example as code snippet
+* correct python_requires in setup
+*  Fix grammar typo in exceptions.py (#7657)
+* Fixed references to chromedriver website
+
+Selenium 4.0 Alpha 3
+
+* Fixing stacktrace parser to handle strings as well as objects
+* urllib throws on 404 so let's check the /status endpoint that returns 200
+* Changing default command executor address to the address of TNG Grid
+* Fixing check of type of a returned element in a test for all_of condition
+* Implement logical expected conditions in Python (#7121)
+* Explicitly clear PoolManager by using context manager (#6878)
+* Fix invisibility_of_element expected condition init function (#7484)
+* fix docs build, add chromium and edge to docs
+* flake8 fixes
+* allow --browser-binary and --browser-args to be used with ChromiumEdge
+* Add support for the new MicrosoftEdge (#7459)
+* increase async script timeout from 0 as the w3c spec states to start time checking immediately
+* fix unit test for firefox options, proxy key should be outside of options
+* update to w3c compliant log endpoints
+* Remove 'resolve_ip' option from RemoteConnection (#1729,#2509)
+* Running python unit tests with bazel
+* Pass capabilities rather than options to the proxy object (#6620)
+* Adding full page screenshot feature for Firefox (#7182)
+* Added EventFiringWebElement to the isinstance check in the move_to method.(#6604)
+* Added socksVersion field in proxy class (#6983)
+* also clear w3c actions in ActionChains#reset_actions
+* fix edge webdriver init by deprecating edge_service in favor of service also fix warnings import in edge/webdriver
+* Removes old exception and dead code from py lib.(#7134)
+* Raise error for unsupported method for set_window_rect
+
+Selenium 4.0 Alpha 1
+* Update driver initialisation to use service and option objects
+* turn on keep-alive by default for remote connections (#7072)
+* Fix ConnectionResetError
+* Add new Cast commands
+* Suggest download Microsoft Webdriver over HTTPS
+* Clear PoolManager in ‘remote_connection’ to ensure sockets are closed
+* remove --disable-gpu option for headless Chrome
+* Add support for the New Window command (#6873)
+* Update docstrings in Options classes to allow documentation to highlight Return values
+* Fix typos in select.py (#6925)
+* Remove native events handling code
+* Deleting unused imports, fixing flake8 issues
+* Remove unused port selection in IE Driver
+* Enabling tests xpassed in Chrome
+* Pretty-printing code samples
+* remove all deprecated methods and args from Python bindings
+* Fix DeprecationWarning: invalid escape sequence
+* Don't override browser options with desired capabilities by default in WebKitGTK (#6814)
+* Add WebKitGTK to API docs (#6815)
+* Subclass options classes from a common base class (#6522)
+* Update Sphinx (#6728)
+* WebDriverWait: update documentation for until and until_not (#6711)
+* Fix typo in description of WebDriver class (#6724)
+* add strictFileInteractability to acceptable W3C capabilities
+* Deprecate Blackberry Driver support
+* Fixing/tidying docstring.
+
+
 Selenium 3.141.0
 * Bump version to a better approximation of Π
 * Improved Test build targets
@@ -670,3 +870,6 @@ Selenium 2 Beta 2
 * Improved IEDriver
 * Basic Authentication support for Selenium 2
 * Ability to have multiple Firefox instances
+
+
+

@@ -60,7 +60,7 @@ void ExecuteScriptCommandHandler::ExecuteInternal(
   }
 
   std::string script_body = script_parameter_iterator->second.asString();
-  const std::string script_source = "(function() { return function(){" + script_body + "};})();";
+  const std::string script_source = "(function() { return function(){\n" + script_body + "\n};})();";
 
   Json::Value json_args(args_parameter_iterator->second);
 

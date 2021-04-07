@@ -27,8 +27,9 @@ import org.openqa.selenium.io.TemporaryFilesystem;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
+import java.nio.charset.Charset;
+import java.nio.file.Files;
 import java.text.MessageFormat;
 import java.util.HashMap;
 import java.util.Map;
@@ -56,7 +57,7 @@ public class ProfilesIni {
 
     BufferedReader reader = null;
     try {
-      reader = new BufferedReader(new FileReader(profilesIni));
+      reader = Files.newBufferedReader(profilesIni.toPath(), Charset.defaultCharset());
 
       String line = reader.readLine();
 

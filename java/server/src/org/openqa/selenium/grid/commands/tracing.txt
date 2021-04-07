@@ -1,0 +1,67 @@
+Selenium Grid ships with support for distributed tracing, backed by
+the OpenTelemetry APIs. This allows admins and devops engineers to
+trace the flow of control through the Grid for each and every command.
+
+To enable this support, you must first provide a "Tracer"
+implementation that should be used. We use OpenTelemtry's own
+mechanisms for selecting the implementations, so if your chosen
+tracing library supports this you should be good to go. If you are
+using the standalone selenium jar, updating the classpath to contain
+your tracer can be done using the `--ext` flag to selenium.
+
+As a worked example, using Jaeger as the tracing library and running
+on macOS or Linux:
+
+```
+  java -jar selenium.jar \
+       --ext $(coursier fetch -p \
+          io.opentelemetry:opentelemetry-exporter-jaeger:1.0.0 \
+          io.grpc:grpc-netty:1.35.0) \
+       standalone
+```
+
+This example uses a tool called "coursier" to generate a full
+classpath, but you can also write this manually. When started this
+way, the selenium server will inform you that it has found a tracer on
+stdout.
+
+However, just making the tracer available is seldom enough. You must
+also configure it to send diagnostics back. In the case of Jaeger,
+this can be done via system properties. Modifying our example:
+
+```
+  java -Dotel.traces.exporter=jaeger \
+       -Dotel.exporter.jaeger.endpoint=localhost:14250 \
+       -Dotel.resource.attributes=service.name=selenium-standalone \
+       -jar selenium.jar \
+       --ext $(coursier fetch -p \
+          io.opentelemetry:opentelemetry-exporter-jaeger:1.0.0 \
+          io.grpc:grpc-netty:1.35.0) \
+       standalone
+```
+
+You will also need to be running a tracing server somewhere. In the
+case of Jaeger, you can do this using docker to fire up something
+locally:
+
+```
+  docker run --rm -it --name jaeger \
+    -p 16686:16686 \
+    -p 14250:14250 \
+    jaegertracing/all-in-one:1.19.2
+```
+
+Now run some tests, and then point a browser at
+http://localhost:16686/ to view the outputs.
+
+There are other popular tracing libraries that are supported by
+OpenTelemetry, so please check their documentation for more
+information on how to configure them.
+
+More information can be found at:
+
+* OpenTelemetry: https://opentelemetry.io
+* Configuring OpenTelemetry:
+    https://github.com/open-telemetry/opentelemetry-java/tree/main/sdk-extensions/autoconfigure
+* Jaeger: https://www.jaegertracing.io
+* Coursier: https://get-coursier.io

@@ -18,16 +18,12 @@
 package org.openqa.selenium.atoms;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
+import static org.assertj.core.api.Assumptions.assumeThat;
 
 import com.google.common.io.Resources;
 
-import org.openqa.selenium.build.Build;
-import org.openqa.selenium.build.InProject;
-
 import java.io.IOException;
 import java.net.URL;
-import java.nio.file.Files;
-import java.nio.file.Path;
 
 /**
  * Utility class for loading JavaScript resources.
@@ -35,19 +31,11 @@ import java.nio.file.Path;
 class JavaScriptLoader {
   private JavaScriptLoader() {}  // Utility class.
 
-  static String loadResource(String resourcePath, String resourceTask) throws IOException {
+  static String loadResource(String resourcePath) throws IOException {
     URL resourceUrl = JavaScriptLoader.class.getResource(resourcePath);
-    if (resourceUrl != null) {
-      return Resources.toString(resourceUrl, UTF_8);
-    }
-    new Build().of(resourceTask).go();
-
-    Path topDir = InProject.locate("Rakefile").getParent();
-    Path builtFile = topDir.resolve(taskToBuildOutput(resourceTask));
-    return new String(Files.readAllBytes(builtFile), UTF_8);
-  }
-
-  static String taskToBuildOutput(String taskName) {
-    return taskName.replace("//", "build/") .replace(":", "/") + ".js";
+    assumeThat(resourceUrl)
+      .withFailMessage("Resource %s not found; are you running with `bazel test`? ", resourcePath)
+      .isNotNull();
+    return Resources.toString(resourceUrl, UTF_8);
   }
 }

@@ -17,32 +17,48 @@
 
 package org.openqa.selenium.grid.node;
 
-import static org.openqa.selenium.grid.web.Routes.combine;
-import static org.openqa.selenium.grid.web.Routes.delete;
-import static org.openqa.selenium.grid.web.Routes.get;
-import static org.openqa.selenium.grid.web.Routes.matching;
-import static org.openqa.selenium.grid.web.Routes.post;
-
+import com.google.common.collect.ImmutableMap;
+import org.openqa.selenium.BuildInfo;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.NoSuchSessionException;
-import org.openqa.selenium.grid.component.HealthCheck;
+import org.openqa.selenium.grid.data.CreateSessionRequest;
+import org.openqa.selenium.grid.data.CreateSessionResponse;
+import org.openqa.selenium.grid.data.NodeId;
+import org.openqa.selenium.grid.data.NodeStatus;
 import org.openqa.selenium.grid.data.Session;
-import org.openqa.selenium.grid.web.CommandHandler;
-import org.openqa.selenium.grid.web.HandlerNotFoundException;
-import org.openqa.selenium.grid.web.Routes;
-import org.openqa.selenium.injector.Injector;
+import org.openqa.selenium.grid.security.RequiresSecretFilter;
+import org.openqa.selenium.grid.security.Secret;
+import org.openqa.selenium.internal.Either;
+import org.openqa.selenium.internal.Require;
+import org.openqa.selenium.io.TemporaryFilesystem;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
-import org.openqa.selenium.remote.tracing.DistributedTracer;
-import org.openqa.selenium.remote.tracing.Span;
+import org.openqa.selenium.remote.http.Routable;
+import org.openqa.selenium.remote.http.Route;
+import org.openqa.selenium.remote.locators.CustomLocator;
+import org.openqa.selenium.remote.tracing.SpanDecorator;
+import org.openqa.selenium.remote.tracing.Tracer;
+import org.openqa.selenium.status.HasReadyState;
+import org.openqa.selenium.WebDriverException;
 
 import java.io.IOException;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.UUID;
-import java.util.function.Predicate;
+import java.net.URI;
+import java.util.Map;
+import java.util.ServiceLoader;
+import java.util.Set;
+import java.util.logging.Logger;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
+
+import static org.openqa.selenium.remote.HttpSessionId.getSessionId;
+import static org.openqa.selenium.remote.http.Contents.asJson;
+import static org.openqa.selenium.remote.http.Route.combine;
+import static org.openqa.selenium.remote.http.Route.delete;
+import static org.openqa.selenium.remote.http.Route.get;
+import static org.openqa.selenium.remote.http.Route.matching;
+import static org.openqa.selenium.remote.http.Route.post;
 
 /**
  * A place where individual webdriver sessions are running. Those sessions may be in-memory, or
@@ -91,59 +107,118 @@ import java.util.function.Predicate;
  * </tr>
  * </table>
  */
-public abstract class Node implements Predicate<HttpRequest>, CommandHandler {
+public abstract class Node implements HasReadyState, Routable {
 
-  protected final DistributedTracer tracer;
-  private final UUID id;
-  private final Injector injector;
-  private final Routes routes;
+  private static final Logger LOG = Logger.getLogger(Node.class.getName());
+  private static final BuildInfo INFO = new BuildInfo();
+  private static final ImmutableMap<String, String> OS_INFO = loadOsInfo();
+  protected final Tracer tracer;
+  private final NodeId id;
+  private final URI uri;
+  private final Route routes;
+  protected boolean draining;
 
-  protected Node(DistributedTracer tracer, UUID id) {
-    this.tracer = Objects.requireNonNull(tracer);
-    this.id = Objects.requireNonNull(id);
+  protected Node(Tracer tracer, NodeId id, URI uri, Secret registrationSecret) {
+    this.tracer = Require.nonNull("Tracer", tracer);
+    this.id = Require.nonNull("Node id", id);
+    this.uri = Require.nonNull("URI", uri);
+    Require.nonNull("Registration secret", registrationSecret);
+
+    RequiresSecretFilter requiresSecret = new RequiresSecretFilter(registrationSecret);
+
+    Set<CustomLocator> customLocators = StreamSupport.stream(
+      ServiceLoader.load(CustomLocator.class).spliterator(),
+      false)
+      .collect(Collectors.toSet());
+
+    if (!customLocators.isEmpty()) {
+      String names = customLocators.stream().map(CustomLocator::getLocatorName).collect(Collectors.joining(", "));
+      LOG.info("Binding additional locator mechanisms: " + names);
+    }
 
     Json json = new Json();
-    injector = Injector.builder()
-        .register(this)
-        .register(json)
-        .register(tracer)
-        .build();
-
     routes = combine(
-        get("/se/grid/node/owner/{sessionId}").using(IsSessionOwner.class)
-            .map("sessionId", SessionId::new),
-        delete("/se/grid/node/session/{sessionId}").using(StopNodeSession.class)
-            .map("sessionId", SessionId::new),
-        get("/se/grid/node/session/{sessionId}").using(GetNodeSession.class)
-            .map("sessionId", SessionId::new),
-        post("/se/grid/node/session").using(NewNodeSession.class),
-        get("/status").using(StatusHandler.class),
-        matching(req -> {
-          if (!req.getUri().startsWith("/session/")) {
-            return false;
-          }
-
-          String[] split = req.getUri().split("/", 4);
-          SessionId sessionId = new SessionId(split[2]);
-
-          return isSessionOwner(sessionId);
-        }).using(ForwardWebDriverCommand.class)
-    ).build();
+      // "getSessionId" is aggressive about finding session ids, so this needs to be the last
+      // route that is checked.
+      matching(req -> getSessionId(req.getUri()).map(SessionId::new).map(this::isSessionOwner).orElse(false))
+        .to(() -> new ForwardWebDriverCommand(this))
+        .with(spanDecorator("node.forward_command")),
+      new CustomLocatorHandler(this, registrationSecret, customLocators),
+      post("/session/{sessionId}/file")
+        .to(params -> new UploadFile(this, sessionIdFrom(params)))
+        .with(spanDecorator("node.upload_file")),
+      post("/session/{sessionId}/se/file")
+        .to(params -> new UploadFile(this, sessionIdFrom(params)))
+        .with(spanDecorator("node.upload_file")),
+      get("/se/grid/node/owner/{sessionId}")
+        .to(params -> new IsSessionOwner(this, sessionIdFrom(params)))
+        .with(spanDecorator("node.is_session_owner").andThen(requiresSecret)),
+      delete("/se/grid/node/session/{sessionId}")
+        .to(params -> new StopNodeSession(this, sessionIdFrom(params)))
+        .with(spanDecorator("node.stop_session").andThen(requiresSecret)),
+      get("/se/grid/node/session/{sessionId}")
+        .to(params -> new GetNodeSession(this, sessionIdFrom(params)))
+        .with(spanDecorator("node.get_session").andThen(requiresSecret)),
+      post("/se/grid/node/session")
+        .to(() -> new NewNodeSession(this, json))
+        .with(spanDecorator("node.new_session").andThen(requiresSecret)),
+      post("/se/grid/node/drain")
+        .to(() -> new Drain(this, json))
+        .with(spanDecorator("node.drain").andThen(requiresSecret)),
+      get("/se/grid/node/status")
+        .to(() -> req -> new HttpResponse().setContent(asJson(getStatus())))
+        .with(spanDecorator("node.node_status")),
+      get("/status")
+        .to(() -> new StatusHandler(this))
+        .with(spanDecorator("node.status")));
   }
 
-  public UUID getId() {
+  private static ImmutableMap<String, String> loadOsInfo() {
+    return ImmutableMap.of(
+      "arch", System.getProperty("os.arch"),
+      "name", System.getProperty("os.name"),
+      "version", System.getProperty("os.version"));
+  }
+
+  private SessionId sessionIdFrom(Map<String, String> params) {
+    return new SessionId(params.get("sessionId"));
+  }
+
+  private SpanDecorator spanDecorator(String name) {
+    return new SpanDecorator(tracer, req -> name);
+  }
+
+  public NodeId getId() {
     return id;
   }
 
-  public abstract Optional<Session> newSession(Capabilities capabilities);
+  public URI getUri() {
+    return uri;
+  }
 
-  public abstract void executeWebDriverCommand(HttpRequest req, HttpResponse resp);
+  public String getNodeVersion() {
+    return String.format("%s (revision %s)", INFO.getReleaseLabel(), INFO.getBuildRevision());
+  }
+
+  public ImmutableMap<String, String> getOsInfo() {
+    return OS_INFO;
+  }
+
+  public abstract Either<WebDriverException, CreateSessionResponse> newSession(CreateSessionRequest sessionRequest);
+
+  public abstract HttpResponse executeWebDriverCommand(HttpRequest req);
 
   public abstract Session getSession(SessionId id) throws NoSuchSessionException;
 
+  public TemporaryFilesystem getTemporaryFilesystem(SessionId id) throws IOException {
+    throw new UnsupportedOperationException();
+  }
+
+  public abstract HttpResponse uploadFile(HttpRequest req, SessionId id);
+
   public abstract void stop(SessionId id) throws NoSuchSessionException;
 
-  protected abstract boolean isSessionOwner(SessionId id);
+  public abstract boolean isSessionOwner(SessionId id);
 
   public abstract boolean isSupporting(Capabilities capabilities);
 
@@ -151,17 +226,17 @@ public abstract class Node implements Predicate<HttpRequest>, CommandHandler {
 
   public abstract HealthCheck getHealthCheck();
 
+  public boolean isDraining() { return draining; }
+
+  public abstract void drain();
+
   @Override
-  public boolean test(HttpRequest req) {
-    return routes.match(injector, req).isPresent();
+  public boolean matches(HttpRequest req) {
+    return routes.matches(req);
   }
 
   @Override
-  public void execute(HttpRequest req, HttpResponse resp) throws IOException {
-    Optional<CommandHandler> handler = routes.match(injector, req);
-    if (!handler.isPresent()) {
-      throw new HandlerNotFoundException(req);
-    }
-    handler.get().execute(req, resp);
+  public HttpResponse execute(HttpRequest req) {
+    return routes.execute(req);
   }
 }

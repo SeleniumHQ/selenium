@@ -41,6 +41,7 @@ def testShouldReturnTheEntireTextContentOfChildElements(driver, pages):
     assert "and block level elements" in text
 
 
+@pytest.mark.xfail_safari
 def testShouldIgnoreScriptElements(driver, pages):
     pages.load("javascriptEnhancedForm.html")
     labelForUsername = driver.find_element(by=By.ID, value="labelforusername")
@@ -51,6 +52,7 @@ def testShouldIgnoreScriptElements(driver, pages):
     assert text == "Username:"
 
 
+@pytest.mark.xfail_safari
 def testShouldRepresentABlockLevelElementAsANewline(driver, pages):
     pages.load("simpleTest.html")
     text = driver.find_element(by=By.ID, value="multiline").text
@@ -60,6 +62,7 @@ def testShouldRepresentABlockLevelElementAsANewline(driver, pages):
     assert text.endswith("and block level elements")
 
 
+@pytest.mark.xfail_safari
 def testShouldCollapseMultipleWhitespaceCharactersIntoASingleSpace(driver, pages):
     pages.load("simpleTest.html")
     text = driver.find_element(by=By.ID, value="lotsofspaces").text
@@ -67,6 +70,7 @@ def testShouldCollapseMultipleWhitespaceCharactersIntoASingleSpace(driver, pages
     assert text == "This line has lots of spaces."
 
 
+@pytest.mark.xfail_safari
 def testShouldTrimText(driver, pages):
     pages.load("simpleTest.html")
     text = driver.find_element(by=By.ID, value="multiline").text
@@ -75,6 +79,7 @@ def testShouldTrimText(driver, pages):
     assert text.endswith("block level elements")
 
 
+@pytest.mark.xfail_safari
 def testShouldConvertANonBreakingSpaceIntoANormalSpaceCharacter(driver, pages):
     pages.load("simpleTest.html")
     text = driver.find_element(by=By.ID, value="nbsp").text
@@ -82,6 +87,7 @@ def testShouldConvertANonBreakingSpaceIntoANormalSpaceCharacter(driver, pages):
     assert text == "This line has a non-breaking space"
 
 
+@pytest.mark.xfail_safari
 def testShouldTreatANonBreakingSpaceAsAnyOtherWhitespaceCharacterWhenCollapsingWhitespace(driver, pages):
     pages.load("simpleTest.html")
     element = driver.find_element(by=By.ID, value="nbspandspaces")
@@ -90,6 +96,7 @@ def testShouldTreatANonBreakingSpaceAsAnyOtherWhitespaceCharacterWhenCollapsingW
     assert text == "This line has a   non-breaking space and spaces"
 
 
+@pytest.mark.xfail_safari
 def testHavingInlineElementsShouldNotAffectHowTextIsReturned(driver, pages):
     pages.load("simpleTest.html")
     text = driver.find_element(by=By.ID, value="inline").text
@@ -97,6 +104,7 @@ def testHavingInlineElementsShouldNotAffectHowTextIsReturned(driver, pages):
     assert text == "This line has text within elements that are meant to be displayed inline"
 
 
+@pytest.mark.xfail_safari
 def testShouldReturnTheEntireTextOfInlineElements(driver, pages):
     pages.load("simpleTest.html")
     text = driver.find_element(by=By.ID, value="span").text
@@ -127,6 +135,7 @@ def testShouldBeAbleToEnterDatesAfterFillingInOtherValuesFirst(driver, pages):
     assert seenValue == expectedValue
 
 
+@pytest.mark.xfail_safari
 def testShouldReturnEmptyStringWhenTextIsOnlySpaces(driver, pages):
     pages.load("xhtmlTest.html")
 
@@ -149,6 +158,7 @@ def testShouldReturnEmptyStringWhenTagIsSelfClosing(driver, pages):
     assert text == ""
 
 
+@pytest.mark.xfail_safari
 def testShouldHandleSiblingBlockLevelElements(driver, pages):
     pages.load("simpleTest.html")
 
@@ -156,6 +166,7 @@ def testShouldHandleSiblingBlockLevelElements(driver, pages):
     assert text == "Some text" + newLine + "Some more text"
 
 
+@pytest.mark.xfail_safari
 def testShouldHandleWhitespaceInInlineElements(driver, pages):
     pages.load("simpleTest.html")
 
@@ -170,6 +181,7 @@ def testReadALargeAmountOfData(driver, pages):
     assert source.endswith("</html>")
 
 
+@pytest.mark.xfail_safari
 def testShouldOnlyIncludeVisibleText(driver, pages):
     pages.load("javascriptPage.html")
 
@@ -180,6 +192,7 @@ def testShouldOnlyIncludeVisibleText(driver, pages):
     assert "sub-element that is explicitly visible" == explicit
 
 
+@pytest.mark.xfail_safari
 def testShouldGetTextFromTableCells(driver, pages):
     pages.load("tables.html")
 

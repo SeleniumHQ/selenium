@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Licensed to the Software Freedom Conservancy (SFC) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -15,31 +17,32 @@
 # specific language governing permissions and limitations
 # under the License.
 
-require File.expand_path('../../../spec_helper', __FILE__)
+require File.expand_path('../../spec_helper', __dir__)
 
 module Selenium
   module WebDriver
     describe KeyActions do
       let(:keyboard) { instance_double(Interactions::KeyInput) }
       let(:mouse) { instance_double(Interactions::PointerInput) }
-      let(:bridge) { double('W3CBridge').as_null_object }
-      let(:builder) { Selenium::WebDriver::W3CActionBuilder.new(bridge, mouse, keyboard) }
+      let(:bridge) { instance_double('Bridge').as_null_object }
+      let(:builder) { Selenium::WebDriver::ActionBuilder.new(bridge, mouse, keyboard) }
       let(:element) { Selenium::WebDriver::Element.new(bridge, 'element') }
       let(:key) { 'a' }
       let(:keys) { 'abc' }
 
       context 'when performing a key action' do
         it 'should get the device if device name is supplied' do
-          expect(builder).to receive(:get_device).with('name').and_return(keyboard)
+          allow(builder).to receive(:get_device).with('name').and_return(keyboard)
           allow(keyboard).to receive(:create_key_down)
           allow(builder).to receive(:tick)
 
           builder.send('key_action', key, action: :create_key_down, device: 'name')
+          expect(builder).to have_received(:get_device).with('name')
         end
 
         it 'should get the first key_input when no device name is supplied' do
-          expect(builder).to receive(:get_device).with(nil)
-          expect(builder).to receive(:key_inputs).and_return([keyboard])
+          allow(builder).to receive(:get_device).with(nil)
+          allow(builder).to receive(:key_inputs).and_return([keyboard])
           allow(keyboard).to receive(:create_key_down)
           allow(builder).to receive(:tick)
 

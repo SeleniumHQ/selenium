@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Licensed to the Software Freedom Conservancy (SFC) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -15,61 +17,25 @@
 # specific language governing permissions and limitations
 # under the License.
 
+require 'selenium/webdriver/chrome/options'
+
 module Selenium
   module WebDriver
     module Edge
-      class Options
-        attr_accessor :in_private, :start_page
-        attr_reader :extension_paths
+      class Options < Selenium::WebDriver::Chrome::Options
+        KEY = 'ms:edgeOptions'
+        BROWSER = 'MicrosoftEdge'
 
-        #
-        # Create a new Options instance for Edge.
-        #
-        # @example
-        #   options = Selenium::WebDriver::Edge::Options.new(in_private: true)
-        #   driver = Selenium::WebDriver.for :edge, options: options
-        #
-        # @param [Hash] opts the pre-defined options to create the Edge::Options with
-        # @option opts [Boolean] :in_private Start in private mode. Default is false
-        # @option opts [Array<String>] :extension_paths A list of full paths to extensions to install on startup
-        # @option opts [String] :start_page Default page to start with
-        #
-        # @see https://docs.microsoft.com/en-us/microsoft-edge/webdriver
-        #
+        protected
 
-        def initialize(**opts)
-          @in_private = opts.delete(:in_private) || false
-          @extension_paths = opts.delete(:extension_paths) || []
-          @start_page = opts.delete(:start_page)
+        def enable_logging(browser_options)
+          browser_options['ms:loggingPrefs'] = @logging_prefs
         end
 
-        #
-        # Add an extension by local path.
-        #
-        # @example
-        #   options = Selenium::WebDriver::Edge::Options.new
-        #   options.add_extension_path('C:\path\to\extension')
-        #
-        # @param [String] path The local path to the extension folder
-        #
+        private
 
-        def add_extension_path(path)
-          raise Error::WebDriverError, "could not find extension at #{path.inspect}" unless File.directory?(path)
-          @extension_paths << path
-        end
-
-        #
-        # @api private
-        #
-
-        def as_json(*)
-          opts = {}
-
-          opts['ms:inPrivate'] = true if @in_private
-          opts['ms:extensionPaths'] = @extension_paths if @extension_paths.any?
-          opts['ms:startPage'] = @start_page if @start_page
-
-          opts
+        def binary_path
+          Edge.path
         end
       end # Options
     end # Edge

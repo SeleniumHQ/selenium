@@ -43,7 +43,7 @@ namespace OpenQA.Selenium
         void Maximize();
 
         /// <summary>
-        /// Minimizes the current window if it is not already maximized.
+        /// Minimizes the current window if it is not already minimized.
         /// </summary>
         void Minimize();
 

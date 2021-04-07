@@ -17,26 +17,33 @@
 
 /**
  * @fileoverview Defines a {@linkplain Driver WebDriver} client for
- * Microsoft's Edge web browser. Before using this module,
- * you must download and install the latest
- * [MicrosoftEdgeDriver](http://go.microsoft.com/fwlink/?LinkId=619687) server.
- * Ensure that the MicrosoftEdgeDriver is on your
- * [PATH](http://en.wikipedia.org/wiki/PATH_%28variable%29).
+ * Microsoft's Edge web browser. Edge (Chromium) is supported and support
+ * for Edge Legacy (EdgeHTML) as part of https://github.com/SeleniumHQ/selenium/issues/9166.
+ * Before using this module, you must download and install the correct
+ * [WebDriver](https://developer.microsoft.com/en-us/microsoft-edge/tools/webdriver/) server.
  *
+ * Ensure that the msedgedriver (Chromium)
+ * is on your [PATH](http://en.wikipedia.org/wiki/PATH_%28variable%29).
+ *
+ * You may use {@link Options} to specify whether Edge Chromium options should be used:
+
+ *     const edge = require('selenium-webdriver/edge');
+ *     const options = new edge.Options();
+
  * There are three primary classes exported by this module:
  *
  * 1. {@linkplain ServiceBuilder}: configures the
  *     {@link ./remote.DriverService remote.DriverService}
- *     that manages the [MicrosoftEdgeDriver] child process.
+ *     that manages the [WebDriver] child process.
  *
  * 2. {@linkplain Options}: defines configuration options for each new
- *     MicrosoftEdgeDriver session, such as which
+ *     WebDriver session, such as which
  *     {@linkplain Options#setProxy proxy} to use when starting the browser.
  *
  * 3. {@linkplain Driver}: the WebDriver client; each new instance will control
  *     a unique browser session.
  *
- * __Customizing the MicrosoftEdgeDriver Server__ <a id="custom-server"></a>
+ * __Customizing the WebDriver Server__ <a id="custom-server"></a>
  *
  * By default, every MicrosoftEdge session will use a single driver service,
  * which is started the first time a {@link Driver} instance is created and
@@ -49,141 +56,89 @@
  * You may also create a {@link Driver} with its own driver service. This is
  * useful if you need to capture the server's log output for a specific session:
  *
- *     var edge = require('selenium-webdriver/edge');
+ *     const edge = require('selenium-webdriver/edge');
  *
- *     var service = new edge.ServiceBuilder()
+ *     const service = new edge.ServiceBuilder()
  *         .setPort(55555)
  *         .build();
  *
- *     var options = new edge.Options();
+ *     let options = new edge.Options();
  *     // configure browser options ...
  *
- *     var driver = edge.Driver.createSession(options, service);
+ *     let driver = edge.Driver.createSession(options, service);
  *
  * Users should only instantiate the {@link Driver} class directly when they
  * need a custom driver service configuration (as shown above). For normal
- * operation, users should start MicrosoftEdge using the
+ * operation, users should start msedgedriver using the
  * {@link ./builder.Builder selenium-webdriver.Builder}.
  *
- * [MicrosoftEdgeDriver]: https://msdn.microsoft.com/en-us/library/mt188085(v=vs.85).aspx
+ * [WebDriver (Chromium)]: https://docs.microsoft.com/en-us/microsoft-edge/webdriver-chromium
  */
 
-'use strict';
+'use strict'
 
-const fs = require('fs');
-const util = require('util');
-
-const http = require('./http');
-const io = require('./io');
-const portprober = require('./net/portprober');
-const promise = require('./lib/promise');
-const remote = require('./remote');
-const Symbols = require('./lib/symbols');
-const webdriver = require('./lib/webdriver');
-const {Browser, Capabilities} = require('./lib/capabilities');
-
-const EDGEDRIVER_EXE = 'MicrosoftWebDriver.exe';
-
+const { Browser } = require('./lib/capabilities')
+const io = require('./io')
+const chromium = require('./chromium')
+const http = require('./http')
+const webdriver = require('./lib/webdriver')
 
 /**
- * _Synchronously_ attempts to locate the edge driver executable on the current
- * system.
- *
- * @return {?string} the located executable, or `null`.
+ * Name of the EdgeDriver executable.
+ * @type {string}
+ * @const
  */
-function locateSynchronously() {
-  return process.platform === 'win32'
-      ? io.findInPath(EDGEDRIVER_EXE, true) : null;
-}
-
-
-/**
- * Class for managing MicrosoftEdgeDriver specific options.
- */
-class Options extends Capabilities {
-  /**
-   * @param {(Capabilities|Map<string, ?>|Object)=} other Another set of
-   *     capabilities to initialize this instance from.
-   */
-  constructor(other = undefined) {
-    super(other);
-    this.setBrowserName(Browser.EDGE);
-  }
-}
-
-
-/**
- * Creates {@link remote.DriverService} instances that manage a
- * MicrosoftEdgeDriver server in a child process.
- */
-class ServiceBuilder extends remote.DriverService.Builder {
-  /**
-   * @param {string=} opt_exe Path to the server executable to use. If omitted,
-   *   the builder will attempt to locate the MicrosoftEdgeDriver on the current
-   *   PATH.
-   * @throws {Error} If provided executable does not exist, or the
-   *   MicrosoftEdgeDriver cannot be found on the PATH.
-   */
-  constructor(opt_exe) {
-    let exe = opt_exe || locateSynchronously();
-    if (!exe) {
-      throw Error(
-        'The ' + EDGEDRIVER_EXE + ' could not be found on the current PATH. ' +
-        'Please download the latest version of the MicrosoftEdgeDriver from ' +
-        'https://www.microsoft.com/en-us/download/details.aspx?id=48212 and ' +
-        'ensure it can be found on your PATH.');
-    }
-
-    super(exe);
-
-    // Binding to the loopback address will fail if not running with
-    // administrator privileges. Since we cannot test for that in script
-    // (or can we?), force the DriverService to use "localhost".
-    this.setHostname('localhost');
-  }
-
-  /**
-   * Enables verbose logging.
-   * @return {!ServiceBuilder} A self reference.
-   */
-  enableVerboseLogging() {
-    return this.addArguments('--verbose');
-  }
-}
-
+const EDGEDRIVER_CHROMIUM_EXE =
+  process.platform === 'win32' ? 'msedgedriver.exe' : 'msedgedriver'
 
 /** @type {remote.DriverService} */
-var defaultService = null;
-
-
-/**
- * Sets the default service to use for new MicrosoftEdgeDriver instances.
- * @param {!remote.DriverService} service The service to use.
- * @throws {Error} If the default service is currently running.
- */
-function setDefaultService(service) {
-  if (defaultService && defaultService.isRunning()) {
-    throw Error(
-      'The previously configured EdgeDriver service is still running. ' +
-      'You must shut it down before you may adjust its configuration.');
-  }
-  defaultService = service;
-}
-
+let defaultService = null
 
 /**
- * Returns the default MicrosoftEdgeDriver service. If such a service has
- * not been configured, one will be constructed using the default configuration
- * for an MicrosoftEdgeDriver executable found on the system PATH.
- * @return {!remote.DriverService} The default MicrosoftEdgeDriver service.
+ * Creates {@link selenium-webdriver/remote.DriverService} instances that manage
+ * a [ChromeDriver](https://chromedriver.chromium.org/)
+ * server in a child process.
  */
-function getDefaultService() {
-  if (!defaultService) {
-    defaultService = new ServiceBuilder().build();
+class ServiceBuilder extends chromium.ServiceBuilder {
+  /**
+   * @param {string=} opt_exe Path to the server executable to use. If omitted,
+   *     the builder will attempt to locate the msedgedriver on the current
+   *     PATH.
+   * @throws {Error} If provided executable does not exist, or the msedgedriver
+   *     cannot be found on the PATH.
+   */
+  constructor(opt_exe) {
+    let exe = opt_exe || locateSynchronously()
+    if (!exe) {
+      throw Error(
+        `The WebDriver for Edge could not be found on the current PATH. Please download the `+
+        `latest version of ${EDGEDRIVER_CHROMIUM_EXE} from `+
+        `https://developer.microsoft.com/en-us/microsoft-edge/tools/webdriver/ `+
+        `and ensure it can be found on your PATH.`
+      )
+    }
+    super(exe)
+    this.setLoopback(true)
   }
-  return defaultService;
 }
 
+/**
+ * Class for managing edge chromium specific options.
+ */
+class Options extends chromium.Options {
+  /**
+   * Sets the path to the edge binary to use
+   *
+   * The binary path be absolute or relative to the msedgedriver server
+   * executable, but it must exist on the machine that will launch edge chromium.
+   *
+   * @param {string} path The path to the edgedriver binary to use.
+   * @return {!Options} A self reference.
+   */
+  setEdgeChromiumBinaryPath(path) {
+    return this.setBinaryPath(path)
+  }
+}
 
 /**
  * Creates a new WebDriver client for Microsoft's Edge.
@@ -193,17 +148,19 @@ class Driver extends webdriver.WebDriver {
    * Creates a new browser session for Microsoft's Edge browser.
    *
    * @param {(Capabilities|Options)=} options The configuration options.
-   * @param {remote.DriverService=} service The session to use; will use
-   *     the {@linkplain #getDefaultService default service} by default.
+   * @param {remote.DriverService=} opt_service The service to use; will create
+   *     a new Legacy or Chromium service based on {@linkplain Options} by default.
    * @return {!Driver} A new driver instance.
    */
-  static createSession(options, service = getDefaultService()) {
-    let client = service.start().then(url => new http.HttpClient(url));
-    let executor = new http.Executor(client);
+  static createSession(options, opt_service) {
+    options = options || new Options()
+    let service = opt_service || getDefaultService()
+    let client = service.start().then((url) => new http.HttpClient(url))
+    let executor = new http.Executor(client)
 
-    options = options || new Options();
-    return /** @type {!Driver} */(super.createSession(
-        executor, options, () => service.kill()));
+    return /** @type {!Driver} */ (super.createSession(executor, options, () =>
+      service.kill()
+    ))
   }
 
   /**
@@ -214,13 +171,54 @@ class Driver extends webdriver.WebDriver {
   setFileDetector() {}
 }
 
+/**
+ * Sets the default service to use for new Edge instances.
+ * @param {!remote.DriverService} service The service to use.
+ * @throws {Error} If the default service is currently running.
+ */
+function setDefaultService(service) {
+  if (defaultService && defaultService.isRunning()) {
+    throw Error(
+      'The previously configured EdgeDriver service is still running. ' +
+      'You must shut it down before you may adjust its configuration.'
+    )
+  }
+  defaultService = service
+}
+
+/**
+ * Returns the default Microsoft Edge driver service. If such a service has
+ * not been configured, one will be constructed using the default configuration
+ * for a MicrosoftWebDriver executable found on the system PATH.
+ * @return {!remote.DriverService} The default Microsoft Edge driver service.
+ */
+function getDefaultService() {
+  if (!defaultService) {
+    defaultService = new ServiceBuilder().build()
+  }
+  return defaultService
+}
+
+
+/**
+ * _Synchronously_ attempts to locate the chromedriver executable on the current
+ * system.
+ *
+ * @return {?string} the located executable, or `null`.
+ */
+function locateSynchronously() {
+  return io.findInPath(EDGEDRIVER_CHROMIUM_EXE, true)
+}
+
+Options.prototype.BROWSER_NAME_VALUE = Browser.EDGE
+Options.prototype.CAPABILITY_KEY = 'ms:edgeOptions'
+Driver.prototype.VENDOR_CAPABILITY_PREFIX = 'ms'
 
 // PUBLIC API
 
-
-exports.Driver = Driver;
-exports.Options = Options;
-exports.ServiceBuilder = ServiceBuilder;
-exports.getDefaultService = getDefaultService;
-exports.setDefaultService = setDefaultService;
-exports.locateSynchronously = locateSynchronously;
+exports.Driver = Driver
+exports.Options = Options
+exports.ServiceBuilder = ServiceBuilder
+exports.getDefaultService = getDefaultService
+exports.setDefaultService = setDefaultService
+exports.locateSynchronously = locateSynchronously

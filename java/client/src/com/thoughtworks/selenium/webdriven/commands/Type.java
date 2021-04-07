@@ -29,7 +29,7 @@ import org.openqa.selenium.WebElement;
 import java.util.logging.Logger;
 
 public class Type extends SeleneseCommand<Void> {
-  private final static Logger log = Logger.getLogger(Type.class.getName());
+  private static final Logger log = Logger.getLogger(Type.class.getName());
 
   private final AlertOverride alertOverride;
   private final JavascriptLibrary js;

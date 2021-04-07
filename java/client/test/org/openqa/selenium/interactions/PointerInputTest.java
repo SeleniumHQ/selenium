@@ -21,6 +21,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.openqa.selenium.remote.Dialect.W3C;
 
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.WrappedWebElement;
 import org.openqa.selenium.interactions.PointerInput.Kind;
@@ -28,14 +29,13 @@ import org.openqa.selenium.interactions.PointerInput.Origin;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.json.PropertySetting;
 import org.openqa.selenium.remote.RemoteWebElement;
+import org.openqa.selenium.testing.UnitTests;
 
 import java.time.Duration;
 import java.util.List;
 import java.util.Map;
 
-/**
- * Unit test for PointerInputs.
- */
+@Category(UnitTests.class)
 public class PointerInputTest {
 
   @Test
@@ -61,10 +61,10 @@ public class PointerInputTest {
   }
 
   private static class ActionSequenceJson {
-    public List<ActionJson> actions;
+    List<ActionJson> actions;
   }
 
   private static class ActionJson {
-    public Map<String, String> origin;
+    Map<String, String> origin;
   }
 }

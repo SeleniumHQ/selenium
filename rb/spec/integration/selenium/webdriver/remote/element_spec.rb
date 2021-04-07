@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Licensed to the Software Freedom Conservancy (SFC) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -19,14 +21,16 @@ require_relative '../spec_helper'
 
 module Selenium
   module WebDriver
-    describe Element, only: {driver: :remote} do
-      around do |example|
+    describe Element, exclusive: {driver: :remote} do
+      before do
         driver.file_detector = ->(filename) { File.join(__dir__, filename) }
-        example.run
+      end
+
+      after do
         driver.file_detector = nil
       end
 
-      context 'when uploading one file', only: {browser: %i[chrome ff_esr firefox ie]} do
+      context 'when uploading one file' do
         it 'uses the file detector' do
           driver.navigate.to url_for('upload.html')
 
@@ -42,7 +46,7 @@ module Selenium
         end
       end
 
-      context 'when uploading multiple files', only: {browser: %i[chrome firefox]} do
+      context 'when uploading multiple files' do
         it 'uses the file detector' do
           driver.navigate.to url_for('upload_multiple.html')
 

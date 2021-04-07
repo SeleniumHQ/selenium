@@ -25,6 +25,7 @@
 #include "ElementRepository.h"
 #include "Script.h"
 #include "StringUtilities.h"
+#include "WebDriverConstants.h"
 
 namespace webdriver {
 

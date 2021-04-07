@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Licensed to the Software Freedom Conservancy (SFC) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -18,8 +20,7 @@
 require 'pathname'
 require 'selenium/server'
 require_relative 'spec_support/test_environment'
-require_relative 'spec_support/guards'
-require_relative 'spec_support/guards/guard'
+require 'selenium/webdriver/support/guards'
 require_relative 'spec_support/helpers'
 require_relative 'spec_support/rack_server'
 require_relative 'spec_support/shared_examples/concurrent_driver'

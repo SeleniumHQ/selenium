@@ -28,7 +28,7 @@ public class GetScreenOrientation extends WebDriverHandler<ScreenOrientation> {
   }
 
   @Override
-  public ScreenOrientation call() throws Exception {
+  public ScreenOrientation call() {
     return ((Rotatable) getUnwrappedDriver()).getOrientation();
   }
 

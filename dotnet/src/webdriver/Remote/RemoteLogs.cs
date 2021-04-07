@@ -27,6 +27,7 @@ namespace OpenQA.Selenium.Remote
     public class RemoteLogs : ILogs
     {
         private RemoteWebDriver driver;
+        private bool isLogSupported = false;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="RemoteLogs"/> class.
@@ -35,6 +36,7 @@ namespace OpenQA.Selenium.Remote
         public RemoteLogs(RemoteWebDriver driver)
         {
             this.driver = driver;
+            this.isLogSupported = (this.driver as ISupportsLogs) != null;
         }
 
         /// <summary>
@@ -45,7 +47,7 @@ namespace OpenQA.Selenium.Remote
             get
             {
                 List<string> availableLogTypes = new List<string>();
-                if (!driver.IsSpecificationCompliant)
+                if (this.isLogSupported)
                 {
                     Response commandResponse = this.driver.InternalExecute(DriverCommand.GetAvailableLogTypes, null);
                     object[] responseValue = commandResponse.Value as object[];
@@ -71,7 +73,7 @@ namespace OpenQA.Selenium.Remote
         public ReadOnlyCollection<LogEntry> GetLog(string logKind)
         {
             List<LogEntry> entries = new List<LogEntry>();
-            if (!driver.IsSpecificationCompliant)
+            if (this.isLogSupported)
             {
                 Dictionary<string, object> parameters = new Dictionary<string, object>();
                 parameters.Add("type", logKind);

@@ -22,11 +22,17 @@ public class UrlInfo {
   private final String baseUrl;
   private final String contextPath;
   private final String pathInfo;
+  private final String queryString;
 
   public UrlInfo(String baseUrl, String contextPath, String pathInfo) {
+    this(baseUrl, contextPath, pathInfo, "");
+  }
+
+  public UrlInfo(String baseUrl, String contextPath, String pathInfo, String queryString) {
     this.baseUrl = baseUrl;
     this.contextPath = contextPath;
     this.pathInfo = pathInfo;
+    this.queryString = queryString;
   }
 
   public String getBaseUrl() {
@@ -43,6 +49,10 @@ public class UrlInfo {
 
   public String getPathInfo() {
     return pathInfo;
+  }
+
+  public String getQueryString() {
+    return queryString;
   }
 
   @Override

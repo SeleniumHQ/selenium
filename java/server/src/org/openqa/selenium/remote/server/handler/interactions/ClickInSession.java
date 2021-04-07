@@ -44,12 +44,15 @@ public class ClickInSession extends WebDriverHandler<Void> {
         case 2:
           leftMouseButton = false;
           break;
+        default:
+          // This is suboptimal
+          break;
       }
     }
   }
 
   @Override
-  public Void call() throws Exception {
+  public Void call() {
     Mouse mouse = ((HasInputDevices) getDriver()).getMouse();
 
     if (leftMouseButton) {

@@ -17,25 +17,22 @@
 
 package org.openqa.selenium.opera;
 
-import static com.google.common.base.Preconditions.checkArgument;
-import static com.google.common.base.Preconditions.checkNotNull;
+import static java.util.Collections.unmodifiableList;
+import static java.util.Collections.unmodifiableMap;
 import static org.openqa.selenium.remote.BrowserType.OPERA_BLINK;
 import static org.openqa.selenium.remote.CapabilityType.BROWSER_NAME;
 
-import com.google.common.collect.ImmutableList;
-import com.google.common.io.Files;
-
+import org.openqa.selenium.internal.Require;
+import org.openqa.selenium.remote.AbstractDriverOptions;
 import org.openqa.selenium.Capabilities;
-import org.openqa.selenium.MutableCapabilities;
-import org.openqa.selenium.Proxy;
 import org.openqa.selenium.WebDriverException;
-import org.openqa.selenium.remote.CapabilityType;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Base64;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -56,10 +53,10 @@ import java.util.TreeMap;
  * // For use with RemoteWebDriver:
  * OperaOptions options = new OperaOptions();
  * RemoteWebDriver driver = new RemoteWebDriver(
- *     new URL("http://localhost:4444/wd/hub"), options);
+ *     new URL("http://localhost:4444/"), options);
  * </code></pre>
  */
-public class OperaOptions extends MutableCapabilities {
+public class OperaOptions extends AbstractDriverOptions<OperaOptions> {
 
   /**
    * Key used to store a set of OperaOptions in a {@link org.openqa.selenium.Capabilities}
@@ -79,8 +76,10 @@ public class OperaOptions extends MutableCapabilities {
 
   @Override
   public OperaOptions merge(Capabilities extraCapabilities) {
-    super.merge(extraCapabilities);
-    return this;
+    OperaOptions newInstance = new OperaOptions();
+    this.asMap().forEach(newInstance::setCapability);
+    extraCapabilities.asMap().forEach(newInstance::setCapability);
+    return newInstance;
   }
 
   /**
@@ -91,7 +90,7 @@ public class OperaOptions extends MutableCapabilities {
    * @param path Path to Opera executable.
    */
   public OperaOptions setBinary(File path) {
-    binary = checkNotNull(path).getPath();
+    binary = Require.nonNull("Path to the opera executable", path).getPath();
     return this;
   }
 
@@ -103,7 +102,7 @@ public class OperaOptions extends MutableCapabilities {
    * @param path Path to Opera executable.
    */
   public OperaOptions setBinary(String path) {
-    binary = checkNotNull(path);
+    binary = Require.nonNull("Path to the opera executable", path);
     return this;
   }
 
@@ -112,7 +111,7 @@ public class OperaOptions extends MutableCapabilities {
    * @see #addArguments(java.util.List)
    */
   public OperaOptions addArguments(String... arguments) {
-    addArguments(ImmutableList.copyOf(arguments));
+    addArguments(Arrays.asList(arguments));
     return this;
   }
 
@@ -126,7 +125,7 @@ public class OperaOptions extends MutableCapabilities {
    * </code></pre>
    *
    * <p>Each argument may contain an option "--" prefix: "--foo" or "foo".
-   * Arguments with an associated value should be delimitted with an "=":
+   * Arguments with an associated value should be delimited with an "=":
    * "foo=bar".
    *
    * @param arguments The arguments to use when starting Opera.
@@ -141,7 +140,7 @@ public class OperaOptions extends MutableCapabilities {
    * @see #addExtensions(java.util.List)
    */
   public OperaOptions addExtensions(File... paths) {
-    addExtensions(ImmutableList.copyOf(paths));
+    addExtensions(Arrays.asList(paths));
     return this;
   }
 
@@ -152,12 +151,7 @@ public class OperaOptions extends MutableCapabilities {
    * @param paths Paths to the extensions to install.
    */
   public OperaOptions addExtensions(List<File> paths) {
-    for (File path : paths) {
-      checkNotNull(path);
-      checkArgument(path.exists(), "%s does not exist", path.getAbsolutePath());
-      checkArgument(!path.isDirectory(), "%s is a directory",
-          path.getAbsolutePath());
-    }
+    paths.forEach(path -> Require.argument("Extension", path).isFile());
     extensionFiles.addAll(paths);
     return this;
   }
@@ -167,7 +161,7 @@ public class OperaOptions extends MutableCapabilities {
    * @see #addEncodedExtensions(java.util.List)
    */
   public OperaOptions addEncodedExtensions(String... encoded) {
-    addEncodedExtensions(ImmutableList.copyOf(encoded));
+    addEncodedExtensions(Arrays.asList(encoded));
     return this;
   }
 
@@ -179,7 +173,7 @@ public class OperaOptions extends MutableCapabilities {
    */
   public OperaOptions addEncodedExtensions(List<String> encoded) {
     for (String extension : encoded) {
-      checkNotNull(extension);
+      Require.nonNull("Encoded exception", extension);
     }
     extensions.addAll(encoded);
     return this;
@@ -194,7 +188,7 @@ public class OperaOptions extends MutableCapabilities {
    *     to JSON.
    */
   public OperaOptions setExperimentalOption(String name, Object value) {
-    experimentalOptions.put(checkNotNull(name), value);
+    experimentalOptions.put(Require.nonNull("Option name", name), value);
     return this;
   }
 
@@ -205,46 +199,36 @@ public class OperaOptions extends MutableCapabilities {
    * @return The option value, or {@code null} if not set.
    */
   public Object getExperimentalOption(String name) {
-    return experimentalOptions.get(checkNotNull(name));
-  }
-
-  public OperaOptions setProxy(Proxy proxy) {
-    setCapability(CapabilityType.PROXY, proxy);
-    return this;
+    return experimentalOptions.get(Require.nonNull("Option name", name));
   }
 
   @Override
   public Map<String, Object> asMap() {
     Map<String, Object> toReturn = new TreeMap<>(super.asMap());
 
-    Map<String, Object> options = new TreeMap<>();
-
-    for (String key : experimentalOptions.keySet()) {
-      options.put(key, experimentalOptions.get(key));
-    }
+    Map<String, Object> options = new TreeMap<>(experimentalOptions);
 
     if (binary != null) {
       options.put("binary", binary);
     }
 
-    options.put("args", ImmutableList.copyOf(args));
+    options.put("args", unmodifiableList(new ArrayList<>(args)));
 
-    List<String> encoded_extensions = new ArrayList<>(
-        extensionFiles.size() + extensions.size());
-    for (File path : extensionFiles) {
+    List<String> encodedExtensions = new ArrayList<>();
+    for (File file : extensionFiles) {
       try {
-        String encoded = Base64.getEncoder().encodeToString(Files.toByteArray(path));
+        String encoded = Base64.getEncoder().encodeToString(Files.readAllBytes(file.toPath()));
 
-        encoded_extensions.add(encoded);
+        encodedExtensions.add(encoded);
       } catch (IOException e) {
         throw new WebDriverException(e);
       }
     }
-    encoded_extensions.addAll(extensions);
-    options.put("extensions", encoded_extensions);
+    encodedExtensions.addAll(extensions);
+    options.put("extensions", unmodifiableList(encodedExtensions));
 
     toReturn.put(CAPABILITY, options);
 
-    return Collections.unmodifiableMap(toReturn);
+    return unmodifiableMap(toReturn);
   }
 }

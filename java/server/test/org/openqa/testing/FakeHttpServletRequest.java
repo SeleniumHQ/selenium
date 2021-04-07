@@ -25,7 +25,6 @@ import com.google.common.net.MediaType;
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
 import java.security.Principal;
 import java.util.Collection;
@@ -40,7 +39,6 @@ import javax.servlet.DispatcherType;
 import javax.servlet.ReadListener;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletContext;
-import javax.servlet.ServletException;
 import javax.servlet.ServletInputStream;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
@@ -86,7 +84,7 @@ public class FakeHttpServletRequest extends HeaderContainer
       }
 
       @Override
-      public int read() throws IOException {
+      public int read() {
         return delegate.read();
       }
 
@@ -145,7 +143,7 @@ public class FakeHttpServletRequest extends HeaderContainer
 
   @Override
   public String getQueryString() {
-    throw new UnsupportedOperationException();
+    return requestUrl.getQueryString();
   }
 
   @Override
@@ -238,7 +236,7 @@ public class FakeHttpServletRequest extends HeaderContainer
   }
 
   @Override
-  public void setCharacterEncoding(String s) throws UnsupportedEncodingException {
+  public void setCharacterEncoding(String s) {
   throw new UnsupportedOperationException();
   }
 
@@ -253,7 +251,7 @@ public class FakeHttpServletRequest extends HeaderContainer
   }
 
   @Override
-  public ServletInputStream getInputStream() throws IOException {
+  public ServletInputStream getInputStream() {
     return inputStream;
   }
 
@@ -280,7 +278,7 @@ public class FakeHttpServletRequest extends HeaderContainer
   @Override
   public String[] getParameterValues(String s) {
     Collection<String> values = parameters.values();
-    return values.toArray(new String[values.size()]);
+    return values.toArray(new String[0]);
   }
 
   @Override
@@ -310,7 +308,7 @@ public class FakeHttpServletRequest extends HeaderContainer
   }
 
   @Override
-  public BufferedReader getReader() throws IOException {
+  public BufferedReader getReader() {
     throw new UnsupportedOperationException();
   }
 
@@ -391,33 +389,32 @@ public class FakeHttpServletRequest extends HeaderContainer
   }
 
   @Override
-  public boolean authenticate(HttpServletResponse response) throws IOException, ServletException {
+  public boolean authenticate(HttpServletResponse response) {
     throw new UnsupportedOperationException();
   }
 
   @Override
-  public void login(String username, String password) throws ServletException {
+  public void login(String username, String password) {
     throw new UnsupportedOperationException();
   }
 
   @Override
-  public void logout() throws ServletException {
+  public void logout() {
     throw new UnsupportedOperationException();
   }
 
   @Override
-  public Collection<Part> getParts() throws IOException, ServletException {
+  public Collection<Part> getParts() {
     throw new UnsupportedOperationException();
   }
 
   @Override
-  public Part getPart(String name) throws IOException, ServletException {
+  public Part getPart(String name) {
     throw new UnsupportedOperationException();
   }
 
   @Override
-  public <T extends HttpUpgradeHandler> T upgrade(Class<T> handlerClass)
-    throws IOException, ServletException {
+  public <T extends HttpUpgradeHandler> T upgrade(Class<T> handlerClass) {
     throw new UnsupportedOperationException();
   }
 

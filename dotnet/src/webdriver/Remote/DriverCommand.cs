@@ -1,4 +1,4 @@
-﻿// <copyright file="DriverCommand.cs" company="WebDriver Committers">
+// <copyright file="DriverCommand.cs" company="WebDriver Committers">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements. See the NOTICE file
 // distributed with this work for additional information
@@ -169,6 +169,11 @@ namespace OpenQA.Selenium.Remote
         public static readonly string SwitchToWindow = "switchToWindow";
 
         /// <summary>
+        /// Represents NewWindow command
+        /// </summary>
+        public static readonly string NewWindow = "newWindow";
+
+        /// <summary>
         /// Represents SwitchToFrame command
         /// </summary>
         public static readonly string SwitchToFrame = "switchToFrame";
@@ -269,6 +274,16 @@ namespace OpenQA.Selenium.Remote
         public static readonly string GetElementValueOfCssProperty = "getElementValueOfCssProperty";
 
         /// <summary>
+        /// Represents GetComputedAccessibleLabel command
+        /// </summary>
+        public static readonly string GetComputedAccessibleLabel = "getComputedAccessibleLabel";
+
+        /// <summary>
+        /// Represents GetComputedAccessibleRole command
+        /// </summary>
+        public static readonly string GetComputedAccessibleRole = "getComputedAccessibleRole";
+
+        /// <summary>
         /// Represents ElementEquals command
         /// </summary>
         public static readonly string ElementEquals = "elementEquals";
@@ -282,6 +297,11 @@ namespace OpenQA.Selenium.Remote
         /// Represents the ElementScreenshot command
         /// </summary>
         public static readonly string ElementScreenshot = "elementScreenshot";
+
+        /// <summary>
+        /// Represents the Print command
+        /// </summary>
+        public static readonly string Print = "print";
 
         /// <summary>
         /// Represents GetOrientation command

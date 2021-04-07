@@ -17,43 +17,54 @@
 
 package org.openqa.selenium.grid.node;
 
-import static java.nio.charset.StandardCharsets.UTF_8;
-
-import org.openqa.selenium.Capabilities;
-import org.openqa.selenium.grid.data.Session;
-import org.openqa.selenium.grid.web.CommandHandler;
+import com.google.common.collect.ImmutableMap;
+import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.grid.data.CreateSessionRequest;
+import org.openqa.selenium.grid.data.CreateSessionResponse;
+import org.openqa.selenium.internal.Either;
+import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.Json;
+import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 
-import java.io.IOException;
+import java.io.UncheckedIOException;
 import java.util.HashMap;
-import java.util.Objects;
-import java.util.function.BiConsumer;
 
-class NewNodeSession implements CommandHandler {
+import static org.openqa.selenium.remote.http.Contents.asJson;
+import static org.openqa.selenium.remote.http.Contents.string;
 
-  private final BiConsumer<HttpResponse, Object> encodeJson;
+class NewNodeSession implements HttpHandler {
+
   private final Node node;
   private final Json json;
 
   NewNodeSession(Node node, Json json) {
-    this.node = Objects.requireNonNull(node);
-
-    this.json = Objects.requireNonNull(json);
-    this.encodeJson = (res, obj) -> {
-      res.setContent(json.toJson(obj).getBytes(UTF_8));
-    };
+    this.node = Require.nonNull("Node", node);
+    this.json = Require.nonNull("Json converter", json);
   }
 
   @Override
-  public void execute(HttpRequest req, HttpResponse resp) throws IOException {
-    Capabilities caps = json.toType(req.getContentString(), Capabilities.class);
+  public HttpResponse execute(HttpRequest req) throws UncheckedIOException {
+    CreateSessionRequest incoming = json.toType(string(req), CreateSessionRequest.class);
 
-    Session session = node.newSession(caps).orElse(null);
+    Either<WebDriverException, CreateSessionResponse> result =
+      node.newSession(incoming);
 
     HashMap<String, Object> value = new HashMap<>();
-    value.put("value", session);
-    encodeJson.accept(resp, value);
+
+    HashMap<String, Object> response = new HashMap<>();
+    if (result.isRight()) {
+      response.put("sessionResponse", result.right());
+    } else {
+      WebDriverException exception = result.left();
+      response.put("exception", ImmutableMap.of(
+        "error", exception.getClass(),
+        "message", exception.getMessage()));
+    }
+
+    value.put("value", response);
+
+    return new HttpResponse().setContent(asJson(value));
   }
 }

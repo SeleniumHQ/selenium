@@ -17,38 +17,33 @@
 
 package org.openqa.selenium.grid.distributor;
 
-import static java.nio.charset.StandardCharsets.UTF_8;
-
 import com.google.common.collect.ImmutableMap;
-
-import org.openqa.selenium.grid.web.CommandHandler;
-import org.openqa.selenium.json.Json;
+import org.openqa.selenium.grid.data.DistributorStatus;
+import org.openqa.selenium.internal.Require;
+import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 
-import java.io.IOException;
-import java.util.Objects;
+import static org.openqa.selenium.remote.http.Contents.asJson;
 
-class StatusHandler implements CommandHandler {
+class StatusHandler implements HttpHandler {
 
   private final Distributor distributor;
-  private final Json json;
 
-  public StatusHandler(Distributor distributor, Json json) {
-    this.distributor = Objects.requireNonNull(distributor);
-    this.json = Objects.requireNonNull(json);
+  StatusHandler(Distributor distributor) {
+    this.distributor = Require.nonNull("Distributor", distributor);
   }
 
   @Override
-  public void execute(HttpRequest req, HttpResponse resp) throws IOException {
+  public HttpResponse execute(HttpRequest req) {
     DistributorStatus status = distributor.getStatus();
 
     ImmutableMap<String, Object> report = ImmutableMap.of(
         "value", ImmutableMap.of(
             "ready", status.hasCapacity(),
             "message", status.hasCapacity() ? "Ready" : "No free slots available",
-            "node", status));
+            "grid", status));
 
-    resp.setContent(json.toJson(report).getBytes(UTF_8));
+    return new HttpResponse().setContent(asJson(report));
   }
 }

@@ -26,7 +26,7 @@ from selenium.webdriver.remote.webelement import WebElement
 class PointerActions(Interaction):
 
     def __init__(self, source=None):
-        if source is None:
+        if not source:
             source = PointerInput(interaction.POINTER_MOUSE, "mouse")
         self.source = source
         super(PointerActions, self).__init__(source)
@@ -40,7 +40,7 @@ class PointerActions(Interaction):
     def move_to(self, element, x=None, y=None):
         if not isinstance(element, WebElement):
             raise AttributeError("move_to requires a WebElement")
-        if x is not None or y is not None:
+        if x or y:
             el_rect = element.rect
             left_offset = el_rect['width'] / 2
             top_offset = el_rect['height'] / 2
@@ -87,8 +87,11 @@ class PointerActions(Interaction):
     def double_click(self, element=None):
         if element:
             self.move_to(element)
-        self.click()
-        self.click()
+        self.pointer_down(MouseButton.LEFT)
+        self.pointer_up(MouseButton.LEFT)
+        self.pointer_down(MouseButton.LEFT)
+        self.pointer_up(MouseButton.LEFT)
+        return self
 
     def pause(self, duration=0):
         self.source.create_pause(duration)

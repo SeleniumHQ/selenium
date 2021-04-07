@@ -15,6 +15,7 @@
 // limitations under the License.
 
 #include "server.h"
+#include <algorithm>
 #include <cstdio>
 #include <cstring>
 #include <sstream>
@@ -302,8 +303,12 @@ std::string Server::ReadRequestBody(struct mg_connection* conn,
     if (request_info->http_headers[header_index].name == NULL) {
       break;
     }
-    if (strcmp(request_info->http_headers[header_index].name,
-               "Content-Length") == 0) {
+    std::string header_name(request_info->http_headers[header_index].name);
+    std::transform(header_name.begin(),
+                   header_name.end(),
+                   header_name.begin(),
+                   ::tolower);
+    if (header_name.compare("content-length") == 0) {
       content_length = atoi(request_info->http_headers[header_index].value);
       break;
     }
@@ -539,7 +544,7 @@ void Server::SendHttpOk(struct mg_connection* connection,
   std::ostringstream out;
   out << "HTTP/1.1 200 OK\r\n"
       << "Content-Length: " << strlen(body_to_send.c_str()) << "\r\n"
-      << "Content-Type: " << content_type << "; charset=UTF-8\r\n"
+      << "Content-Type: " << content_type << "; charset=utf-8\r\n"
       << "Cache-Control: no-cache\r\n"
       << "Vary: Accept-Charset, Accept-Encoding, Accept-Language, Accept\r\n"
       << "Accept-Ranges: bytes\r\n\r\n";
@@ -560,7 +565,7 @@ void Server::SendHttpBadRequest(struct mg_connection* const connection,
   std::ostringstream out;
   out << "HTTP/1.1 400 Bad Request\r\n"
       << "Content-Length: " << strlen(body_to_send.c_str()) << "\r\n"
-      << "Content-Type: application/json; charset=UTF-8\r\n"
+      << "Content-Type: application/json; charset=utf-8\r\n"
       << "Cache-Control: no-cache\r\n"
       << "Vary: Accept-Charset, Accept-Encoding, Accept-Language, Accept\r\n"
       << "Accept-Ranges: bytes\r\n\r\n";
@@ -581,7 +586,7 @@ void Server::SendHttpInternalError(struct mg_connection* connection,
   std::ostringstream out;
   out << "HTTP/1.1 500 Internal Server Error\r\n"
       << "Content-Length: " << strlen(body_to_send.c_str()) << "\r\n"
-      << "Content-Type: application/json; charset=UTF-8\r\n"
+      << "Content-Type: application/json; charset=utf-8\r\n"
       << "Cache-Control: no-cache\r\n"
       << "Vary: Accept-Charset, Accept-Encoding, Accept-Language, Accept\r\n"
       << "Accept-Ranges: bytes\r\n\r\n";
@@ -602,7 +607,7 @@ void Server::SendHttpNotFound(struct mg_connection* const connection,
   std::ostringstream out;
   out << "HTTP/1.1 404 Not Found\r\n"
       << "Content-Length: " << strlen(body_to_send.c_str()) << "\r\n"
-      << "Content-Type: application/json; charset=UTF-8\r\n"
+      << "Content-Type: application/json; charset=utf-8\r\n"
       << "Cache-Control: no-cache\r\n"
       << "Vary: Accept-Charset, Accept-Encoding, Accept-Language, Accept\r\n"
       << "Accept-Ranges: bytes\r\n\r\n";
@@ -642,7 +647,7 @@ void Server::SendHttpTimeout(struct mg_connection* connection,
   std::ostringstream out;
   out << "HTTP/1.1 408 Timeout\r\n\r\n"
       << "Content-Length: " << strlen(body.c_str()) << "\r\n"
-      << "Content-Type: application/json; charset=UTF-8\r\n"
+      << "Content-Type: application/json; charset=utf-8\r\n"
       << "Cache-Control: no-cache\r\n"
       << "Vary: Accept-Charset, Accept-Encoding, Accept-Language, Accept\r\n"
       << "Accept-Ranges: bytes\r\n\r\n";
@@ -747,6 +752,7 @@ void Server::PopulateCommandRepository() {
   this->AddCommand("/session/:sessionid/window", "POST",  webdriver::CommandType::SwitchToWindow);
   this->AddCommand("/session/:sessionid/window", "DELETE",  webdriver::CommandType::CloseWindow);
   this->AddCommand("/session/:sessionid/window/handles", "GET",  webdriver::CommandType::GetWindowHandles);
+  this->AddCommand("/session/:sessionid/window/new", "POST",  webdriver::CommandType::NewWindow);
   this->AddCommand("/session/:sessionid/frame", "POST",  webdriver::CommandType::SwitchToFrame);
   this->AddCommand("/session/:sessionid/frame/parent", "POST",  webdriver::CommandType::SwitchToParentFrame);
   this->AddCommand("/session/:sessionid/window/rect", "GET", webdriver::CommandType::GetWindowRect);

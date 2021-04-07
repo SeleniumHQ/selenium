@@ -23,9 +23,9 @@ import org.junit.Test;
 public class TestLargeHtml extends InternalSelenseTestBase {
   @Test
   public void testLargeHtml() {
-    selenium.open("/selenium-server/tests/html/test_large_html.html");
+    selenium.open("test_large_html.html");
     String source = selenium.getHtmlSource().trim();
-    String expectedEndsWith = "</body>";
+    String expectedEndsWith = "</html>";
     int index = source.length() - expectedEndsWith.length();
     String actualEndsWith = source.substring(index).toLowerCase();
     Assert.assertEquals("source doesn't end correctly", actualEndsWith, expectedEndsWith);

@@ -24,7 +24,7 @@ import org.junit.Test;
 public class TestPause extends InternalSelenseTestBase {
   @Test
   public void testPause() throws Exception {
-    selenium.open("../tests/html/test_reload_onchange_page.html");
+    selenium.open("test_reload_onchange_page.html");
     // Make sure we can pause even when the page doesn't change
     Thread.sleep(100);
     verifyEquals(selenium.getTitle(), "Reload Page");

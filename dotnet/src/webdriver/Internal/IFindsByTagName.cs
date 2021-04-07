@@ -16,6 +16,7 @@
 // limitations under the License.
 // </copyright>
 
+using System;
 using System.Collections.ObjectModel;
 
 namespace OpenQA.Selenium.Internal
@@ -23,6 +24,7 @@ namespace OpenQA.Selenium.Internal
     /// <summary>
     /// Defines the interface through which the user finds elements by their tag name.
     /// </summary>
+    [Obsolete("The internal IFindsBy interfaces are being deprecated in favor of common implementation.")]
     public interface IFindsByTagName
     {
         /// <summary>

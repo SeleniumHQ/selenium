@@ -27,7 +27,7 @@ goog.require('bot.inject.cache');
 
 
 /**
- * Wrapper to allow passing a seliazed window object to executeScript.
+ * Wrapper to allow passing a serialized window object to executeScript.
  *
  * @param {!(string|Function)} fn The function to execute.
  * @param {Array.<*>} args Array of arguments to pass to fn.

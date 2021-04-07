@@ -125,7 +125,7 @@ webdriver.Capability = {
    */
   PROXY: 'proxy',
 
-  /** Whether the driver supports changing the brower's orientation. */
+  /** Whether the driver supports changing the browser's orientation. */
   ROTATABLE: 'rotatable',
 
   /**
@@ -223,8 +223,7 @@ webdriver.Capabilities.ie = function() {
  */
 webdriver.Capabilities.edge = function() {
   return new webdriver.Capabilities().
-    set(webdriver.Capability.BROWSER_NAME, webdriver.Browser.EDGE).
-    set(webdriver.Capability.PLATFORM, 'WINDOWS');
+    set(webdriver.Capability.BROWSER_NAME, webdriver.Browser.EDGE);
 };
 
 

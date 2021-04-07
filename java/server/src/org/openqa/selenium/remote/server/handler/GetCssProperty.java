@@ -36,7 +36,7 @@ public class GetCssProperty extends WebElementHandler<String> {
   }
 
   @Override
-  public String call() throws Exception {
+  public String call() {
     WebElement element = getElement();
     return element.getCssValue(propertyName);
   }

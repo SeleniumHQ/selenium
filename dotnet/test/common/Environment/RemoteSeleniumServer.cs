@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Diagnostics;
 using System.IO;
 using System.Net;
@@ -32,11 +32,16 @@ namespace OpenQA.Selenium.Environment
                             "go //java/server/src/org/openqa/grid/selenium:selenium"));
                 }
 
-                string currentDirectory = EnvironmentManager.Instance.CurrentDirectory;
-                string ieDriverExe = System.IO.Path.Combine(currentDirectory, "IEDriverServer.exe");
-                string chromeDriverExe = System.IO.Path.Combine(currentDirectory, "chromedriver.exe");
-                string geckoDriverExe = System.IO.Path.Combine(currentDirectory, "geckodriver.exe");
-                string edgeDriverExe = System.IO.Path.Combine(currentDirectory, "MicrosoftWebDriver.exe");
+                string serviceDirectory = EnvironmentManager.Instance.DriverServiceDirectory;
+                if (string.IsNullOrEmpty(serviceDirectory))
+                {
+                    serviceDirectory = EnvironmentManager.Instance.CurrentDirectory;
+                }
+
+                string ieDriverExe = System.IO.Path.Combine(serviceDirectory, "IEDriverServer.exe");
+                string chromeDriverExe = System.IO.Path.Combine(serviceDirectory, "chromedriver.exe");
+                string geckoDriverExe = System.IO.Path.Combine(serviceDirectory, "geckodriver.exe");
+                string edgeDriverExe = System.IO.Path.Combine(serviceDirectory, "MicrosoftWebDriver.exe");
                 webserverProcess = new Process();
                 webserverProcess.StartInfo.FileName = "java.exe";
                 webserverProcess.StartInfo.Arguments = "-Dwebdriver.ie.driver=" + ieDriverExe

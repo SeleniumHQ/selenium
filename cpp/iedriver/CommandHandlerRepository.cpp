@@ -25,6 +25,7 @@
 #include "CommandHandlers/ClickElementCommandHandler.h"
 #include "CommandHandlers/ClearElementCommandHandler.h"
 #include "CommandHandlers/CloseWindowCommandHandler.h"
+#include "CommandHandlers/CreateNewWindowCommandHandler.h"
 #include "CommandHandlers/DeleteAllCookiesCommandHandler.h"
 #include "CommandHandlers/DeleteCookieCommandHandler.h"
 #include "CommandHandlers/DismissAlertCommandHandler.h"
@@ -123,6 +124,7 @@ void CommandHandlerRepository::PopulateCommandHandlers() {
   this->command_handlers_[webdriver::CommandType::CloseWindow] = CommandHandlerHandle(new CloseWindowCommandHandler);
   this->command_handlers_[webdriver::CommandType::SwitchToWindow] = CommandHandlerHandle(new SwitchToWindowCommandHandler);
   this->command_handlers_[webdriver::CommandType::GetWindowHandles] = CommandHandlerHandle(new GetAllWindowHandlesCommandHandler);
+  this->command_handlers_[webdriver::CommandType::NewWindow] = CommandHandlerHandle(new CreateNewWindowCommandHandler);
   this->command_handlers_[webdriver::CommandType::SwitchToFrame] = CommandHandlerHandle(new SwitchToFrameCommandHandler);
   this->command_handlers_[webdriver::CommandType::SwitchToParentFrame] = CommandHandlerHandle(new SwitchToParentFrameCommandHandler);
   this->command_handlers_[webdriver::CommandType::GetWindowRect] = CommandHandlerHandle(new GetWindowRectCommandHandler);

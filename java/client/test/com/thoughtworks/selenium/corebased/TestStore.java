@@ -24,14 +24,14 @@ import org.junit.Test;
 public class TestStore extends InternalSelenseTestBase {
   @Test
   public void testStore() {
-    selenium.open("../tests/html/test_verifications.html");
+    selenium.open("test_verifications.html");
     String storedHiddenValue = selenium.getValue("theHidden");
     String storedSpanText = selenium.getText("theSpan");
     String storedTextClass = selenium.getAttribute("theText@class");
     String storedTitle = selenium.getTitle();
     String textVariable = "PLAIN TEXT";
     String javascriptVariable = selenium.getEval("'Pi ~= ' +\n (Math.round(Math.PI * 100) / 100)");
-    selenium.open("../tests/html/test_store_value.html");
+    selenium.open("test_store_value.html");
     selenium.type("theText", storedHiddenValue);
     verifyEquals(selenium.getValue("theText"), "the hidden value");
     selenium.type("theText", storedSpanText);
@@ -48,9 +48,9 @@ public class TestStore extends InternalSelenseTestBase {
     selenium.type("theText", "'" + storedHiddenValue + "'_'" + storedSpanText + "'");
     verifyEquals(selenium.getValue("theText"), "'the hidden value'_'this is the span'");
     // backward compatibility
-    selenium.open("../tests/html/test_just_text.html");
+    selenium.open("test_just_text.html");
     String storedBodyText = selenium.getBodyText();
-    selenium.open("../tests/html/test_store_value.html");
+    selenium.open("test_store_value.html");
     verifyEquals(selenium.getValue("theText"), "");
     selenium.type("theText", storedBodyText);
     verifyEquals(selenium.getValue("theText"), "This is the entire text of the page.");

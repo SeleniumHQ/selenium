@@ -19,6 +19,7 @@
 #include "errorcodes.h"
 #include "../Browser.h"
 #include "../IECommandExecutor.h"
+#include "../WebDriverConstants.h"
 
 namespace webdriver {
 

@@ -1,4 +1,4 @@
-﻿// <copyright file="InternetExplorerDriverService.cs" company="WebDriver Committers">
+// <copyright file="InternetExplorerDriverService.cs" company="WebDriver Committers">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements. See the NOTICE file
 // distributed with this work for additional information
@@ -116,12 +116,12 @@ namespace OpenQA.Selenium.IE
 
                 if (!string.IsNullOrEmpty(this.logFile))
                 {
-                    argsBuilder.Append(string.Format(CultureInfo.InvariantCulture, " -log-file={0}", this.logFile));
+                    argsBuilder.Append(string.Format(CultureInfo.InvariantCulture, " -log-file=\"{0}\"", this.logFile));
                 }
 
                 if (!string.IsNullOrEmpty(this.libraryExtractionPath))
                 {
-                    argsBuilder.Append(string.Format(CultureInfo.InvariantCulture, " -extract-path={0}", this.libraryExtractionPath));
+                    argsBuilder.Append(string.Format(CultureInfo.InvariantCulture, " -extract-path=\"{0}\"", this.libraryExtractionPath));
                 }
 
                 if (this.loggingLevel != InternetExplorerDriverLogLevel.Fatal)

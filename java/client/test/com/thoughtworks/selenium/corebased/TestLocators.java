@@ -24,7 +24,7 @@ import org.junit.Test;
 public class TestLocators extends InternalSelenseTestBase {
   @Test
   public void testLocators() {
-    selenium.open("../tests/html/test_locators.html");
+    selenium.open("test_locators.html");
     // Id location
     verifyEquals(selenium.getText("id=id1"), "this is the first element");
     verifyFalse(selenium.isElementPresent("id=name1"));

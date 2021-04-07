@@ -24,9 +24,9 @@ import org.junit.Test;
 public class TestFramesClick extends InternalSelenseTestBase {
   @Test
   public void testFramesClick() throws Exception {
-    selenium.open("../tests/html/Frames.html");
+    selenium.open("Frames.html");
     selenium.selectFrame("mainFrame");
-    selenium.open("../tests/html/test_click_page1.html");
+    selenium.open("test_click_page1.html");
     // Click a regular link
     verifyEquals(selenium.getText("link"), "Click here for next page");
     selenium.click("link");
@@ -56,7 +56,7 @@ public class TestFramesClick extends InternalSelenseTestBase {
     Thread.sleep(300);
     verifyEquals(selenium.getTitle(), "Click Page 1");
     selenium.setTimeout("5000");
-    selenium.open("../tests/html/test_click_page1.html");
+    selenium.open("test_click_page1.html");
     // TODO Click a link with a target attribute
   }
 }

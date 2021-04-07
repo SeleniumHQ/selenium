@@ -19,8 +19,8 @@ package org.openqa.selenium.testing.drivers;
 
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.firefox.FirefoxOptions;
 import org.openqa.selenium.json.Json;
-import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.LocalFileDetector;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.remote.http.HttpClient;
@@ -35,6 +35,8 @@ import java.net.URL;
 import java.time.Duration;
 import java.util.Map;
 import java.util.function.Supplier;
+
+import static org.openqa.selenium.remote.http.Contents.string;
 
 public class GridSupplier implements Supplier<WebDriver> {
 
@@ -82,30 +84,26 @@ public class GridSupplier implements Supplier<WebDriver> {
     }
 
     // Keep polling the status page of the hub until it claims to be ready
-    HttpClient client = HttpClient.Factory.createDefault().createClient(hub.getWebDriverUrl());
-    Json json = new Json();
-    Wait<HttpClient> wait = new FluentWait<>(client)
-        .ignoring(RuntimeException.class)
-        .withTimeout(Duration.ofSeconds(30));
-    wait.until(c -> {
-      HttpRequest req = new HttpRequest(HttpMethod.GET, "/status");
-      HttpResponse response = null;
-      try {
-        response = c.execute(req);
-      } catch (IOException e) {
-        throw new RuntimeException(e);
-      }
-      Map<?, ?> value = json.toType(response.getContentString(), Map.class);
+    try (HttpClient client = HttpClient.Factory.createDefault().createClient(hub.getWebDriverUrl())) {
+      Json json = new Json();
+      Wait<HttpClient> wait = new FluentWait<>(client)
+          .ignoring(RuntimeException.class)
+          .withTimeout(Duration.ofSeconds(30));
+      wait.until(c -> {
+        HttpRequest req = new HttpRequest(HttpMethod.GET, "/status");
+        HttpResponse response = c.execute(req);
+        Map<?, ?> value = json.toType(string(response), Map.class);
 
-      return ((Map<?, ?>) value.get("value")).get("ready") == Boolean.TRUE;
-    });
+        return Boolean.TRUE.equals(((Map<?, ?>) value.get("value")).get("ready"));
+      });
+    }
 
     started = true;
   }
 
   public static void main(String[] args) {
     System.setProperty("selenium.browser.grid", "true");
-    WebDriver driver = new GridSupplier(DesiredCapabilities.firefox()).get();
+    WebDriver driver = new GridSupplier(new FirefoxOptions()).get();
     driver.get("http://www.google.com");
   }
 }

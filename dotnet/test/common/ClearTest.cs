@@ -113,11 +113,11 @@ namespace OpenQA.Selenium
         [Test]
         public void ShouldBeAbleToClearUrlInput()
         {
-            ShouldBeAbleToClearInput(By.Name("url_input"), "http://seleniumhq.org/");
+            ShouldBeAbleToClearInput(By.Name("url_input"), "https://selenium.dev/");
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Edge, "Driver sees range input as not editable")]
+        [IgnoreBrowser(Browser.EdgeLegacy, "Driver sees range input as not editable")]
         public void ShouldBeAbleToClearRangeInput()
         {
             ShouldBeAbleToClearInput(By.Name("range_input"), "42", "50");
@@ -126,6 +126,7 @@ namespace OpenQA.Selenium
         [Test]
         [IgnoreBrowser(Browser.Chrome, "Driver sees checkbox as not editable")]
         [IgnoreBrowser(Browser.Edge, "Driver sees checkbox as not editable")]
+        [IgnoreBrowser(Browser.EdgeLegacy, "Driver sees checkbox as not editable")]
         [IgnoreBrowser(Browser.Firefox, "Driver sees checkbox as not editable")]
         [IgnoreBrowser(Browser.IE, "Driver sees checkbox as not editable")]
         [IgnoreBrowser(Browser.Safari, "Driver sees checkbox as not editable")]
@@ -135,7 +136,7 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Edge, "Driver sees color input as not editable")]
+        [IgnoreBrowser(Browser.EdgeLegacy, "Driver sees color input as not editable")]
         [IgnoreBrowser(Browser.IE, "Driver does not support clearing color elements")]
         public void ShouldBeAbleToClearColorInput()
         {

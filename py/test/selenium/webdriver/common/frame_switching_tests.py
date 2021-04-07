@@ -137,37 +137,37 @@ def testFrameSearchesShouldBeRelativeToTheCurrentlySelectedFrame(driver, pages):
     assert driver.find_element(By.ID, "pageNumber").text == "2"
 
     with pytest.raises(NoSuchElementException):
-        driver.switch_to.frame(driver.find_element_by_name("third"))
+        driver.switch_to.frame(driver.find_element(By.NAME, "third"))
 
     driver.switch_to.default_content()
-    driver.switch_to.frame(driver.find_element_by_name("third"))
+    driver.switch_to.frame(driver.find_element(By.NAME, "third"))
 
     with pytest.raises(NoSuchFrameException):
         driver.switch_to.frame("second")
 
     driver.switch_to.default_content()
-    driver.switch_to.frame(driver.find_element_by_name("second"))
+    driver.switch_to.frame(driver.find_element(By.NAME, "second"))
     assert driver.find_element(By.ID, "pageNumber").text == "2"
 
 
 def testShouldSelectChildFramesByChainedCalls(driver, pages):
     pages.load("frameset.html")
-    driver.switch_to.frame(driver.find_element_by_name("fourth"))
-    driver.switch_to.frame(driver.find_element_by_name("child2"))
+    driver.switch_to.frame(driver.find_element(By.NAME, "fourth"))
+    driver.switch_to.frame(driver.find_element(By.NAME, "child2"))
     assert driver.find_element(By.ID, "pageNumber").text == "11"
 
 
 def testShouldThrowFrameNotFoundExceptionLookingUpSubFramesWithSuperFrameNames(driver, pages):
     pages.load("frameset.html")
-    driver.switch_to.frame(driver.find_element_by_name("fourth"))
+    driver.switch_to.frame(driver.find_element(By.NAME, "fourth"))
     with pytest.raises(NoSuchElementException):
-        driver.switch_to.frame(driver.find_element_by_name("second"))
+        driver.switch_to.frame(driver.find_element(By.NAME, "second"))
 
 
 def testShouldThrowAnExceptionWhenAFrameCannotBeFound(driver, pages):
     pages.load("xhtmlTest.html")
     with pytest.raises(NoSuchElementException):
-        driver.switch_to.frame(driver.find_element_by_name("Nothing here"))
+        driver.switch_to.frame(driver.find_element(By.NAME, "Nothing here"))
 
 
 def testShouldThrowAnExceptionWhenAFrameCannotBeFoundByIndex(driver, pages):
@@ -178,18 +178,19 @@ def testShouldThrowAnExceptionWhenAFrameCannotBeFoundByIndex(driver, pages):
 
 def testShouldBeAbleToSwitchToParentFrame(driver, pages):
     pages.load("frameset.html")
-    driver.switch_to.frame(driver.find_element_by_name("fourth"))
+    driver.switch_to.frame(driver.find_element(By.NAME, "fourth"))
     driver.switch_to.parent_frame()
-    driver.switch_to.frame(driver.find_element_by_name("first"))
+    driver.switch_to.frame(driver.find_element(By.NAME, "first"))
     assert driver.find_element(By.ID, "pageNumber").text == "1"
 
 
+@pytest.mark.xfail_safari
 def testShouldBeAbleToSwitchToParentFrameFromASecondLevelFrame(driver, pages):
     pages.load("frameset.html")
-    driver.switch_to.frame(driver.find_element_by_name("fourth"))
-    driver.switch_to.frame(driver.find_element_by_name("child1"))
+    driver.switch_to.frame(driver.find_element(By.NAME, "fourth"))
+    driver.switch_to.frame(driver.find_element(By.NAME, "child1"))
     driver.switch_to.parent_frame()
-    driver.switch_to.frame(driver.find_element_by_name("child2"))
+    driver.switch_to.frame(driver.find_element(By.NAME, "child2"))
     assert driver.find_element(By.ID, "pageNumber").text == "11"
 
 
@@ -225,10 +226,11 @@ def testShouldContinueToReferToTheSameFrameOnceItHasBeenSelected(driver, pages):
     WebDriverWait(driver, 3).until(EC.text_to_be_present_in_element((By.XPATH, '//p'), 'Success!'))
 
 
-@pytest.mark.xfail_marionette(raises=WebDriverException,
-                              reason='https://github.com/mozilla/geckodriver/issues/610')
+@pytest.mark.xfail_firefox(raises=WebDriverException,
+                           reason='https://github.com/mozilla/geckodriver/issues/610')
 @pytest.mark.xfail_remote(raises=WebDriverException,
                           reason='https://github.com/mozilla/geckodriver/issues/610')
+@pytest.mark.xfail_safari
 def testShouldFocusOnTheReplacementWhenAFrameFollowsALinkToA_TopTargetedPage(driver, pages):
     pages.load("frameset.html")
     driver.switch_to.frame(0)
@@ -274,7 +276,7 @@ def testShouldBeAbleToClickInAFrame(driver, pages):
 
 def testShouldBeAbleToClickInAFrameThatRewritesTopWindowLocation(driver, pages):
     pages.load("click_tests/issue5237.html")
-    driver.switch_to.frame(driver.find_element_by_id("search"))
+    driver.switch_to.frame(driver.find_element(By.ID, "search"))
     driver.find_element(By.ID, "submit").click()
     driver.switch_to.default_content()
     WebDriverWait(driver, 3).until(EC.title_is("Target page for issue 5237"))
@@ -282,8 +284,8 @@ def testShouldBeAbleToClickInAFrameThatRewritesTopWindowLocation(driver, pages):
 
 def testShouldBeAbleToClickInASubFrame(driver, pages):
     pages.load("frameset.html")
-    driver.switch_to.frame(driver.find_element_by_id("sixth"))
-    driver.switch_to.frame(driver.find_element_by_id("iframe1"))
+    driver.switch_to.frame(driver.find_element(By.ID, "sixth"))
+    driver.switch_to.frame(driver.find_element(By.ID, "iframe1"))
 
     # This should replace frame "iframe1" inside frame "sixth" ...
     driver.find_element(By.ID, "submitButton").click()
@@ -291,14 +293,14 @@ def testShouldBeAbleToClickInASubFrame(driver, pages):
     assert getTextOfGreetingElement(driver), "Success!"
     # Make sure it was really frame "iframe1" inside frame "sixth" which was replaced ...
     driver.switch_to.default_content()
-    driver.switch_to.frame(driver.find_element_by_id("sixth"))
-    driver.switch_to.frame(driver.find_element_by_id("iframe1"))
+    driver.switch_to.frame(driver.find_element(By.ID, "sixth"))
+    driver.switch_to.frame(driver.find_element(By.ID, "iframe1"))
     assert driver.find_element(By.ID, "greeting").text == "Success!"
 
 
 def testShouldBeAbleToFindElementsInIframesByXPath(driver, pages):
     pages.load("iframes.html")
-    driver.switch_to.frame(driver.find_element_by_id("iframe1"))
+    driver.switch_to.frame(driver.find_element(By.ID, "iframe1"))
     element = driver.find_element(By.XPATH, "//*[@id = 'changeme']")
     assert element is not None
 
@@ -306,20 +308,20 @@ def testShouldBeAbleToFindElementsInIframesByXPath(driver, pages):
 def testGetCurrentUrlReturnsTopLevelBrowsingContextUrl(driver, pages):
     pages.load("frameset.html")
     assert "frameset.html" in driver.current_url
-    driver.switch_to.frame(driver.find_element_by_name("second"))
+    driver.switch_to.frame(driver.find_element(By.NAME, "second"))
     assert "frameset.html" in driver.current_url
 
 
 def testGetCurrentUrlReturnsTopLevelBrowsingContextUrlForIframes(driver, pages):
     pages.load("iframes.html")
     assert "iframes.html" in driver.current_url
-    driver.switch_to.frame(driver.find_element_by_id("iframe1"))
+    driver.switch_to.frame(driver.find_element(By.ID, "iframe1"))
     assert "iframes.html" in driver.current_url
 
 
 def testShouldBeAbleToSwitchToTheTopIfTheFrameIsDeletedFromUnderUs(driver, pages):
     pages.load("frame_switching_tests/deletingFrame.html")
-    driver.switch_to.frame(driver.find_element_by_id("iframe1"))
+    driver.switch_to.frame(driver.find_element(By.ID, "iframe1"))
 
     killIframe = driver.find_element(By.ID, "killIframe")
     killIframe.click()
@@ -330,7 +332,7 @@ def testShouldBeAbleToSwitchToTheTopIfTheFrameIsDeletedFromUnderUs(driver, pages
     addIFrame = driver.find_element(By.ID, "addBackFrame")
     addIFrame.click()
     WebDriverWait(driver, 3).until(EC.presence_of_element_located((By.ID, "iframe1")))
-    driver.switch_to.frame(driver.find_element_by_id("iframe1"))
+    driver.switch_to.frame(driver.find_element(By.ID, "iframe1"))
     WebDriverWait(driver, 3).until(EC.presence_of_element_located((By.ID, "success")))
 
 
@@ -366,26 +368,28 @@ def testShouldBeAbleToSwitchToTheTopIfTheFrameIsDeletedFromUnderUsWithWebelement
     WebDriverWait(driver, 3).until(EC.presence_of_element_located((By.ID, "success")))
 
 
-@pytest.mark.xfail_chrome(raises=NoSuchElementException)
-@pytest.mark.xfail_marionette(raises=WebDriverException,
-                              reason='https://github.com/mozilla/geckodriver/issues/614')
-@pytest.mark.xfail_remote(raises=WebDriverException,
-                          reason='https://github.com/mozilla/geckodriver/issues/614')
-@pytest.mark.xfail_webkitgtk(raises=NoSuchElementException)
-def testShouldNotBeAbleToDoAnythingTheFrameIsDeletedFromUnderUs(driver, pages):
-    pages.load("frame_switching_tests/deletingFrame.html")
-    driver.switch_to.frame(driver.find_element_by_id("iframe1"))
+# @pytest.mark.xfail_chrome(raises=NoSuchElementException)
+# @pytest.mark.xfail_chromiumedge(raises=NoSuchElementException)
+# @pytest.mark.xfail_firefox(raises=WebDriverException,
+#                            reason='https://github.com/mozilla/geckodriver/issues/614')
+# @pytest.mark.xfail_remote(raises=WebDriverException,
+#                           reason='https://github.com/mozilla/geckodriver/issues/614')
+# @pytest.mark.xfail_webkitgtk(raises=NoSuchElementException)
+# @pytest.mark.xfail_safari
+# def testShouldNotBeAbleToDoAnythingTheFrameIsDeletedFromUnderUs(driver, pages):
+#     pages.load("frame_switching_tests/deletingFrame.html")
+#     driver.switch_to.frame(driver.find_element(By.ID, "iframe1"))
 
-    killIframe = driver.find_element(By.ID, "killIframe")
-    killIframe.click()
+#     killIframe = driver.find_element(By.ID, "killIframe")
+#     killIframe.click()
 
-    with pytest.raises(NoSuchFrameException):
-        driver.find_element(By.ID, "killIframe").click()
+#     with pytest.raises(NoSuchFrameException):
+#         driver.find_element(By.ID, "killIframe").click()
 
 
 def testShouldReturnWindowTitleInAFrameset(driver, pages):
     pages.load("frameset.html")
-    driver.switch_to.frame(driver.find_element_by_name("third"))
+    driver.switch_to.frame(driver.find_element(By.NAME, "third"))
     assert "Unique title" == driver.title
 
 
@@ -396,6 +400,8 @@ def testJavaScriptShouldExecuteInTheContextOfTheCurrentFrame(driver, pages):
     assert driver.execute_script("return window != window.top")
 
 
+@pytest.mark.xfail_chrome(reason="Fails on Travis")
+@pytest.mark.xfail_safari
 def testShouldNotSwitchMagicallyToTheTopWindow(driver, pages):
     pages.load("frame_switching_tests/bug4876.html")
     driver.switch_to.frame(0)

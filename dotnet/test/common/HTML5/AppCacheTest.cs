@@ -6,7 +6,7 @@ namespace OpenQA.Selenium.Html5
     [TestFixture]
     public class AppCacheTest : DriverTestFixture
     {
-        [Test]
+        //[Test]
 		[IgnoreBrowser(Browser.Safari, "Unimplemented feature")]
 		public void TestAppCacheStatus()
         {

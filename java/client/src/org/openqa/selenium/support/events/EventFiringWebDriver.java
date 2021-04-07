@@ -32,6 +32,7 @@ import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.WindowType;
 import org.openqa.selenium.WrapsDriver;
 import org.openqa.selenium.WrapsElement;
 import org.openqa.selenium.interactions.Coordinates;
@@ -51,6 +52,7 @@ import org.openqa.selenium.support.events.internal.EventFiringTouch;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Proxy;
 import java.net.URL;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -65,10 +67,18 @@ import java.util.stream.Collectors;
 /**
  * A wrapper around an arbitrary {@link WebDriver} instance which supports registering of a
  * {@link WebDriverEventListener}, e&#46;g&#46; for logging purposes.
+ * @deprecated Use {@link EventFiringDecorator} and {@link WebDriverListener} instead
  */
-public class EventFiringWebDriver implements WebDriver, JavascriptExecutor, TakesScreenshot,
-                                             WrapsDriver, HasInputDevices, HasTouchScreen,
-                                             Interactive, HasCapabilities {
+@Deprecated
+public class EventFiringWebDriver implements
+  WebDriver,
+  JavascriptExecutor,
+  TakesScreenshot,
+  WrapsDriver,
+  HasInputDevices,
+  HasTouchScreen,
+  Interactive,
+  HasCapabilities {
 
   private final WebDriver driver;
 
@@ -119,7 +129,7 @@ public class EventFiringWebDriver implements WebDriver, JavascriptExecutor, Take
     }
     extractInterfaces(allInterfaces, object.getClass());
 
-    return allInterfaces.toArray(new Class<?>[allInterfaces.size()]);
+    return allInterfaces.toArray(new Class<?>[0]);
   }
 
   private void extractInterfaces(Set<Class<?>> addTo, Class<?> clazz) {
@@ -267,8 +277,8 @@ public class EventFiringWebDriver implements WebDriver, JavascriptExecutor, Take
     } else if (arg instanceof Map<?, ?>) {
       Map<?, ?> aMap = (Map<?, ?>) arg;
       Map<Object, Object> toReturn = new HashMap<>();
-      for (Object key : aMap.keySet()) {
-        toReturn.put(key, unpackWrappedElement(aMap.get(key)));
+      for (Map.Entry<?, ?> entry : aMap.entrySet()) {
+        toReturn.put(entry.getKey(), unpackWrappedElement(entry.getValue()));
       }
       return toReturn;
     } else if (arg instanceof EventFiringWebElement) {
@@ -665,22 +675,55 @@ public class EventFiringWebDriver implements WebDriver, JavascriptExecutor, Take
       this.timeouts = timeouts;
     }
 
+    @Deprecated
     @Override
     public Timeouts implicitlyWait(long time, TimeUnit unit) {
-      timeouts.implicitlyWait(time, unit);
+      return implicitlyWait(Duration.ofMillis(unit.toMillis(time)));
+    }
+
+    @Override
+    public Timeouts implicitlyWait(Duration duration) {
+      timeouts.implicitlyWait(duration);
       return this;
     }
 
+    @Override
+    public Duration getImplicitWaitTimeout() {
+      return timeouts.getImplicitWaitTimeout();
+    }
+
+    @Deprecated
     @Override
     public Timeouts setScriptTimeout(long time, TimeUnit unit) {
-      timeouts.setScriptTimeout(time, unit);
+      return setScriptTimeout(Duration.ofMillis(unit.toMillis(time)));
+    }
+
+    @Override
+    public Timeouts setScriptTimeout(Duration duration) {
+      timeouts.setScriptTimeout(duration);
       return this;
     }
 
     @Override
+    public Duration getScriptTimeout() {
+      return timeouts.getScriptTimeout();
+    }
+
+    @Deprecated
+    @Override
     public Timeouts pageLoadTimeout(long time, TimeUnit unit) {
-      timeouts.pageLoadTimeout(time, unit);
+      return pageLoadTimeout(Duration.ofMillis(unit.toMillis(time)));
+    }
+
+    @Override
+    public Timeouts pageLoadTimeout(Duration duration) {
+      timeouts.pageLoadTimeout(duration);
       return this;
+    }
+
+    @Override
+    public Duration getPageLoadTimeout() {
+      return timeouts.getPageLoadTimeout();
     }
   }
 
@@ -717,6 +760,14 @@ public class EventFiringWebDriver implements WebDriver, JavascriptExecutor, Take
       dispatcher.beforeSwitchToWindow(windowName, driver);
       WebDriver driverToReturn = targetLocator.window(windowName);
       dispatcher.afterSwitchToWindow(windowName, driver);
+      return driverToReturn;
+    }
+
+    @Override
+    public WebDriver newWindow(WindowType typeHint) {
+      dispatcher.beforeSwitchToWindow(null, driver);
+      WebDriver driverToReturn = targetLocator.newWindow(typeHint);
+      dispatcher.afterSwitchToWindow(null, driver);
       return driverToReturn;
     }
 
@@ -767,6 +818,11 @@ public class EventFiringWebDriver implements WebDriver, JavascriptExecutor, Take
     @Override
     public void maximize() {
       window.maximize();
+    }
+
+    @Override
+    public void minimize() {
+      window.minimize();
     }
 
     @Override

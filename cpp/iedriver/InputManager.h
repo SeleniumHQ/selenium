@@ -51,6 +51,7 @@ struct KeyInfo {
   bool is_extended_key;
   bool is_webdriver_key;
   bool is_ignored_key;
+  bool is_force_scan_code;
   wchar_t character;
 };
 
@@ -118,7 +119,7 @@ public:
   InputState CloneCurrentInputState(void);
   void UpdatePressedKeys(wchar_t character, bool press_key);
   bool IsKeyPressed(wchar_t character);
-  bool IsSingleKey(std::wstring* input);
+  bool IsSingleKey(const std::wstring& input);
 
   void SetupKeyDescriptions(void);
   std::wstring GetKeyDescription(const wchar_t character);

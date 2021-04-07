@@ -91,44 +91,27 @@ namespace OpenQA.Selenium.Remote
         {
             get
             {
-                string timeoutName = LegacyPageLoadTimeoutName;
-                if (this.driver.IsSpecificationCompliant)
-                {
-                    timeoutName = PageLoadTimeoutName;
-                }
-
+                string timeoutName = PageLoadTimeoutName;
                 return this.ExecuteGetTimeout(timeoutName);
             }
 
             set
             {
-                string timeoutName = LegacyPageLoadTimeoutName;
-                if (this.driver.IsSpecificationCompliant)
-                {
-                    timeoutName = PageLoadTimeoutName;
-                }
-
+                string timeoutName = PageLoadTimeoutName;
                 this.ExecuteSetTimeout(timeoutName, value);
             }
         }
 
         private TimeSpan ExecuteGetTimeout(string timeoutType)
         {
-            if (this.driver.IsSpecificationCompliant)
+            Response commandResponse = this.driver.InternalExecute(DriverCommand.GetTimeouts, null);
+            Dictionary<string, object> responseValue = (Dictionary<string, object>)commandResponse.Value;
+            if (!responseValue.ContainsKey(timeoutType))
             {
-                Response commandResponse = this.driver.InternalExecute(DriverCommand.GetTimeouts, null);
-                Dictionary<string, object> responseValue = (Dictionary<string, object>)commandResponse.Value;
-                if (!responseValue.ContainsKey(timeoutType))
-                {
-                    throw new WebDriverException("Specified timeout type not defined");
-                }
+                throw new WebDriverException("Specified timeout type not defined");
+            }
 
-                return TimeSpan.FromMilliseconds(Convert.ToDouble(responseValue[timeoutType], CultureInfo.InvariantCulture));
-            }
-            else
-            {
-                throw new NotImplementedException("Driver instance must comply with the W3C specification to support getting timeout values.");
-            }
+            return TimeSpan.FromMilliseconds(Convert.ToDouble(responseValue[timeoutType], CultureInfo.InvariantCulture));
         }
 
         private void ExecuteSetTimeout(string timeoutType, TimeSpan timeToWait)
@@ -136,38 +119,22 @@ namespace OpenQA.Selenium.Remote
             double milliseconds = timeToWait.TotalMilliseconds;
             if (timeToWait == TimeSpan.MinValue)
             {
-                if (this.driver.IsSpecificationCompliant)
+                if (timeoutType == ImplicitTimeoutName)
                 {
-                    if (timeoutType == ImplicitTimeoutName)
-                    {
-                        milliseconds = DefaultImplicitWaitTimeout.TotalMilliseconds;
-                    }
-                    else if (timeoutType == AsyncScriptTimeoutName)
-                    {
-                        milliseconds = DefaultAsyncScriptTimeout.TotalMilliseconds;
-                    }
-                    else
-                    {
-                        milliseconds = DefaultPageLoadTimeout.TotalMilliseconds;
-                    }
+                    milliseconds = DefaultImplicitWaitTimeout.TotalMilliseconds;
+                }
+                else if (timeoutType == AsyncScriptTimeoutName)
+                {
+                    milliseconds = DefaultAsyncScriptTimeout.TotalMilliseconds;
                 }
                 else
                 {
-                    milliseconds = -1;
+                    milliseconds = DefaultPageLoadTimeout.TotalMilliseconds;
                 }
             }
 
             Dictionary<string, object> parameters = new Dictionary<string, object>();
-            if (this.driver.IsSpecificationCompliant)
-            {
-                parameters.Add(timeoutType, Convert.ToInt64(milliseconds));
-            }
-            else
-            {
-                parameters.Add("type", timeoutType);
-                parameters.Add("ms", milliseconds);
-            }
-
+            parameters.Add(timeoutType, Convert.ToInt64(milliseconds));
             this.driver.InternalExecute(DriverCommand.SetTimeouts, parameters);
         }
     }

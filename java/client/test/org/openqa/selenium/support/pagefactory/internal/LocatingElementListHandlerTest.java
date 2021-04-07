@@ -22,7 +22,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
-import static org.mockito.Mockito.verifyZeroInteractions;
+import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
 import org.junit.Test;
@@ -62,7 +62,7 @@ public class LocatingElementListHandlerTest {
     verify(locator, times(2)).findElements();
     verify(element2, times(1)).sendKeys("Fishy");
     verifyNoMoreInteractions(locator, element2);
-    verifyZeroInteractions(element1);
+    verifyNoInteractions(element1);
   }
 
   @Test

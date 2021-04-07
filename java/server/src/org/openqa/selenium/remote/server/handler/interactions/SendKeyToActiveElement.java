@@ -44,7 +44,7 @@ public class SendKeyToActiveElement extends WebDriverHandler<Void> {
   }
 
   @Override
-  public Void call() throws Exception {
+  public Void call() {
     Keyboard keyboard = ((HasInputDevices) getDriver()).getKeyboard();
 
     String[] keysToSend = keys.toArray(new String[0]);

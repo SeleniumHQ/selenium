@@ -24,7 +24,7 @@ import org.junit.Test;
 public class TestGettingValueOfCheckbox extends InternalSelenseTestBase {
   @Test
   public void testGettingValueOfCheckbox() {
-    selenium.open("../tests/html/test_submit.html");
+    selenium.open("test_submit.html");
 
     String elementLocator = "name=okayToSubmit";
     assertEquals("off", selenium.getValue(elementLocator));

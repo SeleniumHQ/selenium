@@ -21,12 +21,15 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.withSettings;
 
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.interactions.HasTouchScreen;
+import org.openqa.selenium.testing.UnitTests;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
+@Category(UnitTests.class)
 public class ThreadGuardTest {
 
   @Test

@@ -1,0 +1,10 @@
+You can find out more about topics concerning Selenium Grid by running
+the "info" command followed by:
+
+* config - Help on how to configure Selenium
+* tracing - Help on how distributed tracing works with selenium
+* security - Help on how how to secure communications to and within selenium
+* sessionmap - Help on different types of sessionmap and how to start them.
+
+Each topic will give you enough information to help you get started, and
+contains some pointers on our site to provide more complete information.

@@ -17,25 +17,26 @@
 
 package org.openqa.selenium.grid.node;
 
-import org.openqa.selenium.grid.web.CommandHandler;
+import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.SessionId;
+import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 
-import java.io.IOException;
-import java.util.Objects;
+import java.io.UncheckedIOException;
 
-class StopNodeSession implements CommandHandler {
+class StopNodeSession implements HttpHandler {
   private final Node node;
   private final SessionId id;
 
   StopNodeSession(Node node, SessionId id) {
-    this.node = Objects.requireNonNull(node);
-    this.id = Objects.requireNonNull(id);
+    this.node = Require.nonNull("Node", node);
+    this.id = Require.nonNull("Session id", id);
   }
 
   @Override
-  public void execute(HttpRequest req, HttpResponse resp) throws IOException {
+  public HttpResponse execute(HttpRequest req) throws UncheckedIOException {
     node.stop(id);
+    return new HttpResponse();
   }
 }

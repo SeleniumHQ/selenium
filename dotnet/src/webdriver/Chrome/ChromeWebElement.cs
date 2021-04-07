@@ -16,14 +16,14 @@
 // limitations under the License.
 // </copyright>
 
-using OpenQA.Selenium.Remote;
+using OpenQA.Selenium.Chromium;
 
 namespace OpenQA.Selenium.Chrome
 {
     /// <summary>
     /// Provides a mechanism to get elements off the page for test
     /// </summary>
-    public class ChromeWebElement : RemoteWebElement
+    public class ChromeWebElement : ChromiumWebElement
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="ChromeWebElement"/> class.

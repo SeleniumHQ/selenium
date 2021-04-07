@@ -39,7 +39,7 @@ public class FindChildElement extends WebElementHandler<Map<String, String>> {
   }
 
   @Override
-  public Map<String, String> call() throws Exception {
+  public Map<String, String> call() {
     WebElement element = getElement().findElement(by);
     String elementId = getKnownElements().add(element);
 

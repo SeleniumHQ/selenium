@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Licensed to the Software Freedom Conservancy (SFC) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -29,8 +31,16 @@ module Selenium
         base.extend ClassMethods
       end
 
+      def self.decoded(json)
+        JSON.parse(json).fetch('zip')
+      end
+
+      def encoded
+        Zipper.zip(layout_on_disk)
+      end
+
       def as_json(*)
-        {"zip" => Zipper.zip(layout_on_disk)}
+        {"zip" => encoded}
       end
 
       def to_json(*)
@@ -61,7 +71,7 @@ module Selenium
 
       module ClassMethods
         def from_json(json)
-          data = JSON.parse(json).fetch('zip')
+          data = decoded(json)
 
           # can't use Tempfile here since it doesn't support File::BINARY mode on 1.8
           # can't use Dir.mktmpdir(&blk) because of http://jira.codehaus.org/browse/JRUBY-4082

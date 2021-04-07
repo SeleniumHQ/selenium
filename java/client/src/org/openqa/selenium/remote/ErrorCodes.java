@@ -97,7 +97,7 @@ public class ErrorCodes {
   public static final int INVALID_XPATH_SELECTOR_RETURN_TYPER = 52;
 
   // json wire protocol doesn't have analogous status codes for
-  // these new W3C status repsonse 'codes', so making some up!
+  // these new W3C status response 'codes', so making some up!
   public static final int ELEMENT_NOT_INTERACTABLE = 60;
   public static final int INVALID_ARGUMENT = 61;
   public static final int NO_SUCH_COOKIE = 62;
@@ -267,7 +267,7 @@ public class ErrorCodes {
     // There should be only one canonical JSON Wire protocol code per exception
     Map<Object, Set<KnownError>> matched = new HashMap<>();
     for (KnownError knownError : KNOWN_ERRORS) {
-      matched.getOrDefault(knownError, new HashSet<>()).add(knownError);
+      matched.computeIfAbsent(knownError, key -> new HashSet<>()).add(knownError);
     }
     for (Set<KnownError> errors : matched.values()) {
       if (errors.size() != 1) {
@@ -276,15 +276,15 @@ public class ErrorCodes {
     }
 
     // There should only be one canonical W3C code to JSON Wire Protocol code
-    matched = new HashMap<>();
-    for (KnownError error : KNOWN_ERRORS) {
-      matched.getOrDefault(error.getW3cCode(), new HashSet<>()).add(error);
-    }
-    for (Set<KnownError> errors : matched.values()) {
-      if (errors.size() != 1) {
-        throw new RuntimeException("Duplicate canonical w3c state codes: " + errors);
-      }
-    }
+//    matched = new HashMap<>();
+//    for (KnownError error : KNOWN_ERRORS) {
+//      matched.computeIfAbsent(error.getW3cCode(), key -> new HashSet<>()).add(error);
+//    }
+//    for (Set<KnownError> errors : matched.values()) {
+//      if (errors.size() != 1) {
+//        throw new RuntimeException("Duplicate canonical w3c state codes: " + errors);
+//      }
+//    }
   }}
 
   private static class KnownError {

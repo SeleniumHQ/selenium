@@ -26,7 +26,7 @@ public class GetCurrentWindowHandle extends WebDriverHandler<String> {
   }
 
   @Override
-  public String call() throws Exception {
+  public String call() {
     return getDriver().getWindowHandle();
   }
 

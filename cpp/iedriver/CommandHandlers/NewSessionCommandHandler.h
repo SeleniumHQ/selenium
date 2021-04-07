@@ -56,9 +56,6 @@ class NewSessionCommandHandler : public IECommandHandler {
                         const Json::Value& proxy_capability,
                         const bool use_per_process_proxy);
 
-  Json::Value ProcessLegacyCapabilities(const IECommandExecutor& executor,
-                                        const Json::Value& capabilities,
-                                        std::string* error_message);
   Json::Value ProcessCapabilities(const IECommandExecutor& executor,
                                   const Json::Value& capabilities,
                                   std::string* error_message);

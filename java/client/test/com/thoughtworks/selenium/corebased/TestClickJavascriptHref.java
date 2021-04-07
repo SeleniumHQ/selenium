@@ -24,7 +24,7 @@ import org.junit.Test;
 public class TestClickJavascriptHref extends InternalSelenseTestBase {
   @Test
   public void testClickJavascriptHref() {
-    selenium.open("../tests/html/test_click_javascript_page.html");
+    selenium.open("test_click_javascript_page.html");
     selenium.click("link");
     verifyEquals(selenium.getAlert(), "link clicked: foo");
     selenium.click("linkWithMultipleJavascriptStatements");

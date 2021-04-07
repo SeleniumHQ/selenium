@@ -43,7 +43,7 @@ public class FindChildElements extends WebElementHandler<Set<Map<String, String>
   }
 
   @Override
-  public Set<Map<String, String>> call() throws Exception {
+  public Set<Map<String, String>> call() {
     List<WebElement> elements = getElement().findElements(by);
     return elements.stream()
         .map(element -> ImmutableMap.of("ELEMENT", getKnownElements().add(element)))

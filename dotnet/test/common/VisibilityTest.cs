@@ -224,7 +224,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.IE, "IE does not support the hidden attribute")]
         public void ShouldShowElementNotVisibleWithHiddenAttribute()
         {
             string url = EnvironmentManager.Instance.UrlBuilder.WhereIs("hidden.html");
@@ -234,7 +233,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.IE, "IE does not support the hidden attribute")]
         public void ShouldShowElementNotVisibleWhenParentElementHasHiddenAttribute()
         {
             string url = EnvironmentManager.Instance.UrlBuilder.WhereIs("hidden.html");
@@ -272,7 +270,7 @@ namespace OpenQA.Selenium
             IWebElement oranges = options[1];
 
             Assert.That(apples.Selected, Is.True, "Apples should be selected");
-            Assert.That(oranges.Selected, Is.False, "Oranges shoudl be selected");
+            Assert.That(oranges.Selected, Is.False, "Oranges should be selected");
 
             oranges.Click();
             Assert.That(apples.Selected, Is.False, "Apples should not be selected");

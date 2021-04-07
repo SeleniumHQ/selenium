@@ -29,8 +29,8 @@ public class TestQuickOpen extends InternalSelenseTestBase {
     // <td>5000</td>
     // <td>&nbsp;</td>
     // </tr>
-    selenium.open("../tests/html/test_open.html");
-    selenium.open("../tests/html/test_page.slow.html");
+    selenium.open("test_open.html");
+    selenium.open("test_page.slow.html");
     verifyTrue(selenium.isTextPresent("This is a slow-loading page"));
   }
 }

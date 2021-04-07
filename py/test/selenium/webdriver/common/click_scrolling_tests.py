@@ -62,6 +62,8 @@ def testShouldBeAbleToClickOnAnElementHiddenByOverflow(driver, pages):
     assert "line8" == driver.find_element(By.ID, "clicked").text
 
 
+@pytest.mark.xfail_firefox
+@pytest.mark.xfail_remote
 def testShouldBeAbleToClickOnAnElementHiddenByDoubleOverflow(driver, pages):
     pages.load("scrolling_tests/page_with_double_overflow_auto.html")
 
@@ -85,15 +87,13 @@ def testShouldNotScrollOverflowElementsWhichAreVisible(driver, pages):
     assert 0 == yOffset, "Should not have scrolled"
 
 
-@pytest.mark.xfail_chrome(
-    reason='https://bugs.chromium.org/p/chromedriver/issues/detail?id=1542')
-@pytest.mark.xfail_marionette
+@pytest.mark.xfail_firefox
 @pytest.mark.xfail_remote
 def testShouldNotScrollIfAlreadyScrolledAndElementIsInView(driver, pages):
     pages.load("scroll3.html")
-    driver.find_element(By.ID, "button1").click()
-    scrollTop = getScrollTop(driver)
     driver.find_element(By.ID, "button2").click()
+    scrollTop = getScrollTop(driver)
+    driver.find_element(By.ID, "button1").click()
     assert scrollTop == getScrollTop(driver)
 
 
@@ -103,19 +103,21 @@ def testShouldBeAbleToClickRadioButtonScrolledIntoView(driver, pages):
     # If we don't throw, we're good
 
 
+@pytest.mark.xfail_safari
 def testShouldScrollOverflowElementsIfClickPointIsOutOfViewButElementIsInView(driver, pages):
     pages.load("scroll5.html")
     driver.find_element(By.ID, "inner").click()
     assert "clicked" == driver.find_element(By.ID, "clicked").text
 
 
-@pytest.mark.xfail_marionette(
+@pytest.mark.xfail_firefox(
     reason='https://github.com/w3c/webdriver/issues/408')
 @pytest.mark.xfail_remote(
     reason='https://github.com/w3c/webdriver/issues/408')
+@pytest.mark.xfail_safari
 def testShouldBeAbleToClickElementInAFrameThatIsOutOfView(driver, pages):
     pages.load("scrolling_tests/page_with_frame_out_of_view.html")
-    driver.switch_to.frame(driver.find_element_by_name("frame"))
+    driver.switch_to.frame(driver.find_element(By.NAME, "frame"))
     element = driver.find_element(By.NAME, "checkbox")
     element.click()
     assert element.is_selected()
@@ -123,7 +125,7 @@ def testShouldBeAbleToClickElementInAFrameThatIsOutOfView(driver, pages):
 
 def testShouldBeAbleToClickElementThatIsOutOfViewInAFrame(driver, pages):
     pages.load("scrolling_tests/page_with_scrolling_frame.html")
-    driver.switch_to.frame(driver.find_element_by_name("scrolling_frame"))
+    driver.switch_to.frame(driver.find_element(By.NAME, "scrolling_frame"))
     element = driver.find_element(By.NAME, "scroll_checkbox")
     element.click()
     assert element.is_selected()
@@ -137,27 +139,35 @@ def testShouldNotBeAbleToClickElementThatIsOutOfViewInANonScrollableFrame(driver
     # TODO we should assert that the click was unsuccessful
 
 
+@pytest.mark.xfail_safari
 def testShouldBeAbleToClickElementThatIsOutOfViewInAFrameThatIsOutOfView(driver, pages):
     pages.load("scrolling_tests/page_with_scrolling_frame_out_of_view.html")
-    driver.switch_to.frame(driver.find_element_by_name("scrolling_frame"))
+    driver.switch_to.frame(driver.find_element(By.NAME, "scrolling_frame"))
     element = driver.find_element(By.NAME, "scroll_checkbox")
     element.click()
     assert element.is_selected()
 
 
+@pytest.mark.xfail_firefox
+@pytest.mark.xfail_chrome
+@pytest.mark.xfail_remote
 def testShouldBeAbleToClickElementThatIsOutOfViewInANestedFrame(driver, pages):
     pages.load("scrolling_tests/page_with_nested_scrolling_frames.html")
-    driver.switch_to.frame(driver.find_element_by_name("scrolling_frame"))
-    driver.switch_to.frame(driver.find_element_by_name("nested_scrolling_frame"))
+    driver.switch_to.frame(driver.find_element(By.NAME, "scrolling_frame"))
+    driver.switch_to.frame(driver.find_element(By.NAME, "nested_scrolling_frame"))
     element = driver.find_element(By.NAME, "scroll_checkbox")
     element.click()
     assert element.is_selected()
 
 
+@pytest.mark.xfail_firefox
+@pytest.mark.xfail_safari
+@pytest.mark.xfail_chrome
+@pytest.mark.xfail_remote
 def testShouldBeAbleToClickElementThatIsOutOfViewInANestedFrameThatIsOutOfView(driver, pages):
     pages.load("scrolling_tests/page_with_nested_scrolling_frames_out_of_view.html")
-    driver.switch_to.frame(driver.find_element_by_name("scrolling_frame"))
-    driver.switch_to.frame(driver.find_element_by_name("nested_scrolling_frame"))
+    driver.switch_to.frame(driver.find_element(By.NAME, "scrolling_frame"))
+    driver.switch_to.frame(driver.find_element(By.NAME, "nested_scrolling_frame"))
     element = driver.find_element(By.NAME, "scroll_checkbox")
     element.click()
     assert element.is_selected()
@@ -172,15 +182,3 @@ def testShouldNotScrollWhenGettingElementSize(driver, pages):
 
 def getScrollTop(driver):
     return driver.execute_script("return document.body.scrollTop")
-
-
-@pytest.mark.xfail_marionette(
-    reason='https://github.com/w3c/webdriver/issues/408')
-@pytest.mark.xfail_remote(
-    reason='https://github.com/w3c/webdriver/issues/408')
-def testShouldBeAbleToClickElementInATallFrame(driver, pages):
-    pages.load("scrolling_tests/page_with_tall_frame.html")
-    driver.switch_to.frame(driver.find_element_by_name("tall_frame"))
-    element = driver.find_element(By.NAME, "checkbox")
-    element.click()
-    assert element.is_selected()

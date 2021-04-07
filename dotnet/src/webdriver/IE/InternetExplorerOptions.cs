@@ -69,7 +69,7 @@ namespace OpenQA.Selenium.IE
     {
         /// <summary>
         /// Gets the name of the capability used to store IE options in
-        /// a <see cref="DesiredCapabilities"/> object.
+        /// an <see cref="ICapabilities"/> object.
         /// </summary>
         public static readonly string Capability = "se:ieOptions";
 
@@ -107,6 +107,9 @@ namespace OpenQA.Selenium.IE
         private InternetExplorerElementScrollBehavior elementScrollBehavior = InternetExplorerElementScrollBehavior.Default;
         private Dictionary<string, object> additionalInternetExplorerOptions = new Dictionary<string, object>();
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="InternetExplorerOptions"/> class.
+        /// </summary>
         public InternetExplorerOptions() : base()
         {
             this.BrowserName = BrowserNameValue;

@@ -1,0 +1,75 @@
+load("@io_bazel_rules_closure//closure:defs.bzl", "closure_js_deps", "closure_js_library")
+load("//javascript:defs.bzl", "closure_test_suite")
+
+closure_js_library(
+    name = "http",
+    srcs = glob([
+        "capabilities.js",
+        "command.js",
+        "http/*.js",
+        "logging.js",
+        "session.js",
+    ]),
+    suppress = [
+        "JSC_HIDDEN_SUPERCLASS_PROPERTY",
+        "JSC_IMPLICITLY_NULLABLE_JSDOC",
+        "JSC_MISSING_CONST_PROPERTY",
+        "JSC_UNKNOWN_EXPR_TYPE",
+        "JSC_USE_OF_GOOG_PROVIDE",
+    ],
+    visibility = ["//javascript/remote:__pkg__"],
+    deps = [
+        "//javascript/atoms:errors",
+        "@io_bazel_rules_closure//closure/library",
+    ],
+)
+
+closure_js_library(
+    name = "key",
+    srcs = ["key.js"],
+    suppress = [
+        "JSC_USE_OF_GOOG_PROVIDE",
+    ],
+    visibility = ["//javascript:__subpackages__"],
+)
+
+closure_js_library(
+    name = "all_js_for_testing",
+    testonly = 1,
+    srcs = glob(["**/*.js"]),
+    suppress = [
+        "JSC_USE_OF_GOOG_PROVIDE",
+    ],
+    visibility = ["//javascript:__pkg__"],
+    deps = ["@io_bazel_rules_closure//closure/library"],
+)
+
+filegroup(
+    name = "all_files",
+    testonly = 1,
+    srcs = glob(
+        ["**/*"],
+        exclude = [
+            "build.desc",
+        ],
+    ),
+)
+
+closure_js_deps(
+    name = "deps",
+    testonly = 1,
+    deps = [
+        ":all_js_for_testing",
+        "//javascript/webdriver/atoms:all_js_for_testing",
+    ],
+)
+
+closure_test_suite(
+    name = "test",
+    data = [
+        ":all_files",
+        ":deps",
+        "//javascript/atoms:deps",
+        "//javascript/webdriver/atoms/inject:deps",
+    ],
+)

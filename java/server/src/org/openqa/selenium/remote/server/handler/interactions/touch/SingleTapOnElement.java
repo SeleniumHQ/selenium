@@ -45,7 +45,7 @@ public class SingleTapOnElement extends WebElementHandler<Void> {
   }
 
   @Override
-  public Void call() throws Exception {
+  public Void call() {
     TouchScreen touchScreen = ((HasTouchScreen) getDriver()).getTouch();
     WebElement element = getKnownElements().get(elementId);
     Coordinates elementLocation = ((Locatable) element).getCoordinates();

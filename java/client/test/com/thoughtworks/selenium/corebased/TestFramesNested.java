@@ -19,12 +19,14 @@ package com.thoughtworks.selenium.corebased;
 
 import com.thoughtworks.selenium.InternalSelenseTestBase;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
+@Ignore
 public class TestFramesNested extends InternalSelenseTestBase {
   @Test
   public void testFramesNested() {
-    selenium.open("../tests/html/NestedFrames.html");
+    selenium.open("NestedFrames.html");
     verifyEquals(selenium.getTitle(), "NestedFrames");
     verifyFalse(selenium.isTextPresent("This is a test"));
     selenium.selectFrame("mainFrame");
@@ -32,7 +34,7 @@ public class TestFramesNested extends InternalSelenseTestBase {
     selenium.selectFrame("mainFrame");
     verifyEquals(selenium.getTitle(), "AUT");
     selenium.selectFrame("mainFrame");
-    verifyTrue(selenium.getLocation().matches("^[\\s\\S]*/tests/html/test_open\\.html$"));
+    verifyTrue(selenium.getLocation().matches("^[\\s\\S]*/common/legacy/test_open\\.html$"));
     verifyTrue(selenium.isTextPresent("This is a test"));
     selenium.selectFrame("relative=up");
     verifyEquals(selenium.getTitle(), "AUT");

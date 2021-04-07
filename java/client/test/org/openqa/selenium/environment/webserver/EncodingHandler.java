@@ -17,24 +17,27 @@
 
 package org.openqa.selenium.environment.webserver;
 
-import static java.nio.charset.StandardCharsets.UTF_16LE;
-
+import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 
-import java.util.function.BiConsumer;
+import java.io.UncheckedIOException;
 
-public class EncodingHandler implements BiConsumer<HttpRequest, HttpResponse> {
+import static java.nio.charset.StandardCharsets.UTF_16LE;
+import static org.openqa.selenium.remote.http.Contents.string;
+
+public class EncodingHandler implements HttpHandler {
 
   @Override
-  public void accept(HttpRequest request, HttpResponse response) {
-    // Data should be transferred using UTF-8. Pick a different encoding
-    response.setHeader("Content-Type", "text/html;charset=UTF-16LE");
-
+  public HttpResponse execute(HttpRequest req) throws UncheckedIOException {
     String text = "<html><title>Character encoding (UTF 16)</title>"
-                  + "<body><p id='text'>"
-                  + "\u05E9\u05DC\u05D5\u05DD" // "Shalom"
-                  + "</p></body></html>";
-    response.setContent(text.getBytes(UTF_16LE));
+      + "<body><p id='text'>"
+      + "\u05E9\u05DC\u05D5\u05DD" // "Shalom"
+      + "</p></body></html>";
+
+    // Data should be transferred using UTF-8. Pick a different encoding
+    return new HttpResponse()
+      .setHeader("Content-Type", "text/html;charset=UTF-16LE")
+      .setContent(string(text, UTF_16LE));
   }
 }

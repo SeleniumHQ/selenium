@@ -30,7 +30,7 @@ public class CaptureScreenshot extends WebDriverHandler<String> {
   }
 
   @Override
-  public String call() throws Exception {
+  public String call() {
     WebDriver driver = getUnwrappedDriver();
 
     return ((TakesScreenshot) driver).getScreenshotAs(BASE64);

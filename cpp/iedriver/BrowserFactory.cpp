@@ -31,6 +31,7 @@
 #include "FileUtilities.h"
 #include "RegistryUtilities.h"
 #include "StringUtilities.h"
+#include "WebDriverConstants.h"
 
 #define HTML_GETOBJECT_MSG L"WM_HTML_GETOBJECT"
 #define OLEACC_LIBRARY_NAME L"OLEACC.DLL"
@@ -40,6 +41,7 @@
 #define IE_FRAME_WINDOW_CLASS "IEFrame"
 #define SHELL_DOCOBJECT_VIEW_WINDOW_CLASS "Shell DocObject View"
 #define IE_SERVER_CHILD_WINDOW_CLASS "Internet Explorer_Server"
+#define ANDIE_FRAME_WINDOW_CLASS "Chrome_WidgetWin_1"
 
 #define IE_CLSID_REGISTRY_KEY L"SOFTWARE\\Classes\\InternetExplorer.Application\\CLSID"
 #define IE_SECURITY_ZONES_REGISTRY_KEY L"Software\\Microsoft\\Windows\\CurrentVersion\\Internet Settings\\Zones"
@@ -49,6 +51,7 @@
 
 #define IELAUNCHURL_ERROR_MESSAGE "IELaunchURL() returned HRESULT %X ('%s') for URL '%s'"
 #define CREATEPROCESS_ERROR_MESSAGE "CreateProcess() failed for command line '%s'"
+#define CREATEPROCESS_EDGE_ERROR "CreateProcess() failed for edge with the following command: "
 #define NULL_PROCESS_ID_ERROR_MESSAGE " successfully launched Internet Explorer, but did not return a valid process ID."
 #define PROTECTED_MODE_SETTING_ERROR_MESSAGE "Protected Mode settings are not the same for all zones. Enable Protected Mode must be set to the same value (enabled or disabled) for all zones."
 #define ZOOM_SETTING_ERROR_MESSAGE "Browser zoom level was set to %d%%. It should be set to 100%%"
@@ -94,6 +97,7 @@ BrowserFactory::BrowserFactory(void) {
   this->GetExecutableLocation();
   this->GetIEVersion();
   this->oleacc_instance_handle_ = NULL;
+  this->edge_ie_mode_ = false;
 }
 
 BrowserFactory::~BrowserFactory(void) {
@@ -120,7 +124,10 @@ void BrowserFactory::Initialize(BrowserFactorySettings settings) {
   this->clear_cache_ = settings.clear_cache_before_launch;
   this->browser_command_line_switches_ = StringUtilities::ToWString(settings.browser_command_line_switches);
   this->initial_browser_url_ = StringUtilities::ToWString(settings.initial_browser_url);
-
+  this->edge_ie_mode_ = settings.attach_to_edge_ie;
+  LOG(DEBUG) << "path before was " << settings.edge_executable_path << "\n";
+  this->edge_executable_location_ = StringUtilities::ToWString(settings.edge_executable_path);
+  LOG(DEBUG) << "path after was " << this->edge_executable_location_.c_str() << "\n";
   this->html_getobject_msg_ = ::RegisterWindowMessage(HTML_GETOBJECT_MSG);
 
   // Explicitly load MSAA so we know if it's installed
@@ -179,7 +186,9 @@ DWORD BrowserFactory::LaunchBrowserProcess(std::string* error_message) {
     PROCESS_INFORMATION proc_info;
     ::ZeroMemory(&proc_info, sizeof(proc_info));
 
-    if (!use_createprocess_api) {
+    if (this->edge_ie_mode_) {
+      this->LaunchEdgeInIEMode(&proc_info, error_message);
+    } else if (!use_createprocess_api) {
       this->LaunchBrowserUsingIELaunchURL(&proc_info, error_message);
     } else {
       this->LaunchBrowserUsingCreateProcess(&proc_info, error_message);
@@ -326,6 +335,55 @@ void BrowserFactory::LaunchBrowserUsingCreateProcess(PROCESS_INFORMATION* proc_i
   delete[] command_line;
 }
 
+void BrowserFactory::LaunchEdgeInIEMode(PROCESS_INFORMATION* proc_info,
+                                        std::string* error_message) {
+  LOG(TRACE) << "Entering BrowserFactory::LaunchEdgeInIEMode";
+  LOG(DEBUG) << "Starting Edge Chromium from the command line";
+
+  STARTUPINFO start_info;
+  ::ZeroMemory(&start_info, sizeof(start_info));
+  start_info.cb = sizeof(start_info);
+
+  std::wstring executable_and_url = this->edge_executable_location_;
+  if (executable_and_url == L"") {
+    executable_and_url = L"msedge.exe"; // Assume it's on the path if it's not passed
+  }
+
+  // These flags force Edge into a mode where it will only run MSHTML
+  executable_and_url.append(L" --ie-mode-force");
+  executable_and_url.append(L" --internet-explorer-integration=iemode");
+
+  executable_and_url.append(L" ");
+  executable_and_url.append(this->initial_browser_url_);
+
+  LOG(TRACE) << "IE starting command line is: '"
+             << LOGWSTRING(executable_and_url) << "'.";
+
+  LPWSTR command_line = new WCHAR[executable_and_url.size() + 1];
+  wcscpy_s(command_line,
+           executable_and_url.size() + 1,
+           executable_and_url.c_str());
+  command_line[executable_and_url.size()] = L'\0';
+  BOOL create_process_result = ::CreateProcess(NULL,
+                                               command_line,
+                                               NULL,
+                                               NULL,
+                                               FALSE,
+                                               0,
+                                               NULL,
+                                               NULL,
+                                               &start_info,
+                                               proc_info);
+
+
+  if (!create_process_result) {
+    *error_message = CREATEPROCESS_EDGE_ERROR + StringUtilities::ToString(command_line);
+  }
+
+  delete[] command_line;
+}
+
+
 bool BrowserFactory::GetDocumentFromWindowHandle(HWND window_handle,
                                                  IHTMLDocument2** document) {
   LOG(TRACE) << "Entering BrowserFactory::GetDocumentFromWindowHandle";
@@ -410,6 +468,18 @@ bool BrowserFactory::AttachToBrowser(ProcessWindowInfo* process_window_info,
   return attached;
 }
 
+
+bool BrowserFactory::IsBrowserProcessInitialized(DWORD process_id) {
+  ProcessWindowInfo info;
+  info.dwProcessId = process_id;
+  info.hwndBrowser = NULL;
+  info.pBrowser = NULL;
+
+  ::EnumWindows(&BrowserFactory::FindBrowserWindow,
+                reinterpret_cast<LPARAM>(&info));
+  return info.hwndBrowser != NULL;
+}
+
 bool BrowserFactory::AttachToBrowserUsingActiveAccessibility
                                     (ProcessWindowInfo* process_window_info,
                                      std::string* error_message) {
@@ -420,8 +490,15 @@ bool BrowserFactory::AttachToBrowserUsingActiveAccessibility
     if (this->browser_attach_timeout_ > 0 && (clock() > end)) {
       break;
     }
-    ::EnumWindows(&BrowserFactory::FindBrowserWindow,
-                  reinterpret_cast<LPARAM>(process_window_info));
+    if (!this->edge_ie_mode_) {
+      ::EnumWindows(&BrowserFactory::FindBrowserWindow,
+                    reinterpret_cast<LPARAM>(process_window_info));
+    } else {
+      // If we're in edge_ie_mode, we need to look for different windows
+      ::EnumWindows(&BrowserFactory::FindEdgeWindow,
+                    reinterpret_cast<LPARAM>(process_window_info));
+    }
+
     if (process_window_info->hwndBrowser == NULL) {
       ::Sleep(250);
     }
@@ -701,7 +778,7 @@ int BrowserFactory::GetZoomLevel(IHTMLDocument2* document, IHTMLWindow2* window)
   return zoom;
 }
 
-IWebBrowser2* BrowserFactory::CreateBrowser() {
+IWebBrowser2* BrowserFactory::CreateBrowser(bool is_protected_mode) {
   LOG(TRACE) << "Entering BrowserFactory::CreateBrowser";
 
   IWebBrowser2* browser = NULL;
@@ -712,11 +789,20 @@ IWebBrowser2* BrowserFactory::CreateBrowser() {
     context = context | CLSCTX_ENABLE_CLOAKING;
   }
 
-  HRESULT hr = ::CoCreateInstance(CLSID_InternetExplorer,
-                                  NULL,
-                                  context,
-                                  IID_IWebBrowser2,
-                                  reinterpret_cast<void**>(&browser));
+  HRESULT hr = S_OK;
+  if (is_protected_mode) {
+    hr = ::CoCreateInstance(CLSID_InternetExplorer,
+                            NULL,
+                            context,
+                            IID_IWebBrowser2,
+                            reinterpret_cast<void**>(&browser));
+  } else {
+    hr = ::CoCreateInstance(CLSID_InternetExplorerMedium,
+                            NULL,
+                            context,
+                            IID_IWebBrowser2,
+                            reinterpret_cast<void**>(&browser));
+  }
   // When IWebBrowser2::Quit() is called, the wrapper process doesn't
   // exit right away. When that happens, CoCreateInstance can fail while
   // the abandoned iexplore.exe instance is still valid. The "right" way
@@ -920,19 +1006,35 @@ void BrowserFactory::InvokeClearCacheUtility(bool use_low_integrity_level) {
 BOOL CALLBACK BrowserFactory::FindBrowserWindow(HWND hwnd, LPARAM arg) {
   // Could this be an IE instance?
   // 8 == "IeFrame\0"
-  // 21 == "Shell DocObject View\0";
+  // 21 == "Shell DocObject View\0"
+  // 19 == "Chrome_WidgetWin_1"
   char name[21];
   if (::GetClassNameA(hwnd, name, 21) == 0) {
     // No match found. Skip
     return TRUE;
   }
 
-  if (strcmp(IE_FRAME_WINDOW_CLASS, name) != 0 && 
+  if (strcmp(IE_FRAME_WINDOW_CLASS, name) != 0 &&
       strcmp(SHELL_DOCOBJECT_VIEW_WINDOW_CLASS, name) != 0) {
     return TRUE;
   }
 
   return EnumChildWindows(hwnd, FindChildWindowForProcess, arg);
+}
+
+BOOL CALLBACK BrowserFactory::FindEdgeWindow(HWND hwnd, LPARAM arg) {
+  // Could this be an EdgeChrome window?
+  // 19 == "Chrome_WidgetWin_1"
+  char name[20];
+  if (::GetClassNameA(hwnd, name, 20) == 0) {
+    // No match found. Skip
+    return TRUE;
+  }
+
+  // continue if it is not "Chrome_WidgetWin_1"
+  if (strcmp(ANDIE_FRAME_WINDOW_CLASS, name) != 0) return TRUE;
+
+  return EnumChildWindows(hwnd, FindEdgeChildWindowForProcess, arg);
 }
 
 BOOL CALLBACK BrowserFactory::FindChildWindowForProcess(HWND hwnd, LPARAM arg) {
@@ -951,6 +1053,7 @@ BOOL CALLBACK BrowserFactory::FindChildWindowForProcess(HWND hwnd, LPARAM arg) {
   } else {
     DWORD process_id = NULL;
     ::GetWindowThreadProcessId(hwnd, &process_id);
+    LOG(DEBUG) << "Looking for " << process_window_info->dwProcessId;
     if (process_window_info->dwProcessId == process_id) {
       // Once we've found the first Internet Explorer_Server window
       // for the process we want, we can stop.
@@ -962,11 +1065,39 @@ BOOL CALLBACK BrowserFactory::FindChildWindowForProcess(HWND hwnd, LPARAM arg) {
   return TRUE;
 }
 
+BOOL CALLBACK BrowserFactory::FindEdgeChildWindowForProcess(HWND hwnd, LPARAM arg) {
+  ProcessWindowInfo* process_window_info = reinterpret_cast<ProcessWindowInfo*>(arg);
+
+  // Could this be an Internet Explorer Server window?
+  // 25 == "Internet Explorer_Server\0"
+  char name[25];
+  if (::GetClassNameA(hwnd, name, 25) == 0) {
+    // No match found. Skip
+    return TRUE;
+  }
+
+  if (strcmp(IE_SERVER_CHILD_WINDOW_CLASS, name) != 0) {
+    return TRUE;
+  }
+  else {
+    DWORD process_id = NULL;
+    ::GetWindowThreadProcessId(hwnd, &process_id);
+    LOG(DEBUG) << "Looking for " << process_window_info->dwProcessId;
+    // Once we've found the first Internet Explorer_Server window
+    // for the process we want, we can stop.
+    process_window_info->hwndBrowser = hwnd;
+    return FALSE;
+  }
+
+  return TRUE;
+}
+
 BOOL CALLBACK BrowserFactory::FindDialogWindowForProcess(HWND hwnd, LPARAM arg) {
   ProcessWindowInfo* process_win_info = reinterpret_cast<ProcessWindowInfo*>(arg);
 
   // Could this be an dialog window?
   // 7 == "#32770\0"
+  // 29 == "Credential Dialog Xaml Host\0"
   // 34 == "Internet Explorer_TridentDlgFrame\0"
   char name[34];
   if (::GetClassNameA(hwnd, name, 34) == 0) {
@@ -975,7 +1106,8 @@ BOOL CALLBACK BrowserFactory::FindDialogWindowForProcess(HWND hwnd, LPARAM arg) 
   }
   
   if (strcmp(ALERT_WINDOW_CLASS, name) != 0 && 
-      strcmp(HTML_DIALOG_WINDOW_CLASS, name) != 0) {
+      strcmp(HTML_DIALOG_WINDOW_CLASS, name) != 0 &&
+      strcmp(SECURITY_DIALOG_WINDOW_CLASS, name) != 0) {
     return TRUE;
   } else {
     // If the window style has the WS_DISABLED bit set or the 
@@ -1221,5 +1353,8 @@ bool BrowserFactory::IsWindowsVistaOrGreater() {
   return IsWindowsVersionOrGreater(HIBYTE(_WIN32_WINNT_VISTA), LOBYTE(_WIN32_WINNT_VISTA), 0);
 }
 
+bool BrowserFactory::IsEdgeMode() const {
+  return this->edge_ie_mode_;
+}
 
 } // namespace webdriver

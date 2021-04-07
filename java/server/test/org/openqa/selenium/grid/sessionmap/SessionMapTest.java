@@ -17,25 +17,34 @@
 
 package org.openqa.selenium.grid.sessionmap;
 
-import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.NoSuchSessionException;
+import org.openqa.selenium.events.EventBus;
+import org.openqa.selenium.events.local.GuavaEventBus;
 import org.openqa.selenium.grid.data.Session;
+import org.openqa.selenium.grid.data.SessionClosedEvent;
 import org.openqa.selenium.grid.sessionmap.local.LocalSessionMap;
 import org.openqa.selenium.grid.sessionmap.remote.RemoteSessionMap;
-import org.openqa.selenium.grid.web.PassthroughHttpClient;
+import org.openqa.selenium.grid.testing.PassthroughHttpClient;
 import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.remote.http.HttpClient;
-import org.openqa.selenium.remote.tracing.DistributedTracer;
+import org.openqa.selenium.remote.tracing.DefaultTestTracer;
+import org.openqa.selenium.remote.tracing.Tracer;
+import org.openqa.selenium.support.ui.FluentWait;
+import org.openqa.selenium.support.ui.Wait;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.time.Instant;
 import java.util.UUID;
+
+import static java.time.Duration.ofSeconds;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.assertj.core.api.Assertions.assertThatNoException;
+import static org.junit.Assert.assertTrue;
 
 /**
  * We test the session map by ensuring that the HTTP protocol is properly adhered to. If this is
@@ -48,32 +57,38 @@ public class SessionMapTest {
   private SessionMap local;
   private HttpClient client;
   private SessionMap remote;
+  private EventBus bus;
 
   @Before
   public void setUp() throws URISyntaxException {
     id = new SessionId(UUID.randomUUID());
     expected = new Session(
-        id,
-        new URI("http://localhost:1234"),
-        new ImmutableCapabilities());
+      id,
+      new URI("http://localhost:1234"),
+      new ImmutableCapabilities(),
+      new ImmutableCapabilities(),
+      Instant.now());
 
-    local = new LocalSessionMap(DistributedTracer.builder().build());
-    client = new PassthroughHttpClient<>(local);
-    remote = new RemoteSessionMap(client);
+    Tracer tracer = DefaultTestTracer.createTracer();
+    bus = new GuavaEventBus();
+
+    local = new LocalSessionMap(tracer, bus);
+    client = new PassthroughHttpClient(local);
+    remote = new RemoteSessionMap(tracer, client);
   }
 
   @Test
   public void shouldBeAbleToAddASession() {
     assertTrue(remote.add(expected));
 
-    assertEquals(expected, local.get(id));
+    assertThat(local.get(id)).isEqualTo(expected);
   }
 
   @Test
   public void shouldBeAbleToRetrieveASessionUri() {
     local.add(expected);
 
-    assertEquals(expected, remote.get(id));
+    assertThat(remote.get(id)).isEqualTo(expected);
   }
 
   @Test
@@ -86,7 +101,7 @@ public class SessionMapTest {
   public void shouldAllowSessionsToBeRemoved() {
     local.add(expected);
 
-    assertEquals(expected, remote.get(id));
+    assertThat(remote.get(id)).isEqualTo(expected);
 
     remote.remove(id);
 
@@ -99,12 +114,29 @@ public class SessionMapTest {
    */
   @Test
   public void removingASessionThatDoesNotExistIsNotAnError() {
-    remote.remove(id);
+    assertThatNoException().isThrownBy(() -> remote.remove(id));
   }
 
-  @Test(expected = NoSuchSessionException.class)
+  @Test
   public void shouldThrowAnExceptionIfGettingASessionThatDoesNotExist() {
-    remote.get(id);
+    assertThatExceptionOfType(NoSuchSessionException.class).isThrownBy(() -> remote.get(id));
+  }
+
+  @Test
+  public void shouldAllowEntriesToBeRemovedByAMessage() {
+    local.add(expected);
+
+    bus.fire(new SessionClosedEvent(expected.getId()));
+
+    Wait<SessionMap> wait = new FluentWait<>(local).withTimeout(ofSeconds(2));
+    wait.until(sessions -> {
+      try {
+        sessions.get(expected.getId());
+        return false;
+      } catch (NoSuchSessionException e) {
+        return true;
+      }
+    });
   }
 
 }

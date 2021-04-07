@@ -27,7 +27,7 @@ class PointerInput(InputDevice):
 
     def __init__(self, kind, name):
         super(PointerInput, self).__init__()
-        if (kind not in POINTER_KINDS):
+        if kind not in POINTER_KINDS:
             raise InvalidArgumentException("Invalid PointerInput kind '%s'" % kind)
         self.type = POINTER
         self.kind = kind
@@ -39,7 +39,7 @@ class PointerInput(InputDevice):
         action["y"] = y
         if isinstance(origin, WebElement):
             action["origin"] = {"element-6066-11e4-a52e-4f735466cecf": origin.id}
-        elif origin is not None:
+        elif origin:
             action["origin"] = origin
 
         self.add_action(action)

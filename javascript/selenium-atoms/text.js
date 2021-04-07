@@ -103,7 +103,7 @@ core.text.getTextContent_ = function(element, preformatted) {
       text += '\n';
     }
     text = text.replace(/&nbsp/, ' ');
-    if (bot.userAgent.IE && bot.userAgent.isProductVersion(9)) {
+    if (bot.userAgent.IE_DOC_9) {
       text = text.replace(/&#100;/, ' ');
     }
     return text;

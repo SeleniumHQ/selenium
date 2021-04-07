@@ -19,21 +19,19 @@ package org.openqa.selenium;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.junit.Assume.assumeFalse;
 import static org.openqa.selenium.support.ui.ExpectedConditions.alertIsPresent;
 import static org.openqa.selenium.support.ui.ExpectedConditions.titleIs;
+import static org.openqa.selenium.testing.drivers.Browser.CHROME;
+import static org.openqa.selenium.testing.drivers.Browser.EDGE;
 import static org.openqa.selenium.testing.drivers.Browser.IE;
-import static org.openqa.selenium.testing.drivers.Browser.MARIONETTE;
+import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
 import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
-import static org.openqa.selenium.testing.TestUtilities.isIe6;
-import static org.openqa.selenium.testing.TestUtilities.isIe7;
 
 import org.junit.Test;
 import org.openqa.selenium.environment.webserver.Page;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.NotYetImplemented;
-import org.openqa.selenium.testing.TestUtilities;
 
 import java.io.File;
 import java.io.IOException;
@@ -86,7 +84,13 @@ public class FormHandlingTest extends JUnit4TestBase {
   @Test
   @NotYetImplemented(SAFARI)
   @NotYetImplemented(
-    value = MARIONETTE, reason = "Delegates to JS and so the wrong exception is returned")
+    value = FIREFOX, reason = "Delegates to JS and so the wrong exception is returned")
+  @NotYetImplemented(value = IE,
+      reason = "Throws JavascriptException: Error from JavaScript: Unable to find owning document")
+  @NotYetImplemented(value = EDGE,
+      reason = "Throws JavascriptException: Error from JavaScript: Unable to find owning document")
+  @NotYetImplemented(value = CHROME,
+      reason = "Throws JavascriptException: Error from JavaScript: Unable to find owning document")
   public void testShouldNotBeAbleToSubmitAFormThatDoesNotExist() {
     driver.get(pages.formPage);
     WebElement element = driver.findElement(By.name("SearchableText"));
@@ -113,7 +117,8 @@ public class FormHandlingTest extends JUnit4TestBase {
   }
 
   @Test
-  @NotYetImplemented(value = MARIONETTE)
+  @NotYetImplemented(FIREFOX)
+  @NotYetImplemented(SAFARI)
   public void testShouldSubmitAFormUsingTheNewlineLiteral() {
     driver.get(pages.formPage);
     WebElement nestedForm = driver.findElement(By.id("nested_form"));
@@ -166,10 +171,6 @@ public class FormHandlingTest extends JUnit4TestBase {
   @Test
   public void testShouldBeAbleToSendKeysToAFileUploadInputElementInAnXhtmlDocument()
       throws IOException {
-    assumeFalse("IE before 9 doesn't handle pages served with an XHTML content type,"
-                + " and just prompts for to download it",
-                TestUtilities.isOldIe(driver));
-
     driver.get(pages.xhtmlFormPage);
     WebElement uploadElement = driver.findElement(By.id("file"));
     assertThat(uploadElement.getAttribute("value")).isEqualTo("");
@@ -275,7 +276,6 @@ public class FormHandlingTest extends JUnit4TestBase {
 
   @Test
   public void testCanClickOnAnImplicitSubmitButton() {
-    assumeFalse(isIe6(driver) || isIe7(driver) );
     checkSubmitButton("internal_implicit_submit");
   }
 

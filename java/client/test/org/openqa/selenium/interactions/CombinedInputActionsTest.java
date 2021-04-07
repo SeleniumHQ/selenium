@@ -23,10 +23,11 @@ import static org.openqa.selenium.WaitingConditions.elementValueToEqual;
 import static org.openqa.selenium.WaitingConditions.windowHandleCountToBe;
 import static org.openqa.selenium.support.ui.ExpectedConditions.presenceOfElementLocated;
 import static org.openqa.selenium.support.ui.ExpectedConditions.titleIs;
-import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
+import static org.openqa.selenium.testing.drivers.Browser.CHROME;
+import static org.openqa.selenium.testing.drivers.Browser.LEGACY_FIREFOX_XPI;
 import static org.openqa.selenium.testing.drivers.Browser.HTMLUNIT;
 import static org.openqa.selenium.testing.drivers.Browser.IE;
-import static org.openqa.selenium.testing.drivers.Browser.MARIONETTE;
+import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
 import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
 import static org.openqa.selenium.testing.TestUtilities.getEffectivePlatform;
 import static org.openqa.selenium.testing.TestUtilities.getIEVersion;
@@ -35,6 +36,7 @@ import static org.openqa.selenium.testing.TestUtilities.isNativeEventsEnabled;
 
 import org.junit.Test;
 import org.openqa.selenium.By;
+import org.openqa.selenium.Dimension;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.Platform;
@@ -55,7 +57,7 @@ public class CombinedInputActionsTest extends JUnit4TestBase {
 
   @Test
   @Ignore(IE)
-  @Ignore(FIREFOX)
+  @Ignore(LEGACY_FIREFOX_XPI)
   @NotYetImplemented(SAFARI)
   public void testPlainClickingOnMultiSelectionList() {
     driver.get(pages.formSelectionPage);
@@ -80,7 +82,7 @@ public class CombinedInputActionsTest extends JUnit4TestBase {
 
   @Test
   @Ignore(IE)
-  @Ignore(FIREFOX)
+  @Ignore(LEGACY_FIREFOX_XPI)
   @NotYetImplemented(SAFARI)
   public void testShiftClickingOnMultiSelectionList() {
     driver.get(pages.formSelectionPage);
@@ -107,10 +109,11 @@ public class CombinedInputActionsTest extends JUnit4TestBase {
 
   @Test
   @Ignore(IE)
-  @Ignore(FIREFOX)
-  @Ignore(value = MARIONETTE, travis = true)
+  @Ignore(LEGACY_FIREFOX_XPI)
+  @Ignore(value = FIREFOX, travis = true)
   public void testControlClickingOnMultiSelectionList() {
-    assumeFalse("FIXME: macs don't have CONTROL key", getEffectivePlatform().is(Platform.MAC));
+    assumeFalse("FIXME: macs don't have CONTROL key",
+                getEffectivePlatform(driver).is(Platform.MAC));
     driver.get(pages.formSelectionPage);
 
     List<WebElement> options = driver.findElements(By.tagName("option"));
@@ -135,9 +138,10 @@ public class CombinedInputActionsTest extends JUnit4TestBase {
 
   @Test
   @Ignore(IE)
-  @Ignore(value = MARIONETTE, travis = true)
+  @Ignore(value = FIREFOX, travis = true)
   public void testControlClickingOnCustomMultiSelectionList() {
-    assumeFalse("FIXME: macs don't have CONTROL key", getEffectivePlatform().is(Platform.MAC));
+    assumeFalse("FIXME: macs don't have CONTROL key",
+                getEffectivePlatform(driver).is(Platform.MAC));
     driver.get(pages.selectableItemsPage);
 
     WebElement reportingElement = driver.findElement(By.id("infodiv"));
@@ -217,17 +221,16 @@ public class CombinedInputActionsTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(value = MARIONETTE, issue = "https://github.com/mozilla/geckodriver/issues/789")
   @NotYetImplemented(HTMLUNIT)
-  @NotYetImplemented(SAFARI)
   public void testClickAfterMoveToAnElementWithAnOffsetShouldUseLastMousePosition() {
     driver.get(pages.clickEventPage);
 
     WebElement element = driver.findElement(By.id("eventish"));
+    Dimension size = element.getSize();
     Point location = element.getLocation();
 
     new Actions(driver)
-        .moveToElement(element, 20, 10)
+        .moveToElement(element, 20 - size.getWidth() / 2, 10 - size.getHeight() / 2)
         .click()
         .perform();
 
@@ -273,11 +276,14 @@ public class CombinedInputActionsTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(value = MARIONETTE, issue = "https://github.com/mozilla/geckodriver/issues/646")
+  @Ignore(value = FIREFOX, issue = "https://github.com/mozilla/geckodriver/issues/646")
+  @NotYetImplemented(CHROME)
   public void testChordControlCutAndPaste() {
-    assumeFalse("FIXME: macs don't have CONTROL key", getEffectivePlatform().is(Platform.MAC));
+    assumeFalse("FIXME: macs don't have CONTROL key",
+                getEffectivePlatform(driver).is(Platform.MAC));
     assumeFalse("Windows: native events library  does not support storing modifiers state yet",
-                isNativeEventsEnabled(driver) && getEffectivePlatform().is(Platform.WINDOWS) &&
+                isNativeEventsEnabled(driver) &&
+                getEffectivePlatform(driver).is(Platform.WINDOWS) &&
                 isInternetExplorer(driver));
 
     driver.get(pages.javascriptPage);

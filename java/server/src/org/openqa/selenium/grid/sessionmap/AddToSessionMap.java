@@ -17,35 +17,52 @@
 
 package org.openqa.selenium.grid.sessionmap;
 
-import static java.nio.charset.StandardCharsets.UTF_8;
-
 import com.google.common.collect.ImmutableMap;
-
 import org.openqa.selenium.grid.data.Session;
-import org.openqa.selenium.grid.web.CommandHandler;
+import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.Json;
+import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
+import org.openqa.selenium.remote.tracing.Span;
+import org.openqa.selenium.remote.tracing.Tracer;
 
 import java.util.Objects;
 
-class AddToSessionMap implements CommandHandler {
+import static org.openqa.selenium.remote.RemoteTags.CAPABILITIES;
+import static org.openqa.selenium.remote.RemoteTags.SESSION_ID;
+import static org.openqa.selenium.remote.http.Contents.asJson;
+import static org.openqa.selenium.remote.http.Contents.string;
+import static org.openqa.selenium.remote.tracing.HttpTracing.newSpanAsChildOf;
+import static org.openqa.selenium.remote.tracing.Tags.HTTP_REQUEST;
 
+class AddToSessionMap implements HttpHandler {
+
+  private final Tracer tracer;
   private final Json json;
   private final SessionMap sessions;
 
-  AddToSessionMap(Json json, SessionMap sessions) {
-    this.json = Objects.requireNonNull(json);
-    this.sessions = Objects.requireNonNull(sessions);
+  AddToSessionMap(Tracer tracer, Json json, SessionMap sessions) {
+    this.tracer = Require.nonNull("Tracer", tracer);
+    this.json = Require.nonNull("Json converter", json);
+    this.sessions = Require.nonNull("Session map", sessions);
   }
 
   @Override
-  public void execute(HttpRequest req, HttpResponse resp) {
-    Session session = json.toType(req.getContentString(), Session.class);
-    Objects.requireNonNull(session, "Session to add must be set");
+  public HttpResponse execute(HttpRequest req) {
+    try (Span span = newSpanAsChildOf(tracer, req, "sessions.add_session")) {
+      HTTP_REQUEST.accept(span, req);
 
-    sessions.add(session);
+      Session session = json.toType(string(req), Session.class);
+      Objects.requireNonNull(session, "Session to add must be set");
 
-    resp.setContent(json.toJson(ImmutableMap.of("value", true)).getBytes(UTF_8));
+      SESSION_ID.accept(span, session.getId());
+      CAPABILITIES.accept(span, session.getCapabilities());
+      span.setAttribute("session.uri", session.getUri().toString());
+
+      sessions.add(session);
+
+      return new HttpResponse().setContent(asJson(ImmutableMap.of("value", true)));
+    }
   }
 }

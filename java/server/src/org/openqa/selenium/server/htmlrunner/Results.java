@@ -17,9 +17,6 @@
 
 package org.openqa.selenium.server.htmlrunner;
 
-import com.google.common.base.Function;
-import com.google.common.collect.FluentIterable;
-
 import org.openqa.selenium.BuildInfo;
 
 import java.io.IOException;
@@ -28,6 +25,7 @@ import java.io.StringReader;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.function.Function;
 
 import javax.swing.text.MutableAttributeSet;
 import javax.swing.text.html.HTML;
@@ -96,7 +94,7 @@ public class Results {
     try {
       callback = new ElementCallback(
         toSubstitute,
-        FluentIterable.from(toConvert).transform(transform).iterator());
+        toConvert.stream().map(transform).iterator());
       parser.parse(stringReader, callback, true);
     } catch (IOException e) {
       throw new RuntimeException("Unable to parse test table");

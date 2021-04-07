@@ -32,7 +32,7 @@ public class DeleteSession extends WebDriverHandler<Void> {
   }
 
   @Override
-  public Void call() throws Exception {
+  public Void call() {
 
     WebDriver driver = getDriver();
     if (driver == null) {

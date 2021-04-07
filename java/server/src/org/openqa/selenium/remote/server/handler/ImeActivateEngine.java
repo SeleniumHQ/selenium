@@ -35,7 +35,7 @@ public class ImeActivateEngine extends WebDriverHandler<Void> {
   }
 
   @Override
-  public Void call() throws Exception {
+  public Void call() {
     getDriver().manage().ime().activateEngine(engine);
     return null;
   }

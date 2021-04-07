@@ -19,6 +19,7 @@ package org.openqa.selenium.remote;
 
 import java.io.IOException;
 
+@FunctionalInterface
 public interface CommandExecutor {
 
   Response execute(Command command) throws IOException;

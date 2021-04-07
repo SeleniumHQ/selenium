@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Licensed to the Software Freedom Conservancy (SFC) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -20,20 +22,7 @@ require_relative '../spec_helper'
 module Selenium
   module WebDriver
     module Chrome
-      describe Driver, only: {driver: :chrome} do
-        it 'accepts an array of custom command line arguments' do
-          create_driver!(args: ['--user-agent=foo;bar']) do |driver|
-            driver.navigate.to url_for('click_jacker.html')
-
-            ua = driver.execute_script 'return window.navigator.userAgent'
-            expect(ua).to eq('foo;bar')
-          end
-        end
-
-        it 'raises ArgumentError if :args is not an Array' do
-          expect { create_driver!(args: '--foo') }.to raise_error(ArgumentError, ':args must be an Array of Strings')
-        end
-
+      describe Driver, exclusive: {browser: :chrome} do
         it 'gets and sets network conditions' do
           driver.network_conditions = {offline: false, latency: 56, throughput: 789}
           expect(driver.network_conditions).to eq(
@@ -50,7 +39,7 @@ module Selenium
           # at least it doesn't crash
         end
 
-        it 'can execute CDP commands' do
+        it 'can execute CDP commands', only: {driver: :chrome} do
           res = driver.execute_cdp('Page.addScriptToEvaluateOnNewDocument', source: 'window.was_here="TW";')
           expect(res).to have_key('identifier')
 
@@ -61,6 +50,71 @@ module Selenium
             expect(tw).to eq('TW')
           ensure
             driver.execute_cdp('Page.removeScriptToEvaluateOnNewDocument', identifier: res['identifier'])
+          end
+        end
+
+        describe '#print_options' do
+          let(:magic_number) { 'JVBER' }
+          let(:options) { Chrome::Options.new(args: ['--headless']) }
+
+          it 'should return base64 for print command' do
+            create_driver!(capabilities: options) do |driver|
+              driver.navigate.to url_for('printPage.html')
+              expect(driver.print_page).to include(magic_number)
+            end
+          end
+
+          it 'should print with orientation' do
+            create_driver!(capabilities: options) do |driver|
+              driver.navigate.to url_for('printPage.html')
+              expect(driver.print_page(orientation: 'landscape')).to include(magic_number)
+            end
+          end
+
+          it 'should print with valid params' do
+            create_driver!(capabilities: options) do |driver|
+              driver.navigate.to url_for('printPage.html')
+              expect(driver.print_page(orientation: 'landscape',
+                                       page_ranges: ['1-2'],
+                                       page: {width: 30})).to include(magic_number)
+            end
+          end
+        end
+
+        describe '#logs' do
+          before do
+            quit_driver
+            options = Options.new(logging_prefs: {browser: 'ALL',
+                                                  driver: 'ALL',
+                                                  performance: 'ALL'})
+            create_driver!(capabilities: options)
+            driver.navigate.to url_for('errors.html')
+          end
+
+          after(:all) { quit_driver }
+
+          it 'can fetch available log types' do
+            expect(driver.logs.available_types).to include(:performance, :browser, :driver)
+          end
+
+          it 'can get the browser log' do
+            driver.find_element(tag_name: 'input').click
+
+            entries = driver.logs.get(:browser)
+            expect(entries).not_to be_empty
+            expect(entries.first).to be_kind_of(LogEntry)
+          end
+
+          it 'can get the driver log' do
+            entries = driver.logs.get(:driver)
+            expect(entries).not_to be_empty
+            expect(entries.first).to be_kind_of(LogEntry)
+          end
+
+          it 'can get the performance log' do
+            entries = driver.logs.get(:performance)
+            expect(entries).not_to be_empty
+            expect(entries.first).to be_kind_of(LogEntry)
           end
         end
       end

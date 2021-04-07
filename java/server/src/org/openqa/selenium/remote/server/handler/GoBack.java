@@ -26,7 +26,7 @@ public class GoBack extends WebDriverHandler<Void> {
   }
 
   @Override
-  public Void call() throws Exception {
+  public Void call() {
     getDriver().navigate().back();
 
     return null;

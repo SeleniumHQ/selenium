@@ -71,6 +71,8 @@ class SendKeysCommandHandler : public IECommandHandler {
   static BOOL CALLBACK FindWindowWithClassNameAndProcess(HWND hwnd,
                                                          LPARAM arg);
 
+  static std::vector<HWND> FindWindowCandidates(FileNameData* file_data);
+
   void UploadFile(BrowserHandle browser_wrapper,
                   ElementHandle element,
                   const IECommandExecutor& executor,

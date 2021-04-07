@@ -39,7 +39,7 @@ public class GetAllSessions implements RestishHandler<List<GetAllSessions.Sessio
   }
 
   @Override
-  public List<SessionInfo> handle() throws Exception {
+  public List<SessionInfo> handle() {
     Set<SessionId> sessions = allSessions.getSessions();
     List<SessionInfo> sessionInfo =
         sessions.stream().map(id -> new SessionInfo(id, allSessions.get(id).getCapabilities()))

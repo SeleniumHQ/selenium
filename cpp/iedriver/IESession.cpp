@@ -23,6 +23,13 @@
 #include "IECommandExecutor.h"
 #include "messages.h"
 #include "StringUtilities.h"
+#include "WebDriverConstants.h"
+
+#define MUTEX_NAME L"WD_INITIALIZATION_MUTEX"
+#define MUTEX_WAIT_TIMEOUT 30000
+#define THREAD_WAIT_TIMEOUT 30000
+#define EXECUTOR_EXIT_WAIT_TIMEOUT 5000
+#define EXECUTOR_EXIT_WAIT_INTERVAL 100
 
 typedef unsigned (__stdcall *ThreadProcedure)(void*);
 
@@ -68,9 +75,9 @@ void IESession::Initialize(void* init_params) {
 
   unsigned int thread_id = 0;
 
-  HANDLE event_handle = ::CreateEvent(NULL, TRUE, FALSE, EVENT_NAME);
+  HANDLE event_handle = ::CreateEvent(NULL, TRUE, FALSE, WEBDRIVER_START_EVENT_NAME);
   if (event_handle == NULL) {
-    LOGERR(DEBUG) << "Unable to create event " << EVENT_NAME;
+    LOGERR(DEBUG) << "Unable to create event " << WEBDRIVER_START_EVENT_NAME;
   }
 
   ThreadProcedure thread_proc = &IECommandExecutor::ThreadProc;

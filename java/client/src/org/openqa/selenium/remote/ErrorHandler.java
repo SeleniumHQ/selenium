@@ -134,6 +134,9 @@ public class ErrorHandler {
         message += " (WARNING: The client has suppressed server-side stacktraces)";
       } else {
         cause = serverError;
+        if (cause.getStackTrace() == null || cause.getStackTrace().length == 0) {
+          message += " (WARNING: The server did not provide any stacktrace information)";
+        }
       }
 
       if (rawErrorData.get(SCREEN_SHOT) != null) {
@@ -220,7 +223,7 @@ public class ErrorHandler {
 
   private Throwable rebuildServerError(Map<String, Object> rawErrorData, int responseStatus) {
 
-    if (!rawErrorData.containsKey(CLASS) && !rawErrorData.containsKey(STACK_TRACE)) {
+    if (rawErrorData.get(CLASS) == null && rawErrorData.get(STACK_TRACE) == null) {
       // Not enough information for us to try to rebuild an error.
       return null;
     }
@@ -230,7 +233,7 @@ public class ErrorHandler {
     Class<?> clazz = null;
 
     // First: allow Remote Driver to specify the Selenium Server internal exception
-    if (rawErrorData.containsKey(CLASS)) {
+    if (rawErrorData.get(CLASS) != null) {
       String className = (String) rawErrorData.get(CLASS);
       try {
         clazz = Class.forName(className);
@@ -262,7 +265,7 @@ public class ErrorHandler {
     // Note: if we have a class name above, we should always have a stack trace.
     // The inverse is not always true.
     StackTraceElement[] stackTrace = new StackTraceElement[0];
-    if (rawErrorData.containsKey(STACK_TRACE)) {
+    if (rawErrorData.get(STACK_TRACE) != null) {
       @SuppressWarnings({"unchecked"})
       List<Map<String, Object>> stackTraceInfo =
           (List<Map<String, Object>>) rawErrorData.get(STACK_TRACE);

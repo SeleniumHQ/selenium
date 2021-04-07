@@ -28,6 +28,6 @@ public interface NetworkInterfaceProvider {
   Iterable<NetworkInterface> getNetworkInterfaces();
 
   // TODO: Remove this whole method
-  // This method should only return an iterface if it's named exactly "lo"
+  // This method should only return an interface if it's named exactly "lo"
   NetworkInterface getLoInterface();
 }

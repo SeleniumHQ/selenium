@@ -38,7 +38,7 @@ public class SetLocalStorageItem extends WebDriverHandler<Void> {
   }
 
   @Override
-  public Void call() throws Exception {
+  public Void call() {
     Utils.getWebStorage(getUnwrappedDriver()).getLocalStorage().setItem(key, value);
     return null;
   }

@@ -43,7 +43,7 @@ def testShouldBeAbleToOverrideTheWindowAlertMethod(driver, pages):
         "window.alert = function(msg) { document.getElementById('text').innerHTML = msg; }")
     driver.find_element(by=By.ID, value="alert").click()
     try:
-        assert driver.find_element_by_id('text').text == "cheese"
+        assert driver.find_element(By.ID, 'text').text == "cheese"
     except Exception as e:
         # if we're here, likely the alert is displayed
         # not dismissing it will affect other tests
@@ -75,7 +75,7 @@ def testShouldAllowUsersToAcceptAnAlertWithNoTextManually(driver, pages):
 
 def testShouldGetTextOfAlertOpenedInSetTimeout(driver, pages):
     pages.load("alerts.html")
-    driver.find_element_by_id("slow-alert").click()
+    driver.find_element(By.ID, "slow-alert").click()
 
     # DO NOT WAIT OR SLEEP HERE
     # This is a regression test for a bug where only the first switchTo call would throw,
@@ -142,6 +142,10 @@ def testSettingTheValueOfAnAlertThrows(driver, pages):
     condition=sys.platform == 'darwin',
     reason='https://bugs.chromium.org/p/chromedriver/issues/detail?id=26',
     run=False)
+@pytest.mark.xfail_chromiumedge(
+    condition=sys.platform == 'darwin',
+    reason='https://bugs.chromium.org/p/chromedriver/issues/detail?id=26',
+    run=False)
 def testAlertShouldNotAllowAdditionalCommandsIfDimissed(driver, pages):
     pages.load("alerts.html")
     driver.find_element(By.ID, "alert").click()
@@ -153,12 +157,13 @@ def testAlertShouldNotAllowAdditionalCommandsIfDimissed(driver, pages):
         alert.text
 
 
-@pytest.mark.xfail_marionette(reason='Fails on travis')
+@pytest.mark.xfail_firefox(reason='Fails on travis')
 @pytest.mark.xfail_remote(reason='Fails on travis')
+@pytest.mark.xfail_safari
 def testShouldAllowUsersToAcceptAnAlertInAFrame(driver, pages):
     pages.load("alerts.html")
     driver.switch_to.frame(driver.find_element(By.NAME, "iframeWithAlert"))
-    driver.find_element_by_id("alertInFrame").click()
+    driver.find_element(By.ID, "alertInFrame").click()
 
     alert = _waitForAlert(driver)
     alert.accept()
@@ -166,14 +171,15 @@ def testShouldAllowUsersToAcceptAnAlertInAFrame(driver, pages):
     assert "Testing Alerts" == driver.title
 
 
-@pytest.mark.xfail_marionette(reason='Fails on travis')
+@pytest.mark.xfail_firefox(reason='Fails on travis')
 @pytest.mark.xfail_remote(reason='Fails on travis')
+@pytest.mark.xfail_safari
 def testShouldAllowUsersToAcceptAnAlertInANestedFrame(driver, pages):
     pages.load("alerts.html")
     driver.switch_to.frame(driver.find_element(By.NAME, "iframeWithIframe"))
     driver.switch_to.frame(driver.find_element(By.NAME, "iframeWithAlert"))
 
-    driver.find_element_by_id("alertInFrame").click()
+    driver.find_element(By.ID, "alertInFrame").click()
 
     alert = _waitForAlert(driver)
     alert.accept()
@@ -206,8 +212,6 @@ def testPromptShouldHaveNullValueIfDismissed(driver, pages):
     assert "null" == driver.find_element(By.ID, "text").text
 
 
-@pytest.mark.xfail_marionette(reason='https://bugzilla.mozilla.org/show_bug.cgi?id=1477977')
-@pytest.mark.xfail_remote(reason='https://bugzilla.mozilla.org/show_bug.cgi?id=1477977')
 def testHandlesTwoAlertsFromOneInteraction(driver, pages):
     pages.load("alerts.html")
 
@@ -225,6 +229,7 @@ def testHandlesTwoAlertsFromOneInteraction(driver, pages):
     assert driver.find_element(By.ID, "text2").text == "cheddar"
 
 
+@pytest.mark.xfail_safari
 def testShouldHandleAlertOnPageLoad(driver, pages):
     pages.load("alerts.html")
     driver.find_element(By.ID, "open-page-with-onload-alert").click()
@@ -244,8 +249,8 @@ def testShouldHandleAlertOnPageLoadUsingGet(driver, pages):
     WebDriverWait(driver, 3).until(EC.text_to_be_present_in_element((By.TAG_NAME, "p"), "Page with onload event handler"))
 
 
-@pytest.mark.xfail_firefox(reason='Non W3C conformant')
 @pytest.mark.xfail_chrome(reason='Non W3C conformant')
+@pytest.mark.xfail_chromiumedge(reason='Non W3C conformant')
 def testShouldHandleAlertOnPageBeforeUnload(driver, pages):
     pages.load("pageWithOnBeforeUnloadMessage.html")
 
@@ -285,12 +290,11 @@ def testAlertShouldNotAllowAdditionalCommandsIfDismissed(driver, pages):
         alert.text
 
 
-@pytest.mark.xfail_chrome(
-    reason='https://bugs.chromium.org/p/chromedriver/issues/detail?id=1537')
-@pytest.mark.xfail_marionette(
+@pytest.mark.xfail_firefox(
     reason='https://bugzilla.mozilla.org/show_bug.cgi?id=1279211')
 @pytest.mark.xfail_remote(
     reason='https://bugzilla.mozilla.org/show_bug.cgi?id=1279211')
+@pytest.mark.xfail_chrome
 def testUnexpectedAlertPresentExceptionContainsAlertText(driver, pages):
     pages.load("alerts.html")
     driver.find_element(by=By.ID, value="alert").click()

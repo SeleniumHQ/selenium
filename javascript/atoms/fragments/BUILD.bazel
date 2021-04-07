@@ -1,0 +1,220 @@
+load("//javascript:defs.bzl", "closure_fragment")
+
+closure_fragment(
+    name = "clear",
+    function = "bot.action.clear",
+    module = "bot.action",
+    visibility = [
+        "//javascript/chrome-driver:__pkg__",
+        "//javascript/ie-driver:__pkg__",
+    ],
+    deps = [
+        "//javascript/atoms:action",
+    ],
+)
+
+closure_fragment(
+    name = "click",
+    function = "bot.action.click",
+    module = "bot.action",
+    visibility = [
+        "//javascript/chrome-driver:__pkg__",
+        "//javascript/ie-driver:__pkg__",
+    ],
+    deps = [
+        "//javascript/atoms:action",
+    ],
+)
+
+closure_fragment(
+    name = "execute-async-script",
+    function = "bot.inject.executeAsyncScript",
+    module = "bot.inject",
+    visibility = [
+        "//javascript/android-atoms:__pkg__",
+        "//javascript/chrome-driver:__pkg__",
+    ],
+    deps = [
+        "//javascript/atoms:inject",
+    ],
+)
+
+closure_fragment(
+    name = "execute-script",
+    function = "bot.inject.executeScript",
+    module = "bot.inject",
+    visibility = [
+        "//java/client/test/org/openqa/selenium/atoms:__pkg__",
+        "//javascript/android-atoms:__pkg__",
+        "//javascript/chrome-driver:__pkg__",
+    ],
+    deps = [
+        "//javascript/atoms:inject",
+    ],
+)
+
+closure_fragment(
+    name = "execute-sql",
+    function = "bot.storage.database.executeSql",
+    module = "bot.storage.database",
+    visibility = [
+        "//javascript/chrome-driver:__pkg__",
+    ],
+    deps = [
+        "//javascript/atoms:html5",
+    ],
+)
+
+closure_fragment(
+    name = "get-effective-style",
+    function = "bot.dom.getEffectiveStyle",
+    module = "bot.dom",
+    visibility = [
+        "//javascript/chrome-driver:__pkg__",
+        "//javascript/ie-driver:__pkg__",
+    ],
+    deps = [
+        "//javascript/atoms:dom",
+    ],
+)
+
+closure_fragment(
+    name = "get-location",
+    function = "bot.geolocation.getCurrentPosition",
+    module = "bot.geolocation",
+    visibility = [
+        "//javascript/chrome-driver:__pkg__",
+    ],
+    deps = [
+        "//javascript/atoms:html5",
+    ],
+)
+
+closure_fragment(
+    name = "get-size",
+    function = "goog.style.getSize",
+    module = "goog.style",
+    visibility = [
+        "//javascript/chrome-driver:__pkg__",
+    ],
+    deps = [
+        "@io_bazel_rules_closure//closure/library",
+    ],
+)
+
+closure_fragment(
+    name = "is-displayed",
+    function = "bot.dom.isShown",
+    module = "bot.dom",
+    visibility = [
+        "//dotnet/src/webdriver:__pkg__",
+        "//java/client/src/org/openqa/selenium/remote:__pkg__",
+        "//javascript/chrome-driver:__pkg__",
+        "//javascript/ie-driver:__pkg__",
+        "//javascript/node/selenium-webdriver/lib/atoms:__pkg__",
+        "//py:__pkg__",
+    ],
+    deps = [
+        "//javascript/atoms:dom",
+    ],
+)
+
+closure_fragment(
+    name = "is-editable",
+    function = "bot.dom.isEditable",
+    module = "bot.dom",
+    visibility = [
+        "//javascript/ie-driver:__pkg__",
+    ],
+    deps = [
+        "//javascript/atoms:dom",
+    ],
+)
+
+closure_fragment(
+    name = "is-enabled",
+    function = "bot.dom.isEnabled",
+    module = "bot.dom",
+    visibility = [
+        "//javascript/chrome-driver:__pkg__",
+        "//javascript/ie-driver:__pkg__",
+    ],
+    deps = [
+        "//javascript/atoms:dom",
+    ],
+)
+
+closure_fragment(
+    name = "is-focusable",
+    function = "bot.dom.isFocusable",
+    module = "bot.dom",
+    visibility = [
+        "//javascript/ie-driver:__pkg__",
+    ],
+    deps = [
+        "//javascript/atoms:dom",
+    ],
+)
+
+closure_fragment(
+    name = "is-interactable",
+    function = "bot.dom.isInteractable",
+    module = "bot.dom",
+    visibility = [
+        "//javascript/ie-driver:__pkg__",
+    ],
+    deps = [
+        "//javascript/atoms:dom",
+    ],
+)
+
+closure_fragment(
+    name = "find-element",
+    function = "bot.locators.findElement",
+    module = "bot.locators",
+    visibility = [
+        "//javascript/chrome-driver:__pkg__",
+        "//javascript/ie-driver:__pkg__",
+    ],
+    deps = [
+        "//javascript/atoms:locators",
+    ],
+)
+
+closure_fragment(
+    name = "find-elements",
+    function = "bot.locators.findElements",
+    module = "bot.locators",
+    visibility = [
+        "//dotnet/src/webdriver:__pkg__",
+        "//java/client/src/org/openqa/selenium/support/locators:__pkg__",
+        "//javascript/chrome-driver:__pkg__",
+        "//javascript/node/selenium-webdriver/lib/atoms:__pkg__",
+        "//py:__pkg__",
+    ],
+    deps = [
+        "//javascript/atoms:locators",
+    ],
+)
+
+closure_fragment(
+    name = "get-text",
+    function = "bot.dom.getVisibleText",
+    module = "bot.dom",
+    deps = [
+        "//javascript/atoms:dom",
+    ],
+)
+
+closure_fragment(
+    name = "submit",
+    function = "bot.action.submit",
+    module = "bot.action",
+    visibility = [
+        "//javascript/chrome-driver:__pkg__",
+        "//javascript/ie-driver:__pkg__",
+    ],
+    deps = [
+        "//javascript/atoms:action",
+    ],
+)

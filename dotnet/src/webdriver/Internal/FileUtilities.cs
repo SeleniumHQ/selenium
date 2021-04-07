@@ -158,7 +158,14 @@ namespace OpenQA.Selenium.Internal
         public static string GetCurrentDirectory()
         {
             Assembly executingAssembly = typeof(FileUtilities).Assembly;
-            string location =  Path.GetDirectoryName(executingAssembly.Location);
+            string location = null;
+
+            // Make sure not to call Path.GetDirectoryName if assembly location is null or empty
+            if (!string.IsNullOrEmpty(executingAssembly.Location))
+            {
+                location = Path.GetDirectoryName(executingAssembly.Location);
+            }
+
             if (string.IsNullOrEmpty(location))
             {
                 // If there is no location information from the executing

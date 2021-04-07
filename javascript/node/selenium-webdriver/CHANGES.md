@@ -1,8 +1,67 @@
-## v.next
+## v4.0.0-beta.2
+
+* Removed support for Edge legacy.
+* Make the build silent for WebDriver Bidi generated code
+* resolve file path correctly (#9223)
+* Update example in edge.js (#9231)
+* Use a flat namespace for selenium options for finding WebDriver Bidi endpoint
+* Removing duplicate license text updated by update_copyright.js
+* Updating copyright text
+* Minor code cleanup
+* Removing duplicate variable declaration of IE from capabilities
+
+## v4.0.0-beta.1
+
+* JS Binding support for WebDriver Bidi in Firefox
+    - This requires Firefox 87 and Geckodriver 0.29 to be able to work
+* Update the supported CDP versions
+* Update tmp package version (#9155)
+* Adding support for /computedlabel (getAccessibleName) (#9073)
+* Adding support for computedrole (#8990)
+* Use subfolder for NPM package homepage (#8938)
+* Fix typo: tracingCategories -> traceCategories (#8976)
+* Package up mutation-listener for node. Fixes #8955
+* Adding support for `print` endpoint (#8880)
+
+## v4.0.0-alpha.8
+
+* Rolling back native support for Opera Browser
+* Added new ieOptions capabilities:
+    - fileUploadDialogTimeout
+    - setEdgePath
+    - setEdgeChromium
+    - setScrollBehavior
+    - For consistent naming, deprecating `addArguments(...args)` in favor of `addBrowserCommandSwitches(...args)`
+
+* Added relative locators
+* Added Chrome DevTools Protocol (CDP) support
+* Added support for BASIC authentication.
+* Added listener for DOM mutations.
+* Added support for listening out for console log events.
+* Added support listening js exceptions using CDP
+
+### API Changes
+
+* Added the 'opera' module
+
+## v4.0.0-alpha.4
+
+### Changes
+
+* Removed BUILD.bazel files from the build artifact
+
+
+## v4.0.0-alpha.3
+
+### Notice
+
+*  The minimum supported version of Node is now 10.15.0 LTS
 
 ### Changes
 
 * add `pollTimeout` argument to the `wait()` method. Default value is `200`ms
+* add `switchTo().parentFrame()` for non-W3C compatible drivers
+* add support for opening a new window
 
 ### API Changes
 
@@ -712,7 +771,7 @@ continue to be supported, but will require setting the `--harmony` flag.
     due to a previously uncaught error within the frame.
 * FIXED: 8496: Extended the `chrome.Options` API to cover all configuration
     options (e.g. mobile emulation and performance logging) documented on the
-    ChromeDriver [project site](https://sites.google.com/a/chromium.org/chromedriver/capabilities).
+    ChromeDriver [project site](https://chromedriver.chromium.org/capabilities).
 
 ## v2.45.0
 

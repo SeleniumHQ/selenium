@@ -17,6 +17,7 @@
 
 package org.openqa.selenium.ie;
 
+import static java.util.stream.Collectors.toList;
 import static org.openqa.selenium.ie.InternetExplorerDriver.BROWSER_ATTACH_TIMEOUT;
 import static org.openqa.selenium.ie.InternetExplorerDriver.ELEMENT_SCROLL_BEHAVIOR;
 import static org.openqa.selenium.ie.InternetExplorerDriver.ENABLE_PERSISTENT_HOVERING;
@@ -30,22 +31,11 @@ import static org.openqa.selenium.ie.InternetExplorerDriver.INTRODUCE_FLAKINESS_
 import static org.openqa.selenium.ie.InternetExplorerDriver.NATIVE_EVENTS;
 import static org.openqa.selenium.ie.InternetExplorerDriver.REQUIRE_WINDOW_FOCUS;
 import static org.openqa.selenium.remote.CapabilityType.BROWSER_NAME;
-import static org.openqa.selenium.remote.CapabilityType.PAGE_LOAD_STRATEGY;
-import static org.openqa.selenium.remote.CapabilityType.UNHANDLED_PROMPT_BEHAVIOUR;
 
-import com.google.common.base.Preconditions;
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableSortedSet;
-import com.google.common.collect.Streams;
-
-import org.openqa.selenium.Beta;
+import org.openqa.selenium.internal.Require;
+import org.openqa.selenium.remote.AbstractDriverOptions;
 import org.openqa.selenium.Capabilities;
-import org.openqa.selenium.MutableCapabilities;
-import org.openqa.selenium.PageLoadStrategy;
-import org.openqa.selenium.Proxy;
-import org.openqa.selenium.UnexpectedAlertBehaviour;
 import org.openqa.selenium.remote.BrowserType;
-import org.openqa.selenium.remote.CapabilityType;
 
 import java.time.Duration;
 import java.util.Arrays;
@@ -53,7 +43,6 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -65,8 +54,7 @@ import java.util.stream.Stream;
  *
  *new InternetExplorerDriver(options);</pre>
  */
-@Beta
-public class InternetExplorerOptions extends MutableCapabilities {
+public class InternetExplorerOptions extends AbstractDriverOptions<InternetExplorerOptions> {
 
   final static String IE_OPTIONS = "se:ieOptions";
 
@@ -75,26 +63,25 @@ public class InternetExplorerOptions extends MutableCapabilities {
   private static final String FORCE_WINDOW_SHELL_API = "ie.forceShellWindowsApi";
   private static final String VALIDATE_COOKIE_DOCUMENT_TYPE = "ie.validateCookieDocumentType";
 
-  private final static Set<String> CAPABILITY_NAMES = ImmutableSortedSet.<String>naturalOrder()
-      .add(BROWSER_ATTACH_TIMEOUT)
-      .add(ELEMENT_SCROLL_BEHAVIOR)
-      .add(ENABLE_PERSISTENT_HOVERING)
-      .add(FULL_PAGE_SCREENSHOT)
-      .add(FORCE_CREATE_PROCESS)
-      .add(FORCE_WINDOW_SHELL_API)
-      .add(IE_ENSURE_CLEAN_SESSION)
-      .add(IE_SWITCHES)
-      .add(IE_USE_PER_PROCESS_PROXY)
-      .add(IGNORE_ZOOM_SETTING)
-      .add(INITIAL_BROWSER_URL)
-      .add(INTRODUCE_FLAKINESS_BY_IGNORING_SECURITY_DOMAINS)
-      .add(REQUIRE_WINDOW_FOCUS)
-      .add(UPLOAD_DIALOG_TIMEOUT)
-      .add(VALIDATE_COOKIE_DOCUMENT_TYPE)
-      .add(NATIVE_EVENTS)
-      .build();
+  private static final List<String> CAPABILITY_NAMES = Arrays.asList(
+    BROWSER_ATTACH_TIMEOUT,
+    ELEMENT_SCROLL_BEHAVIOR,
+    ENABLE_PERSISTENT_HOVERING,
+    FULL_PAGE_SCREENSHOT,
+    FORCE_CREATE_PROCESS,
+    FORCE_WINDOW_SHELL_API,
+    IE_ENSURE_CLEAN_SESSION,
+    IE_SWITCHES,
+    IE_USE_PER_PROCESS_PROXY,
+    IGNORE_ZOOM_SETTING,
+    INITIAL_BROWSER_URL,
+    INTRODUCE_FLAKINESS_BY_IGNORING_SECURITY_DOMAINS,
+    REQUIRE_WINDOW_FOCUS,
+    UPLOAD_DIALOG_TIMEOUT,
+    VALIDATE_COOKIE_DOCUMENT_TYPE,
+    NATIVE_EVENTS);
 
-  private Map<String, Object> ieOptions = new HashMap<>();
+  private final Map<String, Object> ieOptions = new HashMap<>();
 
   public InternetExplorerOptions() {
     setCapability(BROWSER_NAME, BrowserType.IE);
@@ -103,14 +90,19 @@ public class InternetExplorerOptions extends MutableCapabilities {
 
   public InternetExplorerOptions(Capabilities source) {
     this();
-
-    merge(source);
+    source.getCapabilityNames().forEach(name -> setCapability(name, source.getCapability(name)));
   }
 
   @Override
   public InternetExplorerOptions merge(Capabilities extraCapabilities) {
-    super.merge(extraCapabilities);
-    return this;
+    InternetExplorerOptions newInstance = new InternetExplorerOptions();
+    this.asMap().entrySet().stream()
+      .filter(entry -> !entry.getKey().equals(IE_OPTIONS))
+      .forEach(entry -> newInstance.setCapability(entry.getKey(), entry.getValue()));
+    extraCapabilities.asMap().entrySet().stream()
+      .filter(entry -> !entry.getKey().equals(IE_OPTIONS))
+      .forEach(entry -> newInstance.setCapability(entry.getKey(), entry.getValue()));
+    return newInstance;
   }
 
   public InternetExplorerOptions withAttachTimeout(long duration, TimeUnit unit) {
@@ -165,11 +157,11 @@ public class InternetExplorerOptions extends MutableCapabilities {
     }
 
     return amend(
-        IE_SWITCHES,
-        Streams.concat((Stream<?>) List.class.cast(raw).stream(), Stream.of(switches))
-            .filter(i -> i instanceof String)
-            .map(String.class::cast)
-            .collect(ImmutableList.toImmutableList()));
+      IE_SWITCHES,
+      Stream.concat(((List<?>) raw).stream(), Stream.of(switches))
+        .filter(i -> i instanceof String)
+        .map(String.class::cast)
+        .collect(toList()));
   }
 
   /**
@@ -188,7 +180,7 @@ public class InternetExplorerOptions extends MutableCapabilities {
   }
 
   public InternetExplorerOptions withInitialBrowserUrl(String url) {
-    return amend(INITIAL_BROWSER_URL, Preconditions.checkNotNull(url));
+    return amend(INITIAL_BROWSER_URL, Require.nonNull("Initial browser URL", url));
   }
 
   public InternetExplorerOptions requireWindowFocus() {
@@ -207,11 +199,6 @@ public class InternetExplorerOptions extends MutableCapabilities {
     return amend(INTRODUCE_FLAKINESS_BY_IGNORING_SECURITY_DOMAINS, true);
   }
 
-  @Deprecated
-  public InternetExplorerOptions enableNativeEvents() {
-    return amend(NATIVE_EVENTS, true);
-  }
-
   public InternetExplorerOptions disableNativeEvents() {
     return  amend(NATIVE_EVENTS, false);
   }
@@ -222,19 +209,6 @@ public class InternetExplorerOptions extends MutableCapabilities {
 
   public InternetExplorerOptions takeFullPageScreenshot() {
     return amend(FULL_PAGE_SCREENSHOT, true);
-  }
-
-  public InternetExplorerOptions setPageLoadStrategy(PageLoadStrategy strategy) {
-    return amend(PAGE_LOAD_STRATEGY, strategy);
-  }
-
-  public InternetExplorerOptions setUnhandledPromptBehaviour(UnexpectedAlertBehaviour behaviour) {
-    return amend(UNHANDLED_PROMPT_BEHAVIOUR, behaviour);
-  }
-
-  public InternetExplorerOptions setProxy(Proxy proxy) {
-    setCapability(CapabilityType.PROXY, proxy);
-    return this;
   }
 
   private InternetExplorerOptions amend(String optionName, Object value) {
@@ -258,9 +232,9 @@ public class InternetExplorerOptions extends MutableCapabilities {
 
     if (IE_OPTIONS.equals(key)) {
       ieOptions.clear();
-      Map<?, ?> streamFrom;
+      Map<String, Object> streamFrom;
       if (value instanceof Map) {
-        streamFrom = (Map<?, ?>) value;
+        streamFrom = (Map<String, Object>) value;
       } else if (value instanceof Capabilities) {
         streamFrom = ((Capabilities) value).asMap();
       } else {
@@ -268,15 +242,15 @@ public class InternetExplorerOptions extends MutableCapabilities {
       }
 
       streamFrom.entrySet().stream()
-          .filter(e -> CAPABILITY_NAMES.contains(e.getKey()))
-          .filter(e -> e.getValue() != null)
-          .forEach(e -> {
-            if (IE_SWITCHES.equals(e.getKey())) {
-              setCapability((String) e.getKey(), Arrays.asList(((String) e.getValue()).split(" ")));
-            } else {
-              setCapability((String) e.getKey(), e.getValue());
-            }
-          });
+        .filter(e -> CAPABILITY_NAMES.contains(e.getKey()))
+        .filter(e -> e.getValue() != null)
+        .forEach(e -> {
+          if (IE_SWITCHES.equals(e.getKey())) {
+            setCapability(e.getKey(), Arrays.asList((e.getValue().toString()).split(" ")));
+          } else {
+            setCapability(e.getKey(), e.getValue());
+          }
+        });
     }
   }
 }

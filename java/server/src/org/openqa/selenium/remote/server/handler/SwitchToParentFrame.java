@@ -27,7 +27,7 @@ public class SwitchToParentFrame extends WebDriverHandler<Void> {
   }
 
   @Override
-  public Void call() throws Exception {
+  public Void call() {
     WebDriver driver = getDriver();
     driver.switchTo().parentFrame();
 

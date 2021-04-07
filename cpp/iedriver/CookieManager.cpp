@@ -16,7 +16,6 @@
 
 #include "CookieManager.h"
 
-#include <map>
 #include <UrlMon.h>
 #include <wininet.h>
 

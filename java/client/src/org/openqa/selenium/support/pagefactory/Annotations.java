@@ -70,7 +70,7 @@ public class Annotations extends AbstractAnnotations {
         try {
           builder = annotation.annotationType()
               .getAnnotation(PageFactoryFinder.class).value()
-              .newInstance();
+              .getDeclaredConstructor().newInstance();
         } catch (ReflectiveOperationException e) {
           // Fall through.
         }
@@ -83,10 +83,6 @@ public class Annotations extends AbstractAnnotations {
 
     if (ans == null) {
       ans = buildByFromDefault();
-    }
-
-    if (ans == null) {
-      throw new IllegalArgumentException("Cannot determine how to locate element " + field);
     }
 
     return ans;

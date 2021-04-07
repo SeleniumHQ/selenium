@@ -26,7 +26,7 @@ public class RealDealIntegrationTest extends InternalSelenseTestBase {
     selenium
         .setContext("A real test, using the real Selenium on the browser side served by Jetty, driven from Java");
     selenium.setBrowserLogLevel(SeleniumLogLevels.DEBUG);
-    selenium.open("/selenium-server/tests/html/test_click_page1.html");
+    selenium.open("test_click_page1.html");
     assertTrue("link 'link' doesn't contain expected text",
         selenium.getText("link").indexOf("Click here for next page") != -1);
     String[] links = selenium.getAllLinks();
@@ -34,10 +34,10 @@ public class RealDealIntegrationTest extends InternalSelenseTestBase {
     assertEquals(links[3], "linkToAnchorOnThisPage");
     selenium.click("link");
     selenium.waitForPageToLoad("10000");
-    assertTrue(selenium.getLocation().endsWith("/selenium-server/tests/html/test_click_page2.html"));
+    assertTrue(selenium.getLocation().endsWith("test_click_page2.html"));
     selenium.click("previousPage");
     selenium.waitForPageToLoad("10000");
-    assertTrue(selenium.getLocation().endsWith("/selenium-server/tests/html/test_click_page1.html"));
+    assertTrue(selenium.getLocation().endsWith("test_click_page1.html"));
   }
 
   @Test
@@ -49,7 +49,7 @@ public class RealDealIntegrationTest extends InternalSelenseTestBase {
   public void testFailure() {
     selenium
         .setContext("A real negative test, using the real Selenium on the browser side served by Jetty, driven from Java");
-    selenium.open("/selenium-server/tests/html/test_click_page1.html");
+    selenium.open("test_click_page1.html");
     String badElementName = "This element doesn't exist, so Selenium should throw an exception";
     try {
       selenium.getText(badElementName);

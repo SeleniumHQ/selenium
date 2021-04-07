@@ -23,7 +23,8 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import org.junit.Test;
-import org.mockito.Mockito;
+import org.junit.experimental.categories.Category;
+import org.mockito.ArgumentMatchers;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebDriver;
@@ -32,9 +33,12 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.TickingClock;
 import org.openqa.selenium.support.ui.Wait;
 import org.openqa.selenium.support.ui.WebDriverWait;
+import org.openqa.selenium.testing.UnitTests;
 
+import java.time.Duration;
 import java.util.List;
 
+@Category(UnitTests.class)
 public class PageFactoryTest {
 
   private WebDriver driver;
@@ -165,10 +169,10 @@ public class PageFactoryTest {
   @Test
   public void shouldNotThrowANoSuchElementExceptionWhenUsedWithAFluentWait() {
     driver = mock(WebDriver.class);
-    when(driver.findElement(Mockito.any())).thenThrow(new NoSuchElementException("because"));
+    when(driver.findElement(ArgumentMatchers.any())).thenThrow(new NoSuchElementException("because"));
 
     TickingClock clock = new TickingClock();
-    Wait<WebDriver> wait = new WebDriverWait(driver, clock, clock, 1, 1001);
+    Wait<WebDriver> wait = new WebDriverWait(driver, Duration.ofSeconds(1), Duration.ofMillis(1001), clock, clock);
 
     PublicPage page = new PublicPage();
     PageFactory.initElements(driver, page);

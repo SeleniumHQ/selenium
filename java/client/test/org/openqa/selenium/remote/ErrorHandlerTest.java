@@ -24,6 +24,7 @@ import com.google.common.collect.ImmutableMap;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 import org.openqa.selenium.ElementNotSelectableException;
 import org.openqa.selenium.ElementNotVisibleException;
 import org.openqa.selenium.ImeActivationFailedException;
@@ -48,11 +49,13 @@ import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.interactions.InvalidCoordinatesException;
 import org.openqa.selenium.interactions.MoveTargetOutOfBoundsException;
 import org.openqa.selenium.json.Json;
+import org.openqa.selenium.testing.UnitTests;
 
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+@Category(UnitTests.class)
 public class ErrorHandlerTest {
   private ErrorHandler handler;
 
@@ -95,7 +98,6 @@ public class ErrorHandlerTest {
         .satisfies(e -> assertThat(type.isAssignableFrom(e.getClass())).isTrue());
   }
 
-  @SuppressWarnings({"ThrowableInstanceNeverThrown"})
   @Test
   public void testShouldThrowAVanillaWebDriverExceptionIfServerDoesNotProvideAValue() {
     Response response = createResponse(ErrorCodes.UNHANDLED_ERROR);
@@ -105,7 +107,6 @@ public class ErrorHandlerTest {
         .withMessageContaining(new WebDriverException().getMessage());
   }
 
-  @SuppressWarnings({"ThrowableInstanceNeverThrown"})
   @Test
   public void testShouldNotSetCauseIfResponseValueIsJustAString() {
     assertThatExceptionOfType(WebDriverException.class)
@@ -117,7 +118,6 @@ public class ErrorHandlerTest {
         .withMessageContaining(new WebDriverException().getMessage());
   }
 
-  @SuppressWarnings({"ThrowableInstanceNeverThrown"})
   @Test
   public void testCauseShouldBeAnUnknownServerExceptionIfServerOnlyReturnsAMessage() {
     assertThatExceptionOfType(WebDriverException.class)
@@ -128,26 +128,24 @@ public class ErrorHandlerTest {
         .withMessageContaining(new WebDriverException().getMessage());
   }
 
-  @SuppressWarnings({"ThrowableInstanceNeverThrown"})
   @Test
   public void testCauseShouldUseTheNamedClassIfAvailableOnTheClassPath() {
     assertThatExceptionOfType(WebDriverException.class)
         .isThrownBy(() -> handler.throwIfResponseFailed(
             createResponse(ErrorCodes.UNHANDLED_ERROR,
                            ImmutableMap.of("message", "boom", "class", NullPointerException.class.getName())), 123))
-        .withMessage(new WebDriverException("boom\nCommand duration or timeout: 123 milliseconds").getMessage())
+        .withMessage(new WebDriverException("boom (WARNING: The server did not provide any stacktrace information)\nCommand duration or timeout: 123 milliseconds").getMessage())
         .withCauseInstanceOf(NullPointerException.class)
         .satisfies(expected -> assertThat(expected.getCause()).hasMessage("boom"));
   }
 
-  @SuppressWarnings({"ThrowableInstanceNeverThrown"})
   @Test
   public void testCauseStackTraceShouldBeEmptyIfTheServerDidNotProvideThatInformation() {
     assertThatExceptionOfType(WebDriverException.class)
         .isThrownBy(() -> handler.throwIfResponseFailed(
             createResponse(ErrorCodes.UNHANDLED_ERROR,
                            ImmutableMap.of("message", "boom", "class", NullPointerException.class.getName())), 1234))
-        .withMessage(new WebDriverException("boom\nCommand duration or timeout: 1.23 seconds").getMessage())
+        .withMessage(new WebDriverException("boom (WARNING: The server did not provide any stacktrace information)\nCommand duration or timeout: 1.23 seconds").getMessage())
         .withCauseInstanceOf(NullPointerException.class)
         .satisfies(expected -> {
           assertThat(expected.getCause()).hasMessage("boom");
@@ -155,7 +153,6 @@ public class ErrorHandlerTest {
         });
   }
 
-  @SuppressWarnings("ThrowableInstanceNeverThrown")
   @Test
   public void testShouldBeAbleToRebuildASerializedException() {
     RuntimeException serverError = new RuntimeException("foo bar baz!\nCommand duration or timeout: 123 milliseconds");
@@ -171,7 +168,6 @@ public class ErrorHandlerTest {
         });
   }
 
-  @SuppressWarnings("ThrowableInstanceNeverThrown")
   @Test
   public void testShouldIncludeScreenshotIfProvided() {
     RuntimeException serverError = new RuntimeException("foo bar baz!");
@@ -196,7 +192,6 @@ public class ErrorHandlerTest {
         });
   }
 
-  @SuppressWarnings("ThrowableInstanceNeverThrown")
   @Test
   public void testShouldDefaultToWebDriverExceptionIfClassIsNotSpecified() {
     RuntimeException serverError = new RuntimeException("foo bar baz!");
@@ -217,7 +212,6 @@ public class ErrorHandlerTest {
         });
   }
 
-  @SuppressWarnings("ThrowableInstanceNeverThrown")
   @Test
   public void testShouldStillTryToBuildWebDriverExceptionIfClassIsNotProvidedAndStackTraceIsNotForJava() {
     Map<String, ?> data = ImmutableMap.of(
@@ -247,8 +241,56 @@ public class ErrorHandlerTest {
           assertStackTracesEqual(expectedTrace, cause.getStackTrace());
         });
   }
+  
+  @Test
+  public void testShoulNotBuildWebDriverExceptionIfClassAndStackTraceIsNull() {
+    Map<String, Object> data = new HashMap<>();
+    data.put("message", "some error message");
+    data.put("class", null);
+    data.put("stackTrace", null);
 
-  @SuppressWarnings("ThrowableInstanceNeverThrown")
+    assertThatExceptionOfType(WebDriverException.class)
+        .isThrownBy(() -> handler.throwIfResponseFailed(
+            createResponse(ErrorCodes.UNHANDLED_ERROR, data), 123))
+        .withMessageStartingWith(new WebDriverException(
+            "some error message (WARNING: The server did not provide any stacktrace information)\nCommand duration or timeout: 123 milliseconds",
+            new WebDriverException()).getMessage());
+  }
+  
+  @Test
+  public void testShoulNotBuildWebDriverExceptionIfClassNullAndStackTraceNotNull() {
+    Map<String, Object> data = new HashMap<>();
+    data.put("message", "some error message");
+    data.put("class", null);
+    data.put("stackTrace", Collections.singletonList(
+        ImmutableMap.of("lineNumber", 1224,
+                        "methodName", "someMethod",
+                        "className", "MyClass",
+                        "fileName", "Resource.m")));
+
+    assertThatExceptionOfType(WebDriverException.class)
+        .isThrownBy(() -> handler.throwIfResponseFailed(
+            createResponse(ErrorCodes.UNHANDLED_ERROR, data), 123))
+        .withMessageStartingWith(new WebDriverException(
+            "some error message\nCommand duration or timeout: 123 milliseconds",
+            new WebDriverException()).getMessage());
+  }
+  
+  @Test
+  public void testShoulNotBuildWebDriverExceptionIfClassNotNullAndStackTraceNull() {
+    Map<String, Object> data = new HashMap<>();
+    data.put("message", "some error message");
+    data.put("class", "a");
+    data.put("stackTrace", null);
+
+    assertThatExceptionOfType(WebDriverException.class)
+        .isThrownBy(() -> handler.throwIfResponseFailed(
+            createResponse(ErrorCodes.UNHANDLED_ERROR, data), 123))
+        .withMessageStartingWith(new WebDriverException(
+            "some error message (WARNING: The server did not provide any stacktrace information)\nCommand duration or timeout: 123 milliseconds",
+            new WebDriverException()).getMessage());
+  }
+
   @Test
   public void testToleratesNonNumericLineNumber() {
     Map<String, ?> data = ImmutableMap.of(
@@ -279,7 +321,6 @@ public class ErrorHandlerTest {
         });
   }
 
-  @SuppressWarnings("ThrowableInstanceNeverThrown")
   @Test
   public void testToleratesNumericLineNumberAsString() {
     Map<String, ?> data = ImmutableMap.of(
@@ -311,7 +352,6 @@ public class ErrorHandlerTest {
         });
   }
 
-  @SuppressWarnings("ThrowableInstanceNeverThrown")
   @Test
   public void testShouldIndicateWhenTheServerReturnedAnExceptionThatWasSuppressed() {
     RuntimeException serverError = new RuntimeException("foo bar baz!");
@@ -326,7 +366,6 @@ public class ErrorHandlerTest {
         .withMessageContaining(new WebDriverException().getMessage());
   }
 
-  @SuppressWarnings("ThrowableInstanceNeverThrown")
   @Test
   public void testShouldStillIncludeScreenshotEvenIfServerSideExceptionsAreDisabled() {
     RuntimeException serverError = new RuntimeException("foo bar baz!");
@@ -413,7 +452,6 @@ public class ErrorHandlerTest {
     }
   }
 
-  @SuppressWarnings({"unchecked"})
   private static Map<String, Object> toMap(Object o) {
     String rawJson = new Json().toJson(o);
     return new Json().toType(rawJson, Map.class);

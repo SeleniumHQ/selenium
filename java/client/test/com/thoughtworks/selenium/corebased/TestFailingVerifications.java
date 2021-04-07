@@ -24,10 +24,10 @@ import org.junit.Test;
 public class TestFailingVerifications extends InternalSelenseTestBase {
   @Test
   public void testFailingVerifications() {
-    selenium.open("../tests/html/test_verifications.html");
+    selenium.open("/test_verifications.html");
     try {
       assertTrue(selenium.getLocation().matches(
-          "^[\\s\\S]*/tests/html/not_test_verifications\\.html$"));
+          "^[\\s\\S]*/common/legacy/not_test_verifications\\.html$"));
       fail("expected failure");
     } catch (Throwable e) {
     }

@@ -17,15 +17,14 @@
 
 package org.openqa.selenium.safari;
 
+import static java.util.Collections.unmodifiableMap;
 import static org.openqa.selenium.remote.CapabilityType.BROWSER_NAME;
 
-import com.google.common.collect.ImmutableSortedMap;
-
-import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.MutableCapabilities;
-import org.openqa.selenium.Proxy;
+import org.openqa.selenium.internal.Require;
+import org.openqa.selenium.remote.AbstractDriverOptions;
+import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriverException;
-import org.openqa.selenium.remote.CapabilityType;
 
 import java.util.Map;
 import java.util.TreeMap;
@@ -43,11 +42,11 @@ import java.util.TreeMap;
  *
  * // For use with RemoteWebDriver:
  * RemoteWebDriver driver = new RemoteWebDriver(
- *     new URL("http://localhost:4444/wd/hub"),
+ *     new URL("http://localhost:4444/"),
  *     options);
  * </code></pre>
  */
-public class SafariOptions extends MutableCapabilities {
+public class SafariOptions extends AbstractDriverOptions<SafariOptions> {
 
   static final String SAFARI_TECH_PREVIEW = "Safari Technology Preview";
 
@@ -59,15 +58,10 @@ public class SafariOptions extends MutableCapabilities {
   public static final String CAPABILITY = "safari.options";
 
   private interface Option {
-    @Deprecated
-    String TECHNOLOGY_PREVIEW = "technologyPreview";
-
     // Defined by Apple
     String AUTOMATIC_INSPECTION  = "safari:automaticInspection";
     String AUTOMATIC_PROFILING = "safari:automaticProfiling";
   }
-
-  private Map<String, Object> options = new TreeMap<>();
 
   public SafariOptions() {
     setUseTechnologyPreview(false);
@@ -77,26 +71,24 @@ public class SafariOptions extends MutableCapabilities {
   public SafariOptions(Capabilities source) {
     this();
 
-    source.asMap().forEach((key, value)-> {
-      if (CAPABILITY.equals(key) && value instanceof Map) {
-
-        @SuppressWarnings("unchecked")
-        Map<? extends String, ?> map = (Map<? extends String, ?>) value;
-        options.putAll(map);
-      } else if (value != null) {
-        setCapability(key, value);
-      }
-    });
+    source.getCapabilityNames().forEach(name -> setCapability(name, source.getCapability(name)));
   }
 
   @Override
   public SafariOptions merge(Capabilities extraCapabilities) {
-    super.merge(extraCapabilities);
-    return this;
+    Require.nonNull("Capabilities to merge", extraCapabilities);
+
+    SafariOptions newInstance = new SafariOptions();
+
+    getCapabilityNames().forEach(name -> newInstance.setCapability(name, getCapability(name)));
+    extraCapabilities.getCapabilityNames()
+      .forEach(name -> newInstance.setCapability(name, extraCapabilities.getCapability(name)));
+
+    return newInstance;
   }
 
   /**
-   * Construct a {@link SafariOptions} instance from given capabilites.
+   * Construct a {@link SafariOptions} instance from given capabilities.
    * When the {@link #CAPABILITY} capability is set, all other capabilities will be ignored!
    *
    * @param capabilities Desired capabilities from which the options are derived.
@@ -112,14 +104,14 @@ public class SafariOptions extends MutableCapabilities {
     if (cap instanceof SafariOptions) {
       return (SafariOptions) cap;
     } else if (cap instanceof Map) {
-      return SafariOptions.fromJsonMap((Map<?, ?>) cap);
+      return new SafariOptions(new MutableCapabilities(((Map<String, ?>) cap)));
     } else {
-      return new SafariOptions();
+      return new SafariOptions(capabilities);
     }
   }
 
   // Setters
-  
+
   /**
    * Instruct the SafariDriver to enable the Automatic Inspection if true, otherwise disable
    * the automatic inspection. Defaults to disabling the automatic inspection.
@@ -152,32 +144,8 @@ public class SafariOptions extends MutableCapabilities {
    *     otherwise will use the release version of Safari.
    */
   public SafariOptions setUseTechnologyPreview(boolean useTechnologyPreview) {
-    options.put(Option.TECHNOLOGY_PREVIEW, useTechnologyPreview);
     // Use an object here, rather than a boolean to avoid a stack overflow
     super.setCapability(BROWSER_NAME, useTechnologyPreview ? SAFARI_TECH_PREVIEW : "safari");
-    return this;
-  }
-
-  @Override
-  public void setCapability(String key, Object value) {
-    if (Option.TECHNOLOGY_PREVIEW.equals(key)) {
-      setUseTechnologyPreview(Boolean.valueOf(value.toString()));
-    } else {
-      super.setCapability(key, value);
-    }
-  }
-
-  @Override
-  public void setCapability(String key, boolean value) {
-    if (Option.TECHNOLOGY_PREVIEW.equals(key)) {
-      setUseTechnologyPreview(value);
-    } else {
-      super.setCapability(key, value);
-    }
-  }
-
-  public SafariOptions setProxy(Proxy proxy) {
-    setCapability(CapabilityType.PROXY, proxy);
     return this;
   }
 
@@ -192,38 +160,12 @@ public class SafariOptions extends MutableCapabilities {
   }
 
   public boolean getUseTechnologyPreview() {
-    return SAFARI_TECH_PREVIEW.equals(getBrowserName()) ||
-           options.get(Option.TECHNOLOGY_PREVIEW) == Boolean.TRUE;
-  }
-
-  // (De)serialization of the options
-
-  /**
-   * Parse a Map and reconstruct the {@link SafariOptions}.
-   *
-   * @return A {@link SafariOptions} instance associated with these extensions.
-   */
-  private static SafariOptions fromJsonMap(Map<?, ?> options)  {
-    SafariOptions safariOptions = new SafariOptions();
-
-    Object useTechnologyPreview = options.get(Option.TECHNOLOGY_PREVIEW);
-    if (useTechnologyPreview instanceof Boolean) {
-      safariOptions.setUseTechnologyPreview((Boolean) useTechnologyPreview);
-    }
-
-    return safariOptions;
-  }
-
-  @Override
-  protected int amendHashCode() {
-    return options.hashCode();
+    return SAFARI_TECH_PREVIEW.equals(getBrowserName());
   }
 
   @Override
   public Map<String, Object> asMap() {
-    return ImmutableSortedMap.<String, Object>naturalOrder()
-        .putAll(super.asMap())
-        .put(CAPABILITY, options)
-        .build();
+    Map<String, Object> result = new TreeMap<>(super.asMap());
+    return unmodifiableMap(result);
   }
 }

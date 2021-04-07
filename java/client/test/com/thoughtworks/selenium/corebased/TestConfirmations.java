@@ -24,7 +24,7 @@ import org.junit.Test;
 public class TestConfirmations extends InternalSelenseTestBase {
   @Test
   public void testConfirmations() throws Exception {
-    selenium.open("../tests/html/test_confirm.html");
+    selenium.open("test_confirm.html");
     selenium.chooseCancelOnNextConfirmation();
     selenium.click("confirmAndLeave");
     verifyTrue(selenium.isConfirmationPresent());
@@ -44,7 +44,7 @@ public class TestConfirmations extends InternalSelenseTestBase {
     selenium.waitForPageToLoad("30000");
     verifyTrue(selenium.getConfirmation().matches("^[\\s\\S]*dummy page[\\s\\S]*$"));
     verifyEquals(selenium.getTitle(), "Dummy Page");
-    selenium.open("../tests/html/test_confirm.html");
+    selenium.open("test_confirm.html");
     verifyEquals(selenium.getTitle(), "Test Confirm");
     selenium.chooseCancelOnNextConfirmation();
     selenium.chooseOkOnNextConfirmation();
@@ -52,7 +52,7 @@ public class TestConfirmations extends InternalSelenseTestBase {
     selenium.waitForPageToLoad("30000");
     verifyTrue(selenium.getConfirmation().matches("^[\\s\\S]*dummy page[\\s\\S]*$"));
     verifyEquals(selenium.getTitle(), "Dummy Page");
-    selenium.open("../tests/html/test_confirm.html");
+    selenium.open("test_confirm.html");
     try {
       assertEquals(selenium.getConfirmation(), "This should fail - there are no confirmations");
       fail("expected failure");
@@ -65,11 +65,11 @@ public class TestConfirmations extends InternalSelenseTestBase {
       fail("expected failure");
     } catch (Throwable e) {
     }
-    selenium.open("../tests/html/test_confirm.html");
+    selenium.open("test_confirm.html");
     selenium.click("confirmAndLeave");
     selenium.waitForPageToLoad("30000");
     try {
-      selenium.open("../tests/html/test_confirm.html");
+      selenium.open("test_confirm.html");
       fail("expected failure");
     } catch (Throwable e) {
     }

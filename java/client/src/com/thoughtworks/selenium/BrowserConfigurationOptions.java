@@ -19,6 +19,7 @@ package com.thoughtworks.selenium;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * Contains parameters for a single Selenium browser session.
@@ -65,17 +66,9 @@ public class BrowserConfigurationOptions {
    * @return String with the above format.
    */
   public String serialize() {
-    StringBuilder sb = new StringBuilder();
-    boolean first = true;
-    for (String key : options.keySet()) {
-      if (first) {
-        first = false;
-      } else {
-        sb.append(';');
-      }
-      sb.append(key).append('=').append(options.get(key));
-    }
-    return sb.toString();
+    return options.entrySet().stream()
+      .map(entry -> entry.getKey() + "=" + entry.getValue())
+      .collect(Collectors.joining(";"));
   }
 
   /**

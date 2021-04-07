@@ -28,6 +28,7 @@ MANUAL_PROXY = {
     'socksProxy': 'socks.proxy:65555',
     'socksUsername': 'test',
     'socksPassword': 'test',
+    'socksVersion': 5,
 }
 
 PAC_PROXY = {
@@ -48,6 +49,7 @@ def testCanAddManualProxyToDesiredCapabilities():
     proxy.socksProxy = MANUAL_PROXY['socksProxy']
     proxy.socksUsername = MANUAL_PROXY['socksUsername']
     proxy.socksPassword = MANUAL_PROXY['socksPassword']
+    proxy.socksVersion = MANUAL_PROXY['socksVersion']
 
     desired_capabilities = {}
     proxy.add_to_capabilities(desired_capabilities)
@@ -105,6 +107,7 @@ def testCanInitManualProxy():
     assert MANUAL_PROXY['socksProxy'] == proxy.socksProxy
     assert MANUAL_PROXY['socksUsername'] == proxy.socksUsername
     assert MANUAL_PROXY['socksPassword'] == proxy.socksPassword
+    assert MANUAL_PROXY['socksVersion'] == proxy.socksVersion
 
 
 def testCanInitAutodetectProxy():
@@ -131,6 +134,7 @@ def testCanInitEmptyProxy():
     assert '' == proxy.socksPassword
     assert proxy.auto_detect is False
     assert '' == proxy.proxy_autoconfig_url
+    assert proxy.socks_version is None
 
     desired_capabilities = {}
     proxy.add_to_capabilities(desired_capabilities)

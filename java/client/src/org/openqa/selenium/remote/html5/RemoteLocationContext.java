@@ -50,7 +50,7 @@ public class RemoteLocationContext implements LocationContext {
     if (number instanceof Double) {
       return (Double) number;
     } else if (number instanceof Long) {
-      return ((Long) number).doubleValue();
+      return number.doubleValue();
     } else {
       throw new RuntimeException("Can't convert to double: " + number);
     }

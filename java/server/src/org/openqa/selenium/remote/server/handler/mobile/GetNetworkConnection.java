@@ -29,7 +29,7 @@ public class GetNetworkConnection extends WebDriverHandler<ConnectionType> {
   }
 
   @Override
-  public ConnectionType call() throws Exception {
+  public ConnectionType call() {
     return Utils.getNetworkConnection(getUnwrappedDriver()).getNetworkConnection();
   }
 

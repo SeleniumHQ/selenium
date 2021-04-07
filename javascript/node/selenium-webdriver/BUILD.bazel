@@ -1,0 +1,142 @@
+load("@build_bazel_rules_nodejs//:index.bzl", "nodejs_binary", "pkg_npm")
+load("@npm//@bazel/jasmine:index.bzl", "jasmine_node_test")
+load("//common:defs.bzl", "copy_file")
+
+BROWSER_VERSIONS = [
+    "v85",
+    "v86",
+    "v87",
+    "v88",
+    "v89",
+]
+
+SRC_FILES = [
+    "CHANGES.md",
+    "README.md",
+    "package.json",
+] + glob([
+    "*.js",
+    "example/*.js",
+    "http/*.js",
+    "io/*.js",
+    "lib/*.js",
+    "net/*.js",
+    "remote/*.js",
+    "testing/*.js",
+    "devtools/*.js",
+])
+
+pkg_npm(
+    name = "selenium-webdriver",
+    srcs = SRC_FILES,
+    deps = [
+        ":license",
+        "//javascript/node/selenium-webdriver/lib/atoms:find-elements",
+        "//javascript/node/selenium-webdriver/lib/atoms:get_attribute",
+        "//javascript/node/selenium-webdriver/lib/atoms:is_displayed",
+        "//javascript/node/selenium-webdriver/lib/atoms:mutation-listener",
+    ],
+)
+
+TEST_FILES = glob(["test/**/*_test.js"])
+
+TEST_DATA = SRC_FILES + glob(
+    [
+        "lib/test/**",
+        "test/**",
+    ],
+    exclude = TEST_FILES,
+)
+
+nodejs_binary(
+    name = "fileserver",
+    data = TEST_DATA + [
+        "//common/src/web",
+        "@npm//express",
+        "@npm//multer",
+        "@npm//serve-index",
+        "@npm//tmp",
+        "@npm//jszip",
+        "@npm//rimraf",
+        "//javascript/node/selenium-webdriver/lib/atoms:get_attribute",
+        "//javascript/node/selenium-webdriver/lib/atoms:is_displayed",
+        "//javascript/node/selenium-webdriver/lib/atoms:find-elements",
+        "//javascript/node/selenium-webdriver/lib/atoms:mutation-listener",
+    ],
+    entry_point = "lib/test/fileserver.ts",
+)
+
+jasmine_node_test(
+    name = "tests",
+    srcs = TEST_FILES,
+    data = TEST_DATA + [
+        "tools/init_jasmine.js",
+        "//common/src/web",
+        "@npm//express",
+        "@npm//multer",
+        "@npm//serve-index",
+        "@npm//jszip",
+        "@npm//rimraf",
+        "@npm//tmp",
+        "@npm//sinon",
+        "@npm//ws",
+    ],
+    local = True,
+    templated_args = ["--node_options=--require=$$(rlocation $(rootpath :tools/init_jasmine.js))"],
+    deps = [
+        "//javascript/node/selenium-webdriver/lib/atoms:find-elements",
+        "//javascript/node/selenium-webdriver/lib/atoms:get_attribute",
+        "//javascript/node/selenium-webdriver/lib/atoms:is_displayed",
+        "//javascript/node/selenium-webdriver/lib/atoms:mutation-listener",
+        "@npm//jasmine",
+    ],
+)
+
+# npm_package does not pick up filegroup sources.
+genrule(
+    name = "license",
+    srcs = ["//:license"],
+    outs = [
+        "LICENSE",
+        "NOTICE",
+    ],
+    cmd = "cp $(locations //:license) $(@D)",
+)
+
+[copy_file(
+    name = "browser_protocol_" + n,
+    src = "//common/devtools/chromium/" + n + ":browser_protocol.json",
+    out = "devtools/generator/" + n + "/browser_protocol.json",
+) for n in BROWSER_VERSIONS]
+
+[copy_file(
+    name = "js_protocol_" + n,
+    src = "//common/devtools/chromium/" + n + ":js_protocol.json",
+    out = "devtools/generator/" + n + "/js_protocol.json",
+) for n in BROWSER_VERSIONS]
+
+[nodejs_binary(
+    name = "cdp-srcs-generator-" + n,
+    data = [
+        ":browser_protocol_" + n,
+        ":js_protocol_" + n,
+    ],
+    entry_point = "devtools/generator/protocol-dts-generator.js",
+) for n in BROWSER_VERSIONS]
+
+[genrule(
+    name = "create-cdp-srcs-" + n,
+    srcs = [
+        ":browser_protocol_" + n,
+        ":js_protocol_" + n,
+    ],
+    outs = [
+        "devtools/generator/" + n + "/protocol.d.js",
+        "devtools/generator/" + n + "/protocol-mapping.d.js",
+        "devtools/generator/" + n + "/protocol-proxy-api.d.js",
+    ],
+    cmd = "$(location :cdp-srcs-generator-" + n + ") $(location :browser_protocol_" + n + ") $(location :js_protocol_" + n + ") $(OUTS)",
+    tools = [
+        ":cdp-srcs-generator-" + n,
+    ],
+) for n in BROWSER_VERSIONS]

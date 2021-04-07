@@ -26,7 +26,7 @@ public class ClickElement extends WebElementHandler<Void> {
   }
 
   @Override
-  public Void call() throws Exception {
+  public Void call() {
     getElement().click();
     return null;
   }

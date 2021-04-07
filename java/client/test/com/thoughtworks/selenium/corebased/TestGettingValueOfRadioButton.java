@@ -24,7 +24,7 @@ import org.junit.Test;
 public class TestGettingValueOfRadioButton extends InternalSelenseTestBase {
   @Test
   public void testGettingValueOfCheckbox() {
-    selenium.open("../tests/html/test_check_uncheck.html");
+    selenium.open("test_check_uncheck.html");
 
     String firstRadioLocator = "xpath=//input[@name='base'][1]";
     String secondRadioLocator = "xpath=//input[@name='base'][2]";

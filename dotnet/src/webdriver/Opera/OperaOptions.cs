@@ -54,7 +54,7 @@ namespace OpenQA.Selenium.Opera
     {
         /// <summary>
         /// Gets the name of the capability used to store Opera options in
-        /// a <see cref="DesiredCapabilities"/> object.
+        /// an <see cref="ICapabilities"/> object.
         /// </summary>
         public static readonly string Capability = "operaOptions";
 
@@ -82,6 +82,9 @@ namespace OpenQA.Selenium.Opera
         private Dictionary<string, object> userProfilePreferences;
         private Dictionary<string, object> localStatePreferences;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="OperaOptions"/> class.
+        /// </summary>
         public OperaOptions() : base()
         {
             this.BrowserName = BrowserNameValue;

@@ -12,7 +12,7 @@ A clear and concise description of what the bug is.
 FIREFOX 48+ IS ONLY COMPATIBLE WITH GECKODRIVER.
 
 If the issue is with Google Chrome consider logging an issue with chromedriver instead:
-https://sites.google.com/a/chromium.org/chromedriver/help
+https://chromedriver.chromium.org/help
 
 If the issue is with Firefox GeckoDriver (aka Marionette) consider logging an issue with Mozilla:
 https://bugzilla.mozilla.org/buglist.cgi?product=Testing&component=Marionette

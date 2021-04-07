@@ -11,9 +11,7 @@
 </head>
 <body>
 <H1>Page for Shadow DOM chromedriver tests</H1>
-The page has a shadow root that in turn contains two shadow roots. So we can
-check behaviour with both nested roots and younger/older sibling roots. The
-various sections are highlighted with colored borders to make it more obvious
+The various sections are highlighted with colored borders to make it more obvious
 where each element comes from. Default to pushing the content off the first 
 screen, to test that scrolling to the elements works.
 <div id="padding"></div>
@@ -35,34 +33,17 @@ document.getElementById('padding').style.height = window.innerHeight;
     </div>
   </div>
 </template>
-<template id="olderChildTemplate">
-  <div id="olderChildDiv">
+<template id="childTemplate">
+  <div id="childDiv">
     <div style="border-style:solid;border-color:red">
-      <H3 id="olderHeading">Older Child</H3>
-      As the older child of a nested shadow root, this is the most likely
+      <H3 id="heading">Child</H3>
+      As the child of a nested shadow root, this is the most likely
       to go wrong bit of the page, so we'll concentrate our tests here.
       <H4>Contents</H4>
       <content></content>
-      <input id="olderTextBox" type="text" value="foo"/>
+      <input id="textBox" type="text" value="foo"/>
       <input type="button" onClick="buttonWasClicked()" value="button"
-          id="olderButton"/>
-    </div>
-  </div>
-</template>
-<template id="youngerChildTemplate">
-  <input type="button" onClick="buttonWasClicked()" value="button"
-      id="youngerButton"/>
-  <div id="youngerChildDiv">
-    <div style="border-style:solid;border-color:blue">
-      <H3>Younger Child</H3>
-      <div style="border-style:dotted;border-color:blue">
-        <H4>Younger Child Contents</H4>
-        <content></content>
-      </div>
-      <div style="border-style:dashed;border-color:blue">
-         <H4>Younger Child Shadow</H4>
-         <shadow></shadow>
-      </div>
+          id="button"/>
     </div>
   </div>
 </template>
@@ -70,16 +51,12 @@ document.getElementById('padding').style.height = window.innerHeight;
 var parentShadowRoot = document.querySelector('#innerDiv').createShadowRoot();
 parentShadowRoot.appendChild(document.querySelector('#parentTemplate'
     ).content.cloneNode(true));
-var olderShadowRoot = parentShadowRoot.querySelector("#parentDiv"
+var childShadowRoot = parentShadowRoot.querySelector("#parentDiv"
     ).createShadowRoot();
-olderShadowRoot.appendChild(document.querySelector('#olderChildTemplate'
-    ).content.cloneNode(true));
-var youngerShadowRoot = parentShadowRoot.querySelector("#parentDiv"
-    ).createShadowRoot();
-youngerShadowRoot.appendChild(document.querySelector('#youngerChildTemplate'
+childShadowRoot.appendChild(document.querySelector('#childTemplate'
     ).content.cloneNode(true));
 function buttonWasClicked() {
-  document.querySelector("* /deep/ #olderTextBox").value="Button Was Clicked";
+  document.querySelector("* /deep/ #textBox").value="Button Was Clicked";
 }
 </script>
 <script type="text/javascript">
@@ -94,43 +71,31 @@ function buttonWasClicked() {
   function testShadowRootIsElementClickable() {
     // check isElementClickable works as expected on elements within a shadow
     // DOM
-    var elemButton = document.querySelector("* /deep/ #olderButton");
-    var elemText = document.querySelector("* /deep/ #olderTextBox");
+    var elemButton = document.querySelector("* /deep/ #button");
+    var elemText = document.querySelector("* /deep/ #textBox");
 
     // scroll to the element
     webdriver.chrome.getLocationInView(elemButton, true);
     assertTrue(
-        "Button #olderButton should be clickable",
+        "Button #button should be clickable",
         webdriver.chrome.isElementClickable(elemButton,
             getCenterCoordinate(elemButton)).clickable);
     assertFalse(
-        "Textbox #olderTextBox should not be clickable from #olderButton's "
-            + "location",
+        "Textbox #textBox should not be clickable from #button's location",
         webdriver.chrome.isElementClickable(elemText,
-            getCenterCoordinate(elemButton)).clickable);
-  }
-
-  function testShadowRootTopLevelComponentIsElementClickable() {
-    // Regression test: check things also work on buttons that are top-level
-    // components of a shadow DOM
-    var elemButton = document.querySelector("* /deep/ #youngerButton");
-    webdriver.chrome.getLocationInView(elemButton, true);
-    assertTrue(
-        "Button #youngerButton should be clickable",
-        webdriver.chrome.isElementClickable(elemButton,
             getCenterCoordinate(elemButton)).clickable);
   }
 
   function testShadowRootIsDisplayed() {
     // check isDisplayed works as expected on elements within a shadow
     // DOM
-    var elem = document.querySelector("* /deep/ #olderTextBox");
-    assertTrue("Text box #olderTextBox should be visible",
+    var elem = document.querySelector("* /deep/ #textBox");
+    assertTrue("Text box #textBox should be visible",
         webdriver.chrome.isElementDisplayed(elem));
     document.querySelector("#outerDiv").style.display="None";
     try {
       assertFalse(
-        "Text box #olderTextBox should not be visible",
+        "Text box #textBox should not be visible",
         webdriver.chrome.isElementDisplayed(elem));
     } finally {
       document.querySelector("#outerDiv").style.display="";
@@ -140,43 +105,28 @@ function buttonWasClicked() {
   function testShadowRootFindElement() {
     // check FindElement works as expected on elements within a shadow
     // DOM
-    var elemDiv = document.querySelector("* /deep/ #olderChildDiv");
-    var elemYoung = document.querySelector("* /deep/ #youngerChildDiv");
-    var elemButton = document.querySelector("* /deep/ #olderButton");
+    var elemDiv = document.querySelector("* /deep/ #childDiv");
+    var elemButton = document.querySelector("* /deep/ #button");
     assertEquals(
-        "webdriver.chrome.findElement didn't find the element #olderButton",
+        "webdriver.chrome.findElement didn't find the element #button",
         elemButton,
-        webdriver.chrome.findElement({"id" : "olderButton"}, elemDiv));
-    assertNull(
-        "Trying to find #olderButton from within the younger shadow DOM " +
-             "should return null",
-        webdriver.chrome.findElement({"id" : "olderButton"}, elemYoung));
+        webdriver.chrome.findElement({"id" : "button"}, elemDiv));
   }
 
   function testBotLocatorsFindElements() {
     // webdriver.chrome.findElement depends on bot.locators.findElements.
     // So check that bot.locators.findElements keeps working as expected
     // with shadow roots
-    var elemDiv = document.querySelector("* /deep/ #olderChildDiv");
-    var elemYoung = document.querySelector("* /deep/ #youngerChildDiv");
-    var elemButton = document.querySelector("* /deep/ #olderButton");
-    var elems = bot.locators.findElements({"id" : "olderButton"}, elemDiv);
-    assertEquals("webdriver.chrome.findElements didn't find exactly 1 " +
-            "element for #olderButton",
+    var elemDiv = document.querySelector("* /deep/ #childDiv");
+    var elemButton = document.querySelector("* /deep/ #button");
+    var elems = bot.locators.findElements({"id" : "button"}, elemDiv);
+    assertEquals("webdriver.chrome.findElements didn't find exactly 1 element for #button",
         1,
         elems.length);
     assertEquals(
-        "webdriver.chrome.findElement didn't find the element #olderButton",
+        "webdriver.chrome.findElement didn't find the element button",
         elemButton,
         elems[0]);
-
-    elems = bot.locators.findElements({"id" : "olderButton"}, elemYoung)
-    assertEquals(
-        "Trying to find #olderButton from within the younger shadow DOM " +
-             "should return no results",
-        0,
-        elems.length
-        );
   }
 
 </script>

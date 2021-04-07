@@ -15,237 +15,245 @@
 // specific language governing permissions and limitations
 // under the License.
 
-'use strict';
+'use strict'
 
-const assert = require('assert');
-const path = require('path');
+const assert = require('assert')
+const path = require('path')
+const error = require('../lib/error')
+const firefox = require('../firefox')
+const io = require('../io')
+const { Browser } = require('../')
+const { Context } = require('../firefox')
+const { Pages, suite } = require('../lib/test')
 
-const error = require('../lib/error');
-const firefox = require('../firefox');
-const io = require('../io');
-const {Browser} = require('../');
-const {Context} = require('../firefox');
-const {Pages, suite, ignore} = require('../lib/test');
-
-
-const WEBEXTENSION_EXTENSION =
-    path.join(__dirname, '../lib/test/data/firefox/webextension.xpi');
+const WEBEXTENSION_EXTENSION_XPI = path.join(
+  __dirname,
+  '../lib/test/data/firefox/webextension.xpi'
+)
+const WEBEXTENSION_EXTENSION_ZIP = path.join(
+  __dirname,
+  '../lib/test/data/firefox/webextension.zip'
+)
 
 const WEBEXTENSION_EXTENSION_ID =
-    'webextensions-selenium-example@example.com.xpi';
+  'webextensions-selenium-example@example.com.xpi'
 
+suite(
+  function (env) {
+    describe('firefox', function () {
+      let driver
 
-suite(function(env) {
-  describe('firefox', function() {
-    let driver;
+      beforeEach(function () {
+        driver = null
+      })
 
-    beforeEach(function() {
-      driver = null;
-    });
+      afterEach(function () {
+        return driver && driver.quit()
+      })
 
-    afterEach(function() {
-      return driver && driver.quit();
-    });
+      describe('Options', function () {
+        let profileWithWebExtension
+        let profileWithUserPrefs
 
-    /**
-     * Runs a test that requires Firefox Developer Edition. The test will be
-     * skipped if dev cannot be found on the current system.
-     */
-    function runWithFirefoxDev(options, testFn) {
-      return firefox.Channel.AURORA.locate().then(async (exe) => {
-        options = options || new firefox.Options();
-        options.setBinary(exe);
-        driver = await env.builder()
-            .setFirefoxOptions(options)
-            .build();
-        return testFn();
-      }, err => {
-        console.warn(
-            'Skipping test: could not find Firefox Dev Edition: ' + err);
-      });
-    }
-
-    describe('Options', function() {
-      let profileWithWebExtension;
-      let profileWithUserPrefs;
-
-      before(async function createProfileWithWebExtension() {
-        profileWithWebExtension = await io.tmpDir();
-        let extensionsDir = path.join(profileWithWebExtension, 'extensions');
-        await io.mkdir(extensionsDir);
-        await io.write(
+        before(async function createProfileWithWebExtension() {
+          profileWithWebExtension = await io.tmpDir()
+          let extensionsDir = path.join(profileWithWebExtension, 'extensions')
+          await io.mkdir(extensionsDir)
+          await io.write(
             path.join(extensionsDir, WEBEXTENSION_EXTENSION_ID),
-            await io.read(WEBEXTENSION_EXTENSION));
-      });
+            await io.read(WEBEXTENSION_EXTENSION_XPI)
+          )
+        })
 
-      before(async function createProfileWithUserPrefs() {
-        profileWithUserPrefs = await io.tmpDir();
-        await io.write(
+        before(async function createProfileWithUserPrefs() {
+          profileWithUserPrefs = await io.tmpDir()
+          await io.write(
             path.join(profileWithUserPrefs, 'user.js'),
-            'user_pref("general.useragent.override", "foo;bar");\n');
-      });
+            'user_pref("general.useragent.override", "foo;bar");\n'
+          )
+        })
 
-      describe('setProfile', function() {
-        it('use profile with custom prefs', async function() {
-          let options = new firefox.Options;
-          options.setProfile(profileWithUserPrefs);
+        describe('setProfile', function () {
+          it('use profile with custom prefs', async function () {
+            let options = new firefox.Options()
+            options.setProfile(profileWithUserPrefs)
 
-          driver = env.builder().setFirefoxOptions(options).build();
+            driver = env.builder().setFirefoxOptions(options).build()
 
-          await driver.get(Pages.echoPage);
-          await verifyUserAgentWasChanged();
-        });
+            await driver.get(Pages.echoPage)
+            await verifyUserAgentWasChanged()
+          })
 
-        it('use profile with extension', function() {
-          let options = new firefox.Options;
-          options.setProfile(profileWithWebExtension);
+          it('use profile with extension', async function () {
+            let options = new firefox.Options()
+            options.setProfile(profileWithWebExtension)
 
-          return runWithFirefoxDev(options, async function() {
-            await driver.get(Pages.echoPage);
-            await verifyWebExtensionWasInstalled();
-          });
-        });
-      });
+            driver = env.builder().setFirefoxOptions(options).build()
 
-      describe('setPreference', function() {
-        it('throws if key is not a string', function() {
-          let options = new firefox.Options;
-          assert.throws(() => options.setPreference(1, 2), TypeError);
-          options.setPreference('1', 2);  // OK if no throw.
-        });
+            await driver.get(Pages.echoPage)
+            await verifyWebExtensionWasInstalled()
+          })
+        })
 
-        it('throws if value is an invalid type', function() {
-          let options = new firefox.Options;
-          options.setPreference('a', 1);
-          options.setPreference('b', '2');
-          options.setPreference('c', true);
+        describe('setPreference', function () {
+          it('throws if key is not a string', function () {
+            let options = new firefox.Options()
+            assert.throws(() => options.setPreference(1, 2), TypeError)
+            options.setPreference('1', 2) // OK if no throw.
+          })
 
-          assert.throws(() => options.setPreference('d', null), TypeError);
-          assert.throws(() => options.setPreference('d', undefined), TypeError);
-          assert.throws(() => options.setPreference('d', {}), TypeError);
-        });
+          it('throws if value is an invalid type', function () {
+            let options = new firefox.Options()
+            options.setPreference('a', 1)
+            options.setPreference('b', '2')
+            options.setPreference('c', true)
 
-        it('can start Firefox with custom preferences', async function() {
-          let options = new firefox.Options();
-          options.setPreference('general.useragent.override', 'foo;bar');
+            assert.throws(() => options.setPreference('d', null), TypeError)
+            assert.throws(
+              () => options.setPreference('d', undefined),
+              TypeError
+            )
+            assert.throws(() => options.setPreference('d', {}), TypeError)
+          })
 
-          driver = env.builder().setFirefoxOptions(options).build();
+          it('can start Firefox with custom preferences', async function () {
+            let options = new firefox.Options()
+            options.setPreference('general.useragent.override', 'foo;bar')
 
-          await driver.get(Pages.echoPage);
-          await verifyUserAgentWasChanged();
-        });
+            driver = env.builder().setFirefoxOptions(options).build()
 
-        it('can add extra prefs on top of an existing profile', async function() {
-          let options = new firefox.Options()
+            await driver.get(Pages.echoPage)
+            await verifyUserAgentWasChanged()
+          })
+
+          it('can add extra prefs on top of an existing profile', async function () {
+            let options = new firefox.Options()
               .setPreference('general.useragent.override', 'foo;bar')
-              .setProfile(profileWithWebExtension);
+              .setProfile(profileWithWebExtension)
 
-          return runWithFirefoxDev(options, async function() {
-            await driver.get(Pages.echoPage);
-            await verifyWebExtensionWasInstalled();
-            await verifyUserAgentWasChanged();
-          });
-        });
-      });
+            driver = env.builder().setFirefoxOptions(options).build()
 
-      describe('addExtensions', function() {
-        it('can add extension to brand new profile', async function() {
-          let options = new firefox.Options();
-          options.addExtensions(WEBEXTENSION_EXTENSION);
+            await driver.get(Pages.echoPage)
+            await verifyWebExtensionWasInstalled()
+            await verifyUserAgentWasChanged()
+          })
+        })
 
-          return runWithFirefoxDev(options, async function() {
-            await driver.get(Pages.echoPage);
-            await verifyWebExtensionWasInstalled();
-          });
-        });
+        describe('addExtensions', function () {
+          it('can add extension to brand new profile', async function () {
+            let options = new firefox.Options()
+            options.addExtensions(WEBEXTENSION_EXTENSION_XPI)
 
-        it('can add extension to custom profile', function() {
-          let options = new firefox.Options()
-              .addExtensions(WEBEXTENSION_EXTENSION)
-              .setProfile(profileWithUserPrefs);
+            driver = env.builder().setFirefoxOptions(options).build()
 
-          return runWithFirefoxDev(options, async function() {
-            await driver.get(Pages.echoPage);
-            await verifyWebExtensionWasInstalled();
-            await verifyUserAgentWasChanged();
-          });
-        });
+            await driver.get(Pages.echoPage)
+            await verifyWebExtensionWasInstalled()
+          })
 
-        it('can addExtensions and setPreference', function() {
-          let options = new firefox.Options()
-              .addExtensions(WEBEXTENSION_EXTENSION)
+          it('can add extension to custom profile', async function () {
+            let options = new firefox.Options()
+              .addExtensions(WEBEXTENSION_EXTENSION_XPI)
+              .setProfile(profileWithUserPrefs)
+
+            driver = env.builder().setFirefoxOptions(options).build()
+
+            await driver.get(Pages.echoPage)
+            await verifyWebExtensionWasInstalled()
+            await verifyUserAgentWasChanged()
+          })
+
+          it('can addExtensions and setPreference', async function () {
+            let options = new firefox.Options()
+              .addExtensions(WEBEXTENSION_EXTENSION_XPI)
               .setPreference('general.useragent.override', 'foo;bar')
 
-          return runWithFirefoxDev(options, async function() {
-            await driver.get(Pages.echoPage);
-            await verifyWebExtensionWasInstalled();
-            await verifyUserAgentWasChanged();
-          });
-        });
-      });
-    });
+            driver = env.builder().setFirefoxOptions(options).build()
 
-    describe('context switching', function() {
-      beforeEach(async function() {
-        driver = await env.builder().build();
-      });
+            await driver.get(Pages.echoPage)
+            await verifyWebExtensionWasInstalled()
+            await verifyUserAgentWasChanged()
+          })
 
-      it('can get context', async function() {
-        assert.equal(await driver.getContext(), Context.CONTENT);
-      });
+          it('can load .zip webextensions', async function () {
+            let options = new firefox.Options()
+            options.addExtensions(WEBEXTENSION_EXTENSION_ZIP)
 
-      it('can set context', async function() {
-        await driver.setContext(Context.CHROME);
-        let ctxt = await driver.getContext();
-        assert.equal(ctxt, Context.CHROME);
+            driver = env.builder().setFirefoxOptions(options).build()
 
-        await driver.setContext(Context.CONTENT);
-        ctxt = await driver.getContext();
-        assert.equal(ctxt, Context.CONTENT);
-      });
+            await driver.get(Pages.echoPage)
+            await verifyWebExtensionWasInstalled()
+          })
+        })
+      })
 
-      it('throws on unknown context', function() {
-        return driver.setContext("foo").then(assert.fail, function(e) {
-          assert(e instanceof error.InvalidArgumentError);
-        });
-      });
-    });
+      describe('context switching', function () {
+        beforeEach(async function () {
+          driver = await env.builder().build()
+        })
 
-    it('addons can be installed and uninstalled at runtime', function() {
-      return runWithFirefoxDev(null, async function() {
-        await driver.get(Pages.echoPage);
-        await verifyWebExtensionNotInstalled();
+        it('can get context', async function () {
+          assert.strictEqual(await driver.getContext(), Context.CONTENT)
+        })
 
-        let id = await driver.installAddon(WEBEXTENSION_EXTENSION);
-        await driver.sleep(1000);  // Give extension time to install (yuck).
+        it('can set context', async function () {
+          await driver.setContext(Context.CHROME)
+          let ctxt = await driver.getContext()
+          assert.strictEqual(ctxt, Context.CHROME)
 
-        await driver.get(Pages.echoPage);
-        await verifyWebExtensionWasInstalled();
+          await driver.setContext(Context.CONTENT)
+          ctxt = await driver.getContext()
+          assert.strictEqual(ctxt, Context.CONTENT)
+        })
 
-        await driver.uninstallAddon(id);
-        await driver.get(Pages.echoPage);
-        await verifyWebExtensionNotInstalled();
-      });
-    });
+        it('throws on unknown context', function () {
+          return driver.setContext('foo').then(assert.fail, function (e) {
+            assert(e instanceof error.InvalidArgumentError)
+          })
+        })
+      })
 
-    async function verifyUserAgentWasChanged() {
-      let userAgent =
-          await driver.executeScript('return window.navigator.userAgent');
-      assert.equal(userAgent, 'foo;bar');
-    }
+      it('addons can be installed and uninstalled at runtime', async function () {
+        driver = env.builder().build()
 
-    async function verifyWebExtensionNotInstalled() {
-      let found =
-          await driver.findElements({id: 'webextensions-selenium-example'});
-      assert.equal(found.length, 0);
-    }
+        await driver.get(Pages.echoPage)
+        await verifyWebExtensionNotInstalled()
 
-    async function verifyWebExtensionWasInstalled() {
-      let footer =
-          await driver.findElement({id: 'webextensions-selenium-example'});
-      let text = await footer.getText();
-      assert.equal(
-          text, 'Content injected by webextensions-selenium-example');
-    }
-  });
-}, {browsers: [Browser.FIREFOX]});
+        let id = await driver.installAddon(WEBEXTENSION_EXTENSION_XPI)
+        await driver.sleep(1000) // Give extension time to install (yuck).
+
+        await driver.get(Pages.echoPage)
+        await verifyWebExtensionWasInstalled()
+
+        await driver.uninstallAddon(id)
+        await driver.get(Pages.echoPage)
+        await verifyWebExtensionNotInstalled()
+      })
+
+      async function verifyUserAgentWasChanged() {
+        let userAgent = await driver.executeScript(
+          'return window.navigator.userAgent'
+        )
+        assert.strictEqual(userAgent, 'foo;bar')
+      }
+
+      async function verifyWebExtensionNotInstalled() {
+        let found = await driver.findElements({
+          id: 'webextensions-selenium-example',
+        })
+        assert.strictEqual(found.length, 0)
+      }
+
+      async function verifyWebExtensionWasInstalled() {
+        let footer = await driver.findElement({
+          id: 'webextensions-selenium-example',
+        })
+        let text = await footer.getText()
+        assert.strictEqual(
+          text,
+          'Content injected by webextensions-selenium-example'
+        )
+      }
+    })
+  },
+  { browsers: [Browser.FIREFOX] }
+)

@@ -28,7 +28,7 @@ public class ImeGetAvailableEngines extends WebDriverHandler<List<String>> {
   }
 
   @Override
-  public List<String> call() throws Exception {
+  public List<String> call() {
     return getDriver().manage().ime().getAvailableEngines();
   }
 }

@@ -119,7 +119,7 @@ class ReflectivelyDiscoveredSteps implements Supplier<ImmutableMap<String, CoreS
             selenium,
             state.expand(loc),
             state.expand(val),
-            (seen) -> {
+            seen -> {
               Object expected = getExpectedValue(method, state.expand(loc), state.expand(val));
 
               try {
@@ -137,7 +137,7 @@ class ReflectivelyDiscoveredSteps implements Supplier<ImmutableMap<String, CoreS
             selenium,
             state.expand(loc),
             state.expand(val),
-            (seen) -> {
+            seen -> {
               Object expected = getExpectedValue(method, state.expand(loc), state.expand(val));
 
               try {
@@ -155,7 +155,7 @@ class ReflectivelyDiscoveredSteps implements Supplier<ImmutableMap<String, CoreS
             selenium,
             state.expand(loc),
             state.expand(val),
-            (seen) -> {
+            seen -> {
               Object expected = getExpectedValue(method, state.expand(loc), state.expand(val));
 
               try {
@@ -175,7 +175,7 @@ class ReflectivelyDiscoveredSteps implements Supplier<ImmutableMap<String, CoreS
             selenium,
             state.expand(loc),
             state.expand(val),
-            (toStore) -> {
+            toStore -> {
               state.store(state.expand(val), toStore);
               return NextStepDecorator.IDENTITY;
             }));
@@ -246,7 +246,7 @@ class ReflectivelyDiscoveredSteps implements Supplier<ImmutableMap<String, CoreS
             selenium,
             state.expand(loc),
             state.expand(val),
-            (seen) -> {
+            seen -> {
               // TODO: Hard coding this is obviously bogus
               selenium.waitForPageToLoad("30000");
               return NextStepDecorator.IDENTITY;

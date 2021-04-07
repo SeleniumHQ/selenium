@@ -357,9 +357,10 @@ namespace OpenQA.Selenium
         [Test]
         [IgnoreBrowser(Browser.IE, "Class name is perfectly legal when using CSS selector, if properly escaped.")]
         [IgnoreBrowser(Browser.Firefox, "Class name is perfectly legal when using CSS selector, if properly escaped.")]
-        [IgnoreBrowser(Browser.Edge, "Class name is perfectly legal when using CSS selector, if properly escaped.")]
+        [IgnoreBrowser(Browser.EdgeLegacy, "Class name is perfectly legal when using CSS selector, if properly escaped.")]
         [IgnoreBrowser(Browser.Safari, "Class name is perfectly legal when using CSS selector, if properly escaped.")]
         [IgnoreBrowser(Browser.Chrome, "Class name is perfectly legal when using CSS selector, if properly escaped.")]
+        [IgnoreBrowser(Browser.Edge, "Class name is perfectly legal when using CSS selector, if properly escaped.")]
         [IgnoreBrowser(Browser.Opera, "Throws WebDriverException")]
         public void FindingMultipleElementsByInvalidClassNameShouldThrow()
         {
@@ -433,7 +434,7 @@ namespace OpenQA.Selenium
         [Test]
         [IgnoreBrowser(Browser.IE, "Driver does not support XML namespaces in XPath")]
         [IgnoreBrowser(Browser.Firefox, "Driver does not support XML namespaces in XPath")]
-        [IgnoreBrowser(Browser.Edge, "Driver does not support XML namespaces in XPath")]
+        [IgnoreBrowser(Browser.EdgeLegacy, "Driver does not support XML namespaces in XPath")]
         [IgnoreBrowser(Browser.Safari, "Not yet implemented")]
         public void ShouldBeAbleToFindElementByXPathWithNamespace()
         {
@@ -446,6 +447,7 @@ namespace OpenQA.Selenium
         [IgnoreBrowser(Browser.IE, "Driver does not support finding elements on XML documents.")]
         [IgnoreBrowser(Browser.Chrome, "Driver does not support finding elements on XML documents.")]
         [IgnoreBrowser(Browser.Edge, "Driver does not support finding elements on XML documents.")]
+        [IgnoreBrowser(Browser.EdgeLegacy, "Driver does not support finding elements on XML documents.")]
         [IgnoreBrowser(Browser.Safari, "Not yet implemented")]
         public void ShouldBeAbleToFindElementByXPathInXmlDocument()
         {
@@ -1077,13 +1079,6 @@ namespace OpenQA.Selenium
             driver.Url = simpleTestPage;
             IWebElement element = driver.FindElement(By.LinkText("link with \\ (backslash)"));
             Assert.AreEqual("backslash", element.GetAttribute("id"));
-        }
-
-        private bool SupportsSelectorApi()
-        {
-            IJavaScriptExecutor javascriptDriver = driver as IJavaScriptExecutor;
-            IFindsByCssSelector cssSelectorDriver = driver as IFindsByCssSelector;
-            return (cssSelectorDriver != null) && (javascriptDriver != null);
         }
     }
 }

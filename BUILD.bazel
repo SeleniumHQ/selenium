@@ -1,0 +1,48 @@
+load("//common:browsers.bzl", "chrome_data", "firefox_data")
+load("//java:browsers.bzl", "chrome_jvm_flags", "firefox_jvm_flags")
+load("//java:defs.bzl", "artifact")
+
+filegroup(
+    name = "license",
+    srcs = [
+        "LICENSE",
+        "NOTICE",
+    ],
+    visibility = ["//visibility:public"],
+)
+
+alias(
+    name = "grid",
+    actual = "//java/server/src/org/openqa/selenium/grid:executable-grid",
+)
+
+alias(
+    name = "debug-server",
+    actual = "//java/client/test/org/openqa/selenium/environment:appserver",
+)
+
+alias(
+    name = "calcdeps",
+    actual = "//javascript/atoms:deps",
+)
+
+alias(
+    name = "selenium-server-standalone",
+    actual = "//java/server/src/org/openqa/selenium/grid:selenium_server_deploy.jar",
+)
+
+java_binary(
+    name = "server",
+    main_class = "org.openqa.selenium.grid.Bootstrap",
+    runtime_deps = [
+        "//java/server/src/org/openqa/selenium/grid",
+        artifact("org.slf4j:slf4j-jdk14"),
+    ],
+    jvm_flags = chrome_jvm_flags + firefox_jvm_flags,
+    data = chrome_data + firefox_data,
+    args = [
+        "standalone",
+        "--relax-checks",
+        "true",
+    ],
+)

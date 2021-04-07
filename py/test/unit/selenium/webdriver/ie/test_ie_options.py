@@ -101,7 +101,7 @@ def test_ignore_zoom_level(opts):
 
 
 def test_initial_browser_url(opts):
-    url = 'http://www.seleniumhq.org'
+    url = 'http://www.selenium.dev'
     opts.initial_browser_url = url
     assert opts.initial_browser_url == url
     assert opts.options.get(Options.INITIAL_BROWSER_URL) == url
@@ -176,7 +176,9 @@ def test_to_capabilities_should_not_modify_set_options(opts):
 
 def test_starts_with_default_capabilities(opts):
     from selenium.webdriver import DesiredCapabilities
-    assert opts._caps == DesiredCapabilities.INTERNETEXPLORER
+    caps = DesiredCapabilities.INTERNETEXPLORER.copy()
+    caps.update({"pageLoadStrategy": "normal"})
+    assert opts._caps == caps
 
 
 def test_is_a_baseoptions(opts):

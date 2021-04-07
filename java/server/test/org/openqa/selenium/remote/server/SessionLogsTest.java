@@ -17,13 +17,6 @@
 
 package org.openqa.selenium.remote.server;
 
-import static org.junit.Assert.assertTrue;
-import static org.openqa.selenium.json.Json.MAP_TYPE;
-import static org.openqa.selenium.testing.drivers.Browser.CHROME;
-import static org.openqa.selenium.testing.drivers.Browser.HTMLUNIT;
-import static org.openqa.selenium.testing.drivers.Browser.IE;
-import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
-
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -42,16 +35,26 @@ import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.drivers.Browser;
 import org.openqa.selenium.testing.drivers.OutOfProcessSeleniumServer;
-import org.openqa.selenium.testing.drivers.WebDriverBuilder;
 
 import java.io.IOException;
 import java.net.URL;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
+
+import static org.junit.Assert.assertTrue;
+import static org.openqa.selenium.json.Json.MAP_TYPE;
+import static org.openqa.selenium.remote.http.Contents.string;
+import static org.openqa.selenium.testing.drivers.Browser.CHROME;
+import static org.openqa.selenium.testing.drivers.Browser.EDGE;
+import static org.openqa.selenium.testing.drivers.Browser.HTMLUNIT;
+import static org.openqa.selenium.testing.drivers.Browser.IE;
+import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
 
 @Ignore(HTMLUNIT)
 @Ignore(IE)
 @Ignore(CHROME)
+@Ignore(EDGE)
 @Ignore(SAFARI)
 public class SessionLogsTest extends JUnit4TestBase {
 
@@ -62,7 +65,7 @@ public class SessionLogsTest extends JUnit4TestBase {
   public static void startUpServer() throws IOException {
     server = new OutOfProcessSeleniumServer();
     server.enableLogCapture();
-    server.start();
+    server.start("standalone");
   }
 
   @AfterClass
@@ -79,7 +82,7 @@ public class SessionLogsTest extends JUnit4TestBase {
   }
 
   private void startDriver() {
-    Capabilities caps = WebDriverBuilder.getStandardCapabilitiesFor(Browser.detect());
+    Capabilities caps = Objects.requireNonNull(Browser.detect()).getCapabilities();
     localDriver = new RemoteWebDriver(server.getWebDriverUrl(), caps);
     localDriver.setFileDetector(new LocalFileDetector());
   }
@@ -104,7 +107,7 @@ public class SessionLogsTest extends JUnit4TestBase {
     HttpClient.Factory factory = HttpClient.Factory.createDefault();
     HttpClient client = factory.createClient(new URL(url));
     HttpResponse response = client.execute(new HttpRequest(HttpMethod.POST, url));
-    Map<String, Object> map = new Json().toType(response.getContentString(), MAP_TYPE);
+    Map<String, Object> map = new Json().toType(string(response), MAP_TYPE);
     return (Map<String, Object>) map.get("value");
   }
 }

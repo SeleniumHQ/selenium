@@ -26,7 +26,7 @@ public class ClearElement extends WebElementHandler<Void> {
   }
 
   @Override
-  public Void call() throws Exception {
+  public Void call() {
     getElement().clear();
     return null;
   }

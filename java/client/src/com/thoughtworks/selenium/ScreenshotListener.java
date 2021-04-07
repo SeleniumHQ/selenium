@@ -39,9 +39,16 @@ public class ScreenshotListener implements IResultListener {
     Reporter.setCurrentTestResult(result);
 
     try {
-      outputDirectory.mkdirs();
+      if (!outputDirectory.mkdirs()) {
+        Reporter.log("Unable to take screenshot");
+        return;
+      }
+
       File outFile = File.createTempFile("TEST-" + result.getName(), ".png", outputDirectory);
-      outFile.delete();
+      if (!outFile.delete()) {
+        Reporter.log("Unable to create temporary file for screenshot");
+        return;
+      }
       selenium.captureScreenshot(outFile.getAbsolutePath());
       Reporter.log("<a href='" +
           outFile.getName() +

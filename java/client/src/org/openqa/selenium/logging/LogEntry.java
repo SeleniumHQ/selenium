@@ -17,10 +17,8 @@
 
 package org.openqa.selenium.logging;
 
-import org.openqa.selenium.Beta;
-
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.time.Instant;
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
@@ -29,9 +27,6 @@ import java.util.logging.Level;
  * Represents a single log statement.
  */
 public class LogEntry {
-
-  private static final ThreadLocal<SimpleDateFormat> DATE_FORMAT =
-      ThreadLocal.withInitial(() -> new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ"));
 
   private final Level level;
   private final long timestamp;
@@ -77,11 +72,11 @@ public class LogEntry {
 
   @Override
   public String toString() {
-    return String.format("[%s] [%s] %s",
-                         DATE_FORMAT.get().format(new Date(timestamp)), level, message);
+    return String.format(
+        "[%s] [%s] %s",
+        DateTimeFormatter.ISO_INSTANT.format(Instant.ofEpochMilli(timestamp)), level, message);
   }
 
-  @Beta
   public Map<String, Object> toJson() {
     Map<String, Object> map = new HashMap<>();
     map.put("timestamp", timestamp);

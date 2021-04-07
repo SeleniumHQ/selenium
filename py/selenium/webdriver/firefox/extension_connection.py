@@ -37,10 +37,10 @@ class ExtensionConnection(RemoteConnection):
         HOST = host
         timeout = int(timeout)
 
-        if self.binary is None:
+        if not self.binary:
             self.binary = FirefoxBinary()
 
-        if HOST is None:
+        if not HOST:
             HOST = "127.0.0.1"
 
         PORT = utils.free_port()
@@ -72,7 +72,7 @@ class ExtensionConnection(RemoteConnection):
 
     @classmethod
     def is_connectable(self):
-        """Trys to connect to the extension but do not retrieve context."""
+        """Tries to connect to the extension but do not retrieve context."""
         utils.is_connectable(self.profile.port)
 
 

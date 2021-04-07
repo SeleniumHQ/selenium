@@ -34,15 +34,18 @@ public interface WebElement extends SearchContext, TakesScreenshot {
    * should discard all references to this element and any further
    * operations performed on this element will throw a
    * StaleElementReferenceException.
-   *
+   * <p>
    * Note that if click() is done by sending a native event (which is
    * the default on most browsers/platforms) then the method will
    * _not_ wait for the next page to load and the caller should verify
    * that themselves.
-   *
+   * <p>
    * There are some preconditions for an element to be clicked. The
    * element must be visible and it must have a height and width
    * greater then 0.
+   * <p>
+   * See <a href="https://w3c.github.io/webdriver/#element-click">W3C WebDriver specification</a>
+   * for more details.
    *
    * @throws StaleElementReferenceException If the element no
    *     longer exists as initially defined
@@ -60,6 +63,9 @@ public interface WebElement extends SearchContext, TakesScreenshot {
 
   /**
    * Use this method to simulate typing into an element, which may set its value.
+   * <p>
+   * See <a href="https://w3c.github.io/webdriver/#element-send-keys">W3C WebDriver specification</a>
+   * for more details.
    *
    * @param keysToSend character sequence to send to the element
    *
@@ -68,56 +74,94 @@ public interface WebElement extends SearchContext, TakesScreenshot {
   void sendKeys(CharSequence... keysToSend);
 
   /**
-   * If this element is a text entry element, this will clear the value. Has no effect on other
-   * elements. Text entry elements are INPUT and TEXTAREA elements.
-   *
-   * Note that the events fired by this event may not be as you'd expect.  In particular, we don't
-   * fire any keyboard or mouse events.  If you want to ensure keyboard events are fired, consider
-   * using something like {@link #sendKeys(CharSequence...)} with the backspace key.  To ensure
-   * you get a change event, consider following with a call to {@link #sendKeys(CharSequence...)}
-   * with the tab key.
+   * If this element is a form entry element, this will reset its value.
+   * <p>
+   * See <a href="https://w3c.github.io/webdriver/#element-clear">W3C WebDriver specification</a>
+   * and <a href="https://html.spec.whatwg.org/#concept-form-reset-control">HTML specification</a>
+   * for more details.
    */
   void clear();
 
   /**
    * Get the tag name of this element. <b>Not</b> the value of the name attribute: will return
    * <code>"input"</code> for the element <code>&lt;input name="foo" /&gt;</code>.
+   * <p>
+   * See <a href="https://w3c.github.io/webdriver/#get-element-tag-name">W3C WebDriver specification</a>
+   * for more details.
    *
    * @return The tag name of this element.
    */
   String getTagName();
 
   /**
-   * Get the value of the given attribute of the element. Will return the current value, even if
+   * Get the value of the given property of the element. Will return the current value, even if
    * this has been modified after the page has been loaded.
+   * <p>
+   * See <a href="https://w3c.github.io/webdriver/#get-element-property">W3C WebDriver specification</a>
+   * for more details.
    *
-   * <p>More exactly, this method will return the value of the property with the given name, if it
-   * exists. If it does not, then the value of the attribute with the given name is returned. If
-   * neither exists, null is returned.
-   *
-   * <p>The "style" attribute is converted as best can be to a text representation with a trailing
-   * semi-colon.
-   *
-   * <p>The following are deemed to be "boolean" attributes, and will return either "true" or null:
-   *
-   * <p>async, autofocus, autoplay, checked, compact, complete, controls, declare, defaultchecked,
+   * @param name The name of the property.
+   * @return The property's current value or null if the value is not set.
+   */
+  default String getDomProperty(String name) {
+    throw new UnsupportedOperationException();
+  }
+
+  /**
+   * Get the value of the given attribute of the element.
+   * <p>
+   * This method, unlike {@link #getAttribute(String)}, returns the value of the attribute with the
+   * given name but not the property with the same name.
+   * <p>
+   * The following are deemed to be "boolean" attributes, and will return either "true" or null:
+   * <p>
+   * async, autofocus, autoplay, checked, compact, complete, controls, declare, defaultchecked,
    * defaultselected, defer, disabled, draggable, ended, formnovalidate, hidden, indeterminate,
    * iscontenteditable, ismap, itemscope, loop, multiple, muted, nohref, noresize, noshade,
    * novalidate, nowrap, open, paused, pubdate, readonly, required, reversed, scoped, seamless,
    * seeking, selected, truespeed, willvalidate
+   * <p>
+   * See <a href="https://w3c.github.io/webdriver/#get-element-attribute">W3C WebDriver specification</a>
+   * for more details.
    *
-   * <p>Finally, the following commonly mis-capitalized attribute/property names are evaluated as
+   * @param name The name of the attribute.
+   * @return The attribute's value or null if the value is not set.
+   */
+  default String getDomAttribute(String name) {
+    throw new UnsupportedOperationException();
+  }
+
+  /**
+   * Get the value of the given attribute of the element. Will return the current value, even if
+   * this has been modified after the page has been loaded.
+   * <p>
+   * More exactly, this method will return the value of the property with the given name, if it
+   * exists. If it does not, then the value of the attribute with the given name is returned. If
+   * neither exists, null is returned.
+   * <p>
+   * The "style" attribute is converted as best can be to a text representation with a trailing
+   * semi-colon.
+   * <p>
+   * The following are deemed to be "boolean" attributes, and will return either "true" or null:
+   * <p>
+   * async, autofocus, autoplay, checked, compact, complete, controls, declare, defaultchecked,
+   * defaultselected, defer, disabled, draggable, ended, formnovalidate, hidden, indeterminate,
+   * iscontenteditable, ismap, itemscope, loop, multiple, muted, nohref, noresize, noshade,
+   * novalidate, nowrap, open, paused, pubdate, readonly, required, reversed, scoped, seamless,
+   * seeking, selected, truespeed, willvalidate
+   * <p>
+   * Finally, the following commonly mis-capitalized attribute/property names are evaluated as
    * expected:
-   *
    * <ul>
    * <li>If the given name is "class", the "className" property is returned.
    * <li>If the given name is "readonly", the "readOnly" property is returned.
    * </ul>
-   *
    * <i>Note:</i> The reason for this behavior is that users frequently confuse attributes and
-   * properties. If you need to do something more precise, e.g., refer to an attribute even when a
-   * property of the same name exists, then you should evaluate Javascript to obtain the result
-   * you desire.
+   * properties. If you need to do something more precise, use {@link #getDomAttribute(String)}
+   * or {@link #getDomProperty(String)} to obtain the result you desire.
+   * <p>
+   * See <a href="https://w3c.github.io/webdriver/#get-element-attribute">W3C WebDriver specification</a>
+   * for more details.
    *
    * @param name The name of the attribute.
    * @return The attribute/property's current value or null if the value is not set.
@@ -125,10 +169,37 @@ public interface WebElement extends SearchContext, TakesScreenshot {
   String getAttribute(String name);
 
   /**
+   * Gets result of computing the WAI-ARIA role of element.
+   * <p>
+   * See <a href="https://www.w3.org/TR/webdriver/#get-computed-role">W3C WebDriver specification</a>
+   * for more details.
+   *
+   * @return the WAI-ARIA role of the element.
+   */
+  default String getAriaRole() {
+    throw new UnsupportedOperationException();
+  }
+
+  /**
+   * Gets result of a Accessible Name and Description Computation for the Accessible Name of the element.
+   * <p>
+   * See <a href="https://www.w3.org/TR/webdriver/#get-computed-label">W3C WebDriver specification</a>
+   * for more details.
+   *
+   * @return the accessible name of the element.
+   */
+  default String getAccessibleName() {
+    throw new UnsupportedOperationException();
+  }
+
+  /**
    * Determine whether or not this element is selected or not. This operation only applies to input
    * elements such as checkboxes, options in a select and radio buttons.
    * For more information on which elements this method supports,
    * refer to the <a href="https://w3c.github.io/webdriver/webdriver-spec.html#is-element-selected">specification</a>.
+   * <p>
+   * See <a href="https://w3c.github.io/webdriver/#is-element-selected">W3C WebDriver specification</a>
+   * for more details.
    *
    * @return True if the element is currently selected or checked, false otherwise.
    */
@@ -137,6 +208,9 @@ public interface WebElement extends SearchContext, TakesScreenshot {
   /**
    * Is the element currently enabled or not? This will generally return true for everything but
    * disabled input elements.
+   * <p>
+   * See <a href="https://w3c.github.io/webdriver/#is-element-enabled">W3C WebDriver specification</a>
+   * for more details.
    *
    * @return True if the element is enabled, false otherwise.
    */
@@ -144,9 +218,10 @@ public interface WebElement extends SearchContext, TakesScreenshot {
 
   /**
    * Get the visible (i.e. not hidden by CSS) text of this element, including sub-elements.
+   * <p>
+   * See <a href="https://w3c.github.io/webdriver/#get-element-text">W3C WebDriver specification</a>
+   * for more details.
    *
-   * @see <a href="https://w3c.github.io/webdriver/#get-element-text">"Get Element Text" section
-   * in W3C WebDriver Specification</a>
    * @return The visible text of this element.
    */
   String getText();
@@ -159,6 +234,9 @@ public interface WebElement extends SearchContext, TakesScreenshot {
    * This method is affected by the 'implicit wait' times in force at the time of execution. When
    * implicitly waiting, this method will return as soon as there are more than 0 items in the
    * found collection, or will return an empty list if the timeout is reached.
+   * <p>
+   * See <a href="https://w3c.github.io/webdriver/#find-elements-from-element">W3C WebDriver specification</a>
+   * for more details.
    *
    * @param by The locating mechanism to use
    * @return A list of all {@link WebElement}s, or an empty list if nothing matches.
@@ -174,9 +252,12 @@ public interface WebElement extends SearchContext, TakesScreenshot {
    * This method is affected by the 'implicit wait' times in force at the time of execution.
    * The findElement(..) invocation will return a matching row, or try again repeatedly until
    * the configured timeout is reached.
-   *
+   * <p>
    * findElement should not be used to look for non-present elements, use {@link #findElements(By)}
    * and assert zero length response instead.
+   * <p>
+   * See <a href="https://w3c.github.io/webdriver/#find-element-from-element">W3C WebDriver specification</a>
+   * for more details.
    *
    * @param by The locating mechanism
    * @return The first matching element on the current context.
@@ -197,6 +278,9 @@ public interface WebElement extends SearchContext, TakesScreenshot {
 
   /**
    * Where on the page is the top left-hand corner of the rendered element?
+   * <p>
+   * See <a href="https://w3c.github.io/webdriver/#get-element-rect">W3C WebDriver specification</a>
+   * for more details.
    *
    * @return A point, containing the location of the top left-hand corner of the element
    */
@@ -204,6 +288,9 @@ public interface WebElement extends SearchContext, TakesScreenshot {
 
   /**
    * What is the width and height of the rendered element?
+   * <p>
+   * See <a href="https://w3c.github.io/webdriver/#get-element-rect">W3C WebDriver specification</a>
+   * for more details.
    *
    * @return The size of the element on the page.
    */
@@ -211,14 +298,20 @@ public interface WebElement extends SearchContext, TakesScreenshot {
 
   /**
    * @return The location and size of the rendered element
+   * <p>
+   * See <a href="https://w3c.github.io/webdriver/#get-element-rect">W3C WebDriver specification</a>
+   * for more details.
    */
   Rectangle getRect();
 
   /**
    * Get the value of a given CSS property.
-   * Color values should be returned as rgba strings, so,
-   * for example if the "background-color" property is set as "green" in the
-   * HTML source, the returned value will be "rgba(0, 255, 0, 1)".
+   * Color values could be returned as rgba or rgb strings.
+   * This depends on whether the browser omits the implicit opacity value or not.
+   *
+   * For example if the "background-color" property is set as "green" in the
+   * HTML source, the returned value could be "rgba(0, 255, 0, 1)" if implicit opacity value is
+   * preserved or "rgb(0, 255, 0)" if it is omitted.
    *
    * Note that shorthand CSS properties (e.g. background, font, border, border-top, margin,
    * margin-top, padding, padding-top, list-style, outline, pause, cue) are not returned,
@@ -226,6 +319,9 @@ public interface WebElement extends SearchContext, TakesScreenshot {
    * <a href="http://www.w3.org/TR/DOM-Level-2-Style/css.html#CSS-CSSStyleDeclaration">DOM CSS2 specification</a>
    * - you should directly access the longhand properties (e.g. background-color) to access the
    * desired values.
+   * <p>
+   * See <a href="https://w3c.github.io/webdriver/#get-element-css-value">W3C WebDriver specification</a>
+   * for more details.
    *
    * @param propertyName the css property name of the element
    * @return The current, computed value of the property.

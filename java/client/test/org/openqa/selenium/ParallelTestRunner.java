@@ -25,7 +25,7 @@ import java.util.List;
  */
 public class ParallelTestRunner {
   public interface Worker {
-    void run() throws Exception;
+    void run();
   }
 
   private static class WorkerThread extends Thread {  // Thread safety reviewed

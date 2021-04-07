@@ -23,12 +23,14 @@ import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.Cookie;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.Point;
+import org.openqa.selenium.WindowType;
 import org.openqa.selenium.interactions.Sequence;
+import org.openqa.selenium.print.PrintOptions;
 
+import java.time.Duration;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -71,11 +73,11 @@ public interface DriverCommand {
   String DELETE_ALL_COOKIES = "deleteAllCookies";
 
   String FIND_ELEMENT = "findElement";
-  static CommandPayload FIND_ELEMENT(String strategy, String value) {
+  static CommandPayload FIND_ELEMENT(String strategy, Object value) {
     return new CommandPayload(FIND_ELEMENT, ImmutableMap.of("using", strategy, "value", value));
   }
   String FIND_ELEMENTS = "findElements";
-  static CommandPayload FIND_ELEMENTS(String strategy, String value) {
+  static CommandPayload FIND_ELEMENTS(String strategy, Object value) {
     return new CommandPayload(FIND_ELEMENTS, ImmutableMap.of("using", strategy, "value", value));
   }
   String FIND_CHILD_ELEMENT = "findChildElement";
@@ -121,6 +123,11 @@ public interface DriverCommand {
   static CommandPayload SWITCH_TO_WINDOW(String windowHandleOrName) {
     return new CommandPayload(SWITCH_TO_WINDOW, ImmutableMap.of("handle", windowHandleOrName));
   }
+  String SWITCH_TO_NEW_WINDOW = "newWindow";
+  static CommandPayload SWITCH_TO_NEW_WINDOW(WindowType typeHint) {
+    return new CommandPayload(SWITCH_TO_NEW_WINDOW, ImmutableMap.of("type", typeHint.toString()));
+  }
+
   String SWITCH_TO_CONTEXT = "switchToContext";
   String SWITCH_TO_FRAME = "switchToFrame";
   static CommandPayload SWITCH_TO_FRAME(Object frame) {
@@ -178,14 +185,29 @@ public interface DriverCommand {
   static CommandPayload GET_ELEMENT_SIZE(String id) {
     return new CommandPayload(GET_ELEMENT_SIZE, ImmutableMap.of("id", id));
   }
+  String GET_ELEMENT_DOM_PROPERTY = "getElementDomProperty";
+  static CommandPayload GET_ELEMENT_DOM_PROPERTY(String id, String name) {
+    return new CommandPayload(GET_ELEMENT_DOM_PROPERTY, ImmutableMap.of("id", id, "name", name));
+  }
+  String GET_ELEMENT_DOM_ATTRIBUTE = "getElementDomAttribute";
+  static CommandPayload GET_ELEMENT_DOM_ATTRIBUTE(String id, String name) {
+    return new CommandPayload(GET_ELEMENT_DOM_ATTRIBUTE, ImmutableMap.of("id", id, "name", name));
+  }
   String GET_ELEMENT_ATTRIBUTE = "getElementAttribute";
   static CommandPayload GET_ELEMENT_ATTRIBUTE(String id, String name) {
     return new CommandPayload(GET_ELEMENT_ATTRIBUTE, ImmutableMap.of("id", id, "name", name));
   }
-  String GET_ELEMENT_PROPERTY = "getElementProperty";
   String GET_ELEMENT_VALUE_OF_CSS_PROPERTY = "getElementValueOfCssProperty";
   static CommandPayload GET_ELEMENT_VALUE_OF_CSS_PROPERTY(String id, String name) {
     return new CommandPayload(GET_ELEMENT_VALUE_OF_CSS_PROPERTY, ImmutableMap.of("id", id, "propertyName", name));
+  }
+  String GET_ELEMENT_ARIA_ROLE = "getElementAriaRole";
+  static CommandPayload GET_ELEMENT_ARIA_ROLE(String id) {
+    return new CommandPayload(GET_ELEMENT_ARIA_ROLE, ImmutableMap.of("id", id));
+  }
+  String GET_ELEMENT_ACCESSIBLE_NAME = "getElementAccessibleName";
+  static CommandPayload GET_ELEMENT_ACCESSIBLE_NAME(String id) {
+    return new CommandPayload(GET_ELEMENT_ACCESSIBLE_NAME, ImmutableMap.of("id", id));
   }
   String ELEMENT_EQUALS = "elementEquals";
 
@@ -204,19 +226,44 @@ public interface DriverCommand {
   }
   String SET_ALERT_CREDENTIALS = "setAlertCredentials";
 
+  String GET_TIMEOUTS = "getTimeouts";
   String SET_TIMEOUT = "setTimeout";
+
+  String PRINT_PAGE = "printPage";
+  static CommandPayload PRINT_PAGE(PrintOptions options) {
+    return new CommandPayload(PRINT_PAGE, ImmutableMap.of("options", options));
+  }
+
+  @Deprecated
   static CommandPayload SET_IMPLICIT_WAIT_TIMEOUT(long time, TimeUnit unit) {
     return new CommandPayload(
-        SET_TIMEOUT, ImmutableMap.of("implicit", TimeUnit.MILLISECONDS.convert(time, unit)));
+      SET_TIMEOUT, ImmutableMap.of("implicit", TimeUnit.MILLISECONDS.convert(time, unit)));
   }
+
+  static CommandPayload SET_IMPLICIT_WAIT_TIMEOUT(Duration duration) {
+    return new CommandPayload(SET_TIMEOUT, ImmutableMap.of("implicit", duration.toMillis()));
+  }
+
+  @Deprecated
   static CommandPayload SET_SCRIPT_TIMEOUT(long time, TimeUnit unit) {
     return new CommandPayload(
-        SET_TIMEOUT, ImmutableMap.of("script", TimeUnit.MILLISECONDS.convert(time, unit)));
+      SET_TIMEOUT, ImmutableMap.of("script", TimeUnit.MILLISECONDS.convert(time, unit)));
   }
+
+  static CommandPayload SET_SCRIPT_TIMEOUT(Duration duration) {
+    return new CommandPayload(SET_TIMEOUT, ImmutableMap.of("script", duration.toMillis()));
+  }
+
+  @Deprecated
   static CommandPayload SET_PAGE_LOAD_TIMEOUT(long time, TimeUnit unit) {
     return new CommandPayload(
-        SET_TIMEOUT, ImmutableMap.of("pageLoad", TimeUnit.MILLISECONDS.convert(time, unit)));
+      SET_TIMEOUT, ImmutableMap.of("pageLoad", TimeUnit.MILLISECONDS.convert(time, unit)));
   }
+
+  static CommandPayload SET_PAGE_LOAD_TIMEOUT(Duration duration) {
+    return new CommandPayload(SET_TIMEOUT, ImmutableMap.of("pageLoad", duration.toMillis()));
+  }
+
   String IMPLICITLY_WAIT = "implicitlyWait";
   String SET_SCRIPT_TIMEOUT = "setScriptTimeout";
 
@@ -287,22 +334,23 @@ public interface DriverCommand {
   String SET_CURRENT_WINDOW_POSITION = "setWindowPosition";
   static CommandPayload SET_CURRENT_WINDOW_POSITION(Point targetPosition) {
     return new CommandPayload(
-        SET_CURRENT_WINDOW_POSITION, ImmutableMap.of("x", targetPosition.x, "y", targetPosition.y));
+      SET_CURRENT_WINDOW_POSITION, ImmutableMap.of("x", targetPosition.x, "y", targetPosition.y));
   }
   String GET_CURRENT_WINDOW_POSITION = "getWindowPosition";
   static CommandPayload GET_CURRENT_WINDOW_POSITION() {
     return new CommandPayload(
-        GET_CURRENT_WINDOW_POSITION, ImmutableMap.of("windowHandle", "current"));
+      GET_CURRENT_WINDOW_POSITION, ImmutableMap.of("windowHandle", "current"));
   }
 
   // W3C compatible Window API
   String SET_CURRENT_WINDOW_SIZE = "setCurrentWindowSize";
   static CommandPayload SET_CURRENT_WINDOW_SIZE(Dimension targetSize) {
     return new CommandPayload(
-        SET_CURRENT_WINDOW_SIZE, ImmutableMap.of("width", targetSize.width, "height", targetSize.height));
+      SET_CURRENT_WINDOW_SIZE, ImmutableMap.of("width", targetSize.width, "height", targetSize.height));
   }
   String GET_CURRENT_WINDOW_SIZE = "getCurrentWindowSize";
   String MAXIMIZE_CURRENT_WINDOW = "maximizeCurrentWindow";
+  String MINIMIZE_CURRENT_WINDOW = "minimizeCurrentWindow";
   String FULLSCREEN_CURRENT_WINDOW = "fullscreenCurrentWindow";
 
   // Logging API
@@ -313,4 +361,14 @@ public interface DriverCommand {
   // Mobile API
   String GET_NETWORK_CONNECTION = "getNetworkConnection";
   String SET_NETWORK_CONNECTION = "setNetworkConnection";
+
+  // Virtual Authenticator API
+  // http://w3c.github.io/webauthn#sctn-automation
+  String ADD_VIRTUAL_AUTHENTICATOR = "addVirtualAuthenticator";
+  String REMOVE_VIRTUAL_AUTHENTICATOR = "removeVirtualAuthenticator";
+  String ADD_CREDENTIAL = "addCredential";
+  String GET_CREDENTIALS = "getCredentials";
+  String REMOVE_CREDENTIAL = "removeCredential";
+  String REMOVE_ALL_CREDENTIALS = "removeAllCredentials";
+  String SET_USER_VERIFIED = "setUserVerified";
 }

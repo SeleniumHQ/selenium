@@ -20,12 +20,11 @@ package org.openqa.selenium.logging;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.openqa.selenium.remote.CapabilityType.ENABLE_PROFILING_CAPABILITY;
 import static org.openqa.selenium.testing.drivers.Browser.CHROME;
+import static org.openqa.selenium.testing.drivers.Browser.EDGE;
 import static org.openqa.selenium.testing.drivers.Browser.HTMLUNIT;
 import static org.openqa.selenium.testing.drivers.Browser.IE;
-import static org.openqa.selenium.testing.drivers.Browser.MARIONETTE;
+import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
 import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
-
-import com.google.common.collect.ImmutableList;
 
 import org.junit.After;
 import org.junit.Test;
@@ -37,13 +36,14 @@ import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.drivers.WebDriverBuilder;
 
+import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 @Ignore(HTMLUNIT)
 @Ignore(IE)
 @Ignore(SAFARI)
-@Ignore(MARIONETTE)
+@Ignore(FIREFOX)
 public class PerformanceLoggingTest extends JUnit4TestBase {
 
   private WebDriver loggingDriver;
@@ -67,8 +67,8 @@ public class PerformanceLoggingTest extends JUnit4TestBase {
   @Test
   public void testLogsSingleHttpCommand() {
     startLoggingDriver();
-    ImmutableList<LogEntry> entries = getProfilerEntriesOfType(getProfilerEntries(loggingDriver),
-        EventType.HTTP_COMMAND);
+    List<LogEntry> entries = getProfilerEntriesOfType(getProfilerEntries(loggingDriver),
+                                                      EventType.HTTP_COMMAND);
     // Expect start of newSession, end of newSession, start of getLogs, end of getLogs
     String[] expected = {"\"command\": \"newSession\",\"startorend\": \"start\"",
         "\"command\": \"newSession\",\"startorend\": \"end\"",
@@ -85,7 +85,7 @@ public class PerformanceLoggingTest extends JUnit4TestBase {
    * @param expected The array of expected strings.
    * @return true if a match was found for all expected strings, otherwise false.
    */
-  private boolean containsExpectedEntries(ImmutableList<LogEntry> entries, String[] expected) {
+  private boolean containsExpectedEntries(List<LogEntry> entries, String[] expected) {
     int index = 0;
     for (LogEntry entry : entries) {
       if (index == expected.length) {
@@ -100,6 +100,7 @@ public class PerformanceLoggingTest extends JUnit4TestBase {
 
   @Test
   @Ignore(CHROME)
+  @Ignore(EDGE)
   public void testGetsYieldToPageLoadLogEntries() {
     startLoggingDriver();
     loggingDriver.get(pages.formPage);
@@ -120,9 +121,8 @@ public class PerformanceLoggingTest extends JUnit4TestBase {
     return driver.manage().logs().get(LogType.PROFILER);
   }
 
-  private ImmutableList<LogEntry> getProfilerEntriesOfType(final LogEntries entries,
-      final EventType eventType) {
-    return ImmutableList.copyOf(StreamSupport.stream(entries.spliterator(), false).filter(
-        entry -> entry.getMessage().contains(eventType.toString())).collect(Collectors.toList()));
+  private List<LogEntry> getProfilerEntriesOfType(LogEntries entries, EventType eventType) {
+    return StreamSupport.stream(entries.spliterator(), false).filter(
+        entry -> entry.getMessage().contains(eventType.toString())).collect(Collectors.toList());
   }
 }

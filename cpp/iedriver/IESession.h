@@ -19,12 +19,6 @@
 
 #include "session.h"
 
-#define MUTEX_NAME L"WD_INITIALIZATION_MUTEX"
-#define MUTEX_WAIT_TIMEOUT 30000
-#define THREAD_WAIT_TIMEOUT 30000
-#define EXECUTOR_EXIT_WAIT_TIMEOUT 5000
-#define EXECUTOR_EXIT_WAIT_INTERVAL 100
-
 namespace webdriver {
 
 // Structure to be used for storing session initialization parameters

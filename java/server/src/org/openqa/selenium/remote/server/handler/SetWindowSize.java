@@ -50,7 +50,7 @@ public class SetWindowSize extends WebDriverHandler<Void> {
   }
 
   @Override
-  public Void call() throws Exception {
+  public Void call() {
     getDriver().manage().window().setSize(size);
     return null;
   }

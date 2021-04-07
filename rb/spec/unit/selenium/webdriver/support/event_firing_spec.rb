@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Licensed to the Software Freedom Conservancy (SFC) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -15,17 +17,19 @@
 # specific language governing permissions and limitations
 # under the License.
 
-require File.expand_path('../../spec_helper', __FILE__)
+require File.expand_path('../spec_helper', __dir__)
 
 module Selenium
   module WebDriver
     module Support
       describe EventFiringBridge do
-        let(:bridge) { double(Remote::Bridge, driver_extensions: []) }
-        let(:listener) { double('EventListener') }
+        let(:bridge) { instance_double(Remote::Bridge) }
+        let(:listener) { instance_double('EventListener') }
         let(:event_firing_bridge) { EventFiringBridge.new(bridge, listener) }
-        let(:driver) { Driver.new(event_firing_bridge) }
+        let(:driver) { Driver.new(bridge: event_firing_bridge) }
         let(:element) { Element.new(event_firing_bridge, 'ref') }
+
+        before { allow(bridge).to receive(:browser) }
 
         context 'navigation' do
           it 'fires events for navigate.to' do
@@ -58,18 +62,20 @@ module Selenium
         context 'finding elements' do
           it 'fires events for find_element' do
             expect(listener).to receive(:before_find).with('id', 'foo', instance_of(Driver))
-            expect(bridge).to receive(:find_element_by).with('id', 'foo', nil).and_return(element)
+            allow(bridge).to receive(:find_element_by).with('id', 'foo', nil).and_return(element)
             expect(listener).to receive(:after_find).with('id', 'foo', instance_of(Driver))
 
             driver.find_element(id: 'foo')
+            expect(bridge).to have_received(:find_element_by).with('id', 'foo', nil)
           end
 
           it 'fires events for find_elements' do
             expect(listener).to receive(:before_find).with('class name', 'foo', instance_of(Driver))
-            expect(bridge).to receive(:find_elements_by).with('class name', 'foo', nil).and_return([element])
+            allow(bridge).to receive(:find_elements_by).with('class name', 'foo', nil).and_return([element])
             expect(listener).to receive(:after_find).with('class name', 'foo', instance_of(Driver))
 
             driver.find_elements(class: 'foo')
+            expect(bridge).to have_received(:find_elements_by).with('class name', 'foo', nil)
           end
         end
 

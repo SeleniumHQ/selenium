@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Licensed to the Software Freedom Conservancy (SFC) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -20,7 +22,7 @@ require_relative '../spec_helper'
 module Selenium
   module WebDriver
     module Remote
-      describe Driver, only: {driver: :remote} do
+      describe Driver, exclusive: {driver: :remote} do
         it 'should expose session_id' do
           expect(driver.session_id).to be_kind_of(String)
         end

@@ -25,6 +25,11 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.htmlunit.HtmlUnitDriver;
 import org.openqa.selenium.remote.CapabilityType;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.UncheckedIOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -38,9 +43,6 @@ public class TestUtilities {
   }
 
   public static String getUserAgent(WebDriver driver) {
-    if (driver instanceof HtmlUnitDriver) {
-      return ((HtmlUnitDriver) driver).getBrowserVersion().getUserAgent();
-    }
     try {
       return (String) ((JavascriptExecutor) driver).executeScript(
         "return navigator.userAgent;");
@@ -58,46 +60,23 @@ public class TestUtilities {
     return getUserAgent(driver).contains("Firefox");
   }
 
+  public static boolean isFirefoxVersionOlderThan(int version, WebDriver driver) {
+    return isFirefox(driver) && getFirefoxVersion(driver) < version;
+  }
+
   public static boolean isInternetExplorer(WebDriver driver) {
     String userAgent = getUserAgent(driver);
-    return userAgent.contains("MSIE") || userAgent.contains("Trident");
-  }
-
-  public static boolean isIe6(WebDriver driver) {
-    return isInternetExplorer(driver)
-        && getUserAgent(driver).contains("MSIE 6");
-  }
-
-  public static boolean isIe7(WebDriver driver) {
-    return isInternetExplorer(driver)
-           && getUserAgent(driver).contains("MSIE 7");
-  }
-
-  public static boolean isOldIe(WebDriver driver) {
-    if (!isInternetExplorer(driver)) {
-      return false;
-    }
-    if (driver instanceof HtmlUnitDriver) {
-      String applicationVersion = ((HtmlUnitDriver) driver).getBrowserVersion().getApplicationVersion();
-      return Double.parseDouble(applicationVersion.split(" ")[0]) < 5;
-    }
-    try {
-      String jsToExecute = "return parseInt(window.navigator.appVersion.split(' ')[0]);";
-      // IE9 is trident version 5.  IE9 is the start of new IE.
-      return ((Long)((JavascriptExecutor)driver).executeScript(jsToExecute)).intValue() < 5;
-    } catch (Throwable t) {
-      return false;
-    }
+    return userAgent != null && (userAgent.contains("MSIE") || userAgent.contains("Trident"));
   }
 
   public static boolean isChrome(WebDriver driver) {
     return !(driver instanceof HtmlUnitDriver) && getUserAgent(driver).contains("Chrome");
   }
 
-  public static boolean isOldChromedriver(WebDriver driver) {
+  public static int getChromeVersion(WebDriver driver) {
     if (!(driver instanceof HasCapabilities)) {
       // Driver does not support capabilities -- not a chromedriver at all.
-      return false;
+      return 0;
     }
     Capabilities caps = ((HasCapabilities) driver).getCapabilities();
     String chromedriverVersion = (String) caps.getCapability("chrome.chromedriverVersion");
@@ -111,14 +90,15 @@ public class TestUtilities {
       String[] versionMajorMinor = chromedriverVersion.split("\\.", 2);
       if (versionMajorMinor.length > 1) {
         try {
-          return 20 < Long.parseLong(versionMajorMinor[0]);
+          return Integer.parseInt(versionMajorMinor[0]);
         } catch (NumberFormatException e) {
           // First component of the version is not a number -- not a chromedriver.
-          return false;
+          return 0;
         }
       }
     }
-    return false;
+    return 0;
+
   }
 
   /**
@@ -192,7 +172,7 @@ public class TestUtilities {
     }
 
     Capabilities caps = ((HasCapabilities) driver).getCapabilities();
-    return caps.getPlatform();
+    return caps.getPlatformName();
   }
 
   public static boolean isLocal() {
@@ -201,6 +181,21 @@ public class TestUtilities {
   }
 
   public static boolean isOnTravis() {
-    return Boolean.valueOf(System.getenv("TRAVIS"));
+    return Boolean.parseBoolean(System.getenv("TRAVIS"));
+  }
+
+  public static boolean isOnGitHubActions() {
+    return Boolean.parseBoolean(System.getenv("GITHUB_ACTIONS"));
+  }
+
+  public static File createTmpFile(String content) {
+    try {
+      File f = File.createTempFile("webdriver", "tmp");
+      f.deleteOnExit();
+      Files.write(f.toPath(), content.getBytes(StandardCharsets.UTF_8));
+      return f;
+    } catch (IOException e) {
+      throw new UncheckedIOException(e);
+    }
   }
 }

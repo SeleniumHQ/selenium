@@ -19,13 +19,16 @@ package com.thoughtworks.selenium.corebased;
 
 import com.thoughtworks.selenium.InternalSelenseTestBase;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 public class TestRefresh extends InternalSelenseTestBase {
+  @Ignore("The click on slowRefresh doesn't make the rc implementation wait")
   @Test
   public void testRefresh() {
-    selenium.open("../tests/html/test_page.slow.html");
-    verifyTrue(selenium.getLocation().matches("^[\\s\\S]*/tests/html/test_page\\.slow\\.html$"));
+    selenium.open("test_page.slow.html");
+    System.out.println(selenium.getLocation());
+    verifyTrue(selenium.getLocation().matches("^[\\s\\S]*/common/rc/tests/html/test_page\\.slow\\.html$"));
     verifyEquals(selenium.getTitle(), "Slow Loading Page");
     selenium.click("changeSpan");
     assertTrue(selenium.isTextPresent("Changed the text"));

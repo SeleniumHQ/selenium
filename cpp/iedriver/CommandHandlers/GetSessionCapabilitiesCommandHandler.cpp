@@ -20,6 +20,7 @@
 #include "../IECommandExecutor.h"
 #include "../InputManager.h"
 #include "../ProxyManager.h"
+#include "../WebDriverConstants.h"
 
 namespace webdriver {
 

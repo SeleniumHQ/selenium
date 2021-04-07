@@ -19,6 +19,7 @@ package com.thoughtworks.selenium.corebased;
 
 import com.thoughtworks.selenium.InternalSelenseTestBase;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.HasCapabilities;
@@ -26,10 +27,11 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WrapsDriver;
 import org.openqa.selenium.remote.CapabilityType;
 
+@Ignore()
 public class TestClickAt extends InternalSelenseTestBase {
   @Test(timeout = 60000)
   public void testClickAt() throws Exception {
-    selenium.open("../tests/html/test_click_page1.html");
+    selenium.open("test_click_page1.html");
     verifyEquals(selenium.getText("link"), "Click here for next page");
     selenium.clickAt("link", "0,0");
     selenium.waitForPageToLoad("30000");

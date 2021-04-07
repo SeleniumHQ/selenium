@@ -41,12 +41,10 @@ goog.require('goog.userAgent.product.isVersion');
  * @return {boolean} Whether the browser engine version is the same or higher
  *     than the given version.
  */
-bot.userAgent.isEngineVersion = function(version) {
-  if (bot.userAgent.FIREFOX_EXTENSION) {
-    return bot.userAgent.FIREFOX_EXTENSION_IS_ENGINE_VERSION_(version);
-  } else if (goog.userAgent.IE) {
+bot.userAgent.isEngineVersion = function (version) {
+  if (goog.userAgent.IE) {
     return goog.string.compareVersions(
-        /** @type {number} */ (goog.userAgent.DOCUMENT_MODE), version) >= 0;
+        /** @type {number} */(goog.userAgent.DOCUMENT_MODE), version) >= 0;
   } else {
     return goog.userAgent.isVersionOrHigher(version);
   }
@@ -67,12 +65,10 @@ bot.userAgent.isEngineVersion = function(version) {
  * @return {boolean} Whether the browser product version is the same or higher
  *     than the given version.
  */
-bot.userAgent.isProductVersion = function(version) {
-  if (bot.userAgent.FIREFOX_EXTENSION) {
-    return bot.userAgent.FIREFOX_EXTENSION_IS_PRODUCT_VERSION_(version);
-  } else if (goog.userAgent.product.ANDROID) {
+bot.userAgent.isProductVersion = function (version) {
+  if (goog.userAgent.product.ANDROID) {
     return goog.string.compareVersions(
-        bot.userAgent.ANDROID_VERSION_, version) >= 0;
+      bot.userAgent.ANDROID_VERSION_, version) >= 0;
   } else {
     return goog.userAgent.product.isVersion(version);
   }
@@ -80,75 +76,12 @@ bot.userAgent.isProductVersion = function(version) {
 
 
 /**
- * When we are in a Firefox extension, this is a function that accepts a version
- * and returns whether the version of Gecko we are on is the same or higher
- * than the given version. When we are not in a Firefox extension, this is null.
- * @private {(undefined|function((string|number)): boolean)}
- */
-bot.userAgent.FIREFOX_EXTENSION_IS_ENGINE_VERSION_;
-
-
-/**
- * When we are in a Firefox extension, this is a function that accepts a version
- * and returns whether the version of Firefox we are on is the same or higher
- * than the given version. When we are not in a Firefox extension, this is null.
- * @private {(undefined|function((string|number)): boolean)}
- */
-bot.userAgent.FIREFOX_EXTENSION_IS_PRODUCT_VERSION_;
-
-
-/**
- * Whether we are in a Firefox extension.
- *
- * @const
- * @type {boolean}
- */
-bot.userAgent.FIREFOX_EXTENSION = (function() {
-  // False if this browser is not a Gecko browser.
-  if (!goog.userAgent.GECKO) {
-    return false;
-  }
-
-  // False if this code isn't running in an extension.
-  var Components = goog.global.Components;
-  if (!Components) {
-    return false;
-  }
-  try {
-    if (!Components['classes']) {
-      return false;
-    }
-  } catch (e) {
-    return false;
-  }
-
-  // Populate the version checker functions.
-  var cc = Components['classes'];
-  var ci = Components['interfaces'];
-  var versionComparator = cc['@mozilla.org/xpcom/version-comparator;1'][
-      'getService'](ci['nsIVersionComparator']);
-  var appInfo = cc['@mozilla.org/xre/app-info;1']['getService'](
-      ci['nsIXULAppInfo']);
-  var geckoVersion = appInfo['platformVersion'];
-  var firefoxVersion = appInfo['version'];
-
-  bot.userAgent.FIREFOX_EXTENSION_IS_ENGINE_VERSION_ = function(version) {
-    return versionComparator.compare(geckoVersion, '' + version) >= 0;
-  };
-  bot.userAgent.FIREFOX_EXTENSION_IS_PRODUCT_VERSION_ = function(version) {
-    return versionComparator.compare(firefoxVersion, '' + version) >= 0;
-  };
-
-  return true;
-})();
-
-/**
  * Whether we are a WebExtension.
  *
  * @const
  * @type {boolean}
  */
-bot.userAgent.WEBEXTENSION = (function() {
+bot.userAgent.WEBEXTENSION = (function () {
   // The content script global object is different than it's window
   // Which requires accessing the chrome and browser objects through this
   try {
@@ -165,7 +98,7 @@ bot.userAgent.WEBEXTENSION = (function() {
  * @type {boolean}
  */
 bot.userAgent.IOS = goog.userAgent.product.IPAD ||
-                    goog.userAgent.product.IPHONE;
+  goog.userAgent.product.IPHONE;
 
 
 /**
@@ -182,7 +115,7 @@ bot.userAgent.MOBILE = bot.userAgent.IOS || goog.userAgent.product.ANDROID;
  * @private {string}
  * @const
  */
-bot.userAgent.ANDROID_VERSION_ = (function() {
+bot.userAgent.ANDROID_VERSION_ = (function () {
   if (goog.userAgent.product.ANDROID) {
     var userAgentString = goog.userAgent.getUserAgentString();
     var match = /Android\s+([0-9\.]+)/.exec(userAgentString);
@@ -199,7 +132,7 @@ bot.userAgent.ANDROID_VERSION_ = (function() {
  * @const
  */
 bot.userAgent.IE_DOC_PRE8 = goog.userAgent.IE &&
-    !goog.userAgent.isDocumentModeOrHigher(8);
+  !goog.userAgent.isDocumentModeOrHigher(8);
 
 
 /**
@@ -216,7 +149,7 @@ bot.userAgent.IE_DOC_9 = goog.userAgent.isDocumentModeOrHigher(9);
  * @const
  */
 bot.userAgent.IE_DOC_PRE9 = goog.userAgent.IE &&
-    !goog.userAgent.isDocumentModeOrHigher(9);
+  !goog.userAgent.isDocumentModeOrHigher(9);
 
 
 /**
@@ -233,7 +166,7 @@ bot.userAgent.IE_DOC_10 = goog.userAgent.isDocumentModeOrHigher(10);
  * @const
  */
 bot.userAgent.IE_DOC_PRE10 = goog.userAgent.IE &&
-    !goog.userAgent.isDocumentModeOrHigher(10);
+  !goog.userAgent.isDocumentModeOrHigher(10);
 
 
 /**
@@ -242,7 +175,7 @@ bot.userAgent.IE_DOC_PRE10 = goog.userAgent.IE &&
  * @const
  */
 bot.userAgent.ANDROID_PRE_GINGERBREAD = goog.userAgent.product.ANDROID &&
-    !bot.userAgent.isProductVersion(2.3);
+  !bot.userAgent.isProductVersion(2.3);
 
 
 /**
@@ -251,7 +184,7 @@ bot.userAgent.ANDROID_PRE_GINGERBREAD = goog.userAgent.product.ANDROID &&
  * @const
  */
 bot.userAgent.ANDROID_PRE_ICECREAMSANDWICH = goog.userAgent.product.ANDROID &&
-    !bot.userAgent.isProductVersion(4);
+  !bot.userAgent.isProductVersion(4);
 
 
 /**
@@ -260,7 +193,7 @@ bot.userAgent.ANDROID_PRE_ICECREAMSANDWICH = goog.userAgent.product.ANDROID &&
  * @const
  */
 bot.userAgent.SAFARI_6 = goog.userAgent.product.SAFARI &&
-    bot.userAgent.isProductVersion(6);
+  bot.userAgent.isProductVersion(6);
 
 
 /**
@@ -269,4 +202,4 @@ bot.userAgent.SAFARI_6 = goog.userAgent.product.SAFARI &&
  * @const
  */
 bot.userAgent.WINDOWS_PHONE = goog.userAgent.IE &&
-    goog.userAgent.getUserAgentString().indexOf('IEMobile') != -1;
+  goog.userAgent.getUserAgentString().indexOf('IEMobile') != -1;

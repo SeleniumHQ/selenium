@@ -29,7 +29,7 @@ public class GetAllCookies extends WebDriverHandler<Set<Cookie>> {
   }
 
   @Override
-  public Set<Cookie> call() throws Exception {
+  public Set<Cookie> call() {
     return getDriver().manage().getCookies();
   }
 

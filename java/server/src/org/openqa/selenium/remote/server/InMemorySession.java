@@ -17,8 +17,6 @@
 
 package org.openqa.selenium.remote.server;
 
-
-import com.google.common.base.Preconditions;
 import com.google.common.base.StandardSystemProperty;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
@@ -26,8 +24,10 @@ import com.google.common.collect.ImmutableSet;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.HasCapabilities;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.grid.data.CreateSessionRequest;
 import org.openqa.selenium.grid.session.ActiveSession;
 import org.openqa.selenium.grid.session.SessionFactory;
+import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.io.TemporaryFilesystem;
 import org.openqa.selenium.remote.Dialect;
 import org.openqa.selenium.remote.SessionId;
@@ -35,7 +35,7 @@ import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 
 import java.io.File;
-import java.io.IOException;
+import java.io.UncheckedIOException;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
@@ -54,7 +54,7 @@ class InMemorySession implements ActiveSession {
   private final JsonHttpCommandHandler handler;
 
   private InMemorySession(WebDriver driver, Capabilities capabilities, Dialect downstream) {
-    this.driver = Preconditions.checkNotNull(driver);
+    this.driver = Require.nonNull("Driver", driver);
 
     Capabilities caps;
     if (driver instanceof HasCapabilities) {
@@ -68,10 +68,10 @@ class InMemorySession implements ActiveSession {
         .collect(ImmutableMap.toImmutableMap(Map.Entry::getKey, Map.Entry::getValue));
 
     this.id = new SessionId(UUID.randomUUID().toString());
-    this.downstream = Preconditions.checkNotNull(downstream);
+    this.downstream = Require.nonNull("Downstream dialect", downstream);
 
     File tempRoot = new File(StandardSystemProperty.JAVA_IO_TMPDIR.value(), id.toString());
-    Preconditions.checkState(tempRoot.mkdirs());
+    Require.stateCondition(tempRoot.mkdirs(), "Could not create directory %s", tempRoot);
     this.filesystem = TemporaryFilesystem.getTmpFsBasedOn(tempRoot);
 
     this.handler = new JsonHttpCommandHandler(
@@ -80,8 +80,10 @@ class InMemorySession implements ActiveSession {
   }
 
   @Override
-  public void execute(HttpRequest req, HttpResponse resp) throws IOException {
-    handler.handleRequest(req, resp);
+  public HttpResponse execute(HttpRequest req) throws UncheckedIOException {
+    HttpResponse res = new HttpResponse();
+    handler.handleRequest(req, res);
+    return res;
   }
 
   @Override
@@ -129,25 +131,29 @@ class InMemorySession implements ActiveSession {
 
 
     @Override
-    public boolean isSupporting(Capabilities capabilities) {
+    public boolean test(Capabilities capabilities) {
       return provider.canCreateDriverInstanceFor(capabilities);
     }
 
     @Override
-    public Optional<ActiveSession> apply(Set<Dialect> downstreamDialects, Capabilities caps) {
+    public Optional<ActiveSession> apply(CreateSessionRequest sessionRequest) {
+      Require.nonNull("Session creation request", sessionRequest);
+
       // Assume the blob fits in the available memory.
       try {
-        if (!provider.canCreateDriverInstanceFor(caps)) {
+        if (!provider.canCreateDriverInstanceFor(sessionRequest.getCapabilities())) {
           return Optional.empty();
         }
 
-        WebDriver driver = provider.newInstance(caps);
+        WebDriver driver = provider.newInstance(sessionRequest.getCapabilities());
 
         // Prefer the OSS dialect.
+        Set<Dialect> downstreamDialects = sessionRequest.getDownstreamDialects();
         Dialect downstream = downstreamDialects.contains(Dialect.OSS) || downstreamDialects.isEmpty() ?
                              Dialect.OSS :
                              downstreamDialects.iterator().next();
-        return Optional.of(new InMemorySession(driver, caps, downstream));
+        return Optional.of(
+            new InMemorySession(driver, sessionRequest.getCapabilities(), downstream));
       } catch (IllegalStateException e) {
         return Optional.empty();
       }

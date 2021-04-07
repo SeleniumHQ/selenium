@@ -26,7 +26,7 @@ public class GetElementEnabled extends WebElementHandler<Boolean> {
   }
 
   @Override
-  public Boolean call() throws Exception {
+  public Boolean call() {
     return getElement().isEnabled();
   }
 

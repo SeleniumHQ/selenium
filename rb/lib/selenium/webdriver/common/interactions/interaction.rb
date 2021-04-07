@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Licensed to the Software Freedom Conservancy (SFC) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -24,7 +26,11 @@ module Selenium
         attr_reader :source
 
         def initialize(source)
-          raise TypeError, "#{source.type} is not a valid input type" unless Interactions::SOURCE_TYPES.include? source.type
+          unless Interactions::SOURCE_TYPES.include? source.type
+            raise TypeError,
+                  "#{source.type} is not a valid input type"
+          end
+
           @source = source
         end
       end

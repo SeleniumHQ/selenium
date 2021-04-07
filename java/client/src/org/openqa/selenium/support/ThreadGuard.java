@@ -61,7 +61,7 @@ public class ThreadGuard {
       interfaces.addAll(Arrays.asList(base.getInterfaces()));
       base = base.getSuperclass();
     }
-    return interfaces.toArray(new Class[interfaces.size()]);
+    return interfaces.toArray(new Class[0]);
 
   }
 

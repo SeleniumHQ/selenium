@@ -1,4 +1,4 @@
-﻿// <copyright file="DefaultWait{T}.cs" company="WebDriver Committers">
+// <copyright file="DefaultWait{T}.cs" company="WebDriver Committers">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements. See the NOTICE file
 // distributed with this work for additional information
@@ -139,7 +139,27 @@ namespace OpenQA.Selenium.Support.UI
         /// <typeparam name="TResult">The delegate's expected return type.</typeparam>
         /// <param name="condition">A delegate taking an object of type T as its parameter, and returning a TResult.</param>
         /// <returns>The delegate's return value.</returns>
-        public TResult Until<TResult>(Func<T, TResult> condition)
+        public virtual TResult Until<TResult>(Func<T, TResult> condition)
+        {
+            return Until(condition, CancellationToken.None);
+        }
+
+        /// <summary>
+        /// Repeatedly applies this instance's input value to the given function until one of the following
+        /// occurs:
+        /// <para>
+        /// <list type="bullet">
+        /// <item>the function returns neither null nor false</item>
+        /// <item>the function throws an exception that is not in the list of ignored exception types</item>
+        /// <item>the timeout expires</item>
+        /// </list>
+        /// </para>
+        /// </summary>
+        /// <typeparam name="TResult">The delegate's expected return type.</typeparam>
+        /// <param name="condition">A delegate taking an object of type T as its parameter, and returning a TResult.</param>
+        /// <param name="token">A cancellation token that can be used to cancel the wait.</param>
+        /// <returns>The delegate's return value.</returns>
+        public virtual TResult Until<TResult>(Func<T, TResult> condition, CancellationToken token)
         {
             if (condition == null)
             {
@@ -156,6 +176,8 @@ namespace OpenQA.Selenium.Support.UI
             var endTime = this.clock.LaterBy(this.timeout);
             while (true)
             {
+                token.ThrowIfCancellationRequested();
+
                 try
                 {
                     var result = condition(this.input);

@@ -40,7 +40,7 @@ public class SendKeys extends WebElementHandler<Void> {
   }
 
   @Override
-  public Void call() throws Exception {
+  public Void call() {
     String[] keysToSend = keys.toArray(new String[0]);
     getElement().sendKeys(keysToSend);
 

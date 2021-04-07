@@ -1,0 +1,274 @@
+load("//common:defs.bzl", "copy_file")
+load("@d2l_rules_csharp//csharp:defs.bzl", "csharp_library")
+load(
+    "//dotnet:defs.bzl",
+    "devtools_version_targets",
+    "generated_assembly_info",
+    "merged_assembly",
+    "nuget_package",
+    "nuget_push",
+)
+load(
+    "//dotnet:selenium-dotnet-version.bzl",
+    "ASSEMBLY_COMPANY",
+    "ASSEMBLY_COPYRIGHT",
+    "ASSEMBLY_INFORMATIONAL_VERSION",
+    "ASSEMBLY_PRODUCT",
+    "ASSEMBLY_VERSION",
+    "SE_VERSION",
+    "SUPPORTED_DEVTOOLS_VERSIONS",
+    "SUPPORTED_NET_FRAMEWORKS",
+    "SUPPORTED_NET_STANDARD_VERSIONS",
+)
+
+generated_assembly_info(
+    name = "assembly-info",
+    company = ASSEMBLY_COMPANY,
+    copyright = ASSEMBLY_COPYRIGHT,
+    description = "Selenium WebDriver API .NET Bindings",
+    informational_version = ASSEMBLY_INFORMATIONAL_VERSION,
+    product = ASSEMBLY_PRODUCT,
+    title = "Selenium WebDriver",
+    version = ASSEMBLY_VERSION,
+)
+
+[csharp_library(
+    name = "{}assembly".format(framework),
+    srcs = glob([
+        "*.cs",
+        "Chrome/*.cs",
+        "Chromium/*.cs",
+        "DevTools/**/*.cs",
+        "Edge/*.cs",
+        "Firefox/**/*.cs",
+        "Html5/*.cs",
+        "IE/*.cs",
+        "Interactions/*.cs",
+        "Internal/*.cs",
+        "Opera/*.cs",
+        "Remote/**/*.cs",
+        "Safari/*.cs",
+        "Support/*.cs",
+    ]) + [
+        ":assembly-info",
+    ] + devtools_version_targets(),
+    out = "WebDriver",
+    resources = [
+        "//javascript/atoms/fragments:find-elements.js",
+        "//javascript/atoms/fragments:is-displayed.js",
+        "//javascript/webdriver/atoms:get-attribute.js",
+        "//third_party/js/selenium:webdriver_json",
+    ],
+    target_frameworks = [
+        "{}".format(framework),
+    ],
+    visibility = ["//visibility:public"],
+    deps = [
+        "@json.net//:Newtonsoft.Json",
+        "@net//:System",
+        "@net//:System.Core",
+        "@net//:System.Data",
+        "@net//:System.Drawing",
+        "@net//:System.IO.Compression",
+        "@net//:System.IO.Compression.FileSystem",
+        "@net//:System.Net.Http",
+        "@net//:System.Runtime.Serialization",
+        "@net//:System.Xml",
+    ],
+) for framework in SUPPORTED_NET_FRAMEWORKS]
+
+[csharp_library(
+    name = "{}".format(standard_version),
+    srcs = glob([
+        "*.cs",
+        "Chrome/*.cs",
+        "Chromium/*.cs",
+        "DevTools/**/*.cs",
+        "Edge/*.cs",
+        "Firefox/**/*.cs",
+        "Html5/*.cs",
+        "IE/*.cs",
+        "Interactions/*.cs",
+        "Internal/*.cs",
+        "Opera/*.cs",
+        "Remote/**/*.cs",
+        "Safari/*.cs",
+        "Support/*.cs",
+    ]) + [
+        ":assembly-info",
+    ] + devtools_version_targets(),
+    out = "WebDriver",
+    resources = [
+        "//javascript/atoms/fragments:find-elements.js",
+        "//javascript/atoms/fragments:is-displayed.js",
+        "//javascript/webdriver/atoms:get-attribute.js",
+        "//third_party/js/selenium:webdriver_json",
+    ],
+    target_frameworks = [
+        "{}".format(standard_version),
+    ],
+    visibility = ["//visibility:public"],
+    deps = [
+        "@json.net//:Newtonsoft.Json",
+    ],
+) for standard_version in SUPPORTED_NET_STANDARD_VERSIONS]
+
+[csharp_library(
+    name = "{}assembly-strongnamed".format(framework),
+    srcs = glob([
+        "*.cs",
+        "Chrome/*.cs",
+        "Chromium/*.cs",
+        "DevTools/**/*.cs",
+        "Edge/*.cs",
+        "Firefox/**/*.cs",
+        "Html5/*.cs",
+        "IE/*.cs",
+        "Interactions/*.cs",
+        "Internal/*.cs",
+        "Opera/*.cs",
+        "Remote/**/*.cs",
+        "Safari/*.cs",
+        "Support/*.cs",
+    ]) + [
+        ":assembly-info",
+    ] + devtools_version_targets(),
+    out = "strongnamed/WebDriver",
+    keyfile = "//dotnet:WebDriver.snk",
+    resources = [
+        "//javascript/atoms/fragments:find-elements.js",
+        "//javascript/atoms/fragments:is-displayed.js",
+        "//javascript/webdriver/atoms:get-attribute.js",
+        "//third_party/js/selenium:webdriver_json",
+    ],
+    target_frameworks = [
+        "{}".format(framework),
+    ],
+    visibility = ["//visibility:public"],
+    deps = [
+        "@json.net//:Newtonsoft.Json",
+        "@net//:System",
+        "@net//:System.Core",
+        "@net//:System.Data",
+        "@net//:System.Drawing",
+        "@net//:System.IO.Compression",
+        "@net//:System.IO.Compression.FileSystem",
+        "@net//:System.Net.Http",
+        "@net//:System.Runtime.Serialization",
+        "@net//:System.Xml",
+    ],
+) for framework in SUPPORTED_NET_FRAMEWORKS]
+
+[csharp_library(
+    name = "{}-strongnamed".format(standard_version),
+    srcs = glob([
+        "*.cs",
+        "Chrome/*.cs",
+        "Chromium/*.cs",
+        "DevTools/**/*.cs",
+        "Edge/*.cs",
+        "Firefox/**/*.cs",
+        "Html5/*.cs",
+        "IE/*.cs",
+        "Interactions/*.cs",
+        "Internal/*.cs",
+        "Opera/*.cs",
+        "Remote/**/*.cs",
+        "Safari/*.cs",
+        "Support/*.cs",
+    ]) + [
+        ":assembly-info",
+    ] + devtools_version_targets(),
+    out = "strongnamed/WebDriver",
+    keyfile = "//dotnet:WebDriver.snk",
+    resources = [
+        "//javascript/atoms/fragments:find-elements.js",
+        "//javascript/atoms/fragments:is-displayed.js",
+        "//javascript/webdriver/atoms:get-attribute.js",
+        "//third_party/js/selenium:webdriver_json",
+    ],
+    target_frameworks = [
+        "{}".format(standard_version),
+    ],
+    visibility = ["//visibility:public"],
+    deps = [
+        "@json.net//:Newtonsoft.Json",
+    ],
+) for standard_version in SUPPORTED_NET_STANDARD_VERSIONS]
+
+[merged_assembly(
+    name = "{}".format(framework),
+    src_assembly = ":{}assembly".format(framework),
+    target_framework = "{}".format(framework),
+    visibility = ["//visibility:public"],
+    deps = [
+        "@json.net//:Newtonsoft.Json",
+    ],
+) for framework in SUPPORTED_NET_FRAMEWORKS]
+
+[merged_assembly(
+    name = "{}-strongnamed".format(framework),
+    keyfile = "//dotnet:WebDriver.snk",
+    src_assembly = ":{}assembly-strongnamed".format(framework),
+    target_framework = "{}".format(framework),
+    visibility = ["//visibility:public"],
+    deps = [
+        "@json.net//:Newtonsoft.Json",
+    ],
+) for framework in SUPPORTED_NET_FRAMEWORKS]
+
+copy_file(
+    name = "logo",
+    src = "//common/images:selenium_logo_small.png",
+    out = "icon.png",
+)
+
+nuget_package(
+    name = "package",
+    src = "WebDriver.nuspec",
+    create_symbol_package = True,
+    is_windows = select({
+        "@bazel_tools//src/conditions:host_windows": True,
+        "//conditions:default": False,
+    }),
+    package_id = "Selenium.WebDriver",
+    package_version = "{}".format(SE_VERSION),
+    visibility = ["//visibility:public"],
+    deps = [
+        ":logo",
+        ":net45",
+        ":net46",
+        ":net47",
+        ":net48",
+        ":net5.0",
+        ":netstandard2.0",
+        ":netstandard2.1",
+    ],
+)
+
+nuget_package(
+    name = "package-strongnamed",
+    src = "WebDriver.StrongNamed.nuspec",
+    is_windows = select({
+        "@bazel_tools//src/conditions:host_windows": True,
+        "//conditions:default": False,
+    }),
+    package_id = "Selenium.WebDriver.StrongNamed",
+    package_version = "{}".format(SE_VERSION),
+    visibility = ["//visibility:public"],
+    deps = [
+        ":net45-strongnamed",
+        ":net46-strongnamed",
+        ":net47-strongnamed",
+        ":net48-strongnamed",
+        ":net5.0-strongnamed",
+        ":netstandard2.0-strongnamed",
+        ":netstandard2.1-strongnamed",
+    ],
+)
+
+nuget_push(
+    name = "publish",
+    src = ":package",
+    api_key = "//dotnet:nuget-api-key",
+)

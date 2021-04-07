@@ -41,7 +41,7 @@ public class SetNetworkConnection extends WebDriverHandler<Number> {
   }
 
   @Override
-  public Number call() throws Exception {
+  public Number call() {
     return Integer.parseInt(Utils.getNetworkConnection(getUnwrappedDriver()).setNetworkConnection(type).toString());
   }
 

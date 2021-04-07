@@ -75,7 +75,7 @@ public abstract class SlowLoadableComponent<T extends LoadableComponent<T>>
 
   /**
    * Check for well known error cases, which would mean that loading has finished, but an error
-   * condition was seen. If an error has occured throw an Error, possibly by using JUnit's
+   * condition was seen. If an error has occurred throw an Error, possibly by using JUnit's
    * Assert.assert* methods
    *
    * @throws Error When a well-known error condition has caused the load to fail
@@ -93,6 +93,7 @@ public abstract class SlowLoadableComponent<T extends LoadableComponent<T>>
     try {
       Thread.sleep(sleepFor());
     } catch (InterruptedException e) {
+      Thread.currentThread().interrupt();
       throw new AssertionError(e);
     }
   }

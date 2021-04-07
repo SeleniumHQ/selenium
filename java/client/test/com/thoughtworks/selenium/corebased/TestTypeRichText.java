@@ -35,7 +35,7 @@ public class TestTypeRichText extends InternalSelenseTestBase {
       return;
     }
 
-    selenium.open("../tests/html/test_rich_text.html");
+    selenium.open("test_rich_text.html");
     selenium.selectFrame("richtext");
     verifyEquals(selenium.getText("//body"), "");
     selenium.type("//body", "hello world");

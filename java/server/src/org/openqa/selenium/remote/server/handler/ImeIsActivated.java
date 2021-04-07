@@ -26,7 +26,7 @@ public class ImeIsActivated extends WebDriverHandler<Boolean> {
   }
 
   @Override
-  public Boolean call() throws Exception {
+  public Boolean call() {
     return getDriver().manage().ime().isActivated();
   }
 }

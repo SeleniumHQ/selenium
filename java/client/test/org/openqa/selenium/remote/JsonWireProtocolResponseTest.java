@@ -23,18 +23,23 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import com.google.common.collect.ImmutableMap;
 
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.json.Json;
+import org.openqa.selenium.testing.UnitTests;
 
+import java.util.Map;
+
+@Category(UnitTests.class)
 public class JsonWireProtocolResponseTest {
 
   @Test
   public void successfulResponseGetsParsedProperly() {
     Capabilities caps = new ImmutableCapabilities("cheese", "peas");
-    ImmutableMap<String, ?> payload =
+    Map<String, ?> payload =
         ImmutableMap.of(
             "status", 0,
             "value", caps.asMap(),
@@ -60,7 +65,7 @@ public class JsonWireProtocolResponseTest {
   @Test
   public void shouldIgnoreAw3CProtocolReply() {
     Capabilities caps = new ImmutableCapabilities("cheese", "peas");
-    ImmutableMap<String, ImmutableMap<String, Object>> payload =
+    Map<String, Map<String, Object>> payload =
         ImmutableMap.of(
             "value", ImmutableMap.of(
                 "capabilities", caps.asMap(),
@@ -79,7 +84,7 @@ public class JsonWireProtocolResponseTest {
   @Test
   public void shouldIgnoreAGeckodriver013Reply() {
     Capabilities caps = new ImmutableCapabilities("cheese", "peas");
-    ImmutableMap<String, ?> payload =
+    Map<String, ?> payload =
         ImmutableMap.of(
             "value", caps.asMap(),
             "sessionId", "cheese is opaque");
@@ -99,7 +104,7 @@ public class JsonWireProtocolResponseTest {
     WebDriverException exception = new SessionNotCreatedException("me no likey");
     Json json = new Json();
 
-    ImmutableMap<String, Object> payload = ImmutableMap.of(
+    Map<String, Object> payload = ImmutableMap.of(
         "value", json.toType(json.toJson(exception), Json.MAP_TYPE),
         "status", ErrorCodes.SESSION_NOT_CREATED);
 

@@ -30,7 +30,7 @@ class Options(ArgOptions):
     @property
     def binary_location(self):
         """
-        Returns the location of the browser binary otherwise an empty string
+        :Returns: The location of the browser binary otherwise an empty string
         """
         return self._binary_location
 
@@ -47,7 +47,7 @@ class Options(ArgOptions):
     @property
     def overlay_scrollbars_enabled(self):
         """
-        Returns whether overlay scrollbars should be enabled
+        :Returns: Whether overlay scrollbars should be enabled
         """
         return self._overlay_scrollbars_enabled
 
@@ -60,6 +60,17 @@ class Options(ArgOptions):
          - value : True or False
         """
         self._overlay_scrollbars_enabled = value
+
+    @property
+    def page_load_strategy(self):
+        return self._caps["pageLoadStrategy"]
+
+    @page_load_strategy.setter
+    def page_load_strategy(self, strategy):
+        if strategy in ["normal", "eager", "none"]:
+            self.set_capability("pageLoadStrategy", strategy)
+        else:
+            raise ValueError("Strategy can only be one of the following: normal, eager, none")
 
     def to_capabilities(self):
         """

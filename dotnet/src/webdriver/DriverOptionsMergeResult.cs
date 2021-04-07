@@ -5,6 +5,9 @@ using System.Text;
 
 namespace OpenQA.Selenium.Remote
 {
+    /// <summary>
+    /// Represents the result of merging multiple <see cref="DriverOptions"/>.
+    /// </summary>
     public class DriverOptionsMergeResult
     {
         /// <summary>

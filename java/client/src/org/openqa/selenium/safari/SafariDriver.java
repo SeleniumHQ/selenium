@@ -17,7 +17,7 @@
 
 package org.openqa.selenium.safari;
 
-import com.google.common.collect.ImmutableMap;
+import static java.util.Collections.singletonMap;
 
 import org.openqa.selenium.Beta;
 import org.openqa.selenium.Capabilities;
@@ -98,7 +98,7 @@ public class SafariDriver extends RemoteWebDriver {
   public String newWindow(WindowType type) {
     Response response = execute(
         "SAFARI_NEW_WINDOW",
-        ImmutableMap.of("newTab", type == WindowType.TAB));
+        singletonMap("newTab", type == WindowType.TAB));
 
     return (String) response.getValue();
   }

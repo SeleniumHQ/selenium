@@ -40,6 +40,7 @@ namespace CommandType {
   const std::string CloseWindow = "closeWindow";
   const std::string SwitchToWindow = "switchToWindow";
   const std::string GetWindowHandles = "getWindowHandles";
+  const std::string NewWindow = "newWindow";
   const std::string SwitchToFrame = "switchToFrame";
   const std::string SwitchToParentFrame = "switchToParentFrame";
   const std::string GetWindowRect = "getWindowRect";

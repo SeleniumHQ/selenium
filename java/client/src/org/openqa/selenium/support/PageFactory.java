@@ -125,7 +125,7 @@ public class PageFactory {
         Constructor<T> constructor = pageClassToProxy.getConstructor(WebDriver.class);
         return constructor.newInstance(driver);
       } catch (NoSuchMethodException e) {
-        return pageClassToProxy.newInstance();
+        return pageClassToProxy.getDeclaredConstructor().newInstance();
       }
     } catch (ReflectiveOperationException e) {
       throw new RuntimeException(e);

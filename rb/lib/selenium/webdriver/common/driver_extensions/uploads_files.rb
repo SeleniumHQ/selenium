@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Licensed to the Software Freedom Conservancy (SFC) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -48,9 +50,7 @@ module Selenium
         #
 
         def file_detector=(detector)
-          unless detector.nil? || detector.respond_to?(:call)
-            raise ArgumentError, 'detector must respond to #call'
-          end
+          raise ArgumentError, 'detector must respond to #call' unless detector.nil? || detector.respond_to?(:call)
 
           bridge.file_detector = detector
         end

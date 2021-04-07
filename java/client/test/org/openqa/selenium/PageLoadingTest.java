@@ -17,7 +17,6 @@
 
 package org.openqa.selenium;
 
-import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
@@ -30,10 +29,11 @@ import static org.openqa.selenium.support.ui.ExpectedConditions.presenceOfElemen
 import static org.openqa.selenium.support.ui.ExpectedConditions.titleIs;
 import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOfElementLocated;
 import static org.openqa.selenium.testing.drivers.Browser.CHROME;
-import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
+import static org.openqa.selenium.testing.drivers.Browser.EDGE;
+import static org.openqa.selenium.testing.drivers.Browser.LEGACY_FIREFOX_XPI;
 import static org.openqa.selenium.testing.drivers.Browser.HTMLUNIT;
 import static org.openqa.selenium.testing.drivers.Browser.IE;
-import static org.openqa.selenium.testing.drivers.Browser.MARIONETTE;
+import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
 import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
 
 import org.junit.Test;
@@ -48,12 +48,22 @@ import org.openqa.selenium.testing.NoDriverBeforeTest;
 import org.openqa.selenium.testing.NotYetImplemented;
 import org.openqa.selenium.testing.SwitchToTopAfterTest;
 
+import java.time.Duration;
 import java.util.Set;
 
 public class PageLoadingTest extends JUnit4TestBase {
 
   private void initDriverWithLoadStrategy(String strategy) {
     createNewDriver(new ImmutableCapabilities(CapabilityType.PAGE_LOAD_STRATEGY, strategy));
+  }
+
+  @Test
+  public void shouldSetAndGetPageLoadTimeout() {
+    Duration timeout = driver.manage().timeouts().getPageLoadTimeout();
+    assertThat(timeout).hasMillis(300000);
+    driver.manage().timeouts().pageLoadTimeout(Duration.ofMillis(3000));
+    Duration timeout2 = driver.manage().timeouts().getPageLoadTimeout();
+    assertThat(timeout2).hasMillis(3000);
   }
 
   @Test
@@ -80,6 +90,7 @@ public class PageLoadingTest extends JUnit4TestBase {
   @NoDriverBeforeTest
   @NoDriverAfterTest
   @Ignore(value = CHROME, reason = "Flaky")
+  @Ignore(value = EDGE, reason = "Flaky")
   public void testNoneStrategyShouldNotWaitForPageToRefresh() {
     initDriverWithLoadStrategy("none");
 
@@ -100,7 +111,6 @@ public class PageLoadingTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(CHROME)
   @NeedsLocalEnvironment
   @NoDriverBeforeTest
   @NoDriverAfterTest
@@ -123,7 +133,6 @@ public class PageLoadingTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(CHROME)
   @NeedsLocalEnvironment
   @NoDriverBeforeTest
   @NoDriverAfterTest
@@ -149,7 +158,6 @@ public class PageLoadingTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(CHROME)
   @NoDriverBeforeTest
   @NoDriverAfterTest
   public void testEagerStrategyShouldWaitForDocumentToBeLoaded() {
@@ -189,14 +197,15 @@ public class PageLoadingTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(MARIONETTE)
+  @NotYetImplemented(CHROME)
+  @NotYetImplemented(FIREFOX)
   public void testShouldReturnWhenGettingAUrlThatDoesNotResolve() {
     assertThatCode(
         () -> driver.get("http://www.thisurldoesnotexist.comx/"))
         .doesNotThrowAnyException();
   }
 
-  @NeedsFreshDriver(value = FIREFOX, reason = "No idea why it throws in a fresh driver only")
+  @NeedsFreshDriver(value = LEGACY_FIREFOX_XPI, reason = "No idea why it throws in a fresh driver only")
   @Test
   public void testShouldThrowIfUrlIsMalformed() {
     assertThatExceptionOfType(WebDriverException.class)
@@ -211,7 +220,8 @@ public class PageLoadingTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(MARIONETTE)
+  @NotYetImplemented(CHROME)
+  @NotYetImplemented(FIREFOX)
   public void testShouldReturnWhenGettingAUrlThatDoesNotConnect() {
     // Here's hoping that there's nothing here. There shouldn't be
     driver.get("http://localhost:3001");
@@ -261,6 +271,7 @@ public class PageLoadingTest extends JUnit4TestBase {
   }
 
   @Test
+  @Ignore(SAFARI)
   public void testShouldBeAbleToNavigateBackInTheBrowserHistory() {
     driver.get(pages.formPage);
 
@@ -300,7 +311,8 @@ public class PageLoadingTest extends JUnit4TestBase {
   @Ignore(IE)
   @NotYetImplemented(value = SAFARI, reason = "does not support insecure SSL")
   public void testShouldBeAbleToAccessPagesWithAnInsecureSslCertificate() {
-    // TODO(user): Set the SSL capability to true.
+    createNewDriver(new ImmutableCapabilities(
+        CapabilityType.ACCEPT_INSECURE_CERTS, Boolean.TRUE));
     driver.get(appServer.whereIsSecure("simpleTest.html"));
 
     shortWait.until(titleIs("Hello WebDriver"));
@@ -324,7 +336,7 @@ public class PageLoadingTest extends JUnit4TestBase {
   @NoDriverAfterTest
   @Test
   @Ignore(IE)
-  @Ignore(MARIONETTE)
+  @Ignore(FIREFOX)
   public void testShouldNotHangIfDocumentOpenCallIsNeverFollowedByDocumentCloseCall() {
     driver.get(pages.documentWrite);
 
@@ -336,7 +348,7 @@ public class PageLoadingTest extends JUnit4TestBase {
   // Note: If this test ever fixed/enabled on Firefox, check if it also needs @NoDriverAfterTest OR
   // if @NoDriverAfterTest can be removed from some other tests in this class.
   @Test
-  @Ignore(FIREFOX)
+  @Ignore(LEGACY_FIREFOX_XPI)
   @NotYetImplemented(SAFARI)
   @NeedsLocalEnvironment
   public void testPageLoadTimeoutCanBeChanged() {
@@ -345,13 +357,13 @@ public class PageLoadingTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(FIREFOX)
+  @Ignore(LEGACY_FIREFOX_XPI)
   @NotYetImplemented(SAFARI)
   @NeedsLocalEnvironment
   public void testCanHandleSequentialPageLoadTimeouts() {
     long pageLoadTimeout = 2;
     long pageLoadTimeBuffer = 10;
-    driver.manage().timeouts().pageLoadTimeout(2, SECONDS);
+    driver.manage().timeouts().pageLoadTimeout(Duration.ofSeconds(2));
     assertPageLoadTimeoutIsEnforced(pageLoadTimeout, pageLoadTimeBuffer);
     assertPageLoadTimeoutIsEnforced(pageLoadTimeout, pageLoadTimeBuffer);
   }
@@ -362,7 +374,7 @@ public class PageLoadingTest extends JUnit4TestBase {
     try {
       testPageLoadTimeoutIsEnforced(2);
     } finally {
-      driver.manage().timeouts().pageLoadTimeout(300, SECONDS);
+      driver.manage().timeouts().pageLoadTimeout(Duration.ofSeconds(300));
     }
 
     // Load another page after get() timed out but before test HTTP server served previous page.
@@ -371,12 +383,12 @@ public class PageLoadingTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(value = FIREFOX, travis = true)
+  @Ignore(value = LEGACY_FIREFOX_XPI, travis = true)
   @Ignore(HTMLUNIT)
   @Ignore(value = SAFARI, reason = "Flaky")
   @NeedsLocalEnvironment
   public void testShouldTimeoutIfAPageTakesTooLongToLoadAfterClick() {
-    driver.manage().timeouts().pageLoadTimeout(2, SECONDS);
+    driver.manage().timeouts().pageLoadTimeout(Duration.ofSeconds(2));
 
     driver.get(appServer.whereIs("page_with_link_to_slow_loading_page.html"));
     WebElement link = wait.until(visibilityOfElementLocated(By.id("link-to-slow-loading-page")));
@@ -394,7 +406,7 @@ public class PageLoadingTest extends JUnit4TestBase {
       assertThat(duration).isGreaterThan(2000);
       assertThat(duration).isLessThan(5000);
     } finally {
-      driver.manage().timeouts().pageLoadTimeout(300, SECONDS);
+      driver.manage().timeouts().pageLoadTimeout(Duration.ofSeconds(300));
     }
 
     // Load another page after get() timed out but before test HTTP server served previous page.
@@ -405,13 +417,14 @@ public class PageLoadingTest extends JUnit4TestBase {
   @Test
   @NeedsLocalEnvironment
   @Ignore(value = CHROME, reason = "Flaky")
+  @Ignore(value = EDGE, reason = "Flaky")
   public void testShouldTimeoutIfAPageTakesTooLongToRefresh() {
     // Get the sleeping servlet with a pause of 5 seconds
     String slowPage = appServer.whereIs("sleep?time=5");
 
     driver.get(slowPage);
 
-    driver.manage().timeouts().pageLoadTimeout(2, SECONDS);
+    driver.manage().timeouts().pageLoadTimeout(Duration.ofSeconds(2));
 
     long start = System.currentTimeMillis();
     try {
@@ -426,7 +439,7 @@ public class PageLoadingTest extends JUnit4TestBase {
       assertThat(duration).isGreaterThanOrEqualTo(2000);
       assertThat(duration).isLessThan(4000);
     } finally {
-      driver.manage().timeouts().pageLoadTimeout(300, SECONDS);
+      driver.manage().timeouts().pageLoadTimeout(Duration.ofSeconds(300));
     }
 
     // Load another page after get() timed out but before test HTTP server served previous page.
@@ -435,7 +448,8 @@ public class PageLoadingTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(CHROME)
+  @NotYetImplemented(CHROME)
+  @NotYetImplemented(EDGE)
   @NotYetImplemented(value = SAFARI)
   @NotYetImplemented(HTMLUNIT)
   @NeedsLocalEnvironment
@@ -443,10 +457,10 @@ public class PageLoadingTest extends JUnit4TestBase {
     try {
       testPageLoadTimeoutIsEnforced(1);
     } finally {
-      driver.manage().timeouts().pageLoadTimeout(300, SECONDS);
+      driver.manage().timeouts().pageLoadTimeout(Duration.ofSeconds(300));
     }
 
-    new WebDriverWait(driver, 30)
+    new WebDriverWait(driver, Duration.ofSeconds(30))
         .ignoring(StaleElementReferenceException.class)
         .until(elementTextToEqual(By.tagName("body"), "Slept for 11s"));
   }
@@ -462,7 +476,7 @@ public class PageLoadingTest extends JUnit4TestBase {
   private void testPageLoadTimeoutIsEnforced(long webDriverPageLoadTimeout) {
     // Test page will load this many seconds longer than WD pageLoadTimeout.
     long pageLoadTimeBuffer = 10;
-    driver.manage().timeouts().pageLoadTimeout(webDriverPageLoadTimeout, SECONDS);
+    driver.manage().timeouts().pageLoadTimeout(Duration.ofSeconds(webDriverPageLoadTimeout));
     assertPageLoadTimeoutIsEnforced(webDriverPageLoadTimeout, pageLoadTimeBuffer);
   }
 

@@ -29,7 +29,7 @@ public class MouseDown extends WebDriverHandler<Void> {
   }
 
   @Override
-  public Void call() throws Exception {
+  public Void call() {
     Mouse mouse = ((HasInputDevices) getDriver()).getMouse();
     mouse.mouseDown(null);
     return null;
@@ -37,6 +37,6 @@ public class MouseDown extends WebDriverHandler<Void> {
 
   @Override
   public String toString() {
-    return String.format("[mousedown: no args]");
+    return "[mousedown: no args]";
   }
 }

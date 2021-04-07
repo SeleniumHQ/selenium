@@ -574,7 +574,7 @@ bot.dom.isShown = function(elem, opt_ignoreOpacity) {
   /**
    * Determines whether an element or its parents have `display: none` set
    * @param {!Node} e the element
-   * @return {boolean}
+   * @return {!boolean}
    */
   function displayed(e) {
     if (bot.dom.isElement(e)) {
@@ -602,7 +602,14 @@ bot.dom.isShown = function(elem, opt_ignoreOpacity) {
       return true;
     }
 
-    return parent && displayed(parent);
+    // Child of DETAILS element is not shown unless the DETAILS element is open
+    // or the child is a SUMMARY element.
+    if (parent && bot.dom.isElement(parent, goog.dom.TagName.DETAILS) &&
+        !parent.open && !bot.dom.isElement(e, goog.dom.TagName.SUMMARY)) {
+      return false;
+    }
+
+    return !!parent && displayed(parent);
   }
 
   return bot.dom.isShown_(elem, !!opt_ignoreOpacity, displayed);
@@ -663,10 +670,11 @@ bot.dom.getOverflowState = function(elem, opt_region) {
       if (container == htmlElem) {
         return true;
       }
-      // An element cannot overflow an element with an inline display style.
+      // An element cannot overflow an element with an inline or contents display style.
       var containerDisplay = /** @type {string} */ (
           bot.dom.getEffectiveStyle(container, 'display'));
-      if (goog.string.startsWith(containerDisplay, 'inline')) {
+      if (goog.string.startsWith(containerDisplay, 'inline') ||
+          (containerDisplay == 'contents')) {
         return false;
       }
       // An absolute-positioned element cannot overflow a static-positioned one.
@@ -1167,7 +1175,7 @@ bot.dom.appendVisibleTextLinesFromTextNode_ = function(textNode, lines,
   }
 
   if (textTransform == 'capitalize') {
-    text = text.replace(/(^|\s)(\S)/g, function() {
+    text = text.replace(/(^|[^\d\p{L}\p{S}])([\p{Ll}|\p{S}])/gu, function() {
       return arguments[1] + arguments[2].toUpperCase();
     });
   } else if (textTransform == 'uppercase') {

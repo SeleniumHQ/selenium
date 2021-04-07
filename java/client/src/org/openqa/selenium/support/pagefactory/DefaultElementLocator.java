@@ -47,7 +47,7 @@ public class DefaultElementLocator implements ElementLocator {
   }
 
   /**
-   * Use this constructor in order to process custom annotaions.
+   * Use this constructor in order to process custom annotations.
    *
    * @param searchContext The context to use when finding the element
    * @param annotations AbstractAnnotations class implementation

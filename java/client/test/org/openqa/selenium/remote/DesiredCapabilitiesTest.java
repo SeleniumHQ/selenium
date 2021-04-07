@@ -22,15 +22,19 @@ import static org.assertj.core.api.Assertions.assertThat;
 import com.google.common.collect.ImmutableMap;
 
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.firefox.FirefoxOptions;
 import org.openqa.selenium.logging.LoggingPreferences;
+import org.openqa.selenium.testing.UnitTests;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 
+@Category(UnitTests.class)
 public class DesiredCapabilitiesTest {
 
   @Test
@@ -38,8 +42,8 @@ public class DesiredCapabilitiesTest {
     Map<org.openqa.selenium.Capabilities, Class<? extends WebDriver>> capabilitiesToDriver =
         new ConcurrentHashMap<>();
 
-    capabilitiesToDriver.put(DesiredCapabilities.firefox(), WebDriver.class);
-    capabilitiesToDriver.put(DesiredCapabilities.firefox(), WebDriver.class);
+    capabilitiesToDriver.put(new FirefoxOptions(), WebDriver.class);
+    capabilitiesToDriver.put(new FirefoxOptions(), WebDriver.class);
 
     assertThat(capabilitiesToDriver).hasSize(1);
   }

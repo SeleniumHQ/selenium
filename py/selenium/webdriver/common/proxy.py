@@ -54,12 +54,9 @@ class ProxyType:
         value = str(value).upper()
         for attr in dir(cls):
             attr_value = getattr(cls, attr)
-            if isinstance(attr_value, dict) and \
-                    'string' in attr_value and \
-                    attr_value['string'] is not None and \
-                    attr_value['string'] == value:
+            if isinstance(attr_value, dict) and 'string' in attr_value and attr_value['string'] == value:
                 return attr_value
-        raise Exception("No proxy type is found for %s" % (value))
+        raise Exception(f"No proxy type is found for {value}")
 
 
 class Proxy(object):
@@ -77,6 +74,7 @@ class Proxy(object):
     socksProxy = ''
     socksUsername = ''
     socksPassword = ''
+    socksVersion = None
 
     def __init__(self, raw=None):
         """
@@ -85,27 +83,29 @@ class Proxy(object):
         :Args:
          - raw: raw proxy data. If None, default class values are used.
         """
-        if raw is not None:
-            if 'proxyType' in raw and raw['proxyType'] is not None:
+        if raw:
+            if 'proxyType' in raw and raw['proxyType']:
                 self.proxy_type = ProxyType.load(raw['proxyType'])
-            if 'ftpProxy' in raw and raw['ftpProxy'] is not None:
+            if 'ftpProxy' in raw and raw['ftpProxy']:
                 self.ftp_proxy = raw['ftpProxy']
-            if 'httpProxy' in raw and raw['httpProxy'] is not None:
+            if 'httpProxy' in raw and raw['httpProxy']:
                 self.http_proxy = raw['httpProxy']
-            if 'noProxy' in raw and raw['noProxy'] is not None:
+            if 'noProxy' in raw and raw['noProxy']:
                 self.no_proxy = raw['noProxy']
-            if 'proxyAutoconfigUrl' in raw and raw['proxyAutoconfigUrl'] is not None:
+            if 'proxyAutoconfigUrl' in raw and raw['proxyAutoconfigUrl']:
                 self.proxy_autoconfig_url = raw['proxyAutoconfigUrl']
-            if 'sslProxy' in raw and raw['sslProxy'] is not None:
+            if 'sslProxy' in raw and raw['sslProxy']:
                 self.sslProxy = raw['sslProxy']
-            if 'autodetect' in raw and raw['autodetect'] is not None:
+            if 'autodetect' in raw and raw['autodetect']:
                 self.auto_detect = raw['autodetect']
-            if 'socksProxy' in raw and raw['socksProxy'] is not None:
+            if 'socksProxy' in raw and raw['socksProxy']:
                 self.socks_proxy = raw['socksProxy']
-            if 'socksUsername' in raw and raw['socksUsername'] is not None:
+            if 'socksUsername' in raw and raw['socksUsername']:
                 self.socks_username = raw['socksUsername']
-            if 'socksPassword' in raw and raw['socksPassword'] is not None:
+            if 'socksPassword' in raw and raw['socksPassword']:
                 self.socks_password = raw['socksPassword']
+            if 'socksVersion' in raw and raw['socksVersion']:
+                self.socks_version = raw['socksVersion']
 
     @property
     def proxy_type(self):
@@ -300,9 +300,28 @@ class Proxy(object):
         self.proxyType = ProxyType.MANUAL
         self.socksPassword = value
 
+    @property
+    def socks_version(self):
+        """
+        Returns socks proxy version setting.
+        """
+        return self.socksVersion
+
+    @socks_version.setter
+    def socks_version(self, value):
+        """
+        Sets socks proxy version setting.
+
+        :Args:
+         - value: The socks proxy version value.
+        """
+        self._verify_proxy_type_compatibility(ProxyType.MANUAL)
+        self.proxyType = ProxyType.MANUAL
+        self.socksVersion = value
+
     def _verify_proxy_type_compatibility(self, compatibleProxy):
         if self.proxyType != ProxyType.UNSPECIFIED and self.proxyType != compatibleProxy:
-            raise Exception(" Specified proxy type (%s) not compatible with current setting (%s)" % (compatibleProxy, self.proxyType))
+            raise Exception(f"Specified proxy type ({compatibleProxy}) not compatible with current setting ({self.proxyType})")
 
     def add_to_capabilities(self, capabilities):
         """
@@ -331,4 +350,6 @@ class Proxy(object):
             proxy_caps['socksUsername'] = self.socksUsername
         if self.socksPassword:
             proxy_caps['socksPassword'] = self.socksPassword
+        if self.socksVersion:
+            proxy_caps['socksVersion'] = self.socksVersion
         capabilities['proxy'] = proxy_caps

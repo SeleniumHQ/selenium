@@ -24,7 +24,7 @@ import org.junit.Test;
 public class TestEditable extends InternalSelenseTestBase {
   @Test
   public void testEditable() {
-    selenium.open("../tests/html/test_editable.html");
+    selenium.open("test_editable.html");
     verifyTrue(selenium.isEditable("normal_text"));
     verifyTrue(selenium.isEditable("normal_select"));
     verifyFalse(selenium.isEditable("disabled_text"));
