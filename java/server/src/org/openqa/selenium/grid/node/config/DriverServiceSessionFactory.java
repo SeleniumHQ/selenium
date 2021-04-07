@@ -23,7 +23,7 @@ import org.openqa.selenium.PersistentCapabilities;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.WebDriverException;
-import org.openqa.selenium.chromium.ChromiumDevToolsLocator;
+import org.openqa.selenium.devtools.CdpEndpointFinder;
 import org.openqa.selenium.grid.data.CreateSessionRequest;
 import org.openqa.selenium.grid.node.ActiveSession;
 import org.openqa.selenium.grid.node.ProtocolConvertingSession;
@@ -199,10 +199,12 @@ public class DriverServiceSessionFactory implements SessionFactory {
     }
 
     Function<Capabilities, Optional<DevToolsInfo>> chrome = c ->
-      ChromiumDevToolsLocator.getReportedUri("goog:chromeOptions", c).map(uri -> new DevToolsInfo(uri, c.getBrowserVersion()));
+      CdpEndpointFinder.getReportedUri("goog:chromeOptions", c)
+        .map(uri -> new DevToolsInfo(uri, c.getBrowserVersion()));
 
     Function<Capabilities, Optional<DevToolsInfo>> edge = c ->
-      ChromiumDevToolsLocator.getReportedUri("ms:edgeOptions", c).map(uri -> new DevToolsInfo(uri, c.getBrowserVersion()));
+      CdpEndpointFinder.getReportedUri("ms:edgeOptions", c)
+        .map(uri -> new DevToolsInfo(uri, c.getBrowserVersion()));
 
     Function<Capabilities, Optional<DevToolsInfo>> firefox = c -> {
       Object address = c.getCapability("moz:debuggerAddress");
@@ -216,7 +218,7 @@ public class DriverServiceSessionFactory implements SessionFactory {
       });
     };
 
-    Optional<DevToolsInfo> maybeInfo = Stream.of(chrome, edge)
+    Optional<DevToolsInfo> maybeInfo = Stream.of(chrome, edge, firefox)
       .map(finder -> finder.apply(caps))
       .filter(Optional::isPresent)
       .map(Optional::get)
