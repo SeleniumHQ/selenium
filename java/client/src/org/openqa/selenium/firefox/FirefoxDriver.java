@@ -51,7 +51,6 @@ import org.openqa.selenium.remote.service.DriverCommandExecutor;
 import org.openqa.selenium.remote.service.DriverService;
 
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.nio.file.Path;
 import java.util.Optional;
 import java.util.ServiceLoader;
@@ -207,17 +206,9 @@ public class FirefoxDriver extends RemoteWebDriver
     webStorage = new RemoteWebStorage(getExecuteMethod());
 
     Capabilities capabilities = super.getCapabilities();
-    Optional<URI> cdpUri = Optional.empty();
-    if (capabilities.getCapability("moz:debuggerAddress") instanceof String) {
-      try {
-        URI providedUri = new URI(String.format("http://%s", capabilities.getCapability("moz:debuggerAddress")));
-        HttpClient.Factory clientFactory = HttpClient.Factory.createDefault();
-
-        cdpUri = CdpEndpointFinder.getCdpEndPoint(clientFactory, providedUri);
-      } catch (RuntimeException | URISyntaxException e) {
-        // Swallow the exception.
-      }
-    }
+    HttpClient.Factory clientFactory = HttpClient.Factory.createDefault();
+    Optional<URI> cdpUri = CdpEndpointFinder.getReportedUri("moz:debuggerAddress", capabilities)
+      .flatMap(reported -> CdpEndpointFinder.getCdpEndPoint(clientFactory, reported));
 
     this.cdpUri = cdpUri;
     this.capabilities = cdpUri.map(uri ->

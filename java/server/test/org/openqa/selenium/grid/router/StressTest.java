@@ -121,6 +121,6 @@ public class StressTest {
       });
     }
 
-    CompletableFuture.allOf(futures).get(2, MINUTES);
+    CompletableFuture.allOf(futures).get(4, MINUTES);
   }
 }
