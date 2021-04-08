@@ -56,16 +56,17 @@ class ActionChains(object):
     another.
     """
 
-    def __init__(self, driver):
+    def __init__(self, driver, duration=250):
         """
         Creates a new ActionChains.
 
         :Args:
          - driver: The WebDriver instance which performs user actions.
+         - duration: override the default 250 msecs of DEFAULT_MOVE_DURATION in PointerInput
         """
         self._driver = driver
         self._actions = []
-        self.w3c_actions = ActionBuilder(driver)
+        self.w3c_actions = ActionBuilder(driver, duration=duration)
 
     def perform(self):
         """
