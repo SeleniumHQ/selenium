@@ -70,6 +70,14 @@ namespace OpenQA.Selenium.Support.UI
         }
 
         /// <summary>
+        /// Gets the time span within which the component should be loaded for the implementing subclasses.
+        /// </summary>
+        protected TimeSpan Timeout
+        {
+            get { return this.timeout; }
+        }
+
+        /// <summary>
         /// Ensures that the component is currently loaded.
         /// </summary>
         /// <returns>The loaded component.</returns>
@@ -121,7 +129,7 @@ namespace OpenQA.Selenium.Support.UI
             // no-op by default
         }
 
-        private void Wait()
+        protected void Wait()
         {
             Thread.Sleep(this.sleepInterval);
         }
