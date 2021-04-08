@@ -42,7 +42,7 @@ let Server = function (requestHandler) {
   })
 
   this.setConnectHandler = function(handler) {
-    return server.on('connect', handler);
+    return server.on('connect', handler)
   }
 
   /** @typedef {{port: number, address: string, family: string}} */

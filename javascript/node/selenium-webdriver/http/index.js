@@ -25,7 +25,7 @@
 const http = require('http')
 const https = require('https')
 const url = require('url')
-const tls = require('tls');
+const tls = require('tls')
 
 const httpLib = require('../lib/http')
 
@@ -92,11 +92,11 @@ class HttpClient {
     /**
      * @private {?RequestOptions}
      */
-    this.proxyOptions_ = opt_proxy ? getRequestOptions(opt_proxy) : null;
+    this.proxyOptions_ = opt_proxy ? getRequestOptions(opt_proxy) : null
     /**
      * Allow skipping certificate validation for test cases.
      */
-    this.doCertificateCheck = true;
+    this.doCertificateCheck = true
   }
 
   /** @override */
@@ -213,11 +213,11 @@ function sendRequest(options, onOk, onError, opt_data, opt_proxy, opt_retries) {
         request.end()
       }
     } else {
-      options.headers['Host'] = targetHost;
-      options.path = absoluteUri;
-      options.host = proxy.host;
-      options.hostname = proxy.hostname;
-      options.port = proxy.port;
+      options.headers['Host'] = targetHost
+      options.path = absoluteUri
+      options.host = proxy.host
+      options.hostname = proxy.hostname
+      options.port = proxy.port
 
       // Update the protocol to avoid EPROTO errors when the webdriver proxy
       // uses a different protocol from the remote selenium server.

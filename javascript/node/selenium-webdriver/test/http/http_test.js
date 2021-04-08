@@ -100,7 +100,7 @@ describe('HttpClient', function () {
 
   server.setConnectHandler(function(req, sock, head) {
     if (req.method == 'CONNECT' && req.url == "another.server.com") {
-      sock.write('HTTP/1.1 200 Connection Established\r\n\r\n');
+      sock.write('HTTP/1.1 200 Connection Established\r\n\r\n')
       const keyData = fs.readFileSync("test/http/server-key.pem")
       const certData = fs.readFileSync("test/http/server-cert.pem")
       const tlsConfig = {
