@@ -121,6 +121,14 @@ module Selenium
           end
           alias_method :ie, :internet_explorer
 
+          def always_match(capabilities)
+            new(always_match: capabilities)
+          end
+
+          def first_match(*capabilities)
+            new(first_match: capabilities)
+          end
+
           #
           # @api private
           #
@@ -179,8 +187,9 @@ module Selenium
         #
 
         def initialize(opts = {})
-          @capabilities = opts
-          self.proxy = opts.delete(:proxy)
+          @capabilities = {}
+          self.proxy = opts.delete(:proxy) if opts[:proxy]
+          @capabilities.merge!(opts)
         end
 
         #
@@ -221,28 +230,9 @@ module Selenium
         #
 
         def as_json(*)
-          hash = {}
-
-          @capabilities.each do |key, value|
-            case key
-            when :platform
-              hash['platform'] = value.to_s.upcase
-            when :proxy
-              next unless value
-
-              process_proxy(hash, value)
-            when :unhandled_prompt_behavior
-              hash['unhandledPromptBehavior'] = value.is_a?(Symbol) ? value.to_s.tr('_', ' ') : value
-            when String
-              hash[key.to_s] = value
-            when Symbol
-              hash[self.class.camel_case(key)] = value
-            else
-              raise TypeError, "expected String or Symbol, got #{key.inspect}:#{key.class} / #{value.inspect}"
-            end
+          @capabilities.each_with_object({}) do |(key, value), hash|
+            hash[convert_key(key)] = process_capabilities(key, value, hash)
           end
-
-          hash
         end
 
         def to_json(*)
@@ -263,13 +253,53 @@ module Selenium
 
         private
 
-        def process_proxy(hash, value)
-          hash['proxy'] = value.as_json
-          hash['proxy']['proxyType'] &&= hash['proxy']['proxyType'].downcase
+        def process_capabilities(key, value, hash)
+          case value
+          when Array
+            value.map { |v| process_capabilities(key, v, hash) }
+          when Hash
+            value.each_with_object({}) do |(k, v), h|
+              h[convert_key(k)] = process_capabilities(k, v, h)
+            end
+          when Capabilities, Options
+            value.as_json
+          else
+            convert_value(key, value)
+          end
+        end
 
-          return unless hash['proxy']['noProxy'].is_a?(String)
+        def convert_key(key)
+          case key
+          when String
+            key.to_s
+          when Symbol
+            self.class.camel_case(key)
+          else
+            raise TypeError, "expected String or Symbol, got #{key.inspect}:#{key.class}"
+          end
+        end
 
-          hash['proxy']['noProxy'] = hash['proxy']['noProxy'].split(', ')
+        def convert_value(key, value)
+          case key
+          when :platform
+            value.to_s.upcase
+          when :proxy
+            convert_proxy(value)
+          when :unhandled_prompt_behavior
+            value.is_a?(Symbol) ? value.to_s.tr('_', ' ') : value
+          else
+            value
+          end
+        end
+
+        def convert_proxy(value)
+          return unless value
+
+          hash = value.as_json
+          hash['proxyType'] &&= hash['proxyType'].downcase
+          hash['noProxy'] = hash['noProxy'].split(', ') if hash['noProxy'].is_a?(String)
+
+          hash
         end
       end # Capabilities
     end # Remote

@@ -98,7 +98,7 @@ public abstract class TemplateGridCommand implements CliCommand {
         .map(ParameterDescription::getLongestName)
         .collect(Collectors.toSet());
       if (cliArgs.size() > 0) {
-        allFlags.forEach(flags -> allConfigs.add(new AnnotatedConfig(flags, cliArgs)));
+        allFlags.forEach(flags -> allConfigs.add(new AnnotatedConfig(flags, cliArgs, true)));
       }
 
       // 4. Configuration files (config.toml)
@@ -111,7 +111,7 @@ public abstract class TemplateGridCommand implements CliCommand {
       getFlagObjects().forEach(flagObject -> allConfigs.add(new AnnotatedConfig(flagObject)));
 
       // 7. Default values
-      allFlags.forEach(flags -> allConfigs.add(new AnnotatedConfig(flags)));
+      allFlags.forEach(flags -> allConfigs.add(new AnnotatedConfig(flags, cliArgs, false)));
 
       Config config = new MemoizedConfig(new CompoundConfig(allConfigs.toArray(new Config[0])));
 

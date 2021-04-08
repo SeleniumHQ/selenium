@@ -17,14 +17,6 @@
 
 package org.openqa.selenium.grid.node.config;
 
-import static java.util.Collections.emptyMap;
-import static java.util.Collections.emptySet;
-import static java.util.Collections.singletonMap;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.fail;
-import static org.junit.Assume.assumeFalse;
-import static org.junit.Assume.assumeTrue;
-
 import com.google.common.collect.ImmutableMap;
 
 import org.assertj.core.api.Condition;
@@ -53,6 +45,14 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+
+import static java.util.Collections.emptyMap;
+import static java.util.Collections.emptySet;
+import static java.util.Collections.singletonMap;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.fail;
+import static org.junit.Assume.assumeFalse;
+import static org.junit.Assume.assumeTrue;
 
 @SuppressWarnings("DuplicatedCode")
 public class NodeOptionsTest {
@@ -211,11 +211,11 @@ public class NodeOptionsTest {
       "detect-drivers = false",
       "[[node.driver-configuration]]",
       "name = \"Chrome Beta\"",
-      "max-sessions = 2",
+      "max-sessions = 1",
       String.format("stereotype = \"%s\"", chromeCaps.toString().replace("\"", "\\\"")),
       "[[node.driver-configuration]]",
       "name = \"Firefox Nightly\"",
-      "max-sessions = 3",
+      "max-sessions = 2",
       String.format("stereotype = \"%s\"", firefoxCaps.toString().replace("\"", "\\\""))
     };
     Config config = new TomlConfig(new StringReader(String.join("\n", rawConfig)));
@@ -237,7 +237,7 @@ public class NodeOptionsTest {
             .get("binary").equalsIgnoreCase(chromeLocation));
     assertThat(reported)
       .filteredOn(capabilities -> capabilities.asMap().containsKey(ChromeOptions.CAPABILITY))
-      .hasSize(2);
+      .hasSize(1);
 
     //noinspection unchecked
     assertThat(reported)
@@ -248,7 +248,7 @@ public class NodeOptionsTest {
             .get("binary").equalsIgnoreCase(firefoxLocation));
     assertThat(reported)
       .filteredOn(capabilities -> capabilities.asMap().containsKey(FirefoxOptions.FIREFOX_OPTIONS))
-      .hasSize(3);
+      .hasSize(2);
   }
 
   @Test
@@ -282,6 +282,55 @@ public class NodeOptionsTest {
     assertThat(reported).isEmpty();
   }
 
+  @Test
+  public void shouldNotOverrideMaxSessionsByDefault() {
+    assumeTrue("ChromeDriver needs to be available", new ChromeDriverInfo().isAvailable());
+    int maxRecommendedSessions = Runtime.getRuntime().availableProcessors();
+    int overriddenMaxSessions = maxRecommendedSessions + 10;
+    Config config = new MapConfig(
+      singletonMap("node",
+                   ImmutableMap
+                     .of("max-sessions", overriddenMaxSessions)));
+    List<Capabilities> reported = new ArrayList<>();
+    try {
+      new NodeOptions(config).getSessionFactories(caps -> {
+        reported.add(caps);
+        return Collections.singleton(HelperFactory.create(config, caps));
+      });
+    } catch (ConfigException e) {
+      // Fall through
+    }
+    long chromeSlots = reported.stream()
+      .filter(capabilities -> "chrome".equalsIgnoreCase(capabilities.getBrowserName()))
+      .count();
+    assertThat(chromeSlots).isEqualTo(maxRecommendedSessions);
+  }
+
+  @Test
+  public void canOverrideMaxSessionsWithFlag() {
+    assumeTrue("ChromeDriver needs to be available", new ChromeDriverInfo().isAvailable());
+    int maxRecommendedSessions = Runtime.getRuntime().availableProcessors();
+    int overriddenMaxSessions = maxRecommendedSessions + 10;
+    Config config = new MapConfig(
+      singletonMap("node",
+                   ImmutableMap
+                     .of("max-sessions", overriddenMaxSessions,
+                         "override-max-sessions", true)));
+    List<Capabilities> reported = new ArrayList<>();
+    try {
+      new NodeOptions(config).getSessionFactories(caps -> {
+        reported.add(caps);
+        return Collections.singleton(HelperFactory.create(config, caps));
+      });
+    } catch (ConfigException e) {
+      // Fall through
+    }
+    long chromeSlots = reported.stream()
+      .filter(capabilities -> "chrome".equalsIgnoreCase(capabilities.getBrowserName()))
+      .count();
+    assertThat(chromeSlots).isEqualTo(overriddenMaxSessions);
+  }
+
   private Condition<? super List<? extends Capabilities>> supporting(String name) {
     return new Condition<>(
       caps -> caps.stream().anyMatch(cap -> name.equals(cap.getBrowserName())),
@@ -290,6 +339,7 @@ public class NodeOptionsTest {
   }
 
   public static class HelperFactory {
+
     public static SessionFactory create(Config config, Capabilities caps) {
       return new SessionFactory() {
         @Override

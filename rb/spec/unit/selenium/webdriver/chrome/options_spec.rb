@@ -217,6 +217,16 @@ module Selenium
             expect(options.as_json).to eq("browserName" => "chrome", "goog:chromeOptions" => {"foo" => "bar"})
           end
 
+          it 'converts profile' do
+            profile = Profile.new
+            directory = profile.directory
+
+            opts = Options.new(profile: profile)
+            expect(opts.as_json).to eq('browserName' => 'chrome',
+                                       'goog:chromeOptions' =>
+                                         {'args' => ["--user-data-dir=#{directory}"]})
+          end
+
           it 'returns a JSON hash' do
             allow(File).to receive(:file?).and_return(true)
             allow_any_instance_of(Options).to receive(:encode_extension).with('foo.crx').and_return("encoded_foo")

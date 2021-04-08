@@ -17,8 +17,6 @@
 
 package org.openqa.selenium.opera;
 
-import static org.openqa.selenium.remote.CapabilityType.BROWSER_NAME;
-
 import com.google.auto.service.AutoService;
 
 import org.openqa.selenium.Capabilities;
@@ -30,6 +28,8 @@ import org.openqa.selenium.WebDriverInfo;
 import org.openqa.selenium.remote.BrowserType;
 
 import java.util.Optional;
+
+import static org.openqa.selenium.remote.CapabilityType.BROWSER_NAME;
 
 @AutoService(WebDriverInfo.class)
 public class OperaDriverInfo implements WebDriverInfo {
@@ -67,7 +67,7 @@ public class OperaDriverInfo implements WebDriverInfo {
 
   @Override
   public int getMaximumSimultaneousSessions() {
-    return Runtime.getRuntime().availableProcessors() + 1;
+    return Runtime.getRuntime().availableProcessors();
   }
 
   @Override

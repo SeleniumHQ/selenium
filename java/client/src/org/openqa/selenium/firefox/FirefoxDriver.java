@@ -24,6 +24,7 @@ import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.MutableCapabilities;
 import org.openqa.selenium.OutputType;
+import org.openqa.selenium.PersistentCapabilities;
 import org.openqa.selenium.Proxy;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.devtools.CdpEndpointFinder;
@@ -50,8 +51,8 @@ import org.openqa.selenium.remote.service.DriverCommandExecutor;
 import org.openqa.selenium.remote.service.DriverService;
 
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.nio.file.Path;
+import java.util.Optional;
 import java.util.ServiceLoader;
 import java.util.Set;
 import java.util.stream.StreamSupport;
@@ -160,8 +161,10 @@ public class FirefoxDriver extends RemoteWebDriver
     }
   }
 
+  private final Capabilities capabilities;
   protected FirefoxBinary binary;
-  private RemoteWebStorage webStorage;
+  private final RemoteWebStorage webStorage;
+  private final Optional<URI> cdpUri;
   private DevTools devTools;
 
   public FirefoxDriver() {
@@ -201,6 +204,19 @@ public class FirefoxDriver extends RemoteWebDriver
   private FirefoxDriver(FirefoxDriverCommandExecutor executor, FirefoxOptions options) {
     super(executor, dropCapabilities(options));
     webStorage = new RemoteWebStorage(getExecuteMethod());
+
+    Capabilities capabilities = super.getCapabilities();
+    HttpClient.Factory clientFactory = HttpClient.Factory.createDefault();
+    Optional<URI> cdpUri = CdpEndpointFinder.getReportedUri("moz:debuggerAddress", capabilities)
+      .flatMap(reported -> CdpEndpointFinder.getCdpEndPoint(clientFactory, reported));
+
+    this.cdpUri = cdpUri;
+    this.capabilities = cdpUri.map(uri ->
+        new ImmutableCapabilities(
+            new PersistentCapabilities(capabilities)
+                .setCapability("se:cdp", uri.toString())
+                .setCapability("se:cdpVersion", "86")))
+        .orElse(new ImmutableCapabilities(capabilities));
   }
 
   private static FirefoxDriverCommandExecutor toExecutor(FirefoxOptions options) {
@@ -218,6 +234,11 @@ public class FirefoxDriver extends RemoteWebDriver
             .findFirst().orElseThrow(WebDriverException::new);
 
     return new FirefoxDriverCommandExecutor(builder.withOptions(options).build());
+  }
+
+  @Override
+  public Capabilities getCapabilities() {
+    return capabilities;
   }
 
   @Override
@@ -323,27 +344,17 @@ public class FirefoxDriver extends RemoteWebDriver
   @Override
   public DevTools getDevTools() {
     if (devTools == null) {
-      Object debuggerAddress = getCapabilities().getCapability("moz:debuggerAddress");
-      if (debuggerAddress == null) {
-        throw new WebDriverException("This version of Firefox or geckodriver does not support CDP");
-      }
+      URI wsUri = cdpUri.orElseThrow(() ->
+          new DevToolsException("This version of Firefox or geckodriver does not support CDP"));
 
-      try {
-        HttpClient.Factory clientFactory = HttpClient.Factory.createDefault();
+      HttpClient.Factory clientFactory = HttpClient.Factory.createDefault();
 
-        URI uri = new URI(String.format("http://%s", debuggerAddress));
-        URI wsUri = CdpEndpointFinder.getCdpEndPoint(clientFactory, uri)
-          .orElseThrow(() -> new DevToolsException("Unable to determine URI to connect to from " + debuggerAddress));
+      ClientConfig wsConfig = ClientConfig.defaultConfig().baseUri(wsUri);
+      HttpClient wsClient = clientFactory.createClient(wsConfig);
 
-        ClientConfig wsConfig = ClientConfig.defaultConfig().baseUri(wsUri);
-        HttpClient wsClient = clientFactory.createClient(wsConfig);
-
-        Connection connection = new Connection(wsClient, wsUri.toString());
-        CdpInfo cdpInfo = new CdpVersionFinder().match("86.0").orElseGet(NoOpCdpInfo::new);
-        devTools = new DevTools(cdpInfo::getDomains, connection);
-      } catch (URISyntaxException e) {
-        throw new WebDriverException("Could not initialize DevTools", e);
-      }
+      Connection connection = new Connection(wsClient, wsUri.toString());
+      CdpInfo cdpInfo = new CdpVersionFinder().match("86.0").orElseGet(NoOpCdpInfo::new);
+      devTools = new DevTools(cdpInfo::getDomains, connection);
     }
     return devTools;
   }

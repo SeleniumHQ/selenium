@@ -30,6 +30,7 @@ import org.openqa.selenium.events.EventBus;
 import org.openqa.selenium.grid.TemplateGridServerCommand;
 import org.openqa.selenium.grid.config.CompoundConfig;
 import org.openqa.selenium.grid.config.Config;
+import org.openqa.selenium.grid.config.ConfigFlags;
 import org.openqa.selenium.grid.config.MemoizedConfig;
 import org.openqa.selenium.grid.config.Role;
 import org.openqa.selenium.grid.data.NodeAddedEvent;

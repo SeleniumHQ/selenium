@@ -97,7 +97,7 @@ public class PersistentCapabilities implements Capabilities {
 
   @Override
   public String toString() {
-    return asMap().toString();
+    return org.openqa.selenium.SharedCapabilitiesMethods.toString(asMap());
   }
 
   @Override

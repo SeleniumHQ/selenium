@@ -49,7 +49,7 @@ module Selenium
         #
 
         def create_session(capabilities)
-          response = execute(:new_session, {}, {capabilities: {firstMatch: [capabilities]}})
+          response = execute(:new_session, {}, prepare_capabilities_payload(capabilities))
 
           @session_id = response['sessionId']
           capabilities = response['capabilities']
@@ -592,6 +592,11 @@ module Selenium
 
         def element_id_from(id)
           id['ELEMENT'] || id['element-6066-11e4-a52e-4f735466cecf']
+        end
+
+        def prepare_capabilities_payload(capabilities)
+          capabilities = {firstMatch: [capabilities]} if !capabilities['alwaysMatch'] && !capabilities['firstMatch']
+          {capabilities: capabilities}
         end
 
         def convert_locator(how, what)

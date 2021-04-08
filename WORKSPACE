@@ -197,7 +197,7 @@ load(
 container_pull(
     name = "java_image_base",
     # This pulls the java 11 version of the jave base image
-    digest = "sha256:f9fe0de7f8ded68f757d99e9d165b96e89e00d4cef80d204aa76bc0b8ffc4576",
+    digest = "sha256:34c3598d83f0dba27820323044ebe79e63ad4f137b405676da75a3905a408adf",
     registry = "gcr.io",
     repository = "distroless/java",
 )
@@ -205,7 +205,7 @@ container_pull(
 container_pull(
     name = "firefox_standalone",
     # selenium/standalone-firefox-debug:3.141.59
-    digest = "sha256:a77683572022f8139b07eb29dee66f7b34b5df4d9902b7f1e081e112411f683d",
+    digest = "sha256:27864b3c5ad5a4c4311bfa3e01cf389ec517980df12d3354b33cfc93b726b372",
     registry = "index.docker.io",
     repository = "selenium/standalone-firefox-debug",
 )
@@ -213,16 +213,16 @@ container_pull(
 container_pull(
     name = "chrome_standalone",
     # selenium/standalone-chrome-debug:3.141.59
-    digest = "sha256:53812c3d01622148e9ccd79e598c3740804dbfd51594ae592bac5a14380b595e",
+    digest = "sha256:4c56bcaba306dfc70b873f4e1f2292facb705984de90004c42c65a4380e0d3e3",
     registry = "index.docker.io",
     repository = "selenium/standalone-chrome-debug",
 )
 
 http_archive(
     name = "io_bazel_rules_k8s",
-    sha256 = "d91aeb17bbc619e649f8d32b65d9a8327e5404f451be196990e13f5b7e2d17bb",
-    strip_prefix = "rules_k8s-0.4",
-    urls = ["https://github.com/bazelbuild/rules_k8s/releases/download/v0.4/rules_k8s-v0.4.tar.gz"],
+    sha256 = "51f0977294699cd547e139ceff2396c32588575588678d2054da167691a227ef",
+    strip_prefix = "rules_k8s-0.6",
+    url = "https://github.com/bazelbuild/rules_k8s/archive/v0.6.tar.gz",
 )
 
 load("@io_bazel_rules_k8s//k8s:k8s.bzl", "k8s_repositories")

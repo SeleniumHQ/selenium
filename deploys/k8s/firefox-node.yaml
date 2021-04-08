@@ -44,6 +44,10 @@ spec:
               value: "org.openqa.selenium.grid.node.k8s.OneShotNode"
             - name: NODE_GRID_URL
               value: "http://localhost:4444/"
+            - name: NODE_REGISTER_CYCLE
+              value: "10"
+            - name: NODE_REGISTER_PERIOD
+              value: "120"
           resources:
             limits:
               memory: "1Gi"

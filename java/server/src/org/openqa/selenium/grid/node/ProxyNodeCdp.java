@@ -18,7 +18,6 @@
 package org.openqa.selenium.grid.node;
 
 import org.openqa.selenium.Capabilities;
-import org.openqa.selenium.chromium.ChromiumDevToolsLocator;
 import org.openqa.selenium.devtools.CdpEndpointFinder;
 import org.openqa.selenium.grid.data.Session;
 import org.openqa.selenium.remote.SessionId;
@@ -76,15 +75,22 @@ public class ProxyNodeCdp implements BiFunction<String, Consumer<Message>, Optio
     LOG.fine("Scanning for CDP endpoint: " + caps);
 
     // Using strings here to avoid Node depending upon specific drivers.
-    Optional<URI> cdpUri = ChromiumDevToolsLocator.getReportedUri("goog:chromeOptions", caps)
+    Optional<URI> cdpUri = CdpEndpointFinder.getReportedUri("goog:chromeOptions", caps)
       .flatMap(reported -> CdpEndpointFinder.getCdpEndPoint(clientFactory, reported));
     if (cdpUri.isPresent()) {
       LOG.fine("Chrome endpoint found");
       return cdpUri.map(cdp -> createCdpEndPoint(cdp, downstream));
     }
 
+    cdpUri = CdpEndpointFinder.getReportedUri("moz:debuggerAddress", caps)
+      .flatMap(reported -> CdpEndpointFinder.getCdpEndPoint(clientFactory, reported));
+    if (cdpUri.isPresent()) {
+      LOG.fine("Firefox endpoint found");
+      return cdpUri.map(cdp -> createCdpEndPoint(cdp, downstream));
+    }
+
     LOG.fine("Searching for edge options");
-    cdpUri = ChromiumDevToolsLocator.getReportedUri("ms:edgeOptions", caps)
+    cdpUri = CdpEndpointFinder.getReportedUri("ms:edgeOptions", caps)
       .flatMap(reported -> CdpEndpointFinder.getCdpEndPoint(clientFactory, reported));
     return cdpUri.map(cdp -> createCdpEndPoint(cdp, downstream));
   }

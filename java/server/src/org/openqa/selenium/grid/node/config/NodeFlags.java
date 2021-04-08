@@ -17,15 +17,6 @@
 
 package org.openqa.selenium.grid.node.config;
 
-import static org.openqa.selenium.grid.config.StandardGridRoles.NODE_ROLE;
-import static org.openqa.selenium.grid.node.config.NodeOptions.DEFAULT_DETECT_DRIVERS;
-import static org.openqa.selenium.grid.node.config.NodeOptions.DEFAULT_HEARTBEAT_PERIOD;
-import static org.openqa.selenium.grid.node.config.NodeOptions.DEFAULT_MAX_SESSIONS;
-import static org.openqa.selenium.grid.node.config.NodeOptions.DEFAULT_REGISTER_CYCLE;
-import static org.openqa.selenium.grid.node.config.NodeOptions.DEFAULT_REGISTER_PERIOD;
-import static org.openqa.selenium.grid.node.config.NodeOptions.DEFAULT_SESSION_TIMEOUT;
-import static org.openqa.selenium.grid.node.config.NodeOptions.NODE_SECTION;
-
 import com.google.auto.service.AutoService;
 
 import com.beust.jcommander.Parameter;
@@ -40,6 +31,16 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import static org.openqa.selenium.grid.config.StandardGridRoles.NODE_ROLE;
+import static org.openqa.selenium.grid.node.config.NodeOptions.DEFAULT_DETECT_DRIVERS;
+import static org.openqa.selenium.grid.node.config.NodeOptions.DEFAULT_HEARTBEAT_PERIOD;
+import static org.openqa.selenium.grid.node.config.NodeOptions.DEFAULT_MAX_SESSIONS;
+import static org.openqa.selenium.grid.node.config.NodeOptions.DEFAULT_REGISTER_CYCLE;
+import static org.openqa.selenium.grid.node.config.NodeOptions.DEFAULT_REGISTER_PERIOD;
+import static org.openqa.selenium.grid.node.config.NodeOptions.DEFAULT_SESSION_TIMEOUT;
+import static org.openqa.selenium.grid.node.config.NodeOptions.NODE_SECTION;
+import static org.openqa.selenium.grid.node.config.NodeOptions.OVERRIDE_MAX_SESSIONS;
+
 @SuppressWarnings("unused")
 @AutoService(HasRoles.class)
 public class NodeFlags implements HasRoles {
@@ -50,6 +51,16 @@ public class NodeFlags implements HasRoles {
                   + "of available processors.")
   @ConfigValue(section = NODE_SECTION, name = "max-sessions", example = "8")
   public int maxSessions = DEFAULT_MAX_SESSIONS;
+
+  @Parameter(
+    names = {"--override-max-sessions"},
+    arity = 1,
+    description = "The # of available processos is the recommended max sessions value (1 browser "
+                  + "session per processor). Setting this flag to true allows the recommended max "
+                  + "value to be overwritten. Session stability and reliability might suffer as "
+                  + "the host could run out of resources.")
+  @ConfigValue(section = NODE_SECTION, name = "override-max-sessions", example = "false")
+  public Boolean overrideMaxSessions = OVERRIDE_MAX_SESSIONS;
 
   @Parameter(
     names = {"--session-timeout"},

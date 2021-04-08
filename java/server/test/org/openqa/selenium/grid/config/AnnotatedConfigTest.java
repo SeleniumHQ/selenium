@@ -17,10 +17,6 @@
 
 package org.openqa.selenium.grid.config;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 
@@ -32,6 +28,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 public class AnnotatedConfigTest {
 
@@ -172,7 +172,8 @@ public class AnnotatedConfigTest {
 
     Config config = new AnnotatedConfig(
       new TypesToBeFiltered(),
-      ImmutableSet.of("--string", "--bool"));
+      ImmutableSet.of("--string", "--bool"),
+      true);
     assertEquals(Optional.of(true), config.getBool("types", "boolean"));
     assertEquals(Optional.of("A String"), config.get("types", "string"));
     assertEquals(Optional.empty(), config.getInt("types", "integer"));
