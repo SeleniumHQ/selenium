@@ -1,3 +1,8 @@
+## v4.0.0-beta.3
+
+* Removed support for legacy actions. 
+  This will also remove "Bride Mode" support, which was introduced to translate of action class to legacy API.
+
 ## v4.0.0-beta.2
 
 * Removed support for Edge legacy.
