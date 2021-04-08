@@ -41,6 +41,10 @@ let Server = function (requestHandler) {
     stream.setTimeout(4000)
   })
 
+  this.setConnectHandler = function(handler) {
+    return server.on('connect', handler);
+  }
+
   /** @typedef {{port: number, address: string, family: string}} */
   let Host // eslint-disable-line
 

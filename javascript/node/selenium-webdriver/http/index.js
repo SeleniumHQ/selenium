@@ -25,6 +25,7 @@
 const http = require('http')
 const https = require('https')
 const url = require('url')
+const tls = require('tls');
 
 const httpLib = require('../lib/http')
 
@@ -91,7 +92,11 @@ class HttpClient {
     /**
      * @private {?RequestOptions}
      */
-    this.proxyOptions_ = opt_proxy ? getRequestOptions(opt_proxy) : null
+    this.proxyOptions_ = opt_proxy ? getRequestOptions(opt_proxy) : null;
+    /**
+     * Allow skipping certificate validation for test cases.
+     */
+    this.doCertificateCheck = true;
   }
 
   /** @override */
@@ -136,6 +141,7 @@ class HttpClient {
       pathname: parsedPath.pathname,
       search: parsedPath.search,
       hash: parsedPath.hash,
+      certificateCheck: this.doCertificateCheck,
 
       headers,
     }
@@ -159,6 +165,7 @@ class HttpClient {
 function sendRequest(options, onOk, onError, opt_data, opt_proxy, opt_retries) {
   var hostname = options.hostname
   var port = options.port
+  var protocol = options.protocol
 
   if (opt_proxy) {
     let proxy = /** @type {RequestOptions} */ (opt_proxy)
@@ -178,19 +185,49 @@ function sendRequest(options, onOk, onError, opt_data, opt_proxy, opt_retries) {
     }
 
     // Update the request options with our proxy info.
-    options.headers['Host'] = targetHost
-    options.path = absoluteUri
-    options.host = proxy.host
-    options.hostname = proxy.hostname
-    options.port = proxy.port
+    if (options.protocol === 'https:') {
+      let proxy_connection = {
+        method : 'CONNECT',
+        path :  targetHost,
+        protocol : proxy.protocol,
+        host : proxy.host,
+        hostname : proxy.hostname,
+        port : proxy.port
+      }
+      if (proxy.auth) {
+        proxy_connection.headers['Proxy-Authorization'] =
+          'Basic ' + new Buffer(proxy.auth).toString('base64')
+      }
+      options.createConnection = (coptions, callback) => {
+        let requestFn = proxy.protocol === 'https:' ? https.request : http.request
+        let request = requestFn(proxy_connection)
+        request.on('connect', (res, socket, head) => {
+          let tlsOpts = {
+            socket: socket,
+            rejectUnauthorized: options.certificateCheck,
+            servername: options.hostname
+          }
+          let tlsSocket = tls.connect(tlsOpts)
+          callback(null, tlsSocket)
+        })
+        request.end()
+      }
+    } else {
+      options.headers['Host'] = targetHost;
+      options.path = absoluteUri;
+      options.host = proxy.host;
+      options.hostname = proxy.hostname;
+      options.port = proxy.port;
 
-    // Update the protocol to avoid EPROTO errors when the webdriver proxy
-    // uses a different protocol from the remote selenium server.
-    options.protocol = opt_proxy.protocol
+      // Update the protocol to avoid EPROTO errors when the webdriver proxy
+      // uses a different protocol from the remote selenium server.
+      options.protocol = opt_proxy.protocol
 
-    if (proxy.auth) {
-      options.headers['Proxy-Authorization'] =
-        'Basic ' + Buffer.from(proxy.auth).toString('base64')
+      if (proxy.auth) {
+        options.headers['Proxy-Authorization'] =
+          'Basic ' + Buffer.from(proxy.auth).toString('base64')
+      }
+      protocol = proxy.protocol
     }
   }
 
@@ -204,9 +241,9 @@ function sendRequest(options, onOk, onError, opt_data, opt_proxy, opt_retries) {
         onError(
           Error(
             'Failed to parse "Location" header for server redirect: ' +
-              ex.message +
-              '\nResponse was: \n' +
-              new httpLib.Response(response.statusCode, response.headers, '')
+            ex.message +
+            '\nResponse was: \n' +
+            new httpLib.Response(response.statusCode, response.headers, '')
           )
         )
         return

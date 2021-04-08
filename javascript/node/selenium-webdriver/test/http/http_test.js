@@ -20,6 +20,8 @@
 const assert = require('assert')
 const http = require('http')
 const url = require('url')
+const tls = require('tls')
+const fs = require('fs')
 
 const HttpClient = require('../../http').HttpClient
 const HttpRequest = require('../../lib/http').Request
@@ -96,6 +98,28 @@ describe('HttpClient', function () {
     }
   })
 
+  server.setConnectHandler(function(req, sock, head) {
+    if (req.method == 'CONNECT' && req.url == "another.server.com") {
+      sock.write('HTTP/1.1 200 Connection Established\r\n\r\n');
+      const keyData = fs.readFileSync("test/http/server-key.pem")
+      const certData = fs.readFileSync("test/http/server-cert.pem")
+      const tlsConfig = {
+        key: keyData,
+        cert: certData,
+        requestCert: false
+      }
+      const tlsServer = tls.createServer(tlsConfig, (encSocket) => {
+        encSocket.write("HTTP/1.1 200 OK\r\n"
+                        + "Host: another.server.com\r\n\r\n"
+                        + "Hello from TLS server.")
+        encSocket.end()
+      })
+      tlsServer.emit('connection', sock)
+    } else {
+      sock.end()
+    }
+  })
+
   before(function () {
     return server.start()
   })
@@ -131,6 +155,19 @@ describe('HttpClient', function () {
         request.headers.get('Accept'),
         'application/json; charset=utf-8'
       )
+    })
+  })
+
+  it('uses CONNECT method to access HTTPS pages', function() {
+    const request = new HttpRequest('GET', '/proxy')
+    const client = new HttpClient(
+      'https://another.server.com', undefined, server.url())
+    client.doCertificateCheck = false
+
+    return client.send(request).then(function(response) {
+      assert.strictEqual(200, response.status)
+      assert.strictEqual(response.headers.get('host'), 'another.server.com')
+      assert.strictEqual(response.body, 'Hello from TLS server.')
     })
   })
 
