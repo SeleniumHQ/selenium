@@ -215,7 +215,7 @@ public class FirefoxDriver extends RemoteWebDriver
         new ImmutableCapabilities(
             new PersistentCapabilities(capabilities)
                 .setCapability("se:cdp", uri.toString())
-                .setCapability("se:cdpVersion", "86")))
+                .setCapability("se:cdpVersion", "85")))
         .orElse(new ImmutableCapabilities(capabilities));
   }
 
@@ -353,7 +353,7 @@ public class FirefoxDriver extends RemoteWebDriver
       HttpClient wsClient = clientFactory.createClient(wsConfig);
 
       Connection connection = new Connection(wsClient, wsUri.toString());
-      CdpInfo cdpInfo = new CdpVersionFinder().match("86.0").orElseGet(NoOpCdpInfo::new);
+      CdpInfo cdpInfo = new CdpVersionFinder().match("85.0").orElseGet(NoOpCdpInfo::new);
       devTools = new DevTools(cdpInfo::getDomains, connection);
     }
     return devTools;
