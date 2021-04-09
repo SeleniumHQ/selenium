@@ -1,4 +1,4 @@
-// <copyright file="V87Target.cs" company="WebDriver Committers">
+// <copyright file="V90Target.cs" company="WebDriver Committers">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements. See the NOTICE file
 // distributed with this work for additional information
@@ -21,22 +21,22 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Text;
 using System.Threading.Tasks;
-using OpenQA.Selenium.DevTools.V87.Target;
+using OpenQA.Selenium.DevTools.V90.Target;
 
-namespace OpenQA.Selenium.DevTools.V87
+namespace OpenQA.Selenium.DevTools.V90
 {
     /// <summary>
-    /// Class providing functionality for manipulating targets for version 87 of the DevTools Protocol
+    /// Class providing functionality for manipulating targets for version 89 of the DevTools Protocol
     /// </summary>
-    public class V87Target : DevTools.Target
+    public class V90Target : DevTools.Target
     {
         private TargetAdapter adapter;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="V87Target"/> class.
+        /// Initializes a new instance of the <see cref="V90Target"/> class.
         /// </summary>
         /// <param name="adapter">The adapter for the Target domain.</param>
-        public V87Target(TargetAdapter adapter)
+        public V90Target(TargetAdapter adapter)
         {
             this.adapter = adapter;
         }

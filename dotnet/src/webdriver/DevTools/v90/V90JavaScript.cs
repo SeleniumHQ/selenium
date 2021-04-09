@@ -1,4 +1,4 @@
-// <copyright file="V87JavaScript.cs" company="WebDriver Committers">
+// <copyright file="V90JavaScript.cs" company="WebDriver Committers">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements. See the NOTICE file
 // distributed with this work for additional information
@@ -18,25 +18,25 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using OpenQA.Selenium.DevTools.V87.Page;
-using OpenQA.Selenium.DevTools.V87.Runtime;
+using OpenQA.Selenium.DevTools.V90.Page;
+using OpenQA.Selenium.DevTools.V90.Runtime;
 
-namespace OpenQA.Selenium.DevTools.V87
+namespace OpenQA.Selenium.DevTools.V90
 {
     /// <summary>
-    /// Class containing the JavaScript implementation for version 87 of the DevTools Protocol.
+    /// Class containing the JavaScript implementation for version 89 of the DevTools Protocol.
     /// </summary>
-    public class V87JavaScript : JavaScript
+    public class V90JavaScript : JavaScript
     {
         private RuntimeAdapter runtime;
         private PageAdapter page;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="V87JavaScript"/> class.
+        /// Initializes a new instance of the <see cref="V90JavaScript"/> class.
         /// </summary>
         /// <param name="runtime">The DevTools Protocol adapter for the Runtime domain.</param>
         /// <param name="page">The DevTools Protocol adapter for the Page domain.</param>
-        public V87JavaScript(RuntimeAdapter runtime, PageAdapter page)
+        public V90JavaScript(RuntimeAdapter runtime, PageAdapter page)
         {
             this.runtime = runtime;
             this.page = page;
