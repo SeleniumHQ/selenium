@@ -15,22 +15,22 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.devtools.v87;
+package org.openqa.selenium.devtools.v90;
 
 import org.openqa.selenium.devtools.Command;
 import org.openqa.selenium.devtools.DevTools;
 import org.openqa.selenium.devtools.Event;
 import org.openqa.selenium.devtools.idealized.Javascript;
-import org.openqa.selenium.devtools.v87.page.Page;
-import org.openqa.selenium.devtools.v87.page.model.ScriptIdentifier;
-import org.openqa.selenium.devtools.v87.runtime.Runtime;
-import org.openqa.selenium.devtools.v87.runtime.model.BindingCalled;
+import org.openqa.selenium.devtools.v90.page.Page;
+import org.openqa.selenium.devtools.v90.page.model.ScriptIdentifier;
+import org.openqa.selenium.devtools.v90.runtime.Runtime;
+import org.openqa.selenium.devtools.v90.runtime.model.BindingCalled;
 
 import java.util.Optional;
 
-public class V87Javascript extends Javascript<ScriptIdentifier, BindingCalled> {
+public class V90Javascript extends Javascript<ScriptIdentifier, BindingCalled> {
 
-  public V87Javascript(DevTools devtools) {
+  public V90Javascript(DevTools devtools) {
     super(devtools);
   }
 
@@ -46,7 +46,7 @@ public class V87Javascript extends Javascript<ScriptIdentifier, BindingCalled> {
 
   @Override
   protected Command<Void> doAddJsBinding(String scriptName) {
-    return Runtime.addBinding(scriptName, Optional.empty());
+    return Runtime.addBinding(scriptName, Optional.empty(), Optional.empty());
   }
 
   @Override

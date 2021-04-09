@@ -15,7 +15,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.devtools.v86;
+package org.openqa.selenium.devtools.v90;
 
 import com.google.common.collect.ImmutableList;
 import org.openqa.selenium.JavascriptException;
@@ -25,20 +25,20 @@ import org.openqa.selenium.devtools.Event;
 import org.openqa.selenium.devtools.events.ConsoleEvent;
 import org.openqa.selenium.devtools.idealized.Events;
 import org.openqa.selenium.devtools.idealized.runtime.model.RemoteObject;
-import org.openqa.selenium.devtools.v86.runtime.Runtime;
-import org.openqa.selenium.devtools.v86.runtime.model.ConsoleAPICalled;
-import org.openqa.selenium.devtools.v86.runtime.model.ExceptionDetails;
-import org.openqa.selenium.devtools.v86.runtime.model.ExceptionThrown;
-import org.openqa.selenium.devtools.v86.runtime.model.StackTrace;
+import org.openqa.selenium.devtools.v90.runtime.Runtime;
+import org.openqa.selenium.devtools.v90.runtime.model.ConsoleAPICalled;
+import org.openqa.selenium.devtools.v90.runtime.model.ExceptionDetails;
+import org.openqa.selenium.devtools.v90.runtime.model.ExceptionThrown;
+import org.openqa.selenium.devtools.v90.runtime.model.StackTrace;
 
 import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
 
-public class V86Events extends Events<ConsoleAPICalled, ExceptionThrown> {
+public class V90Events extends Events<ConsoleAPICalled, ExceptionThrown> {
 
-  public V86Events(DevTools devtools) {
+  public V90Events(DevTools devtools) {
     super(devtools);
   }
 
@@ -82,7 +82,7 @@ public class V86Events extends Events<ConsoleAPICalled, ExceptionThrown> {
   protected JavascriptException toJsException(ExceptionThrown event) {
     ExceptionDetails details = event.getExceptionDetails();
     Optional<StackTrace> maybeTrace = details.getStackTrace();
-    Optional<org.openqa.selenium.devtools.v86.runtime.model.RemoteObject>
+    Optional<org.openqa.selenium.devtools.v90.runtime.model.RemoteObject>
       maybeException = details.getException();
 
     String message = maybeException

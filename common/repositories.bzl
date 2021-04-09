@@ -88,16 +88,19 @@ _versions = {
     # Versions found by visiting https://github.com/mozilla/geckodriver/releases
     "geckodriver": {
         "linux": {
-            "url": "https://github.com/mozilla/geckodriver/releases/download/v0.29.0/geckodriver-v0.29.0-linux64.tar.gz",
-            "sha256": "5071803fb85a1b3dca2da4d00450adba485cc6f521fa3898363c032aa0f3879a",
+            "url": "https://github.com/mozilla/geckodriver/releases/download/v0.29.1/geckodriver-v0.29.1-linux64.tar.gz",
+            "sha256": "ec164910a3de7eec71e596bd2a1814ae27ba4c9d112b611680a6470dbe2ce27b",
+            "type": None,
         },
         "mac": {
-            "url": "https://github.com/mozilla/geckodriver/releases/download/v0.29.0/geckodriver-v0.29.0-macos.tar.gz",
-            "sha256": "a97f2ffa02a249fd0739208264bcc75f9dbc431ebb4e9cb63e2815f1e2d1a7e5",
+            "url": "https://github.com/mozilla/geckodriver/releases/download/v0.29.1/geckodriver-v0.29.1-macos.gz",
+            "sha256": "9929c804ad0157ca13fdafca808866c88815b658e7059280a9f08f7e70364963",
+            "type": "tgz",
         },
         "windows": {
             "url": None,
             "sha256": None,
+            "type": None,
         },
     },
 }
@@ -156,6 +159,7 @@ def _firefox():
         url = _versions["geckodriver"]["linux"]["url"],
         sha256 = _versions["geckodriver"]["linux"]["sha256"],
         build_file_content = "exports_files([\"geckodriver\"])",
+        type = _versions["geckodriver"]["linux"]["type"],
     )
 
     http_archive(
@@ -170,6 +174,7 @@ def _firefox():
         url = _versions["geckodriver"]["mac"]["url"],
         sha256 = _versions["geckodriver"]["mac"]["sha256"],
         build_file_content = "exports_files([\"geckodriver\"])",
+        type = _versions["geckodriver"]["mac"]["type"],
     )
 
     pkg_archive(

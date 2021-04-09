@@ -3,10 +3,12 @@ load("//common:defs.bzl", "copy_file")
 load("//java:defs.bzl", "java_export", "java_library")
 load("//java:version.bzl", "SE_VERSION")
 
+cdp_version = "v90"
+
 java_export(
-    name = "v86",
+    name = cdp_version,
     srcs = glob(["*.java"]),
-    maven_coordinates = "org.seleniumhq.selenium:selenium-devtools-v86:%s" % SE_VERSION,
+    maven_coordinates = "org.seleniumhq.selenium:selenium-devtools-%s:%s" % (cdp_version, SE_VERSION),
     opens_to = [
         "org.openqa.selenium.json",
     ],
@@ -51,7 +53,7 @@ genrule(
         ":js_protocol",
     ],
     outs = ["cdp.srcjar"],
-    cmd = "$(location //java/client/src/org/openqa/selenium/devtools:cdp-client-generator) $(location :browser_protocol) $(location :js_protocol) v86 $@",
+    cmd = "$(location //java/client/src/org/openqa/selenium/devtools:cdp-client-generator) $(location :browser_protocol) $(location :js_protocol) %s $@" % cdp_version,
     tools = [
         "//java/client/src/org/openqa/selenium/devtools:cdp-client-generator",
     ],
@@ -59,12 +61,12 @@ genrule(
 
 copy_file(
     name = "browser_protocol",
-    src = "//common/devtools/chromium/v86:browser_protocol",
+    src = "//common/devtools/chromium/%s:browser_protocol" % cdp_version,
     out = "browser_protocol.json",
 )
 
 copy_file(
     name = "js_protocol",
-    src = "//common/devtools/chromium/v86:js_protocol",
+    src = "//common/devtools/chromium/%s:js_protocol" % cdp_version,
     out = "js_protocol.json",
 )

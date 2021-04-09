@@ -7,10 +7,10 @@ load("//py/private:browsers.bzl", "BROWSERS")
 
 BROWSER_VERSIONS = [
     "v85",
-    "v86",
-    "v87",
     "v88",
-    "v89"
+    "v89",
+    "v90",
+    "v91"
 ]
 
 TEST_DEPS = [
