@@ -82,9 +82,10 @@ namespace OpenQA.Selenium.Chromium
         /// </summary>
         /// <param name="commandExecutor">An <see cref="ICommandExecutor"/> object which executes commands for the driver.</param>
         /// <param name="desiredCapabilities">An <see cref="ICapabilities"/> object containing the desired capabilities of the browser.</param>
-        protected ChromiumDriver(ICommandExecutor commandExecutor, ICapabilities desiredCapabilities)
+        protected ChromiumDriver(ICommandExecutor commandExecutor, ICapabilities desiredCapabilities, ChromiumOptions options)
             : base(commandExecutor, desiredCapabilities)
         {
+            this.optionsCapabilityName = options.CapabilityName;
         }
 
         /// <summary>
