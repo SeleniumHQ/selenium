@@ -21,24 +21,19 @@ module Selenium
   module WebDriver
     module Firefox
       class Options < WebDriver::Options
+        attr_accessor :debugger_address
+
         KEY = 'moz:firefoxOptions'
 
         # see: https://firefox-source-docs.mozilla.org/testing/geckodriver/Capabilities.html
         CAPABILITIES = {binary: 'binary',
                         args: 'args',
-                        profile: 'profile',
                         log: 'log',
                         prefs: 'prefs'}.freeze
+        BROWSER = 'firefox'
 
-        CAPABILITIES.each_key do |key|
-          define_method key do
-            @options[key]
-          end
-
-          define_method "#{key}=" do |value|
-            @options[key] = value
-          end
-        end
+        # NOTE: special handling of 'profile' to validate when set instead of when used
+        attr_reader :profile
 
         #
         # Create a new Options instance, only for W3C-capable versions of Firefox.
@@ -57,10 +52,15 @@ module Selenium
         #
 
         def initialize(log_level: nil, **opts)
-          super(opts)
+          @debugger_address = opts.delete(:debugger_address)
 
+          super(**opts)
+
+          @options[:args] ||= []
+          @options[:prefs] ||= {}
           @options[:log] ||= {level: log_level} if log_level
-          process_profile(@options[:profile]) if @options.key?(:profile)
+
+          process_profile(@options.delete(:profile))
         end
 
         #
@@ -74,7 +74,6 @@ module Selenium
         #
 
         def add_argument(arg)
-          @options[:args] ||= []
           @options[:args] << arg
         end
 
@@ -90,7 +89,6 @@ module Selenium
         #
 
         def add_preference(name, value)
-          @options[:prefs] ||= {}
           @options[:prefs][name] = value
         end
 
@@ -121,7 +119,6 @@ module Selenium
         # @param [Profile, String] profile Profile to be used
         #
 
-        undef profile=
         def profile=(profile)
           process_profile(profile)
         end
@@ -134,27 +131,24 @@ module Selenium
           @options[:log] = {level: level}
         end
 
-        #
-        # @api private
-        #
-
-        def as_json(*)
-          options = super
-          options['binary'] ||= Firefox.path if Firefox.path
-
-          {KEY => generate_as_json(options)}
-        end
-
         private
 
+        def process_browser_options(browser_options)
+          browser_options['moz:debuggerAddress'] = true if @debugger_address
+          options = browser_options[KEY]
+          options['binary'] ||= Firefox.path if Firefox.path
+          options['profile'] = @profile if @profile
+        end
+
         def process_profile(profile)
-          @options[:profile] = if profile.nil?
-                                 nil
-                               elsif profile.is_a? Profile
-                                 profile
-                               else
-                                 Profile.from_name(profile)
-                               end
+          @profile = case profile
+                     when nil
+                       nil
+                     when Profile
+                       profile
+                     else
+                       Profile.from_name(profile)
+                     end
         end
       end # Options
     end # Firefox

@@ -14,6 +14,8 @@
 # KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
 # under the License.
+from typing import Union
+import warnings
 from selenium.common.exceptions import InvalidArgumentException
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 from selenium.webdriver.common.proxy import Proxy
@@ -26,8 +28,8 @@ class Log(object):
     def __init__(self):
         self.level = None
 
-    def to_capabilities(self):
-        if self.level is not None:
+    def to_capabilities(self) -> dict:
+        if self.level:
             return {"log": {"level": self.level}}
         return {}
 
@@ -37,19 +39,19 @@ class Options(ArgOptions):
 
     def __init__(self):
         super(Options, self).__init__()
-        self._binary = None
-        self._preferences = {}
+        self._binary: FirefoxBinary = None
+        self._preferences: dict = {}
         self._profile = None
         self._proxy = None
         self.log = Log()
 
     @property
-    def binary(self):
+    def binary(self) -> FirefoxBinary:
         """Returns the FirefoxBinary instance"""
         return self._binary
 
     @binary.setter
-    def binary(self, new_binary):
+    def binary(self, new_binary: Union[str, FirefoxBinary]):
         """Sets location of the browser binary, either by string or
         ``FirefoxBinary`` instance.
 
@@ -59,96 +61,107 @@ class Options(ArgOptions):
         self._binary = new_binary
 
     @property
-    def binary_location(self):
+    def binary_location(self) -> str:
         """
         :Returns: The location of the binary.
         """
         return self.binary._start_cmd
 
     @binary_location.setter  # noqa
-    def binary_location(self, value):
+    def binary_location(self, value: str):
         """ Sets the location of the browser binary by string """
         self.binary = value
 
     @property
-    def accept_insecure_certs(self):
+    def accept_insecure_certs(self) -> bool:
         return self._caps.get('acceptInsecureCerts')
 
     @accept_insecure_certs.setter
-    def accept_insecure_certs(self, value):
+    def accept_insecure_certs(self, value: bool):
         self._caps['acceptInsecureCerts'] = value
 
     @property
-    def preferences(self):
+    def preferences(self) -> dict:
         """:Returns: A dict of preferences."""
         return self._preferences
 
-    def set_preference(self, name, value):
+    def set_preference(self, name: str, value: Union[str, int, bool]):
         """Sets a preference."""
         self._preferences[name] = value
 
     @property
-    def proxy(self):
+    def proxy(self) -> Proxy:
         """
         :Returns: Proxy if set, otherwise None.
         """
         return self._proxy
 
     @proxy.setter
-    def proxy(self, value):
+    def proxy(self, value: Proxy):
         if not isinstance(value, Proxy):
             raise InvalidArgumentException("Only Proxy objects can be passed in.")
         self._proxy = value
 
     @property
-    def profile(self):
+    def profile(self) -> FirefoxProfile:
         """
         :Returns: The Firefox profile to use.
         """
+        if self._profile:
+            warnings.warn(
+                "Getting a profile has been deprecated.",
+                DeprecationWarning,
+                stacklevel=2
+            )
         return self._profile
 
     @profile.setter
-    def profile(self, new_profile):
+    def profile(self, new_profile: Union[str, FirefoxProfile]):
         """Sets location of the browser profile to use, either by string
         or ``FirefoxProfile``.
 
         """
+        warnings.warn(
+            "Setting a profile has been deprecated. Please use the set_preference and install_addons methods",
+            DeprecationWarning,
+            stacklevel=2
+        )
         if not isinstance(new_profile, FirefoxProfile):
             new_profile = FirefoxProfile(new_profile)
         self._profile = new_profile
 
     @property
-    def headless(self):
+    def headless(self) -> bool:
         """
         :Returns: True if the headless argument is set, else False
         """
         return '-headless' in self._arguments
 
     @headless.setter
-    def headless(self, value):
+    def headless(self, value: bool):
         """
         Sets the headless argument
 
         Args:
           value: boolean value indicating to set the headless option
         """
-        if value is True:
+        if value:
             self._arguments.append('-headless')
         elif '-headless' in self._arguments:
             self._arguments.remove('-headless')
 
     @property
-    def page_load_strategy(self):
+    def page_load_strategy(self) -> str:
         return self._caps["pageLoadStrategy"]
 
     @page_load_strategy.setter
-    def page_load_strategy(self, strategy):
+    def page_load_strategy(self, strategy: str):
         if strategy in ["normal", "eager", "none"]:
             self.set_capability("pageLoadStrategy", strategy)
         else:
             raise ValueError("Strategy can only be one of the following: normal, eager, none")
 
-    def to_capabilities(self):
+    def to_capabilities(self) -> dict:
         """Marshals the Firefox options to a `moz:firefoxOptions`
         object.
         """
@@ -159,24 +172,24 @@ class Options(ArgOptions):
         caps = self._caps
         opts = {}
 
-        if self._binary is not None:
+        if self._binary:
             opts["binary"] = self._binary._start_cmd
-        if len(self._preferences) > 0:
+        if self._preferences:
             opts["prefs"] = self._preferences
-        if self._proxy is not None:
+        if self._proxy:
             self._proxy.add_to_capabilities(caps)
-        if self._profile is not None:
+        if self._profile:
             opts["profile"] = self._profile.encoded
-        if len(self._arguments) > 0:
+        if self._arguments:
             opts["args"] = self._arguments
 
         opts.update(self.log.to_capabilities())
 
-        if len(opts) > 0:
+        if opts:
             caps[Options.KEY] = opts
 
         return caps
 
     @property
-    def default_capabilities(self):
+    def default_capabilities(self) -> dict:
         return DesiredCapabilities.FIREFOX.copy()

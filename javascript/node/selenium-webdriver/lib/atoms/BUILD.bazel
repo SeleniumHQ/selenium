@@ -1,4 +1,4 @@
-load("@build_bazel_rules_nodejs//:defs.bzl", "nodejs_binary")
+load("@build_bazel_rules_nodejs//:index.bzl", "nodejs_binary")
 
 nodejs_binary(
     name = "make_atoms_module",
@@ -24,5 +24,23 @@ genrule(
     outs = ["get-attribute.js"],
     cmd = "$(location :make_atoms_module) $< $@",
     tools = [":make_atoms_module"],
+    visibility = ["//javascript/node/selenium-webdriver:__pkg__"],
+)
+
+genrule(
+    name = "find-elements",
+    srcs = ["//javascript/atoms/fragments:find-elements.js"],
+    outs = ["find-elements.js"],
+    cmd = "$(location :make_atoms_module) $< $@",
+    tools = [":make_atoms_module"],
+    visibility = ["//javascript/node/selenium-webdriver:__pkg__"],
+)
+
+genrule(
+    name = "mutation-listener",
+    srcs = ["//javascript/cdp-support:mutation-listener.js"],
+    outs = ["mutation-listener.js"],
+    cmd = "mv $(location //javascript/cdp-support:mutation-listener.js) $@",
+    tools = [],
     visibility = ["//javascript/node/selenium-webdriver:__pkg__"],
 )

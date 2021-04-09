@@ -19,26 +19,31 @@ package org.openqa.selenium.events.zeromq;
 
 import org.openqa.selenium.events.Event;
 import org.openqa.selenium.events.EventBus;
-import org.openqa.selenium.events.Type;
+import org.openqa.selenium.events.EventListener;
+import org.openqa.selenium.grid.security.Secret;
+import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.net.NetworkUtils;
 import org.zeromq.SocketType;
 import org.zeromq.ZContext;
 import org.zeromq.ZMQ;
 
+import java.net.Inet6Address;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.function.Consumer;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 class BoundZmqEventBus implements EventBus {
 
-  public static final Logger LOG = Logger.getLogger(EventBus.class.getName());
+  private static final Logger LOG = Logger.getLogger(EventBus.class.getName());
   private final UnboundZmqEventBus delegate;
   private final ZMQ.Socket xpub;
   private final ZMQ.Socket xsub;
   private final ExecutorService executor;
 
-  BoundZmqEventBus(ZContext context, String publishConnection, String subscribeConnection) {
+  BoundZmqEventBus(ZContext context, String publishConnection, String subscribeConnection, Secret secret) {
     String address = new NetworkUtils().getHostAddress();
     Addresses xpubAddr = deriveAddresses(address, publishConnection);
     Addresses xsubAddr = deriveAddresses(address, subscribeConnection);
@@ -46,32 +51,35 @@ class BoundZmqEventBus implements EventBus {
     LOG.info(String.format("XPUB binding to %s, XSUB binding to %s", xpubAddr, xsubAddr));
 
     xpub = context.createSocket(SocketType.XPUB);
-    xpub.setIPv6(true);
+    xpub.setIPv6(xpubAddr.isIPv6);
     xpub.setImmediate(true);
     xpub.bind(xpubAddr.bindTo);
 
     xsub = context.createSocket(SocketType.XSUB);
-    xsub.setIPv6(true);
+    xsub.setIPv6(xsubAddr.isIPv6);
     xsub.setImmediate(true);
     xsub.bind(xsubAddr.bindTo);
 
-    executor = Executors.newCachedThreadPool(r -> {
+    executor = Executors.newSingleThreadExecutor(r -> {
       Thread thread = new Thread(r, "Message Bus Proxy");
       thread.setDaemon(true);
       return thread;
     });
     executor.submit(() -> ZMQ.proxy(xsub, xpub, null));
 
-    delegate = new UnboundZmqEventBus(context, xpubAddr.advertise, xsubAddr.advertise);
-
-    LOG.info("Event bus ready");
+    delegate = new UnboundZmqEventBus(context, xpubAddr.advertise, xsubAddr.advertise, secret);
   }
 
-
+  @Override
+  public boolean isReady() {
+    return !executor.isShutdown();
+  }
 
   @Override
-  public void addListener(Type type, Consumer<Event> onType) {
-    delegate.addListener(type, onType);
+  public void addListener(EventListener<?> listener) {
+    Require.nonNull("Listener", listener);
+
+    delegate.addListener(listener);
   }
 
   @Override
@@ -89,7 +97,7 @@ class BoundZmqEventBus implements EventBus {
 
   private Addresses deriveAddresses(String host, String connection) {
     if (connection.startsWith("inproc:")) {
-      return new Addresses(connection, connection);
+      return new Addresses(connection, connection, false);
     }
 
     if (!connection.startsWith("tcp://")) {
@@ -109,19 +117,34 @@ class BoundZmqEventBus implements EventBus {
       host = hostName;
     }
 
+    boolean isAddressIPv6 = false;
+    try {
+      if (InetAddress.getByName(host) instanceof Inet6Address ) {
+        isAddressIPv6 = true;
+        if (!host.startsWith("[")) {
+          host = String.format("[%s]", host);
+        }
+      }
+    } catch (UnknownHostException e) {
+      LOG.log(Level.WARNING, "Could not determine if host address is IPv6 or IPv4", e);
+    }
+
     return new Addresses(
         connection,
-        String.format("tcp://%s:%d", host, port));
+        String.format("tcp://%s:%d", host, port),
+        isAddressIPv6
+    );
   }
 
   private static class Addresses {
-    Addresses(String bindTo, String advertise) {
-      this.bindTo = bindTo;
-      this.advertise = advertise;
-    }
-
     String bindTo;
     String advertise;
+    boolean isIPv6;
+    Addresses(String bindTo, String advertise, boolean isIPv6) {
+      this.bindTo = bindTo;
+      this.advertise = advertise;
+      this.isIPv6 = isIPv6;
+    }
 
     @Override
     public String toString() {

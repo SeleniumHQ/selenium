@@ -31,14 +31,14 @@ class Select(object):
 
         Example:
             from selenium.webdriver.support.ui import Select \n
-            Select(driver.find_element_by_tag_name("select")).select_by_index(2)
+            Select(driver.find_element(By.TAG_NAME, "select")).select_by_index(2)
         """
         if webelement.tag_name.lower() != "select":
             raise UnexpectedTagNameException(
                 "Select only works on <select> elements, not on <%s>" %
                 webelement.tag_name)
         self._el = webelement
-        multi = self._el.get_attribute("multiple")
+        multi = self._el.get_dom_attribute("multiple")
         self.is_multiple = multi and multi != "false"
 
     @property

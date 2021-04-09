@@ -19,12 +19,12 @@ package org.openqa.selenium.server.htmlrunner;
 
 import static java.util.regex.Pattern.MULTILINE;
 
-import com.google.common.base.Preconditions;
 import com.google.common.base.Throwables;
+
+import org.openqa.selenium.internal.Require;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -45,7 +45,7 @@ class TestState {
   }
 
   private Object getValue(String key) {
-    Preconditions.checkNotNull(key);
+    Require.nonNull("Key", key);
     return storedValues.get(key);
   }
 

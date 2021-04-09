@@ -125,14 +125,11 @@
  * [webview]: https://developer.chrome.com/multidevice/webview/overview
  */
 
-'use strict';
+'use strict'
 
-const http = require('./http');
-const io = require('./io');
-const {Browser, Capabilities} = require('./lib/capabilities');
-const remote = require('./remote');
-const chromium = require('./chromium');
-
+const io = require('./io')
+const { Browser } = require('./lib/capabilities')
+const chromium = require('./chromium')
 
 /**
  * Name of the ChromeDriver executable.
@@ -140,19 +137,10 @@ const chromium = require('./chromium');
  * @const
  */
 const CHROMEDRIVER_EXE =
-    process.platform === 'win32' ? 'chromedriver.exe' : 'chromedriver';
+  process.platform === 'win32' ? 'chromedriver.exe' : 'chromedriver'
 
-
-/**
- * _Synchronously_ attempts to locate the chromedriver executable on the current
- * system.
- *
- * @return {?string} the located executable, or `null`.
- */
-function locateSynchronously() {
-  return io.findInPath(CHROMEDRIVER_EXE, true);
-}
-
+/** @type {remote.DriverService} */
+let defaultService = null
 
 /**
  * Creates {@link selenium-webdriver/remote.DriverService} instances that manage
@@ -168,52 +156,18 @@ class ServiceBuilder extends chromium.ServiceBuilder {
    *     cannot be found on the PATH.
    */
   constructor(opt_exe) {
-    let exe = opt_exe || locateSynchronously();
+    let exe = opt_exe || locateSynchronously()
     if (!exe) {
       throw Error(
-          'The ChromeDriver could not be found on the current PATH. Please ' +
-          'download the latest version of the ChromeDriver from ' +
-          'http://chromedriver.storage.googleapis.com/index.html and ensure ' +
-          'it can be found on your PATH.');
+        `The ChromeDriver could not be found on the current PATH. Please ` +
+          `download the latest version of the ChromeDriver from ` +
+          `http://chromedriver.storage.googleapis.com/index.html and ensure ` +
+          `it can be found on your PATH.`
+      )
     }
-
-    super(exe);
+    super(exe)
   }
 }
-
-
-/** @type {remote.DriverService} */
-let defaultService = null;
-
-
-/**
- * Sets the default service to use for new ChromeDriver instances.
- * @param {!remote.DriverService} service The service to use.
- * @throws {Error} If the default service is currently running.
- */
-function setDefaultService(service) {
-  if (defaultService && defaultService.isRunning()) {
-    throw Error(
-        'The previously configured ChromeDriver service is still running. ' +
-        'You must shut it down before you may adjust its configuration.');
-  }
-  defaultService = service;
-}
-
-
-/**
- * Returns the default ChromeDriver service. If such a service has not been
- * configured, one will be constructed using the default configuration for
- * a ChromeDriver executable found on the system PATH.
- * @return {!remote.DriverService} The default ChromeDriver service.
- */
-function getDefaultService() {
-  if (!defaultService) {
-    defaultService = new ServiceBuilder().build();
-  }
-  return defaultService;
-}
-
 
 /**
  * Class for managing ChromeDriver specific options.
@@ -231,7 +185,7 @@ class Options extends chromium.Options {
    * @return {!Options} A self reference.
    */
   setChromeBinaryPath(path) {
-    return this.setBinaryPath(path);
+    return this.setBinaryPath(path)
   }
 
   /**
@@ -241,7 +195,7 @@ class Options extends chromium.Options {
    * @return {!Options} A self reference.
    */
   androidChrome() {
-    return this.androidPackage('com.android.chrome');
+    return this.androidPackage('com.android.chrome')
   }
 
   /**
@@ -251,7 +205,7 @@ class Options extends chromium.Options {
    * @return {!Options} A self reference.
    */
   setChromeLogFile(path) {
-    return this.setBrowserLogFile(path);
+    return this.setBrowserLogFile(path)
   }
 
   /**
@@ -261,13 +215,9 @@ class Options extends chromium.Options {
    * @return {!Options} A self reference.
    */
   setChromeMinidumpPath(path) {
-    return this.setBrowserMinidumpPath(path);
+    return this.setBrowserMinidumpPath(path)
   }
 }
-
-Options.prototype.CAPABILITY_KEY = 'goog:chromeOptions';
-Options.prototype.BROWSER_NAME_VALUE = Browser.CHROME;
-
 
 /**
  * Creates a new WebDriver client for Chrome.
@@ -285,21 +235,61 @@ class Driver extends chromium.Driver {
    * @return {!Driver} A new driver instance.
    */
   static createSession(opt_config, opt_serviceExecutor) {
-    let caps = opt_config || new Options();
-    return /** @type {!Driver} */(super.createSession(caps, opt_serviceExecutor));
+    let caps = opt_config || new Options()
+    return /** @type {!Driver} */ (super.createSession(
+      caps,
+      opt_serviceExecutor
+    ))
   }
 }
 
-Driver.getDefaultService = getDefaultService;
-Driver.prototype.VENDOR_COMMAND_PREFIX = "goog";
+/**
+ * _Synchronously_ attempts to locate the chromedriver executable on the current
+ * system.
+ *
+ * @return {?string} the located executable, or `null`.
+ */
+function locateSynchronously() {
+  return io.findInPath(CHROMEDRIVER_EXE, true)
+}
 
+/**
+ * Sets the default service to use for new ChromeDriver instances.
+ * @param {!remote.DriverService} service The service to use.
+ * @throws {Error} If the default service is currently running.
+ */
+function setDefaultService(service) {
+  if (defaultService && defaultService.isRunning()) {
+    throw Error(
+      `The previously configured ChromeDriver service is still running. ` +
+        `You must shut it down before you may adjust its configuration.`
+    )
+  }
+  defaultService = service
+}
+
+/**
+ * Returns the default ChromeDriver service. If such a service has not been
+ * configured, one will be constructed using the default configuration for
+ * a ChromeDriver executable found on the system PATH.
+ * @return {!remote.DriverService} The default ChromeDriver service.
+ */
+function getDefaultService() {
+  if (!defaultService) {
+    defaultService = new ServiceBuilder().build()
+  }
+  return defaultService
+}
+
+Options.prototype.CAPABILITY_KEY = 'goog:chromeOptions'
+Options.prototype.BROWSER_NAME_VALUE = Browser.CHROME
+Driver.getDefaultService = getDefaultService
+Driver.prototype.VENDOR_COMMAND_PREFIX = 'goog'
 
 // PUBLIC API
-
-
-exports.Driver = Driver;
-exports.Options = Options;
-exports.ServiceBuilder = ServiceBuilder;
-exports.getDefaultService = getDefaultService;
-exports.setDefaultService = setDefaultService;
-exports.locateSynchronously = locateSynchronously;
+exports.Driver = Driver
+exports.Options = Options
+exports.ServiceBuilder = ServiceBuilder
+exports.getDefaultService = getDefaultService
+exports.setDefaultService = setDefaultService
+exports.locateSynchronously = locateSynchronously

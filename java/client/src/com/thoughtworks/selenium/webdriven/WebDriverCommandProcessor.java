@@ -40,7 +40,8 @@ import java.util.function.Supplier;
  */
 public class WebDriverCommandProcessor implements CommandProcessor, WrapsDriver {
 
-  private final static long DEFAULT_PAUSE = 500L; // milliseconds
+  private static final long DEFAULT_PAUSE = 500L; // milliseconds
+
   private final Map<String, SeleneseCommand<?>> seleneseMethods = new HashMap<>();
   private final String baseUrl;
   private final Timer timer;

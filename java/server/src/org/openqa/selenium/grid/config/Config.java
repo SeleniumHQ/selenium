@@ -19,8 +19,14 @@ package org.openqa.selenium.grid.config;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
+import java.util.logging.Logger;
 
 public interface Config {
+
+  Set<String> getSectionNames();
+
+  Set<String> getOptions(String section);
 
   Optional<List<String>> getAll(String section, String option);
 
@@ -34,5 +40,18 @@ public interface Config {
 
   default Optional<Boolean> getBool(String section, String option) {
     return get(section, option).map(Boolean::parseBoolean);
+  }
+
+  default <X> X getClass(String section, String option, Class<X> typeOfClass, String defaultClazz) {
+    String clazz = get(section, option).orElse(defaultClazz);
+
+    // We don't declare a constant on the interface, natch.
+    Logger.getLogger(Config.class.getName()).fine(String.format("Creating %s as instance of %s", clazz, typeOfClass));
+
+    try{
+      return ClassCreation.callCreateMethod(clazz, typeOfClass, this);
+    } catch (ReflectiveOperationException e) {
+      throw new IllegalArgumentException("Unable to find class: " + clazz, e);
+    }
   }
 }

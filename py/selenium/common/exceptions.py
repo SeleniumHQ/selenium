@@ -32,9 +32,9 @@ class WebDriverException(Exception):
 
     def __str__(self):
         exception_msg = "Message: %s\n" % self.msg
-        if self.screen is not None:
+        if self.screen:
             exception_msg += "Screenshot: available via screen\n"
-        if self.stacktrace is not None:
+        if self.stacktrace:
             stacktrace = "\n".join(self.stacktrace)
             exception_msg += "Stacktrace:\n%s" % stacktrace
         return exception_msg
@@ -158,7 +158,7 @@ class ElementNotVisibleException(InvalidElementStateException):
 class ElementNotInteractableException(InvalidElementStateException):
     """
     Thrown when an element is present in the DOM but interactions
-    with that element will hit another element do to paint order
+    with that element will hit another element due to paint order
     """
     pass
 
@@ -273,7 +273,7 @@ class ScreenshotException(WebDriverException):
 class ElementClickInterceptedException(WebDriverException):
     """
     The Element Click command could not be completed because the element receiving the events
-    is obscuring the element that was requested clicked.
+    is obscuring the element that was requested to be clicked.
     """
     pass
 
@@ -288,7 +288,7 @@ class InsecureCertificateException(WebDriverException):
 
 class InvalidCoordinatesException(WebDriverException):
     """
-    The coordinates provided to an interactions operation are invalid.
+    The coordinates provided to an interaction's operation are invalid.
     """
     pass
 

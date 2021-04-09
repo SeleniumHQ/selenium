@@ -17,25 +17,30 @@
 
 package org.openqa.selenium.support.pagefactory;
 
+import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.SearchContext;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.internal.FindsById;
-import org.openqa.selenium.internal.FindsByLinkText;
-import org.openqa.selenium.internal.FindsByName;
-import org.openqa.selenium.internal.FindsByXPath;
+import org.openqa.selenium.testing.UnitTests;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
+@Category(UnitTests.class)
 public class ByChainedTest {
+
+  private static final List<WebElement> NO_ELEMENTS = Collections.emptyList();
 
   @Test
   public void findElementZeroBy() {
@@ -43,7 +48,7 @@ public class ByChainedTest {
 
     ByChained by = new ByChained();
     assertThatExceptionOfType(NoSuchElementException.class)
-        .isThrownBy(() -> by.findElement(driver));
+      .isThrownBy(() -> by.findElement(driver));
   }
 
   @Test
@@ -63,9 +68,9 @@ public class ByChainedTest {
     elems12.add(elem1);
     elems12.add(elem2);
 
-    when(driver.findElementsByName("cheese")).thenReturn(elems12);
+    when(driver.findElements(By.cssSelector("cheese"))).thenReturn(elems12);
 
-    ByChained by = new ByChained(By.name("cheese"));
+    ByChained by = new ByChained(By.cssSelector("cheese"));
     assertThat(by.findElement(driver)).isEqualTo(elem1);
   }
 
@@ -78,9 +83,9 @@ public class ByChainedTest {
     elems12.add(elem1);
     elems12.add(elem2);
 
-    when(driver.findElementsByName("cheese")).thenReturn(elems12);
+    when(driver.findElements(By.tagName("cheese"))).thenReturn(elems12);
 
-    ByChained by = new ByChained(By.name("cheese"));
+    ByChained by = new ByChained(By.tagName("cheese"));
     assertThat(by.findElements(driver)).isEqualTo(elems12);
   }
 
@@ -89,11 +94,11 @@ public class ByChainedTest {
     final AllDriver driver = mock(AllDriver.class);
     final List<WebElement> elems = new ArrayList<>();
 
-    when(driver.findElementsByName("cheese")).thenReturn(elems);
+    when(driver.findElements(By.name("cheese"))).thenReturn(elems);
 
     ByChained by = new ByChained(By.name("cheese"));
     assertThatExceptionOfType(NoSuchElementException.class)
-        .isThrownBy(() -> by.findElement(driver));
+      .isThrownBy(() -> by.findElement(driver));
   }
 
   @Test
@@ -101,7 +106,7 @@ public class ByChainedTest {
     final AllDriver driver = mock(AllDriver.class);
     final List<WebElement> elems = new ArrayList<>();
 
-    when(driver.findElementsByName("cheese")).thenReturn(elems);
+    when(driver.findElements(By.name("cheese"))).thenReturn(elems);
 
     ByChained by = new ByChained(By.name("cheese"));
     assertThat(by.findElements(driver)).isEqualTo(elems);
@@ -127,11 +132,11 @@ public class ByChainedTest {
     elems345.addAll(elems34);
     elems345.addAll(elems5);
 
-    when(driver.findElementsByName("cheese")).thenReturn(elems12);
-    when(elem1.findElements(By.name("photo"))).thenReturn(elems34);
-    when(elem2.findElements(By.name("photo"))).thenReturn(elems5);
+    when(driver.findElements(By.cssSelector("cheese"))).thenReturn(elems12);
+    when(elem1.findElements(By.cssSelector("photo"))).thenReturn(elems34);
+    when(elem2.findElements(By.cssSelector("photo"))).thenReturn(elems5);
 
-    ByChained by = new ByChained(By.name("cheese"), By.name("photo"));
+    ByChained by = new ByChained(By.cssSelector("cheese"), By.cssSelector("photo"));
     assertThat(by.findElement(driver)).isEqualTo(elem3);
   }
 
@@ -157,11 +162,11 @@ public class ByChainedTest {
     elems345.addAll(elems34);
     elems345.addAll(elems5);
 
-    when(driver.findElementsByName("cheese")).thenReturn(elems);
+    when(driver.findElements(By.name("cheese"))).thenReturn(elems);
 
     ByChained by = new ByChained(By.name("cheese"), By.name("photo"));
     assertThatExceptionOfType(NoSuchElementException.class)
-        .isThrownBy(() -> by.findElement(driver));
+      .isThrownBy(() -> by.findElement(driver));
   }
 
   @Test
@@ -186,7 +191,7 @@ public class ByChainedTest {
     elems345.addAll(elems34);
     elems345.addAll(elems5);
 
-    when(driver.findElementsByName("cheese")).thenReturn(elems);
+    when(driver.findElements(By.name("cheese"))).thenReturn(elems);
 
     ByChained by = new ByChained(By.name("cheese"), By.name("photo"));
     assertThat(by.findElements(driver)).isEqualTo(elems);
@@ -214,11 +219,11 @@ public class ByChainedTest {
     elems345.addAll(elems34);
     elems345.addAll(elems5);
 
-    when(driver.findElementsByName("cheese")).thenReturn(elems12);
-    when(elem1.findElements(By.name("photo"))).thenReturn(elems);
-    when(elem2.findElements(By.name("photo"))).thenReturn(elems5);
+    when(driver.findElements(By.tagName("cheese"))).thenReturn(elems12);
+    when(elem1.findElements(By.tagName("photo"))).thenReturn(elems);
+    when(elem2.findElements(By.tagName("photo"))).thenReturn(elems5);
 
-    ByChained by = new ByChained(By.name("cheese"), By.name("photo"));
+    ByChained by = new ByChained(By.tagName("cheese"), By.tagName("photo"));
     assertThat(by.findElement(driver)).isEqualTo(elem5);
   }
 
@@ -244,22 +249,66 @@ public class ByChainedTest {
     elems345.addAll(elems34);
     elems345.addAll(elems5);
 
-    when(driver.findElementsByName("cheese")).thenReturn(elems12);
-    when(elem1.findElements(By.name("photo"))).thenReturn(elems);
-    when(elem2.findElements(By.name("photo"))).thenReturn(elems5);
+    when(driver.findElements(By.linkText("cheese"))).thenReturn(elems12);
+    when(elem1.findElements(By.linkText("photo"))).thenReturn(elems);
+    when(elem2.findElements(By.linkText("photo"))).thenReturn(elems5);
 
-    ByChained by = new ByChained(By.name("cheese"), By.name("photo"));
+    ByChained by = new ByChained(By.linkText("cheese"), By.linkText("photo"));
     assertThat(by.findElements(driver)).isEqualTo(elems5);
+  }
+
+  @Test
+  public void findElementsThreeBy_firstFindsOne_secondEmpty() {
+    final AllDriver driver = mock(AllDriver.class);
+    final WebElement elem1 = mock(WebElement.class, "webElement1");
+
+    By by1 = By.name("by1");
+    By by2 = By.name("by2");
+    By by3 = By.name("by3");
+
+    when(driver.findElements(by1)).thenReturn(asList(elem1));
+    when(elem1.findElements(by2)).thenReturn(NO_ELEMENTS);
+
+    ByChained by = new ByChained(by1, by2, by3);
+
+    assertThat(by.findElements(driver)).isEmpty();
+    verify(elem1, never()).findElements(by3);
+  }
+
+  @Test
+  public void findElementThreeBy_firstFindsTwo_secondEmpty() {
+    final AllDriver driver = mock(AllDriver.class);
+    final WebElement elem1 = mock(WebElement.class, "webElement1");
+    final WebElement elem2 = mock(WebElement.class, "webElement2");
+
+    By by1 = By.name("by1");
+    By by2 = By.name("by2");
+    By by3 = By.name("by3");
+
+    when(driver.findElements(by1)).thenReturn(asList(elem1, elem2));
+    when(elem1.findElements(by2)).thenReturn(NO_ELEMENTS);
+    when(elem2.findElements(by2)).thenReturn(NO_ELEMENTS);
+
+    ByChained by = new ByChained(by1, by2, by3);
+
+    assertThat(by.findElements(driver)).isEmpty();
+    verify(elem1, never()).findElements(by3);
+    verify(elem2, never()).findElements(by3);
   }
 
   @Test
   public void testEquals() {
     assertThat(new ByChained(By.id("cheese"), By.name("photo")))
-        .isEqualTo(new ByChained(By.id("cheese"), By.name("photo")));
+      .isEqualTo(new ByChained(By.id("cheese"), By.name("photo")));
   }
 
-  private interface AllDriver extends
-      FindsById, FindsByLinkText, FindsByName, FindsByXPath, SearchContext {
+  @Test
+  public void testToString() {
+    assertThat(new ByChained(By.id("cheese"), By.name("photo")))
+      .hasToString("By.chained({By.id: cheese,By.name: photo})");
+  }
+
+  private interface AllDriver extends SearchContext {
     // Place holder
   }
 

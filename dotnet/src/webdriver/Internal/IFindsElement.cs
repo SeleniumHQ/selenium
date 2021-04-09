@@ -38,7 +38,7 @@ namespace OpenQA.Selenium.Internal
         /// </summary>
         /// <param name="mechanism">The mechanism to use when matching.</param>
         /// <param name="value">The value to match.</param>
-        /// <see cref="IWebElement">IWebElements</see> matching the criteria.</returns>
+        /// <returns><see cref="IWebElement">IWebElements</see> matching the criteria.</returns>
         ReadOnlyCollection<IWebElement> FindElements(string mechanism, string value);
     }
 }

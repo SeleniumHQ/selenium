@@ -58,7 +58,7 @@ public class TerseFormatter extends Formatter {
    * allocations.
    */
   private final StringBuilder buffer;
-  private SimpleDateFormat timestampFormatter;
+  private final SimpleDateFormat timestampFormatter;
 
   public TerseFormatter() {
     buffer = new StringBuilder();

@@ -62,36 +62,45 @@ module Selenium
 
           it 'should contain an actions key with an array of actions' do
             allow(key_input).to receive(:no_actions?).and_return(false)
-            expect(key_input.actions).to receive(:map).and_return([1, 2, 3])
+            allow(key_input.actions).to receive(:map).and_return([1, 2, 3])
+
             expect(key_input.encode).to include(actions: [1, 2, 3])
           end
         end # when encoding
 
         context 'when creating a key_down action' do
           it 'should create a TypingInteraction with the :down direction and key' do
-            expect(KeyInput::TypingInteraction).to receive(:new).with(key_input, :down, key)
+            allow(KeyInput::TypingInteraction).to receive(:new).with(key_input, :down, key)
             allow(key_input).to receive(:add_action)
+
             key_input.create_key_down(key)
+            expect(KeyInput::TypingInteraction).to have_received(:new).with(key_input, :down, key)
           end
 
           it 'should add the action to the list of actions' do
             allow(KeyInput::TypingInteraction).to receive(:new).and_return(:action)
-            expect(key_input).to receive(:add_action).with(:action)
+            allow(key_input).to receive(:add_action).with(:action)
+
             key_input.create_key_down(key)
+            expect(key_input).to have_received(:add_action).with(:action)
           end
         end # when creating a key_down action
 
         context 'when creating a key_up action' do
           it 'should create a TypingInteraction with the :up direction and key' do
-            expect(KeyInput::TypingInteraction).to receive(:new).with(key_input, :up, key)
+            allow(KeyInput::TypingInteraction).to receive(:new).with(key_input, :up, key)
             allow(key_input).to receive(:add_action)
+
             key_input.create_key_up(key)
+            expect(KeyInput::TypingInteraction).to have_received(:new).with(key_input, :up, key)
           end
 
           it 'should add the action to the list of actions' do
             allow(KeyInput::TypingInteraction).to receive(:new).and_return(:action)
-            expect(key_input).to receive(:add_action).with(:action)
+            allow(key_input).to receive(:add_action).with(:action)
+
             key_input.create_key_up(key)
+            expect(key_input).to have_received(:add_action).with(:action)
           end
         end # when creating a key_up action
 

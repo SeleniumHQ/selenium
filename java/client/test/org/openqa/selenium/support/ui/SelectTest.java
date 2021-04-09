@@ -17,6 +17,7 @@
 
 package org.openqa.selenium.support.ui;
 
+import static java.util.Collections.emptyList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.Mockito.mock;
@@ -25,15 +26,18 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 import org.mockito.ArgumentMatchers;
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.testing.UnitTests;
 
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+@Category(UnitTests.class)
 public class SelectTest {
 
   @Test
@@ -70,7 +74,7 @@ public class SelectTest {
   private WebElement mockSelectWebElement(String multiple) {
     final WebElement element = mock(WebElement.class);
     when(element.getTagName()).thenReturn("select");
-    when(element.getAttribute("multiple")).thenReturn(multiple);
+    when(element.getDomAttribute("multiple")).thenReturn(multiple);
     return element;
   }
 
@@ -82,7 +86,7 @@ public class SelectTest {
 
   @Test
   public void shouldReturnAllOptionsWhenAsked() {
-    final List<WebElement> expectedOptions = Collections.emptyList();
+    final List<WebElement> expectedOptions = emptyList();
     Select select = selectWithOptions(expectedOptions);
 
     assertThat(select.getOptions()).isSameAs(expectedOptions);
@@ -245,8 +249,8 @@ public class SelectTest {
 
     final WebElement element = mockSelectWebElement("multiple");
     when(element.getTagName()).thenReturn("select");
-    when(element.getAttribute("multiple")).thenReturn("false");
-    when(element.findElements(xpath1)).thenReturn(Collections.emptyList());
+    when(element.getDomAttribute("multiple")).thenReturn("false");
+    when(element.findElements(xpath1)).thenReturn(emptyList());
     when(element.findElements(xpath2)).thenReturn(Collections.singletonList(firstOption));
     when(firstOption.getText()).thenReturn("foo bar");
 
@@ -267,7 +271,7 @@ public class SelectTest {
   @Test
   public void shouldThrowAnExceptionIfThereAreNoElementsToSelect() {
     final WebElement element = mockSelectWebElement("false");
-    when(element.findElements(ArgumentMatchers.any())).thenReturn(Collections.emptyList());
+    when(element.findElements(ArgumentMatchers.any())).thenReturn(emptyList());
 
     Select select = new Select(element);
 

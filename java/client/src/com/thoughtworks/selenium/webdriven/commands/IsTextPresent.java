@@ -38,6 +38,6 @@ public class IsTextPresent extends SeleneseCommand<Boolean> {
         "return (" + script + ")(arguments[0]);", pattern);
 
     // Handle the null case
-    return Boolean.TRUE == result;
+    return Boolean.TRUE.equals(result);
   }
 }

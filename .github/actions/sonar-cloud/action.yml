@@ -1,0 +1,10 @@
+name: 'Setup and run Sonar scanner'
+runs:
+  using: "composite"
+  steps:
+    - run: |
+        VERSION=4.5.0.2216
+        curl -L -o sonar-scanner-cli.zip https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-$VERSION-linux.zip
+        unzip sonar-scanner-cli.zip
+        ./sonar-scanner-$VERSION-linux/bin/sonar-scanner -Dsonar.host.url="https://sonarcloud.io"
+      shell: bash

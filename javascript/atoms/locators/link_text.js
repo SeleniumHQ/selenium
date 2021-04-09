@@ -36,7 +36,7 @@ goog.require('goog.dom');
  *     such element could be found.
  * @private
  */
-bot.locators.linkText.single_ = function(target, root, opt_isPartial) {
+bot.locators.linkText.single_ = function (target, root, opt_isPartial) {
   var elements;
   try {
     elements = bot.locators.css.many('a', root);
@@ -44,10 +44,10 @@ bot.locators.linkText.single_ = function(target, root, opt_isPartial) {
     // Old versions of browsers don't support CSS. They won't have XHTML
     // support. Sorry.
     elements = goog.dom.getDomHelper(root).getElementsByTagNameAndClass(
-        goog.dom.TagName.A, /*className=*/null, root);
+      goog.dom.TagName.A, /*className=*/null, root);
   }
 
-  var element = goog.array.find(elements, function(element) {
+  var element = goog.array.find(elements, function (element) {
     var text = bot.dom.getVisibleText(element);
     // getVisibleText replaces non-breaking spaces with plain
     // spaces, so if these are present at the beginning or end
@@ -67,10 +67,10 @@ bot.locators.linkText.single_ = function(target, root, opt_isPartial) {
  *     search under.
  * @param {boolean=} opt_isPartial Whether the link text needs to be matched
  *     only partially.
- * @return {IArrayLike} All matching elements, or an empty list.
+ * @return {!IArrayLike} All matching elements, or an empty list.
  * @private
  */
-bot.locators.linkText.many_ = function(target, root, opt_isPartial) {
+bot.locators.linkText.many_ = function (target, root, opt_isPartial) {
   var elements;
   try {
     elements = bot.locators.css.many('a', root);
@@ -78,10 +78,10 @@ bot.locators.linkText.many_ = function(target, root, opt_isPartial) {
     // Old versions of browsers don't support CSS. They won't have XHTML
     // support. Sorry.
     elements = goog.dom.getDomHelper(root).getElementsByTagNameAndClass(
-        goog.dom.TagName.A, /*className=*/null, root);
+      goog.dom.TagName.A, /*className=*/null, root);
   }
 
-  return goog.array.filter(elements, function(element) {
+  return goog.array.filter(elements, function (element) {
     var text = bot.dom.getVisibleText(element);
     // getVisibleText replaces non-breaking spaces with plain
     // spaces, so if these are present at the beginning or end
@@ -101,7 +101,7 @@ bot.locators.linkText.many_ = function(target, root, opt_isPartial) {
  * @return {Element} The first matching element found in the DOM, or null if no
  *     such element could be found.
  */
-bot.locators.linkText.single = function(target, root) {
+bot.locators.linkText.single = function (target, root) {
   return bot.locators.linkText.single_(target, root, false);
 };
 
@@ -113,7 +113,7 @@ bot.locators.linkText.single = function(target, root) {
  *     search under.
  * @return {IArrayLike} All matching elements, or an empty list.
  */
-bot.locators.linkText.many = function(target, root) {
+bot.locators.linkText.many = function (target, root) {
   return bot.locators.linkText.many_(target, root, false);
 };
 
@@ -126,7 +126,7 @@ bot.locators.linkText.many = function(target, root) {
  * @return {Element} The first matching element found in the DOM, or null if no
  *     such element could be found.
  */
-bot.locators.partialLinkText.single = function(target, root) {
+bot.locators.partialLinkText.single = function (target, root) {
   return bot.locators.linkText.single_(target, root, true);
 };
 
@@ -138,6 +138,6 @@ bot.locators.partialLinkText.single = function(target, root) {
  *     search under.
  * @return {IArrayLike} All matching elements, or an empty list.
  */
-bot.locators.partialLinkText.many = function(target, root) {
+bot.locators.partialLinkText.many = function (target, root) {
   return bot.locators.linkText.many_(target, root, true);
 };

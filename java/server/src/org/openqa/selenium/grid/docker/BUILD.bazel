@@ -1,4 +1,5 @@
 load("@rules_jvm_external//:defs.bzl", "artifact")
+load("//java:defs.bzl", "java_library")
 
 java_library(
     name = "docker",
@@ -6,8 +7,10 @@ java_library(
     visibility = [
         "//java/server/src/org/openqa/selenium/grid/commands:__pkg__",
         "//java/server/src/org/openqa/selenium/grid/node/httpd:__pkg__",
+        "//java/server/src/org/openqa/selenium/grid/node/local:__pkg__",
     ],
     deps = [
+        "//java:auto-service",
         "//java/client/src/org/openqa/selenium/json",
         "//java/client/src/org/openqa/selenium/remote",
         "//java/client/src/org/openqa/selenium/support",
@@ -15,7 +18,6 @@ java_library(
         "//java/server/src/org/openqa/selenium/grid/config",
         "//java/server/src/org/openqa/selenium/grid/data",
         "//java/server/src/org/openqa/selenium/grid/node",
-        "//java/server/src/org/openqa/selenium/grid/node/local",
         artifact("com.beust:jcommander"),
         artifact("com.google.guava:guava"),
     ],

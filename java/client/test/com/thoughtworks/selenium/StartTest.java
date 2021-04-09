@@ -37,7 +37,7 @@ public class StartTest {
 
   @BeforeClass
   public static void startSelenium() {
-    env = GlobalTestEnvironment.get(InProcessTestEnvironment.class);
+    env = GlobalTestEnvironment.getOrCreate(InProcessTestEnvironment::new);
     root = env.getAppServer().whereIs("/");
   }
 

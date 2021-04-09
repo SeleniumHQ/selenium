@@ -21,8 +21,6 @@ package org.openqa.selenium.grid.web;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.net.MediaType;
-import io.opentelemetry.OpenTelemetry;
-import io.opentelemetry.trace.Tracer;
 import org.junit.Test;
 import org.mockito.Mockito;
 import org.openqa.selenium.WebDriverException;
@@ -36,6 +34,8 @@ import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
+import org.openqa.selenium.remote.tracing.DefaultTestTracer;
+import org.openqa.selenium.remote.tracing.Tracer;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
@@ -65,7 +65,7 @@ import static org.openqa.selenium.remote.http.HttpMethod.POST;
 public class ProtocolConverterTest {
 
   private final Json json = new Json();
-  private final Tracer tracer = OpenTelemetry.getTracerFactory().get("default");
+  private final Tracer tracer = DefaultTestTracer.createTracer();
 
   @Test
   public void shouldRoundTripASimpleCommand() throws IOException {

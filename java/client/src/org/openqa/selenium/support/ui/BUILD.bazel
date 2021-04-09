@@ -1,4 +1,5 @@
 load("@rules_jvm_external//:defs.bzl", "artifact")
+load("//java:defs.bzl", "java_library")
 
 java_library(
     name = "clock",
@@ -18,10 +19,6 @@ java_library(
         "SlowLoadableComponent.java",
     ],
     visibility = ["//visibility:public"],
-    deps = [
-        ":clock",
-        "//java/client/src/org/openqa/selenium:core",
-    ],
 )
 
 java_library(

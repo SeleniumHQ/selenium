@@ -17,24 +17,24 @@
 
 package org.openqa.selenium.server.htmlrunner;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assume.assumeFalse;
-import static org.junit.Assume.assumeNotNull;
-
 import com.google.common.base.StandardSystemProperty;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.openqa.selenium.chrome.ChromeDriverInfo;
 import org.openqa.selenium.environment.webserver.AppServer;
-import org.openqa.selenium.environment.webserver.JettyAppServer;
-import org.openqa.selenium.os.ExecutableFinder;
+import org.openqa.selenium.environment.webserver.NettyAppServer;
+import org.openqa.selenium.firefox.GeckoDriverInfo;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.concurrent.TimeUnit;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assume.assumeFalse;
+import static org.junit.Assume.assumeNotNull;
 
 public class CoreSelfTest {
 
@@ -47,11 +47,11 @@ public class CoreSelfTest {
 
     switch (browser) {
       case "*firefox":
-        assumeNotNull(new ExecutableFinder().find("geckodriver"));
+        assumeNotNull(new GeckoDriverInfo().isAvailable());
         break;
 
       case "*googlechrome":
-        assumeNotNull(new ExecutableFinder().find("chromedriver"));
+        assumeNotNull(new ChromeDriverInfo().isAvailable());
         break;
 
       default:
@@ -61,7 +61,7 @@ public class CoreSelfTest {
 
   @Before
   public void startTestServer() {
-    server = new JettyAppServer();
+    server = new NettyAppServer();
     server.start();
   }
 

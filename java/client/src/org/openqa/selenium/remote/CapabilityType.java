@@ -33,7 +33,6 @@ public interface CapabilityType {
   String SUPPORTS_LOCATION_CONTEXT = "locationContextEnabled";
   String SUPPORTS_APPLICATION_CACHE = "applicationCacheEnabled";
   String SUPPORTS_NETWORK_CONNECTION = "networkConnectionEnabled";
-  String SUPPORTS_FINDING_BY_CSS = "cssSelectorsEnabled";
   String PROXY = "proxy";
   String SUPPORTS_WEB_STORAGE = "webStorageEnabled";
   String ROTATABLE = "rotatable";

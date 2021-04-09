@@ -18,7 +18,10 @@
 package org.openqa.selenium.chrome;
 
 import org.junit.Test;
+import org.openqa.selenium.chromium.ChromiumDriver;
+import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
+import org.openqa.selenium.testing.drivers.Browser;
 
 import java.util.Map;
 
@@ -29,12 +32,12 @@ public class ChromeDriverFunctionalTest extends JUnit4TestBase {
   private final String CLIPBOARD_READ = "clipboard-read";
   private final String CLIPBOARD_WRITE = "clipboard-write";
 
-  private ChromeDriver driver = null;
+  private ChromiumDriver driver = null;
 
   @Test
   public void canSetPermission() {
     //Cast provided driver to enable ChromeSpecific calls
-    driver = (ChromeDriver) super.driver;
+    driver = (ChromiumDriver) super.driver;
 
     driver.get(pages.clicksPage);
     assertThat(checkPermission(driver, CLIPBOARD_READ)).isEqualTo("prompt");
@@ -66,7 +69,7 @@ public class ChromeDriverFunctionalTest extends JUnit4TestBase {
     assertThat(checkPermission(driver, CLIPBOARD_WRITE)).isEqualTo("granted");
   }
 
-  public String checkPermission(ChromeDriver driver, String permission){
+  public String checkPermission(ChromiumDriver driver, String permission){
     @SuppressWarnings("unchecked")
     Map<String, Object> result = (Map<String, Object>) driver.executeAsyncScript(
       "callback = arguments[arguments.length - 1];"

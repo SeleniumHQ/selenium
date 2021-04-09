@@ -19,59 +19,35 @@ package org.openqa.selenium.grid.server;
 
 import org.openqa.selenium.events.EventBus;
 import org.openqa.selenium.grid.config.Config;
-
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
-import java.util.Objects;
-import java.util.logging.Logger;
+import org.openqa.selenium.internal.Require;
 
 public class EventBusOptions {
 
-  private static final Logger LOG = Logger.getLogger(EventBus.class.getName());
+  static final String EVENTS_SECTION = "events";
   private static final String DEFAULT_CLASS = "org.openqa.selenium.events.zeromq.ZeroMqEventBus";
-
   private final Config config;
-  private EventBus bus;
+  private volatile EventBus bus;
 
   public EventBusOptions(Config config) {
-    this.config = Objects.requireNonNull(config, "Config must be set.");
+    this.config = Require.nonNull("Config", config);
   }
 
   public EventBus getEventBus() {
-    if (bus == null) {
+    EventBus localBus = bus;
+    if (localBus == null) {
       synchronized (this) {
-        if (bus == null) {
-          bus = createBus();
+        localBus = bus;
+        if (localBus == null) {
+          localBus = createBus();
+          bus = localBus;
         }
       }
     }
 
-    return bus;
+    return localBus;
   }
 
   private EventBus createBus() {
-    String clazzName = config.get("events", "implementation").orElse(DEFAULT_CLASS);
-    LOG.info("Creating event bus: " + clazzName);
-    try {
-      Class<?> busClazz = Class.forName(clazzName);
-      Method create = busClazz.getMethod("create", Config.class);
-
-      if (!Modifier.isStatic(create.getModifiers())) {
-        throw new IllegalArgumentException(String.format(
-            "Event bus class %s's `create(Config)` method must be static", clazzName));
-      }
-
-      if (!EventBus.class.isAssignableFrom(create.getReturnType())) {
-        throw new IllegalArgumentException(String.format(
-            "Event bus class %s's `create(Config)` method must return an EventBus", clazzName));
-      }
-
-      return (EventBus) create.invoke(null, config);
-    } catch (NoSuchMethodException e) {
-      throw new IllegalArgumentException(String.format(
-          "Event bus class %s must have a static `create(Config)` method", clazzName));
-    } catch (ReflectiveOperationException e) {
-      throw new IllegalArgumentException("Unable to find event bus class: " + clazzName, e);
-    }
+    return config.getClass(EVENTS_SECTION, "implementation", EventBus.class, DEFAULT_CLASS);
   }
 }

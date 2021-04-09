@@ -18,13 +18,9 @@
 package org.openqa.selenium.logging;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assume.assumeTrue;
-import static org.openqa.selenium.testing.TestUtilities.getChromeVersion;
-import static org.openqa.selenium.testing.TestUtilities.isChrome;
-import static org.openqa.selenium.testing.drivers.Browser.EDGE;
 import static org.openqa.selenium.testing.drivers.Browser.HTMLUNIT;
 import static org.openqa.selenium.testing.drivers.Browser.IE;
-import static org.openqa.selenium.testing.drivers.Browser.MARIONETTE;
+import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
 import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
 
 import org.junit.After;
@@ -46,8 +42,7 @@ import java.util.logging.Level;
 
 @Ignore(HTMLUNIT)
 @Ignore(IE)
-@Ignore(EDGE)
-@Ignore(MARIONETTE)
+@Ignore(FIREFOX)
 @Ignore(SAFARI)
 public class GetLogsTest extends JUnit4TestBase {
 
@@ -63,7 +58,6 @@ public class GetLogsTest extends JUnit4TestBase {
 
   @Test
   public void logBufferShouldBeResetAfterEachGetLogCall() {
-    assumeTrue(!isChrome(driver) || getChromeVersion(driver) > 20);
     driver.get(pages.errorsPage);
     driver.findElement(By.cssSelector("input")).click();
 
@@ -81,7 +75,6 @@ public class GetLogsTest extends JUnit4TestBase {
 
   @Test
   public void differentLogsShouldNotContainTheSameLogEntries() {
-    assumeTrue(!isChrome(driver) || getChromeVersion(driver) > 20);
     driver.get(pages.errorsPage);
     driver.findElement(By.cssSelector("input")).click();
 
@@ -90,12 +83,13 @@ public class GetLogsTest extends JUnit4TestBase {
     for (String logType : logTypes) {
       logTypeToEntriesMap.put(logType, driver.manage().logs().get(logType));
     }
-    for (String firstLogType : logTypeToEntriesMap.keySet()) {
-      for (String secondLogType : logTypeToEntriesMap.keySet()) {
-        if (!firstLogType.equals(secondLogType)) {
-          assertThat(hasOverlappingLogEntries(logTypeToEntriesMap.get(firstLogType), logTypeToEntriesMap.get(secondLogType)))
-              .describedAs("Two different log types (%s, %s) should not  contain the same log entries", firstLogType, secondLogType)
-              .isFalse();
+
+    for (Map.Entry<String, LogEntries> entry : logTypeToEntriesMap.entrySet()) {
+      for (Map.Entry<String, LogEntries> nested : logTypeToEntriesMap.entrySet()) {
+        if (!entry.getKey().equals(nested.getKey())) {
+          assertThat(hasOverlappingLogEntries(entry.getValue(), nested.getValue()))
+            .describedAs("Two different log types (%s, %s) should not  contain the same log entries", entry.getKey(), nested.getKey())
+            .isFalse();
         }
       }
     }
@@ -124,7 +118,6 @@ public class GetLogsTest extends JUnit4TestBase {
   @Test
   @NeedsLocalEnvironment
   public void turningOffLogShouldMeanNoLogMessages() {
-    assumeTrue(!isChrome(driver) || getChromeVersion(driver) > 20);
     Set<String> logTypes = driver.manage().logs().getAvailableLogTypes();
     for (String logType : logTypes) {
       createWebDriverWithLogging(logType, Level.OFF);

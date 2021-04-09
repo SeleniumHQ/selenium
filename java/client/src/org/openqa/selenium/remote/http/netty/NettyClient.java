@@ -17,25 +17,85 @@
 
 package org.openqa.selenium.remote.http.netty;
 
+import com.google.auto.service.AutoService;
+
+import org.asynchttpclient.AsyncHttpClient;
+import org.asynchttpclient.DefaultAsyncHttpClientConfig;
+import org.asynchttpclient.Dsl;
+import org.asynchttpclient.config.AsyncHttpClientConfigDefaults;
+import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.http.ClientConfig;
 import org.openqa.selenium.remote.http.Filter;
 import org.openqa.selenium.remote.http.HttpClient;
+import org.openqa.selenium.remote.http.HttpClientName;
 import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.remote.http.WebSocket;
 
-import java.util.Objects;
+import io.netty.util.HashedWheelTimer;
+import io.netty.util.Timer;
+import io.netty.util.concurrent.DefaultThreadFactory;
+
+import java.io.IOException;
+import java.io.UncheckedIOException;
+import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.BiFunction;
 
 public class NettyClient implements HttpClient {
 
-  private final HttpHandler handler;
-  private BiFunction<HttpRequest, WebSocket.Listener, WebSocket> toWebSocket;
+  private static final Timer TIMER;
+  private static final AtomicBoolean addedHook = new AtomicBoolean();
+  private static final AsyncHttpClient client = createHttpClient(ClientConfig.defaultConfig());
 
-  private NettyClient(HttpHandler handler, BiFunction<HttpRequest, WebSocket.Listener, WebSocket> toWebSocket) {
-    this.handler = Objects.requireNonNull(handler);
-    this.toWebSocket = Objects.requireNonNull(toWebSocket);
+  static {
+    ThreadFactory threadFactory = new DefaultThreadFactory("netty-client-timer", true);
+    HashedWheelTimer timer = new HashedWheelTimer(
+      threadFactory,
+      AsyncHttpClientConfigDefaults.defaultHashedWheelTimerTickDuration(),
+      TimeUnit.MILLISECONDS,
+      AsyncHttpClientConfigDefaults.defaultHashedWheelTimerSize());
+    timer.start();
+    TIMER = timer;
+  }
+
+  private final ClientConfig config;
+  private final HttpHandler handler;
+  private final BiFunction<HttpRequest, WebSocket.Listener, WebSocket> toWebSocket;
+
+  private NettyClient(ClientConfig config) {
+    this.config = Require.nonNull("HTTP client config", config);
+    this.handler = new NettyHttpHandler(config, client).with(config.filter());
+    this.toWebSocket = NettyWebSocket.create(config, client);
+    if (!addedHook.get()) {
+      Runtime.getRuntime().addShutdownHook(new Thread(this::shutdownClient));
+      addedHook.set(true);
+    }
+  }
+
+  /**
+   * Converts a long to an int, clamping the maximum and minimum values to
+   * fit in an integer without overflowing.
+   */
+  static int toClampedInt(long value) {
+    return (int) Math.max(Integer.MIN_VALUE, Math.min(Integer.MAX_VALUE, value));
+  }
+
+  private static AsyncHttpClient createHttpClient(ClientConfig config) {
+    DefaultAsyncHttpClientConfig.Builder builder =
+      new DefaultAsyncHttpClientConfig.Builder()
+        .setThreadFactory(new DefaultThreadFactory("AsyncHttpClient", true))
+        .setUseInsecureTrustManager(true)
+        .setAggregateWebSocketFrameFragments(true)
+        .setWebSocketMaxBufferSize(Integer.MAX_VALUE)
+        .setWebSocketMaxFrameSize(Integer.MAX_VALUE)
+        .setNettyTimer(TIMER)
+        .setRequestTimeout(toClampedInt(config.readTimeout().toMillis()))
+        .setConnectTimeout(toClampedInt(config.connectionTimeout().toMillis()))
+        .setReadTimeout(toClampedInt(config.readTimeout().toMillis()));
+    return Dsl.asyncHttpClient(builder);
   }
 
   @Override
@@ -45,27 +105,46 @@ public class NettyClient implements HttpClient {
 
   @Override
   public WebSocket openSocket(HttpRequest request, WebSocket.Listener listener) {
-    Objects.requireNonNull(request, "Request to send must be set.");
-    Objects.requireNonNull(listener, "WebSocket listener must be set.");
+    Require.nonNull("Request to send", request);
+    Require.nonNull("WebSocket listener", listener);
 
     return toWebSocket.apply(request, listener);
   }
 
   @Override
   public HttpClient with(Filter filter) {
-    Objects.requireNonNull(filter, "Filter to use must be set.");
+    Require.nonNull("Filter", filter);
 
     // TODO: We should probably ensure that websocket requests are run through the filter.
-    return new NettyClient(handler.with(filter), toWebSocket);
+    return new NettyClient(config.withFilter(filter));
   }
 
+  @Override
+  public void close() {
+    // no-op -- done by the shutdown hook
+  }
+
+  private void shutdownClient() {
+    try {
+      client.close();
+    } catch (IOException e) {
+      throw new UncheckedIOException(e);
+    }
+  }
+
+  @AutoService(HttpClient.Factory.class)
+  @HttpClientName("netty")
   public static class Factory implements HttpClient.Factory {
 
     @Override
     public HttpClient createClient(ClientConfig config) {
-      Objects.requireNonNull(config, "Client config to use must be set.");
+      Require.nonNull("Client config", config);
 
-      return new NettyClient(new NettyHttpHandler(config).with(config.filter()), NettyWebSocket.create(config));
+      if (config.baseUri() != null && "unix".equals(config.baseUri().getScheme())) {
+        return new NettyDomainSocketClient(config);
+      }
+
+      return new NettyClient(config);
     }
   }
 }

@@ -17,33 +17,29 @@
 
 package org.openqa.selenium.remote.html5;
 
-import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.html5.ApplicationCache;
 import org.openqa.selenium.remote.AugmenterProvider;
-import org.openqa.selenium.remote.InterfaceImplementation;
+import org.openqa.selenium.remote.ExecuteMethod;
 
-import java.lang.reflect.InvocationTargetException;
+import java.util.function.Predicate;
 
-public class AddApplicationCache implements AugmenterProvider {
+import static org.openqa.selenium.remote.CapabilityType.SUPPORTS_APPLICATION_CACHE;
+
+public class AddApplicationCache implements AugmenterProvider<ApplicationCache> {
 
   @Override
-  public Class<?> getDescribedInterface() {
+  public Predicate<Capabilities> isApplicable() {
+    return caps -> caps.is(SUPPORTS_APPLICATION_CACHE);
+  }
+
+  @Override
+  public Class<ApplicationCache> getDescribedInterface() {
     return ApplicationCache.class;
   }
 
   @Override
-  public InterfaceImplementation getImplementation(Object value) {
-    return (executeMethod, self, method, args) -> {
-      RemoteApplicationCache cache = new RemoteApplicationCache(executeMethod);
-      try {
-        return method.invoke(cache, args);
-      } catch (IllegalAccessException e) {
-        throw new WebDriverException(e);
-      } catch (InvocationTargetException e) {
-        throw new RuntimeException(e.getCause());
-      }
-    };
+  public ApplicationCache getImplementation(Capabilities capabilities, ExecuteMethod executeMethod) {
+    return new RemoteApplicationCache(executeMethod);
   }
-
-
 }

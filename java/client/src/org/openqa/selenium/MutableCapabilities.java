@@ -17,15 +17,16 @@
 
 package org.openqa.selenium;
 
-import java.io.Serializable;
+import org.openqa.selenium.internal.Require;
+
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
+import java.util.TreeMap;
 
-public class MutableCapabilities extends AbstractCapabilities implements Serializable {
-
-  private static final long serialVersionUID = -112816287184979465L;
+public class MutableCapabilities implements Capabilities {
 
   private static final Set<String> OPTION_KEYS;
   static {
@@ -39,6 +40,8 @@ public class MutableCapabilities extends AbstractCapabilities implements Seriali
     keys.add("safari.options");
     OPTION_KEYS = Collections.unmodifiableSet(keys);
   }
+
+  private final Map<String, Object> caps = new TreeMap<>();
 
   public MutableCapabilities() {
     // no-arg constructor
@@ -57,22 +60,17 @@ public class MutableCapabilities extends AbstractCapabilities implements Seriali
   }
 
   /**
-   * Merge the extra capabilities provided into this DesiredCapabilities instance. If capabilities
-   * with the same name exist in this instance, they will be overridden by the values from the
-   * extraCapabilities object.
-   *
-   * @param extraCapabilities Additional capabilities to be added.
-   * @return The DesiredCapabilities instance after the merge.
+   * Merge two {@link Capabilities} together and return the union of the two as a new
+   * {@link Capabilities} instance. Capabilities from {@code other} will override those in
+   * {@code this}.
    */
   @Override
-  public MutableCapabilities merge(Capabilities extraCapabilities) {
-    if (extraCapabilities == null) {
-      return this;
+  public MutableCapabilities merge(Capabilities other) {
+    MutableCapabilities newInstance = new MutableCapabilities(this);
+    if (other != null) {
+      other.asMap().forEach(newInstance::setCapability);
     }
-
-    extraCapabilities.asMap().forEach(this::setCapability);
-
-    return this;
+    return newInstance;
   }
 
   public void setCapability(String capabilityName, boolean value) {
@@ -87,17 +85,73 @@ public class MutableCapabilities extends AbstractCapabilities implements Seriali
     setCapability(capabilityName, (Object) value);
   }
 
-  @Override
   public void setCapability(String key, Object value) {
+    Require.nonNull("Capability name", key);
+
     // We have to special-case some keys and values because of the popular idiom of calling
     // something like "capabilities.setCapability(SafariOptions.CAPABILITY, new SafariOptions());"
     // and this is no longer needed as options are capabilities. There will be a large amount of
     // legacy code that will always try and follow this pattern, however.
     if (OPTION_KEYS.contains(key) && value instanceof Capabilities) {
-      merge((Capabilities) value);
+      ((Capabilities) value).asMap().forEach(this::setCapability);
       return;
     }
 
-    super.setCapability(key, value);
+    if (value == null) {
+      caps.remove(key);
+      return;
+    }
+
+    SharedCapabilitiesMethods.setCapability(caps, key, value);
+  }
+
+  @Override
+  public Map<String, Object> asMap() {
+    return Collections.unmodifiableMap(caps);
+  }
+
+  @Override
+  public Object getCapability(String capabilityName) {
+    return caps.get(capabilityName);
+  }
+
+  @Override
+  public Set<String> getCapabilityNames() {
+    return Collections.unmodifiableSet(caps.keySet());
+  }
+
+  public Map<String, Object> toJson() {
+    return asMap();
+  }
+
+  /**
+   * Subclasses can use this to add information that isn't always in the capabilities map.
+   */
+  protected int amendHashCode() {
+    return 0;
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(amendHashCode(), caps);
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
+    }
+    if (!(o instanceof Capabilities)) {
+      return false;
+    }
+
+    Capabilities that = (Capabilities) o;
+
+    return asMap().equals(that.asMap());
+  }
+
+  @Override
+  public String toString() {
+    return SharedCapabilitiesMethods.toString(caps);
   }
 }

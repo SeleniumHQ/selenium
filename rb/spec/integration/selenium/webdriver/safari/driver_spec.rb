@@ -22,7 +22,7 @@ require_relative '../spec_helper'
 module Selenium
   module WebDriver
     module Safari
-      describe Driver, only: {driver: %i[safari safari_preview]} do
+      describe Driver, exclusive: {browser: %i[safari safari_preview]} do
         it 'gets and sets permissions' do
           driver.permissions = {'getUserMedia' => false}
           expect(driver.permissions).to eq('getUserMedia' => false)

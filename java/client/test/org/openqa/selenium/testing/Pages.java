@@ -56,6 +56,7 @@ public class Pages {
   public String mouseOverPage;
   public String mouseTrackerPage;
   public String nestedPage;
+  public String printPage;
   public String readOnlyPage;
   public String rectanglesPage;
   public String redirectPage;
@@ -116,6 +117,7 @@ public class Pages {
     mouseOverPage = appServer.whereIs("mouseOver.html");
     mouseTrackerPage = appServer.whereIs("mousePositionTracker.html");
     nestedPage = appServer.whereIs("nestedElements.html");
+    printPage = appServer.whereIs("printPage.html");
     readOnlyPage = appServer.whereIs("readOnlyPage.html");
     rectanglesPage = appServer.whereIs("rectangles.html");
     redirectPage = appServer.whereIs("redirect");

@@ -30,6 +30,8 @@ class DefaultHubConfig extends MapConfig {
         "subscribe", "tcp://*:4443",
         "bind", true),
       "sessions", ImmutableMap.of(
-        "implementation", "org.openqa.selenium.grid.sessionmap.local.LocalSessionMap")));
+        "implementation", "org.openqa.selenium.grid.sessionmap.local.LocalSessionMap"),
+      "server", ImmutableMap.of(
+        "port", 4444)));
   }
 }

@@ -1,0 +1,62 @@
+Selenium can be configured in a number of ways:
+
+ * On the command line, using flags.
+ * Via config files in JSON or TOML format.
+ * Using system properties
+ * Using environment variables
+
+When starting selenium, configuration options are prioritised from
+most important to least important:
+
+ 1. Environment variables
+ 2. System properties
+ 3. Command line
+ 4. Config files
+
+The reason for the ordering is to allow selenium to be configured
+easily within containers or in kubernetes.
+
+Additional Config Options
+=========================
+
+In addition, Selenium will use Java's `ServiceLocator` to find
+instances of `org.openqa.selenium.grid.HasRoles` to find new command
+line flags. These should annotate options using JCommander's
+`@Parameter` in order to be picked up. In order for this functionality
+to work, the classes must also be present on the classpath. This can
+either done by modifying the classpath itself, or by using the `--ext`
+flag:
+
+`java -jar selenium.jar --ext $ADDITIONAL_CLASSPATH standalone`
+
+Config Option Structure
+=======================
+
+The best mental model to use when thinking about Selenium
+configurations is to imagine an "INI" file. The configuration is split
+into sections, and within each section there are are options, which
+have a value. For this reason, config files may be specified using
+TOML files:
+
+`java -jar selenium.jar standalone --config myconfig.toml`
+
+Where `myconfig.toml` may look like:
+
+```
+[server]
+# Start on a different port than normal
+port = 4445
+host = "localhost"
+
+[node]
+max-sessions = 12
+```
+
+More Information
+================
+
+Use the `--config-help` flag to have the selenium server output the
+list of configuration options that can be included in a config file,
+and what they do. Examples are included in each entry:
+
+`java -jar selenium.jar standalone --config-help`

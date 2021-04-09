@@ -21,13 +21,13 @@ RSpec::Matchers.define :have_deprecated do |deprecation|
   match do |actual|
     # Suppresses logging output to stdout while ensuring that it is still happening
     default_output = Selenium::WebDriver.logger.io
-    tempfile = Tempfile.new
-    Selenium::WebDriver.logger.output = tempfile
+    io = StringIO.new
+    Selenium::WebDriver.logger.output = io
 
     actual.call
 
     Selenium::WebDriver.logger.output = default_output
-    @deprecations_found = (tempfile.rewind && tempfile.read).scan(/DEPRECATION\] \[:([^\]]*)\]/).flatten.map(&:to_sym)
+    @deprecations_found = (io.rewind && io.read).scan(/DEPRECATION\] \[:([^\]]*)\]/).flatten.map(&:to_sym)
     expect(Array(deprecation).sort).to eq(@deprecations_found.sort)
   end
 

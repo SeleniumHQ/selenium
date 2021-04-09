@@ -52,18 +52,18 @@ public class ConfigureTimeoutTest {
 //    for (String timeoutType : timeoutTypes) {
 //      runW3CAssertion(ImmutableMap.of(timeoutType, 100));
 //    }
-//    verify(timeouts).implicitlyWait(100, TimeUnit.MILLISECONDS);
-//    verify(timeouts).pageLoadTimeout(100, TimeUnit.MILLISECONDS);
-//    verify(timeouts).setScriptTimeout(100, TimeUnit.MILLISECONDS);
+//    verify(timeouts).implicitlyWait(Duration.ofMillis(100));
+//    verify(timeouts).pageLoadTimeout(Duration.ofMillis(100));
+//    verify(timeouts).setScriptTimeout(Duration.ofMillis(100));
 //    verifyNoMoreInteractions(timeouts);
 //  }
 //
 //  @Test
 //  public void shouldAcceptW3CCompliantPayLoadWithMultipleTimeouts() throws Exception {
 //    runW3CAssertion(ImmutableMap.of("implicit", 100, "page load", 100, "script", 100));
-//    verify(timeouts).implicitlyWait(100, TimeUnit.MILLISECONDS);
-//    verify(timeouts).pageLoadTimeout(100, TimeUnit.MILLISECONDS);
-//    verify(timeouts).setScriptTimeout(100, TimeUnit.MILLISECONDS);
+//    verify(timeouts).implicitlyWait(Duration.ofMillis(100));
+//    verify(timeouts).pageLoadTimeout(Duration.ofMillis(100));
+//    verify(timeouts).setScriptTimeout(Duration.ofMillis(100));
 //    verifyNoMoreInteractions(timeouts);
 //  }
 //
@@ -72,9 +72,9 @@ public class ConfigureTimeoutTest {
 //    for (String timeoutType : timeoutTypes) {
 //      runOSSAssertion(timeoutType, 100);
 //    }
-//    verify(timeouts).implicitlyWait(100, TimeUnit.MILLISECONDS);
-//    verify(timeouts).pageLoadTimeout(100, TimeUnit.MILLISECONDS);
-//    verify(timeouts).setScriptTimeout(100, TimeUnit.MILLISECONDS);
+//    verify(timeouts).implicitlyWait(Duration.ofMillis(100));
+//    verify(timeouts).pageLoadTimeout(Duration.ofMillis(100));
+//    verify(timeouts).setScriptTimeout(Duration.ofMillis(100));
 //    verifyNoMoreInteractions(timeouts);
 //  }
 //

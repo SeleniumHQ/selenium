@@ -1,0 +1,13 @@
+load("//dotnet:defs.bzl", "generate_devtools")
+load("//dotnet:selenium-dotnet-version.bzl", "SUPPORTED_DEVTOOLS_VERSIONS")
+
+[generate_devtools(
+    name = "generate-{}".format(devtools_version),
+    out = "{}".format(devtools_version),
+    browser_protocol = "//common/devtools/chromium/{}:browser_protocol".format(devtools_version),
+    generator = "//third_party/dotnet/devtools/src/generator:generator",
+    js_protocol = "//common/devtools/chromium/{}:js_protocol".format(devtools_version),
+    protocol_version = "{}".format(devtools_version),
+    template = "//third_party/dotnet/devtools/src/generator/Templates:command.hbs",
+    visibility = ["//visibility:public"],
+) for devtools_version in SUPPORTED_DEVTOOLS_VERSIONS]

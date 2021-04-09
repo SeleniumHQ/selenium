@@ -17,14 +17,14 @@
 
 package org.openqa.selenium.remote.http;
 
-import java.util.Objects;
+import org.openqa.selenium.internal.Require;
 
 public class TextMessage implements Message {
 
   private final String text;
 
   public TextMessage(CharSequence text) {
-    this.text = Objects.requireNonNull(text, "Message text must be set.").toString();
+    this.text = Require.nonNull("Message text", text).toString();
   }
 
   public String text() {

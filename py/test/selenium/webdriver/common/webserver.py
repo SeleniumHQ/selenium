@@ -20,6 +20,7 @@ It serves the testing html pages that are needed by the webdriver unit tests."""
 
 import logging
 import os
+import re
 import socket
 import threading
 from io import open
@@ -55,6 +56,7 @@ DEFAULT_PORT = 8000
 
 class HtmlOnlyHandler(BaseHTTPRequestHandler):
     """Http handler."""
+
     def do_GET(self):
         """GET method handler."""
         try:
@@ -75,6 +77,47 @@ class HtmlOnlyHandler(BaseHTTPRequestHandler):
         except IOError:
             self.send_error(404, 'File Not Found: %s' % path)
 
+    def do_POST(self):
+        """POST method handler."""
+        try:
+            remaining_bytes = int(self.headers['content-length'])
+            contents = ""
+            line = self.rfile.readline()
+            contents += line.decode("utf-8")
+            remaining_bytes -= len(line)
+            line = self.rfile.readline()
+            contents += line.decode("utf-8")
+            remaining_bytes -= len(line)
+            fn = re.findall(r'Content-Disposition.*name="upload"; filename="(.*)"', line.decode("utf-8"))
+            if not fn:
+                self.send_error(500, f"File not found. {contents}")
+                return
+            line = self.rfile.readline()
+            remaining_bytes -= len(line)
+            contents += line.decode("utf-8")
+            line = self.rfile.readline()
+            remaining_bytes -= len(line)
+            contents += line.decode("utf-8")
+            preline = self.rfile.readline()
+            remaining_bytes -= len(preline)
+            while remaining_bytes > 0:
+                line = self.rfile.readline()
+                remaining_bytes -= len(line)
+                contents += line.decode("utf-8")
+
+            self.send_response(200)
+            self.send_header('Content-type', 'text/html')
+            self.end_headers()
+
+            self.wfile.write(
+                f"""<!doctype html>
+                {contents}
+                <script>window.top.window.onUploadDone();</script>
+                """.encode('utf-8')
+            )
+        except Exception as e:
+            self.send_error(500, f"Error found: {e}")
+
     def log_message(self, format, *args):
         """Override default to avoid trashing stderr"""
         pass
@@ -86,6 +129,7 @@ class ThreadedHTTPServer(ThreadingMixIn, HTTPServer):
 
 class SimpleWebServer(object):
     """A very basic web server."""
+
     def __init__(self, host=DEFAULT_HOST, port=DEFAULT_PORT):
         self.stop_serving = False
         host = host
@@ -121,8 +165,6 @@ class SimpleWebServer(object):
             urllib_request.URLopener().open("http://%s:%d" % (self.host, self.port))
         except IOError:
             pass
-        LOGGER.info("Shutting down the webserver")
-        self.thread.join()
 
     def where_is(self, path):
         return "http://%s:%d/%s" % (self.host, self.port, path)

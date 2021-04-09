@@ -20,9 +20,7 @@
  * with promises.
  */
 
-'use strict';
-
-
+'use strict'
 
 /**
  * Determines whether a {@code value} should be treated as a promise.
@@ -32,17 +30,8 @@
  * @return {boolean} Whether the value is a promise.
  */
 function isPromise(value) {
-  try {
-    // Use array notation so the Closure compiler does not obfuscate away our
-    // contract.
-    return value
-        && (typeof value === 'object' || typeof value === 'function')
-        && typeof value['then'] === 'function';
-  } catch (ex) {
-    return false;
-  }
+  return Object.prototype.toString.call(value) === '[object Promise]'
 }
-
 
 /**
  * Creates a promise that will be resolved at a set time in the future.
@@ -51,11 +40,8 @@ function isPromise(value) {
  * @return {!Promise<void>} The promise.
  */
 function delayed(ms) {
-  return new Promise(resolve => {
-    setTimeout(() => resolve(), ms);
-  });
+  return new Promise((resolve) => setTimeout(resolve, ms))
 }
-
 
 /**
  * Wraps a function that expects a node-style callback as its final
@@ -70,15 +56,15 @@ function delayed(ms) {
  *     result of the provided function's callback.
  */
 function checkedNodeCall(fn, ...args) {
-  return new Promise(function(fulfill, reject) {
+  return new Promise(function (fulfill, reject) {
     try {
-      fn(...args, function(error, value) {
-        error ? reject(error) : fulfill(value);
-      });
+      fn(...args, function (error, value) {
+        error ? reject(error) : fulfill(value)
+      })
     } catch (ex) {
-      reject(ex);
+      reject(ex)
     }
-  });
+  })
 }
 
 /**
@@ -120,14 +106,13 @@ function checkedNodeCall(fn, ...args) {
  */
 async function thenFinally(promise, callback) {
   try {
-    await Promise.resolve(promise);
-    return callback();
+    await Promise.resolve(promise)
+    return callback()
   } catch (e) {
-    await callback();
-    throw e;
+    await callback()
+    throw e
   }
 }
-
 
 /**
  * Calls a function for each element in an array and inserts the result into a
@@ -151,23 +136,22 @@ async function thenFinally(promise, callback) {
  * @template TYPE, SELF
  */
 async function map(array, fn, self = undefined) {
-  const v = await Promise.resolve(array);
+  const v = await Promise.resolve(array)
   if (!Array.isArray(v)) {
-    throw TypeError('not an array');
+    throw TypeError('not an array')
   }
 
-  const arr = /** @type {!Array} */(v);
-  const n = arr.length;
-  const values = new Array(n);
+  const arr = /** @type {!Array} */ (v)
+  const n = arr.length
+  const values = new Array(n)
 
   for (let i = 0; i < n; i++) {
     if (i in arr) {
-      values[i] = await Promise.resolve(fn.call(self, arr[i], i, arr));
+      values[i] = await Promise.resolve(fn.call(self, arr[i], i, arr))
     }
   }
-  return values;
+  return values
 }
-
 
 /**
  * Calls a function for each element in an array, and if the function returns
@@ -191,28 +175,27 @@ async function map(array, fn, self = undefined) {
  * @template TYPE, SELF
  */
 async function filter(array, fn, self = undefined) {
-  const v = await Promise.resolve(array);
+  const v = await Promise.resolve(array)
   if (!Array.isArray(v)) {
-    throw TypeError('not an array');
+    throw TypeError('not an array')
   }
 
-  const arr = /** @type {!Array} */(v);
-  const n = arr.length;
-  const values = [];
-  let valuesLength = 0;
+  const arr = /** @type {!Array} */ (v)
+  const n = arr.length
+  const values = []
+  let valuesLength = 0
 
   for (let i = 0; i < n; i++) {
     if (i in arr) {
-      let value = arr[i];
-      let include = await fn.call(self, value, i, arr);
+      const value = arr[i]
+      const include = await fn.call(self, value, i, arr)
       if (include) {
-        values[valuesLength++] = value;
+        values[valuesLength++] = value
       }
     }
   }
-  return values;
+  return values
 }
-
 
 /**
  * Returns a promise that will be resolved with the input value in a
@@ -234,22 +217,21 @@ async function filter(array, fn, self = undefined) {
  *     of the input value.
  */
 async function fullyResolved(value) {
-  value = await Promise.resolve(value);
+  value = await Promise.resolve(value)
   if (Array.isArray(value)) {
-    return fullyResolveKeys(/** @type {!Array} */ (value));
+    return fullyResolveKeys(/** @type {!Array} */ (value))
   }
 
   if (value && typeof value === 'object') {
-    return fullyResolveKeys(/** @type {!Object} */ (value));
+    return fullyResolveKeys(/** @type {!Object} */ (value))
   }
 
   if (typeof value === 'function') {
-    return fullyResolveKeys(/** @type {!Object} */ (value));
+    return fullyResolveKeys(/** @type {!Object} */ (value))
   }
 
-  return value;
+  return value
 }
-
 
 /**
  * @param {!(Array|Object)} obj the object to resolve.
@@ -257,40 +239,40 @@ async function fullyResolved(value) {
  *     input object once all of its values have been fully resolved.
  */
 async function fullyResolveKeys(obj) {
-  const isArray = Array.isArray(obj);
-  const numKeys = isArray ? obj.length : Object.keys(obj).length;
+  const isArray = Array.isArray(obj)
+  const numKeys = isArray ? obj.length : Object.keys(obj).length
 
   if (!numKeys) {
-    return obj;
+    return obj
   }
 
   async function forEachProperty(obj, fn) {
     for (let key in obj) {
-      await fn(obj[key], key);
+      await fn(obj[key], key)
     }
   }
 
   async function forEachElement(arr, fn) {
     for (let i = 0; i < arr.length; i++) {
-      await fn(arr[i], i);
+      await fn(arr[i], i)
     }
   }
 
-  const forEachKey = isArray ? forEachElement : forEachProperty;
-  await forEachKey(obj, async function(partialValue, key) {
-    if (!Array.isArray(partialValue)
-        && (!partialValue || typeof partialValue !== 'object')) {
-      return;
+  const forEachKey = isArray ? forEachElement : forEachProperty
+  await forEachKey(obj, async function (partialValue, key) {
+    if (
+      !Array.isArray(partialValue) &&
+      (!partialValue || typeof partialValue !== 'object')
+    ) {
+      return
     }
-    let resolvedValue = await fullyResolved(partialValue);
-    obj[key] = resolvedValue;
-  });
-  return obj;
+    let resolvedValue = await fullyResolved(partialValue)
+    obj[key] = resolvedValue
+  })
+  return obj
 }
 
-
 // PUBLIC API
-
 
 module.exports = {
   checkedNodeCall,
@@ -299,5 +281,5 @@ module.exports = {
   finally: thenFinally,
   fullyResolved,
   isPromise,
-  map
-};
+  map,
+}

@@ -27,7 +27,7 @@ module Selenium
       autoload :Extension, 'selenium/webdriver/firefox/extension'
       autoload :ProfilesIni, 'selenium/webdriver/firefox/profiles_ini'
       autoload :Profile, 'selenium/webdriver/firefox/profile'
-      autoload :Bridge, 'selenium/webdriver/firefox/bridge'
+      autoload :Features, 'selenium/webdriver/firefox/features'
       autoload :Driver, 'selenium/webdriver/firefox/driver'
       autoload :Options, 'selenium/webdriver/firefox/options'
       autoload :Service, 'selenium/webdriver/firefox/service'
@@ -37,6 +37,10 @@ module Selenium
       DEFAULT_SECURE_SSL = false
       DEFAULT_ASSUME_UNTRUSTED_ISSUER = true
       DEFAULT_LOAD_NO_FOCUS_LIB = false
+
+      # Mozilla Automation Team asked to only support 85
+      # until WebDriver Bidi is available.
+      DEVTOOLS_VERSION = 85
 
       def self.driver_path=(path)
         WebDriver.logger.deprecate 'Selenium::WebDriver::Firefox#driver_path=',

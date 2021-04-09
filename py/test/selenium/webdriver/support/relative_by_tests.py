@@ -15,17 +15,16 @@
 # specific language governing permissions and limitations
 # under the License.
 
-import pytest
-
-from selenium.webdriver.common.by import By   
+from selenium.webdriver.common.by import By
 from selenium.webdriver.support.relative_locator import with_tag_name
+
 
 def test_should_be_able_to_find_elements_above_another(driver, pages):
     pages.load("relative_locators.html")
     lowest = driver.find_element(By.ID, "below")
-    
+
     elements = driver.find_elements(with_tag_name("p").above(lowest))
-    
+
     ids = [el.get_attribute('id') for el in elements]
     assert "above" in ids
     assert "mid" in ids
@@ -35,8 +34,7 @@ def test_should_be_able_to_combine_filters(driver, pages):
     pages.load("relative_locators.html")
 
     elements = driver.find_elements(with_tag_name("td").above(driver.find_element(By.ID, "center"))
-                                                 .to_right_of(driver.find_element(By.ID, "second")))
+                                    .to_right_of(driver.find_element(By.ID, "second")))
 
     ids = [el.get_attribute('id') for el in elements]
     assert "third" in ids
-    

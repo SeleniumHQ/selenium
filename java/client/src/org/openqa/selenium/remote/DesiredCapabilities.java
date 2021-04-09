@@ -23,8 +23,6 @@ import static org.openqa.selenium.remote.CapabilityType.PLATFORM;
 import static org.openqa.selenium.remote.CapabilityType.SUPPORTS_JAVASCRIPT;
 import static org.openqa.selenium.remote.CapabilityType.VERSION;
 
-import com.google.common.annotations.VisibleForTesting;
-
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.MutableCapabilities;
 import org.openqa.selenium.Platform;
@@ -86,7 +84,7 @@ public class DesiredCapabilities extends MutableCapabilities {
       if (raw instanceof String) {
         return Boolean.parseBoolean((String) raw);
       } else if (raw instanceof Boolean) {
-        return ((Boolean) raw).booleanValue();
+        return (Boolean) raw;
       }
     }
     return true;
@@ -106,12 +104,13 @@ public class DesiredCapabilities extends MutableCapabilities {
    */
   @Override
   public DesiredCapabilities merge(Capabilities extraCapabilities) {
-    super.merge(extraCapabilities);
+    if (extraCapabilities != null) {
+      extraCapabilities.asMap().forEach(this::setCapability);
+    }
     return this;
   }
 
   @Deprecated
-  @VisibleForTesting
   public static DesiredCapabilities htmlUnit() {
     return new DesiredCapabilities(BrowserType.HTMLUNIT, "", Platform.ANY);
   }

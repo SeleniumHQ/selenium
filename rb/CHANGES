@@ -1,3 +1,133 @@
+4.0.0.beta2 (2021-03-16)
+=========================
+
+DevTools:
+  * Separated out DevTools methods into selenium-devtools gem to better manage versioning
+  * Updated supported versions to 85-89
+  * Add support for intercepting browser requests
+
+Firefox:
+  * Add support for using DevTools commands with Firefox Nightly
+
+Remote:
+  * Provide access to browser specific driver extensions as appropriate for designated browser
+  * Add support for using DevTools commands via Grid
+
+Ruby:
+  * Spec Guard implementation moved into lib directory for other projects to use
+  * Implemented `Element#dom_attribute` to obtain attribute value as defined by w3c specification
+  * Implemented `Options#eq?`
+  * Allow Options subclass instances to be created from class methods in superclass
+
+Safari:
+  * Fix bug that prevented usage of Safari Technology Preview
+
+4.0.0.beta1 (2021-02-15)
+=========================
+
+DevTools:
+  * Updated supported versions to 85-88
+
+Edge:
+  * Removed support for legacy Edge HTML
+
+Firefox:
+  * Fixed support for default profile settings
+  * Added support for Devtools for Firefox v87+
+
+Safari:
+  * Removed default platformName specification so it works with Grid
+
+Ruby:
+  * Added support for httpOnly attribute in Cookies
+  * Implemented `#print_page` method (thanks @raju249)
+  * Fixed support for missing libraries in Ruby 3.0 (thanks @znz)
+  * Deprecated `HTTP::Persistent` class
+  * Fixed support for accessors in options classes
+  * Added support for status endpoint for all browsers
+  * Fix support for Browser, Driver, and Performance Logging in Chrome and Edge
+
+4.0.0.alpha7 (2020-11-10)
+=========================
+
+Chrome:
+  * Fixed a link to download ChromeDriver when it's not found (thanks @masakazutakewaka).
+  * Fixed an issue when passing instance of Profile to an Options in capabilities
+    (thanks @masakazutakewaka).
+
+DevTools:
+  * Added support for multiple version of CDP. Currently supported versions are
+    84-87. The proper version is automatically selected when the browser is started
+    based on its version. The implementation is Chromium-based and is confirmed
+    to work in Chrome and Edge at least.
+  * Added support for basic authentication (see HasAuthentication).
+  * Added support for listening to JavaScript console messages (see HasLogEvents).
+  * Added support for listening to JavaScript exceptions (see HasLogEvents).
+  * Added support for listening to DOM mutations (see HasLogEvents).
+
+Edge:
+  * Switched default Edge implementation to Chromium-based. To use older versions
+    of Edge, pass :edge_html when initializing the driver.
+
+Firefox:
+  * Fixed an issue whereby using the new capabilities structure in local drivers
+    would cause the W3C check to complain that `browser_name` was an invalid
+    capability key name (thanks @luke-hill)
+
+Ruby:
+  * Added support for taking screenshots of individual elements using Element#screenshot
+    (thanks @johndouthat).
+  * Fixed deprecation message of using Net::HTTP::Proxy (thanks @masakazutakewaka).
+  * Fixed false negative detection of Linux on WSL2 (thanks @snsten).
+  * Support ChildProcess 4.x versions (thanks @boutil).
+
+Safari:
+  * Fixed browser name in capabilities for Safari Technology Preview.
+
+4.0.0.alpha6 (2020-05-28)
+=========================
+
+Chrome:
+  * Added DevTools classes and methods generated from the CDP specification.
+    It currently supports commands and events and provides Rubyish API:
+      driver.devtools.page.navigate(url: 'http://google.com')
+      driver.devtools.console.clear_messages
+      driver.devtools.page.enable
+      driver.devtools.page.on(:load_event_fired) do |params|
+        puts("Page loaded in #{params['timestamp']}")
+      end
+    Check https://chromedevtools.github.io/devtools-protocol/ for more information
+    about possible commands and events. Please note that this API is considered
+    to be experimental and may change any time before stable 4.0 release.
+  * Fixed an issue when passing :prompt_for_download (or similar snake_cased
+    symbols) in Options#prefs would be ignored by Chrome because Selenium
+    would internally convert it to camelCased format (:promptForDownload).
+    Now :prefs are left intact.
+
+Edge:
+  * Fixed an issue when Driver#execute_cdp would not work for Chromium-based
+    Edge browser.
+
+Ruby:
+  * Deprecated passing :desired_capabilities and :options to driver initialization
+    in favor of :capabilities. They now can be combined in an array to make
+    custom capabilities requirements:
+      caps = Selenium::WebDriver::Remote::Capabilities.chrome
+      opts = Selenium::WebDriver::Chrome::Options.new
+      Selenium::WebDriver.for(:remote, capabilities: :chrome)
+      Selenium::WebDriver.for(:remote, capabilities: caps)
+      Selenium::WebDriver.for(:remote, capabilities: opts)
+      Selenium::WebDriver.for(:remote, capabilities: [caps, opts])
+  * Deprecated passing Hash to :capabilities in favor of Remote::Capabilities object.
+  * Updated minimum require Ruby version to 2.5.
+  * Improved keyword arguments handling to avoid warnings in Ruby 2.7.
+
+4.0.0.alpha5 (2020-03-18)
+=========================
+
+The release is just to synchronize version with other bindings and does not
+include any changes.
+
 4.0.0.alpha4 (2020-01-09)
 =========================
 
@@ -653,11 +783,11 @@ Ruby:
   * Fix bug in auto detection of drivers which allowed selection of non-executable binaries
 
 W3C:
-  * Implement #cookie_named and #delete_all_cookies methods (thanks lmtierney) 
-  * Implement element #property method (thanks lmtierney) 
+  * Implement #cookie_named and #delete_all_cookies methods (thanks lmtierney)
+  * Implement element #property method (thanks lmtierney)
 
 Chrome:
-  * Fix bug in switches (thanks danvine) 
+  * Fix bug in switches (thanks danvine)
 
 3.0.1 (2016-11-06)
 ===================
@@ -679,7 +809,7 @@ Ruby:
   * Add support for latest driver options
   * Add support for :port parameter for launching driver
   * Add support for :service_args parameter for driver command line switches
-  * Improve reliability by increasing service shutdown timeout (#2815; thanks John Barbuto ) 
+  * Improve reliability by increasing service shutdown timeout (#2815; thanks John Barbuto )
 
 Firefox:
   * Add support for :firefox_options in geckodriver

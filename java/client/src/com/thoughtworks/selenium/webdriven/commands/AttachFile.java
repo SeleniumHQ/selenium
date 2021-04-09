@@ -36,7 +36,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class AttachFile extends SeleneseCommand<Void> {
-  private final static Logger LOGGER = Logger.getLogger(AttachFile.class.getName());
+  private static final Logger LOGGER = Logger.getLogger(AttachFile.class.getName());
+
   private final ElementFinder finder;
 
   public AttachFile(ElementFinder finder) {

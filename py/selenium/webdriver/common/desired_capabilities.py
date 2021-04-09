@@ -50,6 +50,7 @@ class DesiredCapabilities(object):
     FIREFOX = {
         "browserName": "firefox",
         "acceptInsecureCerts": True,
+        "moz:debuggerAddress": True,
     }
 
     INTERNETEXPLORER = {
@@ -105,19 +106,6 @@ class DesiredCapabilities(object):
         "browserName": "iPad",
         "version": "",
         "platform": "MAC",
-    }
-
-    ANDROID = {
-        "browserName": "android",
-        "version": "",
-        "platform": "ANDROID",
-    }
-
-    PHANTOMJS = {
-        "browserName": "phantomjs",
-        "version": "",
-        "platform": "ANY",
-        "javascriptEnabled": True,
     }
 
     WEBKITGTK = {

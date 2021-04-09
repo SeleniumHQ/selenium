@@ -19,50 +19,46 @@
  * @fileoverview Demonstrates how to use WebDriver's logging sysem.
  */
 
-'use strict';
+'use strict'
 
-const chrome = require('../chrome');
-const firefox = require('../firefox');
-const edge = require('../edge');
-const {Builder, By, Key, logging, until} = require('..');
+const chrome = require('../chrome')
+const firefox = require('../firefox')
+const edge = require('../edge')
+const { Builder, By, Key, logging, until } = require('..')
 
-logging.installConsoleHandler();
-logging.getLogger('webdriver.http').setLevel(logging.Level.ALL);
-
-(async function() {
-  let driver;
+logging.installConsoleHandler()
+logging.getLogger('webdriver.http').setLevel(logging.Level.ALL)
+;(async function () {
+  let driver
   try {
     driver = await new Builder()
-        // Default to using Firefox. This can be overridden at runtime by
-        // setting the SELENIUM_BROWSER environment variable:
-        //
-        //   SELENIUM_BROWSER=chrome node selenium-webdriver/example/logging.js
-        .forBrowser('firefox')
-        // Configure the service for each browser to enable verbose logging and
-        // to inherit the stdio settings from the current process. The builder
-        // will only start the service if needed for the selected browser.
-        .setChromeService(
-            new chrome.ServiceBuilder()
-                .enableVerboseLogging()
-                .setStdio('inherit'))
-        .setEdgeService(
-            process.platform === 'win32'
-                ? new edge.ServiceBuilder()
-                    .enableVerboseLogging()
-                    .setStdio('inherit')
-                : null)
-        .setFirefoxService(
-            new firefox.ServiceBuilder()
-                .enableVerboseLogging()
-                .setStdio('inherit'))
-        .build();
+      // Default to using Firefox. This can be overridden at runtime by
+      // setting the SELENIUM_BROWSER environment variable:
+      //
+      //   SELENIUM_BROWSER=chrome node selenium-webdriver/example/logging.js
+      .forBrowser('firefox')
+      // Configure the service for each browser to enable verbose logging and
+      // to inherit the stdio settings from the current process. The builder
+      // will only start the service if needed for the selected browser.
+      .setChromeService(
+        new chrome.ServiceBuilder().enableVerboseLogging().setStdio('inherit')
+      )
+      .setEdgeService(
+        process.platform === 'win32'
+          ? new edge.ServiceBuilder().enableVerboseLogging().setStdio('inherit')
+          : null
+      )
+      .setFirefoxService(
+        new firefox.ServiceBuilder().enableVerboseLogging().setStdio('inherit')
+      )
+      .build()
 
-    await driver.get('http://www.google.com/ncr');
-    await driver.findElement(By.name('q')).sendKeys('webdriver', Key.RETURN);
-    await driver.wait(until.titleIs('webdriver - Google Search'), 1000);
+    await driver.get('http://www.google.com/ncr')
+    await driver.findElement(By.name('q')).sendKeys('webdriver', Key.RETURN)
+    await driver.wait(until.titleIs('webdriver - Google Search'), 1000)
   } finally {
     if (driver) {
-      await driver.quit();
+      await driver.quit()
     }
   }
-})();
+})()

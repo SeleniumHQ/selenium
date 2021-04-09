@@ -19,6 +19,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using OpenQA.Selenium.DevTools;
 using OpenQA.Selenium.Remote;
 
 namespace OpenQA.Selenium.Firefox
@@ -65,11 +66,16 @@ namespace OpenQA.Selenium.Firefox
     /// }
     /// </code>
     /// </example>
-    public class FirefoxDriver : RemoteWebDriver
+    public class FirefoxDriver : RemoteWebDriver, IDevTools
     {
+        private const int FirefoxDevToolsProtocolVersion = 85;
+        private const string FirefoxDevToolsCapabilityName = "moz:debuggerAddress";
         private const string SetContextCommand = "setContext";
         private const string InstallAddOnCommand = "installAddOn";
         private const string UninstallAddOnCommand = "uninstallAddOn";
+        private const string GetFullPageScreenshotCommand = "fullPageScreenshot";
+
+        private DevToolsSession devToolsSession;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="FirefoxDriver"/> class.
@@ -153,6 +159,7 @@ namespace OpenQA.Selenium.Firefox
             this.AddCustomFirefoxCommand(SetContextCommand, CommandInfo.PostCommand, "/session/{sessionId}/moz/context");
             this.AddCustomFirefoxCommand(InstallAddOnCommand, CommandInfo.PostCommand, "/session/{sessionId}/moz/addon/install");
             this.AddCustomFirefoxCommand(UninstallAddOnCommand, CommandInfo.PostCommand, "/session/{sessionId}/moz/addon/uninstall");
+            this.AddCustomFirefoxCommand(GetFullPageScreenshotCommand, CommandInfo.GetCommand, "/session/{sessionId}/moz/screenshot/full");
         }
 
         /// <summary>
@@ -240,6 +247,57 @@ namespace OpenQA.Selenium.Firefox
             Dictionary<string, object> parameters = new Dictionary<string, object>();
             parameters["id"] = addOnId;
             this.Execute(UninstallAddOnCommand, parameters);
+        }
+
+        /// <summary>
+        /// Gets a <see cref="Screenshot"/> object representing the image of the full page on the screen.
+        /// </summary>
+        /// <returns>A <see cref="Screenshot"/> object containing the image.</returns>
+        public Screenshot GetFullPageScreenshot()
+        {
+            Response screenshotResponse = this.Execute(GetFullPageScreenshotCommand, null);
+            string base64 = screenshotResponse.Value.ToString();
+            return new Screenshot(base64);
+        }
+
+        /// <summary>
+        /// Creates a session to communicate with a browser using the Chromium Developer Tools debugging protocol.
+        /// </summary>
+        /// <param name="devToolsProtocolVersion">The version of the Chromium Developer Tools protocol to use. Defaults to autodetect the protocol version.</param>
+        /// <returns>The active session to use to communicate with the Chromium Developer Tools debugging protocol.</returns>
+        public DevToolsSession GetDevToolsSession()
+        {
+            return GetDevToolsSession(FirefoxDevToolsProtocolVersion);
+        }
+
+        /// <summary>
+        /// Creates a session to communicate with a browser using the Chromium Developer Tools debugging protocol.
+        /// </summary>
+        /// <param name="devToolsProtocolVersion">The version of the Chromium Developer Tools protocol to use. Defaults to autodetect the protocol version.</param>
+        /// <returns>The active session to use to communicate with the Chromium Developer Tools debugging protocol.</returns>
+        public DevToolsSession GetDevToolsSession(int devToolsProtocolVersion)
+        {
+            if (this.devToolsSession == null)
+            {
+                if (!this.Capabilities.HasCapability(FirefoxDevToolsCapabilityName))
+                {
+                    throw new WebDriverException("Cannot find " + FirefoxDevToolsCapabilityName + " capability for driver");
+                }
+
+                string debuggerAddress = this.Capabilities.GetCapability(FirefoxDevToolsCapabilityName).ToString();
+                try
+                {
+                    DevToolsSession session = new DevToolsSession(debuggerAddress);
+                    session.Start(devToolsProtocolVersion).ConfigureAwait(false).GetAwaiter().GetResult();
+                    this.devToolsSession = session;
+                }
+                catch (Exception e)
+                {
+                    throw new WebDriverException("Unexpected error creating WebSocket DevTools session.", e);
+                }
+            }
+
+            return this.devToolsSession;
         }
 
         /// <summary>

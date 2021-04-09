@@ -22,10 +22,9 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.junit.Assume.assumeFalse;
 import static org.openqa.selenium.testing.TestUtilities.getEffectivePlatform;
 import static org.openqa.selenium.testing.drivers.Browser.CHROME;
-import static org.openqa.selenium.testing.drivers.Browser.EDGE;
 import static org.openqa.selenium.testing.drivers.Browser.HTMLUNIT;
 import static org.openqa.selenium.testing.drivers.Browser.IE;
-import static org.openqa.selenium.testing.drivers.Browser.MARIONETTE;
+import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
 import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
 
 import org.junit.Test;
@@ -40,13 +39,11 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.NotYetImplemented;
-import org.openqa.selenium.testing.TestUtilities;
 
 /**
  * Tests interaction through the advanced gestures API of keyboard handling.
  */
 public class BasicKeyboardInterfaceTest extends JUnit4TestBase {
-
   private Actions getBuilder(WebDriver driver) {
     return new Actions(driver);
   }
@@ -109,7 +106,6 @@ public class BasicKeyboardInterfaceTest extends JUnit4TestBase {
 
   @Test
   @NotYetImplemented(SAFARI)
-  @NotYetImplemented(EDGE)
   public void testSendingKeysWithShiftPressed() {
     driver.get(pages.javascriptPage);
 
@@ -224,7 +220,7 @@ public class BasicKeyboardInterfaceTest extends JUnit4TestBase {
   }
 
   @Test
-  @NotYetImplemented(value = MARIONETTE, reason = "https://bugzilla.mozilla.org/show_bug.cgi?id=1422583")
+  @NotYetImplemented(value = FIREFOX, reason = "https://bugzilla.mozilla.org/show_bug.cgi?id=1422583")
   @NotYetImplemented(CHROME)
   public void testSelectionSelectBySymbol() {
     driver.get(appServer.whereIs("single_text_input.html"));
@@ -248,7 +244,7 @@ public class BasicKeyboardInterfaceTest extends JUnit4TestBase {
 
   @Test
   @Ignore(IE)
-  @NotYetImplemented(value = MARIONETTE, reason = "https://bugzilla.mozilla.org/show_bug.cgi?id=1422583")
+  @NotYetImplemented(value = FIREFOX, reason = "https://bugzilla.mozilla.org/show_bug.cgi?id=1422583")
   @NotYetImplemented(CHROME)
   public void testSelectionSelectByWord() {
     assumeFalse(
@@ -296,6 +292,26 @@ public class BasicKeyboardInterfaceTest extends JUnit4TestBase {
         .perform();
 
     assertThat(input.getAttribute("value")).isEqualTo("");
+  }
+
+  @Test
+  public void testLeftArrowEntry() {
+    final String leftArrowSpaceTestStringCore = "bfmtv.fr";
+    final String leftArrowSpaceTestString = leftArrowSpaceTestStringCore+ "est";
+    final String leftArrowSpaceTestStringExpected = leftArrowSpaceTestStringCore+" est";
+
+    driver.get(appServer.whereIs("single_text_input.html"));
+    WebElement textInput = driver.findElement(By.id("textInput"));
+    sendLeftArrowSpaceTestKeys(textInput, leftArrowSpaceTestString);
+
+    assertThat(textInput.getAttribute("value")).isEqualTo(leftArrowSpaceTestStringExpected);
+  }
+
+  private void sendLeftArrowSpaceTestKeys(final WebElement inputElement, final String leftArrowSpaceTestString) {
+    inputElement.sendKeys(leftArrowSpaceTestString);
+    for (byte j = 0; j < 3; j++)
+      inputElement.sendKeys(Keys.LEFT);
+    inputElement.sendKeys(Keys.SPACE);
   }
 
   private void assertBackgroundColor(WebElement el, Colors expected) {

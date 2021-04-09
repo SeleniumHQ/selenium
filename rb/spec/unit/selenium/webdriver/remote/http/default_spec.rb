@@ -34,7 +34,7 @@ module Selenium
           it 'assigns default timeout to nil' do
             http = client.send :http
 
-            expect(http.open_timeout).to eq nil
+            expect(http.open_timeout).to eq 60
             expect(http.read_timeout).to eq 60
           end
 
@@ -128,7 +128,7 @@ module Selenium
           it 'raises a sane error if a proxy is refusing connections' do
             with_env('http_proxy' => 'http://localhost:1234') do
               http = client.send :http
-              expect(http).to receive(:request).and_raise Errno::ECONNREFUSED.new('Connection refused')
+              allow(http).to receive(:request).and_raise Errno::ECONNREFUSED.new('Connection refused')
 
               expect {
                 client.call :post, 'http://example.com/foo/bar', {}

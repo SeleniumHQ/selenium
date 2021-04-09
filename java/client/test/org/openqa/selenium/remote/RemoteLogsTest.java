@@ -17,16 +17,17 @@
 
 package org.openqa.selenium.remote;
 
+import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
-import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.openqa.selenium.WebDriverException;
@@ -34,6 +35,7 @@ import org.openqa.selenium.logging.LocalLogs;
 import org.openqa.selenium.logging.LogEntries;
 import org.openqa.selenium.logging.LogEntry;
 import org.openqa.selenium.logging.LogType;
+import org.openqa.selenium.testing.UnitTests;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -41,6 +43,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
 
+@Category(UnitTests.class)
 public class RemoteLogsTest {
   @Mock
   private ExecuteMethod executeMethod;
@@ -65,7 +68,7 @@ public class RemoteLogsTest {
     when(
         executeMethod.execute(
             DriverCommand.GET_LOG, ImmutableMap.of(RemoteLogs.TYPE_KEY, LogType.PROFILER)))
-        .thenReturn(ImmutableList.of(
+        .thenReturn(singletonList(
             ImmutableMap.of("level", Level.INFO.getName(), "timestamp", 1L, "message", "world")));
 
     LogEntries logEntries = remoteLogs.get(LogType.PROFILER);
@@ -112,7 +115,7 @@ public class RemoteLogsTest {
     when(
         executeMethod.execute(
             DriverCommand.GET_LOG, ImmutableMap.of(RemoteLogs.TYPE_KEY, LogType.SERVER)))
-        .thenReturn(ImmutableList.of(
+        .thenReturn(singletonList(
             ImmutableMap.of("level", Level.INFO.getName(), "timestamp", 0L, "message", "world")));
 
     LogEntries logEntries = remoteLogs.get(LogType.SERVER);
@@ -126,12 +129,12 @@ public class RemoteLogsTest {
   @Test
   public void throwsOnBogusRemoteLogsResponse() {
     when(
-        executeMethod
-            .execute(DriverCommand.GET_LOG, ImmutableMap.of(RemoteLogs.TYPE_KEY, LogType.BROWSER)))
-        .thenReturn(new ImmutableMap.Builder<>()
-                        .put("error", "unknown method")
-                        .put("message", "Command not found: POST /session/11037/log")
-                        .put("stacktrace", "").build());
+        executeMethod.execute(
+            DriverCommand.GET_LOG, ImmutableMap.of(RemoteLogs.TYPE_KEY, LogType.BROWSER)))
+        .thenReturn(ImmutableMap.of(
+            "error", "unknown method",
+            "message", "Command not found: POST /session/11037/log",
+            "stacktrace", ""));
 
     assertThatExceptionOfType(WebDriverException.class)
         .isThrownBy(() -> remoteLogs.get(LogType.BROWSER));

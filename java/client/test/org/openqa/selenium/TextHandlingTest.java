@@ -18,12 +18,8 @@
 package org.openqa.selenium;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assume.assumeFalse;
 import static org.openqa.selenium.testing.TestUtilities.isFirefox;
 import static org.openqa.selenium.testing.drivers.Browser.ALL;
-import static org.openqa.selenium.testing.drivers.Browser.CHROME;
-import static org.openqa.selenium.testing.drivers.Browser.CHROMIUMEDGE;
-import static org.openqa.selenium.testing.drivers.Browser.EDGE;
 import static org.openqa.selenium.testing.drivers.Browser.HTMLUNIT;
 import static org.openqa.selenium.testing.drivers.Browser.IE;
 import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
@@ -33,11 +29,10 @@ import org.openqa.selenium.environment.webserver.Page;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.NotYetImplemented;
-import org.openqa.selenium.testing.TestUtilities;
 
 public class TextHandlingTest extends JUnit4TestBase {
 
-  private final String newLine = "\n";
+  private static final String NEW_LINE = "\n";
 
   @Test
   public void testShouldReturnTheTextContentOfASingleElementWithNoChildren() {
@@ -77,8 +72,8 @@ public class TextHandlingTest extends JUnit4TestBase {
     String text = driver.findElement(By.id("multiline")).getText();
 
     assertThat(text)
-        .startsWith("A div containing" + newLine)
-        .contains("More than one line of text" + newLine)
+        .startsWith("A div containing" + NEW_LINE)
+        .contains("More than one line of text" + NEW_LINE)
         .endsWith("and block level elements");
   }
 
@@ -197,7 +192,7 @@ public class TextHandlingTest extends JUnit4TestBase {
 
     wait.until(WaitingConditions.elementValueToEqual(textarea, ""));
 
-    String expectedText = "i like cheese" + newLine + newLine + "it's really nice";
+    String expectedText = "i like cheese" + NEW_LINE + NEW_LINE + "it's really nice";
 
     textarea.sendKeys(expectedText);
 
@@ -235,8 +230,6 @@ public class TextHandlingTest extends JUnit4TestBase {
 
   @Test
   public void testShouldReturnEmptyStringWhenTagIsSelfClosing() {
-    assumeFalse("IE version < 9 doesn't support application/xhtml+xml mime type", TestUtilities.isOldIe(driver));
-
     driver.get(pages.xhtmlFormPage);
     String text = driver.findElement(By.id("self-closed")).getText();
 
@@ -257,7 +250,7 @@ public class TextHandlingTest extends JUnit4TestBase {
     driver.get(pages.simpleTestPage);
     String text = driver.findElement(By.id("twoblocks")).getText();
 
-    assertThat(text).isEqualTo("Some text" + newLine + "Some more text");
+    assertThat(text).isEqualTo("Some text" + NEW_LINE + "Some more text");
   }
 
   @Test
@@ -267,8 +260,8 @@ public class TextHandlingTest extends JUnit4TestBase {
     String text = driver.findElement(By.id("nestedblocks")).getText();
 
     assertThat(text)
-        .isEqualTo("Cheese" + newLine + "Some text" + newLine + "Some more text" + newLine
-                   + "and also" + newLine + "Brie");
+        .isEqualTo("Cheese" + NEW_LINE + "Some text" + NEW_LINE + "Some more text" + NEW_LINE
+                   + "and also" + NEW_LINE + "Brie");
   }
 
   @Test
@@ -340,7 +333,6 @@ public class TextHandlingTest extends JUnit4TestBase {
 
   @Test
   @Ignore(IE)
-  @NotYetImplemented(EDGE)
   public void testTextOfATextAreaShouldBeEqualToItsDefaultTextEvenAfterTyping() {
     driver.get(pages.formPage);
     WebElement area = driver.findElement(By.id("withText"));
@@ -352,7 +344,6 @@ public class TextHandlingTest extends JUnit4TestBase {
 
   @Test
   @Ignore(IE)
-  @NotYetImplemented(EDGE)
   public void testTextOfATextAreaShouldBeEqualToItsDefaultTextEvenAfterChangingTheValue() {
     driver.get(pages.formPage);
     WebElement area = driver.findElement(By.id("withText"));
@@ -412,11 +403,8 @@ public class TextHandlingTest extends JUnit4TestBase {
   }
 
   @Test
-  @NotYetImplemented(value = CHROME, reason = "https://bugs.chromium.org/p/chromedriver/issues/detail?id=2155")
-  @NotYetImplemented(value = CHROMIUMEDGE, reason = "https://bugs.chromium.org/p/chromedriver/issues/detail?id=2155")
   @NotYetImplemented(HTMLUNIT)
   @NotYetImplemented(value = SAFARI, reason = "getText does not normalize spaces")
-  @NotYetImplemented(EDGE)
   public void canHandleTextTransformProperty() {
     driver.get(pages.simpleTestPage);
     assertThat(driver.findElement(By.id("capitalized")).getText())

@@ -17,8 +17,6 @@
 
 package org.openqa.selenium.remote.server;
 
-
-import com.google.common.base.Preconditions;
 import com.google.common.base.StandardSystemProperty;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
@@ -29,6 +27,7 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.grid.data.CreateSessionRequest;
 import org.openqa.selenium.grid.session.ActiveSession;
 import org.openqa.selenium.grid.session.SessionFactory;
+import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.io.TemporaryFilesystem;
 import org.openqa.selenium.remote.Dialect;
 import org.openqa.selenium.remote.SessionId;
@@ -38,7 +37,6 @@ import org.openqa.selenium.remote.http.HttpResponse;
 import java.io.File;
 import java.io.UncheckedIOException;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
@@ -56,7 +54,7 @@ class InMemorySession implements ActiveSession {
   private final JsonHttpCommandHandler handler;
 
   private InMemorySession(WebDriver driver, Capabilities capabilities, Dialect downstream) {
-    this.driver = Preconditions.checkNotNull(driver);
+    this.driver = Require.nonNull("Driver", driver);
 
     Capabilities caps;
     if (driver instanceof HasCapabilities) {
@@ -70,10 +68,10 @@ class InMemorySession implements ActiveSession {
         .collect(ImmutableMap.toImmutableMap(Map.Entry::getKey, Map.Entry::getValue));
 
     this.id = new SessionId(UUID.randomUUID().toString());
-    this.downstream = Preconditions.checkNotNull(downstream);
+    this.downstream = Require.nonNull("Downstream dialect", downstream);
 
     File tempRoot = new File(StandardSystemProperty.JAVA_IO_TMPDIR.value(), id.toString());
-    Preconditions.checkState(tempRoot.mkdirs());
+    Require.stateCondition(tempRoot.mkdirs(), "Could not create directory %s", tempRoot);
     this.filesystem = TemporaryFilesystem.getTmpFsBasedOn(tempRoot);
 
     this.handler = new JsonHttpCommandHandler(
@@ -139,7 +137,7 @@ class InMemorySession implements ActiveSession {
 
     @Override
     public Optional<ActiveSession> apply(CreateSessionRequest sessionRequest) {
-      Objects.requireNonNull(sessionRequest);
+      Require.nonNull("Session creation request", sessionRequest);
 
       // Assume the blob fits in the available memory.
       try {

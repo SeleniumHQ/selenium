@@ -24,6 +24,7 @@ import org.openqa.selenium.Platform;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -98,7 +99,7 @@ public class Build {
     @Override
     public void run() {
       try (BufferedReader buildOutput = new BufferedReader(
-          new InputStreamReader(buildProcess.getInputStream()), 8192)) {
+          new InputStreamReader(buildProcess.getInputStream(), Charset.defaultCharset()), 8192)) {
         for (String s = buildOutput.readLine(); s != null && !interrupted(); s =
             buildOutput.readLine()) {
           try {

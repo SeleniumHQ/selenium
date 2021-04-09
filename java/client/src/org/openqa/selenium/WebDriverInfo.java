@@ -46,9 +46,14 @@ public interface WebDriverInfo {
 
   /**
    * @return Whether a call to {@link #createDriver(Capabilities)} would succeed if given
-   *     {@code capabilities}.
+   * {@code capabilities}.
    */
   boolean isSupporting(Capabilities capabilities);
+
+  /**
+   * @return Whether the driver has enabled the CDP interface.
+   */
+  boolean isSupportingCdp();
 
   /**
    * Often, a {@link WebDriver} instance needs one or more supporting files or executables to be

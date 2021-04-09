@@ -92,7 +92,9 @@ public class HTMLLauncher {
     String userExtensions) throws IOException {
     File parent = outputFile.getParentFile();
     if (parent != null && !parent.exists()) {
-      parent.mkdirs();
+      if (!parent.mkdirs()) {
+        throw new IOException("Unable to create directory to store outputs: " + parent);
+      }
     }
     if (outputFile.exists() && !outputFile.canWrite()) {
       throw new IOException("Can't write to outputFile: " + outputFile.getAbsolutePath());

@@ -18,13 +18,13 @@
 package org.openqa.selenium.grid.data;
 
 import org.openqa.selenium.events.Event;
-import org.openqa.selenium.events.Type;
+import org.openqa.selenium.events.EventName;
 
 import java.net.URI;
 
 public class NodeRejectedEvent extends Event {
 
-  public static final Type NODE_REJECTED = new Type("node-rejected");
+  public static final EventName NODE_REJECTED = new EventName("node-rejected");
 
   public NodeRejectedEvent(URI uri) {
     super(NODE_REJECTED, uri);

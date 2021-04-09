@@ -20,7 +20,6 @@ package org.openqa.selenium.edge;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.openqa.selenium.remote.CapabilityType.ACCEPT_INSECURE_CERTS;
 import static org.openqa.selenium.support.ui.ExpectedConditions.titleIs;
-import static org.openqa.selenium.testing.drivers.Browser.EDGE;
 
 import org.junit.After;
 import org.junit.Test;
@@ -28,7 +27,6 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.build.InProject;
 import org.openqa.selenium.support.ui.WebDriverWait;
-import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
 
 import java.io.IOException;
@@ -50,7 +48,6 @@ public class EdgeOptionsFunctionalTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(EDGE)
   public void canStartChromeWithCustomOptions() {
     EdgeOptions options = new EdgeOptions();
     options.addArguments("user-agent=foo;bar");
@@ -62,7 +59,6 @@ public class EdgeOptionsFunctionalTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(EDGE)
   public void optionsStayEqualAfterSerialization() {
     EdgeOptions options1 = new EdgeOptions();
     EdgeOptions options2 = new EdgeOptions();
@@ -72,7 +68,6 @@ public class EdgeOptionsFunctionalTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(EDGE)
   public void canSetAcceptInsecureCerts() {
     EdgeOptions options = new EdgeOptions();
     options.setAcceptInsecureCerts(true);
@@ -83,7 +78,6 @@ public class EdgeOptionsFunctionalTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(EDGE)
   public void canAddExtensionFromFile() {
     EdgeOptions options = new EdgeOptions();
     options.addExtensions(InProject.locate(EXT_PATH).toFile());
@@ -99,7 +93,6 @@ public class EdgeOptionsFunctionalTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(EDGE)
   public void canAddExtensionFromStringEncodedInBase64() throws IOException {
     EdgeOptions options = new EdgeOptions();
     options.addEncodedExtensions(Base64.getEncoder().encodeToString(

@@ -45,15 +45,6 @@ Webdriver.support
    selenium.webdriver.support.select
    selenium.webdriver.support.wait
 
-Webdriver.android
------------------
-
-.. currentmodule:: selenium.webdriver.android
-.. autosummary::
-   :toctree: webdriver_android
-
-   selenium.webdriver.android.webdriver
-
 Webdriver.chrome
 ----------------
 
@@ -117,16 +108,6 @@ Webdriver.opera
    :toctree: webdriver_opera
 
    selenium.webdriver.opera.webdriver
-
-Webdriver.phantomjs
--------------------
-
-.. currentmodule:: selenium.webdriver.phantomjs
-.. autosummary::
-   :toctree: webdriver_phantomjs
-
-   selenium.webdriver.phantomjs.service
-   selenium.webdriver.phantomjs.webdriver
 
 Webdriver.remote
 ----------------

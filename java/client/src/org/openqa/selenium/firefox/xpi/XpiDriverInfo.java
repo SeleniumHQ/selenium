@@ -17,9 +17,6 @@
 
 package org.openqa.selenium.firefox.xpi;
 
-import static org.openqa.selenium.firefox.FirefoxDriver.MARIONETTE;
-import static org.openqa.selenium.remote.CapabilityType.BROWSER_NAME;
-
 import com.google.auto.service.AutoService;
 
 import org.openqa.selenium.Capabilities;
@@ -33,6 +30,9 @@ import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.remote.BrowserType;
 
 import java.util.Optional;
+
+import static org.openqa.selenium.firefox.FirefoxDriver.Capability.MARIONETTE;
+import static org.openqa.selenium.remote.CapabilityType.BROWSER_NAME;
 
 @Deprecated
 @AutoService(WebDriverInfo.class)
@@ -54,6 +54,11 @@ public class XpiDriverInfo implements WebDriverInfo {
   }
 
   @Override
+  public boolean isSupportingCdp() {
+    return false;
+  }
+
+  @Override
   public boolean isAvailable() {
     try {
       // This will search $PATH looking for the binary. It's not perfect, since the user may be
@@ -68,7 +73,7 @@ public class XpiDriverInfo implements WebDriverInfo {
 
   @Override
   public int getMaximumSimultaneousSessions() {
-    return Runtime.getRuntime().availableProcessors() + 1;
+    return Runtime.getRuntime().availableProcessors();
   }
 
   @Override

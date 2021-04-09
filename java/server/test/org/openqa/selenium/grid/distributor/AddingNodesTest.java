@@ -19,36 +19,45 @@ package org.openqa.selenium.grid.distributor;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
-import io.opentelemetry.OpenTelemetry;
-import io.opentelemetry.trace.Tracer;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.NoSuchSessionException;
+import org.openqa.selenium.SessionNotCreatedException;
+import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.events.EventBus;
 import org.openqa.selenium.events.local.GuavaEventBus;
-import org.openqa.selenium.grid.component.HealthCheck;
 import org.openqa.selenium.grid.data.CreateSessionRequest;
 import org.openqa.selenium.grid.data.CreateSessionResponse;
-import org.openqa.selenium.grid.data.DistributorStatus;
+import org.openqa.selenium.grid.data.NodeId;
 import org.openqa.selenium.grid.data.NodeStatus;
 import org.openqa.selenium.grid.data.NodeStatusEvent;
 import org.openqa.selenium.grid.data.Session;
 import org.openqa.selenium.grid.data.SessionClosedEvent;
+import org.openqa.selenium.grid.data.Slot;
+import org.openqa.selenium.grid.data.SlotId;
 import org.openqa.selenium.grid.distributor.local.LocalDistributor;
 import org.openqa.selenium.grid.distributor.remote.RemoteDistributor;
 import org.openqa.selenium.grid.node.CapabilityResponseEncoder;
+import org.openqa.selenium.grid.node.HealthCheck;
 import org.openqa.selenium.grid.node.Node;
 import org.openqa.selenium.grid.node.local.LocalNode;
+import org.openqa.selenium.grid.security.Secret;
 import org.openqa.selenium.grid.sessionmap.local.LocalSessionMap;
+import org.openqa.selenium.grid.sessionqueue.local.LocalNewSessionQueue;
+import org.openqa.selenium.grid.sessionqueue.local.LocalNewSessionQueuer;
 import org.openqa.selenium.grid.testing.TestSessionFactory;
 import org.openqa.selenium.grid.web.CombinedHandler;
 import org.openqa.selenium.grid.web.RoutableHttpClientFactory;
+import org.openqa.selenium.internal.Either;
 import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
+import org.openqa.selenium.remote.tracing.DefaultTestTracer;
+import org.openqa.selenium.remote.tracing.Tracer;
 import org.openqa.selenium.support.ui.FluentWait;
 import org.openqa.selenium.support.ui.Wait;
 
@@ -57,7 +66,9 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.time.Duration;
-import java.util.HashSet;
+import java.time.Instant;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
@@ -66,45 +77,72 @@ import java.util.function.Function;
 
 import static com.google.common.collect.Iterables.getOnlyElement;
 import static org.junit.Assert.assertEquals;
+import static org.openqa.selenium.grid.data.Availability.UP;
 import static org.openqa.selenium.remote.Dialect.W3C;
 
 public class AddingNodesTest {
 
   private static final Capabilities CAPS = new ImmutableCapabilities("cheese", "gouda");
+  private static final Secret registrationSecret = new Secret("caerphilly");
 
   private Distributor distributor;
   private Tracer tracer;
   private EventBus bus;
-  private HttpClient.Factory clientFactory;
   private Wait<Object> wait;
   private URL externalUrl;
   private CombinedHandler handler;
+  private Capabilities stereotype;
 
   @Before
   public void setUpDistributor() throws MalformedURLException {
-    tracer = OpenTelemetry.getTracerFactory().get("default");
+    tracer = DefaultTestTracer.createTracer();
     bus = new GuavaEventBus();
 
     handler = new CombinedHandler();
     externalUrl = new URL("http://example.com");
-    clientFactory = new RoutableHttpClientFactory(
-        externalUrl,
-        handler,
-        HttpClient.Factory.createDefault());
+    HttpClient.Factory clientFactory = new RoutableHttpClientFactory(
+      externalUrl,
+      handler,
+      HttpClient.Factory.createDefault());
 
     LocalSessionMap sessions = new LocalSessionMap(tracer, bus);
-    Distributor local = new LocalDistributor(tracer, bus, clientFactory, sessions, null);
-    handler.addHandler(local);
-    distributor = new RemoteDistributor(tracer, clientFactory, externalUrl);
+    LocalNewSessionQueue localNewSessionQueue = new LocalNewSessionQueue(
+      tracer,
+      bus,
+      Duration.ofSeconds(2),
+      Duration.ofSeconds(2));
+    LocalNewSessionQueuer queuer = new LocalNewSessionQueuer(
+      tracer,
+      bus,
+      localNewSessionQueue,
+      registrationSecret);
+    Distributor local = new LocalDistributor(
+      tracer,
+      bus,
+      clientFactory,
+      sessions,
+      queuer,
+      registrationSecret,
+      Duration.ofMinutes(5));
 
-    wait = new FluentWait<>(new Object()).withTimeout(Duration.ofSeconds(2));
+    handler.addHandler(local);
+    distributor = new RemoteDistributor(tracer, clientFactory, externalUrl, registrationSecret);
+
+    stereotype = new ImmutableCapabilities("browserName", "gouda");
+
+    wait = new FluentWait<>(
+      new Object()).ignoring(Throwable.class).withTimeout(Duration.ofSeconds(2));
   }
 
   @Test
   public void shouldBeAbleToRegisterALocalNode() throws URISyntaxException {
     URI sessionUri = new URI("http://example:1234");
-    Node node = LocalNode.builder(tracer, bus, clientFactory, externalUrl.toURI(), null)
-        .add(CAPS, new TestSessionFactory((id, caps) -> new Session(id, sessionUri, caps)))
+    Node node = LocalNode
+      .builder(tracer, bus, externalUrl.toURI(), externalUrl.toURI(), registrationSecret)
+        .add(
+          CAPS,
+          new TestSessionFactory(
+            (id, caps) -> new Session(id, sessionUri, stereotype, caps, Instant.now())))
         .build();
     handler.addHandler(node);
 
@@ -112,8 +150,8 @@ public class AddingNodesTest {
 
     wait.until(obj -> distributor.getStatus().hasCapacity());
 
-    DistributorStatus.NodeSummary summary = getOnlyElement(distributor.getStatus().getNodes());
-    assertEquals(1, summary.getStereotypes().get(CAPS).intValue());
+    NodeStatus status = getOnlyElement(distributor.getStatus().getNodes());
+    assertEquals(1, getStereotypes(status).get(CAPS).intValue());
   }
 
   @Test
@@ -121,24 +159,29 @@ public class AddingNodesTest {
     URI sessionUri = new URI("http://example:1234");
     Node node = new CustomNode(
         bus,
-        UUID.randomUUID(),
+        new NodeId(UUID.randomUUID()),
         externalUrl.toURI(),
-        c -> new Session(new SessionId(UUID.randomUUID()), sessionUri, c));
+        c -> new Session(
+          new SessionId(UUID.randomUUID()), sessionUri, stereotype, c, Instant.now()));
     handler.addHandler(node);
 
     distributor.add(node);
 
     wait.until(obj -> distributor.getStatus().hasCapacity());
 
-    DistributorStatus.NodeSummary summary = getOnlyElement(distributor.getStatus().getNodes());
-    assertEquals(1, summary.getStereotypes().get(CAPS).intValue());
+    NodeStatus status = getOnlyElement(distributor.getStatus().getNodes());
+    assertEquals(1, getStereotypes(status).get(CAPS).intValue());
   }
 
   @Test
   public void shouldBeAbleToRegisterNodesByListeningForEvents() throws URISyntaxException {
     URI sessionUri = new URI("http://example:1234");
-    Node node = LocalNode.builder(tracer, bus, clientFactory, externalUrl.toURI(), null)
-        .add(CAPS, new TestSessionFactory((id, caps) -> new Session(id, sessionUri, caps)))
+    Node node = LocalNode
+      .builder(tracer, bus, externalUrl.toURI(), externalUrl.toURI(), registrationSecret)
+        .add(
+          CAPS,
+          new TestSessionFactory(
+            (id, caps) -> new Session(id, sessionUri, stereotype, caps, Instant.now())))
         .build();
     handler.addHandler(node);
 
@@ -146,16 +189,51 @@ public class AddingNodesTest {
 
     wait.until(obj -> distributor.getStatus().hasCapacity());
 
-    DistributorStatus.NodeSummary summary = getOnlyElement(distributor.getStatus().getNodes());
-    assertEquals(1, summary.getStereotypes().get(CAPS).intValue());
+    NodeStatus status = getOnlyElement(distributor.getStatus().getNodes());
+    assertEquals(1, getStereotypes(status).get(CAPS).intValue());
+  }
+
+  @Test
+  public void shouldKeepOnlyOneNodeWhenTwoRegistrationsHaveTheSameUriByListeningForEvents()
+    throws URISyntaxException {
+    URI sessionUri = new URI("http://example:1234");
+    Node firstNode = LocalNode
+      .builder(tracer, bus, externalUrl.toURI(), externalUrl.toURI(), registrationSecret)
+      .add(
+        CAPS,
+        new TestSessionFactory(
+          (id, caps) -> new Session(id, sessionUri, stereotype, caps, Instant.now())))
+      .build();
+    Node secondNode = LocalNode
+      .builder(tracer, bus, externalUrl.toURI(), externalUrl.toURI(), registrationSecret)
+      .add(
+        CAPS,
+        new TestSessionFactory(
+          (id, caps) -> new Session(id, sessionUri, stereotype, caps, Instant.now())))
+      .build();
+    handler.addHandler(firstNode);
+    handler.addHandler(secondNode);
+
+    bus.fire(new NodeStatusEvent(firstNode.getStatus()));
+    bus.fire(new NodeStatusEvent(secondNode.getStatus()));
+
+    wait.until(obj -> distributor.getStatus());
+
+    Set<NodeStatus> nodes = distributor.getStatus().getNodes();
+
+    assertEquals(1, nodes.size());
   }
 
   @Test
   public void distributorShouldUpdateStateOfExistingNodeWhenNodePublishesStateChange()
       throws URISyntaxException {
     URI sessionUri = new URI("http://example:1234");
-    Node node = LocalNode.builder(tracer, bus, clientFactory, externalUrl.toURI(), null)
-        .add(CAPS, new TestSessionFactory((id, caps) -> new Session(id, sessionUri, caps)))
+    Node node = LocalNode
+      .builder(tracer, bus, externalUrl.toURI(), externalUrl.toURI(), registrationSecret)
+        .add(
+          CAPS,
+          new TestSessionFactory(
+            (id, caps) -> new Session(id, sessionUri, stereotype, caps, Instant.now())))
         .build();
     handler.addHandler(node);
 
@@ -164,23 +242,43 @@ public class AddingNodesTest {
     // Start empty
     wait.until(obj -> distributor.getStatus().hasCapacity());
 
-    DistributorStatus.NodeSummary summary = getOnlyElement(distributor.getStatus().getNodes());
-    assertEquals(1, summary.getStereotypes().get(CAPS).intValue());
+    NodeStatus nodeStatus = getOnlyElement(distributor.getStatus().getNodes());
+    assertEquals(1, getStereotypes(nodeStatus).get(CAPS).intValue());
 
     // Craft a status that makes it look like the node is busy, and post it on the bus.
     NodeStatus status = node.getStatus();
     NodeStatus crafted = new NodeStatus(
-        status.getNodeId(),
-        status.getUri(),
-        status.getMaxSessionCount(),
-        status.getStereotypes(),
-        ImmutableSet.of(new NodeStatus.Active(CAPS, new SessionId(UUID.randomUUID()), CAPS)),
-        "cheese");
+      status.getId(),
+      status.getUri(),
+      status.getMaxSessionCount(),
+      ImmutableSet.of(
+        new Slot(
+          new SlotId(status.getId(), UUID.randomUUID()),
+          CAPS,
+          Instant.now(),
+          Optional.of(new Session(
+            new SessionId(UUID.randomUUID()), sessionUri, CAPS, CAPS, Instant.now())))),
+      UP,
+      Duration.ofSeconds(10),
+      status.getVersion(),
+      status.getOsInfo());
 
     bus.fire(new NodeStatusEvent(crafted));
 
     // We claimed the only slot is filled. Life is good.
     wait.until(obj -> !distributor.getStatus().hasCapacity());
+  }
+
+  private Map<Capabilities, Integer> getStereotypes(NodeStatus status) {
+    Map<Capabilities, Integer> stereotypes = new HashMap<>();
+
+    for (Slot slot : status.getSlots()) {
+      int count = stereotypes.getOrDefault(slot.getStereotype(), 0);
+      count++;
+      stereotypes.put(slot.getStereotype(), count);
+    }
+
+    return ImmutableMap.copyOf(stereotypes);
   }
 
   static class CustomNode extends Node {
@@ -191,33 +289,43 @@ public class AddingNodesTest {
 
     protected CustomNode(
         EventBus bus,
-        UUID nodeId,
+        NodeId nodeId,
         URI uri,
         Function<Capabilities, Session> factory) {
-      super(OpenTelemetry.getTracerFactory().get("default"), nodeId, uri);
+      super(DefaultTestTracer.createTracer(), nodeId, uri, registrationSecret);
 
       this.bus = bus;
       this.factory = Objects.requireNonNull(factory);
     }
 
     @Override
-    public Optional<CreateSessionResponse> newSession(CreateSessionRequest sessionRequest) {
+    public boolean isReady() {
+      return true;
+    }
+
+    @Override
+    public Either<WebDriverException, CreateSessionResponse> newSession(CreateSessionRequest sessionRequest) {
       Objects.requireNonNull(sessionRequest);
 
       if (running != null) {
-        return Optional.empty();
+        return Either.left(new SessionNotCreatedException("Session already exists"));
       }
       Session session = factory.apply(sessionRequest.getCapabilities());
       running = session;
-      return Optional.of(
-          new CreateSessionResponse(
-              session,
-              CapabilityResponseEncoder.getEncoder(W3C).apply(session)));
+      return Either.right(
+        new CreateSessionResponse(
+          session,
+          CapabilityResponseEncoder.getEncoder(W3C).apply(session)));
     }
 
     @Override
     public HttpResponse executeWebDriverCommand(HttpRequest req) {
       throw new UnsupportedOperationException("executeWebDriverCommand");
+    }
+
+    @Override
+    public HttpResponse uploadFile(HttpRequest req, SessionId id) {
+      throw new UnsupportedOperationException("uploadFile");
     }
 
     @Override
@@ -238,7 +346,7 @@ public class AddingNodesTest {
     }
 
     @Override
-    protected boolean isSessionOwner(SessionId id) {
+    public boolean isSessionOwner(SessionId id) {
       return running != null && running.getId().equals(id);
     }
 
@@ -249,23 +357,43 @@ public class AddingNodesTest {
 
     @Override
     public NodeStatus getStatus() {
-      Set<NodeStatus.Active> actives = new HashSet<>();
+      Session sess = null;
       if (running != null) {
-        actives.add(new NodeStatus.Active(CAPS, running.getId(), running.getCapabilities()));
+        try {
+          sess = new Session(
+            running.getId(),
+            new URI("http://localhost:14568"),
+            CAPS,
+            running.getCapabilities(),
+            Instant.now());
+        } catch (URISyntaxException e) {
+          throw new RuntimeException(e);
+        }
       }
 
       return new NodeStatus(
-          getId(),
-          getUri(),
-          1,
-          ImmutableMap.of(CAPS, 1),
-          actives,
-          "cheese");
+        getId(),
+        getUri(),
+        1,
+        ImmutableSet.of(
+          new Slot(
+            new SlotId(getId(), UUID.randomUUID()),
+            CAPS,
+            Instant.now(),
+            Optional.ofNullable(sess))),
+        UP,
+        Duration.ofSeconds(10),
+        getNodeVersion(),
+        getOsInfo());
     }
 
     @Override
     public HealthCheck getHealthCheck() {
-      return () -> new HealthCheck.Result(true, "tl;dr");
+      return () -> new HealthCheck.Result(UP, "tl;dr");
+    }
+
+    @Override
+    public void drain() {
     }
   }
 

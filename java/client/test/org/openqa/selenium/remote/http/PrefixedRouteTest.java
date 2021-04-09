@@ -18,14 +18,18 @@
 package org.openqa.selenium.remote.http;
 
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
+import org.openqa.selenium.testing.UnitTests;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 
+import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.fail;
 import static org.openqa.selenium.remote.http.HttpMethod.GET;
 
+@Category(UnitTests.class)
 public class PrefixedRouteTest {
 
   @Test
@@ -78,7 +82,7 @@ public class PrefixedRouteTest {
     route.execute(new HttpRequest(GET, "/cheese/and/peas"));
 
     assertThat(path.get()).isEqualTo("/and/peas");
-    assertThat(parts.get()).isEqualTo(List.of("/cheese"));
+    assertThat(parts.get()).isEqualTo(singletonList("/cheese"));
   }
 
   @Test
@@ -98,6 +102,6 @@ public class PrefixedRouteTest {
     route.execute(new HttpRequest(GET, "/cheese/and/peas"));
 
     assertThat(path.get()).isEqualTo("/peas");
-    assertThat(parts.get()).isEqualTo(List.of("/cheese", "/and"));
+    assertThat(parts.get()).isEqualTo(Arrays.asList("/cheese", "/and"));
   }
 }

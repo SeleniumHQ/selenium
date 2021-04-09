@@ -20,7 +20,6 @@ package org.openqa.selenium.remote.server;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
-import io.opentelemetry.trace.Tracer;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.WebDriver;
@@ -28,10 +27,11 @@ import org.openqa.selenium.grid.data.CreateSessionRequest;
 import org.openqa.selenium.grid.session.ActiveSession;
 import org.openqa.selenium.grid.session.SessionFactory;
 import org.openqa.selenium.grid.session.remote.ServicedSession;
+import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.Json;
+import org.openqa.selenium.remote.tracing.Tracer;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.ServiceLoader;
 import java.util.function.Function;
@@ -47,7 +47,6 @@ import static org.openqa.selenium.remote.BrowserType.HTMLUNIT;
 import static org.openqa.selenium.remote.BrowserType.IE;
 import static org.openqa.selenium.remote.BrowserType.OPERA;
 import static org.openqa.selenium.remote.BrowserType.OPERA_BLINK;
-import static org.openqa.selenium.remote.BrowserType.PHANTOMJS;
 import static org.openqa.selenium.remote.BrowserType.SAFARI;
 import static org.openqa.selenium.remote.CapabilityType.BROWSER_NAME;
 
@@ -56,9 +55,9 @@ import static org.openqa.selenium.remote.CapabilityType.BROWSER_NAME;
  */
 public class ActiveSessionFactory implements SessionFactory {
 
-  private final static Logger LOG = Logger.getLogger(ActiveSessionFactory.class.getName());
+  private static final Logger LOG = Logger.getLogger(ActiveSessionFactory.class.getName());
 
-  private final static Function<String, Class<?>> CLASS_EXISTS = name -> {
+  private static final Function<String, Class<?>> CLASS_EXISTS = name -> {
     try {
       return Class.forName(name);
     } catch (ClassNotFoundException | NoClassDefFoundError e) {
@@ -66,7 +65,7 @@ public class ActiveSessionFactory implements SessionFactory {
     }
   };
 
-  private volatile List<SessionFactory> factories;
+  private List<SessionFactory> factories;
 
   public ActiveSessionFactory(Tracer tracer) {
     // Insertion order matters. The first matching predicate is always used for matching.
@@ -93,7 +92,6 @@ public class ActiveSessionFactory implements SessionFactory {
         .put(containsKey("se:ieOptions"), "org.openqa.selenium.ie.InternetExplorerDriverService")
         .put(browserName(OPERA), "org.openqa.selenium.opera.OperaDriverService")
         .put(browserName(OPERA_BLINK), "org.openqa.selenium.opera.OperaDriverService")
-        .put(browserName(PHANTOMJS), "org.openqa.selenium.phantomjs.PhantomJSDriverService")
         .put(browserName(SAFARI), "org.openqa.selenium.safari.SafariDriverService")
         .put(containsKey(Pattern.compile("^safari\\..*")), "org.openqa.selenium.safari.SafariDriverService")
         .build()
@@ -111,8 +109,8 @@ public class ActiveSessionFactory implements SessionFactory {
   public synchronized ActiveSessionFactory bind(
       Predicate<Capabilities> onThis,
       SessionFactory useThis) {
-    Objects.requireNonNull(onThis, "Predicated needed.");
-    Objects.requireNonNull(useThis, "SessionFactory is required");
+    Require.nonNull("Predicate", onThis);
+    Require.nonNull("SessionFactory", useThis);
 
     LOG.info(String.format("Binding %s to respond to %s", useThis, onThis));
 
@@ -149,12 +147,12 @@ public class ActiveSessionFactory implements SessionFactory {
   }
 
   private static Predicate<Capabilities> browserName(String browserName) {
-    Objects.requireNonNull(browserName, "Browser name must be set");
+    Require.nonNull("Browser name", browserName);
     return toCompare -> browserName.equals(toCompare.getBrowserName());
   }
 
   private static Predicate<Capabilities> containsKey(String keyName) {
-    Objects.requireNonNull(keyName, "Key name must be set");
+    Require.nonNull("Key name", keyName);
     return toCompare -> toCompare.getCapability(keyName) != null;
   }
 

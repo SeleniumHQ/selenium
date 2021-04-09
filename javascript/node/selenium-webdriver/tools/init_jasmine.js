@@ -15,9 +15,10 @@
 // specific language governing permissions and limitations
 // under the License.
 
-require('@bazel/jasmine').boot();
+// eslint-disable-next-line node/no-missing-require
+require('@bazel/jasmine').boot()
 
-global.after = global.afterAll;
-global.before = global.beforeAll;
+global.after = global.afterAll
+global.before = global.beforeAll
 
-global.jasmine.DEFAULT_TIMEOUT_INTERVAL = 120 * 1000;
+global.jasmine.DEFAULT_TIMEOUT_INTERVAL = 120 * 1000

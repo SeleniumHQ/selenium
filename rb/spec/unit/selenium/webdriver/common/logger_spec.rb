@@ -70,14 +70,12 @@ module Selenium
         end
 
         it 'allows output to file' do
-          begin
-            logger.output = 'test.log'
-            logger.warn('message')
-            expect(File.read('test.log')).to include('WARN Selenium message')
-          ensure
-            logger.close
-            File.delete('test.log')
-          end
+          logger.output = 'test.log'
+          logger.warn('message')
+          expect(File.read('test.log')).to include('WARN Selenium message')
+        ensure
+          logger.close
+          File.delete('test.log')
         end
       end
 
@@ -106,6 +104,13 @@ module Selenium
         it 'allows to deprecate functionality without replacement' do
           message = /WARN Selenium \[DEPRECATION\] #old is deprecated and will be removed in a future release\./
           expect { logger.deprecate('#old') }.to output(message).to_stdout_from_any_process
+        end
+
+        it 'allows to deprecate functionality with a reference message' do
+          ref_url = 'https://selenium.dev'
+          warn_msg = 'WARN Selenium \[DEPRECATION\] #old is deprecated\. Use #new instead\.'
+          message = /#{warn_msg} See explanation for this deprecation: #{ref_url}/
+          expect { logger.deprecate('#old', '#new', reference: ref_url) }.to output(message).to_stdout_from_any_process
         end
 
         it 'appends deprecation message with provided block' do

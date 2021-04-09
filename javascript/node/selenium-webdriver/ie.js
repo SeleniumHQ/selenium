@@ -25,23 +25,23 @@
  * [wiki](https://github.com/SeleniumHQ/selenium/wiki/InternetExplorerDriver)
  */
 
-'use strict';
+'use strict'
 
-const fs = require('fs');
-const util = require('util');
+const fs = require('fs')
+const http = require('./http')
+const io = require('./io')
+const portprober = require('./net/portprober')
+const remote = require('./remote')
+const webdriver = require('./lib/webdriver')
+const { Browser, Capabilities } = require('./lib/capabilities')
+const error = require('./lib/error')
 
-const http = require('./http');
-const io = require('./io');
-const portprober = require('./net/portprober');
-const promise = require('./lib/promise');
-const remote = require('./remote');
-const webdriver = require('./lib/webdriver');
-const {Browser, Capabilities, Capability} = require('./lib/capabilities');
-
-
-const IEDRIVER_EXE = 'IEDriverServer.exe';
-
-
+const IEDRIVER_EXE = 'IEDriverServer.exe'
+const OPTIONS_CAPABILITY_KEY = 'se:ieOptions'
+const SCROLL_BEHAVIOUR = {
+  BOTTOM: 1,
+  TOP: 0,
+}
 
 /**
  * IEDriverServer logging levels.
@@ -53,10 +53,8 @@ const Level = {
   WARN: 'WARN',
   INFO: 'INFO',
   DEBUG: 'DEBUG',
-  TRACE: 'TRACE'
-};
-
-
+  TRACE: 'TRACE',
+}
 
 /**
  * Option keys:
@@ -69,6 +67,7 @@ const Key = {
   INITIAL_BROWSER_URL: 'initialBrowserUrl',
   ENABLE_PERSISTENT_HOVER: 'enablePersistentHover',
   ENABLE_ELEMENT_CACHE_CLEANUP: 'enableElementCacheCleanup',
+  ELEMENT_SCROLL_BEHAVIOR: 'elementScrollBehavior',
   REQUIRE_WINDOW_FOCUS: 'requireWindowFocus',
   BROWSER_ATTACH_TIMEOUT: 'browserAttachTimeout',
   FORCE_CREATE_PROCESS: 'ie.forceCreateProcessApi',
@@ -79,9 +78,11 @@ const Key = {
   LOG_LEVEL: 'logLevel',
   HOST: 'host',
   EXTRACT_PATH: 'extractPath',
-  SILENT: 'silent'
-};
-
+  SILENT: 'silent',
+  FILE_UPLOAD_DIALOG_TIMEOUT: 'ie.fileUploadDialogTimeout',
+  ATTACH_TO_EDGE_CHROMIUM: 'ie.edgechromium',
+  EDGE_EXECUTABLE_PATH: 'ie.edgepath',
+}
 
 /**
  * Class for managing IEDriver specific options.
@@ -92,13 +93,18 @@ class Options extends Capabilities {
    *     capabilities to initialize this instance from.
    */
   constructor(other = undefined) {
-    super(other);
-    this.setBrowserName(Browser.IE);
+    super(other)
+
+    /** @private {!Object} */
+    this.options_ = this.get(OPTIONS_CAPABILITY_KEY) || {}
+
+    this.set(OPTIONS_CAPABILITY_KEY, this.options_)
+    this.setBrowserName(Browser.INTERNET_EXPLORER)
   }
 
   /**
    * Whether to disable the protected mode settings check when the session is
-   * created. Disbling this setting may lead to significant instability as the
+   * created. Disabling this setting may lead to significant instability as the
    * browser may become unresponsive/hang. Only "best effort" support is provided
    * when using this capability.
    *
@@ -109,8 +115,8 @@ class Options extends Capabilities {
    * @return {!Options} A self reference.
    */
   introduceFlakinessByIgnoringProtectedModeSettings(ignoreSettings) {
-    this.set(Key.IGNORE_PROTECTED_MODE_SETTINGS, !!ignoreSettings);
-    return this;
+    this.options_[Key.IGNORE_PROTECTED_MODE_SETTINGS] = !!ignoreSettings
+    return this
   }
 
   /**
@@ -121,13 +127,13 @@ class Options extends Capabilities {
    * @return {!Options} A self reference.
    */
   ignoreZoomSetting(ignore) {
-    this.set(Key.IGNORE_ZOOM_SETTING, !!ignore);
-    return this;
+    this.options_[Key.IGNORE_ZOOM_SETTING] = !!ignore
+    return this
   }
 
   /**
    * Sets the initial URL loaded when IE starts. This is intended to be used with
-   * {@link #ignoreProtectedModeSettings} to allow the user to initialize IE in
+   * {@link #introduceFlakinessByIgnoringProtectedModeSettings} to allow the user to initialize IE in
    * the proper Protected Mode zone. Setting this option may cause browser
    * instability or flaky and unresponsive code. Only "best effort" support is
    * provided when using this option.
@@ -136,8 +142,8 @@ class Options extends Capabilities {
    * @return {!Options} A self reference.
    */
   initialBrowserUrl(url) {
-    this.set(Key.INITIAL_BROWSER_URL, url);
-    return this;
+    this.options_[Key.INITIAL_BROWSER_URL] = url
+    return this
   }
 
   /**
@@ -149,8 +155,8 @@ class Options extends Capabilities {
    * @return {!Options} A self reference.
    */
   enablePersistentHover(enable) {
-    this.set(Key.ENABLE_PERSISTENT_HOVER, !!enable);
-    return this;
+    this.options_[Key.ENABLE_PERSISTENT_HOVER] = !!enable
+    return this
   }
 
   /**
@@ -163,8 +169,8 @@ class Options extends Capabilities {
    * @return {!Options} A self reference.
    */
   enableElementCacheCleanup(enable) {
-    this.set(Key.ENABLE_ELEMENT_CACHE_CLEANUP, !!enable);
-    return this;
+    this.options_[Key.ENABLE_ELEMENT_CACHE_CLEANUP] = !!enable
+    return this
   }
 
   /**
@@ -177,8 +183,8 @@ class Options extends Capabilities {
    * @return {!Options} A self reference.
    */
   requireWindowFocus(require) {
-    this.set(Key.REQUIRE_WINDOW_FOCUS, !!require);
-    return this;
+    this.options_[Key.REQUIRE_WINDOW_FOCUS] = !!require
+    return this
   }
 
   /**
@@ -190,8 +196,8 @@ class Options extends Capabilities {
    * @return {!Options} A self reference.
    */
   browserAttachTimeout(timeout) {
-    this.set(Key.BROWSER_ATTACH_TIMEOUT, Math.max(timeout, 0));
-    return this;
+    this.options_[Key.BROWSER_ATTACH_TIMEOUT] = Math.max(timeout, 0)
+    return this
   }
 
   /**
@@ -204,8 +210,8 @@ class Options extends Capabilities {
    * @return {!Options} A self reference.
    */
   forceCreateProcessApi(force) {
-    this.set(Key.FORCE_CREATE_PROCESS, !!force);
-    return this;
+    this.options_[Key.FORCE_CREATE_PROCESS] = !!force
+    return this
   }
 
   /**
@@ -215,12 +221,32 @@ class Options extends Capabilities {
    * @param {...(string|!Array.<string>)} args The arguments to add.
    * @return {!Options} A self reference.
    */
+
+  addBrowserCommandSwitches(...args) {
+    let current = this.options_[Key.BROWSER_COMMAND_LINE_SWITCHES] || []
+    if (typeof current == 'string') current = current.split(' ')
+    this.options_[Key.BROWSER_COMMAND_LINE_SWITCHES] = current
+      .concat(args)
+      .join(' ')
+    return this
+  }
+
+  /**
+   * Specifies command-line switches to use when launching Internet Explorer.
+   * This is only valid when used with {@link #forceCreateProcessApi}.
+   *
+   * @param {...(string|!Array.<string>)} args The arguments to add.
+   * @deprecated Use {@link #addBrowserCommandSwitches} instead.
+   * @return {!Options} A self reference.
+   */
+
   addArguments(...args) {
-    let current = this.get(Key.BROWSER_COMMAND_LINE_SWITCHES) || [];
-    this.set(
-        Key.BROWSER_COMMAND_LINE_SWITCHES,
-        current.concat.apply(current, args));
-    return this;
+    let current = this.options_[Key.BROWSER_COMMAND_LINE_SWITCHES] || []
+    if (typeof current == 'string') current = current.split(' ')
+    this.options_[Key.BROWSER_COMMAND_LINE_SWITCHES] = current
+      .concat(args)
+      .join(' ')
+    return this
   }
 
   /**
@@ -232,8 +258,8 @@ class Options extends Capabilities {
    * @return {!Options} A self reference.
    */
   usePerProcessProxy(enable) {
-    this.set(Key.USE_PER_PROCESS_PROXY, !!enable);
-    return this;
+    this.options_[Key.USE_PER_PROCESS_PROXY] = !!enable
+    return this
   }
 
   /**
@@ -246,8 +272,8 @@ class Options extends Capabilities {
    * @return {!Options} A self reference.
    */
   ensureCleanSession(cleanSession) {
-    this.set(Key.ENSURE_CLEAN_SESSION, !!cleanSession);
-    return this;
+    this.options_[Key.ENSURE_CLEAN_SESSION] = !!cleanSession
+    return this
   }
 
   /**
@@ -256,8 +282,8 @@ class Options extends Capabilities {
    * @return {!Options} A self reference.
    */
   setLogFile(file) {
-    this.set(Key.LOG_FILE, file);
-    return this;
+    this.options_[Key.LOG_FILE] = file
+    return this
   }
 
   /**
@@ -266,8 +292,8 @@ class Options extends Capabilities {
    * @return {!Options} A self reference.
    */
   setLogLevel(level) {
-    this.set(Key.LOG_LEVEL, level);
-    return this;
+    this.options_[Key.LOG_LEVEL] = level
+    return this
   }
 
   /**
@@ -276,8 +302,8 @@ class Options extends Capabilities {
    * @return {!Options} A self reference.
    */
   setHost(host) {
-    this.set(Key.HOST, host);
-    return this;
+    this.options_[Key.HOST] = host
+    return this
   }
 
   /**
@@ -286,8 +312,8 @@ class Options extends Capabilities {
    * @return {!Options} A self reference.
    */
   setExtractPath(path) {
-    this.set(Key.EXTRACT_PATH, path);
-    return this;
+    this.options_[Key.EXTRACT_PATH] = path
+    return this
   }
 
   /**
@@ -296,11 +322,61 @@ class Options extends Capabilities {
    * @return {!Options} A self reference.
    */
   silent(silent) {
-    this.set(Key.SILENT, silent);
-    return this;
+    this.options_[Key.SILENT] = silent
+    return this
+  }
+
+  /**
+   * The options File Upload Dialog Timeout in milliseconds
+   *
+   * @param {number} timeout How long to wait for IE.
+   * @return {!Options} A self reference.
+   */
+  fileUploadDialogTimeout(timeout) {
+    this.options_[Key.FILE_UPLOAD_DIALOG_TIMEOUT] = Math.max(timeout, 0)
+    return this
+  }
+
+  /**
+   * Sets the path of the EdgeChromium driver.
+   * @param {string} path The EdgeChromium driver path.
+   * @return {!Options} A self reference.
+   */
+  setEdgePath(path) {
+    this.options_[Key.EDGE_EXECUTABLE_PATH] = path
+    return this
+  }
+
+  /**
+   * Sets the IEDriver to drive Chromium-based Edge in Internet Explorer mode.
+   *
+   * @param {boolean} attachEdgeChromium Whether to run in Chromium-based-Edge in IE mode
+   * @return {!Options} A self reference.
+   */
+  setEdgeChromium(attachEdgeChromium) {
+    this.options_[Key.ATTACH_TO_EDGE_CHROMIUM] = !!attachEdgeChromium
+    return this
+  }
+
+  /**
+   * Sets how elements should be scrolled into view for interaction.
+   * @param {number} behavior The desired scroll behavior: either 0 to align with
+   *     the top of the viewport or 1 to align with the bottom.
+   * @return {!Options} A self reference.
+   */
+  setScrollBehavior(behavior) {
+    if (
+      behavior &&
+      behavior !== SCROLL_BEHAVIOUR.TOP &&
+      behavior !== SCROLL_BEHAVIOUR.BOTTOM
+    ) {
+      throw new error.InvalidArgumentError(`Element Scroll Behavior out of range. 
+      It should be either ${SCROLL_BEHAVIOUR.TOP} or ${SCROLL_BEHAVIOUR.BOTTOM}`)
+    }
+    this.options_[Key.ELEMENT_SCROLL_BEHAVIOR] = behavior
+    return this
   }
 }
-
 
 /**
  * _Synchronously_ attempts to locate the IE driver executable on the current
@@ -309,56 +385,56 @@ class Options extends Capabilities {
  * @return {?string} the located executable, or `null`.
  */
 function locateSynchronously() {
-  return process.platform === 'win32'
-      ? io.findInPath(IEDRIVER_EXE, true) : null;
+  return process.platform === 'win32' ? io.findInPath(IEDRIVER_EXE, true) : null
 }
-
 
 function createServiceFromCapabilities(capabilities) {
   if (process.platform !== 'win32') {
     throw Error(
-        'The IEDriver may only be used on Windows, but you appear to be on ' +
-        process.platform + '. Did you mean to run against a remote ' +
-        'WebDriver server?');
+      'The IEDriver may only be used on Windows, but you appear to be on ' +
+        process.platform +
+        '. Did you mean to run against a remote ' +
+        'WebDriver server?'
+    )
   }
 
-  let exe = locateSynchronously();
+  let exe = locateSynchronously()
   if (!exe || !fs.existsSync(exe)) {
     throw Error(
-        `${IEDRIVER_EXE} could not be found on the current PATH. Please ` +
+      `${IEDRIVER_EXE} could not be found on the current PATH. Please ` +
         `download the latest version of ${IEDRIVER_EXE} from ` +
         'http://selenium-release.storage.googleapis.com/index.html and ' +
-        'ensure it can be found on your system PATH.');
+        'ensure it can be found on your system PATH.'
+    )
   }
 
-  var args = [];
+  var args = []
   if (capabilities.has(Key.HOST)) {
-    args.push('--host=' + capabilities.get(Key.HOST));
+    args.push('--host=' + capabilities.get(Key.HOST))
   }
   if (capabilities.has(Key.LOG_FILE)) {
-    args.push('--log-file=' + capabilities.get(Key.LOG_FILE));
+    args.push('--log-file=' + capabilities.get(Key.LOG_FILE))
   }
   if (capabilities.has(Key.LOG_LEVEL)) {
-    args.push('--log-level=' + capabilities.get(Key.LOG_LEVEL));
+    args.push('--log-level=' + capabilities.get(Key.LOG_LEVEL))
   }
   if (capabilities.has(Key.EXTRACT_PATH)) {
-    args.push('--extract-path=' + capabilities.get(Key.EXTRACT_PATH));
+    args.push('--extract-path=' + capabilities.get(Key.EXTRACT_PATH))
   }
   if (capabilities.get(Key.SILENT)) {
-    args.push('--silent');
+    args.push('--silent')
   }
 
-  var port = portprober.findFreePort();
+  var port = portprober.findFreePort()
   return new remote.DriverService(exe, {
     loopback: true,
     port: port,
-    args: port.then(function(port) {
-      return args.concat('--port=' + port);
+    args: port.then(function (port) {
+      return args.concat('--port=' + port)
     }),
-    stdio: 'ignore'
-  });
+    stdio: 'ignore',
+  })
 }
-
 
 /**
  * Creates {@link selenium-webdriver/remote.DriverService} instances that manage
@@ -371,11 +447,10 @@ class ServiceBuilder extends remote.DriverService.Builder {
    *     the builder will attempt to locate the IEDriverServer on the system PATH.
    */
   constructor(opt_exe) {
-    super(opt_exe || IEDRIVER_EXE);
-    this.setLoopback(true);  // Required.
+    super(opt_exe || IEDRIVER_EXE)
+    this.setLoopback(true) // Required.
   }
 }
-
 
 /**
  * A WebDriver client for Microsoft's Internet Explorer.
@@ -390,21 +465,22 @@ class Driver extends webdriver.WebDriver {
    * @return {!Driver} A new driver instance.
    */
   static createSession(options, opt_service) {
-    options = options || new Options();
+    options = options || new Options()
 
-    let service;
+    let service
 
     if (opt_service instanceof remote.DriverService) {
-      service = opt_service;
+      service = opt_service
     } else {
-      service = createServiceFromCapabilities(options);
+      service = createServiceFromCapabilities(options)
     }
 
-    let client = service.start().then(url => new http.HttpClient(url));
-    let executor = new http.Executor(client);
+    let client = service.start().then((url) => new http.HttpClient(url))
+    let executor = new http.Executor(client)
 
-    return /** @type {!Driver} */(super.createSession(
-        executor, options, () => service.kill()));
+    return /** @type {!Driver} */ (super.createSession(executor, options, () =>
+      service.kill()
+    ))
   }
 
   /**
@@ -415,13 +491,13 @@ class Driver extends webdriver.WebDriver {
   setFileDetector() {}
 }
 
-
 // PUBLIC API
 
-
-exports.Driver = Driver;
-exports.Options = Options;
-exports.Level = Level;
-exports.ServiceBuilder = ServiceBuilder;
-exports.locateSynchronously = locateSynchronously;
-
+exports.Driver = Driver
+exports.Options = Options
+exports.Level = Level
+exports.ServiceBuilder = ServiceBuilder
+exports.Key = Key
+exports.VENDOR_COMMAND_PREFIX = OPTIONS_CAPABILITY_KEY
+exports.Behavior = SCROLL_BEHAVIOUR
+exports.locateSynchronously = locateSynchronously

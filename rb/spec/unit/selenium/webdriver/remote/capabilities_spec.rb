@@ -61,7 +61,7 @@ module Selenium
         end
 
         it 'should default to no proxy' do
-          expect(Capabilities.new.proxy).to be_nil
+          expect { Capabilities.new.proxy }.to raise_error(KeyError)
         end
 
         it 'can set and get standard capabilities' do
@@ -109,6 +109,21 @@ module Selenium
         it 'can be serialized and deserialized to JSON' do
           caps = Capabilities.new(browser_name: 'firefox', 'extension:customCapability': true)
           expect(caps).to eq(Capabilities.json_create(caps.as_json))
+        end
+
+        it 'allows to set alwaysMatch' do
+          expected = {'alwaysMatch' => {'browserName' => 'chrome'}}
+          expect(Capabilities.always_match(browser_name: 'chrome').as_json).to eq(expected)
+          expect(Capabilities.always_match('browserName' => 'chrome').as_json).to eq(expected)
+          expect(Capabilities.always_match(Capabilities.chrome).as_json).to eq(expected)
+        end
+
+        it 'allows to set firstMatch' do
+          expected = {'firstMatch' => [{'browserName' => 'chrome'}, {'browserName' => 'firefox'}]}
+          expect(Capabilities.first_match({browser_name: 'chrome'}, {browser_name: 'firefox'}).as_json).to eq(expected)
+          expect(Capabilities.first_match({'browserName' => 'chrome'},
+                                          {'browserName' => 'firefox'}).as_json).to eq(expected)
+          expect(Capabilities.first_match(Capabilities.chrome, Capabilities.firefox).as_json).to eq(expected)
         end
       end
     end # Remote

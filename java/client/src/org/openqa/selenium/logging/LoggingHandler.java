@@ -65,7 +65,7 @@ public class LoggingHandler extends Handler {
   }
 
   @Override
-  public void flush() {
+  public synchronized void flush() {
     records = new ArrayDeque<>();
   }
 

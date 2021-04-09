@@ -54,10 +54,11 @@ module Selenium
 
       context 'when adding a pointer input' do
         it 'should add a PointerInput' do
-          expect(Interactions::PointerInput).to receive(:new).with(:touch, name: 'touch').and_return(:device)
+          allow(Interactions::PointerInput).to receive(:new).with(:touch, name: 'touch').and_return(:device)
           expect(builder).to receive(:add_input).with(:device)
 
           expect(builder.add_pointer_input(:touch, 'touch')).to eq(:device)
+          expect(Interactions::PointerInput).to have_received(:new).with(:touch, name: 'touch')
         end
 
         it 'should not assign the pointer input as primary if not primary' do
@@ -69,10 +70,11 @@ module Selenium
       end # when adding a pointer input
 
       it 'should add a key input' do
-        expect(Interactions::KeyInput).to receive(:new).with('keyboard').and_return(:device)
+        allow(Interactions::KeyInput).to receive(:new).with('keyboard').and_return(:device)
         expect(builder).to receive(:add_input).with(:device)
 
         expect(builder.add_key_input('keyboard')).to eq(:device)
+        expect(Interactions::KeyInput).to have_received(:new).with('keyboard')
       end
 
       it 'should get a device by name' do
@@ -112,8 +114,8 @@ module Selenium
         end
 
         it 'should call bridge#send_actions with encoded and compacted devices' do
-          expect(mouse).to receive(:encode).and_return(nil)
-          expect(keyboard).to receive(:encode).and_return('not_nil')
+          allow(mouse).to receive(:encode).and_return(nil)
+          allow(keyboard).to receive(:encode).and_return('not_nil')
           expect(bridge).to receive(:send_actions).with(['not_nil'])
           allow(builder).to receive(:clear_all_actions)
 

@@ -17,16 +17,12 @@
 
 package com.thoughtworks.selenium.corebased;
 
-import static org.junit.Assume.assumeFalse;
-
 import com.thoughtworks.selenium.InternalSelenseTestBase;
 
 import org.junit.Ignore;
 import org.junit.Test;
-import org.openqa.selenium.WrapsDriver;
 import org.openqa.selenium.environment.GlobalTestEnvironment;
 import org.openqa.selenium.environment.webserver.AppServer;
-import org.openqa.selenium.testing.TestUtilities;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -35,10 +31,6 @@ import java.net.URL;
 public class TestBasicAuth extends InternalSelenseTestBase {
   @Test
   public void testBasicAuth() throws Exception {
-    assumeFalse(
-        "Geckodriver does not support basic auth without user interaction.",
-        selenium instanceof WrapsDriver &&
-        TestUtilities.isFirefox(((WrapsDriver) selenium).getWrappedDriver()));
     selenium.open(getUrl());
     assertEquals(selenium.getTitle(), "Welcome");
   }

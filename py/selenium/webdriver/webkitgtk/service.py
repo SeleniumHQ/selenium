@@ -32,7 +32,7 @@ class Service(service.Service):
          - port : Port the service is running on
          - log_path : Path for the WebKitGTKDriver service to log to
         """
-        log_file = open(log_path, "wb") if log_path is not None and log_path != "" else None
+        log_file = open(log_path, "wb") if log_path else None
         service.Service.__init__(self, executable_path, port, log_file)
 
     def command_line_args(self):

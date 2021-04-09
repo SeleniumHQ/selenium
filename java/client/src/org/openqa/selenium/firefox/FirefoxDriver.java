@@ -17,36 +17,49 @@
 
 package org.openqa.selenium.firefox;
 
-import static java.util.Collections.singletonMap;
-import static org.openqa.selenium.remote.CapabilityType.PROXY;
-
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
-
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.MutableCapabilities;
 import org.openqa.selenium.OutputType;
+import org.openqa.selenium.PersistentCapabilities;
 import org.openqa.selenium.Proxy;
 import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.devtools.CdpEndpointFinder;
+import org.openqa.selenium.devtools.CdpInfo;
+import org.openqa.selenium.devtools.CdpVersionFinder;
+import org.openqa.selenium.devtools.Connection;
+import org.openqa.selenium.devtools.DevTools;
+import org.openqa.selenium.devtools.DevToolsException;
+import org.openqa.selenium.devtools.HasDevTools;
+import org.openqa.selenium.devtools.noop.NoOpCdpInfo;
 import org.openqa.selenium.html5.LocalStorage;
 import org.openqa.selenium.html5.SessionStorage;
 import org.openqa.selenium.html5.WebStorage;
+import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.CommandInfo;
 import org.openqa.selenium.remote.FileDetector;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.remote.Response;
 import org.openqa.selenium.remote.html5.RemoteWebStorage;
+import org.openqa.selenium.remote.http.ClientConfig;
+import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpMethod;
 import org.openqa.selenium.remote.service.DriverCommandExecutor;
 import org.openqa.selenium.remote.service.DriverService;
 
+import java.net.URI;
 import java.nio.file.Path;
-import java.util.Objects;
+import java.util.Optional;
 import java.util.ServiceLoader;
 import java.util.Set;
 import java.util.stream.StreamSupport;
+
+import static java.nio.charset.StandardCharsets.UTF_8;
+import static java.util.Collections.singletonMap;
+import static org.openqa.selenium.remote.CapabilityType.PROXY;
 
 /**
  * An implementation of the {#link WebDriver} interface that drives Firefox.
@@ -63,7 +76,8 @@ import java.util.stream.StreamSupport;
  * WebDriver driver = new FirefoxDriver(options);
  * </pre>
  */
-public class FirefoxDriver extends RemoteWebDriver implements WebStorage, HasExtensions {
+public class FirefoxDriver extends RemoteWebDriver
+  implements WebStorage, HasExtensions, HasDevTools {
 
   public static final class SystemProperty {
 
@@ -102,9 +116,29 @@ public class FirefoxDriver extends RemoteWebDriver implements WebStorage, HasExt
     public static final String DRIVER_USE_MARIONETTE = "webdriver.firefox.marionette";
   }
 
-  public static final String BINARY = "firefox_binary";
-  public static final String PROFILE = "firefox_profile";
-  public static final String MARIONETTE = "marionette";
+  /**
+   * @deprecated Use {@link Capability#BINARY}
+   */
+  @Deprecated
+  public static final String BINARY = Capability.BINARY;
+
+  /**
+   * @deprecated Use {@link Capability#PROFILE}
+   */
+  @Deprecated
+  public static final String PROFILE = Capability.PROFILE;
+
+  /**
+   * @deprecated Use {@link Capability#MARIONETTE}
+   */
+  @Deprecated
+  public static final String MARIONETTE = Capability.MARIONETTE;
+
+  public static final class Capability {
+    public static final String BINARY = "firefox_binary";
+    public static final String PROFILE = "firefox_profile";
+    public static final String MARIONETTE = "marionette";
+  }
 
   private static class ExtraCommands {
     static String INSTALL_EXTENSION = "installExtension";
@@ -127,8 +161,11 @@ public class FirefoxDriver extends RemoteWebDriver implements WebStorage, HasExt
     }
   }
 
+  private final Capabilities capabilities;
   protected FirefoxBinary binary;
-  private RemoteWebStorage webStorage;
+  private final RemoteWebStorage webStorage;
+  private final Optional<URI> cdpUri;
+  private DevTools devTools;
 
   public FirefoxDriver() {
     this(new FirefoxOptions());
@@ -139,7 +176,7 @@ public class FirefoxDriver extends RemoteWebDriver implements WebStorage, HasExt
    */
   @Deprecated
   public FirefoxDriver(Capabilities desiredCapabilities) {
-    this(new FirefoxOptions(Objects.requireNonNull(desiredCapabilities, "No capabilities seen")));
+    this(new FirefoxOptions(Require.nonNull("Capabilities", desiredCapabilities)));
   }
 
   /**
@@ -148,7 +185,7 @@ public class FirefoxDriver extends RemoteWebDriver implements WebStorage, HasExt
   @Deprecated
   public FirefoxDriver(FirefoxDriverService service, Capabilities desiredCapabilities) {
     this(
-        Objects.requireNonNull(service, "No driver service provided"),
+        Require.nonNull("Driver service", service),
         new FirefoxOptions(desiredCapabilities));
   }
 
@@ -167,10 +204,23 @@ public class FirefoxDriver extends RemoteWebDriver implements WebStorage, HasExt
   private FirefoxDriver(FirefoxDriverCommandExecutor executor, FirefoxOptions options) {
     super(executor, dropCapabilities(options));
     webStorage = new RemoteWebStorage(getExecuteMethod());
+
+    Capabilities capabilities = super.getCapabilities();
+    HttpClient.Factory clientFactory = HttpClient.Factory.createDefault();
+    Optional<URI> cdpUri = CdpEndpointFinder.getReportedUri("moz:debuggerAddress", capabilities)
+      .flatMap(reported -> CdpEndpointFinder.getCdpEndPoint(clientFactory, reported));
+
+    this.cdpUri = cdpUri;
+    this.capabilities = cdpUri.map(uri ->
+        new ImmutableCapabilities(
+            new PersistentCapabilities(capabilities)
+                .setCapability("se:cdp", uri.toString())
+                .setCapability("se:cdpVersion", "86")))
+        .orElse(new ImmutableCapabilities(capabilities));
   }
 
   private static FirefoxDriverCommandExecutor toExecutor(FirefoxOptions options) {
-    Objects.requireNonNull(options, "No options to construct executor from");
+    Require.nonNull("Options to construct executor from", options);
 
     String sysProperty = System.getProperty(SystemProperty.DRIVER_USE_MARIONETTE);
     boolean isLegacy = (sysProperty != null && ! Boolean.parseBoolean(sysProperty))
@@ -184,6 +234,11 @@ public class FirefoxDriver extends RemoteWebDriver implements WebStorage, HasExt
             .findFirst().orElseThrow(WebDriverException::new);
 
     return new FirefoxDriverCommandExecutor(builder.withOptions(options).build());
+  }
+
+  @Override
+  public Capabilities getCapabilities() {
+    return capabilities;
   }
 
   @Override
@@ -208,7 +263,7 @@ public class FirefoxDriver extends RemoteWebDriver implements WebStorage, HasExt
     if (forceMarionette != null) {
       return !forceMarionette;
     }
-    Object marionette = desiredCapabilities.getCapability(MARIONETTE);
+    Object marionette = desiredCapabilities.getCapability(Capability.MARIONETTE);
     return marionette instanceof Boolean && ! (Boolean) marionette;
   }
 
@@ -239,7 +294,7 @@ public class FirefoxDriver extends RemoteWebDriver implements WebStorage, HasExt
       String base64EncodedPng = (String) result;
       return outputType.convertFromBase64Png(base64EncodedPng);
     } else if (result instanceof byte[]) {
-      String base64EncodedPng = new String((byte[]) result);
+      String base64EncodedPng = new String((byte[]) result, UTF_8);
       return outputType.convertFromBase64Png(base64EncodedPng);
     } else {
       throw new RuntimeException(String.format("Unexpected result for %s command: %s",
@@ -270,7 +325,7 @@ public class FirefoxDriver extends RemoteWebDriver implements WebStorage, HasExt
     MutableCapabilities caps;
 
     if (isLegacy(capabilities)) {
-      final Set<String> toRemove = Sets.newHashSet(BINARY, PROFILE);
+      final Set<String> toRemove = Sets.newHashSet(Capability.BINARY, Capability.PROFILE);
       caps = new MutableCapabilities(
           Maps.filterKeys(capabilities.asMap(), key -> !toRemove.contains(key)));
     } else {
@@ -284,5 +339,23 @@ public class FirefoxDriver extends RemoteWebDriver implements WebStorage, HasExt
     }
 
     return caps;
+  }
+
+  @Override
+  public DevTools getDevTools() {
+    if (devTools == null) {
+      URI wsUri = cdpUri.orElseThrow(() ->
+          new DevToolsException("This version of Firefox or geckodriver does not support CDP"));
+
+      HttpClient.Factory clientFactory = HttpClient.Factory.createDefault();
+
+      ClientConfig wsConfig = ClientConfig.defaultConfig().baseUri(wsUri);
+      HttpClient wsClient = clientFactory.createClient(wsConfig);
+
+      Connection connection = new Connection(wsClient, wsUri.toString());
+      CdpInfo cdpInfo = new CdpVersionFinder().match("86.0").orElseGet(NoOpCdpInfo::new);
+      devTools = new DevTools(cdpInfo::getDomains, connection);
+    }
+    return devTools;
   }
 }

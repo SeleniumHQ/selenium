@@ -26,7 +26,6 @@ import org.openqa.selenium.remote.http.WebSocket;
 
 import java.io.IOException;
 import java.io.UncheckedIOException;
-import java.net.URL;
 
 public class PassthroughHttpClient implements HttpClient {
 

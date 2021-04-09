@@ -21,14 +21,14 @@ module Selenium
   module WebDriver
     module Chrome
       class Options < WebDriver::Options
-        attr_accessor :profile
+        attr_accessor :profile, :logging_prefs
 
         KEY = 'goog:chromeOptions'
+        BROWSER = 'chrome'
 
         # see: http://chromedriver.chromium.org/capabilities
         CAPABILITIES = {args: 'args',
                         binary: 'binary',
-                        extensions: 'extensions',
                         local_state: 'localState',
                         prefs: 'prefs',
                         detach: 'detach',
@@ -39,15 +39,8 @@ module Selenium
                         perf_logging_prefs: 'perfLoggingPrefs',
                         window_types: 'windowTypes'}.freeze
 
-        CAPABILITIES.each_key do |key|
-          define_method key do
-            @options[key]
-          end
-
-          define_method "#{key}=" do |value|
-            @options[key] = value
-          end
-        end
+        # NOTE: special handling of 'extensions' to validate when set instead of when used
+        attr_reader :extensions
 
         # Create a new Options instance.
         #
@@ -73,12 +66,24 @@ module Selenium
         # @option opts [Array<String>] :window_types A list of window types to appear in the list of window handles
         #
 
-        def initialize(profile: nil, encoded_extensions: nil, **opts)
-          super(opts)
+        def initialize(profile: nil, **opts)
+          super(**opts)
 
           @profile = profile
-          @options[:encoded_extensions] = encoded_extensions if encoded_extensions
-          @options[:extensions]&.each(&method(:validate_extension))
+
+          @options = {args: [],
+                      prefs: {},
+                      emulation: {},
+                      extensions: [],
+                      local_state: {},
+                      exclude_switches: [],
+                      perf_logging_prefs: {},
+                      window_types: []}.merge(@options)
+
+          @logging_prefs = options.delete(:logging_prefs) || {}
+          @encoded_extensions = @options.delete(:encoded_extensions) || []
+          @extensions = []
+          (@options.delete(:extensions)).each(&method(:validate_extension))
         end
 
         #
@@ -93,8 +98,21 @@ module Selenium
 
         def add_extension(path)
           validate_extension(path)
-          @options[:extensions] ||= []
-          @options[:extensions] << path
+        end
+
+        #
+        # Add an extension by local path.
+        #
+        # @example
+        #   extensions = ['/path/to/extension.crx', '/path/to/other.crx']
+        #   options = Selenium::WebDriver::Chrome::Options.new
+        #   options.extensions = extensions
+        #
+        # @param [Array<String>] :extensions A list of paths to (.crx) Chrome extensions to install on startup
+        #
+
+        def extensions=(extensions)
+          extensions.each(&method(:validate_extension))
         end
 
         #
@@ -108,10 +126,8 @@ module Selenium
         #
 
         def add_encoded_extension(encoded)
-          @options[:encoded_extensions] ||= []
-          @options[:encoded_extensions] << encoded
+          @encoded_extensions << encoded
         end
-        alias_method :encoded_extension=, :add_encoded_extension
 
         #
         # Add a command-line argument to use when starting Chrome.
@@ -124,7 +140,6 @@ module Selenium
         #
 
         def add_argument(arg)
-          @options[:args] ||= []
           @options[:args] << arg
         end
 
@@ -140,7 +155,6 @@ module Selenium
         #
 
         def add_preference(name, value)
-          @options[:prefs] ||= {}
           @options[:prefs][name] = value
         end
 
@@ -179,29 +193,26 @@ module Selenium
           @options[:emulation] = opts
         end
 
-        #
-        # @api private
-        #
+        private
 
-        def as_json(*)
-          options = super
-
-          if @profile
-            options['args'] ||= []
-            options['args'] << "--user-data-dir=#{@profile[:directory]}"
-          end
-
-          options['binary'] ||= binary_path if binary_path
-          extensions = options['extensions'] || []
-          encoded_extensions = options.delete(:encoded_extensions) || []
-
-          options['extensions'] = extensions.map(&method(:encode_extension)) + encoded_extensions
-          options.delete('extensions') if options['extensions'].empty?
-
-          {KEY => generate_as_json(options)}
+        def enable_logging(browser_options)
+          browser_options['goog:loggingPrefs'] = @logging_prefs
         end
 
-        private
+        def process_browser_options(browser_options)
+          enable_logging(browser_options) unless @logging_prefs.empty?
+
+          options = browser_options[self.class::KEY]
+          options['binary'] ||= binary_path if binary_path
+          if @profile
+            options['args'] ||= []
+            options['args'] << "--user-data-dir=#{@profile.directory}"
+          end
+
+          return if (@encoded_extensions + @extensions).empty?
+
+          options['extensions'] = @encoded_extensions + @extensions.map(&method(:encode_extension))
+        end
 
         def binary_path
           Chrome.path
@@ -214,6 +225,12 @@ module Selenium
         def validate_extension(path)
           raise Error::WebDriverError, "could not find extension at #{path.inspect}" unless File.file?(path)
           raise Error::WebDriverError, "file was not an extension #{path.inspect}" unless File.extname(path) == '.crx'
+
+          @extensions << path
+        end
+
+        def camelize?(key)
+          !['prefs'].include?(key)
         end
       end # Options
     end # Chrome

@@ -17,13 +17,13 @@
 
 package org.openqa.selenium.netty.server;
 
-import java.util.Objects;
+import org.openqa.selenium.internal.Require;
 
 class WebSocketHandshakeComplete {
   private final String uri;
 
   public WebSocketHandshakeComplete(String uri) {
-    this.uri = Objects.requireNonNull(uri);
+    this.uri = Require.nonNull("URI", uri);
   }
 
   public String uri() {

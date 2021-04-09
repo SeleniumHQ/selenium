@@ -37,9 +37,10 @@ import io.netty.handler.codec.http.websocketx.WebSocketFrame;
 import io.netty.handler.codec.http.websocketx.WebSocketServerHandshaker;
 import io.netty.handler.codec.http.websocketx.WebSocketServerHandshakerFactory;
 import io.netty.util.AttributeKey;
+
+import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.http.Message;
 
-import java.util.Objects;
 import java.util.Optional;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
@@ -64,8 +65,8 @@ class WebSocketUpgradeHandler extends ChannelInboundHandlerAdapter {
   public WebSocketUpgradeHandler(
     AttributeKey<Consumer<Message>> key,
     BiFunction<String, Consumer<Message>, Optional<Consumer<Message>>> factory) {
-    this.key = Objects.requireNonNull(key);
-    this.factory = Objects.requireNonNull(factory);
+    this.key = Require.nonNull("Key", key);
+    this.factory = Require.nonNull("Factory", factory);
   }
 
   @Override
@@ -109,8 +110,7 @@ class WebSocketUpgradeHandler extends ChannelInboundHandlerAdapter {
     Optional<Consumer<Message>> maybeHandler = factory.apply(
       req.uri(),
       msg -> {
-        Objects.requireNonNull(msg, "Message to send must be set.");
-        ctx.channel().writeAndFlush(msg);
+        ctx.channel().writeAndFlush(Require.nonNull("Message to send", msg));
       });
     if (!maybeHandler.isPresent()) {
       sendHttpResponse(ctx, req, new DefaultFullHttpResponse(HTTP_1_1, BAD_REQUEST, ctx.alloc().buffer(0)));

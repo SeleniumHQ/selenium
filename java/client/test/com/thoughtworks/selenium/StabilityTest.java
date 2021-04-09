@@ -17,9 +17,7 @@
 
 package com.thoughtworks.selenium;
 
-import org.junit.Assume;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.openqa.selenium.WrapsDriver;
 

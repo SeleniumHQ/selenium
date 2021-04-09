@@ -1,0 +1,9 @@
+/* encode-sans-regular - latin */
+@font-face {
+    font-family: 'Encode Sans';
+    font-style: normal;
+    font-weight: 400;
+    src: local(''),
+        /* Chrome 26+, Opera 23+, Firefox 39+ */ url('./fonts/encode-sans-v7-latin-regular.woff2') format('woff2'),
+        /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */ url('./fonts/encode-sans-v7-latin-regular.woff') format('woff');
+}

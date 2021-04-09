@@ -1,0 +1,22 @@
+﻿namespace {{rootNamespace}}.{{domain.Name}}
+{
+    using System.Collections.Generic;
+
+    /// <summary>
+    /// {{xml-code-comment type.Description 1}}
+    /// </summary>
+    public sealed class {{className}} : Dictionary<string, string>
+    {
+    {{#each type.Properties}}
+        /// <summary>
+        /// {{xml-code-comment Description 2}}
+        ///</summary>
+        [JsonProperty("{{Name}}"{{#if Optional}}, DefaultValueHandling = DefaultValueHandling.Ignore{{/if}})]
+        public {{typemap ../context}} {{dehumanize Name}}
+        {
+            get;
+            set;
+        }
+    {{/each}}
+    }
+}

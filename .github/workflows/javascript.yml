@@ -1,0 +1,95 @@
+name: JavaScript workflow
+
+on:
+  push:
+    branches:
+      - trunk
+  pull_request:
+    branches:
+      - trunk
+
+jobs:
+  node_tests:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout source tree
+        uses: actions/checkout@v2
+      - name: Cache Bazel artifacts
+        uses: actions/cache@v2
+        with:
+          path: |
+            ~/.cache/bazel-disk
+            ~/.cache/bazel-repo
+          key: ${{ runner.os }}-bazel-node-tests-${{ hashFiles('**/BUILD.bazel') }}
+          restore-keys: |
+            ${{ runner.os }}-bazel-node-tests-
+            ${{ runner.os }}-bazel-build-
+      - name: Setup Node.js
+        uses: actions/setup-node@v1
+        with:
+          node-version: 15
+      - name: Setup Java
+        uses: actions/setup-java@v1
+        with:
+          java-version: 11
+      - name: Setup bazelisk
+        uses: ./.github/actions/setup-bazelisk
+      - name: Setup Firefox and geckodriver
+        uses: ./.github/actions/setup-firefox
+      - name: Start XVFB
+        run: Xvfb :99 &
+      - name: Run JavaScript tests on Firefox
+        uses: ./.github/actions/bazel
+        with:
+          command: test //javascript/node/selenium-webdriver:tests
+        env:
+          DISPLAY: :99
+          SELENIUM_BROWSER: firefox
+
+  firefox_atom_tests:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout source tree
+        uses: actions/checkout@v2
+      - name: Cache Bazel artifacts
+        uses: actions/cache@v2
+        with:
+          path: |
+            ~/.cache/bazel-disk
+            ~/.cache/bazel-repo
+          key: ${{ runner.os }}-bazel-atom-firefox-tests-${{ hashFiles('**/BUILD.bazel') }}
+          restore-keys: |
+            ${{ runner.os }}-bazel-atom-firefox-tests-
+      - name: Setup Java
+        uses: actions/setup-java@v1
+        with:
+          java-version: 11
+      - name: Setup bazelisk
+        uses: ./.github/actions/setup-bazelisk
+      - name: Setup Firefox and geckodriver
+        uses: ./.github/actions/setup-firefox
+      - name: Start XVFB
+        run: Xvfb :99 &
+      - name: Run atom tests on Firefox
+        uses: ./.github/actions/bazel
+        with:
+          command: test --test_tag_filters=firefox //javascript/atoms/... //javascript/selenium-atoms/... //javascript/webdriver/...
+        env:
+          DISPLAY: :99
+          SELENIUM_BROWSER: firefox
+
+  # As soon as this gets merged https://github.com/facebook/jest/pull/9351, we should upgrade Jest and
+  # run bazel test javascript/grid-ui:test for these tests
+  grid_ui_unit_tests:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout source tree
+        uses: actions/checkout@v2
+      - name: Setup Node
+        uses: actions/setup-node@v2
+        with:
+          node-version: '15.x'
+      - name: NPM install
+        run: cd javascript/grid-ui && npm install
+      - name: Run unit tests
+        run: cd javascript/grid-ui && npm test

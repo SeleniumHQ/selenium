@@ -26,8 +26,10 @@ import static org.mockito.Mockito.withSettings;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.openqa.selenium.By;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.MutableCapabilities;
 import org.openqa.selenium.NoSuchElementException;
@@ -42,10 +44,12 @@ import org.openqa.selenium.remote.CommandExecutor;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.remote.Response;
 import org.openqa.selenium.remote.SessionId;
+import org.openqa.selenium.testing.UnitTests;
 
 import java.io.IOException;
 import java.time.Duration;
 
+@Category(UnitTests.class)
 public class WebDriverWaitTest {
 
   @Mock private WebDriver mockDriver;
@@ -86,6 +90,14 @@ public class WebDriverWaitTest {
 
     assertThatExceptionOfType(TimeoutException.class)
         .isThrownBy(() -> wait.until(d -> false));
+  }
+
+  @Test
+  public void shouldThrowAnExceptionFromCorrectThreadIfTheTimerRunsOut() {
+    WebDriverWait wait = new WebDriverWait(mockDriver, Duration.ofSeconds(1));
+    assertThatExceptionOfType(TimeoutException.class)
+      .isThrownBy(() -> wait.until(ExpectedConditions.presenceOfAllElementsLocatedBy(By.cssSelector(".doesntexist"))))
+      .withStackTraceContaining(this.getClass().getName());
   }
 
   @SuppressWarnings("unchecked")

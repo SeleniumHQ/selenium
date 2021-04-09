@@ -574,7 +574,7 @@ bot.dom.isShown = function(elem, opt_ignoreOpacity) {
   /**
    * Determines whether an element or its parents have `display: none` set
    * @param {!Node} e the element
-   * @return {boolean}
+   * @return {!boolean}
    */
   function displayed(e) {
     if (bot.dom.isElement(e)) {
@@ -609,7 +609,7 @@ bot.dom.isShown = function(elem, opt_ignoreOpacity) {
       return false;
     }
 
-    return parent && displayed(parent);
+    return !!parent && displayed(parent);
   }
 
   return bot.dom.isShown_(elem, !!opt_ignoreOpacity, displayed);
@@ -1175,8 +1175,8 @@ bot.dom.appendVisibleTextLinesFromTextNode_ = function(textNode, lines,
   }
 
   if (textTransform == 'capitalize') {
-    text = text.replace(/\b(\S)/g, function() {
-      return arguments[1].toUpperCase();
+    text = text.replace(/(^|[^\d\p{L}\p{S}])([\p{Ll}|\p{S}])/gu, function() {
+      return arguments[1] + arguments[2].toUpperCase();
     });
   } else if (textTransform == 'uppercase') {
     text = text.toUpperCase();

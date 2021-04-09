@@ -17,13 +17,12 @@
 
 package org.openqa.selenium.support.ui;
 
-import static java.util.Objects.requireNonNull;
-
 import com.google.common.base.Throwables;
 import com.google.common.collect.ImmutableList;
 
 import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.internal.Require;
 
 import java.time.Clock;
 import java.time.Duration;
@@ -31,9 +30,6 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
@@ -71,7 +67,7 @@ import java.util.function.Supplier;
  */
 public class FluentWait<T> implements Wait<T> {
 
-  protected final static long DEFAULT_SLEEP_TIMEOUT = 500;
+  protected static final long DEFAULT_SLEEP_TIMEOUT = 500;
 
   private static final Duration DEFAULT_WAIT_DURATION = Duration.ofMillis(DEFAULT_SLEEP_TIMEOUT);
 
@@ -98,9 +94,9 @@ public class FluentWait<T> implements Wait<T> {
    * @param sleeper Used to put the thread to sleep between evaluation loops.
    */
   public FluentWait(T input, java.time.Clock clock, Sleeper sleeper) {
-    this.input = requireNonNull(input);
-    this.clock = requireNonNull(clock);
-    this.sleeper = requireNonNull(sleeper);
+    this.input = Require.nonNull("Input", input);
+    this.clock = Require.nonNull("Clock", clock);
+    this.sleeper = Require.nonNull("Sleeper", sleeper);
   }
 
   /**
@@ -204,70 +200,44 @@ public class FluentWait<T> implements Wait<T> {
    */
   @Override
   public <V> V until(Function<? super T, V> isTrue) {
-    try {
-      return CompletableFuture.supplyAsync(checkConditionInLoop(isTrue))
-          .get(deriveSafeTimeout(), TimeUnit.MILLISECONDS);
-    } catch (ExecutionException cause) {
-      if (cause.getCause() instanceof RuntimeException) {
-        throw (RuntimeException) cause.getCause();
-      } else if (cause.getCause() instanceof Error) {
-        throw (Error) cause.getCause();
+    Instant end = clock.instant().plus(timeout);
+
+    Throwable lastException;
+    while (true) {
+      try {
+        V value = isTrue.apply(input);
+        if (value != null && (Boolean.class != value.getClass() || Boolean.TRUE.equals(value))) {
+          return value;
+        }
+
+        // Clear the last exception; if another retry or timeout exception would
+        // be caused by a false or null value, the last exception is not the
+        // cause of the timeout.
+        lastException = null;
+      } catch (Throwable e) {
+        lastException = propagateIfNotIgnored(e);
       }
 
-      throw new RuntimeException(cause);
-    } catch (InterruptedException cause) {
-      throw new RuntimeException(cause);
-    } catch (java.util.concurrent.TimeoutException cause) {
-      throw new TimeoutException("Supplied function might have stalled", cause);
+      // Check the timeout after evaluating the function to ensure conditions
+      // with a zero timeout can succeed.
+      if (end.isBefore(clock.instant())) {
+        String message = messageSupplier != null ?
+                         messageSupplier.get() : null;
+
+        String timeoutMessage = String.format(
+            "Expected condition failed: %s (tried for %d second(s) with %d milliseconds interval)",
+            message == null ? "waiting for " + isTrue : message,
+            timeout.getSeconds(), interval.toMillis());
+        throw timeoutException(timeoutMessage, lastException);
+      }
+
+      try {
+        sleeper.sleep(interval);
+      } catch (InterruptedException e) {
+        Thread.currentThread().interrupt();
+        throw new WebDriverException(e);
+      }
     }
-  }
-
-  private <V> Supplier<V> checkConditionInLoop(Function<? super T, V> isTrue) {
-    return () -> {
-      Instant end = clock.instant().plus(timeout);
-
-      Throwable lastException;
-      while (true) {
-        //noinspection ProhibitedExceptionCaught
-        try {
-          V value = isTrue.apply(input);
-          if (value != null && (Boolean.class != value.getClass() || Boolean.TRUE.equals(value))) {
-            return value;
-          }
-
-          // Clear the last exception; if another retry or timeout exception would
-          // be caused by a false or null value, the last exception is not the
-          // cause of the timeout.
-          lastException = null;
-        } catch (Throwable e) {
-          lastException = propagateIfNotIgnored(e);
-        }
-
-        // Check the timeout after evaluating the function to ensure conditions
-        // with a zero timeout can succeed.
-        if (end.isBefore(clock.instant())) {
-          String message = messageSupplier != null ? messageSupplier.get() : null;
-
-          String timeoutMessage = String.format(
-              "Expected condition failed: %s (tried for %d second(s) with %d milliseconds interval)",
-              message == null ? "waiting for " + isTrue : message,
-              timeout.getSeconds(), interval.toMillis());
-          throw timeoutException(timeoutMessage, lastException);
-        }
-
-        try {
-          sleeper.sleep(interval);
-        } catch (InterruptedException e) {
-          Thread.currentThread().interrupt();
-          throw new WebDriverException(e);
-        }
-      }
-    };
-  }
-
-  /** This timeout is somewhat arbitrary.  */
-  private long deriveSafeTimeout() {
-    return this.timeout.toMillis() + this.interval.toMillis();
   }
 
   private Throwable propagateIfNotIgnored(Throwable e) {

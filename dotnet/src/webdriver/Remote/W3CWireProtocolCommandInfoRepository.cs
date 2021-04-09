@@ -84,6 +84,8 @@ namespace OpenQA.Selenium.Remote
             this.TryAddCommand(DriverCommand.GetElementAttribute, new CommandInfo(CommandInfo.GetCommand, "/session/{sessionId}/element/{id}/attribute/{name}"));
             this.TryAddCommand(DriverCommand.GetElementProperty, new CommandInfo(CommandInfo.GetCommand, "/session/{sessionId}/element/{id}/property/{name}"));
             this.TryAddCommand(DriverCommand.GetElementValueOfCssProperty, new CommandInfo(CommandInfo.GetCommand, "/session/{sessionId}/element/{id}/css/{name}"));
+            this.TryAddCommand(DriverCommand.GetComputedAccessibleLabel, new CommandInfo(CommandInfo.GetCommand, "/session/{sessionId}/element/{id}/computedlabel"));
+            this.TryAddCommand(DriverCommand.GetComputedAccessibleRole, new CommandInfo(CommandInfo.GetCommand, "/session/{sessionId}/element/{id}/computedrole"));
             this.TryAddCommand(DriverCommand.GetElementText, new CommandInfo(CommandInfo.GetCommand, "/session/{sessionId}/element/{id}/text"));
             this.TryAddCommand(DriverCommand.GetElementTagName, new CommandInfo(CommandInfo.GetCommand, "/session/{sessionId}/element/{id}/name"));
             this.TryAddCommand(DriverCommand.GetElementRect, new CommandInfo(CommandInfo.GetCommand, "/session/{sessionId}/element/{id}/rect"));
@@ -104,6 +106,7 @@ namespace OpenQA.Selenium.Remote
             this.TryAddCommand(DriverCommand.SetAlertValue, new CommandInfo(CommandInfo.PostCommand, "/session/{sessionId}/alert/text"));
             this.TryAddCommand(DriverCommand.Screenshot, new CommandInfo(CommandInfo.GetCommand, "/session/{sessionId}/screenshot"));
             this.TryAddCommand(DriverCommand.ElementScreenshot, new CommandInfo(CommandInfo.GetCommand, "/session/{sessionId}/element/{id}/screenshot"));
+            this.TryAddCommand(DriverCommand.Print, new CommandInfo(CommandInfo.PostCommand, "/session/{sessionId}/print"));
 
             // Commands below here are not included in the W3C specification,
             // but are required for full fidelity of execution with Selenium's
@@ -112,7 +115,7 @@ namespace OpenQA.Selenium.Remote
             this.TryAddCommand(DriverCommand.IsElementDisplayed, new CommandInfo(CommandInfo.GetCommand, "/session/{sessionId}/element/{id}/displayed"));
             this.TryAddCommand(DriverCommand.ElementEquals, new CommandInfo(CommandInfo.GetCommand, "/session/{sessionId}/element/{id}/equals/{other}"));
             this.TryAddCommand(DriverCommand.DefineDriverMapping, new CommandInfo(CommandInfo.PostCommand, "/config/drivers"));
-            this.TryAddCommand(DriverCommand.UploadFile, new CommandInfo(CommandInfo.PostCommand, "/session/{sessionId}/file"));
+            this.TryAddCommand(DriverCommand.UploadFile, new CommandInfo(CommandInfo.PostCommand, "/session/{sessionId}/se/file"));
             this.TryAddCommand(DriverCommand.SetAlertCredentials, new CommandInfo(CommandInfo.PostCommand, "/session/{sessionId}/alert/credentials"));
             this.TryAddCommand(DriverCommand.GetSessionList, new CommandInfo(CommandInfo.GetCommand, "/sessions"));
             this.TryAddCommand(DriverCommand.GetElementLocationOnceScrolledIntoView, new CommandInfo(CommandInfo.GetCommand, "/session/{sessionId}/element/{id}/location_in_view"));

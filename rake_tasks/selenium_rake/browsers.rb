@@ -21,9 +21,6 @@ module SeleniumRake
       'chromiumedge' => {
         driver: 'ChromiumEdge',
       },
-      'blackberry' => {
-        driver: 'BlackBerry',
-      },
       'remote_firefox' => {
         driver: 'Remote',
         deps: [

@@ -22,11 +22,10 @@ import static org.junit.Assert.fail;
 import static org.junit.Assume.assumeFalse;
 import static org.openqa.selenium.WaitingConditions.elementLocationToBe;
 import static org.openqa.selenium.testing.drivers.Browser.CHROME;
-import static org.openqa.selenium.testing.drivers.Browser.EDGE;
-import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
+import static org.openqa.selenium.testing.drivers.Browser.LEGACY_FIREFOX_XPI;
 import static org.openqa.selenium.testing.drivers.Browser.HTMLUNIT;
 import static org.openqa.selenium.testing.drivers.Browser.IE;
-import static org.openqa.selenium.testing.drivers.Browser.MARIONETTE;
+import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
 import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
 
 import org.junit.Test;
@@ -49,19 +48,19 @@ public class DragAndDropTest extends JUnit4TestBase {
 
   @Test
   public void testDragAndDropRelative() {
-    assumeFalse(Browser.detect() == Browser.OPERA &&
+    assumeFalse(Browser.detect() == Browser.LEGACY_OPERA &&
                 TestUtilities.getEffectivePlatform(driver).is(Platform.WINDOWS));
 
     driver.get(pages.dragAndDropPage);
     WebElement img = driver.findElement(By.id("test1"));
     Point expectedLocation = img.getLocation();
-    drag(img, expectedLocation, 150, 200);
+    expectedLocation = drag(img, expectedLocation, 150, 200);
     wait.until(elementLocationToBe(img, expectedLocation));
-    drag(img, expectedLocation, -50, -25);
+    expectedLocation = drag(img, expectedLocation, -50, -25);
     wait.until(elementLocationToBe(img, expectedLocation));
-    drag(img, expectedLocation, 0, 0);
+    expectedLocation = drag(img, expectedLocation, 0, 0);
     wait.until(elementLocationToBe(img, expectedLocation));
-    drag(img, expectedLocation, 1, -1);
+    expectedLocation = drag(img, expectedLocation, 1, -1);
     wait.until(elementLocationToBe(img, expectedLocation));
   }
 
@@ -106,9 +105,8 @@ public class DragAndDropTest extends JUnit4TestBase {
 
   @Test
   @Ignore(value = IE, reason = "IE fails this test if requireWindowFocus=true")
-  @Ignore(MARIONETTE)
+  @Ignore(FIREFOX)
   @NotYetImplemented(SAFARI)
-  @NotYetImplemented(EDGE)
   @NotYetImplemented(CHROME)
   public void testDragAndDropElementWithOffsetInScrolledDiv() {
     driver.get(appServer.whereIs("dragAndDropInsideScrolledDiv.html"));
@@ -126,12 +124,12 @@ public class DragAndDropTest extends JUnit4TestBase {
     driver.get(pages.dragAndDropPage);
     WebElement img = driver.findElement(By.id("test3"));
     Point expectedLocation = img.getLocation();
-    drag(img, expectedLocation, 100, 100);
+    expectedLocation = drag(img, expectedLocation, 100, 100);
     assertThat(img.getLocation()).isEqualTo(expectedLocation);
   }
 
   @Test
-  @Ignore(FIREFOX)
+  @Ignore(LEGACY_FIREFOX_XPI)
   public void testDragTooFar() {
     driver.get(pages.dragAndDropPage);
     Actions actions = new Actions(driver);
@@ -155,7 +153,6 @@ public class DragAndDropTest extends JUnit4TestBase {
   // TODO(dawagner): Remove @NoDriverAfterTest when we can reliably do window resizing
   @Test
   @NotYetImplemented(SAFARI)
-  @NotYetImplemented(EDGE)
   public void testShouldAllowUsersToDragAndDropToElementsOffTheCurrentViewPort() {
     driver.get(pages.dragAndDropPage);
 
@@ -165,16 +162,15 @@ public class DragAndDropTest extends JUnit4TestBase {
     driver.get(pages.dragAndDropPage);
     WebElement img = driver.findElement(By.id("test3"));
     Point expectedLocation = img.getLocation();
-    drag(img, expectedLocation, 100, 100);
+    expectedLocation= drag(img, expectedLocation, 100, 100);
     assertThat(img.getLocation()).isEqualTo(expectedLocation);
   }
 
-  private void drag(WebElement elem, Point expectedLocation,
-                    int moveRightBy, int moveDownBy) {
+  private Point drag(WebElement elem, Point expectedLocation, int moveRightBy, int moveDownBy) {
     new Actions(driver)
-        .dragAndDropBy(elem, moveRightBy, moveDownBy)
-        .perform();
-    expectedLocation.move(expectedLocation.x + moveRightBy, expectedLocation.y + moveDownBy);
+      .dragAndDropBy(elem, moveRightBy, moveDownBy)
+      .perform();
+    return expectedLocation.moveBy(moveRightBy, moveDownBy);
   }
 
   @Test
@@ -209,8 +205,7 @@ public class DragAndDropTest extends JUnit4TestBase {
   @Test
   @Ignore(value = IE, reason = "IE fails this test if requireWindowFocus=true")
   @NotYetImplemented(SAFARI)
-  @Ignore(MARIONETTE)
-  @NotYetImplemented(EDGE)
+  @Ignore(FIREFOX)
   public void canDragAnElementNotVisibleInTheCurrentViewportDueToAParentOverflow() {
     driver.get(pages.dragDropOverflow);
 

@@ -27,6 +27,7 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.PointerInput.Origin;
 import org.openqa.selenium.interactions.internal.MouseAction.Button;
+import org.openqa.selenium.internal.Require;
 
 import java.time.Duration;
 import java.util.Arrays;
@@ -34,7 +35,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Set;
 import java.util.function.IntConsumer;
 import java.util.logging.Logger;
@@ -45,10 +45,12 @@ import java.util.logging.Logger;
  * <p>
  * Implements the builder pattern: Builds a CompositeAction containing all actions specified by the
  * method calls.
+ * <p>
+ * Call {@link #perform()} at the end of the method chain to actually perform the actions.
  */
 public class Actions {
 
-  private final static Logger LOG = Logger.getLogger(Actions.class.getName());
+  private static final Logger LOG = Logger.getLogger(Actions.class.getName());
   private final WebDriver driver;
 
   // W3C
@@ -62,7 +64,7 @@ public class Actions {
   protected CompositeAction action = new CompositeAction();
 
   public Actions(WebDriver driver) {
-    this.driver = Objects.requireNonNull(driver);
+    this.driver = Require.nonNull("Driver", driver);
 
     if (driver instanceof HasInputDevices) {
       HasInputDevices deviceOwner = (HasInputDevices) driver;
@@ -351,7 +353,7 @@ public class Actions {
 
   /**
    * Moves the mouse to the middle of the element. The element is scrolled into view and its
-   * location is calculated using getBoundingClientRect.
+   * location is calculated using getClientRects.
    * @param target element to move to.
    * @return A self reference.
    */
@@ -364,13 +366,12 @@ public class Actions {
   }
 
   /**
-   * Moves the mouse to an offset from the center of the element.
-   * The element is scrolled into view and its location is calculated using getBoundingClientRect.
+   * Moves the mouse to an offset from the element's in-view center point.
    * @param target element to move to.
-   * @param xOffset Offset from the center. A negative value means coordinates left from
-   * the element.
-   * @param yOffset Offset from the center. A negative value means coordinates above
-   * the element.
+   * @param xOffset Offset from the element's in-view center point. A negative value means
+   * an offset left of the point.
+   * @param yOffset Offset from the element's in-view center point. A negative value means
+   * an offset above the point.
    * @return A self reference.
    */
   public Actions moveToElement(WebElement target, int xOffset, int yOffset) {
@@ -380,7 +381,7 @@ public class Actions {
 
     // Of course, this is the offset from the centre of the element. We have no idea what the width
     // and height are once we execute this method.
-    LOG.info("When using the W3C Action commands, offsets are from the center of element");
+    LOG.info("When using the W3C Action commands, offsets are from the element's in-view center point");
     return moveInTicks(target, xOffset, yOffset);
   }
 
@@ -495,7 +496,7 @@ public class Actions {
   }
 
   public Actions pause(Duration duration) {
-    Objects.requireNonNull(duration, "Duration of pause not set");
+    Require.nonNegative("Duration of pause", duration);
     if (isBuildingActions()) {
       action.addAction(new PauseAction(duration.toMillis()));
     }
@@ -550,8 +551,11 @@ public class Actions {
 
   /**
    * Generates a composite action containing all actions so far, ready to be performed (and
-   * resets the internal builder state, so subsequent calls to {@link #build()} will contain fresh
+   * resets the internal builder state, so subsequent calls to this method will contain fresh
    * sequences).
+   * <p>
+   * <b>Warning</b>: you may want to call {@link #perform()} instead to actually perform
+   * the actions.
    *
    * @return the composite action
    */

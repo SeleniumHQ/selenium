@@ -1,0 +1,1 @@
+Used for testing ClassPathResource

@@ -1,4 +1,4 @@
-load("//:copy_file.bzl", "copy_file")
+load("//common:defs.bzl", "copy_file")
 
 copy_file(
     name = "noblur32",

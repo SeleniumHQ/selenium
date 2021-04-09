@@ -23,9 +23,10 @@ import static org.openqa.selenium.remote.CapabilityType.SUPPORTS_APPLICATION_CAC
 import static org.openqa.selenium.remote.CapabilityType.SUPPORTS_LOCATION_CONTEXT;
 import static org.openqa.selenium.remote.CapabilityType.SUPPORTS_SQL_DATABASE;
 import static org.openqa.selenium.remote.CapabilityType.SUPPORTS_WEB_STORAGE;
+import static org.openqa.selenium.testing.drivers.Browser.CHROME;
 import static org.openqa.selenium.testing.drivers.Browser.HTMLUNIT;
 import static org.openqa.selenium.testing.drivers.Browser.IE;
-import static org.openqa.selenium.testing.drivers.Browser.MARIONETTE;
+import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
 import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
 
 import org.junit.After;
@@ -44,7 +45,8 @@ import org.openqa.selenium.testing.drivers.WebDriverBuilder;
 @Ignore(HTMLUNIT)
 @Ignore(IE)
 @Ignore(SAFARI)
-@Ignore(MARIONETTE)
+@Ignore(FIREFOX)
+@Ignore(CHROME)
 public class Html5CapabilitiesTest extends JUnit4TestBase {
 
   private WebDriver localDriver;
@@ -53,7 +55,6 @@ public class Html5CapabilitiesTest extends JUnit4TestBase {
   public void avoidRemote() {
     // TODO: Resolve why these tests don't work on the remote server
     assumeTrue(TestUtilities.isLocal());
-    assumeTrue(TestUtilities.getFirefoxVersion(driver) >= 12);
   }
 
   @Test

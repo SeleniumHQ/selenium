@@ -32,10 +32,16 @@ import static org.openqa.selenium.json.JsonType.STRING;
 import static org.openqa.selenium.json.PropertySetting.BY_NAME;
 
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
+import org.openqa.selenium.testing.UnitTests;
 
 import java.io.StringReader;
 import java.util.Map;
+import java.util.Random;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
+@Category(UnitTests.class)
 public class JsonInputTest {
 
   @Test
@@ -75,6 +81,15 @@ public class JsonInputTest {
     JsonInput input = newInput("\"cheese\"");
     assertThat(input.peek()).isEqualTo(STRING);
     assertThat(input.nextString()).isEqualTo("cheese");
+  }
+
+  @Test
+  public void shouldBeAbleToHandleAnUnterminatedString() {
+    JsonInput input = newInput("\"cheese");
+    assertThat(input.peek()).isEqualTo(STRING);
+    assertThatExceptionOfType(JsonException.class)
+      .isThrownBy(input::nextString)
+      .withMessageStartingWith("Unterminated string");
   }
 
   @Test
@@ -118,7 +133,7 @@ public class JsonInputTest {
   public void callingHasNextWhenNotInAnArrayOrMapIsAnError() {
     JsonInput input = newInput("\"cheese\"");
     assertThatExceptionOfType(JsonException.class)
-        .isThrownBy(input::hasNext);
+      .isThrownBy(input::hasNext);
   }
 
   @Test
@@ -146,10 +161,12 @@ public class JsonInputTest {
 
   @Test
   public void canReadAMapWithManyEntries() {
-    JsonInput input = newInput("{" +
-        "\"cheese\": \"stilton\"," +
-        "\"vegetable\": \"peas\"," +
-        "\"random\": 42}");
+    JsonInput input = newInput(
+      "{"
+      + "\"cheese\": \"stilton\","
+      + "\"vegetable\": \"peas\","
+      + "\"random\": 42"
+      + "}");
 
     assertThat(input.peek()).isEqualTo(START_MAP);
     input.beginObject();
@@ -213,6 +230,32 @@ public class JsonInputTest {
 
       assertThat(obj.getMessage()).isEqualTo("Cheese!");
     }
+  }
+
+  @Test
+  public void shouldBeAbleToReadDataLongerThanReadBuffer() {
+    char[] chars = new char[]{'c', 'h', 'e', 's'};
+    Random r = new Random();
+    String raw = Stream.generate(() -> "" + chars[r.nextInt(4)])
+      .limit(150).collect(Collectors.joining());
+    JsonInput input = newInput("\"" + raw + "\"");
+    assertThat(input.peek()).isEqualTo(STRING);
+    assertThat(input.nextString()).isEqualTo(raw);
+  }
+
+  @Test
+  public void shouldBeAbleToReadNonWellFormedDataLongerThanReadBuffer() {
+    char[] chars = new char[]{'c', 'h', 'e', 's'};
+    Random r = new Random();
+    String raw = Stream.generate(() -> "" + chars[r.nextInt(4)])
+      .limit(150).collect(Collectors.joining());
+    JsonInput input = newInput("\"" + raw);
+    assertThat(input.peek()).isEqualTo(STRING);
+    assertThatExceptionOfType(JsonException.class)
+      .isThrownBy(input::nextString)
+      .withMessageStartingWith(String.format(
+        "Unterminated string: %s. Last 128 characters read: %s",
+        raw, raw.substring(raw.length() - 128)));
   }
 
   private JsonInput newInput(String raw) {

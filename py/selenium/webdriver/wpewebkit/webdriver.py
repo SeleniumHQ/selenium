@@ -45,7 +45,7 @@ class WebDriver(RemoteWebDriver):
          - desired_capabilities : Dictionary object with desired capabilities
          - service_log_path : Path to write service stdout and stderr output.
         """
-        if options is not None:
+        if options:
             capabilities = options.to_capabilities()
             capabilities.update(desired_capabilities)
             desired_capabilities = capabilities

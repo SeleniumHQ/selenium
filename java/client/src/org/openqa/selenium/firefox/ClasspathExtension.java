@@ -49,7 +49,9 @@ public class ClasspathExtension implements Extension {
     File extractedXpi = new File(holdingPen, loadFrom);
     File parentDir = extractedXpi.getParentFile();
     if (!parentDir.exists()) {
-      parentDir.mkdirs();
+      if (!parentDir.mkdirs()) {
+        throw new IOException("Unable to create directory for extracted extension");
+      }
     }
 
     URL resourceUrl = Resources.getResource(loadResourcesUsing, loadFrom);
