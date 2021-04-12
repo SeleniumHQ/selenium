@@ -74,12 +74,15 @@ public class LocalNewSessionQueue extends NewSessionQueue {
   private final ScheduledExecutorService executorService =
     Executors.newSingleThreadScheduledExecutor();
   private final Thread shutdownHook = new Thread(this::callExecutorShutdown);
-  private final String timedOutErrorMessage =
-    String.format( "New session request rejected after being in the queue for more than %s",
-      requestTimeout);
+  private final String timedOutErrorMessage = String.format(
+    "New session request rejected after being in the queue for more than %s",
+    format(requestTimeout));
 
-  public LocalNewSessionQueue(Tracer tracer, EventBus bus, Duration retryInterval,
-                              Duration requestTimeout) {
+  public LocalNewSessionQueue(
+    Tracer tracer,
+    EventBus bus,
+    Duration retryInterval,
+    Duration requestTimeout) {
     super(tracer, retryInterval, requestTimeout);
     this.bus = Require.nonNull("Event bus", bus);
     Runtime.getRuntime().addShutdownHook(shutdownHook);
@@ -300,6 +303,22 @@ public class LocalNewSessionQueue extends NewSessionQueue {
   public void callExecutorShutdown() {
     LOG.info("Shutting down session queue executor service");
     executorService.shutdown();
+  }
+
+  private static String format(Duration duration) {
+    long hours = duration.toHours();
+    int minutes = (int) duration.toMinutes() % 60;
+    int secs = (int) (duration.getSeconds() % 60);
+
+    StringBuilder toReturn = new StringBuilder();
+    if (hours != 0) {
+      toReturn.append(hours).append("h ");
+    }
+    if (hours != 0 || minutes != 0) {
+      toReturn.append(minutes).append("m ");
+    }
+    toReturn.append(secs).append("s");
+    return toReturn.toString();
   }
 }
 
