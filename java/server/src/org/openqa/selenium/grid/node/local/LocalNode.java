@@ -461,7 +461,7 @@ public class LocalNode extends Node {
   private URI rewrite(String path) {
     try {
       return new URI(
-        gridUri.getScheme(),
+        "ws",
         gridUri.getUserInfo(),
         gridUri.getHost(),
         gridUri.getPort(),
