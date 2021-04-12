@@ -166,7 +166,8 @@ class Log():
         import_cdp()
         ws_url = None
         if self.driver.caps.get("se:cdp"):
-            version, ws_url = self.driver.caps.get("se:cdp")
+            ws_url = self.driver.caps.get("se:cdp")
+            version = self.driver.caps.get("se:cdpVersion").split(".")[0]
         else:
             version, ws_url = self._get_cdp_details()
 
