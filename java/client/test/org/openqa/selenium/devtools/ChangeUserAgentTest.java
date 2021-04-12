@@ -17,22 +17,23 @@
 
 package org.openqa.selenium.devtools;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 import org.junit.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.devtools.idealized.Network;
+import org.openqa.selenium.testing.NotYetImplemented;
+import org.openqa.selenium.testing.drivers.Browser;
 
 import java.util.Map;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeoutException;
 import java.util.stream.Collectors;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class ChangeUserAgentTest extends DevToolsTestBase {
 
   @Test
-  public void canChangeUserAgent() throws InterruptedException, ExecutionException, TimeoutException {
+  @NotYetImplemented(value = Browser.FIREFOX, reason = "Network interception not yet supported")
+  public void canChangeUserAgent() {
     devTools.getDomains().network().setUserAgent(
       new Network.UserAgent("Camembert 1.0")
         .platform("FreeBSD").acceptLanguage("da, en-gb, *"));
