@@ -239,7 +239,7 @@ def server(request):
 @pytest.fixture(autouse=True, scope='session')
 def webserver():
     host = get_lan_ip()
-    print(f"The host is ${host}")
+    print(f"The host is {host}")
     webserver = SimpleWebServer(host=host)
     webserver.start()
     yield webserver
