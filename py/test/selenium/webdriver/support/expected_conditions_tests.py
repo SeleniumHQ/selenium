@@ -18,7 +18,6 @@
 import pytest
 
 from selenium.common.exceptions import TimeoutException
-from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
@@ -66,17 +65,20 @@ def test_none_of_false(driver, pages):
         WebDriverWait(driver, 0.1).until(EC.none_of(
             EC.title_is("Nope"), EC.title_is("Hello WebDriver")))
 
+
 def test_clickable_locator_true(driver, pages):
     pages.load("simpleTest.html")
     WebDriverWait(driver, 0.1).until(
         EC.element_to_be_clickable((By.ID, "multilinelink")))
 
+
 def test_clickable_locator_false(driver, pages):
     pages.load("simpleTest.html")
-    with pytest.raises(NoSuchElementException):
+    with pytest.raises(TimeoutException):
         # text element, should not be clickable
         WebDriverWait(driver, 0.1).until(
-            EC.element_to_be_clickable((By.ID, "trimmedSpace")))
+            EC.element_to_be_clickable((By.ID, "hiddenline")))
+
 
 def test_clickable_element_true(driver, pages):
     pages.load("simpleTest.html")
@@ -84,9 +86,10 @@ def test_clickable_element_true(driver, pages):
     element = driver.find_element(*target)  # grab element at locator
     WebDriverWait(driver, 0.1).until(EC.element_to_be_clickable(element))
 
+
 def test_clickable_element_false(driver, pages):
     pages.load("simpleTest.html")
-    with pytest.raises(NoSuchElementException):
-        target = (By.ID, "trimmedSpace") # text, should not be clickable
+    with pytest.raises(TimeoutException):
+        target = (By.ID, "hiddenline") # text, should not be clickable
         element = driver.find_element(*target)  # grab element at locator
         WebDriverWait(driver, 0.1).until(EC.element_to_be_clickable(element))
