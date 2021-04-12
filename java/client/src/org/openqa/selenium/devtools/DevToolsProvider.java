@@ -41,7 +41,10 @@ public class DevToolsProvider implements AugmenterProvider<HasDevTools> {
 
   @Override
   public HasDevTools getImplementation(Capabilities caps, ExecuteMethod executeMethod) {
-    CdpInfo info = new CdpVersionFinder().match(caps.getBrowserVersion()).orElseGet(NoOpCdpInfo::new);
+    Object cdpVersion = caps.getCapability("se:cdpVersion");
+    String version = cdpVersion instanceof String ? (String) cdpVersion : caps.getBrowserVersion();
+
+    CdpInfo info = new CdpVersionFinder().match(version).orElseGet(NoOpCdpInfo::new);
     Optional<DevTools> devTools = SeleniumCdpConnection.create(caps).map(conn -> new DevTools(info::getDomains, conn));
 
     return () -> devTools.orElseThrow(() -> new IllegalStateException("Unable to create connection to " + caps));
