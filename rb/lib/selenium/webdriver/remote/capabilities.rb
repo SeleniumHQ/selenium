@@ -40,21 +40,14 @@ module Selenium
           :unhandled_prompt_behavior,
           :strict_file_interactability,
 
-          # remote-specific
-          :remote_session_id,
-
-          # TODO: (AR) deprecate compatibility with OSS-capabilities
-          :implicit_timeout,
-          :page_load_timeout,
-          :script_timeout
+          # remote-specific (webdriver.remote.sessionid)
+          :remote_session_id
         ].freeze
 
         KNOWN.each do |key|
           define_method key do
             @capabilities.fetch(key)
           end
-
-          next if key == :proxy
 
           define_method "#{key}=" do |value|
             @capabilities[key] = value
@@ -89,16 +82,10 @@ module Selenium
           alias_method :microsoftedge, :edge
 
           def firefox(opts = {})
-            opts[:browser_version] = opts.delete(:version) if opts.key?(:version)
-            opts[:platform_name] = opts.delete(:platform) if opts.key?(:platform)
-            opts[:timeouts] = {}
-            opts[:timeouts]['implicit'] = opts.delete(:implicit_timeout) if opts.key?(:implicit_timeout)
-            opts[:timeouts]['pageLoad'] = opts.delete(:page_load_timeout) if opts.key?(:page_load_timeout)
-            opts[:timeouts]['script'] = opts.delete(:script_timeout) if opts.key?(:script_timeout)
-            opts.delete(:timeouts) if opts[:timeouts].empty?
-            new({browser_name: 'firefox'}.merge(opts))
+            new({
+              browser_name: 'firefox'
+            }.merge(opts))
           end
-
           alias_method :ff, :firefox
 
           def safari(opts = {})
@@ -135,12 +122,7 @@ module Selenium
 
           def json_create(data)
             data = data.dup
-
             caps = new
-            (KNOWN - %i[timeouts proxy]).each do |cap|
-              data_value = camel_case(cap)
-              caps[cap] = data.delete(data_value) if data.key?(data_value)
-            end
 
             process_timeouts(caps, data.delete('timeouts'))
 
@@ -152,6 +134,11 @@ module Selenium
             # Remote Server Specific
             if data.key?('webdriver.remote.sessionid')
               caps[:remote_session_id] = data.delete('webdriver.remote.sessionid')
+            end
+
+            KNOWN.each do |cap|
+              data_value = camel_case(cap)
+              caps[cap] = data.delete(data_value) if data.key?(data_value)
             end
 
             # any remaining pairs will be added as is, with no conversion
@@ -223,6 +210,34 @@ module Selenium
           else
             raise TypeError, "expected Hash or #{Proxy.name}, got #{proxy.inspect}:#{proxy.class}"
           end
+        end
+
+        def timeouts
+          @capabilities[:timeouts] ||= {}
+        end
+
+        def implicit_timeout
+          timeouts[:implicit]
+        end
+
+        def implicit_timeout=(timeout)
+          timeouts[:implicit] = timeout
+        end
+
+        def page_load_timeout
+          timeouts[:page_load] || timeouts[:pageLoad]
+        end
+
+        def page_load_timeout=(timeout)
+          timeouts[:page_load] = timeout
+        end
+
+        def script_timeout
+          timeouts[:script]
+        end
+
+        def script_timeout=(timeout)
+          timeouts[:script] = timeout
         end
 
         #
