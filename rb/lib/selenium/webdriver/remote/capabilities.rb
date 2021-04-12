@@ -44,7 +44,7 @@ module Selenium
           :remote_session_id
         ].freeze
 
-        KNOWN.each do |key|
+        (KNOWN - %i[proxy timeouts]).each do |key|
           define_method key do
             @capabilities.fetch(key)
           end
@@ -201,6 +201,10 @@ module Selenium
           end
         end
 
+        def proxy
+          @capabilities.fetch(:proxy)
+        end
+
         def proxy=(proxy)
           case proxy
           when Hash
@@ -214,6 +218,10 @@ module Selenium
 
         def timeouts
           @capabilities[:timeouts] ||= {}
+        end
+
+        def timeouts=(timeouts)
+          @capabilities[:timeouts] = timeouts
         end
 
         def implicit_timeout
