@@ -17,40 +17,26 @@
 
 package org.openqa.selenium.grid.sessionqueue;
 
-import org.openqa.selenium.Capabilities;
-import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.grid.data.RequestId;
 import org.openqa.selenium.grid.security.RequiresSecretFilter;
 import org.openqa.selenium.grid.security.Secret;
 import org.openqa.selenium.internal.Require;
-import org.openqa.selenium.remote.NewSessionPayload;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.remote.http.Routable;
 import org.openqa.selenium.remote.http.Route;
-import org.openqa.selenium.remote.tracing.AttributeKey;
-import org.openqa.selenium.remote.tracing.EventAttribute;
-import org.openqa.selenium.remote.tracing.EventAttributeValue;
-import org.openqa.selenium.remote.tracing.Span;
 import org.openqa.selenium.remote.tracing.Tracer;
 import org.openqa.selenium.status.HasReadyState;
 
-import java.io.IOException;
-import java.io.Reader;
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 
-import static org.openqa.selenium.remote.http.Contents.reader;
 import static org.openqa.selenium.remote.http.Route.combine;
 import static org.openqa.selenium.remote.http.Route.delete;
 import static org.openqa.selenium.remote.http.Route.get;
 import static org.openqa.selenium.remote.http.Route.post;
-import static org.openqa.selenium.remote.tracing.Tags.EXCEPTION;
 
 public abstract class NewSessionQueuer implements HasReadyState, Routable {
 
@@ -64,7 +50,6 @@ public abstract class NewSessionQueuer implements HasReadyState, Routable {
     RequiresSecretFilter requiresSecret = new RequiresSecretFilter(registrationSecret);
 
     routes = combine(
-
       post("/session")
         .to(() -> this::addToQueue),
       post("/se/grid/newsessionqueuer/session")
@@ -84,38 +69,6 @@ public abstract class NewSessionQueuer implements HasReadyState, Routable {
 
   private RequestId requestIdFrom(Map<String, String> params) {
     return new RequestId(UUID.fromString(params.get("requestId")));
-  }
-
-  public void validateSessionRequest(HttpRequest request) {
-    try (Span span = tracer.getCurrentContext().createSpan("newsession_queuer.validate")) {
-      Map<String, EventAttributeValue> attributeMap = new HashMap<>();
-      try (
-        Reader reader = reader(request);
-        NewSessionPayload payload = NewSessionPayload.create(reader)) {
-        Objects.requireNonNull(payload, "Requests to process must be set.");
-        attributeMap.put("request.payload", EventAttribute.setValue(payload.toString()));
-
-        Iterator<Capabilities> iterator = payload.stream().iterator();
-        if (!iterator.hasNext()) {
-          SessionNotCreatedException exception =
-            new SessionNotCreatedException("No capabilities found");
-          EXCEPTION.accept(attributeMap, exception);
-          attributeMap.put(
-            AttributeKey.EXCEPTION_MESSAGE.getKey(), EventAttribute.setValue(exception.getMessage()));
-          span.addEvent(AttributeKey.EXCEPTION_EVENT.getKey(), attributeMap);
-          throw exception;
-        }
-      } catch (IOException e) {
-        SessionNotCreatedException exception = new SessionNotCreatedException(e.getMessage(), e);
-        EXCEPTION.accept(attributeMap, exception);
-        String errorMessage = "IOException while reading the request payload. " +
-          exception.getMessage();
-        attributeMap.put(
-          AttributeKey.EXCEPTION_MESSAGE.getKey(), EventAttribute.setValue(errorMessage));
-        span.addEvent(AttributeKey.EXCEPTION_EVENT.getKey(), attributeMap);
-        throw exception;
-      }
-    }
   }
 
   public abstract HttpResponse addToQueue(HttpRequest request);

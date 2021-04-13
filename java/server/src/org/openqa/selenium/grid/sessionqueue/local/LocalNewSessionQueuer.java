@@ -17,6 +17,8 @@
 
 package org.openqa.selenium.grid.sessionqueue.local;
 
+import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.events.EventBus;
 import org.openqa.selenium.grid.config.Config;
 import org.openqa.selenium.grid.data.RequestId;
@@ -29,13 +31,27 @@ import org.openqa.selenium.grid.sessionqueue.NewSessionQueue;
 import org.openqa.selenium.grid.sessionqueue.NewSessionQueuer;
 import org.openqa.selenium.grid.sessionqueue.config.NewSessionQueueOptions;
 import org.openqa.selenium.internal.Require;
+import org.openqa.selenium.remote.NewSessionPayload;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
+import org.openqa.selenium.remote.tracing.AttributeKey;
+import org.openqa.selenium.remote.tracing.EventAttribute;
+import org.openqa.selenium.remote.tracing.EventAttributeValue;
+import org.openqa.selenium.remote.tracing.Span;
 import org.openqa.selenium.remote.tracing.Tracer;
 
+import java.io.IOException;
+import java.io.Reader;
 import java.time.Duration;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
+
+import static org.openqa.selenium.remote.http.Contents.reader;
+import static org.openqa.selenium.remote.tracing.Tags.EXCEPTION;
 
 public class LocalNewSessionQueuer extends NewSessionQueuer {
 
@@ -103,5 +119,36 @@ public class LocalNewSessionQueuer extends NewSessionQueuer {
     return bus.isReady();
   }
 
+  private void validateSessionRequest(HttpRequest request) {
+    try (Span span = tracer.getCurrentContext().createSpan("newsession_queuer.validate")) {
+      Map<String, EventAttributeValue> attributeMap = new HashMap<>();
+      try (
+        Reader reader = reader(request);
+        NewSessionPayload payload = NewSessionPayload.create(reader)) {
+        Objects.requireNonNull(payload, "Requests to process must be set.");
+        attributeMap.put("request.payload", EventAttribute.setValue(payload.toString()));
+
+        Iterator<Capabilities> iterator = payload.stream().iterator();
+        if (!iterator.hasNext()) {
+          SessionNotCreatedException exception =
+            new SessionNotCreatedException("No capabilities found");
+          EXCEPTION.accept(attributeMap, exception);
+          attributeMap.put(
+            AttributeKey.EXCEPTION_MESSAGE.getKey(), EventAttribute.setValue(exception.getMessage()));
+          span.addEvent(AttributeKey.EXCEPTION_EVENT.getKey(), attributeMap);
+          throw exception;
+        }
+      } catch (IOException e) {
+        SessionNotCreatedException exception = new SessionNotCreatedException(e.getMessage(), e);
+        EXCEPTION.accept(attributeMap, exception);
+        String errorMessage = "IOException while reading the request payload. " +
+          exception.getMessage();
+        attributeMap.put(
+          AttributeKey.EXCEPTION_MESSAGE.getKey(), EventAttribute.setValue(errorMessage));
+        span.addEvent(AttributeKey.EXCEPTION_EVENT.getKey(), attributeMap);
+        throw exception;
+      }
+    }
+  }
 }
 
