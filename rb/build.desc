@@ -346,7 +346,9 @@ ruby_library(name = "devtools",
     deps = [
       ":cdp-v85",
       ":cdp-v88",
-      ":cdp-v89"
+      ":cdp-v89",
+      ":cdp-v90",
+      ":cdp-v91"
     ]
 )
 
@@ -395,6 +397,38 @@ ruby_class_call(name = "cdp-v89",
   resources = [
     { "//common/devtools/chromium/v89:browser_protocol": "rb/lib/selenium/webdriver/support/cdp/browser_protocol.json" },
     { "//common/devtools/chromium/v89:js_protocol": "rb/lib/selenium/webdriver/support/cdp/js_protocol.json" }
+  ]
+)
+
+ruby_class_call(name = "cdp-v90",
+  klass = "Selenium::WebDriver::Support::CDPClientGenerator",
+  require = "rb/lib/selenium/webdriver/support/cdp_client_generator",
+  output_dir = "rb/lib/selenium/devtools",
+  version = "v90",
+  srcs = [
+    "lib/selenium/webdriver/support/cdp",
+    "lib/selenium/webdriver/support/cdp/**/*",
+    "lib/selenium/webdriver/support/cdp_client_generator.rb"
+  ],
+  resources = [
+    { "//common/devtools/chromium/v90:browser_protocol": "rb/lib/selenium/webdriver/support/cdp/browser_protocol.json" },
+    { "//common/devtools/chromium/v90:js_protocol": "rb/lib/selenium/webdriver/support/cdp/js_protocol.json" }
+  ]
+)
+
+ruby_class_call(name = "cdp-v91",
+  klass = "Selenium::WebDriver::Support::CDPClientGenerator",
+  require = "rb/lib/selenium/webdriver/support/cdp_client_generator",
+  output_dir = "rb/lib/selenium/devtools",
+  version = "v91",
+  srcs = [
+    "lib/selenium/webdriver/support/cdp",
+    "lib/selenium/webdriver/support/cdp/**/*",
+    "lib/selenium/webdriver/support/cdp_client_generator.rb"
+  ],
+  resources = [
+    { "//common/devtools/chromium/v91:browser_protocol": "rb/lib/selenium/webdriver/support/cdp/browser_protocol.json" },
+    { "//common/devtools/chromium/v91:js_protocol": "rb/lib/selenium/webdriver/support/cdp/js_protocol.json" }
   ]
 )
 
