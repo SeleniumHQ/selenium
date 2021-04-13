@@ -10,6 +10,7 @@ java_library(
         "//java/server/test/org/openqa/selenium/grid/sessionqueue:__pkg__",
     ],
     deps = [
+        "//java/client/src/org/openqa/selenium/json",
         "//java/client/src/org/openqa/selenium/remote",
         "//java/server/src/org/openqa/selenium/grid/config",
         "//java/server/src/org/openqa/selenium/grid/data",

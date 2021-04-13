@@ -42,11 +42,11 @@ public abstract class NewSessionQueue implements HasReadyState {
     this.requestTimeout = Require.nonNull("Session request timeout", requestTimeout);
   }
 
-  public abstract boolean offerLast(HttpRequest request, RequestId requestId);
+  public abstract boolean offerLast(SessionRequest request);
 
-  public abstract boolean offerFirst(HttpRequest request, RequestId requestId);
+  public abstract boolean offerFirst(SessionRequest request);
 
-  public abstract Optional<HttpRequest> remove(RequestId requestId);
+  public abstract Optional<SessionRequest> remove(RequestId requestId);
 
   public abstract int clear();
 
@@ -57,13 +57,11 @@ public abstract class NewSessionQueue implements HasReadyState {
   public void addRequestHeaders(HttpRequest request, RequestId reqId) {
     long timestamp = Instant.now().getEpochSecond();
     request.addHeader(SESSIONREQUEST_TIMESTAMP_HEADER, Long.toString(timestamp));
-
     request.addHeader(SESSIONREQUEST_ID_HEADER, reqId.toString());
   }
 
-  public boolean hasRequestTimedOut(HttpRequest request) {
-    String enqueTimestampStr = request.getHeader(SESSIONREQUEST_TIMESTAMP_HEADER);
-    Instant enque = Instant.ofEpochSecond(Long.parseLong(enqueTimestampStr));
+  public boolean hasRequestTimedOut(SessionRequest request) {
+    Instant enque = request.getEnqueued();
     Instant deque = Instant.now();
     Duration duration = Duration.between(enque, deque);
 

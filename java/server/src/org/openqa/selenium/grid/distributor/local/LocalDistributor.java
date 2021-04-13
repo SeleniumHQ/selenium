@@ -18,7 +18,6 @@
 package org.openqa.selenium.grid.distributor.local;
 
 import com.google.common.collect.ImmutableSet;
-
 import org.openqa.selenium.Beta;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
@@ -59,11 +58,11 @@ import org.openqa.selenium.grid.server.NetworkOptions;
 import org.openqa.selenium.grid.sessionmap.SessionMap;
 import org.openqa.selenium.grid.sessionmap.config.SessionMapOptions;
 import org.openqa.selenium.grid.sessionqueue.NewSessionQueuer;
+import org.openqa.selenium.grid.sessionqueue.SessionRequest;
 import org.openqa.selenium.grid.sessionqueue.config.NewSessionQueuerOptions;
 import org.openqa.selenium.internal.Either;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.http.HttpClient;
-import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.tracing.AttributeKey;
 import org.openqa.selenium.remote.tracing.EventAttribute;
 import org.openqa.selenium.remote.tracing.EventAttributeValue;
@@ -94,7 +93,6 @@ import java.util.logging.Logger;
 import static com.google.common.collect.ImmutableSet.toImmutableSet;
 import static org.openqa.selenium.grid.data.Availability.DOWN;
 import static org.openqa.selenium.grid.data.Availability.DRAINING;
-import static org.openqa.selenium.remote.tracing.HttpTracing.newSpanAsChildOf;
 
 public class LocalDistributor extends Distributor {
 
@@ -395,10 +393,10 @@ public class LocalDistributor extends Distributor {
           if (hasCapacity) {
             RequestId reqId = requestIds.poll();
             if (reqId != null) {
-              Optional<HttpRequest> optionalHttpRequest = sessionRequests.remove(reqId);
+              Optional<SessionRequest> maybeRequest = sessionRequests.remove(reqId);
               // Check if polling the queue did not return null
-              if (optionalHttpRequest.isPresent()) {
-                handleNewSessionRequest(optionalHttpRequest.get(), reqId);
+              if (maybeRequest.isPresent()) {
+                handleNewSessionRequest(maybeRequest.get(), reqId);
               } else {
                 fireSessionRejectedEvent(
                   "Unable to poll request from the new session request queue.",
@@ -412,8 +410,8 @@ public class LocalDistributor extends Distributor {
       }
     }
 
-    private void handleNewSessionRequest(HttpRequest sessionRequest, RequestId reqId) {
-      try (Span span = newSpanAsChildOf(tracer, sessionRequest, "distributor.poll_queue")) {
+    private void handleNewSessionRequest(SessionRequest sessionRequest, RequestId reqId) {
+      try (Span span = tracer.getCurrentContext().createSpan("distributor.poll_queue")) {
         Map<String, EventAttributeValue> attributeMap = new HashMap<>();
         attributeMap.put(
           AttributeKey.LOGGER_CLASS.getKey(),
@@ -439,7 +437,7 @@ public class LocalDistributor extends Distributor {
           SessionNotCreatedException exception = response.left();
 
           if (exception instanceof RetrySessionRequestException) {
-            boolean retried = sessionRequests.retryAddToQueue(sessionRequest, reqId);
+            boolean retried = sessionRequests.retryAddToQueue(sessionRequest);
 
             attributeMap.put("request.retry_add", EventAttribute.setValue(retried));
             span.addEvent("Retry adding to front of queue. No slot available.", attributeMap);

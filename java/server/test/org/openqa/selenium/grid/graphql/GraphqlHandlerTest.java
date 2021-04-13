@@ -24,6 +24,8 @@ import static org.assertj.core.api.Assertions.fail;
 import static org.assertj.core.api.InstanceOfAssertFactories.LIST;
 import static org.assertj.core.api.InstanceOfAssertFactories.MAP;
 import static org.openqa.selenium.json.Json.MAP_TYPE;
+import static org.openqa.selenium.remote.Dialect.OSS;
+import static org.openqa.selenium.remote.Dialect.W3C;
 import static org.openqa.selenium.remote.http.Contents.asJson;
 import static org.openqa.selenium.remote.http.Contents.utf8String;
 import static org.openqa.selenium.remote.http.HttpMethod.GET;
@@ -54,6 +56,7 @@ import org.openqa.selenium.grid.security.Secret;
 import org.openqa.selenium.grid.sessionmap.SessionMap;
 import org.openqa.selenium.grid.sessionmap.local.LocalSessionMap;
 import org.openqa.selenium.grid.sessionqueue.NewSessionQueuer;
+import org.openqa.selenium.grid.sessionqueue.SessionRequest;
 import org.openqa.selenium.grid.sessionqueue.local.LocalNewSessionQueue;
 import org.openqa.selenium.grid.sessionqueue.local.LocalNewSessionQueuer;
 import org.openqa.selenium.grid.testing.TestSessionFactory;
@@ -95,7 +98,7 @@ public class GraphqlHandlerTest {
   private ImmutableCapabilities caps;
   private ImmutableCapabilities stereotype;
   private LocalNewSessionQueue localNewSessionQueue;
-  private NewSessionPayload payload;
+  private SessionRequest sessionRequest;
 
   public GraphqlHandlerTest() throws URISyntaxException {
   }
@@ -109,7 +112,11 @@ public class GraphqlHandlerTest {
     SessionMap sessions = new LocalSessionMap(tracer, events);
     stereotype = new ImmutableCapabilities("browserName", "cheese");
     caps = new ImmutableCapabilities("browserName", "cheese");
-    payload = NewSessionPayload.create(caps);
+    sessionRequest = new SessionRequest(
+      new RequestId(UUID.randomUUID()),
+      Instant.now(),
+      Set.of(OSS, W3C),
+      Set.of(caps));
 
     localNewSessionQueue = new LocalNewSessionQueue(
       tracer,
@@ -161,13 +168,13 @@ public class GraphqlHandlerTest {
 
   @Test
   public void shouldBeAbleToGetSessionQueueSize() {
-    HttpRequest request = new HttpRequest(POST, "/session");
-    request.setContent(asJson(
-      ImmutableMap.of(
-        "capabilities", ImmutableMap.of(
-          "alwaysMatch", caps))));
+    SessionRequest request = new SessionRequest(
+      new RequestId(UUID.randomUUID()),
+      Instant.now(),
+      Set.of(W3C),
+      Set.of(caps));
 
-    localNewSessionQueue.offerLast(request, new RequestId(UUID.randomUUID()));
+    localNewSessionQueue.offerLast(request);
     GraphqlHandler handler = new GraphqlHandler(tracer, distributor, queuer, publicUri, version);
 
     Map<String, Object> topLevel = executeQuery(handler, "{ grid { sessionQueueSize } }");
@@ -181,13 +188,13 @@ public class GraphqlHandlerTest {
 
   @Test
   public void shouldBeAbleToGetSessionQueueRequests() {
-    HttpRequest request = new HttpRequest(POST, "/session");
-    request.setContent(asJson(
-      ImmutableMap.of(
-        "capabilities", ImmutableMap.of(
-          "alwaysMatch", caps))));
+    SessionRequest request = new SessionRequest(
+      new RequestId(UUID.randomUUID()),
+      Instant.now(),
+      Set.of(W3C),
+      Set.of(caps));
 
-    localNewSessionQueue.offerLast(request, new RequestId(UUID.randomUUID()));
+    localNewSessionQueue.offerLast(request);
     GraphqlHandler handler = new GraphqlHandler(tracer, distributor, queuer, publicUri, version);
 
     Map<String, Object> topLevel = executeQuery(handler,
@@ -274,8 +281,7 @@ public class GraphqlHandlerTest {
     distributor.add(node);
     wait.until(obj -> distributor.getStatus().hasCapacity());
 
-    Either<SessionNotCreatedException, CreateSessionResponse> response =
-      distributor.newSession(createRequest(payload));
+    Either<SessionNotCreatedException, CreateSessionResponse> response = distributor.newSession(sessionRequest);
     if (response.isRight()) {
       Session session = response.right().getSession();
 
@@ -310,8 +316,7 @@ public class GraphqlHandlerTest {
     distributor.add(node);
     wait.until(obj -> distributor.getStatus().hasCapacity());
 
-    Either<SessionNotCreatedException, CreateSessionResponse> response =
-      distributor.newSession(createRequest(payload));
+    Either<SessionNotCreatedException, CreateSessionResponse> response = distributor.newSession(sessionRequest);
     if (response.isRight()) {
       Session session = response.right().getSession();
 
@@ -366,8 +371,7 @@ public class GraphqlHandlerTest {
     distributor.add(node);
     wait.until(obj -> distributor.getStatus().hasCapacity());
 
-    Either<SessionNotCreatedException, CreateSessionResponse> response =
-      distributor.newSession(createRequest(payload));
+    Either<SessionNotCreatedException, CreateSessionResponse> response = distributor.newSession(sessionRequest);
 
     if (response.isRight()) {
       Session session = response.right().getSession();
@@ -420,8 +424,7 @@ public class GraphqlHandlerTest {
     distributor.add(node);
     wait.until(obj -> distributor.getStatus().hasCapacity());
 
-    Either<SessionNotCreatedException, CreateSessionResponse> response =
-      distributor.newSession(createRequest(payload));
+    Either<SessionNotCreatedException, CreateSessionResponse> response = distributor.newSession(sessionRequest);
 
     if (response.isRight()) {
       Session session = response.right().getSession();
@@ -480,8 +483,7 @@ public class GraphqlHandlerTest {
     distributor.add(node);
     wait.until(obj -> distributor.getStatus().hasCapacity());
 
-    Either<SessionNotCreatedException, CreateSessionResponse> response =
-      distributor.newSession(createRequest(payload));
+    Either<SessionNotCreatedException, CreateSessionResponse> response = distributor.newSession(sessionRequest);
 
     if (response.isRight()) {
       Session session = response.right().getSession();
@@ -565,19 +567,5 @@ public class GraphqlHandlerTest {
         .setContent(Contents.asJson(singletonMap("query", query))));
 
     return new Json().toType(Contents.string(res), MAP_TYPE);
-  }
-
-  private HttpRequest createRequest(NewSessionPayload payload) {
-    StringBuilder builder = new StringBuilder();
-    try {
-      payload.writeTo(builder);
-    } catch (IOException e) {
-      throw new UncheckedIOException(e);
-    }
-
-    HttpRequest request = new HttpRequest(POST, "/se/grid/distributor/session");
-    request.setContent(utf8String(builder.toString()));
-
-    return request;
   }
 }

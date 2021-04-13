@@ -30,12 +30,14 @@ import org.openqa.selenium.grid.data.CreateSessionResponse;
 import org.openqa.selenium.grid.data.DistributorStatus;
 import org.openqa.selenium.grid.data.NodeStatus;
 import org.openqa.selenium.grid.data.NodeStatusEvent;
+import org.openqa.selenium.grid.data.RequestId;
 import org.openqa.selenium.grid.data.Session;
 import org.openqa.selenium.grid.distributor.Distributor;
 import org.openqa.selenium.grid.node.Node;
 import org.openqa.selenium.grid.node.local.LocalNode;
 import org.openqa.selenium.grid.security.Secret;
 import org.openqa.selenium.grid.sessionmap.local.LocalSessionMap;
+import org.openqa.selenium.grid.sessionqueue.SessionRequest;
 import org.openqa.selenium.grid.sessionqueue.local.LocalNewSessionQueue;
 import org.openqa.selenium.grid.sessionqueue.local.LocalNewSessionQueuer;
 import org.openqa.selenium.grid.testing.TestSessionFactory;
@@ -69,6 +71,7 @@ import java.util.concurrent.TimeUnit;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
 import static org.openqa.selenium.grid.data.Availability.DRAINING;
+import static org.openqa.selenium.remote.Dialect.W3C;
 import static org.openqa.selenium.remote.http.HttpMethod.GET;
 
 public class LocalDistributorTest {
@@ -265,17 +268,17 @@ public class LocalDistributorTest {
       .build();
     distributor.add(node);
 
-    HttpRequest req = new HttpRequest(HttpMethod.POST, "/session")
-        .setContent(Contents.asJson(ImmutableMap.of(
-            "capabilities", ImmutableMap.of(
-                "alwaysMatch", ImmutableMap.of(
-                    "browserName", "cheese")))));
+    SessionRequest sessionRequest = new SessionRequest(
+      new RequestId(UUID.randomUUID()),
+      Instant.now(),
+      Set.of(W3C),
+      Set.of(new ImmutableCapabilities("browserName", "cheese")));
 
     List<Callable<SessionId>> callables = new ArrayList<>();
     for (int i = 0; i < 3; i++) {
       callables.add(() -> {
         Either<SessionNotCreatedException, CreateSessionResponse> result =
-          distributor.newSession(req);
+          distributor.newSession(sessionRequest);
         if (result.isRight()) {
           CreateSessionResponse res = result.right();
           assertThat(res.getSession().getCapabilities().getBrowserName()).isEqualTo("cheese");

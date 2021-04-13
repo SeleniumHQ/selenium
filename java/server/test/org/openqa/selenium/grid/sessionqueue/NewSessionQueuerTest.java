@@ -38,24 +38,20 @@ import org.openqa.selenium.grid.sessionqueue.local.LocalNewSessionQueuer;
 import org.openqa.selenium.grid.sessionqueue.remote.RemoteNewSessionQueuer;
 import org.openqa.selenium.grid.testing.PassthroughHttpClient;
 import org.openqa.selenium.json.Json;
-import org.openqa.selenium.remote.NewSessionPayload;
 import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.remote.http.Contents;
 import org.openqa.selenium.remote.http.HttpClient;
-import org.openqa.selenium.remote.http.HttpMethod;
-import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.remote.tracing.DefaultTestTracer;
 import org.openqa.selenium.remote.tracing.Tracer;
 
-import java.io.IOException;
-import java.io.UncheckedIOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
@@ -76,9 +72,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
-import static org.openqa.selenium.grid.sessionqueue.NewSessionQueue.SESSIONREQUEST_TIMESTAMP_HEADER;
-import static org.openqa.selenium.remote.http.Contents.utf8String;
-import static org.openqa.selenium.remote.http.HttpMethod.POST;
+import static org.openqa.selenium.remote.Dialect.W3C;
 
 public class NewSessionQueuerTest {
 
@@ -89,8 +83,7 @@ public class NewSessionQueuerTest {
   private RemoteNewSessionQueuer remote;
   private EventBus bus;
   private ImmutableCapabilities caps;
-  private NewSessionPayload payload;
-  private HttpRequest request;
+  private SessionRequest sessionRequest;
   private NewSessionQueue sessionQueue;
 
 
@@ -111,8 +104,11 @@ public class NewSessionQueuerTest {
     HttpClient client = new PassthroughHttpClient(local);
     remote = new RemoteNewSessionQueuer(tracer, client, registrationSecret);
 
-    payload = NewSessionPayload.create(caps);
-    request = createRequest(payload, POST, "/session");
+    sessionRequest = new SessionRequest(
+      new RequestId(UUID.randomUUID()),
+      Instant.now(),
+      Set.of(W3C),
+      Set.of(caps));
   }
 
   @Test
@@ -120,7 +116,7 @@ public class NewSessionQueuerTest {
     AtomicBoolean isPresent = new AtomicBoolean(false);
 
     bus.addListener(NewSessionRequestEvent.listener(reqId -> {
-      Optional<HttpRequest> sessionRequest = this.local.remove(reqId);
+      Optional<SessionRequest> sessionRequest = this.local.remove(reqId);
       isPresent.set(sessionRequest.isPresent());
       Capabilities capabilities = new ImmutableCapabilities("browserName", "chrome");
       try {
@@ -151,7 +147,7 @@ public class NewSessionQueuerTest {
       }
     }));
 
-    HttpResponse httpResponse = local.addToQueue(request);
+    HttpResponse httpResponse = local.addToQueue(sessionRequest);
 
     assertThat(isPresent.get()).isTrue();
     assertEquals(httpResponse.getStatus(), HTTP_OK);
@@ -162,7 +158,7 @@ public class NewSessionQueuerTest {
     AtomicBoolean isPresent = new AtomicBoolean(false);
 
     bus.addListener(NewSessionRequestEvent.listener(reqId -> {
-      Optional<HttpRequest> sessionRequest = this.local.remove(reqId);
+      Optional<SessionRequest> sessionRequest = this.local.remove(reqId);
       isPresent.set(sessionRequest.isPresent());
       bus.fire(
           new NewSessionRejectedEvent(
@@ -170,7 +166,7 @@ public class NewSessionQueuerTest {
 
     }));
 
-    HttpResponse httpResponse = local.addToQueue(request);
+    HttpResponse httpResponse = local.addToQueue(sessionRequest);
 
     assertThat(isPresent.get()).isTrue();
     assertEquals(httpResponse.getStatus(), HTTP_INTERNAL_ERROR);
@@ -178,11 +174,10 @@ public class NewSessionQueuerTest {
 
   @Test
   public void shouldBeAbleToAddToQueueRemotelyAndGetErrorResponse() {
-
     AtomicBoolean isPresent = new AtomicBoolean(false);
 
     bus.addListener(NewSessionRequestEvent.listener(reqId -> {
-      Optional<HttpRequest> sessionRequest = this.remote.remove(reqId);
+      Optional<SessionRequest> sessionRequest = this.remote.remove(reqId);
       isPresent.set(sessionRequest.isPresent());
       bus.fire(
           new NewSessionRejectedEvent(
@@ -190,7 +185,7 @@ public class NewSessionQueuerTest {
 
     }));
 
-    HttpResponse httpResponse = remote.addToQueue(request);
+    HttpResponse httpResponse = remote.addToQueue(sessionRequest);
 
     assertThat(isPresent.get()).isTrue();
     assertEquals(httpResponse.getStatus(), HTTP_INTERNAL_ERROR);
@@ -199,16 +194,15 @@ public class NewSessionQueuerTest {
 
   @Test
   public void shouldBeAbleToRemoveFromQueue() {
-    Optional<HttpRequest> httpRequest = local.remove(new RequestId(UUID.randomUUID()));
+    Optional<SessionRequest> httpRequest = local.remove(new RequestId(UUID.randomUUID()));
 
     assertFalse(httpRequest.isPresent());
   }
 
   @Test
   public void shouldBeClearQueue() {
-
     RequestId requestId = new RequestId(UUID.randomUUID());
-    sessionQueue.offerLast(request, requestId);
+    sessionQueue.offerLast(sessionRequest);
 
     int count = local.clearQueue();
 
@@ -218,9 +212,8 @@ public class NewSessionQueuerTest {
 
   @Test
   public void shouldBeClearQueueRemotely() {
-
     RequestId requestId = new RequestId(UUID.randomUUID());
-    sessionQueue.offerLast(request, requestId);
+    sessionQueue.offerLast(sessionRequest);
 
     int count = remote.clearQueue();
 
@@ -230,8 +223,7 @@ public class NewSessionQueuerTest {
 
   @Test
   public void shouldBeAbleToGetQueueContents() {
-    RequestId requestId = new RequestId(UUID.randomUUID());
-    sessionQueue.offerLast(request, requestId);
+    sessionQueue.offerLast(sessionRequest);
 
     List<Object> response = local.getQueueContents();
     assertThat(response).isNotNull();
@@ -243,8 +235,7 @@ public class NewSessionQueuerTest {
 
   @Test
   public void shouldBeAbleToGetQueueContentsRemotely() {
-    RequestId requestId = new RequestId(UUID.randomUUID());
-    sessionQueue.offerLast(request, requestId);
+    sessionQueue.offerLast(sessionRequest);
 
     List<Object> response = sessionQueue.getQueuedRequests();
     assertThat(response).isNotNull();
@@ -258,12 +249,11 @@ public class NewSessionQueuerTest {
   public void shouldBeClearQueueAndFireRejectedEvent() {
     AtomicBoolean result = new AtomicBoolean(false);
 
-    RequestId requestId = new RequestId(UUID.randomUUID());
-    bus.addListener(NewSessionRejectedEvent.listener(response ->
-                                                         result.set(response.getRequestId()
-                                                                        .equals(requestId))));
+    RequestId requestId = sessionRequest.getRequestId();
+    bus.addListener(
+      NewSessionRejectedEvent.listener(response -> result.set(response.getRequestId().equals(requestId))));
 
-    sessionQueue.offerLast(request, requestId);
+    sessionQueue.offerLast(sessionRequest);
 
     int count = remote.clearQueue();
 
@@ -274,21 +264,20 @@ public class NewSessionQueuerTest {
 
   @Test
   public void shouldBeAbleToRemoveFromQueueRemotely() {
-    Optional<HttpRequest> httpRequest = remote.remove(new RequestId(UUID.randomUUID()));
+    Optional<SessionRequest> httpRequest = remote.remove(new RequestId(UUID.randomUUID()));
 
     assertFalse(httpRequest.isPresent());
   }
 
   @Test
   public void shouldBeAbleToAddAgainToQueue() {
-    boolean added = local.retryAddToQueue(request, new RequestId(UUID.randomUUID()));
+    boolean added = local.retryAddToQueue(sessionRequest);
     assertTrue(added);
   }
 
   @Test
   public void shouldBeAbleToAddAgainToQueueRemotely() {
-    HttpRequest request = createRequest(payload, POST, "/se/grid/newsessionqueuer/session");
-    boolean added = remote.retryAddToQueue(request, new RequestId(UUID.randomUUID()));
+    boolean added = remote.retryAddToQueue(sessionRequest);
 
     assertTrue(added);
   }
@@ -301,11 +290,11 @@ public class NewSessionQueuerTest {
     bus.addListener(NewSessionRequestEvent.listener(reqId -> {
       // Keep a count of event fired
       count++;
-      Optional<HttpRequest> sessionRequest = this.remote.remove(reqId);
+      Optional<SessionRequest> sessionRequest = this.remote.remove(reqId);
       isPresent.set(sessionRequest.isPresent());
 
       if (count == 1) {
-        retrySuccess.set(remote.retryAddToQueue(sessionRequest.get(), reqId));
+        retrySuccess.set(remote.retryAddToQueue(sessionRequest.get()));
       }
 
       // Only if it was retried after an interval, the count is 2
@@ -340,18 +329,17 @@ public class NewSessionQueuerTest {
       }
     }));
 
-    HttpResponse httpResponse = remote.addToQueue(request);
+    HttpResponse httpResponse = remote.addToQueue(sessionRequest);
 
     assertThat(isPresent.get()).isTrue();
     assertThat(retrySuccess.get()).isTrue();
     assertEquals(httpResponse.getStatus(), HTTP_OK);
   }
 
-  @Test
+  @Test(timeout = 15000)
   public void shouldBeAbleToHandleMultipleSessionRequestsAtTheSameTime() {
-
     bus.addListener(NewSessionRequestEvent.listener(reqId -> {
-      Optional<HttpRequest> sessionRequest = this.local.remove(reqId);
+      Optional<SessionRequest> sessionRequest = this.local.remove(reqId);
       ImmutableCapabilities capabilities = new ImmutableCapabilities("browserName", "chrome");
       try {
         SessionId sessionId = new SessionId(UUID.randomUUID());
@@ -383,7 +371,15 @@ public class NewSessionQueuerTest {
 
     ExecutorService executor = Executors.newFixedThreadPool(2);
 
-    Callable<HttpResponse> callable = () -> remote.addToQueue(request);
+    Callable<HttpResponse> callable = () -> {
+      SessionRequest sessionRequest = new SessionRequest(
+        new RequestId(UUID.randomUUID()),
+        Instant.now(),
+        Set.of(W3C),
+        Set.of(caps));
+
+      return remote.addToQueue(sessionRequest);
+    };
 
     Future<HttpResponse> firstRequest = executor.submit(callable);
     Future<HttpResponse> secondRequest = executor.submit(callable);
@@ -406,25 +402,20 @@ public class NewSessionQueuerTest {
     executor.shutdown();
   }
 
-  @Test
+  @Test(timeout = 15000)
   public void shouldBeAbleToTimeoutARequestOnRetry() {
-    Tracer tracer = DefaultTestTracer.createTracer();
-    LocalNewSessionQueue sessionQueue = new LocalNewSessionQueue(
-        tracer,
-        bus,
-        Duration.ofSeconds(4),
-        Duration.ofSeconds(2));
-
-    HttpRequest request = createRequest(payload, POST, "/session");
-    request.addHeader(SESSIONREQUEST_TIMESTAMP_HEADER,
-                      Long.toString(1539091064));
+    final SessionRequest request = new SessionRequest(
+      new RequestId(UUID.randomUUID()),
+      Instant.ofEpochMilli(1539091064),
+      Set.of(W3C),
+      Set.of(caps));
 
     AtomicInteger count = new AtomicInteger();
 
     bus.addListener(NewSessionRequestEvent.listener(reqId -> {
       // Add to front of queue, when retry is triggered it will check if request timed out
       count.incrementAndGet();
-      remote.retryAddToQueue(request, reqId);
+      remote.retryAddToQueue(request);
     }));
 
     HttpResponse httpResponse = remote.addToQueue(request);
@@ -433,7 +424,7 @@ public class NewSessionQueuerTest {
     assertEquals(httpResponse.getStatus(), HTTP_INTERNAL_ERROR);
   }
 
-  @Test
+  @Test(timeout = 15000)
   public void shouldBeAbleToTimeoutARequestOnRemove() {
     Tracer tracer = DefaultTestTracer.createTracer();
     LocalNewSessionQueue sessionQueue = new LocalNewSessionQueue(
@@ -449,7 +440,7 @@ public class NewSessionQueuerTest {
 
     AtomicBoolean isPresent = new AtomicBoolean();
     bus.addListener(NewSessionRequestEvent.listener(reqId -> {
-      Optional<HttpRequest> request = remote.remove(reqId);
+      Optional<SessionRequest> request = remote.remove(reqId);
       isPresent.set(request.isPresent());
       bus.fire(
           new NewSessionRejectedEvent(
@@ -457,18 +448,24 @@ public class NewSessionQueuerTest {
 
     }));
 
-    HttpResponse httpResponse = remote.addToQueue(request);
+    HttpResponse httpResponse = remote.addToQueue(sessionRequest);
     assertEquals(httpResponse.getStatus(), HTTP_INTERNAL_ERROR);
 
     assertThat(isPresent.get()).isFalse();
   }
 
-  @Test
+  @Test(timeout = 15000)
   public void shouldBeAbleToClearQueueAndRejectMultipleRequests() {
-
     ExecutorService executor = Executors.newFixedThreadPool(2);
 
-    Callable<HttpResponse> callable = () -> remote.addToQueue(request);
+    Callable<HttpResponse> callable = () -> {
+      SessionRequest sessionRequest = new SessionRequest(
+        new RequestId(UUID.randomUUID()),
+        Instant.now(),
+        Set.of(W3C),
+        Set.of(caps));
+      return remote.addToQueue(sessionRequest);
+    };
 
     Future<HttpResponse> firstRequest = executor.submit(callable);
     Future<HttpResponse> secondRequest = executor.submit(callable);
@@ -491,19 +488,5 @@ public class NewSessionQueuerTest {
     }
 
     executor.shutdown();
-  }
-
-  private HttpRequest createRequest(NewSessionPayload payload, HttpMethod httpMethod, String uri) {
-    StringBuilder builder = new StringBuilder();
-    try {
-      payload.writeTo(builder);
-    } catch (IOException e) {
-      throw new UncheckedIOException(e);
-    }
-
-    HttpRequest request = new HttpRequest(httpMethod, uri);
-    request.setContent(utf8String(builder.toString()));
-
-    return request;
   }
 }

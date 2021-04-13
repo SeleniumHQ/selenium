@@ -25,6 +25,7 @@ import static org.openqa.selenium.remote.tracing.Tags.HTTP_RESPONSE;
 
 import org.openqa.selenium.grid.data.RequestId;
 import org.openqa.selenium.internal.Require;
+import org.openqa.selenium.remote.http.Contents;
 import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
@@ -50,7 +51,9 @@ class AddBackToSessionQueue implements HttpHandler {
       HTTP_REQUEST.accept(span, req);
       span.setAttribute(AttributeKey.REQUEST_ID.getKey(), id.toString());
 
-      boolean value = newSessionQueuer.retryAddToQueue(req, id);
+      SessionRequest sessionRequest = Contents.fromJson(req, SessionRequest.class);
+
+      boolean value = newSessionQueuer.retryAddToQueue(sessionRequest);
 
       span.setAttribute("request.retry", value);
 

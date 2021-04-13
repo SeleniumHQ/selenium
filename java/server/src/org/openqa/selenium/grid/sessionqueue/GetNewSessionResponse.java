@@ -17,11 +17,6 @@
 
 package org.openqa.selenium.grid.sessionqueue;
 
-import static java.net.HttpURLConnection.HTTP_INTERNAL_ERROR;
-import static java.util.Collections.singletonMap;
-import static org.openqa.selenium.remote.http.Contents.asJson;
-import static org.openqa.selenium.remote.http.Contents.bytes;
-
 import org.openqa.selenium.events.EventBus;
 import org.openqa.selenium.grid.data.NewSessionErrorResponse;
 import org.openqa.selenium.grid.data.NewSessionRejectedEvent;
@@ -30,13 +25,10 @@ import org.openqa.selenium.grid.data.NewSessionResponse;
 import org.openqa.selenium.grid.data.NewSessionResponseEvent;
 import org.openqa.selenium.grid.data.RequestId;
 import org.openqa.selenium.internal.Require;
-import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
-import org.openqa.selenium.remote.tracing.Tracer;
 
 import java.util.Map;
 import java.util.Optional;
-import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.locks.Lock;
@@ -44,6 +36,11 @@ import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import static java.net.HttpURLConnection.HTTP_INTERNAL_ERROR;
+import static java.util.Collections.singletonMap;
+import static org.openqa.selenium.remote.http.Contents.asJson;
+import static org.openqa.selenium.remote.http.Contents.bytes;
 
 public class GetNewSessionResponse {
 
@@ -107,16 +104,15 @@ public class GetNewSessionResponse {
     }
   }
 
-  public HttpResponse add(HttpRequest request) {
+  public HttpResponse add(SessionRequest request) {
     Require.nonNull("New Session request", request);
 
     CountDownLatch latch = new CountDownLatch(1);
-    UUID uuid = UUID.randomUUID();
-    RequestId requestId = new RequestId(uuid);
+    RequestId requestId = request.getRequestId();
     NewSessionRequest requestIdentifier = new NewSessionRequest(requestId, latch);
     knownRequests.put(requestId, requestIdentifier);
 
-    if (!sessionRequests.offerLast(request, requestId)) {
+    if (!sessionRequests.offerLast(request)) {
       return internalErrorResponse(
         "Session request could not be created. Error while adding to the session queue.");
     }

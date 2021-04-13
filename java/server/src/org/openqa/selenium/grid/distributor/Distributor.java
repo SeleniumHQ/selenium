@@ -34,10 +34,10 @@ import org.openqa.selenium.grid.node.Node;
 import org.openqa.selenium.grid.security.RequiresSecretFilter;
 import org.openqa.selenium.grid.security.Secret;
 import org.openqa.selenium.grid.sessionmap.SessionMap;
+import org.openqa.selenium.grid.sessionqueue.SessionRequest;
 import org.openqa.selenium.internal.Either;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.Json;
-import org.openqa.selenium.remote.NewSessionPayload;
 import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpRequest;
@@ -53,13 +53,10 @@ import org.openqa.selenium.remote.tracing.Status;
 import org.openqa.selenium.remote.tracing.Tracer;
 import org.openqa.selenium.status.HasReadyState;
 
-import java.io.IOException;
-import java.io.Reader;
 import java.io.UncheckedIOException;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.locks.Lock;
@@ -73,11 +70,9 @@ import static org.openqa.selenium.remote.RemoteTags.CAPABILITIES;
 import static org.openqa.selenium.remote.RemoteTags.CAPABILITIES_EVENT;
 import static org.openqa.selenium.remote.RemoteTags.SESSION_ID;
 import static org.openqa.selenium.remote.RemoteTags.SESSION_ID_EVENT;
-import static org.openqa.selenium.remote.http.Contents.reader;
 import static org.openqa.selenium.remote.http.Route.delete;
 import static org.openqa.selenium.remote.http.Route.get;
 import static org.openqa.selenium.remote.http.Route.post;
-import static org.openqa.selenium.remote.tracing.HttpTracing.newSpanAsChildOf;
 import static org.openqa.selenium.remote.tracing.Tags.EXCEPTION;
 
 /**
@@ -160,24 +155,21 @@ public abstract class Distributor implements HasReadyState, Predicate<HttpReques
           .with(new SpanDecorator(tracer, req -> "distributor.status")));
   }
 
-  public Either<SessionNotCreatedException, CreateSessionResponse> newSession(HttpRequest request)
+  public Either<SessionNotCreatedException, CreateSessionResponse> newSession(SessionRequest request)
     throws SessionNotCreatedException {
+    Require.nonNull("Requests to process", request);
 
-    Span span = newSpanAsChildOf(tracer, request, "distributor.create_session_response");
+    Span span = tracer.getCurrentContext().createSpan("distributor.create_session_response");
     Map<String, EventAttributeValue> attributeMap = new HashMap<>();
-    try (
-      Reader reader = reader(request);
-      NewSessionPayload payload = NewSessionPayload.create(reader)) {
-      Objects.requireNonNull(payload, "Requests to process must be set.");
-
+    try {
       attributeMap.put(AttributeKey.LOGGER_CLASS.getKey(),
         EventAttribute.setValue(getClass().getName()));
 
-      Iterator<Capabilities> iterator = payload.stream().iterator();
-      attributeMap.put("request.payload", EventAttribute.setValue(payload.toString()));
+      Iterator<Capabilities> iterator = request.getDesiredCapabilities().iterator();
+      attributeMap.put("request.payload", EventAttribute.setValue(request.getDesiredCapabilities().toString()));
       String sessionReceivedMessage = "Session request received by the distributor";
       span.addEvent(sessionReceivedMessage, attributeMap);
-      LOG.info(String.format("%s: \n %s", sessionReceivedMessage, payload));
+      LOG.info(String.format("%s: \n %s", sessionReceivedMessage, request.getDesiredCapabilities()));
 
       if (!iterator.hasNext()) {
         SessionNotCreatedException exception =
@@ -192,7 +184,7 @@ public abstract class Distributor implements HasReadyState, Predicate<HttpReques
 
       Either<SessionNotCreatedException, CreateSessionResponse> selected;
       CreateSessionRequest firstRequest = new CreateSessionRequest(
-        payload.getDownstreamDialects(),
+        request.getDownstreamDialects(),
         iterator.next(),
         ImmutableMap.of("span", span));
 
@@ -208,7 +200,7 @@ public abstract class Distributor implements HasReadyState, Predicate<HttpReques
         if (!hostsWithCaps) {
           String errorMessage = String.format(
             "No Node supports the required capabilities: %s",
-            payload.stream().map(Capabilities::toString)
+            request.getDesiredCapabilities().stream().map(Capabilities::toString)
               .collect(Collectors.joining(", ")));
           SessionNotCreatedException exception = new SessionNotCreatedException(errorMessage);
           span.setAttribute(AttributeKey.ERROR.getKey(), true);
@@ -229,7 +221,7 @@ public abstract class Distributor implements HasReadyState, Predicate<HttpReques
           String errorMessage =
             String.format(
               "Unable to find provider for session: %s",
-              payload.stream().map(Capabilities::toString)
+              request.getDesiredCapabilities().stream().map(Capabilities::toString)
                 .collect(Collectors.joining(", ")));
           SessionNotCreatedException exception = new RetrySessionRequestException(errorMessage);
           selected = Either.left(exception);
@@ -270,14 +262,13 @@ public abstract class Distributor implements HasReadyState, Predicate<HttpReques
       span.addEvent(AttributeKey.EXCEPTION_EVENT.getKey(), attributeMap);
 
       return Either.left(e);
-    } catch (IOException e) {
+    } catch (UncheckedIOException e) {
       span.setAttribute(AttributeKey.ERROR.getKey(), true);
       span.setStatus(Status.UNKNOWN);
 
       EXCEPTION.accept(attributeMap, e);
       attributeMap.put(AttributeKey.EXCEPTION_MESSAGE.getKey(),
-        EventAttribute.setValue("Unknown error in LocalDistributor while creating session: " +
-                                e.getMessage()));
+        EventAttribute.setValue("Unknown error in LocalDistributor while creating session: " + e.getMessage()));
       span.addEvent(AttributeKey.EXCEPTION_EVENT.getKey(), attributeMap);
 
       return Either.left(new SessionNotCreatedException(e.getMessage(), e));
@@ -296,8 +287,9 @@ public abstract class Distributor implements HasReadyState, Predicate<HttpReques
 
   protected abstract Set<NodeStatus> getAvailableNodes();
 
-  protected abstract Either<SessionNotCreatedException, CreateSessionResponse> reserve(SlotId slot,
-                                                                                       CreateSessionRequest request);
+  protected abstract Either<SessionNotCreatedException, CreateSessionResponse> reserve(
+    SlotId slot,
+    CreateSessionRequest request);
 
   @Override
   public boolean test(HttpRequest httpRequest) {

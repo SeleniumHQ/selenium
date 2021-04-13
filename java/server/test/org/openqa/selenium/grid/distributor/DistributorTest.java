@@ -19,7 +19,6 @@ package org.openqa.selenium.grid.distributor;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
-
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -39,6 +38,7 @@ import org.openqa.selenium.grid.data.DistributorStatus;
 import org.openqa.selenium.grid.data.NodeDrainComplete;
 import org.openqa.selenium.grid.data.NodeHeartBeatEvent;
 import org.openqa.selenium.grid.data.NodeStatus;
+import org.openqa.selenium.grid.data.RequestId;
 import org.openqa.selenium.grid.data.Session;
 import org.openqa.selenium.grid.data.Slot;
 import org.openqa.selenium.grid.distributor.local.LocalDistributor;
@@ -49,6 +49,7 @@ import org.openqa.selenium.grid.node.local.LocalNode;
 import org.openqa.selenium.grid.security.Secret;
 import org.openqa.selenium.grid.sessionmap.SessionMap;
 import org.openqa.selenium.grid.sessionmap.local.LocalSessionMap;
+import org.openqa.selenium.grid.sessionqueue.SessionRequest;
 import org.openqa.selenium.grid.sessionqueue.local.LocalNewSessionQueue;
 import org.openqa.selenium.grid.sessionqueue.local.LocalNewSessionQueuer;
 import org.openqa.selenium.grid.testing.EitherAssert;
@@ -95,6 +96,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.openqa.selenium.grid.data.Availability.DOWN;
 import static org.openqa.selenium.grid.data.Availability.UP;
+import static org.openqa.selenium.remote.Dialect.W3C;
 import static org.openqa.selenium.remote.http.Contents.utf8String;
 import static org.openqa.selenium.remote.http.HttpMethod.POST;
 
@@ -146,11 +148,8 @@ public class DistributorTest {
 
   @Test
   public void creatingANewSessionWithoutANodeEndsInFailure() {
-    try (NewSessionPayload payload = NewSessionPayload.create(caps)) {
-      Either<SessionNotCreatedException, CreateSessionResponse> result =
-        local.newSession(createRequest(payload));
-      assertThatEither(result).isLeft();
-    }
+    Either<SessionNotCreatedException, CreateSessionResponse> result = local.newSession(createRequest(caps));
+    assertThatEither(result).isLeft();
   }
 
   @Test
@@ -237,14 +236,13 @@ public class DistributorTest {
 
     MutableCapabilities sessionCaps = new MutableCapabilities(caps);
     sessionCaps.setCapability("sausages", "gravy");
-    try (NewSessionPayload payload = NewSessionPayload.create(sessionCaps)) {
-      Either<SessionNotCreatedException, CreateSessionResponse> result =
-        distributor.newSession(createRequest(payload));
-      assertThatEither(result).isRight();
-      Session session = result.right().getSession();
-      assertThat(session.getCapabilities()).isEqualTo(sessionCaps);
-      assertThat(session.getUri()).isEqualTo(routableUri);
-    }
+
+    Either<SessionNotCreatedException, CreateSessionResponse> result =
+      distributor.newSession(createRequest(sessionCaps));
+    assertThatEither(result).isRight();
+    Session session = result.right().getSession();
+    assertThat(session.getCapabilities()).isEqualTo(sessionCaps);
+    assertThat(session.getUri()).isEqualTo(routableUri);
   }
 
   @Test
@@ -280,15 +278,14 @@ public class DistributorTest {
 
     MutableCapabilities sessionCaps = new MutableCapabilities(caps);
     sessionCaps.setCapability("sausages", "gravy");
-    try (NewSessionPayload payload = NewSessionPayload.create(sessionCaps)) {
-      Either<SessionNotCreatedException, CreateSessionResponse> result =
-        distributor.newSession(createRequest(payload));
-      assertThatEither(result).isRight();
-      Session returned = result.right().getSession();
-      Session session = sessions.get(returned.getId());
-      assertThat(session.getCapabilities()).isEqualTo(sessionCaps);
-      assertThat(session.getUri()).isEqualTo(routableUri);
-    }
+
+    Either<SessionNotCreatedException, CreateSessionResponse> result =
+      distributor.newSession(createRequest(sessionCaps));
+    assertThatEither(result).isRight();
+    Session returned = result.right().getSession();
+    Session session = sessions.get(returned.getId());
+    assertThat(session.getCapabilities()).isEqualTo(sessionCaps);
+    assertThat(session.getUri()).isEqualTo(routableUri);
   }
 
   @Test
@@ -327,11 +324,9 @@ public class DistributorTest {
     distributor.add(node);
     distributor.remove(node.getId());
 
-    try (NewSessionPayload payload = NewSessionPayload.create(caps)) {
-      Either<SessionNotCreatedException, CreateSessionResponse> result =
-        local.newSession(createRequest(payload));
-      assertThatEither(result).isLeft();
-    }
+    Either<SessionNotCreatedException, CreateSessionResponse> result =
+      local.newSession(createRequest(caps));
+    assertThatEither(result).isLeft();
   }
 
   @Test
@@ -366,9 +361,7 @@ public class DistributorTest {
 
     assertTrue(node.isDraining());
 
-    NewSessionPayload payload = NewSessionPayload.create(caps);
-    Either<SessionNotCreatedException, CreateSessionResponse> result =
-      distributor.newSession(createRequest(payload));
+    Either<SessionNotCreatedException, CreateSessionResponse> result = distributor.newSession(createRequest(caps));
     assertThatEither(result).isLeft();
   }
 
@@ -413,11 +406,9 @@ public class DistributorTest {
 
     assertThat(distributor.getAvailableNodes().size()).isEqualTo(0);
 
-    try (NewSessionPayload payload = NewSessionPayload.create(caps)) {
-      Either<SessionNotCreatedException, CreateSessionResponse> result =
-        distributor.newSession(createRequest(payload));
-      assertThatEither(result).isLeft();
-    }
+    Either<SessionNotCreatedException, CreateSessionResponse> result =
+      distributor.newSession(createRequest(caps));
+    assertThatEither(result).isLeft();
   }
 
   @Test
@@ -453,9 +444,8 @@ public class DistributorTest {
     distributor.add(node);
     waitToHaveCapacity(distributor);
 
-    NewSessionPayload payload = NewSessionPayload.create(caps);
     Either<SessionNotCreatedException, CreateSessionResponse> session =
-      distributor.newSession(createRequest(payload));
+      distributor.newSession(createRequest(caps));
     assertThatEither(session).isRight();
 
     distributor.drain(node.getId());
@@ -503,13 +493,11 @@ public class DistributorTest {
     distributor.add(node);
     waitToHaveCapacity(distributor);
 
-    NewSessionPayload payload = NewSessionPayload.create(caps);
-
     Either<SessionNotCreatedException, CreateSessionResponse> firstResponse =
-      distributor.newSession(createRequest(payload));
+      distributor.newSession(createRequest(caps));
 
     Either<SessionNotCreatedException, CreateSessionResponse> secondResponse =
-      distributor.newSession(createRequest(payload));
+      distributor.newSession(createRequest(caps));
 
     distributor.drain(node.getId());
 
@@ -584,13 +572,11 @@ public class DistributorTest {
     wait.until(obj -> distributor.getStatus().getNodes().size() == 4);
     wait.until(obj -> distributor.getStatus().hasCapacity());
 
-    try (NewSessionPayload payload = NewSessionPayload.create(caps)) {
-      Either<SessionNotCreatedException, CreateSessionResponse> result =
-        distributor.newSession(createRequest(payload));
-      assertThatEither(result).isRight();
-      Session session = result.right().getSession();
-      assertThat(session.getUri()).isEqualTo(lightest.getStatus().getUri());
-    }
+    Either<SessionNotCreatedException, CreateSessionResponse> result =
+      distributor.newSession(createRequest(caps));
+    assertThatEither(result).isRight();
+    Session session = result.right().getSession();
+    assertThat(session.getUri()).isEqualTo(lightest.getStatus().getUri());
   }
 
   @Test
@@ -623,38 +609,30 @@ public class DistributorTest {
       .add(leastRecent);
     waitToHaveCapacity(distributor);
 
-    try (NewSessionPayload payload = NewSessionPayload.create(caps)) {
-      distributor.newSession(createRequest(payload));
-      // Will be "leastRecent" by default
-    }
+    distributor.newSession(createRequest(caps));
 
     Node middle = createNode(caps, 5, 0);
     handler.addHandler(middle);
     distributor.add(middle);
     waitForAllNodesToHaveCapacity(distributor, 2);
 
-    try (NewSessionPayload payload = NewSessionPayload.create(caps)) {
-      Either<SessionNotCreatedException, CreateSessionResponse> result =
-        distributor.newSession(createRequest(payload));
-      assertThatEither(result).isRight();
-      Session session = result.right().getSession();
-      // Least lightly loaded is middle
-      assertThat(session.getUri()).isEqualTo(middle.getStatus().getUri());
-    }
+    Either<SessionNotCreatedException, CreateSessionResponse> result =
+      distributor.newSession(createRequest(caps));
+    assertThatEither(result).isRight();
+    Session session = result.right().getSession();
+    // Least lightly loaded is middle
+    assertThat(session.getUri()).isEqualTo(middle.getStatus().getUri());
 
     Node mostRecent = createNode(caps, 5, 0);
     handler.addHandler(mostRecent);
     distributor.add(mostRecent);
     waitForAllNodesToHaveCapacity(distributor, 3);
 
-    try (NewSessionPayload payload = NewSessionPayload.create(caps)) {
-      Either<SessionNotCreatedException, CreateSessionResponse> result =
-        distributor.newSession(createRequest(payload));
-      assertThatEither(result).isRight();
-      Session session = result.right().getSession();
-      // Least lightly loaded is most recent
-      assertThat(session.getUri()).isEqualTo(mostRecent.getStatus().getUri());
-    }
+    result = distributor.newSession(createRequest(caps));
+    assertThatEither(result).isRight();
+    session = result.right().getSession();
+    // Least lightly loaded is most recent
+    assertThat(session.getUri()).isEqualTo(mostRecent.getStatus().getUri());
 
     // All the nodes should be equally loaded.
     Map<Capabilities, Integer> expected = getFreeStereotypeCounts(mostRecent.getStatus());
@@ -662,13 +640,10 @@ public class DistributorTest {
     assertThat(getFreeStereotypeCounts(middle.getStatus())).isEqualTo(expected);
 
     // All nodes are now equally loaded. We should be going in time order now
-    try (NewSessionPayload payload = NewSessionPayload.create(caps)) {
-      Either<SessionNotCreatedException, CreateSessionResponse> result =
-        distributor.newSession(createRequest(payload));
-      assertThatEither(result).isRight();
-      Session session = result.right().getSession();
-      assertThat(session.getUri()).isEqualTo(leastRecent.getStatus().getUri());
-    }
+    result = distributor.newSession(createRequest(caps));
+    assertThatEither(result).isRight();
+    session = result.right().getSession();
+    assertThat(session.getUri()).isEqualTo(leastRecent.getStatus().getUri());
   }
 
   private Map<Capabilities, Integer> getFreeStereotypeCounts(NodeStatus status) {
@@ -728,20 +703,15 @@ public class DistributorTest {
     distributor.add(alwaysDown);
 
     // Should be unable to create a session because the node is down.
-    try (NewSessionPayload payload = NewSessionPayload.create(caps)) {
-      Either<SessionNotCreatedException, CreateSessionResponse> result =
-        distributor.newSession(createRequest(payload));
-      assertThatEither(result).isLeft();
-    }
+    Either<SessionNotCreatedException, CreateSessionResponse> result =
+      distributor.newSession(createRequest(caps));
+    assertThatEither(result).isLeft();
 
     distributor.add(alwaysUp);
     waitToHaveCapacity(distributor);
 
-    try (NewSessionPayload payload = NewSessionPayload.create(caps)) {
-      Either<SessionNotCreatedException, CreateSessionResponse> result =
-        distributor.newSession(createRequest(payload));
-      assertThatEither(result).isRight();
-    }
+    result = distributor.newSession(createRequest(caps));
+    assertThatEither(result).isRight();
   }
 
   @Test
@@ -775,18 +745,13 @@ public class DistributorTest {
     waitToHaveCapacity(distributor);
 
     // Use up the one slot available
-    try (NewSessionPayload payload = NewSessionPayload.create(caps)) {
-      Either<SessionNotCreatedException, CreateSessionResponse> result =
-        distributor.newSession(createRequest(payload));
-      assertThatEither(result).isRight();
-    }
+    Either<SessionNotCreatedException, CreateSessionResponse> result =
+      distributor.newSession(createRequest(caps));
+    assertThatEither(result).isRight();
 
     // Now try and create a session.
-    try (NewSessionPayload payload = NewSessionPayload.create(caps)) {
-      Either<SessionNotCreatedException, CreateSessionResponse> result =
-        distributor.newSession(createRequest(payload));
-      assertThatEither(result).isLeft();
-    }
+    result = distributor.newSession(createRequest(caps));
+    assertThatEither(result).isLeft();
   }
 
   @Test
@@ -821,34 +786,29 @@ public class DistributorTest {
 
     // Use up the one slot available
     Session session;
-    try (NewSessionPayload payload = NewSessionPayload.create(caps)) {
-      Either<SessionNotCreatedException, CreateSessionResponse> result =
-        distributor.newSession(createRequest(payload));
-      assertThatEither(result).isRight();
-      session = result.right().getSession();
-      // Make sure the session map has the session
-      sessions.get(session.getId());
+    Either<SessionNotCreatedException, CreateSessionResponse> result =
+      distributor.newSession(createRequest(caps));
+    assertThatEither(result).isRight();
+    session = result.right().getSession();
+    // Make sure the session map has the session
+    sessions.get(session.getId());
 
-      node.stop(session.getId());
-      // Now wait for the session map to say the session is gone.
-      wait.until(obj -> {
-        try {
-          sessions.get(session.getId());
-          return false;
-        } catch (NoSuchSessionException e) {
-          return true;
-        }
-      });
-    }
+    node.stop(session.getId());
+    // Now wait for the session map to say the session is gone.
+    wait.until(obj -> {
+      try {
+        sessions.get(session.getId());
+        return false;
+      } catch (NoSuchSessionException e) {
+        return true;
+      }
+    });
 
     waitToHaveCapacity(distributor);
 
     // And we should now be able to create another session.
-    try (NewSessionPayload payload = NewSessionPayload.create(caps)) {
-      Either<SessionNotCreatedException, CreateSessionResponse> result =
-        distributor.newSession(createRequest(payload));
-      assertThatEither(result).isRight();
-    }
+    result = distributor.newSession(createRequest(caps));
+    assertThatEither(result).isRight();
   }
 
   @Test
@@ -883,13 +843,10 @@ public class DistributorTest {
     distributor.add(node);
     waitToHaveCapacity(distributor);
 
-    ImmutableCapabilities unmatched =
-      new ImmutableCapabilities("browserName", "transit of venus");
-    try (NewSessionPayload payload = NewSessionPayload.create(unmatched)) {
-      Either<SessionNotCreatedException, CreateSessionResponse> result =
-        distributor.newSession(createRequest(payload));
-      assertThatEither(result).isLeft();
-    }
+    Capabilities unmatched = new ImmutableCapabilities("browserName", "transit of venus");
+    Either<SessionNotCreatedException, CreateSessionResponse> result =
+      distributor.newSession(createRequest(unmatched));
+    assertThatEither(result).isLeft();
   }
 
   @Test
@@ -923,11 +880,9 @@ public class DistributorTest {
     distributor.add(node);
     waitToHaveCapacity(distributor);
 
-    try (NewSessionPayload payload = NewSessionPayload.create(caps)) {
-      Either<SessionNotCreatedException, CreateSessionResponse> result =
-        distributor.newSession(createRequest(payload));
-      assertThatEither(result).isLeft();
-    }
+    Either<SessionNotCreatedException, CreateSessionResponse> result =
+      distributor.newSession(createRequest(caps));
+    assertThatEither(result).isLeft();
 
     assertThat(distributor.getStatus().hasCapacity()).isTrue();
   }
@@ -972,11 +927,9 @@ public class DistributorTest {
     distributor.add(node);
 
     // Should be unable to create a session because the node is down.
-    try (NewSessionPayload payload = NewSessionPayload.create(caps)) {
-      Either<SessionNotCreatedException, CreateSessionResponse> result =
-        distributor.newSession(createRequest(payload));
-      assertThatEither(result).isLeft();
-    }
+    Either<SessionNotCreatedException, CreateSessionResponse> result =
+      distributor.newSession(createRequest(caps));
+    assertThatEither(result).isLeft();
 
     // Mark the node as being up
     isUp.set(UP);
@@ -984,11 +937,8 @@ public class DistributorTest {
     distributor.refresh();
 
     // Because the node is now up and running, we should now be able to create a session
-    try (NewSessionPayload payload = NewSessionPayload.create(caps)) {
-      Either<SessionNotCreatedException, CreateSessionResponse> result =
-        distributor.newSession(createRequest(payload));
-      assertThatEither(result).isRight();
-    }
+    result = distributor.newSession(createRequest(caps));
+    assertThatEither(result).isRight();
   }
 
   private Set<Node> createNodeSet(Distributor distributor, int count, Capabilities...capabilities) {
@@ -1061,43 +1011,37 @@ public class DistributorTest {
 
     //Assign 5 Chrome and 5 Firefox sessions to the distributor, make sure they don't go to the Edge node
     for (int i=0; i<5; i++) {
-      try (NewSessionPayload chromePayload = NewSessionPayload.create(chrome);
-           NewSessionPayload firefoxPayload = NewSessionPayload.create(firefox)) {
+      Either<SessionNotCreatedException, CreateSessionResponse> chromeResult =
+        distributor.newSession(createRequest(chrome));
+      assertThatEither(chromeResult).isRight();
+      Session chromeSession = chromeResult.right().getSession();
 
-        Either<SessionNotCreatedException, CreateSessionResponse> chromeResult =
-          distributor.newSession(createRequest(chromePayload));
-        assertThatEither(chromeResult).isRight();
-        Session chromeSession = chromeResult.right().getSession();
+      //Ensure the Uri of the Session matches one of the Chrome Nodes, not the Edge Node
+      assertThat(
+        chromeSession.getUri()).isIn(
+        chromeNodes
+          .stream().map(Node::getStatus).collect(Collectors.toList())     //List of getStatus() from the Set
+          .stream().map(NodeStatus::getUri).collect(Collectors.toList())  //List of getUri() from the Set
+      );
 
-        //Ensure the Uri of the Session matches one of the Chrome Nodes, not the Edge Node
-        assertThat(
-          chromeSession.getUri()).isIn(
-          chromeNodes
-            .stream().map(Node::getStatus).collect(Collectors.toList())     //List of getStatus() from the Set
-            .stream().map(NodeStatus::getUri).collect(Collectors.toList())  //List of getUri() from the Set
-        );
+      Either<SessionNotCreatedException, CreateSessionResponse> firefoxResult =
+        distributor.newSession(createRequest(firefox));
+      assertThatEither(firefoxResult).isRight();
+      Session firefoxSession = firefoxResult.right().getSession();
+      LOG.info(String.format("Firefox Session %d assigned to %s", i, chromeSession.getUri()));
 
-        Either<SessionNotCreatedException, CreateSessionResponse> firefoxResult =
-          distributor.newSession(createRequest(firefoxPayload));
-        assertThatEither(firefoxResult).isRight();
-        Session firefoxSession = firefoxResult.right().getSession();
-        LOG.info(String.format("Firefox Session %d assigned to %s", i, chromeSession.getUri()));
-
-        boolean inFirefoxNodes = firefoxNodes.stream().anyMatch(node -> node.getUri().equals(firefoxSession.getUri()));
-        boolean inChromeNodes = chromeNodes.stream().anyMatch(node -> node.getUri().equals(chromeSession.getUri()));
-        //This could be either, or, or both
-        assertTrue(inFirefoxNodes || inChromeNodes);
-      }
+      boolean inFirefoxNodes = firefoxNodes.stream().anyMatch(node -> node.getUri().equals(firefoxSession.getUri()));
+      boolean inChromeNodes = chromeNodes.stream().anyMatch(node -> node.getUri().equals(chromeSession.getUri()));
+      //This could be either, or, or both
+      assertTrue(inFirefoxNodes || inChromeNodes);
     }
 
     //The Chrome Nodes should be full at this point, but Firefox isn't... so send an Edge session and make sure it routes to an Edge node
-    try (NewSessionPayload edgePayload = NewSessionPayload.create(edge)) {
-      Either<SessionNotCreatedException, CreateSessionResponse> edgeResult =
-        distributor.newSession(createRequest(edgePayload));
-      assertThatEither(edgeResult).isRight();
-      Session edgeSession = edgeResult.right().getSession();
-      assertTrue(edgeNodes.stream().anyMatch(node -> node.getUri().equals(edgeSession.getUri())));
-    }
+    Either<SessionNotCreatedException, CreateSessionResponse> edgeResult =
+      distributor.newSession(createRequest(edge));
+    assertThatEither(edgeResult).isRight();
+    Session edgeSession = edgeResult.right().getSession();
+    assertTrue(edgeNodes.stream().anyMatch(node -> node.getUri().equals(edgeSession.getUri())));
   }
 
   private Node createNode(Capabilities stereotype, int count, int currentLoad) {
@@ -1164,6 +1108,14 @@ public class DistributorTest {
 
     DistributorStatus status = local.getStatus();
     assertFalse(status.hasCapacity());
+  }
+
+  private SessionRequest createRequest(Capabilities... allCaps) {
+    return new SessionRequest(
+      new RequestId(UUID.randomUUID()),
+      Instant.now(),
+      Set.of(W3C),
+      Set.of(allCaps));
   }
 
   private HttpRequest createRequest(NewSessionPayload payload) {

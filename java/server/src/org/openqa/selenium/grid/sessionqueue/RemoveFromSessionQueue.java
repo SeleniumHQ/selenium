@@ -24,6 +24,7 @@ import static org.openqa.selenium.remote.tracing.Tags.HTTP_RESPONSE;
 
 import org.openqa.selenium.grid.data.RequestId;
 import org.openqa.selenium.internal.Require;
+import org.openqa.selenium.remote.http.Contents;
 import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
@@ -49,14 +50,17 @@ public class RemoveFromSessionQueue implements HttpHandler {
     try (Span span = newSpanAsChildOf(tracer, req, "sessionqueuer.remove")) {
       HTTP_REQUEST.accept(span, req);
 
-      Optional<HttpRequest> sessionRequest = newSessionQueuer.remove(id);
+      Optional<SessionRequest> sessionRequest = newSessionQueuer.remove(id);
       HttpResponse response = new HttpResponse();
 
       if (sessionRequest.isPresent()) {
-        HttpRequest request = sessionRequest.get();
-        response.setContent(request.getContent());
-        response.setHeader(NewSessionQueue.SESSIONREQUEST_TIMESTAMP_HEADER,
-          request.getHeader(NewSessionQueue.SESSIONREQUEST_TIMESTAMP_HEADER));
+        SessionRequest request = sessionRequest.get();
+
+        return response
+            .setHeader(
+                NewSessionQueue.SESSIONREQUEST_TIMESTAMP_HEADER,
+                String.valueOf(request.getEnqueued().getEpochSecond()))
+            .setContent(Contents.asJson(sessionRequest));
       } else {
         response.setStatus(HTTP_NO_CONTENT);
       }

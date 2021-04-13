@@ -318,7 +318,7 @@ public class NewSessionPayload implements Closeable {
     }
   }
 
-  public ImmutableSet<Dialect> getDownstreamDialects() {
+  public Set<Dialect> getDownstreamDialects() {
     return dialects.isEmpty() ? ImmutableSet.of(DEFAULT_DIALECT) : dialects;
   }
 

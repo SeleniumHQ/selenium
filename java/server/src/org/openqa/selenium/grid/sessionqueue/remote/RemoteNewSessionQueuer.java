@@ -25,9 +25,12 @@ import org.openqa.selenium.grid.security.Secret;
 import org.openqa.selenium.grid.security.SecretOptions;
 import org.openqa.selenium.grid.server.NetworkOptions;
 import org.openqa.selenium.grid.sessionqueue.NewSessionQueuer;
+import org.openqa.selenium.grid.sessionqueue.SessionRequest;
 import org.openqa.selenium.grid.sessionqueue.config.NewSessionQueuerOptions;
 import org.openqa.selenium.grid.web.Values;
 import org.openqa.selenium.internal.Require;
+import org.openqa.selenium.json.Json;
+import org.openqa.selenium.remote.http.Contents;
 import org.openqa.selenium.remote.http.Filter;
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpRequest;
@@ -41,7 +44,6 @@ import java.net.URI;
 import java.util.List;
 import java.util.Optional;
 
-import static java.net.HttpURLConnection.HTTP_OK;
 import static org.openqa.selenium.grid.sessionqueue.NewSessionQueue.SESSIONREQUEST_ID_HEADER;
 import static org.openqa.selenium.grid.sessionqueue.NewSessionQueue.SESSIONREQUEST_TIMESTAMP_HEADER;
 import static org.openqa.selenium.remote.http.HttpMethod.DELETE;
@@ -52,6 +54,7 @@ public class RemoteNewSessionQueuer extends NewSessionQueuer {
 
   private static final String timestampHeader = SESSIONREQUEST_TIMESTAMP_HEADER;
   private static final String reqIdHeader = SESSIONREQUEST_ID_HEADER;
+  private static final Json JSON = new Json();
   private final HttpClient client;
   private final Filter addSecret;
 
@@ -82,38 +85,40 @@ public class RemoteNewSessionQueuer extends NewSessionQueuer {
   }
 
   @Override
-  public HttpResponse addToQueue(HttpRequest request) {
+  public HttpResponse addToQueue(SessionRequest request) {
     HttpRequest upstream = new HttpRequest(POST, "/se/grid/newsessionqueuer/session");
     HttpTracing.inject(tracer, tracer.getCurrentContext(), upstream);
-    upstream.setContent(request.getContent());
+    upstream.setContent(Contents.asJson(request));
     return client.execute(upstream);
   }
 
   @Override
-  public boolean retryAddToQueue(HttpRequest request, RequestId reqId) {
+  public boolean retryAddToQueue(SessionRequest request) {
+    Require.nonNull("Session request", request);
+
     HttpRequest upstream =
-      new HttpRequest(POST, "/se/grid/newsessionqueuer/session/retry/" + reqId.toString());
+      new HttpRequest(POST, "/se/grid/newsessionqueuer/session/retry/" + request.getRequestId());
     HttpTracing.inject(tracer, tracer.getCurrentContext(), upstream);
-    upstream.setContent(request.getContent());
-    upstream.setHeader(timestampHeader, request.getHeader(timestampHeader));
-    upstream.setHeader(reqIdHeader, reqId.toString());
+    upstream.setContent(Contents.asJson(request));
+    upstream.setHeader(timestampHeader, String.valueOf(request.getEnqueued().getEpochSecond()));
+    upstream.setHeader(reqIdHeader, request.getRequestId().toString());
     HttpResponse response = client.with(addSecret).execute(upstream);
     return Values.get(response, Boolean.class);
   }
 
   @Override
-  public Optional<HttpRequest> remove(RequestId reqId) {
-    HttpRequest upstream =
-      new HttpRequest(GET, "/se/grid/newsessionqueuer/session/" + reqId.toString());
+  public Optional<SessionRequest> remove(RequestId reqId) {
+    HttpRequest upstream = new HttpRequest(GET, "/se/grid/newsessionqueuer/session/" + reqId.toString());
     HttpTracing.inject(tracer, tracer.getCurrentContext(), upstream);
     HttpResponse response = client.with(addSecret).execute(upstream);
 
-    if(response.getStatus()==HTTP_OK) {
-      HttpRequest httpRequest = new HttpRequest(POST, "/session");
-      httpRequest.setContent(response.getContent());
-      httpRequest.setHeader(timestampHeader, response.getHeader(timestampHeader));
-      httpRequest.setHeader(reqIdHeader, response.getHeader(reqIdHeader));
-      return Optional.ofNullable(httpRequest);
+    if (response.isSuccessful()) {
+      // TODO: This should work cleanly with just a TypeToken of <Optional<SessionRequest>>
+      String rawValue = Contents.string(response);
+      if (rawValue == null || rawValue.trim().isEmpty()) {
+        return Optional.empty();
+      }
+      return Optional.of(JSON.toType(rawValue, SessionRequest.class));
     }
 
     return Optional.empty();
