@@ -46,7 +46,7 @@ module Selenium
 
         private
 
-        def devtools_address
+        def devtools_url
           capabilities['se:cdp']
         end
 
