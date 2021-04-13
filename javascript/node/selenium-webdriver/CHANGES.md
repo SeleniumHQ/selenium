@@ -1,7 +1,12 @@
 ## v4.0.0-beta.3
 
-* Removed support for legacy actions. 
+* Removed support for legacy actions.
   This will also remove "Bride Mode" support, which was introduced to translate of action class to legacy API.
+* Remove devtools support for v86,v87 and adding support for v89, v90, v91
+* make isPromise() return boolean value for null and undefined cases (#6785)
+* code cleanup  (#9158)
+* replacing asserts equal with strictEqual and deepEqual with deepStrictEqual
+
 
 ## v4.0.0-beta.2
 
