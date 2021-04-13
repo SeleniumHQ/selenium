@@ -44,16 +44,12 @@ import java.net.URI;
 import java.util.List;
 import java.util.Optional;
 
-import static org.openqa.selenium.grid.sessionqueue.NewSessionQueue.SESSIONREQUEST_ID_HEADER;
-import static org.openqa.selenium.grid.sessionqueue.NewSessionQueue.SESSIONREQUEST_TIMESTAMP_HEADER;
 import static org.openqa.selenium.remote.http.HttpMethod.DELETE;
 import static org.openqa.selenium.remote.http.HttpMethod.GET;
 import static org.openqa.selenium.remote.http.HttpMethod.POST;
 
 public class RemoteNewSessionQueuer extends NewSessionQueuer {
 
-  private static final String timestampHeader = SESSIONREQUEST_TIMESTAMP_HEADER;
-  private static final String reqIdHeader = SESSIONREQUEST_ID_HEADER;
   private static final Json JSON = new Json();
   private final HttpClient client;
   private final Filter addSecret;
@@ -100,8 +96,6 @@ public class RemoteNewSessionQueuer extends NewSessionQueuer {
       new HttpRequest(POST, "/se/grid/newsessionqueuer/session/retry/" + request.getRequestId());
     HttpTracing.inject(tracer, tracer.getCurrentContext(), upstream);
     upstream.setContent(Contents.asJson(request));
-    upstream.setHeader(timestampHeader, String.valueOf(request.getEnqueued().getEpochSecond()));
-    upstream.setHeader(reqIdHeader, request.getRequestId().toString());
     HttpResponse response = client.with(addSecret).execute(upstream);
     return Values.get(response, Boolean.class);
   }

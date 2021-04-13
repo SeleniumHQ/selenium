@@ -26,17 +26,11 @@ import org.openqa.selenium.events.local.GuavaEventBus;
 import org.openqa.selenium.grid.data.NewSessionRejectedEvent;
 import org.openqa.selenium.grid.data.NewSessionRequestEvent;
 import org.openqa.selenium.grid.data.RequestId;
-import org.openqa.selenium.grid.data.Session;
 import org.openqa.selenium.grid.sessionqueue.NewSessionQueue;
 import org.openqa.selenium.grid.sessionqueue.SessionRequest;
-import org.openqa.selenium.remote.NewSessionPayload;
-import org.openqa.selenium.remote.http.HttpMethod;
-import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.tracing.DefaultTestTracer;
 import org.openqa.selenium.remote.tracing.Tracer;
 
-import java.io.IOException;
-import java.io.UncheckedIOException;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.List;
@@ -51,10 +45,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import static org.openqa.selenium.grid.sessionqueue.NewSessionQueue.SESSIONREQUEST_TIMESTAMP_HEADER;
 import static org.openqa.selenium.remote.Dialect.W3C;
-import static org.openqa.selenium.remote.http.Contents.utf8String;
-import static org.openqa.selenium.remote.http.HttpMethod.POST;
 
 public class LocalNewSessionQueueTest {
 

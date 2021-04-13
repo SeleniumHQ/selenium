@@ -19,7 +19,6 @@ package org.openqa.selenium.grid.sessionqueue;
 
 import org.openqa.selenium.grid.data.RequestId;
 import org.openqa.selenium.internal.Require;
-import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.tracing.Tracer;
 import org.openqa.selenium.status.HasReadyState;
 
@@ -30,8 +29,6 @@ import java.util.Optional;
 
 public abstract class NewSessionQueue implements HasReadyState {
 
-  public static final String SESSIONREQUEST_TIMESTAMP_HEADER = "new-session-request-timestamp";
-  public static final String SESSIONREQUEST_ID_HEADER = "request-id";
   protected final Tracer tracer;
   protected final Duration retryInterval;
   protected final Duration requestTimeout;
@@ -53,12 +50,6 @@ public abstract class NewSessionQueue implements HasReadyState {
   public abstract int getQueueSize();
 
   public abstract List<Object> getQueuedRequests();
-
-  public void addRequestHeaders(HttpRequest request, RequestId reqId) {
-    long timestamp = Instant.now().getEpochSecond();
-    request.addHeader(SESSIONREQUEST_TIMESTAMP_HEADER, Long.toString(timestamp));
-    request.addHeader(SESSIONREQUEST_ID_HEADER, reqId.toString());
-  }
 
   public boolean hasRequestTimedOut(SessionRequest request) {
     Instant enque = request.getEnqueued();

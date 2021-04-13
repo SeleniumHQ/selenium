@@ -54,13 +54,7 @@ public class RemoveFromSessionQueue implements HttpHandler {
       HttpResponse response = new HttpResponse();
 
       if (sessionRequest.isPresent()) {
-        SessionRequest request = sessionRequest.get();
-
-        return response
-            .setHeader(
-                NewSessionQueue.SESSIONREQUEST_TIMESTAMP_HEADER,
-                String.valueOf(request.getEnqueued().getEpochSecond()))
-            .setContent(Contents.asJson(sessionRequest));
+        return response.setContent(Contents.asJson(sessionRequest));
       } else {
         response.setStatus(HTTP_NO_CONTENT);
       }
