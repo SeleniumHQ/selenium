@@ -167,6 +167,7 @@ py_library(
         "pytest.ini",
         "setup.cfg",
         "test/selenium/webdriver/common/test_file.txt",
+        "test/selenium/webdriver/common/test_file2.txt",
     ],
     imports = ["."],
     deps = [
