@@ -52,7 +52,7 @@ public class LocalNewSessionQueuer extends NewSessionQueuer {
     this.bus = Require.nonNull("Event bus", bus);
     this.sessionRequests = Require.nonNull("New Session Request Queue", sessionRequests);
 
-    this.getNewSessionResponse  = new GetNewSessionResponse(tracer, bus, sessionRequests);
+    this.getNewSessionResponse  = new GetNewSessionResponse(bus, sessionRequests);
   }
 
   public static NewSessionQueuer create(Config config) {

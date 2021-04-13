@@ -50,13 +50,12 @@ public class GetNewSessionResponse {
   private static final Logger LOG = Logger.getLogger(GetNewSessionResponse.class.getName());
   private static final Map<RequestId, NewSessionRequest> knownRequests = new ConcurrentHashMap<>();
   private final EventBus bus;
-  private final Tracer tracer;
   private final NewSessionQueue sessionRequests;
   private final ReadWriteLock lock = new ReentrantReadWriteLock(true);
 
-  public GetNewSessionResponse(Tracer tracer, EventBus bus,
-                               NewSessionQueue sessionRequests) {
-    this.tracer = Require.nonNull("Tracer", tracer);
+  public GetNewSessionResponse(
+    EventBus bus,
+    NewSessionQueue sessionRequests) {
     this.bus = Require.nonNull("Event bus", bus);
     this.sessionRequests = Require.nonNull("New Session Request Queue", sessionRequests);
 
