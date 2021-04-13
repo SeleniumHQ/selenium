@@ -225,24 +225,24 @@ public class NewSessionQueuerTest {
   public void shouldBeAbleToGetQueueContents() {
     sessionQueue.offerLast(sessionRequest);
 
-    List<Object> response = local.getQueueContents();
+    List<Set<Capabilities>> response = local.getQueueContents();
     assertThat(response).isNotNull();
 
     assertEquals(1, response.size());
 
-    assertEquals(caps, response.get(0));
+    assertEquals(Set.of(caps), response.get(0));
   }
 
   @Test
   public void shouldBeAbleToGetQueueContentsRemotely() {
     sessionQueue.offerLast(sessionRequest);
 
-    List<Object> response = sessionQueue.getQueuedRequests();
+    List<Set<Capabilities>> response = sessionQueue.getQueuedRequests();
     assertThat(response).isNotNull();
 
     assertEquals(1, response.size());
 
-    assertEquals(caps, response.iterator().next());
+    assertEquals(Set.of(caps), response.iterator().next());
   }
 
   @Test

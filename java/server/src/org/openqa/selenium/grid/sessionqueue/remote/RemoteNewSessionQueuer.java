@@ -17,6 +17,7 @@
 
 package org.openqa.selenium.grid.sessionqueue.remote;
 
+import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.grid.config.Config;
 import org.openqa.selenium.grid.data.RequestId;
 import org.openqa.selenium.grid.log.LoggingOptions;
@@ -30,6 +31,7 @@ import org.openqa.selenium.grid.sessionqueue.config.NewSessionQueuerOptions;
 import org.openqa.selenium.grid.web.Values;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.Json;
+import org.openqa.selenium.json.TypeToken;
 import org.openqa.selenium.remote.http.Contents;
 import org.openqa.selenium.remote.http.Filter;
 import org.openqa.selenium.remote.http.HttpClient;
@@ -39,10 +41,12 @@ import org.openqa.selenium.remote.tracing.HttpTracing;
 import org.openqa.selenium.remote.tracing.Tracer;
 
 import java.io.UncheckedIOException;
+import java.lang.reflect.Type;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import static org.openqa.selenium.remote.http.HttpMethod.DELETE;
 import static org.openqa.selenium.remote.http.HttpMethod.GET;
@@ -50,6 +54,7 @@ import static org.openqa.selenium.remote.http.HttpMethod.POST;
 
 public class RemoteNewSessionQueuer extends NewSessionQueuer {
 
+  private static final Type QUEUE_CONTENTS_TYPE = new TypeToken<List<Set<Capabilities>>>() {}.getType();
   private static final Json JSON = new Json();
   private final HttpClient client;
   private final Filter addSecret;
@@ -128,11 +133,12 @@ public class RemoteNewSessionQueuer extends NewSessionQueuer {
   }
 
   @Override
-  public List<Object> getQueueContents() {
+  public List<Set<Capabilities>> getQueueContents() {
     HttpRequest upstream = new HttpRequest(GET, "/se/grid/newsessionqueuer/queue");
     HttpTracing.inject(tracer, tracer.getCurrentContext(), upstream);
     HttpResponse response = client.execute(upstream);
-    return Values.get(response, List.class);
+
+    return Values.get(response, QUEUE_CONTENTS_TYPE);
   }
 
   @Override

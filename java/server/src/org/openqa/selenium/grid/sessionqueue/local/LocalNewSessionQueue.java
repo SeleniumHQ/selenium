@@ -17,6 +17,7 @@
 
 package org.openqa.selenium.grid.sessionqueue.local;
 
+import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.concurrent.Regularly;
 import org.openqa.selenium.events.EventBus;
 import org.openqa.selenium.grid.config.Config;
@@ -46,6 +47,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.concurrent.ConcurrentLinkedDeque;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -114,14 +116,12 @@ public class LocalNewSessionQueue extends NewSessionQueue {
   }
 
   @Override
-  public List<Object> getQueuedRequests() {
+  public List<Set<Capabilities>> getQueuedRequests() {
     Lock readLock = lock.readLock();
     readLock.lock();
     try {
       return sessionRequests.stream()
-        .map(req -> req.getDesiredCapabilities().iterator())
-        .filter(Iterator::hasNext)
-        .map(Iterator::next)
+        .map(SessionRequest::getDesiredCapabilities)
         .collect(Collectors.toList());
     } finally {
       readLock.unlock();

@@ -17,6 +17,7 @@
 
 package org.openqa.selenium.grid.sessionqueue;
 
+import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.grid.data.RequestId;
 import org.openqa.selenium.grid.security.RequiresSecretFilter;
 import org.openqa.selenium.grid.security.Secret;
@@ -37,6 +38,7 @@ import java.time.Instant;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -98,7 +100,7 @@ public abstract class NewSessionQueuer implements HasReadyState, Routable {
 
   public abstract int clearQueue();
 
-  public abstract List<Object> getQueueContents();
+  public abstract List<Set<Capabilities>> getQueueContents();
 
   @Override
   public boolean matches(HttpRequest req) {

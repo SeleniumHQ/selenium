@@ -20,6 +20,7 @@ package org.openqa.selenium.grid.graphql;
 import com.google.common.base.Suppliers;
 import com.google.common.collect.ImmutableList;
 import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.grid.data.DistributorStatus;
 import org.openqa.selenium.grid.data.NodeStatus;
 import org.openqa.selenium.grid.data.Slot;
@@ -34,6 +35,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
@@ -42,7 +44,7 @@ public class Grid {
   private static final Json JSON = new Json();
   private final URI uri;
   private final Supplier<DistributorStatus> distributorStatus;
-  private final List<Object> queueInfoList;
+  private final List<Set<Capabilities>> queueInfoList;
   private final String version;
 
   public Grid(Distributor distributor, NewSessionQueuer newSessionQueuer, URI uri,
@@ -128,7 +130,9 @@ public class Grid {
   }
 
   public List<String> getSessionQueueRequests() {
+    // TODO: The Grid UI expects there to be a single capability per new session request, which is not correct
     return queueInfoList.stream()
+      .map(set -> set.isEmpty() ? new ImmutableCapabilities() : set.iterator().next())
       .map(JSON::toJson)
       .collect(Collectors.toList());
   }

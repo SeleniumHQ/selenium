@@ -17,6 +17,7 @@
 
 package org.openqa.selenium.grid.sessionqueue;
 
+import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.grid.data.RequestId;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.tracing.Tracer;
@@ -26,6 +27,7 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 public abstract class NewSessionQueue implements HasReadyState {
 
@@ -49,7 +51,7 @@ public abstract class NewSessionQueue implements HasReadyState {
 
   public abstract int getQueueSize();
 
-  public abstract List<Object> getQueuedRequests();
+  public abstract List<Set<Capabilities>> getQueuedRequests();
 
   public boolean hasRequestTimedOut(SessionRequest request) {
     Instant enque = request.getEnqueued();

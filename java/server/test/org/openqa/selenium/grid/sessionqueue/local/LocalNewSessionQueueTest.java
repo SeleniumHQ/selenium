@@ -192,13 +192,13 @@ public class LocalNewSessionQueueTest {
     boolean addFirefoxRequest = sessionQueue.offerLast(firefoxRequest);
     assertTrue(addFirefoxRequest);
 
-    List<Object> response = sessionQueue.getQueuedRequests();
+    List<Set<Capabilities>> response = sessionQueue.getQueuedRequests();
     assertThat(response).isNotNull();
 
     assertEquals(2, response.size());
 
-    assertEquals(chromeCaps, response.get(0));
-    assertEquals(firefoxCaps, response.get(1));
+    assertEquals(Set.of(chromeCaps), response.get(0));
+    assertEquals(Set.of(firefoxCaps), response.get(1));
   }
 
   @Test(timeout = 15000)

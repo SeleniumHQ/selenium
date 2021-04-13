@@ -50,6 +50,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 
 import static org.openqa.selenium.remote.http.Contents.reader;
 import static org.openqa.selenium.remote.tracing.Tags.EXCEPTION;
@@ -111,7 +112,7 @@ public class LocalNewSessionQueuer extends NewSessionQueuer {
   }
 
   @Override
-  public List<Object> getQueueContents() {
+  public List<Set<Capabilities>> getQueueContents() {
     return sessionRequests.getQueuedRequests();
   }
 
