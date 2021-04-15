@@ -241,9 +241,8 @@ class UnboundZmqEventBus implements EventBus {
               recentMessages.add(id);
 
               if (!Secret.matches(secret, eventSecret)) {
-                LOG.severe(
-                  String.format(
-                    "Received message without a valid secret. Rejecting. %s -> %s", event, data));
+                LOG.log(Level.SEVERE, "Received message without a valid secret. Rejecting. {0} -> {1}",
+                  new Object[]{event, data}); // String formatting only applied if needed
                 Event rejectedEvent =
                   new Event(REJECTED_EVENT, new ZeroMqEventBus.RejectedEvent(eventName, data));
 
@@ -254,9 +253,14 @@ class UnboundZmqEventBus implements EventBus {
               notifyListeners(eventName, event);
             }
           }
-        } catch (Throwable e) {
-          LOG.log(Level.WARNING, e, () -> "Caught exception: " + e.getMessage());
-          throw e;
+        } catch (Exception e) {
+          if (e.getCause() instanceof AssertionError) {
+            // Do nothing.
+          } else {
+            LOG.log(Level.WARNING, e, () -> "Caught exception while polling for event bus messages: "
+              + e.getMessage());
+            throw e;
+          }
         }
       }
     }
@@ -267,8 +271,8 @@ class UnboundZmqEventBus implements EventBus {
         .forEach(listener -> listenerNotificationExecutor.submit(() -> {
           try {
             listener.accept(event);
-          } catch (Throwable t) {
-            LOG.log(Level.WARNING, t, () -> "Caught exception from listener: " + listener);
+          } catch (Exception e) {
+            LOG.log(Level.WARNING, e, () -> "Caught exception from listener: " + listener);
           }
         }));
     }
