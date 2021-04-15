@@ -64,9 +64,8 @@ rbe_autoconfig(name = "rbe_default")
 
 http_archive(
     name = "rules_python",
-    sha256 = "77a6497a8e01bd5cb9cb9e0f8a683ccaa7f8123ff8f8497ae92e1dd66cc27d58",
-    strip_prefix = "rules_python-0cd570e52939500065cca8e1c7baa895b4b43a4c",
-    url = "https://github.com/bazelbuild/rules_python/archive/0cd570e52939500065cca8e1c7baa895b4b43a4c.zip",
+    url = "https://github.com/bazelbuild/rules_python/releases/download/0.2.0/rules_python-0.2.0.tar.gz",
+    sha256 = "778197e26c5fbeb07ac2a2c5ae405b30f6cb7ad1f5510ea6fdac03bded96cc6f",
 )
 
 # This one is only needed if you're using the packaging rules.
