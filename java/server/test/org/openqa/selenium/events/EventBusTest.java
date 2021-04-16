@@ -59,12 +59,12 @@ public class EventBusTest {
             "tcp://*:" + PortProber.findFreePort(),
             true,
             secret),
-//        () -> ZeroMqEventBus.create(
-//            new ZContext(),
-//            "tcp://localhost:" + PortProber.findFreePort(),
-//            "tcp://localhost:" + PortProber.findFreePort(),
-//            true,
-//            secret),
+        () -> ZeroMqEventBus.create(
+            new ZContext(),
+            "tcp://localhost:" + PortProber.findFreePort(),
+            "tcp://localhost:" + PortProber.findFreePort(),
+            true,
+            secret),
         GuavaEventBus::new);
   }
 

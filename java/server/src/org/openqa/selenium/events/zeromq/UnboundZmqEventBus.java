@@ -241,6 +241,7 @@ class UnboundZmqEventBus implements EventBus {
     } catch (Throwable e) {
       // if the exception escapes, then we never get scheduled again
       LOG.log(Level.WARNING, e, () -> "Caught and swallowed exception: " + e.getMessage());
+      e.printStackTrace();
     }
   }
 
