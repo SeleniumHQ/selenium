@@ -83,7 +83,7 @@ public class EventBusTest {
     bus.close();
   }
 
-  @Test(timeout = 4000)
+  @Test(timeout = 10000)
   public void shouldBeAbleToPublishToAKnownTopic() throws InterruptedException {
     EventName cheese = new EventName("cheese");
     Event event = new Event(cheese, null);
@@ -91,7 +91,7 @@ public class EventBusTest {
     CountDownLatch latch = new CountDownLatch(1);
     bus.addListener(new EventListener<>(cheese, Object.class, obj -> latch.countDown()));
     bus.fire(event);
-    latch.await(1, SECONDS);
+    latch.await(5, SECONDS);
 
     assertThat(latch.getCount()).isEqualTo(0);
   }
@@ -120,7 +120,7 @@ public class EventBusTest {
         executor.submit(() -> bus.fire(new Event(name, "")));
       }
 
-      assertThat(count.await(20, SECONDS)).describedAs(count.toString()).isTrue();
+      assertThat(count.await(60, SECONDS)).describedAs(count.toString()).isTrue();
     } finally {
       executor.shutdownNow();
     }
