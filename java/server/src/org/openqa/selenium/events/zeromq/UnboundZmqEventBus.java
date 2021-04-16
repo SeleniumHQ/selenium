@@ -199,7 +199,7 @@ class UnboundZmqEventBus implements EventBus {
 
   private void pollForIncomingEvents(ZMQ.Poller poller, Secret secret, AtomicBoolean pollingStarted) {
     try {
-      int count = poller.poll(0);
+      int count = poller.poll(50);
 
       pollingStarted.lazySet(true);
 
