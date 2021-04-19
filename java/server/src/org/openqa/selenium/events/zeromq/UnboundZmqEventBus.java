@@ -259,6 +259,7 @@ class UnboundZmqEventBus implements EventBus {
           } else {
             LOG.log(Level.WARNING, e, () -> "Caught exception while polling for event bus messages: "
               + e.getMessage());
+            e.printStackTrace();
             throw e;
           }
         }
