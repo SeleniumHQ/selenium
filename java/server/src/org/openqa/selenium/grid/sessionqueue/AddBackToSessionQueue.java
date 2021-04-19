@@ -36,24 +36,24 @@ import org.openqa.selenium.remote.tracing.Tracer;
 class AddBackToSessionQueue implements HttpHandler {
 
   private final Tracer tracer;
-  private final NewSessionQueuer newSessionQueuer;
+  private final NewSessionQueue newSessionQueue;
   private final RequestId id;
 
-  AddBackToSessionQueue(Tracer tracer, NewSessionQueuer newSessionQueuer, RequestId id) {
+  AddBackToSessionQueue(Tracer tracer, NewSessionQueue newSessionQueue, RequestId id) {
     this.tracer = Require.nonNull("Tracer", tracer);
-    this.newSessionQueuer = Require.nonNull("New Session Queuer", newSessionQueuer);
+    this.newSessionQueue = Require.nonNull("New Session Queue", newSessionQueue);
     this.id = id;
   }
 
   @Override
   public HttpResponse execute(HttpRequest req) {
-    try (Span span = newSpanAsChildOf(tracer, req, "sessionqueuer.retry")) {
+    try (Span span = newSpanAsChildOf(tracer, req, "sessionqueue.retry")) {
       HTTP_REQUEST.accept(span, req);
       span.setAttribute(AttributeKey.REQUEST_ID.getKey(), id.toString());
 
       SessionRequest sessionRequest = Contents.fromJson(req, SessionRequest.class);
 
-      boolean value = newSessionQueuer.retryAddToQueue(sessionRequest);
+      boolean value = newSessionQueue.retryAddToQueue(sessionRequest);
 
       span.setAttribute("request.retry", value);
 

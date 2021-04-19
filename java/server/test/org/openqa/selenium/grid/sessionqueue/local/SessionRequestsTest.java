@@ -26,7 +26,6 @@ import org.openqa.selenium.events.local.GuavaEventBus;
 import org.openqa.selenium.grid.data.NewSessionRejectedEvent;
 import org.openqa.selenium.grid.data.NewSessionRequestEvent;
 import org.openqa.selenium.grid.data.RequestId;
-import org.openqa.selenium.grid.sessionqueue.NewSessionQueue;
 import org.openqa.selenium.grid.sessionqueue.SessionRequest;
 import org.openqa.selenium.remote.tracing.DefaultTestTracer;
 import org.openqa.selenium.remote.tracing.Tracer;
@@ -47,10 +46,10 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.openqa.selenium.remote.Dialect.W3C;
 
-public class LocalNewSessionQueueTest {
+public class LocalSessionRequestsTest {
 
   private EventBus bus;
-  private NewSessionQueue sessionQueue;
+  private SessionRequests sessionQueue;
   private SessionRequest expectedSessionRequest;
   private Capabilities expectedCaps;
 
@@ -59,7 +58,7 @@ public class LocalNewSessionQueueTest {
     Tracer tracer = DefaultTestTracer.createTracer();
     expectedCaps = new ImmutableCapabilities("browserName", "chrome");
     bus = new GuavaEventBus();
-    sessionQueue = new LocalNewSessionQueue(
+    sessionQueue = new LocalSessionRequests(
         tracer,
         bus,
         Duration.ofSeconds(30),
@@ -203,7 +202,7 @@ public class LocalNewSessionQueueTest {
 
   @Test(timeout = 15000)
   public void shouldBeAbleToRemoveRequestsOnTimeout() throws InterruptedException {
-    NewSessionQueue localSessionQueue = new LocalNewSessionQueue(
+    SessionRequests localSessionQueue = new LocalSessionRequests(
       DefaultTestTracer.createTracer(),
       bus,
       Duration.ofSeconds(30),

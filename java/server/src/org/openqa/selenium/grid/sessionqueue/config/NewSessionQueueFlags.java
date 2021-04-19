@@ -18,9 +18,6 @@
 package org.openqa.selenium.grid.sessionqueue.config;
 
 import static org.openqa.selenium.grid.config.StandardGridRoles.SESSION_QUEUE_ROLE;
-import static org.openqa.selenium.grid.sessionqueue.config.NewSessionQueueOptions.DEFAULT_REQUEST_TIMEOUT;
-import static org.openqa.selenium.grid.sessionqueue.config.NewSessionQueueOptions.DEFAULT_RETRY_INTERVAL;
-import static org.openqa.selenium.grid.sessionqueue.config.NewSessionQueueOptions.SESSIONS_QUEUE_SECTION;
 
 import com.google.auto.service.AutoService;
 
@@ -30,26 +27,30 @@ import org.openqa.selenium.grid.config.ConfigValue;
 import org.openqa.selenium.grid.config.HasRoles;
 import org.openqa.selenium.grid.config.Role;
 
+import java.net.URI;
 import java.util.Collections;
 import java.util.Set;
 
-@SuppressWarnings("FieldMayBeFinal")
 @AutoService(HasRoles.class)
 public class NewSessionQueueFlags implements HasRoles {
 
   @Parameter(
-    names = {"--session-request-timeout"},
-    description = "Timeout in seconds. New incoming session request is added to the queue. "
-                  + "Requests sitting in the queue for longer than the configured time will timeout.")
-  @ConfigValue(section = SESSIONS_QUEUE_SECTION, name = "session-request-timeout", example = "5")
-  private int sessionRequestTimeout = DEFAULT_REQUEST_TIMEOUT;
+    names = { "--sq",  "--sessionqueue" },
+    description = "Address of the session queue server.")
+  @ConfigValue(section = "sessionqueue", name = "host", example = "\"http://localhost:1237\"")
+  private URI sessionQueueServer;
 
   @Parameter(
-    names = {"--session-retry-interval"},
-    description = "Retry interval in seconds. If all slots are busy, new session request " +
-                  "will be retried after the given interval.")
-  @ConfigValue(section = SESSIONS_QUEUE_SECTION, name = "session-retry-interval", example = "5")
-  private int sessionRetryInterval = DEFAULT_RETRY_INTERVAL;
+    names = "--sessionqueue-port",
+    description = "Port on which the session queue server is listening.")
+  @ConfigValue(section = "sessionqueue", name = "port", example = "1234")
+  private Integer sessionQueueServerPort;
+
+  @Parameter(
+    names = "--sessionqueue-host",
+    description = "Host on which the session queue server is listening.")
+  @ConfigValue(section = "sessionqueue", name = "hostname", example = "\"localhost\"")
+  private String sessionQueueServerHost;
 
   @Override
   public Set<Role> getRoles() {
