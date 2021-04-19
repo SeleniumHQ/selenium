@@ -53,10 +53,10 @@ import org.openqa.selenium.grid.node.local.LocalNode;
 import org.openqa.selenium.grid.security.Secret;
 import org.openqa.selenium.grid.sessionmap.SessionMap;
 import org.openqa.selenium.grid.sessionmap.local.LocalSessionMap;
-import org.openqa.selenium.grid.sessionqueue.NewSessionQueuer;
+import org.openqa.selenium.grid.sessionqueue.NewSessionQueue;
 import org.openqa.selenium.grid.sessionqueue.SessionRequest;
 import org.openqa.selenium.grid.sessionqueue.local.LocalSessionRequests;
-import org.openqa.selenium.grid.sessionqueue.local.LocalNewSessionQueuer;
+import org.openqa.selenium.grid.sessionqueue.local.LocalNewSessionQueue;
 import org.openqa.selenium.grid.testing.TestSessionFactory;
 import org.openqa.selenium.internal.Either;
 import org.openqa.selenium.json.Json;
@@ -87,7 +87,7 @@ public class GraphqlHandlerTest {
   private final String version = "4.0.0";
   private final Wait<Object> wait = new FluentWait<>(new Object()).withTimeout(Duration.ofSeconds(5));
   private Distributor distributor;
-  private NewSessionQueuer queuer;
+  private NewSessionQueue queue;
   private Tracer tracer;
   private EventBus events;
   private ImmutableCapabilities caps;
@@ -119,7 +119,7 @@ public class GraphqlHandlerTest {
       Duration.ofSeconds(2),
       Duration.ofSeconds(2));
 
-    queuer = new LocalNewSessionQueuer(
+    queue = new LocalNewSessionQueue(
       tracer,
       events,
       localNewSessionQueue,
@@ -130,14 +130,14 @@ public class GraphqlHandlerTest {
       events,
       clientFactory,
       sessions,
-      queuer,
+      queue,
       registrationSecret,
       Duration.ofMinutes(5));
   }
 
   @Test
   public void shouldBeAbleToGetGridUri() {
-    GraphqlHandler handler = new GraphqlHandler(tracer, distributor, queuer, publicUri, version);
+    GraphqlHandler handler = new GraphqlHandler(tracer, distributor, queue, publicUri, version);
 
     Map<String, Object> topLevel = executeQuery(handler, "{ grid { uri } }");
 
@@ -150,7 +150,7 @@ public class GraphqlHandlerTest {
 
   @Test
   public void shouldBeAbleToGetGridVersion() {
-    GraphqlHandler handler = new GraphqlHandler(tracer, distributor, queuer, publicUri, version);
+    GraphqlHandler handler = new GraphqlHandler(tracer, distributor, queue, publicUri, version);
 
     Map<String, Object> topLevel = executeQuery(handler, "{ grid { version } }");
 
@@ -170,7 +170,7 @@ public class GraphqlHandlerTest {
       Set.of(caps));
 
     localNewSessionQueue.offerLast(request);
-    GraphqlHandler handler = new GraphqlHandler(tracer, distributor, queuer, publicUri, version);
+    GraphqlHandler handler = new GraphqlHandler(tracer, distributor, queue, publicUri, version);
 
     Map<String, Object> topLevel = executeQuery(handler, "{ grid { sessionQueueSize } }");
 
@@ -190,7 +190,7 @@ public class GraphqlHandlerTest {
       Set.of(caps));
 
     localNewSessionQueue.offerLast(request);
-    GraphqlHandler handler = new GraphqlHandler(tracer, distributor, queuer, publicUri, version);
+    GraphqlHandler handler = new GraphqlHandler(tracer, distributor, queue, publicUri, version);
 
     Map<String, Object> topLevel = executeQuery(handler,
       "{ sessionsInfo { sessionQueueRequests } }");
@@ -204,7 +204,7 @@ public class GraphqlHandlerTest {
 
   @Test
   public void shouldBeReturnAnEmptyListIfQueueIsEmpty() {
-    GraphqlHandler handler = new GraphqlHandler(tracer, distributor, queuer, publicUri, version);
+    GraphqlHandler handler = new GraphqlHandler(tracer, distributor, queue, publicUri, version);
 
     Map<String, Object> topLevel = executeQuery(handler,
       "{ sessionsInfo { sessionQueueRequests } }");
@@ -218,7 +218,7 @@ public class GraphqlHandlerTest {
 
   @Test
   public void shouldReturnAnEmptyListForNodesIfNoneAreRegistered() {
-    GraphqlHandler handler = new GraphqlHandler(tracer, distributor, queuer, publicUri, version);
+    GraphqlHandler handler = new GraphqlHandler(tracer, distributor, queue, publicUri, version);
 
     Map<String, Object> topLevel = executeQuery(handler, "{ nodesInfo { nodes { uri } } }");
 
@@ -250,7 +250,7 @@ public class GraphqlHandlerTest {
     distributor.add(node);
     wait.until(obj -> distributor.getStatus().hasCapacity());
 
-    GraphqlHandler handler = new GraphqlHandler(tracer, distributor, queuer, publicUri, version);
+    GraphqlHandler handler = new GraphqlHandler(tracer, distributor, queue, publicUri, version);
     Map<String, Object> topLevel = executeQuery(handler, "{ nodesInfo { nodes { uri } } }");
 
     assertThat(topLevel).describedAs(topLevel.toString()).isEqualTo(
@@ -281,7 +281,7 @@ public class GraphqlHandlerTest {
       Session session = response.right().getSession();
 
       assertThat(session).isNotNull();
-      GraphqlHandler handler = new GraphqlHandler(tracer, distributor, queuer, publicUri, version);
+      GraphqlHandler handler = new GraphqlHandler(tracer, distributor, queue, publicUri, version);
       Map<String, Object> topLevel = executeQuery(handler,
         "{ grid { sessionCount } }");
 
@@ -334,7 +334,7 @@ public class GraphqlHandlerTest {
       String query = String.format(
         "{ session (id: \"%s\") { id, capabilities, startTime, uri } }", sessionId);
 
-      GraphqlHandler handler = new GraphqlHandler(tracer, distributor, queuer, publicUri, version);
+      GraphqlHandler handler = new GraphqlHandler(tracer, distributor, queue, publicUri, version);
       Map<String, Object> result = executeQuery(handler, query);
 
       assertThat(result).describedAs(result.toString()).isEqualTo(
@@ -389,7 +389,7 @@ public class GraphqlHandlerTest {
           slot);
       String query = String.format("{ session (id: \"%s\") { nodeId, nodeUri } }", sessionId);
 
-      GraphqlHandler handler = new GraphqlHandler(tracer, distributor, queuer, publicUri, version);
+      GraphqlHandler handler = new GraphqlHandler(tracer, distributor, queue, publicUri, version);
       Map<String, Object> result = executeQuery(handler, query);
 
       assertThat(result).describedAs(result.toString()).isEqualTo(
@@ -446,7 +446,7 @@ public class GraphqlHandlerTest {
       String query = String.format(
         "{ session (id: \"%s\") { slot { id, stereotype, lastStarted } } }", sessionId);
 
-      GraphqlHandler handler = new GraphqlHandler(tracer, distributor, queuer, publicUri, version);
+      GraphqlHandler handler = new GraphqlHandler(tracer, distributor, queue, publicUri, version);
       Map<String, Object> result = executeQuery(handler, query);
 
       assertThat(result).describedAs(result.toString()).isEqualTo(
@@ -488,7 +488,7 @@ public class GraphqlHandlerTest {
 
       String query = String.format("{ session (id: \"%s\") { sessionDurationMillis } }", sessionId);
 
-      GraphqlHandler handler = new GraphqlHandler(tracer, distributor, queuer, publicUri, version);
+      GraphqlHandler handler = new GraphqlHandler(tracer, distributor, queue, publicUri, version);
       Map<String, Object> result = executeQuery(handler, query);
 
       assertThat(result)
@@ -519,7 +519,7 @@ public class GraphqlHandlerTest {
     String randomSessionId = UUID.randomUUID().toString();
     String query = "{ session (id: \"" + randomSessionId + "\") { sessionDurationMillis } }";
 
-    GraphqlHandler handler = new GraphqlHandler(tracer, distributor, queuer, publicUri, version);
+    GraphqlHandler handler = new GraphqlHandler(tracer, distributor, queue, publicUri, version);
     Map<String, Object> result = executeQuery(handler, query);
     assertThat(result)
       .containsEntry("data", null)
@@ -548,7 +548,7 @@ public class GraphqlHandlerTest {
 
     String query = "{ session (id: \"\") { sessionDurationMillis } }";
 
-    GraphqlHandler handler = new GraphqlHandler(tracer, distributor, queuer, publicUri, version);
+    GraphqlHandler handler = new GraphqlHandler(tracer, distributor, queue, publicUri, version);
     Map<String, Object> result = executeQuery(handler, query);
     assertThat(result)
       .containsEntry("data", null)

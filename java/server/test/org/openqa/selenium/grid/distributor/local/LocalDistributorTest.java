@@ -37,7 +37,7 @@ import org.openqa.selenium.grid.security.Secret;
 import org.openqa.selenium.grid.sessionmap.local.LocalSessionMap;
 import org.openqa.selenium.grid.sessionqueue.SessionRequest;
 import org.openqa.selenium.grid.sessionqueue.local.LocalSessionRequests;
-import org.openqa.selenium.grid.sessionqueue.local.LocalNewSessionQueuer;
+import org.openqa.selenium.grid.sessionqueue.local.LocalNewSessionQueue;
 import org.openqa.selenium.grid.testing.TestSessionFactory;
 import org.openqa.selenium.internal.Either;
 import org.openqa.selenium.remote.HttpSessionId;
@@ -95,22 +95,22 @@ public class LocalDistributorTest {
 
   @Test
   public void testAddNodeToDistributor() {
-    LocalSessionRequests localNewSessionQueue = new LocalSessionRequests(
+    LocalSessionRequests localSessionRequests = new LocalSessionRequests(
       tracer,
       bus,
       Duration.ofSeconds(2),
       Duration.ofSeconds(2));
-    LocalNewSessionQueuer queuer = new LocalNewSessionQueuer(
+    LocalNewSessionQueue queue = new LocalNewSessionQueue(
       tracer,
       bus,
-      localNewSessionQueue,
+      localSessionRequests,
       registrationSecret);
     Distributor distributor = new LocalDistributor(
       tracer,
       bus,
       clientFactory,
       new LocalSessionMap(tracer, bus),
-      queuer,
+      queue,
       registrationSecret,
       Duration.ofMinutes(5));
     distributor.add(localNode);
@@ -129,22 +129,22 @@ public class LocalDistributorTest {
   @Test
   public void testShouldNotAddNodeWithWrongSecret() {
     Secret secret = new Secret("my_secret");
-    LocalSessionRequests localNewSessionQueue = new LocalSessionRequests(
+    LocalSessionRequests localSessionRequests = new LocalSessionRequests(
       tracer,
       bus,
       Duration.ofSeconds(2),
       Duration.ofSeconds(2));
-    LocalNewSessionQueuer queuer = new LocalNewSessionQueuer(
+    LocalNewSessionQueue queue = new LocalNewSessionQueue(
       tracer,
       bus,
-      localNewSessionQueue,
+      localSessionRequests,
       registrationSecret);
     Distributor secretDistributor = new LocalDistributor(
       tracer,
       bus,
       clientFactory,
       new LocalSessionMap(tracer, bus),
-      queuer,
+      queue,
       secret,
       Duration.ofMinutes(5));
     bus.fire(new NodeStatusEvent(localNode.getStatus()));
@@ -157,22 +157,22 @@ public class LocalDistributorTest {
 
   @Test
   public void testRemoveNodeFromDistributor() {
-    LocalSessionRequests localNewSessionQueue = new LocalSessionRequests(
+    LocalSessionRequests localSessionRequests = new LocalSessionRequests(
       tracer,
       bus,
       Duration.ofSeconds(2),
       Duration.ofSeconds(2));
-    LocalNewSessionQueuer queuer = new LocalNewSessionQueuer(
+    LocalNewSessionQueue queue = new LocalNewSessionQueue(
       tracer,
       bus,
-      localNewSessionQueue,
+      localSessionRequests,
       registrationSecret);
     Distributor distributor = new LocalDistributor(
       tracer,
       bus,
       clientFactory,
       new LocalSessionMap(tracer, bus),
-      queuer,
+      queue,
       registrationSecret,
       Duration.ofMinutes(5));
     distributor.add(localNode);
@@ -191,22 +191,22 @@ public class LocalDistributorTest {
 
   @Test
   public void testAddSameNodeTwice() {
-    LocalSessionRequests localNewSessionQueue = new LocalSessionRequests(
+    LocalSessionRequests localSessionRequests = new LocalSessionRequests(
       tracer,
       bus,
       Duration.ofSeconds(2),
       Duration.ofSeconds(2));
-    LocalNewSessionQueuer queuer = new LocalNewSessionQueuer(
+    LocalNewSessionQueue queue = new LocalNewSessionQueue(
       tracer,
       bus,
-      localNewSessionQueue,
+      localSessionRequests,
       registrationSecret);
     Distributor distributor = new LocalDistributor(
       tracer,
       bus,
       clientFactory,
       new LocalSessionMap(tracer, bus),
-      queuer,
+      queue,
       registrationSecret,
       Duration.ofMinutes(5));
     distributor.add(localNode);
@@ -220,22 +220,22 @@ public class LocalDistributorTest {
 
   @Test
   public void shouldBeAbleToAddMultipleSessionsConcurrently() throws Exception {
-    LocalSessionRequests localNewSessionQueue = new LocalSessionRequests(
+    LocalSessionRequests localSessionRequests = new LocalSessionRequests(
       tracer,
       bus,
       Duration.ofSeconds(2),
       Duration.ofSeconds(2));
-    LocalNewSessionQueuer queuer = new LocalNewSessionQueuer(
+    LocalNewSessionQueue queue = new LocalNewSessionQueue(
       tracer,
       bus,
-      localNewSessionQueue,
+      localSessionRequests,
       registrationSecret);
     LocalDistributor distributor = new LocalDistributor(
       tracer,
       bus,
       clientFactory,
       new LocalSessionMap(tracer, bus),
-      queuer,
+      queue,
       registrationSecret,
       Duration.ofMinutes(5));
 
@@ -300,22 +300,22 @@ public class LocalDistributorTest {
 
   @Test
   public void testDrainNodeFromDistributor() {
-    LocalSessionRequests localNewSessionQueue = new LocalSessionRequests(
+    LocalSessionRequests localSessionRequests = new LocalSessionRequests(
       tracer,
       bus,
       Duration.ofSeconds(2),
       Duration.ofSeconds(2));
-    LocalNewSessionQueuer queuer = new LocalNewSessionQueuer(
+    LocalNewSessionQueue queue = new LocalNewSessionQueue(
       tracer,
       bus,
-      localNewSessionQueue,
+      localSessionRequests,
       registrationSecret);
     Distributor distributor = new LocalDistributor(
       tracer,
       bus,
       clientFactory,
       new LocalSessionMap(tracer, bus),
-      queuer,
+      queue,
       registrationSecret,
       Duration.ofMinutes(5));
     distributor.add(localNode);
@@ -341,22 +341,22 @@ public class LocalDistributorTest {
   public void testDrainNodeFromNode() {
     assertThat(localNode.isDraining()).isFalse();
 
-    LocalSessionRequests localNewSessionQueue = new LocalSessionRequests(
+    LocalSessionRequests localSessionRequests = new LocalSessionRequests(
       tracer,
       bus,
       Duration.ofSeconds(2),
       Duration.ofSeconds(2));
-    LocalNewSessionQueuer queuer = new LocalNewSessionQueuer(
+    LocalNewSessionQueue queue = new LocalNewSessionQueue(
       tracer,
       bus,
-      localNewSessionQueue,
+      localSessionRequests,
       registrationSecret);
     Distributor distributor = new LocalDistributor(
       tracer,
       bus,
       clientFactory,
       new LocalSessionMap(tracer, bus),
-      queuer,
+      queue,
       registrationSecret,
       Duration.ofMinutes(5));
     distributor.add(localNode);

@@ -40,9 +40,9 @@ import org.openqa.selenium.grid.server.Server;
 import org.openqa.selenium.grid.sessionmap.SessionMap;
 import org.openqa.selenium.grid.sessionmap.local.LocalSessionMap;
 import org.openqa.selenium.grid.sessionqueue.local.SessionRequests;
-import org.openqa.selenium.grid.sessionqueue.NewSessionQueuer;
+import org.openqa.selenium.grid.sessionqueue.NewSessionQueue;
 import org.openqa.selenium.grid.sessionqueue.local.LocalSessionRequests;
-import org.openqa.selenium.grid.sessionqueue.local.LocalNewSessionQueuer;
+import org.openqa.selenium.grid.sessionqueue.local.LocalNewSessionQueue;
 import org.openqa.selenium.grid.testing.TestSessionFactory;
 import org.openqa.selenium.grid.web.CombinedHandler;
 import org.openqa.selenium.grid.web.EnsureSpecCompliantHeaders;
@@ -92,15 +92,15 @@ public class NewSessionCreationTest {
   @Test
   public void ensureJsCannotCreateANewSession() throws URISyntaxException {
     SessionMap sessions = new LocalSessionMap(tracer, events);
-    LocalSessionRequests localNewSessionQueue = new LocalSessionRequests(
+    LocalSessionRequests localSessionRequests = new LocalSessionRequests(
       tracer,
       events,
       Duration.ofSeconds(2),
       Duration.ofSeconds(2));
-    NewSessionQueuer queuer = new LocalNewSessionQueuer(
+    NewSessionQueue queue = new LocalNewSessionQueue(
       tracer,
       events,
-      localNewSessionQueue,
+      localSessionRequests,
       registrationSecret);
 
     Distributor distributor = new LocalDistributor(
@@ -108,11 +108,11 @@ public class NewSessionCreationTest {
       events,
       clientFactory,
       sessions,
-      queuer,
+      queue,
       registrationSecret,
       Duration.ofMinutes(5));
 
-    Routable router = new Router(tracer, clientFactory, sessions, queuer, distributor)
+    Routable router = new Router(tracer, clientFactory, sessions, queue, distributor)
       .with(new EnsureSpecCompliantHeaders(ImmutableList.of(), ImmutableSet.of()));
 
     server = new NettyServer(
@@ -168,24 +168,24 @@ public class NewSessionCreationTest {
 
     SessionMap sessions = new LocalSessionMap(tracer, events);
     handler.addHandler(sessions);
-    SessionRequests localSessionRequests = new LocalSessionRequests(
+    SessionRequests sessionRequests = new LocalSessionRequests(
       tracer,
       events,
       Duration.ofSeconds(2),
       Duration.ofSeconds(10));
-    NewSessionQueuer queuer = new LocalNewSessionQueuer(
+    NewSessionQueue queue = new LocalNewSessionQueue(
       tracer,
       events,
-      localSessionRequests,
+      sessionRequests,
       registrationSecret);
-    handler.addHandler(queuer);
+    handler.addHandler(queue);
 
     Distributor distributor = new LocalDistributor(
       tracer,
       events,
       clientFactory,
       sessions,
-      queuer,
+      queue,
       registrationSecret,
       Duration.ofMinutes(5));
     handler.addHandler(distributor);
@@ -213,7 +213,7 @@ public class NewSessionCreationTest {
     handler.addHandler(localNode);
     distributor.add(localNode);
 
-    Router router = new Router(tracer, clientFactory, sessions, queuer, distributor);
+    Router router = new Router(tracer, clientFactory, sessions, queue, distributor);
     handler.addHandler(router);
 
     server = new NettyServer(

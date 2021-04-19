@@ -47,7 +47,7 @@ import org.openqa.selenium.grid.node.local.LocalNode;
 import org.openqa.selenium.grid.security.Secret;
 import org.openqa.selenium.grid.sessionmap.local.LocalSessionMap;
 import org.openqa.selenium.grid.sessionqueue.local.LocalSessionRequests;
-import org.openqa.selenium.grid.sessionqueue.local.LocalNewSessionQueuer;
+import org.openqa.selenium.grid.sessionqueue.local.LocalNewSessionQueue;
 import org.openqa.selenium.grid.testing.TestSessionFactory;
 import org.openqa.selenium.grid.web.CombinedHandler;
 import org.openqa.selenium.grid.web.RoutableHttpClientFactory;
@@ -111,7 +111,7 @@ public class AddingNodesTest {
       bus,
       Duration.ofSeconds(2),
       Duration.ofSeconds(2));
-    LocalNewSessionQueuer queuer = new LocalNewSessionQueuer(
+    LocalNewSessionQueue queue = new LocalNewSessionQueue(
       tracer,
       bus,
       localNewSessionQueue,
@@ -121,7 +121,7 @@ public class AddingNodesTest {
       bus,
       clientFactory,
       sessions,
-      queuer,
+      queue,
       registrationSecret,
       Duration.ofMinutes(5));
 

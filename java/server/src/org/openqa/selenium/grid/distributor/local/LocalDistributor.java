@@ -57,9 +57,9 @@ import org.openqa.selenium.grid.server.EventBusOptions;
 import org.openqa.selenium.grid.server.NetworkOptions;
 import org.openqa.selenium.grid.sessionmap.SessionMap;
 import org.openqa.selenium.grid.sessionmap.config.SessionMapOptions;
-import org.openqa.selenium.grid.sessionqueue.NewSessionQueuer;
+import org.openqa.selenium.grid.sessionqueue.NewSessionQueue;
 import org.openqa.selenium.grid.sessionqueue.SessionRequest;
-import org.openqa.selenium.grid.sessionqueue.config.NewSessionQueuerOptions;
+import org.openqa.selenium.grid.sessionqueue.config.NewSessionQueueOptions;
 import org.openqa.selenium.internal.Either;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.http.HttpClient;
@@ -113,14 +113,14 @@ public class LocalDistributor extends Distributor {
   private final GridModel model;
   private final Map<NodeId, Node> nodes;
 
-  private final NewSessionQueuer sessionRequests;
+  private final NewSessionQueue sessionRequests;
 
   public LocalDistributor(
     Tracer tracer,
     EventBus bus,
     HttpClient.Factory clientFactory,
     SessionMap sessions,
-    NewSessionQueuer sessionRequests,
+    NewSessionQueue sessionRequests,
     Secret registrationSecret,
     Duration healthcheckInterval) {
     super(tracer, clientFactory, new DefaultSlotSelector(), sessions, registrationSecret);
@@ -169,9 +169,9 @@ public class LocalDistributor extends Distributor {
     HttpClient.Factory clientFactory = new NetworkOptions(config).getHttpClientFactory(tracer);
     SessionMap sessions = new SessionMapOptions(config).getSessionMap();
     SecretOptions secretOptions = new SecretOptions(config);
-    NewSessionQueuer sessionRequests =
-      new NewSessionQueuerOptions(config).getSessionQueuer(
-        "org.openqa.selenium.grid.sessionqueue.remote.RemoteNewSessionQueuer");
+    NewSessionQueue sessionRequests =
+      new NewSessionQueueOptions(config).getSessionQueue(
+        "org.openqa.selenium.grid.sessionqueue.remote.RemoteNewSessionQueue");
     return new LocalDistributor(
       tracer,
       bus,

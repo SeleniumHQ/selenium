@@ -26,9 +26,9 @@ import org.openqa.selenium.grid.log.LoggingOptions;
 import org.openqa.selenium.grid.security.Secret;
 import org.openqa.selenium.grid.security.SecretOptions;
 import org.openqa.selenium.grid.server.EventBusOptions;
-import org.openqa.selenium.grid.sessionqueue.NewSessionQueuer;
+import org.openqa.selenium.grid.sessionqueue.NewSessionQueue;
 import org.openqa.selenium.grid.sessionqueue.SessionRequest;
-import org.openqa.selenium.grid.sessionqueue.config.NewSessionQueueOptions;
+import org.openqa.selenium.grid.sessionqueue.config.SessionRequestOptions;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.remote.tracing.AttributeKey;
@@ -47,13 +47,13 @@ import java.util.Set;
 import static org.openqa.selenium.remote.http.Contents.reader;
 import static org.openqa.selenium.remote.tracing.Tags.EXCEPTION;
 
-public class LocalNewSessionQueuer extends NewSessionQueuer {
+public class LocalNewSessionQueue extends NewSessionQueue {
 
   public final SessionRequests sessionRequests;
   private final EventBus bus;
   private final GetNewSessionResponse getNewSessionResponse;
 
-  public LocalNewSessionQueuer(
+  public LocalNewSessionQueue(
     Tracer tracer,
     EventBus bus,
     SessionRequests sessionRequests,
@@ -65,11 +65,11 @@ public class LocalNewSessionQueuer extends NewSessionQueuer {
     this.getNewSessionResponse  = new GetNewSessionResponse(bus, sessionRequests);
   }
 
-  public static NewSessionQueuer create(Config config) {
+  public static NewSessionQueue create(Config config) {
     Tracer tracer = new LoggingOptions(config).getTracer();
     EventBus bus = new EventBusOptions(config).getEventBus();
-    Duration retryInterval = new NewSessionQueueOptions(config).getSessionRequestRetryInterval();
-    Duration requestTimeout = new NewSessionQueueOptions(config).getSessionRequestTimeout();
+    Duration retryInterval = new SessionRequestOptions(config).getSessionRequestRetryInterval();
+    Duration requestTimeout = new SessionRequestOptions(config).getSessionRequestTimeout();
     SessionRequests sessionRequests = new LocalSessionRequests(
       tracer,
       bus,
@@ -79,7 +79,7 @@ public class LocalNewSessionQueuer extends NewSessionQueuer {
     SecretOptions secretOptions = new SecretOptions(config);
     Secret registrationSecret = secretOptions.getRegistrationSecret();
 
-    return new LocalNewSessionQueuer(tracer, bus, sessionRequests, registrationSecret);
+    return new LocalNewSessionQueue(tracer, bus, sessionRequests, registrationSecret);
   }
 
   @Override
@@ -114,7 +114,7 @@ public class LocalNewSessionQueuer extends NewSessionQueuer {
   }
 
   private void validateSessionRequest(SessionRequest request) {
-    try (Span span = tracer.getCurrentContext().createSpan("newsession_queuer.validate")) {
+    try (Span span = tracer.getCurrentContext().createSpan("newsession_queue.validate")) {
       Map<String, EventAttributeValue> attributeMap = new HashMap<>();
 
       if (request.getDesiredCapabilities().isEmpty()) {

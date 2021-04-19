@@ -33,9 +33,9 @@ import org.openqa.selenium.grid.node.local.LocalNode;
 import org.openqa.selenium.grid.security.Secret;
 import org.openqa.selenium.grid.sessionmap.SessionMap;
 import org.openqa.selenium.grid.sessionmap.local.LocalSessionMap;
-import org.openqa.selenium.grid.sessionqueue.NewSessionQueuer;
+import org.openqa.selenium.grid.sessionqueue.NewSessionQueue;
 import org.openqa.selenium.grid.sessionqueue.local.LocalSessionRequests;
-import org.openqa.selenium.grid.sessionqueue.local.LocalNewSessionQueuer;
+import org.openqa.selenium.grid.sessionqueue.local.LocalNewSessionQueue;
 import org.openqa.selenium.grid.testing.PassthroughHttpClient;
 import org.openqa.selenium.grid.testing.TestSessionFactory;
 import org.openqa.selenium.grid.web.CombinedHandler;
@@ -67,7 +67,7 @@ public class RouterTest {
   private EventBus bus;
   private CombinedHandler handler;
   private SessionMap sessions;
-  private NewSessionQueuer queuer;
+  private NewSessionQueue queue;
   private Distributor distributor;
   private Router router;
   private Secret registrationSecret;
@@ -90,20 +90,20 @@ public class RouterTest {
       bus,
       Duration.ofSeconds(2),
       Duration.ofSeconds(2));
-    queuer = new LocalNewSessionQueuer(tracer, bus, localNewSessionQueue, registrationSecret);
-    handler.addHandler(queuer);
+    queue = new LocalNewSessionQueue(tracer, bus, localNewSessionQueue, registrationSecret);
+    handler.addHandler(queue);
 
     distributor = new LocalDistributor(
       tracer,
       bus,
       clientFactory,
       sessions,
-      queuer,
+      queue,
       registrationSecret,
       Duration.ofMinutes(5));
     handler.addHandler(distributor);
 
-    router = new Router(tracer, clientFactory, sessions, queuer, distributor);
+    router = new Router(tracer, clientFactory, sessions, queue, distributor);
   }
 
   @Test

@@ -21,9 +21,9 @@ import com.google.common.collect.ImmutableMap;
 
 import org.openqa.selenium.grid.config.MapConfig;
 
-class DefaultNewSessionQueuerConfig extends MapConfig {
+class DefaultNewSessionQueueConfig extends MapConfig {
 
-  DefaultNewSessionQueuerConfig() {
+  DefaultNewSessionQueueConfig() {
     super(ImmutableMap.of(
         "events", ImmutableMap.of(
             "publish", "tcp://*:4442",

@@ -25,7 +25,7 @@ import org.openqa.selenium.grid.data.DistributorStatus;
 import org.openqa.selenium.grid.data.NodeStatus;
 import org.openqa.selenium.grid.data.Slot;
 import org.openqa.selenium.grid.distributor.Distributor;
-import org.openqa.selenium.grid.sessionqueue.NewSessionQueuer;
+import org.openqa.selenium.grid.sessionqueue.NewSessionQueue;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.Json;
 
@@ -47,12 +47,12 @@ public class Grid {
   private final List<Set<Capabilities>> queueInfoList;
   private final String version;
 
-  public Grid(Distributor distributor, NewSessionQueuer newSessionQueuer, URI uri,
+  public Grid(Distributor distributor, NewSessionQueue newSessionQueue, URI uri,
               String version) {
     Require.nonNull("Distributor", distributor);
     this.uri = Require.nonNull("Grid's public URI", uri);
-    NewSessionQueuer sessionQueuer = Require.nonNull("NewSessionQueuer", newSessionQueuer);
-    this.queueInfoList = sessionQueuer.getQueueContents();
+    NewSessionQueue sessionQueue = Require.nonNull("New session queue", newSessionQueue);
+    this.queueInfoList = sessionQueue.getQueueContents();
     this.distributorStatus = Suppliers.memoize(distributor::getStatus);
     this.version = Require.nonNull("Grid's version", version);
   }

@@ -34,9 +34,9 @@ import org.openqa.selenium.grid.data.RequestId;
 import org.openqa.selenium.grid.data.Session;
 import org.openqa.selenium.grid.security.Secret;
 import org.openqa.selenium.grid.sessionqueue.local.LocalSessionRequests;
-import org.openqa.selenium.grid.sessionqueue.local.LocalNewSessionQueuer;
+import org.openqa.selenium.grid.sessionqueue.local.LocalNewSessionQueue;
 import org.openqa.selenium.grid.sessionqueue.local.SessionRequests;
-import org.openqa.selenium.grid.sessionqueue.remote.RemoteNewSessionQueuer;
+import org.openqa.selenium.grid.sessionqueue.remote.RemoteNewSessionQueue;
 import org.openqa.selenium.grid.testing.PassthroughHttpClient;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.remote.SessionId;
@@ -75,13 +75,13 @@ import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
 import static org.openqa.selenium.remote.Dialect.W3C;
 
-public class NewSessionQueuerTest {
+public class NewSessionQueueTest {
 
   private static final Json JSON = new Json();
   private static int count = 0;
   private final Secret registrationSecret = new Secret("secret");
-  private LocalNewSessionQueuer local;
-  private RemoteNewSessionQueuer remote;
+  private LocalNewSessionQueue local;
+  private RemoteNewSessionQueue remote;
   private EventBus bus;
   private ImmutableCapabilities caps;
   private SessionRequest sessionRequest;
@@ -100,10 +100,10 @@ public class NewSessionQueuerTest {
         Duration.ofSeconds(1),
         Duration.ofSeconds(1000));
 
-    local = new LocalNewSessionQueuer(tracer, bus, sessionQueue, registrationSecret);
+    local = new LocalNewSessionQueue(tracer, bus, sessionQueue, registrationSecret);
 
     HttpClient client = new PassthroughHttpClient(local);
-    remote = new RemoteNewSessionQueuer(tracer, client, registrationSecret);
+    remote = new RemoteNewSessionQueue(tracer, client, registrationSecret);
 
     sessionRequest = new SessionRequest(
       new RequestId(UUID.randomUUID()),
@@ -434,10 +434,10 @@ public class NewSessionQueuerTest {
         Duration.ofSeconds(4),
         Duration.ofSeconds(0));
 
-    local = new LocalNewSessionQueuer(tracer, bus, sessionQueue, registrationSecret);
+    local = new LocalNewSessionQueue(tracer, bus, sessionQueue, registrationSecret);
 
     HttpClient client = new PassthroughHttpClient(local);
-    remote = new RemoteNewSessionQueuer(tracer, client, registrationSecret);
+    remote = new RemoteNewSessionQueue(tracer, client, registrationSecret);
 
     AtomicBoolean isPresent = new AtomicBoolean();
     bus.addListener(NewSessionRequestEvent.listener(reqId -> {

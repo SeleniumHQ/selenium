@@ -29,7 +29,7 @@ import org.openqa.selenium.grid.jmx.JMXHelper;
 import org.openqa.selenium.grid.node.local.LocalNode;
 import org.openqa.selenium.grid.security.Secret;
 import org.openqa.selenium.grid.server.BaseServerOptions;
-import org.openqa.selenium.grid.sessionqueue.config.NewSessionQueueOptions;
+import org.openqa.selenium.grid.sessionqueue.config.SessionRequestOptions;
 import org.openqa.selenium.grid.sessionqueue.local.LocalSessionRequests;
 import org.openqa.selenium.grid.testing.TestSessionFactory;
 import org.openqa.selenium.net.PortProber;
@@ -159,8 +159,8 @@ public class JmxTest {
 
       new JMXHelper().unregister(name);
 
-      NewSessionQueueOptions queueOptions =
-        new NewSessionQueueOptions(new MapConfig(ImmutableMap.of()));
+      SessionRequestOptions queueOptions =
+        new SessionRequestOptions(new MapConfig(ImmutableMap.of()));
       MBeanInfo info = beanServer.getMBeanInfo(name);
       assertThat(info).isNotNull();
 

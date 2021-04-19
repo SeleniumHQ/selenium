@@ -47,12 +47,12 @@ import static org.openqa.selenium.remote.http.Route.delete;
 import static org.openqa.selenium.remote.http.Route.get;
 import static org.openqa.selenium.remote.http.Route.post;
 
-public abstract class NewSessionQueuer implements HasReadyState, Routable {
+public abstract class NewSessionQueue implements HasReadyState, Routable {
 
   protected final Tracer tracer;
   private final Route routes;
 
-  protected NewSessionQueuer(Tracer tracer, Secret registrationSecret) {
+  protected NewSessionQueue(Tracer tracer, Secret registrationSecret) {
     this.tracer = Require.nonNull("Tracer", tracer);
 
     Require.nonNull("Registration secret", registrationSecret);
@@ -73,17 +73,17 @@ public abstract class NewSessionQueuer implements HasReadyState, Routable {
             throw new UncheckedIOException(e);
           }
         }),
-      post("/se/grid/newsessionqueuer/session")
+      post("/se/grid/newsessionqueue/session")
         .to(() -> new AddToSessionQueue(tracer, this)),
-      post("/se/grid/newsessionqueuer/session/retry/{requestId}")
+      post("/se/grid/newsessionqueue/session/retry/{requestId}")
         .to(params -> new AddBackToSessionQueue(tracer, this, requestIdFrom(params)))
         .with(requiresSecret),
-      get("/se/grid/newsessionqueuer/session/{requestId}")
+      get("/se/grid/newsessionqueue/session/{requestId}")
         .to(params -> new RemoveFromSessionQueue(tracer, this, requestIdFrom(params)))
         .with(requiresSecret),
-      get("/se/grid/newsessionqueuer/queue")
+      get("/se/grid/newsessionqueue/queue")
         .to(() -> new GetSessionQueue(tracer, this)),
-      delete("/se/grid/newsessionqueuer/queue")
+      delete("/se/grid/newsessionqueue/queue")
         .to(() -> new ClearSessionQueue(tracer, this))
         .with(requiresSecret));
   }
