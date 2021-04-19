@@ -15,7 +15,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.grid.sessionqueue;
+package org.openqa.selenium.grid.sessionqueue.local;
 
 import com.google.common.collect.ImmutableMap;
 import org.junit.Before;
@@ -33,8 +33,8 @@ import org.openqa.selenium.grid.data.NewSessionResponseEvent;
 import org.openqa.selenium.grid.data.RequestId;
 import org.openqa.selenium.grid.data.Session;
 import org.openqa.selenium.grid.security.Secret;
+import org.openqa.selenium.grid.sessionqueue.SessionRequest;
 import org.openqa.selenium.grid.sessionqueue.local.LocalNewSessionQueue;
-import org.openqa.selenium.grid.sessionqueue.local.SessionRequests;
 import org.openqa.selenium.grid.sessionqueue.remote.RemoteNewSessionQueue;
 import org.openqa.selenium.grid.testing.PassthroughHttpClient;
 import org.openqa.selenium.json.Json;
@@ -74,7 +74,7 @@ import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
 import static org.openqa.selenium.remote.Dialect.W3C;
 
-public class NewSessionQueueTest {
+public class LocalNewSessionQueueTest {
 
   private static final Json JSON = new Json();
   private static int count = 0;
@@ -84,7 +84,6 @@ public class NewSessionQueueTest {
   private EventBus bus;
   private ImmutableCapabilities caps;
   private SessionRequest sessionRequest;
-  private SessionRequests sessionQueue;
 
 
   @Before
@@ -93,13 +92,12 @@ public class NewSessionQueueTest {
     caps = new ImmutableCapabilities("browserName", "chrome");
     bus = new GuavaEventBus();
 
-    sessionQueue = new SessionRequests(
-        tracer,
-        bus,
-        Duration.ofSeconds(1),
-        Duration.ofSeconds(1000));
-
-    local = new LocalNewSessionQueue(tracer, bus, sessionQueue, registrationSecret);
+    local = new LocalNewSessionQueue(
+      tracer,
+      bus,
+      Duration.ofSeconds(1),
+      Duration.ofSeconds(1000),
+      registrationSecret);
 
     HttpClient client = new PassthroughHttpClient(local);
     remote = new RemoteNewSessionQueue(tracer, client, registrationSecret);
@@ -202,7 +200,7 @@ public class NewSessionQueueTest {
   @Test
   public void shouldBeClearQueue() {
     RequestId requestId = new RequestId(UUID.randomUUID());
-    sessionQueue.offerLast(sessionRequest);
+    local.offerLast(sessionRequest);
 
     int count = local.clearQueue();
 
@@ -213,7 +211,7 @@ public class NewSessionQueueTest {
   @Test
   public void shouldBeClearQueueRemotely() {
     RequestId requestId = new RequestId(UUID.randomUUID());
-    sessionQueue.offerLast(sessionRequest);
+    remote.offerLast(sessionRequest);
 
     int count = remote.clearQueue();
 
@@ -223,7 +221,7 @@ public class NewSessionQueueTest {
 
   @Test
   public void shouldBeAbleToGetQueueContents() {
-    sessionQueue.offerLast(sessionRequest);
+    local.offerLast(sessionRequest);
 
     List<Set<Capabilities>> response = local.getQueueContents();
     assertThat(response).isNotNull();
@@ -235,9 +233,9 @@ public class NewSessionQueueTest {
 
   @Test
   public void shouldBeAbleToGetQueueContentsRemotely() {
-    sessionQueue.offerLast(sessionRequest);
+    remote.offerLast(sessionRequest);
 
-    List<Set<Capabilities>> response = sessionQueue.getQueuedRequests();
+    List<Set<Capabilities>> response = remote.getQueueContents();
     assertThat(response).isNotNull();
 
     assertEquals(1, response.size());
@@ -253,7 +251,7 @@ public class NewSessionQueueTest {
     bus.addListener(
       NewSessionRejectedEvent.listener(response -> result.set(response.getRequestId().equals(requestId))));
 
-    sessionQueue.offerLast(sessionRequest);
+    local.offerLast(sessionRequest);
 
     int count = remote.clearQueue();
 
@@ -427,13 +425,12 @@ public class NewSessionQueueTest {
   @Test(timeout = 15000)
   public void shouldBeAbleToTimeoutARequestOnRemove() {
     Tracer tracer = DefaultTestTracer.createTracer();
-    SessionRequests sessionQueue = new SessionRequests(
-        tracer,
-        bus,
-        Duration.ofSeconds(4),
-        Duration.ofSeconds(0));
-
-    local = new LocalNewSessionQueue(tracer, bus, sessionQueue, registrationSecret);
+    local = new LocalNewSessionQueue(
+      tracer,
+      bus,
+      Duration.ofSeconds(4),
+      Duration.ofSeconds(0),
+      registrationSecret);
 
     HttpClient client = new PassthroughHttpClient(local);
     remote = new RemoteNewSessionQueue(tracer, client, registrationSecret);

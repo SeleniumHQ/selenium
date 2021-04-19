@@ -55,7 +55,6 @@ import org.openqa.selenium.grid.sessionmap.SessionMap;
 import org.openqa.selenium.grid.sessionmap.local.LocalSessionMap;
 import org.openqa.selenium.grid.sessionqueue.NewSessionQueue;
 import org.openqa.selenium.grid.sessionqueue.SessionRequest;
-import org.openqa.selenium.grid.sessionqueue.local.SessionRequests;
 import org.openqa.selenium.grid.sessionqueue.local.LocalNewSessionQueue;
 import org.openqa.selenium.grid.testing.TestSessionFactory;
 import org.openqa.selenium.internal.Either;
@@ -92,7 +91,6 @@ public class GraphqlHandlerTest {
   private EventBus events;
   private ImmutableCapabilities caps;
   private ImmutableCapabilities stereotype;
-  private SessionRequests localNewSessionQueue;
   private SessionRequest sessionRequest;
 
   public GraphqlHandlerTest() throws URISyntaxException {
@@ -113,16 +111,11 @@ public class GraphqlHandlerTest {
       Set.of(OSS, W3C),
       Set.of(caps));
 
-    localNewSessionQueue = new SessionRequests(
-      tracer,
-      events,
-      Duration.ofSeconds(2),
-      Duration.ofSeconds(2));
-
     queue = new LocalNewSessionQueue(
       tracer,
       events,
-      localNewSessionQueue,
+      Duration.ofSeconds(2),
+      Duration.ofSeconds(2),
       registrationSecret);
 
     distributor = new LocalDistributor(
@@ -169,7 +162,7 @@ public class GraphqlHandlerTest {
       Set.of(W3C),
       Set.of(caps));
 
-    localNewSessionQueue.offerLast(request);
+    queue.offerLast(request);
     GraphqlHandler handler = new GraphqlHandler(tracer, distributor, queue, publicUri, version);
 
     Map<String, Object> topLevel = executeQuery(handler, "{ grid { sessionQueueSize } }");
@@ -189,7 +182,7 @@ public class GraphqlHandlerTest {
       Set.of(W3C),
       Set.of(caps));
 
-    localNewSessionQueue.offerLast(request);
+    queue.offerLast(request);
     GraphqlHandler handler = new GraphqlHandler(tracer, distributor, queue, publicUri, version);
 
     Map<String, Object> topLevel = executeQuery(handler,

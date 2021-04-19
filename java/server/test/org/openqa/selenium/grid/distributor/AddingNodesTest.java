@@ -19,7 +19,6 @@ package org.openqa.selenium.grid.distributor;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.Capabilities;
@@ -46,7 +45,7 @@ import org.openqa.selenium.grid.node.Node;
 import org.openqa.selenium.grid.node.local.LocalNode;
 import org.openqa.selenium.grid.security.Secret;
 import org.openqa.selenium.grid.sessionmap.local.LocalSessionMap;
-import org.openqa.selenium.grid.sessionqueue.local.SessionRequests;
+import org.openqa.selenium.grid.sessionqueue.NewSessionQueue;
 import org.openqa.selenium.grid.sessionqueue.local.LocalNewSessionQueue;
 import org.openqa.selenium.grid.testing.TestSessionFactory;
 import org.openqa.selenium.grid.web.CombinedHandler;
@@ -106,15 +105,11 @@ public class AddingNodesTest {
       HttpClient.Factory.createDefault());
 
     LocalSessionMap sessions = new LocalSessionMap(tracer, bus);
-    SessionRequests localNewSessionQueue = new SessionRequests(
+    NewSessionQueue queue = new LocalNewSessionQueue(
       tracer,
       bus,
       Duration.ofSeconds(2),
-      Duration.ofSeconds(2));
-    LocalNewSessionQueue queue = new LocalNewSessionQueue(
-      tracer,
-      bus,
-      localNewSessionQueue,
+      Duration.ofSeconds(2),
       registrationSecret);
     Distributor local = new LocalDistributor(
       tracer,

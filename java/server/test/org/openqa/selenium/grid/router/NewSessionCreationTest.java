@@ -39,9 +39,7 @@ import org.openqa.selenium.grid.server.BaseServerOptions;
 import org.openqa.selenium.grid.server.Server;
 import org.openqa.selenium.grid.sessionmap.SessionMap;
 import org.openqa.selenium.grid.sessionmap.local.LocalSessionMap;
-import org.openqa.selenium.grid.sessionqueue.local.SessionRequests;
 import org.openqa.selenium.grid.sessionqueue.NewSessionQueue;
-import org.openqa.selenium.grid.sessionqueue.local.SessionRequests;
 import org.openqa.selenium.grid.sessionqueue.local.LocalNewSessionQueue;
 import org.openqa.selenium.grid.testing.TestSessionFactory;
 import org.openqa.selenium.grid.web.CombinedHandler;
@@ -92,15 +90,11 @@ public class NewSessionCreationTest {
   @Test
   public void ensureJsCannotCreateANewSession() throws URISyntaxException {
     SessionMap sessions = new LocalSessionMap(tracer, events);
-    SessionRequests localSessionRequests = new SessionRequests(
-      tracer,
-      events,
-      Duration.ofSeconds(2),
-      Duration.ofSeconds(2));
     NewSessionQueue queue = new LocalNewSessionQueue(
       tracer,
       events,
-      localSessionRequests,
+      Duration.ofSeconds(2),
+      Duration.ofSeconds(2),
       registrationSecret);
 
     Distributor distributor = new LocalDistributor(
@@ -168,15 +162,11 @@ public class NewSessionCreationTest {
 
     SessionMap sessions = new LocalSessionMap(tracer, events);
     handler.addHandler(sessions);
-    SessionRequests sessionRequests = new SessionRequests(
-      tracer,
-      events,
-      Duration.ofSeconds(2),
-      Duration.ofSeconds(10));
     NewSessionQueue queue = new LocalNewSessionQueue(
       tracer,
       events,
-      sessionRequests,
+      Duration.ofSeconds(2),
+      Duration.ofSeconds(10),
       registrationSecret);
     handler.addHandler(queue);
 

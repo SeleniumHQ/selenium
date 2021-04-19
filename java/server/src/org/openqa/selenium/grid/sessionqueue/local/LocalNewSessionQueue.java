@@ -22,6 +22,9 @@ import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.events.EventBus;
 import org.openqa.selenium.grid.config.Config;
 import org.openqa.selenium.grid.data.RequestId;
+import org.openqa.selenium.grid.jmx.JMXHelper;
+import org.openqa.selenium.grid.jmx.ManagedAttribute;
+import org.openqa.selenium.grid.jmx.ManagedService;
 import org.openqa.selenium.grid.log.LoggingOptions;
 import org.openqa.selenium.grid.security.Secret;
 import org.openqa.selenium.grid.security.SecretOptions;
@@ -44,9 +47,10 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
-import static org.openqa.selenium.remote.http.Contents.reader;
 import static org.openqa.selenium.remote.tracing.Tags.EXCEPTION;
 
+@ManagedService(objectName = "org.seleniumhq.grid:type=SessionQueue,name=LocalSessionQueue",
+  description = "New session queue")
 public class LocalNewSessionQueue extends NewSessionQueue {
 
   public final SessionRequests sessionRequests;
@@ -56,13 +60,21 @@ public class LocalNewSessionQueue extends NewSessionQueue {
   public LocalNewSessionQueue(
     Tracer tracer,
     EventBus bus,
-    SessionRequests sessionRequests,
+    Duration retryInterval,
+    Duration requestTimeout,
     Secret registrationSecret) {
     super(tracer, registrationSecret);
     this.bus = Require.nonNull("Event bus", bus);
-    this.sessionRequests = Require.nonNull("New Session Request Queue", sessionRequests);
+
+    this.sessionRequests = new SessionRequests(
+      tracer,
+      bus,
+      Require.nonNull("Retry interval", retryInterval),
+      Require.nonNull("Request timeout", requestTimeout));
 
     this.getNewSessionResponse  = new GetNewSessionResponse(bus, sessionRequests);
+
+    new JMXHelper().register(this);
   }
 
   public static NewSessionQueue create(Config config) {
@@ -70,22 +82,23 @@ public class LocalNewSessionQueue extends NewSessionQueue {
     EventBus bus = new EventBusOptions(config).getEventBus();
     Duration retryInterval = new SessionRequestOptions(config).getSessionRequestRetryInterval();
     Duration requestTimeout = new SessionRequestOptions(config).getSessionRequestTimeout();
-    SessionRequests sessionRequests = new SessionRequests(
-      tracer,
-      bus,
-      retryInterval,
-      requestTimeout);
 
     SecretOptions secretOptions = new SecretOptions(config);
     Secret registrationSecret = secretOptions.getRegistrationSecret();
 
-    return new LocalNewSessionQueue(tracer, bus, sessionRequests, registrationSecret);
+    return new LocalNewSessionQueue(tracer, bus, retryInterval, requestTimeout, registrationSecret);
   }
 
   @Override
   public HttpResponse addToQueue(SessionRequest request) {
     validateSessionRequest(request);
     return getNewSessionResponse.add(request);
+  }
+
+  @Override
+  public boolean offerLast(SessionRequest request) {
+    Require.nonNull("Session request", request);
+    return sessionRequests.offerLast(request);
   }
 
   @Override
@@ -111,6 +124,11 @@ public class LocalNewSessionQueue extends NewSessionQueue {
   @Override
   public boolean isReady() {
     return bus.isReady();
+  }
+
+  @ManagedAttribute(name = "NewSessionQueueSize")
+  public int getQueueSize() {
+    return sessionRequests.getQueueSize();
   }
 
   private void validateSessionRequest(SessionRequest request) {

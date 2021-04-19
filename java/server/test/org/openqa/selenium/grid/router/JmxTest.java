@@ -29,8 +29,9 @@ import org.openqa.selenium.grid.jmx.JMXHelper;
 import org.openqa.selenium.grid.node.local.LocalNode;
 import org.openqa.selenium.grid.security.Secret;
 import org.openqa.selenium.grid.server.BaseServerOptions;
+import org.openqa.selenium.grid.sessionqueue.NewSessionQueue;
 import org.openqa.selenium.grid.sessionqueue.config.SessionRequestOptions;
-import org.openqa.selenium.grid.sessionqueue.local.SessionRequests;
+import org.openqa.selenium.grid.sessionqueue.local.LocalNewSessionQueue;
 import org.openqa.selenium.grid.testing.TestSessionFactory;
 import org.openqa.selenium.net.PortProber;
 import org.openqa.selenium.remote.tracing.DefaultTestTracer;
@@ -185,21 +186,21 @@ public class JmxTest {
   @Test
   public void shouldBeAbleToRegisterSessionQueue() {
     try {
-      ObjectName name = new ObjectName("org.seleniumhq.grid:type=SessionQueue," +
-        "name=LocalSessionQueue");
+      ObjectName name = new ObjectName("org.seleniumhq.grid:type=SessionQueue,name=LocalSessionQueue");
 
       new JMXHelper().unregister(name);
 
       Tracer tracer = DefaultTestTracer.createTracer();
       EventBus bus = new GuavaEventBus();
 
-      SessionRequests localNewSessionQueue = new SessionRequests(
+      NewSessionQueue sessionQueue = new LocalNewSessionQueue(
         tracer,
         bus,
         Duration.ofSeconds(2),
-        Duration.ofSeconds(2));
+        Duration.ofSeconds(2),
+        new Secret(""));
 
-      assertThat(localNewSessionQueue).isNotNull();
+      assertThat(sessionQueue).isNotNull();
       MBeanInfo info = beanServer.getMBeanInfo(name);
       assertThat(info).isNotNull();
 

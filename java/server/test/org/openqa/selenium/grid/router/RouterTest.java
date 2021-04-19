@@ -34,7 +34,6 @@ import org.openqa.selenium.grid.security.Secret;
 import org.openqa.selenium.grid.sessionmap.SessionMap;
 import org.openqa.selenium.grid.sessionmap.local.LocalSessionMap;
 import org.openqa.selenium.grid.sessionqueue.NewSessionQueue;
-import org.openqa.selenium.grid.sessionqueue.local.SessionRequests;
 import org.openqa.selenium.grid.sessionqueue.local.LocalNewSessionQueue;
 import org.openqa.selenium.grid.testing.PassthroughHttpClient;
 import org.openqa.selenium.grid.testing.TestSessionFactory;
@@ -85,12 +84,12 @@ public class RouterTest {
 
     registrationSecret = new Secret("stinking bishop");
 
-    SessionRequests localNewSessionQueue = new SessionRequests(
+    queue = new LocalNewSessionQueue(
       tracer,
       bus,
       Duration.ofSeconds(2),
-      Duration.ofSeconds(2));
-    queue = new LocalNewSessionQueue(tracer, bus, localNewSessionQueue, registrationSecret);
+      Duration.ofSeconds(2),
+      registrationSecret);
     handler.addHandler(queue);
 
     distributor = new LocalDistributor(

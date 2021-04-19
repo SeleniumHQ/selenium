@@ -19,7 +19,6 @@ package org.openqa.selenium.grid.commands;
 
 import com.google.auto.service.AutoService;
 import com.google.common.collect.ImmutableSet;
-
 import org.openqa.selenium.BuildInfo;
 import org.openqa.selenium.cli.CliCommand;
 import org.openqa.selenium.events.EventBus;
@@ -41,10 +40,8 @@ import org.openqa.selenium.grid.server.NetworkOptions;
 import org.openqa.selenium.grid.server.Server;
 import org.openqa.selenium.grid.sessionmap.SessionMap;
 import org.openqa.selenium.grid.sessionmap.local.LocalSessionMap;
-import org.openqa.selenium.grid.sessionqueue.local.SessionRequests;
 import org.openqa.selenium.grid.sessionqueue.NewSessionQueue;
 import org.openqa.selenium.grid.sessionqueue.config.SessionRequestOptions;
-import org.openqa.selenium.grid.sessionqueue.local.SessionRequests;
 import org.openqa.selenium.grid.sessionqueue.local.LocalNewSessionQueue;
 import org.openqa.selenium.grid.web.CombinedHandler;
 import org.openqa.selenium.grid.web.GridUiRoute;
@@ -144,12 +141,12 @@ public class Hub extends TemplateGridServerCommand {
       networkOptions.getHttpClientFactory(tracer));
 
     SessionRequestOptions sessionRequestOptions = new SessionRequestOptions(config);
-    SessionRequests sessionRequests = new SessionRequests(
+    NewSessionQueue queue = new LocalNewSessionQueue(
       tracer,
-      bus,
+       bus,
       sessionRequestOptions.getSessionRequestRetryInterval(),
-      sessionRequestOptions.getSessionRequestTimeout());
-    NewSessionQueue queue = new LocalNewSessionQueue(tracer, bus, sessionRequests, secret);
+      sessionRequestOptions.getSessionRequestTimeout(),
+      secret);
     handler.addHandler(queue);
 
     DistributorOptions distributorOptions = new DistributorOptions(config);

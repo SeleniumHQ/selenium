@@ -49,8 +49,8 @@ import org.openqa.selenium.grid.node.local.LocalNode;
 import org.openqa.selenium.grid.security.Secret;
 import org.openqa.selenium.grid.sessionmap.SessionMap;
 import org.openqa.selenium.grid.sessionmap.local.LocalSessionMap;
+import org.openqa.selenium.grid.sessionqueue.NewSessionQueue;
 import org.openqa.selenium.grid.sessionqueue.SessionRequest;
-import org.openqa.selenium.grid.sessionqueue.local.SessionRequests;
 import org.openqa.selenium.grid.sessionqueue.local.LocalNewSessionQueue;
 import org.openqa.selenium.grid.testing.EitherAssert;
 import org.openqa.selenium.grid.testing.PassthroughHttpClient;
@@ -124,15 +124,11 @@ public class DistributorTest {
     tracer = DefaultTestTracer.createTracer();
     bus = new GuavaEventBus();
     LocalSessionMap sessions = new LocalSessionMap(tracer, bus);
-    SessionRequests localNewSessionQueue = new SessionRequests(
+    NewSessionQueue queue = new LocalNewSessionQueue(
       tracer,
       bus,
       Duration.ofSeconds(2),
-      Duration.ofSeconds(2));
-    LocalNewSessionQueue queue = new LocalNewSessionQueue(
-      tracer,
-      bus,
-      localNewSessionQueue,
+      Duration.ofSeconds(2),
       registrationSecret);
     local = new LocalDistributor(
       tracer,
@@ -156,15 +152,11 @@ public class DistributorTest {
   public void shouldStartHeartBeatOnNodeRegistration() {
     EventBus bus = new GuavaEventBus();
     LocalSessionMap sessions = new LocalSessionMap(tracer, bus);
-    SessionRequests localNewSessionQueue = new SessionRequests(
+    NewSessionQueue queue = new LocalNewSessionQueue(
       tracer,
       bus,
       Duration.ofSeconds(2),
-      Duration.ofSeconds(2));
-    LocalNewSessionQueue queue = new LocalNewSessionQueue(
-      tracer,
-      bus,
-      localNewSessionQueue,
+      Duration.ofSeconds(2),
       registrationSecret);
     LocalNode node = LocalNode.builder(tracer, bus, routableUri, routableUri, registrationSecret)
       .add(
@@ -207,15 +199,11 @@ public class DistributorTest {
   @Test
   public void shouldBeAbleToAddANodeAndCreateASession() {
     LocalSessionMap sessions = new LocalSessionMap(tracer, bus);
-    SessionRequests localSessionRequests = new SessionRequests(
+    NewSessionQueue queue = new LocalNewSessionQueue(
       tracer,
       bus,
       Duration.ofSeconds(2),
-      Duration.ofSeconds(2));
-    LocalNewSessionQueue queue = new LocalNewSessionQueue(
-      tracer,
-      bus,
-      localSessionRequests,
+      Duration.ofSeconds(2),
       registrationSecret);
     LocalNode node = LocalNode.builder(tracer, bus, routableUri, routableUri, registrationSecret)
       .add(
@@ -248,15 +236,11 @@ public class DistributorTest {
   @Test
   public void creatingASessionAddsItToTheSessionMap() {
     LocalSessionMap sessions = new LocalSessionMap(tracer, bus);
-    SessionRequests localSessionRequests = new SessionRequests(
+    NewSessionQueue queue = new LocalNewSessionQueue(
       tracer,
       bus,
       Duration.ofSeconds(2),
-      Duration.ofSeconds(2));
-    LocalNewSessionQueue queue = new LocalNewSessionQueue(
-      tracer,
-      bus,
-      localSessionRequests,
+      Duration.ofSeconds(2),
       registrationSecret);
 
     LocalNode node = LocalNode.builder(tracer, bus, routableUri, routableUri, registrationSecret)
@@ -291,15 +275,11 @@ public class DistributorTest {
   @Test
   public void shouldBeAbleToRemoveANode() throws MalformedURLException {
     LocalSessionMap sessions = new LocalSessionMap(tracer, bus);
-    SessionRequests localSessionRequests = new SessionRequests(
+    NewSessionQueue queue = new LocalNewSessionQueue(
       tracer,
       bus,
       Duration.ofSeconds(2),
-      Duration.ofSeconds(2));
-    LocalNewSessionQueue queue = new LocalNewSessionQueue(
-      tracer,
-      bus,
-      localSessionRequests,
+      Duration.ofSeconds(2),
       registrationSecret);
 
     LocalNode node = LocalNode.builder(tracer, bus, routableUri, routableUri, registrationSecret)
@@ -332,15 +312,11 @@ public class DistributorTest {
   @Test
   public void testDrainingNodeDoesNotAcceptNewSessions() {
     SessionMap sessions = new LocalSessionMap(tracer, bus);
-    SessionRequests localSessionRequests = new SessionRequests(
+    NewSessionQueue queue = new LocalNewSessionQueue(
       tracer,
       bus,
       Duration.ofSeconds(2),
-      Duration.ofSeconds(2));
-    LocalNewSessionQueue queue = new LocalNewSessionQueue(
-      tracer,
-      bus,
-      localSessionRequests,
+      Duration.ofSeconds(2),
       registrationSecret);
     LocalNode node = LocalNode.builder(tracer, bus, routableUri, routableUri, registrationSecret)
       .add(
@@ -368,15 +344,11 @@ public class DistributorTest {
   @Test
   public void testDrainedNodeShutsDownOnceEmpty() throws InterruptedException {
     SessionMap sessions = new LocalSessionMap(tracer, bus);
-    SessionRequests localSessionRequests = new SessionRequests(
+    NewSessionQueue queue = new LocalNewSessionQueue(
       tracer,
       bus,
       Duration.ofSeconds(2),
-      Duration.ofSeconds(2));
-    LocalNewSessionQueue queue = new LocalNewSessionQueue(
-      tracer,
-      bus,
-      localSessionRequests,
+      Duration.ofSeconds(2),
       registrationSecret);
     LocalNode node = LocalNode.builder(tracer, bus, routableUri, routableUri, registrationSecret)
       .add(
@@ -414,15 +386,11 @@ public class DistributorTest {
   @Test
   public void drainedNodeDoesNotShutDownIfNotEmpty() throws InterruptedException {
     SessionMap sessions = new LocalSessionMap(tracer, bus);
-    SessionRequests localSessionRequests = new SessionRequests(
+    NewSessionQueue queue = new LocalNewSessionQueue(
       tracer,
       bus,
       Duration.ofSeconds(2),
-      Duration.ofSeconds(2));
-    LocalNewSessionQueue queue = new LocalNewSessionQueue(
-      tracer,
-      bus,
-      localSessionRequests,
+      Duration.ofSeconds(2),
       registrationSecret);
     LocalNode node = LocalNode.builder(tracer, bus, routableUri, routableUri, registrationSecret)
       .add(
@@ -460,15 +428,11 @@ public class DistributorTest {
   @Test
   public void drainedNodeShutsDownAfterSessionsFinish() throws InterruptedException {
     SessionMap sessions = new LocalSessionMap(tracer, bus);
-    SessionRequests localSessionRequests = new SessionRequests(
+    NewSessionQueue queue = new LocalNewSessionQueue(
       tracer,
       bus,
       Duration.ofSeconds(2),
-      Duration.ofSeconds(2));
-    LocalNewSessionQueue queue = new LocalNewSessionQueue(
-      tracer,
-      bus,
-      localSessionRequests,
+      Duration.ofSeconds(2),
       registrationSecret);
     LocalNode node = LocalNode.builder(tracer, bus, routableUri, routableUri, registrationSecret)
       .add(
@@ -535,15 +499,11 @@ public class DistributorTest {
     // * reverse insertion order
     // * sorted with most heavily used first
     SessionMap sessions = new LocalSessionMap(tracer, bus);
-    SessionRequests localSessionRequests = new SessionRequests(
+    NewSessionQueue queue = new LocalNewSessionQueue(
       tracer,
       bus,
       Duration.ofSeconds(2),
-      Duration.ofSeconds(2));
-    LocalNewSessionQueue queue = new LocalNewSessionQueue(
-      tracer,
-      bus,
-      localSessionRequests,
+      Duration.ofSeconds(2),
       registrationSecret);
 
     Node lightest = createNode(caps, 10, 0);
@@ -582,15 +542,11 @@ public class DistributorTest {
   @Test
   public void shouldUseLastSessionCreatedTimeAsTieBreaker() {
     SessionMap sessions = new LocalSessionMap(tracer, bus);
-    SessionRequests localSessionRequests = new SessionRequests(
+    NewSessionQueue queue = new LocalNewSessionQueue(
       tracer,
       bus,
       Duration.ofSeconds(2),
-      Duration.ofSeconds(2));
-    LocalNewSessionQueue queue = new LocalNewSessionQueue(
-      tracer,
-      bus,
-      localSessionRequests,
+      Duration.ofSeconds(2),
       registrationSecret);
     Node leastRecent = createNode(caps, 5, 0);
 
@@ -661,15 +617,11 @@ public class DistributorTest {
     CombinedHandler handler = new CombinedHandler();
 
     SessionMap sessions = new LocalSessionMap(tracer, bus);
-    SessionRequests localSessionRequests = new SessionRequests(
+    NewSessionQueue queue = new LocalNewSessionQueue(
       tracer,
       bus,
       Duration.ofSeconds(2),
-      Duration.ofSeconds(2));
-    LocalNewSessionQueue queue = new LocalNewSessionQueue(
-      tracer,
-      bus,
-      localSessionRequests,
+      Duration.ofSeconds(2),
       registrationSecret);
     handler.addHandler(sessions);
 
@@ -717,15 +669,11 @@ public class DistributorTest {
   @Test
   public void shouldNotScheduleAJobIfAllSlotsAreBeingUsed() {
     SessionMap sessions = new LocalSessionMap(tracer, bus);
-    SessionRequests localSessionRequests = new SessionRequests(
+    NewSessionQueue queue = new LocalNewSessionQueue(
       tracer,
       bus,
       Duration.ofSeconds(2),
-      Duration.ofSeconds(2));
-    LocalNewSessionQueue queue = new LocalNewSessionQueue(
-      tracer,
-      bus,
-      localSessionRequests,
+      Duration.ofSeconds(2),
       registrationSecret);
 
     LocalNode node = LocalNode.builder(tracer, bus, routableUri, routableUri, registrationSecret)
@@ -757,15 +705,11 @@ public class DistributorTest {
   @Test
   public void shouldReleaseSlotOnceSessionEnds() {
     SessionMap sessions = new LocalSessionMap(tracer, bus);
-    SessionRequests localSessionRequests = new SessionRequests(
+    NewSessionQueue queue = new LocalNewSessionQueue(
       tracer,
       bus,
       Duration.ofSeconds(2),
-      Duration.ofSeconds(2));
-    LocalNewSessionQueue queue = new LocalNewSessionQueue(
-      tracer,
-      bus,
-      localSessionRequests,
+      Duration.ofSeconds(2),
       registrationSecret);
 
     LocalNode node = LocalNode.builder(tracer, bus, routableUri, routableUri, registrationSecret)
@@ -816,15 +760,11 @@ public class DistributorTest {
     CombinedHandler handler = new CombinedHandler();
 
     LocalSessionMap sessions = new LocalSessionMap(tracer, bus);
-    SessionRequests localSessionRequests = new SessionRequests(
+    NewSessionQueue queue = new LocalNewSessionQueue(
       tracer,
       bus,
       Duration.ofSeconds(2),
-      Duration.ofSeconds(2));
-    LocalNewSessionQueue queue = new LocalNewSessionQueue(
-      tracer,
-      bus,
-      localSessionRequests,
+      Duration.ofSeconds(2),
       registrationSecret);
     handler.addHandler(handler);
 
@@ -852,15 +792,11 @@ public class DistributorTest {
   @Test
   public void attemptingToStartASessionWhichFailsMarksAsTheSlotAsAvailable() {
     SessionMap sessions = new LocalSessionMap(tracer, bus);
-    SessionRequests localSessionRequests = new SessionRequests(
+    NewSessionQueue queue = new LocalNewSessionQueue(
       tracer,
       bus,
       Duration.ofSeconds(2),
-      Duration.ofSeconds(2));
-    LocalNewSessionQueue queue = new LocalNewSessionQueue(
-      tracer,
-      bus,
-      localSessionRequests,
+      Duration.ofSeconds(2),
       registrationSecret);
 
     LocalNode node = LocalNode.builder(tracer, bus, routableUri, routableUri, registrationSecret)
@@ -894,15 +830,11 @@ public class DistributorTest {
     SessionMap sessions = new LocalSessionMap(tracer, bus);
     handler.addHandler(sessions);
     AtomicReference<Availability> isUp = new AtomicReference<>(DOWN);
-    SessionRequests localSessionRequests = new SessionRequests(
+    NewSessionQueue queue = new LocalNewSessionQueue(
       tracer,
       bus,
       Duration.ofSeconds(2),
-      Duration.ofSeconds(2));
-    LocalNewSessionQueue queue = new LocalNewSessionQueue(
-      tracer,
-      bus,
-      localSessionRequests,
+      Duration.ofSeconds(2),
       registrationSecret);
 
     URI uri = createUri();
@@ -969,15 +901,11 @@ public class DistributorTest {
     SessionMap sessions = new LocalSessionMap(tracer, bus);
     handler.addHandler(sessions);
 
-    SessionRequests localSessionRequests = new SessionRequests(
+    NewSessionQueue queue = new LocalNewSessionQueue(
       tracer,
       bus,
       Duration.ofSeconds(2),
-      Duration.ofSeconds(2));
-    LocalNewSessionQueue queue = new LocalNewSessionQueue(
-      tracer,
-      bus,
-      localSessionRequests,
+      Duration.ofSeconds(2),
       registrationSecret);
 
     LocalDistributor distributor = new LocalDistributor(

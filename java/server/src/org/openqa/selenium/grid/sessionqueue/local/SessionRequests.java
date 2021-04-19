@@ -25,9 +25,6 @@ import org.openqa.selenium.grid.data.NewSessionErrorResponse;
 import org.openqa.selenium.grid.data.NewSessionRejectedEvent;
 import org.openqa.selenium.grid.data.NewSessionRequestEvent;
 import org.openqa.selenium.grid.data.RequestId;
-import org.openqa.selenium.grid.jmx.JMXHelper;
-import org.openqa.selenium.grid.jmx.ManagedAttribute;
-import org.openqa.selenium.grid.jmx.ManagedService;
 import org.openqa.selenium.grid.log.LoggingOptions;
 import org.openqa.selenium.grid.server.EventBusOptions;
 import org.openqa.selenium.grid.sessionqueue.SessionRequest;
@@ -59,13 +56,11 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
-@ManagedService(objectName = "org.seleniumhq.grid:type=SessionQueue,name=LocalSessionQueue",
-  description = "New session queue")
-public class SessionRequests {
+class SessionRequests {
 
   private static final Logger LOG = Logger.getLogger(SessionRequests.class.getName());
-  private final EventBus bus;
   private final Tracer tracer;
+  private final EventBus bus;
   private final Duration retryInterval;
   private final Duration requestTimeout;
   private final Deque<SessionRequest> sessionRequests = new ConcurrentLinkedDeque<>();
@@ -73,7 +68,7 @@ public class SessionRequests {
   private final ScheduledExecutorService executorService =
     Executors.newSingleThreadScheduledExecutor();
   private final Thread shutdownHook = new Thread(this::callExecutorShutdown);
-
+  private final String timedOutErrorMessage;
 
   public SessionRequests(
     Tracer tracer,
@@ -81,16 +76,19 @@ public class SessionRequests {
     Duration retryInterval,
     Duration requestTimeout) {
     this.tracer = Require.nonNull("Tracer", tracer);
+    this.bus = Require.nonNull("Event bus", bus);
     this.retryInterval = Require.nonNull("Session request retry interval", retryInterval);
     this.requestTimeout = Require.nonNull("Session request timeout", requestTimeout);
-    this.bus = Require.nonNull("Event bus", bus);
+
+    timedOutErrorMessage = String.format(
+      "New session request rejected after being in the queue for more than %s",
+      format(requestTimeout));
+
     Runtime.getRuntime().addShutdownHook(shutdownHook);
 
     Regularly regularly = new Regularly("New Session Queue Clean up");
     Duration purgeTimeout = requestTimeout.multipliedBy(2);
     regularly.submit(this::purgeTimedOutRequests, purgeTimeout, purgeTimeout);
-
-    new JMXHelper().register(this);
   }
 
   public static SessionRequests create(Config config) {
@@ -105,8 +103,7 @@ public class SessionRequests {
     return bus.isReady();
   }
 
-  @ManagedAttribute(name = "NewSessionQueueSize")
-  public int getQueueSize() {
+  int getQueueSize() {
     Lock readLock = lock.readLock();
     readLock.lock();
     try {
@@ -166,8 +163,7 @@ public class SessionRequests {
     try {
       boolean added = sessionRequests.offerFirst(request);
       if (added) {
-        executorService.schedule(() -> retryRequest(request),
-          retryInterval.getSeconds(), TimeUnit.SECONDS);
+        executorService.schedule(() -> retryRequest(request), retryInterval.getSeconds(), TimeUnit.SECONDS);
       }
       return added;
     } finally {
@@ -184,7 +180,7 @@ public class SessionRequests {
         LOG.log(Level.INFO, "Request {0} timed out", requestId);
         sessionRequests.remove(sessionRequest);
         bus.fire(new NewSessionRejectedEvent(
-          new NewSessionErrorResponse(requestId, getTimeoutErrorMessage())));
+          new NewSessionErrorResponse(requestId, timedOutErrorMessage)));
       } else {
         LOG.log(Level.INFO,
           "Adding request back to the queue. All slots are busy. Request: {0}",
@@ -226,7 +222,7 @@ public class SessionRequests {
       if (request.isPresent()) {
         if (hasRequestTimedOut(request.get())) {
           bus.fire(new NewSessionRejectedEvent(
-            new NewSessionErrorResponse(id, getTimeoutErrorMessage())));
+            new NewSessionErrorResponse(id, timedOutErrorMessage)));
           return Optional.empty();
         }
       }
@@ -267,7 +263,7 @@ public class SessionRequests {
         if (hasRequestTimedOut(sessionRequest)) {
           iterator.remove();
           bus.fire(new NewSessionRejectedEvent(
-            new NewSessionErrorResponse(sessionRequest.getRequestId(), getTimeoutErrorMessage())));
+            new NewSessionErrorResponse(sessionRequest.getRequestId(), timedOutErrorMessage)));
         }
       }
     } finally {
@@ -302,11 +298,5 @@ public class SessionRequests {
     }
     toReturn.append(secs).append("s");
     return toReturn.toString();
-  }
-
-  private String getTimeoutErrorMessage() {
-    return String.format(
-      "New session request rejected after being in the queue for more than %s",
-      format(requestTimeout));
   }
 }

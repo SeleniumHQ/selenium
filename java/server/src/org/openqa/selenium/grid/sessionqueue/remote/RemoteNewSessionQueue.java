@@ -94,6 +94,15 @@ public class RemoteNewSessionQueue extends NewSessionQueue {
   }
 
   @Override
+  public boolean offerLast(SessionRequest request) {
+    HttpRequest upstream = new HttpRequest(POST, "/se/grid/newsessionqueue/session/last");
+    HttpTracing.inject(tracer, tracer.getCurrentContext(), upstream);
+    upstream.setContent(Contents.asJson(request));
+    HttpResponse response = client.execute(upstream);
+    return Values.get(response, Boolean.class);
+  }
+
+  @Override
   public boolean retryAddToQueue(SessionRequest request) {
     Require.nonNull("Session request", request);
 
