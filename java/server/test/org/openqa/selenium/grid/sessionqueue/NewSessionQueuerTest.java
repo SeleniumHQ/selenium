@@ -35,6 +35,7 @@ import org.openqa.selenium.grid.data.Session;
 import org.openqa.selenium.grid.security.Secret;
 import org.openqa.selenium.grid.sessionqueue.local.LocalNewSessionQueue;
 import org.openqa.selenium.grid.sessionqueue.local.LocalNewSessionQueuer;
+import org.openqa.selenium.grid.sessionqueue.local.NewSessionQueue;
 import org.openqa.selenium.grid.sessionqueue.remote.RemoteNewSessionQueuer;
 import org.openqa.selenium.grid.testing.PassthroughHttpClient;
 import org.openqa.selenium.json.Json;

@@ -15,7 +15,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.grid.sessionqueue;
+package org.openqa.selenium.grid.sessionqueue.local;
 
 import org.openqa.selenium.events.EventBus;
 import org.openqa.selenium.grid.data.NewSessionErrorResponse;
@@ -24,6 +24,7 @@ import org.openqa.selenium.grid.data.NewSessionRequest;
 import org.openqa.selenium.grid.data.NewSessionResponse;
 import org.openqa.selenium.grid.data.NewSessionResponseEvent;
 import org.openqa.selenium.grid.data.RequestId;
+import org.openqa.selenium.grid.sessionqueue.SessionRequest;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.http.HttpResponse;
 
@@ -47,7 +48,7 @@ public class GetNewSessionResponse {
   private static final Logger LOG = Logger.getLogger(GetNewSessionResponse.class.getName());
   private static final Map<RequestId, NewSessionRequest> knownRequests = new ConcurrentHashMap<>();
   private final EventBus bus;
-  private final NewSessionQueue sessionRequests;
+  private final org.openqa.selenium.grid.sessionqueue.local.NewSessionQueue sessionRequests;
   private final ReadWriteLock lock = new ReentrantReadWriteLock(true);
 
   public GetNewSessionResponse(

@@ -21,7 +21,6 @@ import org.openqa.selenium.grid.config.Config;
 import org.openqa.selenium.grid.jmx.JMXHelper;
 import org.openqa.selenium.grid.jmx.ManagedAttribute;
 import org.openqa.selenium.grid.jmx.ManagedService;
-import org.openqa.selenium.grid.sessionqueue.NewSessionQueue;
 
 import java.time.Duration;
 
@@ -32,8 +31,6 @@ public class NewSessionQueueOptions {
   static final String SESSIONS_QUEUE_SECTION = "sessionqueue";
   static final int DEFAULT_REQUEST_TIMEOUT = 300;
   static final int DEFAULT_RETRY_INTERVAL = 5;
-  private static final String DEFAULT_NEWSESSION_QUEUE =
-    "org.openqa.selenium.grid.sessionmap.remote.LocalNewSessionQueue";
   private final Config config;
 
   public NewSessionQueueOptions(Config config) {
@@ -68,11 +65,5 @@ public class NewSessionQueueOptions {
   @ManagedAttribute(name = "RetryIntervalSeconds")
   public long getRetryIntervalSeconds() {
     return getSessionRequestRetryInterval().getSeconds();
-  }
-
-  public NewSessionQueue getSessionQueue() {
-    return config
-      .getClass(SESSIONS_QUEUE_SECTION, "implementation", NewSessionQueue.class,
-        DEFAULT_NEWSESSION_QUEUE);
   }
 }

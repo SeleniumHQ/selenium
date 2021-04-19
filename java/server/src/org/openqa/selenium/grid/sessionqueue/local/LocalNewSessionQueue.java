@@ -30,7 +30,6 @@ import org.openqa.selenium.grid.jmx.ManagedAttribute;
 import org.openqa.selenium.grid.jmx.ManagedService;
 import org.openqa.selenium.grid.log.LoggingOptions;
 import org.openqa.selenium.grid.server.EventBusOptions;
-import org.openqa.selenium.grid.sessionqueue.NewSessionQueue;
 import org.openqa.selenium.grid.sessionqueue.SessionRequest;
 import org.openqa.selenium.grid.sessionqueue.config.NewSessionQueueOptions;
 import org.openqa.selenium.internal.Require;

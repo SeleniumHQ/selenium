@@ -15,10 +15,11 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.grid.sessionqueue;
+package org.openqa.selenium.grid.sessionqueue.local;
 
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.grid.data.RequestId;
+import org.openqa.selenium.grid.sessionqueue.SessionRequest;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.tracing.Tracer;
 import org.openqa.selenium.status.HasReadyState;
