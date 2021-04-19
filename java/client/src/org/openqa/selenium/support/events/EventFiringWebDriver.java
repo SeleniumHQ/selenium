@@ -458,6 +458,11 @@ public class EventFiringWebDriver implements
     }
 
     @Override
+    public String getDomAttribute(String name) {
+      return element.getDomAttribute(name);
+    }
+
+    @Override
     public boolean isSelected() {
       return element.isSelected();
     }
