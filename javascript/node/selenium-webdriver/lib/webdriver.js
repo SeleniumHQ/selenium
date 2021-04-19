@@ -986,7 +986,8 @@ class WebDriver {
     }
 
     if (typeof locator === 'function') {
-      return this.findElementInternal_(locator, this)
+      id = this.findElementInternal_(locator, this)
+      return new WebElementPromise(this, id)
     } else if (cmd === null) {
       cmd = new command.Command(command.Name.FIND_ELEMENT)
         .setParameter('using', locator.using)
