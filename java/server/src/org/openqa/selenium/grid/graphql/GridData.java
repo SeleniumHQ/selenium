@@ -25,7 +25,7 @@ import org.openqa.selenium.internal.Require;
 
 import java.net.URI;
 
-public class GridData implements DataFetcher {
+public class GridData implements DataFetcher<Grid> {
   private final Distributor distributor;
   private final NewSessionQueue newSessionQueue;
   private final URI publicUri;
@@ -43,7 +43,7 @@ public class GridData implements DataFetcher {
   }
 
   @Override
-  public Object get(DataFetchingEnvironment environment) {
+  public Grid get(DataFetchingEnvironment environment) {
     return new Grid(distributor, newSessionQueue, publicUri, version);
   }
 }
