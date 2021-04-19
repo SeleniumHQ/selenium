@@ -33,9 +33,9 @@ import org.openqa.selenium.grid.data.NewSessionResponseEvent;
 import org.openqa.selenium.grid.data.RequestId;
 import org.openqa.selenium.grid.data.Session;
 import org.openqa.selenium.grid.security.Secret;
-import org.openqa.selenium.grid.sessionqueue.local.LocalNewSessionQueue;
+import org.openqa.selenium.grid.sessionqueue.local.LocalSessionRequests;
 import org.openqa.selenium.grid.sessionqueue.local.LocalNewSessionQueuer;
-import org.openqa.selenium.grid.sessionqueue.local.NewSessionQueue;
+import org.openqa.selenium.grid.sessionqueue.local.SessionRequests;
 import org.openqa.selenium.grid.sessionqueue.remote.RemoteNewSessionQueuer;
 import org.openqa.selenium.grid.testing.PassthroughHttpClient;
 import org.openqa.selenium.json.Json;
@@ -85,7 +85,7 @@ public class NewSessionQueuerTest {
   private EventBus bus;
   private ImmutableCapabilities caps;
   private SessionRequest sessionRequest;
-  private NewSessionQueue sessionQueue;
+  private SessionRequests sessionQueue;
 
 
   @Before
@@ -94,7 +94,7 @@ public class NewSessionQueuerTest {
     caps = new ImmutableCapabilities("browserName", "chrome");
     bus = new GuavaEventBus();
 
-    sessionQueue = new LocalNewSessionQueue(
+    sessionQueue = new LocalSessionRequests(
         tracer,
         bus,
         Duration.ofSeconds(1),
@@ -428,7 +428,7 @@ public class NewSessionQueuerTest {
   @Test(timeout = 15000)
   public void shouldBeAbleToTimeoutARequestOnRemove() {
     Tracer tracer = DefaultTestTracer.createTracer();
-    LocalNewSessionQueue sessionQueue = new LocalNewSessionQueue(
+    LocalSessionRequests sessionQueue = new LocalSessionRequests(
         tracer,
         bus,
         Duration.ofSeconds(4),

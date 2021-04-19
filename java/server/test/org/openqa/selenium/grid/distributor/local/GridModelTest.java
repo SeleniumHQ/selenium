@@ -24,7 +24,7 @@ import org.openqa.selenium.grid.distributor.Distributor;
 import org.openqa.selenium.grid.security.Secret;
 import org.openqa.selenium.grid.sessionmap.SessionMap;
 import org.openqa.selenium.grid.sessionmap.local.LocalSessionMap;
-import org.openqa.selenium.grid.sessionqueue.local.LocalNewSessionQueue;
+import org.openqa.selenium.grid.sessionqueue.local.LocalSessionRequests;
 import org.openqa.selenium.grid.sessionqueue.local.LocalNewSessionQueuer;
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.tracing.DefaultTestTracer;
@@ -39,7 +39,7 @@ public class GridModelTest {
   private final HttpClient.Factory clientFactory = HttpClient.Factory.createDefault();
   private final SessionMap sessions = new LocalSessionMap(tracer, events);
   private final Secret secret = new Secret("cheese");
-  LocalNewSessionQueue localNewSessionQueue = new LocalNewSessionQueue(
+  LocalSessionRequests localNewSessionQueue = new LocalSessionRequests(
     tracer,
     events,
     Duration.ofSeconds(2),

@@ -48,12 +48,12 @@ public class GetNewSessionResponse {
   private static final Logger LOG = Logger.getLogger(GetNewSessionResponse.class.getName());
   private static final Map<RequestId, NewSessionRequest> knownRequests = new ConcurrentHashMap<>();
   private final EventBus bus;
-  private final org.openqa.selenium.grid.sessionqueue.local.NewSessionQueue sessionRequests;
+  private final SessionRequests sessionRequests;
   private final ReadWriteLock lock = new ReentrantReadWriteLock(true);
 
   public GetNewSessionResponse(
     EventBus bus,
-    NewSessionQueue sessionRequests) {
+    SessionRequests sessionRequests) {
     this.bus = Require.nonNull("Event bus", bus);
     this.sessionRequests = Require.nonNull("New Session Request Queue", sessionRequests);
 

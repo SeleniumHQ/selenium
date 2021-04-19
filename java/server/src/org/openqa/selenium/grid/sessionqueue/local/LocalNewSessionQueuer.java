@@ -49,14 +49,14 @@ import static org.openqa.selenium.remote.tracing.Tags.EXCEPTION;
 
 public class LocalNewSessionQueuer extends NewSessionQueuer {
 
-  public final NewSessionQueue sessionRequests;
+  public final SessionRequests sessionRequests;
   private final EventBus bus;
   private final GetNewSessionResponse getNewSessionResponse;
 
   public LocalNewSessionQueuer(
     Tracer tracer,
     EventBus bus,
-    NewSessionQueue sessionRequests,
+    SessionRequests sessionRequests,
     Secret registrationSecret) {
     super(tracer, registrationSecret);
     this.bus = Require.nonNull("Event bus", bus);
@@ -70,7 +70,7 @@ public class LocalNewSessionQueuer extends NewSessionQueuer {
     EventBus bus = new EventBusOptions(config).getEventBus();
     Duration retryInterval = new NewSessionQueueOptions(config).getSessionRequestRetryInterval();
     Duration requestTimeout = new NewSessionQueueOptions(config).getSessionRequestTimeout();
-    NewSessionQueue sessionRequests = new LocalNewSessionQueue(
+    SessionRequests sessionRequests = new LocalSessionRequests(
       tracer,
       bus,
       retryInterval,

@@ -60,9 +60,9 @@ import java.util.stream.Collectors;
 
 @ManagedService(objectName = "org.seleniumhq.grid:type=SessionQueue,name=LocalSessionQueue",
   description = "New session queue")
-public class LocalNewSessionQueue extends NewSessionQueue {
+public class LocalSessionRequests extends SessionRequests {
 
-  private static final Logger LOG = Logger.getLogger(LocalNewSessionQueue.class.getName());
+  private static final Logger LOG = Logger.getLogger(LocalSessionRequests.class.getName());
   private final EventBus bus;
   private final Deque<SessionRequest> sessionRequests = new ConcurrentLinkedDeque<>();
   private final ReadWriteLock lock = new ReentrantReadWriteLock(true);
@@ -73,7 +73,7 @@ public class LocalNewSessionQueue extends NewSessionQueue {
     "New session request rejected after being in the queue for more than %s",
     format(requestTimeout));
 
-  public LocalNewSessionQueue(
+  public LocalSessionRequests(
     Tracer tracer,
     EventBus bus,
     Duration retryInterval,
@@ -89,12 +89,12 @@ public class LocalNewSessionQueue extends NewSessionQueue {
     new JMXHelper().register(this);
   }
 
-  public static NewSessionQueue create(Config config) {
+  public static SessionRequests create(Config config) {
     Tracer tracer = new LoggingOptions(config).getTracer();
     EventBus bus = new EventBusOptions(config).getEventBus();
     Duration retryInterval = new NewSessionQueueOptions(config).getSessionRequestRetryInterval();
     Duration requestTimeout = new NewSessionQueueOptions(config).getSessionRequestTimeout();
-    return new LocalNewSessionQueue(tracer, bus, retryInterval, requestTimeout);
+    return new LocalSessionRequests(tracer, bus, retryInterval, requestTimeout);
   }
 
   @Override

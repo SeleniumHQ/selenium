@@ -62,9 +62,9 @@ import org.openqa.selenium.grid.server.BaseServerOptions;
 import org.openqa.selenium.grid.server.Server;
 import org.openqa.selenium.grid.sessionmap.SessionMap;
 import org.openqa.selenium.grid.sessionmap.local.LocalSessionMap;
-import org.openqa.selenium.grid.sessionqueue.local.NewSessionQueue;
+import org.openqa.selenium.grid.sessionqueue.local.SessionRequests;
 import org.openqa.selenium.grid.sessionqueue.NewSessionQueuer;
-import org.openqa.selenium.grid.sessionqueue.local.LocalNewSessionQueue;
+import org.openqa.selenium.grid.sessionqueue.local.LocalSessionRequests;
 import org.openqa.selenium.grid.sessionqueue.local.LocalNewSessionQueuer;
 import org.openqa.selenium.grid.testing.TestSessionFactory;
 import org.openqa.selenium.grid.web.CombinedHandler;
@@ -98,7 +98,7 @@ public class SessionQueueGridTest {
 
     SessionMap sessions = new LocalSessionMap(tracer, bus);
     handler.addHandler(sessions);
-    NewSessionQueue localNewSessionQueue = new LocalNewSessionQueue(
+    SessionRequests localSessionRequests = new LocalSessionRequests(
       tracer,
       bus,
       Duration.ofSeconds(5),
@@ -106,7 +106,7 @@ public class SessionQueueGridTest {
     NewSessionQueuer queuer = new LocalNewSessionQueuer(
       tracer,
       bus,
-      localNewSessionQueue,
+      localSessionRequests,
       registrationSecret);
     handler.addHandler(queuer);
 

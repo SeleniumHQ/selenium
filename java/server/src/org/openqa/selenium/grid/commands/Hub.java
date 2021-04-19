@@ -41,10 +41,10 @@ import org.openqa.selenium.grid.server.NetworkOptions;
 import org.openqa.selenium.grid.server.Server;
 import org.openqa.selenium.grid.sessionmap.SessionMap;
 import org.openqa.selenium.grid.sessionmap.local.LocalSessionMap;
-import org.openqa.selenium.grid.sessionqueue.local.NewSessionQueue;
+import org.openqa.selenium.grid.sessionqueue.local.SessionRequests;
 import org.openqa.selenium.grid.sessionqueue.NewSessionQueuer;
 import org.openqa.selenium.grid.sessionqueue.config.NewSessionQueueOptions;
-import org.openqa.selenium.grid.sessionqueue.local.LocalNewSessionQueue;
+import org.openqa.selenium.grid.sessionqueue.local.LocalSessionRequests;
 import org.openqa.selenium.grid.sessionqueue.local.LocalNewSessionQueuer;
 import org.openqa.selenium.grid.web.CombinedHandler;
 import org.openqa.selenium.grid.web.GridUiRoute;
@@ -146,7 +146,7 @@ public class Hub extends TemplateGridServerCommand {
       networkOptions.getHttpClientFactory(tracer));
 
     NewSessionQueueOptions newSessionQueueOptions = new NewSessionQueueOptions(config);
-    NewSessionQueue sessionRequests = new LocalNewSessionQueue(
+    SessionRequests sessionRequests = new LocalSessionRequests(
       tracer,
       bus,
       newSessionQueueOptions.getSessionRequestRetryInterval(),

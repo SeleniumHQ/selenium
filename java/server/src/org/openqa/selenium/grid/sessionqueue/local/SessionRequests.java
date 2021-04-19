@@ -30,13 +30,13 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
-public abstract class NewSessionQueue implements HasReadyState {
+public abstract class SessionRequests implements HasReadyState {
 
   protected final Tracer tracer;
   protected final Duration retryInterval;
   protected final Duration requestTimeout;
 
-  protected NewSessionQueue(Tracer tracer, Duration retryInterval, Duration requestTimeout) {
+  protected SessionRequests(Tracer tracer, Duration retryInterval, Duration requestTimeout) {
     this.tracer = Require.nonNull("Tracer", tracer);
     this.retryInterval = Require.nonNull("Session request retry interval", retryInterval);
     this.requestTimeout = Require.nonNull("Session request timeout", requestTimeout);
