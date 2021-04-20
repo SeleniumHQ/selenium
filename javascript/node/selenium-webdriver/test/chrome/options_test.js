@@ -98,7 +98,7 @@ describe('chrome.Options', function () {
         assert.strictEqual(options.options_.windowTypes, undefined);
     
         options.windowTypes('a', 'b');
-        assert.deepEqual(options.options_.windowTypes, ['a', 'b']);
+        assert.deepStrictEqual(options.options_.windowTypes, ['a', 'b']);
     })
     
     it('flattens input arrays', function() {
@@ -106,7 +106,7 @@ describe('chrome.Options', function () {
         assert.strictEqual(options.options_.windowTypes, undefined);
     
         options.windowTypes(['a', 'b'], 'c', [1, 2], 3);
-        assert.deepEqual(options.options_.windowTypes, ['a', 'b', 'c', 1, 2, 3]);
+        assert.deepStrictEqual(options.options_.windowTypes, ['a', 'b', 'c', 1, 2, 3]);
     })
   })
 })
