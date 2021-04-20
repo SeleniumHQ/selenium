@@ -140,7 +140,7 @@ class UnboundZmqEventBus implements EventBus {
     // be up yet.
     while (!pollingStarted.get()) {
       try {
-        Thread.sleep(100);
+        Thread.sleep(1000);
       } catch (InterruptedException e) {
         Thread.currentThread().interrupt();
         throw new RuntimeException(e);
@@ -259,7 +259,6 @@ class UnboundZmqEventBus implements EventBus {
           } else {
             LOG.log(Level.WARNING, e, () -> "Caught exception while polling for event bus messages: "
               + e.getMessage());
-            e.printStackTrace();
             throw e;
           }
         }
