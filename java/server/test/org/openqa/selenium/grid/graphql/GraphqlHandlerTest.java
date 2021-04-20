@@ -55,7 +55,7 @@ import org.openqa.selenium.grid.sessionmap.SessionMap;
 import org.openqa.selenium.grid.sessionmap.local.LocalSessionMap;
 import org.openqa.selenium.grid.sessionqueue.NewSessionQueue;
 import org.openqa.selenium.grid.sessionqueue.SessionRequest;
-import org.openqa.selenium.grid.sessionqueue.local.LocalSessionRequests;
+import org.openqa.selenium.grid.sessionqueue.local.SessionRequests;
 import org.openqa.selenium.grid.sessionqueue.local.LocalNewSessionQueue;
 import org.openqa.selenium.grid.testing.TestSessionFactory;
 import org.openqa.selenium.internal.Either;
@@ -92,7 +92,7 @@ public class GraphqlHandlerTest {
   private EventBus events;
   private ImmutableCapabilities caps;
   private ImmutableCapabilities stereotype;
-  private LocalSessionRequests localNewSessionQueue;
+  private SessionRequests localNewSessionQueue;
   private SessionRequest sessionRequest;
 
   public GraphqlHandlerTest() throws URISyntaxException {
@@ -113,7 +113,7 @@ public class GraphqlHandlerTest {
       Set.of(OSS, W3C),
       Set.of(caps));
 
-    localNewSessionQueue = new LocalSessionRequests(
+    localNewSessionQueue = new SessionRequests(
       tracer,
       events,
       Duration.ofSeconds(2),

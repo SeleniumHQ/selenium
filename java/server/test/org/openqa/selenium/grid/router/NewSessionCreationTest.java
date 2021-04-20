@@ -41,7 +41,7 @@ import org.openqa.selenium.grid.sessionmap.SessionMap;
 import org.openqa.selenium.grid.sessionmap.local.LocalSessionMap;
 import org.openqa.selenium.grid.sessionqueue.local.SessionRequests;
 import org.openqa.selenium.grid.sessionqueue.NewSessionQueue;
-import org.openqa.selenium.grid.sessionqueue.local.LocalSessionRequests;
+import org.openqa.selenium.grid.sessionqueue.local.SessionRequests;
 import org.openqa.selenium.grid.sessionqueue.local.LocalNewSessionQueue;
 import org.openqa.selenium.grid.testing.TestSessionFactory;
 import org.openqa.selenium.grid.web.CombinedHandler;
@@ -92,7 +92,7 @@ public class NewSessionCreationTest {
   @Test
   public void ensureJsCannotCreateANewSession() throws URISyntaxException {
     SessionMap sessions = new LocalSessionMap(tracer, events);
-    LocalSessionRequests localSessionRequests = new LocalSessionRequests(
+    SessionRequests localSessionRequests = new SessionRequests(
       tracer,
       events,
       Duration.ofSeconds(2),
@@ -168,7 +168,7 @@ public class NewSessionCreationTest {
 
     SessionMap sessions = new LocalSessionMap(tracer, events);
     handler.addHandler(sessions);
-    SessionRequests sessionRequests = new LocalSessionRequests(
+    SessionRequests sessionRequests = new SessionRequests(
       tracer,
       events,
       Duration.ofSeconds(2),

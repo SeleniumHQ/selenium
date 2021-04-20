@@ -61,25 +61,28 @@ import java.util.stream.Collectors;
 
 @ManagedService(objectName = "org.seleniumhq.grid:type=SessionQueue,name=LocalSessionQueue",
   description = "New session queue")
-public class LocalSessionRequests extends SessionRequests {
+public class SessionRequests {
 
-  private static final Logger LOG = Logger.getLogger(LocalSessionRequests.class.getName());
+  private static final Logger LOG = Logger.getLogger(SessionRequests.class.getName());
   private final EventBus bus;
+  private final Tracer tracer;
+  private final Duration retryInterval;
+  private final Duration requestTimeout;
   private final Deque<SessionRequest> sessionRequests = new ConcurrentLinkedDeque<>();
   private final ReadWriteLock lock = new ReentrantReadWriteLock(true);
   private final ScheduledExecutorService executorService =
     Executors.newSingleThreadScheduledExecutor();
   private final Thread shutdownHook = new Thread(this::callExecutorShutdown);
-  private final String timedOutErrorMessage = String.format(
-    "New session request rejected after being in the queue for more than %s",
-    format(requestTimeout));
 
-  public LocalSessionRequests(
+
+  public SessionRequests(
     Tracer tracer,
     EventBus bus,
     Duration retryInterval,
     Duration requestTimeout) {
-    super(tracer, retryInterval, requestTimeout);
+    this.tracer = Require.nonNull("Tracer", tracer);
+    this.retryInterval = Require.nonNull("Session request retry interval", retryInterval);
+    this.requestTimeout = Require.nonNull("Session request timeout", requestTimeout);
     this.bus = Require.nonNull("Event bus", bus);
     Runtime.getRuntime().addShutdownHook(shutdownHook);
 
@@ -95,15 +98,13 @@ public class LocalSessionRequests extends SessionRequests {
     EventBus bus = new EventBusOptions(config).getEventBus();
     Duration retryInterval = new SessionRequestOptions(config).getSessionRequestRetryInterval();
     Duration requestTimeout = new SessionRequestOptions(config).getSessionRequestTimeout();
-    return new LocalSessionRequests(tracer, bus, retryInterval, requestTimeout);
+    return new SessionRequests(tracer, bus, retryInterval, requestTimeout);
   }
 
-  @Override
   public boolean isReady() {
     return bus.isReady();
   }
 
-  @Override
   @ManagedAttribute(name = "NewSessionQueueSize")
   public int getQueueSize() {
     Lock readLock = lock.readLock();
@@ -115,7 +116,6 @@ public class LocalSessionRequests extends SessionRequests {
     }
   }
 
-  @Override
   public List<Set<Capabilities>> getQueuedRequests() {
     Lock readLock = lock.readLock();
     readLock.lock();
@@ -128,7 +128,6 @@ public class LocalSessionRequests extends SessionRequests {
     }
   }
 
-  @Override
   public boolean offerLast(SessionRequest request) {
     Require.nonNull("New Session request", request);
 
@@ -139,13 +138,13 @@ public class LocalSessionRequests extends SessionRequests {
     try {
       Map<String, EventAttributeValue> attributeMap = new HashMap<>();
       attributeMap.put(
-          AttributeKey.LOGGER_CLASS.getKey(), EventAttribute.setValue(getClass().getName()));
+        AttributeKey.LOGGER_CLASS.getKey(), EventAttribute.setValue(getClass().getName()));
 
       boolean added = sessionRequests.offerLast(request);
 
       attributeMap.put(
-          AttributeKey.REQUEST_ID.getKey(),
-          EventAttribute.setValue(request.getRequestId().toString()));
+        AttributeKey.REQUEST_ID.getKey(),
+        EventAttribute.setValue(request.getRequestId().toString()));
       attributeMap.put("request.added", EventAttribute.setValue(added));
       span.addEvent("Add new session request to the queue", attributeMap);
 
@@ -160,7 +159,6 @@ public class LocalSessionRequests extends SessionRequests {
     }
   }
 
-  @Override
   public boolean offerFirst(SessionRequest request) {
     Require.nonNull("New Session request", request);
     Lock writeLock = lock.writeLock();
@@ -169,7 +167,7 @@ public class LocalSessionRequests extends SessionRequests {
       boolean added = sessionRequests.offerFirst(request);
       if (added) {
         executorService.schedule(() -> retryRequest(request),
-          super.retryInterval.getSeconds(), TimeUnit.SECONDS);
+          retryInterval.getSeconds(), TimeUnit.SECONDS);
       }
       return added;
     } finally {
@@ -186,7 +184,7 @@ public class LocalSessionRequests extends SessionRequests {
         LOG.log(Level.INFO, "Request {0} timed out", requestId);
         sessionRequests.remove(sessionRequest);
         bus.fire(new NewSessionRejectedEvent(
-          new NewSessionErrorResponse(requestId, timedOutErrorMessage)));
+          new NewSessionErrorResponse(requestId, getTimeoutErrorMessage())));
       } else {
         LOG.log(Level.INFO,
           "Adding request back to the queue. All slots are busy. Request: {0}",
@@ -198,7 +196,6 @@ public class LocalSessionRequests extends SessionRequests {
     }
   }
 
-  @Override
   public Optional<SessionRequest> remove(RequestId id) {
     Lock writeLock = lock.writeLock();
     writeLock.lock();
@@ -229,7 +226,7 @@ public class LocalSessionRequests extends SessionRequests {
       if (request.isPresent()) {
         if (hasRequestTimedOut(request.get())) {
           bus.fire(new NewSessionRejectedEvent(
-            new NewSessionErrorResponse(id, timedOutErrorMessage)));
+            new NewSessionErrorResponse(id, getTimeoutErrorMessage())));
           return Optional.empty();
         }
       }
@@ -239,7 +236,6 @@ public class LocalSessionRequests extends SessionRequests {
     }
   }
 
-  @Override
   public int clear() {
     Lock writeLock = lock.writeLock();
     writeLock.lock();
@@ -271,7 +267,7 @@ public class LocalSessionRequests extends SessionRequests {
         if (hasRequestTimedOut(sessionRequest)) {
           iterator.remove();
           bus.fire(new NewSessionRejectedEvent(
-            new NewSessionErrorResponse(sessionRequest.getRequestId(), timedOutErrorMessage)));
+            new NewSessionErrorResponse(sessionRequest.getRequestId(), getTimeoutErrorMessage())));
         }
       }
     } finally {
@@ -307,5 +303,10 @@ public class LocalSessionRequests extends SessionRequests {
     toReturn.append(secs).append("s");
     return toReturn.toString();
   }
-}
 
+  private String getTimeoutErrorMessage() {
+    return String.format(
+      "New session request rejected after being in the queue for more than %s",
+      format(requestTimeout));
+  }
+}

@@ -30,7 +30,7 @@ import org.openqa.selenium.grid.node.local.LocalNode;
 import org.openqa.selenium.grid.security.Secret;
 import org.openqa.selenium.grid.server.BaseServerOptions;
 import org.openqa.selenium.grid.sessionqueue.config.SessionRequestOptions;
-import org.openqa.selenium.grid.sessionqueue.local.LocalSessionRequests;
+import org.openqa.selenium.grid.sessionqueue.local.SessionRequests;
 import org.openqa.selenium.grid.testing.TestSessionFactory;
 import org.openqa.selenium.net.PortProber;
 import org.openqa.selenium.remote.tracing.DefaultTestTracer;
@@ -193,7 +193,7 @@ public class JmxTest {
       Tracer tracer = DefaultTestTracer.createTracer();
       EventBus bus = new GuavaEventBus();
 
-      LocalSessionRequests localNewSessionQueue = new LocalSessionRequests(
+      SessionRequests localNewSessionQueue = new SessionRequests(
         tracer,
         bus,
         Duration.ofSeconds(2),
