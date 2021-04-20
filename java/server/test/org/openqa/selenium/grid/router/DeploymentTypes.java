@@ -31,7 +31,7 @@ import org.openqa.selenium.grid.node.httpd.NodeServer;
 import org.openqa.selenium.grid.router.httpd.RouterServer;
 import org.openqa.selenium.grid.server.Server;
 import org.openqa.selenium.grid.sessionmap.httpd.SessionMapServer;
-import org.openqa.selenium.grid.sessionqueue.httpd.NewSessionQueuerServer;
+import org.openqa.selenium.grid.sessionqueue.httpd.NewSessionQueueServer;
 import org.openqa.selenium.grid.web.Values;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.json.JsonOutput;
@@ -183,7 +183,7 @@ public enum DeploymentTypes {
         .start();
       waitUntilReady(eventServer, Duration.ofSeconds(5));
 
-      Server<?> newSessionQueueServer = new NewSessionQueuerServer()
+      Server<?> newSessionQueueServer = new NewSessionQueueServer()
         .asServer(new MemoizedConfig(new CompoundConfig(setRandomPort(), sharedConfig))).start();
       waitUntilReady(newSessionQueueServer, Duration.ofSeconds(5));
       Config newSessionQueueServerConfig = new TomlConfig(new StringReader(String.join(

@@ -25,9 +25,9 @@ import org.openqa.selenium.grid.security.AddSecretFilter;
 import org.openqa.selenium.grid.security.Secret;
 import org.openqa.selenium.grid.security.SecretOptions;
 import org.openqa.selenium.grid.server.NetworkOptions;
-import org.openqa.selenium.grid.sessionqueue.NewSessionQueuer;
+import org.openqa.selenium.grid.sessionqueue.NewSessionQueue;
 import org.openqa.selenium.grid.sessionqueue.SessionRequest;
-import org.openqa.selenium.grid.sessionqueue.config.NewSessionQueuerOptions;
+import org.openqa.selenium.grid.sessionqueue.config.NewSessionQueueOptions;
 import org.openqa.selenium.grid.web.Values;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.Json;
@@ -52,14 +52,14 @@ import static org.openqa.selenium.remote.http.HttpMethod.DELETE;
 import static org.openqa.selenium.remote.http.HttpMethod.GET;
 import static org.openqa.selenium.remote.http.HttpMethod.POST;
 
-public class RemoteNewSessionQueuer extends NewSessionQueuer {
+public class RemoteNewSessionQueue extends NewSessionQueue {
 
   private static final Type QUEUE_CONTENTS_TYPE = new TypeToken<List<Set<Capabilities>>>() {}.getType();
   private static final Json JSON = new Json();
   private final HttpClient client;
   private final Filter addSecret;
 
-  public RemoteNewSessionQueuer(Tracer tracer, HttpClient client, Secret registrationSecret) {
+  public RemoteNewSessionQueue(Tracer tracer, HttpClient client, Secret registrationSecret) {
     super(tracer, registrationSecret);
     this.client = Require.nonNull("HTTP client", client);
 
@@ -67,16 +67,16 @@ public class RemoteNewSessionQueuer extends NewSessionQueuer {
     this.addSecret = new AddSecretFilter(registrationSecret);
   }
 
-  public static NewSessionQueuer create(Config config) {
+  public static NewSessionQueue create(Config config) {
     Tracer tracer = new LoggingOptions(config).getTracer();
-    URI uri = new NewSessionQueuerOptions(config).getSessionQueuerUri();
+    URI uri = new NewSessionQueueOptions(config).getSessionQueueUri();
     HttpClient.Factory clientFactory = new NetworkOptions(config).getHttpClientFactory(tracer);
 
     SecretOptions secretOptions = new SecretOptions(config);
     Secret registrationSecret = secretOptions.getRegistrationSecret();
 
     try {
-      return new RemoteNewSessionQueuer(
+      return new RemoteNewSessionQueue(
         tracer,
         clientFactory.createClient(uri.toURL()),
         registrationSecret);
@@ -87,7 +87,7 @@ public class RemoteNewSessionQueuer extends NewSessionQueuer {
 
   @Override
   public HttpResponse addToQueue(SessionRequest request) {
-    HttpRequest upstream = new HttpRequest(POST, "/se/grid/newsessionqueuer/session");
+    HttpRequest upstream = new HttpRequest(POST, "/se/grid/newsessionqueue/session");
     HttpTracing.inject(tracer, tracer.getCurrentContext(), upstream);
     upstream.setContent(Contents.asJson(request));
     return client.execute(upstream);
@@ -98,7 +98,7 @@ public class RemoteNewSessionQueuer extends NewSessionQueuer {
     Require.nonNull("Session request", request);
 
     HttpRequest upstream =
-      new HttpRequest(POST, "/se/grid/newsessionqueuer/session/retry/" + request.getRequestId());
+      new HttpRequest(POST, "/se/grid/newsessionqueue/session/retry/" + request.getRequestId());
     HttpTracing.inject(tracer, tracer.getCurrentContext(), upstream);
     upstream.setContent(Contents.asJson(request));
     HttpResponse response = client.with(addSecret).execute(upstream);
@@ -107,7 +107,7 @@ public class RemoteNewSessionQueuer extends NewSessionQueuer {
 
   @Override
   public Optional<SessionRequest> remove(RequestId reqId) {
-    HttpRequest upstream = new HttpRequest(GET, "/se/grid/newsessionqueuer/session/" + reqId.toString());
+    HttpRequest upstream = new HttpRequest(GET, "/se/grid/newsessionqueue/session/" + reqId.toString());
     HttpTracing.inject(tracer, tracer.getCurrentContext(), upstream);
     HttpResponse response = client.with(addSecret).execute(upstream);
 
@@ -125,7 +125,7 @@ public class RemoteNewSessionQueuer extends NewSessionQueuer {
 
   @Override
   public int clearQueue() {
-    HttpRequest upstream = new HttpRequest(DELETE, "/se/grid/newsessionqueuer/queue");
+    HttpRequest upstream = new HttpRequest(DELETE, "/se/grid/newsessionqueue/queue");
     HttpTracing.inject(tracer, tracer.getCurrentContext(), upstream);
     HttpResponse response = client.with(addSecret).execute(upstream);
 
@@ -134,7 +134,7 @@ public class RemoteNewSessionQueuer extends NewSessionQueuer {
 
   @Override
   public List<Set<Capabilities>> getQueueContents() {
-    HttpRequest upstream = new HttpRequest(GET, "/se/grid/newsessionqueuer/queue");
+    HttpRequest upstream = new HttpRequest(GET, "/se/grid/newsessionqueue/queue");
     HttpTracing.inject(tracer, tracer.getCurrentContext(), upstream);
     HttpResponse response = client.execute(upstream);
 

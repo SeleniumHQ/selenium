@@ -36,21 +36,21 @@ import java.util.Optional;
 public class RemoveFromSessionQueue implements HttpHandler {
 
   private final Tracer tracer;
-  private final NewSessionQueuer newSessionQueuer;
+  private final NewSessionQueue newSessionQueue;
   private final RequestId id;
 
-  RemoveFromSessionQueue(Tracer tracer, NewSessionQueuer newSessionQueuer, RequestId id) {
+  RemoveFromSessionQueue(Tracer tracer, NewSessionQueue newSessionQueue, RequestId id) {
     this.tracer = Require.nonNull("Tracer", tracer);
-    this.newSessionQueuer = Require.nonNull("New Session Queuer", newSessionQueuer);
+    this.newSessionQueue = Require.nonNull("New Session Queue", newSessionQueue);
     this.id = id;
   }
 
   @Override
   public HttpResponse execute(HttpRequest req) {
-    try (Span span = newSpanAsChildOf(tracer, req, "sessionqueuer.remove")) {
+    try (Span span = newSpanAsChildOf(tracer, req, "sessionqueue.remove")) {
       HTTP_REQUEST.accept(span, req);
 
-      Optional<SessionRequest> sessionRequest = newSessionQueuer.remove(id);
+      Optional<SessionRequest> sessionRequest = newSessionQueue.remove(id);
       HttpResponse response = new HttpResponse();
 
       if (sessionRequest.isPresent()) {

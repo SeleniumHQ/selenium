@@ -35,20 +35,20 @@ import org.openqa.selenium.remote.tracing.Tracer;
 public class ClearSessionQueue implements HttpHandler {
 
   private final Tracer tracer;
-  private final NewSessionQueuer newSessionQueuer;
+  private final NewSessionQueue newSessionQueue;
 
-  ClearSessionQueue(Tracer tracer, NewSessionQueuer newSessionQueuer) {
+  ClearSessionQueue(Tracer tracer, NewSessionQueue newSessionQueue) {
     this.tracer = Require.nonNull("Tracer", tracer);
-    this.newSessionQueuer = Require.nonNull("New Session Queuer", newSessionQueuer);
+    this.newSessionQueue = Require.nonNull("New Session Queue", newSessionQueue);
   }
 
   @Override
   public HttpResponse execute(HttpRequest req) {
-    Span span = newSpanAsChildOf(tracer, req, "sessionqueuer.clear");
+    Span span = newSpanAsChildOf(tracer, req, "sessionqueue.clear");
     HTTP_REQUEST.accept(span, req);
 
     try {
-      int value = newSessionQueuer.clearQueue();
+      int value = newSessionQueue.clearQueue();
       span.setAttribute("cleared", value);
 
       HttpResponse response = new HttpResponse();
