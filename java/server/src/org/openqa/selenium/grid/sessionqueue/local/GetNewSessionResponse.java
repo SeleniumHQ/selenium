@@ -20,7 +20,6 @@ package org.openqa.selenium.grid.sessionqueue.local;
 import org.openqa.selenium.events.EventBus;
 import org.openqa.selenium.grid.data.NewSessionErrorResponse;
 import org.openqa.selenium.grid.data.NewSessionRejectedEvent;
-import org.openqa.selenium.grid.data.NewSessionRequest;
 import org.openqa.selenium.grid.data.NewSessionResponse;
 import org.openqa.selenium.grid.data.NewSessionResponseEvent;
 import org.openqa.selenium.grid.data.RequestId;
@@ -43,7 +42,7 @@ import static java.util.Collections.singletonMap;
 import static org.openqa.selenium.remote.http.Contents.asJson;
 import static org.openqa.selenium.remote.http.Contents.bytes;
 
-public class GetNewSessionResponse {
+class GetNewSessionResponse {
 
   private static final Logger LOG = Logger.getLogger(GetNewSessionResponse.class.getName());
   private static final Map<RequestId, NewSessionRequest> knownRequests = new ConcurrentHashMap<>();
@@ -110,7 +109,7 @@ public class GetNewSessionResponse {
 
     CountDownLatch latch = new CountDownLatch(1);
     RequestId requestId = request.getRequestId();
-    NewSessionRequest requestIdentifier = new NewSessionRequest(requestId, latch);
+    NewSessionRequest requestIdentifier = new NewSessionRequest(latch);
     knownRequests.put(requestId, requestIdentifier);
 
     if (!sessionRequests.offerLast(request)) {
