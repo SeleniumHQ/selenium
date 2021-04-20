@@ -64,9 +64,8 @@ rbe_autoconfig(name = "rbe_default")
 
 http_archive(
     name = "rules_python",
-    sha256 = "77a6497a8e01bd5cb9cb9e0f8a683ccaa7f8123ff8f8497ae92e1dd66cc27d58",
-    strip_prefix = "rules_python-0cd570e52939500065cca8e1c7baa895b4b43a4c",
-    url = "https://github.com/bazelbuild/rules_python/archive/0cd570e52939500065cca8e1c7baa895b4b43a4c.zip",
+    url = "https://github.com/bazelbuild/rules_python/releases/download/0.2.0/rules_python-0.2.0.tar.gz",
+    sha256 = "778197e26c5fbeb07ac2a2c5ae405b30f6cb7ad1f5510ea6fdac03bded96cc6f",
 )
 
 # This one is only needed if you're using the packaging rules.
@@ -102,9 +101,9 @@ http_archive(
         "//java:rules_jvm_external_javadoc.patch",
         "//java:rules_jvm_external_visibility.patch",
     ],
-    sha256 = "5f292b0b16afc42d6931339ac39cc33e22db4ddd6fc9d75d3aafaacceef957e8",
-    strip_prefix = "rules_jvm_external-eecd2531bc65d46ab37d6ca73297879328afa2b2",
-    url = "https://github.com/bazelbuild/rules_jvm_external/archive/eecd2531bc65d46ab37d6ca73297879328afa2b2.zip",
+    sha256 = "3631082609854e0e7c28c6cdc06708eceda15816f5ff3153f84da7932e3e428c",
+    strip_prefix = "rules_jvm_external-c0a8a3ea3fed24a66eade21015249ed5ed99bf65",
+    url = "https://github.com/bazelbuild/rules_jvm_external/archive/c0a8a3ea3fed24a66eade21015249ed5ed99bf65.zip",
 )
 
 load("@rules_jvm_external//:repositories.bzl", "rules_jvm_external_deps")
@@ -138,8 +137,8 @@ selenium_register_dotnet()
 
 http_archive(
     name = "build_bazel_rules_nodejs",
-    sha256 = "f533eeefc8fe1ddfe93652ec50f82373d0c431f7faabd5e6323f6903195ef227",
-    urls = ["https://github.com/bazelbuild/rules_nodejs/releases/download/3.3.0/rules_nodejs-3.3.0.tar.gz"],
+    sha256 = "1134ec9b7baee008f1d54f0483049a97e53a57cd3913ec9d6db625549c98395a",
+    urls = ["https://github.com/bazelbuild/rules_nodejs/releases/download/3.4.0/rules_nodejs-3.4.0.tar.gz"],
 )
 
 load("@build_bazel_rules_nodejs//:index.bzl", "npm_install")

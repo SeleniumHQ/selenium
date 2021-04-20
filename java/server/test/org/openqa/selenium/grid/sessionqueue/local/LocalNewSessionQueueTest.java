@@ -17,282 +17,473 @@
 
 package org.openqa.selenium.grid.sessionqueue.local;
 
+import com.google.common.collect.ImmutableMap;
 import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.events.EventBus;
 import org.openqa.selenium.events.local.GuavaEventBus;
+import org.openqa.selenium.grid.data.CreateSessionResponse;
 import org.openqa.selenium.grid.data.NewSessionErrorResponse;
 import org.openqa.selenium.grid.data.NewSessionRejectedEvent;
 import org.openqa.selenium.grid.data.NewSessionRequestEvent;
+import org.openqa.selenium.grid.data.NewSessionResponse;
+import org.openqa.selenium.grid.data.NewSessionResponseEvent;
 import org.openqa.selenium.grid.data.RequestId;
-import org.openqa.selenium.grid.sessionqueue.NewSessionQueue;
-import org.openqa.selenium.remote.NewSessionPayload;
-import org.openqa.selenium.remote.http.HttpMethod;
-import org.openqa.selenium.remote.http.HttpRequest;
+import org.openqa.selenium.grid.data.Session;
+import org.openqa.selenium.grid.security.Secret;
+import org.openqa.selenium.grid.sessionqueue.SessionRequest;
+import org.openqa.selenium.grid.sessionqueue.local.LocalNewSessionQueue;
+import org.openqa.selenium.grid.sessionqueue.remote.RemoteNewSessionQueue;
+import org.openqa.selenium.grid.testing.PassthroughHttpClient;
+import org.openqa.selenium.json.Json;
+import org.openqa.selenium.remote.SessionId;
+import org.openqa.selenium.remote.http.Contents;
+import org.openqa.selenium.remote.http.HttpClient;
+import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.remote.tracing.DefaultTestTracer;
 import org.openqa.selenium.remote.tracing.Tracer;
 
-import java.io.IOException;
-import java.io.UncheckedIOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
-import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 
+import static java.net.HttpURLConnection.HTTP_INTERNAL_ERROR;
+import static java.net.HttpURLConnection.HTTP_OK;
+import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
-import static org.openqa.selenium.grid.sessionqueue.NewSessionQueue.SESSIONREQUEST_TIMESTAMP_HEADER;
-import static org.openqa.selenium.remote.http.Contents.utf8String;
-import static org.openqa.selenium.remote.http.HttpMethod.POST;
+import static org.openqa.selenium.remote.Dialect.W3C;
 
 public class LocalNewSessionQueueTest {
 
+  private static final Json JSON = new Json();
+  private static int count = 0;
+  private final Secret registrationSecret = new Secret("secret");
+  private LocalNewSessionQueue local;
+  private RemoteNewSessionQueue remote;
   private EventBus bus;
-  private NewSessionQueue sessionQueue;
-  private HttpRequest expectedSessionRequest;
-  private RequestId requestId;
+  private ImmutableCapabilities caps;
+  private SessionRequest sessionRequest;
+
 
   @Before
   public void setUp() {
     Tracer tracer = DefaultTestTracer.createTracer();
-    Capabilities caps = new ImmutableCapabilities("browserName", "chrome");
+    caps = new ImmutableCapabilities("browserName", "chrome");
     bus = new GuavaEventBus();
-    requestId = new RequestId(UUID.randomUUID());
-    sessionQueue = new LocalNewSessionQueue(
-        tracer,
-        bus,
-        Duration.ofSeconds(30),
-        Duration.ofSeconds(30));
 
-    NewSessionPayload payload = NewSessionPayload.create(caps);
-    expectedSessionRequest = createRequest(payload, POST, "/session");
+    local = new LocalNewSessionQueue(
+      tracer,
+      bus,
+      Duration.ofSeconds(1),
+      Duration.ofSeconds(1000),
+      registrationSecret);
+
+    HttpClient client = new PassthroughHttpClient(local);
+    remote = new RemoteNewSessionQueue(tracer, client, registrationSecret);
+
+    sessionRequest = new SessionRequest(
+      new RequestId(UUID.randomUUID()),
+      Instant.now(),
+      Set.of(W3C),
+      Set.of(caps));
   }
 
   @Test
-  public void shouldBeAbleToAddToEndOfQueue() throws InterruptedException {
-    AtomicBoolean result = new AtomicBoolean(false);
-    CountDownLatch latch = new CountDownLatch(1);
+  public void shouldBeAbleToAddToQueueAndGetValidResponse() {
+    AtomicBoolean isPresent = new AtomicBoolean(false);
 
     bus.addListener(NewSessionRequestEvent.listener(reqId -> {
-      result.set(reqId.equals(requestId));
-      latch.countDown();
+      Optional<SessionRequest> sessionRequest = this.local.remove(reqId);
+      isPresent.set(sessionRequest.isPresent());
+      Capabilities capabilities = new ImmutableCapabilities("browserName", "chrome");
+      try {
+        SessionId sessionId = new SessionId("123");
+        Session session =
+            new Session(
+                sessionId,
+                new URI("http://example.com"),
+                caps,
+                capabilities,
+                Instant.now());
+        CreateSessionResponse sessionResponse = new CreateSessionResponse(
+            session,
+            JSON.toJson(
+                ImmutableMap.of(
+                    "value", ImmutableMap.of(
+                        "sessionId", sessionId,
+                        "capabilities", capabilities)))
+                .getBytes(UTF_8));
+        NewSessionResponse newSessionResponse =
+            new NewSessionResponse(reqId, sessionResponse.getSession(),
+                                   sessionResponse.getDownstreamEncodedResponse());
+        bus.fire(new NewSessionResponseEvent(newSessionResponse));
+      } catch (URISyntaxException e) {
+        bus.fire(
+            new NewSessionRejectedEvent(
+                new NewSessionErrorResponse(new RequestId(UUID.randomUUID()), "Error")));
+      }
     }));
 
-    boolean added = sessionQueue.offerLast(expectedSessionRequest, requestId);
-    assertTrue(added);
+    HttpResponse httpResponse = local.addToQueue(sessionRequest);
 
-    latch.await(5, TimeUnit.SECONDS);
-
-    assertThat(latch.getCount()).isEqualTo(0);
-    assertTrue(result.get());
+    assertThat(isPresent.get()).isTrue();
+    assertEquals(httpResponse.getStatus(), HTTP_OK);
   }
 
   @Test
-  public void shouldBeAbleToRemoveFromFrontOfQueue() {
-    boolean added = sessionQueue.offerLast(expectedSessionRequest, requestId);
-    assertTrue(added);
+  public void shouldBeAbleToAddToQueueAndGetErrorResponse() {
+    AtomicBoolean isPresent = new AtomicBoolean(false);
 
-    Optional<HttpRequest> receivedRequest = sessionQueue.remove(requestId);
+    bus.addListener(NewSessionRequestEvent.listener(reqId -> {
+      Optional<SessionRequest> sessionRequest = this.local.remove(reqId);
+      isPresent.set(sessionRequest.isPresent());
+      bus.fire(
+          new NewSessionRejectedEvent(
+              new NewSessionErrorResponse(reqId, "Error")));
 
-    assertTrue(receivedRequest.isPresent());
-    assertEquals(expectedSessionRequest, receivedRequest.get());
+    }));
+
+    HttpResponse httpResponse = local.addToQueue(sessionRequest);
+
+    assertThat(isPresent.get()).isTrue();
+    assertEquals(httpResponse.getStatus(), HTTP_INTERNAL_ERROR);
   }
 
   @Test
-  public void shouldBeAbleToRemoveFromEmptyQueue() {
-    Optional<HttpRequest> receivedRequest = sessionQueue.remove(requestId);
-    assertFalse(receivedRequest.isPresent());
+  public void shouldBeAbleToAddToQueueRemotelyAndGetErrorResponse() {
+    AtomicBoolean isPresent = new AtomicBoolean(false);
+
+    bus.addListener(NewSessionRequestEvent.listener(reqId -> {
+      Optional<SessionRequest> sessionRequest = this.remote.remove(reqId);
+      isPresent.set(sessionRequest.isPresent());
+      bus.fire(
+          new NewSessionRejectedEvent(
+              new NewSessionErrorResponse(reqId, "Could not poll the queue")));
+
+    }));
+
+    HttpResponse httpResponse = remote.addToQueue(sessionRequest);
+
+    assertThat(isPresent.get()).isTrue();
+    assertEquals(httpResponse.getStatus(), HTTP_INTERNAL_ERROR);
+  }
+
+
+  @Test
+  public void shouldBeAbleToRemoveFromQueue() {
+    Optional<SessionRequest> httpRequest = local.remove(new RequestId(UUID.randomUUID()));
+
+    assertFalse(httpRequest.isPresent());
   }
 
   @Test
-  public void shouldBeAbleToRemoveRequest() {
-    long timestamp = Instant.now().getEpochSecond();
+  public void shouldBeClearQueue() {
+    RequestId requestId = new RequestId(UUID.randomUUID());
+    local.offerLast(sessionRequest);
 
-    ImmutableCapabilities chromeCaps = new ImmutableCapabilities("browserName", "chrome");
-    NewSessionPayload chromePayload = NewSessionPayload.create(chromeCaps);
-    HttpRequest chromeRequest = createRequest(chromePayload, POST, "/session");
-    chromeRequest.addHeader(SESSIONREQUEST_TIMESTAMP_HEADER, Long.toString(timestamp));
-    RequestId chromeRequestId = new RequestId(UUID.randomUUID());
+    int count = local.clearQueue();
 
-    ImmutableCapabilities firefoxCaps = new ImmutableCapabilities("browserName", "firefox");
-    NewSessionPayload firefoxpayload = NewSessionPayload.create(firefoxCaps);
-    HttpRequest firefoxRequest = createRequest(firefoxpayload, POST, "/session");
-    firefoxRequest.addHeader(SESSIONREQUEST_TIMESTAMP_HEADER, Long.toString(timestamp));
-    RequestId firefoxRequestId = new RequestId(UUID.randomUUID());
-
-    boolean addedChromeRequest = sessionQueue.offerFirst(chromeRequest, chromeRequestId);
-    assertTrue(addedChromeRequest);
-
-    boolean addFirefoxRequest = sessionQueue.offerFirst(firefoxRequest, firefoxRequestId);
-    assertTrue(addFirefoxRequest);
-
-    Optional<HttpRequest> polledChromeRequest = sessionQueue.remove(chromeRequestId);
-    assertTrue(polledChromeRequest.isPresent());
-    assertEquals(chromeRequest, polledChromeRequest.get());
-
-    Optional<HttpRequest> polledFirefoxRequest = sessionQueue.remove(firefoxRequestId);
-    assertTrue(polledFirefoxRequest.isPresent());
-    assertEquals(firefoxRequest, polledFirefoxRequest.get());
+    assertEquals(count, 1);
+    assertFalse(local.remove(requestId).isPresent());
   }
 
   @Test
-  public void shouldAddTimestampHeader() {
-    boolean added = sessionQueue.offerLast(expectedSessionRequest, requestId);
-    assertTrue(added);
+  public void shouldBeClearQueueRemotely() {
+    RequestId requestId = new RequestId(UUID.randomUUID());
+    remote.offerLast(sessionRequest);
 
-    Optional<HttpRequest> receivedRequest = sessionQueue.remove(requestId);
+    int count = remote.clearQueue();
 
-    assertTrue(receivedRequest.isPresent());
-    HttpRequest request = receivedRequest.get();
-    assertEquals(expectedSessionRequest, request);
-    assertTrue(request.getHeader(NewSessionQueue.SESSIONREQUEST_TIMESTAMP_HEADER) != null);
-  }
-
-  @Test
-  public void shouldAddRequestIdHeader() {
-    boolean added = sessionQueue.offerLast(expectedSessionRequest, requestId);
-    assertTrue(added);
-
-    Optional<HttpRequest> receivedRequest = sessionQueue.remove(requestId);
-
-    assertTrue(receivedRequest.isPresent());
-    HttpRequest request = receivedRequest.get();
-    assertEquals(expectedSessionRequest, request);
-    String polledRequestId = request.getHeader(NewSessionQueue.SESSIONREQUEST_ID_HEADER);
-    assertTrue(polledRequestId != null);
-    assertEquals(requestId, new RequestId(UUID.fromString(polledRequestId)));
-  }
-
-  @Test
-  public void shouldBeAbleToAddToFrontOfQueue() {
-    long timestamp = Instant.now().getEpochSecond();
-
-    ImmutableCapabilities chromeCaps = new ImmutableCapabilities("browserName", "chrome");
-    NewSessionPayload chromePayload = NewSessionPayload.create(chromeCaps);
-    HttpRequest chromeRequest = createRequest(chromePayload, POST, "/session");
-    chromeRequest.addHeader(SESSIONREQUEST_TIMESTAMP_HEADER, Long.toString(timestamp));
-    RequestId chromeRequestId = new RequestId(UUID.randomUUID());
-
-    ImmutableCapabilities firefoxCaps = new ImmutableCapabilities("browserName", "firefox");
-    NewSessionPayload firefoxpayload = NewSessionPayload.create(firefoxCaps);
-    HttpRequest firefoxRequest = createRequest(firefoxpayload, POST, "/session");
-    firefoxRequest.addHeader(SESSIONREQUEST_TIMESTAMP_HEADER, Long.toString(timestamp));
-    RequestId firefoxRequestId = new RequestId(UUID.randomUUID());
-
-    boolean addedChromeRequest = sessionQueue.offerFirst(chromeRequest, chromeRequestId);
-    assertTrue(addedChromeRequest);
-
-    boolean addFirefoxRequest = sessionQueue.offerFirst(firefoxRequest, firefoxRequestId);
-    assertTrue(addFirefoxRequest);
-
-    Optional<HttpRequest> polledFirefoxRequest = sessionQueue.remove(firefoxRequestId);
-    assertTrue(polledFirefoxRequest.isPresent());
-    assertEquals(firefoxRequest, polledFirefoxRequest.get());
-
-    Optional<HttpRequest> polledChromeRequest = sessionQueue.remove(chromeRequestId);
-    assertTrue(polledChromeRequest.isPresent());
-    assertEquals(chromeRequest, polledChromeRequest.get());
-  }
-
-  @Test
-  public void shouldBeClearAPopulatedQueue() {
-    sessionQueue.offerLast(expectedSessionRequest, new RequestId(UUID.randomUUID()));
-    sessionQueue.offerLast(expectedSessionRequest, new RequestId(UUID.randomUUID()));
-
-    int count = sessionQueue.clear();
-    assertEquals(count, 2);
-  }
-
-  @Test
-  public void shouldBeClearAEmptyQueue() {
-    int count = sessionQueue.clear();
-    assertEquals(count, 0);
-  }
-
-  @Test
-  public void shouldBeAbleToGetQueueSize() {
-    boolean added = sessionQueue.offerLast(expectedSessionRequest, requestId);
-    assertTrue(added);
-
-    int size = sessionQueue.getQueueSize();
-    assertEquals(1, size);
+    assertEquals(count, 1);
+    assertFalse(remote.remove(requestId).isPresent());
   }
 
   @Test
   public void shouldBeAbleToGetQueueContents() {
-    long timestamp = Instant.now().getEpochSecond();
+    local.offerLast(sessionRequest);
 
-    ImmutableCapabilities chromeCaps = new ImmutableCapabilities(
-      "browserName", "chrome",
-      "platform", "mac",
-      "version", "87");
-    NewSessionPayload chromePayload = NewSessionPayload.create(chromeCaps);
-    HttpRequest chromeRequest = createRequest(chromePayload, POST, "/session");
-    chromeRequest.addHeader(SESSIONREQUEST_TIMESTAMP_HEADER, Long.toString(timestamp));
-    RequestId chromeRequestId = new RequestId(UUID.randomUUID());
-    boolean addedChromeRequest = sessionQueue.offerLast(chromeRequest, chromeRequestId);
-    assertTrue(addedChromeRequest);
-
-    ImmutableCapabilities firefoxCaps = new ImmutableCapabilities(
-      "browserName", "firefox",
-      "platform", "windows",
-      "version", "84");
-    NewSessionPayload firefoxPayload = NewSessionPayload.create(firefoxCaps);
-    HttpRequest firefoxRequest = createRequest(firefoxPayload, POST, "/session");
-    firefoxRequest.addHeader(SESSIONREQUEST_TIMESTAMP_HEADER, Long.toString(timestamp));
-    RequestId firefoxRequestId = new RequestId(UUID.randomUUID());
-    boolean addFirefoxRequest = sessionQueue.offerLast(firefoxRequest, firefoxRequestId);
-    assertTrue(addFirefoxRequest);
-
-    List<Object> response = sessionQueue.getQueuedRequests();
+    List<Set<Capabilities>> response = local.getQueueContents();
     assertThat(response).isNotNull();
 
-    assertEquals(2, response.size());
+    assertEquals(1, response.size());
 
-    assertEquals(chromeCaps, response.get(0));
-    assertEquals(firefoxCaps, response.get(1));
+    assertEquals(Set.of(caps), response.get(0));
   }
 
   @Test
-  public void shouldBeAbleToRemoveRequestsOnTimeout() throws InterruptedException {
-    NewSessionQueue localSessionQueue = new LocalNewSessionQueue(
-      DefaultTestTracer.createTracer(),
-      bus,
-      Duration.ofSeconds(30),
-      Duration.ofSeconds(1));
+  public void shouldBeAbleToGetQueueContentsRemotely() {
+    remote.offerLast(sessionRequest);
 
-    CountDownLatch latch = new CountDownLatch(1);
+    List<Set<Capabilities>> response = remote.getQueueContents();
+    assertThat(response).isNotNull();
 
-    bus.addListener(NewSessionRejectedEvent.listener(reqId -> latch.countDown()));
+    assertEquals(1, response.size());
 
-    boolean added = localSessionQueue.offerLast(expectedSessionRequest, requestId);
-    assertTrue(added);
-
-    boolean requestExpired = latch.await(2, TimeUnit.MINUTES);
-
-    assertThat(requestExpired).isTrue();
-    assertThat(localSessionQueue.getQueueSize()).isZero();
+    assertEquals(Set.of(caps), response.iterator().next());
   }
 
-  private HttpRequest createRequest(NewSessionPayload payload, HttpMethod httpMethod, String uri) {
-    StringBuilder builder = new StringBuilder();
+  @Test
+  public void shouldBeClearQueueAndFireRejectedEvent() {
+    AtomicBoolean result = new AtomicBoolean(false);
+
+    RequestId requestId = sessionRequest.getRequestId();
+    bus.addListener(
+      NewSessionRejectedEvent.listener(response -> result.set(response.getRequestId().equals(requestId))));
+
+    local.offerLast(sessionRequest);
+
+    int count = remote.clearQueue();
+
+    assertThat(result.get()).isTrue();
+    assertEquals(count, 1);
+    assertFalse(remote.remove(requestId).isPresent());
+  }
+
+  @Test
+  public void shouldBeAbleToRemoveFromQueueRemotely() {
+    Optional<SessionRequest> httpRequest = remote.remove(new RequestId(UUID.randomUUID()));
+
+    assertFalse(httpRequest.isPresent());
+  }
+
+  @Test
+  public void shouldBeAbleToAddAgainToQueue() {
+    boolean added = local.retryAddToQueue(sessionRequest);
+    assertTrue(added);
+  }
+
+  @Test
+  public void shouldBeAbleToAddAgainToQueueRemotely() {
+    boolean added = remote.retryAddToQueue(sessionRequest);
+
+    assertTrue(added);
+  }
+
+  @Test
+  public void shouldBeAbleToRetryRequest() {
+    AtomicBoolean isPresent = new AtomicBoolean(false);
+    AtomicBoolean retrySuccess = new AtomicBoolean(false);
+
+    bus.addListener(NewSessionRequestEvent.listener(reqId -> {
+      // Keep a count of event fired
+      count++;
+      Optional<SessionRequest> sessionRequest = this.remote.remove(reqId);
+      isPresent.set(sessionRequest.isPresent());
+
+      if (count == 1) {
+        retrySuccess.set(remote.retryAddToQueue(sessionRequest.get()));
+      }
+
+      // Only if it was retried after an interval, the count is 2
+      if (count == 2) {
+        ImmutableCapabilities capabilities = new ImmutableCapabilities("browserName", "chrome");
+        try {
+          SessionId sessionId = new SessionId("123");
+          Session session =
+              new Session(
+                  sessionId,
+                  new URI("http://example.com"),
+                  caps,
+                  capabilities,
+                  Instant.now());
+          CreateSessionResponse sessionResponse = new CreateSessionResponse(
+              session,
+              JSON.toJson(
+                  ImmutableMap.of(
+                      "value", ImmutableMap.of(
+                          "sessionId", sessionId,
+                          "capabilities", capabilities)))
+                  .getBytes(UTF_8));
+          NewSessionResponse newSessionResponse =
+              new NewSessionResponse(reqId, sessionResponse.getSession(),
+                                     sessionResponse.getDownstreamEncodedResponse());
+          bus.fire(new NewSessionResponseEvent(newSessionResponse));
+        } catch (URISyntaxException e) {
+          bus.fire(
+              new NewSessionRejectedEvent(
+                  new NewSessionErrorResponse(new RequestId(UUID.randomUUID()), "Error")));
+        }
+      }
+    }));
+
+    HttpResponse httpResponse = remote.addToQueue(sessionRequest);
+
+    assertThat(isPresent.get()).isTrue();
+    assertThat(retrySuccess.get()).isTrue();
+    assertEquals(httpResponse.getStatus(), HTTP_OK);
+  }
+
+  @Test(timeout = 15000)
+  public void shouldBeAbleToHandleMultipleSessionRequestsAtTheSameTime() {
+    bus.addListener(NewSessionRequestEvent.listener(reqId -> {
+      Optional<SessionRequest> sessionRequest = this.local.remove(reqId);
+      ImmutableCapabilities capabilities = new ImmutableCapabilities("browserName", "chrome");
+      try {
+        SessionId sessionId = new SessionId(UUID.randomUUID());
+        Session session =
+            new Session(
+                sessionId,
+                new URI("http://example.com"),
+                caps,
+                capabilities,
+                Instant.now());
+        CreateSessionResponse sessionResponse = new CreateSessionResponse(
+            session,
+            JSON.toJson(
+                ImmutableMap.of(
+                    "value", ImmutableMap.of(
+                        "sessionId", sessionId,
+                        "capabilities", capabilities)))
+                .getBytes(UTF_8));
+        NewSessionResponse newSessionResponse =
+            new NewSessionResponse(reqId, sessionResponse.getSession(),
+                                   sessionResponse.getDownstreamEncodedResponse());
+        bus.fire(new NewSessionResponseEvent(newSessionResponse));
+      } catch (URISyntaxException e) {
+        bus.fire(
+            new NewSessionRejectedEvent(
+                new NewSessionErrorResponse(new RequestId(UUID.randomUUID()), "Error")));
+      }
+    }));
+
+    ExecutorService executor = Executors.newFixedThreadPool(2);
+
+    Callable<HttpResponse> callable = () -> {
+      SessionRequest sessionRequest = new SessionRequest(
+        new RequestId(UUID.randomUUID()),
+        Instant.now(),
+        Set.of(W3C),
+        Set.of(caps));
+
+      return remote.addToQueue(sessionRequest);
+    };
+
+    Future<HttpResponse> firstRequest = executor.submit(callable);
+    Future<HttpResponse> secondRequest = executor.submit(callable);
+
     try {
-      payload.writeTo(builder);
-    } catch (IOException e) {
-      throw new UncheckedIOException(e);
+      HttpResponse firstResponse = firstRequest.get(30, TimeUnit.SECONDS);
+      HttpResponse secondResponse = secondRequest.get(30, TimeUnit.SECONDS);
+
+      String firstResponseContents = Contents.string(firstResponse);
+      String secondResponseContents = Contents.string(secondResponse);
+
+      assertEquals(firstResponse.getStatus(), HTTP_OK);
+      assertEquals(secondResponse.getStatus(), HTTP_OK);
+
+      assertNotEquals(firstResponseContents, secondResponseContents);
+    } catch (InterruptedException | ExecutionException | TimeoutException e) {
+      fail("Could not create session");
     }
 
-    HttpRequest request = new HttpRequest(httpMethod, uri);
-    request.setContent(utf8String(builder.toString()));
+    executor.shutdown();
+  }
 
-    return request;
+  @Test(timeout = 15000)
+  public void shouldBeAbleToTimeoutARequestOnRetry() {
+    final SessionRequest request = new SessionRequest(
+      new RequestId(UUID.randomUUID()),
+      Instant.ofEpochMilli(1539091064),
+      Set.of(W3C),
+      Set.of(caps));
+
+    AtomicInteger count = new AtomicInteger();
+
+    bus.addListener(NewSessionRequestEvent.listener(reqId -> {
+      // Add to front of queue, when retry is triggered it will check if request timed out
+      count.incrementAndGet();
+      remote.retryAddToQueue(request);
+    }));
+
+    HttpResponse httpResponse = remote.addToQueue(request);
+
+    assertEquals(count.get(),1);
+    assertEquals(httpResponse.getStatus(), HTTP_INTERNAL_ERROR);
+  }
+
+  @Test(timeout = 15000)
+  public void shouldBeAbleToTimeoutARequestOnRemove() {
+    Tracer tracer = DefaultTestTracer.createTracer();
+    local = new LocalNewSessionQueue(
+      tracer,
+      bus,
+      Duration.ofSeconds(4),
+      Duration.ofSeconds(0),
+      registrationSecret);
+
+    HttpClient client = new PassthroughHttpClient(local);
+    remote = new RemoteNewSessionQueue(tracer, client, registrationSecret);
+
+    AtomicBoolean isPresent = new AtomicBoolean();
+    bus.addListener(NewSessionRequestEvent.listener(reqId -> {
+      Optional<SessionRequest> request = remote.remove(reqId);
+      isPresent.set(request.isPresent());
+      bus.fire(
+          new NewSessionRejectedEvent(
+              new NewSessionErrorResponse(reqId, "Error")));
+
+    }));
+
+    HttpResponse httpResponse = remote.addToQueue(sessionRequest);
+    assertEquals(httpResponse.getStatus(), HTTP_INTERNAL_ERROR);
+
+    assertThat(isPresent.get()).isFalse();
+  }
+
+  @Test(timeout = 15000)
+  public void shouldBeAbleToClearQueueAndRejectMultipleRequests() {
+    ExecutorService executor = Executors.newFixedThreadPool(2);
+
+    Callable<HttpResponse> callable = () -> {
+      SessionRequest sessionRequest = new SessionRequest(
+        new RequestId(UUID.randomUUID()),
+        Instant.now(),
+        Set.of(W3C),
+        Set.of(caps));
+      return remote.addToQueue(sessionRequest);
+    };
+
+    Future<HttpResponse> firstRequest = executor.submit(callable);
+    Future<HttpResponse> secondRequest = executor.submit(callable);
+
+    int count = 0;
+
+    while (count < 2) {
+      count += remote.clearQueue();
+    }
+
+    try {
+      HttpResponse firstResponse = firstRequest.get(30, TimeUnit.SECONDS);
+      HttpResponse secondResponse = secondRequest.get(30, TimeUnit.SECONDS);
+
+      assertEquals(firstResponse.getStatus(), HTTP_INTERNAL_ERROR);
+      assertEquals(secondResponse.getStatus(), HTTP_INTERNAL_ERROR);
+
+    } catch (InterruptedException | ExecutionException | TimeoutException e) {
+      fail("Could not create session");
+    }
+
+    executor.shutdown();
   }
 }

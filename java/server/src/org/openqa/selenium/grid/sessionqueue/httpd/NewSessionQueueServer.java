@@ -26,8 +26,8 @@ import org.openqa.selenium.grid.TemplateGridServerCommand;
 import org.openqa.selenium.grid.config.Config;
 import org.openqa.selenium.grid.config.Role;
 import org.openqa.selenium.grid.server.Server;
-import org.openqa.selenium.grid.sessionqueue.NewSessionQueuer;
-import org.openqa.selenium.grid.sessionqueue.config.NewSessionQueuerOptions;
+import org.openqa.selenium.grid.sessionqueue.NewSessionQueue;
+import org.openqa.selenium.grid.sessionqueue.config.NewSessionQueueOptions;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.remote.http.Route;
@@ -39,22 +39,21 @@ import java.util.logging.Logger;
 import static java.net.HttpURLConnection.HTTP_NO_CONTENT;
 import static org.openqa.selenium.grid.config.StandardGridRoles.EVENT_BUS_ROLE;
 import static org.openqa.selenium.grid.config.StandardGridRoles.HTTPD_ROLE;
-import static org.openqa.selenium.grid.config.StandardGridRoles.SESSION_QUEUER_ROLE;
 import static org.openqa.selenium.grid.config.StandardGridRoles.SESSION_QUEUE_ROLE;
 import static org.openqa.selenium.json.Json.JSON_UTF_8;
 import static org.openqa.selenium.remote.http.Contents.asJson;
 import static org.openqa.selenium.remote.http.Route.get;
 
 @AutoService(CliCommand.class)
-public class NewSessionQueuerServer extends TemplateGridServerCommand {
+public class NewSessionQueueServer extends TemplateGridServerCommand {
 
-  private static final Logger LOG = Logger.getLogger(NewSessionQueuerServer.class.getName());
-  private static final String LOCAL_NEWSESSION_QUEUER =
-    "org.openqa.selenium.grid.sessionqueue.local.LocalNewSessionQueuer";
+  private static final Logger LOG = Logger.getLogger(NewSessionQueueServer.class.getName());
+  private static final String LOCAL_NEWSESSION_QUEUE =
+    "org.openqa.selenium.grid.sessionqueue.local.LocalNewSessionQueue";
 
   @Override
   public String getName() {
-    return "sessionqueuer";
+    return "sessionqueue";
   }
 
   @Override
@@ -64,7 +63,7 @@ public class NewSessionQueuerServer extends TemplateGridServerCommand {
 
   @Override
   public Set<Role> getConfigurableRoles() {
-    return ImmutableSet.of(EVENT_BUS_ROLE, HTTPD_ROLE, SESSION_QUEUER_ROLE, SESSION_QUEUE_ROLE);
+    return ImmutableSet.of(EVENT_BUS_ROLE, HTTPD_ROLE, SESSION_QUEUE_ROLE, SESSION_QUEUE_ROLE);
   }
 
   @Override
@@ -74,30 +73,30 @@ public class NewSessionQueuerServer extends TemplateGridServerCommand {
 
   @Override
   protected String getSystemPropertiesConfigPrefix() {
-    return "sessionqueuer";
+    return "sessionqueue";
   }
 
   @Override
   protected Config getDefaultConfig() {
-    return new DefaultNewSessionQueuerConfig();
+    return new DefaultNewSessionQueueConfig();
   }
 
   @Override
   protected Handlers createHandlers(Config config) {
-    NewSessionQueuerOptions queuerOptions = new NewSessionQueuerOptions(config);
+    NewSessionQueueOptions queueOptions = new NewSessionQueueOptions(config);
 
-    NewSessionQueuer sessionQueuer = queuerOptions.getSessionQueuer(LOCAL_NEWSESSION_QUEUER);
+    NewSessionQueue sessionQueue = queueOptions.getSessionQueue(LOCAL_NEWSESSION_QUEUE);
 
     return new Handlers(
       Route.combine(
-        sessionQueuer,
+        sessionQueue,
         get("/status").to(() -> req ->
           new HttpResponse()
             .addHeader("Content-Type", JSON_UTF_8)
             .setContent(asJson(
               ImmutableMap.of("value", ImmutableMap.of(
                 "ready", true,
-                "message", "New Session Queuer is ready."))))),
+                "message", "New Session Queue is ready."))))),
         get("/readyz").to(() -> req -> new HttpResponse().setStatus(HTTP_NO_CONTENT))),
       null);
   }
@@ -111,7 +110,7 @@ public class NewSessionQueuerServer extends TemplateGridServerCommand {
 
     BuildInfo info = new BuildInfo();
     LOG.info(String.format(
-        "Started Selenium New Session Queuer %s (revision %s): %s",
+        "Started Selenium New Session Queue %s (revision %s): %s",
         info.getReleaseLabel(),
         info.getBuildRevision(),
         server.getUrl()));

@@ -5,6 +5,10 @@ java_test_suite(
     name = "SmallTests",
     size = "small",
     srcs = glob(["*Test.java"]),
+    javacopts = [
+        "--release",
+        "11",
+    ],
     deps = [
         "//java/client/src/org/openqa/selenium/json",
         "//java/client/src/org/openqa/selenium/remote",

@@ -458,6 +458,14 @@ module Selenium
           execute :get_element_property, id: element.ref, name: name
         end
 
+        def element_aria_role(element)
+          execute :get_element_aria_role, id: element.ref
+        end
+
+        def element_aria_label(element)
+          execute :get_element_aria_label, id: element.ref
+        end
+
         def element_value(element)
           element_property element, 'value'
         end

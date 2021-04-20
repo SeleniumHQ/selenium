@@ -22,6 +22,7 @@ import static org.openqa.selenium.remote.tracing.Tags.HTTP_REQUEST;
 import static org.openqa.selenium.remote.tracing.Tags.HTTP_RESPONSE;
 
 import org.openqa.selenium.internal.Require;
+import org.openqa.selenium.remote.http.Contents;
 import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
@@ -31,19 +32,19 @@ import org.openqa.selenium.remote.tracing.Tracer;
 class AddToSessionQueue implements HttpHandler {
 
   private final Tracer tracer;
-  private final NewSessionQueuer newSessionQueuer;
+  private final NewSessionQueue newSessionQueue;
 
-  AddToSessionQueue(Tracer tracer, NewSessionQueuer newSessionQueuer) {
+  AddToSessionQueue(Tracer tracer, NewSessionQueue newSessionQueue) {
     this.tracer = Require.nonNull("Tracer", tracer);
-    this.newSessionQueuer = Require.nonNull("New Session Queuer", newSessionQueuer);
+    this.newSessionQueue = Require.nonNull("New Session Queue", newSessionQueue);
   }
 
   @Override
   public HttpResponse execute(HttpRequest req) {
-    try (Span span = newSpanAsChildOf(tracer, req, "sessionqueuer.add")) {
+    try (Span span = newSpanAsChildOf(tracer, req, "sessionqueue.add")) {
       HTTP_REQUEST.accept(span, req);
 
-      HttpResponse response = newSessionQueuer.addToQueue(req);
+      HttpResponse response = newSessionQueue.addToQueue(Contents.fromJson(req, SessionRequest.class));
 
       HTTP_RESPONSE.accept(span, response);
 

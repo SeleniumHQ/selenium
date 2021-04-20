@@ -15,34 +15,20 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.grid.data;
+package org.openqa.selenium.grid.sessionqueue.httpd;
 
-import org.openqa.selenium.remote.http.HttpResponse;
+import com.google.common.collect.ImmutableMap;
 
-import java.util.UUID;
-import java.util.concurrent.CountDownLatch;
+import org.openqa.selenium.grid.config.MapConfig;
 
-public class NewSessionRequest {
+class DefaultNewSessionQueueConfig extends MapConfig {
 
-  private final RequestId requestId;
-  private final CountDownLatch latch;
-  private HttpResponse sessionResponse;
-
-  public NewSessionRequest(RequestId requestId, CountDownLatch latch) {
-    this.requestId = requestId;
-    this.latch = latch;
+  DefaultNewSessionQueueConfig() {
+    super(ImmutableMap.of(
+        "events", ImmutableMap.of(
+            "publish", "tcp://*:4442",
+            "subscribe", "tcp://*:4443"),
+        "server", ImmutableMap.of(
+            "port", 5559)));
   }
-
-  public CountDownLatch getLatch() {
-    return latch;
-  }
-
-  public void setSessionResponse(HttpResponse sessionResponse) {
-    this.sessionResponse = sessionResponse;
-  }
-
-  public HttpResponse getSessionResponse() {
-    return sessionResponse;
-  }
-
 }
