@@ -90,6 +90,6 @@ def test_clickable_element_true(driver, pages):
 def test_clickable_element_false(driver, pages):
     pages.load("simpleTest.html")
     with pytest.raises(TimeoutException):
-        target = (By.ID, "hiddenline") # text, should not be clickable
+        target = (By.ID, "hiddenline")  # text, should not be clickable
         element = driver.find_element(*target)  # grab element at locator
         WebDriverWait(driver, 0.1).until(EC.element_to_be_clickable(element))
