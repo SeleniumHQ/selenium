@@ -24,6 +24,7 @@ import com.google.common.io.FileBackedOutputStream;
 
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.Json;
+import org.openqa.selenium.json.JsonInput;
 import org.openqa.selenium.json.JsonOutput;
 
 import java.io.ByteArrayInputStream;
@@ -33,6 +34,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.UncheckedIOException;
+import java.lang.reflect.Type;
 import java.nio.charset.Charset;
 import java.util.function.Supplier;
 
@@ -121,6 +123,15 @@ public class Contents {
       out.write(obj);
     }
     return utf8String(builder);
+  }
+
+  public static <T> T fromJson(HttpMessage<?> message, Type typeOfT) {
+    try (Reader reader = reader(message);
+        JsonInput input = JSON.newInput(reader)) {
+      return input.read(typeOfT);
+    } catch (IOException e) {
+      throw new UncheckedIOException(e);
+    }
   }
 
   public static Supplier<InputStream> memoize(Supplier<InputStream> delegate) {

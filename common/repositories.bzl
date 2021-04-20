@@ -93,7 +93,7 @@ _versions = {
             "type": None,
         },
         "mac": {
-            "url": "https://github.com/mozilla/geckodriver/releases/download/v0.29.1/geckodriver-v0.29.1-macos.gz",
+            "url": "https://github.com/mozilla/geckodriver/releases/download/v0.29.1/geckodriver-v0.29.1-macos.tar.gz",
             "sha256": "9929c804ad0157ca13fdafca808866c88815b658e7059280a9f08f7e70364963",
             "type": "tgz",
         },

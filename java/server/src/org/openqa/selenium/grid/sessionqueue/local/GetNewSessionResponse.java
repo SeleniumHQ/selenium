@@ -15,28 +15,20 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.grid.sessionqueue;
-
-import static java.net.HttpURLConnection.HTTP_INTERNAL_ERROR;
-import static java.util.Collections.singletonMap;
-import static org.openqa.selenium.remote.http.Contents.asJson;
-import static org.openqa.selenium.remote.http.Contents.bytes;
+package org.openqa.selenium.grid.sessionqueue.local;
 
 import org.openqa.selenium.events.EventBus;
 import org.openqa.selenium.grid.data.NewSessionErrorResponse;
 import org.openqa.selenium.grid.data.NewSessionRejectedEvent;
-import org.openqa.selenium.grid.data.NewSessionRequest;
 import org.openqa.selenium.grid.data.NewSessionResponse;
 import org.openqa.selenium.grid.data.NewSessionResponseEvent;
 import org.openqa.selenium.grid.data.RequestId;
+import org.openqa.selenium.grid.sessionqueue.SessionRequest;
 import org.openqa.selenium.internal.Require;
-import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
-import org.openqa.selenium.remote.tracing.Tracer;
 
 import java.util.Map;
 import java.util.Optional;
-import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.locks.Lock;
@@ -45,18 +37,22 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class GetNewSessionResponse {
+import static java.net.HttpURLConnection.HTTP_INTERNAL_ERROR;
+import static java.util.Collections.singletonMap;
+import static org.openqa.selenium.remote.http.Contents.asJson;
+import static org.openqa.selenium.remote.http.Contents.bytes;
+
+class GetNewSessionResponse {
 
   private static final Logger LOG = Logger.getLogger(GetNewSessionResponse.class.getName());
   private static final Map<RequestId, NewSessionRequest> knownRequests = new ConcurrentHashMap<>();
   private final EventBus bus;
-  private final Tracer tracer;
-  private final NewSessionQueue sessionRequests;
+  private final SessionRequests sessionRequests;
   private final ReadWriteLock lock = new ReentrantReadWriteLock(true);
 
-  public GetNewSessionResponse(Tracer tracer, EventBus bus,
-                               NewSessionQueue sessionRequests) {
-    this.tracer = Require.nonNull("Tracer", tracer);
+  public GetNewSessionResponse(
+    EventBus bus,
+    SessionRequests sessionRequests) {
     this.bus = Require.nonNull("Event bus", bus);
     this.sessionRequests = Require.nonNull("New Session Request Queue", sessionRequests);
 
@@ -108,16 +104,15 @@ public class GetNewSessionResponse {
     }
   }
 
-  public HttpResponse add(HttpRequest request) {
+  public HttpResponse add(SessionRequest request) {
     Require.nonNull("New Session request", request);
 
     CountDownLatch latch = new CountDownLatch(1);
-    UUID uuid = UUID.randomUUID();
-    RequestId requestId = new RequestId(uuid);
-    NewSessionRequest requestIdentifier = new NewSessionRequest(requestId, latch);
+    RequestId requestId = request.getRequestId();
+    NewSessionRequest requestIdentifier = new NewSessionRequest(latch);
     knownRequests.put(requestId, requestIdentifier);
 
-    if (!sessionRequests.offerLast(request, requestId)) {
+    if (!sessionRequests.offerLast(request)) {
       return internalErrorResponse(
         "Session request could not be created. Error while adding to the session queue.");
     }

@@ -19,6 +19,6 @@
 
 module Selenium
   module WebDriver
-    VERSION = '4.0.0.beta2'
+    VERSION = '4.0.0.beta3'
   end # WebDriver
 end # Selenium

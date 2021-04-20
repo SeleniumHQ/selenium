@@ -2,9 +2,13 @@ load("@rules_jvm_external//:defs.bzl", "artifact")
 load("//java:defs.bzl", "java_test_suite")
 
 java_test_suite(
-    name = "MediumTests",
+    name = "medium-tests",
     size = "medium",
     srcs = glob(["*Test.java"]),
+    javacopts = [
+        "--release",
+        "11",
+    ],
     deps = [
         "//java/client/src/org/openqa/selenium:core",
         "//java/client/src/org/openqa/selenium/json",

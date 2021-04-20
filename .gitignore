@@ -20,6 +20,7 @@ javascript/node/selenium-webdriver/node_modules/
 javascript/node/selenium-webdriver/lib/atoms/find-elements.js
 javascript/node/selenium-webdriver/lib/atoms/get-attribute.js
 javascript/node/selenium-webdriver/lib/atoms/is-displayed.js
+javascript/node/selenium-webdriver/lib/atoms/mutation-listener.js
 javascript/safari-driver/node_modules/
 javascript/webdriver/devtools/types/
 .idea/vcs.xml

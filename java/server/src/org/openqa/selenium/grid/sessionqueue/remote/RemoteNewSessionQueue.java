@@ -17,6 +17,7 @@
 
 package org.openqa.selenium.grid.sessionqueue.remote;
 
+import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.grid.config.Config;
 import org.openqa.selenium.grid.data.RequestId;
 import org.openqa.selenium.grid.log.LoggingOptions;
@@ -24,10 +25,14 @@ import org.openqa.selenium.grid.security.AddSecretFilter;
 import org.openqa.selenium.grid.security.Secret;
 import org.openqa.selenium.grid.security.SecretOptions;
 import org.openqa.selenium.grid.server.NetworkOptions;
-import org.openqa.selenium.grid.sessionqueue.NewSessionQueuer;
-import org.openqa.selenium.grid.sessionqueue.config.NewSessionQueuerOptions;
+import org.openqa.selenium.grid.sessionqueue.NewSessionQueue;
+import org.openqa.selenium.grid.sessionqueue.SessionRequest;
+import org.openqa.selenium.grid.sessionqueue.config.NewSessionQueueOptions;
 import org.openqa.selenium.grid.web.Values;
 import org.openqa.selenium.internal.Require;
+import org.openqa.selenium.json.Json;
+import org.openqa.selenium.json.TypeToken;
+import org.openqa.selenium.remote.http.Contents;
 import org.openqa.selenium.remote.http.Filter;
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpRequest;
@@ -36,26 +41,25 @@ import org.openqa.selenium.remote.tracing.HttpTracing;
 import org.openqa.selenium.remote.tracing.Tracer;
 
 import java.io.UncheckedIOException;
+import java.lang.reflect.Type;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
-import static java.net.HttpURLConnection.HTTP_OK;
-import static org.openqa.selenium.grid.sessionqueue.NewSessionQueue.SESSIONREQUEST_ID_HEADER;
-import static org.openqa.selenium.grid.sessionqueue.NewSessionQueue.SESSIONREQUEST_TIMESTAMP_HEADER;
 import static org.openqa.selenium.remote.http.HttpMethod.DELETE;
 import static org.openqa.selenium.remote.http.HttpMethod.GET;
 import static org.openqa.selenium.remote.http.HttpMethod.POST;
 
-public class RemoteNewSessionQueuer extends NewSessionQueuer {
+public class RemoteNewSessionQueue extends NewSessionQueue {
 
-  private static final String timestampHeader = SESSIONREQUEST_TIMESTAMP_HEADER;
-  private static final String reqIdHeader = SESSIONREQUEST_ID_HEADER;
+  private static final Type QUEUE_CONTENTS_TYPE = new TypeToken<List<Set<Capabilities>>>() {}.getType();
+  private static final Json JSON = new Json();
   private final HttpClient client;
   private final Filter addSecret;
 
-  public RemoteNewSessionQueuer(Tracer tracer, HttpClient client, Secret registrationSecret) {
+  public RemoteNewSessionQueue(Tracer tracer, HttpClient client, Secret registrationSecret) {
     super(tracer, registrationSecret);
     this.client = Require.nonNull("HTTP client", client);
 
@@ -63,16 +67,16 @@ public class RemoteNewSessionQueuer extends NewSessionQueuer {
     this.addSecret = new AddSecretFilter(registrationSecret);
   }
 
-  public static NewSessionQueuer create(Config config) {
+  public static NewSessionQueue create(Config config) {
     Tracer tracer = new LoggingOptions(config).getTracer();
-    URI uri = new NewSessionQueuerOptions(config).getSessionQueuerUri();
+    URI uri = new NewSessionQueueOptions(config).getSessionQueueUri();
     HttpClient.Factory clientFactory = new NetworkOptions(config).getHttpClientFactory(tracer);
 
     SecretOptions secretOptions = new SecretOptions(config);
     Secret registrationSecret = secretOptions.getRegistrationSecret();
 
     try {
-      return new RemoteNewSessionQueuer(
+      return new RemoteNewSessionQueue(
         tracer,
         clientFactory.createClient(uri.toURL()),
         registrationSecret);
@@ -82,38 +86,47 @@ public class RemoteNewSessionQueuer extends NewSessionQueuer {
   }
 
   @Override
-  public HttpResponse addToQueue(HttpRequest request) {
-    HttpRequest upstream = new HttpRequest(POST, "/se/grid/newsessionqueuer/session");
+  public HttpResponse addToQueue(SessionRequest request) {
+    HttpRequest upstream = new HttpRequest(POST, "/se/grid/newsessionqueue/session");
     HttpTracing.inject(tracer, tracer.getCurrentContext(), upstream);
-    upstream.setContent(request.getContent());
+    upstream.setContent(Contents.asJson(request));
     return client.execute(upstream);
   }
 
   @Override
-  public boolean retryAddToQueue(HttpRequest request, RequestId reqId) {
-    HttpRequest upstream =
-      new HttpRequest(POST, "/se/grid/newsessionqueuer/session/retry/" + reqId.toString());
+  public boolean offerLast(SessionRequest request) {
+    HttpRequest upstream = new HttpRequest(POST, "/se/grid/newsessionqueue/session/last");
     HttpTracing.inject(tracer, tracer.getCurrentContext(), upstream);
-    upstream.setContent(request.getContent());
-    upstream.setHeader(timestampHeader, request.getHeader(timestampHeader));
-    upstream.setHeader(reqIdHeader, reqId.toString());
+    upstream.setContent(Contents.asJson(request));
+    HttpResponse response = client.execute(upstream);
+    return Values.get(response, Boolean.class);
+  }
+
+  @Override
+  public boolean retryAddToQueue(SessionRequest request) {
+    Require.nonNull("Session request", request);
+
+    HttpRequest upstream =
+      new HttpRequest(POST, "/se/grid/newsessionqueue/session/retry/" + request.getRequestId());
+    HttpTracing.inject(tracer, tracer.getCurrentContext(), upstream);
+    upstream.setContent(Contents.asJson(request));
     HttpResponse response = client.with(addSecret).execute(upstream);
     return Values.get(response, Boolean.class);
   }
 
   @Override
-  public Optional<HttpRequest> remove(RequestId reqId) {
-    HttpRequest upstream =
-      new HttpRequest(GET, "/se/grid/newsessionqueuer/session/" + reqId.toString());
+  public Optional<SessionRequest> remove(RequestId reqId) {
+    HttpRequest upstream = new HttpRequest(GET, "/se/grid/newsessionqueue/session/" + reqId.toString());
     HttpTracing.inject(tracer, tracer.getCurrentContext(), upstream);
     HttpResponse response = client.with(addSecret).execute(upstream);
 
-    if(response.getStatus()==HTTP_OK) {
-      HttpRequest httpRequest = new HttpRequest(POST, "/session");
-      httpRequest.setContent(response.getContent());
-      httpRequest.setHeader(timestampHeader, response.getHeader(timestampHeader));
-      httpRequest.setHeader(reqIdHeader, response.getHeader(reqIdHeader));
-      return Optional.ofNullable(httpRequest);
+    if (response.isSuccessful()) {
+      // TODO: This should work cleanly with just a TypeToken of <Optional<SessionRequest>>
+      String rawValue = Contents.string(response);
+      if (rawValue == null || rawValue.trim().isEmpty()) {
+        return Optional.empty();
+      }
+      return Optional.of(JSON.toType(rawValue, SessionRequest.class));
     }
 
     return Optional.empty();
@@ -121,7 +134,7 @@ public class RemoteNewSessionQueuer extends NewSessionQueuer {
 
   @Override
   public int clearQueue() {
-    HttpRequest upstream = new HttpRequest(DELETE, "/se/grid/newsessionqueuer/queue");
+    HttpRequest upstream = new HttpRequest(DELETE, "/se/grid/newsessionqueue/queue");
     HttpTracing.inject(tracer, tracer.getCurrentContext(), upstream);
     HttpResponse response = client.with(addSecret).execute(upstream);
 
@@ -129,11 +142,12 @@ public class RemoteNewSessionQueuer extends NewSessionQueuer {
   }
 
   @Override
-  public List<Object> getQueueContents() {
-    HttpRequest upstream = new HttpRequest(GET, "/se/grid/newsessionqueuer/queue");
+  public List<Set<Capabilities>> getQueueContents() {
+    HttpRequest upstream = new HttpRequest(GET, "/se/grid/newsessionqueue/queue");
     HttpTracing.inject(tracer, tracer.getCurrentContext(), upstream);
     HttpResponse response = client.execute(upstream);
-    return Values.get(response, List.class);
+
+    return Values.get(response, QUEUE_CONTENTS_TYPE);
   }
 
   @Override

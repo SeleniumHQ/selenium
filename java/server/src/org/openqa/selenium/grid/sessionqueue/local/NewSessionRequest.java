@@ -17,24 +17,29 @@
 
 package org.openqa.selenium.grid.sessionqueue.local;
 
-import org.openqa.selenium.grid.data.RequestId;
-import org.openqa.selenium.remote.http.HttpRequest;
+import org.openqa.selenium.remote.http.HttpResponse;
 
-public class SessionRequest {
+import java.util.concurrent.CountDownLatch;
 
-  private final RequestId requestId;
-  private final HttpRequest request;
+class NewSessionRequest {
 
-  public SessionRequest(RequestId requestId, HttpRequest request) {
-    this.requestId = requestId;
-    this.request = request;
+  private final CountDownLatch latch;
+  private HttpResponse sessionResponse;
+
+  public NewSessionRequest(CountDownLatch latch) {
+    this.latch = latch;
   }
 
-  public RequestId getRequestId() {
-    return requestId;
+  public CountDownLatch getLatch() {
+    return latch;
   }
 
-  public HttpRequest getHttpRequest() {
-    return request;
+  public void setSessionResponse(HttpResponse sessionResponse) {
+    this.sessionResponse = sessionResponse;
   }
+
+  public HttpResponse getSessionResponse() {
+    return sessionResponse;
+  }
+
 }

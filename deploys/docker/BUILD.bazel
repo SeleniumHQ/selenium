@@ -137,7 +137,7 @@ container_image(
 container_image(
     name = "session-queue-image",
     base = ":grid-base",
-    entrypoint = ENTRY_POINT + ["sessionqueuer"],
+    entrypoint = ENTRY_POINT + ["sessionqueue"],
     ports = [
         "5559/tcp",  # Web
         "4442/tcp",  # ZeroMQ
