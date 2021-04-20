@@ -33,7 +33,6 @@ import org.openqa.selenium.grid.data.NewSessionResponseEvent;
 import org.openqa.selenium.grid.data.RequestId;
 import org.openqa.selenium.grid.data.Session;
 import org.openqa.selenium.grid.security.Secret;
-import org.openqa.selenium.grid.sessionqueue.local.LocalSessionRequests;
 import org.openqa.selenium.grid.sessionqueue.local.LocalNewSessionQueue;
 import org.openqa.selenium.grid.sessionqueue.local.SessionRequests;
 import org.openqa.selenium.grid.sessionqueue.remote.RemoteNewSessionQueue;
@@ -94,7 +93,7 @@ public class NewSessionQueueTest {
     caps = new ImmutableCapabilities("browserName", "chrome");
     bus = new GuavaEventBus();
 
-    sessionQueue = new LocalSessionRequests(
+    sessionQueue = new SessionRequests(
         tracer,
         bus,
         Duration.ofSeconds(1),
@@ -428,7 +427,7 @@ public class NewSessionQueueTest {
   @Test(timeout = 15000)
   public void shouldBeAbleToTimeoutARequestOnRemove() {
     Tracer tracer = DefaultTestTracer.createTracer();
-    LocalSessionRequests sessionQueue = new LocalSessionRequests(
+    SessionRequests sessionQueue = new SessionRequests(
         tracer,
         bus,
         Duration.ofSeconds(4),

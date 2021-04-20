@@ -36,8 +36,8 @@ import org.openqa.selenium.grid.node.local.LocalNode;
 import org.openqa.selenium.grid.security.Secret;
 import org.openqa.selenium.grid.sessionmap.local.LocalSessionMap;
 import org.openqa.selenium.grid.sessionqueue.SessionRequest;
-import org.openqa.selenium.grid.sessionqueue.local.LocalSessionRequests;
 import org.openqa.selenium.grid.sessionqueue.local.LocalNewSessionQueue;
+import org.openqa.selenium.grid.sessionqueue.local.SessionRequests;
 import org.openqa.selenium.grid.testing.TestSessionFactory;
 import org.openqa.selenium.internal.Either;
 import org.openqa.selenium.remote.HttpSessionId;
@@ -95,7 +95,7 @@ public class LocalDistributorTest {
 
   @Test
   public void testAddNodeToDistributor() {
-    LocalSessionRequests localSessionRequests = new LocalSessionRequests(
+    SessionRequests localSessionRequests = new SessionRequests(
       tracer,
       bus,
       Duration.ofSeconds(2),
@@ -129,7 +129,7 @@ public class LocalDistributorTest {
   @Test
   public void testShouldNotAddNodeWithWrongSecret() {
     Secret secret = new Secret("my_secret");
-    LocalSessionRequests localSessionRequests = new LocalSessionRequests(
+    SessionRequests localSessionRequests = new SessionRequests(
       tracer,
       bus,
       Duration.ofSeconds(2),
@@ -157,7 +157,7 @@ public class LocalDistributorTest {
 
   @Test
   public void testRemoveNodeFromDistributor() {
-    LocalSessionRequests localSessionRequests = new LocalSessionRequests(
+    SessionRequests localSessionRequests = new SessionRequests(
       tracer,
       bus,
       Duration.ofSeconds(2),
@@ -191,7 +191,7 @@ public class LocalDistributorTest {
 
   @Test
   public void testAddSameNodeTwice() {
-    LocalSessionRequests localSessionRequests = new LocalSessionRequests(
+    SessionRequests localSessionRequests = new SessionRequests(
       tracer,
       bus,
       Duration.ofSeconds(2),
@@ -220,7 +220,7 @@ public class LocalDistributorTest {
 
   @Test
   public void shouldBeAbleToAddMultipleSessionsConcurrently() throws Exception {
-    LocalSessionRequests localSessionRequests = new LocalSessionRequests(
+    SessionRequests localSessionRequests = new SessionRequests(
       tracer,
       bus,
       Duration.ofSeconds(2),
@@ -300,7 +300,7 @@ public class LocalDistributorTest {
 
   @Test
   public void testDrainNodeFromDistributor() {
-    LocalSessionRequests localSessionRequests = new LocalSessionRequests(
+    SessionRequests localSessionRequests = new SessionRequests(
       tracer,
       bus,
       Duration.ofSeconds(2),
@@ -341,7 +341,7 @@ public class LocalDistributorTest {
   public void testDrainNodeFromNode() {
     assertThat(localNode.isDraining()).isFalse();
 
-    LocalSessionRequests localSessionRequests = new LocalSessionRequests(
+    SessionRequests localSessionRequests = new SessionRequests(
       tracer,
       bus,
       Duration.ofSeconds(2),

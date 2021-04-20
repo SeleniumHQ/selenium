@@ -50,7 +50,7 @@ import org.openqa.selenium.grid.security.Secret;
 import org.openqa.selenium.grid.sessionmap.SessionMap;
 import org.openqa.selenium.grid.sessionmap.local.LocalSessionMap;
 import org.openqa.selenium.grid.sessionqueue.SessionRequest;
-import org.openqa.selenium.grid.sessionqueue.local.LocalSessionRequests;
+import org.openqa.selenium.grid.sessionqueue.local.SessionRequests;
 import org.openqa.selenium.grid.sessionqueue.local.LocalNewSessionQueue;
 import org.openqa.selenium.grid.testing.EitherAssert;
 import org.openqa.selenium.grid.testing.PassthroughHttpClient;
@@ -124,7 +124,7 @@ public class DistributorTest {
     tracer = DefaultTestTracer.createTracer();
     bus = new GuavaEventBus();
     LocalSessionMap sessions = new LocalSessionMap(tracer, bus);
-    LocalSessionRequests localNewSessionQueue = new LocalSessionRequests(
+    SessionRequests localNewSessionQueue = new SessionRequests(
       tracer,
       bus,
       Duration.ofSeconds(2),
@@ -156,7 +156,7 @@ public class DistributorTest {
   public void shouldStartHeartBeatOnNodeRegistration() {
     EventBus bus = new GuavaEventBus();
     LocalSessionMap sessions = new LocalSessionMap(tracer, bus);
-    LocalSessionRequests localNewSessionQueue = new LocalSessionRequests(
+    SessionRequests localNewSessionQueue = new SessionRequests(
       tracer,
       bus,
       Duration.ofSeconds(2),
@@ -207,7 +207,7 @@ public class DistributorTest {
   @Test
   public void shouldBeAbleToAddANodeAndCreateASession() {
     LocalSessionMap sessions = new LocalSessionMap(tracer, bus);
-    LocalSessionRequests localSessionRequests = new LocalSessionRequests(
+    SessionRequests localSessionRequests = new SessionRequests(
       tracer,
       bus,
       Duration.ofSeconds(2),
@@ -248,7 +248,7 @@ public class DistributorTest {
   @Test
   public void creatingASessionAddsItToTheSessionMap() {
     LocalSessionMap sessions = new LocalSessionMap(tracer, bus);
-    LocalSessionRequests localSessionRequests = new LocalSessionRequests(
+    SessionRequests localSessionRequests = new SessionRequests(
       tracer,
       bus,
       Duration.ofSeconds(2),
@@ -291,7 +291,7 @@ public class DistributorTest {
   @Test
   public void shouldBeAbleToRemoveANode() throws MalformedURLException {
     LocalSessionMap sessions = new LocalSessionMap(tracer, bus);
-    LocalSessionRequests localSessionRequests = new LocalSessionRequests(
+    SessionRequests localSessionRequests = new SessionRequests(
       tracer,
       bus,
       Duration.ofSeconds(2),
@@ -332,7 +332,7 @@ public class DistributorTest {
   @Test
   public void testDrainingNodeDoesNotAcceptNewSessions() {
     SessionMap sessions = new LocalSessionMap(tracer, bus);
-    LocalSessionRequests localSessionRequests = new LocalSessionRequests(
+    SessionRequests localSessionRequests = new SessionRequests(
       tracer,
       bus,
       Duration.ofSeconds(2),
@@ -368,7 +368,7 @@ public class DistributorTest {
   @Test
   public void testDrainedNodeShutsDownOnceEmpty() throws InterruptedException {
     SessionMap sessions = new LocalSessionMap(tracer, bus);
-    LocalSessionRequests localSessionRequests = new LocalSessionRequests(
+    SessionRequests localSessionRequests = new SessionRequests(
       tracer,
       bus,
       Duration.ofSeconds(2),
@@ -414,7 +414,7 @@ public class DistributorTest {
   @Test
   public void drainedNodeDoesNotShutDownIfNotEmpty() throws InterruptedException {
     SessionMap sessions = new LocalSessionMap(tracer, bus);
-    LocalSessionRequests localSessionRequests = new LocalSessionRequests(
+    SessionRequests localSessionRequests = new SessionRequests(
       tracer,
       bus,
       Duration.ofSeconds(2),
@@ -460,7 +460,7 @@ public class DistributorTest {
   @Test
   public void drainedNodeShutsDownAfterSessionsFinish() throws InterruptedException {
     SessionMap sessions = new LocalSessionMap(tracer, bus);
-    LocalSessionRequests localSessionRequests = new LocalSessionRequests(
+    SessionRequests localSessionRequests = new SessionRequests(
       tracer,
       bus,
       Duration.ofSeconds(2),
@@ -535,7 +535,7 @@ public class DistributorTest {
     // * reverse insertion order
     // * sorted with most heavily used first
     SessionMap sessions = new LocalSessionMap(tracer, bus);
-    LocalSessionRequests localSessionRequests = new LocalSessionRequests(
+    SessionRequests localSessionRequests = new SessionRequests(
       tracer,
       bus,
       Duration.ofSeconds(2),
@@ -582,7 +582,7 @@ public class DistributorTest {
   @Test
   public void shouldUseLastSessionCreatedTimeAsTieBreaker() {
     SessionMap sessions = new LocalSessionMap(tracer, bus);
-    LocalSessionRequests localSessionRequests = new LocalSessionRequests(
+    SessionRequests localSessionRequests = new SessionRequests(
       tracer,
       bus,
       Duration.ofSeconds(2),
@@ -661,7 +661,7 @@ public class DistributorTest {
     CombinedHandler handler = new CombinedHandler();
 
     SessionMap sessions = new LocalSessionMap(tracer, bus);
-    LocalSessionRequests localSessionRequests = new LocalSessionRequests(
+    SessionRequests localSessionRequests = new SessionRequests(
       tracer,
       bus,
       Duration.ofSeconds(2),
@@ -717,7 +717,7 @@ public class DistributorTest {
   @Test
   public void shouldNotScheduleAJobIfAllSlotsAreBeingUsed() {
     SessionMap sessions = new LocalSessionMap(tracer, bus);
-    LocalSessionRequests localSessionRequests = new LocalSessionRequests(
+    SessionRequests localSessionRequests = new SessionRequests(
       tracer,
       bus,
       Duration.ofSeconds(2),
@@ -757,7 +757,7 @@ public class DistributorTest {
   @Test
   public void shouldReleaseSlotOnceSessionEnds() {
     SessionMap sessions = new LocalSessionMap(tracer, bus);
-    LocalSessionRequests localSessionRequests = new LocalSessionRequests(
+    SessionRequests localSessionRequests = new SessionRequests(
       tracer,
       bus,
       Duration.ofSeconds(2),
@@ -816,7 +816,7 @@ public class DistributorTest {
     CombinedHandler handler = new CombinedHandler();
 
     LocalSessionMap sessions = new LocalSessionMap(tracer, bus);
-    LocalSessionRequests localSessionRequests = new LocalSessionRequests(
+    SessionRequests localSessionRequests = new SessionRequests(
       tracer,
       bus,
       Duration.ofSeconds(2),
@@ -852,7 +852,7 @@ public class DistributorTest {
   @Test
   public void attemptingToStartASessionWhichFailsMarksAsTheSlotAsAvailable() {
     SessionMap sessions = new LocalSessionMap(tracer, bus);
-    LocalSessionRequests localSessionRequests = new LocalSessionRequests(
+    SessionRequests localSessionRequests = new SessionRequests(
       tracer,
       bus,
       Duration.ofSeconds(2),
@@ -894,7 +894,7 @@ public class DistributorTest {
     SessionMap sessions = new LocalSessionMap(tracer, bus);
     handler.addHandler(sessions);
     AtomicReference<Availability> isUp = new AtomicReference<>(DOWN);
-    LocalSessionRequests localSessionRequests = new LocalSessionRequests(
+    SessionRequests localSessionRequests = new SessionRequests(
       tracer,
       bus,
       Duration.ofSeconds(2),
@@ -969,7 +969,7 @@ public class DistributorTest {
     SessionMap sessions = new LocalSessionMap(tracer, bus);
     handler.addHandler(sessions);
 
-    LocalSessionRequests localSessionRequests = new LocalSessionRequests(
+    SessionRequests localSessionRequests = new SessionRequests(
       tracer,
       bus,
       Duration.ofSeconds(2),

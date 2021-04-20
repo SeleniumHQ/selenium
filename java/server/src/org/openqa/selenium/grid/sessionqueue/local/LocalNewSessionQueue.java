@@ -70,7 +70,7 @@ public class LocalNewSessionQueue extends NewSessionQueue {
     EventBus bus = new EventBusOptions(config).getEventBus();
     Duration retryInterval = new SessionRequestOptions(config).getSessionRequestRetryInterval();
     Duration requestTimeout = new SessionRequestOptions(config).getSessionRequestTimeout();
-    SessionRequests sessionRequests = new LocalSessionRequests(
+    SessionRequests sessionRequests = new SessionRequests(
       tracer,
       bus,
       retryInterval,
