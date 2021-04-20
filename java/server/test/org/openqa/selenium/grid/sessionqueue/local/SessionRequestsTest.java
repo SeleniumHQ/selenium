@@ -46,7 +46,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.openqa.selenium.remote.Dialect.W3C;
 
-public class LocalSessionRequestsTest {
+public class SessionRequestsTest {
 
   private EventBus bus;
   private SessionRequests sessionQueue;
@@ -58,7 +58,7 @@ public class LocalSessionRequestsTest {
     Tracer tracer = DefaultTestTracer.createTracer();
     expectedCaps = new ImmutableCapabilities("browserName", "chrome");
     bus = new GuavaEventBus();
-    sessionQueue = new LocalSessionRequests(
+    sessionQueue = new SessionRequests(
         tracer,
         bus,
         Duration.ofSeconds(30),
@@ -202,7 +202,7 @@ public class LocalSessionRequestsTest {
 
   @Test(timeout = 15000)
   public void shouldBeAbleToRemoveRequestsOnTimeout() throws InterruptedException {
-    SessionRequests localSessionQueue = new LocalSessionRequests(
+    SessionRequests localSessionQueue = new SessionRequests(
       DefaultTestTracer.createTracer(),
       bus,
       Duration.ofSeconds(30),

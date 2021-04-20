@@ -25,9 +25,6 @@ import org.openqa.selenium.grid.data.NewSessionErrorResponse;
 import org.openqa.selenium.grid.data.NewSessionRejectedEvent;
 import org.openqa.selenium.grid.data.NewSessionRequestEvent;
 import org.openqa.selenium.grid.data.RequestId;
-import org.openqa.selenium.grid.jmx.JMXHelper;
-import org.openqa.selenium.grid.jmx.ManagedAttribute;
-import org.openqa.selenium.grid.jmx.ManagedService;
 import org.openqa.selenium.grid.log.LoggingOptions;
 import org.openqa.selenium.grid.server.EventBusOptions;
 import org.openqa.selenium.grid.sessionqueue.SessionRequest;
@@ -59,35 +56,39 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
-@ManagedService(objectName = "org.seleniumhq.grid:type=SessionQueue,name=LocalSessionQueue",
-  description = "New session queue")
-public class LocalSessionRequests extends SessionRequests {
+class SessionRequests {
 
-  private static final Logger LOG = Logger.getLogger(LocalSessionRequests.class.getName());
+  private static final Logger LOG = Logger.getLogger(SessionRequests.class.getName());
+  private final Tracer tracer;
   private final EventBus bus;
+  private final Duration retryInterval;
+  private final Duration requestTimeout;
   private final Deque<SessionRequest> sessionRequests = new ConcurrentLinkedDeque<>();
   private final ReadWriteLock lock = new ReentrantReadWriteLock(true);
   private final ScheduledExecutorService executorService =
     Executors.newSingleThreadScheduledExecutor();
   private final Thread shutdownHook = new Thread(this::callExecutorShutdown);
-  private final String timedOutErrorMessage = String.format(
-    "New session request rejected after being in the queue for more than %s",
-    format(requestTimeout));
+  private final String timedOutErrorMessage;
 
-  public LocalSessionRequests(
+  public SessionRequests(
     Tracer tracer,
     EventBus bus,
     Duration retryInterval,
     Duration requestTimeout) {
-    super(tracer, retryInterval, requestTimeout);
+    this.tracer = Require.nonNull("Tracer", tracer);
     this.bus = Require.nonNull("Event bus", bus);
+    this.retryInterval = Require.nonNull("Session request retry interval", retryInterval);
+    this.requestTimeout = Require.nonNull("Session request timeout", requestTimeout);
+
+    timedOutErrorMessage = String.format(
+      "New session request rejected after being in the queue for more than %s",
+      format(requestTimeout));
+
     Runtime.getRuntime().addShutdownHook(shutdownHook);
 
     Regularly regularly = new Regularly("New Session Queue Clean up");
     Duration purgeTimeout = requestTimeout.multipliedBy(2);
     regularly.submit(this::purgeTimedOutRequests, purgeTimeout, purgeTimeout);
-
-    new JMXHelper().register(this);
   }
 
   public static SessionRequests create(Config config) {
@@ -95,17 +96,14 @@ public class LocalSessionRequests extends SessionRequests {
     EventBus bus = new EventBusOptions(config).getEventBus();
     Duration retryInterval = new SessionRequestOptions(config).getSessionRequestRetryInterval();
     Duration requestTimeout = new SessionRequestOptions(config).getSessionRequestTimeout();
-    return new LocalSessionRequests(tracer, bus, retryInterval, requestTimeout);
+    return new SessionRequests(tracer, bus, retryInterval, requestTimeout);
   }
 
-  @Override
   public boolean isReady() {
     return bus.isReady();
   }
 
-  @Override
-  @ManagedAttribute(name = "NewSessionQueueSize")
-  public int getQueueSize() {
+  int getQueueSize() {
     Lock readLock = lock.readLock();
     readLock.lock();
     try {
@@ -115,7 +113,6 @@ public class LocalSessionRequests extends SessionRequests {
     }
   }
 
-  @Override
   public List<Set<Capabilities>> getQueuedRequests() {
     Lock readLock = lock.readLock();
     readLock.lock();
@@ -128,7 +125,6 @@ public class LocalSessionRequests extends SessionRequests {
     }
   }
 
-  @Override
   public boolean offerLast(SessionRequest request) {
     Require.nonNull("New Session request", request);
 
@@ -139,13 +135,13 @@ public class LocalSessionRequests extends SessionRequests {
     try {
       Map<String, EventAttributeValue> attributeMap = new HashMap<>();
       attributeMap.put(
-          AttributeKey.LOGGER_CLASS.getKey(), EventAttribute.setValue(getClass().getName()));
+        AttributeKey.LOGGER_CLASS.getKey(), EventAttribute.setValue(getClass().getName()));
 
       boolean added = sessionRequests.offerLast(request);
 
       attributeMap.put(
-          AttributeKey.REQUEST_ID.getKey(),
-          EventAttribute.setValue(request.getRequestId().toString()));
+        AttributeKey.REQUEST_ID.getKey(),
+        EventAttribute.setValue(request.getRequestId().toString()));
       attributeMap.put("request.added", EventAttribute.setValue(added));
       span.addEvent("Add new session request to the queue", attributeMap);
 
@@ -160,7 +156,6 @@ public class LocalSessionRequests extends SessionRequests {
     }
   }
 
-  @Override
   public boolean offerFirst(SessionRequest request) {
     Require.nonNull("New Session request", request);
     Lock writeLock = lock.writeLock();
@@ -168,8 +163,7 @@ public class LocalSessionRequests extends SessionRequests {
     try {
       boolean added = sessionRequests.offerFirst(request);
       if (added) {
-        executorService.schedule(() -> retryRequest(request),
-          super.retryInterval.getSeconds(), TimeUnit.SECONDS);
+        executorService.schedule(() -> retryRequest(request), retryInterval.getSeconds(), TimeUnit.SECONDS);
       }
       return added;
     } finally {
@@ -198,7 +192,6 @@ public class LocalSessionRequests extends SessionRequests {
     }
   }
 
-  @Override
   public Optional<SessionRequest> remove(RequestId id) {
     Lock writeLock = lock.writeLock();
     writeLock.lock();
@@ -239,7 +232,6 @@ public class LocalSessionRequests extends SessionRequests {
     }
   }
 
-  @Override
   public int clear() {
     Lock writeLock = lock.writeLock();
     writeLock.lock();
@@ -308,4 +300,3 @@ public class LocalSessionRequests extends SessionRequests {
     return toReturn.toString();
   }
 }
-

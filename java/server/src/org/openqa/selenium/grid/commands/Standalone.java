@@ -42,10 +42,8 @@ import org.openqa.selenium.grid.server.NetworkOptions;
 import org.openqa.selenium.grid.server.Server;
 import org.openqa.selenium.grid.sessionmap.SessionMap;
 import org.openqa.selenium.grid.sessionmap.local.LocalSessionMap;
-import org.openqa.selenium.grid.sessionqueue.local.SessionRequests;
 import org.openqa.selenium.grid.sessionqueue.NewSessionQueue;
 import org.openqa.selenium.grid.sessionqueue.config.SessionRequestOptions;
-import org.openqa.selenium.grid.sessionqueue.local.LocalSessionRequests;
 import org.openqa.selenium.grid.sessionqueue.local.LocalNewSessionQueue;
 import org.openqa.selenium.grid.web.CombinedHandler;
 import org.openqa.selenium.grid.web.GridUiRoute;
@@ -141,16 +139,11 @@ public class Standalone extends TemplateGridServerCommand {
     combinedHandler.addHandler(sessions);
 
     SessionRequestOptions sessionRequestOptions = new SessionRequestOptions(config);
-    SessionRequests sessionRequests = new LocalSessionRequests(
-      tracer,
-      bus,
-      sessionRequestOptions.getSessionRequestRetryInterval(),
-      sessionRequestOptions.getSessionRequestTimeout());
-
     NewSessionQueue queue = new LocalNewSessionQueue(
       tracer,
       bus,
-      sessionRequests,
+      sessionRequestOptions.getSessionRequestRetryInterval(),
+      sessionRequestOptions.getSessionRequestTimeout(),
       registrationSecret);
     combinedHandler.addHandler(queue);
 
