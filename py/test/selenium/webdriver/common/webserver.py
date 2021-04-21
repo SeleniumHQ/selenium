@@ -131,6 +131,7 @@ class SimpleWebServer(object):
     """A very basic web server."""
 
     def __init__(self, host=DEFAULT_HOST, port=DEFAULT_PORT):
+        print(f"Will attempt to use the following {host} with port {port}")
         self.stop_serving = False
         host = host
         port = port
