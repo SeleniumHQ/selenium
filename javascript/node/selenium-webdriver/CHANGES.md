@@ -1,3 +1,7 @@
+## v4.0.0-beta.4
+
+* Allow RelativeBy to work with findElement
+
 ## v4.0.0-beta.3
 
 * Removed support for legacy actions.

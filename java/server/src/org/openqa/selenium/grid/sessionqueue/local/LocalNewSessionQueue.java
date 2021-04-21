@@ -18,22 +18,22 @@
 package org.openqa.selenium.grid.sessionqueue.local;
 
 import org.openqa.selenium.Capabilities;
-import org.openqa.selenium.concurrent.Regularly;
+import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.events.EventBus;
 import org.openqa.selenium.grid.config.Config;
-import org.openqa.selenium.grid.data.NewSessionErrorResponse;
-import org.openqa.selenium.grid.data.NewSessionRejectedEvent;
-import org.openqa.selenium.grid.data.NewSessionRequestEvent;
 import org.openqa.selenium.grid.data.RequestId;
 import org.openqa.selenium.grid.jmx.JMXHelper;
 import org.openqa.selenium.grid.jmx.ManagedAttribute;
 import org.openqa.selenium.grid.jmx.ManagedService;
 import org.openqa.selenium.grid.log.LoggingOptions;
+import org.openqa.selenium.grid.security.Secret;
+import org.openqa.selenium.grid.security.SecretOptions;
 import org.openqa.selenium.grid.server.EventBusOptions;
 import org.openqa.selenium.grid.sessionqueue.NewSessionQueue;
 import org.openqa.selenium.grid.sessionqueue.SessionRequest;
-import org.openqa.selenium.grid.sessionqueue.config.NewSessionQueueOptions;
+import org.openqa.selenium.grid.sessionqueue.config.SessionRequestOptions;
 import org.openqa.selenium.internal.Require;
+import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.remote.tracing.AttributeKey;
 import org.openqa.selenium.remote.tracing.EventAttribute;
 import org.openqa.selenium.remote.tracing.EventAttributeValue;
@@ -41,51 +41,38 @@ import org.openqa.selenium.remote.tracing.Span;
 import org.openqa.selenium.remote.tracing.Tracer;
 
 import java.time.Duration;
-import java.util.Deque;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
-import java.util.concurrent.ConcurrentLinkedDeque;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReadWriteLock;
-import java.util.concurrent.locks.ReentrantReadWriteLock;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import java.util.stream.Collectors;
+
+import static org.openqa.selenium.remote.tracing.Tags.EXCEPTION;
 
 @ManagedService(objectName = "org.seleniumhq.grid:type=SessionQueue,name=LocalSessionQueue",
   description = "New session queue")
 public class LocalNewSessionQueue extends NewSessionQueue {
 
-  private static final Logger LOG = Logger.getLogger(LocalNewSessionQueue.class.getName());
+  public final SessionRequests sessionRequests;
   private final EventBus bus;
-  private final Deque<SessionRequest> sessionRequests = new ConcurrentLinkedDeque<>();
-  private final ReadWriteLock lock = new ReentrantReadWriteLock(true);
-  private final ScheduledExecutorService executorService =
-    Executors.newSingleThreadScheduledExecutor();
-  private final Thread shutdownHook = new Thread(this::callExecutorShutdown);
-  private final String timedOutErrorMessage = String.format(
-    "New session request rejected after being in the queue for more than %s",
-    format(requestTimeout));
+  private final GetNewSessionResponse getNewSessionResponse;
 
   public LocalNewSessionQueue(
     Tracer tracer,
     EventBus bus,
     Duration retryInterval,
-    Duration requestTimeout) {
-    super(tracer, retryInterval, requestTimeout);
+    Duration requestTimeout,
+    Secret registrationSecret) {
+    super(tracer, registrationSecret);
     this.bus = Require.nonNull("Event bus", bus);
-    Runtime.getRuntime().addShutdownHook(shutdownHook);
 
-    Regularly regularly = new Regularly("New Session Queue Clean up");
-    Duration purgeTimeout = requestTimeout.multipliedBy(2);
-    regularly.submit(this::purgeTimedOutRequests, purgeTimeout, purgeTimeout);
+    this.sessionRequests = new SessionRequests(
+      tracer,
+      bus,
+      Require.nonNull("Retry interval", retryInterval),
+      Require.nonNull("Request timeout", requestTimeout));
+
+    this.getNewSessionResponse  = new GetNewSessionResponse(bus, sessionRequests);
 
     new JMXHelper().register(this);
   }
@@ -93,9 +80,45 @@ public class LocalNewSessionQueue extends NewSessionQueue {
   public static NewSessionQueue create(Config config) {
     Tracer tracer = new LoggingOptions(config).getTracer();
     EventBus bus = new EventBusOptions(config).getEventBus();
-    Duration retryInterval = new NewSessionQueueOptions(config).getSessionRequestRetryInterval();
-    Duration requestTimeout = new NewSessionQueueOptions(config).getSessionRequestTimeout();
-    return new LocalNewSessionQueue(tracer, bus, retryInterval, requestTimeout);
+    Duration retryInterval = new SessionRequestOptions(config).getSessionRequestRetryInterval();
+    Duration requestTimeout = new SessionRequestOptions(config).getSessionRequestTimeout();
+
+    SecretOptions secretOptions = new SecretOptions(config);
+    Secret registrationSecret = secretOptions.getRegistrationSecret();
+
+    return new LocalNewSessionQueue(tracer, bus, retryInterval, requestTimeout, registrationSecret);
+  }
+
+  @Override
+  public HttpResponse addToQueue(SessionRequest request) {
+    validateSessionRequest(request);
+    return getNewSessionResponse.add(request);
+  }
+
+  @Override
+  public boolean offerLast(SessionRequest request) {
+    Require.nonNull("Session request", request);
+    return sessionRequests.offerLast(request);
+  }
+
+  @Override
+  public boolean retryAddToQueue(SessionRequest request) {
+    return sessionRequests.offerFirst(request);
+  }
+
+  @Override
+  public Optional<SessionRequest> remove(RequestId id) {
+    return sessionRequests.remove(id);
+  }
+
+  @Override
+  public int clearQueue() {
+    return sessionRequests.clear();
+  }
+
+  @Override
+  public List<Set<Capabilities>> getQueueContents() {
+    return sessionRequests.getQueuedRequests();
   }
 
   @Override
@@ -103,201 +126,25 @@ public class LocalNewSessionQueue extends NewSessionQueue {
     return bus.isReady();
   }
 
-  @Override
   @ManagedAttribute(name = "NewSessionQueueSize")
   public int getQueueSize() {
-    Lock readLock = lock.readLock();
-    readLock.lock();
-    try {
-      return sessionRequests.size();
-    } finally {
-      readLock.unlock();
-    }
+    return sessionRequests.getQueueSize();
   }
 
-  @Override
-  public List<Set<Capabilities>> getQueuedRequests() {
-    Lock readLock = lock.readLock();
-    readLock.lock();
-    try {
-      return sessionRequests.stream()
-        .map(SessionRequest::getDesiredCapabilities)
-        .collect(Collectors.toList());
-    } finally {
-      readLock.unlock();
-    }
-  }
-
-  @Override
-  public boolean offerLast(SessionRequest request) {
-    Require.nonNull("New Session request", request);
-
-    Span span = tracer.getCurrentContext().createSpan("local_sessionqueue.add");
-
-    Lock writeLock = lock.writeLock();
-    writeLock.lock();
-    try {
+  private void validateSessionRequest(SessionRequest request) {
+    try (Span span = tracer.getCurrentContext().createSpan("newsession_queue.validate")) {
       Map<String, EventAttributeValue> attributeMap = new HashMap<>();
-      attributeMap.put(
-          AttributeKey.LOGGER_CLASS.getKey(), EventAttribute.setValue(getClass().getName()));
 
-      boolean added = sessionRequests.offerLast(request);
-
-      attributeMap.put(
-          AttributeKey.REQUEST_ID.getKey(),
-          EventAttribute.setValue(request.getRequestId().toString()));
-      attributeMap.put("request.added", EventAttribute.setValue(added));
-      span.addEvent("Add new session request to the queue", attributeMap);
-
-      if (added) {
-        bus.fire(new NewSessionRequestEvent(request.getRequestId()));
+      if (request.getDesiredCapabilities().isEmpty()) {
+        SessionNotCreatedException exception =
+          new SessionNotCreatedException("No capabilities found");
+        EXCEPTION.accept(attributeMap, exception);
+        attributeMap.put(
+          AttributeKey.EXCEPTION_MESSAGE.getKey(), EventAttribute.setValue(exception.getMessage()));
+        span.addEvent(AttributeKey.EXCEPTION_EVENT.getKey(), attributeMap);
+        throw exception;
       }
-
-      return added;
-    } finally {
-      writeLock.unlock();
-      span.close();
     }
-  }
-
-  @Override
-  public boolean offerFirst(SessionRequest request) {
-    Require.nonNull("New Session request", request);
-    Lock writeLock = lock.writeLock();
-    writeLock.lock();
-    try {
-      boolean added = sessionRequests.offerFirst(request);
-      if (added) {
-        executorService.schedule(() -> retryRequest(request),
-          super.retryInterval.getSeconds(), TimeUnit.SECONDS);
-      }
-      return added;
-    } finally {
-      writeLock.unlock();
-    }
-  }
-
-  private void retryRequest(SessionRequest sessionRequest) {
-    Lock writeLock = lock.writeLock();
-    writeLock.lock();
-    try {
-      RequestId requestId = sessionRequest.getRequestId();
-      if (hasRequestTimedOut(sessionRequest)) {
-        LOG.log(Level.INFO, "Request {0} timed out", requestId);
-        sessionRequests.remove(sessionRequest);
-        bus.fire(new NewSessionRejectedEvent(
-          new NewSessionErrorResponse(requestId, timedOutErrorMessage)));
-      } else {
-        LOG.log(Level.INFO,
-          "Adding request back to the queue. All slots are busy. Request: {0}",
-          requestId);
-        bus.fire(new NewSessionRequestEvent(requestId));
-      }
-    } finally {
-      writeLock.unlock();
-    }
-  }
-
-  @Override
-  public Optional<SessionRequest> remove(RequestId id) {
-    Lock writeLock = lock.writeLock();
-    writeLock.lock();
-    try {
-      // Peek  the deque and check if the request-id matches. Most cases, it would.
-      // If so poll the deque else iterate over the deque and find a match.
-      Optional<SessionRequest> firstSessionRequest =
-        Optional.ofNullable(sessionRequests.peekFirst());
-
-      Optional<SessionRequest> request = Optional.empty();
-      if (firstSessionRequest.isPresent()) {
-        if (id.equals(firstSessionRequest.get().getRequestId())) {
-          request = Optional.ofNullable(sessionRequests.pollFirst());
-        } else {
-          Optional<SessionRequest> matchedRequest = sessionRequests
-            .stream()
-            .filter(sessionRequest -> id.equals(sessionRequest.getRequestId()))
-            .findFirst();
-
-          if (matchedRequest.isPresent()) {
-            SessionRequest sessionRequest = matchedRequest.get();
-            sessionRequests.remove(sessionRequest);
-            request = Optional.of(sessionRequest);
-          }
-        }
-      }
-
-      if (request.isPresent()) {
-        if (hasRequestTimedOut(request.get())) {
-          bus.fire(new NewSessionRejectedEvent(
-            new NewSessionErrorResponse(id, timedOutErrorMessage)));
-          return Optional.empty();
-        }
-      }
-      return request;
-    } finally {
-      writeLock.unlock();
-    }
-  }
-
-  @Override
-  public int clear() {
-    Lock writeLock = lock.writeLock();
-    writeLock.lock();
-    try {
-      int count = 0;
-      LOG.info("Clearing new session request queue");
-      for (SessionRequest sessionRequest = sessionRequests.poll(); sessionRequest != null;
-           sessionRequest = sessionRequests.poll()) {
-        count++;
-        NewSessionErrorResponse errorResponse =
-          new NewSessionErrorResponse(sessionRequest.getRequestId(),
-            "New session request cancelled.");
-
-        bus.fire(new NewSessionRejectedEvent(errorResponse));
-      }
-      return count;
-    } finally {
-      writeLock.unlock();
-    }
-  }
-
-  private void purgeTimedOutRequests() {
-    Lock writeLock = lock.writeLock();
-    writeLock.lock();
-    try {
-      Iterator<SessionRequest> iterator = sessionRequests.iterator();
-      while (iterator.hasNext()) {
-        SessionRequest sessionRequest = iterator.next();
-        if (hasRequestTimedOut(sessionRequest)) {
-          iterator.remove();
-          bus.fire(new NewSessionRejectedEvent(
-            new NewSessionErrorResponse(sessionRequest.getRequestId(), timedOutErrorMessage)));
-        }
-      }
-    } finally {
-      writeLock.unlock();
-    }
-  }
-
-  public void callExecutorShutdown() {
-    LOG.info("Shutting down session queue executor service");
-    executorService.shutdown();
-  }
-
-  private static String format(Duration duration) {
-    long hours = duration.toHours();
-    int minutes = (int) duration.toMinutes() % 60;
-    int secs = (int) (duration.getSeconds() % 60);
-
-    StringBuilder toReturn = new StringBuilder();
-    if (hours != 0) {
-      toReturn.append(hours).append("h ");
-    }
-    if (hours != 0 || minutes != 0) {
-      toReturn.append(minutes).append("m ");
-    }
-    toReturn.append(secs).append("s");
-    return toReturn.toString();
   }
 }
 

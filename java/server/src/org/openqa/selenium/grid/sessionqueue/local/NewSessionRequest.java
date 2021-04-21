@@ -15,21 +15,18 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.grid.data;
+package org.openqa.selenium.grid.sessionqueue.local;
 
 import org.openqa.selenium.remote.http.HttpResponse;
 
-import java.util.UUID;
 import java.util.concurrent.CountDownLatch;
 
-public class NewSessionRequest {
+class NewSessionRequest {
 
-  private final RequestId requestId;
   private final CountDownLatch latch;
   private HttpResponse sessionResponse;
 
-  public NewSessionRequest(RequestId requestId, CountDownLatch latch) {
-    this.requestId = requestId;
+  public NewSessionRequest(CountDownLatch latch) {
     this.latch = latch;
   }
 

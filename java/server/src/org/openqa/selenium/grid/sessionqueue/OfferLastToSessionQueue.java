@@ -17,12 +17,6 @@
 
 package org.openqa.selenium.grid.sessionqueue;
 
-import static java.net.HttpURLConnection.HTTP_NO_CONTENT;
-import static org.openqa.selenium.remote.tracing.HttpTracing.newSpanAsChildOf;
-import static org.openqa.selenium.remote.tracing.Tags.HTTP_REQUEST;
-import static org.openqa.selenium.remote.tracing.Tags.HTTP_RESPONSE;
-
-import org.openqa.selenium.grid.data.RequestId;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.http.Contents;
 import org.openqa.selenium.remote.http.HttpHandler;
@@ -31,35 +25,35 @@ import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.remote.tracing.Span;
 import org.openqa.selenium.remote.tracing.Tracer;
 
-import java.util.Optional;
+import java.util.Collections;
 
-public class RemoveFromSessionQueue implements HttpHandler {
+import static org.openqa.selenium.remote.http.Contents.asJson;
+import static org.openqa.selenium.remote.tracing.HttpTracing.newSpanAsChildOf;
+import static org.openqa.selenium.remote.tracing.Tags.HTTP_REQUEST;
+import static org.openqa.selenium.remote.tracing.Tags.HTTP_RESPONSE;
+
+class OfferLastToSessionQueue implements HttpHandler {
 
   private final Tracer tracer;
   private final NewSessionQueue newSessionQueue;
-  private final RequestId id;
 
-  RemoveFromSessionQueue(Tracer tracer, NewSessionQueue newSessionQueue, RequestId id) {
+  OfferLastToSessionQueue(Tracer tracer, NewSessionQueue newSessionQueue) {
     this.tracer = Require.nonNull("Tracer", tracer);
     this.newSessionQueue = Require.nonNull("New Session Queue", newSessionQueue);
-    this.id = id;
   }
 
   @Override
   public HttpResponse execute(HttpRequest req) {
-    try (Span span = newSpanAsChildOf(tracer, req, "sessionqueue.remove")) {
+    try (Span span = newSpanAsChildOf(tracer, req, "sessionqueue.addLast")) {
       HTTP_REQUEST.accept(span, req);
 
-      Optional<SessionRequest> sessionRequest = newSessionQueue.remove(id);
-      HttpResponse response = new HttpResponse();
+      boolean result = newSessionQueue.offerLast(Contents.fromJson(req, SessionRequest.class));
 
-      if (sessionRequest.isPresent()) {
-        return response.setContent(Contents.asJson(sessionRequest));
-      } else {
-        response.setStatus(HTTP_NO_CONTENT);
-      }
+      HttpResponse response = new HttpResponse()
+        .setContent(Contents.asJson(Collections.singletonMap("value", result)));
 
       HTTP_RESPONSE.accept(span, response);
+
       return response;
     }
   }

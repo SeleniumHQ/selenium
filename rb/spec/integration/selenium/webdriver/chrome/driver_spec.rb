@@ -39,7 +39,7 @@ module Selenium
           # at least it doesn't crash
         end
 
-        it 'can execute CDP commands', only: {driver: :chrome} do
+        it 'can execute CDP commands' do
           res = driver.execute_cdp('Page.addScriptToEvaluateOnNewDocument', source: 'window.was_here="TW";')
           expect(res).to have_key('identifier')
 
