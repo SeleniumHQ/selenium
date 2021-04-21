@@ -35,12 +35,14 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class ZeroMqTcpTest {
   private EventBus bus;
+  private ZContext zContext;
 
   @Before
   public void getBus() {
     Secret secret = new Secret("cheese");
+    zContext = new ZContext();
     bus =  ZeroMqEventBus.create(
-      new ZContext(),
+      zContext,
       "tcp://*:" + PortProber.findFreePort(),
       "tcp://*:" + PortProber.findFreePort(),
       true,
@@ -50,6 +52,7 @@ public class ZeroMqTcpTest {
   @After
   public void closeBus() {
     bus.close();
+    zContext.close();
   }
 
   @Test(timeout = 4000)
