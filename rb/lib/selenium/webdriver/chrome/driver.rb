@@ -27,7 +27,8 @@ module Selenium
       #
 
       class Driver < WebDriver::Driver
-        EXTENSIONS = [DriverExtensions::HasNetworkConditions,
+        EXTENSIONS = [DriverExtensions::HasCDP,
+                      DriverExtensions::HasNetworkConditions,
                       DriverExtensions::HasNetworkInterception,
                       DriverExtensions::HasWebStorage,
                       DriverExtensions::HasLocation,
@@ -40,10 +41,6 @@ module Selenium
 
         def browser
           :chrome
-        end
-
-        def execute_cdp(cmd, **params)
-          @bridge.send_command(cmd: cmd, params: params)
         end
 
         private
