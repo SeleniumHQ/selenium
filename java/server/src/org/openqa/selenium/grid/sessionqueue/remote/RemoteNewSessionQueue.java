@@ -18,7 +18,9 @@
 package org.openqa.selenium.grid.sessionqueue.remote;
 
 import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.grid.config.Config;
+import org.openqa.selenium.grid.data.CreateSessionResponse;
 import org.openqa.selenium.grid.data.RequestId;
 import org.openqa.selenium.grid.log.LoggingOptions;
 import org.openqa.selenium.grid.security.AddSecretFilter;
@@ -29,6 +31,7 @@ import org.openqa.selenium.grid.sessionqueue.NewSessionQueue;
 import org.openqa.selenium.grid.sessionqueue.SessionRequest;
 import org.openqa.selenium.grid.sessionqueue.config.NewSessionQueueOptions;
 import org.openqa.selenium.grid.web.Values;
+import org.openqa.selenium.internal.Either;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.json.TypeToken;
@@ -107,7 +110,7 @@ public class RemoteNewSessionQueue extends NewSessionQueue {
     Require.nonNull("Session request", request);
 
     HttpRequest upstream =
-      new HttpRequest(POST, "/se/grid/newsessionqueue/session/retry/" + request.getRequestId());
+      new HttpRequest(POST, String.format("/se/grid/newsessionqueue/session/%s/retry", request.getRequestId()));
     HttpTracing.inject(tracer, tracer.getCurrentContext(), upstream);
     upstream.setContent(Contents.asJson(request));
     HttpResponse response = client.with(addSecret).execute(upstream);
@@ -116,7 +119,7 @@ public class RemoteNewSessionQueue extends NewSessionQueue {
 
   @Override
   public Optional<SessionRequest> remove(RequestId reqId) {
-    HttpRequest upstream = new HttpRequest(GET, "/se/grid/newsessionqueue/session/" + reqId.toString());
+    HttpRequest upstream = new HttpRequest(GET, "/se/grid/newsessionqueue/session/" + reqId);
     HttpTracing.inject(tracer, tracer.getCurrentContext(), upstream);
     HttpResponse response = client.with(addSecret).execute(upstream);
 
@@ -130,6 +133,24 @@ public class RemoteNewSessionQueue extends NewSessionQueue {
     }
 
     return Optional.empty();
+  }
+
+  @Override
+  public void complete(RequestId reqId, Either<SessionNotCreatedException, CreateSessionResponse> result) {
+    Require.nonNull("Request ID", reqId);
+    Require.nonNull("Result", result);
+
+    HttpRequest upstream;
+    if (result.isRight()) {
+      upstream = new HttpRequest(POST, String.format("/se/grid/newsessionqueue/session/%s/success", reqId))
+        .setContent(Contents.asJson(result.right()));
+    } else {
+      upstream = new HttpRequest(POST, String.format("/se/grid/newsessionqueue/session/%s/failure", reqId))
+        .setContent(Contents.asJson(result.left()));
+    }
+
+    HttpTracing.inject(tracer, tracer.getCurrentContext(), upstream);
+    client.with(addSecret).execute(upstream);
   }
 
   @Override

@@ -18,9 +18,12 @@
 package org.openqa.selenium.grid.sessionqueue;
 
 import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.SessionNotCreatedException;
+import org.openqa.selenium.grid.data.CreateSessionResponse;
 import org.openqa.selenium.grid.data.RequestId;
 import org.openqa.selenium.grid.security.RequiresSecretFilter;
 import org.openqa.selenium.grid.security.Secret;
+import org.openqa.selenium.internal.Either;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.NewSessionPayload;
 import org.openqa.selenium.remote.http.Contents;
@@ -77,9 +80,13 @@ public abstract class NewSessionQueue implements HasReadyState, Routable {
         .to(() -> new OfferLastToSessionQueue(tracer, this)),
       post("/se/grid/newsessionqueue/session")
         .to(() -> new AddToSessionQueue(tracer, this)),
-      post("/se/grid/newsessionqueue/session/retry/{requestId}")
+      post("/se/grid/newsessionqueue/session/{requestId}/retry")
         .to(params -> new AddBackToSessionQueue(tracer, this, requestIdFrom(params)))
         .with(requiresSecret),
+      post("/se/grid/newsessionqueue/session/{requestId}/fail")
+        .to(params -> new SessionNotCreated(tracer, this, requestIdFrom(params))),
+      post("/se/grid/newsessionqueue/session/{requestId}/success")
+        .to(params -> new SessionCreated(tracer, this, requestIdFrom(params))),
       get("/se/grid/newsessionqueue/session/{requestId}")
         .to(params -> new RemoveFromSessionQueue(tracer, this, requestIdFrom(params)))
         .with(requiresSecret),
@@ -101,6 +108,8 @@ public abstract class NewSessionQueue implements HasReadyState, Routable {
   public abstract boolean retryAddToQueue(SessionRequest request);
 
   public abstract Optional<SessionRequest> remove(RequestId reqId);
+
+  public abstract void complete(RequestId reqId, Either<SessionNotCreatedException, CreateSessionResponse> result);
 
   public abstract int clearQueue();
 

@@ -33,8 +33,6 @@ import org.openqa.selenium.grid.data.DistributorStatus;
 import org.openqa.selenium.grid.data.NewSessionErrorResponse;
 import org.openqa.selenium.grid.data.NewSessionRejectedEvent;
 import org.openqa.selenium.grid.data.NewSessionRequestEvent;
-import org.openqa.selenium.grid.data.NewSessionResponse;
-import org.openqa.selenium.grid.data.NewSessionResponseEvent;
 import org.openqa.selenium.grid.data.NodeAddedEvent;
 import org.openqa.selenium.grid.data.NodeDrainComplete;
 import org.openqa.selenium.grid.data.NodeHeartBeatEvent;
@@ -113,14 +111,14 @@ public class LocalDistributor extends Distributor {
   private final GridModel model;
   private final Map<NodeId, Node> nodes;
 
-  private final NewSessionQueue sessionRequests;
+  private final NewSessionQueue sessionQueue;
 
   public LocalDistributor(
     Tracer tracer,
     EventBus bus,
     HttpClient.Factory clientFactory,
     SessionMap sessions,
-    NewSessionQueue sessionRequests,
+    NewSessionQueue sessionQueue,
     Secret registrationSecret,
     Duration healthcheckInterval) {
     super(tracer, clientFactory, new DefaultSlotSelector(), sessions, registrationSecret);
@@ -130,7 +128,7 @@ public class LocalDistributor extends Distributor {
     this.sessions = Require.nonNull("Session map", sessions);
     this.model = new GridModel(bus);
     this.nodes = new ConcurrentHashMap<>();
-    this.sessionRequests = Require.nonNull("New Session Request Queue", sessionRequests);
+    this.sessionQueue = Require.nonNull("New Session Request Queue", sessionQueue);
     this.registrationSecret = Require.nonNull("Registration secret", registrationSecret);
     this.healthcheckInterval = Require.nonNull("Health check interval", healthcheckInterval);
 
@@ -169,15 +167,14 @@ public class LocalDistributor extends Distributor {
     HttpClient.Factory clientFactory = new NetworkOptions(config).getHttpClientFactory(tracer);
     SessionMap sessions = new SessionMapOptions(config).getSessionMap();
     SecretOptions secretOptions = new SecretOptions(config);
-    NewSessionQueue sessionRequests =
-      new NewSessionQueueOptions(config).getSessionQueue(
-        "org.openqa.selenium.grid.sessionqueue.remote.RemoteNewSessionQueue");
+    NewSessionQueue sessionQueue = new NewSessionQueueOptions(config).getSessionQueue(
+      "org.openqa.selenium.grid.sessionqueue.remote.RemoteNewSessionQueue");
     return new LocalDistributor(
       tracer,
       bus,
       clientFactory,
       sessions,
-      sessionRequests,
+      sessionQueue,
       secretOptions.getRegistrationSecret(),
       distributorOptions.getHealthCheckInterval());
   }
@@ -393,7 +390,7 @@ public class LocalDistributor extends Distributor {
           if (hasCapacity) {
             RequestId reqId = requestIds.poll();
             if (reqId != null) {
-              Optional<SessionRequest> maybeRequest = sessionRequests.remove(reqId);
+              Optional<SessionRequest> maybeRequest = sessionQueue.remove(reqId);
               // Check if polling the queue did not return null
               if (maybeRequest.isPresent()) {
                 handleNewSessionRequest(maybeRequest.get(), reqId);
@@ -422,34 +419,20 @@ public class LocalDistributor extends Distributor {
           EventAttribute.setValue(reqId.toString()));
 
         attributeMap.put("request", EventAttribute.setValue(sessionRequest.toString()));
-        Either<SessionNotCreatedException, CreateSessionResponse> response =
-          newSession(sessionRequest);
-        if (response.isRight()) {
-          CreateSessionResponse sessionResponse = response.right();
-          NewSessionResponse newSessionResponse =
-            new NewSessionResponse(
-              reqId,
-              sessionResponse.getSession(),
-              sessionResponse.getDownstreamEncodedResponse());
+        Either<SessionNotCreatedException, CreateSessionResponse> response = newSession(sessionRequest);
 
-          bus.fire(new NewSessionResponseEvent(newSessionResponse));
-        } else {
-          SessionNotCreatedException exception = response.left();
+        if (response.isLeft()) {
+          boolean retried = sessionQueue.retryAddToQueue(sessionRequest);
 
-          if (exception instanceof RetrySessionRequestException) {
-            boolean retried = sessionRequests.retryAddToQueue(sessionRequest);
+          attributeMap.put("request.retry_add", EventAttribute.setValue(retried));
+          span.addEvent("Retry adding to front of queue. No slot available.", attributeMap);
 
-            attributeMap.put("request.retry_add", EventAttribute.setValue(retried));
-            span.addEvent("Retry adding to front of queue. No slot available.", attributeMap);
-
-            if (!retried) {
-              span.addEvent("Retry adding to front of queue failed.", attributeMap);
-              fireSessionRejectedEvent(exception.getMessage(), reqId);
-            }
-          } else {
-            fireSessionRejectedEvent(exception.getMessage(), reqId);
+          if (retried) {
+            return;
           }
         }
+
+        sessionQueue.complete(reqId, response);
       }
     }
 

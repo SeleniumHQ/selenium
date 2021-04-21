@@ -17,20 +17,7 @@
 
 package org.openqa.selenium.grid.graphql;
 
-import static java.util.Collections.singletonList;
-import static java.util.Collections.singletonMap;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.fail;
-import static org.assertj.core.api.InstanceOfAssertFactories.LIST;
-import static org.assertj.core.api.InstanceOfAssertFactories.MAP;
-import static org.openqa.selenium.json.Json.MAP_TYPE;
-import static org.openqa.selenium.remote.Dialect.OSS;
-import static org.openqa.selenium.remote.Dialect.W3C;
-import static org.openqa.selenium.remote.http.Contents.utf8String;
-import static org.openqa.selenium.remote.http.HttpMethod.GET;
-
 import com.google.common.collect.ImmutableMap;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.Capabilities;
@@ -41,6 +28,7 @@ import org.openqa.selenium.events.EventBus;
 import org.openqa.selenium.events.local.GuavaEventBus;
 import org.openqa.selenium.grid.data.CreateSessionRequest;
 import org.openqa.selenium.grid.data.CreateSessionResponse;
+import org.openqa.selenium.grid.data.NewSessionRequestEvent;
 import org.openqa.selenium.grid.data.RequestId;
 import org.openqa.selenium.grid.data.Session;
 import org.openqa.selenium.grid.data.Slot;
@@ -77,6 +65,19 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.CountDownLatch;
+
+import static java.util.Collections.singletonList;
+import static java.util.Collections.singletonMap;
+import static java.util.concurrent.TimeUnit.SECONDS;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
+import static org.assertj.core.api.InstanceOfAssertFactories.LIST;
+import static org.assertj.core.api.InstanceOfAssertFactories.MAP;
+import static org.openqa.selenium.json.Json.MAP_TYPE;
+import static org.openqa.selenium.remote.Dialect.OSS;
+import static org.openqa.selenium.remote.Dialect.W3C;
+import static org.openqa.selenium.remote.http.HttpMethod.GET;
 
 public class GraphqlHandlerTest {
 
@@ -154,6 +155,21 @@ public class GraphqlHandlerTest {
             "version", version))));
   }
 
+  private void continueOnceAddedToQueue(SessionRequest request) {
+    // Add to the queue in the background
+    CountDownLatch latch = new CountDownLatch(1);
+    events.addListener(NewSessionRequestEvent.listener(id -> latch.countDown()));
+    new Thread(() -> {
+      queue.addToQueue(request);
+    }).start();
+    try {
+      assertThat(latch.await(5, SECONDS)).isTrue();
+    } catch (InterruptedException e) {
+      Thread.currentThread().interrupt();
+      throw new RuntimeException(e);
+    }
+  }
+
   @Test
   public void shouldBeAbleToGetSessionQueueSize() {
     SessionRequest request = new SessionRequest(
@@ -162,7 +178,7 @@ public class GraphqlHandlerTest {
       Set.of(W3C),
       Set.of(caps));
 
-    queue.offerLast(request);
+    continueOnceAddedToQueue(request);
     GraphqlHandler handler = new GraphqlHandler(tracer, distributor, queue, publicUri, version);
 
     Map<String, Object> topLevel = executeQuery(handler, "{ grid { sessionQueueSize } }");
@@ -182,7 +198,8 @@ public class GraphqlHandlerTest {
       Set.of(W3C),
       Set.of(caps));
 
-    queue.offerLast(request);
+    continueOnceAddedToQueue(request);
+
     GraphqlHandler handler = new GraphqlHandler(tracer, distributor, queue, publicUri, version);
 
     Map<String, Object> topLevel = executeQuery(handler,
