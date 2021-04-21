@@ -77,6 +77,8 @@ jobs:
   chrome_tests:
     needs: unit_tests
     runs-on: ubuntu-latest
+    container:
+      image: python:3.7.10-alpine3.12
     steps:
       - name: Checkout source tree
         uses: actions/checkout@v2
