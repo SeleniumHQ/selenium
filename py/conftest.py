@@ -25,6 +25,7 @@ import pytest
 
 from selenium import webdriver
 from selenium.webdriver import DesiredCapabilities
+from selenium.webdriver.common.utils import free_port
 from test.selenium.webdriver.common.webserver import SimpleWebServer
 from test.selenium.webdriver.common.network import get_lan_ip
 
@@ -238,7 +239,7 @@ def server(request):
 
 @pytest.fixture(autouse=True, scope='session')
 def webserver():
-    webserver = SimpleWebServer(host=get_lan_ip())
+    webserver = SimpleWebServer(host=get_lan_ip(), port=free_port())
     webserver.start()
     yield webserver
     webserver.stop()
