@@ -189,7 +189,7 @@ public enum DeploymentTypes {
       Config newSessionQueueServerConfig = new TomlConfig(new StringReader(String.join(
         "\n",
         new String[] {
-          "[sessionqueuer]",
+          "[sessionqueue]",
           "hostname = \"localhost\"",
           "port = " + newSessionQueueServer.getUrl().getPort()
         }
