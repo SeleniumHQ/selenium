@@ -14,11 +14,7 @@
 # KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
 # under the License.
-from typing import Union
-import warnings
-from selenium.common.exceptions import InvalidArgumentException
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
-from selenium.webdriver.common.proxy import Proxy
 from selenium.webdriver.common.options import ArgOptions
 
 
@@ -33,24 +29,23 @@ class Log(object):
 
 
 class Options(ArgOptions):
-    KEY = "webkit:safariOptions"
+    KEY = "safari.options"
 
     def __init__(self):
         super(Options, self).__init__()
         self._binary_location = None
         self._preferences: dict = {}
-        self._proxy = None
         self.log = Log()
 
     @property
-    def binary_location(self):
+    def binary_location(self) -> str:
         """
         :Returns: The location of the browser binary otherwise an empty string
         """
         return self._binary_location
 
     @binary_location.setter
-    def binary_location(self, value):
+    def binary_location(self, value: str):
         """
         Allows you to set the browser binary to launch
 
