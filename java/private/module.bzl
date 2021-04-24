@@ -153,7 +153,8 @@ def _java_module_impl(ctx):
         output_source_jar = ctx.actions.declare_file("lib%s-src.jar" % ctx.attr.name),
         source_jars = depset(
             items = ctx.attr.target[JavaInfo].source_jars,
-            transitive = [info.source_jars for info in all_infos if not info.name]).to_list(),
+            transitive = [info.source_jars for info in all_infos if not info.name],
+        ).to_list(),
         java_toolchain = ctx.attr._java_toolchain[java_common.JavaToolchainInfo],
         host_javabase = ctx.attr._javabase[java_common.JavaRuntimeInfo],
     )

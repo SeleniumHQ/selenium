@@ -182,9 +182,9 @@ def _firefox():
         url = _versions["firefox"]["mac"]["url"],
         sha256 = _versions["firefox"]["mac"]["sha256"],
         build_file_content = "exports_files([\"Firefox.app\"])",
-#        move = {
-#            "Firefox.tmp1.pkg/Payload/Firefox.app": "Firefox.app",
-#        }
+        #        move = {
+        #            "Firefox.tmp1.pkg/Payload/Firefox.app": "Firefox.app",
+        #        }
     )
 
     # TODO: figure out how to unpack the firefox exe on Windows

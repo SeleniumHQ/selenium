@@ -1,7 +1,6 @@
 load("@apple_rules_lint//lint:defs.bzl", "get_lint_config")
 load(
     "@rules_java//java:defs.bzl",
-    _java_binary = "java_binary",
     _java_library = "java_library",
     _java_test = "java_test",
 )

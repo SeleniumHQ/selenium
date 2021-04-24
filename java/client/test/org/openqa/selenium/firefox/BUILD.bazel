@@ -15,13 +15,13 @@ java_test_suite(
         ["*.java"],
         exclude = LARGE_TESTS,
     ),
+    data = [
+        ":firebug_xpi",
+        "//third_party/firebug:firebug-1.5.0-fx.xpi",
+        "//third_party/firebug:mooltipass-1.1.87.xpi",
+    ],
     tags = [
         "requires-network",
-    ],
-    data = [
-            "//third_party/firebug:firebug-1.5.0-fx.xpi",
-            "//third_party/firebug:mooltipass-1.1.87.xpi",
-            ":firebug_xpi"
     ],
     deps = [
         "//java/client/src/org/openqa/selenium/firefox",
@@ -72,4 +72,3 @@ copy_file(
     src = "//third_party/firebug:firebug-1.5.0-fx.xpi",
     out = "firebug-1.5.0-fx.xpi",
 )
-

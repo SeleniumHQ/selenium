@@ -100,7 +100,7 @@ def create_executable_assembly(ctx, extra_srcs, extra_deps):
 
     direct_runfiles = [result[0].out, result[0].pdb]
     if runtimeconfig != None:
-        direct_runfiles += [runtimeconfig]
+        direct_runfiles.append(runtimeconfig)
 
     result.append(DefaultInfo(
         executable = shell_file,

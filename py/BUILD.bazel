@@ -1,8 +1,8 @@
-load("@rules_python//python:defs.bzl", "py_binary", "py_library", "py_test")
+load("@rules_python//python:defs.bzl", "py_binary", "py_library")
 load("@rules_python//python:packaging.bzl", "py_package", "py_wheel")
 load("@dev_requirements//:requirements.bzl", "requirement")
 load("//common:defs.bzl", "copy_file")
-load("//py:defs.bzl", "py_test_suite", "pytest_test")
+load("//py:defs.bzl", "py_test_suite")
 load("//py/private:browsers.bzl", "BROWSERS")
 
 BROWSER_VERSIONS = [
@@ -10,7 +10,7 @@ BROWSER_VERSIONS = [
     "v88",
     "v89",
     "v90",
-    "v91"
+    "v91",
 ]
 
 TEST_DEPS = [
@@ -31,7 +31,7 @@ TEST_DEPS = [
     requirement("pytest-mock"),
     requirement("sortedcontainers"),
     requirement("sniffio"),
-    requirement("zipp")
+    requirement("zipp"),
 ]
 
 copy_file(
