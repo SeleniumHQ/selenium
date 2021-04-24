@@ -58,6 +58,10 @@ The following command should work:
 xcode-select --install
 ```
 
+* Users of Apple Silicon Macs should add `build
+  --host_platform=//:rosetta` to their `.bazelrc.local` file. We are working
+  to make sure this isn't required in the long run.
+
 * Windows users should have the latest version of Visual Studio command line tools and build tools installed
   * `BAZEL_VS` environment variable should point to the location of the build tools,
      e.g. `C:\Program Files (x86)\Microsoft Visual Studio\2019\BuildTools`

@@ -33,16 +33,24 @@ alias(
 
 java_binary(
     name = "server",
+    args = [
+        "standalone",
+        "--relax-checks",
+        "true",
+    ],
+    data = chrome_data + firefox_data,
+    jvm_flags = chrome_jvm_flags + firefox_jvm_flags,
     main_class = "org.openqa.selenium.grid.Bootstrap",
     runtime_deps = [
         "//java/server/src/org/openqa/selenium/grid",
         artifact("org.slf4j:slf4j-jdk14"),
     ],
-    jvm_flags = chrome_jvm_flags + firefox_jvm_flags,
-    data = chrome_data + firefox_data,
-    args = [
-        "standalone",
-        "--relax-checks",
-        "true",
+)
+
+platform(
+    name = "rosetta",
+    constraint_values = [
+        "@platforms//os:osx",
+        "@platforms//cpu:x86_64",
     ],
 )
