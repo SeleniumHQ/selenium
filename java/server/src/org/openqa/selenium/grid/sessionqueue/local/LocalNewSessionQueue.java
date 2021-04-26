@@ -4,6 +4,7 @@ import com.google.common.annotations.VisibleForTesting;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.events.EventBus;
+import org.openqa.selenium.grid.config.Config;
 import org.openqa.selenium.grid.data.CreateSessionResponse;
 import org.openqa.selenium.grid.data.NewSessionErrorResponse;
 import org.openqa.selenium.grid.data.NewSessionRejectedEvent;
@@ -12,9 +13,14 @@ import org.openqa.selenium.grid.data.RequestId;
 import org.openqa.selenium.grid.jmx.JMXHelper;
 import org.openqa.selenium.grid.jmx.ManagedAttribute;
 import org.openqa.selenium.grid.jmx.ManagedService;
+import org.openqa.selenium.grid.log.LoggingOptions;
 import org.openqa.selenium.grid.security.Secret;
+import org.openqa.selenium.grid.security.SecretOptions;
+import org.openqa.selenium.grid.server.EventBusOptions;
 import org.openqa.selenium.grid.sessionqueue.NewSessionQueue;
 import org.openqa.selenium.grid.sessionqueue.SessionRequest;
+import org.openqa.selenium.grid.sessionqueue.config.NewSessionQueueOptions;
+import org.openqa.selenium.grid.sessionqueue.config.SessionRequestOptions;
 import org.openqa.selenium.internal.Either;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.http.Contents;
@@ -111,6 +117,22 @@ public class LocalNewSessionQueue extends NewSessionQueue implements Closeable {
     service.scheduleAtFixedRate(this::timeoutSessions, retryPeriod.toMillis(), retryPeriod.toMillis(), MILLISECONDS);
 
     new JMXHelper().register(this);
+  }
+
+  public static NewSessionQueue create(Config config) {
+    LoggingOptions loggingOptions = new LoggingOptions(config);
+    Tracer tracer = loggingOptions.getTracer();
+
+    EventBusOptions eventBusOptions = new EventBusOptions(config);
+    SessionRequestOptions requestOptions = new SessionRequestOptions(config);
+    SecretOptions secretOptions = new SecretOptions(config);
+
+    return new LocalNewSessionQueue(
+      tracer,
+      eventBusOptions.getEventBus(),
+      requestOptions.getSessionRequestRetryInterval(),
+      requestOptions.getSessionRequestTimeout(),
+      secretOptions.getRegistrationSecret());
   }
 
   private void timeoutSessions() {
