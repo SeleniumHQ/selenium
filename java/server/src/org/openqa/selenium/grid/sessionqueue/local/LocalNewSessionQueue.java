@@ -47,6 +47,29 @@ import java.util.stream.Collectors;
 import static java.net.HttpURLConnection.HTTP_INTERNAL_ERROR;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 
+/**
+ * An in-memory implementation of the list of new session requests.
+ * <p>
+ * The lifecycle of a request can be described as:
+ * <ol>
+ *   <li>User adds an item on to the queue using {@link #addToQueue(SessionRequest)}. This
+ *       will block until the request completes in some way.
+ *   <li>After being added, a {@link NewSessionRequestEvent} is fired. Listeners should use
+ *       this as an indication to call {@link #remove(RequestId)} to get the session request.
+ *   <li>If the session request is completed, then {@link #complete(RequestId, Either)} must
+ *       be called. This will not only ensure that {@link #addToQueue(SessionRequest)}
+ *       returns, but will also fire a {@link NewSessionRejectedEvent} if the session was
+ *       rejected. Positive completions of events are assumed to be notified on the event bus
+ *       by other listeners.
+ *   <li>If the request cannot be handled right now, call
+ *       {@link #retryAddToQueue(SessionRequest)} to return the session request to the front
+ *       of the queue.
+ * </ol>
+ * <p>
+ * There is a background thread that will reap {@link SessionRequest}s that have timed out.
+ * This means that a request can either complete by a listener calling
+ * {@link #complete(RequestId, Either)} directly, or by being reaped by the thread.
+ */
 @ManagedService(objectName = "org.seleniumhq.grid:type=SessionQueue,name=LocalSessionQueue",
   description = "New session queue")
 public class LocalNewSessionQueue extends NewSessionQueue implements Closeable {
@@ -214,7 +237,6 @@ public class LocalNewSessionQueue extends NewSessionQueue implements Closeable {
     Require.nonNull("New session request", request);
 
     boolean added;
-    Data data;
 
     Lock writeLock = lock.writeLock();
     writeLock.lock();
