@@ -81,7 +81,8 @@ public enum DeploymentTypes {
           additionalConfig,
           new TomlConfig(new StringReader(String.join("\n", rawConfig)))));
 
-      Server<?> server = new Standalone().asServer(new CompoundConfig(setRandomPort(), config)).start();waitUntilReady(server, Duration.ofSeconds(5));
+      Server<?> server = new Standalone().asServer(new CompoundConfig(setRandomPort(), config)).start();
+      waitUntilReady(server, Duration.ofSeconds(5));
 
       return new Deployment(server, server::stop);
     }
