@@ -212,27 +212,6 @@ public class LocalNewSessionQueue extends NewSessionQueue implements Closeable {
   }
 
   @Override
-  public boolean offerLast(SessionRequest request) {
-    Require.nonNull("New session request", request);
-
-    Lock writeLock = lock.writeLock();
-    writeLock.lock();
-    try {
-      if (!requests.containsKey(request.getRequestId())) {
-        return false;
-      }
-
-      if (queue.contains(request)) {
-        return true;
-      }
-
-      return queue.offerLast(request);
-    } finally {
-      writeLock.unlock();
-    }
-  }
-
-  @Override
   public boolean retryAddToQueue(SessionRequest request) {
     Require.nonNull("New session request", request);
 

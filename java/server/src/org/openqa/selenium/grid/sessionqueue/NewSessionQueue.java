@@ -76,8 +76,6 @@ public abstract class NewSessionQueue implements HasReadyState, Routable {
             throw new UncheckedIOException(e);
           }
         }),
-      post("/se/grid/newsessionqueue/session/last")
-        .to(() -> new OfferLastToSessionQueue(tracer, this)),
       post("/se/grid/newsessionqueue/session")
         .to(() -> new AddToSessionQueue(tracer, this)),
       post("/se/grid/newsessionqueue/session/{requestId}/retry")
@@ -102,8 +100,6 @@ public abstract class NewSessionQueue implements HasReadyState, Routable {
   }
 
   public abstract HttpResponse addToQueue(SessionRequest request);
-
-  public abstract boolean offerLast(SessionRequest request);
 
   public abstract boolean retryAddToQueue(SessionRequest request);
 

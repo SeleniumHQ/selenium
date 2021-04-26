@@ -257,7 +257,7 @@ public class LocalNewSessionQueueTest {
     localQueue.injectIntoQueue(sessionRequest);
     queue.remove(requestId);
 
-    queue.offerLast(sessionRequest);
+    queue.retryAddToQueue(sessionRequest);
 
     int count = queue.clearQueue();
 
