@@ -305,7 +305,7 @@ public class AddingNodesTest {
       if (running != null) {
         return Either.left(new SessionNotCreatedException("Session already exists"));
       }
-      Session session = factory.apply(sessionRequest.getCapabilities());
+      Session session = factory.apply(sessionRequest.getDesiredCapabilities());
       running = session;
       return Either.right(
         new CreateSessionResponse(

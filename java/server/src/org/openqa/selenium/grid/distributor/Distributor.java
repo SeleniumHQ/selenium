@@ -195,7 +195,7 @@ public abstract class Distributor implements HasReadyState, Predicate<HttpReques
 
         // Reject new session immediately if no node has the required capabilities
         boolean hostsWithCaps = model.stream()
-          .anyMatch(nodeStatus -> nodeStatus.hasCapability(firstRequest.getCapabilities()));
+          .anyMatch(nodeStatus -> nodeStatus.hasCapability(firstRequest.getDesiredCapabilities()));
 
         if (!hostsWithCaps) {
           String errorMessage = String.format(
@@ -214,7 +214,7 @@ public abstract class Distributor implements HasReadyState, Predicate<HttpReques
         }
 
         // Find a Node that supports the capabilities present in the new session
-        Set<SlotId> slotIds = slotSelector.selectSlot(firstRequest.getCapabilities(), model);
+        Set<SlotId> slotIds = slotSelector.selectSlot(firstRequest.getDesiredCapabilities(), model);
         if (!slotIds.isEmpty()) {
           selected = reserve(slotIds.iterator().next(), firstRequest);
         } else {

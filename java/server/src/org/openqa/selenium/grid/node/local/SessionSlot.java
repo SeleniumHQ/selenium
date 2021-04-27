@@ -134,7 +134,7 @@ public class SessionSlot implements
       return Either.left(new RetrySessionRequestException("Slot is busy. Try another slot."));
     }
 
-    if (!test(sessionRequest.getCapabilities())) {
+    if (!test(sessionRequest.getDesiredCapabilities())) {
       return Either.left(new SessionNotCreatedException("New session request capabilities do not "
                                                         + "match the stereotype."));
     }

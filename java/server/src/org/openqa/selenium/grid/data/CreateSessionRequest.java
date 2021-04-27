@@ -53,7 +53,7 @@ public class CreateSessionRequest {
     return downstreamDialects;
   }
 
-  public Capabilities getCapabilities() {
+  public Capabilities getDesiredCapabilities() {
     return capabilities;
   }
 
@@ -69,7 +69,7 @@ public class CreateSessionRequest {
     input.beginObject();
     while (input.hasNext()) {
       switch (input.nextName()) {
-        case "capabilities":
+        case "desiredCapabilities":
           capabilities = input.read(Capabilities.class);
           break;
 

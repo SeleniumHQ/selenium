@@ -94,14 +94,14 @@ public class DriverServiceSessionFactory implements SessionFactory {
       return Either.left(new SessionNotCreatedException("No downstream dialects were found."));
     }
 
-    if (!test(sessionRequest.getCapabilities())) {
+    if (!test(sessionRequest.getDesiredCapabilities())) {
       return Either.left(new SessionNotCreatedException("New session request capabilities do not "
                                                         + "match the stereotype."));
     }
 
     try (Span span = tracer.getCurrentContext().createSpan("driver_service_factory.apply")) {
 
-      Capabilities capabilities = browserOptionsMutator.apply(sessionRequest.getCapabilities());
+      Capabilities capabilities = browserOptionsMutator.apply(sessionRequest.getDesiredCapabilities());
 
       Optional<Platform> platformName = Optional.ofNullable(capabilities.getPlatformName());
       if (platformName.isPresent()) {
