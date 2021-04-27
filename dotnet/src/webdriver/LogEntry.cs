@@ -1,4 +1,4 @@
-﻿// <copyright file="LogEntry.cs" company="WebDriver Committers">
+// <copyright file="LogEntry.cs" company="WebDriver Committers">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements. See the NOTICE file
 // distributed with this work for additional information
@@ -36,6 +36,19 @@ namespace OpenQA.Selenium
         /// </summary>
         private LogEntry()
         {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="LogEntry"/> class with predefined timestamp, log level and message
+        /// </summary>
+        /// <param name="timestamp"></param>
+        /// <param name="level"></param>
+        /// <param name="message"></param>
+        public LogEntry(DateTime timestamp, LogLevel level, string message)
+        {
+            this.timestamp = timestamp;
+            this.level = level;
+            this.message = message ?? string.Empty;
         }
 
         /// <summary>
