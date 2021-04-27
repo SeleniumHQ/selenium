@@ -56,6 +56,7 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
@@ -244,11 +245,13 @@ public class LocalDistributorTest {
       .build();
     distributor.add(node);
 
-    SessionRequest sessionRequest = new SessionRequest(
-      new RequestId(UUID.randomUUID()),
-      Instant.now(),
-      Set.of(W3C),
-      Set.of(new ImmutableCapabilities("browserName", "cheese")));
+    SessionRequest sessionRequest =
+        new SessionRequest(
+            new RequestId(UUID.randomUUID()),
+            Instant.now(),
+            Set.of(W3C),
+            Set.of(new ImmutableCapabilities("browserName", "cheese")),
+            Map.of());
 
     List<Callable<SessionId>> callables = new ArrayList<>();
     for (int i = 0; i < 3; i++) {

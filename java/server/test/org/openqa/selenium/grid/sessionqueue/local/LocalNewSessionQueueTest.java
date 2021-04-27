@@ -56,6 +56,7 @@ import java.time.Instant;
 import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
@@ -122,7 +123,8 @@ public class LocalNewSessionQueueTest {
       new RequestId(UUID.randomUUID()),
       Instant.now(),
       Set.of(W3C),
-      Set.of(CAPS));
+      Set.of(CAPS),
+      Map.of());
   }
 
   @Parameterized.Parameters
@@ -377,7 +379,8 @@ public class LocalNewSessionQueueTest {
         new RequestId(UUID.randomUUID()),
         Instant.now(),
         Set.of(W3C),
-        Set.of(CAPS));
+        Set.of(CAPS),
+        Map.of());
 
       return queue.addToQueue(sessionRequest);
     };
@@ -409,7 +412,8 @@ public class LocalNewSessionQueueTest {
       new RequestId(UUID.randomUUID()),
       LONG_AGO,
       Set.of(W3C),
-      Set.of(CAPS));
+      Set.of(CAPS),
+      Map.of());
 
     AtomicInteger count = new AtomicInteger();
 
@@ -438,7 +442,8 @@ public class LocalNewSessionQueueTest {
       new RequestId(UUID.randomUUID()),
       LONG_AGO,
       Set.of(W3C),
-      Set.of(CAPS));
+      Set.of(CAPS),
+      Map.of());
     localQueue.injectIntoQueue(sessionRequest);
 
     queue.remove(sessionRequest.getRequestId());
@@ -456,7 +461,8 @@ public class LocalNewSessionQueueTest {
         new RequestId(UUID.randomUUID()),
         Instant.now(),
         Set.of(W3C),
-        Set.of(CAPS));
+        Set.of(CAPS),
+        Map.of());
       return queue.addToQueue(sessionRequest);
     };
 

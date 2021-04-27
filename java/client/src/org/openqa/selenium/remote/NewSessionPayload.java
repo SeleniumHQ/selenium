@@ -322,6 +322,37 @@ public class NewSessionPayload implements Closeable {
     return dialects.isEmpty() ? ImmutableSet.of(DEFAULT_DIALECT) : dialects;
   }
 
+  public Map<String, Object> getMetadata() {
+    Set<String> ignoredMetadataKeys = ImmutableSet.of("capabilities", "desiredCapabilities");
+
+    CharSource charSource = backingStore.asByteSource().asCharSource(UTF_8);
+    try (Reader reader = charSource.openBufferedStream();
+         JsonInput input = json.newInput(reader)) {
+      ImmutableMap.Builder<String, Object> toReturn = ImmutableMap.builder();
+
+      input.beginObject();
+      while (input.hasNext()) {
+        String name = input.nextName();
+        if (ignoredMetadataKeys.contains(name)) {
+          input.skipValue();
+          continue;
+        }
+
+        Object value = input.read(Object.class);
+        if (value == null) {
+          continue;
+        }
+
+        toReturn.put(name, value);
+      }
+      input.endObject();
+
+      return toReturn.build();
+    } catch (IOException e) {
+      throw new UncheckedIOException(e);
+    }
+  }
+
   @Override
   public void close() {
     try {

@@ -110,7 +110,8 @@ public class GraphqlHandlerTest {
       new RequestId(UUID.randomUUID()),
       Instant.now(),
       Set.of(OSS, W3C),
-      Set.of(caps));
+      Set.of(caps),
+      Map.of());
 
     queue = new LocalNewSessionQueue(
       tracer,
@@ -176,7 +177,8 @@ public class GraphqlHandlerTest {
       new RequestId(UUID.randomUUID()),
       Instant.now(),
       Set.of(W3C),
-      Set.of(caps));
+      Set.of(caps),
+      Map.of());
 
     continueOnceAddedToQueue(request);
     GraphqlHandler handler = new GraphqlHandler(tracer, distributor, queue, publicUri, version);
@@ -196,7 +198,8 @@ public class GraphqlHandlerTest {
       new RequestId(UUID.randomUUID()),
       Instant.now(),
       Set.of(W3C),
-      Set.of(caps));
+      Set.of(caps),
+      Map.of());
 
     continueOnceAddedToQueue(request);
 

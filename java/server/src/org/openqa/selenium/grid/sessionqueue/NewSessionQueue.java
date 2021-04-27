@@ -70,7 +70,8 @@ public abstract class NewSessionQueue implements HasReadyState, Routable {
               new RequestId(UUID.randomUUID()),
               Instant.now(),
               payload.getDownstreamDialects(),
-              payload.stream().collect(Collectors.toSet()));
+              payload.stream().collect(Collectors.toSet()),
+              payload.getMetadata());
             return addToQueue(sessionRequest);
           } catch (IOException e) {
             throw new UncheckedIOException(e);

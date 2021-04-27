@@ -59,7 +59,6 @@ import org.openqa.selenium.grid.web.CombinedHandler;
 import org.openqa.selenium.internal.Either;
 import org.openqa.selenium.net.PortProber;
 import org.openqa.selenium.remote.Dialect;
-import org.openqa.selenium.remote.NewSessionPayload;
 import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpHandler;
@@ -70,7 +69,6 @@ import org.openqa.selenium.remote.tracing.Tracer;
 import org.openqa.selenium.support.ui.FluentWait;
 import org.openqa.selenium.support.ui.Wait;
 
-import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.net.MalformedURLException;
 import java.net.URI;
@@ -97,8 +95,6 @@ import static org.junit.Assert.assertTrue;
 import static org.openqa.selenium.grid.data.Availability.DOWN;
 import static org.openqa.selenium.grid.data.Availability.UP;
 import static org.openqa.selenium.remote.Dialect.W3C;
-import static org.openqa.selenium.remote.http.Contents.utf8String;
-import static org.openqa.selenium.remote.http.HttpMethod.POST;
 
 public class DistributorTest {
 
@@ -1043,21 +1039,8 @@ public class DistributorTest {
       new RequestId(UUID.randomUUID()),
       Instant.now(),
       Set.of(W3C),
-      Set.of(allCaps));
-  }
-
-  private HttpRequest createRequest(NewSessionPayload payload) {
-    StringBuilder builder = new StringBuilder();
-    try {
-      payload.writeTo(builder);
-    } catch (IOException e) {
-      throw new UncheckedIOException(e);
-    }
-
-    HttpRequest request = new HttpRequest(POST, "/se/grid/distributor/session");
-    request.setContent(utf8String(builder.toString()));
-
-    return request;
+      Set.of(allCaps),
+      Map.of());
   }
 
   private URI createUri() {

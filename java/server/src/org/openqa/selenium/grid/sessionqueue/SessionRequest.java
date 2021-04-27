@@ -18,6 +18,7 @@
 package org.openqa.selenium.grid.sessionqueue;
 
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableSet;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.grid.data.RequestId;
 import org.openqa.selenium.internal.Require;
@@ -34,6 +35,9 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import static java.util.Collections.emptyMap;
+import static org.openqa.selenium.json.Json.MAP_TYPE;
+
 public class SessionRequest {
 
   private static final Type SET_OF_CAPABILITIES = new TypeToken<Set<Capabilities>>() {}.getType();
@@ -42,6 +46,7 @@ public class SessionRequest {
   private final Instant enqueued;
   private final Set<Capabilities> desiredCapabilities;
   private final Set<Dialect> downstreamDialects;
+  private final Map<String, Object> metadata;
 
   public SessionRequest(RequestId requestId, HttpRequest request, Instant enqueued) {
     this.requestId = Require.nonNull("Request ID", requestId);
@@ -51,6 +56,7 @@ public class SessionRequest {
     try (NewSessionPayload payload = NewSessionPayload.create(Contents.reader(request))) {
       desiredCapabilities = payload.stream().collect(Collectors.toSet());
       downstreamDialects = payload.getDownstreamDialects();
+      metadata = payload.getMetadata();
     }
   }
 
@@ -58,11 +64,13 @@ public class SessionRequest {
     RequestId requestId,
     Instant enqueued,
     Set<Dialect> downstreamDialects,
-    Set<Capabilities> desiredCapabilities) {
+    Set<Capabilities> desiredCapabilities,
+    Map<String, Object> metadata) {
     this.requestId = Require.nonNull("Request ID", requestId);
     this.enqueued = Require.nonNull("Enqueud time", enqueued);
-    this.downstreamDialects = Require.nonNull("Downstream dialects", downstreamDialects);
-    this.desiredCapabilities = Require.nonNull("Capabilities", desiredCapabilities);
+    this.downstreamDialects = ImmutableSet.copyOf(Require.nonNull("Downstream dialects", downstreamDialects));
+    this.desiredCapabilities = ImmutableSet.copyOf(Require.nonNull("Capabilities", desiredCapabilities));
+    this.metadata = ImmutableMap.copyOf(Require.nonNull("Metadata", metadata));
   }
 
   public RequestId getRequestId() {
@@ -86,7 +94,8 @@ public class SessionRequest {
       "requestId", requestId,
       "enqueued", enqueued,
       "dialects", downstreamDialects,
-      "capabilities", desiredCapabilities);
+      "capabilities", desiredCapabilities,
+      "metadata", metadata);
   }
 
   private static SessionRequest fromJson(JsonInput input) {
@@ -94,6 +103,7 @@ public class SessionRequest {
     Instant enqueued = null;
     Set<Capabilities> capabilities = null;
     Set<Dialect> dialects = null;
+    Map<String, Object> metadata = emptyMap();
 
     input.beginObject();
     while (input.hasNext()) {
@@ -110,6 +120,10 @@ public class SessionRequest {
           enqueued = input.read(Instant.class);
           break;
 
+        case "metadata":
+          metadata = input.read(MAP_TYPE);
+          break;
+
         case "requestId":
           id = input.read(RequestId.class);
           break;
@@ -121,6 +135,6 @@ public class SessionRequest {
     }
     input.endObject();
 
-    return new SessionRequest(id, enqueued, dialects, capabilities);
+    return new SessionRequest(id, enqueued, dialects, capabilities, metadata);
   }
 }
