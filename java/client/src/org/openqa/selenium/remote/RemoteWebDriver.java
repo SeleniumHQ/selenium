@@ -88,6 +88,7 @@ import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static java.util.Collections.singleton;
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.openqa.selenium.remote.CapabilityType.LOGGING_PREFS;
 import static org.openqa.selenium.remote.CapabilityType.PLATFORM;
@@ -248,7 +249,7 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor, HasInputD
   }
 
   protected void startSession(Capabilities capabilities) {
-    Response response = execute(DriverCommand.NEW_SESSION(capabilities));
+    Response response = execute(DriverCommand.NEW_SESSION(singleton(capabilities)));
 
     if (response == null) {
       throw new SessionNotCreatedException(
@@ -269,7 +270,7 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor, HasInputD
         response.toString());
     }
 
-    Map<String, Object> rawCapabilities = (Map<String, Object>) responseValue;
+    @SuppressWarnings("unchecked") Map<String, Object> rawCapabilities = (Map<String, Object>) responseValue;
     MutableCapabilities returnedCapabilities = new MutableCapabilities(rawCapabilities);
     String platformString = (String) rawCapabilities.getOrDefault(
       PLATFORM,
