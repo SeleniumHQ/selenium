@@ -15,12 +15,9 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.grid.sessionqueue;
+package org.openqa.selenium.grid.data;
 
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.ImmutableSet;
 import org.openqa.selenium.Capabilities;
-import org.openqa.selenium.grid.data.RequestId;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.JsonInput;
 import org.openqa.selenium.json.TypeToken;
@@ -31,11 +28,18 @@ import org.openqa.selenium.remote.http.HttpRequest;
 
 import java.lang.reflect.Type;
 import java.time.Instant;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeMap;
 import java.util.stream.Collectors;
 
 import static java.util.Collections.emptyMap;
+import static java.util.Collections.unmodifiableMap;
+import static java.util.Collections.unmodifiableSet;
 import static org.openqa.selenium.json.Json.MAP_TYPE;
 
 public class SessionRequest {
@@ -68,9 +72,11 @@ public class SessionRequest {
     Map<String, Object> metadata) {
     this.requestId = Require.nonNull("Request ID", requestId);
     this.enqueued = Require.nonNull("Enqueud time", enqueued);
-    this.downstreamDialects = ImmutableSet.copyOf(Require.nonNull("Downstream dialects", downstreamDialects));
-    this.desiredCapabilities = ImmutableSet.copyOf(Require.nonNull("Capabilities", desiredCapabilities));
-    this.metadata = ImmutableMap.copyOf(Require.nonNull("Metadata", metadata));
+    this.downstreamDialects = unmodifiableSet(
+      new HashSet<>(Require.nonNull("Downstream dialects", downstreamDialects)));
+    this.desiredCapabilities = unmodifiableSet(
+      new LinkedHashSet<>(Require.nonNull("Capabilities", desiredCapabilities)));
+    this.metadata = Collections.unmodifiableMap(new TreeMap<>(Require.nonNull("Metadata", metadata)));
   }
 
   public RequestId getRequestId() {
@@ -90,12 +96,13 @@ public class SessionRequest {
   }
 
   private Map<String, Object> toJson() {
-    return ImmutableMap.of(
-      "requestId", requestId,
-      "enqueued", enqueued,
-      "dialects", downstreamDialects,
-      "capabilities", desiredCapabilities,
-      "metadata", metadata);
+    Map<String, Object> toReturn = new HashMap<>();
+    toReturn.put("requestId", requestId);
+    toReturn.put("enqueued", enqueued);
+    toReturn.put("dialects", downstreamDialects);
+    toReturn.put("capabilities", desiredCapabilities);
+    toReturn.put("metadata", metadata);
+    return unmodifiableMap(toReturn);
   }
 
   private static SessionRequest fromJson(JsonInput input) {

@@ -34,7 +34,7 @@ import org.openqa.selenium.grid.node.Node;
 import org.openqa.selenium.grid.security.RequiresSecretFilter;
 import org.openqa.selenium.grid.security.Secret;
 import org.openqa.selenium.grid.sessionmap.SessionMap;
-import org.openqa.selenium.grid.sessionqueue.SessionRequest;
+import org.openqa.selenium.grid.data.SessionRequest;
 import org.openqa.selenium.internal.Either;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.Json;

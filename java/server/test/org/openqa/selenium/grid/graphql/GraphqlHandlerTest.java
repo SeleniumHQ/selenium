@@ -42,7 +42,7 @@ import org.openqa.selenium.grid.security.Secret;
 import org.openqa.selenium.grid.sessionmap.SessionMap;
 import org.openqa.selenium.grid.sessionmap.local.LocalSessionMap;
 import org.openqa.selenium.grid.sessionqueue.NewSessionQueue;
-import org.openqa.selenium.grid.sessionqueue.SessionRequest;
+import org.openqa.selenium.grid.data.SessionRequest;
 import org.openqa.selenium.grid.sessionqueue.local.LocalNewSessionQueue;
 import org.openqa.selenium.grid.testing.TestSessionFactory;
 import org.openqa.selenium.internal.Either;

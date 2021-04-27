@@ -36,7 +36,7 @@ import org.openqa.selenium.grid.data.RequestId;
 import org.openqa.selenium.grid.data.Session;
 import org.openqa.selenium.grid.security.Secret;
 import org.openqa.selenium.grid.sessionqueue.NewSessionQueue;
-import org.openqa.selenium.grid.sessionqueue.SessionRequest;
+import org.openqa.selenium.grid.data.SessionRequest;
 import org.openqa.selenium.grid.sessionqueue.remote.RemoteNewSessionQueue;
 import org.openqa.selenium.grid.testing.PassthroughHttpClient;
 import org.openqa.selenium.internal.Debug;

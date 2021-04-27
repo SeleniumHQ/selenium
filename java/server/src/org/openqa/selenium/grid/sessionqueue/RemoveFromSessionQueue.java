@@ -23,6 +23,7 @@ import static org.openqa.selenium.remote.tracing.Tags.HTTP_REQUEST;
 import static org.openqa.selenium.remote.tracing.Tags.HTTP_RESPONSE;
 
 import org.openqa.selenium.grid.data.RequestId;
+import org.openqa.selenium.grid.data.SessionRequest;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.http.Contents;
 import org.openqa.selenium.remote.http.HttpHandler;

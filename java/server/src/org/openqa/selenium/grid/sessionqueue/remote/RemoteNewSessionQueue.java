@@ -28,7 +28,7 @@ import org.openqa.selenium.grid.security.Secret;
 import org.openqa.selenium.grid.security.SecretOptions;
 import org.openqa.selenium.grid.server.NetworkOptions;
 import org.openqa.selenium.grid.sessionqueue.NewSessionQueue;
-import org.openqa.selenium.grid.sessionqueue.SessionRequest;
+import org.openqa.selenium.grid.data.SessionRequest;
 import org.openqa.selenium.grid.sessionqueue.config.NewSessionQueueOptions;
 import org.openqa.selenium.grid.web.Values;
 import org.openqa.selenium.internal.Either;

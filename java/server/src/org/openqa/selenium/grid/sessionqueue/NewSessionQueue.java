@@ -21,6 +21,7 @@ import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.grid.data.CreateSessionResponse;
 import org.openqa.selenium.grid.data.RequestId;
+import org.openqa.selenium.grid.data.SessionRequest;
 import org.openqa.selenium.grid.security.RequiresSecretFilter;
 import org.openqa.selenium.grid.security.Secret;
 import org.openqa.selenium.internal.Either;
