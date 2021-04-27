@@ -81,6 +81,111 @@ namespace OpenQA.Selenium
         }
 
         /// <summary>
+        /// Creates a new <see cref="RelativeBy"/> for finding elements with the specified class name.
+        /// </summary>
+        /// <param name="className">The class name of the element to find.</param>
+        /// <returns>A <see cref="RelativeBy"/> object to be used in finding the elements.</returns>
+        public static RelativeBy WithClassName(string className)
+        {
+            if (string.IsNullOrEmpty(className))
+            {
+                throw new ArgumentException("Class name must not be null or the empty string", "className");
+            }
+
+            return new RelativeBy(By.ClassName(className));
+        }
+
+        /// <summary>
+        /// Creates a new <see cref="RelativeBy"/> for finding elements with the specified id.
+        /// </summary>
+        /// <param name="id">The id of the element to find.</param>
+        /// <returns>A <see cref="RelativeBy"/> object to be used in finding the elements.</returns>
+        public static RelativeBy WithId(string id)
+        {
+            if (string.IsNullOrEmpty(id))
+            {
+                throw new ArgumentException("Id must not be null or the empty string", "id");
+            }
+
+            return new RelativeBy(By.Id(id));
+        }
+
+        /// <summary>
+        /// Creates a new <see cref="RelativeBy"/> for finding elements with the specified name.
+        /// </summary>
+        /// <param name="name">The name of the element to find.</param>
+        /// <returns>A <see cref="RelativeBy"/> object to be used in finding the elements.</returns>
+        public static RelativeBy WithName(string name)
+        {
+            if (string.IsNullOrEmpty(name))
+            {
+                throw new ArgumentException("Name must not be null or the empty string", "name");
+            }
+
+            return new RelativeBy(By.Name(name));
+        }
+
+        /// <summary>
+        /// Creates a new <see cref="RelativeBy"/> for finding elements with the specified link text.
+        /// </summary>
+        /// <param name="linkText">The link text of the element to find.</param>
+        /// <returns>A <see cref="RelativeBy"/> object to be used in finding the elements.</returns>
+        public static RelativeBy WithLinkText(string linkText)
+        {
+            if (string.IsNullOrEmpty(linkText))
+            {
+                throw new ArgumentException("Link text must not be null or the empty string", "linkText");
+            }
+
+            return new RelativeBy(By.LinkText(linkText));
+        }
+
+        /// <summary>
+        /// Creates a new <see cref="RelativeBy"/> for finding elements with the specified partial link text.
+        /// </summary>
+        /// <param name="linkText">The link text of the element to find.</param>
+        /// <returns>A <see cref="RelativeBy"/> object to be used in finding the elements.</returns>
+        public static RelativeBy WithPartialLinkText(string linkText)
+        {
+            if (string.IsNullOrEmpty(linkText))
+            {
+                throw new ArgumentException("Link text must not be null or the empty string", "linkText");
+            }
+
+            return new RelativeBy(By.PartialLinkText(linkText));
+        }
+
+        /// <summary>
+        /// Creates a new <see cref="RelativeBy"/> for finding elements with the specified CSS selector.
+        /// </summary>
+        /// <param name="cssSelector">The link text of the element to find.</param>
+        /// <returns>A <see cref="RelativeBy"/> object to be used in finding the elements.</returns>
+        public static RelativeBy WithCssSelector(string cssSelector)
+        {
+            if (string.IsNullOrEmpty(cssSelector))
+            {
+                throw new ArgumentException("CSS selector must not be null or the empty string", "cssSelector");
+            }
+
+            return new RelativeBy(By.CssSelector(cssSelector));
+        }
+
+        /// <summary>
+        /// Creates a new <see cref="RelativeBy"/> for finding elements with the specified XPath.
+        /// </summary>
+        /// <param name="xPath">The XPath of the element to find.</param>
+        /// <returns>A <see cref="RelativeBy"/> object to be used in finding the elements.</returns>
+        public static RelativeBy WithXPath(string xPath)
+        {
+            if (string.IsNullOrEmpty(xPath))
+            {
+                throw new ArgumentException("XPath must not be null or the empty string", "xPath");
+            }
+
+            return new RelativeBy(By.XPath(xPath));
+        }
+
+        /// <summary>
         /// Finds the first element matching the criteria.
         /// </summary>
         /// <param name="context">An <see cref="ISearchContext"/> object to use to search for the elements.</param>
