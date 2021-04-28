@@ -32,7 +32,7 @@ class WebDriverWait(object):
             - timeout - Number of seconds before timing out
             - poll_frequency - sleep interval between calls
               By default, it is 0.5 second.
-            - ignored_exceptions - iterable structure of exception classes ignored during calls.
+            - ignored_exceptions - iterable structure of exception classes ignored during calls. N.B. `selenium.common.exceptions.TimeoutException` is not ignored for `until(self, method, message='')` and `until_not(self, method, message='')` 
               By default, it contains NoSuchElementException only.
 
            Example::
