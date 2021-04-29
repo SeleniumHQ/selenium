@@ -47,7 +47,12 @@ import java.util.concurrent.TimeoutException;
 public class DriverCommandExecutor extends HttpCommandExecutor implements Closeable {
 
   private final DriverService service;
-  private final ExecutorService executorService = Executors.newFixedThreadPool(2);
+  private final ExecutorService executorService = Executors.newFixedThreadPool(2,  r -> {
+    Thread thread = new Thread(r);
+    thread.setName("Driver Command Executor");
+    thread.setDaemon(true);
+    return thread;
+  });
 
   /**
    * Creates a new DriverCommandExecutor which will communicate with the driver as configured
@@ -158,7 +163,7 @@ public class DriverCommandExecutor extends HttpCommandExecutor implements Closea
   }
 
   @Override
-  public void close() throws IOException {
+  public void close() {
     executorService.shutdownNow();
   }
 }
