@@ -23,6 +23,7 @@ import org.asynchttpclient.AsyncHttpClient;
 import org.asynchttpclient.DefaultAsyncHttpClientConfig;
 import org.asynchttpclient.Dsl;
 import org.asynchttpclient.config.AsyncHttpClientConfigDefaults;
+import org.asynchttpclient.proxy.ProxyServer;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.http.ClientConfig;
 import org.openqa.selenium.remote.http.Filter;
@@ -94,7 +95,9 @@ public class NettyClient implements HttpClient {
         .setNettyTimer(TIMER)
         .setRequestTimeout(toClampedInt(config.readTimeout().toMillis()))
         .setConnectTimeout(toClampedInt(config.connectionTimeout().toMillis()))
-        .setReadTimeout(toClampedInt(config.readTimeout().toMillis()));
+        .setReadTimeout(toClampedInt(config.readTimeout().toMillis()))
+        .setUseProxyProperties(true)
+        .setUseProxySelector(true);
     return Dsl.asyncHttpClient(builder);
   }
 
