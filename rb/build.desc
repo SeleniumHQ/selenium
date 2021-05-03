@@ -12,7 +12,7 @@ rubygem(
   ]
 )
 
-rubydevtoolsgem(
+rubygem(
   gemspec = "build/rb/selenium-devtools.gemspec",
   name = "devtools",
   deps = [
@@ -90,6 +90,7 @@ ruby_test(name = "chrome",
   ],
   deps = [
     ":chrome",
+    ":devtools",
     ":bidi"
   ]
 )
@@ -106,6 +107,7 @@ ruby_test(name = "remote-chrome",
   ],
   deps = [
     ":chrome",
+    ":devtools",
     ":bidi",
     ":remote"
   ]
@@ -130,6 +132,7 @@ ruby_test(name = "edge",
   ],
   deps = [
     ":edge",
+    ":devtools",
     ":bidi"
   ]
 )
@@ -146,6 +149,7 @@ ruby_test(name = "remote-edge",
   ],
   deps = [
     ":edge",
+    ":devtools",
     ":bidi",
     ":remote"
   ]
@@ -182,6 +186,7 @@ ruby_test(name = "firefox-nightly",
   ],
   deps = [
     ":firefox",
+    ":devtools",
     ":bidi"
   ]
 )
@@ -327,7 +332,6 @@ ruby_library(name = "bidi",
   ],
   deps = [
     ":common",
-    ":devtools"
   ],
   resources = [
     { "../javascript/cdp-support/mutation-listener.js": "rb/lib/selenium/webdriver/atoms/mutationListener.js" }
@@ -339,6 +343,7 @@ ruby_library(name = "devtools",
     "selenium-devtools.gemspec",
     "lib/selenium/devtools.rb",
     "lib/selenium/devtools/version.rb",
+    "Gemfile",
     "NOTICE",
     "CHANGES",
     "README.md"
