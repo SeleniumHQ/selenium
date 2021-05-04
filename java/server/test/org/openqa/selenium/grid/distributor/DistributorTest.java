@@ -40,6 +40,7 @@ import org.openqa.selenium.grid.data.NodeHeartBeatEvent;
 import org.openqa.selenium.grid.data.NodeStatus;
 import org.openqa.selenium.grid.data.RequestId;
 import org.openqa.selenium.grid.data.Session;
+import org.openqa.selenium.grid.data.SessionRequest;
 import org.openqa.selenium.grid.data.Slot;
 import org.openqa.selenium.grid.distributor.local.LocalDistributor;
 import org.openqa.selenium.grid.distributor.remote.RemoteDistributor;
@@ -51,7 +52,6 @@ import org.openqa.selenium.grid.security.Secret;
 import org.openqa.selenium.grid.sessionmap.SessionMap;
 import org.openqa.selenium.grid.sessionmap.local.LocalSessionMap;
 import org.openqa.selenium.grid.sessionqueue.NewSessionQueue;
-import org.openqa.selenium.grid.data.SessionRequest;
 import org.openqa.selenium.grid.sessionqueue.local.LocalNewSessionQueue;
 import org.openqa.selenium.grid.testing.EitherAssert;
 import org.openqa.selenium.grid.testing.PassthroughHttpClient;
@@ -741,12 +741,13 @@ public class DistributorTest {
 
     // Use up the one slot available
     Session session;
-    Either<SessionNotCreatedException, CreateSessionResponse> result =
-      distributor.newSession(createRequest(caps));
+    Either<SessionNotCreatedException, CreateSessionResponse> result = distributor.newSession(createRequest(caps));
     assertThatEither(result).isRight();
     session = result.right().getSession();
     // Make sure the session map has the session
     sessions.get(session.getId());
+
+    Session argleBlarg = sessions.get(session.getId());
 
     node.stop(session.getId());
     // Now wait for the session map to say the session is gone.
@@ -1006,6 +1007,15 @@ public class DistributorTest {
     return node;
   }
 
+  private Node createBrokenNode(Capabilities stereotype) {
+    URI uri = createUri();
+    return LocalNode.builder(tracer, bus, uri, uri, registrationSecret)
+      .add(
+        stereotype,
+        new TestSessionFactory(stereotype, (id, caps) -> {throw new SessionNotCreatedException("Surprise!");}))
+      .build();
+  }
+
   @Test
   @Ignore
   public void shouldCorrectlySetSessionCountsWhenStartedAfterNodeWithSession() {
@@ -1051,6 +1061,56 @@ public class DistributorTest {
 
     DistributorStatus status = local.getStatus();
     assertFalse(status.hasCapacity());
+  }
+
+  @Test
+  public void shouldFallbackToSecondAvailableCapabilitiesIfFirstNotAvailable() {
+    local.add(createNode(new ImmutableCapabilities("browserName", "not cheese"), 1, 1));
+    local.add(createNode(new ImmutableCapabilities("browserName", "cheese"), 1, 0));
+    waitToHaveCapacity(local);
+
+    SessionRequest sessionRequest = new SessionRequest(
+      new RequestId(UUID.randomUUID()),
+      Instant.now(),
+      Set.of(W3C),
+      // Insertion order is assumed to be preserved
+        ImmutableSet.of(
+            // There's no capacity for this
+              new ImmutableCapabilities("browserName", "not cheese"),
+            // But there is for this, so we expect this to be created.
+              new ImmutableCapabilities("browserName", "cheese")),
+      Map.of());
+
+    Either<SessionNotCreatedException, CreateSessionResponse> result = local.newSession(sessionRequest);
+
+    assertThat(result.isRight()).isTrue();
+    Capabilities seen = result.right().getSession().getCapabilities();
+    assertThat(seen.getBrowserName()).isEqualTo("cheese");
+  }
+
+  @Test
+  public void shouldFallbackToSecondAvailableCapabilitiesIfFirstThrowsOnCreation() {
+    local.add(createBrokenNode(new ImmutableCapabilities("browserName", "not cheese")));
+    local.add(createNode(new ImmutableCapabilities("browserName", "cheese"), 1, 0));
+    waitToHaveCapacity(local);
+
+    SessionRequest sessionRequest = new SessionRequest(
+      new RequestId(UUID.randomUUID()),
+      Instant.now(),
+      Set.of(W3C),
+      // Insertion order is assumed to be preserved
+        ImmutableSet.of(
+            // There's no capacity for this
+              new ImmutableCapabilities("browserName", "not cheese"),
+            // But there is for this, so we expect this to be created.
+              new ImmutableCapabilities("browserName", "cheese")),
+      Map.of());
+
+    Either<SessionNotCreatedException, CreateSessionResponse> result = local.newSession(sessionRequest);
+
+    assertThat(result.isRight()).isTrue();
+    Capabilities seen = result.right().getSession().getCapabilities();
+    assertThat(seen.getBrowserName()).isEqualTo("cheese");
   }
 
   private SessionRequest createRequest(Capabilities... allCaps) {

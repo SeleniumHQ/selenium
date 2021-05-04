@@ -17,7 +17,6 @@
 
 package org.openqa.selenium.grid.distributor.local;
 
-import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import org.openqa.selenium.Beta;
 import org.openqa.selenium.Capabilities;
@@ -75,7 +74,6 @@ import java.io.UncheckedIOException;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -92,15 +90,16 @@ import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.stream.Collectors;
 
 import static com.google.common.collect.ImmutableSet.toImmutableSet;
 import static org.openqa.selenium.grid.data.Availability.DOWN;
 import static org.openqa.selenium.grid.data.Availability.DRAINING;
+import static org.openqa.selenium.internal.Debug.getDebugLogLevel;
 import static org.openqa.selenium.remote.RemoteTags.CAPABILITIES;
 import static org.openqa.selenium.remote.RemoteTags.CAPABILITIES_EVENT;
 import static org.openqa.selenium.remote.RemoteTags.SESSION_ID;
 import static org.openqa.selenium.remote.RemoteTags.SESSION_ID_EVENT;
+import static org.openqa.selenium.remote.tracing.AttributeKey.SESSION_URI;
 import static org.openqa.selenium.remote.tracing.Tags.EXCEPTION;
 
 public class LocalDistributor extends Distributor {
@@ -353,19 +352,19 @@ public class LocalDistributor extends Distributor {
     throws SessionNotCreatedException {
     Require.nonNull("Requests to process", request);
 
-    Span span = tracer.getCurrentContext().createSpan("distributor.create_session_response");
+    Span span = tracer.getCurrentContext().createSpan("distributor.new_session");
     Map<String, EventAttributeValue> attributeMap = new HashMap<>();
     try {
       attributeMap.put(AttributeKey.LOGGER_CLASS.getKey(),
         EventAttribute.setValue(getClass().getName()));
 
-      Iterator<Capabilities> iterator = request.getDesiredCapabilities().iterator();
       attributeMap.put("request.payload", EventAttribute.setValue(request.getDesiredCapabilities().toString()));
       String sessionReceivedMessage = "Session request received by the distributor";
       span.addEvent(sessionReceivedMessage, attributeMap);
       LOG.info(String.format("%s: \n %s", sessionReceivedMessage, request.getDesiredCapabilities()));
 
-      if (!iterator.hasNext()) {
+      // If there are no capabilities at all, something is horribly wrong
+      if (request.getDesiredCapabilities().isEmpty()) {
         SessionNotCreatedException exception =
           new SessionNotCreatedException("No capabilities found in session request payload");
         EXCEPTION.accept(attributeMap, exception);
@@ -376,76 +375,87 @@ public class LocalDistributor extends Distributor {
         return Either.left(exception);
       }
 
-      Either<SessionNotCreatedException, CreateSessionResponse> selected;
-      CreateSessionRequest firstRequest = new CreateSessionRequest(
-        request.getDownstreamDialects(),
-        iterator.next(),
-        ImmutableMap.of("span", span));
-
-      Lock writeLock = this.lock.writeLock();
-      writeLock.lock();
-      try {
-        Set<NodeStatus> model = ImmutableSet.copyOf(getAvailableNodes());
-
-        // Reject new session immediately if no node has the required capabilities
-        boolean hostsWithCaps = model.stream()
-          .anyMatch(nodeStatus -> nodeStatus.hasCapability(firstRequest.getDesiredCapabilities()));
-
-        if (!hostsWithCaps) {
-          String errorMessage = String.format(
-            "No Node supports the required capabilities: %s",
-            request.getDesiredCapabilities().stream().map(Capabilities::toString)
-              .collect(Collectors.joining(", ")));
-          SessionNotCreatedException exception = new SessionNotCreatedException(errorMessage);
-          span.setAttribute(AttributeKey.ERROR.getKey(), true);
-          span.setStatus(Status.ABORTED);
-
-          EXCEPTION.accept(attributeMap, exception);
-          attributeMap.put(AttributeKey.EXCEPTION_MESSAGE.getKey(),
-            EventAttribute.setValue("Unable to create session: " + exception.getMessage()));
-          span.addEvent(AttributeKey.EXCEPTION_EVENT.getKey(), attributeMap);
-          return Either.left(exception);
-        }
-
-        // Find a Node that supports the capabilities present in the new session
-        Set<SlotId> slotIds = slotSelector.selectSlot(firstRequest.getDesiredCapabilities(), model);
-        if (!slotIds.isEmpty()) {
-          selected = reserve(slotIds.iterator().next(), firstRequest);
-        } else {
-          String errorMessage =
-            String.format(
-              "Unable to find provider for session: %s",
-              request.getDesiredCapabilities().stream().map(Capabilities::toString)
-                .collect(Collectors.joining(", ")));
-          SessionNotCreatedException exception = new RetrySessionRequestException(errorMessage);
-          selected = Either.left(exception);
-        }
-      } finally {
-        writeLock.unlock();
+      // If there are capabilities, but the Grid doesn't support them, bail too.
+      long unmatchableCount = request.getDesiredCapabilities().stream()
+        .filter(caps -> !isSupported(caps))
+        .count();
+      if (unmatchableCount == request.getDesiredCapabilities().size()) {
+        SessionNotCreatedException exception = new SessionNotCreatedException(
+          "No nodes support the capabilities in the request");
+        EXCEPTION.accept(attributeMap, exception);
+        attributeMap.put(
+          AttributeKey.EXCEPTION_MESSAGE.getKey(),
+          EventAttribute.setValue(exception.getMessage()));
+        span.addEvent(AttributeKey.EXCEPTION_EVENT.getKey(), attributeMap);
+        return Either.left(exception);
       }
 
-      if (selected.isRight()) {
-        CreateSessionResponse sessionResponse = selected.right();
+      boolean retry = false;
+      SessionNotCreatedException lastFailure = new SessionNotCreatedException("Unable to create new session");
+      for (Capabilities caps : request.getDesiredCapabilities()) {
+        if (!isSupported(caps)) {
+          continue;
+        }
 
-        sessions.add(sessionResponse.getSession());
-        SessionId sessionId = sessionResponse.getSession().getId();
-        Capabilities caps = sessionResponse.getSession().getCapabilities();
-        String sessionUri = sessionResponse.getSession().getUri().toString();
-        SESSION_ID.accept(span, sessionId);
-        CAPABILITIES.accept(span, caps);
-        SESSION_ID_EVENT.accept(attributeMap, sessionId);
-        CAPABILITIES_EVENT.accept(attributeMap, caps);
-        span.setAttribute(AttributeKey.SESSION_URI.getKey(), sessionUri);
-        attributeMap.put(AttributeKey.SESSION_URI.getKey(), EventAttribute.setValue(sessionUri));
+        // Try and find a slot that we can use for this session. While we
+        // are finding the slot, no other session can possibly be started.
+        // Therefore, spend as little time as possible holding the write
+        // lock, and release it as quickly as possible. Under no
+        // circumstances should we try to actually start the session itself
+        // in this next block of code.
+        SlotId selectedSlot = reserveSlot(request.getRequestId(), caps);
+        if (selectedSlot == null) {
+          LOG.info(String.format("Unable to find slot for request %s. May retry: %s ", request.getRequestId(), caps));
+          retry = true;
+          continue;
+        }
 
-        String sessionCreatedMessage = "Session created by the distributor";
-        span.addEvent(sessionCreatedMessage, attributeMap);
-        LOG.info(String.format("%s. Id: %s, Caps: %s", sessionCreatedMessage, sessionId, caps));
-        return Either.right(sessionResponse);
+        CreateSessionRequest singleRequest = new CreateSessionRequest(
+          request.getDownstreamDialects(),
+          caps,
+          request.getMetadata());
 
+        try {
+          CreateSessionResponse response = startSession(selectedSlot, singleRequest);
+          sessions.add(response.getSession());
+          model.setSession(selectedSlot, response.getSession());
+
+          SessionId sessionId = response.getSession().getId();
+          Capabilities sessionCaps = response.getSession().getCapabilities();
+          String sessionUri = response.getSession().getUri().toString();
+          SESSION_ID.accept(span, sessionId);
+          CAPABILITIES.accept(span, sessionCaps);
+          SESSION_ID_EVENT.accept(attributeMap, sessionId);
+          CAPABILITIES_EVENT.accept(attributeMap, sessionCaps);
+          span.setAttribute(SESSION_URI.getKey(), sessionUri);
+          attributeMap.put(SESSION_URI.getKey(), EventAttribute.setValue(sessionUri));
+
+          String sessionCreatedMessage = "Session created by the distributor";
+          span.addEvent(sessionCreatedMessage, attributeMap);
+          LOG.info(String.format("%s. Id: %s, Caps: %s", sessionCreatedMessage, sessionId, sessionCaps));
+
+          return Either.right(response);
+        } catch (SessionNotCreatedException e) {
+          model.setSession(selectedSlot, null);
+          lastFailure = e;
+        }
+      }
+
+      // If we've made it this far, we've not been able to start a session
+      if (retry) {
+        lastFailure = new RetrySessionRequestException(
+          "Will re-attempt to find a node which can run this session",
+          lastFailure);
+        attributeMap.put(
+          AttributeKey.EXCEPTION_MESSAGE.getKey(),
+          EventAttribute.setValue("Will retry session " + request.getRequestId()));
       } else {
-        return selected;
+        EXCEPTION.accept(attributeMap, lastFailure);
+        attributeMap.put(AttributeKey.EXCEPTION_MESSAGE.getKey(),
+          EventAttribute.setValue("Unable to create session: " + lastFailure.getMessage()));
+        span.addEvent(AttributeKey.EXCEPTION_EVENT.getKey(), attributeMap);
       }
+      return Either.left(lastFailure);
     } catch (SessionNotCreatedException e) {
       span.setAttribute(AttributeKey.ERROR.getKey(), true);
       span.setStatus(Status.ABORTED);
@@ -471,39 +481,72 @@ public class LocalDistributor extends Distributor {
     }
   }
 
-  protected Either<SessionNotCreatedException, CreateSessionResponse> reserve(
-    SlotId slotId,
-    CreateSessionRequest request) {
-    Require.nonNull("Slot ID", slotId);
-    Require.nonNull("New Session request", request);
+  private CreateSessionResponse startSession(SlotId selectedSlot, CreateSessionRequest singleRequest) {
+    Node node = nodes.get(selectedSlot.getOwningNodeId());
+    if (node == null) {
+      throw new SessionNotCreatedException("Unable to find owning node for slot");
+    }
+
+    Either<WebDriverException, CreateSessionResponse> result;
+    try {
+      result = node.newSession(singleRequest);
+    } catch (SessionNotCreatedException e) {
+      result = Either.left(e);
+    } catch (RuntimeException e) {
+      result = Either.left(new SessionNotCreatedException(e.getMessage(), e));
+    }
+    if (result.isLeft()) {
+      WebDriverException exception = result.left();
+      if (exception instanceof SessionNotCreatedException) {
+        throw exception;
+      }
+      throw new SessionNotCreatedException(exception.getMessage(), exception);
+    }
+
+    return result.right();
+  }
+
+  private SlotId reserveSlot(RequestId requestId, Capabilities caps) {
+    Lock writeLock = lock.writeLock();
+    writeLock.lock();
+    try {
+      Set<SlotId> slotIds = slotSelector.selectSlot(caps, getAvailableNodes());
+      if (slotIds.isEmpty()) {
+        LOG.log(
+          getDebugLogLevel(),
+          String.format("No slots found for request %s and capabilities %s", requestId, caps));
+        return null;
+      }
+
+      for (SlotId slotId : slotIds) {
+        if (reserve(slotId)) {
+          return slotId;
+        }
+      }
+
+      return null;
+    } finally {
+      writeLock.unlock();
+    }
+  }
+
+  private boolean isSupported(Capabilities caps) {
+    return getAvailableNodes().stream().anyMatch(node -> node.hasCapability(caps));
+  }
+
+  private boolean reserve(SlotId id) {
+    Require.nonNull("Slot ID", id);
 
     Lock writeLock = this.lock.writeLock();
     writeLock.lock();
     try {
-      Node node = nodes.get(slotId.getOwningNodeId());
+      Node node = nodes.get(id.getOwningNodeId());
       if (node == null) {
-        return Either.left(new RetrySessionRequestException(
-          "Unable to find node. Try a different node"));
+        LOG.log(getDebugLogLevel(), String.format("Unable to find node with id %s", id));
+        return false;
       }
 
-      model.reserve(slotId);
-
-      Either<WebDriverException, CreateSessionResponse> response = node.newSession(request);
-
-      if (response.isRight()) {
-        model.setSession(slotId, response.right().getSession());
-        return Either.right(response.right());
-      } else {
-        model.setSession(slotId, null);
-
-        WebDriverException exception = response.left();
-        if (exception instanceof RetrySessionRequestException) {
-          return Either.left(new RetrySessionRequestException(exception.getMessage()));
-        } else {
-          return Either.left(new SessionNotCreatedException(exception.getMessage()));
-        }
-      }
-
+      return model.reserve(id);
     } finally {
       writeLock.unlock();
     }
