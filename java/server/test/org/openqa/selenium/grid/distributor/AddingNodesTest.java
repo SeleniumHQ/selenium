@@ -39,6 +39,7 @@ import org.openqa.selenium.grid.data.Slot;
 import org.openqa.selenium.grid.data.SlotId;
 import org.openqa.selenium.grid.distributor.local.LocalDistributor;
 import org.openqa.selenium.grid.distributor.remote.RemoteDistributor;
+import org.openqa.selenium.grid.distributor.selector.DefaultSlotSelector;
 import org.openqa.selenium.grid.node.CapabilityResponseEncoder;
 import org.openqa.selenium.grid.node.HealthCheck;
 import org.openqa.selenium.grid.node.Node;
@@ -117,6 +118,7 @@ public class AddingNodesTest {
       clientFactory,
       sessions,
       queue,
+      new DefaultSlotSelector(),
       registrationSecret,
       Duration.ofMinutes(5));
 

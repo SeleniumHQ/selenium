@@ -21,6 +21,7 @@ package org.openqa.selenium.grid.distributor.config;
 import static org.openqa.selenium.grid.config.StandardGridRoles.DISTRIBUTOR_ROLE;
 import static org.openqa.selenium.grid.distributor.config.DistributorOptions.DEFAULT_DISTRIBUTOR_IMPLEMENTATION;
 import static org.openqa.selenium.grid.distributor.config.DistributorOptions.DEFAULT_HEALTHCHECK_INTERVAL;
+import static org.openqa.selenium.grid.distributor.config.DistributorOptions.DEFAULT_SLOT_SELECTOR_IMPLEMENTATION;
 import static org.openqa.selenium.grid.distributor.config.DistributorOptions.DISTRIBUTOR_SECTION;
 
 import com.google.auto.service.AutoService;
@@ -63,6 +64,10 @@ public class DistributorFlags implements HasRoles {
     name = "implementation",
     example = DEFAULT_DISTRIBUTOR_IMPLEMENTATION)
   private String implementation = DEFAULT_DISTRIBUTOR_IMPLEMENTATION;
+
+  @Parameter(names = {"--slot-selector"}, description = "Full classname of non-default slot selector implementation")
+  @ConfigValue(section = DISTRIBUTOR_SECTION, name = "slot-selector", example = DEFAULT_SLOT_SELECTOR_IMPLEMENTATION)
+  private String slotSelector = DEFAULT_SLOT_SELECTOR_IMPLEMENTATION;
 
   @Parameter(
     names = {"--healthcheck-interval"},
