@@ -11,7 +11,6 @@ module CrazyFun
             copy_sources dir, args[:srcs]
             copy_resources dir, args[:resources], build_dir if args[:resources]
             require_source build_dir, args[:require]
-            create_output_dir build_dir, "#{args[:output_dir]}/#{args[:version]}"
             Dir.chdir(build_dir) { call_class(args[:klass], args) }
             remove_sources args[:srcs]
           end
@@ -22,10 +21,6 @@ module CrazyFun
 
         def require_source(dir, src)
           require File.join(dir, src)
-        end
-
-        def create_output_dir(root_dir, output_dir)
-          mkdir_p File.join(root_dir, output_dir)
         end
 
         def call_class(klass, **args)

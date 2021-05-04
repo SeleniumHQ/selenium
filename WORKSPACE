@@ -253,3 +253,33 @@ k8s_defaults(
 load("//common:repositories.bzl", "pin_browsers")
 
 pin_browsers()
+
+http_archive(
+    name = "coinbase_rules_ruby",
+    sha256 = "1023905d384a9c2822f33099127d55d151f3f1bd54b9fc8404a7c9cc80f8dba0",
+    strip_prefix = "rules_ruby-41f5dab4d7c4d0cb96a3b4b8e188861096a36be8",
+    url = "https://github.com/p0deje/rules_ruby/archive/41f5dab4d7c4d0cb96a3b4b8e188861096a36be8.tar.gz",
+)
+
+load(
+    "@coinbase_rules_ruby//ruby:deps.bzl",
+    "rules_ruby_dependencies",
+    "ruby_register_toolchains",
+)
+
+rules_ruby_dependencies()
+ruby_register_toolchains()
+
+load("@coinbase_rules_ruby//ruby:defs.bzl", "rb_bundle")
+
+rb_bundle(
+    name = "bundle",
+    bundler_version = "2.1.4",
+    gemfile = "//:rb/Gemfile",
+    srcs = [
+        "//:rb/lib/selenium/devtools/version.rb",
+        "//:rb/lib/selenium/webdriver/version.rb",
+        "//:rb/selenium-devtools.gemspec",
+        "//:rb/selenium-webdriver.gemspec",
+    ]
+)
