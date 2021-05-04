@@ -31,4 +31,6 @@ Gem::Specification.new do |s|
 
   s.files = Dir.glob('{lib/selenium/devtools}/**/*')
   s.require_paths = ["lib"]
+
+  s.add_runtime_dependency 'websocket', ['~> 1.0']
 end
