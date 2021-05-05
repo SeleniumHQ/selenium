@@ -17,6 +17,8 @@
 
 package org.openqa.selenium.remote.codec.w3c;
 
+import static java.net.HttpURLConnection.HTTP_BAD_GATEWAY;
+import static java.net.HttpURLConnection.HTTP_GATEWAY_TIMEOUT;
 import static java.net.HttpURLConnection.HTTP_INTERNAL_ERROR;
 import static java.net.HttpURLConnection.HTTP_OK;
 import static java.nio.charset.StandardCharsets.UTF_8;
@@ -56,6 +58,56 @@ public class W3CHttpResponseCodecTest {
     assertThat(decoded.getStatus().intValue()).isEqualTo(ErrorCodes.SUCCESS);
     assertThat(decoded.getState()).isEqualTo("success");
     assertThat(decoded.getValue()).isEqualTo("cheese");
+  }
+
+  @Test
+  public void shouldBeAbleToHandleGatewayTimeoutError() {
+    String responseString = "<html>\r\n" +
+      "<body>\r\n" +
+      "<h1>504 Gateway Time-out</h1>\r\n" +
+      "The server didn't respond in time.\r\n" +
+      "</body>\r\n" +
+      "</html>";
+
+    byte[] contents = responseString.getBytes(UTF_8);
+
+    HttpResponse response = new HttpResponse();
+    response.setStatus(HTTP_GATEWAY_TIMEOUT);
+    response.addHeader("Server", "nginx");
+    response.addHeader("Content-Type", "text/html");
+    response.addHeader("Content-Length", String.valueOf(contents.length));
+    response.setContent(bytes(contents));
+
+    Response decoded = new W3CHttpResponseCodec().decode(response);
+
+    assertThat(decoded.getStatus().intValue()).isEqualTo(ErrorCodes.UNHANDLED_ERROR);
+    assertThat(decoded.getValue()).isEqualTo(responseString);
+  }
+
+
+  @Test
+  public void shouldBeAbleToHandleBadGatewayError() {
+    String responseString = "<html>\r\n" +
+      "<head><title>502 Bad Gateway</title></head>\r\n" +
+      "<body>\r\n" +
+      "<center><h1>502 Bad Gateway</h1></center>\r\n" +
+      "<hr><center>nginx</center>\r\n" +
+      "</body>\r\n" +
+      "</html>";
+
+    byte[] contents = responseString.getBytes(UTF_8);
+
+    HttpResponse response = new HttpResponse();
+    response.setStatus(HTTP_BAD_GATEWAY);
+    response.addHeader("Server", "nginx");
+    response.addHeader("Content-Type", "text/html");
+    response.addHeader("Content-Length", String.valueOf(contents.length));
+    response.setContent(bytes(contents));
+
+    Response decoded = new W3CHttpResponseCodec().decode(response);
+
+    assertThat(decoded.getStatus().intValue()).isEqualTo(ErrorCodes.UNHANDLED_ERROR);
+    assertThat(decoded.getValue()).isEqualTo(responseString);
   }
 
   @Test
