@@ -253,7 +253,7 @@ module Selenium
                                emulation: {device_name: :mine},
                                local_state: {
                                  foo: 'bar',
-                                 key_that_should_not_be_camelcased: 'baz',
+                                 key_that_should_not_be_camelcased: 'baz'
                                },
                                detach: true,
                                debugger_address: '127.0.0.1:8181',
@@ -284,7 +284,7 @@ module Selenium
                                                'mobileEmulation' => {'deviceName' => 'mine'},
                                                'localState' => {
                                                  'foo' => 'bar',
-                                                 'key_that_should_not_be_camelcased' => 'baz',
+                                                 'key_that_should_not_be_camelcased' => 'baz'
                                                },
                                                'detach' => true,
                                                'debuggerAddress' => '127.0.0.1:8181',
