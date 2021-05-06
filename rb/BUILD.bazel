@@ -82,8 +82,7 @@ rb_library(
     srcs = glob([
         "lib/selenium/webdriver/devtools/**/*.rb",
         "lib/selenium/webdriver/devtools.rb",
-    ]),
-    data = [":mutation-listener"],
+    ]) + [":mutation-listener"],
     deps = [":common"],
 )
 
@@ -114,8 +113,7 @@ rb_library(
         "Gemfile",
         "CHANGES",
         "README.md",
-    ]),
-    data = [
+    ]) + [
         ":find-elements",
         ":get-attribute",
         ":is-displayed",
@@ -160,8 +158,7 @@ rb_library(
     srcs = glob([
         "lib/selenium/webdriver/remote/**/*.rb",
         "lib/selenium/webdriver/remote.rb",
-    ]),
-    data = [":selenium-server-deploy"],
+    ]) + [":selenium-server-deploy"],
     deps = [":common"],
 )
 
@@ -181,8 +178,7 @@ rb_library(
         "lib/selenium/devtools.rb",
         "lib/selenium/devtools/version.rb",
         "selenium-devtools.gemspec",
-    ]),
-    data = [":license"] + [":cdp-" + n for n in CDP_VERSIONS],
+    ]) + [":license"] + [":cdp-" + n for n in CDP_VERSIONS],
     deps = ["@bundle//:websocket"],
 )
 
