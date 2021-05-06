@@ -29,7 +29,14 @@ Gem::Specification.new do |s|
   s.required_rubygems_version = Gem::Requirement.new('> 1.3.1') if s.respond_to? :required_rubygems_version=
   s.required_ruby_version = Gem::Requirement.new('>= 2.5')
 
-  s.files = Dir.glob('{lib/selenium/devtools}/**/*')
+  s.files = [
+    'LICENSE',
+    'NOTICE',
+    'Gemfile',
+    'selenium-devtools.gemspec',
+    'lib/selenium/devtools.rb'
+  ] + Dir['lib/selenium/devtools/**/*']
+
   s.require_paths = ["lib"]
 
   s.add_runtime_dependency 'websocket', ['~> 1.0']

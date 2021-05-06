@@ -256,9 +256,9 @@ pin_browsers()
 
 http_archive(
     name = "coinbase_rules_ruby",
-    sha256 = "1023905d384a9c2822f33099127d55d151f3f1bd54b9fc8404a7c9cc80f8dba0",
-    strip_prefix = "rules_ruby-41f5dab4d7c4d0cb96a3b4b8e188861096a36be8",
-    url = "https://github.com/p0deje/rules_ruby/archive/41f5dab4d7c4d0cb96a3b4b8e188861096a36be8.tar.gz",
+    sha256 = "eebf4d99319753430866c4b25c574ca8792b09bd071e757a029b225d399ee10a",
+    strip_prefix = "rules_ruby-03150fc10f17487dd78b267d77349a29243fbf55",
+    url = "https://github.com/p0deje/rules_ruby/archive/03150fc10f17487dd78b267d77349a29243fbf55.tar.gz",
 )
 
 load(

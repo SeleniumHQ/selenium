@@ -1,4 +1,5 @@
 load("//common:defs.bzl", "copy_file")
+load("//rb:defs.bzl", "rb_gem")
 load(
     "@coinbase_rules_ruby//ruby:defs.bzl",
     "rb_binary",
@@ -46,13 +47,42 @@ copy_file(
     out = "selenium_server_deploy.jar",
 )
 
+genrule(
+    name = "license",
+    srcs = ["//:license"],
+    outs = [
+        "LICENSE",
+        "NOTICE",
+    ],
+    cmd = "cp $(locations //:license) $(@D)",
+)
+
+rb_gem(
+    name = "selenium-webdriver",
+    gemspec = "selenium-webdriver.gemspec",
+    deps = [
+        ":bidi",
+        ":chrome",
+        ":common",
+        ":edge",
+        ":firefox",
+        ":ie",
+        ":safari",
+    ],
+)
+
+rb_gem(
+    name = "selenium-devtools",
+    gemspec = "selenium-devtools.gemspec",
+    deps = [":devtools"],
+)
+
 rb_library(
     name = "bidi",
     srcs = glob([
         "lib/selenium/webdriver/devtools/**/*.rb",
         "lib/selenium/webdriver/devtools.rb",
-    ]),
-    data = [":mutation-listener"],
+    ]) + [":mutation-listener"],
     deps = [":common"],
 )
 
@@ -83,12 +113,11 @@ rb_library(
         "Gemfile",
         "CHANGES",
         "README.md",
-    ]),
-    data = [
+    ]) + [
         ":find-elements",
         ":get-attribute",
         ":is-displayed",
-        "//:license",
+        ":license",
     ],
     deps = [
         "@bundle//:childprocess",
@@ -129,8 +158,7 @@ rb_library(
     srcs = glob([
         "lib/selenium/webdriver/remote/**/*.rb",
         "lib/selenium/webdriver/remote.rb",
-    ]),
-    data = [":selenium-server-deploy"],
+    ]) + [":selenium-server-deploy"],
     deps = [":common"],
 )
 
@@ -146,17 +174,12 @@ rb_library(
 rb_library(
     name = "devtools",
     srcs = glob([
-        "selenium-devtools.gemspec",
+        "Gemfile",
         "lib/selenium/devtools.rb",
         "lib/selenium/devtools/version.rb",
-        "Gemfile",
-        "CHANGES",
-        "README.md",
-    ]),
-    data = ["//:license"] + [":cdp-" + n for n in CDP_VERSIONS],
-    deps = [
-        "@bundle//:websocket",
-    ],
+        "selenium-devtools.gemspec",
+    ]) + [":license"] + [":cdp-" + n for n in CDP_VERSIONS],
+    deps = ["@bundle//:websocket"],
 )
 
 [genrule(
@@ -170,9 +193,7 @@ rb_library(
         "lib/selenium/devtools/" + n + ".rb",
     ],
     cmd = "ruby $(location :cdp-generate) $(location //common/devtools/chromium/" + n + ":browser_protocol) $(location //common/devtools/chromium/" + n + ":js_protocol) $(OUTS) " + n,
-    tools = [
-        ":cdp-generate",
-    ],
+    tools = [":cdp-generate"],
 ) for n in CDP_VERSIONS]
 
 rb_binary(
@@ -542,9 +563,7 @@ rb_binary(
         "rb/README.md",
     ],
     main = "@bundle//:bin/yard",
-    deps = [
-        "@bundle//:yard",
-    ],
+    deps = ["@bundle//:yard"],
 )
 
 rb_binary(
