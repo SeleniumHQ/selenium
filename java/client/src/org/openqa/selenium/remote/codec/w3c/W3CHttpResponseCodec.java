@@ -19,6 +19,7 @@ package org.openqa.selenium.remote.codec.w3c;
 
 import static com.google.common.base.Strings.nullToEmpty;
 import static com.google.common.net.HttpHeaders.CONTENT_TYPE;
+import static java.net.HttpURLConnection.HTTP_BAD_GATEWAY;
 import static java.net.HttpURLConnection.HTTP_BAD_METHOD;
 import static java.net.HttpURLConnection.HTTP_GATEWAY_TIMEOUT;
 import static java.net.HttpURLConnection.HTTP_INTERNAL_ERROR;
@@ -90,7 +91,8 @@ public class W3CHttpResponseCodec extends AbstractHttpResponseCodec {
       if (HTTP_BAD_METHOD == encodedResponse.getStatus()) {
         response.setStatus(ErrorCodes.UNKNOWN_COMMAND);
         response.setValue(content);
-      } else if (HTTP_GATEWAY_TIMEOUT == encodedResponse.getStatus()) {
+      } else if (HTTP_GATEWAY_TIMEOUT == encodedResponse.getStatus() ||
+        HTTP_BAD_GATEWAY == encodedResponse.getStatus()) {
         response.setStatus(ErrorCodes.UNHANDLED_ERROR);
         response.setValue(content);
       } else {
