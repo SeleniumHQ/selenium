@@ -424,7 +424,7 @@ public class LocalDistributor extends Distributor {
         attributeMap.put("request", EventAttribute.setValue(sessionRequest.toString()));
         Either<SessionNotCreatedException, CreateSessionResponse> response = newSession(sessionRequest);
 
-        if (response.isLeft()) {
+        if (response.isLeft() && response.left() instanceof RetrySessionRequestException) {
           boolean retried = sessionQueue.retryAddToQueue(sessionRequest);
 
           attributeMap.put("request.retry_add", EventAttribute.setValue(retried));
