@@ -45,6 +45,7 @@ import org.openqa.selenium.grid.data.SlotId;
 import org.openqa.selenium.grid.distributor.Distributor;
 import org.openqa.selenium.grid.distributor.config.DistributorOptions;
 import org.openqa.selenium.grid.distributor.selector.DefaultSlotSelector;
+import org.openqa.selenium.grid.distributor.selector.SlotSelector;
 import org.openqa.selenium.grid.log.LoggingOptions;
 import org.openqa.selenium.grid.node.HealthCheck;
 import org.openqa.selenium.grid.node.Node;
@@ -119,9 +120,10 @@ public class LocalDistributor extends Distributor {
     HttpClient.Factory clientFactory,
     SessionMap sessions,
     NewSessionQueue sessionQueue,
+    SlotSelector slotSelector,
     Secret registrationSecret,
     Duration healthcheckInterval) {
-    super(tracer, clientFactory, new DefaultSlotSelector(), sessions, registrationSecret);
+    super(tracer, clientFactory, slotSelector, sessions, registrationSecret);
     this.tracer = Require.nonNull("Tracer", tracer);
     this.bus = Require.nonNull("Event bus", bus);
     this.clientFactory = Require.nonNull("HTTP client factory", clientFactory);
@@ -175,6 +177,7 @@ public class LocalDistributor extends Distributor {
       clientFactory,
       sessions,
       sessionQueue,
+      distributorOptions.getSlotSelector(),
       secretOptions.getRegistrationSecret(),
       distributorOptions.getHealthCheckInterval());
   }

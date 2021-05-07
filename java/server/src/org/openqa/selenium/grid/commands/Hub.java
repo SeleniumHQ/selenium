@@ -28,6 +28,7 @@ import org.openqa.selenium.grid.config.Role;
 import org.openqa.selenium.grid.distributor.Distributor;
 import org.openqa.selenium.grid.distributor.config.DistributorOptions;
 import org.openqa.selenium.grid.distributor.local.LocalDistributor;
+import org.openqa.selenium.grid.distributor.selector.DefaultSlotSelector;
 import org.openqa.selenium.grid.graphql.GraphqlHandler;
 import org.openqa.selenium.grid.log.LoggingOptions;
 import org.openqa.selenium.grid.router.ProxyCdpIntoGrid;
@@ -156,6 +157,7 @@ public class Hub extends TemplateGridServerCommand {
       clientFactory,
       sessions,
       queue,
+      distributorOptions.getSlotSelector(),
       secret,
       distributorOptions.getHealthCheckInterval());
     handler.addHandler(distributor);

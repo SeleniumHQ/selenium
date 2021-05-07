@@ -5,7 +5,7 @@ require:
 AllCops:
   TargetRubyVersion: 2.5
   Exclude:
-    - 'lib/selenium/webdriver/devtools/**/*'
+    - 'lib/selenium/devtools/**/*'
 
 Layout/EmptyLinesAroundAttributeAccessor:
   Enabled: true
@@ -60,6 +60,7 @@ Metrics/ClassLength:
     - 'lib/selenium/webdriver/common/driver.rb'
     - 'lib/selenium/webdriver/remote/bridge.rb'
     - 'lib/selenium/webdriver/remote/capabilities.rb'
+    - 'spec/integration/selenium/webdriver/spec_support/test_environment.rb'
 
 Metrics/CyclomaticComplexity:
   Max: 9
@@ -143,8 +144,10 @@ Style/BlockDelimiters:
 Style/CommentedKeyword:
   Enabled: false
 
+# __dir__ should be avoided when used with Bazel.
 Style/Dir:
   Exclude:
+    - 'selenium-devtools.gemspec'
     - 'selenium-webdriver.gemspec'
 
 # Consider documenting all top-level classes and modules
