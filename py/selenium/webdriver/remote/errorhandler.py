@@ -122,8 +122,8 @@ class ErrorHandler(object):
                         value = value['value']
                     status = value.get('error', None)
                     if not status:
-                        status = value["status"]
-                        message = value["value"]
+                        status = value.get("status", ErrorCode.UNKNOWN_ERROR)
+                        message = value.get("value") or value.get("message")
                         if not isinstance(message, str):
                             value = message
                             message = message.get('message')

@@ -43,6 +43,7 @@ import org.openqa.selenium.grid.data.Session;
 import org.openqa.selenium.grid.data.Slot;
 import org.openqa.selenium.grid.distributor.local.LocalDistributor;
 import org.openqa.selenium.grid.distributor.remote.RemoteDistributor;
+import org.openqa.selenium.grid.distributor.selector.DefaultSlotSelector;
 import org.openqa.selenium.grid.node.HealthCheck;
 import org.openqa.selenium.grid.node.Node;
 import org.openqa.selenium.grid.node.local.LocalNode;
@@ -132,6 +133,7 @@ public class DistributorTest {
       HttpClient.Factory.createDefault(),
       sessions,
       queue,
+      new DefaultSlotSelector(),
       registrationSecret,
       Duration.ofMinutes(5));
     stereotype = new ImmutableCapabilities("browserName", "cheese");
@@ -167,6 +169,7 @@ public class DistributorTest {
       new PassthroughHttpClient.Factory(node),
       sessions,
       queue,
+      new DefaultSlotSelector(),
       registrationSecret,
       Duration.ofMinutes(5));
     distributor.add(node);
@@ -213,6 +216,7 @@ public class DistributorTest {
       new PassthroughHttpClient.Factory(node),
       sessions,
       queue,
+      new DefaultSlotSelector(),
       registrationSecret,
       Duration.ofMinutes(5));
     distributor.add(node);
@@ -251,6 +255,7 @@ public class DistributorTest {
       new PassthroughHttpClient.Factory(node),
       sessions,
       queue,
+      new DefaultSlotSelector(),
       registrationSecret,
       Duration.ofMinutes(5));
     distributor.add(node);
@@ -290,6 +295,7 @@ public class DistributorTest {
       new PassthroughHttpClient.Factory(node),
       sessions,
       queue,
+      new DefaultSlotSelector(),
       registrationSecret,
       Duration.ofMinutes(5));
     Distributor distributor = new RemoteDistributor(
@@ -326,6 +332,7 @@ public class DistributorTest {
       new PassthroughHttpClient.Factory(node),
       sessions,
       queue,
+      new DefaultSlotSelector(),
       registrationSecret,
       Duration.ofMinutes(5));
     distributor.add(node);
@@ -361,6 +368,7 @@ public class DistributorTest {
       new PassthroughHttpClient.Factory(node),
       sessions,
       queue,
+      new DefaultSlotSelector(),
       registrationSecret,
       Duration.ofMinutes(5));
     distributor.add(node);
@@ -403,6 +411,7 @@ public class DistributorTest {
       new PassthroughHttpClient.Factory(node),
       sessions,
       queue,
+      new DefaultSlotSelector(),
       registrationSecret,
       Duration.ofMinutes(5));
     distributor.add(node);
@@ -448,6 +457,7 @@ public class DistributorTest {
       new PassthroughHttpClient.Factory(node),
       sessions,
       queue,
+      new DefaultSlotSelector(),
       registrationSecret,
       Duration.ofMinutes(5));
     distributor.add(node);
@@ -518,6 +528,7 @@ public class DistributorTest {
       new PassthroughHttpClient.Factory(handler),
       sessions,
       queue,
+      new DefaultSlotSelector(),
       registrationSecret,
       Duration.ofMinutes(5))
       .add(heavy)
@@ -556,6 +567,7 @@ public class DistributorTest {
       new PassthroughHttpClient.Factory(handler),
       sessions,
       queue,
+      new DefaultSlotSelector(),
       registrationSecret,
       Duration.ofMinutes(5))
       .add(leastRecent);
@@ -645,6 +657,7 @@ public class DistributorTest {
       new PassthroughHttpClient.Factory(handler),
       sessions,
       queue,
+      new DefaultSlotSelector(),
       registrationSecret,
       Duration.ofMinutes(5));
     handler.addHandler(distributor);
@@ -682,6 +695,7 @@ public class DistributorTest {
       new PassthroughHttpClient.Factory(node),
       sessions,
       queue,
+      new DefaultSlotSelector(),
       registrationSecret,
       Duration.ofMinutes(5));
 
@@ -719,6 +733,7 @@ public class DistributorTest {
       new PassthroughHttpClient.Factory(node),
       sessions,
       queue,
+      new DefaultSlotSelector(),
       registrationSecret,
       Duration.ofMinutes(5));
     distributor.add(node);
@@ -770,6 +785,7 @@ public class DistributorTest {
       new PassthroughHttpClient.Factory(handler),
       sessions,
       queue,
+      new DefaultSlotSelector(),
       registrationSecret,
       Duration.ofMinutes(5));
     handler.addHandler(distributor);
@@ -807,6 +823,7 @@ public class DistributorTest {
       new PassthroughHttpClient.Factory(node),
       sessions,
       queue,
+      new DefaultSlotSelector(),
       registrationSecret,
       Duration.ofMinutes(5));
     distributor.add(node);
@@ -849,6 +866,7 @@ public class DistributorTest {
       new PassthroughHttpClient.Factory(handler),
       sessions,
       queue,
+      new DefaultSlotSelector(),
       registrationSecret,
       Duration.ofMinutes(5));
     handler.addHandler(distributor);
@@ -910,6 +928,7 @@ public class DistributorTest {
       new PassthroughHttpClient.Factory(handler),
       sessions,
       queue,
+      new DefaultSlotSelector(),
       registrationSecret,
       Duration.ofMinutes(5));
     handler.addHandler(distributor);

@@ -22,6 +22,7 @@ java_test_suite(
         "//java/server/src/org/openqa/selenium/grid/distributor",
         "//java/server/src/org/openqa/selenium/grid/distributor/local",
         "//java/server/src/org/openqa/selenium/grid/distributor/remote",
+        "//java/server/src/org/openqa/selenium/grid/distributor/selector",
         "//java/server/src/org/openqa/selenium/grid/node",
         "//java/server/src/org/openqa/selenium/grid/node/local",
         "//java/server/src/org/openqa/selenium/grid/security",

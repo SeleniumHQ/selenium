@@ -8,6 +8,7 @@ exports_files(
     visibility = [
         "//javascript/node/selenium-webdriver:__pkg__",
         "//py:__pkg__",
+        "//rb:__pkg__",
     ],
 )
 

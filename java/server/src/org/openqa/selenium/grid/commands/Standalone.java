@@ -154,6 +154,7 @@ public class Standalone extends TemplateGridServerCommand {
       clientFactory,
       sessions,
       queue,
+      distributorOptions.getSlotSelector(),
       registrationSecret,
       distributorOptions.getHealthCheckInterval());
     combinedHandler.addHandler(distributor);

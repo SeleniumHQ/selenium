@@ -30,13 +30,23 @@ Gem::Specification.new do |s|
   s.required_rubygems_version = Gem::Requirement.new('> 1.3.1') if s.respond_to? :required_rubygems_version=
   s.required_ruby_version = Gem::Requirement.new('>= 2.5')
 
-  s.files = Dir.glob('{lib/**/*}') - Dir.glob('{lib/selenium/devtools}/**/*')
+  s.files = [
+    'CHANGES',
+    'LICENSE',
+    'NOTICE',
+    'Gemfile',
+    'README.md',
+    'selenium-webdriver.gemspec',
+    'lib/selenium-webdriver.rb',
+    'lib/selenium/server.rb',
+    'lib/selenium/webdriver.rb'
+  ] + Dir['lib/selenium/webdriver/**/*']
+
   s.require_paths = ['lib']
 
   s.add_runtime_dependency 'childprocess', ['>= 0.5', '< 5.0']
   s.add_runtime_dependency 'rexml', ['~> 3.2']
   s.add_runtime_dependency 'rubyzip', ['>= 1.2.2']
-  s.add_runtime_dependency 'websocket', ['~> 1.0']
 
   # childprocess requires ffi on windows but doesn't declare it in its dependencies
   s.add_development_dependency 'ffi'

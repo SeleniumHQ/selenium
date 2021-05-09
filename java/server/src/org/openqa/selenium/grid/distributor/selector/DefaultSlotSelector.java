@@ -19,6 +19,7 @@ package org.openqa.selenium.grid.distributor.selector;
 
 import com.google.common.annotations.VisibleForTesting;
 import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.grid.config.Config;
 import org.openqa.selenium.grid.data.NodeStatus;
 import org.openqa.selenium.grid.data.Slot;
 import org.openqa.selenium.grid.data.SlotId;
@@ -65,4 +66,7 @@ public class DefaultSlotSelector implements SlotSelector {
       .count();
   }
 
+  public static SlotSelector create(Config config) {
+    return new DefaultSlotSelector();
+  }
 }

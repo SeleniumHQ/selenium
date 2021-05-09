@@ -34,6 +34,7 @@ import org.openqa.selenium.grid.data.Session;
 import org.openqa.selenium.grid.data.Slot;
 import org.openqa.selenium.grid.distributor.Distributor;
 import org.openqa.selenium.grid.distributor.local.LocalDistributor;
+import org.openqa.selenium.grid.distributor.selector.DefaultSlotSelector;
 import org.openqa.selenium.grid.node.ActiveSession;
 import org.openqa.selenium.grid.node.Node;
 import org.openqa.selenium.grid.node.SessionFactory;
@@ -126,6 +127,7 @@ public class GraphqlHandlerTest {
       clientFactory,
       sessions,
       queue,
+      new DefaultSlotSelector(),
       registrationSecret,
       Duration.ofMinutes(5));
   }
