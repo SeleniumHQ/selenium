@@ -16,14 +16,40 @@
 
   <PropertyGroup>
     <AssemblyTitle>WebDriver</AssemblyTitle>
-    <Description>Selenium WebDriver API .NET Bindings</Description>
-    <Company>Selenium Committers</Company>
-    <Copyright>Copyright © Software Freedom Conservancy 2018</Copyright>
-    <Product>Selenium</Product>
-    <Version>4</Version>
+    <Description>Selenium is a set of different software tools each with a different approach
+to supporting browser automation. These tools are highly flexible, allowing
+many options for locating and manipulating elements within a browser, and one
+of its key features is the support for automating multiple browser platforms.
+This package contains the .NET bindings for the concise and object-based
+Selenium WebDriver API, which uses native OS-level events to manipulate the
+browser, bypassing the JavaScript sandbox, and does not require the Selenium
+Server to automate the browser.Selenium is a set of different software tools each with a different approach
+to supporting browser automation. These tools are highly flexible, allowing
+many options for locating and manipulating elements within a browser, and one
+of its key features is the support for automating multiple browser platforms.
+This package contains the .NET bindings for the concise and object-based
+Selenium WebDriver API, which uses native OS-level events to manipulate the
+browser, bypassing the JavaScript sandbox, and does not require the Selenium
+Server to automate the browser.</Description>
+    <Company>Selenium</Company>
+    <Copyright>Copyright © 2021 Software Freedom Conservancy</Copyright>
+    <Product>WebDriver</Product>
     <PackageId>Selenium.WebDriver</PackageId>
-    <AssemblyVersion>4.0.0.0</AssemblyVersion>
-    <FileVersion>4.0.0.0</FileVersion>
+    <Authors>Selenium Committers</Authors>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
+    <RepositoryUrl>https://github.com/SeleniumHQ/selenium</RepositoryUrl>
+    <PackageProjectUrl>https://selenium.dev</PackageProjectUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageTags>selenium webdriver browser automation</PackageTags>
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+
+    <!-- override this in official/release build/pack/publish commands with -p:Version=x.y.z -->
+    <VersionPrefix>5.0.0.0</VersionPrefix>
+    <VersionSuffix></VersionSuffix>
+    <PackageIcon>selenium_logo_square_green.png</PackageIcon>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net45|AnyCPU'">
@@ -87,6 +113,10 @@
     <EmbeddedResource Remove="obj\**" />
     <None Remove="cdp\**" />
     <None Remove="obj\**" />
+    <None Include="images\icon.png">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
   </ItemGroup>
 
   <ItemGroup>
@@ -99,7 +129,18 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
     <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\selenium_logo_square_green.png">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
   </ItemGroup>
 
   <ItemGroup Condition="'$(OS)' == 'WINDOWS_NT'">

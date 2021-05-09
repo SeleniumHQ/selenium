@@ -17,14 +17,37 @@
 
   <PropertyGroup>
     <AssemblyTitle>Selenium WebDriver WebDriverBackedSelenium</AssemblyTitle>
-    <Description>Selenium RC API using WebDriver .NET Bindings</Description>
-    <Company>Selenium Committers</Company>
-    <Copyright>Copyright © Software Freedom Conservancy 2017</Copyright>
-    <Product>Selenium</Product>
-    <Version>3</Version>
+    <Description>Selenium is a set of different software tools each with a different approach
+to supporting browser automation. These tools are highly flexible, allowing
+many options for locating and manipulating elements within a browser, and one
+of its key features is the support for automating multiple browser platforms.
+This package contains the .NET bindings for the deprecated, more procedural
+Selenium Remote Control (or Selenium RC) API, but implemented using the current
+WebDriver technology. It does not require a running instance of the Selenium
+Server, and is not limited to the functionality available from within the
+JavaScript sandbox. It is intended as a transitional package to allow
+organizations with significant investment in the Selenium RC API to run their
+code with minimal modifications until they are able to migrate to the Selenium
+WebDriver API.</Description>
+    <Company>Selenium</Company>
+    <Copyright>Copyright © 2021 Software Freedom Conservancy</Copyright>
+    <Product>WebDriver-backed Selenium</Product>
     <PackageId>Selenium.WebDriverBackedSelenium</PackageId>
-    <AssemblyVersion>3.0.0.0</AssemblyVersion>
-    <FileVersion>3.0.0.0</FileVersion>
+    <Authors>Selenium Committers</Authors>
+    <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
+    <PackageProjectUrl>https://selenium.dev/</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/SeleniumHQ/selenium</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageTags>selenium webdriver remote control rc browser automation</PackageTags>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+
+    <!-- override this in official/release build/pack/publish commands with -p:Version=x.y.z -->
+    <VersionPrefix>4.0.0.0</VersionPrefix>
+    <VersionSuffix></VersionSuffix>
+    <PackageIcon>selenium_logo_square_green.png</PackageIcon>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net48|AnyCPU'">
@@ -85,10 +108,21 @@
     <Compile Remove="obj\**" />
     <EmbeddedResource Remove="obj\**" />
     <None Remove="obj\**" />
+    <None Include="..\selenium_logo_square_green.png">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
   </ItemGroup>
 
   <ItemGroup>
     <None Remove="Settings.StyleCop" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
   </ItemGroup>
 
   <ItemGroup>
