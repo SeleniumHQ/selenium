@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-root = __dir__
+root = File.realpath(File.dirname(__FILE__))
 raise "cwd must be #{root} when reading gemspec" if root != Dir.pwd
 
 $LOAD_PATH.push(File.expand_path('lib', root))
@@ -29,6 +29,15 @@ Gem::Specification.new do |s|
   s.required_rubygems_version = Gem::Requirement.new('> 1.3.1') if s.respond_to? :required_rubygems_version=
   s.required_ruby_version = Gem::Requirement.new('>= 2.5')
 
-  s.files = Dir.glob('{lib/selenium/devtools}/**/*')
+  s.files = [
+    'LICENSE',
+    'NOTICE',
+    'Gemfile',
+    'selenium-devtools.gemspec',
+    'lib/selenium/devtools.rb'
+  ] + Dir['lib/selenium/devtools/**/*']
+
   s.require_paths = ["lib"]
+
+  s.add_runtime_dependency 'websocket', ['~> 1.0']
 end

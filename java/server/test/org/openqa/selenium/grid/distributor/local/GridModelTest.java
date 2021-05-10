@@ -21,6 +21,7 @@ import org.junit.Test;
 import org.openqa.selenium.events.EventBus;
 import org.openqa.selenium.events.local.GuavaEventBus;
 import org.openqa.selenium.grid.distributor.Distributor;
+import org.openqa.selenium.grid.distributor.selector.DefaultSlotSelector;
 import org.openqa.selenium.grid.security.Secret;
 import org.openqa.selenium.grid.sessionmap.SessionMap;
 import org.openqa.selenium.grid.sessionmap.local.LocalSessionMap;
@@ -51,6 +52,7 @@ public class GridModelTest {
     clientFactory,
     sessions,
     queue,
+    new DefaultSlotSelector(),
     secret,
     Duration.ofMinutes(5));
 

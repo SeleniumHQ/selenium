@@ -603,7 +603,7 @@ module Selenium
         end
 
         def prepare_capabilities_payload(capabilities)
-          capabilities = {firstMatch: [capabilities]} if !capabilities['alwaysMatch'] && !capabilities['firstMatch']
+          capabilities = {alwaysMatch: capabilities} if !capabilities['alwaysMatch'] && !capabilities['firstMatch']
           {capabilities: capabilities}
         end
 

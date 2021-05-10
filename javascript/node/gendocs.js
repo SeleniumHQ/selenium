@@ -89,7 +89,7 @@ function mkdirp(aPath) {
  */
 function installDossier() {
   return new Promise(function(fulfill, reject) {
-    let buildNodeDir = path.join(PROJECT_ROOT, 'build/javascript/node');
+    let buildNodeDir = path.join(PROJECT_ROOT);
     let jar = path.join(buildNodeDir, 'node_modules/js-dossier/dossier.jar');
     fs.stat(jar, function(err) {
       if (!err) return fulfill(jar);

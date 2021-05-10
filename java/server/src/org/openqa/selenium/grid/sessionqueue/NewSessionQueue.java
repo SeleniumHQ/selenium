@@ -79,14 +79,17 @@ public abstract class NewSessionQueue implements HasReadyState, Routable {
           }
         }),
       post("/se/grid/newsessionqueue/session")
-        .to(() -> new AddToSessionQueue(tracer, this)),
+        .to(() -> new AddToSessionQueue(tracer, this))
+        .with(requiresSecret),
       post("/se/grid/newsessionqueue/session/{requestId}/retry")
         .to(params -> new AddBackToSessionQueue(tracer, this, requestIdFrom(params)))
         .with(requiresSecret),
       post("/se/grid/newsessionqueue/session/{requestId}/fail")
-        .to(params -> new SessionNotCreated(tracer, this, requestIdFrom(params))),
+        .to(params -> new SessionNotCreated(tracer, this, requestIdFrom(params)))
+        .with(requiresSecret),
       post("/se/grid/newsessionqueue/session/{requestId}/success")
-        .to(params -> new SessionCreated(tracer, this, requestIdFrom(params))),
+        .to(params -> new SessionCreated(tracer, this, requestIdFrom(params)))
+        .with(requiresSecret),
       get("/se/grid/newsessionqueue/session/{requestId}")
         .to(params -> new RemoveFromSessionQueue(tracer, this, requestIdFrom(params)))
         .with(requiresSecret),

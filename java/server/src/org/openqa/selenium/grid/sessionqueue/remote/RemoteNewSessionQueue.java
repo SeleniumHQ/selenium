@@ -93,7 +93,7 @@ public class RemoteNewSessionQueue extends NewSessionQueue {
     HttpRequest upstream = new HttpRequest(POST, "/se/grid/newsessionqueue/session");
     HttpTracing.inject(tracer, tracer.getCurrentContext(), upstream);
     upstream.setContent(Contents.asJson(request));
-    return client.execute(upstream);
+    return client.with(addSecret).execute(upstream);
   }
 
   @Override

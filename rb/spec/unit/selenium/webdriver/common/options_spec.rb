@@ -17,16 +17,29 @@
 # specific language governing permissions and limitations
 # under the License.
 
-require 'websocket'
+require File.expand_path('../spec_helper', __dir__)
 
 module Selenium
-  module DevTools
-    class << self
-      attr_accessor :version
+  module WebDriver
+    describe Options do
+      subject(:options) { Options.new(local_state: {}) }
 
-      def load_version
-        require "selenium/devtools/v#{@version}"
+      before do
+        stub_const("#{Options}::BROWSER", 'foo')
+        stub_const("#{Options}::CAPABILITIES", {local_state: 'localState'})
       end
-    end
-  end # DevTools
+
+      describe '#as_json' do
+        it 'does not override options set via symbol name' do
+          options.add_option(:local_state, {foo: 'bar'})
+          expect(options.as_json).to include('localState' => {'foo' => 'bar'})
+        end
+
+        it 'does not override options set via string name' do
+          options.add_option('localState', {foo: 'bar'})
+          expect(options.as_json).to include('localState' => {'foo' => 'bar'})
+        end
+      end
+    end # Options
+  end # WebDriver
 end # Selenium

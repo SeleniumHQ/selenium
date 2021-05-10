@@ -36,10 +36,10 @@ module Selenium
           it 'sends plain capabilities' do
             payload = JSON.generate(
               capabilities: {
-                firstMatch: [{
+                alwaysMatch: {
                   browserName: 'internet explorer',
                   platformName: 'windows'
-                }]
+                }
               }
             )
 
@@ -54,12 +54,12 @@ module Selenium
           it 'passes options as capabilities' do
             payload = JSON.generate(
               capabilities: {
-                firstMatch: [{
+                alwaysMatch: {
                   'browserName' => 'chrome',
                   'goog:chromeOptions' => {
                     args: %w[foo bar]
                   }
-                }]
+                }
               }
             )
 
