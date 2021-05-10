@@ -28,11 +28,14 @@ import org.openqa.selenium.remote.DriverCommand;
 import org.openqa.selenium.remote.HttpCommandExecutor;
 import org.openqa.selenium.remote.Response;
 
+import java.io.Closeable;
 import java.io.IOException;
 import java.net.ConnectException;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
@@ -41,9 +44,15 @@ import java.util.concurrent.TimeoutException;
  * and dies with a single WebDriver session. The service will be restarted upon each new session
  * request and shutdown after each quit command.
  */
-public class DriverCommandExecutor extends HttpCommandExecutor {
+public class DriverCommandExecutor extends HttpCommandExecutor implements Closeable {
 
   private final DriverService service;
+  private final ExecutorService executorService = Executors.newFixedThreadPool(2,  r -> {
+    Thread thread = new Thread(r);
+    thread.setName("Driver Command Executor");
+    thread.setDaemon(true);
+    return thread;
+  });
 
   /**
    * Creates a new DriverCommandExecutor which will communicate with the driver as configured
@@ -104,12 +113,12 @@ public class DriverCommandExecutor extends HttpCommandExecutor {
           Throwables.throwIfUnchecked(t);
           throw new WebDriverException(t);
         }
-      });
+      }, executorService);
 
       CompletableFuture<Response> processFinished = CompletableFuture.supplyAsync(() -> {
         service.process.waitFor(service.getTimeout().toMillis());
         return null;
-      });
+      }, executorService);
 
       try {
         Response response = (Response) CompletableFuture.anyOf(commandComplete, processFinished)
@@ -151,5 +160,10 @@ public class DriverCommandExecutor extends HttpCommandExecutor {
   @VisibleForTesting
   Response invokeExecute(Command command) throws IOException {
     return super.execute(command);
+  }
+
+  @Override
+  public void close() {
+    executorService.shutdownNow();
   }
 }
