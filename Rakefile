@@ -24,7 +24,6 @@ require 'rake_tasks/selenium_rake/crazy_fun'
 require 'rake_tasks/crazy_fun/mappings/file_copy_hack'
 require 'rake_tasks/crazy_fun/mappings/tasks'
 require 'rake_tasks/crazy_fun/mappings/rake_mappings'
-require 'rake_tasks/crazy_fun/mappings/ruby_mappings'
 
 # Location of all new (non-CrazyFun) methods
 require 'rake_tasks/selenium_rake/browsers'
@@ -81,7 +80,6 @@ crazy_fun = SeleniumRake::CrazyFun.new
 # If crazy fun doesn't know how to handle a particular output type ("java_library"
 # in the example above) then it will throw an exception, stopping the build
 CrazyFun::Mappings::RakeMappings.new.add_all(crazy_fun)
-CrazyFun::Mappings::RubyMappings.new.add_all(crazy_fun)
 
 # Finally, find every file named "build.desc" in the project, and generate
 # rake tasks from them. These tasks are normal rake tasks, and can be invoked
