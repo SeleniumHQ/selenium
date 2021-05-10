@@ -348,7 +348,6 @@ public class LocalDistributorTest {
     assertThat(localNode.isDraining()).isTrue();
   }
 
-
   private class Handler extends Session implements HttpHandler {
 
     private Handler(Capabilities capabilities) {

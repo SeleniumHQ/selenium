@@ -40,11 +40,11 @@ import org.openqa.selenium.grid.data.NodeId;
 import org.openqa.selenium.grid.data.NodeStatus;
 import org.openqa.selenium.grid.data.NodeStatusEvent;
 import org.openqa.selenium.grid.data.RequestId;
+import org.openqa.selenium.grid.data.SessionRequest;
 import org.openqa.selenium.grid.data.Slot;
 import org.openqa.selenium.grid.data.SlotId;
 import org.openqa.selenium.grid.distributor.Distributor;
 import org.openqa.selenium.grid.distributor.config.DistributorOptions;
-import org.openqa.selenium.grid.distributor.selector.DefaultSlotSelector;
 import org.openqa.selenium.grid.distributor.selector.SlotSelector;
 import org.openqa.selenium.grid.log.LoggingOptions;
 import org.openqa.selenium.grid.node.HealthCheck;
@@ -57,18 +57,20 @@ import org.openqa.selenium.grid.server.NetworkOptions;
 import org.openqa.selenium.grid.sessionmap.SessionMap;
 import org.openqa.selenium.grid.sessionmap.config.SessionMapOptions;
 import org.openqa.selenium.grid.sessionqueue.NewSessionQueue;
-import org.openqa.selenium.grid.data.SessionRequest;
 import org.openqa.selenium.grid.sessionqueue.config.NewSessionQueueOptions;
 import org.openqa.selenium.internal.Either;
 import org.openqa.selenium.internal.Require;
+import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.tracing.AttributeKey;
 import org.openqa.selenium.remote.tracing.EventAttribute;
 import org.openqa.selenium.remote.tracing.EventAttributeValue;
 import org.openqa.selenium.remote.tracing.Span;
+import org.openqa.selenium.remote.tracing.Status;
 import org.openqa.selenium.remote.tracing.Tracer;
 import org.openqa.selenium.status.HasReadyState;
 
+import java.io.UncheckedIOException;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -92,6 +94,13 @@ import java.util.logging.Logger;
 import static com.google.common.collect.ImmutableSet.toImmutableSet;
 import static org.openqa.selenium.grid.data.Availability.DOWN;
 import static org.openqa.selenium.grid.data.Availability.DRAINING;
+import static org.openqa.selenium.internal.Debug.getDebugLogLevel;
+import static org.openqa.selenium.remote.RemoteTags.CAPABILITIES;
+import static org.openqa.selenium.remote.RemoteTags.CAPABILITIES_EVENT;
+import static org.openqa.selenium.remote.RemoteTags.SESSION_ID;
+import static org.openqa.selenium.remote.RemoteTags.SESSION_ID_EVENT;
+import static org.openqa.selenium.remote.tracing.AttributeKey.SESSION_URI;
+import static org.openqa.selenium.remote.tracing.Tags.EXCEPTION;
 
 public class LocalDistributor extends Distributor {
 
@@ -101,6 +110,7 @@ public class LocalDistributor extends Distributor {
   private final EventBus bus;
   private final HttpClient.Factory clientFactory;
   private final SessionMap sessions;
+  private final SlotSelector slotSelector;
   private final Secret registrationSecret;
   private final Regularly hostChecker = new Regularly("distributor host checker");
   private final Map<NodeId, Runnable> allChecks = new HashMap<>();
@@ -123,16 +133,17 @@ public class LocalDistributor extends Distributor {
     SlotSelector slotSelector,
     Secret registrationSecret,
     Duration healthcheckInterval) {
-    super(tracer, clientFactory, slotSelector, sessions, registrationSecret);
+    super(tracer, clientFactory, registrationSecret);
     this.tracer = Require.nonNull("Tracer", tracer);
     this.bus = Require.nonNull("Event bus", bus);
     this.clientFactory = Require.nonNull("HTTP client factory", clientFactory);
     this.sessions = Require.nonNull("Session map", sessions);
-    this.model = new GridModel(bus);
-    this.nodes = new ConcurrentHashMap<>();
     this.sessionQueue = Require.nonNull("New Session Request Queue", sessionQueue);
+    this.slotSelector = Require.nonNull("Slot selector", slotSelector);
     this.registrationSecret = Require.nonNull("Registration secret", registrationSecret);
     this.healthcheckInterval = Require.nonNull("Health check interval", healthcheckInterval);
+    this.model = new GridModel(bus);
+    this.nodes = new ConcurrentHashMap<>();
 
     bus.addListener(NodeStatusEvent.listener(this::register));
     bus.addListener(NodeStatusEvent.listener(model::refresh));
@@ -324,7 +335,6 @@ public class LocalDistributor extends Distributor {
     allHealthChecks.parallelStream().forEach(Runnable::run);
   }
 
-  @Override
   protected Set<NodeStatus> getAvailableNodes() {
     Lock readLock = this.lock.readLock();
     readLock.lock();
@@ -338,37 +348,205 @@ public class LocalDistributor extends Distributor {
   }
 
   @Override
-  protected Either<SessionNotCreatedException, CreateSessionResponse> reserve(SlotId slotId, CreateSessionRequest request) {
-    Require.nonNull("Slot ID", slotId);
-    Require.nonNull("New Session request", request);
+  public Either<SessionNotCreatedException, CreateSessionResponse> newSession(SessionRequest request)
+    throws SessionNotCreatedException {
+    Require.nonNull("Requests to process", request);
+
+    Span span = tracer.getCurrentContext().createSpan("distributor.new_session");
+    Map<String, EventAttributeValue> attributeMap = new HashMap<>();
+    try {
+      attributeMap.put(AttributeKey.LOGGER_CLASS.getKey(),
+        EventAttribute.setValue(getClass().getName()));
+
+      attributeMap.put("request.payload", EventAttribute.setValue(request.getDesiredCapabilities().toString()));
+      String sessionReceivedMessage = "Session request received by the distributor";
+      span.addEvent(sessionReceivedMessage, attributeMap);
+      LOG.info(String.format("%s: \n %s", sessionReceivedMessage, request.getDesiredCapabilities()));
+
+      // If there are no capabilities at all, something is horribly wrong
+      if (request.getDesiredCapabilities().isEmpty()) {
+        SessionNotCreatedException exception =
+          new SessionNotCreatedException("No capabilities found in session request payload");
+        EXCEPTION.accept(attributeMap, exception);
+        attributeMap.put(AttributeKey.EXCEPTION_MESSAGE.getKey(),
+          EventAttribute.setValue("Unable to create session. No capabilities found: " +
+            exception.getMessage()));
+        span.addEvent(AttributeKey.EXCEPTION_EVENT.getKey(), attributeMap);
+        return Either.left(exception);
+      }
+
+      // If there are capabilities, but the Grid doesn't support them, bail too.
+      long unmatchableCount = request.getDesiredCapabilities().stream()
+        .filter(caps -> !isSupported(caps))
+        .count();
+      if (unmatchableCount == request.getDesiredCapabilities().size()) {
+        SessionNotCreatedException exception = new SessionNotCreatedException(
+          "No nodes support the capabilities in the request");
+        EXCEPTION.accept(attributeMap, exception);
+        attributeMap.put(
+          AttributeKey.EXCEPTION_MESSAGE.getKey(),
+          EventAttribute.setValue(exception.getMessage()));
+        span.addEvent(AttributeKey.EXCEPTION_EVENT.getKey(), attributeMap);
+        return Either.left(exception);
+      }
+
+      boolean retry = false;
+      SessionNotCreatedException lastFailure = new SessionNotCreatedException("Unable to create new session");
+      for (Capabilities caps : request.getDesiredCapabilities()) {
+        if (!isSupported(caps)) {
+          continue;
+        }
+
+        // Try and find a slot that we can use for this session. While we
+        // are finding the slot, no other session can possibly be started.
+        // Therefore, spend as little time as possible holding the write
+        // lock, and release it as quickly as possible. Under no
+        // circumstances should we try to actually start the session itself
+        // in this next block of code.
+        SlotId selectedSlot = reserveSlot(request.getRequestId(), caps);
+        if (selectedSlot == null) {
+          LOG.info(String.format("Unable to find slot for request %s. May retry: %s ", request.getRequestId(), caps));
+          retry = true;
+          continue;
+        }
+
+        CreateSessionRequest singleRequest = new CreateSessionRequest(
+          request.getDownstreamDialects(),
+          caps,
+          request.getMetadata());
+
+        try {
+          CreateSessionResponse response = startSession(selectedSlot, singleRequest);
+          sessions.add(response.getSession());
+          model.setSession(selectedSlot, response.getSession());
+
+          SessionId sessionId = response.getSession().getId();
+          Capabilities sessionCaps = response.getSession().getCapabilities();
+          String sessionUri = response.getSession().getUri().toString();
+          SESSION_ID.accept(span, sessionId);
+          CAPABILITIES.accept(span, sessionCaps);
+          SESSION_ID_EVENT.accept(attributeMap, sessionId);
+          CAPABILITIES_EVENT.accept(attributeMap, sessionCaps);
+          span.setAttribute(SESSION_URI.getKey(), sessionUri);
+          attributeMap.put(SESSION_URI.getKey(), EventAttribute.setValue(sessionUri));
+
+          String sessionCreatedMessage = "Session created by the distributor";
+          span.addEvent(sessionCreatedMessage, attributeMap);
+          LOG.info(String.format("%s. Id: %s, Caps: %s", sessionCreatedMessage, sessionId, sessionCaps));
+
+          return Either.right(response);
+        } catch (SessionNotCreatedException e) {
+          model.setSession(selectedSlot, null);
+          lastFailure = e;
+        }
+      }
+
+      // If we've made it this far, we've not been able to start a session
+      if (retry) {
+        lastFailure = new RetrySessionRequestException(
+          "Will re-attempt to find a node which can run this session",
+          lastFailure);
+        attributeMap.put(
+          AttributeKey.EXCEPTION_MESSAGE.getKey(),
+          EventAttribute.setValue("Will retry session " + request.getRequestId()));
+      } else {
+        EXCEPTION.accept(attributeMap, lastFailure);
+        attributeMap.put(AttributeKey.EXCEPTION_MESSAGE.getKey(),
+          EventAttribute.setValue("Unable to create session: " + lastFailure.getMessage()));
+        span.addEvent(AttributeKey.EXCEPTION_EVENT.getKey(), attributeMap);
+      }
+      return Either.left(lastFailure);
+    } catch (SessionNotCreatedException e) {
+      span.setAttribute(AttributeKey.ERROR.getKey(), true);
+      span.setStatus(Status.ABORTED);
+
+      EXCEPTION.accept(attributeMap, e);
+      attributeMap.put(AttributeKey.EXCEPTION_MESSAGE.getKey(),
+        EventAttribute.setValue("Unable to create session: " + e.getMessage()));
+      span.addEvent(AttributeKey.EXCEPTION_EVENT.getKey(), attributeMap);
+
+      return Either.left(e);
+    } catch (UncheckedIOException e) {
+      span.setAttribute(AttributeKey.ERROR.getKey(), true);
+      span.setStatus(Status.UNKNOWN);
+
+      EXCEPTION.accept(attributeMap, e);
+      attributeMap.put(AttributeKey.EXCEPTION_MESSAGE.getKey(),
+        EventAttribute.setValue("Unknown error in LocalDistributor while creating session: " + e.getMessage()));
+      span.addEvent(AttributeKey.EXCEPTION_EVENT.getKey(), attributeMap);
+
+      return Either.left(new SessionNotCreatedException(e.getMessage(), e));
+    } finally {
+      span.close();
+    }
+  }
+
+  private CreateSessionResponse startSession(SlotId selectedSlot, CreateSessionRequest singleRequest) {
+    Node node = nodes.get(selectedSlot.getOwningNodeId());
+    if (node == null) {
+      throw new SessionNotCreatedException("Unable to find owning node for slot");
+    }
+
+    Either<WebDriverException, CreateSessionResponse> result;
+    try {
+      result = node.newSession(singleRequest);
+    } catch (SessionNotCreatedException e) {
+      result = Either.left(e);
+    } catch (RuntimeException e) {
+      result = Either.left(new SessionNotCreatedException(e.getMessage(), e));
+    }
+    if (result.isLeft()) {
+      WebDriverException exception = result.left();
+      if (exception instanceof SessionNotCreatedException) {
+        throw exception;
+      }
+      throw new SessionNotCreatedException(exception.getMessage(), exception);
+    }
+
+    return result.right();
+  }
+
+  private SlotId reserveSlot(RequestId requestId, Capabilities caps) {
+    Lock writeLock = lock.writeLock();
+    writeLock.lock();
+    try {
+      Set<SlotId> slotIds = slotSelector.selectSlot(caps, getAvailableNodes());
+      if (slotIds.isEmpty()) {
+        LOG.log(
+          getDebugLogLevel(),
+          String.format("No slots found for request %s and capabilities %s", requestId, caps));
+        return null;
+      }
+
+      for (SlotId slotId : slotIds) {
+        if (reserve(slotId)) {
+          return slotId;
+        }
+      }
+
+      return null;
+    } finally {
+      writeLock.unlock();
+    }
+  }
+
+  private boolean isSupported(Capabilities caps) {
+    return getAvailableNodes().stream().anyMatch(node -> node.hasCapability(caps));
+  }
+
+  private boolean reserve(SlotId id) {
+    Require.nonNull("Slot ID", id);
 
     Lock writeLock = this.lock.writeLock();
     writeLock.lock();
     try {
-      Node node = nodes.get(slotId.getOwningNodeId());
+      Node node = nodes.get(id.getOwningNodeId());
       if (node == null) {
-        return Either.left(new RetrySessionRequestException(
-          "Unable to find node. Try a different node"));
+        LOG.log(getDebugLogLevel(), String.format("Unable to find node with id %s", id));
+        return false;
       }
 
-      model.reserve(slotId);
-
-      Either<WebDriverException, CreateSessionResponse> response = node.newSession(request);
-
-      if (response.isRight()) {
-        model.setSession(slotId, response.right().getSession());
-        return Either.right(response.right());
-      } else {
-        model.setSession(slotId, null);
-
-        WebDriverException exception = response.left();
-        if (exception instanceof RetrySessionRequestException) {
-          return Either.left(new RetrySessionRequestException(exception.getMessage()));
-        } else {
-          return Either.left(new SessionNotCreatedException(exception.getMessage()));
-        }
-      }
-
+      return model.reserve(id);
     } finally {
       writeLock.unlock();
     }
@@ -440,8 +618,7 @@ public class LocalDistributor extends Distributor {
     }
 
     private void fireSessionRejectedEvent(String message, RequestId reqId) {
-      bus.fire(
-        new NewSessionRejectedEvent(new NewSessionErrorResponse(reqId, message)));
+      bus.fire(new NewSessionRejectedEvent(new NewSessionErrorResponse(reqId, message)));
     }
   }
 }

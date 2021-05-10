@@ -91,6 +91,10 @@ public class SessionRequest {
     return downstreamDialects;
   }
 
+  public Map<String, Object> getMetadata() {
+    return metadata;
+  }
+
   public Instant getEnqueued() {
     return enqueued;
   }
