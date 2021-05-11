@@ -556,18 +556,32 @@ public class LocalDistributor extends Distributor {
 
     @Override
     public void run() {
-      // We deliberately run this outside of a lock: if we're unsuccessful
-      // starting the session, we just put the request back on the queue.
-      // This does mean, however, that under high contention, we might end
-      // up starving a session request.
-      Set<Capabilities> stereotypes = getAvailableNodes().stream()
-        .filter(NodeStatus::hasCapacity)
-        .map(node -> node.getSlots().stream().map(Slot::getStereotype).collect(Collectors.toSet()))
-        .flatMap(Collection::stream)
-        .collect(Collectors.toSet());
+      int initialSize = sessionQueue.getQueueContents().size();
+      boolean retry = initialSize != 0;
 
-      Optional<SessionRequest> maybeRequest = sessionQueue.getNextAvailable(stereotypes);
-      maybeRequest.ifPresent(this::handleNewSessionRequest);
+      while (retry) {
+        // We deliberately run this outside of a lock: if we're unsuccessful
+        // starting the session, we just put the request back on the queue.
+        // This does mean, however, that under high contention, we might end
+        // up starving a session request.
+        Set<Capabilities> stereotypes =
+            getAvailableNodes().stream()
+                .filter(NodeStatus::hasCapacity)
+                .map(
+                    node ->
+                        node.getSlots().stream()
+                            .map(Slot::getStereotype)
+                            .collect(Collectors.toSet()))
+                .flatMap(Collection::stream)
+                .collect(Collectors.toSet());
+
+        Optional<SessionRequest> maybeRequest = sessionQueue.getNextAvailable(stereotypes);
+        maybeRequest.ifPresent(this::handleNewSessionRequest);
+
+        int currentSize = sessionQueue.getQueueContents().size();
+        retry = currentSize != 0 && currentSize != initialSize;
+        initialSize = currentSize;
+      }
     }
 
     private void handleNewSessionRequest(SessionRequest sessionRequest) {
