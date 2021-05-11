@@ -30,9 +30,11 @@ import static org.openqa.selenium.SharedCapabilitiesMethods.setCapability;
 public class ImmutableCapabilities implements Capabilities {
 
   private final Map<String, Object> delegate;
+  private final int hashCode;
 
   public ImmutableCapabilities() {
     this.delegate = Collections.emptyMap();
+    this.hashCode = SharedCapabilitiesMethods.hashCode(this);
   }
 
   public ImmutableCapabilities(String k, Object v) {
@@ -43,6 +45,7 @@ public class ImmutableCapabilities implements Capabilities {
     setCapability(delegate, k, v);
 
     this.delegate = Collections.unmodifiableMap(delegate);
+    this.hashCode = SharedCapabilitiesMethods.hashCode(this);
   }
 
   public ImmutableCapabilities(String k1, Object v1, String k2, Object v2) {
@@ -57,6 +60,7 @@ public class ImmutableCapabilities implements Capabilities {
     setCapability(delegate, k2, v2);
 
     this.delegate = Collections.unmodifiableMap(delegate);
+    this.hashCode = SharedCapabilitiesMethods.hashCode(this);
   }
 
   public ImmutableCapabilities(String k1, Object v1, String k2, Object v2, String k3, Object v3) {
@@ -74,6 +78,7 @@ public class ImmutableCapabilities implements Capabilities {
     setCapability(delegate, k3, v3);
 
     this.delegate = Collections.unmodifiableMap(delegate);
+    this.hashCode = SharedCapabilitiesMethods.hashCode(this);
   }
 
   public ImmutableCapabilities(
@@ -98,6 +103,7 @@ public class ImmutableCapabilities implements Capabilities {
     setCapability(delegate, k4, v4);
 
     this.delegate = Collections.unmodifiableMap(delegate);
+    this.hashCode = SharedCapabilitiesMethods.hashCode(this);
   }
 
   public ImmutableCapabilities(
@@ -126,6 +132,7 @@ public class ImmutableCapabilities implements Capabilities {
     setCapability(delegate, k5, v5);
 
     this.delegate = Collections.unmodifiableMap(delegate);
+    this.hashCode = SharedCapabilitiesMethods.hashCode(this);
   }
 
   public ImmutableCapabilities(Capabilities other) {
@@ -141,6 +148,7 @@ public class ImmutableCapabilities implements Capabilities {
     });
 
     this.delegate = Collections.unmodifiableMap(delegate);
+    this.hashCode = SharedCapabilitiesMethods.hashCode(this);
   }
 
   public ImmutableCapabilities(Map<?, ?> capabilities) {
@@ -156,6 +164,7 @@ public class ImmutableCapabilities implements Capabilities {
     });
 
     this.delegate = Collections.unmodifiableMap(delegate);
+    this.hashCode = SharedCapabilitiesMethods.hashCode(this);
   }
 
   @Override
@@ -171,33 +180,17 @@ public class ImmutableCapabilities implements Capabilities {
 
   @Override
   public int hashCode() {
-    return delegate.hashCode();
+    return hashCode;
   }
 
   @Override
   public boolean equals(Object o) {
-    if (this == o) {
-      return true;
-    }
-
     if (!(o instanceof Capabilities)) {
       return false;
     }
-
-    Capabilities other = (Capabilities) o;
-    Set<String> names = other.getCapabilityNames();
-    if (names.size() != delegate.size()) {
-      return false;
-    }
-
-    for (String name : names) {
-      if (!Objects.equals(delegate.get(name), other.getCapability(name))) {
-        return false;
-      }
-    }
-
-    return true;
+    return SharedCapabilitiesMethods.equals(this, (Capabilities) o);
   }
+
 
   @Override
   public String toString() {

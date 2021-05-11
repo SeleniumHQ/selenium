@@ -193,16 +193,6 @@ public class ChromiumOptions<T extends ChromiumOptions<?>> extends AbstractDrive
   }
 
   @Override
-  protected int amendHashCode() {
-    return Objects.hash(
-        args,
-        binary,
-        experimentalOptions,
-        extensionFiles,
-        extensions);
-  }
-
-  @Override
   public Map<String, Object> asMap() {
     Map<String, Object> toReturn = new TreeMap<>(super.asMap());
 

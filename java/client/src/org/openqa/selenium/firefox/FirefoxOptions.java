@@ -364,13 +364,6 @@ public class FirefoxOptions extends AbstractDriverOptions<FirefoxOptions> {
     return newInstance;
   }
 
-  @Override
-  protected int amendHashCode() {
-    return Objects.hash(
-      firefoxOptions,
-      legacy);
-  }
-
   private enum Keys {
     ARGS("args") {
       @Override

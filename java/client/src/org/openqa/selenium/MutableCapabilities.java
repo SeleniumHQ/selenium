@@ -22,7 +22,6 @@ import org.openqa.selenium.internal.Require;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Set;
 import java.util.TreeMap;
 
@@ -124,30 +123,17 @@ public class MutableCapabilities implements Capabilities {
     return asMap();
   }
 
-  /**
-   * Subclasses can use this to add information that isn't always in the capabilities map.
-   */
-  protected int amendHashCode() {
-    return 0;
-  }
-
   @Override
   public int hashCode() {
-    return Objects.hash(amendHashCode(), caps);
+    return SharedCapabilitiesMethods.hashCode(this);
   }
 
   @Override
   public boolean equals(Object o) {
-    if (this == o) {
-      return true;
-    }
     if (!(o instanceof Capabilities)) {
       return false;
     }
-
-    Capabilities that = (Capabilities) o;
-
-    return asMap().equals(that.asMap());
+    return SharedCapabilitiesMethods.equals(this, (Capabilities) o);
   }
 
   @Override
