@@ -1,4 +1,4 @@
-# Selenium 
+# Selenium
 
 [![Python workflow](https://github.com/SeleniumHQ/selenium/workflows/Python%20workflow/badge.svg)](https://github.com/SeleniumHQ/selenium/actions?query=workflow%3A%22Python+workflow%22)
 [![Ruby workflow](https://github.com/SeleniumHQ/selenium/workflows/Ruby%20workflow/badge.svg)](https://github.com/SeleniumHQ/selenium/actions?query=workflow%3A%22Ruby+workflow%22)
@@ -49,7 +49,6 @@ before submitting your pull requests.
   installed. If you're met with a list of command-line options, you're referencing the JDK properly.
 * [Python 3.7+](https://www.python.org/downloads/)
 * `python` on the PATH
-* [The Requests Library](http://python-requests.org) for Python: `pip install requests`
 * [The tox automation project](http://tox.readthedocs.org/) for Python: `pip install tox`
 * MacOS users should have the latest version of Xcode installed, including the command-line tools.
 The following command should work:
