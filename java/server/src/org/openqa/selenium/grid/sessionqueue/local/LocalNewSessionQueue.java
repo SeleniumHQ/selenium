@@ -39,13 +39,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
-import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedDeque;
-import java.util.concurrent.ExecutionException;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeoutException;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
@@ -177,7 +175,6 @@ public class LocalNewSessionQueue extends NewSessionQueue implements Closeable {
     Require.nonNull("Request id", request.getRequestId());
 
     Data data = injectIntoQueue(request);
-    CompletableFuture<Either<SessionNotCreatedException, CreateSessionResponse>> future = data.future;
 
     if (isTimedOut(Instant.now(), data)) {
       failDueToTimeout(request.getRequestId());
@@ -185,17 +182,16 @@ public class LocalNewSessionQueue extends NewSessionQueue implements Closeable {
 
     Either<SessionNotCreatedException, CreateSessionResponse> result;
     try {
-      result = future.get(requestTimeout.toMillis(), MILLISECONDS);
+      if (data.latch.await(requestTimeout.toMillis(), MILLISECONDS)) {
+        result = data.result;
+      } else {
+        result = Either.left(new SessionNotCreatedException("New session request timed out"));
+      }
     } catch (InterruptedException e) {
       Thread.currentThread().interrupt();
       result = Either.left(new SessionNotCreatedException("Interrupted when creating the session", e));
-    } catch (ExecutionException e) {
-      Throwable cause = e.getCause();
-      result = Either.left(new SessionNotCreatedException(
-        cause == null ? e.getMessage() : cause.getMessage(),
-        cause == null ? e : cause));
-    } catch (TimeoutException e) {
-      result = Either.left(new SessionNotCreatedException("New session request timed out"));
+    } catch (RuntimeException e) {
+      result = Either.left(new SessionNotCreatedException("An error occurred creating the session", e));
     }
 
     Lock writeLock = this.lock.writeLock();
@@ -222,8 +218,7 @@ public class LocalNewSessionQueue extends NewSessionQueue implements Closeable {
   Data injectIntoQueue(SessionRequest request) {
     Require.nonNull("Session request", request);
 
-    CompletableFuture<Either<SessionNotCreatedException, CreateSessionResponse>> future = new CompletableFuture<>();
-    Data data = new Data(future, request.getEnqueued());
+    Data data = new Data(request.getEnqueued());
 
     Lock writeLock = lock.writeLock();
     writeLock.lock();
@@ -343,7 +338,7 @@ public class LocalNewSessionQueue extends NewSessionQueue implements Closeable {
     if (result.isLeft()) {
       bus.fire(new NewSessionRejectedEvent(new NewSessionErrorResponse(reqId, result.left().getMessage())));
     }
-    data.future.complete(result);
+    data.setResult(result);
   }
 
   @Override
@@ -355,7 +350,7 @@ public class LocalNewSessionQueue extends NewSessionQueue implements Closeable {
       int size = queue.size();
       queue.clear();
       requests.forEach((reqId, data) -> {
-        data.future.complete(Either.left(new SessionNotCreatedException("Request queue was cleared")));
+        data.setResult(Either.left(new SessionNotCreatedException("Request queue was cleared")));
         bus.fire(new NewSessionRejectedEvent(
           new NewSessionErrorResponse(reqId, "New session queue was forcibly cleared")));
       });
@@ -401,11 +396,22 @@ public class LocalNewSessionQueue extends NewSessionQueue implements Closeable {
 
   private class Data {
     public final Instant endTime;
-    public final CompletableFuture<Either<SessionNotCreatedException, CreateSessionResponse>> future;
+    public Either<SessionNotCreatedException, CreateSessionResponse> result;
+    private boolean complete;
+    private CountDownLatch latch = new CountDownLatch(1);
 
-    public Data(CompletableFuture<Either<SessionNotCreatedException, CreateSessionResponse>> future, Instant enqueud) {
-      this.future = future;
-      this.endTime = enqueud.plus(requestTimeout);
+    public Data(Instant enqueued) {
+      this.endTime = enqueued.plus(requestTimeout);
+      this.result = Either.left(new SessionNotCreatedException("Session not created"));
+    }
+
+    public synchronized void setResult(Either<SessionNotCreatedException, CreateSessionResponse> result) {
+      if (complete) {
+        return;
+      }
+      this.result = result;
+      complete = true;
+      latch.countDown();
     }
   }
 }
