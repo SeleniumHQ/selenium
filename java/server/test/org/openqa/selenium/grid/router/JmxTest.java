@@ -24,6 +24,7 @@ import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.events.EventBus;
 import org.openqa.selenium.events.local.GuavaEventBus;
 import org.openqa.selenium.grid.config.MapConfig;
+import org.openqa.selenium.grid.data.DefaultSlotMatcher;
 import org.openqa.selenium.grid.data.Session;
 import org.openqa.selenium.grid.jmx.JMXHelper;
 import org.openqa.selenium.grid.node.local.LocalNode;
@@ -196,6 +197,7 @@ public class JmxTest {
       NewSessionQueue sessionQueue = new LocalNewSessionQueue(
         tracer,
         bus,
+        new DefaultSlotMatcher(),
         Duration.ofSeconds(2),
         Duration.ofSeconds(2),
         new Secret(""));

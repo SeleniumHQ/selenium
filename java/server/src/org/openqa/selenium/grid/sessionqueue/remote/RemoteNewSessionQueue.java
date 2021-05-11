@@ -110,7 +110,7 @@ public class RemoteNewSessionQueue extends NewSessionQueue {
 
   @Override
   public Optional<SessionRequest> remove(RequestId reqId) {
-    HttpRequest upstream = new HttpRequest(GET, "/se/grid/newsessionqueue/session/" + reqId);
+    HttpRequest upstream = new HttpRequest(POST, "/se/grid/newsessionqueue/session/" + reqId);
     HttpTracing.inject(tracer, tracer.getCurrentContext(), upstream);
     HttpResponse response = client.with(addSecret).execute(upstream);
 
@@ -124,6 +124,20 @@ public class RemoteNewSessionQueue extends NewSessionQueue {
     }
 
     return Optional.empty();
+  }
+
+  @Override
+  public Optional<SessionRequest> getNextAvailable(Set<Capabilities> stereotypes) {
+    Require.nonNull("Stereotypes", stereotypes);
+
+    HttpRequest upstream = new HttpRequest(POST, "/se/grid/newsessionqueue/session/next")
+      .setContent(Contents.asJson(stereotypes));
+    HttpTracing.inject(tracer, tracer.getCurrentContext(), upstream);
+    HttpResponse response = client.with(addSecret).execute(upstream);
+
+    SessionRequest value = Values.get(response, SessionRequest.class);
+
+    return Optional.ofNullable(value);
   }
 
   @Override

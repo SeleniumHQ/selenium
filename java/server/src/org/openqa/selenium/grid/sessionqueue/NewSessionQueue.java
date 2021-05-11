@@ -90,8 +90,11 @@ public abstract class NewSessionQueue implements HasReadyState, Routable {
       post("/se/grid/newsessionqueue/session/{requestId}/success")
         .to(params -> new SessionCreated(tracer, this, requestIdFrom(params)))
         .with(requiresSecret),
-      get("/se/grid/newsessionqueue/session/{requestId}")
+      post("/se/grid/newsessionqueue/session/{requestId}")
         .to(params -> new RemoveFromSessionQueue(tracer, this, requestIdFrom(params)))
+        .with(requiresSecret),
+      post("/se/grid/newsessionqueue/session/next")
+        .to(() -> new GetNextMatchingRequest(this))
         .with(requiresSecret),
       get("/se/grid/newsessionqueue/queue")
         .to(() -> new GetSessionQueue(tracer, this)),
@@ -109,6 +112,8 @@ public abstract class NewSessionQueue implements HasReadyState, Routable {
   public abstract boolean retryAddToQueue(SessionRequest request);
 
   public abstract Optional<SessionRequest> remove(RequestId reqId);
+
+  public abstract Optional<SessionRequest> getNextAvailable(Set<Capabilities> stereotypes);
 
   public abstract void complete(RequestId reqId, Either<SessionNotCreatedException, CreateSessionResponse> result);
 

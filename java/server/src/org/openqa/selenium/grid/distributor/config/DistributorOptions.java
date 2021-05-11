@@ -19,6 +19,7 @@ package org.openqa.selenium.grid.distributor.config;
 
 import org.openqa.selenium.grid.config.Config;
 import org.openqa.selenium.grid.config.ConfigException;
+import org.openqa.selenium.grid.data.SlotMatcher;
 import org.openqa.selenium.grid.distributor.Distributor;
 import org.openqa.selenium.grid.distributor.selector.SlotSelector;
 
@@ -32,6 +33,7 @@ public class DistributorOptions {
   static final String DISTRIBUTOR_SECTION = "distributor";
   static final String DEFAULT_DISTRIBUTOR_IMPLEMENTATION =
     "org.openqa.selenium.grid.distributor.local.LocalDistributor";
+  static final String DEFAULT_SLOT_MATCHER = "org.openqa.selenium.grid.data.DefaultSlotMatcher";
   static final String DEFAULT_SLOT_SELECTOR_IMPLEMENTATION =
     "org.openqa.selenium.grid.distributor.selector.DefaultSlotSelector";
 
@@ -94,6 +96,14 @@ public class DistributorOptions {
       "implementation",
       Distributor.class,
       DEFAULT_DISTRIBUTOR_IMPLEMENTATION);
+  }
+
+  public SlotMatcher getSlotMatcher() {
+    return config.getClass(
+      DISTRIBUTOR_SECTION,
+      "slot-matcher",
+      SlotMatcher.class,
+      DEFAULT_SLOT_MATCHER);
   }
 
   public SlotSelector getSlotSelector() {

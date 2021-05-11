@@ -10,6 +10,9 @@ import org.openqa.selenium.grid.data.NewSessionErrorResponse;
 import org.openqa.selenium.grid.data.NewSessionRejectedEvent;
 import org.openqa.selenium.grid.data.NewSessionRequestEvent;
 import org.openqa.selenium.grid.data.RequestId;
+import org.openqa.selenium.grid.data.SessionRequest;
+import org.openqa.selenium.grid.data.SlotMatcher;
+import org.openqa.selenium.grid.distributor.config.DistributorOptions;
 import org.openqa.selenium.grid.jmx.JMXHelper;
 import org.openqa.selenium.grid.jmx.ManagedAttribute;
 import org.openqa.selenium.grid.jmx.ManagedService;
@@ -18,7 +21,6 @@ import org.openqa.selenium.grid.security.Secret;
 import org.openqa.selenium.grid.security.SecretOptions;
 import org.openqa.selenium.grid.server.EventBusOptions;
 import org.openqa.selenium.grid.sessionqueue.NewSessionQueue;
-import org.openqa.selenium.grid.data.SessionRequest;
 import org.openqa.selenium.grid.sessionqueue.config.SessionRequestOptions;
 import org.openqa.selenium.internal.Either;
 import org.openqa.selenium.internal.Require;
@@ -47,6 +49,7 @@ import java.util.concurrent.TimeoutException;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import static java.net.HttpURLConnection.HTTP_INTERNAL_ERROR;
@@ -80,6 +83,7 @@ import static java.util.concurrent.TimeUnit.MILLISECONDS;
 public class LocalNewSessionQueue extends NewSessionQueue implements Closeable {
 
   private final EventBus bus;
+  private final SlotMatcher slotMatcher;
   private final Duration requestTimeout;
   private final Map<RequestId, Data> requests;
   private final Deque<SessionRequest> queue;
@@ -94,11 +98,13 @@ public class LocalNewSessionQueue extends NewSessionQueue implements Closeable {
   public LocalNewSessionQueue(
     Tracer tracer,
     EventBus bus,
+    SlotMatcher slotMatcher,
     Duration retryPeriod,
     Duration requestTimeout,
     Secret registrationSecret) {
     super(tracer, registrationSecret);
 
+    this.slotMatcher = Require.nonNull("Slot matcher", slotMatcher);
     this.bus = Require.nonNull("Event bus", bus);
     Require.nonNull("Retry period", retryPeriod);
     if (retryPeriod.isNegative() || retryPeriod.isZero()) {
@@ -125,10 +131,12 @@ public class LocalNewSessionQueue extends NewSessionQueue implements Closeable {
     EventBusOptions eventBusOptions = new EventBusOptions(config);
     SessionRequestOptions requestOptions = new SessionRequestOptions(config);
     SecretOptions secretOptions = new SecretOptions(config);
+    SlotMatcher slotMatcher = new DistributorOptions(config).getSlotMatcher();
 
     return new LocalNewSessionQueue(
       tracer,
       eventBusOptions.getEventBus(),
+      slotMatcher,
       requestOptions.getSessionRequestRetryInterval(),
       requestOptions.getSessionRequestTimeout(),
       secretOptions.getRegistrationSecret());
@@ -172,7 +180,6 @@ public class LocalNewSessionQueue extends NewSessionQueue implements Closeable {
     CompletableFuture<Either<SessionNotCreatedException, CreateSessionResponse>> future = data.future;
 
     if (isTimedOut(Instant.now(), data)) {
-      System.out.println("Timing out request!");
       failDueToTimeout(request.getRequestId());
     }
 
@@ -284,6 +291,29 @@ public class LocalNewSessionQueue extends NewSessionQueue implements Closeable {
   }
 
   @Override
+  public Optional<SessionRequest> getNextAvailable(Set<Capabilities> stereotypes) {
+    Require.nonNull("Stereotypes", stereotypes);
+
+    Predicate<Capabilities> matchesStereotype =
+      caps -> stereotypes.stream().anyMatch(stereotype -> slotMatcher.matches(stereotype, caps));
+
+    Lock writeLock = lock.writeLock();
+    writeLock.lock();
+    try {
+      Optional<SessionRequest> maybeRequest =
+          queue.stream()
+              .filter(req -> req.getDesiredCapabilities().stream().anyMatch(matchesStereotype))
+              .findFirst();
+
+      maybeRequest.ifPresent(req -> this.remove(req.getRequestId()));
+
+      return maybeRequest;
+    } finally {
+      writeLock.unlock();
+    }
+  }
+
+  @Override
   public void complete(RequestId reqId, Either<SessionNotCreatedException, CreateSessionResponse> result) {
     Require.nonNull("New session request", reqId);
     Require.nonNull("Result", result);
@@ -322,8 +352,6 @@ public class LocalNewSessionQueue extends NewSessionQueue implements Closeable {
     writeLock.lock();
 
     try {
-      System.out.println(requests);
-
       int size = queue.size();
       queue.clear();
       requests.forEach((reqId, data) -> {
