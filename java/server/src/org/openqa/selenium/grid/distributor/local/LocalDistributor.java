@@ -73,23 +73,20 @@ import org.openqa.selenium.status.HasReadyState;
 import java.io.UncheckedIOException;
 import java.time.Duration;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Queue;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.ThreadFactory;
-import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 import static com.google.common.collect.ImmutableSet.toImmutableSet;
 import static org.openqa.selenium.grid.data.Availability.DOWN;
@@ -114,8 +111,6 @@ public class LocalDistributor extends Distributor {
   private final Secret registrationSecret;
   private final Regularly hostChecker = new Regularly("distributor host checker");
   private final Map<NodeId, Runnable> allChecks = new HashMap<>();
-  private final Queue<RequestId> requestIds = new ConcurrentLinkedQueue<>();
-  private final ScheduledExecutorService executorService;
   private final Duration healthcheckInterval;
 
   private final ReadWriteLock lock = new ReentrantReadWriteLock(/* fair */ true);
@@ -123,6 +118,7 @@ public class LocalDistributor extends Distributor {
   private final Map<NodeId, Node> nodes;
 
   private final NewSessionQueue sessionQueue;
+  private final Regularly regularly;
 
   public LocalDistributor(
     Tracer tracer,
@@ -154,23 +150,22 @@ public class LocalDistributor extends Distributor {
         register(nodeStatus);
       }
     }));
+
+    regularly = new Regularly(
+      Executors.newSingleThreadScheduledExecutor(
+        r -> {
+          Thread thread = new Thread(r);
+          thread.setName("New Session Queue");
+          thread.setDaemon(true);
+          return thread;
+        }));
+
+    NewSessionRunnable newSessionRunnable = new NewSessionRunnable();
     bus.addListener(NodeDrainComplete.listener(this::remove));
-    bus.addListener(NewSessionRequestEvent.listener(requestIds::offer));
+    bus.addListener(NewSessionRequestEvent.listener(ignored -> newSessionRunnable.run()));
 
-    Regularly regularly = new Regularly("Local Distributor");
     regularly.submit(model::purgeDeadNodes, Duration.ofSeconds(30), Duration.ofSeconds(30));
-
-    Thread shutdownHook = new Thread(this::callExecutorShutdown);
-    Runtime.getRuntime().addShutdownHook(shutdownHook);
-    NewSessionRunnable runnable = new NewSessionRunnable();
-    ThreadFactory threadFactory = r -> {
-      Thread thread = new Thread(r);
-      thread.setName("New Session Creation");
-      thread.setDaemon(true);
-      return thread;
-    };
-    executorService = Executors.newSingleThreadScheduledExecutor(threadFactory);
-    executorService.scheduleAtFixedRate(runnable, 0, 1000, TimeUnit.MILLISECONDS);
+    regularly.submit(newSessionRunnable, Duration.ofSeconds(5), Duration.ofSeconds(5));
   }
 
   public static Distributor create(Config config) {
@@ -554,41 +549,30 @@ public class LocalDistributor extends Distributor {
 
   public void callExecutorShutdown() {
     LOG.info("Shutting down Distributor executor service");
-    executorService.shutdownNow();
+    regularly.shutdown();
   }
 
   public class NewSessionRunnable implements Runnable {
 
     @Override
     public void run() {
-      Lock writeLock = lock.writeLock();
-      writeLock.lock();
-      try {
-        if (!requestIds.isEmpty()) {
-          Set<NodeStatus> availableNodes = ImmutableSet.copyOf(getAvailableNodes());
-          boolean hasCapacity = availableNodes.stream()
-            .anyMatch(NodeStatus::hasCapacity);
-          if (hasCapacity) {
-            RequestId reqId = requestIds.poll();
-            if (reqId != null) {
-              Optional<SessionRequest> maybeRequest = sessionQueue.remove(reqId);
-              // Check if polling the queue did not return null
-              if (maybeRequest.isPresent()) {
-                handleNewSessionRequest(maybeRequest.get(), reqId);
-              } else {
-                fireSessionRejectedEvent(
-                  "Unable to poll request from the new session request queue.",
-                  reqId);
-              }
-            }
-          }
-        }
-      } finally {
-        writeLock.unlock();
-      }
+      // We deliberately run this outside of a lock: if we're unsuccessful
+      // starting the session, we just put the request back on the queue.
+      // This does mean, however, that under high contention, we might end
+      // up starving a session request.
+      Set<Capabilities> stereotypes = getAvailableNodes().stream()
+        .filter(NodeStatus::hasCapacity)
+        .map(node -> node.getSlots().stream().map(Slot::getStereotype).collect(Collectors.toSet()))
+        .flatMap(Collection::stream)
+        .collect(Collectors.toSet());
+
+      Optional<SessionRequest> maybeRequest = sessionQueue.getNextAvailable(stereotypes);
+      maybeRequest.ifPresent(this::handleNewSessionRequest);
     }
 
-    private void handleNewSessionRequest(SessionRequest sessionRequest, RequestId reqId) {
+    private void handleNewSessionRequest(SessionRequest sessionRequest) {
+      RequestId reqId = sessionRequest.getRequestId();
+
       try (Span span = tracer.getCurrentContext().createSpan("distributor.poll_queue")) {
         Map<String, EventAttributeValue> attributeMap = new HashMap<>();
         attributeMap.put(
