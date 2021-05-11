@@ -614,9 +614,5 @@ public class LocalDistributor extends Distributor {
         sessionQueue.complete(reqId, response);
       }
     }
-
-    private void fireSessionRejectedEvent(String message, RequestId reqId) {
-      bus.fire(new NewSessionRejectedEvent(new NewSessionErrorResponse(reqId, message)));
-    }
   }
 }
