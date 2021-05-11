@@ -38,7 +38,8 @@ Gem::Specification.new do |s|
     'README.md',
     'selenium-webdriver.gemspec',
     'lib/selenium-webdriver.rb',
-    'lib/selenium/server.rb'
+    'lib/selenium/server.rb',
+    'lib/selenium/webdriver.rb'
   ] + Dir['lib/selenium/webdriver/**/*']
 
   s.require_paths = ['lib']

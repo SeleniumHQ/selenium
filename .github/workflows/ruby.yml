@@ -9,6 +9,33 @@ on:
       - trunk
 
 jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        target: ['selenium-devtools', 'selenium-webdriver']
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-java@v1
+        with:
+          java-version: 11
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: 2.5
+      - uses: actions/cache@v2
+        with:
+          path: |
+            ~/.cache/bazel-disk
+            ~/.cache/bazel-repo
+          key: ${{ runner.os }}-bazel-ruby-build-gem-${{ matrix.target }}-${{ hashFiles('**/BUILD.bazel') }}
+          restore-keys: |
+            ${{ runner.os }}-bazel-ruby-build-gem-${{ matrix.target }}-
+      - uses: ./.github/actions/setup-bazelisk
+      - uses: ./.github/actions/bazel
+        with:
+          command: build //rb:${{ matrix.target }}
+
   chrome-test:
     runs-on: ubuntu-latest
     strategy:
