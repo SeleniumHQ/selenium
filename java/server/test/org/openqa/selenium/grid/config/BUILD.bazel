@@ -6,6 +6,7 @@ java_test_suite(
     size = "small",
     srcs = glob(["*Test.java"]),
     deps = [
+        "//java/client/src/org/openqa/selenium:core",
         "//java/server/src/org/openqa/selenium/grid/config",
         artifact("com.beust:jcommander"),
         artifact("com.google.guava:guava"),
