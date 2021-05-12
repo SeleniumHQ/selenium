@@ -84,8 +84,8 @@ CrazyFun::Mappings::RakeMappings.new.add_all(crazy_fun)
 # Finally, find every file named "build.desc" in the project, and generate
 # rake tasks from them. These tasks are normal rake tasks, and can be invoked
 # from rake.
-crazy_fun.create_tasks(Dir['common/**/build.desc'])
-crazy_fun.create_tasks(Dir['rb/**/build.desc'])
+# FIXME: the rules for the targets were removed and build files won't load
+# crazy_fun.create_tasks(Dir['**/build.desc'])
 
 #  If it looks like a bazel target, build it with bazel
 rule /\/\/.*/ do |task|
