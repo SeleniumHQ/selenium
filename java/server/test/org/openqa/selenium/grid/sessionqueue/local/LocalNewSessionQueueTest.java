@@ -30,6 +30,7 @@ import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.events.EventBus;
 import org.openqa.selenium.events.local.GuavaEventBus;
 import org.openqa.selenium.grid.data.CreateSessionResponse;
+import org.openqa.selenium.grid.data.DefaultSlotMatcher;
 import org.openqa.selenium.grid.data.NewSessionRejectedEvent;
 import org.openqa.selenium.grid.data.NewSessionRequestEvent;
 import org.openqa.selenium.grid.data.RequestId;
@@ -143,6 +144,7 @@ public class LocalNewSessionQueueTest {
       LocalNewSessionQueue local = new LocalNewSessionQueue(
         tracer,
         bus,
+        new DefaultSlotMatcher(),
         Duration.ofSeconds(1),
         Duration.ofSeconds(Debug.isDebugging() ? 9999 : 5),
         REGISTRATION_SECRET);
@@ -154,6 +156,7 @@ public class LocalNewSessionQueueTest {
       LocalNewSessionQueue local = new LocalNewSessionQueue(
         tracer,
         bus,
+        new DefaultSlotMatcher(),
         Duration.ofSeconds(1),
         Duration.ofSeconds(Debug.isDebugging() ? 9999 : 5),
         REGISTRATION_SECRET);
@@ -487,5 +490,54 @@ public class LocalNewSessionQueueTest {
     }
 
     executor.shutdownNow();
+  }
+
+  @Test
+  public void shouldBeAbleToReturnTheNextAvailableEntryThatMatchesAStereotype() {
+    SessionRequest expected = new SessionRequest(
+      new RequestId(UUID.randomUUID()),
+      Instant.now(),
+      Set.of(W3C),
+      Set.of(new ImmutableCapabilities("browserName", "cheese", "se:kind", "smoked")),
+      Map.of());
+    localQueue.injectIntoQueue(expected);
+
+    localQueue.injectIntoQueue(new SessionRequest(
+      new RequestId(UUID.randomUUID()),
+      Instant.now(),
+      Set.of(W3C),
+      Set.of(new ImmutableCapabilities("browserName", "peas", "se:kind", "mushy")),
+      Map.of()));
+
+    Optional<SessionRequest> returned = queue.getNextAvailable(
+      Set.of(new ImmutableCapabilities("browserName", "cheese")));
+
+    assertThat(returned).isEqualTo(Optional.of(expected));
+  }
+
+  @Test
+  public void shouldNotReturnANextAvailableEntryThatDoesNotMatchTheStereotypes() {
+    // Note that this is basically the same test as getting the entry
+    // from queue, but we've cleverly reversed the entries, so the one
+    // that doesn't match should be first in the queue.
+    localQueue.injectIntoQueue(new SessionRequest(
+      new RequestId(UUID.randomUUID()),
+      Instant.now(),
+      Set.of(W3C),
+      Set.of(new ImmutableCapabilities("browserName", "peas", "se:kind", "mushy")),
+      Map.of()));
+
+    SessionRequest expected = new SessionRequest(
+      new RequestId(UUID.randomUUID()),
+      Instant.now(),
+      Set.of(W3C),
+      Set.of(new ImmutableCapabilities("browserName", "cheese", "se:kind", "smoked")),
+      Map.of());
+    localQueue.injectIntoQueue(expected);
+
+    Optional<SessionRequest> returned = queue.getNextAvailable(
+      Set.of(new ImmutableCapabilities("browserName", "cheese")));
+
+    assertThat(returned).isEqualTo(Optional.of(expected));
   }
 }

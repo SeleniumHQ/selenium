@@ -26,6 +26,7 @@ import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.events.EventBus;
 import org.openqa.selenium.events.local.GuavaEventBus;
 import org.openqa.selenium.grid.config.MapConfig;
+import org.openqa.selenium.grid.data.DefaultSlotMatcher;
 import org.openqa.selenium.grid.data.Session;
 import org.openqa.selenium.grid.distributor.Distributor;
 import org.openqa.selenium.grid.distributor.local.LocalDistributor;
@@ -98,6 +99,7 @@ public class SessionQueueGridTest {
     NewSessionQueue queue = new LocalNewSessionQueue(
       tracer,
       bus,
+      new DefaultSlotMatcher(),
       Duration.ofSeconds(5),
       Duration.ofSeconds(10),
       registrationSecret);
@@ -191,7 +193,7 @@ public class SessionQueueGridTest {
         fixedThreadPoolService.submit(sessionCreationTask).get(20, SECONDS);
       assertThat(secondSessionResponse.getStatus()).isEqualTo(HTTP_OK);
 
-      Future<HttpResponse> thirdSessionrFuture = fixedThreadPoolService.submit(sessionCreationTask);
+      Future<HttpResponse> thirdSessionFuture = fixedThreadPoolService.submit(sessionCreationTask);
 
       Callable<HttpResponse> clearTask = () -> {
         HttpRequest request =
@@ -205,7 +207,7 @@ public class SessionQueueGridTest {
       // Clearing the new session request will cancel the third session request in the queue.
       clearQueueResponse.get(10, SECONDS);
 
-      HttpResponse thirdSessionResponse = thirdSessionrFuture.get();
+      HttpResponse thirdSessionResponse = thirdSessionFuture.get();
       assertThat(thirdSessionResponse.getStatus()).isEqualTo(HTTP_INTERNAL_ERROR);
     } catch (InterruptedException e) {
       fail("Unable to create session. Thread Interrupted");

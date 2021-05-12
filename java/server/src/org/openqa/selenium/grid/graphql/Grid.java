@@ -47,8 +47,11 @@ public class Grid {
   private final List<Set<Capabilities>> queueInfoList;
   private final String version;
 
-  public Grid(Distributor distributor, NewSessionQueue newSessionQueue, URI uri,
-              String version) {
+  public Grid(
+    Distributor distributor,
+    NewSessionQueue newSessionQueue,
+    URI uri,
+    String version) {
     Require.nonNull("Distributor", distributor);
     this.uri = Require.nonNull("Grid's public URI", uri);
     NewSessionQueue sessionQueue = Require.nonNull("New session queue", newSessionQueue);

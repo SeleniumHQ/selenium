@@ -24,6 +24,8 @@ import java.util.Collection;
 import java.util.Comparator;
 import java.util.IdentityHashMap;
 import java.util.Map;
+import java.util.Objects;
+import java.util.function.IntBinaryOperator;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -31,6 +33,17 @@ class SharedCapabilitiesMethods {
 
   private SharedCapabilitiesMethods() {
     // Utility class
+  }
+
+  static int hashCode(Capabilities caps) {
+    return caps.getCapabilityNames().stream()
+      .sorted()
+      .mapToInt(name -> Objects.hash(name, caps.getCapability(name)))
+      .reduce(0, (l, r) -> l ^ r);
+  }
+
+  static boolean equals(Capabilities left, Capabilities right) {
+    return left.hashCode() == right.hashCode();
   }
 
   static void setCapability(Map<String, Object> caps, String key, Object value) {

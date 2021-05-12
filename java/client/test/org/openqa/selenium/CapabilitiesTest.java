@@ -120,4 +120,16 @@ public class CapabilitiesTest {
     assertThat(caps1.asMap()).containsExactlyEntriesOf(map1);
     assertThat(caps2.asMap()).containsExactlyEntriesOf(map2);
   }
+
+  @Test
+  public void ensureHashCodesAreEqual() {
+    Capabilities one = new ImmutableCapabilities("key1", "value1", "key2", "value2");
+    Capabilities two = new MutableCapabilities(ImmutableMap.of("key1", "value1", "key2", "value2"));
+    Capabilities three = new PersistentCapabilities(new ImmutableCapabilities("key2", "value2"))
+      .setCapability("key1", "value1");
+
+    assertThat(one.hashCode()).isEqualTo(two.hashCode());
+    assertThat(one.hashCode()).isEqualTo(three.hashCode());
+    assertThat(two.hashCode()).isEqualTo(three.hashCode());
+  }
 }

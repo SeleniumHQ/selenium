@@ -33,7 +33,9 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
+import java.util.StringJoiner;
 import java.util.TreeMap;
 import java.util.stream.Collectors;
 
@@ -97,6 +99,34 @@ public class SessionRequest {
 
   public Instant getEnqueued() {
     return enqueued;
+  }
+
+  @Override
+  public String toString() {
+    return new StringJoiner(", ", SessionRequest.class.getSimpleName() + "[", "]")
+      .add("requestId=" + requestId)
+      .add("desiredCapabilities=" + desiredCapabilities)
+      .add("downstreamDialects=" + downstreamDialects)
+      .add("metadata=" + metadata)
+      .toString();
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (!(o instanceof SessionRequest)) {
+      return false;
+    }
+    SessionRequest that = (SessionRequest) o;
+
+    return this.requestId.equals(that.requestId) &&
+      this.desiredCapabilities.equals(that.desiredCapabilities) &&
+      this.downstreamDialects.equals(that.downstreamDialects) &&
+      this.metadata.equals(that.metadata);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(requestId, enqueued, desiredCapabilities, downstreamDialects, metadata);
   }
 
   private Map<String, Object> toJson() {

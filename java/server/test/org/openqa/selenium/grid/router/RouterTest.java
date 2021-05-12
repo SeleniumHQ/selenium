@@ -24,6 +24,7 @@ import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.events.EventBus;
 import org.openqa.selenium.events.local.GuavaEventBus;
 import org.openqa.selenium.grid.data.Availability;
+import org.openqa.selenium.grid.data.DefaultSlotMatcher;
 import org.openqa.selenium.grid.data.Session;
 import org.openqa.selenium.grid.distributor.Distributor;
 import org.openqa.selenium.grid.distributor.local.LocalDistributor;
@@ -88,6 +89,7 @@ public class RouterTest {
     queue = new LocalNewSessionQueue(
       tracer,
       bus,
+      new DefaultSlotMatcher(),
       Duration.ofSeconds(2),
       Duration.ofSeconds(2),
       registrationSecret);

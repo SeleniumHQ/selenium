@@ -34,6 +34,7 @@ import org.openqa.selenium.events.local.GuavaEventBus;
 import org.openqa.selenium.grid.data.Availability;
 import org.openqa.selenium.grid.data.CreateSessionRequest;
 import org.openqa.selenium.grid.data.CreateSessionResponse;
+import org.openqa.selenium.grid.data.DefaultSlotMatcher;
 import org.openqa.selenium.grid.data.DistributorStatus;
 import org.openqa.selenium.grid.data.NodeDrainComplete;
 import org.openqa.selenium.grid.data.NodeHeartBeatEvent;
@@ -124,6 +125,7 @@ public class DistributorTest {
     NewSessionQueue queue = new LocalNewSessionQueue(
       tracer,
       bus,
+      new DefaultSlotMatcher(),
       Duration.ofSeconds(2),
       Duration.ofSeconds(2),
       registrationSecret);
@@ -153,6 +155,7 @@ public class DistributorTest {
     NewSessionQueue queue = new LocalNewSessionQueue(
       tracer,
       bus,
+      new DefaultSlotMatcher(),
       Duration.ofSeconds(2),
       Duration.ofSeconds(2),
       registrationSecret);
@@ -201,6 +204,7 @@ public class DistributorTest {
     NewSessionQueue queue = new LocalNewSessionQueue(
       tracer,
       bus,
+      new DefaultSlotMatcher(),
       Duration.ofSeconds(2),
       Duration.ofSeconds(2),
       registrationSecret);
@@ -239,6 +243,7 @@ public class DistributorTest {
     NewSessionQueue queue = new LocalNewSessionQueue(
       tracer,
       bus,
+      new DefaultSlotMatcher(),
       Duration.ofSeconds(2),
       Duration.ofSeconds(2),
       registrationSecret);
@@ -279,6 +284,7 @@ public class DistributorTest {
     NewSessionQueue queue = new LocalNewSessionQueue(
       tracer,
       bus,
+      new DefaultSlotMatcher(),
       Duration.ofSeconds(2),
       Duration.ofSeconds(2),
       registrationSecret);
@@ -317,6 +323,7 @@ public class DistributorTest {
     NewSessionQueue queue = new LocalNewSessionQueue(
       tracer,
       bus,
+      new DefaultSlotMatcher(),
       Duration.ofSeconds(2),
       Duration.ofSeconds(2),
       registrationSecret);
@@ -350,6 +357,7 @@ public class DistributorTest {
     NewSessionQueue queue = new LocalNewSessionQueue(
       tracer,
       bus,
+      new DefaultSlotMatcher(),
       Duration.ofSeconds(2),
       Duration.ofSeconds(2),
       registrationSecret);
@@ -393,6 +401,7 @@ public class DistributorTest {
     NewSessionQueue queue = new LocalNewSessionQueue(
       tracer,
       bus,
+      new DefaultSlotMatcher(),
       Duration.ofSeconds(2),
       Duration.ofSeconds(2),
       registrationSecret);
@@ -436,6 +445,7 @@ public class DistributorTest {
     NewSessionQueue queue = new LocalNewSessionQueue(
       tracer,
       bus,
+      new DefaultSlotMatcher(),
       Duration.ofSeconds(2),
       Duration.ofSeconds(2),
       registrationSecret);
@@ -508,6 +518,7 @@ public class DistributorTest {
     NewSessionQueue queue = new LocalNewSessionQueue(
       tracer,
       bus,
+      new DefaultSlotMatcher(),
       Duration.ofSeconds(2),
       Duration.ofSeconds(2),
       registrationSecret);
@@ -552,6 +563,7 @@ public class DistributorTest {
     NewSessionQueue queue = new LocalNewSessionQueue(
       tracer,
       bus,
+      new DefaultSlotMatcher(),
       Duration.ofSeconds(2),
       Duration.ofSeconds(2),
       registrationSecret);
@@ -628,6 +640,7 @@ public class DistributorTest {
     NewSessionQueue queue = new LocalNewSessionQueue(
       tracer,
       bus,
+      new DefaultSlotMatcher(),
       Duration.ofSeconds(2),
       Duration.ofSeconds(2),
       registrationSecret);
@@ -681,6 +694,7 @@ public class DistributorTest {
     NewSessionQueue queue = new LocalNewSessionQueue(
       tracer,
       bus,
+      new DefaultSlotMatcher(),
       Duration.ofSeconds(2),
       Duration.ofSeconds(2),
       registrationSecret);
@@ -718,6 +732,7 @@ public class DistributorTest {
     NewSessionQueue queue = new LocalNewSessionQueue(
       tracer,
       bus,
+      new DefaultSlotMatcher(),
       Duration.ofSeconds(2),
       Duration.ofSeconds(2),
       registrationSecret);
@@ -775,6 +790,7 @@ public class DistributorTest {
     NewSessionQueue queue = new LocalNewSessionQueue(
       tracer,
       bus,
+      new DefaultSlotMatcher(),
       Duration.ofSeconds(2),
       Duration.ofSeconds(2),
       registrationSecret);
@@ -808,6 +824,7 @@ public class DistributorTest {
     NewSessionQueue queue = new LocalNewSessionQueue(
       tracer,
       bus,
+      new DefaultSlotMatcher(),
       Duration.ofSeconds(2),
       Duration.ofSeconds(2),
       registrationSecret);
@@ -847,6 +864,7 @@ public class DistributorTest {
     NewSessionQueue queue = new LocalNewSessionQueue(
       tracer,
       bus,
+      new DefaultSlotMatcher(),
       Duration.ofSeconds(2),
       Duration.ofSeconds(2),
       registrationSecret);
@@ -919,6 +937,7 @@ public class DistributorTest {
     NewSessionQueue queue = new LocalNewSessionQueue(
       tracer,
       bus,
+      new DefaultSlotMatcher(),
       Duration.ofSeconds(2),
       Duration.ofSeconds(2),
       registrationSecret);

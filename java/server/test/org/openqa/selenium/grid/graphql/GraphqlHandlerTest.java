@@ -28,6 +28,7 @@ import org.openqa.selenium.events.EventBus;
 import org.openqa.selenium.events.local.GuavaEventBus;
 import org.openqa.selenium.grid.data.CreateSessionRequest;
 import org.openqa.selenium.grid.data.CreateSessionResponse;
+import org.openqa.selenium.grid.data.DefaultSlotMatcher;
 import org.openqa.selenium.grid.data.NewSessionRequestEvent;
 import org.openqa.selenium.grid.data.RequestId;
 import org.openqa.selenium.grid.data.Session;
@@ -117,6 +118,7 @@ public class GraphqlHandlerTest {
     queue = new LocalNewSessionQueue(
       tracer,
       events,
+      new DefaultSlotMatcher(),
       Duration.ofSeconds(2),
       Duration.ofSeconds(2),
       registrationSecret);
