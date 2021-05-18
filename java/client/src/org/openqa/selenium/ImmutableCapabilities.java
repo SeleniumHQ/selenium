@@ -194,7 +194,7 @@ public class ImmutableCapabilities implements Capabilities {
 
   @Override
   public String toString() {
-    return SharedCapabilitiesMethods.toString(delegate);
+    return SharedCapabilitiesMethods.toString(this);
   }
 
   public static ImmutableCapabilities copyOf(Capabilities capabilities) {

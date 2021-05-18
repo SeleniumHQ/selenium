@@ -74,9 +74,9 @@ class SharedCapabilitiesMethods {
     caps.put(key, value);
   }
 
-  static String toString(Map<String, Object> caps) {
+  static String toString(Capabilities caps) {
     Map<Object, String> seen = new IdentityHashMap<>();
-    return "Capabilities " + abbreviate(seen, caps);
+    return "Capabilities " + abbreviate(seen, caps.asMap());
   }
 
   private static String abbreviate(Map<Object, String> seen, Object stringify) {

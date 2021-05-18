@@ -97,7 +97,7 @@ public class PersistentCapabilities implements Capabilities {
 
   @Override
   public String toString() {
-    return SharedCapabilitiesMethods.toString(asMap());
+    return SharedCapabilitiesMethods.toString(this);
   }
 
   @Override

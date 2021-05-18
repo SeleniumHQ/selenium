@@ -138,6 +138,6 @@ public class MutableCapabilities implements Capabilities {
 
   @Override
   public String toString() {
-    return SharedCapabilitiesMethods.toString(caps);
+    return SharedCapabilitiesMethods.toString(this);
   }
 }
