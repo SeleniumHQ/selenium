@@ -18,17 +18,8 @@
 package org.openqa.selenium.grid.distributor.config;
 
 
-import static org.openqa.selenium.grid.config.StandardGridRoles.DISTRIBUTOR_ROLE;
-import static org.openqa.selenium.grid.distributor.config.DistributorOptions.DEFAULT_DISTRIBUTOR_IMPLEMENTATION;
-import static org.openqa.selenium.grid.distributor.config.DistributorOptions.DEFAULT_HEALTHCHECK_INTERVAL;
-import static org.openqa.selenium.grid.distributor.config.DistributorOptions.DEFAULT_SLOT_MATCHER;
-import static org.openqa.selenium.grid.distributor.config.DistributorOptions.DEFAULT_SLOT_SELECTOR_IMPLEMENTATION;
-import static org.openqa.selenium.grid.distributor.config.DistributorOptions.DISTRIBUTOR_SECTION;
-
-import com.google.auto.service.AutoService;
-
 import com.beust.jcommander.Parameter;
-
+import com.google.auto.service.AutoService;
 import org.openqa.selenium.grid.config.ConfigValue;
 import org.openqa.selenium.grid.config.HasRoles;
 import org.openqa.selenium.grid.config.Role;
@@ -36,6 +27,13 @@ import org.openqa.selenium.grid.config.Role;
 import java.net.URI;
 import java.util.Collections;
 import java.util.Set;
+
+import static org.openqa.selenium.grid.config.StandardGridRoles.DISTRIBUTOR_ROLE;
+import static org.openqa.selenium.grid.distributor.config.DistributorOptions.DEFAULT_DISTRIBUTOR_IMPLEMENTATION;
+import static org.openqa.selenium.grid.distributor.config.DistributorOptions.DEFAULT_HEALTHCHECK_INTERVAL;
+import static org.openqa.selenium.grid.distributor.config.DistributorOptions.DEFAULT_SLOT_MATCHER;
+import static org.openqa.selenium.grid.distributor.config.DistributorOptions.DEFAULT_SLOT_SELECTOR_IMPLEMENTATION;
+import static org.openqa.selenium.grid.distributor.config.DistributorOptions.DISTRIBUTOR_SECTION;
 
 @SuppressWarnings("FieldMayBeFinal")
 @AutoService(HasRoles.class)

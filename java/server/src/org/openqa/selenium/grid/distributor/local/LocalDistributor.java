@@ -30,8 +30,6 @@ import org.openqa.selenium.grid.config.Config;
 import org.openqa.selenium.grid.data.CreateSessionRequest;
 import org.openqa.selenium.grid.data.CreateSessionResponse;
 import org.openqa.selenium.grid.data.DistributorStatus;
-import org.openqa.selenium.grid.data.NewSessionErrorResponse;
-import org.openqa.selenium.grid.data.NewSessionRejectedEvent;
 import org.openqa.selenium.grid.data.NewSessionRequestEvent;
 import org.openqa.selenium.grid.data.NodeAddedEvent;
 import org.openqa.selenium.grid.data.NodeDrainComplete;
