@@ -304,7 +304,7 @@ const COMMAND_MAP = new Map([
   [cmd.Name.GET_LOG, post('/session/:sessionId/log')],
   [cmd.Name.GET_AVAILABLE_LOG_TYPES, get('/session/:sessionId/log/types')],
   [cmd.Name.GET_SESSION_LOGS, post('/logs')],
-  [cmd.Name.UPLOAD_FILE, post('/session/:sessionId/se/file')],
+  [cmd.Name.UPLOAD_FILE, post('/session/:sessionId/file')],
 ])
 
 /** @const {!Map<string, (CommandSpec|CommandTransformer)>} */
