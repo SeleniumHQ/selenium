@@ -41,10 +41,7 @@ import org.openqa.selenium.status.HasReadyState;
 import java.io.UncheckedIOException;
 import java.util.Map;
 import java.util.UUID;
-import java.util.concurrent.locks.ReadWriteLock;
-import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.function.Predicate;
-import java.util.logging.Logger;
 
 import static org.openqa.selenium.remote.http.Route.delete;
 import static org.openqa.selenium.remote.http.Route.get;
@@ -88,11 +85,8 @@ import static org.openqa.selenium.remote.http.Route.post;
  */
 public abstract class Distributor implements HasReadyState, Predicate<HttpRequest>, Routable {
 
-  private static final Logger LOG = Logger.getLogger(Distributor.class.getName());
-
   private final Route routes;
   protected final Tracer tracer;
-  private final ReadWriteLock lock = new ReentrantReadWriteLock(true);
 
   protected Distributor(
     Tracer tracer,
