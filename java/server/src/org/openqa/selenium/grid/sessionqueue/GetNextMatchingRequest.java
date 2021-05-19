@@ -25,6 +25,8 @@ import org.openqa.selenium.remote.http.Contents;
 import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
+import org.openqa.selenium.remote.tracing.Span;
+import org.openqa.selenium.remote.tracing.Tracer;
 
 import java.io.UncheckedIOException;
 import java.lang.reflect.Type;
@@ -32,22 +34,34 @@ import java.util.Optional;
 import java.util.Set;
 
 import static java.util.Collections.singletonMap;
+import static org.openqa.selenium.remote.tracing.HttpTracing.newSpanAsChildOf;
+import static org.openqa.selenium.remote.tracing.Tags.HTTP_REQUEST;
+import static org.openqa.selenium.remote.tracing.Tags.HTTP_RESPONSE;
 
 class GetNextMatchingRequest implements HttpHandler {
   private static final Type SET_OF_CAPABILITIES = new TypeToken<Set<Capabilities>>() {}.getType();
 
+  private final Tracer tracer;
   private final NewSessionQueue queue;
 
-  public GetNextMatchingRequest(NewSessionQueue queue) {
+  public GetNextMatchingRequest(Tracer tracer, NewSessionQueue queue) {
+    this.tracer = Require.nonNull("Tracer", tracer);
     this.queue = Require.nonNull("New session queue", queue);
   }
 
   @Override
   public HttpResponse execute(HttpRequest req) throws UncheckedIOException {
-    Set<Capabilities> stereotypes = Contents.fromJson(req, SET_OF_CAPABILITIES);
+    try (Span span = newSpanAsChildOf(tracer, req, "sessionqueue.getrequest")) {
+      HTTP_REQUEST.accept(span, req);
+      Set<Capabilities> stereotypes = Contents.fromJson(req, SET_OF_CAPABILITIES);
 
-    Optional<SessionRequest> maybeRequest = queue.getNextAvailable(stereotypes);
+      Optional<SessionRequest> maybeRequest = queue.getNextAvailable(stereotypes);
 
-    return new HttpResponse().setContent(Contents.asJson(singletonMap("value", maybeRequest.orElse(null))));
+      HttpResponse response =  new HttpResponse().setContent(Contents.asJson(singletonMap("value", maybeRequest.orElse(null))));
+
+      HTTP_RESPONSE.accept(span, response);
+
+      return response;
+    }
   }
 }
