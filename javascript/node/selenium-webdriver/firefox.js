@@ -632,22 +632,30 @@ class Driver extends webdriver.WebDriver {
    * ID that may later be used to {@linkplain #uninstallAddon uninstall} the
    * addon.
    *
+   * To install an unpacked extension, specify the path to the extension
+   * directory with temporary = true and remotePath = true.
    *
-   * @param {string} path Path on the local filesystem to the web extension to
-   *     install.
+   * @param {string} path Path on the local or remote filesystem to the web
+   * extension to install.
    * @param {boolean} temporary Flag indicating whether the extension should be
    *     installed temporarily - gets removed on restart
+   * @param {boolean} remotePath Flag indicating whether the path should be
+   *     resolved locally or on the remote sever. If true, the addon path must
+   *     be absolute.
    * @return {!Promise<string>} A promise that will resolve to an ID for the
    *     newly installed addon.
    * @see #uninstallAddon
    */
-  async installAddon(path, temporary = false) {
-    let buf = await io.read(path)
-    return this.execute(
-      new command.Command(ExtensionCommand.INSTALL_ADDON)
-        .setParameter('addon', buf.toString('base64'))
-        .setParameter('temporary', temporary)
-    )
+  async installAddon(path, temporary = false, remotePath = false) {
+    let cmd = new command.Command(ExtensionCommand.INSTALL_ADDON)
+      .setParameter('temporary', temporary)
+    if (remotePath) {
+      cmd = cmd.setParameter('path', path)
+    } else {
+      let buf = await io.read(path)
+      cmd = cmd.setParameter('addon', buf.toString('base64'))
+    }
+    return this.execute(cmd)
   }
 
   /**

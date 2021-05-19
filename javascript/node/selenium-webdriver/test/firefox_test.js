@@ -34,6 +34,10 @@ const WEBEXTENSION_EXTENSION_ZIP = path.join(
   __dirname,
   '../lib/test/data/firefox/webextension.zip'
 )
+const WEBEXTENSION_EXTENSION_UNPACKED = path.join(
+  __dirname,
+  '../lib/test/data/firefox/webextension'
+)
 
 const WEBEXTENSION_EXTENSION_ID =
   'webextensions-selenium-example@example.com.xpi'
@@ -253,6 +257,24 @@ suite(
           'Content injected by webextensions-selenium-example'
         )
       }
+
+      it('unpacked addons can be installed and uninstalled at runtime', async function () {
+        driver = env.builder().build()
+
+        await driver.get(Pages.echoPage)
+        await verifyWebExtensionNotInstalled()
+
+        let id = await driver.installAddon(
+          WEBEXTENSION_EXTENSION_UNPACKED, true, true)
+        await driver.sleep(1000) // Give extension time to install
+
+        await driver.get(Pages.echoPage)
+        await verifyWebExtensionWasInstalled()
+
+        await driver.uninstallAddon(id)
+        await driver.get(Pages.echoPage)
+        await verifyWebExtensionNotInstalled()
+      })
     })
   },
   { browsers: [Browser.FIREFOX] }
