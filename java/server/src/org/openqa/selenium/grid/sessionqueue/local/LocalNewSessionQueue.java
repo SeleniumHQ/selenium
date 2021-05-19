@@ -26,6 +26,8 @@ import org.openqa.selenium.internal.Either;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.http.Contents;
 import org.openqa.selenium.remote.http.HttpResponse;
+import org.openqa.selenium.remote.tracing.AttributeKey;
+import org.openqa.selenium.remote.tracing.Span;
 import org.openqa.selenium.remote.tracing.Tracer;
 
 import java.io.Closeable;
@@ -265,8 +267,10 @@ public class LocalNewSessionQueue extends NewSessionQueue implements Closeable {
 
   @Override
   public Optional<SessionRequest> remove(RequestId reqId) {
+    Span span = tracer.getCurrentContext().createSpan("sessionqueue.remove");
     Require.nonNull("Request ID", reqId);
 
+    span.setAttribute(AttributeKey.REQUEST_ID.getKey(), reqId.toString());
     Lock writeLock = lock.writeLock();
     writeLock.lock();
     try {
@@ -276,17 +280,21 @@ public class LocalNewSessionQueue extends NewSessionQueue implements Closeable {
         if (reqId.equals(req.getRequestId())) {
           iterator.remove();
 
+          span.setAttribute("removed", true);
           return Optional.of(req);
         }
       }
+      span.setAttribute("removed", false);
       return Optional.empty();
     } finally {
       writeLock.unlock();
+      span.close();
     }
   }
 
   @Override
   public Optional<SessionRequest> getNextAvailable(Set<Capabilities> stereotypes) {
+    Span span = tracer.getCurrentContext().createSpan("sessionqueue.stereotypematch");
     Require.nonNull("Stereotypes", stereotypes);
 
     Predicate<Capabilities> matchesStereotype =
@@ -300,11 +308,15 @@ public class LocalNewSessionQueue extends NewSessionQueue implements Closeable {
               .filter(req -> req.getDesiredCapabilities().stream().anyMatch(matchesStereotype))
               .findFirst();
 
-      maybeRequest.ifPresent(req -> this.remove(req.getRequestId()));
+      maybeRequest.ifPresent(req -> {
+        span.setAttribute("match", true);
+        this.remove(req.getRequestId());
+      });
 
       return maybeRequest;
     } finally {
       writeLock.unlock();
+      span.close();
     }
   }
 

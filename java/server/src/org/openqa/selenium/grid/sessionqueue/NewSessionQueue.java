@@ -94,7 +94,7 @@ public abstract class NewSessionQueue implements HasReadyState, Routable {
         .to(params -> new RemoveFromSessionQueue(tracer, this, requestIdFrom(params)))
         .with(requiresSecret),
       post("/se/grid/newsessionqueue/session/next")
-        .to(() -> new GetNextMatchingRequest(this))
+        .to(() -> new GetNextMatchingRequest(tracer, this))
         .with(requiresSecret),
       get("/se/grid/newsessionqueue/queue")
         .to(() -> new GetSessionQueue(tracer, this)),
