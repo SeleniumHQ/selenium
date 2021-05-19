@@ -18,13 +18,20 @@
 
 from typing import Dict, List, Union
 from selenium.common.exceptions import WebDriverException
+from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webelement import WebElement
 
 
-def with_tag_name(tag_name: str):
+def with_tag_name(tag_name: str) -> "RelativeBy":
     if not tag_name:
         raise WebDriverException("tag_name can not be null")
     return RelativeBy({"css selector": tag_name})
+
+
+def locate_with(by: By, using: str) -> "RelativeBy":
+    assert by is not None, "Please pass in a by argument"
+    assert using is not None, "Please pass in a using argument"
+    return RelativeBy({by: using})
 
 
 class RelativeBy(object):
