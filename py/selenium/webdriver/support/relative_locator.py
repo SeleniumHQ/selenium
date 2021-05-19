@@ -16,10 +16,12 @@
 # under the License.
 
 
+from typing import Dict, List, Union
 from selenium.common.exceptions import WebDriverException
+from selenium.webdriver.remote.webelement import WebElement
 
 
-def with_tag_name(tag_name):
+def with_tag_name(tag_name: str):
     if not tag_name:
         raise WebDriverException("tag_name can not be null")
     return RelativeBy({"css selector": tag_name})
@@ -27,39 +29,39 @@ def with_tag_name(tag_name):
 
 class RelativeBy(object):
 
-    def __init__(self, root=None, filters=None):
+    def __init__(self, root: Dict = None, filters: List = None):
         self.root = root
         self.filters = filters or []
 
-    def above(self, element_or_locator=None):
+    def above(self, element_or_locator: Union[WebElement, Dict] = None):
         if not element_or_locator:
             raise WebDriverException("Element or locator must be given when calling above method")
 
         self.filters.append({"kind": "above", "args": [element_or_locator]})
         return self
 
-    def below(self, element_or_locator=None):
+    def below(self, element_or_locator: Union[WebElement, Dict] = None):
         if not element_or_locator:
             raise WebDriverException("Element or locator must be given when calling above method")
 
         self.filters.append({"kind": "below", "args": [element_or_locator]})
         return self
 
-    def to_left_of(self, element_or_locator=None):
+    def to_left_of(self, element_or_locator: Union[WebElement, Dict] = None):
         if not element_or_locator:
             raise WebDriverException("Element or locator must be given when calling above method")
 
         self.filters.append({"kind": "left", "args": [element_or_locator]})
         return self
 
-    def to_right_of(self, element_or_locator):
+    def to_right_of(self, element_or_locator: Union[WebElement, Dict] = None):
         if not element_or_locator:
             raise WebDriverException("Element or locator must be given when calling above method")
 
         self.filters.append({"kind": "right", "args": [element_or_locator]})
         return self
 
-    def near(self, element_or_locator_distance=None):
+    def near(self, element_or_locator_distance: Union[WebElement, Dict, int] = None):
         if not element_or_locator_distance:
             raise WebDriverException("Element or locator or distance must be given when calling above method")
 
