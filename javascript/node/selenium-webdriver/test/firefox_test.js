@@ -34,7 +34,7 @@ const WEBEXTENSION_EXTENSION_ZIP = path.join(
   __dirname,
   '../lib/test/data/firefox/webextension.zip'
 )
-const WEBEXTENSION_EXTENSION_UNPACKED = path.join(
+const WEBEXTENSION_EXTENSION_DIR = path.join(
   __dirname,
   '../lib/test/data/firefox/webextension'
 )
@@ -216,21 +216,45 @@ suite(
         })
       })
 
-      it('addons can be installed and uninstalled at runtime', async function () {
-        driver = env.builder().build()
+      describe('installAddon', function() {
+        beforeEach(async function () {
+          driver = await env.builder().build()
+        })
 
-        await driver.get(Pages.echoPage)
-        await verifyWebExtensionNotInstalled()
+        it('addons can be installed and uninstalled at runtime', async function () {
+          await driver.get(Pages.echoPage)
+          await verifyWebExtensionNotInstalled()
 
-        let id = await driver.installAddon(WEBEXTENSION_EXTENSION_XPI)
-        await driver.sleep(1000) // Give extension time to install (yuck).
+          let id = await driver.installAddon(WEBEXTENSION_EXTENSION_XPI)
+          await driver.sleep(1000) // Give extension time to install (yuck).
 
-        await driver.get(Pages.echoPage)
-        await verifyWebExtensionWasInstalled()
+          await driver.get(Pages.echoPage)
+          await verifyWebExtensionWasInstalled()
 
-        await driver.uninstallAddon(id)
-        await driver.get(Pages.echoPage)
-        await verifyWebExtensionNotInstalled()
+          await driver.uninstallAddon(id)
+          await driver.get(Pages.echoPage)
+          await verifyWebExtensionNotInstalled()
+        })
+
+        it('unpacked addons can be installed and uninstalled at runtime', async function () {
+          await driver.get(Pages.echoPage)
+          await verifyWebExtensionNotInstalled()
+
+          // When running tests, bazel creates a "runfiles" directory with
+          // symlinks to the original source files. The symlinks get ignored
+          // when installing the addon. As a workaround, we copy the files to a
+          // temporary directory.
+          let extensionDir = await io.tmpDir()
+          await io.copyDir(WEBEXTENSION_EXTENSION_DIR, extensionDir)
+          let id = await driver.installAddon(extensionDir, true, true)
+
+          await driver.get(Pages.echoPage)
+          await verifyWebExtensionWasInstalled()
+
+          await driver.uninstallAddon(id)
+          await driver.get(Pages.echoPage)
+          await verifyWebExtensionNotInstalled()
+        })
       })
 
       async function verifyUserAgentWasChanged() {
@@ -257,24 +281,6 @@ suite(
           'Content injected by webextensions-selenium-example'
         )
       }
-
-      it('unpacked addons can be installed and uninstalled at runtime', async function () {
-        driver = env.builder().build()
-
-        await driver.get(Pages.echoPage)
-        await verifyWebExtensionNotInstalled()
-
-        let id = await driver.installAddon(
-          WEBEXTENSION_EXTENSION_UNPACKED, true, true)
-        await driver.sleep(1000) // Give extension time to install
-
-        await driver.get(Pages.echoPage)
-        await verifyWebExtensionWasInstalled()
-
-        await driver.uninstallAddon(id)
-        await driver.get(Pages.echoPage)
-        await verifyWebExtensionNotInstalled()
-      })
     })
   },
   { browsers: [Browser.FIREFOX] }
