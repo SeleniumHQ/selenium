@@ -358,8 +358,11 @@ class Options extends Capabilities {
    * @return {!Options} A self reference.
    */
   addExtensions(...args) {
-    let current = this.options_.extensions || []
-    this.options_.extensions = current.concat(...args)
+    let extensions = this.options_.extensions || new Extensions()
+    extensions.add(...args)
+    if (extensions.length) {
+      this.options_.extensions = extensions
+    }
     return this
   }
 
@@ -584,28 +587,47 @@ class Options extends Capabilities {
     }
     return this
   }
+}
+
+/**
+ * A list of extensions to install when launching the browser.
+ */
+class Extensions {
+  constructor() {
+    this.extensions = []
+  }
 
   /**
-   * Converts this instance to its JSON wire protocol representation. Note this
-   * function is an implementation not intended for general use.
+   * @return {number} The length of the extensions list.
+   */
+  get length() {
+    return this.extensions.length
+  }
+
+  /**
+   * Add additional extensions to install when launching the browser. Each
+   * extension should be specified as the path to the packed CRX file, or a
+   * Buffer for an extension.
    *
-   * @return {!Object} The JSON wire protocol representation of this instance.
-   * @suppress {checkTypes} Suppress [] access on a struct.
+   * @param {...(string|!Buffer|!Array<(string|!Buffer)>)} args The
+   *     extensions to add.
+   */
+  add(...args) {
+    this.extensions = this.extensions.concat(...args)
+  }
+
+  /**
+   * @return {!Object} A serialized representation of this Extensions object.
    */
   [Symbols.serialize]() {
-    if (this.options_.extensions && this.options_.extensions.length) {
-      this.options_.extensions = this.options_.extensions.map(function (
-        extension
-      ) {
-        if (Buffer.isBuffer(extension)) {
-          return extension.toString('base64')
-        }
-        return io
-          .read(/** @type {string} */ (extension))
-          .then((buffer) => buffer.toString('base64'))
-      })
-    }
-    return super[Symbols.serialize]()
+    return this.extensions.map(function (extension) {
+      if (Buffer.isBuffer(extension)) {
+        return extension.toString('base64')
+      }
+      return io
+        .read(/** @type {string} */ (extension))
+        .then((buffer) => buffer.toString('base64'))
+    })
   }
 }
 
