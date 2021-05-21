@@ -26,8 +26,6 @@ import org.openqa.selenium.grid.security.RequiresSecretFilter;
 import org.openqa.selenium.grid.security.Secret;
 import org.openqa.selenium.internal.Either;
 import org.openqa.selenium.internal.Require;
-import org.openqa.selenium.remote.NewSessionPayload;
-import org.openqa.selenium.remote.http.Contents;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.remote.http.Routable;
@@ -35,16 +33,12 @@ import org.openqa.selenium.remote.http.Route;
 import org.openqa.selenium.remote.tracing.Tracer;
 import org.openqa.selenium.status.HasReadyState;
 
-import java.io.IOException;
-import java.io.Reader;
-import java.io.UncheckedIOException;
 import java.time.Instant;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 import static org.openqa.selenium.remote.http.Route.combine;
 import static org.openqa.selenium.remote.http.Route.delete;
@@ -65,18 +59,12 @@ public abstract class NewSessionQueue implements HasReadyState, Routable {
     routes = combine(
       post("/session")
         .to(() -> req -> {
-          try (Reader reader = Contents.reader(req);
-               NewSessionPayload payload = NewSessionPayload.create(reader)) {
-            SessionRequest sessionRequest = new SessionRequest(
-              new RequestId(UUID.randomUUID()),
-              Instant.now(),
-              payload.getDownstreamDialects(),
-              payload.stream().collect(Collectors.toSet()),
-              payload.getMetadata());
-            return addToQueue(sessionRequest);
-          } catch (IOException e) {
-            throw new UncheckedIOException(e);
-          }
+          SessionRequest sessionRequest = new SessionRequest(
+            new RequestId(UUID.randomUUID()),
+            req,
+            Instant.now()
+          );
+          return addToQueue(sessionRequest);
         }),
       post("/se/grid/newsessionqueue/session")
         .to(() -> new AddToSessionQueue(tracer, this))

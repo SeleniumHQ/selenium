@@ -1098,6 +1098,7 @@ public class DistributorTest {
               new ImmutableCapabilities("browserName", "not cheese"),
             // But there is for this, so we expect this to be created.
               new ImmutableCapabilities("browserName", "cheese")),
+      Map.of(),
       Map.of());
 
     Either<SessionNotCreatedException, CreateSessionResponse> result = local.newSession(sessionRequest);
@@ -1123,6 +1124,7 @@ public class DistributorTest {
               new ImmutableCapabilities("browserName", "not cheese"),
             // But there is for this, so we expect this to be created.
               new ImmutableCapabilities("browserName", "cheese")),
+      Map.of(),
       Map.of());
 
     Either<SessionNotCreatedException, CreateSessionResponse> result = local.newSession(sessionRequest);
@@ -1138,6 +1140,7 @@ public class DistributorTest {
       Instant.now(),
       Set.of(W3C),
       Set.of(allCaps),
+      Map.of(),
       Map.of());
   }
 

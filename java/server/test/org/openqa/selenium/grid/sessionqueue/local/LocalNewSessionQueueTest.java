@@ -125,6 +125,7 @@ public class LocalNewSessionQueueTest {
       Instant.now(),
       Set.of(W3C),
       Set.of(CAPS),
+      Map.of(),
       Map.of());
   }
 
@@ -383,6 +384,7 @@ public class LocalNewSessionQueueTest {
         Instant.now(),
         Set.of(W3C),
         Set.of(CAPS),
+        Map.of(),
         Map.of());
 
       return queue.addToQueue(sessionRequest);
@@ -416,6 +418,7 @@ public class LocalNewSessionQueueTest {
       LONG_AGO,
       Set.of(W3C),
       Set.of(CAPS),
+      Map.of(),
       Map.of());
 
     AtomicInteger count = new AtomicInteger();
@@ -446,6 +449,7 @@ public class LocalNewSessionQueueTest {
       LONG_AGO,
       Set.of(W3C),
       Set.of(CAPS),
+      Map.of(),
       Map.of());
     localQueue.injectIntoQueue(sessionRequest);
 
@@ -465,6 +469,7 @@ public class LocalNewSessionQueueTest {
         Instant.now(),
         Set.of(W3C),
         Set.of(CAPS),
+        Map.of(),
         Map.of());
       return queue.addToQueue(sessionRequest);
     };
@@ -499,6 +504,7 @@ public class LocalNewSessionQueueTest {
       Instant.now(),
       Set.of(W3C),
       Set.of(new ImmutableCapabilities("browserName", "cheese", "se:kind", "smoked")),
+      Map.of(),
       Map.of());
     localQueue.injectIntoQueue(expected);
 
@@ -507,6 +513,7 @@ public class LocalNewSessionQueueTest {
       Instant.now(),
       Set.of(W3C),
       Set.of(new ImmutableCapabilities("browserName", "peas", "se:kind", "mushy")),
+      Map.of(),
       Map.of()));
 
     Optional<SessionRequest> returned = queue.getNextAvailable(
@@ -525,6 +532,7 @@ public class LocalNewSessionQueueTest {
       Instant.now(),
       Set.of(W3C),
       Set.of(new ImmutableCapabilities("browserName", "peas", "se:kind", "mushy")),
+      Map.of(),
       Map.of()));
 
     SessionRequest expected = new SessionRequest(
@@ -532,6 +540,7 @@ public class LocalNewSessionQueueTest {
       Instant.now(),
       Set.of(W3C),
       Set.of(new ImmutableCapabilities("browserName", "cheese", "se:kind", "smoked")),
+      Map.of(),
       Map.of());
     localQueue.injectIntoQueue(expected);
 

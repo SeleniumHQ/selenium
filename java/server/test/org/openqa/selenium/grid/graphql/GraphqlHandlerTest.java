@@ -113,6 +113,7 @@ public class GraphqlHandlerTest {
       Instant.now(),
       Set.of(OSS, W3C),
       Set.of(caps),
+      Map.of(),
       Map.of());
 
     queue = new LocalNewSessionQueue(
@@ -182,6 +183,7 @@ public class GraphqlHandlerTest {
       Instant.now(),
       Set.of(W3C),
       Set.of(caps),
+      Map.of(),
       Map.of());
 
     continueOnceAddedToQueue(request);
@@ -203,6 +205,7 @@ public class GraphqlHandlerTest {
       Instant.now(),
       Set.of(W3C),
       Set.of(caps),
+      Map.of(),
       Map.of());
 
     continueOnceAddedToQueue(request);
