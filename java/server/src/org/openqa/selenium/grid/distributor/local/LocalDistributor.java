@@ -41,6 +41,7 @@ import org.openqa.selenium.grid.data.RequestId;
 import org.openqa.selenium.grid.data.SessionRequest;
 import org.openqa.selenium.grid.data.Slot;
 import org.openqa.selenium.grid.data.SlotId;
+import org.openqa.selenium.grid.data.TraceSessionRequest;
 import org.openqa.selenium.grid.distributor.Distributor;
 import org.openqa.selenium.grid.distributor.config.DistributorOptions;
 import org.openqa.selenium.grid.distributor.selector.SlotSelector;
@@ -65,6 +66,7 @@ import org.openqa.selenium.remote.tracing.EventAttribute;
 import org.openqa.selenium.remote.tracing.EventAttributeValue;
 import org.openqa.selenium.remote.tracing.Span;
 import org.openqa.selenium.remote.tracing.Status;
+import org.openqa.selenium.remote.tracing.TraceContext;
 import org.openqa.selenium.remote.tracing.Tracer;
 import org.openqa.selenium.status.HasReadyState;
 
@@ -585,7 +587,7 @@ public class LocalDistributor extends Distributor {
     private void handleNewSessionRequest(SessionRequest sessionRequest) {
       RequestId reqId = sessionRequest.getRequestId();
 
-      try (Span span = tracer.getCurrentContext().createSpan("distributor.poll_queue")) {
+      try (Span span = TraceSessionRequest.extract(tracer, sessionRequest).createSpan("distributor.poll_queue")) {
         Map<String, EventAttributeValue> attributeMap = new HashMap<>();
         attributeMap.put(
           AttributeKey.LOGGER_CLASS.getKey(),
@@ -599,13 +601,17 @@ public class LocalDistributor extends Distributor {
         Either<SessionNotCreatedException, CreateSessionResponse> response = newSession(sessionRequest);
 
         if (response.isLeft() && response.left() instanceof RetrySessionRequestException) {
-          boolean retried = sessionQueue.retryAddToQueue(sessionRequest);
+          try(Span childSpan = span.createSpan("distributor.retry")) {
+            LOG.info("Retryinggg");
+            boolean retried = sessionQueue.retryAddToQueue(sessionRequest);
 
-          attributeMap.put("request.retry_add", EventAttribute.setValue(retried));
-          span.addEvent("Retry adding to front of queue. No slot available.", attributeMap);
+            attributeMap.put("request.retry_add", EventAttribute.setValue(retried));
+            childSpan.addEvent("Retry adding to front of queue. No slot available.", attributeMap);
 
-          if (retried) {
-            return;
+            if (retried) {
+              return;
+            }
+            childSpan.addEvent("retrying_request", attributeMap);
           }
         }
 

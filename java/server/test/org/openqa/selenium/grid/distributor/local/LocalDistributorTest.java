@@ -263,6 +263,7 @@ public class LocalDistributorTest {
             Instant.now(),
             Set.of(W3C),
             Set.of(new ImmutableCapabilities("browserName", "cheese")),
+            Map.of(),
             Map.of());
 
     List<Callable<SessionId>> callables = new ArrayList<>();

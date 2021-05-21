@@ -65,18 +65,12 @@ public abstract class NewSessionQueue implements HasReadyState, Routable {
     routes = combine(
       post("/session")
         .to(() -> req -> {
-          try (Reader reader = Contents.reader(req);
-               NewSessionPayload payload = NewSessionPayload.create(reader)) {
-            SessionRequest sessionRequest = new SessionRequest(
-              new RequestId(UUID.randomUUID()),
-              Instant.now(),
-              payload.getDownstreamDialects(),
-              payload.stream().collect(Collectors.toSet()),
-              payload.getMetadata());
-            return addToQueue(sessionRequest);
-          } catch (IOException e) {
-            throw new UncheckedIOException(e);
-          }
+          SessionRequest sessionRequest = new SessionRequest(
+            new RequestId(UUID.randomUUID()),
+            req,
+            Instant.now()
+          );
+          return addToQueue(sessionRequest);
         }),
       post("/se/grid/newsessionqueue/session")
         .to(() -> new AddToSessionQueue(tracer, this))

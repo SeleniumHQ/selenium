@@ -34,6 +34,7 @@ import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 import java.util.StringJoiner;
 import java.util.TreeMap;
@@ -48,11 +49,13 @@ public class SessionRequest {
 
   private static final Type SET_OF_CAPABILITIES = new TypeToken<Set<Capabilities>>() {}.getType();
   private static final Type SET_OF_DIALECTS = new TypeToken<Set<Dialect>>() {}.getType();
+  private static final Type TRACE_HEADERS = new TypeToken<Map<String, String>>() {}.getType();
   private final RequestId requestId;
   private final Instant enqueued;
   private final Set<Capabilities> desiredCapabilities;
   private final Set<Dialect> downstreamDialects;
   private final Map<String, Object> metadata;
+  private final Map<String, String> traceHeaders;
 
   public SessionRequest(RequestId requestId, HttpRequest request, Instant enqueued) {
     this.requestId = Require.nonNull("Request ID", requestId);
@@ -64,6 +67,11 @@ public class SessionRequest {
       downstreamDialects = payload.getDownstreamDialects();
       metadata = payload.getMetadata();
     }
+
+    Map<String, String> headers = new HashMap<>();
+    Optional<String> traceparentValue = Optional.ofNullable(request.getHeader("traceparent"));
+    traceparentValue.ifPresent(value -> headers.put("traceparent", value));
+    this.traceHeaders = Collections.unmodifiableMap(headers);
   }
 
   public SessionRequest(
@@ -71,7 +79,8 @@ public class SessionRequest {
     Instant enqueued,
     Set<Dialect> downstreamDialects,
     Set<Capabilities> desiredCapabilities,
-    Map<String, Object> metadata) {
+    Map<String, Object> metadata,
+    Map<String, String> traceHeaders) {
     this.requestId = Require.nonNull("Request ID", requestId);
     this.enqueued = Require.nonNull("Enqueud time", enqueued);
     this.downstreamDialects = unmodifiableSet(
@@ -79,10 +88,19 @@ public class SessionRequest {
     this.desiredCapabilities = unmodifiableSet(
       new LinkedHashSet<>(Require.nonNull("Capabilities", desiredCapabilities)));
     this.metadata = Collections.unmodifiableMap(new TreeMap<>(Require.nonNull("Metadata", metadata)));
+    this.traceHeaders = unmodifiableMap(new HashMap<>(Require.nonNull("Trace HTTP headers", traceHeaders)));
   }
 
   public RequestId getRequestId() {
     return requestId;
+  }
+
+  public Map<String, String> getTraceHeaders() {
+    return traceHeaders;
+  }
+
+  public String getTraceHeader(String key) {
+    return traceHeaders.get(key);
   }
 
   public Set<Capabilities> getDesiredCapabilities() {
@@ -108,6 +126,7 @@ public class SessionRequest {
       .add("desiredCapabilities=" + desiredCapabilities)
       .add("downstreamDialects=" + downstreamDialects)
       .add("metadata=" + metadata)
+      .add("traceHeaders=" + traceHeaders)
       .toString();
   }
 
@@ -121,12 +140,13 @@ public class SessionRequest {
     return this.requestId.equals(that.requestId) &&
       this.desiredCapabilities.equals(that.desiredCapabilities) &&
       this.downstreamDialects.equals(that.downstreamDialects) &&
-      this.metadata.equals(that.metadata);
+      this.metadata.equals(that.metadata) &&
+      this.traceHeaders.equals(that.traceHeaders);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(requestId, enqueued, desiredCapabilities, downstreamDialects, metadata);
+    return Objects.hash(requestId, enqueued, desiredCapabilities, downstreamDialects, metadata, traceHeaders);
   }
 
   private Map<String, Object> toJson() {
@@ -136,6 +156,7 @@ public class SessionRequest {
     toReturn.put("dialects", downstreamDialects);
     toReturn.put("capabilities", desiredCapabilities);
     toReturn.put("metadata", metadata);
+    toReturn.put("traceHeaders", traceHeaders);
     return unmodifiableMap(toReturn);
   }
 
@@ -145,6 +166,7 @@ public class SessionRequest {
     Set<Capabilities> capabilities = null;
     Set<Dialect> dialects = null;
     Map<String, Object> metadata = emptyMap();
+    Map<String, String> tracerHeaders = emptyMap();
 
     input.beginObject();
     while (input.hasNext()) {
@@ -169,6 +191,10 @@ public class SessionRequest {
           id = input.read(RequestId.class);
           break;
 
+        case "traceHeaders":
+          tracerHeaders = input.read(TRACE_HEADERS);
+          break;
+
         default:
           input.skipValue();
           break;
@@ -176,6 +202,6 @@ public class SessionRequest {
     }
     input.endObject();
 
-    return new SessionRequest(id, enqueued, dialects, capabilities, metadata);
+    return new SessionRequest(id, enqueued, dialects, capabilities, metadata, tracerHeaders);
   }
 }
