@@ -20,24 +20,31 @@ import logging
 import os
 import tempfile
 import zipfile
+from typing import TYPE_CHECKING, Any, Optional, Union
+
+
+if TYPE_CHECKING:
+    Path = Union[str, os.PathLike[str]]
+else:
+    Path = Union[str, os.PathLike]
 
 
 LOGGER = logging.getLogger(__name__)
 
 
-def format_json(json_struct):
+def format_json(json_struct: Any) -> str:
     return json.dumps(json_struct, indent=4)
 
 
-def dump_json(json_struct):
+def dump_json(json_struct: Any) -> str:
     return json.dumps(json_struct)
 
 
-def load_json(s):
+def load_json(s: Union[str, bytes]) -> Any:
     return json.loads(s)
 
 
-def unzip_to_temp_dir(zip_file_name):
+def unzip_to_temp_dir(zip_file_name: Path) -> Optional[str]:
     """Unzip zipfile to a temporary directory.
 
     The directory of the unzipped files is returned if success,
