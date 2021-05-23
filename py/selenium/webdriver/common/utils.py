@@ -18,25 +18,29 @@
 """
 The Utils methods.
 """
+
+from typing import Iterable, List, Optional, Union
+
 import socket
 from selenium.webdriver.common.keys import Keys
 
+AnyKey = Union[str, int, float]
+
 _is_connectable_exceptions = (socket.error, ConnectionResetError)
 
-
-def free_port():
+def free_port() -> int:
     """
     Determines a free port using sockets.
     """
     free_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     free_socket.bind(('127.0.0.1', 0))
     free_socket.listen(5)
-    port = free_socket.getsockname()[1]
+    port: int = free_socket.getsockname()[1]
     free_socket.close()
     return port
 
 
-def find_connectable_ip(host, port=None):
+def find_connectable_ip(host: Union[str, bytes, bytearray, None], port: Optional[int] = None) -> Optional[str]:
     """Resolve a hostname to an IP, preferring IPv4 addresses.
 
     We prefer IPv4 so that we don't change behavior from previous IPv4-only
@@ -74,7 +78,7 @@ def find_connectable_ip(host, port=None):
     return ip
 
 
-def join_host_port(host, port):
+def join_host_port(host: str, port: int) -> str:
     """Joins a hostname and port together.
 
     This is a minimal implementation intended to cope with IPv6 literals. For
@@ -90,7 +94,7 @@ def join_host_port(host, port):
     return '%s:%d' % (host, port)
 
 
-def is_connectable(port, host="localhost"):
+def is_connectable(port: int, host: Optional[str] = "localhost") -> bool:
     """
     Tries to connect to the server at port to see if it is running.
 
@@ -109,7 +113,7 @@ def is_connectable(port, host="localhost"):
     return result
 
 
-def is_url_connectable(port):
+def is_url_connectable(port: Union[int, str]) -> bool:
     """
     Tries to connect to the HTTP server at /status path
     and specified port to see if it responds successfully.
@@ -120,7 +124,7 @@ def is_url_connectable(port):
     try:
         from urllib import request as url_request
     except ImportError:
-        import urllib2 as url_request
+        import urllib2 as url_request  # type: ignore  # python2 stuff
 
     try:
         res = url_request.urlopen("http://127.0.0.1:%s/status" % port)
@@ -132,9 +136,9 @@ def is_url_connectable(port):
         return False
 
 
-def keys_to_typing(value):
+def keys_to_typing(value: Iterable[AnyKey]) -> List[str]:
     """Processes the values that will be typed in the element."""
-    typing = []
+    typing: List[str] = []
     for val in value:
         if isinstance(val, Keys):
             typing.append(val)
