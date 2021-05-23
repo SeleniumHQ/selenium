@@ -15,6 +15,13 @@
 # specific language governing permissions and limitations
 # under the License.
 
+from typing import Any, Dict, Mapping, Type, TypeVar
+
+
+_KT = TypeVar("_KT")
+_VT = TypeVar("_VT")
+
+
 from selenium.common.exceptions import (ElementClickInterceptedException,
                                         ElementNotInteractableException,
                                         ElementNotSelectableException,
@@ -95,7 +102,7 @@ class ErrorHandler(object):
     Handles errors returned by the WebDriver server.
     """
 
-    def check_response(self, response):
+    def check_response(self, response: Dict[str, Any]) -> None:
         """
         Checks that a JSON response from the WebDriver does not have an error.
 
@@ -110,7 +117,7 @@ class ErrorHandler(object):
             return
         value = None
         message = response.get("message", "")
-        screen = response.get("screen", "")
+        screen: str = response.get("screen", "")
         stacktrace = None
         if isinstance(status, int):
             value_json = response.get('value', None)
@@ -133,7 +140,7 @@ class ErrorHandler(object):
                     pass
 
         if status in ErrorCode.NO_SUCH_ELEMENT:
-            exception_class = NoSuchElementException
+            exception_class: Type[WebDriverException] = NoSuchElementException
         elif status in ErrorCode.NO_SUCH_FRAME:
             exception_class = NoSuchFrameException
         elif status in ErrorCode.NO_SUCH_WINDOW:
@@ -232,8 +239,8 @@ class ErrorHandler(object):
                 alert_text = value['data'].get('text')
             elif 'alert' in value:
                 alert_text = value['alert'].get('text')
-            raise exception_class(message, screen, stacktrace, alert_text)
+            raise exception_class(message, screen, stacktrace, alert_text)  # type: ignore[call-arg]  # mypy is not smart enough here
         raise exception_class(message, screen, stacktrace)
 
-    def _value_or_default(self, obj, key, default):
+    def _value_or_default(self, obj: Mapping[_KT, _VT], key: _KT, default: _VT) -> _VT:
         return obj[key] if key in obj else default
