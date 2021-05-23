@@ -19,7 +19,7 @@
 Exceptions that may happen in all the webdriver code.
 """
 
-from typing import Optional
+from typing import Optional, Sequence
 
 
 class WebDriverException(Exception):
@@ -27,7 +27,7 @@ class WebDriverException(Exception):
     Base webdriver exception.
     """
 
-    def __init__(self, msg: Optional[str] = None, screen: Optional[str] = None, stacktrace: Optional[str] = None) -> None:
+    def __init__(self, msg: Optional[str] = None, screen: Optional[str] = None, stacktrace: Optional[Sequence[str]] = None) -> None:
         self.msg = msg
         self.screen = screen
         self.stacktrace = stacktrace
@@ -128,7 +128,7 @@ class UnexpectedAlertPresentException(WebDriverException):
     Usually raised when  an unexpected modal is blocking the webdriver from executing
     commands.
     """
-    def __init__(self, msg: Optional[str] = None, screen: Optional[str] = None, stacktrace: Optional[str] = None, alert_text: Optional[str] = None) -> None:
+    def __init__(self, msg: Optional[str] = None, screen: Optional[str] = None, stacktrace: Optional[Sequence[str]] = None, alert_text: Optional[str] = None) -> None:
         super(UnexpectedAlertPresentException, self).__init__(msg, screen, stacktrace)
         self.alert_text = alert_text
 
