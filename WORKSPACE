@@ -182,18 +182,21 @@ load(
     "container_pull",
 )
 
+# Examine https://console.cloud.google.com/gcr/images/distroless/GLOBAL/java?gcrImageListsize=30 to find
+# the latest version when updating
 container_pull(
     name = "java_image_base",
-    # This pulls the java 11 version of the jave base image
-    digest = "sha256:34c3598d83f0dba27820323044ebe79e63ad4f137b405676da75a3905a408adf",
+    # This pulls the java 11 version of the java base image
+    digest = "sha256:ae5d32ed4da6d2207fd34accde64f5b1264cbdd1340fa8c1cfa70cdf1841f9db",
     registry = "gcr.io",
     repository = "distroless/java",
 )
 
+
 container_pull(
     name = "firefox_standalone",
     # selenium/standalone-firefox-debug:3.141.59
-    digest = "sha256:27864b3c5ad5a4c4311bfa3e01cf389ec517980df12d3354b33cfc93b726b372",
+    digest = "sha256:ac284138b2b8d581b9d3b1a15282ab0a679aa06cc34146f473e5e5aee5f5303d",
     registry = "index.docker.io",
     repository = "selenium/standalone-firefox-debug",
 )
@@ -201,7 +204,7 @@ container_pull(
 container_pull(
     name = "chrome_standalone",
     # selenium/standalone-chrome-debug:3.141.59
-    digest = "sha256:4c56bcaba306dfc70b873f4e1f2292facb705984de90004c42c65a4380e0d3e3",
+    digest = "sha256:75edd7f58f4faeb4c7b11d81bfa4c720e007253846defe3117bc3f692922894c",
     registry = "index.docker.io",
     repository = "selenium/standalone-chrome-debug",
 )
