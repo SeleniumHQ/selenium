@@ -10,10 +10,9 @@ load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
 
 http_archive(
     name = "apple_rules_lint",
-    sha256 = "ece669d52998c7a0df2c2380f37edbf4ed8ebb1a03587ed1781dfbececef9b3d",
-    urls = [
-        "https://github.com/apple/apple_rules_lint/releases/download/0.1.0/apple_rules_lint-0.1.0.tar.gz",
-    ],
+    sha256 = "8feab4b08a958b10cb2abb7f516652cd770b582b36af6477884b3bba1f2f0726",
+    strip_prefix = "apple_rules_lint-0.1.1",
+    url = "https://github.com/apple/apple_rules_lint/archive/0.1.1.zip",
 )
 
 load("@apple_rules_lint//lint:repositories.bzl", "lint_deps")
