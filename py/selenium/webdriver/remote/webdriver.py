@@ -21,8 +21,8 @@ import copy
 
 import pkgutil
 import sys
-from typing import (List,
-                    NoReturn)
+from typing import (Dict, List,
+                    NoReturn, Union)
 
 import warnings
 
@@ -120,6 +120,32 @@ def get_remote_connection(capabilities, command_executor, keep_alive, ignore_loc
     return handler(command_executor, keep_alive=keep_alive, ignore_proxy=ignore_local_proxy)
 
 
+def create_matches(options: List[BaseOptions]) -> Dict:
+    capabilities = {"capabilities": {}}
+    opts = []
+    for opt in options:
+        opts.append(opt.to_capabilities())
+    opts_size = len(opts)
+    samesies = set()
+    for i in range(opts_size):
+        min_index = i
+        if i + 1 < opts_size:
+            samesies.update(opts[min_index].items() & opts[i + 1].items())
+
+    always = {}
+    for i in samesies:
+        always[i[0]] = i[1]
+
+    for i in opts:
+        for k in always.keys():
+            del i[k]
+
+    capabilities["capabilities"]["alwaysMatch"] = always
+    capabilities["capabilities"]["firstMatch"] = opts
+
+    return capabilities
+
+
 class BaseWebDriver(metaclass=ABCMeta):
     """
     Abstract Base Class for all Webdriver subtypes.
@@ -147,7 +173,7 @@ class WebDriver(BaseWebDriver):
 
     def __init__(self, command_executor='http://127.0.0.1:4444',
                  desired_capabilities=None, browser_profile=None, proxy=None,
-                 keep_alive=True, file_detector=None, options: BaseOptions = None):
+                 keep_alive=True, file_detector=None, options: Union[BaseOptions, List[BaseOptions]] = None):
         """
         Create a new driver that will issue commands using the wire protocol.
 
@@ -191,15 +217,20 @@ class WebDriver(BaseWebDriver):
                 stacklevel=2
             )
         capabilities = {}
-        _ignore_local_proxy = False
-        if options:
-            capabilities = options.to_capabilities()
-            _ignore_local_proxy = options._ignore_local_proxy
-        if desired_capabilities:
-            if not isinstance(desired_capabilities, dict):
-                raise WebDriverException("Desired Capabilities must be a dictionary")
-            else:
-                capabilities.update(desired_capabilities)
+        # If we get a list we can assume that no capabilities
+        # have been passed in
+        if isinstance(options, list):
+            capabilities = create_matches(options)
+        else:
+            _ignore_local_proxy = False
+            if options:
+                capabilities = options.to_capabilities()
+                _ignore_local_proxy = options._ignore_local_proxy
+            if desired_capabilities:
+                if not isinstance(desired_capabilities, dict):
+                    raise WebDriverException("Desired Capabilities must be a dictionary")
+                else:
+                    capabilities.update(desired_capabilities)
         self.command_executor = command_executor
         if isinstance(self.command_executor, (str, bytes)):
             self.command_executor = get_remote_connection(capabilities, command_executor=command_executor,
