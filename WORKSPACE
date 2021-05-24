@@ -87,9 +87,9 @@ http_archive(
         "//java:rules_jvm_external_javadoc.patch",
         "//java:rules_jvm_external_visibility.patch",
     ],
-    sha256 = "3d00a53394e0e856f6a97fab75855a3fd6552190ca004f79bfac0cbfd3c1e5d1",
-    strip_prefix = "rules_jvm_external-786947c47918c44b5d740df500bb3090607df04d",
-    url = "https://github.com/bazelbuild/rules_jvm_external/archive/786947c47918c44b5d740df500bb3090607df04d.zip",
+    sha256 = "f36441aa876c4f6427bfb2d1f2d723b48e9d930b62662bf723ddfb8fc80f0140",
+    strip_prefix = "rules_jvm_external-4.1",
+    url = "https://github.com/bazelbuild/rules_jvm_external/archive/4.1.zip",
 )
 
 load("@rules_jvm_external//:repositories.bzl", "rules_jvm_external_deps")
