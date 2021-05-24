@@ -20,6 +20,7 @@ package org.openqa.selenium.grid.node.config;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableMultimap;
+import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Multimap;
 
 import org.openqa.selenium.Capabilities;
@@ -72,6 +73,8 @@ public class NodeOptions {
   private static final String DEFAULT_IMPL = "org.openqa.selenium.grid.node.local.LocalNodeFactory";
   private static final ImmutableCapabilities CURRENT_PLATFORM =
     new ImmutableCapabilities("platformName", Platform.getCurrent());
+  private static final ImmutableSet<String>
+    ONE_SESSION_DRIVERS = ImmutableSet.of("safari", "internet explorer");
 
   private final Config config;
 
@@ -452,7 +455,8 @@ public class NodeOptions {
 
   private int getDriverMaxSessions(WebDriverInfo info, int desiredMaxSessions) {
     // IE and Safari
-    if (info.getMaximumSimultaneousSessions() == 1) {
+    if (info.getMaximumSimultaneousSessions() == 1 &&
+        ONE_SESSION_DRIVERS.contains(info.getDisplayName().toLowerCase())) {
       return info.getMaximumSimultaneousSessions();
     }
     boolean overrideMaxSessions = config.getBool(NODE_SECTION, "override-max-sessions")
