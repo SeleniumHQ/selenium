@@ -21,29 +21,17 @@ import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.JsonInput;
 import org.openqa.selenium.json.TypeToken;
-import org.openqa.selenium.remote.Dialect;
-import org.openqa.selenium.remote.NewSessionPayload;
-import org.openqa.selenium.remote.http.Contents;
-import org.openqa.selenium.remote.http.HttpRequest;
 
 import java.lang.reflect.Type;
-import java.time.Instant;
-import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.Set;
 import java.util.StringJoiner;
-import java.util.TreeMap;
-import java.util.stream.Collectors;
 
-import static java.util.Collections.emptyMap;
 import static java.util.Collections.unmodifiableMap;
 import static java.util.Collections.unmodifiableSet;
-import static org.openqa.selenium.json.Json.MAP_TYPE;
 
 public class SessionRequestCapability {
 
