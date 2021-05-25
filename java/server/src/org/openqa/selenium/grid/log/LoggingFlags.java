@@ -29,6 +29,7 @@ import java.util.Set;
 
 import static org.openqa.selenium.grid.config.StandardGridRoles.ALL_ROLES;
 import static org.openqa.selenium.grid.log.LoggingOptions.DEFAULT_CONFIGURE_LOGGING;
+import static org.openqa.selenium.grid.log.LoggingOptions.DEFAULT_HTTP_LOGS;
 import static org.openqa.selenium.grid.log.LoggingOptions.DEFAULT_LOG_LEVEL;
 import static org.openqa.selenium.grid.log.LoggingOptions.DEFAULT_PLAIN_LOGS;
 import static org.openqa.selenium.grid.log.LoggingOptions.DEFAULT_STRUCTURED_LOGS;
@@ -58,6 +59,10 @@ public class LoggingFlags implements HasRoles {
   @Parameter(description = "Enable trace collection", hidden = true, names = "--tracing", arity = 1)
   @ConfigValue(section = LOGGING_SECTION, name = "tracing", example = "true")
   private Boolean enableTracing = DEFAULT_TRACING_ENABLED;
+
+  @Parameter(description = "Enable http logging. Tracing should be enabled to log http logs.", hidden = true, names = "--http-logs", arity = 1)
+  @ConfigValue(section = LOGGING_SECTION, name = "http-logs", example = "true")
+  private Boolean httpLogs = DEFAULT_HTTP_LOGS;
 
   @Parameter(description = "File to write out logs", names = "--log", arity = 1)
   @ConfigValue(section = LOGGING_SECTION, name = "log-file", example = "true")
