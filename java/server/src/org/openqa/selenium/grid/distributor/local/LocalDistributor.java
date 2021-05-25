@@ -39,6 +39,7 @@ import org.openqa.selenium.grid.data.NodeStatus;
 import org.openqa.selenium.grid.data.NodeStatusEvent;
 import org.openqa.selenium.grid.data.RequestId;
 import org.openqa.selenium.grid.data.SessionRequest;
+import org.openqa.selenium.grid.data.SessionRequestCapability;
 import org.openqa.selenium.grid.data.Slot;
 import org.openqa.selenium.grid.data.SlotId;
 import org.openqa.selenium.grid.data.TraceSessionRequest;
@@ -369,21 +370,6 @@ public class LocalDistributor extends Distributor {
         return Either.left(exception);
       }
 
-      // If there are capabilities, but the Grid doesn't support them, bail too.
-      long unmatchableCount = request.getDesiredCapabilities().stream()
-        .filter(caps -> !isSupported(caps))
-        .count();
-      if (unmatchableCount == request.getDesiredCapabilities().size()) {
-        SessionNotCreatedException exception = new SessionNotCreatedException(
-          "No nodes support the capabilities in the request");
-        EXCEPTION.accept(attributeMap, exception);
-        attributeMap.put(
-          AttributeKey.EXCEPTION_MESSAGE.getKey(),
-          EventAttribute.setValue(exception.getMessage()));
-        span.addEvent(AttributeKey.EXCEPTION_EVENT.getKey(), attributeMap);
-        return Either.left(exception);
-      }
-
       boolean retry = false;
       SessionNotCreatedException lastFailure = new SessionNotCreatedException("Unable to create new session");
       for (Capabilities caps : request.getDesiredCapabilities()) {
@@ -555,6 +541,9 @@ public class LocalDistributor extends Distributor {
 
     @Override
     public void run() {
+      List<SessionRequestCapability> queueContents = sessionQueue.getQueueContents();
+      checkMatchingSlot(queueContents);
+
       int initialSize = sessionQueue.getQueueContents().size();
       boolean retry = initialSize != 0;
 
@@ -580,6 +569,20 @@ public class LocalDistributor extends Distributor {
         int currentSize = sessionQueue.getQueueContents().size();
         retry = currentSize != 0 && currentSize != initialSize;
         initialSize = currentSize;
+      }
+    }
+
+    private void checkMatchingSlot(List<SessionRequestCapability> sessionRequests) {
+      for(SessionRequestCapability request : sessionRequests) {
+        long unmatchableCount = request.getDesiredCapabilities().stream()
+          .filter(caps -> !isSupported(caps))
+          .count();
+
+        if (unmatchableCount == request.getDesiredCapabilities().size()) {
+          SessionNotCreatedException exception = new SessionNotCreatedException(
+            "No nodes support the capabilities in the request");
+          sessionQueue.complete(request.getRequestId(), Either.left(exception));
+        }
       }
     }
 

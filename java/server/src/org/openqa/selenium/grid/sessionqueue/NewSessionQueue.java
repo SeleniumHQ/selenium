@@ -22,6 +22,7 @@ import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.grid.data.CreateSessionResponse;
 import org.openqa.selenium.grid.data.RequestId;
 import org.openqa.selenium.grid.data.SessionRequest;
+import org.openqa.selenium.grid.data.SessionRequestCapability;
 import org.openqa.selenium.grid.security.RequiresSecretFilter;
 import org.openqa.selenium.grid.security.Secret;
 import org.openqa.selenium.internal.Either;
@@ -72,7 +73,7 @@ public abstract class NewSessionQueue implements HasReadyState, Routable {
       post("/se/grid/newsessionqueue/session/{requestId}/retry")
         .to(params -> new AddBackToSessionQueue(tracer, this, requestIdFrom(params)))
         .with(requiresSecret),
-      post("/se/grid/newsessionqueue/session/{requestId}/fail")
+      post("/se/grid/newsessionqueue/session/{requestId}/failure")
         .to(params -> new SessionNotCreated(tracer, this, requestIdFrom(params)))
         .with(requiresSecret),
       post("/se/grid/newsessionqueue/session/{requestId}/success")
@@ -107,7 +108,7 @@ public abstract class NewSessionQueue implements HasReadyState, Routable {
 
   public abstract int clearQueue();
 
-  public abstract List<Set<Capabilities>> getQueueContents();
+  public abstract List<SessionRequestCapability> getQueueContents();
 
   @Override
   public boolean matches(HttpRequest req) {
