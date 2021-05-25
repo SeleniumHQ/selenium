@@ -35,6 +35,7 @@ import org.openqa.selenium.grid.data.NewSessionRejectedEvent;
 import org.openqa.selenium.grid.data.NewSessionRequestEvent;
 import org.openqa.selenium.grid.data.RequestId;
 import org.openqa.selenium.grid.data.Session;
+import org.openqa.selenium.grid.data.SessionRequestCapability;
 import org.openqa.selenium.grid.security.Secret;
 import org.openqa.selenium.grid.sessionqueue.NewSessionQueue;
 import org.openqa.selenium.grid.data.SessionRequest;
@@ -72,6 +73,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
 import static java.net.HttpURLConnection.HTTP_INTERNAL_ERROR;
 import static java.net.HttpURLConnection.HTTP_OK;
@@ -240,7 +242,10 @@ public class LocalNewSessionQueueTest {
   public void shouldBeAbleToGetQueueContents() {
     localQueue.injectIntoQueue(sessionRequest);
 
-    List<Set<Capabilities>> response = queue.getQueueContents();
+    List<Set<Capabilities>> response = queue.getQueueContents()
+      .stream()
+      .map(SessionRequestCapability::getDesiredCapabilities)
+      .collect(Collectors.toList());
 
     assertThat(response).hasSize(1);
 

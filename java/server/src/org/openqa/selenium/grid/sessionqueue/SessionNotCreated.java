@@ -51,7 +51,8 @@ class SessionNotCreated implements HttpHandler {
     try (Span span = newSpanAsChildOf(tracer, req, "sessionqueue.created_bad")) {
       HTTP_REQUEST.accept(span, req);
 
-      SessionNotCreatedException exception = Contents.fromJson(req, SessionNotCreatedException.class);
+      String message = Contents.fromJson(req, String.class);
+      SessionNotCreatedException exception = new SessionNotCreatedException(message);
       queue.complete(requestId, Either.left(exception));
 
       HttpResponse res = new HttpResponse();

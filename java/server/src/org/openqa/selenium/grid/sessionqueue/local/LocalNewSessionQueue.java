@@ -11,6 +11,7 @@ import org.openqa.selenium.grid.data.NewSessionRejectedEvent;
 import org.openqa.selenium.grid.data.NewSessionRequestEvent;
 import org.openqa.selenium.grid.data.RequestId;
 import org.openqa.selenium.grid.data.SessionRequest;
+import org.openqa.selenium.grid.data.SessionRequestCapability;
 import org.openqa.selenium.grid.data.TraceSessionRequest;
 import org.openqa.selenium.grid.data.SlotMatcher;
 import org.openqa.selenium.grid.distributor.config.DistributorOptions;
@@ -379,13 +380,14 @@ public class LocalNewSessionQueue extends NewSessionQueue implements Closeable {
   }
 
   @Override
-  public List<Set<Capabilities>> getQueueContents() {
+  public List<SessionRequestCapability> getQueueContents() {
     Lock readLock = lock.readLock();
     readLock.lock();
 
     try {
       return queue.stream()
-        .map(SessionRequest::getDesiredCapabilities)
+        .map(req ->
+          new SessionRequestCapability(req.getRequestId(), req.getDesiredCapabilities()))
         .collect(Collectors.toList());
     } finally {
       readLock.unlock();
