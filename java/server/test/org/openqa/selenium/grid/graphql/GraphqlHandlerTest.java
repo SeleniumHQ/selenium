@@ -68,6 +68,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import static java.util.Collections.singletonList;
 import static java.util.Collections.singletonMap;
@@ -177,7 +178,23 @@ public class GraphqlHandlerTest {
   }
 
   @Test
-  public void shouldBeAbleToGetSessionQueueSize() {
+  public void shouldBeAbleToGetSessionQueueSize() throws URISyntaxException {
+    AtomicInteger count = new AtomicInteger();
+
+    URI nodeUri = new URI("http://example:5678");
+    TestSessionFactory sessionFactory = new TestSessionFactory((id, caps) -> new Session(
+      id,
+      nodeUri,
+      new ImmutableCapabilities(),
+      caps,
+      Instant.now()));
+
+    LocalNode localNode = LocalNode.builder(tracer, events, nodeUri, nodeUri, registrationSecret)
+      .add(caps, sessionFactory).build();
+    distributor.add(localNode);
+
+    wait.until(obj -> distributor.getStatus().hasCapacity());
+
     SessionRequest request = new SessionRequest(
       new RequestId(UUID.randomUUID()),
       Instant.now(),
@@ -186,6 +203,7 @@ public class GraphqlHandlerTest {
       Map.of(),
       Map.of());
 
+    continueOnceAddedToQueue(request);
     continueOnceAddedToQueue(request);
     GraphqlHandler handler = new GraphqlHandler(tracer, distributor, queue, publicUri, version);
 
@@ -199,7 +217,22 @@ public class GraphqlHandlerTest {
   }
 
   @Test
-  public void shouldBeAbleToGetSessionQueueRequests() {
+  public void shouldBeAbleToGetSessionQueueRequests() throws URISyntaxException {
+    AtomicInteger count = new AtomicInteger();
+
+    URI nodeUri = new URI("http://example:5678");
+    TestSessionFactory sessionFactory = new TestSessionFactory((id, caps) -> new Session(
+      id,
+      nodeUri,
+      new ImmutableCapabilities(),
+      caps,
+      Instant.now()));
+
+    LocalNode localNode = LocalNode.builder(tracer, events, nodeUri, nodeUri, registrationSecret)
+      .add(caps, sessionFactory).build();
+    distributor.add(localNode);
+    wait.until(obj -> distributor.getStatus().hasCapacity());
+
     SessionRequest request = new SessionRequest(
       new RequestId(UUID.randomUUID()),
       Instant.now(),
@@ -208,6 +241,7 @@ public class GraphqlHandlerTest {
       Map.of(),
       Map.of());
 
+    continueOnceAddedToQueue(request);
     continueOnceAddedToQueue(request);
 
     GraphqlHandler handler = new GraphqlHandler(tracer, distributor, queue, publicUri, version);
