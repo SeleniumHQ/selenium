@@ -22,13 +22,10 @@ import io.opentelemetry.context.Context;
 import io.opentelemetry.context.propagation.TextMapPropagator;
 import io.opentelemetry.sdk.OpenTelemetrySdk;
 import io.opentelemetry.sdk.autoconfigure.OpenTelemetrySdkAutoConfiguration;
-import org.openqa.selenium.grid.config.Config;
-import org.openqa.selenium.grid.config.MapConfig;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.tracing.Propagator;
 import org.openqa.selenium.remote.tracing.TraceContext;
 
-import java.util.Collections;
 import java.util.logging.Logger;
 
 public class OpenTelemetryTracer implements org.openqa.selenium.remote.tracing.Tracer {

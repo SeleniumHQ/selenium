@@ -26,7 +26,6 @@ import io.opentelemetry.sdk.common.CompletableResultCode;
 import io.opentelemetry.sdk.trace.SdkTracerProviderBuilder;
 import io.opentelemetry.sdk.trace.data.EventData;
 import io.opentelemetry.sdk.trace.data.SpanData;
-import io.opentelemetry.sdk.trace.data.StatusData;
 import io.opentelemetry.sdk.trace.export.SimpleSpanProcessor;
 import io.opentelemetry.sdk.trace.export.SpanExporter;
 import org.openqa.selenium.json.Json;
@@ -55,12 +54,9 @@ public class SeleniumSpanExporter implements SdkTracerProviderConfigurer {
           LOG.fine(String.valueOf(span));
 
           String traceId = span.getTraceId();
-          StatusData status = span.getStatus();
           List<EventData> eventList = span.getEvents();
 
-          Optional<String> kind = Optional.ofNullable(span
-            .getAttributes()
-            .get(AttributeKey.stringKey(org.openqa.selenium.remote.tracing.AttributeKey.SPAN_KIND.getKey())));
+          Level logLevel = getLogLevel(span);
 
           eventList.forEach(event -> {
             Map<String, Object> map = new HashMap<>();
@@ -71,19 +67,7 @@ public class SeleniumSpanExporter implements SdkTracerProviderConfigurer {
             Attributes attributes = event.getAttributes();
             map.put("attributes", attributes.asMap());
             String jsonString = getJsonString(map);
-            if (status.getStatusCode() == StatusCode.ERROR) {
-              LOG.log(Level.WARNING, jsonString);
-            } else {
-              Level level = Level.FINE;
-              if (httpLogs && kind.isPresent()) {
-                String kindValue = kind.get();
-                if (Span.Kind.SERVER.name().equalsIgnoreCase(kindValue) ||
-                  Span.Kind.CLIENT.name().equalsIgnoreCase(kindValue)) {
-                  level = Level.INFO;
-                }
-              }
-              LOG.log(level, jsonString);
-            }
+            LOG.log(logLevel, jsonString);
           });
         });
         return CompletableResultCode.ofSuccess();
@@ -109,5 +93,26 @@ public class SeleniumSpanExporter implements SdkTracerProviderConfigurer {
       text.append('\n');
     }
     return text.toString();
+  }
+
+  private Level getLogLevel(SpanData span) {
+    Level level = Level.FINE;
+
+    Optional<String> kind = Optional.ofNullable(span
+      .getAttributes()
+      .get(AttributeKey.stringKey(org.openqa.selenium.remote.tracing.AttributeKey.SPAN_KIND.getKey())));
+
+    if (span.getStatus().getStatusCode() == StatusCode.ERROR) {
+      level = Level.WARNING;
+    } else {
+      if (httpLogs && kind.isPresent()) {
+        String kindValue = kind.get();
+        if (Span.Kind.SERVER.name().equalsIgnoreCase(kindValue) ||
+          Span.Kind.CLIENT.name().equalsIgnoreCase(kindValue)) {
+          level = Level.INFO;
+        }
+      }
+    }
+    return level;
   }
 }
