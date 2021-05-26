@@ -43,10 +43,8 @@ import org.openqa.selenium.grid.server.Server;
 import org.openqa.selenium.grid.sessionmap.SessionMap;
 import org.openqa.selenium.grid.sessionmap.local.LocalSessionMap;
 import org.openqa.selenium.grid.sessionqueue.NewSessionQueue;
-import org.openqa.selenium.grid.sessionqueue.NewSessionQueuer;
-import org.openqa.selenium.grid.sessionqueue.config.NewSessionQueueOptions;
+import org.openqa.selenium.grid.sessionqueue.config.SessionRequestOptions;
 import org.openqa.selenium.grid.sessionqueue.local.LocalNewSessionQueue;
-import org.openqa.selenium.grid.sessionqueue.local.LocalNewSessionQueuer;
 import org.openqa.selenium.grid.web.CombinedHandler;
 import org.openqa.selenium.grid.web.GridUiRoute;
 import org.openqa.selenium.grid.web.RoutableHttpClientFactory;
@@ -140,32 +138,29 @@ public class Standalone extends TemplateGridServerCommand {
     SessionMap sessions = new LocalSessionMap(tracer, bus);
     combinedHandler.addHandler(sessions);
 
-    NewSessionQueueOptions newSessionQueueOptions = new NewSessionQueueOptions(config);
-    NewSessionQueue sessionRequests = new LocalNewSessionQueue(
-      tracer,
-      bus,
-      newSessionQueueOptions.getSessionRequestRetryInterval(),
-      newSessionQueueOptions.getSessionRequestTimeout());
-
-    NewSessionQueuer queuer = new LocalNewSessionQueuer(
-      tracer,
-      bus,
-      sessionRequests,
-      registrationSecret);
-    combinedHandler.addHandler(queuer);
-
     DistributorOptions distributorOptions = new DistributorOptions(config);
+    SessionRequestOptions sessionRequestOptions = new SessionRequestOptions(config);
+    NewSessionQueue queue = new LocalNewSessionQueue(
+      tracer,
+      bus,
+      distributorOptions.getSlotMatcher(),
+      sessionRequestOptions.getSessionRequestRetryInterval(),
+      sessionRequestOptions.getSessionRequestTimeout(),
+      registrationSecret);
+    combinedHandler.addHandler(queue);
+
     Distributor distributor = new LocalDistributor(
       tracer,
       bus,
       clientFactory,
       sessions,
-      queuer,
+      queue,
+      distributorOptions.getSlotSelector(),
       registrationSecret,
       distributorOptions.getHealthCheckInterval());
     combinedHandler.addHandler(distributor);
 
-    Routable router = new Router(tracer, clientFactory, sessions, queuer, distributor)
+    Routable router = new Router(tracer, clientFactory, sessions, queue, distributor)
       .with(networkOptions.getSpecComplianceChecks());
 
     HttpHandler readinessCheck = req -> {
@@ -178,7 +173,7 @@ public class Standalone extends TemplateGridServerCommand {
     GraphqlHandler graphqlHandler = new GraphqlHandler(
       tracer,
       distributor,
-      queuer,
+      queue,
       serverOptions.getExternalUri(),
       getFormattedVersion());
 

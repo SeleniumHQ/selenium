@@ -44,10 +44,11 @@ To start the `JdbcBackedSessionMap`:
 
 ```
 SESSIONS_IMPLEMENTATION=org.openqa.selenium.grid.sessionmap.jdbc.JdbcBackedSessionMap \
+SESSIONS_SCHEME=jdbc \
 java -jar selenium.jar
-  --ext $(coursier fetch -p org.seleniumhq.selenium:selenium-session-map-redis:4.0.0-alpha-6:org.postgresql:postgresql:42.2.14.jre7) \
+  --ext $(coursier fetch -p org.seleniumhq.selenium:selenium-session-map-jdbc:4.0.0-alpha-6 org.postgresql:postgresql:42.2.14.jre7) \
   sessions \
   --jdbc-user "<jdbc_user>" --jdbc-password "<jdbc_password>" \
-  --jdbc-url "<jdbc_url>"`
+  --jdbc-url "<jdbc_url>"
 ```
 

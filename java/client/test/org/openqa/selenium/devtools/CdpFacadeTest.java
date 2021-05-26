@@ -28,6 +28,9 @@ import org.openqa.selenium.environment.webserver.NettyAppServer;
 import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.remote.http.Route;
 import org.openqa.selenium.support.devtools.NetworkInterceptor;
+import org.openqa.selenium.testing.Ignore;
+import org.openqa.selenium.testing.NotYetImplemented;
+import org.openqa.selenium.testing.drivers.Browser;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assumptions.assumeThat;
@@ -50,6 +53,7 @@ public class CdpFacadeTest extends DevToolsTestBase {
   }
 
   @Test
+  @NotYetImplemented(value = Browser.FIREFOX, reason = "Network interception not yet supported")
   public void networkInterceptorAndAuthHandlersDoNotFight() {
     assumeThat(driver).isInstanceOf(HasAuthentication.class);
 
@@ -81,6 +85,7 @@ public class CdpFacadeTest extends DevToolsTestBase {
   }
 
   @Test
+  @NotYetImplemented(value = Browser.FIREFOX, reason = "Network interception not yet supported")
   public void canAuthenticate() {
     assumeThat(driver).isInstanceOf(HasAuthentication.class);
 

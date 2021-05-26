@@ -23,7 +23,7 @@ import org.openqa.selenium.PersistentCapabilities;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.WebDriverException;
-import org.openqa.selenium.chromium.ChromiumDevToolsLocator;
+import org.openqa.selenium.devtools.CdpEndpointFinder;
 import org.openqa.selenium.grid.data.CreateSessionRequest;
 import org.openqa.selenium.grid.node.ActiveSession;
 import org.openqa.selenium.grid.node.ProtocolConvertingSession;
@@ -46,7 +46,6 @@ import org.openqa.selenium.remote.tracing.Status;
 import org.openqa.selenium.remote.tracing.Tracer;
 
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.net.URL;
 import java.time.Instant;
 import java.util.HashMap;
@@ -95,14 +94,14 @@ public class DriverServiceSessionFactory implements SessionFactory {
       return Either.left(new SessionNotCreatedException("No downstream dialects were found."));
     }
 
-    if (!test(sessionRequest.getCapabilities())) {
+    if (!test(sessionRequest.getDesiredCapabilities())) {
       return Either.left(new SessionNotCreatedException("New session request capabilities do not "
                                                         + "match the stereotype."));
     }
 
     try (Span span = tracer.getCurrentContext().createSpan("driver_service_factory.apply")) {
 
-      Capabilities capabilities = browserOptionsMutator.apply(sessionRequest.getCapabilities());
+      Capabilities capabilities = browserOptionsMutator.apply(sessionRequest.getDesiredCapabilities());
 
       Optional<Platform> platformName = Optional.ofNullable(capabilities.getPlatformName());
       if (platformName.isPresent()) {
@@ -199,24 +198,18 @@ public class DriverServiceSessionFactory implements SessionFactory {
     }
 
     Function<Capabilities, Optional<DevToolsInfo>> chrome = c ->
-      ChromiumDevToolsLocator.getReportedUri("goog:chromeOptions", c).map(uri -> new DevToolsInfo(uri, c.getBrowserVersion()));
+      CdpEndpointFinder.getReportedUri("goog:chromeOptions", c)
+        .map(uri -> new DevToolsInfo(uri, c.getBrowserVersion()));
 
     Function<Capabilities, Optional<DevToolsInfo>> edge = c ->
-      ChromiumDevToolsLocator.getReportedUri("ms:edgeOptions", c).map(uri -> new DevToolsInfo(uri, c.getBrowserVersion()));
+      CdpEndpointFinder.getReportedUri("ms:edgeOptions", c)
+        .map(uri -> new DevToolsInfo(uri, c.getBrowserVersion()));
 
-    Function<Capabilities, Optional<DevToolsInfo>> firefox = c -> {
-      Object address = c.getCapability("moz:debuggerAddress");
-      return Optional.ofNullable(address).map(adr -> {
-        try {
-          URI uri = new URI(String.format("http://%s", adr));
-          return new DevToolsInfo(uri, "86");
-        } catch (URISyntaxException e) {
-          return null;
-        }
-      });
-    };
+    Function<Capabilities, Optional<DevToolsInfo>> firefox = c ->
+      CdpEndpointFinder.getReportedUri("moz:debuggerAddress", c)
+        .map(uri -> new DevToolsInfo(uri, "85"));
 
-    Optional<DevToolsInfo> maybeInfo = Stream.of(chrome, edge)
+    Optional<DevToolsInfo> maybeInfo = Stream.of(chrome, edge, firefox)
       .map(finder -> finder.apply(caps))
       .filter(Optional::isPresent)
       .map(Optional::get)

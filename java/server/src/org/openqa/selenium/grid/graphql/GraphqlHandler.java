@@ -29,7 +29,7 @@ import graphql.schema.idl.SchemaGenerator;
 import graphql.schema.idl.SchemaParser;
 import graphql.schema.idl.TypeDefinitionRegistry;
 import org.openqa.selenium.grid.distributor.Distributor;
-import org.openqa.selenium.grid.sessionqueue.NewSessionQueuer;
+import org.openqa.selenium.grid.sessionqueue.NewSessionQueue;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.remote.http.Contents;
@@ -67,16 +67,16 @@ public class GraphqlHandler implements HttpHandler {
   public static final Json JSON = new Json();
   private final Tracer tracer;
   private final Distributor distributor;
-  private final NewSessionQueuer newSessionQueuer;
+  private final NewSessionQueue newSessionQueue;
   private final URI publicUri;
   private final String version;
   private final GraphQL graphQl;
 
 
-  public GraphqlHandler(Tracer tracer, Distributor distributor, NewSessionQueuer newSessionQueuer,
+  public GraphqlHandler(Tracer tracer, Distributor distributor, NewSessionQueue newSessionQueue,
                         URI publicUri, String version) {
     this.distributor = Require.nonNull("Distributor", distributor);
-    this.newSessionQueuer = Require.nonNull("NewSessionQueuer", newSessionQueuer);
+    this.newSessionQueue = Require.nonNull("New session queue", newSessionQueue);
     this.publicUri = Require.nonNull("Uri", publicUri);
     this.version = Require.nonNull("GridVersion", version);
     this.tracer = Require.nonNull("Tracer", tracer);
@@ -173,7 +173,7 @@ public class GraphqlHandler implements HttpHandler {
   }
 
   private RuntimeWiring buildRuntimeWiring() {
-    GridData gridData = new GridData(distributor, newSessionQueuer, publicUri, version);
+    GridData gridData = new GridData(distributor, newSessionQueue, publicUri, version);
     return RuntimeWiring.newRuntimeWiring()
       .scalar(Types.Uri)
       .scalar(Types.Url)

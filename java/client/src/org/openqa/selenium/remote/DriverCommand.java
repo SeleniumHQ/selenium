@@ -18,13 +18,13 @@
 package org.openqa.selenium.remote;
 
 import com.google.common.collect.ImmutableMap;
-
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.Cookie;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.Point;
 import org.openqa.selenium.WindowType;
 import org.openqa.selenium.interactions.Sequence;
+import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.print.PrintOptions;
 
 import java.time.Duration;
@@ -32,6 +32,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 /**
  * An empty interface defining constants for the standard commands defined in the WebDriver JSON
@@ -44,7 +45,24 @@ public interface DriverCommand {
   String GET_CAPABILITIES = "getCapabilities";
   String NEW_SESSION = "newSession";
   static CommandPayload NEW_SESSION(Capabilities capabilities) {
-    return new CommandPayload(NEW_SESSION, ImmutableMap.of("desiredCapabilities", capabilities));
+    Require.nonNull("Capabilities", capabilities);
+    return new CommandPayload(
+      NEW_SESSION,
+      ImmutableMap.of(
+        "capabilities", CapabilitiesUtils.makeW3CSafe(capabilities).collect(Collectors.toSet()),
+        "desiredCapabilities", capabilities));
+  }
+  static CommandPayload NEW_SESSION(Collection<Capabilities> capabilities) {
+    Require.nonNull("Capabilities", capabilities);
+    if (capabilities.isEmpty()) {
+      throw new IllegalArgumentException("Capabilities for new session must not be empty");
+    }
+
+    return new CommandPayload(
+      NEW_SESSION,
+      ImmutableMap.of(
+        "capabilities", capabilities.stream().flatMap(CapabilitiesUtils::makeW3CSafe).collect(Collectors.toSet()),
+        "desiredCapabilities", capabilities.iterator().next()));
   }
 
   String STATUS = "status";

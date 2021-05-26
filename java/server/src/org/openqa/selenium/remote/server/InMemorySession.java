@@ -141,11 +141,11 @@ class InMemorySession implements ActiveSession {
 
       // Assume the blob fits in the available memory.
       try {
-        if (!provider.canCreateDriverInstanceFor(sessionRequest.getCapabilities())) {
+        if (!provider.canCreateDriverInstanceFor(sessionRequest.getDesiredCapabilities())) {
           return Optional.empty();
         }
 
-        WebDriver driver = provider.newInstance(sessionRequest.getCapabilities());
+        WebDriver driver = provider.newInstance(sessionRequest.getDesiredCapabilities());
 
         // Prefer the OSS dialect.
         Set<Dialect> downstreamDialects = sessionRequest.getDownstreamDialects();
@@ -153,7 +153,7 @@ class InMemorySession implements ActiveSession {
                              Dialect.OSS :
                              downstreamDialects.iterator().next();
         return Optional.of(
-            new InMemorySession(driver, sessionRequest.getCapabilities(), downstream));
+            new InMemorySession(driver, sessionRequest.getDesiredCapabilities(), downstream));
       } catch (IllegalStateException e) {
         return Optional.empty();
       }

@@ -53,6 +53,7 @@ experimental domain Accessibility
       labelfor
       labelwrapped
       legend
+      rubyannotation
       tablecaption
       title
       other
@@ -202,8 +203,20 @@ experimental domain Accessibility
       # children, if requested.
       array of AXNode nodes
 
-  # Fetches the entire accessibility tree
+  # Fetches the entire accessibility tree for the root Document
   experimental command getFullAXTree
+    parameters
+      # The maximum depth at which descendants of the root node should be retrieved.
+      # If omitted, the full tree is returned.
+      optional integer max_depth
+    returns
+      array of AXNode nodes
+
+  # Fetches a particular accessibility node by AXNodeId.
+  # Requires `enable()` to have been called previously.
+  experimental command getChildAXNodes
+    parameters
+      AXNodeId id
     returns
       array of AXNode nodes
 
@@ -648,6 +661,14 @@ experimental domain Audits
       optional SourceCodeLocation sourceCodeLocation
       optional DOM.BackendNodeId violatingNodeId
 
+  # Details for a request that has been blocked with the BLOCKED_BY_RESPONSE
+  # code. Currently only used for COEP/COOP, but may be extended to include
+  # some CSP errors in the future.
+  type SharedArrayBufferTransferIssueDetails extends object
+    properties
+      SourceCodeLocation sourceCodeLocation
+      boolean isWarning
+
   # A unique identifier for the type of issue. Each type may use one of the
   # optional fields in InspectorIssueDetails to convey more specific
   # information about the kind of issue.
@@ -658,6 +679,7 @@ experimental domain Audits
       BlockedByResponseIssue
       HeavyAdIssue
       ContentSecurityPolicyIssue
+      SharedArrayBufferTransferIssue
 
   # This struct holds a list of optional fields with additional information
   # specific to the kind of issue. When adding a new issue code, please also
@@ -669,6 +691,7 @@ experimental domain Audits
       optional BlockedByResponseIssueDetails blockedByResponseIssueDetails
       optional HeavyAdIssueDetails heavyAdIssueDetails
       optional ContentSecurityPolicyIssueDetails contentSecurityPolicyIssueDetails
+      optional SharedArrayBufferTransferIssueDetails sharedArrayBufferTransferIssueDetails
 
   # An inspector issue reported from the back-end.
   type InspectorIssue extends object
@@ -815,6 +838,7 @@ domain Browser
       backgroundFetch
       clipboardReadWrite
       clipboardSanitizedWrite
+      displayCapture
       durableStorage
       flash
       geolocation
@@ -1791,6 +1815,8 @@ domain DOM
       backdrop
       selection
       target-text
+      spelling-error
+      grammar-error
       first-line-inherited
       scrollbar
       scrollbar-thumb
@@ -4723,6 +4749,8 @@ domain Network
       optional CookieSameSite sameSite
       # Cookie Priority
       experimental CookiePriority priority
+      # True if cookie is SameParty.
+      experimental boolean sameParty
 
   # Types of reasons why a cookie may not be stored from a response.
   experimental type SetCookieBlockedReason extends string
@@ -5494,6 +5522,8 @@ domain Network
       RequestId transportId
       # WebTransport request URL.
       string url
+      # Timestamp.
+      MonotonicTime timestamp
       # Request initiator.
       optional Initiator initiator
 
@@ -5501,6 +5531,8 @@ domain Network
     parameters
       # WebTransport identifier.
       RequestId transportId
+      # Timestamp.
+      MonotonicTime timestamp
 
   experimental type PrivateNetworkRequestPolicy extends string
     enum
@@ -5552,6 +5584,36 @@ domain Network
       # Raw response header text as it was received over the wire. The raw text may not always be
       # available, such as in the case of HTTP/2 or QUIC.
       optional string headersText
+
+  # Fired exactly once for each Trust Token operation. Depending on
+  # the type of the operation and whether the operation succeeded or
+  # failed, the event is fired before the corresponding request was sent
+  # or after the response was received.
+  experimental event trustTokenOperationDone
+    parameters
+      # Detailed success or error status of the operation.
+      # 'AlreadyExists' also signifies a successful operation, as the result
+      # of the operation already exists und thus, the operation was abort
+      # preemptively (e.g. a cache hit).
+      enum status
+        Ok
+        InvalidArgument
+        FailedPrecondition
+        ResourceExhausted
+        AlreadyExists
+        Unavailable
+        BadResponse
+        InternalError
+        UnknownError
+        FulfilledLocally
+      TrustTokenOperationType type
+      RequestId requestId
+      # Top level origin. The context in which the operation was attempted.
+      optional string topLevelOrigin
+      # Origin of the issuer in case of a "Issuance" or "Redemption" operation.
+      optional string issuerOrigin
+      # The number of obtained Trust Tokens on a successful "Issuance" operation.
+      optional integer issuedTokenCount
 
   experimental type CrossOriginOpenerPolicyValue extends string
     enum
@@ -7085,6 +7147,72 @@ domain Performance
       # Timestamp title.
       string title
 
+# Reporting of performance timeline events, as specified in
+# https://w3c.github.io/performance-timeline/#dom-performanceobserver.
+experimental domain PerformanceTimeline
+  depends on DOM
+  depends on Network
+
+  # See https://github.com/WICG/LargestContentfulPaint and largest_contentful_paint.idl
+  type LargestContentfulPaint extends object
+    properties
+      Network.TimeSinceEpoch renderTime
+      Network.TimeSinceEpoch loadTime
+      # The number of pixels being painted.
+      number size
+      # The id attribute of the element, if available.
+      optional string elementId
+      # The URL of the image (may be trimmed).
+      optional string url
+      optional DOM.BackendNodeId nodeId
+
+  type LayoutShiftAttribution extends object
+    properties
+      DOM.Rect previousRect
+      DOM.Rect currentRect
+      optional DOM.BackendNodeId nodeId
+
+  # See https://wicg.github.io/layout-instability/#sec-layout-shift and layout_shift.idl
+  type LayoutShift extends object
+    properties
+      # Score increment produced by this event.
+      number value
+      boolean hadRecentInput
+      Network.TimeSinceEpoch lastInputTime
+      array of LayoutShiftAttribution sources
+
+  type TimelineEvent extends object
+    properties
+      # Identifies the frame that this event is related to. Empty for non-frame targets.
+      Page.FrameId frameId
+      # The event type, as specified in https://w3c.github.io/performance-timeline/#dom-performanceentry-entrytype
+      # This determines which of the optional "details" fiedls is present.
+      string type
+      # Name may be empty depending on the type.
+      string name
+      # Time in seconds since Epoch, monotonically increasing within document lifetime.
+      Network.TimeSinceEpoch time
+      # Event duration, if applicable.
+      optional number duration
+      optional LargestContentfulPaint lcpDetails
+      optional LayoutShift layoutShiftDetails
+
+  # Previously buffered events would be reported before method returns.
+  # See also: timelineEventAdded
+  command enable
+    parameters
+      # The types of event to report, as specified in
+      # https://w3c.github.io/performance-timeline/#dom-performanceentry-entrytype
+      # The specified filter overrides any previous filters, passing empty
+      # filter disables recording.
+      # Note that not all types exposed to the web platform are currently supported.
+      array of string eventTypes
+
+  # Sent when a performance timeline event is added. See reportPerformanceTimeline method.
+  event timelineEventAdded
+    parameters
+      TimelineEvent event
+
 # Security
 domain Security
 
@@ -8030,6 +8158,10 @@ experimental domain Tracing
       # transfer mode (defaults to `none`)
       optional StreamCompression streamCompression
       optional TraceConfig traceConfig
+      # Base64-encoded serialized perfetto.protos.TraceConfig protobuf message
+      # When specified, the parameters `categories`, `options`, `traceConfig`
+      # are ignored.
+      optional binary perfettoConfig
 
   event bufferUsage
     parameters

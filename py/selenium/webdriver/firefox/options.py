@@ -161,6 +161,9 @@ class Options(ArgOptions):
         else:
             raise ValueError("Strategy can only be one of the following: normal, eager, none")
 
+    def enable_mobile(self, android_package: str = "org.mozilla.firefox", android_activity=None, device_serial=None):
+        super().enable_mobile(android_package, android_activity, device_serial)
+
     def to_capabilities(self) -> dict:
         """Marshals the Firefox options to a `moz:firefoxOptions`
         object.
@@ -182,6 +185,8 @@ class Options(ArgOptions):
             opts["profile"] = self._profile.encoded
         if self._arguments:
             opts["args"] = self._arguments
+        if self.mobile_options:
+            opts.update(self.mobile_options)
 
         opts.update(self.log.to_capabilities())
 

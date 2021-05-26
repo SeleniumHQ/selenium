@@ -42,6 +42,7 @@ import org.openqa.selenium.testing.UnitTests;
 
 import java.io.IOException;
 import java.io.StringReader;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -268,6 +269,43 @@ public class NewSessionPayloadTest {
       Map<String, Object> seen = new Json().toType(toParse.toString(), MAP_TYPE);
 
       assertThat(seen).containsEntry("se:meta", "cheese is good");
+    }
+  }
+
+  @Test
+  public void shouldExposeMetaData() {
+    Map<String, Object> raw = ImmutableMap.of(
+      "capabilities", singletonMap("alwaysMatch", singletonMap("browserName", "cheese")),
+      "se:meta", "cheese is good");
+
+    try (NewSessionPayload payload = NewSessionPayload.create(raw)) {
+      Map<String, Object> seen = payload.getMetadata();
+      assertThat(seen).isEqualTo(Map.of("se:meta", "cheese is good"));
+    }
+  }
+
+  @Test
+  public void nullValuesInMetaDataAreIgnored() {
+    Map<String, Object> raw = new HashMap<>();
+    raw.put("capabilities", singletonMap("alwaysMatch", singletonMap("browserName", "cheese")));
+    raw.put("se:bad", null);
+    raw.put("se:good", "cheese");
+
+    try (NewSessionPayload payload = NewSessionPayload.create(raw)) {
+      Map<String, Object> seen = payload.getMetadata();
+      assertThat(seen).isEqualTo(Map.of("se:good", "cheese"));
+    }
+  }
+
+  @Test
+  public void keysUsedForStoringCapabilitiesAreIgnoredFromMetadata() {
+    Map<String, Object> raw = ImmutableMap.of(
+      "capabilities", singletonMap("alwaysMatch", singletonMap("browserName", "cheese")),
+      "desiredCapabilities", emptyMap());
+
+    try (NewSessionPayload payload = NewSessionPayload.create(raw)) {
+      Map<String, Object> seen = payload.getMetadata();
+      assertThat(seen).isEqualTo(emptyMap());
     }
   }
 

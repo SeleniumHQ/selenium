@@ -18,6 +18,7 @@
 package org.openqa.selenium.chromium;
 
 import com.google.common.collect.ImmutableMap;
+
 import org.openqa.selenium.BuildInfo;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.Credentials;
@@ -93,7 +94,7 @@ public class ChromiumDriver extends RemoteWebDriver implements
 
     HttpClient.Factory factory = HttpClient.Factory.createDefault();
     Capabilities originalCapabilities = super.getCapabilities();
-    Optional<URI> cdpUri = ChromiumDevToolsLocator.getReportedUri(capabilityKey, originalCapabilities)
+    Optional<URI> cdpUri = CdpEndpointFinder.getReportedUri(capabilityKey, originalCapabilities)
       .flatMap(uri -> CdpEndpointFinder.getCdpEndPoint(factory, uri));
 
     connection = cdpUri.map(uri -> new Connection(

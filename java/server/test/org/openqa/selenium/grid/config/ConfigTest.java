@@ -28,6 +28,8 @@ import com.beust.jcommander.JCommander;
 import com.beust.jcommander.Parameter;
 
 import org.junit.Test;
+import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.ImmutableCapabilities;
 
 import java.util.List;
 import java.util.Optional;
@@ -104,6 +106,20 @@ public class ConfigTest {
     String name = config.getClass("foo", "bar", String.class, ReadsConfig.class.getName());
 
     assertThat(name).isEqualTo("cheddar");
+  }
+
+  @Test
+  public void shouldBeAbleToGetAClassWithDefaultConstructor() {
+    Config config = new MapConfig(
+      ImmutableMap.of("foo", ImmutableMap.of("caps", ImmutableCapabilities.class.getName())));
+
+    Capabilities caps = config.getClass(
+      "foo",
+      "caps",
+      Capabilities.class,
+      ImmutableCapabilities.class.getName());
+
+    assertThat(caps).isInstanceOf(ImmutableCapabilities.class);
   }
 
   public static class ReadsConfig {

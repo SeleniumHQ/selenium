@@ -1,3 +1,43 @@
+v4.0.0-beta-4
+=============
+
+* Rework how the `Distributor` creates sessions to be more
+  spec-compliant.
+* Rework internal structure of the New Session Queue.
+* `DriverCommandExecutor` uses its own `ExecutorService` (#9430)
+* Add proxy support to NettyClient (#9434)
+* Handle bad gateway response from the server when starting a new
+  session (#9444)
+* Expose session request metadata from the new session payload
+* Implement getDomAttribute method in EventFiringWebDriver (#9394)
+
+v4.0.0-beta-3
+=============
+
+* Allow RelativeBy to start with any locator, not just tag name
+  (#9273)
+* Selenium-created sessions supporting CDP have a `se:cdp` capability,
+  pointing to the websocket address for CDP communication, and a
+  `se:cdpVersion` which indictaes the version of the CDP to use.
+* Correctly indicate the Firefox supports CDP v85
+* Add support for CDP v90 and v91 and remove support for CDP v86 and
+  v87.
+* Improving exception when server returns 504 (#9354)
+* The node server rewrites cdp endpoints and versions into standard
+  `se:cdp*` ones.
+* Allowing users to override recommended max sessions in Grid.
+* Better platform matching in Grid.
+* Use heartbeat to register the Node with the Distributor (#9321)
+* Add logging of http exchange contents in debug mode.
+* Fix getScreenshotAs: avoid unnecessary conversions (#9308)
+* Docker fixes around starting containers with the correct network
+  name.
+* Wait until Nodes are available before indicating that Grid is ready.
+* Purge timed out requests sitting the queue at regular intervals
+  (#9283)
+* Add null check before returning isDisplayed value (#9299)
+* Added "/wd/hub" route to RouterServer for better backwards compat.
+
 v4.0.0-beta-2
 =============
 

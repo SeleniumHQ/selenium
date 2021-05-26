@@ -51,7 +51,6 @@ import org.openqa.selenium.remote.service.DriverCommandExecutor;
 import org.openqa.selenium.remote.service.DriverService;
 
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.nio.file.Path;
 import java.util.Optional;
 import java.util.ServiceLoader;
@@ -207,24 +206,16 @@ public class FirefoxDriver extends RemoteWebDriver
     webStorage = new RemoteWebStorage(getExecuteMethod());
 
     Capabilities capabilities = super.getCapabilities();
-    Optional<URI> cdpUri = Optional.empty();
-    if (capabilities.getCapability("moz:debuggerAddress") instanceof String) {
-      try {
-        URI providedUri = new URI(String.format("http://%s", capabilities.getCapability("moz:debuggerAddress")));
-        HttpClient.Factory clientFactory = HttpClient.Factory.createDefault();
-
-        cdpUri = CdpEndpointFinder.getCdpEndPoint(clientFactory, providedUri);
-      } catch (RuntimeException | URISyntaxException e) {
-        // Swallow the exception.
-      }
-    }
+    HttpClient.Factory clientFactory = HttpClient.Factory.createDefault();
+    Optional<URI> cdpUri = CdpEndpointFinder.getReportedUri("moz:debuggerAddress", capabilities)
+      .flatMap(reported -> CdpEndpointFinder.getCdpEndPoint(clientFactory, reported));
 
     this.cdpUri = cdpUri;
     this.capabilities = cdpUri.map(uri ->
         new ImmutableCapabilities(
             new PersistentCapabilities(capabilities)
                 .setCapability("se:cdp", uri.toString())
-                .setCapability("se:cdpVersion", "86")))
+                .setCapability("se:cdpVersion", "85")))
         .orElse(new ImmutableCapabilities(capabilities));
   }
 
@@ -362,7 +353,7 @@ public class FirefoxDriver extends RemoteWebDriver
       HttpClient wsClient = clientFactory.createClient(wsConfig);
 
       Connection connection = new Connection(wsClient, wsUri.toString());
-      CdpInfo cdpInfo = new CdpVersionFinder().match("86.0").orElseGet(NoOpCdpInfo::new);
+      CdpInfo cdpInfo = new CdpVersionFinder().match("85.0").orElseGet(NoOpCdpInfo::new);
       devTools = new DevTools(cdpInfo::getDomains, connection);
     }
     return devTools;

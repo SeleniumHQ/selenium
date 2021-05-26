@@ -94,11 +94,13 @@ public class EndToEndTest {
                     "driver-factories = [\n" +
                     String.format("\"%s\",", TestSessionFactoryFactory.class.getName()) + "\n" +
                     String.format("\"%s\"", rawCaps.toString().replace("\"", "\\\"")) + "\n" +
-                    "]"));
+                    "]\n" +
+                    "[sessionqueue]\n" +
+                    "session-request-timeout = 5"));
 
     return ImmutableSet.of(
-//      () -> DeploymentTypes.DISTRIBUTED.start(CAPS, additionalConfig),
-//      () -> DeploymentTypes.HUB_AND_NODE.start(CAPS, additionalConfig),
+      () -> DeploymentTypes.DISTRIBUTED.start(CAPS, additionalConfig),
+      () -> DeploymentTypes.HUB_AND_NODE.start(CAPS, additionalConfig),
       () -> DeploymentTypes.STANDALONE.start(CAPS, additionalConfig));
   }
 

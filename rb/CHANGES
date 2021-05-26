@@ -1,3 +1,34 @@
+4.0.0.beta3 (2021-04-13)
+=========================
+
+Chrome:
+  * Fixed a regression with prefs hash keys being converted to camelCase.
+  * Fixed an issue when passing Profile object to Options would fail.
+
+DevTools:
+  * Released selenium-devtools 0.91.0 which:
+    - adds CDP versions 90 and 91
+    - removes CDP versions 86 and 87
+
+Remote:
+  * Added support for setting alwaysMatch/firstMatch capabilities per W3C
+    WebDriver specification. It's done using the following methods where
+    `caps` is either a Ruby hash with desired capabilities or an instance
+    of Remote::Capabilities:
+      * Selenium::WebDriver::Remote::Capabilities.always_match(caps)
+      * Selenium::WebDriver::Remote::Capabilities.first_match(caps)
+  * Added support for Driver#save_print_page.
+  * Fixed an issue with Driver#print_page.
+  * Added support for setting timeouts capabilities in Remote::Capabilities
+    per W3C WebDriver specification.
+  * Added support for Element#aria_role which returns WAI-ARIA role of the element.
+  * Added support for Element#accessible name which returns WAI-ARIA label of the element.
+  * Added support for using DevTools version provided by Grid instead of
+    calculating it manually
+
+Ruby:
+  * Remove JRuby-specific socket poller. Note that this requires JRuby 9.2.8.0+.
+
 4.0.0.beta2 (2021-03-16)
 =========================
 

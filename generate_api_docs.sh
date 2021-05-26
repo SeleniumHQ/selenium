@@ -20,7 +20,7 @@ rm -rf docs/api/java docs/api/py docs/api/rb
 
 mv build/javadoc docs/api/java
 mv build/docs/api/py docs/api/py
-mv build/docs/api/rb docs/api/rb
+mv bazel-bin/rb/docs.runfiles/selenium/docs/api/rb docs/api/rb
 
 git add -A docs/api
 

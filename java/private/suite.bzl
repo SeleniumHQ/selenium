@@ -1,5 +1,5 @@
 load(":library.bzl", "java_library", "java_test")
-load(":selenium_test.bzl", "BROWSERS", "DEFAULT_BROWSER", "selenium_test")
+load(":selenium_test.bzl", "BROWSERS", "selenium_test")
 load(":package.bzl", "package_name")
 
 _test_attrs = [

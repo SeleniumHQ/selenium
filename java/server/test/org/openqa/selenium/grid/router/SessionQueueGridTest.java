@@ -17,17 +17,40 @@
 
 package org.openqa.selenium.grid.router;
 
-import static java.net.HttpURLConnection.HTTP_INTERNAL_ERROR;
-import static java.net.HttpURLConnection.HTTP_OK;
-import static java.util.concurrent.TimeUnit.SECONDS;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
-import static org.openqa.selenium.remote.http.Contents.asJson;
-import static org.openqa.selenium.remote.http.HttpMethod.DELETE;
-import static org.openqa.selenium.remote.http.HttpMethod.POST;
-
 import com.google.common.collect.ImmutableMap;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.ImmutableCapabilities;
+import org.openqa.selenium.events.EventBus;
+import org.openqa.selenium.events.local.GuavaEventBus;
+import org.openqa.selenium.grid.config.MapConfig;
+import org.openqa.selenium.grid.data.DefaultSlotMatcher;
+import org.openqa.selenium.grid.data.Session;
+import org.openqa.selenium.grid.distributor.Distributor;
+import org.openqa.selenium.grid.distributor.local.LocalDistributor;
+import org.openqa.selenium.grid.distributor.selector.DefaultSlotSelector;
+import org.openqa.selenium.grid.node.local.LocalNode;
+import org.openqa.selenium.grid.security.AddSecretFilter;
+import org.openqa.selenium.grid.security.Secret;
+import org.openqa.selenium.grid.server.BaseServerOptions;
+import org.openqa.selenium.grid.server.Server;
+import org.openqa.selenium.grid.sessionmap.SessionMap;
+import org.openqa.selenium.grid.sessionmap.local.LocalSessionMap;
+import org.openqa.selenium.grid.sessionqueue.NewSessionQueue;
+import org.openqa.selenium.grid.sessionqueue.local.LocalNewSessionQueue;
+import org.openqa.selenium.grid.testing.TestSessionFactory;
+import org.openqa.selenium.grid.web.CombinedHandler;
+import org.openqa.selenium.grid.web.RoutableHttpClientFactory;
+import org.openqa.selenium.net.PortProber;
+import org.openqa.selenium.netty.server.NettyServer;
+import org.openqa.selenium.remote.http.HttpClient;
+import org.openqa.selenium.remote.http.HttpHandler;
+import org.openqa.selenium.remote.http.HttpRequest;
+import org.openqa.selenium.remote.http.HttpResponse;
+import org.openqa.selenium.remote.tracing.DefaultTestTracer;
+import org.openqa.selenium.remote.tracing.Tracer;
 
 import java.net.MalformedURLException;
 import java.net.URI;
@@ -44,39 +67,14 @@ import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeoutException;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.openqa.selenium.Capabilities;
-import org.openqa.selenium.ImmutableCapabilities;
-import org.openqa.selenium.events.EventBus;
-import org.openqa.selenium.events.local.GuavaEventBus;
-import org.openqa.selenium.grid.config.MapConfig;
-import org.openqa.selenium.grid.data.Session;
-import org.openqa.selenium.grid.distributor.Distributor;
-import org.openqa.selenium.grid.distributor.local.LocalDistributor;
-import org.openqa.selenium.grid.node.local.LocalNode;
-import org.openqa.selenium.grid.security.AddSecretFilter;
-import org.openqa.selenium.grid.security.Secret;
-import org.openqa.selenium.grid.server.BaseServerOptions;
-import org.openqa.selenium.grid.server.Server;
-import org.openqa.selenium.grid.sessionmap.SessionMap;
-import org.openqa.selenium.grid.sessionmap.local.LocalSessionMap;
-import org.openqa.selenium.grid.sessionqueue.NewSessionQueue;
-import org.openqa.selenium.grid.sessionqueue.NewSessionQueuer;
-import org.openqa.selenium.grid.sessionqueue.local.LocalNewSessionQueue;
-import org.openqa.selenium.grid.sessionqueue.local.LocalNewSessionQueuer;
-import org.openqa.selenium.grid.testing.TestSessionFactory;
-import org.openqa.selenium.grid.web.CombinedHandler;
-import org.openqa.selenium.grid.web.RoutableHttpClientFactory;
-import org.openqa.selenium.net.PortProber;
-import org.openqa.selenium.netty.server.NettyServer;
-import org.openqa.selenium.remote.http.HttpClient;
-import org.openqa.selenium.remote.http.HttpHandler;
-import org.openqa.selenium.remote.http.HttpRequest;
-import org.openqa.selenium.remote.http.HttpResponse;
-import org.openqa.selenium.remote.tracing.DefaultTestTracer;
-import org.openqa.selenium.remote.tracing.Tracer;
+import static java.net.HttpURLConnection.HTTP_INTERNAL_ERROR;
+import static java.net.HttpURLConnection.HTTP_OK;
+import static java.util.concurrent.TimeUnit.SECONDS;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.fail;
+import static org.openqa.selenium.remote.http.Contents.asJson;
+import static org.openqa.selenium.remote.http.HttpMethod.DELETE;
+import static org.openqa.selenium.remote.http.HttpMethod.POST;
 
 public class SessionQueueGridTest {
   private static final Capabilities CAPS = new ImmutableCapabilities("browserName", "cheese");
@@ -98,24 +96,22 @@ public class SessionQueueGridTest {
 
     SessionMap sessions = new LocalSessionMap(tracer, bus);
     handler.addHandler(sessions);
-    NewSessionQueue localNewSessionQueue = new LocalNewSessionQueue(
+    NewSessionQueue queue = new LocalNewSessionQueue(
       tracer,
       bus,
+      new DefaultSlotMatcher(),
       Duration.ofSeconds(5),
-      Duration.ofSeconds(10));
-    NewSessionQueuer queuer = new LocalNewSessionQueuer(
-      tracer,
-      bus,
-      localNewSessionQueue,
+      Duration.ofSeconds(10),
       registrationSecret);
-    handler.addHandler(queuer);
+    handler.addHandler(queue);
 
     Distributor distributor = new LocalDistributor(
       tracer,
       bus,
       clientFactory,
       sessions,
-      queuer,
+      queue,
+      new DefaultSlotSelector(),
       registrationSecret,
       Duration.ofMinutes(5));
     handler.addHandler(distributor);
@@ -136,7 +132,7 @@ public class SessionQueueGridTest {
     handler.addHandler(localNode);
     distributor.add(localNode);
 
-    Router router = new Router(tracer, clientFactory, sessions, queuer, distributor);
+    Router router = new Router(tracer, clientFactory, sessions, queue, distributor);
 
     server = createServer(router);
     server.start();
@@ -197,11 +193,11 @@ public class SessionQueueGridTest {
         fixedThreadPoolService.submit(sessionCreationTask).get(20, SECONDS);
       assertThat(secondSessionResponse.getStatus()).isEqualTo(HTTP_OK);
 
-      Future<HttpResponse> thirdSessionrFuture = fixedThreadPoolService.submit(sessionCreationTask);
+      Future<HttpResponse> thirdSessionFuture = fixedThreadPoolService.submit(sessionCreationTask);
 
       Callable<HttpResponse> clearTask = () -> {
         HttpRequest request =
-          new HttpRequest(DELETE, "/se/grid/newsessionqueuer/queue");
+          new HttpRequest(DELETE, "/se/grid/newsessionqueue/queue");
         HttpClient client = clientFactory.createClient(server.getUrl());
         return client.with(new AddSecretFilter(registrationSecret)).execute(request);
       };
@@ -211,7 +207,7 @@ public class SessionQueueGridTest {
       // Clearing the new session request will cancel the third session request in the queue.
       clearQueueResponse.get(10, SECONDS);
 
-      HttpResponse thirdSessionResponse = thirdSessionrFuture.get();
+      HttpResponse thirdSessionResponse = thirdSessionFuture.get();
       assertThat(thirdSessionResponse.getStatus()).isEqualTo(HTTP_INTERNAL_ERROR);
     } catch (InterruptedException e) {
       fail("Unable to create session. Thread Interrupted");

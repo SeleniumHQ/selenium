@@ -27,7 +27,8 @@ module Selenium
       #
 
       class Driver < WebDriver::Driver
-        EXTENSIONS = [DriverExtensions::HasNetworkConditions,
+        EXTENSIONS = [DriverExtensions::HasCDP,
+                      DriverExtensions::HasNetworkConditions,
                       DriverExtensions::HasNetworkInterception,
                       DriverExtensions::HasWebStorage,
                       DriverExtensions::HasLocation,
@@ -42,11 +43,18 @@ module Selenium
           :chrome
         end
 
-        def execute_cdp(cmd, **params)
-          @bridge.send_command(cmd: cmd, params: params)
+        private
+
+        def devtools_url
+          uri = URI(devtools_address)
+          response = Net::HTTP.get(uri.hostname, '/json/version', uri.port)
+
+          JSON.parse(response)['webSocketDebuggerUrl']
         end
 
-        private
+        def devtools_version
+          Integer(capabilities.browser_version.split('.').first)
+        end
 
         def devtools_address
           "http://#{capabilities['goog:chromeOptions']['debuggerAddress']}"

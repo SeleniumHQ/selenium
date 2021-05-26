@@ -17,10 +17,6 @@
 
 package org.openqa.selenium.chromium;
 
-import static java.util.Collections.unmodifiableList;
-import static java.util.Collections.unmodifiableMap;
-import static java.util.stream.Collectors.toList;
-
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.internal.Require;
@@ -32,12 +28,17 @@ import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Base64;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
+import java.util.Set;
 import java.util.TreeMap;
 import java.util.stream.Stream;
+
+import static java.util.Collections.unmodifiableList;
+import static java.util.Collections.unmodifiableMap;
+import static java.util.stream.Collectors.toList;
 
 /**
  * Class to manage options specific to {@link ChromiumDriver}.
@@ -67,10 +68,10 @@ public class ChromiumOptions<T extends ChromiumOptions<?>> extends AbstractDrive
   private final List<String> extensions = new ArrayList<>();
   private final Map<String, Object> experimentalOptions = new HashMap<>();
 
-  private final String CAPABILITY;
+  private final String capabilityName;
 
   public ChromiumOptions(String capabilityType, String browserType, String capability) {
-    this.CAPABILITY = capability;
+    this.capabilityName = capability;
     setCapability(capabilityType, browserType);
   }
 
@@ -193,18 +194,16 @@ public class ChromiumOptions<T extends ChromiumOptions<?>> extends AbstractDrive
   }
 
   @Override
-  protected int amendHashCode() {
-    return Objects.hash(
-        args,
-        binary,
-        experimentalOptions,
-        extensionFiles,
-        extensions);
+  protected Set<String> getExtraCapabilityNames() {
+    return Collections.singleton(capabilityName);
   }
 
   @Override
-  public Map<String, Object> asMap() {
-    Map<String, Object> toReturn = new TreeMap<>(super.asMap());
+  protected Object getExtraCapability(String capabilityName) {
+    Require.nonNull("Capability name", capabilityName);
+    if (!this.capabilityName.equals(capabilityName)) {
+      return null;
+    }
 
     Map<String, Object> options = new TreeMap<>();
     experimentalOptions.forEach(options::put);
@@ -216,22 +215,20 @@ public class ChromiumOptions<T extends ChromiumOptions<?>> extends AbstractDrive
     options.put("args", unmodifiableList(new ArrayList<>(args)));
 
     options.put(
-        "extensions",
-        unmodifiableList(Stream.concat(
-            extensionFiles.stream()
-                .map(file -> {
-                  try {
-                    return Base64.getEncoder().encodeToString(Files.readAllBytes(file.toPath()));
-                  } catch (IOException e) {
-                    throw new SessionNotCreatedException(e.getMessage(), e);
-                  }
-                }),
-            extensions.stream()
-        ).collect(toList())));
+      "extensions",
+      unmodifiableList(Stream.concat(
+        extensionFiles.stream()
+          .map(file -> {
+            try {
+              return Base64.getEncoder().encodeToString(Files.readAllBytes(file.toPath()));
+            } catch (IOException e) {
+              throw new SessionNotCreatedException(e.getMessage(), e);
+            }
+          }),
+        extensions.stream()
+      ).collect(toList())));
 
-    toReturn.put(CAPABILITY, unmodifiableMap(options));
-
-    return unmodifiableMap(toReturn);
+    return unmodifiableMap(options);
   }
 
   protected void mergeInPlace(Capabilities capabilities) {

@@ -36,9 +36,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 import java.util.TreeMap;
+import java.util.TreeSet;
 
-import static java.util.Collections.unmodifiableMap;
 import static java.util.stream.Collectors.toMap;
 import static org.openqa.selenium.firefox.FirefoxDriver.Capability.BINARY;
 import static org.openqa.selenium.firefox.FirefoxDriver.Capability.MARIONETTE;
@@ -342,13 +343,31 @@ public class FirefoxOptions extends AbstractDriverOptions<FirefoxOptions> {
   }
 
   @Override
-  public Map<String, Object> asMap() {
-    Map<String, Object> toReturn = new TreeMap<>(super.asMap());
-    toReturn.put(FIREFOX_OPTIONS, firefoxOptions);
+  protected Set<String> getExtraCapabilityNames() {
+    Set<String> names = new TreeSet<>();
+
+    names.add(FIREFOX_OPTIONS);
     if (legacy) {
-      toReturn.put(MARIONETTE, false);
+      names.add(MARIONETTE);
     }
-    return unmodifiableMap(toReturn);
+
+    return Collections.unmodifiableSet(names);
+  }
+
+  @Override
+  protected Object getExtraCapability(String capabilityName) {
+    Require.nonNull("Capability name", capabilityName);
+
+    switch (capabilityName) {
+      case FIREFOX_OPTIONS:
+        return Collections.unmodifiableMap(firefoxOptions);
+
+      case MARIONETTE:
+        return !legacy;
+
+      default:
+        return null;
+    }
   }
 
   @Override
@@ -362,13 +381,6 @@ public class FirefoxOptions extends AbstractDriverOptions<FirefoxOptions> {
       newInstance.mirror((FirefoxOptions) capabilities);
     }
     return newInstance;
-  }
-
-  @Override
-  protected int amendHashCode() {
-    return Objects.hash(
-      firefoxOptions,
-      legacy);
   }
 
   private enum Keys {

@@ -1,4 +1,4 @@
-load("//java:defs.bzl", "java_library", "artifact")
+load("//java:defs.bzl", "artifact", "java_library")
 
 java_library(
     name = "testing",

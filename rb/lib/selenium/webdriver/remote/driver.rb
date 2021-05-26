@@ -44,16 +44,14 @@ module Selenium
           super
         end
 
-        def print_page(**options)
-          options[:page_ranges] &&= Array(options[:page_ranges])
-
-          @bridge.print_page(options)
-        end
-
         private
 
-        def devtools_address
+        def devtools_url
           capabilities['se:cdp']
+        end
+
+        def devtools_version
+          capabilities['se:cdpVersion'].split('.').first
         end
       end # Driver
     end # Remote

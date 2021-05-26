@@ -230,7 +230,7 @@ module Selenium
         end
 
         def camelize?(key)
-          !['prefs'].include?(key)
+          !%w[localState prefs].include?(key)
         end
       end # Options
     end # Chrome

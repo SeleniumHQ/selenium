@@ -17,6 +17,7 @@
 
 package org.openqa.selenium.devtools;
 
+import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.remote.http.ClientConfig;
@@ -64,6 +65,34 @@ public class CdpEndpointFinder {
       return Optional.of(new URI(debuggerUrl));
     } catch (URISyntaxException e) {
       LOG.warning("Invalid URI for endpoint " + raw);
+      return Optional.empty();
+    }
+  }
+
+  public static Optional<URI> getReportedUri(String capabilityKey, Capabilities caps) {
+    Object raw = caps.getCapability(capabilityKey);
+
+    if ((raw instanceof Map)) {
+      raw = ((Map<?, ?>) raw).get("debuggerAddress");
+    }
+
+    if (!(raw instanceof String)) {
+      LOG.fine("No debugger address");
+      return Optional.empty();
+    }
+
+    int index = ((String) raw).lastIndexOf(':');
+    if (index == -1 || index == ((String) raw).length() - 1) {
+      LOG.fine("No index in " + raw);
+      return Optional.empty();
+    }
+
+    try {
+      URI uri = new URI(String.format("http://%s", raw));
+      LOG.fine("URI found: " + uri);
+      return Optional.of(uri);
+    } catch (URISyntaxException e) {
+      LOG.warning("Unable to create URI from: " + raw);
       return Optional.empty();
     }
   }
