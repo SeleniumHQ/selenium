@@ -18,15 +18,8 @@
 package org.openqa.selenium.grid.distributor.config;
 
 
-import static org.openqa.selenium.grid.config.StandardGridRoles.DISTRIBUTOR_ROLE;
-import static org.openqa.selenium.grid.distributor.config.DistributorOptions.DEFAULT_DISTRIBUTOR_IMPLEMENTATION;
-import static org.openqa.selenium.grid.distributor.config.DistributorOptions.DEFAULT_HEALTHCHECK_INTERVAL;
-import static org.openqa.selenium.grid.distributor.config.DistributorOptions.DISTRIBUTOR_SECTION;
-
-import com.google.auto.service.AutoService;
-
 import com.beust.jcommander.Parameter;
-
+import com.google.auto.service.AutoService;
 import org.openqa.selenium.grid.config.ConfigValue;
 import org.openqa.selenium.grid.config.HasRoles;
 import org.openqa.selenium.grid.config.Role;
@@ -34,6 +27,13 @@ import org.openqa.selenium.grid.config.Role;
 import java.net.URI;
 import java.util.Collections;
 import java.util.Set;
+
+import static org.openqa.selenium.grid.config.StandardGridRoles.DISTRIBUTOR_ROLE;
+import static org.openqa.selenium.grid.distributor.config.DistributorOptions.DEFAULT_DISTRIBUTOR_IMPLEMENTATION;
+import static org.openqa.selenium.grid.distributor.config.DistributorOptions.DEFAULT_HEALTHCHECK_INTERVAL;
+import static org.openqa.selenium.grid.distributor.config.DistributorOptions.DEFAULT_SLOT_MATCHER;
+import static org.openqa.selenium.grid.distributor.config.DistributorOptions.DEFAULT_SLOT_SELECTOR_IMPLEMENTATION;
+import static org.openqa.selenium.grid.distributor.config.DistributorOptions.DISTRIBUTOR_SECTION;
 
 @SuppressWarnings("FieldMayBeFinal")
 @AutoService(HasRoles.class)
@@ -63,6 +63,18 @@ public class DistributorFlags implements HasRoles {
     name = "implementation",
     example = DEFAULT_DISTRIBUTOR_IMPLEMENTATION)
   private String implementation = DEFAULT_DISTRIBUTOR_IMPLEMENTATION;
+
+  @Parameter(
+    names = {"--slot-matcher"},
+    description = "Full classname of non-default slot matcher to use. This is used to determine whether a Node can support a particular session.")
+  @ConfigValue(section = DISTRIBUTOR_SECTION, name = "slot-matcher", example = DEFAULT_SLOT_MATCHER)
+  private String slotMatcher = DEFAULT_SLOT_MATCHER;
+
+  @Parameter(
+    names = {"--slot-selector"},
+    description = "Full classname of non-default slot selector. This is used to select a slot in a Node once the Node has been matched.")
+  @ConfigValue(section = DISTRIBUTOR_SECTION, name = "slot-selector", example = DEFAULT_SLOT_SELECTOR_IMPLEMENTATION)
+  private String slotSelector = DEFAULT_SLOT_SELECTOR_IMPLEMENTATION;
 
   @Parameter(
     names = {"--healthcheck-interval"},

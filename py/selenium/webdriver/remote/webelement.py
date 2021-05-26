@@ -529,7 +529,7 @@ class WebElement(BaseWebElement):
         if self.parent._is_remote:
             local_files = list(map(lambda keys_to_send:
                                    self.parent.file_detector.is_local_file(str(keys_to_send)),
-                                   ''.join(str(value)).split('\n')))
+                                   ''.join(map(str, value)).split('\n')))
             if None not in local_files:
                 remote_files = []
                 for file in local_files:

@@ -26,14 +26,11 @@ import org.openqa.selenium.OutputType;
 import org.openqa.selenium.Point;
 import org.openqa.selenium.Rectangle;
 import org.openqa.selenium.SearchContext;
-import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.WrapsDriver;
 import org.openqa.selenium.WrapsElement;
 import org.openqa.selenium.interactions.Coordinates;
-import org.openqa.selenium.interactions.Locatable;
 import org.openqa.selenium.io.Zip;
 
 import java.io.File;
@@ -43,7 +40,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-public class RemoteWebElement implements WebElement, WrapsDriver, TakesScreenshot, Locatable {
+public class RemoteWebElement implements IsRemoteWebElement {
 
   private String foundBy;
   protected String id;
@@ -58,6 +55,7 @@ public class RemoteWebElement implements WebElement, WrapsDriver, TakesScreensho
     this.parent = parent;
   }
 
+  @Override
   public String getId() {
     return id;
   }

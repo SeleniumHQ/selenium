@@ -114,7 +114,7 @@ module Selenium
 
         self.class::CAPABILITIES.each do |capability_alias, capability_name|
           capability_value = options.delete(capability_alias)
-          options[capability_name] = capability_value unless capability_value.nil?
+          options[capability_name] = capability_value if !capability_value.nil? && !options.key?(capability_name)
         end
         browser_options = defined?(self.class::KEY) ? {self.class::KEY => options} : options
 

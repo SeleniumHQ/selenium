@@ -1,5 +1,5 @@
 load("//java:version.bzl", "SE_VERSION")
-load("//java:defs.bzl", "java_dist_zip", "java_export", "java_import", "java_library", "javadoc")
+load("//java:defs.bzl", "java_dist_zip", "java_export", "java_import", "javadoc")
 load("//java/client/src/org/openqa/selenium/devtools:versions.bzl", "CDP_DEPS")
 
 filegroup(
@@ -41,6 +41,9 @@ java_export(
     name = "client-combined",
     maven_coordinates = "org.seleniumhq.selenium:selenium-java:" + SE_VERSION,
     pom_template = ":template-pom",
+    visibility = [
+        "//visibility:public",
+    ],
     exports = [
         ":core",
         "//java/client/src/org/openqa/selenium/chrome",
@@ -53,9 +56,6 @@ java_export(
         "//java/client/src/org/openqa/selenium/safari",
         "//java/client/src/org/openqa/selenium/support",
     ] + CDP_DEPS,
-    visibility = [
-        "//visibility:public",
-    ],
 )
 
 java_dist_zip(

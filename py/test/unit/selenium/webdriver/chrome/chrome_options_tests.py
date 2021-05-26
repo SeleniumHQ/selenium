@@ -155,3 +155,9 @@ def test_starts_with_default_capabilities(options):
 def test_is_a_baseoptions(options):
     from selenium.webdriver.common.options import BaseOptions
     assert isinstance(options, BaseOptions)
+
+
+def test_enables_chrome_mobile(options):
+    options.enable_mobile()
+    result_caps = options.to_capabilities()
+    assert result_caps["goog:chromeOptions"]["androidPackage"] == "com.android.chrome"

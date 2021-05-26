@@ -10,6 +10,9 @@ java_selenium_test_suite(
         "firefox",
         "edge",
     ],
+    tags = [
+        "selenium-remote",
+    ],
     deps = [
         ":test-lib",
         "//java/client/src/org/openqa/selenium/devtools",

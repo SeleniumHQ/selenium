@@ -192,3 +192,9 @@ def test_creates_capabilities_with_page_load_strategy(options):
     options.page_load_strategy = 'eager'
     caps = options.to_capabilities()
     assert caps['pageLoadStrategy'] == 'eager'
+
+
+def test_enables_firefox_mobile(options):
+    options.enable_mobile()
+    result_caps = options.to_capabilities()
+    assert result_caps["moz:firefoxOptions"]["androidPackage"] == "org.mozilla.firefox"

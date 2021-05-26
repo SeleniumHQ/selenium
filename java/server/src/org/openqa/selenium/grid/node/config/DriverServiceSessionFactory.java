@@ -94,14 +94,14 @@ public class DriverServiceSessionFactory implements SessionFactory {
       return Either.left(new SessionNotCreatedException("No downstream dialects were found."));
     }
 
-    if (!test(sessionRequest.getCapabilities())) {
+    if (!test(sessionRequest.getDesiredCapabilities())) {
       return Either.left(new SessionNotCreatedException("New session request capabilities do not "
                                                         + "match the stereotype."));
     }
 
     try (Span span = tracer.getCurrentContext().createSpan("driver_service_factory.apply")) {
 
-      Capabilities capabilities = browserOptionsMutator.apply(sessionRequest.getCapabilities());
+      Capabilities capabilities = browserOptionsMutator.apply(sessionRequest.getDesiredCapabilities());
 
       Optional<Platform> platformName = Optional.ofNullable(capabilities.getPlatformName());
       if (platformName.isPresent()) {
@@ -207,7 +207,7 @@ public class DriverServiceSessionFactory implements SessionFactory {
 
     Function<Capabilities, Optional<DevToolsInfo>> firefox = c ->
       CdpEndpointFinder.getReportedUri("moz:debuggerAddress", c)
-        .map(uri -> new DevToolsInfo(uri, "86"));
+        .map(uri -> new DevToolsInfo(uri, "85"));
 
     Optional<DevToolsInfo> maybeInfo = Stream.of(chrome, edge, firefox)
       .map(finder -> finder.apply(caps))

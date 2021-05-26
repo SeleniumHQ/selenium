@@ -39,7 +39,7 @@ module Selenium
           # at least it doesn't crash
         end
 
-        it 'can execute CDP commands', only: {driver: :chrome} do
+        it 'can execute CDP commands' do
           res = driver.execute_cdp('Page.addScriptToEvaluateOnNewDocument', source: 'window.was_here="TW";')
           expect(res).to have_key('identifier')
 
@@ -53,7 +53,7 @@ module Selenium
           end
         end
 
-        describe '#print_options' do
+        describe 'PrintsPage' do
           let(:magic_number) { 'JVBER' }
           let(:options) { Chrome::Options.new(args: ['--headless']) }
 
@@ -64,19 +64,27 @@ module Selenium
             end
           end
 
-          it 'should print with orientation' do
-            create_driver!(capabilities: options) do |driver|
-              driver.navigate.to url_for('printPage.html')
-              expect(driver.print_page(orientation: 'landscape')).to include(magic_number)
-            end
-          end
-
           it 'should print with valid params' do
             create_driver!(capabilities: options) do |driver|
               driver.navigate.to url_for('printPage.html')
               expect(driver.print_page(orientation: 'landscape',
                                        page_ranges: ['1-2'],
                                        page: {width: 30})).to include(magic_number)
+            end
+          end
+
+          it 'should save pdf' do
+            create_driver!(capabilities: options) do |driver|
+              driver.navigate.to url_for('printPage.html')
+
+              path = "#{Dir.tmpdir}/test#{SecureRandom.urlsafe_base64}.pdf"
+
+              driver.save_print_page path
+
+              expect(File.exist?(path)).to be true
+              expect(File.size(path)).to be_positive
+            ensure
+              File.delete(path) if File.exist?(path)
             end
           end
         end

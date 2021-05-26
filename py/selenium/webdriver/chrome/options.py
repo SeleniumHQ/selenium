@@ -24,3 +24,6 @@ class Options(ChromiumOptions):
     @property
     def default_capabilities(self) -> dict:
         return DesiredCapabilities.CHROME.copy()
+
+    def enable_mobile(self, android_package="com.android.chrome", android_activity=None, device_serial=None):
+        super().enable_mobile(android_package, android_activity, device_serial)

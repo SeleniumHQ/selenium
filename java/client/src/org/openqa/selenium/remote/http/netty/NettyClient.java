@@ -94,7 +94,9 @@ public class NettyClient implements HttpClient {
         .setNettyTimer(TIMER)
         .setRequestTimeout(toClampedInt(config.readTimeout().toMillis()))
         .setConnectTimeout(toClampedInt(config.connectionTimeout().toMillis()))
-        .setReadTimeout(toClampedInt(config.readTimeout().toMillis()));
+        .setReadTimeout(toClampedInt(config.readTimeout().toMillis()))
+        .setUseProxyProperties(true)
+        .setUseProxySelector(true);
     return Dsl.asyncHttpClient(builder);
   }
 

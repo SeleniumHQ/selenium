@@ -10,7 +10,9 @@ java_library(
     deps = [
         "//java:auto-service",
         "//java/server/src/org/openqa/selenium/grid/config",
+        "//java/server/src/org/openqa/selenium/grid/data",
         "//java/server/src/org/openqa/selenium/grid/distributor",
+        "//java/server/src/org/openqa/selenium/grid/distributor/selector",
         artifact("com.beust:jcommander"),
     ],
 )

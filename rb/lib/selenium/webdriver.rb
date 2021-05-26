@@ -23,7 +23,6 @@ require 'fileutils'
 require 'date'
 require 'json'
 require 'set'
-require 'websocket'
 
 require 'selenium/webdriver/atoms'
 require 'selenium/webdriver/common'

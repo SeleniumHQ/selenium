@@ -161,6 +161,26 @@ module Selenium
       end
 
       #
+      # Gets the computed WAI-ARIA role of element
+      #
+      # @return [String]
+      #
+
+      def aria_role
+        bridge.element_aria_role self
+      end
+
+      #
+      # Gets the computed WAI-ARIA label of element.
+      #
+      # @return [String]
+      #
+
+      def accessible_name
+        bridge.element_aria_label self
+      end
+
+      #
       # Get the text content of this element
       #
       # @return [String]

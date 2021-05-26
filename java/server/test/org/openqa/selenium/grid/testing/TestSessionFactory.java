@@ -60,7 +60,7 @@ public class TestSessionFactory implements SessionFactory {
   @Override
   public Either<WebDriverException, ActiveSession> apply(CreateSessionRequest sessionRequest) {
     SessionId id = new SessionId(UUID.randomUUID());
-    Session session = sessionGenerator.apply(id, sessionRequest.getCapabilities());
+    Session session = sessionGenerator.apply(id, sessionRequest.getDesiredCapabilities());
 
     URL url;
     try {

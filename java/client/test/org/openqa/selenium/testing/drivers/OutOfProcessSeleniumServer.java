@@ -66,9 +66,17 @@ public class OutOfProcessSeleniumServer {
     String localAddress = new NetworkUtils().getPrivateLocalAddress();
     baseUrl = String.format("http://%s:%d", localAddress, port);
 
-    command = new CommandLine("java", Stream.concat(
+    // Make sure we inherit system properties.
+    Stream<String> javaFlags = System.getProperties().entrySet().stream()
+      .filter(entry -> {
+        String key = String.valueOf(entry.getKey());
+        return key.startsWith("selenium") || key.startsWith("webdriver");
+      })
+      .map(entry -> "-D" + entry.getKey() + "=" + entry.getValue());
+
+    command = new CommandLine("java", Stream.concat(javaFlags, Stream.concat(
       Stream.of("-jar", serverJar, mode, "--port", String.valueOf(port)),
-      Stream.of(extraFlags)).toArray(String[]::new));
+      Stream.of(extraFlags))).toArray(String[]::new));
     if (Platform.getCurrent().is(Platform.WINDOWS)) {
       File workingDir = findBinRoot(new File(".").getAbsoluteFile());
       command.setWorkingDirectory(workingDir.getAbsolutePath());

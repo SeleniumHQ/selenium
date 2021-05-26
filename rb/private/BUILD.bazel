@@ -1,0 +1,6 @@
+package(default_visibility = ["//rb/private:__pkg__"])
+
+exports_files(
+    ["gem_builder.tpl"],
+    visibility = ["//visibility:public"],
+)

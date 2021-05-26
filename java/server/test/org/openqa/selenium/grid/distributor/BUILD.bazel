@@ -2,9 +2,13 @@ load("@rules_jvm_external//:defs.bzl", "artifact")
 load("//java:defs.bzl", "java_test_suite")
 
 java_test_suite(
-    name = "MediumTests",
+    name = "medium-tests",
     size = "medium",
     srcs = glob(["*Test.java"]),
+    javacopts = [
+        "--release",
+        "11",
+    ],
     deps = [
         "//java/client/src/org/openqa/selenium:core",
         "//java/client/src/org/openqa/selenium/json",
@@ -18,6 +22,7 @@ java_test_suite(
         "//java/server/src/org/openqa/selenium/grid/distributor",
         "//java/server/src/org/openqa/selenium/grid/distributor/local",
         "//java/server/src/org/openqa/selenium/grid/distributor/remote",
+        "//java/server/src/org/openqa/selenium/grid/distributor/selector",
         "//java/server/src/org/openqa/selenium/grid/node",
         "//java/server/src/org/openqa/selenium/grid/node/local",
         "//java/server/src/org/openqa/selenium/grid/security",

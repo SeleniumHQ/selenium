@@ -18,6 +18,7 @@
 # under the License.
 
 require 'erb'
+require 'fileutils'
 require 'json'
 
 module Selenium
@@ -25,19 +26,24 @@ module Selenium
     module Support
       class CDPClientGenerator
         # Input JSON files are generated from PDL tasks.
-        BROWSER_PROTOCOL_PATH = File.expand_path('cdp/browser_protocol.json', __dir__)
-        JS_PROTOCOL_PATH = File.expand_path('cdp/js_protocol.json', __dir__)
         TEMPLATE_PATH = File.expand_path('cdp/domain.rb.erb', __dir__)
 
         RESERVED_KEYWORDS = %w[end].freeze
 
-        def call(output_dir:, version:, **)
+        def call(output_dir:, version:, browser_protocol_path: nil, js_protocol_path: nil, loader_path: nil, **)
           @template = ERB.new(File.read(TEMPLATE_PATH))
           @output_dir = output_dir
+          @loader_path = loader_path || "#{@output_dir}.rb"
           @version = version
 
-          browser_protocol = JSON.parse(File.read(BROWSER_PROTOCOL_PATH), symbolize_names: true)
-          js_protocol = JSON.parse(File.read(JS_PROTOCOL_PATH), symbolize_names: true)
+          browser_protocol_path ||= File.expand_path('cdp/browser_protocol.json', __dir__)
+          js_protocol_path ||= File.expand_path('cdp/js_protocol.json', __dir__)
+
+          browser_protocol = JSON.parse(File.read(browser_protocol_path), symbolize_names: true)
+          js_protocol = JSON.parse(File.read(js_protocol_path), symbolize_names: true)
+
+          FileUtils.mkdir_p(@output_dir)
+
           browser_protocol[:domains].each(&method(:process_domain))
           js_protocol[:domains].each(&method(:process_domain))
           require_file
@@ -45,7 +51,7 @@ module Selenium
 
         def process_domain(domain)
           result = @template.result_with_hash(domain: domain, version: @version.upcase, h: self)
-          filename = File.join("#{@output_dir}/#{@version}", "#{snake_case(domain[:domain])}.rb")
+          filename = File.join(@output_dir, "#{snake_case(domain[:domain])}.rb")
           File.write(filename, remove_empty_lines(result))
         end
 
@@ -82,9 +88,21 @@ module Selenium
           # rubocop:enable Lint/InterpolationCheck
 
           require_all = "Dir.glob(\"#{dynamic_location}/#{@version}/*\", &method(:require))"
-          File.open("#{@output_dir}/#{@version}.rb", 'w') { |file| file.write(require_all) }
+          File.open(@loader_path, 'w') { |file| file.write(require_all) }
         end
       end
     end
   end
+end
+
+if $PROGRAM_NAME == __FILE__
+  browser_protocol_path, js_protocol_path, output_dir, loader_path, version = *ARGV
+
+  Selenium::WebDriver::Support::CDPClientGenerator.new.call(
+    browser_protocol_path: browser_protocol_path,
+    js_protocol_path: js_protocol_path,
+    output_dir: output_dir,
+    loader_path: loader_path,
+    version: version
+  )
 end
