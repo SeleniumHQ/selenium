@@ -1,4 +1,4 @@
-# Selenium 
+# Selenium
 
 [![Python workflow](https://github.com/SeleniumHQ/selenium/workflows/Python%20workflow/badge.svg)](https://github.com/SeleniumHQ/selenium/actions?query=workflow%3A%22Python+workflow%22)
 [![Ruby workflow](https://github.com/SeleniumHQ/selenium/workflows/Ruby%20workflow/badge.svg)](https://github.com/SeleniumHQ/selenium/actions?query=workflow%3A%22Ruby+workflow%22)
@@ -49,7 +49,6 @@ before submitting your pull requests.
   installed. If you're met with a list of command-line options, you're referencing the JDK properly.
 * [Python 3.7+](https://www.python.org/downloads/)
 * `python` on the PATH
-* [The Requests Library](http://python-requests.org) for Python: `pip install requests`
 * [The tox automation project](http://tox.readthedocs.org/) for Python: `pip install tox`
 * MacOS users should have the latest version of Xcode installed, including the command-line tools.
 The following command should work:
@@ -57,6 +56,10 @@ The following command should work:
 ```bash
 xcode-select --install
 ```
+
+* Users of Apple Silicon Macs should add `build
+  --host_platform=//:rosetta` to their `.bazelrc.local` file. We are working
+  to make sure this isn't required in the long run.
 
 * Windows users should have the latest version of Visual Studio command line tools and build tools installed
   * `BAZEL_VS` environment variable should point to the location of the build tools,

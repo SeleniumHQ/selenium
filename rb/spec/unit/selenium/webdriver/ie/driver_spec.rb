@@ -32,8 +32,8 @@ module Selenium
         end
 
         def expect_request(body: nil, endpoint: nil)
-          body = (body || {capabilities: {firstMatch: [browserName: "internet explorer",
-                                                       platformName: 'windows']}}).to_json
+          body = (body || {capabilities: {alwaysMatch: {browserName: "internet explorer",
+                                                        platformName: 'windows'}}}).to_json
           endpoint ||= "#{service_manager.uri}/session"
           stub_request(:post, endpoint).with(body: body).to_return(valid_response)
         end
@@ -50,18 +50,19 @@ module Selenium
 
         context 'with :desired capabilities' do
           it 'accepts value as a Symbol' do
-            expect_request(body: {capabilities: {firstMatch: [browserName: "internet explorer",
-                                                              platformName: 'windows']}})
+            expect_request(body: {capabilities: {alwaysMatch: {browserName: "internet explorer",
+                                                               platformName: 'windows'}}})
             expect {
+              expect { Driver.new(desired_capabilities: :ie) }.to have_deprecated(:desired_capabilities)
               expect { Driver.new(desired_capabilities: :ie) }.to have_deprecated(:desired_capabilities)
             }.not_to raise_exception
           end
 
           it 'accepts Capabilities.ie' do
             capabilities = Remote::Capabilities.ie(invalid: 'foobar')
-            expect_request(body: {capabilities: {firstMatch: [browserName: "internet explorer",
-                                                              platformName: 'windows',
-                                                              invalid: 'foobar']}})
+            expect_request(body: {capabilities: {alwaysMatch: {browserName: "internet explorer",
+                                                               platformName: 'windows',
+                                                               invalid: 'foobar'}}})
 
             expect {
               expect { Driver.new(desired_capabilities: capabilities) }.to have_deprecated(:desired_capabilities)
@@ -70,8 +71,8 @@ module Selenium
 
           it 'accepts constructed Capabilities with Snake Case as Symbols' do
             capabilities = Remote::Capabilities.new(browser_name: 'internet explorer', invalid: 'foobar')
-            expect_request(body: {capabilities: {firstMatch: [browserName: "internet explorer",
-                                                              invalid: 'foobar']}})
+            expect_request(body: {capabilities: {alwaysMatch: {browserName: "internet explorer",
+                                                               invalid: 'foobar'}}})
 
             expect {
               expect { Driver.new(desired_capabilities: capabilities) }.to have_deprecated(:desired_capabilities)
@@ -80,8 +81,8 @@ module Selenium
 
           it 'accepts constructed Capabilities with Camel Case as Symbols' do
             capabilities = Remote::Capabilities.new(browserName: 'internet explorer', invalid: 'foobar')
-            expect_request(body: {capabilities: {firstMatch: [browserName: "internet explorer",
-                                                              invalid: 'foobar']}})
+            expect_request(body: {capabilities: {alwaysMatch: {browserName: "internet explorer",
+                                                               invalid: 'foobar'}}})
 
             expect {
               expect { Driver.new(desired_capabilities: capabilities) }.to have_deprecated(:desired_capabilities)
@@ -90,8 +91,8 @@ module Selenium
 
           it 'accepts constructed Capabilities with Camel Case as Strings' do
             capabilities = Remote::Capabilities.new('browserName' => 'internet explorer', 'invalid' => 'foobar')
-            expect_request(body: {capabilities: {firstMatch: [browserName: "internet explorer",
-                                                              invalid: 'foobar']}})
+            expect_request(body: {capabilities: {alwaysMatch: {browserName: "internet explorer",
+                                                               invalid: 'foobar'}}})
 
             expect {
               expect { Driver.new(desired_capabilities: capabilities) }.to have_deprecated(:desired_capabilities)
@@ -100,8 +101,8 @@ module Selenium
 
           it 'accepts Hash with Camel Case keys as Symbols' do
             capabilities = {browserName: 'internet explorer', invalid: 'foobar'}
-            expect_request(body: {capabilities: {firstMatch: [browserName: "internet explorer",
-                                                              invalid: 'foobar']}})
+            expect_request(body: {capabilities: {alwaysMatch: {browserName: "internet explorer",
+                                                               invalid: 'foobar'}}})
 
             expect {
               expect { Driver.new(desired_capabilities: capabilities) }.to have_deprecated(:desired_capabilities)
@@ -110,8 +111,8 @@ module Selenium
 
           it 'accepts Hash with Camel Case keys as Strings' do
             capabilities = {"browserName" => 'internet explorer', "invalid" => 'foobar'}
-            expect_request(body: {capabilities: {firstMatch: [browserName: "internet explorer",
-                                                              invalid: 'foobar']}})
+            expect_request(body: {capabilities: {alwaysMatch: {browserName: "internet explorer",
+                                                               invalid: 'foobar'}}})
 
             expect {
               expect { Driver.new(desired_capabilities: capabilities) }.to have_deprecated(:desired_capabilities)
@@ -121,11 +122,10 @@ module Selenium
 
         it 'accepts provided Options as sole parameter' do
           opts = {invalid: 'foobar', args: ['-f']}
-
-          expect_request(body: {capabilities: {firstMatch: ["browserName": "internet explorer",
-                                                            "se:ieOptions": {"invalid": "foobar",
-                                                                             "nativeEvents": true,
-                                                                             "ie.browserCommandLineSwitches": "-f"}]}})
+          expect_request(body: {capabilities: {alwaysMatch: {"browserName": "internet explorer",
+                                                             "se:ieOptions": {"invalid": "foobar",
+                                                                              "nativeEvents": true,
+                                                                              "ie.browserCommandLineSwitches": "-f"}}}})
 
           expect {
             expect { Driver.new(options: Options.new(**opts)) }.to have_deprecated(:browser_options)
@@ -135,11 +135,11 @@ module Selenium
         it 'accepts combination of Options and Capabilities' do
           caps = Remote::Capabilities.ie(invalid: 'foobar')
           browser_opts = {args: ['-f']}
-          expect_request(body: {capabilities: {firstMatch: ["browserName": "internet explorer",
-                                                            "platformName": "windows",
-                                                            "invalid": "foobar",
-                                                            "se:ieOptions": {"nativeEvents": true,
-                                                                             "ie.browserCommandLineSwitches": "-f"}]}})
+          expect_request(body: {capabilities: {alwaysMatch: {"browserName": "internet explorer",
+                                                             "platformName": "windows",
+                                                             "invalid": "foobar",
+                                                             "se:ieOptions": {"nativeEvents": true,
+                                                                              "ie.browserCommandLineSwitches": "-f"}}}})
 
           expect {
             expect {
@@ -155,44 +155,44 @@ module Selenium
 
         context 'with :capabilities' do
           it 'accepts value as a Symbol' do
-            expect_request(body: {capabilities: {firstMatch: [browserName: "internet explorer",
-                                                              platformName: 'windows']}})
+            expect_request(body: {capabilities: {alwaysMatch: {browserName: "internet explorer",
+                                                               platformName: 'windows'}}})
             expect { Driver.new(capabilities: :ie) }.not_to raise_exception
           end
 
           it 'accepts Capabilities.ie' do
             capabilities = Remote::Capabilities.ie(invalid: 'foobar')
-            expect_request(body: {capabilities: {firstMatch: [browserName: "internet explorer",
-                                                              platformName: 'windows',
-                                                              invalid: 'foobar']}})
+            expect_request(body: {capabilities: {alwaysMatch: {browserName: "internet explorer",
+                                                               platformName: 'windows',
+                                                               invalid: 'foobar'}}})
 
             expect { Driver.new(capabilities: capabilities) }.not_to raise_exception
           end
 
           it 'accepts constructed Capabilities with Snake Case as Symbols' do
             capabilities = Remote::Capabilities.new(browser_name: 'internet explorer', invalid: 'foobar')
-            expect_request(body: {capabilities: {firstMatch: [browserName: "internet explorer", invalid: 'foobar']}})
+            expect_request(body: {capabilities: {alwaysMatch: {browserName: "internet explorer", invalid: 'foobar'}}})
 
             expect { Driver.new(capabilities: capabilities) }.not_to raise_exception
           end
 
           it 'accepts constructed Capabilities with Camel Case as Symbols' do
             capabilities = Remote::Capabilities.new(browserName: 'internet explorer', invalid: 'foobar')
-            expect_request(body: {capabilities: {firstMatch: [browserName: "internet explorer", invalid: 'foobar']}})
+            expect_request(body: {capabilities: {alwaysMatch: {browserName: "internet explorer", invalid: 'foobar'}}})
 
             expect { Driver.new(capabilities: capabilities) }.not_to raise_exception
           end
 
           it 'accepts constructed Capabilities with Camel Case as Strings' do
             capabilities = Remote::Capabilities.new('browserName' => 'internet explorer', 'invalid' => 'foobar')
-            expect_request(body: {capabilities: {firstMatch: [browserName: "internet explorer", invalid: 'foobar']}})
+            expect_request(body: {capabilities: {alwaysMatch: {browserName: "internet explorer", invalid: 'foobar'}}})
 
             expect { Driver.new(capabilities: capabilities) }.not_to raise_exception
           end
 
           it 'accepts Hash with Camel Case keys as Symbols but is deprecated' do
             capabilities = {browserName: 'internet explorer', invalid: 'foobar'}
-            expect_request(body: {capabilities: {firstMatch: [browserName: "internet explorer", invalid: 'foobar']}})
+            expect_request(body: {capabilities: {alwaysMatch: {browserName: "internet explorer", invalid: 'foobar'}}})
 
             expect {
               expect { Driver.new(capabilities: capabilities) }.to have_deprecated(:capabilities_hash)
@@ -201,7 +201,7 @@ module Selenium
 
           it 'accepts Hash with Camel Case keys as Strings but is deprecated' do
             capabilities = {"browserName" => 'internet explorer', "invalid" => 'foobar'}
-            expect_request(body: {capabilities: {firstMatch: [browserName: "internet explorer", invalid: 'foobar']}})
+            expect_request(body: {capabilities: {alwaysMatch: {browserName: "internet explorer", invalid: 'foobar'}}})
 
             expect {
               expect { Driver.new(capabilities: capabilities) }.to have_deprecated(:capabilities_hash)
@@ -219,24 +219,24 @@ module Selenium
 
             it 'with Options instance' do
               browser_opts = {start_page: 'http://selenium.dev'}
-              expect_request(body: {capabilities: {firstMatch: [browserName: "internet explorer",
-                                                                'se:ieOptions': {"startPage": 'http://selenium.dev',
-                                                                                 'nativeEvents': true}]}})
+              expect_request(body: {capabilities: {alwaysMatch: {browserName: "internet explorer",
+                                                                 'se:ieOptions': {"startPage": 'http://selenium.dev',
+                                                                                  'nativeEvents': true}}}})
 
               expect { Driver.new(capabilities: [Options.new(**browser_opts)]) }.not_to raise_exception
             end
 
             it 'with Capabilities instance' do
               capabilities = Remote::Capabilities.new(browser_name: 'internet explorer', invalid: 'foobar')
-              expect_request(body: {capabilities: {firstMatch: [browserName: "internet explorer", invalid: 'foobar']}})
+              expect_request(body: {capabilities: {alwaysMatch: {browserName: "internet explorer", invalid: 'foobar'}}})
 
               expect { Driver.new(capabilities: [capabilities]) }.not_to raise_exception
             end
 
             it 'with Options instance and an instance of a custom object responding to #as_json' do
-              expect_request(body: {capabilities: {firstMatch: [browserName: "internet explorer",
-                                                                'se:ieOptions': {"nativeEvents": true},
-                                                                'company:key': 'value']}})
+              expect_request(body: {capabilities: {alwaysMatch: {browserName: "internet explorer",
+                                                                 'se:ieOptions': {"nativeEvents": true},
+                                                                 'company:key': 'value'}}})
 
               expect { Driver.new(capabilities: [Options.new, as_json_object.new]) }.not_to raise_exception
             end
@@ -244,11 +244,11 @@ module Selenium
             it 'with Options instance, Capabilities instance and instance of a custom object responding to #as_json' do
               capabilities = Remote::Capabilities.new(browser_name: 'internet explorer', invalid: 'foobar')
               options = Options.new(start_page: 'http://selenium.dev')
-              expect_request(body: {capabilities: {firstMatch: [browserName: "internet explorer",
-                                                                invalid: 'foobar',
-                                                                'se:ieOptions': {"startPage": 'http://selenium.dev',
-                                                                                 'nativeEvents': true},
-                                                                'company:key': 'value']}})
+              expect_request(body: {capabilities: {alwaysMatch: {browserName: "internet explorer",
+                                                                 invalid: 'foobar',
+                                                                 'se:ieOptions': {"startPage": 'http://selenium.dev',
+                                                                                  'nativeEvents': true},
+                                                                 'company:key': 'value'}}})
 
               expect { Driver.new(capabilities: [capabilities, options, as_json_object.new]) }.not_to raise_exception
             end

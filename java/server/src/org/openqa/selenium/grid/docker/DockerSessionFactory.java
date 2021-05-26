@@ -133,7 +133,7 @@ public class DockerSessionFactory implements SessionFactory {
 
   @Override
   public Either<WebDriverException, ActiveSession> apply(CreateSessionRequest sessionRequest) {
-    LOG.info("Starting session for " + sessionRequest.getCapabilities());
+    LOG.info("Starting session for " + sessionRequest.getDesiredCapabilities());
 
     int port = runningInDocker ? 4444 : PortProber.findFreePort();
     try (Span span = tracer.getCurrentContext().createSpan("docker_session_factory.apply")) {
@@ -143,7 +143,7 @@ public class DockerSessionFactory implements SessionFactory {
       String logMessage = runningInDocker ? "Creating container..." :
                           "Creating container, mapping container port 4444 to " + port;
       LOG.info(logMessage);
-      Container container = createBrowserContainer(port, sessionRequest.getCapabilities());
+      Container container = createBrowserContainer(port, sessionRequest.getDesiredCapabilities());
       container.start();
       ContainerInfo containerInfo = container.inspect();
 
@@ -184,7 +184,7 @@ public class DockerSessionFactory implements SessionFactory {
 
       Command command = new Command(
           null,
-          DriverCommand.NEW_SESSION(sessionRequest.getCapabilities()));
+          DriverCommand.NEW_SESSION(sessionRequest.getDesiredCapabilities()));
       ProtocolHandshake.Result result;
       Response response;
       try {
@@ -211,7 +211,7 @@ public class DockerSessionFactory implements SessionFactory {
 
       SessionId id = new SessionId(response.getSessionId());
       Capabilities capabilities = new ImmutableCapabilities((Map<?, ?>) response.getValue());
-      Capabilities mergedCapabilities = capabilities.merge(sessionRequest.getCapabilities());
+      Capabilities mergedCapabilities = capabilities.merge(sessionRequest.getDesiredCapabilities());
 
       Container videoContainer = null;
       Optional<DockerAssetsPath> path = ofNullable(this.assetsPath);

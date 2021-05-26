@@ -92,10 +92,7 @@ module Selenium
           }.to raise_error(Error::UnableToSetCookieError)
         end
 
-        it 'should not allow setting on a different domain',
-           except: [{browser: %i[chrome edge],
-                     reason: "https://bugs.chromium.org/p/chromedriver/issues/detail?id=3733"},
-                    {browser: %i[safari safari_preview]}] do
+        it 'should not allow setting on a different domain', except: {browser: %i[safari safari_preview]} do
           expect {
             driver.manage.add_cookie name: 'domain',
                                      value: 'different',

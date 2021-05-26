@@ -393,4 +393,13 @@ public class FirefoxOptionsTest {
       set(originalValue);
     }
   }
+
+  @Test
+  public void firefoxOptionsShouldEqualEquivalentImmutableCapabilities() {
+    FirefoxOptions options = new FirefoxOptions().addArguments("hello").setPageLoadStrategy(EAGER).setHeadless(true);
+    Capabilities caps = new ImmutableCapabilities(options);
+
+    assertThat(caps).isEqualTo(options);
+    assertThat(caps.getCapabilityNames()).contains(FIREFOX_OPTIONS);
+  }
 }

@@ -1,3 +1,15 @@
+Selenium 4 Beta 3
+
+* Enable more tests
+* Improve support for WebDriver Bidi over selenium grid
+* Update CDP Support versions to remove 86,87 and add 90,91
+* Allow overriding the default 250 msecs duration of pointer movement (#9336)
+* Only give deprecation warning if Profile is being used in options
+* Loosen version requirements on dependencies. Fixes #9312
+* Bump urllib3 from 1.26.2 to 1.26.3 in /py (#9311)
+* Disable wait on frame test due to bug in Firefox
+* Correct pinned browser path for chrome on linux
+
 Selenium 4 beta 2 Post 1
 
 * Fix Chrome instantiation

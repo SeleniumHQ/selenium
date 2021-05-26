@@ -169,6 +169,8 @@ class ChromiumOptions(ArgOptions):
         """
         caps = self._caps
         chrome_options = self.experimental_options.copy()
+        if self.mobile_options:
+            chrome_options.update(self.mobile_options)
         chrome_options["extensions"] = self.extensions
         if self.binary_location:
             chrome_options["binary"] = self.binary_location

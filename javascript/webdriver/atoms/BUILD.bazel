@@ -91,6 +91,7 @@ closure_fragment(
         "//javascript/ie-driver:__pkg__",
         "//javascript/node/selenium-webdriver/lib/atoms:__pkg__",
         "//py:__pkg__",
+        "//rb:__pkg__",
     ],
     deps = [
         ":atoms-lib",

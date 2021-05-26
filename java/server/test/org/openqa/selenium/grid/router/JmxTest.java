@@ -24,12 +24,14 @@ import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.events.EventBus;
 import org.openqa.selenium.events.local.GuavaEventBus;
 import org.openqa.selenium.grid.config.MapConfig;
+import org.openqa.selenium.grid.data.DefaultSlotMatcher;
 import org.openqa.selenium.grid.data.Session;
 import org.openqa.selenium.grid.jmx.JMXHelper;
 import org.openqa.selenium.grid.node.local.LocalNode;
 import org.openqa.selenium.grid.security.Secret;
 import org.openqa.selenium.grid.server.BaseServerOptions;
-import org.openqa.selenium.grid.sessionqueue.config.NewSessionQueueOptions;
+import org.openqa.selenium.grid.sessionqueue.NewSessionQueue;
+import org.openqa.selenium.grid.sessionqueue.config.SessionRequestOptions;
 import org.openqa.selenium.grid.sessionqueue.local.LocalNewSessionQueue;
 import org.openqa.selenium.grid.testing.TestSessionFactory;
 import org.openqa.selenium.net.PortProber;
@@ -159,8 +161,8 @@ public class JmxTest {
 
       new JMXHelper().unregister(name);
 
-      NewSessionQueueOptions queueOptions =
-        new NewSessionQueueOptions(new MapConfig(ImmutableMap.of()));
+      SessionRequestOptions queueOptions =
+        new SessionRequestOptions(new MapConfig(ImmutableMap.of()));
       MBeanInfo info = beanServer.getMBeanInfo(name);
       assertThat(info).isNotNull();
 
@@ -185,21 +187,22 @@ public class JmxTest {
   @Test
   public void shouldBeAbleToRegisterSessionQueue() {
     try {
-      ObjectName name = new ObjectName("org.seleniumhq.grid:type=SessionQueue," +
-        "name=LocalSessionQueue");
+      ObjectName name = new ObjectName("org.seleniumhq.grid:type=SessionQueue,name=LocalSessionQueue");
 
       new JMXHelper().unregister(name);
 
       Tracer tracer = DefaultTestTracer.createTracer();
       EventBus bus = new GuavaEventBus();
 
-      LocalNewSessionQueue localNewSessionQueue = new LocalNewSessionQueue(
+      NewSessionQueue sessionQueue = new LocalNewSessionQueue(
         tracer,
         bus,
+        new DefaultSlotMatcher(),
         Duration.ofSeconds(2),
-        Duration.ofSeconds(2));
+        Duration.ofSeconds(2),
+        new Secret(""));
 
-      assertThat(localNewSessionQueue).isNotNull();
+      assertThat(sessionQueue).isNotNull();
       MBeanInfo info = beanServer.getMBeanInfo(name);
       assertThat(info).isNotNull();
 

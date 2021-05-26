@@ -25,7 +25,7 @@ chrome_args = select({
     "@selenium//common:use_local_chromedriver": [
         "--driver-binary=$(location @selenium//common:chromedriver)",
     ],
-    "//conditions:default": []
+    "//conditions:default": [],
 }) + headless_args
 
 edge_args = select({
@@ -36,7 +36,7 @@ edge_args = select({
     "@selenium//common:use_local_msedgedriver": [
         "--driver-binary=$(location @selenium//common:msedgedriver)",
     ],
-    "//conditions:default": []
+    "//conditions:default": [],
 }) + headless_args
 
 firefox_args = select({
@@ -79,5 +79,5 @@ BROWSERS = {
         "args": ["--driver=safari"],
         "data": [],
         "tags": COMMON_TAGS + ["safari"],
-    }
+    },
 }

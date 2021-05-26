@@ -43,6 +43,7 @@ java_library(
     exports = [
         ":browser",
     ],
+    runtime_deps = CDP_DEPS,
     deps = [
         ":browser",
         "//java/client/src/org/openqa/selenium:core",
@@ -61,5 +62,4 @@ java_library(
         artifact("junit:junit"),
         artifact("org.seleniumhq.selenium:htmlunit-driver"),
     ],
-    runtime_deps = CDP_DEPS,
 )

@@ -113,6 +113,7 @@ closure_fragment(
         "//javascript/ie-driver:__pkg__",
         "//javascript/node/selenium-webdriver/lib/atoms:__pkg__",
         "//py:__pkg__",
+        "//rb:__pkg__",
     ],
     deps = [
         "//javascript/atoms:dom",
@@ -191,6 +192,7 @@ closure_fragment(
         "//javascript/chrome-driver:__pkg__",
         "//javascript/node/selenium-webdriver/lib/atoms:__pkg__",
         "//py:__pkg__",
+        "//rb:__pkg__",
     ],
     deps = [
         "//javascript/atoms:locators",

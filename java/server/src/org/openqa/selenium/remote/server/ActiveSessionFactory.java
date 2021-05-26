@@ -170,9 +170,9 @@ public class ActiveSessionFactory implements SessionFactory {
 
   @Override
   public Optional<ActiveSession> apply(CreateSessionRequest sessionRequest) {
-    LOG.finest("Capabilities are: " + new Json().toJson(sessionRequest.getCapabilities()));
+    LOG.finest("Capabilities are: " + new Json().toJson(sessionRequest.getDesiredCapabilities()));
     return factories.stream()
-        .filter(factory -> factory.test(sessionRequest.getCapabilities()))
+        .filter(factory -> factory.test(sessionRequest.getDesiredCapabilities()))
         .peek(factory -> LOG.finest(String.format("Matched factory %s", factory)))
         .map(factory -> factory.apply(sessionRequest))
         .filter(Optional::isPresent)
