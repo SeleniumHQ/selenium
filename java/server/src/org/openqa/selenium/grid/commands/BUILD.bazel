@@ -25,6 +25,7 @@ java_library(
         "//java/server/src/org/openqa/selenium/grid/distributor",
         "//java/server/src/org/openqa/selenium/grid/distributor/config",
         "//java/server/src/org/openqa/selenium/grid/distributor/local",
+        "//java/server/src/org/openqa/selenium/grid/distributor/selector",
         "//java/server/src/org/openqa/selenium/grid/graphql",
         "//java/server/src/org/openqa/selenium/grid/log",
         "//java/server/src/org/openqa/selenium/grid/node",

@@ -39,6 +39,7 @@ import java.util.function.Consumer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import static org.openqa.selenium.internal.Debug.getDebugLogLevel;
 import static org.openqa.selenium.remote.http.HttpMethod.GET;
 
 public class ProxyNodeCdp implements BiFunction<String, Consumer<Message>, Optional<Consumer<Message>>> {
@@ -78,20 +79,23 @@ public class ProxyNodeCdp implements BiFunction<String, Consumer<Message>, Optio
     Optional<URI> cdpUri = CdpEndpointFinder.getReportedUri("goog:chromeOptions", caps)
       .flatMap(reported -> CdpEndpointFinder.getCdpEndPoint(clientFactory, reported));
     if (cdpUri.isPresent()) {
-      LOG.fine("Chrome endpoint found");
+      LOG.log(getDebugLogLevel(), "Chrome endpoint found");
       return cdpUri.map(cdp -> createCdpEndPoint(cdp, downstream));
     }
 
     cdpUri = CdpEndpointFinder.getReportedUri("moz:debuggerAddress", caps)
       .flatMap(reported -> CdpEndpointFinder.getCdpEndPoint(clientFactory, reported));
     if (cdpUri.isPresent()) {
-      LOG.fine("Firefox endpoint found");
+      LOG.log(getDebugLogLevel(), "Firefox endpoint found");
       return cdpUri.map(cdp -> createCdpEndPoint(cdp, downstream));
     }
 
     LOG.fine("Searching for edge options");
     cdpUri = CdpEndpointFinder.getReportedUri("ms:edgeOptions", caps)
       .flatMap(reported -> CdpEndpointFinder.getCdpEndPoint(clientFactory, reported));
+    if (cdpUri.isPresent()) {
+      LOG.log(getDebugLogLevel(), "Edge endpoint found");
+    }
     return cdpUri.map(cdp -> createCdpEndPoint(cdp, downstream));
   }
 

@@ -11,7 +11,7 @@ build --tool_java_language_version=11
 build --javacopt="--release 8"
 
 # Require java dependencies to be used and first-order
-build --strict_java_deps=strict
+build --experimental_strict_java_deps=strict
 build --explicit_java_test_deps
 
 # Ensure builds are unpolluted by the user env
@@ -34,6 +34,7 @@ build --noexperimental_sandbox_default_allow_network
 build --test_env=CI
 build --test_env=DASHBOARD_URL
 build --test_env=DISPLAY
+build --test_env=FIREFOX_NIGHTLY_BINARY
 build --test_env=GITHUB_ACTIONS
 build --test_env=LOCALAPPDATA
 build --test_env=MOZ_HEADLESS

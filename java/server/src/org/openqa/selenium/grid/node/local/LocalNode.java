@@ -279,7 +279,7 @@ public class LocalNode extends Node {
       attributeMap
         .put(AttributeKey.LOGGER_CLASS.getKey(), EventAttribute.setValue(getClass().getName()));
       attributeMap.put("session.request.capabilities",
-        EventAttribute.setValue(sessionRequest.getCapabilities().toString()));
+        EventAttribute.setValue(sessionRequest.getDesiredCapabilities().toString()));
       attributeMap.put("session.request.downstreamdialect",
         EventAttribute.setValue(sessionRequest.getDownstreamDialects().toString()));
 
@@ -304,7 +304,7 @@ public class LocalNode extends Node {
       SessionSlot slotToUse = null;
       synchronized (factories) {
         for (SessionSlot factory : factories) {
-          if (!factory.isAvailable() || !factory.test(sessionRequest.getCapabilities())) {
+          if (!factory.isAvailable() || !factory.test(sessionRequest.getDesiredCapabilities())) {
             continue;
           }
 
@@ -461,7 +461,7 @@ public class LocalNode extends Node {
   private URI rewrite(String path) {
     try {
       return new URI(
-        gridUri.getScheme(),
+        "ws",
         gridUri.getUserInfo(),
         gridUri.getHost(),
         gridUri.getPort(),

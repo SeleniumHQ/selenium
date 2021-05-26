@@ -17,6 +17,7 @@
 
 package org.openqa.selenium.grid.config;
 
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 
@@ -28,10 +29,12 @@ class ClassCreation {
 
   static <X> X callCreateMethod(String clazz, Class<X> typeOfClass, Config configToUse)
     throws ReflectiveOperationException {
+
+    // Use the context class loader since this is what the `--ext`
+    // flag modifies.
+    Class<?> classClazz = Class.forName(clazz, true, Thread.currentThread().getContextClassLoader());
+
     try {
-      // Use the context class loader since this is what the `--ext`
-      // flag modifies.
-      Class<?> classClazz = Class.forName(clazz, true, Thread.currentThread().getContextClassLoader());
       Method create = classClazz.getMethod("create", org.openqa.selenium.grid.config.Config.class);
 
       if (!Modifier.isStatic(create.getModifiers())) {
@@ -46,8 +49,15 @@ class ClassCreation {
 
       return typeOfClass.cast(create.invoke(null, configToUse));
     } catch (NoSuchMethodException e) {
-      throw new IllegalArgumentException(String.format(
-        "Class %s must have a static `create(Config)` method", clazz));
+      // Check to see if there's a public no-arg constructor
+      Constructor<? extends X> constructor;
+      try {
+        constructor = classClazz.asSubclass(typeOfClass).getConstructor();
+      } catch (NoSuchMethodException e2) {
+        throw new IllegalArgumentException(String.format(
+          "Class %s must have a static `create(Config)` method or a default constructor", clazz));
+      }
+      return constructor.newInstance();
     }
   }
 }

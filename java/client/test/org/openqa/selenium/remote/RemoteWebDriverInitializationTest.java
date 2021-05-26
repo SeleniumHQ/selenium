@@ -83,7 +83,7 @@ public class RemoteWebDriverInitializationTest {
       .isThrownBy(() -> new RemoteWebDriver(executor, new ImmutableCapabilities()))
       .withMessageContaining("Build info: ")
       .withMessageContaining("Driver info: org.openqa.selenium.remote.RemoteWebDriver")
-      .withMessageContaining("Command: [null, newSession {desiredCapabilities=Capabilities {}}]");
+      .withMessageContaining("Command: [null, newSession {capabilities=[Capabilities {}], desiredCapabilities=Capabilities {}}]");
 
     verifyNoCommands(executor);
   }

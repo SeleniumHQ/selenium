@@ -46,8 +46,12 @@ module Selenium
 
         private
 
-        def devtools_address
+        def devtools_url
           capabilities['se:cdp']
+        end
+
+        def devtools_version
+          capabilities['se:cdpVersion'].split('.').first
         end
       end # Driver
     end # Remote

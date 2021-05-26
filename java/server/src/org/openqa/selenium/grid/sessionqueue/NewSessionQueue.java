@@ -17,57 +17,107 @@
 
 package org.openqa.selenium.grid.sessionqueue;
 
+import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.SessionNotCreatedException;
+import org.openqa.selenium.grid.data.CreateSessionResponse;
 import org.openqa.selenium.grid.data.RequestId;
+import org.openqa.selenium.grid.data.SessionRequest;
+import org.openqa.selenium.grid.data.SessionRequestCapability;
+import org.openqa.selenium.grid.security.RequiresSecretFilter;
+import org.openqa.selenium.grid.security.Secret;
+import org.openqa.selenium.internal.Either;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.http.HttpRequest;
+import org.openqa.selenium.remote.http.HttpResponse;
+import org.openqa.selenium.remote.http.Routable;
+import org.openqa.selenium.remote.http.Route;
 import org.openqa.selenium.remote.tracing.Tracer;
 import org.openqa.selenium.status.HasReadyState;
 
-import java.time.Duration;
 import java.time.Instant;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
+import java.util.UUID;
 
-public abstract class NewSessionQueue implements HasReadyState {
+import static org.openqa.selenium.remote.http.Route.combine;
+import static org.openqa.selenium.remote.http.Route.delete;
+import static org.openqa.selenium.remote.http.Route.get;
+import static org.openqa.selenium.remote.http.Route.post;
 
-  public static final String SESSIONREQUEST_TIMESTAMP_HEADER = "new-session-request-timestamp";
-  public static final String SESSIONREQUEST_ID_HEADER = "request-id";
+public abstract class NewSessionQueue implements HasReadyState, Routable {
+
   protected final Tracer tracer;
-  protected final Duration retryInterval;
-  protected final Duration requestTimeout;
+  private final Route routes;
 
-  protected NewSessionQueue(Tracer tracer, Duration retryInterval, Duration requestTimeout) {
+  protected NewSessionQueue(Tracer tracer, Secret registrationSecret) {
     this.tracer = Require.nonNull("Tracer", tracer);
-    this.retryInterval = Require.nonNull("Session request retry interval", retryInterval);
-    this.requestTimeout = Require.nonNull("Session request timeout", requestTimeout);
+
+    Require.nonNull("Registration secret", registrationSecret);
+    RequiresSecretFilter requiresSecret = new RequiresSecretFilter(registrationSecret);
+
+    routes = combine(
+      post("/session")
+        .to(() -> req -> {
+          SessionRequest sessionRequest = new SessionRequest(
+            new RequestId(UUID.randomUUID()),
+            req,
+            Instant.now()
+          );
+          return addToQueue(sessionRequest);
+        }),
+      post("/se/grid/newsessionqueue/session")
+        .to(() -> new AddToSessionQueue(tracer, this))
+        .with(requiresSecret),
+      post("/se/grid/newsessionqueue/session/{requestId}/retry")
+        .to(params -> new AddBackToSessionQueue(tracer, this, requestIdFrom(params)))
+        .with(requiresSecret),
+      post("/se/grid/newsessionqueue/session/{requestId}/failure")
+        .to(params -> new SessionNotCreated(tracer, this, requestIdFrom(params)))
+        .with(requiresSecret),
+      post("/se/grid/newsessionqueue/session/{requestId}/success")
+        .to(params -> new SessionCreated(tracer, this, requestIdFrom(params)))
+        .with(requiresSecret),
+      post("/se/grid/newsessionqueue/session/{requestId}")
+        .to(params -> new RemoveFromSessionQueue(tracer, this, requestIdFrom(params)))
+        .with(requiresSecret),
+      post("/se/grid/newsessionqueue/session/next")
+        .to(() -> new GetNextMatchingRequest(tracer, this))
+        .with(requiresSecret),
+      get("/se/grid/newsessionqueue/queue")
+        .to(() -> new GetSessionQueue(tracer, this)),
+      delete("/se/grid/newsessionqueue/queue")
+        .to(() -> new ClearSessionQueue(tracer, this))
+        .with(requiresSecret));
   }
 
-  public abstract boolean offerLast(HttpRequest request, RequestId requestId);
-
-  public abstract boolean offerFirst(HttpRequest request, RequestId requestId);
-
-  public abstract Optional<HttpRequest> remove(RequestId requestId);
-
-  public abstract int clear();
-
-  public abstract int getQueueSize();
-
-  public abstract List<Object> getQueuedRequests();
-
-  public void addRequestHeaders(HttpRequest request, RequestId reqId) {
-    long timestamp = Instant.now().getEpochSecond();
-    request.addHeader(SESSIONREQUEST_TIMESTAMP_HEADER, Long.toString(timestamp));
-
-    request.addHeader(SESSIONREQUEST_ID_HEADER, reqId.toString());
+  private RequestId requestIdFrom(Map<String, String> params) {
+    return new RequestId(UUID.fromString(params.get("requestId")));
   }
 
-  public boolean hasRequestTimedOut(HttpRequest request) {
-    String enqueTimestampStr = request.getHeader(SESSIONREQUEST_TIMESTAMP_HEADER);
-    Instant enque = Instant.ofEpochSecond(Long.parseLong(enqueTimestampStr));
-    Instant deque = Instant.now();
-    Duration duration = Duration.between(enque, deque);
+  public abstract HttpResponse addToQueue(SessionRequest request);
 
-    return duration.compareTo(requestTimeout) > 0;
+  public abstract boolean retryAddToQueue(SessionRequest request);
+
+  public abstract Optional<SessionRequest> remove(RequestId reqId);
+
+  public abstract Optional<SessionRequest> getNextAvailable(Set<Capabilities> stereotypes);
+
+  public abstract void complete(RequestId reqId, Either<SessionNotCreatedException, CreateSessionResponse> result);
+
+  public abstract int clearQueue();
+
+  public abstract List<SessionRequestCapability> getQueueContents();
+
+  @Override
+  public boolean matches(HttpRequest req) {
+    return routes.matches(req);
   }
 
+  @Override
+  public HttpResponse execute(HttpRequest req) {
+    return routes.execute(req);
+  }
 }
+

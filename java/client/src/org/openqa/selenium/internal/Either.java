@@ -73,4 +73,9 @@ public class Either<A, B> implements Iterable<B> {
   public Stream<B> stream() {
     return Stream.of(right());
   }
+
+  @Override
+  public String toString() {
+    return "[Either(" + (isLeft() ? "left" : "right") + "): " + (isLeft() ? left() : right()) + "]";
+  }
 }

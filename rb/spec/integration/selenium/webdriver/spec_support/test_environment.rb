@@ -27,6 +27,8 @@ module Selenium
           @create_driver_error = nil
           @create_driver_error_count = 0
 
+          extract_browser_from_bazel_target_name
+
           @driver = (ENV['WD_SPEC_DRIVER'] || :chrome).to_sym
           @driver_instance = nil
         end
@@ -103,7 +105,13 @@ module Selenium
           local_selenium_jar = 'selenium_server_deploy.jar'
           downloaded_selenium_jar = "selenium-server-standalone-#{Selenium::Server.latest}.jar"
 
-          directory_names = [root, root.join('rb'), root.join('build'), root.join('build/rb')]
+          directory_names = [
+            root,
+            root.join('rb'),
+            root.join('build'),
+            root.join('build/rb'),
+            Pathname.new(Dir.pwd).join('rb')
+          ]
           file_names = [local_selenium_jar, downloaded_selenium_jar]
           file_names.delete(local_selenium_jar) if ENV['DOWNLOAD_SERVER']
 
@@ -227,6 +235,21 @@ module Selenium
         def create_edge_driver(opt = {})
           WebDriver::Edge.path = ENV['EDGE_BINARY'] if ENV['EDGE_BINARY']
           WebDriver::Driver.for :edge, opt
+        end
+
+        def extract_browser_from_bazel_target_name
+          name = ENV['TEST_TARGET']
+          return unless name
+
+          case name
+          when %r{//rb:remote-(.+)-test}
+            ENV['WD_REMOTE_BROWSER'] = Regexp.last_match(1).tr('-', '_')
+            ENV['WD_SPEC_DRIVER'] = 'remote'
+          when %r{//rb:(.+)-test}
+            ENV['WD_SPEC_DRIVER'] = Regexp.last_match(1).tr('-', '_')
+          else
+            raise "Don't know how to extract browser name from #{name}"
+          end
         end
       end
     end # SpecSupport

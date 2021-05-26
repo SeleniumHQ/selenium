@@ -40,7 +40,7 @@ public enum Architecture {
 
   X64("amd64", "ia64", "x86_64"),
 
-  ARM("arm"),
+  ARM("aarch64", "arm"),
 
   MIPS32("mips32") {
     @Override

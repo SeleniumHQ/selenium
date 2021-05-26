@@ -27,6 +27,7 @@ class BaseOptions(metaclass=ABCMeta):
         super(BaseOptions, self).__init__()
         self._caps = self.default_capabilities
         self.set_capability("pageLoadStrategy", "normal")
+        self.mobile_options = None
 
     @property
     def capabilities(self):
@@ -35,6 +36,23 @@ class BaseOptions(metaclass=ABCMeta):
     def set_capability(self, name, value):
         """ Sets a capability """
         self._caps[name] = value
+
+    def enable_mobile(self, android_package: str = None, android_activity: str = None, device_serial: str = None):
+        """
+            Enables mobile browser use for browsers that support it
+
+            :Args:
+                android_activity: The name of the android package to start
+        """
+        if not android_package:
+            raise AttributeError("android_package must be passed in")
+        self.mobile_options = {
+            "androidPackage": android_package
+        }
+        if android_activity:
+            self.mobile_options["androidActivity"] = android_activity
+        if device_serial:
+            self.mobile_options["androidDeviceSerial"] = device_serial
 
     @abstractmethod
     def to_capabilities(self):

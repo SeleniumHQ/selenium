@@ -163,7 +163,7 @@ public class OneShotNode extends Node {
       throw new IllegalStateException("Only expected one session at a time");
     }
 
-    Optional<WebDriver> driver = driverInfo.createDriver(sessionRequest.getCapabilities());
+    Optional<WebDriver> driver = driverInfo.createDriver(sessionRequest.getDesiredCapabilities());
     if (!driver.isPresent()) {
       return Either.left(new WebDriverException("Unable to create a driver instance"));
     }
