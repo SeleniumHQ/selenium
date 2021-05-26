@@ -101,7 +101,7 @@ public class SessionQueueGridTest {
       bus,
       new DefaultSlotMatcher(),
       Duration.ofSeconds(5),
-      Duration.ofSeconds(10),
+      Duration.ofSeconds(60),
       registrationSecret);
     handler.addHandler(queue);
 
@@ -166,7 +166,7 @@ public class SessionQueueGridTest {
     }
   }
 
-  @Test
+  @Test(timeout = 5000)
   public void shouldBeAbleToRejectRequest() {
     // Grid has no slots for the requested capabilities
     HttpResponse httpResponse = createSession(ImmutableMap.of("browserName", "burger"));
