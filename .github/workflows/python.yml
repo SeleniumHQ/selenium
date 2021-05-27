@@ -62,7 +62,7 @@ jobs:
       - name: Test with tox
         run: |
           tox -c py/tox.ini -- --cobertura-xml-report ci || true
-          bash <(curl -s https://codecov.io/bash) -f ci/cobertura.xml
+          bash <(curl -s https://codecov.io/bash) -f py/ci/cobertura.xml
         env:
           TOXENV: mypy
 
