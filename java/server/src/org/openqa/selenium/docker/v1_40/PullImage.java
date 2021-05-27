@@ -47,7 +47,7 @@ class PullImage {
 
     LOG.info("Pulling " + ref);
 
-    String image = String.format("%s/%s/%s", ref.getDomain(), ref.getRepository(), ref.getName());
+    String image = String.format("%s/%s", ref.getDomain(), ref.getName());
     HttpRequest req = new HttpRequest(POST, "/v1.40/images/create")
       .addHeader("Content-Type", JSON_UTF_8)
       .addHeader("Content-Length", "0")
