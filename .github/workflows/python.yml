@@ -60,7 +60,9 @@ jobs:
           python -m pip install --upgrade pip
           pip install tox==2.4.1
       - name: Test with tox
-        run: tox -c py/tox.ini || true
+        run: |
+          tox -c py/tox.ini -- --cobertura-xml-report ci || true
+          bash <(curl -s https://codecov.io/bash) -f ci/cobertura.xml
         env:
           TOXENV: mypy
 
