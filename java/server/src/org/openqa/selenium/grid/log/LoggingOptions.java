@@ -45,6 +45,7 @@ public class LoggingOptions {
   static final boolean DEFAULT_PLAIN_LOGS = true;
   static final boolean DEFAULT_STRUCTURED_LOGS = false;
   static final boolean DEFAULT_TRACING_ENABLED = true;
+  public static final boolean DEFAULT_HTTP_LOGS = false;
   private static final Logger LOG = Logger.getLogger(LoggingOptions.class.getName());
   private final Config config;
   private Level level = Level.INFO;
@@ -55,6 +56,10 @@ public class LoggingOptions {
 
   public boolean isUsingStructuredLogging() {
     return config.getBool(LOGGING_SECTION, "structured-logs").orElse(DEFAULT_STRUCTURED_LOGS);
+  }
+
+  public boolean shouldLogHttpLogs() {
+    return config.getBool(LOGGING_SECTION, "http-logs").orElse(DEFAULT_HTTP_LOGS);
   }
 
   public boolean isUsingPlainLogs() {
@@ -82,6 +87,8 @@ public class LoggingOptions {
       LOG.info("Using null tracer");
       return new NullTracer();
     }
+
+    OpenTelemetryTracer.setHttpLogs(shouldLogHttpLogs());
 
     return OpenTelemetryTracer.getInstance();
   }

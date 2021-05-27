@@ -47,10 +47,11 @@ class PullImage {
 
     LOG.info("Pulling " + ref);
 
+    String image = String.format("%s/%s", ref.getDomain(), ref.getName());
     HttpRequest req = new HttpRequest(POST, "/v1.40/images/create")
       .addHeader("Content-Type", JSON_UTF_8)
       .addHeader("Content-Length", "0")
-      .addQueryParameter("fromImage", String.format("%s/%s", ref.getRepository(), ref.getName()));
+      .addQueryParameter("fromImage", image);
 
     if (ref.getDigest() != null) {
       req.addQueryParameter("tag", ref.getDigest());

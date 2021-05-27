@@ -3,7 +3,7 @@ load("//common/private:dmg_archive.bzl", "dmg_archive")
 load("//common/private:drivers.bzl", "local_drivers")
 load("//common/private:pkg_archive.bzl", "pkg_archive")
 
-_edge_version = "89.0.774.54"
+_edge_version = "90.0.818.66"
 
 _versions = {
     # The chrome version number is found by visiting http://omahaproxy.appspot.com,
@@ -48,7 +48,7 @@ _versions = {
         },
         "mac": {
             "url": "https://officecdn-microsoft-com.akamaized.net/pr/C1297A47-86C4-4C1F-97FA-950631F94777/MacAutoupdate/MicrosoftEdge-%s.pkg?platform=Mac&Consent=0&channel=Stable" % _edge_version,
-            "sha256": "23541c9d9e31c5a4221957a56906749b4ddcb422a22d178b4dd5adf833230838",
+            "sha256": "d1ea256e8824309f557b244919dad2b41a3c72625cc90dee7e833f05d8e2a48d",
         },
         "windows": {
             "url": None,
@@ -63,7 +63,7 @@ _versions = {
         },
         "mac": {
             "url": "https://msedgedriver.azureedge.net/%s/edgedriver_mac64.zip" % _edge_version,
-            "sha256": "c8eab921ccaaec552f1380d3ca95f91e947fda1866c84d7f47da0198b9b52645",
+            "sha256": "76258626f980eb0d0384ca99d0af30ed7e9e91c6801e89bf0361205d660c698d",
         },
         "windows": {
             "url": "https://msedgedriver.azureedge.net/%s/edgedriver_win64.zip" % _edge_version,

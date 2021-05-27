@@ -23,6 +23,7 @@ import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.grid.data.DistributorStatus;
 import org.openqa.selenium.grid.data.NodeStatus;
+import org.openqa.selenium.grid.data.SessionRequestCapability;
 import org.openqa.selenium.grid.data.Slot;
 import org.openqa.selenium.grid.distributor.Distributor;
 import org.openqa.selenium.grid.sessionqueue.NewSessionQueue;
@@ -55,7 +56,11 @@ public class Grid {
     Require.nonNull("Distributor", distributor);
     this.uri = Require.nonNull("Grid's public URI", uri);
     NewSessionQueue sessionQueue = Require.nonNull("New session queue", newSessionQueue);
-    this.queueInfoList = sessionQueue.getQueueContents();
+    this.queueInfoList = sessionQueue
+      .getQueueContents()
+      .stream()
+      .map(SessionRequestCapability::getDesiredCapabilities)
+      .collect(Collectors.toList());
     this.distributorStatus = Suppliers.memoize(distributor::getStatus);
     this.version = Require.nonNull("Grid's version", version);
   }

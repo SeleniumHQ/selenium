@@ -31,6 +31,7 @@ import java.util.Set;
 import static org.openqa.selenium.grid.config.StandardGridRoles.DISTRIBUTOR_ROLE;
 import static org.openqa.selenium.grid.distributor.config.DistributorOptions.DEFAULT_DISTRIBUTOR_IMPLEMENTATION;
 import static org.openqa.selenium.grid.distributor.config.DistributorOptions.DEFAULT_HEALTHCHECK_INTERVAL;
+import static org.openqa.selenium.grid.distributor.config.DistributorOptions.DEFAULT_REJECT_UNSUPPORTED_CAPS;
 import static org.openqa.selenium.grid.distributor.config.DistributorOptions.DEFAULT_SLOT_MATCHER;
 import static org.openqa.selenium.grid.distributor.config.DistributorOptions.DEFAULT_SLOT_SELECTOR_IMPLEMENTATION;
 import static org.openqa.selenium.grid.distributor.config.DistributorOptions.DISTRIBUTOR_SECTION;
@@ -83,6 +84,11 @@ public class DistributorFlags implements HasRoles {
   @ConfigValue(section = DISTRIBUTOR_SECTION, name = "healthcheck-interval", example = "60")
   public int healthcheckInterval =  DEFAULT_HEALTHCHECK_INTERVAL;
 
+  @Parameter(description = "Allow the Distributor to reject a request immediately if the Grid does not support the requested capability." +
+    "Rejecting requests immediately is suitable for Grid set up that does not spin up Nodes on demand.",
+    names = "--reject-unsupported-caps", arity = 1)
+  @ConfigValue(section = DISTRIBUTOR_SECTION, name = "--reject-unsupported-caps", example = "true")
+  private boolean rejectUnsupportedCaps = DEFAULT_REJECT_UNSUPPORTED_CAPS;
 
   @Override
   public Set<Role> getRoles() {
