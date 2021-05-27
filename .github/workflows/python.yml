@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - trunk
-      - 'CI/*'
   pull_request:
     branches:
       - trunk
