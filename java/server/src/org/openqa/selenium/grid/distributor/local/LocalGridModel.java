@@ -27,6 +27,7 @@ import org.openqa.selenium.grid.data.Session;
 import org.openqa.selenium.grid.data.SessionClosedEvent;
 import org.openqa.selenium.grid.data.Slot;
 import org.openqa.selenium.grid.data.SlotId;
+import org.openqa.selenium.grid.distributor.GridModel;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.SessionId;
 
@@ -48,22 +49,23 @@ import static org.openqa.selenium.grid.data.Availability.DOWN;
 import static org.openqa.selenium.grid.data.Availability.DRAINING;
 import static org.openqa.selenium.grid.data.Availability.UP;
 
-public class GridModel {
+public class LocalGridModel implements GridModel {
 
-  private static final Logger LOG = Logger.getLogger(GridModel.class.getName());
+  private static final Logger LOG = Logger.getLogger(LocalGridModel.class.getName());
   private static final SessionId RESERVED = new SessionId("reserved");
   private final ReadWriteLock lock = new ReentrantReadWriteLock(/* fair */ true);
   private final Map<Availability, Set<NodeStatus>> nodes = new ConcurrentHashMap<>();
   private final EventBus events;
 
-  public GridModel(EventBus events) {
+  public LocalGridModel(EventBus events) {
     this.events = Require.nonNull("Event bus", events);
 
     this.events.addListener(NodeDrainStarted.listener(nodeId -> setAvailability(nodeId, DRAINING)));
     this.events.addListener(SessionClosedEvent.listener(this::release));
   }
 
-  public GridModel add(NodeStatus node) {
+  @Override
+  public void add(NodeStatus node) {
     Require.nonNull("Node", node);
 
     Lock writeLock = lock.writeLock();
@@ -88,11 +90,10 @@ public class GridModel {
     } finally {
       writeLock.unlock();
     }
-
-    return this;
   }
 
-  public GridModel refresh(NodeStatus status) {
+  @Override
+  public void refresh(NodeStatus status) {
     Require.nonNull("Node status", status);
 
     Lock writeLock = lock.writeLock();
@@ -101,7 +102,7 @@ public class GridModel {
       AvailabilityAndNode availabilityAndNode = findNode(status.getId());
 
       if (availabilityAndNode == null) {
-        return this;
+        return;
       }
 
       // if the node was marked as "down", keep it down until a healthcheck passes:
@@ -109,19 +110,18 @@ public class GridModel {
       if (DOWN.equals(availabilityAndNode.availability)) {
         nodes(DOWN).remove(availabilityAndNode.status);
         nodes(DOWN).add(status);
-        return this;
       }
 
       // But do trust the node if it tells us it's draining
       nodes(availabilityAndNode.availability).remove(availabilityAndNode.status);
       nodes(status.getAvailability()).add(status);
-      return this;
     } finally {
       writeLock.unlock();
     }
   }
 
-  public GridModel touch(NodeId id) {
+  @Override
+  public void touch(NodeId id) {
     Require.nonNull("Node ID", id);
 
     Lock writeLock = lock.writeLock();
@@ -131,13 +131,13 @@ public class GridModel {
       if (availabilityAndNode != null) {
         availabilityAndNode.status.touch();
       }
-      return this;
     } finally {
       writeLock.unlock();
     }
   }
 
-  public GridModel remove(NodeId id) {
+  @Override
+  public void remove(NodeId id) {
     Require.nonNull("Node ID", id);
 
     Lock writeLock = lock.writeLock();
@@ -145,16 +145,16 @@ public class GridModel {
     try {
       AvailabilityAndNode availabilityAndNode = findNode(id);
       if (availabilityAndNode == null) {
-        return this;
+        return;
       }
 
       nodes(availabilityAndNode.availability).remove(availabilityAndNode.status);
-      return this;
     } finally {
       writeLock.unlock();
     }
   }
 
+  @Override
   public void purgeDeadNodes() {
     long now = System.currentTimeMillis();
     Lock writeLock = lock.writeLock();
@@ -200,6 +200,7 @@ public class GridModel {
     }
   }
 
+  @Override
   public Availability setAvailability(NodeId id, Availability availability) {
     Require.nonNull("Node ID", id);
     Require.nonNull("Availability", availability);
@@ -232,6 +233,7 @@ public class GridModel {
     }
   }
 
+  @Override
   public boolean reserve(SlotId slotId) {
     Lock writeLock = lock.writeLock();
     writeLock.lock();
@@ -269,6 +271,7 @@ public class GridModel {
     }
   }
 
+  @Override
   public Set<NodeStatus> getSnapshot() {
     Lock readLock = this.lock.readLock();
     readLock.lock();
@@ -285,7 +288,7 @@ public class GridModel {
     }
   }
 
-  private Set<NodeStatus> nodes(Availability availability) {
+  public Set<NodeStatus> nodes(Availability availability) {
     return nodes.computeIfAbsent(availability, ignored -> new HashSet<>());
   }
 
@@ -312,7 +315,8 @@ public class GridModel {
       status.getOsInfo());
   }
 
-  private void release(SessionId id) {
+  @Override
+  public void release(SessionId id) {
     if (id == null) {
       return;
     }
@@ -361,6 +365,7 @@ public class GridModel {
     amend(UP, status, reserved);
   }
 
+  @Override
   public void setSession(SlotId slotId, Session session) {
     Require.nonNull("Slot ID", slotId);
 

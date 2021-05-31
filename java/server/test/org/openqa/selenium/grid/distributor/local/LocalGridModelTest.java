@@ -33,7 +33,7 @@ import org.openqa.selenium.remote.tracing.Tracer;
 
 import java.time.Duration;
 
-public class GridModelTest {
+public class LocalGridModelTest {
 
   private final Tracer tracer = DefaultTestTracer.createTracer();
   private final EventBus events = new GuavaEventBus();

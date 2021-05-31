@@ -115,7 +115,7 @@ public class LocalDistributor extends Distributor {
   private final Duration healthcheckInterval;
 
   private final ReadWriteLock lock = new ReentrantReadWriteLock(/* fair */ true);
-  private final GridModel model;
+  private final LocalGridModel model;
   private final Map<NodeId, Node> nodes;
 
   private final NewSessionQueue sessionQueue;
@@ -142,7 +142,7 @@ public class LocalDistributor extends Distributor {
     this.slotSelector = Require.nonNull("Slot selector", slotSelector);
     this.registrationSecret = Require.nonNull("Registration secret", registrationSecret);
     this.healthcheckInterval = Require.nonNull("Health check interval", healthcheckInterval);
-    this.model = new GridModel(bus);
+    this.model = new LocalGridModel(bus);
     this.nodes = new ConcurrentHashMap<>();
     this.rejectUnsupportedCaps = rejectUnsupportedCaps;
 
