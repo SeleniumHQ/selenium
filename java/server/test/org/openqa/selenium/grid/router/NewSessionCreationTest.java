@@ -108,7 +108,8 @@ public class NewSessionCreationTest {
       queue,
       new DefaultSlotSelector(),
       registrationSecret,
-      Duration.ofMinutes(5));
+      Duration.ofMinutes(5),
+      false);
 
     Routable router = new Router(tracer, clientFactory, sessions, queue, distributor)
       .with(new EnsureSpecCompliantHeaders(ImmutableList.of(), ImmutableSet.of()));
@@ -183,7 +184,8 @@ public class NewSessionCreationTest {
       queue,
       new DefaultSlotSelector(),
       registrationSecret,
-      Duration.ofMinutes(5));
+      Duration.ofMinutes(5),
+      false);
     handler.addHandler(distributor);
 
     AtomicInteger count = new AtomicInteger();
@@ -224,6 +226,71 @@ public class NewSessionCreationTest {
       ImmutableMap.of(
         "capabilities", ImmutableMap.of(
           "alwaysMatch", capabilities))));
+
+
+    HttpClient client = clientFactory.createClient(server.getUrl());
+    HttpResponse httpResponse = client.execute(request);
+    assertThat(httpResponse.getStatus()).isEqualTo(HTTP_INTERNAL_ERROR);
+  }
+
+  @Test(timeout = 5000L)
+  public void shouldRejectRequestForUnsupportedCaps() throws URISyntaxException {
+    Capabilities capabilities = new ImmutableCapabilities("browserName", "cheese");
+    URI nodeUri = new URI("http://localhost:4444");
+    CombinedHandler handler = new CombinedHandler();
+
+    SessionMap sessions = new LocalSessionMap(tracer, events);
+    handler.addHandler(sessions);
+    NewSessionQueue queue = new LocalNewSessionQueue(
+      tracer,
+      events,
+      new DefaultSlotMatcher(),
+      Duration.ofSeconds(5),
+      Duration.ofSeconds(60),
+      registrationSecret);
+    handler.addHandler(queue);
+
+    Distributor distributor = new LocalDistributor(
+      tracer,
+      events,
+      clientFactory,
+      sessions,
+      queue,
+      new DefaultSlotSelector(),
+      registrationSecret,
+      Duration.ofMinutes(5),
+      true);
+    handler.addHandler(distributor);
+
+    TestSessionFactory sessionFactory = new TestSessionFactory((id, caps) ->
+      new Session(
+        id,
+        nodeUri,
+        new ImmutableCapabilities(),
+        caps,
+        Instant.now())
+    );
+
+    LocalNode localNode = LocalNode.builder(tracer, events, nodeUri, nodeUri, registrationSecret)
+      .add(capabilities, sessionFactory).build();
+    handler.addHandler(localNode);
+    distributor.add(localNode);
+
+    Router router = new Router(tracer, clientFactory, sessions, queue, distributor);
+    handler.addHandler(router);
+
+    server = new NettyServer(
+      new BaseServerOptions(
+        new MapConfig(ImmutableMap.of())),
+      handler);
+
+    server.start();
+
+    HttpRequest request = new HttpRequest(POST, "/session");
+    request.setContent(asJson(
+      ImmutableMap.of(
+        "capabilities", ImmutableMap.of(
+          "alwaysMatch", new ImmutableCapabilities("browserName", "burger")))));
 
 
     HttpClient client = clientFactory.createClient(server.getUrl());

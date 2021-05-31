@@ -70,6 +70,32 @@ module Selenium
       ensure
         File.delete(path) if File.exist?(path)
       end
+
+      describe 'page size' do
+        before do
+          driver.navigate.to url_for('printPage.html')
+        end
+
+        after do
+          File.delete(path) if File.exist?(path)
+        end
+
+        it 'takes viewport screenshot by default' do
+          screenshot = driver.save_screenshot path
+          expect(IO.read(screenshot)[0x10..0x18].unpack('NN').last).to be < 2600
+        end
+
+        it 'takes full page screenshot', exclusive: {browser: :firefox} do
+          screenshot = driver.save_screenshot path, full_page: true
+          expect(IO.read(screenshot)[0x10..0x18].unpack('NN').last).to be > 2600
+        end
+
+        it 'does not take full page screenshot', exclude: {browser: :firefox} do
+          expect {
+            driver.save_screenshot path, full_page: true
+          }.to raise_exception(Error::UnsupportedOperationError, /Full Page Screenshots are not supported/)
+        end
+      end
     end
   end
 end

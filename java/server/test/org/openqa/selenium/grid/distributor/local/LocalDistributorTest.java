@@ -113,7 +113,8 @@ public class LocalDistributorTest {
       queue,
       new DefaultSlotSelector(),
       registrationSecret,
-      Duration.ofMinutes(5));
+      Duration.ofMinutes(5),
+      false);
     distributor.add(localNode);
     DistributorStatus status = distributor.getStatus();
 
@@ -145,7 +146,8 @@ public class LocalDistributorTest {
       queue,
       new DefaultSlotSelector(),
       secret,
-      Duration.ofMinutes(5));
+      Duration.ofMinutes(5),
+      false);
     bus.fire(new NodeStatusEvent(localNode.getStatus()));
     DistributorStatus status = secretDistributor.getStatus();
 
@@ -171,7 +173,8 @@ public class LocalDistributorTest {
       queue,
       new DefaultSlotSelector(),
       registrationSecret,
-      Duration.ofMinutes(5));
+      Duration.ofMinutes(5),
+      false);
     distributor.add(localNode);
 
     //Check the size
@@ -203,7 +206,8 @@ public class LocalDistributorTest {
       queue,
       new DefaultSlotSelector(),
       registrationSecret,
-      Duration.ofMinutes(5));
+      Duration.ofMinutes(5),
+      false);
     distributor.add(localNode);
     distributor.add(localNode);
     DistributorStatus status = distributor.getStatus();
@@ -230,7 +234,8 @@ public class LocalDistributorTest {
       queue,
       new DefaultSlotSelector(),
       registrationSecret,
-      Duration.ofMinutes(5));
+      Duration.ofMinutes(5),
+      false);
 
     // Add one node to ensure that everything is created in that.
     Capabilities caps = new ImmutableCapabilities("browserName", "cheese");
@@ -311,7 +316,8 @@ public class LocalDistributorTest {
       queue,
       new DefaultSlotSelector(),
       registrationSecret,
-      Duration.ofMinutes(5));
+      Duration.ofMinutes(5),
+      false);
     distributor.add(localNode);
     assertThat(localNode.isDraining()).isFalse();
 
@@ -350,7 +356,8 @@ public class LocalDistributorTest {
       queue,
       new DefaultSlotSelector(),
       registrationSecret,
-      Duration.ofMinutes(5));
+      Duration.ofMinutes(5),
+      false);
     distributor.add(localNode);
 
     localNode.drain();

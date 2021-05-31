@@ -36,6 +36,7 @@ public class DistributorOptions {
   static final String DEFAULT_SLOT_MATCHER = "org.openqa.selenium.grid.data.DefaultSlotMatcher";
   static final String DEFAULT_SLOT_SELECTOR_IMPLEMENTATION =
     "org.openqa.selenium.grid.distributor.selector.DefaultSlotSelector";
+  static final boolean DEFAULT_REJECT_UNSUPPORTED_CAPS = false;
 
   public static final int DEFAULT_HEALTHCHECK_INTERVAL = 300;
 
@@ -112,5 +113,10 @@ public class DistributorOptions {
       "slot-selector",
       SlotSelector.class,
       DEFAULT_SLOT_SELECTOR_IMPLEMENTATION);
+  }
+
+  public boolean shouldRejectUnsupportedCaps() {
+    return config.getBool(DISTRIBUTOR_SECTION,
+      "reject-unsupported-caps").orElse(DEFAULT_REJECT_UNSUPPORTED_CAPS);
   }
 }

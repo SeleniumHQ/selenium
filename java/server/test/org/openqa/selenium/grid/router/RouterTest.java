@@ -103,7 +103,8 @@ public class RouterTest {
       queue,
       new DefaultSlotSelector(),
       registrationSecret,
-      Duration.ofMinutes(5));
+      Duration.ofMinutes(5),
+      false);
     handler.addHandler(distributor);
 
     router = new Router(tracer, clientFactory, sessions, queue, distributor);
