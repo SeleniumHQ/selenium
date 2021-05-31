@@ -101,7 +101,7 @@ public class SessionQueueGridTest {
       bus,
       new DefaultSlotMatcher(),
       Duration.ofSeconds(5),
-      Duration.ofSeconds(10),
+      Duration.ofSeconds(60),
       registrationSecret);
     handler.addHandler(queue);
 
@@ -113,7 +113,8 @@ public class SessionQueueGridTest {
       queue,
       new DefaultSlotSelector(),
       registrationSecret,
-      Duration.ofMinutes(5));
+      Duration.ofMinutes(5),
+      false);
     handler.addHandler(distributor);
 
     LocalNode localNode = LocalNode.builder(tracer, bus, nodeUri, nodeUri, registrationSecret)

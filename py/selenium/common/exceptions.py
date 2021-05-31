@@ -19,18 +19,20 @@
 Exceptions that may happen in all the webdriver code.
 """
 
+from typing import Optional, Sequence
+
 
 class WebDriverException(Exception):
     """
     Base webdriver exception.
     """
 
-    def __init__(self, msg=None, screen=None, stacktrace=None):
+    def __init__(self, msg: Optional[str] = None, screen: Optional[str] = None, stacktrace: Optional[Sequence[str]] = None) -> None:
         self.msg = msg
         self.screen = screen
         self.stacktrace = stacktrace
 
-    def __str__(self):
+    def __str__(self) -> str:
         exception_msg = "Message: %s\n" % self.msg
         if self.screen:
             exception_msg += "Screenshot: available via screen\n"
@@ -126,11 +128,11 @@ class UnexpectedAlertPresentException(WebDriverException):
     Usually raised when  an unexpected modal is blocking the webdriver from executing
     commands.
     """
-    def __init__(self, msg=None, screen=None, stacktrace=None, alert_text=None):
+    def __init__(self, msg: Optional[str] = None, screen: Optional[str] = None, stacktrace: Optional[Sequence[str]] = None, alert_text: Optional[str] = None) -> None:
         super(UnexpectedAlertPresentException, self).__init__(msg, screen, stacktrace)
         self.alert_text = alert_text
 
-    def __str__(self):
+    def __str__(self) -> str:
         return "Alert Text: %s\n%s" % (self.alert_text, super(UnexpectedAlertPresentException, self).__str__())
 
 

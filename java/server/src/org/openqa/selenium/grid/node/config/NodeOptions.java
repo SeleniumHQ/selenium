@@ -74,7 +74,7 @@ public class NodeOptions {
   private static final ImmutableCapabilities CURRENT_PLATFORM =
     new ImmutableCapabilities("platformName", Platform.getCurrent());
   private static final ImmutableSet<String>
-    ONE_SESSION_DRIVERS = ImmutableSet.of("safari", "safari technology preview");
+    SINGLE_SESSION_DRIVERS = ImmutableSet.of("safari", "safari technology preview");
 
   private final Config config;
 
@@ -458,7 +458,7 @@ public class NodeOptions {
   private int getDriverMaxSessions(WebDriverInfo info, int desiredMaxSessions) {
     // Safari and Safari Technology Preview
     if (info.getMaximumSimultaneousSessions() == 1 &&
-        ONE_SESSION_DRIVERS.contains(info.getDisplayName().toLowerCase())) {
+        SINGLE_SESSION_DRIVERS.contains(info.getDisplayName().toLowerCase())) {
       return info.getMaximumSimultaneousSessions();
     }
     boolean overrideMaxSessions = config.getBool(NODE_SECTION, "override-max-sessions")
