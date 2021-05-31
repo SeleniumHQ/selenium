@@ -15,7 +15,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.grid.distributor.local;
+package org.openqa.selenium.grid.distributor.gridmodel.local;
 
 import com.google.common.collect.ImmutableSet;
 import org.openqa.selenium.events.EventBus;
