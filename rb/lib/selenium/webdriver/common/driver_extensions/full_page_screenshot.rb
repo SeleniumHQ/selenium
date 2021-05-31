@@ -19,34 +19,25 @@
 
 module Selenium
   module WebDriver
-    module Firefox
-      module Features
+    module DriverExtensions
+      module FullPageScreenshot
+        #
+        # Save a PNG screenshot of the full page to the given path
+        #
+        # @api public
+        #
 
-        FIREFOX_COMMANDS = {
-          install_addon: [:post, 'session/:session_id/moz/addon/install'],
-          uninstall_addon: [:post, 'session/:session_id/moz/addon/uninstall'],
-          full_page_screenshot: [:get, 'session/:session_id/moz/screenshot/full']
-        }.freeze
-
-        def commands(command)
-          FIREFOX_COMMANDS[command] || self.class::COMMANDS[command]
+        def save_full_page_screenshot(path)
+          save_screenshot(path, full_page: true)
         end
 
-        def install_addon(path, temporary)
-          payload = {path: path}
-          payload[:temporary] = temporary unless temporary.nil?
-          execute :install_addon, {}, payload
-        end
-
-        def uninstall_addon(id)
-          execute :uninstall_addon, {}, {id: id}
-        end
+        private
 
         def full_screenshot
-          execute :full_page_screenshot
+          @bridge.full_screenshot
         end
 
-      end # Bridge
-    end # Firefox
+      end # FullPageScreenshot
+    end # DriverExtensions
   end # WebDriver
 end # Selenium

@@ -56,7 +56,8 @@ public class GridModelTest {
     queue,
     new DefaultSlotSelector(),
     secret,
-    Duration.ofMinutes(5));
+    Duration.ofMinutes(5),
+    false);
 
   @Test
   public void shouldNotChangeTheStateOfANodeMarkedAsDownWhenNodeStatusEventFires() {

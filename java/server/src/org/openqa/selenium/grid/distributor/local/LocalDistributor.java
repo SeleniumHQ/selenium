@@ -120,6 +120,8 @@ public class LocalDistributor extends Distributor {
   private final NewSessionQueue sessionQueue;
   private final Regularly regularly;
 
+  private final boolean rejectUnsupportedCaps;
+
   public LocalDistributor(
     Tracer tracer,
     EventBus bus,
@@ -128,7 +130,8 @@ public class LocalDistributor extends Distributor {
     NewSessionQueue sessionQueue,
     SlotSelector slotSelector,
     Secret registrationSecret,
-    Duration healthcheckInterval) {
+    Duration healthcheckInterval,
+    boolean rejectUnsupportedCaps) {
     super(tracer, clientFactory, registrationSecret);
     this.tracer = Require.nonNull("Tracer", tracer);
     this.bus = Require.nonNull("Event bus", bus);
@@ -140,6 +143,7 @@ public class LocalDistributor extends Distributor {
     this.healthcheckInterval = Require.nonNull("Health check interval", healthcheckInterval);
     this.model = new GridModel(bus);
     this.nodes = new ConcurrentHashMap<>();
+    this.rejectUnsupportedCaps = rejectUnsupportedCaps;
 
     bus.addListener(NodeStatusEvent.listener(this::register));
     bus.addListener(NodeStatusEvent.listener(model::refresh));
@@ -185,7 +189,8 @@ public class LocalDistributor extends Distributor {
       sessionQueue,
       distributorOptions.getSlotSelector(),
       secretOptions.getRegistrationSecret(),
-      distributorOptions.getHealthCheckInterval());
+      distributorOptions.getHealthCheckInterval(),
+      distributorOptions.shouldRejectUnsupportedCaps());
   }
 
   @Override
@@ -541,9 +546,9 @@ public class LocalDistributor extends Distributor {
 
     @Override
     public void run() {
-      List<SessionRequestCapability> queueContents = sessionQueue.getQueueContents();
-      checkMatchingSlot(queueContents);
-
+      if (rejectUnsupportedCaps) {
+        checkMatchingSlot(sessionQueue.getQueueContents());
+      }
       int initialSize = sessionQueue.getQueueContents().size();
       boolean retry = initialSize != 0;
 
