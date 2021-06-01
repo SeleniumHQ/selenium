@@ -20,6 +20,7 @@ package org.openqa.selenium.grid.sessionqueue.httpd;
 import com.google.auto.service.AutoService;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
+
 import org.openqa.selenium.BuildInfo;
 import org.openqa.selenium.cli.CliCommand;
 import org.openqa.selenium.grid.TemplateGridServerCommand;
@@ -110,9 +111,9 @@ public class NewSessionQueueServer extends TemplateGridServerCommand {
 
     BuildInfo info = new BuildInfo();
     LOG.info(String.format(
-        "Started Selenium New Session Queue %s (revision %s): %s",
-        info.getReleaseLabel(),
-        info.getBuildRevision(),
-        server.getUrl()));
+      "Started Selenium SessionQueue %s (revision %s): %s",
+      info.getReleaseLabel(),
+      info.getBuildRevision(),
+      server.getUrl()));
   }
 }
