@@ -32,7 +32,7 @@ import java.util.Optional;
 public class DistributorOptions {
 
   public static final int DEFAULT_HEALTHCHECK_INTERVAL = 300;
-  static final String DISTRIBUTOR_SECTION = "distributor";
+  public static final String DISTRIBUTOR_SECTION = "distributor";
   static final String DEFAULT_DISTRIBUTOR_IMPLEMENTATION =
     "org.openqa.selenium.grid.distributor.local.LocalDistributor";
   static final String DEFAULT_SLOT_MATCHER = "org.openqa.selenium.grid.data.DefaultSlotMatcher";
