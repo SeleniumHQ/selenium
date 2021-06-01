@@ -45,8 +45,8 @@ import org.openqa.selenium.grid.data.Slot;
 import org.openqa.selenium.grid.data.SlotId;
 import org.openqa.selenium.grid.data.TraceSessionRequest;
 import org.openqa.selenium.grid.distributor.Distributor;
+import org.openqa.selenium.grid.distributor.GridModel;
 import org.openqa.selenium.grid.distributor.config.DistributorOptions;
-import org.openqa.selenium.grid.distributor.gridmodel.local.LocalGridModel;
 import org.openqa.selenium.grid.distributor.selector.SlotSelector;
 import org.openqa.selenium.grid.log.LoggingOptions;
 import org.openqa.selenium.grid.node.HealthCheck;
@@ -116,7 +116,7 @@ public class LocalDistributor extends Distributor {
   private final Duration healthcheckInterval;
 
   private final ReadWriteLock lock = new ReentrantReadWriteLock(/* fair */ true);
-  private final LocalGridModel model;
+  private final GridModel model;
   private final Map<NodeId, Node> nodes;
 
   private final NewSessionQueue sessionQueue;
@@ -130,6 +130,7 @@ public class LocalDistributor extends Distributor {
     HttpClient.Factory clientFactory,
     SessionMap sessions,
     NewSessionQueue sessionQueue,
+    GridModel model,
     SlotSelector slotSelector,
     Secret registrationSecret,
     Duration healthcheckInterval,
@@ -143,7 +144,7 @@ public class LocalDistributor extends Distributor {
     this.slotSelector = Require.nonNull("Slot selector", slotSelector);
     this.registrationSecret = Require.nonNull("Registration secret", registrationSecret);
     this.healthcheckInterval = Require.nonNull("Health check interval", healthcheckInterval);
-    this.model = new LocalGridModel(bus);
+    this.model = model;
     this.nodes = new ConcurrentHashMap<>();
     this.rejectUnsupportedCaps = rejectUnsupportedCaps;
 
@@ -189,6 +190,7 @@ public class LocalDistributor extends Distributor {
       clientFactory,
       sessions,
       sessionQueue,
+      distributorOptions.getGridModel(),
       distributorOptions.getSlotSelector(),
       secretOptions.getRegistrationSecret(),
       distributorOptions.getHealthCheckInterval(),

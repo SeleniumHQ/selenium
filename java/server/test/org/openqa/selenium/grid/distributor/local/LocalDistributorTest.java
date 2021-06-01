@@ -32,6 +32,7 @@ import org.openqa.selenium.grid.data.NodeStatusEvent;
 import org.openqa.selenium.grid.data.RequestId;
 import org.openqa.selenium.grid.data.Session;
 import org.openqa.selenium.grid.distributor.Distributor;
+import org.openqa.selenium.grid.distributor.gridmodel.local.LocalGridModel;
 import org.openqa.selenium.grid.distributor.selector.DefaultSlotSelector;
 import org.openqa.selenium.grid.node.Node;
 import org.openqa.selenium.grid.node.local.LocalNode;
@@ -111,6 +112,7 @@ public class LocalDistributorTest {
       clientFactory,
       new LocalSessionMap(tracer, bus),
       queue,
+      new LocalGridModel(bus),
       new DefaultSlotSelector(),
       registrationSecret,
       Duration.ofMinutes(5),
@@ -144,6 +146,7 @@ public class LocalDistributorTest {
       clientFactory,
       new LocalSessionMap(tracer, bus),
       queue,
+      new LocalGridModel(bus),
       new DefaultSlotSelector(),
       secret,
       Duration.ofMinutes(5),
@@ -171,6 +174,7 @@ public class LocalDistributorTest {
       clientFactory,
       new LocalSessionMap(tracer, bus),
       queue,
+      new LocalGridModel(bus),
       new DefaultSlotSelector(),
       registrationSecret,
       Duration.ofMinutes(5),
@@ -204,6 +208,7 @@ public class LocalDistributorTest {
       clientFactory,
       new LocalSessionMap(tracer, bus),
       queue,
+      new LocalGridModel(bus),
       new DefaultSlotSelector(),
       registrationSecret,
       Duration.ofMinutes(5),
@@ -232,6 +237,7 @@ public class LocalDistributorTest {
       clientFactory,
       new LocalSessionMap(tracer, bus),
       queue,
+      new LocalGridModel(bus),
       new DefaultSlotSelector(),
       registrationSecret,
       Duration.ofMinutes(5),
@@ -314,6 +320,7 @@ public class LocalDistributorTest {
       clientFactory,
       new LocalSessionMap(tracer, bus),
       queue,
+      new LocalGridModel(bus),
       new DefaultSlotSelector(),
       registrationSecret,
       Duration.ofMinutes(5),
@@ -354,6 +361,7 @@ public class LocalDistributorTest {
       clientFactory,
       new LocalSessionMap(tracer, bus),
       queue,
+      new LocalGridModel(bus),
       new DefaultSlotSelector(),
       registrationSecret,
       Duration.ofMinutes(5),

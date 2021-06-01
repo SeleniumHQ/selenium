@@ -32,6 +32,7 @@ import org.openqa.selenium.grid.config.MapConfig;
 import org.openqa.selenium.grid.data.DefaultSlotMatcher;
 import org.openqa.selenium.grid.data.Session;
 import org.openqa.selenium.grid.distributor.Distributor;
+import org.openqa.selenium.grid.distributor.gridmodel.local.LocalGridModel;
 import org.openqa.selenium.grid.distributor.local.LocalDistributor;
 import org.openqa.selenium.grid.distributor.selector.DefaultSlotSelector;
 import org.openqa.selenium.grid.node.Node;
@@ -106,6 +107,7 @@ public class NewSessionCreationTest {
       clientFactory,
       sessions,
       queue,
+      new LocalGridModel(events),
       new DefaultSlotSelector(),
       registrationSecret,
       Duration.ofMinutes(5),
@@ -182,6 +184,7 @@ public class NewSessionCreationTest {
       clientFactory,
       sessions,
       queue,
+      new LocalGridModel(events),
       new DefaultSlotSelector(),
       registrationSecret,
       Duration.ofMinutes(5),
@@ -256,6 +259,7 @@ public class NewSessionCreationTest {
       clientFactory,
       sessions,
       queue,
+      new LocalGridModel(events),
       new DefaultSlotSelector(),
       registrationSecret,
       Duration.ofMinutes(5),
