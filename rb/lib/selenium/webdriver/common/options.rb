@@ -110,6 +110,7 @@ module Selenium
         options = @options.dup
 
         w3c_options = options.select { |key, _val| W3C_OPTIONS.include?(key) }
+        w3c_options[:unhandled_prompt_behavior] = w3c_options[:unhandled_prompt_behavior]&.to_s&.tr('_', ' ')
         options.delete_if { |key, _val| W3C_OPTIONS.include?(key) }
 
         self.class::CAPABILITIES.each do |capability_alias, capability_name|
