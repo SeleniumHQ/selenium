@@ -136,10 +136,7 @@ module Selenium
             expect(element.attribute(prop_or_attr)).to eq 'true'
           end
 
-          it '#dom_attribute does not update after click',
-             except: [{browser: %i[chrome edge],
-                       reason: 'https://bugs.chromium.org/p/chromedriver/issues/detail?id=3746'},
-                      {browser: :safari}] do
+          it '#dom_attribute does not update after click', except: {browser: :safari} do
             element.click
             expect(element.dom_attribute(prop_or_attr)).to eq 'true'
           end
@@ -171,10 +168,7 @@ module Selenium
             expect(element.attribute(prop_or_attr)).to be_nil
           end
 
-          it '#dom_attribute does not update after click',
-             except: [{browser: %i[chrome edge],
-                       reason: 'https://bugs.chromium.org/p/chromedriver/issues/detail?id=3746'},
-                      {browser: :safari}] do
+          it '#dom_attribute does not update after click' do
             element.click
             expect(element.dom_attribute(prop_or_attr)).to eq nil
           end
@@ -194,9 +188,7 @@ module Selenium
           let(:element) { driver.find_element(id: 'withText') }
           let(:prop_or_attr) { 'value' }
 
-          it '#dom_attribute returns nil',
-             except: {browser: %i[chrome edge],
-                      reason: 'https://bugs.chromium.org/p/chromedriver/issues/detail?id=3746'} do
+          it '#dom_attribute returns nil' do
             expect(element.dom_attribute(prop_or_attr)).to be_nil
           end
 
@@ -259,9 +251,7 @@ module Selenium
           let(:element) { driver.find_element(id: 'result') }
           let(:prop_or_attr) { 'style' }
 
-          it '#dom_attribute attribute with no formatting',
-             except: {browser: %i[chrome edge],
-                      reason: 'https://bugs.chromium.org/p/chromedriver/issues/detail?id=3746'} do
+          it '#dom_attribute attribute with no formatting' do
             expect(element.dom_attribute(prop_or_attr)).to eq 'width:300;height:60'
           end
 
@@ -353,9 +343,7 @@ module Selenium
           let(:element) { driver.find_element(id: 'wallace') }
           let(:prop_or_attr) { 'className' }
 
-          it '#dom_attribute returns nil',
-             except: {browser: %i[chrome edge],
-                      reason: 'https://bugs.chromium.org/p/chromedriver/issues/detail?id=3746'} do
+          it '#dom_attribute returns nil' do
             expect(element.dom_attribute(prop_or_attr)).to be_nil
           end
 
@@ -372,9 +360,7 @@ module Selenium
           let(:element) { driver.find_element(tag_name: 'form') }
           let(:prop_or_attr) { 'action' }
 
-          it '#dom_attribute returns attribute value',
-             except: {browser: %i[chrome edge],
-                      reason: 'https://bugs.chromium.org/p/chromedriver/issues/detail?id=3746'} do
+          it '#dom_attribute returns attribute value' do
             expect(element.dom_attribute(prop_or_attr)).to eq 'resultPage.html'
           end
 
