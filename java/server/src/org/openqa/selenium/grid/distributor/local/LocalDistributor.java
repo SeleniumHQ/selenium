@@ -18,6 +18,7 @@
 package org.openqa.selenium.grid.distributor.local;
 
 import com.google.common.collect.ImmutableSet;
+
 import org.openqa.selenium.Beta;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
@@ -609,7 +610,7 @@ public class LocalDistributor extends Distributor {
 
         if (response.isLeft() && response.left() instanceof RetrySessionRequestException) {
           try(Span childSpan = span.createSpan("distributor.retry")) {
-            LOG.info("Retryinggg");
+            LOG.info("Retrying");
             boolean retried = sessionQueue.retryAddToQueue(sessionRequest);
 
             attributeMap.put("request.retry_add", EventAttribute.setValue(retried));

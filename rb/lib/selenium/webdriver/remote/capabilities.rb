@@ -307,22 +307,12 @@ module Selenium
           when :platform
             value.to_s.upcase
           when :proxy
-            convert_proxy(value)
+            value&.as_json
           when :unhandled_prompt_behavior
             value.is_a?(Symbol) ? value.to_s.tr('_', ' ') : value
           else
             value
           end
-        end
-
-        def convert_proxy(value)
-          return unless value
-
-          hash = value.as_json
-          hash['proxyType'] &&= hash['proxyType'].downcase
-          hash['noProxy'] = hash['noProxy'].split(', ') if hash['noProxy'].is_a?(String)
-
-          hash
         end
       end # Capabilities
     end # Remote

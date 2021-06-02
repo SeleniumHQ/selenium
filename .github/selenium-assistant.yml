@@ -32,13 +32,12 @@ closeQuestionsAndSupportRequestsComment: >
 
   * 📮 Post them to [StackOverflow](https://stackoverflow.com/questions/tagged/selenium)
 
-  * 🗣 Join us in the [IRC/Slack channel](https://seleniumhq.herokuapp.com/) where the community can help you as well
+  * 🗣 Join us in the [IRC/Slack channel](https://www.selenium.dev/support/) where the community can help you as well
 
 
   If you think this is incorrect, please feel free to open a new issue.
 
 
-  Thank you for your contributions.
 
 # Issue types that the repo supports. When an issue is created, the heading should be one of these strings
 # (from the issue templates). To take into account markdown characters, put the whole string in quotations.
@@ -75,10 +74,9 @@ closeNotSupportedIssueTypesComment: >
 
   * 📮 Post them to [StackOverflow](https://stackoverflow.com/questions/tagged/selenium)
 
-  * 🗣 Join us in the [IRC/Slack channel](https://seleniumhq.herokuapp.com/) where the community can help you as well
+  * 🗣 Join us in the [IRC/Slack channel](https://www.selenium.dev/support/) where the community can help you as well
 
 
   If you think this is incorrect, please feel free to open a new issue.
 
 
-  Thank you for your contributions.

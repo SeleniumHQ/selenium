@@ -45,9 +45,13 @@ public class SessionMapOptions {
 
     Optional<URI> host = config.get(SESSIONS_SECTION, "host").map(str -> {
       try {
-        return new URI(str);
+        URI sessionUri = new URI(str);
+        if (sessionUri.getHost() == null || sessionUri.getPort() == -1) {
+          throw new ConfigException("Undefined host or port in SessionMap server URI: " + str);
+        }
+        return sessionUri;
       } catch (URISyntaxException e) {
-        throw new ConfigException("Session map server URI is not a valid URI: " + str);
+        throw new ConfigException("Session Map server URI is not a valid URI: " + str);
       }
     });
 
