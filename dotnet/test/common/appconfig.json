@@ -46,6 +46,13 @@
     },
 
     "Edge": {
+      "DriverTypeName": "OpenQA.Selenium.Edge.StableChannelEdgeDriver",
+      "AssemblyName": "WebDriver.Common.Tests",
+      "BrowserValue": "Edge",
+      "RemoteCapabilities": "MicrosoftEdge"
+    },
+
+    "EdgeDev": {
       "DriverTypeName": "OpenQA.Selenium.Edge.DevChannelEdgeDriver",
       "AssemblyName": "WebDriver.Common.Tests",
       "BrowserValue": "Edge",
