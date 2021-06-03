@@ -19,6 +19,7 @@ package org.openqa.selenium.grid.distributor;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
+
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -118,7 +119,7 @@ public class DistributorTest {
   @Before
   public void setUp() throws URISyntaxException {
     nodeUri = new URI("http://example:5678");
-    routableUri = new URI("http://localhost:1234");
+    routableUri = new URI(String.format("http://localhost:%s", PortProber.findFreePort()));
     tracer = DefaultTestTracer.createTracer();
     bus = new GuavaEventBus();
     LocalSessionMap sessions = new LocalSessionMap(tracer, bus);
