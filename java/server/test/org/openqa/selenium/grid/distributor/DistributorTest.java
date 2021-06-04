@@ -183,20 +183,20 @@ public class DistributorTest {
     CountDownLatch latch = new CountDownLatch(1);
 
     bus.addListener(NodeHeartBeatEvent.listener(nodeStatus -> {
-      latch.countDown();
       if (node.getId().equals(nodeStatus.getId())) {
+        latch.countDown();
         heartbeatStarted.set(true);
       }
     }));
     waitToHaveCapacity(distributor);
-    boolean eventFired = false;
+    boolean eventFiredAndListenedTo = false;
     try {
-      eventFired = latch.await(30, TimeUnit.SECONDS);
+      eventFiredAndListenedTo = latch.await(30, TimeUnit.SECONDS);
     } catch (InterruptedException e) {
       Assert.fail("Thread Interrupted");
     }
 
-    assertThat(eventFired).isTrue();
+    assertThat(eventFiredAndListenedTo).isTrue();
     assertThat(heartbeatStarted.get()).isTrue();
   }
 
