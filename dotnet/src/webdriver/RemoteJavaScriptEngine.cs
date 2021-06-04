@@ -1,4 +1,4 @@
-// <copyright file="RemoteJavaScriptEngine.cs" company="WebDriver Committers">
+// <copyright file="JavaScriptEngine.cs" company="WebDriver Committers">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements. See the NOTICE file
 // distributed with this work for additional information
@@ -22,12 +22,12 @@ using System.Globalization;
 using System.Threading.Tasks;
 using OpenQA.Selenium.DevTools;
 
-namespace OpenQA.Selenium.Remote
+namespace OpenQA.Selenium
 {
     /// <summary>
     /// Provides methods allowing the user to manage settings in the browser's JavaScript engine.
     /// </summary>
-    public class RemoteJavaScriptEngine : IJavaScriptEngine
+    public class JavaScriptEngine : IJavaScriptEngine
     {
         private Lazy<DevToolsSession> session;
         private Dictionary<string, InitializationScript> initializationScripts = new Dictionary<string, InitializationScript>();
@@ -38,7 +38,7 @@ namespace OpenQA.Selenium.Remote
         /// Initializes a new instance of the <see cref="RemoteJavaScriptEngine"/> class.
         /// </summary>
         /// <param name="driver">The <see cref="IWebDriver"/> instance in which the JavaScript engine is executing.</param>
-        public RemoteJavaScriptEngine(IWebDriver driver)
+        public JavaScriptEngine(IWebDriver driver)
         {
             this.session = new Lazy<DevToolsSession>(() =>
             {
