@@ -15,7 +15,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.docker.v1_40;
+package org.openqa.selenium.docker.v1_41;
 
 import org.openqa.selenium.docker.DockerException;
 import org.openqa.selenium.docker.internal.Reference;
@@ -29,6 +29,7 @@ import org.openqa.selenium.remote.http.HttpResponse;
 import java.util.Map;
 import java.util.logging.Logger;
 
+import static org.openqa.selenium.docker.v1_41.V141Docker.DOCKER_API_VERSION;
 import static org.openqa.selenium.json.Json.JSON_UTF_8;
 import static org.openqa.selenium.json.Json.MAP_TYPE;
 import static org.openqa.selenium.remote.http.HttpMethod.POST;
@@ -48,7 +49,7 @@ class PullImage {
     LOG.info("Pulling " + ref);
 
     String image = String.format("%s/%s", ref.getDomain(), ref.getName());
-    HttpRequest req = new HttpRequest(POST, "/v1.40/images/create")
+    HttpRequest req = new HttpRequest(POST, String.format("/v%s/images/create", DOCKER_API_VERSION))
       .addHeader("Content-Type", JSON_UTF_8)
       .addHeader("Content-Length", "0")
       .addQueryParameter("fromImage", image);

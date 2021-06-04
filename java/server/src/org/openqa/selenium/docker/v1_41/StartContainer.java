@@ -15,36 +15,33 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.docker.v1_40;
+package org.openqa.selenium.docker.v1_41;
 
 import org.openqa.selenium.docker.ContainerId;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpRequest;
 
-import java.time.Duration;
-
-import static org.openqa.selenium.docker.v1_40.DockerMessages.throwIfNecessary;
+import static org.openqa.selenium.docker.v1_41.DockerMessages.throwIfNecessary;
+import static org.openqa.selenium.docker.v1_41.V141Docker.DOCKER_API_VERSION;
 import static org.openqa.selenium.remote.http.HttpMethod.POST;
 
-class StopContainer {
+class StartContainer {
   private final HttpHandler client;
 
-  public StopContainer(HttpHandler client) {
+  public StartContainer(HttpHandler client) {
     this.client = Require.nonNull("HTTP client", client);
   }
 
-  public void apply(ContainerId id, Duration timeout) {
+  public void apply(ContainerId id) {
     Require.nonNull("Container id", id);
-    Require.nonNull("Timeout", timeout);
 
-    String seconds = String.valueOf(timeout.toMillis() / 1000);
-
-    HttpRequest request = new HttpRequest(POST, String.format("/v1.40/containers/%s/stop", id))
-      .addHeader("Content-Length", "0")
-      .addHeader("Content-Type", "text/plain")
-      .addQueryParameter("t", seconds);
-
-    throwIfNecessary(client.execute(request), "Unable to stop container: %s", id);
+    throwIfNecessary(
+      client.execute(
+        new HttpRequest(POST, String.format("/v%s/containers/%s/start", DOCKER_API_VERSION, id))
+          .addHeader("Content-Length", "0")
+          .addHeader("Content-Type", "text/plain")),
+      "Unable to start container: %s",
+      id);
   }
 }

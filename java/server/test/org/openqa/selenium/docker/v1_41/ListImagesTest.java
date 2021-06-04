@@ -15,7 +15,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.docker.v1_40;
+package org.openqa.selenium.docker.v1_41;
 
 import org.junit.Test;
 import org.openqa.selenium.docker.Image;

@@ -15,7 +15,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.docker.v1_40;
+package org.openqa.selenium.docker.v1_41;
 
 import org.openqa.selenium.docker.Container;
 import org.openqa.selenium.docker.ContainerConfig;
@@ -35,6 +35,7 @@ import java.util.Map;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
+import static org.openqa.selenium.docker.v1_41.V141Docker.DOCKER_API_VERSION;
 import static org.openqa.selenium.json.Json.JSON_UTF_8;
 import static org.openqa.selenium.json.Json.MAP_TYPE;
 import static org.openqa.selenium.remote.http.Contents.asJson;
@@ -54,7 +55,7 @@ class CreateContainer {
   public Container apply(ContainerConfig info) {
     HttpResponse res = DockerMessages.throwIfNecessary(
       client.execute(
-        new HttpRequest(POST, "/v1.40/containers/create")
+        new HttpRequest(POST, String.format("/v%s/containers/create", DOCKER_API_VERSION))
           .addHeader("Content-Type", JSON_UTF_8)
           .setContent(asJson(info))),
       "Unable to create container: ",

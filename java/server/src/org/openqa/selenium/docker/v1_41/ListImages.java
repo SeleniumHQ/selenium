@@ -15,9 +15,10 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.docker.v1_40;
+package org.openqa.selenium.docker.v1_41;
 
 import com.google.common.collect.ImmutableMap;
+
 import org.openqa.selenium.docker.Image;
 import org.openqa.selenium.docker.internal.ImageSummary;
 import org.openqa.selenium.docker.internal.Reference;
@@ -33,6 +34,7 @@ import java.util.Map;
 import java.util.Set;
 
 import static com.google.common.collect.ImmutableSet.toImmutableSet;
+import static org.openqa.selenium.docker.v1_41.V141Docker.DOCKER_API_VERSION;
 import static org.openqa.selenium.json.Json.JSON_UTF_8;
 import static org.openqa.selenium.remote.http.Contents.string;
 import static org.openqa.selenium.remote.http.HttpMethod.GET;
@@ -54,15 +56,15 @@ class ListImages {
     String familiarName = reference.getFamiliarName();
     Map<String, Object> filters = ImmutableMap.of("reference", ImmutableMap.of(familiarName, true));
 
-    // https://docs.docker.com/engine/api/v1.40/#operation/ImageList
-    HttpRequest req = new HttpRequest(GET, "/v1.40/images/json")
+    // https://docs.docker.com/engine/api/v1.41/#operation/ImageList
+    HttpRequest req = new HttpRequest(GET, String.format("/v%s/images/json", DOCKER_API_VERSION))
       .addHeader("Content-Length", "0")
       .addHeader("Content-Type", JSON_UTF_8)
       .addQueryParameter("filters", JSON.toJson(filters));
 
     HttpResponse response = DockerMessages.throwIfNecessary(
       client.execute(req),
-    "Unable to list images for %s", reference);
+      "Unable to list images for %s", reference);
 
     Set<ImageSummary> images =
       JSON.toType(string(response), SET_OF_IMAGE_SUMMARIES);
