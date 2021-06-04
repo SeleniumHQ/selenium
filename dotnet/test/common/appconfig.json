@@ -95,10 +95,10 @@
     },
 
     "Remote": {
-      "DriverTypeName": "OpenQA.Selenium.Remote.TestInternetExplorerRemoteWebDriver",
-      "AssemblyName": "WebDriver.Remote.Tests",
+      "DriverTypeName": "OpenQA.Selenium.Remote.StableChannelRemoteChromeDriver",
+      "AssemblyName": "WebDriver.Common.Tests",
       "BrowserValue": "Remote",
-      "RemoteCapabilities": "internet explorer",
+      "RemoteCapabilities": "chrome",
       "AutoStartRemoteServer": true
     }
   }

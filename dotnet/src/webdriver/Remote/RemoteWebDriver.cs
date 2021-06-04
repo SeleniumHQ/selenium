@@ -19,6 +19,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using OpenQA.Selenium.DevTools;
 using OpenQA.Selenium.Html5;
 using OpenQA.Selenium.Internal;
 
@@ -57,13 +58,14 @@ namespace OpenQA.Selenium.Remote
     /// }
     /// </code>
     /// </example>
-    public class RemoteWebDriver : WebDriver, IFindsById, IFindsByClassName, IFindsByLinkText, IFindsByName, IFindsByTagName, IFindsByXPath, IFindsByPartialLinkText, IFindsByCssSelector
+    public class RemoteWebDriver : WebDriver, IDevTools, IFindsById, IFindsByClassName, IFindsByLinkText, IFindsByName, IFindsByTagName, IFindsByXPath, IFindsByPartialLinkText, IFindsByCssSelector
     {
+        public readonly string RemoteDevToolsEndPointCapabilityName = "se:cdp";
+        public readonly string RemoteDevToolsVersionCapabilityName = "se:cdpVersion";
+
         private const string DefaultRemoteServerUrl = "http://127.0.0.1:4444/wd/hub";
 
-        private IWebStorage storage;
-        private IApplicationCache appCache;
-        private ILocationContext locationContext;
+        private DevToolsSession devToolsSession;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="RemoteWebDriver"/> class. This constructor defaults proxy to http://127.0.0.1:4444/wd/hub
@@ -397,6 +399,49 @@ namespace OpenQA.Selenium.Remote
         public ReadOnlyCollection<IWebElement> FindElementsByCssSelector(string cssSelector)
         {
             return this.FindElements("css selector", cssSelector);
+        }
+
+        public DevToolsSession GetDevToolsSession()
+        {
+            return GetDevToolsSession(DevToolsSession.AutoDetectDevToolsProtocolVersion);
+        }
+
+        public DevToolsSession GetDevToolsSession(int protocolVersion)
+        {
+            if (this.devToolsSession == null)
+            {
+                if (!this.Capabilities.HasCapability(RemoteDevToolsEndPointCapabilityName))
+                {
+                    throw new WebDriverException("Cannot find " + RemoteDevToolsEndPointCapabilityName + " capability for driver");
+                }
+
+                if (!this.Capabilities.HasCapability(RemoteDevToolsVersionCapabilityName))
+                {
+                    throw new WebDriverException("Cannot find " + RemoteDevToolsVersionCapabilityName + " capability for driver");
+                }
+
+                string debuggerAddress = this.Capabilities.GetCapability(RemoteDevToolsEndPointCapabilityName).ToString();
+                string version = this.Capabilities.GetCapability(RemoteDevToolsVersionCapabilityName).ToString();
+
+                bool versionParsed = int.TryParse(version.Substring(0, version.IndexOf(".")), out int devToolsProtocolVersion);
+                if (!versionParsed)
+                {
+                    throw new WebDriverException("Cannot parse protocol version from reported version string: " + version);
+                }
+
+                try
+                {
+                    DevToolsSession session = new DevToolsSession(debuggerAddress);
+                    session.Start(devToolsProtocolVersion).ConfigureAwait(false).GetAwaiter().GetResult();
+                    this.devToolsSession = session;
+                }
+                catch (Exception e)
+                {
+                    throw new WebDriverException("Unexpected error creating WebSocket DevTools session.", e);
+                }
+            }
+
+            return this.devToolsSession;
         }
 
         private static ICapabilities ConvertOptionsToCapabilities(DriverOptions options)
