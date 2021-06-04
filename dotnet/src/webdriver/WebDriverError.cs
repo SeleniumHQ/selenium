@@ -124,6 +124,11 @@ namespace OpenQA.Selenium
         public const string NoSuchWindow = "no such window";
 
         /// <summary>
+        /// Represents the no such shadow root error.
+        /// </summary>
+        public const string NoSuchShadowRoot = "no such shadow root";
+
+        /// <summary>
         /// Represents the script timeout error.
         /// </summary>
         public const string ScriptTimeout = "script timeout";
@@ -226,6 +231,7 @@ namespace OpenQA.Selenium
             resultMap[NoSuchElement] = WebDriverResult.NoSuchElement;
             resultMap[NoSuchFrame] = WebDriverResult.NoSuchFrame;
             resultMap[NoSuchWindow] = WebDriverResult.NoSuchWindow;
+            resultMap[NoSuchShadowRoot] = WebDriverResult.NoSuchShadowRoot;
             resultMap[ScriptTimeout] = WebDriverResult.AsyncScriptTimeout;
             resultMap[SessionNotCreated] = WebDriverResult.SessionNotCreated;
             resultMap[StaleElementReference] = WebDriverResult.ObsoleteElement;

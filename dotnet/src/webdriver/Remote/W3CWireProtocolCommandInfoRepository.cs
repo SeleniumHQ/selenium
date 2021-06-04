@@ -83,10 +83,13 @@ namespace OpenQA.Selenium.Remote
             this.TryAddCommand(DriverCommand.MinimizeWindow, new HttpCommandInfo(HttpCommandInfo.PostCommand, "/session/{sessionId}/window/minimize"));
             this.TryAddCommand(DriverCommand.FullScreenWindow, new HttpCommandInfo(HttpCommandInfo.PostCommand, "/session/{sessionId}/window/fullscreen"));
             this.TryAddCommand(DriverCommand.GetActiveElement, new HttpCommandInfo(HttpCommandInfo.GetCommand, "/session/{sessionId}/element/active"));
+            this.TryAddCommand(DriverCommand.GetElementShadowRoot, new HttpCommandInfo(HttpCommandInfo.GetCommand, "/session/{sessionId}/element/{id}/shadow"));
             this.TryAddCommand(DriverCommand.FindElement, new HttpCommandInfo(HttpCommandInfo.PostCommand, "/session/{sessionId}/element"));
             this.TryAddCommand(DriverCommand.FindElements, new HttpCommandInfo(HttpCommandInfo.PostCommand, "/session/{sessionId}/elements"));
             this.TryAddCommand(DriverCommand.FindChildElement, new HttpCommandInfo(HttpCommandInfo.PostCommand, "/session/{sessionId}/element/{id}/element"));
             this.TryAddCommand(DriverCommand.FindChildElements, new HttpCommandInfo(HttpCommandInfo.PostCommand, "/session/{sessionId}/element/{id}/elements"));
+            this.TryAddCommand(DriverCommand.FindShadowChildElement, new HttpCommandInfo(HttpCommandInfo.PostCommand, "/session/{sessionId}/shadow/{id}/element"));
+            this.TryAddCommand(DriverCommand.FindShadowChildElements, new HttpCommandInfo(HttpCommandInfo.PostCommand, "/session/{sessionId}/shadow/{id}/elements"));
             this.TryAddCommand(DriverCommand.IsElementSelected, new HttpCommandInfo(HttpCommandInfo.GetCommand, "/session/{sessionId}/element/{id}/selected"));
             this.TryAddCommand(DriverCommand.ClickElement, new HttpCommandInfo(HttpCommandInfo.PostCommand, "/session/{sessionId}/element/{id}/click"));
             this.TryAddCommand(DriverCommand.ClearElement, new HttpCommandInfo(HttpCommandInfo.PostCommand, "/session/{sessionId}/element/{id}/clear"));

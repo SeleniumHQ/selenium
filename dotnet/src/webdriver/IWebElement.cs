@@ -219,5 +219,12 @@ namespace OpenQA.Selenium
         /// return "#008000" for its value.</remarks>
         /// <exception cref="StaleElementReferenceException">Thrown when the target element is no longer valid in the document DOM.</exception>
         string GetCssValue(string propertyName);
+
+        /// <summary>
+        /// Gets the representation of an element's shadow root for accessing the shadow DOM of a web component.
+        /// </summary>
+        /// <exception cref="NoSuchShadowRootException">Thrown when this element does not have a shadow root.</exception>
+        /// <returns>A shadow root representation.</returns>
+        ISearchContext GetShadowRoot();
     }
 }

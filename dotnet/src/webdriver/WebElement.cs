@@ -39,11 +39,20 @@ namespace OpenQA.Selenium
         private WebDriver driver;
         private string elementId;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="WebElement"/> class.
+        /// </summary>
+        /// <param name="parentDriver">The <see cref="WebDriver"/> instance that is driving this element.</param>
+        /// <param name="id">The ID value provided to identify the element.</param>
         public WebElement(WebDriver parentDriver, string id)
         {
             this.driver = parentDriver;
             this.elementId = id;
         }
+
+        /// <summary>
+        /// Gets the <see cref="IWebDriver"/> driving this element.
+        /// </summary>
         public IWebDriver WrappedDriver
         {
             get { return this.driver; }
@@ -497,6 +506,33 @@ namespace OpenQA.Selenium
             }
 
             return propertyValue;
+        }
+
+        /// <summary>
+        /// Gets the representation of an element's shadow root for accessing the shadow DOM of a web component.
+        /// </summary>
+        /// <returns>A shadow root representation.</returns>
+        /// <exception cref="StaleElementReferenceException">Thrown when the target element is no longer valid in the document DOM.</exception>
+        /// <exception cref="NoSuchShadowRootException">Thrown when this element does not have a shadow root.</exception>
+        public virtual ISearchContext GetShadowRoot()
+        {
+            Dictionary<string, object> parameters = new Dictionary<string, object>();
+            parameters.Add("id", this.Id);
+
+            Response commandResponse = this.Execute(DriverCommand.GetElementShadowRoot, parameters);
+            Dictionary<string, object> shadowRootDictionary = commandResponse.Value as Dictionary<string, object>;
+            if (shadowRootDictionary == null)
+            {
+                throw new WebDriverException("Get shadow root command succeeded, but response value does not represent a shadow root.");
+            }
+
+            if (!shadowRootDictionary.ContainsKey(ShadowRoot.ShadowRootReferencePropertyName))
+            {
+                throw new WebDriverException("Get shadow root command succeeded, but response value does not have a shadow root key value.");
+            }
+
+            string shadowRootId = shadowRootDictionary[ShadowRoot.ShadowRootReferencePropertyName].ToString();
+            return new ShadowRoot(this.driver, shadowRootId);
         }
 
         /// <summary>

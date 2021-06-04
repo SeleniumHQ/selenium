@@ -803,6 +803,9 @@ namespace OpenQA.Selenium
                         case WebDriverResult.MoveTargetOutOfBounds:
                             throw new MoveTargetOutOfBoundsException(errorMessage);
 
+                        case WebDriverResult.NoSuchShadowRoot:
+                            throw new NoSuchShadowRootException(errorMessage);
+
                         default:
                             throw new InvalidOperationException(string.Format(CultureInfo.InvariantCulture, "{0} ({1})", errorMessage, errorResponse.Status));
                     }

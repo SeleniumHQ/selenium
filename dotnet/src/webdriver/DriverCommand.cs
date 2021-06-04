@@ -124,6 +124,16 @@ namespace OpenQA.Selenium
         public static readonly string FindChildElements = "findChildElements";
 
         /// <summary>
+        /// Represents FindShadowChildElement command
+        /// </summary>
+        public static readonly string FindShadowChildElement = "findShadowChildElement";
+
+        /// <summary>
+        /// Represents FindShadosChildElements command
+        /// </summary>
+        public static readonly string FindShadowChildElements = "findShadowChildElements";
+
+        /// <summary>
         /// Describes an element
         /// </summary>
         public static readonly string DescribeElement = "describeElement";
@@ -282,6 +292,11 @@ namespace OpenQA.Selenium
         /// Represents GetComputedAccessibleRole command
         /// </summary>
         public static readonly string GetComputedAccessibleRole = "getComputedAccessibleRole";
+
+        /// <summary>
+        /// Represents the GetElementShadowRoot command.
+        /// </summary>
+        public static readonly string GetElementShadowRoot = "getElementShadowRoot";
 
         /// <summary>
         /// Represents ElementEquals command
