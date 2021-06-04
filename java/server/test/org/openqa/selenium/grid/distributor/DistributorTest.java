@@ -197,7 +197,7 @@ public class DistributorTest {
     }
 
     assertThat(eventFired).isTrue();
-    assertThat(heartbeatStarted).isTrue();
+    assertThat(heartbeatStarted.get()).isTrue();
   }
 
   @Test
@@ -689,6 +689,7 @@ public class DistributorTest {
       false);
     handler.addHandler(distributor);
     distributor.add(alwaysDown);
+    waitForAllNodesToMeetCondition(distributor, 1, DOWN);
 
     // Should be unable to create a session because the node is down.
     Either<SessionNotCreatedException, CreateSessionResponse> result =
@@ -905,10 +906,11 @@ public class DistributorTest {
       queue,
       new DefaultSlotSelector(),
       registrationSecret,
-      Duration.ofMinutes(5),
+      Duration.ofSeconds(1),
       false);
     handler.addHandler(distributor);
     distributor.add(node);
+    waitForAllNodesToMeetCondition(distributor, 1, DOWN);
 
     // Should be unable to create a session because the node is down.
     Either<SessionNotCreatedException, CreateSessionResponse> result =
@@ -1180,13 +1182,18 @@ public class DistributorTest {
   }
 
   private void waitForAllNodesToHaveCapacity(Distributor distributor, int nodeCount) {
+    waitForAllNodesToMeetCondition(distributor, nodeCount, UP);
+  }
+
+  private void waitForAllNodesToMeetCondition(Distributor distributor, int nodeCount,
+                                              Availability availability) {
     new FluentWait<>(distributor)
       .withTimeout(Duration.ofSeconds(5))
       .pollingEvery(Duration.ofMillis(100))
       .until(d -> {
         Set<NodeStatus> nodes = d.getStatus().getNodes();
         return nodes.size() == nodeCount && nodes.stream().allMatch(
-          node -> node.getAvailability() == UP && node.hasCapacity());
+          node -> node.getAvailability() == availability && node.hasCapacity());
       });
   }
 
