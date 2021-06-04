@@ -1,6 +1,7 @@
 ## v4.0.0-beta.4
 
-* Allow RelativeBy to work with findElement
+* Add windowTypes option support for ChromiumDriver (#7897)
+* Allow relativeby with findElement  (#9396)
 
 ## v4.0.0-beta.3
 

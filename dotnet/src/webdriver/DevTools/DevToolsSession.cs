@@ -64,6 +64,10 @@ namespace OpenQA.Selenium.DevTools
 
             CommandTimeout = TimeSpan.FromSeconds(5);
             this.debuggerEndpoint = endpointAddress;
+            if (endpointAddress.StartsWith("ws:"))
+            {
+                this.websocketAddress = endpointAddress;
+            }
 
             sessionSocket = new ClientWebSocket();
             sessionSocket.Options.KeepAliveInterval = TimeSpan.Zero;
@@ -249,23 +253,33 @@ namespace OpenQA.Selenium.DevTools
         /// <returns>A task that represents the asynchronous operation.</returns>
         internal async Task Start(int protocolVersion)
         {
-            string debuggerUrl = string.Format(CultureInfo.InvariantCulture, "http://{0}", this.debuggerEndpoint);
-            string rawVersionInfo = string.Empty;
-            using (HttpClient client = new HttpClient())
+            if (this.websocketAddress == null)
             {
-                client.BaseAddress = new Uri(debuggerUrl);
-                rawVersionInfo = await client.GetStringAsync("/json/version");
-            }
-
-            var versionInfo = JsonConvert.DeserializeObject<DevToolsVersionInfo>(rawVersionInfo);
-            websocketAddress = versionInfo.WebSocketDebuggerUrl;
-
-            if (protocolVersion == AutoDetectDevToolsProtocolVersion)
-            {
-                bool versionParsed = int.TryParse(versionInfo.BrowserMajorVersion, out protocolVersion);
-                if (!versionParsed)
+                string debuggerUrl = string.Format(CultureInfo.InvariantCulture, "http://{0}", this.debuggerEndpoint);
+                string rawVersionInfo = string.Empty;
+                using (HttpClient client = new HttpClient())
                 {
-                    throw new WebDriverException(string.Format(CultureInfo.InvariantCulture, "Unable to parse version number received from browser. Reported browser version string is '{0}'", versionInfo.Browser));
+                    client.BaseAddress = new Uri(debuggerUrl);
+                    rawVersionInfo = await client.GetStringAsync("/json/version");
+                }
+
+                var versionInfo = JsonConvert.DeserializeObject<DevToolsVersionInfo>(rawVersionInfo);
+                this.websocketAddress = versionInfo.WebSocketDebuggerUrl;
+
+                if (protocolVersion == AutoDetectDevToolsProtocolVersion)
+                {
+                    bool versionParsed = int.TryParse(versionInfo.BrowserMajorVersion, out protocolVersion);
+                    if (!versionParsed)
+                    {
+                        throw new WebDriverException(string.Format(CultureInfo.InvariantCulture, "Unable to parse version number received from browser. Reported browser version string is '{0}'", versionInfo.Browser));
+                    }
+                }
+            }
+            else
+            {
+                if (protocolVersion == AutoDetectDevToolsProtocolVersion)
+                {
+                    throw new WebDriverException("A WebSocket address for DevTools protocol has been detected, but the protocol version cannot be automatically detected. You must specify a protocol version.");
                 }
             }
 

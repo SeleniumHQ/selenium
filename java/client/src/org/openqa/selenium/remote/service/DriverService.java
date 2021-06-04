@@ -31,6 +31,7 @@ import org.openqa.selenium.net.UrlChecker;
 import org.openqa.selenium.os.CommandLine;
 import org.openqa.selenium.os.ExecutableFinder;
 
+import java.io.Closeable;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -42,6 +43,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.concurrent.locks.ReentrantLock;
@@ -55,8 +58,15 @@ import java.util.concurrent.locks.ReentrantLock;
  * In addition to this, it is supposed that the driver server implements /shutdown hook that is
  * used to stop the server.
  */
-public class DriverService {
+public class DriverService implements Closeable {
   protected static final Duration DEFAULT_TIMEOUT = Duration.ofSeconds(20);
+  private final ExecutorService executorService = Executors.newFixedThreadPool(2, r -> {
+    Thread thread = new Thread(r);
+    thread.setName("Driver Service Executor");
+    thread.setDaemon(true);
+    return thread;
+  });
+
 
   /**
    * The base URL for the managed server.
@@ -198,7 +208,7 @@ public class DriverService {
       CompletableFuture<StartOrDie> serverStarted = CompletableFuture.supplyAsync(() -> {
         waitUntilAvailable();
         return StartOrDie.SERVER_STARTED;
-      });
+      }, executorService);
 
       CompletableFuture<StartOrDie> processFinished = CompletableFuture.supplyAsync(() -> {
         try {
@@ -207,7 +217,7 @@ public class DriverService {
           return StartOrDie.PROCESS_IS_ACTIVE;
         }
         return StartOrDie.PROCESS_DIED;
-      });
+      }, executorService);
 
       try {
         StartOrDie status = (StartOrDie) CompletableFuture.anyOf(serverStarted, processFinished)
@@ -300,6 +310,11 @@ public class DriverService {
 
   protected OutputStream getOutputStream() {
     return outputStream;
+  }
+
+  @Override
+  public void close() {
+    executorService.shutdownNow();
   }
 
   public abstract static class Builder<DS extends DriverService, B extends Builder<?, ?>> {

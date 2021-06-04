@@ -16,7 +16,7 @@
 # under the License.
 
 from selenium.webdriver.common.by import By
-from selenium.webdriver.support.relative_locator import with_tag_name
+from selenium.webdriver.support.relative_locator import with_tag_name, locate_with
 
 
 def test_should_be_able_to_find_elements_above_another(driver, pages):
@@ -38,3 +38,23 @@ def test_should_be_able_to_combine_filters(driver, pages):
 
     ids = [el.get_attribute('id') for el in elements]
     assert "third" in ids
+
+
+def test_should_be_able_to_use_css_selectors(driver, pages):
+    pages.load("relative_locators.html")
+
+    elements = driver.find_elements(locate_with(By.CSS_SELECTOR, "td").above(driver.find_element(By.ID, "center"))
+                                    .to_right_of(driver.find_element(By.ID, "second")))
+
+    ids = [el.get_attribute('id') for el in elements]
+    assert "third" in ids
+
+
+def test_should_be_able_to_use_xpath(driver, pages):
+    pages.load("relative_locators.html")
+
+    elements = driver.find_elements(locate_with(By.XPATH, "//td[1]").below(driver.find_element(By.ID, "second"))
+                                    .above(driver.find_element(By.ID, "seventh")))
+
+    ids = [el.get_attribute('id') for el in elements]
+    assert "fourth" in ids

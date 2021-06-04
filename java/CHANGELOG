@@ -1,3 +1,16 @@
+v4.0.0-beta-4
+=============
+
+* Rework how the `Distributor` creates sessions to be more
+  spec-compliant.
+* Rework internal structure of the New Session Queue.
+* `DriverCommandExecutor` uses its own `ExecutorService` (#9430)
+* Add proxy support to NettyClient (#9434)
+* Handle bad gateway response from the server when starting a new
+  session (#9444)
+* Expose session request metadata from the new session payload
+* Implement getDomAttribute method in EventFiringWebDriver (#9394)
+
 v4.0.0-beta-3
 =============
 

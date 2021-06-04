@@ -17,17 +17,6 @@
 
 package org.openqa.selenium;
 
-import static java.util.Arrays.asList;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.openqa.selenium.testing.drivers.Browser.CHROME;
-import static org.openqa.selenium.testing.drivers.Browser.EDGE;
-import static org.openqa.selenium.testing.drivers.Browser.LEGACY_FIREFOX_XPI;
-import static org.openqa.selenium.testing.drivers.Browser.HTMLUNIT;
-import static org.openqa.selenium.testing.drivers.Browser.IE;
-import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
-import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
-
 import org.junit.Test;
 import org.openqa.selenium.environment.webserver.Page;
 import org.openqa.selenium.testing.Ignore;
@@ -35,6 +24,17 @@ import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.NotYetImplemented;
 
 import java.util.List;
+
+import static java.util.Arrays.asList;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.openqa.selenium.testing.drivers.Browser.CHROME;
+import static org.openqa.selenium.testing.drivers.Browser.EDGE;
+import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
+import static org.openqa.selenium.testing.drivers.Browser.HTMLUNIT;
+import static org.openqa.selenium.testing.drivers.Browser.IE;
+import static org.openqa.selenium.testing.drivers.Browser.LEGACY_FIREFOX_XPI;
+import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
 
 public class ElementDomAttributeTest extends JUnit4TestBase {
 
@@ -55,7 +55,6 @@ public class ElementDomAttributeTest extends JUnit4TestBase {
   }
 
   @Test
-  @NotYetImplemented(value = CHROME, reason = "It returns a property")
   @NotYetImplemented(EDGE)
   public void testShouldReturnTheActualValueWhenGettingSrcAttributeOfAValidImgTag() {
     driver.get(pages.simpleTestPage);
@@ -65,7 +64,6 @@ public class ElementDomAttributeTest extends JUnit4TestBase {
   }
 
   @Test
-  @NotYetImplemented(value = CHROME, reason = "It returns a property")
   @NotYetImplemented(EDGE)
   public void testShouldReturnTheActualValueWhenGettingHrefAttributeOfAValidAnchorTag() {
     driver.get(pages.simpleTestPage);
@@ -94,7 +92,6 @@ public class ElementDomAttributeTest extends JUnit4TestBase {
   }
 
   @Test
-  @NotYetImplemented(value = CHROME, reason = "It returns a property")
   @NotYetImplemented(EDGE)
   public void testShouldNotReturnTheValueOfTheIndexAttributeIfItIsMissing() {
     driver.get(pages.formPage);
@@ -183,7 +180,6 @@ public class ElementDomAttributeTest extends JUnit4TestBase {
   }
 
   @Test
-  @NotYetImplemented(value = CHROME, reason = "It returns a property")
   @NotYetImplemented(EDGE)
   public void testShouldNotReturnTheContentsOfATextAreaAsItsValue() {
     driver.get(pages.formPage);
@@ -192,7 +188,6 @@ public class ElementDomAttributeTest extends JUnit4TestBase {
   }
 
   @Test
-  @NotYetImplemented(value = CHROME, reason = "It returns a property")
   @NotYetImplemented(EDGE)
   public void testShouldNotReturnInnerHtmlProperty() {
     driver.get(pages.simpleTestPage);
@@ -216,7 +211,6 @@ public class ElementDomAttributeTest extends JUnit4TestBase {
   }
 
   @Test
-  @NotYetImplemented(value = CHROME, reason = "It returns a property")
   @NotYetImplemented(EDGE)
   public void testShouldNotReturnTextContentProperty() {
     driver.get(pages.simpleTestPage);
@@ -280,7 +274,6 @@ public class ElementDomAttributeTest extends JUnit4TestBase {
   }
 
   @Test
-  @NotYetImplemented(value = CHROME, reason = "It returns a property")
   @NotYetImplemented(EDGE)
   public void testCanRetrieveTheCurrentValueOfATextFormFieldWithPresetText() {
     driver.get(pages.formPage);
@@ -291,7 +284,6 @@ public class ElementDomAttributeTest extends JUnit4TestBase {
   }
 
   @Test
-  @NotYetImplemented(value = CHROME, reason = "It returns a property")
   @NotYetImplemented(EDGE)
   public void testShouldNotReturnTextOfATextArea() {
     driver.get(pages.formPage);
@@ -368,7 +360,6 @@ public class ElementDomAttributeTest extends JUnit4TestBase {
 
   @Test
   @NotYetImplemented(IE)
-  @NotYetImplemented(CHROME)
   @NotYetImplemented(EDGE)
   @Ignore(LEGACY_FIREFOX_XPI)
   @NotYetImplemented(HTMLUNIT)

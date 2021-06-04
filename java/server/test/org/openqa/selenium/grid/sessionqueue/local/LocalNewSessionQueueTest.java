@@ -30,10 +30,12 @@ import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.events.EventBus;
 import org.openqa.selenium.events.local.GuavaEventBus;
 import org.openqa.selenium.grid.data.CreateSessionResponse;
+import org.openqa.selenium.grid.data.DefaultSlotMatcher;
 import org.openqa.selenium.grid.data.NewSessionRejectedEvent;
 import org.openqa.selenium.grid.data.NewSessionRequestEvent;
 import org.openqa.selenium.grid.data.RequestId;
 import org.openqa.selenium.grid.data.Session;
+import org.openqa.selenium.grid.data.SessionRequestCapability;
 import org.openqa.selenium.grid.security.Secret;
 import org.openqa.selenium.grid.sessionqueue.NewSessionQueue;
 import org.openqa.selenium.grid.data.SessionRequest;
@@ -71,6 +73,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
 import static java.net.HttpURLConnection.HTTP_INTERNAL_ERROR;
 import static java.net.HttpURLConnection.HTTP_OK;
@@ -124,6 +127,7 @@ public class LocalNewSessionQueueTest {
       Instant.now(),
       Set.of(W3C),
       Set.of(CAPS),
+      Map.of(),
       Map.of());
   }
 
@@ -143,6 +147,7 @@ public class LocalNewSessionQueueTest {
       LocalNewSessionQueue local = new LocalNewSessionQueue(
         tracer,
         bus,
+        new DefaultSlotMatcher(),
         Duration.ofSeconds(1),
         Duration.ofSeconds(Debug.isDebugging() ? 9999 : 5),
         REGISTRATION_SECRET);
@@ -154,6 +159,7 @@ public class LocalNewSessionQueueTest {
       LocalNewSessionQueue local = new LocalNewSessionQueue(
         tracer,
         bus,
+        new DefaultSlotMatcher(),
         Duration.ofSeconds(1),
         Duration.ofSeconds(Debug.isDebugging() ? 9999 : 5),
         REGISTRATION_SECRET);
@@ -236,7 +242,10 @@ public class LocalNewSessionQueueTest {
   public void shouldBeAbleToGetQueueContents() {
     localQueue.injectIntoQueue(sessionRequest);
 
-    List<Set<Capabilities>> response = queue.getQueueContents();
+    List<Set<Capabilities>> response = queue.getQueueContents()
+      .stream()
+      .map(SessionRequestCapability::getDesiredCapabilities)
+      .collect(Collectors.toList());
 
     assertThat(response).hasSize(1);
 
@@ -380,6 +389,7 @@ public class LocalNewSessionQueueTest {
         Instant.now(),
         Set.of(W3C),
         Set.of(CAPS),
+        Map.of(),
         Map.of());
 
       return queue.addToQueue(sessionRequest);
@@ -413,6 +423,7 @@ public class LocalNewSessionQueueTest {
       LONG_AGO,
       Set.of(W3C),
       Set.of(CAPS),
+      Map.of(),
       Map.of());
 
     AtomicInteger count = new AtomicInteger();
@@ -443,6 +454,7 @@ public class LocalNewSessionQueueTest {
       LONG_AGO,
       Set.of(W3C),
       Set.of(CAPS),
+      Map.of(),
       Map.of());
     localQueue.injectIntoQueue(sessionRequest);
 
@@ -462,6 +474,7 @@ public class LocalNewSessionQueueTest {
         Instant.now(),
         Set.of(W3C),
         Set.of(CAPS),
+        Map.of(),
         Map.of());
       return queue.addToQueue(sessionRequest);
     };
@@ -487,5 +500,58 @@ public class LocalNewSessionQueueTest {
     }
 
     executor.shutdownNow();
+  }
+
+  @Test
+  public void shouldBeAbleToReturnTheNextAvailableEntryThatMatchesAStereotype() {
+    SessionRequest expected = new SessionRequest(
+      new RequestId(UUID.randomUUID()),
+      Instant.now(),
+      Set.of(W3C),
+      Set.of(new ImmutableCapabilities("browserName", "cheese", "se:kind", "smoked")),
+      Map.of(),
+      Map.of());
+    localQueue.injectIntoQueue(expected);
+
+    localQueue.injectIntoQueue(new SessionRequest(
+      new RequestId(UUID.randomUUID()),
+      Instant.now(),
+      Set.of(W3C),
+      Set.of(new ImmutableCapabilities("browserName", "peas", "se:kind", "mushy")),
+      Map.of(),
+      Map.of()));
+
+    Optional<SessionRequest> returned = queue.getNextAvailable(
+      Set.of(new ImmutableCapabilities("browserName", "cheese")));
+
+    assertThat(returned).isEqualTo(Optional.of(expected));
+  }
+
+  @Test
+  public void shouldNotReturnANextAvailableEntryThatDoesNotMatchTheStereotypes() {
+    // Note that this is basically the same test as getting the entry
+    // from queue, but we've cleverly reversed the entries, so the one
+    // that doesn't match should be first in the queue.
+    localQueue.injectIntoQueue(new SessionRequest(
+      new RequestId(UUID.randomUUID()),
+      Instant.now(),
+      Set.of(W3C),
+      Set.of(new ImmutableCapabilities("browserName", "peas", "se:kind", "mushy")),
+      Map.of(),
+      Map.of()));
+
+    SessionRequest expected = new SessionRequest(
+      new RequestId(UUID.randomUUID()),
+      Instant.now(),
+      Set.of(W3C),
+      Set.of(new ImmutableCapabilities("browserName", "cheese", "se:kind", "smoked")),
+      Map.of(),
+      Map.of());
+    localQueue.injectIntoQueue(expected);
+
+    Optional<SessionRequest> returned = queue.getNextAvailable(
+      Set.of(new ImmutableCapabilities("browserName", "cheese")));
+
+    assertThat(returned).isEqualTo(Optional.of(expected));
   }
 }

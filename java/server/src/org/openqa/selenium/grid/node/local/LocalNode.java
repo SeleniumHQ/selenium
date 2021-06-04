@@ -485,10 +485,12 @@ public class LocalNode extends Node {
   public NodeStatus getStatus() {
     Set<Slot> slots = factories.stream()
       .map(slot -> {
+        Instant lastStarted = Instant.EPOCH;
         Optional<Session> session = Optional.empty();
         if (!slot.isAvailable()) {
           ActiveSession activeSession = slot.getSession();
           if (activeSession != null) {
+            lastStarted = activeSession.getStartTime();
             session = Optional.of(
               new Session(
                 activeSession.getId(),
@@ -502,7 +504,7 @@ public class LocalNode extends Node {
         return new Slot(
           new SlotId(getId(), slot.getId()),
           slot.getStereotype(),
-          Instant.EPOCH,
+          lastStarted,
           session);
       })
       .collect(toImmutableSet());

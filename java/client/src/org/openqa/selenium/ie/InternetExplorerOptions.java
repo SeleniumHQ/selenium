@@ -39,10 +39,12 @@ import org.openqa.selenium.remote.BrowserType;
 
 import java.time.Duration;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -252,5 +254,16 @@ public class InternetExplorerOptions extends AbstractDriverOptions<InternetExplo
           }
         });
     }
+  }
+
+  @Override
+  protected Set<String> getExtraCapabilityNames() {
+    return Collections.emptySet();
+  }
+
+  @Override
+  protected Object getExtraCapability(String capabilityName) {
+    Require.nonNull("Capability name", capabilityName);
+    return null;
   }
 }

@@ -30,7 +30,13 @@ import org.openqa.selenium.Proxy;
 import org.openqa.selenium.UnexpectedAlertBehaviour;
 import org.openqa.selenium.internal.Require;
 
-public class AbstractDriverOptions<DO extends AbstractDriverOptions> extends MutableCapabilities {
+import java.util.Collections;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeMap;
+import java.util.TreeSet;
+
+public abstract class AbstractDriverOptions<DO extends AbstractDriverOptions> extends MutableCapabilities {
 
   public DO setPageLoadStrategy(PageLoadStrategy strategy) {
     setCapability(
@@ -62,4 +68,31 @@ public class AbstractDriverOptions<DO extends AbstractDriverOptions> extends Mut
     return (DO) this;
   }
 
+  @Override
+  public Set<String> getCapabilityNames() {
+    TreeSet<String> names = new TreeSet<>(super.getCapabilityNames());
+    names.addAll(getExtraCapabilityNames());
+    return Collections.unmodifiableSet(names);
+  }
+
+  protected abstract Set<String> getExtraCapabilityNames();
+
+  @Override
+  public Object getCapability(String capabilityName) {
+    Require.nonNull("Capability name", capabilityName);
+
+    if (getExtraCapabilityNames().contains(capabilityName)) {
+      return getExtraCapability(capabilityName);
+    }
+    return super.getCapability(capabilityName);
+  }
+
+  protected abstract Object getExtraCapability(String capabilityName);
+
+  @Override
+  public Map<String, Object> asMap() {
+    Map<String, Object> toReturn = new TreeMap<>(super.asMap());
+    getExtraCapabilityNames().forEach(name -> toReturn.put(name, getCapability(name)));
+    return Collections.unmodifiableMap(toReturn);
+  }
 }

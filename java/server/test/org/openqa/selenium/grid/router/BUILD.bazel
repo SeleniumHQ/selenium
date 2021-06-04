@@ -22,6 +22,7 @@ java_library(
         artifact("org.slf4j:slf4j-jdk14"),
     ],
     deps = [
+        "//java/server/src/org/openqa/selenium/grid/config",
         "//java/client/src/org/openqa/selenium:core",
         "//java/client/src/org/openqa/selenium/json",
         "//java/client/src/org/openqa/selenium/remote/http",
@@ -56,6 +57,7 @@ java_selenium_test_suite(
         "//java/client/test/org/openqa/selenium/testing:annotations",
         "//java/client/test/org/openqa/selenium/testing:test-base",
         "//java/server/src/org/openqa/selenium/grid",
+        "//java/server/src/org/openqa/selenium/grid/config",
         "//java/server/test/org/openqa/selenium/grid/testing",
         artifact("com.google.guava:guava"),
         artifact("junit:junit"),
@@ -82,6 +84,7 @@ java_test_suite(
         "//java/client/test/org/openqa/selenium/testing:test-base",
         "//java/server/src/org/openqa/selenium/grid",
         "//java/server/test/org/openqa/selenium/grid/testing",
+        "//java/server/src/org/openqa/selenium/grid/config",
         artifact("com.google.guava:guava"),
         artifact("io.opentelemetry:opentelemetry-api"),
         artifact("junit:junit"),

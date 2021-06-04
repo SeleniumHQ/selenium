@@ -24,7 +24,6 @@ require 'rake_tasks/selenium_rake/crazy_fun'
 require 'rake_tasks/crazy_fun/mappings/file_copy_hack'
 require 'rake_tasks/crazy_fun/mappings/tasks'
 require 'rake_tasks/crazy_fun/mappings/rake_mappings'
-require 'rake_tasks/crazy_fun/mappings/ruby_mappings'
 
 # Location of all new (non-CrazyFun) methods
 require 'rake_tasks/selenium_rake/browsers'
@@ -56,11 +55,11 @@ def release_version
 end
 
 def google_storage_version
-  '4.0-beta-3'
+  '4.0-beta-4'
 end
 
 def version
-  "#{release_version}.0-beta-3"
+  "#{release_version}.0-beta-4"
 end
 
 # The build system used by webdriver is layered on top of rake, and we call it
@@ -81,13 +80,12 @@ crazy_fun = SeleniumRake::CrazyFun.new
 # If crazy fun doesn't know how to handle a particular output type ("java_library"
 # in the example above) then it will throw an exception, stopping the build
 CrazyFun::Mappings::RakeMappings.new.add_all(crazy_fun)
-CrazyFun::Mappings::RubyMappings.new.add_all(crazy_fun)
 
 # Finally, find every file named "build.desc" in the project, and generate
 # rake tasks from them. These tasks are normal rake tasks, and can be invoked
 # from rake.
-crazy_fun.create_tasks(Dir['common/**/build.desc'])
-crazy_fun.create_tasks(Dir['rb/**/build.desc'])
+# FIXME: the rules for the targets were removed and build files won't load
+# crazy_fun.create_tasks(Dir['**/build.desc'])
 
 #  If it looks like a bazel target, build it with bazel
 rule /\/\/.*/ do |task|
@@ -487,39 +485,6 @@ namespace :side do
         f << IO.read(atom).strip
         f << ";\n"
       end
-    end
-  end
-end
-
-namespace :jruby do
-  desc 'Update jruby version'
-  task :update do
-    jruby_version = '9.2.8.0'
-    jruby_gems = { 'inifile' => '3.0.0' }
-    jar_name = "jruby-complete-#{jruby_version}.jar"
-    url = "https://repo1.maven.org/maven2/org/jruby/jruby-complete/#{jruby_version}/#{jar_name}"
-
-    Dir.chdir('third_party/jruby') do
-      puts "Downloading #{jar_name} from #{url}..."
-      File.open(jar_name, 'wb') do |write_file|
-        open(url, 'rb') do |read_file|
-          write_file.write(read_file.read)
-        end
-      end
-
-      puts 'Installing gems...'
-      jruby_gems.each do |gem_name, gem_version|
-        sh 'java', '-jar', jar_name, '-S', 'gem', 'install', '-i', "./#{gem_name}", gem_name, '-v', gem_version
-        sh 'jar', 'uf', jar_name, '-C', gem_name, '.'
-        rm_rf gem_name
-      end
-
-      puts 'Bumping VERSION...'
-      version = `java -jar #{jar_name} -v`.split("\n").first
-      File.write('VERSION', "#{version}\n")
-
-      mv jar_name, 'jruby-complete.jar'
-      puts 'Done!'
     end
   end
 end

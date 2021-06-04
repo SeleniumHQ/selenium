@@ -20,6 +20,7 @@ package org.openqa.selenium.grid.node.config;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableMultimap;
+import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Multimap;
 
 import org.openqa.selenium.Capabilities;
@@ -72,6 +73,8 @@ public class NodeOptions {
   private static final String DEFAULT_IMPL = "org.openqa.selenium.grid.node.local.LocalNodeFactory";
   private static final ImmutableCapabilities CURRENT_PLATFORM =
     new ImmutableCapabilities("platformName", Platform.getCurrent());
+  private static final ImmutableSet<String>
+    SINGLE_SESSION_DRIVERS = ImmutableSet.of("safari", "safari technology preview");
 
   private final Config config;
 
@@ -131,8 +134,10 @@ public class NodeOptions {
               "Overriding max recommended number of {0} concurrent sessions. "
               + "Session stability and reliability might suffer!",
               DEFAULT_MAX_SESSIONS);
-      LOG.warning("One browser session is recommended per available processor. IE and "
-                  + "Safari are always limited to 1 session per host.");
+      LOG.warning("One browser session is recommended per available processor. "
+                  + "Safari is always limited to 1 session per host.");
+      LOG.warning("Overriding this value for Internet Explorer is not recommended. "
+                  + "Issues related to parallel testing with Internet Explored won't be accepted.");
       LOG.warning("Double check if enabling 'override-max-sessions' is really needed");
     }
     int maxSessions = getMaxSessions();
@@ -451,8 +456,9 @@ public class NodeOptions {
   }
 
   private int getDriverMaxSessions(WebDriverInfo info, int desiredMaxSessions) {
-    // IE and Safari
-    if (info.getMaximumSimultaneousSessions() == 1) {
+    // Safari and Safari Technology Preview
+    if (info.getMaximumSimultaneousSessions() == 1 &&
+        SINGLE_SESSION_DRIVERS.contains(info.getDisplayName().toLowerCase())) {
       return info.getMaximumSimultaneousSessions();
     }
     boolean overrideMaxSessions = config.getBool(NODE_SECTION, "override-max-sessions")

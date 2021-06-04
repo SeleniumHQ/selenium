@@ -21,7 +21,6 @@ import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.grid.data.NodeStatus;
 import org.openqa.selenium.grid.data.SlotId;
 
-import java.util.Optional;
 import java.util.Set;
 
 /** Used to determine which {@link org.openqa.selenium.grid.node.Node} to

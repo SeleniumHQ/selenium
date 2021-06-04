@@ -21,7 +21,6 @@ before_test:
   - ruby -v
   - gem -v
   - bundle -v
-  - pip install requests
   - chromedriver.exe --version
   - geckodriver.exe --version
   - IEDriverServer.exe --version

@@ -25,8 +25,6 @@ import static java.util.logging.Level.WARNING;
 
 public interface WebSocket extends Closeable {
 
-  Logger LOG = Logger.getLogger(WebSocket.class.getName());
-
   WebSocket send(Message message);
 
   default WebSocket sendText(CharSequence data) {
@@ -65,7 +63,7 @@ public interface WebSocket extends Closeable {
     }
 
     default void onError(Throwable cause) {
-      LOG.log(WARNING, cause.getMessage(), cause);
+      Logger.getLogger(WebSocket.class.getName()).log(WARNING, cause.getMessage(), cause);
     }
   }
 

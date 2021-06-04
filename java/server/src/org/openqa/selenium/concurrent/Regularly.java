@@ -34,14 +34,18 @@ public class Regularly {
   private final ScheduledExecutorService executor;
   private final List<RetryingRunnable> scheduledRunnables = new ArrayList<>();
 
-  public Regularly(String name) {
-    Require.nonNull("Name", name);
 
-    this.executor = Executors.newScheduledThreadPool(1, r -> {
+  public Regularly(String name) {
+    this(Executors.newScheduledThreadPool(1, r -> {
       Thread thread = new Thread(r, name);
       thread.setDaemon(true);
       return thread;
-    });
+    }));
+    Require.nonNull("Name", name);
+  }
+
+  public Regularly(ScheduledExecutorService executor) {
+    this.executor = Require.nonNull("Executor", executor);
   }
 
   public void submit(Runnable task, Duration successPeriod, Duration retryPeriod) {

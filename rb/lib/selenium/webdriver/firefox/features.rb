@@ -24,7 +24,8 @@ module Selenium
 
         FIREFOX_COMMANDS = {
           install_addon: [:post, 'session/:session_id/moz/addon/install'],
-          uninstall_addon: [:post, 'session/:session_id/moz/addon/uninstall']
+          uninstall_addon: [:post, 'session/:session_id/moz/addon/uninstall'],
+          full_page_screenshot: [:get, 'session/:session_id/moz/screenshot/full']
         }.freeze
 
         def commands(command)
@@ -39,6 +40,10 @@ module Selenium
 
         def uninstall_addon(id)
           execute :uninstall_addon, {}, {id: id}
+        end
+
+        def full_screenshot
+          execute :full_page_screenshot
         end
 
       end # Bridge

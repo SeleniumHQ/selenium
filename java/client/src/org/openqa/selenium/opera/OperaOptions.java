@@ -17,15 +17,10 @@
 
 package org.openqa.selenium.opera;
 
-import static java.util.Collections.unmodifiableList;
-import static java.util.Collections.unmodifiableMap;
-import static org.openqa.selenium.remote.BrowserType.OPERA_BLINK;
-import static org.openqa.selenium.remote.CapabilityType.BROWSER_NAME;
-
-import org.openqa.selenium.internal.Require;
-import org.openqa.selenium.remote.AbstractDriverOptions;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.internal.Require;
+import org.openqa.selenium.remote.AbstractDriverOptions;
 
 import java.io.File;
 import java.io.IOException;
@@ -33,10 +28,16 @@ import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Base64;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.TreeMap;
+
+import static java.util.Collections.unmodifiableList;
+import static org.openqa.selenium.remote.BrowserType.OPERA_BLINK;
+import static org.openqa.selenium.remote.CapabilityType.BROWSER_NAME;
 
 /**
  * Class to manage options specific to {@link OperaDriver}.
@@ -203,8 +204,17 @@ public class OperaOptions extends AbstractDriverOptions<OperaOptions> {
   }
 
   @Override
-  public Map<String, Object> asMap() {
-    Map<String, Object> toReturn = new TreeMap<>(super.asMap());
+  protected Set<String> getExtraCapabilityNames() {
+    return Collections.singleton(CAPABILITY);
+  }
+
+  @Override
+  protected Object getExtraCapability(String capabilityName) {
+    Require.nonNull("Capability name", capabilityName);
+
+    if (!CAPABILITY.equals(capabilityName)) {
+      return null;
+    }
 
     Map<String, Object> options = new TreeMap<>(experimentalOptions);
 
@@ -227,8 +237,6 @@ public class OperaOptions extends AbstractDriverOptions<OperaOptions> {
     encodedExtensions.addAll(extensions);
     options.put("extensions", unmodifiableList(encodedExtensions));
 
-    toReturn.put(CAPABILITY, options);
-
-    return unmodifiableMap(toReturn);
+    return Collections.unmodifiableMap(options);
   }
 }

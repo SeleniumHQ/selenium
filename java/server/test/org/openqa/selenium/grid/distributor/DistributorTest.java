@@ -19,6 +19,7 @@ package org.openqa.selenium.grid.distributor;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
+
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -28,18 +29,19 @@ import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.MutableCapabilities;
 import org.openqa.selenium.NoSuchSessionException;
 import org.openqa.selenium.SessionNotCreatedException;
-import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.events.EventBus;
 import org.openqa.selenium.events.local.GuavaEventBus;
 import org.openqa.selenium.grid.data.Availability;
 import org.openqa.selenium.grid.data.CreateSessionRequest;
 import org.openqa.selenium.grid.data.CreateSessionResponse;
+import org.openqa.selenium.grid.data.DefaultSlotMatcher;
 import org.openqa.selenium.grid.data.DistributorStatus;
 import org.openqa.selenium.grid.data.NodeDrainComplete;
 import org.openqa.selenium.grid.data.NodeHeartBeatEvent;
 import org.openqa.selenium.grid.data.NodeStatus;
 import org.openqa.selenium.grid.data.RequestId;
 import org.openqa.selenium.grid.data.Session;
+import org.openqa.selenium.grid.data.SessionRequest;
 import org.openqa.selenium.grid.data.Slot;
 import org.openqa.selenium.grid.distributor.local.LocalDistributor;
 import org.openqa.selenium.grid.distributor.remote.RemoteDistributor;
@@ -51,7 +53,6 @@ import org.openqa.selenium.grid.security.Secret;
 import org.openqa.selenium.grid.sessionmap.SessionMap;
 import org.openqa.selenium.grid.sessionmap.local.LocalSessionMap;
 import org.openqa.selenium.grid.sessionqueue.NewSessionQueue;
-import org.openqa.selenium.grid.data.SessionRequest;
 import org.openqa.selenium.grid.sessionqueue.local.LocalNewSessionQueue;
 import org.openqa.selenium.grid.testing.EitherAssert;
 import org.openqa.selenium.grid.testing.PassthroughHttpClient;
@@ -117,13 +118,14 @@ public class DistributorTest {
   @Before
   public void setUp() throws URISyntaxException {
     nodeUri = new URI("http://example:5678");
-    routableUri = new URI("http://localhost:1234");
+    routableUri = createUri();
     tracer = DefaultTestTracer.createTracer();
     bus = new GuavaEventBus();
     LocalSessionMap sessions = new LocalSessionMap(tracer, bus);
     NewSessionQueue queue = new LocalNewSessionQueue(
       tracer,
       bus,
+      new DefaultSlotMatcher(),
       Duration.ofSeconds(2),
       Duration.ofSeconds(2),
       registrationSecret);
@@ -135,7 +137,8 @@ public class DistributorTest {
       queue,
       new DefaultSlotSelector(),
       registrationSecret,
-      Duration.ofMinutes(5));
+      Duration.ofMinutes(5),
+      false);
     stereotype = new ImmutableCapabilities("browserName", "cheese");
     caps = new ImmutableCapabilities("browserName", "cheese");
   }
@@ -153,6 +156,7 @@ public class DistributorTest {
     NewSessionQueue queue = new LocalNewSessionQueue(
       tracer,
       bus,
+      new DefaultSlotMatcher(),
       Duration.ofSeconds(2),
       Duration.ofSeconds(2),
       registrationSecret);
@@ -171,7 +175,8 @@ public class DistributorTest {
       queue,
       new DefaultSlotSelector(),
       registrationSecret,
-      Duration.ofMinutes(5));
+      Duration.ofMinutes(5),
+      false);
     distributor.add(node);
 
     AtomicBoolean heartbeatStarted = new AtomicBoolean();
@@ -192,7 +197,7 @@ public class DistributorTest {
     }
 
     assertThat(eventFired).isTrue();
-    assertThat(heartbeatStarted).isTrue();
+    assertThat(heartbeatStarted.get()).isTrue();
   }
 
   @Test
@@ -201,6 +206,7 @@ public class DistributorTest {
     NewSessionQueue queue = new LocalNewSessionQueue(
       tracer,
       bus,
+      new DefaultSlotMatcher(),
       Duration.ofSeconds(2),
       Duration.ofSeconds(2),
       registrationSecret);
@@ -218,7 +224,8 @@ public class DistributorTest {
       queue,
       new DefaultSlotSelector(),
       registrationSecret,
-      Duration.ofMinutes(5));
+      Duration.ofMinutes(5),
+      false);
     distributor.add(node);
     waitToHaveCapacity(distributor);
 
@@ -239,6 +246,7 @@ public class DistributorTest {
     NewSessionQueue queue = new LocalNewSessionQueue(
       tracer,
       bus,
+      new DefaultSlotMatcher(),
       Duration.ofSeconds(2),
       Duration.ofSeconds(2),
       registrationSecret);
@@ -257,7 +265,8 @@ public class DistributorTest {
       queue,
       new DefaultSlotSelector(),
       registrationSecret,
-      Duration.ofMinutes(5));
+      Duration.ofMinutes(5),
+      false);
     distributor.add(node);
     waitToHaveCapacity(distributor);
 
@@ -279,6 +288,7 @@ public class DistributorTest {
     NewSessionQueue queue = new LocalNewSessionQueue(
       tracer,
       bus,
+      new DefaultSlotMatcher(),
       Duration.ofSeconds(2),
       Duration.ofSeconds(2),
       registrationSecret);
@@ -297,7 +307,8 @@ public class DistributorTest {
       queue,
       new DefaultSlotSelector(),
       registrationSecret,
-      Duration.ofMinutes(5));
+      Duration.ofMinutes(5),
+      false);
     Distributor distributor = new RemoteDistributor(
       tracer,
       new PassthroughHttpClient.Factory(local),
@@ -317,6 +328,7 @@ public class DistributorTest {
     NewSessionQueue queue = new LocalNewSessionQueue(
       tracer,
       bus,
+      new DefaultSlotMatcher(),
       Duration.ofSeconds(2),
       Duration.ofSeconds(2),
       registrationSecret);
@@ -334,7 +346,8 @@ public class DistributorTest {
       queue,
       new DefaultSlotSelector(),
       registrationSecret,
-      Duration.ofMinutes(5));
+      Duration.ofMinutes(5),
+      false);
     distributor.add(node);
     distributor.drain(node.getId());
 
@@ -350,6 +363,7 @@ public class DistributorTest {
     NewSessionQueue queue = new LocalNewSessionQueue(
       tracer,
       bus,
+      new DefaultSlotMatcher(),
       Duration.ofSeconds(2),
       Duration.ofSeconds(2),
       registrationSecret);
@@ -370,7 +384,8 @@ public class DistributorTest {
       queue,
       new DefaultSlotSelector(),
       registrationSecret,
-      Duration.ofMinutes(5));
+      Duration.ofMinutes(5),
+      false);
     distributor.add(node);
     waitToHaveCapacity(distributor);
 
@@ -380,7 +395,7 @@ public class DistributorTest {
 
     assertThat(latch.getCount()).isEqualTo(0);
 
-    assertThat(distributor.getAvailableNodes().size()).isEqualTo(0);
+    assertThat(distributor.getStatus().getNodes()).isEmpty();
 
     Either<SessionNotCreatedException, CreateSessionResponse> result =
       distributor.newSession(createRequest(caps));
@@ -393,6 +408,7 @@ public class DistributorTest {
     NewSessionQueue queue = new LocalNewSessionQueue(
       tracer,
       bus,
+      new DefaultSlotMatcher(),
       Duration.ofSeconds(2),
       Duration.ofSeconds(2),
       registrationSecret);
@@ -413,7 +429,8 @@ public class DistributorTest {
       queue,
       new DefaultSlotSelector(),
       registrationSecret,
-      Duration.ofMinutes(5));
+      Duration.ofMinutes(5),
+      false);
     distributor.add(node);
     waitToHaveCapacity(distributor);
 
@@ -427,7 +444,7 @@ public class DistributorTest {
 
     assertThat(latch.getCount()).isEqualTo(1);
 
-    assertThat(distributor.getAvailableNodes().size()).isEqualTo(1);
+    assertThat(distributor.getStatus().getNodes().size()).isEqualTo(1);
   }
 
   @Test
@@ -436,6 +453,7 @@ public class DistributorTest {
     NewSessionQueue queue = new LocalNewSessionQueue(
       tracer,
       bus,
+      new DefaultSlotMatcher(),
       Duration.ofSeconds(2),
       Duration.ofSeconds(2),
       registrationSecret);
@@ -459,7 +477,8 @@ public class DistributorTest {
       queue,
       new DefaultSlotSelector(),
       registrationSecret,
-      Duration.ofMinutes(5));
+      Duration.ofMinutes(5),
+      false);
     distributor.add(node);
     waitToHaveCapacity(distributor);
 
@@ -471,7 +490,7 @@ public class DistributorTest {
 
     distributor.drain(node.getId());
 
-    assertThat(distributor.getAvailableNodes().size()).isEqualTo(1);
+    assertThat(distributor.getStatus().getNodes().size()).isEqualTo(1);
 
     node.stop(firstResponse.right().getSession().getId());
     node.stop(secondResponse.right().getSession().getId());
@@ -479,7 +498,7 @@ public class DistributorTest {
     latch.await(5, TimeUnit.SECONDS);
 
     assertThat(latch.getCount()).isEqualTo(0);
-    assertThat(distributor.getAvailableNodes().size()).isEqualTo(0);
+    assertThat(distributor.getStatus().getNodes()).isEmpty();
   }
 
   @Test
@@ -508,6 +527,7 @@ public class DistributorTest {
     NewSessionQueue queue = new LocalNewSessionQueue(
       tracer,
       bus,
+      new DefaultSlotMatcher(),
       Duration.ofSeconds(2),
       Duration.ofSeconds(2),
       registrationSecret);
@@ -530,13 +550,16 @@ public class DistributorTest {
       queue,
       new DefaultSlotSelector(),
       registrationSecret,
-      Duration.ofMinutes(5))
+      Duration.ofMinutes(5),
+      false)
       .add(heavy)
       .add(medium)
       .add(lightest)
       .add(massive);
 
     wait.until(obj -> distributor.getStatus().getNodes().size() == 4);
+    wait.until(ignored -> distributor.getStatus().getNodes().stream().allMatch(
+      node -> node.getAvailability() == UP && node.hasCapacity()));
     wait.until(obj -> distributor.getStatus().hasCapacity());
 
     Either<SessionNotCreatedException, CreateSessionResponse> result =
@@ -552,6 +575,7 @@ public class DistributorTest {
     NewSessionQueue queue = new LocalNewSessionQueue(
       tracer,
       bus,
+      new DefaultSlotMatcher(),
       Duration.ofSeconds(2),
       Duration.ofSeconds(2),
       registrationSecret);
@@ -569,7 +593,8 @@ public class DistributorTest {
       queue,
       new DefaultSlotSelector(),
       registrationSecret,
-      Duration.ofMinutes(5))
+      Duration.ofMinutes(5),
+      false)
       .add(leastRecent);
     waitToHaveCapacity(distributor);
 
@@ -628,6 +653,7 @@ public class DistributorTest {
     NewSessionQueue queue = new LocalNewSessionQueue(
       tracer,
       bus,
+      new DefaultSlotMatcher(),
       Duration.ofSeconds(2),
       Duration.ofSeconds(2),
       registrationSecret);
@@ -659,9 +685,11 @@ public class DistributorTest {
       queue,
       new DefaultSlotSelector(),
       registrationSecret,
-      Duration.ofMinutes(5));
+      Duration.ofSeconds(1),
+      false);
     handler.addHandler(distributor);
     distributor.add(alwaysDown);
+    waitForAllNodesToMeetCondition(distributor, 1, DOWN);
 
     // Should be unable to create a session because the node is down.
     Either<SessionNotCreatedException, CreateSessionResponse> result =
@@ -681,6 +709,7 @@ public class DistributorTest {
     NewSessionQueue queue = new LocalNewSessionQueue(
       tracer,
       bus,
+      new DefaultSlotMatcher(),
       Duration.ofSeconds(2),
       Duration.ofSeconds(2),
       registrationSecret);
@@ -697,7 +726,8 @@ public class DistributorTest {
       queue,
       new DefaultSlotSelector(),
       registrationSecret,
-      Duration.ofMinutes(5));
+      Duration.ofMinutes(5),
+      false);
 
     distributor.add(node);
     waitToHaveCapacity(distributor);
@@ -718,6 +748,7 @@ public class DistributorTest {
     NewSessionQueue queue = new LocalNewSessionQueue(
       tracer,
       bus,
+      new DefaultSlotMatcher(),
       Duration.ofSeconds(2),
       Duration.ofSeconds(2),
       registrationSecret);
@@ -735,18 +766,20 @@ public class DistributorTest {
       queue,
       new DefaultSlotSelector(),
       registrationSecret,
-      Duration.ofMinutes(5));
+      Duration.ofMinutes(5),
+      false);
     distributor.add(node);
     waitToHaveCapacity(distributor);
 
     // Use up the one slot available
     Session session;
-    Either<SessionNotCreatedException, CreateSessionResponse> result =
-      distributor.newSession(createRequest(caps));
+    Either<SessionNotCreatedException, CreateSessionResponse> result = distributor.newSession(createRequest(caps));
     assertThatEither(result).isRight();
     session = result.right().getSession();
     // Make sure the session map has the session
     sessions.get(session.getId());
+
+    Session argleBlarg = sessions.get(session.getId());
 
     node.stop(session.getId());
     // Now wait for the session map to say the session is gone.
@@ -774,6 +807,7 @@ public class DistributorTest {
     NewSessionQueue queue = new LocalNewSessionQueue(
       tracer,
       bus,
+      new DefaultSlotMatcher(),
       Duration.ofSeconds(2),
       Duration.ofSeconds(2),
       registrationSecret);
@@ -787,7 +821,8 @@ public class DistributorTest {
       queue,
       new DefaultSlotSelector(),
       registrationSecret,
-      Duration.ofMinutes(5));
+      Duration.ofMinutes(5),
+      false);
     handler.addHandler(distributor);
 
     Node node = createNode(caps, 1, 0);
@@ -807,6 +842,7 @@ public class DistributorTest {
     NewSessionQueue queue = new LocalNewSessionQueue(
       tracer,
       bus,
+      new DefaultSlotMatcher(),
       Duration.ofSeconds(2),
       Duration.ofSeconds(2),
       registrationSecret);
@@ -825,7 +861,8 @@ public class DistributorTest {
       queue,
       new DefaultSlotSelector(),
       registrationSecret,
-      Duration.ofMinutes(5));
+      Duration.ofMinutes(5),
+      false);
     distributor.add(node);
     waitToHaveCapacity(distributor);
 
@@ -846,6 +883,7 @@ public class DistributorTest {
     NewSessionQueue queue = new LocalNewSessionQueue(
       tracer,
       bus,
+      new DefaultSlotMatcher(),
       Duration.ofSeconds(2),
       Duration.ofSeconds(2),
       registrationSecret);
@@ -868,9 +906,11 @@ public class DistributorTest {
       queue,
       new DefaultSlotSelector(),
       registrationSecret,
-      Duration.ofMinutes(5));
+      Duration.ofSeconds(1),
+      false);
     handler.addHandler(distributor);
     distributor.add(node);
+    waitForAllNodesToMeetCondition(distributor, 1, DOWN);
 
     // Should be unable to create a session because the node is down.
     Either<SessionNotCreatedException, CreateSessionResponse> result =
@@ -918,6 +958,7 @@ public class DistributorTest {
     NewSessionQueue queue = new LocalNewSessionQueue(
       tracer,
       bus,
+      new DefaultSlotMatcher(),
       Duration.ofSeconds(2),
       Duration.ofSeconds(2),
       registrationSecret);
@@ -930,7 +971,8 @@ public class DistributorTest {
       queue,
       new DefaultSlotSelector(),
       registrationSecret,
-      Duration.ofMinutes(5));
+      Duration.ofMinutes(5),
+      false);
     handler.addHandler(distributor);
 
     //Create all three Capability types
@@ -1006,6 +1048,15 @@ public class DistributorTest {
     return node;
   }
 
+  private Node createBrokenNode(Capabilities stereotype) {
+    URI uri = createUri();
+    return LocalNode.builder(tracer, bus, uri, uri, registrationSecret)
+      .add(
+        stereotype,
+        new TestSessionFactory(stereotype, (id, caps) -> {throw new SessionNotCreatedException("Surprise!");}))
+      .build();
+  }
+
   @Test
   @Ignore
   public void shouldCorrectlySetSessionCountsWhenStartedAfterNodeWithSession() {
@@ -1053,12 +1104,65 @@ public class DistributorTest {
     assertFalse(status.hasCapacity());
   }
 
+  @Test
+  public void shouldFallbackToSecondAvailableCapabilitiesIfFirstNotAvailable() {
+    local.add(createNode(new ImmutableCapabilities("browserName", "not cheese"), 1, 1));
+    local.add(createNode(new ImmutableCapabilities("browserName", "cheese"), 1, 0));
+    waitToHaveCapacity(local);
+
+    SessionRequest sessionRequest = new SessionRequest(
+      new RequestId(UUID.randomUUID()),
+      Instant.now(),
+      Set.of(W3C),
+      // Insertion order is assumed to be preserved
+        ImmutableSet.of(
+            // There's no capacity for this
+              new ImmutableCapabilities("browserName", "not cheese"),
+            // But there is for this, so we expect this to be created.
+              new ImmutableCapabilities("browserName", "cheese")),
+      Map.of(),
+      Map.of());
+
+    Either<SessionNotCreatedException, CreateSessionResponse> result = local.newSession(sessionRequest);
+
+    assertThat(result.isRight()).isTrue();
+    Capabilities seen = result.right().getSession().getCapabilities();
+    assertThat(seen.getBrowserName()).isEqualTo("cheese");
+  }
+
+  @Test
+  public void shouldFallbackToSecondAvailableCapabilitiesIfFirstThrowsOnCreation() {
+    local.add(createBrokenNode(new ImmutableCapabilities("browserName", "not cheese")));
+    local.add(createNode(new ImmutableCapabilities("browserName", "cheese"), 1, 0));
+    waitForAllNodesToHaveCapacity(local, 2);
+
+    SessionRequest sessionRequest = new SessionRequest(
+      new RequestId(UUID.randomUUID()),
+      Instant.now(),
+      Set.of(W3C),
+      // Insertion order is assumed to be preserved
+        ImmutableSet.of(
+            // There's no capacity for this
+              new ImmutableCapabilities("browserName", "not cheese"),
+            // But there is for this, so we expect this to be created.
+              new ImmutableCapabilities("browserName", "cheese")),
+      Map.of(),
+      Map.of());
+
+    Either<SessionNotCreatedException, CreateSessionResponse> result = local.newSession(sessionRequest);
+
+    assertThat(result.isRight()).isTrue();
+    Capabilities seen = result.right().getSession().getCapabilities();
+    assertThat(seen.getBrowserName()).isEqualTo("cheese");
+  }
+
   private SessionRequest createRequest(Capabilities... allCaps) {
     return new SessionRequest(
       new RequestId(UUID.randomUUID()),
       Instant.now(),
       Set.of(W3C),
       Set.of(allCaps),
+      Map.of(),
       Map.of());
   }
 
@@ -1078,21 +1182,19 @@ public class DistributorTest {
   }
 
   private void waitForAllNodesToHaveCapacity(Distributor distributor, int nodeCount) {
-    try {
-      new FluentWait<>(distributor)
-        .withTimeout(Duration.ofSeconds(5))
-        .pollingEvery(Duration.ofMillis(100))
-        .until(d -> {
-          Set<NodeStatus> nodes = d.getStatus().getNodes();
-          return nodes.size() == nodeCount && nodes.stream().allMatch(
-            node -> node.getAvailability() == UP && node.hasCapacity());
-        });
-    } catch (TimeoutException ex) {
-      Set<NodeStatus> nodes = distributor.getStatus().getNodes();
-      System.out.println("*************");
-      System.out.println("" + nodes.size());
-      nodes.forEach(node -> System.out.println("" + node.hasCapacity()));
-    }
+    waitForAllNodesToMeetCondition(distributor, nodeCount, UP);
+  }
+
+  private void waitForAllNodesToMeetCondition(Distributor distributor, int nodeCount,
+                                              Availability availability) {
+    new FluentWait<>(distributor)
+      .withTimeout(Duration.ofSeconds(5))
+      .pollingEvery(Duration.ofMillis(100))
+      .until(d -> {
+        Set<NodeStatus> nodes = d.getStatus().getNodes();
+        return nodes.size() == nodeCount && nodes.stream().allMatch(
+          node -> node.getAvailability() == availability && node.hasCapacity());
+      });
   }
 
   class HandledSession extends Session implements HttpHandler {

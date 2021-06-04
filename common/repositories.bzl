@@ -3,40 +3,40 @@ load("//common/private:dmg_archive.bzl", "dmg_archive")
 load("//common/private:drivers.bzl", "local_drivers")
 load("//common/private:pkg_archive.bzl", "pkg_archive")
 
-_edge_version = "89.0.774.54"
+_edge_version = "90.0.818.66"
 
 _versions = {
     # The chrome version number is found by visiting http://omahaproxy.appspot.com,
     # looking for the current stable version for any platform, and using the "lookup"
     # feature to find out "Version information". The "Branch Base Position" gives you
     # the version.
-    # 827102 = 88.0.4324.96
+    # 856583 = 90.0.4427.0
     "chrome": {
         "linux": {
-            "url": "https://storage.googleapis.com/chromium-browser-snapshots/Linux_x64/827102/chrome-linux.zip",
-            "sha256": "e2720836e44063796a9be3c9fa6522a753f92a7ed5e3686a5e9246b0e45cf161",
+            "url": "https://storage.googleapis.com/chromium-browser-snapshots/Linux_x64/856583/chrome-linux.zip",
+            "sha256": "cfdb58903416ecfbc862dedaa8e4aa9df2df17f24fc448e01bb5911da22ce5ef",
         },
         "mac": {
-            "url": "https://storage.googleapis.com/chromium-browser-snapshots/Mac/827102/chrome-mac.zip",
-            "sha256": "9e053a67e2be04c39ab51021aff30010681d2e9c616a3b8195a9ae32c5aed3b5",
+            "url": "https://storage.googleapis.com/chromium-browser-snapshots/Mac/856583/chrome-mac.zip",
+            "sha256": "89caa2b03b753b798d1f6d034963fc37c926ca87c58403b6aebe0fed91ecbe8a",
         },
         "windows": {
-            "url": "https://storage.googleapis.com/chromium-browser-snapshots/Win_x64/827102/chrome-win.zip",
+            "url": "https://storage.googleapis.com/chromium-browser-snapshots/Win_x64/856583/chrome-win.zip",
             "sha256": None,
         },
     },
     # Versions found by visiting https://chromedriver.chromium.org/downloads
     "chromedriver": {
         "linux": {
-            "url": "https://chromedriver.storage.googleapis.com/88.0.4324.96/chromedriver_linux64.zip",
-            "sha256": "817ca10b63f01bb2f6ead37658c83cd68bcd912ea6a4f0a761d152080a1b1e42",
+            "url": "https://chromedriver.storage.googleapis.com/90.0.4430.24/chromedriver_linux64.zip",
+            "sha256": "474e9832e2f592f30d5b3260a17c479e50c46dade2c062316af13da2735fd12f",
         },
         "mac": {
-            "url": "https://chromedriver.storage.googleapis.com/88.0.4324.96/chromedriver_mac64.zip",
-            "sha256": "b7171a5bf9cdc1afe10b7f7812e13d275342e861518a7db6ff1ce5666e65bf86",
+            "url": "https://chromedriver.storage.googleapis.com/90.0.4430.24/chromedriver_mac64.zip",
+            "sha256": "1318b3717576154e36476c3253ee8e87a2e09eaf07631ee4948348a8f6a1545f",
         },
         "windows": {
-            "url": "https://chromedriver.storage.googleapis.com/88.0.4324.96/chromedriver_win32.zip",
+            "url": "https://chromedriver.storage.googleapis.com/90.0.4430.24/chromedriver_win32.zip",
             "sha256": None,
         },
     },
@@ -48,7 +48,7 @@ _versions = {
         },
         "mac": {
             "url": "https://officecdn-microsoft-com.akamaized.net/pr/C1297A47-86C4-4C1F-97FA-950631F94777/MacAutoupdate/MicrosoftEdge-%s.pkg?platform=Mac&Consent=0&channel=Stable" % _edge_version,
-            "sha256": "23541c9d9e31c5a4221957a56906749b4ddcb422a22d178b4dd5adf833230838",
+            "sha256": "d1ea256e8824309f557b244919dad2b41a3c72625cc90dee7e833f05d8e2a48d",
         },
         "windows": {
             "url": None,
@@ -63,7 +63,7 @@ _versions = {
         },
         "mac": {
             "url": "https://msedgedriver.azureedge.net/%s/edgedriver_mac64.zip" % _edge_version,
-            "sha256": "c8eab921ccaaec552f1380d3ca95f91e947fda1866c84d7f47da0198b9b52645",
+            "sha256": "76258626f980eb0d0384ca99d0af30ed7e9e91c6801e89bf0361205d660c698d",
         },
         "windows": {
             "url": "https://msedgedriver.azureedge.net/%s/edgedriver_win64.zip" % _edge_version,

@@ -17,17 +17,17 @@
 
 package org.openqa.selenium.safari;
 
-import static java.util.Collections.unmodifiableMap;
-import static org.openqa.selenium.remote.CapabilityType.BROWSER_NAME;
-
+import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.MutableCapabilities;
+import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.AbstractDriverOptions;
-import org.openqa.selenium.Capabilities;
-import org.openqa.selenium.WebDriverException;
 
+import java.util.Collections;
 import java.util.Map;
-import java.util.TreeMap;
+import java.util.Set;
+
+import static org.openqa.selenium.remote.CapabilityType.BROWSER_NAME;
 
 /**
  * Class to manage options specific to {@link SafariDriver}.
@@ -164,8 +164,12 @@ public class SafariOptions extends AbstractDriverOptions<SafariOptions> {
   }
 
   @Override
-  public Map<String, Object> asMap() {
-    Map<String, Object> result = new TreeMap<>(super.asMap());
-    return unmodifiableMap(result);
+  protected Set<String> getExtraCapabilityNames() {
+    return Collections.emptySet();
+  }
+
+  @Override
+  protected Object getExtraCapability(String capabilityName) {
+    return null;
   }
 }

@@ -22,6 +22,7 @@ import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.grid.config.Config;
 import org.openqa.selenium.grid.data.CreateSessionResponse;
 import org.openqa.selenium.grid.data.RequestId;
+import org.openqa.selenium.grid.data.SessionRequestCapability;
 import org.openqa.selenium.grid.log.LoggingOptions;
 import org.openqa.selenium.grid.security.AddSecretFilter;
 import org.openqa.selenium.grid.security.Secret;
@@ -57,7 +58,7 @@ import static org.openqa.selenium.remote.http.HttpMethod.POST;
 
 public class RemoteNewSessionQueue extends NewSessionQueue {
 
-  private static final Type QUEUE_CONTENTS_TYPE = new TypeToken<List<Set<Capabilities>>>() {}.getType();
+  private static final Type QUEUE_CONTENTS_TYPE = new TypeToken<List<SessionRequestCapability>>() {}.getType();
   private static final Json JSON = new Json();
   private final HttpClient client;
   private final Filter addSecret;
@@ -110,7 +111,7 @@ public class RemoteNewSessionQueue extends NewSessionQueue {
 
   @Override
   public Optional<SessionRequest> remove(RequestId reqId) {
-    HttpRequest upstream = new HttpRequest(GET, "/se/grid/newsessionqueue/session/" + reqId);
+    HttpRequest upstream = new HttpRequest(POST, "/se/grid/newsessionqueue/session/" + reqId);
     HttpTracing.inject(tracer, tracer.getCurrentContext(), upstream);
     HttpResponse response = client.with(addSecret).execute(upstream);
 
@@ -127,6 +128,20 @@ public class RemoteNewSessionQueue extends NewSessionQueue {
   }
 
   @Override
+  public Optional<SessionRequest> getNextAvailable(Set<Capabilities> stereotypes) {
+    Require.nonNull("Stereotypes", stereotypes);
+
+    HttpRequest upstream = new HttpRequest(POST, "/se/grid/newsessionqueue/session/next")
+      .setContent(Contents.asJson(stereotypes));
+    HttpTracing.inject(tracer, tracer.getCurrentContext(), upstream);
+    HttpResponse response = client.with(addSecret).execute(upstream);
+
+    SessionRequest value = Values.get(response, SessionRequest.class);
+
+    return Optional.ofNullable(value);
+  }
+
+  @Override
   public void complete(RequestId reqId, Either<SessionNotCreatedException, CreateSessionResponse> result) {
     Require.nonNull("Request ID", reqId);
     Require.nonNull("Result", result);
@@ -137,7 +152,7 @@ public class RemoteNewSessionQueue extends NewSessionQueue {
         .setContent(Contents.asJson(result.right()));
     } else {
       upstream = new HttpRequest(POST, String.format("/se/grid/newsessionqueue/session/%s/failure", reqId))
-        .setContent(Contents.asJson(result.left()));
+        .setContent(Contents.asJson(result.left().getRawMessage()));
     }
 
     HttpTracing.inject(tracer, tracer.getCurrentContext(), upstream);
@@ -154,7 +169,7 @@ public class RemoteNewSessionQueue extends NewSessionQueue {
   }
 
   @Override
-  public List<Set<Capabilities>> getQueueContents() {
+  public List<SessionRequestCapability> getQueueContents() {
     HttpRequest upstream = new HttpRequest(GET, "/se/grid/newsessionqueue/queue");
     HttpTracing.inject(tracer, tracer.getCurrentContext(), upstream);
     HttpResponse response = client.execute(upstream);
