@@ -18,6 +18,7 @@
 package org.openqa.selenium.chrome;
 
 import com.google.auto.service.AutoService;
+
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.SessionNotCreatedException;
@@ -45,9 +46,9 @@ public class ChromeDriverInfo extends ChromiumDriverInfo {
 
   @Override
   public boolean isSupporting(Capabilities capabilities) {
-    return BrowserType.CHROME.equals(capabilities.getBrowserName()) ||
-      capabilities.getCapability("chromeOptions") != null ||
-      capabilities.getCapability("goog:chromeOptions") != null;
+    return BrowserType.CHROME.equalsIgnoreCase(capabilities.getBrowserName()) ||
+           capabilities.getCapability("chromeOptions") != null ||
+           capabilities.getCapability("goog:chromeOptions") != null;
   }
 
   @Override

@@ -29,7 +29,7 @@ import static java.net.HttpURLConnection.HTTP_INTERNAL_ERROR;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.openqa.selenium.remote.http.Contents.utf8String;
 
-// https://docs.docker.com/engine/api/v1.40/#operation/SystemVersion
+// https://docs.docker.com/engine/api/v1.41/#operation/SystemVersion
 public class VersionCommandTest {
 
   @Test
@@ -79,11 +79,11 @@ public class VersionCommandTest {
     HttpHandler handler = req -> new HttpResponse()
       .addHeader("Content-Type", "application/json")
       // Note: the version here does not exactly match any we claim to provide
-      .setContent(utf8String("{\"ApiVersion\":\"1.41\",\"MinAPIVersion\":\"1.12\"}"));
+      .setContent(utf8String("{\"ApiVersion\":\"1.42\",\"MinAPIVersion\":\"1.12\"}"));
 
     Optional<DockerProtocol> maybeDocker = new VersionCommand(handler).getDockerProtocol();
 
     assertThat(maybeDocker).isNotEqualTo(Optional.empty());
-    assertThat(maybeDocker.get().version()).isEqualTo("1.40");
+    assertThat(maybeDocker.get().version()).isEqualTo("1.41");
   }
 }

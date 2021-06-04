@@ -69,7 +69,7 @@ namespace OpenQA.Selenium.Edge
         /// <summary>
         /// Initializes a new instance of the <see cref="EdgeOptions"/> class.
         /// </summary>
-        public EdgeOptions()
+        public EdgeOptions() : base()
         {
             this.BrowserName = DefaultBrowserNameValue;
             this.AddKnownCapabilityName(UseChromiumCapability, "UseChromium property");

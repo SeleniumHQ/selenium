@@ -18,6 +18,7 @@
 package org.openqa.selenium.grid.distributor.local;
 
 import com.google.common.collect.ImmutableSet;
+
 import org.openqa.selenium.Beta;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
@@ -546,10 +547,11 @@ public class LocalDistributor extends Distributor {
 
     @Override
     public void run() {
+      List<SessionRequestCapability> queueContents = sessionQueue.getQueueContents();
       if (rejectUnsupportedCaps) {
-        checkMatchingSlot(sessionQueue.getQueueContents());
+        checkMatchingSlot(queueContents);
       }
-      int initialSize = sessionQueue.getQueueContents().size();
+      int initialSize = queueContents.size();
       boolean retry = initialSize != 0;
 
       while (retry) {
@@ -609,7 +611,7 @@ public class LocalDistributor extends Distributor {
 
         if (response.isLeft() && response.left() instanceof RetrySessionRequestException) {
           try(Span childSpan = span.createSpan("distributor.retry")) {
-            LOG.info("Retryinggg");
+            LOG.info("Retrying");
             boolean retried = sessionQueue.retryAddToQueue(sessionRequest);
 
             attributeMap.put("request.retry_add", EventAttribute.setValue(retried));

@@ -46,8 +46,8 @@ public class OperaDriverInfo implements WebDriverInfo {
 
   @Override
   public boolean isSupporting(Capabilities capabilities) {
-    return BrowserType.OPERA_BLINK.equals(capabilities.getBrowserName()) ||
-      BrowserType.OPERA.equals(capabilities.getBrowserName());
+    return BrowserType.OPERA_BLINK.equalsIgnoreCase(capabilities.getBrowserName()) ||
+           BrowserType.OPERA.equalsIgnoreCase(capabilities.getBrowserName());
   }
 
   @Override

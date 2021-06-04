@@ -19,6 +19,7 @@ package org.openqa.selenium.grid.distributor;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
+
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -28,7 +29,6 @@ import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.MutableCapabilities;
 import org.openqa.selenium.NoSuchSessionException;
 import org.openqa.selenium.SessionNotCreatedException;
-import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.events.EventBus;
 import org.openqa.selenium.events.local.GuavaEventBus;
 import org.openqa.selenium.grid.data.Availability;
@@ -118,7 +118,7 @@ public class DistributorTest {
   @Before
   public void setUp() throws URISyntaxException {
     nodeUri = new URI("http://example:5678");
-    routableUri = new URI("http://localhost:1234");
+    routableUri = createUri();
     tracer = DefaultTestTracer.createTracer();
     bus = new GuavaEventBus();
     LocalSessionMap sessions = new LocalSessionMap(tracer, bus);
@@ -183,21 +183,21 @@ public class DistributorTest {
     CountDownLatch latch = new CountDownLatch(1);
 
     bus.addListener(NodeHeartBeatEvent.listener(nodeStatus -> {
-      latch.countDown();
       if (node.getId().equals(nodeStatus.getId())) {
+        latch.countDown();
         heartbeatStarted.set(true);
       }
     }));
     waitToHaveCapacity(distributor);
-    boolean eventFired = false;
+    boolean eventFiredAndListenedTo = false;
     try {
-      eventFired = latch.await(30, TimeUnit.SECONDS);
+      eventFiredAndListenedTo = latch.await(30, TimeUnit.SECONDS);
     } catch (InterruptedException e) {
       Assert.fail("Thread Interrupted");
     }
 
-    assertThat(eventFired).isTrue();
-    assertThat(heartbeatStarted).isTrue();
+    assertThat(eventFiredAndListenedTo).isTrue();
+    assertThat(heartbeatStarted.get()).isTrue();
   }
 
   @Test
@@ -558,6 +558,8 @@ public class DistributorTest {
       .add(massive);
 
     wait.until(obj -> distributor.getStatus().getNodes().size() == 4);
+    wait.until(ignored -> distributor.getStatus().getNodes().stream().allMatch(
+      node -> node.getAvailability() == UP && node.hasCapacity()));
     wait.until(obj -> distributor.getStatus().hasCapacity());
 
     Either<SessionNotCreatedException, CreateSessionResponse> result =
@@ -683,10 +685,11 @@ public class DistributorTest {
       queue,
       new DefaultSlotSelector(),
       registrationSecret,
-      Duration.ofMinutes(5),
+      Duration.ofSeconds(1),
       false);
     handler.addHandler(distributor);
     distributor.add(alwaysDown);
+    waitForAllNodesToMeetCondition(distributor, 1, DOWN);
 
     // Should be unable to create a session because the node is down.
     Either<SessionNotCreatedException, CreateSessionResponse> result =
@@ -903,10 +906,11 @@ public class DistributorTest {
       queue,
       new DefaultSlotSelector(),
       registrationSecret,
-      Duration.ofMinutes(5),
+      Duration.ofSeconds(1),
       false);
     handler.addHandler(distributor);
     distributor.add(node);
+    waitForAllNodesToMeetCondition(distributor, 1, DOWN);
 
     // Should be unable to create a session because the node is down.
     Either<SessionNotCreatedException, CreateSessionResponse> result =
@@ -1130,7 +1134,7 @@ public class DistributorTest {
   public void shouldFallbackToSecondAvailableCapabilitiesIfFirstThrowsOnCreation() {
     local.add(createBrokenNode(new ImmutableCapabilities("browserName", "not cheese")));
     local.add(createNode(new ImmutableCapabilities("browserName", "cheese"), 1, 0));
-    waitToHaveCapacity(local);
+    waitForAllNodesToHaveCapacity(local, 2);
 
     SessionRequest sessionRequest = new SessionRequest(
       new RequestId(UUID.randomUUID()),
@@ -1178,21 +1182,19 @@ public class DistributorTest {
   }
 
   private void waitForAllNodesToHaveCapacity(Distributor distributor, int nodeCount) {
-    try {
-      new FluentWait<>(distributor)
-        .withTimeout(Duration.ofSeconds(5))
-        .pollingEvery(Duration.ofMillis(100))
-        .until(d -> {
-          Set<NodeStatus> nodes = d.getStatus().getNodes();
-          return nodes.size() == nodeCount && nodes.stream().allMatch(
-            node -> node.getAvailability() == UP && node.hasCapacity());
-        });
-    } catch (TimeoutException ex) {
-      Set<NodeStatus> nodes = distributor.getStatus().getNodes();
-      System.out.println("*************");
-      System.out.println("" + nodes.size());
-      nodes.forEach(node -> System.out.println("" + node.hasCapacity()));
-    }
+    waitForAllNodesToMeetCondition(distributor, nodeCount, UP);
+  }
+
+  private void waitForAllNodesToMeetCondition(Distributor distributor, int nodeCount,
+                                              Availability availability) {
+    new FluentWait<>(distributor)
+      .withTimeout(Duration.ofSeconds(5))
+      .pollingEvery(Duration.ofMillis(100))
+      .until(d -> {
+        Set<NodeStatus> nodes = d.getStatus().getNodes();
+        return nodes.size() == nodeCount && nodes.stream().allMatch(
+          node -> node.getAvailability() == availability && node.hasCapacity());
+      });
   }
 
   class HandledSession extends Session implements HttpHandler {

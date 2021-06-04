@@ -66,7 +66,7 @@ namespace OpenQA.Selenium.Firefox
     /// }
     /// </code>
     /// </example>
-    public class FirefoxDriver : RemoteWebDriver, IDevTools
+    public class FirefoxDriver : WebDriver, IDevTools
     {
         private const int FirefoxDevToolsProtocolVersion = 85;
         private const string FirefoxDevToolsCapabilityName = "moz:debuggerAddress";
@@ -156,10 +156,10 @@ namespace OpenQA.Selenium.Firefox
             : base(new DriverServiceCommandExecutor(service, commandTimeout), ConvertOptionsToCapabilities(options))
         {
             // Add the custom commands unique to Firefox
-            this.AddCustomFirefoxCommand(SetContextCommand, CommandInfo.PostCommand, "/session/{sessionId}/moz/context");
-            this.AddCustomFirefoxCommand(InstallAddOnCommand, CommandInfo.PostCommand, "/session/{sessionId}/moz/addon/install");
-            this.AddCustomFirefoxCommand(UninstallAddOnCommand, CommandInfo.PostCommand, "/session/{sessionId}/moz/addon/uninstall");
-            this.AddCustomFirefoxCommand(GetFullPageScreenshotCommand, CommandInfo.GetCommand, "/session/{sessionId}/moz/screenshot/full");
+            this.AddCustomFirefoxCommand(SetContextCommand, HttpCommandInfo.PostCommand, "/session/{sessionId}/moz/context");
+            this.AddCustomFirefoxCommand(InstallAddOnCommand, HttpCommandInfo.PostCommand, "/session/{sessionId}/moz/addon/install");
+            this.AddCustomFirefoxCommand(UninstallAddOnCommand, HttpCommandInfo.PostCommand, "/session/{sessionId}/moz/addon/uninstall");
+            this.AddCustomFirefoxCommand(GetFullPageScreenshotCommand, HttpCommandInfo.GetCommand, "/session/{sessionId}/moz/screenshot/full");
         }
 
         /// <summary>
@@ -325,8 +325,8 @@ namespace OpenQA.Selenium.Firefox
 
         private void AddCustomFirefoxCommand(string commandName, string method, string resourcePath)
         {
-            CommandInfo commandInfoToAdd = new CommandInfo(method, resourcePath);
-            this.CommandExecutor.CommandInfoRepository.TryAddCommand(commandName, commandInfoToAdd);
+            HttpCommandInfo commandInfoToAdd = new HttpCommandInfo(method, resourcePath);
+            this.CommandExecutor.TryAddCommand(commandName, commandInfoToAdd);
         }
     }
 }

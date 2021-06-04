@@ -54,7 +54,7 @@ namespace OpenQA.Selenium.Opera
     /// }
     /// </code>
     /// </example>
-    public class OperaDriver : RemoteWebDriver
+    public class OperaDriver : WebDriver
     {
         /// <summary>
         /// Accept untrusted SSL Certificates

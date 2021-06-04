@@ -1470,17 +1470,68 @@ namespace OpenQA.Selenium.Support.Events
             }
 
             /// <summary>
+            /// Gets the value of a declared HTML attribute of this element.
+            /// </summary>
+            /// <param name="attributeName">The name of the HTML attribute to get the value of.</param>
+            /// <returns>The HTML attribute's current value. Returns a <see langword="null"/> if the
+            /// value is not set or the declared attribute does not exist.</returns>
+            /// <remarks>
+            /// As opposed to the <see cref="GetAttribute(string)"/> method, this method
+            /// only returns attributes declared in the element's HTML markup. To access the value
+            /// of an IDL property of the element, either use the <see cref="GetAttribute(string)"/>
+            /// method or the <see cref="GetDomProperty(string)"/> method.
+            /// </remarks>
+            public string GetDomAttribute(string attributeName)
+            {
+                string attribute = string.Empty;
+                try
+                {
+                    attribute = this.underlyingElement.GetDomAttribute(attributeName);
+                }
+                catch (Exception ex)
+                {
+                    this.parentDriver.OnException(new WebDriverExceptionEventArgs(this.parentDriver, ex));
+                    throw;
+                }
+
+                return attribute;
+            }
+
+            /// <summary>
             /// Gets the value of a JavaScript property of this element.
             /// </summary>
             /// <param name="propertyName">The name JavaScript the JavaScript property to get the value of.</param>
             /// <returns>The JavaScript property's current value. Returns a <see langword="null"/> if the
             /// value is not set or the property does not exist.</returns>
+            [Obsolete("Use the GetDomProperty method instead.")]
             public string GetProperty(string propertyName)
             {
                 string elementProperty = string.Empty;
                 try
                 {
                     elementProperty = this.underlyingElement.GetProperty(propertyName);
+                }
+                catch (Exception ex)
+                {
+                    this.parentDriver.OnException(new WebDriverExceptionEventArgs(this.parentDriver, ex));
+                    throw;
+                }
+
+                return elementProperty;
+            }
+
+            /// <summary>
+            /// Gets the value of a JavaScript property of this element.
+            /// </summary>
+            /// <param name="propertyName">The name JavaScript the JavaScript property to get the value of.</param>
+            /// <returns>The JavaScript property's current value. Returns a <see langword="null"/> if the
+            /// value is not set or the property does not exist.</returns>
+            public string GetDomProperty(string propertyName)
+            {
+                string elementProperty = string.Empty;
+                try
+                {
+                    elementProperty = this.underlyingElement.GetDomProperty(propertyName);
                 }
                 catch (Exception ex)
                 {

@@ -160,9 +160,9 @@ public class Reference {
 
     Reference that = (Reference) o;
     return this.domain.equals(that.domain) &&
-      this.name.equals(that.name) &&
-      Objects.equals(tag, that.tag) &&
-      Objects.equals(digest, that.digest);
+           this.name.equals(that.name) &&
+           Objects.equals(tag, that.tag) &&
+           Objects.equals(digest, that.digest);
   }
 
   @Override
