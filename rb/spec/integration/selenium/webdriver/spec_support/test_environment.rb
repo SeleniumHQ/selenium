@@ -113,7 +113,7 @@ module Selenium
                 end
 
           WebDriver.logger.info "Server Location: #{jar}"
-          jar
+          jar.to_s
         end
 
         def quit
