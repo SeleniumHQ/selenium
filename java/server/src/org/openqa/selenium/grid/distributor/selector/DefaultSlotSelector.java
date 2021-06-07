@@ -51,7 +51,7 @@ public class DefaultSlotSelector implements SlotSelector {
           // And use the node id as a tie-breaker.
           .thenComparing(NodeStatus::getId))
       .flatMap(node -> node.getSlots().stream()
-        .filter(slot -> !slot.getSession().isPresent())
+        .filter(slot -> slot.getSession()==null)
         .filter(slot -> slot.isSupporting(capabilities))
         .map(Slot::getId))
       .collect(toImmutableSet());
