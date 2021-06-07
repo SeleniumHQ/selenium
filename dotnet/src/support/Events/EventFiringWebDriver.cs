@@ -1564,6 +1564,27 @@ namespace OpenQA.Selenium.Support.Events
             }
 
             /// <summary>
+            /// Gets the representation of an element's shadow root for accessing the shadow DOM of a web component.
+            /// </summary>
+            /// <exception cref="NoSuchShadowRootException">Thrown when this element does not have a shadow root.</exception>
+            /// <returns>A shadow root representation.</returns>
+            public ISearchContext GetShadowRoot()
+            {
+                ISearchContext shadowRoot = null;
+                try
+                {
+                    shadowRoot = this.underlyingElement.GetShadowRoot();
+                }
+                catch (Exception ex)
+                {
+                    this.parentDriver.OnException(new WebDriverExceptionEventArgs(this.parentDriver, ex));
+                    throw;
+                }
+
+                return shadowRoot;
+            }
+
+            /// <summary>
             /// Finds the first element in the page that matches the <see cref="By"/> object
             /// </summary>
             /// <param name="by">By mechanism to find the element</param>
