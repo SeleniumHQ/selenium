@@ -486,18 +486,17 @@ public class LocalNode extends Node {
     Set<Slot> slots = factories.stream()
       .map(slot -> {
         Instant lastStarted = Instant.EPOCH;
-        Optional<Session> session = Optional.empty();
+        Session session = null;
         if (!slot.isAvailable()) {
           ActiveSession activeSession = slot.getSession();
           if (activeSession != null) {
             lastStarted = activeSession.getStartTime();
-            session = Optional.of(
-              new Session(
-                activeSession.getId(),
-                activeSession.getUri(),
-                slot.getStereotype(),
-                activeSession.getCapabilities(),
-                activeSession.getStartTime()));
+            session = new Session(
+              activeSession.getId(),
+              activeSession.getUri(),
+              slot.getStereotype(),
+              activeSession.getCapabilities(),
+              activeSession.getStartTime());
           }
         }
 

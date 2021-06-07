@@ -81,7 +81,10 @@ public class Grid {
       Map<org.openqa.selenium.grid.data.Session, Slot> sessions = new HashMap<>();
 
       for (Slot slot : status.getSlots()) {
-        slot.getSession().ifPresent(session -> sessions.put(session, slot));
+        org.openqa.selenium.grid.data.Session session = slot.getSession();
+        if (session != null) {
+          sessions.put(session, slot);
+        }
 
         int count = stereotypes.getOrDefault(slot.getStereotype(), 0);
         count++;
@@ -116,7 +119,7 @@ public class Grid {
     return distributorStatus.get().getNodes().stream()
       .map(NodeStatus::getSlots)
       .flatMap(Collection::stream)
-      .filter(slot -> slot.getSession().isPresent())
+      .filter(slot -> slot.getSession()!=null)
       .mapToInt(slot -> 1)
       .sum();
   }
@@ -149,8 +152,8 @@ public class Grid {
     List<Session> sessions = new ArrayList<>();
     for (NodeStatus status : distributorStatus.get().getNodes()) {
       for (Slot slot : status.getSlots()) {
-        if (slot.getSession().isPresent()) {
-          org.openqa.selenium.grid.data.Session session = slot.getSession().get();
+        if (slot.getSession()!=null) {
+          org.openqa.selenium.grid.data.Session session = slot.getSession();
           sessions.add(
             new org.openqa.selenium.grid.graphql.Session(
               session.getId().toString(),

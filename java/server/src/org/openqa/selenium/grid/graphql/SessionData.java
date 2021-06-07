@@ -70,10 +70,10 @@ public class SessionData implements DataFetcher {
   private SessionInSlot findSession(String sessionId, Set<NodeStatus> nodeStatuses) {
     for (NodeStatus status : nodeStatuses) {
       for (Slot slot : status.getSlots()) {
-        Optional<org.openqa.selenium.grid.data.Session> session = slot.getSession();
+        org.openqa.selenium.grid.data.Session session = slot.getSession();
 
-        if (session.isPresent() && sessionId.equals(session.get().getId().toString())) {
-          return new SessionInSlot(session.get(), status, slot);
+        if (session!=null && sessionId.equals(session.getId().toString())) {
+          return new SessionInSlot(session, status, slot);
         }
       }
     }

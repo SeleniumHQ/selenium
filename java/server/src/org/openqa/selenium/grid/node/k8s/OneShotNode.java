@@ -342,8 +342,8 @@ public class OneShotNode extends Node {
           stereotype,
           Instant.EPOCH,
           driver == null ?
-            Optional.empty() :
-            Optional.of(new Session(sessionId, getUri(), stereotype, capabilities, Instant.now())))),
+            null :
+            new Session(sessionId, getUri(), stereotype, capabilities, Instant.now()))),
       isDraining() ? DRAINING : UP,
       heartbeatPeriod,
       getNodeVersion(),

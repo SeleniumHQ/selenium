@@ -258,8 +258,8 @@ public class AddingNodesTest {
           new SlotId(status.getId(), UUID.randomUUID()),
           CAPS,
           Instant.now(),
-          Optional.of(new Session(
-            new SessionId(UUID.randomUUID()), sessionUri, CAPS, CAPS, Instant.now())))),
+          new Session(
+            new SessionId(UUID.randomUUID()), sessionUri, CAPS, CAPS, Instant.now()))),
       UP,
       Duration.ofSeconds(10),
       status.getVersion(),
@@ -382,7 +382,7 @@ public class AddingNodesTest {
             new SlotId(getId(), UUID.randomUUID()),
             CAPS,
             Instant.now(),
-            Optional.ofNullable(sess))),
+            sess)),
         UP,
         Duration.ofSeconds(10),
         getNodeVersion(),

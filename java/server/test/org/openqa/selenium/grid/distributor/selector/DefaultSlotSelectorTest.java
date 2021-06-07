@@ -189,8 +189,7 @@ public class DefaultSlotSelectorTest {
               new SlotId(nodeId, UUID.randomUUID()),
               stereotype,
               now,
-              Optional.of(
-                new Session(new SessionId(UUID.randomUUID()), uri, stereotype, stereotype, now))));
+              new Session(new SessionId(UUID.randomUUID()), uri, stereotype, stereotype, now)));
         }
 
         for (int i = 0; i < count - currentLoad; i++) {
@@ -199,7 +198,7 @@ public class DefaultSlotSelectorTest {
               new SlotId(nodeId, UUID.randomUUID()),
               stereotype,
               Instant.EPOCH,
-              Optional.empty()));
+              null));
         }
       }
     );

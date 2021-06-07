@@ -335,16 +335,16 @@ public class LocalGridModel implements GridModel {
       for (Map.Entry<Availability, Set<NodeStatus>> entry : nodes.entrySet()) {
         for (NodeStatus node : entry.getValue()) {
           for (Slot slot : node.getSlots()) {
-            if (!slot.getSession().isPresent()) {
+            if (slot.getSession()==null) {
               continue;
             }
 
-            if (id.equals(slot.getSession().get().getId())) {
+            if (id.equals(slot.getSession().getId())) {
               Slot released = new Slot(
                 slot.getId(),
                 slot.getStereotype(),
                 slot.getLastStarted(),
-                Optional.empty());
+                null);
               amend(entry.getKey(), node, released);
               return;
             }
@@ -363,12 +363,12 @@ public class LocalGridModel implements GridModel {
       slot.getId(),
       slot.getStereotype(),
       now,
-      Optional.of(new Session(
+      new Session(
         RESERVED,
         status.getUri(),
         slot.getStereotype(),
         slot.getStereotype(),
-        now)));
+        now));
 
     amend(UP, status, reserved);
   }
@@ -396,13 +396,13 @@ public class LocalGridModel implements GridModel {
       }
 
       Slot slot = maybeSlot.get();
-      Optional<Session> maybeSession = slot.getSession();
-      if (!maybeSession.isPresent()) {
+      Session maybeSession = slot.getSession();
+      if (maybeSession == null) {
         LOG.warning("Grid model and reality have diverged. Slot is not reserved. " + slotId);
         return;
       }
 
-      Session current = maybeSession.get();
+      Session current = maybeSession;
       if (!RESERVED.equals(current.getId())) {
         LOG.warning("Grid model and reality have diverged. Slot has session and is not reserved. " + slotId);
         return;
@@ -412,7 +412,7 @@ public class LocalGridModel implements GridModel {
         slot.getId(),
         slot.getStereotype(),
         session == null ? slot.getLastStarted() : session.getStartTime(),
-        Optional.ofNullable(session));
+        session);
 
       amend(node.availability, node.status, updated);
     } finally {

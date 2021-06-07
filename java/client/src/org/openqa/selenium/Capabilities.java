@@ -17,6 +17,7 @@
 
 package org.openqa.selenium;
 
+import java.io.Serializable;
 import java.util.Collections;
 import java.util.Map;
 import java.util.Objects;
@@ -27,7 +28,7 @@ import java.util.stream.Stream;
 /**
  * Describes a series of key/value pairs that encapsulate aspects of a browser.
  */
-public interface Capabilities {
+public interface Capabilities extends Serializable {
 
   default String getBrowserName() {
     return String.valueOf(Optional.ofNullable(getCapability("browserName")).orElse(""));
