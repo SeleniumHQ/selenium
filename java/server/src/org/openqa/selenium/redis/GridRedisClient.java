@@ -21,6 +21,9 @@ import io.lettuce.core.KeyValue;
 import io.lettuce.core.RedisClient;
 import io.lettuce.core.RedisURI;
 import io.lettuce.core.api.StatefulRedisConnection;
+import org.redisson.Redisson;
+import org.redisson.api.RedissonClient;
+import org.redisson.config.Config;
 
 import java.io.Closeable;
 import java.net.URI;
@@ -29,11 +32,16 @@ import java.util.Map;
 
 public class GridRedisClient implements Closeable {
   private final RedisClient client;
+  private final RedissonClient redissonClient;
   private final StatefulRedisConnection<String, String> connection;
 
   public GridRedisClient(URI serverUri) {
     client = RedisClient.create(RedisURI.create(serverUri));
     connection = client.connect();
+
+    Config redissonConfig = new Config();
+    redissonConfig.useSingleServer().setAddress(serverUri.toString());
+    redissonClient = Redisson.create(redissonConfig);
   }
 
   public StatefulRedisConnection<String, String> getConnection() {
