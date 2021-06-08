@@ -19,6 +19,8 @@ package org.openqa.selenium.grid.security;
 
 import static java.util.Base64.getEncoder;
 
+import org.openqa.selenium.Credentials;
+import org.openqa.selenium.UsernameAndPassword;
 import org.openqa.selenium.grid.config.Config;
 import org.openqa.selenium.grid.config.ConfigException;
 
@@ -26,9 +28,11 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.util.Arrays;
+import java.util.Optional;
 
 public class SecretOptions {
 
+  private static final String ROUTER_SECTION = "router";
   private static final String SERVER_SECTION = "server";
 
   private final Config config;
@@ -52,6 +56,20 @@ public class SecretOptions {
     }
     return config.get(SERVER_SECTION, "registration-secret")
       .map(Secret::new).orElse(new Secret(secret));
+  }
+
+  public UsernameAndPassword getServerAuthentication() {
+    Optional<String> username = config.get(ROUTER_SECTION, "username");
+    Optional<String> password = config.get(ROUTER_SECTION, "password");
+
+    System.out.println(username);
+    System.out.println(password);
+
+    if (!username.isPresent() || !password.isPresent()) {
+      return null;
+    }
+
+    return new UsernameAndPassword(username.get(), password.get());
   }
 
   private boolean isSecure() {

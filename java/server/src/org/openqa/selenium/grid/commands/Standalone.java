@@ -20,6 +20,7 @@ package org.openqa.selenium.grid.commands;
 import com.google.auto.service.AutoService;
 import com.google.common.collect.ImmutableSet;
 import org.openqa.selenium.BuildInfo;
+import org.openqa.selenium.UsernameAndPassword;
 import org.openqa.selenium.cli.CliCommand;
 import org.openqa.selenium.events.EventBus;
 import org.openqa.selenium.grid.TemplateGridServerCommand;
@@ -34,6 +35,7 @@ import org.openqa.selenium.grid.node.Node;
 import org.openqa.selenium.grid.node.ProxyNodeCdp;
 import org.openqa.selenium.grid.node.config.NodeOptions;
 import org.openqa.selenium.grid.router.Router;
+import org.openqa.selenium.grid.security.BasicAuthenticationFilter;
 import org.openqa.selenium.grid.security.Secret;
 import org.openqa.selenium.grid.security.SecretOptions;
 import org.openqa.selenium.grid.server.BaseServerOptions;
@@ -180,13 +182,20 @@ public class Standalone extends TemplateGridServerCommand {
 
     Routable ui = new GridUiRoute();
 
-    HttpHandler httpHandler = combine(
+    Routable httpHandler = combine(
       ui,
       router,
       Route.prefix("/wd/hub").to(combine(router)),
       Route.options("/graphql").to(() -> graphqlHandler),
-      Route.post("/graphql").to(() -> graphqlHandler),
-      Route.get("/readyz").to(() -> readinessCheck));
+      Route.post("/graphql").to(() -> graphqlHandler));
+
+    UsernameAndPassword uap = secretOptions.getServerAuthentication();
+    if (uap != null) {
+      httpHandler = httpHandler.with(new BasicAuthenticationFilter(uap.username(), uap.password()));
+    }
+
+    // Allow the liveness endpoint to be reached, since k8s doesn't make it easy to authenticate these checks
+    httpHandler = combine(httpHandler, Route.get("/readyz").to(() -> readinessCheck));
 
     Node node = new NodeOptions(config).getNode();
     combinedHandler.addHandler(node);
