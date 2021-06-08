@@ -24,12 +24,13 @@ import org.openqa.selenium.remote.http.HttpResponse;
 
 import java.net.HttpURLConnection;
 import java.util.Base64;
+import java.util.logging.Logger;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 
 public class BasicAuthenticationFilter implements Filter {
 
-  private static final Base64.Decoder DECODER = Base64.getDecoder();
+  private static final Logger LOG = Logger.getLogger(BasicAuthenticationFilter.class.getName());
   private final String passphrase;
 
   public BasicAuthenticationFilter(String user, String password) {
@@ -42,6 +43,7 @@ public class BasicAuthenticationFilter implements Filter {
       Require.nonNull("Request", req);
 
       if (!isAuthorized(req.getHeader("Authorization"))) {
+        LOG.info("Unauthorized request to " + req);
         return new HttpResponse()
           .setStatus(HttpURLConnection.HTTP_UNAUTHORIZED)
           .addHeader("WWW-Authenticate", "Basic realm=\"selenium-server\"");
