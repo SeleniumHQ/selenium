@@ -62,9 +62,6 @@ public class SecretOptions {
     Optional<String> username = config.get(ROUTER_SECTION, "username");
     Optional<String> password = config.get(ROUTER_SECTION, "password");
 
-    System.out.println(username);
-    System.out.println(password);
-
     if (!username.isPresent() || !password.isPresent()) {
       return null;
     }

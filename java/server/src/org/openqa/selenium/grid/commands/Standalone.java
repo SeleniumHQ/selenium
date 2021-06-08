@@ -191,6 +191,7 @@ public class Standalone extends TemplateGridServerCommand {
 
     UsernameAndPassword uap = secretOptions.getServerAuthentication();
     if (uap != null) {
+      LOG.info("Requiring authentication to connect");
       httpHandler = httpHandler.with(new BasicAuthenticationFilter(uap.username(), uap.password()));
     }
 
