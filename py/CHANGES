@@ -2,7 +2,7 @@ Selenium 4 Beta 4 (The Final Beta)
 
 * Returning fixed IP in GitHub actions (#9550)
 * PEP 484 type hints for common.exceptions and webdriver.support.color (#9482)
-* Add the ability to pass in multiple options and have that capabilities
+* Add the ability to pass in multiple options and have that capabilities returned as (first|always)Match
 * Add docstrings for RelativeBy
 * Add the ability to pass in different locators to do Relative Locator searches
 * Add a test with returning a JS Const object #9468
