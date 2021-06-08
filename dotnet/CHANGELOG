@@ -9,7 +9,7 @@ v4.0.0b4
  * (on behalf of doctor-house) Made HttpRequestData properties settable.
    Fixes issue #9456.
  * Added proxying of CDP commands via remote/grid.
- * Updated Chromium-based browsers to correclty inherit Options.
+ * Updated Chromium-based browsers to correctly inherit Options.
  * Refactored .NET bindings class inheritance hierarchy. This breaks the
    assumption that all browser-specific driver (ChromeDriver, FirefoxDriver,
    EdgeDriver, etc.) are all subclasses of RemoteWebDriver. This is no longer
@@ -121,7 +121,7 @@ v4.0.0a7
  * 4.0.0a6 was skipped for the .NET bindings and not released publicly.
  * Enabled the ability to push shipping releases to the NuGet repository
    from the Bazel command line.
- * Introduced a version-independent implementation of CDP for .NET. This 
+ * Introduced a version-independent implementation of CDP for .NET. This
    version introduces a facade around Chromium's Developer Tools Protocol,
    which will present developers with a stable, version-independent API for
    the use cases most relevant to Selenium. It is still possible for users
@@ -357,7 +357,7 @@ v4.0.0a1
    section. The second method adds a capability to a browser's specific set of
    options. Accordingly, these methods are different for each browser's Options
    class (AddAdditionalChromeOption for ChromeOptions,
-   AddAdditionalFirefoxOption for FirefoxOptions, 
+   AddAdditionalFirefoxOption for FirefoxOptions,
    AddAdditionalInternetExplorerOption for InternetExplorerOptions, etc.).
 
    Also, this version completes the removal of the DesiredCapabilities class by
@@ -443,7 +443,7 @@ v4.0.0a1
    life cycle of the executable.
  * Implemented strictFileInteractability capability.
  * Allowed HttpCommandExecutor subclasses to set CommandInfoRepository. This
-   allows subclasses of HttpCommandExecutor to properly update the 
+   allows subclasses of HttpCommandExecutor to properly update the
    CommandInfoRepository upon creating a new session. Please note that making
    the property setter protected should not be assumed as part of the permanent
    API contract. It may be removed at any time, without warning, and without
@@ -715,7 +715,7 @@ v3.11.1
  * Added BeforeRemoteHttpRequest event to .NET RemoteWebDriver. This commit
    adds the ability for advanced users of the .NET bindings RemoteWebDriver
    class to modify the HTTP command sent from the .NET WebDriver code to the
-   remote WebDriver server. Note carefully that this **DOES NOT** modify the 
+   remote WebDriver server. Note carefully that this **DOES NOT** modify the
    HTTP request between the browser and the web server, and is not a mechanism
    for getting access to that HTTP request. Usage of this new event would look
    something like this:
@@ -1033,7 +1033,7 @@ v3.5.0
 
 v3.4.0
 ======
- * Exposed new Interactions framework. This release introduces a new 
+ * Exposed new Interactions framework. This release introduces a new
    Interactions framework using the ActionBuilder class for creating advanced
    user interaction sequences in the .NET bindings. This framework is only
    designed to be used with remote ends that understand the W3C WebDriver
@@ -1049,7 +1049,7 @@ v3.4.0
    wants to use the legacy Firefox driver. Starting with Geckodriver 0.16,
    this capability is not recognized as valid, since it violates the spec,
    and will not create a session if it's specified.
- * Updated InternetExplorerOptions to send IE-specific capabilities in a 
+ * Updated InternetExplorerOptions to send IE-specific capabilities in a
    property named "se:ieOptions". This is the correct method for passing
    browser-specific capabilities according to the W3C WebDriver spec. This
    should be transparent for most users, but beginning with 3.4.0.0 of the
@@ -1157,15 +1157,15 @@ v3.0.0-beta1
  * The Mozilla-provided Marionette-based FirefoxDriver is now the default
    implementation for automating Firefox. Additionally, this aligns the
    FirefoxDriver class with other browser-specific implementations, using
-   a FirefoxOptions class for setting options for the browser session. 
+   a FirefoxOptions class for setting options for the browser session.
    Constructors of FirefoxDriver directly referencing FirefoxProfile or
-   FirefoxBinary have been marked as deprecated, and will be removed in a 
+   FirefoxBinary have been marked as deprecated, and will be removed in a
    future release.
 
 v2.53.0
 =======
  * This will be the final full release in the 2.x series. There may be
-   small point releases going forward, but future development will 
+   small point releases going forward, but future development will
    concentrate on 3.0.
  * (on behalf of arnonaxelrod) Added an overload of ExecuteJavaScript
    extension method that doesn't accept a generic argument and doesn't
@@ -1213,7 +1213,7 @@ v2.50.1
 v2.50.0
 =======
  * Updated embedded Firefox driver with new click algorithm
- * Added type-safe options .NET for recently added Chrome capabilities. 
+ * Added type-safe options .NET for recently added Chrome capabilities.
    This includes adding type-safe capabilities for 'mobileEmulation',
    'perfLoggingPrefs', and 'windowTypes' to ChromeOptions class.
  * (on behalf Edward Ned Harvey) Updated ChromeDriverService to locate
@@ -1340,21 +1340,21 @@ v2.46.0
    an invalid response. Note that the checks for the validation of the
    repsonses is minimal, checking for the Content-Type header and that the
    response code is a 200.
- * (on behalf of Sergey Tikhomirov) Refactored PageFactory implementation, 
+ * (on behalf of Sergey Tikhomirov) Refactored PageFactory implementation,
    including a number of changes to make it more extensible and more robust.
 
    First, instead of the hand-rolled proxy classes that had been used
    previously, this refactor introduces proxy objects based on
    System.Runtime.Remoting.Proxies.RealProxy, which allows for more
    flexibility in the types of objects proxied.
-    
+
    Second, this refactor now allows users to provide their own implementation
    engines for examining attributes of Page Object classes and determining
    what course to take. To create a new implementation the user must provide
    an implementation of the IPageObjectMemberDecorator interface, which
    determines which attributes to examine fields and properties for, and how
    to create the proxy objects assigned to the members.
-    
+
    Third, this refactor introduces a new IElementLocator interface to Page
    Object implementations, and deprecates the IElementLocatorFactory
    interface. The IElementLocator interface is substantially similar to the
@@ -1367,7 +1367,7 @@ v2.46.0
    constructor, and this technique is demonstrated in the source code to the
    two implementations provided in the regular .NET language bindings
    releases.
-    
+
    Finally, this commit also introduces a breaking change in
    IElementLocatorFactory. Developers of classes that implement this
    interface will now be required to implement the CreateLocator method,
@@ -1542,7 +1542,7 @@ v2.40.0
  * Issue #6870: Updated FirefoxDriver constructor for ICapabilities. This
    allows the user to pass an ICapabilities object to the Firefox driver
    constructor and have specific capabilities used in driver instantiation.
- * Issue #6935: Changing .NET random temp file generation to be truly random. 
+ * Issue #6935: Changing .NET random temp file generation to be truly random.
    The .NET bindings now use GUIDs as part of the file names for files and
    directories created in the temp directory. This is to work around potential
    collisions in random number generation encountered when using the .NET
@@ -1556,7 +1556,7 @@ v2.40.0
  * Updated .NET PhantomJS driver to be able to execute code in the PhantomJS
    context. This allows the user to execute PhantomJS-specific commands using
    the PhantomJS JavaScript API.
- * Updated .NET bindings to use webdriver.json for default Firefox profile.    
+ * Updated .NET bindings to use webdriver.json for default Firefox profile.
    Other language bindings have been using a common JSON file containing the
    default profile setting for the anonymous Firefox profile used by the
    Firefox driver. The .NET bindings now do the same.
@@ -1598,13 +1598,13 @@ v2.39.0
    reduce the amount of type casting that must be done to access
    functionality not provided by the base IWebDriver interface. The following
    methods were added:
-    
+
     * TakeScreenshot() - does not require a cast to ITakesScreenshot, and has
       support for working directly with instances of RemoteWebDriver.
     * ExecuteJavaScript<T>() - does not require a cast to
       IJavaScriptExecutor, and will automatically cast the result to the type
       specified by the generic type parameter (T).
-    
+
    These extension methods should be considered experimental. To use them
    requires a reference to WebDriver.Support.dll, and adding a using clause
    for OpenQA.Selenium.Support.Extensions.
@@ -1649,7 +1649,7 @@ v2.36.0
  * Changed the command line arguments to chromedriver.exe to include two
    hyphens, instead of one (e.g., "--silent" instead of "-silent").
  * Issue #6163: Fixed quoting of cmd argument contains space for PhantomJS.
- * Added ability to set Chrome extensions by using base64 encoded strings. 
+ * Added ability to set Chrome extensions by using base64 encoded strings.
    Previously, you could only install extensions by using a path to a .crx
    file. Now you can embed the extension as a base64-encoded string, without
    having it persisted to the disk at all.
@@ -1785,7 +1785,7 @@ v2.30.0
  * Updated .NET dependencies. Json.NET to 4.5r11; Castle.Core to 3.2.0.
  * Added more diagnostics for failed HTTP requests in .NET bindings. This is an
    attempt to help diagnose the root cause of issue #3719. Please note that it
-   makes no effort whatsoever to "fix" the issue. This is simply hoping to 
+   makes no effort whatsoever to "fix" the issue. This is simply hoping to
    provide more information for those who have run into that issue, and see if
    all occurrances have the same root cause.
  * Only adding environment variables for Firefox process if they do not already
@@ -1826,12 +1826,12 @@ v2.28.0
    a string argument. To use a custom finder with the FindsByAttribute, use the
    following syntax:
 
-       [FindsBy(How = How.Custom, 
-                Using = "customCriteria", 
+       [FindsBy(How = How.Custom,
+                Using = "customCriteria",
                 CustomFinderType = typeof(MyCustomBySubclass))]
 
    Using How.Custom without specifying a CustomFinderType, or using a
-   CustomFinderType that either does not descend from By or does not have a 
+   CustomFinderType that either does not descend from By or does not have a
    proper constructor will throw an exception.
 
 v2.27.1
@@ -1841,7 +1841,7 @@ v2.27.1
    service executables (IEDriverServer.exe and chromedriver.exe) would not be
    found if placed in the same directory as the WebDriver.dll assembly,
    breaking previous behavior.
-   
+
 v2.27.0
 =======
  * Issues #3508 and #2103: Modified to no longer hang on alerts triggered by
@@ -1872,13 +1872,13 @@ v2.26.0
  * Prevent firefox from updating, checking and warning for extension and plugin
    updates
  * Handled the case where a JSON Wire Protocol error response contains a null
-   value for the message property. Also guarded against null values in other 
+   value for the message property. Also guarded against null values in other
    members of the error response.
  * Added .NET implementation of PhantomJSDriver, as a headless option for .NET
    users. This driver requires PhantomJS and GhostDriver. Since the GhostDriver
-   project isn't ready to be used just yet, these classes are marked with 
+   project isn't ready to be used just yet, these classes are marked with
    "internal" visibility. When the GhostDriver project is ready, these classes
-   will be made public. Also including test enhancements for use with 
+   will be made public. Also including test enhancements for use with
    PhantomJS.
  * Made keep-alive configurable on .NET HttpCommandExecutor and
    DriverServiceCommandExecutor.
@@ -1886,7 +1886,7 @@ v2.26.0
    bindings is called specifically with a null value for element.
  * Added the LibraryExtractionPath propery to InternetExplorerDriverService to
    be able to set the location to which the support library of the
-   IEDriverServer.exe is extracted. 
+   IEDriverServer.exe is extracted.
  * Implementing SuppressInitialDiagnosticInformation property on DriverService
    to allow users of standalone driver servers to suppress the display of the
    initial information from the console via the -silent switch.
@@ -1923,7 +1923,7 @@ v2.25.1
  * Exposed constructors in ChromeDriver and InternetExplorerDriver that allow
    passing a DriverService object. This gives the user more control over the
    properties of the DriverService.
- * Updated exception thrown by .NET SafariDriver when a connection to the 
+ * Updated exception thrown by .NET SafariDriver when a connection to the
    driver is not created within 45 seconds.
  * Cleaned up documentation comment warning on build of the .NET implementation
    of WebDriverBackedSelenium.
@@ -1937,7 +1937,7 @@ v2.25.0
    line switches using strongly-typed properties of the object.
  * Added elementScrollBehavior capability to allow users to specify how
    elements scroll into the viewport for interaction. Default behavior is
-   unchanged (the capability is set to 0), but can be set to scroll to align 
+   unchanged (the capability is set to 0), but can be set to scroll to align
    to the bottom of the viewport by setting the capability to 1. This commit
    includes an addition to the InternetExplorerOptions of the .NET bindings.
  * Fixed element finding and table handling in .NET WebDriverBackedSelenium.
@@ -1949,7 +1949,7 @@ v2.24.0
 
 v2.23.0
 =======
- * Removed the embedded IE server from the .NET bindings. From now on, you 
+ * Removed the embedded IE server from the .NET bindings. From now on, you
    *must* use the IE standalone server with .NET.
  * Removed unneeded polling for parent.lock file on anonymous Firefox profile
    in temp directory.
@@ -1967,11 +1967,11 @@ v2.22.0
    the WebDriver.Support assembly. Also created  additions to the .NET
    PageFactory to allow decorating members with multiple instances of
    FindsByAttribute, including ordering of the attributes.
- * The .NET IE driver implementation now looks for the IE standalone server. 
+ * The .NET IE driver implementation now looks for the IE standalone server.
    Please note that if you do not set the option in InternetExplorerOptions
-   to use the legacy server, the constructor *will* throw an exception. There 
-   is no automatic fallback to using the embedded .dll, because there's no 
-   standard way in the .NET framework to alert the user to a condition that 
+   to use the legacy server, the constructor *will* throw an exception. There
+   is no automatic fallback to using the embedded .dll, because there's no
+   standard way in the .NET framework to alert the user to a condition that
    needs attention at runtime, and guarantee it will be seen.
  * Implemented ability to set page load timeout in the .NET bindings.
  * Added tests to .NET bindings to align more closely with Java.
@@ -1986,14 +1986,14 @@ v2.22.0
    Mono).
  * Updated .NET Safari driver to conform to the new message format in r16716.
  * Implemented an InitialBrowserUrl property in InternetExplorerOptions to
-   allow the user to customize the page loaded when IE launches. This can be 
+   allow the user to customize the page loaded when IE launches. This can be
    used in conjunction with IntroduceInstabilityByIgnoringProtectedModeSettings
    property to set the initial Protected Mode zone of the browser. However,
-   this is still by far a second-best choice, and the first choice should 
-   *always* be to actually set the Protected Mode settings of each zone. If a 
+   this is still by far a second-best choice, and the first choice should
+   *always* be to actually set the Protected Mode settings of each zone. If a
    user is using this property, only a "best effort" at support will be given.
  * Allow user-defined installation path for Safari in the SafariDriver.
- * Changed .NET DesiredCapabilities.Android() to correctly assign a platform 
+ * Changed .NET DesiredCapabilities.Android() to correctly assign a platform
    value of Android.
 
 v2.21.0
@@ -2003,10 +2003,10 @@ v2.21.0
  * Updated NoSuchFrameException, NoSuchWindowException, and
    NoAlertPresentException to properly descend from NotFoundException
    in the .NET bindings.
- * Modifying .NET PageFactory so that elements marked with the FindBy 
+ * Modifying .NET PageFactory so that elements marked with the FindBy
    attribute can be used with the interactions API.
  * Updated Json.NET dependency to 4.5r1 and NuGet.exe to 1.7.
- * Changed the name of the standalone IE driver server from 
+ * Changed the name of the standalone IE driver server from
    InternetExplorerDriver.exe to IEDriverServer.exe
  * Removed recently added restore window command from .NET bindings.
  * Extracted FindFreePort method in .NET to a common utility class.
@@ -2037,9 +2037,9 @@ v2.18.0
 =======
  * Updated .NET WebDriver.Support assembly to depend on Castle Windsor 3.0
  * Updated to JSON.NET to 4.0r6
- * Refactored ChromeDriverService to be a subclass of a base DriverService 
+ * Refactored ChromeDriverService to be a subclass of a base DriverService
    class, designed to allow any JSON Wire Protocol-compliant standalone server
-   executable to be used as a service. This adds all required work for the 
+   executable to be used as a service. This adds all required work for the
    .NET bindings to begin using the standalone IE remote server.
  * Enable CODE_ANALYSIS flag for Debug builds so that standalone FxCop can
    take advantage of GlobalSuppressions.cs.
@@ -2063,13 +2063,13 @@ v2.16.0
  * Made By, Cookie and Screenshot .NET classes serializable.
  * Slightly modifying build output to be more informative when building
    .NET bindings from within the Visual Studio IDE.
- * Explicitly setting socket.ExclusiveAddressUse = true when attempting to 
+ * Explicitly setting socket.ExclusiveAddressUse = true when attempting to
    find a free port for the .NET bindings' FirefoxDriver.
- * Updating the .NET remote Command object to return an empty JSON object 
+ * Updating the .NET remote Command object to return an empty JSON object
    ("{}") instead of an empty string when the command has no parameters.
  * Implementing the /sessions and /status commands for the IE driver and the
    .NET bindings.
- * Check elements' internal IDs for equality before making RPC call to 
+ * Check elements' internal IDs for equality before making RPC call to
    determine IWebElement equality in .NET.
  * Removed unused JSON wire protocol command values from the .NET bindings.
 
@@ -2120,7 +2120,7 @@ v2.9.0
 
 v2.8.0
 ======
-  * Added interactions methods for .Release(), ClickAndHold(), and 
+  * Added interactions methods for .Release(), ClickAndHold(), and
     DoubleClick() which take no arguments
   * Added ClickAt() implementation in WebDriverBackedSelenium
 
