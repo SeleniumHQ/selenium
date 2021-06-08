@@ -15,35 +15,40 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.environment.webserver;
+package org.openqa.selenium.grid.security;
 
-import com.google.common.net.MediaType;
-import org.openqa.selenium.remote.http.Contents;
+import org.openqa.selenium.internal.Require;
+import org.openqa.selenium.remote.http.Filter;
 import org.openqa.selenium.remote.http.HttpHandler;
-import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 
-import java.io.UncheckedIOException;
 import java.net.HttpURLConnection;
 import java.util.Base64;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 
-public class BasicAuthHandler implements HttpHandler {
-  private static final String CREDENTIALS = "test:test";
-  private final Base64.Decoder decoder = Base64.getDecoder();
+public class BasicAuthenticationFilter implements Filter {
+
+  private static final Base64.Decoder DECODER = Base64.getDecoder();
+  private final String passphrase;
+
+  public BasicAuthenticationFilter(String user, String password) {
+    passphrase = Base64.getEncoder().encodeToString((user + ":" + password).getBytes(UTF_8));
+  }
 
   @Override
-  public HttpResponse execute(HttpRequest req) throws UncheckedIOException {
-    if (isAuthorized(req.getHeader("Authorization"))) {
-      return new HttpResponse()
-        .addHeader("Content-Type", MediaType.HTML_UTF_8.toString())
-        .setContent(Contents.string("<h1>authorized</h1>", UTF_8));
-    }
+  public HttpHandler apply(HttpHandler next) {
+    return req -> {
+      Require.nonNull("Request", req);
 
-    return new HttpResponse()
-      .setStatus(HttpURLConnection.HTTP_UNAUTHORIZED)
-      .addHeader("WWW-Authenticate", "Basic realm=\"basic-auth-test\"");
+      if (!isAuthorized(req.getHeader("Authorization"))) {
+        return new HttpResponse()
+          .setStatus(HttpURLConnection.HTTP_UNAUTHORIZED)
+          .addHeader("WWW-Authenticate", "Basic realm=\"selenium-server\"");
+      }
+
+      return next.execute(req);
+    };
   }
 
   private boolean isAuthorized(String auth) {
@@ -51,8 +56,7 @@ public class BasicAuthHandler implements HttpHandler {
       final int index = auth.indexOf(' ') + 1;
 
       if (index > 0) {
-        final String credentials = new String(decoder.decode(auth.substring(index)), UTF_8);
-        return CREDENTIALS.equals(credentials);
+        return passphrase.equals(auth.substring(index));
       }
     }
 
