@@ -899,6 +899,11 @@ public class RemoteWebDriver implements IsRemoteWebDriver {
 
       @Override
       public Timeouts setScriptTimeout(Duration duration) {
+        return scriptTimeout(duration);
+      }
+
+      @Override
+      public Timeouts scriptTimeout(Duration duration) {
         execute(DriverCommand.SET_SCRIPT_TIMEOUT(duration));
         return this;
       }
