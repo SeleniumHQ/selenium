@@ -20,10 +20,11 @@ package org.openqa.selenium.remote;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.JsonException;
 
+import java.io.Serializable;
 import java.util.Map;
 import java.util.UUID;
 
-public class SessionId {
+public class SessionId implements Serializable {
 
   private final String opaqueKey;
 

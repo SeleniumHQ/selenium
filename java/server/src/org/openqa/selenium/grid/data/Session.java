@@ -23,6 +23,7 @@ import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.JsonInput;
 import org.openqa.selenium.remote.SessionId;
 
+import java.io.Serializable;
 import java.net.URI;
 import java.time.Instant;
 import java.util.Map;
@@ -36,7 +37,7 @@ import static java.util.Collections.unmodifiableMap;
  * The serialized form is designed to mimic that of the return value of the New Session command, but
  * an additional {@code uri} field must also be present.
  */
-public class Session {
+public class Session implements Serializable {
 
   private final SessionId id;
   private final URI uri;
