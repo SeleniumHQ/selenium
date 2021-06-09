@@ -186,7 +186,7 @@ public class DistributorTest {
     CountDownLatch latch = new CountDownLatch(1);
 
     bus.addListener(NodeHeartBeatEvent.listener(nodeStatus -> {
-      if (node.getId().equals(nodeStatus.getId())) {
+      if (node.getId().equals(nodeStatus.getNodeId())) {
         latch.countDown();
         heartbeatStarted.set(true);
       }
@@ -577,7 +577,7 @@ public class DistributorTest {
       distributor.newSession(createRequest(caps));
     assertThatEither(result).isRight();
     Session session = result.right().getSession();
-    assertThat(session.getUri()).isEqualTo(lightest.getStatus().getUri());
+    assertThat(session.getUri()).isEqualTo(lightest.getStatus().getExternalUri());
   }
 
   @Test
@@ -622,7 +622,7 @@ public class DistributorTest {
     assertThatEither(result).isRight();
     Session session = result.right().getSession();
     // Least lightly loaded is middle
-    assertThat(session.getUri()).isEqualTo(middle.getStatus().getUri());
+    assertThat(session.getUri()).isEqualTo(middle.getStatus().getExternalUri());
 
     Node mostRecent = createNode(caps, 5, 0);
     handler.addHandler(mostRecent);
@@ -633,7 +633,7 @@ public class DistributorTest {
     assertThatEither(result).isRight();
     session = result.right().getSession();
     // Least lightly loaded is most recent
-    assertThat(session.getUri()).isEqualTo(mostRecent.getStatus().getUri());
+    assertThat(session.getUri()).isEqualTo(mostRecent.getStatus().getExternalUri());
 
     // All the nodes should be equally loaded.
     Map<Capabilities, Integer> expected = getFreeStereotypeCounts(mostRecent.getStatus());
@@ -644,7 +644,7 @@ public class DistributorTest {
     result = distributor.newSession(createRequest(caps));
     assertThatEither(result).isRight();
     session = result.right().getSession();
-    assertThat(session.getUri()).isEqualTo(leastRecent.getStatus().getUri());
+    assertThat(session.getUri()).isEqualTo(leastRecent.getStatus().getExternalUri());
   }
 
   private Map<Capabilities, Integer> getFreeStereotypeCounts(NodeStatus status) {
@@ -1025,7 +1025,7 @@ public class DistributorTest {
         chromeSession.getUri()).isIn(
         chromeNodes
           .stream().map(Node::getStatus).collect(Collectors.toList())     //List of getStatus() from the Set
-          .stream().map(NodeStatus::getUri).collect(Collectors.toList())  //List of getUri() from the Set
+          .stream().map(NodeStatus::getExternalUri).collect(Collectors.toList())  //List of getUri() from the Set
       );
 
       Either<SessionNotCreatedException, CreateSessionResponse> firefoxResult =

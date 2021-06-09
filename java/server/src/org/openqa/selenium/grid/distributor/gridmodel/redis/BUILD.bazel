@@ -30,3 +30,31 @@ java_export(
         artifact("com.google.guava:guava"),
     ],
 )
+java_library(
+    name = "redis",
+    srcs = glob(["*.java"]),
+    visibility = [
+        "//java/server/src/org/openqa/selenium/grid/commands:__pkg__",
+        "//java/server/src/org/openqa/selenium/grid/distributor:__pkg__",
+        "//java/server/src/org/openqa/selenium/grid/distributor:__subpackages__",
+        "//java/server/test/org/openqa/selenium/grid/distributor:__pkg__",
+        "//java/server/test/org/openqa/selenium/grid/distributor:__subpackages__",
+    ],
+     deps = [
+         "//java:auto-service",
+         "//java/client/src/org/openqa/selenium/remote",
+         "//java/server/src/org/openqa/selenium/events",
+         "//java/server/src/org/openqa/selenium/grid",
+         "//java/server/src/org/openqa/selenium/grid/config",
+         "//java/server/src/org/openqa/selenium/grid/data",
+         "//java/server/src/org/openqa/selenium/grid/distributor",
+         "//java/server/src/org/openqa/selenium/grid/distributor/config",
+         "//java/server/src/org/openqa/selenium/redis",
+         "//java/server/src/org/openqa/selenium/grid/node",
+         "//java/server/src/org/openqa/selenium/grid/node/remote",
+         "//java/server/src/org/openqa/selenium/grid/server",
+         artifact("com.beust:jcommander"),
+         artifact("com.google.guava:guava"),
+        ],
+)
+

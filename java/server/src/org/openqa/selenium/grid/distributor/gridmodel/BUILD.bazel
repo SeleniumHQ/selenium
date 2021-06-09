@@ -8,5 +8,7 @@ java_library(
         "//java/server/src/org/openqa/selenium/grid/commands:__pkg__",
         "//java/server/src/org/openqa/selenium/grid/distributor:__pkg__",
         "//java/server/src/org/openqa/selenium/grid/distributor:__subpackages__",
+        "//java/server/test/org/openqa/selenium/grid/distributor:__pkg__",
+        "//java/server/test/org/openqa/selenium/grid/distributor:__subpackages__",
     ]
 )

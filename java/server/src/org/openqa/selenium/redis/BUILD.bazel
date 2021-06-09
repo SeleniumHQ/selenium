@@ -9,6 +9,7 @@ java_library(
         "//java/server/test/org/openqa/selenium:__subpackages__",
     ],
     deps = [
+        "//java/server/src/org/openqa/selenium/grid/data",
         artifact("io.lettuce:lettuce-core"),
         artifact("org.redisson:redisson")
     ],
