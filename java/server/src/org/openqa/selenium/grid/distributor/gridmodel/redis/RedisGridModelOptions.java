@@ -55,7 +55,7 @@ public class RedisGridModelOptions {
 
     try {
       return new URI(
-        "http",
+        "redis",
         null,
         hostname.get(),
         port.get(),
