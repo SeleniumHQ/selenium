@@ -25,6 +25,7 @@ import static org.mockito.Mockito.when;
 import org.junit.Test;
 import org.mockito.ArgumentMatchers;
 import org.openqa.selenium.NoSuchElementException;
+import org.openqa.selenium.SearchContext;
 import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -38,7 +39,7 @@ import java.util.List;
 
 public class PageFactoryTest {
 
-  private WebDriver driver;
+  private SearchContext searchContext;
 
   @Test
   public void shouldProxyElementsInAnInstantiatedPage() {
@@ -47,7 +48,7 @@ public class PageFactoryTest {
     assertThat(page.q).isNull();
     assertThat(page.list).isNull();
 
-    PageFactory.initElements(driver, page);
+    PageFactory.initElements(searchContext, page);
 
     assertThat(page.q).isNotNull();
     assertThat(page.list).isNotNull();
@@ -55,7 +56,7 @@ public class PageFactoryTest {
 
   @Test
   public void shouldInsertProxiesForPublicWebElements() {
-    PublicPage page = PageFactory.initElements(driver, PublicPage.class);
+    PublicPage page = PageFactory.initElements(searchContext, PublicPage.class);
 
     assertThat(page.q).isNotNull();
     assertThat(page.list).isNotNull();
@@ -65,7 +66,7 @@ public class PageFactoryTest {
   public void shouldProxyElementsFromParentClassesToo() {
     ChildPage page = new ChildPage();
 
-    PageFactory.initElements(driver, page);
+    PageFactory.initElements(searchContext, page);
 
     assertThat(page.q).isNotNull();
     assertThat(page.list).isNotNull();
@@ -74,7 +75,7 @@ public class PageFactoryTest {
 
   @Test
   public void shouldProxyRenderedWebElementFields() {
-    PublicPage page = PageFactory.initElements(driver, PublicPage.class);
+    PublicPage page = PageFactory.initElements(searchContext, PublicPage.class);
 
     assertThat(page.rendered).isNotNull();
   }
@@ -83,7 +84,7 @@ public class PageFactoryTest {
   public void shouldProxyPrivateElements() {
     PrivatePage page = new PrivatePage();
 
-    PageFactory.initElements(driver, page);
+    PageFactory.initElements(searchContext, page);
 
     assertThat(page.getField()).isNotNull();
     assertThat(page.getList()).isNotNull();
@@ -91,7 +92,7 @@ public class PageFactoryTest {
 
   @Test
   public void shouldUseAConstructorThatTakesAWebDriverAsAnArgument() {
-    driver = mock(WebDriver.class);
+    WebDriver driver = mock(WebDriver.class);
 
     ConstructedPage page = PageFactory.initElements(driver, ConstructedPage.class);
 
@@ -124,7 +125,7 @@ public class PageFactoryTest {
   public void shouldNotDecorateListsOfWebElementsThatAreNotAnnotated() {
     UnmarkedListPage page = new UnmarkedListPage();
 
-    PageFactory.initElements(driver, page);
+    PageFactory.initElements(searchContext, page);
 
     assertThat(page.elements).isNull();
   }
@@ -133,7 +134,7 @@ public class PageFactoryTest {
   public void shouldNotDecorateListsThatAreTypedButNotWebElementLists() {
     UnmarkedListPage page = new UnmarkedListPage();
 
-    PageFactory.initElements(driver, page);
+    PageFactory.initElements(searchContext, page);
 
     assertThat(page.objects).isNull();
   }
@@ -142,7 +143,7 @@ public class PageFactoryTest {
   public void shouldNotDecorateUnTypedLists() {
     UnmarkedListPage page = new UnmarkedListPage();
 
-    PageFactory.initElements(driver, page);
+    PageFactory.initElements(searchContext, page);
 
     assertThat(page.untyped).isNull();
   }
@@ -165,7 +166,7 @@ public class PageFactoryTest {
 
   @Test
   public void shouldNotThrowANoSuchElementExceptionWhenUsedWithAFluentWait() {
-    driver = mock(WebDriver.class);
+    WebDriver driver = mock(WebDriver.class);
     when(driver.findElement(ArgumentMatchers.any())).thenThrow(new NoSuchElementException("because"));
 
     TickingClock clock = new TickingClock();
