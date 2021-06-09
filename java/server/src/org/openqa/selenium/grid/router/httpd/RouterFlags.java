@@ -42,6 +42,20 @@ public class RouterFlags implements HasRoles {
   @ConfigValue(section = "network", name = "relax-checks", example = "true")
   private Boolean relaxChecks = false;
 
+  @Parameter(
+    names = "--username",
+    description = "User name clients must use to connect to the server. " +
+                  "Both this and password need to be set in order to be used.")
+  @ConfigValue(section = "router", name = "username", example = "admin")
+  private String username;
+
+  @Parameter(
+    names = "--password",
+    description = "Password clients must use to connect to the server. " +
+      "Both this and the username need to be set in order to be used.")
+  @ConfigValue(section = "router", name = "password", example = "hunter2")
+  private String password;
+
   @Override
   public Set<Role> getRoles() {
     return Collections.singleton(ROUTER_ROLE);

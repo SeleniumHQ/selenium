@@ -30,6 +30,7 @@ import java.util.Optional;
 
 public class DistributorOptions {
 
+  public static final int DEFAULT_HEALTHCHECK_INTERVAL = 300;
   static final String DISTRIBUTOR_SECTION = "distributor";
   static final String DEFAULT_DISTRIBUTOR_IMPLEMENTATION =
     "org.openqa.selenium.grid.distributor.local.LocalDistributor";
@@ -37,9 +38,6 @@ public class DistributorOptions {
   static final String DEFAULT_SLOT_SELECTOR_IMPLEMENTATION =
     "org.openqa.selenium.grid.distributor.selector.DefaultSlotSelector";
   static final boolean DEFAULT_REJECT_UNSUPPORTED_CAPS = false;
-
-  public static final int DEFAULT_HEALTHCHECK_INTERVAL = 300;
-
   private final Config config;
 
   public DistributorOptions(Config config) {
@@ -49,7 +47,11 @@ public class DistributorOptions {
   public URI getDistributorUri() {
     Optional<URI> host = config.get(DISTRIBUTOR_SECTION, "host").map(str -> {
       try {
-        return new URI(str);
+        URI distributorUri = new URI(str);
+        if (distributorUri.getHost() == null || distributorUri.getPort() == -1) {
+          throw new ConfigException("Undefined host or port in Distributor server URI: " + str);
+        }
+        return distributorUri;
       } catch (URISyntaxException e) {
         throw new ConfigException("Distributor URI is not a valid URI: " + str);
       }

@@ -47,12 +47,12 @@ public class EdgeDriverInfo extends ChromiumDriverInfo {
 
   @Override
   public boolean isSupporting(Capabilities capabilities) {
-    return (BrowserType.EDGE.equals(capabilities.getBrowserName())
-      || capabilities.getCapability("ms:edgeOptions") != null
-      || capabilities.getCapability("edgeOptions") != null)
-      &&
-      (capabilities.getCapability(EdgeOptions.USE_CHROMIUM) == null
-        || Objects.equals(capabilities.getCapability(EdgeOptions.USE_CHROMIUM), true));
+    return (BrowserType.EDGE.equalsIgnoreCase(capabilities.getBrowserName())
+            || capabilities.getCapability("ms:edgeOptions") != null
+            || capabilities.getCapability("edgeOptions") != null)
+           &&
+           (capabilities.getCapability(EdgeOptions.USE_CHROMIUM) == null
+            || Objects.equals(capabilities.getCapability(EdgeOptions.USE_CHROMIUM), true));
   }
 
   @Override

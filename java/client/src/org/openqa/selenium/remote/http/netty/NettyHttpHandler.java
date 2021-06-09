@@ -59,6 +59,7 @@ public class NettyHttpHandler extends RemoteCall {
         getConfig().baseUri(),
         toClampedInt(getConfig().readTimeout().toMillis()),
         toClampedInt(getConfig().readTimeout().toMillis()),
+        getConfig().credentials(),
         request));
 
     try {

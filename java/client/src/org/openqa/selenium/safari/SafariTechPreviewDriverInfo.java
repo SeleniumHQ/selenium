@@ -18,6 +18,7 @@
 package org.openqa.selenium.safari;
 
 import com.google.auto.service.AutoService;
+
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.SessionNotCreatedException;
@@ -44,7 +45,7 @@ public class SafariTechPreviewDriverInfo implements WebDriverInfo {
 
   @Override
   public boolean isSupporting(Capabilities capabilities) {
-    if (SafariOptions.SAFARI_TECH_PREVIEW.equals(capabilities.getBrowserName())) {
+    if (SafariOptions.SAFARI_TECH_PREVIEW.equalsIgnoreCase(capabilities.getBrowserName())) {
       return true;
     }
 

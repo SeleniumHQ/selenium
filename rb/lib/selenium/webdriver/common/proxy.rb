@@ -141,10 +141,10 @@ module Selenium
 
       def as_json(*)
         json_result = {
-          'proxyType' => TYPES[type],
+          'proxyType' => TYPES[type].downcase,
           'ftpProxy' => ftp,
           'httpProxy' => http,
-          'noProxy' => no_proxy,
+          'noProxy' => no_proxy.is_a?(String) ? no_proxy.split(', ') : no_proxy,
           'proxyAutoconfigUrl' => pac,
           'sslProxy' => ssl,
           'autodetect' => auto_detect,

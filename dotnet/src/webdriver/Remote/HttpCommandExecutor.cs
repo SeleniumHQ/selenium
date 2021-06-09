@@ -92,11 +92,11 @@ namespace OpenQA.Selenium.Remote
         /// <summary>
         /// Gets the repository of objects containin information about commands.
         /// </summary>
-        public CommandInfoRepository CommandInfoRepository
-        {
-            get { return this.commandInfoRepository; }
-            protected set { this.commandInfoRepository = value; }
-        }
+        //public CommandInfoRepository CommandInfoRepository
+        //{
+        //    get { return this.commandInfoRepository; }
+        //    protected set { this.commandInfoRepository = value; }
+        //}
 
         /// <summary>
         /// Gets or sets an <see cref="IWebProxy"/> object to be used to proxy requests
@@ -120,6 +120,17 @@ namespace OpenQA.Selenium.Remote
             set { this.enableKeepAlive = value; }
         }
 
+        public bool TryAddCommand(string commandName, CommandInfo info)
+        {
+            HttpCommandInfo commandInfo = info as HttpCommandInfo;
+            if (commandInfo == null)
+            {
+                return false;
+            }
+
+            return this.commandInfoRepository.TryAddCommand(commandName, commandInfo);
+        }
+
         /// <summary>
         /// Executes a command
         /// </summary>
@@ -132,7 +143,7 @@ namespace OpenQA.Selenium.Remote
                 throw new ArgumentNullException("commandToExecute", "commandToExecute cannot be null");
             }
 
-            CommandInfo info = this.commandInfoRepository.GetCommandInfo(commandToExecute.Name);
+            HttpCommandInfo info = this.commandInfoRepository.GetCommandInfo<HttpCommandInfo>(commandToExecute.Name);
             if (info == null)
             {
                 throw new NotImplementedException(string.Format("The command you are attempting to execute, {0}, does not exist in the protocol dialect used by the remote end.", commandToExecute.Name));
@@ -243,14 +254,14 @@ namespace OpenQA.Selenium.Remote
 
             HttpMethod method = new HttpMethod(requestInfo.HttpMethod);
             HttpRequestMessage requestMessage = new HttpRequestMessage(method, requestInfo.FullUri);
-            if (requestInfo.HttpMethod == CommandInfo.GetCommand)
+            if (requestInfo.HttpMethod == HttpCommandInfo.GetCommand)
             {
                 CacheControlHeaderValue cacheControlHeader = new CacheControlHeaderValue();
                 cacheControlHeader.NoCache = true;
                 requestMessage.Headers.CacheControl = cacheControlHeader;
             }
 
-            if (requestInfo.HttpMethod == CommandInfo.PostCommand)
+            if (requestInfo.HttpMethod == HttpCommandInfo.PostCommand)
             {
                 MediaTypeWithQualityHeaderValue acceptHeader = new MediaTypeWithQualityHeaderValue(JsonMimeType);
                 acceptHeader.CharSet = Utf8CharsetType;
@@ -285,28 +296,28 @@ namespace OpenQA.Selenium.Remote
                 response.Value = body;
             }
 
-            if (this.CommandInfoRepository.SpecificationLevel < 1 && (responseInfo.StatusCode < HttpStatusCode.OK || responseInfo.StatusCode >= HttpStatusCode.BadRequest))
-            {
-                if (responseInfo.StatusCode >= HttpStatusCode.BadRequest && responseInfo.StatusCode < HttpStatusCode.InternalServerError)
-                {
-                    response.Status = WebDriverResult.UnhandledError;
-                }
-                else if (responseInfo.StatusCode >= HttpStatusCode.InternalServerError)
-                {
-                    if (responseInfo.StatusCode == HttpStatusCode.NotImplemented)
-                    {
-                        response.Status = WebDriverResult.UnknownCommand;
-                    }
-                    else if (response.Status == WebDriverResult.Success)
-                    {
-                        response.Status = WebDriverResult.UnhandledError;
-                    }
-                }
-                else
-                {
-                    response.Status = WebDriverResult.UnhandledError;
-                }
-            }
+            //if (this.CommandInfoRepository.SpecificationLevel < 1 && (responseInfo.StatusCode < HttpStatusCode.OK || responseInfo.StatusCode >= HttpStatusCode.BadRequest))
+            //{
+            //    if (responseInfo.StatusCode >= HttpStatusCode.BadRequest && responseInfo.StatusCode < HttpStatusCode.InternalServerError)
+            //    {
+            //        response.Status = WebDriverResult.UnhandledError;
+            //    }
+            //    else if (responseInfo.StatusCode >= HttpStatusCode.InternalServerError)
+            //    {
+            //        if (responseInfo.StatusCode == HttpStatusCode.NotImplemented)
+            //        {
+            //            response.Status = WebDriverResult.UnknownCommand;
+            //        }
+            //        else if (response.Status == WebDriverResult.Success)
+            //        {
+            //            response.Status = WebDriverResult.UnhandledError;
+            //        }
+            //    }
+            //    else
+            //    {
+            //        response.Status = WebDriverResult.UnhandledError;
+            //    }
+            //}
 
             if (response.Value is string)
             {
@@ -345,7 +356,7 @@ namespace OpenQA.Selenium.Remote
 
         private class HttpRequestInfo
         {
-            public HttpRequestInfo(Uri serverUri, Command commandToExecute, CommandInfo commandInfo)
+            public HttpRequestInfo(Uri serverUri, Command commandToExecute, HttpCommandInfo commandInfo)
             {
                 this.FullUri = commandInfo.CreateCommandUri(serverUri, commandToExecute);
                 this.HttpMethod = commandInfo.Method;

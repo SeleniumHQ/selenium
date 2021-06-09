@@ -58,7 +58,7 @@ namespace OpenQA.Selenium.Chrome
         /// <summary>
         /// Initializes a new instance of the <see cref="ChromeOptions"/> class.
         /// </summary>
-        public ChromeOptions()
+        public ChromeOptions() : base()
         {
             this.BrowserName = BrowserNameValue;
         }

@@ -20,12 +20,12 @@ package org.openqa.selenium.grid.sessionmap.httpd;
 import com.google.auto.service.AutoService;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
+
 import org.openqa.selenium.BuildInfo;
 import org.openqa.selenium.cli.CliCommand;
 import org.openqa.selenium.grid.TemplateGridServerCommand;
 import org.openqa.selenium.grid.config.Config;
 import org.openqa.selenium.grid.config.Role;
-import org.openqa.selenium.grid.server.BaseServerOptions;
 import org.openqa.selenium.grid.server.Server;
 import org.openqa.selenium.grid.sessionmap.SessionMap;
 import org.openqa.selenium.grid.sessionmap.config.SessionMapOptions;
@@ -108,7 +108,7 @@ public class SessionMapServer extends TemplateGridServerCommand {
 
     BuildInfo info = new BuildInfo();
     LOG.info(String.format(
-      "Started Selenium session map %s (revision %s): %s",
+      "Started Selenium SessionMap %s (revision %s): %s",
       info.getReleaseLabel(),
       info.getBuildRevision(),
       server.getUrl()));

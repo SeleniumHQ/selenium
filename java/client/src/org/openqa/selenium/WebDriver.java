@@ -384,13 +384,30 @@ public interface WebDriver extends SearchContext {
      * error code with invalid argument will be returned.
      *
      * @param duration The timeout value.
+     * @deprecated Use {@link #scriptTimeout(Duration)}
      * @return A self reference.
      * @see JavascriptExecutor#executeAsyncScript(String, Object...)
      * @see <a href="https://www.w3.org/TR/webdriver/#set-timeouts">W3C WebDriver</a>
      * @see <a href="https://www.w3.org/TR/webdriver/#dfn-timeouts-configuration">W3C WebDriver</a>
      */
+    @Deprecated
     default Timeouts setScriptTimeout(Duration duration) {
       return setScriptTimeout(duration.toMillis(), TimeUnit.MILLISECONDS);
+    }
+
+    /**
+     * Sets the amount of time to wait for an asynchronous script to finish execution before
+     * throwing an error. If the timeout is negative, not null, or greater than 2e16 - 1, an
+     * error code with invalid argument will be returned.
+     *
+     * @param duration The timeout value.
+     * @return A self reference.
+     * @see JavascriptExecutor#executeAsyncScript(String, Object...)
+     * @see <a href="https://www.w3.org/TR/webdriver/#set-timeouts">W3C WebDriver</a>
+     * @see <a href="https://www.w3.org/TR/webdriver/#dfn-timeouts-configuration">W3C WebDriver</a>
+     */
+    default Timeouts scriptTimeout(Duration duration) {
+      return setScriptTimeout(duration);
     }
 
     /**

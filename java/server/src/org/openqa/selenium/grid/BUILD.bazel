@@ -1,6 +1,6 @@
 load("@rules_jvm_external//:defs.bzl", "artifact")
 load("//common:defs.bzl", "copy_file")
-load("//java:defs.bzl", "java_binary", "java_dist_zip", "java_export", "java_library", "javadoc")
+load("//java:defs.bzl", "java_binary", "java_dist_zip", "java_export", "java_library", "javadoc", "merge_jars")
 load("//java:version.bzl", "SE_VERSION")
 load("//java/client/src/org/openqa/selenium/devtools:versions.bzl", "CDP_DEPS")
 
@@ -8,10 +8,10 @@ genrule(
     name = "executable-grid",
     srcs = [
         "zip-preamble.sh",
-        ":selenium_server_deploy.jar",
+        ":add-build-info",
     ],
     outs = ["selenium"],
-    cmd = "cat $(location :zip-preamble.sh) $(location :selenium_server_deploy.jar) > $@",
+    cmd = "cat $(location :zip-preamble.sh) $(location :add-build-info) > $@",
     executable = True,
     visibility = [
         "//:__pkg__",
@@ -88,6 +88,14 @@ java_export(
         "//java/server/src/org/openqa/selenium/cli",
         "//java/server/src/org/openqa/selenium/grid/config",
     ],
+)
+
+merge_jars(
+  name = "add-build-info",
+  inputs = [
+    ":selenium_server_deploy.jar",
+    "//java/client/src/org/openqa/selenium:manifest",
+  ],
 )
 
 java_binary(

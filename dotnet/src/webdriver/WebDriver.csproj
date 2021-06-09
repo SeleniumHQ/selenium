@@ -145,6 +145,10 @@
     <Reference Include="System.IO.Compression" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Remote\JsonConverters\" />
+  </ItemGroup>
+
   <Target Name="PreBuild" BeforeTargets="PreBuildEvent" Condition="'$(OS)' == 'Windows_NT'">
     <Exec Command="call $(ProjectDir)WebDriver.csproj.prebuild.cmd $(ProjectDir)" />
   </Target>

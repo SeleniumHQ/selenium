@@ -39,6 +39,9 @@ if os.name != "nt":
 
 
 def get_lan_ip():
+    if os.environ.get('CI') == 'true':
+        return '0.0.0.0'
+
     try:
         ip = socket.gethostbyname(socket.gethostname())
     except Exception:

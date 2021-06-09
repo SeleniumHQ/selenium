@@ -18,6 +18,7 @@
 package org.openqa.selenium.grid.node.local;
 
 import com.google.common.collect.ImmutableList;
+
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.grid.config.Config;
 import org.openqa.selenium.grid.data.DefaultSlotMatcher;
@@ -91,7 +92,18 @@ public class LocalNodeFactory {
     builders.stream()
       .filter(builder -> builder.score(stereotype) > 0)
       .forEach(builder -> {
-        DriverService.Builder<?, ?> driverServiceBuilder = builder.usingAnyFreePort();
+        DriverService.Builder<?, ?> driverServiceBuilder;
+        Class<?> clazz = builder.getClass();
+        try {
+          // We do this to give each Node slot its own instance of the DriverService.Builder.
+          // This is important because the Node processes many new session requests
+          // and the DriverService creation needs to be thread safe.
+          Object driverBuilder = clazz.newInstance();
+          driverServiceBuilder = ((DriverService.Builder<?, ?>) driverBuilder).usingAnyFreePort();
+        } catch (InstantiationException | IllegalAccessException e) {
+          throw new IllegalArgumentException(String.format(
+            "Class %s could not be found or instantiated", clazz));
+        }
         toReturn.add(new DriverServiceSessionFactory(
           tracer,
           clientFactory,

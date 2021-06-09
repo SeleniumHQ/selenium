@@ -51,7 +51,7 @@ public class GeckoDriverInfo implements WebDriverInfo {
       return false;
     }
 
-    if (BrowserType.FIREFOX.equals(capabilities.getBrowserName())) {
+    if (BrowserType.FIREFOX.equalsIgnoreCase(capabilities.getBrowserName())) {
       return true;
     }
 
