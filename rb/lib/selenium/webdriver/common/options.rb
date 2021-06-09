@@ -109,8 +109,7 @@ module Selenium
       def as_json(*)
         options = @options.dup
 
-        w3c_options = options.select { |key, _val| W3C_OPTIONS.include?(key) }
-        options.delete_if { |key, _val| W3C_OPTIONS.include?(key) }
+        w3c_options = process_w3c_options(options)
 
         self.class::CAPABILITIES.each do |capability_alias, capability_name|
           capability_value = options.delete(capability_alias)
@@ -123,6 +122,13 @@ module Selenium
       end
 
       private
+
+      def process_w3c_options(options)
+        w3c_options = options.select { |key, _val| W3C_OPTIONS.include?(key) }
+        w3c_options[:unhandled_prompt_behavior] &&= w3c_options[:unhandled_prompt_behavior]&.to_s&.tr('_', ' ')
+        options.delete_if { |key, _val| W3C_OPTIONS.include?(key) }
+        w3c_options
+      end
 
       def process_browser_options(_browser_options)
         nil

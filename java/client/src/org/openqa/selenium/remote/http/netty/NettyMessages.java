@@ -27,6 +27,8 @@ import org.asynchttpclient.Dsl;
 import org.asynchttpclient.Request;
 import org.asynchttpclient.RequestBuilder;
 import org.asynchttpclient.Response;
+import org.openqa.selenium.Credentials;
+import org.openqa.selenium.UsernameAndPassword;
 import org.openqa.selenium.remote.http.AddSeleniumUserAgent;
 import org.openqa.selenium.remote.http.HttpMethod;
 import org.openqa.selenium.remote.http.HttpRequest;
@@ -40,8 +42,12 @@ class NettyMessages {
     // Utility classes.
   }
 
-  protected static Request toNettyRequest(URI baseUrl, int readTimeout, int requestTimeout,
-                                          HttpRequest request) {
+  protected static Request toNettyRequest(
+    URI baseUrl,
+    int readTimeout,
+    int requestTimeout,
+    Credentials credentials,
+    HttpRequest request) {
 
     String rawUrl = getRawUrl(baseUrl, request.getUri());
 
@@ -70,7 +76,13 @@ class NettyMessages {
       String user = parts[0];
       String pass = parts.length > 1 ? parts[1] : null;
 
-      builder.setRealm(Dsl.basicAuthRealm(user, pass).setUsePreemptiveAuth(true).build());
+      builder.setRealm(Dsl.basicAuthRealm(user, pass).setUsePreemptiveAuth(true));
+    } else if (credentials != null) {
+      if (!(credentials instanceof UsernameAndPassword)) {
+        throw new IllegalArgumentException("Credentials must be a user name and password");
+      }
+      UsernameAndPassword uap = (UsernameAndPassword) credentials;
+      builder.setRealm(Dsl.basicAuthRealm(uap.username(), uap.password()).setUsePreemptiveAuth(true));
     }
 
     if (request.getMethod().equals(HttpMethod.POST)) {

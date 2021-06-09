@@ -67,9 +67,14 @@ namespace OpenQA.Selenium.Remote
         /// <summary>
         /// Gets the <see cref="CommandInfoRepository"/> object associated with this executor.
         /// </summary>
-        public CommandInfoRepository CommandInfoRepository
+        //public CommandInfoRepository CommandInfoRepository
+        //{
+        //    get { return this.internalExecutor.CommandInfoRepository; }
+        //}
+
+        public bool TryAddCommand(string commandName, CommandInfo info)
         {
-            get { return this.internalExecutor.CommandInfoRepository; }
+            return this.internalExecutor.TryAddCommand(commandName, info);
         }
 
         /// <summary>

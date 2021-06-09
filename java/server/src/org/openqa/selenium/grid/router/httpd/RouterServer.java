@@ -20,8 +20,8 @@ package org.openqa.selenium.grid.router.httpd;
 import com.google.auto.service.AutoService;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
-
 import org.openqa.selenium.BuildInfo;
+import org.openqa.selenium.UsernameAndPassword;
 import org.openqa.selenium.cli.CliCommand;
 import org.openqa.selenium.grid.TemplateGridServerCommand;
 import org.openqa.selenium.grid.config.Config;
@@ -34,6 +34,7 @@ import org.openqa.selenium.grid.graphql.GraphqlHandler;
 import org.openqa.selenium.grid.log.LoggingOptions;
 import org.openqa.selenium.grid.router.ProxyCdpIntoGrid;
 import org.openqa.selenium.grid.router.Router;
+import org.openqa.selenium.grid.security.BasicAuthenticationFilter;
 import org.openqa.selenium.grid.security.Secret;
 import org.openqa.selenium.grid.security.SecretOptions;
 import org.openqa.selenium.grid.server.BaseServerOptions;
@@ -47,6 +48,7 @@ import org.openqa.selenium.grid.sessionqueue.remote.RemoteNewSessionQueue;
 import org.openqa.selenium.grid.web.GridUiRoute;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.http.HttpClient;
+import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.remote.http.Routable;
 import org.openqa.selenium.remote.http.Route;
@@ -148,15 +150,25 @@ public class RouterServer extends TemplateGridServerCommand {
     Routable routerWithSpecChecks = new Router(tracer, clientFactory, sessions, queue, distributor)
       .with(networkOptions.getSpecComplianceChecks());
 
-    Route handler = Route.combine(
+    Routable route = Route.combine(
       ui,
       routerWithSpecChecks,
       Route.prefix("/wd/hub").to(combine(routerWithSpecChecks)),
       Route.options("/graphql").to(() -> graphqlHandler),
-      Route.post("/graphql").to(() -> graphqlHandler),
+      Route.post("/graphql").to(() -> graphqlHandler));
+
+    UsernameAndPassword uap = secretOptions.getServerAuthentication();
+    if (uap != null) {
+      LOG.info("Requiring authentication to connect");
+      route = route.with(new BasicAuthenticationFilter(uap.username(), uap.password()));
+    }
+
+    // Since k8s doesn't make it easy to do an authenticated liveness probe, allow unauthenticated access to it.
+    Routable routeWithLiveness = Route.combine(
+      route,
       get("/readyz").to(() -> req -> new HttpResponse().setStatus(HTTP_NO_CONTENT)));
 
-    return new Handlers(handler, new ProxyCdpIntoGrid(clientFactory, sessions));
+    return new Handlers(routeWithLiveness, new ProxyCdpIntoGrid(clientFactory, sessions));
   }
 
   @Override

@@ -72,10 +72,10 @@ public class BootstrapTest {
   @Test
   public void shouldComplainBitterlyIfNoSupportedVersionOfDockerProtocolIsFound() {
     HttpHandler client = req -> new HttpResponse()
-        .setStatus(HTTP_BAD_REQUEST)
-        .setHeader("Content-Type", "application/json")
-        .setContent(utf8String(
-          "{\"message\":\"client version 1.50 is too new. Maximum supported API version is 1.40\"}"));
+      .setStatus(HTTP_BAD_REQUEST)
+      .setHeader("Content-Type", "application/json")
+      .setContent(utf8String(
+        "{\"message\":\"client version 1.50 is too new. Maximum supported API version is 1.41\"}"));
 
     boolean isSupported = new Docker(client).isSupported();
 

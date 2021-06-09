@@ -1,3 +1,30 @@
+v4.0.0b4
+========
+ * 4.0.0b3 was skipped for the .NET bindings and not released publicly.
+ * Added support for finding elements in shadow DOM. This feature adds
+   support for the WebDriver protocol commands for finding elements
+   located in a Shadow DOM. Please note that until a driver implementation
+   (chromedriver, geckodriver, etc.) supports the end points documented in
+   the specification, none of these methods will function at all.
+ * (on behalf of doctor-house) Made HttpRequestData properties settable.
+   Fixes issue #9456.
+ * Added proxying of CDP commands via remote/grid.
+ * Updated Chromium-based browsers to correclty inherit Options.
+ * Refactored .NET bindings class inheritance hierarchy. This breaks the
+   assumption that all browser-specific driver (ChromeDriver, FirefoxDriver,
+   EdgeDriver, etc.) are all subclasses of RemoteWebDriver. This is no longer
+   the case. The guidance for all users has always been to write your
+   Selenium code using the IWebDriver interface, rather than the concrete
+   implementation classes. If you have followed this guidance in your Selenium
+   code, this change should be largely transparent to you. If you have used
+   the implementation classes, this might be a breaking change.
+ * (on behalf of Puja Jagani) Removed CDP version support for 86 and 87.
+   Added CDP version support for 90 and 91.
+ * (on behalf of Troy Walsh) Added screenshot support for
+   EventFiringWebElement. Fixes issue #9258.
+ * Made DriverService InitializationTimeout property public, and also allow
+   the property to be settable. Fixes issue #9150.
+
 v4.0.0b2
 ========
  * (on behalf of Artur Nebot) Set EdgeOptions to start Chromium-based Edge

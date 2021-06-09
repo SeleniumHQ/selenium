@@ -21,8 +21,10 @@ import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableSet;
 import org.openqa.selenium.Beta;
 import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.Credentials;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.SessionNotCreatedException;
+import org.openqa.selenium.UsernameAndPassword;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverInfo;
 import org.openqa.selenium.internal.Either;
@@ -123,6 +125,7 @@ public class RemoteWebDriverBuilder {
   private ClientConfig clientConfig = ClientConfig.defaultConfig();
   private URI remoteHost = null;
   private DriverService driverService;
+  private Credentials credentials = null;
 
   RemoteWebDriverBuilder() {
     // Access through RemoteWebDriver.builder
@@ -246,6 +249,14 @@ public class RemoteWebDriverBuilder {
     return this;
   }
 
+  public RemoteWebDriverBuilder authenticateAs(UsernameAndPassword usernameAndPassword) {
+    Require.nonNull("User name and password", usernameAndPassword);
+
+    this.credentials = usernameAndPassword;
+
+    return this;
+  }
+
   /**
    * Allows precise control of the {@link ClientConfig} to use with remote
    * instances. If {@link ClientConfig#baseUri(URI)} has been called, then
@@ -349,6 +360,9 @@ public class RemoteWebDriverBuilder {
     URI baseUri = getBaseUri();
     if (baseUri != null) {
       driverClientConfig = driverClientConfig.baseUri(baseUri);
+    }
+    if (credentials != null) {
+      driverClientConfig = driverClientConfig.authenticateAs(credentials);
     }
 
     HttpHandler client = handlerFactory.apply(driverClientConfig);

@@ -547,10 +547,11 @@ public class LocalDistributor extends Distributor {
 
     @Override
     public void run() {
+      List<SessionRequestCapability> queueContents = sessionQueue.getQueueContents();
       if (rejectUnsupportedCaps) {
-        checkMatchingSlot(sessionQueue.getQueueContents());
+        checkMatchingSlot(queueContents);
       }
-      int initialSize = sessionQueue.getQueueContents().size();
+      int initialSize = queueContents.size();
       boolean retry = initialSize != 0;
 
       while (retry) {

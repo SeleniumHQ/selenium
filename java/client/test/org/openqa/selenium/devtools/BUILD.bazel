@@ -22,6 +22,7 @@ java_selenium_test_suite(
         "//java/client/test/org/openqa/selenium/environment",
         "//java/client/test/org/openqa/selenium/testing:annotations",
         "//java/client/test/org/openqa/selenium/testing:test-base",
+        "//java/server/src/org/openqa/selenium/grid/security",
         artifact("com.google.guava:guava"),
         artifact("junit:junit"),
         artifact("org.assertj:assertj-core"),
