@@ -47,7 +47,7 @@ import BrowserLogo from '../common/BrowserLogo'
 import OsLogo from '../common/OsLogo'
 import { Size } from '../../models/size'
 import { StyleRules } from '@material-ui/core/styles'
-import Capabilities from "../../models/capabilities";
+import Capabilities from '../../models/capabilities'
 
 interface SessionData {
   id: string
@@ -132,10 +132,10 @@ interface HeadCell {
 }
 
 const headCells: HeadCell[] = [
-  { id: 'id', numeric: false, label: 'ID' },
+  { id: 'id', numeric: false, label: 'Session ID' },
   { id: 'capabilities', numeric: false, label: 'Capabilities' },
   { id: 'startTime', numeric: false, label: 'Start time' },
-  { id: 'sessionDurationMillis', numeric: true, label: 'Duration' },
+  { id: 'sessionDurationMillis', numeric: false, label: 'Duration' },
   { id: 'nodeUri', numeric: false, label: 'Node URI' }
 ]
 
@@ -159,7 +159,7 @@ function EnhancedTableHead (props: EnhancedTableProps): JSX.Element {
         {headCells.map((headCell) => (
           <TableCell
             key={headCell.id}
-            align={headCell.numeric ? 'right' : 'left'}
+            align='left'
             padding='default'
             sortDirection={orderBy === headCell.id ? order : false}
           >
@@ -358,29 +358,38 @@ class RunningSessions extends React.Component<RunningSessionsProps, RunningSessi
                         return (
                           <TableRow
                             hover
-                            onClick={(event) => this.handleClick(event, row.id as string)}
+                            onClick={(event) =>
+                              this.handleClick(event, row.id as string)}
                             role='checkbox'
                             aria-checked={isItemSelected}
                             tabIndex={-1}
                             key={row.id}
                             selected={isItemSelected}
                           >
-                            <TableCell component='th' id={labelId} scope='row'>
+                            <TableCell
+                              component='th'
+                              id={labelId}
+                              scope='row'
+                              align='left'
+                            >
                               {row.id}
                             </TableCell>
-                            <TableCell align='right'>
-                              <OsLogo osName={row.platformName as string} size={Size.S} />
-                              <BrowserLogo browserName={row.browserName as string} />
-                              {browserVersion(row.browserVersion as string)}
+                            <TableCell align='left'>
                               {this.displaySessionInfo(row.id as string)}
+                              <OsLogo osName={row.platformName as string}
+                                      size={Size.S}/>
+                              <BrowserLogo
+                                browserName={row.browserName as string}/>
+                              {browserVersion(row.browserVersion as string)}
                               <Dialog
                                 onClose={this.handleDialogClose}
                                 aria-labelledby='session-info-dialog'
                                 open={rowOpen === row.id}
                               >
                                 <DialogTitle id='session-info-dialog'>
-                                  <OsLogo osName={row.platformName as string} />
-                                  <BrowserLogo browserName={row.browserName as string} />
+                                  <OsLogo osName={row.platformName as string}/>
+                                  <BrowserLogo
+                                    browserName={row.browserName as string}/>
                                   {browserVersion(row.browserVersion as string)}
                                 </DialogTitle>
                                 <DialogContent dividers>
@@ -390,25 +399,30 @@ class RunningSessions extends React.Component<RunningSessionsProps, RunningSessi
                                   <Typography gutterBottom component='span'>
                                     <pre>
                                       {JSON.stringify(
-                                        JSON.parse(row.capabilities as string) as object,
+                                        JSON.parse(
+                                          row.capabilities as string) as object,
                                         null, 2)}
                                     </pre>
                                   </Typography>
                                 </DialogContent>
                                 <DialogActions>
-                                  <Button onClick={this.handleDialogClose} color='primary' variant='contained'>
+                                  <Button
+                                    onClick={this.handleDialogClose}
+                                    color='primary'
+                                    variant='contained'>
                                     Close
                                   </Button>
                                 </DialogActions>
                               </Dialog>
                             </TableCell>
-                            <TableCell align='right'>
+                            <TableCell align='left'>
                               {row.startTime}
                             </TableCell>
-                            <TableCell align='right'>
-                              {prettyMilliseconds(Number(row.sessionDurationMillis))}
+                            <TableCell align='left'>
+                              {prettyMilliseconds(
+                                Number(row.sessionDurationMillis))}
                             </TableCell>
-                            <TableCell align='right'>
+                            <TableCell align='left'>
                               {row.nodeUri}
                             </TableCell>
                           </TableRow>
