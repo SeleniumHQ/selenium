@@ -4,6 +4,7 @@ import org.openqa.selenium.grid.data.Availability;
 import org.openqa.selenium.grid.data.NodeId;
 import org.openqa.selenium.grid.data.NodeStatus;
 import org.openqa.selenium.grid.data.Session;
+import org.openqa.selenium.grid.data.Slot;
 import org.openqa.selenium.grid.data.SlotId;
 import org.openqa.selenium.remote.SessionId;
 
@@ -11,26 +12,44 @@ import java.util.Set;
 
 public interface GridModel {
 
-  public void add(NodeStatus node);
+  public static final SessionId RESERVED = new SessionId("reserved");
 
-  public void refresh(NodeStatus status);
+  void add(NodeStatus node);
 
-  public void touch(NodeId id);
+  void refresh(NodeStatus status);
 
-  public void remove(NodeId id);
+  void touch(NodeId id);
 
-  public void purgeDeadNodes();
+  void remove(NodeId id);
 
-  public Availability setAvailability(NodeId id, Availability availability);
+  void purgeDeadNodes();
 
-  public boolean reserve(SlotId slotId);
+  Availability setAvailability(NodeId id, Availability availability);
 
-  public Set<NodeStatus> getSnapshot();
+  boolean reserve(SlotId slotId);
 
-  public Set<NodeStatus> nodes(Availability availability);
+  Set<NodeStatus> getSnapshot();
 
-  public void release(SessionId id);
+  void release(SessionId id);
 
-  public void setSession(SlotId slotId, Session session);
+  void setSession(SlotId slotId, Session session);
+
+  AvailabilityAndNode findNode(NodeId id);
+
+  void reserve(NodeStatus status, Slot slot);
+
+  NodeStatus rewrite(NodeStatus status, Availability availability);
+
+  void amend(Availability availability, NodeStatus status, Slot slot);
+
+  public class AvailabilityAndNode {
+    public final Availability availability;
+    public final NodeStatus status;
+
+    public AvailabilityAndNode(Availability availability, NodeStatus status) {
+      this.availability = availability;
+      this.status = status;
+    }
+  }
 
 }
