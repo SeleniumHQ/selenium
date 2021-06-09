@@ -97,8 +97,8 @@ public class Grid {
         status.getOsInfo().get("version"));
 
       toReturn.add(new Node(
-        status.getId(),
-        status.getUri(),
+        status.getNodeId(),
+        status.getExternalUri(),
         status.getAvailability(),
         status.getMaxSessionCount(),
         status.getSlots().size(),
@@ -160,8 +160,8 @@ public class Grid {
               session.getCapabilities(),
               session.getStartTime(),
               session.getUri(),
-              status.getId().toString(),
-              status.getUri(),
+              status.getNodeId().toString(),
+              status.getExternalUri(),
               slot)
           );
         }

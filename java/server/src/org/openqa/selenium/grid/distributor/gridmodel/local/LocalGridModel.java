@@ -54,7 +54,6 @@ import static org.openqa.selenium.grid.data.Availability.UP;
 public class LocalGridModel implements GridModel {
 
   private static final Logger LOG = Logger.getLogger(LocalGridModel.class.getName());
-  private static final SessionId RESERVED = new SessionId("reserved");
   private final ReadWriteLock lock = new ReentrantReadWriteLock(/* fair */ true);
   private final Map<Availability, Set<NodeStatus>> nodes = new ConcurrentHashMap<>();
   private final EventBus events;
@@ -86,8 +85,8 @@ public class LocalGridModel implements GridModel {
           NodeStatus next = iterator.next();
 
           // If the ID is the same, we're re-adding a node. If the URI is the same a node probably restarted
-          if (next.getId().equals(node.getId()) || next.getUri().equals(node.getUri())) {
-            LOG.info(String.format("Re-adding node with id %s and URI %s.", node.getId(), node.getUri()));
+          if (next.getNodeId().equals(node.getNodeId()) || next.getExternalUri().equals(node.getExternalUri())) {
+            LOG.info(String.format("Re-adding node with id %s and URI %s.", node.getNodeId(), node.getExternalUri()));
             iterator.remove();
           }
         }
@@ -107,7 +106,7 @@ public class LocalGridModel implements GridModel {
     Lock writeLock = lock.writeLock();
     writeLock.lock();
     try {
-      AvailabilityAndNode availabilityAndNode = findNode(status.getId());
+      AvailabilityAndNode availabilityAndNode = findNode(status.getNodeId());
 
       if (availabilityAndNode == null) {
         return;
@@ -181,7 +180,7 @@ public class LocalGridModel implements GridModel {
         LOG.info(String.format(
           "Switching nodes %s from UP to DOWN",
           lost.stream()
-            .map(node -> String.format("%s (uri: %s)", node.getId(), node.getUri()))
+            .map(node -> String.format("%s (uri: %s)", node.getNodeId(), node.getExternalUri()))
             .collect(joining(", "))));
         nodes(UP).removeAll(lost);
         nodes(DOWN).addAll(lost);
@@ -190,7 +189,7 @@ public class LocalGridModel implements GridModel {
         LOG.info(String.format(
           "Switching nodes %s from DOWN to UP",
           resurrected.stream()
-            .map(node -> String.format("%s (uri: %s)", node.getId(), node.getUri()))
+            .map(node -> String.format("%s (uri: %s)", node.getNodeId(), node.getExternalUri()))
             .collect(joining(", "))));
         nodes(DOWN).removeAll(resurrected);
         nodes(UP).addAll(resurrected);
@@ -199,7 +198,7 @@ public class LocalGridModel implements GridModel {
         LOG.info(String.format(
           "Removing nodes %s that are DOWN for too long",
           dead.stream()
-            .map(node -> String.format("%s (uri: %s)", node.getId(), node.getUri()))
+            .map(node -> String.format("%s (uri: %s)", node.getNodeId(), node.getExternalUri()))
             .collect(joining(", "))));
         nodes(DOWN).removeAll(dead);
       }
@@ -232,7 +231,7 @@ public class LocalGridModel implements GridModel {
       LOG.info(String.format(
         "Switching node %s (uri: %s) from %s to %s",
         id,
-        availabilityAndNode.status.getUri(),
+        availabilityAndNode.status.getExternalUri(),
         availabilityAndNode.availability,
         availability));
       return availabilityAndNode.availability;
@@ -267,7 +266,7 @@ public class LocalGridModel implements GridModel {
       if (!maybeSlot.isPresent()) {
         LOG.warning(String.format(
           "Asked to reserve slot on node %s, but no slot with id %s found",
-          node.status.getId(),
+          node.status.getNodeId(),
           slotId));
         return false;
       }
@@ -300,10 +299,11 @@ public class LocalGridModel implements GridModel {
     return nodes.computeIfAbsent(availability, ignored -> new HashSet<>());
   }
 
-  private AvailabilityAndNode findNode(NodeId id) {
+  @Override
+  public AvailabilityAndNode findNode(NodeId id) {
     for (Map.Entry<Availability, Set<NodeStatus>> entry : nodes.entrySet()) {
       for (NodeStatus nodeStatus : entry.getValue()) {
-        if (id.equals(nodeStatus.getId())) {
+        if (id.equals(nodeStatus.getNodeId())) {
           return new AvailabilityAndNode(entry.getKey(), nodeStatus);
         }
       }
@@ -311,10 +311,11 @@ public class LocalGridModel implements GridModel {
     return null;
   }
 
-  private NodeStatus rewrite(NodeStatus status, Availability availability) {
+  @Override
+  public NodeStatus rewrite(NodeStatus status, Availability availability) {
     return new NodeStatus(
-      status.getId(),
-      status.getUri(),
+      status.getNodeId(),
+      status.getExternalUri(),
       status.getMaxSessionCount(),
       status.getSlots(),
       availability,
@@ -356,7 +357,8 @@ public class LocalGridModel implements GridModel {
     }
   }
 
-  private void reserve(NodeStatus status, Slot slot) {
+  @Override
+  public void reserve(NodeStatus status, Slot slot) {
     Instant now = Instant.now();
 
     Slot reserved = new Slot(
@@ -365,7 +367,7 @@ public class LocalGridModel implements GridModel {
       now,
       new Session(
         RESERVED,
-        status.getUri(),
+        status.getExternalUri(),
         slot.getStereotype(),
         slot.getStereotype(),
         now));
@@ -420,30 +422,21 @@ public class LocalGridModel implements GridModel {
     }
   }
 
-  private void amend(Availability availability, NodeStatus status, Slot slot) {
+  @Override
+  public void amend(Availability availability, NodeStatus status, Slot slot) {
     Set<Slot> newSlots = new HashSet<>(status.getSlots());
     newSlots.removeIf(s -> s.getId().equals(slot.getId()));
     newSlots.add(slot);
 
     nodes(availability).remove(status);
     nodes(availability).add(new NodeStatus(
-      status.getId(),
-      status.getUri(),
+      status.getNodeId(),
+      status.getExternalUri(),
       status.getMaxSessionCount(),
       newSlots,
       status.getAvailability(),
       status.heartbeatPeriod(),
       status.getVersion(),
       status.getOsInfo()));
-  }
-
-  private static class AvailabilityAndNode {
-    public final Availability availability;
-    public final NodeStatus status;
-
-    public AvailabilityAndNode(Availability availability, NodeStatus status) {
-      this.availability = availability;
-      this.status = status;
-    }
   }
 }

@@ -21,7 +21,11 @@ import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.JsonInput;
 import org.openqa.selenium.json.TypeToken;
+import org.redisson.api.annotation.REntity;
+import org.redisson.api.annotation.RId;
+import org.redisson.api.annotation.RIndex;
 
+import java.io.Serializable;
 import java.net.URI;
 import java.time.Duration;
 import java.time.Instant;
@@ -34,17 +38,23 @@ import java.util.TreeMap;
 import static java.util.Collections.unmodifiableMap;
 import static java.util.Collections.unmodifiableSet;
 
+@REntity
 public class NodeStatus {
 
-  private final NodeId nodeId;
-  private final URI externalUri;
-  private final int maxSessionCount;
-  private final Set<Slot> slots;
-  private final Availability availability;
+  @RId
+  private NodeId nodeId;
+
+  private URI externalUri;
+  private int maxSessionCount;
+  private Set<Slot> slots;
+  private Availability availability;
   private Duration heartbeatPeriod;
-  private final String version;
-  private final Map<String, String> osInfo;
+  private String version;
+  private Map<String, String> osInfo;
   private long touched = System.currentTimeMillis();
+
+  public NodeStatus() {
+  }
 
   public NodeStatus(
     NodeId nodeId,
@@ -69,7 +79,7 @@ public class NodeStatus {
 
   public static NodeStatus fromJson(JsonInput input) {
     NodeId nodeId = null;
-    URI uri = null;
+    URI externalUri = null;
     int maxSessions = 0;
     Set<Slot> slots = null;
     Availability availability = null;
@@ -88,7 +98,7 @@ public class NodeStatus {
           heartbeatPeriod = Duration.ofMillis(input.read(Long.class));
           break;
 
-        case "id":
+        case "nodeId":
           nodeId = input.read(NodeId.class);
           break;
 
@@ -101,8 +111,8 @@ public class NodeStatus {
           }.getType());
           break;
 
-        case "uri":
-          uri = input.read(URI.class);
+        case "externalUri":
+          externalUri = input.read(URI.class);
           break;
 
         case "version":
@@ -122,7 +132,7 @@ public class NodeStatus {
 
     return new NodeStatus(
       nodeId,
-      uri,
+      externalUri,
       maxSessions,
       slots,
       availability,
@@ -136,56 +146,100 @@ public class NodeStatus {
   }
 
   public boolean hasCapacity() {
-    return slots.stream().anyMatch(slot -> !slot.getSession().isPresent());
+    return slots.stream().anyMatch(slot -> slot.getSession() == null);
   }
 
   public boolean hasCapacity(Capabilities caps) {
     return slots.stream()
-      .anyMatch(slot -> !slot.getSession().isPresent() && slot.isSupporting(caps));
-  }
-
-  public NodeId getId() {
-    return nodeId;
-  }
-
-  public URI getUri() {
-    return externalUri;
+      .anyMatch(slot -> slot.getSession() == null && slot.isSupporting(caps));
   }
 
   public int getMaxSessionCount() {
     return maxSessionCount;
   }
 
+  public void setMaxSessionCount(int maxSessionCount) {
+    this.maxSessionCount = maxSessionCount;
+  }
+
+  public NodeId getNodeId() {
+    return nodeId;
+  }
+
+  public void setNodeId(NodeId nodeId) {
+    this.nodeId = nodeId;
+  }
+
+  public URI getExternalUri() {
+    return externalUri;
+  }
+
+  public void setExternalUri(URI externalUri) {
+    this.externalUri = externalUri;
+  }
+
   public Set<Slot> getSlots() {
     return slots;
+  }
+
+  public void setSlots(Set<Slot> slots) {
+    this.slots = slots;
   }
 
   public Availability getAvailability() {
     return availability;
   }
 
+  public void setAvailability(Availability availability) {
+    this.availability = availability;
+  }
+
+  public Duration getHeartbeatPeriod() {
+    return heartbeatPeriod;
+  }
+
+  public void setHeartbeatPeriod(Duration heartbeatPeriod) {
+    this.heartbeatPeriod = heartbeatPeriod;
+  }
+
   public String getVersion() {
     return version;
+  }
+
+  public void setVersion(String version) {
+    this.version = version;
   }
 
   public Map<String, String> getOsInfo() {
     return osInfo;
   }
 
+  public void setOsInfo(Map<String, String> osInfo) {
+    this.osInfo = osInfo;
+  }
+
+  public long getTouched() {
+    return touched;
+  }
+
+  public void setTouched(long touched) {
+    this.touched = touched;
+  }
+
   public float getLoad() {
     float inUse = slots.parallelStream()
-      .filter(slot -> slot.getSession().isPresent())
+      .filter(slot -> slot.getSession() != null)
       .count();
 
     return (inUse / (float) maxSessionCount) * 100f;
   }
 
   public long getLastSessionCreated() {
-      return slots.parallelStream()
-        .map(Slot::getLastStarted)
-        .mapToLong(Instant::toEpochMilli)
-        .max()
-        .orElse(0);
+    return slots.parallelStream()
+      .map(Slot::getLastStarted)
+      .mapToLong(Instant::toEpochMilli)
+      .max()
+      .orElse(0);
   }
 
   public Duration heartbeatPeriod() {
@@ -208,11 +262,11 @@ public class NodeStatus {
 
     NodeStatus that = (NodeStatus) o;
     return Objects.equals(this.nodeId, that.nodeId) &&
-           Objects.equals(this.externalUri, that.externalUri) &&
-           this.maxSessionCount == that.maxSessionCount &&
-           Objects.equals(this.slots, that.slots) &&
-           Objects.equals(this.availability, that.availability) &&
-           Objects.equals(this.version, that.version);
+      Objects.equals(this.externalUri, that.externalUri) &&
+      this.maxSessionCount == that.maxSessionCount &&
+      Objects.equals(this.slots, that.slots) &&
+      Objects.equals(this.availability, that.availability) &&
+      Objects.equals(this.version, that.version);
   }
 
   @Override
@@ -222,8 +276,8 @@ public class NodeStatus {
 
   private Map<String, Object> toJson() {
     Map<String, Object> toReturn = new TreeMap<>();
-    toReturn.put("id", nodeId);
-    toReturn.put("uri", externalUri);
+    toReturn.put("nodeId", nodeId);
+    toReturn.put("externalUri", externalUri);
     toReturn.put("maxSessions", maxSessionCount);
     toReturn.put("slots", slots);
     toReturn.put("availability", availability);

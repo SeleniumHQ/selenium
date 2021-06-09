@@ -151,8 +151,8 @@ public class LocalDistributor extends Distributor {
     bus.addListener(NodeStatusEvent.listener(this::register));
     bus.addListener(NodeStatusEvent.listener(model::refresh));
     bus.addListener(NodeHeartBeatEvent.listener(nodeStatus -> {
-      if (nodes.containsKey(nodeStatus.getId())) {
-        model.touch(nodeStatus.getId());
+      if (nodes.containsKey(nodeStatus.getNodeId())) {
+        model.touch(nodeStatus.getNodeId());
       } else {
         register(nodeStatus);
       }
@@ -214,7 +214,7 @@ public class LocalDistributor extends Distributor {
     Lock writeLock = lock.writeLock();
     writeLock.lock();
     try {
-      if (nodes.containsKey(status.getId())) {
+      if (nodes.containsKey(status.getNodeId())) {
         return;
       }
 
@@ -227,8 +227,8 @@ public class LocalDistributor extends Distributor {
       RemoteNode remoteNode = new RemoteNode(
         tracer,
         clientFactory,
-        status.getId(),
-        status.getUri(),
+        status.getNodeId(),
+        status.getExternalUri(),
         registrationSecret,
         capabilities);
 

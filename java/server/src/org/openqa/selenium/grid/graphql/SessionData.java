@@ -26,7 +26,6 @@ import org.openqa.selenium.grid.data.Slot;
 import org.openqa.selenium.grid.distributor.Distributor;
 import org.openqa.selenium.internal.Require;
 
-import java.util.Optional;
 import java.util.Set;
 import java.util.function.Supplier;
 
@@ -58,8 +57,8 @@ public class SessionData implements DataFetcher {
         session.getCapabilities(),
         session.getStartTime(),
         session.getUri(),
-        currentSession.node.getId().toString(),
-        currentSession.node.getUri(),
+        currentSession.node.getNodeId().toString(),
+        currentSession.node.getExternalUri(),
         currentSession.slot);
     } else {
       throw new SessionNotFoundException("No ongoing session found with the requested session id.",

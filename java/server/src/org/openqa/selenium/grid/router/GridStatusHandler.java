@@ -127,8 +127,8 @@ class GridStatusHandler implements HttpHandler {
 
       List<Map<String, Object>> nodeResults = status.getNodes().stream()
         .map(node -> new ImmutableMap.Builder<String, Object>()
-          .put("id", node.getId())
-          .put("uri", node.getUri())
+          .put("id", node.getNodeId())
+          .put("uri", node.getExternalUri())
           .put("maxSessions", node.getMaxSessionCount())
           .put("osInfo", node.getOsInfo())
           .put("heartbeatPeriod", node.heartbeatPeriod().toMillis())

@@ -72,7 +72,6 @@ import java.time.Instant;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import java.util.function.Function;
@@ -250,12 +249,12 @@ public class AddingNodesTest {
     // Craft a status that makes it look like the node is busy, and post it on the bus.
     NodeStatus status = node.getStatus();
     NodeStatus crafted = new NodeStatus(
-      status.getId(),
-      status.getUri(),
+      status.getNodeId(),
+      status.getExternalUri(),
       status.getMaxSessionCount(),
       ImmutableSet.of(
         new Slot(
-          new SlotId(status.getId(), UUID.randomUUID()),
+          new SlotId(status.getNodeId(), UUID.randomUUID()),
           CAPS,
           Instant.now(),
           new Session(

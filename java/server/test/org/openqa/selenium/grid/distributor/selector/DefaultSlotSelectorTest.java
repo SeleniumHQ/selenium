@@ -51,7 +51,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Optional;
 import java.util.Random;
 import java.util.Set;
 import java.util.UUID;
@@ -109,7 +108,7 @@ public class DefaultSlotSelectorTest {
       .collect(toImmutableSet());
 
     assertThat(nodeIds)
-      .containsSequence(oneBrowser.getId(), twoBrowsers.getId(), threeBrowsers.getId());
+      .containsSequence(oneBrowser.getNodeId(), twoBrowsers.getNodeId(), threeBrowsers.getNodeId());
   }
 
   @Test
@@ -168,10 +167,10 @@ public class DefaultSlotSelectorTest {
       .collect(toImmutableSet());
     assertThat(nodeIds)
       .containsSequence(
-        highLoadAndOneBrowser.getId(),
-        mediumLoadAndTwoBrowsers.getId(),
-        mediumLoadAndOtherTwoBrowsers.getId(),
-        lightLoadAndThreeBrowsers.getId());
+        highLoadAndOneBrowser.getNodeId(),
+        mediumLoadAndTwoBrowsers.getNodeId(),
+        mediumLoadAndOtherTwoBrowsers.getNodeId(),
+        lightLoadAndThreeBrowsers.getNodeId());
   }
 
   private NodeStatus createNode(List<Capabilities> stereotypes, int count, int currentLoad) {

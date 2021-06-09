@@ -126,8 +126,8 @@ public class LocalDistributorTest {
 
     //Check a couple attributes
     NodeStatus distributorNode = nodes.iterator().next();
-    assertThat(distributorNode.getId()).isEqualByComparingTo(localNode.getId());
-    assertThat(distributorNode.getUri()).isEqualTo(uri);
+    assertThat(distributorNode.getNodeId()).isEqualByComparingTo(localNode.getId());
+    assertThat(distributorNode.getExternalUri()).isEqualTo(uri);
   }
 
   @Test
