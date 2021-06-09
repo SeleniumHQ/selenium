@@ -147,12 +147,17 @@ namespace OpenQA.Selenium.DevTools.V89
                 ResponseCode = responseData.StatusCode,
             };
 
-            if (responseData.Headers.Count > 0)
+            if (responseData.Headers.Count > 0 || responseData.CookieHeaders.Count > 0)
             {
                 List<HeaderEntry> headers = new List<HeaderEntry>();
-                foreach(KeyValuePair<string, string> headerPair in responseData.Headers)
+                foreach (KeyValuePair<string, string> headerPair in responseData.Headers)
                 {
                     headers.Add(new HeaderEntry() { Name = headerPair.Key, Value = headerPair.Value });
+                }
+
+                foreach (string cookieHeader in responseData.CookieHeaders)
+                {
+                    headers.Add(new HeaderEntry() { Name = "Set-Cookie", Value = cookieHeader });
                 }
 
                 commandSettings.ResponseHeaders = headers.ToArray();
@@ -286,7 +291,22 @@ namespace OpenQA.Selenium.DevTools.V89
 
                 foreach (var header in e.ResponseHeaders)
                 {
-                    wrappedResponse.ResponseData.Headers.Add(header.Name, header.Value);
+                    if (header.Name.ToLowerInvariant() == "set-cookie")
+                    {
+                        wrappedResponse.ResponseData.CookieHeaders.Add(header.Value);
+                    }
+                    else
+                    {
+                        if (wrappedResponse.ResponseData.Headers.ContainsKey(header.Name))
+                        {
+                            string currentHeaderValue = wrappedResponse.ResponseData.Headers[header.Name];
+                            wrappedResponse.ResponseData.Headers[header.Name] = currentHeaderValue + ", " + header.Value;
+                        }
+                        else
+                        {
+                            wrappedResponse.ResponseData.Headers.Add(header.Name, header.Value);
+                        }
+                    }
                 }
 
                 this.OnResponsePaused(wrappedResponse);
