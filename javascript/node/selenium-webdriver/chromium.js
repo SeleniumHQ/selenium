@@ -276,6 +276,19 @@ class Options extends Capabilities {
   }
 
   /**
+   * Sets the address of a Chromium remote debugging server to connect to.
+   * Address should be of the form "{hostname|IP address}:port"
+   * (e.g. "localhost:9222").
+   *
+   * @param {string} address The address to connect to.
+   * @return {!Options} A self reference.
+   */
+  debuggerAddress(address) {
+    this.options_.debuggerAddress = address;
+    return this
+  }
+
+  /**
    * Configures the driver to start the browser in headless mode.
    *
    * > __NOTE:__ Resizing the browser window in headless mode is only supported
