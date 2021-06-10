@@ -17,8 +17,6 @@
 
 package org.openqa.selenium.ie;
 
-import static org.openqa.selenium.remote.CapabilityType.BROWSER_NAME;
-
 import com.google.auto.service.AutoService;
 
 import org.openqa.selenium.Capabilities;
@@ -30,6 +28,8 @@ import org.openqa.selenium.WebDriverInfo;
 import org.openqa.selenium.remote.BrowserType;
 
 import java.util.Optional;
+
+import static org.openqa.selenium.remote.CapabilityType.BROWSER_NAME;
 
 @AutoService(WebDriverInfo.class)
 public class InternetExplorerDriverInfo implements WebDriverInfo {
@@ -46,8 +46,13 @@ public class InternetExplorerDriverInfo implements WebDriverInfo {
 
   @Override
   public boolean isSupporting(Capabilities capabilities) {
-    return BrowserType.IE.equals(capabilities.getBrowserName()) ||
+    return BrowserType.IE.equalsIgnoreCase(capabilities.getBrowserName()) ||
            capabilities.getCapability("se:ieOptions") != null;
+  }
+
+  @Override
+  public boolean isSupportingCdp() {
+    return false;
   }
 
   @Override

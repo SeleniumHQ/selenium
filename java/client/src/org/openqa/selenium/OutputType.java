@@ -18,9 +18,9 @@
 package org.openqa.selenium;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Base64;
 
 /**
@@ -84,26 +84,14 @@ public interface OutputType<T> {
     }
 
     private File save(byte[] data) {
-      OutputStream stream = null;
-
       try {
-        File tmpFile = File.createTempFile("screenshot", ".png");
+        Path tmpFilePath = Files.createTempFile("screenshot", ".png");
+        File tmpFile = tmpFilePath.toFile();
         tmpFile.deleteOnExit();
-
-        stream = new FileOutputStream(tmpFile);
-        stream.write(data);
-
+        Files.write(tmpFilePath, data);
         return tmpFile;
       } catch (IOException e) {
         throw new WebDriverException(e);
-      } finally {
-        if (stream != null) {
-          try {
-            stream.close();
-          } catch (IOException e) {
-            // Nothing sane to do
-          }
-        }
       }
     }
 

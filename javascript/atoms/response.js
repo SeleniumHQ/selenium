@@ -17,7 +17,7 @@
 
 /**
  * @fileoverview Utilities for working with WebDriver response objects.
- * @see: hhttps://github.com/SeleniumHQ/selenium/wiki/JsonWireProtocol#responses
+ * @see: https://github.com/SeleniumHQ/selenium/wiki/JsonWireProtocol#responses
  */
 
 goog.provide('bot.response');
@@ -39,7 +39,7 @@ bot.response.ResponseObject;
  * @param {*} value The value to test.
  * @return {boolean} Whether the given value is a response object.
  */
-bot.response.isResponseObject = function(value) {
+bot.response.isResponseObject = function (value) {
   return goog.isObject(value) && goog.isNumber(value['status']);
 };
 
@@ -49,7 +49,7 @@ bot.response.isResponseObject = function(value) {
  * @param {*} value The response value.
  * @return {!bot.response.ResponseObject} The new response object.
  */
-bot.response.createResponse = function(value) {
+bot.response.createResponse = function (value) {
   if (bot.response.isResponseObject(value)) {
     return /** @type {!bot.response.ResponseObject} */ (value);
   }
@@ -66,13 +66,13 @@ bot.response.createResponse = function(value) {
  * @param {(bot.Error|Error|*)} error The error value to convert.
  * @return {!bot.response.ResponseObject} The new response object.
  */
-bot.response.createErrorResponse = function(error) {
+bot.response.createErrorResponse = function (error) {
   if (bot.response.isResponseObject(error)) {
     return /** @type {!bot.response.ResponseObject} */ (error);
   }
 
   var statusCode = error && goog.isNumber(error.code) ? error.code :
-      bot.ErrorCode.UNKNOWN_ERROR;
+    bot.ErrorCode.UNKNOWN_ERROR;
   return {
     'status': /** @type {bot.ErrorCode} */ (statusCode),
     'value': {
@@ -92,7 +92,7 @@ bot.response.createErrorResponse = function(error) {
  * @throws {bot.Error} If the response describes an error.
  * @see https://github.com/SeleniumHQ/selenium/wiki/JsonWireProtocol#failed-commands
  */
-bot.response.checkResponse = function(responseObj) {
+bot.response.checkResponse = function (responseObj) {
   var status = responseObj['status'];
   if (status == bot.ErrorCode.SUCCESS) {
     return responseObj;

@@ -15,9 +15,6 @@
 // specific language governing permissions and limitations
 // under the License.
 
-/**
- * A {@link Finder} for title tags.
- */
 package org.openqa.selenium.lift.find;
 
 import static org.hamcrest.Matchers.equalTo;

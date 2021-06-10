@@ -18,8 +18,8 @@
 package org.openqa.selenium;
 
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.openqa.selenium.testing.drivers.Browser.LEGACY_FIREFOX_XPI;
 import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
-import static org.openqa.selenium.testing.drivers.Browser.MARIONETTE;
 import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
 
 import org.junit.Test;
@@ -40,8 +40,8 @@ public class SessionHandlingTest extends JUnit4TestBase {
 
   @NoDriverAfterTest
   @Test
-  @Ignore(value = FIREFOX)
-  @NotYetImplemented(value = MARIONETTE, reason = "https://github.com/mozilla/geckodriver/issues/689")
+  @Ignore(value = LEGACY_FIREFOX_XPI)
+  @NotYetImplemented(value = FIREFOX, reason = "https://github.com/mozilla/geckodriver/issues/689")
   @NotYetImplemented(SAFARI)
   public void callingQuitAfterClosingTheLastWindowIsANoOp() {
     driver.close();
@@ -51,7 +51,7 @@ public class SessionHandlingTest extends JUnit4TestBase {
 
   @NoDriverAfterTest
   @Test
-  @Ignore(value = FIREFOX)
+  @Ignore(value = LEGACY_FIREFOX_XPI)
   public void callingAnyOperationAfterClosingTheLastWindowShouldThrowAnException() {
     driver.close();
     sleepTight(3000);

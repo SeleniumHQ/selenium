@@ -17,6 +17,8 @@
 
 package org.openqa.selenium.docker;
 
+import org.openqa.selenium.internal.Require;
+
 import java.util.Objects;
 
 public class ContainerId {
@@ -24,7 +26,7 @@ public class ContainerId {
   private final String id;
 
   public ContainerId(String id) {
-    this.id = Objects.requireNonNull(id);
+    this.id = Require.nonNull("Container id", id);
   }
 
   @Override

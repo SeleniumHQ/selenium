@@ -1,0 +1,61 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: router
+  labels:
+    app: router
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: router
+  template:
+    metadata:
+      labels:
+        app: router
+    spec:
+      containers:
+        - name: router
+          image: selenium/router:latest
+          ports:
+            - containerPort: 4444
+          env:
+            - name: SESSIONS_HOSTNAME
+              value: "session-map"
+            - name: SESSIONS_PORT
+              value: "5556"
+            - name: SESSIONQUEUE_HOSTNAME
+              value: "session-queue"
+            - name: SESSIONQUEUE_PORT
+              value: "5559"
+            - name: DISTRIBUTOR_HOSTNAME
+              value: "distributor"
+            - name: DISTRIBUTOR_PORT
+              value: "5553"
+          resources:
+            limits:
+              memory: "512Mi"
+              cpu: ".5"
+          readinessProbe:
+            httpGet:
+              port: 4444
+              path: "/readyz"
+            initialDelaySeconds: 5
+            periodSeconds: 30
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: router
+  labels:
+    run: router
+spec:
+  type: LoadBalancer
+  selector:
+    app: router
+  ports:
+    - port: 4444
+      targetPort: 4444
+      protocol: TCP
+      name: web

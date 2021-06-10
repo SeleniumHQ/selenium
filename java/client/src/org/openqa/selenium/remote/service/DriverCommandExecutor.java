@@ -17,28 +17,42 @@
 
 package org.openqa.selenium.remote.service;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Throwables;
 
 import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.Command;
 import org.openqa.selenium.remote.CommandInfo;
 import org.openqa.selenium.remote.DriverCommand;
 import org.openqa.selenium.remote.HttpCommandExecutor;
 import org.openqa.selenium.remote.Response;
 
+import java.io.Closeable;
 import java.io.IOException;
 import java.net.ConnectException;
 import java.util.Map;
-import java.util.Objects;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 /**
  * A specialized {@link HttpCommandExecutor} that will use a {@link DriverService} that lives
  * and dies with a single WebDriver session. The service will be restarted upon each new session
  * request and shutdown after each quit command.
  */
-public class DriverCommandExecutor extends HttpCommandExecutor {
+public class DriverCommandExecutor extends HttpCommandExecutor implements Closeable {
 
   private final DriverService service;
+  private final ExecutorService executorService = Executors.newFixedThreadPool(2,  r -> {
+    Thread thread = new Thread(r);
+    thread.setName("Driver Command Executor");
+    thread.setDaemon(true);
+    return thread;
+  });
 
   /**
    * Creates a new DriverCommandExecutor which will communicate with the driver as configured
@@ -47,7 +61,7 @@ public class DriverCommandExecutor extends HttpCommandExecutor {
    * @param service The DriverService to send commands to.
    */
   public DriverCommandExecutor(DriverService service) {
-    super(Objects.requireNonNull(service.getUrl(), "DriverService is required"));
+    super(Require.nonNull("DriverService", service.getUrl()));
     this.service = service;
   }
 
@@ -75,25 +89,81 @@ public class DriverCommandExecutor extends HttpCommandExecutor {
    */
   @Override
   public Response execute(Command command) throws IOException {
+    boolean newlyStarted = false;
     if (DriverCommand.NEW_SESSION.equals(command.getName())) {
+      boolean wasRunningBefore = service.isRunning();
       service.start();
+      newlyStarted = !wasRunningBefore && service.isRunning();
     }
 
-    try {
-      return super.execute(command);
-    } catch (Throwable t) {
-      Throwable rootCause = Throwables.getRootCause(t);
-      if (rootCause instanceof ConnectException &&
-          "Connection refused".equals(rootCause.getMessage()) &&
-          !service.isRunning()) {
-        throw new WebDriverException("The driver server has unexpectedly died!", t);
-      }
-      Throwables.throwIfUnchecked(t);
-      throw new WebDriverException(t);
-    } finally {
-      if (DriverCommand.QUIT.equals(command.getName())) {
+    if (DriverCommand.QUIT.equals(command.getName())) {
+      CompletableFuture<Response> commandComplete = CompletableFuture.supplyAsync(() -> {
+        try {
+          return invokeExecute(command);
+        } catch (Throwable t) {
+          Throwable rootCause = Throwables.getRootCause(t);
+          if (rootCause instanceof IllegalStateException
+              && "Closed".equals(rootCause.getMessage())) {
+            return null;
+          }
+          if (rootCause instanceof ConnectException
+              && "Connection refused".equals(rootCause.getMessage())) {
+            throw new WebDriverException("The driver server has unexpectedly died!", t);
+          }
+          Throwables.throwIfUnchecked(t);
+          throw new WebDriverException(t);
+        }
+      }, executorService);
+
+      CompletableFuture<Response> processFinished = CompletableFuture.supplyAsync(() -> {
+        service.process.waitFor(service.getTimeout().toMillis());
+        return null;
+      }, executorService);
+
+      try {
+        Response response = (Response) CompletableFuture.anyOf(commandComplete, processFinished)
+          .get(service.getTimeout().toMillis() * 2, TimeUnit.MILLISECONDS);
         service.stop();
+        return response;
+      } catch (ExecutionException | TimeoutException e) {
+        throw new WebDriverException("Timed out waiting for driver server to stop.", e);
+      } catch (InterruptedException e) {
+        Thread.currentThread().interrupt();
+        throw new WebDriverException("Timed out waiting for driver server to stop.", e);
+      }
+
+    } else {
+      try {
+        return invokeExecute(command);
+      } catch (Throwable t) {
+        Throwable rootCause = Throwables.getRootCause(t);
+        if (rootCause instanceof ConnectException &&
+            "Connection refused".equals(rootCause.getMessage()) &&
+            !service.isRunning()) {
+          throw new WebDriverException("The driver server has unexpectedly died!", t);
+        }
+        // an attempt to execute a command in the newly started driver server has failed
+        // hence need to stop it
+        if (newlyStarted && service.isRunning()) {
+          try {
+            service.stop();
+          } catch (Exception ignored) {
+            // fall through
+          }
+        }
+        Throwables.throwIfUnchecked(t);
+        throw new WebDriverException(t);
       }
     }
+  }
+
+  @VisibleForTesting
+  Response invokeExecute(Command command) throws IOException {
+    return super.execute(command);
+  }
+
+  @Override
+  public void close() {
+    executorService.shutdownNow();
   }
 }

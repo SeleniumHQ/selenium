@@ -17,32 +17,51 @@
 
 package org.openqa.selenium.grid.data;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
-
 import org.junit.Test;
 import org.openqa.selenium.ImmutableCapabilities;
-import org.openqa.selenium.grid.data.NodeStatus;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.remote.SessionId;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.time.Duration;
+import java.time.Instant;
+import java.util.Optional;
 import java.util.UUID;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.openqa.selenium.grid.data.Availability.UP;
 
 public class NodeStatusTest {
 
   @Test
   public void ensureRoundTripWorks() throws URISyntaxException {
     ImmutableCapabilities stereotype = new ImmutableCapabilities("cheese", "brie");
+    NodeId nodeId = new NodeId(UUID.randomUUID());
     NodeStatus status = new NodeStatus(
-        UUID.randomUUID(),
-        new URI("http://localhost:23456"),
-        100,
-        ImmutableMap.of(stereotype, 1),
-        ImmutableSet.of(new NodeStatus.Active(stereotype, new SessionId(UUID.randomUUID()), new ImmutableCapabilities("peas", "sausages"))));
+      nodeId,
+      new URI("http://localhost:23456"),
+      100,
+      ImmutableSet.of(
+        new Slot(
+          new SlotId(nodeId, UUID.randomUUID()),
+          stereotype,
+          Instant.EPOCH,
+          Optional.of(new Session(
+            new SessionId(UUID.randomUUID()),
+            new URI("http://localhost:1235"),
+            stereotype,
+            new ImmutableCapabilities("peas", "sausages"),
+            Instant.now())))),
+      UP,
+      Duration.ofSeconds(10),
+      "4.0.0",
+      ImmutableMap.of(
+        "name", "Max OS X",
+        "arch", "x86_64",
+        "version", "10.15.7"));
 
     Json json = new Json();
     String source = json.toJson(status);

@@ -44,9 +44,11 @@ namespace OpenQA.Selenium.Support.UI
                 throw new ArgumentNullException("element", "element cannot be null");
             }
 
-            if (string.IsNullOrEmpty(element.TagName) || string.Compare(element.TagName, "select", StringComparison.OrdinalIgnoreCase) != 0)
+            string tagName = element.TagName;
+
+            if (string.IsNullOrEmpty(tagName) || string.Compare(tagName, "select", StringComparison.OrdinalIgnoreCase) != 0)
             {
-                throw new UnexpectedTagNameException("select", element.TagName);
+                throw new UnexpectedTagNameException("select", tagName);
             }
 
             this.element = element;

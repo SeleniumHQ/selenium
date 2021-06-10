@@ -17,18 +17,19 @@
 
 package org.openqa.selenium.grid.router;
 
-import io.opentracing.Tracer;
+import com.google.common.collect.ImmutableSet;
+
 import org.openqa.selenium.grid.distributor.Distributor;
 import org.openqa.selenium.grid.sessionmap.SessionMap;
-import org.openqa.selenium.json.Json;
+import org.openqa.selenium.grid.sessionqueue.NewSessionQueue;
+import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.http.HttpClient;
-import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.remote.http.Routable;
 import org.openqa.selenium.remote.tracing.SpanDecorator;
-
-import java.util.Objects;
+import org.openqa.selenium.remote.tracing.Tracer;
+import org.openqa.selenium.status.HasReadyState;
 
 import static org.openqa.selenium.remote.http.Route.combine;
 import static org.openqa.selenium.remote.http.Route.get;
@@ -37,25 +38,47 @@ import static org.openqa.selenium.remote.http.Route.matching;
 /**
  * A simple router that is aware of the selenium-protocol.
  */
-public class Router implements Routable, HttpHandler {
+public class Router implements HasReadyState, Routable {
 
   private final Routable routes;
+  private final SessionMap sessions;
+  private final Distributor distributor;
+  private final NewSessionQueue queue;
 
   public Router(
     Tracer tracer,
     HttpClient.Factory clientFactory,
     SessionMap sessions,
+    NewSessionQueue queue,
     Distributor distributor) {
-    Objects.requireNonNull(tracer, "Tracer to use must be set.");
+    Require.nonNull("Tracer to use", tracer);
+    Require.nonNull("HTTP client factory", clientFactory);
+
+    this.sessions = Require.nonNull("Session map", sessions);
+    this.queue = Require.nonNull("New Session Request Queue", queue);
+    this.distributor = Require.nonNull("Distributor", distributor);
+
+    HandleSession sessionHandler = new HandleSession(tracer, clientFactory, sessions);
 
     routes =
       combine(
-        get("/status")
-          .to(() -> new GridStatusHandler(new Json(), tracer, clientFactory, distributor)),
+        get("/status").to(() -> new GridStatusHandler(tracer, distributor)),
         sessions.with(new SpanDecorator(tracer, req -> "session_map")),
+        queue.with(new SpanDecorator(tracer, req -> "session_queue")),
         distributor.with(new SpanDecorator(tracer, req -> "distributor")),
         matching(req -> req.getUri().startsWith("/session/"))
-          .to(() -> new HandleSession(tracer, clientFactory, sessions)));
+          .to(() -> sessionHandler));
+  }
+
+  @Override
+  public boolean isReady() {
+    try {
+      return ImmutableSet.of(distributor, sessions, queue).parallelStream()
+        .map(HasReadyState::isReady)
+        .reduce(true, Boolean::logicalAnd);
+    } catch (RuntimeException e) {
+      return false;
+    }
   }
 
   @Override

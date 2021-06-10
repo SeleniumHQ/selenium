@@ -15,6 +15,25 @@
 # specific language governing permissions and limitations
 # under the License.
 
+import sys
+from typing import Any, Optional, Sequence, TYPE_CHECKING
+
+if sys.version_info >= (3, 9):
+    from re import Match
+else:
+    from typing import Match
+
+if TYPE_CHECKING:
+    from typing import SupportsInt, SupportsFloat, Union
+    from typing_extensions import SupportsIndex
+
+    ParseableFloat = Union[SupportsFloat, SupportsIndex, str, bytes, bytearray]
+    ParseableInt = Union[SupportsInt, SupportsIndex, str, bytes]
+else:
+    ParseableFloat = Any
+    ParseableInt = Any
+
+
 RGB_PATTERN = r"^\s*rgb\(\s*(\d{1,3})\s*,\s*(\d{1,3})\s*,\s*(\d{1,3})\s*\)\s*$"
 RGB_PCT_PATTERN = r"^\s*rgb\(\s*(\d{1,3}|\d{1,2}\.\d+)%\s*,\s*(\d{1,3}|\d{1,2}\.\d+)%\s*,\s*(\d{1,3}|\d{1,2}\.\d+)%\s*\)\s*$"
 RGBA_PATTERN = r"^\s*rgba\(\s*(\d{1,3})\s*,\s*(\d{1,3})\s*,\s*(\d{1,3})\s*,\s*(0|1|0\.\d+)\s*\)\s*$"
@@ -41,20 +60,22 @@ class Color(object):
     """
 
     @staticmethod
-    def from_string(str_):
+    def from_string(str_: str) -> "Color":
         import re
 
         class Matcher(object):
-            def __init__(self):
+            match_obj: Optional[Match[str]]
+
+            def __init__(self) -> None:
                 self.match_obj = None
 
-            def match(self, pattern, str_):
+            def match(self, pattern: str, str_: str) -> Optional[Match[str]]:
                 self.match_obj = re.match(pattern, str_)
                 return self.match_obj
 
             @property
-            def groups(self):
-                return () if self.match_obj is None else self.match_obj.groups()
+            def groups(self) -> Sequence[str]:
+                return () if not self.match_obj else self.match_obj.groups()
 
         m = Matcher()
 
@@ -66,7 +87,7 @@ class Color(object):
         elif m.match(RGBA_PATTERN, str_):
             return Color(*m.groups)
         elif m.match(RGBA_PCT_PATTERN, str_):
-            rgba = tuple([float(each) / 100 * 255 for each in m.groups[:3]] + [m.groups[3]])
+            rgba = tuple([float(each) / 100 * 255 for each in m.groups[:3]] + [m.groups[3]])  # type: ignore
             return Color(*rgba)
         elif m.match(HEX_PATTERN, str_):
             rgb = tuple([int(each, 16) for each in m.groups])
@@ -82,20 +103,20 @@ class Color(object):
             raise ValueError("Could not convert %s into color" % str_)
 
     @staticmethod
-    def _from_hsl(h, s, l, a=1):
+    def _from_hsl(h: ParseableFloat, s: ParseableFloat, light: ParseableFloat, a: ParseableFloat = 1) -> "Color":
         h = float(h) / 360
         s = float(s) / 100
-        l = float(l) / 100
+        _l = float(light) / 100
 
         if s == 0:
-            r = l
+            r = _l
             g = r
             b = r
         else:
-            luminocity2 = l * (1 + s) if l < 0.5 else l + s - l * s
-            luminocity1 = 2 * l - luminocity2
+            luminocity2 = _l * (1 + s) if _l < 0.5 else _l + s - _l * s
+            luminocity1 = 2 * _l - luminocity2
 
-            def hue_to_rgb(lum1, lum2, hue):
+            def hue_to_rgb(lum1: float, lum2: float, hue: float) -> float:
                 if hue < 0.0:
                     hue += 1
                 if hue > 1.0:
@@ -116,42 +137,42 @@ class Color(object):
 
         return Color(round(r * 255), round(g * 255), round(b * 255), a)
 
-    def __init__(self, red, green, blue, alpha=1):
+    def __init__(self, red: ParseableInt, green: ParseableInt, blue: ParseableInt, alpha: ParseableFloat = 1) -> None:
         self.red = int(red)
         self.green = int(green)
         self.blue = int(blue)
         self.alpha = "1" if float(alpha) == 1 else str(float(alpha) or 0)
 
     @property
-    def rgb(self):
+    def rgb(self) -> str:
         return "rgb(%d, %d, %d)" % (self.red, self.green, self.blue)
 
     @property
-    def rgba(self):
+    def rgba(self) -> str:
         return "rgba(%d, %d, %d, %s)" % (self.red, self.green, self.blue, self.alpha)
 
     @property
-    def hex(self):
+    def hex(self) -> str:
         return "#%02x%02x%02x" % (self.red, self.green, self.blue)
 
-    def __eq__(self, other):
+    def __eq__(self, other: object) -> bool:
         if isinstance(other, Color):
             return self.rgba == other.rgba
         return NotImplemented
 
-    def __ne__(self, other):
+    def __ne__(self, other: Any) -> bool:
         result = self.__eq__(other)
         if result is NotImplemented:
             return result
         return not result
 
-    def __hash__(self):
+    def __hash__(self) -> int:
         return hash((self.red, self.green, self.blue, self.alpha))
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return "Color(red=%d, green=%d, blue=%d, alpha=%s)" % (self.red, self.green, self.blue, self.alpha)
 
-    def __str__(self):
+    def __str__(self) -> str:
         return "Color: %s" % self.rgba
 
 

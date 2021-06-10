@@ -17,37 +17,60 @@
 
 package org.openqa.selenium.grid.router.httpd;
 
-import com.beust.jcommander.JCommander;
-import com.beust.jcommander.ParameterException;
 import com.google.auto.service.AutoService;
-import io.opentracing.Tracer;
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableSet;
 import org.openqa.selenium.BuildInfo;
+import org.openqa.selenium.UsernameAndPassword;
 import org.openqa.selenium.cli.CliCommand;
-import org.openqa.selenium.grid.config.AnnotatedConfig;
-import org.openqa.selenium.grid.config.CompoundConfig;
-import org.openqa.selenium.grid.config.ConcatenatingConfig;
+import org.openqa.selenium.grid.TemplateGridServerCommand;
 import org.openqa.selenium.grid.config.Config;
-import org.openqa.selenium.grid.config.EnvConfig;
+import org.openqa.selenium.grid.config.MapConfig;
+import org.openqa.selenium.grid.config.Role;
 import org.openqa.selenium.grid.distributor.Distributor;
-import org.openqa.selenium.grid.distributor.config.DistributorFlags;
 import org.openqa.selenium.grid.distributor.config.DistributorOptions;
+import org.openqa.selenium.grid.distributor.remote.RemoteDistributor;
+import org.openqa.selenium.grid.graphql.GraphqlHandler;
 import org.openqa.selenium.grid.log.LoggingOptions;
+import org.openqa.selenium.grid.router.ProxyCdpIntoGrid;
 import org.openqa.selenium.grid.router.Router;
-import org.openqa.selenium.grid.server.BaseServerFlags;
+import org.openqa.selenium.grid.security.BasicAuthenticationFilter;
+import org.openqa.selenium.grid.security.Secret;
+import org.openqa.selenium.grid.security.SecretOptions;
 import org.openqa.selenium.grid.server.BaseServerOptions;
-import org.openqa.selenium.grid.server.HelpFlags;
+import org.openqa.selenium.grid.server.NetworkOptions;
 import org.openqa.selenium.grid.server.Server;
 import org.openqa.selenium.grid.sessionmap.SessionMap;
-import org.openqa.selenium.grid.sessionmap.config.SessionMapFlags;
 import org.openqa.selenium.grid.sessionmap.config.SessionMapOptions;
-import org.openqa.selenium.netty.server.NettyServer;
+import org.openqa.selenium.grid.sessionqueue.NewSessionQueue;
+import org.openqa.selenium.grid.sessionqueue.config.NewSessionQueueOptions;
+import org.openqa.selenium.grid.sessionqueue.remote.RemoteNewSessionQueue;
+import org.openqa.selenium.grid.web.GridUiRoute;
+import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.http.HttpClient;
-import org.openqa.selenium.remote.tracing.TracedHttpClient;
+import org.openqa.selenium.remote.http.HttpHandler;
+import org.openqa.selenium.remote.http.HttpResponse;
+import org.openqa.selenium.remote.http.Routable;
+import org.openqa.selenium.remote.http.Route;
+import org.openqa.selenium.remote.tracing.Tracer;
 
+import java.net.URL;
+import java.util.Collections;
+import java.util.Set;
 import java.util.logging.Logger;
 
+import static java.net.HttpURLConnection.HTTP_NO_CONTENT;
+import static org.openqa.selenium.grid.config.StandardGridRoles.DISTRIBUTOR_ROLE;
+import static org.openqa.selenium.grid.config.StandardGridRoles.HTTPD_ROLE;
+import static org.openqa.selenium.grid.config.StandardGridRoles.ROUTER_ROLE;
+import static org.openqa.selenium.grid.config.StandardGridRoles.SESSION_MAP_ROLE;
+import static org.openqa.selenium.grid.config.StandardGridRoles.SESSION_QUEUE_ROLE;
+import static org.openqa.selenium.net.Urls.fromUri;
+import static org.openqa.selenium.remote.http.Route.combine;
+import static org.openqa.selenium.remote.http.Route.get;
+
 @AutoService(CliCommand.class)
-public class RouterServer implements CliCommand {
+public class RouterServer extends TemplateGridServerCommand {
 
   private static final Logger LOG = Logger.getLogger(RouterServer.class.getName());
 
@@ -62,63 +85,104 @@ public class RouterServer implements CliCommand {
   }
 
   @Override
-  public Executable configure(String... args) {
+  public Set<Role> getConfigurableRoles() {
+    return ImmutableSet.of(
+        DISTRIBUTOR_ROLE,
+        HTTPD_ROLE,
+        ROUTER_ROLE,
+        SESSION_MAP_ROLE,
+        SESSION_QUEUE_ROLE);
+  }
 
-    HelpFlags help = new HelpFlags();
-    BaseServerFlags serverFlags = new BaseServerFlags(4444);
-    SessionMapFlags sessionMapFlags = new SessionMapFlags();
-    DistributorFlags distributorFlags = new DistributorFlags();
+  @Override
+  public Set<Object> getFlagObjects() {
+    return Collections.emptySet();
+  }
 
-    JCommander commander = JCommander.newBuilder()
-        .programName(getName())
-        .addObject(help)
-        .addObject(serverFlags)
-        .addObject(sessionMapFlags)
-        .addObject(distributorFlags)
-        .build();
+  @Override
+  protected String getSystemPropertiesConfigPrefix() {
+    return "router";
+  }
 
-    return () -> {
-      try {
-        commander.parse(args);
-      } catch (ParameterException e) {
-        System.err.println(e.getMessage());
-        commander.usage();
-        return;
-      }
+  @Override
+  protected Config getDefaultConfig() {
+    return new MapConfig(ImmutableMap.of("server", ImmutableMap.of("port", 4444)));
+  }
 
-      if (help.displayHelp(commander, System.out)) {
-        return;
-      }
+  @Override
+  protected Handlers createHandlers(Config config) {
+    LoggingOptions loggingOptions = new LoggingOptions(config);
+    Tracer tracer = loggingOptions.getTracer();
 
-      Config config = new CompoundConfig(
-          new EnvConfig(),
-          new ConcatenatingConfig("router", '.', System.getProperties()),
-          new AnnotatedConfig(help),
-          new AnnotatedConfig(serverFlags),
-          new AnnotatedConfig(sessionMapFlags),
-          new AnnotatedConfig(distributorFlags));
+    NetworkOptions networkOptions = new NetworkOptions(config);
+    HttpClient.Factory clientFactory = networkOptions.getHttpClientFactory(tracer);
 
-      LoggingOptions loggingOptions = new LoggingOptions(config);
-      loggingOptions.configureLogging();
-      Tracer tracer = loggingOptions.getTracer();
+    BaseServerOptions serverOptions = new BaseServerOptions(config);
+    SecretOptions secretOptions = new SecretOptions(config);
+    Secret secret = secretOptions.getRegistrationSecret();
 
-      HttpClient.Factory clientFactory = new TracedHttpClient.Factory(tracer, HttpClient.Factory.createDefault());
+    SessionMapOptions sessionsOptions = new SessionMapOptions(config);
+    SessionMap sessions = sessionsOptions.getSessionMap();
 
-      SessionMapOptions sessionsOptions = new SessionMapOptions(config);
-      SessionMap sessions = sessionsOptions.getSessionMap(tracer, clientFactory);
+    NewSessionQueueOptions sessionQueueOptions = new NewSessionQueueOptions(config);
+    URL sessionQueueUrl = fromUri(sessionQueueOptions.getSessionQueueUri());
+    NewSessionQueue queue = new RemoteNewSessionQueue(
+      tracer,
+      clientFactory.createClient(sessionQueueUrl),
+      secret);
 
-      BaseServerOptions serverOptions = new BaseServerOptions(config);
+    DistributorOptions distributorOptions = new DistributorOptions(config);
+    URL distributorUrl = fromUri(distributorOptions.getDistributorUri());
+    Distributor distributor = new RemoteDistributor(
+      tracer,
+      clientFactory,
+      distributorUrl,
+      secret);
 
-      DistributorOptions distributorOptions = new DistributorOptions(config);
-      Distributor distributor = distributorOptions.getDistributor(tracer, clientFactory);
+    GraphqlHandler graphqlHandler = new GraphqlHandler(
+      tracer,
+      distributor,
+      queue,
+      serverOptions.getExternalUri(),
+      getServerVersion());
 
-      Router router = new Router(tracer, clientFactory, sessions, distributor);
+    Routable ui = new GridUiRoute();
+    Routable routerWithSpecChecks = new Router(tracer, clientFactory, sessions, queue, distributor)
+      .with(networkOptions.getSpecComplianceChecks());
 
-      Server<?> server = new NettyServer(serverOptions, router);
-      server.start();
+    Routable route = Route.combine(
+      ui,
+      routerWithSpecChecks,
+      Route.prefix("/wd/hub").to(combine(routerWithSpecChecks)),
+      Route.options("/graphql").to(() -> graphqlHandler),
+      Route.post("/graphql").to(() -> graphqlHandler));
 
-      BuildInfo info = new BuildInfo();
-      LOG.info(String.format("Started Selenium router %s (revision %s)", info.getReleaseLabel(), info.getBuildRevision()));
-    };
+    UsernameAndPassword uap = secretOptions.getServerAuthentication();
+    if (uap != null) {
+      LOG.info("Requiring authentication to connect");
+      route = route.with(new BasicAuthenticationFilter(uap.username(), uap.password()));
+    }
+
+    // Since k8s doesn't make it easy to do an authenticated liveness probe, allow unauthenticated access to it.
+    Routable routeWithLiveness = Route.combine(
+      route,
+      get("/readyz").to(() -> req -> new HttpResponse().setStatus(HTTP_NO_CONTENT)));
+
+    return new Handlers(routeWithLiveness, new ProxyCdpIntoGrid(clientFactory, sessions));
+  }
+
+  @Override
+  protected void execute(Config config) {
+    Require.nonNull("Config", config);
+
+    Server<?> server = asServer(config).start();
+
+    LOG.info(String.format(
+      "Started Selenium Router %s: %s", getServerVersion(), server.getUrl()));
+  }
+
+  private String getServerVersion() {
+    BuildInfo info = new BuildInfo();
+    return String.format("%s (revision %s)", info.getReleaseLabel(), info.getBuildRevision());
   }
 }

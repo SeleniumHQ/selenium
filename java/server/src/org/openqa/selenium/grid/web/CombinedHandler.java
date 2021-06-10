@@ -17,6 +17,7 @@
 
 package org.openqa.selenium.grid.web;
 
+import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpRequest;
@@ -25,7 +26,6 @@ import org.openqa.selenium.remote.http.Routable;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 import java.util.function.Predicate;
 
 public class CombinedHandler implements Predicate<HttpRequest>, Routable, HttpHandler {
@@ -33,8 +33,7 @@ public class CombinedHandler implements Predicate<HttpRequest>, Routable, HttpHa
   private final Map<Routable, HttpHandler> handlers = new HashMap<>();
 
   public void addHandler(Routable handler) {
-    Objects.requireNonNull(handler);
-    handlers.put(handler, handler);
+    handlers.put(Require.nonNull("Handler", handler), handler);
   }
 
   @Override

@@ -17,6 +17,7 @@
 
 package org.openqa.selenium.grid.web;
 
+import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.http.ClientConfig;
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpRequest;
@@ -24,8 +25,8 @@ import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.remote.http.WebSocket;
 
 import java.io.UncheckedIOException;
+import java.net.URI;
 import java.net.URL;
-import java.util.Objects;
 
 import static org.openqa.selenium.remote.http.Contents.utf8String;
 
@@ -36,18 +37,18 @@ public class RoutableHttpClientFactory implements HttpClient.Factory {
   private final HttpClient.Factory delegate;
 
   public RoutableHttpClientFactory(URL self, CombinedHandler handler, HttpClient.Factory delegate) {
-    this.self = Objects.requireNonNull(self);
-    this.handler = Objects.requireNonNull(handler);
-    this.delegate = Objects.requireNonNull(delegate);
+    this.self = Require.nonNull("URL", self);
+    this.handler = Require.nonNull("Handler", handler);
+    this.delegate = Require.nonNull("Delegate", delegate);
   }
 
   @Override
   public HttpClient createClient(ClientConfig config) {
-    Objects.requireNonNull(config, "Client config to use must be set.");
+    Require.nonNull("Client config", config);
 
-    URL url = config.baseUrl();
+    URI url = config.baseUri();
 
-    if (self.getProtocol().equals(url.getProtocol()) &&
+    if (self.getProtocol().equals(url.getScheme()) &&
       self.getHost().equals(url.getHost()) &&
       self.getPort() == url.getPort()) {
 

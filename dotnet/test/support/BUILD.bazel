@@ -1,4 +1,4 @@
-load("//dotnet:nunit-test.bzl", "nunit_test")
+load("//dotnet:defs.bzl", "nunit_test")
 
 nunit_test(
     name = "support",
@@ -11,30 +11,31 @@ nunit_test(
     ]),
     out = "WebDriver.Support.Tests.dll",
     args = [
-        "--agents=1",
-        "--params=ConfigFile=$(location appconfig.json)",
-        "--params=ActiveWebsiteConfig=HostsFileRedirect",
+        "--workers=1",
+        "--params=ConfigFile=$(location //dotnet/test/common:appconfig.json)",
         "--params=ActiveDriverConfig={}".format(config_setting),
+        "--params=ActiveWebsiteConfig=HostsFileRedirect",
     ],
     data = [
-        "appconfig.json",
         "//common/src/web",
+        "//dotnet/test/common:appconfig.json",
         "//java/client/test/org/openqa/selenium/environment:appserver_deploy.jar",
     ],
-    dotnet_context_data = "@io_bazel_rules_dotnet//:net_context_data_net47",
+    is_windows = select({
+        "@bazel_tools//src/conditions:host_windows": True,
+        "//conditions:default": False,
+    }),
+    tags = [
+        "no-sandbox",
+        "requires-network",
+    ],
+    target_frameworks = ["netcoreapp2.1"],
     visibility = ["//visibility:public"],
     deps = [
-        "//dotnet/src/support:net47",
-        "//dotnet/src/webdriver:net47",
-        "@castle.core//:net45",
-        "@io_bazel_rules_dotnet//dotnet/stdlib.net:system.core.dll",
-        "@io_bazel_rules_dotnet//dotnet/stdlib.net:system.data.dll",
-        "@io_bazel_rules_dotnet//dotnet/stdlib.net:system.dll",
-        "@io_bazel_rules_dotnet//dotnet/stdlib.net:system.drawing.dll",
-        "@io_bazel_rules_dotnet//dotnet/stdlib.net:system.xml.dll",
-        "@json.net//:net45",
-        "@moq//:net45",
-        "@nunit//:net45",
-        "@system.threading.tasks.extensions//:net45",
+        "//dotnet/src/support:netstandard2.0",
+        "//dotnet/src/webdriver:netstandard2.0",
+        "//dotnet/test/common:firefox",
+        "@json.net//:Newtonsoft.Json",
+        "@moq//:Moq",
     ],
 )

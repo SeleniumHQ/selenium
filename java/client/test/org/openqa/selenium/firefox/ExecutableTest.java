@@ -22,10 +22,13 @@ import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.Assume;
+import org.junit.experimental.categories.Category;
 import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.testing.UnitTests;
 
 import java.io.File;
 
+@Category(UnitTests.class)
 public class ExecutableTest {
 
   private String binaryPath;

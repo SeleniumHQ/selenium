@@ -18,6 +18,7 @@
 package org.openqa.selenium.atoms;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.InstanceOfAssertFactories.MAP;
 
 import net.sourceforge.htmlunit.corejs.javascript.Context;
 import net.sourceforge.htmlunit.corejs.javascript.ContextFactory;
@@ -104,7 +105,8 @@ public class CompiledAtomsNotLeakingTest {
 
       assertThat(result.get("status")).isInstanceOf(Long.class).as(jsonResult).isEqualTo(0L);
       assertThat(result.get("value")).isInstanceOf(Map.class);
-      assertThat((Map<String, Object>) result.get("value"))
+      assertThat(result.get("value"))
+          .asInstanceOf(MAP)
           .hasSize(2)
           .containsEntry("status", 0L)
           .containsEntry("value", 3L);

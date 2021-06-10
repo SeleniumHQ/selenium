@@ -19,7 +19,6 @@ package org.openqa.selenium.netty.server;
 
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.Channel;
-import io.netty.channel.ChannelOption;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
@@ -27,18 +26,27 @@ import io.netty.handler.logging.LogLevel;
 import io.netty.handler.logging.LoggingHandler;
 import io.netty.handler.ssl.SslContext;
 import io.netty.handler.ssl.SslContextBuilder;
-import org.openqa.selenium.grid.server.AddWebDriverSpecHeaders;
+import io.netty.handler.ssl.util.SelfSignedCertificate;
+import io.netty.util.internal.logging.InternalLoggerFactory;
+import io.netty.util.internal.logging.JdkLoggerFactory;
+import org.openqa.selenium.remote.AddWebDriverSpecHeaders;
 import org.openqa.selenium.grid.server.BaseServerOptions;
 import org.openqa.selenium.grid.server.Server;
-import org.openqa.selenium.grid.server.WrapExceptions;
+import org.openqa.selenium.remote.ErrorFilter;
+import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.http.HttpHandler;
+import org.openqa.selenium.remote.http.Message;
 
+import javax.net.ssl.SSLException;
 import java.io.IOException;
 import java.io.UncheckedIOException;
+import java.net.BindException;
 import java.net.MalformedURLException;
-import javax.net.ssl.SSLException;
 import java.net.URL;
-import java.util.Objects;
+import java.security.cert.CertificateException;
+import java.util.Optional;
+import java.util.function.BiFunction;
+import java.util.function.Consumer;
 
 public class NettyServer implements Server<NettyServer> {
 
@@ -47,33 +55,55 @@ public class NettyServer implements Server<NettyServer> {
   private final int port;
   private final URL externalUrl;
   private final HttpHandler handler;
+  private final BiFunction<String, Consumer<Message>, Optional<Consumer<Message>>> websocketHandler;
   private final SslContext sslCtx;
+  private final boolean allowCors;
 
   private Channel channel;
 
-  public NettyServer(BaseServerOptions options, HttpHandler handler) {
-    Objects.requireNonNull(options, "Server options must be set.");
-    Objects.requireNonNull(handler, "Handler to use must be set.");
+  public NettyServer(
+    BaseServerOptions options,
+    HttpHandler handler) {
+    this(options, handler, (str, sink) -> Optional.empty());
+  }
 
-    Boolean secure = options.isSecure();
+  public NettyServer(
+    BaseServerOptions options,
+    HttpHandler handler,
+    BiFunction<String, Consumer<Message>, Optional<Consumer<Message>>> websocketHandler) {
+    Require.nonNull("Server options", options);
+    Require.nonNull("Handler", handler);
+    this.websocketHandler = Require.nonNull("Factory for websocket connections", websocketHandler);
+
+    InternalLoggerFactory.setDefaultFactory(JdkLoggerFactory.INSTANCE);
+
+    boolean secure = options.isSecure();
     if (secure) {
       try {
         sslCtx = SslContextBuilder.forServer(options.getCertificate(), options.getPrivateKey())
           .build();
       } catch (SSLException e) {
-        throw new UncheckedIOException(new IOException("Certificate problem.", e)); 
+        throw new UncheckedIOException(new IOException("Certificate problem.", e));
       }
-
+    } else if (options.isSelfSigned()) {
+      try {
+        SelfSignedCertificate cert = new SelfSignedCertificate();
+        sslCtx = SslContextBuilder.forServer(cert.certificate(), cert.privateKey())
+          .build();
+      } catch (CertificateException | SSLException e) {
+        throw new UncheckedIOException(new IOException("Self-signed certificate problem.", e));
+      }
     } else {
       sslCtx = null;
     }
 
-    this.handler = handler.with(new WrapExceptions().andThen(new AddWebDriverSpecHeaders()));
+    this.handler = handler.with(new ErrorFilter().andThen(new AddWebDriverSpecHeaders()));
 
     bossGroup = new NioEventLoopGroup(1);
     workerGroup = new NioEventLoopGroup();
 
     port = options.getPort();
+    allowCors = options.getAllowCORS();
 
     try {
       externalUrl = options.getExternalUri().toURL();
@@ -95,30 +125,37 @@ public class NettyServer implements Server<NettyServer> {
   @Override
   public void stop() {
     try {
+      bossGroup.shutdownGracefully().sync();
+      workerGroup.shutdownGracefully().sync();
+
       channel.closeFuture().sync();
     } catch (InterruptedException e) {
       Thread.currentThread().interrupt();
       throw new UncheckedIOException(new IOException("Shutdown interrupted", e));
     } finally {
       channel = null;
-      bossGroup.shutdownGracefully();
-      workerGroup.shutdownGracefully();
     }
   }
 
+  @SuppressWarnings("ConstantConditions")
   public NettyServer start() {
     ServerBootstrap b = new ServerBootstrap();
 
     b.group(bossGroup, workerGroup)
       .channel(NioServerSocketChannel.class)
-      .handler(new LoggingHandler(LogLevel.INFO))
-      .childHandler(new SeleniumHttpInitializer(handler, sslCtx));
+      .handler(new LoggingHandler(LogLevel.DEBUG))
+      .childHandler(new SeleniumHttpInitializer(sslCtx, handler, websocketHandler, allowCors));
 
     try {
       channel = b.bind(port).sync().channel();
     } catch (InterruptedException e) {
       Thread.currentThread().interrupt();
       throw new UncheckedIOException(new IOException("Start up interrupted", e));
+    } catch (Exception e) {
+      if (e instanceof BindException) {
+        throw new UncheckedIOException(new IOException(String.format("Port %s already in use", port), e));
+      }
+      throw e;
     }
 
     return this;

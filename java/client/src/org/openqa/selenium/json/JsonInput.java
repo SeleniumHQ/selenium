@@ -17,8 +17,11 @@
 
 package org.openqa.selenium.json;
 
+import org.openqa.selenium.internal.Require;
+
 import java.io.Closeable;
 import java.io.IOException;
+import java.io.Reader;
 import java.io.UncheckedIOException;
 import java.lang.reflect.Type;
 import java.math.BigDecimal;
@@ -26,12 +29,11 @@ import java.time.Instant;
 import java.util.ArrayDeque;
 import java.util.Arrays;
 import java.util.Deque;
-import java.util.Objects;
 import java.util.function.Function;
 
 public class JsonInput implements Closeable {
 
-  private final Readable source;
+  private final Reader source;
   private volatile boolean readPerformed = false;
   private JsonTypeCoercer coercer;
   private PropertySetting setter;
@@ -40,11 +42,11 @@ public class JsonInput implements Closeable {
   // figuring out whether we're expecting a NAME properly.
   private Deque<Container> stack = new ArrayDeque<>();
 
-  JsonInput(Readable source, JsonTypeCoercer coercer, PropertySetting setter) {
-    this.source = Objects.requireNonNull(source);
-    this.coercer = Objects.requireNonNull(coercer);
+  JsonInput(Reader source, JsonTypeCoercer coercer, PropertySetting setter) {
+    this.source = Require.nonNull("Source", source);
+    this.coercer = Require.nonNull("Coercer", coercer);
     this.input = new Input(source);
-    this.setter = Objects.requireNonNull(setter);
+    this.setter = Require.nonNull("Setter", setter);
   }
 
   /**
@@ -54,7 +56,7 @@ public class JsonInput implements Closeable {
    */
   public PropertySetting propertySetting(PropertySetting setter) {
     PropertySetting previous = this.setter;
-    this.setter = Objects.requireNonNull(setter);
+    this.setter = Require.nonNull("Setter", setter);
     return previous;
   }
 
@@ -76,12 +78,10 @@ public class JsonInput implements Closeable {
 
   @Override
   public void close() {
-    if (source instanceof Closeable) {
-      try {
-        ((Closeable) source).close();
-      } catch (IOException e) {
-        throw new UncheckedIOException(e);
-      }
+    try {
+      source.close();
+    } catch (IOException e) {
+      throw new UncheckedIOException(e);
     }
   }
 
@@ -344,21 +344,21 @@ public class JsonInput implements Closeable {
     input.read();  // Skip leading quote
 
     StringBuilder builder = new StringBuilder();
-    while (input.peek() != '"' && input.peek() != Input.EOF) {
-      char read = input.read();
-      if (read == '\\') {
-        readEscape(builder);
-      } else {
-        builder.append(read);
+    char c;
+    while (true) {
+      c = input.read();
+      switch (c) {
+        case Input.EOF:
+          throw new JsonException("Unterminated string: " + builder + ". " + input);
+        case '"': // terminate string
+          return builder.toString();
+        case '\\': // quoted char
+          readEscape(builder);
+          break;
+        default:
+          builder.append(c);
       }
     }
-
-    char last = input.read();// Skip trailing quote
-    if (last != '"') {
-      throw new JsonException("Unterminated string: " + builder + ". " + input);
-    }
-
-    return builder.toString();
   }
 
   private void readEscape(StringBuilder builder) {

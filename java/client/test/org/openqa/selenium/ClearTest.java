@@ -20,12 +20,11 @@ package org.openqa.selenium;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.openqa.selenium.testing.drivers.Browser.CHROME;
-import static org.openqa.selenium.testing.drivers.Browser.CHROMIUMEDGE;
 import static org.openqa.selenium.testing.drivers.Browser.EDGE;
-import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
+import static org.openqa.selenium.testing.drivers.Browser.LEGACY_FIREFOX_XPI;
 import static org.openqa.selenium.testing.drivers.Browser.HTMLUNIT;
 import static org.openqa.selenium.testing.drivers.Browser.IE;
-import static org.openqa.selenium.testing.drivers.Browser.MARIONETTE;
+import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
 import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
 
 import org.junit.Test;
@@ -139,11 +138,10 @@ public class ClearTest extends JUnit4TestBase {
 
   @Test
   @NotYetImplemented(CHROME)
-  @NotYetImplemented(CHROMIUMEDGE)
-  @NotYetImplemented(FIREFOX)
-  @NotYetImplemented(MARIONETTE)
-  @NotYetImplemented(IE)
   @NotYetImplemented(EDGE)
+  @NotYetImplemented(LEGACY_FIREFOX_XPI)
+  @NotYetImplemented(FIREFOX)
+  @NotYetImplemented(IE)
   @NotYetImplemented(SAFARI)
   public void shouldBeAbleToClearCheckboxInput() {
     shouldBeAbleToClearInput(By.name("checkbox_input"), "Checkbox");

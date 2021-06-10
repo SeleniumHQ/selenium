@@ -25,6 +25,8 @@ import org.openqa.selenium.WebElement;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * Mechanism used to locate elements within a document using a series of other lookups.  This class
@@ -61,18 +63,16 @@ public class ByChained extends By implements Serializable {
       return new ArrayList<>();
     }
 
-    List<WebElement> elems = null;
-    for (By by : bys) {
-      List<WebElement> newElems = new ArrayList<>();
-
-      if (elems == null) {
-        newElems.addAll(by.findElements(context));
-      } else {
-        for (WebElement elem : elems) {
-          newElems.addAll(elem.findElements(by));
-        }
+    List<WebElement> elems = bys[0].findElements(context);
+    for (int i = 1; i < bys.length; i++) {
+      if (elems.isEmpty()) {
+        break; // if any one of the bys finds no elements, then return no elements
       }
-      elems = newElems;
+      final By by = bys[i];
+      elems = elems.stream()
+        .map(elem -> elem.findElements(by))
+        .flatMap(List::stream)
+        .collect(Collectors.toList());
     }
 
     return elems;
@@ -80,16 +80,9 @@ public class ByChained extends By implements Serializable {
 
   @Override
   public String toString() {
-    StringBuilder stringBuilder = new StringBuilder("By.chained(");
-    stringBuilder.append("{");
-
-    boolean first = true;
-    for (By by : bys) {
-      stringBuilder.append((first ? "" : ",")).append(by);
-      first = false;
-    }
-    stringBuilder.append("})");
-    return stringBuilder.toString();
+    return String.format(
+      "By.chained({%s})",
+      Stream.of(bys).map(By::toString).collect(Collectors.joining(",")));
   }
 
 }

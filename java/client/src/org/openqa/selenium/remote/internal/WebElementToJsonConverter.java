@@ -17,18 +17,20 @@
 
 package org.openqa.selenium.remote.internal;
 
-import com.google.common.base.Function;
-import com.google.common.collect.Collections2;
+import static java.util.stream.Collectors.toList;
+
 import com.google.common.collect.ImmutableMap;
 
 import org.openqa.selenium.WrapsElement;
 import org.openqa.selenium.remote.Dialect;
 import org.openqa.selenium.remote.RemoteWebElement;
+import org.openqa.selenium.remote.IsRemoteWebElement;
 
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Function;
 
 /**
  * Converts {@link RemoteWebElement} objects, which may be
@@ -51,10 +53,10 @@ public class WebElementToJsonConverter implements Function<Object, Object> {
       arg = ((WrapsElement) arg).getWrappedElement();
     }
 
-    if (arg instanceof RemoteWebElement) {
+    if (arg instanceof IsRemoteWebElement) {
       return ImmutableMap.of(
-        Dialect.OSS.getEncodedElementKey(), ((RemoteWebElement) arg).getId(),
-        Dialect.W3C.getEncodedElementKey(), ((RemoteWebElement) arg).getId());
+        Dialect.OSS.getEncodedElementKey(), ((IsRemoteWebElement) arg).getId(),
+        Dialect.W3C.getEncodedElementKey(), ((IsRemoteWebElement) arg).getId());
     }
 
     if (arg.getClass().isArray()) {
@@ -63,7 +65,7 @@ public class WebElementToJsonConverter implements Function<Object, Object> {
 
     if (arg instanceof Collection<?>) {
       Collection<?> args = (Collection<?>) arg;
-      return Collections2.transform(args, this);
+      return args.stream().map(this).collect(toList());
     }
 
     if (arg instanceof Map<?, ?>) {
@@ -80,7 +82,7 @@ public class WebElementToJsonConverter implements Function<Object, Object> {
       return converted;
     }
 
-    throw new IllegalArgumentException("Argument is of an illegal type: " +
-        arg.getClass().getName());
+    throw new IllegalArgumentException(
+        "Argument is of an illegal type: " + arg.getClass().getName());
   }
 }

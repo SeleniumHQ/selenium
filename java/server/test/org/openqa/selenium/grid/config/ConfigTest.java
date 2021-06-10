@@ -17,6 +17,7 @@
 
 package org.openqa.selenium.grid.config;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 
@@ -27,6 +28,8 @@ import com.beust.jcommander.JCommander;
 import com.beust.jcommander.Parameter;
 
 import org.junit.Test;
+import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.ImmutableCapabilities;
 
 import java.util.List;
 import java.util.Optional;
@@ -76,7 +79,7 @@ public class ConfigTest {
       @Parameter(
           names = {"-D"},
           variableArity = true)
-      @ConfigValue(section = "food", name = "kinds")
+      @ConfigValue(section = "food", name = "kinds", example = "[]")
       public List<String> field;
     }
 
@@ -91,5 +94,37 @@ public class ConfigTest {
     Config config = new AnnotatedConfig(settable);
 
     assertEquals(Optional.of(settable.field), config.getAll("food", "kinds"));
+  }
+
+  @Test
+  public void compoundConfigsCanProperlyInstantiateClassesReferringToOptionsInOtherConfigs() {
+    Config config = new CompoundConfig(
+      new MapConfig(ImmutableMap.of("cheese", ImmutableMap.of("taste", "delicious"))),
+      new MapConfig(ImmutableMap.of("cheese", ImmutableMap.of("name", "cheddar"))),
+      new MapConfig(ImmutableMap.of("cheese", ImmutableMap.of("scent", "smelly"))));
+
+    String name = config.getClass("foo", "bar", String.class, ReadsConfig.class.getName());
+
+    assertThat(name).isEqualTo("cheddar");
+  }
+
+  @Test
+  public void shouldBeAbleToGetAClassWithDefaultConstructor() {
+    Config config = new MapConfig(
+      ImmutableMap.of("foo", ImmutableMap.of("caps", ImmutableCapabilities.class.getName())));
+
+    Capabilities caps = config.getClass(
+      "foo",
+      "caps",
+      Capabilities.class,
+      ImmutableCapabilities.class.getName());
+
+    assertThat(caps).isInstanceOf(ImmutableCapabilities.class);
+  }
+
+  public static class ReadsConfig {
+    public static String create(Config config) {
+      return config.get("cheese", "name").orElse("no cheese");
+    }
   }
 }

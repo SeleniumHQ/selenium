@@ -18,29 +18,28 @@
 package org.openqa.selenium.events.zeromq;
 
 import org.openqa.selenium.events.Event;
-import org.openqa.selenium.events.Type;
+import org.openqa.selenium.events.EventName;
+import org.openqa.selenium.internal.Require;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.function.Consumer;
 
 class Topic {
 
   private final List<Consumer<Event>> listeners = new CopyOnWriteArrayList<>();
-  private final Type type;
+  private final EventName eventName;
 
-  Topic(Type forType) {
-    this.type = Objects.requireNonNull(forType);
+  Topic(EventName forEventName) {
+    this.eventName = Require.nonNull("Type", forEventName);
   }
 
   void addListener(Consumer<Event> listener) {
-    Objects.requireNonNull(listener, "Event listener must be set.");
-    listeners.add(listener);
+    listeners.add(Require.nonNull("Event listener", listener));
   }
 
   public void fire(Event event) {
-    if (!type.equals(event.getType())) {
+    if (!eventName.equals(event.getType())) {
       return;
     }
 

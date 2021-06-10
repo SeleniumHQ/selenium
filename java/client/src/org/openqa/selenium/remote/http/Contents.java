@@ -21,7 +21,11 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 
 import com.google.common.io.ByteStreams;
 import com.google.common.io.FileBackedOutputStream;
+
+import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.Json;
+import org.openqa.selenium.json.JsonInput;
+import org.openqa.selenium.json.JsonOutput;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -30,8 +34,8 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.UncheckedIOException;
+import java.lang.reflect.Type;
 import java.nio.charset.Charset;
-import java.util.Objects;
 import java.util.function.Supplier;
 
 public class Contents {
@@ -47,26 +51,26 @@ public class Contents {
   }
 
   public static Supplier<InputStream> utf8String(CharSequence value) {
-    Objects.requireNonNull(value, "Value to return must be set.");
+    Require.nonNull("Value to return", value);
 
     return string(value, UTF_8);
   }
 
   public static Supplier<InputStream> string(CharSequence value, Charset charset) {
-    Objects.requireNonNull(value, "Value to return must be set.");
-    Objects.requireNonNull(charset, "Character set to use must be set.");
+    Require.nonNull("Value to return", value);
+    Require.nonNull("Character set", charset);
 
     return bytes(value.toString().getBytes(charset));
   }
 
   public static Supplier<InputStream> bytes(byte[] bytes) {
-    Objects.requireNonNull(bytes, "Bytes to return must be set but may be empty.");
+    Require.nonNull("Bytes to return", bytes, "may be empty");
 
     return () -> new ByteArrayInputStream(bytes);
   }
 
   public static byte[] bytes(Supplier<InputStream> supplier) {
-    Objects.requireNonNull(supplier, "Supplier of input must be set.");
+    Require.nonNull("Supplier of input", supplier);
 
     try (InputStream is = supplier.get();
          ByteArrayOutputStream bos = new ByteArrayOutputStream()) {
@@ -82,8 +86,8 @@ public class Contents {
   }
 
   public static String string(Supplier<InputStream> supplier, Charset charset) {
-    Objects.requireNonNull(supplier, "Supplier of input must be set.");
-    Objects.requireNonNull(charset, "Character set to use must be set.");
+    Require.nonNull("Supplier of input", supplier);
+    Require.nonNull("Character set", charset);
 
     return new String(bytes(supplier), charset);
   }
@@ -93,14 +97,14 @@ public class Contents {
   }
 
   public static Reader utf8Reader(Supplier<InputStream> supplier) {
-    Objects.requireNonNull(supplier, "Supplier of input must be set.");
+    Require.nonNull("Supplier", supplier);
 
     return reader(supplier, UTF_8);
   }
 
   public static Reader reader(Supplier<InputStream> supplier, Charset charset) {
-    Objects.requireNonNull(supplier, "Supplier of input must be set.");
-    Objects.requireNonNull(charset, "Character set to use must be set.");
+    Require.nonNull("Supplier of input", supplier);
+    Require.nonNull("Character set", charset);
 
     return new InputStreamReader(supplier.get(), charset);
   }
@@ -113,7 +117,21 @@ public class Contents {
    * @return an {@link InputStream} containing the object converted to a UTF-8 JSON string.
    */
   public static Supplier<InputStream> asJson(Object obj) {
-    return utf8String(JSON.toJson(obj));
+    StringBuilder builder = new StringBuilder();
+    try (JsonOutput out = JSON.newOutput(builder)) {
+      out.writeClassName(false);
+      out.write(obj);
+    }
+    return utf8String(builder);
+  }
+
+  public static <T> T fromJson(HttpMessage<?> message, Type typeOfT) {
+    try (Reader reader = reader(message);
+        JsonInput input = JSON.newInput(reader)) {
+      return input.read(typeOfT);
+    } catch (IOException e) {
+      throw new UncheckedIOException(e);
+    }
   }
 
   public static Supplier<InputStream> memoize(Supplier<InputStream> delegate) {
@@ -144,8 +162,7 @@ public class Contents {
             } finally {
               try {
                 this.fos.close();
-              } catch (IOException e) {
-                throw new UncheckedIOException(e);
+              } catch (IOException ignore) {
               }
             }
           }
@@ -153,7 +170,7 @@ public class Contents {
       }
 
       try {
-        return Objects.requireNonNull(fos.asByteSource()).openBufferedStream();
+        return Require.state("Source", fos.asByteSource()).nonNull().openBufferedStream();
       } catch (IOException e) {
         throw new UncheckedIOException(e);
       }

@@ -95,18 +95,22 @@ class Command(object):
     GET_ELEMENT_ATTRIBUTE = "getElementAttribute"
     GET_ELEMENT_PROPERTY = "getElementProperty"
     GET_ELEMENT_VALUE_OF_CSS_PROPERTY = "getElementValueOfCssProperty"
+    GET_ELEMENT_ARIA_ROLE = "getElementAriaRole"
+    GET_ELEMENT_ARIA_LABEL = "getElementAriaLabel"
     SCREENSHOT = "screenshot"
     ELEMENT_SCREENSHOT = "elementScreenshot"
     IMPLICIT_WAIT = "implicitlyWait"
     EXECUTE_ASYNC_SCRIPT = "executeAsyncScript"
     SET_SCRIPT_TIMEOUT = "setScriptTimeout"
     SET_TIMEOUTS = "setTimeouts"
+    GET_TIMEOUTS = "getTimeouts"
     MAXIMIZE_WINDOW = "windowMaximize"
     W3C_MAXIMIZE_WINDOW = "w3cMaximizeWindow"
     GET_LOG = "getLog"
     GET_AVAILABLE_LOG_TYPES = "getAvailableLogTypes"
     FULLSCREEN_WINDOW = "fullscreenWindow"
     MINIMIZE_WINDOW = "minimizeWindow"
+    PRINT_PAGE = 'printPage'
 
     # Alerts
     DISMISS_ALERT = "dismissAlert"

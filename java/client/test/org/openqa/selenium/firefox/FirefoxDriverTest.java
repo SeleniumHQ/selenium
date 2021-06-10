@@ -17,22 +17,7 @@
 
 package org.openqa.selenium.firefox;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.fail;
-import static org.junit.Assume.assumeNotNull;
-import static org.mockito.Mockito.atLeastOnce;
-import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.verify;
-import static org.openqa.selenium.WaitingConditions.elementValueToEqual;
-import static org.openqa.selenium.remote.CapabilityType.ACCEPT_SSL_CERTS;
-import static org.openqa.selenium.remote.CapabilityType.PAGE_LOAD_STRATEGY;
-import static org.openqa.selenium.support.ui.ExpectedConditions.titleIs;
-import static org.openqa.selenium.testing.drivers.Browser.MARIONETTE;
-
 import com.google.common.collect.ImmutableMap;
-
 import org.junit.After;
 import org.junit.Test;
 import org.mockito.ArgumentMatchers;
@@ -45,7 +30,6 @@ import org.openqa.selenium.ParallelTestRunner;
 import org.openqa.selenium.ParallelTestRunner.Worker;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.firefox.xpi.XpiDriverService;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.Command;
 import org.openqa.selenium.remote.CommandExecutor;
@@ -71,6 +55,20 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.fail;
+import static org.junit.Assume.assumeNotNull;
+import static org.mockito.Mockito.atLeastOnce;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.verify;
+import static org.openqa.selenium.WaitingConditions.elementValueToEqual;
+import static org.openqa.selenium.remote.CapabilityType.ACCEPT_SSL_CERTS;
+import static org.openqa.selenium.remote.CapabilityType.PAGE_LOAD_STRATEGY;
+import static org.openqa.selenium.support.ui.ExpectedConditions.titleIs;
+import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
+
 @NeedsLocalEnvironment(reason = "Requires local browser launching environment")
 public class FirefoxDriverTest extends JUnit4TestBase {
 
@@ -90,7 +88,7 @@ public class FirefoxDriverTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(value = MARIONETTE, reason = "Assumed to be covered by tests for GeckoDriverService")
+  @Ignore(value = FIREFOX, reason = "Assumed to be covered by tests for GeckoDriverService")
   public void canStartDriverWithSpecifiedBinary() {
     FirefoxBinary binary = spy(new FirefoxBinary());
     FirefoxOptions options = new FirefoxOptions()
@@ -148,17 +146,17 @@ public class FirefoxDriverTest extends JUnit4TestBase {
     profile.setPreference("browser.startup.page", 1);
     profile.setPreference("browser.startup.homepage", pages.xhtmlTestPage);
 
-    Capabilities caps = new ImmutableCapabilities(FirefoxDriver.PROFILE, profile);
+    Capabilities caps = new ImmutableCapabilities(FirefoxDriver.Capability.PROFILE, profile);
 
     localDriver = new FirefoxDriver(caps);
     wait.until($ -> "XHTML Test Page".equals(localDriver.getTitle()));
   }
 
   @Test
-  @Ignore(value = MARIONETTE, reason = "Assumed to be covered by tests for GeckoDriverService")
+  @Ignore(value = FIREFOX, reason = "Assumed to be covered by tests for GeckoDriverService")
   public void canSetBinaryInCapabilities() {
     FirefoxBinary binary = spy(new FirefoxBinary());
-    Capabilities caps = new ImmutableCapabilities(FirefoxDriver.BINARY, binary);
+    Capabilities caps = new ImmutableCapabilities(FirefoxDriver.Capability.BINARY, binary);
 
     localDriver = new FirefoxDriver(caps);
 
@@ -168,7 +166,7 @@ public class FirefoxDriverTest extends JUnit4TestBase {
   @Test
   public void canSetBinaryPathInCapabilities() {
     String binPath = new FirefoxBinary().getPath();
-    Capabilities caps = new ImmutableCapabilities(FirefoxDriver.BINARY, binPath);
+    Capabilities caps = new ImmutableCapabilities(FirefoxDriver.Capability.BINARY, binPath);
 
     localDriver = new FirefoxDriver(caps);
   }
@@ -220,7 +218,7 @@ public class FirefoxDriverTest extends JUnit4TestBase {
   public void shouldWaitUntilBrowserHasClosedProperly() {
     driver.get(pages.simpleTestPage);
     driver.quit();
-    JUnit4TestBase.removeDriver();
+    removeDriver();
 
     driver = new WebDriverBuilder().get();
 
@@ -295,11 +293,11 @@ public class FirefoxDriverTest extends JUnit4TestBase {
   }
 
   @Test(timeout = 60000)
-  @Ignore(MARIONETTE)
+  @Ignore(FIREFOX)
   public void shouldBeAbleToStartANewInstanceEvenWithVerboseLogging() {
     FirefoxBinary binary = new FirefoxBinary();
-    XpiDriverService service = new XpiDriverService.Builder()
-        .withBinary(binary)
+    GeckoDriverService service = new GeckoDriverService.Builder()
+        .usingFirefoxBinary(binary)
         .withEnvironment(ImmutableMap.of("NSPR_LOG_MODULES", "all:5"))
         .build();
 
@@ -346,7 +344,7 @@ public class FirefoxDriverTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(value = MARIONETTE, issue = "https://github.com/mozilla/geckodriver/issues/273")
+  @Ignore(value = FIREFOX, issue = "https://github.com/mozilla/geckodriver/issues/273")
   public void canAccessUrlProtectedByBasicAuth() {
     driver.get(appServer.whereIsWithCredentials("basicAuth", "test", "test"));
     assertThat(driver.findElement(By.tagName("h1")).getText()).isEqualTo("authorized");
@@ -504,7 +502,7 @@ public class FirefoxDriverTest extends JUnit4TestBase {
   }
 
   @Test
-  @NotYetImplemented(value = MARIONETTE, reason = "https://bugzilla.mozilla.org/show_bug.cgi?id=1415067")
+  @NotYetImplemented(value = FIREFOX, reason = "https://bugzilla.mozilla.org/show_bug.cgi?id=1415067")
   public void testFirefoxCanNativelyClickOverlappingElements() {
     FirefoxOptions options = new FirefoxOptions();
     options.setCapability(CapabilityType.OVERLAPPING_CHECK_DISABLED, true);

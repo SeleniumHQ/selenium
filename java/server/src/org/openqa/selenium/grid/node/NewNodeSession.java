@@ -17,8 +17,12 @@
 
 package org.openqa.selenium.grid.node;
 
+import com.google.common.collect.ImmutableMap;
+import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.grid.data.CreateSessionRequest;
 import org.openqa.selenium.grid.data.CreateSessionResponse;
+import org.openqa.selenium.internal.Either;
+import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpRequest;
@@ -26,10 +30,9 @@ import org.openqa.selenium.remote.http.HttpResponse;
 
 import java.io.UncheckedIOException;
 import java.util.HashMap;
-import java.util.Objects;
 
+import static org.openqa.selenium.remote.http.Contents.asJson;
 import static org.openqa.selenium.remote.http.Contents.string;
-import static org.openqa.selenium.remote.http.Contents.utf8String;
 
 class NewNodeSession implements HttpHandler {
 
@@ -37,19 +40,31 @@ class NewNodeSession implements HttpHandler {
   private final Json json;
 
   NewNodeSession(Node node, Json json) {
-    this.node = Objects.requireNonNull(node);
-    this.json = Objects.requireNonNull(json);
+    this.node = Require.nonNull("Node", node);
+    this.json = Require.nonNull("Json converter", json);
   }
 
   @Override
   public HttpResponse execute(HttpRequest req) throws UncheckedIOException {
     CreateSessionRequest incoming = json.toType(string(req), CreateSessionRequest.class);
 
-    CreateSessionResponse sessionResponse = node.newSession(incoming).orElse(null);
+    Either<WebDriverException, CreateSessionResponse> result =
+      node.newSession(incoming);
 
     HashMap<String, Object> value = new HashMap<>();
-    value.put("value", sessionResponse);
 
-    return new HttpResponse().setContent(utf8String(json.toJson(value)));
+    HashMap<String, Object> response = new HashMap<>();
+    if (result.isRight()) {
+      response.put("sessionResponse", result.right());
+    } else {
+      WebDriverException exception = result.left();
+      response.put("exception", ImmutableMap.of(
+        "error", exception.getClass(),
+        "message", exception.getMessage()));
+    }
+
+    value.put("value", response);
+
+    return new HttpResponse().setContent(asJson(value));
   }
 }

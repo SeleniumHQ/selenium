@@ -19,14 +19,14 @@ package org.openqa.selenium.remote.codec.w3c;
 
 import static com.google.common.base.Strings.nullToEmpty;
 import static com.google.common.net.HttpHeaders.CONTENT_TYPE;
+import static java.net.HttpURLConnection.HTTP_BAD_GATEWAY;
 import static java.net.HttpURLConnection.HTTP_BAD_METHOD;
+import static java.net.HttpURLConnection.HTTP_GATEWAY_TIMEOUT;
 import static java.net.HttpURLConnection.HTTP_INTERNAL_ERROR;
-import static java.net.HttpURLConnection.HTTP_OK;
 import static org.openqa.selenium.json.Json.MAP_TYPE;
 import static org.openqa.selenium.json.Json.OBJECT_TYPE;
 import static org.openqa.selenium.remote.http.Contents.string;
 
-import com.google.common.base.Strings;
 import com.google.common.base.Throwables;
 
 import org.openqa.selenium.UnhandledAlertException;
@@ -86,10 +86,14 @@ public class W3CHttpResponseCodec extends AbstractHttpResponseCodec {
 
     // Are we dealing with an error?
     // {"error":"no such alert","message":"No tab modal was open when attempting to get the dialog text"}
-    if (HTTP_OK != encodedResponse.getStatus()) {
+    if (!encodedResponse.isSuccessful()) {
       log.fine("Processing an error");
       if (HTTP_BAD_METHOD == encodedResponse.getStatus()) {
         response.setStatus(ErrorCodes.UNKNOWN_COMMAND);
+        response.setValue(content);
+      } else if (HTTP_GATEWAY_TIMEOUT == encodedResponse.getStatus() ||
+        HTTP_BAD_GATEWAY == encodedResponse.getStatus()) {
+        response.setStatus(ErrorCodes.UNHANDLED_ERROR);
         response.setValue(content);
       } else {
         Map<String, Object> obj = json.toType(content, MAP_TYPE);
@@ -135,7 +139,7 @@ public class W3CHttpResponseCodec extends AbstractHttpResponseCodec {
     response.setState("success");
     response.setStatus(ErrorCodes.SUCCESS);
     if (!content.isEmpty()) {
-      if (contentType.startsWith("application/json") || Strings.isNullOrEmpty("")) {
+      if (contentType.startsWith("application/json")) {
         Map<String, Object> parsed = json.toType(content, MAP_TYPE);
         if (parsed.containsKey("value")) {
           Object value = parsed.get("value");

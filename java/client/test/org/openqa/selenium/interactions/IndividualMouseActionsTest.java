@@ -21,15 +21,18 @@ import static org.mockito.Mockito.when;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 import org.mockito.InOrder;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
+import org.openqa.selenium.testing.UnitTests;
 
 /**
  * Unit test for all simple keyboard actions.
  *
  */
+@Category(UnitTests.class)
 public class IndividualMouseActionsTest {
 
   @Mock private Mouse mockMouse;

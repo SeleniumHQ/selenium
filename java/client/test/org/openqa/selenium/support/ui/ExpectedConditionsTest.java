@@ -57,6 +57,7 @@ import com.google.common.collect.Sets;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
@@ -67,6 +68,7 @@ import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.testing.UnitTests;
 
 import java.time.Duration;
 import java.time.Instant;
@@ -76,6 +78,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.regex.Pattern;
 
+@Category(UnitTests.class)
 public class ExpectedConditionsTest {
 
   @Mock

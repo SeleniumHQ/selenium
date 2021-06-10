@@ -27,17 +27,20 @@ import org.openqa.selenium.WebDriver;
 public class WaitForCondition extends SeleneseCommand<Void> {
 
   private final ScriptMutator mutator;
+  private final Runnable sleepUntil;
 
-  public WaitForCondition(ScriptMutator mutator) {
+  public WaitForCondition(ScriptMutator mutator, Runnable sleepUntil) {
     this.mutator = mutator;
+    this.sleepUntil = sleepUntil;
   }
 
   @Override
-  protected Void handleSeleneseCommand(final WebDriver driver, String script,
-      final String timeout) {
+  protected Void handleSeleneseCommand(final WebDriver driver, String script, final String timeout) {
     StringBuilder builder = new StringBuilder();
     mutator.mutate(script, builder);
     final String modified = builder.toString();
+
+    sleepUntil.run();
 
     new Wait() {
       @Override
@@ -56,7 +59,7 @@ public class WaitForCondition extends SeleneseCommand<Void> {
           return true;
         }
       }
-    }.wait("Failed to resolve " + script, Long.valueOf(timeout));
+    }.wait("Failed to resolve " + script, Long.parseLong(timeout));
 
     return null;
   }

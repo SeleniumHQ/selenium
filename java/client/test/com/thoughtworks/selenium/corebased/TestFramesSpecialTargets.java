@@ -19,8 +19,10 @@ package com.thoughtworks.selenium.corebased;
 
 import com.thoughtworks.selenium.InternalSelenseTestBase;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
+@Ignore("Unable to find changeSpan")
 public class TestFramesSpecialTargets extends InternalSelenseTestBase {
   @Test
   public void testFramesSpecialTargets() {

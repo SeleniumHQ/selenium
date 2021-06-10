@@ -82,6 +82,8 @@ module Selenium
           get_element_attribute: [:get, 'session/:session_id/element/:id/attribute/:name'],
           get_element_property: [:get, 'session/:session_id/element/:id/property/:name'],
           get_element_css_value: [:get, 'session/:session_id/element/:id/css/:property_name'],
+          get_element_aria_role: [:get, 'session/:session_id/element/:id/computedrole'],
+          get_element_aria_label: [:get, 'session/:session_id/element/:id/computedlabel'],
           get_element_text: [:get, 'session/:session_id/element/:id/text'],
           get_element_tag_name: [:get, 'session/:session_id/element/:id/name'],
           get_element_rect: [:get, 'session/:session_id/element/:id/rect'],
@@ -117,6 +119,7 @@ module Selenium
 
           actions: [:post, 'session/:session_id/actions'],
           release_actions: [:delete, 'session/:session_id/actions'],
+          print_page: [:post, 'session/:session_id/print'],
 
           #
           # Element Operations

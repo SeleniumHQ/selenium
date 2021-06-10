@@ -74,6 +74,8 @@ def closure_fragment(
         "chrome": [
             "--define=goog.userAgent.ASSUME_WEBKIT=true",
             "--define=goog.userAgent.product.ASSUME_CHROME=true",
+            "--define=goog.NATIVE_ARRAY_PROTOTYPES=false",
+            "--use_types_for_optimization=false",
         ],
         "ie": [
             "--define=goog.userAgent.ASSUME_IE=true",

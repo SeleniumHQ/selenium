@@ -24,21 +24,21 @@ from .pointer_input import PointerInput
 
 
 class ActionBuilder(object):
-    def __init__(self, driver, mouse=None, keyboard=None):
-        if mouse is None:
+    def __init__(self, driver, mouse=None, keyboard=None, duration=250):
+        if not mouse:
             mouse = PointerInput(interaction.POINTER_MOUSE, "mouse")
-        if keyboard is None:
+        if not keyboard:
             keyboard = KeyInput(interaction.KEY)
         self.devices = [mouse, keyboard]
         self._key_action = KeyActions(keyboard)
-        self._pointer_action = PointerActions(mouse)
+        self._pointer_action = PointerActions(mouse, duration=duration)
         self.driver = driver
 
     def get_device_with(self, name):
         try:
             idx = self.devices.index(name)
             return self.devices[idx]
-        except:
+        except Exception:
             pass
 
     @property
@@ -73,6 +73,7 @@ class ActionBuilder(object):
             encoded = device.encode()
             if encoded['actions']:
                 enc["actions"].append(encoded)
+                device.actions = []
         self.driver.execute(Command.W3C_ACTIONS, enc)
 
     def clear_actions(self):

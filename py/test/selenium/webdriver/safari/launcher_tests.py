@@ -21,7 +21,7 @@ import pytest
 
 
 def test_launch(driver):
-    assert driver.capabilities['browserName'] == 'safari'
+    assert driver.capabilities['browserName'] == 'Safari'
 
 
 def test_launch_with_invalid_executable_path_raises_exception(driver_class):
@@ -29,9 +29,10 @@ def test_launch_with_invalid_executable_path_raises_exception(driver_class):
     assert not os.path.exists(path)
     with pytest.raises(Exception) as e:
         driver_class(executable_path=path)
-    assert 'SafariDriver requires Safari 10 on OSX El Capitan' in str(e)
+    assert 'are you running Safari 10 or later?' in str(e)
 
 
+@pytest.mark.skipif(not os.path.exists('/Applications/Safari Technology Preview.app/Contents/MacOS/safaridriver'), reason="Preview not installed")
 class TestTechnologyPreview(object):
 
     @pytest.fixture
@@ -49,7 +50,7 @@ def test_launch_safari_with_legacy_flag(mocker, driver_class):
     mocker.patch('subprocess.Popen')
     try:
         driver_class(service_args=['--legacy'])
-    except Exception as e:
+    except Exception:
         pass
     args, kwargs = subprocess.Popen.call_args
     assert '--legacy' in args[0]
@@ -60,7 +61,7 @@ def test_launch_safari_without_legacy_flag(mocker, driver_class):
     mocker.patch('subprocess.Popen')
     try:
         driver_class()
-    except Exception as e:
+    except Exception:
         pass
     args, kwargs = subprocess.Popen.call_args
     assert '--legacy' not in args[0]

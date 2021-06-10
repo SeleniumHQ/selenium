@@ -1,41 +1,47 @@
 try-import .bazelrc.local
 
+build --flag_alias=pin_browsers=//common:pin_browsers
+build --flag_alias=headless=//common:headless
+
 # Set the default java toolchain
-build --java_toolchain=@bazel_tools//tools/jdk:toolchain_java11
-test --java_toolchain=@bazel_tools//tools/jdk:toolchain_java11
+build --java_runtime_version=remotejdk_11
+build --tool_java_language_version=11
 
 # We target java 8 by default
-build --javacopt "-source 8"
-build --javacopt "-target 8"
+build --javacopt="--release 8"
 
 # Require java dependencies to be used and first-order
-build --strict_java_deps strict
+build --experimental_strict_java_deps=strict
+build --explicit_java_test_deps
 
-build --workspace_status_command scripts/build-info.py
+# Ensure builds are unpolluted by the user env
+build --incompatible_strict_action_env
+
+# Except for the PATH environment variable
+build --action_env=PATH
+
+# For build stamping
+build --workspace_status_command=scripts/build-info.py
 
 # Make sure we get something helpful when tests fail
-test --verbose_failures 
-test --test_output=errors
+build --verbose_failures
+build --test_output=errors
 
-# Need to be able to open sockets on localhost
-test --noexperimental_sandbox_default_allow_network
-
-# Turn on the "Managed Directories" feature.
-# This allows Bazel to share the same node_modules directory with other tools
-# NB: this option was introduced in Bazel 0.26
-# See https://docs.bazel.build/versions/master/command-line-reference.html#flag--experimental_allow_incremental_repository_updates
-common --experimental_allow_incremental_repository_updates
+# Tests need to be able to open sockets on localhost
+build --noexperimental_sandbox_default_allow_network
 
 # pass environment variables to the test environment
-test --test_env=TRAVIS
-test --test_env=DISPLAY
-test --test_env=MOZ_HEADLESS
-test --test_env=DASHBOARD_URL
+build --test_env=CI
+build --test_env=DASHBOARD_URL
+build --test_env=DISPLAY
+build --test_env=FIREFOX_NIGHTLY_BINARY
+build --test_env=GITHUB_ACTIONS
+build --test_env=LOCALAPPDATA
+build --test_env=MOZ_HEADLESS
+build --test_env=PATH  # Remove once browser pinning works
+build --test_env=SELENIUM_BROWSER
+build --test_env=TRAVIS
 
-# Set up caching on local disk so incremental builds are faster
-# See https://bazel.build/designs/2016/09/30/repository-cache.html
-build --repository_cache=~/.cache/bazel-repo
-test --repository_cache=~/.cache/bazel-repo
-# See https://docs.bazel.build/versions/master/remote-caching.html#disk-cache
-build --disk_cache=~/.cache/bazel-disk
-test --disk_cache=~/.cache/bazel-disk
+test --test_timeout=1800
+
+test:node_debug --test_output=streamed --test_strategy=exclusive --test_timeout=9999 --nocache_test_results

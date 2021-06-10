@@ -22,14 +22,19 @@ import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufInputStream;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
+import io.netty.handler.codec.http.DefaultFullHttpResponse;
 import io.netty.handler.codec.http.HttpContent;
 import io.netty.handler.codec.http.HttpObject;
+import io.netty.handler.codec.http.HttpResponseStatus;
 import io.netty.handler.codec.http.HttpUtil;
+import io.netty.handler.codec.http.HttpVersion;
 import io.netty.handler.codec.http.LastHttpContent;
-import org.openqa.selenium.remote.http.Contents;
+import io.netty.handler.codec.http.QueryStringDecoder;
+import io.netty.util.ReferenceCountUtil;
 import org.openqa.selenium.remote.http.HttpMethod;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
+import org.openqa.selenium.remote.tracing.AttributeKey;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -40,6 +45,8 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.logging.Logger;
 
+import static io.netty.handler.codec.http.HttpMethod.HEAD;
+import static org.openqa.selenium.remote.http.Contents.memoize;
 
 class RequestConverter extends SimpleChannelInboundHandler<HttpObject> {
 
@@ -49,8 +56,8 @@ class RequestConverter extends SimpleChannelInboundHandler<HttpObject> {
 
   @Override
   protected void channelRead0(
-      ChannelHandlerContext ctx,
-      HttpObject msg) throws Exception {
+    ChannelHandlerContext ctx,
+    HttpObject msg) throws Exception {
     LOG.fine("Incoming message: " + msg);
 
     if (msg instanceof io.netty.handler.codec.http.HttpRequest) {
@@ -64,12 +71,28 @@ class RequestConverter extends SimpleChannelInboundHandler<HttpObject> {
         return;
       }
 
-      HttpRequest req = createRequest(nettyRequest);
+      if (nettyRequest.headers().contains("Sec-WebSocket-Version") &&
+        "upgrade".equals(nettyRequest.headers().get("Connection"))) {
+        // Pass this on to later in the pipeline.
+        ReferenceCountUtil.retain(msg);
+        ctx.fireChannelRead(msg);
+        return;
+      }
+
+      HttpRequest req = createRequest(ctx, nettyRequest);
+      if (req == null) {
+        return;
+      }
+
+      req.setAttribute(AttributeKey.HTTP_SCHEME.getKey(),
+        nettyRequest.protocolVersion().protocolName());
+      req.setAttribute(AttributeKey.HTTP_FLAVOR.getKey(),
+        nettyRequest.protocolVersion().majorVersion());
 
       out = new PipedOutputStream();
       InputStream in = new PipedInputStream(out);
 
-      req.setContent(Contents.memoize(() -> in));
+      req.setContent(memoize(() -> in));
       ctx.fireChannelRead(req);
     }
 
@@ -98,14 +121,34 @@ class RequestConverter extends SimpleChannelInboundHandler<HttpObject> {
     }
   }
 
-  private HttpRequest createRequest(io.netty.handler.codec.http.HttpRequest nettyRequest) {
+  private HttpRequest createRequest(
+    ChannelHandlerContext ctx,
+    io.netty.handler.codec.http.HttpRequest nettyRequest) {
+
+    // Attempt to map the netty method
+    HttpMethod method;
+    if (nettyRequest.method().equals(HEAD)) {
+      method = HttpMethod.GET;
+    } else {
+      try {
+        method = HttpMethod.valueOf(nettyRequest.method().name());
+      } catch (IllegalArgumentException e) {
+        ctx.writeAndFlush(new DefaultFullHttpResponse(HttpVersion.HTTP_1_1, HttpResponseStatus.METHOD_NOT_ALLOWED));
+        return null;
+      }
+    }
+
+    QueryStringDecoder decoder = new QueryStringDecoder(nettyRequest.uri());
+
     HttpRequest req = new HttpRequest(
-        HttpMethod.valueOf(nettyRequest.method().name()),
-        nettyRequest.uri());
+      method,
+      decoder.path());
+
+    decoder.parameters().forEach((key, values) -> values.forEach(value -> req.addQueryParameter(key, value)));
 
     nettyRequest.headers().entries().stream()
-        .filter(entry -> entry.getKey() != null)
-        .forEach(entry -> req.addHeader(entry.getKey(), entry.getValue()));
+      .filter(entry -> entry.getKey() != null)
+      .forEach(entry -> req.addHeader(entry.getKey(), entry.getValue()));
 
     return req;
   }

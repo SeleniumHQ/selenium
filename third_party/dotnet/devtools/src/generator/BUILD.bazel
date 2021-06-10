@@ -1,0 +1,47 @@
+load("//dotnet:defs.bzl", "csharp_executable", "generated_assembly_info")
+load(
+    "//dotnet:selenium-dotnet-version.bzl",
+    "ASSEMBLY_COMPANY",
+    "ASSEMBLY_COPYRIGHT",
+    "ASSEMBLY_INFORMATIONAL_VERSION",
+    "ASSEMBLY_PRODUCT",
+    "ASSEMBLY_VERSION",
+)
+
+generated_assembly_info(
+    name = "assembly-info",
+    company = ASSEMBLY_COMPANY,
+    copyright = ASSEMBLY_COPYRIGHT,
+    description = "Selenium DevTools Protocol Code Generator",
+    informational_version = ASSEMBLY_INFORMATIONAL_VERSION,
+    product = ASSEMBLY_PRODUCT,
+    title = "Selenium DevTools Protocol Code Generator",
+    version = ASSEMBLY_VERSION,
+)
+
+csharp_executable(
+    name = "generator",
+    srcs = glob([
+        "*.cs",
+        "CodeGen/**/*.cs",
+        "Converters/**/*.cs",
+        "ProtocolDefinition/**/*.cs",
+    ]) + [":assembly-info"],
+    out = "DevToolsGenerator",
+    is_windows = select({
+        "@bazel_tools//src/conditions:host_windows": True,
+        "//conditions:default": False,
+    }),
+    target_frameworks = [
+        "netcoreapp3.1",
+    ],
+    visibility = ["//visibility:public"],
+    deps = [
+        "@commandlineparser//:CommandLine",
+        "@dependencyinjection//:Microsoft.Extensions.DependencyInjection",
+        "@dependencyinjectionabstractions//:Microsoft.Extensions.DependencyInjection.Abstractions",
+        "@handlebars//:Handlebars",
+        "@humanizer//:Humanizer",
+        "@json.net//:Newtonsoft.Json",
+    ],
+)

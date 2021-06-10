@@ -19,11 +19,11 @@ package org.openqa.selenium.devtools;
 
 import com.google.common.collect.ImmutableMap;
 
+import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.JsonInput;
 
 import java.lang.reflect.Type;
 import java.util.Map;
-import java.util.Objects;
 import java.util.function.Function;
 
 public class Command<X> {
@@ -38,8 +38,7 @@ public class Command<X> {
   }
 
   public Command(String method, Map<String, Object> params, Type typeOfX) {
-    this(method, params, input -> input.read(typeOfX));
-    Objects.requireNonNull(typeOfX, "Type to convert to must be set.");
+    this(method, params, input -> input.read(Require.nonNull("Type to convert to", typeOfX)));
   }
 
   public Command(String method, Map<String, Object> params, Function<JsonInput, X> mapper) {
@@ -47,9 +46,9 @@ public class Command<X> {
   }
 
   private Command(String method, Map<String, Object> params, Function<JsonInput, X> mapper, boolean sendsResponse) {
-    this.method = Objects.requireNonNull(method, "Method name must be set.");
-    this.params = ImmutableMap.copyOf(Objects.requireNonNull(params, "Command parameters must be set."));
-    this.mapper = Objects.requireNonNull(mapper, "Mapper for result must be set.");
+    this.method = Require.nonNull("Method name", method);
+    this.params = ImmutableMap.copyOf(Require.nonNull("Command parameters", params));
+    this.mapper = Require.nonNull("Mapper for result", mapper);
 
     this.sendsResponse = sendsResponse;
   }

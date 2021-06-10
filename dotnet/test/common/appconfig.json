@@ -1,9 +1,12 @@
 {
-  "CaptureWebServerOutput": false,
-  "HideWebServerCommandPrompt": true,
   "DriverServiceLocation": "",
   "ActiveDriverConfig": "Chrome",
   "ActiveWebsiteConfig": "Default",
+  "TestWebServerConfig": {
+    "CaptureConsoleOutput": false,
+    "HideCommandPromptWindow": true,
+    "JavaHomeDirectory": ""
+  },
   "WebsiteConfigs": {
     "Default": {
       "Protocol": "http",
@@ -43,6 +46,13 @@
     },
 
     "Edge": {
+      "DriverTypeName": "OpenQA.Selenium.Edge.StableChannelEdgeDriver",
+      "AssemblyName": "WebDriver.Common.Tests",
+      "BrowserValue": "Edge",
+      "RemoteCapabilities": "MicrosoftEdge"
+    },
+
+    "EdgeDev": {
       "DriverTypeName": "OpenQA.Selenium.Edge.DevChannelEdgeDriver",
       "AssemblyName": "WebDriver.Common.Tests",
       "BrowserValue": "Edge",
@@ -85,10 +95,10 @@
     },
 
     "Remote": {
-      "DriverTypeName": "OpenQA.Selenium.Remote.TestInternetExplorerRemoteWebDriver",
-      "AssemblyName": "WebDriver.Remote.Tests",
+      "DriverTypeName": "OpenQA.Selenium.Remote.StableChannelRemoteChromeDriver",
+      "AssemblyName": "WebDriver.Common.Tests",
       "BrowserValue": "Remote",
-      "RemoteCapabilities": "internet explorer",
+      "RemoteCapabilities": "chrome",
       "AutoStartRemoteServer": true
     }
   }

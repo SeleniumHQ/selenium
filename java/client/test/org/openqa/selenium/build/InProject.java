@@ -17,8 +17,9 @@
 
 package org.openqa.selenium.build;
 
-import com.google.common.base.Preconditions;
+import static org.openqa.selenium.Platform.WINDOWS;
 
+import org.openqa.selenium.Platform;
 import org.openqa.selenium.WebDriverException;
 
 import java.io.FileNotFoundException;
@@ -38,33 +39,34 @@ public class InProject {
    *         be found
    */
   public static Path locate(String... paths) {
-    Preconditions.checkArgument(paths.length > 0);
     return Stream.of(paths)
-        .map(path -> Paths.get(path))
-        .filter(path -> Files.exists(path))
-        .findFirst()
-        .map(Path::toAbsolutePath)
-        .orElseGet(() -> {
-          Path root = findProjectRoot();
-          return Stream.of(paths)
-              .map(path -> {
-                Path needle = root.resolve(path);
-                return Files.exists(needle) ? needle : null;
-              })
-              .filter(Objects::nonNull)
-              .findFirst().orElseThrow(() -> new WebDriverException(new FileNotFoundException(
-                  String.format("Could not find any of %s in the project",
-                                String.join(",", paths)))));
-        });
+      .map(Paths::get)
+      .filter(Files::exists)
+      .findFirst()
+      .map(Path::toAbsolutePath)
+      .orElseGet(() -> {
+        Path root = findProjectRoot();
+        return Stream.of(paths)
+          .map(path -> {
+            Path needle = root.resolve(path);
+            return Files.exists(needle) ? needle : null;
+          })
+          .filter(Objects::nonNull)
+          .findFirst().orElseThrow(() -> new WebDriverException(new FileNotFoundException(
+            String.format("Could not find any of %s in the project",
+                          String.join(",", paths)))));
+      });
   }
 
   public static Path findProjectRoot() {
-    Path dir = findRunfilesRoot();
-    if (dir != null) {
-      return dir.resolve("selenium").normalize();
+    Path dir;
+    if (!Platform.getCurrent().is(WINDOWS)) {
+      dir = findRunfilesRoot();
+      if (dir != null) {
+        return dir.resolve("selenium").normalize();
+      }
     }
 
-    // Find the rakefile first
     dir = Paths.get(".").toAbsolutePath();
     Path pwd = dir;
     while (dir != null && !dir.equals(dir.getParent())) {
@@ -74,7 +76,11 @@ public class InProject {
       }
       dir = dir.getParent();
     }
-    Preconditions.checkNotNull(dir, "Unable to find root of project in %s when looking", pwd);
+
+    if (dir == null) {
+      throw new IllegalStateException(String.format("Unable to find root of project in %s when looking", pwd));
+    }
+
     return dir.normalize();
   }
 

@@ -17,31 +17,29 @@
 
 package org.openqa.selenium.remote.mobile;
 
-import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.mobile.NetworkConnection;
 import org.openqa.selenium.remote.AugmenterProvider;
-import org.openqa.selenium.remote.InterfaceImplementation;
+import org.openqa.selenium.remote.ExecuteMethod;
 
-import java.lang.reflect.InvocationTargetException;
+import java.util.function.Predicate;
 
-public class AddNetworkConnection implements AugmenterProvider {
+import static org.openqa.selenium.remote.CapabilityType.SUPPORTS_NETWORK_CONNECTION;
+
+public class AddNetworkConnection implements AugmenterProvider<NetworkConnection> {
 
   @Override
-  public Class<?> getDescribedInterface() {
+  public Predicate<Capabilities> isApplicable() {
+    return caps -> caps.is(SUPPORTS_NETWORK_CONNECTION);
+  }
+
+  @Override
+  public Class<NetworkConnection> getDescribedInterface() {
     return NetworkConnection.class;
   }
 
   @Override
-  public InterfaceImplementation getImplementation(Object value) {
-    return (executeMethod, self, method, args) -> {
-      NetworkConnection connection = new RemoteNetworkConnection(executeMethod);
-      try {
-        return method.invoke(connection, args);
-      } catch (IllegalAccessException e) {
-        throw new WebDriverException(e);
-      } catch (InvocationTargetException e) {
-        throw new RuntimeException(e.getCause());
-      }
-    };
+  public NetworkConnection getImplementation(Capabilities capabilities, ExecuteMethod executeMethod) {
+    return new RemoteNetworkConnection(executeMethod);
   }
 }

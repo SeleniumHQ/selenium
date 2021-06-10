@@ -58,23 +58,20 @@ public class NetworkInterface {
   }
 
   public boolean isLoopBack() {
-    if (isLoopback == null) {
-      if (networkInterface != null) {
-        try {
-          // Issue 1181 : determine whether this NetworkInterface instance is loopback
-          // from java.net.NetworkInterface API
-          isLoopback = networkInterface.isLoopback();
-        } catch (SocketException ex) {
-          Logger.getLogger(NetworkInterface.class.getName()).log(Level.WARNING, null, ex);
-        }
-      }
-      // If a SocketException is caught, determine whether this NetworkInterface
-      // instance is loopback from computation from its inetAddresses
-      if (isLoopback == null) {
+    if (isLoopback == null && networkInterface != null) {
+      try {
+        // Issue 1181 : determine whether this NetworkInterface instance is loopback
+        // from java.net.NetworkInterface API
+        isLoopback = networkInterface.isLoopback();
+      } catch (SocketException ex) {
+        Logger.getLogger(NetworkInterface.class.getName()).log(Level.WARNING, null, ex);
+        // If a SocketException is caught, determine whether this NetworkInterface
+        // instance is loopback from computation from its inetAddresses
         isLoopback = isLoopBackFromINetAddresses(list(networkInterface.getInetAddresses()));
       }
     }
-    return isLoopback;
+    // 'isLoopback != null' to avoid an unboxing NPE
+    return isLoopback != null && isLoopback;
   }
 
   private boolean isLoopBackFromINetAddresses(Iterable<InetAddress> inetAddresses) {

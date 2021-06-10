@@ -17,285 +17,219 @@
 
 package org.openqa.selenium.grid.distributor.local;
 
-import com.google.common.annotations.VisibleForTesting;
-import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
-import io.opentracing.Span;
-import io.opentracing.SpanContext;
-import io.opentracing.Tracer;
-import io.opentracing.tag.Tags;
+
 import org.openqa.selenium.Beta;
 import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.ImmutableCapabilities;
+import org.openqa.selenium.RetrySessionRequestException;
 import org.openqa.selenium.SessionNotCreatedException;
+import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.concurrent.Regularly;
 import org.openqa.selenium.events.EventBus;
+import org.openqa.selenium.grid.config.Config;
 import org.openqa.selenium.grid.data.CreateSessionRequest;
 import org.openqa.selenium.grid.data.CreateSessionResponse;
 import org.openqa.selenium.grid.data.DistributorStatus;
+import org.openqa.selenium.grid.data.NewSessionRequestEvent;
+import org.openqa.selenium.grid.data.NodeAddedEvent;
+import org.openqa.selenium.grid.data.NodeDrainComplete;
+import org.openqa.selenium.grid.data.NodeHeartBeatEvent;
+import org.openqa.selenium.grid.data.NodeId;
 import org.openqa.selenium.grid.data.NodeStatus;
+import org.openqa.selenium.grid.data.NodeStatusEvent;
+import org.openqa.selenium.grid.data.RequestId;
+import org.openqa.selenium.grid.data.SessionRequest;
+import org.openqa.selenium.grid.data.SessionRequestCapability;
+import org.openqa.selenium.grid.data.Slot;
+import org.openqa.selenium.grid.data.SlotId;
+import org.openqa.selenium.grid.data.TraceSessionRequest;
 import org.openqa.selenium.grid.distributor.Distributor;
+import org.openqa.selenium.grid.distributor.config.DistributorOptions;
+import org.openqa.selenium.grid.distributor.selector.SlotSelector;
+import org.openqa.selenium.grid.log.LoggingOptions;
+import org.openqa.selenium.grid.node.HealthCheck;
 import org.openqa.selenium.grid.node.Node;
 import org.openqa.selenium.grid.node.remote.RemoteNode;
+import org.openqa.selenium.grid.security.Secret;
+import org.openqa.selenium.grid.security.SecretOptions;
+import org.openqa.selenium.grid.server.EventBusOptions;
+import org.openqa.selenium.grid.server.NetworkOptions;
 import org.openqa.selenium.grid.sessionmap.SessionMap;
-import org.openqa.selenium.json.Json;
-import org.openqa.selenium.json.JsonOutput;
-import org.openqa.selenium.remote.NewSessionPayload;
+import org.openqa.selenium.grid.sessionmap.config.SessionMapOptions;
+import org.openqa.selenium.grid.sessionqueue.NewSessionQueue;
+import org.openqa.selenium.grid.sessionqueue.config.NewSessionQueueOptions;
+import org.openqa.selenium.internal.Either;
+import org.openqa.selenium.internal.Require;
+import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.remote.http.HttpClient;
-import org.openqa.selenium.remote.http.HttpRequest;
-import org.openqa.selenium.remote.tracing.HttpTracing;
+import org.openqa.selenium.remote.tracing.AttributeKey;
+import org.openqa.selenium.remote.tracing.EventAttribute;
+import org.openqa.selenium.remote.tracing.EventAttributeValue;
+import org.openqa.selenium.remote.tracing.Span;
+import org.openqa.selenium.remote.tracing.Status;
+import org.openqa.selenium.remote.tracing.Tracer;
+import org.openqa.selenium.status.HasReadyState;
 
-import java.io.IOException;
-import java.io.Reader;
+import java.io.UncheckedIOException;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Comparator;
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
-import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.Executors;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
-import java.util.function.Supplier;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import static com.google.common.collect.ImmutableSet.toImmutableSet;
-import static org.openqa.selenium.grid.data.NodeStatusEvent.NODE_STATUS;
-import static org.openqa.selenium.grid.distributor.local.Host.Status.UP;
-import static org.openqa.selenium.remote.http.Contents.reader;
+import static org.openqa.selenium.grid.data.Availability.DOWN;
+import static org.openqa.selenium.grid.data.Availability.DRAINING;
+import static org.openqa.selenium.internal.Debug.getDebugLogLevel;
+import static org.openqa.selenium.remote.RemoteTags.CAPABILITIES;
+import static org.openqa.selenium.remote.RemoteTags.CAPABILITIES_EVENT;
+import static org.openqa.selenium.remote.RemoteTags.SESSION_ID;
+import static org.openqa.selenium.remote.RemoteTags.SESSION_ID_EVENT;
+import static org.openqa.selenium.remote.tracing.AttributeKey.SESSION_URI;
+import static org.openqa.selenium.remote.tracing.Tags.EXCEPTION;
 
 public class LocalDistributor extends Distributor {
 
-  private static final Json JSON = new Json();
-  private static final Logger LOG = Logger.getLogger("Selenium Distributor (Local)");
-  private final ReadWriteLock lock = new ReentrantReadWriteLock(/* fair */ true);
-  private final Set<Host> hosts = new HashSet<>();
+  private static final Logger LOG = Logger.getLogger(LocalDistributor.class.getName());
+
   private final Tracer tracer;
   private final EventBus bus;
   private final HttpClient.Factory clientFactory;
   private final SessionMap sessions;
+  private final SlotSelector slotSelector;
+  private final Secret registrationSecret;
   private final Regularly hostChecker = new Regularly("distributor host checker");
-  private final Map<UUID, Collection<Runnable>> allChecks = new ConcurrentHashMap<>();
+  private final Map<NodeId, Runnable> allChecks = new HashMap<>();
+  private final Duration healthcheckInterval;
+
+  private final ReadWriteLock lock = new ReentrantReadWriteLock(/* fair */ true);
+  private final GridModel model;
+  private final Map<NodeId, Node> nodes;
+
+  private final NewSessionQueue sessionQueue;
+  private final Regularly regularly;
+
+  private final boolean rejectUnsupportedCaps;
 
   public LocalDistributor(
-      Tracer tracer,
-      EventBus bus,
-      HttpClient.Factory clientFactory,
-      SessionMap sessions) {
-    super(tracer, clientFactory);
-    this.tracer = Objects.requireNonNull(tracer);
-    this.bus = Objects.requireNonNull(bus);
-    this.clientFactory = Objects.requireNonNull(clientFactory);
-    this.sessions = Objects.requireNonNull(sessions);
+    Tracer tracer,
+    EventBus bus,
+    HttpClient.Factory clientFactory,
+    SessionMap sessions,
+    NewSessionQueue sessionQueue,
+    SlotSelector slotSelector,
+    Secret registrationSecret,
+    Duration healthcheckInterval,
+    boolean rejectUnsupportedCaps) {
+    super(tracer, clientFactory, registrationSecret);
+    this.tracer = Require.nonNull("Tracer", tracer);
+    this.bus = Require.nonNull("Event bus", bus);
+    this.clientFactory = Require.nonNull("HTTP client factory", clientFactory);
+    this.sessions = Require.nonNull("Session map", sessions);
+    this.sessionQueue = Require.nonNull("New Session Request Queue", sessionQueue);
+    this.slotSelector = Require.nonNull("Slot selector", slotSelector);
+    this.registrationSecret = Require.nonNull("Registration secret", registrationSecret);
+    this.healthcheckInterval = Require.nonNull("Health check interval", healthcheckInterval);
+    this.model = new GridModel(bus);
+    this.nodes = new ConcurrentHashMap<>();
+    this.rejectUnsupportedCaps = rejectUnsupportedCaps;
 
-    bus.addListener(NODE_STATUS, event -> refresh(event.getData(NodeStatus.class)));
+    bus.addListener(NodeStatusEvent.listener(this::register));
+    bus.addListener(NodeStatusEvent.listener(model::refresh));
+    bus.addListener(NodeHeartBeatEvent.listener(nodeStatus -> {
+      if (nodes.containsKey(nodeStatus.getId())) {
+        model.touch(nodeStatus.getId());
+      } else {
+        register(nodeStatus);
+      }
+    }));
+
+    regularly = new Regularly(
+      Executors.newSingleThreadScheduledExecutor(
+        r -> {
+          Thread thread = new Thread(r);
+          thread.setName("New Session Queue");
+          thread.setDaemon(true);
+          return thread;
+        }));
+
+    NewSessionRunnable newSessionRunnable = new NewSessionRunnable();
+    bus.addListener(NodeDrainComplete.listener(this::remove));
+    bus.addListener(NewSessionRequestEvent.listener(ignored -> newSessionRunnable.run()));
+
+    regularly.submit(model::purgeDeadNodes, Duration.ofSeconds(30), Duration.ofSeconds(30));
+    regularly.submit(newSessionRunnable, Duration.ofSeconds(5), Duration.ofSeconds(5));
+  }
+
+  public static Distributor create(Config config) {
+    Tracer tracer = new LoggingOptions(config).getTracer();
+    EventBus bus = new EventBusOptions(config).getEventBus();
+    DistributorOptions distributorOptions = new DistributorOptions(config);
+    HttpClient.Factory clientFactory = new NetworkOptions(config).getHttpClientFactory(tracer);
+    SessionMap sessions = new SessionMapOptions(config).getSessionMap();
+    SecretOptions secretOptions = new SecretOptions(config);
+    NewSessionQueue sessionQueue = new NewSessionQueueOptions(config).getSessionQueue(
+      "org.openqa.selenium.grid.sessionqueue.remote.RemoteNewSessionQueue");
+    return new LocalDistributor(
+      tracer,
+      bus,
+      clientFactory,
+      sessions,
+      sessionQueue,
+      distributorOptions.getSlotSelector(),
+      secretOptions.getRegistrationSecret(),
+      distributorOptions.getHealthCheckInterval(),
+      distributorOptions.shouldRejectUnsupportedCaps());
   }
 
   @Override
-  public CreateSessionResponse newSession(HttpRequest request)
-      throws SessionNotCreatedException {
-    Span previous = tracer.scopeManager().activeSpan();
-    SpanContext parent = HttpTracing.extract(tracer, request);
-    Span span = tracer.buildSpan("distributor.new_session").asChildOf(parent).start();
-    tracer.scopeManager().activate(span);
-
-    try (Reader reader = reader(request);
-    NewSessionPayload payload = NewSessionPayload.create(reader)) {
-      Objects.requireNonNull(payload, "Requests to process must be set.");
-
-      Iterator<Capabilities> iterator = payload.stream().iterator();
-
-      if (!iterator.hasNext()) {
-        throw new SessionNotCreatedException("No capabilities found");
-      }
-
-      Optional<Supplier<CreateSessionResponse>> selected;
-      CreateSessionRequest firstRequest = new CreateSessionRequest(
-          payload.getDownstreamDialects(),
-          iterator.next(),
-          ImmutableMap.of());
-
-      Lock writeLock = this.lock.writeLock();
-      writeLock.lock();
-      try {
-        Stream<Host> firstRound = this.hosts.stream()
-            .filter(host -> host.getHostStatus() == UP)
-            // Find a host that supports this kind of thing
-            .filter(host -> host.hasCapacity(firstRequest.getCapabilities()));
-
-        //of the hosts that survived the first round, separate into buckets and prioritize by browser "rarity"
-        Stream<Host> prioritizedHosts = getPrioritizedHostStream(firstRound, firstRequest.getCapabilities());
-
-        //Take the further-filtered Stream and prioritize by load, then by session age
-        selected = prioritizedHosts
-            .min(
-                // Now sort by node which has the lowest load (natural ordering)
-                Comparator.comparingDouble(Host::getLoad)
-                    // Then last session created (oldest first), so natural ordering again
-                    .thenComparingLong(Host::getLastSessionCreated)
-                    // And use the host id as a tie-breaker.
-                    .thenComparing(Host::getId))
-            // And reserve some space for this session
-            .map(host -> host.reserve(firstRequest));
-      } finally {
-        writeLock.unlock();
-      }
-
-      CreateSessionResponse sessionResponse = selected
-          .orElseThrow(
-              () -> {
-                span.setTag(Tags.ERROR, true);
-                return new SessionNotCreatedException(
-                  "Unable to find provider for session: " + payload.stream()
-                    .map(Capabilities::toString)
-                    .collect(Collectors.joining(", ")));
-              })
-          .get();
-
-      sessions.add(sessionResponse.getSession());
-
-      span.setTag("session.id", sessionResponse.getSession().getId().toString());
-      span.setTag("session.url", sessionResponse.getSession().getUri().toString());
-      span.setTag("session.capabilities", sessionResponse.getSession().getCapabilities().toString());
-
-      return sessionResponse;
-    } catch (IOException e) {
-      span.setTag(Tags.ERROR, true);
-      throw new SessionNotCreatedException(e.getMessage(), e);
-    } finally {
-      span.finish();
-      tracer.scopeManager().activate(previous);
+  public boolean isReady() {
+    try {
+      return ImmutableSet.of(bus, sessions).parallelStream()
+        .map(HasReadyState::isReady)
+        .reduce(true, Boolean::logicalAnd);
+    } catch (RuntimeException e) {
+      return false;
     }
   }
 
-  /**
-   * Takes a Stream of Hosts, along with the Capabilities of the current request, and prioritizes the
-   * request by removing Hosts that offer Capabilities that are more rare. e.g. if there are only a
-   * couple Edge nodes, but a lot of Chrome nodes, the Edge nodes should be removed from
-   * consideration when Chrome is requested. This does not currently take the amount of load on the
-   * server into consideration--it only checks for availability, not how much availability
-   * @param hostStream Stream of hosts attached to the Distributor (assume it's filtered for only those that offer these Capabilities)
-   * @param capabilities Passing in the whole Capabilities object will allow us to prioritize more than just browser
-   * @return Stream of distinct Hosts with the more rare Capabilities removed
-   */
-  @VisibleForTesting
-  Stream<Host> getPrioritizedHostStream(Stream<Host> hostStream, Capabilities capabilities) {
-    //TODO for the moment, we're not going to operate on the Stream that was passed in--we need to
-    // alter and futz with the contents, so the stream isn't the right place to operate. This
-    // will likely be optimized back into the algo, but not yet
-    Set<Host> filteredHostSet = hostStream.collect(Collectors.toSet());
+  private void register(NodeStatus status) {
+    Require.nonNull("Node", status);
 
-    //A "bucket" is a list of hosts that can use a particular browser. The "edge" bucket is the
-    // complete list of Hosts that support "edge". By separating Hosts into buckets, we will
-    // know which browsers have fewer nodes available for the browsers we're not interested in, and
-    // can prioritize based on the browsers that have more availability
-    Map<String, Set<Host>> hostBuckets = sortHostsToBucketsByBrowser(filteredHostSet);
-
-    //First, check to see if all buckets are the same size. If they are, just send back the full list of hosts
-    // (i.e. the hosts are all "balanced" with regard to browser priority)
-    if (allBucketsSameSize(hostBuckets)) {
-      return hostBuckets.values().stream().distinct().flatMap(Set::stream);
-    }
-
-    //Then, starting with the smallest bucket that isn't the current browser being prioritized,
-    // remove all hosts in that bucket from consideration, then rebuild the buckets. Then do the
-    // "same size" check again, and keep doing this until either a) there is only one bucket, or b)
-    // all buckets are the same size
-
-    //Note: there should never be a case where a bucket will have *more* nodes available for the
-    // given browser than the one being requested. The first filter in this check looks for
-    // "equal", not "equal-or-greater" as a result of this assumption
-
-    //There might be unforeseen cases that challenge this assumption. TODO Create unit tests to prove it
-
-    //TODO a List of Map.Entry is silly. whatever this structure needs to be needs to be returned by
-    // the sortHostsToBucketsByBrowser method in a way that we don't have to sort it separately like this
-    final List<Map.Entry<String, Set<Host>>> sorted = hostBuckets.entrySet().stream().sorted(
-        Comparator.comparingInt(v -> v.getValue().size())
-    ).collect(Collectors.toList());
-
-    // Until the buckets are the same size, keep removing hosts that have more "rare" browser capabilities
-    Map<String, Set<Host>> newHostBuckets;
-    for (Map.Entry<String, Set<Host>> entry: sorted) {
-      //Don't examine the bucket containing the browser in question--we're prioritizing the other browsers
-      //TODO This shouldn't be necessary, because if the list is sorted by size, this won't be possible until
-      // they're all the same size. Create a unit test to prove it
-      if (entry.getKey().equals(capabilities.getBrowserName())) {
-        continue;
-      }
-
-      //Remove all hosts from this bucket from the full set of eligible hosts
-      final Set<Host> filteredHosts = filteredHostSet.stream().filter(host -> !entry.getValue().contains(host)).collect(Collectors.toSet());
-
-      //Rebuild the buckets by browser
-      newHostBuckets = sortHostsToBucketsByBrowser(filteredHosts);
-
-      //Check the bucket sizes--if they're the same, then we're done
-      if (allBucketsSameSize(newHostBuckets)) {
-        LOG.fine("Hosts have been balanced according to browser priority");
-        return newHostBuckets.values().stream().distinct().flatMap(Set::stream);
-      }
-    }
-
-    return hostBuckets.values().stream().distinct().flatMap(Set::stream);
-  }
-
-  @VisibleForTesting
-  Map<String, Set<Host>> sortHostsToBucketsByBrowser(Set<Host> hostSet) {
-    //Make a hash of browserType -> list of hosts that support it
-    Map<String, Set<Host>> hostBuckets = new HashMap<>();
-    hostSet.forEach(host -> host.asSummary().getStereotypes().forEach((k, v) -> {
-      if (!hostBuckets.containsKey(k.getBrowserName())) {
-        Set<Host> newSet = new HashSet<>();
-        newSet.add(host);
-        hostBuckets.put(k.getBrowserName(), newSet);
-      }
-      hostBuckets.get(k.getBrowserName()).add(host);
-    }));
-    return hostBuckets;
-  }
-
-  @VisibleForTesting
-  boolean allBucketsSameSize(Map<String, Set<Host>> hostBuckets) {
-    Set<Integer> intSet = new HashSet<>();
-    hostBuckets.values().forEach(bucket ->  intSet.add(bucket.size()));
-    return intSet.size() == 1;
-  }
-
-  private void refresh(NodeStatus status) {
-    Objects.requireNonNull(status);
-
-    // Iterate over the available nodes to find a match.
     Lock writeLock = lock.writeLock();
     writeLock.lock();
     try {
-      Optional<Host> existing = hosts.stream()
-          .filter(host -> host.getId().equals(status.getNodeId()))
-          .findFirst();
-
-
-      if (existing.isPresent()) {
-        // Modify the state
-        existing.get().update(status);
-      } else {
-        // No match made. Add a new host.
-        Node node = new RemoteNode(
-            tracer,
-            clientFactory,
-            status.getNodeId(),
-            status.getUri(),
-            status.getStereotypes().keySet());
-        add(node, status);
+      if (nodes.containsKey(status.getId())) {
+        return;
       }
+
+      Set<Capabilities> capabilities = status.getSlots().stream()
+        .map(Slot::getStereotype)
+        .map(ImmutableCapabilities::copyOf)
+        .collect(toImmutableSet());
+
+      // A new node! Add this as a remote node, since we've not called add
+      RemoteNode remoteNode = new RemoteNode(
+        tracer,
+        clientFactory,
+        status.getId(),
+        status.getUri(),
+        registrationSecret,
+        capabilities);
+
+      add(remoteNode);
     } finally {
       writeLock.unlock();
     }
@@ -303,42 +237,74 @@ public class LocalDistributor extends Distributor {
 
   @Override
   public LocalDistributor add(Node node) {
-    return add(node, node.getStatus());
-  }
+    Require.nonNull("Node", node);
 
-  private LocalDistributor add(Node node, NodeStatus status) {
-    StringBuilder sb = new StringBuilder();
+    LOG.info(String.format("Added node %s at %s.", node.getId(), node.getUri()));
 
-    Lock writeLock = this.lock.writeLock();
-    writeLock.lock();
-    try (JsonOutput out = JSON.newOutput(sb)) {
-      out.setPrettyPrint(false).write(node);
+    nodes.put(node.getId(), node);
+    model.add(node.getStatus());
 
-      Host host = new Host(bus, node);
-      host.update(status);
-      hosts.add(host);
-      LOG.info(String.format("Added node %s.", node.getId()));
-      host.runHealthCheck();
+    // Extract the health check
+    Runnable runnableHealthCheck = asRunnableHealthCheck(node);
+    allChecks.put(node.getId(), runnableHealthCheck);
+    hostChecker.submit(runnableHealthCheck, healthcheckInterval, Duration.ofSeconds(30));
 
-      Runnable runnable = host::runHealthCheck;
-      Collection<Runnable> nodeRunnables = allChecks.getOrDefault(node.getId(), new ArrayList<>());
-      nodeRunnables.add(runnable);
-      allChecks.put(node.getId(), nodeRunnables);
-      hostChecker.submit(runnable, Duration.ofMinutes(5), Duration.ofSeconds(30));
-    } finally {
-      writeLock.unlock();
-    }
+    bus.fire(new NodeAddedEvent(node.getId()));
 
     return this;
   }
 
+  private Runnable asRunnableHealthCheck(Node node) {
+    HealthCheck healthCheck = node.getHealthCheck();
+    NodeId id = node.getId();
+    return () -> {
+      HealthCheck.Result result;
+      try {
+        result = healthCheck.check();
+      } catch (Exception e) {
+        LOG.log(Level.WARNING, "Unable to process node " + id, e);
+        result = new HealthCheck.Result(DOWN, "Unable to run healthcheck. Assuming down");
+      }
+
+      Lock writeLock = lock.writeLock();
+      writeLock.lock();
+      try {
+        model.setAvailability(id, result.getAvailability());
+      } finally {
+        writeLock.unlock();
+      }
+    };
+  }
+
   @Override
-  public void remove(UUID nodeId) {
+  public boolean drain(NodeId nodeId) {
+    Node node = nodes.get(nodeId);
+    if (node == null) {
+      LOG.info("Asked to drain unregistered node " + nodeId);
+      return false;
+    }
+
     Lock writeLock = lock.writeLock();
     writeLock.lock();
     try {
-      hosts.removeIf(host -> nodeId.equals(host.getId()));
-      allChecks.getOrDefault(nodeId, new ArrayList<>()).forEach(hostChecker::remove);
+      node.drain();
+      model.setAvailability(nodeId, DRAINING);
+    } finally {
+      writeLock.unlock();
+    }
+
+    return node.isDraining();
+  }
+
+  public void remove(NodeId nodeId) {
+    Lock writeLock = lock.writeLock();
+    writeLock.lock();
+    try {
+      model.remove(nodeId);
+      Runnable runnable = allChecks.remove(nodeId);
+      if (runnable != null) {
+        hostChecker.remove(runnable);
+      }
     } finally {
       writeLock.unlock();
     }
@@ -349,25 +315,317 @@ public class LocalDistributor extends Distributor {
     Lock readLock = this.lock.readLock();
     readLock.lock();
     try {
-      ImmutableSet<DistributorStatus.NodeSummary> summaries = this.hosts.stream()
-          .map(Host::asSummary)
-          .collect(toImmutableSet());
-
-      return new DistributorStatus(summaries);
+      return new DistributorStatus(model.getSnapshot());
     } finally {
       readLock.unlock();
     }
   }
 
-  @VisibleForTesting
   @Beta
   public void refresh() {
+    List<Runnable> allHealthChecks = new ArrayList<>();
+
+    Lock readLock = this.lock.readLock();
+    readLock.lock();
+    try {
+      allHealthChecks.addAll(allChecks.values());
+    } finally {
+      readLock.unlock();
+    }
+
+    allHealthChecks.parallelStream().forEach(Runnable::run);
+  }
+
+  protected Set<NodeStatus> getAvailableNodes() {
+    Lock readLock = this.lock.readLock();
+    readLock.lock();
+    try {
+      return model.getSnapshot().stream()
+        .filter(node -> !DOWN.equals(node.getAvailability()))
+        .collect(toImmutableSet());
+    } finally {
+      readLock.unlock();
+    }
+  }
+
+  @Override
+  public Either<SessionNotCreatedException, CreateSessionResponse> newSession(SessionRequest request)
+    throws SessionNotCreatedException {
+    Require.nonNull("Requests to process", request);
+
+    Span span = tracer.getCurrentContext().createSpan("distributor.new_session");
+    Map<String, EventAttributeValue> attributeMap = new HashMap<>();
+    try {
+      attributeMap.put(AttributeKey.LOGGER_CLASS.getKey(),
+        EventAttribute.setValue(getClass().getName()));
+
+      attributeMap.put("request.payload", EventAttribute.setValue(request.getDesiredCapabilities().toString()));
+      String sessionReceivedMessage = "Session request received by the distributor";
+      span.addEvent(sessionReceivedMessage, attributeMap);
+      LOG.info(String.format("%s: \n %s", sessionReceivedMessage, request.getDesiredCapabilities()));
+
+      // If there are no capabilities at all, something is horribly wrong
+      if (request.getDesiredCapabilities().isEmpty()) {
+        SessionNotCreatedException exception =
+          new SessionNotCreatedException("No capabilities found in session request payload");
+        EXCEPTION.accept(attributeMap, exception);
+        attributeMap.put(AttributeKey.EXCEPTION_MESSAGE.getKey(),
+          EventAttribute.setValue("Unable to create session. No capabilities found: " +
+            exception.getMessage()));
+        span.addEvent(AttributeKey.EXCEPTION_EVENT.getKey(), attributeMap);
+        return Either.left(exception);
+      }
+
+      boolean retry = false;
+      SessionNotCreatedException lastFailure = new SessionNotCreatedException("Unable to create new session");
+      for (Capabilities caps : request.getDesiredCapabilities()) {
+        if (!isSupported(caps)) {
+          continue;
+        }
+
+        // Try and find a slot that we can use for this session. While we
+        // are finding the slot, no other session can possibly be started.
+        // Therefore, spend as little time as possible holding the write
+        // lock, and release it as quickly as possible. Under no
+        // circumstances should we try to actually start the session itself
+        // in this next block of code.
+        SlotId selectedSlot = reserveSlot(request.getRequestId(), caps);
+        if (selectedSlot == null) {
+          LOG.info(String.format("Unable to find slot for request %s. May retry: %s ", request.getRequestId(), caps));
+          retry = true;
+          continue;
+        }
+
+        CreateSessionRequest singleRequest = new CreateSessionRequest(
+          request.getDownstreamDialects(),
+          caps,
+          request.getMetadata());
+
+        try {
+          CreateSessionResponse response = startSession(selectedSlot, singleRequest);
+          sessions.add(response.getSession());
+          model.setSession(selectedSlot, response.getSession());
+
+          SessionId sessionId = response.getSession().getId();
+          Capabilities sessionCaps = response.getSession().getCapabilities();
+          String sessionUri = response.getSession().getUri().toString();
+          SESSION_ID.accept(span, sessionId);
+          CAPABILITIES.accept(span, sessionCaps);
+          SESSION_ID_EVENT.accept(attributeMap, sessionId);
+          CAPABILITIES_EVENT.accept(attributeMap, sessionCaps);
+          span.setAttribute(SESSION_URI.getKey(), sessionUri);
+          attributeMap.put(SESSION_URI.getKey(), EventAttribute.setValue(sessionUri));
+
+          String sessionCreatedMessage = "Session created by the distributor";
+          span.addEvent(sessionCreatedMessage, attributeMap);
+          LOG.info(String.format("%s. Id: %s, Caps: %s", sessionCreatedMessage, sessionId, sessionCaps));
+
+          return Either.right(response);
+        } catch (SessionNotCreatedException e) {
+          model.setSession(selectedSlot, null);
+          lastFailure = e;
+        }
+      }
+
+      // If we've made it this far, we've not been able to start a session
+      if (retry) {
+        lastFailure = new RetrySessionRequestException(
+          "Will re-attempt to find a node which can run this session",
+          lastFailure);
+        attributeMap.put(
+          AttributeKey.EXCEPTION_MESSAGE.getKey(),
+          EventAttribute.setValue("Will retry session " + request.getRequestId()));
+      } else {
+        EXCEPTION.accept(attributeMap, lastFailure);
+        attributeMap.put(AttributeKey.EXCEPTION_MESSAGE.getKey(),
+          EventAttribute.setValue("Unable to create session: " + lastFailure.getMessage()));
+        span.addEvent(AttributeKey.EXCEPTION_EVENT.getKey(), attributeMap);
+      }
+      return Either.left(lastFailure);
+    } catch (SessionNotCreatedException e) {
+      span.setAttribute(AttributeKey.ERROR.getKey(), true);
+      span.setStatus(Status.ABORTED);
+
+      EXCEPTION.accept(attributeMap, e);
+      attributeMap.put(AttributeKey.EXCEPTION_MESSAGE.getKey(),
+        EventAttribute.setValue("Unable to create session: " + e.getMessage()));
+      span.addEvent(AttributeKey.EXCEPTION_EVENT.getKey(), attributeMap);
+
+      return Either.left(e);
+    } catch (UncheckedIOException e) {
+      span.setAttribute(AttributeKey.ERROR.getKey(), true);
+      span.setStatus(Status.UNKNOWN);
+
+      EXCEPTION.accept(attributeMap, e);
+      attributeMap.put(AttributeKey.EXCEPTION_MESSAGE.getKey(),
+        EventAttribute.setValue("Unknown error in LocalDistributor while creating session: " + e.getMessage()));
+      span.addEvent(AttributeKey.EXCEPTION_EVENT.getKey(), attributeMap);
+
+      return Either.left(new SessionNotCreatedException(e.getMessage(), e));
+    } finally {
+      span.close();
+    }
+  }
+
+  private CreateSessionResponse startSession(SlotId selectedSlot, CreateSessionRequest singleRequest) {
+    Node node = nodes.get(selectedSlot.getOwningNodeId());
+    if (node == null) {
+      throw new SessionNotCreatedException("Unable to find owning node for slot");
+    }
+
+    Either<WebDriverException, CreateSessionResponse> result;
+    try {
+      result = node.newSession(singleRequest);
+    } catch (SessionNotCreatedException e) {
+      result = Either.left(e);
+    } catch (RuntimeException e) {
+      result = Either.left(new SessionNotCreatedException(e.getMessage(), e));
+    }
+    if (result.isLeft()) {
+      WebDriverException exception = result.left();
+      if (exception instanceof SessionNotCreatedException) {
+        throw exception;
+      }
+      throw new SessionNotCreatedException(exception.getMessage(), exception);
+    }
+
+    return result.right();
+  }
+
+  private SlotId reserveSlot(RequestId requestId, Capabilities caps) {
     Lock writeLock = lock.writeLock();
     writeLock.lock();
     try {
-      hosts.forEach(Host::runHealthCheck);
+      Set<SlotId> slotIds = slotSelector.selectSlot(caps, getAvailableNodes());
+      if (slotIds.isEmpty()) {
+        LOG.log(
+          getDebugLogLevel(),
+          String.format("No slots found for request %s and capabilities %s", requestId, caps));
+        return null;
+      }
+
+      for (SlotId slotId : slotIds) {
+        if (reserve(slotId)) {
+          return slotId;
+        }
+      }
+
+      return null;
     } finally {
       writeLock.unlock();
+    }
+  }
+
+  private boolean isSupported(Capabilities caps) {
+    return getAvailableNodes().stream().anyMatch(node -> node.hasCapability(caps));
+  }
+
+  private boolean reserve(SlotId id) {
+    Require.nonNull("Slot ID", id);
+
+    Lock writeLock = this.lock.writeLock();
+    writeLock.lock();
+    try {
+      Node node = nodes.get(id.getOwningNodeId());
+      if (node == null) {
+        LOG.log(getDebugLogLevel(), String.format("Unable to find node with id %s", id));
+        return false;
+      }
+
+      return model.reserve(id);
+    } finally {
+      writeLock.unlock();
+    }
+  }
+
+  public void callExecutorShutdown() {
+    LOG.info("Shutting down Distributor executor service");
+    regularly.shutdown();
+  }
+
+  public class NewSessionRunnable implements Runnable {
+
+    @Override
+    public void run() {
+      List<SessionRequestCapability> queueContents = sessionQueue.getQueueContents();
+      if (rejectUnsupportedCaps) {
+        checkMatchingSlot(queueContents);
+      }
+      int initialSize = queueContents.size();
+      boolean retry = initialSize != 0;
+
+      while (retry) {
+        // We deliberately run this outside of a lock: if we're unsuccessful
+        // starting the session, we just put the request back on the queue.
+        // This does mean, however, that under high contention, we might end
+        // up starving a session request.
+        Set<Capabilities> stereotypes =
+            getAvailableNodes().stream()
+                .filter(NodeStatus::hasCapacity)
+                .map(
+                    node ->
+                        node.getSlots().stream()
+                            .map(Slot::getStereotype)
+                            .collect(Collectors.toSet()))
+                .flatMap(Collection::stream)
+                .collect(Collectors.toSet());
+
+        Optional<SessionRequest> maybeRequest = sessionQueue.getNextAvailable(stereotypes);
+        maybeRequest.ifPresent(this::handleNewSessionRequest);
+
+        int currentSize = sessionQueue.getQueueContents().size();
+        retry = currentSize != 0 && currentSize != initialSize;
+        initialSize = currentSize;
+      }
+    }
+
+    private void checkMatchingSlot(List<SessionRequestCapability> sessionRequests) {
+      for(SessionRequestCapability request : sessionRequests) {
+        long unmatchableCount = request.getDesiredCapabilities().stream()
+          .filter(caps -> !isSupported(caps))
+          .count();
+
+        if (unmatchableCount == request.getDesiredCapabilities().size()) {
+          SessionNotCreatedException exception = new SessionNotCreatedException(
+            "No nodes support the capabilities in the request");
+          sessionQueue.complete(request.getRequestId(), Either.left(exception));
+        }
+      }
+    }
+
+    private void handleNewSessionRequest(SessionRequest sessionRequest) {
+      RequestId reqId = sessionRequest.getRequestId();
+
+      try (Span span = TraceSessionRequest.extract(tracer, sessionRequest).createSpan("distributor.poll_queue")) {
+        Map<String, EventAttributeValue> attributeMap = new HashMap<>();
+        attributeMap.put(
+          AttributeKey.LOGGER_CLASS.getKey(),
+          EventAttribute.setValue(getClass().getName()));
+        span.setAttribute(AttributeKey.REQUEST_ID.getKey(), reqId.toString());
+        attributeMap.put(
+          AttributeKey.REQUEST_ID.getKey(),
+          EventAttribute.setValue(reqId.toString()));
+
+        attributeMap.put("request", EventAttribute.setValue(sessionRequest.toString()));
+        Either<SessionNotCreatedException, CreateSessionResponse> response = newSession(sessionRequest);
+
+        if (response.isLeft() && response.left() instanceof RetrySessionRequestException) {
+          try(Span childSpan = span.createSpan("distributor.retry")) {
+            LOG.info("Retrying");
+            boolean retried = sessionQueue.retryAddToQueue(sessionRequest);
+
+            attributeMap.put("request.retry_add", EventAttribute.setValue(retried));
+            childSpan.addEvent("Retry adding to front of queue. No slot available.", attributeMap);
+
+            if (retried) {
+              return;
+            }
+            childSpan.addEvent("retrying_request", attributeMap);
+          }
+        }
+
+        sessionQueue.complete(reqId, response);
+      }
     }
   }
 }

@@ -29,10 +29,10 @@ goog.require('bot.ErrorCode');
  * @return {Element} The first matching element found in the DOM, or null if no
  *     such element could be found.
  */
-bot.locators.tagName.single = function(target, root) {
+bot.locators.tagName.single = function (target, root) {
   if (target === "") {
     throw new bot.Error(bot.ErrorCode.INVALID_SELECTOR_ERROR,
-        'Unable to locate an element with the tagName ""');
+      'Unable to locate an element with the tagName ""');
   }
   return root.getElementsByTagName(target)[0] || null;
 };
@@ -43,12 +43,12 @@ bot.locators.tagName.single = function(target, root) {
  * @param {string} target The tag name to search for.
  * @param {!(Document|Element)} root The document or element to perform the
  *     search under.
- * @return {IArrayLike} All matching elements, or an empty list.
+ * @return {!IArrayLike} All matching elements, or an empty list.
  */
-bot.locators.tagName.many = function(target, root) {
+bot.locators.tagName.many = function (target, root) {
   if (target === "") {
     throw new bot.Error(bot.ErrorCode.INVALID_SELECTOR_ERROR,
-        'Unable to locate an element with the tagName ""');
+      'Unable to locate an element with the tagName ""');
   }
   return root.getElementsByTagName(target);
 };

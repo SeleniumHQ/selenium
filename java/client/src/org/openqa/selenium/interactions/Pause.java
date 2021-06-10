@@ -17,6 +17,8 @@
 
 package org.openqa.selenium.interactions;
 
+import static org.openqa.selenium.internal.Require.nonNegative;
+
 import java.time.Duration;
 import java.util.HashMap;
 import java.util.Map;
@@ -35,11 +37,7 @@ public class Pause extends Interaction implements Encodable {
   // TODO(simons): Reduce visibility?
   public Pause(InputSource device, Duration duration) {
     super(device);
-
-    if (duration.isNegative()) {
-      throw new IllegalStateException("Duration must be set to 0 or more: " + duration);
-    }
-    this.duration = duration;
+    this.duration = nonNegative(duration);
   }
 
   @Override

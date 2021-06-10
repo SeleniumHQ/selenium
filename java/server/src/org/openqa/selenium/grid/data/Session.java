@@ -17,16 +17,19 @@
 
 package org.openqa.selenium.grid.data;
 
-import com.google.common.collect.ImmutableMap;
-
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
+import org.openqa.selenium.internal.Require;
+import org.openqa.selenium.json.JsonInput;
 import org.openqa.selenium.remote.SessionId;
 
 import java.net.URI;
-import java.net.URISyntaxException;
+import java.time.Instant;
 import java.util.Map;
 import java.util.Objects;
+import java.util.TreeMap;
+
+import static java.util.Collections.unmodifiableMap;
 
 /**
  * Represents a running instance of a WebDriver session. It is identified by a {@link SessionId}.
@@ -37,14 +40,18 @@ public class Session {
 
   private final SessionId id;
   private final URI uri;
+  private final Capabilities stereotype;
   private final Capabilities capabilities;
+  private final Instant startTime;
 
-  public Session(SessionId id, URI uri, Capabilities capabilities) {
-    this.id = Objects.requireNonNull(id, "Session ID must be set.");
-    this.uri = Objects.requireNonNull(uri, "Where the session is running must be set.");
+  public Session(SessionId id, URI uri, Capabilities stereotype, Capabilities capabilities, Instant startTime) {
+    this.id = Require.nonNull("Session ID", id);
+    this.uri = Require.nonNull("Where the session is running", uri);
+    this.startTime = Require.nonNull("Start time", startTime);
 
-    Objects.requireNonNull(capabilities, "Session capabilities must be set");
-    this.capabilities = ImmutableCapabilities.copyOf(capabilities);
+    this.stereotype = ImmutableCapabilities.copyOf(Require.nonNull("Stereotype", stereotype));
+    this.capabilities = ImmutableCapabilities.copyOf(
+        Require.nonNull("Session capabilities", capabilities));
   }
 
   public SessionId getId() {
@@ -55,24 +62,67 @@ public class Session {
     return uri;
   }
 
+  public Capabilities getStereotype() {
+    return stereotype;
+  }
+
   public Capabilities getCapabilities() {
     return capabilities;
   }
 
-  private Map<String, Object> toJson() {
-    // Deliberately shaped like the return value for the W3C New Session command's return value.
-    return ImmutableMap.of(
-        "sessionId", getId().toString(),
-        "capabilities", getCapabilities(),
-        "uri", getUri());
+  public Instant getStartTime() {
+    return startTime;
   }
 
-  private static Session fromJson(Map<String, Object> raw) throws URISyntaxException {
-    SessionId id = new SessionId((String) raw.get("sessionId"));
-    URI uri = new URI((String) raw.get("uri"));
-    Capabilities caps = new ImmutableCapabilities((Map<?, ?>) raw.get("capabilities"));
+  private Map<String, Object> toJson() {
+    // Deliberately shaped like the return value for the W3C New Session command's return value.
+    Map<String, Object> toReturn = new TreeMap<>();
+    toReturn.put("capabilities", getCapabilities());
+    toReturn.put("sessionId", getId().toString());
+    toReturn.put("stereotype", getStereotype());
+    toReturn.put("start", getStartTime());
+    toReturn.put("uri", getUri());
+    return unmodifiableMap(toReturn);
+  }
 
-    return new Session(id, uri, caps);
+  private static Session fromJson(JsonInput input) {
+    SessionId id = null;
+    URI uri = null;
+    Capabilities caps = null;
+    Capabilities stereotype = null;
+    Instant start = null;
+
+    input.beginObject();
+    while (input.hasNext()) {
+      switch (input.nextName()) {
+        case "capabilities":
+          caps = ImmutableCapabilities.copyOf(input.read(Capabilities.class));
+          break;
+
+        case "sessionId":
+          id = input.read(SessionId.class);
+          break;
+
+        case "start":
+          start = input.read(Instant.class);
+          break;
+
+        case "stereotype":
+          stereotype = input.read(Capabilities.class);
+          break;
+
+        case "uri":
+          uri = input.read(URI.class);
+          break;
+
+        default:
+          input.skipValue();
+          break;
+      }
+    }
+    input.endObject();
+
+    return new Session(id, uri, stereotype, caps, start);
   }
 
   @Override

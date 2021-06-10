@@ -30,7 +30,7 @@ goog.require('goog.style');
 
 
 /**
- * Find the first element in the DOM matching the mechanism and critera.
+ * Find the first element in the DOM matching the mechanism and criteria.
  *
  * @param {!string} mechanism The mechanism to search by.
  * @param {!string} criteria The criteria to search for.
@@ -63,7 +63,7 @@ webdriver.ie.findElement = function(mechanism, criteria, opt_root) {
 
 
 /**
- * Find all elements in the DOM matching the mechanism and critera.
+ * Find all elements in the DOM matching the mechanism and criteria.
  *
  * @param {!string} mechanism The mechanism to search by.
  * @param {!string} criteria The criteria to search for.

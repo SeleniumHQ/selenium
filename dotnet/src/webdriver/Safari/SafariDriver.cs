@@ -1,4 +1,4 @@
-﻿// <copyright file="SafariDriver.cs" company="WebDriver Committers">
+// <copyright file="SafariDriver.cs" company="WebDriver Committers">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements. See the NOTICE file
 // distributed with this work for additional information
@@ -59,7 +59,7 @@ namespace OpenQA.Selenium.Safari
     /// }
     /// </code>
     /// </example>
-    public class SafariDriver : RemoteWebDriver
+    public class SafariDriver : WebDriver
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="SafariDriver"/> class.
@@ -89,7 +89,7 @@ namespace OpenQA.Selenium.Safari
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SafariDriver"/> class using the specified path
-        /// to the directory containing ChromeDriver.exe.
+        /// to the directory containing safaridriver.
         /// </summary>
         /// <param name="safariDriverDirectory">The full path to the directory containing SafariDriver executable.</param>
         public SafariDriver(string safariDriverDirectory)
@@ -99,7 +99,7 @@ namespace OpenQA.Selenium.Safari
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SafariDriver"/> class using the specified path
-        /// to the directory containing ChromeDriver.exe and options.
+        /// to the directory containing safaridriver and options.
         /// </summary>
         /// <param name="safariDriverDirectory">The full path to the directory containing SafariDriver executable.</param>
         /// <param name="options">The <see cref="SafariOptions"/> to be used with the Safari driver.</param>
@@ -110,7 +110,7 @@ namespace OpenQA.Selenium.Safari
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SafariDriver"/> class using the specified path
-        /// to the directory containing ChromeDriver.exe, options, and command timeout.
+        /// to the directory containing safaridriver, options, and command timeout.
         /// </summary>
         /// <param name="safariDriverDirectory">The full path to the directory containing SafariDriver executable.</param>
         /// <param name="options">The <see cref="SafariOptions"/> to be used with the Safari driver.</param>

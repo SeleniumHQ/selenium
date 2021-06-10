@@ -21,10 +21,13 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 import org.openqa.selenium.io.FileHandler;
 import org.openqa.selenium.io.Zip;
 import org.openqa.selenium.build.InProject;
+import org.openqa.selenium.testing.UnitTests;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -40,10 +43,11 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+@Category(UnitTests.class)
 public class FirefoxProfileTest {
   private static final String FIREBUG_PATH = "third_party/firebug/firebug-1.5.0-fx.xpi";
   private static final String FIREBUG_RESOURCE_PATH =
-      "/org/openqa/selenium/firefox/firebug-1.5.0-fx.xpi";
+    "java/client/test/org/openqa/selenium/firefox/firebug-1.5.0-fx.xpi";
   private static final String MOOLTIPASS_PATH = "third_party/firebug/mooltipass-1.1.87.xpi";
 
   private FirefoxProfile profile;
@@ -148,6 +152,7 @@ public class FirefoxProfileTest {
   }
 
   @Test
+  @Ignore("Need to replace the extension")
   public void shouldInstallExtensionFromZip() {
     profile.addExtension(InProject.locate(FIREBUG_PATH).toFile());
     File profileDir = profile.layoutOnDisk();

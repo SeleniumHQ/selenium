@@ -128,7 +128,7 @@ public class InternalSelenseTestBase extends SeleneseTestBase {
 
   @BeforeClass
   public static void initializeServer() {
-    GlobalTestEnvironment.get(InProcessTestEnvironment.class);
+    GlobalTestEnvironment.getOrCreate(InProcessTestEnvironment::new);
   }
 
   public TestWatcher traceMethodName = new TestWatcher() {
@@ -169,24 +169,23 @@ public class InternalSelenseTestBase extends SeleneseTestBase {
   private Capabilities createCapabilities() {
     String property = System.getProperty("selenium.browser", "ff");
 
-    Browser browser = Browser.valueOf(property);
+    Browser browser = Browser.detect();
     switch (browser) {
       case CHROME:
         return new ChromeOptions();
 
       case EDGE:
-      case CHROMIUMEDGE:
         return new EdgeOptions();
 
       case IE:
         return new InternetExplorerOptions();
 
+      case LEGACY_FIREFOX_XPI:
       case FIREFOX:
-      case MARIONETTE:
         return new FirefoxOptions();
 
+      case LEGACY_OPERA:
       case OPERA:
-      case OPERABLINK:
         return new OperaOptions();
 
       case SAFARI:

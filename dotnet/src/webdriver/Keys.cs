@@ -163,12 +163,12 @@ namespace OpenQA.Selenium
         public static readonly string ArrowRight = Convert.ToString(Convert.ToChar(0xE014, CultureInfo.InvariantCulture), CultureInfo.InvariantCulture); // alias
 
         /// <summary>
-        /// Represents the Left arrow key.
+        /// Represents the down arrow key.
         /// </summary>
         public static readonly string Down = Convert.ToString(Convert.ToChar(0xE015, CultureInfo.InvariantCulture), CultureInfo.InvariantCulture);
 
         /// <summary>
-        /// Represents the Left arrow key.
+        /// Represents the down arrow key.
         /// </summary>
         public static readonly string ArrowDown = Convert.ToString(Convert.ToChar(0xE015, CultureInfo.InvariantCulture), CultureInfo.InvariantCulture); // alias
 

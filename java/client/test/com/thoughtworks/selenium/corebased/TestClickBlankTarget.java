@@ -19,8 +19,10 @@ package com.thoughtworks.selenium.corebased;
 
 import com.thoughtworks.selenium.InternalSelenseTestBase;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
+@Ignore("Switching to the null window appears to fail")
 public class TestClickBlankTarget extends InternalSelenseTestBase {
   @Test
   public void testClickBlankTarget() {

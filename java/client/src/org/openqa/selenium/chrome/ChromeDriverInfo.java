@@ -46,9 +46,14 @@ public class ChromeDriverInfo extends ChromiumDriverInfo {
 
   @Override
   public boolean isSupporting(Capabilities capabilities) {
-    return BrowserType.CHROME.equals(capabilities.getBrowserName()) ||
+    return BrowserType.CHROME.equalsIgnoreCase(capabilities.getBrowserName()) ||
            capabilities.getCapability("chromeOptions") != null ||
            capabilities.getCapability("goog:chromeOptions") != null;
+  }
+
+  @Override
+  public boolean isSupportingCdp() {
+    return true;
   }
 
   @Override

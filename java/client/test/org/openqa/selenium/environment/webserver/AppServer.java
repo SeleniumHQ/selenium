@@ -17,6 +17,9 @@
 
 package org.openqa.selenium.environment.webserver;
 
+import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.net.NetworkUtils;
+
 public interface AppServer {
 
   String getHostName();
@@ -36,5 +39,24 @@ public interface AppServer {
   void start();
 
   void stop();
+
+  static String detectHostname() {
+    String hostnameFromProperty = System.getenv("HOSTNAME");
+    return hostnameFromProperty == null ? "localhost" : hostnameFromProperty;
+  }
+
+  static String detectAlternateHostname() {
+    String alternativeHostnameFromProperty = System.getenv("ALTERNATIVE_HOSTNAME");
+    if (alternativeHostnameFromProperty != null) {
+      return alternativeHostnameFromProperty;
+    }
+
+    NetworkUtils networkUtils = new NetworkUtils();
+    try {
+      return networkUtils.getNonLoopbackAddressOfThisMachine();
+    } catch (WebDriverException e) {
+      return networkUtils.getPrivateLocalAddress();
+    }
+  }
 
 }

@@ -151,7 +151,6 @@ public class DefaultSelenium implements Selenium {
 
   @Override
   public void showContextualBanner() {
-
     try {
       StackTraceElement[] e = Thread.currentThread().getStackTrace();
 
@@ -167,7 +166,11 @@ public class DefaultSelenium implements Selenium {
         methodName = e[i].getMethodName();
         break;
       }
-      showContextualBanner(className, methodName);
+      if (className != null && methodName != null) {
+        showContextualBanner(className, methodName);
+      } else {
+        this.setContext("<unknown context>");
+      }
     } catch (Exception e) {
       this.setContext("<unknown context>");
     }

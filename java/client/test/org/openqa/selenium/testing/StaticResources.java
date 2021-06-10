@@ -17,6 +17,8 @@
 
 package org.openqa.selenium.testing;
 
+import static org.openqa.selenium.build.DevMode.isInDevMode;
+
 import org.openqa.selenium.build.BazelBuild;
 import org.openqa.selenium.build.InProject;
 
@@ -24,10 +26,21 @@ import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Objects;
+import java.util.logging.Logger;
 
 class StaticResources {
+  private static Logger log = Logger.getLogger(StaticResources.class.getName());
 
   static void ensureAvailable() {
+    if (!isInDevMode()) {
+      // we should only need to do this when we're in dev mode
+      // when running in a test suite, our dependencies should already
+      // be listed.
+      log.info("Not in dev mode. Ignoring attempt to copy static resources");
+      return;
+    }
+
     if (!Files.exists(InProject.findProjectRoot().resolve("Rakefile"))) {
       // we're not in dev mode
       return;
@@ -45,6 +58,11 @@ class StaticResources {
     copy("javascript/webdriver/atoms/get-attribute.js",
          "org/openqa/selenium/remote/getAttribute.js");
 
+    // Relative locators
+    bazel.build("//javascript/atoms/fragments:find-elements");
+    copy("javascript/atoms/fragments/find-elements.js",
+         "org/openqa/selenium/support/locators/findElements.js");
+
     // Firefox XPI
     copy("third_party/js/selenium/webdriver_prefs.json",
          "org/openqa/selenium/firefox/webdriver_prefs.json");
@@ -56,7 +74,7 @@ class StaticResources {
   private static void copy(String copyFrom, String copyTo) {
     try {
       Path source = InProject.locate("bazel-bin").resolve(copyFrom);
-      Path dest = InProject.locate("java/client/build/test").resolve(copyTo);
+      Path dest = InProject.locate("java/build/test").resolve(copyTo);
 
       if (Files.exists(dest)) {
         // Assume we're good.

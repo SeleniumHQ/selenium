@@ -18,7 +18,6 @@
 package org.openqa.selenium.testing.drivers;
 
 import com.google.common.collect.ImmutableMap;
-
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.Platform;
@@ -40,14 +39,15 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.logging.Level;
 import java.util.stream.Stream;
 
 public class WebDriverBuilder implements Supplier<WebDriver> {
 
-  private static LinkedList<Runnable> shutdownActions = new LinkedList<>();
-  private static Set<WebDriver> managedDrivers = new HashSet<>();
+  private static final LinkedList<Runnable> shutdownActions = new LinkedList<>();
+  private static final Set<WebDriver> managedDrivers = new HashSet<>();
   static {
     shutdownActions.add(() -> managedDrivers.forEach(WebDriver::quit));
     Runtime.getRuntime().addShutdownHook(new Thread(() -> shutdownActions.forEach(Runnable::run)));
@@ -55,41 +55,6 @@ public class WebDriverBuilder implements Supplier<WebDriver> {
 
   static void addShutdownAction(Runnable action) {
     shutdownActions.add(action);
-  }
-
-  private static Map<Browser, Supplier<Capabilities>> capabilitySuppliers =
-    new ImmutableMap.Builder<Browser, Supplier<Capabilities>>()
-      .put(Browser.CHROME, ChromeOptions::new)
-      .put(Browser.FIREFOX, () -> new FirefoxOptions()
-          .setLegacy(true)
-          .setHeadless(Boolean.parseBoolean(System.getProperty("webdriver.firefox.headless", "false"))))
-      .put(Browser.MARIONETTE, () -> new FirefoxOptions()
-          .setHeadless(Boolean.parseBoolean(System.getProperty("webdriver.firefox.headless", "false"))))
-      .put(Browser.IE, () -> {
-        InternetExplorerOptions options = new InternetExplorerOptions();
-        if (Boolean.getBoolean("selenium.ie.disable_native_events")) {
-          options.disableNativeEvents();
-        }
-        if (Boolean.getBoolean("selenium.ie.require_window_focus")) {
-          options.requireWindowFocus();
-        }
-        return options;
-      })
-      .put(Browser.CHROMIUMEDGE, EdgeOptions::new)
-      .put(Browser.EDGE, EdgeOptions::new)
-      .put(Browser.HTMLUNIT, () -> new DesiredCapabilities(BrowserType.HTMLUNIT, "", Platform.ANY))
-      .put(Browser.OPERABLINK, OperaOptions::new)
-      .put(Browser.SAFARI, () -> {
-        SafariOptions options = new SafariOptions();
-        if (Boolean.getBoolean("selenium.safari.tp")) {
-          options.setUseTechnologyPreview(true);
-        }
-        return options;
-      })
-      .build();
-
-  public static Capabilities getStandardCapabilitiesFor(Browser toBuild) {
-    return capabilitySuppliers.getOrDefault(toBuild, ImmutableCapabilities::new).get();
   }
 
   private final Browser toBuild;
@@ -108,15 +73,15 @@ public class WebDriverBuilder implements Supplier<WebDriver> {
   }
 
   public WebDriver get(Capabilities desiredCapabilities) {
-    Capabilities desiredCaps = getStandardCapabilitiesFor(toBuild).merge(desiredCapabilities);
+    Objects.requireNonNull(desiredCapabilities, "Capabilities to use must be set");
+    Capabilities desiredCaps = Objects.requireNonNull(Browser.detect()).getCapabilities().merge(desiredCapabilities);
 
     WebDriver driver =
-        Stream.of(
-            new ExternalDriverSupplier(desiredCaps),
-            new GridSupplier(desiredCaps),
-            new RemoteSupplier(desiredCaps),
-            new TestInternetExplorerSupplier(desiredCaps),
-            new DefaultDriverSupplier(desiredCaps))
+      Stream.of(new ExternalDriverSupplier(desiredCaps),
+                new GridSupplier(desiredCaps),
+                new RemoteSupplier(desiredCaps),
+                new TestInternetExplorerSupplier(desiredCaps),
+                new DefaultDriverSupplier(desiredCaps))
         .map(Supplier::get)
         .filter(Objects::nonNull)
         .findFirst()

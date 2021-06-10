@@ -57,6 +57,8 @@ module Selenium
           :jenkins
         elsif ENV['APPVEYOR']
           :appveyor
+        elsif ENV['GITHUB_ACTIONS']
+          :github
         end
       end
 
@@ -95,7 +97,7 @@ module Selenium
       def wsl?
         return false unless linux?
 
-        File.read('/proc/version').include?('Microsoft')
+        File.read('/proc/version').downcase.include?('microsoft')
       rescue Errno::EACCES
         # the file cannot be accessed on Linux on DeX
         false

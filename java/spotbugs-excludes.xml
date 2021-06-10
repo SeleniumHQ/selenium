@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<FindBugsFilter
+  xmlns="https://github.com/spotbugs/filter/3.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="https://github.com/spotbugs/filter/3.0.0 https://raw.githubusercontent.com/spotbugs/spotbugs/3.1.0/spotbugs/etc/findbugsfilter.xsd">
+
+  <Match>
+    <Bug pattern="SIC_INNER_SHOULD_BE_STATIC"/>
+  </Match>
+
+  <Match>
+    <Class name="com.thoughtworks.selenium.InternalSelenseTestBase"/>
+    <Bug pattern="NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE"/>
+  </Match>
+
+  <Match>
+    <Class name="org.openqa.selenium.ImmutableCapabilities"/>
+    <Bug pattern="EQ_CHECK_FOR_OPERAND_NOT_COMPATIBLE_WITH_THIS"/>
+  </Match>
+
+  <Match>
+    <Class name="org.openqa.selenium.build.Build"/>
+    <Bug pattern="NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE"/>
+  </Match>
+
+  <Match>
+    <Class name="org.openqa.selenium.grid.config.Configs"/>
+    <Bug pattern="NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE"/>
+  </Match>
+
+  <Match>
+    <Class name="org.openqa.selenium.docker.v1_40.PullImage"/>
+    <Bug pattern="DE_MIGHT_IGNORE"/>
+  </Match>
+
+  <Match>
+    <Class name="org.openqa.selenium.events.zeromq.BoundZmqEventBus"/>
+    <Bug pattern="RV_RETURN_VALUE_IGNORED_BAD_PRACTICE"/>
+  </Match>
+
+  <Match>
+    <Class name="org.openqa.selenium.events.zeromq.UnboundZmqEventBus"/>
+    <Bug pattern="UR_UNINIT_READ"/>
+  </Match>
+
+  <Match>
+    <Class name="org.openqa.selenium.firefox.Executable"/>
+    <Bug pattern="NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE"/>
+  </Match>
+
+  <Match>
+    <Class name="org.openqa.selenium.firefox.FirefoxBinary"/>
+    <Bug pattern="DMI_HARDCODED_ABSOLUTE_FILENAME,NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE"/>
+  </Match>
+
+  <Match>
+    <Class name="org.openqa.selenium.firefox.FirefoxDriver"/>
+    <Bug pattern="NP_BOOLEAN_RETURN_NULL,UUF_UNUSED_PUBLIC_OR_PROTECTED_FIELD"/>
+  </Match>
+
+  <Match>
+    <Class name="org.openqa.selenium.firefox.FirefoxProfile"/>
+    <Bug pattern="RV_RETURN_VALUE_IGNORED_BAD_PRACTICE"/>
+  </Match>
+
+  <Match>
+    <Class name="org.openqa.selenium.firefox.xpi.XpiDriverService"/>
+    <Bug pattern="OBL_UNSATISFIED_OBLIGATION"/>
+  </Match>
+
+  <Match>
+    <Class name="~org.openqa.selenium.grid.commands.CompletionCommand.*"/>
+    <Bug pattern="DM_EXIT"/>
+  </Match>
+
+  <Match>
+    <Class name="org.openqa.selenium.grid.commands.StandaloneFlags"/>
+    <Bug pattern="URF_UNREAD_PUBLIC_OR_PROTECTED_FIELD"/>
+  </Match>
+
+  <Match>
+    <Class name="~org.openqa.selenium.grid.data..*SessionResponse"/>
+    <Bug pattern="EI_EXPOSE_REP"/>
+  </Match>
+
+  <Match>
+    <Class name="org.openqa.selenium.grid.log.LoggingFlags"/>
+    <Bug pattern="URF_UNREAD_FIELD"/>
+  </Match>
+
+  <Match>
+    <Class name="org.openqa.selenium.grid.node.config.DriverServiceSessionFactory"/>
+    <Bug pattern="REC_CATCH_EXCEPTION"/>
+  </Match>
+
+  <Match>
+    <Class name="org.openqa.selenium.grid.node.httpd.NodeFlags"/>
+    <Bug pattern="URF_UNREAD_PUBLIC_OR_PROTECTED_FIELD"/>
+  </Match>
+
+  <Match>
+    <Class name="org.openqa.selenium.grid.node.k8s.OneShotNode"/>
+    <Bug pattern="NP_LOAD_OF_KNOWN_NULL_VALUE,NP_NULL_ON_SOME_PATH"/>
+  </Match>
+
+  <Match>
+    <Class name="org.openqa.selenium.grid.server.BaseServerFlags"/>
+    <Bug pattern="URF_UNREAD_FIELD"/>
+  </Match>
+
+  <Match>
+    <Class name="org.openqa.selenium.grid.sessionqueue.config.SessionRequestFlags"/>
+    <Bug pattern="URF_UNREAD_FIELD"/>
+  </Match>
+
+  <Match>
+    <Class name="org.openqa.selenium.grid.web.PathResource"/>
+    <Bug pattern="NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE"/>
+  </Match>
+
+  <Match>
+    <Class name="~org.openqa.selenium.interactions..*"/>
+    <Bug pattern="UWF_UNWRITTEN_FIELD"/>
+  </Match>
+
+
+  <Match>
+    <Class name="org.openqa.selenium.json.JsonInput"/>
+    <Bug pattern="IS2_INCONSISTENT_SYNC"/>
+  </Match>
+
+  <Match>
+    <Class name="org.openqa.selenium.json.JsonInputIterator"/>
+    <Bug pattern="IT_NO_SUCH_ELEMENT"/>
+  </Match>
+
+  <Match>
+    <Class name="org.openqa.selenium.mobile.NetworkConnection$ConnectionType"/>
+    <Bug pattern="IM_BAD_CHECK_FOR_ODD"/>
+  </Match>
+
+  <Match>
+    <Class name="org.openqa.selenium.net.NetworkUtils"/>
+    <Bug pattern="ST_WRITE_TO_STATIC_FROM_INSTANCE_METHOD"/>
+  </Match>
+
+  <Match>
+    <Class name="org.openqa.selenium.remote.http.BinaryMessage"/>
+    <Bug pattern="EI_EXPOSE_REP"/>
+  </Match>
+
+  <Match>
+    <Class name="~org.openqa.selenium.remote.internal.HttpClientTestBase.*"/>
+    <Bug pattern="ST_WRITE_TO_STATIC_FROM_INSTANCE_METHOD"/>
+  </Match>
+
+  <Match>
+    <Class name="org.openqa.selenium.safari.SafariDriverService"/>
+    <Bug pattern="DMI_HARDCODED_ABSOLUTE_FILENAME"/>
+  </Match>
+
+  <Match>
+    <Class name="org.openqa.selenium.server.htmlrunner.ReflectivelyDiscoveredSteps"/>
+    <Bug pattern="SF_SWITCH_FALLTHROUGH"/>
+  </Match>
+
+  <Match>
+    <Class name="org.openqa.selenium.testing.Pages"/>
+    <Bug pattern="URF_UNREAD_PUBLIC_OR_PROTECTED_FIELD"/>
+  </Match>
+
+  <Match>
+    <Class name="org.openqa.selenium.testing.JUnit4TestBase"/>
+    <Bug pattern="URF_UNREAD_PUBLIC_OR_PROTECTED_FIELD"/>
+  </Match>
+
+  <Match>
+    <Class name="org.openqa.selenium.testing.StaticResources"/>
+    <Bug pattern="NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE"/>
+  </Match>
+</FindBugsFilter>

@@ -28,17 +28,28 @@ namespace OpenQA.Selenium.Environment
             string content = File.ReadAllText(configFile);
             TestEnvironment env = JsonConvert.DeserializeObject<TestEnvironment>(content);
 
-            bool captureWebServerOutput = TestContext.Parameters.Get<bool>("CaptureWebServerOutput", env.CaptureWebServerOutput);
-            bool hideWebServerCommandPrompt = TestContext.Parameters.Get<bool>("HideWebServerCommandPrompt", env.HideWebServerCommandPrompt);
             string activeDriverConfig = TestContext.Parameters.Get("ActiveDriverConfig", env.ActiveDriverConfig);
             string activeWebsiteConfig = TestContext.Parameters.Get("ActiveWebsiteConfig", env.ActiveWebsiteConfig);
             string driverServiceLocation = TestContext.Parameters.Get("DriverServiceLocation", env.DriverServiceLocation);
             DriverConfig driverConfig = env.DriverConfigs[activeDriverConfig];
             WebsiteConfig websiteConfig = env.WebSiteConfigs[activeWebsiteConfig];
+            TestWebServerConfig webServerConfig = env.TestWebServerConfig;
+            webServerConfig.CaptureConsoleOutput = TestContext.Parameters.Get<bool>("CaptureWebServerOutput", env.TestWebServerConfig.CaptureConsoleOutput);
+            webServerConfig.HideCommandPromptWindow = TestContext.Parameters.Get<bool>("HideWebServerCommandPrompt", env.TestWebServerConfig.HideCommandPromptWindow);
+            webServerConfig.JavaHomeDirectory = TestContext.Parameters.Get("WebServerJavaHome", env.TestWebServerConfig.JavaHomeDirectory);
             this.driverFactory = new DriverFactory(driverServiceLocation);
             this.driverFactory.DriverStarting += OnDriverStarting;
 
-            Assembly driverAssembly = Assembly.Load(driverConfig.AssemblyName);
+            Assembly driverAssembly = null;
+            try
+            {
+                driverAssembly = Assembly.Load(driverConfig.AssemblyName);
+            }
+            catch (FileNotFoundException)
+            {
+                driverAssembly = Assembly.GetExecutingAssembly();
+            }
+
             driverType = driverAssembly.GetType(driverConfig.DriverTypeName);
             browser = driverConfig.BrowserValue;
             remoteCapabilities = driverConfig.RemoteCapabilities;
@@ -108,7 +119,7 @@ namespace OpenQA.Selenium.Environment
                 projectRoot += "/selenium";
             }
 
-            webServer = new TestWebServer(projectRoot, captureWebServerOutput, hideWebServerCommandPrompt);
+            webServer = new TestWebServer(projectRoot, webServerConfig);
             bool autoStartRemoteServer = false;
             if (browser == Browser.Remote)
             {

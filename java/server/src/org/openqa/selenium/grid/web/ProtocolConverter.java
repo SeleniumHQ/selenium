@@ -18,14 +18,11 @@
 package org.openqa.selenium.grid.web;
 
 import com.google.common.annotations.VisibleForTesting;
-import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.net.MediaType;
-import io.opentracing.Span;
-import io.opentracing.SpanContext;
-import io.opentracing.Tracer;
-import io.opentracing.tag.Tags;
+
+import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.remote.Command;
 import org.openqa.selenium.remote.CommandCodec;
@@ -34,6 +31,7 @@ import org.openqa.selenium.remote.DriverCommand;
 import org.openqa.selenium.remote.JsonToWebElementConverter;
 import org.openqa.selenium.remote.Response;
 import org.openqa.selenium.remote.ResponseCodec;
+import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.remote.codec.jwp.JsonHttpCommandCodec;
 import org.openqa.selenium.remote.codec.jwp.JsonHttpResponseCodec;
 import org.openqa.selenium.remote.codec.w3c.W3CHttpCommandCodec;
@@ -42,9 +40,16 @@ import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
+import org.openqa.selenium.remote.tracing.AttributeKey;
+import org.openqa.selenium.remote.tracing.EventAttribute;
+import org.openqa.selenium.remote.tracing.EventAttributeValue;
 import org.openqa.selenium.remote.tracing.HttpTracing;
+import org.openqa.selenium.remote.tracing.Span;
+import org.openqa.selenium.remote.tracing.Status;
+import org.openqa.selenium.remote.tracing.Tracer;
 
 import java.io.UncheckedIOException;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.function.Function;
@@ -53,13 +58,21 @@ import static java.net.HttpURLConnection.HTTP_OK;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.openqa.selenium.json.Json.MAP_TYPE;
 import static org.openqa.selenium.remote.Dialect.W3C;
+import static org.openqa.selenium.remote.RemoteTags.SESSION_ID;
+import static org.openqa.selenium.remote.RemoteTags.SESSION_ID_EVENT;
 import static org.openqa.selenium.remote.http.Contents.bytes;
 import static org.openqa.selenium.remote.http.Contents.string;
+import static org.openqa.selenium.remote.tracing.HttpTracing.newSpanAsChildOf;
+import static org.openqa.selenium.remote.tracing.Tags.HTTP_REQUEST;
+import static org.openqa.selenium.remote.tracing.Tags.HTTP_REQUEST_EVENT;
+import static org.openqa.selenium.remote.tracing.Tags.HTTP_RESPONSE;
+import static org.openqa.selenium.remote.tracing.Tags.HTTP_RESPONSE_EVENT;
+import static org.openqa.selenium.remote.tracing.Tags.KIND;
 
 public class ProtocolConverter implements HttpHandler {
 
-  private final static Json JSON = new Json();
-  private final static ImmutableSet<String> IGNORED_REQ_HEADERS = ImmutableSet.<String>builder()
+  private static final Json JSON = new Json();
+  private static final ImmutableSet<String> IGNORED_REQ_HEADERS = ImmutableSet.<String>builder()
     .add("connection")
     .add("content-length")
     .add("content-type")
@@ -87,15 +100,13 @@ public class ProtocolConverter implements HttpHandler {
     HttpClient client,
     Dialect downstream,
     Dialect upstream) {
-    this.tracer = Objects.requireNonNull(tracer);
-    this.client = Objects.requireNonNull(client);
+    this.tracer = Require.nonNull("Tracer", tracer);
+    this.client = Require.nonNull("HTTP client", client);
 
-    Objects.requireNonNull(downstream);
-    this.downstream = getCommandCodec(downstream);
+    this.downstream = getCommandCodec(Require.nonNull("Downstream dialect", downstream));
     this.downstreamResponse = getResponseCodec(downstream);
 
-    Objects.requireNonNull(upstream);
-    this.upstream = getCommandCodec(upstream);
+    this.upstream = getCommandCodec(Require.nonNull("Upstream dialect", upstream));
     this.upstreamResponse = getResponseCodec(upstream);
 
     converter = new JsonToWebElementConverter(null);
@@ -105,15 +116,21 @@ public class ProtocolConverter implements HttpHandler {
 
   @Override
   public HttpResponse execute(HttpRequest req) throws UncheckedIOException {
-    Span previousSpan = tracer.scopeManager().activeSpan();
-    SpanContext parent = HttpTracing.extract(tracer, req);
-    Span span = tracer.buildSpan("protocol_converter").asChildOf(parent).start();
-    try {
-      tracer.scopeManager().activate(span);
-
+    try (Span span = newSpanAsChildOf(tracer, req, "protocol_converter")) {
+      Map<String, EventAttributeValue> attributeMap = new HashMap<>();
+      attributeMap.put(AttributeKey.HTTP_HANDLER_CLASS.getKey(),
+                       EventAttribute.setValue(getClass().getName()));
       Command command = downstream.decode(req);
-      span.setTag("session.id", String.valueOf(command.getSessionId()));
-      span.setTag("command.name", command.getName());
+      KIND.accept(span, Span.Kind.SERVER);
+      HTTP_REQUEST.accept(span, req);
+      HTTP_REQUEST_EVENT.accept(attributeMap, req);
+      SessionId sessionId = command.getSessionId();
+      SESSION_ID.accept(span, sessionId);
+      SESSION_ID_EVENT.accept(attributeMap, sessionId);
+      String commandName = command.getName();
+      span.setAttribute("command.name", commandName);
+      attributeMap.put("command.name", EventAttribute.setValue(commandName));
+      attributeMap.put("downstream.command.parameters", EventAttribute.setValue(command.getParameters().toString()));
 
       // Massage the webelements
       @SuppressWarnings("unchecked")
@@ -123,12 +140,17 @@ public class ProtocolConverter implements HttpHandler {
         command.getName(),
         parameters);
 
+      attributeMap.put("upstream.command.parameters", EventAttribute.setValue(command.getParameters().toString()));
       HttpRequest request = upstream.encode(command);
 
       HttpTracing.inject(tracer, span, request);
       HttpResponse res = makeRequest(request);
-      span.setTag(Tags.HTTP_STATUS, res.getStatus());
-      span.setTag(Tags.ERROR, !res.isSuccessful());
+      if(!res.isSuccessful()) {
+        span.setAttribute("error", true);
+        span.setStatus(Status.UNKNOWN);
+      }
+      HTTP_RESPONSE.accept(span, res);
+      HTTP_RESPONSE_EVENT.accept(attributeMap, res);
 
       HttpResponse toReturn;
       if (DriverCommand.NEW_SESSION.equals(command.getName()) && res.getStatus() == HTTP_OK) {
@@ -144,10 +166,8 @@ public class ProtocolConverter implements HttpHandler {
         }
       });
 
+      span.addEvent("Protocol conversion completed", attributeMap);
       return toReturn;
-    } finally {
-      span.finish();
-      tracer.scopeManager().activate(previousSpan);
     }
   }
 
@@ -185,8 +205,8 @@ public class ProtocolConverter implements HttpHandler {
   private HttpResponse createW3CNewSessionResponse(HttpResponse response) {
     Map<String, Object> value = JSON.toType(string(response), MAP_TYPE);
 
-    Preconditions.checkState(value.get("sessionId") != null);
-    Preconditions.checkState(value.get("value") instanceof Map);
+    Require.state("Session id", value.get("sessionId")).nonNull();
+    Require.state("Response payload", value.get("value")).instanceOf(Map.class);
 
     return createResponse(ImmutableMap.of(
       "value", ImmutableMap.of(
@@ -198,8 +218,8 @@ public class ProtocolConverter implements HttpHandler {
     Map<String, Object> value = Objects.requireNonNull(Values.get(response, MAP_TYPE));
 
     // Check to see if the values we need are set
-    Preconditions.checkState(value.get("sessionId") != null);
-    Preconditions.checkState(value.get("capabilities") instanceof Map);
+    Require.state("Session id", value.get("sessionId")).nonNull();
+    Require.state("Response payload", value.get("capabilities")).instanceOf(Map.class);
 
     return createResponse(ImmutableMap.of(
       "status", 0,

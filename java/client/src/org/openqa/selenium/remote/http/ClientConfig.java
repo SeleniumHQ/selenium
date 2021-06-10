@@ -24,9 +24,9 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.time.Duration;
-import java.util.Objects;
 
-import static com.google.common.base.Preconditions.checkArgument;
+import org.openqa.selenium.Credentials;
+import org.openqa.selenium.internal.Require;
 
 public class ClientConfig {
 
@@ -36,43 +36,46 @@ public class ClientConfig {
   private final Duration readTimeout;
   private final Filter filters;
   private final Proxy proxy;
+  private final Credentials credentials;
 
   private ClientConfig(
       URI baseUri,
       Duration connectionTimeout,
       Duration readTimeout,
       Filter filters,
-      Proxy proxy) {
+      Proxy proxy,
+      Credentials credentials) {
     this.baseUri = baseUri;
-    this.connectionTimeout = Objects.requireNonNull(
-        connectionTimeout,
-        "Connection timeout must be set.");
-    this.readTimeout = Objects.requireNonNull(readTimeout, "Connection timeout must be set.");
-    this.filters = Objects.requireNonNull(filters, "Filters must be set.");
+    this.connectionTimeout = Require.nonNegative("Connection timeout", connectionTimeout);
+    this.readTimeout = Require.nonNegative("Read timeout", readTimeout);
+    this.filters = Require.nonNull("Filters", filters);
     this.proxy = proxy;
-
-    checkArgument(!readTimeout.isNegative(), "Read time out cannot be negative");
-    checkArgument(!connectionTimeout.isNegative(), "Connection time out cannot be negative");
+    this.credentials = credentials;
   }
 
   public static ClientConfig defaultConfig() {
     return new ClientConfig(
       null,
-      Duration.ofMinutes(2),
-      Duration.ofHours(3),
+      Duration.ofSeconds(10),
+      Duration.ofMinutes(3),
       new AddSeleniumUserAgent(),
+      null,
       null);
   }
 
   public ClientConfig baseUri(URI baseUri) {
-    Objects.requireNonNull(baseUri, "Base URI to use must be set.");
-    return new ClientConfig(baseUri, connectionTimeout, readTimeout, filters, proxy);
+    return new ClientConfig(
+      Require.nonNull("Base URI", baseUri),
+      connectionTimeout,
+      readTimeout,
+      filters,
+      proxy,
+      credentials);
   }
 
   public ClientConfig baseUrl(URL baseUrl) {
-    Objects.requireNonNull(baseUrl, "Base URL to use must be set.");
     try {
-      return baseUri(baseUrl.toURI());
+      return baseUri(Require.nonNull("Base URL", baseUrl).toURI());
     } catch (URISyntaxException e) {
       throw new RuntimeException(e);
     }
@@ -91,8 +94,13 @@ public class ClientConfig {
   }
 
   public ClientConfig connectionTimeout(Duration timeout) {
-    Objects.requireNonNull(timeout, "Connection timeout must be set.");
-    return new ClientConfig(baseUri, timeout, readTimeout, filters, proxy);
+    return new ClientConfig(
+      baseUri,
+      Require.nonNull("Connection timeout", timeout),
+      readTimeout,
+      filters,
+      proxy,
+      credentials);
   }
 
   public Duration connectionTimeout() {
@@ -100,8 +108,13 @@ public class ClientConfig {
   }
 
   public ClientConfig readTimeout(Duration timeout) {
-    Objects.requireNonNull(timeout, "Read timeout must be set.");
-    return new ClientConfig(baseUri, connectionTimeout, timeout, filters, proxy);
+    return new ClientConfig(
+      baseUri,
+      connectionTimeout,
+      Require.nonNull("Read timeout", timeout),
+      filters,
+      proxy,
+      credentials);
   }
 
   public Duration readTimeout() {
@@ -114,7 +127,8 @@ public class ClientConfig {
         connectionTimeout,
         readTimeout,
         filter == null ? DEFAULT_FILTER : filter.andThen(DEFAULT_FILTER),
-        proxy);
+        proxy,
+        credentials);
   }
 
   public Filter filter() {
@@ -122,10 +136,42 @@ public class ClientConfig {
   }
 
   public ClientConfig proxy(Proxy proxy) {
-    return new ClientConfig(baseUri, connectionTimeout, readTimeout, filters, proxy);
+    return new ClientConfig(
+      baseUri,
+      connectionTimeout,
+      readTimeout,
+      filters,
+      Require.nonNull("Proxy", proxy),
+      credentials);
   }
 
   public Proxy proxy() {
     return proxy;
+  }
+
+  public ClientConfig authenticateAs(Credentials credentials) {
+    return new ClientConfig(
+      baseUri,
+      connectionTimeout,
+      readTimeout,
+      filters,
+      proxy,
+      Require.nonNull("Credentials", credentials));
+  }
+
+  public Credentials credentials() {
+    return credentials;
+  }
+
+  @Override
+  public String toString() {
+    return "ClientConfig{" +
+      "baseUri=" + baseUri +
+      ", connectionTimeout=" + connectionTimeout +
+      ", readTimeout=" + readTimeout +
+      ", filters=" + filters +
+      ", proxy=" + proxy +
+      ", credentials=" + credentials +
+      '}';
   }
 }

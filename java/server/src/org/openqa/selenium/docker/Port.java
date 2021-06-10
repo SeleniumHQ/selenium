@@ -17,7 +17,7 @@
 
 package org.openqa.selenium.docker;
 
-import java.util.Objects;
+import org.openqa.selenium.internal.Require;
 
 public class Port {
 
@@ -25,7 +25,7 @@ public class Port {
   private final int port;
 
   private Port(String protocol, int port) {
-    this.protocol = Objects.requireNonNull(protocol);
+    this.protocol = Require.nonNull("Protocol", protocol);
     this.port = port;
   }
 

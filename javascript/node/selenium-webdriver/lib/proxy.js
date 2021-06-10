@@ -25,7 +25,7 @@
  *     capabilities.setProxy(proxy.manual({http: 'host:1234'});
  */
 
-'use strict';
+'use strict'
 
 /**
  * Supported {@linkplain Config proxy configuration} types.
@@ -38,8 +38,7 @@ const Type = {
   MANUAL: 'manual',
   PAC: 'pac',
   SYSTEM: 'system',
-};
-
+}
 
 /**
  * Describes how a proxy should be configured for a WebDriver session.
@@ -51,8 +50,7 @@ function Config() {}
  * The proxy type.
  * @type {Type}
  */
-Config.prototype.proxyType;
-
+Config.prototype.proxyType
 
 /**
  * Describes how to configure a PAC proxy.
@@ -66,8 +64,7 @@ function PacConfig() {}
  *
  * @type {string}
  */
-PacConfig.prototype.proxyAutoconfigUrl;
-
+PacConfig.prototype.proxyAutoconfigUrl
 
 /**
  * Record object that defines a manual proxy configuration. Manual
@@ -85,61 +82,57 @@ function ManualConfig() {}
  *
  * @type {(string|undefined)}
  */
-ManualConfig.prototype.ftpProxy;
+ManualConfig.prototype.ftpProxy
 
 /**
  * The proxy host for HTTP requests.
  *
  * @type {(string|undefined)}
  */
-ManualConfig.prototype.httpProxy;
+ManualConfig.prototype.httpProxy
 
 /**
  * An array of hosts which should bypass all proxies.
  *
  * @type {(Array<string>|undefined)}
  */
-ManualConfig.prototype.noProxy;
+ManualConfig.prototype.noProxy
 
 /**
  * The proxy host for HTTPS requests.
  *
  * @type {(string|undefined)}
  */
-ManualConfig.prototype.sslProxy;
+ManualConfig.prototype.sslProxy
 
 /**
  * Defines the host and port for the SOCKS proxy to use.
  *
  * @type {(number|undefined)}
  */
-ManualConfig.prototype.socksProxy;
+ManualConfig.prototype.socksProxy
 
 /**
  * Defines the SOCKS proxy version. Must be a number in the range [0, 255].
  *
  * @type {(number|undefined)}
  */
-ManualConfig.prototype.socksVersion;
-
+ManualConfig.prototype.socksVersion
 
 // PUBLIC API
 
-
-/** @const */ exports.Config = Config;
-/** @const */ exports.ManualConfig = ManualConfig;
-/** @const */ exports.PacConfig = PacConfig;
-/** @const */ exports.Type = Type;
-
+/** @const */ exports.Config = Config
+/** @const */ exports.ManualConfig = ManualConfig
+/** @const */ exports.PacConfig = PacConfig
+/** @const */ exports.Type = Type
 
 /**
  * Configures WebDriver to bypass all browser proxies.
  * @return {!Config} A new proxy configuration object.
  */
-exports.direct = function() {
-  return {proxyType: Type.DIRECT};
-};
-
+exports.direct = function () {
+  return { proxyType: Type.DIRECT }
+}
 
 /**
  * Manually configures the browser proxy.  The following options are
@@ -162,16 +155,15 @@ exports.direct = function() {
  *     configuration options.
  * @return {!ManualConfig} A new proxy configuration object.
  */
-exports.manual = function({ftp, http, https, bypass}) {
+exports.manual = function ({ ftp, http, https, bypass }) {
   return {
     proxyType: Type.MANUAL,
     ftpProxy: ftp,
     httpProxy: http,
     sslProxy: https,
     noProxy: bypass,
-  };
-};
-
+  }
+}
 
 /**
  * Creates a proxy configuration for a socks proxy.
@@ -193,14 +185,13 @@ exports.manual = function({ftp, http, https, bypass}) {
  * @return {!ManualConfig} A new proxy configuration object.
  * @see https://en.wikipedia.org/wiki/SOCKS
  */
-exports.socks = function(socksProxy, socksVersion = undefined) {
-  return /** @type {!Config} */({
+exports.socks = function (socksProxy, socksVersion = undefined) {
+  return /** @type {!Config} */ ({
     proxyType: Type.MANUAL,
     socksProxy,
-    socksVersion
-  });
-};
-
+    socksVersion,
+  })
+}
 
 /**
  * Configures WebDriver to configure the browser proxy using the PAC file at
@@ -208,15 +199,14 @@ exports.socks = function(socksProxy, socksVersion = undefined) {
  * @param {string} proxyAutoconfigUrl URL for the PAC proxy to use.
  * @return {!PacConfig} A new proxy configuration object.
  */
-exports.pac = function(proxyAutoconfigUrl) {
-  return {proxyType: Type.PAC, proxyAutoconfigUrl};
-};
-
+exports.pac = function (proxyAutoconfigUrl) {
+  return { proxyType: Type.PAC, proxyAutoconfigUrl }
+}
 
 /**
  * Configures WebDriver to use the current system's proxy.
  * @return {!Config} A new proxy configuration object.
  */
-exports.system = function() {
-  return {proxyType: Type.SYSTEM};
-};
+exports.system = function () {
+  return { proxyType: Type.SYSTEM }
+}

@@ -1,0 +1,11 @@
+query Summary {
+	grid {
+		uri
+		totalSlots
+		nodeCount
+		maxSession
+		sessionCount
+		sessionQueueSize
+		version
+	}
+}

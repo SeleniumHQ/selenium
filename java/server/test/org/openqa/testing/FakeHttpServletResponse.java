@@ -17,8 +17,10 @@
 
 package org.openqa.testing;
 
+import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.io.Writer;
 import java.util.Collection;
 import java.util.Locale;
 
@@ -27,13 +29,16 @@ import javax.servlet.WriteListener;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
+
 public class FakeHttpServletResponse extends HeaderContainer
     implements HttpServletResponse {
 
   private final StringWriter stringWriter = new StringWriter();
   private final ServletOutputStream servletOutputStream =
       new StringServletOutputStream(stringWriter);
-  private final PrintWriter printWriter = new PrintWriter(servletOutputStream);
+  private final Writer writer = new OutputStreamWriter(servletOutputStream, UTF_8);
+  private final PrintWriter printWriter = new PrintWriter(writer);
   private int status = HttpServletResponse.SC_OK;
 
   @Override

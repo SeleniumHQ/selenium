@@ -24,6 +24,10 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.WindowType;
 
+/**
+ * @deprecated Use {@link EventFiringDecorator} and {@link WebDriverListener} instead
+ */
+@Deprecated
 public interface WebDriverEventListener {
 
   /**

@@ -54,6 +54,7 @@ public class TestAttachFile extends InternalSelenseTestBase {
     selenium.open("/common/upload.html");
     selenium.attachFile("upload", testFile.toURI().toURL().toString());
     selenium.click("go");
+    Thread.sleep(2000);
     selenium.waitForPageToLoad("30000");
     selenium.selectFrame("upload_target");
     assertEquals(selenium.getText("//body"), LOREM_IPSUM_TEXT);

@@ -35,9 +35,9 @@ module Selenium
         # @api private
         #
 
-        def initialize(http_client: nil, url:)
+        def initialize(url:, http_client: nil)
           uri = url.is_a?(URI) ? url : URI.parse(url)
-          uri.path += '/' unless %r{\/$}.match?(uri.path)
+          uri.path += '/' unless uri.path.end_with?('/')
 
           @http = http_client || Http::Default.new
           @http.server_url = uri
@@ -48,8 +48,8 @@ module Selenium
         # Creates session.
         #
 
-        def create_session(desired_capabilities, options = nil)
-          response = execute(:new_session, {}, merged_capabilities(desired_capabilities, options))
+        def create_session(capabilities)
+          response = execute(:new_session, {}, prepare_capabilities_payload(capabilities))
 
           @session_id = response['sessionId']
           capabilities = response['capabilities']
@@ -57,6 +57,17 @@ module Selenium
           raise Error::WebDriverError, 'no sessionId in returned payload' unless @session_id
 
           @capabilities = Capabilities.json_create(capabilities)
+
+          case @capabilities[:browser_name]
+          when 'chrome'
+            extend(WebDriver::Chrome::Features)
+          when 'firefox'
+            extend(WebDriver::Firefox::Features)
+          when 'msedge'
+            extend(WebDriver::Edge::Features)
+          when 'Safari', 'Safari Technology Preview'
+            extend(WebDriver::Safari::Features)
+          end
         end
 
         #
@@ -70,7 +81,7 @@ module Selenium
         def browser
           @browser ||= begin
             name = @capabilities.browser_name
-            name ? name.tr(' ', '_').to_sym : 'unknown'
+            name ? name.tr(' ', '_').downcase.to_sym : 'unknown'
           end
         end
 
@@ -207,7 +218,10 @@ module Selenium
         end
 
         def window_size(handle = :current)
-          raise Error::UnsupportedOperationError, 'Switch to desired window before getting its size' unless handle == :current
+          unless handle == :current
+            raise Error::UnsupportedOperationError,
+                  'Switch to desired window before getting its size'
+          end
 
           data = execute :get_window_rect
           Dimension.new data['width'], data['height']
@@ -218,7 +232,10 @@ module Selenium
         end
 
         def maximize_window(handle = :current)
-          raise Error::UnsupportedOperationError, 'Switch to desired window before changing its size' unless handle == :current
+          unless handle == :current
+            raise Error::UnsupportedOperationError,
+                  'Switch to desired window before changing its size'
+          end
 
           execute :maximize_window
         end
@@ -249,6 +266,10 @@ module Selenium
 
         def screenshot
           execute :take_screenshot
+        end
+
+        def element_screenshot(element)
+          execute :take_element_screenshot, id: element.ref
         end
 
         #
@@ -301,22 +322,6 @@ module Selenium
 
         def session_storage_size
           execute_script('return sessionStorage.length')
-        end
-
-        def location
-          raise Error::UnsupportedOperationError, 'The W3C standard does not currently support getting location'
-        end
-
-        def set_location(_lat, _lon, _alt)
-          raise Error::UnsupportedOperationError, 'The W3C standard does not currently support setting location'
-        end
-
-        def network_connection
-          raise Error::UnsupportedOperationError, 'The W3C standard does not currently support getting network connection'
-        end
-
-        def network_connection=(_type)
-          raise Error::UnsupportedOperationError, 'The W3C standard does not currently support setting network connection'
         end
 
         #
@@ -389,6 +394,10 @@ module Selenium
           execute :release_actions
         end
 
+        def print_page(options = {})
+          execute :print_page, {}, {options: options}
+        end
+
         def click_element(element)
           execute :element_click, id: element
         end
@@ -428,14 +437,6 @@ module Selenium
                             'if (arguments[0].dispatchEvent(e)) { arguments[0].submit() }', form.as_json)
         end
 
-        def screen_orientation=(orientation)
-          execute :set_screen_orientation, {}, {orientation: orientation}
-        end
-
-        def screen_orientation
-          execute :get_screen_orientation
-        end
-
         #
         # element properties
         #
@@ -449,8 +450,20 @@ module Selenium
           execute_atom :getAttribute, element, name
         end
 
+        def element_dom_attribute(element, name)
+          execute :get_element_attribute, id: element.ref, name: name
+        end
+
         def element_property(element, name)
           execute :get_element_property, id: element.ref, name: name
+        end
+
+        def element_aria_role(element)
+          execute :get_element_aria_role, id: element.ref
+        end
+
+        def element_aria_label(element)
+          execute :get_element_aria_label, id: element.ref
         end
 
         def element_value(element)
@@ -571,16 +584,6 @@ module Selenium
           COMMANDS[command]
         end
 
-        def merged_capabilities(capabilities, options = nil)
-          capabilities.merge!(options.as_json) if options
-
-          {
-            capabilities: {
-              firstMatch: [capabilities]
-            }
-          }
-        end
-
         def unwrap_script_result(arg)
           case arg
           when Array
@@ -597,6 +600,11 @@ module Selenium
 
         def element_id_from(id)
           id['ELEMENT'] || id['element-6066-11e4-a52e-4f735466cecf']
+        end
+
+        def prepare_capabilities_payload(capabilities)
+          capabilities = {alwaysMatch: capabilities} if !capabilities['alwaysMatch'] && !capabilities['firstMatch']
+          {capabilities: capabilities}
         end
 
         def convert_locator(how, what)
@@ -626,7 +634,7 @@ module Selenium
           [how, what]
         end
 
-        ESCAPE_CSS_REGEXP = /(['"\\#.:;,!?+<>=~*^$|%&@`{}\-\[\]\(\)])/.freeze
+        ESCAPE_CSS_REGEXP = /(['"\\#.:;,!?+<>=~*^$|%&@`{}\-\[\]()])/.freeze
         UNICODE_CODE_POINT = 30
 
         # Escapes invalid characters in CSS selector.

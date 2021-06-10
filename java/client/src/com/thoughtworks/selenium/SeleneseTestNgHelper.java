@@ -34,7 +34,7 @@ import java.lang.reflect.Method;
 
 public class SeleneseTestNgHelper extends SeleneseTestBase {
 
-  private static Selenium staticSelenium;
+  private Selenium staticSelenium;
 
   @BeforeTest
   @Override
@@ -110,7 +110,7 @@ public class SeleneseTestNgHelper extends SeleneseTestBase {
 
   // @Override static method of super class (which assumes JUnit conventions)
   public static void assertEquals(String actual, String[] expected) {
-    SeleneseTestBase.assertEquals(expected, actual);
+    SeleneseTestBase.assertEquals(expected, new String[] {actual});
   }
 
   // @Override static method of super class (which assumes JUnit conventions)

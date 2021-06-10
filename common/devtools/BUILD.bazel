@@ -1,0 +1,25 @@
+load("@rules_python//python:defs.bzl", "py_binary")
+
+exports_files(
+    srcs = [
+        "browser_protocol.json",
+        "js_protocol.json",
+    ],
+    visibility = [
+        "//javascript/node/selenium-webdriver:__pkg__",
+        "//py:__pkg__",
+        "//rb:__pkg__",
+    ],
+)
+
+py_binary(
+    name = "pdl_to_json",
+    srcs = [
+        "convert_protocol_to_json.py",
+        "pdl.py",
+    ],
+    main = "convert_protocol_to_json.py",
+    visibility = [
+        "//common/devtools:__subpackages__",
+    ],
+)

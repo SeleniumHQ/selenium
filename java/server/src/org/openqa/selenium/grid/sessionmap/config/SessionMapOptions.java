@@ -17,36 +17,41 @@
 
 package org.openqa.selenium.grid.sessionmap.config;
 
-import io.opentracing.Tracer;
 import org.openqa.selenium.grid.config.Config;
 import org.openqa.selenium.grid.config.ConfigException;
 import org.openqa.selenium.grid.sessionmap.SessionMap;
-import org.openqa.selenium.grid.sessionmap.remote.RemoteSessionMap;
-import org.openqa.selenium.remote.http.HttpClient;
 
-import java.net.MalformedURLException;
-import java.net.URL;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.Optional;
 
 public class SessionMapOptions {
 
+  private static final String SESSIONS_SECTION = "sessions";
+
+  private static final String DEFAULT_SESSION_MAP =
+    "org.openqa.selenium.grid.sessionmap.remote.RemoteSessionMap";
+  private static final String DEFAULT_SESSION_MAP_SCHEME = "http";
   private final Config config;
 
   public SessionMapOptions(Config config) {
     this.config = config;
   }
 
-  public SessionMap getSessionMap(Tracer tracer, HttpClient.Factory clientFactory) {
-    HttpClient client = clientFactory.createClient(getSessionMapUrl());
-    return new RemoteSessionMap(tracer, client);
-  }
+  public URI getSessionMapUri() {
 
-  private URL getSessionMapUrl() {
-    Optional<URL> host = config.get("sessions", "host").map(str -> {
+    String scheme = config.get(SESSIONS_SECTION, "scheme")
+      .orElse(DEFAULT_SESSION_MAP_SCHEME);
+
+    Optional<URI> host = config.get(SESSIONS_SECTION, "host").map(str -> {
       try {
-        return new URL(str);
-      } catch (MalformedURLException e) {
-        throw new ConfigException("Session map server URI is not a valid URI: " + str);
+        URI sessionUri = new URI(str);
+        if (sessionUri.getHost() == null || sessionUri.getPort() == -1) {
+          throw new ConfigException("Undefined host or port in SessionMap server URI: " + str);
+        }
+        return sessionUri;
+      } catch (URISyntaxException e) {
+        throw new ConfigException("Session Map server URI is not a valid URI: " + str);
       }
     });
 
@@ -54,24 +59,35 @@ public class SessionMapOptions {
       return host.get();
     }
 
-    Optional<Integer> port = config.getInt("sessions", "port");
-    Optional<String> hostname = config.get("sessions", "hostname");
+    Optional<Integer> port = config.getInt(SESSIONS_SECTION, "port");
+    Optional<String> hostname = config.get(SESSIONS_SECTION, "hostname");
 
     if (!(port.isPresent() && hostname.isPresent())) {
       throw new ConfigException("Unable to determine host and port for the session map server");
     }
 
     try {
-      return new URL(
-          "http",
+      return new URI(
+          scheme,
+          null,
           hostname.get(),
           port.get(),
-          "");
-    } catch (MalformedURLException e) {
+          "",
+          null,
+          null);
+    } catch (URISyntaxException e) {
       throw new ConfigException(
           "Session map server uri configured through host (%s) and port (%d) is not a valid URI",
           hostname.get(),
           port.get());
     }
+  }
+
+  public SessionMap getSessionMap() {
+    return config.getClass(
+      SESSIONS_SECTION,
+      "implementation",
+      SessionMap.class,
+      DEFAULT_SESSION_MAP);
   }
 }

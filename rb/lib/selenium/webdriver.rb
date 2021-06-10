@@ -23,10 +23,9 @@ require 'fileutils'
 require 'date'
 require 'json'
 require 'set'
-require 'websocket'
 
-require 'selenium/webdriver/common'
 require 'selenium/webdriver/atoms'
+require 'selenium/webdriver/common'
 require 'selenium/webdriver/version'
 
 module Selenium
@@ -39,8 +38,6 @@ module Selenium
     autoload :Chrome,     'selenium/webdriver/chrome'
     autoload :DevTools,   'selenium/webdriver/devtools'
     autoload :Edge,       'selenium/webdriver/edge'
-    autoload :EdgeHtml,   'selenium/webdriver/edge'
-    autoload :EdgeChrome, 'selenium/webdriver/edge'
     autoload :Firefox,    'selenium/webdriver/firefox'
     autoload :IE,         'selenium/webdriver/ie'
     autoload :Remote,     'selenium/webdriver/remote'

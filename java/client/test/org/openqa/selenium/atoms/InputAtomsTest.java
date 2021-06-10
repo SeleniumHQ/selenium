@@ -25,15 +25,12 @@ import net.sourceforge.htmlunit.corejs.javascript.ContextFactory;
 import net.sourceforge.htmlunit.corejs.javascript.ScriptableObject;
 
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
 
 import java.io.IOException;
 
 /**
  * Sanity tests against the //javascript/webdriver/atoms:inputs target.
  */
-@RunWith(JUnit4.class)
 public class InputAtomsTest {
 
   private static final String RESOURCE_PATH = "/org/openqa/selenium/atoms/atoms_inputs.js";
@@ -49,10 +46,10 @@ public class InputAtomsTest {
         global = context.initStandardObjects();
 
         // Check assumptions abut the global context, which the atoms assumes is a DOM window.
-        assertThat((Object) eval(context, "this.window=this;")).isEqualTo(global);
-        assertThat((Object) eval(context, "this")).isEqualTo(global);
-        assertThat((Object) eval(context, "window")).isEqualTo(global);
-        assertThat((Object) eval(context, "this === window")).isEqualTo(true);
+        assertThat(eval(context, "this.window=this;")).isEqualTo(global);
+        assertThat(eval(context, "this")).isEqualTo(global);
+        assertThat(eval(context, "window")).isEqualTo(global);
+        assertThat(eval(context, "this === window")).isEqualTo(true);
 
         eval(context, source, RESOURCE_PATH);
 
@@ -68,17 +65,15 @@ public class InputAtomsTest {
       }
 
       private void assertFunction(Context context, String property) {
-        assertThat((Object) eval(context, "typeof " + property)).describedAs(property).isEqualTo("function");
+        assertThat(eval(context, "typeof " + property)).describedAs(property).isEqualTo("function");
       }
 
-      @SuppressWarnings({"unchecked"})
-      private <T> T eval(Context context, String script) {
-        return (T) eval(context, script, "");
+      private Object eval(Context context, String script) {
+        return eval(context, script, "");
       }
 
-      @SuppressWarnings({"unchecked"})
-      private <T> T eval(Context context, String script, String src) {
-        return (T) context.evaluateString(global, script, src, 1, null);
+      private Object eval(Context context, String script, String src) {
+        return context.evaluateString(global, script, src, 1, null);
       }
     });
   }

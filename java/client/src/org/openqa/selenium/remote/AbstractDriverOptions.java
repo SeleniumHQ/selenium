@@ -28,22 +28,27 @@ import org.openqa.selenium.MutableCapabilities;
 import org.openqa.selenium.PageLoadStrategy;
 import org.openqa.selenium.Proxy;
 import org.openqa.selenium.UnexpectedAlertBehaviour;
+import org.openqa.selenium.internal.Require;
 
-import java.util.Objects;
+import java.util.Collections;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeMap;
+import java.util.TreeSet;
 
-public class AbstractDriverOptions<DO extends AbstractDriverOptions> extends MutableCapabilities {
+public abstract class AbstractDriverOptions<DO extends AbstractDriverOptions> extends MutableCapabilities {
 
   public DO setPageLoadStrategy(PageLoadStrategy strategy) {
     setCapability(
         PAGE_LOAD_STRATEGY,
-        Objects.requireNonNull(strategy, "Page load strategy must not be null"));
+        Require.nonNull("Page load strategy", strategy));
     return (DO) this;
   }
 
   public DO setUnhandledPromptBehaviour(UnexpectedAlertBehaviour behaviour) {
     setCapability(
         UNHANDLED_PROMPT_BEHAVIOUR,
-        Objects.requireNonNull(behaviour, "Unhandled prompt behavior must not be null"));
+        Require.nonNull("Unhandled prompt behavior", behaviour));
     setCapability(UNEXPECTED_ALERT_BEHAVIOUR, behaviour);
     return (DO) this;
   }
@@ -59,8 +64,35 @@ public class AbstractDriverOptions<DO extends AbstractDriverOptions> extends Mut
   }
 
   public DO setProxy(Proxy proxy) {
-    setCapability(PROXY, Objects.requireNonNull(proxy, "Proxy must not be null"));
+    setCapability(PROXY, Require.nonNull("Proxy", proxy));
     return (DO) this;
   }
 
+  @Override
+  public Set<String> getCapabilityNames() {
+    TreeSet<String> names = new TreeSet<>(super.getCapabilityNames());
+    names.addAll(getExtraCapabilityNames());
+    return Collections.unmodifiableSet(names);
+  }
+
+  protected abstract Set<String> getExtraCapabilityNames();
+
+  @Override
+  public Object getCapability(String capabilityName) {
+    Require.nonNull("Capability name", capabilityName);
+
+    if (getExtraCapabilityNames().contains(capabilityName)) {
+      return getExtraCapability(capabilityName);
+    }
+    return super.getCapability(capabilityName);
+  }
+
+  protected abstract Object getExtraCapability(String capabilityName);
+
+  @Override
+  public Map<String, Object> asMap() {
+    Map<String, Object> toReturn = new TreeMap<>(super.asMap());
+    getExtraCapabilityNames().forEach(name -> toReturn.put(name, getCapability(name)));
+    return Collections.unmodifiableMap(toReturn);
+  }
 }

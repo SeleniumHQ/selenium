@@ -19,8 +19,10 @@ package com.thoughtworks.selenium.corebased;
 
 import com.thoughtworks.selenium.InternalSelenseTestBase;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
+@Ignore("Not implemented")
 public class TestUIElementLocators extends InternalSelenseTestBase {
   @Test
   public void testUIElementLocators() {

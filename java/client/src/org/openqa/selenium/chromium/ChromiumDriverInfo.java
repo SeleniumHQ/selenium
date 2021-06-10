@@ -23,6 +23,6 @@ public abstract class ChromiumDriverInfo implements WebDriverInfo {
 
   @Override
   public int getMaximumSimultaneousSessions() {
-    return Runtime.getRuntime().availableProcessors() + 1;
+    return Runtime.getRuntime().availableProcessors();
   }
 }

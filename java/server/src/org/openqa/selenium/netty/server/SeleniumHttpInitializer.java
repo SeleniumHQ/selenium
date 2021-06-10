@@ -19,23 +19,38 @@ package org.openqa.selenium.netty.server;
 
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.socket.SocketChannel;
-import io.netty.handler.codec.http.HttpObjectAggregator;
 import io.netty.handler.codec.http.HttpServerCodec;
 import io.netty.handler.codec.http.HttpServerKeepAliveHandler;
+import io.netty.handler.codec.http.websocketx.extensions.compression.WebSocketServerCompressionHandler;
 import io.netty.handler.ssl.SslContext;
 import io.netty.handler.stream.ChunkedWriteHandler;
-import org.openqa.selenium.remote.http.HttpHandler;
+import io.netty.util.AttributeKey;
 
-import java.util.Objects;
+import org.openqa.selenium.internal.Require;
+import org.openqa.selenium.remote.http.HttpHandler;
+import org.openqa.selenium.remote.http.Message;
+
+import java.util.Optional;
+import java.util.function.BiFunction;
+import java.util.function.Consumer;
 
 class SeleniumHttpInitializer extends ChannelInitializer<SocketChannel> {
 
+  private static AttributeKey<Consumer<Message>> KEY = AttributeKey.newInstance("se-ws-handler");
   private HttpHandler seleniumHandler;
+  private final BiFunction<String, Consumer<Message>, Optional<Consumer<Message>>> webSocketHandler;
   private SslContext sslCtx;
+  private final boolean allowCors;
 
-  SeleniumHttpInitializer(HttpHandler seleniumHandler, SslContext sslCtx) {
-    this.seleniumHandler = Objects.requireNonNull(seleniumHandler);
+  SeleniumHttpInitializer(
+    SslContext sslCtx,
+    HttpHandler seleniumHandler,
+    BiFunction<String, Consumer<Message>, Optional<Consumer<Message>>> webSocketHandler,
+    boolean allowCors) {
     this.sslCtx = sslCtx;
+    this.seleniumHandler = Require.nonNull("HTTP handler", seleniumHandler);
+    this.webSocketHandler = Require.nonNull("WebSocket handler", webSocketHandler);
+    this.allowCors = allowCors;
   }
 
   @Override
@@ -46,8 +61,17 @@ class SeleniumHttpInitializer extends ChannelInitializer<SocketChannel> {
     ch.pipeline().addLast("codec", new HttpServerCodec());
     ch.pipeline().addLast("keep-alive", new HttpServerKeepAliveHandler());
     ch.pipeline().addLast("chunked-write", new ChunkedWriteHandler());
+
+    // Websocket magic
+    ch.pipeline().addLast("ws-compression", new WebSocketServerCompressionHandler());
+    ch.pipeline().addLast("ws-protocol", new WebSocketUpgradeHandler(KEY, webSocketHandler));
+    ch.pipeline().addLast("netty-to-se-messages", new MessageInboundConverter());
+    ch.pipeline().addLast("se-to-netty-messages", new MessageOutboundConverter());
+    ch.pipeline().addLast("se-websocket-handler", new WebSocketMessageHandler(KEY));
+
+    // Regular HTTP magic
     ch.pipeline().addLast("se-request", new RequestConverter());
-    ch.pipeline().addLast("se-response", new ResponseConverter());
+    ch.pipeline().addLast("se-response", new ResponseConverter(allowCors));
     ch.pipeline().addLast("se-handler", new SeleniumHandler(seleniumHandler));
   }
 }

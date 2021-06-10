@@ -31,7 +31,7 @@ class JreMessages {
   static HttpRequest asRequest(HttpExchange exchange) {
     HttpRequest request = new HttpRequest(
       HttpMethod.valueOf(exchange.getRequestMethod()),
-      exchange.getRequestURI().toString());
+      exchange.getRequestURI().getPath());
 
     String query = exchange.getRequestURI().getQuery();
     if (query != null) {

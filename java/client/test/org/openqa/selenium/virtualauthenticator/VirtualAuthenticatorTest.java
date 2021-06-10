@@ -20,25 +20,19 @@ package org.openqa.selenium.virtualauthenticator;
 import static org.assertj.core.api.Assumptions.assumeThat;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Fail.fail;
+import static org.assertj.core.api.InstanceOfAssertFactories.MAP;
 
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.util.Base64;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.environment.webserver.Page;
 import org.openqa.selenium.testing.JUnit4TestBase;
-import org.openqa.selenium.testing.NotYetImplemented;
-import org.openqa.selenium.virtualauthenticator.Credential;
-import org.openqa.selenium.virtualauthenticator.HasVirtualAuthenticator;
-import org.openqa.selenium.virtualauthenticator.VirtualAuthenticator;
-import org.openqa.selenium.virtualauthenticator.VirtualAuthenticatorOptions;
 import org.openqa.selenium.virtualauthenticator.VirtualAuthenticatorOptions.Protocol;
 
 import java.util.Arrays;
-import java.util.ArrayList;
 import java.util.Map;
 import java.util.List;
 
@@ -47,15 +41,15 @@ public class VirtualAuthenticatorTest extends JUnit4TestBase {
   /**
    * A pkcs#8 encoded unencrypted EC256 private key as a base64url string.
    */
-  private final String base64EncodedPK =
+  private final static String base64EncodedPK =
       "MIGHAgEAMBMGByqGSM49AgEGCCqGSM49AwEHBG0wawIBAQQg8_zMDQDYAxlU-Q"
     + "hk1Dwkf0v18GZca1DMF3SaJ9HPdmShRANCAASNYX5lyVCOZLzFZzrIKmeZ2jwU"
     + "RmgsJYxGP__fWN_S-j5sN4tT15XEpN_7QZnt14YvI6uvAgO0uJEboFaZlOEB";
 
-  private final PKCS8EncodedKeySpec privateKey =
+  private final static PKCS8EncodedKeySpec privateKey =
       new PKCS8EncodedKeySpec(Base64.getUrlDecoder().decode(base64EncodedPK));
 
-  private final String script =
+  private final static String script =
       "async function registerCredential(options = {}) {"
     + "  options = Object.assign({"
     + "    authenticatorSelection: {"
@@ -112,11 +106,13 @@ public class VirtualAuthenticatorTest extends JUnit4TestBase {
     + "  }"
     + "}";
 
+  private JavascriptExecutor jsAwareDriver;
   private VirtualAuthenticator authenticator;
 
   @Before
   public void setup() {
     assumeThat(driver).isInstanceOf(HasVirtualAuthenticator.class);
+    jsAwareDriver = (JavascriptExecutor) driver;
     driver.get(appServer.create(new Page()
         .withTitle("Virtual Authenticator Test")
         .withScripts(script)));
@@ -148,9 +144,22 @@ public class VirtualAuthenticatorTest extends JUnit4TestBase {
     return ret;
   }
 
-  private Map<String, Object> getAssertionFor(Object credentialId) {
-    return (Map<String, Object>)
-      ((JavascriptExecutor) driver).executeAsyncScript(
+  @SuppressWarnings("unchecked")
+  private List<Long> extractRawIdFrom(Object response) {
+    Map<String, Object> responseJson = (Map<String, Object>) response;
+    Map<String, Object> credentialJson = (Map<String, Object>) responseJson.get("credential");
+    return (List<Long>) credentialJson.get("rawId");
+  }
+
+  @SuppressWarnings("unchecked")
+  private String extractIdFrom(Object response) {
+    Map<String, Object> responseJson = (Map<String, Object>) response;
+    Map<String, Object> credentialJson = (Map<String, Object>) responseJson.get("credential");
+    return (String) credentialJson.get("id");
+  }
+
+  private Object getAssertionFor(Object credentialId) {
+    return jsAwareDriver.executeAsyncScript(
         "getCredential([{"
       + "  \"type\": \"public-key\","
       + "  \"id\": Int8Array.from(arguments[0]),"
@@ -168,14 +177,15 @@ public class VirtualAuthenticatorTest extends JUnit4TestBase {
   public void testCreateAuthenticator() {
     // Register a credential on the Virtual Authenticator.
     createSimpleU2FAuthenticator();
-    Map<String, Object> response = (Map<String, Object>)
-      ((JavascriptExecutor) driver).executeAsyncScript(
+    Object response = jsAwareDriver.executeAsyncScript(
         "registerCredential().then(arguments[arguments.length - 1]);");
-    assertThat(response.get("status")).isEqualTo("OK");
+    assertThat(response).asInstanceOf(MAP).containsEntry("status", "OK");
 
     // Attempt to use the credential to get an assertion.
-    response = getAssertionFor(((Map<String, Object>) response.get("credential")).get("rawId"));
-    assertThat(response.get("status")).isEqualTo("OK");
+    assertThat(response)
+        .extracting("credential.rawId")
+        .extracting(this::getAssertionFor).asInstanceOf(MAP)
+        .containsEntry("status", "OK");
   }
 
   @Test
@@ -197,8 +207,8 @@ public class VirtualAuthenticatorTest extends JUnit4TestBase {
     authenticator.addCredential(credential);
 
     // Attempt to use the credential to generate an assertion.
-    Map<String, Object> response = getAssertionFor(Arrays.asList(1, 2, 3, 4));
-    assertThat(response.get("status")).isEqualTo("OK");
+    Object response = getAssertionFor(Arrays.asList(1, 2, 3, 4));
+    assertThat(response).asInstanceOf(MAP).containsEntry("status", "OK");
   }
 
   @Test
@@ -213,14 +223,11 @@ public class VirtualAuthenticatorTest extends JUnit4TestBase {
 
     // Attempt to use the credential to generate an assertion. Notice we use an
     // empty allowCredentials array.
-    Map<String, Object> response = (Map<String, Object>)
-      ((JavascriptExecutor) driver).executeAsyncScript(
+    Object response = jsAwareDriver.executeAsyncScript(
         "getCredential([]).then(arguments[arguments.length - 1]);");
 
-    assertThat(response.get("status")).isEqualTo("OK");
-
-    Map<String, Object> attestation = (Map<String, Object>) response.get("attestation");
-    assertThat((List) attestation.get("userHandle")).containsExactly(1L);
+    assertThat(response).asInstanceOf(MAP).containsEntry("status", "OK");
+    assertThat(response).extracting("attestation.userHandle").asList().containsExactly(1L);
   }
 
   @Test
@@ -229,21 +236,18 @@ public class VirtualAuthenticatorTest extends JUnit4TestBase {
     createRKEnabledAuthenticator();
 
     // Register a resident credential.
-    Map<String, Object> response1 = (Map<String, Object>)
-      ((JavascriptExecutor) driver).executeAsyncScript(
+    Object response1 = jsAwareDriver.executeAsyncScript(
         "registerCredential({authenticatorSelection: {requireResidentKey: true}})"
       + " .then(arguments[arguments.length - 1]);");
-    assertThat(response1.get("status")).isEqualTo("OK");
-    Map<String, Object> credential1Json = (Map<String, Object>) response1.get("credential");
-    byte[] credential1Id = convertListIntoArrayOfBytes((ArrayList<Long>) credential1Json.get("rawId"));
+    assertThat(response1).asInstanceOf(MAP).containsEntry("status", "OK");
 
     // Register a non resident credential.
-    Map<String, Object> response2 = (Map<String, Object>)
-      ((JavascriptExecutor) driver).executeAsyncScript(
+    Object response2 = jsAwareDriver.executeAsyncScript(
         "registerCredential().then(arguments[arguments.length - 1]);");
-    assertThat(response2.get("status")).isEqualTo("OK");
-    Map<String, Object> credential2Json = (Map<String, Object>) response2.get("credential");
-    byte[] credential2Id = convertListIntoArrayOfBytes((ArrayList<Long>) credential2Json.get("rawId"));
+    assertThat(response2).asInstanceOf(MAP).containsEntry("status", "OK");
+
+    byte[] credential1Id = convertListIntoArrayOfBytes(extractRawIdFrom(response1));
+    byte[] credential2Id = convertListIntoArrayOfBytes(extractRawIdFrom(response2));
 
     assertThat(credential1Id).isNotEqualTo(credential2Id);
 
@@ -282,20 +286,18 @@ public class VirtualAuthenticatorTest extends JUnit4TestBase {
     createSimpleU2FAuthenticator();
 
     // Register credential.
-    Map<String, Object> response = (Map<String, Object>)
-      ((JavascriptExecutor) driver).executeAsyncScript(
+    Object response = jsAwareDriver.executeAsyncScript(
         "registerCredential().then(arguments[arguments.length - 1]);");
-    assertThat(response.get("status")).isEqualTo("OK");
-    Map<String, Object> credentialJson = (Map<String, Object>) response.get("credential");
+    assertThat(response).asInstanceOf(MAP).containsEntry("status", "OK");
 
     // Remove a credential by its ID as an array of bytes.
-    byte[] rawCredentialId =
-      convertListIntoArrayOfBytes((ArrayList<Long>) credentialJson.get("rawId"));
+    List<Long> rawId = extractRawIdFrom(response);
+    byte[] rawCredentialId = convertListIntoArrayOfBytes(rawId);
     authenticator.removeCredential(rawCredentialId);
 
     // Trying to get an assertion should fail.
-    response = getAssertionFor(credentialJson.get("rawId"));
-    assertThat((String) response.get("status")).startsWith("NotAllowedError");
+    response = getAssertionFor(rawId);
+    assertThat(response).asInstanceOf(MAP).extracting("status").asString().startsWith("NotAllowedError");
   }
 
   @Test
@@ -303,19 +305,18 @@ public class VirtualAuthenticatorTest extends JUnit4TestBase {
     createSimpleU2FAuthenticator();
 
     // Register credential.
-    Map<String, Object> response = (Map<String, Object>)
-      ((JavascriptExecutor) driver).executeAsyncScript(
+    Object response = jsAwareDriver.executeAsyncScript(
         "registerCredential().then(arguments[arguments.length - 1]);");
-    assertThat(response.get("status")).isEqualTo("OK");
-    Map<String, Object> credentialJson = (Map<String, Object>) response.get("credential");
+    assertThat(response).asInstanceOf(MAP).containsEntry("status", "OK");
+    List<Long> rawId = extractRawIdFrom(response);
 
     // Remove a credential by its base64url ID.
-    String credentialId = (String) credentialJson.get("id");
+    String credentialId = extractIdFrom(response);
     authenticator.removeCredential(credentialId);
 
     // Trying to get an assertion should fail.
-    response = getAssertionFor(credentialJson.get("rawId"));
-    assertThat((String) response.get("status")).startsWith("NotAllowedError");
+    response = getAssertionFor(rawId);
+    assertThat(response).asInstanceOf(MAP).extracting("status").asString().startsWith("NotAllowedError");
   }
 
   @Test
@@ -323,24 +324,21 @@ public class VirtualAuthenticatorTest extends JUnit4TestBase {
     createSimpleU2FAuthenticator();
 
     // Register two credentials.
-    Map<String, Object> response1 = (Map<String, Object>)
-      ((JavascriptExecutor) driver).executeAsyncScript(
+    Object response1 = jsAwareDriver.executeAsyncScript(
         "registerCredential().then(arguments[arguments.length - 1]);");
-    assertThat(response1.get("status")).isEqualTo("OK");
-    Map<String, Object> credential1Json = (Map<String, Object>) response1.get("credential");
+    assertThat(response1).asInstanceOf(MAP).containsEntry("status", "OK");
+    List<Long> rawId1 = extractRawIdFrom(response1);
 
-    Map<String, Object> response2 = (Map<String, Object>)
-      ((JavascriptExecutor) driver).executeAsyncScript(
+    Object response2 = jsAwareDriver.executeAsyncScript(
         "registerCredential().then(arguments[arguments.length - 1]);");
-    assertThat(response2.get("status")).isEqualTo("OK");
-    Map<String, Object> credential2Json = (Map<String, Object>) response2.get("credential");
+    assertThat(response2).asInstanceOf(MAP).containsEntry("status", "OK");
+    List<Long> rawId2 = extractRawIdFrom(response1);
 
     // Remove all credentials.
     authenticator.removeAllCredentials();
 
     // Trying to get an assertion allowing for any of both should fail.
-    Map<String, Object> response = (Map<String, Object>)
-      ((JavascriptExecutor) driver).executeAsyncScript(
+    Object response = jsAwareDriver.executeAsyncScript(
         "getCredential([{"
       + "  \"type\": \"public-key\","
       + "  \"id\": Int8Array.from(arguments[0]),"
@@ -348,8 +346,8 @@ public class VirtualAuthenticatorTest extends JUnit4TestBase {
       + "  \"type\": \"public-key\","
       + "  \"id\": Int8Array.from(arguments[1]),"
       + "}]).then(arguments[arguments.length - 1]);",
-      credential1Json.get("rawId"), credential2Json.get("rawId"));
-    assertThat((String) response.get("status")).startsWith("NotAllowedError");
+        rawId1, rawId2);
+    assertThat(response).asInstanceOf(MAP).extracting("status").asString().startsWith("NotAllowedError");
   }
 
   @Test
@@ -357,34 +355,31 @@ public class VirtualAuthenticatorTest extends JUnit4TestBase {
     createRKEnabledAuthenticator();
 
     // Register a credential requiring UV.
-    Map<String, Object> response = (Map<String, Object>)
-      ((JavascriptExecutor) driver).executeAsyncScript(
+    Object response = jsAwareDriver.executeAsyncScript(
         "registerCredential({authenticatorSelection: {userVerification: 'required'}})"
       + "  .then(arguments[arguments.length - 1]);");
-    assertThat(response.get("status")).isEqualTo("OK");
-    Map<String, Object> credentialJson = (Map<String, Object>) response.get("credential");
+    assertThat(response).asInstanceOf(MAP).containsEntry("status", "OK");
+    List<Long> rawId = extractRawIdFrom(response);
 
     // Getting an assertion requiring user verification should succeed.
-    response = (Map<String, Object>)
-      ((JavascriptExecutor) driver).executeAsyncScript(
+    response = jsAwareDriver.executeAsyncScript(
         "getCredential([{"
       + "  \"type\": \"public-key\","
       + "  \"id\": Int8Array.from(arguments[0]),"
       + "}], {userVerification: 'required'}).then(arguments[arguments.length - 1]);",
-      credentialJson.get("rawId"));
-    assertThat(response.get("status")).isEqualTo("OK");
+        rawId);
+    assertThat(response).asInstanceOf(MAP).containsEntry("status", "OK");
 
     // Disable user verification.
     authenticator.setUserVerified(false);
 
     // Getting an assertion requiring user verification should fail.
-    response = (Map<String, Object>)
-      ((JavascriptExecutor) driver).executeAsyncScript(
+    response = jsAwareDriver.executeAsyncScript(
         "getCredential([{"
       + "  \"type\": \"public-key\","
       + "  \"id\": Int8Array.from(arguments[0]),"
       + "}], {userVerification: 'required'}).then(arguments[arguments.length - 1]);",
-      credentialJson.get("rawId"));
-    assertThat((String) response.get("status")).startsWith("NotAllowedError");
+        rawId);
+    assertThat(response).asInstanceOf(MAP).extracting("status").asString().startsWith("NotAllowedError");
   }
 }

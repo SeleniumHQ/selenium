@@ -20,8 +20,9 @@ package org.openqa.selenium.remote.http;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
 
+import org.openqa.selenium.internal.Require;
+
 import java.util.Iterator;
-import java.util.Objects;
 
 public class HttpRequest extends HttpMessage<HttpRequest> {
 
@@ -60,8 +61,8 @@ public class HttpRequest extends HttpMessage<HttpRequest> {
    */
   public HttpRequest addQueryParameter(String name, String value) {
     queryParameters.put(
-        Objects.requireNonNull(name, "Name must be set"),
-        Objects.requireNonNull(value, "Value must be set"));
+        Require.nonNull("Name", name),
+        Require.nonNull("Value", value));
     return this;
   }
 

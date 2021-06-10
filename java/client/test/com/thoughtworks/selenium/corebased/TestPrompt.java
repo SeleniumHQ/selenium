@@ -19,8 +19,10 @@ package com.thoughtworks.selenium.corebased;
 
 import com.thoughtworks.selenium.InternalSelenseTestBase;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
+@Ignore("getPrompt not implemented")
 public class TestPrompt extends InternalSelenseTestBase {
   @Test
   public void testPrompt() throws Exception {

@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>net47;net46;net45;netstandard2.0</TargetFrameworks>
+    <TargetFrameworks>net5.0;net48;net47;net46;net45;netstandard2.1;netstandard2.0</TargetFrameworks>
     <AssemblyName>WebDriver.Support</AssemblyName>
     <RootNamespace>OpenQA.Selenium.Support</RootNamespace>
     <BuildSystem>visual-studio</BuildSystem>
@@ -27,30 +27,30 @@
     <FileVersion>4.0.0.0</FileVersion>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net35|AnyCPU'">
-    <DocumentationFile>..\..\..\build\cli\Release\net35\WebDriver.Support.xml</DocumentationFile>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net35|AnyCPU'">
-    <DocumentationFile>..\..\..\build\cli\Debug\net35\WebDriver.Support.xml</DocumentationFile>
-    <WarningLevel>0</WarningLevel>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net40|AnyCPU'">
-    <DocumentationFile>..\..\..\build\cli\Release\net40\WebDriver.Support.xml</DocumentationFile>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net40|AnyCPU'">
-    <DocumentationFile>..\..\..\build\cli\Debug\net40\WebDriver.Support.xml</DocumentationFile>
-    <WarningLevel>0</WarningLevel>
-  </PropertyGroup>
-
   <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net45|AnyCPU'">
     <DocumentationFile>..\..\..\build\cli\Release\net45\WebDriver.Support.xml</DocumentationFile>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net45|AnyCPU'">
     <DocumentationFile>..\..\..\build\cli\Debug\net45\WebDriver.Support.xml</DocumentationFile>
+    <WarningLevel>0</WarningLevel>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net46|AnyCPU'">
+    <DocumentationFile>..\..\..\build\cli\Release\net46\WebDriver.Support.xml</DocumentationFile>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net46|AnyCPU'">
+    <DocumentationFile>..\..\..\build\cli\Debug\net46\WebDriver.Support.xml</DocumentationFile>
+    <WarningLevel>0</WarningLevel>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net48|AnyCPU'">
+    <DocumentationFile>..\..\..\build\cli\Release\net48\WebDriver.Support.xml</DocumentationFile>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net48|AnyCPU'">
+    <DocumentationFile>..\..\..\build\cli\Debug\net48\WebDriver.Support.xml</DocumentationFile>
     <WarningLevel>0</WarningLevel>
   </PropertyGroup>
 
@@ -63,6 +63,15 @@
     <WarningLevel>0</WarningLevel>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|netstandard2.1|AnyCPU'">
+    <DocumentationFile>..\..\..\build\cli\Release\netstandard2.1\WebDriver.Support.xml</DocumentationFile>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|netstandard2.1|AnyCPU'">
+    <DocumentationFile>..\..\..\build\cli\Debug\netstandard2.1\WebDriver.Support.xml</DocumentationFile>
+    <WarningLevel>0</WarningLevel>
+  </PropertyGroup>
+
   <ItemGroup>
     <Compile Remove="obj\**" />
     <EmbeddedResource Remove="obj\**" />
@@ -70,8 +79,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Remove="BUCK" />
-    <None Remove="build.desc" />
     <None Remove="Settings.StyleCop" />
     <None Remove="WebDriver.Support.ruleset" />
   </ItemGroup>

@@ -121,7 +121,7 @@ public class Color {
     return result;
   }
 
-  private static abstract class Converter {
+  private abstract static class Converter {
     public Color getColor(String value) {
       Matcher matcher = getPattern().matcher(value);
       if (matcher.find()) {

@@ -98,7 +98,7 @@ public abstract class Wait {
     throw new WaitTimedOutException(message);
   }
 
-  public class WaitTimedOutException extends RuntimeException {
+  public static class WaitTimedOutException extends RuntimeException {
 
     private static final long serialVersionUID = 1L;
 

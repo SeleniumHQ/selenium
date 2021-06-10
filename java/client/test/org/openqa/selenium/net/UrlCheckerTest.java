@@ -19,9 +19,8 @@ package org.openqa.selenium.net;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.openqa.selenium.environment.webserver.JreAppServer;
+import org.openqa.selenium.environment.webserver.NettyAppServer;
 import org.openqa.selenium.remote.http.HttpResponse;
-import org.openqa.selenium.remote.http.Route;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -32,23 +31,34 @@ import java.util.concurrent.TimeUnit;
 import static java.lang.System.currentTimeMillis;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.openqa.selenium.remote.http.Contents.utf8String;
+import static org.openqa.selenium.testing.Safely.safelyCall;
 
 public class UrlCheckerTest {
 
   private final UrlChecker urlChecker = new UrlChecker();
   private final ExecutorService executorService = Executors.newSingleThreadExecutor();
-  private JreAppServer server;
+  private NettyAppServer server;
   private URL url;
 
   @Before
-  public void buildServer() throws MalformedURLException {
-    JreAppServer server = new JreAppServer();
-    server.setHandler(Route.get("/").to(() -> req -> new HttpResponse()
-      .setStatus(200)
-      .setContent(utf8String("<h1>Working</h1>"))));
-    this.server = server;
+  public void buildServer() throws MalformedURLException, UrlChecker.TimeoutException {
+    // Warming NettyServer up
+    final NettyAppServer server = createServer();
+    executorService.submit(() -> {
+      server.start();
+      return null;
+    });
+    urlChecker.waitUntilAvailable(10, TimeUnit.SECONDS, new URL(server.whereIs("/")));
+    server.stop();
 
-    this.url = new URL(server.whereIs("/"));
+    this.server = createServer();
+    this.url = new URL(this.server.whereIs("/"));
+  }
+
+  private NettyAppServer createServer() {
+    return new NettyAppServer(req -> new HttpResponse()
+      .setStatus(200)
+      .setContent(utf8String("<h1>Working</h1>")));
   }
 
   @Test
@@ -64,7 +74,7 @@ public class UrlCheckerTest {
     long start = currentTimeMillis();
     urlChecker.waitUntilAvailable(10, TimeUnit.SECONDS, url);
     long elapsed = currentTimeMillis() - start;
-    assertThat(elapsed).isLessThan(UrlChecker.CONNECT_TIMEOUT_MS + 100L); // threshold
+    assertThat(elapsed).isLessThan(UrlChecker.CONNECT_TIMEOUT_MS + 600L); // threshold
   }
 
   @Test
@@ -82,14 +92,12 @@ public class UrlCheckerTest {
     long start = currentTimeMillis();
     urlChecker.waitUntilUnavailable(10, TimeUnit.SECONDS, url);
     long elapsed = currentTimeMillis() - start;
-    assertThat(elapsed).isLessThan(UrlChecker.CONNECT_TIMEOUT_MS + delay + 200L); // threshold
+    assertThat(elapsed).isLessThan(UrlChecker.CONNECT_TIMEOUT_MS + delay + 600L); // threshold
   }
 
   @After
   public void cleanup() {
-    if (server != null) {
-      server.stop();
-    }
-    executorService.shutdown();
+    safelyCall(() -> server.stop());
+    safelyCall(executorService::shutdownNow);
   }
 }

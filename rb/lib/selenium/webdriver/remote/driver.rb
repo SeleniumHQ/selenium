@@ -28,11 +28,8 @@ module Selenium
 
       class Driver < WebDriver::Driver
         include DriverExtensions::UploadsFiles
-        include DriverExtensions::TakesScreenshot
         include DriverExtensions::HasSessionId
-        include DriverExtensions::Rotatable
         include DriverExtensions::HasRemoteStatus
-        include DriverExtensions::HasWebStorage
 
         def initialize(bridge: nil, listener: nil, **opts)
           desired_capabilities = opts[:desired_capabilities]
@@ -45,6 +42,16 @@ module Selenium
           end
           opts[:url] ||= "http://#{Platform.localhost}:4444/wd/hub"
           super
+        end
+
+        private
+
+        def devtools_url
+          capabilities['se:cdp']
+        end
+
+        def devtools_version
+          capabilities['se:cdpVersion'].split('.').first
         end
       end # Driver
     end # Remote

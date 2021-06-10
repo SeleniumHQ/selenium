@@ -1,0 +1,73 @@
+schema {
+  query: GridQuery
+}
+
+scalar Uri
+
+enum Status {
+  UP
+  DRAINING
+  DOWN
+}
+
+type Session {
+  id: String!
+  capabilities: String!
+  startTime: String!
+  uri: Uri!
+  nodeId: String!
+  nodeUri: Uri!
+  sessionDurationMillis: String!
+  slot: Slot
+}
+
+type Slot {
+  id: String!
+  stereotype: String!
+  lastStarted: String!
+}
+
+type OsInfo {
+  arch: String!
+  name: String!
+  version: String!
+}
+
+type Node {
+  id: ID!
+  uri: Uri!
+  status: Status!
+  maxSession: Int!
+  slotCount: Int!
+  sessions: [Session]!
+  sessionCount: Int!
+  stereotypes: String!
+  version: String!
+  osInfo: OsInfo!
+}
+
+type Sessions {
+  sessionQueueRequests: [String]!
+  sessions: [Session]!
+}
+
+type Nodes {
+  nodes: [Node!]!
+}
+
+type GridQuery {
+  grid: Grid!
+  sessionsInfo: Sessions!
+  nodesInfo: Nodes!
+  session(id: String!) : Session!
+}
+
+type Grid {
+  uri: Uri!
+  totalSlots: Int!
+  nodeCount: Int!
+  maxSession: Int!
+  sessionCount: Int!
+  version: String!
+  sessionQueueSize: Int!
+}

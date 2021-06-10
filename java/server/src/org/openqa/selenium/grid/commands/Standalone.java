@@ -17,49 +17,66 @@
 
 package org.openqa.selenium.grid.commands;
 
-import com.beust.jcommander.JCommander;
-import com.beust.jcommander.ParameterException;
 import com.google.auto.service.AutoService;
-import io.opentracing.Tracer;
+import com.google.common.collect.ImmutableSet;
 import org.openqa.selenium.BuildInfo;
-import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.UsernameAndPassword;
 import org.openqa.selenium.cli.CliCommand;
 import org.openqa.selenium.events.EventBus;
-import org.openqa.selenium.grid.config.AnnotatedConfig;
-import org.openqa.selenium.grid.config.CompoundConfig;
-import org.openqa.selenium.grid.config.ConcatenatingConfig;
+import org.openqa.selenium.grid.TemplateGridServerCommand;
 import org.openqa.selenium.grid.config.Config;
-import org.openqa.selenium.grid.config.EnvConfig;
+import org.openqa.selenium.grid.config.Role;
 import org.openqa.selenium.grid.distributor.Distributor;
+import org.openqa.selenium.grid.distributor.config.DistributorOptions;
 import org.openqa.selenium.grid.distributor.local.LocalDistributor;
-import org.openqa.selenium.grid.docker.DockerFlags;
-import org.openqa.selenium.grid.docker.DockerOptions;
+import org.openqa.selenium.grid.graphql.GraphqlHandler;
 import org.openqa.selenium.grid.log.LoggingOptions;
 import org.openqa.selenium.grid.node.Node;
+import org.openqa.selenium.grid.node.ProxyNodeCdp;
 import org.openqa.selenium.grid.node.config.NodeOptions;
-import org.openqa.selenium.grid.node.local.LocalNode;
 import org.openqa.selenium.grid.router.Router;
-import org.openqa.selenium.grid.server.BaseServerFlags;
+import org.openqa.selenium.grid.security.BasicAuthenticationFilter;
+import org.openqa.selenium.grid.security.Secret;
+import org.openqa.selenium.grid.security.SecretOptions;
 import org.openqa.selenium.grid.server.BaseServerOptions;
-import org.openqa.selenium.grid.server.EventBusConfig;
-import org.openqa.selenium.grid.server.EventBusFlags;
-import org.openqa.selenium.grid.server.HelpFlags;
+import org.openqa.selenium.grid.server.EventBusOptions;
+import org.openqa.selenium.grid.server.NetworkOptions;
 import org.openqa.selenium.grid.server.Server;
 import org.openqa.selenium.grid.sessionmap.SessionMap;
 import org.openqa.selenium.grid.sessionmap.local.LocalSessionMap;
+import org.openqa.selenium.grid.sessionqueue.NewSessionQueue;
+import org.openqa.selenium.grid.sessionqueue.config.SessionRequestOptions;
+import org.openqa.selenium.grid.sessionqueue.local.LocalNewSessionQueue;
 import org.openqa.selenium.grid.web.CombinedHandler;
+import org.openqa.selenium.grid.web.GridUiRoute;
 import org.openqa.selenium.grid.web.RoutableHttpClientFactory;
-import org.openqa.selenium.net.NetworkUtils;
-import org.openqa.selenium.netty.server.NettyServer;
+import org.openqa.selenium.internal.Require;
+import org.openqa.selenium.remote.http.Contents;
 import org.openqa.selenium.remote.http.HttpClient;
-import org.openqa.selenium.remote.tracing.TracedHttpClient;
+import org.openqa.selenium.remote.http.HttpHandler;
+import org.openqa.selenium.remote.http.HttpResponse;
+import org.openqa.selenium.remote.http.Routable;
+import org.openqa.selenium.remote.http.Route;
+import org.openqa.selenium.remote.tracing.Tracer;
 
+import java.net.MalformedURLException;
 import java.net.URI;
-import java.net.URISyntaxException;
+import java.net.URL;
+import java.util.Collections;
+import java.util.Set;
 import java.util.logging.Logger;
 
+import static java.net.HttpURLConnection.HTTP_INTERNAL_ERROR;
+import static java.net.HttpURLConnection.HTTP_OK;
+import static org.openqa.selenium.grid.config.StandardGridRoles.DISTRIBUTOR_ROLE;
+import static org.openqa.selenium.grid.config.StandardGridRoles.HTTPD_ROLE;
+import static org.openqa.selenium.grid.config.StandardGridRoles.NODE_ROLE;
+import static org.openqa.selenium.grid.config.StandardGridRoles.ROUTER_ROLE;
+import static org.openqa.selenium.grid.config.StandardGridRoles.SESSION_QUEUE_ROLE;
+import static org.openqa.selenium.remote.http.Route.combine;
+
 @AutoService(CliCommand.class)
-public class Standalone implements CliCommand {
+public class Standalone extends TemplateGridServerCommand {
 
   private static final Logger LOG = Logger.getLogger("selenium");
 
@@ -74,101 +91,134 @@ public class Standalone implements CliCommand {
   }
 
   @Override
-  public Executable configure(String... args) {
-    HelpFlags help = new HelpFlags();
-    BaseServerFlags baseFlags = new BaseServerFlags(4444);
-    EventBusFlags eventFlags = new EventBusFlags();
-    DockerFlags dockerFlags = new DockerFlags();
-    StandaloneFlags standaloneFlags = new StandaloneFlags();
+  public Set<Role> getConfigurableRoles() {
+    return ImmutableSet.of(DISTRIBUTOR_ROLE, HTTPD_ROLE, NODE_ROLE, ROUTER_ROLE, SESSION_QUEUE_ROLE);
+  }
 
-    JCommander commander = JCommander.newBuilder()
-        .programName("standalone")
-        .addObject(baseFlags)
-        .addObject(help)
-        .addObject(eventFlags)
-        .addObject(dockerFlags)
-        .addObject(standaloneFlags)
-        .build();
+  @Override
+  public Set<Object> getFlagObjects() {
+    return Collections.singleton(new StandaloneFlags());
+  }
 
-    return () -> {
-      try {
-        commander.parse(args);
-      } catch (ParameterException e) {
-        System.err.println(e.getMessage());
-        commander.usage();
-        return;
-      }
+  @Override
+  protected String getSystemPropertiesConfigPrefix() {
+    return "selenium";
+  }
 
-      if (help.displayHelp(commander, System.out)) {
-        return;
-      }
+  @Override
+  protected Config getDefaultConfig() {
+    return new DefaultStandaloneConfig();
+  }
 
-      Config config = new CompoundConfig(
-          new EnvConfig(),
-          new ConcatenatingConfig("selenium", '.', System.getProperties()),
-          new AnnotatedConfig(help),
-          new AnnotatedConfig(baseFlags),
-          new AnnotatedConfig(dockerFlags),
-          new AnnotatedConfig(standaloneFlags),
-          new AnnotatedConfig(eventFlags),
-          new DefaultStandaloneConfig());
+  @Override
+  protected Handlers createHandlers(Config config) {
+    LoggingOptions loggingOptions = new LoggingOptions(config);
+    Tracer tracer = loggingOptions.getTracer();
 
-      LoggingOptions loggingOptions = new LoggingOptions(config);
-      loggingOptions.configureLogging();
-      Tracer tracer = loggingOptions.getTracer();
+    EventBusOptions events = new EventBusOptions(config);
+    EventBus bus = events.getEventBus();
 
-      EventBusConfig events = new EventBusConfig(config);
-      EventBus bus = events.getEventBus();
+    BaseServerOptions serverOptions = new BaseServerOptions(config);
+    SecretOptions secretOptions = new SecretOptions(config);
+    Secret registrationSecret = secretOptions.getRegistrationSecret();
 
-      String hostName;
-      try {
-        hostName = new NetworkUtils().getNonLoopbackAddressOfThisMachine();
-      } catch (WebDriverException e) {
-        hostName = "localhost";
-      }
+    URI localhost = serverOptions.getExternalUri();
+    URL localhostUrl;
+    try {
+      localhostUrl = localhost.toURL();
+    } catch (MalformedURLException e) {
+      throw new IllegalArgumentException(e);
+    }
 
-      int port = config.getInt("server", "port")
-          .orElseThrow(() -> new IllegalArgumentException("No port to use configured"));
-      URI localhost = null;
-      try {
-        localhost = new URI("http", null, hostName, port, null, null, null);
-      } catch (URISyntaxException e) {
-        throw new RuntimeException(e);
-      }
+    NetworkOptions networkOptions = new NetworkOptions(config);
+    CombinedHandler combinedHandler = new CombinedHandler();
+    HttpClient.Factory clientFactory = new RoutableHttpClientFactory(
+      localhostUrl,
+      combinedHandler,
+      networkOptions.getHttpClientFactory(tracer));
 
-      CombinedHandler combinedHandler = new CombinedHandler();
-      HttpClient.Factory clientFactory = new TracedHttpClient.Factory(
-        tracer,
-        new RoutableHttpClientFactory(
-          localhost.toURL(),
-          combinedHandler,
-          HttpClient.Factory.createDefault()));
+    SessionMap sessions = new LocalSessionMap(tracer, bus);
+    combinedHandler.addHandler(sessions);
 
-      SessionMap sessions = new LocalSessionMap(tracer, bus);
-      combinedHandler.addHandler(sessions);
-      Distributor distributor = new LocalDistributor(tracer, bus, clientFactory, sessions);
-      combinedHandler.addHandler(distributor);
-      Router router = new Router(tracer, clientFactory, sessions, distributor);
+    DistributorOptions distributorOptions = new DistributorOptions(config);
+    SessionRequestOptions sessionRequestOptions = new SessionRequestOptions(config);
+    NewSessionQueue queue = new LocalNewSessionQueue(
+      tracer,
+      bus,
+      distributorOptions.getSlotMatcher(),
+      sessionRequestOptions.getSessionRequestRetryInterval(),
+      sessionRequestOptions.getSessionRequestTimeout(),
+      registrationSecret);
+    combinedHandler.addHandler(queue);
 
-      LocalNode.Builder nodeBuilder = LocalNode.builder(
-          tracer,
-          bus,
-          clientFactory,
-          localhost)
-          .maximumConcurrentSessions(Runtime.getRuntime().availableProcessors() * 3);
+    Distributor distributor = new LocalDistributor(
+      tracer,
+      bus,
+      clientFactory,
+      sessions,
+      queue,
+      distributorOptions.getSlotSelector(),
+      registrationSecret,
+      distributorOptions.getHealthCheckInterval(),
+      distributorOptions.shouldRejectUnsupportedCaps());
+    combinedHandler.addHandler(distributor);
 
-      new NodeOptions(config).configure(tracer, clientFactory, nodeBuilder);
-      new DockerOptions(config).configure(tracer, clientFactory, nodeBuilder);
+    Routable router = new Router(tracer, clientFactory, sessions, queue, distributor)
+      .with(networkOptions.getSpecComplianceChecks());
 
-      Node node = nodeBuilder.build();
-      combinedHandler.addHandler(node);
-      distributor.add(node);
-
-      Server<?> server = new NettyServer(new BaseServerOptions(config), router);
-      server.start();
-
-      BuildInfo info = new BuildInfo();
-      LOG.info(String.format("Started Selenium standalone %s (revision %s)", info.getReleaseLabel(), info.getBuildRevision()));
+    HttpHandler readinessCheck = req -> {
+      boolean ready = sessions.isReady() && distributor.isReady() && bus.isReady();
+      return new HttpResponse()
+        .setStatus(ready ? HTTP_OK : HTTP_INTERNAL_ERROR)
+        .setContent(Contents.utf8String("Standalone is " + ready));
     };
+
+    GraphqlHandler graphqlHandler = new GraphqlHandler(
+      tracer,
+      distributor,
+      queue,
+      serverOptions.getExternalUri(),
+      getFormattedVersion());
+
+    Routable ui = new GridUiRoute();
+
+    Routable httpHandler = combine(
+      ui,
+      router,
+      Route.prefix("/wd/hub").to(combine(router)),
+      Route.options("/graphql").to(() -> graphqlHandler),
+      Route.post("/graphql").to(() -> graphqlHandler));
+
+    UsernameAndPassword uap = secretOptions.getServerAuthentication();
+    if (uap != null) {
+      LOG.info("Requiring authentication to connect");
+      httpHandler = httpHandler.with(new BasicAuthenticationFilter(uap.username(), uap.password()));
+    }
+
+    // Allow the liveness endpoint to be reached, since k8s doesn't make it easy to authenticate these checks
+    httpHandler = combine(httpHandler, Route.get("/readyz").to(() -> readinessCheck));
+
+    Node node = new NodeOptions(config).getNode();
+    combinedHandler.addHandler(node);
+    distributor.add(node);
+
+    return new Handlers(httpHandler, new ProxyNodeCdp(clientFactory, node));
+  }
+
+  @Override
+  protected void execute(Config config) {
+    Require.nonNull("Config", config);
+
+    Server<?> server = asServer(config).start();
+
+    LOG.info(String.format(
+      "Started Selenium Standalone %s: %s",
+      getFormattedVersion(),
+      server.getUrl()));
+  }
+
+  private String getFormattedVersion() {
+    BuildInfo info = new BuildInfo();
+    return String.format("%s (revision %s)", info.getReleaseLabel(), info.getBuildRevision());
   }
 }

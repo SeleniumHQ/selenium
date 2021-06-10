@@ -29,7 +29,12 @@ module Selenium
         #
 
         def devtools
-          @devtools ||= DevTools.new(capabilities['goog:chromeOptions']['debuggerAddress'])
+          @devtools ||= begin
+            require 'selenium/devtools'
+            Selenium::DevTools.version ||= devtools_version
+            Selenium::DevTools.load_version
+            Selenium::WebDriver::DevTools.new(url: devtools_url)
+          end
         end
 
       end # HasDevTools

@@ -17,8 +17,6 @@
 
 package org.openqa.selenium.safari;
 
-import static org.openqa.selenium.remote.CapabilityType.BROWSER_NAME;
-
 import com.google.auto.service.AutoService;
 
 import org.openqa.selenium.Capabilities;
@@ -30,6 +28,8 @@ import org.openqa.selenium.WebDriverInfo;
 import org.openqa.selenium.remote.BrowserType;
 
 import java.util.Optional;
+
+import static org.openqa.selenium.remote.CapabilityType.BROWSER_NAME;
 
 @AutoService(WebDriverInfo.class)
 public class SafariDriverInfo implements WebDriverInfo {
@@ -46,14 +46,19 @@ public class SafariDriverInfo implements WebDriverInfo {
 
   @Override
   public boolean isSupporting(Capabilities capabilities) {
-    if (BrowserType.SAFARI.equals(capabilities.getBrowserName())) {
+    if (BrowserType.SAFARI.equalsIgnoreCase(capabilities.getBrowserName())) {
       return true;
     }
 
     return capabilities.asMap().keySet().parallelStream()
-        .map(key -> key.startsWith("safari.") || key.startsWith("safari:"))
-        .reduce(Boolean::logicalOr)
-        .orElse(false);
+      .map(key -> key.startsWith("safari.") || key.startsWith("safari:"))
+      .reduce(Boolean::logicalOr)
+      .orElse(false);
+  }
+
+  @Override
+  public boolean isSupportingCdp() {
+    return false;
   }
 
   @Override

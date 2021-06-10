@@ -17,37 +17,21 @@
 
 package org.openqa.selenium.testing.drivers;
 
-import com.google.common.collect.ImmutableMap;
-
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.WebDriverInfo;
 import org.openqa.selenium.htmlunit.HtmlUnitDriver;
-import org.openqa.selenium.ie.InternetExplorerDriver;
 import org.openqa.selenium.remote.BrowserType;
-import org.openqa.selenium.safari.SafariDriver;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
-import java.util.Map;
+import java.util.ServiceLoader;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
 public class DefaultDriverSupplier implements Supplier<WebDriver> {
 
-  private static Map<String, Function<Capabilities, WebDriver>> driverConstructors =
-      new ImmutableMap.Builder<String, Function<Capabilities, WebDriver>>()
-          .put(BrowserType.CHROME, TestChromeDriver::new)
-          .put(BrowserType.OPERA_BLINK, TestOperaBlinkDriver::new)
-          .put(BrowserType.FIREFOX, FirefoxDriver::new)
-          .put(BrowserType.HTMLUNIT, HtmlUnitDriver::new)
-          .put(BrowserType.IE, InternetExplorerDriver::new)
-          .put(BrowserType.EDGE, TestEdgeDriver::new)
-          .put(BrowserType.SAFARI, SafariDriver::new)
-          .put("Safari Technology Preview", SafariDriver::new)
-          .build();
-
-  private Capabilities capabilities;
+  private final Capabilities capabilities;
 
   DefaultDriverSupplier(Capabilities capabilities) {
     this.capabilities = capabilities;
@@ -58,10 +42,18 @@ public class DefaultDriverSupplier implements Supplier<WebDriver> {
     Function<Capabilities, WebDriver> driverConstructor;
 
     if (capabilities != null) {
-      String browserName = capabilities.getBrowserName();
-      driverConstructor = driverConstructors.getOrDefault(browserName, caps -> {
-        throw new RuntimeException("No driver can be provided for capabilities " + caps);
-      });
+      if (capabilities.getBrowserName().equals(BrowserType.HTMLUNIT)) {
+        return new HtmlUnitDriver();
+      }
+
+      return ServiceLoader.load(WebDriverInfo.class).stream()
+        .map(ServiceLoader.Provider::get)
+        .filter(WebDriverInfo::isAvailable)
+        .filter(info -> info.isSupporting(capabilities))
+        .findFirst()
+        .orElseThrow(() -> new RuntimeException("No driver can be provided for capabilities " + capabilities))
+        .createDriver(capabilities)
+        .orElseThrow(() -> new RuntimeException("Unable to create driver"));
     } else {
       String className = System.getProperty("selenium.browser.class_name");
       try {

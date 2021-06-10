@@ -27,12 +27,29 @@ module Selenium
       #
 
       class Driver < WebDriver::Driver
-        include DriverExtensions::HasAddons
-        include DriverExtensions::HasWebStorage
-        include DriverExtensions::TakesScreenshot
+        EXTENSIONS = [DriverExtensions::HasAddons,
+                      DriverExtensions::FullPageScreenshot,
+                      DriverExtensions::HasDevTools,
+                      DriverExtensions::HasLogEvents,
+                      DriverExtensions::HasNetworkInterception,
+                      DriverExtensions::HasWebStorage,
+                      DriverExtensions::PrintsPage].freeze
 
         def browser
           :firefox
+        end
+
+        private
+
+        def devtools_url
+          uri = URI("http://#{capabilities['moz:debuggerAddress']}")
+          response = Net::HTTP.get(uri.hostname, '/json/version', uri.port)
+
+          JSON.parse(response)['webSocketDebuggerUrl']
+        end
+
+        def devtools_version
+          Firefox::DEVTOOLS_VERSION
         end
       end # Driver
     end # Firefox

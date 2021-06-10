@@ -10,6 +10,49 @@
     td {
       border: solid;
     }
+    #proximity-tests {
+      position: relative;
+      padding: 10px;
+      border: 1px solid black;
+      width: 640px;
+      height: 480px;
+    }
+
+    #proxima1 {
+      position: absolute;
+      top: 310px;
+      left: 230px;
+      height: 40px;
+      width: 40px;
+      background-color: red;
+    }
+
+    #proxima2 {
+      position: absolute;
+      top: 100px;
+      left: 100px;
+      height: 40px;
+      width: 40px;
+      background-color: green;
+    }
+
+    #proxima3 {
+      position: absolute;
+      top: 150px;
+      left: 310px;
+      height: 40px;
+      width: 40px;
+      background-color: yellow;
+    }
+
+    #proxima4 {
+      position: absolute;
+      top: 400px;
+      left: 150px;
+      height: 40px;
+      width: 40px;
+      background-color: blue;
+    }
   </style>
   <script src="test_bootstrap.js"></script>
   <script type="text/javascript">
@@ -41,16 +84,16 @@
       var found = bot.locators.findElements({relative: {root: {"tag name": "p"}, filters: [above(lowest)]}});
 
       assertEquals(2, found.length);
-      assertEquals("above", found[0].getAttribute("id"));
-      assertEquals("mid", found[1].getAttribute("id"));
+      assertEquals("mid", found[0].getAttribute("id"));
+      assertEquals("above", found[1].getAttribute("id"));
     }
 
     function testCanFindAllElementsAboveAnother() {
       var found = bot.locators.findElements({relative: {root: {tagName: 'td'}, filters: [above({id: "center"})]}});
 
       assertEquals(3, found.length);
-      assertEquals("first", found[0].getAttribute("id"));
-      assertEquals("second", found[1].getAttribute("id"));
+      assertEquals("second", found[0].getAttribute("id"));
+      assertEquals("first", found[1].getAttribute("id"));
       assertEquals("third", found[2].getAttribute("id"));
     }
 
@@ -69,21 +112,22 @@
       // don't expect the three cells on the left of the table to be found.
       var found = bot.locators.findElements({relative: {root: {tagName: 'td'}, filters: [{kind: "near", args: [{id: "sixth"}]}]}});
 
+      // Elements are sorted by proximity to "sixth"
       assertEquals(5, found.length);
-      assertEquals("second", found[0].getAttribute("id"));
-      assertEquals("third", found[1].getAttribute("id"));
+      assertEquals("third", found[0].getAttribute("id"));
+      assertEquals("ninth", found[1].getAttribute("id"));
       assertEquals("center", found[2].getAttribute("id"));
       // Note: an element is not near itself.
-      assertEquals("eighth", found[3].getAttribute("id"));
-      assertEquals("ninth", found[4].getAttribute("id"));
+      assertEquals("second", found[3].getAttribute("id"));
+      assertEquals("eighth", found[4].getAttribute("id"));
     }
 
     function testShouldBeAbleToFindAnElementToTheLeftOfAnother() {
       var found = bot.locators.findElements({relative: {root: {tagName: 'td'}, filters: [leftOf({id: "center"})]}});
 
       assertEquals(3, found.length);
-      assertEquals("first", found[0].getAttribute("id"));
-      assertEquals("fourth", found[1].getAttribute("id"));
+      assertEquals("fourth", found[0].getAttribute("id"));
+      assertEquals("first", found[1].getAttribute("id"));
       assertEquals("seventh", found[2].getAttribute("id"));
     }
 
@@ -91,8 +135,8 @@
       var found = bot.locators.findElements({relative: {root: {tagName: 'td'}, filters: [rightOf({id: "center"})]}});
 
       assertEquals(3, found.length);
-      assertEquals("third", found[0].getAttribute("id"));
-      assertEquals("sixth", found[1].getAttribute("id"));
+      assertEquals("sixth", found[0].getAttribute("id"));
+      assertEquals("third", found[1].getAttribute("id"));
       assertEquals("ninth", found[2].getAttribute("id"));
     }
 
@@ -117,6 +161,55 @@
 
       assertEquals(1, found.length);
       assertEquals("below", found[0].getAttribute("id"));
+    }
+
+    function testShouldOrderNodesByProximity() {
+      // Create an iframe to hold the content
+      var frame = document.createElement("iframe");
+      var pageSource = "" +
+        "<head>" +
+        "<style>" +
+        "#proxima1 {position: absolute;\n top: 310px;\n left: 230px;\n height: 40px;\n width: 40px;\n background-color: red;}\n" +
+        "#proxima2 {position: absolute;\n top: 100px;\n left: 100px;\n height: 40px;\n width: 40px;\n background-color: green;}\n" +
+        "#proxima3 {position: absolute;\n top: 150px;\n left: 310px;\n height: 40px;\n width: 40px;\n background-color: yellow;}\n" +
+        "#proxima4 {position: absolute;\n top: 400px;\n left: 150px;\n height: 40px;\n width: 40px;\n background-color: blue;}\n" +
+        "</style>" +
+        "</head>" +
+        "<div id=\"proxima1\">a</div>\n<div id=\"proxima2\">b</div>\n<div id=\"proxima3\">c</div>\n<div id=\"proxima4\">d</div>\n"
+        "";
+      frame.setAttribute("width", 640);
+      frame.setAttribute("height", 480);
+      // frame.src = "data:text/html;charset=utf-8," + encodeURI(pageSource);
+      document.body.appendChild(frame);
+
+      var win = goog.dom.getFrameContentWindow(frame);
+      win.document.documentElement.innerHTML = pageSource;
+
+      var current = bot.getWindow();
+
+      try {
+        bot.setWindow(goog.dom.getFrameContentWindow(frame));
+
+        var red = bot.locators.findElement({id: "proxima1"});
+        var green = bot.locators.findElement({id: "proxima2"});
+        var yellow = bot.locators.findElement({id: "proxima3"});
+        var blue = bot.locators.findElement({id: "proxima4"});
+
+        var found = bot.locators.findElements({
+          relative: {
+            root: {tagName: "div"},
+            filters: [{kind: "near", args: [red, 400]}]
+          }
+        })
+
+        var expected = [blue, yellow, green];
+        assertEquals(expected.length, found.length);
+        for (var i = 0; i < expected.length; i++) {
+          assertEquals(expected[i], found[i]);
+        }
+      } finally {
+        bot.setWindow(current);
+      }
     }
 
   </script>

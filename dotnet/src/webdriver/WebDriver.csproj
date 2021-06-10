@@ -1,10 +1,9 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>net47;net46;net45;netstandard2.0</TargetFrameworks>
+    <TargetFrameworks>net5.0;net48;net47;net46;net45;netstandard2.1;netstandard2.0</TargetFrameworks>
     <AssemblyName>WebDriver</AssemblyName>
     <RootNamespace>OpenQA.Selenium</RootNamespace>
-    <BuildSystem>visual-studio</BuildSystem>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
@@ -54,6 +53,15 @@
     <WarningLevel>0</WarningLevel>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net48|AnyCPU'">
+    <DocumentationFile>..\..\..\build\cli\Release\net48\WebDriver.xml</DocumentationFile>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net48|AnyCPU'">
+    <DocumentationFile>..\..\..\build\cli\Debug\net48\WebDriver.xml</DocumentationFile>
+    <WarningLevel>0</WarningLevel>
+  </PropertyGroup>
+
   <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|netstandard2.0|AnyCPU'">
     <DocumentationFile>..\..\..\build\cli\Release\netstandard2.0\WebDriver.xml</DocumentationFile>
   </PropertyGroup>
@@ -63,54 +71,90 @@
     <WarningLevel>0</WarningLevel>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|netstandard2.1|AnyCPU'">
+    <DocumentationFile>..\..\..\build\cli\Release\netstandard2.1\WebDriver.xml</DocumentationFile>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|netstandard2.1|AnyCPU'">
+    <DocumentationFile>..\..\..\build\cli\Debug\netstandard2.1\WebDriver.xml</DocumentationFile>
+    <WarningLevel>0</WarningLevel>
+  </PropertyGroup>
+
   <ItemGroup>
+    <Compile Remove="cdp\**" />
     <Compile Remove="obj\**" />
+    <EmbeddedResource Remove="cdp\**" />
     <EmbeddedResource Remove="obj\**" />
+    <None Remove="cdp\**" />
     <None Remove="obj\**" />
   </ItemGroup>
 
   <ItemGroup>
-    <None Remove="BUCK" />
-    <None Remove="build.desc" />
     <None Remove="Settings.StyleCop" />
-    <None Remove="WebDriver.nuspec" />
     <None Remove="WebDriver.ruleset" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Newtonsoft.Json" Version="12.0.2" />
+    <Compile Include="..\..\..\bazel-bin\dotnet\src\webdriver\cdp\**\*.cs" LinkBase="DevTools\generated" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Properties\" />
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
   </ItemGroup>
 
-  <ItemGroup Condition="'$(BuildSystem)' == 'buck'">
-    <EmbeddedResource Include="$(MSBuildProjectDirectory)\..\..\..\buck-out\gen\third_party\js\selenium\webdriver_prefs\webdriver_prefs">
+  <ItemGroup Condition="'$(OS)' == 'WINDOWS_NT'">
+    <EmbeddedResource Include="$(ProjectDir)..\..\..\third_party\js\selenium\webdriver.json">
       <Visible>False</Visible>
-      <LogicalName>WebDriver.FirefoxPreferences</LogicalName>
+      <LogicalName>webdriver_prefs.json</LogicalName>
     </EmbeddedResource>
-    <EmbeddedResource Include="$(MSBuildProjectDirectory)\..\..\..\buck-out\gen\javascript\webdriver\atoms\get-attribute.js">
+    <EmbeddedResource Include="$(ProjectDir)..\..\..\bazel-bin\javascript\webdriver\atoms\get-attribute.js">
       <Visible>False</Visible>
-      <LogicalName>getAttribute.js</LogicalName>
+      <LogicalName>get-attribute.js</LogicalName>
     </EmbeddedResource>
-    <EmbeddedResource Include="$(MSBuildProjectDirectory)\..\..\..\buck-out\gen\javascript\atoms\fragments\is-displayed.js">
+    <EmbeddedResource Include="$(ProjectDir)..\..\..\bazel-bin\javascript\atoms\fragments\is-displayed.js">
       <Visible>False</Visible>
-      <LogicalName>isDisplayed.js</LogicalName>
+      <LogicalName>is-displayed.js</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="$(ProjectDir)..\..\..\bazel-bin\javascript\atoms\fragments\find-elements.js">
+      <Visible>False</Visible>
+      <LogicalName>find-elements.js</LogicalName>
     </EmbeddedResource>
   </ItemGroup>
 
-  <ItemGroup Condition="'$(TargetFramework)'!='netstandard2.0'">
+  <ItemGroup Condition="'$(OS)' != 'WINDOWS_NT'">
+    <EmbeddedResource Include="$(ProjectDir)../../../third_party/js/selenium/webdriver.json">
+      <Visible>False</Visible>
+      <LogicalName>webdriver_prefs.json</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="$(ProjectDir)../../../bazel-bin/javascript/webdriver/atoms/get-attribute.js">
+      <Visible>False</Visible>
+      <LogicalName>get-attribute.js</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="$(ProjectDir)../../../bazel-bin/javascript/atoms/fragments/is-displayed.js">
+      <Visible>False</Visible>
+      <LogicalName>is-displayed.js</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="$(ProjectDir)../../../bazel-bin/javascript/atoms/fragments/find-elements.js">
+      <Visible>False</Visible>
+      <LogicalName>find-elements.js</LogicalName>
+    </EmbeddedResource>
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(TargetFramework)'!='net5.0' And '$(TargetFramework)'!='netstandard2.0' And '$(TargetFramework)'!='netstandard2.1'">
     <Reference Include="System.Net.Http" />
     <Reference Include="System.IO.Compression" />
   </ItemGroup>
 
-  <Target Name="PostBuild" AfterTargets="PostBuildEvent" Condition="'$(BuildSystem)' == 'visual-studio' And '$(OS)' == 'Windows_NT'">
-    <Exec Command="for %%G in (net45 net46 net47 netstandard2.0) do (&#xD;&#xA;  if exist &quot;$(ProjectDir)..\..\..\build\cpp\Win32\$(ConfigurationName)\IEDriverServer.exe&quot; (&#xD;&#xA;    echo Found IE 32-bit native binary, copying from Win32 build target $(ProjectDir)..\..\..\build\cpp\Win32\$(ConfigurationName)\IEDriverServer.exe&#xD;&#xA;    copy /y &quot;$(ProjectDir)..\..\..\build\cpp\Win32\$(ConfigurationName)\IEDriverServer.exe&quot; &quot;$(TargetDir)..\%%G&quot; &gt; NUL&#xD;&#xA;  ) else (&#xD;&#xA;    echo Missing IE 32-bit native binary, copying from Win32 prebuilt location $(ProjectDir)..\..\..\cpp\prebuilt\Win32\Release\IEDriverServer.exe&#xD;&#xA;    copy /y &quot;$(ProjectDir)..\..\..\cpp\prebuilt\Win32\Release\IEDriverServer.exe&quot; &quot;$(TargetDir)..\%%G&quot; &gt; NUL&#xD;&#xA;  )&#xD;&#xA;&#xD;&#xA;  echo Copying Firefox preferences file from $(ProjectDir)..\..\..\javascript\firefox-driver\webdriver.json&#xD;&#xA;  copy /y &quot;$(ProjectDir)..\..\..\javascript\firefox-driver\webdriver.json&quot; &quot;$(TargetDir)..\%%G&quot; &gt; NUL&#xD;&#xA;&#xD;&#xA;  if not exist &quot;$(TargetDir)..\%%G\getAttribute.js&quot; (&#xD;&#xA;    if not exist &quot;$(ProjectDir)..\..\..\buck-out\gen\javascript\webdriver\atoms\get-attribute.js&quot; (&#xD;&#xA;      echo Building getAttribute atom&#xD;&#xA;      pushd &quot;$(ProjectDir)..\..\..&quot;&#xD;&#xA;      call &quot;go.bat&quot; //javascript/webdriver/atoms:get-attribute&#xD;&#xA;      popd&#xD;&#xA;    )&#xD;&#xA;    echo Copying getAttribute atom&#xD;&#xA;    copy /y &quot;$(ProjectDir)..\..\..\buck-out\gen\javascript\webdriver\atoms\get-attribute.js&quot; &quot;$(TargetDir)..\%%G\getAttribute.js&quot; &gt; NUL&#xD;&#xA;  ) else (&#xD;&#xA;    echo Found getAttribute atom at $(TargetDir)..\%%G\getAttribute.js.&#xD;&#xA;  )&#xD;&#xA;&#xD;&#xA;  if not exist &quot;$(TargetDir)..\%%G\isDisplayed.js&quot; (&#xD;&#xA;    if not exist  &quot;$(ProjectDir)..\..\..\buck-out\gen\javascript\atoms\fragments\is-displayed.js&quot; (&#xD;&#xA;      echo Building isDisplayed atom&#xD;&#xA;      pushd &quot;$(ProjectDir)..\..\..&quot;&#xD;&#xA;      call &quot;go.bat&quot; //javascript/atoms/fragments:is-displayed&#xD;&#xA;      popd&#xD;&#xA;    )&#xD;&#xA;    echo Copying isDisplayed atom&#xD;&#xA;    copy /y &quot;$(ProjectDir)..\..\..\buck-out\gen\javascript\atoms\fragments\is-displayed.js&quot; &quot;$(TargetDir)..\%%G\isDisplayed.js&quot; &gt; NUL&#xD;&#xA;  ) else (&#xD;&#xA;    echo Found isDisplayed atom at $(TargetDir)..\%%G\isDisplayed.js.&#xD;&#xA;  )&#xD;&#xA;)" />
+  <ItemGroup>
+    <Folder Include="Remote\JsonConverters\" />
+  </ItemGroup>
+
+  <Target Name="PreBuild" BeforeTargets="PreBuildEvent" Condition="'$(OS)' == 'Windows_NT'">
+    <Exec Command="call $(ProjectDir)WebDriver.csproj.prebuild.cmd $(ProjectDir)" />
   </Target>
 
-  <Target Name="PostBuild" AfterTargets="PostBuildEvent" Condition="'$(BuildSystem)' == 'visual-studio' And '$(OS)' != 'Windows_NT'">
-    <Exec Command="js_target_location=//javascript&#xD;&#xA;for platform_dir in net45; do&#xD;&#xA;  if [ -f &quot;$(ProjectDir)../../../build/cpp/Win32/$(ConfigurationName)/IEDriverServer.exe&quot; ]; then&#xD;&#xA;    echo Found IE 32-bit native binary, copying from Win32 build target $(ProjectDir)../../../build/cpp/Win32/$(ConfigurationName)/IEDriverServer.exe&#xD;&#xA;    cp -f &quot;$(ProjectDir)../../../build/cpp/Win32/$(ConfigurationName)/IEDriverServer.exe&quot; &quot;$(TargetDir)../$platform_dir&quot; &gt; /dev/null&#xD;&#xA;  else&#xD;&#xA;    echo Missing IE 32-bit native binary, copying from Win32 prebuilt location $(ProjectDir)../../../cpp/prebuilt/Win32/Release/IEDriverServer.exe&#xD;&#xA;    cp -f &quot;$(ProjectDir)../../../cpp/prebuilt/Win32/Release/IEDriverServer.exe&quot; &quot;$(TargetDir)../$platform_dir&quot; &gt; /dev/null&#xD;&#xA;  fi&#xD;&#xA;&#xD;&#xA;  if [ -f &quot;$(ProjectDir)../../../buck-out/gen/javascript/firefox-driver/webdriver/webdriver.xpi&quot; ]; then&#xD;&#xA;    echo Copying Firefox extension from $(ProjectDir)../../../buck-out/gen/javascript/firefox-driver/webdriver/webdriver.xpi&#xD;&#xA;    cp -f &quot;$(ProjectDir)../../../buck-out/gen/javascript/firefox-driver/webdriver/webdriver.xpi&quot; &quot;$(TargetDir)../$platform_dir&quot; &gt; /dev/null&#xD;&#xA;  else&#xD;&#xA;    echo WARN: No Firefox extension found at $(ProjectDir)../../../buck-out/gen/javascript/firefox-driver/webdriver/webdriver.xpi&#xD;&#xA;  fi&#xD;&#xA;&#xD;&#xA;  echo Copying Firefox preferences file from $(ProjectDir)../../../javascript/firefox-driver/webdriver.json&#xD;&#xA;  cp -f &quot;$(ProjectDir)../../../javascript/firefox-driver/webdriver.json&quot; &quot;$(TargetDir)../$platform_dir&quot; &gt; /dev/null&#xD;&#xA;&#xD;&#xA;  if [ ! -f &quot;$(TargetDir)../$platform_dir/getAttribute.js&quot; ]; then&#xD;&#xA;    if [ ! -f &quot;$(ProjectDir)../../../buck-out/gen/javascript/webdriver/atoms/get-attribute.js&quot; ]; then&#xD;&#xA;      echo Building getAttribute atom&#xD;&#xA;      pushd &quot;$(ProjectDir)../../..&quot;&#xD;&#xA;      &quot;./go&quot; $js_target_location/webdriver/atoms:get-attribute&#xD;&#xA;      popd&#xD;&#xA;    fi&#xD;&#xA;    echo Copying getAttribute atom&#xD;&#xA;    cp -f &quot;$(ProjectDir)../../../buck-out/gen/javascript/webdriver/atoms/get-attribute.js&quot; &quot;$(TargetDir)../$platform_dir/getAttribute.js&quot; &gt; /dev/null&#xD;&#xA;  else&#xD;&#xA;    echo Found getAttribute atom at $(TargetDir)../$platform_dir/getAttribute.js.&#xD;&#xA;  fi&#xD;&#xA;&#xD;&#xA;  if [ ! -f &quot;$(TargetDir)../$platform_dir/isDisplayed.js&quot; ]; then&#xD;&#xA;    if [ ! -f &quot;$(ProjectDir)../../../buck-out/gen/javascript/atoms/fragments/is-displayed.js&quot; ]; then&#xD;&#xA;      echo Building isDisplayed atom&#xD;&#xA;      pushd &quot;$(ProjectDir)../../..&quot;&#xD;&#xA;      &quot;./go&quot; $js_target_location/atoms/fragments:is-displayed&#xD;&#xA;      popd&#xD;&#xA;    fi&#xD;&#xA;    echo Copying isDisplayed atom&#xD;&#xA;    cp -f &quot;$(ProjectDir)../../../buck-out/gen/javascript/atoms/fragments/is-displayed.js&quot; &quot;$(TargetDir)../$platform_dir/isDisplayed.js&quot; &gt; /dev/null&#xD;&#xA;  else&#xD;&#xA;    echo Found isDisplayed atom at $(TargetDir)../$platform_dir/isDisplayed.js.&#xD;&#xA;  fi&#xD;&#xA;done" />
+  <Target Name="PreBuildNonWindows" BeforeTargets="PreBuildEvent" Condition="'$(OS)' != 'Windows_NT'">
+    <Exec Command="$(ProjectDir)WebDriver.csproj.prebuild.sh $(ProjectDir)" />
   </Target>
 
 </Project>

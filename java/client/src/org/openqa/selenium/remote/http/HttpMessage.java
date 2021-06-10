@@ -28,6 +28,8 @@ import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Multimap;
 import com.google.common.net.MediaType;
 
+import org.openqa.selenium.internal.Require;
+
 import java.io.InputStream;
 import java.io.Reader;
 import java.nio.charset.Charset;
@@ -38,7 +40,7 @@ import java.util.Objects;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
-class HttpMessage<M extends HttpMessage<M>>  {
+abstract class HttpMessage<M extends HttpMessage<M>>  {
 
   private final Multimap<String, String> headers = ArrayListMultimap.create();
   private final Map<String, Object> attributes = new HashMap<>();
@@ -139,7 +141,7 @@ class HttpMessage<M extends HttpMessage<M>>  {
   }
 
   public M setContent(Supplier<InputStream> supplier) {
-    this.content = Objects.requireNonNull(supplier, "Supplier must be set.");
+    this.content = Require.nonNull("Supplier", supplier);
     return self();
   }
 

@@ -17,21 +17,18 @@
 
 package org.openqa.selenium.remote;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.openqa.selenium.OutputType.BASE64;
-import static org.openqa.selenium.testing.drivers.Browser.HTMLUNIT;
-
 import org.junit.Test;
 import org.openqa.selenium.By;
-import org.openqa.selenium.Capabilities;
-import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
-import org.openqa.selenium.testing.drivers.WebDriverBuilder;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.openqa.selenium.OutputType.BASE64;
+import static org.openqa.selenium.testing.drivers.Browser.HTMLUNIT;
 
 @Ignore(HTMLUNIT)
 public class RemoteWebDriverScreenshotTest extends JUnit4TestBase {
@@ -71,30 +68,6 @@ public class RemoteWebDriverScreenshotTest extends JUnit4TestBase {
     String screenshot = ((TakesScreenshot) toUse).getScreenshotAs(BASE64);
 
     assertThat(screenshot.length()).isGreaterThan(0);
-  }
-
-  @Test
-  public void testShouldBeAbleToDisableSnapshotOnException() {
-    if (!(driver instanceof RemoteWebDriver)) {
-      System.out.println("Skipping test: driver is not a remote webdriver");
-      return;
-    }
-
-    Capabilities caps = new ImmutableCapabilities("webdriver.remote.quietExceptions", true);
-
-    WebDriver noScreenshotDriver = new WebDriverBuilder().get(caps);
-
-    noScreenshotDriver.get(pages.simpleTestPage);
-
-    assertThatExceptionOfType(NoSuchElementException.class)
-        .isThrownBy(() -> noScreenshotDriver.findElement(By.id("doesnayexist")))
-        .satisfies(e -> {
-          Throwable t = e;
-          while (t != null) {
-            assertThat(t).isNotInstanceOf(ScreenshotException.class);
-            t = t.getCause();
-          }
-        });
   }
 
 }

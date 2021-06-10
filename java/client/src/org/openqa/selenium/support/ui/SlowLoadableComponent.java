@@ -93,6 +93,7 @@ public abstract class SlowLoadableComponent<T extends LoadableComponent<T>>
     try {
       Thread.sleep(sleepFor());
     } catch (InterruptedException e) {
+      Thread.currentThread().interrupt();
       throw new AssertionError(e);
     }
   }

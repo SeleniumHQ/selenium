@@ -17,24 +17,10 @@
 
 package org.openqa.selenium.json;
 
-import static java.util.logging.Level.ALL;
-import static java.util.logging.Level.FINE;
-import static java.util.logging.Level.OFF;
-import static java.util.logging.Level.WARNING;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.byLessThan;
-import static org.openqa.selenium.Proxy.ProxyType.PAC;
-import static org.openqa.selenium.json.Json.MAP_TYPE;
-import static org.openqa.selenium.logging.LogType.BROWSER;
-import static org.openqa.selenium.logging.LogType.CLIENT;
-import static org.openqa.selenium.logging.LogType.DRIVER;
-import static org.openqa.selenium.logging.LogType.SERVER;
-
-import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.reflect.TypeToken;
-
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.Cookie;
 import org.openqa.selenium.ImmutableCapabilities;
@@ -49,14 +35,33 @@ import org.openqa.selenium.remote.DriverCommand;
 import org.openqa.selenium.remote.ErrorCodes;
 import org.openqa.selenium.remote.Response;
 import org.openqa.selenium.remote.SessionId;
+import org.openqa.selenium.testing.UnitTests;
 
 import java.io.StringReader;
+import java.time.Instant;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
+import static java.util.logging.Level.ALL;
+import static java.util.logging.Level.FINE;
+import static java.util.logging.Level.OFF;
+import static java.util.logging.Level.WARNING;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.assertj.core.api.Assertions.byLessThan;
+import static org.assertj.core.api.InstanceOfAssertFactories.MAP;
+import static org.openqa.selenium.Proxy.ProxyType.PAC;
+import static org.openqa.selenium.json.Json.MAP_TYPE;
+import static org.openqa.selenium.logging.LogType.BROWSER;
+import static org.openqa.selenium.logging.LogType.CLIENT;
+import static org.openqa.selenium.logging.LogType.DRIVER;
+import static org.openqa.selenium.logging.LogType.SERVER;
+
+@Category(UnitTests.class)
 public class JsonTest {
 
   @Test
@@ -75,7 +80,7 @@ public class JsonTest {
   @Test
   public void canRoundTripNumbers() {
     Map<String, Object> original = ImmutableMap.of(
-        "options", ImmutableMap.of("args", ImmutableList.of(1L, "hello")));
+        "options", ImmutableMap.of("args", Arrays.asList(1L, "hello")));
 
     Json json = new Json();
     String converted = json.toJson(original);
@@ -101,7 +106,7 @@ public class JsonTest {
   @Test
   public void shouldCoerceAListOfCapabilitiesIntoSomethingMutable() {
     // This is needed since Grid expects each of the capabilities to be mutable
-    List<Capabilities> expected = ImmutableList.of(
+    List<Capabilities> expected = Arrays.asList(
         new ImmutableCapabilities("cheese", "brie"),
         new ImmutableCapabilities("peas", 42L));
 
@@ -199,6 +204,16 @@ public class JsonTest {
   }
 
   @Test
+  public void canNotPopulateAnObjectOfAClassWithNoDefaultConstructor() {
+    String raw = "{\"value\": \"time\"}";
+
+    assertThatExceptionOfType(JsonException.class)
+      .isThrownBy(() -> new Json().toType(raw, NoDefaultConstructor.class))
+      .withMessageStartingWith(
+        "Unable to find type coercer for class %s", NoDefaultConstructor.class.getTypeName());
+  }
+
+  @Test
   public void willSilentlyDiscardUnusedFieldsWhenPopulatingABean() {
     String raw = "{\"value\": \"time\", \"frob\": \"telephone\"}";
 
@@ -214,6 +229,17 @@ public class JsonTest {
     Map<?,?> map = new Json().toType(raw, Map.class);
 
     assertThat(map.get("magicNumber")).isEqualTo(3L);
+  }
+
+  @Test
+  public void shouldBeAbleToReadAnInstant() {
+    // We will lose the nanoseconds
+    Instant now = Instant.ofEpochMilli(System.currentTimeMillis());
+    String raw = String.valueOf(now.toEpochMilli());
+
+    Instant instant = new Json().toType(raw, Instant.class);
+
+    assertThat(instant).isEqualTo(now);
   }
 
   @Test
@@ -252,8 +278,8 @@ public class JsonTest {
         "{\"value\":{\"value\":\"\",\"text\":\"\",\"selected\":false,\"enabled\":true,\"id\":\"three\"},\"context\":\"con\",\"sessionId\":\"sess\"}";
     Response converted = new Json().toType(json, Response.class);
 
-    Map<String, Object> value = (Map<String, Object>) converted.getValue();
-    assertThat(value).containsEntry("id", "three");
+    assertThat(converted).extracting("value").asInstanceOf(MAP)
+      .containsEntry("id", "three");
   }
 
   @Test
@@ -299,8 +325,7 @@ public class JsonTest {
     Object first = list.get(0);
     assertThat(first instanceof Map).isTrue();
 
-    Map<String, Object> map = (Map<String, Object>) first;
-    assertThat(map)
+    assertThat(first).asInstanceOf(MAP)
         .containsEntry("name", "foo")
         .containsEntry("value", "bar")
         .containsEntry("domain", "localhost")
@@ -519,6 +544,23 @@ public class JsonTest {
   public static class SimpleBean {
 
     private String value;
+
+    public String getValue() {
+      return value;
+    }
+
+    public void setValue(String value) {
+      this.value = value;
+    }
+  }
+
+  public static class NoDefaultConstructor {
+
+    private String value;
+
+    public NoDefaultConstructor(String value) {
+      this.value = value;
+    }
 
     public String getValue() {
       return value;

@@ -1,4 +1,5 @@
 load("@rules_jvm_external//:defs.bzl", "artifact")
+load("//java:defs.bzl", "java_library")
 
 java_library(
     name = "config",
@@ -7,11 +8,10 @@ java_library(
         "//java/server/src/org/openqa/selenium/grid:__subpackages__",
     ],
     deps = [
-        "//java/client/src/org/openqa/selenium/remote/http",
+        "//java:auto-service",
         "//java/server/src/org/openqa/selenium/grid/config",
         "//java/server/src/org/openqa/selenium/grid/sessionmap",
-        "//java/server/src/org/openqa/selenium/grid/sessionmap/remote",
         artifact("com.beust:jcommander"),
-        artifact("io.opentracing:opentracing-api"),
+        artifact("io.opentelemetry:opentelemetry-api"),
     ],
 )

@@ -17,22 +17,27 @@
 
 package org.openqa.selenium.grid.distributor.config;
 
-import io.opentracing.Tracer;
 import org.openqa.selenium.grid.config.Config;
 import org.openqa.selenium.grid.config.ConfigException;
+import org.openqa.selenium.grid.data.SlotMatcher;
 import org.openqa.selenium.grid.distributor.Distributor;
-import org.openqa.selenium.grid.distributor.remote.RemoteDistributor;
-import org.openqa.selenium.remote.http.HttpClient;
+import org.openqa.selenium.grid.distributor.selector.SlotSelector;
 
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.net.URL;
+import java.time.Duration;
 import java.util.Optional;
-
-import static org.openqa.selenium.net.Urls.fromUri;
 
 public class DistributorOptions {
 
+  public static final int DEFAULT_HEALTHCHECK_INTERVAL = 300;
+  static final String DISTRIBUTOR_SECTION = "distributor";
+  static final String DEFAULT_DISTRIBUTOR_IMPLEMENTATION =
+    "org.openqa.selenium.grid.distributor.local.LocalDistributor";
+  static final String DEFAULT_SLOT_MATCHER = "org.openqa.selenium.grid.data.DefaultSlotMatcher";
+  static final String DEFAULT_SLOT_SELECTOR_IMPLEMENTATION =
+    "org.openqa.selenium.grid.distributor.selector.DefaultSlotSelector";
+  static final boolean DEFAULT_REJECT_UNSUPPORTED_CAPS = false;
   private final Config config;
 
   public DistributorOptions(Config config) {
@@ -40,9 +45,13 @@ public class DistributorOptions {
   }
 
   public URI getDistributorUri() {
-    Optional<URI> host = config.get("distributor", "host").map(str -> {
+    Optional<URI> host = config.get(DISTRIBUTOR_SECTION, "host").map(str -> {
       try {
-        return new URI(str);
+        URI distributorUri = new URI(str);
+        if (distributorUri.getHost() == null || distributorUri.getPort() == -1) {
+          throw new ConfigException("Undefined host or port in Distributor server URI: " + str);
+        }
+        return distributorUri;
       } catch (URISyntaxException e) {
         throw new ConfigException("Distributor URI is not a valid URI: " + str);
       }
@@ -52,8 +61,8 @@ public class DistributorOptions {
       return host.get();
     }
 
-    Optional<Integer> port = config.getInt("distributor", "port");
-    Optional<String> hostname = config.get("distributor", "hostname");
+    Optional<Integer> port = config.getInt(DISTRIBUTOR_SECTION, "port");
+    Optional<String> hostname = config.get(DISTRIBUTOR_SECTION, "hostname");
 
     if (!(port.isPresent() && hostname.isPresent())) {
       throw new ConfigException("Unable to determine host and port for the distributor");
@@ -76,11 +85,40 @@ public class DistributorOptions {
     }
   }
 
-  public Distributor getDistributor(Tracer tracer, HttpClient.Factory clientFactory) {
-    URL distributorUrl = fromUri(getDistributorUri());
-    return new RemoteDistributor(
-        tracer,
-        clientFactory,
-        distributorUrl);
+  public Duration getHealthCheckInterval() {
+    // If the user sets 0s or less, we default to 10s.
+    int seconds = Math.max(
+      config.getInt(DISTRIBUTOR_SECTION, "healthcheck-interval").orElse(DEFAULT_HEALTHCHECK_INTERVAL),
+      10);
+    return Duration.ofSeconds(seconds);
+  }
+
+  public Distributor getDistributor() {
+    return config.getClass(
+      DISTRIBUTOR_SECTION,
+      "implementation",
+      Distributor.class,
+      DEFAULT_DISTRIBUTOR_IMPLEMENTATION);
+  }
+
+  public SlotMatcher getSlotMatcher() {
+    return config.getClass(
+      DISTRIBUTOR_SECTION,
+      "slot-matcher",
+      SlotMatcher.class,
+      DEFAULT_SLOT_MATCHER);
+  }
+
+  public SlotSelector getSlotSelector() {
+    return config.getClass(
+      DISTRIBUTOR_SECTION,
+      "slot-selector",
+      SlotSelector.class,
+      DEFAULT_SLOT_SELECTOR_IMPLEMENTATION);
+  }
+
+  public boolean shouldRejectUnsupportedCaps() {
+    return config.getBool(DISTRIBUTOR_SECTION,
+      "reject-unsupported-caps").orElse(DEFAULT_REJECT_UNSUPPORTED_CAPS);
   }
 }

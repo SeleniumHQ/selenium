@@ -19,9 +19,8 @@ package org.openqa.selenium;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assume.assumeFalse;
-import static org.openqa.selenium.testing.drivers.Browser.EDGE;
 import static org.openqa.selenium.testing.drivers.Browser.IE;
-import static org.openqa.selenium.testing.drivers.Browser.MARIONETTE;
+import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
 import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
 import static org.openqa.selenium.testing.TestUtilities.getEffectivePlatform;
 import static org.openqa.selenium.testing.TestUtilities.isFirefox;
@@ -39,7 +38,7 @@ public class ContentEditableTest extends JUnit4TestBase {
   }
 
   @Test
-  @NotYetImplemented(value = MARIONETTE)
+  @NotYetImplemented(value = FIREFOX)
   public void testTypingIntoAnIFrameWithContentEditableOrDesignModeSet() {
     driver.get(pages.richTextPage);
 
@@ -56,7 +55,7 @@ public class ContentEditableTest extends JUnit4TestBase {
   }
 
   @Test
-  @NotYetImplemented(value = MARIONETTE)
+  @NotYetImplemented(value = FIREFOX)
   @NotYetImplemented(SAFARI)
   public void testNonPrintableCharactersShouldWorkWithContentEditableOrDesignModeSet() {
     assumeFalse("FIXME: Fails in Firefox on Linux with synthesized events",
@@ -86,8 +85,7 @@ public class ContentEditableTest extends JUnit4TestBase {
 
   @Test
   @NotYetImplemented(SAFARI)
-  @NotYetImplemented(EDGE)
-  @NotYetImplemented(value = MARIONETTE, reason = "https://github.com/mozilla/geckodriver/issues/667")
+  @NotYetImplemented(value = FIREFOX, reason = "https://github.com/mozilla/geckodriver/issues/667")
   public void testShouldBeAbleToTypeIntoContentEditableElementWithExistingValue() {
     driver.get(pages.readOnlyPage);
     WebElement editable = driver.findElement(By.id("content-editable"));
@@ -114,8 +112,7 @@ public class ContentEditableTest extends JUnit4TestBase {
   @Test
   @NotYetImplemented(value = IE, reason = "Prepends text")
   @NotYetImplemented(value = SAFARI, reason = "Prepends text")
-  @NotYetImplemented(value = MARIONETTE, reason = "https://github.com/mozilla/geckodriver/issues/667")
-  @NotYetImplemented(EDGE)
+  @NotYetImplemented(value = FIREFOX, reason = "https://github.com/mozilla/geckodriver/issues/667")
   public void testShouldAppendToTinyMCE() {
     driver.get(appServer.whereIs("tinymce.html"));
     driver.switchTo().frame("mce_0_ifr");
@@ -128,7 +125,7 @@ public class ContentEditableTest extends JUnit4TestBase {
   }
 
   @Test
-  @NotYetImplemented(value = MARIONETTE, reason = "Doesn't write anything")
+  @NotYetImplemented(value = FIREFOX, reason = "Doesn't write anything")
   @NotYetImplemented(value = SAFARI, reason = "Prepends text")
   public void appendsTextToEndOfContentEditableWithMultipleTextNodes() {
     driver.get(appServer.whereIs("content-editable.html"));

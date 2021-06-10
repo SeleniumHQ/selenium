@@ -17,41 +17,84 @@
 
 package org.openqa.selenium.grid.log;
 
-import io.opentracing.Tracer;
-import io.opentracing.contrib.tracerresolver.TracerResolver;
-import io.opentracing.noop.NoopTracerFactory;
 import org.openqa.selenium.grid.config.Config;
+import org.openqa.selenium.grid.config.ConfigException;
+import org.openqa.selenium.internal.Require;
+import org.openqa.selenium.remote.tracing.Tracer;
+import org.openqa.selenium.remote.tracing.empty.NullTracer;
+import org.openqa.selenium.remote.tracing.opentelemetry.OpenTelemetryTracer;
 
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.OutputStream;
+import java.io.UncheckedIOException;
+import java.io.UnsupportedEncodingException;
 import java.util.Arrays;
 import java.util.Enumeration;
-import java.util.Objects;
+import java.util.Locale;
 import java.util.logging.Handler;
+import java.util.logging.Level;
 import java.util.logging.LogManager;
 import java.util.logging.Logger;
 
 public class LoggingOptions {
 
+  static final String LOGGING_SECTION = "logging";
+  static final boolean DEFAULT_CONFIGURE_LOGGING = true;
+  static final String DEFAULT_LOG_LEVEL = Level.INFO.getName();
+  static final boolean DEFAULT_PLAIN_LOGS = true;
+  static final boolean DEFAULT_STRUCTURED_LOGS = false;
+  static final boolean DEFAULT_TRACING_ENABLED = true;
+  public static final boolean DEFAULT_HTTP_LOGS = false;
+  private static final Logger LOG = Logger.getLogger(LoggingOptions.class.getName());
   private final Config config;
+  private Level level = Level.INFO;
 
   public LoggingOptions(Config config) {
-    this.config = Objects.requireNonNull(config);
+    this.config = Require.nonNull("Config", config);
   }
 
   public boolean isUsingStructuredLogging() {
-    return config.getBool("logging", "structured-logs").orElse(false);
+    return config.getBool(LOGGING_SECTION, "structured-logs").orElse(DEFAULT_STRUCTURED_LOGS);
+  }
+
+  public boolean shouldLogHttpLogs() {
+    return config.getBool(LOGGING_SECTION, "http-logs").orElse(DEFAULT_HTTP_LOGS);
   }
 
   public boolean isUsingPlainLogs() {
-    return config.getBool("logging", "plain-logs").orElse(true);
+    return config.getBool(LOGGING_SECTION, "plain-logs").orElse(DEFAULT_PLAIN_LOGS);
+  }
+
+  public String getLogEncoding() {
+    return config.get(LOGGING_SECTION, "log-encoding").orElse(null);
+  }
+
+  public void setLoggingLevel() {
+    String configLevel = config.get(LOGGING_SECTION, "log-level").orElse(DEFAULT_LOG_LEVEL);
+
+    try {
+      level = Level.parse(configLevel.toUpperCase(Locale.ROOT));
+    } catch (IllegalArgumentException e) {
+      throw new ConfigException("Unable to determine log level from " + configLevel);
+    }
   }
 
   public Tracer getTracer() {
-    Tracer tracer = TracerResolver.resolveTracer();
-    return tracer == null ? NoopTracerFactory.create() : tracer;
+    boolean tracingEnabled = config.getBool(LOGGING_SECTION, "tracing")
+      .orElse(DEFAULT_TRACING_ENABLED);
+    if (!tracingEnabled) {
+      LOG.info("Using null tracer");
+      return new NullTracer();
+    }
+
+    OpenTelemetryTracer.setHttpLogs(shouldLogHttpLogs());
+
+    return OpenTelemetryTracer.getInstance();
   }
 
   public void configureLogging() {
-    if (!config.getBool("logging", "enable").orElse(true)) {
+    if (!config.getBool(LOGGING_SECTION, "enable").orElse(DEFAULT_CONFIGURE_LOGGING)) {
       return;
     }
 
@@ -60,23 +103,61 @@ public class LoggingOptions {
     Enumeration<String> names = logManager.getLoggerNames();
     while (names.hasMoreElements()) {
       Logger logger = logManager.getLogger(names.nextElement());
+      if (logger == null) {
+        continue;
+      }
+
       Arrays.stream(logger.getHandlers()).forEach(logger::removeHandler);
     }
 
     // Now configure the root logger, since everything should flow up to that
     Logger logger = logManager.getLogger("");
+    setLoggingLevel();
+    logger.setLevel(level);
+    OutputStream out = getOutputStream();
+    String encoding = getLogEncoding();
 
     if (isUsingPlainLogs()) {
-      Handler handler = new FlushingHandler(System.out);
+      Handler handler = new FlushingHandler(out);
       handler.setFormatter(new TerseFormatter());
-      logger.addHandler(handler);
+      handler.setLevel(level);
+      configureLogEncoding(logger, encoding, handler);
     }
 
     if (isUsingStructuredLogging()) {
-      Handler handler = new FlushingHandler(System.out);
+      Handler handler = new FlushingHandler(out);
       handler.setFormatter(new JsonFormatter());
-      logger.addHandler(handler);
+      handler.setLevel(level);
+      configureLogEncoding(logger, encoding, handler);
     }
   }
 
+  private void configureLogEncoding(Logger logger, String encoding, Handler handler) {
+    String message;
+    try {
+      if (encoding != null) {
+        handler.setEncoding(encoding);
+        message = String.format("Using encoding %s", encoding);
+      } else {
+        message = "Using the system default encoding";
+      }
+    } catch (UnsupportedEncodingException e) {
+      message =
+        String.format("Using the system default encoding. Unsupported encoding %s", encoding);
+    }
+    logger.addHandler(handler);
+    logger.log(Level.INFO, message);
+  }
+
+  private OutputStream getOutputStream() {
+    return config.get(LOGGING_SECTION, "log-file")
+      .map(fileName -> {
+        try {
+          return (OutputStream) new FileOutputStream(fileName);
+        } catch (FileNotFoundException e) {
+          throw new UncheckedIOException(e);
+        }
+      })
+      .orElse(System.out);
+  }
 }

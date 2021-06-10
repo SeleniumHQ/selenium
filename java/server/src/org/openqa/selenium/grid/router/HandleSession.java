@@ -19,76 +19,107 @@ package org.openqa.selenium.grid.router;
 
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
-import io.opentracing.Span;
-import io.opentracing.SpanContext;
-import io.opentracing.Tracer;
-import io.opentracing.tag.Tags;
+import com.google.common.cache.RemovalListener;
+
 import org.openqa.selenium.NoSuchSessionException;
+import org.openqa.selenium.concurrent.Regularly;
 import org.openqa.selenium.grid.data.Session;
 import org.openqa.selenium.grid.sessionmap.SessionMap;
 import org.openqa.selenium.grid.web.ReverseProxyHandler;
+import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.net.Urls;
 import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
+import org.openqa.selenium.remote.tracing.AttributeKey;
+import org.openqa.selenium.remote.tracing.EventAttribute;
+import org.openqa.selenium.remote.tracing.EventAttributeValue;
 import org.openqa.selenium.remote.tracing.HttpTracing;
-import org.openqa.selenium.remote.tracing.TracedCallable;
+import org.openqa.selenium.remote.tracing.Span;
+import org.openqa.selenium.remote.tracing.Status;
+import org.openqa.selenium.remote.tracing.Tracer;
 
+import java.io.IOException;
+import java.io.UncheckedIOException;
+import java.net.URL;
 import java.time.Duration;
-import java.util.Objects;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutionException;
 
 import static org.openqa.selenium.remote.HttpSessionId.getSessionId;
+import static org.openqa.selenium.remote.RemoteTags.SESSION_ID;
+import static org.openqa.selenium.remote.RemoteTags.SESSION_ID_EVENT;
+import static org.openqa.selenium.remote.tracing.Tags.EXCEPTION;
+import static org.openqa.selenium.remote.tracing.Tags.HTTP_REQUEST;
+import static org.openqa.selenium.remote.tracing.Tags.HTTP_REQUEST_EVENT;
+import static org.openqa.selenium.remote.tracing.Tags.HTTP_RESPONSE;
 
 class HandleSession implements HttpHandler {
 
   private final Tracer tracer;
   private final HttpClient.Factory httpClientFactory;
   private final SessionMap sessions;
-  private final Cache<SessionId, HttpHandler> knownSessions;
+  private final Cache<URL, HttpClient> httpClients;
 
-  public HandleSession(
+  HandleSession(
     Tracer tracer,
     HttpClient.Factory httpClientFactory,
     SessionMap sessions) {
-    this.tracer = Objects.requireNonNull(tracer);
-    this.httpClientFactory = Objects.requireNonNull(httpClientFactory);
-    this.sessions = Objects.requireNonNull(sessions);
+    this.tracer = Require.nonNull("Tracer", tracer);
+    this.httpClientFactory = Require.nonNull("HTTP client factory", httpClientFactory);
+    this.sessions = Require.nonNull("Sessions", sessions);
 
-    this.knownSessions = CacheBuilder.newBuilder()
+    this.httpClients = CacheBuilder.newBuilder()
       .expireAfterAccess(Duration.ofMinutes(1))
+      .removalListener((RemovalListener<URL, HttpClient>) removal -> removal.getValue().close())
       .build();
+
+    new Regularly("Clean up http clients cache").submit(
+      httpClients::cleanUp, Duration.ofMinutes(1), Duration.ofMinutes(1));
   }
 
   @Override
   public HttpResponse execute(HttpRequest req) {
-    Span previousSpan = tracer.scopeManager().activeSpan();
-    SpanContext parent = HttpTracing.extract(tracer, req);
-    Span span = tracer.buildSpan("router.handle_session").asChildOf(parent).start();
-    try {
-      tracer.scopeManager().activate(span);
+    try (Span span = HttpTracing.newSpanAsChildOf(tracer, req, "router.handle_session")) {
+      Map<String, EventAttributeValue> attributeMap = new HashMap<>();
+      attributeMap.put(AttributeKey.HTTP_HANDLER_CLASS.getKey(),
+                       EventAttribute.setValue(getClass().getName()));
 
-      span.setTag(Tags.HTTP_METHOD, req.getMethod().toString());
-      span.setTag(Tags.HTTP_URL, req.getUri());
+      HTTP_REQUEST.accept(span, req);
+      HTTP_REQUEST_EVENT.accept(attributeMap, req);
 
       SessionId id = getSessionId(req.getUri()).map(SessionId::new)
-        .orElseThrow(() -> new NoSuchSessionException("Cannot find session: " + req));
+        .orElseThrow(() -> {
+          NoSuchSessionException exception = new NoSuchSessionException("Cannot find session: " + req);
+          EXCEPTION.accept(attributeMap, exception);
+          attributeMap.put(AttributeKey.EXCEPTION_MESSAGE.getKey(),
+                           EventAttribute.setValue(
+                             "Unable to execute request for an existing session: " + exception.getMessage()));
+          span.addEvent(AttributeKey.EXCEPTION_EVENT.getKey(), attributeMap);
+          return exception;
+        });
 
-      span.setTag("session.id", id.toString());
+      SESSION_ID.accept(span, id);
+      SESSION_ID_EVENT.accept(attributeMap, id);
 
       try {
         HttpTracing.inject(tracer, span, req);
-        HttpResponse res = knownSessions.get(id, loadSessionId(tracer, span, id)).execute(req);
+        HttpResponse res = loadSessionId(tracer, span, id).call().execute(req);
 
-        span.setTag(Tags.HTTP_STATUS, res.getStatus());
+        HTTP_RESPONSE.accept(span, res);
 
         return res;
-      } catch (ExecutionException e) {
-        span.setTag(Tags.ERROR, true);
-        span.setTag("error.message", e.getMessage());
+      } catch (Exception e) {
+        span.setAttribute("error", true);
+        span.setStatus(Status.CANCELLED);
+
+        EXCEPTION.accept(attributeMap, e);
+        attributeMap.put(AttributeKey.EXCEPTION_MESSAGE.getKey(),
+                         EventAttribute.setValue("Unable to execute request for an existing session: " + e.getMessage()));
+        span.addEvent(AttributeKey.EXCEPTION_EVENT.getKey(), attributeMap);
 
         Throwable cause = e.getCause();
         if (cause instanceof RuntimeException) {
@@ -96,23 +127,16 @@ class HandleSession implements HttpHandler {
         }
         throw new RuntimeException(cause);
       }
-    } finally {
-      span.finish();
-      tracer.scopeManager().activate(previousSpan);
     }
   }
 
   private Callable<HttpHandler> loadSessionId(Tracer tracer, Span span, SessionId id) {
-    return new TracedCallable<>(
-      tracer,
-      span,
+    return span.wrap(
       () -> {
         Session session = sessions.get(id);
-          if (session instanceof HttpHandler) {
-            return (HttpHandler) session;
-          }
-          HttpClient client = httpClientFactory.createClient(Urls.fromUri(session.getUri()));
-          return new ReverseProxyHandler(tracer, client);
+        URL url = Urls.fromUri(session.getUri());
+        HttpClient client = httpClients.get(url, () -> httpClientFactory.createClient(url));
+        return new ReverseProxyHandler(tracer, client);
       }
     );
   }

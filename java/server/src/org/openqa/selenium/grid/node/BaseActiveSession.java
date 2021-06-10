@@ -20,13 +20,14 @@ package org.openqa.selenium.grid.node;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.grid.data.Session;
+import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.Dialect;
 import org.openqa.selenium.remote.SessionId;
 
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.util.Objects;
+import java.time.Instant;
 
 public abstract class BaseActiveSession implements ActiveSession {
 
@@ -35,25 +36,29 @@ public abstract class BaseActiveSession implements ActiveSession {
   private final Dialect upstream;
 
   protected BaseActiveSession(
-      SessionId id,
-      URL url,
-      Dialect downstream,
-      Dialect upstream,
-      Capabilities capabilities) {
-    URI uri = null;
+    SessionId id,
+    URL url,
+    Dialect downstream,
+    Dialect upstream,
+    Capabilities stereotype,
+    Capabilities capabilities,
+    Instant startTime) {
+    URI uri;
     try {
-      uri = Objects.requireNonNull(url).toURI();
+      uri = Require.nonNull("URL", url).toURI();
     } catch (URISyntaxException e) {
       throw new IllegalArgumentException(e);
     }
 
     this.session = new Session(
-        Objects.requireNonNull(id),
-        uri,
-        ImmutableCapabilities.copyOf(Objects.requireNonNull(capabilities)));
+      Require.nonNull("Session id", id),
+      uri,
+      ImmutableCapabilities.copyOf(Require.nonNull("Stereotype", stereotype)),
+      ImmutableCapabilities.copyOf(Require.nonNull("Capabilities", capabilities)),
+      Require.nonNull("Start time", startTime));
 
-    this.downstream = Objects.requireNonNull(downstream);
-    this.upstream = Objects.requireNonNull(upstream);
+    this.downstream = Require.nonNull("Downstream dialect", downstream);
+    this.upstream = Require.nonNull("Upstream dialect", upstream);
   }
 
   @Override
@@ -62,8 +67,18 @@ public abstract class BaseActiveSession implements ActiveSession {
   }
 
   @Override
+  public Capabilities getStereotype() {
+    return session.getStereotype();
+  }
+
+  @Override
   public Capabilities getCapabilities() {
     return session.getCapabilities();
+  }
+
+  @Override
+  public Instant getStartTime() {
+    return session.getStartTime();
   }
 
   @Override

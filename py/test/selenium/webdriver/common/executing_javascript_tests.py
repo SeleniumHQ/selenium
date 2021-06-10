@@ -18,6 +18,7 @@
 import pytest
 
 from selenium.common.exceptions import WebDriverException
+from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webelement import WebElement
 
 try:
@@ -179,7 +180,7 @@ def testShouldThrowAnExceptionWhenTheJavascriptIsBad(driver, pages):
 def testShouldBeAbleToCallFunctionsDefinedOnThePage(driver, pages):
     pages.load("javascriptPage.html")
     driver.execute_script("displayMessage('I like cheese')")
-    text = driver.find_element_by_id("result").text
+    text = driver.find_element(By.ID, "result").text
     assert "I like cheese" == text.strip()
 
 
@@ -204,7 +205,7 @@ def testShouldBeAbleToPassANumberAnAsArgument(driver, pages):
 
 def testShouldBeAbleToPassAWebElementAsArgument(driver, pages):
     pages.load("javascriptPage.html")
-    button = driver.find_element_by_id("plainButton")
+    button = driver.find_element(By.ID, "plainButton")
     value = driver.execute_script(
         "arguments[0]['flibble'] = arguments[0].getAttribute('id'); return arguments[0]['flibble']",
         button)
@@ -280,3 +281,23 @@ def testCanPassANone(driver, pages):
     pages.load("simpleTest.html")
     res = driver.execute_script("return arguments[0] === null", None)
     assert res
+
+
+def test_can_return_a_const(driver, pages):
+    pages.load("simpleTest.html")
+    res = driver.execute_script("const cheese='cheese'; return cheese")
+    assert res == "cheese"
+
+
+def test_can_return_a_const_in_a_page(driver, pages):
+    pages.load("const_js.html")
+    res = driver.execute_script("return makeMeA('sandwich');")
+    assert res == "cheese sandwich"
+
+
+@pytest.mark.xfail_firefox
+def test_can_return_global_const(driver, pages):
+    pages.load("const_js.html")
+    # cheese is a variable with "cheese" in it
+    res = driver.execute_script("return cheese")
+    assert res == "cheese"

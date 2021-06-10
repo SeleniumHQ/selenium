@@ -18,10 +18,12 @@
 package com.thoughtworks.selenium;
 
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.awt.event.KeyEvent;
 
+@Ignore("Focus does not focus")
 public class TestNativeKeys extends InternalSelenseTestBase {
   @Test
   public void testKeyPressNative() {

@@ -1,0 +1,72 @@
+load("@k8s_dev//:defaults.bzl", "k8s_dev")
+load("@io_bazel_rules_k8s//k8s:objects.bzl", "k8s_objects")
+
+k8s_objects(
+    name = "grid",
+    objects = [
+        # Ordered by nominal start order
+        ":event-bus",
+        ":session-map",
+        ":session-queue",
+        ":distributor",
+        ":router",
+        ":chrome-node",
+        ":firefox-node",
+    ],
+)
+
+k8s_dev(
+    name = "distributor",
+    images = {
+        "selenium/distributor:latest": "//deploys/docker:distributor-image",
+    },
+    template = "distributor.yaml",
+)
+
+k8s_dev(
+    name = "event-bus",
+    images = {
+        "selenium/event-bus:latest": "//deploys/docker:event-bus-image",
+    },
+    template = "event-bus.yaml",
+)
+
+k8s_dev(
+    name = "router",
+    images = {
+        "selenium/router:latest": "//deploys/docker:router-image",
+    },
+    template = "router.yaml",
+)
+
+k8s_dev(
+    name = "session-map",
+    images = {
+        "selenium/session-map:latest": "//deploys/docker:session-map-image",
+    },
+    template = "session-map.yaml",
+)
+
+k8s_dev(
+    name = "session-queue",
+    images = {
+        "selenium/session-queue:latest": "//deploys/docker:session-queue-image",
+    },
+    template = "session-queue.yaml",
+)
+
+k8s_dev(
+    name = "firefox-node",
+    images = {
+        "selenium/firefox-node:latest": "//deploys/docker:firefox-node",
+    },
+    template = "firefox-node.yaml",
+)
+
+k8s_dev(
+    name = "chrome-node",
+    images = {
+        "selenium/chrome-node:latest": "//deploys/docker:chrome-node",
+    },
+    template = "chrome-node.yaml",
+)

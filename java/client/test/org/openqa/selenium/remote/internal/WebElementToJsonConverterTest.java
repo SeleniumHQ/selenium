@@ -21,7 +21,6 @@ import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
-import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 
 import org.junit.Test;
@@ -97,13 +96,13 @@ public class WebElementToJsonConverterTest {
     Object converted = CONVERTER.apply(outerList);
     assertThat(converted).isInstanceOf(Collection.class);
 
-    List<?> list = ImmutableList.copyOf((Collection<?>) converted);
+    List<?> list = new ArrayList<>((Collection<?>) converted);
     assertThat(list).hasSize(3);
     assertThat(list.get(0)).isEqualTo("apples");
     assertThat(list.get(1)).isEqualTo("oranges");
     assertThat(list.get(2)).isInstanceOf(Collection.class);
 
-    list = ImmutableList.copyOf((Collection<?>) list.get(2));
+    list = new ArrayList<>((Collection<?>) list.get(2));
     assertContentsInOrder(list, 123, "abc");
   }
 

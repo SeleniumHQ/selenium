@@ -19,7 +19,6 @@ package org.openqa.selenium.testing;
 
 import org.eclipse.egit.github.core.Issue;
 import org.eclipse.egit.github.core.service.IssueService;
-import org.openqa.selenium.Platform;
 import org.openqa.selenium.testing.drivers.Browser;
 
 import java.io.IOException;
@@ -30,16 +29,11 @@ import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
 public class IgnoreComparator {
-  private Set<Browser> ignored = new HashSet<>();
-  private Platform currentPlatform = Platform.getCurrent();
+  private final Set<Browser> ignored = new HashSet<>();
 
   // TODO(simon): reduce visibility
   public void addDriver(Browser driverToIgnore) {
     ignored.add(driverToIgnore);
-  }
-
-  public void setCurrentPlatform(Platform platform) {
-    currentPlatform = platform;
   }
 
   public boolean shouldIgnore(IgnoreList ignoreList) {
@@ -52,10 +46,11 @@ public class IgnoreComparator {
   }
 
   private boolean shouldIgnore(Stream<Ignore> ignoreList) {
-    return ignoreList.anyMatch(driver ->
-        (ignored.contains(driver.value()) || driver.value() == Browser.ALL)
-        && (!driver.travis() || TestUtilities.isOnTravis())
-        && isOpen(driver.issue()));
+    return ignoreList.anyMatch(
+      driver -> (ignored.contains(driver.value()) || driver.value() == Browser.ALL)
+                && ((!driver.travis() || TestUtilities.isOnTravis())
+                    || (!driver.gitHubActions() || TestUtilities.isOnGitHubActions()))
+                && isOpen(driver.issue()));
   }
 
   private boolean isOpen(String issue) {

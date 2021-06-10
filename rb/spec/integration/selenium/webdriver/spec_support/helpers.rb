@@ -34,7 +34,7 @@ module Selenium
         end
 
         def create_driver!(**opts, &block)
-          GlobalTestEnv.create_driver!(opts, &block)
+          GlobalTestEnv.create_driver!(**opts, &block)
         end
 
         def ensure_single_window

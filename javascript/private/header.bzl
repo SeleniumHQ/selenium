@@ -61,9 +61,9 @@ closure_lang_file = rule(
             cfg = "host",
         ),
         "utf8": attr.bool(
-          doc = "Generate utf8 or not. UTF8 with generate wstring and wchar_t." 
-          + "If false, genereation with use char and string. Defaults to True",
-          default = True,
+            doc = "Generate utf8 or not. UTF8 with generate string and char. " +
+                  "If false, genereation with use wchar_t and wstring. Defaults to False",
+            default = False,
         ),
     },
 )

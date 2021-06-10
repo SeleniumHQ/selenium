@@ -24,7 +24,10 @@ import static org.openqa.selenium.Keys.chord;
 import static org.openqa.selenium.Keys.getKeyFromUnicode;
 
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
+import org.openqa.selenium.testing.UnitTests;
 
+@Category(UnitTests.class)
 public class KeysTest {
 
   @Test

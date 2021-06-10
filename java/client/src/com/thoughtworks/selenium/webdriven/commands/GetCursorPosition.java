@@ -54,7 +54,7 @@ public class GetCursorPosition extends com.thoughtworks.selenium.webdriven.Selen
         "} catch (e) {",
         "  throw Error('There is no cursor on this page!');",
         "}",
-        "return String(elementRange.text).replace(/\r/g,' ').length;"),
+        "return String(elementRange.text).replace(/\\r/g,' ').length;"),
       element);
   }
 }

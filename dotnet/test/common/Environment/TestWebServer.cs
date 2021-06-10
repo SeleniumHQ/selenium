@@ -16,14 +16,16 @@ namespace OpenQA.Selenium.Environment
         private string projectRootPath;
         private bool captureWebServerOutput;
         private bool hideCommandPrompt;
+        private string javaHomeDirectory;
 
         private StringBuilder outputData = new StringBuilder();
 
-        public TestWebServer(string projectRoot, bool captureWebServerOutput, bool hideCommandPrompt)
+        public TestWebServer(string projectRoot, TestWebServerConfig config)
         {
-            projectRootPath = projectRoot;
-            this.captureWebServerOutput = captureWebServerOutput;
-            this.hideCommandPrompt = hideCommandPrompt;
+            this.projectRootPath = projectRoot;
+            this.captureWebServerOutput = config.CaptureConsoleOutput;
+            this.hideCommandPrompt = config.HideCommandPromptWindow;
+            this.javaHomeDirectory = config.JavaHomeDirectory;
         }
 
         public void Start()
@@ -47,6 +49,12 @@ namespace OpenQA.Selenium.Environment
                     javaExecutableName = javaExecutableName + ".exe";
                 }
 
+                string javaExecutablePath = string.Empty;
+                if (!string.IsNullOrEmpty(this.javaHomeDirectory))
+                {
+                    javaExecutablePath = Path.Combine(this.javaHomeDirectory, "bin");
+                }
+
                 List<string> javaSystemProperties = new List<string>();
 
                 StringBuilder processArgsBuilder = new StringBuilder();
@@ -68,11 +76,24 @@ namespace OpenQA.Selenium.Environment
                 processArgsBuilder.AppendFormat("-jar {0}", standaloneTestJar);
 
                 webserverProcess = new Process();
-                webserverProcess.StartInfo.FileName = javaExecutableName;
+                if (!string.IsNullOrEmpty(javaExecutablePath))
+                {
+                    webserverProcess.StartInfo.FileName = Path.Combine(javaExecutablePath, javaExecutableName);
+                }
+                else
+                {
+                    webserverProcess.StartInfo.FileName = javaExecutableName;
+                }
+
                 webserverProcess.StartInfo.Arguments = processArgsBuilder.ToString();
                 webserverProcess.StartInfo.WorkingDirectory = projectRootPath;
                 webserverProcess.StartInfo.UseShellExecute = !(hideCommandPrompt || captureWebServerOutput);
                 webserverProcess.StartInfo.CreateNoWindow = hideCommandPrompt;
+                if (!string.IsNullOrEmpty(this.javaHomeDirectory))
+                {
+                    webserverProcess.StartInfo.EnvironmentVariables["JAVA_HOME"] = this.javaHomeDirectory;
+                }
+
                 if (captureWebServerOutput)
                 {
                     webserverProcess.StartInfo.RedirectStandardOutput = true;

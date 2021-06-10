@@ -20,9 +20,6 @@ package org.openqa.selenium.support.ui;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.openqa.selenium.testing.drivers.Browser.ALL;
-import static org.openqa.selenium.testing.drivers.Browser.EDGE;
-
-import com.google.common.collect.ImmutableList;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -31,7 +28,6 @@ import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
-import org.openqa.selenium.testing.NotYetImplemented;
 
 public class SelectElementTest extends JUnit4TestBase {
 
@@ -88,7 +84,7 @@ public class SelectElementTest extends JUnit4TestBase {
     Select select = new Select(selectElement);
 
     assertThat(select.getOptions()).extracting(WebElement::getText)
-        .isEqualTo(ImmutableList.of("One", "Two", "Four", "Still learning how to count, apparently"));
+        .containsExactly("One", "Two", "Four", "Still learning how to count, apparently");
 
   }
 
@@ -98,7 +94,7 @@ public class SelectElementTest extends JUnit4TestBase {
     Select select = new Select(selectElement);
 
     assertThat(select.getAllSelectedOptions()).extracting(WebElement::getText)
-        .isEqualTo(ImmutableList.of("One"));
+        .containsExactly("One");
   }
 
   @Test
@@ -107,7 +103,7 @@ public class SelectElementTest extends JUnit4TestBase {
     Select select = new Select(selectElement);
 
     assertThat(select.getAllSelectedOptions()).extracting(WebElement::getText)
-        .isEqualTo(ImmutableList.of("Eggs", "Sausages"));
+        .containsExactly("Eggs", "Sausages");
   }
 
   @Test
@@ -193,7 +189,6 @@ public class SelectElementTest extends JUnit4TestBase {
   }
 
   @Test
-  @NotYetImplemented(EDGE)
   public void shouldAllowUserToDeselectAllWhenSelectSupportsMultipleSelections() {
     WebElement selectElement = driver.findElement(By.name("multi"));
     Select select = new Select(selectElement);
@@ -256,7 +251,7 @@ public class SelectElementTest extends JUnit4TestBase {
 
     assertThat(select.getAllSelectedOptions()).hasSize(1);
   }
-  
+
   @Test
   public void shouldThrowExceptionOnDeselectByReturnedValueIfOptionDoesNotExist() {
     WebElement selectElement = driver.findElement(By.name("select_empty_multiple"));
@@ -265,7 +260,7 @@ public class SelectElementTest extends JUnit4TestBase {
     assertThatExceptionOfType(NoSuchElementException.class)
         .isThrownBy(() -> select.deselectByValue("not there"));
   }
-  
+
   @Test
   public void shouldThrowExceptionOnDeselectByVisibleTextIfOptionDoesNotExist() {
     WebElement selectElement = driver.findElement(By.name("select_empty_multiple"));
@@ -274,7 +269,7 @@ public class SelectElementTest extends JUnit4TestBase {
     assertThatExceptionOfType(NoSuchElementException.class)
         .isThrownBy(() -> select.deselectByVisibleText("not there"));
   }
-  
+
   @Test
   public void shouldThrowExceptionOnDeselectByIndexIfOptionDoesNotExist() {
     WebElement selectElement = driver.findElement(By.name("select_empty_multiple"));
@@ -283,7 +278,7 @@ public class SelectElementTest extends JUnit4TestBase {
     assertThatExceptionOfType(NoSuchElementException.class)
         .isThrownBy(() -> select.deselectByIndex(10));
   }
-  
+
   @Test
   public void shouldNotAllowUserToDeselectByIndexWhenSelectDoesNotSupportMultipleSelections() {
     WebElement selectElement = driver.findElement(By.name("selectomatic"));
@@ -292,7 +287,7 @@ public class SelectElementTest extends JUnit4TestBase {
     assertThatExceptionOfType(UnsupportedOperationException.class)
         .isThrownBy(() -> select.deselectByIndex(10));
   }
-  
+
   @Test
   public void shouldNotAllowUserToDeselectByValueWhenSelectDoesNotSupportMultipleSelections() {
     WebElement selectElement = driver.findElement(By.name("selectomatic"));
@@ -301,7 +296,7 @@ public class SelectElementTest extends JUnit4TestBase {
     assertThatExceptionOfType(UnsupportedOperationException.class)
         .isThrownBy(() -> select.deselectByValue("two"));
   }
-  
+
   @Test
   public void shouldNotAllowUserToDeselectByVisibleTextWhenSelectDoesNotSupportMultipleSelections() {
     WebElement selectElement = driver.findElement(By.name("selectomatic"));

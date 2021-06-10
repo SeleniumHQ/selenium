@@ -71,6 +71,15 @@ def test_set_proxy(options):
     assert options._proxy == proxy
 
 
+def test_set_proxy_isnt_in_moz_prefix(options):
+    proxy = Proxy({'proxyType': ProxyType.MANUAL})
+    options.proxy = proxy
+
+    caps = options.to_capabilities()
+    assert caps["proxy"]["proxyType"] == "MANUAL"
+    assert caps.get("moz:firefoxOptions") is None
+
+
 def test_raises_exception_if_proxy_is_not_proxy_object(options):
     with pytest.raises(InvalidArgumentException):
         options.proxy = 'foo'
@@ -154,9 +163,38 @@ def test_creates_capabilities(options):
 
 def test_starts_with_default_capabilities(options):
     from selenium.webdriver import DesiredCapabilities
-    assert options._caps == DesiredCapabilities.FIREFOX
+    caps = DesiredCapabilities.FIREFOX.copy()
+    caps.update({"pageLoadStrategy": "normal"})
+    assert options._caps == caps
 
 
 def test_is_a_baseoptions(options):
     from selenium.webdriver.common.options import BaseOptions
     assert isinstance(options, BaseOptions)
+
+
+def test_raises_exception_with_invalid_page_load_strategy(options):
+    with pytest.raises(ValueError):
+        options.page_load_strategy = 'never'
+
+
+def test_set_page_load_strategy(options):
+    options.page_load_strategy = 'normal'
+    assert options._caps["pageLoadStrategy"] == 'normal'
+
+
+def test_get_page_load_strategy(options):
+    options._page_load_strategy = 'normal'
+    assert options._caps["pageLoadStrategy"] == 'normal'
+
+
+def test_creates_capabilities_with_page_load_strategy(options):
+    options.page_load_strategy = 'eager'
+    caps = options.to_capabilities()
+    assert caps['pageLoadStrategy'] == 'eager'
+
+
+def test_enables_firefox_mobile(options):
+    options.enable_mobile()
+    result_caps = options.to_capabilities()
+    assert result_caps["moz:firefoxOptions"]["androidPackage"] == "org.mozilla.firefox"

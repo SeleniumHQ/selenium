@@ -20,5 +20,4 @@ package org.openqa.selenium.json;
 public enum PropertySetting {
   BY_NAME,
   BY_FIELD
-  ;
 }

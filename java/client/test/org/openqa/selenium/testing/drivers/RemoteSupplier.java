@@ -19,6 +19,7 @@ package org.openqa.selenium.testing.drivers;
 
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.remote.Augmenter;
 import org.openqa.selenium.remote.LocalFileDetector;
 import org.openqa.selenium.remote.RemoteWebDriver;
 
@@ -59,10 +60,10 @@ public class RemoteSupplier implements Supplier<WebDriver> {
 
     RemoteWebDriver driver = new RemoteWebDriver(serverUrl, desiredCapabilities);
     driver.setFileDetector(new LocalFileDetector());
-    return driver;
+    return new Augmenter().augment(driver);
   }
 
-  private synchronized  void startServer() {
+  private synchronized void startServer() {
     if (started) {
       return;
     }

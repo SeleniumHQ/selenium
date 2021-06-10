@@ -16,6 +16,7 @@
 // limitations under the License.
 // </copyright>
 
+using System;
 using System.Drawing;
 
 namespace OpenQA.Selenium
@@ -41,8 +42,7 @@ namespace OpenQA.Selenium
         string TagName { get; }
 
         /// <summary>
-        /// Gets the innerText of this element, without any leading or trailing whitespace,
-        /// and with other whitespace collapsed.
+        /// Get the visible (i.e. not hidden by CSS) text of this element, including sub-elements.
         /// </summary>
         /// <exception cref="StaleElementReferenceException">Thrown when the target element is no longer valid in the document DOM.</exception>
         string Text { get; }
@@ -174,13 +174,38 @@ namespace OpenQA.Selenium
         string GetAttribute(string attributeName);
 
         /// <summary>
+        /// Gets the value of a declared HTML attribute of this element.
+        /// </summary>
+        /// <param name="attributeName">The name of the HTML attribute to get the value of.</param>
+        /// <returns>The HTML attribute's current value. Returns a <see langword="null"/> if the
+        /// value is not set or the declared attribute does not exist.</returns>
+        /// <exception cref="StaleElementReferenceException">Thrown when the target element is no longer valid in the document DOM.</exception>
+        /// <remarks>
+        /// As opposed to the <see cref="GetAttribute(string)"/> method, this method
+        /// only returns attributes declared in the element's HTML markup. To access the value
+        /// of an IDL property of the element, either use the <see cref="GetAttribute(string)"/>
+        /// method or the <see cref="GetDomProperty(string)"/> method.
+        /// </remarks>
+        string GetDomAttribute(string attributeName);
+
+        /// <summary>
         /// Gets the value of a JavaScript property of this element.
         /// </summary>
         /// <param name="propertyName">The name JavaScript the JavaScript property to get the value of.</param>
         /// <returns>The JavaScript property's current value. Returns a <see langword="null"/> if the
         /// value is not set or the property does not exist.</returns>
         /// <exception cref="StaleElementReferenceException">Thrown when the target element is no longer valid in the document DOM.</exception>
+        [Obsolete("Use the GetDomProperty method instead.")]
         string GetProperty(string propertyName);
+
+        /// <summary>
+        /// Gets the value of a JavaScript property of this element.
+        /// </summary>
+        /// <param name="propertyName">The name of the JavaScript property to get the value of.</param>
+        /// <returns>The JavaScript property's current value. Returns a <see langword="null"/> if the
+        /// value is not set or the property does not exist.</returns>
+        /// <exception cref="StaleElementReferenceException">Thrown when the target element is no longer valid in the document DOM.</exception>
+        string GetDomProperty(string propertyName);
 
         /// <summary>
         /// Gets the value of a CSS property of this element.
@@ -194,5 +219,12 @@ namespace OpenQA.Selenium
         /// return "#008000" for its value.</remarks>
         /// <exception cref="StaleElementReferenceException">Thrown when the target element is no longer valid in the document DOM.</exception>
         string GetCssValue(string propertyName);
+
+        /// <summary>
+        /// Gets the representation of an element's shadow root for accessing the shadow DOM of a web component.
+        /// </summary>
+        /// <exception cref="NoSuchShadowRootException">Thrown when this element does not have a shadow root.</exception>
+        /// <returns>A shadow root representation.</returns>
+        ISearchContext GetShadowRoot();
     }
 }
