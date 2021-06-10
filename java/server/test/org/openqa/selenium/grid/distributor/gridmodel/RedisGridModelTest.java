@@ -128,10 +128,6 @@ public class RedisGridModelTest {
       .build();
   }
 
-  @After
-  public void cleanUp() {
-
-  }
   @AfterClass
   public static void tearDownRedisServer() {
     safelyCall(() -> server.stop());

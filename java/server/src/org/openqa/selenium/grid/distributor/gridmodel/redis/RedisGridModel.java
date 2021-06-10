@@ -445,4 +445,7 @@ public class RedisGridModel implements GridModel {
       status.getOsInfo());
   }
 
+  public GridRedisClient getRedisClient() {
+    return redisClient;
+  }
 }
