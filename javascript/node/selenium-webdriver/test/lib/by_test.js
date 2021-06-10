@@ -89,7 +89,8 @@ describe('by', function () {
 
   describe('RelativeBy', function () {
     it('marshalls the RelativeBy object', function () {
-      let relative = by.withTagName('p').above(by.By.name('foobar'))
+      let relative = by.locateWith(by.By.tagName('p')).above(by.By.name('foobar'))
+
       let expected = {
         relative: {
           root: { 'css selector': 'p' },
@@ -110,7 +111,7 @@ describe('by', function () {
     })
 
     it('accepts custom locator functions', function () {
-      let original = function () {}
+      let original = function () { }
       let locator = by.checkedLocator(original)
       assert.strictEqual(locator, original)
     })

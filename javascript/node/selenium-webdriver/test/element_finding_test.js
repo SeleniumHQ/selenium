@@ -21,6 +21,7 @@ const assert = require('assert')
 const promise = require('../lib/promise')
 const { Browser, By, error, withTagName, until } = require('..')
 const { Pages, ignore, suite, whereIs } = require('../lib/test')
+const { locateWith } = require('../lib/by')
 
 suite(function (env) {
   const browsers = (...args) => env.browsers(...args)
@@ -61,7 +62,7 @@ suite(function (env) {
 
       it(
         'should find multiple elements by ID even though that is ' +
-          'malformed HTML',
+        'malformed HTML',
         async function () {
           await driver.get(Pages.nestedPage)
 
@@ -306,7 +307,7 @@ suite(function (env) {
 
       it(
         'should find first matching element when searching by ' +
-          'compound CSS selector',
+        'compound CSS selector',
         async function () {
           await driver.get(Pages.xhtmlTestPage)
 
@@ -349,7 +350,7 @@ suite(function (env) {
 
       it(
         'should be able to find element with short ' +
-          'boolean attribute selector',
+        'boolean attribute selector',
         async function () {
           await driver.get(
             whereIs('locators_tests/boolean_attribute_selected.html')
@@ -362,7 +363,7 @@ suite(function (env) {
 
       it(
         'should be able to find element with short boolean attribute ' +
-          'selector on HTML4 page',
+        'selector on HTML4 page',
         async function () {
           await driver.get(
             whereIs('locators_tests/boolean_attribute_selected_html4.html')
@@ -461,6 +462,12 @@ suite(function (env) {
           withTagName('td').above(By.id('center')).toRightOf(By.id('second'))
         )
         assert.deepStrictEqual(await element.getAttribute('id'), `third`)
+      })
+
+      it('should search by passing in a by object', async function () {
+        await driver.get(Pages.relativeLocators)
+        let element = await driver.findElement(locateWith(By.css('p')).above(await driver.findElement(By.id('below'))))
+        assert.deepStrictEqual(await element.getAttribute('id'), 'mid')
       })
     })
 
