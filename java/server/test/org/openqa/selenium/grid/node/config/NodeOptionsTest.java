@@ -21,6 +21,7 @@ import com.google.common.collect.ImmutableMap;
 
 import org.assertj.core.api.Condition;
 import org.junit.Test;
+import org.mockito.Mockito;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.Platform;
@@ -120,6 +121,57 @@ public class NodeOptionsTest {
     // There may be more drivers available, but we know that these are meant to be here.
     assertThat(reported).is(supporting("safari"));
     assertThat(reported).isNot(supporting("internet explorer"));
+  }
+
+  @Test
+  public void platformNameIsAddedByDefault() {
+    Config config = new MapConfig(singletonMap("node", singletonMap("detect-drivers", "true")));
+
+    List<Capabilities> reported = new ArrayList<>();
+    new NodeOptions(config).getSessionFactories(caps -> {
+      reported.add(caps);
+      return Collections.singleton(HelperFactory.create(config, caps));
+    });
+
+    assertThat(reported)
+      .filteredOn(capabilities -> capabilities.getPlatformName() != null)
+      .hasSize(reported.size());
+  }
+
+  @Test
+  public void vncEnabledCapabilityIsAddedWhenEnvVarIsTrue() {
+    Config config = new MapConfig(singletonMap("node", singletonMap("detect-drivers", "true")));
+
+    List<Capabilities> reported = new ArrayList<>();
+    NodeOptions nodeOptions = new NodeOptions(config);
+    NodeOptions nodeOptionsSpy = Mockito.spy(nodeOptions);
+    Mockito.doReturn(true).when(nodeOptionsSpy).isVncEnabled();
+    nodeOptionsSpy.getSessionFactories(caps -> {
+      reported.add(caps);
+      return Collections.singleton(HelperFactory.create(config, caps));
+    });
+
+    assertThat(reported)
+      .filteredOn(capabilities -> capabilities.getCapability("se:vncEnabled") != null)
+      .hasSize(reported.size());
+  }
+
+  @Test
+  public void vncEnabledCapabilityIsNotAddedWhenEnvVarIsFalse() {
+    Config config = new MapConfig(singletonMap("node", singletonMap("detect-drivers", "true")));
+
+    List<Capabilities> reported = new ArrayList<>();
+    NodeOptions nodeOptions = new NodeOptions(config);
+    NodeOptions nodeOptionsSpy = Mockito.spy(nodeOptions);
+    Mockito.doReturn(false).when(nodeOptionsSpy).isVncEnabled();
+    nodeOptionsSpy.getSessionFactories(caps -> {
+      reported.add(caps);
+      return Collections.singleton(HelperFactory.create(config, caps));
+    });
+
+    assertThat(reported)
+      .filteredOn(capabilities -> capabilities.getCapability("se:vncEnabled") == null)
+      .hasSize(reported.size());
   }
 
   @Test
