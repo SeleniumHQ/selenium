@@ -17,6 +17,7 @@
 
 package org.openqa.selenium.grid.node.config;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableMultimap;
@@ -24,7 +25,7 @@ import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Multimap;
 
 import org.openqa.selenium.Capabilities;
-import org.openqa.selenium.ImmutableCapabilities;
+import org.openqa.selenium.PersistentCapabilities;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.WebDriver;
@@ -50,6 +51,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.ServiceLoader;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Function;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -65,18 +67,20 @@ public class NodeOptions {
   static final String NODE_SECTION = "node";
   static final boolean DEFAULT_DETECT_DRIVERS = true;
   static final boolean OVERRIDE_MAX_SESSIONS = false;
+  static final String DEFAULT_VNC_ENV_VAR = "START_XVFB";
   static final int DEFAULT_REGISTER_CYCLE = 10;
   static final int DEFAULT_REGISTER_PERIOD = 120;
 
   private static final Logger LOG = Logger.getLogger(NodeOptions.class.getName());
   private static final Json JSON = new Json();
   private static final String DEFAULT_IMPL = "org.openqa.selenium.grid.node.local.LocalNodeFactory";
-  private static final ImmutableCapabilities CURRENT_PLATFORM =
-    new ImmutableCapabilities("platformName", Platform.getCurrent());
+  private static final Platform CURRENT_PLATFORM = Platform.getCurrent();
   private static final ImmutableSet<String>
     SINGLE_SESSION_DRIVERS = ImmutableSet.of("safari", "safari technology preview");
 
   private final Config config;
+  private final AtomicBoolean vncEnabled = new AtomicBoolean();
+  private final AtomicBoolean vncEnabledValueSet = new AtomicBoolean();
 
   public NodeOptions(Config config) {
     this.config = Require.nonNull("Config", config);
@@ -179,6 +183,15 @@ public class NodeOptions {
     return Duration.ofSeconds(seconds);
   }
 
+  @VisibleForTesting
+  boolean isVncEnabled() {
+    String vncEnvVar = config.get(NODE_SECTION, "vnc-env-var").orElse(DEFAULT_VNC_ENV_VAR);
+    if (!vncEnabledValueSet.getAndSet(true)) {
+      vncEnabled.set(Boolean.parseBoolean(System.getenv(vncEnvVar)));
+    }
+    return vncEnabled.get();
+  }
+
   private void addDriverFactoriesFromConfig(ImmutableMultimap.Builder<Capabilities,
     SessionFactory> sessionFactories) {
     config.getAll(NODE_SECTION, "driver-factories").ifPresent(allConfigs -> {
@@ -186,8 +199,8 @@ public class NodeOptions {
         throw new ConfigException("Expected each driver class to be mapped to a config");
       }
 
-      Map<String, String> configMap = IntStream.range(0, allConfigs.size()/2).boxed()
-        .collect(Collectors.toMap(i -> allConfigs.get(2*i), i -> allConfigs.get(2*i + 1)));
+      Map<String, String> configMap = IntStream.range(0, allConfigs.size() / 2).boxed()
+        .collect(Collectors.toMap(i -> allConfigs.get(2 * i), i -> allConfigs.get(2 * i + 1)));
 
       configMap.forEach((clazz, config) -> {
         Capabilities stereotype = JSON.toType(config, Capabilities.class);
@@ -271,7 +284,8 @@ public class NodeOptions {
         if (!configMap.containsKey("stereotype")) {
           throw new ConfigException("Driver config is missing stereotype value. " + configMap);
         }
-        Capabilities stereotype = JSON.toType(configMap.get("stereotype"), Capabilities.class);
+        Capabilities stereotype =
+          enhanceStereotype(JSON.toType(configMap.get("stereotype"), Capabilities.class));
         String configName = configMap.getOrDefault("name", "Custom Slot Config");
         int driverMaxSessions = Integer.parseInt(configMap.getOrDefault("max-sessions", "1"));
         Require.positive("Driver max sessions", driverMaxSessions);
@@ -319,8 +333,7 @@ public class NodeOptions {
       .peek(this::report)
       .forEach(
         entry -> {
-          Capabilities capabilities = entry.getKey()
-            .getCanonicalCapabilities().merge(CURRENT_PLATFORM);
+          Capabilities capabilities = enhanceStereotype(entry.getKey().getCanonicalCapabilities());
           sessionFactories.putAll(capabilities, entry.getValue());
         });
 
@@ -372,8 +385,7 @@ public class NodeOptions {
       .peek(this::report)
       .forEach(
         entry -> {
-          Capabilities capabilities = entry.getKey()
-            .getCanonicalCapabilities().merge(CURRENT_PLATFORM);
+          Capabilities capabilities = enhanceStereotype(entry.getKey().getCanonicalCapabilities());
           sessionFactories.putAll(capabilities, entry.getValue());
         });
   }
@@ -400,7 +412,7 @@ public class NodeOptions {
 
     Multimap<WebDriverInfo, SessionFactory> toReturn = HashMultimap.create();
     infos.forEach(info -> {
-      Capabilities caps = info.getCanonicalCapabilities().merge(CURRENT_PLATFORM);
+      Capabilities caps = enhanceStereotype(info.getCanonicalCapabilities());
       builders.stream()
         .filter(builder -> builder.score(caps) > 0)
         .forEach(builder -> {
@@ -475,15 +487,23 @@ public class NodeOptions {
     return Math.min(info.getMaximumSimultaneousSessions(), desiredMaxSessions);
   }
 
+  private Capabilities enhanceStereotype(Capabilities capabilities) {
+    if (capabilities.getPlatformName() == null) {
+      capabilities = new PersistentCapabilities(capabilities)
+        .setCapability("platformName", CURRENT_PLATFORM);
+    }
+    if (isVncEnabled()) {
+      capabilities = new PersistentCapabilities(capabilities)
+        .setCapability("se:vncEnabled", true);
+    }
+    return capabilities;
+  }
+
   private void report(Map.Entry<WebDriverInfo, Collection<SessionFactory>> entry) {
     StringBuilder caps = new StringBuilder();
     try (JsonOutput out = JSON.newOutput(caps)) {
       out.setPrettyPrint(false);
-      Capabilities capabilities = entry.getKey().getCanonicalCapabilities();
-      if (capabilities.getPlatformName() == null) {
-        capabilities = capabilities.merge(CURRENT_PLATFORM);
-      }
-      out.write(capabilities);
+      out.write(entry.getKey().getCanonicalCapabilities());
     }
 
     LOG.info(String.format(
