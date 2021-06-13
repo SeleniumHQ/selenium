@@ -81,7 +81,6 @@ import java.time.Instant;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
@@ -341,10 +340,9 @@ public class LocalNode extends Node {
 
         // The session we return has to look like it came from the node, since we might be dealing
         // with a webdriver implementation that only accepts connections from localhost
-        Session externalSession = createExternalSession(
-          session,
-          externalUri,
-          slotToUse.isSupportingCdp() || caps.getCapability("se:cdp") != null);
+        boolean isSupportingCdp = slotToUse.isSupportingCdp() ||
+                                  caps.getCapability("se:cdp") != null;
+        Session externalSession = createExternalSession(session, externalUri, isSupportingCdp);
         return Either.right(new CreateSessionResponse(
           externalSession,
           getEncoder(session.getDownstreamDialect()).apply(externalSession)));
@@ -446,13 +444,21 @@ public class LocalNode extends Node {
     tempFileSystems.invalidate(id);
   }
 
-  private Session createExternalSession(ActiveSession other, URI externalUri, boolean isSupportingCdp) {
+  private Session createExternalSession(ActiveSession other, URI externalUri,
+                                        boolean isSupportingCdp) {
     Capabilities toUse = ImmutableCapabilities.copyOf(other.getCapabilities());
 
-    // Rewrite the se:options if necessary to send the cdp url back
+    // Add se:cdp if necessary to send the cdp url back
     if (isSupportingCdp) {
       String cdpPath = String.format("/session/%s/se/cdp", other.getId());
       toUse = new PersistentCapabilities(toUse).setCapability("se:cdp", rewrite(cdpPath));
+    }
+
+    // If enabled, set the VNC endpoint for live view
+    boolean isVncEnabled = toUse.getCapability("se:vncLocalAddress") != null;
+    if (isVncEnabled) {
+      String vncPath = String.format("/session/%s/se/vnc", other.getId());
+      toUse = new PersistentCapabilities(toUse).setCapability("se:vnc", rewrite(vncPath));
     }
 
     return new Session(other.getId(), externalUri, other.getStereotype(), toUse, Instant.now());
@@ -460,8 +466,9 @@ public class LocalNode extends Node {
 
   private URI rewrite(String path) {
     try {
+      String scheme = "https".equals(gridUri.getScheme()) ? "wss" : "ws";
       return new URI(
-        "ws",
+        scheme,
         gridUri.getUserInfo(),
         gridUri.getHost(),
         gridUri.getPort(),

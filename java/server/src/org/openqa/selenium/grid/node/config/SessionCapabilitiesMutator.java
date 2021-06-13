@@ -21,27 +21,34 @@ import com.google.common.collect.ImmutableMap;
 
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
+import org.openqa.selenium.PersistentCapabilities;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.function.Function;
 
-public class BrowserOptionsMutator implements Function<Capabilities, Capabilities> {
+public class SessionCapabilitiesMutator implements Function<Capabilities, Capabilities> {
 
   private static final ImmutableMap<String, String> BROWSER_OPTIONS = ImmutableMap.of(
     "chrome", "goog:chromeOptions",
     "firefox", "moz:firefoxOptions",
     "microsoftedge", "ms:edgeOptions");
+  private static final String SE_VNC_ENABLED = "se:vncEnabled";
   private final Capabilities slotStereotype;
 
 
-  public BrowserOptionsMutator(Capabilities slotStereotype) {
+  public SessionCapabilitiesMutator(Capabilities slotStereotype) {
     this.slotStereotype = slotStereotype;
   }
 
   @Override
   public Capabilities apply(Capabilities capabilities) {
+    if (slotStereotype.getCapability(SE_VNC_ENABLED) != null) {
+      capabilities = new PersistentCapabilities(capabilities)
+        .setCapability(SE_VNC_ENABLED, slotStereotype.getCapability(SE_VNC_ENABLED));
+    }
+
     if (!Objects.equals(slotStereotype.getBrowserName(), capabilities.getBrowserName())) {
       return capabilities;
     }
