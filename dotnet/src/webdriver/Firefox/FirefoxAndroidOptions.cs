@@ -27,9 +27,6 @@ namespace OpenQA.Selenium.Firefox
     /// </summary>
     public class FirefoxAndroidOptions : AndroidOptions
     {
-        private string androidPackage;
-        private string androidDeviceSerial;
-        private string androidActivity;
         private List<string> androidIntentArguments = new List<string>();
 
         /// <summary>
@@ -54,7 +51,7 @@ namespace OpenQA.Selenium.Firefox
         /// <param name="arguments">The argument to add.</param>
         public void AddIntentArgument(string argument)
         {
-            this.AddIntentArguments(argument);
+            this.ddIntentArguments(argument);
         }
 
         /// <summary>

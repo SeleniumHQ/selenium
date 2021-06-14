@@ -1,4 +1,4 @@
-﻿// <copyright file="SlowLoadableComponent{T}.cs" company="WebDriver Committers">
+// <copyright file="SlowLoadableComponent{T}.cs" company="WebDriver Committers">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements. See the NOTICE file
 // distributed with this work for additional information
@@ -104,8 +104,12 @@ namespace OpenQA.Selenium.Support.UI
             }
             else
             {
-                string timeoutMessage = string.Format(CultureInfo.InvariantCulture, "Timed out after {0} seconds.", this.timeout.TotalSeconds);
-                throw new WebDriverTimeoutException(timeoutMessage);
+                if (string.IsNullOrEmpty(UnableToLoadMessage))
+                {
+                    this.UnableToLoadMessage = string.Format(CultureInfo.InvariantCulture, "Timed out after {0} seconds.", this.timeout.TotalSeconds);
+                }
+
+                throw new WebDriverTimeoutException(this.UnableToLoadMessage);
             }
         }
 
