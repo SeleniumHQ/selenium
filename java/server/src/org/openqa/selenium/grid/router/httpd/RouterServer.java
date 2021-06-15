@@ -20,6 +20,7 @@ package org.openqa.selenium.grid.router.httpd;
 import com.google.auto.service.AutoService;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
+
 import org.openqa.selenium.BuildInfo;
 import org.openqa.selenium.UsernameAndPassword;
 import org.openqa.selenium.cli.CliCommand;
@@ -48,7 +49,6 @@ import org.openqa.selenium.grid.sessionqueue.remote.RemoteNewSessionQueue;
 import org.openqa.selenium.grid.web.GridUiRoute;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.http.HttpClient;
-import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.remote.http.Routable;
 import org.openqa.selenium.remote.http.Route;

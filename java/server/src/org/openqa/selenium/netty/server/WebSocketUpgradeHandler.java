@@ -17,6 +17,9 @@
 
 package org.openqa.selenium.netty.server;
 
+import org.openqa.selenium.internal.Require;
+import org.openqa.selenium.remote.http.Message;
+
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelFuture;
@@ -37,9 +40,6 @@ import io.netty.handler.codec.http.websocketx.WebSocketFrame;
 import io.netty.handler.codec.http.websocketx.WebSocketServerHandshaker;
 import io.netty.handler.codec.http.websocketx.WebSocketServerHandshakerFactory;
 import io.netty.util.AttributeKey;
-
-import org.openqa.selenium.internal.Require;
-import org.openqa.selenium.remote.http.Message;
 
 import java.util.Optional;
 import java.util.function.BiFunction;
@@ -67,6 +67,27 @@ class WebSocketUpgradeHandler extends ChannelInboundHandlerAdapter {
     BiFunction<String, Consumer<Message>, Optional<Consumer<Message>>> factory) {
     this.key = Require.nonNull("Key", key);
     this.factory = Require.nonNull("Factory", factory);
+  }
+
+  private static void sendHttpResponse(
+    ChannelHandlerContext ctx, HttpRequest req, FullHttpResponse res) {
+    // Generate an error page if response status code is not OK (200).
+    if (res.status().code() != 200) {
+      ByteBuf buf = Unpooled.copiedBuffer(res.status().toString(), UTF_8);
+      res.content().writeBytes(buf);
+      buf.release();
+      setContentLength(res, res.content().readableBytes());
+    }
+
+    // Send the response and close the connection if necessary.
+    ChannelFuture f = ctx.channel().writeAndFlush(res);
+    if (!isKeepAlive(req) || res.status().code() != 200) {
+      f.addListener(ChannelFutureListener.CLOSE);
+    }
+  }
+
+  private static String getWebSocketLocation(HttpRequest req) {
+    return "ws://" + req.headers().get(HttpHeaderNames.HOST);
   }
 
   @Override
@@ -100,8 +121,8 @@ class WebSocketUpgradeHandler extends ChannelInboundHandlerAdapter {
     }
 
     // Only handle the initial HTTP upgrade request
-    if (!(req.headers().contains("Connection", "upgrade", true) &&
-        req.headers().contains("Sec-WebSocket-Version"))) {
+    if (!(req.headers().containsValue("Connection", "upgrade", true) &&
+          req.headers().contains("Sec-WebSocket-Version"))) {
       ctx.fireChannelRead(req);
       return;
     }
@@ -109,17 +130,16 @@ class WebSocketUpgradeHandler extends ChannelInboundHandlerAdapter {
     // Is this something we should try and handle?
     Optional<Consumer<Message>> maybeHandler = factory.apply(
       req.uri(),
-      msg -> {
-        ctx.channel().writeAndFlush(Require.nonNull("Message to send", msg));
-      });
+      msg -> ctx.channel().writeAndFlush(Require.nonNull("Message to send", msg)));
     if (!maybeHandler.isPresent()) {
-      sendHttpResponse(ctx, req, new DefaultFullHttpResponse(HTTP_1_1, BAD_REQUEST, ctx.alloc().buffer(0)));
+      sendHttpResponse(ctx, req,
+                       new DefaultFullHttpResponse(HTTP_1_1, BAD_REQUEST, ctx.alloc().buffer(0)));
       return;
     }
 
     // Handshake
     WebSocketServerHandshakerFactory wsFactory = new WebSocketServerHandshakerFactory(
-      getWebSocketLocation(req), null, false, Integer.MAX_VALUE);
+      getWebSocketLocation(req), null, true, Integer.MAX_VALUE);
     handshaker = wsFactory.newHandshaker(req);
     if (handshaker == null) {
       WebSocketServerHandshakerFactory.sendUnsupportedVersionResponse(ctx.channel());
@@ -155,29 +175,8 @@ class WebSocketUpgradeHandler extends ChannelInboundHandlerAdapter {
     }
   }
 
-  private static void sendHttpResponse(
-    ChannelHandlerContext ctx, HttpRequest req, FullHttpResponse res) {
-    // Generate an error page if response status code is not OK (200).
-    if (res.status().code() != 200) {
-      ByteBuf buf = Unpooled.copiedBuffer(res.status().toString(), UTF_8);
-      res.content().writeBytes(buf);
-      buf.release();
-      setContentLength(res, res.content().readableBytes());
-    }
-
-    // Send the response and close the connection if necessary.
-    ChannelFuture f = ctx.channel().writeAndFlush(res);
-    if (!isKeepAlive(req) || res.status().code() != 200) {
-      f.addListener(ChannelFutureListener.CLOSE);
-    }
-  }
-
   @Override
   public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
     ctx.close();
-  }
-
-  private static String getWebSocketLocation(HttpRequest req) {
-    return "ws://" + req.headers().get(HttpHeaderNames.HOST);
   }
 }
