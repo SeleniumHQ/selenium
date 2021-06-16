@@ -19,6 +19,7 @@ package org.openqa.selenium.grid.commands;
 
 import com.google.auto.service.AutoService;
 import com.google.common.collect.ImmutableSet;
+
 import org.openqa.selenium.BuildInfo;
 import org.openqa.selenium.UsernameAndPassword;
 import org.openqa.selenium.cli.CliCommand;
@@ -32,7 +33,7 @@ import org.openqa.selenium.grid.distributor.local.LocalDistributor;
 import org.openqa.selenium.grid.graphql.GraphqlHandler;
 import org.openqa.selenium.grid.log.LoggingOptions;
 import org.openqa.selenium.grid.node.Node;
-import org.openqa.selenium.grid.node.ProxyNodeCdp;
+import org.openqa.selenium.grid.node.ProxyNodeWebsockets;
 import org.openqa.selenium.grid.node.config.NodeOptions;
 import org.openqa.selenium.grid.router.Router;
 import org.openqa.selenium.grid.security.BasicAuthenticationFilter;
@@ -203,7 +204,7 @@ public class Standalone extends TemplateGridServerCommand {
     combinedHandler.addHandler(node);
     distributor.add(node);
 
-    return new Handlers(httpHandler, new ProxyNodeCdp(clientFactory, node));
+    return new Handlers(httpHandler, new ProxyNodeWebsockets(clientFactory, node));
   }
 
   @Override

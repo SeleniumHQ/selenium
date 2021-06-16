@@ -17,6 +17,8 @@
 
 package org.openqa.selenium.grid.node;
 
+import com.google.common.collect.ImmutableSet;
+
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.devtools.CdpEndpointFinder;
 import org.openqa.selenium.grid.data.Session;
@@ -32,6 +34,7 @@ import org.openqa.selenium.remote.http.UrlTemplate;
 import org.openqa.selenium.remote.http.WebSocket;
 
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.function.BiFunction;
@@ -42,28 +45,40 @@ import java.util.logging.Logger;
 import static org.openqa.selenium.internal.Debug.getDebugLogLevel;
 import static org.openqa.selenium.remote.http.HttpMethod.GET;
 
-public class ProxyNodeCdp implements BiFunction<String, Consumer<Message>, Optional<Consumer<Message>>> {
+public class ProxyNodeWebsockets implements BiFunction<String, Consumer<Message>,
+  Optional<Consumer<Message>>> {
 
   private static final UrlTemplate CDP_TEMPLATE = new UrlTemplate("/session/{sessionId}/se/cdp");
-  private static final Logger LOG = Logger.getLogger(ProxyNodeCdp.class.getName());
+  private static final UrlTemplate VNC_TEMPLATE = new UrlTemplate("/session/{sessionId}/se/vnc");
+  private static final Logger LOG = Logger.getLogger(ProxyNodeWebsockets.class.getName());
+  private static final ImmutableSet<String> CDP_ENDPOINT_CAPS =
+    ImmutableSet.of("goog:chromeOptions",
+                    "moz:debuggerAddress",
+                    "ms:edgeOptions");
   private final HttpClient.Factory clientFactory;
   private final Node node;
 
-  public ProxyNodeCdp(HttpClient.Factory clientFactory, Node node) {
+
+  public ProxyNodeWebsockets(HttpClient.Factory clientFactory, Node node) {
     this.clientFactory = Objects.requireNonNull(clientFactory);
     this.node = Objects.requireNonNull(node);
   }
 
   @Override
   public Optional<Consumer<Message>> apply(String uri, Consumer<Message> downstream) {
-    UrlTemplate.Match match = CDP_TEMPLATE.match(uri);
-    if (match == null) {
+    UrlTemplate.Match cdpMatch = CDP_TEMPLATE.match(uri);
+    UrlTemplate.Match vncMatch = VNC_TEMPLATE.match(uri);
+
+    if (cdpMatch == null && vncMatch == null) {
       return Optional.empty();
     }
 
-    LOG.fine("Matching CDP session for " + match.getParameters().get("sessionId"));
+    String sessionId = cdpMatch != null ?
+                       cdpMatch.getParameters().get("sessionId") :
+                       vncMatch.getParameters().get("sessionId");
 
-    SessionId id = new SessionId(match.getParameters().get("sessionId"));
+    LOG.fine("Matching websockets for session id: " + sessionId);
+    SessionId id = new SessionId(sessionId);
 
     if (!node.isSessionOwner(id)) {
       LOG.info("Not owner of " + id);
@@ -72,40 +87,50 @@ public class ProxyNodeCdp implements BiFunction<String, Consumer<Message>, Optio
 
     Session session = node.getSession(id);
     Capabilities caps = session.getCapabilities();
+    LOG.fine("Scanning for endpoint: " + caps);
 
-    LOG.fine("Scanning for CDP endpoint: " + caps);
-
-    // Using strings here to avoid Node depending upon specific drivers.
-    Optional<URI> cdpUri = CdpEndpointFinder.getReportedUri("goog:chromeOptions", caps)
-      .flatMap(reported -> CdpEndpointFinder.getCdpEndPoint(clientFactory, reported));
-    if (cdpUri.isPresent()) {
-      LOG.log(getDebugLogLevel(), "Chrome endpoint found");
-      return cdpUri.map(cdp -> createCdpEndPoint(cdp, downstream));
+    if (cdpMatch != null) {
+      return findCdpEndpoint(downstream, caps);
     }
-
-    cdpUri = CdpEndpointFinder.getReportedUri("moz:debuggerAddress", caps)
-      .flatMap(reported -> CdpEndpointFinder.getCdpEndPoint(clientFactory, reported));
-    if (cdpUri.isPresent()) {
-      LOG.log(getDebugLogLevel(), "Firefox endpoint found");
-      return cdpUri.map(cdp -> createCdpEndPoint(cdp, downstream));
-    }
-
-    LOG.fine("Searching for edge options");
-    cdpUri = CdpEndpointFinder.getReportedUri("ms:edgeOptions", caps)
-      .flatMap(reported -> CdpEndpointFinder.getCdpEndPoint(clientFactory, reported));
-    if (cdpUri.isPresent()) {
-      LOG.log(getDebugLogLevel(), "Edge endpoint found");
-    }
-    return cdpUri.map(cdp -> createCdpEndPoint(cdp, downstream));
+    return findVncEndpoint(downstream, caps);
   }
 
-  private Consumer<Message> createCdpEndPoint(URI uri, Consumer<Message> downstream) {
+  private Optional<Consumer<Message>> findCdpEndpoint(Consumer<Message> downstream,
+                                                      Capabilities caps) {
+    // Using strings here to avoid Node depending upon specific drivers.
+    for (String cdpEndpointCap : CDP_ENDPOINT_CAPS) {
+      Optional<URI> cdpUri = CdpEndpointFinder.getReportedUri(cdpEndpointCap, caps)
+        .flatMap(reported -> CdpEndpointFinder.getCdpEndPoint(clientFactory, reported));
+      if (cdpUri.isPresent()) {
+        LOG.log(getDebugLogLevel(), String.format("Endpoint found in %s", cdpEndpointCap));
+        return cdpUri.map(cdp -> createWsEndPoint(cdp, downstream));
+      }
+    }
+    return Optional.empty();
+  }
+
+  private Optional<Consumer<Message>> findVncEndpoint(Consumer<Message> downstream,
+                                                      Capabilities caps) {
+    String vncLocalAddress = (String) caps.getCapability("se:vncLocalAddress");
+    Optional<URI> vncUri;
+    try {
+      vncUri = Optional.of(new URI(vncLocalAddress));
+    } catch (URISyntaxException e) {
+      LOG.warning("Invalid URI for endpoint " + vncLocalAddress);
+      return Optional.empty();
+    }
+    LOG.log(getDebugLogLevel(), String.format("Endpoint found in %s", "se:vncLocalAddress"));
+    return vncUri.map(vnc -> createWsEndPoint(vnc, downstream));
+  }
+
+  private Consumer<Message> createWsEndPoint(URI uri, Consumer<Message> downstream) {
     Objects.requireNonNull(uri);
 
-    LOG.info("Establishing CDP connection to " + uri);
+    LOG.info("Establishing connection to " + uri);
 
     HttpClient client = clientFactory.createClient(ClientConfig.defaultConfig().baseUri(uri));
-    WebSocket upstream = client.openSocket(new HttpRequest(GET, uri.toString()), new ForwardingListener(downstream));
+    WebSocket upstream = client.openSocket(
+      new HttpRequest(GET, uri.toString()), new ForwardingListener(downstream));
     return upstream::send;
   }
 
@@ -133,7 +158,7 @@ public class ProxyNodeCdp implements BiFunction<String, Consumer<Message>, Optio
 
     @Override
     public void onError(Throwable cause) {
-      LOG.log(Level.WARNING, "Error proxying CDP command", cause);
+      LOG.log(Level.WARNING, "Error proxying websocket command", cause);
     }
   }
 }

@@ -40,13 +40,14 @@ import java.util.logging.Logger;
 
 import static org.openqa.selenium.remote.http.HttpMethod.GET;
 
-public class ProxyCdpIntoGrid implements BiFunction<String, Consumer<Message>, Optional<Consumer<Message>>> {
+public class ProxyWebsocketsIntoGrid implements BiFunction<String, Consumer<Message>,
+  Optional<Consumer<Message>>> {
 
-  private static final Logger LOG = Logger.getLogger(ProxyCdpIntoGrid.class.getName());
+  private static final Logger LOG = Logger.getLogger(ProxyWebsocketsIntoGrid.class.getName());
   private final HttpClient.Factory clientFactory;
   private final SessionMap sessions;
 
-  public ProxyCdpIntoGrid(HttpClient.Factory clientFactory, SessionMap sessions) {
+  public ProxyWebsocketsIntoGrid(HttpClient.Factory clientFactory, SessionMap sessions) {
     this.clientFactory = Objects.requireNonNull(clientFactory);
     this.sessions = Objects.requireNonNull(sessions);
   }
@@ -99,7 +100,7 @@ public class ProxyCdpIntoGrid implements BiFunction<String, Consumer<Message>, O
 
     @Override
     public void onError(Throwable cause) {
-      LOG.log(Level.WARNING, "Error proxying CDP command", cause);
+      LOG.log(Level.WARNING, "Error proxying websocket command", cause);
     }
   }
 }

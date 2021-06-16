@@ -10,6 +10,7 @@ _RUNTIME_DEPS = [
     "@npm//@babel/preset-react",
     "@npm//@material-ui/core",
     "@npm//@material-ui/icons",
+    "@npm//@novnc/novnc",
     "@npm//clsx",
     "@npm//graphql",
     "@npm//graphql.macro",

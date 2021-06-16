@@ -81,9 +81,7 @@ public class RedisBackedSessionMapTest {
       Instant.now());
     sessions.add(expected);
 
-    SessionMap reader = new RedisBackedSessionMap(tracer, uri, bus);
-
-    URI seen = reader.getUri(expected.getId());
+    URI seen = sessions.getUri(expected.getId());
 
     assertThat(seen).isEqualTo(expected.getUri());
   }
@@ -98,9 +96,7 @@ public class RedisBackedSessionMapTest {
       Instant.now());
     sessions.add(expected);
 
-    SessionMap reader = new RedisBackedSessionMap(tracer, uri, bus);
-
-    Session seen = reader.get(expected.getId());
+    Session seen = sessions.get(expected.getId());
 
     assertThat(seen).isEqualTo(expected);
   }
