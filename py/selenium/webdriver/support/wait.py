@@ -16,6 +16,7 @@
 # under the License.
 
 import time
+import asyncio
 from selenium.common.exceptions import NoSuchElementException
 from selenium.common.exceptions import TimeoutException
 
@@ -105,6 +106,98 @@ class WebDriverWait(object):
             except self._ignored_exceptions:
                 return True
             time.sleep(self._poll)
+            if time.time() > end_time:
+                break
+        raise TimeoutException(message)
+
+class AsyncWebDriverWait(object):
+    def __init__(self, driver, timeout, poll_frequency=POLL_FREQUENCY, ignored_exceptions=None):
+        """Constructor, takes a WebDriver instance and timeout in seconds.
+
+           :Args:
+            - driver - Instance of WebDriver (Ie, Firefox, Chrome or Remote)
+            - timeout - Number of seconds before timing out
+            - poll_frequency - sleep interval between calls
+              By default, it is 0.5 second.
+            - ignored_exceptions - iterable structure of exception classes ignored during calls.
+              By default, it contains NoSuchElementException only.
+
+           Example::
+
+            from selenium.webdriver.support.wait import WebDriverWait \n
+            element = WebDriverWait(driver, 10).until(lambda x: x.find_element(By.ID, "someId")) \n
+            is_disappeared = WebDriverWait(driver, 30, 1, (ElementNotVisibleException)).\\ \n
+                        until_not(lambda x: x.find_element(By.ID, "someId").is_displayed())
+        """
+        self._driver = driver
+        self._timeout = float(timeout)
+        self._poll = poll_frequency
+        # avoid the divide by zero
+        if self._poll == 0:
+            self._poll = POLL_FREQUENCY
+        exceptions = list(IGNORED_EXCEPTIONS)
+        if ignored_exceptions:
+            try:
+                exceptions.extend(iter(ignored_exceptions))
+            except TypeError:  # ignored_exceptions is not iterable
+                exceptions.append(ignored_exceptions)
+        self._ignored_exceptions = tuple(exceptions)
+
+    def __repr__(self):
+        return '<{0.__module__}.{0.__name__} (session="{1}")>'.format(
+            type(self), self._driver.session_id)
+
+    async def until(self, method, message=''):
+        """awaits the method provided with the driver as an argument until the \
+        return value does not evaluate to ``False``.
+
+        :param method: callable(WebDriver) or awaitable(WebDriver)
+        :param message: optional message for :exc:`TimeoutException`
+        :returns: the result of the last call to `method`
+        :raises: :exc:`selenium.common.exceptions.TimeoutException` if timeout occurs
+        """
+        screen = None
+        stacktrace = None
+
+        end_time = time.time() + self._timeout
+        while True:
+            try:
+                if asyncio.iscoroutinefunction(method):
+                    value = await method(self._driver)
+                else:
+                    value = method(self._driver)
+                if value:
+                    return value
+            except self._ignored_exceptions as exc:
+                screen = getattr(exc, 'screen', None)
+                stacktrace = getattr(exc, 'stacktrace', None)
+            await asyncio.sleep(self._poll)
+            if time.time() > end_time:
+                break
+        raise TimeoutException(message, screen, stacktrace)
+
+    async def until_not(self, method, message=''):
+        """awaits the method provided with the driver as an argument until the \
+        return value evaluates to ``False``.
+
+        :param method: callable(WebDriver) or awaitable(WebDriver)
+        :param message: optional message for :exc:`TimeoutException`
+        :returns: the result of the last call to `method`, or
+                  ``True`` if `method` has raised one of the ignored exceptions
+        :raises: :exc:`selenium.common.exceptions.TimeoutException` if timeout occurs
+        """
+        end_time = time.time() + self._timeout
+        while True:
+            try:
+                if asyncio.iscoroutinefunction(method):
+                    value = await method(self._driver)
+                else:
+                    value = method(self._driver)
+                if not value:
+                    return value
+            except self._ignored_exceptions:
+                return True
+            await asyncio.sleep(self._poll)
             if time.time() > end_time:
                 break
         raise TimeoutException(message)
