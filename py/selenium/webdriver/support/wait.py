@@ -148,7 +148,7 @@ class AsyncWebDriverWait(object):
             type(self), self._driver.session_id)
 
     async def until(self, method, message=''):
-        """awaits the method provided with the driver as an argument until the \
+        """Awaits or calls the method provided with the driver as an argument until the \
         return value does not evaluate to ``False``.
 
         :param method: callable(WebDriver) or awaitable(WebDriver)
@@ -177,7 +177,7 @@ class AsyncWebDriverWait(object):
         raise TimeoutException(message, screen, stacktrace)
 
     async def until_not(self, method, message=''):
-        """awaits the method provided with the driver as an argument until the \
+        """Awaits or calls the method provided with the driver as an argument until the \
         return value evaluates to ``False``.
 
         :param method: callable(WebDriver) or awaitable(WebDriver)
