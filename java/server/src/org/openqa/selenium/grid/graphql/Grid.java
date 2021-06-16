@@ -17,7 +17,6 @@
 
 package org.openqa.selenium.grid.graphql;
 
-import com.google.common.base.Suppliers;
 import com.google.common.collect.ImmutableList;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
@@ -37,14 +36,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 public class Grid {
 
   private static final Json JSON = new Json();
   private final URI uri;
-  private final Supplier<DistributorStatus> distributorStatus;
+  private final DistributorStatus distributorStatus;
   private final List<Set<Capabilities>> queueInfoList;
   private final String version;
 
@@ -61,7 +59,7 @@ public class Grid {
       .stream()
       .map(SessionRequestCapability::getDesiredCapabilities)
       .collect(Collectors.toList());
-    this.distributorStatus = Suppliers.memoize(distributor::getStatus);
+    this.distributorStatus = distributor.getStatus();
     this.version = Require.nonNull("Grid's version", version);
   }
 
@@ -76,7 +74,7 @@ public class Grid {
   public List<Node> getNodes() {
     ImmutableList.Builder<Node> toReturn = ImmutableList.builder();
 
-    for (NodeStatus status : distributorStatus.get().getNodes()) {
+    for (NodeStatus status : distributorStatus.getNodes()) {
       Map<Capabilities, Integer> stereotypes = new HashMap<>();
       Map<org.openqa.selenium.grid.data.Session, Slot> sessions = new HashMap<>();
 
@@ -112,11 +110,11 @@ public class Grid {
   }
 
   public int getNodeCount() {
-    return distributorStatus.get().getNodes().size();
+    return distributorStatus.getNodes().size();
   }
 
   public int getSessionCount() {
-    return distributorStatus.get().getNodes().stream()
+    return distributorStatus.getNodes().stream()
       .map(NodeStatus::getSlots)
       .flatMap(Collection::stream)
       .filter(slot -> slot.getSession()!=null)
@@ -125,13 +123,13 @@ public class Grid {
   }
 
   public int getTotalSlots() {
-    return distributorStatus.get().getNodes().stream()
+    return distributorStatus.getNodes().stream()
       .mapToInt(status -> status.getSlots().size())
       .sum();
   }
 
   public int getMaxSession() {
-    return distributorStatus.get().getNodes().stream()
+    return distributorStatus.getNodes().stream()
       .mapToInt(NodeStatus::getMaxSessionCount)
       .sum();
   }
@@ -150,7 +148,7 @@ public class Grid {
 
   public List<Session> getSessions() {
     List<Session> sessions = new ArrayList<>();
-    for (NodeStatus status : distributorStatus.get().getNodes()) {
+    for (NodeStatus status : distributorStatus.getNodes()) {
       for (Slot slot : status.getSlots()) {
         if (slot.getSession()!=null) {
           org.openqa.selenium.grid.data.Session session = slot.getSession();

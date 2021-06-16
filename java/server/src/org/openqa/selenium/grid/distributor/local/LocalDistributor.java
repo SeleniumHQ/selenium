@@ -31,7 +31,6 @@ import org.openqa.selenium.grid.config.Config;
 import org.openqa.selenium.grid.data.CreateSessionRequest;
 import org.openqa.selenium.grid.data.CreateSessionResponse;
 import org.openqa.selenium.grid.data.DistributorStatus;
-import org.openqa.selenium.grid.data.NewSessionRequestEvent;
 import org.openqa.selenium.grid.data.NodeAddedEvent;
 import org.openqa.selenium.grid.data.NodeDrainComplete;
 import org.openqa.selenium.grid.data.NodeHeartBeatEvent;
@@ -72,6 +71,7 @@ import org.openqa.selenium.remote.tracing.Status;
 import org.openqa.selenium.remote.tracing.Tracer;
 import org.openqa.selenium.status.HasReadyState;
 
+import java.io.Closeable;
 import java.io.UncheckedIOException;
 import java.time.Duration;
 import java.util.ArrayList;
@@ -101,7 +101,7 @@ import static org.openqa.selenium.remote.RemoteTags.SESSION_ID_EVENT;
 import static org.openqa.selenium.remote.tracing.AttributeKey.SESSION_URI;
 import static org.openqa.selenium.remote.tracing.Tags.EXCEPTION;
 
-public class LocalDistributor extends Distributor {
+public class LocalDistributor extends Distributor implements Closeable {
 
   private static final Logger LOG = Logger.getLogger(LocalDistributor.class.getName());
 
@@ -112,6 +112,7 @@ public class LocalDistributor extends Distributor {
   private final SlotSelector slotSelector;
   private final Secret registrationSecret;
   private final Regularly hostChecker = new Regularly("distributor host checker");
+  private final Regularly purgeDeadNodes = new Regularly("Purge deadNodes");
   private final Map<NodeId, Runnable> allChecks = new HashMap<>();
   private final Duration healthcheckInterval;
 
@@ -120,7 +121,7 @@ public class LocalDistributor extends Distributor {
   private final Map<NodeId, Node> nodes;
 
   private final NewSessionQueue sessionQueue;
-  private final Regularly regularly;
+  private final Regularly createNewSession;
 
   private final boolean rejectUnsupportedCaps;
 
@@ -158,7 +159,7 @@ public class LocalDistributor extends Distributor {
       }
     }));
 
-    regularly = new Regularly(
+    createNewSession = new Regularly(
       Executors.newSingleThreadScheduledExecutor(
         r -> {
           Thread thread = new Thread(r);
@@ -169,10 +170,9 @@ public class LocalDistributor extends Distributor {
 
     NewSessionRunnable newSessionRunnable = new NewSessionRunnable();
     bus.addListener(NodeDrainComplete.listener(this::remove));
-    bus.addListener(NewSessionRequestEvent.listener(ignored -> newSessionRunnable.run()));
 
-    regularly.submit(model::purgeDeadNodes, Duration.ofSeconds(30), Duration.ofSeconds(30));
-    regularly.submit(newSessionRunnable, Duration.ofSeconds(5), Duration.ofSeconds(5));
+    purgeDeadNodes.submit(model::purgeDeadNodes, Duration.ofSeconds(30), Duration.ofSeconds(30));
+    createNewSession.submit(newSessionRunnable, Duration.ofSeconds(5), Duration.ofSeconds(5));
   }
 
   public static Distributor create(Config config) {
@@ -541,9 +541,12 @@ public class LocalDistributor extends Distributor {
     }
   }
 
-  public void callExecutorShutdown() {
+  @Override
+  public void close() {
     LOG.info("Shutting down Distributor executor service");
-    regularly.shutdown();
+    purgeDeadNodes.shutdown();
+    hostChecker.shutdown();
+    createNewSession.shutdown();
   }
 
   public class NewSessionRunnable implements Runnable {

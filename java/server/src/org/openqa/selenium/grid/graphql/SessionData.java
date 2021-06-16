@@ -17,24 +17,21 @@
 
 package org.openqa.selenium.grid.graphql;
 
-import com.google.common.base.Suppliers;
 import graphql.schema.DataFetcher;
 import graphql.schema.DataFetchingEnvironment;
-import org.openqa.selenium.grid.data.DistributorStatus;
 import org.openqa.selenium.grid.data.NodeStatus;
 import org.openqa.selenium.grid.data.Slot;
 import org.openqa.selenium.grid.distributor.Distributor;
 import org.openqa.selenium.internal.Require;
 
 import java.util.Set;
-import java.util.function.Supplier;
 
 public class SessionData implements DataFetcher {
 
-  private final Supplier<DistributorStatus> distributorStatus;
+  private final Distributor distributor;
 
   public SessionData(Distributor distributor) {
-    distributorStatus = Suppliers.memoize(Require.nonNull("Distributor", distributor)::getStatus);
+    this.distributor = Require.nonNull("Distributor", distributor);
   }
 
   @Override
@@ -45,7 +42,7 @@ public class SessionData implements DataFetcher {
       throw new SessionNotFoundException("Session id is empty. A valid session id is required.");
     }
 
-    Set<NodeStatus> nodeStatuses = distributorStatus.get().getNodes();
+    Set<NodeStatus> nodeStatuses = distributor.getStatus().getNodes();
 
     SessionInSlot currentSession = findSession(sessionId, nodeStatuses);
 
@@ -62,7 +59,7 @@ public class SessionData implements DataFetcher {
         currentSession.slot);
     } else {
       throw new SessionNotFoundException("No ongoing session found with the requested session id.",
-                                         sessionId);
+        sessionId);
     }
   }
 

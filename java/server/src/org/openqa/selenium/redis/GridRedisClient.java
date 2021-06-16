@@ -29,6 +29,7 @@ import org.redisson.api.RLiveObjectService;
 import org.redisson.api.RSet;
 import org.redisson.api.RedissonClient;
 import org.redisson.config.Config;
+import org.redisson.config.SingleServerConfig;
 
 import java.io.Closeable;
 import java.net.URI;
@@ -51,7 +52,10 @@ public class GridRedisClient implements Closeable {
 
     Config redissonConfig = new Config();
     redissonConfig.setNettyThreads(0);
-    redissonConfig.useSingleServer().setAddress(serverUri.toString());
+    SingleServerConfig singleServerConfig = redissonConfig.useSingleServer();
+    singleServerConfig.setAddress(serverUri.toString());
+    singleServerConfig.setConnectionMinimumIdleSize(5);
+    singleServerConfig.setConnectionPoolSize(5);
     redissonClient = Redisson.create(redissonConfig);
     service = redissonClient.getLiveObjectService();
   }

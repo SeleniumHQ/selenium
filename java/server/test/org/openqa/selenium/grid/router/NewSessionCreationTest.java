@@ -20,6 +20,7 @@ package org.openqa.selenium.grid.router;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -98,7 +99,7 @@ public class NewSessionCreationTest {
       events,
       new DefaultSlotMatcher(),
       Duration.ofSeconds(2),
-      Duration.ofSeconds(2),
+      Duration.ofSeconds(60),
       registrationSecret);
 
     Distributor distributor = new LocalDistributor(
@@ -119,7 +120,7 @@ public class NewSessionCreationTest {
     server = new NettyServer(
       new BaseServerOptions(new MapConfig(ImmutableMap.of())),
       router,
-      new ProxyCdpIntoGrid(clientFactory, sessions))
+      new ProxyWebsocketsIntoGrid(clientFactory, sessions))
       .start();
 
     URI uri = server.getUrl().toURI();
@@ -236,7 +237,7 @@ public class NewSessionCreationTest {
     assertThat(httpResponse.getStatus()).isEqualTo(HTTP_INTERNAL_ERROR);
   }
 
-  @Test(timeout = 5000L)
+  @Test(timeout = 10000L)
   public void shouldRejectRequestForUnsupportedCaps() throws URISyntaxException {
     Capabilities capabilities = new ImmutableCapabilities("browserName", "cheese");
     URI nodeUri = new URI("http://localhost:4444");
