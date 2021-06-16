@@ -33,7 +33,7 @@ import org.openqa.selenium.grid.distributor.config.DistributorOptions;
 import org.openqa.selenium.grid.distributor.remote.RemoteDistributor;
 import org.openqa.selenium.grid.graphql.GraphqlHandler;
 import org.openqa.selenium.grid.log.LoggingOptions;
-import org.openqa.selenium.grid.router.ProxyCdpIntoGrid;
+import org.openqa.selenium.grid.router.ProxyWebsocketsIntoGrid;
 import org.openqa.selenium.grid.router.Router;
 import org.openqa.selenium.grid.security.BasicAuthenticationFilter;
 import org.openqa.selenium.grid.security.Secret;
@@ -168,7 +168,7 @@ public class RouterServer extends TemplateGridServerCommand {
       route,
       get("/readyz").to(() -> req -> new HttpResponse().setStatus(HTTP_NO_CONTENT)));
 
-    return new Handlers(routeWithLiveness, new ProxyCdpIntoGrid(clientFactory, sessions));
+    return new Handlers(routeWithLiveness, new ProxyWebsocketsIntoGrid(clientFactory, sessions));
   }
 
   @Override
