@@ -19,6 +19,7 @@ package org.openqa.selenium.grid.commands;
 
 import com.google.auto.service.AutoService;
 import com.google.common.collect.ImmutableSet;
+
 import org.openqa.selenium.BuildInfo;
 import org.openqa.selenium.UsernameAndPassword;
 import org.openqa.selenium.cli.CliCommand;
@@ -31,7 +32,7 @@ import org.openqa.selenium.grid.distributor.config.DistributorOptions;
 import org.openqa.selenium.grid.distributor.local.LocalDistributor;
 import org.openqa.selenium.grid.graphql.GraphqlHandler;
 import org.openqa.selenium.grid.log.LoggingOptions;
-import org.openqa.selenium.grid.router.ProxyCdpIntoGrid;
+import org.openqa.selenium.grid.router.ProxyWebsocketsIntoGrid;
 import org.openqa.selenium.grid.router.Router;
 import org.openqa.selenium.grid.security.BasicAuthenticationFilter;
 import org.openqa.selenium.grid.security.Secret;
@@ -199,7 +200,7 @@ public class Hub extends TemplateGridServerCommand {
     // Allow the liveness endpoint to be reached, since k8s doesn't make it easy to authenticate these checks
     httpHandler = combine(httpHandler, Route.get("/readyz").to(() -> readinessCheck));
 
-    return new Handlers(httpHandler, new ProxyCdpIntoGrid(clientFactory, sessions));
+    return new Handlers(httpHandler, new ProxyWebsocketsIntoGrid(clientFactory, sessions));
   }
 
   @Override

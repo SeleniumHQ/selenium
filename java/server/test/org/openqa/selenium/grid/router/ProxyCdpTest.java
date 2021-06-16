@@ -17,6 +17,8 @@
 
 package org.openqa.selenium.grid.router;
 
+import com.google.common.collect.ImmutableMap;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -44,7 +46,6 @@ import org.openqa.selenium.remote.tracing.Tracer;
 import java.net.URISyntaxException;
 import java.time.Instant;
 import java.util.Collections;
-import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.CountDownLatch;
@@ -53,8 +54,6 @@ import java.util.concurrent.atomic.AtomicReference;
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.openqa.selenium.remote.http.HttpMethod.GET;
-
-import com.google.common.collect.ImmutableMap;
 
 public class ProxyCdpTest {
 
@@ -73,7 +72,7 @@ public class ProxyCdpTest {
     // Set up the proxy we'll be using
     HttpClient.Factory clientFactory = HttpClient.Factory.createDefault();
 
-    ProxyCdpIntoGrid proxy = new ProxyCdpIntoGrid(clientFactory, sessions);
+    ProxyWebsocketsIntoGrid proxy = new ProxyWebsocketsIntoGrid(clientFactory, sessions);
     proxyServer = new NettyServer(new BaseServerOptions(emptyConfig), nullHandler, proxy).start();
   }
 
@@ -144,7 +143,7 @@ public class ProxyCdpTest {
         "https-self-signed", true)));
 
     HttpClient.Factory clientFactory = HttpClient.Factory.createDefault();
-    ProxyCdpIntoGrid proxy = new ProxyCdpIntoGrid(clientFactory, sessions);
+    ProxyWebsocketsIntoGrid proxy = new ProxyWebsocketsIntoGrid(clientFactory, sessions);
 
     Server<?> backend = createBackendServer(new CountDownLatch(1), new AtomicReference<>(), "Cheddar", emptyConfig);
 
