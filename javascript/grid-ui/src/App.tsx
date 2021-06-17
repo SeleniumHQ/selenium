@@ -15,8 +15,18 @@
 // specific language governing permissions and limitations
 // under the License.
 
-import { ApolloClient, ApolloProvider, InMemoryCache, NormalizedCacheObject } from '@apollo/client'
-import { Route, Switch, RouteComponentProps, withRouter } from 'react-router-dom'
+import {
+  ApolloClient,
+  ApolloProvider,
+  InMemoryCache,
+  NormalizedCacheObject
+} from '@apollo/client'
+import {
+  Route,
+  RouteComponentProps,
+  Switch,
+  withRouter
+} from 'react-router-dom'
 import React, { ReactNode } from 'react'
 import ReactModal from 'react-modal'
 import { GridConfig } from './config'
@@ -124,6 +134,8 @@ class App extends React.Component<AppProps, AppState> {
     const maxSession = error !== undefined ? 0 : data?.grid?.maxSession ?? 0
     const sessionCount = error !== undefined ? 0 : data?.grid?.sessionCount ?? 0
     const nodeCount = error !== undefined ? 0 : data?.grid?.nodeCount ?? 0
+    const sessionQueueSize = error !== undefined ? 0
+      : data?.grid?.sessionQueueSize ?? 0
 
     const topBarSubheader = error ?? data?.grid?.version
 
@@ -142,6 +154,7 @@ class App extends React.Component<AppProps, AppState> {
               maxSession={maxSession}
               sessionCount={sessionCount}
               nodeCount={nodeCount}
+              sessionQueueSize={sessionQueueSize}
             />
           )}
           <main className={classes.content}>
