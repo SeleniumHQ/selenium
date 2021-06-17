@@ -26,7 +26,7 @@
     "start": "react-scripts start",
     "build": "react-scripts build && python scripts/rmSourcemaps.py",
     "analyze": "source-map-explorer 'build/static/js/*.js'",
-    "test": "react-scripts test --watchAll=false",
+    "test": "react-scripts test --watchAll=false --transformIgnorePatterns 'node_modules/(?!(@novnc)/)'",
     "eject": "react-scripts eject",
     "lint": "ts-standard && eslint --ext '.js,.ts,.tsx' src"
   },
