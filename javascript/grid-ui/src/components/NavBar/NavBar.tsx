@@ -32,6 +32,7 @@ import {
   Box,
   createStyles,
   Theme,
+  Typography,
   withStyles
 } from '@material-ui/core'
 import { withRouter } from 'react-router'
@@ -75,7 +76,11 @@ const useStyles = (theme: Theme): StyleRules => createStyles(
       [theme.breakpoints.up('sm')]: {
         width: theme.spacing(9)
       }
+    },
+    queueBackground: {
+      backgroundColor: theme.palette.secondary.main
     }
+
   })
 
 function ListItemLink (props): JSX.Element {
@@ -87,6 +92,7 @@ interface NavBarProps extends RouteComponentProps {
   maxSession: number
   sessionCount: number
   nodeCount: number
+  sessionQueueSize: number
   classes: any
 }
 
@@ -101,6 +107,7 @@ class NavBar extends React.Component<NavBarProps, {}> {
       maxSession,
       sessionCount,
       nodeCount,
+      sessionQueueSize,
       classes,
       location
     } = this.props
@@ -134,24 +141,36 @@ class NavBar extends React.Component<NavBarProps, {}> {
             </ListItemLink>
             <ListItemLink href='#sessions'>
               <ListItemIcon>
-                <AssessmentIcon />
+                <AssessmentIcon/>
               </ListItemIcon>
-              <ListItemText primary='Sessions' />
+              <ListItemText primary='Sessions'/>
             </ListItemLink>
             <ListItemLink href='#help'>
               <ListItemIcon>
-                <HelpIcon />
+                <HelpIcon/>
               </ListItemIcon>
-              <ListItemText primary='Help' />
+              <ListItemText primary='Help'/>
             </ListItemLink>
           </div>
         </List>
-        <Box flexGrow={1} />
+        <Box flexGrow={1}/>
+        {open && (
+          <Box p={3} m={1} className={classes.queueBackground}>
+            <Typography
+              align='center'
+              gutterBottom
+              variant='h4'
+            >
+              Queue size: {sessionQueueSize}
+            </Typography>
+          </Box>
+        )}
         {showOverallConcurrency && open && (
           <OverallConcurrency
             sessionCount={sessionCount}
             maxSession={maxSession}
-          />)}
+          />
+        )}
       </Drawer>
     )
   }

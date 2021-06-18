@@ -157,9 +157,10 @@ class WebSocketUpgradeHandler extends ChannelInboundHandlerAdapter {
 
   private void handleWebSocketFrame(ChannelHandlerContext ctx, WebSocketFrame frame) {
     if (frame instanceof CloseWebSocketFrame) {
-      handshaker.close(ctx.channel(), (CloseWebSocketFrame) frame);
+      CloseWebSocketFrame close = (CloseWebSocketFrame) frame.retain();
+      handshaker.close(ctx.channel(), close);
       // Pass on to the rest of the channel
-      ctx.fireChannelRead(frame);
+      ctx.fireChannelRead(close);
     } else if (frame instanceof PingWebSocketFrame) {
       ctx.write(new PongWebSocketFrame(frame.isFinalFragment(), frame.rsv(), frame.content()));
     } else if (frame instanceof ContinuationWebSocketFrame) {
@@ -170,8 +171,8 @@ class WebSocketUpgradeHandler extends ChannelInboundHandlerAdapter {
       // Allow the rest of the pipeline to deal with this.
       ctx.fireChannelRead(frame);
     } else {
-      throw new UnsupportedOperationException(String.format("%s frame types not supported", frame.getClass()
-        .getName()));
+      throw new UnsupportedOperationException(
+        String.format("%s frame types not supported", frame.getClass().getName()));
     }
   }
 

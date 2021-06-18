@@ -20,6 +20,7 @@ package org.openqa.selenium.grid.router;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -119,7 +120,7 @@ public class NewSessionCreationTest {
     server = new NettyServer(
       new BaseServerOptions(new MapConfig(ImmutableMap.of())),
       router,
-      new ProxyCdpIntoGrid(clientFactory, sessions))
+      new ProxyWebsocketsIntoGrid(clientFactory, sessions))
       .start();
 
     URI uri = server.getUrl().toURI();
