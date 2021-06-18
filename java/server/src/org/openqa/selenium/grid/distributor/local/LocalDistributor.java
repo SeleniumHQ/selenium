@@ -35,6 +35,7 @@ import org.openqa.selenium.grid.data.NodeAddedEvent;
 import org.openqa.selenium.grid.data.NodeDrainComplete;
 import org.openqa.selenium.grid.data.NodeHeartBeatEvent;
 import org.openqa.selenium.grid.data.NodeId;
+import org.openqa.selenium.grid.data.NodesRemovedEvent;
 import org.openqa.selenium.grid.data.NodeStatus;
 import org.openqa.selenium.grid.data.NodeStatusEvent;
 import org.openqa.selenium.grid.data.RequestId;
@@ -151,6 +152,8 @@ public class LocalDistributor extends Distributor implements Closeable {
 
     bus.addListener(NodeStatusEvent.listener(this::register));
     bus.addListener(NodeStatusEvent.listener(model::refresh));
+    bus.addListener(NodesRemovedEvent.listener(this::removeAll));
+    bus.addListener(NodeDrainComplete.listener(this::remove));
     bus.addListener(NodeHeartBeatEvent.listener(nodeStatus -> {
       if (nodes.containsKey(nodeStatus.getNodeId())) {
         model.touch(nodeStatus.getNodeId());
@@ -169,7 +172,6 @@ public class LocalDistributor extends Distributor implements Closeable {
         }));
 
     NewSessionRunnable newSessionRunnable = new NewSessionRunnable();
-    bus.addListener(NodeDrainComplete.listener(this::remove));
 
     purgeDeadNodes.submit(model::purgeDeadNodes, Duration.ofSeconds(30), Duration.ofSeconds(30));
     createNewSession.submit(newSessionRunnable, Duration.ofSeconds(5), Duration.ofSeconds(5));
@@ -299,10 +301,15 @@ public class LocalDistributor extends Distributor implements Closeable {
     return node.isDraining();
   }
 
+  public void removeAll(Set<NodeId> nodes) {
+    nodes.forEach(this::remove);
+  }
+
   public void remove(NodeId nodeId) {
     Lock writeLock = lock.writeLock();
     writeLock.lock();
     try {
+      nodes.remove(nodeId);
       model.remove(nodeId);
       Runnable runnable = allChecks.remove(nodeId);
       if (runnable != null) {

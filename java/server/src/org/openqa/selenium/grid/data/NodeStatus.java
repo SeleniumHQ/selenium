@@ -23,9 +23,8 @@ import org.openqa.selenium.json.JsonInput;
 import org.openqa.selenium.json.TypeToken;
 import org.redisson.api.annotation.REntity;
 import org.redisson.api.annotation.RId;
-import org.redisson.api.annotation.RIndex;
 
-import java.io.Serializable;
+import java.lang.reflect.Type;
 import java.net.URI;
 import java.time.Duration;
 import java.time.Instant;
@@ -40,6 +39,8 @@ import static java.util.Collections.unmodifiableSet;
 
 @REntity
 public class NodeStatus {
+
+  private static final Type SLOT_TYPE = new TypeToken<Set<Slot>>() {}.getType();
 
   @RId
   private NodeId nodeId;
@@ -95,7 +96,7 @@ public class NodeStatus {
           break;
 
         case "heartbeatPeriod":
-          heartbeatPeriod = Duration.ofMillis(input.read(Long.class));
+          heartbeatPeriod = Duration.ofSeconds(input.read(Long.class));
           break;
 
         case "nodeId":
@@ -107,8 +108,7 @@ public class NodeStatus {
           break;
 
         case "slots":
-          slots = input.read(new TypeToken<Set<Slot>>() {
-          }.getType());
+          slots = input.read(SLOT_TYPE);
           break;
 
         case "externalUri":
@@ -281,7 +281,7 @@ public class NodeStatus {
     toReturn.put("maxSessions", maxSessionCount);
     toReturn.put("slots", slots);
     toReturn.put("availability", availability);
-    toReturn.put("heartbeatPeriod", heartbeatPeriod.toMillis());
+    toReturn.put("heartbeatPeriod", heartbeatPeriod.getSeconds());
     toReturn.put("version", version);
     toReturn.put("osInfo", osInfo);
 

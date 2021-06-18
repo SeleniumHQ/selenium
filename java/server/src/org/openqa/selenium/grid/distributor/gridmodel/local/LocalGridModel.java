@@ -23,6 +23,7 @@ import org.openqa.selenium.grid.config.Config;
 import org.openqa.selenium.grid.data.Availability;
 import org.openqa.selenium.grid.data.NodeDrainStarted;
 import org.openqa.selenium.grid.data.NodeId;
+import org.openqa.selenium.grid.data.NodesRemovedEvent;
 import org.openqa.selenium.grid.data.NodeStatus;
 import org.openqa.selenium.grid.data.Session;
 import org.openqa.selenium.grid.data.SessionClosedEvent;
@@ -164,6 +165,7 @@ public class LocalGridModel implements GridModel {
   @Override
   public void purgeDeadNodes() {
     long now = System.currentTimeMillis();
+    Set<NodeStatus> dead = ImmutableSet.of();
     Lock writeLock = lock.writeLock();
     writeLock.lock();
     try {
@@ -173,7 +175,7 @@ public class LocalGridModel implements GridModel {
       Set<NodeStatus> resurrected = nodes(DOWN).stream()
         .filter(status -> now - status.touched() <= status.heartbeatPeriod().toMillis())
         .collect(toSet());
-      Set<NodeStatus> dead = nodes(DOWN).stream()
+      dead = nodes(DOWN).stream()
         .filter(status -> now - status.touched() > status.heartbeatPeriod().toMillis() * 4)
         .collect(toSet());
       if (lost.size() > 0) {
@@ -196,11 +198,15 @@ public class LocalGridModel implements GridModel {
       }
       if (dead.size() > 0) {
         LOG.info(String.format(
-          "Removing nodes %s that are DOWN for too long",
+          "Removing nodes %s that are DOWN for too long from the Grid model",
           dead.stream()
             .map(node -> String.format("%s (uri: %s)", node.getNodeId(), node.getExternalUri()))
             .collect(joining(", "))));
         nodes(DOWN).removeAll(dead);
+        events.fire(new NodesRemovedEvent(
+          dead.stream()
+            .map(NodeStatus::getNodeId)
+            .collect(toSet())));
       }
     } finally {
       writeLock.unlock();

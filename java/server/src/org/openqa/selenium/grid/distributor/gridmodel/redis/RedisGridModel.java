@@ -7,6 +7,7 @@ import org.openqa.selenium.grid.data.Availability;
 import org.openqa.selenium.grid.data.NodeDrainStarted;
 import org.openqa.selenium.grid.data.NodeId;
 import org.openqa.selenium.grid.data.NodeStatus;
+import org.openqa.selenium.grid.data.NodesRemovedEvent;
 import org.openqa.selenium.grid.data.Session;
 import org.openqa.selenium.grid.data.SessionClosedEvent;
 import org.openqa.selenium.grid.data.Slot;
@@ -194,7 +195,7 @@ public class RedisGridModel implements GridModel {
 
       if (dead.size() > 0) {
         LOG.info(String.format(
-          "Removing nodes %s that are DOWN for too long",
+          "Removing nodes %s that are DOWN for too long from the Grid model",
           dead.stream()
             .map(node -> String.format("%s (uri: %s)", node.getNodeId(), node.getExternalUri()))
             .collect(joining(", "))));
@@ -202,6 +203,7 @@ public class RedisGridModel implements GridModel {
           .map(NodeStatus::getNodeId).collect(Collectors.toSet());
         redisClient.removeAllNodeAvailability(DOWN, deadNodeIds);
         redisClient.removeAllNodes(deadNodeIds);
+        events.fire(new NodesRemovedEvent(deadNodeIds));
       }
     } finally {
       writeLock.unlock();
