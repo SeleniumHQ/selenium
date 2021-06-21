@@ -18,7 +18,6 @@
 package org.openqa.selenium.remote;
 
 import com.google.common.collect.ImmutableMap;
-
 import org.openqa.selenium.Beta;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Dimension;
@@ -39,6 +38,9 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+
+import static org.openqa.selenium.remote.DriverCommand.FIND_CHILD_ELEMENT;
+import static org.openqa.selenium.remote.DriverCommand.FIND_CHILD_ELEMENTS;
 
 public class RemoteWebElement implements IsRemoteWebElement {
 
@@ -206,12 +208,18 @@ public class RemoteWebElement implements IsRemoteWebElement {
 
   @Override
   public List<WebElement> findElements(By locator) {
-    return parent.findElements(parent, this, locator);
+    return parent.findElements(
+      this,
+      (using, value) -> FIND_CHILD_ELEMENTS(getId(), using, String.valueOf(value)),
+      locator);
   }
 
   @Override
   public WebElement findElement(By locator) {
-    return parent.findElement(parent, this, locator);
+    return parent.findElement(
+      this,
+      (using, value) -> FIND_CHILD_ELEMENT(getId(), using, String.valueOf(value)),
+      locator);
   }
 
   /**
@@ -228,6 +236,12 @@ public class RemoteWebElement implements IsRemoteWebElement {
   @Deprecated
   protected List<WebElement> findElements(String using, String value) {
     throw new UnsupportedOperationException("`findElement` has been replaced by usages of " + By.Remotable.class);
+  }
+
+  @Override
+  public SearchContext getShadowRoot() {
+    Response response = execute(DriverCommand.GET_ELEMENT_SHADOW_ROOT(getId()));
+    return (SearchContext) response.getValue();
   }
 
   protected Response execute(CommandPayload payload) {

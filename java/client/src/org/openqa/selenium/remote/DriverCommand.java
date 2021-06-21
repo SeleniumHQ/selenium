@@ -29,10 +29,11 @@ import org.openqa.selenium.print.PrintOptions;
 
 import java.time.Duration;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
+
+import static java.util.Collections.singletonMap;
 
 /**
  * An empty interface defining constants for the standard commands defined in the WebDriver JSON
@@ -108,6 +109,31 @@ public interface DriverCommand {
     return new CommandPayload(FIND_CHILD_ELEMENTS,
                               ImmutableMap.of("id", id, "using", strategy, "value", value));
   }
+  String GET_ELEMENT_SHADOW_ROOT = "getElementShadowRoot";
+  static CommandPayload GET_ELEMENT_SHADOW_ROOT(String id) {
+    Require.nonNull("Element ID", id);
+    return new CommandPayload(GET_ELEMENT_SHADOW_ROOT, singletonMap("id", id));
+  }
+
+  String FIND_ELEMENT_FROM_SHADOW_ROOT = "findElementFromShadowRoot";
+  static CommandPayload FIND_ELEMENT_FROM_SHADOW_ROOT(String shadowId, String strategy, String value) {
+    Require.nonNull("Shadow root ID", shadowId);
+    Require.nonNull("Element finding strategy", strategy);
+    Require.nonNull("Value for finding strategy", value);
+    return new CommandPayload(
+      FIND_ELEMENT_FROM_SHADOW_ROOT,
+      ImmutableMap.of("shadowId", shadowId, "using", strategy, "value", value));
+  }
+
+  String FIND_ELEMENTS_FROM_SHADOW_ROOT = "findElementsFromShadowRoot";
+  static CommandPayload FIND_ELEMENTS_FROM_SHADOW_ROOT(String shadowId, String strategy, String value) {
+    Require.nonNull("Shadow root ID", shadowId);
+    Require.nonNull("Element finding strategy", strategy);
+    Require.nonNull("Value for finding strategy", value);
+    return new CommandPayload(
+      FIND_ELEMENTS_FROM_SHADOW_ROOT,
+      ImmutableMap.of("shadowId", shadowId, "using", strategy, "value", value));
+  }
 
   String CLEAR_ELEMENT = "clearElement";
   static CommandPayload CLEAR_ELEMENT(String id) {
@@ -149,7 +175,7 @@ public interface DriverCommand {
   String SWITCH_TO_CONTEXT = "switchToContext";
   String SWITCH_TO_FRAME = "switchToFrame";
   static CommandPayload SWITCH_TO_FRAME(Object frame) {
-    return new CommandPayload(SWITCH_TO_FRAME, Collections.singletonMap("id", frame));
+    return new CommandPayload(SWITCH_TO_FRAME, singletonMap("id", frame));
   }
   String SWITCH_TO_PARENT_FRAME = "switchToParentFrame";
   String GET_ACTIVE_ELEMENT = "getActiveElement";
