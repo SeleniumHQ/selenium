@@ -17,12 +17,8 @@
 
 package org.openqa.selenium.remote;
 
-import static java.net.HttpURLConnection.HTTP_INTERNAL_ERROR;
-
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Iterables;
-
-import org.openqa.selenium.Beta;
 import org.openqa.selenium.ElementClickInterceptedException;
 import org.openqa.selenium.ElementNotInteractableException;
 import org.openqa.selenium.ElementNotSelectableException;
@@ -39,6 +35,7 @@ import org.openqa.selenium.NoSuchCookieException;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.NoSuchFrameException;
 import org.openqa.selenium.NoSuchSessionException;
+import org.openqa.selenium.NoSuchShadowRootException;
 import org.openqa.selenium.NoSuchWindowException;
 import org.openqa.selenium.ScriptTimeoutException;
 import org.openqa.selenium.SessionNotCreatedException;
@@ -61,12 +58,13 @@ import java.util.Set;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
+import static java.net.HttpURLConnection.HTTP_INTERNAL_ERROR;
+
 /**
  * Defines common error codes for the wire protocol.
  */
 public class ErrorCodes {
 
-  @Beta
   public static final String SUCCESS_STRING = "success";
   public static final int SUCCESS = 0;
   public static final int NO_SUCH_SESSION = 6;
@@ -103,6 +101,7 @@ public class ErrorCodes {
   public static final int NO_SUCH_COOKIE = 62;
   public static final int UNABLE_TO_CAPTURE_SCREEN = 63;
   public static final int ELEMENT_CLICK_INTERCEPTED = 64;
+  public static final int NO_SUCH_SHADOW_ROOT = 65;
 
   // The following error codes are derived straight from HTTP return codes.
   public static final int METHOD_NOT_ALLOWED = 405;
@@ -248,6 +247,7 @@ public class ErrorCodes {
     .add(new KnownError(NO_SUCH_ELEMENT, "no such element", 404, NoSuchElementException.class, true, true))
     .add(new KnownError(NO_SUCH_FRAME, "no such frame", 404, NoSuchFrameException.class, true, true))
     .add(new KnownError(NO_SUCH_SESSION, "invalid session id", 404, NoSuchSessionException.class, true, true))
+    .add(new KnownError(NO_SUCH_SHADOW_ROOT, "no such shadow root", 404, NoSuchShadowRootException.class, true, true))
     .add(new KnownError(NO_SUCH_WINDOW, "no such window", 404, NoSuchWindowException.class, true, true))
     .add(new KnownError(SESSION_NOT_CREATED, "session not created", 500, SessionNotCreatedException.class ,true, true))
     .add(new KnownError(STALE_ELEMENT_REFERENCE, "stale element reference", 404, StaleElementReferenceException.class, true, true))

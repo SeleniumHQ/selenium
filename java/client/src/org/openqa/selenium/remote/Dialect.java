@@ -40,6 +40,11 @@ public enum Dialect {
     public String getEncodedElementKey() {
       return "ELEMENT";
     }
+
+    @Override
+    public String getShadowRootElementKey() {
+      return "shadow-6066-11e4-a52e-4f735466cecf";
+    }
   },
   W3C {
     @Override
@@ -56,9 +61,15 @@ public enum Dialect {
     public String getEncodedElementKey() {
       return "element-6066-11e4-a52e-4f735466cecf";
     }
+
+    @Override
+    public String getShadowRootElementKey() {
+      return "shadow-6066-11e4-a52e-4f735466cecf";
+    }
   };
 
   public abstract CommandCodec<HttpRequest> getCommandCodec();
   public abstract ResponseCodec<HttpResponse> getResponseCodec();
   public abstract String getEncodedElementKey();
+  public abstract String getShadowRootElementKey();
 }
