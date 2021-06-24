@@ -21,6 +21,7 @@ package org.openqa.selenium;
  * This interface indicates that the implementing class knows about the driver that contains it and
  * can export it.
  */
+@FunctionalInterface
 public interface WrapsDriver {
   /**
    * @return The driver that contains this element.
