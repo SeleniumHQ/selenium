@@ -55,12 +55,11 @@ public class NettyClient implements HttpClient {
 
   static {
     ThreadFactory threadFactory = new DefaultThreadFactory("netty-client-timer", true);
-    HashedWheelTimer timer = new HashedWheelTimer(
+    TIMER = new HashedWheelTimer(
       threadFactory,
       AsyncHttpClientConfigDefaults.defaultHashedWheelTimerTickDuration(),
       TimeUnit.MILLISECONDS,
       AsyncHttpClientConfigDefaults.defaultHashedWheelTimerSize());
-    TIMER = timer;
   }
 
   private final ClientConfig config;
