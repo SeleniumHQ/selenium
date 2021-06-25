@@ -60,7 +60,6 @@ public class NettyClient implements HttpClient {
       AsyncHttpClientConfigDefaults.defaultHashedWheelTimerTickDuration(),
       TimeUnit.MILLISECONDS,
       AsyncHttpClientConfigDefaults.defaultHashedWheelTimerSize());
-    timer.start();
     TIMER = timer;
   }
 
