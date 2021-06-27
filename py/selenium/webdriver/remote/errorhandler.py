@@ -17,11 +17,6 @@
 
 from typing import Any, Dict, Mapping, Type, TypeVar
 
-
-_KT = TypeVar("_KT")
-_VT = TypeVar("_VT")
-
-
 from selenium.common.exceptions import (ElementClickInterceptedException,
                                         ElementNotInteractableException,
                                         ElementNotSelectableException,
@@ -50,6 +45,10 @@ from selenium.common.exceptions import (ElementClickInterceptedException,
                                         UnexpectedAlertPresentException,
                                         UnknownMethodException,
                                         WebDriverException)
+
+
+_KT = TypeVar("_KT")
+_VT = TypeVar("_VT")
 
 
 class ErrorCode(object):
