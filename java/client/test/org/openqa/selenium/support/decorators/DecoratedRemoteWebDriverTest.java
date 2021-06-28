@@ -26,7 +26,6 @@ import org.openqa.selenium.WrapsDriver;
 import org.openqa.selenium.WrapsElement;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.remote.Dialect;
-import org.openqa.selenium.remote.IsRemoteWebDriver;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.remote.RemoteWebElement;
 import org.openqa.selenium.remote.SessionId;
@@ -45,14 +44,16 @@ import static org.openqa.selenium.json.Json.MAP_TYPE;
 public class DecoratedRemoteWebDriverTest {
 
   @Test
-  public void canConvertDecoratedToRemoteWebDriverInterface() {
+  public void shouldImplementWrapsDriverToProvideAccessToUnderlyingDriver() {
     SessionId sessionId = new SessionId(UUID.randomUUID());
     RemoteWebDriver originalDriver = mock(RemoteWebDriver.class);
     when(originalDriver.getSessionId()).thenReturn(sessionId);
 
-    IsRemoteWebDriver decoratedDriver = (IsRemoteWebDriver) new WebDriverDecorator().decorate(originalDriver);
+    WebDriver decoratedDriver = new WebDriverDecorator().decorate(originalDriver);
 
-    assertThat(decoratedDriver.getSessionId()).isEqualTo(sessionId);
+    RemoteWebDriver underlying = (RemoteWebDriver) ((WrapsDriver) decoratedDriver).getWrappedDriver();
+
+    assertThat(underlying.getSessionId()).isEqualTo(sessionId);
   }
 
   @Test
