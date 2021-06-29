@@ -67,7 +67,7 @@ public class LocalGridModel implements GridModel {
 
   public static GridModel create(Config config) {
     EventBus bus = new EventBusOptions(config).getEventBus();
-    
+
     return new LocalGridModel(bus);
   }
 
@@ -168,13 +168,13 @@ public class LocalGridModel implements GridModel {
     writeLock.lock();
     try {
       Set<NodeStatus> lost = nodes(UP).stream()
-        .filter(status -> now - status.touched() > status.heartbeatPeriod().toMillis() * 2)
+        .filter(status -> now - status.touched() > status.getHeartbeatPeriod().toMillis() * 2)
         .collect(toSet());
       Set<NodeStatus> resurrected = nodes(DOWN).stream()
-        .filter(status -> now - status.touched() <= status.heartbeatPeriod().toMillis())
+        .filter(status -> now - status.touched() <= status.getHeartbeatPeriod().toMillis())
         .collect(toSet());
       Set<NodeStatus> dead = nodes(DOWN).stream()
-        .filter(status -> now - status.touched() > status.heartbeatPeriod().toMillis() * 4)
+        .filter(status -> now - status.touched() > status.getHeartbeatPeriod().toMillis() * 4)
         .collect(toSet());
       if (lost.size() > 0) {
         LOG.info(String.format(
@@ -319,7 +319,7 @@ public class LocalGridModel implements GridModel {
       status.getMaxSessionCount(),
       status.getSlots(),
       availability,
-      status.heartbeatPeriod(),
+      status.getHeartbeatPeriod(),
       status.getVersion(),
       status.getOsInfo());
   }
@@ -435,7 +435,7 @@ public class LocalGridModel implements GridModel {
       status.getMaxSessionCount(),
       newSlots,
       status.getAvailability(),
-      status.heartbeatPeriod(),
+      status.getHeartbeatPeriod(),
       status.getVersion(),
       status.getOsInfo()));
   }
