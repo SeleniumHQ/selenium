@@ -242,16 +242,8 @@ public class NodeStatus {
       .orElse(0);
   }
 
-  public Duration heartbeatPeriod() {
-    return heartbeatPeriod;
-  }
-
   public void touch() {
     touched = System.currentTimeMillis();
-  }
-
-  public long touched() {
-    return touched;
   }
 
   @Override
