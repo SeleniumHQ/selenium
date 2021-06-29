@@ -168,13 +168,13 @@ public class LocalGridModel implements GridModel {
     writeLock.lock();
     try {
       Set<NodeStatus> lost = nodes(UP).stream()
-        .filter(status -> now - status.touched() > status.getHeartbeatPeriod().toMillis() * 2)
+        .filter(status -> now - status.getTouched() > status.getHeartbeatPeriod().toMillis() * 2)
         .collect(toSet());
       Set<NodeStatus> resurrected = nodes(DOWN).stream()
-        .filter(status -> now - status.touched() <= status.getHeartbeatPeriod().toMillis())
+        .filter(status -> now - status.getTouched() <= status.getHeartbeatPeriod().toMillis())
         .collect(toSet());
       Set<NodeStatus> dead = nodes(DOWN).stream()
-        .filter(status -> now - status.touched() > status.getHeartbeatPeriod().toMillis() * 4)
+        .filter(status -> now - status.getTouched() > status.getHeartbeatPeriod().toMillis() * 4)
         .collect(toSet());
       if (lost.size() > 0) {
         LOG.info(String.format(

@@ -153,17 +153,17 @@ public class RedisGridModel implements GridModel {
       Set<NodeId> up = redisClient.getNodesByAvailability(UP);
       Set<NodeStatus> upNodes = redisClient.getNodes(up);
       Set<NodeStatus> lost = upNodes.stream()
-        .filter(status -> now - status.touched() > status.heartbeatPeriod().toMillis() * 2)
+        .filter(status -> now - status.getTouched() > status.getHeartbeatPeriod().toMillis() * 2)
         .collect(toSet());
 
       Set<NodeId> down = redisClient.getNodesByAvailability(DOWN);
       Set<NodeStatus> downNodes = redisClient.getNodes(down);
       Set<NodeStatus> resurrected = downNodes.stream()
-        .filter(status -> now - status.touched() <= status.heartbeatPeriod().toMillis())
+        .filter(status -> now - status.getTouched() <= status.getHeartbeatPeriod().toMillis())
         .collect(toSet());
 
       Set<NodeStatus> dead = downNodes.stream()
-        .filter(status -> now - status.touched() > status.heartbeatPeriod().toMillis() * 4)
+        .filter(status -> now - status.getTouched() > status.getHeartbeatPeriod().toMillis() * 4)
         .collect(toSet());
 
       if (lost.size() > 0) {
@@ -425,7 +425,7 @@ public class RedisGridModel implements GridModel {
       status.getMaxSessionCount(),
       newSlots,
       status.getAvailability(),
-      status.heartbeatPeriod(),
+      status.getHeartbeatPeriod(),
       status.getVersion(),
       status.getOsInfo());
     redisClient.addNode(updatedStatus);
@@ -440,7 +440,7 @@ public class RedisGridModel implements GridModel {
       status.getMaxSessionCount(),
       status.getSlots(),
       availability,
-      status.heartbeatPeriod(),
+      status.getHeartbeatPeriod(),
       status.getVersion(),
       status.getOsInfo());
   }
