@@ -36,19 +36,16 @@ import static java.util.Collections.unmodifiableSet;
 
 public class NodeStatus {
 
-  private NodeId nodeId;
+  private final NodeId nodeId;
 
-  private URI externalUri;
-  private int maxSessionCount;
-  private Set<Slot> slots;
-  private Availability availability;
-  private Duration heartbeatPeriod;
-  private String version;
-  private Map<String, String> osInfo;
+  private final URI externalUri;
+  private final int maxSessionCount;
+  private final Set<Slot> slots;
+  private final Availability availability;
+  private final Duration heartbeatPeriod;
+  private final String version;
+  private final Map<String, String> osInfo;
   private long touched = System.currentTimeMillis();
-
-  public NodeStatus() {
-  }
 
   public NodeStatus(
     NodeId nodeId,
@@ -152,64 +149,32 @@ public class NodeStatus {
     return maxSessionCount;
   }
 
-  public void setMaxSessionCount(int maxSessionCount) {
-    this.maxSessionCount = maxSessionCount;
-  }
-
   public NodeId getNodeId() {
     return nodeId;
-  }
-
-  public void setNodeId(NodeId nodeId) {
-    this.nodeId = nodeId;
   }
 
   public URI getExternalUri() {
     return externalUri;
   }
 
-  public void setExternalUri(URI externalUri) {
-    this.externalUri = externalUri;
-  }
-
   public Set<Slot> getSlots() {
     return slots;
-  }
-
-  public void setSlots(Set<Slot> slots) {
-    this.slots = slots;
   }
 
   public Availability getAvailability() {
     return availability;
   }
 
-  public void setAvailability(Availability availability) {
-    this.availability = availability;
-  }
-
   public Duration getHeartbeatPeriod() {
     return heartbeatPeriod;
-  }
-
-  public void setHeartbeatPeriod(Duration heartbeatPeriod) {
-    this.heartbeatPeriod = heartbeatPeriod;
   }
 
   public String getVersion() {
     return version;
   }
 
-  public void setVersion(String version) {
-    this.version = version;
-  }
-
   public Map<String, String> getOsInfo() {
     return osInfo;
-  }
-
-  public void setOsInfo(Map<String, String> osInfo) {
-    this.osInfo = osInfo;
   }
 
   public long getTouched() {
