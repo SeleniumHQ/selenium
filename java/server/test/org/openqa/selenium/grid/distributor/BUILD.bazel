@@ -20,7 +20,6 @@ java_test_suite(
         "//java/server/src/org/openqa/selenium/grid/component",
         "//java/server/src/org/openqa/selenium/grid/data",
         "//java/server/src/org/openqa/selenium/grid/distributor",
-        "//java/server/src/org/openqa/selenium/grid/distributor/gridmodel/local",
         "//java/server/src/org/openqa/selenium/grid/distributor/local",
         "//java/server/src/org/openqa/selenium/grid/distributor/remote",
         "//java/server/src/org/openqa/selenium/grid/distributor/selector",

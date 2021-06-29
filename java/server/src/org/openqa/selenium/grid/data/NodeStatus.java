@@ -23,9 +23,7 @@ import org.openqa.selenium.json.JsonInput;
 import org.openqa.selenium.json.TypeToken;
 import org.redisson.api.annotation.REntity;
 import org.redisson.api.annotation.RId;
-import org.redisson.api.annotation.RIndex;
 
-import java.io.Serializable;
 import java.net.URI;
 import java.time.Duration;
 import java.time.Instant;
