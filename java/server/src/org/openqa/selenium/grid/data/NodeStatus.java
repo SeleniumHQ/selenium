@@ -45,7 +45,6 @@ public class NodeStatus {
   private final Duration heartbeatPeriod;
   private final String version;
   private final Map<String, String> osInfo;
-  private long touched = System.currentTimeMillis();
 
   public NodeStatus(
     NodeId nodeId,
@@ -177,14 +176,6 @@ public class NodeStatus {
     return osInfo;
   }
 
-  public long getTouched() {
-    return touched;
-  }
-
-  public void setTouched(long touched) {
-    this.touched = touched;
-  }
-
   public float getLoad() {
     float inUse = slots.parallelStream()
       .filter(slot -> slot.getSession() != null)
@@ -199,10 +190,6 @@ public class NodeStatus {
       .mapToLong(Instant::toEpochMilli)
       .max()
       .orElse(0);
-  }
-
-  public void touch() {
-    touched = System.currentTimeMillis();
   }
 
   @Override
