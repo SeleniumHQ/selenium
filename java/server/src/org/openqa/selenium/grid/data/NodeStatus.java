@@ -21,8 +21,6 @@ import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.JsonInput;
 import org.openqa.selenium.json.TypeToken;
-import org.redisson.api.annotation.REntity;
-import org.redisson.api.annotation.RId;
 
 import java.net.URI;
 import java.time.Duration;
@@ -36,10 +34,8 @@ import java.util.TreeMap;
 import static java.util.Collections.unmodifiableMap;
 import static java.util.Collections.unmodifiableSet;
 
-@REntity
 public class NodeStatus {
 
-  @RId
   private NodeId nodeId;
 
   private URI externalUri;
