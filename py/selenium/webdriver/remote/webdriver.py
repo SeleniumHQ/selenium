@@ -1368,7 +1368,7 @@ class WebDriver(BaseWebDriver):
                 driver.set_window_rect(x=10, y=10, width=100, height=200)
         """
 
-        if (not x and not y) and (not height and not width):
+        if (x is None and y is None) and (not height and not width):
             raise InvalidArgumentException("x and y or height and width need values")
 
         return self.execute(Command.SET_WINDOW_RECT, {"x": x, "y": y,
