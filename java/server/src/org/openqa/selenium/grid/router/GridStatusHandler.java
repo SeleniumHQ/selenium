@@ -131,7 +131,7 @@ class GridStatusHandler implements HttpHandler {
           .put("uri", node.getExternalUri())
           .put("maxSessions", node.getMaxSessionCount())
           .put("osInfo", node.getOsInfo())
-          .put("heartbeatPeriod", node.heartbeatPeriod().toMillis())
+          .put("heartbeatPeriod", node.getHeartbeatPeriod().toMillis())
           .put("availability", node.getAvailability())
           .put("version", node.getVersion())
           .put("slots", node.getSlots())

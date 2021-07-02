@@ -17,51 +17,77 @@
 
 package org.openqa.selenium.support.decorators;
 
-import com.google.common.collect.ImmutableMap;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.WrapsDriver;
+import org.openqa.selenium.WrapsElement;
+import org.openqa.selenium.json.Json;
 import org.openqa.selenium.remote.Dialect;
-import org.openqa.selenium.remote.IsRemoteWebDriver;
-import org.openqa.selenium.remote.IsRemoteWebElement;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.remote.RemoteWebElement;
 import org.openqa.selenium.remote.SessionId;
-import org.openqa.selenium.remote.internal.WebElementToJsonConverter;
 import org.openqa.selenium.testing.UnitTests;
 
+import java.util.Map;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import static org.openqa.selenium.remote.Dialect.OSS;
+import static org.openqa.selenium.json.Json.MAP_TYPE;
 
 @Category(UnitTests.class)
 public class DecoratedRemoteWebDriverTest {
 
   @Test
-  public void canConvertDecoratedToRemoteWebDriverInterface() {
+  public void shouldImplementWrapsDriverToProvideAccessToUnderlyingDriver() {
     SessionId sessionId = new SessionId(UUID.randomUUID());
     RemoteWebDriver originalDriver = mock(RemoteWebDriver.class);
     when(originalDriver.getSessionId()).thenReturn(sessionId);
 
-    IsRemoteWebDriver decoratedDriver = (IsRemoteWebDriver) new WebDriverDecorator().decorate(originalDriver);
+    WebDriver decoratedDriver = new WebDriverDecorator().decorate(originalDriver);
 
-    assertThat(decoratedDriver.getSessionId()).isEqualTo(sessionId);
+    RemoteWebDriver underlying = (RemoteWebDriver) ((WrapsDriver) decoratedDriver).getWrappedDriver();
+
+    assertThat(underlying.getSessionId()).isEqualTo(sessionId);
   }
 
-  @Test(expected = ClassCastException.class)
+  @Test
   public void cannotConvertDecoratedToRemoteWebDriver() {
-    SessionId sessionId = new SessionId(UUID.randomUUID());
     RemoteWebDriver originalDriver = mock(RemoteWebDriver.class);
-    when(originalDriver.getSessionId()).thenReturn(sessionId);
 
-    RemoteWebDriver decoratedDriver = (RemoteWebDriver) new WebDriverDecorator().decorate(originalDriver);
+    WebDriver decorated = new WebDriverDecorator().decorate(originalDriver);
+
+    assertThat(decorated).isNotInstanceOf(RemoteWebDriver.class);
+  }
+
+  @Test
+  public void decoratedDriversShouldImplementWrapsDriver() {
+    RemoteWebDriver originalDriver = mock(RemoteWebDriver.class);
+
+    WebDriver decorated = new WebDriverDecorator().decorate(originalDriver);
+
+    assertThat(decorated).isInstanceOf(WrapsDriver.class);
+  }
+
+  @Test
+  public void decoratedElementsShouldImplementWrapsElement() {
+    RemoteWebDriver originalDriver = mock(RemoteWebDriver.class);
+    RemoteWebElement originalElement = new RemoteWebElement();
+    String elementId = UUID.randomUUID().toString();
+    originalElement.setParent(originalDriver);
+    originalElement.setId(elementId);
+
+    when(originalDriver.findElement(any())).thenReturn(originalElement);
+
+    WebDriver decoratedDriver = new WebDriverDecorator().decorate(originalDriver);
+    WebElement element = decoratedDriver.findElement(By.id("test"));
+
+    assertThat(element).isInstanceOf(WrapsElement.class);
   }
 
   @Test
@@ -77,10 +103,12 @@ public class DecoratedRemoteWebDriverTest {
     WebDriver decoratedDriver = new WebDriverDecorator().decorate(originalDriver);
 
     WebElement element = decoratedDriver.findElement(By.id("test"));
-    WebElementToJsonConverter converter = new WebElementToJsonConverter();
-    ImmutableMap<String, String> result = (ImmutableMap<String, String>) converter.apply(element);
 
-    assertThat(result.get(Dialect.OSS.getEncodedElementKey())).isEqualTo(elementId);
+    Json json = new Json();
+    String raw = json.toJson(element);
+    Map<String, String> result = json.toType(raw, MAP_TYPE);
+
+    assertThat(result.get(Dialect.W3C.getEncodedElementKey())).isEqualTo(elementId);
   }
 
 }
