@@ -15,14 +15,12 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.grid.distributor.gridmodel;
+package org.openqa.selenium.grid.distributor;
 
 import org.junit.Test;
 import org.openqa.selenium.events.EventBus;
 import org.openqa.selenium.events.local.GuavaEventBus;
 import org.openqa.selenium.grid.data.DefaultSlotMatcher;
-import org.openqa.selenium.grid.distributor.Distributor;
-import org.openqa.selenium.grid.distributor.gridmodel.local.LocalGridModel;
 import org.openqa.selenium.grid.distributor.local.LocalDistributor;
 import org.openqa.selenium.grid.distributor.selector.DefaultSlotSelector;
 import org.openqa.selenium.grid.security.Secret;
@@ -35,7 +33,7 @@ import org.openqa.selenium.remote.tracing.Tracer;
 
 import java.time.Duration;
 
-public class LocalGridModelTest {
+public class GridModelTest {
 
   private final Tracer tracer = DefaultTestTracer.createTracer();
   private final EventBus events = new GuavaEventBus();
@@ -56,7 +54,7 @@ public class LocalGridModelTest {
     clientFactory,
     sessions,
     queue,
-    new LocalGridModel(events),
+    new GridModel(events),
     new DefaultSlotSelector(),
     secret,
     Duration.ofMinutes(5),

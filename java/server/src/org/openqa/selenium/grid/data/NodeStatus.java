@@ -21,11 +21,7 @@ import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.JsonInput;
 import org.openqa.selenium.json.TypeToken;
-import org.redisson.api.annotation.REntity;
-import org.redisson.api.annotation.RId;
-import org.redisson.api.annotation.RIndex;
 
-import java.io.Serializable;
 import java.net.URI;
 import java.time.Duration;
 import java.time.Instant;
@@ -38,23 +34,17 @@ import java.util.TreeMap;
 import static java.util.Collections.unmodifiableMap;
 import static java.util.Collections.unmodifiableSet;
 
-@REntity
 public class NodeStatus {
 
-  @RId
-  private NodeId nodeId;
+  private final NodeId nodeId;
 
-  private URI externalUri;
-  private int maxSessionCount;
-  private Set<Slot> slots;
-  private Availability availability;
-  private Duration heartbeatPeriod;
-  private String version;
-  private Map<String, String> osInfo;
-  private long touched = System.currentTimeMillis();
-
-  public NodeStatus() {
-  }
+  private final URI externalUri;
+  private final int maxSessionCount;
+  private final Set<Slot> slots;
+  private final Availability availability;
+  private final Duration heartbeatPeriod;
+  private final String version;
+  private final Map<String, String> osInfo;
 
   public NodeStatus(
     NodeId nodeId,
@@ -158,72 +148,32 @@ public class NodeStatus {
     return maxSessionCount;
   }
 
-  public void setMaxSessionCount(int maxSessionCount) {
-    this.maxSessionCount = maxSessionCount;
-  }
-
   public NodeId getNodeId() {
     return nodeId;
-  }
-
-  public void setNodeId(NodeId nodeId) {
-    this.nodeId = nodeId;
   }
 
   public URI getExternalUri() {
     return externalUri;
   }
 
-  public void setExternalUri(URI externalUri) {
-    this.externalUri = externalUri;
-  }
-
   public Set<Slot> getSlots() {
     return slots;
-  }
-
-  public void setSlots(Set<Slot> slots) {
-    this.slots = slots;
   }
 
   public Availability getAvailability() {
     return availability;
   }
 
-  public void setAvailability(Availability availability) {
-    this.availability = availability;
-  }
-
   public Duration getHeartbeatPeriod() {
     return heartbeatPeriod;
-  }
-
-  public void setHeartbeatPeriod(Duration heartbeatPeriod) {
-    this.heartbeatPeriod = heartbeatPeriod;
   }
 
   public String getVersion() {
     return version;
   }
 
-  public void setVersion(String version) {
-    this.version = version;
-  }
-
   public Map<String, String> getOsInfo() {
     return osInfo;
-  }
-
-  public void setOsInfo(Map<String, String> osInfo) {
-    this.osInfo = osInfo;
-  }
-
-  public long getTouched() {
-    return touched;
-  }
-
-  public void setTouched(long touched) {
-    this.touched = touched;
   }
 
   public float getLoad() {
@@ -240,18 +190,6 @@ public class NodeStatus {
       .mapToLong(Instant::toEpochMilli)
       .max()
       .orElse(0);
-  }
-
-  public Duration heartbeatPeriod() {
-    return heartbeatPeriod;
-  }
-
-  public void touch() {
-    touched = System.currentTimeMillis();
-  }
-
-  public long touched() {
-    return touched;
   }
 
   @Override

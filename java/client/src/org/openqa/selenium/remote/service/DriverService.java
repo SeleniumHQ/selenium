@@ -60,7 +60,7 @@ import java.util.concurrent.locks.ReentrantLock;
  */
 public class DriverService implements Closeable {
   protected static final Duration DEFAULT_TIMEOUT = Duration.ofSeconds(20);
-  private final ExecutorService executorService = Executors.newFixedThreadPool(2, r -> {
+  private static final ExecutorService executorService = Executors.newFixedThreadPool(2, r -> {
     Thread thread = new Thread(r);
     thread.setName("Driver Service Executor");
     thread.setDaemon(true);

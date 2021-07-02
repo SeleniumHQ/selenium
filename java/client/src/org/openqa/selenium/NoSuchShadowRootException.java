@@ -15,15 +15,19 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.remote;
+package org.openqa.selenium;
 
-import org.openqa.selenium.TakesScreenshot;
-import org.openqa.selenium.WebElement;
-import org.openqa.selenium.WrapsDriver;
-import org.openqa.selenium.interactions.Locatable;
+public class NoSuchShadowRootException extends NotFoundException {
 
-public interface IsRemoteWebElement extends WebElement, WrapsDriver, TakesScreenshot, Locatable {
+  public NoSuchShadowRootException(String message) {
+    super(message);
+  }
 
-  public String getId();
+  public NoSuchShadowRootException(Throwable cause) {
+    super(cause);
+  }
 
+  public NoSuchShadowRootException(String message, Throwable cause) {
+    super(message, cause);
+  }
 }
