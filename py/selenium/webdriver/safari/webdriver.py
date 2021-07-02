@@ -56,20 +56,20 @@ class WebDriver(RemoteWebDriver):
              HTTP keep-alive. Defaults to True.
          - service_args : List of args to pass to the safaridriver service
         """
-        if port == 0:
+        if port:
             warnings.warn("port has been deprecated, please set it via the service class",
                           DeprecationWarning, stacklevel=2)
 
         if executable_path != DEFAULT_EXECUTABLE_PATH:
             warnings.warn("executable_path has been deprecated, please use the Options class to set it",
                           DeprecationWarning, stacklevel=2)
-        if not reuse_service:
+        if reuse_service:
             warnings.warn("reuse_service has been deprecated, please use the Service class to set it",
                           DeprecationWarning, stacklevel=2)
         if desired_capabilities != DEFAULT_SAFARI_CAPS:
             warnings.warn("desired_capabilities has been deprecated, please use the Options class to set it",
                           DeprecationWarning, stacklevel=2)
-        if not quiet:
+        if quiet:
             warnings.warn("quiet has been deprecated, please use the Service class to set it",
                           DeprecationWarning, stacklevel=2)
         if not keep_alive:
