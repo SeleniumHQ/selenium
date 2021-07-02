@@ -114,6 +114,20 @@ def test_should_set_the_rect_of_the_current_window(driver):
     assert new_rect.get('height') == target_height
 
 
+def test_set_window_rect_should_accept_0_as_x_and_y(driver):
+    from selenium.common.exceptions import InvalidArgumentException
+    try:
+        driver.set_window_rect(x=0, y=0)
+    except InvalidArgumentException:
+        pytest.fail("Should not have thrown InvalidArgumentException")
+
+
+def test_set_window_rect_throws_when_height_and_width_are_0(driver):
+    from selenium.common.exceptions import InvalidArgumentException
+    with pytest.raises(InvalidArgumentException):
+        driver.set_window_rect(height=0, width=0)
+
+
 # @pytest.mark.xfail_safari(raises=WebDriverException,
 #                           reason='Fullscreen command not implemented')
 # @pytest.mark.skipif(os.environ.get('TRAVIS') == 'true',

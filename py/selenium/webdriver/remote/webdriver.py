@@ -21,7 +21,7 @@ import copy
 
 import pkgutil
 import sys
-from typing import Dict, List, Union
+from typing import Dict, List, Optional, Union
 
 import warnings
 
@@ -48,6 +48,7 @@ from selenium.webdriver.common.options import BaseOptions
 from selenium.webdriver.common.timeouts import Timeouts
 from selenium.webdriver.common.html5.application_cache import ApplicationCache
 from selenium.webdriver.support.relative_locator import RelativeBy
+from selenium.webdriver.common.print_page_options import PrintOptions
 
 
 _W3C_CAPABILITY_NAMES = frozenset([
@@ -906,7 +907,7 @@ class WebDriver(BaseWebDriver):
         """
         self.execute(Command.MINIMIZE_WINDOW)
 
-    def print_page(self, print_options=None) -> str:
+    def print_page(self, print_options: Optional[PrintOptions] = None) -> str:
         """
         Takes PDF of the current page.
         The driver makes a best effort to return a PDF based on the provided parameters.
@@ -1368,7 +1369,7 @@ class WebDriver(BaseWebDriver):
                 driver.set_window_rect(x=10, y=10, width=100, height=200)
         """
 
-        if (not x and not y) and (not height and not width):
+        if (x is None and y is None) and (not height and not width):
             raise InvalidArgumentException("x and y or height and width need values")
 
         return self.execute(Command.SET_WINDOW_RECT, {"x": x, "y": y,
