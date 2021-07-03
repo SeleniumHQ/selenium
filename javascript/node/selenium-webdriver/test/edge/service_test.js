@@ -18,8 +18,8 @@
 'use strict'
 
 const assert = require('assert')
-const edge = require('../edge')
-const test = require('../lib/test')
+const edge = require('../../edge')
+const test = require('../../lib/test')
 
 test.suite(
   function (_env) {
