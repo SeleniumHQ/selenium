@@ -22,6 +22,7 @@
 goog.provide('webdriver.Command');
 goog.provide('webdriver.CommandExecutor');
 goog.provide('webdriver.CommandName');
+goog.provide('webdriver.commandName');
 
 
 
