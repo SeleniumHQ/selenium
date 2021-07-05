@@ -20,13 +20,9 @@
 /**
  * @fileoverview Defines types related to user input with the WebDriver API.
  */
-
-const promise = require('./promise')
 const { Command, Name } = require('./command')
 const {
-  InvalidArgumentError,
-  UnknownCommandError,
-  UnsupportedOperationError,
+  InvalidArgumentError
 } = require('./error')
 
 /**
