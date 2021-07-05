@@ -28,9 +28,7 @@ test.suite(
     let driver
 
     before(async function () {
-      driver = await env
-        .builder()
-        .build()
+      driver = await env.builder().build()
     })
     after(() => driver.quit())
 
@@ -71,7 +69,7 @@ test.suite(
         await driver.onLogException(cdpConnection, function (event) {
           assert.strictEqual(
             event['exceptionDetails']['stackTrace']['callFrames'][0][
-            'functionName'
+              'functionName'
             ],
             'onmouseover'
           )
@@ -101,14 +99,16 @@ test.suite(
     })
 
     describe('Basic Auth Injection', function () {
-
       it('denies entry if username and password do not match', async function () {
         const pageCdpConnection = await driver.createCDPConnection('page')
 
         await driver.register('random', 'random', pageCdpConnection)
         await driver.get(fileServer.Pages.basicAuth)
         let source = await driver.getPageSource()
-        assert.ok(!source.includes('Access granted!'), `The Source is \n ${source}`)
+        assert.ok(
+          !source.includes('Access granted!'),
+          `The Source is \n ${source}`
+        )
       })
 
       it('grants access if username and password are a match', async function () {

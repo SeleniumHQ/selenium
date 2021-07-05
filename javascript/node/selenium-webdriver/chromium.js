@@ -557,13 +557,12 @@ class Options extends Capabilities {
    * @return {!Options} A self reference.
    */
   windowTypes(...args) {
-    let windowTypes = (this.options_.windowTypes || []).concat(...args);
+    let windowTypes = (this.options_.windowTypes || []).concat(...args)
     if (windowTypes.length) {
-      this.options_.windowTypes = windowTypes;
+      this.options_.windowTypes = windowTypes
     }
-    return this;
+    return this
   }
-
 
   /**
    * Converts this instance to its JSON wire protocol representation. Note this
@@ -581,7 +580,7 @@ class Options extends Capabilities {
           return extension.toString('base64')
         }
         return io
-          .read(/** @type {string} */(extension))
+          .read(/** @type {string} */ (extension))
           .then((buffer) => buffer.toString('base64'))
       })
     }
@@ -634,7 +633,7 @@ class Driver extends webdriver.WebDriver {
    * implementation.
    * @override
    */
-  setFileDetector() { }
+  setFileDetector() {}
 
   /**
    * Schedules a command to launch Chrome App with given ID.

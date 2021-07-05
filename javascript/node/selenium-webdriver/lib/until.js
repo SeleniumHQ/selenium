@@ -137,14 +137,13 @@ exports.alertIsPresent = function alertIsPresent() {
  * @return {!Condition<boolean>} The new condition.
  */
 exports.titleIs = function titleIs(title) {
-  return new Condition(
-    'for title to be ' + JSON.stringify(title),
-    function (driver) {
-      return driver.getTitle().then(function (t) {
-        return t === title
-      })
-    }
-  )
+  return new Condition('for title to be ' + JSON.stringify(title), function (
+    driver
+  ) {
+    return driver.getTitle().then(function (t) {
+      return t === title
+    })
+  })
 }
 
 /**
@@ -189,14 +188,13 @@ exports.titleMatches = function titleMatches(regex) {
  * @return {!Condition<boolean>} The new condition.
  */
 exports.urlIs = function urlIs(url) {
-  return new Condition(
-    'for URL to be ' + JSON.stringify(url),
-    function (driver) {
-      return driver.getCurrentUrl().then(function (u) {
-        return u === url
-      })
-    }
-  )
+  return new Condition('for URL to be ' + JSON.stringify(url), function (
+    driver
+  ) {
+    return driver.getCurrentUrl().then(function (u) {
+      return u === url
+    })
+  })
 }
 
 /**

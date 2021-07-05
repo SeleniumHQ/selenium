@@ -131,6 +131,71 @@ describe('HttpClient', function () {
         request.headers.get('Accept'),
         'application/json; charset=utf-8'
       )
+      assert.strictEqual(agent.keepAlive, false)
+    })
+  })
+
+  it('can send a basic HTTP request with custom user-agent via client_options', function () {
+    const request = new HttpRequest('GET', '/echo')
+    request.headers.set('Foo', 'Bar')
+
+    const agent = new http.Agent()
+    agent.maxSockets = 1 // Only making 1 request.
+
+    const client = new HttpClient(server.url(), agent, null, {
+      'user-agent': 'test',
+      'keep-alive': 'false',
+    })
+
+    return client.send(request).then(function (response) {
+      assert.strictEqual(200, response.status)
+
+      const headers = JSON.parse(response.body)
+      assert.strictEqual(headers['content-length'], '0')
+      assert.strictEqual(headers['connection'], 'keep-alive')
+      assert.strictEqual(headers['host'], server.host())
+      assert.strictEqual(headers['user-agent'], 'test')
+
+      assert.strictEqual(request.headers.get('Foo'), 'Bar')
+      assert.strictEqual(agent.keepAlive, false)
+      assert.strictEqual(
+        request.headers.get('Accept'),
+        'application/json; charset=utf-8'
+      )
+    })
+  })
+
+  it('can send a basic HTTP request with keep-alive being set to true via client_options', function () {
+    const request = new HttpRequest('GET', '/echo')
+    request.headers.set('Foo', 'Bar')
+
+    const agent = new http.Agent()
+    agent.maxSockets = 1 // Only making 1 request.
+
+    const client = new HttpClient(server.url(), agent, null, {
+      'keep-alive': 'true',
+    })
+
+    return client.send(request).then(function (response) {
+      assert.strictEqual(200, response.status)
+
+      const headers = JSON.parse(response.body)
+      assert.strictEqual(headers['content-length'], '0')
+      assert.strictEqual(headers['connection'], 'keep-alive')
+      assert.strictEqual(headers['host'], server.host())
+
+      const regex = /^selenium\/.* \(js (windows|mac|linux)\)$/
+      assert.ok(
+        regex.test(headers['user-agent']),
+        `${headers['user-agent']} does not match ${regex}`
+      )
+
+      assert.strictEqual(request.headers.get('Foo'), 'Bar')
+      assert.strictEqual(agent.keepAlive, true)
+      assert.strictEqual(
+        request.headers.get('Accept'),
+        'application/json; charset=utf-8'
+      )
     })
   })
 

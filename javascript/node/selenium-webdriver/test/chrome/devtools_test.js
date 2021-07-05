@@ -109,7 +109,7 @@ test.suite(
         await driver.onLogException(cdpConnection, function (event) {
           assert.strictEqual(
             event['exceptionDetails']['stackTrace']['callFrames'][0][
-            'functionName'
+              'functionName'
             ],
             'onmouseover'
           )
@@ -139,7 +139,6 @@ test.suite(
     })
 
     describe('Basic Auth Injection', function () {
-
       it('denies entry if username and password do not match', async function () {
         const pageCdpConnection = await driver.createCDPConnection('page')
 
