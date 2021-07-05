@@ -58,16 +58,27 @@ import java.net.URISyntaxException;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.Callable;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentSkipListSet;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 
+import static java.util.Collections.newSetFromMap;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
 import static org.openqa.selenium.grid.data.Availability.DRAINING;
@@ -370,6 +381,82 @@ public class LocalDistributorTest {
 
     localNode.drain();
     assertThat(localNode.isDraining()).isTrue();
+  }
+
+  @Test
+  public void slowStartingNodesShouldNotCauseReservationsToBeSerialized() {
+    NewSessionQueue queue  = new LocalNewSessionQueue(
+      tracer,
+      bus,
+      new DefaultSlotMatcher(),
+      Duration.ofSeconds(2),
+      Duration.ofSeconds(2),
+      registrationSecret);
+
+    LocalDistributor distributor = new LocalDistributor(
+      tracer,
+      bus,
+      clientFactory,
+      new LocalSessionMap(tracer, bus),
+      queue,
+      new GridModel(bus),
+      new DefaultSlotSelector(),
+      registrationSecret,
+      Duration.ofMinutes(5),
+      false);
+
+    Capabilities caps = new ImmutableCapabilities("browserName", "cheese");
+
+    long delay = 4000;
+    LocalNode node = LocalNode.builder(tracer, bus, uri, uri, registrationSecret)
+      .add(caps, new TestSessionFactory(caps, (id, c) -> {
+        try {
+          Thread.sleep(delay);
+        } catch (InterruptedException e) {
+          e.printStackTrace();
+        }
+        return new Handler(c);
+      }))
+      .build();
+
+    distributor.add(node);
+
+    Set<Future<Either<SessionNotCreatedException, CreateSessionResponse>>> futures =
+      newSetFromMap(new ConcurrentHashMap<>());
+    ExecutorService service = Executors.newFixedThreadPool(2);
+
+    long start = System.currentTimeMillis();
+    futures.add(
+      service.submit(() -> distributor.newSession(new SessionRequest(
+        new RequestId(UUID.randomUUID()),
+        Instant.now(),
+        Set.of(W3C),
+        Set.of(caps),
+        Map.of(),
+        Map.of()))));
+    futures.add(
+      service.submit(() -> distributor.newSession(new SessionRequest(
+        new RequestId(UUID.randomUUID()),
+        Instant.now(),
+        Set.of(W3C),
+        Set.of(caps),
+        Map.of(),
+        Map.of()))));
+
+    futures.forEach(f -> {
+      try {
+        f.get();
+      } catch (InterruptedException e) {
+        fail("Interrupted");
+      } catch (ExecutionException e) {
+        throw new RuntimeException(e);
+      }
+    });
+
+    // If the sessions are created serially, then we expect the first
+    // session to take up to `delay` ms to complete, followed by the
+    // second session.
+    assertThat(System.currentTimeMillis() - start).isLessThan(delay * 2);
   }
 
   private class Handler extends Session implements HttpHandler {
