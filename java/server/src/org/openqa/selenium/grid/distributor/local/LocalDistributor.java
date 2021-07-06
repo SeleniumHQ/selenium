@@ -82,7 +82,9 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
@@ -120,6 +122,15 @@ public class LocalDistributor extends Distributor implements Closeable {
   private final GridModel model;
   private final Map<NodeId, Node> nodes;
 
+  private final Executor sessionCreatorExecutor = Executors.newFixedThreadPool(
+    Runtime.getRuntime().availableProcessors(),
+    r -> {
+      Thread thread = new Thread(r);
+      thread.setName("Local Distributor session creation");
+      thread.setDaemon(true);
+      return thread;
+    }
+  );
   private final NewSessionQueue sessionQueue;
   private final Regularly createNewSession;
 
@@ -163,7 +174,7 @@ public class LocalDistributor extends Distributor implements Closeable {
       Executors.newSingleThreadScheduledExecutor(
         r -> {
           Thread thread = new Thread(r);
-          thread.setName("New Session Queue");
+          thread.setName("Local Distributor new session queue");
           thread.setDaemon(true);
           return thread;
         }));
@@ -549,7 +560,7 @@ public class LocalDistributor extends Distributor implements Closeable {
     createNewSession.shutdown();
   }
 
-  public class NewSessionRunnable implements Runnable {
+  private class NewSessionRunnable implements Runnable {
 
     @Override
     public void run() {
@@ -577,7 +588,7 @@ public class LocalDistributor extends Distributor implements Closeable {
                 .collect(Collectors.toSet());
 
         Optional<SessionRequest> maybeRequest = sessionQueue.getNextAvailable(stereotypes);
-        maybeRequest.ifPresent(this::handleNewSessionRequest);
+        maybeRequest.ifPresent(req -> sessionCreatorExecutor.execute(() -> handleNewSessionRequest(req)));
 
         int currentSize = sessionQueue.getQueueContents().size();
         retry = currentSize != 0 && currentSize != initialSize;
