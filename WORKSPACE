@@ -192,7 +192,6 @@ container_pull(
     repository = "distroless/java",
 )
 
-
 container_pull(
     name = "firefox_standalone",
     # selenium/standalone-firefox-debug:3.141.59
@@ -255,23 +254,24 @@ http_archive(
 
 load(
     "@coinbase_rules_ruby//ruby:deps.bzl",
-    "rules_ruby_dependencies",
     "ruby_register_toolchains",
+    "rules_ruby_dependencies",
 )
 
 rules_ruby_dependencies()
+
 ruby_register_toolchains()
 
 load("@coinbase_rules_ruby//ruby:defs.bzl", "rb_bundle")
 
 rb_bundle(
     name = "bundle",
-    bundler_version = "2.1.4",
-    gemfile = "//:rb/Gemfile",
     srcs = [
         "//:rb/lib/selenium/devtools/version.rb",
         "//:rb/lib/selenium/webdriver/version.rb",
         "//:rb/selenium-devtools.gemspec",
         "//:rb/selenium-webdriver.gemspec",
-    ]
+    ],
+    bundler_version = "2.1.4",
+    gemfile = "//:rb/Gemfile",
 )

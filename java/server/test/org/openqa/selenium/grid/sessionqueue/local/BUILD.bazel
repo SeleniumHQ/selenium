@@ -12,8 +12,8 @@ java_test_suite(
     deps = [
         "//java/client/src/org/openqa/selenium/json",
         "//java/client/src/org/openqa/selenium/remote",
-        "//java/client/test/org/openqa/selenium/remote/tracing:tracing-support",
         "//java/client/src/org/openqa/selenium/support",
+        "//java/client/test/org/openqa/selenium/remote/tracing:tracing-support",
         "//java/client/test/org/openqa/selenium/testing:test-base",
         "//java/server/src/org/openqa/selenium/events",
         "//java/server/src/org/openqa/selenium/events/local",
