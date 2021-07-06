@@ -39,7 +39,7 @@ import java.util.logging.Logger;
 
 import static java.util.Collections.emptyList;
 import static java.util.stream.Collectors.toList;
-import static org.openqa.selenium.build.Debug.isDebug;
+import static org.openqa.selenium.internal.Debug.isDebugging;
 
 public class CaptureLoggingRule implements TestRule {
   @Override
@@ -71,7 +71,7 @@ public class CaptureLoggingRule implements TestRule {
     }
 
     private List<Handler> beginLogCapture() {
-      if (isDebug()) {
+      if (isDebugging()) {
         return emptyList();
       }
 
@@ -92,7 +92,7 @@ public class CaptureLoggingRule implements TestRule {
     }
 
     private void writeCapturedLogs() {
-      if (isDebug()) {
+      if (isDebugging()) {
         return;
       }
 
@@ -104,7 +104,7 @@ public class CaptureLoggingRule implements TestRule {
     }
 
     private void endLogCapture(List<Handler> handlers) {
-      if (isDebug()) {
+      if (isDebugging()) {
         return;
       }
 
