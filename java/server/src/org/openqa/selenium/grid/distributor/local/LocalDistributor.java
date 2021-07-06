@@ -58,6 +58,7 @@ import org.openqa.selenium.grid.sessionmap.SessionMap;
 import org.openqa.selenium.grid.sessionmap.config.SessionMapOptions;
 import org.openqa.selenium.grid.sessionqueue.NewSessionQueue;
 import org.openqa.selenium.grid.sessionqueue.config.NewSessionQueueOptions;
+import org.openqa.selenium.internal.Debug;
 import org.openqa.selenium.internal.Either;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.SessionId;
@@ -249,8 +250,6 @@ public class LocalDistributor extends Distributor implements Closeable {
   public LocalDistributor add(Node node) {
     Require.nonNull("Node", node);
 
-    LOG.info(String.format("Added node %s at %s.", node.getId(), node.getUri()));
-
     nodes.put(node.getId(), node);
     model.add(node.getStatus());
 
@@ -258,6 +257,12 @@ public class LocalDistributor extends Distributor implements Closeable {
     Runnable runnableHealthCheck = asRunnableHealthCheck(node);
     allChecks.put(node.getId(), runnableHealthCheck);
     hostChecker.submit(runnableHealthCheck, healthcheckInterval, Duration.ofSeconds(30));
+
+    LOG.info(String.format(
+      "Added node %s at %s. Health check every %ss",
+      node.getId(),
+      node.getUri(),
+      healthcheckInterval.toMillis() / 1000));
 
     bus.fire(new NodeAddedEvent(node.getId()));
 
@@ -268,6 +273,8 @@ public class LocalDistributor extends Distributor implements Closeable {
     HealthCheck healthCheck = node.getHealthCheck();
     NodeId id = node.getId();
     return () -> {
+      LOG.log(getDebugLogLevel(), "Running health check for " + node.getId());
+
       HealthCheck.Result result;
       try {
         result = healthCheck.check();
@@ -279,6 +286,9 @@ public class LocalDistributor extends Distributor implements Closeable {
       Lock writeLock = lock.writeLock();
       writeLock.lock();
       try {
+        LOG.log(
+          getDebugLogLevel(),
+          String.format("Health check result for %s was %s", node.getId(), result.getAvailability()));
         model.setAvailability(id, result.getAvailability());
       } finally {
         writeLock.unlock();
