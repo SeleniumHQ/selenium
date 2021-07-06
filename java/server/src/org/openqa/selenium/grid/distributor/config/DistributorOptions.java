@@ -104,14 +104,6 @@ public class DistributorOptions {
       DEFAULT_DISTRIBUTOR_IMPLEMENTATION);
   }
 
-  public GridModel getGridModel() {
-    return config.getClass(
-      DISTRIBUTOR_SECTION,
-      "grid-model",
-      GridModel.class,
-      DEFAULT_GRID_MODEL_IMPLEMENTATION);
-  }
-
   public SlotMatcher getSlotMatcher() {
     return config.getClass(
       DISTRIBUTOR_SECTION,

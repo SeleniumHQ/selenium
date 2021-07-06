@@ -18,7 +18,6 @@
 package org.openqa.selenium.grid.distributor.local;
 
 import com.google.common.collect.ImmutableSet;
-
 import org.openqa.selenium.Beta;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
@@ -84,7 +83,6 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
-import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
@@ -142,7 +140,6 @@ public class LocalDistributor extends Distributor implements Closeable {
     HttpClient.Factory clientFactory,
     SessionMap sessions,
     NewSessionQueue sessionQueue,
-    GridModel model,
     SlotSelector slotSelector,
     Secret registrationSecret,
     Duration healthcheckInterval,
@@ -156,7 +153,7 @@ public class LocalDistributor extends Distributor implements Closeable {
     this.slotSelector = Require.nonNull("Slot selector", slotSelector);
     this.registrationSecret = Require.nonNull("Registration secret", registrationSecret);
     this.healthcheckInterval = Require.nonNull("Health check interval", healthcheckInterval);
-    this.model = model;
+    this.model = new GridModel(bus);
     this.nodes = new ConcurrentHashMap<>();
     this.rejectUnsupportedCaps = rejectUnsupportedCaps;
 
@@ -201,7 +198,6 @@ public class LocalDistributor extends Distributor implements Closeable {
       clientFactory,
       sessions,
       sessionQueue,
-      distributorOptions.getGridModel(),
       distributorOptions.getSlotSelector(),
       secretOptions.getRegistrationSecret(),
       distributorOptions.getHealthCheckInterval(),
