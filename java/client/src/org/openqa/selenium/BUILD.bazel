@@ -92,8 +92,8 @@ java_import(
         ":manifest-jar",
     ],
     visibility = [
-      "//java/server/src/org/openqa/selenium/grid:__pkg__",
-    ]
+        "//java/server/src/org/openqa/selenium/grid:__pkg__",
+    ],
 )
 
 genrule(
@@ -125,12 +125,12 @@ genrule(
 )
 
 genrule(
-  name = "manifest-entries",
-  outs = [
-      "manifest-entries.jar",
-  ],
-  cmd = select({
-      "//common:stamp": """
+    name = "manifest-entries",
+    outs = [
+        "manifest-entries.jar",
+    ],
+    cmd = select({
+        "//common:stamp": """
       mkdir META-INF &&
       echo Manifest-Version: 1.0 >META-INF/MANIFEST.MF &&
       echo "" >>META-INF/MANIFEST.MF &&
@@ -141,7 +141,7 @@ genrule(
       echo Build-Time: $$(date) >>META-INF/MANIFEST.MF &&
       $(location @bazel_tools//tools/zip:zipper) c $@ META-INF/MANIFEST.MF
       """ % SE_VERSION,
-      "//conditions:default": """
+        "//conditions:default": """
       mkdir META-INF &&
       echo Manifest-Version: 1.0 >META-INF/MANIFEST.MF &&
       echo "" >>META-INF/MANIFEST.MF &&
@@ -152,12 +152,12 @@ genrule(
       echo Build-Time: Wed Jan 3 21:49:10 2007 +0000 >>META-INF/MANIFEST.MF &&
       $(location @bazel_tools//tools/zip:zipper) c $@ META-INF/MANIFEST.MF
       """ % SE_VERSION,
-  }),
-  stamp = select({
-      "//common:stamp": True,
-      "//conditions:default": False,
-  }),
-  tools = [
-      "@bazel_tools//tools/zip:zipper",
-  ],
+    }),
+    stamp = select({
+        "//common:stamp": True,
+        "//conditions:default": False,
+    }),
+    tools = [
+        "@bazel_tools//tools/zip:zipper",
+    ],
 )

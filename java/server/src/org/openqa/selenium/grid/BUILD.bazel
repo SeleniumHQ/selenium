@@ -52,10 +52,10 @@ java_binary(
         "//conditions:default": [],
     }),
     main_class = "org.openqa.selenium.grid.Bootstrap",
-    runtime_deps = [":grid"],
     visibility = [
         "//:__pkg__",
     ],
+    runtime_deps = [":grid"],
 )
 
 BASE_COMMAND_SRCS = [
