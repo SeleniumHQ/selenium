@@ -31,15 +31,14 @@ import org.openqa.selenium.grid.data.NodeStatus;
 import org.openqa.selenium.grid.data.NodeStatusEvent;
 import org.openqa.selenium.grid.data.RequestId;
 import org.openqa.selenium.grid.data.Session;
+import org.openqa.selenium.grid.data.SessionRequest;
 import org.openqa.selenium.grid.distributor.Distributor;
-import org.openqa.selenium.grid.distributor.GridModel;
 import org.openqa.selenium.grid.distributor.selector.DefaultSlotSelector;
 import org.openqa.selenium.grid.node.Node;
 import org.openqa.selenium.grid.node.local.LocalNode;
 import org.openqa.selenium.grid.security.Secret;
 import org.openqa.selenium.grid.sessionmap.local.LocalSessionMap;
 import org.openqa.selenium.grid.sessionqueue.NewSessionQueue;
-import org.openqa.selenium.grid.data.SessionRequest;
 import org.openqa.selenium.grid.sessionqueue.local.LocalNewSessionQueue;
 import org.openqa.selenium.grid.testing.TestSessionFactory;
 import org.openqa.selenium.internal.Either;
@@ -58,25 +57,18 @@ import java.net.URISyntaxException;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.Callable;
-import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentSkipListSet;
-import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import static java.util.Collections.newSetFromMap;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -123,7 +115,6 @@ public class LocalDistributorTest {
       clientFactory,
       new LocalSessionMap(tracer, bus),
       queue,
-      new GridModel(bus),
       new DefaultSlotSelector(),
       registrationSecret,
       Duration.ofMinutes(5),
@@ -157,7 +148,6 @@ public class LocalDistributorTest {
       clientFactory,
       new LocalSessionMap(tracer, bus),
       queue,
-      new GridModel(bus),
       new DefaultSlotSelector(),
       secret,
       Duration.ofMinutes(5),
@@ -185,7 +175,6 @@ public class LocalDistributorTest {
       clientFactory,
       new LocalSessionMap(tracer, bus),
       queue,
-      new GridModel(bus),
       new DefaultSlotSelector(),
       registrationSecret,
       Duration.ofMinutes(5),
@@ -219,7 +208,6 @@ public class LocalDistributorTest {
       clientFactory,
       new LocalSessionMap(tracer, bus),
       queue,
-      new GridModel(bus),
       new DefaultSlotSelector(),
       registrationSecret,
       Duration.ofMinutes(5),
@@ -248,7 +236,6 @@ public class LocalDistributorTest {
       clientFactory,
       new LocalSessionMap(tracer, bus),
       queue,
-      new GridModel(bus),
       new DefaultSlotSelector(),
       registrationSecret,
       Duration.ofMinutes(5),
@@ -331,7 +318,6 @@ public class LocalDistributorTest {
       clientFactory,
       new LocalSessionMap(tracer, bus),
       queue,
-      new GridModel(bus),
       new DefaultSlotSelector(),
       registrationSecret,
       Duration.ofMinutes(5),
@@ -372,7 +358,6 @@ public class LocalDistributorTest {
       clientFactory,
       new LocalSessionMap(tracer, bus),
       queue,
-      new GridModel(bus),
       new DefaultSlotSelector(),
       registrationSecret,
       Duration.ofMinutes(5),
@@ -399,7 +384,6 @@ public class LocalDistributorTest {
       clientFactory,
       new LocalSessionMap(tracer, bus),
       queue,
-      new GridModel(bus),
       new DefaultSlotSelector(),
       registrationSecret,
       Duration.ofMinutes(5),

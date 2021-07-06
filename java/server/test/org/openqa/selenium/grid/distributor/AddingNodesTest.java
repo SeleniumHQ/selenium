@@ -119,7 +119,6 @@ public class AddingNodesTest {
       clientFactory,
       sessions,
       queue,
-      new GridModel(bus),
       new DefaultSlotSelector(),
       registrationSecret,
       Duration.ofMinutes(5),
