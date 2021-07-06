@@ -4,6 +4,10 @@ import linuxLogo from '../assets/operating-systems/linux.svg'
 import unknownOsLogo from '../assets/operating-systems/unknown.svg'
 
 const osLogo = (os: string): string => {
+  if (!os) {
+    return unknownOsLogo
+  }
+
   const osLowerCase: string = os.toLowerCase()
   if (osLowerCase.includes('win')) {
     return windowsLogo
