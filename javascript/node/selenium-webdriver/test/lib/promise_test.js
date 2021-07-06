@@ -60,22 +60,22 @@ describe('promise', function () {
   })
 
   it('isPromise', () => {
-    const v = () => {};
-    const x = new Promise(v, v);
-    const p = createRejectedPromise('reject');
-    const q = Promise.resolve("resolved");
-    assert.equal(true, promise.isPromise(x));
-    assert.equal(true, promise.isPromise(p));
-    assert.equal(true, promise.isPromise(q));
-    assert.equal(false, promise.isPromise(0));
-    assert.equal(false, promise.isPromise(false));
-    assert.equal(false, promise.isPromise(true));
-    assert.equal(false, promise.isPromise(null));
-    assert.equal(false, promise.isPromise(undefined));
-    assert.equal(false, promise.isPromise(''));
-    assert.equal(false, promise.isPromise('promise'));
-    assert.equal(false, promise.isPromise(v));
-  });
+    const v = () => {}
+    const x = new Promise(v, v)
+    const p = createRejectedPromise('reject')
+    const q = Promise.resolve('resolved')
+    assert.equal(true, promise.isPromise(x))
+    assert.equal(true, promise.isPromise(p))
+    assert.equal(true, promise.isPromise(q))
+    assert.equal(false, promise.isPromise(0))
+    assert.equal(false, promise.isPromise(false))
+    assert.equal(false, promise.isPromise(true))
+    assert.equal(false, promise.isPromise(null))
+    assert.equal(false, promise.isPromise(undefined))
+    assert.equal(false, promise.isPromise(''))
+    assert.equal(false, promise.isPromise('promise'))
+    assert.equal(false, promise.isPromise(v))
+  })
 
   function defer() {
     let d = {}

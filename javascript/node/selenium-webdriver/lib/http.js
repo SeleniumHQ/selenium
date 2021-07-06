@@ -490,7 +490,8 @@ function buildRequest(customCommands, w3c, command) {
   }
 }
 
-const CLIENTS = /** !WeakMap<!Executor, !(Client|IThenable<!Client>)> */ new WeakMap()
+const CLIENTS =
+  /** !WeakMap<!Executor, !(Client|IThenable<!Client>)> */ new WeakMap()
 
 /**
  * A command executor that communicates with the server using JSON over HTTP.

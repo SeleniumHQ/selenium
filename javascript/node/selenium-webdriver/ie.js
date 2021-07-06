@@ -478,9 +478,9 @@ class Driver extends webdriver.WebDriver {
     let client = service.start().then((url) => new http.HttpClient(url))
     let executor = new http.Executor(client)
 
-    return /** @type {!Driver} */ (super.createSession(executor, options, () =>
-      service.kill()
-    ))
+    return /** @type {!Driver} */ (
+      super.createSession(executor, options, () => service.kill())
+    )
   }
 
   /**

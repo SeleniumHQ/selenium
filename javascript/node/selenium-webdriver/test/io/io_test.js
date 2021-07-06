@@ -115,7 +115,10 @@ describe('io', function () {
         })
         .then(function (p) {
           assert.strictEqual('sub', path.basename(p))
-          assert.strictEqual('hi', fs.readFileSync(path.join(p, 'foo'), 'utf-8'))
+          assert.strictEqual(
+            'hi',
+            fs.readFileSync(path.join(p, 'foo'), 'utf-8')
+          )
         })
     })
 
@@ -135,9 +138,18 @@ describe('io', function () {
           })
         })
         .then(function (dir) {
-          assert.strictEqual('a', fs.readFileSync(path.join(dir, 'foo'), 'utf-8'))
-          assert.strictEqual('c', fs.readFileSync(path.join(dir, 'baz'), 'utf-8'))
-          assert.strictEqual('e', fs.readFileSync(path.join(dir, 'sub/quot'), 'utf-8'))
+          assert.strictEqual(
+            'a',
+            fs.readFileSync(path.join(dir, 'foo'), 'utf-8')
+          )
+          assert.strictEqual(
+            'c',
+            fs.readFileSync(path.join(dir, 'baz'), 'utf-8')
+          )
+          assert.strictEqual(
+            'e',
+            fs.readFileSync(path.join(dir, 'sub/quot'), 'utf-8')
+          )
 
           assert.ok(!fs.existsSync(path.join(dir, 'bar')))
           assert.ok(!fs.existsSync(path.join(dir, 'sub/quux')))
@@ -164,9 +176,18 @@ describe('io', function () {
           })
         })
         .then(function (dir) {
-          assert.strictEqual('b', fs.readFileSync(path.join(dir, 'bar'), 'utf-8'))
-          assert.strictEqual('c', fs.readFileSync(path.join(dir, 'baz'), 'utf-8'))
-          assert.strictEqual('d', fs.readFileSync(path.join(dir, 'sub/quux'), 'utf-8'))
+          assert.strictEqual(
+            'b',
+            fs.readFileSync(path.join(dir, 'bar'), 'utf-8')
+          )
+          assert.strictEqual(
+            'c',
+            fs.readFileSync(path.join(dir, 'baz'), 'utf-8')
+          )
+          assert.strictEqual(
+            'd',
+            fs.readFileSync(path.join(dir, 'sub/quux'), 'utf-8')
+          )
 
           assert.ok(!fs.existsSync(path.join(dir, 'foo')))
           assert.ok(!fs.existsSync(path.join(dir, 'sub/quot')))

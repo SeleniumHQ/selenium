@@ -109,10 +109,10 @@ class ServiceBuilder extends chromium.ServiceBuilder {
     let exe = opt_exe || locateSynchronously()
     if (!exe) {
       throw Error(
-        `The WebDriver for Edge could not be found on the current PATH. Please download the `+
-        `latest version of ${EDGEDRIVER_CHROMIUM_EXE} from `+
-        `https://developer.microsoft.com/en-us/microsoft-edge/tools/webdriver/ `+
-        `and ensure it can be found on your PATH.`
+        `The WebDriver for Edge could not be found on the current PATH. Please download the ` +
+          `latest version of ${EDGEDRIVER_CHROMIUM_EXE} from ` +
+          `https://developer.microsoft.com/en-us/microsoft-edge/tools/webdriver/ ` +
+          `and ensure it can be found on your PATH.`
       )
     }
     super(exe)
@@ -152,10 +152,9 @@ class Driver extends chromium.Driver {
    */
   static createSession(opt_config, opt_serviceExecutor) {
     let caps = opt_config || new Options()
-    return /** @type {!Driver} */ (super.createSession(
-      caps,
-      opt_serviceExecutor
-    ))
+    return /** @type {!Driver} */ (
+      super.createSession(caps, opt_serviceExecutor)
+    )
   }
 
   /**
@@ -175,7 +174,7 @@ function setDefaultService(service) {
   if (defaultService && defaultService.isRunning()) {
     throw Error(
       'The previously configured EdgeDriver service is still running. ' +
-      'You must shut it down before you may adjust its configuration.'
+        'You must shut it down before you may adjust its configuration.'
     )
   }
   defaultService = service
@@ -193,7 +192,6 @@ function getDefaultService() {
   }
   return defaultService
 }
-
 
 /**
  * _Synchronously_ attempts to locate the chromedriver executable on the current
