@@ -62,6 +62,12 @@ module Selenium
       class StaleElementReferenceError < WebDriverError; end
 
       #
+      # A command failed because the referenced shadow root is no longer attached to the DOM.
+      #
+
+      class DetachedShadowRootError < WebDriverError; end
+
+      #
       # The target element is in an invalid state, rendering it impossible to interact with, for
       # example if you click a disabled element.
       #
@@ -92,6 +98,12 @@ module Selenium
       #
 
       class NoSuchWindowError < WebDriverError; end
+
+      #
+      # The element does not have a shadow root.
+      #
+
+      class NoSuchShadowRootError < WebDriverError; end
 
       #
       # An illegal attempt was made to set a cookie under a different domain than the current page.
