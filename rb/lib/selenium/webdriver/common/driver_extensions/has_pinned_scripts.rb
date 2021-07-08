@@ -22,6 +22,31 @@ module Selenium
     module DriverExtensions
       module HasPinnedScripts
 
+        #
+        # Returns the list of all pinned scripts.
+        #
+        # @return [Array<DevTools::PinnedScript>]
+        #
+
+        def pinned_scripts
+          @pinned_scripts ||= []
+        end
+
+        #
+        # Pins JavaScript snippet that is available during the whole
+        # session on every page. This allows to store and call
+        # scripts without sending them over the wire every time.
+        #
+        # @example
+        #   script = driver.pin_script('return window.location.href')
+        #   driver.execute_script(script)
+        #   # navigate to a new page
+        #   driver.execute_script(script)
+        #
+        # @param [String] script
+        # @return [DevTools::PinnedScript]
+        #
+
         def pin_script(script)
           script = DevTools::PinnedScript.new(script)
           pinned_scripts << script
@@ -34,24 +59,16 @@ module Selenium
           script
         end
 
+        #
+        # Unpins script making it undefined for the subsequent calls.
+        #
+        # @param [DevTools::PinnedScript]
+        #
+
         def unpin_script(script)
           devtools.runtime.evaluate(expression: script.remove)
           devtools.page.remove_script_to_evaluate_on_new_document(identifier: script.devtools_identifier)
           pinned_scripts.delete(script)
-        end
-
-        def pinned_scripts
-          @pinned_scripts ||= []
-        end
-
-        def execute_script(script, *args)
-          script = script.call if script.is_a?(DevTools::PinnedScript)
-          super(script, *args)
-        end
-
-        def execute_async_script(script, *args)
-          script = script.call if script.is_a?(DevTools::PinnedScript)
-          super(script, *args)
         end
 
       end # HasPinnedScripts
