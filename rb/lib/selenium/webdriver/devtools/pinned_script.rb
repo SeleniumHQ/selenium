@@ -29,13 +29,25 @@ module Selenium
           @script = script
         end
 
+        #
+        # @api private
+        #
+
         def callable
           "function __webdriver_#{key}(arguments) { #{script} }"
         end
 
-        def call
-          "return __webdriver_#{key}(arguments)"
+        #
+        # @api private
+        #
+
+        def to_json(*)
+          %{"return __webdriver_#{key}(arguments)"}
         end
+
+        #
+        # @api private
+        #
 
         def remove
           "__webdriver_#{key} = undefined"
