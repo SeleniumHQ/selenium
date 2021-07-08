@@ -37,6 +37,7 @@ module Selenium
                       DriverExtensions::HasAuthentication,
                       DriverExtensions::HasLogs,
                       DriverExtensions::HasLogEvents,
+                      DriverExtensions::HasPinnedScripts,
                       DriverExtensions::PrintsPage].freeze
 
         def browser
