@@ -1,13 +1,13 @@
 load("//java:defs.bzl", "artifact", "java_test_suite")
 
 java_test_suite(
-  name = "small-tests",
-  size = "small",
-  srcs = glob(["*.java"]),
-  deps = [
-    "//java/client/src/org/openqa/selenium/remote/http",
-    "//java/server/src/org/openqa/selenium/grid/security",
-    artifact("junit:junit"),
-    artifact("org.assertj:assertj-core"),
-  ]
+    name = "small-tests",
+    size = "small",
+    srcs = glob(["*.java"]),
+    deps = [
+        "//java/client/src/org/openqa/selenium/remote/http",
+        "//java/server/src/org/openqa/selenium/grid/security",
+        artifact("junit:junit"),
+        artifact("org.assertj:assertj-core"),
+    ],
 )

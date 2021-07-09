@@ -160,7 +160,6 @@ public class Hub extends TemplateGridServerCommand {
       clientFactory,
       sessions,
       queue,
-      distributorOptions.getGridModel(),
       distributorOptions.getSlotSelector(),
       secret,
       distributorOptions.getHealthCheckInterval(),

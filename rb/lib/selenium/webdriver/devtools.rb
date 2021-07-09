@@ -23,6 +23,7 @@ module Selenium
       autoload :ConsoleEvent, 'selenium/webdriver/devtools/console_event'
       autoload :ExceptionEvent, 'selenium/webdriver/devtools/exception_event'
       autoload :MutationEvent, 'selenium/webdriver/devtools/mutation_event'
+      autoload :PinnedScript, 'selenium/webdriver/devtools/pinned_script'
       autoload :Request, 'selenium/webdriver/devtools/request'
 
       def initialize(url:)
