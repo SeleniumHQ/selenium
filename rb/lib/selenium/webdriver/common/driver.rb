@@ -297,7 +297,9 @@ module Selenium
       # @see SearchContext
       #
 
-      def ref; end
+      def ref
+        [:driver, nil]
+      end
 
       private
 

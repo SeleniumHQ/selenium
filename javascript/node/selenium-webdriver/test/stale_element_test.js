@@ -36,7 +36,7 @@ test.suite(function (env) {
     .ignore(env.browsers(Browser.SAFARI))
     .it(
       'dynamically removing elements from the DOM trigger a ' +
-      'StaleElementReferenceError',
+        'StaleElementReferenceError',
       async function () {
         await driver.get(Pages.javascriptPage)
 
@@ -57,8 +57,10 @@ test.suite(function (env) {
     var el = await driver.findElement(By.id('oneline'))
     await driver.switchTo().defaultContent()
     return el.getText().then(assert.fail, function (e) {
-      assert.ok(e instanceof error.StaleElementReferenceError,
-        `The error is ${JSON.stringify(e)}`)
+      assert.ok(
+        e instanceof error.StaleElementReferenceError,
+        `The error is ${JSON.stringify(e)}`
+      )
     })
   })
 })

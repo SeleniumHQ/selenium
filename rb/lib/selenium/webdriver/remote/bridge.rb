@@ -269,7 +269,7 @@ module Selenium
         end
 
         def element_screenshot(element)
-          execute :take_element_screenshot, id: element.ref
+          execute :take_element_screenshot, id: element
         end
 
         #
@@ -431,7 +431,7 @@ module Selenium
         end
 
         def submit_element(element)
-          form = find_element_by('xpath', "./ancestor-or-self::form", element)
+          form = find_element_by('xpath', "./ancestor-or-self::form", [:element, element])
           execute_script("var e = arguments[0].ownerDocument.createEvent('Event');" \
                             "e.initEvent('submit', true, true);" \
                             'if (arguments[0].dispatchEvent(e)) { arguments[0].submit() }', form.as_json)
@@ -451,19 +451,19 @@ module Selenium
         end
 
         def element_dom_attribute(element, name)
-          execute :get_element_attribute, id: element.ref, name: name
+          execute :get_element_attribute, id: element, name: name
         end
 
         def element_property(element, name)
-          execute :get_element_property, id: element.ref, name: name
+          execute :get_element_property, id: element, name: name
         end
 
         def element_aria_role(element)
-          execute :get_element_aria_role, id: element.ref
+          execute :get_element_aria_role, id: element
         end
 
         def element_aria_label(element)
-          execute :get_element_aria_label, id: element.ref
+          execute :get_element_aria_label, id: element
         end
 
         def element_value(element)
@@ -524,13 +524,17 @@ module Selenium
 
         alias_method :switch_to_active_element, :active_element
 
-        def find_element_by(how, what, parent = nil)
+        def find_element_by(how, what, parent_ref = [])
           how, what = convert_locator(how, what)
 
           return execute_atom(:findElements, Support::RelativeLocator.new(what).as_json).first if how == 'relative'
 
-          id = if parent
-                 execute :find_child_element, {id: parent}, {using: how, value: what.to_s}
+          parent_type, parent_id = parent_ref
+          id = case parent_type
+               when :element
+                 execute :find_child_element, {id: parent_id}, {using: how, value: what.to_s}
+               when :shadow_root
+                 execute :find_shadow_child_element, {id: parent_id}, {using: how, value: what.to_s}
                else
                  execute :find_element, {}, {using: how, value: what.to_s}
                end
@@ -538,18 +542,27 @@ module Selenium
           Element.new self, element_id_from(id)
         end
 
-        def find_elements_by(how, what, parent = nil)
+        def find_elements_by(how, what, parent_ref = [])
           how, what = convert_locator(how, what)
 
           return execute_atom :findElements, Support::RelativeLocator.new(what).as_json if how == 'relative'
 
-          ids = if parent
-                  execute :find_child_elements, {id: parent}, {using: how, value: what.to_s}
+          parent_type, parent_id = parent_ref
+          ids = case parent_type
+                when :element
+                  execute :find_child_elements, {id: parent_id}, {using: how, value: what.to_s}
+                when :shadow_root
+                  execute :find_shadow_child_elements, {id: parent_id}, {using: how, value: what.to_s}
                 else
                   execute :find_elements, {}, {using: how, value: what.to_s}
                 end
 
           ids.map { |id| Element.new self, element_id_from(id) }
+        end
+
+        def shadow_root(element)
+          id = execute :get_element_shadow_root, id: element
+          ShadowRoot.new self, shadow_root_id_from(id)
         end
 
         private
@@ -599,7 +612,11 @@ module Selenium
         end
 
         def element_id_from(id)
-          id['ELEMENT'] || id['element-6066-11e4-a52e-4f735466cecf']
+          id['ELEMENT'] || id[Element::ELEMENT_KEY]
+        end
+
+        def shadow_root_id_from(id)
+          id[ShadowRoot::ROOT_KEY]
         end
 
         def prepare_capabilities_payload(capabilities)

@@ -592,3 +592,23 @@ rb_binary(
         "@bundle//:rubocop-rspec",
     ],
 )
+
+rb_binary(
+    name = "console",
+    args = [
+        "-rselenium-webdriver",
+        "-rselenium/devtools",
+    ],
+    includes = ["rb/lib"],
+    main = "@bundle//:bin/pry",
+    deps = [
+        ":bidi",
+        ":chrome",
+        ":common",
+        ":devtools",
+        ":edge",
+        ":firefox",
+        ":ie",
+        ":safari",
+    ],
+)

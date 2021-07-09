@@ -73,7 +73,14 @@ describe('edge.Options', function () {
       assert.strictEqual(options.options_.extensions, undefined)
 
       options.addExtensions(['a', 'b'], 'c', [1, 2], 3)
-      assert.deepStrictEqual(options.options_.extensions, ['a', 'b', 'c', 1, 2, 3])
+      assert.deepStrictEqual(options.options_.extensions, [
+        'a',
+        'b',
+        'c',
+        1,
+        2,
+        3,
+      ])
     })
   })
 
@@ -85,28 +92,32 @@ describe('edge.Options', function () {
         [symbols.serialize]()
 
       assert.strictEqual(wire['ms:edgeOptions'].extensions.length, 1)
-      assert.strictEqual(
-        await wire['ms:edgeOptions'].extensions[0],
-        expected
-      )
+      assert.strictEqual(await wire['ms:edgeOptions'].extensions[0], expected)
     })
   })
 
-  describe('windowTypes', function() {
-    it('takes var_args', function() {
-        let options = new edge.Options();
-        assert.strictEqual(options.options_.windowTypes, undefined);
+  describe('windowTypes', function () {
+    it('takes var_args', function () {
+      let options = new edge.Options()
+      assert.strictEqual(options.options_.windowTypes, undefined)
 
-        options.windowTypes('a', 'b');
-        assert.deepStrictEqual(options.options_.windowTypes, ['a', 'b']);
+      options.windowTypes('a', 'b')
+      assert.deepStrictEqual(options.options_.windowTypes, ['a', 'b'])
     })
 
-    it('flattens input arrays', function() {
-        let options = new edge.Options();
-        assert.strictEqual(options.options_.windowTypes, undefined);
+    it('flattens input arrays', function () {
+      let options = new edge.Options()
+      assert.strictEqual(options.options_.windowTypes, undefined)
 
-        options.windowTypes(['a', 'b'], 'c', [1, 2], 3);
-        assert.deepStrictEqual(options.options_.windowTypes, ['a', 'b', 'c', 1, 2, 3]);
+      options.windowTypes(['a', 'b'], 'c', [1, 2], 3)
+      assert.deepStrictEqual(options.options_.windowTypes, [
+        'a',
+        'b',
+        'c',
+        1,
+        2,
+        3,
+      ])
     })
   })
 })
@@ -134,22 +145,20 @@ test.suite(
       })
 
       it('can start edge with network conditions set', async function () {
-
         driver = await env.builder().build()
         await driver.get(test.Pages.ajaxyPage)
         await driver.setNetworkConditions({
           offline: true,
           latency: 0,
           download_throughput: 0,
-          upload_throughput: 0
-        });
-        assert.deepStrictEqual(await driver.getNetworkConditions(),
-          {
-            download_throughput: 0,
-            latency: 0,
-            offline: true,
-            upload_throughput: 0
-          })
+          upload_throughput: 0,
+        })
+        assert.deepStrictEqual(await driver.getNetworkConditions(), {
+          download_throughput: 0,
+          latency: 0,
+          offline: true,
+          upload_throughput: 0,
+        })
       })
     })
   },

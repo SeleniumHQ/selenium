@@ -35,7 +35,6 @@ import org.openqa.selenium.grid.data.Session;
 import org.openqa.selenium.grid.data.SessionRequest;
 import org.openqa.selenium.grid.data.Slot;
 import org.openqa.selenium.grid.distributor.Distributor;
-import org.openqa.selenium.grid.distributor.GridModel;
 import org.openqa.selenium.grid.distributor.local.LocalDistributor;
 import org.openqa.selenium.grid.distributor.selector.DefaultSlotSelector;
 import org.openqa.selenium.grid.node.ActiveSession;
@@ -131,7 +130,6 @@ public class GraphqlHandlerTest {
       clientFactory,
       sessions,
       queue,
-      new GridModel(events),
       new DefaultSlotSelector(),
       registrationSecret,
       Duration.ofMinutes(5),
@@ -168,9 +166,7 @@ public class GraphqlHandlerTest {
     // Add to the queue in the background
     CountDownLatch latch = new CountDownLatch(1);
     events.addListener(NewSessionRequestEvent.listener(id -> latch.countDown()));
-    new Thread(() -> {
-      queue.addToQueue(request);
-    }).start();
+    new Thread(() -> queue.addToQueue(request)).start();
     try {
       assertThat(latch.await(5, SECONDS)).isTrue();
     } catch (InterruptedException e) {
@@ -180,7 +176,7 @@ public class GraphqlHandlerTest {
   }
 
   @Test
-  public void shouldBeAbleToGetSessionQueueSize() throws URISyntaxException {
+  public void shouldBeAbleToGetSessionQueueSize() {
     SessionRequest request = new SessionRequest(
       new RequestId(UUID.randomUUID()),
       Instant.now(),
@@ -202,7 +198,7 @@ public class GraphqlHandlerTest {
   }
 
   @Test
-  public void shouldBeAbleToGetSessionQueueRequests() throws URISyntaxException {
+  public void shouldBeAbleToGetSessionQueueRequests() {
     SessionRequest request = new SessionRequest(
       new RequestId(UUID.randomUUID()),
       Instant.now(),

@@ -18,7 +18,6 @@
 package org.openqa.selenium.grid.distributor.local;
 
 import com.google.common.collect.ImmutableSet;
-
 import org.openqa.selenium.Beta;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
@@ -59,6 +58,7 @@ import org.openqa.selenium.grid.sessionmap.SessionMap;
 import org.openqa.selenium.grid.sessionmap.config.SessionMapOptions;
 import org.openqa.selenium.grid.sessionqueue.NewSessionQueue;
 import org.openqa.selenium.grid.sessionqueue.config.NewSessionQueueOptions;
+import org.openqa.selenium.internal.Debug;
 import org.openqa.selenium.internal.Either;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.SessionId;
@@ -82,6 +82,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
@@ -120,6 +121,15 @@ public class LocalDistributor extends Distributor implements Closeable {
   private final GridModel model;
   private final Map<NodeId, Node> nodes;
 
+  private final Executor sessionCreatorExecutor = Executors.newFixedThreadPool(
+    Runtime.getRuntime().availableProcessors(),
+    r -> {
+      Thread thread = new Thread(r);
+      thread.setName("Local Distributor session creation");
+      thread.setDaemon(true);
+      return thread;
+    }
+  );
   private final NewSessionQueue sessionQueue;
   private final Regularly createNewSession;
 
@@ -131,7 +141,6 @@ public class LocalDistributor extends Distributor implements Closeable {
     HttpClient.Factory clientFactory,
     SessionMap sessions,
     NewSessionQueue sessionQueue,
-    GridModel model,
     SlotSelector slotSelector,
     Secret registrationSecret,
     Duration healthcheckInterval,
@@ -145,7 +154,7 @@ public class LocalDistributor extends Distributor implements Closeable {
     this.slotSelector = Require.nonNull("Slot selector", slotSelector);
     this.registrationSecret = Require.nonNull("Registration secret", registrationSecret);
     this.healthcheckInterval = Require.nonNull("Health check interval", healthcheckInterval);
-    this.model = model;
+    this.model = new GridModel(bus);
     this.nodes = new ConcurrentHashMap<>();
     this.rejectUnsupportedCaps = rejectUnsupportedCaps;
 
@@ -163,7 +172,7 @@ public class LocalDistributor extends Distributor implements Closeable {
       Executors.newSingleThreadScheduledExecutor(
         r -> {
           Thread thread = new Thread(r);
-          thread.setName("New Session Queue");
+          thread.setName("Local Distributor new session queue");
           thread.setDaemon(true);
           return thread;
         }));
@@ -190,7 +199,6 @@ public class LocalDistributor extends Distributor implements Closeable {
       clientFactory,
       sessions,
       sessionQueue,
-      distributorOptions.getGridModel(),
       distributorOptions.getSlotSelector(),
       secretOptions.getRegistrationSecret(),
       distributorOptions.getHealthCheckInterval(),
@@ -242,8 +250,6 @@ public class LocalDistributor extends Distributor implements Closeable {
   public LocalDistributor add(Node node) {
     Require.nonNull("Node", node);
 
-    LOG.info(String.format("Added node %s at %s.", node.getId(), node.getUri()));
-
     nodes.put(node.getId(), node);
     model.add(node.getStatus());
 
@@ -251,6 +257,12 @@ public class LocalDistributor extends Distributor implements Closeable {
     Runnable runnableHealthCheck = asRunnableHealthCheck(node);
     allChecks.put(node.getId(), runnableHealthCheck);
     hostChecker.submit(runnableHealthCheck, healthcheckInterval, Duration.ofSeconds(30));
+
+    LOG.info(String.format(
+      "Added node %s at %s. Health check every %ss",
+      node.getId(),
+      node.getUri(),
+      healthcheckInterval.toMillis() / 1000));
 
     bus.fire(new NodeAddedEvent(node.getId()));
 
@@ -261,6 +273,8 @@ public class LocalDistributor extends Distributor implements Closeable {
     HealthCheck healthCheck = node.getHealthCheck();
     NodeId id = node.getId();
     return () -> {
+      LOG.log(getDebugLogLevel(), "Running health check for " + node.getId());
+
       HealthCheck.Result result;
       try {
         result = healthCheck.check();
@@ -272,6 +286,9 @@ public class LocalDistributor extends Distributor implements Closeable {
       Lock writeLock = lock.writeLock();
       writeLock.lock();
       try {
+        LOG.log(
+          getDebugLogLevel(),
+          String.format("Health check result for %s was %s", node.getId(), result.getAvailability()));
         model.setAvailability(id, result.getAvailability());
       } finally {
         writeLock.unlock();
@@ -549,7 +566,7 @@ public class LocalDistributor extends Distributor implements Closeable {
     createNewSession.shutdown();
   }
 
-  public class NewSessionRunnable implements Runnable {
+  private class NewSessionRunnable implements Runnable {
 
     @Override
     public void run() {
@@ -577,7 +594,7 @@ public class LocalDistributor extends Distributor implements Closeable {
                 .collect(Collectors.toSet());
 
         Optional<SessionRequest> maybeRequest = sessionQueue.getNextAvailable(stereotypes);
-        maybeRequest.ifPresent(this::handleNewSessionRequest);
+        maybeRequest.ifPresent(req -> sessionCreatorExecutor.execute(() -> handleNewSessionRequest(req)));
 
         int currentSize = sessionQueue.getQueueContents().size();
         retry = currentSize != 0 && currentSize != initialSize;
