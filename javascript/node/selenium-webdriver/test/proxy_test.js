@@ -124,7 +124,12 @@ test.suite(function (env) {
   // Proxy support not implemented.
   test
     .ignore(
-      env.browsers(Browser.CHROME, Browser.INTERNET_EXPLORER, Browser.SAFARI, Browser.FIREFOX)
+      env.browsers(
+        Browser.CHROME,
+        Browser.INTERNET_EXPLORER,
+        Browser.SAFARI,
+        Browser.FIREFOX
+      )
     )
     .describe('manual proxy settings', function () {
       it('can configure HTTP proxy host', async function () {
@@ -175,7 +180,12 @@ test.suite(function (env) {
   // Safari does not support proxies.
   test
     .ignore(
-      env.browsers(Browser.INTERNET_EXPLORER, Browser.SAFARI, Browser.CHROME, Browser.FIREFOX)
+      env.browsers(
+        Browser.INTERNET_EXPLORER,
+        Browser.SAFARI,
+        Browser.CHROME,
+        Browser.FIREFOX
+      )
     )
     .describe('pac proxy settings', function () {
       it('can configure proxy through PAC file', async function () {
