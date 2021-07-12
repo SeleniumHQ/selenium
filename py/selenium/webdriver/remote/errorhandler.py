@@ -138,8 +138,9 @@ class ErrorHandler(object):
                 except ValueError:
                     pass
 
+        exception_class: Type[WebDriverException]
         if status in ErrorCode.NO_SUCH_ELEMENT:
-            exception_class: Type[WebDriverException] = NoSuchElementException
+            exception_class = NoSuchElementException
         elif status in ErrorCode.NO_SUCH_FRAME:
             exception_class = NoSuchFrameException
         elif status in ErrorCode.NO_SUCH_WINDOW:
@@ -207,7 +208,7 @@ class ErrorHandler(object):
         if message == "" and 'message' in value:
             message = value['message']
 
-        screen = None
+        screen = None  # type: ignore[assignment]
         if 'screen' in value:
             screen = value['screen']
 
