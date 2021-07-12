@@ -17,9 +17,6 @@
 
 package org.openqa.selenium.remote.service;
 
-import static java.util.Collections.emptyMap;
-import static java.util.concurrent.TimeUnit.SECONDS;
-
 import com.google.common.collect.ImmutableMap;
 
 import org.openqa.selenium.Beta;
@@ -49,6 +46,9 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.concurrent.locks.ReentrantLock;
 
+import static java.util.Collections.emptyMap;
+import static java.util.concurrent.TimeUnit.SECONDS;
+
 /**
  * Manages the life and death of a native executable driver server.
  *
@@ -59,8 +59,9 @@ import java.util.concurrent.locks.ReentrantLock;
  * used to stop the server.
  */
 public class DriverService implements Closeable {
+
   protected static final Duration DEFAULT_TIMEOUT = Duration.ofSeconds(20);
-  private static final ExecutorService executorService = Executors.newFixedThreadPool(2, r -> {
+  private final ExecutorService executorService = Executors.newFixedThreadPool(2, r -> {
     Thread thread = new Thread(r);
     thread.setName("Driver Service Executor");
     thread.setDaemon(true);
@@ -77,17 +78,15 @@ public class DriverService implements Closeable {
    * Controls access to {@link #process}.
    */
   private final ReentrantLock lock = new ReentrantLock();
-
+  private final String executable;
+  private final Duration timeout;
+  private final List<String> args;
+  private final Map<String, String> environment;
   /**
    * A reference to the current child process. Will be {@code null} whenever this service is not
    * running. Protected by {@link #lock}.
    */
   protected CommandLine process = null;
-
-  private final String executable;
-  private final Duration timeout;
-  private final List<String> args;
-  private final Map<String, String> environment;
   private OutputStream outputStream = System.err;
 
   /**
@@ -112,25 +111,6 @@ public class DriverService implements Closeable {
 
    this.url = getUrl(port);
  }
-
-  protected List<String> getArgs() {
-    return args;
-  }
-
-  protected Map<String, String> getEnvironment() {
-   return environment;
- }
-
-  protected URL getUrl(int port) throws IOException {
-   return new URL(String.format("http://localhost:%d", port));
- }
-
-  /**
-   * @return The base URL for the managed driver server.
-   */
-  public URL getUrl() {
-    return url;
-  }
 
   /**
    *
@@ -165,6 +145,25 @@ public class DriverService implements Closeable {
     Require.stateCondition(exe.canExecute(), "It must be an executable file: %s", exe);
   }
 
+  protected List<String> getArgs() {
+    return args;
+  }
+
+  protected Map<String, String> getEnvironment() {
+   return environment;
+ }
+
+  protected URL getUrl(int port) throws IOException {
+   return new URL(String.format("http://localhost:%d", port));
+ }
+
+  /**
+   * @return The base URL for the managed driver server.
+   */
+  public URL getUrl() {
+    return url;
+  }
+
   /**
    * Checks whether the driver child process is currently running.
    *
@@ -179,12 +178,6 @@ public class DriverService implements Closeable {
     } finally {
       lock.unlock();
     }
-  }
-
-  private enum StartOrDie {
-    SERVER_STARTED,
-    PROCESS_IS_ACTIVE,
-    PROCESS_DIED
   }
 
   /**
@@ -315,6 +308,12 @@ public class DriverService implements Closeable {
   @Override
   public void close() {
     executorService.shutdownNow();
+  }
+
+  private enum StartOrDie {
+    SERVER_STARTED,
+    PROCESS_IS_ACTIVE,
+    PROCESS_DIED
   }
 
   public abstract static class Builder<DS extends DriverService, B extends Builder<?, ?>> {
