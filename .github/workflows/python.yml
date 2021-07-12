@@ -17,7 +17,7 @@ jobs:
       - name: Set up Python 3.7
         uses: actions/setup-python@v2
         with:
-          python-version: 3.7.9
+          python-version: 3.7.10
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
@@ -35,7 +35,7 @@ jobs:
       - name: Set up Python 3.7
         uses: actions/setup-python@v2
         with:
-          python-version: 3.7.9
+          python-version: 3.7.10
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
@@ -64,7 +64,7 @@ jobs:
       - name: Set up Python 3.7
         uses: actions/setup-python@v2
         with:
-          python-version: 3.7.9
+          python-version: 3.7.10
       - name: Setup Java
         uses: actions/setup-java@v1
         with:
@@ -95,7 +95,7 @@ jobs:
       - name: Set up Python 3.7
         uses: actions/setup-python@v2
         with:
-          python-version: 3.7.9
+          python-version: 3.7.10
       - name: Setup Java
         uses: actions/setup-java@v1
         with:
@@ -130,7 +130,7 @@ jobs:
       - name: Set up Python 3.7
         uses: actions/setup-python@v2
         with:
-          python-version: 3.7.9
+          python-version: 3.7.10
       - name: Setup Java
         uses: actions/setup-java@v1
         with:
@@ -167,7 +167,7 @@ jobs:
       - name: Set up Python 3.7
         uses: actions/setup-python@v2
         with:
-          python-version: 3.7.9
+          python-version: 3.7.10
       - name: Setup Java
         uses: actions/setup-java@v1
         with:
