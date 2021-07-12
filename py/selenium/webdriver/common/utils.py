@@ -28,6 +28,7 @@ AnyKey = Union[str, int, float]
 
 _is_connectable_exceptions = (socket.error, ConnectionResetError)
 
+
 def free_port() -> int:
     """
     Determines a free port using sockets.
