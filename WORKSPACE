@@ -127,6 +127,16 @@ http_archive(
     urls = ["https://github.com/bazelbuild/rules_nodejs/releases/download/3.7.0/rules_nodejs-3.7.0.tar.gz"],
 )
 
+load("@build_bazel_rules_nodejs//:index.bzl", "node_repositories")
+
+node_repositories(
+  package_json = [
+    "//:package.json",
+    "//javascript/grid-ui:package.json",
+  ],
+  node_version = "16.4.1",
+)
+
 load("@build_bazel_rules_nodejs//:index.bzl", "npm_install")
 
 npm_install(
