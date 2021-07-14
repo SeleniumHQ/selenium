@@ -154,34 +154,15 @@ public class DistributorTest {
   }
 
   @Test
-  public void shouldStartHeartBeatOnNodeRegistration() {
+  public void shouldStartHeartBeatOnNodeStart() {
     EventBus bus = new GuavaEventBus();
-    LocalSessionMap sessions = new LocalSessionMap(tracer, bus);
-    NewSessionQueue queue = new LocalNewSessionQueue(
-      tracer,
-      bus,
-      new DefaultSlotMatcher(),
-      Duration.ofSeconds(2),
-      Duration.ofSeconds(2),
-      registrationSecret);
+
     LocalNode node = LocalNode.builder(tracer, bus, routableUri, routableUri, registrationSecret)
       .add(
         caps,
         new TestSessionFactory((id, c) -> new Session(id, nodeUri, stereotype, c, Instant.now())))
-      .heartbeatPeriod(Duration.ofSeconds(10))
+      .heartbeatPeriod(Duration.ofSeconds(1))
       .build();
-
-    Distributor distributor = new LocalDistributor(
-      tracer,
-      bus,
-      new PassthroughHttpClient.Factory(node),
-      sessions,
-      queue,
-      new DefaultSlotSelector(),
-      registrationSecret,
-      Duration.ofMinutes(5),
-      false);
-    distributor.add(node);
 
     AtomicBoolean heartbeatStarted = new AtomicBoolean();
     CountDownLatch latch = new CountDownLatch(1);
@@ -192,7 +173,7 @@ public class DistributorTest {
         heartbeatStarted.set(true);
       }
     }));
-    waitToHaveCapacity(distributor);
+
     boolean eventFiredAndListenedTo = false;
     try {
       eventFiredAndListenedTo = latch.await(30, TimeUnit.SECONDS);
@@ -683,14 +664,6 @@ public class DistributorTest {
       .healthCheck(() -> new HealthCheck.Result(DOWN, "Boo!"))
       .build();
     handler.addHandler(alwaysDown);
-    Node alwaysUp = LocalNode.builder(tracer, bus, uri, uri, registrationSecret)
-      .add(
-        caps,
-        new TestSessionFactory((id, c) -> new Session(id, uri, stereotype, c, Instant.now())))
-      .advanced()
-      .healthCheck(() -> new HealthCheck.Result(UP, "Yay!"))
-      .build();
-    handler.addHandler(alwaysUp);
 
     LocalDistributor distributor = new LocalDistributor(
       tracer,
@@ -710,6 +683,15 @@ public class DistributorTest {
     Either<SessionNotCreatedException, CreateSessionResponse> result =
       distributor.newSession(createRequest(caps));
     assertThatEither(result).isLeft();
+
+    Node alwaysUp = LocalNode.builder(tracer, bus, uri, uri, registrationSecret)
+      .add(
+        caps,
+        new TestSessionFactory((id, c) -> new Session(id, uri, stereotype, c, Instant.now())))
+      .advanced()
+      .healthCheck(() -> new HealthCheck.Result(UP, "Yay!"))
+      .build();
+    handler.addHandler(alwaysUp);
 
     distributor.add(alwaysUp);
     waitToHaveCapacity(distributor);
