@@ -1196,7 +1196,7 @@ public class DistributorTest {
     local = new LocalDistributor(
       tracer,
       bus,
-      new PassthroughHttpClient.Factory(node),
+      new PassthroughHttpClient.Factory(handler),
       sessions,
       queue,
       new DefaultSlotSelector(),
