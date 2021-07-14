@@ -40,10 +40,12 @@ import org.openqa.selenium.grid.security.Secret;
 import org.openqa.selenium.grid.sessionmap.local.LocalSessionMap;
 import org.openqa.selenium.grid.sessionqueue.NewSessionQueue;
 import org.openqa.selenium.grid.sessionqueue.local.LocalNewSessionQueue;
+import org.openqa.selenium.grid.testing.PassthroughHttpClient;
 import org.openqa.selenium.grid.testing.TestSessionFactory;
 import org.openqa.selenium.internal.Either;
 import org.openqa.selenium.remote.HttpSessionId;
 import org.openqa.selenium.remote.SessionId;
+import org.openqa.selenium.remote.http.ClientConfig;
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpRequest;
@@ -82,7 +84,6 @@ public class LocalDistributorTest {
   private final Secret registrationSecret = new Secret("bavarian smoked");
   private Tracer tracer;
   private EventBus bus;
-  private HttpClient.Factory clientFactory;
   private URI uri;
   private Node localNode;
 
@@ -90,7 +91,6 @@ public class LocalDistributorTest {
   public void setUp() throws URISyntaxException {
     tracer = DefaultTestTracer.createTracer();
     bus = new GuavaEventBus();
-    clientFactory = HttpClient.Factory.createDefault();
 
     Capabilities caps = new ImmutableCapabilities("browserName", "cheese");
     uri = new URI("http://localhost:1234");
@@ -112,7 +112,7 @@ public class LocalDistributorTest {
     Distributor distributor = new LocalDistributor(
       tracer,
       bus,
-      clientFactory,
+      new PassthroughHttpClient.Factory(localNode),
       new LocalSessionMap(tracer, bus),
       queue,
       new DefaultSlotSelector(),
@@ -133,34 +133,6 @@ public class LocalDistributorTest {
   }
 
   @Test
-  public void testShouldNotAddNodeWithWrongSecret() {
-    Secret secret = new Secret("my_secret");
-    NewSessionQueue queue  = new LocalNewSessionQueue(
-      tracer,
-      bus,
-      new DefaultSlotMatcher(),
-      Duration.ofSeconds(2),
-      Duration.ofSeconds(2),
-      registrationSecret);
-    Distributor secretDistributor = new LocalDistributor(
-      tracer,
-      bus,
-      clientFactory,
-      new LocalSessionMap(tracer, bus),
-      queue,
-      new DefaultSlotSelector(),
-      secret,
-      Duration.ofMinutes(5),
-      false);
-    bus.fire(new NodeStatusEvent(localNode.getStatus()));
-    DistributorStatus status = secretDistributor.getStatus();
-
-    //Check the size
-    final Set<NodeStatus> nodes = status.getNodes();
-    assertThat(nodes.size()).isEqualTo(0);
-  }
-
-  @Test
   public void testRemoveNodeFromDistributor() {
     NewSessionQueue queue  = new LocalNewSessionQueue(
       tracer,
@@ -172,7 +144,7 @@ public class LocalDistributorTest {
     Distributor distributor = new LocalDistributor(
       tracer,
       bus,
-      clientFactory,
+      new PassthroughHttpClient.Factory(localNode),
       new LocalSessionMap(tracer, bus),
       queue,
       new DefaultSlotSelector(),
@@ -205,7 +177,7 @@ public class LocalDistributorTest {
     Distributor distributor = new LocalDistributor(
       tracer,
       bus,
-      clientFactory,
+      new PassthroughHttpClient.Factory(localNode),
       new LocalSessionMap(tracer, bus),
       queue,
       new DefaultSlotSelector(),
@@ -230,16 +202,7 @@ public class LocalDistributorTest {
       Duration.ofSeconds(2),
       Duration.ofSeconds(2),
       registrationSecret);
-    LocalDistributor distributor = new LocalDistributor(
-      tracer,
-      bus,
-      clientFactory,
-      new LocalSessionMap(tracer, bus),
-      queue,
-      new DefaultSlotSelector(),
-      registrationSecret,
-      Duration.ofMinutes(5),
-      false);
+
 
     // Add one node to ensure that everything is created in that.
     Capabilities caps = new ImmutableCapabilities("browserName", "cheese");
@@ -264,6 +227,18 @@ public class LocalDistributorTest {
       .add(caps, new TestSessionFactory(VerifyingHandler::new))
       .maximumConcurrentSessions(3)
       .build();
+
+    LocalDistributor distributor = new LocalDistributor(
+      tracer,
+      bus,
+      new PassthroughHttpClient.Factory(node),
+      new LocalSessionMap(tracer, bus),
+      queue,
+      new DefaultSlotSelector(),
+      registrationSecret,
+      Duration.ofMinutes(5),
+      false);
+
     distributor.add(node);
 
     SessionRequest sessionRequest =
@@ -315,7 +290,7 @@ public class LocalDistributorTest {
     Distributor distributor = new LocalDistributor(
       tracer,
       bus,
-      clientFactory,
+      new PassthroughHttpClient.Factory(localNode),
       new LocalSessionMap(tracer, bus),
       queue,
       new DefaultSlotSelector(),
@@ -355,7 +330,7 @@ public class LocalDistributorTest {
     Distributor distributor = new LocalDistributor(
       tracer,
       bus,
-      clientFactory,
+      new PassthroughHttpClient.Factory(localNode),
       new LocalSessionMap(tracer, bus),
       queue,
       new DefaultSlotSelector(),
@@ -381,7 +356,7 @@ public class LocalDistributorTest {
     LocalDistributor distributor = new LocalDistributor(
       tracer,
       bus,
-      clientFactory,
+      new PassthroughHttpClient.Factory(localNode),
       new LocalSessionMap(tracer, bus),
       queue,
       new DefaultSlotSelector(),
