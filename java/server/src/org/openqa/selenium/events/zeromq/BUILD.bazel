@@ -8,6 +8,7 @@ java_library(
         "//java/server/src/org/openqa/selenium/grid:__subpackages__",
         "//java/server/test/org/openqa/selenium/events:__subpackages__",
         "//java/server/test/org/openqa/selenium/grid/router:__pkg__",
+        "//java/server/test/org/openqa/selenium/grid/distributor:__pkg__",
     ],
     deps = [
         "//java/client/src/org/openqa/selenium:core",
