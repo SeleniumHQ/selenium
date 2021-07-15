@@ -17,10 +17,6 @@
 
 package org.openqa.selenium.remote.http.netty;
 
-import static org.asynchttpclient.Dsl.request;
-import static org.openqa.selenium.remote.http.Contents.empty;
-import static org.openqa.selenium.remote.http.Contents.memoize;
-
 import com.google.common.base.Strings;
 
 import org.asynchttpclient.Dsl;
@@ -35,6 +31,10 @@ import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 
 import java.net.URI;
+
+import static org.asynchttpclient.Dsl.request;
+import static org.openqa.selenium.remote.http.Contents.empty;
+import static org.openqa.selenium.remote.http.Contents.memoize;
 
 class NettyMessages {
 
@@ -59,6 +59,11 @@ class NettyMessages {
       for (String value : request.getQueryParameters(name)) {
         builder.addQueryParam(name, value);
       }
+    }
+
+    // Netty tends to timeout when a GET request has a 'Content-Length' header
+    if (request.getMethod().equals(HttpMethod.GET) && request.getHeader("Content-Length") != null) {
+      request.removeHeader("Content-Length");
     }
 
     for (String name : request.getHeaderNames()) {

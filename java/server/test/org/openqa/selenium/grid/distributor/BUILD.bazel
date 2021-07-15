@@ -17,6 +17,7 @@ java_test_suite(
         "//java/client/test/org/openqa/selenium/remote/tracing:tracing-support",
         "//java/server/src/org/openqa/selenium/events",
         "//java/server/src/org/openqa/selenium/events/local",
+        "//java/server/src/org/openqa/selenium/events/zeromq",
         "//java/server/src/org/openqa/selenium/grid/component",
         "//java/server/src/org/openqa/selenium/grid/data",
         "//java/server/src/org/openqa/selenium/grid/distributor",
@@ -36,5 +37,6 @@ java_test_suite(
         artifact("io.opentelemetry:opentelemetry-api"),
         artifact("junit:junit"),
         artifact("org.assertj:assertj-core"),
+        artifact("org.zeromq:jeromq"),
     ],
 )

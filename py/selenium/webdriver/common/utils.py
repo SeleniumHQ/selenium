@@ -22,11 +22,12 @@ The Utils methods.
 from typing import Iterable, List, Optional, Union
 
 import socket
+from selenium.types import AnyKey
 from selenium.webdriver.common.keys import Keys
 
-AnyKey = Union[str, int, float]
 
 _is_connectable_exceptions = (socket.error, ConnectionResetError)
+
 
 def free_port() -> int:
     """

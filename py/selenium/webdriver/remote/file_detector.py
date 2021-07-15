@@ -18,8 +18,8 @@
 from abc import ABCMeta, abstractmethod
 import os
 from typing import Optional
-from selenium.webdriver.common.utils import keys_to_typing
 from selenium.types import AnyKey
+from selenium.webdriver.common.utils import keys_to_typing
 
 
 class FileDetector(metaclass=ABCMeta):

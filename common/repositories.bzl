@@ -3,40 +3,40 @@ load("//common/private:dmg_archive.bzl", "dmg_archive")
 load("//common/private:drivers.bzl", "local_drivers")
 load("//common/private:pkg_archive.bzl", "pkg_archive")
 
-_edge_version = "90.0.818.66"
+_chromium_version = "871231"  # 91.0.4472.114
+_edge_version = "91.0.864.67"
 
 _versions = {
     # The chrome version number is found by visiting http://omahaproxy.appspot.com,
     # looking for the current stable version for any platform, and using the "lookup"
     # feature to find out "Version information". The "Branch Base Position" gives you
     # the version.
-    # 856583 = 90.0.4427.0
     "chrome": {
         "linux": {
-            "url": "https://storage.googleapis.com/chromium-browser-snapshots/Linux_x64/856583/chrome-linux.zip",
-            "sha256": "cfdb58903416ecfbc862dedaa8e4aa9df2df17f24fc448e01bb5911da22ce5ef",
+            "url": "https://storage.googleapis.com/chromium-browser-snapshots/Linux_x64/%s/chrome-linux.zip" % _chromium_version,
+            "sha256": "1fa063fa7dd8abf08e02dc02403ccffc64634a3d4b6223c4971eb7e7d1ac0615",
         },
         "mac": {
-            "url": "https://storage.googleapis.com/chromium-browser-snapshots/Mac/856583/chrome-mac.zip",
-            "sha256": "89caa2b03b753b798d1f6d034963fc37c926ca87c58403b6aebe0fed91ecbe8a",
+            "url": "https://storage.googleapis.com/chromium-browser-snapshots/Mac/%s/chrome-mac.zip" % _chromium_version,
+            "sha256": "d85a251a32e9a69c9c9a4fd8368f27a78f3823e397ca0e563a40fb2787f2c240",
         },
         "windows": {
-            "url": "https://storage.googleapis.com/chromium-browser-snapshots/Win_x64/856583/chrome-win.zip",
+            "url": "https://storage.googleapis.com/chromium-browser-snapshots/Win_x64/%s/chrome-win.zip" % _chromium_version,
             "sha256": None,
         },
     },
     # Versions found by visiting https://chromedriver.chromium.org/downloads
     "chromedriver": {
         "linux": {
-            "url": "https://chromedriver.storage.googleapis.com/90.0.4430.24/chromedriver_linux64.zip",
-            "sha256": "474e9832e2f592f30d5b3260a17c479e50c46dade2c062316af13da2735fd12f",
+            "url": "https://chromedriver.storage.googleapis.com/91.0.4472.101/chromedriver_linux64.zip",
+            "sha256": "cf064f2a7c0ac3710e1bde24f59dd3c954dd4e9b65e75322f1a065f18b29fd37",
         },
         "mac": {
-            "url": "https://chromedriver.storage.googleapis.com/90.0.4430.24/chromedriver_mac64.zip",
-            "sha256": "1318b3717576154e36476c3253ee8e87a2e09eaf07631ee4948348a8f6a1545f",
+            "url": "https://chromedriver.storage.googleapis.com/91.0.4472.101/chromedriver_mac64.zip",
+            "sha256": "c84c506dc5d45d85c4e4729822ce2fa843741dccdfc3ed2823cad85cab0cce59",
         },
         "windows": {
-            "url": "https://chromedriver.storage.googleapis.com/90.0.4430.24/chromedriver_win32.zip",
+            "url": "https://chromedriver.storage.googleapis.com/91.0.4472.101/chromedriver_win32.zip",
             "sha256": None,
         },
     },
@@ -48,7 +48,7 @@ _versions = {
         },
         "mac": {
             "url": "https://officecdn-microsoft-com.akamaized.net/pr/C1297A47-86C4-4C1F-97FA-950631F94777/MacAutoupdate/MicrosoftEdge-%s.pkg?platform=Mac&Consent=0&channel=Stable" % _edge_version,
-            "sha256": "d1ea256e8824309f557b244919dad2b41a3c72625cc90dee7e833f05d8e2a48d",
+            "sha256": "078bb879499625eb0952d62c0b1990ba858ebeb308653373ba76e5c9afd1a69f",
         },
         "windows": {
             "url": None,
@@ -63,7 +63,7 @@ _versions = {
         },
         "mac": {
             "url": "https://msedgedriver.azureedge.net/%s/edgedriver_mac64.zip" % _edge_version,
-            "sha256": "76258626f980eb0d0384ca99d0af30ed7e9e91c6801e89bf0361205d660c698d",
+            "sha256": "3db26dafd45e2cb46f47f405d6fc5537f9eaac7401093fe8285f4c25ec92e97c",
         },
         "windows": {
             "url": "https://msedgedriver.azureedge.net/%s/edgedriver_win64.zip" % _edge_version,
@@ -73,12 +73,12 @@ _versions = {
     # Versions found by visiting https://ftp.mozilla.org/pub/firefox/releases/
     "firefox": {
         "linux": {
-            "url": "https://ftp.mozilla.org/pub/firefox/releases/88.0/linux-i686/en-US/firefox-88.0.tar.bz2",
-            "sha256": "a6f45b2aac37f917c0e3b8450cce94646f8734215d8f04a896f21cdbca7ba77b",
+            "url": "https://ftp.mozilla.org/pub/firefox/releases/90.0/linux-x86_64/en-US/firefox-90.0.tar.bz2",
+            "sha256": "29fd51b6316d1e589220c2f47e5ff7cdd996cddd450f64ce1dd28ed0e8e4e8fa",
         },
         "mac": {
-            "url": "https://ftp.mozilla.org/pub/firefox/releases/88.0/mac/en-US/Firefox%2088.0.dmg",
-            "sha256": "8e12a1f5db329e349c5e49e448a589b9649cdbda225eae13813b41e8f88f0f33",
+            "url": "https://ftp.mozilla.org/pub/firefox/releases/90.0/mac/en-US/Firefox%2090.0.dmg",
+            "sha256": "dbc08038e2a26017d360bbf366a935084ed0e0914dc50f3e7e419e5b765c8863",
         },
         "windows": {
             "url": None,

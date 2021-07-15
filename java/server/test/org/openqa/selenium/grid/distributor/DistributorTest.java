@@ -20,6 +20,7 @@ package org.openqa.selenium.grid.distributor;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -31,6 +32,7 @@ import org.openqa.selenium.NoSuchSessionException;
 import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.events.EventBus;
 import org.openqa.selenium.events.local.GuavaEventBus;
+import org.openqa.selenium.events.zeromq.ZeroMqEventBus;
 import org.openqa.selenium.grid.data.Availability;
 import org.openqa.selenium.grid.data.CreateSessionRequest;
 import org.openqa.selenium.grid.data.CreateSessionResponse;
@@ -68,8 +70,10 @@ import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.remote.tracing.DefaultTestTracer;
 import org.openqa.selenium.remote.tracing.Tracer;
+import org.openqa.selenium.status.HasReadyState;
 import org.openqa.selenium.support.ui.FluentWait;
 import org.openqa.selenium.support.ui.Wait;
+import org.zeromq.ZContext;
 
 import java.io.UncheckedIOException;
 import java.net.MalformedURLException;
@@ -92,6 +96,7 @@ import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
+import static org.assertj.core.api.Assertions.from;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.openqa.selenium.grid.data.Availability.DOWN;
@@ -110,6 +115,8 @@ public class DistributorTest {
   private Capabilities caps;
   private URI nodeUri;
   private URI routableUri;
+  private LocalSessionMap sessions;
+  private NewSessionQueue queue;
 
   private static <A, B> EitherAssert<A, B> assertThatEither(Either<A, B> either) {
     return new EitherAssert<>(either);
@@ -120,15 +127,33 @@ public class DistributorTest {
     nodeUri = new URI("http://example:5678");
     routableUri = createUri();
     tracer = DefaultTestTracer.createTracer();
-    bus = new GuavaEventBus();
-    LocalSessionMap sessions = new LocalSessionMap(tracer, bus);
-    NewSessionQueue queue = new LocalNewSessionQueue(
+    bus =  ZeroMqEventBus.create(
+      new ZContext(),
+      "tcp://localhost:" + PortProber.findFreePort(),
+      "tcp://localhost:" + PortProber.findFreePort(),
+      true,
+      registrationSecret);
+    sessions = new LocalSessionMap(tracer, bus);
+    queue = new LocalNewSessionQueue(
       tracer,
       bus,
       new DefaultSlotMatcher(),
       Duration.ofSeconds(2),
       Duration.ofSeconds(2),
       registrationSecret);
+
+    stereotype = new ImmutableCapabilities("browserName", "cheese");
+    caps = new ImmutableCapabilities("browserName", "cheese");
+    new FluentWait<>(bus).withTimeout(Duration.ofSeconds(5)).until(HasReadyState::isReady);
+  }
+
+  @After
+  public void cleanUp() {
+    bus.close();
+  }
+
+  @Test
+  public void creatingANewSessionWithoutANodeEndsInFailure() {
     local = new LocalDistributor(
       tracer,
       bus,
@@ -139,45 +164,20 @@ public class DistributorTest {
       registrationSecret,
       Duration.ofMinutes(5),
       false);
-    stereotype = new ImmutableCapabilities("browserName", "cheese");
-    caps = new ImmutableCapabilities("browserName", "cheese");
-  }
-
-  @Test
-  public void creatingANewSessionWithoutANodeEndsInFailure() {
     Either<SessionNotCreatedException, CreateSessionResponse> result = local.newSession(createRequest(caps));
     assertThatEither(result).isLeft();
   }
 
   @Test
-  public void shouldStartHeartBeatOnNodeRegistration() {
+  public void shouldStartHeartBeatOnNodeStart() {
     EventBus bus = new GuavaEventBus();
-    LocalSessionMap sessions = new LocalSessionMap(tracer, bus);
-    NewSessionQueue queue = new LocalNewSessionQueue(
-      tracer,
-      bus,
-      new DefaultSlotMatcher(),
-      Duration.ofSeconds(2),
-      Duration.ofSeconds(2),
-      registrationSecret);
+
     LocalNode node = LocalNode.builder(tracer, bus, routableUri, routableUri, registrationSecret)
       .add(
         caps,
         new TestSessionFactory((id, c) -> new Session(id, nodeUri, stereotype, c, Instant.now())))
-      .heartbeatPeriod(Duration.ofSeconds(10))
+      .heartbeatPeriod(Duration.ofSeconds(1))
       .build();
-
-    Distributor distributor = new LocalDistributor(
-      tracer,
-      bus,
-      new PassthroughHttpClient.Factory(node),
-      sessions,
-      queue,
-      new DefaultSlotSelector(),
-      registrationSecret,
-      Duration.ofMinutes(5),
-      false);
-    distributor.add(node);
 
     AtomicBoolean heartbeatStarted = new AtomicBoolean();
     CountDownLatch latch = new CountDownLatch(1);
@@ -188,7 +188,7 @@ public class DistributorTest {
         heartbeatStarted.set(true);
       }
     }));
-    waitToHaveCapacity(distributor);
+
     boolean eventFiredAndListenedTo = false;
     try {
       eventFiredAndListenedTo = latch.await(30, TimeUnit.SECONDS);
@@ -497,6 +497,8 @@ public class DistributorTest {
 
     latch.await(5, TimeUnit.SECONDS);
 
+    waitTillNodesAreRemoved(distributor);
+
     assertThat(latch.getCount()).isEqualTo(0);
     assertThat(distributor.getStatus().getNodes()).isEmpty();
   }
@@ -508,6 +510,17 @@ public class DistributorTest {
         caps,
         new TestSessionFactory((id, c) -> new Session(id, nodeUri, stereotype, c, Instant.now())))
       .build();
+
+    local = new LocalDistributor(
+      tracer,
+      bus,
+      new PassthroughHttpClient.Factory(node),
+      sessions,
+      queue,
+      new DefaultSlotSelector(),
+      registrationSecret,
+      Duration.ofMinutes(5),
+      false);
 
     local.add(node);
     local.add(node);
@@ -668,14 +681,6 @@ public class DistributorTest {
       .healthCheck(() -> new HealthCheck.Result(DOWN, "Boo!"))
       .build();
     handler.addHandler(alwaysDown);
-    Node alwaysUp = LocalNode.builder(tracer, bus, uri, uri, registrationSecret)
-      .add(
-        caps,
-        new TestSessionFactory((id, c) -> new Session(id, uri, stereotype, c, Instant.now())))
-      .advanced()
-      .healthCheck(() -> new HealthCheck.Result(UP, "Yay!"))
-      .build();
-    handler.addHandler(alwaysUp);
 
     LocalDistributor distributor = new LocalDistributor(
       tracer,
@@ -695,6 +700,15 @@ public class DistributorTest {
     Either<SessionNotCreatedException, CreateSessionResponse> result =
       distributor.newSession(createRequest(caps));
     assertThatEither(result).isLeft();
+
+    Node alwaysUp = LocalNode.builder(tracer, bus, uri, uri, registrationSecret)
+      .add(
+        caps,
+        new TestSessionFactory((id, c) -> new Session(id, uri, stereotype, c, Instant.now())))
+      .advanced()
+      .healthCheck(() -> new HealthCheck.Result(UP, "Yay!"))
+      .build();
+    handler.addHandler(alwaysUp);
 
     distributor.add(alwaysUp);
     waitToHaveCapacity(distributor);
@@ -811,7 +825,7 @@ public class DistributorTest {
       Duration.ofSeconds(2),
       Duration.ofSeconds(2),
       registrationSecret);
-    handler.addHandler(handler);
+    handler.addHandler(sessions);
 
     Distributor distributor = new LocalDistributor(
       tracer,
@@ -927,7 +941,7 @@ public class DistributorTest {
     assertThatEither(result).isRight();
   }
 
-  private Set<Node> createNodeSet(Distributor distributor, int count, Capabilities...capabilities) {
+  private Set<Node> createNodeSet(CombinedHandler handler, Distributor distributor, int count, Capabilities...capabilities) {
     Set<Node> nodeSet = new HashSet<>();
     for (int i=0; i<count; i++) {
       URI uri = createUri();
@@ -938,6 +952,7 @@ public class DistributorTest {
           new TestSessionFactory((id, hostCaps) -> new HandledSession(uri, hostCaps)));
       }
       Node node = builder.build();
+      handler.addHandler(node);
       distributor.add(node);
       nodeSet.add(node);
     }
@@ -973,7 +988,6 @@ public class DistributorTest {
       registrationSecret,
       Duration.ofMinutes(5),
       false);
-    handler.addHandler(distributor);
 
     //Create all three Capability types
     Capabilities edge = new ImmutableCapabilities("browserName", "edge");
@@ -981,14 +995,14 @@ public class DistributorTest {
     Capabilities chrome = new ImmutableCapabilities("browserName", "chrome");
 
     //Store our "expected results" sets for the various browser-specific nodes
-    Set<Node> edgeNodes = createNodeSet(distributor, 3, edge, chrome, firefox);
+    Set<Node> edgeNodes = createNodeSet(handler, distributor, 3, edge, chrome, firefox);
 
     //chromeNodes is all these new nodes PLUS all the Edge nodes from before
-    Set<Node> chromeNodes = createNodeSet(distributor,5, chrome, firefox);
+    Set<Node> chromeNodes = createNodeSet(handler, distributor, 5, chrome, firefox);
     chromeNodes.addAll(edgeNodes);
 
     //all nodes support firefox, so add them to the firefoxNodes set
-    Set<Node> firefoxNodes = createNodeSet(distributor,3, firefox);
+    Set<Node> firefoxNodes = createNodeSet(handler, distributor, 3, firefox);
     firefoxNodes.addAll(edgeNodes);
     firefoxNodes.addAll(chromeNodes);
 
@@ -1011,7 +1025,7 @@ public class DistributorTest {
 
       Either<SessionNotCreatedException, CreateSessionResponse> firefoxResult =
         distributor.newSession(createRequest(firefox));
-      assertThatEither(firefoxResult).isRight();
+       assertThatEither(firefoxResult).isRight();
       Session firefoxSession = firefoxResult.right().getSession();
       LOG.info(String.format("Firefox Session %d assigned to %s", i, chromeSession.getUri()));
 
@@ -1077,6 +1091,17 @@ public class DistributorTest {
       .healthCheck(() -> new HealthCheck.Result(DOWN, "TL;DR"))
       .build();
 
+    local = new LocalDistributor(
+      tracer,
+      bus,
+      new PassthroughHttpClient.Factory(node),
+      sessions,
+      queue,
+      new DefaultSlotSelector(),
+      registrationSecret,
+      Duration.ofMinutes(5),
+      false);
+
     local.add(node);
 
     DistributorStatus status = local.getStatus();
@@ -1098,6 +1123,17 @@ public class DistributorTest {
       .healthCheck(() -> new HealthCheck.Result(DOWN, "TL;DR"))
       .build();
 
+    local = new LocalDistributor(
+      tracer,
+      bus,
+      new PassthroughHttpClient.Factory(node),
+      sessions,
+      queue,
+      new DefaultSlotSelector(),
+      registrationSecret,
+      Duration.ofMinutes(5),
+      false);
+
     local.add(node);
 
     DistributorStatus status = local.getStatus();
@@ -1106,8 +1142,27 @@ public class DistributorTest {
 
   @Test
   public void shouldFallbackToSecondAvailableCapabilitiesIfFirstNotAvailable() {
-    local.add(createNode(new ImmutableCapabilities("browserName", "not cheese"), 1, 1));
-    local.add(createNode(new ImmutableCapabilities("browserName", "cheese"), 1, 0));
+    CombinedHandler handler = new CombinedHandler();
+
+    Node firstNode = createNode(new ImmutableCapabilities("browserName", "not cheese"), 1, 1);
+    Node secondNode =  createNode(new ImmutableCapabilities("browserName", "cheese"), 1, 0);
+
+    handler.addHandler(firstNode);
+    handler.addHandler(secondNode);
+
+    local = new LocalDistributor(
+      tracer,
+      bus,
+      new PassthroughHttpClient.Factory(handler),
+      sessions,
+      queue,
+      new DefaultSlotSelector(),
+      registrationSecret,
+      Duration.ofMinutes(5),
+      false);
+
+    local.add(firstNode);
+    local.add(secondNode);
     waitToHaveCapacity(local);
 
     SessionRequest sessionRequest = new SessionRequest(
@@ -1132,8 +1187,23 @@ public class DistributorTest {
 
   @Test
   public void shouldFallbackToSecondAvailableCapabilitiesIfFirstThrowsOnCreation() {
-    local.add(createBrokenNode(new ImmutableCapabilities("browserName", "not cheese")));
-    local.add(createNode(new ImmutableCapabilities("browserName", "cheese"), 1, 0));
+    CombinedHandler handler = new CombinedHandler();
+    Node brokenNode = createBrokenNode(new ImmutableCapabilities("browserName", "not cheese"));
+    Node node = createNode(new ImmutableCapabilities("browserName", "cheese"), 1, 0);
+    handler.addHandler(brokenNode);
+    handler.addHandler(node);
+    local = new LocalDistributor(
+      tracer,
+      bus,
+      new PassthroughHttpClient.Factory(handler),
+      sessions,
+      queue,
+      new DefaultSlotSelector(),
+      registrationSecret,
+      Duration.ofMinutes(5),
+      false);
+    local.add(brokenNode);
+    local.add(node);
     waitForAllNodesToHaveCapacity(local, 2);
 
     SessionRequest sessionRequest = new SessionRequest(
@@ -1181,6 +1251,15 @@ public class DistributorTest {
       .until(d -> d.getStatus().hasCapacity());
   }
 
+  private void waitTillNodesAreRemoved(Distributor distributor) {
+    new FluentWait<>(distributor)
+      .withTimeout(Duration.ofSeconds(5))
+      .pollingEvery(Duration.ofMillis(100))
+      .until(d -> {
+        Set<NodeStatus> nodes = d.getStatus().getNodes();
+        return nodes.size() == 0; });
+  }
+
   private void waitForAllNodesToHaveCapacity(Distributor distributor, int nodeCount) {
     waitForAllNodesToMeetCondition(distributor, nodeCount, UP);
   }
@@ -1188,7 +1267,7 @@ public class DistributorTest {
   private void waitForAllNodesToMeetCondition(Distributor distributor, int nodeCount,
                                               Availability availability) {
     new FluentWait<>(distributor)
-      .withTimeout(Duration.ofSeconds(5))
+      .withTimeout(Duration.ofSeconds(10))
       .pollingEvery(Duration.ofMillis(100))
       .until(d -> {
         Set<NodeStatus> nodes = d.getStatus().getNodes();
