@@ -44,6 +44,7 @@ import org.openqa.selenium.grid.sessionmap.SessionMap;
 import org.openqa.selenium.grid.sessionmap.local.LocalSessionMap;
 import org.openqa.selenium.grid.sessionqueue.NewSessionQueue;
 import org.openqa.selenium.grid.sessionqueue.local.LocalNewSessionQueue;
+import org.openqa.selenium.grid.testing.PassthroughHttpClient;
 import org.openqa.selenium.grid.testing.TestSessionFactory;
 import org.openqa.selenium.grid.web.CombinedHandler;
 import org.openqa.selenium.grid.web.EnsureSpecCompliantHeaders;
@@ -177,18 +178,6 @@ public class NewSessionCreationTest {
       registrationSecret);
     handler.addHandler(queue);
 
-    Distributor distributor = new LocalDistributor(
-      tracer,
-      events,
-      clientFactory,
-      sessions,
-      queue,
-      new DefaultSlotSelector(),
-      registrationSecret,
-      Duration.ofMinutes(5),
-      false);
-    handler.addHandler(distributor);
-
     AtomicInteger count = new AtomicInteger();
 
     // First session creation attempt throws an error.
@@ -210,6 +199,19 @@ public class NewSessionCreationTest {
     LocalNode localNode = LocalNode.builder(tracer, events, nodeUri, nodeUri, registrationSecret)
       .add(capabilities, sessionFactory).build();
     handler.addHandler(localNode);
+
+    Distributor distributor = new LocalDistributor(
+      tracer,
+      events,
+      new PassthroughHttpClient.Factory(handler),
+      sessions,
+      queue,
+      new DefaultSlotSelector(),
+      registrationSecret,
+      Duration.ofMinutes(5),
+      false);
+    handler.addHandler(distributor);
+
     distributor.add(localNode);
 
     Router router = new Router(tracer, clientFactory, sessions, queue, distributor);
@@ -251,18 +253,6 @@ public class NewSessionCreationTest {
       registrationSecret);
     handler.addHandler(queue);
 
-    Distributor distributor = new LocalDistributor(
-      tracer,
-      events,
-      clientFactory,
-      sessions,
-      queue,
-      new DefaultSlotSelector(),
-      registrationSecret,
-      Duration.ofMinutes(5),
-      true);
-    handler.addHandler(distributor);
-
     TestSessionFactory sessionFactory = new TestSessionFactory((id, caps) ->
       new Session(
         id,
@@ -275,6 +265,19 @@ public class NewSessionCreationTest {
     LocalNode localNode = LocalNode.builder(tracer, events, nodeUri, nodeUri, registrationSecret)
       .add(capabilities, sessionFactory).build();
     handler.addHandler(localNode);
+
+    Distributor distributor = new LocalDistributor(
+      tracer,
+      events,
+      new PassthroughHttpClient.Factory(handler),
+      sessions,
+      queue,
+      new DefaultSlotSelector(),
+      registrationSecret,
+      Duration.ofMinutes(5),
+      true);
+    handler.addHandler(distributor);
+
     distributor.add(localNode);
 
     Router router = new Router(tracer, clientFactory, sessions, queue, distributor);
