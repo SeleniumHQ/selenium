@@ -22,23 +22,24 @@ import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.JsonInput;
 
+import java.io.Serializable;
 import java.time.Instant;
 import java.util.Objects;
 import java.util.Optional;
 
-public class Slot {
+public class Slot implements Serializable {
 
   private final SlotId id;
   private final Capabilities stereotype;
-  private final Optional<Session> session;
+  private final Session session;
   private final Instant lastStarted;
   private final SlotMatcher slotMatcher;
 
-  public Slot(SlotId id, Capabilities stereotype, Instant lastStarted, Optional<Session> session) {
+  public Slot(SlotId id, Capabilities stereotype, Instant lastStarted, Session session) {
     this.id = Require.nonNull("Slot ID", id);
     this.stereotype = ImmutableCapabilities.copyOf(Require.nonNull("Stereotype", stereotype));
     this.lastStarted = Require.nonNull("Last started", lastStarted);
-    this.session = Require.nonNull("Session", session);
+    this.session = session;
     this.slotMatcher = new DefaultSlotMatcher();
   }
 
@@ -54,7 +55,7 @@ public class Slot {
     return lastStarted;
   }
 
-  public Optional<Session> getSession() {
+  public Session getSession() {
     return session;
   }
 
@@ -84,7 +85,7 @@ public class Slot {
     SlotId id = null;
     Capabilities stereotype = null;
     Instant lastStarted = null;
-    Optional<Session> session = Optional.empty();
+    Session session = null;
 
     input.beginObject();
     while (input.hasNext()) {
@@ -99,7 +100,7 @@ public class Slot {
           break;
 
         case "session":
-          session = Optional.ofNullable(input.read(Session.class));
+          session = input.read(Session.class);
           break;
 
         case "stereotype":

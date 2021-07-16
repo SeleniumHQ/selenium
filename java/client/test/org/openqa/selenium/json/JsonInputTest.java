@@ -17,6 +17,7 @@
 
 package org.openqa.selenium.json;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.openqa.selenium.json.Json.MAP_TYPE;
@@ -35,7 +36,13 @@ import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.openqa.selenium.testing.UnitTests;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
 import java.io.StringReader;
+import java.nio.charset.StandardCharsets;
 import java.util.Map;
 import java.util.Random;
 import java.util.stream.Collectors;
@@ -256,6 +263,30 @@ public class JsonInputTest {
       .withMessageStartingWith(String.format(
         "Unterminated string: %s. Last 128 characters read: %s",
         raw, raw.substring(raw.length() - 128)));
+  }
+
+  @Test
+  public void nullInputsShouldCoerceAsNullValues() throws IOException {
+    try (InputStream is = new ByteArrayInputStream(new byte[0]);
+         Reader reader = new InputStreamReader(is, UTF_8);
+         JsonInput input = new Json().newInput(reader)) {
+
+      Object value = input.read(MAP_TYPE);
+
+      assertThat(value).isNull();
+    }
+  }
+
+  @Test
+  public void emptyStringsWithNoJsonValuesComeBackAsNull() throws IOException {
+    try (InputStream is = new ByteArrayInputStream("     ".getBytes(UTF_8));
+         Reader reader = new InputStreamReader(is, UTF_8);
+         JsonInput input = new Json().newInput(reader)) {
+
+      Object value = input.read(String.class);
+
+      assertThat(value).isNull();
+    }
   }
 
   private JsonInput newInput(String raw) {

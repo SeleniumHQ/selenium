@@ -17,16 +17,14 @@
 
 package org.openqa.selenium.remote.http.netty;
 
-import static org.asynchttpclient.Dsl.request;
-import static org.openqa.selenium.remote.http.Contents.empty;
-import static org.openqa.selenium.remote.http.Contents.memoize;
-
 import com.google.common.base.Strings;
 
 import org.asynchttpclient.Dsl;
 import org.asynchttpclient.Request;
 import org.asynchttpclient.RequestBuilder;
 import org.asynchttpclient.Response;
+import org.openqa.selenium.Credentials;
+import org.openqa.selenium.UsernameAndPassword;
 import org.openqa.selenium.remote.http.AddSeleniumUserAgent;
 import org.openqa.selenium.remote.http.HttpMethod;
 import org.openqa.selenium.remote.http.HttpRequest;
@@ -34,14 +32,22 @@ import org.openqa.selenium.remote.http.HttpResponse;
 
 import java.net.URI;
 
+import static org.asynchttpclient.Dsl.request;
+import static org.openqa.selenium.remote.http.Contents.empty;
+import static org.openqa.selenium.remote.http.Contents.memoize;
+
 class NettyMessages {
 
   private NettyMessages() {
     // Utility classes.
   }
 
-  protected static Request toNettyRequest(URI baseUrl, int readTimeout, int requestTimeout,
-                                          HttpRequest request) {
+  protected static Request toNettyRequest(
+    URI baseUrl,
+    int readTimeout,
+    int requestTimeout,
+    Credentials credentials,
+    HttpRequest request) {
 
     String rawUrl = getRawUrl(baseUrl, request.getUri());
 
@@ -53,6 +59,11 @@ class NettyMessages {
       for (String value : request.getQueryParameters(name)) {
         builder.addQueryParam(name, value);
       }
+    }
+
+    // Netty tends to timeout when a GET request has a 'Content-Length' header
+    if (request.getMethod().equals(HttpMethod.GET) && request.getHeader("Content-Length") != null) {
+      request.removeHeader("Content-Length");
     }
 
     for (String name : request.getHeaderNames()) {
@@ -70,7 +81,13 @@ class NettyMessages {
       String user = parts[0];
       String pass = parts.length > 1 ? parts[1] : null;
 
-      builder.setRealm(Dsl.basicAuthRealm(user, pass).setUsePreemptiveAuth(true).build());
+      builder.setRealm(Dsl.basicAuthRealm(user, pass).setUsePreemptiveAuth(true));
+    } else if (credentials != null) {
+      if (!(credentials instanceof UsernameAndPassword)) {
+        throw new IllegalArgumentException("Credentials must be a user name and password");
+      }
+      UsernameAndPassword uap = (UsernameAndPassword) credentials;
+      builder.setRealm(Dsl.basicAuthRealm(uap.username(), uap.password()).setUsePreemptiveAuth(true));
     }
 
     if (request.getMethod().equals(HttpMethod.POST)) {

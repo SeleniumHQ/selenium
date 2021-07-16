@@ -37,14 +37,14 @@ import static java.util.Collections.unmodifiableSet;
 public class NodeStatus {
 
   private final NodeId nodeId;
+
   private final URI externalUri;
   private final int maxSessionCount;
   private final Set<Slot> slots;
   private final Availability availability;
-  private Duration heartbeatPeriod;
+  private final Duration heartbeatPeriod;
   private final String version;
   private final Map<String, String> osInfo;
-  private long touched = System.currentTimeMillis();
 
   public NodeStatus(
     NodeId nodeId,
@@ -69,7 +69,7 @@ public class NodeStatus {
 
   public static NodeStatus fromJson(JsonInput input) {
     NodeId nodeId = null;
-    URI uri = null;
+    URI externalUri = null;
     int maxSessions = 0;
     Set<Slot> slots = null;
     Availability availability = null;
@@ -88,7 +88,7 @@ public class NodeStatus {
           heartbeatPeriod = Duration.ofMillis(input.read(Long.class));
           break;
 
-        case "id":
+        case "nodeId":
           nodeId = input.read(NodeId.class);
           break;
 
@@ -101,8 +101,8 @@ public class NodeStatus {
           }.getType());
           break;
 
-        case "uri":
-          uri = input.read(URI.class);
+        case "externalUri":
+          externalUri = input.read(URI.class);
           break;
 
         case "version":
@@ -122,7 +122,7 @@ public class NodeStatus {
 
     return new NodeStatus(
       nodeId,
-      uri,
+      externalUri,
       maxSessions,
       slots,
       availability,
@@ -136,24 +136,24 @@ public class NodeStatus {
   }
 
   public boolean hasCapacity() {
-    return slots.stream().anyMatch(slot -> !slot.getSession().isPresent());
+    return slots.stream().anyMatch(slot -> slot.getSession() == null);
   }
 
   public boolean hasCapacity(Capabilities caps) {
     return slots.stream()
-      .anyMatch(slot -> !slot.getSession().isPresent() && slot.isSupporting(caps));
-  }
-
-  public NodeId getId() {
-    return nodeId;
-  }
-
-  public URI getUri() {
-    return externalUri;
+      .anyMatch(slot -> slot.getSession() == null && slot.isSupporting(caps));
   }
 
   public int getMaxSessionCount() {
     return maxSessionCount;
+  }
+
+  public NodeId getNodeId() {
+    return nodeId;
+  }
+
+  public URI getExternalUri() {
+    return externalUri;
   }
 
   public Set<Slot> getSlots() {
@@ -162,6 +162,10 @@ public class NodeStatus {
 
   public Availability getAvailability() {
     return availability;
+  }
+
+  public Duration getHeartbeatPeriod() {
+    return heartbeatPeriod;
   }
 
   public String getVersion() {
@@ -174,30 +178,18 @@ public class NodeStatus {
 
   public float getLoad() {
     float inUse = slots.parallelStream()
-      .filter(slot -> slot.getSession().isPresent())
+      .filter(slot -> slot.getSession() != null)
       .count();
 
     return (inUse / (float) maxSessionCount) * 100f;
   }
 
   public long getLastSessionCreated() {
-      return slots.parallelStream()
-        .map(Slot::getLastStarted)
-        .mapToLong(Instant::toEpochMilli)
-        .max()
-        .orElse(0);
-  }
-
-  public Duration heartbeatPeriod() {
-    return heartbeatPeriod;
-  }
-
-  public void touch() {
-    touched = System.currentTimeMillis();
-  }
-
-  public long touched() {
-    return touched;
+    return slots.parallelStream()
+      .map(Slot::getLastStarted)
+      .mapToLong(Instant::toEpochMilli)
+      .max()
+      .orElse(0);
   }
 
   @Override
@@ -208,11 +200,11 @@ public class NodeStatus {
 
     NodeStatus that = (NodeStatus) o;
     return Objects.equals(this.nodeId, that.nodeId) &&
-           Objects.equals(this.externalUri, that.externalUri) &&
-           this.maxSessionCount == that.maxSessionCount &&
-           Objects.equals(this.slots, that.slots) &&
-           Objects.equals(this.availability, that.availability) &&
-           Objects.equals(this.version, that.version);
+      Objects.equals(this.externalUri, that.externalUri) &&
+      this.maxSessionCount == that.maxSessionCount &&
+      Objects.equals(this.slots, that.slots) &&
+      Objects.equals(this.availability, that.availability) &&
+      Objects.equals(this.version, that.version);
   }
 
   @Override
@@ -222,8 +214,8 @@ public class NodeStatus {
 
   private Map<String, Object> toJson() {
     Map<String, Object> toReturn = new TreeMap<>();
-    toReturn.put("id", nodeId);
-    toReturn.put("uri", externalUri);
+    toReturn.put("nodeId", nodeId);
+    toReturn.put("externalUri", externalUri);
     toReturn.put("maxSessions", maxSessionCount);
     toReturn.put("slots", slots);
     toReturn.put("availability", availability);

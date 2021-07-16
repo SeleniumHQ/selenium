@@ -30,6 +30,7 @@ import java.util.Set;
 
 import static org.openqa.selenium.grid.config.StandardGridRoles.DISTRIBUTOR_ROLE;
 import static org.openqa.selenium.grid.distributor.config.DistributorOptions.DEFAULT_DISTRIBUTOR_IMPLEMENTATION;
+import static org.openqa.selenium.grid.distributor.config.DistributorOptions.DEFAULT_GRID_MODEL_IMPLEMENTATION;
 import static org.openqa.selenium.grid.distributor.config.DistributorOptions.DEFAULT_HEALTHCHECK_INTERVAL;
 import static org.openqa.selenium.grid.distributor.config.DistributorOptions.DEFAULT_REJECT_UNSUPPORTED_CAPS;
 import static org.openqa.selenium.grid.distributor.config.DistributorOptions.DEFAULT_SLOT_MATCHER;
@@ -66,6 +67,12 @@ public class DistributorFlags implements HasRoles {
   private String implementation = DEFAULT_DISTRIBUTOR_IMPLEMENTATION;
 
   @Parameter(
+    names = {"--grid-model"},
+    description = "Full classname of non-default grid model. This is used to store states of the all the registered Nodes.")
+  @ConfigValue(section = DISTRIBUTOR_SECTION, name = "grid-model", example = DEFAULT_GRID_MODEL_IMPLEMENTATION)
+  private String gridModel = DEFAULT_GRID_MODEL_IMPLEMENTATION;
+
+  @Parameter(
     names = {"--slot-matcher"},
     description = "Full classname of non-default slot matcher to use. This is used to determine whether a Node can support a particular session.")
   @ConfigValue(section = DISTRIBUTOR_SECTION, name = "slot-matcher", example = DEFAULT_SLOT_MATCHER)
@@ -87,7 +94,7 @@ public class DistributorFlags implements HasRoles {
   @Parameter(description = "Allow the Distributor to reject a request immediately if the Grid does not support the requested capability." +
     "Rejecting requests immediately is suitable for Grid set up that does not spin up Nodes on demand.",
     names = "--reject-unsupported-caps", arity = 1)
-  @ConfigValue(section = DISTRIBUTOR_SECTION, name = "--reject-unsupported-caps", example = "true")
+  @ConfigValue(section = DISTRIBUTOR_SECTION, name = "reject-unsupported-caps", example = "true")
   private boolean rejectUnsupportedCaps = DEFAULT_REJECT_UNSUPPORTED_CAPS;
 
   @Override

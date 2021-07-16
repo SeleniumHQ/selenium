@@ -192,29 +192,27 @@ suite(function (env) {
       }
     )
 
-    ignore(env.browsers(Browser.FIREFOX, Browser.INTERNET_EXPLORER, Browser.SAFARI)).it(
-      'can add same site cookie property to `Strict`',
-      async function () {
-        let cookie = createSameSiteCookieSpec('Strict')
-        let childUrl = fileserver.whereIs('child/childPage.html')
-        await driver.get(childUrl)
-        await driver.manage().addCookie(cookie)
-        const actual = await driver.manage().getCookie(cookie.name)
-        assert.strictEqual(actual.sameSite, 'Strict')
-      }
-    )
+    ignore(
+      env.browsers(Browser.FIREFOX, Browser.INTERNET_EXPLORER, Browser.SAFARI)
+    ).it('can add same site cookie property to `Strict`', async function () {
+      let cookie = createSameSiteCookieSpec('Strict')
+      let childUrl = fileserver.whereIs('child/childPage.html')
+      await driver.get(childUrl)
+      await driver.manage().addCookie(cookie)
+      const actual = await driver.manage().getCookie(cookie.name)
+      assert.strictEqual(actual.sameSite, 'Strict')
+    })
 
-    ignore(env.browsers(Browser.FIREFOX, Browser.INTERNET_EXPLORER, Browser.SAFARI)).it(
-      'can add same site cookie property to `Lax`',
-      async function () {
-        let cookie = createSameSiteCookieSpec('Lax')
-        let childUrl = fileserver.whereIs('child/childPage.html')
-        await driver.get(childUrl)
-        await driver.manage().addCookie(cookie)
-        const actualCookie = await driver.manage().getCookie(cookie.name)
-        assert.strictEqual(actualCookie.sameSite, 'Lax')
-      }
-    )
+    ignore(
+      env.browsers(Browser.FIREFOX, Browser.INTERNET_EXPLORER, Browser.SAFARI)
+    ).it('can add same site cookie property to `Lax`', async function () {
+      let cookie = createSameSiteCookieSpec('Lax')
+      let childUrl = fileserver.whereIs('child/childPage.html')
+      await driver.get(childUrl)
+      await driver.manage().addCookie(cookie)
+      const actualCookie = await driver.manage().getCookie(cookie.name)
+      assert.strictEqual(actualCookie.sameSite, 'Lax')
+    })
 
     ignore(env.browsers(Browser.INTERNET_EXPLORER, Browser.SAFARI)).it(
       'can add same site cookie property to `None` when cookie is Secure',

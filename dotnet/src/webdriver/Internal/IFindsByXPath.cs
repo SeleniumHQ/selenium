@@ -24,7 +24,7 @@ namespace OpenQA.Selenium.Internal
     /// <summary>
     /// Defines the interface through which the user finds elements by XPath.
     /// </summary>
-    [Obsolete("The internal IFindsBy interfaces are being deprecated in favor of common implementation.")]
+    [Obsolete("The internal IFindsBy interfaces are being deprecated in favor of common implementation, and will be removed in the next full release.")]
     public interface IFindsByXPath
     {
         /// <summary>

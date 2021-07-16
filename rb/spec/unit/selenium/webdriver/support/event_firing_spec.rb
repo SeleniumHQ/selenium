@@ -62,20 +62,20 @@ module Selenium
         context 'finding elements' do
           it 'fires events for find_element' do
             expect(listener).to receive(:before_find).with('id', 'foo', instance_of(Driver))
-            allow(bridge).to receive(:find_element_by).with('id', 'foo', nil).and_return(element)
+            allow(bridge).to receive(:find_element_by).with('id', 'foo', [:driver, nil]).and_return(element)
             expect(listener).to receive(:after_find).with('id', 'foo', instance_of(Driver))
 
             driver.find_element(id: 'foo')
-            expect(bridge).to have_received(:find_element_by).with('id', 'foo', nil)
+            expect(bridge).to have_received(:find_element_by).with('id', 'foo', [:driver, nil])
           end
 
           it 'fires events for find_elements' do
             expect(listener).to receive(:before_find).with('class name', 'foo', instance_of(Driver))
-            allow(bridge).to receive(:find_elements_by).with('class name', 'foo', nil).and_return([element])
+            allow(bridge).to receive(:find_elements_by).with('class name', 'foo', [:driver, nil]).and_return([element])
             expect(listener).to receive(:after_find).with('class name', 'foo', instance_of(Driver))
 
             driver.find_elements(class: 'foo')
-            expect(bridge).to have_received(:find_elements_by).with('class name', 'foo', nil)
+            expect(bridge).to have_received(:find_elements_by).with('class name', 'foo', [:driver, nil])
           end
         end
 

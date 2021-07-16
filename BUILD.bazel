@@ -17,6 +17,11 @@ alias(
 )
 
 alias(
+    name = "pinned-grid",
+    actual = "//java/server/src/org/openqa/selenium/grid:pinned-grid",
+)
+
+alias(
     name = "debug-server",
     actual = "//java/client/test/org/openqa/selenium/environment:appserver",
 )

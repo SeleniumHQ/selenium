@@ -38,6 +38,7 @@ import static org.openqa.selenium.grid.node.config.NodeOptions.DEFAULT_MAX_SESSI
 import static org.openqa.selenium.grid.node.config.NodeOptions.DEFAULT_REGISTER_CYCLE;
 import static org.openqa.selenium.grid.node.config.NodeOptions.DEFAULT_REGISTER_PERIOD;
 import static org.openqa.selenium.grid.node.config.NodeOptions.DEFAULT_SESSION_TIMEOUT;
+import static org.openqa.selenium.grid.node.config.NodeOptions.DEFAULT_VNC_ENV_VAR;
 import static org.openqa.selenium.grid.node.config.NodeOptions.NODE_SECTION;
 import static org.openqa.selenium.grid.node.config.NodeOptions.OVERRIDE_MAX_SESSIONS;
 
@@ -154,6 +155,14 @@ public class NodeFlags implements HasRoles {
                   "to inform it that the Node is up.")
   @ConfigValue(section = NODE_SECTION, name = "heartbeat-period", example = "10")
   public int heartbeatPeriod = DEFAULT_HEARTBEAT_PERIOD;
+
+  @Parameter(
+    names = "--vnc-env-var",
+    hidden = true,
+    description = "Environment variable to check in order to determine if a vnc stream is " +
+                  "available or not.")
+  @ConfigValue(section = NODE_SECTION, name = "vnc-env-var", example = "START_XVFB")
+  public String vncEnvVar = DEFAULT_VNC_ENV_VAR;
 
   @Override
   public Set<Role> getRoles() {

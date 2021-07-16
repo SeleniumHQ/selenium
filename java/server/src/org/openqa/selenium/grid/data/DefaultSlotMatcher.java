@@ -19,6 +19,7 @@ package org.openqa.selenium.grid.data;
 
 import org.openqa.selenium.Capabilities;
 
+import java.io.Serializable;
 import java.util.Objects;
 
 /**
@@ -41,7 +42,7 @@ import java.util.Objects;
  * matching slots, since the matching of these is implementation-specific
  * to each driver.
  */
-public class DefaultSlotMatcher implements SlotMatcher {
+public class DefaultSlotMatcher implements SlotMatcher, Serializable {
 
   @Override
   public boolean matches(Capabilities stereotype, Capabilities capabilities) {

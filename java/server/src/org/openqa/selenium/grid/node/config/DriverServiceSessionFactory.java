@@ -67,7 +67,7 @@ public class DriverServiceSessionFactory implements SessionFactory {
   private final Predicate<Capabilities> predicate;
   private final DriverService.Builder<?, ?> builder;
   private final Capabilities stereotype;
-  private final BrowserOptionsMutator browserOptionsMutator;
+  private final SessionCapabilitiesMutator sessionCapabilitiesMutator;
 
   public DriverServiceSessionFactory(
       Tracer tracer,
@@ -80,7 +80,7 @@ public class DriverServiceSessionFactory implements SessionFactory {
     this.stereotype = ImmutableCapabilities.copyOf(Require.nonNull("Stereotype", stereotype));
     this.predicate = Require.nonNull("Accepted capabilities predicate", predicate);
     this.builder = Require.nonNull("Driver service builder", builder);
-    this.browserOptionsMutator = new BrowserOptionsMutator(this.stereotype);
+    this.sessionCapabilitiesMutator = new SessionCapabilitiesMutator(this.stereotype);
   }
 
   @Override
@@ -101,7 +101,8 @@ public class DriverServiceSessionFactory implements SessionFactory {
 
     try (Span span = tracer.getCurrentContext().createSpan("driver_service_factory.apply")) {
 
-      Capabilities capabilities = browserOptionsMutator.apply(sessionRequest.getDesiredCapabilities());
+      Capabilities capabilities = sessionCapabilitiesMutator
+        .apply(sessionRequest.getDesiredCapabilities());
 
       Optional<Platform> platformName = Optional.ofNullable(capabilities.getPlatformName());
       if (platformName.isPresent()) {
@@ -142,14 +143,13 @@ public class DriverServiceSessionFactory implements SessionFactory {
         attributeMap.put(AttributeKey.DRIVER_RESPONSE.getKey(),
                          EventAttribute.setValue(response.toString()));
 
-        // TODO: This is a nasty hack. Try and make it elegant.
-
         Capabilities caps = new ImmutableCapabilities((Map<?, ?>) response.getValue());
         if (platformName.isPresent()) {
           caps = setInitialPlatform(caps, platformName.get());
         }
 
         caps = readDevToolsEndpointAndVersion(caps);
+        caps = readVncEndpoint(capabilities, caps);
 
         span.addEvent("Driver service created session", attributeMap);
         return Either.right(
@@ -214,6 +214,7 @@ public class DriverServiceSessionFactory implements SessionFactory {
       .filter(Optional::isPresent)
       .map(Optional::get)
       .findFirst();
+
     if (maybeInfo.isPresent()) {
       DevToolsInfo info = maybeInfo.get();
       return new PersistentCapabilities(caps)
@@ -221,6 +222,17 @@ public class DriverServiceSessionFactory implements SessionFactory {
         .setCapability("se:cdpVersion", info.version);
     }
     return caps;
+  }
+
+  private Capabilities readVncEndpoint(Capabilities requestedCaps, Capabilities returnedCaps) {
+    String seVncEnabledCap = "se:vncEnabled";
+    String seVncEnabled = String.valueOf(requestedCaps.getCapability(seVncEnabledCap));
+    if (Boolean.parseBoolean(seVncEnabled)) {
+      returnedCaps = new PersistentCapabilities(returnedCaps)
+        .setCapability("se:vncLocalAddress", "ws://localhost:7900/websockify")
+        .setCapability(seVncEnabledCap, true);
+    }
+    return returnedCaps;
   }
 
   // We set the platform to ANY before sending the caps to the driver because some drivers will

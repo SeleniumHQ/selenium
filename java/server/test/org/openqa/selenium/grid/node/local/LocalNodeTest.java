@@ -32,6 +32,7 @@ import org.openqa.selenium.grid.data.CreateSessionRequest;
 import org.openqa.selenium.grid.data.CreateSessionResponse;
 import org.openqa.selenium.grid.data.NodeStatus;
 import org.openqa.selenium.grid.data.Session;
+import org.openqa.selenium.grid.data.Slot;
 import org.openqa.selenium.grid.node.Node;
 import org.openqa.selenium.grid.security.Secret;
 import org.openqa.selenium.grid.testing.EitherAssert;
@@ -159,15 +160,15 @@ public class LocalNodeTest {
   public void canReturnStatusInfo() {
     NodeStatus status = node.getStatus();
     assertThat(status.getSlots().stream()
-      .filter(slot -> slot.getSession().isPresent())
-      .map(slot -> slot.getSession().get())
+      .filter(slot -> slot.getSession()!=null)
+      .map(Slot::getSession)
       .filter(s -> s.getId().equals(session.getId()))).isNotEmpty();
 
     node.stop(session.getId());
     status = node.getStatus();
     assertThat(status.getSlots().stream()
-      .filter(slot -> slot.getSession().isPresent())
-      .map(slot -> slot.getSession().get())
+      .filter(slot -> slot.getSession()!=null)
+      .map(Slot::getSession)
       .filter(s -> s.getId().equals(session.getId()))).isEmpty();
   }
 
@@ -175,14 +176,14 @@ public class LocalNodeTest {
   public void nodeStatusInfoIsImmutable() {
     NodeStatus status = node.getStatus();
     assertThat(status.getSlots().stream()
-      .filter(slot -> slot.getSession().isPresent())
-      .map(slot -> slot.getSession().get())
+      .filter(slot -> slot.getSession()!=null)
+      .map(slot -> slot.getSession())
       .filter(s -> s.getId().equals(session.getId()))).isNotEmpty();
 
     node.stop(session.getId());
     assertThat(status.getSlots().stream()
-      .filter(slot -> slot.getSession().isPresent())
-      .map(slot -> slot.getSession().get())
+      .filter(slot -> slot.getSession()!=null)
+      .map(slot -> slot.getSession())
       .filter(s -> s.getId().equals(session.getId()))).isNotEmpty();
   }
 

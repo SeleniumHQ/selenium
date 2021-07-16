@@ -18,6 +18,7 @@
 package org.openqa.selenium.ie;
 
 import com.google.auto.service.AutoService;
+
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.SessionNotCreatedException;
@@ -45,8 +46,8 @@ public class InternetExplorerDriverInfo implements WebDriverInfo {
 
   @Override
   public boolean isSupporting(Capabilities capabilities) {
-    return BrowserType.IE.equals(capabilities.getBrowserName()) ||
-      capabilities.getCapability("se:ieOptions") != null;
+    return BrowserType.IE.equalsIgnoreCase(capabilities.getBrowserName()) ||
+           capabilities.getCapability("se:ieOptions") != null;
   }
 
   @Override

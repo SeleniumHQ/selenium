@@ -295,6 +295,7 @@ def test_can_return_a_const_in_a_page(driver, pages):
     assert res == "cheese sandwich"
 
 
+@pytest.mark.xfail_remote
 @pytest.mark.xfail_firefox
 def test_can_return_global_const(driver, pages):
     pages.load("const_js.html")

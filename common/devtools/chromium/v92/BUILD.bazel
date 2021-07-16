@@ -1,0 +1,37 @@
+package(
+    default_visibility = [
+        "//dotnet/src/webdriver:__subpackages__",
+        "//java/client/src/org/openqa/selenium/devtools:__subpackages__",
+        "//javascript/node/selenium-webdriver:__pkg__",
+        "//py:__pkg__",
+        "//rb:__pkg__",
+    ],
+)
+
+genrule(
+    name = "browser_protocol",
+    srcs = [
+        "browser_protocol.pdl",
+    ],
+    outs = [
+        "browser_protocol.json",
+    ],
+    cmd = "$(location //common/devtools:pdl_to_json) $(location :browser_protocol.pdl)  --map_binary_to_string=true $@",
+    tools = [
+        "//common/devtools:pdl_to_json",
+    ],
+)
+
+genrule(
+    name = "js_protocol",
+    srcs = [
+        "js_protocol.pdl",
+    ],
+    outs = [
+        "js_protocol.json",
+    ],
+    cmd = "$(location //common/devtools:pdl_to_json) $(location :js_protocol.pdl) --map_binary_to_string=true $@",
+    tools = [
+        "//common/devtools:pdl_to_json",
+    ],
+)

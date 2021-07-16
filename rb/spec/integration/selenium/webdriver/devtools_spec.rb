@@ -22,9 +22,6 @@ require_relative 'spec_helper'
 module Selenium
   module WebDriver
     describe DevTools, exclusive: {browser: %i[chrome edge firefox_nightly]} do
-      let(:username) { SpecSupport::RackServer::TestApp::BASIC_AUTH_CREDENTIALS.first }
-      let(:password) { SpecSupport::RackServer::TestApp::BASIC_AUTH_CREDENTIALS.last }
-
       before(:all) { quit_driver }
 
       after { quit_driver }
@@ -47,6 +44,9 @@ module Selenium
 
       context 'authentication', except: {browser: :firefox_nightly,
                                          reason: 'Fetch.enable is not yet supported'} do
+        let(:username) { SpecSupport::RackServer::TestApp::BASIC_AUTH_CREDENTIALS.first }
+        let(:password) { SpecSupport::RackServer::TestApp::BASIC_AUTH_CREDENTIALS.last }
+
         it 'on any request' do
           driver.register(username: username, password: password)
 
@@ -192,6 +192,49 @@ module Selenium
           driver.find_element(id: 'submitButton').click
           expect(driver.title).to eq('Intercepted!')
           expect(stubbed).not_to be_empty
+        end
+      end
+
+      context 'script pinning' do
+        before do
+          driver.navigate.to url_for('xhtmlTest.html')
+        end
+
+        it 'allows to pin script' do
+          script = driver.pin_script('return document.title;')
+          expect(driver.pinned_scripts).to eq([script])
+          expect(driver.execute_script(script)).to eq('XHTML Test Page')
+        end
+
+        it 'ensures pinned script is available on new pages' do
+          script = driver.pin_script('return document.title;')
+          driver.navigate.to url_for('formPage.html')
+          expect(driver.execute_script(script)).to eq('We Leave From Here')
+        end
+
+        it 'allows to unpin script' do
+          script = driver.pin_script('return document.title;')
+          driver.unpin_script(script)
+          expect(driver.pinned_scripts).to be_empty
+          expect { driver.execute_script(script) }.to raise_error(Error::JavascriptError)
+        end
+
+        it 'ensures unpinned scripts are not available on new pages' do
+          script = driver.pin_script('return document.title;')
+          driver.unpin_script(script)
+          driver.navigate.to url_for('formPage.html')
+          expect { driver.execute_script(script) }.to raise_error(Error::JavascriptError)
+        end
+
+        it 'handles arguments in pinned script' do
+          script = driver.pin_script('return arguments;')
+          element = driver.find_element(id: 'id1')
+          expect(driver.execute_script(script, 1, true, element)).to eq([1, true, element])
+        end
+
+        it 'supports async pinned scripts' do
+          script = driver.pin_script('arguments[0]()')
+          expect { driver.execute_async_script(script) }.not_to raise_error
         end
       end
     end

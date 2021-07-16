@@ -285,15 +285,34 @@ public class DockerSessionFactory implements SessionFactory {
     if (!recordVideoForSession(sessionCapabilities)) {
       return null;
     }
+    int videoPort = 9000;
     Map<String, String> envVars = getVideoContainerEnvVars(
       sessionCapabilities,
       browserContainerIp);
     Map<String, String> volumeBinds = Collections.singletonMap(hostPath, "/videos");
-    Container videoContainer = docker.create(image(videoImage)
-                                               .env(envVars)
-                                               .bind(volumeBinds)
-                                               .network(networkName));
+    ContainerConfig containerConfig = image(videoImage)
+      .env(envVars)
+      .bind(volumeBinds)
+      .network(networkName);
+    if (!runningInDocker) {
+      videoPort = PortProber.findFreePort();
+      containerConfig = containerConfig.map(Port.tcp(9000), Port.tcp(videoPort));
+    }
+    Container videoContainer = docker.create(containerConfig);
     videoContainer.start();
+    String videoContainerIp = runningInDocker ? videoContainer.inspect().getIp() : "localhost";
+    try {
+      URL videoContainerUrl = new URL(String.format("http://%s:%s", videoContainerIp, videoPort));
+      HttpClient videoClient = clientFactory.createClient(videoContainerUrl);
+      LOG.fine(String.format("Waiting for video recording... (id: %s)", videoContainer.getId()));
+      waitForServerToStart(videoClient, Duration.ofMinutes(1));
+    } catch (Exception e) {
+      videoContainer.stop(Duration.ofSeconds(10));
+      String message = String.format(
+        "Unable to verify video recording started (container id: %s), %s", videoContainer.getId(),
+        e.getMessage());
+      LOG.warning(message);
+    }
     LOG.info(String.format("Video container started (id: %s)", videoContainer.getId()));
     return videoContainer;
   }

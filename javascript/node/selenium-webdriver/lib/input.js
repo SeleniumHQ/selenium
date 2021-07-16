@@ -20,14 +20,8 @@
 /**
  * @fileoverview Defines types related to user input with the WebDriver API.
  */
-
-const promise = require('./promise')
 const { Command, Name } = require('./command')
-const {
-  InvalidArgumentError,
-  UnknownCommandError,
-  UnsupportedOperationError,
-} = require('./error')
+const { InvalidArgumentError } = require('./error')
 
 /**
  * Enumeration of the buttons used in the advanced interactions API.
@@ -503,7 +497,6 @@ class Actions {
    *     sequence (see class description for details).
    */
   constructor(executor, { async = false } = {}) {
-
     /** @private @const */
     this.executor_ = executor
 
@@ -882,13 +875,9 @@ class Actions {
       return Promise.resolve()
     }
 
-    try {
-      await this.executor_.execute(
-        new Command(Name.ACTIONS).setParameter('actions', _actions)
-      )
-    } catch (ex) {
-      throw ex
-    }
+    await this.executor_.execute(
+      new Command(Name.ACTIONS).setParameter('actions', _actions)
+    )
   }
 }
 

@@ -17,21 +17,23 @@
 
 package org.openqa.selenium.devtools;
 
+import com.google.common.net.MediaType;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.HasAuthentication;
 import org.openqa.selenium.UsernameAndPassword;
-import org.openqa.selenium.environment.webserver.BasicAuthHandler;
 import org.openqa.selenium.environment.webserver.NettyAppServer;
+import org.openqa.selenium.grid.security.BasicAuthenticationFilter;
+import org.openqa.selenium.remote.http.Contents;
 import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.remote.http.Route;
 import org.openqa.selenium.support.devtools.NetworkInterceptor;
-import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.NotYetImplemented;
 import org.openqa.selenium.testing.drivers.Browser;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assumptions.assumeThat;
 import static org.openqa.selenium.remote.http.Contents.utf8String;
@@ -43,7 +45,12 @@ public class CdpFacadeTest extends DevToolsTestBase {
 
   @BeforeClass
   public static void startServer() {
-    server = new NettyAppServer(new BasicAuthHandler());
+    server = new NettyAppServer(
+      new BasicAuthenticationFilter("test", "test")
+        .andFinally(req ->
+          new HttpResponse()
+            .addHeader("Content-Type", MediaType.HTML_UTF_8.toString())
+            .setContent(Contents.string("<h1>authorized</h1>", UTF_8))));
     server.start();
   }
 

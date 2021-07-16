@@ -27,7 +27,7 @@ import org.openqa.selenium.remote.RemoteWebDriver;
  * A {@link WebDriver} implementation that controls a Chrome browser running on the local machine.
  * It requires a <code>chromedriver</code> executable to be available in PATH.
  *
- * @see <a href="https://sites.google.com/a/chromium.org/chromedriver/">chromedriver</a>
+ * @see <a href="https://sites.google.com/chromium.org/driver/">chromedriver</a>
  */
 public class ChromeDriver extends ChromiumDriver {
 

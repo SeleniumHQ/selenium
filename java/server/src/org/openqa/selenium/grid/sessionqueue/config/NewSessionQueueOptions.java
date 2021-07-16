@@ -39,7 +39,11 @@ public class NewSessionQueueOptions {
 
     Optional<URI> host = config.get(SESSION_QUEUE_SECTION, "host").map(str -> {
       try {
-        return new URI(str);
+        URI sessionQueueUri = new URI(str);
+        if (sessionQueueUri.getHost() == null || sessionQueueUri.getPort() == -1) {
+          throw new ConfigException("Undefined host or port in SessionQueue server URI: " + str);
+        }
+        return sessionQueueUri;
       } catch (URISyntaxException e) {
         throw new ConfigException("Session queue server URI is not a valid URI: " + str);
       }

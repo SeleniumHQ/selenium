@@ -5,6 +5,8 @@ java_library(
     name = "config",
     srcs = glob(["*.java"]),
     visibility = [
+        "//java/client/src/org/openqa/selenium/remote:__pkg__",
+        "//java/client/src/org/openqa/selenium/remote/tracing:__subpackages__",
         "//java/client/test/org/openqa/selenium:__pkg__",
         "//java/client/test/org/openqa/selenium/environment:__pkg__",
         "//java/server/src/org/openqa/selenium/cli:__pkg__",
@@ -12,8 +14,6 @@ java_library(
         "//java/server/src/org/openqa/selenium/grid:__subpackages__",
         "//java/server/src/org/openqa/selenium/netty/server:__pkg__",
         "//java/server/src/org/openqa/selenium/server/htmlrunner:__pkg__",
-        "//java/client/src/org/openqa/selenium/remote:__pkg__",
-        "//java/client/src/org/openqa/selenium/remote/tracing:__subpackages__",
         "//java/server/test/com/thoughtworks/selenium/webdriven:__pkg__",
         "//java/server/test/org/openqa/selenium:__subpackages__",
     ],

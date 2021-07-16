@@ -74,7 +74,7 @@ public class UrlCheckerTest {
     long start = currentTimeMillis();
     urlChecker.waitUntilAvailable(10, TimeUnit.SECONDS, url);
     long elapsed = currentTimeMillis() - start;
-    assertThat(elapsed).isLessThan(UrlChecker.CONNECT_TIMEOUT_MS + 100L); // threshold
+    assertThat(elapsed).isLessThan(UrlChecker.CONNECT_TIMEOUT_MS + 600L); // threshold
   }
 
   @Test
@@ -92,7 +92,7 @@ public class UrlCheckerTest {
     long start = currentTimeMillis();
     urlChecker.waitUntilUnavailable(10, TimeUnit.SECONDS, url);
     long elapsed = currentTimeMillis() - start;
-    assertThat(elapsed).isLessThan(UrlChecker.CONNECT_TIMEOUT_MS + delay + 200L); // threshold
+    assertThat(elapsed).isLessThan(UrlChecker.CONNECT_TIMEOUT_MS + delay + 600L); // threshold
   }
 
   @After

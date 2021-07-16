@@ -32,6 +32,7 @@ import org.openqa.selenium.grid.data.DefaultSlotMatcher;
 import org.openqa.selenium.grid.data.NewSessionRequestEvent;
 import org.openqa.selenium.grid.data.RequestId;
 import org.openqa.selenium.grid.data.Session;
+import org.openqa.selenium.grid.data.SessionRequest;
 import org.openqa.selenium.grid.data.Slot;
 import org.openqa.selenium.grid.distributor.Distributor;
 import org.openqa.selenium.grid.distributor.local.LocalDistributor;
@@ -44,8 +45,8 @@ import org.openqa.selenium.grid.security.Secret;
 import org.openqa.selenium.grid.sessionmap.SessionMap;
 import org.openqa.selenium.grid.sessionmap.local.LocalSessionMap;
 import org.openqa.selenium.grid.sessionqueue.NewSessionQueue;
-import org.openqa.selenium.grid.data.SessionRequest;
 import org.openqa.selenium.grid.sessionqueue.local.LocalNewSessionQueue;
+import org.openqa.selenium.grid.testing.PassthroughHttpClient;
 import org.openqa.selenium.grid.testing.TestSessionFactory;
 import org.openqa.selenium.internal.Either;
 import org.openqa.selenium.json.Json;
@@ -68,7 +69,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import static java.util.Collections.singletonList;
 import static java.util.Collections.singletonMap;
@@ -96,6 +96,7 @@ public class GraphqlHandlerTest {
   private ImmutableCapabilities caps;
   private ImmutableCapabilities stereotype;
   private SessionRequest sessionRequest;
+  private SessionMap sessions;
 
   public GraphqlHandlerTest() throws URISyntaxException {
   }
@@ -106,7 +107,7 @@ public class GraphqlHandlerTest {
     events = new GuavaEventBus();
     HttpClient.Factory clientFactory = HttpClient.Factory.createDefault();
 
-    SessionMap sessions = new LocalSessionMap(tracer, events);
+    sessions = new LocalSessionMap(tracer, events);
     stereotype = new ImmutableCapabilities("browserName", "cheese");
     caps = new ImmutableCapabilities("browserName", "cheese");
     sessionRequest = new SessionRequest(
@@ -167,9 +168,7 @@ public class GraphqlHandlerTest {
     // Add to the queue in the background
     CountDownLatch latch = new CountDownLatch(1);
     events.addListener(NewSessionRequestEvent.listener(id -> latch.countDown()));
-    new Thread(() -> {
-      queue.addToQueue(request);
-    }).start();
+    new Thread(() -> queue.addToQueue(request)).start();
     try {
       assertThat(latch.await(5, SECONDS)).isTrue();
     } catch (InterruptedException e) {
@@ -179,7 +178,7 @@ public class GraphqlHandlerTest {
   }
 
   @Test
-  public void shouldBeAbleToGetSessionQueueSize() throws URISyntaxException {
+  public void shouldBeAbleToGetSessionQueueSize() {
     SessionRequest request = new SessionRequest(
       new RequestId(UUID.randomUUID()),
       Instant.now(),
@@ -201,7 +200,7 @@ public class GraphqlHandlerTest {
   }
 
   @Test
-  public void shouldBeAbleToGetSessionQueueRequests() throws URISyntaxException {
+  public void shouldBeAbleToGetSessionQueueRequests() {
     SessionRequest request = new SessionRequest(
       new RequestId(UUID.randomUUID()),
       Instant.now(),
@@ -295,6 +294,17 @@ public class GraphqlHandlerTest {
         caps,
         Instant.now()))).build();
 
+    distributor = new LocalDistributor(
+      tracer,
+      events,
+      new PassthroughHttpClient.Factory(node),
+      sessions,
+      queue,
+      new DefaultSlotSelector(),
+      registrationSecret,
+      Duration.ofMinutes(5),
+      false);
+
     distributor.add(node);
     wait.until(obj -> distributor.getStatus().hasCapacity());
 
@@ -329,6 +339,17 @@ public class GraphqlHandlerTest {
         stereotype,
         caps,
         Instant.now()))).build();
+
+    distributor = new LocalDistributor(
+      tracer,
+      events,
+      new PassthroughHttpClient.Factory(node),
+      sessions,
+      queue,
+      new DefaultSlotSelector(),
+      registrationSecret,
+      Duration.ofMinutes(5),
+      false);
 
     distributor.add(node);
     wait.until(obj -> distributor.getStatus().hasCapacity());
@@ -385,6 +406,17 @@ public class GraphqlHandlerTest {
         caps,
         Instant.now()))).build();
 
+    distributor = new LocalDistributor(
+      tracer,
+      events,
+      new PassthroughHttpClient.Factory(node),
+      sessions,
+      queue,
+      new DefaultSlotSelector(),
+      registrationSecret,
+      Duration.ofMinutes(5),
+      false);
+
     distributor.add(node);
     wait.until(obj -> distributor.getStatus().hasCapacity());
 
@@ -437,6 +469,17 @@ public class GraphqlHandlerTest {
         stereotype,
         caps,
         Instant.now()))).build();
+
+    distributor = new LocalDistributor(
+      tracer,
+      events,
+      new PassthroughHttpClient.Factory(node),
+      sessions,
+      queue,
+      new DefaultSlotSelector(),
+      registrationSecret,
+      Duration.ofMinutes(5),
+      false);
 
     distributor.add(node);
     wait.until(obj -> distributor.getStatus().hasCapacity());
@@ -496,6 +539,17 @@ public class GraphqlHandlerTest {
         stereotype,
         caps,
         Instant.now()))).build();
+
+    distributor = new LocalDistributor(
+      tracer,
+      events,
+      new PassthroughHttpClient.Factory(node),
+      sessions,
+      queue,
+      new DefaultSlotSelector(),
+      registrationSecret,
+      Duration.ofMinutes(5),
+      false);
 
     distributor.add(node);
     wait.until(obj -> distributor.getStatus().hasCapacity());

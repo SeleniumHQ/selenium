@@ -36,7 +36,6 @@ import org.openqa.selenium.events.EventBus;
 import org.openqa.selenium.grid.data.Availability;
 import org.openqa.selenium.grid.data.CreateSessionRequest;
 import org.openqa.selenium.grid.data.CreateSessionResponse;
-import org.openqa.selenium.grid.data.NodeAddedEvent;
 import org.openqa.selenium.grid.data.NodeDrainComplete;
 import org.openqa.selenium.grid.data.NodeDrainStarted;
 import org.openqa.selenium.grid.data.NodeHeartBeatEvent;
@@ -81,11 +80,9 @@ import java.time.Instant;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
@@ -118,7 +115,6 @@ public class LocalNode extends Node {
   private final Cache<SessionId, TemporaryFilesystem> tempFileSystems;
   private final Regularly regularly;
   private final AtomicInteger pendingSessions = new AtomicInteger();
-  private final AtomicBoolean heartBeatStarted = new AtomicBoolean(false);
 
   private LocalNode(
     Tracer tracer,
@@ -175,16 +171,7 @@ public class LocalNode extends Node {
     this.regularly = new Regularly("Local Node: " + externalUri);
     regularly.submit(currentSessions::cleanUp, Duration.ofSeconds(30), Duration.ofSeconds(30));
     regularly.submit(tempFileSystems::cleanUp, Duration.ofSeconds(30), Duration.ofSeconds(30));
-
-    bus.addListener(NodeAddedEvent.listener(nodeId -> {
-      if (getId().equals(nodeId)) {
-        // Lets avoid to create more than one "Regularly" when the Node registers again.
-        if (!heartBeatStarted.getAndSet(true)) {
-          regularly.submit(
-            () -> bus.fire(new NodeHeartBeatEvent(getStatus())), heartbeatPeriod, heartbeatPeriod);
-        }
-      }
-    }));
+    regularly.submit(() -> bus.fire(new NodeHeartBeatEvent(getStatus())), heartbeatPeriod, heartbeatPeriod);
 
     bus.addListener(SessionClosedEvent.listener(id -> {
       try {
@@ -341,10 +328,9 @@ public class LocalNode extends Node {
 
         // The session we return has to look like it came from the node, since we might be dealing
         // with a webdriver implementation that only accepts connections from localhost
-        Session externalSession = createExternalSession(
-          session,
-          externalUri,
-          slotToUse.isSupportingCdp() || caps.getCapability("se:cdp") != null);
+        boolean isSupportingCdp = slotToUse.isSupportingCdp() ||
+                                  caps.getCapability("se:cdp") != null;
+        Session externalSession = createExternalSession(session, externalUri, isSupportingCdp);
         return Either.right(new CreateSessionResponse(
           externalSession,
           getEncoder(session.getDownstreamDialect()).apply(externalSession)));
@@ -446,13 +432,21 @@ public class LocalNode extends Node {
     tempFileSystems.invalidate(id);
   }
 
-  private Session createExternalSession(ActiveSession other, URI externalUri, boolean isSupportingCdp) {
+  private Session createExternalSession(ActiveSession other, URI externalUri,
+                                        boolean isSupportingCdp) {
     Capabilities toUse = ImmutableCapabilities.copyOf(other.getCapabilities());
 
-    // Rewrite the se:options if necessary to send the cdp url back
+    // Add se:cdp if necessary to send the cdp url back
     if (isSupportingCdp) {
       String cdpPath = String.format("/session/%s/se/cdp", other.getId());
       toUse = new PersistentCapabilities(toUse).setCapability("se:cdp", rewrite(cdpPath));
+    }
+
+    // If enabled, set the VNC endpoint for live view
+    boolean isVncEnabled = toUse.getCapability("se:vncLocalAddress") != null;
+    if (isVncEnabled) {
+      String vncPath = String.format("/session/%s/se/vnc", other.getId());
+      toUse = new PersistentCapabilities(toUse).setCapability("se:vnc", rewrite(vncPath));
     }
 
     return new Session(other.getId(), externalUri, other.getStereotype(), toUse, Instant.now());
@@ -460,8 +454,9 @@ public class LocalNode extends Node {
 
   private URI rewrite(String path) {
     try {
+      String scheme = "https".equals(gridUri.getScheme()) ? "wss" : "ws";
       return new URI(
-        "ws",
+        scheme,
         gridUri.getUserInfo(),
         gridUri.getHost(),
         gridUri.getPort(),
@@ -473,7 +468,7 @@ public class LocalNode extends Node {
     }
   }
 
-  private void  killSession(SessionSlot slot) {
+  private void killSession(SessionSlot slot) {
     currentSessions.invalidate(slot.getSession().getId());
     // Attempt to stop the session
     if (!slot.isAvailable()) {
@@ -485,24 +480,25 @@ public class LocalNode extends Node {
   public NodeStatus getStatus() {
     Set<Slot> slots = factories.stream()
       .map(slot -> {
-        Optional<Session> session = Optional.empty();
+        Instant lastStarted = Instant.EPOCH;
+        Session session = null;
         if (!slot.isAvailable()) {
           ActiveSession activeSession = slot.getSession();
           if (activeSession != null) {
-            session = Optional.of(
-              new Session(
-                activeSession.getId(),
-                activeSession.getUri(),
-                slot.getStereotype(),
-                activeSession.getCapabilities(),
-                activeSession.getStartTime()));
+            lastStarted = activeSession.getStartTime();
+            session = new Session(
+              activeSession.getId(),
+              activeSession.getUri(),
+              slot.getStereotype(),
+              activeSession.getCapabilities(),
+              activeSession.getStartTime());
           }
         }
 
         return new Slot(
           new SlotId(getId(), slot.getId()),
           slot.getStereotype(),
-          Instant.EPOCH,
+          lastStarted,
           session);
       })
       .collect(toImmutableSet());

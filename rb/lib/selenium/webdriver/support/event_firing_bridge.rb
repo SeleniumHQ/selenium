@@ -76,7 +76,7 @@ module Selenium
             @delegate.find_element_by how, what, parent
           end
 
-          Element.new self, e.ref
+          Element.new self, e.ref.last
         end
 
         def find_elements_by(how, what, parent = nil)
@@ -84,7 +84,7 @@ module Selenium
             @delegate.find_elements_by(how, what, parent)
           end
 
-          es.map { |e| Element.new self, e.ref }
+          es.map { |e| Element.new self, e.ref.last }
         end
 
         def execute_script(script, *args)

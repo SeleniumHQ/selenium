@@ -18,7 +18,7 @@ build --explicit_java_test_deps
 build --incompatible_strict_action_env
 
 # Except for the PATH environment variable
-#build --action_env=PATH
+build --action_env=PATH
 
 # For build stamping
 build --workspace_status_command=scripts/build-info.py

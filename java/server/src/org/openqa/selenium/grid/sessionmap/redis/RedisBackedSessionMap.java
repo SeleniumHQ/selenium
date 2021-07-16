@@ -305,4 +305,9 @@ public class RedisBackedSessionMap extends SessionMap {
               EventAttribute.setValue(serverUri.toString()));
     }
   }
+
+  public GridRedisClient getRedisClient() {
+    return connection;
+  }
+
 }

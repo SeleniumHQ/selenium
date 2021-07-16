@@ -131,6 +131,7 @@ class NettyWebSocket implements WebSocket {
         config.baseUri(),
         toClampedInt(config.readTimeout().toMillis()),
         toClampedInt(config.readTimeout().toMillis()),
+        config.credentials(),
         filtered);
 
       return new NettyWebSocket(client, nettyReq, listener);

@@ -20,6 +20,7 @@ package org.openqa.selenium.grid.commands;
 import com.google.auto.service.AutoService;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
+
 import org.openqa.selenium.BuildInfo;
 import org.openqa.selenium.cli.CliCommand;
 import org.openqa.selenium.events.Event;
@@ -141,7 +142,7 @@ public class EventBusCommand extends TemplateGridCommand {
 
     BuildInfo info = new BuildInfo();
     LOG.info(String.format(
-      "Started Selenium event bus %s (revision %s): %s",
+      "Started Selenium EventBus %s (revision %s): %s",
       info.getReleaseLabel(),
       info.getBuildRevision(),
       server.getUrl()));

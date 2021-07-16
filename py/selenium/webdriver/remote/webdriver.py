@@ -21,8 +21,7 @@ import copy
 
 import pkgutil
 import sys
-from typing import (Dict, List,
-                    NoReturn, Union)
+from typing import Dict, List, Optional, Union
 
 import warnings
 
@@ -46,6 +45,7 @@ from selenium.common.exceptions import (InvalidArgumentException,
                                         NoSuchCookieException)
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.options import BaseOptions
+from selenium.webdriver.common.print_page_options import PrintOptions
 from selenium.webdriver.common.timeouts import Timeouts
 from selenium.webdriver.common.html5.application_cache import ApplicationCache
 from selenium.webdriver.support.relative_locator import RelativeBy
@@ -69,6 +69,7 @@ _OSS_W3C_CONVERSION = {
     'version': 'browserVersion',
     'platform': 'platformName'
 }
+
 
 devtools = None
 
@@ -126,15 +127,23 @@ def create_matches(options: List[BaseOptions]) -> Dict:
     for opt in options:
         opts.append(opt.to_capabilities())
     opts_size = len(opts)
-    samesies = set()
+    samesies = {}
+
+    # Can not use bitwise operations on the dicts or lists due to
+    # https://bugs.python.org/issue38210
     for i in range(opts_size):
         min_index = i
         if i + 1 < opts_size:
-            samesies.update(opts[min_index].items() & opts[i + 1].items())
+            first_keys = opts[min_index].keys()
+
+            for kys in first_keys:
+                if kys in opts[i + 1].keys():
+                    if opts[min_index][kys] == opts[i + 1][kys]:
+                        samesies.update({kys: opts[min_index][kys]})
 
     always = {}
-    for i in samesies:
-        always[i[0]] = i[1]
+    for k, v in samesies.items():
+        always[k] = v
 
     for i in opts:
         for k in always.keys():
@@ -318,7 +327,7 @@ class WebDriver(BaseWebDriver):
         """
         pass
 
-    def start_session(self, capabilities: dict, browser_profile=None) -> NoReturn:
+    def start_session(self, capabilities: dict, browser_profile=None) -> None:
         """
         Creates a new session with the desired capabilities.
 
@@ -405,7 +414,7 @@ class WebDriver(BaseWebDriver):
         # a success
         return {'success': 0, 'value': None, 'sessionId': self.session_id}
 
-    def get(self, url: str) -> NoReturn:
+    def get(self, url: str) -> None:
         """
         Loads a web page in the current browser session.
         """
@@ -753,7 +762,7 @@ class WebDriver(BaseWebDriver):
         self.pinned_scripts[_script_key.id] = script
         return _script_key
 
-    def unpin(self, script_key) -> NoReturn:
+    def unpin(self, script_key) -> None:
         """
 
         """
@@ -837,7 +846,7 @@ class WebDriver(BaseWebDriver):
         """
         return self.execute(Command.GET_PAGE_SOURCE)['value']
 
-    def close(self) -> NoReturn:
+    def close(self) -> None:
         """
         Closes the current window.
 
@@ -848,7 +857,7 @@ class WebDriver(BaseWebDriver):
         """
         self.execute(Command.CLOSE)
 
-    def quit(self) -> NoReturn:
+    def quit(self) -> None:
         """
         Quits the driver and closes every associated window.
 
@@ -887,7 +896,7 @@ class WebDriver(BaseWebDriver):
         """
         return self.execute(Command.W3C_GET_WINDOW_HANDLES)['value']
 
-    def maximize_window(self) -> NoReturn:
+    def maximize_window(self) -> None:
         """
         Maximizes the current window that webdriver is using
         """
@@ -895,19 +904,19 @@ class WebDriver(BaseWebDriver):
         command = Command.W3C_MAXIMIZE_WINDOW
         self.execute(command, params)
 
-    def fullscreen_window(self) -> NoReturn:
+    def fullscreen_window(self) -> None:
         """
         Invokes the window manager-specific 'full screen' operation
         """
         self.execute(Command.FULLSCREEN_WINDOW)
 
-    def minimize_window(self) -> NoReturn:
+    def minimize_window(self) -> None:
         """
         Invokes the window manager-specific 'minimize' operation
         """
         self.execute(Command.MINIMIZE_WINDOW)
 
-    def print_page(self, print_options=None) -> str:
+    def print_page(self, print_options: Optional[PrintOptions] = None) -> str:
         """
         Takes PDF of the current page.
         The driver makes a best effort to return a PDF based on the provided parameters.
@@ -939,7 +948,7 @@ class WebDriver(BaseWebDriver):
         return self._switch_to
 
     # Navigation
-    def back(self) -> NoReturn:
+    def back(self) -> None:
         """
         Goes one step backward in the browser history.
 
@@ -950,7 +959,7 @@ class WebDriver(BaseWebDriver):
         """
         self.execute(Command.GO_BACK)
 
-    def forward(self) -> NoReturn:
+    def forward(self) -> None:
         """
         Goes one step forward in the browser history.
 
@@ -961,7 +970,7 @@ class WebDriver(BaseWebDriver):
         """
         self.execute(Command.GO_FORWARD)
 
-    def refresh(self) -> NoReturn:
+    def refresh(self) -> None:
         """
         Refreshes the current page.
 
@@ -998,7 +1007,7 @@ class WebDriver(BaseWebDriver):
         except NoSuchCookieException:
             return None
 
-    def delete_cookie(self, name) -> NoReturn:
+    def delete_cookie(self, name) -> None:
         """
         Deletes a single cookie with the given name.
 
@@ -1009,7 +1018,7 @@ class WebDriver(BaseWebDriver):
         """
         self.execute(Command.DELETE_COOKIE, {'name': name})
 
-    def delete_all_cookies(self) -> NoReturn:
+    def delete_all_cookies(self) -> None:
         """
         Delete all cookies in the scope of the session.
 
@@ -1020,7 +1029,7 @@ class WebDriver(BaseWebDriver):
         """
         self.execute(Command.DELETE_ALL_COOKIES)
 
-    def add_cookie(self, cookie_dict) -> NoReturn:
+    def add_cookie(self, cookie_dict) -> None:
         """
         Adds a cookie to your current session.
 
@@ -1042,7 +1051,7 @@ class WebDriver(BaseWebDriver):
             self.execute(Command.ADD_COOKIE, {'cookie': cookie_dict})
 
     # Timeouts
-    def implicitly_wait(self, time_to_wait) -> NoReturn:
+    def implicitly_wait(self, time_to_wait) -> None:
         """
         Sets a sticky timeout to implicitly wait for an element to be found,
            or a command to complete. This method only needs to be called one
@@ -1060,7 +1069,7 @@ class WebDriver(BaseWebDriver):
         self.execute(Command.SET_TIMEOUTS, {
             'implicit': int(float(time_to_wait) * 1000)})
 
-    def set_script_timeout(self, time_to_wait) -> NoReturn:
+    def set_script_timeout(self, time_to_wait) -> None:
         """
         Set the amount of time that the script should wait during an
            execute_async_script call before throwing an error.
@@ -1076,7 +1085,7 @@ class WebDriver(BaseWebDriver):
         self.execute(Command.SET_TIMEOUTS, {
             'script': int(float(time_to_wait) * 1000)})
 
-    def set_page_load_timeout(self, time_to_wait) -> NoReturn:
+    def set_page_load_timeout(self, time_to_wait) -> None:
         """
         Set the amount of time to wait for a page load to complete
            before throwing an error.
@@ -1114,7 +1123,7 @@ class WebDriver(BaseWebDriver):
         return Timeouts(**timeouts)
 
     @timeouts.setter
-    def timeouts(self, timeouts) -> NoReturn:
+    def timeouts(self, timeouts) -> None:
         """
         Set all timeouts for the session. This will override any previously
         set timeouts.
@@ -1369,7 +1378,7 @@ class WebDriver(BaseWebDriver):
                 driver.set_window_rect(x=10, y=10, width=100, height=200)
         """
 
-        if (not x and not y) and (not height and not width):
+        if (x is None and y is None) and (not height and not width):
             raise InvalidArgumentException("x and y or height and width need values")
 
         return self.execute(Command.SET_WINDOW_RECT, {"x": x, "y": y,
