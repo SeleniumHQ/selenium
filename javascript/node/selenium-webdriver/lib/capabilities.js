@@ -83,7 +83,7 @@ const Platform = {
  *
  * @record
  */
-function Timeouts() {}
+function Timeouts() { }
 
 /**
  * Defines when, in milliseconds, to interrupt a script that is being
@@ -280,6 +280,13 @@ class Capabilities {
    */
   static safari() {
     return new Capabilities().setBrowserName(Browser.SAFARI)
+  }
+
+  /**
+   * @return {!Capabilities} A basic set of capabilities for Opera
+   */
+  static opera() {
+    return new Capabilities().setBrowserName(Browser.OPERA)
   }
 
   /**
