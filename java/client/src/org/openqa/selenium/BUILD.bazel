@@ -131,7 +131,7 @@ genrule(
     ],
     cmd = select({
         "//common:stamp": """
-      mkdir META-INF &&
+      mkdir -p META-INF &&
       echo Manifest-Version: 1.0 >META-INF/MANIFEST.MF &&
       echo "" >>META-INF/MANIFEST.MF &&
       echo "" >>META-INF/MANIFEST.MF &&
@@ -142,7 +142,7 @@ genrule(
       $(location @bazel_tools//tools/zip:zipper) c $@ META-INF/MANIFEST.MF
       """ % SE_VERSION,
         "//conditions:default": """
-      mkdir META-INF &&
+      mkdir -p META-INF &&
       echo Manifest-Version: 1.0 >META-INF/MANIFEST.MF &&
       echo "" >>META-INF/MANIFEST.MF &&
       echo "" >>META-INF/MANIFEST.MF &&
