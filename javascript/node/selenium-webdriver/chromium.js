@@ -214,6 +214,14 @@ class ServiceBuilder extends remote.DriverService.Builder {
   }
 
   /**
+   * Enables Chrome logging.
+   * @returns {!ServiceBuilder} A self reference.
+   */
+   enableChromeLogging() {
+    return this.addArguments('--enable-chrome-logs');
+  }
+
+  /**
    * Enables verbose logging.
    * @return {!ServiceBuilder} A self reference.
    */
