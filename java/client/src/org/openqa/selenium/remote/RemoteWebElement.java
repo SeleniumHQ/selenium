@@ -18,7 +18,6 @@
 package org.openqa.selenium.remote;
 
 import com.google.common.collect.ImmutableMap;
-
 import org.openqa.selenium.Beta;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Dimension;
@@ -26,11 +25,14 @@ import org.openqa.selenium.OutputType;
 import org.openqa.selenium.Point;
 import org.openqa.selenium.Rectangle;
 import org.openqa.selenium.SearchContext;
+import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.WrapsDriver;
 import org.openqa.selenium.WrapsElement;
 import org.openqa.selenium.interactions.Coordinates;
+import org.openqa.selenium.interactions.Locatable;
 import org.openqa.selenium.io.Zip;
 
 import java.io.File;
@@ -40,7 +42,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-public class RemoteWebElement implements IsRemoteWebElement {
+import static org.openqa.selenium.remote.DriverCommand.FIND_CHILD_ELEMENT;
+import static org.openqa.selenium.remote.DriverCommand.FIND_CHILD_ELEMENTS;
+
+public class RemoteWebElement implements WebElement, Locatable, TakesScreenshot, WrapsDriver  {
 
   private String foundBy;
   protected String id;
@@ -55,7 +60,6 @@ public class RemoteWebElement implements IsRemoteWebElement {
     this.parent = parent;
   }
 
-  @Override
   public String getId() {
     return id;
   }
@@ -206,12 +210,18 @@ public class RemoteWebElement implements IsRemoteWebElement {
 
   @Override
   public List<WebElement> findElements(By locator) {
-    return parent.findElements(parent, this, locator);
+    return parent.findElements(
+      this,
+      (using, value) -> FIND_CHILD_ELEMENTS(getId(), using, String.valueOf(value)),
+      locator);
   }
 
   @Override
   public WebElement findElement(By locator) {
-    return parent.findElement(parent, this, locator);
+    return parent.findElement(
+      this,
+      (using, value) -> FIND_CHILD_ELEMENT(getId(), using, String.valueOf(value)),
+      locator);
   }
 
   /**
@@ -228,6 +238,12 @@ public class RemoteWebElement implements IsRemoteWebElement {
   @Deprecated
   protected List<WebElement> findElements(String using, String value) {
     throw new UnsupportedOperationException("`findElement` has been replaced by usages of " + By.Remotable.class);
+  }
+
+  @Override
+  public SearchContext getShadowRoot() {
+    Response response = execute(DriverCommand.GET_ELEMENT_SHADOW_ROOT(getId()));
+    return (SearchContext) response.getValue();
   }
 
   protected Response execute(CommandPayload payload) {

@@ -80,8 +80,6 @@
 const { Browser } = require('./lib/capabilities')
 const io = require('./io')
 const chromium = require('./chromium')
-const http = require('./http')
-const webdriver = require('./lib/webdriver')
 
 /**
  * Name of the EdgeDriver executable.
@@ -111,10 +109,10 @@ class ServiceBuilder extends chromium.ServiceBuilder {
     let exe = opt_exe || locateSynchronously()
     if (!exe) {
       throw Error(
-        `The WebDriver for Edge could not be found on the current PATH. Please download the `+
-        `latest version of ${EDGEDRIVER_CHROMIUM_EXE} from `+
-        `https://developer.microsoft.com/en-us/microsoft-edge/tools/webdriver/ `+
-        `and ensure it can be found on your PATH.`
+        `The WebDriver for Edge could not be found on the current PATH. Please download the ` +
+          `latest version of ${EDGEDRIVER_CHROMIUM_EXE} from ` +
+          `https://developer.microsoft.com/en-us/microsoft-edge/tools/webdriver/ ` +
+          `and ensure it can be found on your PATH.`
       )
     }
     super(exe)
@@ -143,24 +141,20 @@ class Options extends chromium.Options {
 /**
  * Creates a new WebDriver client for Microsoft's Edge.
  */
-class Driver extends webdriver.WebDriver {
+class Driver extends chromium.Driver {
   /**
    * Creates a new browser session for Microsoft's Edge browser.
    *
-   * @param {(Capabilities|Options)=} options The configuration options.
-   * @param {remote.DriverService=} opt_service The service to use; will create
+   * @param {(Capabilities|Options)=} opt_config The configuration options.
+   * @param {remote.DriverService=} opt_serviceExecutor The service to use; will create
    *     a new Legacy or Chromium service based on {@linkplain Options} by default.
    * @return {!Driver} A new driver instance.
    */
-  static createSession(options, opt_service) {
-    options = options || new Options()
-    let service = opt_service || getDefaultService()
-    let client = service.start().then((url) => new http.HttpClient(url))
-    let executor = new http.Executor(client)
-
-    return /** @type {!Driver} */ (super.createSession(executor, options, () =>
-      service.kill()
-    ))
+  static createSession(opt_config, opt_serviceExecutor) {
+    let caps = opt_config || new Options()
+    return /** @type {!Driver} */ (
+      super.createSession(caps, opt_serviceExecutor)
+    )
   }
 
   /**
@@ -180,7 +174,7 @@ function setDefaultService(service) {
   if (defaultService && defaultService.isRunning()) {
     throw Error(
       'The previously configured EdgeDriver service is still running. ' +
-      'You must shut it down before you may adjust its configuration.'
+        'You must shut it down before you may adjust its configuration.'
     )
   }
   defaultService = service
@@ -199,7 +193,6 @@ function getDefaultService() {
   return defaultService
 }
 
-
 /**
  * _Synchronously_ attempts to locate the chromedriver executable on the current
  * system.
@@ -213,6 +206,7 @@ function locateSynchronously() {
 Options.prototype.BROWSER_NAME_VALUE = Browser.EDGE
 Options.prototype.CAPABILITY_KEY = 'ms:edgeOptions'
 Driver.prototype.VENDOR_CAPABILITY_PREFIX = 'ms'
+Driver.getDefaultService = getDefaultService
 
 // PUBLIC API
 

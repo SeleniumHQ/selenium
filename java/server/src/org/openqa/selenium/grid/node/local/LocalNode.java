@@ -36,7 +36,6 @@ import org.openqa.selenium.events.EventBus;
 import org.openqa.selenium.grid.data.Availability;
 import org.openqa.selenium.grid.data.CreateSessionRequest;
 import org.openqa.selenium.grid.data.CreateSessionResponse;
-import org.openqa.selenium.grid.data.NodeAddedEvent;
 import org.openqa.selenium.grid.data.NodeDrainComplete;
 import org.openqa.selenium.grid.data.NodeDrainStarted;
 import org.openqa.selenium.grid.data.NodeHeartBeatEvent;
@@ -84,7 +83,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
@@ -117,7 +115,6 @@ public class LocalNode extends Node {
   private final Cache<SessionId, TemporaryFilesystem> tempFileSystems;
   private final Regularly regularly;
   private final AtomicInteger pendingSessions = new AtomicInteger();
-  private final AtomicBoolean heartBeatStarted = new AtomicBoolean(false);
 
   private LocalNode(
     Tracer tracer,
@@ -174,16 +171,7 @@ public class LocalNode extends Node {
     this.regularly = new Regularly("Local Node: " + externalUri);
     regularly.submit(currentSessions::cleanUp, Duration.ofSeconds(30), Duration.ofSeconds(30));
     regularly.submit(tempFileSystems::cleanUp, Duration.ofSeconds(30), Duration.ofSeconds(30));
-
-    bus.addListener(NodeAddedEvent.listener(nodeId -> {
-      if (getId().equals(nodeId)) {
-        // Lets avoid to create more than one "Regularly" when the Node registers again.
-        if (!heartBeatStarted.getAndSet(true)) {
-          regularly.submit(
-            () -> bus.fire(new NodeHeartBeatEvent(getStatus())), heartbeatPeriod, heartbeatPeriod);
-        }
-      }
-    }));
+    regularly.submit(() -> bus.fire(new NodeHeartBeatEvent(getStatus())), heartbeatPeriod, heartbeatPeriod);
 
     bus.addListener(SessionClosedEvent.listener(id -> {
       try {
@@ -480,7 +468,7 @@ public class LocalNode extends Node {
     }
   }
 
-  private void  killSession(SessionSlot slot) {
+  private void killSession(SessionSlot slot) {
     currentSessions.invalidate(slot.getSession().getId());
     // Attempt to stop the session
     if (!slot.isAvailable()) {

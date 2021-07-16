@@ -1,11 +1,11 @@
-load("//java:defs.bzl", "java_library", "artifact")
+load("//java:defs.bzl", "java_library")
 
 java_library(
     name = "data",
     srcs = glob(["*.java"]),
     visibility = [
+        "//java/server/src/org/openqa/selenium:__subpackages__",
         "//java/server/src/org/openqa/selenium/grid:__subpackages__",
-         "//java/server/src/org/openqa/selenium:__subpackages__",
         "//java/server/src/org/openqa/selenium/remote/server:__subpackages__",
         "//java/server/test/org/openqa/selenium/grid:__subpackages__",
     ],
@@ -15,6 +15,5 @@ java_library(
         "//java/client/src/org/openqa/selenium/remote",
         "//java/server/src/org/openqa/selenium/events",
         "//java/server/src/org/openqa/selenium/grid/security",
-         artifact("org.redisson:redisson")
     ],
 )

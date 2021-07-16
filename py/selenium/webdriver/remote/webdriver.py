@@ -21,7 +21,7 @@ import copy
 
 import pkgutil
 import sys
-from typing import Dict, List, Union
+from typing import Dict, List, Optional, Union
 
 import warnings
 
@@ -45,6 +45,7 @@ from selenium.common.exceptions import (InvalidArgumentException,
                                         NoSuchCookieException)
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.options import BaseOptions
+from selenium.webdriver.common.print_page_options import PrintOptions
 from selenium.webdriver.common.timeouts import Timeouts
 from selenium.webdriver.common.html5.application_cache import ApplicationCache
 from selenium.webdriver.support.relative_locator import RelativeBy
@@ -68,6 +69,7 @@ _OSS_W3C_CONVERSION = {
     'version': 'browserVersion',
     'platform': 'platformName'
 }
+
 
 devtools = None
 
@@ -125,15 +127,23 @@ def create_matches(options: List[BaseOptions]) -> Dict:
     for opt in options:
         opts.append(opt.to_capabilities())
     opts_size = len(opts)
-    samesies = set()
+    samesies = {}
+
+    # Can not use bitwise operations on the dicts or lists due to
+    # https://bugs.python.org/issue38210
     for i in range(opts_size):
         min_index = i
         if i + 1 < opts_size:
-            samesies.update(opts[min_index].items() & opts[i + 1].items())
+            first_keys = opts[min_index].keys()
+
+            for kys in first_keys:
+                if kys in opts[i + 1].keys():
+                    if opts[min_index][kys] == opts[i + 1][kys]:
+                        samesies.update({kys: opts[min_index][kys]})
 
     always = {}
-    for i in samesies:
-        always[i[0]] = i[1]
+    for k, v in samesies.items():
+        always[k] = v
 
     for i in opts:
         for k in always.keys():
@@ -906,7 +916,7 @@ class WebDriver(BaseWebDriver):
         """
         self.execute(Command.MINIMIZE_WINDOW)
 
-    def print_page(self, print_options=None) -> str:
+    def print_page(self, print_options: Optional[PrintOptions] = None) -> str:
         """
         Takes PDF of the current page.
         The driver makes a best effort to return a PDF based on the provided parameters.
@@ -1368,7 +1378,7 @@ class WebDriver(BaseWebDriver):
                 driver.set_window_rect(x=10, y=10, width=100, height=200)
         """
 
-        if (not x and not y) and (not height and not width):
+        if (x is None and y is None) and (not height and not width):
             raise InvalidArgumentException("x and y or height and width need values")
 
         return self.execute(Command.SET_WINDOW_RECT, {"x": x, "y": y,

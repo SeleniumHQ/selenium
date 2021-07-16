@@ -31,7 +31,7 @@ import java.util.Optional;
 
 public class DistributorOptions {
 
-  public static final int DEFAULT_HEALTHCHECK_INTERVAL = 300;
+  public static final int DEFAULT_HEALTHCHECK_INTERVAL = 120;
   public static final String DISTRIBUTOR_SECTION = "distributor";
   static final String DEFAULT_DISTRIBUTOR_IMPLEMENTATION =
     "org.openqa.selenium.grid.distributor.local.LocalDistributor";
@@ -39,7 +39,7 @@ public class DistributorOptions {
   static final String DEFAULT_SLOT_SELECTOR_IMPLEMENTATION =
     "org.openqa.selenium.grid.distributor.selector.DefaultSlotSelector";
   static final String DEFAULT_GRID_MODEL_IMPLEMENTATION =
-    "org.openqa.selenium.grid.distributor.gridmodel.local.LocalGridModel";
+    "org.openqa.selenium.grid.distributor.GridModel";
   static final boolean DEFAULT_REJECT_UNSUPPORTED_CAPS = false;
   private final Config config;
 
@@ -102,14 +102,6 @@ public class DistributorOptions {
       "implementation",
       Distributor.class,
       DEFAULT_DISTRIBUTOR_IMPLEMENTATION);
-  }
-
-  public GridModel getGridModel() {
-    return config.getClass(
-      DISTRIBUTOR_SECTION,
-      "grid-model",
-      GridModel.class,
-      DEFAULT_GRID_MODEL_IMPLEMENTATION);
   }
 
   public SlotMatcher getSlotMatcher() {

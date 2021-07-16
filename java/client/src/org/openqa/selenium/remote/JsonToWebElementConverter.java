@@ -50,12 +50,17 @@ public class JsonToWebElementConverter implements Function<Object, Object> {
       Map<?, ?> resultAsMap = (Map<?, ?>) result;
       String elementKey = getElementKey(resultAsMap);
 		  if (null != elementKey) {
-			  RemoteWebElement element = newRemoteWebElement();
-			  element.setId(String.valueOf(resultAsMap.get(elementKey)));
-			  return element;
-      } else {
-        return Maps.transformValues(resultAsMap, this);
+        RemoteWebElement element = newRemoteWebElement();
+        element.setId(String.valueOf(resultAsMap.get(elementKey)));
+        return element;
       }
+
+		  String shadowKey = getShadowRootKey(resultAsMap);
+		  if (null != shadowKey) {
+		    return new ShadowRoot(driver, String.valueOf(resultAsMap.get(shadowKey)));
+      }
+
+		  return Maps.transformValues(resultAsMap, this);
     }
 
     if (result instanceof RemoteWebElement) {
@@ -83,6 +88,7 @@ public class JsonToWebElementConverter implements Function<Object, Object> {
     }
     return element;
   }
+
   private String getElementKey(Map<?, ?> resultAsMap) {
 		for (Dialect d : Dialect.values()) {
 			String elementKeyForDialect = d.getEncodedElementKey();
@@ -92,4 +98,14 @@ public class JsonToWebElementConverter implements Function<Object, Object> {
 		}
 		return null;
 	}
+
+	private String getShadowRootKey(Map<?, ?> resultAsMap) {
+    for (Dialect d : Dialect.values()) {
+      String shadowRootElementKey = d.getShadowRootElementKey();
+      if (resultAsMap.containsKey(shadowRootElementKey)) {
+        return shadowRootElementKey;
+      }
+    }
+    return null;
+  }
 }

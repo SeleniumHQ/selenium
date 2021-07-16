@@ -20,6 +20,7 @@ package org.openqa.selenium.grid.router;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -32,7 +33,6 @@ import org.openqa.selenium.grid.config.MapConfig;
 import org.openqa.selenium.grid.data.DefaultSlotMatcher;
 import org.openqa.selenium.grid.data.Session;
 import org.openqa.selenium.grid.distributor.Distributor;
-import org.openqa.selenium.grid.distributor.gridmodel.local.LocalGridModel;
 import org.openqa.selenium.grid.distributor.local.LocalDistributor;
 import org.openqa.selenium.grid.distributor.selector.DefaultSlotSelector;
 import org.openqa.selenium.grid.node.Node;
@@ -44,6 +44,7 @@ import org.openqa.selenium.grid.sessionmap.SessionMap;
 import org.openqa.selenium.grid.sessionmap.local.LocalSessionMap;
 import org.openqa.selenium.grid.sessionqueue.NewSessionQueue;
 import org.openqa.selenium.grid.sessionqueue.local.LocalNewSessionQueue;
+import org.openqa.selenium.grid.testing.PassthroughHttpClient;
 import org.openqa.selenium.grid.testing.TestSessionFactory;
 import org.openqa.selenium.grid.web.CombinedHandler;
 import org.openqa.selenium.grid.web.EnsureSpecCompliantHeaders;
@@ -98,7 +99,7 @@ public class NewSessionCreationTest {
       events,
       new DefaultSlotMatcher(),
       Duration.ofSeconds(2),
-      Duration.ofSeconds(2),
+      Duration.ofSeconds(60),
       registrationSecret);
 
     Distributor distributor = new LocalDistributor(
@@ -107,7 +108,6 @@ public class NewSessionCreationTest {
       clientFactory,
       sessions,
       queue,
-      new LocalGridModel(events),
       new DefaultSlotSelector(),
       registrationSecret,
       Duration.ofMinutes(5),
@@ -119,7 +119,7 @@ public class NewSessionCreationTest {
     server = new NettyServer(
       new BaseServerOptions(new MapConfig(ImmutableMap.of())),
       router,
-      new ProxyCdpIntoGrid(clientFactory, sessions))
+      new ProxyWebsocketsIntoGrid(clientFactory, sessions))
       .start();
 
     URI uri = server.getUrl().toURI();
@@ -178,19 +178,6 @@ public class NewSessionCreationTest {
       registrationSecret);
     handler.addHandler(queue);
 
-    Distributor distributor = new LocalDistributor(
-      tracer,
-      events,
-      clientFactory,
-      sessions,
-      queue,
-      new LocalGridModel(events),
-      new DefaultSlotSelector(),
-      registrationSecret,
-      Duration.ofMinutes(5),
-      false);
-    handler.addHandler(distributor);
-
     AtomicInteger count = new AtomicInteger();
 
     // First session creation attempt throws an error.
@@ -212,6 +199,19 @@ public class NewSessionCreationTest {
     LocalNode localNode = LocalNode.builder(tracer, events, nodeUri, nodeUri, registrationSecret)
       .add(capabilities, sessionFactory).build();
     handler.addHandler(localNode);
+
+    Distributor distributor = new LocalDistributor(
+      tracer,
+      events,
+      new PassthroughHttpClient.Factory(handler),
+      sessions,
+      queue,
+      new DefaultSlotSelector(),
+      registrationSecret,
+      Duration.ofMinutes(5),
+      false);
+    handler.addHandler(distributor);
+
     distributor.add(localNode);
 
     Router router = new Router(tracer, clientFactory, sessions, queue, distributor);
@@ -236,7 +236,7 @@ public class NewSessionCreationTest {
     assertThat(httpResponse.getStatus()).isEqualTo(HTTP_INTERNAL_ERROR);
   }
 
-  @Test(timeout = 5000L)
+  @Test(timeout = 10000L)
   public void shouldRejectRequestForUnsupportedCaps() throws URISyntaxException {
     Capabilities capabilities = new ImmutableCapabilities("browserName", "cheese");
     URI nodeUri = new URI("http://localhost:4444");
@@ -253,19 +253,6 @@ public class NewSessionCreationTest {
       registrationSecret);
     handler.addHandler(queue);
 
-    Distributor distributor = new LocalDistributor(
-      tracer,
-      events,
-      clientFactory,
-      sessions,
-      queue,
-      new LocalGridModel(events),
-      new DefaultSlotSelector(),
-      registrationSecret,
-      Duration.ofMinutes(5),
-      true);
-    handler.addHandler(distributor);
-
     TestSessionFactory sessionFactory = new TestSessionFactory((id, caps) ->
       new Session(
         id,
@@ -278,6 +265,19 @@ public class NewSessionCreationTest {
     LocalNode localNode = LocalNode.builder(tracer, events, nodeUri, nodeUri, registrationSecret)
       .add(capabilities, sessionFactory).build();
     handler.addHandler(localNode);
+
+    Distributor distributor = new LocalDistributor(
+      tracer,
+      events,
+      new PassthroughHttpClient.Factory(handler),
+      sessions,
+      queue,
+      new DefaultSlotSelector(),
+      registrationSecret,
+      Duration.ofMinutes(5),
+      true);
+    handler.addHandler(distributor);
+
     distributor.add(localNode);
 
     Router router = new Router(tracer, clientFactory, sessions, queue, distributor);

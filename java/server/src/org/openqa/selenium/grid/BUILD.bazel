@@ -19,6 +19,45 @@ genrule(
     ],
 )
 
+java_binary(
+    name = "pinned-grid",
+    data = select({
+        "//common:linux": [
+            "@linux_chromedriver//:chromedriver",
+            "@linux_chrome//:chrome-linux",
+            "@linux_geckodriver//:geckodriver",
+            "@linux_firefox//:firefox",
+        ],
+        "//common:macos": [
+            "@mac_chromedriver//:chromedriver",
+            "@mac_chrome//:Chromium.app",
+            "@mac_firefox//:Firefox.app",
+            "@mac_geckodriver//:geckodriver",
+        ],
+        "//conditions:default": [],
+    }),
+    jvm_flags = select({
+        "//common:linux": [
+            "-Dwebdriver.chrome.driver=$(location @linux_chromedriver//:chromedriver)",
+            "-Dwebdriver.chrome.binary=$(location @linux_chrome//:chrome-linux)/chrome",
+            "-Dwebdriver.gecko.driver=$(location @linux_geckodriver//:geckodriver)",
+            "-Dwebdriver.firefox.bin=$(location @linux_firefox//:firefox)/firefox",
+        ],
+        "//common:macos": [
+            "-Dwebdriver.chrome.driver=$(location @mac_chromedriver//:chromedriver)",
+            "-Dwebdriver.chrome.binary=$(location @mac_chrome//:Chromium.app)/Contents/MacOS/Chromium",
+            "-Dwebdriver.gecko.driver=$(location @mac_geckodriver//:geckodriver)",
+            "-Dwebdriver.firefox.bin=$(location @mac_firefox//:Firefox.app)/Contents/MacOS/firefox",
+        ],
+        "//conditions:default": [],
+    }),
+    main_class = "org.openqa.selenium.grid.Bootstrap",
+    visibility = [
+        "//:__pkg__",
+    ],
+    runtime_deps = [":grid"],
+)
+
 BASE_COMMAND_SRCS = [
     "TemplateGridCommand.java",
     "TemplateGridServerCommand.java",
@@ -91,11 +130,11 @@ java_export(
 )
 
 merge_jars(
-  name = "add-build-info",
-  inputs = [
-    ":selenium_server_deploy.jar",
-    "//java/client/src/org/openqa/selenium:manifest",
-  ],
+    name = "add-build-info",
+    inputs = [
+        ":selenium_server_deploy.jar",
+        "//java/client/src/org/openqa/selenium:manifest",
+    ],
 )
 
 java_binary(

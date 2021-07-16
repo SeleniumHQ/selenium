@@ -21,6 +21,8 @@ import org.openqa.selenium.Alert;
 import org.openqa.selenium.Beta;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.WrapsDriver;
+import org.openqa.selenium.WrapsElement;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.virtualauthenticator.VirtualAuthenticator;
 
@@ -28,8 +30,10 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -230,9 +234,11 @@ public class WebDriverDecorator {
 
   public void afterCall(Decorated<?> target, Method method, Object[] args, Object res) {}
 
-  public Object onError(Decorated<?> target, Method method, Object[] args,
-                        InvocationTargetException e) throws Throwable
-  {
+  public Object onError(
+    Decorated<?> target,
+    Method method,
+    Object[] args,
+    InvocationTargetException e) throws Throwable {
     throw e.getTargetException();
   }
 
@@ -275,6 +281,7 @@ public class WebDriverDecorator {
   protected final <Z> Z createProxy(final Decorated<Z> decorated) {
     Set<Class<?>> decoratedInterfaces = extractInterfaces(decorated);
     Set<Class<?>> originalInterfaces = extractInterfaces(decorated.getOriginal());
+    Map<Class<?>, InvocationHandler> derivedInterfaces = deriveAdditionalInterfaces(decorated.getOriginal());
 
     final InvocationHandler handler = (proxy, method, args) -> {
       try {
@@ -288,6 +295,10 @@ public class WebDriverDecorator {
           decorated.afterCall(method, result, args);
           return result;
         }
+        if (derivedInterfaces.containsKey(method.getDeclaringClass())) {
+          return derivedInterfaces.get(method.getDeclaringClass()).invoke(proxy, method, args);
+        }
+
         return method.invoke(decorated.getOriginal(), args);
       } catch (InvocationTargetException e) {
         return decorated.onError(method, e, args);
@@ -297,6 +308,7 @@ public class WebDriverDecorator {
     Set<Class<?>> allInterfaces = new HashSet<>();
     allInterfaces.addAll(decoratedInterfaces);
     allInterfaces.addAll(originalInterfaces);
+    allInterfaces.addAll(derivedInterfaces.keySet());
     Class<?>[] allInterfacesArray = allInterfaces.toArray(new Class<?>[0]);
 
     return (Z) Proxy.newProxyInstance(
@@ -328,5 +340,48 @@ public class WebDriverDecorator {
       }
     }
     extractInterfaces(collector, clazz.getSuperclass());
+  }
+
+  private Map<Class<?>, InvocationHandler> deriveAdditionalInterfaces(Object object) {
+    Map<Class<?>, InvocationHandler> handlers = new HashMap<>();
+
+    if (object instanceof WebDriver && !(object instanceof WrapsDriver)) {
+      handlers.put(WrapsDriver.class, (proxy, method, args) -> {
+        if ("getWrappedDriver".equals(method.getName())) {
+          return object;
+        }
+        throw new UnsupportedOperationException(method.getName());
+      });
+    }
+
+    if (object instanceof WebElement && !(object instanceof WrapsElement)) {
+      handlers.put(WrapsElement.class, (proxy, method, args) -> {
+        if ("getWrappedElement".equals(method.getName())) {
+          return object;
+        }
+        throw new UnsupportedOperationException(method.getName());
+      });
+    }
+
+    try {
+      Method toJson = object.getClass().getDeclaredMethod("toJson");
+      toJson.setAccessible(true);
+
+      handlers.put(JsonSerializer.class, ((proxy, method, args) -> {
+        if ("toJson".equals(method.getName())) {
+          return toJson.invoke(object);
+        }
+        throw new UnsupportedOperationException(method.getName());
+      }));
+    } catch (NoSuchMethodException e) {
+      // Fine. Just fall through
+    }
+
+    return handlers;
+  }
+
+  @FunctionalInterface
+  interface JsonSerializer {
+    Object toJson();
   }
 }

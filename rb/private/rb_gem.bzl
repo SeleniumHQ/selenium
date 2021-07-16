@@ -16,7 +16,7 @@ def _rb_gem_impl(ctx):
         executable = gem_builder,
         outputs = [ctx.outputs.gem],
         execution_requirements = {
-            "no-sandbox": "1", # allow to traverse directory symlinks
+            "no-sandbox": "1",  # allow to traverse directory symlinks
         },
     )
 

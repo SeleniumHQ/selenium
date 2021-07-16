@@ -439,7 +439,11 @@ suite(function (env) {
         for (let i = 0; i < elements.length; i++) {
           ids.push(await elements[i].getAttribute('id'))
         }
-        assert.notDeepStrictEqual(ids.indexOf('third'), -1, `Elements are ${ids}`)
+        assert.notDeepStrictEqual(
+          ids.indexOf('third'),
+          -1,
+          `Elements are ${ids}`
+        )
       })
     })
 
@@ -448,7 +452,7 @@ suite(function (env) {
         await driver.get(Pages.relativeLocators)
         let below = await driver.findElement(By.id('below'))
         let element = await driver.findElement(withTagName('p').above(below))
-       assert.deepStrictEqual(await element.getAttribute('id'), `mid`)
+        assert.deepStrictEqual(await element.getAttribute('id'), `mid`)
       })
 
       it('should combine filters', async function () {

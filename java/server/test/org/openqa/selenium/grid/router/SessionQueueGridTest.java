@@ -29,7 +29,6 @@ import org.openqa.selenium.grid.config.MapConfig;
 import org.openqa.selenium.grid.data.DefaultSlotMatcher;
 import org.openqa.selenium.grid.data.Session;
 import org.openqa.selenium.grid.distributor.Distributor;
-import org.openqa.selenium.grid.distributor.gridmodel.local.LocalGridModel;
 import org.openqa.selenium.grid.distributor.local.LocalDistributor;
 import org.openqa.selenium.grid.distributor.selector.DefaultSlotSelector;
 import org.openqa.selenium.grid.node.local.LocalNode;
@@ -41,6 +40,7 @@ import org.openqa.selenium.grid.sessionmap.SessionMap;
 import org.openqa.selenium.grid.sessionmap.local.LocalSessionMap;
 import org.openqa.selenium.grid.sessionqueue.NewSessionQueue;
 import org.openqa.selenium.grid.sessionqueue.local.LocalNewSessionQueue;
+import org.openqa.selenium.grid.testing.PassthroughHttpClient;
 import org.openqa.selenium.grid.testing.TestSessionFactory;
 import org.openqa.selenium.grid.web.CombinedHandler;
 import org.openqa.selenium.grid.web.RoutableHttpClientFactory;
@@ -96,7 +96,6 @@ public class SessionQueueGridTest {
     registrationSecret = new Secret("cheese");
 
     SessionMap sessions = new LocalSessionMap(tracer, bus);
-    handler.addHandler(sessions);
     NewSessionQueue queue = new LocalNewSessionQueue(
       tracer,
       bus,
@@ -105,19 +104,6 @@ public class SessionQueueGridTest {
       Duration.ofSeconds(60),
       registrationSecret);
     handler.addHandler(queue);
-
-    Distributor distributor = new LocalDistributor(
-      tracer,
-      bus,
-      clientFactory,
-      sessions,
-      queue,
-      new LocalGridModel(bus),
-      new DefaultSlotSelector(),
-      registrationSecret,
-      Duration.ofMinutes(5),
-      false);
-    handler.addHandler(distributor);
 
     LocalNode localNode = LocalNode.builder(tracer, bus, nodeUri, nodeUri, registrationSecret)
       .add(CAPS, new TestSessionFactory((id, caps) -> new Session(
@@ -133,6 +119,19 @@ public class SessionQueueGridTest {
         caps,
         Instant.now()))).build();
     handler.addHandler(localNode);
+
+    Distributor distributor = new LocalDistributor(
+      tracer,
+      bus,
+      new PassthroughHttpClient.Factory(localNode),
+      sessions,
+      queue,
+      new DefaultSlotSelector(),
+      registrationSecret,
+      Duration.ofMinutes(5),
+      false);
+    handler.addHandler(distributor);
+
     distributor.add(localNode);
 
     Router router = new Router(tracer, clientFactory, sessions, queue, distributor);

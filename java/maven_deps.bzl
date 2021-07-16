@@ -76,7 +76,7 @@ def selenium_java_deps():
             "org.zeromq:jeromq:0.5.2",
             "xyz.rogfam:littleproxy:2.0.3",
             "org.seleniumhq.selenium:htmlunit-driver:2.49.1",
-            "org.redisson:redisson:3.15.5"
+            "org.redisson:redisson:3.15.5",
         ],
         excluded_artifacts = [
             "org.hamcrest:hamcrest-all",  # Replaced by hamcrest 2

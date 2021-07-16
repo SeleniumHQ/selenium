@@ -94,7 +94,7 @@ public class DistributorFlags implements HasRoles {
   @Parameter(description = "Allow the Distributor to reject a request immediately if the Grid does not support the requested capability." +
     "Rejecting requests immediately is suitable for Grid set up that does not spin up Nodes on demand.",
     names = "--reject-unsupported-caps", arity = 1)
-  @ConfigValue(section = DISTRIBUTOR_SECTION, name = "--reject-unsupported-caps", example = "true")
+  @ConfigValue(section = DISTRIBUTOR_SECTION, name = "reject-unsupported-caps", example = "true")
   private boolean rejectUnsupportedCaps = DEFAULT_REJECT_UNSUPPORTED_CAPS;
 
   @Override

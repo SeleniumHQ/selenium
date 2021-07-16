@@ -50,6 +50,7 @@ Gem::Specification.new do |s|
 
   # childprocess requires ffi on windows but doesn't declare it in its dependencies
   s.add_development_dependency 'ffi'
+  s.add_development_dependency 'pry', ['~> 0.14']
   s.add_development_dependency 'rack', ['~> 2.0']
   s.add_development_dependency 'rake'
   s.add_development_dependency 'rspec', ['~> 3.0']

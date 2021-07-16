@@ -31,7 +31,6 @@ import org.openqa.selenium.grid.config.Config;
 import org.openqa.selenium.grid.data.CreateSessionRequest;
 import org.openqa.selenium.grid.data.CreateSessionResponse;
 import org.openqa.selenium.grid.data.DistributorStatus;
-import org.openqa.selenium.grid.data.NewSessionRequestEvent;
 import org.openqa.selenium.grid.data.NodeAddedEvent;
 import org.openqa.selenium.grid.data.NodeDrainComplete;
 import org.openqa.selenium.grid.data.NodeHeartBeatEvent;
@@ -72,6 +71,7 @@ import org.openqa.selenium.remote.tracing.Status;
 import org.openqa.selenium.remote.tracing.Tracer;
 import org.openqa.selenium.status.HasReadyState;
 
+import java.io.Closeable;
 import java.io.UncheckedIOException;
 import java.time.Duration;
 import java.util.ArrayList;
@@ -82,6 +82,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
@@ -101,7 +102,7 @@ import static org.openqa.selenium.remote.RemoteTags.SESSION_ID_EVENT;
 import static org.openqa.selenium.remote.tracing.AttributeKey.SESSION_URI;
 import static org.openqa.selenium.remote.tracing.Tags.EXCEPTION;
 
-public class LocalDistributor extends Distributor {
+public class LocalDistributor extends Distributor implements Closeable {
 
   private static final Logger LOG = Logger.getLogger(LocalDistributor.class.getName());
 
@@ -112,6 +113,7 @@ public class LocalDistributor extends Distributor {
   private final SlotSelector slotSelector;
   private final Secret registrationSecret;
   private final Regularly hostChecker = new Regularly("distributor host checker");
+  private final Regularly purgeDeadNodes = new Regularly("Purge deadNodes");
   private final Map<NodeId, Runnable> allChecks = new HashMap<>();
   private final Duration healthcheckInterval;
 
@@ -119,8 +121,17 @@ public class LocalDistributor extends Distributor {
   private final GridModel model;
   private final Map<NodeId, Node> nodes;
 
+  private final Executor sessionCreatorExecutor = Executors.newFixedThreadPool(
+    Runtime.getRuntime().availableProcessors(),
+    r -> {
+      Thread thread = new Thread(r);
+      thread.setName("Local Distributor session creation");
+      thread.setDaemon(true);
+      return thread;
+    }
+  );
   private final NewSessionQueue sessionQueue;
-  private final Regularly regularly;
+  private final Regularly createNewSession;
 
   private final boolean rejectUnsupportedCaps;
 
@@ -130,7 +141,6 @@ public class LocalDistributor extends Distributor {
     HttpClient.Factory clientFactory,
     SessionMap sessions,
     NewSessionQueue sessionQueue,
-    GridModel model,
     SlotSelector slotSelector,
     Secret registrationSecret,
     Duration healthcheckInterval,
@@ -144,7 +154,7 @@ public class LocalDistributor extends Distributor {
     this.slotSelector = Require.nonNull("Slot selector", slotSelector);
     this.registrationSecret = Require.nonNull("Registration secret", registrationSecret);
     this.healthcheckInterval = Require.nonNull("Health check interval", healthcheckInterval);
-    this.model = model;
+    this.model = new GridModel(bus);
     this.nodes = new ConcurrentHashMap<>();
     this.rejectUnsupportedCaps = rejectUnsupportedCaps;
 
@@ -158,21 +168,20 @@ public class LocalDistributor extends Distributor {
       }
     }));
 
-    regularly = new Regularly(
+    createNewSession = new Regularly(
       Executors.newSingleThreadScheduledExecutor(
         r -> {
           Thread thread = new Thread(r);
-          thread.setName("New Session Queue");
+          thread.setName("Local Distributor new session queue");
           thread.setDaemon(true);
           return thread;
         }));
 
     NewSessionRunnable newSessionRunnable = new NewSessionRunnable();
     bus.addListener(NodeDrainComplete.listener(this::remove));
-    bus.addListener(NewSessionRequestEvent.listener(ignored -> newSessionRunnable.run()));
 
-    regularly.submit(model::purgeDeadNodes, Duration.ofSeconds(30), Duration.ofSeconds(30));
-    regularly.submit(newSessionRunnable, Duration.ofSeconds(5), Duration.ofSeconds(5));
+    purgeDeadNodes.submit(model::purgeDeadNodes, Duration.ofSeconds(30), Duration.ofSeconds(30));
+    createNewSession.submit(newSessionRunnable, Duration.ofSeconds(5), Duration.ofSeconds(5));
   }
 
   public static Distributor create(Config config) {
@@ -190,7 +199,6 @@ public class LocalDistributor extends Distributor {
       clientFactory,
       sessions,
       sessionQueue,
-      distributorOptions.getGridModel(),
       distributorOptions.getSlotSelector(),
       secretOptions.getRegistrationSecret(),
       distributorOptions.getHealthCheckInterval(),
@@ -242,8 +250,6 @@ public class LocalDistributor extends Distributor {
   public LocalDistributor add(Node node) {
     Require.nonNull("Node", node);
 
-    LOG.info(String.format("Added node %s at %s.", node.getId(), node.getUri()));
-
     nodes.put(node.getId(), node);
     model.add(node.getStatus());
 
@@ -251,6 +257,12 @@ public class LocalDistributor extends Distributor {
     Runnable runnableHealthCheck = asRunnableHealthCheck(node);
     allChecks.put(node.getId(), runnableHealthCheck);
     hostChecker.submit(runnableHealthCheck, healthcheckInterval, Duration.ofSeconds(30));
+
+    LOG.info(String.format(
+      "Added node %s at %s. Health check every %ss",
+      node.getId(),
+      node.getUri(),
+      healthcheckInterval.toMillis() / 1000));
 
     bus.fire(new NodeAddedEvent(node.getId()));
 
@@ -261,6 +273,8 @@ public class LocalDistributor extends Distributor {
     HealthCheck healthCheck = node.getHealthCheck();
     NodeId id = node.getId();
     return () -> {
+      LOG.log(getDebugLogLevel(), "Running health check for " + node.getId());
+
       HealthCheck.Result result;
       try {
         result = healthCheck.check();
@@ -272,6 +286,9 @@ public class LocalDistributor extends Distributor {
       Lock writeLock = lock.writeLock();
       writeLock.lock();
       try {
+        LOG.log(
+          getDebugLogLevel(),
+          String.format("Health check result for %s was %s", node.getId(), result.getAvailability()));
         model.setAvailability(id, result.getAvailability());
       } finally {
         writeLock.unlock();
@@ -541,12 +558,15 @@ public class LocalDistributor extends Distributor {
     }
   }
 
-  public void callExecutorShutdown() {
+  @Override
+  public void close() {
     LOG.info("Shutting down Distributor executor service");
-    regularly.shutdown();
+    purgeDeadNodes.shutdown();
+    hostChecker.shutdown();
+    createNewSession.shutdown();
   }
 
-  public class NewSessionRunnable implements Runnable {
+  private class NewSessionRunnable implements Runnable {
 
     @Override
     public void run() {
@@ -574,7 +594,7 @@ public class LocalDistributor extends Distributor {
                 .collect(Collectors.toSet());
 
         Optional<SessionRequest> maybeRequest = sessionQueue.getNextAvailable(stereotypes);
-        maybeRequest.ifPresent(this::handleNewSessionRequest);
+        maybeRequest.ifPresent(req -> sessionCreatorExecutor.execute(() -> handleNewSessionRequest(req)));
 
         int currentSize = sessionQueue.getQueueContents().size();
         retry = currentSize != 0 && currentSize != initialSize;

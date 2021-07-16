@@ -18,6 +18,7 @@
 package org.openqa.selenium.grid.distributor.selector;
 
 import com.google.common.annotations.VisibleForTesting;
+
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.grid.config.Config;
 import org.openqa.selenium.grid.data.NodeStatus;
@@ -30,6 +31,10 @@ import java.util.Set;
 import static com.google.common.collect.ImmutableSet.toImmutableSet;
 
 public class DefaultSlotSelector implements SlotSelector {
+
+  public static SlotSelector create(Config config) {
+    return new DefaultSlotSelector();
+  }
 
   @Override
   public Set<SlotId> selectSlot(Capabilities capabilities, Set<NodeStatus> nodes) {
@@ -51,7 +56,7 @@ public class DefaultSlotSelector implements SlotSelector {
           // And use the node id as a tie-breaker.
           .thenComparing(NodeStatus::getNodeId))
       .flatMap(node -> node.getSlots().stream()
-        .filter(slot -> slot.getSession()==null)
+        .filter(slot -> slot.getSession() == null)
         .filter(slot -> slot.isSupporting(capabilities))
         .map(Slot::getId))
       .collect(toImmutableSet());
@@ -64,9 +69,5 @@ public class DefaultSlotSelector implements SlotSelector {
       .map(slot -> slot.getStereotype().getBrowserName().toLowerCase())
       .distinct()
       .count();
-  }
-
-  public static SlotSelector create(Config config) {
-    return new DefaultSlotSelector();
   }
 }

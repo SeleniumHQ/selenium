@@ -11,11 +11,12 @@ java_test_suite(
     ),
     deps = [
         "//java/client/src/org/openqa/selenium:core",
+        "//java/client/src/org/openqa/selenium/json",
         "//java/client/src/org/openqa/selenium/remote",
         "//java/client/src/org/openqa/selenium/support/decorators",
         "//java/client/test/org/openqa/selenium/testing:annotations",
         artifact("junit:junit"),
-         artifact("com.google.guava:guava"),
+        artifact("com.google.guava:guava"),
         artifact("org.assertj:assertj-core"),
         artifact("org.mockito:mockito-core"),
     ],

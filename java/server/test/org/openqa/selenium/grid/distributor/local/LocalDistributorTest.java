@@ -31,20 +31,21 @@ import org.openqa.selenium.grid.data.NodeStatus;
 import org.openqa.selenium.grid.data.NodeStatusEvent;
 import org.openqa.selenium.grid.data.RequestId;
 import org.openqa.selenium.grid.data.Session;
+import org.openqa.selenium.grid.data.SessionRequest;
 import org.openqa.selenium.grid.distributor.Distributor;
-import org.openqa.selenium.grid.distributor.gridmodel.local.LocalGridModel;
 import org.openqa.selenium.grid.distributor.selector.DefaultSlotSelector;
 import org.openqa.selenium.grid.node.Node;
 import org.openqa.selenium.grid.node.local.LocalNode;
 import org.openqa.selenium.grid.security.Secret;
 import org.openqa.selenium.grid.sessionmap.local.LocalSessionMap;
 import org.openqa.selenium.grid.sessionqueue.NewSessionQueue;
-import org.openqa.selenium.grid.data.SessionRequest;
 import org.openqa.selenium.grid.sessionqueue.local.LocalNewSessionQueue;
+import org.openqa.selenium.grid.testing.PassthroughHttpClient;
 import org.openqa.selenium.grid.testing.TestSessionFactory;
 import org.openqa.selenium.internal.Either;
 import org.openqa.selenium.remote.HttpSessionId;
 import org.openqa.selenium.remote.SessionId;
+import org.openqa.selenium.remote.http.ClientConfig;
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpRequest;
@@ -64,10 +65,14 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.Callable;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
+import static java.util.Collections.newSetFromMap;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
 import static org.openqa.selenium.grid.data.Availability.DRAINING;
@@ -79,7 +84,6 @@ public class LocalDistributorTest {
   private final Secret registrationSecret = new Secret("bavarian smoked");
   private Tracer tracer;
   private EventBus bus;
-  private HttpClient.Factory clientFactory;
   private URI uri;
   private Node localNode;
 
@@ -87,7 +91,6 @@ public class LocalDistributorTest {
   public void setUp() throws URISyntaxException {
     tracer = DefaultTestTracer.createTracer();
     bus = new GuavaEventBus();
-    clientFactory = HttpClient.Factory.createDefault();
 
     Capabilities caps = new ImmutableCapabilities("browserName", "cheese");
     uri = new URI("http://localhost:1234");
@@ -109,10 +112,9 @@ public class LocalDistributorTest {
     Distributor distributor = new LocalDistributor(
       tracer,
       bus,
-      clientFactory,
+      new PassthroughHttpClient.Factory(localNode),
       new LocalSessionMap(tracer, bus),
       queue,
-      new LocalGridModel(bus),
       new DefaultSlotSelector(),
       registrationSecret,
       Duration.ofMinutes(5),
@@ -131,35 +133,6 @@ public class LocalDistributorTest {
   }
 
   @Test
-  public void testShouldNotAddNodeWithWrongSecret() {
-    Secret secret = new Secret("my_secret");
-    NewSessionQueue queue  = new LocalNewSessionQueue(
-      tracer,
-      bus,
-      new DefaultSlotMatcher(),
-      Duration.ofSeconds(2),
-      Duration.ofSeconds(2),
-      registrationSecret);
-    Distributor secretDistributor = new LocalDistributor(
-      tracer,
-      bus,
-      clientFactory,
-      new LocalSessionMap(tracer, bus),
-      queue,
-      new LocalGridModel(bus),
-      new DefaultSlotSelector(),
-      secret,
-      Duration.ofMinutes(5),
-      false);
-    bus.fire(new NodeStatusEvent(localNode.getStatus()));
-    DistributorStatus status = secretDistributor.getStatus();
-
-    //Check the size
-    final Set<NodeStatus> nodes = status.getNodes();
-    assertThat(nodes.size()).isEqualTo(0);
-  }
-
-  @Test
   public void testRemoveNodeFromDistributor() {
     NewSessionQueue queue  = new LocalNewSessionQueue(
       tracer,
@@ -171,10 +144,9 @@ public class LocalDistributorTest {
     Distributor distributor = new LocalDistributor(
       tracer,
       bus,
-      clientFactory,
+      new PassthroughHttpClient.Factory(localNode),
       new LocalSessionMap(tracer, bus),
       queue,
-      new LocalGridModel(bus),
       new DefaultSlotSelector(),
       registrationSecret,
       Duration.ofMinutes(5),
@@ -205,10 +177,9 @@ public class LocalDistributorTest {
     Distributor distributor = new LocalDistributor(
       tracer,
       bus,
-      clientFactory,
+      new PassthroughHttpClient.Factory(localNode),
       new LocalSessionMap(tracer, bus),
       queue,
-      new LocalGridModel(bus),
       new DefaultSlotSelector(),
       registrationSecret,
       Duration.ofMinutes(5),
@@ -231,17 +202,7 @@ public class LocalDistributorTest {
       Duration.ofSeconds(2),
       Duration.ofSeconds(2),
       registrationSecret);
-    LocalDistributor distributor = new LocalDistributor(
-      tracer,
-      bus,
-      clientFactory,
-      new LocalSessionMap(tracer, bus),
-      queue,
-      new LocalGridModel(bus),
-      new DefaultSlotSelector(),
-      registrationSecret,
-      Duration.ofMinutes(5),
-      false);
+
 
     // Add one node to ensure that everything is created in that.
     Capabilities caps = new ImmutableCapabilities("browserName", "cheese");
@@ -266,6 +227,18 @@ public class LocalDistributorTest {
       .add(caps, new TestSessionFactory(VerifyingHandler::new))
       .maximumConcurrentSessions(3)
       .build();
+
+    LocalDistributor distributor = new LocalDistributor(
+      tracer,
+      bus,
+      new PassthroughHttpClient.Factory(node),
+      new LocalSessionMap(tracer, bus),
+      queue,
+      new DefaultSlotSelector(),
+      registrationSecret,
+      Duration.ofMinutes(5),
+      false);
+
     distributor.add(node);
 
     SessionRequest sessionRequest =
@@ -317,10 +290,9 @@ public class LocalDistributorTest {
     Distributor distributor = new LocalDistributor(
       tracer,
       bus,
-      clientFactory,
+      new PassthroughHttpClient.Factory(localNode),
       new LocalSessionMap(tracer, bus),
       queue,
-      new LocalGridModel(bus),
       new DefaultSlotSelector(),
       registrationSecret,
       Duration.ofMinutes(5),
@@ -358,10 +330,9 @@ public class LocalDistributorTest {
     Distributor distributor = new LocalDistributor(
       tracer,
       bus,
-      clientFactory,
+      new PassthroughHttpClient.Factory(localNode),
       new LocalSessionMap(tracer, bus),
       queue,
-      new LocalGridModel(bus),
       new DefaultSlotSelector(),
       registrationSecret,
       Duration.ofMinutes(5),
@@ -370,6 +341,81 @@ public class LocalDistributorTest {
 
     localNode.drain();
     assertThat(localNode.isDraining()).isTrue();
+  }
+
+  @Test
+  public void slowStartingNodesShouldNotCauseReservationsToBeSerialized() {
+    NewSessionQueue queue  = new LocalNewSessionQueue(
+      tracer,
+      bus,
+      new DefaultSlotMatcher(),
+      Duration.ofSeconds(2),
+      Duration.ofSeconds(2),
+      registrationSecret);
+
+    LocalDistributor distributor = new LocalDistributor(
+      tracer,
+      bus,
+      new PassthroughHttpClient.Factory(localNode),
+      new LocalSessionMap(tracer, bus),
+      queue,
+      new DefaultSlotSelector(),
+      registrationSecret,
+      Duration.ofMinutes(5),
+      false);
+
+    Capabilities caps = new ImmutableCapabilities("browserName", "cheese");
+
+    long delay = 4000;
+    LocalNode node = LocalNode.builder(tracer, bus, uri, uri, registrationSecret)
+      .add(caps, new TestSessionFactory(caps, (id, c) -> {
+        try {
+          Thread.sleep(delay);
+        } catch (InterruptedException e) {
+          e.printStackTrace();
+        }
+        return new Handler(c);
+      }))
+      .build();
+
+    distributor.add(node);
+
+    Set<Future<Either<SessionNotCreatedException, CreateSessionResponse>>> futures =
+      newSetFromMap(new ConcurrentHashMap<>());
+    ExecutorService service = Executors.newFixedThreadPool(2);
+
+    long start = System.currentTimeMillis();
+    futures.add(
+      service.submit(() -> distributor.newSession(new SessionRequest(
+        new RequestId(UUID.randomUUID()),
+        Instant.now(),
+        Set.of(W3C),
+        Set.of(caps),
+        Map.of(),
+        Map.of()))));
+    futures.add(
+      service.submit(() -> distributor.newSession(new SessionRequest(
+        new RequestId(UUID.randomUUID()),
+        Instant.now(),
+        Set.of(W3C),
+        Set.of(caps),
+        Map.of(),
+        Map.of()))));
+
+    futures.forEach(f -> {
+      try {
+        f.get();
+      } catch (InterruptedException e) {
+        fail("Interrupted");
+      } catch (ExecutionException e) {
+        throw new RuntimeException(e);
+      }
+    });
+
+    // If the sessions are created serially, then we expect the first
+    // session to take up to `delay` ms to complete, followed by the
+    // second session.
+    assertThat(System.currentTimeMillis() - start).isLessThan(delay * 2);
   }
 
   private class Handler extends Session implements HttpHandler {

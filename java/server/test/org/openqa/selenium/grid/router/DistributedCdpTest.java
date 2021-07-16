@@ -18,10 +18,10 @@
 package org.openqa.selenium.grid.router;
 
 import com.google.common.collect.ImmutableMap;
+
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.openqa.selenium.Capabilities;
-import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.MutableCapabilities;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
@@ -42,7 +42,6 @@ import org.openqa.selenium.remote.http.Route;
 import org.openqa.selenium.support.devtools.NetworkInterceptor;
 import org.openqa.selenium.testing.drivers.Browser;
 
-import java.io.IOException;
 import java.io.StringReader;
 import java.util.HashMap;
 import java.util.Map;
@@ -70,8 +69,7 @@ public class DistributedCdpTest {
       browser.getCapabilities(),
       new TomlConfig(new StringReader(
         "[node]\n" +
-          "detect-drivers = true\n" +
-          "drivers = " + browser.displayName())));
+        "driver-implementation = " + browser.displayName())));
 
     Server<?> server = new NettyServer(
       new BaseServerOptions(new MapConfig(ImmutableMap.of())),
