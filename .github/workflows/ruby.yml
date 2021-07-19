@@ -7,7 +7,20 @@ on:
   pull_request:
     branches:
       - trunk
-
+    paths:
+      # These files are common to all languages
+      - scripts/**
+      - common/**
+      - javascript/atoms/**
+      - third_party/**
+      - copyiedriver.bat
+      - go
+      - github/actions/**
+      # These files are specific to ruby
+      - rake_tasks/**
+      - rb/**
+      - Rakefile
+      - .github/workflows/ruby.yml
 jobs:
   build:
     runs-on: ubuntu-latest
