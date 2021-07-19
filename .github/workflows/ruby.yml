@@ -4,9 +4,23 @@ on:
   push:
     branches:
       - trunk
+    paths:
+      - rb/**
+      - scripts/**
+      - common/**
+      - rake_tasks/**
+      - Rakefile
+      - .github/workflows/ruby.yml
   pull_request:
     branches:
       - trunk
+    paths:
+      - rb/**
+      - scripts/**
+      - common/**
+      - rake_tasks/**
+      - Rakefile
+      - .github/workflows/ruby.yml
 
 jobs:
   build:
