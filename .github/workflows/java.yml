@@ -15,8 +15,6 @@ on:
       - javascript/atoms/**
       # These files are specific to java
       - java/**
-      - BUILD.bazel
-      - Rakefile
       - .github/workflows/java.yml
 env:
   NODE_VERSION: '13.x'
