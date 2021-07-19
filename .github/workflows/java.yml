@@ -9,19 +9,13 @@ on:
       - trunk
     paths:
       # These files are common to all languages
-      - scripts/**
+      - .bazel*
+      - .github/actions
       - common/**
       - javascript/atoms/**
-      - third_party/**
-      - copyiedriver.bat
-      - go
-      - github/actions/**
       # These files are specific to java
       - java/**
       - BUILD.bazel
-      - .bazelversion
-      - .bazelrc
-      - .bazelignore
       - Rakefile
       - .github/workflows/java.yml
 env:
