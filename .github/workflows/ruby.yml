@@ -10,7 +10,7 @@ on:
     paths:
       # These files are common to all languages
       - .bazel*
-      - .github/actions
+      - .github/actions/**
       - common/**
       - javascript/atoms/**
       # These files are specific to ruby
