@@ -13,6 +13,8 @@ on:
       - .github/actions/**
       - common/**
       - javascript/atoms/**
+      - javascript/cdp-support/**
+      - javascript/webdriver/**
       # These files are specific to java
       - java/**
       - .github/workflows/java.yml
