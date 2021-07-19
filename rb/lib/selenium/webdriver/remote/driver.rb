@@ -30,11 +30,6 @@ module Selenium
         include DriverExtensions::UploadsFiles
         include DriverExtensions::HasSessionId
         include DriverExtensions::HasRemoteStatus
-        include DriverExtensions::HasWebStorage
-        include DriverExtensions::HasDevTools
-        include DriverExtensions::HasAuthentication
-        include DriverExtensions::HasLogEvents
-        include DriverExtensions::HasNetworkInterception
 
         def initialize(bridge: nil, listener: nil, **opts)
           desired_capabilities = opts[:desired_capabilities]
@@ -49,22 +44,14 @@ module Selenium
           super
         end
 
-        def print_page(**options)
-          options[:page_ranges] &&= Array(options[:page_ranges])
-
-          @bridge.print_page(options)
-        end
-
         private
-
-        def devtools_version
-          return Firefox::DEVTOOLS_VERSION if browser == :firefox
-
-          Integer(capabilities.browser_version.split('.').first)
-        end
 
         def devtools_url
           capabilities['se:cdp']
+        end
+
+        def devtools_version
+          capabilities['se:cdpVersion'].split('.').first
         end
       end # Driver
     end # Remote

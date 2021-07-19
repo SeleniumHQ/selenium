@@ -1,3 +1,56 @@
+Selenium 4 Beta 4 (The Final Beta)
+
+* Returning fixed IP in GitHub actions (#9550)
+* PEP 484 type hints for common.exceptions and webdriver.support.color (#9482)
+* Add the ability to pass in multiple options and have that capabilities returned as (first|always)Match
+* Add docstrings for RelativeBy
+* Add the ability to pass in different locators to do Relative Locator searches
+* Add a test with returning a JS Const object #9468
+* Handle poor responses from drivers when there are errors. Fixes #9437
+* Add the ability to enable mobile on options classes
+* Add the ability to use Options classes on Safari
+* Fix converting list of tuples to str in send_keys (#9330)
+* Expand element to be clickable in expected conditions(#9374)
+* Upgrade rules_python to 0.2.0
+
+Selenium 4 Beta 3
+
+* Enable more tests
+* Improve support for WebDriver Bidi over selenium grid
+* Update CDP Support versions to remove 86,87 and add 90,91
+* Allow overriding the default 250 msecs duration of pointer movement (#9336)
+* Only give deprecation warning if Profile is being used in options
+* Loosen version requirements on dependencies. Fixes #9312
+* Bump urllib3 from 1.26.2 to 1.26.3 in /py (#9311)
+* Disable wait on frame test due to bug in Firefox
+* Correct pinned browser path for chrome on linux
+
+Selenium 4 beta 2 Post 1
+
+* Fix Chrome instantiation
+
+Selenium 4 beta 2
+
+* Set up python for pinned browsers
+* Add Multiple file upload test
+* Fix using arguments in Chrome Option. Fixes  #9281
+* Deprecate arguments in remote webdriver instantiation
+* Improve proxy via options test for Firefox
+* Set Chromium Edge to be the default for Edge browsers
+* Move code so that it is reachable
+* Fix usage of options to RemoteWebDriver (#9240)
+* Deprecate using a Firefox profile in Options
+* use attribute endpoint to evaluate multiple selects
+* implement get_dom_attribute
+* Add attribute_to_be_include method to expected_conditions when the at… (#9200)
+* Additional Python type hints (#9192)
+* Correct Type Hinting on option method. Fixes #9210
+* Use a flat namespace for selenium options
+* remove unused imports
+* Add ARIA APIs for getting the role and label of an Element
+* Fix homepage attribute in wheel target
+* Avoid using bazel native python rules
+
 Selenium 4.0 Beta 1
 
 * Deprecate all but `Options` and `Service` arguments in driver instantiation. (#9125,#9128)
@@ -844,5 +897,7 @@ Selenium 2 Beta 2
 * Improved IEDriver
 * Basic Authentication support for Selenium 2
 * Ability to have multiple Firefox instances
+
+
 
 

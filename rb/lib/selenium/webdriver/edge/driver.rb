@@ -33,14 +33,10 @@ module Selenium
           :edge
         end
 
-        def bridge_class
-          Bridge
-        end
-
         private
 
-        def devtools_debugger_address
-          capabilities['ms:edgeOptions']['debuggerAddress']
+        def devtools_address
+          "http://#{capabilities['ms:edgeOptions']['debuggerAddress']}"
         end
       end # Driver
     end # Edge

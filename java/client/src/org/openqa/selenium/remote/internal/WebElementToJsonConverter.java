@@ -17,10 +17,7 @@
 
 package org.openqa.selenium.remote.internal;
 
-import static java.util.stream.Collectors.toList;
-
 import com.google.common.collect.ImmutableMap;
-
 import org.openqa.selenium.WrapsElement;
 import org.openqa.selenium.remote.Dialect;
 import org.openqa.selenium.remote.RemoteWebElement;
@@ -30,6 +27,8 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
+
+import static java.util.stream.Collectors.toList;
 
 /**
  * Converts {@link RemoteWebElement} objects, which may be

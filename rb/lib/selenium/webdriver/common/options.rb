@@ -109,12 +109,11 @@ module Selenium
       def as_json(*)
         options = @options.dup
 
-        w3c_options = options.select { |key, _val| W3C_OPTIONS.include?(key) }
-        options.delete_if { |key, _val| W3C_OPTIONS.include?(key) }
+        w3c_options = process_w3c_options(options)
 
         self.class::CAPABILITIES.each do |capability_alias, capability_name|
           capability_value = options.delete(capability_alias)
-          options[capability_name] = capability_value unless capability_value.nil?
+          options[capability_name] = capability_value if !capability_value.nil? && !options.key?(capability_name)
         end
         browser_options = defined?(self.class::KEY) ? {self.class::KEY => options} : options
 
@@ -123,6 +122,13 @@ module Selenium
       end
 
       private
+
+      def process_w3c_options(options)
+        w3c_options = options.select { |key, _val| W3C_OPTIONS.include?(key) }
+        w3c_options[:unhandled_prompt_behavior] &&= w3c_options[:unhandled_prompt_behavior]&.to_s&.tr('_', ' ')
+        options.delete_if { |key, _val| W3C_OPTIONS.include?(key) }
+        w3c_options
+      end
 
       def process_browser_options(_browser_options)
         nil
@@ -134,12 +140,7 @@ module Selenium
 
       def generate_as_json(value, camelize_keys: true)
         if value.is_a?(Hash)
-          value.each_with_object({}) do |(key, val), hash|
-            next if val.respond_to?(:empty?) && val.empty?
-
-            key = convert_json_key(key, camelize: camelize_keys)
-            hash[key] = generate_as_json(val, camelize_keys: camelize?(key))
-          end
+          process_json_hash(value, camelize_keys)
         elsif value.respond_to?(:as_json)
           value.as_json
         elsif value.is_a?(Array)
@@ -148,6 +149,16 @@ module Selenium
           value.to_s
         else
           value
+        end
+      end
+
+      def process_json_hash(value, camelize_keys)
+        value.each_with_object({}) do |(key, val), hash|
+          next if val.respond_to?(:empty?) && val.empty?
+
+          camelize = camelize_keys ? camelize?(key) : false
+          key = convert_json_key(key, camelize: camelize)
+          hash[key] = generate_as_json(val, camelize_keys: camelize)
         end
       end
 

@@ -66,7 +66,7 @@ public class StressTest {
       browser.getCapabilities(),
       new TomlConfig(new StringReader(
         "[node]\n" +
-          "drivers = " + browser.displayName())));
+        "driver-implementation = " + browser.displayName())));
     tearDowns.add(deployment);
 
     server = deployment.getServer();
@@ -121,6 +121,6 @@ public class StressTest {
       });
     }
 
-    CompletableFuture.allOf(futures).get(2, MINUTES);
+    CompletableFuture.allOf(futures).get(4, MINUTES);
   }
 }

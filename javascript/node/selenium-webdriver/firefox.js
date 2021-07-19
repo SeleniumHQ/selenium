@@ -124,7 +124,6 @@ const io = require('./io')
 const remote = require('./remote')
 const webdriver = require('./lib/webdriver')
 const zip = require('./io/zip')
-const cdp = require('./devtools/CDPConnection')
 const { Browser, Capabilities } = require('./lib/capabilities')
 const { Zip } = require('./io/zip')
 
@@ -393,6 +392,24 @@ class Options extends Capabilities {
       return this
     }
     throw TypeError('binary must be a string path or Channel object')
+  }
+
+  /**
+   * Enables Mobile start up features
+   *
+   * @param {string} androidPackage The package to use
+   * @return {!Options} A self reference
+   */
+  enableMobile(androidPackage = "org.mozilla.firefox", androidActivity = null, deviceSerial = null) {
+    this.firefoxOptions_().androidPackage = androidPackage
+
+    if (androidActivity) {
+      this.firefoxOptions_().androidActivity = androidActivity
+    }
+    if (deviceSerial) {
+      this.firefoxOptions_().deviceSerial = deviceSerial
+    }
+    return this
   }
 }
 

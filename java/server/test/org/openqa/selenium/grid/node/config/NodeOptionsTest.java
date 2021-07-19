@@ -17,21 +17,16 @@
 
 package org.openqa.selenium.grid.node.config;
 
-import static java.util.Collections.emptyMap;
-import static java.util.Collections.emptySet;
-import static java.util.Collections.singletonMap;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.fail;
-import static org.junit.Assume.assumeFalse;
-import static org.junit.Assume.assumeTrue;
-
 import com.google.common.collect.ImmutableMap;
 
 import org.assertj.core.api.Condition;
 import org.junit.Test;
+import org.mockito.Mockito;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.Platform;
+import org.openqa.selenium.SessionNotCreatedException;
+import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.chrome.ChromeDriverInfo;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.firefox.FirefoxOptions;
@@ -42,6 +37,7 @@ import org.openqa.selenium.grid.config.TomlConfig;
 import org.openqa.selenium.grid.data.CreateSessionRequest;
 import org.openqa.selenium.grid.node.ActiveSession;
 import org.openqa.selenium.grid.node.SessionFactory;
+import org.openqa.selenium.internal.Either;
 import org.openqa.selenium.json.Json;
 
 import java.io.StringReader;
@@ -50,7 +46,14 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
+
+import static java.util.Collections.emptyMap;
+import static java.util.Collections.emptySet;
+import static java.util.Collections.singletonMap;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.fail;
+import static org.junit.Assume.assumeFalse;
+import static org.junit.Assume.assumeTrue;
 
 @SuppressWarnings("DuplicatedCode")
 public class NodeOptionsTest {
@@ -66,7 +69,7 @@ public class NodeOptionsTest {
     List<Capabilities> reported = new ArrayList<>();
     new NodeOptions(config).getSessionFactories(caps -> {
       reported.add(caps);
-      return Collections.emptySet();
+      return Collections.singleton(HelperFactory.create(config, caps));
     });
 
     ChromeDriverInfo chromeDriverInfo = new ChromeDriverInfo();
@@ -90,7 +93,7 @@ public class NodeOptionsTest {
     List<Capabilities> reported = new ArrayList<>();
     new NodeOptions(config).getSessionFactories(caps -> {
       reported.add(caps);
-      return Collections.emptySet();
+      return Collections.singleton(HelperFactory.create(config, caps));
     });
 
     assertThat(reported).is(supporting("chrome"));
@@ -112,7 +115,7 @@ public class NodeOptionsTest {
     List<Capabilities> reported = new ArrayList<>();
     new NodeOptions(config).getSessionFactories(caps -> {
       reported.add(caps);
-      return Collections.emptySet();
+      return Collections.singleton(HelperFactory.create(config, caps));
     });
 
     // There may be more drivers available, but we know that these are meant to be here.
@@ -121,12 +124,63 @@ public class NodeOptionsTest {
   }
 
   @Test
+  public void platformNameIsAddedByDefault() {
+    Config config = new MapConfig(singletonMap("node", singletonMap("detect-drivers", "true")));
+
+    List<Capabilities> reported = new ArrayList<>();
+    new NodeOptions(config).getSessionFactories(caps -> {
+      reported.add(caps);
+      return Collections.singleton(HelperFactory.create(config, caps));
+    });
+
+    assertThat(reported)
+      .filteredOn(capabilities -> capabilities.getPlatformName() != null)
+      .hasSize(reported.size());
+  }
+
+  @Test
+  public void vncEnabledCapabilityIsAddedWhenEnvVarIsTrue() {
+    Config config = new MapConfig(singletonMap("node", singletonMap("detect-drivers", "true")));
+
+    List<Capabilities> reported = new ArrayList<>();
+    NodeOptions nodeOptions = new NodeOptions(config);
+    NodeOptions nodeOptionsSpy = Mockito.spy(nodeOptions);
+    Mockito.doReturn(true).when(nodeOptionsSpy).isVncEnabled();
+    nodeOptionsSpy.getSessionFactories(caps -> {
+      reported.add(caps);
+      return Collections.singleton(HelperFactory.create(config, caps));
+    });
+
+    assertThat(reported)
+      .filteredOn(capabilities -> capabilities.getCapability("se:vncEnabled") != null)
+      .hasSize(reported.size());
+  }
+
+  @Test
+  public void vncEnabledCapabilityIsNotAddedWhenEnvVarIsFalse() {
+    Config config = new MapConfig(singletonMap("node", singletonMap("detect-drivers", "true")));
+
+    List<Capabilities> reported = new ArrayList<>();
+    NodeOptions nodeOptions = new NodeOptions(config);
+    NodeOptions nodeOptionsSpy = Mockito.spy(nodeOptions);
+    Mockito.doReturn(false).when(nodeOptionsSpy).isVncEnabled();
+    nodeOptionsSpy.getSessionFactories(caps -> {
+      reported.add(caps);
+      return Collections.singleton(HelperFactory.create(config, caps));
+    });
+
+    assertThat(reported)
+      .filteredOn(capabilities -> capabilities.getCapability("se:vncEnabled") == null)
+      .hasSize(reported.size());
+  }
+
+  @Test
   public void canConfigureNodeWithoutDriverDetection() {
     Config config = new MapConfig(singletonMap("node", singletonMap("detect-drivers", "false")));
     List<Capabilities> reported = new ArrayList<>();
     new NodeOptions(config).getSessionFactories(caps -> {
       reported.add(caps);
-      return Collections.emptySet();
+      return Collections.singleton(HelperFactory.create(config, caps));
     });
 
     assertThat(reported).isEmpty();
@@ -144,7 +198,7 @@ public class NodeOptionsTest {
     try {
       new NodeOptions(config).getSessionFactories(caps -> {
         reported.add(caps);
-        return Collections.emptySet();
+        return Collections.singleton(HelperFactory.create(config, caps));
       });
       fail("Should have not executed 'getSessionFactories' successfully");
     } catch (ConfigException e) {
@@ -161,7 +215,7 @@ public class NodeOptionsTest {
     List<Capabilities> reported = new ArrayList<>();
     new NodeOptions(config).getSessionFactories(caps -> {
       reported.add(caps);
-      return Collections.emptySet();
+      return Collections.singleton(HelperFactory.create(config, caps));
     });
 
     assertThat(reported).isNotEmpty();
@@ -209,11 +263,11 @@ public class NodeOptionsTest {
       "detect-drivers = false",
       "[[node.driver-configuration]]",
       "name = \"Chrome Beta\"",
-      "max-sessions = 2",
+      "max-sessions = 1",
       String.format("stereotype = \"%s\"", chromeCaps.toString().replace("\"", "\\\"")),
       "[[node.driver-configuration]]",
       "name = \"Firefox Nightly\"",
-      "max-sessions = 3",
+      "max-sessions = 2",
       String.format("stereotype = \"%s\"", firefoxCaps.toString().replace("\"", "\\\""))
     };
     Config config = new TomlConfig(new StringReader(String.join("\n", rawConfig)));
@@ -221,7 +275,7 @@ public class NodeOptionsTest {
     List<Capabilities> reported = new ArrayList<>();
     new NodeOptions(config).getSessionFactories(capabilities -> {
       reported.add(capabilities);
-      return Collections.emptySet();
+      return Collections.singleton(HelperFactory.create(config, capabilities));
     });
 
     assertThat(reported).is(supporting("chrome"));
@@ -235,7 +289,7 @@ public class NodeOptionsTest {
             .get("binary").equalsIgnoreCase(chromeLocation));
     assertThat(reported)
       .filteredOn(capabilities -> capabilities.asMap().containsKey(ChromeOptions.CAPABILITY))
-      .hasSize(2);
+      .hasSize(1);
 
     //noinspection unchecked
     assertThat(reported)
@@ -246,7 +300,7 @@ public class NodeOptionsTest {
             .get("binary").equalsIgnoreCase(firefoxLocation));
     assertThat(reported)
       .filteredOn(capabilities -> capabilities.asMap().containsKey(FirefoxOptions.FIREFOX_OPTIONS))
-      .hasSize(3);
+      .hasSize(2);
   }
 
   @Test
@@ -269,7 +323,7 @@ public class NodeOptionsTest {
     try {
       new NodeOptions(config).getSessionFactories(caps -> {
         reported.add(caps);
-        return Collections.emptySet();
+        return Collections.singleton(HelperFactory.create(config, caps));
       });
       fail("Should have not executed 'getSessionFactories' successfully because driver config " +
            "needs the stereotype field");
@@ -278,6 +332,55 @@ public class NodeOptionsTest {
     }
 
     assertThat(reported).isEmpty();
+  }
+
+  @Test
+  public void shouldNotOverrideMaxSessionsByDefault() {
+    assumeTrue("ChromeDriver needs to be available", new ChromeDriverInfo().isAvailable());
+    int maxRecommendedSessions = Runtime.getRuntime().availableProcessors();
+    int overriddenMaxSessions = maxRecommendedSessions + 10;
+    Config config = new MapConfig(
+      singletonMap("node",
+                   ImmutableMap
+                     .of("max-sessions", overriddenMaxSessions)));
+    List<Capabilities> reported = new ArrayList<>();
+    try {
+      new NodeOptions(config).getSessionFactories(caps -> {
+        reported.add(caps);
+        return Collections.singleton(HelperFactory.create(config, caps));
+      });
+    } catch (ConfigException e) {
+      // Fall through
+    }
+    long chromeSlots = reported.stream()
+      .filter(capabilities -> "chrome".equalsIgnoreCase(capabilities.getBrowserName()))
+      .count();
+    assertThat(chromeSlots).isEqualTo(maxRecommendedSessions);
+  }
+
+  @Test
+  public void canOverrideMaxSessionsWithFlag() {
+    assumeTrue("ChromeDriver needs to be available", new ChromeDriverInfo().isAvailable());
+    int maxRecommendedSessions = Runtime.getRuntime().availableProcessors();
+    int overriddenMaxSessions = maxRecommendedSessions + 10;
+    Config config = new MapConfig(
+      singletonMap("node",
+                   ImmutableMap
+                     .of("max-sessions", overriddenMaxSessions,
+                         "override-max-sessions", true)));
+    List<Capabilities> reported = new ArrayList<>();
+    try {
+      new NodeOptions(config).getSessionFactories(caps -> {
+        reported.add(caps);
+        return Collections.singleton(HelperFactory.create(config, caps));
+      });
+    } catch (ConfigException e) {
+      // Fall through
+    }
+    long chromeSlots = reported.stream()
+      .filter(capabilities -> "chrome".equalsIgnoreCase(capabilities.getBrowserName()))
+      .count();
+    assertThat(chromeSlots).isEqualTo(overriddenMaxSessions);
   }
 
   private Condition<? super List<? extends Capabilities>> supporting(String name) {
@@ -292,8 +395,9 @@ public class NodeOptionsTest {
     public static SessionFactory create(Config config, Capabilities caps) {
       return new SessionFactory() {
         @Override
-        public Optional<ActiveSession> apply(CreateSessionRequest createSessionRequest) {
-          return Optional.empty();
+        public Either<WebDriverException, ActiveSession> apply(
+          CreateSessionRequest createSessionRequest) {
+          return Either.left(new SessionNotCreatedException("HelperFactory for testing"));
         }
 
         @Override

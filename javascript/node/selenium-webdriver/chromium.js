@@ -214,6 +214,14 @@ class ServiceBuilder extends remote.DriverService.Builder {
   }
 
   /**
+   * Enables Chrome logging.
+   * @returns {!ServiceBuilder} A self reference.
+   */
+   enableChromeLogging() {
+    return this.addArguments('--enable-chrome-logs');
+  }
+
+  /**
    * Enables verbose logging.
    * @return {!ServiceBuilder} A self reference.
    */
@@ -272,6 +280,19 @@ class Options extends Capabilities {
     if (newArgs.length) {
       this.options_.args = newArgs
     }
+    return this
+  }
+
+  /**
+   * Sets the address of a Chromium remote debugging server to connect to.
+   * Address should be of the form "{hostname|IP address}:port"
+   * (e.g. "localhost:9222").
+   *
+   * @param {string} address The address to connect to.
+   * @return {!Options} A self reference.
+   */
+  debuggerAddress(address) {
+    this.options_.debuggerAddress = address;
     return this
   }
 
@@ -550,6 +571,21 @@ class Options extends Capabilities {
   }
 
   /**
+   * Sets a list of the window types that will appear when getting window
+   * handles. For access to <webview> elements, include "webview" in the list.
+   * @param {...(string|!Array<string>)} args The window types that will appear
+   * when getting window handles.
+   * @return {!Options} A self reference.
+   */
+  windowTypes(...args) {
+    let windowTypes = (this.options_.windowTypes || []).concat(...args)
+    if (windowTypes.length) {
+      this.options_.windowTypes = windowTypes
+    }
+    return this
+  }
+
+  /**
    * Converts this instance to its JSON wire protocol representation. Note this
    * function is an implementation not intended for general use.
    *
@@ -565,7 +601,7 @@ class Options extends Capabilities {
           return extension.toString('base64')
         }
         return io
-          .read(/** @type {string} */(extension))
+          .read(/** @type {string} */ (extension))
           .then((buffer) => buffer.toString('base64'))
       })
     }
@@ -618,7 +654,7 @@ class Driver extends webdriver.WebDriver {
    * implementation.
    * @override
    */
-  setFileDetector() { }
+  setFileDetector() {}
 
   /**
    * Schedules a command to launch Chrome App with given ID.

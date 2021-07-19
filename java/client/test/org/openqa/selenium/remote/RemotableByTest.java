@@ -210,7 +210,7 @@ public class RemotableByTest {
   }
 
   @SafeVarargs
-  private final WebDriver createDriver(Function<Command, Response>... responses) {
+  private WebDriver createDriver(Function<Command, Response>... responses) {
     Iterator<Function<Command, Response>> iterator = Arrays.stream(responses).iterator();
     CommandExecutor executor = cmd -> iterator.next().apply(cmd);
 

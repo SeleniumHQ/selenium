@@ -17,35 +17,28 @@
 
 package org.openqa.selenium.firefox;
 
-import static java.net.HttpURLConnection.HTTP_OK;
-import static java.nio.charset.StandardCharsets.UTF_8;
-import static java.util.Collections.singletonMap;
-import static org.openqa.selenium.json.Json.MAP_TYPE;
-import static org.openqa.selenium.remote.CapabilityType.PROXY;
-import static org.openqa.selenium.remote.http.Contents.string;
-import static org.openqa.selenium.remote.http.HttpMethod.GET;
-
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
-
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.MutableCapabilities;
 import org.openqa.selenium.OutputType;
+import org.openqa.selenium.PersistentCapabilities;
 import org.openqa.selenium.Proxy;
 import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.devtools.CdpEndpointFinder;
 import org.openqa.selenium.devtools.CdpInfo;
 import org.openqa.selenium.devtools.CdpVersionFinder;
 import org.openqa.selenium.devtools.Connection;
 import org.openqa.selenium.devtools.DevTools;
+import org.openqa.selenium.devtools.DevToolsException;
 import org.openqa.selenium.devtools.HasDevTools;
 import org.openqa.selenium.devtools.noop.NoOpCdpInfo;
 import org.openqa.selenium.html5.LocalStorage;
 import org.openqa.selenium.html5.SessionStorage;
 import org.openqa.selenium.html5.WebStorage;
 import org.openqa.selenium.internal.Require;
-import org.openqa.selenium.json.Json;
 import org.openqa.selenium.remote.CommandInfo;
 import org.openqa.selenium.remote.FileDetector;
 import org.openqa.selenium.remote.RemoteWebDriver;
@@ -54,18 +47,19 @@ import org.openqa.selenium.remote.html5.RemoteWebStorage;
 import org.openqa.selenium.remote.http.ClientConfig;
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpMethod;
-import org.openqa.selenium.remote.http.HttpRequest;
-import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.remote.service.DriverCommandExecutor;
 import org.openqa.selenium.remote.service.DriverService;
 
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.nio.file.Path;
-import java.util.Map;
+import java.util.Optional;
 import java.util.ServiceLoader;
 import java.util.Set;
 import java.util.stream.StreamSupport;
+
+import static java.nio.charset.StandardCharsets.UTF_8;
+import static java.util.Collections.singletonMap;
+import static org.openqa.selenium.remote.CapabilityType.PROXY;
 
 /**
  * An implementation of the {#link WebDriver} interface that drives Firefox.
@@ -83,8 +77,7 @@ import java.util.stream.StreamSupport;
  * </pre>
  */
 public class FirefoxDriver extends RemoteWebDriver
-  implements WebStorage, HasExtensions, HasDevTools
-{
+  implements WebStorage, HasExtensions, HasDevTools {
 
   public static final class SystemProperty {
 
@@ -168,8 +161,10 @@ public class FirefoxDriver extends RemoteWebDriver
     }
   }
 
+  private final Capabilities capabilities;
   protected FirefoxBinary binary;
-  private RemoteWebStorage webStorage;
+  private final RemoteWebStorage webStorage;
+  private final Optional<URI> cdpUri;
   private DevTools devTools;
 
   public FirefoxDriver() {
@@ -209,6 +204,19 @@ public class FirefoxDriver extends RemoteWebDriver
   private FirefoxDriver(FirefoxDriverCommandExecutor executor, FirefoxOptions options) {
     super(executor, dropCapabilities(options));
     webStorage = new RemoteWebStorage(getExecuteMethod());
+
+    Capabilities capabilities = super.getCapabilities();
+    HttpClient.Factory clientFactory = HttpClient.Factory.createDefault();
+    Optional<URI> cdpUri = CdpEndpointFinder.getReportedUri("moz:debuggerAddress", capabilities)
+      .flatMap(reported -> CdpEndpointFinder.getCdpEndPoint(clientFactory, reported));
+
+    this.cdpUri = cdpUri;
+    this.capabilities = cdpUri.map(uri ->
+        new ImmutableCapabilities(
+            new PersistentCapabilities(capabilities)
+                .setCapability("se:cdp", uri.toString())
+                .setCapability("se:cdpVersion", "85")))
+        .orElse(new ImmutableCapabilities(capabilities));
   }
 
   private static FirefoxDriverCommandExecutor toExecutor(FirefoxOptions options) {
@@ -226,6 +234,11 @@ public class FirefoxDriver extends RemoteWebDriver
             .findFirst().orElseThrow(WebDriverException::new);
 
     return new FirefoxDriverCommandExecutor(builder.withOptions(options).build());
+  }
+
+  @Override
+  public Capabilities getCapabilities() {
+    return capabilities;
   }
 
   @Override
@@ -331,36 +344,17 @@ public class FirefoxDriver extends RemoteWebDriver
   @Override
   public DevTools getDevTools() {
     if (devTools == null) {
-      Object debuggerAddress = getCapabilities().getCapability("moz:debuggerAddress");
-      if (debuggerAddress == null) {
-        throw new WebDriverException("This version of Firefox or geckodriver does not support CDP");
-      }
-      try {
-        URI uri = new URI(String.format("http://%s", debuggerAddress));
-        ClientConfig config = ClientConfig.defaultConfig().baseUri(uri);
-        HttpClient.Factory clientFactory = HttpClient.Factory.createDefault();
-        HttpClient client = clientFactory.createClient(config);
+      URI wsUri = cdpUri.orElseThrow(() ->
+          new DevToolsException("This version of Firefox or geckodriver does not support CDP"));
 
-        HttpResponse res = client.execute(new HttpRequest(GET, "/json/version"));
-        if (res.getStatus() != HTTP_OK) {
-          throw new WebDriverException("Could not obtain information about CDP version supported by the driver");
-        }
-        Map<String, Object> versionData = new Json().toType(string(res), MAP_TYPE);
-        Object debuggerUrl = versionData.get("webSocketDebuggerUrl");
-        if (!(debuggerUrl instanceof String)) {
-          throw new WebDriverException("The driver did not provide CDP endpoint");
-        }
+      HttpClient.Factory clientFactory = HttpClient.Factory.createDefault();
 
-        URI wsUri = new URI((String) debuggerUrl);
-        ClientConfig wsConfig = ClientConfig.defaultConfig().baseUri(wsUri);
-        HttpClient wsClient = clientFactory.createClient(wsConfig);
+      ClientConfig wsConfig = ClientConfig.defaultConfig().baseUri(wsUri);
+      HttpClient wsClient = clientFactory.createClient(wsConfig);
 
-        Connection connection = new Connection(wsClient, wsUri.toString());
-        CdpInfo cdpInfo = new CdpVersionFinder().match("86.0").orElseGet(NoOpCdpInfo::new);
-        devTools = new DevTools(cdpInfo::getDomains, connection);
-      } catch (URISyntaxException e) {
-        throw new WebDriverException("Could not initialize DevTools", e);
-      }
+      Connection connection = new Connection(wsClient, wsUri.toString());
+      CdpInfo cdpInfo = new CdpVersionFinder().match("85.0").orElseGet(NoOpCdpInfo::new);
+      devTools = new DevTools(cdpInfo::getDomains, connection);
     }
     return devTools;
   }

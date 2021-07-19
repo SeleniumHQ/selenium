@@ -217,6 +217,16 @@ module Selenium
             expect(options.as_json).to eq("browserName" => "chrome", "goog:chromeOptions" => {"foo" => "bar"})
           end
 
+          it 'converts profile' do
+            profile = Profile.new
+            directory = profile.directory
+
+            opts = Options.new(profile: profile)
+            expect(opts.as_json).to eq('browserName' => 'chrome',
+                                       'goog:chromeOptions' =>
+                                         {'args' => ["--user-data-dir=#{directory}"]})
+          end
+
           it 'returns a JSON hash' do
             allow(File).to receive(:file?).and_return(true)
             allow_any_instance_of(Options).to receive(:encode_extension).with('foo.crx').and_return("encoded_foo")
@@ -225,8 +235,8 @@ module Selenium
             opts = Options.new(browser_version: '75',
                                platform_name: 'win10',
                                accept_insecure_certs: false,
-                               page_load_strategy: 'eager',
-                               unhandled_prompt_behavior: 'accept',
+                               page_load_strategy: :eager,
+                               unhandled_prompt_behavior: :accept_and_notify,
                                strict_file_interactability: true,
                                timeouts: {script: 40000,
                                           page_load: 400000,
@@ -234,13 +244,17 @@ module Selenium
                                set_window_rect: false,
                                args: %w[foo bar],
                                prefs: {foo: 'bar',
-                                       key_that_should_not_be_camelcased: 'baz'},
+                                       key_that_should_not_be_camelcased: 'baz',
+                                       nested_one: {nested_two: 'bazbar'}},
                                binary: '/foo/bar',
                                extensions: ['foo.crx', 'bar.crx'],
                                encoded_extensions: ['encoded_foobar'],
                                foo: 'bar',
                                emulation: {device_name: :mine},
-                               local_state: {foo: 'bar'},
+                               local_state: {
+                                 foo: 'bar',
+                                 key_that_should_not_be_camelcased: 'baz'
+                               },
                                detach: true,
                                debugger_address: '127.0.0.1:8181',
                                exclude_switches: %w[foobar barfoo],
@@ -254,7 +268,7 @@ module Selenium
                                        'platformName' => 'win10',
                                        'acceptInsecureCerts' => false,
                                        'pageLoadStrategy' => 'eager',
-                                       'unhandledPromptBehavior' => 'accept',
+                                       'unhandledPromptBehavior' => 'accept and notify',
                                        'strictFileInteractability' => true,
                                        'timeouts' => {'script' => 40000,
                                                       'pageLoad' => 400000,
@@ -262,12 +276,16 @@ module Selenium
                                        'setWindowRect' => false,
                                        key => {'args' => %w[foo bar],
                                                'prefs' => {'foo' => 'bar',
-                                                           'key_that_should_not_be_camelcased' => 'baz'},
+                                                           'key_that_should_not_be_camelcased' => 'baz',
+                                                           'nested_one' => {'nested_two' => 'bazbar'}},
                                                'binary' => '/foo/bar',
                                                'extensions' => %w[encoded_foobar encoded_foo encoded_bar],
                                                'foo' => 'bar',
                                                'mobileEmulation' => {'deviceName' => 'mine'},
-                                               'localState' => {'foo' => 'bar'},
+                                               'localState' => {
+                                                 'foo' => 'bar',
+                                                 'key_that_should_not_be_camelcased' => 'baz'
+                                               },
                                                'detach' => true,
                                                'debuggerAddress' => '127.0.0.1:8181',
                                                'excludeSwitches' => %w[foobar barfoo],

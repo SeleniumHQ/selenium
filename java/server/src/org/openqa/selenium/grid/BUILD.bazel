@@ -1,6 +1,6 @@
 load("@rules_jvm_external//:defs.bzl", "artifact")
 load("//common:defs.bzl", "copy_file")
-load("//java:defs.bzl", "java_binary", "java_dist_zip", "java_export", "java_library", "javadoc")
+load("//java:defs.bzl", "java_binary", "java_dist_zip", "java_export", "java_library", "javadoc", "merge_jars")
 load("//java:version.bzl", "SE_VERSION")
 load("//java/client/src/org/openqa/selenium/devtools:versions.bzl", "CDP_DEPS")
 
@@ -8,15 +8,54 @@ genrule(
     name = "executable-grid",
     srcs = [
         "zip-preamble.sh",
-        ":selenium_server_deploy.jar",
+        ":add-build-info",
     ],
     outs = ["selenium"],
-    cmd = "cat $(location :zip-preamble.sh) $(location :selenium_server_deploy.jar) > $@",
+    cmd = "cat $(location :zip-preamble.sh) $(location :add-build-info) > $@",
     executable = True,
     visibility = [
         "//:__pkg__",
         "//deploys/docker:__pkg__",
     ],
+)
+
+java_binary(
+    name = "pinned-grid",
+    data = select({
+        "//common:linux": [
+            "@linux_chromedriver//:chromedriver",
+            "@linux_chrome//:chrome-linux",
+            "@linux_geckodriver//:geckodriver",
+            "@linux_firefox//:firefox",
+        ],
+        "//common:macos": [
+            "@mac_chromedriver//:chromedriver",
+            "@mac_chrome//:Chromium.app",
+            "@mac_firefox//:Firefox.app",
+            "@mac_geckodriver//:geckodriver",
+        ],
+        "//conditions:default": [],
+    }),
+    jvm_flags = select({
+        "//common:linux": [
+            "-Dwebdriver.chrome.driver=$(location @linux_chromedriver//:chromedriver)",
+            "-Dwebdriver.chrome.binary=$(location @linux_chrome//:chrome-linux)/chrome",
+            "-Dwebdriver.gecko.driver=$(location @linux_geckodriver//:geckodriver)",
+            "-Dwebdriver.firefox.bin=$(location @linux_firefox//:firefox)/firefox",
+        ],
+        "//common:macos": [
+            "-Dwebdriver.chrome.driver=$(location @mac_chromedriver//:chromedriver)",
+            "-Dwebdriver.chrome.binary=$(location @mac_chrome//:Chromium.app)/Contents/MacOS/Chromium",
+            "-Dwebdriver.gecko.driver=$(location @mac_geckodriver//:geckodriver)",
+            "-Dwebdriver.firefox.bin=$(location @mac_firefox//:Firefox.app)/Contents/MacOS/firefox",
+        ],
+        "//conditions:default": [],
+    }),
+    main_class = "org.openqa.selenium.grid.Bootstrap",
+    visibility = [
+        "//:__pkg__",
+    ],
+    runtime_deps = [":grid"],
 )
 
 BASE_COMMAND_SRCS = [
@@ -90,6 +129,14 @@ java_export(
     ],
 )
 
+merge_jars(
+    name = "add-build-info",
+    inputs = [
+        ":selenium_server_deploy.jar",
+        "//java/client/src/org/openqa/selenium:manifest",
+    ],
+)
+
 java_binary(
     name = "selenium_server",
     main_class = "org.openqa.selenium.grid.Bootstrap",
@@ -100,6 +147,7 @@ java_binary(
         "//java/server/test:__subpackages__",
         "//javascript:__subpackages__",
         "//py:__pkg__",
+        "//rb:__pkg__",
     ],
     runtime_deps = [
         ":grid",
@@ -134,9 +182,10 @@ javadoc(
     third_party_prefixes = [
         "@maven//",
         "//third_party",
-    ],
+    ] + CDP_DEPS,
     transitive = True,
     deps = [
         ":grid",
+        "//java/client/src/org/openqa/selenium:client-combined",
     ],
 )

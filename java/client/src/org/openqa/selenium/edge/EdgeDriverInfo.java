@@ -17,6 +17,7 @@
 package org.openqa.selenium.edge;
 
 import com.google.auto.service.AutoService;
+
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.SessionNotCreatedException;
@@ -46,12 +47,12 @@ public class EdgeDriverInfo extends ChromiumDriverInfo {
 
   @Override
   public boolean isSupporting(Capabilities capabilities) {
-    return (BrowserType.EDGE.equals(capabilities.getBrowserName())
-      || capabilities.getCapability("ms:edgeOptions") != null
-      || capabilities.getCapability("edgeOptions") != null)
-      &&
-      (capabilities.getCapability(EdgeOptions.USE_CHROMIUM) == null
-        || Objects.equals(capabilities.getCapability(EdgeOptions.USE_CHROMIUM), true));
+    return (BrowserType.EDGE.equalsIgnoreCase(capabilities.getBrowserName())
+            || capabilities.getCapability("ms:edgeOptions") != null
+            || capabilities.getCapability("edgeOptions") != null)
+           &&
+           (capabilities.getCapability(EdgeOptions.USE_CHROMIUM) == null
+            || Objects.equals(capabilities.getCapability(EdgeOptions.USE_CHROMIUM), true));
   }
 
   @Override
@@ -71,7 +72,7 @@ public class EdgeDriverInfo extends ChromiumDriverInfo {
 
   @Override
   public int getMaximumSimultaneousSessions() {
-    return Runtime.getRuntime().availableProcessors() + 1;
+    return Runtime.getRuntime().availableProcessors();
   }
 
   @Override

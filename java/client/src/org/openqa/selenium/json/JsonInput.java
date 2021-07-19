@@ -286,6 +286,13 @@ public class JsonInput implements Closeable {
   }
 
   public <T> T read(Type type) {
+    skipWhitespace(input);
+
+    // Guard against reading an empty stream
+    if (input.peek() == Input.EOF) {
+      return null;
+    }
+
     return coercer.coerce(this, type, setter);
   }
 

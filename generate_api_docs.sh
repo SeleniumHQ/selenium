@@ -2,7 +2,7 @@
 ./go javadocs || exit
 
 # Python
-./go //py:setup //py:init //py:docs || exit
+tox -c py/tox.ini -e docs || exit
 
 # Ruby
 cd rb
@@ -20,11 +20,11 @@ rm -rf docs/api/java docs/api/py docs/api/rb
 
 mv build/javadoc docs/api/java
 mv build/docs/api/py docs/api/py
-mv build/docs/api/rb docs/api/rb
+mv bazel-bin/rb/docs.runfiles/selenium/docs/api/rb docs/api/rb
 
 git add -A docs/api
 
-read -p "Do you want to commit the chages? (Y/n):" changes </dev/tty
+read -p "Do you want to commit the changes? (Y/n):" changes </dev/tty
 
 if [ -z $changes ]; then
   changes=Y
@@ -36,8 +36,8 @@ case "$changes" in
   *) exit;;
 esac
 
-echo "Commiting changes"
-git commit -am "updating javadoc and py docs"
+echo "Committing changes"
+git commit -am "updating API docs"
 
 echo "pushing to origin gh-pages"
 git push origin gh-pages

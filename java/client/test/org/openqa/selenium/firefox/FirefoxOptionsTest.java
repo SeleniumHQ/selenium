@@ -80,18 +80,6 @@ public class FirefoxOptionsTest {
   }
 
   @Test
-  public void canInitFirefoxOptionsWithCapabilitiesThatContainFirefoxOptions() {
-    FirefoxOptions options = new FirefoxOptions().setLegacy(true).merge(
-      new ImmutableCapabilities(PAGE_LOAD_STRATEGY, PageLoadStrategy.EAGER));
-    Capabilities caps = new ImmutableCapabilities(FIREFOX_OPTIONS, options);
-
-    FirefoxOptions options2 = new FirefoxOptions(caps);
-
-    assertThat(options2.isLegacy()).isTrue();
-    assertThat(options2.getCapability(PAGE_LOAD_STRATEGY)).isEqualTo(EAGER);
-  }
-
-  @Test
   public void canInitFirefoxOptionsWithCapabilitiesThatContainFirefoxOptionsAsMap() {
     FirefoxProfile profile = new FirefoxProfile();
     Capabilities caps = new ImmutableCapabilities(
@@ -404,5 +392,14 @@ public class FirefoxOptionsTest {
     public void reset() {
       set(originalValue);
     }
+  }
+
+  @Test
+  public void firefoxOptionsShouldEqualEquivalentImmutableCapabilities() {
+    FirefoxOptions options = new FirefoxOptions().addArguments("hello").setPageLoadStrategy(EAGER).setHeadless(true);
+    Capabilities caps = new ImmutableCapabilities(options);
+
+    assertThat(caps).isEqualTo(options);
+    assertThat(caps.getCapabilityNames()).contains(FIREFOX_OPTIONS);
   }
 }

@@ -17,14 +17,6 @@
 
 package org.openqa.selenium.grid.node.config;
 
-import static org.openqa.selenium.grid.config.StandardGridRoles.NODE_ROLE;
-import static org.openqa.selenium.grid.node.config.NodeOptions.DEFAULT_DETECT_DRIVERS;
-import static org.openqa.selenium.grid.node.config.NodeOptions.DEFAULT_HEARTBEAT_PERIOD;
-import static org.openqa.selenium.grid.node.config.NodeOptions.DEFAULT_MAX_SESSIONS;
-import static org.openqa.selenium.grid.node.config.NodeOptions.DEFAULT_REGISTER_CYCLE;
-import static org.openqa.selenium.grid.node.config.NodeOptions.DEFAULT_REGISTER_PERIOD;
-import static org.openqa.selenium.grid.node.config.NodeOptions.NODE_SECTION;
-
 import com.google.auto.service.AutoService;
 
 import com.beust.jcommander.Parameter;
@@ -39,15 +31,45 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import static org.openqa.selenium.grid.config.StandardGridRoles.NODE_ROLE;
+import static org.openqa.selenium.grid.node.config.NodeOptions.DEFAULT_DETECT_DRIVERS;
+import static org.openqa.selenium.grid.node.config.NodeOptions.DEFAULT_HEARTBEAT_PERIOD;
+import static org.openqa.selenium.grid.node.config.NodeOptions.DEFAULT_MAX_SESSIONS;
+import static org.openqa.selenium.grid.node.config.NodeOptions.DEFAULT_REGISTER_CYCLE;
+import static org.openqa.selenium.grid.node.config.NodeOptions.DEFAULT_REGISTER_PERIOD;
+import static org.openqa.selenium.grid.node.config.NodeOptions.DEFAULT_SESSION_TIMEOUT;
+import static org.openqa.selenium.grid.node.config.NodeOptions.DEFAULT_VNC_ENV_VAR;
+import static org.openqa.selenium.grid.node.config.NodeOptions.NODE_SECTION;
+import static org.openqa.selenium.grid.node.config.NodeOptions.OVERRIDE_MAX_SESSIONS;
+
 @SuppressWarnings("unused")
 @AutoService(HasRoles.class)
 public class NodeFlags implements HasRoles {
 
   @Parameter(
-    names = "--max-sessions. Default value is the number of available processors.",
-    description = "Maximum number of concurrent sessions.")
+    names = {"--max-sessions"},
+    description = "Maximum number of concurrent sessions. Default value is the number "
+                  + "of available processors.")
   @ConfigValue(section = NODE_SECTION, name = "max-sessions", example = "8")
   public int maxSessions = DEFAULT_MAX_SESSIONS;
+
+  @Parameter(
+    names = {"--override-max-sessions"},
+    arity = 1,
+    description = "The # of available processos is the recommended max sessions value (1 browser "
+                  + "session per processor). Setting this flag to true allows the recommended max "
+                  + "value to be overwritten. Session stability and reliability might suffer as "
+                  + "the host could run out of resources.")
+  @ConfigValue(section = NODE_SECTION, name = "override-max-sessions", example = "false")
+  public Boolean overrideMaxSessions = OVERRIDE_MAX_SESSIONS;
+
+  @Parameter(
+    names = {"--session-timeout"},
+    description = "Let X be the session-timeout in seconds. The Node will automatically kill "
+                  + "a session that has not had any activity in the last X seconds. " +
+                  "This will release the slot for other tests.")
+  @ConfigValue(section = NODE_SECTION, name = "session-timeout", example = "60")
+  public int sessionTimeout = DEFAULT_SESSION_TIMEOUT;
 
   @Parameter(
     names = {"--detect-drivers"}, arity = 1,
@@ -133,6 +155,14 @@ public class NodeFlags implements HasRoles {
                   "to inform it that the Node is up.")
   @ConfigValue(section = NODE_SECTION, name = "heartbeat-period", example = "10")
   public int heartbeatPeriod = DEFAULT_HEARTBEAT_PERIOD;
+
+  @Parameter(
+    names = "--vnc-env-var",
+    hidden = true,
+    description = "Environment variable to check in order to determine if a vnc stream is " +
+                  "available or not.")
+  @ConfigValue(section = NODE_SECTION, name = "vnc-env-var", example = "START_XVFB")
+  public String vncEnvVar = DEFAULT_VNC_ENV_VAR;
 
   @Override
   public Set<Role> getRoles() {

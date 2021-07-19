@@ -18,6 +18,7 @@
 package org.openqa.selenium.firefox.xpi;
 
 import com.google.auto.service.AutoService;
+
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.SessionNotCreatedException;
@@ -72,7 +73,7 @@ public class XpiDriverInfo implements WebDriverInfo {
 
   @Override
   public int getMaximumSimultaneousSessions() {
-    return Runtime.getRuntime().availableProcessors() + 1;
+    return Runtime.getRuntime().availableProcessors();
   }
 
   @Override

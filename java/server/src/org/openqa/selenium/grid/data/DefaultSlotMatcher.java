@@ -19,6 +19,7 @@ package org.openqa.selenium.grid.data;
 
 import org.openqa.selenium.Capabilities;
 
+import java.io.Serializable;
 import java.util.Objects;
 
 /**
@@ -41,7 +42,7 @@ import java.util.Objects;
  * matching slots, since the matching of these is implementation-specific
  * to each driver.
  */
-public class DefaultSlotMatcher implements SlotMatcher {
+public class DefaultSlotMatcher implements SlotMatcher, Serializable {
 
   @Override
   public boolean matches(Capabilities stereotype, Capabilities capabilities) {
@@ -49,9 +50,17 @@ public class DefaultSlotMatcher implements SlotMatcher {
     Boolean initialMatch = stereotype.getCapabilityNames().stream()
       // Matching of extension capabilities is implementation independent. Skip them
       .filter(name -> !name.contains(":"))
+      // Platform matching is special, we do it below
+      .filter(name -> !"platform".equalsIgnoreCase(name) && !"platformName".equalsIgnoreCase(name))
       .map(name -> {
         Object value = capabilities.getCapability(name);
-        return value == null || Objects.equals(stereotype.getCapability(name), value);
+        boolean matches;
+        if (value instanceof String) {
+          matches = stereotype.getCapability(name).toString().equalsIgnoreCase(value.toString());
+        } else {
+          matches = value == null || Objects.equals(stereotype.getCapability(name), value);
+        }
+        return matches;
       })
       .reduce(Boolean::logicalAnd)
       .orElse(false);
@@ -69,7 +78,9 @@ public class DefaultSlotMatcher implements SlotMatcher {
       Objects.equals(stereotype.getBrowserVersion(), capabilities.getBrowserVersion());
     boolean platformNameMatch =
       capabilities.getPlatformName() == null ||
-      Objects.equals(stereotype.getPlatformName(), capabilities.getPlatformName());
+      Objects.equals(stereotype.getPlatformName(), capabilities.getPlatformName()) ||
+      (stereotype.getPlatformName() != null &&
+       stereotype.getPlatformName().is(capabilities.getPlatformName()));
     return browserNameMatch && browserVersionMatch && platformNameMatch;
   }
 }

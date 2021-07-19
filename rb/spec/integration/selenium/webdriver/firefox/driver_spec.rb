@@ -22,7 +22,7 @@ require_relative '../spec_helper'
 module Selenium
   module WebDriver
     module Firefox
-      describe Driver, exclusive: {driver: :firefox} do
+      describe Driver, exclusive: {browser: :firefox} do
         describe '#print_options' do
           let(:magic_number) { 'JVBER' }
 
@@ -40,6 +40,14 @@ module Selenium
             expect(driver.print_page(orientation: 'landscape',
                                      page_ranges: ['1-2'],
                                      page: {width: 30})).to include(magic_number)
+          end
+
+          it 'should print full page' do
+            path = "#{Dir.tmpdir}/test#{SecureRandom.urlsafe_base64}.png"
+            screenshot = driver.save_full_page_screenshot(path)
+            expect(IO.read(screenshot)[0x10..0x18].unpack('NN').last).to be > 2600
+          ensure
+            File.delete(path) if File.exist?(path)
           end
         end
       end

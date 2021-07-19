@@ -4,12 +4,13 @@ load("@npm//react-scripts:index.bzl", "react_scripts", "react_scripts_test")
 load("//common:defs.bzl", "zip_file")
 
 _RUNTIME_DEPS = [
-    "chdir.js",
+    "chdir.cjs",
     ":copy_static_files",
     "@npm//@apollo/client",
     "@npm//@babel/preset-react",
     "@npm//@material-ui/core",
     "@npm//@material-ui/icons",
+    "@npm//@novnc/novnc",
     "@npm//clsx",
     "@npm//graphql",
     "@npm//graphql.macro",
@@ -44,7 +45,7 @@ copy_to_bin(
 # So we'll need to chdir before it runs.
 write_file(
     name = "write_chdir_script",
-    out = "chdir.js",
+    out = "chdir.cjs",
     content = ["process.chdir(__dirname)"],
 )
 
@@ -52,7 +53,7 @@ react_scripts(
     # Note: this must be named "build" since react-scripts hard-codes that as the output dir
     name = "build",
     args = [
-        "--node_options=--require=./$(execpath chdir.js)",
+        "--node_options=--require=./$(execpath chdir.cjs)",
         "build",
     ],
     data = _RUNTIME_DEPS + [
@@ -80,7 +81,7 @@ copy_to_bin(
 react_scripts_test(
     name = "test",
     args = [
-        "--node_options=--require=./$(rootpath chdir.js)",
+        "--node_options=--require=./$(rootpath chdir.cjs)",
         "test",
         "--watchAll=false",
         "--no-cache",

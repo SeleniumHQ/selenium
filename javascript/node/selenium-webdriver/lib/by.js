@@ -258,8 +258,36 @@ class By {
   }
 }
 
+/**
+ * Start Searching for relative objects using the value returned from
+ * `By.tagName()`.
+ *
+ * Note: this method will likely be removed in the future please use
+ * `locateWith`.
+ * @param {By} The value returned from calling By.tagName()
+ * @returns
+ */
 function withTagName(tagName) {
-  return new RelativeBy(tagName)
+  return new RelativeBy({ 'css selector': tagName })
+}
+
+/**
+ * Start searching for relative objects using search criteria with By.
+ * @param {string} A By map that shows how to find the initial element
+ * @returns {RelativeBy}
+ */
+function locateWith(by) {
+  return new RelativeBy(getLocator(by));
+}
+
+function getLocator(locatorOrElement) {
+  let toFind
+  if (locatorOrElement instanceof By) {
+    toFind = locatorOrElement.toObject()
+  } else {
+    toFind = locatorOrElement
+  }
+  return toFind
 }
 
 /**
@@ -269,11 +297,11 @@ function withTagName(tagName) {
  */
 class RelativeBy {
   /**
-   * @param {string} tagName
+   * @param {By} findDetails
    * @param {Array<Object>} filters
    */
-  constructor(tagName, filters = null) {
-    this.root = tagName
+  constructor(findDetails, filters = null) {
+    this.root = findDetails
     this.filters = filters || []
   }
 
@@ -285,7 +313,7 @@ class RelativeBy {
   above(locatorOrElement) {
     this.filters.push({
       kind: 'above',
-      args: [this.getLocator(locatorOrElement)],
+      args: [getLocator(locatorOrElement)],
     })
     return this
   }
@@ -298,7 +326,7 @@ class RelativeBy {
   below(locatorOrElement) {
     this.filters.push({
       kind: 'below',
-      args: [this.getLocator(locatorOrElement)],
+      args: [getLocator(locatorOrElement)],
     })
     return this
   }
@@ -311,7 +339,7 @@ class RelativeBy {
   toLeftOf(locatorOrElement) {
     this.filters.push({
       kind: 'left',
-      args: [this.getLocator(locatorOrElement)],
+      args: [getLocator(locatorOrElement)],
     })
     return this
   }
@@ -324,7 +352,7 @@ class RelativeBy {
   toRightOf(locatorOrElement) {
     this.filters.push({
       kind: 'right',
-      args: [this.getLocator(locatorOrElement)],
+      args: [getLocator(locatorOrElement)],
     })
     return this
   }
@@ -337,7 +365,7 @@ class RelativeBy {
   near(locatorOrElement) {
     this.filters.push({
       kind: 'near',
-      args: [this.getLocator(locatorOrElement)],
+      args: [getLocator(locatorOrElement)],
     })
     return this
   }
@@ -350,20 +378,10 @@ class RelativeBy {
   marshall() {
     return {
       relative: {
-        root: { 'css selector': this.root },
+        root: this.root,
         filters: this.filters,
       },
     }
-  }
-
-  getLocator(locatorOrElement) {
-    let toFind
-    if (locatorOrElement instanceof By) {
-      toFind = locatorOrElement.toObject()
-    } else {
-      toFind = locatorOrElement
-    }
-    return toFind
   }
 
   /** @override */
@@ -411,5 +429,6 @@ module.exports = {
   By: By,
   RelativeBy: RelativeBy,
   withTagName: withTagName,
+  locateWith: locateWith,
   checkedLocator: check,
 }

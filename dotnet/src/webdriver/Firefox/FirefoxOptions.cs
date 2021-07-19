@@ -60,7 +60,9 @@ namespace OpenQA.Selenium.Firefox
         private const string FirefoxPrefsCapability = "prefs";
         private const string FirefoxEnvCapability = "env";
         private const string FirefoxOptionsCapability = "moz:firefoxOptions";
+        private const string FirefoxEnableDevToolsProtocolCapability = "moz:debuggerAddress";
 
+        private bool enableDevToolsProtocol;
         private string browserBinaryLocation;
         private FirefoxDriverLogLevel logLevel = FirefoxDriverLogLevel.Default;
         private FirefoxProfile profile;
@@ -86,6 +88,7 @@ namespace OpenQA.Selenium.Firefox
             this.AddKnownCapabilityName(FirefoxOptions.FirefoxLogCapability, "LogLevel property");
             this.AddKnownCapabilityName(FirefoxOptions.FirefoxLegacyProfileCapability, "Profile property");
             this.AddKnownCapabilityName(FirefoxOptions.FirefoxLegacyBinaryCapability, "BrowserExecutableLocation property");
+            this.AddKnownCapabilityName(FirefoxOptions.FirefoxEnableDevToolsProtocolCapability, "EnableDevToolsProtocol property");
         }
 
         /// <summary>
@@ -123,6 +126,12 @@ namespace OpenQA.Selenium.Firefox
         {
             get { return this.logLevel; }
             set { this.logLevel = value; }
+        }
+
+        public bool EnableDevToolsProtocol
+        {
+            get { return this.enableDevToolsProtocol; }
+            set { this.enableDevToolsProtocol = value; }
         }
 
         /// <summary>
@@ -318,6 +327,10 @@ namespace OpenQA.Selenium.Firefox
             IWritableCapabilities capabilities = GenerateDesiredCapabilities(true);
             Dictionary<string, object> firefoxOptions = this.GenerateFirefoxOptionsDictionary();
             capabilities.SetCapability(FirefoxOptionsCapability, firefoxOptions);
+            if (this.enableDevToolsProtocol)
+            {
+                capabilities.SetCapability(FirefoxEnableDevToolsProtocolCapability, true);
+            }
 
             return capabilities.AsReadOnly();
         }

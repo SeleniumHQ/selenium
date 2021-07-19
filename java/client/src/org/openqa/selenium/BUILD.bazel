@@ -1,5 +1,5 @@
 load("//java:version.bzl", "SE_VERSION")
-load("//java:defs.bzl", "java_dist_zip", "java_export", "java_import", "java_library", "javadoc")
+load("//java:defs.bzl", "java_dist_zip", "java_export", "java_import", "javadoc")
 load("//java/client/src/org/openqa/selenium/devtools:versions.bzl", "CDP_DEPS")
 
 filegroup(
@@ -41,6 +41,9 @@ java_export(
     name = "client-combined",
     maven_coordinates = "org.seleniumhq.selenium:selenium-java:" + SE_VERSION,
     pom_template = ":template-pom",
+    visibility = [
+        "//visibility:public",
+    ],
     exports = [
         ":core",
         "//java/client/src/org/openqa/selenium/chrome",
@@ -54,13 +57,6 @@ java_export(
         "//java/client/src/org/openqa/selenium/support",
     ] + CDP_DEPS,
 )
-
-#javadoc(
-#    name = "core-docs",
-#    deps = [
-#        ":core",
-#    ],
-#)
 
 java_dist_zip(
     name = "client-zip",
@@ -82,7 +78,7 @@ javadoc(
     third_party_prefixes = [
         "@maven//",
         "//third_party",
-    ],
+    ] + CDP_DEPS,
     transitive = True,
     deps = [
         ":client-combined",
@@ -92,7 +88,11 @@ javadoc(
 java_import(
     name = "manifest",
     jars = [
+        ":manifest-entries",
         ":manifest-jar",
+    ],
+    visibility = [
+        "//java/server/src/org/openqa/selenium/grid:__pkg__",
     ],
 )
 
@@ -114,6 +114,44 @@ genrule(
         echo "Build-Revision = Unknown"  >>META-INF/selenium-build.properties &&
         $(location @bazel_tools//tools/zip:zipper) c $@ META-INF/selenium-build.properties
     """ % SE_VERSION,
+    }),
+    stamp = select({
+        "//common:stamp": True,
+        "//conditions:default": False,
+    }),
+    tools = [
+        "@bazel_tools//tools/zip:zipper",
+    ],
+)
+
+genrule(
+    name = "manifest-entries",
+    outs = [
+        "manifest-entries.jar",
+    ],
+    cmd = select({
+        "//common:stamp": """
+      mkdir -p META-INF &&
+      echo Manifest-Version: 1.0 >META-INF/MANIFEST.MF &&
+      echo "" >>META-INF/MANIFEST.MF &&
+      echo "" >>META-INF/MANIFEST.MF &&
+      echo Name: Build-Info >>META-INF/MANIFEST.MF &&
+      echo Selenium-Version: %s >>META-INF/MANIFEST.MF &&
+      echo Build-Revision: $$(grep GIT_REVISION bazel-out/stable-status.txt | cut -d' ' -f 2) >>META-INF/MANIFEST.MF &&
+      echo Build-Time: $$(date) >>META-INF/MANIFEST.MF &&
+      $(location @bazel_tools//tools/zip:zipper) c $@ META-INF/MANIFEST.MF
+      """ % SE_VERSION,
+        "//conditions:default": """
+      mkdir -p META-INF &&
+      echo Manifest-Version: 1.0 >META-INF/MANIFEST.MF &&
+      echo "" >>META-INF/MANIFEST.MF &&
+      echo "" >>META-INF/MANIFEST.MF &&
+      echo Name: Build-Info >>META-INF/MANIFEST.MF &&
+      echo Selenium-Version: %s >>META-INF/MANIFEST.MF &&
+      echo Build-Revision: Unknown >>META-INF/MANIFEST.MF &&
+      echo Build-Time: Wed Jan 3 21:49:10 2007 +0000 >>META-INF/MANIFEST.MF &&
+      $(location @bazel_tools//tools/zip:zipper) c $@ META-INF/MANIFEST.MF
+      """ % SE_VERSION,
     }),
     stamp = select({
         "//common:stamp": True,

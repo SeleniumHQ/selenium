@@ -106,6 +106,13 @@ module Selenium
           expect { logger.deprecate('#old') }.to output(message).to_stdout_from_any_process
         end
 
+        it 'allows to deprecate functionality with a reference message' do
+          ref_url = 'https://selenium.dev'
+          warn_msg = 'WARN Selenium \[DEPRECATION\] #old is deprecated\. Use #new instead\.'
+          message = /#{warn_msg} See explanation for this deprecation: #{ref_url}/
+          expect { logger.deprecate('#old', '#new', reference: ref_url) }.to output(message).to_stdout_from_any_process
+        end
+
         it 'appends deprecation message with provided block' do
           message = /WARN Selenium \[DEPRECATION\] #old is deprecated\. Use #new instead\. More Details\./
           expect { logger.deprecate('#old', '#new') { 'More Details.' } }.to output(message).to_stdout_from_any_process

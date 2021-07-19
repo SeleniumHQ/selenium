@@ -1,10 +1,8 @@
-package(default_visibility = ["//deploys/k8s:__pkg__"])
-
-load("@io_bazel_rules_docker//java:image.bzl", "java_image")
 load("@io_bazel_rules_docker//contrib:passwd.bzl", "passwd_entry", "passwd_file")
 load("@io_bazel_rules_docker//container:container.bzl", "container_image", "container_layer", "container_push")
 load("@rules_pkg//:pkg.bzl", "pkg_tar")
-load("//common:defs.bzl", "copy_file")
+
+package(default_visibility = ["//deploys/k8s:__pkg__"])
 
 REGISTRY = "localhost:5000"
 
@@ -129,6 +127,17 @@ container_image(
     entrypoint = ENTRY_POINT + ["sessions"],
     ports = [
         "5556/tcp",  # Web
+        "4442/tcp",  # ZeroMQ
+        "4443/tcp",
+    ],
+)
+
+container_image(
+    name = "session-queue-image",
+    base = ":grid-base",
+    entrypoint = ENTRY_POINT + ["sessionqueue"],
+    ports = [
+        "5559/tcp",  # Web
         "4442/tcp",  # ZeroMQ
         "4443/tcp",
     ],

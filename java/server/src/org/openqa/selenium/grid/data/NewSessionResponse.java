@@ -32,8 +32,10 @@ public class NewSessionResponse {
   private final Session session;
   private final byte[] downstreamEncodedResponse;
 
-  public NewSessionResponse(RequestId requestId, Session session,
-                            byte[] downstreamEncodedResponse) {
+  public NewSessionResponse(
+    RequestId requestId,
+     Session session,
+     byte[] downstreamEncodedResponse) {
     this.requestId = Require.nonNull("Request Id", requestId);
     this.session = Require.nonNull("Session", session);
     this.downstreamEncodedResponse = Require.nonNull

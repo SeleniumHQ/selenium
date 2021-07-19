@@ -17,12 +17,16 @@
 
 package org.openqa.selenium.grid.node.config;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableMultimap;
+import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Multimap;
 
 import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.PersistentCapabilities;
+import org.openqa.selenium.Platform;
 import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverInfo;
@@ -47,7 +51,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.ServiceLoader;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Function;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -55,18 +61,26 @@ import java.util.stream.StreamSupport;
 
 public class NodeOptions {
 
+  public static final int DEFAULT_MAX_SESSIONS = Runtime.getRuntime().availableProcessors();
+  public static final int DEFAULT_HEARTBEAT_PERIOD = 60;
+  public static final int DEFAULT_SESSION_TIMEOUT = 300;
   static final String NODE_SECTION = "node";
   static final boolean DEFAULT_DETECT_DRIVERS = true;
-  static final int DEFAULT_HEARTBEAT_PERIOD = 60;
-  static final int DEFAULT_MAX_SESSIONS = Runtime.getRuntime().availableProcessors();
+  static final boolean OVERRIDE_MAX_SESSIONS = false;
+  static final String DEFAULT_VNC_ENV_VAR = "START_XVFB";
   static final int DEFAULT_REGISTER_CYCLE = 10;
   static final int DEFAULT_REGISTER_PERIOD = 120;
 
   private static final Logger LOG = Logger.getLogger(NodeOptions.class.getName());
   private static final Json JSON = new Json();
   private static final String DEFAULT_IMPL = "org.openqa.selenium.grid.node.local.LocalNodeFactory";
+  private static final Platform CURRENT_PLATFORM = Platform.getCurrent();
+  private static final ImmutableSet<String>
+    SINGLE_SESSION_DRIVERS = ImmutableSet.of("safari", "safari technology preview");
 
   private final Config config;
+  private final AtomicBoolean vncEnabled = new AtomicBoolean();
+  private final AtomicBoolean vncEnabledValueSet = new AtomicBoolean();
 
   public NodeOptions(Config config) {
     this.config = Require.nonNull("Config", config);
@@ -91,6 +105,7 @@ public class NodeOptions {
     int seconds = Math.max(
       config.getInt(NODE_SECTION, "register-cycle").orElse(DEFAULT_REGISTER_CYCLE),
       1);
+
     return Duration.ofSeconds(seconds);
   }
 
@@ -99,6 +114,7 @@ public class NodeOptions {
     int seconds = Math.max(
       config.getInt(NODE_SECTION, "register-period").orElse(DEFAULT_REGISTER_PERIOD),
       1);
+
     return Duration.ofSeconds(seconds);
   }
 
@@ -114,7 +130,24 @@ public class NodeOptions {
     /* Danger! Java stereotype ahead! */
     Function<Capabilities, Collection<SessionFactory>> factoryFactory) {
 
+    LOG.log(Level.INFO, "Detected {0} available processors", DEFAULT_MAX_SESSIONS);
+    boolean overrideMaxSessions = config.getBool(NODE_SECTION, "override-max-sessions")
+      .orElse(OVERRIDE_MAX_SESSIONS);
+    if (overrideMaxSessions) {
+      LOG.log(Level.WARNING,
+              "Overriding max recommended number of {0} concurrent sessions. "
+              + "Session stability and reliability might suffer!",
+              DEFAULT_MAX_SESSIONS);
+      LOG.warning("One browser session is recommended per available processor. "
+                  + "Safari is always limited to 1 session per host.");
+      LOG.warning("Overriding this value for Internet Explorer is not recommended. "
+                  + "Issues related to parallel testing with Internet Explored won't be accepted.");
+      LOG.warning("Double check if enabling 'override-max-sessions' is really needed");
+    }
     int maxSessions = getMaxSessions();
+    if (maxSessions > DEFAULT_MAX_SESSIONS) {
+      LOG.log(Level.WARNING, "Max sessions set to {0} ", maxSessions);
+    }
 
     Map<WebDriverInfo, Collection<SessionFactory>> allDrivers =
       discoverDrivers(maxSessions, factoryFactory);
@@ -123,17 +156,40 @@ public class NodeOptions {
       ImmutableMultimap.builder();
 
     addDriverFactoriesFromConfig(sessionFactories);
+    addDriverConfigs(factoryFactory, sessionFactories);
     addSpecificDrivers(allDrivers, sessionFactories);
     addDetectedDrivers(allDrivers, sessionFactories);
-    addDriverConfigs(factoryFactory, sessionFactories);
 
     return sessionFactories.build().asMap();
   }
 
   public int getMaxSessions() {
-    return Math.min(
-      config.getInt(NODE_SECTION, "max-sessions").orElse(DEFAULT_MAX_SESSIONS),
-      DEFAULT_MAX_SESSIONS);
+    int maxSessions = config.getInt(NODE_SECTION, "max-sessions")
+      .orElse(DEFAULT_MAX_SESSIONS);
+    Require.positive("Driver max sessions", maxSessions);
+    boolean overrideMaxSessions = config.getBool(NODE_SECTION, "override-max-sessions")
+      .orElse(OVERRIDE_MAX_SESSIONS);
+    if (maxSessions > DEFAULT_MAX_SESSIONS && overrideMaxSessions) {
+      return maxSessions;
+    }
+    return Math.min(maxSessions, DEFAULT_MAX_SESSIONS);
+  }
+
+  public Duration getSessionTimeout() {
+    // If the user sets 10s or less, we default to 10s.
+    int seconds = Math.max(
+      config.getInt(NODE_SECTION, "session-timeout").orElse(DEFAULT_SESSION_TIMEOUT),
+      10);
+    return Duration.ofSeconds(seconds);
+  }
+
+  @VisibleForTesting
+  boolean isVncEnabled() {
+    String vncEnvVar = config.get(NODE_SECTION, "vnc-env-var").orElse(DEFAULT_VNC_ENV_VAR);
+    if (!vncEnabledValueSet.getAndSet(true)) {
+      vncEnabled.set(Boolean.parseBoolean(System.getenv(vncEnvVar)));
+    }
+    return vncEnabled.get();
   }
 
   private void addDriverFactoriesFromConfig(ImmutableMultimap.Builder<Capabilities,
@@ -143,8 +199,8 @@ public class NodeOptions {
         throw new ConfigException("Expected each driver class to be mapped to a config");
       }
 
-      Map<String, String> configMap = IntStream.range(0, allConfigs.size()/2).boxed()
-        .collect(Collectors.toMap(i -> allConfigs.get(2*i), i -> allConfigs.get(2*i + 1)));
+      Map<String, String> configMap = IntStream.range(0, allConfigs.size() / 2).boxed()
+        .collect(Collectors.toMap(i -> allConfigs.get(2 * i), i -> allConfigs.get(2 * i + 1)));
 
       configMap.forEach((clazz, config) -> {
         Capabilities stereotype = JSON.toType(config, Capabilities.class);
@@ -228,7 +284,8 @@ public class NodeOptions {
         if (!configMap.containsKey("stereotype")) {
           throw new ConfigException("Driver config is missing stereotype value. " + configMap);
         }
-        Capabilities stereotype = JSON.toType(configMap.get("stereotype"), Capabilities.class);
+        Capabilities stereotype =
+          enhanceStereotype(JSON.toType(configMap.get("stereotype"), Capabilities.class));
         String configName = configMap.getOrDefault("name", "Custom Slot Config");
         int driverMaxSessions = Integer.parseInt(configMap.getOrDefault("max-sessions", "1"));
         Require.positive("Driver max sessions", driverMaxSessions);
@@ -244,8 +301,8 @@ public class NodeOptions {
         builders.stream()
           .filter(builder -> builder.score(stereotype) > 0)
           .forEach(builder -> {
-            int maxSessions = Math.min(info.getMaximumSimultaneousSessions(), driverMaxSessions);
-            for (int i = 0; i < maxSessions; i++) {
+            int maxDriverSessions = getDriverMaxSessions(info, driverMaxSessions);
+            for (int i = 0; i < maxDriverSessions; i++) {
               driverConfigs.putAll(driverInfoConfig, factoryFactory.apply(stereotype));
             }
           });
@@ -275,15 +332,26 @@ public class NodeOptions {
       .stream()
       .peek(this::report)
       .forEach(
-        entry ->
-          sessionFactories.putAll(entry.getKey().getCanonicalCapabilities(), entry.getValue()));
+        entry -> {
+          Capabilities capabilities = enhanceStereotype(entry.getKey().getCanonicalCapabilities());
+          sessionFactories.putAll(capabilities, entry.getValue());
+        });
+
+    if (sessionFactories.build().size() == 0) {
+      String logMessage = "No drivers have been configured or have been found on PATH";
+      LOG.warning(logMessage);
+      throw new ConfigException(logMessage);
+    }
   }
 
   private void addSpecificDrivers(
     Map<WebDriverInfo, Collection<SessionFactory>> allDrivers,
     ImmutableMultimap.Builder<Capabilities, SessionFactory> sessionFactories) {
-    if (!config.getBool(NODE_SECTION, "detect-drivers").orElse(DEFAULT_DETECT_DRIVERS) &&
-        config.getAll(NODE_SECTION, "driver-implementation").isPresent()) {
+    if (!config.getAll(NODE_SECTION, "driver-implementation").isPresent()) {
+      return;
+    }
+
+    if (!config.getBool(NODE_SECTION, "detect-drivers").orElse(DEFAULT_DETECT_DRIVERS)) {
       String logMessage = "Specific drivers cannot be added if 'detect-drivers' is set to false";
       LOG.warning(logMessage);
       throw new ConfigException(logMessage);
@@ -292,16 +360,34 @@ public class NodeOptions {
     List<String> drivers = config.getAll(NODE_SECTION, "driver-implementation")
       .orElse(new ArrayList<>())
       .stream()
+      .distinct()
       .map(String::toLowerCase)
+      .peek(driver -> {
+        boolean noneMatch = allDrivers
+          .entrySet()
+          .stream()
+          .noneMatch(entry -> entry.getKey().getDisplayName().equalsIgnoreCase(driver));
+        if (noneMatch) {
+          LOG.log(Level.WARNING, "Could not find {0} driver on PATH.", driver);
+        }
+      })
       .collect(Collectors.toList());
+
+    allDrivers.entrySet().stream()
+      .filter(entry -> drivers.contains(entry.getKey().getDisplayName().toLowerCase()))
+      .findFirst()
+      .orElseThrow(() ->
+                     new ConfigException("No drivers were found for %s", drivers.toString()));
 
     allDrivers.entrySet().stream()
       .filter(entry -> drivers.contains(entry.getKey().getDisplayName().toLowerCase()))
       .sorted(Comparator.comparing(entry -> entry.getKey().getDisplayName().toLowerCase()))
       .peek(this::report)
       .forEach(
-        entry ->
-          sessionFactories.putAll(entry.getKey().getCanonicalCapabilities(), entry.getValue()));
+        entry -> {
+          Capabilities capabilities = enhanceStereotype(entry.getKey().getCanonicalCapabilities());
+          sessionFactories.putAll(capabilities, entry.getValue());
+        });
   }
 
   private Map<WebDriverInfo, Collection<SessionFactory>> discoverDrivers(
@@ -318,17 +404,20 @@ public class NodeOptions {
         .sorted(Comparator.comparing(info -> info.getDisplayName().toLowerCase()))
         .collect(Collectors.toList());
 
+    LOG.log(Level.INFO, "Discovered {0} driver(s)", infos.size());
+
     // Same
     List<DriverService.Builder<?, ?>> builders = new ArrayList<>();
     ServiceLoader.load(DriverService.Builder.class).forEach(builders::add);
 
     Multimap<WebDriverInfo, SessionFactory> toReturn = HashMultimap.create();
     infos.forEach(info -> {
-      Capabilities caps = info.getCanonicalCapabilities();
+      Capabilities caps = enhanceStereotype(info.getCanonicalCapabilities());
       builders.stream()
         .filter(builder -> builder.score(caps) > 0)
         .forEach(builder -> {
-          for (int i = 0; i < Math.min(info.getMaximumSimultaneousSessions(), maxSessions); i++) {
+          int maxDriverSessions = getDriverMaxSessions(info, maxSessions);
+          for (int i = 0; i < maxDriverSessions; i++) {
             toReturn.putAll(info, factoryFactory.apply(caps));
           }
         });
@@ -376,6 +465,38 @@ public class NodeOptions {
         return Optional.empty();
       }
     };
+  }
+
+  private int getDriverMaxSessions(WebDriverInfo info, int desiredMaxSessions) {
+    // Safari and Safari Technology Preview
+    if (info.getMaximumSimultaneousSessions() == 1 &&
+        SINGLE_SESSION_DRIVERS.contains(info.getDisplayName().toLowerCase())) {
+      return info.getMaximumSimultaneousSessions();
+    }
+    boolean overrideMaxSessions = config.getBool(NODE_SECTION, "override-max-sessions")
+      .orElse(OVERRIDE_MAX_SESSIONS);
+    if (desiredMaxSessions > info.getMaximumSimultaneousSessions() && overrideMaxSessions) {
+      String logMessage = String.format(
+        "Overriding max recommended number of %s concurrent sessions for %s, setting it to %s",
+        info.getMaximumSimultaneousSessions(),
+        info.getDisplayName(),
+        desiredMaxSessions);
+      LOG.log(Level.FINE, logMessage);
+      return desiredMaxSessions;
+    }
+    return Math.min(info.getMaximumSimultaneousSessions(), desiredMaxSessions);
+  }
+
+  private Capabilities enhanceStereotype(Capabilities capabilities) {
+    if (capabilities.getPlatformName() == null) {
+      capabilities = new PersistentCapabilities(capabilities)
+        .setCapability("platformName", CURRENT_PLATFORM);
+    }
+    if (isVncEnabled()) {
+      capabilities = new PersistentCapabilities(capabilities)
+        .setCapability("se:vncEnabled", true);
+    }
+    return capabilities;
   }
 
   private void report(Map.Entry<WebDriverInfo, Collection<SessionFactory>> entry) {

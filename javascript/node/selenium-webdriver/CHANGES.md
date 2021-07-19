@@ -1,3 +1,30 @@
+## v4.0.0-beta.4
+
+* Add windowTypes option support for ChromiumDriver (#7897)
+* Allow relativeby with findElement  (#9396)
+
+## v4.0.0-beta.3
+
+* Removed support for legacy actions.
+  This will also remove "Bride Mode" support, which was introduced to translate of action class to legacy API.
+* Remove devtools support for v86,v87 and adding support for v89, v90, v91
+* make isPromise() return boolean value for null and undefined cases (#6785)
+* code cleanup  (#9158)
+* replacing asserts equal with strictEqual and deepEqual with deepStrictEqual
+
+
+## v4.0.0-beta.2
+
+* Removed support for Edge legacy.
+* Make the build silent for WebDriver Bidi generated code
+* resolve file path correctly (#9223)
+* Update example in edge.js (#9231)
+* Use a flat namespace for selenium options for finding WebDriver Bidi endpoint
+* Removing duplicate license text updated by update_copyright.js
+* Updating copyright text
+* Minor code cleanup
+* Removing duplicate variable declaration of IE from capabilities
+
 ## v4.0.0-beta.1
 
 * JS Binding support for WebDriver Bidi in Firefox

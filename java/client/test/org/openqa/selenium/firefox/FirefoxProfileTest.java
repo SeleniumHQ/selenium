@@ -47,7 +47,7 @@ import java.util.stream.Stream;
 public class FirefoxProfileTest {
   private static final String FIREBUG_PATH = "third_party/firebug/firebug-1.5.0-fx.xpi";
   private static final String FIREBUG_RESOURCE_PATH =
-      "/org/openqa/selenium/firefox/firebug-1.5.0-fx.xpi";
+    "java/client/test/org/openqa/selenium/firefox/firebug-1.5.0-fx.xpi";
   private static final String MOOLTIPASS_PATH = "third_party/firebug/mooltipass-1.1.87.xpi";
 
   private FirefoxProfile profile;
@@ -161,7 +161,6 @@ public class FirefoxProfileTest {
   }
 
   @Test
-  @Ignore("Need to figure out why files are not showing up")
   public void shouldInstallWebExtensionFromZip() {
     profile.addExtension(InProject.locate(MOOLTIPASS_PATH).toFile());
     File profileDir = profile.layoutOnDisk();
@@ -170,7 +169,6 @@ public class FirefoxProfileTest {
   }
 
   @Test
-  @Ignore("Need to figure out why files are not showing up")
   public void shouldInstallExtensionFromDirectory() throws IOException {
     File extension = InProject.locate(FIREBUG_PATH).toFile();
     File unzippedExtension = Zip.unzipToTempDir(new FileInputStream(extension), "unzip", "stream");
@@ -181,7 +179,6 @@ public class FirefoxProfileTest {
   }
 
   @Test
-  @Ignore("Need to figure out why files are not showing up")
   public void shouldInstallWebExtensionFromDirectory() throws IOException {
     File extension = InProject.locate(MOOLTIPASS_PATH).toFile();
     File unzippedExtension = Zip.unzipToTempDir(new FileInputStream(extension), "unzip", "stream");
@@ -192,7 +189,6 @@ public class FirefoxProfileTest {
   }
 
   @Test
-  @Ignore("Need to figure out why files are not showing up")
   public void shouldInstallExtensionUsingClasspath() {
     profile.addExtension(FirefoxProfileTest.class, FIREBUG_RESOURCE_PATH);
     File profileDir = profile.layoutOnDisk();

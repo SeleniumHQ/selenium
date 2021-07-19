@@ -1,4 +1,4 @@
-﻿// <copyright file="SafariDriver.cs" company="WebDriver Committers">
+// <copyright file="SafariDriver.cs" company="WebDriver Committers">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements. See the NOTICE file
 // distributed with this work for additional information
@@ -59,7 +59,7 @@ namespace OpenQA.Selenium.Safari
     /// }
     /// </code>
     /// </example>
-    public class SafariDriver : RemoteWebDriver
+    public class SafariDriver : WebDriver
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="SafariDriver"/> class.

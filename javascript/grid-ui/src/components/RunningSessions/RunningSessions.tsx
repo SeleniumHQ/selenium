@@ -29,6 +29,7 @@ import Paper from '@material-ui/core/Paper'
 import FormControlLabel from '@material-ui/core/FormControlLabel'
 import Switch from '@material-ui/core/Switch'
 import {
+  Box,
   Button,
   createStyles,
   Dialog,
@@ -40,14 +41,18 @@ import {
   withStyles
 } from '@material-ui/core'
 import InfoIcon from '@material-ui/icons/Info'
+import VideocamIcon from '@material-ui/icons/Videocam'
+import Slide from '@material-ui/core/Slide'
+import { StyleRules } from '@material-ui/core/styles'
+import { TransitionProps } from '@material-ui/core/transitions'
 import browserVersion from '../../util/browser-version'
 import EnhancedTableToolbar from '../EnhancedTableToolbar'
 import prettyMilliseconds from 'pretty-ms'
 import BrowserLogo from '../common/BrowserLogo'
 import OsLogo from '../common/OsLogo'
 import { Size } from '../../models/size'
-import { StyleRules } from '@material-ui/core/styles'
-import Capabilities from "../../models/capabilities";
+import Capabilities from '../../models/capabilities'
+import LiveView from '../LiveView/LiveView'
 
 interface SessionData {
   id: string
@@ -60,7 +65,9 @@ interface SessionData {
   nodeId: string
   nodeUri: string
   sessionDurationMillis: number
-  slot: any
+  slot: any,
+  vnc: string,
+  name: string,
 }
 
 function createSessionData (
@@ -73,10 +80,12 @@ function createSessionData (
   sessionDurationMillis: number,
   slot: any
 ): SessionData {
-  const parsedCapabilities = JSON.parse(capabilities) as Capabilities
-  const browserName = parsedCapabilities.browserName
-  const browserVersion = parsedCapabilities.browserVersion ?? parsedCapabilities.version
-  const platformName = parsedCapabilities.platformName ?? parsedCapabilities.platform
+  const parsed = JSON.parse(capabilities) as Capabilities
+  const browserName = parsed.browserName
+  const browserVersion = parsed.browserVersion ?? parsed.version
+  const platformName = parsed.platformName ?? parsed.platform
+  const vnc: string = parsed['se:vnc'] ?? ''
+  const name: string = parsed['se:name'] ?? id
   return {
     id,
     capabilities,
@@ -88,7 +97,9 @@ function createSessionData (
     nodeId,
     nodeUri,
     sessionDurationMillis,
-    slot
+    slot,
+    vnc,
+    name
   }
 }
 
@@ -132,10 +143,10 @@ interface HeadCell {
 }
 
 const headCells: HeadCell[] = [
-  { id: 'id', numeric: false, label: 'ID' },
+  { id: 'id', numeric: false, label: 'Session' },
   { id: 'capabilities', numeric: false, label: 'Capabilities' },
   { id: 'startTime', numeric: false, label: 'Start time' },
-  { id: 'sessionDurationMillis', numeric: true, label: 'Duration' },
+  { id: 'sessionDurationMillis', numeric: false, label: 'Duration' },
   { id: 'nodeUri', numeric: false, label: 'Node URI' }
 ]
 
@@ -159,7 +170,7 @@ function EnhancedTableHead (props: EnhancedTableProps): JSX.Element {
         {headCells.map((headCell) => (
           <TableCell
             key={headCell.id}
-            align={headCell.numeric ? 'right' : 'left'}
+            align='left'
             padding='default'
             sortDirection={orderBy === headCell.id ? order : false}
           >
@@ -168,7 +179,9 @@ function EnhancedTableHead (props: EnhancedTableProps): JSX.Element {
               direction={orderBy === headCell.id ? order : 'asc'}
               onClick={createSortHandler(headCell.id)}
             >
-              {headCell.label}
+              <Box fontWeight='fontWeightBold' mr={1} display='inline'>
+                {headCell.label}
+              </Box>
               {orderBy === headCell.id ? (
                 <span className={classes.visuallyHidden}>
                   {order === 'desc' ? 'sorted descending' : 'sorted ascending'}
@@ -208,6 +221,13 @@ const useStyles = (theme: Theme): StyleRules => createStyles(
     buttonMargin: {
       padding: 1
     },
+    textPadding: {
+      paddingLeft: 10,
+      paddingRight: 10
+    },
+    dialogContent: {
+      height: 600
+    },
     queueList: {
       minWidth: 750,
       backgroundColor: theme.palette.background.paper,
@@ -233,7 +253,15 @@ interface RunningSessionsState {
   dense: boolean
   rowsPerPage: number
   rowOpen: string
+  rowLiveViewOpen: string
 }
+
+const Transition = React.forwardRef(function Transition (
+  props: TransitionProps & { children?: React.ReactElement },
+  ref: React.Ref<unknown>,
+) {
+  return <Slide direction="up" ref={ref} {...props} />
+})
 
 class RunningSessions extends React.Component<RunningSessionsProps, RunningSessionsState> {
   constructor (props) {
@@ -245,7 +273,8 @@ class RunningSessions extends React.Component<RunningSessionsProps, RunningSessi
       page: 0,
       dense: false,
       rowsPerPage: 5,
-      rowOpen: ''
+      rowOpen: '',
+      rowLiveViewOpen: ''
     }
   }
 
@@ -255,6 +284,14 @@ class RunningSessions extends React.Component<RunningSessionsProps, RunningSessi
 
   handleDialogClose = (): void => {
     this.setState({ rowOpen: '' })
+  }
+
+  handleLiveViewOpen = (rowId: string): void => {
+    this.setState({ rowLiveViewOpen: rowId })
+  }
+
+  handleLiveViewClose = (): void => {
+    this.setState({ rowLiveViewOpen: '' })
   }
 
   handleRequestSort = (event: React.MouseEvent<unknown>,
@@ -304,15 +341,29 @@ class RunningSessions extends React.Component<RunningSessionsProps, RunningSessi
     }
     const { classes } = this.props
     return (
-      <IconButton className={classes.buttonMargin} onClick={handleInfoIconClick}>
-        <InfoIcon />
+      <IconButton className={classes.buttonMargin}
+                  onClick={handleInfoIconClick}>
+        <InfoIcon/>
+      </IconButton>
+    )
+  }
+
+  displayLiveView = (id: string): JSX.Element => {
+    const handleLiveViewIconClick = (): void => {
+      this.handleLiveViewOpen(id)
+    }
+    const { classes } = this.props
+    return (
+      <IconButton className={classes.buttonMargin}
+                  onClick={handleLiveViewIconClick}>
+        <VideocamIcon/>
       </IconButton>
     )
   }
 
   render (): ReactNode {
     const { sessions, classes } = this.props
-    const { dense, order, orderBy, page, rowOpen, rowsPerPage } = this.state
+    const { dense, order, orderBy, page, rowOpen, rowLiveViewOpen, rowsPerPage } = this.state
 
     const rows = sessions.map((session) => {
       return createSessionData(
@@ -358,29 +409,102 @@ class RunningSessions extends React.Component<RunningSessionsProps, RunningSessi
                         return (
                           <TableRow
                             hover
-                            onClick={(event) => this.handleClick(event, row.id as string)}
+                            onClick={(event) =>
+                              this.handleClick(event, row.id as string)}
                             role='checkbox'
                             aria-checked={isItemSelected}
                             tabIndex={-1}
                             key={row.id}
                             selected={isItemSelected}
                           >
-                            <TableCell component='th' id={labelId} scope='row'>
+                            <TableCell
+                              component='th'
+                              id={labelId}
+                              scope='row'
+                              align='left'
+                            >
+                              {
+                                (row.vnc as string).length > 0 &&
+                                this.displayLiveView(row.id as string)
+                              }
                               {row.id}
+                              {
+                                (row.vnc as string).length > 0 &&
+                                <Dialog
+                                  onClose={this.handleLiveViewClose}
+                                  aria-labelledby='live-view-dialog'
+                                  open={rowLiveViewOpen === row.id}
+                                  fullWidth={true}
+                                  maxWidth={'xl'}
+                                  fullScreen
+                                  TransitionComponent={Transition}
+                                >
+                                  <DialogTitle id='live-view-dialog'>
+                                    <Typography gutterBottom component='span'
+                                                className={classes.textPadding}
+                                    >
+                                      <Box fontWeight='fontWeightBold'
+                                           mr={1}
+                                           display='inline'>
+                                        Session
+                                      </Box>
+                                      {row.name}
+                                    </Typography>
+                                    <OsLogo
+                                      osName={row.platformName as string}/>
+                                    <BrowserLogo
+                                      browserName={row.browserName as string}/>
+                                    {browserVersion(
+                                      row.browserVersion as string)}
+                                  </DialogTitle>
+                                  <DialogContent
+                                    dividers
+                                    className={classes.dialogContent}
+                                  >
+                                    <LiveView
+                                      url={row.vnc as string}
+                                      scaleViewport={true}
+                                    />
+                                  </DialogContent>
+                                  <DialogActions>
+                                    <Button
+                                      onClick={this.handleLiveViewClose}
+                                      color='primary'
+                                      variant='contained'>
+                                      Close
+                                    </Button>
+                                  </DialogActions>
+                                </Dialog>
+                              }
                             </TableCell>
-                            <TableCell align='right'>
-                              <OsLogo osName={row.platformName as string} size={Size.S} />
-                              <BrowserLogo browserName={row.browserName as string} />
-                              {browserVersion(row.browserVersion as string)}
+                            <TableCell align='left'>
                               {this.displaySessionInfo(row.id as string)}
+                              <OsLogo osName={row.platformName as string}
+                                      size={Size.S}/>
+                              <BrowserLogo
+                                browserName={row.browserName as string}/>
+                              {browserVersion(row.browserVersion as string)}
                               <Dialog
                                 onClose={this.handleDialogClose}
                                 aria-labelledby='session-info-dialog'
                                 open={rowOpen === row.id}
+                                fullWidth={true}
+                                maxWidth={'md'}
                               >
                                 <DialogTitle id='session-info-dialog'>
-                                  <OsLogo osName={row.platformName as string} />
-                                  <BrowserLogo browserName={row.browserName as string} />
+                                  <Typography gutterBottom component='span'
+                                              className={classes.textPadding}
+                                  >
+                                    <Box fontWeight='fontWeightBold'
+                                         mr={1}
+                                         display='inline'>
+                                      Session
+                                    </Box>
+                                    {row.name}
+                                  </Typography>
+                                  <OsLogo osName={row.platformName as string}/>
+                                  <BrowserLogo
+                                    browserName={row.browserName as string}/>
                                   {browserVersion(row.browserVersion as string)}
                                 </DialogTitle>
                                 <DialogContent dividers>
@@ -390,25 +514,30 @@ class RunningSessions extends React.Component<RunningSessionsProps, RunningSessi
                                   <Typography gutterBottom component='span'>
                                     <pre>
                                       {JSON.stringify(
-                                        JSON.parse(row.capabilities as string) as object,
+                                        JSON.parse(
+                                          row.capabilities as string) as object,
                                         null, 2)}
                                     </pre>
                                   </Typography>
                                 </DialogContent>
                                 <DialogActions>
-                                  <Button onClick={this.handleDialogClose} color='primary' variant='contained'>
+                                  <Button
+                                    onClick={this.handleDialogClose}
+                                    color='primary'
+                                    variant='contained'>
                                     Close
                                   </Button>
                                 </DialogActions>
                               </Dialog>
                             </TableCell>
-                            <TableCell align='right'>
+                            <TableCell align='left'>
                               {row.startTime}
                             </TableCell>
-                            <TableCell align='right'>
-                              {prettyMilliseconds(Number(row.sessionDurationMillis))}
+                            <TableCell align='left'>
+                              {prettyMilliseconds(
+                                Number(row.sessionDurationMillis))}
                             </TableCell>
-                            <TableCell align='right'>
+                            <TableCell align='left'>
                               {row.nodeUri}
                             </TableCell>
                           </TableRow>

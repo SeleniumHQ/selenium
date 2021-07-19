@@ -158,22 +158,12 @@ public class OneShotNode extends Node {
   }
 
   @Override
-  public Optional<CreateSessionResponse> newSession(CreateSessionRequest sessionRequest) {
-    Either<WebDriverException, CreateSessionResponse> result = createNewSession(sessionRequest);
-
-    if (result.isRight()) {
-      return Optional.of(result.right());
-    } else {
-      return Optional.empty();
-    }
-  }
-
-  public Either<WebDriverException, CreateSessionResponse> createNewSession(CreateSessionRequest sessionRequest) {
+  public Either<WebDriverException, CreateSessionResponse> newSession(CreateSessionRequest sessionRequest) {
     if (driver != null) {
       throw new IllegalStateException("Only expected one session at a time");
     }
 
-    Optional<WebDriver> driver = driverInfo.createDriver(sessionRequest.getCapabilities());
+    Optional<WebDriver> driver = driverInfo.createDriver(sessionRequest.getDesiredCapabilities());
     if (!driver.isPresent()) {
       return Either.left(new WebDriverException("Unable to create a driver instance"));
     }
@@ -352,8 +342,8 @@ public class OneShotNode extends Node {
           stereotype,
           Instant.EPOCH,
           driver == null ?
-            Optional.empty() :
-            Optional.of(new Session(sessionId, getUri(), stereotype, capabilities, Instant.now())))),
+            null :
+            new Session(sessionId, getUri(), stereotype, capabilities, Instant.now()))),
       isDraining() ? DRAINING : UP,
       heartbeatPeriod,
       getNodeVersion(),

@@ -22,7 +22,10 @@ import com.google.auto.service.AutoService;
 import org.asynchttpclient.AsyncHttpClient;
 import org.asynchttpclient.DefaultAsyncHttpClientConfig;
 import org.asynchttpclient.Dsl;
+import org.asynchttpclient.Realm;
 import org.asynchttpclient.config.AsyncHttpClientConfigDefaults;
+import org.openqa.selenium.Credentials;
+import org.openqa.selenium.UsernameAndPassword;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.http.ClientConfig;
 import org.openqa.selenium.remote.http.Filter;
@@ -52,13 +55,11 @@ public class NettyClient implements HttpClient {
 
   static {
     ThreadFactory threadFactory = new DefaultThreadFactory("netty-client-timer", true);
-    HashedWheelTimer timer = new HashedWheelTimer(
+    TIMER = new HashedWheelTimer(
       threadFactory,
       AsyncHttpClientConfigDefaults.defaultHashedWheelTimerTickDuration(),
       TimeUnit.MILLISECONDS,
       AsyncHttpClientConfigDefaults.defaultHashedWheelTimerSize());
-    timer.start();
-    TIMER = timer;
   }
 
   private final ClientConfig config;
@@ -94,7 +95,19 @@ public class NettyClient implements HttpClient {
         .setNettyTimer(TIMER)
         .setRequestTimeout(toClampedInt(config.readTimeout().toMillis()))
         .setConnectTimeout(toClampedInt(config.connectionTimeout().toMillis()))
-        .setReadTimeout(toClampedInt(config.readTimeout().toMillis()));
+        .setReadTimeout(toClampedInt(config.readTimeout().toMillis()))
+        .setUseProxyProperties(true)
+        .setUseProxySelector(true);
+
+    if (config.credentials() != null) {
+      Credentials credentials = config.credentials();
+      if (!(credentials instanceof UsernameAndPassword)) {
+        throw new IllegalArgumentException("Credentials must be a username and password");
+      }
+      UsernameAndPassword uap = (UsernameAndPassword) credentials;
+      builder.setRealm(new Realm.Builder(uap.username(), uap.password()).setUsePreemptiveAuth(true));
+    }
+
     return Dsl.asyncHttpClient(builder);
   }
 

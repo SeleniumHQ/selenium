@@ -24,6 +24,7 @@ import pytest
 from selenium.webdriver import DesiredCapabilities
 from selenium.webdriver.remote.command import Command
 from selenium.webdriver.remote.webdriver import WebDriver
+from selenium.webdriver.remote import webdriver
 
 
 def test_converts_oss_capabilities_to_w3c(mocker):
@@ -70,3 +71,55 @@ def test_accepts_firefox_options_to_remote_driver(mocker, browser_name):
 
     WebDriver(desired_capabilities=caps, options=opts)
     mock.assert_called_with(expected_caps, None)
+
+
+def test_always_match_if_2_of_the_same_options():
+    from selenium.webdriver.chrome.options import Options as ChromeOptions
+    from selenium.webdriver.chrome.options import Options as ChromeOptions2
+
+    co1 = ChromeOptions()
+    co1.add_argument("foo")
+    co2 = ChromeOptions2()
+    co2.add_argument("bar")
+
+    expected = {
+        "capabilities": {
+            "alwaysMatch": {
+                "browserName": "chrome",
+                "pageLoadStrategy": "normal",
+                "platform": "ANY",
+                "version": ""
+            },
+            "firstMatch": [
+                {"goog:chromeOptions": {"args": ["foo"], "extensions": []}},
+                {"goog:chromeOptions": {"args": ["bar"], "extensions": []}},
+            ]
+        }
+    }
+    result = webdriver.create_matches([co1, co2])
+    assert expected == result
+
+
+def test_first_match_when_2_different_option_types():
+    from selenium.webdriver.chrome.options import Options as ChromeOptions
+    from selenium.webdriver.firefox.options import Options as FirefoxOptions
+
+    expected = {
+        "capabilities": {
+            "alwaysMatch": {"pageLoadStrategy": "normal"},
+            "firstMatch": [
+                {"browserName": "chrome",
+                 "platform": "ANY",
+                 "version": "",
+                 "goog:chromeOptions": {"extensions": [], "args": []}},
+                {"browserName": "firefox",
+                 "acceptInsecureCerts": True,
+                 "moz:debuggerAddress": True,
+                 "moz:firefoxOptions": {"args": ["foo"]}
+                 }
+            ]
+        }
+    }
+
+    result = webdriver.create_matches([ChromeOptions(), FirefoxOptions()])
+    assert expected == result

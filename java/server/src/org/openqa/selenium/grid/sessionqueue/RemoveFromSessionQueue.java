@@ -23,7 +23,9 @@ import static org.openqa.selenium.remote.tracing.Tags.HTTP_REQUEST;
 import static org.openqa.selenium.remote.tracing.Tags.HTTP_RESPONSE;
 
 import org.openqa.selenium.grid.data.RequestId;
+import org.openqa.selenium.grid.data.SessionRequest;
 import org.openqa.selenium.internal.Require;
+import org.openqa.selenium.remote.http.Contents;
 import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
@@ -35,28 +37,25 @@ import java.util.Optional;
 public class RemoveFromSessionQueue implements HttpHandler {
 
   private final Tracer tracer;
-  private final NewSessionQueuer newSessionQueuer;
+  private final NewSessionQueue newSessionQueue;
   private final RequestId id;
 
-  RemoveFromSessionQueue(Tracer tracer, NewSessionQueuer newSessionQueuer, RequestId id) {
+  RemoveFromSessionQueue(Tracer tracer, NewSessionQueue newSessionQueue, RequestId id) {
     this.tracer = Require.nonNull("Tracer", tracer);
-    this.newSessionQueuer = Require.nonNull("New Session Queuer", newSessionQueuer);
+    this.newSessionQueue = Require.nonNull("New Session Queue", newSessionQueue);
     this.id = id;
   }
 
   @Override
   public HttpResponse execute(HttpRequest req) {
-    try (Span span = newSpanAsChildOf(tracer, req, "sessionqueuer.remove")) {
+    try (Span span = newSpanAsChildOf(tracer, req, "sessionqueue.remove")) {
       HTTP_REQUEST.accept(span, req);
 
-      Optional<HttpRequest> sessionRequest = newSessionQueuer.remove(id);
+      Optional<SessionRequest> sessionRequest = newSessionQueue.remove(id);
       HttpResponse response = new HttpResponse();
 
       if (sessionRequest.isPresent()) {
-        HttpRequest request = sessionRequest.get();
-        response.setContent(request.getContent());
-        response.setHeader(NewSessionQueue.SESSIONREQUEST_TIMESTAMP_HEADER,
-          request.getHeader(NewSessionQueue.SESSIONREQUEST_TIMESTAMP_HEADER));
+        return response.setContent(Contents.asJson(sessionRequest));
       } else {
         response.setStatus(HTTP_NO_CONTENT);
       }

@@ -17,9 +17,6 @@
 
 package org.openqa.selenium.remote.service;
 
-import static java.util.Collections.emptyMap;
-import static java.util.concurrent.TimeUnit.SECONDS;
-
 import com.google.common.collect.ImmutableMap;
 
 import org.openqa.selenium.Beta;
@@ -31,6 +28,7 @@ import org.openqa.selenium.net.UrlChecker;
 import org.openqa.selenium.os.CommandLine;
 import org.openqa.selenium.os.ExecutableFinder;
 
+import java.io.Closeable;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -42,9 +40,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.concurrent.locks.ReentrantLock;
+
+import static java.util.Collections.emptyMap;
+import static java.util.concurrent.TimeUnit.SECONDS;
 
 /**
  * Manages the life and death of a native executable driver server.
@@ -55,8 +58,16 @@ import java.util.concurrent.locks.ReentrantLock;
  * In addition to this, it is supposed that the driver server implements /shutdown hook that is
  * used to stop the server.
  */
-public class DriverService {
+public class DriverService implements Closeable {
+
   protected static final Duration DEFAULT_TIMEOUT = Duration.ofSeconds(20);
+  private final ExecutorService executorService = Executors.newFixedThreadPool(2, r -> {
+    Thread thread = new Thread(r);
+    thread.setName("Driver Service Executor");
+    thread.setDaemon(true);
+    return thread;
+  });
+
 
   /**
    * The base URL for the managed server.
@@ -67,17 +78,15 @@ public class DriverService {
    * Controls access to {@link #process}.
    */
   private final ReentrantLock lock = new ReentrantLock();
-
+  private final String executable;
+  private final Duration timeout;
+  private final List<String> args;
+  private final Map<String, String> environment;
   /**
    * A reference to the current child process. Will be {@code null} whenever this service is not
    * running. Protected by {@link #lock}.
    */
   protected CommandLine process = null;
-
-  private final String executable;
-  private final Duration timeout;
-  private final List<String> args;
-  private final Map<String, String> environment;
   private OutputStream outputStream = System.err;
 
   /**
@@ -102,25 +111,6 @@ public class DriverService {
 
    this.url = getUrl(port);
  }
-
-  protected List<String> getArgs() {
-    return args;
-  }
-
-  protected Map<String, String> getEnvironment() {
-   return environment;
- }
-
-  protected URL getUrl(int port) throws IOException {
-   return new URL(String.format("http://localhost:%d", port));
- }
-
-  /**
-   * @return The base URL for the managed driver server.
-   */
-  public URL getUrl() {
-    return url;
-  }
 
   /**
    *
@@ -155,6 +145,25 @@ public class DriverService {
     Require.stateCondition(exe.canExecute(), "It must be an executable file: %s", exe);
   }
 
+  protected List<String> getArgs() {
+    return args;
+  }
+
+  protected Map<String, String> getEnvironment() {
+   return environment;
+ }
+
+  protected URL getUrl(int port) throws IOException {
+   return new URL(String.format("http://localhost:%d", port));
+ }
+
+  /**
+   * @return The base URL for the managed driver server.
+   */
+  public URL getUrl() {
+    return url;
+  }
+
   /**
    * Checks whether the driver child process is currently running.
    *
@@ -169,12 +178,6 @@ public class DriverService {
     } finally {
       lock.unlock();
     }
-  }
-
-  private enum StartOrDie {
-    SERVER_STARTED,
-    PROCESS_IS_ACTIVE,
-    PROCESS_DIED
   }
 
   /**
@@ -198,7 +201,7 @@ public class DriverService {
       CompletableFuture<StartOrDie> serverStarted = CompletableFuture.supplyAsync(() -> {
         waitUntilAvailable();
         return StartOrDie.SERVER_STARTED;
-      });
+      }, executorService);
 
       CompletableFuture<StartOrDie> processFinished = CompletableFuture.supplyAsync(() -> {
         try {
@@ -207,7 +210,7 @@ public class DriverService {
           return StartOrDie.PROCESS_IS_ACTIVE;
         }
         return StartOrDie.PROCESS_DIED;
-      });
+      }, executorService);
 
       try {
         StartOrDie status = (StartOrDie) CompletableFuture.anyOf(serverStarted, processFinished)
@@ -300,6 +303,17 @@ public class DriverService {
 
   protected OutputStream getOutputStream() {
     return outputStream;
+  }
+
+  @Override
+  public void close() {
+    executorService.shutdownNow();
+  }
+
+  private enum StartOrDie {
+    SERVER_STARTED,
+    PROCESS_IS_ACTIVE,
+    PROCESS_DIED
   }
 
   public abstract static class Builder<DS extends DriverService, B extends Builder<?, ?>> {

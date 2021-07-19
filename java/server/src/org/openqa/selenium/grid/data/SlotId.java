@@ -20,6 +20,7 @@ package org.openqa.selenium.grid.data;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.JsonInput;
 
+import java.io.Serializable;
 import java.util.Map;
 import java.util.Objects;
 import java.util.TreeMap;
@@ -27,7 +28,7 @@ import java.util.UUID;
 
 import static java.util.Collections.unmodifiableMap;
 
-public class SlotId {
+public class SlotId implements Serializable {
 
   private final NodeId nodeId;
   private final UUID uuid;

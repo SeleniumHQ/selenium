@@ -27,10 +27,8 @@ import org.openqa.selenium.Cookie;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.HasCapabilities;
 import org.openqa.selenium.ImmutableCapabilities;
-import org.openqa.selenium.InvalidArgumentException;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.MutableCapabilities;
-import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.NoSuchFrameException;
 import org.openqa.selenium.NoSuchWindowException;
 import org.openqa.selenium.OutputType;
@@ -76,19 +74,19 @@ import java.util.Base64;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
+import java.util.function.BiFunction;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static java.nio.charset.StandardCharsets.UTF_8;
+import static java.util.Collections.singleton;
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.openqa.selenium.remote.CapabilityType.LOGGING_PREFS;
 import static org.openqa.selenium.remote.CapabilityType.PLATFORM;
@@ -96,25 +94,19 @@ import static org.openqa.selenium.remote.CapabilityType.PLATFORM_NAME;
 import static org.openqa.selenium.remote.CapabilityType.SUPPORTS_JAVASCRIPT;
 
 @Augmentable
-public class RemoteWebDriver implements WebDriver, JavascriptExecutor, HasInputDevices,
-                                        HasCapabilities, Interactive, TakesScreenshot,
-                                        HasVirtualAuthenticator, PrintsPage {
+public class RemoteWebDriver implements WebDriver,
+  JavascriptExecutor,
+  HasInputDevices,
+  HasCapabilities,
+  HasVirtualAuthenticator,
+  Interactive,
+  PrintsPage,
+  TakesScreenshot {
 
   // TODO: This static logger should be unified with the per-instance localLogs
   private static final Logger logger = Logger.getLogger(RemoteWebDriver.class.getName());
   private Level level = Level.FINE;
-
-  private Map<Class<? extends By>, Mechanism> remotableBys = new HashMap<>();
-  // We would do this in either `init` or a constructor, but there are
-  // multiple constructors and we occasionally add a new one, and `init`
-  // may be overridden by the user
-  {
-    remotableBys.put(By.cssSelector("a").getClass(), Mechanism.REMOTE);
-    remotableBys.put(By.linkText("a").getClass(), Mechanism.REMOTE);
-    remotableBys.put(By.partialLinkText("a").getClass(), Mechanism.REMOTE);
-    remotableBys.put(By.tagName("a").getClass(), Mechanism.REMOTE);
-    remotableBys.put(By.xpath("//a").getClass(), Mechanism.REMOTE);
-  }
+  private final ElementLocation elementLocation = new ElementLocation();
 
   private ErrorHandler errorHandler = new ErrorHandler();
   private CommandExecutor executor;
@@ -249,7 +241,7 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor, HasInputD
   }
 
   protected void startSession(Capabilities capabilities) {
-    Response response = execute(DriverCommand.NEW_SESSION(capabilities));
+    Response response = execute(DriverCommand.NEW_SESSION(singleton(capabilities)));
 
     if (response == null) {
       throw new SessionNotCreatedException(
@@ -270,7 +262,7 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor, HasInputD
         response.toString());
     }
 
-    Map<String, Object> rawCapabilities = (Map<String, Object>) responseValue;
+    @SuppressWarnings("unchecked") Map<String, Object> rawCapabilities = (Map<String, Object>) responseValue;
     MutableCapabilities returnedCapabilities = new MutableCapabilities(rawCapabilities);
     String platformString = (String) rawCapabilities.getOrDefault(
       PLATFORM,
@@ -358,8 +350,7 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor, HasInputD
       String base64EncodedPng = (String) result;
       return outputType.convertFromBase64Png(base64EncodedPng);
     } else if (result instanceof byte[]) {
-      String base64EncodedPng = new String((byte[]) result, UTF_8);
-      return outputType.convertFromBase64Png(base64EncodedPng);
+      return outputType.convertFromPngBytes((byte[]) result);
     } else {
       throw new RuntimeException(String.format("Unexpected result for %s command: %s",
           DriverCommand.SCREENSHOT,
@@ -379,95 +370,30 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor, HasInputD
   public WebElement findElement(By locator) {
     Require.nonNull("Locator", locator);
 
-    return findElement(this, this, locator);
+    return findElement(this, DriverCommand::FIND_ELEMENT, locator);
   }
 
-  WebElement findElement(RemoteWebDriver parent, SearchContext context, By locator) {
-    Mechanism mechanism = remotableBys.get(locator.getClass());
-    if (mechanism != null) {
-      WebElement element = mechanism.findElement(parent, context, locator);
-      return massage(parent, context, element, locator);
-    }
+  WebElement findElement(
+    SearchContext context,
+    BiFunction<String, Object, CommandPayload> findCommand,
+    By locator) {
 
-    // Attempt to find the element remotely
-    if (locator instanceof By.Remotable) {
-      try {
-        WebElement element = Mechanism.REMOTE.findElement(parent, context, locator);
-        remotableBys.put(locator.getClass(), Mechanism.REMOTE);
-        return massage(parent, context, element, locator);
-      } catch (NoSuchElementException e) {
-        remotableBys.put(locator.getClass(), Mechanism.REMOTE);
-        throw e;
-      } catch (InvalidArgumentException e) {
-        // Fall through
-      }
-    }
-
-    try {
-      WebElement element = Mechanism.CONTEXT.findElement(parent, context, locator);
-      remotableBys.put(locator.getClass(), Mechanism.CONTEXT);
-      return massage(parent, context, element, locator);
-    } catch (NoSuchElementException e) {
-      remotableBys.put(locator.getClass(), Mechanism.CONTEXT);
-      throw e;
-    }
+    return elementLocation.findElement(this, context, findCommand, locator);
   }
 
   @Override
   public List<WebElement> findElements(By locator) {
     Require.nonNull("Locator", locator);
 
-    return findElements(this, this, locator);
+    return findElements(this, DriverCommand::FIND_ELEMENTS, locator);
   }
 
-  public List<WebElement> findElements(RemoteWebDriver parent, SearchContext context, By locator) {
-    Mechanism mechanism = remotableBys.get(locator.getClass());
-    if (mechanism != null) {
-      List<WebElement> elements = mechanism.findElements(parent, context, locator);
-      elements.forEach(e -> massage(parent, context, e, locator));
-      return elements;
-    }
+  public List<WebElement> findElements(
+    SearchContext context,
+    BiFunction<String, Object, CommandPayload> findCommand,
+    By locator) {
 
-    // Attempt to find the element remotely
-    if (locator instanceof By.Remotable) {
-      try {
-        List<WebElement> elements = Mechanism.REMOTE.findElements(parent, context, locator);
-        remotableBys.put(locator.getClass(), Mechanism.REMOTE);
-        elements.forEach(e -> massage(parent, context, e, locator));
-        return elements;
-      } catch (NoSuchElementException e) {
-        remotableBys.put(locator.getClass(), Mechanism.REMOTE);
-        throw e;
-      } catch (InvalidArgumentException e) {
-        // Fall through
-      }
-    }
-
-    try {
-      List<WebElement> elements = Mechanism.CONTEXT.findElements(parent, context, locator);
-      remotableBys.put(locator.getClass(), Mechanism.CONTEXT);
-      elements.forEach(e -> massage(parent, context, e, locator));
-      return elements;
-    } catch (NoSuchElementException e) {
-      remotableBys.put(locator.getClass(), Mechanism.CONTEXT);
-      throw e;
-    }
-  }
-
-  private WebElement massage(RemoteWebDriver parent, SearchContext context, WebElement element, By locator) {
-    if (!(element instanceof RemoteWebElement)) {
-      return element;
-    }
-
-    RemoteWebElement remoteElement = (RemoteWebElement) element;
-    if (locator instanceof By.Remotable) {
-      By.Remotable.Parameters params = ((By.Remotable) locator).getRemoteParameters();
-      remoteElement.setFoundBy(context, params.using(), String.valueOf(params.value()));
-    }
-    remoteElement.setFileDetector(parent.getFileDetector());
-    remoteElement.setParent(parent);
-
-    return remoteElement;
+    return elementLocation.findElements(this, context, findCommand, locator);
   }
 
   /**
@@ -605,6 +531,7 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor, HasInputD
    */
   public void setLogLevel(Level level) {
     this.level = level;
+    logger.setLevel(level);
   }
 
   protected Response execute(CommandPayload payload) {
@@ -907,6 +834,11 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor, HasInputD
 
       @Override
       public Timeouts setScriptTimeout(Duration duration) {
+        return scriptTimeout(duration);
+      }
+
+      @Override
+      public Timeouts scriptTimeout(Duration duration) {
         execute(DriverCommand.SET_SCRIPT_TIMEOUT(duration));
         return this;
       }
@@ -1225,83 +1157,5 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor, HasInputD
         caps.getBrowserName(),
         platform,
         getSessionId());
-  }
-
-  private enum Mechanism {
-    CONTEXT {
-      @Override
-      WebElement findElement(RemoteWebDriver parent, SearchContext context, By locator) {
-        return locator.findElement(context);
-      }
-
-      @Override
-      List<WebElement> findElements(RemoteWebDriver parent, SearchContext context, By locator) {
-        return locator.findElements(context);
-      }
-    },
-    REMOTE {
-      @Override
-      WebElement findElement(RemoteWebDriver parent, SearchContext context, By locator) {
-        String commandName;
-        Map<String, Object> params = new HashMap<>();
-
-        By.Remotable.Parameters fromLocator = ((By.Remotable) locator).getRemoteParameters();
-        params.put("using", fromLocator.using());
-        params.put("value", fromLocator.value());
-
-        if (context instanceof RemoteWebElement) {
-          commandName = DriverCommand.FIND_CHILD_ELEMENT;
-          params.put("id", ((RemoteWebElement) context).getId());
-        } else {
-          commandName = DriverCommand.FIND_ELEMENT;
-        }
-
-        Response response = parent.execute(new CommandPayload(commandName, params));
-        Object value = response.getValue();
-        if (value == null) {
-          throw new NoSuchElementException("Unable to find element with locator " + locator);
-        }
-        try {
-          return (WebElement) value;
-        } catch (ClassCastException ex) {
-          throw new WebDriverException(
-            "Returned value cannot be converted to WebElement: " + value, ex);
-        }
-      }
-
-      @Override
-      List<WebElement> findElements(RemoteWebDriver parent, SearchContext context, By locator) {
-        String commandName;
-        Map<String, Object> params = new HashMap<>();
-
-        By.Remotable.Parameters fromLocator = ((By.Remotable) locator).getRemoteParameters();
-        params.put("using", fromLocator.using());
-        params.put("value", fromLocator.value());
-
-        if (context instanceof RemoteWebElement) {
-          commandName = DriverCommand.FIND_CHILD_ELEMENTS;
-          params.put("id", ((RemoteWebElement) context).getId());
-        } else {
-          commandName = DriverCommand.FIND_ELEMENTS;
-        }
-
-        Response response = parent.execute(new CommandPayload(commandName, params));
-        Object value = response.getValue();
-        if (value == null) { // see https://github.com/SeleniumHQ/selenium/issues/4555
-          return Collections.emptyList();
-        }
-        try {
-          @SuppressWarnings("unchecked") List<WebElement> toReturn = (List<WebElement>) value;
-          return toReturn;
-        } catch (ClassCastException ex) {
-          throw new WebDriverException(
-            "Returned value cannot be converted to WebElement: " + value, ex);
-        }
-      }
-    }
-    ;
-
-    abstract WebElement findElement(RemoteWebDriver parent, SearchContext context, By locator);
-    abstract List<WebElement> findElements(RemoteWebDriver parent, SearchContext context, By locator);
   }
 }

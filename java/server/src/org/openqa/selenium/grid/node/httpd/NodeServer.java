@@ -17,14 +17,6 @@
 
 package org.openqa.selenium.grid.node.httpd;
 
-import static java.net.HttpURLConnection.HTTP_INTERNAL_ERROR;
-import static java.net.HttpURLConnection.HTTP_NO_CONTENT;
-import static org.openqa.selenium.grid.config.StandardGridRoles.EVENT_BUS_ROLE;
-import static org.openqa.selenium.grid.config.StandardGridRoles.HTTPD_ROLE;
-import static org.openqa.selenium.grid.config.StandardGridRoles.NODE_ROLE;
-import static org.openqa.selenium.grid.data.Availability.DOWN;
-import static org.openqa.selenium.remote.http.Route.get;
-
 import com.google.auto.service.AutoService;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.net.MediaType;
@@ -46,7 +38,7 @@ import org.openqa.selenium.grid.data.NodeStatusEvent;
 import org.openqa.selenium.grid.log.LoggingOptions;
 import org.openqa.selenium.grid.node.HealthCheck;
 import org.openqa.selenium.grid.node.Node;
-import org.openqa.selenium.grid.node.ProxyNodeCdp;
+import org.openqa.selenium.grid.node.ProxyNodeWebsockets;
 import org.openqa.selenium.grid.node.config.NodeOptions;
 import org.openqa.selenium.grid.server.BaseServerOptions;
 import org.openqa.selenium.grid.server.EventBusOptions;
@@ -66,6 +58,14 @@ import java.util.Set;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Logger;
+
+import static java.net.HttpURLConnection.HTTP_INTERNAL_ERROR;
+import static java.net.HttpURLConnection.HTTP_NO_CONTENT;
+import static org.openqa.selenium.grid.config.StandardGridRoles.EVENT_BUS_ROLE;
+import static org.openqa.selenium.grid.config.StandardGridRoles.HTTPD_ROLE;
+import static org.openqa.selenium.grid.config.StandardGridRoles.NODE_ROLE;
+import static org.openqa.selenium.grid.data.Availability.DOWN;
+import static org.openqa.selenium.remote.http.Route.get;
 
 @AutoService(CliCommand.class)
 public class NodeServer extends TemplateGridServerCommand {
@@ -167,7 +167,7 @@ public class NodeServer extends TemplateGridServerCommand {
       node,
       get("/readyz").to(() -> readinessCheck));
 
-    return new Handlers(httpHandler, new ProxyNodeCdp(clientFactory, node));
+    return new Handlers(httpHandler, new ProxyNodeWebsockets(clientFactory, node));
   }
 
   @Override
@@ -199,7 +199,6 @@ public class NodeServer extends TemplateGridServerCommand {
         Executors.newSingleThreadExecutor().submit(() -> {
           Failsafe.with(registrationPolicy).run(
             () -> {
-              LOG.info("Sending registration event...");
               HealthCheck.Result check = node.getHealthCheck().check();
               if (DOWN.equals(check.getAvailability())) {
                 LOG.severe("Node is not alive: " + check.getMessage());
@@ -210,6 +209,7 @@ public class NodeServer extends TemplateGridServerCommand {
               if (nodeRegistered.get()) {
                 throw new InterruptedException("Stopping registration thread.");
               }
+              LOG.info("Sending registration event...");
             }
           );
         });

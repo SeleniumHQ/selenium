@@ -19,11 +19,11 @@ namespace OpenQA.Selenium.DevTools
         [IgnoreBrowser(Selenium.Browser.Safari, "Safari does not support Chrome DevTools Protocol")]
         public async Task VerifyMessageAdded()
         {
-            var domains = session.GetVersionSpecificDomains<V87.DevToolsSessionDomains>();
+            var domains = session.GetVersionSpecificDomains<V91.DevToolsSessionDomains>();
             string consoleMessage = "Hello Selenium";
 
             ManualResetEventSlim sync = new ManualResetEventSlim(false);
-            EventHandler<V87.Console.MessageAddedEventArgs> messageAddedHandler = (sender, e) =>
+            EventHandler<V91.Console.MessageAddedEventArgs> messageAddedHandler = (sender, e) =>
             {
                 Assert.That(e.Message.Text, Is.EqualTo(consoleMessage));
                 sync.Set();

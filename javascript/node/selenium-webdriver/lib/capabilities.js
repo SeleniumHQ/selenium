@@ -263,7 +263,9 @@ class Capabilities {
    * @return {!Capabilities} A basic set of capabilities for Firefox.
    */
   static firefox() {
-    return new Capabilities().setBrowserName(Browser.FIREFOX).set("moz:debuggerAddress", true)
+    return new Capabilities()
+      .setBrowserName(Browser.FIREFOX)
+      .set('moz:debuggerAddress', true)
   }
 
   /**
@@ -278,6 +280,13 @@ class Capabilities {
    */
   static safari() {
     return new Capabilities().setBrowserName(Browser.SAFARI)
+  }
+
+  /**
+   * @return {!Capabilities} A basic set of capabilities for Opera
+   */
+  static opera() {
+    return new Capabilities().setBrowserName(Browser.OPERA)
   }
 
   /**

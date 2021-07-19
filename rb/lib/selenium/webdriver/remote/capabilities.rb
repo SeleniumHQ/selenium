@@ -40,21 +40,14 @@ module Selenium
           :unhandled_prompt_behavior,
           :strict_file_interactability,
 
-          # remote-specific
-          :remote_session_id,
-
-          # TODO: (AR) deprecate compatibility with OSS-capabilities
-          :implicit_timeout,
-          :page_load_timeout,
-          :script_timeout
+          # remote-specific (webdriver.remote.sessionid)
+          :remote_session_id
         ].freeze
 
-        KNOWN.each do |key|
+        (KNOWN - %i[proxy timeouts]).each do |key|
           define_method key do
             @capabilities.fetch(key)
           end
-
-          next if key == :proxy
 
           define_method "#{key}=" do |value|
             @capabilities[key] = value
@@ -89,16 +82,10 @@ module Selenium
           alias_method :microsoftedge, :edge
 
           def firefox(opts = {})
-            opts[:browser_version] = opts.delete(:version) if opts.key?(:version)
-            opts[:platform_name] = opts.delete(:platform) if opts.key?(:platform)
-            opts[:timeouts] = {}
-            opts[:timeouts]['implicit'] = opts.delete(:implicit_timeout) if opts.key?(:implicit_timeout)
-            opts[:timeouts]['pageLoad'] = opts.delete(:page_load_timeout) if opts.key?(:page_load_timeout)
-            opts[:timeouts]['script'] = opts.delete(:script_timeout) if opts.key?(:script_timeout)
-            opts.delete(:timeouts) if opts[:timeouts].empty?
-            new({browser_name: 'firefox'}.merge(opts))
+            new({
+              browser_name: 'firefox'
+            }.merge(opts))
           end
-
           alias_method :ff, :firefox
 
           def safari(opts = {})
@@ -121,18 +108,21 @@ module Selenium
           end
           alias_method :ie, :internet_explorer
 
+          def always_match(capabilities)
+            new(always_match: capabilities)
+          end
+
+          def first_match(*capabilities)
+            new(first_match: capabilities)
+          end
+
           #
           # @api private
           #
 
           def json_create(data)
             data = data.dup
-
             caps = new
-            (KNOWN - %i[timeouts proxy]).each do |cap|
-              data_value = camel_case(cap)
-              caps[cap] = data.delete(data_value) if data.key?(data_value)
-            end
 
             process_timeouts(caps, data.delete('timeouts'))
 
@@ -144,6 +134,11 @@ module Selenium
             # Remote Server Specific
             if data.key?('webdriver.remote.sessionid')
               caps[:remote_session_id] = data.delete('webdriver.remote.sessionid')
+            end
+
+            KNOWN.each do |cap|
+              data_value = camel_case(cap)
+              caps[cap] = data.delete(data_value) if data.key?(data_value)
             end
 
             # any remaining pairs will be added as is, with no conversion
@@ -179,8 +174,9 @@ module Selenium
         #
 
         def initialize(opts = {})
-          @capabilities = opts
-          self.proxy = opts.delete(:proxy)
+          @capabilities = {}
+          self.proxy = opts.delete(:proxy) if opts[:proxy]
+          @capabilities.merge!(opts)
         end
 
         #
@@ -205,6 +201,10 @@ module Selenium
           end
         end
 
+        def proxy
+          @capabilities.fetch(:proxy)
+        end
+
         def proxy=(proxy)
           case proxy
           when Hash
@@ -216,33 +216,46 @@ module Selenium
           end
         end
 
+        def timeouts
+          @capabilities[:timeouts] ||= {}
+        end
+
+        def timeouts=(timeouts)
+          @capabilities[:timeouts] = timeouts
+        end
+
+        def implicit_timeout
+          timeouts[:implicit]
+        end
+
+        def implicit_timeout=(timeout)
+          timeouts[:implicit] = timeout
+        end
+
+        def page_load_timeout
+          timeouts[:page_load] || timeouts[:pageLoad]
+        end
+
+        def page_load_timeout=(timeout)
+          timeouts[:page_load] = timeout
+        end
+
+        def script_timeout
+          timeouts[:script]
+        end
+
+        def script_timeout=(timeout)
+          timeouts[:script] = timeout
+        end
+
         #
         # @api private
         #
 
         def as_json(*)
-          hash = {}
-
-          @capabilities.each do |key, value|
-            case key
-            when :platform
-              hash['platform'] = value.to_s.upcase
-            when :proxy
-              next unless value
-
-              process_proxy(hash, value)
-            when :unhandled_prompt_behavior
-              hash['unhandledPromptBehavior'] = value.is_a?(Symbol) ? value.to_s.tr('_', ' ') : value
-            when String
-              hash[key.to_s] = value
-            when Symbol
-              hash[self.class.camel_case(key)] = value
-            else
-              raise TypeError, "expected String or Symbol, got #{key.inspect}:#{key.class} / #{value.inspect}"
-            end
+          @capabilities.each_with_object({}) do |(key, value), hash|
+            hash[convert_key(key)] = process_capabilities(key, value, hash)
           end
-
-          hash
         end
 
         def to_json(*)
@@ -263,13 +276,43 @@ module Selenium
 
         private
 
-        def process_proxy(hash, value)
-          hash['proxy'] = value.as_json
-          hash['proxy']['proxyType'] &&= hash['proxy']['proxyType'].downcase
+        def process_capabilities(key, value, hash)
+          case value
+          when Array
+            value.map { |v| process_capabilities(key, v, hash) }
+          when Hash
+            value.each_with_object({}) do |(k, v), h|
+              h[convert_key(k)] = process_capabilities(k, v, h)
+            end
+          when Capabilities, Options
+            value.as_json
+          else
+            convert_value(key, value)
+          end
+        end
 
-          return unless hash['proxy']['noProxy'].is_a?(String)
+        def convert_key(key)
+          case key
+          when String
+            key.to_s
+          when Symbol
+            self.class.camel_case(key)
+          else
+            raise TypeError, "expected String or Symbol, got #{key.inspect}:#{key.class}"
+          end
+        end
 
-          hash['proxy']['noProxy'] = hash['proxy']['noProxy'].split(', ')
+        def convert_value(key, value)
+          case key
+          when :platform
+            value.to_s.upcase
+          when :proxy
+            value&.as_json
+          when :unhandled_prompt_behavior
+            value.is_a?(Symbol) ? value.to_s.tr('_', ' ') : value
+          else
+            value
+          end
         end
       end # Capabilities
     end # Remote

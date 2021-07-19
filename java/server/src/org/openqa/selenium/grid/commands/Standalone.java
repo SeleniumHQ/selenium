@@ -19,20 +19,24 @@ package org.openqa.selenium.grid.commands;
 
 import com.google.auto.service.AutoService;
 import com.google.common.collect.ImmutableSet;
+
 import org.openqa.selenium.BuildInfo;
+import org.openqa.selenium.UsernameAndPassword;
 import org.openqa.selenium.cli.CliCommand;
 import org.openqa.selenium.events.EventBus;
 import org.openqa.selenium.grid.TemplateGridServerCommand;
 import org.openqa.selenium.grid.config.Config;
 import org.openqa.selenium.grid.config.Role;
 import org.openqa.selenium.grid.distributor.Distributor;
+import org.openqa.selenium.grid.distributor.config.DistributorOptions;
 import org.openqa.selenium.grid.distributor.local.LocalDistributor;
 import org.openqa.selenium.grid.graphql.GraphqlHandler;
 import org.openqa.selenium.grid.log.LoggingOptions;
 import org.openqa.selenium.grid.node.Node;
-import org.openqa.selenium.grid.node.ProxyNodeCdp;
+import org.openqa.selenium.grid.node.ProxyNodeWebsockets;
 import org.openqa.selenium.grid.node.config.NodeOptions;
 import org.openqa.selenium.grid.router.Router;
+import org.openqa.selenium.grid.security.BasicAuthenticationFilter;
 import org.openqa.selenium.grid.security.Secret;
 import org.openqa.selenium.grid.security.SecretOptions;
 import org.openqa.selenium.grid.server.BaseServerOptions;
@@ -42,10 +46,8 @@ import org.openqa.selenium.grid.server.Server;
 import org.openqa.selenium.grid.sessionmap.SessionMap;
 import org.openqa.selenium.grid.sessionmap.local.LocalSessionMap;
 import org.openqa.selenium.grid.sessionqueue.NewSessionQueue;
-import org.openqa.selenium.grid.sessionqueue.NewSessionQueuer;
-import org.openqa.selenium.grid.sessionqueue.config.NewSessionQueueOptions;
+import org.openqa.selenium.grid.sessionqueue.config.SessionRequestOptions;
 import org.openqa.selenium.grid.sessionqueue.local.LocalNewSessionQueue;
-import org.openqa.selenium.grid.sessionqueue.local.LocalNewSessionQueuer;
 import org.openqa.selenium.grid.web.CombinedHandler;
 import org.openqa.selenium.grid.web.GridUiRoute;
 import org.openqa.selenium.grid.web.RoutableHttpClientFactory;
@@ -67,6 +69,7 @@ import java.util.logging.Logger;
 
 import static java.net.HttpURLConnection.HTTP_INTERNAL_ERROR;
 import static java.net.HttpURLConnection.HTTP_OK;
+import static org.openqa.selenium.grid.config.StandardGridRoles.DISTRIBUTOR_ROLE;
 import static org.openqa.selenium.grid.config.StandardGridRoles.HTTPD_ROLE;
 import static org.openqa.selenium.grid.config.StandardGridRoles.NODE_ROLE;
 import static org.openqa.selenium.grid.config.StandardGridRoles.ROUTER_ROLE;
@@ -90,7 +93,7 @@ public class Standalone extends TemplateGridServerCommand {
 
   @Override
   public Set<Role> getConfigurableRoles() {
-    return ImmutableSet.of(HTTPD_ROLE, NODE_ROLE, ROUTER_ROLE, SESSION_QUEUE_ROLE);
+    return ImmutableSet.of(DISTRIBUTOR_ROLE, HTTPD_ROLE, NODE_ROLE, ROUTER_ROLE, SESSION_QUEUE_ROLE);
   }
 
   @Override
@@ -138,30 +141,30 @@ public class Standalone extends TemplateGridServerCommand {
     SessionMap sessions = new LocalSessionMap(tracer, bus);
     combinedHandler.addHandler(sessions);
 
-    NewSessionQueueOptions newSessionQueueOptions = new NewSessionQueueOptions(config);
-    NewSessionQueue sessionRequests = new LocalNewSessionQueue(
+    DistributorOptions distributorOptions = new DistributorOptions(config);
+    SessionRequestOptions sessionRequestOptions = new SessionRequestOptions(config);
+    NewSessionQueue queue = new LocalNewSessionQueue(
       tracer,
       bus,
-      newSessionQueueOptions.getSessionRequestRetryInterval(),
-      newSessionQueueOptions.getSessionRequestTimeout());
-
-    NewSessionQueuer queuer = new LocalNewSessionQueuer(
-      tracer,
-      bus,
-      sessionRequests,
+      distributorOptions.getSlotMatcher(),
+      sessionRequestOptions.getSessionRequestRetryInterval(),
+      sessionRequestOptions.getSessionRequestTimeout(),
       registrationSecret);
-    combinedHandler.addHandler(queuer);
+    combinedHandler.addHandler(queue);
 
     Distributor distributor = new LocalDistributor(
       tracer,
       bus,
       clientFactory,
       sessions,
-      queuer,
-      registrationSecret);
+      queue,
+      distributorOptions.getSlotSelector(),
+      registrationSecret,
+      distributorOptions.getHealthCheckInterval(),
+      distributorOptions.shouldRejectUnsupportedCaps());
     combinedHandler.addHandler(distributor);
 
-    Routable router = new Router(tracer, clientFactory, sessions, queuer, distributor)
+    Routable router = new Router(tracer, clientFactory, sessions, queue, distributor)
       .with(networkOptions.getSpecComplianceChecks());
 
     HttpHandler readinessCheck = req -> {
@@ -174,25 +177,33 @@ public class Standalone extends TemplateGridServerCommand {
     GraphqlHandler graphqlHandler = new GraphqlHandler(
       tracer,
       distributor,
-      queuer,
+      queue,
       serverOptions.getExternalUri(),
       getFormattedVersion());
 
     Routable ui = new GridUiRoute();
 
-    HttpHandler httpHandler = combine(
+    Routable httpHandler = combine(
       ui,
       router,
       Route.prefix("/wd/hub").to(combine(router)),
       Route.options("/graphql").to(() -> graphqlHandler),
-      Route.post("/graphql").to(() -> graphqlHandler),
-      Route.get("/readyz").to(() -> readinessCheck));
+      Route.post("/graphql").to(() -> graphqlHandler));
+
+    UsernameAndPassword uap = secretOptions.getServerAuthentication();
+    if (uap != null) {
+      LOG.info("Requiring authentication to connect");
+      httpHandler = httpHandler.with(new BasicAuthenticationFilter(uap.username(), uap.password()));
+    }
+
+    // Allow the liveness endpoint to be reached, since k8s doesn't make it easy to authenticate these checks
+    httpHandler = combine(httpHandler, Route.get("/readyz").to(() -> readinessCheck));
 
     Node node = new NodeOptions(config).getNode();
     combinedHandler.addHandler(node);
     distributor.add(node);
 
-    return new Handlers(httpHandler, new ProxyNodeCdp(clientFactory, node));
+    return new Handlers(httpHandler, new ProxyNodeWebsockets(clientFactory, node));
   }
 
   @Override

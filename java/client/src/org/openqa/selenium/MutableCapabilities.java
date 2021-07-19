@@ -18,20 +18,12 @@
 package org.openqa.selenium;
 
 import org.openqa.selenium.internal.Require;
-import org.openqa.selenium.logging.LogLevelMapping;
-import org.openqa.selenium.logging.LoggingPreferences;
 
-import java.util.Collection;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashSet;
-import java.util.IdentityHashMap;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Set;
 import java.util.TreeMap;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public class MutableCapabilities implements Capabilities {
 
@@ -109,31 +101,7 @@ public class MutableCapabilities implements Capabilities {
       return;
     }
 
-    if ("loggingPrefs".equals(key) && value instanceof Map) {
-      LoggingPreferences prefs = new LoggingPreferences();
-      @SuppressWarnings("unchecked") Map<String, String> prefsMap = (Map<String, String>) value;
-
-      prefsMap.forEach((pKey, pValue) -> prefs.enable(pKey, LogLevelMapping.toLevel(pValue)));
-      caps.put(key, prefs);
-      return;
-    }
-
-    if ("platform".equals(key) && value instanceof String) {
-      try {
-        caps.put(key, Platform.fromString((String) value));
-      } catch (WebDriverException e) {
-        caps.put(key, value);
-      }
-      return;
-    }
-
-    if ("unexpectedAlertBehaviour".equals(key)) {
-      caps.put("unexpectedAlertBehaviour", value);
-      caps.put("unhandledPromptBehavior", value);
-      return;
-    }
-
-    caps.put(key, value);
+    SharedCapabilitiesMethods.setCapability(caps, key, value);
   }
 
   @Override
@@ -155,77 +123,21 @@ public class MutableCapabilities implements Capabilities {
     return asMap();
   }
 
-  /**
-   * Subclasses can use this to add information that isn't always in the capabilities map.
-   */
-  protected int amendHashCode() {
-    return 0;
-  }
-
   @Override
   public int hashCode() {
-    return Objects.hash(amendHashCode(), caps);
+    return SharedCapabilitiesMethods.hashCode(this);
   }
 
   @Override
   public boolean equals(Object o) {
-    if (this == o) {
-      return true;
-    }
     if (!(o instanceof Capabilities)) {
       return false;
     }
-
-    Capabilities that = (Capabilities) o;
-
-    return asMap().equals(that.asMap());
+    return SharedCapabilitiesMethods.equals(this, (Capabilities) o);
   }
 
   @Override
   public String toString() {
-    Map<Object, String> seen = new IdentityHashMap<>();
-    return "Capabilities " + abbreviate(seen, caps);
-  }
-
-  private String abbreviate(Map<Object, String> seen, Object stringify) {
-    if (stringify == null) {
-      return "null";
-    }
-
-    StringBuilder value = new StringBuilder();
-
-    if (stringify.getClass().isArray()) {
-      value.append("[");
-      value.append(
-        Stream.of((Object[]) stringify)
-          .map(item -> abbreviate(seen, item))
-          .collect(Collectors.joining(", ")));
-      value.append("]");
-    } else if (stringify instanceof Collection) {
-      value.append("[");
-      value.append(
-        ((Collection<?>) stringify).stream()
-          .map(item -> abbreviate(seen, item))
-          .collect(Collectors.joining(", ")));
-      value.append("]");
-    } else if (stringify instanceof Map) {
-      value.append("{");
-      value.append(
-        ((Map<?, ?>) stringify).entrySet().stream()
-          .sorted(Comparator.comparing(entry -> String.valueOf(entry.getKey())))
-          .map(entry -> String.format("%s: %s", entry.getKey(), abbreviate(seen, entry.getValue())))
-          .collect(Collectors.joining(", ")));
-      value.append("}");
-    } else {
-      String s = String.valueOf(stringify);
-      if (s.length() > 30) {
-        value.append(s, 0, 27).append("...");
-      } else {
-        value.append(s);
-      }
-    }
-
-    seen.put(stringify, value.toString());
-    return value.toString();
+    return SharedCapabilitiesMethods.toString(this);
   }
 }

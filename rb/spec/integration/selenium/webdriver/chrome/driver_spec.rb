@@ -22,7 +22,7 @@ require_relative '../spec_helper'
 module Selenium
   module WebDriver
     module Chrome
-      describe Driver, exclusive: {driver: :chrome} do
+      describe Driver, exclusive: {browser: :chrome} do
         it 'gets and sets network conditions' do
           driver.network_conditions = {offline: false, latency: 56, throughput: 789}
           expect(driver.network_conditions).to eq(
@@ -53,7 +53,7 @@ module Selenium
           end
         end
 
-        describe '#print_options' do
+        describe 'PrintsPage' do
           let(:magic_number) { 'JVBER' }
           let(:options) { Chrome::Options.new(args: ['--headless']) }
 
@@ -64,19 +64,27 @@ module Selenium
             end
           end
 
-          it 'should print with orientation' do
-            create_driver!(capabilities: options) do |driver|
-              driver.navigate.to url_for('printPage.html')
-              expect(driver.print_page(orientation: 'landscape')).to include(magic_number)
-            end
-          end
-
           it 'should print with valid params' do
             create_driver!(capabilities: options) do |driver|
               driver.navigate.to url_for('printPage.html')
               expect(driver.print_page(orientation: 'landscape',
                                        page_ranges: ['1-2'],
                                        page: {width: 30})).to include(magic_number)
+            end
+          end
+
+          it 'should save pdf' do
+            create_driver!(capabilities: options) do |driver|
+              driver.navigate.to url_for('printPage.html')
+
+              path = "#{Dir.tmpdir}/test#{SecureRandom.urlsafe_base64}.pdf"
+
+              driver.save_print_page path
+
+              expect(File.exist?(path)).to be true
+              expect(File.size(path)).to be_positive
+            ensure
+              File.delete(path) if File.exist?(path)
             end
           end
         end

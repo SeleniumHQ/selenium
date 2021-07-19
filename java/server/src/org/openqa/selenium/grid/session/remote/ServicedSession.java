@@ -154,7 +154,7 @@ public class ServicedSession extends RemoteSession {
     @Override
     public Optional<ActiveSession> apply(CreateSessionRequest sessionRequest) {
       Require.nonNull("Session creation request", sessionRequest);
-      DriverService service = createService.apply(sessionRequest.getCapabilities());
+      DriverService service = createService.apply(sessionRequest.getDesiredCapabilities());
 
       try {
         service.start();
@@ -168,7 +168,7 @@ public class ServicedSession extends RemoteSession {
             service,
             url,
             sessionRequest.getDownstreamDialects(),
-            sessionRequest.getCapabilities());
+            sessionRequest.getDesiredCapabilities());
       } catch (IOException | IllegalStateException | NullPointerException | InvalidArgumentException e) {
         LOG.log(Level.INFO, e.getMessage(), e);
         service.stop();

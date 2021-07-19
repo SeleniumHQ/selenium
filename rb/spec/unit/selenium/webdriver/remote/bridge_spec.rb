@@ -36,10 +36,10 @@ module Selenium
           it 'sends plain capabilities' do
             payload = JSON.generate(
               capabilities: {
-                firstMatch: [{
+                alwaysMatch: {
                   browserName: 'internet explorer',
                   platformName: 'windows'
-                }]
+                }
               }
             )
 
@@ -54,12 +54,12 @@ module Selenium
           it 'passes options as capabilities' do
             payload = JSON.generate(
               capabilities: {
-                firstMatch: [{
+                alwaysMatch: {
                   'browserName' => 'chrome',
                   'goog:chromeOptions' => {
                     args: %w[foo bar]
                   }
-                }]
+                }
               }
             )
 
@@ -68,6 +68,41 @@ module Selenium
               .and_return('status' => 200, 'value' => {'sessionId' => 'foo', 'capabilities' => {}})
 
             bridge.create_session(Chrome::Options.new(args: %w[foo bar]).as_json)
+            expect(http).to have_received(:request).with(any_args, payload)
+          end
+
+          it 'uses alwaysMatch when passed' do
+            payload = JSON.generate(
+              capabilities: {
+                alwaysMatch: {
+                  browserName: 'chrome'
+                }
+              }
+            )
+
+            allow(http).to receive(:request)
+              .with(any_args, payload)
+              .and_return('status' => 200, 'value' => {'sessionId' => 'foo', 'capabilities' => {}})
+
+            bridge.create_session(Capabilities.always_match(Capabilities.chrome).as_json)
+            expect(http).to have_received(:request).with(any_args, payload)
+          end
+
+          it 'uses firstMatch when passed' do
+            payload = JSON.generate(
+              capabilities: {
+                firstMatch: [
+                  {browserName: 'chrome'},
+                  {browserName: 'firefox'}
+                ]
+              }
+            )
+
+            allow(http).to receive(:request)
+              .with(any_args, payload)
+              .and_return('status' => 200, 'value' => {'sessionId' => 'foo', 'capabilities' => {}})
+
+            bridge.create_session(Capabilities.first_match(Capabilities.chrome, Capabilities.firefox).as_json)
             expect(http).to have_received(:request).with(any_args, payload)
           end
 

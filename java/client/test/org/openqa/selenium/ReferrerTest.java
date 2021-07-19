@@ -156,6 +156,8 @@ public class ReferrerTest {
    */
   @Test
   @NeedsLocalEnvironment
+  @Ignore(value = CHROME, reason = "https://developers.google.com/web/updates/2020/07/referrer-policy-new-chrome-default")
+  @Ignore(value = FIREFOX, reason = "https://developers.google.com/web/updates/2020/07/referrer-policy-new-chrome-default")
   public void crossDomainHistoryNavigationWithoutAProxy() {
     String page1Url = server1.whereIs(PAGE_1) + "?next=" + encode(server2.whereIs(PAGE_2));
     String page2Url = server2.whereIs(PAGE_2) + "?next=" + encode(server1.whereIs(PAGE_3));
@@ -198,6 +200,8 @@ public class ReferrerTest {
    */
   @Test
   @NeedsLocalEnvironment
+  @Ignore(value = CHROME, reason = "https://developers.google.com/web/updates/2020/07/referrer-policy-new-chrome-default")
+  @Ignore(value = FIREFOX, reason = "https://developers.google.com/web/updates/2020/07/referrer-policy-new-chrome-default")
   public void crossDomainHistoryNavigationWithADirectProxy() {
     proxyServer.setPacFileContents("function FindProxyForURL(url, host) { return 'DIRECT'; }");
     WebDriver driver = createDriver(proxyServer.whereIs("/pac.js"));
@@ -221,6 +225,8 @@ public class ReferrerTest {
    */
   @Test
   @NeedsLocalEnvironment
+  @Ignore(value = CHROME, reason = "https://developers.google.com/web/updates/2020/07/referrer-policy-new-chrome-default")
+  @Ignore(value = FIREFOX, reason = "https://developers.google.com/web/updates/2020/07/referrer-policy-new-chrome-default")
   public void crossDomainHistoryNavigationWithAProxiedHost() {
     proxyServer.setPacFileContents(Joiner.on('\n').join(
       "function FindProxyForURL(url, host) {",
@@ -251,6 +257,8 @@ public class ReferrerTest {
    */
   @Test
   @NeedsLocalEnvironment
+  @Ignore(value = CHROME, reason = "https://developers.google.com/web/updates/2020/07/referrer-policy-new-chrome-default")
+  @Ignore(value = FIREFOX, reason = "https://developers.google.com/web/updates/2020/07/referrer-policy-new-chrome-default")
   public void crossDomainHistoryNavigationWhenProxyInterceptsHostRequests() {
     proxyServer.setPacFileContents(Joiner.on('\n').join(
       "function FindProxyForURL(url, host) {",

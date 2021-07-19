@@ -17,12 +17,6 @@
 
 package org.openqa.selenium.remote.http;
 
-import static com.google.common.net.HttpHeaders.CONTENT_TYPE;
-import static java.nio.charset.StandardCharsets.UTF_8;
-import static org.openqa.selenium.remote.http.Contents.bytes;
-import static org.openqa.selenium.remote.http.Contents.reader;
-import static org.openqa.selenium.remote.http.Contents.string;
-
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Multimap;
@@ -39,6 +33,12 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
+
+import static com.google.common.net.HttpHeaders.CONTENT_TYPE;
+import static java.nio.charset.StandardCharsets.UTF_8;
+import static org.openqa.selenium.remote.http.Contents.bytes;
+import static org.openqa.selenium.remote.http.Contents.reader;
+import static org.openqa.selenium.remote.http.Contents.string;
 
 abstract class HttpMessage<M extends HttpMessage<M>>  {
 
@@ -106,7 +106,10 @@ abstract class HttpMessage<M extends HttpMessage<M>>  {
   }
 
   public M removeHeader(String name) {
-    headers.removeAll(name);
+    String toRemove = headers.keySet().stream()
+      .filter(header -> header.equalsIgnoreCase(name))
+      .findFirst().orElse(name);
+    headers.removeAll(toRemove);
     return self();
   }
 

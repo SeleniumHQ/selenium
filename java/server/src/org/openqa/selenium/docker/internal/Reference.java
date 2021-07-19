@@ -24,66 +24,86 @@ import org.openqa.selenium.Beta;
 import org.openqa.selenium.docker.DockerException;
 import org.openqa.selenium.internal.Require;
 
-import java.util.Map;
 import java.util.Objects;
-import java.util.function.Function;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 @Beta
 public class Reference {
-
   private static final String DEFAULT_DOMAIN = "docker.io";
+  private static final String LEGACY_DEFAULT_DOMAIN = "index.docker.io";
   private static final String DEFAULT_REPO = "library";
   private static final String DEFAULT_TAG = "latest";
 
-  // Capturing groups used in patterns below
-  private static final String DOMAIN = "([\\w\\d-_.]+?(:(\\d+))?)";
-  private static final String REPO = "([\\w\\d-_.]+?)";
-  private static final String NAME = "([\\w\\d-_.]+?)";
-  private static final String TAG = "([\\w\\d-_.]+?)";
-  private static final String DIGEST = "(sha256:[A-Fa-f0-9]{64})";
-
-  // name -> {domain: "docker.io", repository: "repository", name: name, tag: "latest", digest: null}
-  // name:tag -> {domain: "docker.io", repository: "repository", name: name, tag: tag, digest: null}
-  // name@digest -> {domain: "docker.io", repository: "repository", name: name, tag: null, digest: digest}
-  // repository/name -> {domain: "docker.io", repository: repository, name: name, tag: "latest", digest: null}
-  // repository/name:tag -> {domain: "docker.io", repository: repository, name: name, tag: tag, digest: null}
-  // repository/name@digest -> {domain: "docker.io", repository: repository, name: name, tag: null, digest: digest}
-  // domain/repository/name:tag -> {domain: "domain", repository: repository, name: name, tag: tag, digest: null}
-  // domain:port/repository/name@digest -> {domain: "domain:port", repository: repository, name: name, tag: tag, digest: null}
-  private static final Map<Pattern, Function<Matcher, Reference>> PATTERNS = ImmutableMap.<Pattern, Function<Matcher, Reference>>builder()
-    .put(Pattern.compile(TAG), m -> new Reference(DEFAULT_DOMAIN, DEFAULT_REPO, m.group(1), DEFAULT_TAG, null))
-    .put(Pattern.compile(String.format("%s:%s", NAME, TAG)), m -> new Reference(DEFAULT_DOMAIN, DEFAULT_REPO, m.group(1), m.group(2), null))
-    .put(Pattern.compile(String.format("%s/%s", REPO, NAME)), m -> new Reference(DEFAULT_DOMAIN, m.group(1), m.group(2), DEFAULT_TAG, null))
-    .put(Pattern.compile(String.format("%s@%s", NAME, DIGEST)), m -> new Reference(DEFAULT_DOMAIN, DEFAULT_REPO, m.group(1), null, m.group(2)))
-    .put(Pattern.compile(String.format("%s/%s:%s", REPO, NAME, TAG)), m -> new Reference(DEFAULT_DOMAIN, m.group(1), m.group(2), m.group(3), null))
-    .put(Pattern.compile(String.format("%s/%s@%s", REPO, NAME, DIGEST)), m -> new Reference(DEFAULT_DOMAIN, m.group(1), m.group(2), null, m.group(3)))
-    .put(Pattern.compile(String.format("%s/%s/%s", DOMAIN, REPO, NAME)), m -> new Reference(m.group(1), m.group(4), m.group(5), DEFAULT_TAG, null))
-    .put(Pattern.compile(String.format("%s/%s/%s:%s", DOMAIN, REPO, NAME, TAG)), m -> new Reference(m.group(1), m.group(4), m.group(5), m.group(6), null))
-    .build();
-
   private final String domain;
-  private final String repository;
   private final String name;
   private final String tag;
   private final String digest;
 
   @VisibleForTesting
-  Reference(String domain, String repository, String name, String tag, String digest) {
+  Reference(String domain, String name, String tag, String digest) {
     this.domain = Require.nonNull("Domain", domain);
-    this.repository = Require.nonNull("Repository", repository);
     this.name = Require.nonNull("Name", name);
     this.tag = tag;
     this.digest = digest;
   }
 
-  public String getDomain() {
-    return domain;
+  // Logic taken from https://github.com/distribution/distribution/blob/main/reference/normalize.go
+  public static Reference parse(String input) {
+    Require.nonNull("Reference to parse", input);
+
+    ImmutableMap<String, String> splitDockerDomain = splitDockerDomain(input);
+    String domain = splitDockerDomain.get("domain");
+    String remainder = splitDockerDomain.get("remainder");
+
+    String name;
+    String digest = null;
+    String tag = DEFAULT_TAG;
+
+    int digestSep = remainder.indexOf("@");
+    int tagSep = remainder.indexOf(":");
+    if (digestSep > -1 && tagSep > -1) {
+      digest = remainder.substring(digestSep + 1);
+      name = remainder.substring(0, digestSep);
+      tag = null;
+    } else if (tagSep > -1) {
+      tag = remainder.substring(tagSep + 1);
+      name = remainder.substring(0, tagSep);
+    } else {
+      name = remainder;
+    }
+
+    if (!name.toLowerCase().equals(name)) {
+      throw new DockerException(String.format(
+        "Invalid reference format: repository name (%s) must be lowercase", name));
+    }
+
+    return new Reference(domain, name, tag, digest);
   }
 
-  public String getRepository() {
-    return repository;
+  private static ImmutableMap<String, String> splitDockerDomain(String name) {
+    String domain;
+    String remainder;
+    int domSep = name.indexOf("/");
+    String possibleDomain = domSep == -1 ? "" : name.substring(0, domSep);
+    if (domSep == -1 || (!possibleDomain.contains(".") && !possibleDomain.contains(":")
+                         && !"localhost".equalsIgnoreCase(possibleDomain)
+                         && possibleDomain.toLowerCase().equals(possibleDomain))) {
+      remainder = name;
+      domain = DEFAULT_DOMAIN;
+    } else {
+      domain = possibleDomain;
+      remainder = name.substring(domSep + 1);
+    }
+    if (LEGACY_DEFAULT_DOMAIN.equals(domain)) {
+      domain = DEFAULT_DOMAIN;
+    }
+    if (DEFAULT_DOMAIN.equals(domain) && !remainder.contains("/")) {
+      remainder = String.format("%s/%s", DEFAULT_REPO, remainder);
+    }
+    return ImmutableMap.of("domain", domain, "remainder", remainder);
+  }
+
+  public String getDomain() {
+    return domain;
   }
 
   public String getName() {
@@ -105,11 +125,11 @@ public class Reference {
       familiar.append(domain).append("/");
     }
 
-    if (!DEFAULT_REPO.equals(repository)) {
-      familiar.append(repository).append("/");
+    if (name.contains(DEFAULT_REPO) && DEFAULT_DOMAIN.equals(domain)) {
+      familiar.append(name.replace(DEFAULT_REPO + "/", ""));
+    } else {
+      familiar.append(name);
     }
-
-    familiar.append(name);
 
     if (digest != null) {
       familiar.append("@").append(digest);
@@ -122,24 +142,10 @@ public class Reference {
     return familiar.toString();
   }
 
-  public static Reference parse(String input) {
-    Require.nonNull("Reference to parse", input);
-
-    for (Map.Entry<Pattern, Function<Matcher, Reference>> entry : PATTERNS.entrySet()) {
-      Matcher matcher = entry.getKey().matcher(input);
-      if (matcher.matches()) {
-        return entry.getValue().apply(matcher);
-      }
-    }
-
-    throw new DockerException("Unable to parse: " + input);
-  }
-
   @Override
   public String toString() {
     return "Reference{" +
       "domain='" + domain + '\'' +
-      ", repository='" + repository + '\'' +
       ", name='" + name + '\'' +
       ", tag='" + tag + '\'' +
       ", digest='" + digest + '\'' +
@@ -154,14 +160,13 @@ public class Reference {
 
     Reference that = (Reference) o;
     return this.domain.equals(that.domain) &&
-      this.repository.equals(that.repository) &&
-      this.name.equals(that.name) &&
-      Objects.equals(tag, that.tag) &&
-      Objects.equals(digest, that.digest);
+           this.name.equals(that.name) &&
+           Objects.equals(tag, that.tag) &&
+           Objects.equals(digest, that.digest);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(domain, repository, name, tag, digest);
+    return Objects.hash(domain, name, tag, digest);
   }
 }

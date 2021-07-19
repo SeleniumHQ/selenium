@@ -24,38 +24,41 @@ module Selenium
     #
     module TakesScreenshot
       #
-      # Save a PNG screenshot to the given path
+      # Save a PNG screenshot of the viewport to the given path
       #
       # @api public
       #
 
-      def save_screenshot(png_path)
+      def save_screenshot(png_path, full_page: false)
         extension = File.extname(png_path).downcase
         if extension != '.png'
           WebDriver.logger.warn "name used for saved screenshot does not match file type. "\
                                 "It should end with .png extension",
                                 id: :screenshot
         end
-        File.open(png_path, 'wb') { |f| f << screenshot_as(:png) }
+        File.open(png_path, 'wb') { |f| f << screenshot_as(:png, full_page: full_page) }
       end
 
       #
       # Return a PNG screenshot in the given format as a string
       #
       # @param [:base64, :png] format
+      # @param [Boolean] full_page allows taking full page screenshots if supported
       # @return String screenshot
       #
       # @api public
 
-      def screenshot_as(format)
+      def screenshot_as(format, full_page: false)
         case format
         when :base64
-          screenshot
+          full_page ? full_screenshot : screenshot
         when :png
-          screenshot.unpack1('m')
+          screenshot_as(:base64, full_page: full_page).unpack1('m')
         else
           raise Error::UnsupportedOperationError, "unsupported format: #{format.inspect}"
         end
+      rescue NameError
+        raise Error::UnsupportedOperationError, "Full Page Screenshots are not supported for #{inspect}"
       end
 
     end # TakesScreenshot

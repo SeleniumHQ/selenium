@@ -24,10 +24,13 @@ import org.junit.Test;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.NoSuchSessionException;
+import org.openqa.selenium.SessionNotCreatedException;
+import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.events.EventBus;
 import org.openqa.selenium.events.local.GuavaEventBus;
 import org.openqa.selenium.grid.data.CreateSessionRequest;
 import org.openqa.selenium.grid.data.CreateSessionResponse;
+import org.openqa.selenium.grid.data.DefaultSlotMatcher;
 import org.openqa.selenium.grid.data.NodeId;
 import org.openqa.selenium.grid.data.NodeStatus;
 import org.openqa.selenium.grid.data.NodeStatusEvent;
@@ -37,17 +40,20 @@ import org.openqa.selenium.grid.data.Slot;
 import org.openqa.selenium.grid.data.SlotId;
 import org.openqa.selenium.grid.distributor.local.LocalDistributor;
 import org.openqa.selenium.grid.distributor.remote.RemoteDistributor;
+import org.openqa.selenium.grid.distributor.selector.DefaultSlotSelector;
 import org.openqa.selenium.grid.node.CapabilityResponseEncoder;
 import org.openqa.selenium.grid.node.HealthCheck;
 import org.openqa.selenium.grid.node.Node;
 import org.openqa.selenium.grid.node.local.LocalNode;
 import org.openqa.selenium.grid.security.Secret;
 import org.openqa.selenium.grid.sessionmap.local.LocalSessionMap;
+import org.openqa.selenium.grid.sessionqueue.NewSessionQueue;
 import org.openqa.selenium.grid.sessionqueue.local.LocalNewSessionQueue;
-import org.openqa.selenium.grid.sessionqueue.local.LocalNewSessionQueuer;
+import org.openqa.selenium.grid.testing.PassthroughHttpClient;
 import org.openqa.selenium.grid.testing.TestSessionFactory;
 import org.openqa.selenium.grid.web.CombinedHandler;
 import org.openqa.selenium.grid.web.RoutableHttpClientFactory;
+import org.openqa.selenium.internal.Either;
 import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpRequest;
@@ -66,7 +72,6 @@ import java.time.Instant;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import java.util.function.Function;
@@ -88,6 +93,8 @@ public class AddingNodesTest {
   private URL externalUrl;
   private CombinedHandler handler;
   private Capabilities stereotype;
+  private LocalSessionMap sessions;
+  private NewSessionQueue queue;
 
   @Before
   public void setUpDistributor() throws MalformedURLException {
@@ -96,32 +103,15 @@ public class AddingNodesTest {
 
     handler = new CombinedHandler();
     externalUrl = new URL("http://example.com");
-    HttpClient.Factory clientFactory = new RoutableHttpClientFactory(
-      externalUrl,
-      handler,
-      HttpClient.Factory.createDefault());
 
-    LocalSessionMap sessions = new LocalSessionMap(tracer, bus);
-    LocalNewSessionQueue localNewSessionQueue = new LocalNewSessionQueue(
+    sessions = new LocalSessionMap(tracer, bus);
+    queue = new LocalNewSessionQueue(
       tracer,
       bus,
+      new DefaultSlotMatcher(),
       Duration.ofSeconds(2),
-      Duration.ofSeconds(2));
-    LocalNewSessionQueuer queuer = new LocalNewSessionQueuer(
-      tracer,
-      bus,
-      localNewSessionQueue,
+      Duration.ofSeconds(2),
       registrationSecret);
-    Distributor local = new LocalDistributor(
-      tracer,
-      bus,
-      clientFactory,
-      sessions,
-      queuer,
-      registrationSecret);
-
-    handler.addHandler(local);
-    distributor = new RemoteDistributor(tracer, clientFactory, externalUrl, registrationSecret);
 
     stereotype = new ImmutableCapabilities("browserName", "gouda");
 
@@ -139,7 +129,19 @@ public class AddingNodesTest {
           new TestSessionFactory(
             (id, caps) -> new Session(id, sessionUri, stereotype, caps, Instant.now())))
         .build();
-    handler.addHandler(node);
+
+    Distributor local = new LocalDistributor(
+      tracer,
+      bus,
+      new PassthroughHttpClient.Factory(node),
+      sessions,
+      queue,
+      new DefaultSlotSelector(),
+      registrationSecret,
+      Duration.ofMinutes(5),
+      false);
+
+    distributor = new RemoteDistributor(tracer, new PassthroughHttpClient.Factory(local), externalUrl, registrationSecret);
 
     distributor.add(node);
 
@@ -158,7 +160,19 @@ public class AddingNodesTest {
         externalUrl.toURI(),
         c -> new Session(
           new SessionId(UUID.randomUUID()), sessionUri, stereotype, c, Instant.now()));
-    handler.addHandler(node);
+
+    Distributor local = new LocalDistributor(
+      tracer,
+      bus,
+      new PassthroughHttpClient.Factory(node),
+      sessions,
+      queue,
+      new DefaultSlotSelector(),
+      registrationSecret,
+      Duration.ofMinutes(5),
+      false);
+
+    distributor = new RemoteDistributor(tracer, new PassthroughHttpClient.Factory(local), externalUrl, registrationSecret);
 
     distributor.add(node);
 
@@ -178,7 +192,19 @@ public class AddingNodesTest {
           new TestSessionFactory(
             (id, caps) -> new Session(id, sessionUri, stereotype, caps, Instant.now())))
         .build();
-    handler.addHandler(node);
+
+    Distributor local = new LocalDistributor(
+      tracer,
+      bus,
+      new PassthroughHttpClient.Factory(node),
+      sessions,
+      queue,
+      new DefaultSlotSelector(),
+      registrationSecret,
+      Duration.ofMinutes(5),
+      false);
+
+    distributor = new RemoteDistributor(tracer, new PassthroughHttpClient.Factory(local), externalUrl, registrationSecret);
 
     bus.fire(new NodeStatusEvent(node.getStatus()));
 
@@ -209,6 +235,19 @@ public class AddingNodesTest {
     handler.addHandler(firstNode);
     handler.addHandler(secondNode);
 
+    Distributor local = new LocalDistributor(
+      tracer,
+      bus,
+      new PassthroughHttpClient.Factory(handler),
+      sessions,
+      queue,
+      new DefaultSlotSelector(),
+      registrationSecret,
+      Duration.ofMinutes(5),
+      false);
+
+    distributor = new RemoteDistributor(tracer, new PassthroughHttpClient.Factory(local), externalUrl, registrationSecret);
+
     bus.fire(new NodeStatusEvent(firstNode.getStatus()));
     bus.fire(new NodeStatusEvent(secondNode.getStatus()));
 
@@ -230,7 +269,19 @@ public class AddingNodesTest {
           new TestSessionFactory(
             (id, caps) -> new Session(id, sessionUri, stereotype, caps, Instant.now())))
         .build();
-    handler.addHandler(node);
+
+    Distributor local = new LocalDistributor(
+      tracer,
+      bus,
+      new PassthroughHttpClient.Factory(node),
+      sessions,
+      queue,
+      new DefaultSlotSelector(),
+      registrationSecret,
+      Duration.ofMinutes(5),
+      false);
+
+    distributor = new RemoteDistributor(tracer, new PassthroughHttpClient.Factory(local), externalUrl, registrationSecret);
 
     bus.fire(new NodeStatusEvent(node.getStatus()));
 
@@ -243,16 +294,16 @@ public class AddingNodesTest {
     // Craft a status that makes it look like the node is busy, and post it on the bus.
     NodeStatus status = node.getStatus();
     NodeStatus crafted = new NodeStatus(
-      status.getId(),
-      status.getUri(),
+      status.getNodeId(),
+      status.getExternalUri(),
       status.getMaxSessionCount(),
       ImmutableSet.of(
         new Slot(
-          new SlotId(status.getId(), UUID.randomUUID()),
+          new SlotId(status.getNodeId(), UUID.randomUUID()),
           CAPS,
           Instant.now(),
-          Optional.of(new Session(
-            new SessionId(UUID.randomUUID()), sessionUri, CAPS, CAPS, Instant.now())))),
+          new Session(
+            new SessionId(UUID.randomUUID()), sessionUri, CAPS, CAPS, Instant.now()))),
       UP,
       Duration.ofSeconds(10),
       status.getVersion(),
@@ -299,18 +350,18 @@ public class AddingNodesTest {
     }
 
     @Override
-    public Optional<CreateSessionResponse> newSession(CreateSessionRequest sessionRequest) {
+    public Either<WebDriverException, CreateSessionResponse> newSession(CreateSessionRequest sessionRequest) {
       Objects.requireNonNull(sessionRequest);
 
       if (running != null) {
-        return Optional.empty();
+        return Either.left(new SessionNotCreatedException("Session already exists"));
       }
-      Session session = factory.apply(sessionRequest.getCapabilities());
+      Session session = factory.apply(sessionRequest.getDesiredCapabilities());
       running = session;
-      return Optional.of(
-          new CreateSessionResponse(
-              session,
-              CapabilityResponseEncoder.getEncoder(W3C).apply(session)));
+      return Either.right(
+        new CreateSessionResponse(
+          session,
+          CapabilityResponseEncoder.getEncoder(W3C).apply(session)));
     }
 
     @Override
@@ -375,7 +426,7 @@ public class AddingNodesTest {
             new SlotId(getId(), UUID.randomUUID()),
             CAPS,
             Instant.now(),
-            Optional.ofNullable(sess))),
+            sess)),
         UP,
         Duration.ofSeconds(10),
         getNodeVersion(),

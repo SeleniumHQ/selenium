@@ -27,29 +27,29 @@ module Selenium
       #
 
       class Driver < WebDriver::Driver
-        include DriverExtensions::HasAddons
-        include DriverExtensions::HasDevTools
-        include DriverExtensions::HasLogEvents
-        include DriverExtensions::HasNetworkInterception
-        include DriverExtensions::HasWebStorage
-        include DriverExtensions::PrintsPage
+        EXTENSIONS = [DriverExtensions::HasAddons,
+                      DriverExtensions::FullPageScreenshot,
+                      DriverExtensions::HasDevTools,
+                      DriverExtensions::HasLogEvents,
+                      DriverExtensions::HasNetworkInterception,
+                      DriverExtensions::HasWebStorage,
+                      DriverExtensions::PrintsPage].freeze
 
         def browser
           :firefox
         end
 
-        def bridge_class
-          Bridge
-        end
-
         private
 
-        def devtools_version
-          DEVTOOLS_VERSION
+        def devtools_url
+          uri = URI("http://#{capabilities['moz:debuggerAddress']}")
+          response = Net::HTTP.get(uri.hostname, '/json/version', uri.port)
+
+          JSON.parse(response)['webSocketDebuggerUrl']
         end
 
-        def devtools_debugger_address
-          capabilities['moz:debuggerAddress']
+        def devtools_version
+          Firefox::DEVTOOLS_VERSION
         end
       end # Driver
     end # Firefox

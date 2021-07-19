@@ -55,7 +55,7 @@ public class Docker {
   public Container create(ContainerConfig config) {
     Require.nonNull("Container config", config);
 
-    LOG.info("Creating image from " + config);
+    LOG.fine("Creating image from " + config);
 
     return getDocker()
       .map(protocol -> protocol.create(config))
@@ -65,7 +65,7 @@ public class Docker {
   public Optional<ContainerInfo> inspect(ContainerId id) {
     Require.nonNull("Container id", id);
 
-    LOG.info("Inspecting container with id: " + id);
+    LOG.fine("Inspecting container with id: " + id);
 
     if (!getDocker().map(protocol -> protocol.isContainerPresent(id)).orElse(false)) {
       return Optional.empty();

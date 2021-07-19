@@ -1,4 +1,5 @@
 load("@rules_jvm_external//:defs.bzl", "artifact")
+load("//common:defs.bzl", "copy_file")
 load("//java:defs.bzl", "java_selenium_test_suite", "java_test_suite")
 
 LARGE_TESTS = [
@@ -14,6 +15,11 @@ java_test_suite(
         ["*.java"],
         exclude = LARGE_TESTS,
     ),
+    data = [
+        ":firebug_xpi",
+        "//third_party/firebug:firebug-1.5.0-fx.xpi",
+        "//third_party/firebug:mooltipass-1.1.87.xpi",
+    ],
     tags = [
         "requires-network",
     ],
@@ -45,9 +51,6 @@ java_selenium_test_suite(
         "//third_party/firebug:firebug-1.5.0-fx.xpi",
         "//third_party/firebug:mooltipass-1.1.87.xpi",
     ],
-    tags = [
-        "no-remote",
-    ],
     deps = [
         "//java/client/src/org/openqa/selenium/firefox",
         "//java/client/src/org/openqa/selenium/remote",
@@ -62,4 +65,10 @@ java_selenium_test_suite(
         artifact("org.assertj:assertj-core"),
         artifact("org.mockito:mockito-core"),
     ],
+)
+
+copy_file(
+    name = "firebug_xpi",
+    src = "//third_party/firebug:firebug-1.5.0-fx.xpi",
+    out = "firebug-1.5.0-fx.xpi",
 )

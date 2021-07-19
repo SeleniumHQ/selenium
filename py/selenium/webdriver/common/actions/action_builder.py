@@ -24,14 +24,14 @@ from .pointer_input import PointerInput
 
 
 class ActionBuilder(object):
-    def __init__(self, driver, mouse=None, keyboard=None):
+    def __init__(self, driver, mouse=None, keyboard=None, duration=250):
         if not mouse:
             mouse = PointerInput(interaction.POINTER_MOUSE, "mouse")
         if not keyboard:
             keyboard = KeyInput(interaction.KEY)
         self.devices = [mouse, keyboard]
         self._key_action = KeyActions(keyboard)
-        self._pointer_action = PointerActions(mouse)
+        self._pointer_action = PointerActions(mouse, duration=duration)
         self.driver = driver
 
     def get_device_with(self, name):

@@ -18,20 +18,22 @@
 package org.openqa.selenium.remote;
 
 import com.google.common.collect.ImmutableMap;
-
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.Cookie;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.Point;
 import org.openqa.selenium.WindowType;
 import org.openqa.selenium.interactions.Sequence;
+import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.print.PrintOptions;
 
 import java.time.Duration;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
+
+import static java.util.Collections.singletonMap;
 
 /**
  * An empty interface defining constants for the standard commands defined in the WebDriver JSON
@@ -44,7 +46,24 @@ public interface DriverCommand {
   String GET_CAPABILITIES = "getCapabilities";
   String NEW_SESSION = "newSession";
   static CommandPayload NEW_SESSION(Capabilities capabilities) {
-    return new CommandPayload(NEW_SESSION, ImmutableMap.of("desiredCapabilities", capabilities));
+    Require.nonNull("Capabilities", capabilities);
+    return new CommandPayload(
+      NEW_SESSION,
+      ImmutableMap.of(
+        "capabilities", CapabilitiesUtils.makeW3CSafe(capabilities).collect(Collectors.toSet()),
+        "desiredCapabilities", capabilities));
+  }
+  static CommandPayload NEW_SESSION(Collection<Capabilities> capabilities) {
+    Require.nonNull("Capabilities", capabilities);
+    if (capabilities.isEmpty()) {
+      throw new IllegalArgumentException("Capabilities for new session must not be empty");
+    }
+
+    return new CommandPayload(
+      NEW_SESSION,
+      ImmutableMap.of(
+        "capabilities", capabilities.stream().flatMap(CapabilitiesUtils::makeW3CSafe).collect(Collectors.toSet()),
+        "desiredCapabilities", capabilities.iterator().next()));
   }
 
   String STATUS = "status";
@@ -90,6 +109,31 @@ public interface DriverCommand {
     return new CommandPayload(FIND_CHILD_ELEMENTS,
                               ImmutableMap.of("id", id, "using", strategy, "value", value));
   }
+  String GET_ELEMENT_SHADOW_ROOT = "getElementShadowRoot";
+  static CommandPayload GET_ELEMENT_SHADOW_ROOT(String id) {
+    Require.nonNull("Element ID", id);
+    return new CommandPayload(GET_ELEMENT_SHADOW_ROOT, singletonMap("id", id));
+  }
+
+  String FIND_ELEMENT_FROM_SHADOW_ROOT = "findElementFromShadowRoot";
+  static CommandPayload FIND_ELEMENT_FROM_SHADOW_ROOT(String shadowId, String strategy, String value) {
+    Require.nonNull("Shadow root ID", shadowId);
+    Require.nonNull("Element finding strategy", strategy);
+    Require.nonNull("Value for finding strategy", value);
+    return new CommandPayload(
+      FIND_ELEMENT_FROM_SHADOW_ROOT,
+      ImmutableMap.of("shadowId", shadowId, "using", strategy, "value", value));
+  }
+
+  String FIND_ELEMENTS_FROM_SHADOW_ROOT = "findElementsFromShadowRoot";
+  static CommandPayload FIND_ELEMENTS_FROM_SHADOW_ROOT(String shadowId, String strategy, String value) {
+    Require.nonNull("Shadow root ID", shadowId);
+    Require.nonNull("Element finding strategy", strategy);
+    Require.nonNull("Value for finding strategy", value);
+    return new CommandPayload(
+      FIND_ELEMENTS_FROM_SHADOW_ROOT,
+      ImmutableMap.of("shadowId", shadowId, "using", strategy, "value", value));
+  }
 
   String CLEAR_ELEMENT = "clearElement";
   static CommandPayload CLEAR_ELEMENT(String id) {
@@ -131,7 +175,7 @@ public interface DriverCommand {
   String SWITCH_TO_CONTEXT = "switchToContext";
   String SWITCH_TO_FRAME = "switchToFrame";
   static CommandPayload SWITCH_TO_FRAME(Object frame) {
-    return new CommandPayload(SWITCH_TO_FRAME, Collections.singletonMap("id", frame));
+    return new CommandPayload(SWITCH_TO_FRAME, singletonMap("id", frame));
   }
   String SWITCH_TO_PARENT_FRAME = "switchToParentFrame";
   String GET_ACTIVE_ELEMENT = "getActiveElement";

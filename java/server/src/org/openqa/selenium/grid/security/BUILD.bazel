@@ -5,6 +5,7 @@ java_library(
     name = "security",
     srcs = glob(["*.java"]),
     visibility = [
+        "//java/client/test/org/openqa/selenium:__subpackages__",
         "//java/server/src/org/openqa/selenium/events:__subpackages__",
         "//java/server/src/org/openqa/selenium/grid:__subpackages__",
         "//java/server/test/org/openqa/selenium/events:__subpackages__",

@@ -45,7 +45,7 @@ describe('DriverService', function () {
 
     function verifyFailure(e) {
       assert.ok(!(e instanceof CancellationError))
-      assert.equal('Server terminated early with status 1', e.message)
+      assert.strictEqual('Server terminated early with status 1', e.message)
     }
 
     function expectFailure() {
@@ -66,7 +66,7 @@ describe('FileDetector', function () {
       let theFile = path.join(dir, 'not-there')
       return new remote.FileDetector()
         .handleFile(new ExplodingDriver(), theFile)
-        .then((f) => assert.equal(f, theFile))
+        .then((f) => assert.strictEqual(f, theFile))
     })
   })
 
@@ -74,7 +74,7 @@ describe('FileDetector', function () {
     return io.tmpDir().then((dir) => {
       return new remote.FileDetector()
         .handleFile(new ExplodingDriver(), dir)
-        .then((f) => assert.equal(f, dir))
+        .then((f) => assert.strictEqual(f, dir))
     })
   })
 
@@ -84,14 +84,17 @@ describe('FileDetector', function () {
         .handleFile(
           new (class FakeDriver {
             execute(command) {
-              assert.equal(command.getName(), cmd.Name.UPLOAD_FILE)
-              assert.equal(typeof command.getParameters()['file'], 'string')
+              assert.strictEqual(command.getName(), cmd.Name.UPLOAD_FILE)
+              assert.strictEqual(
+                typeof command.getParameters()['file'],
+                'string'
+              )
               return Promise.resolve('success!')
             }
           })(),
           theFile
         )
-        .then((f) => assert.equal(f, 'success!'))
+        .then((f) => assert.strictEqual(f, 'success!'))
     })
   })
 })

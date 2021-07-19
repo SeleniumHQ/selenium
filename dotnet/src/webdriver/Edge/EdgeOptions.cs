@@ -50,7 +50,7 @@ namespace OpenQA.Selenium.Edge
 
         // Engine switching
         private const string UseChromiumCapability = "ms:edgeChromium";
-        private bool useChromium = false;
+        private bool useChromium = true;
 
         private const string EdgeOptionsCapabilityName = "edgeOptions";
 
@@ -69,7 +69,7 @@ namespace OpenQA.Selenium.Edge
         /// <summary>
         /// Initializes a new instance of the <see cref="EdgeOptions"/> class.
         /// </summary>
-        public EdgeOptions()
+        public EdgeOptions() : base()
         {
             this.BrowserName = DefaultBrowserNameValue;
             this.AddKnownCapabilityName(UseChromiumCapability, "UseChromium property");

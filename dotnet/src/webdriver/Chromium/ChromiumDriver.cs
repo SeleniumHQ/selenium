@@ -31,7 +31,7 @@ namespace OpenQA.Selenium.Chromium
     /// <summary>
     /// Provides an abstract way to access Chromium-based browsers to run tests.
     /// </summary>
-    public abstract class ChromiumDriver : RemoteWebDriver, ISupportsLogs, IDevTools
+    public abstract class ChromiumDriver : WebDriver, ISupportsLogs, IDevTools
     {
         /// <summary>
         /// Accept untrusted SSL Certificates
@@ -70,11 +70,11 @@ namespace OpenQA.Selenium.Chromium
             this.optionsCapabilityName = options.CapabilityName;
 
             // Add the custom commands unique to Chrome
-            this.AddCustomChromeCommand(GetNetworkConditionsCommand, CommandInfo.GetCommand, "/session/{sessionId}/chromium/network_conditions");
-            this.AddCustomChromeCommand(SetNetworkConditionsCommand, CommandInfo.PostCommand, "/session/{sessionId}/chromium/network_conditions");
-            this.AddCustomChromeCommand(DeleteNetworkConditionsCommand, CommandInfo.DeleteCommand, "/session/{sessionId}/chromium/network_conditions");
-            this.AddCustomChromeCommand(SendChromeCommand, CommandInfo.PostCommand, "/session/{sessionId}/chromium/send_command");
-            this.AddCustomChromeCommand(SendChromeCommandWithResult, CommandInfo.PostCommand, "/session/{sessionId}/chromium/send_command_and_get_result");
+            this.AddCustomChromeCommand(GetNetworkConditionsCommand, HttpCommandInfo.GetCommand, "/session/{sessionId}/chromium/network_conditions");
+            this.AddCustomChromeCommand(SetNetworkConditionsCommand, HttpCommandInfo.PostCommand, "/session/{sessionId}/chromium/network_conditions");
+            this.AddCustomChromeCommand(DeleteNetworkConditionsCommand, HttpCommandInfo.DeleteCommand, "/session/{sessionId}/chromium/network_conditions");
+            this.AddCustomChromeCommand(SendChromeCommand, HttpCommandInfo.PostCommand, "/session/{sessionId}/chromium/send_command");
+            this.AddCustomChromeCommand(SendChromeCommandWithResult, HttpCommandInfo.PostCommand, "/session/{sessionId}/chromium/send_command_and_get_result");
         }
 
         /// <summary>
@@ -241,8 +241,8 @@ namespace OpenQA.Selenium.Chromium
 
         private void AddCustomChromeCommand(string commandName, string method, string resourcePath)
         {
-            CommandInfo commandInfoToAdd = new CommandInfo(method, resourcePath);
-            this.CommandExecutor.CommandInfoRepository.TryAddCommand(commandName, commandInfoToAdd);
+            HttpCommandInfo commandInfoToAdd = new HttpCommandInfo(method, resourcePath);
+            this.CommandExecutor.TryAddCommand(commandName, commandInfoToAdd);
         }
     }
 }

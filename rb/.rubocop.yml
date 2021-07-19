@@ -5,7 +5,7 @@ require:
 AllCops:
   TargetRubyVersion: 2.5
   Exclude:
-    - 'lib/selenium/webdriver/devtools/**/*'
+    - 'lib/selenium/devtools/**/*'
 
 Layout/EmptyLinesAroundAttributeAccessor:
   Enabled: true
@@ -51,19 +51,20 @@ Metrics/BlockLength:
   Max: 18
   Exclude:
     - 'spec/**/*.rb'
-    - 'selenium-webdriver.gemspec'
+    - 'selenium-*.gemspec'
 
 Metrics/ClassLength:
   CountComments: false
   Max: 160
   Exclude:
+    - 'lib/selenium/webdriver/common/driver.rb'
     - 'lib/selenium/webdriver/remote/bridge.rb'
     - 'lib/selenium/webdriver/remote/capabilities.rb'
+    - 'spec/integration/selenium/webdriver/spec_support/test_environment.rb'
 
 Metrics/CyclomaticComplexity:
   Max: 9
   Exclude:
-    - 'lib/selenium/webdriver/remote/capabilities.rb'
     - 'lib/selenium/webdriver/support/color.rb'
 
 Metrics/MethodLength:
@@ -83,11 +84,8 @@ Metrics/ModuleLength:
 Metrics/ParameterLists:
   CountKeywordArgs: false
 
-# TODO: Refactor Chrome::Bridge#create_capabilities
 Metrics/PerceivedComplexity:
-  Max: 10
-  Exclude:
-    - 'lib/selenium/webdriver/remote/capabilities.rb'
+  Max: 9
 
 Naming/FileName:
   Exclude:
@@ -146,8 +144,10 @@ Style/BlockDelimiters:
 Style/CommentedKeyword:
   Enabled: false
 
+# __dir__ should be avoided when used with Bazel.
 Style/Dir:
   Exclude:
+    - 'selenium-devtools.gemspec'
     - 'selenium-webdriver.gemspec'
 
 # Consider documenting all top-level classes and modules

@@ -22,6 +22,7 @@ import pytest
 
 @pytest.mark.xfail_firefox
 @pytest.mark.xfail_safari
+@pytest.mark.xfail_remote
 def test_should_return_explicitly_specified_role(driver):
     driver.get("data:text/html,<div role='heading' aria-level='1'>Level 1 Header</div>")
     header1 = driver.find_element(By.CSS_SELECTOR, "div")
@@ -30,6 +31,7 @@ def test_should_return_explicitly_specified_role(driver):
 
 @pytest.mark.xfail_firefox
 @pytest.mark.xfail_safari
+@pytest.mark.xfail_remote
 def test_shouldReturnImplicitRoleDefinedByTagName(driver):
     driver.get("data:text/html,<h1>Level 1 Header</h1>")
     header1 = driver.find_element(By.CSS_SELECTOR, "h1")
@@ -38,6 +40,7 @@ def test_shouldReturnImplicitRoleDefinedByTagName(driver):
 
 @pytest.mark.xfail_firefox
 @pytest.mark.xfail_safari
+@pytest.mark.xfail_remote
 def test_should_return_explicit_role_even_if_it_contradicts_tag_name(driver):
     driver.get("data:text/html,<h1 role='alert'>Level 1 Header</h1>")
     header1 = driver.find_element(By.CSS_SELECTOR, "h1")

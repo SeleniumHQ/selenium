@@ -34,11 +34,11 @@ import static org.openqa.selenium.remote.tracing.Tags.HTTP_RESPONSE;
 class GetSessionQueue implements HttpHandler {
 
   private final Tracer tracer;
-  private final NewSessionQueuer newSessionQueuer;
+  private final NewSessionQueue newSessionQueue;
 
-  GetSessionQueue(Tracer tracer, NewSessionQueuer newSessionQueuer) {
+  GetSessionQueue(Tracer tracer, NewSessionQueue newSessionQueue) {
     this.tracer = Require.nonNull("Tracer", tracer);
-    this.newSessionQueuer = Require.nonNull("New Session Queuer", newSessionQueuer);
+    this.newSessionQueue = Require.nonNull("New Session Queue", newSessionQueue);
   }
 
   @Override
@@ -48,7 +48,7 @@ class GetSessionQueue implements HttpHandler {
 
       HttpResponse response = new HttpResponse()
         .setContent(asJson(Collections.singletonMap(
-          "value", newSessionQueuer.getQueueContents())));
+          "value", newSessionQueue.getQueueContents())));
 
       HTTP_RESPONSE.accept(span, response);
 

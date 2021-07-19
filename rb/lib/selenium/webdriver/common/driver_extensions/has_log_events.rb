@@ -112,8 +112,7 @@ module Selenium
 
           devtools.runtime.add_binding(name: '__webdriver_attribute')
           execute_script(mutation_listener)
-          script = devtools.page.add_script_to_evaluate_on_new_document(source: mutation_listener)
-          pinned_scripts[mutation_listener] = script['identifier']
+          devtools.page.add_script_to_evaluate_on_new_document(source: mutation_listener)
 
           devtools.runtime.on(:binding_called, &method(:log_mutation_event))
         end
@@ -137,10 +136,6 @@ module Selenium
 
         def mutation_listener
           @mutation_listener ||= read_atom(:mutationListener)
-        end
-
-        def pinned_scripts
-          @pinned_scripts ||= {}
         end
 
       end # HasLogEvents

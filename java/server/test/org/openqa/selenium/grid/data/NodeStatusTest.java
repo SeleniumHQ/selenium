@@ -49,12 +49,12 @@ public class NodeStatusTest {
           new SlotId(nodeId, UUID.randomUUID()),
           stereotype,
           Instant.EPOCH,
-          Optional.of(new Session(
+          new Session(
             new SessionId(UUID.randomUUID()),
             new URI("http://localhost:1235"),
             stereotype,
             new ImmutableCapabilities("peas", "sausages"),
-            Instant.now())))),
+            Instant.now()))),
       UP,
       Duration.ofSeconds(10),
       "4.0.0",

@@ -19,10 +19,8 @@ package org.openqa.selenium;
 
 import org.openqa.selenium.internal.Require;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collector;
@@ -32,6 +30,7 @@ import java.util.stream.Stream;
 public class PersistentCapabilities implements Capabilities {
   private final ImmutableCapabilities caps;
   private final ImmutableCapabilities overrides;
+  private final int hashCode;
 
   public PersistentCapabilities() {
     this(new ImmutableCapabilities());
@@ -46,6 +45,7 @@ public class PersistentCapabilities implements Capabilities {
     Require.nonNull("Additional capabilities", newValues, "may be empty, but must be set.");
     this.caps = ImmutableCapabilities.copyOf(previousValues);
     this.overrides = ImmutableCapabilities.copyOf(newValues);
+    this.hashCode = SharedCapabilitiesMethods.hashCode(this);
   }
 
   public PersistentCapabilities setCapability(String name, Object value) {
@@ -97,29 +97,19 @@ public class PersistentCapabilities implements Capabilities {
 
   @Override
   public String toString() {
-    return asMap().toString();
+    return SharedCapabilitiesMethods.toString(this);
   }
 
   @Override
   public int hashCode() {
-    return Arrays.deepHashCode(new Capabilities[] {caps, overrides});
+    return hashCode;
   }
 
   @Override
-  public boolean equals(Object obj) {
-    if (!(obj instanceof Capabilities)) {
+  public boolean equals(Object o) {
+    if (!(o instanceof Capabilities)) {
       return false;
     }
-
-    Capabilities that = (Capabilities) obj;
-
-    // Compare names first
-    if (!(this.getCapabilityNames().equals(that.getCapabilityNames()))) {
-      return false;
-    }
-
-    return this.getCapabilityNames().stream()
-      .map(name -> Objects.deepEquals(this.getCapability(name), that.getCapability(name)))
-      .reduce(true, Boolean::logicalAnd);
+    return SharedCapabilitiesMethods.equals(this, (Capabilities) o);
   }
 }

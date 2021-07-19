@@ -1,14 +1,13 @@
 load("@apple_rules_lint//lint:defs.bzl", "get_lint_config")
 load(
     "@rules_java//java:defs.bzl",
-    _java_binary = "java_binary",
     _java_library = "java_library",
     _java_test = "java_test",
 )
 load(":export.bzl", _java_export = "java_export")
 load(":spotbugs.bzl", "spotbugs_test")
 
-def _add_lint_tests(name, **kwargs):
+def add_lint_tests(name, **kwargs):
     srcs = kwargs.get("srcs", [])
 
     if len(srcs) == 0:
@@ -31,9 +30,13 @@ def _add_lint_tests(name, **kwargs):
         )
 
 def java_export(name, **kwargs):
-    _add_lint_tests(name, **kwargs)
+    add_lint_tests(name, **kwargs)
     _java_export(name = name, **kwargs)
 
 def java_library(name, **kwargs):
-    _add_lint_tests(name, **kwargs)
+    add_lint_tests(name, **kwargs)
     _java_library(name = name, **kwargs)
+
+def java_test(name, **kwargs):
+    add_lint_tests(name, **kwargs)
+    _java_test(name = name, **kwargs)

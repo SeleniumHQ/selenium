@@ -10,10 +10,9 @@ load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
 
 http_archive(
     name = "apple_rules_lint",
-    sha256 = "ece669d52998c7a0df2c2380f37edbf4ed8ebb1a03587ed1781dfbececef9b3d",
-    urls = [
-        "https://github.com/apple/apple_rules_lint/releases/download/0.1.0/apple_rules_lint-0.1.0.tar.gz",
-    ],
+    sha256 = "8feab4b08a958b10cb2abb7f516652cd770b582b36af6477884b3bba1f2f0726",
+    strip_prefix = "apple_rules_lint-0.1.1",
+    url = "https://github.com/apple/apple_rules_lint/archive/0.1.1.zip",
 )
 
 load("@apple_rules_lint//lint:repositories.bzl", "lint_deps")
@@ -29,10 +28,10 @@ lint_setup({
 
 http_archive(
     name = "platforms",
-    sha256 = "460caee0fa583b908c622913334ec3c1b842572b9c23cf0d3da0c2543a1a157d",
+    sha256 = "079945598e4b6cc075846f7fd6a9d0857c33a7afc0de868c2ccb96405225135d",
     urls = [
-        "https://github.com/bazelbuild/platforms/releases/download/0.0.3/platforms-0.0.3.tar.gz",
-        "https://mirror.bazel.build/github.com/bazelbuild/platforms/releases/download/0.0.3/platforms-0.0.3.tar.gz",
+        "https://github.com/bazelbuild/platforms/releases/download/0.0.4/platforms-0.0.4.tar.gz",
+        "https://mirror.bazel.build/github.com/bazelbuild/platforms/releases/download/0.0.4/platforms-0.0.4.tar.gz",
     ],
 )
 
@@ -50,27 +49,13 @@ load("@bazel_skylib//:workspace.bzl", "bazel_skylib_workspace")
 bazel_skylib_workspace()
 
 http_archive(
-    name = "bazel_toolchains",
-    sha256 = "1adf5db506a7e3c465a26988514cfc3971af6d5b3c2218925cd6e71ee443fc3f",
-    strip_prefix = "bazel-toolchains-4.0.0",
-    urls = [
-        "https://github.com/bazelbuild/bazel-toolchains/releases/download/4.0.0/bazel-toolchains-4.0.0.tar.gz",
-    ],
-)
-
-load("@bazel_toolchains//rules:rbe_repo.bzl", "rbe_autoconfig")
-
-rbe_autoconfig(name = "rbe_default")
-
-http_archive(
     name = "rules_python",
-    sha256 = "77a6497a8e01bd5cb9cb9e0f8a683ccaa7f8123ff8f8497ae92e1dd66cc27d58",
-    strip_prefix = "rules_python-0cd570e52939500065cca8e1c7baa895b4b43a4c",
-    url = "https://github.com/bazelbuild/rules_python/archive/0cd570e52939500065cca8e1c7baa895b4b43a4c.zip",
+    sha256 = "778197e26c5fbeb07ac2a2c5ae405b30f6cb7ad1f5510ea6fdac03bded96cc6f",
+    url = "https://github.com/bazelbuild/rules_python/releases/download/0.2.0/rules_python-0.2.0.tar.gz",
 )
 
 # This one is only needed if you're using the packaging rules.
-load("@rules_python//python:pip.bzl", "pip_install", "pip_repositories")
+load("@rules_python//python:pip.bzl", "pip_install")
 
 pip_install(
     name = "dev_requirements",
@@ -79,11 +64,11 @@ pip_install(
 
 http_archive(
     name = "rules_proto",
-    sha256 = "8e7d59a5b12b233be5652e3d29f42fba01c7cbab09f6b3a8d0a57ed6d1e9a0da",
-    strip_prefix = "rules_proto-7e4afce6fe62dbff0a4a03450143146f9f2d7488",
+    sha256 = "9fc210a34f0f9e7cc31598d109b5d069ef44911a82f507d5a88716db171615a8",
+    strip_prefix = "rules_proto-f7a30f6f80006b591fa7c437fe5a951eb10bcbcf",
     urls = [
-        "https://github.com/bazelbuild/rules_proto/archive/7e4afce6fe62dbff0a4a03450143146f9f2d7488.tar.gz",
-        "https://mirror.bazel.build/github.com/bazelbuild/rules_proto/archive/7e4afce6fe62dbff0a4a03450143146f9f2d7488.tar.gz",
+        "https://github.com/bazelbuild/rules_proto/archive/f7a30f6f80006b591fa7c437fe5a951eb10bcbcf.tar.gz",
+        "https://mirror.bazel.build/github.com/bazelbuild/rules_proto/archive/f7a30f6f80006b591fa7c437fe5a951eb10bcbcf.tar.gz",
     ],
 )
 
@@ -99,11 +84,12 @@ http_archive(
         "-p1",
     ],
     patches = [
+        "//java:rules_jvm_external_javadoc.patch",
         "//java:rules_jvm_external_visibility.patch",
     ],
-    sha256 = "31701ad93dbfe544d597dbe62c9a1fdd76d81d8a9150c2bf1ecf928ecdf97169",
-    strip_prefix = "rules_jvm_external-4.0",
-    url = "https://github.com/bazelbuild/rules_jvm_external/archive/4.0.zip",
+    sha256 = "f36441aa876c4f6427bfb2d1f2d723b48e9d930b62662bf723ddfb8fc80f0140",
+    strip_prefix = "rules_jvm_external-4.1",
+    url = "https://github.com/bazelbuild/rules_jvm_external/archive/4.1.zip",
 )
 
 load("@rules_jvm_external//:repositories.bzl", "rules_jvm_external_deps")
@@ -137,8 +123,18 @@ selenium_register_dotnet()
 
 http_archive(
     name = "build_bazel_rules_nodejs",
-    sha256 = "55a25a762fcf9c9b88ab54436581e671bc9f4f523cb5a1bd32459ebec7be68a8",
-    urls = ["https://github.com/bazelbuild/rules_nodejs/releases/download/3.2.2/rules_nodejs-3.2.2.tar.gz"],
+    sha256 = "8f5f192ba02319254aaf2cdcca00ec12eaafeb979a80a1e946773c520ae0a2c9",
+    urls = ["https://github.com/bazelbuild/rules_nodejs/releases/download/3.7.0/rules_nodejs-3.7.0.tar.gz"],
+)
+
+load("@build_bazel_rules_nodejs//:index.bzl", "node_repositories")
+
+node_repositories(
+  package_json = [
+    "//:package.json",
+    "//javascript/grid-ui:package.json",
+  ],
+  node_version = "16.4.1",
 )
 
 load("@build_bazel_rules_nodejs//:index.bzl", "npm_install")
@@ -166,15 +162,18 @@ rules_closure_toolchains()
 
 http_archive(
     name = "rules_pkg",
-    sha256 = "aeca78988341a2ee1ba097641056d168320ecc51372ef7ff8e64b139516a4937",
-    url = "https://github.com/bazelbuild/rules_pkg/releases/download/0.2.6-1/rules_pkg-0.2.6.tar.gz",
+    sha256 = "038f1caa773a7e35b3663865ffb003169c6a71dc995e39bf4815792f385d837d",
+    urls = [
+        "https://github.com/bazelbuild/rules_pkg/releases/download/0.4.0/rules_pkg-0.4.0.tar.gz",
+        "https://mirror.bazel.build/github.com/bazelbuild/rules_pkg/releases/download/0.4.0/rules_pkg-0.4.0.tar.gz",
+    ],
 )
 
 http_archive(
     name = "io_bazel_rules_docker",
-    sha256 = "df3ef4a4b53b0145c9751c1e2a840f900e322e7798612a46257abe285d046dc5",
-    strip_prefix = "rules_docker-7da0de3d094aae5601c45ae0855b64fb2771cd72",
-    urls = ["https://github.com/bazelbuild/rules_docker/archive/7da0de3d094aae5601c45ae0855b64fb2771cd72.zip"],
+    sha256 = "59d5b42ac315e7eadffa944e86e90c2990110a1c8075f1cd145f487e999d22b3",
+    strip_prefix = "rules_docker-0.17.0",
+    urls = ["https://github.com/bazelbuild/rules_docker/releases/download/v0.17.0/rules_docker-v0.17.0.tar.gz"],
 )
 
 load(
@@ -193,10 +192,12 @@ load(
     "container_pull",
 )
 
+# Examine https://console.cloud.google.com/gcr/images/distroless/GLOBAL/java?gcrImageListsize=30 to find
+# the latest version when updating
 container_pull(
     name = "java_image_base",
-    # This pulls the java 11 version of the jave base image
-    digest = "sha256:f9fe0de7f8ded68f757d99e9d165b96e89e00d4cef80d204aa76bc0b8ffc4576",
+    # This pulls the java 11 version of the java base image
+    digest = "sha256:ae5d32ed4da6d2207fd34accde64f5b1264cbdd1340fa8c1cfa70cdf1841f9db",
     registry = "gcr.io",
     repository = "distroless/java",
 )
@@ -204,7 +205,7 @@ container_pull(
 container_pull(
     name = "firefox_standalone",
     # selenium/standalone-firefox-debug:3.141.59
-    digest = "sha256:a77683572022f8139b07eb29dee66f7b34b5df4d9902b7f1e081e112411f683d",
+    digest = "sha256:ac284138b2b8d581b9d3b1a15282ab0a679aa06cc34146f473e5e5aee5f5303d",
     registry = "index.docker.io",
     repository = "selenium/standalone-firefox-debug",
 )
@@ -212,19 +213,19 @@ container_pull(
 container_pull(
     name = "chrome_standalone",
     # selenium/standalone-chrome-debug:3.141.59
-    digest = "sha256:53812c3d01622148e9ccd79e598c3740804dbfd51594ae592bac5a14380b595e",
+    digest = "sha256:75edd7f58f4faeb4c7b11d81bfa4c720e007253846defe3117bc3f692922894c",
     registry = "index.docker.io",
     repository = "selenium/standalone-chrome-debug",
 )
 
 http_archive(
     name = "io_bazel_rules_k8s",
-    sha256 = "d91aeb17bbc619e649f8d32b65d9a8327e5404f451be196990e13f5b7e2d17bb",
-    strip_prefix = "rules_k8s-0.4",
-    urls = ["https://github.com/bazelbuild/rules_k8s/releases/download/v0.4/rules_k8s-v0.4.tar.gz"],
+    sha256 = "5d4e71b9e34065222115e85bb6dc3bfd80d7c926fafbcf6b01e04e99769c7ca1",
+    strip_prefix = "rules_k8s-32df7190a9b2534eb5d15e6c018b81fd345a0cf8",
+    url = "https://github.com/bazelbuild/rules_k8s/archive/32df7190a9b2534eb5d15e6c018b81fd345a0cf8.zip",
 )
 
-load("@io_bazel_rules_k8s//k8s:k8s.bzl", "k8s_repositories")
+load("@io_bazel_rules_k8s//k8s:k8s.bzl", "k8s_defaults", "k8s_repositories")
 
 k8s_repositories()
 
@@ -242,8 +243,6 @@ go_rules_dependencies()
 
 go_register_toolchains()
 
-load("@io_bazel_rules_k8s//k8s:k8s.bzl", "k8s_defaults")
-
 k8s_defaults(
     name = "k8s_dev",
     cluster = "docker-desktop",
@@ -255,3 +254,34 @@ k8s_defaults(
 load("//common:repositories.bzl", "pin_browsers")
 
 pin_browsers()
+
+http_archive(
+    name = "coinbase_rules_ruby",
+    sha256 = "f83da569318a6af9f1bd2d320d747c6717e4f8a1d30eb7f9d4e793939b62144e",
+    strip_prefix = "rules_ruby-4239b06d1af6c9f036a74e2c6c61213d5f19e487",
+    url = "https://github.com/p0deje/rules_ruby/archive/4239b06d1af6c9f036a74e2c6c61213d5f19e487.tar.gz",
+)
+
+load(
+    "@coinbase_rules_ruby//ruby:deps.bzl",
+    "ruby_register_toolchains",
+    "rules_ruby_dependencies",
+)
+
+rules_ruby_dependencies()
+
+ruby_register_toolchains()
+
+load("@coinbase_rules_ruby//ruby:defs.bzl", "rb_bundle")
+
+rb_bundle(
+    name = "bundle",
+    srcs = [
+        "//:rb/lib/selenium/devtools/version.rb",
+        "//:rb/lib/selenium/webdriver/version.rb",
+        "//:rb/selenium-devtools.gemspec",
+        "//:rb/selenium-webdriver.gemspec",
+    ],
+    bundler_version = "2.1.4",
+    gemfile = "//:rb/Gemfile",
+)

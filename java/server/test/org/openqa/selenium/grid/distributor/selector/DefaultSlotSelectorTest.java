@@ -51,7 +51,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Optional;
 import java.util.Random;
 import java.util.Set;
 import java.util.UUID;
@@ -109,7 +108,7 @@ public class DefaultSlotSelectorTest {
       .collect(toImmutableSet());
 
     assertThat(nodeIds)
-      .containsSequence(oneBrowser.getId(), twoBrowsers.getId(), threeBrowsers.getId());
+      .containsSequence(oneBrowser.getNodeId(), twoBrowsers.getNodeId(), threeBrowsers.getNodeId());
   }
 
   @Test
@@ -168,10 +167,10 @@ public class DefaultSlotSelectorTest {
       .collect(toImmutableSet());
     assertThat(nodeIds)
       .containsSequence(
-        highLoadAndOneBrowser.getId(),
-        mediumLoadAndTwoBrowsers.getId(),
-        mediumLoadAndOtherTwoBrowsers.getId(),
-        lightLoadAndThreeBrowsers.getId());
+        highLoadAndOneBrowser.getNodeId(),
+        mediumLoadAndTwoBrowsers.getNodeId(),
+        mediumLoadAndOtherTwoBrowsers.getNodeId(),
+        lightLoadAndThreeBrowsers.getNodeId());
   }
 
   private NodeStatus createNode(List<Capabilities> stereotypes, int count, int currentLoad) {
@@ -189,8 +188,7 @@ public class DefaultSlotSelectorTest {
               new SlotId(nodeId, UUID.randomUUID()),
               stereotype,
               now,
-              Optional.of(
-                new Session(new SessionId(UUID.randomUUID()), uri, stereotype, stereotype, now))));
+              new Session(new SessionId(UUID.randomUUID()), uri, stereotype, stereotype, now)));
         }
 
         for (int i = 0; i < count - currentLoad; i++) {
@@ -199,7 +197,7 @@ public class DefaultSlotSelectorTest {
               new SlotId(nodeId, UUID.randomUUID()),
               stereotype,
               Instant.EPOCH,
-              Optional.empty()));
+              null));
         }
       }
     );

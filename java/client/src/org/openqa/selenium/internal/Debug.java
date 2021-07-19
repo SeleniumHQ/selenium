@@ -26,11 +26,16 @@ import java.util.logging.Level;
  */
 public class Debug {
 
-  private static final boolean IS_DEBUG;
+  private static boolean IS_DEBUG;
   static {
-    IS_DEBUG = Boolean.getBoolean("selenium.webdriver.verbose") ||
-      // Thanks https://stackoverflow.com/a/6865049
-      ManagementFactory.getRuntimeMXBean().getInputArguments().toString().contains("-agentlib:jdwp");
+    boolean debugFlag = ManagementFactory.getRuntimeMXBean().getInputArguments().stream()
+      .map(str -> str.contains("-agentlib:jdwp"))
+      .reduce(Boolean::logicalOr)
+      .orElse(false);
+    boolean simpleProperty = Boolean.getBoolean("selenium.debug");
+    boolean longerProperty = Boolean.getBoolean("selenium.webdriver.verbose");
+
+    IS_DEBUG = debugFlag || simpleProperty || longerProperty;
   }
 
   private Debug() {

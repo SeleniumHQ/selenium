@@ -33,15 +33,15 @@ const Pages = test.Pages
 describe('Capabilities', function () {
   it('can set and unset a capability', function () {
     let caps = new Capabilities()
-    assert.equal(undefined, caps.get('foo'))
+    assert.strictEqual(undefined, caps.get('foo'))
     assert.ok(!caps.has('foo'))
 
     caps.set('foo', 'bar')
-    assert.equal('bar', caps.get('foo'))
+    assert.strictEqual('bar', caps.get('foo'))
     assert.ok(caps.has('foo'))
 
     caps.set('foo', null)
-    assert.equal(null, caps.get('foo'))
+    assert.strictEqual(null, caps.get('foo'))
     assert.ok(caps.has('foo'))
   })
 
@@ -55,39 +55,39 @@ describe('Capabilities', function () {
 
     const caps2 = new Capabilities().set('color', 'green')
 
-    assert.equal('bar', caps1.get('foo'))
-    assert.equal('red', caps1.get('color'))
-    assert.equal('green', caps2.get('color'))
-    assert.equal(undefined, caps2.get('foo'))
+    assert.strictEqual('bar', caps1.get('foo'))
+    assert.strictEqual('red', caps1.get('color'))
+    assert.strictEqual('green', caps2.get('color'))
+    assert.strictEqual(undefined, caps2.get('foo'))
 
     caps2.merge(caps1)
-    assert.equal('bar', caps1.get('foo'))
-    assert.equal('red', caps1.get('color'))
-    assert.equal('red', caps2.get('color'))
-    assert.equal('bar', caps2.get('foo'))
+    assert.strictEqual('bar', caps1.get('foo'))
+    assert.strictEqual('red', caps1.get('color'))
+    assert.strictEqual('red', caps2.get('color'))
+    assert.strictEqual('bar', caps2.get('foo'))
 
     const caps3 = new Map().set('color', 'blue')
 
     caps2.merge(caps3)
-    assert.equal('blue', caps2.get('color'))
-    assert.equal('bar', caps2.get('foo'))
+    assert.strictEqual('blue', caps2.get('color'))
+    assert.strictEqual('bar', caps2.get('foo'))
 
     const caps4 = { foo: 'baz' }
 
     const caps5 = caps2.merge(caps4)
 
-    assert.equal('blue', caps2.get('color'))
-    assert.equal('baz', caps2.get('foo'))
-    assert.equal('blue', caps5.get('color'))
-    assert.equal('baz', caps5.get('foo'))
-    assert.equal(true, caps5 instanceof Capabilities)
-    assert.equal(caps2, caps5)
+    assert.strictEqual('blue', caps2.get('color'))
+    assert.strictEqual('baz', caps2.get('foo'))
+    assert.strictEqual('blue', caps5.get('color'))
+    assert.strictEqual('baz', caps5.get('foo'))
+    assert.strictEqual(true, caps5 instanceof Capabilities)
+    assert.strictEqual(caps2, caps5)
   })
 
   it('can be initialized from a hash object', function () {
     let caps = new Capabilities({ one: 123, abc: 'def' })
-    assert.equal(123, caps.get('one'))
-    assert.equal('def', caps.get('abc'))
+    assert.strictEqual(123, caps.get('one'))
+    assert.strictEqual('def', caps.get('abc'))
   })
 
   it('can be initialized from a map', function () {
@@ -97,8 +97,8 @@ describe('Capabilities', function () {
     ])
 
     let caps = new Capabilities(m)
-    assert.equal(123, caps.get('one'))
-    assert.equal('def', caps.get('abc'))
+    assert.strictEqual(123, caps.get('one'))
+    assert.strictEqual('def', caps.get('abc'))
   })
 
   describe('serialize', function () {
@@ -108,7 +108,10 @@ describe('Capabilities', function () {
         ['abc', 'def'],
       ])
       let caps = new Capabilities(m)
-      assert.deepEqual({ one: 123, abc: 'def' }, caps[Symbols.serialize]())
+      assert.deepStrictEqual(
+        { one: 123, abc: 'def' },
+        caps[Symbols.serialize]()
+      )
     })
 
     it('does not omit capabilities set to a false-like value', function () {
@@ -117,7 +120,7 @@ describe('Capabilities', function () {
       caps.set('number', 0)
       caps.set('string', '')
 
-      assert.deepEqual(
+      assert.deepStrictEqual(
         { bool: false, number: 0, string: '' },
         caps[Symbols.serialize]()
       )
@@ -127,14 +130,14 @@ describe('Capabilities', function () {
       let caps = new Capabilities()
       caps.set('foo', null)
       caps.set('bar', 123)
-      assert.deepEqual({ bar: 123 }, caps[Symbols.serialize]())
+      assert.deepStrictEqual({ bar: 123 }, caps[Symbols.serialize]())
     })
 
     it('omits capabilities with an undefined value', function () {
       let caps = new Capabilities()
       caps.set('foo', undefined)
       caps.set('bar', 123)
-      assert.deepEqual({ bar: 123 }, caps[Symbols.serialize]())
+      assert.deepStrictEqual({ bar: 123 }, caps[Symbols.serialize]())
     })
   })
 })
@@ -207,7 +210,7 @@ test.suite(function (env) {
 
         var frame = await driver.findElement(By.id('upload_target'))
         await driver.switchTo().frame(frame)
-        assert.equal(
+        assert.strictEqual(
           await driver.findElement(By.css('body')).getText(),
           LOREM_IPSUM_TEXT
         )

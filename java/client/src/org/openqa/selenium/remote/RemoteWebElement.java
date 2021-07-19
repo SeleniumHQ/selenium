@@ -18,7 +18,6 @@
 package org.openqa.selenium.remote;
 
 import com.google.common.collect.ImmutableMap;
-
 import org.openqa.selenium.Beta;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Dimension;
@@ -43,9 +42,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import static java.nio.charset.StandardCharsets.UTF_8;
+import static org.openqa.selenium.remote.DriverCommand.FIND_CHILD_ELEMENT;
+import static org.openqa.selenium.remote.DriverCommand.FIND_CHILD_ELEMENTS;
 
-public class RemoteWebElement implements WebElement, WrapsDriver, TakesScreenshot, Locatable {
+public class RemoteWebElement implements WebElement, Locatable, TakesScreenshot, WrapsDriver  {
 
   private String foundBy;
   protected String id;
@@ -210,12 +210,18 @@ public class RemoteWebElement implements WebElement, WrapsDriver, TakesScreensho
 
   @Override
   public List<WebElement> findElements(By locator) {
-    return parent.findElements(parent, this, locator);
+    return parent.findElements(
+      this,
+      (using, value) -> FIND_CHILD_ELEMENTS(getId(), using, String.valueOf(value)),
+      locator);
   }
 
   @Override
   public WebElement findElement(By locator) {
-    return parent.findElement(parent, this, locator);
+    return parent.findElement(
+      this,
+      (using, value) -> FIND_CHILD_ELEMENT(getId(), using, String.valueOf(value)),
+      locator);
   }
 
   /**
@@ -232,6 +238,12 @@ public class RemoteWebElement implements WebElement, WrapsDriver, TakesScreensho
   @Deprecated
   protected List<WebElement> findElements(String using, String value) {
     throw new UnsupportedOperationException("`findElement` has been replaced by usages of " + By.Remotable.class);
+  }
+
+  @Override
+  public SearchContext getShadowRoot() {
+    Response response = execute(DriverCommand.GET_ELEMENT_SHADOW_ROOT(getId()));
+    return (SearchContext) response.getValue();
   }
 
   protected Response execute(CommandPayload payload) {
@@ -295,6 +307,10 @@ public class RemoteWebElement implements WebElement, WrapsDriver, TakesScreensho
     Object value = execute(DriverCommand.IS_ELEMENT_DISPLAYED(id))
       .getValue();
     try {
+      // See https://github.com/SeleniumHQ/selenium/issues/9266
+      if (value == null) {
+        return false;
+      }
       return (Boolean) value;
     } catch (ClassCastException ex) {
       throw new WebDriverException("Returned value cannot be converted to Boolean: " + value, ex);
@@ -372,8 +388,7 @@ public class RemoteWebElement implements WebElement, WrapsDriver, TakesScreensho
       String base64EncodedPng = (String) result;
       return outputType.convertFromBase64Png(base64EncodedPng);
     } else if (result instanceof byte[]) {
-      String base64EncodedPng = new String((byte[]) result, UTF_8);
-      return outputType.convertFromBase64Png(base64EncodedPng);
+      return outputType.convertFromPngBytes((byte[]) result);
     } else {
       throw new RuntimeException(String.format(
         "Unexpected result for %s command: %s",

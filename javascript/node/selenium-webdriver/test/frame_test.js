@@ -40,12 +40,12 @@ test.suite(function (env) {
 
     let frame = await driver.findElement(By.name('iframe1-name'))
     await driver.switchTo().frame(frame)
-    assert.equal(
+    assert.strictEqual(
       await driver.executeScript('return document.title'),
       'We Leave From Here'
     )
     await driver.switchTo().parentFrame()
-    assert.equal(
+    assert.strictEqual(
       await driver.executeScript('return document.title'),
       'This page has iframes'
     )

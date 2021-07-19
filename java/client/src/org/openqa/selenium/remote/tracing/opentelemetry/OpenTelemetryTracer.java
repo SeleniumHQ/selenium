@@ -31,6 +31,7 @@ import java.util.logging.Logger;
 public class OpenTelemetryTracer implements org.openqa.selenium.remote.tracing.Tracer {
 
   private static final Logger LOG = Logger.getLogger(OpenTelemetryTracer.class.getName());
+  private static boolean HTTP_LOGS;
 
   // We obtain the underlying tracer instance from the singleton instance
   // that OpenTelemetry maintains. If we blindly grabbed the tracing provider
@@ -40,6 +41,14 @@ public class OpenTelemetryTracer implements org.openqa.selenium.remote.tracing.T
   // tracing more than once for the entire JVM, so we're never going to be
   // adding unit tests for this.
   private static volatile OpenTelemetryTracer singleton;
+
+  public static void setHttpLogs(boolean value) {
+    HTTP_LOGS = value;
+  }
+
+  public static boolean getHttpLogs() {
+    return HTTP_LOGS;
+  }
 
   public static OpenTelemetryTracer getInstance() {
     OpenTelemetryTracer localTracer = singleton;
@@ -58,6 +67,13 @@ public class OpenTelemetryTracer implements org.openqa.selenium.remote.tracing.T
   private static OpenTelemetryTracer createTracer() {
     LOG.info("Using OpenTelemetry for tracing");
 
+    // Default exporter for traces and metrics is OTLP 0.17.0 onwards.
+    // If the metrics exporter property is not set to none, external dependency is required.
+    System.setProperty("otel.metrics.exporter", "none");
+    String exporter = System.getProperty("otel.traces.exporter");
+    if(exporter == null) {
+      System.setProperty("otel.traces.exporter", "none");
+    }
     OpenTelemetrySdk autoConfiguredSdk = OpenTelemetrySdkAutoConfiguration.initialize();
 
     return new OpenTelemetryTracer(

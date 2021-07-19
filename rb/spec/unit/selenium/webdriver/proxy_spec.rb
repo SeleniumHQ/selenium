@@ -70,10 +70,10 @@ module Selenium
       it 'should return a hash of the json properties to serialize', :aggregate_failures do
         proxy_json = Proxy.new(proxy_settings).as_json
 
-        expect(proxy_json['proxyType']).to     eq('MANUAL')
+        expect(proxy_json['proxyType']).to     eq('manual')
         expect(proxy_json['ftpProxy']).to      eq(proxy_settings[:ftp])
         expect(proxy_json['httpProxy']).to     eq(proxy_settings[:http])
-        expect(proxy_json['noProxy']).to       eq(proxy_settings[:no_proxy])
+        expect(proxy_json['noProxy']).to       eq([proxy_settings[:no_proxy]])
         expect(proxy_json['sslProxy']).to      eq(proxy_settings[:ssl])
         expect(proxy_json['socksProxy']).to    eq(proxy_settings[:socks])
         expect(proxy_json['socksUsername']).to eq(proxy_settings[:socks_username])
@@ -84,14 +84,14 @@ module Selenium
       it 'should configure a PAC proxy', :aggregate_failures do
         proxy_json = Proxy.new(pac_proxy_settings).as_json
 
-        expect(proxy_json['proxyType']).to eq('PAC')
+        expect(proxy_json['proxyType']).to eq('pac')
         expect(proxy_json['proxyAutoconfigUrl']).to eq(pac_proxy_settings[:pac])
       end
 
       it 'should configure an auto-detected proxy', :aggregate_failures do
         proxy_json = Proxy.new(auto_detect: true).as_json
 
-        expect(proxy_json['proxyType']).to eq('AUTODETECT')
+        expect(proxy_json['proxyType']).to eq('autodetect')
         expect(proxy_json['autodetect']).to be true
       end
 
@@ -101,7 +101,7 @@ module Selenium
         proxy = Proxy.new(settings)
         proxy_json = proxy.as_json
 
-        expect(proxy_json.delete('proxyType')).to eq(settings[:type].to_s.upcase)
+        expect(proxy_json.delete('proxyType')).to eq(settings[:type].to_s)
         expect(proxy_json.delete('httpProxy')).to eq(settings[:http])
 
         expect(proxy_json).to be_empty

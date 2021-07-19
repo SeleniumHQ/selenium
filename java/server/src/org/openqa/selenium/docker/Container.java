@@ -43,7 +43,7 @@ public class Container {
   }
 
   public void start() {
-    LOG.info("Starting " + getId());
+    LOG.info("Starting container " + getId());
     protocol.startContainer(id);
     this.running = true;
   }
@@ -52,7 +52,7 @@ public class Container {
     Require.nonNull("Timeout to wait for", timeout);
 
     if (this.running) {
-      LOG.info("Stopping " + getId());
+      LOG.info("Stopping container " + getId());
       try {
         protocol.stopContainer(id, timeout);
         this.running = false;
@@ -63,7 +63,7 @@ public class Container {
   }
 
   public ContainerInfo inspect() {
-    LOG.info("Inspecting " + getId());
+    LOG.info("Inspecting container " + getId());
 
     return protocol.inspectContainer(getId());
   }

@@ -34,6 +34,9 @@ import org.openqa.selenium.remote.BrowserType;
 import org.openqa.selenium.safari.SafariDriverInfo;
 import org.openqa.selenium.safari.SafariOptions;
 
+import java.io.File;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.logging.Logger;
 
 import static org.openqa.selenium.remote.CapabilityType.BROWSER_NAME;
@@ -54,6 +57,18 @@ public enum Browser {
         options.setHeadless(true);
       }
 
+      options.addArguments(
+        "disable-extensions",
+        "disable-infobars",
+        "disable-breakpad",
+        "disable-dev-shm-usage",
+        "no-sandbox");
+
+      Map<String, Object> prefs = new HashMap<>();
+      prefs.put("exit_type", "None");
+      prefs.put("exited_cleanly", true);
+      options.setExperimentalOption("prefs", prefs);
+
       return options;
     }
   },
@@ -71,12 +86,33 @@ public enum Browser {
         options.setHeadless(true);
       }
 
+      options.addArguments("disable-extensions", "disable-infobars", "disable-breakpad");
+
+      Map<String, Object> prefs = new HashMap<>();
+      prefs.put("exit_type", "None");
+      prefs.put("exited_cleanly", true);
+      options.setExperimentalOption("prefs", prefs);
+
       return options;
     }
   },
   HTMLUNIT(new ImmutableCapabilities(BROWSER_NAME, BrowserType.HTMLUNIT), "HtmlUnit", false),
   LEGACY_FIREFOX_XPI(new FirefoxOptions().setLegacy(true), new XpiDriverInfo().getDisplayName(), false),
-  IE(new InternetExplorerOptions(), new InternetExplorerDriverInfo().getDisplayName(), false),
+  IE(new InternetExplorerOptions(), new InternetExplorerDriverInfo().getDisplayName(), false) {
+    @Override
+    public Capabilities getCapabilities() {
+      InternetExplorerOptions options = new InternetExplorerOptions();
+
+      if (Boolean.getBoolean("selenium.ie.disable_native_events")) {
+        options.disableNativeEvents();
+      }
+      if (Boolean.getBoolean("selenium.ie.require_window_focus")) {
+        options.requireWindowFocus();
+      }
+
+      return options;
+    }
+  },
   FIREFOX(new FirefoxOptions(), new GeckoDriverInfo().getDisplayName(), false) {
     @Override
     public Capabilities getCapabilities() {
@@ -95,7 +131,19 @@ public enum Browser {
     }
   },
   LEGACY_OPERA(new OperaOptions(), new OperaDriverInfo().getDisplayName(), false),
-  OPERA(new OperaOptions(), new OperaDriverInfo().getDisplayName(), false),
+  OPERA(new OperaOptions(), new OperaDriverInfo().getDisplayName(), false) {
+    @Override
+    public Capabilities getCapabilities() {
+      OperaOptions options = new OperaOptions();
+      options.addArguments("disable-extensions");
+      String operaPath = System.getProperty("webdriver.opera.binary");
+      if (operaPath != null) {
+        options.setBinary(new File(operaPath));
+      }
+
+      return options;
+    }
+  },
   SAFARI(new SafariOptions(), new SafariDriverInfo().getDisplayName(), false);
 
   private static final Logger log = Logger.getLogger(Browser.class.getName());

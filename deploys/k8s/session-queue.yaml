@@ -1,0 +1,55 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: session-queue
+  labels:
+    app: session-queue
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: session-queue
+  template:
+    metadata:
+      labels:
+        app: session-queue
+    spec:
+      containers:
+        - name: session-queue
+          image: selenium/session-queue:latest
+          ports:
+            - containerPort: 5559
+          env:
+            - name: EVENTS_BIND
+              value: "false"
+            - name: EVENTS_PUBLISH
+              value: "tcp://event-bus:4442"
+            - name: EVENTS_SUBSCRIBE
+              value: "tcp://event-bus:4443"
+          resources:
+            limits:
+              memory: "512Mi"
+              cpu: ".5"
+          readinessProbe:
+            httpGet:
+              port: 5559
+              path: "/readyz"
+            initialDelaySeconds: 2
+            periodSeconds: 60
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: session-queue
+  labels:
+    run: session-queue
+spec:
+  type: NodePort
+  selector:
+    app: session-queue
+  ports:
+    - port: 5559
+      targetPort: 5559
+      protocol: TCP
+      name: web

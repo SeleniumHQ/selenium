@@ -143,7 +143,7 @@ module Selenium
       #
 
       def dom_attribute(name)
-        bridge.element_dom_attribute self, name
+        bridge.element_dom_attribute @id, name
       end
 
       #
@@ -157,7 +157,27 @@ module Selenium
       #
 
       def property(name)
-        bridge.element_property self, name
+        bridge.element_property @id, name
+      end
+
+      #
+      # Gets the computed WAI-ARIA role of element
+      #
+      # @return [String]
+      #
+
+      def aria_role
+        bridge.element_aria_role @id
+      end
+
+      #
+      # Gets the computed WAI-ARIA label of element.
+      #
+      # @return [String]
+      #
+
+      def accessible_name
+        bridge.element_aria_label @id
       end
 
       #
@@ -297,6 +317,16 @@ module Selenium
         bridge.element_size @id
       end
 
+      #
+      # Returns the shadow root of an element.
+      #
+      # @return [WebDriver::ShadowRoot]
+      #
+
+      def shadow_root
+        bridge.shadow_root @id
+      end
+
       #-------------------------------- sugar  --------------------------------
 
       #
@@ -317,13 +347,12 @@ module Selenium
       alias_method :[], :attribute
 
       #
-      # for SearchContext and execute_script
-      #
       # @api private
+      # @see SearchContext
       #
 
       def ref
-        @id
+        [:element, @id]
       end
 
       #
@@ -359,7 +388,7 @@ module Selenium
       end
 
       def screenshot
-        bridge.element_screenshot(self)
+        bridge.element_screenshot(@id)
       end
     end # Element
   end # WebDriver

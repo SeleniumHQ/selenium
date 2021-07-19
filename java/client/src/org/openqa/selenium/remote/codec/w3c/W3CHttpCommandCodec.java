@@ -31,6 +31,8 @@ import static org.openqa.selenium.remote.DriverCommand.FIND_CHILD_ELEMENT;
 import static org.openqa.selenium.remote.DriverCommand.FIND_CHILD_ELEMENTS;
 import static org.openqa.selenium.remote.DriverCommand.FIND_ELEMENT;
 import static org.openqa.selenium.remote.DriverCommand.FIND_ELEMENTS;
+import static org.openqa.selenium.remote.DriverCommand.FIND_ELEMENTS_FROM_SHADOW_ROOT;
+import static org.openqa.selenium.remote.DriverCommand.FIND_ELEMENT_FROM_SHADOW_ROOT;
 import static org.openqa.selenium.remote.DriverCommand.GET_ACTIVE_ELEMENT;
 import static org.openqa.selenium.remote.DriverCommand.GET_ALERT_TEXT;
 import static org.openqa.selenium.remote.DriverCommand.GET_AVAILABLE_LOG_TYPES;
@@ -45,6 +47,7 @@ import static org.openqa.selenium.remote.DriverCommand.GET_ELEMENT_LOCATION;
 import static org.openqa.selenium.remote.DriverCommand.GET_ELEMENT_LOCATION_ONCE_SCROLLED_INTO_VIEW;
 import static org.openqa.selenium.remote.DriverCommand.GET_ELEMENT_DOM_PROPERTY;
 import static org.openqa.selenium.remote.DriverCommand.GET_ELEMENT_RECT;
+import static org.openqa.selenium.remote.DriverCommand.GET_ELEMENT_SHADOW_ROOT;
 import static org.openqa.selenium.remote.DriverCommand.GET_ELEMENT_SIZE;
 import static org.openqa.selenium.remote.DriverCommand.GET_LOCAL_STORAGE_ITEM;
 import static org.openqa.selenium.remote.DriverCommand.GET_LOCAL_STORAGE_KEYS;
@@ -169,6 +172,9 @@ public class W3CHttpCommandCodec extends AbstractHttpCommandCodec {
     defineCommand(GET_ELEMENT_DOM_ATTRIBUTE, get(elementId + "/attribute/:name"));
     defineCommand(GET_ELEMENT_ARIA_ROLE, get(elementId + "/computedrole"));
     defineCommand(GET_ELEMENT_ACCESSIBLE_NAME, get(elementId + "/computedlabel"));
+    defineCommand(GET_ELEMENT_SHADOW_ROOT, get(elementId + "/shadow"));
+    defineCommand(FIND_ELEMENT_FROM_SHADOW_ROOT, post(sessionId + "/shadow/:shadowId/element"));
+    defineCommand(FIND_ELEMENTS_FROM_SHADOW_ROOT, post(sessionId + "/shadow/:shadowId/elements"));
 
     // Emulate the old Actions API since everyone still likes to call these things.
     alias(CLICK, ACTIONS);

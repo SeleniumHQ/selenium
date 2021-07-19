@@ -22,6 +22,8 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSortedSet;
 import com.google.common.primitives.Primitives;
 
+import com.beust.jcommander.Parameter;
+
 import org.openqa.selenium.internal.Require;
 
 import java.lang.reflect.Field;
@@ -53,10 +55,10 @@ public class AnnotatedConfig implements Config {
   private final Map<String, Map<String, List<String>>> config;
 
   public AnnotatedConfig(Object obj) {
-    this(obj, Collections.emptySet());
+    this(obj, Collections.emptySet(), false);
   }
 
-  public AnnotatedConfig(Object obj, Set<String> cliArgs) {
+  public AnnotatedConfig(Object obj, Set<String> cliArgs, boolean includeCliArgs) {
     Map<String, Map<String, List<String>>> values = new HashMap<>();
 
     Deque<Field> allConfigValues = findConfigFields(obj.getClass());
@@ -75,8 +77,15 @@ public class AnnotatedConfig implements Config {
       }
 
       ConfigValue annotation = field.getAnnotation(ConfigValue.class);
-      if (cliArgs.size() > 0 && !cliArgs.contains(annotation.name())) {
+      Parameter cliAnnotation = field.getAnnotation(Parameter.class);
+      boolean containsCliArg = cliAnnotation != null &&
+                               Arrays.stream(cliAnnotation.names()).anyMatch(cliArgs::contains);
+      if (cliArgs.size() > 0 && !containsCliArg && includeCliArgs) {
         // Only getting config values for args entered by the user.
+        continue;
+      }
+      if (cliArgs.size() > 0 && containsCliArg && !includeCliArgs) {
+        // Excluding config values for args entered by the user.
         continue;
       }
       Map<String, List<String>> section = values.computeIfAbsent(
