@@ -46,7 +46,7 @@ module Selenium
 
         (KNOWN - %i[proxy timeouts]).each do |key|
           define_method key do
-            @capabilities.fetch(key)
+            @capabilities[key]
           end
 
           define_method "#{key}=" do |value|
@@ -202,7 +202,7 @@ module Selenium
         end
 
         def proxy
-          @capabilities.fetch(:proxy)
+          @capabilities[:proxy]
         end
 
         def proxy=(proxy)
