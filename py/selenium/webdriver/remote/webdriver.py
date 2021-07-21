@@ -18,8 +18,10 @@
 """The WebDriver implementation."""
 
 import copy
+from importlib import import_module
 
 import pkgutil
+
 import sys
 from typing import Dict, List, Optional, Union
 
@@ -27,12 +29,12 @@ import warnings
 
 from abc import ABCMeta
 from base64 import b64decode
-from contextlib import contextmanager
+from contextlib import asynccontextmanager, contextmanager
 
+from .bidi_connection import BidiConnection
 from .command import Command
 from .errorhandler import ErrorHandler
 from .file_detector import FileDetector, LocalFileDetector
-from .log import Log
 from .mobile import Mobile
 from .remote_connection import RemoteConnection
 from .script_key import ScriptKey
@@ -44,6 +46,7 @@ from selenium.common.exceptions import (InvalidArgumentException,
                                         WebDriverException,
                                         NoSuchCookieException)
 from selenium.webdriver.common.by import By
+from selenium.webdriver.common.log import Log
 from selenium.webdriver.common.options import BaseOptions
 from selenium.webdriver.common.print_page_options import PrintOptions
 from selenium.webdriver.common.timeouts import Timeouts
@@ -71,7 +74,13 @@ _OSS_W3C_CONVERSION = {
 }
 
 
-devtools = None
+cdp = None
+
+
+def import_cdp():
+    global cdp
+    if not cdp:
+        cdp = import_module("selenium.webdriver.common.bidi.cdp")
 
 
 def _make_w3c_caps(caps):
@@ -1473,7 +1482,53 @@ class WebDriver(BaseWebDriver):
         """
         return self.execute(Command.GET_LOG, {'type': log_type})['value']
 
-    @property
-    def log(self) -> Log:
+    @asynccontextmanager
+    async def bidi_connection(self):
         assert sys.version_info >= (3, 7)
-        return Log(self)
+        global cdp
+        import_cdp()
+        ws_url = None
+        if self.caps.get("se:cdp"):
+            ws_url = self.caps.get("se:cdp")
+            version = self.caps.get("se:cdpVersion").split(".")[0]
+        else:
+            version, ws_url = self._get_cdp_details()
+
+        if not ws_url:
+            raise WebDriverException("Unable to find url to connect to from capabilities")
+
+        cdp.import_devtools(version)
+
+        devtools = import_module("selenium.webdriver.common.devtools.v{}".format(version))
+        async with cdp.open_cdp(ws_url) as conn:
+            targets = await conn.execute(devtools.target.get_targets())
+            target_id = targets[0].target_id
+            async with conn.open_session(target_id) as session:
+                yield BidiConnection(session, cdp, devtools)
+
+    def _get_cdp_details(self):
+        import json
+        import urllib3
+
+        http = urllib3.PoolManager()
+        _firefox = False
+        if self.caps.get("browserName") == "chrome":
+            debugger_address = self.caps.get(f"{self.vendor_prefix}:{self.caps.get('browserName')}Options").get("debuggerAddress")
+        else:
+            _firefox = True
+            debugger_address = self.caps.get("moz:debuggerAddress")
+        res = http.request('GET', f"http://{debugger_address}/json/version")
+        data = json.loads(res.data)
+
+        browser_version = data.get("Browser")
+        websocket_url = data.get("webSocketDebuggerUrl")
+
+        import re
+        if _firefox:
+            # Mozilla Automation Team asked to only support 85
+            # until WebDriver Bidi is available.
+            version = 85
+        else:
+            version = re.search(r".*/(\d+)\.", browser_version).group(1)
+
+        return version, websocket_url

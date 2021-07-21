@@ -55,7 +55,7 @@ copy_file(
 copy_file(
     name = "mutation-listener",
     src = "//javascript/cdp-support:mutation-listener.js",
-    out = "selenium/webdriver/remote/mutation-listener.js",
+    out = "selenium/webdriver/common/mutation-listener.js",
 )
 
 copy_file(
