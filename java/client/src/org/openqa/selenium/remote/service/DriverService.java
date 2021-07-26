@@ -286,6 +286,7 @@ public class DriverService implements Closeable {
     } finally {
       process = null;
       lock.unlock();
+      executorService.shutdownNow();
     }
 
     if (toThrow != null) {
