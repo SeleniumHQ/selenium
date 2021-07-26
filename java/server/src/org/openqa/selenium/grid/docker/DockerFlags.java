@@ -20,6 +20,7 @@ package org.openqa.selenium.grid.docker;
 import static org.openqa.selenium.grid.config.StandardGridRoles.NODE_ROLE;
 import static org.openqa.selenium.grid.docker.DockerOptions.DEFAULT_ASSETS_PATH;
 import static org.openqa.selenium.grid.docker.DockerOptions.DEFAULT_DOCKER_URL;
+import static org.openqa.selenium.grid.docker.DockerOptions.DEFAULT_MAX_SESSIONS;
 import static org.openqa.selenium.grid.docker.DockerOptions.DEFAULT_VIDEO_IMAGE;
 import static org.openqa.selenium.grid.docker.DockerOptions.DOCKER_SECTION;
 
@@ -87,6 +88,13 @@ public class DockerFlags implements HasRoles {
   )
   @ConfigValue(section = DOCKER_SECTION, name = "assets-path", example = DEFAULT_ASSETS_PATH)
   private String assetsPath;
+
+  @Parameter(
+    names = {"--docker-max-sessions"},
+    description = "Maximum number of sessions. This value defaults to and is upper-bound"
+                  + " by the number of available processors.")
+  @ConfigValue(section = DOCKER_SECTION, name = "docker-max-sessions", example = "8")
+  public int maxSessions = DEFAULT_MAX_SESSIONS;
 
   @Override
   public Set<Role> getRoles() {
