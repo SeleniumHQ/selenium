@@ -107,6 +107,13 @@ public class NewSessionPayload implements Closeable {
     } catch (IOException e) {
       throw new UncheckedIOException(e);
     }
+
+    try {
+      source.close();
+    } catch (IOException e) {
+      // Ignore
+    }
+
   }
 
   private void validate() throws IOException {
