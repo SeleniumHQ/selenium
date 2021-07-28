@@ -46,7 +46,6 @@ from selenium.common.exceptions import (InvalidArgumentException,
                                         WebDriverException,
                                         NoSuchCookieException)
 from selenium.webdriver.common.by import By
-from selenium.webdriver.common.log import Log
 from selenium.webdriver.common.options import BaseOptions
 from selenium.webdriver.common.print_page_options import PrintOptions
 from selenium.webdriver.common.timeouts import Timeouts
