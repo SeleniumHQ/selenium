@@ -139,7 +139,7 @@ class WebDriver(RemoteWebDriver):
         capabilities = dict(capabilities)
 
         if capabilities.get("binary"):
-            self.binary = capabilities["binary"]
+            options.binary = capabilities["binary"]
 
         # options overrides capabilities
         if options:
@@ -174,15 +174,13 @@ class WebDriver(RemoteWebDriver):
                 log_path=service_log_path)
         self.service.start()
 
-        capabilities.update(options.to_capabilities())
-
         executor = FirefoxRemoteConnection(
             remote_server_addr=self.service.service_url,
             ignore_proxy=options._ignore_local_proxy)
         RemoteWebDriver.__init__(
             self,
             command_executor=executor,
-            desired_capabilities=capabilities,
+            options=options,
             keep_alive=True)
 
         self._is_remote = False
