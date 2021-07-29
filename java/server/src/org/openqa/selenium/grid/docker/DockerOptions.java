@@ -50,6 +50,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.logging.Logger;
 
 import static org.openqa.selenium.Platform.WINDOWS;
+import static org.openqa.selenium.grid.node.config.NodeOptions.NODE_SECTION;
 
 public class DockerOptions {
 
@@ -153,7 +154,7 @@ public class DockerOptions {
     Image videoImage = getVideoImage(docker);
     loadImages(docker, videoImage.getName());
 
-    int maxContainerCount = Math.min(config.getInt(DOCKER_SECTION, "docker-max-sessions")
+    int maxContainerCount = Math.min(config.getInt(NODE_SECTION, "max-sessions")
                                        .orElse(DEFAULT_MAX_SESSIONS), DEFAULT_MAX_SESSIONS);
     ImmutableMultimap.Builder<Capabilities, SessionFactory> factories = ImmutableMultimap.builder();
     kinds.forEach((name, caps) -> {

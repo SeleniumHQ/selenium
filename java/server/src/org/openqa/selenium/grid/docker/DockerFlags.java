@@ -89,13 +89,6 @@ public class DockerFlags implements HasRoles {
   @ConfigValue(section = DOCKER_SECTION, name = "assets-path", example = DEFAULT_ASSETS_PATH)
   private String assetsPath;
 
-  @Parameter(
-    names = {"--docker-max-sessions"},
-    description = "Maximum number of sessions. This value defaults to and is upper-bound"
-                  + " by the number of available processors.")
-  @ConfigValue(section = DOCKER_SECTION, name = "docker-max-sessions", example = "8")
-  public int maxSessions = DEFAULT_MAX_SESSIONS;
-
   @Override
   public Set<Role> getRoles() {
     return Collections.singleton(NODE_ROLE);
