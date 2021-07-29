@@ -57,6 +57,7 @@ public class DockerOptions {
   static final String DEFAULT_ASSETS_PATH = "/opt/selenium/assets";
   static final String DEFAULT_DOCKER_URL = "unix:/var/run/docker.sock";
   static final String DEFAULT_VIDEO_IMAGE = "selenium/video:latest";
+  static final int DEFAULT_MAX_SESSIONS = Runtime.getRuntime().availableProcessors();
   private static final String DEFAULT_DOCKER_NETWORK = "bridge";
   private static final Logger LOG = Logger.getLogger(DockerOptions.class.getName());
   private static final Json JSON = new Json();
@@ -152,7 +153,9 @@ public class DockerOptions {
     Image videoImage = getVideoImage(docker);
     loadImages(docker, videoImage.getName());
 
-    int maxContainerCount = Runtime.getRuntime().availableProcessors();
+    // Hard coding the config section value "node" to avoid an extra dependency
+    int maxContainerCount = Math.min(config.getInt("node", "max-sessions")
+                                       .orElse(DEFAULT_MAX_SESSIONS), DEFAULT_MAX_SESSIONS);
     ImmutableMultimap.Builder<Capabilities, SessionFactory> factories = ImmutableMultimap.builder();
     kinds.forEach((name, caps) -> {
       Image image = docker.getImage(name);
