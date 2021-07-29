@@ -64,7 +64,7 @@ public class NodeOptions {
   public static final int DEFAULT_MAX_SESSIONS = Runtime.getRuntime().availableProcessors();
   public static final int DEFAULT_HEARTBEAT_PERIOD = 60;
   public static final int DEFAULT_SESSION_TIMEOUT = 300;
-  public static final String NODE_SECTION = "node";
+  static final String NODE_SECTION = "node";
   static final boolean DEFAULT_DETECT_DRIVERS = true;
   static final boolean OVERRIDE_MAX_SESSIONS = false;
   static final String DEFAULT_VNC_ENV_VAR = "START_XVFB";
