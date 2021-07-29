@@ -20,7 +20,6 @@ package org.openqa.selenium.grid.docker;
 import static org.openqa.selenium.grid.config.StandardGridRoles.NODE_ROLE;
 import static org.openqa.selenium.grid.docker.DockerOptions.DEFAULT_ASSETS_PATH;
 import static org.openqa.selenium.grid.docker.DockerOptions.DEFAULT_DOCKER_URL;
-import static org.openqa.selenium.grid.docker.DockerOptions.DEFAULT_MAX_SESSIONS;
 import static org.openqa.selenium.grid.docker.DockerOptions.DEFAULT_VIDEO_IMAGE;
 import static org.openqa.selenium.grid.docker.DockerOptions.DOCKER_SECTION;
 
