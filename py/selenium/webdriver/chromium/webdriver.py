@@ -96,7 +96,6 @@ class ChromiumDriver(RemoteWebDriver):
                     remote_server_addr=self.service.service_url,
                     browser_name=browser_name, vendor_prefix=vendor_prefix,
                     keep_alive=keep_alive, ignore_proxy=_ignore_proxy),
-                desired_capabilities=desired_capabilities,
                 options=options)
         except Exception:
             self.quit()

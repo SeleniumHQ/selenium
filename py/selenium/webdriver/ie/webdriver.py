@@ -60,7 +60,8 @@ class WebDriver(RemoteWebDriver):
             warnings.warn('executable_path has been deprecated, please pass in a Service object',
                           DeprecationWarning, stacklevel=2)
         if capabilities:
-            warnings.warn('capabilities has been deprecated, please pass in a Service object',
+            warnings.warn('capabilities has been deprecated, please pass in a Options object.'
+                          'This field will be ignored if Options object also used.',
                           DeprecationWarning, stacklevel=2)
         if port != DEFAULT_PORT:
             warnings.warn('port has been deprecated, please pass in a Service object',
@@ -78,7 +79,7 @@ class WebDriver(RemoteWebDriver):
             warnings.warn('service_log_path has been deprecated, please pass in a Service object',
                           DeprecationWarning, stacklevel=2)
         if desired_capabilities:
-            warnings.warn('desired_capabilities has been deprecated, please pass in a Service object',
+            warnings.warn('desired_capabilities has been deprecated, please pass in an Options object',
                           DeprecationWarning, stacklevel=2)
         if keep_alive != DEFAULT_KEEP_ALIVE:
             warnings.warn('keep_alive has been deprecated, please pass in a Service object',
@@ -119,7 +120,7 @@ class WebDriver(RemoteWebDriver):
         RemoteWebDriver.__init__(
             self,
             command_executor=self.iedriver.service_url,
-            desired_capabilities=capabilities,
+            options=options,
             keep_alive=keep_alive)
         self._is_remote = False
 

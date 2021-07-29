@@ -22,7 +22,6 @@ import sys
 from contextlib import asynccontextmanager
 from importlib import import_module
 
-from selenium.common.exceptions import WebDriverException
 from selenium.webdriver.common.by import By
 
 cdp = None

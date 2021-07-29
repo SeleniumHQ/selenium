@@ -34,7 +34,7 @@ public class Command<X> {
   private final boolean sendsResponse;
 
   public Command(String method, Map<String, Object> params) {
-    this(method, params, Void.class);
+    this(method, params, Object.class);
   }
 
   public Command(String method, Map<String, Object> params, Type typeOfX) {
