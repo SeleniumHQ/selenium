@@ -104,6 +104,11 @@ You may have to update this from time to time.
 
 ### Common Build Targets
 
+#### Java
+
+<details>
+<summary>Click to see Java Build Steps</summary>
+
 To build the most commonly-used modules of Selenium from source, execute this command from the root
 project folder:
 
@@ -111,18 +116,99 @@ project folder:
 bazel build java/...
 ```
 
-If you have some extra time on your hands, you can run this command to get extra confidence
-that your build is successful. This will do a lot more work to build all the javascript artifacts:
+If you want to test you can run then you can do so by running the following command
 
 ```sh
-bazel build java/... javascript/...
+bazel test //java/... --test_size_filters=small,medium,large --test_tag_filters=<browser>
 ```
 
-If you're making changes to the java/ or javascript/ folders in this project, and this command
-executes without errors, you should be able to create a PR of your changes. (See also CONTRIBUTING.md)
+The `test_size_filters` argument takes small, medium, large. Small are akin to unit tests,
+medium is akin to integration tests, and large is akin to end to end tests.
+
+The `test_tag_filters` allow us to pass in browser names and a few different tags that we can
+find in the code base.
+<details>
+
+#### JavaScript
+<details>
+<summary>Click to see JavaScript Build Steps</summary>
+
+If you want to build all the JavaScript code you can run:
+
+```sh
+bazel build javascript/...
+```
+
+To build the NodeJS bindings you will need to run:
+
+```sh
+bazel build //javascript/node/selenium-webdriver
+```
+
+To run the tests run:
+
+```sh
+bazel test //javascript/node/selenium-webdriver:tests
+```
+
+You can pass in the environment variable `SELENIUM_BROWSER` with the name of the browser.
+
+To publish to NPM run:
+
+```sh
+bazel run //javascript/node/selenium-webdriver:selenium-webdriver.publish
+```
+</details>
+
+#### Python
+<details>
+<summary>Click to see Python Build Steps</summary>
+
+If you want to build the python bindings run:
+
+```sh
+bazel build //py:selenium
+```
+
+To run the tests run:
+
+```sh
+bazel test //py:test-<browsername>
+```
+
+If you add `--//common:pin_browsers` it will download the browsers and drivers for you to use.
+
+To publish run
+
+```sh
+bazel build //py:selenium-wheel
+twine upload bazel-bin/py/selenium-*.whl
+```
+
+####  Ruby
+<details>
+<summary>Click to see Ruby Build Steps</summary>
+
+To build the Ruby code run:
+
+```sh
+bazel build //rb/...
+```
+</details>
+
+####  .NET
+<details>
+<summary>Click to see .NET Build Steps</summary>
+
+To build the .NET code run:
+
+```sh
+bazel build //dotnet/...
+```
+</details>
+
 
 ### Build Details
-
 * Bazel files are called BUILD.bazel
 * [crazyfun](https://github.com/SeleniumHQ/selenium/wiki/Crazy-Fun-Build) build files are called
 *build.desc*. This is an older build system, still in use in the project for Ruby bindings mostly.
