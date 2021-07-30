@@ -61,7 +61,7 @@ module Selenium
         end
 
         it 'should default to no proxy' do
-          expect { Capabilities.new.proxy }.to raise_error(KeyError)
+          expect(Capabilities.new.proxy).to be_nil
         end
 
         it 'can set and get standard capabilities' do
