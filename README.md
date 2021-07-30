@@ -127,7 +127,7 @@ medium is akin to integration tests, and large is akin to end to end tests.
 
 The `test_tag_filters` allow us to pass in browser names and a few different tags that we can
 find in the code base.
-<details>
+</details>
 
 #### JavaScript
 <details>
@@ -184,6 +184,7 @@ To publish run
 bazel build //py:selenium-wheel
 twine upload bazel-bin/py/selenium-*.whl
 ```
+</details>
 
 ####  Ruby
 <details>
@@ -225,7 +226,6 @@ In this case, `javascript/atoms` is the module directory,
 
 As you see *build targets* scroll past in the log,
 you may want to run them individually.
-
 
 
 ## Common Tasks (Bazel)
