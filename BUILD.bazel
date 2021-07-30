@@ -13,17 +13,17 @@ filegroup(
 
 alias(
     name = "grid",
-    actual = "//java/server/src/org/openqa/selenium/grid:executable-grid",
+    actual = "//java/src/org/openqa/selenium/grid:executable-grid",
 )
 
 alias(
     name = "pinned-grid",
-    actual = "//java/server/src/org/openqa/selenium/grid:pinned-grid",
+    actual = "//java/src/org/openqa/selenium/grid:pinned-grid",
 )
 
 alias(
     name = "debug-server",
-    actual = "//java/client/test/org/openqa/selenium/environment:appserver",
+    actual = "//java/test/org/openqa/selenium/environment:appserver",
 )
 
 alias(
@@ -33,7 +33,7 @@ alias(
 
 alias(
     name = "selenium-server-standalone",
-    actual = "//java/server/src/org/openqa/selenium/grid:selenium_server_deploy.jar",
+    actual = "//java/src/org/openqa/selenium/grid:selenium_server_deploy.jar",
 )
 
 java_binary(
@@ -47,7 +47,7 @@ java_binary(
     jvm_flags = chrome_jvm_flags + firefox_jvm_flags,
     main_class = "org.openqa.selenium.grid.Bootstrap",
     runtime_deps = [
-        "//java/server/src/org/openqa/selenium/grid",
+        "//java/src/org/openqa/selenium/grid",
         artifact("org.slf4j:slf4j-jdk14"),
     ],
 )

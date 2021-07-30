@@ -1,0 +1,42 @@
+load("@rules_jvm_external//:defs.bzl", "artifact")
+load("//common:defs.bzl", "copy_file")
+load("//java:defs.bzl", "java_export")
+load("//java:version.bzl", "SE_VERSION")
+
+java_export(
+    name = "xpi",
+    srcs = glob(["*.java"]),
+    maven_coordinates = "org.seleniumhq.selenium:selenium-firefox-xpi-driver:%s" % SE_VERSION,
+    pom_template = "//java/src/org/openqa/selenium:template-pom",
+    resources = [
+        ":amd64",
+        ":i386",
+        ":webdriver_xpi",
+    ],
+    visibility = ["//visibility:public"],
+    deps = [
+        "//java:auto-service",
+        "//java/src/org/openqa/selenium:core",
+        "//java/src/org/openqa/selenium/firefox",
+        "//java/src/org/openqa/selenium/remote",
+        artifact("com.google.guava:guava"),
+    ],
+)
+
+copy_file(
+    name = "webdriver_xpi",
+    src = "//third_party/js/selenium:webdriver_xpi",
+    out = "webdriver.xpi",
+)
+
+copy_file(
+    name = "i386",
+    src = "//cpp/prebuilt:noblur32",
+    out = "x86/x_ignore_nofocus.so",
+)
+
+copy_file(
+    name = "amd64",
+    src = "//cpp/prebuilt:noblur64",
+    out = "amd64/x_ignore_nofocus.so",
+)

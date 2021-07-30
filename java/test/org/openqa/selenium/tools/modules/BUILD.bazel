@@ -1,0 +1,23 @@
+# Disabled until we actually have a test. Where did it go?
+
+#java_test_suite(
+#    name = "SmallTests",
+#    size = "small",
+#    srcs = glob(["*.java"]),
+#    data = [
+#        "no-module.jar",
+#        "with-auto-module-name.jar",
+#        "with-module-info.jar",
+#    ],
+#    javacopts = [
+#        "--release",
+#        "11",
+#    ],
+#    deps = [
+#        "//java/src/dev/selenium/tools/modules:ModuleGenerator",
+#        "//third_party/java/assertj",
+#        "//third_party/java/bytebuddy:byte-buddy",
+#        "//third_party/java/guava",
+#        "//third_party/java/junit",
+#    ],
+#)

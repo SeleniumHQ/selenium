@@ -1,0 +1,60 @@
+load("@rules_jvm_external//:defs.bzl", "artifact")
+load("//common:defs.bzl", "copy_file")
+load("//java:defs.bzl", "java_export")
+load("//java:version.bzl", "SE_VERSION")
+
+java_export(
+    name = "remote",
+    srcs = glob(["**/*.java"]),
+    hides = [
+        "org.openqa.selenium.remote.internal",
+    ],
+    maven_coordinates = "org.seleniumhq.selenium:selenium-remote-driver:%s" % SE_VERSION,
+    opens_to = [
+        "org.openqa.selenium.json",
+    ],
+    pom_template = "//java/src/org/openqa/selenium:template-pom",
+    resources = [
+        ":get-attribute",
+        ":is-displayed",
+    ],
+    uses = [
+        "org.openqa.selenium.remote.AugmenterProvider",
+        "org.openqa.selenium.remote.session.CapabilitiesFilter",
+        "org.openqa.selenium.remote.session.CapabilityTransform",
+        "org.openqa.selenium.remote.service.DriverService$Builder",
+    ],
+    visibility = ["//visibility:public"],
+    exports = [
+        "//java/src/org/openqa/selenium:core",
+        "//java/src/org/openqa/selenium/io",
+        "//java/src/org/openqa/selenium/os",
+        "//java/src/org/openqa/selenium/remote/http",
+        "//java/src/org/openqa/selenium/remote/locators",
+        "//java/src/org/openqa/selenium/remote/tracing",
+        "//java/src/org/openqa/selenium/remote/tracing/opentelemetry",
+    ],
+    deps = [
+        "//java/src/org/openqa/selenium:core",
+        "//java/src/org/openqa/selenium/io",
+        "//java/src/org/openqa/selenium/json",
+        "//java/src/org/openqa/selenium/os",
+        "//java/src/org/openqa/selenium/remote/http/netty",
+        "//java/src/org/openqa/selenium/remote/tracing",
+        "//java/src/org/openqa/selenium/remote/tracing/opentelemetry",
+        artifact("com.google.guava:guava"),
+        artifact("net.bytebuddy:byte-buddy"),
+    ],
+)
+
+copy_file(
+    name = "get-attribute",
+    src = "//javascript/webdriver/atoms:get-attribute.js",
+    out = "getAttribute.js",
+)
+
+copy_file(
+    name = "is-displayed",
+    src = "//javascript/atoms/fragments:is-displayed.js",
+    out = "isDisplayed.js",
+)

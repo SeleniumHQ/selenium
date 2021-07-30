@@ -1,0 +1,36 @@
+load("@rules_jvm_external//:defs.bzl", "artifact")
+load("//java:defs.bzl", "java_library")
+
+java_library(
+    name = "httpd",
+    srcs = glob(["*.java"]),
+    visibility = [
+        "//java/src/org/openqa/selenium/grid:__pkg__",
+        "//java/test/org/openqa/selenium/grid/router:__pkg__",
+        "//java/test/org/openqa/selenium/grid/router/httpd:__pkg__",
+    ],
+    deps = [
+        "//java:auto-service",
+        "//java/src/org/openqa/selenium/remote",
+        "//java/src/org/openqa/selenium/cli",
+        "//java/src/org/openqa/selenium/grid:base-command",
+        "//java/src/org/openqa/selenium/grid/config",
+        "//java/src/org/openqa/selenium/grid/distributor",
+        "//java/src/org/openqa/selenium/grid/distributor/config",
+        "//java/src/org/openqa/selenium/grid/distributor/remote",
+        "//java/src/org/openqa/selenium/grid/graphql",
+        "//java/src/org/openqa/selenium/grid/log",
+        "//java/src/org/openqa/selenium/grid/router",
+        "//java/src/org/openqa/selenium/grid/security",
+        "//java/src/org/openqa/selenium/grid/server",
+        "//java/src/org/openqa/selenium/grid/sessionmap",
+        "//java/src/org/openqa/selenium/grid/sessionmap/config",
+        "//java/src/org/openqa/selenium/grid/sessionqueue",
+        "//java/src/org/openqa/selenium/grid/sessionqueue/config",
+        "//java/src/org/openqa/selenium/grid/sessionqueue/remote",
+        "//java/src/org/openqa/selenium/grid/web",
+        "//java/src/org/openqa/selenium/netty/server",
+        artifact("com.beust:jcommander"),
+        artifact("com.google.guava:guava"),
+    ],
+)

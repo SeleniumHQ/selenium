@@ -1,0 +1,72 @@
+load("@rules_jvm_external//:defs.bzl", "artifact")
+load("//common:defs.bzl", "copy_file")
+load("//java:defs.bzl", "java_export", "java_library")
+load("//java:version.bzl", "SE_VERSION")
+
+cdp_version = "v90"
+
+java_export(
+    name = cdp_version,
+    srcs = glob(["*.java"]),
+    maven_coordinates = "org.seleniumhq.selenium:selenium-devtools-%s:%s" % (cdp_version, SE_VERSION),
+    opens_to = [
+        "org.openqa.selenium.json",
+    ],
+    pom_template = "//java/src/org/openqa/selenium:template-pom",
+    visibility = [
+        "//visibility:public",
+    ],
+    exports = [
+        ":cdp",
+    ],
+    deps = [
+        ":cdp",
+        "//java:auto-service",
+        "//java/src/org/openqa/selenium:core",
+        "//java/src/org/openqa/selenium/devtools",
+        "//java/src/org/openqa/selenium/json",
+        "//java/src/org/openqa/selenium/remote/http",
+        artifact("com.google.guava:guava"),
+    ],
+)
+
+java_library(
+    name = "cdp",
+    srcs = [
+        ":create-cdp-srcs",
+    ],
+    tags = [
+        "no-lint",
+    ],
+    deps = [
+        "//java/src/org/openqa/selenium:core",
+        "//java/src/org/openqa/selenium/devtools",
+        "//java/src/org/openqa/selenium/json",
+        artifact("com.google.guava:guava"),
+    ],
+)
+
+genrule(
+    name = "create-cdp-srcs",
+    srcs = [
+        ":browser_protocol",
+        ":js_protocol",
+    ],
+    outs = ["cdp.srcjar"],
+    cmd = "$(location //java/src/org/openqa/selenium/devtools:cdp-client-generator) $(location :browser_protocol) $(location :js_protocol) %s $@" % cdp_version,
+    tools = [
+        "//java/src/org/openqa/selenium/devtools:cdp-client-generator",
+    ],
+)
+
+copy_file(
+    name = "browser_protocol",
+    src = "//common/devtools/chromium/%s:browser_protocol" % cdp_version,
+    out = "browser_protocol.json",
+)
+
+copy_file(
+    name = "js_protocol",
+    src = "//common/devtools/chromium/%s:js_protocol" % cdp_version,
+    out = "js_protocol.json",
+)

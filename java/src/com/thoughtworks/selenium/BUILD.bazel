@@ -1,0 +1,60 @@
+load("@rules_jvm_external//:defs.bzl", "artifact")
+load("//java:defs.bzl", "java_library")
+
+java_library(
+    name = "api",
+    srcs = [
+        "CommandProcessor.java",
+        "Selenium.java",
+        "SeleniumException.java",
+        "Wait.java",
+    ],
+    visibility = [
+        "//java/src/com/thoughtworks/selenium/condition:__pkg__",
+    ],
+)
+
+java_library(
+    name = "selenium",
+    srcs = [
+        "BrowserConfigurationOptions.java",
+        "DefaultRemoteCommand.java",
+        "DefaultSelenium.java",
+        "HttpCommandProcessor.java",
+        "RemoteCommand.java",
+        "ScreenshotListener.java",
+        "SeleneseTestBase.java",
+        "SeleneseTestCase.java",
+        "SeleneseTestNgHelper.java",
+        "SeleniumLogLevels.java",
+    ],
+    visibility = [
+        "//java/src/com/thoughtworks/selenium:__subpackages__",
+        "//java/test/com/thoughtworks/selenium:__subpackages__",
+        "//java/src/com/thoughtworks/selenium:__subpackages__",
+        "//java/src/org/openqa/selenium/server/htmlrunner:__pkg__",
+        "//java/test/com/thoughtworks/selenium:__subpackages__",
+    ],
+    exports = [
+        ":api",
+    ],
+    deps = [
+        ":api",
+        "//java/src/org/openqa/selenium:core",
+        artifact("junit:junit"),
+        artifact("org.testng:testng"),
+    ],
+)
+
+java_library(
+    name = "leg-rc",
+    visibility = [
+        "//visibility:public",
+    ],
+    exports = [
+        ":api",
+        ":selenium",
+        "//java/src/com/thoughtworks/selenium/condition",
+        "//java/src/com/thoughtworks/selenium/webdriven",
+    ],
+)

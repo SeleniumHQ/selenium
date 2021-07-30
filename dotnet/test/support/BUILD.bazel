@@ -19,7 +19,7 @@ nunit_test(
     data = [
         "//common/src/web",
         "//dotnet/test/common:appconfig.json",
-        "//java/client/test/org/openqa/selenium/environment:appserver_deploy.jar",
+        "//java/test/org/openqa/selenium/environment:appserver_deploy.jar",
     ],
     is_windows = select({
         "@bazel_tools//src/conditions:host_windows": True,
