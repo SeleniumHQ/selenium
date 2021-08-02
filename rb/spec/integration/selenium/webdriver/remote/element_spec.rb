@@ -31,7 +31,7 @@ module Selenium
       end
 
       context 'when uploading one file' do
-        it 'uses the file detector' do
+        it 'uses the provided file detector' do
           driver.navigate.to url_for('upload.html')
 
           driver.find_element(id: 'upload').send_keys('element_spec.rb')
@@ -47,7 +47,7 @@ module Selenium
       end
 
       context 'when uploading multiple files' do
-        it 'uses the file detector' do
+        it 'uses the provided file detector' do
           driver.navigate.to url_for('upload_multiple.html')
 
           driver.find_element(id: 'upload').send_keys("driver_spec.rb\nelement_spec.rb")
@@ -58,7 +58,7 @@ module Selenium
           wait.until { driver.find_element(xpath: '//body') }
 
           body = driver.find_element(xpath: '//body')
-          expect(body.text.scan('Licensed to the Software Freedom Conservancy').count).to eq(4)
+          expect(body.text.scan('Licensed to the Software Freedom Conservancy').count).to eq(5)
         end
       end
     end
