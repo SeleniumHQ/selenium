@@ -1,0 +1,34 @@
+load("@rules_jvm_external//:defs.bzl", "artifact")
+load("//java/private:selenium_test.bzl", "BROWSERS")
+load("//java:defs.bzl", "java_test_suite")
+
+firefox = BROWSERS["firefox"]
+
+java_test_suite(
+    name = "MediumTests",
+    size = "medium",
+    srcs = glob(["*Test.java"]),
+    data = firefox["data"],
+    javacopts = [
+        "-source",
+        "11",
+        "-target",
+        "11",
+    ],
+    jvm_flags = firefox["jvm_flags"],
+    tags = firefox["tags"],
+    deps = [
+        "//java/src/com/thoughtworks/selenium",
+        "//java/src/org/openqa/selenium/remote",
+        "//java/test/org/openqa/selenium/environment",
+        "//java/test/org/openqa/selenium/remote/tracing:tracing-support",
+        "//java/test/org/openqa/selenium/testing",
+        "//java/src/com/thoughtworks/selenium/webdriven",
+        "//java/src/org/openqa/selenium/grid",
+        "//java/src/org/openqa/selenium/jre/server",
+        "//java/src/org/openqa/selenium/remote/server",
+        artifact("io.opentelemetry:opentelemetry-api"),
+        artifact("junit:junit"),
+        artifact("org.mockito:mockito-core"),
+    ] + firefox["deps"],
+)

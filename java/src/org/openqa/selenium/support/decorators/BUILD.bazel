@@ -1,0 +1,10 @@
+load("//java:defs.bzl", "java_library")
+
+java_library(
+    name = "decorators",
+    srcs = glob(["*.java"]),
+    visibility = ["//visibility:public"],
+    deps = [
+        "//java/src/org/openqa/selenium:core",
+    ],
+)

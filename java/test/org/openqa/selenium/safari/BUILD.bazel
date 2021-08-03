@@ -1,0 +1,23 @@
+load("@rules_jvm_external//:defs.bzl", "artifact")
+load("//java:defs.bzl", "java_selenium_test_suite")
+
+java_selenium_test_suite(
+    name = "large-tests",
+    size = "large",
+    srcs = glob(["*.java"]),
+    browsers = [
+        "safari",
+    ],
+    deps = [
+        "//java/src/org/openqa/selenium/remote",
+        "//java/src/org/openqa/selenium/safari",
+        "//java/src/org/openqa/selenium/support",
+        "//java/test/org/openqa/selenium/environment",
+        "//java/test/org/openqa/selenium/testing:annotations",
+        "//java/test/org/openqa/selenium/testing:test-base",
+        "//java/test/org/openqa/selenium/testing/drivers",
+        artifact("junit:junit"),
+        artifact("org.assertj:assertj-core"),
+        artifact("org.mockito:mockito-core"),
+    ],
+)

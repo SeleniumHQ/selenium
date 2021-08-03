@@ -1,0 +1,21 @@
+load("@rules_jvm_external//:defs.bzl", "artifact")
+load("//java:defs.bzl", "java_test_suite")
+
+java_test_suite(
+    name = "small-tests",
+    size = "small",
+    srcs = glob(["*.java"]),
+    deps = [
+        "//java/src/org/openqa/selenium/remote/tracing",
+        "//java/src/org/openqa/selenium/remote/tracing/opentelemetry",
+        "//java/test/org/openqa/selenium/testing:annotations",
+        "//java/src/org/openqa/selenium/grid/web",
+        artifact("io.opentelemetry:opentelemetry-api"),
+        artifact("io.opentelemetry:opentelemetry-sdk"),
+        artifact("io.opentelemetry:opentelemetry-sdk-common"),
+        artifact("io.opentelemetry:opentelemetry-sdk-trace"),
+        artifact("io.opentelemetry:opentelemetry-context"),
+        artifact("junit:junit"),
+        artifact("org.assertj:assertj-core"),
+    ],
+)

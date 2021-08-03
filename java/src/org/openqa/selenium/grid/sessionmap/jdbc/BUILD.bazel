@@ -1,0 +1,24 @@
+load("@rules_jvm_external//:defs.bzl", "artifact")
+load("//java:version.bzl", "SE_VERSION")
+load("//java:defs.bzl", "java_export")
+
+java_export(
+    name = "jdbc",
+    srcs = glob(["*.java"]),
+    maven_coordinates = "org.seleniumhq.selenium:selenium-session-map-jdbc:%s" % SE_VERSION,
+    pom_template = "//java/src/org/openqa/selenium:template-pom",
+    visibility = [
+        "//visibility:public",
+    ],
+    exports = [
+        "//java/src/org/openqa/selenium/grid",
+    ],
+    deps = [
+        "//java:auto-service",
+        "//java/src/org/openqa/selenium/json",
+        "//java/src/org/openqa/selenium/remote",
+        "//java/src/org/openqa/selenium/grid",
+        artifact("com.beust:jcommander"),
+        artifact("com.google.guava:guava"),
+    ],
+)

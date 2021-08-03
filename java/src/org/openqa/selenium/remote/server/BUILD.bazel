@@ -1,0 +1,43 @@
+load("@rules_jvm_external//:defs.bzl", "artifact")
+load("//java:defs.bzl", "java_library")
+
+# Only enough to get the webdriven rc emulation working
+# TODO(simon): Migrate webdriver rc emulation off this stack
+java_library(
+    name = "server",
+    srcs = [
+        "ActiveSessionFactory.java",
+        "ActiveSessionListener.java",
+        "ActiveSessions.java",
+        "DefaultDriverProvider.java",
+        "DriverProvider.java",
+        "DriverSessions.java",
+        "InMemorySession.java",
+        "JsonHttpCommandHandler.java",
+        "KnownElements.java",
+        "NewSessionPipeline.java",
+        "RequiresAllSessions.java",
+        "RequiresSession.java",
+        "Session.java",
+    ] + glob([
+        "handler/*.java",
+        "handler/html5/*.java",
+        "handler/interactions/*.java",
+        "handler/interactions/touch/*.java",
+        "handler/internal/*.java",
+        "handler/mobile/*.java",
+        "log/*.java",
+        "rest/*.java",
+    ]),
+    visibility = [
+        "//java/src/com/thoughtworks/selenium:__subpackages__",
+        "//java/test/com/thoughtworks/selenium:__subpackages__",
+    ],
+    deps = [
+        "//java/src/org/openqa/selenium/json",
+        "//java/src/org/openqa/selenium/remote",
+        "//java/src/org/openqa/selenium/grid",
+        artifact("com.google.guava:guava"),
+        artifact("javax.servlet:javax.servlet-api"),
+    ],
+)

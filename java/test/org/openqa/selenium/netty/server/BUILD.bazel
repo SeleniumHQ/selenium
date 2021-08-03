@@ -1,0 +1,39 @@
+load("@rules_jvm_external//:defs.bzl", "artifact")
+load("//java:defs.bzl", "java_test_suite")
+
+SMALL_TEST_SRCS = [
+    "RequestConverterTest.java",
+]
+
+java_test_suite(
+    name = "small-tests",
+    size = "small",
+    srcs = SMALL_TEST_SRCS,
+    deps = [
+        "//java/src/org/openqa/selenium/netty/server",
+        artifact("io.netty:netty-codec-http"),
+        artifact("io.netty:netty-transport"),
+        artifact("junit:junit"),
+        artifact("org.assertj:assertj-core"),
+    ],
+)
+
+java_test_suite(
+    name = "medium-tests",
+    size = "medium",
+    srcs = glob(
+        ["*.java"],
+        exclude = SMALL_TEST_SRCS,
+    ),
+    deps = [
+        "//java/src/org/openqa/selenium:core",
+        "//java/src/org/openqa/selenium/remote/http",
+        "//java/src/org/openqa/selenium/support",
+        "//java/test/org/openqa/selenium/testing:test-base",
+        "//java/src/org/openqa/selenium/grid/config",
+        "//java/src/org/openqa/selenium/netty/server",
+        artifact("com.google.guava:guava"),
+        artifact("junit:junit"),
+        artifact("org.assertj:assertj-core"),
+    ],
+)
