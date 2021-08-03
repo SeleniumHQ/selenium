@@ -54,7 +54,9 @@ module Selenium
                                persistent_hover: true,
                                require_window_focus: true,
                                use_per_process_proxy: true,
-                               validate_cookie_document_type: true,
+                               use_legacy_file_upload_dialog_handling: true,
+                               attach_to_edge_chrome: true,
+                               edge_executable_path: '/path/to/edge',
                                'custom:options': {foo: 'bar'})
 
             expect(opts.args.to_a).to eq(%w[foo bar])
@@ -72,7 +74,9 @@ module Selenium
             expect(opts.persistent_hover).to eq(true)
             expect(opts.require_window_focus).to eq(true)
             expect(opts.use_per_process_proxy).to eq(true)
-            expect(opts.validate_cookie_document_type).to eq(true)
+            expect(opts.use_legacy_file_upload_dialog_handling).to eq(true)
+            expect(opts.attach_to_edge_chrome).to eq(true)
+            expect(opts.edge_executable_path).to eq('/path/to/edge')
             expect(opts.browser_name).to eq('internet explorer')
             expect(opts.browser_version).to eq('11')
             expect(opts.platform_name).to eq('win10')
@@ -142,7 +146,9 @@ module Selenium
                                persistent_hover: true,
                                require_window_focus: true,
                                use_per_process_proxy: true,
-                               validate_cookie_document_type: true)
+                               use_legacy_file_upload_dialog_handling: true,
+                               attach_to_edge_chrome: true,
+                               edge_executable_path: '/path/to/edge')
 
             key = 'se:ieOptions'
             expect(opts.as_json).to eq('browserName' => 'internet explorer',
@@ -171,7 +177,9 @@ module Selenium
                                                'enablePersistentHover' => true,
                                                'requireWindowFocus' => true,
                                                'ie.usePerProcessProxy' => true,
-                                               'ie.validateCookieDocumentType' => true})
+                                               'ie.useLegacyFileUploadDialogHandling' => true,
+                                               'ie.edgechromium' => true,
+                                               'ie.edgepath' => '/path/to/edge'})
           end
         end
       end # Options

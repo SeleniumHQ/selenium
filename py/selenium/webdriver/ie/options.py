@@ -44,7 +44,9 @@ class Options(ArgOptions):
     PERSISTENT_HOVER = 'enablePersistentHover'
     REQUIRE_WINDOW_FOCUS = 'requireWindowFocus'
     USE_PER_PROCESS_PROXY = 'ie.usePerProcessProxy'
-    VALIDATE_COOKIE_DOCUMENT_TYPE = 'ie.validateCookieDocumentType'
+    USE_LEGACY_FILE_UPLOAD_DIALOG_HANDLING = 'ie.useLegacyFileUploadDialogHandling'
+    ATTACH_TO_EDGE_CHROME = 'ie.edgechromium'
+    EDGE_EXECUTABLE_PATH = 'ie.edgepath'
 
     def __init__(self):
         super(Options, self).__init__()
@@ -289,20 +291,52 @@ class Options(ArgOptions):
         self._options[self.USE_PER_PROCESS_PROXY] = value
 
     @property
-    def validate_cookie_document_type(self) -> bool:
-        """:Returns: The options Validate Cookie Document Type value """
-        return self._options.get(self.VALIDATE_COOKIE_DOCUMENT_TYPE)
+    def use_legacy_file_upload_dialog_handling(self) -> bool:
+        """:Returns: The options Use Legacy File Upload Dialog Handling value """
+        return self._options.get(self.USE_LEGACY_FILE_UPLOAD_DIALOG_HANDLING)
 
-    @validate_cookie_document_type.setter
-    def validate_cookie_document_type(self, value: bool):
+    @use_legacy_file_upload_dialog_handling.setter
+    def use_legacy_file_upload_dialog_handling(self, value: bool):
         """
-        Sets the options Validate Cookie Document Type value
+        Sets the options Use Legacy File Upload Dialog Handling value
 
         :Args:
          - value: boolean value
 
         """
-        self._options[self.VALIDATE_COOKIE_DOCUMENT_TYPE] = value
+        self._options[self.USE_LEGACY_FILE_UPLOAD_DIALOG_HANDLING] = value
+
+    @property
+    def attach_to_edge_chrome(self) -> bool:
+        """:Returns: The options Attach to Edge Chrome value """
+        return self._options.get(self.ATTACH_TO_EDGE_CHROME)
+
+    @attach_to_edge_chrome.setter
+    def attach_to_edge_chrome(self, value: bool):
+        """
+        Sets the options Attach to Edge Chrome value
+
+        :Args:
+         - value: boolean value
+
+        """
+        self._options[self.ATTACH_TO_EDGE_CHROME] = value
+
+    @property
+    def edge_executable_path(self) -> str:
+        """:Returns: The options Edge Executable Path value """
+        return self._options.get(self.EDGE_EXECUTABLE_PATH)
+
+    @edge_executable_path.setter
+    def edge_executable_path(self, value: str):
+        """
+        Sets the options Initial Browser Url value
+
+        :Args:
+         - value: Path string
+
+        """
+        self._options[self.EDGE_EXECUTABLE_PATH] = value
 
     @property
     def additional_options(self) -> dict:
