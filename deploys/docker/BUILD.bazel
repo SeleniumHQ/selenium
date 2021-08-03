@@ -147,7 +147,7 @@ container_layer(
     name = "grid-binary",
     directory = "/opt/selenium/bin",
     files = [
-        "//java/server/src/org/openqa/selenium/grid:executable-grid",
+        "//java/src/org/openqa/selenium/grid:executable-grid",
     ],
 )
 
@@ -155,7 +155,7 @@ container_layer(
     name = "one-shot",
     directory = "/opt/selenium",
     files = [
-        "//java/server/src/org/openqa/selenium/grid/node/k8s",
+        "//java/src/org/openqa/selenium/grid/node/k8s",
     ],
 )
 
