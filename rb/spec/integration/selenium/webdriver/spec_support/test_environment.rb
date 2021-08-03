@@ -103,7 +103,7 @@ module Selenium
 
         def remote_server_jar
           test_jar = "#{Pathname.new(Dir.pwd).join('rb')}/selenium_server_deploy.jar"
-          built_jar = root.join('bazel-bin/java/server/src/org/openqa/selenium/grid/selenium_server_deploy.jar')
+          built_jar = root.join('bazel-bin/java/src/org/openqa/selenium/grid/selenium_server_deploy.jar')
           jar = if File.exist?(test_jar) && ENV['DOWNLOAD_SERVER'].nil?
                   test_jar
                 elsif File.exist?(built_jar) && ENV['DOWNLOAD_SERVER'].nil?

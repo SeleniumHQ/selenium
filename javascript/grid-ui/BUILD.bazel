@@ -69,7 +69,7 @@ zip_file(
     ],
     extension = "jar",
     visibility = [
-        "//java/server/src/org/openqa/selenium/grid:__pkg__",
+        "//java/src/org/openqa/selenium/grid:__pkg__",
     ],
 )
 

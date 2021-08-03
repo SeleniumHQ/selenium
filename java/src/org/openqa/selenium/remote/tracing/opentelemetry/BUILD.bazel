@@ -1,0 +1,27 @@
+load("@rules_jvm_external//:defs.bzl", "artifact")
+load("//java:defs.bzl", "java_library")
+
+java_library(
+    name = "opentelemetry",
+    srcs = glob(["*.java"]),
+    visibility = [
+        "//java/src/org/openqa/selenium/remote:__pkg__",
+        "//java/test/org/openqa/selenium/remote/tracing:__subpackages__",
+    ],
+    deps = [
+        "//java:auto-service",
+        "//java/src/org/openqa/selenium:core",
+        "//java/src/org/openqa/selenium/json",
+        "//java/src/org/openqa/selenium/remote/tracing",
+        "//java/src/org/openqa/selenium/grid/config",
+        artifact("com.google.guava:guava"),
+        artifact("io.opentelemetry:opentelemetry-api"),
+        artifact("io.opentelemetry:opentelemetry-context"),
+        artifact("io.opentelemetry:opentelemetry-exporter-logging"),
+        artifact("io.opentelemetry:opentelemetry-sdk"),
+        artifact("io.opentelemetry:opentelemetry-sdk-common"),
+        artifact("io.opentelemetry:opentelemetry-sdk-extension-autoconfigure"),
+        artifact("io.opentelemetry:opentelemetry-sdk-trace"),
+        artifact("io.opentelemetry:opentelemetry-semconv"),
+    ],
+)

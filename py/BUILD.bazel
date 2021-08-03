@@ -356,7 +356,7 @@ py_test_suite(
         "--driver=remote",
     ],
     data = [
-        "//java/server/src/org/openqa/selenium/grid:selenium_server_deploy.jar",
+        "//java/src/org/openqa/selenium/grid:selenium_server_deploy.jar",
     ],
     tags = [
         "no-sandbox",

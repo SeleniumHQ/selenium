@@ -15,7 +15,7 @@ def closure_test_suite(name, data = [], browsers = None):
         ],
         data = data,
         runtime_deps = [
-            "//java/client/test/org/openqa/selenium/javascript:javascript",
+            "//java/test/org/openqa/selenium/javascript:javascript",
         ],
     )
 
@@ -25,7 +25,7 @@ def closure_test_suite(name, data = [], browsers = None):
         data = data,
         testonly = 1,
         runtime_deps = [
-            "//java/client/test/org/openqa/selenium/environment",
+            "//java/test/org/openqa/selenium/environment",
             artifact("org.slf4j:slf4j-jdk14"),
         ],
     )

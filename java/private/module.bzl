@@ -238,7 +238,7 @@ java_module = rule(
             cfg = "host",
         ),
         "_module_generator": attr.label(
-            default = "//java/buildtools/src/dev/selenium/tools/modules:ModuleGenerator",
+            default = "//java/src/dev/selenium/tools/modules:ModuleGenerator",
             executable = True,
             cfg = "host",
         ),

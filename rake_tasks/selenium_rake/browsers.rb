@@ -26,7 +26,7 @@ module SeleniumRake
         deps: [
           :remote_client,
           :'selenium-server-standalone',
-          '//java/server/test/org/openqa/selenium/remote/server/auth:server'
+          '//java/test/org/openqa/selenium/remote/server/auth:server'
         ]
       },
       'safari' => {

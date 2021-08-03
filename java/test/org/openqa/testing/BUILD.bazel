@@ -1,0 +1,14 @@
+load("@rules_jvm_external//:defs.bzl", "artifact")
+load("//java:defs.bzl", "java_library")
+
+java_library(
+    name = "testing",
+    srcs = glob(["*.java"]),
+    visibility = [
+        "//java/test/org/openqa/selenium:__subpackages__",
+    ],
+    deps = [
+        artifact("com.google.guava:guava"),
+        artifact("javax.servlet:javax.servlet-api"),
+    ],
+)

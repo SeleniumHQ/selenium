@@ -1,0 +1,18 @@
+load("//java:defs.bzl", "java_binary")
+
+java_binary(
+    name = "javadoc",
+    srcs = glob(["*.java"]),
+    javacopts = [
+        "--release",
+        "11",
+    ],
+    main_class = "dev.selenium.tools.javadoc.JavadocJarMaker",
+    visibility = [
+        "//visibility:public",
+    ],
+    deps = [
+        "//java/src/org/openqa/selenium/io",
+        "@rules_jvm_external//private/tools/java/rules/jvm/external/zip",
+    ],
+)

@@ -1,0 +1,118 @@
+load("@rules_jvm_external//:defs.bzl", "artifact")
+load("//java/private:selenium_test.bzl", "BROWSERS")
+load("//java:defs.bzl", "java_binary", "java_library", "java_test_suite")
+
+filegroup(
+    name = "keystore",
+    srcs = [
+        "webserver/keystore",
+    ],
+    visibility = [
+        "//dotnet/test:__subpackages__",
+    ],
+)
+
+java_library(
+    name = "environment",
+    testonly = True,
+    srcs = glob(
+        [
+            "*.java",
+            "webserver/*.java",
+        ],
+        exclude = [
+            "**/*Test.java",
+            "**/*TestBase.java",
+        ],
+    ),
+    data = [
+        "webserver/keystore",
+        "//common/src/web",
+        "//javascript/atoms",
+        "//javascript/atoms:deps",
+        "//third_party/closure/goog",
+        "//third_party/js/selenium:webdriver_json",
+        "//third_party/js/selenium:webdriver_xpi",
+        "//third_party/js/sizzle",
+        "@com_google_javascript_closure_library",
+    ],
+    javacopts = [
+        "--release",
+        "11",
+    ],
+    visibility = [
+        "//java/test:__subpackages__",
+        "//java/test:__subpackages__",
+        "//java/test:__subpackages__",
+        "//javascript:__subpackages__",
+    ],
+    deps = [
+        "//java/src/org/openqa/selenium:core",
+        "//java/src/org/openqa/selenium/json",
+        "//java/src/org/openqa/selenium/remote",
+        "//java/src/org/openqa/selenium/remote/http",
+        "//java/test/org/openqa/selenium/build",
+        "//java/src/org/openqa/selenium/grid/config",
+        "//java/src/org/openqa/selenium/grid/security",
+        "//java/src/org/openqa/selenium/grid/server",
+        "//java/src/org/openqa/selenium/grid/web",
+        "//java/src/org/openqa/selenium/netty/server",
+        artifact("com.google.guava:guava"),
+        artifact("org.assertj:assertj-core"),
+    ],
+)
+
+java_binary(
+    name = "appserver",
+    testonly = True,
+    main_class = "org.openqa.selenium.environment.webserver.NettyAppServer",
+    visibility = [
+        "//:__pkg__",
+        "//dotnet/test:__subpackages__",
+    ],
+    runtime_deps = [
+        ":environment",
+    ],
+)
+
+java_binary(
+    name = "jre-server",
+    testonly = True,
+    main_class = "org.openqa.selenium.environment.webserver.JreAppServer",
+    visibility = [
+        "//dotnet/test:__subpackages__",
+    ],
+    runtime_deps = [
+        ":environment",
+    ],
+)
+
+java_library(
+    name = "test-base",
+    testonly = True,
+    srcs = ["webserver/AppServerTestBase.java"],
+    deps = [
+        ":environment",
+        "//java/src/org/openqa/selenium:core",
+        "//java/src/org/openqa/selenium/remote/http",
+        "//java/src/org/openqa/selenium/support",
+        "//java/test/org/openqa/selenium/testing/drivers",
+        artifact("junit:junit"),
+    ],
+)
+
+firefox = BROWSERS["firefox"]
+
+java_test_suite(
+    name = "MediumTests",
+    size = "medium",
+    srcs = glob(["**/*Test.java"]),
+    data = firefox["data"],
+    jvm_flags = firefox["jvm_flags"],
+    tags = firefox["tags"],
+    deps = [
+        ":environment",
+        ":test-base",
+        artifact("junit:junit"),
+    ] + firefox["deps"],
+)
