@@ -49,7 +49,6 @@ public abstract class AbstractDriverOptions<DO extends AbstractDriverOptions> ex
     setCapability(
         UNHANDLED_PROMPT_BEHAVIOUR,
         Require.nonNull("Unhandled prompt behavior", behaviour));
-    setCapability(UNEXPECTED_ALERT_BEHAVIOUR, behaviour);
     return (DO) this;
   }
 
