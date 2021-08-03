@@ -63,7 +63,9 @@ public class InternetExplorerOptions extends AbstractDriverOptions<InternetExplo
   private static final String FULL_PAGE_SCREENSHOT = "ie.enableFullPageScreenshot";
   private static final String UPLOAD_DIALOG_TIMEOUT = "ie.fileUploadDialogTimeout";
   private static final String FORCE_WINDOW_SHELL_API = "ie.forceShellWindowsApi";
-  private static final String VALIDATE_COOKIE_DOCUMENT_TYPE = "ie.validateCookieDocumentType";
+  private static final String LEGACY_FILE_UPLOAD_DIALOG_HANDLING = "ie.useLegacyFileUploadDialogHandling";
+  private static final String ATTACH_TO_EDGE_CHROME = "ie.edgechromium";
+  private static final String EDGE_EXECUTABLE_PATH = "ie.edgepath";
 
   private static final List<String> CAPABILITY_NAMES = Arrays.asList(
     BROWSER_ATTACH_TIMEOUT,
@@ -80,8 +82,11 @@ public class InternetExplorerOptions extends AbstractDriverOptions<InternetExplo
     INTRODUCE_FLAKINESS_BY_IGNORING_SECURITY_DOMAINS,
     REQUIRE_WINDOW_FOCUS,
     UPLOAD_DIALOG_TIMEOUT,
-    VALIDATE_COOKIE_DOCUMENT_TYPE,
-    NATIVE_EVENTS);
+    NATIVE_EVENTS,
+    LEGACY_FILE_UPLOAD_DIALOG_HANDLING,
+    ATTACH_TO_EDGE_CHROME,
+    EDGE_EXECUTABLE_PATH);
+
 
   private final Map<String, Object> ieOptions = new HashMap<>();
 
@@ -211,6 +216,18 @@ public class InternetExplorerOptions extends AbstractDriverOptions<InternetExplo
 
   public InternetExplorerOptions takeFullPageScreenshot() {
     return amend(FULL_PAGE_SCREENSHOT, true);
+  }
+
+  public InternetExplorerOptions useLegacyUploadDialog() {
+    return amend(LEGACY_FILE_UPLOAD_DIALOG_HANDLING, true);
+  }
+
+  public InternetExplorerOptions attachToEdgeChrome() {
+    return amend(ATTACH_TO_EDGE_CHROME, true);
+  }
+
+  public InternetExplorerOptions withEdgeExecutablePath(String path) {
+    return amend(EDGE_EXECUTABLE_PATH, path);
   }
 
   private InternetExplorerOptions amend(String optionName, Object value) {
