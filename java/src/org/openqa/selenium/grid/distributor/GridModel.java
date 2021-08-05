@@ -23,6 +23,7 @@ import org.openqa.selenium.grid.config.Config;
 import org.openqa.selenium.grid.data.Availability;
 import org.openqa.selenium.grid.data.NodeDrainStarted;
 import org.openqa.selenium.grid.data.NodeId;
+import org.openqa.selenium.grid.data.NodeRemovedEvent;
 import org.openqa.selenium.grid.data.NodeStatus;
 import org.openqa.selenium.grid.data.Session;
 import org.openqa.selenium.grid.data.SessionClosedEvent;
@@ -223,6 +224,7 @@ public class GridModel {
         nodes.remove(node);
         nodePurgeTimes.remove(node.getNodeId());
         nodeHealthCount.remove(node.getNodeId());
+        events.fire(new NodeRemovedEvent(node));
       });
     } finally {
       writeLock.unlock();

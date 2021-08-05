@@ -20,6 +20,7 @@ package org.openqa.selenium.grid.sessionmap.local;
 import org.openqa.selenium.NoSuchSessionException;
 import org.openqa.selenium.events.EventBus;
 import org.openqa.selenium.grid.config.Config;
+import org.openqa.selenium.grid.data.NodeRemovedEvent;
 import org.openqa.selenium.grid.data.Session;
 import org.openqa.selenium.grid.data.SessionClosedEvent;
 import org.openqa.selenium.grid.log.LoggingOptions;
@@ -70,6 +71,12 @@ public class LocalSessionMap extends SessionMap {
         LOG.info(String.format("%s, Id: %s", sessionDeletedMessage, id));
       }
     }));
+
+    bus.addListener(NodeRemovedEvent.listener(nodeStatus -> nodeStatus.getSlots().stream()
+      .filter(slot -> slot.getSession() != null)
+      .map(slot -> slot.getSession().getId())
+      .forEach(knownSessions::remove)));
+
   }
 
   public static SessionMap create(Config config) {
