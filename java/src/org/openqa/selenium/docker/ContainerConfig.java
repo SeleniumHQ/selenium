@@ -32,6 +32,7 @@ import java.util.stream.Collectors;
 public class ContainerConfig {
 
   private static final String DEFAULT_DOCKER_NETWORK = "bridge";
+  private static final long DEFAULT_SHM_SIZE = 67108864L; // 64MB
 
   private final Image image;
   // Port bindings, keyed on the container port, with values being host ports
@@ -40,23 +41,25 @@ public class ContainerConfig {
   private final Map<String, String> volumeBinds;
   private final String networkName;
   private final boolean autoRemove;
+  private final long shmSize;
 
 
   public ContainerConfig(Image image,
                          Multimap<String, Map<String, Object>> portBindings,
-                         Map<String, String> envVars,
-                         Map<String, String> volumeBinds, String networkName) {
+                         Map<String, String> envVars, Map<String, String> volumeBinds,
+                         String networkName, long shmSize) {
     this.image = image;
     this.portBindings = portBindings;
     this.envVars = envVars;
     this.volumeBinds = volumeBinds;
     this.networkName = networkName;
     this.autoRemove = true;
+    this.shmSize = shmSize;
   }
 
   public static ContainerConfig image(Image image) {
     return new ContainerConfig(image, HashMultimap.create(), ImmutableMap.of(), ImmutableMap.of(),
-                               DEFAULT_DOCKER_NETWORK);
+                               DEFAULT_DOCKER_NETWORK, DEFAULT_SHM_SIZE);
   }
 
   public ContainerConfig map(Port containerPort, Port hostPort) {
@@ -65,33 +68,42 @@ public class ContainerConfig {
 
     if (!hostPort.getProtocol().equals(containerPort.getProtocol())) {
       throw new DockerException(
-          String.format("Port protocols must match: %s -> %s", hostPort, containerPort));
+        String.format("Port protocols must match: %s -> %s", hostPort, containerPort));
     }
 
     Multimap<String, Map<String, Object>> updatedBindings = HashMultimap.create(portBindings);
     updatedBindings.put(
-        containerPort.getPort() + "/" + containerPort.getProtocol(),
-        ImmutableMap.of("HostPort", String.valueOf(hostPort.getPort()), "HostIp", ""));
+      containerPort.getPort() + "/" + containerPort.getProtocol(),
+      ImmutableMap.of("HostPort", String.valueOf(hostPort.getPort()), "HostIp", ""));
 
-    return new ContainerConfig(image, updatedBindings, envVars, volumeBinds, networkName);
+    return new ContainerConfig(image, updatedBindings, envVars, volumeBinds, networkName,
+                               shmSize);
   }
 
   public ContainerConfig env(Map<String, String> envVars) {
     Require.nonNull("Container env vars", envVars);
 
-    return new ContainerConfig(image, portBindings, envVars, volumeBinds, networkName);
+    return new ContainerConfig(image, portBindings, envVars, volumeBinds, networkName,
+                               shmSize);
   }
 
   public ContainerConfig bind(Map<String, String> volumeBinds) {
     Require.nonNull("Container volume binds", volumeBinds);
 
-    return new ContainerConfig(image, portBindings, envVars, volumeBinds, networkName);
+    return new ContainerConfig(image, portBindings, envVars, volumeBinds, networkName,
+                               shmSize);
   }
 
   public ContainerConfig network(String networkName) {
     Require.nonNull("Container network name", networkName);
 
-    return new ContainerConfig(image, portBindings, envVars, volumeBinds, networkName);
+    return new ContainerConfig(image, portBindings, envVars, volumeBinds, networkName,
+                               shmSize);
+  }
+
+  public ContainerConfig shmMemorySize(long shmSize) {
+    return new ContainerConfig(image, portBindings, envVars, volumeBinds, networkName,
+                               shmSize);
   }
 
   @Override
@@ -103,6 +115,7 @@ public class ContainerConfig {
            ", volumeBinds=" + volumeBinds +
            ", networkName=" + networkName +
            ", autoRemove=" + autoRemove +
+           ", shmSize=" + shmSize +
            '}';
   }
 
@@ -119,6 +132,7 @@ public class ContainerConfig {
       "PortBindings", portBindings.asMap(),
       "AutoRemove", autoRemove,
       "NetworkMode", networkName,
+      "ShmSize", shmSize,
       "Binds", volumeBinds);
 
     return ImmutableMap.of(
