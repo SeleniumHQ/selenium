@@ -17,6 +17,17 @@
 
 package org.openqa.selenium.grid.node.local;
 
+import static com.google.common.collect.ImmutableSet.toImmutableSet;
+import static org.openqa.selenium.grid.data.Availability.DRAINING;
+import static org.openqa.selenium.grid.data.Availability.UP;
+import static org.openqa.selenium.grid.node.CapabilityResponseEncoder.getEncoder;
+import static org.openqa.selenium.remote.HttpSessionId.getSessionId;
+import static org.openqa.selenium.remote.RemoteTags.CAPABILITIES;
+import static org.openqa.selenium.remote.RemoteTags.SESSION_ID;
+import static org.openqa.selenium.remote.http.Contents.asJson;
+import static org.openqa.selenium.remote.http.Contents.string;
+import static org.openqa.selenium.remote.http.HttpMethod.DELETE;
+
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Ticker;
 import com.google.common.cache.Cache;
@@ -45,6 +56,7 @@ import org.openqa.selenium.grid.data.Session;
 import org.openqa.selenium.grid.data.SessionClosedEvent;
 import org.openqa.selenium.grid.data.Slot;
 import org.openqa.selenium.grid.data.SlotId;
+import org.openqa.selenium.grid.docker.DockerSession;
 import org.openqa.selenium.grid.jmx.JMXHelper;
 import org.openqa.selenium.grid.jmx.ManagedAttribute;
 import org.openqa.selenium.grid.jmx.ManagedService;
@@ -86,17 +98,6 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
-
-import static com.google.common.collect.ImmutableSet.toImmutableSet;
-import static org.openqa.selenium.grid.data.Availability.DRAINING;
-import static org.openqa.selenium.grid.data.Availability.UP;
-import static org.openqa.selenium.grid.node.CapabilityResponseEncoder.getEncoder;
-import static org.openqa.selenium.remote.HttpSessionId.getSessionId;
-import static org.openqa.selenium.remote.RemoteTags.CAPABILITIES;
-import static org.openqa.selenium.remote.RemoteTags.SESSION_ID;
-import static org.openqa.selenium.remote.http.Contents.asJson;
-import static org.openqa.selenium.remote.http.Contents.string;
-import static org.openqa.selenium.remote.http.HttpMethod.DELETE;
 
 @ManagedService(objectName = "org.seleniumhq.grid:type=Node,name=LocalNode",
   description = "Node running the webdriver sessions.")
@@ -391,6 +392,14 @@ public class LocalNode extends Node {
 
   @Override
   public HttpResponse uploadFile(HttpRequest req, SessionId id) {
+
+    // When the session is running in a Docker container, the upload file command
+    // needs to be forwarded to the container as well.
+    SessionSlot slot = currentSessions.getIfPresent(id);
+    if (slot != null && slot.getSession() instanceof DockerSession) {
+      return executeWebDriverCommand(req);
+    }
+
     Map<String, Object> incoming = JSON.toType(string(req), Json.MAP_TYPE);
 
     File tempDir;

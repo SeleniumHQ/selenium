@@ -30,7 +30,7 @@ import java.net.URL;
 import java.time.Duration;
 import java.time.Instant;
 
-class DockerSession extends ProtocolConvertingSession {
+public class DockerSession extends ProtocolConvertingSession {
 
   private final Container container;
   private final Container videoContainer;
