@@ -34,6 +34,7 @@ import org.openqa.selenium.grid.config.MemoizedConfig;
 import org.openqa.selenium.grid.config.Role;
 import org.openqa.selenium.grid.data.NodeAddedEvent;
 import org.openqa.selenium.grid.data.NodeDrainComplete;
+import org.openqa.selenium.grid.data.NodeRemovedEvent;
 import org.openqa.selenium.grid.data.NodeStatusEvent;
 import org.openqa.selenium.grid.log.LoggingOptions;
 import org.openqa.selenium.grid.node.HealthCheck;
@@ -74,6 +75,8 @@ public class NodeServer extends TemplateGridServerCommand {
   private final AtomicBoolean nodeRegistered = new AtomicBoolean(false);
   private Node node;
   private EventBus bus;
+  private final Thread shutdownHook =
+    new Thread(() -> bus.fire(new NodeRemovedEvent(node.getStatus())));
 
   @Override
   public String getName() {
@@ -223,6 +226,7 @@ public class NodeServer extends TemplateGridServerCommand {
   protected void execute(Config config) {
     Require.nonNull("Config", config);
 
+    Runtime.getRuntime().addShutdownHook(shutdownHook);
     Server<?> server = asServer(config).start();
 
     BuildInfo info = new BuildInfo();
