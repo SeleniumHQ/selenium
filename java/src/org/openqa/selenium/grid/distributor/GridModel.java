@@ -57,9 +57,11 @@ public class GridModel {
   private static final Logger LOG = Logger.getLogger(GridModel.class.getName());
   // How many times a node's heartbeat duration needs to be exceeded before the node is considered purgeable.
   private static final int PURGE_TIMEOUT_MULTIPLIER = 4;
+  private static final int UNHEALTHY_THRESHOLD = 4;
   private final ReadWriteLock lock = new ReentrantReadWriteLock(/* fair */ true);
   private final Set<NodeStatus> nodes = Collections.newSetFromMap(new ConcurrentHashMap<>());
   private final Map<NodeId, Instant> nodePurgeTimes = new ConcurrentHashMap<>();
+  private final Map<NodeId, Integer> nodeHealthCount = new ConcurrentHashMap<>();
   private final EventBus events;
 
   public GridModel(EventBus events) {
@@ -96,6 +98,7 @@ public class GridModel {
           NodeStatus refreshed = rewrite(node, next.getAvailability());
           nodes.add(refreshed);
           nodePurgeTimes.put(refreshed.getNodeId(), Instant.now());
+          updateHealthCheckCount(refreshed.getNodeId(), refreshed.getAvailability());
 
           return;
         }
@@ -117,6 +120,7 @@ public class GridModel {
       NodeStatus refreshed = rewrite(node, DOWN);
       nodes.add(refreshed);
       nodePurgeTimes.put(refreshed.getNodeId(), Instant.now());
+      updateHealthCheckCount(refreshed.getNodeId(), refreshed.getAvailability());
     } finally {
       writeLock.unlock();
     }
@@ -177,6 +181,7 @@ public class GridModel {
     try {
       nodes.removeIf(n -> n.getNodeId().equals(id));
       nodePurgeTimes.remove(id);
+      nodeHealthCount.remove(id);
     } finally {
       writeLock.unlock();
     }
@@ -190,8 +195,13 @@ public class GridModel {
       Set<NodeStatus> toRemove = new HashSet<>();
 
       for (NodeStatus node : nodes) {
+        NodeId id = node.getNodeId();
+        if (nodeHealthCount.getOrDefault(id, 0) > UNHEALTHY_THRESHOLD) {
+          toRemove.add(node);
+        }
+
         Instant now = Instant.now();
-        Instant lastTouched = nodePurgeTimes.getOrDefault(node.getNodeId(), Instant.now());
+        Instant lastTouched = nodePurgeTimes.getOrDefault(id, Instant.now());
         Instant lostTime = lastTouched.plus(node.getHeartbeatPeriod().multipliedBy(PURGE_TIMEOUT_MULTIPLIER / 2));
         Instant deadTime = lastTouched.plus(node.getHeartbeatPeriod().multipliedBy(PURGE_TIMEOUT_MULTIPLIER));
 
@@ -212,6 +222,7 @@ public class GridModel {
       toRemove.forEach(node -> {
         nodes.remove(node);
         nodePurgeTimes.remove(node.getNodeId());
+        nodeHealthCount.remove(node.getNodeId());
       });
     } finally {
       writeLock.unlock();
@@ -418,6 +429,29 @@ public class GridModel {
         session);
 
       amend(node.getAvailability(), node, updated);
+    } finally {
+      writeLock.unlock();
+    }
+  }
+
+  public void updateHealthCheckCount(NodeId id, Availability availability) {
+    Require.nonNull("Node ID", id);
+    Require.nonNull("Availability", availability);
+
+    Lock writeLock = lock.writeLock();
+    writeLock.lock();
+    try {
+      int unhealthyCount = nodeHealthCount.getOrDefault(id, 0);
+
+      // Keep track of consecutive number of times the Node health check fails
+      if (availability.equals(DOWN)) {
+        nodeHealthCount.put(id, unhealthyCount + 1);
+      }
+
+      // If the Node is healthy again before crossing the threshold, then reset the count.
+      if (unhealthyCount <= UNHEALTHY_THRESHOLD && availability.equals(UP)) {
+        nodeHealthCount.put(id, 0);
+      }
     } finally {
       writeLock.unlock();
     }
