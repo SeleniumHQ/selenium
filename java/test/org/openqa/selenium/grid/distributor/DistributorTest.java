@@ -90,6 +90,7 @@ import java.util.UUID;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
@@ -941,6 +942,117 @@ public class DistributorTest {
     assertThatEither(result).isRight();
   }
 
+  @Test
+  public void shouldRemoveNodeWhoseHealthCheckFailsConsistently() {
+    CombinedHandler handler = new CombinedHandler();
+
+    AtomicReference<Availability> availability = new AtomicReference<>(UP);
+
+    SessionMap sessions = new LocalSessionMap(tracer, bus);
+    handler.addHandler(sessions);
+    NewSessionQueue queue = new LocalNewSessionQueue(
+      tracer,
+      bus,
+      new DefaultSlotMatcher(),
+      Duration.ofSeconds(2),
+      Duration.ofSeconds(2),
+      registrationSecret);
+
+    URI uri = createUri();
+    Node node = LocalNode.builder(tracer, bus, uri, uri, registrationSecret)
+      .add(
+        caps,
+        new TestSessionFactory((id, caps) -> new Session(id, uri, stereotype, caps, Instant.now())))
+      .advanced()
+      .healthCheck(() -> new HealthCheck.Result(availability.get(), "TL;DR"))
+      .build();
+    handler.addHandler(node);
+
+    LocalDistributor distributor = new LocalDistributor(
+      tracer,
+      bus,
+      new PassthroughHttpClient.Factory(handler),
+      sessions,
+      queue,
+      new DefaultSlotSelector(),
+      registrationSecret,
+      Duration.ofSeconds(1),
+      false);
+    handler.addHandler(distributor);
+    distributor.add(node);
+
+    waitToHaveCapacity(distributor);
+
+    Either<SessionNotCreatedException, CreateSessionResponse> result =
+      distributor.newSession(createRequest(caps));
+    assertThatEither(result).isRight();
+
+    availability.set(DOWN);
+
+    waitTillNodesAreRemoved(distributor);
+
+    result =
+      distributor.newSession(createRequest(caps));
+    assertThatEither(result).isLeft();
+  }
+
+  @Test
+  public void shouldNotRemoveNodeWhoseHealthCheckPassesBeforeThreshold()
+    throws InterruptedException {
+    CombinedHandler handler = new CombinedHandler();
+
+    AtomicInteger count = new AtomicInteger(0);
+    CountDownLatch latch = new CountDownLatch(1);
+
+    SessionMap sessions = new LocalSessionMap(tracer, bus);
+    handler.addHandler(sessions);
+    NewSessionQueue queue = new LocalNewSessionQueue(
+      tracer,
+      bus,
+      new DefaultSlotMatcher(),
+      Duration.ofSeconds(2),
+      Duration.ofSeconds(2),
+      registrationSecret);
+
+    URI uri = createUri();
+    Node node = LocalNode.builder(tracer, bus, uri, uri, registrationSecret)
+      .add(
+        caps,
+        new TestSessionFactory((id, caps) -> new Session(id, uri, stereotype, caps, Instant.now())))
+      .advanced()
+      .healthCheck(() -> {
+        if (count.get() <= 4) {
+          count.incrementAndGet();
+          return new HealthCheck.Result(DOWN, "Down");
+        }
+        latch.countDown();
+        return new HealthCheck.Result(UP, "Up");
+      })
+      .build();
+    handler.addHandler(node);
+
+    LocalDistributor distributor = new LocalDistributor(
+      tracer,
+      bus,
+      new PassthroughHttpClient.Factory(handler),
+      sessions,
+      queue,
+      new DefaultSlotSelector(),
+      registrationSecret,
+      Duration.ofSeconds(1),
+      false);
+    handler.addHandler(distributor);
+    distributor.add(node);
+
+    latch.await(60, TimeUnit.SECONDS);
+
+    waitToHaveCapacity(distributor);
+
+    Either<SessionNotCreatedException, CreateSessionResponse> result =
+      distributor.newSession(createRequest(caps));
+    assertThatEither(result).isRight();
+  }
+
   private Set<Node> createNodeSet(CombinedHandler handler, Distributor distributor, int count, Capabilities...capabilities) {
     Set<Node> nodeSet = new HashSet<>();
     for (int i=0; i<count; i++) {
@@ -1253,7 +1365,7 @@ public class DistributorTest {
 
   private void waitTillNodesAreRemoved(Distributor distributor) {
     new FluentWait<>(distributor)
-      .withTimeout(Duration.ofSeconds(5))
+      .withTimeout(Duration.ofSeconds(60))
       .pollingEvery(Duration.ofMillis(100))
       .until(d -> {
         Set<NodeStatus> nodes = d.getStatus().getNodes();
