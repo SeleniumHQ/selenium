@@ -9,6 +9,12 @@ available via the project downloads page. Changes in "revision" field indicate
 private releases checked into the prebuilts directory of the source tree, but
 not made generally available on the downloads page.
 
+v3.150.2.0
+==========
+ * Updates to JavaScript automation atoms.
+ * Changed source to compile against Windows 10 SDK. This means that the
+   executable may no longer run on versions of Windows less than Windows 10.
+
 v3.150.1.1
 ==========
  * Made checking of the Content-Length header case-insensitive. This fixes
