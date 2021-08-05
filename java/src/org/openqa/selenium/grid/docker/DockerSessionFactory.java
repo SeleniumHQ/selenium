@@ -17,6 +17,13 @@
 
 package org.openqa.selenium.grid.docker;
 
+import static java.util.Optional.ofNullable;
+import static org.openqa.selenium.docker.ContainerConfig.image;
+import static org.openqa.selenium.remote.Dialect.W3C;
+import static org.openqa.selenium.remote.http.Contents.string;
+import static org.openqa.selenium.remote.http.HttpMethod.GET;
+import static org.openqa.selenium.remote.tracing.Tags.EXCEPTION;
+
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.ImmutableCapabilities;
@@ -74,13 +81,6 @@ import java.util.Optional;
 import java.util.TimeZone;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-import static java.util.Optional.ofNullable;
-import static org.openqa.selenium.docker.ContainerConfig.image;
-import static org.openqa.selenium.remote.Dialect.W3C;
-import static org.openqa.selenium.remote.http.Contents.string;
-import static org.openqa.selenium.remote.http.HttpMethod.GET;
-import static org.openqa.selenium.remote.tracing.Tags.EXCEPTION;
 
 public class DockerSessionFactory implements SessionFactory {
 
@@ -256,10 +256,10 @@ public class DockerSessionFactory implements SessionFactory {
 
   private Container createBrowserContainer(int port, Capabilities sessionCapabilities) {
     Map<String, String> browserContainerEnvVars = getBrowserContainerEnvVars(sessionCapabilities);
-    Map<String, String> devShmMount = Collections.singletonMap("/dev/shm", "/dev/shm");
+    long browserContainerShmMemorySize = 2147483648L; //2GB
     ContainerConfig containerConfig = image(browserImage)
       .env(browserContainerEnvVars)
-      .bind(devShmMount)
+      .shmMemorySize(browserContainerShmMemorySize)
       .network(networkName);
     if (!runningInDocker) {
       containerConfig = containerConfig.map(Port.tcp(4444), Port.tcp(port));
