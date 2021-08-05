@@ -103,7 +103,7 @@ function ensureFileDetectorsAreEnabled(ctor) {
  */
 class ThenableWebDriver {
   /** @param {...?} args */
-  static createSession(...args) {} // eslint-disable-line
+  static createSession(...args) { } // eslint-disable-line
 }
 
 /**
@@ -615,7 +615,7 @@ class Builder {
     if (typeof browser !== 'string') {
       throw TypeError(
         `Target browser must be a string, but is <${typeof browser}>;` +
-          ' did you forget to call forBrowser()?'
+        ' did you forget to call forBrowser()?'
       )
     }
 
@@ -736,8 +736,8 @@ class Builder {
       default:
         throw new Error(
           'Do not know how to build driver: ' +
-            browser +
-            '; did you forget to call usingServer(url)?'
+          browser +
+          '; did you forget to call usingServer(url)?'
         )
     }
   }
@@ -793,9 +793,9 @@ function checkOptions(caps, key, optionType, setMethod) {
   if (val instanceof optionType) {
     throw new error.InvalidArgumentError(
       'Options class extends Capabilities and should not be set as key ' +
-        `"${key}"; set browser-specific options with ` +
-        `Builder.${setMethod}(). For more information, see the ` +
-        'documentation attached to the function that threw this error'
+      `"${key}"; set browser-specific options with ` +
+      `Builder.${setMethod}(). For more information, see the ` +
+      'documentation attached to the function that threw this error'
     )
   }
 }
@@ -807,6 +807,7 @@ exports.Builder = Builder
 exports.Button = input.Button
 exports.By = by.By
 exports.withTagName = by.withTagName
+exports.withLocator = by.withLocator
 exports.Capabilities = capabilities.Capabilities
 exports.Capability = capabilities.Capability
 exports.Condition = webdriver.Condition
