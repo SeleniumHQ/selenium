@@ -290,6 +290,7 @@ public class LocalDistributor extends Distributor implements Closeable {
           getDebugLogLevel(),
           String.format("Health check result for %s was %s", node.getId(), result.getAvailability()));
         model.setAvailability(id, result.getAvailability());
+        model.updateHealthCheckCount(id, result.getAvailability());
       } finally {
         writeLock.unlock();
       }
