@@ -35,6 +35,7 @@ import org.openqa.selenium.grid.data.NodeAddedEvent;
 import org.openqa.selenium.grid.data.NodeDrainComplete;
 import org.openqa.selenium.grid.data.NodeHeartBeatEvent;
 import org.openqa.selenium.grid.data.NodeId;
+import org.openqa.selenium.grid.data.NodeRemovedEvent;
 import org.openqa.selenium.grid.data.NodeStatus;
 import org.openqa.selenium.grid.data.NodeStatusEvent;
 import org.openqa.selenium.grid.data.RequestId;
@@ -160,6 +161,7 @@ public class LocalDistributor extends Distributor implements Closeable {
 
     bus.addListener(NodeStatusEvent.listener(this::register));
     bus.addListener(NodeStatusEvent.listener(model::refresh));
+    bus.addListener(NodeRemovedEvent.listener(nodeStatus -> remove(nodeStatus.getNodeId())));
     bus.addListener(NodeHeartBeatEvent.listener(nodeStatus -> {
       if (nodes.containsKey(nodeStatus.getNodeId())) {
         model.touch(nodeStatus.getNodeId());
@@ -321,6 +323,7 @@ public class LocalDistributor extends Distributor implements Closeable {
     Lock writeLock = lock.writeLock();
     writeLock.lock();
     try {
+      nodes.remove(nodeId);
       model.remove(nodeId);
       Runnable runnable = allChecks.remove(nodeId);
       if (runnable != null) {
