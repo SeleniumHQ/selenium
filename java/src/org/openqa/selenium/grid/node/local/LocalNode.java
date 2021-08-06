@@ -150,12 +150,12 @@ public class LocalNode extends Node {
       .expireAfterAccess(sessionTimeout)
       .ticker(ticker)
       .removalListener((RemovalListener<SessionId, SessionSlot>) notification -> {
-        // If we were invoked explicitly, then return: we know what we're doing.
-        if (!notification.wasEvicted()) {
-          return;
+        // Attempt to stop the session
+        SessionSlot slot = notification.getValue();
+        if (!slot.isAvailable()) {
+          slot.stop();
         }
 
-        killSession(notification.getValue());
       })
       .build();
 
@@ -434,7 +434,7 @@ public class LocalNode extends Node {
       throw new NoSuchSessionException("Cannot find session with id: " + id);
     }
 
-    killSession(slot);
+    currentSessions.invalidate(id);
     tempFileSystems.invalidate(id);
   }
 
@@ -471,14 +471,6 @@ public class LocalNode extends Node {
         null);
     } catch (URISyntaxException e) {
       throw new RuntimeException(e);
-    }
-  }
-
-  private void killSession(SessionSlot slot) {
-    currentSessions.invalidate(slot.getSession().getId());
-    // Attempt to stop the session
-    if (!slot.isAvailable()) {
-      slot.stop();
     }
   }
 
