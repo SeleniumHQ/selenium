@@ -163,7 +163,7 @@ module Selenium
         it 'should find above another' do
           driver.navigate.to url_for('relative_locators.html')
 
-          above = driver.find_elements(relative: {tag_name: 'td', above: {id: 'center'}})
+          above = driver.find_elements(relative: {css: 'td', above: {id: 'center'}})
           expect(above.map { |e| e.attribute('id') }).to eq(%w[second first third])
         end
 
@@ -171,7 +171,7 @@ module Selenium
           driver.navigate.to url_for('relative_locators.html')
 
           midpoint = driver.find_element(id: 'mid')
-          above = driver.find_elements(relative: {tag_name: 'p', below: midpoint})
+          above = driver.find_elements(relative: {id: 'below', below: midpoint})
           expect(above.map { |e| e.attribute('id') }).to eq(['below'])
         end
 
