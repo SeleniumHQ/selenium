@@ -175,10 +175,7 @@ public class LocalNode extends Node {
     regularly.submit(() -> bus.fire(new NodeHeartBeatEvent(getStatus())), heartbeatPeriod, heartbeatPeriod);
 
     bus.addListener(SessionClosedEvent.listener(id -> {
-      try {
-        this.stop(id);
-      } catch (NoSuchSessionException ignore) {
-      }
+      // Listen to session terminated events so we know when to fire the NodeDrainComplete event
       if (this.isDraining()) {
         int done = pendingSessions.decrementAndGet();
         if (done <= 0) {
