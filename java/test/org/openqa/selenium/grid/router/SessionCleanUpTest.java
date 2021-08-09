@@ -19,6 +19,7 @@ package org.openqa.selenium.grid.router;
 
 import static java.net.HttpURLConnection.HTTP_OK;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
 import static org.openqa.selenium.grid.data.Availability.DOWN;
 import static org.openqa.selenium.grid.data.Availability.UP;
 import static org.openqa.selenium.remote.Dialect.W3C;
@@ -42,7 +43,6 @@ import org.openqa.selenium.grid.config.MapConfig;
 import org.openqa.selenium.grid.data.Availability;
 import org.openqa.selenium.grid.data.CreateSessionResponse;
 import org.openqa.selenium.grid.data.DefaultSlotMatcher;
-import org.openqa.selenium.grid.data.NodeRemovedEvent;
 import org.openqa.selenium.grid.data.NodeStatus;
 import org.openqa.selenium.grid.data.RequestId;
 import org.openqa.selenium.grid.data.Session;
@@ -85,7 +85,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
-import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicReference;
 
 public class SessionCleanUpTest {
@@ -115,10 +114,15 @@ public class SessionCleanUpTest {
     if (server != null) {
       server.stop();
     }
+
+    if (events != null) {
+      events.close();
+    }
   }
 
-  @Test(expected = NoSuchSessionException.class)
-  public void shouldRemoveSessionAfterNodeIsShutDownGracefully() throws URISyntaxException {
+  @Test
+  public void shouldRemoveSessionAfterNodeIsShutDownGracefully()
+    throws URISyntaxException {
     Capabilities capabilities = new ImmutableCapabilities("browserName", "cheese");
     CombinedHandler handler = new CombinedHandler();
     CombinedHandler nodeHandler = new CombinedHandler();
@@ -142,7 +146,7 @@ public class SessionCleanUpTest {
       queue,
       new DefaultSlotSelector(),
       registrationSecret,
-      Duration.ofSeconds(2),
+      Duration.ofSeconds(1),
       false);
     handler.addHandler(distributor);
 
@@ -205,38 +209,41 @@ public class SessionCleanUpTest {
 
     assertThat(session.getCapabilities()).isEqualTo(capabilities);
 
-    distributor.refresh();
     nodeServer.stop();
 
     waitTillNodesAreRemoved(distributor);
 
-    sessions.get(id);
+    try {
+      waitTillSessionIsRemoved(sessions, id);
+    } catch (Exception e) {
+      fail("Session not removed");
+    }
   }
 
-  @Test(expected = NoSuchSessionException.class)
+  @Test
   public void shouldRemoveSessionAfterNodeIsDown() throws URISyntaxException {
-    EventBus bus = new GuavaEventBus();
     CombinedHandler handler = new CombinedHandler();
     Capabilities capabilities = new ImmutableCapabilities("browserName", "cheese");
 
     AtomicReference<Availability> availability = new AtomicReference<>(UP);
 
-    SessionMap sessions = new LocalSessionMap(tracer, bus);
+    SessionMap sessions = new LocalSessionMap(tracer, events);
     handler.addHandler(sessions);
     NewSessionQueue queue = new LocalNewSessionQueue(
       tracer,
-      bus,
+      events,
       new DefaultSlotMatcher(),
       Duration.ofSeconds(2),
       Duration.ofSeconds(2),
       registrationSecret);
 
     URI uri = new URI("http://localhost:" + PortProber.findFreePort());
-    Node node = LocalNode.builder(tracer, bus, uri, uri, registrationSecret)
+    Node node = LocalNode.builder(tracer, events, uri, uri, registrationSecret)
       .add(
         capabilities,
         new TestSessionFactory(
           (id, caps) -> new Session(id, uri, capabilities, caps, Instant.now())))
+      .heartbeatPeriod(Duration.ofSeconds(500000))
       .advanced()
       .healthCheck(() -> new HealthCheck.Result(availability.get(), "TL;DR"))
       .build();
@@ -244,7 +251,7 @@ public class SessionCleanUpTest {
 
     LocalDistributor distributor = new LocalDistributor(
       tracer,
-      bus,
+      events,
       new PassthroughHttpClient.Factory(handler),
       sessions,
       queue,
@@ -276,7 +283,11 @@ public class SessionCleanUpTest {
 
     waitTillNodesAreRemoved(distributor);
 
-    sessions.get(id);
+    try {
+      waitTillSessionIsRemoved(sessions, id);
+    } catch (Exception e) {
+      fail("Session not removed");
+    }
   }
 
   private void waitToHaveCapacity(Distributor distributor) {
@@ -293,6 +304,20 @@ public class SessionCleanUpTest {
       .until(d -> {
         Set<NodeStatus> nodes = d.getStatus().getNodes();
         return nodes.isEmpty();
+      });
+  }
+
+  private void waitTillSessionIsRemoved(SessionMap sessionMap, SessionId id) {
+    new FluentWait<>(sessionMap)
+      .withTimeout(Duration.ofSeconds(15))
+      .pollingEvery(Duration.ofMillis(100))
+      .until(s -> {
+        try {
+          s.get(id);
+        } catch (NoSuchSessionException e) {
+          return true;
+        }
+        return false;
       });
   }
 }
