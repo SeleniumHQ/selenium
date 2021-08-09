@@ -199,6 +199,7 @@ public class GridModel {
         NodeId id = node.getNodeId();
         if (nodeHealthCount.getOrDefault(id, 0) > UNHEALTHY_THRESHOLD) {
           toRemove.add(node);
+          break;
         }
 
         Instant now = Instant.now();
