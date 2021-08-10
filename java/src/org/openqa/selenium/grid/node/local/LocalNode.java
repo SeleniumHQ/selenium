@@ -66,8 +66,10 @@ import org.openqa.selenium.grid.node.Node;
 import org.openqa.selenium.grid.node.SessionFactory;
 import org.openqa.selenium.grid.node.config.NodeOptions;
 import org.openqa.selenium.grid.security.Secret;
+import org.openqa.selenium.internal.Debug;
 import org.openqa.selenium.internal.Either;
 import org.openqa.selenium.internal.Require;
+import org.openqa.selenium.internal.ShutdownHooks;
 import org.openqa.selenium.io.TemporaryFilesystem;
 import org.openqa.selenium.io.Zip;
 import org.openqa.selenium.json.Json;
@@ -141,16 +143,17 @@ public class LocalNode extends Node {
     Require.nonNull("Registration secret", registrationSecret);
 
     this.healthCheck = healthCheck == null ?
-      () -> new HealthCheck.Result(
-        isDraining() ? DRAINING : UP,
-        String.format("%s is %s", uri, isDraining() ? "draining" : "up")) :
-      healthCheck;
+                       () -> new HealthCheck.Result(
+                         isDraining() ? DRAINING : UP,
+                         String.format("%s is %s", uri, isDraining() ? "draining" : "up")) :
+                       healthCheck;
 
     this.currentSessions = CacheBuilder.newBuilder()
       .expireAfterAccess(sessionTimeout)
       .ticker(ticker)
       .removalListener((RemovalListener<SessionId, SessionSlot>) notification -> {
         // Attempt to stop the session
+        LOG.log(Debug.getDebugLogLevel(), "Stopping session %s", notification.getKey().toString());
         SessionSlot slot = notification.getValue();
         if (!slot.isAvailable()) {
           slot.stop();
@@ -185,6 +188,7 @@ public class LocalNode extends Node {
       }
     }));
 
+    ShutdownHooks.add(new Thread(this::stopAllSessions));
     new JMXHelper().register(this);
   }
 
@@ -436,6 +440,13 @@ public class LocalNode extends Node {
 
     currentSessions.invalidate(id);
     tempFileSystems.invalidate(id);
+  }
+
+  private void stopAllSessions() {
+    if (currentSessions.size() > 0) {
+      LOG.info("Trying to stop all running sessions before shutting down...");
+      currentSessions.invalidateAll();
+    }
   }
 
   private Session createExternalSession(ActiveSession other, URI externalUri,

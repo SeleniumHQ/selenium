@@ -17,6 +17,8 @@
 
 package org.openqa.selenium.remote.http.netty;
 
+import static org.openqa.selenium.internal.ShutdownHooks.HookExecutionStrategy.AT_END;
+
 import com.google.auto.service.AutoService;
 
 import org.asynchttpclient.AsyncHttpClient;
@@ -27,6 +29,7 @@ import org.asynchttpclient.config.AsyncHttpClientConfigDefaults;
 import org.openqa.selenium.Credentials;
 import org.openqa.selenium.UsernameAndPassword;
 import org.openqa.selenium.internal.Require;
+import org.openqa.selenium.internal.ShutdownHooks;
 import org.openqa.selenium.remote.http.ClientConfig;
 import org.openqa.selenium.remote.http.Filter;
 import org.openqa.selenium.remote.http.HttpClient;
@@ -71,7 +74,7 @@ public class NettyClient implements HttpClient {
     this.handler = new NettyHttpHandler(config, client).with(config.filter());
     this.toWebSocket = NettyWebSocket.create(config, client);
     if (!addedHook.get()) {
-      Runtime.getRuntime().addShutdownHook(new Thread(this::shutdownClient));
+      ShutdownHooks.add(new Thread(this::shutdownClient), AT_END);
       addedHook.set(true);
     }
   }
