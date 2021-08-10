@@ -17,29 +17,17 @@
 
 package org.openqa.selenium.testing.drivers;
 
-import com.google.common.collect.ImmutableMap;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
-import org.openqa.selenium.Platform;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.chrome.ChromeOptions;
-import org.openqa.selenium.edge.EdgeOptions;
-import org.openqa.selenium.firefox.FirefoxOptions;
-import org.openqa.selenium.ie.InternetExplorerOptions;
-import org.openqa.selenium.opera.OperaOptions;
-import org.openqa.selenium.remote.BrowserType;
-import org.openqa.selenium.remote.DesiredCapabilities;
-import org.openqa.selenium.safari.SafariOptions;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.HashSet;
 import java.util.LinkedList;
-import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
-import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.logging.Level;
 import java.util.stream.Stream;
@@ -53,10 +41,6 @@ public class WebDriverBuilder implements Supplier<WebDriver> {
     Runtime.getRuntime().addShutdownHook(new Thread(() -> shutdownActions.forEach(Runnable::run)));
   }
 
-  static void addShutdownAction(Runnable action) {
-    shutdownActions.add(action);
-  }
-
   private final Browser toBuild;
 
   public WebDriverBuilder() {
@@ -65,6 +49,10 @@ public class WebDriverBuilder implements Supplier<WebDriver> {
 
   public WebDriverBuilder(Browser toBuild) {
     this.toBuild = Optional.ofNullable(toBuild).orElse(Browser.CHROME);
+  }
+
+  static void addShutdownAction(Runnable action) {
+    shutdownActions.add(action);
   }
 
   @Override
