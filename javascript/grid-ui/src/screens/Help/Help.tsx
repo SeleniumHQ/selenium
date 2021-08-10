@@ -15,10 +15,15 @@
 // specific language governing permissions and limitations
 // under the License.
 
-import React, {ReactNode} from 'react'
-import {Box, Container, Link, Typography} from '@material-ui/core'
-import {createStyles, StyleRules, Theme, withStyles} from '@material-ui/core/styles'
-import {RouteComponentProps, withRouter} from 'react-router-dom'
+import React, { ReactNode } from 'react'
+import { Box, Container, Link, Typography } from '@material-ui/core'
+import {
+  createStyles,
+  StyleRules,
+  Theme,
+  withStyles
+} from '@material-ui/core/styles'
+import { RouteComponentProps, withRouter } from 'react-router-dom'
 
 const useStyles = (theme: Theme): StyleRules => createStyles(
   {
@@ -75,8 +80,8 @@ class Help extends React.Component<HelpProps, {}> {
               >
                 More information about Selenium Grid can be found at the{' '}
                 <Link
-                  href='https://www.selenium.dev/documentation/en/grid/'
-                  target='_blank' rel='noreferrer'
+                  href="https://www.selenium.dev/documentation/grid/"
+                  target="_blank" rel="noreferrer"
                 >
                   documentation
                 </Link>.
@@ -122,8 +127,8 @@ class Help extends React.Component<HelpProps, {}> {
                 Selenium is made possible through the efforts of our open source
                 community, contributions from these{' '}
                 <Link
-                  href='https://www.selenium.dev/documentation/en/front_matter/copyright_and_attributions/'
-                  target='_blank' rel='noreferrer'
+                  href="https://www.selenium.dev/documentation/about/copyright_and_attributions/"
+                  target="_blank" rel='noreferrer'
                 >
                   people
                 </Link>
