@@ -1,4 +1,4 @@
-// <copyright file="V88Domains.cs" company="WebDriver Committers">
+// <copyright file="V92Domains.cs" company="WebDriver Committers">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements. See the NOTICE file
 // distributed with this work for additional information
@@ -19,16 +19,16 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace OpenQA.Selenium.DevTools.V88
+namespace OpenQA.Selenium.DevTools.V92
 {
     /// <summary>
     /// Class containing the domain implementation for version 88 of the DevTools Protocol.
     /// </summary>
-    public class V88Domains : DevToolsDomains
+    public class V92Domains : DevToolsDomains
     {
         private DevToolsSessionDomains domains;
 
-        public V88Domains(DevToolsSession session)
+        public V92Domains(DevToolsSession session)
         {
             this.domains = new DevToolsSessionDomains(session);
         }
@@ -36,7 +36,7 @@ namespace OpenQA.Selenium.DevTools.V88
         /// <summary>
         /// Gets the DevTools Protocol version for which this class is valid.
         /// </summary>
-        public static int DevToolsVersion => 88;
+        public static int DevToolsVersion => 92;
 
         /// <summary>
         /// Gets the version-specific domains for the DevTools session. This value must be cast to a version specific type to be at all useful.
@@ -46,21 +46,21 @@ namespace OpenQA.Selenium.DevTools.V88
         /// <summary>
         /// Gets the object used for manipulating network information in the browser.
         /// </summary>
-        public override DevTools.Network Network => new V88Network(domains.Network, domains.Fetch);
+        public override DevTools.Network Network => new V92Network(domains.Network, domains.Fetch);
 
         /// <summary>
         /// Gets the object used for manipulating the browser's JavaScript execution.
         /// </summary>
-        public override JavaScript JavaScript => new V88JavaScript(domains.Runtime, domains.Page);
+        public override JavaScript JavaScript => new V92JavaScript(domains.Runtime, domains.Page);
 
         /// <summary>
         /// Gets the object used for manipulating DevTools Protocol targets.
         /// </summary>
-        public override DevTools.Target Target => new V88Target(domains.Target);
+        public override DevTools.Target Target => new V92Target(domains.Target);
 
         /// <summary>
         /// Gets the object used for manipulating the browser's logs.
         /// </summary>
-        public override DevTools.Log Log => new V88Log(domains.Log);
+        public override DevTools.Log Log => new V92Log(domains.Log);
     }
 }
