@@ -85,7 +85,6 @@ import com.google.common.io.Resources;
 import org.openqa.selenium.InvalidSelectorException;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.interactions.Interaction;
-import org.openqa.selenium.interactions.KeyInput;
 import org.openqa.selenium.interactions.PointerInput;
 import org.openqa.selenium.interactions.Sequence;
 import org.openqa.selenium.remote.RemoteWebElement;
@@ -113,7 +112,6 @@ import java.util.stream.Stream;
 public class W3CHttpCommandCodec extends AbstractHttpCommandCodec {
 
   private final PointerInput mouse = new PointerInput(PointerInput.Kind.MOUSE, "mouse");
-  private final KeyInput keyboard = new KeyInput("keyboard");
 
   public W3CHttpCommandCodec() {
     String sessionId = "/session/:sessionId";
@@ -352,7 +350,6 @@ public class W3CHttpCommandCodec extends AbstractHttpCommandCodec {
         }
 
         String text = source
-            .flatMap(Stream::of)
             .collect(Collectors.joining());
         return ImmutableMap.<String, Object>builder()
             .putAll(

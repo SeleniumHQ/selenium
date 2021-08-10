@@ -254,6 +254,12 @@ bazel test --test_size_filters=small,medium java/...
 Bazel's "test" command will run *all* tests in the package, including integration tests. Expect
 the ```test java/...``` to launch browsers and consume a considerable amount of time and resources.
 
+To bump the versions of the pinned browsers to their latest stable versions:
+
+```sh
+bazel run scripts:pinned_browsers > temp.bzl && mv temp.bzl common/repositories.bzl
+```
+
 ## Editing Code
 
 Most of the team use either Intellij IDEA or VS.Code for their day-to-day editing. If you're
