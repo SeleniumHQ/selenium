@@ -86,6 +86,21 @@ namespace OpenQA.Selenium
         Task ClearInitializationScripts();
 
         /// <summary>
+        /// Pins a JavaScript snippet for execution in the browser without transmitting the
+        /// entire script across the wire for every execution.
+        /// </summary>
+        /// <param name="script">The JavaScript to pin</param>
+        /// <returns>A task containing a <see cref="PinnedScript"/> object to use to execute the script.</returns>
+        Task<PinnedScript> PinScript(string script);
+
+        /// <summary>
+        /// Unpins a previously pinned script from the browser.
+        /// </summary>
+        /// <param name="script">The <see cref="PinnedScript"/> object to unpin.</param>
+        /// <returns>A task that represents the asynchronous operation.</returns>
+        Task UnpinScript(PinnedScript script);
+
+        /// <summary>
         /// Asynchronously adds a binding to a callback method that will raise
         /// an event when the named binding is called by JavaScript executing
         /// in the browser.

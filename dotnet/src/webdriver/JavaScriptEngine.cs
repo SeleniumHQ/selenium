@@ -29,17 +29,23 @@ namespace OpenQA.Selenium
     /// </summary>
     public class JavaScriptEngine : IJavaScriptEngine
     {
+        private IWebDriver driver;
         private Lazy<DevToolsSession> session;
         private Dictionary<string, InitializationScript> initializationScripts = new Dictionary<string, InitializationScript>();
+        private Dictionary<string, PinnedScript> pinnedScripts = new Dictionary<string, PinnedScript>();
         private List<string> bindings = new List<string>();
         private bool isEnabled = false;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="RemoteJavaScriptEngine"/> class.
+        /// Initializes a new instance of the <see cref="JavaScriptEngine"/> class.
         /// </summary>
         /// <param name="driver">The <see cref="IWebDriver"/> instance in which the JavaScript engine is executing.</param>
         public JavaScriptEngine(IWebDriver driver)
         {
+            // Use of Lazy<T> means this exception won't be thrown until the user first
+            // attempts to access the DevTools session, probably on the first call to
+            // StartEventMonitoring() or in adding scripts to the instance.
+            this.driver = driver;
             this.session = new Lazy<DevToolsSession>(() =>
             {
                 IDevTools devToolsDriver = driver as IDevTools;
@@ -171,6 +177,39 @@ namespace OpenQA.Selenium
         }
 
         /// <summary>
+        /// Pins a JavaScript snippet for execution in the browser without transmitting the
+        /// entire script across the wire for every execution.
+        /// </summary>
+        /// <param name="script">The JavaScript to pin</param>
+        /// <returns>A task containing a <see cref="PinnedScript"/> object to use to execute the script.</returns>
+        public async Task<PinnedScript> PinScript(string script)
+        {
+            // We do an "Evaluate" first so as to immediately create the script on the loaded
+            // page, then will add it to the initialization of future pages.
+            PinnedScript pinnedScript = new PinnedScript(script);
+            await this.EnableDomains();
+            await this.session.Value.Domains.JavaScript.Evaluate(pinnedScript.CreationScript);
+            pinnedScript.ScriptId = await this.session.Value.Domains.JavaScript.AddScriptToEvaluateOnNewDocument(pinnedScript.CreationScript);
+            this.pinnedScripts[pinnedScript.Handle] = pinnedScript;
+            return pinnedScript;
+        }
+
+        /// <summary>
+        /// Unpins a previously pinned script from the browser.
+        /// </summary>
+        /// <param name="script">The <see cref="PinnedScript"/> object to unpin.</param>
+        /// <returns>A task that represents the asynchronous operation.</returns>
+        public async Task UnpinScript(PinnedScript script)
+        {
+            if (this.pinnedScripts.ContainsKey(script.Handle))
+            {
+                await this.session.Value.Domains.JavaScript.Evaluate(script.RemovalScript);
+                await this.session.Value.Domains.JavaScript.RemoveScriptToEvaluateOnNewDocument(script.ScriptId);
+                this.pinnedScripts.Remove(script.Handle);
+            }
+        }
+
+        /// <summary>
         /// Asynchronously adds a binding to a callback method that will raise an event when the named
         /// binding is called by JavaScript executing in the browser.
         /// </summary>
@@ -214,26 +253,39 @@ namespace OpenQA.Selenium
         }
 
         /// <summary>
-        /// Asynchronously removes all bindings to JavaScript callbacks and all
-        /// initialization scripts from being loaded for each document.
+        /// Asynchronously removes all bindings to JavaScript callbacks, all
+        /// initialization scripts from being loaded for each document, and unpins
+        /// all pinned scripts.
         /// </summary>
         /// <returns>A task that represents the asynchronous operation.</returns>
         public async Task ClearAll()
         {
+            await this.ClearPinnedScripts();
             await this.ClearInitializationScripts();
             await this.ClearScriptCallbackBindings();
         }
 
         /// <summary>
         /// Asynchronously removes all bindings to JavaScript callbacks, all
-        /// initialization scripts from being loaded for each document, and
-        /// stops listening for events.
+        /// initialization scripts from being loaded for each document, all
+        /// pinned scripts, and stops listening for events.
         /// </summary>
         /// <returns>A task that represents the asynchronous operation.</returns>
         public async Task Reset()
         {
             StopEventMonitoring();
             await ClearAll();
+        }
+
+        private async Task ClearPinnedScripts()
+        {
+            // Use a copy of the list to prevent the iterator from becoming invalid
+            // when we modify the collection.
+            List<string> scriptHandles = new List<string>(this.pinnedScripts.Keys);
+            foreach (string scriptHandle in scriptHandles)
+            {
+                await this.UnpinScript(this.pinnedScripts[scriptHandle]);
+            }
         }
 
         private async Task EnableDomains()

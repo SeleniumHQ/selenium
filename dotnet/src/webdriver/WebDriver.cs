@@ -363,6 +363,17 @@ namespace OpenQA.Selenium
         }
 
         /// <summary>
+        /// Executes JavaScript in the context of the currently selected frame or window
+        /// </summary>
+        /// <param name="script">A <see cref="PinnedScript"/> object containing the JavaScript code to execute.</param>
+        /// <param name="args">The arguments to the script.</param>
+        /// <returns>The value returned by the script.</returns>
+        public object ExecuteScript(PinnedScript script, params object[] args)
+        {
+            return this.ExecuteScript(script.ExecutionScript, args);
+        }
+
+        /// <summary>
         /// Finds the first element in the page that matches the <see cref="By"/> object
         /// </summary>
         /// <param name="by">By mechanism to find the object</param>
