@@ -39,7 +39,11 @@ import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.events.EventBus;
 import org.openqa.selenium.events.local.GuavaEventBus;
 import org.openqa.selenium.events.zeromq.ZeroMqEventBus;
+import org.openqa.selenium.grid.config.CompoundConfig;
+import org.openqa.selenium.grid.config.Config;
 import org.openqa.selenium.grid.config.MapConfig;
+import org.openqa.selenium.grid.config.MemoizedConfig;
+import org.openqa.selenium.grid.config.TomlConfig;
 import org.openqa.selenium.grid.data.Availability;
 import org.openqa.selenium.grid.data.CreateSessionResponse;
 import org.openqa.selenium.grid.data.DefaultSlotMatcher;
@@ -52,6 +56,8 @@ import org.openqa.selenium.grid.distributor.local.LocalDistributor;
 import org.openqa.selenium.grid.distributor.selector.DefaultSlotSelector;
 import org.openqa.selenium.grid.node.HealthCheck;
 import org.openqa.selenium.grid.node.Node;
+import org.openqa.selenium.grid.node.SessionFactory;
+import org.openqa.selenium.grid.node.httpd.NodeServer;
 import org.openqa.selenium.grid.node.local.LocalNode;
 import org.openqa.selenium.grid.security.Secret;
 import org.openqa.selenium.grid.server.BaseServerOptions;
@@ -66,10 +72,12 @@ import org.openqa.selenium.grid.web.CombinedHandler;
 import org.openqa.selenium.grid.web.Values;
 import org.openqa.selenium.internal.Either;
 import org.openqa.selenium.json.Json;
+import org.openqa.selenium.json.JsonOutput;
 import org.openqa.selenium.net.PortProber;
 import org.openqa.selenium.netty.server.NettyServer;
 import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.remote.http.HttpClient;
+import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.remote.tracing.DefaultTestTracer;
@@ -77,6 +85,8 @@ import org.openqa.selenium.remote.tracing.Tracer;
 import org.openqa.selenium.support.ui.FluentWait;
 import org.zeromq.ZContext;
 
+import java.io.StringReader;
+import java.io.UncheckedIOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.time.Duration;
@@ -95,15 +105,19 @@ public class SessionCleanUpTest {
   private HttpClient.Factory clientFactory;
   private Secret registrationSecret;
   private Server<?> server;
+  int publish;
+  int subscribe;
 
   @Before
   public void setup() {
     tracer = DefaultTestTracer.createTracer();
     registrationSecret = new Secret("hereford hop");
+    publish = PortProber.findFreePort();
+    subscribe = PortProber.findFreePort();
     events = ZeroMqEventBus.create(
       new ZContext(),
-      "tcp://localhost:" + PortProber.findFreePort(),
-      "tcp://localhost:" + PortProber.findFreePort(),
+      "tcp://localhost:" + publish,
+      "tcp://localhost:" + subscribe,
       true,
       registrationSecret);
     clientFactory = HttpClient.Factory.createDefault();
@@ -121,11 +135,9 @@ public class SessionCleanUpTest {
   }
 
   @Test
-  public void shouldRemoveSessionAfterNodeIsShutDownGracefully()
-    throws URISyntaxException {
+  public void shouldRemoveSessionAfterNodeIsShutDownGracefully() {
     Capabilities capabilities = new ImmutableCapabilities("browserName", "cheese");
     CombinedHandler handler = new CombinedHandler();
-    CombinedHandler nodeHandler = new CombinedHandler();
 
     SessionMap sessions = new LocalSessionMap(tracer, events);
     handler.addHandler(sessions);
@@ -160,32 +172,40 @@ public class SessionCleanUpTest {
 
     server.start();
 
-    URI serverUri = server.getUrl().toURI();
-    TestSessionFactory sessionFactory = new TestSessionFactory((id, caps) -> new Session(
-      id,
-      serverUri,
-      new ImmutableCapabilities(),
-      caps,
-      Instant.now()));
+    StringBuilder rawCaps = new StringBuilder();
+    try (JsonOutput out = new Json().newOutput(rawCaps)) {
+      out.setPrettyPrint(false).write(capabilities);
+    }
 
-    Server<?> nodeServer = new NettyServer(
-      new BaseServerOptions(
-        new MapConfig(ImmutableMap.of())),
-      nodeHandler);
+    Config additionalConfig =
+      new TomlConfig(
+        new StringReader(
+          "[node]\n" +
+          "detect-drivers = false\n" +
+          "driver-factories = [\n" +
+          String.format("\"%s\",", LocalTestSessionFactory.class.getName()) + "\n" +
+          String.format("\"%s\"", rawCaps.toString().replace("\"", "\\\"")) + "\n" +
+          "]"));
 
-    Node localNode = LocalNode.builder(tracer,
-                                       events,
-                                       nodeServer.getUrl().toURI(),
-                                       nodeServer.getUrl().toURI(),
-                                       registrationSecret)
-      .heartbeatPeriod(Duration.ofSeconds(5))
-      .add(capabilities, sessionFactory)
-      .advanced()
-      .healthCheck(() -> new HealthCheck.Result(UP, "Node availability"))
-      .build();
-    nodeHandler.addHandler(localNode);
+    String[] rawConfig = new String[]{
+      "[events]",
+      "publish = \"tcp://localhost:" + publish + "\"",
+      "subscribe = \"tcp://localhost:" + subscribe + "\"",
+      "",
+      "[network]",
+      "relax-checks = true",
+      "",
+      "[server]",
+      "registration-secret = \"hereford hop\""};
 
-    nodeServer.start();
+    Config nodeConfig = new MemoizedConfig(
+      new CompoundConfig(
+        additionalConfig,
+        new TomlConfig(new StringReader(String.join("\n", rawConfig))),
+        new MapConfig(
+          ImmutableMap.of("server", ImmutableMap.of("port", PortProber.findFreePort())))));
+
+    Server<?> nodeServer = new NodeServer().asServer(nodeConfig).start();
 
     waitToHaveCapacity(distributor);
 
@@ -288,6 +308,18 @@ public class SessionCleanUpTest {
     } catch (Exception e) {
       fail("Session not removed");
     }
+
+    Either<SessionNotCreatedException, CreateSessionResponse> sessionResponse =
+      distributor.newSession(new SessionRequest(
+        new RequestId(UUID.randomUUID()),
+        Instant.now(),
+        ImmutableSet.of(W3C),
+        ImmutableSet.of(capabilities),
+        ImmutableMap.of(),
+        ImmutableMap.of()));
+    assertThat(sessionResponse.isLeft()).isTrue();
+    assertThat(distributor.getStatus().getNodes().isEmpty()).isTrue();
+
   }
 
   private void waitToHaveCapacity(Distributor distributor) {
@@ -319,5 +351,35 @@ public class SessionCleanUpTest {
         }
         return false;
       });
+  }
+
+  public static class LocalTestSessionFactory {
+
+    public static SessionFactory create(Config config, Capabilities stereotype) {
+      BaseServerOptions serverOptions = new BaseServerOptions(config);
+      String hostname = serverOptions.getHostname().orElse("localhost");
+      int port = serverOptions.getPort();
+      URI serverUri;
+      try {
+        serverUri = new URI("http", null, hostname, port, null, null, null);
+      } catch (URISyntaxException e) {
+        throw new RuntimeException(e);
+      }
+
+      return new TestSessionFactory(stereotype, (id, caps) -> new SpoofSession(serverUri, caps));
+    }
+  }
+
+  private static class SpoofSession extends Session implements HttpHandler {
+
+    private SpoofSession(URI serverUri, Capabilities capabilities) {
+      super(new SessionId(UUID.randomUUID()), serverUri, new ImmutableCapabilities(), capabilities,
+            Instant.now());
+    }
+
+    @Override
+    public HttpResponse execute(HttpRequest req) throws UncheckedIOException {
+      return new HttpResponse();
+    }
   }
 }
