@@ -252,8 +252,14 @@ public class LocalDistributor extends Distributor implements Closeable {
   public LocalDistributor add(Node node) {
     Require.nonNull("Node", node);
 
-    nodes.put(node.getId(), node);
-    model.add(node.getStatus());
+    // An exception occurs if Node heartbeat has started but the server is not ready.
+    // Unhandled exception blocks the event-bus thread from processing any event henceforth.
+    try {
+      model.add(node.getStatus());
+      nodes.put(node.getId(), node);
+    } catch (Exception e){
+      return this;
+    }
 
     // Extract the health check
     Runnable runnableHealthCheck = asRunnableHealthCheck(node);
