@@ -93,6 +93,17 @@ namespace OpenQA.Selenium.DevTools
         public abstract Task RemoveScriptToEvaluateOnNewDocument(string scriptId);
 
         /// <summary>
+        /// Evaluates a JavaScript snippet. It does not return a value.
+        /// </summary>
+        /// <param name="script">The script to evaluate</param>
+        /// <returns>A task that represents the asynchronous operation.</returns>
+        /// <remarks>
+        /// This method is internal to the operation of pinned scripts in Selenium, and
+        /// is therefore internal by design.
+        /// </remarks>
+        internal abstract Task Evaluate(string script);
+
+        /// <summary>
         /// Raises the BindingCalled event.
         /// </summary>
         /// <param name="e">An <see cref="BindingCalledEventArgs"/> that contains the event data.</param>

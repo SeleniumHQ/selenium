@@ -122,6 +122,20 @@ namespace OpenQA.Selenium.DevTools.V91
             await page.RemoveScriptToEvaluateOnNewDocument(new RemoveScriptToEvaluateOnNewDocumentCommandSettings() { Identifier = scriptId });
         }
 
+        /// <summary>
+        /// Evaluates a JavaScript snippet. It does not return a value.
+        /// </summary>
+        /// <param name="script">The script to evaluate</param>
+        /// <returns>A task that represents the asynchronous operation.</returns>
+        /// <remarks>
+        /// This method is internal to the operation of pinned scripts in Selenium, and
+        /// is therefore internal by design.
+        /// </remarks>
+        internal override async Task Evaluate(string script)
+        {
+            await runtime.Evaluate(new EvaluateCommandSettings { Expression = script });
+        }
+
         private void OnRuntimeBindingCalled(object sender, Runtime.BindingCalledEventArgs e)
         {
             BindingCalledEventArgs wrapped = new BindingCalledEventArgs()

@@ -102,6 +102,20 @@ namespace OpenQA.Selenium.DevTools.V90
         }
 
         /// <summary>
+        /// Evaluates a JavaScript snippet. It does not return a value.
+        /// </summary>
+        /// <param name="script">The script to evaluate</param>
+        /// <returns>A task that represents the asynchronous operation.</returns>
+        /// <remarks>
+        /// This method is internal to the operation of pinned scripts in Selenium, and
+        /// is therefore internal by design.
+        /// </remarks>
+        internal override async Task Evaluate(string script)
+        {
+            await runtime.Evaluate(new EvaluateCommandSettings { Expression = script });
+        }
+
+        /// <summary>
         /// Adds a JavaScript snippet to evaluate when a new document is opened.
         /// </summary>
         /// <param name="script">The script to add to be evaluated when a new document is opened.</param>
