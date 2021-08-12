@@ -34,6 +34,7 @@ import org.openqa.selenium.grid.data.Session;
 import org.openqa.selenium.grid.data.SessionRequest;
 import org.openqa.selenium.grid.distributor.Distributor;
 import org.openqa.selenium.grid.distributor.selector.DefaultSlotSelector;
+import org.openqa.selenium.grid.node.HealthCheck;
 import org.openqa.selenium.grid.node.Node;
 import org.openqa.selenium.grid.node.local.LocalNode;
 import org.openqa.selenium.grid.security.Secret;
@@ -76,6 +77,7 @@ import static java.util.Collections.newSetFromMap;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
 import static org.openqa.selenium.grid.data.Availability.DRAINING;
+import static org.openqa.selenium.grid.data.Availability.UP;
 import static org.openqa.selenium.remote.Dialect.W3C;
 import static org.openqa.selenium.remote.http.HttpMethod.GET;
 
@@ -226,6 +228,8 @@ public class LocalDistributorTest {
       .add(caps, new TestSessionFactory(VerifyingHandler::new))
       .add(caps, new TestSessionFactory(VerifyingHandler::new))
       .maximumConcurrentSessions(3)
+      .advanced()
+      .healthCheck(() -> new HealthCheck.Result(UP, "UP!"))
       .build();
 
     LocalDistributor distributor = new LocalDistributor(
