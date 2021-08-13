@@ -1,0 +1,22 @@
+load("@rules_jvm_external//:defs.bzl", "artifact")
+load("//java:defs.bzl", "java_test_suite")
+
+java_test_suite(
+    name = "MediumTests",
+    size = "medium",
+    srcs = glob(["*Test.java"]),
+    deps = [
+        "//java/src/org/openqa/selenium/json",
+        "//java/src/org/openqa/selenium/remote",
+        "//java/test/org/openqa/selenium/remote/tracing:tracing-support",
+        "//java/src/org/openqa/selenium/grid/config",
+        "//java/src/org/openqa/selenium/grid/server",
+        "//java/src/org/openqa/selenium/grid/web",
+        "//java/src/org/openqa/selenium/jre/server",
+        "//java/test/org/openqa/testing",
+        artifact("com.google.guava:guava"),
+        artifact("javax.servlet:javax.servlet-api"),
+        artifact("junit:junit"),
+        artifact("org.assertj:assertj-core"),
+    ],
+)

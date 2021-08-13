@@ -1,0 +1,33 @@
+load("//java:defs.bzl", "artifact", "java_test_suite")
+
+java_test_suite(
+    name = "small-tests",
+    size = "small",
+    srcs = glob(["*Test.java"]),
+    javacopts = [
+        "--release",
+        "11",
+    ],
+    deps = [
+        "//java/src/org/openqa/selenium:core",
+        "//java/src/org/openqa/selenium/json",
+        "//java/src/org/openqa/selenium/remote",
+        "//java/src/org/openqa/selenium/support",
+        "//java/test/org/openqa/selenium/remote/tracing:tracing-support",
+        "//java/src/org/openqa/selenium/events",
+        "//java/src/org/openqa/selenium/events/local",
+        "//java/src/org/openqa/selenium/grid/data",
+        "//java/src/org/openqa/selenium/grid/node",
+        "//java/src/org/openqa/selenium/grid/node/local",
+        "//java/src/org/openqa/selenium/grid/node/locators",
+        "//java/src/org/openqa/selenium/grid/node/remote",
+        "//java/src/org/openqa/selenium/grid/security",
+        "//java/src/org/openqa/selenium/grid/web",
+        "//java/test/org/openqa/selenium/grid/testing",
+        artifact("com.google.guava:guava"),
+        artifact("io.opentelemetry:opentelemetry-api"),
+        artifact("junit:junit"),
+        artifact("org.assertj:assertj-core"),
+        artifact("org.mockito:mockito-core"),
+    ],
+)

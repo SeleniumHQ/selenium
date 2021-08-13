@@ -1,0 +1,16 @@
+load("//java:defs.bzl", "java_library")
+
+java_library(
+    name = "locators",
+    srcs = glob(["*.java"]),
+    visibility = [
+        "//java/src/org/openqa/selenium/grid/node:__pkg__",
+        "//java/src/org/openqa/selenium/grid/node/locators:__pkg__",
+        "//java/test/org/openqa/selenium/grid:__subpackages__",
+    ],
+    deps = [
+        "//java:auto-service",
+        "//java/src/org/openqa/selenium:core",
+        "//java/src/org/openqa/selenium/remote",
+    ],
+)

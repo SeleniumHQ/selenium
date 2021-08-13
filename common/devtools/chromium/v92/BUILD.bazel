@@ -1,7 +1,7 @@
 package(
     default_visibility = [
         "//dotnet/src/webdriver:__subpackages__",
-        "//java/client/src/org/openqa/selenium/devtools:__subpackages__",
+        "//java/src/org/openqa/selenium/devtools:__subpackages__",
         "//javascript/node/selenium-webdriver:__pkg__",
         "//py:__pkg__",
         "//rb:__pkg__",

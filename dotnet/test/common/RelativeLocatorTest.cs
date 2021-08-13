@@ -16,7 +16,7 @@ namespace OpenQA.Selenium
 
             IWebElement lowest = driver.FindElement(By.Id("below"));
 
-            ReadOnlyCollection<IWebElement> elements = driver.FindElements(RelativeBy.WithTagName("p").Above(lowest));
+            ReadOnlyCollection<IWebElement> elements = driver.FindElements(RelativeBy.WithLocator(By.TagName("p")).Above(lowest));
             List<string> elementIds = new List<string>();
             foreach (IWebElement element in elements)
             {
@@ -32,7 +32,7 @@ namespace OpenQA.Selenium
         {
             driver.Url = (EnvironmentManager.Instance.UrlBuilder.WhereIs("relative_locators.html"));
 
-            ReadOnlyCollection<IWebElement> seen = driver.FindElements(RelativeBy.WithTagName("td").Above(By.Id("center")).RightOf(By.Id("second")));
+            ReadOnlyCollection<IWebElement> seen = driver.FindElements(RelativeBy.WithLocator(By.TagName("td")).Above(By.Id("center")).RightOf(By.Id("second")));
 
             List<string> elementIds = new List<string>();
             foreach (IWebElement element in seen)

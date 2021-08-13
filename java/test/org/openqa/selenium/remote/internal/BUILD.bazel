@@ -1,0 +1,53 @@
+load("@rules_jvm_external//:defs.bzl", "artifact")
+load("//java:defs.bzl", "java_library", "java_test_suite")
+
+java_library(
+    name = "test-lib",
+    testonly = True,
+    srcs = [
+        "DomainSocketsTestBase.java",
+        "HttpClientTestBase.java",
+    ],
+    visibility = [
+        "//java/test/org/openqa/selenium:__subpackages__",
+    ],
+    deps = [
+        "//java/src/org/openqa/selenium:core",
+        "//java/src/org/openqa/selenium/json",
+        "//java/src/org/openqa/selenium/remote",
+        "//java/src/org/openqa/selenium/remote/http",
+        "//java/test/org/openqa/selenium/environment",
+        "//java/test/org/openqa/selenium/testing:test-base",
+        artifact("com.google.guava:guava"),
+        artifact("junit:junit"),
+        artifact("org.assertj:assertj-core"),
+        artifact("io.netty:netty-buffer"),
+        artifact("io.netty:netty-codec-http"),
+        artifact("io.netty:netty-handler"),
+        artifact("io.netty:netty-transport"),
+        artifact("io.netty:netty-transport-native-epoll"),
+        artifact("io.netty:netty-transport-native-epoll-linux-x86_64"),
+        artifact("io.netty:netty-transport-native-kqueue"),
+        artifact("io.netty:netty-transport-native-kqueue-osx-x86_64"),
+        artifact("io.netty:netty-transport-native-unix-common"),
+    ],
+)
+
+java_test_suite(
+    name = "SmallTests",
+    size = "small",
+    srcs = glob(["*Test.java"]),
+    tags = [
+        "no-sandbox",
+    ],
+    deps = [
+        ":test-lib",
+        "//java/src/org/openqa/selenium:core",
+        "//java/src/org/openqa/selenium/remote",
+        "//java/src/org/openqa/selenium/remote/http",
+        "//java/test/org/openqa/selenium:helpers",
+        artifact("org.assertj:assertj-core"),
+        artifact("com.google.guava:guava"),
+        artifact("junit:junit"),
+    ],
+)

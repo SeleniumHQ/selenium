@@ -42,6 +42,7 @@ module Selenium
           end
           opts[:url] ||= "http://#{Platform.localhost}:4444/wd/hub"
           super
+          @bridge.file_detector = ->((filename, *)) { File.exist?(filename) && filename.to_s }
         end
 
         private
