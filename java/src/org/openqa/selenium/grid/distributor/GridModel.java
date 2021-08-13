@@ -24,6 +24,7 @@ import org.openqa.selenium.grid.data.Availability;
 import org.openqa.selenium.grid.data.NodeDrainStarted;
 import org.openqa.selenium.grid.data.NodeId;
 import org.openqa.selenium.grid.data.NodeRemovedEvent;
+import org.openqa.selenium.grid.data.NodeRestartedEvent;
 import org.openqa.selenium.grid.data.NodeStatus;
 import org.openqa.selenium.grid.data.Session;
 import org.openqa.selenium.grid.data.SessionClosedEvent;
@@ -102,6 +103,16 @@ public class GridModel {
           updateHealthCheckCount(refreshed.getNodeId(), refreshed.getAvailability());
 
           return;
+        }
+
+        // If the URI is the same but NodeId is different then the Node has restarted
+        if(!next.getNodeId().equals(node.getNodeId()) &&
+           next.getExternalUri().equals(node.getExternalUri())) {
+          LOG.info(String.format("Re-adding node with id %s and URI %s.", node.getNodeId(), node.getExternalUri()));
+
+          events.fire(new NodeRestartedEvent(node));
+          iterator.remove();
+          break;
         }
 
         // If the URI has changed, then assume this is a new node and fall
