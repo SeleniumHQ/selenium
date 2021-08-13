@@ -1,0 +1,28 @@
+load("@rules_jvm_external//:defs.bzl", "artifact")
+load("//java:defs.bzl", "java_library")
+
+java_library(
+    name = "server",
+    srcs = glob(["*.java"]),
+    visibility = [
+        "//java/test/org/openqa/selenium/environment:__pkg__",
+        "//java/src/org/openqa/selenium:__subpackages__",
+        "//java/test/org/openqa/selenium/grid:__subpackages__",
+    ],
+    runtime_deps = [
+        "//java/src/org/openqa/selenium/events/zeromq",
+    ],
+    deps = [
+        "//java:auto-service",
+        "//java/src/org/openqa/selenium:core",
+        "//java/src/org/openqa/selenium/remote",
+        "//java/src/org/openqa/selenium/events",
+        "//java/src/org/openqa/selenium/grid/component",
+        "//java/src/org/openqa/selenium/grid/config",
+        "//java/src/org/openqa/selenium/grid/jmx",
+        "//java/src/org/openqa/selenium/grid/web",
+        artifact("com.beust:jcommander"),
+        artifact("com.google.guava:guava"),
+        artifact("javax.servlet:javax.servlet-api"),
+    ],
+)

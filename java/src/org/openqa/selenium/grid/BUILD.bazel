@@ -1,0 +1,192 @@
+load("@rules_jvm_external//:defs.bzl", "artifact")
+load("//common:defs.bzl", "copy_file")
+load("//java:defs.bzl", "java_binary", "java_dist_zip", "java_export", "java_library", "javadoc", "merge_jars")
+load("//java:version.bzl", "SE_VERSION")
+load("//java/src/org/openqa/selenium/devtools:versions.bzl", "CDP_DEPS")
+
+genrule(
+    name = "executable-grid",
+    srcs = [
+        "zip-preamble.sh",
+        ":add-build-info",
+    ],
+    outs = ["selenium"],
+    cmd = "cat $(location :zip-preamble.sh) $(location :add-build-info) > $@",
+    executable = True,
+    visibility = [
+        "//:__pkg__",
+        "//deploys/docker:__pkg__",
+    ],
+)
+
+java_binary(
+    name = "pinned-grid",
+    data = select({
+        "//common:linux": [
+            "@linux_chromedriver//:chromedriver",
+            "@linux_chrome//:chrome-linux",
+            "@linux_geckodriver//:geckodriver",
+            "@linux_firefox//:firefox",
+        ],
+        "//common:macos": [
+            "@mac_chromedriver//:chromedriver",
+            "@mac_chrome//:Chromium.app",
+            "@mac_firefox//:Firefox.app",
+            "@mac_geckodriver//:geckodriver",
+        ],
+        "//conditions:default": [],
+    }),
+    jvm_flags = select({
+        "//common:linux": [
+            "-Dwebdriver.chrome.driver=$(location @linux_chromedriver//:chromedriver)",
+            "-Dwebdriver.chrome.binary=$(location @linux_chrome//:chrome-linux)/chrome",
+            "-Dwebdriver.gecko.driver=$(location @linux_geckodriver//:geckodriver)",
+            "-Dwebdriver.firefox.bin=$(location @linux_firefox//:firefox)/firefox",
+        ],
+        "//common:macos": [
+            "-Dwebdriver.chrome.driver=$(location @mac_chromedriver//:chromedriver)",
+            "-Dwebdriver.chrome.binary=$(location @mac_chrome//:Chromium.app)/Contents/MacOS/Chromium",
+            "-Dwebdriver.gecko.driver=$(location @mac_geckodriver//:geckodriver)",
+            "-Dwebdriver.firefox.bin=$(location @mac_firefox//:Firefox.app)/Contents/MacOS/firefox",
+        ],
+        "//conditions:default": [],
+    }),
+    main_class = "org.openqa.selenium.grid.Bootstrap",
+    visibility = [
+        "//:__pkg__",
+    ],
+    runtime_deps = [":grid"],
+)
+
+BASE_COMMAND_SRCS = [
+    "TemplateGridCommand.java",
+    "TemplateGridServerCommand.java",
+]
+
+java_library(
+    name = "base-command",
+    srcs = BASE_COMMAND_SRCS,
+    visibility = [
+        "//java/src/org/openqa/selenium/grid:__subpackages__",
+    ],
+    deps = [
+        "//java/src/org/openqa/selenium:core",
+        "//java/src/org/openqa/selenium/remote/http",
+        "//java/src/org/openqa/selenium/cli",
+        "//java/src/org/openqa/selenium/grid/config",
+        "//java/src/org/openqa/selenium/grid/log",
+        "//java/src/org/openqa/selenium/grid/server",
+        "//java/src/org/openqa/selenium/netty/server",
+        artifact("com.beust:jcommander"),
+        artifact("com.google.guava:guava"),
+    ],
+)
+
+java_export(
+    name = "grid",
+    srcs = glob(
+        ["*.java"],
+        exclude = BASE_COMMAND_SRCS,
+    ),
+    maven_coordinates = "org.seleniumhq.selenium:selenium-grid:%s" % SE_VERSION,
+    opens_to = [
+        "org.openqa.selenium.json",
+    ],
+    pom_template = "//java/src/org/openqa/selenium:template-pom",
+    resource_jars = [
+        "//javascript/grid-ui:react_jar",
+    ],
+    uses = [
+        "org.openqa.selenium.WebDriverInfo",
+        "org.openqa.selenium.cli.CliCommand",
+        "org.openqa.selenium.grid.config.HasRoles",
+        "org.openqa.selenium.remote.locators.CustomLocator",
+        "org.openqa.selenium.remote.service.DriverService$Builder",
+    ],
+    visibility = [
+        "//visibility:public",
+    ],
+    runtime_deps = [
+        "//java/src/org/openqa/selenium/chrome",
+        "//java/src/org/openqa/selenium/edge",
+        "//java/src/org/openqa/selenium/firefox",
+        "//java/src/org/openqa/selenium/ie",
+        "//java/src/org/openqa/selenium/opera",
+        "//java/src/org/openqa/selenium/safari",
+        "//java/src/org/openqa/selenium/events/local",
+        "//java/src/org/openqa/selenium/events/zeromq",
+        "//java/src/org/openqa/selenium/grid/commands",
+        "//java/src/org/openqa/selenium/grid/distributor/httpd",
+        "//java/src/org/openqa/selenium/grid/node/httpd",
+        "//java/src/org/openqa/selenium/grid/router/httpd",
+        "//java/src/org/openqa/selenium/grid/session",
+        "//java/src/org/openqa/selenium/grid/sessionmap/httpd",
+        "//java/src/org/openqa/selenium/grid/sessionqueue/httpd",
+    ] + CDP_DEPS,
+    deps = [
+        ":base-command",
+        "//java/src/org/openqa/selenium/cli",
+        "//java/src/org/openqa/selenium/grid/config",
+    ],
+)
+
+merge_jars(
+    name = "add-build-info",
+    inputs = [
+        ":selenium_server_deploy.jar",
+        "//java/src/org/openqa/selenium:manifest",
+    ],
+)
+
+java_binary(
+    name = "selenium_server",
+    main_class = "org.openqa.selenium.grid.Bootstrap",
+    visibility = [
+        "//:__pkg__",
+        "//deploys/docker:__pkg__",
+        "//java/test:__subpackages__",
+        "//java/test:__subpackages__",
+        "//javascript:__subpackages__",
+        "//py:__pkg__",
+        "//rb:__pkg__",
+    ],
+    runtime_deps = [
+        ":grid",
+        artifact("org.slf4j:slf4j-jdk14"),
+    ],
+)
+
+copy_file(
+    name = "server-binary",
+    src = ":selenium_server_deploy.jar",
+    out = "selenium-server-%s.jar" % SE_VERSION,
+)
+
+java_dist_zip(
+    name = "server-zip",
+    files = [
+        ":server-binary",
+        "//:license",
+        "//java:CHANGELOG",
+    ],
+    third_party_prefixes = [
+        "@maven//",
+        "//third_party",
+    ],
+    deps = [
+        ":grid",
+    ],
+)
+
+javadoc(
+    name = "all-javadocs",
+    third_party_prefixes = [
+        "@maven//",
+        "//third_party",
+    ] + CDP_DEPS,
+    transitive = True,
+    deps = [
+        ":grid",
+        "//java/src/org/openqa/selenium:client-combined",
+    ],
+)

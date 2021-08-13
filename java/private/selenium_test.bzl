@@ -17,25 +17,25 @@ DEFAULT_BROWSER = "firefox"
 
 BROWSERS = {
     "chrome": {
-        "deps": ["//java/client/src/org/openqa/selenium/chrome"],
+        "deps": ["//java/src/org/openqa/selenium/chrome"],
         "jvm_flags": ["-Dselenium.browser=chrome"] + chrome_jvm_flags,
         "data": chrome_data,
         "tags": COMMON_TAGS + ["chrome"],
     },
     "edge": {
-        "deps": ["//java/client/src/org/openqa/selenium/edge"],
+        "deps": ["//java/src/org/openqa/selenium/edge"],
         "jvm_flags": ["-Dselenium.browser=edge"] + edge_jvm_flags,
         "data": edge_data,
         "tags": COMMON_TAGS + ["edge"],
     },
     "firefox": {
-        "deps": ["//java/client/src/org/openqa/selenium/firefox"],
+        "deps": ["//java/src/org/openqa/selenium/firefox"],
         "jvm_flags": ["-Dselenium.browser=ff"] + firefox_jvm_flags,
         "data": firefox_data,
         "tags": COMMON_TAGS + ["firefox"],
     },
     "ie": {
-        "deps": ["//java/client/src/org/openqa/selenium/ie"],
+        "deps": ["//java/src/org/openqa/selenium/ie"],
         "jvm_flags": ["-Dselenium.browser=ie"] +
                      select({
                          "@selenium//common:windows": ["-Dselenium.skiptest=false"],
@@ -45,7 +45,7 @@ BROWSERS = {
         "tags": COMMON_TAGS + ["exclusive", "ie"],
     },
     "safari": {
-        "deps": ["//java/client/src/org/openqa/selenium/safari"],
+        "deps": ["//java/src/org/openqa/selenium/safari"],
         "jvm_flags": ["-Dselenium.browser=safari"] +
                      select({
                          "@selenium//common:macos": ["-Dselenium.skiptest=false"],
@@ -96,11 +96,11 @@ def selenium_test(name, test_class, size = "medium", browsers = BROWSERS.keys(),
                 size = size,
                 jvm_flags = BROWSERS[browser]["jvm_flags"] + jvm_flags + [
                     "-Dselenium.browser.remote=true",
-                    "-Dselenium.browser.remote.path=$(location @selenium//java/server/src/org/openqa/selenium/grid:selenium_server_deploy.jar)",
+                    "-Dselenium.browser.remote.path=$(location @selenium//java/src/org/openqa/selenium/grid:selenium_server_deploy.jar)",
                 ],
                 tags = BROWSERS[browser]["tags"] + tags + ["remote"],
                 data = BROWSERS[browser]["data"] + data + [
-                    "@selenium//java/server/src/org/openqa/selenium/grid:selenium_server_deploy.jar",
+                    "@selenium//java/src/org/openqa/selenium/grid:selenium_server_deploy.jar",
                 ],
                 **stripped_args
             )

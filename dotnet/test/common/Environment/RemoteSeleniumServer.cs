@@ -8,7 +8,7 @@ namespace OpenQA.Selenium.Environment
     public class RemoteSeleniumServer
     {
         private Process webserverProcess;
-        private string serverJarName = @"java/server/src/org/openqa/selenium/grid/selenium_server_deploy.jar";
+        private string serverJarName = @"java/src/org/openqa/selenium/grid/selenium_server_deploy.jar";
         private string projectRootPath;
         private bool autoStart;
 
@@ -29,7 +29,7 @@ namespace OpenQA.Selenium.Environment
                         string.Format(
                             "Selenium server jar at {0} didn't exist - please build it using something like {1}",
                             serverJarName,
-                            "go //java/server/src/org/openqa/grid/selenium:selenium"));
+                            "go //java/src/org/openqa/grid/selenium:selenium"));
                 }
 
                 string serviceDirectory = EnvironmentManager.Instance.DriverServiceDirectory;

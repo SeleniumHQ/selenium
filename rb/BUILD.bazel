@@ -42,7 +42,7 @@ copy_file(
 
 copy_file(
     name = "selenium-server-deploy",
-    src = "//java/server/src/org/openqa/selenium/grid:selenium_server_deploy.jar",
+    src = "//java/src/org/openqa/selenium/grid:selenium_server_deploy.jar",
     out = "selenium_server_deploy.jar",
 )
 

@@ -1,0 +1,42 @@
+load("@rules_jvm_external//:defs.bzl", "artifact")
+load("//java:defs.bzl", "java_selenium_test_suite", "java_test_suite")
+
+LARGE_TESTS = [
+    "LoggingTest.java",
+]
+
+java_selenium_test_suite(
+    name = "large-tests",
+    srcs = LARGE_TESTS,
+    browsers = [
+        "chrome",
+        "edge",
+    ],
+    deps = [
+        "//java/src/org/openqa/selenium/chromium",
+        "//java/src/org/openqa/selenium/remote",
+        "//java/test/org/openqa/selenium/testing:test-base",
+        artifact("junit:junit"),
+        artifact("org.assertj:assertj-core"),
+    ],
+)
+
+java_test_suite(
+    name = "small-tests",
+    size = "small",
+    srcs = glob(
+        ["*.java"],
+        exclude = LARGE_TESTS,
+    ),
+    deps = [
+        "//java/src/org/openqa/selenium:core",
+        "//java/src/org/openqa/selenium/chrome",
+        "//java/src/org/openqa/selenium/chromium",
+        "//java/src/org/openqa/selenium/edge",
+        "//java/src/org/openqa/selenium/json",
+        "//java/test/org/openqa/selenium/testing:annotations",
+        "//java/test/org/openqa/selenium/testing:test-base",
+        artifact("junit:junit"),
+        artifact("org.assertj:assertj-core"),
+    ],
+)

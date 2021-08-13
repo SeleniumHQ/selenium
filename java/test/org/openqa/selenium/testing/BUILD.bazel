@@ -1,0 +1,96 @@
+load("@rules_jvm_external//:defs.bzl", "artifact")
+load("//java:defs.bzl", "java_library", "java_test_suite")
+
+java_library(
+    name = "testing",
+    exports = [
+        ":annotations",
+        ":test-base",
+    ],
+    testonly = True,
+    visibility = [
+        "//java/test:__subpackages__",
+    ],
+)
+
+java_library(
+    name = "annotations",
+    srcs = [
+        "Ignore.java",
+        "IgnoreList.java",
+        "NeedsFreshDriver.java",
+        "NeedsLocalEnvironment.java",
+        "NoDriverAfterTest.java",
+        "NoDriverBeforeTest.java",
+        "NotYetImplemented.java",
+        "NotYetImplementedList.java",
+        "SwitchToTopAfterTest.java",
+        "UnitTests.java",
+    ],
+    testonly = True,
+    visibility = [
+        "//java/test:__subpackages__",
+        "//java/test:__subpackages__",
+        "//java/test:__subpackages__",
+    ],
+    exports = [
+        "//java/test/org/openqa/selenium/testing/drivers:browser",
+    ],
+    deps = ["//java/test/org/openqa/selenium/testing/drivers:browser"],
+)
+
+java_library(
+    name = "test-base",
+    testonly = True,
+    srcs = [
+        "CaptureLoggingRule.java",
+        "IgnoreComparator.java",
+        "JUnit4TestBase.java",
+        "Pages.java",
+        "Safely.java",
+        "SeleniumTestRule.java",
+        "SeleniumTestRunner.java",
+        "StaticResources.java",
+        "TearDownFixture.java",
+        "TestIgnorance.java",
+        "TestUtilities.java",
+    ],
+    visibility = [
+        "//java/test:__subpackages__",
+        "//java/test:__subpackages__",
+        "//java/test:__subpackages__",
+    ],
+    deps = [
+        ":annotations",
+        "//java/src/org/openqa/selenium:core",
+        "//java/src/org/openqa/selenium/remote",
+        "//java/src/org/openqa/selenium/support/ui:wait",
+        "//java/test/org/openqa/selenium/build",
+        "//java/test/org/openqa/selenium/environment",
+        "//java/test/org/openqa/selenium/testing/drivers",
+        "//java/test/org/openqa/selenium/testing/drivers:browser",
+        artifact("com.google.guava:guava"),
+        artifact("junit:junit"),
+        artifact("org.eclipse.mylyn.github:org.eclipse.egit.github.core"),
+        artifact("org.assertj:assertj-core"),
+        artifact("org.seleniumhq.selenium:htmlunit-driver"),
+    ],
+)
+
+java_test_suite(
+    name = "SmallTests",
+    size = "small",
+    srcs = ["IgnoreComparatorUnitTest.java"],
+    visibility = [
+        "//java/test/org/openqa/selenium:__pkg__",
+    ],
+    deps = [
+        ":test-base",
+        "//java/src/org/openqa/selenium:core",
+        "//java/test/org/openqa/selenium/testing:annotations",
+        "//java/test/org/openqa/selenium/testing/drivers",
+        "//java/test/org/openqa/selenium/testing/drivers:browser",
+        artifact("junit:junit"),
+        artifact("org.mockito:mockito-core"),
+    ],
+)

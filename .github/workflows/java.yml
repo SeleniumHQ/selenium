@@ -127,7 +127,7 @@ jobs:
       - name: Run browser tests in Chrome
         uses: ./.github/actions/bazel-test
         with:
-          query: attr(tags, chrome, tests(//java/client/...)) except attr(tags, remote, tests(//java/client/...))
+          query: attr(tags, chrome, tests(//java/...)) except attr(tags, remote, tests(//java/...))
         env:
           DISPLAY: :99
 
@@ -160,7 +160,7 @@ jobs:
       - name: Run browser tests in Firefox
         uses: ./.github/actions/bazel-test
         with:
-          query: attr(tags, firefox, tests(//java/client/...)) except attr(tags, remote, tests(//java/client/...))
+          query: attr(tags, firefox, tests(//java/...)) except attr(tags, remote, tests(//java/...))
         env:
           DISPLAY: :99
 
@@ -196,7 +196,7 @@ jobs:
       - name: Run server tests
         uses: ./.github/actions/bazel-test
         with:
-          query: tests(//java/server/...) except attr(tags, 'lint|ie|edge|edgehtml|safari', tests(//java/server/...))
+          query: tests(//java/...) except attr(tags, 'lint|ie|edge|edgehtml|safari', tests(//java/...))
         env:
           DISPLAY: :99
 
