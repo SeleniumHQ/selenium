@@ -318,6 +318,8 @@ class Builder {
   }
 
   /**
+   * @deprecated Since Selenium 4.0 withCapabilities is deprecated, use set*Options instead where * is the browser(eg setChromeOptions)
+   *
    * Sets the desired capabilities when requesting a new session. This will
    * overwrite any previously set capabilities.
    * @param {!(Object|Capabilities)} capabilities The desired capabilities for
