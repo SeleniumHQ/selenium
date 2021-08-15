@@ -53,6 +53,8 @@ public class Json {
   public <T> T toType(String source, Type typeOfT, PropertySetting setter) {
     try (StringReader reader = new StringReader(source)) {
       return toType(reader, typeOfT, setter);
+    } catch (JsonException e) {
+      throw new JsonException("Unable to parse: " + source, e);
     }
   }
 
