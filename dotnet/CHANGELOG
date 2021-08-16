@@ -22,6 +22,8 @@ v4.0.0rc1
    account for this, a new property on HttpResponseData has been added to
    list the cookie headers (the `CookieHeaders` property) as found in the
    response.
+ * (on behalf of Nikolay Borisenko) Modified to dispose HttpRequestMessage
+   and HttpResponseMessage when making HTTP calls across the wire.
 
 v4.0.0b4
 ========
