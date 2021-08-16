@@ -1,4 +1,4 @@
-// <copyright file="NetworkResponseRecievedEventArgs.cs" company="WebDriver Committers">
+// <copyright file="NetworkResponseReceivedEventArgs.cs" company="WebDriver Committers">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements. See the NOTICE file
 // distributed with this work for additional information
@@ -24,7 +24,7 @@ namespace OpenQA.Selenium
     /// <summary>
     /// Provides data for the NetworkResponseReceived event of an object implementing the <see cref="INetwork"/> interface.
     /// </summary>
-    public class NetworkResponseRecievedEventArgs : EventArgs
+    public class NetworkResponseReceivedEventArgs : EventArgs
     {
         private readonly string requestId;
         private readonly string responseUrl;
@@ -34,10 +34,10 @@ namespace OpenQA.Selenium
         private readonly Dictionary<string, string> responseHeaders = new Dictionary<string, string>();
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="NetworkResponseRecievedEventArgs"/> class.
+        /// Initializes a new instance of the <see cref="NetworkResponseReceivedEventArgs"/> class.
         /// </summary>
         /// <param name="responseData">The <see cref="HttpResponseData"/> that describes the network response.</param>
-        public NetworkResponseRecievedEventArgs(HttpResponseData responseData)
+        public NetworkResponseReceivedEventArgs(HttpResponseData responseData)
         {
             this.requestId = responseData.RequestId;
             this.responseUrl = responseData.Url;

@@ -61,7 +61,7 @@ namespace OpenQA.Selenium
         /// <summary>
         /// Occurs when a browser receives a network response.
         /// </summary>
-        public event EventHandler<NetworkResponseRecievedEventArgs> NetworkResponseReceived;
+        public event EventHandler<NetworkResponseReceivedEventArgs> NetworkResponseReceived;
 
         /// <summary>
         /// Asynchronously starts monitoring for network traffic.
@@ -217,7 +217,7 @@ namespace OpenQA.Selenium
             await this.session.Value.Domains.Network.ContinueResponseWithoutModification(e.ResponseData);
             if (this.NetworkResponseReceived != null)
             {
-                this.NetworkResponseReceived(this, new NetworkResponseRecievedEventArgs(e.ResponseData));
+                this.NetworkResponseReceived(this, new NetworkResponseReceivedEventArgs(e.ResponseData));
             }
         }
     }
