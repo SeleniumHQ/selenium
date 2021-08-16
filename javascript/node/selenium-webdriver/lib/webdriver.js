@@ -258,18 +258,18 @@ class IWebDriver {
   /**
    * @return {!command.Executor} The command executor used by this instance.
    */
-  getExecutor() {}
+  getExecutor() { }
 
   /**
    * @return {!Promise<!Session>} A promise for this client's session.
    */
-  getSession() {}
+  getSession() { }
 
   /**
    * @return {!Promise<!Capabilities>} A promise that will resolve with
    *     the this instance's capabilities.
    */
-  getCapabilities() {}
+  getCapabilities() { }
 
   /**
    * Terminates the browser session. After calling quit, this instance will be
@@ -279,7 +279,7 @@ class IWebDriver {
    * @return {!Promise<void>} A promise that will be resolved when the
    *     command has completed.
    */
-  quit() {}
+  quit() { }
 
   /**
    * Creates a new action sequence using this driver. The sequence will not be
@@ -458,7 +458,7 @@ class IWebDriver {
     timeout = undefined, // eslint-disable-line
     message = undefined, // eslint-disable-line
     pollTimeout = undefined // eslint-disable-line
-  ) {}
+  ) { }
 
   /**
    * Makes the driver sleep for the given amount of time.
@@ -475,7 +475,7 @@ class IWebDriver {
    * @return {!Promise<string>} A promise that will be resolved with the current
    *     window handle.
    */
-  getWindowHandle() {}
+  getWindowHandle() { }
 
   /**
    * Retrieves a list of all available window handles.
@@ -483,7 +483,7 @@ class IWebDriver {
    * @return {!Promise<!Array<string>>} A promise that will be resolved with an
    *     array of window handles.
    */
-  getAllWindowHandles() {}
+  getAllWindowHandles() { }
 
   /**
    * Retrieves the current page's source. The returned source is a representation
@@ -493,7 +493,7 @@ class IWebDriver {
    * @return {!Promise<string>} A promise that will be resolved with the current
    *     page source.
    */
-  getPageSource() {}
+  getPageSource() { }
 
   /**
    * Closes the current window.
@@ -501,7 +501,7 @@ class IWebDriver {
    * @return {!Promise<void>} A promise that will be resolved when this command
    *     has completed.
    */
-  close() {}
+  close() { }
 
   /**
    * Navigates to the given URL.
@@ -518,7 +518,7 @@ class IWebDriver {
    * @return {!Promise<string>} A promise that will be resolved with the
    *     current URL.
    */
-  getCurrentUrl() {}
+  getCurrentUrl() { }
 
   /**
    * Retrieves the current page title.
@@ -526,7 +526,7 @@ class IWebDriver {
    * @return {!Promise<string>} A promise that will be resolved with the current
    *     page's title.
    */
-  getTitle() {}
+  getTitle() { }
 
   /**
    * Locates an element on the page. If the element cannot be found, a
@@ -590,23 +590,23 @@ class IWebDriver {
    * @return {!Promise<string>} A promise that will be resolved to the
    *     screenshot as a base-64 encoded PNG.
    */
-  takeScreenshot() {}
+  takeScreenshot() { }
 
   /**
    * @return {!Options} The options interface for this instance.
    */
-  manage() {}
+  manage() { }
 
   /**
    * @return {!Navigation} The navigation interface for this instance.
    */
-  navigate() {}
+  navigate() { }
 
   /**
    * @return {!TargetLocator} The target locator interface for this
    *     instance.
    */
-  switchTo() {}
+  switchTo() { }
 
   /**
    *
@@ -665,7 +665,7 @@ class WebDriver {
     // If session is a rejected promise, add a no-op rejection handler.
     // This effectively hides setup errors until users attempt to interact
     // with the session.
-    this.session_.catch(function () {})
+    this.session_.catch(function () { })
 
     /** @private {!command.Executor} */
     this.executor_ = executor
@@ -761,12 +761,12 @@ class WebDriver {
       this.session_ = Promise.reject(
         new error.NoSuchSessionError(
           'This driver instance does not have a valid session ID ' +
-            '(did you call WebDriver.quit()?) and may no longer be used.'
+          '(did you call WebDriver.quit()?) and may no longer be used.'
         )
       )
 
       // Only want the session rejection to bubble if accessed.
-      this.session_.catch(function () {})
+      this.session_.catch(function () { })
 
       if (this.onQuit_) {
         return this.onQuit_.call(void 0)
@@ -827,18 +827,15 @@ class WebDriver {
             let timeoutMessage = resolveWaitMessage(message)
             reject(
               new error.TimeoutError(
-                `${timeoutMessage}Timed out waiting for promise to resolve after ${
-                  Date.now() - start
+                `${timeoutMessage}Timed out waiting for promise to resolve after ${Date.now() - start
                 }ms`
               )
             )
           } catch (ex) {
             reject(
               new error.TimeoutError(
-                `${
-                  ex.message
-                }\nTimed out waiting for promise to resolve after ${
-                  Date.now() - start
+                `${ex.message
+                }\nTimed out waiting for promise to resolve after ${Date.now() - start
                 }ms`
               )
             )
@@ -868,7 +865,7 @@ class WebDriver {
     if (typeof fn !== 'function') {
       throw TypeError(
         'Wait condition must be a promise-like object, function, or a ' +
-          'Condition object'
+        'Condition object'
       )
     }
 
@@ -920,7 +917,7 @@ class WebDriver {
           if (!(value instanceof WebElement)) {
             throw TypeError(
               'WebElementCondition did not resolve to a WebElement: ' +
-                Object.prototype.toString.call(value)
+              Object.prototype.toString.call(value)
             )
           }
           return value
@@ -1732,7 +1729,7 @@ class Options {
       } else if (typeof value !== 'undefined') {
         throw TypeError(
           'invalid timeouts configuration:' +
-            ` expected "${key}" to be a number, got ${typeof value}`
+          ` expected "${key}" to be a number, got ${typeof value}`
         )
       }
     }
@@ -1793,7 +1790,7 @@ function legacyTimeout(driver, type, ms) {
  *
  * @record
  */
-Options.Cookie = function () {}
+Options.Cookie = function () { }
 
 /**
  * The name of the cookie.
@@ -2498,18 +2495,18 @@ class WebElement {
    */
   async sendKeys(...args) {
     let keys = []
-    ;(await Promise.all(args)).forEach((key) => {
-      let type = typeof key
-      if (type === 'number') {
-        key = String(key)
-      } else if (type !== 'string') {
-        throw TypeError('each key must be a number of string; got ' + type)
-      }
+      ; (await Promise.all(args)).forEach((key) => {
+        let type = typeof key
+        if (type === 'number') {
+          key = String(key)
+        } else if (type !== 'string') {
+          throw TypeError('each key must be a number of string; got ' + type)
+        }
 
-      // The W3C protocol requires keys to be specified as an array where
-      // each element is a single key.
-      keys.push(...key.split(''))
-    })
+        // The W3C protocol requires keys to be specified as an array where
+        // each element is a single key.
+        keys.push(...key.split(''))
+      })
 
     if (!this.driver_.fileDetector_) {
       return this.execute_(
@@ -2728,18 +2725,12 @@ class WebElement {
    * Take a screenshot of the visible region encompassed by this element's
    * bounding rectangle.
    *
-   * @param {boolean=} scroll Optional argument that indicates whether the
-   *     element should be scrolled into view before taking a screenshot.
-   *     Defaults to false.
    * @return {!Promise<string>} A promise that will be
    *     resolved to the screenshot as a base-64 encoded PNG.
    */
-  takeScreenshot(scroll = false) {
+  takeScreenshot() {
     return this.execute_(
-      new command.Command(command.Name.TAKE_ELEMENT_SCREENSHOT).setParameter(
-        'scroll',
-        scroll
-      )
+      new command.Command(command.Name.TAKE_ELEMENT_SCREENSHOT)
     )
   }
 }
