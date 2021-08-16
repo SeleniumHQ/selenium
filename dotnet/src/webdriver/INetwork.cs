@@ -37,7 +37,7 @@ namespace OpenQA.Selenium
         /// <summary>
         /// Occurs when a browser receives a network response.
         /// </summary>
-        event EventHandler<NetworkResponseRecievedEventArgs> NetworkResponseReceived;
+        event EventHandler<NetworkResponseReceivedEventArgs> NetworkResponseReceived;
 
         /// <summary>
         /// Adds a <see cref="NetworkRequestHandler"/> to examine incoming network requests,

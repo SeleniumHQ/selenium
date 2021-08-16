@@ -39,8 +39,6 @@ namespace OpenQA.Selenium.DevTools
         {
             { 92, typeof(V92.V92Domains) },
             { 91, typeof(V91.V91Domains) },
-            { 90, typeof(V90.V90Domains) },
-            { 89, typeof(V89.V89Domains) },
             { 85, typeof(V85.V85Domains) }  
         };
 
