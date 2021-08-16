@@ -1,3 +1,28 @@
+v4.0.0rc1
+=========
+ * Set available versions of Chrome DevTools Protocol to 85, 91, and 92.
+ * Enabled script pinning. This allows the user to add a snippet of JavaScript
+   to a page that will be available on all subsquent pages, and not have to
+   pass the script across the wire every time. For exceptionally large blobs
+   of JavaScript, this may represent a significant savings in bandwidth and
+   data sent to the remote end of the WebDriver protocol. This feature is
+   currently only available for browsers that implement the Chrome DevTools
+   Protocol.
+ * Added ability to use By object with relative locators. This change also
+   marks RelativeBy.WithTagName as obsolete. Users should change their calls
+   to `RelativeBy.WithLocator(By.TagName(...))`.
+ * Allow network interception to handle duplicate response headers.
+   Headers in HTTP responses may be repeated. The previous implementation
+   of CDP network response handling did not take this into account. Now, if
+   a response has duplicate headers, the values will be combined into a
+   single header with the correct name, and a comma-separated list for the
+   value. This is complaint with RFC2616. There is an exception for the
+   Set-Cookie header, however, which is allowed to occur multiple times,
+   but is not combinable as to the rules of the aforementioned RFC. To
+   account for this, a new property on HttpResponseData has been added to
+   list the cookie headers (the `CookieHeaders` property) as found in the
+   response.
+
 v4.0.0b4
 ========
  * 4.0.0b3 was skipped for the .NET bindings and not released publicly.
