@@ -23,6 +23,7 @@ import com.google.common.collect.ImmutableSortedSet;
 import org.openqa.selenium.internal.Require;
 
 import io.ous.jtoml.JToml;
+import io.ous.jtoml.ParseException;
 import io.ous.jtoml.Toml;
 import io.ous.jtoml.TomlTable;
 
@@ -45,6 +46,10 @@ public class TomlConfig implements Config {
       toml = JToml.parse(reader);
     } catch (IOException e) {
       throw new ConfigException("Unable to read TOML.", e);
+    } catch (ParseException e) {
+      throw new ConfigException(e.getCause() +
+                                "\n Validate the config using https://www.toml-lint.com/. "
+                                + "\n Refer https://toml.io/en/ for TOML usage guidance. ");
     }
   }
 
