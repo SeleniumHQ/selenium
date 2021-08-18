@@ -29,6 +29,7 @@ import org.openqa.selenium.json.Json;
 
 import java.io.PrintStream;
 import java.nio.file.Path;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -109,6 +110,8 @@ public class ConfigFlags implements HasRoles {
 
     StringBuilder demoToml = new StringBuilder();
     demoToml.append("Configuration help for Toml config file").append("\n\n");
+    demoToml.append("In case of parsing errors, validate the config using https://www.toml-lint.com/").append("\n\n");
+    demoToml.append("Refer https://toml.io/en/ for TOML usage guidance").append("\n\n");
     allOptions.forEach((section, options) -> {
       demoToml.append("[").append(section).append("]\n");
       options.stream().filter(option -> !option.hidden).forEach(option -> {
@@ -119,22 +122,24 @@ public class ConfigFlags implements HasRoles {
         if (!option.defaultValue.isEmpty()) {
           demoToml.append("# Default: ").append(option.defaultValue).append("\n");
         }
-        demoToml.append("# Example: ").append("\n");
-        if (option.prefixed) {
-          demoToml.append("[[")
-            .append(section)
-            .append(".")
-            .append(option.optionName)
-            .append("]]")
-            .append(option.example(config))
-            .append("\n\n");
-        } else {
-          demoToml.append(option.optionName)
-            .append(" = ")
-            .append(option.example(config)).append("\n\n");
-        }
+        Arrays.stream(option.example()).forEach(example -> {
+          demoToml.append("# Example: ").append("\n");
+          if (option.prefixed) {
+            demoToml.append("[[")
+              .append(section)
+              .append(".")
+              .append(option.optionName)
+              .append("]]")
+              .append(option.example(config, example))
+              .append("\n\n");
+          } else {
+            demoToml.append(option.optionName)
+              .append(" = ")
+              .append(option.example(config, example)).append("\n\n");
+          }
+        });
+        demoToml.append("\n");
       });
-      demoToml.append("\n");
     });
 
     dumpTo.print(demoToml);

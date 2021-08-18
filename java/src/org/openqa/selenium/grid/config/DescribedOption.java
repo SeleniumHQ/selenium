@@ -30,6 +30,7 @@ import com.beust.jcommander.Parameter;
 import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
@@ -50,7 +51,7 @@ public class DescribedOption implements Comparable<DescribedOption> {
   public final String optionName;
   public final String description;
   public final String type;
-  public final String example;
+  public final String[] example;
   public final String defaultValue;
   public final boolean prefixed;
   public final boolean repeats;
@@ -133,11 +134,11 @@ public class DescribedOption implements Comparable<DescribedOption> {
     return quotable;
   }
 
-  public String example() {
+  public String[] example() {
     return example;
   }
 
-  public String example(Config config) {
+  public String example(Config config, String example) {
     Optional<List<String>> allOptions = config.getAll(section, optionName);
     if (allOptions.isPresent() && !allOptions.get().isEmpty()) {
       if (repeats) {
@@ -179,7 +180,7 @@ public class DescribedOption implements Comparable<DescribedOption> {
            Objects.equals(description, that.description) &&
            Objects.equals(defaultValue, that.defaultValue) &&
            Objects.equals(type, that.type) &&
-           Objects.equals(example, that.example) &&
+           Arrays.equals(example, that.example) &&
            Objects.equals(flags, that.flags);
   }
 
@@ -189,7 +190,7 @@ public class DescribedOption implements Comparable<DescribedOption> {
                         optionName,
                         description,
                         type,
-                        example,
+                        Arrays.hashCode(example),
                         repeats,
                         quotable,
                         flags,
