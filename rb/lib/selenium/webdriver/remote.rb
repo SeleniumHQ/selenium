@@ -18,6 +18,7 @@
 # under the License.
 
 require 'uri'
+require 'selenium/webdriver/remote/server_error'
 
 module Selenium
   module WebDriver
@@ -25,7 +26,6 @@ module Selenium
       autoload :Bridge, 'selenium/webdriver/remote/bridge'
       autoload :Driver, 'selenium/webdriver/remote/driver'
       autoload :Response, 'selenium/webdriver/remote/response'
-      autoload :ServerError, 'selenium/webdriver/remote/server_error'
       autoload :Capabilities, 'selenium/webdriver/remote/capabilities'
       autoload :COMMANDS, 'selenium/webdriver/remote/commands'
       module Http
