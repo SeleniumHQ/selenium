@@ -128,7 +128,7 @@ For normal WebDriver scripts (non-Remote), the Java server is not needed.
 
 However, to use Selenium Webdriver Remote or the legacy Selenium API (Selenium-RC), you need to also run the Selenium server.  The server requires a Java Runtime Environment (JRE).
 
-Download the server separately, from: http://selenium-release.storage.googleapis.com/4.0/selenium-server-standalone-4.0.0.jar
+Download the server separately, from: https://www.selenium.dev/downloads/
 
 Run the server from the command line::
 

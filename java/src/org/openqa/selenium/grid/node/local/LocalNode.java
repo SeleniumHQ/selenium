@@ -158,7 +158,6 @@ public class LocalNode extends Node {
         if (!slot.isAvailable()) {
           slot.stop();
         }
-
       })
       .build();
 

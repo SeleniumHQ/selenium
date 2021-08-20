@@ -223,7 +223,9 @@ under the License.
 [edge]: http://go.microsoft.com/fwlink/?LinkId=619687
 [geckodriver]: https://github.com/mozilla/geckodriver/releases/
 [reduction]: http://www.webkit.org/quality/reduction.html
-[release]: http://selenium-release.storage.googleapis.com/index.html
+
+[release]: https://www.selenium.dev/downloads/
+
 [users]: https://groups.google.com/forum/#!forum/selenium-users
 [safaridriver]: https://developer.apple.com/library/prerelease/content/releasenotes/General/WhatsNewInSafari/Articles/Safari_10_0.html#//apple_ref/doc/uid/TP40014305-CH11-DontLinkElementID_28
 [operadriver]: https://github.com/operasoftware/operachromiumdriver/releases
