@@ -448,7 +448,7 @@ DriverService.Builder = class {
 
 /**
  * Manages the life and death of the
- * <a href="http://selenium-release.storage.googleapis.com/index.html">
+ * <a href="https://www.selenium.dev/downloads/">
  * standalone Selenium server</a>.
  */
 class SeleniumServer extends DriverService {
@@ -562,7 +562,7 @@ SeleniumServer.Options = class {
 /**
  * A {@link webdriver.FileDetector} that may be used when running
  * against a remote
- * [Selenium server](http://selenium-release.storage.googleapis.com/index.html).
+ * [Selenium server](https://www.selenium.dev/downloads/).
  *
  * When a file path on the local machine running this script is entered with
  * {@link webdriver.WebElement#sendKeys WebElement#sendKeys}, this file detector

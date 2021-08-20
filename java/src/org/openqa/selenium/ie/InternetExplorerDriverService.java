@@ -169,8 +169,8 @@ public class InternetExplorerDriverService extends DriverService {
     @Override
     protected File findDefaultExecutable() {
       return findExecutable("IEDriverServer", IE_DRIVER_EXE_PROPERTY,
-          "https://github.com/SeleniumHQ/selenium/wiki/InternetExplorerDriver",
-          "http://selenium-release.storage.googleapis.com/index.html");
+                            "https://github.com/SeleniumHQ/selenium/wiki/InternetExplorerDriver",
+                            "https://www.selenium.dev/downloads/");
     }
 
     @Override

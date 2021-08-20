@@ -162,7 +162,7 @@ function createDriver(ctor, ...args) {
  *   option always takes precedence over {@code SELENIUM_SERVER_JAR}.
  *
  * - {@code SELENIUM_SERVER_JAR}: defines the path to the
- *   <a href="http://selenium-release.storage.googleapis.com/index.html">
+ *   <a href="https://www.selenium.dev/downloads/">
  *   standalone Selenium server</a> jar to use. The server will be started the
  *   first time a WebDriver instance and be killed when the process exits.
  *
