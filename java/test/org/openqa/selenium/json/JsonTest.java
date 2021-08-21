@@ -209,6 +209,9 @@ public class JsonTest {
 
     assertThatExceptionOfType(JsonException.class)
       .isThrownBy(() -> new Json().toType(raw, NoDefaultConstructor.class))
+      .withMessage("Unable to parse: {\"value\": \"time\"}")
+      .havingCause()
+      .isInstanceOf(JsonException.class)
       .withMessageStartingWith(
         "Unable to find type coercer for class %s", NoDefaultConstructor.class.getTypeName());
   }
