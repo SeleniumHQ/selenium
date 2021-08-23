@@ -70,6 +70,31 @@ public class EdgeDriverService extends DriverService {
   public static final String EDGE_DRIVER_ALLOWED_IPS_PROPERTY = "webdriver.edge.withAllowedIps";
 
   /**
+   * System property that defines whether the MSEdgeDriver executable should check for build
+   * version compatibility between MSEdgeDriver and the browser.
+   */
+  public static final String EDGE_DRIVER_DISABLE_BUILD_CHECK = "webdriver.edge.disableBuildCheck";
+
+  /**
+   * @param executable  The EdgeDriver executable.
+   * @param port        Which port to start the EdgeDriver on.
+   * @param timeout     Timeout waiting for driver server to start.
+   * @param args        The arguments to the launched server.
+   * @param environment The environment for the launched server.
+   * @throws IOException If an I/O error occurs.
+   */
+  public EdgeDriverService(
+    File executable,
+    int port,
+    Duration timeout,
+    List<String> args,
+    Map<String, String> environment) throws IOException {
+    super(executable, port, timeout,
+          unmodifiableList(new ArrayList<>(args)),
+          unmodifiableMap(new HashMap<>(environment)));
+  }
+
+  /**
    * Configures and returns a new {@link EdgeDriverService} using the default configuration. In
    * this configuration, the service will use the MSEdgeDriver executable identified by the
    * {@link #EDGE_DRIVER_EXE_PROPERTY} system property. Each service created by this method will
@@ -82,34 +107,16 @@ public class EdgeDriverService extends DriverService {
   }
 
   /**
-   * @param executable The EdgeDriver executable.
-   * @param port Which port to start the EdgeDriver on.
-   * @param timeout     Timeout waiting for driver server to start.
-   * @param args The arguments to the launched server.
-   * @param environment The environment for the launched server.
-   * @throws IOException If an I/O error occurs.
-   */
-  public EdgeDriverService(
-      File executable,
-      int port,
-      Duration timeout,
-      List<String> args,
-      Map<String, String> environment) throws IOException {
-    super(executable, port, timeout,
-          unmodifiableList(new ArrayList<>(args)),
-          unmodifiableMap(new HashMap<>(environment)));
-  }
-
-  /**
    * Builder used to configure new {@link EdgeDriverService} instances.
    */
   @AutoService(DriverService.Builder.class)
   public static class Builder extends DriverService.Builder<
-      EdgeDriverService, EdgeDriverService.Builder> {
+    EdgeDriverService, EdgeDriverService.Builder> {
 
     private boolean verbose = Boolean.getBoolean(EDGE_DRIVER_VERBOSE_LOG_PROPERTY);
     private boolean silent = Boolean.getBoolean(EDGE_DRIVER_SILENT_OUTPUT_PROPERTY);
     private String allowedListIps = System.getProperty(EDGE_DRIVER_ALLOWED_IPS_PROPERTY);
+    private boolean disableBuildCheck = Boolean.getBoolean(EDGE_DRIVER_DISABLE_BUILD_CHECK);
 
     @Override
     public int score(Capabilities capabilities) {
@@ -168,9 +175,9 @@ public class EdgeDriverService extends DriverService {
     @Override
     protected File findDefaultExecutable() {
       return findExecutable(
-          "msedgedriver", EDGE_DRIVER_EXE_PROPERTY,
-          "https://github.com/SeleniumHQ/selenium/wiki/MicrosoftWebDriver",
-          "https://msedgecdn.azurewebsites.net/webdriver/index.html");
+        "msedgedriver", EDGE_DRIVER_EXE_PROPERTY,
+        "https://docs.microsoft.com/en-us/microsoft-edge/webdriver-chromium/",
+        "https://developer.microsoft.com/en-us/microsoft-edge/tools/webdriver/");
     }
 
     @Override
@@ -195,6 +202,9 @@ public class EdgeDriverService extends DriverService {
       }
       if (allowedListIps != null) {
         args.add(String.format("--whitelisted-ips=%s", allowedListIps));
+      }
+      if (disableBuildCheck) {
+        args.add("--disable-build-check");
       }
 
       return unmodifiableList(args);

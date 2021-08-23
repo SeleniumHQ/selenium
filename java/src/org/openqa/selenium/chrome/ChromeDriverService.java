@@ -20,16 +20,18 @@ package org.openqa.selenium.chrome;
 import static java.util.Collections.unmodifiableList;
 
 import com.google.auto.service.AutoService;
+
+import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.remote.BrowserType;
+import org.openqa.selenium.remote.service.DriverService;
+
 import java.io.File;
 import java.io.IOException;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import org.openqa.selenium.Capabilities;
-import org.openqa.selenium.WebDriverException;
-import org.openqa.selenium.remote.BrowserType;
-import org.openqa.selenium.remote.service.DriverService;
 
 /**
  * Manages the life and death of a ChromeDriver server.
@@ -66,14 +68,22 @@ public class ChromeDriverService extends DriverService {
    * in silent mode.
    */
   public static final String CHROME_DRIVER_SILENT_OUTPUT_PROPERTY =
-      "webdriver.chrome.silentOutput";
+    "webdriver.chrome.silentOutput";
 
   /**
    * System property that defines comma-separated list of remote IPv4 addresses which are
    * allowed to connect to ChromeDriver.
    */
   public static final String CHROME_DRIVER_WHITELISTED_IPS_PROPERTY =
-      "webdriver.chrome.whitelistedIps";
+    "webdriver.chrome.whitelistedIps";
+
+  /**
+   * System property that defines whether the chromedriver executable should check for build
+   * version compatibility between chromedriver and the browser.
+   */
+  public static final String
+    CHROME_DRIVER_DISABLE_BUILD_CHECK =
+    "webdriver.chrome.disableBuildCheck";
 
   /**
    * @param executable  The chromedriver executable.
@@ -83,10 +93,10 @@ public class ChromeDriverService extends DriverService {
    * @throws IOException If an I/O error occurs.
    */
   public ChromeDriverService(
-      File executable,
-      int port,
-      List<String> args,
-      Map<String, String> environment) throws IOException {
+    File executable,
+    int port,
+    List<String> args,
+    Map<String, String> environment) throws IOException {
     super(executable, port, DEFAULT_TIMEOUT, args, environment);
   }
 
@@ -144,6 +154,7 @@ public class ChromeDriverService extends DriverService {
     private boolean verbose = Boolean.getBoolean(CHROME_DRIVER_VERBOSE_LOG_PROPERTY);
     private boolean silent = Boolean.getBoolean(CHROME_DRIVER_SILENT_OUTPUT_PROPERTY);
     private String whitelistedIps = System.getProperty(CHROME_DRIVER_WHITELISTED_IPS_PROPERTY);
+    private boolean disableBuildCheck = Boolean.getBoolean(CHROME_DRIVER_DISABLE_BUILD_CHECK);
     private ChromeDriverLogLevel logLevel = null;
 
     @Override
@@ -220,9 +231,9 @@ public class ChromeDriverService extends DriverService {
     @Override
     protected File findDefaultExecutable() {
       return findExecutable(
-          "chromedriver", CHROME_DRIVER_EXE_PROPERTY,
-          "https://github.com/SeleniumHQ/selenium/wiki/ChromeDriver",
-          "http://chromedriver.storage.googleapis.com/index.html");
+        "chromedriver", CHROME_DRIVER_EXE_PROPERTY,
+        "https://github.com/SeleniumHQ/selenium/wiki/ChromeDriver",
+        "https://chromedriver.storage.googleapis.com/index.html");
     }
 
     @Override
@@ -259,6 +270,9 @@ public class ChromeDriverService extends DriverService {
       }
       if (whitelistedIps != null) {
         args.add(String.format("--whitelisted-ips=%s", whitelistedIps));
+      }
+      if (disableBuildCheck) {
+        args.add("--disable-build-check");
       }
 
       return unmodifiableList(args);
