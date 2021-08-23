@@ -17,6 +17,14 @@
 
 package org.openqa.selenium.grid.distributor.local;
 
+import static java.util.Collections.newSetFromMap;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
+import static org.openqa.selenium.grid.data.Availability.DRAINING;
+import static org.openqa.selenium.grid.data.Availability.UP;
+import static org.openqa.selenium.remote.Dialect.W3C;
+import static org.openqa.selenium.remote.http.HttpMethod.GET;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.Capabilities;
@@ -28,7 +36,6 @@ import org.openqa.selenium.grid.data.CreateSessionResponse;
 import org.openqa.selenium.grid.data.DefaultSlotMatcher;
 import org.openqa.selenium.grid.data.DistributorStatus;
 import org.openqa.selenium.grid.data.NodeStatus;
-import org.openqa.selenium.grid.data.NodeStatusEvent;
 import org.openqa.selenium.grid.data.RequestId;
 import org.openqa.selenium.grid.data.Session;
 import org.openqa.selenium.grid.data.SessionRequest;
@@ -46,13 +53,13 @@ import org.openqa.selenium.grid.testing.TestSessionFactory;
 import org.openqa.selenium.internal.Either;
 import org.openqa.selenium.remote.HttpSessionId;
 import org.openqa.selenium.remote.SessionId;
-import org.openqa.selenium.remote.http.ClientConfig;
-import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.remote.tracing.DefaultTestTracer;
 import org.openqa.selenium.remote.tracing.Tracer;
+import org.openqa.selenium.support.ui.FluentWait;
+import org.openqa.selenium.support.ui.Wait;
 
 import java.io.UncheckedIOException;
 import java.net.URI;
@@ -73,14 +80,6 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
-import static java.util.Collections.newSetFromMap;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.fail;
-import static org.openqa.selenium.grid.data.Availability.DRAINING;
-import static org.openqa.selenium.grid.data.Availability.UP;
-import static org.openqa.selenium.remote.Dialect.W3C;
-import static org.openqa.selenium.remote.http.HttpMethod.GET;
-
 public class LocalDistributorTest {
 
   private final Secret registrationSecret = new Secret("bavarian smoked");
@@ -88,6 +87,7 @@ public class LocalDistributorTest {
   private EventBus bus;
   private URI uri;
   private Node localNode;
+  private Wait<Object> wait;
 
   @Before
   public void setUp() throws URISyntaxException {
@@ -97,9 +97,12 @@ public class LocalDistributorTest {
     Capabilities caps = new ImmutableCapabilities("browserName", "cheese");
     uri = new URI("http://localhost:1234");
     localNode = LocalNode.builder(tracer, bus, uri, uri, registrationSecret)
-        .add(caps, new TestSessionFactory((id, c) -> new Handler(c)))
-        .maximumConcurrentSessions(2)
-        .build();
+      .add(caps, new TestSessionFactory((id, c) -> new Handler(c)))
+      .maximumConcurrentSessions(2)
+      .build();
+
+    wait = new FluentWait<>(
+      new Object()).ignoring(Throwable.class).withTimeout(Duration.ofSeconds(5));
   }
 
   @Test
@@ -244,6 +247,7 @@ public class LocalDistributorTest {
       false);
 
     distributor.add(node);
+    wait.until(obj -> distributor.getStatus().hasCapacity());
 
     SessionRequest sessionRequest =
         new SessionRequest(
