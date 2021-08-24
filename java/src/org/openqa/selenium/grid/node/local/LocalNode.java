@@ -116,7 +116,6 @@ public class LocalNode extends Node {
   private final List<SessionSlot> factories;
   private final Cache<SessionId, SessionSlot> currentSessions;
   private final Cache<SessionId, TemporaryFilesystem> tempFileSystems;
-  private final Regularly regularly;
   private final AtomicInteger pendingSessions = new AtomicInteger();
 
   private LocalNode(
@@ -162,19 +161,22 @@ public class LocalNode extends Node {
       .build();
 
     this.tempFileSystems = CacheBuilder.newBuilder()
-        .expireAfterAccess(sessionTimeout)
-        .ticker(ticker)
-        .removalListener((RemovalListener<SessionId, TemporaryFilesystem>) notification -> {
-          TemporaryFilesystem tempFS = notification.getValue();
-          tempFS.deleteTemporaryFiles();
-          tempFS.deleteBaseDir();
-        })
-        .build();
+      .expireAfterAccess(sessionTimeout)
+      .ticker(ticker)
+      .removalListener((RemovalListener<SessionId, TemporaryFilesystem>) notification -> {
+        TemporaryFilesystem tempFS = notification.getValue();
+        tempFS.deleteTemporaryFiles();
+        tempFS.deleteBaseDir();
+      })
+      .build();
 
-    this.regularly = new Regularly("Local Node: " + externalUri);
-    regularly.submit(currentSessions::cleanUp, Duration.ofSeconds(30), Duration.ofSeconds(30));
-    regularly.submit(tempFileSystems::cleanUp, Duration.ofSeconds(30), Duration.ofSeconds(30));
-    regularly.submit(() -> bus.fire(new NodeHeartBeatEvent(getStatus())), heartbeatPeriod, heartbeatPeriod);
+    Regularly sessionCleanup = new Regularly("Session Cleanup Node: " + externalUri);
+    sessionCleanup.submit(currentSessions::cleanUp, Duration.ofSeconds(30), Duration.ofSeconds(30));
+    Regularly tmpFileCleanup = new Regularly("TempFile Cleanup Node: " + externalUri);
+    tmpFileCleanup.submit(tempFileSystems::cleanUp, Duration.ofSeconds(30), Duration.ofSeconds(30));
+    Regularly regularHeartBeat = new Regularly("Heartbeat Node: " + externalUri);
+    regularHeartBeat.submit(() -> bus.fire(new NodeHeartBeatEvent(getStatus())), heartbeatPeriod,
+                            heartbeatPeriod);
 
     bus.addListener(SessionClosedEvent.listener(id -> {
       // Listen to session terminated events so we know when to fire the NodeDrainComplete event
