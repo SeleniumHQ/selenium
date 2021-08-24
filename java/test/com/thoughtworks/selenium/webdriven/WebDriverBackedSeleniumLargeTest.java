@@ -70,12 +70,13 @@ public class WebDriverBackedSeleniumLargeTest extends JUnit4TestBase {
     selenium.stop();
 
     try {
-      // Now schedule a command that caues "interrupt" to be thrown internally.
+      // Now schedule a command that causes "interrupt" to be thrown internally.
       selenium.isElementPresent("name=q");
       fail("This test should have failed");
-    } catch (NullPointerException expected) {
+    } catch (NullPointerException | IllegalStateException expected) {
       // This is the exception thrown by selenium 1. We should throw the same
       // one
+      // IllegalStateException is what the timer throws when it has been stopped
     }
 
     try {
