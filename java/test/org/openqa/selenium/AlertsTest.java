@@ -25,10 +25,10 @@ import static org.openqa.selenium.support.ui.ExpectedConditions.presenceOfElemen
 import static org.openqa.selenium.support.ui.ExpectedConditions.titleIs;
 import static org.openqa.selenium.testing.drivers.Browser.CHROME;
 import static org.openqa.selenium.testing.drivers.Browser.EDGE;
-import static org.openqa.selenium.testing.drivers.Browser.LEGACY_FIREFOX_XPI;
+import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
 import static org.openqa.selenium.testing.drivers.Browser.HTMLUNIT;
 import static org.openqa.selenium.testing.drivers.Browser.IE;
-import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
+import static org.openqa.selenium.testing.drivers.Browser.LEGACY_FIREFOX_XPI;
 import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
 
 import org.junit.After;
@@ -44,6 +44,15 @@ import org.openqa.selenium.testing.SwitchToTopAfterTest;
 import java.util.Set;
 
 public class AlertsTest extends JUnit4TestBase {
+
+  private static ExpectedCondition<Boolean> textInElementLocated(
+    final By locator, final String text) {
+    return driver -> text.equals(driver.findElement(locator).getText());
+  }
+
+  private static ExpectedCondition<WebDriver> ableToSwitchToWindow(final String name) {
+    return driver -> driver.switchTo().window(name);
+  }
 
   @After
   public void closeAlertIfPresent() {
@@ -174,6 +183,7 @@ public class AlertsTest extends JUnit4TestBase {
   }
 
   @Test
+  @Ignore(value = FIREFOX, reason = "Hangs")
   public void testShouldAllowAUserToSetTheValueOfAPrompt() {
     driver.get(promptPage(null));
 
@@ -352,6 +362,7 @@ public class AlertsTest extends JUnit4TestBase {
   }
 
   @Test
+  @Ignore(value = FIREFOX, reason = "Hangs")
   public void testShouldHandleAlertOnPageLoad() {
     String pageWithOnLoad = appServer.create(new Page()
         .withOnLoad("javascript:alert(\"onload\")")
@@ -464,15 +475,6 @@ public class AlertsTest extends JUnit4TestBase {
 
     assertThat(value).isEqualTo("Tasty cheese");
     assertThat(driver.getTitle()).isEqualTo("Testing Alerts");
-  }
-
-  private static ExpectedCondition<Boolean> textInElementLocated(
-      final By locator, final String text) {
-    return driver -> text.equals(driver.findElement(locator).getText());
-  }
-
-  private static ExpectedCondition<WebDriver> ableToSwitchToWindow(final String name) {
-    return driver -> driver.switchTo().window(name);
   }
 
   private void setSimpleOnBeforeUnload(Object returnText) {
