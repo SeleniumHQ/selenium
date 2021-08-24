@@ -17,8 +17,8 @@
 
 package com.thoughtworks.selenium;
 
+import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.fail;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.spy;
@@ -54,7 +54,7 @@ public class HttpCommandProcessorUnitTest {
       @Override
       public String doCommand(String commandName, String[] args) {
         assertEquals("testComplete", commandName);
-        assertNull(args);
+        assertArrayEquals(args, new String[0]);
         return null;
       }
     };
@@ -113,6 +113,23 @@ public class HttpCommandProcessorUnitTest {
     }
   }
 
+  @Test
+  public void testGetBooleanArray() {
+    HttpCommandProcessor processor =
+        new HttpCommandProcessor("localhost", 4444, "*chrome", "http://www.openqa.org");
+    processor = spy(processor);
+
+    String[] cmdArgs = new String[] {"1", "2"};
+    String[] cmdResults = new String[] {"true", "false"};
+    boolean[] boolCmdResults = new boolean[] {true, false};
+
+    doReturn(cmdResults).when(processor).getStringArray("command", cmdArgs);
+
+    boolean[] methodResults = processor.getBooleanArray("command", cmdArgs);
+    assertEquals(boolCmdResults[0], methodResults[0]);
+    assertEquals(boolCmdResults[1], methodResults[1]);
+  }
+
   /**
    * Inner class to help mock out the network and pipe connections to verify that they are closed
    * regardless of where IOExceptions occur.
@@ -121,14 +138,13 @@ public class HttpCommandProcessorUnitTest {
    */
   private class IOEThrowingHttpCommandProcessor extends HttpCommandProcessor {
 
-    private HttpURLConnection closedConn;
-    private Writer closedWriter;
-    private Reader closedReader;
-
     protected String responseString = "normal response";
     protected boolean throwIoeOnGetConnection = false;
     protected boolean throwIoeOnGetInputStream = false;
     protected boolean throwIoeOnGetOutputStream = false;
+    private HttpURLConnection closedConn;
+    private Writer closedWriter;
+    private Reader closedReader;
 
     public IOEThrowingHttpCommandProcessor(String serverHost,
         int serverPort, String browserStartCommand, String browserURL) {
@@ -182,23 +198,6 @@ public class HttpCommandProcessorUnitTest {
           && (writerNotNull && (null != closedWriter)) && (readerNotNull && (null != closedReader)));
     }
 
-  }
-
-  @Test
-  public void testGetBooleanArray() {
-    HttpCommandProcessor processor =
-        new HttpCommandProcessor("localhost", 4444, "*chrome", "http://www.openqa.org");
-    processor = spy(processor);
-
-    String[] cmdArgs = new String[] {"1", "2"};
-    String[] cmdResults = new String[] {"true", "false"};
-    boolean[] boolCmdResults = new boolean[] {true, false};
-
-    doReturn(cmdResults).when(processor).getStringArray("command", cmdArgs);
-
-    boolean[] methodResults = processor.getBooleanArray("command", cmdArgs);
-    assertEquals(boolCmdResults[0], methodResults[0]);
-    assertEquals(boolCmdResults[1], methodResults[1]);
   }
 
 }
