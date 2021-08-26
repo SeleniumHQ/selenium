@@ -26,26 +26,46 @@ namespace OpenQA.Selenium.Remote
     /// </summary>
     public class SendingRemoteHttpRequestEventArgs : EventArgs
     {
-        private HttpWebRequest request;
+        private string method;
+        private string fullUrl;
         private string requestBody;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SendingRemoteHttpRequestEventArgs"/> class.
         /// </summary>
-        /// <param name="request">The <see cref="HttpWebRequest"/> object being sent.</param>
+        /// <param name="method">The HTTP method of the request being sent.</param>
+        /// <param name="fullUrl">The full URL of the request being sent.</param>
         /// <param name="requestBody">The body of the request.</param>
-        public SendingRemoteHttpRequestEventArgs(HttpWebRequest request, string requestBody)
+        public SendingRemoteHttpRequestEventArgs(string method, string fullUrl, string requestBody)
         {
-            this.request = request;
+            this.method = method;
+            this.fullUrl = fullUrl;
             this.requestBody = requestBody;
         }
 
         /// <summary>
         /// Gets the <see cref="HttpWebRequest"/> object representing the HTTP request being sent.
         /// </summary>
+        [Obsolete("Bindings no longer use HttpWebRequest. This property will return null, and will be removed in a future release.")]
         public HttpWebRequest Request
         {
-            get { return this.request; }
+            get { return null; }
+        }
+
+        /// <summary>
+        /// Gets the HTTP method for the HTTP request.
+        /// </summary>
+        public string Method
+        {
+            get { return this.method; }
+        }
+
+        /// <summary>
+        /// Gets the full URL of the HTTP request.
+        /// </summary>
+        public string FullUrl
+        {
+            get { return this.fullUrl; }
         }
 
         /// <summary>
