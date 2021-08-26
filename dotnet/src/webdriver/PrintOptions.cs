@@ -219,7 +219,7 @@ namespace OpenQA.Selenium
 
             if (this.pageRanges.Count > 0)
             {
-
+                toReturn["pageRanges"] = new List<object>(this.pageRanges);
             }
 
             return toReturn;

@@ -24,6 +24,11 @@ v4.0.0rc1
    response.
  * (on behalf of Nikolay Borisenko) Modified to dispose HttpRequestMessage
    and HttpResponseMessage when making HTTP calls across the wire.
+ * Updated the InternetExplorerOptions class to match the existing capabilities
+   of the IE driver.
+ * Updatde the events in HttpCommandExecutor to allow the user to capture
+   the commands sent to the remote end of a WebDriver session.
+ * Fixed the PrintOptions class to handle page ranges. Fixes issue #9755.
 
 v4.0.0b4
 ========
