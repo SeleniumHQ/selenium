@@ -109,7 +109,7 @@ namespace OpenQA.Selenium.IE
         private TimeSpan fileUploadDialogTimeout = TimeSpan.MinValue;
         private string initialBrowserUrl = string.Empty;
         private string browserCommandLineArguments = string.Empty;
-        private string edgeExecutablePathCapability = string.Empty;
+        private string edgeExecutablePath = string.Empty;
         private InternetExplorerElementScrollBehavior elementScrollBehavior = InternetExplorerElementScrollBehavior.Default;
         private Dictionary<string, object> additionalInternetExplorerOptions = new Dictionary<string, object>();
 
@@ -137,7 +137,7 @@ namespace OpenQA.Selenium.IE
             this.AddKnownCapabilityName(EnsureCleanSessionCapability, "EnsureCleanSession property");
             this.AddKnownCapabilityName(FileUploadDialogTimeoutCapability, "FileUploadDialogTimeout property");
             this.AddKnownCapabilityName(EnableFullPageScreenshotCapability, "EnableFullPageScreenshot property");
-            this.AddKnownCapabilityName(LegacyFileUploadDialogHanldingCapability, "LegacyFileUploadDialogHanlding property");
+            this.AddKnownCapabilityName(LegacyFileUploadDialogHandlingCapability, "LegacyFileUploadDialogHanlding property");
             this.AddKnownCapabilityName(AttachToEdgeChromeCapability, "AttachToEdgeChrome property");
             this.AddKnownCapabilityName(EdgeExecutablePathCapability, "EdgeExecutablePath property");
         }
@@ -485,17 +485,17 @@ namespace OpenQA.Selenium.IE
 
             if (this.legacyFileUploadDialogHandling)
             {
-                internetExplorerOptionsDictionary[LegacyFileUploadDialogHandling] = true;
+                internetExplorerOptionsDictionary[LegacyFileUploadDialogHandlingCapability] = true;
             }
 
             if (this.attachToEdgeChrome)
             {
-                internetExplorerOptionsDictionary[AttachToEdgeChrome] = true;
+                internetExplorerOptionsDictionary[AttachToEdgeChromeCapability] = true;
             }
 
-            if (!string.IsNullOrEmpty(this.edgeExecutablePathCapability))
+            if (!string.IsNullOrEmpty(this.edgeExecutablePath))
             {
-                internetExplorerOptionsDictionary[EdgeExecutablePathCapability] = this.edgeExecutablePathCapability;
+                internetExplorerOptionsDictionary[EdgeExecutablePathCapability] = this.edgeExecutablePath;
             }
 
             foreach (KeyValuePair<string, object> pair in this.additionalInternetExplorerOptions)
