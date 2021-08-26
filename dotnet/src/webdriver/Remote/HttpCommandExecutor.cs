@@ -232,7 +232,6 @@ namespace OpenQA.Selenium.Remote
             }
 
             httpClientHandler.Proxy = this.Proxy;
-            // httpClientHandler.MaxConnectionsPerServer = 2000;
 
             this.client = new HttpClient(httpClientHandler);
             string userAgentString = string.Format(CultureInfo.InvariantCulture, UserAgentHeaderTemplate, ResourceUtilities.AssemblyVersion, ResourceUtilities.PlatformFamily);
@@ -249,7 +248,7 @@ namespace OpenQA.Selenium.Remote
 
         private async Task<HttpResponseInfo> MakeHttpRequest(HttpRequestInfo requestInfo)
         {
-            SendingRemoteHttpRequestEventArgs eventArgs = new SendingRemoteHttpRequestEventArgs(null, requestInfo.RequestBody);
+            SendingRemoteHttpRequestEventArgs eventArgs = new SendingRemoteHttpRequestEventArgs(requestInfo.HttpMethod, requestInfo.FullUri.ToString(), requestInfo.RequestBody);
             this.OnSendingRemoteHttpRequest(eventArgs);
 
             HttpMethod method = new HttpMethod(requestInfo.HttpMethod);
@@ -300,29 +299,6 @@ namespace OpenQA.Selenium.Remote
             {
                 response.Value = body;
             }
-
-            //if (this.CommandInfoRepository.SpecificationLevel < 1 && (responseInfo.StatusCode < HttpStatusCode.OK || responseInfo.StatusCode >= HttpStatusCode.BadRequest))
-            //{
-            //    if (responseInfo.StatusCode >= HttpStatusCode.BadRequest && responseInfo.StatusCode < HttpStatusCode.InternalServerError)
-            //    {
-            //        response.Status = WebDriverResult.UnhandledError;
-            //    }
-            //    else if (responseInfo.StatusCode >= HttpStatusCode.InternalServerError)
-            //    {
-            //        if (responseInfo.StatusCode == HttpStatusCode.NotImplemented)
-            //        {
-            //            response.Status = WebDriverResult.UnknownCommand;
-            //        }
-            //        else if (response.Status == WebDriverResult.Success)
-            //        {
-            //            response.Status = WebDriverResult.UnhandledError;
-            //        }
-            //    }
-            //    else
-            //    {
-            //        response.Status = WebDriverResult.UnhandledError;
-            //    }
-            //}
 
             if (response.Value is string)
             {
