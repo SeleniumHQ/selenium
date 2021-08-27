@@ -47,6 +47,7 @@ import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -243,11 +244,16 @@ public class NodeOptions {
     Function<Capabilities, Collection<SessionFactory>> factoryFactory,
     ImmutableMultimap.Builder<Capabilities, SessionFactory> sessionFactories) {
     Multimap<WebDriverInfo, SessionFactory> driverConfigs = HashMultimap.create();
-    int configElements = 3;
     config.getAll(NODE_SECTION, "driver-configuration").ifPresent(drivers -> {
-      if (drivers.size() % configElements != 0) {
-        throw new ConfigException("Expected each driver config to have three elements " +
-                                  "(name, stereotype and max-sessions)");
+      /*
+        The four accepted keys are: name, max-sessions, stereotype, webdriver-executable. The
+        mandatory keys are name and stereotype. When configs are read, they keys always come
+        alphabetically ordered. This means that we know a new config is present when we find
+        the "name" key again.
+       */
+
+      if (drivers.size() == 0) {
+        throw new ConfigException("No driver configs were found!");
       }
 
       drivers.stream()
@@ -260,19 +266,24 @@ public class NodeOptions {
                                     "required 'key=value' structure");
         });
 
+      // Find all indexes where "name" is present, as it marks the start of a config
+      int[] configIndexes = IntStream.range(0, drivers.size())
+        .filter(index -> drivers.get(index).startsWith("name")).toArray();
+
+      if (configIndexes.length == 0) {
+        throw new ConfigException("No 'name' keyword was found in the provided configs!");
+      }
+
       List<Map<String, String>> driversMap = new ArrayList<>();
-      IntStream.range(0, drivers.size()/configElements).boxed()
-        .forEach(i -> {
-          ImmutableMap<String, String> configMap = ImmutableMap.of(
-            drivers.get(i*configElements).split("=")[0],
-            drivers.get(i*configElements).split("=")[1],
-            drivers.get(i*configElements+1).split("=")[0],
-            drivers.get(i*configElements+1).split("=")[1],
-            drivers.get(i*configElements+2).split("=")[0],
-            drivers.get(i*configElements+2).split("=")[1]
-          );
-          driversMap.add(configMap);
+      for (int i = 0; i < configIndexes.length; i++) {
+        int fromIndex = configIndexes[i];
+        int toIndex = (i + 1) >= configIndexes.length ? drivers.size() : configIndexes[i + 1];
+        Map<String, String> configMap = new HashMap<>();
+        drivers.subList(fromIndex, toIndex).forEach(keyValue -> {
+          configMap.put(keyValue.split("=")[0], keyValue.split("=")[1]);
         });
+        driversMap.add(configMap);
+      }
 
       List<DriverService.Builder<?, ?>> builders = new ArrayList<>();
       ServiceLoader.load(DriverService.Builder.class).forEach(builders::add);

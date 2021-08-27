@@ -17,6 +17,14 @@
 
 package org.openqa.selenium.grid.node.config;
 
+import static java.util.Collections.emptyMap;
+import static java.util.Collections.emptySet;
+import static java.util.Collections.singletonMap;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.fail;
+import static org.junit.Assume.assumeFalse;
+import static org.junit.Assume.assumeTrue;
+
 import com.google.common.collect.ImmutableMap;
 
 import org.assertj.core.api.Condition;
@@ -46,14 +54,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-
-import static java.util.Collections.emptyMap;
-import static java.util.Collections.emptySet;
-import static java.util.Collections.singletonMap;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.fail;
-import static org.junit.Assume.assumeFalse;
-import static org.junit.Assume.assumeTrue;
 
 @SuppressWarnings("DuplicatedCode")
 public class NodeOptionsTest {
@@ -333,6 +333,31 @@ public class NodeOptionsTest {
 
     assertThat(reported).isEmpty();
   }
+
+  @Test
+  public void maxSessionsFieldIsOptionalInDriversConfig() {
+    String[] rawConfig = new String[]{
+      "[node]",
+      "detect-drivers = false",
+      "[[node.driver-configuration]]",
+      "name = \"Chrome Beta\"",
+      "stereotype = '{\"browserName\": \"chrome\"}'",
+      "[[node.driver-configuration]]",
+      "name = \"Firefox Nightly\"",
+      "stereotype = '{\"browserName\": \"firefox\"}'",
+      };
+    Config config = new TomlConfig(new StringReader(String.join("\n", rawConfig)));
+
+    List<Capabilities> reported = new ArrayList<>();
+    new NodeOptions(config).getSessionFactories(capabilities -> {
+      reported.add(capabilities);
+      return Collections.singleton(HelperFactory.create(config, capabilities));
+    });
+
+    assertThat(reported).is(supporting("chrome"));
+    assertThat(reported).is(supporting("firefox"));
+  }
+
 
   @Test
   public void shouldNotOverrideMaxSessionsByDefault() {
