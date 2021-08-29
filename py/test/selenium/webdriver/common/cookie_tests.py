@@ -56,6 +56,17 @@ def same_site_cookie_lax(webserver):
         'secure': False}
     return same_site_cookie_lax
 
+@pytest.fixture
+def same_site_cookie_none(webserver):
+    same_site_cookie_none = {
+        'name': 'foo',
+        'value': 'bar',
+        'path': '/',
+        'domain': webserver.host,
+        'sameSite': 'None',
+        'secure': True}
+    return same_site_cookie_none
+
 
 @pytest.fixture(autouse=True)
 def pages(request, driver, pages):
@@ -87,6 +98,14 @@ def testAddCookieSameSiteLax(same_site_cookie_lax, driver):
     returned = driver.get_cookie('foo')
     assert 'sameSite' in returned and returned['sameSite'] == 'Lax'
 
+
+@pytest.mark.xfail_firefox(reason='sameSite cookie attribute not implemented')
+@pytest.mark.xfail_remote(reason='sameSite cookie attribute not implemented')
+@pytest.mark.xfail_safari
+def testAddCookieSameSiteNone(same_site_cookie_none, driver):
+    driver.add_cookie(same_site_cookie_none)
+    # Note that insecure sites (http:) can't set cookies with the Secure directive.
+    # driver.get_cookie would return None
 
 @pytest.mark.xfail_ie
 @pytest.mark.xfail_safari
