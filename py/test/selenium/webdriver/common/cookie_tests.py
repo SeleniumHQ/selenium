@@ -56,6 +56,7 @@ def same_site_cookie_lax(webserver):
         'secure': False}
     return same_site_cookie_lax
 
+
 @pytest.fixture
 def same_site_cookie_none(webserver):
     same_site_cookie_none = {
@@ -106,6 +107,7 @@ def testAddCookieSameSiteNone(same_site_cookie_none, driver):
     driver.add_cookie(same_site_cookie_none)
     # Note that insecure sites (http:) can't set cookies with the Secure directive.
     # driver.get_cookie would return None
+
 
 @pytest.mark.xfail_ie
 @pytest.mark.xfail_safari
