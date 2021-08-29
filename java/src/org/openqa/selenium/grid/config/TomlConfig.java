@@ -95,8 +95,7 @@ public class TomlConfig implements Config {
           .map(item -> (TomlTable)item)
           .forEach(tomlTable -> tomlTable.toMap().entrySet().stream()
             .map(entry -> String.format("%s=%s", entry.getKey(), entry.getValue()))
-            .collect(Collectors.toList())
-            .stream().sorted()
+            .sorted()
             .forEach(toReturn::add));
         return Optional.of(toReturn);
       }
