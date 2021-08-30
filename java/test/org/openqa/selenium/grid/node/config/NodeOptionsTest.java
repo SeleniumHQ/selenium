@@ -304,6 +304,56 @@ public class NodeOptionsTest {
   }
 
   @Test
+  public void driversCanBeConfiguredWithASpecificWebDriverBinary() {
+    String chLocation = "/Applications/Google Chrome Beta.app/Contents/MacOS/Google Chrome Beta";
+    String ffLocation = "/Applications/Firefox Nightly.app/Contents/MacOS/firefox-bin";
+    String chromeDriverLocation = "/path/to/chromedriver_beta/chromedriver";
+    String geckoDriverLocation = "/path/to/geckodriver_nightly/geckodriver";
+    ChromeOptions chromeOptions = new ChromeOptions();
+    chromeOptions.setBinary(chLocation);
+    FirefoxOptions firefoxOptions = new FirefoxOptions();
+    firefoxOptions.setBinary(ffLocation);
+    StringBuilder chromeCaps = new StringBuilder();
+    StringBuilder firefoxCaps = new StringBuilder();
+    new Json().newOutput(chromeCaps).setPrettyPrint(false).write(chromeOptions);
+    new Json().newOutput(firefoxCaps).setPrettyPrint(false).write(firefoxOptions);
+
+    String[] rawConfig = new String[]{
+      "[node]",
+      "detect-drivers = false",
+      "[[node.driver-configuration]]",
+      "display-name = \"Chrome Beta\"",
+      String.format("webdriver-executable = '%s'", chromeDriverLocation),
+      String.format("stereotype = \"%s\"", chromeCaps.toString().replace("\"", "\\\"")),
+      "[[node.driver-configuration]]",
+      "display-name = \"Firefox Nightly\"",
+      String.format("webdriver-executable = '%s'", geckoDriverLocation),
+      String.format("stereotype = \"%s\"", firefoxCaps.toString().replace("\"", "\\\""))
+    };
+    Config config = new TomlConfig(new StringReader(String.join("\n", rawConfig)));
+
+    List<Capabilities> reported = new ArrayList<>();
+    new NodeOptions(config).getSessionFactories(capabilities -> {
+      reported.add(capabilities);
+      return Collections.singleton(HelperFactory.create(config, capabilities));
+    });
+
+    assertThat(reported).is(supporting("chrome"));
+    assertThat(reported).is(supporting("firefox"));
+    assertThat(reported)
+      .filteredOn(capabilities -> capabilities.asMap().containsKey(ChromeOptions.CAPABILITY))
+      .allMatch(
+        capabilities ->
+          chromeDriverLocation.equals(capabilities.getCapability("se:webDriverExecutable")));
+
+    assertThat(reported)
+      .filteredOn(capabilities -> capabilities.asMap().containsKey(FirefoxOptions.FIREFOX_OPTIONS))
+      .anyMatch(
+        capabilities ->
+          geckoDriverLocation.equals(capabilities.getCapability("se:webDriverExecutable")));
+  }
+
+  @Test
   public void driversConfigNeedsStereotypeField() {
     String[] rawConfig = new String[]{
       "[node]",
