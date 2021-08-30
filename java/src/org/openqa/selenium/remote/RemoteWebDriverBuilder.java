@@ -126,6 +126,7 @@ public class RemoteWebDriverBuilder {
   private URI remoteHost = null;
   private DriverService driverService;
   private Credentials credentials = null;
+  private Augmenter augmenter = new Augmenter();
 
   RemoteWebDriverBuilder() {
     // Access through RemoteWebDriver.builder
@@ -299,6 +300,15 @@ public class RemoteWebDriverBuilder {
     return this;
   }
 
+  /**
+   * @param augmenter The {@link Augmenter} to use when creating the {@link WebDriver} instance.
+   */
+  public RemoteWebDriverBuilder augmentUsing(Augmenter augmenter) {
+    Require.nonNull("Augmenter", augmenter);
+    this.augmenter = augmenter;
+    return this;
+  }
+
   @VisibleForTesting
   WebDriver getLocalDriver() {
     if (remoteHost != null || clientConfig.baseUri() != null || driverService != null) {
@@ -350,7 +360,7 @@ public class RemoteWebDriverBuilder {
       driver = getRemoteDriver();
     }
 
-    return new Augmenter().augment(driver);
+    return augmenter.augment(driver);
   }
 
   private WebDriver getRemoteDriver() {
