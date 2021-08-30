@@ -3,7 +3,7 @@ load("@rules_jvm_external//:specs.bzl", "maven")
 
 def selenium_java_deps():
     netty_version = "4.1.67.Final"
-    opentelemetry_version = "1.2.0"
+    opentelemetry_version = "1.5.0"
 
     maven_install(
         artifacts = [

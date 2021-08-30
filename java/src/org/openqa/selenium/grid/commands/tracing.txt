@@ -13,10 +13,13 @@ As a worked example, using Jaeger as the tracing library and running
 on macOS or Linux:
 
 ```
-  java -jar selenium.jar \
+  java -Dotel.traces.exporter=jaeger \
+       -Dotel.exporter.jaeger.endpoint=localhost:14250 \
+       -Dotel.resource.attributes=service.name=selenium-standalone \
+       -jar selenium.jar \
        --ext $(coursier fetch -p \
-          io.opentelemetry:opentelemetry-exporter-jaeger:1.0.0 \
-          io.grpc:grpc-netty:1.35.0) \
+          io.opentelemetry:opentelemetry-exporter-jaeger:1.5.0 \
+          io.grpc:grpc-netty:1.40.1) \
        standalone
 ```
 
@@ -35,8 +38,8 @@ this can be done via system properties. Modifying our example:
        -Dotel.resource.attributes=service.name=selenium-standalone \
        -jar selenium.jar \
        --ext $(coursier fetch -p \
-          io.opentelemetry:opentelemetry-exporter-jaeger:1.0.0 \
-          io.grpc:grpc-netty:1.35.0) \
+          io.opentelemetry:opentelemetry-exporter-jaeger:1.5.0 \
+          io.grpc:grpc-netty:1.40.1) \
        standalone
 ```
 
@@ -48,7 +51,7 @@ locally:
   docker run --rm -it --name jaeger \
     -p 16686:16686 \
     -p 14250:14250 \
-    jaegertracing/all-in-one:1.19.2
+    jaegertracing/all-in-one:1.25
 ```
 
 Now run some tests, and then point a browser at
