@@ -17,6 +17,17 @@
 
 package org.openqa.selenium.grid.node.config;
 
+import static org.openqa.selenium.grid.config.StandardGridRoles.NODE_ROLE;
+import static org.openqa.selenium.grid.node.config.NodeOptions.DEFAULT_DETECT_DRIVERS;
+import static org.openqa.selenium.grid.node.config.NodeOptions.DEFAULT_HEARTBEAT_PERIOD;
+import static org.openqa.selenium.grid.node.config.NodeOptions.DEFAULT_MAX_SESSIONS;
+import static org.openqa.selenium.grid.node.config.NodeOptions.DEFAULT_REGISTER_CYCLE;
+import static org.openqa.selenium.grid.node.config.NodeOptions.DEFAULT_REGISTER_PERIOD;
+import static org.openqa.selenium.grid.node.config.NodeOptions.DEFAULT_SESSION_TIMEOUT;
+import static org.openqa.selenium.grid.node.config.NodeOptions.DEFAULT_VNC_ENV_VAR;
+import static org.openqa.selenium.grid.node.config.NodeOptions.NODE_SECTION;
+import static org.openqa.selenium.grid.node.config.NodeOptions.OVERRIDE_MAX_SESSIONS;
+
 import com.google.auto.service.AutoService;
 
 import com.beust.jcommander.Parameter;
@@ -30,17 +41,6 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
-import static org.openqa.selenium.grid.config.StandardGridRoles.NODE_ROLE;
-import static org.openqa.selenium.grid.node.config.NodeOptions.DEFAULT_DETECT_DRIVERS;
-import static org.openqa.selenium.grid.node.config.NodeOptions.DEFAULT_HEARTBEAT_PERIOD;
-import static org.openqa.selenium.grid.node.config.NodeOptions.DEFAULT_MAX_SESSIONS;
-import static org.openqa.selenium.grid.node.config.NodeOptions.DEFAULT_REGISTER_CYCLE;
-import static org.openqa.selenium.grid.node.config.NodeOptions.DEFAULT_REGISTER_PERIOD;
-import static org.openqa.selenium.grid.node.config.NodeOptions.DEFAULT_SESSION_TIMEOUT;
-import static org.openqa.selenium.grid.node.config.NodeOptions.DEFAULT_VNC_ENV_VAR;
-import static org.openqa.selenium.grid.node.config.NodeOptions.NODE_SECTION;
-import static org.openqa.selenium.grid.node.config.NodeOptions.OVERRIDE_MAX_SESSIONS;
 
 @SuppressWarnings("unused")
 @AutoService(HasRoles.class)
@@ -115,11 +115,12 @@ public class NodeFlags implements HasRoles {
     description = "List of configured drivers a Node supports. " +
                   "It is recommended to provide this type of configuration through a toml config " +
                   "file to improve readability. Command line example: " +
-                  "--drivers-configuration name=\"Firefox Nightly\" max-sessions=2 " +
-                  "stereotype='{\"browserName\": \"firefox\", \"browserVersion\": \"86\", " +
+                  "--drivers-configuration display-name=\"Firefox Nightly\" max-sessions=2 " +
+                  "webdriver-path=\"/usr/local/bin/geckodriver\" "
+                  + "stereotype='{\"browserName\": \"firefox\", \"browserVersion\": \"86\", " +
                   "\"moz:firefoxOptions\": " +
                   "{\"binary\":\"/Applications/Firefox Nightly.app/Contents/MacOS/firefox-bin\"}}'",
-    arity = 3,
+    arity = 4,
     variableArity = true,
     splitter = NonSplittingSplitter.class)
   @ConfigValue(
@@ -127,7 +128,8 @@ public class NodeFlags implements HasRoles {
     name = "driver-configuration",
     prefixed = true,
     example = "\n" +
-              "name = \"Firefox Nightly\"\n" +
+              "display-name = \"Firefox Nightly\"\n" +
+              "webdriver-executable = \"/usr/local/bin/chromedriver\"\n" +
               "max-sessions = 2\n" +
               "stereotype = \"{\"browserName\": \"firefox\", \"browserVersion\": \"86\", " +
               "\"moz:firefoxOptions\": " +
