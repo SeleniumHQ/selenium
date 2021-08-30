@@ -262,11 +262,11 @@ public class NodeOptionsTest {
       "[node]",
       "detect-drivers = false",
       "[[node.driver-configuration]]",
-      "name = \"Chrome Beta\"",
+      "display-name = \"Chrome Beta\"",
       "max-sessions = 1",
       String.format("stereotype = \"%s\"", chromeCaps.toString().replace("\"", "\\\"")),
       "[[node.driver-configuration]]",
-      "name = \"Firefox Nightly\"",
+      "display-name = \"Firefox Nightly\"",
       "max-sessions = 2",
       String.format("stereotype = \"%s\"", firefoxCaps.toString().replace("\"", "\\\""))
     };
@@ -309,14 +309,14 @@ public class NodeOptionsTest {
       "[node]",
       "detect-drivers = false",
       "[[node.driver-configuration]]",
-      "name = \"Chrome Beta\"",
+      "display-name = \"Chrome Beta\"",
       "max-sessions = 2",
       "cheese = \"paipa\"",
       "[[node.driver-configuration]]",
-      "name = \"Firefox Nightly\"",
+      "display-name = \"Firefox Nightly\"",
       "max-sessions = 2",
       "cheese = \"sabana\"",
-    };
+      };
     Config config = new TomlConfig(new StringReader(String.join("\n", rawConfig)));
 
     List<Capabilities> reported = new ArrayList<>();
@@ -340,10 +340,10 @@ public class NodeOptionsTest {
       "[node]",
       "detect-drivers = false",
       "[[node.driver-configuration]]",
-      "name = \"Chrome Beta\"",
+      "display-name = \"Chrome Beta\"",
       "stereotype = '{\"browserName\": \"chrome\"}'",
       "[[node.driver-configuration]]",
-      "name = \"Firefox Nightly\"",
+      "display-name = \"Firefox Nightly\"",
       "stereotype = '{\"browserName\": \"firefox\"}'",
       };
     Config config = new TomlConfig(new StringReader(String.join("\n", rawConfig)));
