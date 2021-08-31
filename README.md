@@ -366,6 +366,13 @@ bazel test --run_under="xvfb-run -a" //java/... --test_tag_filters=chrome
 
 ## Bazel Installation/Troubleshooting
 
+### Selenium Build Docker Image
+
+If you're finding it hard to set up a development environment using bazel
+and you have access to Docker, then you can build a Docker image suitable
+for building and testing Selenium in from the Dockerfile in the 
+[dev image](scripts/dev-image/Dockerfile) directory.
+
 ### MacOS
 
 #### bazelisk
@@ -401,3 +408,32 @@ The first command will prompt you for a password. The second step requires you t
 license, and then accept it by typing "agree".
 
 (Thanks to [this thread](https://github.com/bazelbuild/bazel/issues/4314) for these steps)
+
+## Releasing
+
+Before running a release build, you must ensure that the `--stamp` flag is used by
+the build. The easiest way to do this is:
+
+```shell
+echo build --stamp >>.bazelrc.local
+```
+
+### Java
+
+To release the Java components, make sure you have permission to push to the OSS Sonatype
+repo. You will need these credentials when pushing the maven release.
+
+Make sure that the java `CHANGELOG` is up to date, then just run:
+
+```shell
+./go release-java
+```
+
+This will do two things:
+
+1. Build the publishable artifacts and push them to a staging repo on the
+   OSS Sonatype server.
+2. Create zip files to upload in `build/dist`
+
+You will need to manually release the maven artifacts, and also upload
+the artifacts from `build/dist` to the GitHub release.
