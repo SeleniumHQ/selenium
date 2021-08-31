@@ -1,3 +1,25 @@
+v4.0.0-rc-1
+===========
+
+* Supported CDP versions: 85, 91, 92.
+* Only the name and stereotype are mandatory in nodeConfig.
+* No longer sets unexpected alert value in Options by default.
+* Update IE options class in each language to match the currently
+  supported capabilities in the IE Driver.
+* Delete existing sessions if the Node is restarted.
+* Sessions are now stopped when the Node is gracefully shutdown.
+* Fixes file upload for Dynamic Grid
+* Add docker max sessions flag. (#9688)
+* Close DriverService and DriverCommandExecutor executor on
+  quit. (#9666)
+* Handle empty inputs for JSON more gracefully.
+* Ensure that default healthcheck duration is less than
+  the default node timeout duration.
+* Better resource utilisation in the Distributor when starting
+  sessions.
+* Implement ShadowDOM APIs in the Java bindings
+* Routing VNC websockets through the Grid
+
 v4.0.0-beta-4
 =============
 
