@@ -11,15 +11,15 @@ def pin_browsers():
 
     http_archive(
         name = "linux_firefox",
-        url = "https://ftp.mozilla.org/pub/firefox/releases/91.0/linux-x86_64/en-US/firefox-91.0.tar.bz2",
-        sha256 = "bced054543003caf29d0c93aa63359809bdf1f1fcbca92b82c57167fe94ca1c9",
+        url = "https://ftp.mozilla.org/pub/firefox/releases/91.0.2/linux-x86_64/en-US/firefox-91.0.2.tar.bz2",
+        sha256 = "9eaac9c88ff4696228292590b65ab2fd1b0d98b7a1edf5a21abc11b7803a046d",
         build_file_content = "exports_files([\"firefox\"])",
     )
     
     dmg_archive(
         name = "mac_firefox",
-        url = "https://ftp.mozilla.org/pub/firefox/releases/91.0/mac/en-US/Firefox%2091.0.dmg",
-        sha256 = "d26c43f490320b3f301578fa653a2235562dfed31ed12b9b1f7c4515da21a6fb",
+        url = "https://ftp.mozilla.org/pub/firefox/releases/91.0.2/mac/en-US/Firefox%2091.0.2.dmg",
+        sha256 = "4147fff1b176a659d6d4d928efe6ec98af313533508809264d78cc83c93cab30",
         build_file_content = "exports_files([\"Firefox.app\"])",
     )
     
@@ -39,18 +39,18 @@ def pin_browsers():
         
     pkg_archive(
         name = "mac_edge",
-        url = "https://officecdn-microsoft-com.akamaized.net/pr/C1297A47-86C4-4C1F-97FA-950631F94777/MacAutoupdate/MicrosoftEdge-92.0.902.67.pkg?platform=Mac&Consent=0&channel=Stable",
-        sha256 = "afb14750572b49c2ad5f25b637ffb3d637107e3db094b97b14a386a9f85a9af7",
+        url = "https://officecdn-microsoft-com.akamaized.net/pr/C1297A47-86C4-4C1F-97FA-950631F94777/MacAutoupdate/MicrosoftEdge-92.0.902.84.pkg?platform=Mac&Consent=0&channel=Stable",
+        sha256 = "1cb38e5d07392a3e4598e8644842e97e5583324c1c53df77f4c3c60fde726c2b",
         move = {
-            "MicrosoftEdge-92.0.902.67.pkg/Payload/Microsoft Edge.app": "Edge.app",
+            "MicrosoftEdge-92.0.902.84.pkg/Payload/Microsoft Edge.app": "Edge.app",
         },
         build_file_content = "exports_files([\"Edge.app\"])",
     )
     
     http_archive(
         name = "mac_edgedriver",
-        url = "https://msedgedriver.azureedge.net/92.0.902.67/edgedriver_mac64.zip",
-        sha256 = "a5afad438001fe92ee71e539fdb1dd20c72a9cec7d08c01ec6516215e4abf181",
+        url = "https://msedgedriver.azureedge.net/92.0.902.84/edgedriver_mac64.zip",
+        sha256 = "c4bd74dc6e1026f6cb6beaf8fa0ecc2e6208ac1e604460432d14e6de90b0dabe",
         build_file_content = "exports_files([\"msedgedriver\"])",
     )
     
