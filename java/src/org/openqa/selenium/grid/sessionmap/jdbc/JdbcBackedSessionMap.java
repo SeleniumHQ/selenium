@@ -23,6 +23,7 @@ import org.openqa.selenium.NoSuchSessionException;
 import org.openqa.selenium.events.EventBus;
 import org.openqa.selenium.grid.config.Config;
 import org.openqa.selenium.grid.config.ConfigException;
+import org.openqa.selenium.grid.data.NodeRemovedEvent;
 import org.openqa.selenium.grid.data.Session;
 import org.openqa.selenium.grid.data.SessionClosedEvent;
 import org.openqa.selenium.grid.log.LoggingOptions;
@@ -83,6 +84,11 @@ public class JdbcBackedSessionMap extends SessionMap implements Closeable {
 
     this.connection = jdbcConnection;
     this.bus.addListener(SessionClosedEvent.listener(this::remove));
+
+    this.bus.addListener(NodeRemovedEvent.listener(nodeStatus -> nodeStatus.getSlots().stream()
+      .filter(slot -> slot.getSession() != null)
+      .map(slot -> slot.getSession().getId())
+      .forEach(this::remove)));
   }
 
   public static SessionMap create(Config config) {
