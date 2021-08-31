@@ -383,7 +383,7 @@ task 'prep-release-zip': [
   chmod 0666, "build/dist/selenium-html-runner-#{version}.jar"
 end
 
-task 'release-java': %i[publish-maven push-release]
+task 'release-java': %i[prep-release-zip publish-maven]
 
 def read_user_pass_from_m2_settings
   settings = File.read(ENV['HOME'] + '/.m2/settings.xml')
@@ -416,13 +416,6 @@ task :'maven-install' do
   JAVA_RELEASE_TARGETS.each do |p|
     Bazel::execute('run', ['--stamp', '--define', "maven_repo=file://#{ENV['HOME']}/.m2/repository", '--define', 'gpg_sign=true'], p)
   end
-end
-
-task 'push-release': [:'prep-release-zip'] do
-  py = 'java -jar third_party/py/jython.jar'
-  py = 'python' if SeleniumRake::Checks.python?
-
-  sh "#{py} third_party/py/googlestorage/publish_release.py --project_id google.com:webdriver --bucket selenium-release --acl public-read --publish_version #{google_storage_version} --publish build/dist/selenium-server-#{version}.jar --publish build/dist/selenium-java-#{version}.zip --publish build/dist/selenium-server-#{version}.jar --publish build/dist/selenium-html-runner-#{version}.jar"
 end
 
 desc 'Build the selenium client jars'
