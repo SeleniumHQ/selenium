@@ -24,6 +24,7 @@ import org.openqa.selenium.events.EventBus;
 import org.openqa.selenium.grid.config.Config;
 import org.openqa.selenium.grid.config.ConfigException;
 import org.openqa.selenium.grid.data.NodeRemovedEvent;
+import org.openqa.selenium.grid.data.NodeRestartedEvent;
 import org.openqa.selenium.grid.data.Session;
 import org.openqa.selenium.grid.data.SessionClosedEvent;
 import org.openqa.selenium.grid.log.LoggingOptions;
@@ -89,6 +90,8 @@ public class JdbcBackedSessionMap extends SessionMap implements Closeable {
       .filter(slot -> slot.getSession() != null)
       .map(slot -> slot.getSession().getId())
       .forEach(this::remove)));
+
+    bus.addListener(NodeRestartedEvent.listener(nodeStatus -> this.removeByUri(nodeStatus.getExternalUri())));
   }
 
   public static SessionMap create(Config config) {
@@ -304,6 +307,42 @@ public class JdbcBackedSessionMap extends SessionMap implements Closeable {
         EXCEPTION.accept(attributeMap, e);
         attributeMap.put(AttributeKey.EXCEPTION_MESSAGE.getKey(),
                          EventAttribute.setValue("Unable to delete session information from the database: " + e.getMessage()));
+        span.addEvent(AttributeKey.EXCEPTION_EVENT.getKey(), attributeMap);
+        throw new JdbcException(e.getMessage());
+      }
+    }
+  }
+
+  public void removeByUri(URI sessionUri) {
+    Require.nonNull("Session URI", sessionUri);
+    try (Span span = tracer.getCurrentContext().createSpan(
+      "DELETE from  sessions_map where session_uri = ?")) {
+      Map<String, EventAttributeValue> attributeMap = new HashMap<>();
+
+      try (PreparedStatement statement = connection.prepareStatement(
+        String.format("delete from %1$s where %2$s = ?",
+                      TABLE_NAME,
+                      SESSION_URI_COL))) {
+
+        statement.setString(1, sessionUri.toString());
+        String statementStr = statement.toString();
+        span.setAttribute(DATABASE_STATEMENT, statementStr);
+        span.setAttribute(DATABASE_OPERATION, "delete");
+        attributeMap.put(DATABASE_STATEMENT, EventAttribute.setValue(statementStr));
+        attributeMap.put(DATABASE_OPERATION, EventAttribute.setValue("delete"));
+
+        int rowCount = statement.executeUpdate();
+        attributeMap.put("rows.deleted", EventAttribute.setValue(rowCount));
+        span.addEvent("Deleted session from the database", attributeMap);
+
+      } catch (SQLException e) {
+        span.setAttribute("error", true);
+        span.setStatus(Status.CANCELLED);
+        EXCEPTION.accept(attributeMap, e);
+        attributeMap.put(AttributeKey.EXCEPTION_MESSAGE.getKey(),
+                         EventAttribute.setValue(
+                           "Unable to delete session information from the database: " + e
+                             .getMessage()));
         span.addEvent(AttributeKey.EXCEPTION_EVENT.getKey(), attributeMap);
         throw new JdbcException(e.getMessage());
       }
