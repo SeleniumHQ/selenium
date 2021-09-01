@@ -56,15 +56,15 @@ def pin_browsers():
     
     http_archive(
         name = "linux_chrome",
-        url = "https://storage.googleapis.com/chromium-browser-snapshots/Linux_x64/885174/chrome-linux.zip",
-        sha256 = "7a7781b13a9296f67aefda073b056446ef850c01c5b56e90dde1f3cfb1bde806",
+        url = "https://storage.googleapis.com/chromium-browser-snapshots/Linux_x64/902192/chrome-linux.zip",
+        sha256 = "2fd5218274f01d2ae5db666903189a379ebe683826b579aba0e582d11e7a2722",
         build_file_content = "exports_files([\"chrome-linux\"])",
     )
     
     http_archive(
         name = "mac_chrome",
-        url = "https://storage.googleapis.com/chromium-browser-snapshots/Mac/885174/chrome-mac.zip",
-        sha256 = "8aab4d6052d42c660afd18b100fe7c0b4df6d1d523be953dce6601b873b6f205",
+        url = "https://storage.googleapis.com/chromium-browser-snapshots/Mac/902192/chrome-mac.zip",
+        sha256 = "b944959f7e75bd4457f55662541d921b3b8d0be4e488450006ae615079bc0814",
         strip_prefix = "chrome-mac",
         build_file_content = "exports_files([\"Chromium.app\"])",
     )
