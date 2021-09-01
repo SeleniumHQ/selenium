@@ -1,6 +1,6 @@
 v4.0.0rc1
 =========
- * Set available versions of Chrome DevTools Protocol to 85, 91, and 92.
+ * Set available versions of Chrome DevTools Protocol to 85, 92, and 93.
  * Enabled script pinning. This allows the user to add a snippet of JavaScript
    to a page that will be available on all subsquent pages, and not have to
    pass the script across the wire every time. For exceptionally large blobs
