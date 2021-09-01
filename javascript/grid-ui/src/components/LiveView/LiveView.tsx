@@ -19,6 +19,7 @@ import React, { ReactNode } from 'react'
 import { createStyles, Theme, withStyles } from '@material-ui/core'
 import { StyleRules } from '@material-ui/core/styles'
 import RFB from '@novnc/novnc/core/rfb'
+import PasswordDialog from './PasswordDialog'
 
 const useStyles = (theme: Theme): StyleRules => createStyles(
   {
@@ -47,13 +48,34 @@ interface LiveViewProps {
    * smaller than its container, or handled according to `clipViewport` if it
    * is larger.  Default is false.
    */
-  scaleViewport?: boolean
+  scaleViewport?: boolean,
+  /**
+   * Callback to close the Live View when the PasswordDialog is prompted and
+   * the user clicks 'Cancel'
+   */
+  onClose: () => void
 }
 
-class LiveView extends React.Component<LiveViewProps, {}> {
+interface PasswordDialogState {
+  open: boolean,
+  message: string
+}
 
+class LiveView extends React.Component<LiveViewProps, PasswordDialogState> {
   rfb: any = null
   canvas: any = null
+
+  constructor (props) {
+    super(props)
+    this.state = {
+      open: false,
+      message: ''
+    }
+  }
+
+  handlePasswordDialog = (state: boolean): void => {
+    this.setState({ open: state })
+  }
 
   disconnect = () => {
     if (!this.rfb) {
@@ -74,6 +96,8 @@ class LiveView extends React.Component<LiveViewProps, {}> {
     this.rfb = new RFB(this.canvas, this.props.url, {})
     this.rfb.scaleViewport = this.props.scaleViewport
     this.rfb.background = 'rgb(247,248,248)'
+    this.rfb.addEventListener('credentialsrequired', this.handleCredentials)
+    this.rfb.addEventListener('securityfailure', this.securityFailed)
   }
 
   registerChild = ref => {
@@ -96,6 +120,30 @@ class LiveView extends React.Component<LiveViewProps, {}> {
     this.rfb.scaleViewport = this.props.scaleViewport
   }
 
+  securityFailed = (event: any) => {
+    let errorMessage
+    if ('reason' in event.detail) {
+      errorMessage =
+        'Connection has been rejected with reason: ' + event.detail.reason
+    } else {
+      errorMessage = 'New connection has been rejected'
+    }
+    this.setState({ message: errorMessage })
+    this.connect()
+  }
+
+  handleCredentials = () => {
+    this.handlePasswordDialog(true)
+  }
+
+  handleCredentialsEntered = (password: string) => {
+    this.rfb.sendCredentials({ username: '', password: password })
+  }
+
+  handlePasswordDialogClose = () => {
+    this.props.onClose()
+  }
+
   handleMouseEnter = () => {
     if (!this.rfb) {
       return
@@ -113,6 +161,8 @@ class LiveView extends React.Component<LiveViewProps, {}> {
   }
 
   render (): ReactNode {
+    const { open, message } = this.state
+
     return (
       <div
         style={
@@ -124,7 +174,16 @@ class LiveView extends React.Component<LiveViewProps, {}> {
         ref={this.registerChild}
         onMouseEnter={this.handleMouseEnter}
         onMouseLeave={this.handleMouseLeave}
-      />
+      >
+        <PasswordDialog title={'LiveView (VNC) Password'}
+                        open={open}
+                        setOpen={this.handlePasswordDialog}
+                        onConfirm={this.handleCredentialsEntered}
+                        onCancel={this.handlePasswordDialogClose}
+        >
+          {message}
+        </PasswordDialog>
+      </div>
     )
   }
 }
