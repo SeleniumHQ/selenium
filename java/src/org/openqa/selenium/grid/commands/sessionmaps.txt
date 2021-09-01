@@ -19,13 +19,14 @@ java -jar selenium.jar \
 
 The `JdbcBackedSessionMap` uses JDBC to talk to use any supported database for session map store.
 
-The table name used to store sessions is: `sessions_map` It consists of three columns of string datatype: `session_ids`, `session_caps`, `session_uri`
+The table name used to store sessions is: `sessions_map`.
+It consists of three columns of string datatype: `session_ids`, `session_caps`, `session_uri`, `session_stereotype`, `session_start`
 
 Prerequisites
 
 1. Ensure the appropriate JDBC driver jar is downloaded on the host machine.
 
-2. Ensure the "sessions_map" table with varchar "session_ids", "session_caps" and "session_uri" columns is created in the database.
+2. Ensure the "sessions_map" table with varchar "session_ids", "session_caps", "session_uri", "session_stereotype" and "session_start" columns is created in the database.
 
 You can create the required table using something similar to:
 
@@ -33,12 +34,14 @@ You can create the required table using something similar to:
 CREATE TABLE sessions_map(
     session_ids varchar(256),
     session_caps varchar(1000),
-    session_uri varchar(256)
+    session_uri varchar(256),
+    session_stereotype varchar(1000),
+    session_start varchar(256)
  );
  ```
  
 Here the size of each column is an arbitrary number. Ensure the datatype and limit matches the selected database. Also, the limit for varchar type should be able to accommodate the
-capabilities json stored in "sessions_caps".
+capabilities json stored in "session_caps" and stereotype json stored in "session_stereotype".
 
 To start the `JdbcBackedSessionMap`:
 
