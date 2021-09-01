@@ -260,13 +260,18 @@ public class RedisBackedSessionMap extends SessionMap {
 
       String uriKey = uriKey(id);
       String capabilitiesKey = capabilitiesKey(id);
+      String stereotypeKey = stereotypeKey(id);
+      String startKey = startKey(id);
       span.setAttribute(REDIS_URI_KEY, uriKey);
       span.setAttribute(REDIS_CAPABILITIES_KEY, capabilitiesKey);
+      span.setAttribute(REDIS_START_KEY, startKey);
       attributeMap.put(REDIS_URI_KEY, EventAttribute.setValue(uriKey));
       attributeMap.put(REDIS_CAPABILITIES_KEY, EventAttribute.setValue(capabilitiesKey));
+      attributeMap.put(REDIS_START_KEY, EventAttribute.setValue(startKey));
 
       span.addEvent("Deleted session from the database", attributeMap);
-      connection.del(uriKey, capabilitiesKey);
+
+      connection.del(uriKey, capabilitiesKey, stereotypeKey, startKey);
     }
   }
 
