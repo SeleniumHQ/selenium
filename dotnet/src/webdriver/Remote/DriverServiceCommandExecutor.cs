@@ -141,6 +141,7 @@ namespace OpenQA.Selenium.Remote
             {
                 if (disposing)
                 {
+                    this.internalExecutor.Dispose();
                     this.service.Dispose();
                 }
 

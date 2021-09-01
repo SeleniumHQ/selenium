@@ -712,6 +712,8 @@ namespace OpenQA.Selenium
             {
                 this.sessionId = null;
             }
+
+            this.executor.Dispose();
         }
 
         private static void UnpackAndThrowOnError(Response errorResponse)
