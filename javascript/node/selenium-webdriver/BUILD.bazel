@@ -26,6 +26,7 @@ SRC_FILES = [
 
 pkg_npm(
     name = "selenium-webdriver",
+    package_name = "selenium-webdriver",
     srcs = SRC_FILES,
     deps = [
         ":license",
