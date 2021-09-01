@@ -61,7 +61,7 @@ interface State {
 }
 
 const PasswordDialog = (props) => {
-  const { title, children, open, setOpen, onConfirm } = props
+  const { title, children, open, setOpen, onConfirm, onCancel } = props
   const classes = useStyles()
   const [values, setValues] = React.useState<State>({
     amount: '',
@@ -119,7 +119,10 @@ const PasswordDialog = (props) => {
       </DialogContent>
       <DialogActions>
         <Button variant={'contained'}
-                onClick={() => setOpen(false)}
+                onClick={() => {
+                  setOpen(false)
+                  onCancel()
+                }}
                 color={'secondary'}>
           Cancel
         </Button>
