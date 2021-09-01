@@ -411,12 +411,44 @@ license, and then accept it by typing "agree".
 
 ## Releasing
 
+Begin by tagging the revision you're about to release, and push that tag to GitHub.
+
 Before running a release build, you must ensure that the `--stamp` flag is used by
 the build. The easiest way to do this is:
 
 ```shell
 echo build --stamp >>.bazelrc.local
 ```
+
+### GitHub Release Page
+
+* Draft a new (perhaps pre-release)
+* Make sure this release is for the tag you created earlier
+* Set the title to be whatever the release is.
+* Use `git log $PREV_RELEASE..$NEW_TAG --format=format:'* [`%h`](https://github.com/seleniumhq/selenium/commit/%H) - %s :: %an' | pbcopy`
+  to generate the list of changes. Make sure you've set
+  `$PREV_RELEASE` and `$NEW_TAG`!
+* The release notes are:
+```
+### Changelog
+
+For each component's detailed changelog, please check:
+* [Ruby](https://github.com/SeleniumHQ/selenium/blob/trunk/rb/CHANGES)
+* [Python](https://github.com/SeleniumHQ/selenium/blob/trunk/py/CHANGES)
+* [JavaScript](https://github.com/SeleniumHQ/selenium/blob/trunk/javascript/node/selenium-webdriver/CHANGES.md)
+* [Java](https://github.com/SeleniumHQ/selenium/blob/trunk/java/CHANGELOG)
+* [DotNet](https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/CHANGELOG)
+* [IEDriverServer](https://github.com/SeleniumHQ/selenium/blob/trunk/cpp/iedriverserver/CHANGELOG)
+
+### Commits in this release
+<details>
+<summary>Click to see all the commits included in this release</summary>
+
+   INSERT LIST OF CHANGES HERE!
+
+</details>
+ ```
+* Now publish the release.
 
 ### Java
 
