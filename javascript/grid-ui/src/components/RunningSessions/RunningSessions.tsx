@@ -464,6 +464,7 @@ class RunningSessions extends React.Component<RunningSessionsProps, RunningSessi
                                     <LiveView
                                       url={row.vnc as string}
                                       scaleViewport={true}
+                                      onClose={this.handleLiveViewClose}
                                     />
                                   </DialogContent>
                                   <DialogActions>
