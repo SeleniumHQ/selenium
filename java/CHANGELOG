@@ -1,7 +1,7 @@
 v4.0.0-rc-1
 ===========
 
-* Supported CDP versions: 85, 91, 92.
+* Supported CDP versions: 85, 91, 92, 93.
 * Only the name and stereotype are mandatory in nodeConfig.
 * No longer sets unexpected alert value in Options by default.
 * Update IE options class in each language to match the currently
