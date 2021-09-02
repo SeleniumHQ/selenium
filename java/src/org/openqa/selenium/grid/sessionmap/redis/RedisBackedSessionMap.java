@@ -25,6 +25,7 @@ import org.openqa.selenium.NoSuchSessionException;
 import org.openqa.selenium.events.EventBus;
 import org.openqa.selenium.grid.config.Config;
 import org.openqa.selenium.grid.data.NodeRemovedEvent;
+import org.openqa.selenium.grid.data.NodeRestartedEvent;
 import org.openqa.selenium.grid.data.Session;
 import org.openqa.selenium.grid.data.SessionClosedEvent;
 import org.openqa.selenium.grid.log.LoggingOptions;
@@ -85,6 +86,8 @@ public class RedisBackedSessionMap extends SessionMap {
       .filter(slot -> slot.getSession() != null)
       .map(slot -> slot.getSession().getId())
       .forEach(this::remove)));
+
+    bus.addListener(NodeRestartedEvent.listener(nodeStatus -> this.removeByUri(nodeStatus.getExternalUri())));
   }
 
   public static SessionMap create(Config config) {
@@ -273,6 +276,26 @@ public class RedisBackedSessionMap extends SessionMap {
 
       connection.del(uriKey, capabilitiesKey, stereotypeKey, startKey);
     }
+  }
+
+  public void removeByUri(URI uri) {
+    List<String> uriKeys = connection.getKeysByPattern("session:*:uri");
+
+    if (uriKeys.isEmpty()) {
+      return;
+    }
+
+    String[] keys = new String[uriKeys.size()];
+    keys = uriKeys.toArray(keys);
+
+    List<KeyValue<String, String>> keyValues = connection.mget(keys);
+    keyValues.stream()
+      .filter(entry -> entry.getValue().equals(uri.toString()))
+      .map(KeyValue::getKey)
+      .map(key -> {
+        String[] sessionKey = key.split(":");
+        return new SessionId(sessionKey[1]);
+      }).forEach(this::remove);
   }
 
   @Override
