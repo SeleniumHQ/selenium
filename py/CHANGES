@@ -1,3 +1,22 @@
+Selenium 4 Release Candidate 1
+
+* Remove cdp versions 88, 89, and 90
+* Replace v91 with v93 in bazel files
+* update IE options class in each language to match the currently supported capabilities in the IE Driver
+* Specify that the "find_element_by_* ..." warning is a deprecation warning (#9700)
+* clean up imports
+* Use options when passing things to remote webdriver instead of capabilities (#9678)
+* Correct deprecation message in IE handling code
+* Rewrite the logging module for bidi connections
+* remove non-w3c compliant parameters from default capabilities
+* Run type checks in CI and report typing coverage to codecov (#9523)
+* PEP 484 Type Hints added
+* Handle first/always match better when it hits lists/dicts. Fixes #9538
+* correct tox warnings
+* Fix deprecation warnings for Safari (#9577)
+* Allow 0 coordinates for the window position. Fixes #9574
+* Fix incorrect use of 'NoReturn' type annotation. (#9540)
+
 Selenium 4 Beta 4 (The Final Beta)
 
 * Returning fixed IP in GitHub actions (#9550)
@@ -901,3 +920,10 @@ Selenium 2 Beta 2
 
 
 
+
+
+commit 5f4d8182e48da00f855a427293a1cd59f4b80503
+Author: David Burns <david.b@browserstack.com>
+Date:   Mon Jun 7 21:35:40 2021 +0100
+
+    [py] Update changelog and versions for B4
