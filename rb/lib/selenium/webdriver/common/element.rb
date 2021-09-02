@@ -222,6 +222,15 @@ module Selenium
       def clear
         bridge.clear_element @id
       end
+      
+      #
+      #This method it to utilise both clear & send keys inside the same method
+      #It eliminates calling clear & send keys method separately
+      #
+      def clear_and_send_keys(*args)
+        clear
+        send_keys(*args)
+      end
 
       #
       # Is the element enabled?
