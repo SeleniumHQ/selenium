@@ -56,11 +56,11 @@ public class LoggingFlags implements HasRoles {
   @ConfigValue(section = LOGGING_SECTION, name = "plain-logs", example = "true")
   private Boolean plainLogs = DEFAULT_PLAIN_LOGS;
 
-  @Parameter(description = "Enable trace collection", hidden = true, names = "--tracing", arity = 1)
+  @Parameter(description = "Enable trace collection", names = "--tracing", arity = 1)
   @ConfigValue(section = LOGGING_SECTION, name = "tracing", example = "true")
   private Boolean enableTracing = DEFAULT_TRACING_ENABLED;
 
-  @Parameter(description = "Enable http logging. Tracing should be enabled to log http logs.", hidden = true, names = "--http-logs", arity = 1)
+  @Parameter(description = "Enable http logging. Tracing should be enabled to log http logs.", names = "--http-logs", arity = 1)
   @ConfigValue(section = LOGGING_SECTION, name = "http-logs", example = "true")
   private Boolean httpLogs = DEFAULT_HTTP_LOGS;
 
