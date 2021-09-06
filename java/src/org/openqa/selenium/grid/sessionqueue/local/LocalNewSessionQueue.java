@@ -1,6 +1,10 @@
 package org.openqa.selenium.grid.sessionqueue.local;
 
+import static java.net.HttpURLConnection.HTTP_INTERNAL_ERROR;
+import static java.util.concurrent.TimeUnit.MILLISECONDS;
+
 import com.google.common.annotations.VisibleForTesting;
+
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.events.EventBus;
@@ -23,7 +27,7 @@ import org.openqa.selenium.grid.security.Secret;
 import org.openqa.selenium.grid.security.SecretOptions;
 import org.openqa.selenium.grid.server.EventBusOptions;
 import org.openqa.selenium.grid.sessionqueue.NewSessionQueue;
-import org.openqa.selenium.grid.sessionqueue.config.SessionRequestOptions;
+import org.openqa.selenium.grid.sessionqueue.config.NewSessionQueueOptions;
 import org.openqa.selenium.internal.Either;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.http.Contents;
@@ -53,9 +57,6 @@ import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
-
-import static java.net.HttpURLConnection.HTTP_INTERNAL_ERROR;
-import static java.util.concurrent.TimeUnit.MILLISECONDS;
 
 /**
  * An in-memory implementation of the list of new session requests.
@@ -133,7 +134,7 @@ public class LocalNewSessionQueue extends NewSessionQueue implements Closeable {
     Tracer tracer = loggingOptions.getTracer();
 
     EventBusOptions eventBusOptions = new EventBusOptions(config);
-    SessionRequestOptions requestOptions = new SessionRequestOptions(config);
+    NewSessionQueueOptions newSessionQueueOptions = new NewSessionQueueOptions(config);
     SecretOptions secretOptions = new SecretOptions(config);
     SlotMatcher slotMatcher = new DistributorOptions(config).getSlotMatcher();
 
@@ -141,8 +142,8 @@ public class LocalNewSessionQueue extends NewSessionQueue implements Closeable {
       tracer,
       eventBusOptions.getEventBus(),
       slotMatcher,
-      requestOptions.getSessionRequestRetryInterval(),
-      requestOptions.getSessionRequestTimeout(),
+      newSessionQueueOptions.getSessionRequestRetryInterval(),
+      newSessionQueueOptions.getSessionRequestTimeout(),
       secretOptions.getRegistrationSecret());
   }
 

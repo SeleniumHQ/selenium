@@ -17,6 +17,15 @@
 
 package org.openqa.selenium.grid.commands;
 
+import static java.net.HttpURLConnection.HTTP_INTERNAL_ERROR;
+import static java.net.HttpURLConnection.HTTP_OK;
+import static org.openqa.selenium.grid.config.StandardGridRoles.DISTRIBUTOR_ROLE;
+import static org.openqa.selenium.grid.config.StandardGridRoles.EVENT_BUS_ROLE;
+import static org.openqa.selenium.grid.config.StandardGridRoles.HTTPD_ROLE;
+import static org.openqa.selenium.grid.config.StandardGridRoles.ROUTER_ROLE;
+import static org.openqa.selenium.grid.config.StandardGridRoles.SESSION_QUEUE_ROLE;
+import static org.openqa.selenium.remote.http.Route.combine;
+
 import com.google.auto.service.AutoService;
 import com.google.common.collect.ImmutableSet;
 
@@ -44,7 +53,7 @@ import org.openqa.selenium.grid.server.Server;
 import org.openqa.selenium.grid.sessionmap.SessionMap;
 import org.openqa.selenium.grid.sessionmap.local.LocalSessionMap;
 import org.openqa.selenium.grid.sessionqueue.NewSessionQueue;
-import org.openqa.selenium.grid.sessionqueue.config.SessionRequestOptions;
+import org.openqa.selenium.grid.sessionqueue.config.NewSessionQueueOptions;
 import org.openqa.selenium.grid.sessionqueue.local.LocalNewSessionQueue;
 import org.openqa.selenium.grid.web.CombinedHandler;
 import org.openqa.selenium.grid.web.GridUiRoute;
@@ -63,15 +72,6 @@ import java.net.URL;
 import java.util.Collections;
 import java.util.Set;
 import java.util.logging.Logger;
-
-import static java.net.HttpURLConnection.HTTP_INTERNAL_ERROR;
-import static java.net.HttpURLConnection.HTTP_OK;
-import static org.openqa.selenium.grid.config.StandardGridRoles.DISTRIBUTOR_ROLE;
-import static org.openqa.selenium.grid.config.StandardGridRoles.EVENT_BUS_ROLE;
-import static org.openqa.selenium.grid.config.StandardGridRoles.HTTPD_ROLE;
-import static org.openqa.selenium.grid.config.StandardGridRoles.ROUTER_ROLE;
-import static org.openqa.selenium.grid.config.StandardGridRoles.SESSION_QUEUE_ROLE;
-import static org.openqa.selenium.remote.http.Route.combine;
 
 @AutoService(CliCommand.class)
 public class Hub extends TemplateGridServerCommand {
@@ -144,13 +144,13 @@ public class Hub extends TemplateGridServerCommand {
       networkOptions.getHttpClientFactory(tracer));
 
     DistributorOptions distributorOptions = new DistributorOptions(config);
-    SessionRequestOptions sessionRequestOptions = new SessionRequestOptions(config);
+    NewSessionQueueOptions newSessionRequestOptions = new NewSessionQueueOptions(config);
     NewSessionQueue queue = new LocalNewSessionQueue(
       tracer,
       bus,
       distributorOptions.getSlotMatcher(),
-      sessionRequestOptions.getSessionRequestRetryInterval(),
-      sessionRequestOptions.getSessionRequestTimeout(),
+      newSessionRequestOptions.getSessionRequestRetryInterval(),
+      newSessionRequestOptions.getSessionRequestTimeout(),
       secret);
     handler.addHandler(queue);
 
