@@ -17,6 +17,16 @@
 
 package org.openqa.selenium.grid.router.httpd;
 
+import static java.net.HttpURLConnection.HTTP_NO_CONTENT;
+import static org.openqa.selenium.grid.config.StandardGridRoles.DISTRIBUTOR_ROLE;
+import static org.openqa.selenium.grid.config.StandardGridRoles.HTTPD_ROLE;
+import static org.openqa.selenium.grid.config.StandardGridRoles.ROUTER_ROLE;
+import static org.openqa.selenium.grid.config.StandardGridRoles.SESSION_MAP_ROLE;
+import static org.openqa.selenium.grid.config.StandardGridRoles.SESSION_QUEUE_ROLE;
+import static org.openqa.selenium.net.Urls.fromUri;
+import static org.openqa.selenium.remote.http.Route.combine;
+import static org.openqa.selenium.remote.http.Route.get;
+
 import com.google.auto.service.AutoService;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
@@ -48,6 +58,7 @@ import org.openqa.selenium.grid.sessionqueue.config.NewSessionQueueOptions;
 import org.openqa.selenium.grid.sessionqueue.remote.RemoteNewSessionQueue;
 import org.openqa.selenium.grid.web.GridUiRoute;
 import org.openqa.selenium.internal.Require;
+import org.openqa.selenium.remote.http.ClientConfig;
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.remote.http.Routable;
@@ -55,19 +66,10 @@ import org.openqa.selenium.remote.http.Route;
 import org.openqa.selenium.remote.tracing.Tracer;
 
 import java.net.URL;
+import java.time.Duration;
 import java.util.Collections;
 import java.util.Set;
 import java.util.logging.Logger;
-
-import static java.net.HttpURLConnection.HTTP_NO_CONTENT;
-import static org.openqa.selenium.grid.config.StandardGridRoles.DISTRIBUTOR_ROLE;
-import static org.openqa.selenium.grid.config.StandardGridRoles.HTTPD_ROLE;
-import static org.openqa.selenium.grid.config.StandardGridRoles.ROUTER_ROLE;
-import static org.openqa.selenium.grid.config.StandardGridRoles.SESSION_MAP_ROLE;
-import static org.openqa.selenium.grid.config.StandardGridRoles.SESSION_QUEUE_ROLE;
-import static org.openqa.selenium.net.Urls.fromUri;
-import static org.openqa.selenium.remote.http.Route.combine;
-import static org.openqa.selenium.remote.http.Route.get;
 
 @AutoService(CliCommand.class)
 public class RouterServer extends TemplateGridServerCommand {
@@ -124,11 +126,16 @@ public class RouterServer extends TemplateGridServerCommand {
     SessionMapOptions sessionsOptions = new SessionMapOptions(config);
     SessionMap sessions = sessionsOptions.getSessionMap();
 
-    NewSessionQueueOptions sessionQueueOptions = new NewSessionQueueOptions(config);
-    URL sessionQueueUrl = fromUri(sessionQueueOptions.getSessionQueueUri());
+    NewSessionQueueOptions newSessionQueueOptions = new NewSessionQueueOptions(config);
+    URL sessionQueueUrl = fromUri(newSessionQueueOptions.getSessionQueueUri());
+    Duration sessionRequestTimeout = newSessionQueueOptions.getSessionRequestTimeout();
+    ClientConfig httpClientConfig = ClientConfig
+      .defaultConfig()
+      .baseUrl(sessionQueueUrl)
+      .readTimeout(sessionRequestTimeout);
     NewSessionQueue queue = new RemoteNewSessionQueue(
       tracer,
-      clientFactory.createClient(sessionQueueUrl),
+      clientFactory.createClient(httpClientConfig),
       secret);
 
     DistributorOptions distributorOptions = new DistributorOptions(config);
