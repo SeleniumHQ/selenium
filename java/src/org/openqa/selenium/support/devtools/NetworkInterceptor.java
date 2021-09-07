@@ -20,13 +20,17 @@ package org.openqa.selenium.support.devtools;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.devtools.DevTools;
 import org.openqa.selenium.devtools.HasDevTools;
-import org.openqa.selenium.devtools.idealized.Network;
-import org.openqa.selenium.devtools.idealized.OpaqueKey;
 import org.openqa.selenium.internal.Require;
+import org.openqa.selenium.remote.http.Filter;
+import org.openqa.selenium.remote.http.HttpHandler;
+import org.openqa.selenium.remote.http.HttpMethod;
+import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
+import org.openqa.selenium.remote.http.Routable;
 import org.openqa.selenium.remote.http.Route;
 
-import java.io.Closeable;
+import java.util.Map;
+import java.util.Optional;
 
 import static org.openqa.selenium.remote.http.Contents.utf8String;
 
@@ -47,32 +51,72 @@ import static org.openqa.selenium.remote.http.Contents.utf8String;
  *     // Your code here.
  *   }
  * </code>
+ * <p>
+ * It is also possible to intercept and modify responses that the browser will
+ * receive. Do this by calling {@link #NetworkInterceptor(WebDriver, Filter)}.
  */
-public class NetworkInterceptor implements Closeable {
+public class NetworkInterceptor implements AutoCloseable {
 
   public static final HttpResponse PROCEED_WITH_REQUEST = new HttpResponse()
     .addHeader("Selenium-Interceptor", "Continue")
     .setContent(utf8String("Original request should proceed"));
 
-  private final OpaqueKey key;
-  private final Network<?, ?> network;
+  private final DevTools tools;
 
-  public NetworkInterceptor(WebDriver driver, Route route) {
+  public NetworkInterceptor(WebDriver driver, HttpHandler handler) {
+    this(driver, (Filter) next -> handler);
+  }
+
+  public NetworkInterceptor(WebDriver driver, Routable routable) {
+    this(
+      driver,
+      (Filter) next -> req -> {
+        if (routable.matches(req)) {
+          return routable.execute(req);
+        }
+        return next.execute(req);
+      });
+  }
+
+  public NetworkInterceptor(WebDriver driver, Filter filter) {
+    Require.nonNull("WebDriver", driver);
+    Require.nonNull("HTTP filter", filter);
+
     if (!(driver instanceof HasDevTools)) {
       throw new IllegalArgumentException("WebDriver instance must implement HasDevTools");
     }
-    Require.nonNull("Route", route);
 
-    DevTools devTools = ((HasDevTools) driver).getDevTools();
-    devTools.createSessionIfThereIsNotOne();
+    this.tools = ((HasDevTools) driver).getDevTools();
+    tools.createSessionIfThereIsNotOne();
 
-    network = devTools.getDomains().network();
-
-    key = network.addRequestHandler(route);
+    tools.getDomains().network().interceptTrafficWith(filter);
   }
 
   @Override
   public void close() {
-    network.removeRequestHandler(key);
+    tools.getDomains().network().resetNetworkFilter();
   }
+
+  protected HttpMethod convertFromCdpHttpMethod(String method) {
+    Require.nonNull("HTTP Method", method);
+    try {
+      return HttpMethod.valueOf(method.toUpperCase());
+    } catch (IllegalArgumentException e) {
+      // Spam in a reasonable value
+      return HttpMethod.GET;
+    }
+  }
+
+  protected HttpRequest createHttpRequest(
+    String cdpMethod,
+    String url,
+    Map<String, Object> headers,
+    Optional<String> postData) {
+    HttpRequest req = new HttpRequest(convertFromCdpHttpMethod(cdpMethod), url);
+    headers.forEach((key, value) -> req.addHeader(key, String.valueOf(value)));
+    postData.ifPresent(data -> req.setContent(utf8String(data)));
+
+    return req;
+  }
+
 }
