@@ -19,32 +19,47 @@ package org.openqa.selenium.devtools.idealized;
 
 import org.openqa.selenium.Credentials;
 import org.openqa.selenium.UsernameAndPassword;
+import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.devtools.Command;
 import org.openqa.selenium.devtools.DevTools;
 import org.openqa.selenium.devtools.DevToolsException;
 import org.openqa.selenium.devtools.Event;
+import org.openqa.selenium.internal.Either;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.http.Contents;
+import org.openqa.selenium.remote.http.Filter;
 import org.openqa.selenium.remote.http.HttpMethod;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
-import org.openqa.selenium.remote.http.Routable;
 
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.Base64;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.function.Function;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ExecutionException;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
+import java.util.logging.Logger;
+
+import static java.net.HttpURLConnection.HTTP_OK;
+import static java.nio.charset.StandardCharsets.UTF_8;
+import static java.util.logging.Level.WARNING;
 
 public abstract class Network<AUTHREQUIRED, REQUESTPAUSED> {
 
+  private static final Logger LOG = Logger.getLogger(Network.class.getName());
+
   private final Map<Predicate<URI>, Supplier<Credentials>> authHandlers = new LinkedHashMap<>();
-  private final Map<Predicate<HttpRequest>, Function<HttpRequest, HttpResponse>> uriHandlers = new LinkedHashMap<>();
+  private final Filter defaultFilter = next -> next::execute;
+  private Filter filter = defaultFilter;
   protected final DevTools devTools;
-  private boolean interceptingTraffic = false;
 
   public Network(DevTools devtools) {
     this.devTools = Require.nonNull("DevTools", devtools);
@@ -55,8 +70,7 @@ public abstract class Network<AUTHREQUIRED, REQUESTPAUSED> {
     devTools.send(enableNetworkCaching());
 
     authHandlers.clear();
-    uriHandlers.clear();
-    interceptingTraffic = false;
+    filter = defaultFilter;
   }
 
   public static class UserAgent {
@@ -113,35 +127,19 @@ public abstract class Network<AUTHREQUIRED, REQUESTPAUSED> {
     prepareToInterceptTraffic();
   }
 
-  public OpaqueKey addRequestHandler(Routable routable) {
-    Require.nonNull("Routable", routable);
-
-    return addRequestHandler(routable::matches, routable::execute);
-  }
-
-  public OpaqueKey addRequestHandler(Predicate<HttpRequest> whenThisMatches, Function<HttpRequest, HttpResponse> returnThis) {
-    Require.nonNull("Request predicate", whenThisMatches);
-    Require.nonNull("Handler", returnThis);
-
-    uriHandlers.put(whenThisMatches, returnThis);
-
-    prepareToInterceptTraffic();
-
-    return new OpaqueKey(whenThisMatches);
-  }
-
   @SuppressWarnings("SuspiciousMethodCalls")
-  public void removeRequestHandler(OpaqueKey key) {
-    Require.nonNull("Key", key);
-
-    uriHandlers.remove(key.getValue());
+  public void resetNetworkFilter() {
+    filter = defaultFilter;
   }
 
-  private void prepareToInterceptTraffic() {
-    if (interceptingTraffic) {
-      return;
-    }
+  public void interceptTrafficWith(Filter filter) {
+    Require.nonNull("HTTP filter", filter);
 
+    this.filter = filter;
+    prepareToInterceptTraffic();
+  }
+
+  public void prepareToInterceptTraffic() {
     devTools.send(disableNetworkCaching());
 
     devTools.addListener(
@@ -169,35 +167,56 @@ public abstract class Network<AUTHREQUIRED, REQUESTPAUSED> {
         devTools.send(cancelAuth(authRequired));
       });
 
+    Map<String, CompletableFuture<HttpResponse>> responses = new ConcurrentHashMap<>();
+
     devTools.addListener(
       requestPausedEvent(),
       pausedRequest -> {
-        Optional<HttpRequest> req = createHttpRequest(pausedRequest);
+        String id = getRequestId(pausedRequest);
+        Either<HttpRequest, HttpResponse> message = createSeMessages(pausedRequest);
 
-        if (!req.isPresent()) {
+        if (message.isRight()) {
+          HttpResponse res = message.right();
+          CompletableFuture<HttpResponse> future = responses.remove(id);
+
+          if (future == null) {
+            devTools.send(continueWithoutModification(pausedRequest));
+            return;
+          }
+
+          future.complete(res);
+          return;
+        }
+
+        HttpResponse forBrowser = filter.andFinally(req -> {
+          // Convert the selenium request to a CDP one and fulfill.
+
+          CompletableFuture<HttpResponse> res = new CompletableFuture<>();
+          responses.put(id, res);
+
+          devTools.send(continueRequest(pausedRequest, req));
+
+          // Wait for the CDP response and send that back.
+          try {
+            return res.get();
+          } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            throw new WebDriverException(e);
+          } catch (ExecutionException e) {
+            LOG.log(WARNING, e, () -> "Unable to process request");
+            return new HttpResponse();
+          }
+        }).execute(message.left());
+
+        if ("Continue".equals(forBrowser.getHeader("Selenium-Interceptor"))) {
           devTools.send(continueWithoutModification(pausedRequest));
           return;
         }
 
-        Optional<HttpResponse> maybeRes = getHttpResponse(req.get());
-        if (!maybeRes.isPresent()) {
-          devTools.send(continueWithoutModification(pausedRequest));
-          return;
-        }
-
-        HttpResponse response = maybeRes.get();
-
-        if ("Continue".equals(response.getHeader("Selenium-Interceptor"))) {
-          devTools.send(continueWithoutModification(pausedRequest));
-          return;
-        }
-
-        devTools.send(createResponse(pausedRequest, response));
+        devTools.send(fulfillRequest(pausedRequest, forBrowser));
       });
 
     devTools.send(enableFetchForAllPatterns());
-
-    interceptingTraffic = true;
   }
 
   protected Optional<Credentials> getAuthCredentials(URI uri) {
@@ -210,16 +229,6 @@ public abstract class Network<AUTHREQUIRED, REQUESTPAUSED> {
       .findFirst();
   }
 
-  protected Optional<HttpResponse> getHttpResponse(HttpRequest forRequest) {
-    Require.nonNull("Request", forRequest);
-
-    return uriHandlers.entrySet().stream()
-      .filter(entry -> entry.getKey().test(forRequest))
-      .map(Map.Entry::getValue)
-      .map(func -> func.apply(forRequest))
-      .findFirst();
-  }
-
   protected HttpMethod convertFromCdpHttpMethod(String method) {
     Require.nonNull("HTTP Method", method);
     try {
@@ -228,6 +237,32 @@ public abstract class Network<AUTHREQUIRED, REQUESTPAUSED> {
       // Spam in a reasonable value
       return HttpMethod.GET;
     }
+  }
+
+  protected HttpResponse createHttpResponse(
+    Optional<Integer> statusCode,
+    String body,
+    Boolean bodyIsBase64Encoded,
+    List<Map.Entry<String, String>> headers) {
+    Supplier<InputStream> content;
+    if (bodyIsBase64Encoded != null && bodyIsBase64Encoded) {
+      byte[] decoded = Base64.getDecoder().decode(body);
+      content = () -> new ByteArrayInputStream(decoded);
+    } else {
+      content = Contents.string(body, UTF_8);
+    }
+
+    HttpResponse res = new HttpResponse()
+      .setStatus(statusCode.orElse(HTTP_OK))
+      .setContent(content);
+
+    headers.forEach(entry -> {
+      if (entry.getValue() != null) {
+        res.addHeader(entry.getKey(), entry.getValue());
+      }
+    });
+
+    return res;
   }
 
   protected HttpRequest createHttpRequest(
@@ -262,9 +297,13 @@ public abstract class Network<AUTHREQUIRED, REQUESTPAUSED> {
 
   protected abstract Event<REQUESTPAUSED> requestPausedEvent();
 
-  protected abstract Optional<HttpRequest> createHttpRequest(REQUESTPAUSED pausedRequest);
+  protected abstract String getRequestId(REQUESTPAUSED pausedReq);
 
-  protected abstract Command<Void> continueWithoutModification(REQUESTPAUSED pausedRequest);
+  protected abstract Either<HttpRequest, HttpResponse> createSeMessages(REQUESTPAUSED pausedReq);
 
-  protected abstract Command<Void> createResponse(REQUESTPAUSED pausedRequest, HttpResponse response);
+  protected abstract Command<Void> continueWithoutModification(REQUESTPAUSED pausedReq);
+
+  protected abstract Command<Void> continueRequest(REQUESTPAUSED pausedReq, HttpRequest req);
+
+  protected abstract Command<Void> fulfillRequest(REQUESTPAUSED pausedReq, HttpResponse res);
 }

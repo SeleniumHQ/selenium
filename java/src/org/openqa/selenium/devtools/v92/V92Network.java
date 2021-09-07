@@ -18,6 +18,7 @@
 package org.openqa.selenium.devtools.v92;
 
 import com.google.common.collect.ImmutableList;
+import com.google.common.io.ByteStreams;
 import org.openqa.selenium.UsernameAndPassword;
 import org.openqa.selenium.devtools.Command;
 import org.openqa.selenium.devtools.DevTools;
@@ -29,14 +30,20 @@ import org.openqa.selenium.devtools.v92.fetch.model.AuthRequired;
 import org.openqa.selenium.devtools.v92.fetch.model.HeaderEntry;
 import org.openqa.selenium.devtools.v92.fetch.model.RequestPattern;
 import org.openqa.selenium.devtools.v92.fetch.model.RequestPaused;
+import org.openqa.selenium.devtools.v92.fetch.model.RequestStage;
 import org.openqa.selenium.devtools.v92.network.model.Request;
-import org.openqa.selenium.remote.http.Contents;
+import org.openqa.selenium.internal.Either;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 
-import java.util.ArrayList;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.AbstractMap;
 import java.util.Base64;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 public class V92Network extends Network<AuthRequired, RequestPaused> {
@@ -64,7 +71,9 @@ public class V92Network extends Network<AuthRequired, RequestPaused> {
   @Override
   protected Command<Void> enableFetchForAllPatterns() {
     return Fetch.enable(
-      Optional.of(ImmutableList.of(new RequestPattern(Optional.of("*"), Optional.empty(), Optional.empty()))),
+      Optional.of(ImmutableList.of(
+        new RequestPattern(Optional.of("*"), Optional.empty(), Optional.of(RequestStage.REQUEST)),
+        new RequestPattern(Optional.of("*"), Optional.empty(), Optional.of(RequestStage.RESPONSE)))),
       Optional.of(true));
   }
 
@@ -101,23 +110,42 @@ public class V92Network extends Network<AuthRequired, RequestPaused> {
   }
 
   @Override
-  protected Event<RequestPaused> requestPausedEvent() {
+  public Event<RequestPaused> requestPausedEvent() {
     return Fetch.requestPaused();
   }
 
   @Override
-  protected Optional<HttpRequest> createHttpRequest(RequestPaused pausedRequest) {
-    if (pausedRequest.getResponseErrorReason().isPresent() || pausedRequest.getResponseStatusCode().isPresent()) {
-      return Optional.empty();
+  public Either<HttpRequest, HttpResponse> createSeMessages(RequestPaused pausedReq) {
+    if (pausedReq.getResponseStatusCode().isPresent() || pausedReq.getResponseErrorReason().isPresent()) {
+      Fetch.GetResponseBodyResponse base64Body = devTools.send(Fetch.getResponseBody(pausedReq.getRequestId()));
+
+      List<Map.Entry<String, String>> headers = new LinkedList<>();
+      pausedReq.getResponseHeaders().ifPresent(resHeaders ->
+        resHeaders.forEach(header -> headers.add(new AbstractMap.SimpleEntry<>(header.getName(), header.getValue()))));
+
+      HttpResponse res = createHttpResponse(
+        pausedReq.getResponseStatusCode(),
+        base64Body.getBody(),
+        base64Body.getBase64Encoded(),
+        headers);
+
+      return Either.right(res);
     }
 
-    Request cdpRequest = pausedRequest.getRequest();
+    Request cdpReq = pausedReq.getRequest();
 
-    return Optional.of(createHttpRequest(
-      cdpRequest.getMethod(),
-      cdpRequest.getUrl(),
-      cdpRequest.getHeaders(),
-      cdpRequest.getPostData()));
+    HttpRequest req = createHttpRequest(
+      cdpReq.getMethod(),
+      cdpReq.getUrl(),
+      cdpReq.getHeaders(),
+      cdpReq.getPostData());
+
+    return Either.left(req);
+  }
+
+  @Override
+  protected String getRequestId(RequestPaused pausedReq) {
+    return pausedReq.getRequestId().toString();
   }
 
   @Override
@@ -131,20 +159,43 @@ public class V92Network extends Network<AuthRequired, RequestPaused> {
   }
 
   @Override
-  protected Command<Void> createResponse(RequestPaused pausedRequest, HttpResponse response) {
-    List<HeaderEntry> headers = new ArrayList<>();
-    response.getHeaderNames().forEach(
-      name -> response.getHeaders(name).forEach(value -> headers.add(new HeaderEntry(name, value))));
+  protected Command<Void> continueRequest(RequestPaused pausedReq, HttpRequest req) {
+    ByteArrayOutputStream bos = new ByteArrayOutputStream();
+    try (InputStream is = req.getContent().get()) {
+      ByteStreams.copy(is, bos);
+    } catch (IOException e) {
+      return continueWithoutModification(pausedReq);
+    }
 
-    byte[] bytes = Contents.bytes(response.getContent());
-    String body = bytes.length > 0 ? Base64.getEncoder().encodeToString(bytes) : null;
+    List<HeaderEntry> headers = new LinkedList<>();
+    req.getHeaderNames().forEach(name -> req.getHeaders(name).forEach(value -> headers.add(new HeaderEntry(name, value))));
+
+    return Fetch.continueRequest(
+      pausedReq.getRequestId(),
+      Optional.empty(),
+      Optional.of(req.getMethod().toString()),
+      Optional.of(Base64.getEncoder().encodeToString(bos.toByteArray())),
+      Optional.of(headers));
+  }
+
+  @Override
+  protected Command<Void> fulfillRequest(RequestPaused pausedReq, HttpResponse res) {
+    List<HeaderEntry> headers = new LinkedList<>();
+    res.getHeaderNames().forEach(name -> res.getHeaders(name).forEach(value -> headers.add(new HeaderEntry(name, value))));
+
+    ByteArrayOutputStream bos = new ByteArrayOutputStream();
+    try (InputStream is = res.getContent().get()) {
+      ByteStreams.copy(is, bos);
+    } catch (IOException e) {
+      bos.reset();
+    }
 
     return Fetch.fulfillRequest(
-      pausedRequest.getRequestId(),
-      response.getStatus(),
+      pausedReq.getRequestId(),
+      res.getStatus(),
       Optional.of(headers),
       Optional.empty(),
-      Optional.ofNullable(body),
+      Optional.of(Base64.getEncoder().encodeToString(bos.toByteArray())),
       Optional.empty());
   }
 }

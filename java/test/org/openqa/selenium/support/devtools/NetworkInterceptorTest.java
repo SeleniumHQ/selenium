@@ -27,6 +27,7 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.devtools.HasDevTools;
 import org.openqa.selenium.environment.webserver.NettyAppServer;
 import org.openqa.selenium.remote.http.Contents;
+import org.openqa.selenium.remote.http.Filter;
 import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.remote.http.Route;
 import org.openqa.selenium.testing.drivers.WebDriverBuilder;
@@ -50,7 +51,7 @@ public class NetworkInterceptorTest {
   public static void shouldTestBeRunAtAll() {
     assumeThat(Boolean.getBoolean("selenium.skiptest")).isFalse();
   }
-  
+
   @Before
   public void setup() {
     driver = new WebDriverBuilder().get();
@@ -111,7 +112,7 @@ public class NetworkInterceptorTest {
       driver,
       Route.matching(req -> true).to(() -> req -> {
         seen.set(true);
-        return NetworkInterceptor.PROCEED_WITH_REQUEST;
+        return org.openqa.selenium.support.devtools.NetworkInterceptor.PROCEED_WITH_REQUEST;
       }));
 
     driver.get(appServer.whereIs("/cheese"));
@@ -139,5 +140,23 @@ public class NetworkInterceptorTest {
     driver.get(appServer.whereIs("/cheese"));
     String text = driver.findElement(By.tagName("body")).getText();
     assertThat(text).contains("Hello, World!");
+  }
+
+  @Test
+  public void shouldBeAbleToInterceptAResponse() {
+    try (NetworkInterceptor networkInterceptor = new NetworkInterceptor(
+      driver,
+      (Filter) next -> req -> {
+        HttpResponse res = next.execute(req);
+        res.addHeader("Content-Type", MediaType.HTML_UTF_8.toString());
+        res.setContent(Contents.utf8String("Sausages"));
+        return res;
+      })) {
+
+      driver.get(appServer.whereIs("/cheese"));
+    }
+
+    String body = driver.findElement(By.tagName("body")).getText();
+    assertThat(body).contains("Sausages");
   }
 }

@@ -21,6 +21,7 @@ import com.google.common.collect.ImmutableMap;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.openqa.selenium.By;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.MutableCapabilities;
 import org.openqa.selenium.WebDriver;
@@ -73,29 +74,23 @@ public class DistributedCdpTest {
 
     Server<?> server = new NettyServer(
       new BaseServerOptions(new MapConfig(ImmutableMap.of())),
-      req -> new HttpResponse().setContent(Contents.utf8String("I like cheese")))
+      req -> new HttpResponse().setContent(Contents.utf8String(
+        "<script>document.write(navigator.userAgent);</script><body><h1 id=header>Cheese</h1>")))
       .start();
 
     WebDriver driver = new RemoteWebDriver(
       deployment.getServer().getUrl(), addBrowserPath(browser.getCapabilities()));
     driver = new Augmenter().augment(driver);
 
-    String serverUri = server.getUrl().toString();
-
-    CountDownLatch latch = new CountDownLatch(1);
     try (DevTools devTools = ((HasDevTools) driver).getDevTools()) {
       devTools.createSessionIfThereIsNotOne();
       Network<?, ?> network = devTools.getDomains().network();
-      network.addRequestHandler(
-        Route.matching(req -> req.getUri().startsWith(serverUri))
-          .to(() -> req -> {
-            latch.countDown();
-            return NetworkInterceptor.PROCEED_WITH_REQUEST;
-          }));
+      network.setUserAgent("Cheese-Browser 4000");
 
       driver.get(server.getUrl().toString());
 
-      assertThat(latch.await(10, SECONDS)).isTrue();
+      String body = driver.findElement(By.tagName("body")).getText();
+      assertThat(body).contains("Cheese-Browser 4000");
     }
   }
 
