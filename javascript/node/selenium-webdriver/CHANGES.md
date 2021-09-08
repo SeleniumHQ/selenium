@@ -1,3 +1,22 @@
+## v4.0.0-rc-1
+
+* Deprecates withCapabilities method and removes tests (#9701)
+* expose `withLocator` method at the top level
+* Enables Mobile feature for Firefox (Still need to expand this to chromium based browsers)
+
+* Add the ability to do Relative Locators with all By types. Fixes #9559
+* Add default Opera capabilities. Fixes #9654
+* Add support for ChromeDriver `--enable-chrome-logs` (#9575) [Author: Mark Stacey]
+
+  The `--enable-chrome-logs` ChromeDriver option can now be enabled using
+  the Chromium (or Chrome) ServiceBuilder, similarly to the other options
+  provided by ChromeDriver.
+
+* Add the debuggerAddress option to chromium.js (#9561) [Author: Brandon Walderman]
+* Adds http client options (#9638)[Author: Dharin Shah]
+* Updating edge.js to extend chromium.driver (fixes #9626)
+
+
 ## v4.0.0-beta.4
 
 * Add windowTypes option support for ChromiumDriver (#7897)

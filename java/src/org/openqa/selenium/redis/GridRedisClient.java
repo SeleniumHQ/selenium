@@ -76,6 +76,10 @@ public class GridRedisClient implements Closeable {
     return connection.sync().get(key);
   }
 
+  public List<String> getKeysByPattern(String pattern) {
+    return connection.sync().keys(pattern);
+  }
+
   public boolean isOpen() {
     return connection.isOpen();
   }

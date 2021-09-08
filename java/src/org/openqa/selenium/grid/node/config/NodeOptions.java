@@ -39,6 +39,7 @@ import org.openqa.selenium.json.Json;
 import org.openqa.selenium.json.JsonOutput;
 import org.openqa.selenium.remote.service.DriverService;
 
+import java.io.File;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.net.URI;
@@ -246,10 +247,10 @@ public class NodeOptions {
     Multimap<WebDriverInfo, SessionFactory> driverConfigs = HashMultimap.create();
     config.getAll(NODE_SECTION, "driver-configuration").ifPresent(drivers -> {
       /*
-        The four accepted keys are: name, max-sessions, stereotype, webdriver-executable. The
-        mandatory keys are name and stereotype. When configs are read, they keys always come
-        alphabetically ordered. This means that we know a new config is present when we find
-        the "name" key again.
+        The four accepted keys are: display-name, max-sessions, stereotype, webdriver-executable.
+        The mandatory keys are display-name and stereotype. When configs are read, they keys always
+        come alphabetically ordered. This means that we know a new config is present when we find
+        the "display-name" key again.
        */
 
       if (drivers.size() == 0) {
@@ -266,12 +267,12 @@ public class NodeOptions {
                                     "required 'key=value' structure");
         });
 
-      // Find all indexes where "name" is present, as it marks the start of a config
+      // Find all indexes where "display-name" is present, as it marks the start of a config
       int[] configIndexes = IntStream.range(0, drivers.size())
-        .filter(index -> drivers.get(index).startsWith("name")).toArray();
+        .filter(index -> drivers.get(index).startsWith("display-name")).toArray();
 
       if (configIndexes.length == 0) {
-        throw new ConfigException("No 'name' keyword was found in the provided configs!");
+        throw new ConfigException("No 'display-name' keyword was found in the provided configs!");
       }
 
       List<Map<String, String>> driversMap = new ArrayList<>();
@@ -279,9 +280,8 @@ public class NodeOptions {
         int fromIndex = configIndexes[i];
         int toIndex = (i + 1) >= configIndexes.length ? drivers.size() : configIndexes[i + 1];
         Map<String, String> configMap = new HashMap<>();
-        drivers.subList(fromIndex, toIndex).forEach(keyValue -> {
-          configMap.put(keyValue.split("=")[0], keyValue.split("=")[1]);
-        });
+        drivers.subList(fromIndex, toIndex)
+          .forEach(keyValue -> configMap.put(keyValue.split("=")[0], keyValue.split("=")[1]));
         driversMap.add(configMap);
       }
 
@@ -295,17 +295,36 @@ public class NodeOptions {
         if (!configMap.containsKey("stereotype")) {
           throw new ConfigException("Driver config is missing stereotype value. " + configMap);
         }
-        Capabilities stereotype =
-          enhanceStereotype(JSON.toType(configMap.get("stereotype"), Capabilities.class));
-        String configName = configMap.getOrDefault("name", "Custom Slot Config");
-        int driverMaxSessions = Integer.parseInt(configMap.getOrDefault("max-sessions", "1"));
-        Require.positive("Driver max sessions", driverMaxSessions);
+
+        Capabilities confStereotype = JSON.toType(configMap.get("stereotype"), Capabilities.class);
+        if (configMap.containsKey("webdriver-executable")) {
+          String webDriverExecutablePath = configMap.getOrDefault("webdriver-executable", "");
+          File webDriverExecutable = new File(webDriverExecutablePath);
+          if (!webDriverExecutable.isFile()) {
+            LOG.warning(
+              "Driver executable does not seem to be a file! " + webDriverExecutablePath);
+          }
+          if (!webDriverExecutable.canExecute()) {
+            LOG.warning("Driver file exists but does not seem to be a executable! "
+                        + webDriverExecutablePath);
+          }
+          confStereotype = new PersistentCapabilities(confStereotype)
+            .setCapability("se:webDriverExecutable", webDriverExecutablePath);
+        }
+        Capabilities stereotype = enhanceStereotype(confStereotype);
+
+        String configName = configMap.getOrDefault("display-name", "Custom Slot Config");
 
         WebDriverInfo info = infos.stream()
           .filter(webDriverInfo -> webDriverInfo.isSupporting(stereotype))
           .findFirst()
           .orElseThrow(() ->
                          new ConfigException("Unable to find matching driver for %s", stereotype));
+
+        int driverMaxSessions = Integer
+          .parseInt(configMap.getOrDefault("max-sessions",
+                                           String.valueOf(info.getMaximumSimultaneousSessions())));
+        Require.positive("Driver max sessions", driverMaxSessions);
 
         WebDriverInfo driverInfoConfig = createConfiguredDriverInfo(info, stereotype, configName);
 

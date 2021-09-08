@@ -19,20 +19,29 @@ package org.openqa.selenium.grid.sessionqueue.config;
 
 import org.openqa.selenium.grid.config.Config;
 import org.openqa.selenium.grid.config.ConfigException;
+import org.openqa.selenium.grid.jmx.JMXHelper;
+import org.openqa.selenium.grid.jmx.ManagedAttribute;
+import org.openqa.selenium.grid.jmx.ManagedService;
 import org.openqa.selenium.grid.sessionqueue.NewSessionQueue;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.time.Duration;
 import java.util.Optional;
 
+@ManagedService(objectName = "org.seleniumhq.grid:type=Config,name=NewSessionQueueConfig",
+  description = "New session queue config")
 public class NewSessionQueueOptions {
 
   static final String SESSION_QUEUE_SECTION = "sessionqueue";
+  static final int DEFAULT_REQUEST_TIMEOUT = 300;
+  static final int DEFAULT_RETRY_INTERVAL = 5;
 
   private final Config config;
 
   public NewSessionQueueOptions(Config config) {
     this.config = config;
+    new JMXHelper().register(this);
   }
 
   public URI getSessionQueueUri() {
@@ -77,7 +86,37 @@ public class NewSessionQueueOptions {
     }
   }
 
+  public Duration getSessionRequestTimeout() {
+    // If the user sets 0 or less, we default to 1s.
+    int timeout = Math.max(
+      config.getInt(SESSION_QUEUE_SECTION, "session-request-timeout")
+        .orElse(DEFAULT_REQUEST_TIMEOUT),
+      1);
+
+    return Duration.ofSeconds(timeout);
+  }
+
+  public Duration getSessionRequestRetryInterval() {
+    // If the user sets 0 or less, we default to 1s.
+    int interval = Math.max(
+      config.getInt(SESSION_QUEUE_SECTION, "session-retry-interval")
+        .orElse(DEFAULT_REQUEST_TIMEOUT),
+      1);
+    return Duration.ofSeconds(interval);
+  }
+
+  @ManagedAttribute(name = "RequestTimeoutSeconds")
+  public long getRequestTimeoutSeconds() {
+    return getSessionRequestTimeout().getSeconds();
+  }
+
+  @ManagedAttribute(name = "RetryIntervalSeconds")
+  public long getRetryIntervalSeconds() {
+    return getSessionRequestRetryInterval().getSeconds();
+  }
+
   public NewSessionQueue getSessionQueue(String implementation) {
-    return config.getClass(SESSION_QUEUE_SECTION, "implementation", NewSessionQueue.class, implementation);
+    return config
+      .getClass(SESSION_QUEUE_SECTION, "implementation", NewSessionQueue.class, implementation);
   }
 }

@@ -37,6 +37,7 @@ import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.service.DriverService;
 import org.openqa.selenium.remote.tracing.Tracer;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -88,6 +89,8 @@ public class LocalNodeFactory {
     Capabilities stereotype) {
     ImmutableList.Builder<SessionFactory> toReturn = ImmutableList.builder();
     SlotMatcher slotMatcher = new DefaultSlotMatcher();
+    String webDriverExecutablePath =
+      String.valueOf(stereotype.asMap().getOrDefault("se:webDriverExecutable", ""));
 
     builders.stream()
       .filter(builder -> builder.score(stereotype) > 0)
@@ -100,6 +103,10 @@ public class LocalNodeFactory {
           // and the DriverService creation needs to be thread safe.
           Object driverBuilder = clazz.newInstance();
           driverServiceBuilder = ((DriverService.Builder<?, ?>) driverBuilder).usingAnyFreePort();
+          if (!webDriverExecutablePath.isEmpty()) {
+            driverServiceBuilder =
+              driverServiceBuilder.usingDriverExecutable(new File(webDriverExecutablePath));
+          }
         } catch (InstantiationException | IllegalAccessException e) {
           throw new IllegalArgumentException(String.format(
             "Class %s could not be found or instantiated", clazz));

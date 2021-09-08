@@ -49,22 +49,16 @@ issueTypes:
 closeNotSupportedIssueTypes: true
 
 closeNotSupportedIssueTypesComment: >
-  ❗️ It seems this issue is not using any of the supported templates
+  ❗️ It seems this issue is not using any of the supported templates. This is a volunteer-run project
+  that receives a lot of issues that do not provide sufficient information needed to provide proper help.
 
+  💡 Please select which of these best represents your concern, and make sure you provide all of the requested information:
 
-  💡 Supported issue types are (they start with):
+  * 🐛 [Bug Report](https://github.com/SeleniumHQ/selenium/issues/new?template=bug.md) (bugs found in a recent release)
 
+  * 🚀 [Feature Proposal](https://github.com/SeleniumHQ/selenium/issues/new?template=feature.md) (a useful feature you would like to propose)
 
-  * 🐛 Bug Report (bugs found in a recent release)
-
-  * 🚀 Feature Proposal (a useful feature you would like to propose)
-
-  * 💥 Regression Report (a supported feature is not working anymore)
-
-
-  Issue templates help this project to stay in shape, please use them and fill them out completely.
-  By doing that you are helping the project because the community and maintainers can provide prompt feedback,
-  and potentially solve the issue.
+  * 💥 [Regression Report](https://github.com/SeleniumHQ/selenium/issues/new?template=regression.md) (a supported feature is not working anymore)
 
 
   If you are asking a question, a better way to address this is:
@@ -75,8 +69,4 @@ closeNotSupportedIssueTypesComment: >
   * 📮 Post them to [StackOverflow](https://stackoverflow.com/questions/tagged/selenium)
 
   * 🗣 Join us in the [IRC/Slack channel](https://www.selenium.dev/support/) where the community can help you as well
-
-
-  If you think this is incorrect, please feel free to open a new issue.
-
 

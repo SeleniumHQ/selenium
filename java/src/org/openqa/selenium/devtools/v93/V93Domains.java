@@ -15,7 +15,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.devtools.v91;
+package org.openqa.selenium.devtools.v93;
 
 import org.openqa.selenium.devtools.DevTools;
 import org.openqa.selenium.devtools.idealized.Domains;
@@ -26,21 +26,21 @@ import org.openqa.selenium.devtools.idealized.log.Log;
 import org.openqa.selenium.devtools.idealized.target.Target;
 import org.openqa.selenium.internal.Require;
 
-public class V91Domains implements Domains {
+public class V93Domains implements Domains {
 
-  private final V91Javascript js;
-  private final V91Events events;
-  private final V91Log log;
-  private final V91Network network;
-  private final V91Target target;
+  private final V93Javascript js;
+  private final V93Events events;
+  private final V93Log log;
+  private final V93Network network;
+  private final V93Target target;
 
-  public V91Domains(DevTools devtools) {
+  public V93Domains(DevTools devtools) {
     Require.nonNull("DevTools", devtools);
-    events = new V91Events(devtools);
-    js = new V91Javascript(devtools);
-    log = new V91Log();
-    network = new V91Network(devtools);
-    target = new V91Target();
+    events = new V93Events(devtools);
+    js = new V93Javascript(devtools);
+    log = new V93Log();
+    network = new V93Network(devtools);
+    target = new V93Target();
   }
 
   @Override

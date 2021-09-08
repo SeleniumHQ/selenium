@@ -1,3 +1,21 @@
+4.0.0.rc1 (2021-09-01)
+=========================
+
+DevTools:
+  * Released selenium-devtools 0.92.0 (2021-08-21) which:
+    - adds CDP versions 92
+    - removes CDP versions 88, 89, 90
+
+IE:
+  * Added options for running Microsoft Edge in IE mode with IE Driver
+
+Remote:
+  * Added default file detector for remote driver
+
+Ruby:
+  * Fixed bug for getting valid capability that has not been set
+  * Fixed bug preventing loading of ServerError class
+
 4.0.0.beta4 (2021-06-07)
 =========================
 

@@ -24,6 +24,8 @@ import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.NoSuchSessionException;
 import org.openqa.selenium.events.EventBus;
 import org.openqa.selenium.grid.config.Config;
+import org.openqa.selenium.grid.data.NodeRemovedEvent;
+import org.openqa.selenium.grid.data.NodeRestartedEvent;
 import org.openqa.selenium.grid.data.Session;
 import org.openqa.selenium.grid.data.SessionClosedEvent;
 import org.openqa.selenium.grid.log.LoggingOptions;
@@ -79,6 +81,13 @@ public class RedisBackedSessionMap extends SessionMap {
     this.connection = new GridRedisClient(serverUri);
     this.serverUri = serverUri;
     this.bus.addListener(SessionClosedEvent.listener(this::remove));
+
+    this.bus.addListener(NodeRemovedEvent.listener(nodeStatus -> nodeStatus.getSlots().stream()
+      .filter(slot -> slot.getSession() != null)
+      .map(slot -> slot.getSession().getId())
+      .forEach(this::remove)));
+
+    bus.addListener(NodeRestartedEvent.listener(nodeStatus -> this.removeByUri(nodeStatus.getExternalUri())));
   }
 
   public static SessionMap create(Config config) {
@@ -254,14 +263,39 @@ public class RedisBackedSessionMap extends SessionMap {
 
       String uriKey = uriKey(id);
       String capabilitiesKey = capabilitiesKey(id);
+      String stereotypeKey = stereotypeKey(id);
+      String startKey = startKey(id);
       span.setAttribute(REDIS_URI_KEY, uriKey);
       span.setAttribute(REDIS_CAPABILITIES_KEY, capabilitiesKey);
+      span.setAttribute(REDIS_START_KEY, startKey);
       attributeMap.put(REDIS_URI_KEY, EventAttribute.setValue(uriKey));
       attributeMap.put(REDIS_CAPABILITIES_KEY, EventAttribute.setValue(capabilitiesKey));
+      attributeMap.put(REDIS_START_KEY, EventAttribute.setValue(startKey));
 
       span.addEvent("Deleted session from the database", attributeMap);
-      connection.del(uriKey, capabilitiesKey);
+
+      connection.del(uriKey, capabilitiesKey, stereotypeKey, startKey);
     }
+  }
+
+  public void removeByUri(URI uri) {
+    List<String> uriKeys = connection.getKeysByPattern("session:*:uri");
+
+    if (uriKeys.isEmpty()) {
+      return;
+    }
+
+    String[] keys = new String[uriKeys.size()];
+    keys = uriKeys.toArray(keys);
+
+    List<KeyValue<String, String>> keyValues = connection.mget(keys);
+    keyValues.stream()
+      .filter(entry -> entry.getValue().equals(uri.toString()))
+      .map(KeyValue::getKey)
+      .map(key -> {
+        String[] sessionKey = key.split(":");
+        return new SessionId(sessionKey[1]);
+      }).forEach(this::remove);
   }
 
   @Override
