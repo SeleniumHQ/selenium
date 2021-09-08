@@ -18,19 +18,20 @@
 'use strict'
 
 const assert = require('assert')
-
+const { Browser, until } = require('..')
 const fileServer = require('../lib/test/fileserver')
-const test = require('../lib/test')
-const until = require('../lib/until')
+const { Pages, ignore, suite } = require('../lib/test')
 
-test.suite(
+suite(
   function (env) {
+    const browsers = (...args) => env.browsers(...args)
+
     let driver
 
-    before(async function () {
+    beforeAll(async function () {
       driver = await env.builder().build()
     })
-    after(() => driver.quit())
+    afterAll(() => driver.quit())
 
     it('sends Page.enable command using devtools', async function () {
       const cdpConnection = await driver.createCDPConnection('page')
@@ -69,12 +70,12 @@ test.suite(
         await driver.onLogException(cdpConnection, function (event) {
           assert.strictEqual(
             event['exceptionDetails']['stackTrace']['callFrames'][0][
-              'functionName'
+            'functionName'
             ],
             'onmouseover'
           )
         })
-        await driver.get(test.Pages.javascriptPage)
+        await driver.get(Pages.javascriptPage)
         let element = driver.findElement({ id: 'throwing-mouseover' })
         await element.click()
       })
@@ -99,27 +100,29 @@ test.suite(
     })
 
     describe('Basic Auth Injection', function () {
-      it('denies entry if username and password do not match', async function () {
-        const pageCdpConnection = await driver.createCDPConnection('page')
+      ignore(browsers(Browser.SAFARI, Browser.FIREFOX)).
+        it('denies entry if username and password do not match', async function () {
+          const pageCdpConnection = await driver.createCDPConnection('page')
 
-        await driver.register('random', 'random', pageCdpConnection)
-        await driver.get(fileServer.Pages.basicAuth)
-        let source = await driver.getPageSource()
-        assert.ok(
-          !source.includes('Access granted!'),
-          `The Source is \n ${source}`
-        )
-      })
+          await driver.register('random', 'random', pageCdpConnection)
+          await driver.get(fileServer.Pages.basicAuth)
+          let source = await driver.getPageSource()
+          assert.ok(
+            !source.includes('Access granted!'),
+            `The Source is \n ${source}`
+          )
+        })
 
-      it('grants access if username and password are a match', async function () {
-        const pageCdpConnection = await driver.createCDPConnection('page')
+      ignore(browsers(Browser.SAFARI, Browser.FIREFOX)).
+        it('grants access if username and password are a match', async function () {
+          const pageCdpConnection = await driver.createCDPConnection('page')
 
-        await driver.register('genie', 'bottle', pageCdpConnection)
-        await driver.get(fileServer.Pages.basicAuth)
-        let source = await driver.getPageSource()
-        assert.strictEqual(source.includes('Access granted!'), true)
-      })
+          await driver.register('genie', 'bottle', pageCdpConnection)
+          await driver.get(fileServer.Pages.basicAuth)
+          let source = await driver.getPageSource()
+          assert.strictEqual(source.includes('Access granted!'), true)
+        })
     })
   },
-  { browsers: ['chrome'] }
+  { browsers: ['chrome', 'firefox'] }
 )

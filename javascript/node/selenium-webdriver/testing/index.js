@@ -40,14 +40,14 @@ const ie = require('../ie')
 const remote = require('../remote')
 const safari = require('../safari')
 const opera = require('../opera')
-const { Browser } = require('../lib/capabilities')
+const { Browser, Capabilities } = require('../lib/capabilities')
 const { Builder } = require('../index')
 
 /**
  * Describes a browser targeted by a {@linkplain suite test suite}.
  * @record
  */
-function TargetBrowser() {}
+function TargetBrowser() { }
 
 /**
  * The {@linkplain Browser name} of the targeted browser.
@@ -210,7 +210,7 @@ function init(force = false) {
   if (seleniumJar && seleniumUrl) {
     throw Error(
       'Ambiguous test configuration: both SELENIUM_REMOTE_URL' +
-        ' && SELENIUM_SERVER_JAR environment variables are set'
+      ' && SELENIUM_SERVER_JAR environment variables are set'
     )
   }
 
@@ -218,8 +218,8 @@ function init(force = false) {
   if ((seleniumJar || seleniumUrl) && envBrowsers.length === 0) {
     throw Error(
       'Ambiguous test configuration: when either the SELENIUM_REMOTE_URL or' +
-        ' SELENIUM_SERVER_JAR environment variable is set, the' +
-        ' SELENIUM_BROWSER variable must also be set.'
+      ' SELENIUM_SERVER_JAR environment variable is set, the' +
+      ' SELENIUM_BROWSER variable must also be set.'
     )
   }
 
@@ -289,7 +289,8 @@ class Environment {
 
     const realBuild = builder.build
     builder.build = function () {
-      builder.forBrowser(browser.name, browser.version, browser.platform)
+
+      builder.withCapabilities(Capabilities[browser.name].apply(Capabilities))
 
       if (browser.capabilities) {
         builder.getCapabilities().merge(browser.capabilities)
@@ -311,7 +312,7 @@ class Environment {
  * Configuration options for a {@linkplain ./index.suite test suite}.
  * @record
  */
-function SuiteOptions() {}
+function SuiteOptions() { }
 
 /**
  * The browsers to run the test suite against.
@@ -486,8 +487,8 @@ function getTestHook(name) {
   if (type !== 'function') {
     throw TypeError(
       `Expected global.${name} to be a function, but is ${type}.` +
-        ' This can happen if you try using this module when running with' +
-        ' node directly instead of using jasmine or mocha'
+      ' This can happen if you try using this module when running with' +
+      ' node directly instead of using jasmine or mocha'
     )
   }
   return fn
