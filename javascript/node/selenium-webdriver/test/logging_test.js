@@ -27,7 +27,12 @@ test.suite(function (env) {
   // Logging API not supported in Safari.
   test
     .ignore(
-      env.browsers(Browser.INTERNET_EXPLORER, Browser.SAFARI, Browser.FIREFOX)
+      env.browsers(
+        Browser.INTERNET_EXPLORER,
+        Browser.SAFARI,
+        Browser.FIREFOX,
+        Browser.CHROME
+      )
     )
     .describe('logging', function () {
       var driver

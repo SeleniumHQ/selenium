@@ -1229,23 +1229,12 @@ class WebDriver {
     if (target && cdpTargets.indexOf(target.toLowerCase()) === -1) {
       throw new error.InvalidArgumentError('invalid target value')
     }
-    let path
-    if (target === 'page') {
-      path = '/json'
-    } else {
-      path = '/json/version'
-    }
+    const path = '/json/version'
     let request = new http.Request('GET', path)
     let client = new http.HttpClient('http://' + debuggerAddress)
     let response = await client.send(request)
-    let url
-    if (target.toLowerCase() === 'page') {
-      url = JSON.parse(response.body)[0]['webSocketDebuggerUrl']
-    } else {
-      url = JSON.parse(response.body)['webSocketDebuggerUrl']
-    }
 
-    return url
+    return JSON.parse(response.body)['webSocketDebuggerUrl']
   }
 
   /**
