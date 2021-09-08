@@ -11,9 +11,6 @@ java_library(
         "//java/src/org/openqa/selenium:core",
         "//java/src/org/openqa/selenium/devtools",
         "//java/src/org/openqa/selenium/remote/http",
-
-        "//java/src/org/openqa/selenium/devtools/v93",
-
         artifact("com.google.guava:guava"),
     ],
 )
