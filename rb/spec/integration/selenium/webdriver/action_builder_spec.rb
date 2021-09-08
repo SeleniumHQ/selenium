@@ -137,11 +137,12 @@ module Selenium
           end
 
           droppable = driver.find_element(id: 'droppable')
+          expect(droppable.text).to eq('A')
 
           driver.action.drag_and_drop(draggable, droppable).perform
 
-          text = droppable.find_element(tag_name: 'p').text
-          expect(text).to eq('Dropped!')
+          text = driver.find_element(id: 'droppable').text
+          expect(text).to eq('B')
         end
 
         it 'double clicks an element', except: {browser: %i[safari safari_preview]} do
