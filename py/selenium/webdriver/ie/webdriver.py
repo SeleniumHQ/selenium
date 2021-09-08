@@ -60,8 +60,8 @@ class WebDriver(RemoteWebDriver):
             warnings.warn('executable_path has been deprecated, please pass in a Service object',
                           DeprecationWarning, stacklevel=2)
         if capabilities:
-            warnings.warn('capabilities has been deprecated, please pass in a Options object.'
-                          'This field will be ignored if Options object also used.',
+            warnings.warn('capabilities has been deprecated, please pass in an Options object.'
+                          'This field will be ignored if an Options object is also used.',
                           DeprecationWarning, stacklevel=2)
         if port != DEFAULT_PORT:
             warnings.warn('port has been deprecated, please pass in a Service object',
