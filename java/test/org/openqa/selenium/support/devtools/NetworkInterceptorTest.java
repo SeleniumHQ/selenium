@@ -112,7 +112,7 @@ public class NetworkInterceptorTest {
       driver,
       Route.matching(req -> true).to(() -> req -> {
         seen.set(true);
-        return org.openqa.selenium.support.devtools.NetworkInterceptor.PROCEED_WITH_REQUEST;
+        return NetworkInterceptor.PROCEED_WITH_REQUEST;
       }));
 
     driver.get(appServer.whereIs("/cheese"));

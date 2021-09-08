@@ -18,7 +18,6 @@
 package org.openqa.selenium.grid.router;
 
 import com.google.common.collect.ImmutableMap;
-
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.openqa.selenium.By;
@@ -39,17 +38,13 @@ import org.openqa.selenium.remote.Augmenter;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.remote.http.Contents;
 import org.openqa.selenium.remote.http.HttpResponse;
-import org.openqa.selenium.remote.http.Route;
-import org.openqa.selenium.support.devtools.NetworkInterceptor;
 import org.openqa.selenium.testing.drivers.Browser;
 
 import java.io.StringReader;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
-import java.util.concurrent.CountDownLatch;
 
-import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assumptions.assumeThat;
 
