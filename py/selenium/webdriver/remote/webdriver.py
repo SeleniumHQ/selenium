@@ -1117,7 +1117,7 @@ class WebDriver(BaseWebDriver):
 
         """
         if 'sameSite' in cookie_dict:
-            assert cookie_dict['sameSite'] in ['Strict', 'Lax']
+            assert cookie_dict['sameSite'] in ['Strict', 'Lax', 'None']
             self.execute(Command.ADD_COOKIE, {'cookie': cookie_dict})
         else:
             self.execute(Command.ADD_COOKIE, {'cookie': cookie_dict})
