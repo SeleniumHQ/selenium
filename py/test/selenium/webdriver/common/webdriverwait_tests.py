@@ -19,7 +19,7 @@ import time
 
 import pytest
 
-from selenium.common.exceptions import TimeoutException
+from selenium.common.exceptions import TimeoutException, InvalidSelectorException
 from selenium.common.exceptions import StaleElementReferenceException
 from selenium.common.exceptions import WebDriverException
 from selenium.common.exceptions import InvalidElementStateException
@@ -30,6 +30,12 @@ from selenium.webdriver.support.ui import WebDriverWait
 
 def throwSERE(driver):
     raise StaleElementReferenceException("test")
+
+
+def testShouldFailWithInvalidSelectorException(driver, pages):
+    pages.load("dynamic.html")
+    with pytest.raises(InvalidSelectorException):
+        WebDriverWait(driver, 0.7).until(EC.presence_of_element_located((By.XPATH, "//*[contains(@id,'something'")))
 
 
 def testShouldExplicitlyWaitForASingleElement(driver, pages):
