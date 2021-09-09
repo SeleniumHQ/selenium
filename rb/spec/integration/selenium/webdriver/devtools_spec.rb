@@ -160,15 +160,12 @@ module Selenium
           expect(requests).not_to be_empty
         end
 
-        it 'allows to stub responses' do
-          requests = []
+        it 'allows to stub requests' do
           driver.intercept do |request|
-            requests << request
             request.respond(body: '<title>Intercepted!</title>')
           end
           driver.navigate.to url_for('html5Page.html')
           expect(driver.title).to eq('Intercepted!')
-          expect(requests).not_to be_empty
         end
 
         it 'intercepts specific requests' do
@@ -192,6 +189,43 @@ module Selenium
           driver.find_element(id: 'submitButton').click
           expect(driver.title).to eq('Intercepted!')
           expect(stubbed).not_to be_empty
+        end
+
+        it 'allows to continue responses' do
+          responses = []
+          driver.intercept do |request|
+            request.continue do |response|
+              responses << response
+              response.continue
+            end
+          end
+          driver.navigate.to url_for('html5Page.html')
+          expect(driver.title).to eq('HTML5')
+          expect(responses).not_to be_empty
+        end
+
+        it 'allows to stub responses' do
+          driver.intercept do |request|
+            request.continue do |response|
+              request.respond(body: "#{response.body}, '<h4 id=\"appended\">Appended!</h4>'")
+            end
+          end
+          driver.navigate.to url_for('html5Page.html')
+          expect(driver.find_elements(id: "appended")).not_to be_empty
+        end
+
+        it 'intercepts specific responses' do
+          driver.intercept do |request|
+            request.continue do |response|
+              if request.url.include?('html5Page.html')
+                request.respond(body: "#{response.body}, '<h4 id=\"appended\">Appended!</h4>'")
+              else
+                response.continue
+              end
+            end
+          end
+          driver.navigate.to url_for('html5Page.html')
+          expect(driver.find_elements(id: "appended")).not_to be_empty
         end
       end
 

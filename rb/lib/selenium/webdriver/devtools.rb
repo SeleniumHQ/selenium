@@ -25,6 +25,7 @@ module Selenium
       autoload :MutationEvent, 'selenium/webdriver/devtools/mutation_event'
       autoload :PinnedScript, 'selenium/webdriver/devtools/pinned_script'
       autoload :Request, 'selenium/webdriver/devtools/request'
+      autoload :Response, 'selenium/webdriver/devtools/response'
 
       def initialize(url:)
         @messages = []
