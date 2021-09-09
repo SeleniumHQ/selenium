@@ -24,17 +24,38 @@ module Selenium
 
         attr_reader :url, :method, :headers
 
+        # @api private
+        attr_reader :on_response
+
         def initialize(devtools:, id:, url:, method:, headers:)
           @devtools = devtools
           @id = id
           @url = url
           @method = method
           @headers = headers
+          @on_response = Proc.new(&:continue)
         end
 
-        def continue
+        #
+        # Continues the request, optionally yielding
+        # the response before it reaches the browser.
+        #
+        # @param [#call] block which is called when response is intercepted
+        # @yieldparam [DevTools::Response]
+        #
+
+        def continue(&block)
+          @on_response = block if block_given?
           @devtools.fetch.continue_request(request_id: @id)
         end
+
+        #
+        # Fulfills the request providing the stubbed response.
+        #
+        # @param [Integer] code
+        # @param [Hash] headers
+        # @param [String] body
+        #
 
         def respond(code: 200, headers: {}, body: '')
           @devtools.fetch.fulfill_request(
