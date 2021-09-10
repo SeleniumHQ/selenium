@@ -22,7 +22,7 @@
  * build a {@link org.openqa.selenium.grid.config.Config} instance, for
  * which there are strongly-typed role-specific classes that use a
  * {@code Config}, such as
- * {@link org.openqa.selenium.grid.docker.DockerOptions}.
+ * {@link org.openqa.selenium.grid.node.docker.DockerOptions}.
  *
  * <p>Assuming your {@code CliCommand} extends
  * {@link org.openqa.selenium.grid.TemplateGridCommand}, the process for
