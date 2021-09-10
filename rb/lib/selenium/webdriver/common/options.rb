@@ -90,7 +90,8 @@ module Selenium
       # @param [Boolean, String, Integer] value Value of the option
       #
 
-      def add_option(name, value)
+      def add_option(name, value = nil)
+        @options[name.keys.first] = name.values.first if value.nil? && name.is_a?(Hash)
         @options[name] = value
       end
 
