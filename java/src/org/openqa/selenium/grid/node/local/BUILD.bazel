@@ -24,6 +24,7 @@ java_library(
         "//java/src/org/openqa/selenium/grid/log",
         "//java/src/org/openqa/selenium/grid/node",
         "//java/src/org/openqa/selenium/grid/node/config",
+        "//java/src/org/openqa/selenium/grid/node/relay",
         "//java/src/org/openqa/selenium/grid/security",
         "//java/src/org/openqa/selenium/grid/server",
         artifact("com.google.guava:guava"),
