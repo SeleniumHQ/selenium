@@ -59,15 +59,26 @@ module Selenium
         end
 
         describe '#add_option' do
-          it 'adds an option if name spaced' do
-            options.add_option('safari:foo', 'bar')
-            expect(options.instance_variable_get('@options')['safari:foo']).to eq('bar')
+          context 'when namespaced' do
+            it 'adds an option with ordered pairs' do
+              options.add_option('safari:foo', 'bar')
+              expect(options.instance_variable_get('@options')['safari:foo']).to eq('bar')
+            end
+
+            it 'adds an option with Hash' do
+              options.add_option('safari:foo': 'bar')
+              expect(options.instance_variable_get('@options')[:'safari:foo']).to eq('bar')
+            end
           end
 
-          # Note that this only applies to the method, weird things can still happen
-          # if stuff is passed into the constructor
-          it 'raises exception if not name spaced' do
-            expect { options.add_option('foo', 'bar') }.to raise_exception(ArgumentError)
+          context 'when not namespaced' do
+            it 'raises exception with ordered pairs' do
+              expect { options.add_option('foo', 'bar') }.to raise_exception(ArgumentError)
+            end
+
+            it 'raises exception with Hash' do
+              expect { options.add_option(foo: 'bar') }.to raise_exception(ArgumentError)
+            end
           end
         end
 
