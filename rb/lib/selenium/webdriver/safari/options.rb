@@ -28,6 +28,12 @@ module Selenium
                         automatic_profiling: 'safari:automaticProfiling'}.freeze
         BROWSER = 'safari'
 
+        def add_option(name, value)
+          raise ArgumentError, 'Safari does not support options that are not namespaced' unless name.to_s.include?(':')
+
+          super
+        end
+
       end # Options
     end # Safari
   end # WebDriver

@@ -58,14 +58,28 @@ module Selenium
           end
         end
 
+        describe '#add_option' do
+          it 'adds an option if name spaced' do
+            options.add_option('safari:foo', 'bar')
+            expect(options.instance_variable_get('@options')['safari:foo']).to eq('bar')
+          end
+
+          # Note that this only applies to the method, weird things can still happen
+          # if stuff is passed into the constructor
+          it 'raises exception if not name spaced' do
+            expect { options.add_option('foo', 'bar') }.to raise_exception(ArgumentError)
+          end
+        end
+
         describe '#as_json' do
           it 'returns empty options by default' do
             expect(options.as_json).to eq("browserName" => "safari")
           end
 
-          it 'returns added option' do
-            options.add_option(:foo, 'bar')
-            expect(options.as_json).to eq("browserName" => "safari", "foo" => "bar")
+          it 'returns added options' do
+            options.add_option('safari:foo', 'bar')
+            expect(options.as_json).to eq("browserName" => "safari",
+                                          "safari:foo" => "bar")
           end
 
           it 'returns JSON hash' do
@@ -80,7 +94,8 @@ module Selenium
                                           implicit: 1},
                                set_window_rect: false,
                                automatic_profiling: false,
-                               automatic_inspection: true)
+                               automatic_inspection: true,
+                               'safari:foo': 'foo')
 
             expect(opts.as_json).to eq('browserName' => 'safari',
                                        'browserVersion' => '12',
@@ -94,7 +109,8 @@ module Selenium
                                                       'implicit' => 1},
                                        'setWindowRect' => false,
                                        'safari:automaticInspection' => true,
-                                       'safari:automaticProfiling' => false)
+                                       'safari:automaticProfiling' => false,
+                                       'safari:foo' => 'foo')
           end
         end
       end # Options

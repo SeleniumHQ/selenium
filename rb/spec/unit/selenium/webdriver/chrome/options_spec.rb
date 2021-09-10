@@ -212,9 +212,12 @@ module Selenium
             expect(options.as_json).to eq("browserName" => "chrome", "goog:chromeOptions" => {})
           end
 
-          it 'returns added option' do
+          it 'returns added options' do
             options.add_option(:foo, 'bar')
-            expect(options.as_json).to eq("browserName" => "chrome", "goog:chromeOptions" => {"foo" => "bar"})
+            options.add_option('foo:bar', {foo: 'bar'})
+            expect(options.as_json).to eq("browserName" => "chrome",
+                                          "foo:bar" => {"foo" => "bar"},
+                                          "goog:chromeOptions" => {"foo" => "bar"})
           end
 
           it 'converts profile' do
@@ -260,7 +263,8 @@ module Selenium
                                exclude_switches: %w[foobar barfoo],
                                minidump_path: 'linux/only',
                                perf_logging_prefs: {'enable_network': true},
-                               window_types: %w[normal devtools])
+                               window_types: %w[normal devtools],
+                               'custom:options': {foo: 'bar'})
 
             key = 'goog:chromeOptions'
             expect(opts.as_json).to eq('browserName' => 'chrome',
@@ -274,6 +278,7 @@ module Selenium
                                                       'pageLoad' => 400000,
                                                       'implicit' => 1},
                                        'setWindowRect' => false,
+                                       'custom:options' => {'foo' => 'bar'},
                                        key => {'args' => %w[foo bar],
                                                'prefs' => {'foo' => 'bar',
                                                            'key_that_should_not_be_camelcased' => 'baz',
