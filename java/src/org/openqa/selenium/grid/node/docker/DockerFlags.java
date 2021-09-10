@@ -15,13 +15,9 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.grid.docker;
+package org.openqa.selenium.grid.node.docker;
 
 import static org.openqa.selenium.grid.config.StandardGridRoles.NODE_ROLE;
-import static org.openqa.selenium.grid.docker.DockerOptions.DEFAULT_ASSETS_PATH;
-import static org.openqa.selenium.grid.docker.DockerOptions.DEFAULT_DOCKER_URL;
-import static org.openqa.selenium.grid.docker.DockerOptions.DEFAULT_VIDEO_IMAGE;
-import static org.openqa.selenium.grid.docker.DockerOptions.DOCKER_SECTION;
 
 import com.google.auto.service.AutoService;
 
@@ -44,21 +40,21 @@ public class DockerFlags implements HasRoles {
     names = {"--docker-url"},
     description = "URL for connecting to the docker daemon"
   )
-  @ConfigValue(section = DOCKER_SECTION, name = "url", example = DEFAULT_DOCKER_URL)
+  @ConfigValue(section = DockerOptions.DOCKER_SECTION, name = "url", example = DockerOptions.DEFAULT_DOCKER_URL)
   private String dockerUrl;
 
   @Parameter(
     names = {"--docker-host"},
     description = "Host name where the docker daemon is running"
   )
-  @ConfigValue(section = DOCKER_SECTION, name = "host", example = "\"localhost\"")
+  @ConfigValue(section = DockerOptions.DOCKER_SECTION, name = "host", example = "\"localhost\"")
   private String dockerHost;
 
   @Parameter(
     names = {"--docker-port"},
     description = "Port where the docker daemon is running"
   )
-  @ConfigValue(section = DOCKER_SECTION, name = "port", example = "2375")
+  @ConfigValue(section = DockerOptions.DOCKER_SECTION, name = "port", example = "2375")
   private Integer dockerPort;
 
   @Parameter(
@@ -69,7 +65,7 @@ public class DockerFlags implements HasRoles {
     variableArity = true,
     splitter = NonSplittingSplitter.class)
   @ConfigValue(
-    section = DOCKER_SECTION,
+    section = DockerOptions.DOCKER_SECTION,
     name = "configs",
     example = "[\"selenium/standalone-firefox:latest\", \"{\\\"browserName\\\": \\\"firefox\\\"}\"]")
   private List<String> images2Capabilities;
@@ -78,14 +74,14 @@ public class DockerFlags implements HasRoles {
     names = {"--docker-video-image"},
     description = "Docker image to be used when video recording is enabled"
   )
-  @ConfigValue(section = DOCKER_SECTION, name = "video-image", example = DEFAULT_VIDEO_IMAGE)
-  private String videoImage = DEFAULT_VIDEO_IMAGE;
+  @ConfigValue(section = DockerOptions.DOCKER_SECTION, name = "video-image", example = DockerOptions.DEFAULT_VIDEO_IMAGE)
+  private String videoImage = DockerOptions.DEFAULT_VIDEO_IMAGE;
 
   @Parameter(
     names = {"--docker-assets-path"},
     description = "Absolute path where assets will be stored"
   )
-  @ConfigValue(section = DOCKER_SECTION, name = "assets-path", example = DEFAULT_ASSETS_PATH)
+  @ConfigValue(section = DockerOptions.DOCKER_SECTION, name = "assets-path", example = DockerOptions.DEFAULT_ASSETS_PATH)
   private String assetsPath;
 
   @Override
