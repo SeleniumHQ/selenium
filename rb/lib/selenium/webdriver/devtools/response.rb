@@ -22,39 +22,42 @@ module Selenium
     class DevTools
       class Response
 
-        attr_reader :code, :headers
+        attr_accessor :code, :body, :headers
+        attr_reader :id
 
-        def initialize(devtools:, id:, code:, headers:)
-          @devtools = devtools
+        #
+        # Creates response from DevTools message.
+        # @api private
+        #
+
+        def self.from(id, encoded_body, params)
+          new(
+            id: id,
+            code: params['responseStatusCode'],
+            body: Base64.strict_decode64(encoded_body),
+            headers: params['responseHeaders'].each_with_object({}) do |header, hash|
+              hash[header['name']] = header['value']
+            end
+          )
+        end
+
+        def initialize(id:, code:, body:, headers:)
           @id = id
           @code = code
+          @body = body
           @headers = headers
         end
 
-        #
-        # Returns the response body.
-        # @return [String]
-        #
-
-        def body
-          @body ||= begin
-            result = @devtools.fetch.get_response_body(request_id: @id)
-            encoded_body = result.dig('result', 'body')
-
-            Base64.strict_decode64(encoded_body)
-          end
-        end
-
-        #
-        # Continues the response unmodified.
-        #
-
-        def continue
-          @devtools.fetch.continue_request(request_id: @id)
+        def ==(other)
+          self.class == other.class &&
+            id == other.id &&
+            code == other.code &&
+            body == other.body &&
+            headers == other.headers
         end
 
         def inspect
-          %(#<#{self.class.name} @code="#{code}")
+          %(#<#{self.class.name} @id="#{id}" @code="#{code}")
         end
 
       end # Response

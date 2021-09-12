@@ -28,41 +28,36 @@ module Selenium
         # a stubbed response instead.
         #
         # @example Log requests and pass through
-        #   driver.intercept do |request|
+        #   driver.intercept do |request, &continue|
         #     puts "#{request.method} #{request.url}"
-        #     request.continue
+        #     continue.call(request)
         #   end
         #
         # @example Stub requests for images
-        #   driver.intercept do |request|
+        #   driver.intercept do |request, &continue|
         #     if request.url.match?(/\.png$/)
-        #       request.respond(body: File.read('myfile.png'))
-        #     else
-        #       request.continue
+        #       request.url = 'https://upload.wikimedia.org/wikipedia/commons/d/d5/Selenium_Logo.png'
         #     end
+        #     continue.call(request)
         #   end
         #
         # @example Log responses and pass through
-        #   driver.intercept do |request|
-        #     request.continue do |response|
+        #   driver.intercept do |request, &continue|
+        #     continue.call(request) do |response|
         #       puts "#{response.code} #{response.body}"
-        #       response.continue
         #     end
         #   end
         #
         # @example Mutate specific response
-        #   driver.intercept do |request|
-        #     request.continue do |response|
-        #       if request.url.include?('/myurl')
-        #         request.respond(body: "#{response.body}, Added by Selenium!")
-        #       else
-        #         response.continue
-        #       end
+        #   driver.intercept do |request, &continue|
+        #     continue.call(request) do |response|
+        #       response.body << 'Added by Selenium!' if request.url.include?('/myurl')
         #     end
         #   end
         #
-        # @param [#call] block which is called when request is interecepted
-        # @yieldparam [DevTools::Request]
+        # @param [Proc] block which is called when request is intercepted
+        # @yieldparam [DevTools::Request] request
+        # @yieldparam [Proc] continue block which proceeds with the request and optionally yields response
         #
 
         def intercept(&block)
@@ -70,7 +65,7 @@ module Selenium
           devtools.fetch.on(:request_paused) do |params|
             id = params['requestId']
             if params.key?('responseStatusCode') || params.key?('responseErrorReason')
-              intercept_response(id, params, &intercepted_requests[id].on_response)
+              intercept_response(id, params, &pending_response_requests.delete(id))
             else
               intercept_request(id, params, &block)
             end
@@ -80,33 +75,53 @@ module Selenium
 
         private
 
-        def intercepted_requests
-          @intercepted_requests ||= {}
+        def pending_response_requests
+          @pending_response_requests ||= {}
         end
 
-        def intercept_request(id, params)
-          request = DevTools::Request.new(
-            devtools: devtools,
-            id: id,
-            url: params.dig('request', 'url'),
-            method: params.dig('request', 'method'),
-            headers: params.dig('request', 'headers')
-          )
-          intercepted_requests[id] = request
+        def intercept_request(id, params, &block)
+          original = DevTools::Request.from(id, params)
+          mutable = DevTools::Request.from(id, params)
 
-          yield request
+          block.call(mutable) do |&continue| # rubocop:disable Performance/RedundantBlockCall
+            pending_response_requests[id] = continue
+
+            if original == mutable
+              devtools.fetch.continue_request(request_id: id)
+            else
+              devtools.fetch.continue_request(
+                request_id: id,
+                url: mutable.url,
+                method: mutable.method,
+                post_data: mutable.post_data,
+                headers: mutable.headers.map do |k, v|
+                  {name: k, value: v}
+                end
+              )
+            end
+          end
         end
 
         def intercept_response(id, params)
-          response = DevTools::Response.new(
-            devtools: devtools,
-            id: id,
-            code: params['responseStatusCode'],
-            headers: params['responseHeaders']
-          )
-          intercepted_requests.delete(id)
+          return devtools.fetch.continue_request(request_id: id) unless block_given?
 
-          yield response
+          body = devtools.fetch.get_response_body(request_id: id).dig('result', 'body')
+          original = DevTools::Response.from(id, body, params)
+          mutable = DevTools::Response.from(id, body, params)
+          yield mutable
+
+          if original == mutable
+            devtools.fetch.continue_request(request_id: id)
+          else
+            devtools.fetch.fulfill_request(
+              request_id: id,
+              body: Base64.strict_encode64(mutable.body),
+              response_code: mutable.code,
+              response_headers: mutable.headers.map do |k, v|
+                {name: k, value: v}
+              end
+            )
+          end
         end
       end # HasNetworkInterception
     end # DriverExtensions

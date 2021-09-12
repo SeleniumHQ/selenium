@@ -22,54 +22,43 @@ module Selenium
     class DevTools
       class Request
 
-        attr_reader :url, :method, :headers
+        attr_accessor :url, :method, :headers, :post_data
+        attr_reader :id
 
+        #
+        # Creates request from DevTools message.
         # @api private
-        attr_reader :on_response
+        #
 
-        def initialize(devtools:, id:, url:, method:, headers:)
-          @devtools = devtools
+        def self.from(id, params)
+          new(
+            id: id,
+            url: params.dig('request', 'url'),
+            method: params.dig('request', 'method'),
+            headers: params.dig('request', 'headers'),
+            post_data: params.dig('request', 'postData')
+          )
+        end
+
+        def initialize(id:, url:, method:, headers:, post_data:)
           @id = id
           @url = url
           @method = method
           @headers = headers
-          @on_response = Proc.new(&:continue)
+          @post_data = post_data
         end
 
-        #
-        # Continues the request, optionally yielding
-        # the response before it reaches the browser.
-        #
-        # @param [#call] block which is called when response is intercepted
-        # @yieldparam [DevTools::Response]
-        #
-
-        def continue(&block)
-          @on_response = block if block_given?
-          @devtools.fetch.continue_request(request_id: @id)
-        end
-
-        #
-        # Fulfills the request providing the stubbed response.
-        #
-        # @param [Integer] code
-        # @param [Hash] headers
-        # @param [String] body
-        #
-
-        def respond(code: 200, headers: {}, body: '')
-          @devtools.fetch.fulfill_request(
-            request_id: @id,
-            body: Base64.strict_encode64(body),
-            response_code: code,
-            response_headers: headers.map do |k, v|
-              {name: k, value: v}
-            end
-          )
+        def ==(other)
+          self.class == other.class &&
+            id == other.id &&
+            url == other.url &&
+            method == other.method &&
+            headers == other.headers &&
+            post_data == other.post_data
         end
 
         def inspect
-          %(#<#{self.class.name} @method="#{method}" @url="#{url}")
+          %(#<#{self.class.name} @id="#{id}" @method="#{method}" @url="#{url}")
         end
 
       end # Request
