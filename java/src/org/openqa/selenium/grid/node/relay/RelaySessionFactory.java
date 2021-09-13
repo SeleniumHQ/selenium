@@ -86,10 +86,32 @@ public class RelaySessionFactory implements SessionFactory {
 
   @Override
   public boolean test(Capabilities capabilities) {
-    return stereotype.getCapabilityNames().stream()
+    // If a request reaches this point is because the basic match of W3C caps has already been done.
+
+    // Custom matching in case a platformVersion is requested
+    boolean platformVersionMatch = capabilities.getCapabilityNames()
+      .stream()
+      .filter(name -> name.contains("platformVersion"))
       .map(
-        name ->
-          Objects.equals(stereotype.getCapability(name), capabilities.getCapability(name)))
+        platformVersionCapName ->
+          Objects.equals(stereotype.getCapability(platformVersionCapName),
+                         capabilities.getCapability(platformVersionCapName)))
+      .reduce(Boolean::logicalAnd)
+      .orElse(true);
+
+    return platformVersionMatch && stereotype.getCapabilityNames().stream()
+      .filter(name -> capabilities.asMap().containsKey(name))
+      .map(
+        name -> {
+          if (capabilities.getCapability(name) instanceof String) {
+            return stereotype.getCapability(name).toString()
+              .equalsIgnoreCase(capabilities.getCapability(name).toString());
+          } else {
+            return capabilities.getCapability(name) == null ||
+                   Objects.equals(stereotype.getCapability(name), capabilities.getCapability(name));
+          }
+        }
+      )
       .reduce(Boolean::logicalAnd)
       .orElse(false);
   }
