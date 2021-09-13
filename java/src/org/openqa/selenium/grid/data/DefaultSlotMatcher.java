@@ -33,7 +33,7 @@ import java.util.Objects;
  *       <ul>
  *         <li>browserName
  *         <li>browserVersion
- *         <li>platform
+ *         <li>platformName
  *       </ul>
  *       Then the {@code stereotype} must contain the same values.
  * </ul>
@@ -53,14 +53,13 @@ public class DefaultSlotMatcher implements SlotMatcher, Serializable {
       // Platform matching is special, we do it below
       .filter(name -> !"platform".equalsIgnoreCase(name) && !"platformName".equalsIgnoreCase(name))
       .map(name -> {
-        Object value = capabilities.getCapability(name);
-        boolean matches;
-        if (value instanceof String) {
-          matches = stereotype.getCapability(name).toString().equalsIgnoreCase(value.toString());
+        if (capabilities.getCapability(name) instanceof String) {
+          return stereotype.getCapability(name).toString()
+            .equalsIgnoreCase(capabilities.getCapability(name).toString());
         } else {
-          matches = value == null || Objects.equals(stereotype.getCapability(name), value);
+          return capabilities.getCapability(name) == null ||
+                 Objects.equals(stereotype.getCapability(name), capabilities.getCapability(name));
         }
-        return matches;
       })
       .reduce(Boolean::logicalAnd)
       .orElse(false);
@@ -71,7 +70,7 @@ public class DefaultSlotMatcher implements SlotMatcher, Serializable {
 
     // Simple browser, browserVersion and platformName match
     boolean browserNameMatch =
-      capabilities.getBrowserName() == null ||
+      (capabilities.getBrowserName() == null || capabilities.getBrowserName().isEmpty()) ||
       Objects.equals(stereotype.getBrowserName(), capabilities.getBrowserName());
     boolean browserVersionMatch =
       (capabilities.getBrowserVersion() == null || capabilities.getBrowserVersion().isEmpty()) ||
