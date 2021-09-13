@@ -34,8 +34,11 @@ import org.openqa.selenium.testing.drivers.WebDriverBuilder;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import static com.google.common.net.MediaType.XHTML_UTF_8;
+import static java.net.HttpURLConnection.HTTP_MOVED_TEMP;
 import static java.net.HttpURLConnection.HTTP_NOT_FOUND;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
 import static org.assertj.core.api.Assumptions.assumeThat;
 import static org.openqa.selenium.remote.http.Contents.utf8String;
 import static org.openqa.selenium.testing.Safely.safelyCall;
@@ -59,10 +62,19 @@ public class NetworkInterceptorTest {
     assumeThat(driver).isInstanceOf(HasDevTools.class);
     assumeThat(isFirefoxVersionOlderThan(87, driver)).isFalse();
 
-    appServer = new NettyAppServer(req -> new HttpResponse()
-      .setStatus(200)
-      .addHeader("Content-Type", MediaType.XHTML_UTF_8.toString())
-      .setContent(utf8String("<html><head><title>Hello, World!</title></head><body/></html>")));
+    Route route = Route.combine(
+      Route.matching(req -> true)
+        .to(() -> req -> new HttpResponse()
+          .setStatus(200)
+          .addHeader("Content-Type", XHTML_UTF_8.toString())
+          .setContent(utf8String("<html><head><title>Hello, World!</title></head><body/></html>"))),
+      Route.get("/redirect")
+        .to(() -> req -> new HttpResponse()
+          .setStatus(HTTP_MOVED_TEMP)
+          .setHeader("Location", "/cheese")
+          .setContent(Contents.utf8String("Delicious"))));
+
+    appServer = new NettyAppServer(route);
     appServer.start();
   }
 
@@ -158,5 +170,17 @@ public class NetworkInterceptorTest {
 
     String body = driver.findElement(By.tagName("body")).getText();
     assertThat(body).contains("Sausages");
+  }
+
+  @Test
+  public void shouldHandleRedirects() {
+    try (NetworkInterceptor networkInterceptor = new NetworkInterceptor(
+      driver,
+      (Filter) next -> next::execute)) {
+      driver.get(appServer.whereIs("/redirect"));
+
+      String body = driver.findElement(By.tagName("body")).getText();
+      assertThat(body).contains("Hello, World!");
+    }
   }
 }

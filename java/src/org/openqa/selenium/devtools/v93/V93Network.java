@@ -22,6 +22,7 @@ import com.google.common.io.ByteStreams;
 import org.openqa.selenium.UsernameAndPassword;
 import org.openqa.selenium.devtools.Command;
 import org.openqa.selenium.devtools.DevTools;
+import org.openqa.selenium.devtools.DevToolsException;
 import org.openqa.selenium.devtools.Event;
 import org.openqa.selenium.devtools.idealized.Network;
 import org.openqa.selenium.devtools.v93.fetch.Fetch;
@@ -45,8 +46,13 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.logging.Logger;
+
+import static java.net.HttpURLConnection.HTTP_OK;
 
 public class V93Network extends Network<AuthRequired, RequestPaused> {
+
+  private static final Logger LOG = Logger.getLogger(V93Network.class.getName());
 
   public V93Network(DevTools devTools) {
     super(devTools);
@@ -117,7 +123,23 @@ public class V93Network extends Network<AuthRequired, RequestPaused> {
   @Override
   public Either<HttpRequest, HttpResponse> createSeMessages(RequestPaused pausedReq) {
     if (pausedReq.getResponseStatusCode().isPresent() || pausedReq.getResponseErrorReason().isPresent()) {
-      Fetch.GetResponseBodyResponse base64Body = devTools.send(Fetch.getResponseBody(pausedReq.getRequestId()));
+      String body;
+      boolean bodyIsBase64Encoded;
+
+      try {
+        Fetch.GetResponseBodyResponse base64Body = devTools.send(Fetch.getResponseBody(pausedReq.getRequestId()));
+        body = base64Body.getBody();
+        bodyIsBase64Encoded = base64Body.getBase64Encoded() != null && base64Body.getBase64Encoded();
+      } catch (DevToolsException e) {
+        // Redirects don't seem to have bodies
+        int code = pausedReq.getResponseStatusCode().orElse(HTTP_OK);
+        if (code < 300 && code > 399) {
+          LOG.warning("Unable to get body for request id " + pausedReq.getRequestId());
+        }
+
+        body = null;
+        bodyIsBase64Encoded = false;
+      }
 
       List<Map.Entry<String, String>> headers = new LinkedList<>();
       pausedReq.getResponseHeaders().ifPresent(resHeaders ->
@@ -125,8 +147,8 @@ public class V93Network extends Network<AuthRequired, RequestPaused> {
 
       HttpResponse res = createHttpResponse(
         pausedReq.getResponseStatusCode(),
-        base64Body.getBody(),
-        base64Body.getBase64Encoded(),
+        body,
+        bodyIsBase64Encoded,
         headers);
 
       return Either.right(res);
