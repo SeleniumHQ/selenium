@@ -11,15 +11,15 @@ def pin_browsers():
 
     http_archive(
         name = "linux_firefox",
-        url = "https://ftp.mozilla.org/pub/firefox/releases/91.0.2/linux-x86_64/en-US/firefox-91.0.2.tar.bz2",
-        sha256 = "9eaac9c88ff4696228292590b65ab2fd1b0d98b7a1edf5a21abc11b7803a046d",
+        url = "https://ftp.mozilla.org/pub/firefox/releases/92.0/linux-x86_64/en-US/firefox-92.0.tar.bz2",
+        sha256 = "29050d18670a61585b101f8fa4e196fcfc22d0447178143202301836f3c048eb",
         build_file_content = "exports_files([\"firefox\"])",
     )
     
     dmg_archive(
         name = "mac_firefox",
-        url = "https://ftp.mozilla.org/pub/firefox/releases/91.0.2/mac/en-US/Firefox%2091.0.2.dmg",
-        sha256 = "4147fff1b176a659d6d4d928efe6ec98af313533508809264d78cc83c93cab30",
+        url = "https://ftp.mozilla.org/pub/firefox/releases/92.0/mac/en-US/Firefox%2092.0.dmg",
+        sha256 = "68978c990d06ab94364a36c49d220aeb4e07a8c5d9eaa677bb154a300612964e",
         build_file_content = "exports_files([\"Firefox.app\"])",
     )
     
@@ -39,18 +39,18 @@ def pin_browsers():
         
     pkg_archive(
         name = "mac_edge",
-        url = "https://officecdn-microsoft-com.akamaized.net/pr/C1297A47-86C4-4C1F-97FA-950631F94777/MacAutoupdate/MicrosoftEdge-93.0.961.38.pkg?platform=Mac&Consent=0&channel=Stable",
-        sha256 = "446f3e46d3752fa423789fdf26dbbb37462d3c1211a921e7ba7febb97cb47d68",
+        url = "https://officecdn-microsoft-com.akamaized.net/pr/C1297A47-86C4-4C1F-97FA-950631F94777/MacAutoupdate/MicrosoftEdge-93.0.961.47.pkg?platform=Mac&Consent=0&channel=Stable",
+        sha256 = "f3b9964b160917667123d3c14384dde9f1ba79abb8199c8ec22e5a8bb674ed50",
         move = {
-            "MicrosoftEdge-93.0.961.38.pkg/Payload/Microsoft Edge.app": "Edge.app",
+            "MicrosoftEdge-93.0.961.47.pkg/Payload/Microsoft Edge.app": "Edge.app",
         },
         build_file_content = "exports_files([\"Edge.app\"])",
     )
     
     http_archive(
         name = "mac_edgedriver",
-        url = "https://msedgedriver.azureedge.net/93.0.961.38/edgedriver_mac64.zip",
-        sha256 = "fb374b7d4153f2f7bbb671b6b8ba982058dddf00c5fc7b9ef8988d7a5e847d82",
+        url = "https://msedgedriver.azureedge.net/93.0.961.47/edgedriver_mac64.zip",
+        sha256 = "40be9709f434b9b341ce4927665496f8164858d9e2a053a7509877e7307f7f73",
         build_file_content = "exports_files([\"msedgedriver\"])",
     )
     
@@ -71,15 +71,15 @@ def pin_browsers():
     
     http_archive(
         name = "linux_chromedriver",
-        url = "https://chromedriver.storage.googleapis.com/92.0.4515.107/chromedriver_linux64.zip",
-        sha256 = "c3cfba55df31a0a0d62d901049e91ee1ec4e38dd165e752409b7430ae59fcc8b",
+        url = "https://chromedriver.storage.googleapis.com/93.0.4577.63/chromedriver_linux64.zip",
+        sha256 = "eb1065a67ac2db7233cd402c197e8372c1dd52e4e2e930b7e5e1250fa4f45470",
         build_file_content = "exports_files([\"chromedriver\"])",
     )
     
     http_archive(
         name = "mac_chromedriver",
-        url = "https://chromedriver.storage.googleapis.com/92.0.4515.107/chromedriver_mac64.zip",
-        sha256 = "97f9a5733ef83a001922fd14ff2f5ac5b03c8a16aa02986ecca300cfbffaa03e",
+        url = "https://chromedriver.storage.googleapis.com/93.0.4577.63/chromedriver_mac64.zip",
+        sha256 = "ff4469d533dd09998fc99767468995b81b2ccd180811d961496e3b4f9d058284",
         build_file_content = "exports_files([\"chromedriver\"])",
     )
     
