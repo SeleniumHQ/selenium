@@ -152,7 +152,7 @@ public class LocalNode extends Node {
       .ticker(ticker)
       .removalListener((RemovalListener<SessionId, SessionSlot>) notification -> {
         // Attempt to stop the session
-        LOG.log(Debug.getDebugLogLevel(), "Stopping session %s", notification.getKey().toString());
+        LOG.log(Debug.getDebugLogLevel(), "Stopping session {0}", notification.getKey().toString());
         SessionSlot slot = notification.getValue();
         if (!slot.isAvailable()) {
           slot.stop();
