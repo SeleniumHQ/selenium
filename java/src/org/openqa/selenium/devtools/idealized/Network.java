@@ -245,7 +245,10 @@ public abstract class Network<AUTHREQUIRED, REQUESTPAUSED> {
     Boolean bodyIsBase64Encoded,
     List<Map.Entry<String, String>> headers) {
     Supplier<InputStream> content;
-    if (bodyIsBase64Encoded != null && bodyIsBase64Encoded) {
+
+    if (body == null) {
+      content = Contents.empty();
+    } else if (bodyIsBase64Encoded != null && bodyIsBase64Encoded) {
       byte[] decoded = Base64.getDecoder().decode(body);
       content = () -> new ByteArrayInputStream(decoded);
     } else {
