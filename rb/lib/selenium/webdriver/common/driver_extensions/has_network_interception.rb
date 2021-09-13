@@ -105,7 +105,7 @@ module Selenium
         def intercept_response(id, params)
           return devtools.fetch.continue_request(request_id: id) unless block_given?
 
-          body = devtools.fetch.get_response_body(request_id: id).dig('result', 'body')
+          body = fetch_response_body(id)
           original = DevTools::Response.from(id, body, params)
           mutable = DevTools::Response.from(id, body, params)
           yield mutable
@@ -115,13 +115,20 @@ module Selenium
           else
             devtools.fetch.fulfill_request(
               request_id: id,
-              body: Base64.strict_encode64(mutable.body),
+              body: (Base64.strict_encode64(mutable.body) if mutable.body),
               response_code: mutable.code,
               response_headers: mutable.headers.map do |k, v|
                 {name: k, value: v}
               end
             )
           end
+        end
+
+        def fetch_response_body(id)
+          devtools.fetch.get_response_body(request_id: id).dig('result', 'body')
+        rescue Error::WebDriverError
+          # CDP fails to get body on certain responses (301) and raises:
+          # Can only get response body on requests captured after headers received.
         end
       end # HasNetworkInterception
     end # DriverExtensions
