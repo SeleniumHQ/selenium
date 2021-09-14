@@ -17,8 +17,14 @@
 
 package org.openqa.selenium.grid.distributor;
 
+import static com.google.common.collect.Iterables.getOnlyElement;
+import static org.junit.Assert.assertEquals;
+import static org.openqa.selenium.grid.data.Availability.UP;
+import static org.openqa.selenium.remote.Dialect.W3C;
+
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.Capabilities;
@@ -52,10 +58,8 @@ import org.openqa.selenium.grid.sessionqueue.local.LocalNewSessionQueue;
 import org.openqa.selenium.grid.testing.PassthroughHttpClient;
 import org.openqa.selenium.grid.testing.TestSessionFactory;
 import org.openqa.selenium.grid.web.CombinedHandler;
-import org.openqa.selenium.grid.web.RoutableHttpClientFactory;
 import org.openqa.selenium.internal.Either;
 import org.openqa.selenium.remote.SessionId;
-import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.remote.tracing.DefaultTestTracer;
@@ -75,11 +79,6 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 import java.util.function.Function;
-
-import static com.google.common.collect.Iterables.getOnlyElement;
-import static org.junit.Assert.assertEquals;
-import static org.openqa.selenium.grid.data.Availability.UP;
-import static org.openqa.selenium.remote.Dialect.W3C;
 
 public class AddingNodesTest {
 
@@ -139,7 +138,8 @@ public class AddingNodesTest {
       new DefaultSlotSelector(),
       registrationSecret,
       Duration.ofMinutes(5),
-      false);
+      false,
+      Duration.ofSeconds(5));
 
     distributor = new RemoteDistributor(tracer, new PassthroughHttpClient.Factory(local), externalUrl, registrationSecret);
 
@@ -170,7 +170,8 @@ public class AddingNodesTest {
       new DefaultSlotSelector(),
       registrationSecret,
       Duration.ofMinutes(5),
-      false);
+      false,
+      Duration.ofSeconds(5));
 
     distributor = new RemoteDistributor(tracer, new PassthroughHttpClient.Factory(local), externalUrl, registrationSecret);
 
@@ -202,7 +203,8 @@ public class AddingNodesTest {
       new DefaultSlotSelector(),
       registrationSecret,
       Duration.ofMinutes(5),
-      false);
+      false,
+      Duration.ofSeconds(5));
 
     distributor = new RemoteDistributor(tracer, new PassthroughHttpClient.Factory(local), externalUrl, registrationSecret);
 
@@ -244,7 +246,8 @@ public class AddingNodesTest {
       new DefaultSlotSelector(),
       registrationSecret,
       Duration.ofMinutes(5),
-      false);
+      false,
+      Duration.ofSeconds(5));
 
     distributor = new RemoteDistributor(tracer, new PassthroughHttpClient.Factory(local), externalUrl, registrationSecret);
 
@@ -279,7 +282,8 @@ public class AddingNodesTest {
       new DefaultSlotSelector(),
       registrationSecret,
       Duration.ofMinutes(5),
-      false);
+      false,
+      Duration.ofSeconds(5));
 
     distributor = new RemoteDistributor(tracer, new PassthroughHttpClient.Factory(local), externalUrl, registrationSecret);
 

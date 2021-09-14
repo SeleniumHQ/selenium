@@ -17,6 +17,14 @@
 
 package org.openqa.selenium.grid.distributor;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.openqa.selenium.grid.data.Availability.DOWN;
+import static org.openqa.selenium.grid.data.Availability.UP;
+import static org.openqa.selenium.remote.Dialect.W3C;
+
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 
@@ -95,15 +103,6 @@ import java.util.concurrent.atomic.AtomicReference;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.fail;
-import static org.assertj.core.api.Assertions.from;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.openqa.selenium.grid.data.Availability.DOWN;
-import static org.openqa.selenium.grid.data.Availability.UP;
-import static org.openqa.selenium.remote.Dialect.W3C;
-
 public class DistributorTest {
 
   private static final Logger LOG = Logger.getLogger("Distributor Test");
@@ -164,7 +163,8 @@ public class DistributorTest {
       new DefaultSlotSelector(),
       registrationSecret,
       Duration.ofMinutes(5),
-      false);
+      false,
+      Duration.ofSeconds(5));
     Either<SessionNotCreatedException, CreateSessionResponse> result = local.newSession(createRequest(caps));
     assertThatEither(result).isLeft();
   }
@@ -226,7 +226,8 @@ public class DistributorTest {
       new DefaultSlotSelector(),
       registrationSecret,
       Duration.ofMinutes(5),
-      false);
+      false,
+      Duration.ofSeconds(5));
     distributor.add(node);
     waitToHaveCapacity(distributor);
 
@@ -267,7 +268,8 @@ public class DistributorTest {
       new DefaultSlotSelector(),
       registrationSecret,
       Duration.ofMinutes(5),
-      false);
+      false,
+      Duration.ofSeconds(5));
     distributor.add(node);
     waitToHaveCapacity(distributor);
 
@@ -309,7 +311,8 @@ public class DistributorTest {
       new DefaultSlotSelector(),
       registrationSecret,
       Duration.ofMinutes(5),
-      false);
+      false,
+      Duration.ofSeconds(5));
     Distributor distributor = new RemoteDistributor(
       tracer,
       new PassthroughHttpClient.Factory(local),
@@ -348,7 +351,8 @@ public class DistributorTest {
       new DefaultSlotSelector(),
       registrationSecret,
       Duration.ofMinutes(5),
-      false);
+      false,
+      Duration.ofSeconds(5));
     distributor.add(node);
     distributor.drain(node.getId());
 
@@ -386,7 +390,8 @@ public class DistributorTest {
       new DefaultSlotSelector(),
       registrationSecret,
       Duration.ofMinutes(5),
-      false);
+      false,
+      Duration.ofSeconds(5));
     distributor.add(node);
     waitToHaveCapacity(distributor);
 
@@ -431,7 +436,8 @@ public class DistributorTest {
       new DefaultSlotSelector(),
       registrationSecret,
       Duration.ofMinutes(5),
-      false);
+      false,
+      Duration.ofSeconds(5));
     distributor.add(node);
     waitToHaveCapacity(distributor);
 
@@ -479,7 +485,8 @@ public class DistributorTest {
       new DefaultSlotSelector(),
       registrationSecret,
       Duration.ofMinutes(5),
-      false);
+      false,
+      Duration.ofSeconds(5));
     distributor.add(node);
     waitToHaveCapacity(distributor);
 
@@ -521,7 +528,8 @@ public class DistributorTest {
       new DefaultSlotSelector(),
       registrationSecret,
       Duration.ofMinutes(5),
-      false);
+      false,
+      Duration.ofSeconds(5));
 
     local.add(node);
     local.add(node);
@@ -565,7 +573,8 @@ public class DistributorTest {
       new DefaultSlotSelector(),
       registrationSecret,
       Duration.ofMinutes(5),
-      false)
+      false,
+      Duration.ofSeconds(5))
       .add(heavy)
       .add(medium)
       .add(lightest)
@@ -608,7 +617,8 @@ public class DistributorTest {
       new DefaultSlotSelector(),
       registrationSecret,
       Duration.ofMinutes(5),
-      false)
+      false,
+      Duration.ofSeconds(5))
       .add(leastRecent);
     waitToHaveCapacity(distributor);
 
@@ -692,7 +702,8 @@ public class DistributorTest {
       new DefaultSlotSelector(),
       registrationSecret,
       Duration.ofSeconds(1),
-      false);
+      false,
+      Duration.ofSeconds(5));
     handler.addHandler(distributor);
     distributor.add(alwaysDown);
     waitForAllNodesToMeetCondition(distributor, 1, DOWN);
@@ -742,7 +753,8 @@ public class DistributorTest {
       new DefaultSlotSelector(),
       registrationSecret,
       Duration.ofMinutes(5),
-      false);
+      false,
+      Duration.ofSeconds(5));
 
     distributor.add(node);
     waitToHaveCapacity(distributor);
@@ -782,7 +794,8 @@ public class DistributorTest {
       new DefaultSlotSelector(),
       registrationSecret,
       Duration.ofMinutes(5),
-      false);
+      false,
+      Duration.ofSeconds(5));
     distributor.add(node);
     waitToHaveCapacity(distributor);
 
@@ -837,7 +850,8 @@ public class DistributorTest {
       new DefaultSlotSelector(),
       registrationSecret,
       Duration.ofMinutes(5),
-      false);
+      false,
+      Duration.ofSeconds(5));
     handler.addHandler(distributor);
 
     Node node = createNode(caps, 1, 0);
@@ -877,7 +891,8 @@ public class DistributorTest {
       new DefaultSlotSelector(),
       registrationSecret,
       Duration.ofMinutes(5),
-      false);
+      false,
+      Duration.ofSeconds(5));
     distributor.add(node);
     waitToHaveCapacity(distributor);
 
@@ -922,7 +937,8 @@ public class DistributorTest {
       new DefaultSlotSelector(),
       registrationSecret,
       Duration.ofSeconds(1),
-      false);
+      false,
+      Duration.ofSeconds(5));
     handler.addHandler(distributor);
     distributor.add(node);
     waitForAllNodesToMeetCondition(distributor, 1, DOWN);
@@ -986,7 +1002,8 @@ public class DistributorTest {
       new DefaultSlotSelector(),
       registrationSecret,
       Duration.ofSeconds(1),
-      false);
+      false,
+      Duration.ofSeconds(5));
     handler.addHandler(distributor);
     distributor.add(node);
 
@@ -1045,7 +1062,8 @@ public class DistributorTest {
       new DefaultSlotSelector(),
       registrationSecret,
       Duration.ofMinutes(5),
-      false);
+      false,
+      Duration.ofSeconds(5));
 
     //Create all three Capability types
     Capabilities edge = new ImmutableCapabilities("browserName", "edge");
@@ -1158,7 +1176,8 @@ public class DistributorTest {
       new DefaultSlotSelector(),
       registrationSecret,
       Duration.ofMinutes(5),
-      false);
+      false,
+      Duration.ofSeconds(5));
 
     local.add(node);
 
@@ -1190,7 +1209,8 @@ public class DistributorTest {
       new DefaultSlotSelector(),
       registrationSecret,
       Duration.ofMinutes(5),
-      false);
+      false,
+      Duration.ofSeconds(5));
 
     local.add(node);
 
@@ -1217,7 +1237,8 @@ public class DistributorTest {
       new DefaultSlotSelector(),
       registrationSecret,
       Duration.ofMinutes(5),
-      false);
+      false,
+      Duration.ofSeconds(5));
 
     local.add(firstNode);
     local.add(secondNode);
@@ -1259,7 +1280,8 @@ public class DistributorTest {
       new DefaultSlotSelector(),
       registrationSecret,
       Duration.ofMinutes(5),
-      false);
+      false,
+      Duration.ofSeconds(5));
     local.add(brokenNode);
     local.add(node);
     waitForAllNodesToHaveCapacity(local, 2);
