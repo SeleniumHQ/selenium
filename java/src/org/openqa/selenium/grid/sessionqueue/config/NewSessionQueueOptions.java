@@ -100,7 +100,7 @@ public class NewSessionQueueOptions {
     // If the user sets 0 or less, we default to 1s.
     int interval = Math.max(
       config.getInt(SESSION_QUEUE_SECTION, "session-retry-interval")
-        .orElse(DEFAULT_REQUEST_TIMEOUT),
+        .orElse(DEFAULT_RETRY_INTERVAL),
       1);
     return Duration.ofSeconds(interval);
   }
