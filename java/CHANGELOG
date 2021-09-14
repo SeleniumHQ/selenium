@@ -1,3 +1,14 @@
+v4.0.0-rc-2
+===========
+
+* Supported CDP versions: 85, 92, 93
+* NetworkInterceptor now takes a Filter to allow responses to be
+  captured and rewritten.
+* Added a "relay" option to better support forwarding sessions to
+  something like the Appium server.
+* Fixed CDP connection locking when called re-entrantly.
+* Remove sessions from Redis backed session map on restart
+
 v4.0.0-rc-1
 ===========
 
