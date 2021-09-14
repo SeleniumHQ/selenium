@@ -123,7 +123,8 @@ public class LocalDistributorTest {
       new DefaultSlotSelector(),
       registrationSecret,
       Duration.ofMinutes(5),
-      false);
+      false,
+      Duration.ofSeconds(5));
     distributor.add(localNode);
     DistributorStatus status = distributor.getStatus();
 
@@ -155,7 +156,8 @@ public class LocalDistributorTest {
       new DefaultSlotSelector(),
       registrationSecret,
       Duration.ofMinutes(5),
-      false);
+      false,
+      Duration.ofSeconds(5));
     distributor.add(localNode);
 
     //Check the size
@@ -188,7 +190,8 @@ public class LocalDistributorTest {
       new DefaultSlotSelector(),
       registrationSecret,
       Duration.ofMinutes(5),
-      false);
+      false,
+      Duration.ofSeconds(5));
     distributor.add(localNode);
     distributor.add(localNode);
     DistributorStatus status = distributor.getStatus();
@@ -244,7 +247,8 @@ public class LocalDistributorTest {
       new DefaultSlotSelector(),
       registrationSecret,
       Duration.ofMinutes(5),
-      false);
+      false,
+      Duration.ofSeconds(5));
 
     distributor.add(node);
     wait.until(obj -> distributor.getStatus().hasCapacity());
@@ -304,7 +308,8 @@ public class LocalDistributorTest {
       new DefaultSlotSelector(),
       registrationSecret,
       Duration.ofMinutes(5),
-      false);
+      false,
+      Duration.ofSeconds(5));
     distributor.add(localNode);
     assertThat(localNode.isDraining()).isFalse();
 
@@ -344,7 +349,8 @@ public class LocalDistributorTest {
       new DefaultSlotSelector(),
       registrationSecret,
       Duration.ofMinutes(5),
-      false);
+      false,
+      Duration.ofSeconds(5));
     distributor.add(localNode);
 
     localNode.drain();
@@ -370,7 +376,8 @@ public class LocalDistributorTest {
       new DefaultSlotSelector(),
       registrationSecret,
       Duration.ofMinutes(5),
-      false);
+      false,
+      Duration.ofSeconds(5));
 
     Capabilities caps = new ImmutableCapabilities("browserName", "cheese");
 

@@ -17,7 +17,20 @@
 
 package org.openqa.selenium.grid.graphql;
 
+import static java.util.Collections.singletonList;
+import static java.util.Collections.singletonMap;
+import static java.util.concurrent.TimeUnit.SECONDS;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
+import static org.assertj.core.api.InstanceOfAssertFactories.LIST;
+import static org.assertj.core.api.InstanceOfAssertFactories.MAP;
+import static org.openqa.selenium.json.Json.MAP_TYPE;
+import static org.openqa.selenium.remote.Dialect.OSS;
+import static org.openqa.selenium.remote.Dialect.W3C;
+import static org.openqa.selenium.remote.http.HttpMethod.GET;
+
 import com.google.common.collect.ImmutableMap;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.Capabilities;
@@ -69,18 +82,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.CountDownLatch;
-
-import static java.util.Collections.singletonList;
-import static java.util.Collections.singletonMap;
-import static java.util.concurrent.TimeUnit.SECONDS;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.fail;
-import static org.assertj.core.api.InstanceOfAssertFactories.LIST;
-import static org.assertj.core.api.InstanceOfAssertFactories.MAP;
-import static org.openqa.selenium.json.Json.MAP_TYPE;
-import static org.openqa.selenium.remote.Dialect.OSS;
-import static org.openqa.selenium.remote.Dialect.W3C;
-import static org.openqa.selenium.remote.http.HttpMethod.GET;
 
 public class GraphqlHandlerTest {
 
@@ -135,7 +136,8 @@ public class GraphqlHandlerTest {
       new DefaultSlotSelector(),
       registrationSecret,
       Duration.ofMinutes(5),
-      false);
+      false,
+      Duration.ofSeconds(5));
   }
 
   @Test
@@ -303,7 +305,8 @@ public class GraphqlHandlerTest {
       new DefaultSlotSelector(),
       registrationSecret,
       Duration.ofMinutes(5),
-      false);
+      false,
+      Duration.ofSeconds(5));
 
     distributor.add(node);
     wait.until(obj -> distributor.getStatus().hasCapacity());
@@ -349,7 +352,8 @@ public class GraphqlHandlerTest {
       new DefaultSlotSelector(),
       registrationSecret,
       Duration.ofMinutes(5),
-      false);
+      false,
+      Duration.ofSeconds(5));
 
     distributor.add(node);
     wait.until(obj -> distributor.getStatus().hasCapacity());
@@ -415,7 +419,8 @@ public class GraphqlHandlerTest {
       new DefaultSlotSelector(),
       registrationSecret,
       Duration.ofMinutes(5),
-      false);
+      false,
+      Duration.ofSeconds(5));
 
     distributor.add(node);
     wait.until(obj -> distributor.getStatus().hasCapacity());
@@ -479,7 +484,8 @@ public class GraphqlHandlerTest {
       new DefaultSlotSelector(),
       registrationSecret,
       Duration.ofMinutes(5),
-      false);
+      false,
+      Duration.ofSeconds(5));
 
     distributor.add(node);
     wait.until(obj -> distributor.getStatus().hasCapacity());
@@ -549,7 +555,8 @@ public class GraphqlHandlerTest {
       new DefaultSlotSelector(),
       registrationSecret,
       Duration.ofMinutes(5),
-      false);
+      false,
+      Duration.ofSeconds(5));
 
     distributor.add(node);
     wait.until(obj -> distributor.getStatus().hasCapacity());

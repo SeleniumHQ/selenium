@@ -37,7 +37,6 @@ import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.NoSuchSessionException;
 import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.events.EventBus;
-import org.openqa.selenium.events.local.GuavaEventBus;
 import org.openqa.selenium.events.zeromq.ZeroMqEventBus;
 import org.openqa.selenium.grid.config.CompoundConfig;
 import org.openqa.selenium.grid.config.Config;
@@ -100,13 +99,13 @@ import java.util.concurrent.atomic.AtomicReference;
 public class SessionCleanUpTest {
 
   public static final Json JSON = new Json();
+  int publish;
+  int subscribe;
   private Tracer tracer;
   private EventBus events;
   private HttpClient.Factory clientFactory;
   private Secret registrationSecret;
   private Server<?> server;
-  int publish;
-  int subscribe;
 
   @Before
   public void setup() {
@@ -159,7 +158,8 @@ public class SessionCleanUpTest {
       new DefaultSlotSelector(),
       registrationSecret,
       Duration.ofSeconds(1),
-      false);
+      false,
+      Duration.ofSeconds(5));
     handler.addHandler(distributor);
 
     Router router = new Router(tracer, clientFactory, sessions, queue, distributor);
@@ -278,7 +278,8 @@ public class SessionCleanUpTest {
       new DefaultSlotSelector(),
       registrationSecret,
       Duration.ofSeconds(1),
-      false);
+      false,
+      Duration.ofSeconds(5));
     handler.addHandler(distributor);
     distributor.add(node);
 
