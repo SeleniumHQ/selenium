@@ -19,17 +19,20 @@ package org.openqa.selenium.chrome;
 
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
+import org.openqa.selenium.PageLoadStrategy;
+import org.openqa.selenium.UnexpectedAlertBehaviour;
 import org.openqa.selenium.remote.AcceptedW3CCapabilityKeys;
 import org.openqa.selenium.testing.TestUtilities;
 import org.openqa.selenium.testing.UnitTests;
 
 import java.io.File;
+import java.time.Duration;
 import java.util.Base64;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Predicate;
-import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.toSet;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -38,6 +41,9 @@ import static org.assertj.core.api.InstanceOfAssertFactories.LIST;
 import static org.assertj.core.api.InstanceOfAssertFactories.MAP;
 import static org.openqa.selenium.chrome.ChromeDriverLogLevel.OFF;
 import static org.openqa.selenium.chrome.ChromeDriverLogLevel.SEVERE;
+import static org.openqa.selenium.remote.CapabilityType.IMPLICIT_TIMEOUT;
+import static org.openqa.selenium.remote.CapabilityType.PAGE_LOAD_TIMEOUT;
+import static org.openqa.selenium.remote.CapabilityType.SCRIPT_TIMEOUT;
 
 @Category(UnitTests.class)
 public class ChromeOptionsTest {
@@ -65,6 +71,62 @@ public class ChromeOptionsTest {
   public void canBuildLogLevelFromStringRepresentation() {
     assertThat(ChromeDriverLogLevel.fromString("off")).isEqualTo(OFF);
     assertThat(ChromeDriverLogLevel.fromString("SEVERE")).isEqualTo(SEVERE);
+  }
+
+  @Test
+  public void canAddW3CCompliantOptions() {
+    ChromeOptions chromeOptions = new ChromeOptions();
+    chromeOptions.setBrowserVersion("99");
+    chromeOptions.setPlatformName("9 3/4");
+    chromeOptions.setUnhandledPromptBehaviour(UnexpectedAlertBehaviour.IGNORE);
+    chromeOptions.setAcceptInsecureCerts(true);
+    chromeOptions.setPageLoadStrategy(PageLoadStrategy.EAGER);
+    chromeOptions.setStrictFileInteractability(true);
+
+    Map<String, Duration> timeouts = new HashMap<>();
+    timeouts.put(IMPLICIT_TIMEOUT, Duration.ofSeconds(1));
+    timeouts.put(PAGE_LOAD_TIMEOUT, Duration.ofSeconds(2));
+    timeouts.put(SCRIPT_TIMEOUT, Duration.ofSeconds(3));
+    chromeOptions.setTimeouts(timeouts);
+
+    Map<String, Object> mappedOptions = chromeOptions.asMap();
+    assertThat(mappedOptions.get("browserName")).isEqualTo("chrome");
+    assertThat(mappedOptions.get("browserVersion")).isEqualTo("99");
+    assertThat(mappedOptions.get("platformName")).isEqualTo("9 3/4");
+    assertThat(mappedOptions.get("unhandledPromptBehavior").toString()).isEqualTo("ignore");
+    assertThat(mappedOptions.get("acceptInsecureCerts")).isEqualTo(true);
+    assertThat(mappedOptions.get("pageLoadStrategy").toString()).isEqualTo("eager");
+    assertThat(mappedOptions.get("strictFileInteractability")).isEqualTo(true);
+
+    Map<String, Long> convertedTimeouts = new HashMap<>();
+    convertedTimeouts.put("implicit", 1000L);
+    convertedTimeouts.put("pageLoad", 2000L);
+    convertedTimeouts.put("script", 3000L);
+
+    assertThat(mappedOptions.get("timeouts")).isEqualTo(convertedTimeouts);
+  }
+
+  @Test
+  public void canAddOneTimeout() {
+    ChromeOptions chromeOptions = new ChromeOptions();
+    Map<String, Duration> timeouts = new HashMap<>();
+    timeouts.put("implicit", Duration.ofSeconds(1));
+
+    Map<String, Long> convertedTimeouts = new HashMap<>();
+    convertedTimeouts.put("implicit", 1000L);
+
+    chromeOptions.setTimeouts(timeouts);
+    Map<String, Object> mappedOptions = chromeOptions.asMap();
+    assertThat(mappedOptions.get("timeouts")).isEqualTo(convertedTimeouts);
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void canNotAddInvalidTimeout() {
+    ChromeOptions chromeOptions = new ChromeOptions();
+    Map<String, Duration> timeouts = new HashMap<>();
+    timeouts.put("foo", Duration.ofSeconds(1));
+
+    chromeOptions.setTimeouts(timeouts);
   }
 
   @Test

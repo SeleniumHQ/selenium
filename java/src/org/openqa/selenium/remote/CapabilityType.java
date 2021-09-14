@@ -47,6 +47,10 @@ public interface CapabilityType {
   String HAS_TOUCHSCREEN = "hasTouchScreen";
   String OVERLAPPING_CHECK_DISABLED = "overlappingCheckDisabled";
   String STRICT_FILE_INTERACTABILITY = "strictFileInteractability";
+  String TIMEOUTS = "timeouts";
+  String IMPLICIT_TIMEOUT = "implicit";
+  String PAGE_LOAD_TIMEOUT = "pageLoad";
+  String SCRIPT_TIMEOUT = "script";
 
   String LOGGING_PREFS = "loggingPrefs";
 
