@@ -17,6 +17,10 @@
 
 package org.openqa.selenium.grid.node.config;
 
+import static org.openqa.selenium.remote.RemoteTags.CAPABILITIES;
+import static org.openqa.selenium.remote.RemoteTags.CAPABILITIES_EVENT;
+import static org.openqa.selenium.remote.tracing.Tags.EXCEPTION;
+
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.PersistentCapabilities;
@@ -30,6 +34,8 @@ import org.openqa.selenium.grid.node.ProtocolConvertingSession;
 import org.openqa.selenium.grid.node.SessionFactory;
 import org.openqa.selenium.internal.Either;
 import org.openqa.selenium.internal.Require;
+import org.openqa.selenium.net.HostIdentifier;
+import org.openqa.selenium.net.NetworkUtils;
 import org.openqa.selenium.remote.Command;
 import org.openqa.selenium.remote.Dialect;
 import org.openqa.selenium.remote.DriverCommand;
@@ -55,10 +61,6 @@ import java.util.Set;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
-
-import static org.openqa.selenium.remote.RemoteTags.CAPABILITIES;
-import static org.openqa.selenium.remote.RemoteTags.CAPABILITIES_EVENT;
-import static org.openqa.selenium.remote.tracing.Tags.EXCEPTION;
 
 public class DriverServiceSessionFactory implements SessionFactory {
 
@@ -227,9 +229,11 @@ public class DriverServiceSessionFactory implements SessionFactory {
   private Capabilities readVncEndpoint(Capabilities requestedCaps, Capabilities returnedCaps) {
     String seVncEnabledCap = "se:vncEnabled";
     String seVncEnabled = String.valueOf(requestedCaps.getCapability(seVncEnabledCap));
-    if (Boolean.parseBoolean(seVncEnabled)) {
+    boolean vncLocalAddressSet = requestedCaps.getCapabilityNames().contains("se:vncLocalAddress");
+    if (Boolean.parseBoolean(seVncEnabled) && !vncLocalAddressSet) {
+      String vncLocalAddress = String.format("ws://%s:7900", getHost());
       returnedCaps = new PersistentCapabilities(returnedCaps)
-        .setCapability("se:vncLocalAddress", "ws://localhost:7900/websockify")
+        .setCapability("se:vncLocalAddress", vncLocalAddress)
         .setCapability(seVncEnabledCap, true);
     }
     return returnedCaps;
@@ -243,5 +247,14 @@ public class DriverServiceSessionFactory implements SessionFactory {
 
   private Capabilities setInitialPlatform(Capabilities caps, Platform platform) {
     return new PersistentCapabilities(caps).setCapability("platformName", platform);
+  }
+
+  private String getHost() {
+    try {
+      return new NetworkUtils().getNonLoopbackAddressOfThisMachine();
+    } catch (WebDriverException e) {
+      return HostIdentifier.getHostName();
+    }
+
   }
 }
