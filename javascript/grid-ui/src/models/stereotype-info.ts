@@ -18,6 +18,7 @@
 interface StereotypeInfo {
   browserName: string
   browserVersion: string
+  platformName: string
   slotCount: number
   rawData: any
 }
