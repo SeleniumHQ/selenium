@@ -140,7 +140,7 @@ public class FirefoxDriver extends RemoteWebDriver
     public static final String MARIONETTE = "marionette";
   }
 
-  private static class ExtraCommands {
+  static class ExtraCommands {
     static String INSTALL_EXTENSION = "installExtension";
     static String UNINSTALL_EXTENSION = "uninstallExtension";
     static String FULL_PAGE_SCREENSHOT = "fullPageScreenshot";

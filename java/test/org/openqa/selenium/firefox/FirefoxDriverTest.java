@@ -35,6 +35,7 @@ import org.openqa.selenium.remote.Command;
 import org.openqa.selenium.remote.CommandExecutor;
 import org.openqa.selenium.remote.DriverCommand;
 import org.openqa.selenium.remote.RemoteWebDriver;
+import org.openqa.selenium.remote.RemoteWebDriverBuilder;
 import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.remote.UnreachableBrowserException;
 import org.openqa.selenium.support.ui.ExpectedCondition;
@@ -518,6 +519,22 @@ public class FirefoxDriverTest extends JUnit4TestBase {
                  + "click in over (handled by over)\n"
                  + "click in over (handled by body)");
   }
+
+  @Test
+  public void shouldAllowRemoteWebDriversToBeAugmentedWithHasExtensions() {
+    WebDriver driver = RemoteWebDriver.builder()
+      .oneOf(new FirefoxOptions())
+      .address("http://localhost:4444/")
+      .build();
+
+    try {
+      assertThat(driver).isInstanceOf(HasExtensions.class);
+      fail(driver.getClass().getName());
+    } finally {
+      driver.quit();
+    }
+  }
+
 
   private static class CustomFirefoxProfile extends FirefoxProfile {}
 
