@@ -36,7 +36,7 @@ import Loading from '../../components/Loading/Loading'
 import Error from '../../components/Error/Error'
 import StereotypeInfo from '../../models/stereotype-info'
 import browserVersion from '../../util/browser-version'
-import Capabilities from "../../models/capabilities";
+import Capabilities from '../../models/capabilities'
 
 const useStyles = (theme: Theme): StyleRules => createStyles(
   {
@@ -129,12 +129,12 @@ class Overview extends React.Component<OverviewProps, OverviewState> {
       const message = 'There has been an error while loading the Nodes from the Grid.'
       return (
         <Grid container spacing={3}>
-          <Error message={message} errorMessage={error} />
+          <Error message={message} errorMessage={error}/>
         </Grid>
       )
     }
 
-    const nodes = data.nodesInfo.nodes.map((node) => {
+    const unSortedNodes = data.nodesInfo.nodes.map((node) => {
       const osInfo: OsInfo = {
         name: node.osInfo.name,
         version: node.osInfo.version,
@@ -170,6 +170,7 @@ class Overview extends React.Component<OverviewProps, OverviewState> {
       return newNode
     })
 
+    const nodes = unSortedNodes.sort((a, b) => (a.id < b.id ? -1 : 1))
     if (nodes.length === 0) {
       const shortMessage = 'The Grid has no registered Nodes yet.'
       return (
