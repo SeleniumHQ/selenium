@@ -117,7 +117,6 @@ public class LocalDistributor extends Distributor implements Closeable {
   private final Regularly purgeDeadNodes = new Regularly("Purge deadNodes");
   private final Map<NodeId, Runnable> allChecks = new HashMap<>();
   private final Duration healthcheckInterval;
-  private final Duration sessionRequestRetryInterval;
 
   private final ReadWriteLock lock = new ReentrantReadWriteLock(/* fair */ true);
   private final GridModel model;
@@ -157,11 +156,10 @@ public class LocalDistributor extends Distributor implements Closeable {
     this.slotSelector = Require.nonNull("Slot selector", slotSelector);
     this.registrationSecret = Require.nonNull("Registration secret", registrationSecret);
     this.healthcheckInterval = Require.nonNull("Health check interval", healthcheckInterval);
-    this.sessionRequestRetryInterval = Require.nonNull("Session request interval",
-                                                       sessionRequestRetryInterval);
     this.model = new GridModel(bus);
     this.nodes = new ConcurrentHashMap<>();
     this.rejectUnsupportedCaps = rejectUnsupportedCaps;
+    Require.nonNull("Session request interval", sessionRequestRetryInterval);
 
     bus.addListener(NodeStatusEvent.listener(this::register));
     bus.addListener(NodeStatusEvent.listener(model::refresh));
