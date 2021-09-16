@@ -24,7 +24,6 @@ import {
   DialogContent,
   DialogTitle,
   IconButton,
-  Theme,
   Typography,
   withStyles
 } from '@material-ui/core'
@@ -34,7 +33,7 @@ import InfoIcon from '@material-ui/icons/Info'
 import OsLogo from '../common/OsLogo'
 import { StyleRules } from '@material-ui/core/styles'
 
-const useStyles = (theme: Theme): StyleRules => createStyles(
+const useStyles = (): StyleRules => createStyles(
   {
     buttonMargin: {
       padding: 1

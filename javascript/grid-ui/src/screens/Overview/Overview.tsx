@@ -148,9 +148,11 @@ class Overview extends React.Component<OverviewProps, OverviewState> {
 
       const slotStereotypes = (JSON.parse(node.stereotypes) as Array<StereoTypeData>).map((item) => {
         const slotStereotype: StereotypeInfo = {
-          browserName: item.stereotype.browserName,
+          browserName: item.stereotype.browserName ?? '',
           browserVersion: browserVersion(
             item.stereotype.browserVersion ?? item.stereotype.version),
+          platformName: (item.stereotype.platformName
+                        ?? item.stereotype.platform) ?? '',
           slotCount: item.slots,
           rawData: item
         }
