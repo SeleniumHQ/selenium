@@ -120,6 +120,7 @@ public class Grid {
       .map(NodeStatus::getSlots)
       .flatMap(Collection::stream)
       .filter(slot -> slot.getSession()!=null)
+      .filter(slot -> !slot.getSession().getId().equals(RESERVED))
       .mapToInt(slot -> 1)
       .sum();
   }
