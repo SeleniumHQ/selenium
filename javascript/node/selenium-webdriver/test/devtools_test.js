@@ -20,6 +20,7 @@
 const assert = require('assert')
 const { Browser, until } = require('..')
 const fileServer = require('../lib/test/fileserver')
+const { HttpResponse } = require('../devtools/networkontor')
 const { Pages, ignore, suite } = require('../lib/test')
 
 suite(
@@ -121,6 +122,22 @@ suite(
           await driver.get(fileServer.Pages.basicAuth)
           let source = await driver.getPageSource()
           assert.strictEqual(source.includes('Access granted!'), true)
+        })
+    })
+
+    describe("Network Interception", function () {
+      ignore(browsers(Browser.SAFARI, Browser.FIREFOX)).
+        it('Allows network requests to be captured and mocked', async function () {
+          const connection = await driver.createCDPConnection('page')
+          let url = fileServer.whereIs("/cheese")
+          let httpResponse = new HttpResponse(url)
+          httpResponse.addHeaders("Content-Type", "UTF-8")
+          httpResponse.body = "sausages"
+          await driver.onIntercept(connection, httpResponse, async function () {
+            let body = await driver.getPageSource()
+            assert.strictEqual(body.includes("sausages"), true, `Body contains: ${body}`)
+          })
+          driver.get(url)
         })
     })
   },
