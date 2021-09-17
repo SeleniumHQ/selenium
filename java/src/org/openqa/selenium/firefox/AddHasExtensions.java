@@ -21,12 +21,15 @@ import com.google.auto.service.AutoService;
 import com.google.common.collect.ImmutableMap;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.remote.AugmenterProvider;
+import org.openqa.selenium.remote.CommandInfo;
 import org.openqa.selenium.remote.ExecuteMethod;
 
 import java.nio.file.Path;
+import java.util.Map;
 import java.util.function.Predicate;
 
 import static java.util.Collections.singletonMap;
+import static org.openqa.selenium.firefox.FirefoxDriver.EXTRA_COMMANDS;
 import static org.openqa.selenium.remote.BrowserType.FIREFOX;
 
 @AutoService(AugmenterProvider.class)
@@ -57,5 +60,10 @@ public class AddHasExtensions implements AugmenterProvider<HasExtensions> {
         executeMethod.execute(FirefoxDriver.ExtraCommands.UNINSTALL_EXTENSION, singletonMap("id", extensionId));
       }
     };
+  }
+
+  @Override
+  public Map<String, CommandInfo> getAdditionalCommands() {
+    return EXTRA_COMMANDS;
   }
 }

@@ -28,14 +28,15 @@ import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.ParallelTestRunner;
 import org.openqa.selenium.ParallelTestRunner.Worker;
+import org.openqa.selenium.UnsupportedCommandException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.build.InProject;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.Command;
 import org.openqa.selenium.remote.CommandExecutor;
 import org.openqa.selenium.remote.DriverCommand;
 import org.openqa.selenium.remote.RemoteWebDriver;
-import org.openqa.selenium.remote.RemoteWebDriverBuilder;
 import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.remote.UnreachableBrowserException;
 import org.openqa.selenium.support.ui.ExpectedCondition;
@@ -51,6 +52,7 @@ import org.openqa.selenium.testing.drivers.WebDriverBuilder;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Field;
+import java.nio.file.Path;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
@@ -528,8 +530,11 @@ public class FirefoxDriverTest extends JUnit4TestBase {
       .build();
 
     try {
-      assertThat(driver).isInstanceOf(HasExtensions.class);
-      fail(driver.getClass().getName());
+      String MOOLTIPASS_PATH = "third_party/firebug/mooltipass-1.1.87.xpi";
+      Path extension = InProject.locate(MOOLTIPASS_PATH);
+      ((HasExtensions) driver).installExtension(extension);
+    } catch (UnsupportedCommandException e) {
+      fail("Expected HasExtensions to support installExtension()");
     } finally {
       driver.quit();
     }

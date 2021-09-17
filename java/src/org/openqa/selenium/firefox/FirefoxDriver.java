@@ -146,7 +146,7 @@ public class FirefoxDriver extends RemoteWebDriver
     static String FULL_PAGE_SCREENSHOT = "fullPageScreenshot";
   }
 
-  private static final ImmutableMap<String, CommandInfo> EXTRA_COMMANDS = ImmutableMap.of(
+  static final ImmutableMap<String, CommandInfo> EXTRA_COMMANDS = ImmutableMap.of(
       ExtraCommands.INSTALL_EXTENSION,
       new CommandInfo("/session/:sessionId/moz/addon/install", HttpMethod.POST),
       ExtraCommands.UNINSTALL_EXTENSION,

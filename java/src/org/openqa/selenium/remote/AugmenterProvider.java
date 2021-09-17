@@ -19,6 +19,8 @@ package org.openqa.selenium.remote;
 
 import org.openqa.selenium.Capabilities;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.function.Predicate;
 
 /**
@@ -43,4 +45,8 @@ public interface AugmenterProvider<X> {
    * @return An interface implementation
    */
   X getImplementation(Capabilities capabilities, ExecuteMethod executeMethod);
+
+  default Map<String, CommandInfo> getAdditionalCommands() {
+    return new HashMap<>();
+  }
 }

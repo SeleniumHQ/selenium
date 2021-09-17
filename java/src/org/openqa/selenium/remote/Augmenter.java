@@ -38,8 +38,10 @@ import org.openqa.selenium.remote.mobile.AddNetworkConnection;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.ServiceLoader;
 import java.util.Set;
 import java.util.function.BiFunction;
@@ -62,6 +64,7 @@ import static net.bytebuddy.matcher.ElementMatchers.named;
 @Beta
 public class Augmenter {
   private final Set<Augmentation<?>> augmentations;
+  private List<Augmentation<?>>  matchingAugmenters;
 
   public Augmenter() {
     Set<Augmentation<?>> augmentations = new HashSet<>();
@@ -83,7 +86,8 @@ public class Augmenter {
     Require.nonNull("Interface provider", provider);
     return new Augmentation<>(provider.isApplicable(),
                               provider.getDescribedInterface(),
-                              provider::getImplementation);
+                              provider::getImplementation,
+                              provider.getAdditionalCommands());
   }
 
   private Augmenter(Set<Augmentation<?>> augmentations, Augmentation<?> toAdd) {
@@ -103,30 +107,33 @@ public class Augmenter {
     return addDriverAugmentation(
       provider.isApplicable(),
       provider.getDescribedInterface(),
-      provider::getImplementation);
+      provider::getImplementation,
+      provider.getAdditionalCommands());
   }
 
   public <X> Augmenter addDriverAugmentation(
     String capabilityName,
     Class<X> implementThis,
-    BiFunction<Capabilities, ExecuteMethod, X> usingThis) {
+    BiFunction<Capabilities, ExecuteMethod, X> usingThis,
+    Map<String, CommandInfo> addingCommands) {
     Require.nonNull("Capability name", capabilityName);
     Require.nonNull("Interface to implement", implementThis);
     Require.nonNull("Concrete implementation", usingThis, "of %s", implementThis);
 
-    return addDriverAugmentation(check(capabilityName), implementThis, usingThis);
+    return addDriverAugmentation(check(capabilityName), implementThis, usingThis, addingCommands);
   }
 
   public <X> Augmenter addDriverAugmentation(
     Predicate<Capabilities> whenThisMatches,
     Class<X> implementThis,
-    BiFunction<Capabilities, ExecuteMethod, X> usingThis) {
+    BiFunction<Capabilities, ExecuteMethod, X> usingThis,
+    Map<String, CommandInfo> addingCommands) {
     Require.nonNull("Capability predicate", whenThisMatches);
     Require.nonNull("Interface to implement", implementThis);
     Require.nonNull("Concrete implementation", usingThis, "of %s", implementThis);
     Require.precondition(implementThis.isInterface(), "Expected %s to be an interface", implementThis);
 
-    return new Augmenter(augmentations, new Augmentation<>(whenThisMatches, implementThis, usingThis));
+    return new Augmenter(augmentations, new Augmentation<>(whenThisMatches, implementThis, usingThis, addingCommands));
   }
 
   private Predicate<Capabilities> check(String capabilityName) {
@@ -158,7 +165,7 @@ public class Augmenter {
     Capabilities caps = ImmutableCapabilities.copyOf(((HasCapabilities) driver).getCapabilities());
 
     // Collect the interfaces to apply
-    List<Augmentation<?>> matchingAugmenters = augmentations.stream()
+    matchingAugmenters = augmentations.stream()
       // Only consider the augmenters that match interfaces we don't already implement
       .filter(augmentation -> !augmentation.interfaceClass.isAssignableFrom(driver.getClass()))
       // And which match an augmentation we have
@@ -206,6 +213,14 @@ public class Augmenter {
     }
   }
 
+  public Map<String, CommandInfo> getMatchingAdditionalCommands() {
+    HashMap<String, CommandInfo> matchingCommands = new HashMap<>();
+    for (Augmentation<?> augmenter : matchingAugmenters) {
+      matchingCommands.putAll(augmenter.additionalCommands);
+    }
+    return matchingCommands;
+  }
+
   private RemoteWebDriver extractRemoteWebDriver(WebDriver driver) {
     Require.nonNull("WebDriver", driver);
 
@@ -251,14 +266,17 @@ public class Augmenter {
     public final Predicate<Capabilities> whenMatches;
     public final Class<X> interfaceClass;
     public final BiFunction<Capabilities, ExecuteMethod, X> implementation;
+    public Map<String, CommandInfo> additionalCommands;
 
     public Augmentation(
       Predicate<Capabilities> whenMatches,
       Class<X> interfaceClass,
-      BiFunction<Capabilities, ExecuteMethod, X> implementation) {
+      BiFunction<Capabilities, ExecuteMethod, X> implementation,
+      Map<String, CommandInfo> additionalCommands) {
       this.whenMatches = Require.nonNull("Capabilities predicate", whenMatches);
       this.interfaceClass = Require.nonNull("Interface to implement", interfaceClass);
       this.implementation = Require.nonNull("Interface implementation", implementation);
+      this.additionalCommands = Require.nonNull("Interface additional commands", additionalCommands);
 
       Require.precondition(
         interfaceClass.isInterface(),

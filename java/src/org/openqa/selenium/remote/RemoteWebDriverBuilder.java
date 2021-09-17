@@ -35,7 +35,6 @@ import org.openqa.selenium.remote.http.Filter;
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpRequest;
-import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.remote.service.DriverService;
 
 import java.io.Closeable;
@@ -97,6 +96,7 @@ public class RemoteWebDriverBuilder {
     "firstMatch");
   private final List<Capabilities> requestedCapabilities = new ArrayList<>();
   private final Map<String, Object> additionalCapabilities = new TreeMap<>();
+  private Map<String, CommandInfo> additionalCommands;
   private final Map<String, Object> metadata = new TreeMap<>();
   private Function<ClientConfig, HttpHandler> handlerFactory =
       config -> {
@@ -360,7 +360,9 @@ public class RemoteWebDriverBuilder {
       driver = getRemoteDriver();
     }
 
-    return augmenter.augment(driver);
+    WebDriver augmented = augmenter.augment(driver);
+    this.additionalCommands = augmenter.getMatchingAdditionalCommands();
+    return augmented;
   }
 
   private WebDriver getRemoteDriver() {
@@ -429,13 +431,12 @@ public class RemoteWebDriverBuilder {
 
   private CommandExecutor createExecutor(HttpHandler handler, ProtocolHandshake.Result result) {
     Dialect dialect = result.getDialect();
-    Function<Command, HttpRequest> commandEncoder = dialect.getCommandCodec()::encode;
-    Function<HttpResponse, Response> responseDecoder = dialect.getResponseCodec()::decode;
+    CommandCodec<HttpRequest> commandCodec = dialect.getCommandCodec();
 
     Response newSessionResponse = result.createResponse();
     String id = newSessionResponse.getSessionId();
 
-    CommandExecutor baseExecutor = cmd -> commandEncoder.andThen(handler::execute).andThen(responseDecoder).apply(cmd);
+    CommandExecutor baseExecutor = cmd -> commandEncoder(commandCodec).andThen(handler::execute).andThen(dialect.getResponseCodec()::decode).apply(cmd);
 
     CommandExecutor handleNewSession = cmd -> {
       if (DriverCommand.NEW_SESSION.equals(cmd.getName())) {
@@ -467,6 +468,18 @@ public class RemoteWebDriverBuilder {
     };
 
     return stopService;
+  }
+
+  private Function<Command, HttpRequest> commandEncoder(CommandCodec<HttpRequest> commandCodec) {
+    for (Map.Entry<String, CommandInfo> entry : additionalCommands.entrySet()) {
+      commandCodec.defineCommand(entry.getKey(), entry.getValue().getMethod(), entry.getValue().getUrl());
+    }
+
+    return commandCodec::encode;
+  }
+
+  public void addCommand(String command, CommandInfo commandInfo) {
+    additionalCommands.put(command, commandInfo);
   }
 
   private Set<String> getClobberedCapabilities() {
