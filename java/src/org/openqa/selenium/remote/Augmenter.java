@@ -180,7 +180,7 @@ public class Augmenter {
       .annotateType(AnnotationDescription.Builder.ofType(Augmentable.class).build())
       .method(named("isAugmented")).intercept(FixedValue.value(true));
 
-    for (Augmentation<?> augmentation : augmentations) {
+    for (Augmentation<?> augmentation : matchingAugmenters) {
       Class<?> iface = augmentation.interfaceClass;
 
       Object instance = augmentation.implementation.apply(caps, execute);
