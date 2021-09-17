@@ -28,6 +28,7 @@ import org.openqa.selenium.grid.distributor.Distributor;
 import org.openqa.selenium.grid.sessionqueue.NewSessionQueue;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.Json;
+import org.openqa.selenium.remote.SessionId;
 
 import java.net.URI;
 import java.util.ArrayList;
@@ -41,6 +42,7 @@ import java.util.stream.Collectors;
 public class Grid {
 
   private static final Json JSON = new Json();
+  private static final SessionId RESERVED = new SessionId("reserved");
   private final URI uri;
   private final DistributorStatus distributorStatus;
   private final List<Set<Capabilities>> queueInfoList;
@@ -150,7 +152,7 @@ public class Grid {
     List<Session> sessions = new ArrayList<>();
     for (NodeStatus status : distributorStatus.getNodes()) {
       for (Slot slot : status.getSlots()) {
-        if (slot.getSession()!=null) {
+        if (slot.getSession() != null && !slot.getSession().getId().equals(RESERVED)) {
           org.openqa.selenium.grid.data.Session session = slot.getSession();
           sessions.add(
             new org.openqa.selenium.grid.graphql.Session(
