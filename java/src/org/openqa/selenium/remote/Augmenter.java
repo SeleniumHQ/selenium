@@ -114,6 +114,15 @@ public class Augmenter {
   public <X> Augmenter addDriverAugmentation(
     String capabilityName,
     Class<X> implementThis,
+    BiFunction<Capabilities, ExecuteMethod, X> usingThis) {
+    Map<String, CommandInfo> addingCommands = new HashMap<>();
+
+    return this.addDriverAugmentation(capabilityName, implementThis, usingThis, addingCommands);
+  }
+
+  public <X> Augmenter addDriverAugmentation(
+    String capabilityName,
+    Class<X> implementThis,
     BiFunction<Capabilities, ExecuteMethod, X> usingThis,
     Map<String, CommandInfo> addingCommands) {
     Require.nonNull("Capability name", capabilityName);
@@ -121,6 +130,15 @@ public class Augmenter {
     Require.nonNull("Concrete implementation", usingThis, "of %s", implementThis);
 
     return addDriverAugmentation(check(capabilityName), implementThis, usingThis, addingCommands);
+  }
+
+  public <X> Augmenter addDriverAugmentation(
+    Predicate<Capabilities> whenThisMatches,
+    Class<X> implementThis,
+    BiFunction<Capabilities, ExecuteMethod, X> usingThis) {
+    Map<String, CommandInfo> addingCommands = new HashMap<>();
+
+    return this.addDriverAugmentation(whenThisMatches, implementThis, usingThis, addingCommands);
   }
 
   public <X> Augmenter addDriverAugmentation(
