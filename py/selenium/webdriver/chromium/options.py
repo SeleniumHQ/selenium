@@ -121,7 +121,7 @@ class ChromiumOptions(ArgOptions):
         """
         return self._experimental_options
 
-    def add_experimental_option(self, name: str, value: Union[str, int, dict]):
+    def add_experimental_option(self, name: str, value: Union[str, int, dict, List[str]]):
         """
         Adds an experimental option which is passed to chromium.
 
