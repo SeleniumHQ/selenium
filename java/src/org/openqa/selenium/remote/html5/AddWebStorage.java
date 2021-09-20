@@ -20,17 +20,27 @@ package org.openqa.selenium.remote.html5;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.html5.WebStorage;
 import org.openqa.selenium.remote.AugmenterProvider;
+import org.openqa.selenium.remote.BrowserType;
 import org.openqa.selenium.remote.ExecuteMethod;
 
 import java.util.function.Predicate;
 
+import static org.openqa.selenium.remote.BrowserType.CHROME;
+import static org.openqa.selenium.remote.BrowserType.EDGE;
+import static org.openqa.selenium.remote.BrowserType.FIREFOX;
+import static org.openqa.selenium.remote.BrowserType.OPERA;
 import static org.openqa.selenium.remote.CapabilityType.SUPPORTS_WEB_STORAGE;
 
 public class AddWebStorage implements AugmenterProvider<WebStorage> {
 
   @Override
   public Predicate<Capabilities> isApplicable() {
-    return caps -> caps.is(SUPPORTS_WEB_STORAGE);
+    return caps ->
+      FIREFOX.equals(caps.getBrowserName()) ||
+      CHROME.equals(caps.getBrowserName()) ||
+      EDGE.equals(caps.getBrowserName()) ||
+      OPERA.equals(caps.getBrowserName()) ||
+      caps.is(SUPPORTS_WEB_STORAGE);
   }
 
   @Override
