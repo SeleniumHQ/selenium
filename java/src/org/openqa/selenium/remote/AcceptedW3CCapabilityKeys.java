@@ -34,7 +34,8 @@ public class AcceptedW3CCapabilityKeys implements Predicate<String> {
       "^setWindowRect$",
       "^strictFileInteractability$",
       "^timeouts$",
-      "^unhandledPromptBehavior$")
+      "^unhandledPromptBehavior$",
+      "^webSocketUrl$")  // from webdriver-bidi
       .map(Pattern::compile)
       .map(Pattern::asPredicate)
       .reduce(identity -> false, Predicate::or);
