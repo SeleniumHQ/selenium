@@ -42,11 +42,9 @@ import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.CommandInfo;
 import org.openqa.selenium.remote.FileDetector;
 import org.openqa.selenium.remote.RemoteWebDriver;
-import org.openqa.selenium.remote.Response;
 import org.openqa.selenium.remote.html5.RemoteWebStorage;
 import org.openqa.selenium.remote.http.ClientConfig;
 import org.openqa.selenium.remote.http.HttpClient;
-import org.openqa.selenium.remote.http.HttpMethod;
 import org.openqa.selenium.remote.service.DriverCommandExecutor;
 import org.openqa.selenium.remote.service.DriverService;
 
@@ -58,7 +56,6 @@ import java.util.ServiceLoader;
 import java.util.Set;
 import java.util.stream.StreamSupport;
 
-import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.openqa.selenium.remote.CapabilityType.PROXY;
 
 /**
@@ -140,15 +137,6 @@ public class FirefoxDriver extends RemoteWebDriver
     public static final String MARIONETTE = "marionette";
   }
 
-  static class ExtraCommands {
-    static String FULL_PAGE_SCREENSHOT = "fullPageScreenshot";
-  }
-
-  private static final ImmutableMap<String, CommandInfo> EXTRA_COMMANDS = ImmutableMap.of(
-      ExtraCommands.FULL_PAGE_SCREENSHOT,
-      new CommandInfo("/session/:sessionId/moz/screenshot/full", HttpMethod.GET)
-  );
-
   private static class FirefoxDriverCommandExecutor extends DriverCommandExecutor {
     public FirefoxDriverCommandExecutor(DriverService service) {
       super(service, getExtraCommands());
@@ -156,7 +144,7 @@ public class FirefoxDriver extends RemoteWebDriver
 
     private static Map<String, CommandInfo> getExtraCommands() {
       return ImmutableMap.<String, CommandInfo>builder()
-        .putAll(EXTRA_COMMANDS)
+        .putAll(new AddHasFullPageScreenshot().getAdditionalCommands())
         .putAll(new AddHasExtensions().getAdditionalCommands())
         .build();
     }
@@ -166,6 +154,7 @@ public class FirefoxDriver extends RemoteWebDriver
   protected FirefoxBinary binary;
   private final RemoteWebStorage webStorage;
   private final HasExtensions extensions;
+  private final HasFullPageScreenshot fullPageScreenshot;
   private final Optional<URI> cdpUri;
   private DevTools devTools;
 
@@ -207,6 +196,7 @@ public class FirefoxDriver extends RemoteWebDriver
     super(executor, dropCapabilities(options));
     webStorage = new RemoteWebStorage(getExecuteMethod());
     extensions = new AddHasExtensions().getImplementation(getCapabilities(), getExecuteMethod());
+    fullPageScreenshot = new AddHasFullPageScreenshot().getImplementation(getCapabilities(), getExecuteMethod());
 
     Capabilities capabilities = super.getCapabilities();
     HttpClient.Factory clientFactory = HttpClient.Factory.createDefault();
@@ -291,19 +281,7 @@ public class FirefoxDriver extends RemoteWebDriver
    * @throws WebDriverException on failure.
    */
   public <X> X getFullPageScreenshotAs(OutputType<X> outputType) throws WebDriverException {
-    Response response = execute(ExtraCommands.FULL_PAGE_SCREENSHOT);
-    Object result = response.getValue();
-    if (result instanceof String) {
-      String base64EncodedPng = (String) result;
-      return outputType.convertFromBase64Png(base64EncodedPng);
-    } else if (result instanceof byte[]) {
-      String base64EncodedPng = new String((byte[]) result, UTF_8);
-      return outputType.convertFromBase64Png(base64EncodedPng);
-    } else {
-      throw new RuntimeException(String.format("Unexpected result for %s command: %s",
-                                               ExtraCommands.FULL_PAGE_SCREENSHOT,
-                                               result == null ? "null" : result.getClass().getName() + " instance"));
-    }
+    return fullPageScreenshot.getFullPageScreenshotAs(outputType);
   }
 
   private static Boolean forceMarionetteFromSystemProperty() {
