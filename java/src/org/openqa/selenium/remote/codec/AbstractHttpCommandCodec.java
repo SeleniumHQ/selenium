@@ -237,6 +237,12 @@ public abstract class AbstractHttpCommandCodec implements CommandCodec<HttpReque
   }
 
   @Override
+  public boolean isSupported(String commandName) {
+    Require.nonNull("Command name", commandName);
+    return nameToSpec.containsKey(commandName) || aliases.containsKey(commandName);
+  }
+
+  @Override
   public HttpRequest encode(Command command) {
     String name = aliases.getOrDefault(command.getName(), command.getName());
     CommandSpec spec = nameToSpec.get(name);
