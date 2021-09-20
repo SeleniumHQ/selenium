@@ -1,4 +1,3 @@
-<!DOCTYPE html>
 <html>
 <head>
   <title>relative_locator_test.html</title>
@@ -53,13 +52,22 @@
       width: 40px;
       background-color: blue;
     }
+
+    .c {
+      position: absolute;
+      border: 1px solid black;
+      height: 50px;
+      width: 50px;
+    }
   </style>
+
   <script src="test_bootstrap.js"></script>
   <script type="text/javascript">
     goog.require('bot.locators');
     goog.require('goog.array');
     goog.require('goog.testing.jsunit');
   </script>
+
   <script type="text/javascript">
 
     function above(locator) {
@@ -163,6 +171,16 @@
       assertEquals("below", found[0].getAttribute("id"));
     }
 
+    function testShouldNotRepeatElements() {
+      var base = bot.locators.findElement({id: "e"});
+
+      var found = bot.locators.findElements({relative: {root: {tagName: "div"}, filters: [{kind: "above", args: [base]}]}});
+
+      assertEquals(2, found.length);
+      assertEquals("b", found[0].getAttribute("id"));
+      assertEquals("a", found[1].getAttribute("id"));
+    }
+
     function testShouldOrderNodesByProximity() {
       // Create an iframe to hold the content
       var frame = document.createElement("iframe");
@@ -217,10 +235,10 @@
 <body>
 
 <h1>Relative Locator Tests</h1>
+
 <p id="above">This text is above.
 <p id="mid">This is a paragraph of text in the middle.
 <p id="below">This text is below.
-
 
 <table>
   <tr>
@@ -240,4 +258,14 @@
   </tr>
 </table>
 
+<span style="position: relative">
+  <div id= "a" class="c" style="left:25;top:0;">El-A</div>
+  <div id= "b" class="c" style="left:78;top:30;">El-B</div>
+  <div id= "c" class="c" style="left:131;top:60;">El-C</div>
+  <div id= "d" class="c" style="left:0;top:53;">El-D</div>
+  <div id= "e" class="c" style="left:53;top:83;">El-E</div>
+  <div id= "f" class="c" style="left:106;top:113;">El-F</div>
+</span>
+
 </body>
+</html>
