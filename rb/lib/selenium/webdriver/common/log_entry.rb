@@ -22,9 +22,9 @@ module Selenium
     class LogEntry
       attr_reader :level, :timestamp, :message
 
-      def initialize(timestamp, level, message)
-        @timestamp = timestamp
+      def initialize(level, timestamp, message)
         @level = level
+        @timestamp = timestamp
         @message = message
       end
 
