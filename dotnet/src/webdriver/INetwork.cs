@@ -64,6 +64,18 @@ namespace OpenQA.Selenium
         void ClearAuthenticationHandlers();
 
         /// <summary>
+        /// Adds a <see cref="NetworkResponseHandler"/> to examine received network responses,
+        /// and optionally modify the response. 
+        /// </summary>
+        /// <param name="handler">The <see cref="NetworkResponseHandler"/> to add.</param>
+        void AddResponseHandler(NetworkResponseHandler handler);
+
+        /// <summary>
+        /// Clears all added <see cref="NetworkResponseHandler"/> instances.
+        /// </summary>
+        void ClearResponseHandlers();
+
+        /// <summary>
         /// Asynchronously starts monitoring for network traffic.
         /// </summary>
         /// <returns>A task that represents the asynchronous operation.</returns>
