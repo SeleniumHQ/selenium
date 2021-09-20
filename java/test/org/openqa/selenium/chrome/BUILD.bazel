@@ -22,4 +22,8 @@ java_selenium_test_suite(
         artifact("org.assertj:assertj-core"),
         artifact("org.mockito:mockito-core"),
     ],
+    javacopts = [
+            "--release",
+            "11",
+        ],
 )
