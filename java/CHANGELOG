@@ -8,6 +8,11 @@ v4.0.0-rc-2
   something like the Appium server.
 * Fixed CDP connection locking when called re-entrantly.
 * Remove sessions from Redis backed session map on restart
+* Accept "webSocketUrl" as a valid w3c capability name, as it's
+  declared in WebDriver Bidi
+* Add strongly-typed methods for setting timeouts and other w3c
+  capabilities on the base options class.
+* Enable live view for Dynamic Grid
 
 v4.0.0-rc-1
 ===========
