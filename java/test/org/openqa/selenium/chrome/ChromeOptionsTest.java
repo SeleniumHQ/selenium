@@ -41,6 +41,7 @@ import static org.assertj.core.api.InstanceOfAssertFactories.LIST;
 import static org.assertj.core.api.InstanceOfAssertFactories.MAP;
 import static org.openqa.selenium.chrome.ChromeDriverLogLevel.OFF;
 import static org.openqa.selenium.chrome.ChromeDriverLogLevel.SEVERE;
+import static org.openqa.selenium.remote.CapabilityType.TIMEOUTS;
 
 @Category(UnitTests.class)
 public class ChromeOptionsTest {
@@ -115,6 +116,19 @@ public class ChromeOptionsTest {
     expectedTimeouts.put("pageLoad", 2000L);
     Map<String, Object> mappedOptions2 = chromeOptions.asMap();
     assertThat(expectedTimeouts).isEqualTo(mappedOptions2.get("timeouts"));
+  }
+
+  @Test
+  public void mixAddingTimeoutsCapsAndSetter() {
+    ChromeOptions chromeOptions = new ChromeOptions();
+    chromeOptions.setCapability(TIMEOUTS, Map.of("implicit", 1000));
+    chromeOptions.setPageLoadTimeout(Duration.ofSeconds(2));
+
+    Map<String, Number> expectedTimeouts = new HashMap<>();
+    expectedTimeouts.put("implicit", 1000);
+    expectedTimeouts.put("pageLoad", 2000L);
+
+    assertThat(chromeOptions.asMap().get("timeouts")).isEqualTo(expectedTimeouts);
   }
 
   @Test

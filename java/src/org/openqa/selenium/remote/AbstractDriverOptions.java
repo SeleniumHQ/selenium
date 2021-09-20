@@ -41,8 +41,6 @@ import static org.openqa.selenium.remote.CapabilityType.TIMEOUTS;
 import static org.openqa.selenium.remote.CapabilityType.UNHANDLED_PROMPT_BEHAVIOUR;
 
 public abstract class AbstractDriverOptions<DO extends AbstractDriverOptions> extends MutableCapabilities {
-  private Map<String, Long> timeouts = new HashMap<>();
-
   public DO setBrowserVersion(String browserVersion) {
     setCapability(
       BROWSER_VERSION,
@@ -58,20 +56,26 @@ public abstract class AbstractDriverOptions<DO extends AbstractDriverOptions> ex
   }
 
   public DO setImplicitWaitTimeout(Duration timeout) {
-    this.timeouts.put("implicit", timeout.toMillis());
-    setCapability(TIMEOUTS, this.timeouts);
+    Map<String, Number> timeouts = getTimeouts();
+    timeouts.put("implicit", timeout.toMillis());
+
+    setCapability(TIMEOUTS, Collections.unmodifiableMap(timeouts));
     return (DO) this;
   }
 
   public DO setPageLoadTimeout(Duration timeout) {
-    this.timeouts.put("pageLoad", timeout.toMillis());
-    setCapability(TIMEOUTS, this.timeouts);
+    Map<String, Number> timeouts = getTimeouts();
+    timeouts.put("pageLoad", timeout.toMillis());
+
+    setCapability(TIMEOUTS, Collections.unmodifiableMap(timeouts));
     return (DO) this;
   }
 
   public DO setScriptTimeout(Duration timeout) {
-    this.timeouts.put("script", timeout.toMillis());
-    setCapability(TIMEOUTS, this.timeouts);
+    Map<String, Number> timeouts = getTimeouts();
+    timeouts.put("script", timeout.toMillis());
+
+    setCapability(TIMEOUTS, Collections.unmodifiableMap(timeouts));
     return (DO) this;
   }
 
@@ -130,5 +134,16 @@ public abstract class AbstractDriverOptions<DO extends AbstractDriverOptions> ex
     Map<String, Object> toReturn = new TreeMap<>(super.asMap());
     getExtraCapabilityNames().forEach(name -> toReturn.put(name, getCapability(name)));
     return Collections.unmodifiableMap(toReturn);
+  }
+
+  private Map<String, Number> getTimeouts() {
+    Map<String, Number> newTimeouts = new HashMap<>();
+    Object raw = getCapability(TIMEOUTS);
+    ((Map<?, ?>) raw).forEach((key, value) -> {
+      if (key instanceof String && value instanceof Number) {
+        newTimeouts.put((String) key, (Number) value);
+      }
+    });
+      return newTimeouts;
   }
 }
