@@ -14,6 +14,7 @@ java_selenium_test_suite(
         "//java/src/org/openqa/selenium:core",
         "//java/src/org/openqa/selenium/remote",
         "//java/src/org/openqa/selenium/support/locators",
+        "//java/test/org/openqa/selenium/environment",
         "//java/test/org/openqa/selenium/testing:test-base",
         artifact("junit:junit"),
         artifact("org.assertj:assertj-core"),
