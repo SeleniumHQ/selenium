@@ -28,6 +28,11 @@ import org.openqa.selenium.remote.http.HttpMethod;
 public interface CommandCodec<T> {
 
   /**
+   * @return Whether this {@link CommandCodec} supports the given command name.
+   */
+  boolean isSupported(String commandName);
+
+  /**
    * Encodes a command.
    *
    * @param command the command to encode.

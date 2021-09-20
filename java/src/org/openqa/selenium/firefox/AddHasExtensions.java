@@ -20,17 +20,34 @@ package org.openqa.selenium.firefox;
 import com.google.auto.service.AutoService;
 import com.google.common.collect.ImmutableMap;
 import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.remote.AdditionalHttpCommands;
 import org.openqa.selenium.remote.AugmenterProvider;
+import org.openqa.selenium.remote.CommandInfo;
 import org.openqa.selenium.remote.ExecuteMethod;
+import org.openqa.selenium.remote.http.HttpMethod;
 
 import java.nio.file.Path;
+import java.util.Map;
 import java.util.function.Predicate;
 
 import static java.util.Collections.singletonMap;
 import static org.openqa.selenium.remote.BrowserType.FIREFOX;
 
-@AutoService(AugmenterProvider.class)
-public class AddHasExtensions implements AugmenterProvider<HasExtensions> {
+@AutoService({AdditionalHttpCommands.class, AugmenterProvider.class})
+public class AddHasExtensions implements AugmenterProvider<HasExtensions>, AdditionalHttpCommands {
+
+  public static final String INSTALL_EXTENSION = "installExtension";
+  public static final String UNINSTALL_EXTENSION = "uninstallExtension";
+
+  private static final Map<String, CommandInfo> COMMANDS = ImmutableMap.of(
+    INSTALL_EXTENSION, new CommandInfo("/session/:sessionId/moz/addon/install",HttpMethod.POST),
+    UNINSTALL_EXTENSION, new CommandInfo("/session/:sessionId/moz/addon/uninstall", HttpMethod.POST));
+
+  @Override
+  public Map<String, CommandInfo> getAdditionalCommands() {
+    return COMMANDS;
+  }
+
   @Override
   public Predicate<Capabilities> isApplicable() {
     return caps -> FIREFOX.equals(caps.getBrowserName());
@@ -46,15 +63,15 @@ public class AddHasExtensions implements AugmenterProvider<HasExtensions> {
     return new HasExtensions() {
       @Override
       public String installExtension(Path path) {
-        return (String) executeMethod.execute(FirefoxDriver.ExtraCommands.INSTALL_EXTENSION,
-          ImmutableMap.of("path", path.toAbsolutePath().toString(),
-            "temporary", false));
+        return (String) executeMethod.execute(
+          INSTALL_EXTENSION,
+          ImmutableMap.of("path", path.toAbsolutePath().toString(), "temporary", false));
 
       }
 
       @Override
       public void uninstallExtension(String extensionId) {
-        executeMethod.execute(FirefoxDriver.ExtraCommands.UNINSTALL_EXTENSION, singletonMap("id", extensionId));
+        executeMethod.execute(UNINSTALL_EXTENSION, singletonMap("id", extensionId));
       }
     };
   }
