@@ -26,6 +26,7 @@ import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.OutputType;
 import org.openqa.selenium.ParallelTestRunner;
 import org.openqa.selenium.ParallelTestRunner.Worker;
 import org.openqa.selenium.WebDriver;
@@ -557,6 +558,43 @@ public class FirefoxDriverTest extends JUnit4TestBase {
       Path extension = InProject.locate("third_party/firebug/favourite_colour-1.1-an+fx.xpi");
       ((HasExtensions) augmentedDriver).installExtension(extension);
       ((HasExtensions) augmentedDriver).uninstallExtension("favourite-colour-examples@mozilla.org");
+    } finally {
+      driver.quit();
+    }
+  }
+
+  @Test
+  public void shouldTakeFullPageScreenshot() {
+    File tempFile = ((FirefoxDriver) driver).getFullPageScreenshotAs(OutputType.FILE);
+    assertThat(tempFile.exists()).isTrue();
+    assertThat(tempFile.length()).isGreaterThan(0);
+  }
+
+  @Test
+  public void shouldAllowRemoteWebDriverBuilderToUseHasFullPageScreenshot() {
+    WebDriver driver = RemoteWebDriver.builder()
+      .oneOf(new FirefoxOptions())
+      .address("http://localhost:4444/")
+      .build();
+
+    try {
+      File tempFile = ((HasFullPageScreenshot) driver).getFullPageScreenshotAs(OutputType.FILE);
+      assertThat(tempFile.exists()).isTrue();
+      assertThat(tempFile.length()).isGreaterThan(0);
+    } finally {
+      driver.quit();
+    }
+  }
+
+  @Test
+  public void shouldAllowDriverToBeAugmentedWithFullHasPageScreenshot() throws MalformedURLException {
+    WebDriver driver = new RemoteWebDriver(new URL("http://localhost:4444/"), new FirefoxOptions());
+    WebDriver augmentedDriver = new Augmenter().augment(driver);
+
+    try {
+      File tempFile = ((HasFullPageScreenshot) augmentedDriver).getFullPageScreenshotAs(OutputType.FILE);
+      assertThat(tempFile.exists()).isTrue();
+      assertThat(tempFile.length()).isGreaterThan(0);
     } finally {
       driver.quit();
     }
