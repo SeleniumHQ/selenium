@@ -20,7 +20,7 @@
 const assert = require('assert')
 const { Browser, until } = require('..')
 const fileServer = require('../lib/test/fileserver')
-const { HttpResponse } = require('../devtools/networkontor')
+const { HttpResponse } = require('../devtools/networkinterceptor')
 const { Pages, ignore, suite } = require('../lib/test')
 
 suite(
