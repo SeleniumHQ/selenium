@@ -17,26 +17,67 @@
 
 package org.openqa.selenium.remote;
 
-import static org.openqa.selenium.remote.CapabilityType.ACCEPT_INSECURE_CERTS;
-import static org.openqa.selenium.remote.CapabilityType.PAGE_LOAD_STRATEGY;
-import static org.openqa.selenium.remote.CapabilityType.PROXY;
-import static org.openqa.selenium.remote.CapabilityType.STRICT_FILE_INTERACTABILITY;
-import static org.openqa.selenium.remote.CapabilityType.UNEXPECTED_ALERT_BEHAVIOUR;
-import static org.openqa.selenium.remote.CapabilityType.UNHANDLED_PROMPT_BEHAVIOUR;
-
 import org.openqa.selenium.MutableCapabilities;
 import org.openqa.selenium.PageLoadStrategy;
 import org.openqa.selenium.Proxy;
 import org.openqa.selenium.UnexpectedAlertBehaviour;
 import org.openqa.selenium.internal.Require;
 
+import java.time.Duration;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
+import static org.openqa.selenium.remote.CapabilityType.ACCEPT_INSECURE_CERTS;
+import static org.openqa.selenium.remote.CapabilityType.BROWSER_VERSION;
+import static org.openqa.selenium.remote.CapabilityType.PAGE_LOAD_STRATEGY;
+import static org.openqa.selenium.remote.CapabilityType.PLATFORM_NAME;
+import static org.openqa.selenium.remote.CapabilityType.PROXY;
+import static org.openqa.selenium.remote.CapabilityType.STRICT_FILE_INTERACTABILITY;
+import static org.openqa.selenium.remote.CapabilityType.TIMEOUTS;
+import static org.openqa.selenium.remote.CapabilityType.UNHANDLED_PROMPT_BEHAVIOUR;
+
 public abstract class AbstractDriverOptions<DO extends AbstractDriverOptions> extends MutableCapabilities {
+  public DO setBrowserVersion(String browserVersion) {
+    setCapability(
+      BROWSER_VERSION,
+      Require.nonNull("Browser version", browserVersion));
+    return (DO) this;
+  }
+
+  public DO setPlatformName(String platformName) {
+    setCapability(
+      PLATFORM_NAME,
+      Require.nonNull("Platform Name", platformName));
+    return (DO) this;
+  }
+
+  public DO setImplicitWaitTimeout(Duration timeout) {
+    Map<String, Number> timeouts = getTimeouts();
+    timeouts.put("implicit", timeout.toMillis());
+
+    setCapability(TIMEOUTS, Collections.unmodifiableMap(timeouts));
+    return (DO) this;
+  }
+
+  public DO setPageLoadTimeout(Duration timeout) {
+    Map<String, Number> timeouts = getTimeouts();
+    timeouts.put("pageLoad", timeout.toMillis());
+
+    setCapability(TIMEOUTS, Collections.unmodifiableMap(timeouts));
+    return (DO) this;
+  }
+
+  public DO setScriptTimeout(Duration timeout) {
+    Map<String, Number> timeouts = getTimeouts();
+    timeouts.put("script", timeout.toMillis());
+
+    setCapability(TIMEOUTS, Collections.unmodifiableMap(timeouts));
+    return (DO) this;
+  }
 
   public DO setPageLoadStrategy(PageLoadStrategy strategy) {
     setCapability(
@@ -93,5 +134,16 @@ public abstract class AbstractDriverOptions<DO extends AbstractDriverOptions> ex
     Map<String, Object> toReturn = new TreeMap<>(super.asMap());
     getExtraCapabilityNames().forEach(name -> toReturn.put(name, getCapability(name)));
     return Collections.unmodifiableMap(toReturn);
+  }
+
+  private Map<String, Number> getTimeouts() {
+    Map<String, Number> newTimeouts = new HashMap<>();
+    Object raw = getCapability(TIMEOUTS);
+    ((Map<?, ?>) raw).forEach((key, value) -> {
+      if (key instanceof String && value instanceof Number) {
+        newTimeouts.put((String) key, (Number) value);
+      }
+    });
+      return newTimeouts;
   }
 }
