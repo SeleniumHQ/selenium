@@ -155,6 +155,7 @@ public class DefaultSlotSelectorTest {
       .map(SlotId::getOwningNodeId)
       .distinct()
       .collect(toImmutableSet());
+    assertThat(nodeIds).doesNotContain(maximumLoad.getNodeId());
     assertThat(nodeIds)
       .containsSequence(
         lightLoad.getNodeId(),
