@@ -22,22 +22,22 @@ module Selenium
     class LogEntry
       attr_reader :level, :timestamp, :message
 
-      def initialize(level, timestamp, message)
-        @level = level
+      def initialize(timestamp, level, message)
         @timestamp = timestamp
+        @level = level
         @message = message
       end
 
       def as_json(*)
         {
-          'level' => level,
           'timestamp' => timestamp,
+          'level' => level,
           'message' => message
         }
       end
 
       def to_s
-        "#{level} #{time}: #{message}"
+        "#{time} #{level}: #{message}"
       end
 
       def time
