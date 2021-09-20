@@ -1229,6 +1229,19 @@ class WebDriver {
     if (target && cdpTargets.indexOf(target.toLowerCase()) === -1) {
       throw new error.InvalidArgumentError('invalid target value')
     }
+
+    if (debuggerAddress.match(/\/se\/cdp/)) {
+      if (debuggerAddress.match("ws:\/\/", "http:\/\/")) {
+        return debuggerAddress.replace("ws:\/\/", "http:\/\/") 
+      }
+      else if (debuggerAddress.match("wss:\/\/", "https:\/\/")) {
+        return debuggerAddress.replace("wss:\/\/", "https:\/\/") 
+      }
+      else {
+      return debuggerAddress
+      }
+    }
+
     const path = '/json/version'
     let request = new http.Request('GET', path)
     let client = new http.HttpClient('http://' + debuggerAddress)
