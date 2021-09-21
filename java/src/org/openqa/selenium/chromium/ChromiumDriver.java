@@ -18,7 +18,6 @@
 package org.openqa.selenium.chromium;
 
 import com.google.common.collect.ImmutableMap;
-
 import org.openqa.selenium.BuildInfo;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.Credentials;
@@ -73,7 +72,8 @@ public class ChromiumDriver extends RemoteWebDriver implements
   HasTouchScreen,
   LocationContext,
   NetworkConnection,
-  WebStorage {
+  WebStorage,
+  HasNetworkConditions {
 
   private static final Logger LOG = Logger.getLogger(ChromiumDriver.class.getName());
 
@@ -82,6 +82,7 @@ public class ChromiumDriver extends RemoteWebDriver implements
   private final RemoteWebStorage webStorage;
   private final TouchScreen touchScreen;
   private final RemoteNetworkConnection networkConnection;
+  private final HasNetworkConditions networkConditions;
   private final Optional<Connection> connection;
   private final Optional<DevTools> devTools;
 
@@ -91,6 +92,7 @@ public class ChromiumDriver extends RemoteWebDriver implements
     webStorage = new RemoteWebStorage(getExecuteMethod());
     touchScreen = new RemoteTouchScreen(getExecuteMethod());
     networkConnection = new RemoteNetworkConnection(getExecuteMethod());
+    networkConditions = new AddHasNetworkConditions().getImplementation(getCapabilities(), getExecuteMethod());
 
     HttpClient.Factory factory = HttpClient.Factory.createDefault();
     Capabilities originalCapabilities = super.getCapabilities();
@@ -246,6 +248,19 @@ public class ChromiumDriver extends RemoteWebDriver implements
   public void setPermission(String name, String value) {
     getExecuteMethod().execute(ChromiumDriverCommand.SET_PERMISSION,
       ImmutableMap.of("descriptor", ImmutableMap.of("name", name), "state", value));
+  }
+
+  @Override public ChromiumNetworkConditions getNetworkConditions() {
+    return networkConditions.getNetworkConditions();
+  }
+
+  @Override public void setNetworkConditions(ChromiumNetworkConditions networkConditions) {
+    Require.nonNull("Network Conditions", networkConditions);
+    this.networkConditions.setNetworkConditions(networkConditions);
+  }
+
+  @Override public void deleteNetworkConditions() {
+    networkConditions.deleteNetworkConditions();
   }
 
   @Override

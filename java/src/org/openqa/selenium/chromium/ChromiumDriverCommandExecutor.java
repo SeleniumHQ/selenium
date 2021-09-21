@@ -17,15 +17,15 @@
 
 package org.openqa.selenium.chromium;
 
-import static java.util.Collections.unmodifiableMap;
-
-import java.util.HashMap;
-import java.util.Map;
-
 import org.openqa.selenium.remote.CommandInfo;
 import org.openqa.selenium.remote.http.HttpMethod;
 import org.openqa.selenium.remote.service.DriverCommandExecutor;
 import org.openqa.selenium.remote.service.DriverService;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import static java.util.Collections.unmodifiableMap;
 
 /**
  * {@link DriverCommandExecutor} that understands ChromiumDriver specific commands.
@@ -44,13 +44,7 @@ public class ChromiumDriverCommandExecutor extends DriverCommandExecutor {
     mappings.put(ChromiumDriverCommand.LAUNCH_APP,
       new CommandInfo(chromiumPrefix + "/launch_app", HttpMethod.POST));
 
-    String networkConditions = chromiumPrefix + "/network_conditions";
-    mappings.put(ChromiumDriverCommand.GET_NETWORK_CONDITIONS,
-      new CommandInfo(networkConditions, HttpMethod.GET));
-    mappings.put(ChromiumDriverCommand.SET_NETWORK_CONDITIONS,
-      new CommandInfo(networkConditions, HttpMethod.POST));
-    mappings.put(ChromiumDriverCommand.DELETE_NETWORK_CONDITIONS,
-      new CommandInfo(networkConditions, HttpMethod.DELETE));
+    mappings.putAll(new AddHasNetworkConditions().getAdditionalCommands());
 
     mappings.put( ChromiumDriverCommand.EXECUTE_CDP_COMMAND,
       new CommandInfo(vendorPrefix + "/cdp/execute", HttpMethod.POST));

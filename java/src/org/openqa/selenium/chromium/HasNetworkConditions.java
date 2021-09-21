@@ -17,21 +17,29 @@
 
 package org.openqa.selenium.chromium;
 
+import org.openqa.selenium.Beta;
+
 /**
- * Constants for the ChromiumDriver specific command IDs.
+ * Used by classes to indicate that they can install and uninstall browser extensions on the fly.
  */
-final class ChromiumDriverCommand {
-  private ChromiumDriverCommand() {}
+@Beta
+public interface HasNetworkConditions {
 
-  static final String LAUNCH_APP = "launchApp";
-  static final String EXECUTE_CDP_COMMAND = "executeCdpCommand";
+  /**
+   * Gets map of network conditions.
+   * These have to be set before they can be retrieved.
+   *
+   * @return the current network condition values.
+   */
+  ChromiumNetworkConditions getNetworkConditions();
 
-  // Cast Media Router APIs
-  static final String GET_CAST_SINKS = "getCastSinks";
-  static final String SET_CAST_SINK_TO_USE = "selectCastSink";
-  static final String START_CAST_TAB_MIRRORING = "startCastTabMirroring";
-  static final String GET_CAST_ISSUE_MESSAGE = "getCastIssueMessage";
-  static final String STOP_CASTING = "stopCasting";
+  /**
+   * Set network limitations
+   *
+   * @param networkConditions object containing valid network condition settings.
+   */
+  void setNetworkConditions(ChromiumNetworkConditions networkConditions);
 
-  static final String SET_PERMISSION = "setPermission";
+  void deleteNetworkConditions();
+
 }

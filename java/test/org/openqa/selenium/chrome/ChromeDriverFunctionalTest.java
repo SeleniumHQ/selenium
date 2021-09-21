@@ -18,14 +18,22 @@
 package org.openqa.selenium.chrome;
 
 import org.junit.Test;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.chromium.ChromiumDriver;
-import org.openqa.selenium.testing.Ignore;
+import org.openqa.selenium.chromium.ChromiumNetworkConditions;
+import org.openqa.selenium.chromium.HasNetworkConditions;
+import org.openqa.selenium.remote.Augmenter;
+import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.testing.JUnit4TestBase;
-import org.openqa.selenium.testing.drivers.Browser;
 
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.time.Duration;
 import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
 
 public class ChromeDriverFunctionalTest extends JUnit4TestBase {
 
@@ -78,4 +86,54 @@ public class ChromeDriverFunctionalTest extends JUnit4TestBase {
       + "}));", permission);
     return result.get("state").toString();
   }
+
+  @Test
+  public void shouldAllowChromiumToManageNetworkConditions() {
+    driver = (ChromiumDriver) super.driver;
+
+    ChromiumNetworkConditions networkConditions = new ChromiumNetworkConditions();
+    networkConditions.setLatency(Duration.ofMillis(200));
+
+      driver.setNetworkConditions(networkConditions);
+      assertThat(driver.getNetworkConditions().getLatency()).isEqualTo(Duration.ofMillis(200));
+
+      driver.deleteNetworkConditions();
+
+      try {
+        driver.getNetworkConditions();
+        fail("If Network Conditions were deleted, should not be able to get Network Conditions");
+      } catch (WebDriverException e) {
+        if (!e.getMessage().contains("network conditions must be set before it can be retrieved")) {
+          throw e;
+        }
+      }
+  }
+
+  @Test
+  public void shouldAllowRemoteWebDriverToAugmentHasNetworkConditions() throws MalformedURLException {
+    WebDriver driver = new RemoteWebDriver(new URL("http://localhost:4444/"), new ChromeOptions());
+    WebDriver augmentedDriver = new Augmenter().augment(driver);
+
+    ChromiumNetworkConditions networkConditions = new ChromiumNetworkConditions();
+    networkConditions.setLatency(Duration.ofMillis(200));
+
+    try {
+      ((HasNetworkConditions) augmentedDriver).setNetworkConditions(networkConditions);
+      assertThat(((HasNetworkConditions) augmentedDriver).getNetworkConditions().getLatency()).isEqualTo(Duration.ofMillis(200));
+
+      ((HasNetworkConditions) augmentedDriver).deleteNetworkConditions();
+
+      try {
+        ((HasNetworkConditions) augmentedDriver).getNetworkConditions();
+        fail("If Network Conditions were deleted, should not be able to get Network Conditions");
+      } catch (WebDriverException e) {
+        if (!e.getMessage().contains("network conditions must be set before it can be retrieved")) {
+          throw e;
+        }
+      }
+    } finally {
+      driver.quit();
+    }
+  }
+
 }
