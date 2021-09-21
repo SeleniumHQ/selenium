@@ -144,8 +144,9 @@ public class FirefoxDriver extends RemoteWebDriver
 
     private static Map<String, CommandInfo> getExtraCommands() {
       return ImmutableMap.<String, CommandInfo>builder()
-        .putAll(new AddHasFullPageScreenshot().getAdditionalCommands())
+        .putAll(new AddHasContext().getAdditionalCommands())
         .putAll(new AddHasExtensions().getAdditionalCommands())
+        .putAll(new AddHasFullPageScreenshot().getAdditionalCommands())
         .build();
     }
   }
