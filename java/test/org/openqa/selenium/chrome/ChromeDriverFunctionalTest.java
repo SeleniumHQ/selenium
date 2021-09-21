@@ -22,6 +22,7 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.chromium.ChromiumDriver;
 import org.openqa.selenium.chromium.ChromiumNetworkConditions;
+import org.openqa.selenium.chromium.HasCasting;
 import org.openqa.selenium.chromium.HasNetworkConditions;
 import org.openqa.selenium.remote.Augmenter;
 import org.openqa.selenium.remote.RemoteWebDriver;
@@ -30,6 +31,7 @@ import org.openqa.selenium.testing.JUnit4TestBase;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.time.Duration;
+import java.util.ArrayList;
 import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -85,6 +87,47 @@ public class ChromeDriverFunctionalTest extends JUnit4TestBase {
       + "name: arguments[0]"
       + "}));", permission);
     return result.get("state").toString();
+  }
+
+  @Test
+  public void shouldCast() throws InterruptedException {
+    driver = (ChromiumDriver) super.driver;
+
+    // Does not get list the first time it is called
+    driver.getCastSinks();
+    Thread.sleep(1500);
+    ArrayList<Map<String, String>> castSinks = driver.getCastSinks();
+
+    // Can not call these commands if there are no sinks available
+    if (castSinks.size() > 0) {
+      String deviceName = castSinks.get(0).get("name");
+
+      driver.startTabMirroring(deviceName);
+      driver.stopCasting(deviceName);
+    }
+  }
+
+  @Test
+  public void shouldAllowRemoteWebDriverToAugmentHasCasting() throws InterruptedException, MalformedURLException {
+    WebDriver driver = new RemoteWebDriver(new URL("http://localhost:4444/"), new ChromeOptions());
+    WebDriver augmentedDriver = new Augmenter().augment(driver);
+
+    try {
+      // Does not get list the first time it is called
+      ((HasCasting) augmentedDriver).getCastSinks();
+      Thread.sleep(1000);
+      ArrayList<Map<String, String>> castSinks = ((HasCasting) augmentedDriver).getCastSinks();
+
+      // Can not call these commands if there are no sinks available
+      if (castSinks.size() > 0) {
+        String deviceName = castSinks.get(0).get("name");
+
+        ((HasCasting) augmentedDriver).startTabMirroring(deviceName);
+        ((HasCasting) augmentedDriver).stopCasting(deviceName);
+      }
+    } finally {
+      driver.quit();
+    }
   }
 
   @Test

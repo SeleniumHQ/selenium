@@ -55,6 +55,7 @@ import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.mobile.RemoteNetworkConnection;
 
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Predicate;
@@ -73,7 +74,8 @@ public class ChromiumDriver extends RemoteWebDriver implements
   LocationContext,
   NetworkConnection,
   WebStorage,
-  HasNetworkConditions {
+  HasNetworkConditions,
+  HasCasting {
 
   private static final Logger LOG = Logger.getLogger(ChromiumDriver.class.getName());
 
@@ -83,6 +85,7 @@ public class ChromiumDriver extends RemoteWebDriver implements
   private final TouchScreen touchScreen;
   private final RemoteNetworkConnection networkConnection;
   private final HasNetworkConditions networkConditions;
+  protected HasCasting casting;
   private final Optional<Connection> connection;
   private final Optional<DevTools> devTools;
 
@@ -223,26 +226,24 @@ public class ChromiumDriver extends RemoteWebDriver implements
     return devTools;
   }
 
-  public String getCastSinks() {
-    Object response = getExecuteMethod().execute(ChromiumDriverCommand.GET_CAST_SINKS, null);
-    return response.toString();
+  public ArrayList<Map<String, String>> getCastSinks() {
+    return casting.getCastSinks();
   }
 
   public String getCastIssueMessage() {
-    Object response = getExecuteMethod().execute(ChromiumDriverCommand.GET_CAST_ISSUE_MESSAGE, null);
-    return response.toString();
+    return casting.getCastIssueMessage();
   }
 
   public void selectCastSink(String deviceName) {
-    getExecuteMethod().execute(ChromiumDriverCommand.SET_CAST_SINK_TO_USE, ImmutableMap.of("sinkName", deviceName));
+    casting.selectCastSink(deviceName);
   }
 
   public void startTabMirroring(String deviceName) {
-    getExecuteMethod().execute(ChromiumDriverCommand.START_CAST_TAB_MIRRORING, ImmutableMap.of("sinkName", deviceName));
+    casting.startTabMirroring(deviceName);
   }
 
   public void stopCasting(String deviceName) {
-    getExecuteMethod().execute(ChromiumDriverCommand.STOP_CASTING, ImmutableMap.of("sinkName", deviceName));
+    casting.stopCasting(deviceName);
   }
 
   public void setPermission(String name, String value) {

@@ -34,12 +34,14 @@ import static java.util.Collections.unmodifiableMap;
  */
 public class ChromiumDriverCommandExecutor extends DriverCommandExecutor {
 
-  private static Map<String, CommandInfo> buildChromiumCommandMappings(String vendorKeyword) {
+  private static Map<String, CommandInfo> buildChromiumCommandMappings(String vendorKeyword, Map<String, CommandInfo> extraCommands) {
     String sessionPrefix = "/session/:sessionId/";
     String chromiumPrefix = sessionPrefix + "chromium";
     String vendorPrefix = sessionPrefix + vendorKeyword;
 
     HashMap<String, CommandInfo> mappings = new HashMap<>();
+
+    mappings.putAll(extraCommands);
 
     mappings.put(ChromiumDriverCommand.LAUNCH_APP,
       new CommandInfo(chromiumPrefix + "/launch_app", HttpMethod.POST));
@@ -49,26 +51,13 @@ public class ChromiumDriverCommandExecutor extends DriverCommandExecutor {
     mappings.put( ChromiumDriverCommand.EXECUTE_CDP_COMMAND,
       new CommandInfo(vendorPrefix + "/cdp/execute", HttpMethod.POST));
 
-    // Cast / Media Router APIs
-    String cast = vendorPrefix + "/cast";
-    mappings.put(ChromiumDriverCommand.GET_CAST_SINKS,
-      new CommandInfo(cast + "/get_sinks", HttpMethod.GET));
-    mappings.put(ChromiumDriverCommand.SET_CAST_SINK_TO_USE,
-      new CommandInfo(cast + "/set_sink_to_use", HttpMethod.POST));
-    mappings.put(ChromiumDriverCommand.START_CAST_TAB_MIRRORING,
-      new CommandInfo(cast + "/start_tab_mirroring", HttpMethod.POST));
-    mappings.put(ChromiumDriverCommand.GET_CAST_ISSUE_MESSAGE,
-      new CommandInfo(cast + "/get_issue_message", HttpMethod.GET));
-    mappings.put(ChromiumDriverCommand.STOP_CASTING,
-      new CommandInfo(cast + "/stop_casting", HttpMethod.POST));
-
     mappings.put(ChromiumDriverCommand.SET_PERMISSION,
       new CommandInfo(sessionPrefix + "/permissions", HttpMethod.POST));
 
     return unmodifiableMap(mappings);
   }
 
-  public ChromiumDriverCommandExecutor(String vendorPrefix, DriverService service) {
-    super(service, buildChromiumCommandMappings(vendorPrefix));
+  public ChromiumDriverCommandExecutor(String vendorPrefix, DriverService service, Map<String, CommandInfo> extraCommands) {
+    super(service, buildChromiumCommandMappings(vendorPrefix, extraCommands));
   }
 }
