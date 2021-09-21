@@ -74,7 +74,7 @@ import static org.openqa.selenium.remote.CapabilityType.PROXY;
  * </pre>
  */
 public class FirefoxDriver extends RemoteWebDriver
-  implements WebStorage, HasExtensions, HasDevTools {
+  implements WebStorage, HasExtensions, HasFullPageScreenshot, HasDevTools {
 
   public static final class SystemProperty {
 
@@ -280,6 +280,7 @@ public class FirefoxDriver extends RemoteWebDriver
    * @return Object in which is stored information about the screenshot.
    * @throws WebDriverException on failure.
    */
+  @Override
   public <X> X getFullPageScreenshotAs(OutputType<X> outputType) throws WebDriverException {
     return fullPageScreenshot.getFullPageScreenshotAs(outputType);
   }
