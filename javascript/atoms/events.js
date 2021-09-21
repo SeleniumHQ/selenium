@@ -351,7 +351,7 @@ bot.events.KeyboardEventFactory_.prototype.create = function (target, opt_args) 
   var doc = goog.dom.getOwnerDocument(target);
   var event;
 
-  if (goog.userAgent.GECKO) {
+  if (goog.userAgent.GECKO && !goog.isEngineVersion(93)) {
     var view = goog.dom.getWindow(doc);
     var keyCode = args.charCode ? 0 : args.keyCode;
     event = doc.createEvent('KeyboardEvent');
