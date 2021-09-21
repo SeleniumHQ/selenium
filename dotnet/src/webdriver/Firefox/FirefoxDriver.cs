@@ -300,6 +300,15 @@ namespace OpenQA.Selenium.Firefox
             return this.devToolsSession;
         }
 
+        public void TerminateDevToolsSession()
+        {
+            if (this.devToolsSession != null)
+            {
+                this.devToolsSession.Dispose();
+                this.devToolsSession = null;
+            }
+        }
+
         /// <summary>
         /// In derived classes, the <see cref="PrepareEnvironment"/> method prepares the environment for test execution.
         /// </summary>

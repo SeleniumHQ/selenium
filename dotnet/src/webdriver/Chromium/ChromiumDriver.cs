@@ -216,6 +216,15 @@ namespace OpenQA.Selenium.Chromium
             return this.devToolsSession;
         }
 
+        public void TerminateDevToolsSession()
+        {
+            if (this.devToolsSession != null)
+            {
+                this.devToolsSession.Dispose();
+                this.devToolsSession = null;
+            }
+        }
+
         protected override void Dispose(bool disposing)
         {
             if (disposing)
