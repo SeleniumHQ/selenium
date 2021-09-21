@@ -600,6 +600,60 @@ public class FirefoxDriverTest extends JUnit4TestBase {
     }
   }
 
+  @Test
+  public void shouldSetContext() {
+    FirefoxOptions options = new FirefoxOptions();
+    String dir = "foo/bar";
+    options.addPreference("browser.download.dir", dir);
+
+    FirefoxDriver driver = new FirefoxDriver(options);
+
+    try {
+      driver.setContext(FirefoxCommandContext.CHROME);
+      String result = (String) driver.executeScript("return Services.prefs.getStringPref('browser.download.dir')");
+      assertThat(result).isEqualTo(dir);
+    } finally {
+      driver.quit();
+    }
+  }
+
+  @Test
+  public void shouldAllowRemoteWebDriverBuilderToUseHasContext() throws MalformedURLException {
+    FirefoxOptions options = new FirefoxOptions();
+    String dir = "foo/bar";
+    options.addPreference("browser.download.dir", dir);
+    WebDriver driver = new RemoteWebDriver(new URL("http://localhost:4444/"), options);
+    WebDriver augmentedDriver = new Augmenter().augment(driver);
+
+    try {
+      ((HasContext) augmentedDriver).setContext(FirefoxCommandContext.CHROME);
+      String result = (String) ((JavascriptExecutor) driver).executeScript("return Services.prefs.getStringPref('browser.download.dir')");
+      assertThat(result).isEqualTo(dir);
+    } finally {
+      driver.quit();
+    }
+  }
+
+  @Test
+  public void shouldAllowRemoteWebDriverToAugmenterHasContext() {
+    FirefoxOptions options = new FirefoxOptions();
+    String dir = "foo/bar";
+    options.addPreference("browser.download.dir", dir);
+
+    WebDriver driver = RemoteWebDriver.builder()
+      .oneOf(options)
+      .address("http://localhost:4444/")
+      .build();
+
+    try {
+      ((HasContext) driver).setContext(FirefoxCommandContext.CHROME);
+      String result = (String) ((JavascriptExecutor) driver).executeScript("return Services.prefs.getStringPref('browser.download.dir')");
+      assertThat(result).isEqualTo(dir);
+    } finally {
+      driver.quit();
+    }
+  }
+
   private static class CustomFirefoxProfile extends FirefoxProfile {}
 
 }

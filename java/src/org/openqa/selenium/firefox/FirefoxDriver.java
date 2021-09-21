@@ -74,7 +74,7 @@ import static org.openqa.selenium.remote.CapabilityType.PROXY;
  * </pre>
  */
 public class FirefoxDriver extends RemoteWebDriver
-  implements WebStorage, HasExtensions, HasFullPageScreenshot, HasDevTools {
+  implements WebStorage, HasExtensions, HasFullPageScreenshot, HasContext, HasDevTools {
 
   public static final class SystemProperty {
 
@@ -155,6 +155,7 @@ public class FirefoxDriver extends RemoteWebDriver
   private final RemoteWebStorage webStorage;
   private final HasExtensions extensions;
   private final HasFullPageScreenshot fullPageScreenshot;
+  private final HasContext context;
   private final Optional<URI> cdpUri;
   private DevTools devTools;
 
@@ -197,6 +198,7 @@ public class FirefoxDriver extends RemoteWebDriver
     webStorage = new RemoteWebStorage(getExecuteMethod());
     extensions = new AddHasExtensions().getImplementation(getCapabilities(), getExecuteMethod());
     fullPageScreenshot = new AddHasFullPageScreenshot().getImplementation(getCapabilities(), getExecuteMethod());
+    context = new AddHasContext().getImplementation(getCapabilities(), getExecuteMethod());
 
     Capabilities capabilities = super.getCapabilities();
     HttpClient.Factory clientFactory = HttpClient.Factory.createDefault();
@@ -283,6 +285,10 @@ public class FirefoxDriver extends RemoteWebDriver
   @Override
   public <X> X getFullPageScreenshotAs(OutputType<X> outputType) throws WebDriverException {
     return fullPageScreenshot.getFullPageScreenshotAs(outputType);
+  }
+
+  @Override public void setContext(FirefoxCommandContext commandContext) {
+    context.setContext(commandContext);
   }
 
   private static Boolean forceMarionetteFromSystemProperty() {
