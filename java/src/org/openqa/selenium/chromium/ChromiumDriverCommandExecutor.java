@@ -43,8 +43,8 @@ public class ChromiumDriverCommandExecutor extends DriverCommandExecutor {
     return ImmutableMap.<String, CommandInfo>builder()
       .putAll(commands)
       .putAll(new AddHasNetworkConditions().getAdditionalCommands())
+      .putAll(new AddHasPermissions().getAdditionalCommands())
       .put(ChromiumDriverCommand.LAUNCH_APP, new CommandInfo("/session/:sessionId/chromium/launch_app", HttpMethod.POST))
-      .put(ChromiumDriverCommand.SET_PERMISSION, new CommandInfo("/session/:sessionId/permissions", HttpMethod.POST))
       .build();
   }
 }

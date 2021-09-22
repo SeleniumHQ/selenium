@@ -76,7 +76,8 @@ public class ChromiumDriver extends RemoteWebDriver implements
   WebStorage,
   HasNetworkConditions,
   HasCasting,
-  HasCdp {
+  HasCdp,
+  HasPermissions {
 
   private static final Logger LOG = Logger.getLogger(ChromiumDriver.class.getName());
 
@@ -86,6 +87,7 @@ public class ChromiumDriver extends RemoteWebDriver implements
   private final TouchScreen touchScreen;
   private final RemoteNetworkConnection networkConnection;
   private final HasNetworkConditions networkConditions;
+  private final HasPermissions permissions;
   protected HasCasting casting;
   protected HasCdp cdp;
   private final Optional<Connection> connection;
@@ -95,6 +97,7 @@ public class ChromiumDriver extends RemoteWebDriver implements
     super(commandExecutor, capabilities);
     locationContext = new RemoteLocationContext(getExecuteMethod());
     webStorage = new RemoteWebStorage(getExecuteMethod());
+    permissions = new AddHasPermissions().getImplementation(getCapabilities(), getExecuteMethod());
     touchScreen = new RemoteTouchScreen(getExecuteMethod());
     networkConnection = new RemoteNetworkConnection(getExecuteMethod());
     networkConditions = new AddHasNetworkConditions().getImplementation(getCapabilities(), getExecuteMethod());
@@ -235,8 +238,7 @@ public class ChromiumDriver extends RemoteWebDriver implements
   }
 
   public void setPermission(String name, String value) {
-    getExecuteMethod().execute(ChromiumDriverCommand.SET_PERMISSION,
-      ImmutableMap.of("descriptor", ImmutableMap.of("name", name), "state", value));
+    permissions.setPermission(name, value);
   }
 
   @Override public ChromiumNetworkConditions getNetworkConditions() {

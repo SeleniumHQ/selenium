@@ -18,6 +18,7 @@
 package org.openqa.selenium.chrome;
 
 import org.junit.Test;
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.chromium.ChromiumDriver;
@@ -25,6 +26,7 @@ import org.openqa.selenium.chromium.ChromiumNetworkConditions;
 import org.openqa.selenium.chromium.HasCasting;
 import org.openqa.selenium.chromium.HasCdp;
 import org.openqa.selenium.chromium.HasNetworkConditions;
+import org.openqa.selenium.chromium.HasPermissions;
 import org.openqa.selenium.remote.Augmenter;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.testing.JUnit4TestBase;
@@ -62,6 +64,26 @@ public class ChromeDriverFunctionalTest extends JUnit4TestBase {
   }
 
   @Test
+  public void shouldAllowRemoteWebDriverToAugmentHasPermissions() throws MalformedURLException {
+    WebDriver driver = new RemoteWebDriver(new URL("http://localhost:4444/"), new ChromeOptions());
+    WebDriver augmentedDriver = new Augmenter().augment(driver);
+
+    try {
+      driver.get(pages.clicksPage);
+      assertThat(checkPermission(driver, CLIPBOARD_READ)).isEqualTo("prompt");
+      assertThat(checkPermission(driver, CLIPBOARD_WRITE)).isEqualTo("granted");
+
+      ((HasPermissions) augmentedDriver).setPermission(CLIPBOARD_READ, "denied");
+      ((HasPermissions) augmentedDriver).setPermission(CLIPBOARD_WRITE, "prompt");
+
+      assertThat(checkPermission(driver, CLIPBOARD_READ)).isEqualTo("denied");
+      assertThat(checkPermission(driver, CLIPBOARD_WRITE)).isEqualTo("prompt");
+    } finally {
+      driver.quit();
+    }
+  }
+
+  @Test
   public void canSetPermissionHeadless() {
     ChromeOptions options = new ChromeOptions();
     options.setHeadless(true);
@@ -80,9 +102,9 @@ public class ChromeDriverFunctionalTest extends JUnit4TestBase {
     assertThat(checkPermission(driver, CLIPBOARD_WRITE)).isEqualTo("granted");
   }
 
-  public String checkPermission(ChromiumDriver driver, String permission){
+  public String checkPermission(WebDriver driver, String permission){
     @SuppressWarnings("unchecked")
-    Map<String, Object> result = (Map<String, Object>) driver.executeAsyncScript(
+    Map<String, Object> result = (Map<String, Object>) ((JavascriptExecutor) driver).executeAsyncScript(
       "callback = arguments[arguments.length - 1];"
       + "callback(navigator.permissions.query({"
       + "name: arguments[0]"
