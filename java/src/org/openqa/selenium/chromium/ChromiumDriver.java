@@ -17,7 +17,6 @@
 
 package org.openqa.selenium.chromium;
 
-import com.google.common.collect.ImmutableMap;
 import org.openqa.selenium.BuildInfo;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.Credentials;
@@ -207,6 +206,7 @@ public class ChromiumDriver extends RemoteWebDriver implements
     launch.launchApp(id);
   }
 
+  @Override
   public Map<String, Object> executeCdpCommand(String commandName, Map<String, Object> parameters) {
     return cdp.executeCdpCommand(commandName, parameters);
   }
@@ -253,7 +253,6 @@ public class ChromiumDriver extends RemoteWebDriver implements
 
   @Override
   public void setNetworkConditions(ChromiumNetworkConditions networkConditions) {
-    Require.nonNull("Network Conditions", networkConditions);
     this.networkConditions.setNetworkConditions(networkConditions);
   }
 

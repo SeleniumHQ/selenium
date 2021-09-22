@@ -37,6 +37,7 @@ public interface HasExtensions {
 
   /**
    * Uninstall the extension by the given identifier.
+   * This value can be found in the extension's manifest, and typically ends with "@mozilla.org".
    *
    * @param extensionId The unique extension identifier returned by {{@link #installExtension(Path)}}
    */

@@ -65,9 +65,9 @@ public class EdgeOptionsTest {
   }
 
   @Test
-  public void canAddExtensions() {
+  public void canAddExtensions() throws IOException {
     EdgeOptions options = new EdgeOptions();
-    File tmpDir = Files.createTempDir();
+    File tmpDir = File.createTempFile("webdriver", "tmp");
     tmpDir.deleteOnExit();
     File ext1 = createTempFile(tmpDir, "ext1 content");
     File ext2 = createTempFile(tmpDir, "ext2 content");

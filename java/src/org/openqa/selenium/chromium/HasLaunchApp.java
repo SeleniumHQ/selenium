@@ -19,6 +19,9 @@ package org.openqa.selenium.chromium;
 
 import org.openqa.selenium.Beta;
 
+/**
+ * Used by classes to indicate that they can launch a Chromium app.
+ */
 @Beta
 public interface HasLaunchApp {
 

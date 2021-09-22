@@ -19,6 +19,7 @@ package org.openqa.selenium.chromium;
 
 import com.google.common.collect.ImmutableMap;
 import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.AdditionalHttpCommands;
 import org.openqa.selenium.remote.AugmenterProvider;
 import org.openqa.selenium.remote.CommandInfo;
@@ -51,24 +52,29 @@ public abstract class AddHasCasting implements AugmenterProvider<HasCasting>, Ad
   public HasCasting getImplementation(Capabilities capabilities, ExecuteMethod executeMethod) {
     return new HasCasting() {
       @Override public ArrayList<Map<String, String>> getCastSinks() {
-        return (ArrayList<Map<String, String>>) executeMethod.execute(ChromiumDriverCommand.GET_CAST_SINKS, null);
+        return (ArrayList<Map<String, String>>) executeMethod.execute(GET_CAST_SINKS, null);
       }
 
       @Override public void selectCastSink(String deviceName) {
-        executeMethod.execute(ChromiumDriverCommand.SET_CAST_SINK_TO_USE, ImmutableMap.of("sinkName", deviceName));
+        Require.nonNull("Device Name", deviceName);
+
+        executeMethod.execute(SET_CAST_SINK_TO_USE, ImmutableMap.of("sinkName", deviceName));
       }
 
       @Override public void startTabMirroring(String deviceName) {
-        executeMethod.execute(ChromiumDriverCommand.START_CAST_TAB_MIRRORING, ImmutableMap.of("sinkName", deviceName));
+        Require.nonNull("Device Name", deviceName);
+
+        executeMethod.execute(START_CAST_TAB_MIRRORING, ImmutableMap.of("sinkName", deviceName));
       }
 
       @Override public String getCastIssueMessage() {
-        Object response = executeMethod.execute(ChromiumDriverCommand.GET_CAST_ISSUE_MESSAGE, null);
-        return response.toString();
+        return executeMethod.execute(GET_CAST_ISSUE_MESSAGE, null).toString();
       }
 
       @Override public void stopCasting(String deviceName) {
-        executeMethod.execute(ChromiumDriverCommand.STOP_CASTING, ImmutableMap.of("sinkName", deviceName));
+        Require.nonNull("Device Name", deviceName);
+
+        executeMethod.execute(STOP_CASTING, ImmutableMap.of("sinkName", deviceName));
       }
     };
   }

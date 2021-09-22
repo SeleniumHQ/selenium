@@ -20,6 +20,7 @@ package org.openqa.selenium.chromium;
 import com.google.auto.service.AutoService;
 import com.google.common.collect.ImmutableMap;
 import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.AdditionalHttpCommands;
 import org.openqa.selenium.remote.AugmenterProvider;
 import org.openqa.selenium.remote.CommandInfo;
@@ -80,6 +81,8 @@ public class AddHasNetworkConditions implements AugmenterProvider<HasNetworkCond
 
       @Override
       public void setNetworkConditions(ChromiumNetworkConditions networkConditions) {
+        Require.nonNull("Network Conditions", networkConditions);
+
         Map<String, Object> conditions = ImmutableMap.of(ChromiumNetworkConditions.OFFLINE, networkConditions.getOffline(),
           ChromiumNetworkConditions.LATENCY, networkConditions.getLatency().toMillis(),
           ChromiumNetworkConditions.DOWNLOAD_THROUGHPUT, networkConditions.getDownloadThroughput(),

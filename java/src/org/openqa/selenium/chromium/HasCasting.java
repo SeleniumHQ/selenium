@@ -23,7 +23,7 @@ import java.util.ArrayList;
 import java.util.Map;
 
 /**
- * Used by classes to indicate that they can install and uninstall browser extensions on the fly.
+ * Used by classes to indicate that they can cast devices to available sink targets.
  */
 @Beta
 public interface HasCasting {

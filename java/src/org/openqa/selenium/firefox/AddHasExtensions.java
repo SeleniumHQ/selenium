@@ -20,6 +20,7 @@ package org.openqa.selenium.firefox;
 import com.google.auto.service.AutoService;
 import com.google.common.collect.ImmutableMap;
 import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.AdditionalHttpCommands;
 import org.openqa.selenium.remote.AugmenterProvider;
 import org.openqa.selenium.remote.CommandInfo;
@@ -40,7 +41,7 @@ public class AddHasExtensions implements AugmenterProvider<HasExtensions>, Addit
   public static final String UNINSTALL_EXTENSION = "uninstallExtension";
 
   private static final Map<String, CommandInfo> COMMANDS = ImmutableMap.of(
-    INSTALL_EXTENSION, new CommandInfo("/session/:sessionId/moz/addon/install",HttpMethod.POST),
+    INSTALL_EXTENSION, new CommandInfo("/session/:sessionId/moz/addon/install", HttpMethod.POST),
     UNINSTALL_EXTENSION, new CommandInfo("/session/:sessionId/moz/addon/uninstall", HttpMethod.POST));
 
   @Override
@@ -63,15 +64,18 @@ public class AddHasExtensions implements AugmenterProvider<HasExtensions>, Addit
     return new HasExtensions() {
       @Override
       public String installExtension(Path path) {
+        Require.nonNull("Extension Path", path);
+
         return (String) executeMethod.execute(
           INSTALL_EXTENSION,
           ImmutableMap.of("path", path.toAbsolutePath().toString(), "temporary", false));
-
       }
 
       @Override
       public void uninstallExtension(String extensionId) {
-        executeMethod.execute(UNINSTALL_EXTENSION, singletonMap("id", extensionId));
+        Require.nonNull("Extension ID", extensionId);
+
+        executeMethod.execute(UNINSTALL_EXTENSION, ImmutableMap.of("id", extensionId));
       }
     };
   }

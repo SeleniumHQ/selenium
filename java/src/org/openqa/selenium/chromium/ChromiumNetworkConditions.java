@@ -52,48 +52,54 @@ public class ChromiumNetworkConditions {
   }
 
   /**
+   *  The current simulated latency of the connection.
    *
-   * @return
+   * @return amount of latency, typically a Duration of milliseconds.
    */
   public Duration getLatency() {
     return latency;
   }
 
   /**
+   *  Sets the simulated latency of the connection.
    *
-   * @param latency
+   * @param latency amount of latency, typically a Duration of millisceonds.
    */
   public void setLatency(Duration latency) {
     this.latency = latency;
   }
 
   /**
+   * The current throughput of the network connection in kb/second for downloading.
    *
-   * @return
+   * @return the current download throughput in kb/second.
    */
   public Number getDownloadThroughput() {
     return downloadThroughput;
   }
 
   /**
+   * ets the throughput of the network connection in kb/second for downloading.
    *
-   * @param downloadThroughput
+   * @param downloadThroughput thoughput in kb/second
    */
   public void setDownloadThroughput(Number downloadThroughput) {
     this.downloadThroughput = downloadThroughput;
   }
 
   /**
+   * The current throughput of the network connection in kb/second for uploading.
    *
-   * @return
+   * @return the current upload throughput in kb/second.
    */
   public Number getUploadThroughput() {
     return uploadThroughput;
   }
 
   /**
+   * ets the throughput of the network connection in kb/second for uploading.
    *
-   * @param uploadThroughput
+   * @param uploadThroughput thoughput in kb/second
    */
   public void setUploadThroughput(Number uploadThroughput) {
     this.uploadThroughput = uploadThroughput;

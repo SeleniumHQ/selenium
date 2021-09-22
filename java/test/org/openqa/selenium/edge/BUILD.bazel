@@ -18,11 +18,13 @@ java_selenium_test_suite(
         "//java/test/org/openqa/selenium/build",
         "//java/test/org/openqa/selenium/testing:annotations",
         "//java/test/org/openqa/selenium/testing:test-base",
+        artifact("com.google.guava:guava"),
         artifact("junit:junit"),
         artifact("org.assertj:assertj-core"),
+        artifact("org.mockito:mockito-core"),
     ],
     javacopts = [
-            "--release",
-            "11",
-        ],
+        "--release",
+        "11",
+    ],
 )

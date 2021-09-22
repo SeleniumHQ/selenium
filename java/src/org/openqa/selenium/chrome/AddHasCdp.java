@@ -36,7 +36,7 @@ public class AddHasCdp extends org.openqa.selenium.chromium.AddHasCdp {
   @Override
   public Map<String, CommandInfo> getAdditionalCommands() {
     return ImmutableMap.of(
-      EXECUTE_CDP, new CommandInfo("session/:sessionId/goog//cdp/execute", HttpMethod.POST));
+      EXECUTE_CDP, new CommandInfo("session/:sessionId/goog/cdp/execute", HttpMethod.POST));
   }
 
   @Override

@@ -111,10 +111,10 @@ public class SafariDriver extends RemoteWebDriver implements HasPermissions, Has
     private static Map<String, CommandInfo> getExtraCommands() {
       return ImmutableMap.<String, CommandInfo>builder()
         .putAll(new AddHasPermissions().getAdditionalCommands())
+        .putAll(new AddHasDebugger().getAdditionalCommands())
         .build();
     }
   }
-
 
   @Override
   public void setFileDetector(FileDetector detector) {

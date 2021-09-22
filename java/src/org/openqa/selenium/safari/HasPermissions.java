@@ -21,10 +21,15 @@ import org.openqa.selenium.Beta;
 
 import java.util.Map;
 
+/**
+ * Used by classes to indicate that they can take adjust permissions.
+ */
 @Beta
 public interface HasPermissions {
 
   /**
+   * Set permission on the browser.
+   * The only supported permission at this time is "getUserMedia".
    *
    * @param permission the name of the item to set permission on.
    * @param value whether the permission has been granted.

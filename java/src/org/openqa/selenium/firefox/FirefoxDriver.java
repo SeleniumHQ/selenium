@@ -265,13 +265,11 @@ public class FirefoxDriver extends RemoteWebDriver
 
   @Override
   public String installExtension(Path path) {
-    Require.nonNull("Path", path);
     return extensions.installExtension(path);
   }
 
   @Override
   public void uninstallExtension(String extensionId) {
-    Require.nonNull("Extension ID", extensionId);
     extensions.uninstallExtension(extensionId);
   }
 

@@ -32,7 +32,7 @@ import java.util.function.Predicate;
 public class AddHasCdp extends org.openqa.selenium.chromium.AddHasCdp {
 
   private static final Map<String, CommandInfo> COMMANDS = ImmutableMap.of(
-    EXECUTE_CDP, new CommandInfo("session/:sessionId/ms//cdp/execute", HttpMethod.POST));
+    EXECUTE_CDP, new CommandInfo("session/:sessionId/ms/cdp/execute", HttpMethod.POST));
 
   @Override
   public Map<String, CommandInfo> getAdditionalCommands() {

@@ -19,14 +19,15 @@ package org.openqa.selenium.chromium;
 
 import org.openqa.selenium.Beta;
 
-import java.util.Map;
-
+/**
+ * Used by classes to indicate that they can adjust permissions compatible items.
+ */
 @Beta
 public interface HasPermissions {
 
   /**
    *
-   * @param name what permission to set.
+   * @param name what item to set the permission on.
    * @param value what to set the permission to.
    */
   public void setPermission(String name, String value);

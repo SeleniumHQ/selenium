@@ -19,6 +19,9 @@ package org.openqa.selenium.safari;
 
 import org.openqa.selenium.Beta;
 
+/**
+ * Used by classes to indicate that they can open the browser debugger.
+ */
 @Beta
 public interface HasDebugger {
 

@@ -20,6 +20,7 @@ package org.openqa.selenium.firefox;
 import com.google.auto.service.AutoService;
 import com.google.common.collect.ImmutableMap;
 import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.AdditionalHttpCommands;
 import org.openqa.selenium.remote.AugmenterProvider;
 import org.openqa.selenium.remote.CommandInfo;
@@ -59,6 +60,8 @@ public class AddHasContext implements AugmenterProvider<HasContext>, AdditionalH
     return new HasContext() {
       @Override
       public void setContext(FirefoxCommandContext context) {
+        Require.nonNull("Firefox Command Context", context);
+
         executeMethod.execute(
           CONTEXT,
           ImmutableMap.of(CONTEXT, context));

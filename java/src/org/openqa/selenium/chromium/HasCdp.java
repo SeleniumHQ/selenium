@@ -19,17 +19,16 @@ package org.openqa.selenium.chromium;
 
 import org.openqa.selenium.Beta;
 
-import java.util.ArrayList;
 import java.util.Map;
 
 /**
- * Used by classes to indicate that they can install and uninstall browser extensions on the fly.
+ * Used by classes to indicate that they can execute Command DevTools commands.
  */
 @Beta
 public interface HasCdp {
 
   /**
-   * Execute a Chrome Devtools Protocol command and get returned result. The
+   * Execute a Chrome DevTools Protocol command and get returned result. The
    * command and command args should follow
    * <a href="https://chromedevtools.github.io/devtools-protocol/">chrome
    * devtools protocol domains/commands</a>.
@@ -38,7 +37,7 @@ public interface HasCdp {
    *
    * @param commandName the command to execute with Chrome Dev Tools.
    * @param parameters any information needed to execute the Dev Tools command.
-   * @return
+   * @return the name and value of the response.
    */
   public Map<String, Object> executeCdpCommand(String commandName, Map<String, Object> parameters);
 }

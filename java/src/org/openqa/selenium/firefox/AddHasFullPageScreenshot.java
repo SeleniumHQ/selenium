@@ -21,6 +21,7 @@ import com.google.auto.service.AutoService;
 import com.google.common.collect.ImmutableMap;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.OutputType;
+import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.AdditionalHttpCommands;
 import org.openqa.selenium.remote.AugmenterProvider;
 import org.openqa.selenium.remote.CommandInfo;
@@ -60,6 +61,8 @@ public class AddHasFullPageScreenshot<X> implements AugmenterProvider<HasFullPag
     return new HasFullPageScreenshot() {
       @Override
       public <X> X getFullPageScreenshotAs(OutputType<X> outputType) {
+        Require.nonNull("Output Type", outputType);
+
         Object result = executeMethod.execute(FULL_PAGE_SCREENSHOT, null);
 
         if (result instanceof String) {

@@ -20,7 +20,7 @@ package org.openqa.selenium.chromium;
 import org.openqa.selenium.Beta;
 
 /**
- * Used by classes to indicate that they can install and uninstall browser extensions on the fly.
+ * Used by classes to indicate that they can simulate different network conditions.
  */
 @Beta
 public interface HasNetworkConditions {
@@ -40,6 +40,9 @@ public interface HasNetworkConditions {
    */
   void setNetworkConditions(ChromiumNetworkConditions networkConditions);
 
+  /**
+   * Resets the network conditions to the default settings.
+   */
   void deleteNetworkConditions();
 
 }

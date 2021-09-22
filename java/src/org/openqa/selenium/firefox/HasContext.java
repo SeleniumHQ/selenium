@@ -20,7 +20,7 @@ package org.openqa.selenium.firefox;
 import org.openqa.selenium.Beta;
 
 /**
- * Used by classes to indicate that they can install and uninstall browser extensions on the fly.
+ * Used by classes to indicate that they can change the context commands operate in.
  */
 @Beta
 public interface HasContext {
