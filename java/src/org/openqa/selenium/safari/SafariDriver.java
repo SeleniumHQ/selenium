@@ -34,9 +34,10 @@ import java.util.Map;
  *
  * This driver can be configured using the {@link SafariOptions} class.
  */
-public class SafariDriver extends RemoteWebDriver implements HasPermissions{
+public class SafariDriver extends RemoteWebDriver implements HasPermissions, HasDebugger {
 
   private final HasPermissions permissions;
+  private final HasDebugger debugger;
 
   /**
    * Initializes a new SafariDriver} class with default {@link SafariOptions}.
@@ -84,6 +85,7 @@ public class SafariDriver extends RemoteWebDriver implements HasPermissions{
   public SafariDriver(SafariDriverService safariServer, SafariOptions safariOptions) {
     super(new SafariDriverCommandExecutor(safariServer), safariOptions);
     permissions = new AddHasPermissions().getImplementation(getCapabilities(), getExecuteMethod());
+    debugger = new AddHasDebugger().getImplementation(getCapabilities(), getExecuteMethod());
   }
 
   @Override
@@ -94,6 +96,10 @@ public class SafariDriver extends RemoteWebDriver implements HasPermissions{
   @Override
   public Map<String, Boolean> getPermissions() {
     return permissions.getPermissions();
+  }
+
+  @Override public void attachDebugger() {
+    debugger.attachDebugger();
   }
 
   private static class SafariDriverCommandExecutor extends DriverCommandExecutor {

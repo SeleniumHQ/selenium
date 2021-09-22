@@ -31,8 +31,10 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.Duration;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
 import static org.junit.Assume.assumeTrue;
 
 public class SafariDriverTest extends JUnit4TestBase {
@@ -103,6 +105,35 @@ public class SafariDriverTest extends JUnit4TestBase {
       ((HasPermissions) augmentedDriver).setPermissions("getUserMedia", false);
 
       assertThat(((HasPermissions) augmentedDriver).getPermissions().get("getUserMedia")).isEqualTo(false);
+    } finally {
+      driver.quit();
+    }
+  }
+
+  @Test
+  public void canAttachDebugger() {
+    removeDriver();
+
+    SafariOptions options = new SafariOptions();
+    options.setScriptTimeout(Duration.ofSeconds(4));
+    SafariDriver driver = new SafariDriver(options);
+
+    driver.attachDebugger();
+
+    driver.quit();
+  }
+
+  @Test
+  public void shouldAllowRemoteWebDriverToAugmentHasDebugger() throws MalformedURLException {
+    removeDriver();
+
+    WebDriver driver = new RemoteWebDriver(new URL("http://localhost:4444/"), new SafariOptions());
+    WebDriver augmentedDriver = new Augmenter().augment(driver);
+
+    try {
+      ((HasDebugger) augmentedDriver).attachDebugger();
+    } catch (ClassCastException e) {
+      fail("Expected augmented driver to be able to cast to HasDebugger");
     } finally {
       driver.quit();
     }
