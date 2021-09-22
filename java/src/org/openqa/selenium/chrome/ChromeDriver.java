@@ -103,16 +103,18 @@ public class ChromeDriver extends ChromiumDriver {
   public ChromeDriver(ChromeDriverService service, Capabilities capabilities) {
     super(new ChromeDriverCommandExecutor(service), capabilities, ChromeOptions.CAPABILITY);
     casting = new AddHasCasting().getImplementation(getCapabilities(), getExecuteMethod());
+    cdp = new AddHasCdp().getImplementation(getCapabilities(), getExecuteMethod());
   }
 
   private static class ChromeDriverCommandExecutor extends ChromiumDriverCommandExecutor {
     public ChromeDriverCommandExecutor(DriverService service) {
-      super("goog", service, getExtraCommands());
+      super(service, getExtraCommands());
     }
 
     private static Map<String, CommandInfo> getExtraCommands() {
       return ImmutableMap.<String, CommandInfo>builder()
         .putAll(new AddHasCasting().getAdditionalCommands())
+        .putAll(new AddHasCdp().getAdditionalCommands())
         .build();
     }
   }

@@ -21,4 +21,8 @@ java_selenium_test_suite(
         artifact("junit:junit"),
         artifact("org.assertj:assertj-core"),
     ],
+    javacopts = [
+            "--release",
+            "11",
+        ],
 )

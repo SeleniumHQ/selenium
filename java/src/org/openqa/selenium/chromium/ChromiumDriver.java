@@ -75,7 +75,8 @@ public class ChromiumDriver extends RemoteWebDriver implements
   NetworkConnection,
   WebStorage,
   HasNetworkConditions,
-  HasCasting {
+  HasCasting,
+  HasCdp {
 
   private static final Logger LOG = Logger.getLogger(ChromiumDriver.class.getName());
 
@@ -86,6 +87,7 @@ public class ChromiumDriver extends RemoteWebDriver implements
   private final RemoteNetworkConnection networkConnection;
   private final HasNetworkConditions networkConditions;
   protected HasCasting casting;
+  protected HasCdp cdp;
   private final Optional<Connection> connection;
   private final Optional<DevTools> devTools;
 
@@ -203,22 +205,8 @@ public class ChromiumDriver extends RemoteWebDriver implements
     execute(ChromiumDriverCommand.LAUNCH_APP, ImmutableMap.of("id", id));
   }
 
-  /**
-   * Execute a Chrome Devtools Protocol command and get returned result. The
-   * command and command args should follow
-   * <a href="https://chromedevtools.github.io/devtools-protocol/">chrome
-   * devtools protocol domains/commands</a>.
-   */
   public Map<String, Object> executeCdpCommand(String commandName, Map<String, Object> parameters) {
-    Require.nonNull("Command name", commandName);
-    Require.nonNull("Parameters", parameters);
-
-    @SuppressWarnings("unchecked")
-    Map<String, Object> toReturn = (Map<String, Object>) getExecuteMethod().execute(
-      ChromiumDriverCommand.EXECUTE_CDP_COMMAND,
-      ImmutableMap.of("cmd", commandName, "params", parameters));
-
-    return ImmutableMap.copyOf(toReturn);
+    return cdp.executeCdpCommand(commandName, parameters);
   }
 
   @Override

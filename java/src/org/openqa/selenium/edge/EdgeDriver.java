@@ -48,6 +48,7 @@ public class EdgeDriver extends ChromiumDriver {
   public EdgeDriver(EdgeDriverService service, EdgeOptions options) {
     super(new EdgeDriverCommandExecutor(service), Require.nonNull("Driver options", options), EdgeOptions.CAPABILITY);
     casting = new AddHasCasting().getImplementation(getCapabilities(), getExecuteMethod());
+    cdp = new AddHasCdp().getImplementation(getCapabilities(), getExecuteMethod());
   }
 
   @Deprecated
@@ -57,12 +58,13 @@ public class EdgeDriver extends ChromiumDriver {
 
   private static class EdgeDriverCommandExecutor extends ChromiumDriverCommandExecutor {
     public EdgeDriverCommandExecutor(DriverService service) {
-      super("ms", service, getExtraCommands());
+      super(service, getExtraCommands());
     }
 
     private static Map<String, CommandInfo> getExtraCommands() {
       return ImmutableMap.<String, CommandInfo>builder()
         .putAll(new AddHasCasting().getAdditionalCommands())
+        .putAll(new AddHasCdp().getAdditionalCommands())
         .build();
     }
   }

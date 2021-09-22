@@ -23,6 +23,7 @@ import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.chromium.ChromiumDriver;
 import org.openqa.selenium.chromium.ChromiumNetworkConditions;
 import org.openqa.selenium.chromium.HasCasting;
+import org.openqa.selenium.chromium.HasCdp;
 import org.openqa.selenium.chromium.HasNetworkConditions;
 import org.openqa.selenium.remote.Augmenter;
 import org.openqa.selenium.remote.RemoteWebDriver;
@@ -150,6 +151,30 @@ public class ChromeDriverFunctionalTest extends JUnit4TestBase {
           throw e;
         }
       }
+  }
+
+  @Test
+  public void shouldAllowCdpCommands() {
+    driver = (ChromiumDriver) super.driver;
+    Map<String, Object> parameters = Map.of("url", pages.simpleTestPage);
+    driver.executeCdpCommand("Page.navigate", parameters);
+
+    assertThat(driver.getTitle()).isEqualTo("Hello WebDriver");
+  }
+
+  @Test
+  public void shouldAllowRemoteWebDriverToAugmentHasCdp() throws MalformedURLException {
+    WebDriver driver = new RemoteWebDriver(new URL("http://localhost:4444/"), new ChromeOptions());
+    WebDriver augmentedDriver = new Augmenter().augment(driver);
+
+    try {
+      Map<String, Object> parameters = Map.of("url", pages.simpleTestPage);
+      ((HasCdp) augmentedDriver).executeCdpCommand("Page.navigate", parameters);
+
+      assertThat(driver.getTitle()).isEqualTo("Hello WebDriver");
+    } finally {
+      driver.quit();
+    }
   }
 
   @Test

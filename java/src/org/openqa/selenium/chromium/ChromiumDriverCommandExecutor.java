@@ -17,6 +17,7 @@
 
 package org.openqa.selenium.chromium;
 
+import com.google.common.collect.ImmutableMap;
 import org.openqa.selenium.remote.CommandInfo;
 import org.openqa.selenium.remote.http.HttpMethod;
 import org.openqa.selenium.remote.service.DriverCommandExecutor;
@@ -34,30 +35,16 @@ import static java.util.Collections.unmodifiableMap;
  */
 public class ChromiumDriverCommandExecutor extends DriverCommandExecutor {
 
-  private static Map<String, CommandInfo> buildChromiumCommandMappings(String vendorKeyword, Map<String, CommandInfo> extraCommands) {
-    String sessionPrefix = "/session/:sessionId/";
-    String chromiumPrefix = sessionPrefix + "chromium";
-    String vendorPrefix = sessionPrefix + vendorKeyword;
-
-    HashMap<String, CommandInfo> mappings = new HashMap<>();
-
-    mappings.putAll(extraCommands);
-
-    mappings.put(ChromiumDriverCommand.LAUNCH_APP,
-      new CommandInfo(chromiumPrefix + "/launch_app", HttpMethod.POST));
-
-    mappings.putAll(new AddHasNetworkConditions().getAdditionalCommands());
-
-    mappings.put( ChromiumDriverCommand.EXECUTE_CDP_COMMAND,
-      new CommandInfo(vendorPrefix + "/cdp/execute", HttpMethod.POST));
-
-    mappings.put(ChromiumDriverCommand.SET_PERMISSION,
-      new CommandInfo(sessionPrefix + "/permissions", HttpMethod.POST));
-
-    return unmodifiableMap(mappings);
+  public ChromiumDriverCommandExecutor(DriverService service, Map<String, CommandInfo> extraCommands) {
+    super(service, getExtraCommands(extraCommands));
   }
 
-  public ChromiumDriverCommandExecutor(String vendorPrefix, DriverService service, Map<String, CommandInfo> extraCommands) {
-    super(service, buildChromiumCommandMappings(vendorPrefix, extraCommands));
+  private static Map<String, CommandInfo> getExtraCommands(Map<String, CommandInfo> commands) {
+    return ImmutableMap.<String, CommandInfo>builder()
+      .putAll(commands)
+      .putAll(new AddHasNetworkConditions().getAdditionalCommands())
+      .put(ChromiumDriverCommand.LAUNCH_APP, new CommandInfo("/session/:sessionId/chromium/launch_app", HttpMethod.POST))
+      .put(ChromiumDriverCommand.SET_PERMISSION, new CommandInfo("/session/:sessionId/permissions", HttpMethod.POST))
+      .build();
   }
 }
