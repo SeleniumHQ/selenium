@@ -77,7 +77,8 @@ public class ChromiumDriver extends RemoteWebDriver implements
   HasNetworkConditions,
   HasCasting,
   HasCdp,
-  HasPermissions {
+  HasPermissions,
+  HasLaunchApp {
 
   private static final Logger LOG = Logger.getLogger(ChromiumDriver.class.getName());
 
@@ -88,6 +89,7 @@ public class ChromiumDriver extends RemoteWebDriver implements
   private final RemoteNetworkConnection networkConnection;
   private final HasNetworkConditions networkConditions;
   private final HasPermissions permissions;
+  private final HasLaunchApp launch;
   protected HasCasting casting;
   protected HasCdp cdp;
   private final Optional<Connection> connection;
@@ -101,6 +103,7 @@ public class ChromiumDriver extends RemoteWebDriver implements
     touchScreen = new RemoteTouchScreen(getExecuteMethod());
     networkConnection = new RemoteNetworkConnection(getExecuteMethod());
     networkConditions = new AddHasNetworkConditions().getImplementation(getCapabilities(), getExecuteMethod());
+    launch = new AddHasLaunchApp().getImplementation(getCapabilities(), getExecuteMethod());
 
     HttpClient.Factory factory = HttpClient.Factory.createDefault();
     Capabilities originalCapabilities = super.getCapabilities();
@@ -199,13 +202,9 @@ public class ChromiumDriver extends RemoteWebDriver implements
     return networkConnection.setNetworkConnection(type);
   }
 
-  /**
-   * Launches Chrome app specified by id.
-   *
-   * @param id Chrome app id.
-   */
+  @Override
   public void launchApp(String id) {
-    execute(ChromiumDriverCommand.LAUNCH_APP, ImmutableMap.of("id", id));
+    launch.launchApp(id);
   }
 
   public Map<String, Object> executeCdpCommand(String commandName, Map<String, Object> parameters) {

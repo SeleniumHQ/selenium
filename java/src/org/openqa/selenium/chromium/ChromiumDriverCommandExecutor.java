@@ -44,7 +44,7 @@ public class ChromiumDriverCommandExecutor extends DriverCommandExecutor {
       .putAll(commands)
       .putAll(new AddHasNetworkConditions().getAdditionalCommands())
       .putAll(new AddHasPermissions().getAdditionalCommands())
-      .put(ChromiumDriverCommand.LAUNCH_APP, new CommandInfo("/session/:sessionId/chromium/launch_app", HttpMethod.POST))
+      .putAll(new AddHasLaunchApp().getAdditionalCommands())
       .build();
   }
 }
