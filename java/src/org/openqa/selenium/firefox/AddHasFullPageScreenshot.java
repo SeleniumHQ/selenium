@@ -58,7 +58,8 @@ public class AddHasFullPageScreenshot<X> implements AugmenterProvider<HasFullPag
   @Override
   public HasFullPageScreenshot getImplementation(Capabilities capabilities, ExecuteMethod executeMethod) {
     return new HasFullPageScreenshot() {
-      @Override public <X> X getFullPageScreenshotAs(OutputType<X> outputType) {
+      @Override
+      public <X> X getFullPageScreenshotAs(OutputType<X> outputType) {
         Object result = executeMethod.execute(FULL_PAGE_SCREENSHOT, null);
 
         if (result instanceof String) {

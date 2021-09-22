@@ -48,16 +48,19 @@ public class AddHasLaunchApp implements AugmenterProvider<HasLaunchApp>, Additio
     return COMMANDS;
   }
 
-  @Override public Predicate<Capabilities> isApplicable() {
+  @Override
+  public Predicate<Capabilities> isApplicable() {
     String[] validBrowsers = new String[] { EDGE, CHROME, "msedge" };
     return caps -> new ArrayList<>(Arrays.asList(validBrowsers)).contains(caps.getBrowserName());
   }
 
-  @Override public Class<HasLaunchApp> getDescribedInterface() {
+  @Override
+  public Class<HasLaunchApp> getDescribedInterface() {
     return HasLaunchApp.class;
   }
 
-  @Override public HasLaunchApp getImplementation(Capabilities capabilities, ExecuteMethod executeMethod) {
+  @Override
+  public HasLaunchApp getImplementation(Capabilities capabilities, ExecuteMethod executeMethod) {
     return new HasLaunchApp() {
       @Override
       public void launchApp(String id) {

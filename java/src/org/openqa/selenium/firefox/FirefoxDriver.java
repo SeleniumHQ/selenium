@@ -288,7 +288,8 @@ public class FirefoxDriver extends RemoteWebDriver
     return fullPageScreenshot.getFullPageScreenshotAs(outputType);
   }
 
-  @Override public void setContext(FirefoxCommandContext commandContext) {
+  @Override
+  public void setContext(FirefoxCommandContext commandContext) {
     context.setContext(commandContext);
   }
 

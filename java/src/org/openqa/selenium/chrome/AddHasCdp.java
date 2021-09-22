@@ -39,7 +39,8 @@ public class AddHasCdp extends org.openqa.selenium.chromium.AddHasCdp {
       EXECUTE_CDP, new CommandInfo("session/:sessionId/goog//cdp/execute", HttpMethod.POST));
   }
 
-  @Override public Predicate<Capabilities> isApplicable() {
+  @Override
+  public Predicate<Capabilities> isApplicable() {
     return caps -> CHROME.equals(caps.getBrowserName());
   }
 }

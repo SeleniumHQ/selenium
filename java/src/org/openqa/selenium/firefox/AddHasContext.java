@@ -57,7 +57,8 @@ public class AddHasContext implements AugmenterProvider<HasContext>, AdditionalH
   @Override
   public HasContext getImplementation(Capabilities capabilities, ExecuteMethod executeMethod) {
     return new HasContext() {
-      @Override public void setContext(FirefoxCommandContext context) {
+      @Override
+      public void setContext(FirefoxCommandContext context) {
         executeMethod.execute(
           CONTEXT,
           ImmutableMap.of(CONTEXT, context));

@@ -40,18 +40,22 @@ public abstract class AddHasCdp implements AugmenterProvider<HasCdp>, Additional
   @Override
   public abstract Map<String, CommandInfo> getAdditionalCommands();
 
-  @Override public Predicate<Capabilities> isApplicable() {
+  @Override
+  public Predicate<Capabilities> isApplicable() {
     String[] validBrowsers = new String[] { EDGE, CHROME, "msedge" };
     return caps -> new ArrayList<>(Arrays.asList(validBrowsers)).contains(caps.getBrowserName());
   }
 
-  @Override public Class<HasCdp> getDescribedInterface() {
+  @Override
+  public Class<HasCdp> getDescribedInterface() {
     return HasCdp.class;
   }
 
-  @Override public HasCdp getImplementation(Capabilities capabilities, ExecuteMethod executeMethod) {
+  @Override
+  public HasCdp getImplementation(Capabilities capabilities, ExecuteMethod executeMethod) {
     return new HasCdp() {
-      @Override public Map<String, Object> executeCdpCommand(String commandName, Map<String, Object> parameters) {
+      @Override
+      public Map<String, Object> executeCdpCommand(String commandName, Map<String, Object> parameters) {
         Require.nonNull("Command name", commandName);
         Require.nonNull("Parameters", parameters);
 

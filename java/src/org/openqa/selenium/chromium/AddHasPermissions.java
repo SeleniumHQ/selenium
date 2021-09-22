@@ -48,16 +48,19 @@ public class AddHasPermissions implements AugmenterProvider<HasPermissions>, Add
     return COMMANDS;
   }
 
-  @Override public Predicate<Capabilities> isApplicable() {
+  @Override
+  public Predicate<Capabilities> isApplicable() {
     String[] validBrowsers = new String[] { EDGE, CHROME, "msedge" };
     return caps -> new ArrayList<>(Arrays.asList(validBrowsers)).contains(caps.getBrowserName());
   }
 
-  @Override public Class<HasPermissions> getDescribedInterface() {
+  @Override
+  public Class<HasPermissions> getDescribedInterface() {
     return HasPermissions.class;
   }
 
-  @Override public HasPermissions getImplementation(Capabilities capabilities, ExecuteMethod executeMethod) {
+  @Override
+  public HasPermissions getImplementation(Capabilities capabilities, ExecuteMethod executeMethod) {
     return new HasPermissions() {
       @Override
       public void setPermission(String name, String value) {

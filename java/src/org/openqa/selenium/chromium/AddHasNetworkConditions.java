@@ -53,18 +53,22 @@ public class AddHasNetworkConditions implements AugmenterProvider<HasNetworkCond
     return COMMANDS;
   }
 
-  @Override public Predicate<Capabilities> isApplicable() {
+  @Override
+  public Predicate<Capabilities> isApplicable() {
     String[] validBrowsers = new String[] { EDGE, CHROME, "msedge" };
     return caps -> new ArrayList<>(Arrays.asList(validBrowsers)).contains(caps.getBrowserName());
   }
 
-  @Override public Class<HasNetworkConditions> getDescribedInterface() {
+  @Override
+  public Class<HasNetworkConditions> getDescribedInterface() {
     return HasNetworkConditions.class;
   }
 
-  @Override public HasNetworkConditions getImplementation(Capabilities capabilities, ExecuteMethod executeMethod) {
+  @Override
+  public HasNetworkConditions getImplementation(Capabilities capabilities, ExecuteMethod executeMethod) {
     return new HasNetworkConditions() {
-      @Override public ChromiumNetworkConditions getNetworkConditions() {
+      @Override
+      public ChromiumNetworkConditions getNetworkConditions() {
         Map<String, Object> result = (Map<String, Object>) executeMethod.execute(GET_NETWORK_CONDITIONS, null);
         ChromiumNetworkConditions networkConditions = new ChromiumNetworkConditions();
         networkConditions.setOffline((Boolean) result.getOrDefault(ChromiumNetworkConditions.OFFLINE, false));

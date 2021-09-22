@@ -216,40 +216,49 @@ public class ChromiumDriver extends RemoteWebDriver implements
     return devTools;
   }
 
+  @Override
   public ArrayList<Map<String, String>> getCastSinks() {
     return casting.getCastSinks();
   }
 
+  @Override
   public String getCastIssueMessage() {
     return casting.getCastIssueMessage();
   }
 
+  @Override
   public void selectCastSink(String deviceName) {
     casting.selectCastSink(deviceName);
   }
 
+  @Override
   public void startTabMirroring(String deviceName) {
     casting.startTabMirroring(deviceName);
   }
 
+  @Override
   public void stopCasting(String deviceName) {
     casting.stopCasting(deviceName);
   }
 
+  @Override
   public void setPermission(String name, String value) {
     permissions.setPermission(name, value);
   }
 
-  @Override public ChromiumNetworkConditions getNetworkConditions() {
+  @Override
+  public ChromiumNetworkConditions getNetworkConditions() {
     return networkConditions.getNetworkConditions();
   }
 
-  @Override public void setNetworkConditions(ChromiumNetworkConditions networkConditions) {
+  @Override
+  public void setNetworkConditions(ChromiumNetworkConditions networkConditions) {
     Require.nonNull("Network Conditions", networkConditions);
     this.networkConditions.setNetworkConditions(networkConditions);
   }
 
-  @Override public void deleteNetworkConditions() {
+  @Override
+  public void deleteNetworkConditions() {
     networkConditions.deleteNetworkConditions();
   }
 

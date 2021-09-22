@@ -42,11 +42,13 @@ public abstract class AddHasCasting implements AugmenterProvider<HasCasting>, Ad
   @Override
   public abstract Predicate<Capabilities> isApplicable();
 
-  @Override public Class<HasCasting> getDescribedInterface() {
+  @Override
+  public Class<HasCasting> getDescribedInterface() {
     return HasCasting.class;
   }
 
-  @Override public HasCasting getImplementation(Capabilities capabilities, ExecuteMethod executeMethod) {
+  @Override
+  public HasCasting getImplementation(Capabilities capabilities, ExecuteMethod executeMethod) {
     return new HasCasting() {
       @Override public ArrayList<Map<String, String>> getCastSinks() {
         return (ArrayList<Map<String, String>>) executeMethod.execute(ChromiumDriverCommand.GET_CAST_SINKS, null);

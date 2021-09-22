@@ -43,7 +43,8 @@ public class AddHasCasting extends org.openqa.selenium.chromium.AddHasCasting {
       STOP_CASTING, new CommandInfo("session/:sessionId/goog/cast/stop_casting", HttpMethod.POST));
   }
 
-  @Override public Predicate<Capabilities> isApplicable() {
+  @Override
+  public Predicate<Capabilities> isApplicable() {
     return caps -> CHROME.equals(caps.getBrowserName());
   }
 }

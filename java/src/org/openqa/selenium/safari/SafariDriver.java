@@ -98,7 +98,8 @@ public class SafariDriver extends RemoteWebDriver implements HasPermissions, Has
     return permissions.getPermissions();
   }
 
-  @Override public void attachDebugger() {
+  @Override
+  public void attachDebugger() {
     debugger.attachDebugger();
   }
 

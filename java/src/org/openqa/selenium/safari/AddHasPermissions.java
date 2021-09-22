@@ -59,11 +59,13 @@ public class AddHasPermissions implements AugmenterProvider<HasPermissions>, Add
   @Override
   public HasPermissions getImplementation(Capabilities capabilities, ExecuteMethod executeMethod) {
     return new HasPermissions() {
-      @Override public void setPermissions(String permission, Boolean value) {
+      @Override
+      public void setPermissions(String permission, Boolean value) {
         executeMethod.execute(SET_PERMISSIONS, singletonMap("permissions", singletonMap(permission, value)));
       }
 
-      @Override public Map<String, Boolean> getPermissions() {
+      @Override
+      public Map<String, Boolean> getPermissions() {
         Map<String, Object> results = (Map<String, Object>) executeMethod.execute(GET_PERMISSIONS, singletonMap("permissions", null));
         return (Map<String, Boolean>) results.get("permissions");
       }

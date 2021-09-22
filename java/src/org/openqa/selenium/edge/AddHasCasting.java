@@ -43,7 +43,8 @@ public class AddHasCasting extends org.openqa.selenium.chromium.AddHasCasting {
     return COMMANDS;
   }
 
-  @Override public Predicate<Capabilities> isApplicable() {
+  @Override
+  public Predicate<Capabilities> isApplicable() {
     return caps -> "msedge".equals(caps.getBrowserName());
   }
 }
