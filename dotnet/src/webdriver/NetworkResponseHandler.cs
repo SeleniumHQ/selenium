@@ -1,4 +1,4 @@
-// <copyright file="IDevTools.cs" company="WebDriver Committers">
+// <copyright file="NetworkResponsetHandler.cs" company="WebDriver Committers">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements. See the NOTICE file
 // distributed with this work for additional information
@@ -16,26 +16,26 @@
 // limitations under the License.
 // </copyright>
 
-namespace OpenQA.Selenium.DevTools
+using System;
+
+namespace OpenQA.Selenium
 {
     /// <summary>
-    /// Interface indicating the driver supports the Chrome DevTools Protocol.
+    /// Allows a user to handle a returned network, potentially modifying it before processing by the browser.
     /// </summary>
-    public interface IDevTools
+    public class NetworkResponseHandler
     {
         /// <summary>
-        /// Creates a session to communicate with a browser using a Developer Tools debugging protocol.
+        /// Gets or sets a function that evaluates returned response data in an <see cref="HttpResponseData"/> object,
+        /// and returns a value indicating whether the data matches the specified criteria.
         /// </summary>
-        /// <returns>The active session to use to communicate with the Developer Tools debugging protocol.</returns>
-        DevToolsSession GetDevToolsSession();
+        public Func<HttpResponseData, bool> ResponseMatcher { get; set; }
 
         /// <summary>
-        /// Creates a session to communicate with a browser using a specific version of the Developer Tools debugging protocol.
+        /// Gets or sets a function that accepts an <see cref="HttpResponseData"/> object describing a network
+        /// response received by the browser, and returns a modified <see cref="HttpResponseData"/> object to used
+        /// as the actual network response.
         /// </summary>
-        /// <param name="protocolVersion">The specific version of the Developer Tools debugging protocol to use.</param>
-        /// <returns>The active session to use to communicate with the Developer Tools debugging protocol.</returns>
-        DevToolsSession GetDevToolsSession(int protocolVersion);
-
-        void TerminateDevToolsSession();
+        public Func<HttpResponseData, HttpResponseData> ResponseTransformer { get; set; }
     }
 }

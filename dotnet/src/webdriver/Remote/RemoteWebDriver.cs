@@ -444,6 +444,15 @@ namespace OpenQA.Selenium.Remote
             return this.devToolsSession;
         }
 
+        public void TerminateDevToolsSession()
+        {
+            if (this.devToolsSession != null)
+            {
+                this.devToolsSession.Dispose();
+                this.devToolsSession = null;
+            }
+        }
+
         private static ICapabilities ConvertOptionsToCapabilities(DriverOptions options)
         {
             if (options == null)
