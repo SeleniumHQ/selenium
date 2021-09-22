@@ -15,7 +15,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.support.devtools;
+package org.openqa.selenium.devtools;
 
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.devtools.DevTools;
@@ -57,6 +57,10 @@ import static org.openqa.selenium.remote.http.Contents.utf8String;
  */
 public class NetworkInterceptor implements AutoCloseable {
 
+  /**
+   * Return this from a {@link Routable} in order to have the browser
+   * continue the request unmodified.
+   */
   public static final HttpResponse PROCEED_WITH_REQUEST = new HttpResponse()
     .addHeader("Selenium-Interceptor", "Continue")
     .setContent(utf8String("Original request should proceed"));
