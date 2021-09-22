@@ -17,11 +17,16 @@
 
 package org.openqa.selenium.safari;
 
+import com.google.common.collect.ImmutableMap;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.remote.CommandInfo;
 import org.openqa.selenium.remote.FileDetector;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.remote.service.DriverCommandExecutor;
+import org.openqa.selenium.remote.service.DriverService;
+
+import java.util.Map;
 
 /**
  * A WebDriver implementation that controls Safari using a browser extension
@@ -29,7 +34,9 @@ import org.openqa.selenium.remote.service.DriverCommandExecutor;
  *
  * This driver can be configured using the {@link SafariOptions} class.
  */
-public class SafariDriver extends RemoteWebDriver {
+public class SafariDriver extends RemoteWebDriver implements HasPermissions{
+
+  private final HasPermissions permissions;
 
   /**
    * Initializes a new SafariDriver} class with default {@link SafariOptions}.
@@ -75,8 +82,32 @@ public class SafariDriver extends RemoteWebDriver {
    * @param safariOptions safari specific options / capabilities for the driver
    */
   public SafariDriver(SafariDriverService safariServer, SafariOptions safariOptions) {
-    super(new DriverCommandExecutor(safariServer), safariOptions);
+    super(new SafariDriverCommandExecutor(safariServer), safariOptions);
+    permissions = new AddHasPermissions().getImplementation(getCapabilities(), getExecuteMethod());
   }
+
+  @Override
+  public void setPermissions(String permission, Boolean value) {
+    this.permissions.setPermissions(permission, value);
+  }
+
+  @Override
+  public Map<String, Boolean> getPermissions() {
+    return permissions.getPermissions();
+  }
+
+  private static class SafariDriverCommandExecutor extends DriverCommandExecutor {
+    public SafariDriverCommandExecutor(DriverService service) {
+      super(service, getExtraCommands());
+    }
+
+    private static Map<String, CommandInfo> getExtraCommands() {
+      return ImmutableMap.<String, CommandInfo>builder()
+        .putAll(new AddHasPermissions().getAdditionalCommands())
+        .build();
+    }
+  }
+
 
   @Override
   public void setFileDetector(FileDetector detector) {

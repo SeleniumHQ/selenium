@@ -17,20 +17,23 @@
 
 package org.openqa.selenium.safari;
 
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assume.assumeTrue;
-
 import org.junit.After;
 import org.junit.Test;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.net.PortProber;
+import org.openqa.selenium.remote.Augmenter;
+import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.testing.JUnit4TestBase;
 
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assume.assumeTrue;
 
 public class SafariDriverTest extends JUnit4TestBase {
 
@@ -75,4 +78,33 @@ public class SafariDriverTest extends JUnit4TestBase {
     assertThat(driver2.getTitle()).isEqualTo("XHTML Test Page");
   }
 
+  @Test
+  public void canChangePermissions() {
+    removeDriver();
+    SafariDriver driver = new SafariDriver();
+
+    assertThat(driver.getPermissions().get("getUserMedia")).isEqualTo(true);
+
+    driver.setPermissions("getUserMedia", false);
+
+    assertThat(driver.getPermissions().get("getUserMedia")).isEqualTo(false);
+  }
+
+  @Test
+  public void shouldAllowRemoteWebDriverToAugmentHasPermissions() throws MalformedURLException {
+    removeDriver();
+
+    WebDriver driver = new RemoteWebDriver(new URL("http://localhost:4444/"), new SafariOptions());
+    WebDriver augmentedDriver = new Augmenter().augment(driver);
+
+    try {
+      assertThat(((HasPermissions) augmentedDriver).getPermissions().get("getUserMedia")).isEqualTo(true);
+
+      ((HasPermissions) augmentedDriver).setPermissions("getUserMedia", false);
+
+      assertThat(((HasPermissions) augmentedDriver).getPermissions().get("getUserMedia")).isEqualTo(false);
+    } finally {
+      driver.quit();
+    }
+  }
 }
