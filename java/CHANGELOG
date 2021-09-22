@@ -2,6 +2,7 @@ v4.0.0-rc-2
 ===========
 
 * Supported CDP versions: 85, 92, 93
+* Moved NetworkInterceptor to org.opeqa.selenium.devtools
 * NetworkInterceptor now takes a Filter to allow responses to be
   captured and rewritten.
 * Added a "relay" option to better support forwarding sessions to
