@@ -19,6 +19,8 @@
 
 require 'net/http'
 
+require 'selenium/webdriver/common/platform'
+
 module Selenium
   module WebDriver
     module Edge

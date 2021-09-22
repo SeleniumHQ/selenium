@@ -21,6 +21,8 @@ require 'timeout'
 require 'socket'
 require 'rexml/document'
 
+require 'selenium/webdriver/common/platform'
+
 module Selenium
   module WebDriver
     module Firefox
