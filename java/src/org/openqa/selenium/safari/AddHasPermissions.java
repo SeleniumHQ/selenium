@@ -29,8 +29,6 @@ import org.openqa.selenium.remote.http.HttpMethod;
 import java.util.Map;
 import java.util.function.Predicate;
 
-import static java.util.Collections.singletonMap;
-
 @AutoService({AdditionalHttpCommands.class, AugmenterProvider.class})
 public class AddHasPermissions implements AugmenterProvider<HasPermissions>, AdditionalHttpCommands {
 
@@ -60,7 +58,7 @@ public class AddHasPermissions implements AugmenterProvider<HasPermissions>, Add
   public HasPermissions getImplementation(Capabilities capabilities, ExecuteMethod executeMethod) {
     return new HasPermissions() {
       @Override
-      public void setPermissions(String permission, Boolean value) {
+      public void setPermissions(String permission, boolean value) {
         executeMethod.execute(SET_PERMISSIONS, ImmutableMap.of("permissions", ImmutableMap.of(permission, value)));
       }
 

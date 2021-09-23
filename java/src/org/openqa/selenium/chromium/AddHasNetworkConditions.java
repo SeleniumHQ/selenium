@@ -28,13 +28,10 @@ import org.openqa.selenium.remote.ExecuteMethod;
 import org.openqa.selenium.remote.http.HttpMethod;
 
 import java.time.Duration;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Map;
 import java.util.function.Predicate;
 
-import static org.openqa.selenium.remote.BrowserType.CHROME;
-import static org.openqa.selenium.remote.BrowserType.EDGE;
+import static org.openqa.selenium.chromium.ChromiumDriver.KNOWN_CHROMIUM_BROWSERS;
 
 @AutoService({AdditionalHttpCommands.class, AugmenterProvider.class})
 public class AddHasNetworkConditions implements AugmenterProvider<HasNetworkConditions>, AdditionalHttpCommands {
@@ -56,8 +53,7 @@ public class AddHasNetworkConditions implements AugmenterProvider<HasNetworkCond
 
   @Override
   public Predicate<Capabilities> isApplicable() {
-    String[] validBrowsers = new String[] { EDGE, CHROME, "msedge" };
-    return caps -> new ArrayList<>(Arrays.asList(validBrowsers)).contains(caps.getBrowserName());
+    return caps -> KNOWN_CHROMIUM_BROWSERS.contains(caps.getBrowserName());
   }
 
   @Override
@@ -74,8 +70,8 @@ public class AddHasNetworkConditions implements AugmenterProvider<HasNetworkCond
         ChromiumNetworkConditions networkConditions = new ChromiumNetworkConditions();
         networkConditions.setOffline((Boolean) result.getOrDefault(ChromiumNetworkConditions.OFFLINE, false));
         networkConditions.setLatency(Duration.ofMillis((Long) result.getOrDefault(ChromiumNetworkConditions.LATENCY, 0)));
-        networkConditions.setDownloadThroughput((Number) result.getOrDefault(ChromiumNetworkConditions.DOWNLOAD_THROUGHPUT, -1));
-        networkConditions.setDownloadThroughput((Number) result.getOrDefault(ChromiumNetworkConditions.UPLOAD_THROUGHPUT, -1));
+        networkConditions.setDownloadThroughput(((Number) result.getOrDefault(ChromiumNetworkConditions.DOWNLOAD_THROUGHPUT, -1)).intValue());
+        networkConditions.setDownloadThroughput(((Number) result.getOrDefault(ChromiumNetworkConditions.UPLOAD_THROUGHPUT, -1)).intValue());
         return networkConditions;
       }
 

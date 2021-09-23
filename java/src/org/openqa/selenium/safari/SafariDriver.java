@@ -89,7 +89,7 @@ public class SafariDriver extends RemoteWebDriver implements HasPermissions, Has
   }
 
   @Override
-  public void setPermissions(String permission, Boolean value) {
+  public void setPermissions(String permission, boolean value) {
     this.permissions.setPermissions(permission, value);
   }
 

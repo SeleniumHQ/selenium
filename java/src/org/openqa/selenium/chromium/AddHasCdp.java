@@ -25,25 +25,21 @@ import org.openqa.selenium.remote.AugmenterProvider;
 import org.openqa.selenium.remote.CommandInfo;
 import org.openqa.selenium.remote.ExecuteMethod;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Map;
 import java.util.function.Predicate;
 
-import static org.openqa.selenium.remote.BrowserType.CHROME;
-import static org.openqa.selenium.remote.BrowserType.EDGE;
+import static org.openqa.selenium.chromium.ChromiumDriver.KNOWN_CHROMIUM_BROWSERS;
 
 public abstract class AddHasCdp implements AugmenterProvider<HasCdp>, AdditionalHttpCommands {
 
-    public static final String EXECUTE_CDP = "executeCdpCommand";
+  public static final String EXECUTE_CDP = "executeCdpCommand";
 
   @Override
   public abstract Map<String, CommandInfo> getAdditionalCommands();
 
   @Override
   public Predicate<Capabilities> isApplicable() {
-    String[] validBrowsers = new String[] { EDGE, CHROME, "msedge" };
-    return caps -> new ArrayList<>(Arrays.asList(validBrowsers)).contains(caps.getBrowserName());
+    return caps -> KNOWN_CHROMIUM_BROWSERS.contains(caps.getBrowserName());
   }
 
   @Override

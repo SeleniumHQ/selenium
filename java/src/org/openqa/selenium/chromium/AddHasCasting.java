@@ -25,7 +25,7 @@ import org.openqa.selenium.remote.AugmenterProvider;
 import org.openqa.selenium.remote.CommandInfo;
 import org.openqa.selenium.remote.ExecuteMethod;
 
-import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.function.Predicate;
 
@@ -51,8 +51,8 @@ public abstract class AddHasCasting implements AugmenterProvider<HasCasting>, Ad
   @Override
   public HasCasting getImplementation(Capabilities capabilities, ExecuteMethod executeMethod) {
     return new HasCasting() {
-      @Override public ArrayList<Map<String, String>> getCastSinks() {
-        return (ArrayList<Map<String, String>>) executeMethod.execute(GET_CAST_SINKS, null);
+      @Override public List<Map<String, String>> getCastSinks() {
+        return (List<Map<String, String>>) executeMethod.execute(GET_CAST_SINKS, null);
       }
 
       @Override public void selectCastSink(String deviceName) {

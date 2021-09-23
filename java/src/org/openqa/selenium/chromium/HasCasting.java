@@ -19,7 +19,7 @@ package org.openqa.selenium.chromium;
 
 import org.openqa.selenium.Beta;
 
-import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -34,7 +34,7 @@ public interface HasCasting {
    * @return array of ID / Name pairs of available cast sink targets
    *
    */
-  ArrayList<Map<String, String>> getCastSinks();
+  List<Map<String, String>> getCastSinks();
 
   /**
    * Selects a cast sink (Cast device) as the recipient of media router intents (connect or play).

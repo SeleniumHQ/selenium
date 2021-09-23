@@ -31,7 +31,7 @@ import org.openqa.selenium.testing.JUnit4TestBase;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.time.Duration;
-import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -74,7 +74,7 @@ public class EdgeDriverFunctionalTest extends JUnit4TestBase {
       // Does not get list the first time it is called
       driver.getCastSinks();
       Thread.sleep(1500);
-      ArrayList<Map<String, String>> castSinks = driver.getCastSinks();
+      List<Map<String, String>> castSinks = driver.getCastSinks();
 
       // Can not call these commands if there are no sinks available
       if (castSinks.size() > 0) {
@@ -97,7 +97,7 @@ public class EdgeDriverFunctionalTest extends JUnit4TestBase {
       // Does not get list the first time it is called
       ((HasCasting) augmentedDriver).getCastSinks();
       Thread.sleep(1000);
-      ArrayList<Map<String, String>> castSinks = ((HasCasting) augmentedDriver).getCastSinks();
+      List<Map<String, String>> castSinks = ((HasCasting) augmentedDriver).getCastSinks();
 
       // Can not call these commands if there are no sinks available
       if (castSinks.size() > 0) {

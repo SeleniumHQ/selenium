@@ -24,21 +24,22 @@ import java.time.Duration;
  *
  */
 public class ChromiumNetworkConditions {
-  private Boolean offline = false;
-  private Duration latency = Duration.ZERO;
-  private Number downloadThroughput = -1;
-  private Number uploadThroughput = -1;
-
   public static final String OFFLINE = "offline";
   public static final String LATENCY = "latency";
   public static final String DOWNLOAD_THROUGHPUT = "download_throughput";
   public static final String UPLOAD_THROUGHPUT = "upload_throughput";
 
+  private boolean offline = false;
+  private Duration latency = Duration.ZERO;
+  private int downloadThroughput = -1;
+  private int uploadThroughput = -1;
+
+
   /**
    *
    * @return whether network is simulated to be offline.
    */
-  public Boolean getOffline() {
+  public boolean getOffline() {
     return offline;
   }
 
@@ -47,7 +48,7 @@ public class ChromiumNetworkConditions {
    *
    * @param offline when set to true, network is simulated to be offline.
    */
-  public void setOffline(Boolean offline) {
+  public void setOffline(boolean offline) {
     this.offline = offline;
   }
 
@@ -74,7 +75,7 @@ public class ChromiumNetworkConditions {
    *
    * @return the current download throughput in kb/second.
    */
-  public Number getDownloadThroughput() {
+  public int getDownloadThroughput() {
     return downloadThroughput;
   }
 
@@ -83,7 +84,7 @@ public class ChromiumNetworkConditions {
    *
    * @param downloadThroughput thoughput in kb/second
    */
-  public void setDownloadThroughput(Number downloadThroughput) {
+  public void setDownloadThroughput(int downloadThroughput) {
     this.downloadThroughput = downloadThroughput;
   }
 
@@ -92,7 +93,7 @@ public class ChromiumNetworkConditions {
    *
    * @return the current upload throughput in kb/second.
    */
-  public Number getUploadThroughput() {
+  public int getUploadThroughput() {
     return uploadThroughput;
   }
 
@@ -101,7 +102,7 @@ public class ChromiumNetworkConditions {
    *
    * @param uploadThroughput thoughput in kb/second
    */
-  public void setUploadThroughput(Number uploadThroughput) {
+  public void setUploadThroughput(int uploadThroughput) {
     this.uploadThroughput = uploadThroughput;
   }
 }

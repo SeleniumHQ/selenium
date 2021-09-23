@@ -27,18 +27,15 @@ import org.openqa.selenium.remote.CommandInfo;
 import org.openqa.selenium.remote.ExecuteMethod;
 import org.openqa.selenium.remote.http.HttpMethod;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Map;
 import java.util.function.Predicate;
 
-import static org.openqa.selenium.remote.BrowserType.CHROME;
-import static org.openqa.selenium.remote.BrowserType.EDGE;
+import static org.openqa.selenium.chromium.ChromiumDriver.KNOWN_CHROMIUM_BROWSERS;
 
 @AutoService({AdditionalHttpCommands.class, AugmenterProvider.class})
 public class AddHasPermissions implements AugmenterProvider<HasPermissions>, AdditionalHttpCommands {
 
-    public static final String SET_PERMISSION = "setPermission";
+  public static final String SET_PERMISSION = "setPermission";
 
   private static final Map<String, CommandInfo> COMMANDS = ImmutableMap.of(
     SET_PERMISSION, new CommandInfo("/session/:sessionId/permissions", HttpMethod.POST));
@@ -50,8 +47,7 @@ public class AddHasPermissions implements AugmenterProvider<HasPermissions>, Add
 
   @Override
   public Predicate<Capabilities> isApplicable() {
-    String[] validBrowsers = new String[] { EDGE, CHROME, "msedge" };
-    return caps -> new ArrayList<>(Arrays.asList(validBrowsers)).contains(caps.getBrowserName());
+    return caps -> KNOWN_CHROMIUM_BROWSERS.contains(caps.getBrowserName());
   }
 
   @Override

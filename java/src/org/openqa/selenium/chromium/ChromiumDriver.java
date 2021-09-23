@@ -17,6 +17,7 @@
 
 package org.openqa.selenium.chromium;
 
+import com.google.common.collect.ImmutableList;
 import org.openqa.selenium.BuildInfo;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.Credentials;
@@ -54,12 +55,16 @@ import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.mobile.RemoteNetworkConnection;
 
 import java.net.URI;
-import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.logging.Logger;
+
+import static org.openqa.selenium.remote.BrowserType.CHROME;
+import static org.openqa.selenium.remote.BrowserType.EDGE;
+import static org.openqa.selenium.remote.BrowserType.OPERA;
 
 /**
  * A {@link WebDriver} implementation that controls a Chromium browser running on the local machine.
@@ -67,18 +72,19 @@ import java.util.logging.Logger;
  */
 public class ChromiumDriver extends RemoteWebDriver implements
   HasAuthentication,
+  HasCasting,
+  HasCdp,
   HasDevTools,
+  HasLaunchApp,
   HasLogEvents,
+  HasNetworkConditions,
+  HasPermissions,
   HasTouchScreen,
   LocationContext,
   NetworkConnection,
-  WebStorage,
-  HasNetworkConditions,
-  HasCasting,
-  HasCdp,
-  HasPermissions,
-  HasLaunchApp {
+  WebStorage {
 
+  public static final List<String> KNOWN_CHROMIUM_BROWSERS = ImmutableList.of(CHROME, EDGE, OPERA, "msedge");
   private static final Logger LOG = Logger.getLogger(ChromiumDriver.class.getName());
 
   private final Capabilities capabilities;
@@ -217,7 +223,7 @@ public class ChromiumDriver extends RemoteWebDriver implements
   }
 
   @Override
-  public ArrayList<Map<String, String>> getCastSinks() {
+  public List<Map<String, String>> getCastSinks() {
     return casting.getCastSinks();
   }
 
