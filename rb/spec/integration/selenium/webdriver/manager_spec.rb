@@ -267,21 +267,8 @@ module Selenium
       describe 'new_window' do
         after { ensure_single_window }
 
-        types = %i[tab window]
-        types.each do |type|
-          it "should be able to open a new #{type}" do
-            before_window_handles = driver.window_handles.length
-            driver.manage.new_window(type)
-            expect(driver.window_handles.length).to eq(before_window_handles + 1)
-          end
-        end
-
         it "returns an exception if an invalid type is provided" do
-          invalid_types = [:invalid, 'invalid', 'tab', 'window']
-          invalid_types.each do |type|
-            expect { driver.manage.new_window(type) }.to \
-              raise_error(ArgumentError, "invalid argument for type. Got: '#{type.inspect}'. Try :tab or :window")
-          end
+            expect { driver.manage.new_window }.to have_deprecated(:new_window)
         end
       end
     end # Options
