@@ -68,6 +68,47 @@ module Selenium
           quit_driver
         end
 
+        describe '#new_window' do
+          it 'should switch to a new window' do
+            original_window = driver.window_handle
+            driver.switch_to.new_window(:window)
+
+            expect(driver.window_handles.size).to eq 2
+            expect(driver.window_handle).not_to eq original_window
+          end
+
+          it 'should switch to a new tab' do
+            original_window = driver.window_handle
+            driver.switch_to.new_window(:tab)
+
+            expect(driver.window_handles.size).to eq 2
+            expect(driver.window_handle).not_to eq original_window
+          end
+
+          it 'should raise exception when the new window type is not recognized' do
+            expect {
+              driver.switch_to.new_window(:unknown)
+            }.to raise_error(ArgumentError)
+          end
+
+          it 'should switch to the new window then close it when given a block' do
+            original_window = driver.window_handle
+
+            driver.switch_to.new_window do
+              expect(driver.window_handles.size).to eq 2
+            end
+
+            expect(driver.window_handles.size).to eq 1
+            expect(driver.window_handle).to eq original_window
+          end
+
+          it 'should not error if switching to a new window with a block that closes window' do
+            expect {
+              driver.switch_to.new_window { driver.close }
+            }.not_to raise_exception
+          end
+        end
+
         it 'should switch to a window and back when given a block' do
           driver.navigate.to url_for('xhtmlTest.html')
 

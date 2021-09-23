@@ -45,6 +45,34 @@ module Selenium
       end
 
       #
+      # Switch to a new top-level browsing context
+      #
+      # @param type either :tab or :window
+      #
+
+      def new_window(type = :window)
+        unless %i[window tab].include?(type)
+          raise ArgumentError, "Valid types are :tab and :window, received: #{type.inspect}"
+        end
+
+        handle = @bridge.new_window(type)['handle']
+
+        if block_given?
+          execute_and_close = proc do
+            yield(self)
+            begin
+              @bridge.close
+            rescue Error::NoSuchWindowError
+              # window already closed
+            end
+          end
+          window(handle, &execute_and_close)
+        else
+          window(handle)
+        end
+      end
+
+      #
       # switch to the given window handle
       #
       # If given a block, this method will switch back to the original window after
