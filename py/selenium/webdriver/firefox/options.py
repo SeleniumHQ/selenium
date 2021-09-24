@@ -150,17 +150,6 @@ class Options(ArgOptions):
         elif '-headless' in self._arguments:
             self._arguments.remove('-headless')
 
-    @property
-    def page_load_strategy(self) -> str:
-        return self._caps["pageLoadStrategy"]
-
-    @page_load_strategy.setter
-    def page_load_strategy(self, strategy: str):
-        if strategy in ["normal", "eager", "none"]:
-            self.set_capability("pageLoadStrategy", strategy)
-        else:
-            raise ValueError("Strategy can only be one of the following: normal, eager, none")
-
     def enable_mobile(self, android_package: str = "org.mozilla.firefox", android_activity=None, device_serial=None):
         super().enable_mobile(android_package, android_activity, device_serial)
 

@@ -62,17 +62,6 @@ class Options(ArgOptions):
     def accept_insecure_certs(self, value: bool):
         self._caps['acceptInsecureCerts'] = value
 
-    @property
-    def page_load_strategy(self) -> str:
-        return self._caps["pageLoadStrategy"]
-
-    @page_load_strategy.setter
-    def page_load_strategy(self, strategy: str):
-        if strategy in ["normal", "eager", "none"]:
-            self.set_capability("pageLoadStrategy", strategy)
-        else:
-            raise ValueError("Strategy can only be one of the following: normal, eager, none")
-
     def to_capabilities(self) -> dict:
         """Marshals the  options to an desired capabilities object.
         """

@@ -16,6 +16,7 @@
 # under the License.
 
 from abc import ABCMeta, abstractmethod
+from typing import NoReturn
 
 
 class BaseOptions(metaclass=ABCMeta):
@@ -36,6 +37,27 @@ class BaseOptions(metaclass=ABCMeta):
     def set_capability(self, name, value):
         """ Sets a capability """
         self._caps[name] = value
+
+    @property
+    def page_load_strategy(self) -> str:
+        """
+        :returns: page load strategy if set, otherwise "normal"
+        """
+        return self._caps["pageLoadStrategy"]
+
+    @page_load_strategy.setter
+    def page_load_strategy(self, strategy: str) -> NoReturn:
+        """
+        Determines the point at which a navigation command is returned:
+        https://w3c.github.io/webdriver/#dfn-table-of-page-load-strategies
+
+        :param strategy: the strategy corresponding to a document readiness state
+        """
+        if strategy in ["normal", "eager", "none"]:
+            self.set_capability("pageLoadStrategy", strategy)
+        else:
+            raise ValueError("Strategy can only be one of the following: normal, eager, none")
+
 
     def enable_mobile(self, android_package: str = None, android_activity: str = None, device_serial: str = None):
         """
