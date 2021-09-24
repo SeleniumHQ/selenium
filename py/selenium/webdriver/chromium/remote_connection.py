@@ -25,6 +25,7 @@ class ChromiumRemoteConnection(RemoteConnection):
         self._commands["launchApp"] = ('POST', '/session/$sessionId/chromium/launch_app')
         self._commands["setNetworkConditions"] = ('POST', '/session/$sessionId/chromium/network_conditions')
         self._commands["getNetworkConditions"] = ('GET', '/session/$sessionId/chromium/network_conditions')
+        self._commands["deleteNetworkConditions"] = ('DELETE', '/session/$sessionId/chromium/network_conditions')
         self._commands['executeCdpCommand'] = ('POST', '/session/$sessionId/{}/cdp/execute'.format(vendor_prefix))
         self._commands['getSinks'] = ('GET', '/session/$sessionId/{}/cast/get_sinks'.format(vendor_prefix))
         self._commands['getIssueMessage'] = ('GET', '/session/$sessionId/{}/cast/get_issue_message'.format(vendor_prefix))

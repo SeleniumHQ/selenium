@@ -139,6 +139,12 @@ class ChromiumDriver(RemoteWebDriver):
             'network_conditions': network_conditions
         })
 
+    def delete_network_conditions(self) -> NoReturn:
+        """
+        Resets Chromium network emulation settings.
+        """
+        self.execute("deleteNetworkConditions")
+
     def execute_cdp_cmd(self, cmd: str, cmd_args: dict):
         """
         Execute Chrome Devtools Protocol command and get returned result
