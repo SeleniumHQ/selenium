@@ -23,6 +23,7 @@ class ChromiumRemoteConnection(RemoteConnection):
         RemoteConnection.__init__(self, remote_server_addr, keep_alive, ignore_proxy=ignore_proxy)
         self.browser_name = browser_name
         self._commands["launchApp"] = ('POST', '/session/$sessionId/chromium/launch_app')
+        self._commands["setPermissions"] = ('POST', '/session/$sessionId/permissions')
         self._commands["setNetworkConditions"] = ('POST', '/session/$sessionId/chromium/network_conditions')
         self._commands["getNetworkConditions"] = ('GET', '/session/$sessionId/chromium/network_conditions')
         self._commands["deleteNetworkConditions"] = ('DELETE', '/session/$sessionId/chromium/network_conditions')

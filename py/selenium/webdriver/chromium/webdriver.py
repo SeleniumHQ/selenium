@@ -145,6 +145,20 @@ class ChromiumDriver(RemoteWebDriver):
         """
         self.execute("deleteNetworkConditions")
 
+    def set_permissions(self, name: str, value: str) -> NoReturn:
+        """
+        Sets Applicable Permission.
+
+        :Args:
+         - name: The item to set the permission on.
+         - value: The value to set on the item
+
+        :Usage:
+            ::
+                driver.set_permissions('clipboard-read', 'denied')
+        """
+        self.execute("setPermissions", {'descriptor': {'name': name}, 'state': value})
+
     def execute_cdp_cmd(self, cmd: str, cmd_args: dict):
         """
         Execute Chrome Devtools Protocol command and get returned result
