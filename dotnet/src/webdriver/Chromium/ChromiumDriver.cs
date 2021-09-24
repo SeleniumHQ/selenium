@@ -43,6 +43,7 @@ namespace OpenQA.Selenium.Chromium
         private const string DeleteNetworkConditionsCommand = "deleteNetworkConditions";
         private const string SendChromeCommand = "sendChromeCommand";
         private const string SendChromeCommandWithResult = "sendChromeCommandWithResult";
+        protected const string ExecuteCdp = "executeCdpCommand";
 
         private readonly string optionsCapabilityName;
         private DevToolsSession devToolsSession;
@@ -128,11 +129,12 @@ namespace OpenQA.Selenium.Chromium
         }
 
         /// <summary>
-        /// Executes a custom Chrome command.
+        /// Executes a custom Chrome Dev Tools Protocol Command.
         /// </summary>
         /// <param name="commandName">Name of the command to execute.</param>
         /// <param name="commandParameters">Parameters of the command to execute.</param>
-        public void ExecuteChromeCommand(string commandName, Dictionary<string, object> commandParameters)
+        /// <returns>An object representing the result of the command, if applicable.</returns>
+        public object ExecuteCdpCommand(string commandName, Dictionary<string, object> commandParameters)
         {
             if (commandName == null)
             {
@@ -142,7 +144,19 @@ namespace OpenQA.Selenium.Chromium
             Dictionary<string, object> parameters = new Dictionary<string, object>();
             parameters["cmd"] = commandName;
             parameters["params"] = commandParameters;
-            this.Execute(SendChromeCommand, parameters);
+            Response response = this.Execute(ExecuteCdp, parameters);
+            return response.Value;
+        }
+
+        /// <summary>
+        /// Executes a custom Chrome command.
+        /// </summary>
+        /// <param name="commandName">Name of the command to execute.</param>
+        /// <param name="commandParameters">Parameters of the command to execute.</param>
+        [Obsolete("ExecuteChromeCommand is deprecated in favor of ExecuteCdpCommand.")]
+        public void ExecuteChromeCommand(string commandName, Dictionary<string, object> commandParameters)
+        {
+            ExecuteCdpCommand(commandName, commandParameters);
         }
 
         /// <summary>
@@ -151,18 +165,10 @@ namespace OpenQA.Selenium.Chromium
         /// <param name="commandName">Name of the command to execute.</param>
         /// <param name="commandParameters">Parameters of the command to execute.</param>
         /// <returns>An object representing the result of the command.</returns>
+        [Obsolete("ExecuteChromeCommandWithResult is deprecated in favor of ExecuteCdpCommand.")]
         public object ExecuteChromeCommandWithResult(string commandName, Dictionary<string, object> commandParameters)
         {
-            if (commandName == null)
-            {
-                throw new ArgumentNullException("commandName", "commandName must not be null");
-            }
-
-            Dictionary<string, object> parameters = new Dictionary<string, object>();
-            parameters["cmd"] = commandName;
-            parameters["params"] = commandParameters;
-            Response response = this.Execute(SendChromeCommandWithResult, parameters);
-            return response.Value;
+            return ExecuteCdpCommand(commandName, commandParameters);
         }
 
         /// <summary>
@@ -248,7 +254,7 @@ namespace OpenQA.Selenium.Chromium
             return options.ToCapabilities();
         }
 
-        private void AddCustomChromeCommand(string commandName, string method, string resourcePath)
+        protected void AddCustomChromeCommand(string commandName, string method, string resourcePath)
         {
             HttpCommandInfo commandInfoToAdd = new HttpCommandInfo(method, resourcePath);
             this.CommandExecutor.TryAddCommand(commandName, commandInfoToAdd);
