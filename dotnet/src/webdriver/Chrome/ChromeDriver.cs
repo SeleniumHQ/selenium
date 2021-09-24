@@ -138,6 +138,7 @@ namespace OpenQA.Selenium.Chrome
         public ChromeDriver(ChromeDriverService service, ChromeOptions options, TimeSpan commandTimeout)
             : base(service, options, commandTimeout)
         {
+            this.AddCustomChromeCommand(ExecuteCdp, HttpCommandInfo.PostCommand, "/session/{sessionId}/goog/cdp/execute");
         }
 
     }

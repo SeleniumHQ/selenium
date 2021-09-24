@@ -106,6 +106,7 @@ namespace OpenQA.Selenium.Edge
         public EdgeDriver(EdgeDriverService service, EdgeOptions options, TimeSpan commandTimeout)
             : base(service, options, commandTimeout)
         {
+            this.AddCustomChromeCommand(ExecuteCdp, HttpCommandInfo.PostCommand, "/session/{sessionId}/ms/cdp/execute");
         }
     }
 }
