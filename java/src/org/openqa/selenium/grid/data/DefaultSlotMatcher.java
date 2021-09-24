@@ -47,24 +47,11 @@ public class DefaultSlotMatcher implements SlotMatcher, Serializable {
   @Override
   public boolean matches(Capabilities stereotype, Capabilities capabilities) {
 
-    Boolean initialMatch = stereotype.getCapabilityNames().stream()
-      // Matching of extension capabilities is implementation independent. Skip them
-      .filter(name -> !name.contains(":"))
-      // Platform matching is special, we do it below
-      .filter(name -> !"platform".equalsIgnoreCase(name) && !"platformName".equalsIgnoreCase(name))
-      .map(name -> {
-        if (capabilities.getCapability(name) instanceof String) {
-          return stereotype.getCapability(name).toString()
-            .equalsIgnoreCase(capabilities.getCapability(name).toString());
-        } else {
-          return capabilities.getCapability(name) == null ||
-                 Objects.equals(stereotype.getCapability(name), capabilities.getCapability(name));
-        }
-      })
-      .reduce(Boolean::logicalAnd)
-      .orElse(false);
+    if (!initialMatch(stereotype, capabilities)) {
+      return false;
+    }
 
-    if (!initialMatch) {
+    if (!platformVersionMatch(stereotype, capabilities)) {
       return false;
     }
 
@@ -82,4 +69,41 @@ public class DefaultSlotMatcher implements SlotMatcher, Serializable {
        stereotype.getPlatformName().is(capabilities.getPlatformName()));
     return browserNameMatch && browserVersionMatch && platformNameMatch;
   }
+
+  private Boolean initialMatch(Capabilities stereotype, Capabilities capabilities) {
+    return stereotype.getCapabilityNames().stream()
+      // Matching of extension capabilities is implementation independent. Skip them
+      .filter(name -> !name.contains(":"))
+      // Platform matching is special, we do later
+      .filter(name -> !"platform".equalsIgnoreCase(name) && !"platformName".equalsIgnoreCase(name))
+      .map(name -> {
+        if (capabilities.getCapability(name) instanceof String) {
+          return stereotype.getCapability(name).toString()
+            .equalsIgnoreCase(capabilities.getCapability(name).toString());
+        } else {
+          return capabilities.getCapability(name) == null ||
+                 Objects.equals(stereotype.getCapability(name), capabilities.getCapability(name));
+        }
+      })
+      .reduce(Boolean::logicalAnd)
+      .orElse(false);
+  }
+
+  private Boolean platformVersionMatch(Capabilities stereotype, Capabilities capabilities) {
+    /*
+      This platform version match is not W3C compliant but users can add Appium servers as
+      Nodes, so we avoid delaying the match until the Slot, which makes the whole matching
+      process faster.
+     */
+    return capabilities.getCapabilityNames()
+      .stream()
+      .filter(name -> name.contains("platformVersion"))
+      .map(
+        platformVersionCapName ->
+          Objects.equals(stereotype.getCapability(platformVersionCapName),
+                         capabilities.getCapability(platformVersionCapName)))
+      .reduce(Boolean::logicalAnd)
+      .orElse(true);
+  }
+
 }

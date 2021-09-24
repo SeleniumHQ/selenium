@@ -72,6 +72,85 @@ public class DefaultSlotMatcherTest {
   }
 
   @Test
+  public void matchesEmptyBrowser() {
+    Capabilities stereotype = new ImmutableCapabilities(
+      CapabilityType.BROWSER_NAME, "chrome",
+      CapabilityType.BROWSER_VERSION, "80",
+      CapabilityType.PLATFORM_NAME, Platform.WINDOWS
+    );
+    Capabilities capabilities = new ImmutableCapabilities(
+      CapabilityType.PLATFORM_NAME, Platform.WINDOWS
+    );
+    assertThat(slotMatcher.matches(stereotype, capabilities)).isTrue();
+  }
+
+  @Test
+  public void matchesPrefixedPlatformVersion() {
+    Capabilities stereotype = new ImmutableCapabilities(
+      CapabilityType.BROWSER_NAME, "chrome",
+      CapabilityType.BROWSER_VERSION, "80",
+      CapabilityType.PLATFORM_NAME, Platform.WINDOWS,
+      "prefixed:platformVersion", "10"
+    );
+    Capabilities capabilities = new ImmutableCapabilities(
+      CapabilityType.BROWSER_NAME, "chrome",
+      CapabilityType.BROWSER_VERSION, "80",
+      CapabilityType.PLATFORM_NAME, Platform.WINDOWS,
+      "prefixed:platformVersion", "10"
+    );
+    assertThat(slotMatcher.matches(stereotype, capabilities)).isTrue();
+  }
+
+  @Test
+  public void prefixedPlatformVersionDoesNotMatch() {
+    Capabilities stereotype = new ImmutableCapabilities(
+      CapabilityType.BROWSER_NAME, "chrome",
+      CapabilityType.BROWSER_VERSION, "80",
+      CapabilityType.PLATFORM_NAME, Platform.WINDOWS,
+      "prefixed:platformVersion", "10"
+    );
+    Capabilities capabilities = new ImmutableCapabilities(
+      CapabilityType.BROWSER_NAME, "chrome",
+      CapabilityType.BROWSER_VERSION, "80",
+      CapabilityType.PLATFORM_NAME, Platform.WINDOWS,
+      "prefixed:platformVersion", "11"
+    );
+    assertThat(slotMatcher.matches(stereotype, capabilities)).isFalse();
+  }
+
+  @Test
+  public void matchesWhenPrefixedPlatformVersionIsNotRequested() {
+    Capabilities stereotype = new ImmutableCapabilities(
+      CapabilityType.BROWSER_NAME, "chrome",
+      CapabilityType.BROWSER_VERSION, "80",
+      CapabilityType.PLATFORM_NAME, Platform.WINDOWS,
+      "prefixed:platformVersion", "10"
+    );
+    Capabilities capabilities = new ImmutableCapabilities(
+      CapabilityType.BROWSER_NAME, "chrome",
+      CapabilityType.BROWSER_VERSION, "80",
+      CapabilityType.PLATFORM_NAME, Platform.WINDOWS
+    );
+    assertThat(slotMatcher.matches(stereotype, capabilities)).isTrue();
+  }
+
+  @Test
+  public void prefixedPlatformVersionDoesNotMatchWhenNotPresentInStereotype() {
+    Capabilities stereotype = new ImmutableCapabilities(
+      CapabilityType.BROWSER_NAME, "chrome",
+      CapabilityType.BROWSER_VERSION, "80",
+      CapabilityType.PLATFORM_NAME, Platform.WINDOWS
+    );
+    Capabilities capabilities = new ImmutableCapabilities(
+      CapabilityType.BROWSER_NAME, "chrome",
+      CapabilityType.BROWSER_VERSION, "80",
+      CapabilityType.PLATFORM_NAME, Platform.WINDOWS,
+      "prefixed:platformVersion", "10"
+    );
+    assertThat(slotMatcher.matches(stereotype, capabilities)).isFalse();
+  }
+
+  @Test
   public void platformDoesNotMatch() {
     Capabilities stereotype = new ImmutableCapabilities(
       CapabilityType.BROWSER_NAME, "chrome",
