@@ -104,10 +104,6 @@ module Selenium
         @timeouts ||= Timeouts.new(@bridge)
       end
 
-      #
-      # @api beta This API may be changed or removed in a future release.
-      #
-
       def logs
         WebDriver.logger.deprecate('Manager#logs', 'Chrome::Driver#logs')
         @logs ||= Logs.new(@bridge)
@@ -134,10 +130,6 @@ module Selenium
                                "Try :tab or :window"
         end
       end
-
-      #
-      # @api beta This API may be changed or removed in a future release.
-      #
 
       def window
         @window ||= Window.new(@bridge)
