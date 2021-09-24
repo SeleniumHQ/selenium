@@ -255,4 +255,117 @@ public class DefaultSlotMatcherTest {
 
     assertThat(slotMatcher.matches(stereotype, capabilities)).isTrue();
   }
+
+  @Test
+  public void extensionPrefixedCapabilitiesMatches() {
+    Capabilities stereotype = new ImmutableCapabilities(
+      CapabilityType.BROWSER_NAME, "chrome",
+      CapabilityType.BROWSER_VERSION, "84",
+      CapabilityType.PLATFORM_NAME, Platform.WINDOWS,
+      "prefixed:cheese", "amsterdam"
+    );
+
+    Capabilities capabilities = new ImmutableCapabilities(
+      CapabilityType.BROWSER_NAME, "chrome",
+      CapabilityType.BROWSER_VERSION, "84",
+      CapabilityType.PLATFORM_NAME, Platform.WINDOWS,
+      "prefixed:cheese", "amsterdam"
+    );
+    assertThat(slotMatcher.matches(stereotype, capabilities)).isTrue();
+  }
+
+  @Test
+  public void extensionPrefixedCapabilitiesMatchesWhenNotPresentInStereotype() {
+    Capabilities stereotype = new ImmutableCapabilities(
+      CapabilityType.BROWSER_NAME, "chrome",
+      CapabilityType.BROWSER_VERSION, "84",
+      CapabilityType.PLATFORM_NAME, Platform.WINDOWS
+    );
+
+    Capabilities capabilities = new ImmutableCapabilities(
+      CapabilityType.BROWSER_NAME, "chrome",
+      CapabilityType.BROWSER_VERSION, "84",
+      CapabilityType.PLATFORM_NAME, Platform.WINDOWS,
+      "prefixed:cheese", "amsterdam"
+    );
+    assertThat(slotMatcher.matches(stereotype, capabilities)).isTrue();
+  }
+
+  @Test
+  public void extensionPrefixedCapabilitiesDoNotMatch() {
+    Capabilities stereotype = new ImmutableCapabilities(
+      CapabilityType.BROWSER_NAME, "chrome",
+      CapabilityType.BROWSER_VERSION, "84",
+      CapabilityType.PLATFORM_NAME, Platform.WINDOWS,
+      "prefixed:cheese", "amsterdam"
+    );
+
+    Capabilities capabilities = new ImmutableCapabilities(
+      CapabilityType.BROWSER_NAME, "chrome",
+      CapabilityType.BROWSER_VERSION, "84",
+      CapabilityType.PLATFORM_NAME, Platform.WINDOWS,
+      "prefixed:cheese", "gouda"
+    );
+    assertThat(slotMatcher.matches(stereotype, capabilities)).isFalse();
+  }
+
+  @Test
+  public void multipleExtensionPrefixedCapabilitiesMatch() {
+    Capabilities stereotype = new ImmutableCapabilities(
+      CapabilityType.BROWSER_NAME, "chrome",
+      CapabilityType.BROWSER_VERSION, "84",
+      CapabilityType.PLATFORM_NAME, Platform.WINDOWS,
+      "prefixed:cheese", "amsterdam",
+      "prefixed:fruit", "mango"
+    );
+
+    Capabilities capabilities = new ImmutableCapabilities(
+      CapabilityType.BROWSER_NAME, "chrome",
+      CapabilityType.BROWSER_VERSION, "84",
+      CapabilityType.PLATFORM_NAME, Platform.WINDOWS,
+      "prefixed:cheese", "amsterdam",
+      "prefixed:fruit", "mango"
+    );
+    assertThat(slotMatcher.matches(stereotype, capabilities)).isTrue();
+  }
+
+  @Test
+  public void multipleExtensionPrefixedCapabilitiesDoNotMatchWhenOneIsDifferent() {
+    Capabilities stereotype = new ImmutableCapabilities(
+      CapabilityType.BROWSER_NAME, "chrome",
+      CapabilityType.BROWSER_VERSION, "84",
+      CapabilityType.PLATFORM_NAME, Platform.WINDOWS,
+      "prefixed:cheese", "amsterdam",
+      "prefixed:fruit", "mango"
+    );
+
+    Capabilities capabilities = new ImmutableCapabilities(
+      CapabilityType.BROWSER_NAME, "chrome",
+      CapabilityType.BROWSER_VERSION, "84",
+      CapabilityType.PLATFORM_NAME, Platform.WINDOWS,
+      "prefixed:cheese", "amsterdam",
+      "prefixed:fruit", "orange"
+    );
+    assertThat(slotMatcher.matches(stereotype, capabilities)).isFalse();
+  }
+
+  @Test
+  public void vendorExtensionPrefixedCapabilitiesAreIgnoredForMatching() {
+    Capabilities stereotype = new ImmutableCapabilities(
+      CapabilityType.BROWSER_NAME, "chrome",
+      CapabilityType.BROWSER_VERSION, "84",
+      CapabilityType.PLATFORM_NAME, Platform.WINDOWS,
+      "goog:cheese", "amsterdam",
+      "ms:fruit", "mango"
+    );
+
+    Capabilities capabilities = new ImmutableCapabilities(
+      CapabilityType.BROWSER_NAME, "chrome",
+      CapabilityType.BROWSER_VERSION, "84",
+      CapabilityType.PLATFORM_NAME, Platform.WINDOWS,
+      "goog:cheese", "gouda",
+      "ms:fruit", "orange"
+    );
+    assertThat(slotMatcher.matches(stereotype, capabilities)).isTrue();
+  }
 }
