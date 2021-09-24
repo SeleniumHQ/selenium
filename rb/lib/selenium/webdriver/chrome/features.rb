@@ -44,7 +44,7 @@ module Selenium
         end
 
         def cast_sink_to_use=(name)
-          execute :set_cast_sink_to_use, {}, {'sinkName' => name}
+          execute :set_cast_sink_to_use, {}, {sinkName: name}
         end
 
         def cast_issue_message
@@ -52,11 +52,11 @@ module Selenium
         end
 
         def start_cast_tab_mirroring(name)
-          execute :start_cast_tab_mirroring, {}, {'sinkName' => name}
+          execute :start_cast_tab_mirroring, {}, {sinkName: name}
         end
 
         def stop_casting(name)
-          execute :stop_casting, {}, {'sinkName' => name}
+          execute :stop_casting, {}, {sinkName: name}
         end
 
         def network_conditions
