@@ -29,6 +29,7 @@ module Selenium
       class Driver < WebDriver::Driver
         EXTENSIONS = [DriverExtensions::HasAddons,
                       DriverExtensions::FullPageScreenshot,
+                      DriverExtensions::HasContext,
                       DriverExtensions::HasDevTools,
                       DriverExtensions::HasLogEvents,
                       DriverExtensions::HasNetworkInterception,

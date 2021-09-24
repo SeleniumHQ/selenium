@@ -49,6 +49,20 @@ module Selenium
           ensure
             File.delete(path) if File.exist?(path)
           end
+
+          it 'can get and set context' do
+            options = Options.new(prefs: {'browser.download.dir': 'foo/bar'})
+            create_driver!(capabilities: options) do |driver|
+              expect(driver.context).to eq 'content'
+
+              driver.context = 'chrome'
+              expect(driver.context).to eq 'chrome'
+
+              # This call can not be made when context is set to 'content'
+              dir = driver.execute_script("return Services.prefs.getStringPref('browser.download.dir')")
+              expect(dir).to eq 'foo/bar'
+            end
+          end
         end
       end
     end # Firefox

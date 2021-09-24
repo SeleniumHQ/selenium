@@ -23,6 +23,8 @@ module Selenium
       module Features
 
         FIREFOX_COMMANDS = {
+          get_context: [:get, 'session/:session_id/moz/context'],
+          set_context: [:post, 'session/:session_id/moz/context'],
           install_addon: [:post, 'session/:session_id/moz/addon/install'],
           uninstall_addon: [:post, 'session/:session_id/moz/addon/uninstall'],
           full_page_screenshot: [:get, 'session/:session_id/moz/screenshot/full']
@@ -46,6 +48,13 @@ module Selenium
           execute :full_page_screenshot
         end
 
+        def context=(context)
+          execute :set_context, {}, {context: context}
+        end
+
+        def context
+          execute :get_context
+        end
       end # Bridge
     end # Firefox
   end # WebDriver
