@@ -176,7 +176,7 @@ module Selenium
           expect(get_permission('clipboard-read')).to eq('prompt')
           expect(get_permission('clipboard-write')).to eq('granted')
 
-          driver.add_permissions('clipboard-read' => 'denied','clipboard-write' => 'prompt')
+          driver.add_permissions('clipboard-read' => 'denied', 'clipboard-write' => 'prompt')
 
           expect(get_permission('clipboard-read')).to eq('denied')
           expect(get_permission('clipboard-write')).to eq('prompt')
