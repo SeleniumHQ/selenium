@@ -126,6 +126,19 @@ module Selenium
           end
         end
 
+        it 'manages network features' do
+          driver.network_conditions = {offline: false, latency: 56, download_throughput: 789, upload_throughput: 600}
+          conditions = driver.network_conditions
+          expect(conditions['offline']).to eq false
+          expect(conditions['latency']).to eq 56
+          expect(conditions['download_throughput']).to eq 789
+          expect(conditions['upload_throughput']).to eq 600
+          driver.delete_network_conditions
+
+          error = /network conditions must be set before it can be retrieved/
+          expect { driver.network_conditions }.to raise_error(Error::UnknownError, error)
+        end
+
         # This requires cast sinks to run
         it 'casts' do
           # Does not get list correctly the first time for some reason

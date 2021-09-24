@@ -31,6 +31,7 @@ module Selenium
           stop_casting: [:post, 'session/:session_id/goog/cast/stop_casting'],
           get_network_conditions: [:get, 'session/:session_id/chromium/network_conditions'],
           set_network_conditions: [:post, 'session/:session_id/chromium/network_conditions'],
+          delete_network_conditions: [:delete, 'session/:session_id/chromium/network_conditions'],
           send_command: [:post, 'session/:session_id/goog/cdp/execute'],
           get_available_log_types: [:get, 'session/:session_id/se/log/types'],
           get_log: [:post, 'session/:session_id/se/log']
@@ -70,6 +71,10 @@ module Selenium
 
         def network_conditions=(conditions)
           execute :set_network_conditions, {}, {network_conditions: conditions}
+        end
+
+        def delete_network_conditions
+          execute :delete_network_conditions
         end
 
         def send_command(command_params)
