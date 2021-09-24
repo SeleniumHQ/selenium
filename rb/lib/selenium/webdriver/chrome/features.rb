@@ -23,6 +23,7 @@ module Selenium
       module Features
 
         CHROME_COMMANDS = {
+          launch_app: [:post, 'session/:session_id/chromium/launch_app'],
           get_cast_sinks: [:get, 'session/:session_id/goog/cast/get_sinks'],
           set_cast_sink_to_use: [:post, 'session/:session_id/goog/cast/set_sink_to_use'],
           start_cast_tab_mirroring: [:post, 'session/:session_id/goog/cast/start_tab_mirroring'],
@@ -37,6 +38,10 @@ module Selenium
 
         def commands(command)
           CHROME_COMMANDS[command] || self.class::COMMANDS[command]
+        end
+
+        def launch_app(id)
+          execute :launch_app, {}, {id: id}
         end
 
         def cast_sinks

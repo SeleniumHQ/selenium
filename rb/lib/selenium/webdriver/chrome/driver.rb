@@ -32,6 +32,7 @@ module Selenium
                       DriverExtensions::HasNetworkConditions,
                       DriverExtensions::HasNetworkInterception,
                       DriverExtensions::HasWebStorage,
+                      DriverExtensions::HasLaunching,
                       DriverExtensions::HasLocation,
                       DriverExtensions::DownloadsFiles,
                       DriverExtensions::HasDevTools,
