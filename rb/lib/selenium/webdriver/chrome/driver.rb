@@ -34,6 +34,7 @@ module Selenium
                       DriverExtensions::HasWebStorage,
                       DriverExtensions::HasLaunching,
                       DriverExtensions::HasLocation,
+                      DriverExtensions::HasPermissions,
                       DriverExtensions::DownloadsFiles,
                       DriverExtensions::HasDevTools,
                       DriverExtensions::HasAuthentication,
