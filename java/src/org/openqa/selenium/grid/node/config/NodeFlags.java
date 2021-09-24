@@ -129,7 +129,7 @@ public class NodeFlags implements HasRoles {
     prefixed = true,
     example = "\n" +
               "display-name = \"Firefox Nightly\"\n" +
-              "webdriver-executable = \"/usr/local/bin/chromedriver\"\n" +
+              "webdriver-executable = \"/usr/local/bin/geckodriver\"\n" +
               "max-sessions = 2\n" +
               "stereotype = \"{\"browserName\": \"firefox\", \"browserVersion\": \"86\", " +
               "\"moz:firefoxOptions\": " +

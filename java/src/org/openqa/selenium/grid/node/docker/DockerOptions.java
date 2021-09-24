@@ -15,7 +15,9 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.grid.docker;
+package org.openqa.selenium.grid.node.docker;
+
+import static org.openqa.selenium.Platform.WINDOWS;
 
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.ImmutableMultimap;
@@ -48,8 +50,6 @@ import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.logging.Logger;
-
-import static org.openqa.selenium.Platform.WINDOWS;
 
 public class DockerOptions {
 

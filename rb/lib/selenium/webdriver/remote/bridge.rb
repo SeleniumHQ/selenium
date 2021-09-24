@@ -25,7 +25,7 @@ module Selenium
 
         PORT = 4444
 
-        attr_accessor :context, :http, :file_detector
+        attr_accessor :http, :file_detector
         attr_reader :capabilities
 
         #

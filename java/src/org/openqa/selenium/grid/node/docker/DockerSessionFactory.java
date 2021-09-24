@@ -15,7 +15,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.grid.docker;
+package org.openqa.selenium.grid.node.docker;
 
 import static java.util.Optional.ofNullable;
 import static org.openqa.selenium.docker.ContainerConfig.image;

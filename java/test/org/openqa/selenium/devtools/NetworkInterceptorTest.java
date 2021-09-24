@@ -15,7 +15,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.support.devtools;
+package org.openqa.selenium.devtools;
 
 import com.google.common.net.MediaType;
 import org.junit.After;
@@ -25,16 +25,21 @@ import org.junit.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.devtools.HasDevTools;
+import org.openqa.selenium.devtools.NetworkInterceptor;
 import org.openqa.selenium.environment.webserver.NettyAppServer;
 import org.openqa.selenium.remote.http.Contents;
+import org.openqa.selenium.remote.http.Filter;
 import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.remote.http.Route;
 import org.openqa.selenium.testing.drivers.WebDriverBuilder;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import static com.google.common.net.MediaType.XHTML_UTF_8;
+import static java.net.HttpURLConnection.HTTP_MOVED_TEMP;
 import static java.net.HttpURLConnection.HTTP_NOT_FOUND;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
 import static org.assertj.core.api.Assumptions.assumeThat;
 import static org.openqa.selenium.remote.http.Contents.utf8String;
 import static org.openqa.selenium.testing.Safely.safelyCall;
@@ -50,7 +55,7 @@ public class NetworkInterceptorTest {
   public static void shouldTestBeRunAtAll() {
     assumeThat(Boolean.getBoolean("selenium.skiptest")).isFalse();
   }
-  
+
   @Before
   public void setup() {
     driver = new WebDriverBuilder().get();
@@ -58,10 +63,19 @@ public class NetworkInterceptorTest {
     assumeThat(driver).isInstanceOf(HasDevTools.class);
     assumeThat(isFirefoxVersionOlderThan(87, driver)).isFalse();
 
-    appServer = new NettyAppServer(req -> new HttpResponse()
-      .setStatus(200)
-      .addHeader("Content-Type", MediaType.XHTML_UTF_8.toString())
-      .setContent(utf8String("<html><head><title>Hello, World!</title></head><body/></html>")));
+    Route route = Route.combine(
+      Route.matching(req -> true)
+        .to(() -> req -> new HttpResponse()
+          .setStatus(200)
+          .addHeader("Content-Type", XHTML_UTF_8.toString())
+          .setContent(utf8String("<html><head><title>Hello, World!</title></head><body/></html>"))),
+      Route.get("/redirect")
+        .to(() -> req -> new HttpResponse()
+          .setStatus(HTTP_MOVED_TEMP)
+          .setHeader("Location", "/cheese")
+          .setContent(Contents.utf8String("Delicious"))));
+
+    appServer = new NettyAppServer(route);
     appServer.start();
   }
 
@@ -139,5 +153,35 @@ public class NetworkInterceptorTest {
     driver.get(appServer.whereIs("/cheese"));
     String text = driver.findElement(By.tagName("body")).getText();
     assertThat(text).contains("Hello, World!");
+  }
+
+  @Test
+  public void shouldBeAbleToInterceptAResponse() {
+    try (NetworkInterceptor networkInterceptor = new NetworkInterceptor(
+      driver,
+      (Filter) next -> req -> {
+        HttpResponse res = next.execute(req);
+        res.addHeader("Content-Type", MediaType.HTML_UTF_8.toString());
+        res.setContent(Contents.utf8String("Sausages"));
+        return res;
+      })) {
+
+      driver.get(appServer.whereIs("/cheese"));
+    }
+
+    String body = driver.findElement(By.tagName("body")).getText();
+    assertThat(body).contains("Sausages");
+  }
+
+  @Test
+  public void shouldHandleRedirects() {
+    try (NetworkInterceptor networkInterceptor = new NetworkInterceptor(
+      driver,
+      (Filter) next -> next::execute)) {
+      driver.get(appServer.whereIs("/redirect"));
+
+      String body = driver.findElement(By.tagName("body")).getText();
+      assertThat(body).contains("Hello, World!");
+    }
   }
 }

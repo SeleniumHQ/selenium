@@ -16,10 +16,11 @@
 // under the License.
 
 import {
+  Badge,
   Box,
   createStyles,
   Grid,
-  Theme,
+  Tooltip,
   Typography,
   withStyles
 } from '@material-ui/core'
@@ -27,15 +28,19 @@ import React, { ReactNode } from 'react'
 import StereotypeInfo from '../../models/stereotype-info'
 import BrowserLogo from '../common/BrowserLogo'
 import { StyleRules } from '@material-ui/core/styles'
+import OsLogo from '../common/OsLogo'
+import { Size } from '../../models/size'
 
-const useStyles = (theme: Theme): StyleRules => createStyles(
+const useStyles = (): StyleRules => createStyles(
   {
-    slotCount: {
-      marginBottom: 5
+    boxStyle: {
+      marginBottom: 5,
+      marginTop: 20,
+      marginRight: 35
     },
     browserVersion: {
       marginBottom: 5,
-      marginRight: 20
+      marginRight: 7
     }
   })
 
@@ -51,20 +56,19 @@ class Stereotypes extends React.Component<StereotypesProps, {}> {
     function CreateStereotypeGridItem (slotStereotype: StereotypeInfo, index: any): JSX.Element {
       return (
         <Grid item key={index}>
-          <Grid container alignItems='center' spacing={1}>
-            <Grid item>
-              <BrowserLogo browserName={slotStereotype.browserName} />
-            </Grid>
-            <Grid item>
-              <Typography className={classes.slotCount}>
-                {slotStereotype.slotCount}
-              </Typography>
-            </Grid>
-            <Grid item>
-              <Typography className={classes.browserVersion} variant='caption'>
-                {slotStereotype.browserVersion}
-              </Typography>
-            </Grid>
+          <Grid container alignItems="center" spacing={1}>
+            <Tooltip title={JSON.stringify(slotStereotype.rawData.stereotype)}>
+              <Badge badgeContent={slotStereotype.slotCount} color={'primary'}
+                     className={classes.boxStyle}>
+                <Grid item className={classes.browserVersion}>
+                  <OsLogo osName={slotStereotype.platformName} size={Size.XS}/>
+                  <BrowserLogo browserName={slotStereotype.browserName}/>
+                  <Typography variant="caption">
+                    {slotStereotype.browserVersion}
+                  </Typography>
+                </Grid>
+              </Badge>
+            </Tooltip>
           </Grid>
         </Grid>
       )

@@ -20,6 +20,8 @@ package org.openqa.selenium.grid.data;
 import org.openqa.selenium.Capabilities;
 
 import java.io.Serializable;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -33,7 +35,7 @@ import java.util.Objects;
  *       <ul>
  *         <li>browserName
  *         <li>browserVersion
- *         <li>platform
+ *         <li>platformName
  *       </ul>
  *       Then the {@code stereotype} must contain the same values.
  * </ul>
@@ -44,34 +46,31 @@ import java.util.Objects;
  */
 public class DefaultSlotMatcher implements SlotMatcher, Serializable {
 
+  /*
+    List of prefixed extension capabilities we never should try to match, they should be
+    matched in the Node or in the browser driver.
+   */
+  private static final List<String> EXTENSION_CAPABILITIES_PREFIXES = Arrays.asList(
+    "goog:", "moz:", "ms:", "se:");
+
   @Override
   public boolean matches(Capabilities stereotype, Capabilities capabilities) {
 
-    Boolean initialMatch = stereotype.getCapabilityNames().stream()
-      // Matching of extension capabilities is implementation independent. Skip them
-      .filter(name -> !name.contains(":"))
-      // Platform matching is special, we do it below
-      .filter(name -> !"platform".equalsIgnoreCase(name) && !"platformName".equalsIgnoreCase(name))
-      .map(name -> {
-        Object value = capabilities.getCapability(name);
-        boolean matches;
-        if (value instanceof String) {
-          matches = stereotype.getCapability(name).toString().equalsIgnoreCase(value.toString());
-        } else {
-          matches = value == null || Objects.equals(stereotype.getCapability(name), value);
-        }
-        return matches;
-      })
-      .reduce(Boolean::logicalAnd)
-      .orElse(false);
-
-    if (!initialMatch) {
+    if (!initialMatch(stereotype, capabilities)) {
       return false;
     }
 
-    // Simple browser, browserVersion and platformName match
+    if (!platformVersionMatch(stereotype, capabilities)) {
+      return false;
+    }
+
+    if (!extensionCapabilitiesMatch(stereotype, capabilities)) {
+      return false;
+    }
+
+    // At the end, a simple browser, browserVersion and platformName match
     boolean browserNameMatch =
-      capabilities.getBrowserName() == null ||
+      (capabilities.getBrowserName() == null || capabilities.getBrowserName().isEmpty()) ||
       Objects.equals(stereotype.getBrowserName(), capabilities.getBrowserName());
     boolean browserVersionMatch =
       (capabilities.getBrowserVersion() == null || capabilities.getBrowserVersion().isEmpty()) ||
@@ -83,4 +82,66 @@ public class DefaultSlotMatcher implements SlotMatcher, Serializable {
        stereotype.getPlatformName().is(capabilities.getPlatformName()));
     return browserNameMatch && browserVersionMatch && platformNameMatch;
   }
+
+  private Boolean initialMatch(Capabilities stereotype, Capabilities capabilities) {
+    return stereotype.getCapabilityNames().stream()
+      // Matching of extension capabilities is implementation independent. Skip them
+      .filter(name -> !name.contains(":"))
+      // Platform matching is special, we do later
+      .filter(name -> !"platform".equalsIgnoreCase(name) && !"platformName".equalsIgnoreCase(name))
+      .map(name -> {
+        if (capabilities.getCapability(name) instanceof String) {
+          return stereotype.getCapability(name).toString()
+            .equalsIgnoreCase(capabilities.getCapability(name).toString());
+        } else {
+          return capabilities.getCapability(name) == null ||
+                 Objects.equals(stereotype.getCapability(name), capabilities.getCapability(name));
+        }
+      })
+      .reduce(Boolean::logicalAnd)
+      .orElse(false);
+  }
+
+  private Boolean platformVersionMatch(Capabilities stereotype, Capabilities capabilities) {
+    /*
+      This platform version match is not W3C compliant but users can add Appium servers as
+      Nodes, so we avoid delaying the match until the Slot, which makes the whole matching
+      process faster.
+     */
+    return capabilities.getCapabilityNames()
+      .stream()
+      .filter(name -> name.contains("platformVersion"))
+      .map(
+        platformVersionCapName ->
+          Objects.equals(stereotype.getCapability(platformVersionCapName),
+                         capabilities.getCapability(platformVersionCapName)))
+      .reduce(Boolean::logicalAnd)
+      .orElse(true);
+  }
+
+  private Boolean extensionCapabilitiesMatch(Capabilities stereotype, Capabilities capabilities) {
+    /*
+      We match extension capabilities when they are not prefixed with any of the
+      EXTENSION_CAPABILITIES_PREFIXES items. Also, we match them only when the capabilities
+      of the new session request contains that specific extension capability.
+     */
+    return stereotype.getCapabilityNames().stream()
+      .filter(name -> name.contains(":"))
+      .filter(name -> capabilities.asMap().containsKey(name))
+      .filter(name -> EXTENSION_CAPABILITIES_PREFIXES.stream().noneMatch(name::contains))
+      .map(
+        name -> {
+          if (capabilities.getCapability(name) instanceof String) {
+            return stereotype.getCapability(name).toString()
+              .equalsIgnoreCase(capabilities.getCapability(name).toString());
+          } else {
+            return capabilities.getCapability(name) == null ||
+                   Objects.equals(stereotype.getCapability(name), capabilities.getCapability(name));
+          }
+        }
+      )
+      .reduce(Boolean::logicalAnd)
+      .orElse(true);
+  }
+
 }

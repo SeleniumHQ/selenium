@@ -19,12 +19,12 @@ namespace OpenQA.Selenium.DevTools
         [IgnoreBrowser(Selenium.Browser.Safari, "Safari does not support Chrome DevTools Protocol")]
         public async Task VerifyEntryAddedAndClearLog()
         {
-            var domains = session.GetVersionSpecificDomains<V91.DevToolsSessionDomains>();
+            var domains = session.GetVersionSpecificDomains<V93.DevToolsSessionDomains>();
             ManualResetEventSlim sync = new ManualResetEventSlim(false);
-            EventHandler<V91.Log.EntryAddedEventArgs> entryAddedHandler = (sender, e) =>
+            EventHandler<V93.Log.EntryAddedEventArgs> entryAddedHandler = (sender, e) =>
             {
                 Assert.That(e.Entry.Text.Contains("404"));
-                Assert.That(e.Entry.Level == V91.Log.LogEntryLevelValues.Error);
+                Assert.That(e.Entry.Level == V93.Log.LogEntryLevelValues.Error);
                 sync.Set();
             };
 

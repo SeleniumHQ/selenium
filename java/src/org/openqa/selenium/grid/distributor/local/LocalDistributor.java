@@ -17,6 +17,17 @@
 
 package org.openqa.selenium.grid.distributor.local;
 
+import static com.google.common.collect.ImmutableSet.toImmutableSet;
+import static org.openqa.selenium.grid.data.Availability.DOWN;
+import static org.openqa.selenium.grid.data.Availability.DRAINING;
+import static org.openqa.selenium.internal.Debug.getDebugLogLevel;
+import static org.openqa.selenium.remote.RemoteTags.CAPABILITIES;
+import static org.openqa.selenium.remote.RemoteTags.CAPABILITIES_EVENT;
+import static org.openqa.selenium.remote.RemoteTags.SESSION_ID;
+import static org.openqa.selenium.remote.RemoteTags.SESSION_ID_EVENT;
+import static org.openqa.selenium.remote.tracing.AttributeKey.SESSION_URI;
+import static org.openqa.selenium.remote.tracing.Tags.EXCEPTION;
+
 import com.google.common.collect.ImmutableSet;
 
 import org.openqa.selenium.Beta;
@@ -92,17 +103,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
-import static com.google.common.collect.ImmutableSet.toImmutableSet;
-import static org.openqa.selenium.grid.data.Availability.DOWN;
-import static org.openqa.selenium.grid.data.Availability.DRAINING;
-import static org.openqa.selenium.internal.Debug.getDebugLogLevel;
-import static org.openqa.selenium.remote.RemoteTags.CAPABILITIES;
-import static org.openqa.selenium.remote.RemoteTags.CAPABILITIES_EVENT;
-import static org.openqa.selenium.remote.RemoteTags.SESSION_ID;
-import static org.openqa.selenium.remote.RemoteTags.SESSION_ID_EVENT;
-import static org.openqa.selenium.remote.tracing.AttributeKey.SESSION_URI;
-import static org.openqa.selenium.remote.tracing.Tags.EXCEPTION;
-
 public class LocalDistributor extends Distributor implements Closeable {
 
   private static final Logger LOG = Logger.getLogger(LocalDistributor.class.getName());
@@ -145,7 +145,8 @@ public class LocalDistributor extends Distributor implements Closeable {
     SlotSelector slotSelector,
     Secret registrationSecret,
     Duration healthcheckInterval,
-    boolean rejectUnsupportedCaps) {
+    boolean rejectUnsupportedCaps,
+    Duration sessionRequestRetryInterval) {
     super(tracer, clientFactory, registrationSecret);
     this.tracer = Require.nonNull("Tracer", tracer);
     this.bus = Require.nonNull("Event bus", bus);
@@ -158,6 +159,7 @@ public class LocalDistributor extends Distributor implements Closeable {
     this.model = new GridModel(bus);
     this.nodes = new ConcurrentHashMap<>();
     this.rejectUnsupportedCaps = rejectUnsupportedCaps;
+    Require.nonNull("Session request interval", sessionRequestRetryInterval);
 
     bus.addListener(NodeStatusEvent.listener(this::register));
     bus.addListener(NodeStatusEvent.listener(model::refresh));
@@ -183,7 +185,8 @@ public class LocalDistributor extends Distributor implements Closeable {
     bus.addListener(NodeDrainComplete.listener(this::remove));
 
     purgeDeadNodes.submit(model::purgeDeadNodes, Duration.ofSeconds(30), Duration.ofSeconds(30));
-    createNewSession.submit(newSessionRunnable, Duration.ofSeconds(5), Duration.ofSeconds(5));
+    createNewSession
+      .submit(newSessionRunnable, sessionRequestRetryInterval, sessionRequestRetryInterval);
   }
 
   public static Distributor create(Config config) {
@@ -193,7 +196,8 @@ public class LocalDistributor extends Distributor implements Closeable {
     HttpClient.Factory clientFactory = new NetworkOptions(config).getHttpClientFactory(tracer);
     SessionMap sessions = new SessionMapOptions(config).getSessionMap();
     SecretOptions secretOptions = new SecretOptions(config);
-    NewSessionQueue sessionQueue = new NewSessionQueueOptions(config).getSessionQueue(
+    NewSessionQueueOptions newSessionQueueOptions = new NewSessionQueueOptions(config);
+    NewSessionQueue sessionQueue = newSessionQueueOptions.getSessionQueue(
       "org.openqa.selenium.grid.sessionqueue.remote.RemoteNewSessionQueue");
     return new LocalDistributor(
       tracer,
@@ -204,7 +208,8 @@ public class LocalDistributor extends Distributor implements Closeable {
       distributorOptions.getSlotSelector(),
       secretOptions.getRegistrationSecret(),
       distributorOptions.getHealthCheckInterval(),
-      distributorOptions.shouldRejectUnsupportedCaps());
+      distributorOptions.shouldRejectUnsupportedCaps(),
+      newSessionQueueOptions.getSessionRequestRetryInterval());
   }
 
   @Override

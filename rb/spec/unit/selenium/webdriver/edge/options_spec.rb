@@ -133,8 +133,13 @@ module Selenium
         end
 
         describe '#add_option' do
-          it 'adds an option' do
+          it 'adds an option with ordered pairs' do
             options.add_option(:foo, 'bar')
+            expect(options.instance_variable_get('@options')[:foo]).to eq('bar')
+          end
+
+          it 'adds an option with Hash' do
+            options.add_option(foo: 'bar')
             expect(options.instance_variable_get('@options')[:foo]).to eq('bar')
           end
         end
@@ -168,9 +173,12 @@ module Selenium
             expect(options.as_json).to eq("browserName" => "MicrosoftEdge", "ms:edgeOptions" => {})
           end
 
-          it 'returns added option' do
+          it 'returns added options' do
             options.add_option(:foo, 'bar')
-            expect(options.as_json).to eq("browserName" => "MicrosoftEdge", "ms:edgeOptions" => {"foo" => "bar"})
+            options.add_option('foo:bar', {foo: 'bar'})
+            expect(options.as_json).to eq("browserName" => "MicrosoftEdge",
+                                          "foo:bar" => {"foo" => "bar"},
+                                          "ms:edgeOptions" => {"foo" => "bar"})
           end
 
           it 'returns a JSON hash' do
@@ -202,7 +210,8 @@ module Selenium
                                exclude_switches: %w[foobar barfoo],
                                minidump_path: 'linux/only',
                                perf_logging_prefs: {'enable_network': true},
-                               window_types: %w[normal devtools])
+                               window_types: %w[normal devtools],
+                               'custom:options': {foo: 'bar'})
 
             key = 'ms:edgeOptions'
             expect(opts.as_json).to eq('browserName' => 'MicrosoftEdge',
@@ -216,6 +225,7 @@ module Selenium
                                                       'pageLoad' => 400000,
                                                       'implicit' => 1},
                                        'setWindowRect' => false,
+                                       'custom:options' => {'foo' => 'bar'},
                                        key => {'args' => %w[foo bar],
                                                'prefs' => {'foo' => 'bar',
                                                            'key_that_should_not_be_camelcased' => 'baz'},

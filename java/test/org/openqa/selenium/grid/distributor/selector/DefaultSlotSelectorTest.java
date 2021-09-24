@@ -132,6 +132,37 @@ public class DefaultSlotSelectorTest {
   }
 
   @Test
+  public void theNodeWhichHasExceededMaxSessionsIsNotSelected() {
+    Capabilities chrome = new ImmutableCapabilities("browserName", "chrome");
+
+    NodeStatus lightLoad =
+      createNode(ImmutableList.of(chrome), 12, 2);
+    NodeStatus mediumLoad =
+      createNode(ImmutableList.of(chrome), 12, 5);
+    NodeStatus maximumLoad =
+      createNode(ImmutableList.of(chrome), 12, 12);
+
+    Set<SlotId> ids = selector.selectSlot(chrome, ImmutableSet.of(maximumLoad, mediumLoad, lightLoad));
+    SlotId expected = ids.iterator().next();
+
+    // The slot should belong to the Node with light load
+    assertThat(lightLoad.getSlots().stream())
+      .anyMatch(slot -> expected.equals(slot.getId()));
+
+    // The node whose current number of sessions is greater than or equal to the max sessions is not included
+    // Hence, the node with the maximum load is skipped
+    ImmutableSet<NodeId> nodeIds = ids.stream()
+      .map(SlotId::getOwningNodeId)
+      .distinct()
+      .collect(toImmutableSet());
+    assertThat(nodeIds).doesNotContain(maximumLoad.getNodeId());
+    assertThat(nodeIds)
+      .containsSequence(
+        lightLoad.getNodeId(),
+        mediumLoad.getNodeId());
+  }
+
+  @Test
   public void nodesAreOrderedByNumberOfSupportedBrowsersAndLoad() {
     Capabilities chrome = new ImmutableCapabilities("browserName", "chrome");
     Capabilities firefox = new ImmutableCapabilities("browserName", "firefox");
@@ -161,6 +192,7 @@ public class DefaultSlotSelectorTest {
       .anyMatch(slot -> expected.equals(slot.getId()));
 
     // Nodes are ordered by the diversity of supported browsers, then by load
+    // The node whose current number of sessions is greater than or equal to the max sessions is not included
     ImmutableSet<NodeId> nodeIds = ids.stream()
       .map(SlotId::getOwningNodeId)
       .distinct()
@@ -169,7 +201,6 @@ public class DefaultSlotSelectorTest {
       .containsSequence(
         highLoadAndOneBrowser.getNodeId(),
         mediumLoadAndTwoBrowsers.getNodeId(),
-        mediumLoadAndOtherTwoBrowsers.getNodeId(),
         lightLoadAndThreeBrowsers.getNodeId());
   }
 

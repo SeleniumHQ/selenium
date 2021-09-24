@@ -2,6 +2,7 @@ licenses(["notice"])
 
 exports_files(
     [
+        "favourite_colour-1.1-an+fx.xpi",
         "firebug-1.5.0-fx.xpi",
         "mooltipass-1.1.87.xpi",
     ],

@@ -139,9 +139,10 @@ public class NodeStatus {
     return slots.stream().anyMatch(slot -> slot.getSession() == null);
   }
 
+  // Check if the Node's max session limit is not exceeded and has a free slot that supports the capability.
   public boolean hasCapacity(Capabilities caps) {
-    return slots.stream()
-      .anyMatch(slot -> slot.getSession() == null && slot.isSupporting(caps));
+    return slots.stream().filter(slot -> slot.getSession() != null).count() < maxSessionCount &&
+           slots.stream().anyMatch(slot -> slot.getSession() == null && slot.isSupporting(caps));
   }
 
   public int getMaxSessionCount() {

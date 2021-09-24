@@ -28,10 +28,13 @@ module Selenium
 
       class Driver < WebDriver::Driver
         EXTENSIONS = [DriverExtensions::HasCDP,
+                      DriverExtensions::HasCasting,
                       DriverExtensions::HasNetworkConditions,
                       DriverExtensions::HasNetworkInterception,
                       DriverExtensions::HasWebStorage,
+                      DriverExtensions::HasLaunching,
                       DriverExtensions::HasLocation,
+                      DriverExtensions::HasPermissions,
                       DriverExtensions::DownloadsFiles,
                       DriverExtensions::HasDevTools,
                       DriverExtensions::HasAuthentication,

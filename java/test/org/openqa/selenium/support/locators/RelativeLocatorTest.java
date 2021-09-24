@@ -20,6 +20,7 @@ package org.openqa.selenium.support.locators;
 import org.junit.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.environment.webserver.Page;
 import org.openqa.selenium.testing.JUnit4TestBase;
 
 import java.util.List;
@@ -44,7 +45,6 @@ public class RelativeLocatorTest extends JUnit4TestBase {
     List<String> ids = elements.stream().map(e -> e.getAttribute("id")).collect(Collectors.toList());
 
     assertThat(ids).containsExactly("mid", "above");
-
   }
 
   @Test
@@ -164,5 +164,37 @@ public class RelativeLocatorTest extends JUnit4TestBase {
     //    because of DOM insertion order)
     List<String> ids = seen.stream().map(e -> e.getAttribute("id")).collect(Collectors.toList());
     assertThat(ids).containsExactly("second", "eighth", "fourth", "sixth", "first", "third", "seventh", "ninth");
+  }
+
+  @Test
+  public void ensureNoRepeatedElements() {
+    String url = appServer.create(new Page()
+      .withTitle("Repeated Elements")
+      .withStyles(" .c {\n" +
+        "    \tposition: absolute;\n" +
+        "    \tborder: 1px solid black;\n" +
+        "    \theight: 50px;\n" +
+        "    \twidth: 50px;\n" +
+        "    }")
+      .withBody("<span style=\"position: relative;\">\n" +
+        "    <div id= \"a\" class=\"c\" style=\"left:25;top:0;\">El-A</div>\n" +
+        "    <div id= \"b\" class=\"c\" style=\"left:78;top:30;\">El-B</div>\n" +
+        "    <div id= \"c\" class=\"c\" style=\"left:131;top:60;\">El-C</div>\n" +
+        "    <div id= \"d\" class=\"c\" style=\"left:0;top:53;\">El-D</div>\n" +
+        "    <div id= \"e\" class=\"c\" style=\"left:53;top:83;\">El-E</div>\n" +
+        "    <div id= \"f\" class=\"c\" style=\"left:106;top:113;\">El-F</div>\n" +
+        "  </span>"));
+
+    driver.get(url);
+
+    WebElement base = driver.findElement(By.id("e"));
+    List<WebElement> cells = driver.findElements(with(tagName("div")).above(base));
+
+    WebElement a = driver.findElement(By.id("a"));
+    WebElement b = driver.findElement(By.id("b"));
+
+    assertThat(cells)
+      .describedAs(cells.stream().map(e -> e.getAttribute("id")).collect(Collectors.joining(", ")))
+      .isEqualTo(List.of(b, a));
   }
 }

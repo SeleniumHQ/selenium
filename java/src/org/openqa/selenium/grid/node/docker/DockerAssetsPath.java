@@ -15,23 +15,27 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.safari;
+package org.openqa.selenium.grid.node.docker;
 
-import static java.util.Collections.singletonMap;
-import static org.openqa.selenium.remote.http.HttpMethod.POST;
+import org.openqa.selenium.remote.SessionId;
 
-import org.openqa.selenium.remote.CommandInfo;
-import org.openqa.selenium.remote.service.DriverCommandExecutor;
-import org.openqa.selenium.remote.service.DriverService;
+import java.io.File;
 
-import java.util.Map;
+public class DockerAssetsPath {
 
-class SafariDriverCommandExecutor extends DriverCommandExecutor {
+  private final String hostPath;
+  private final String containerPath;
 
-  private static final Map<String, CommandInfo> SAFARI_COMMANDS = singletonMap(
-      "SAFARI_NEW_WINDOW", new CommandInfo("/session/:sessionId/apple/window/new", POST));
+  public DockerAssetsPath(String hostPath, String containerPath) {
+    this.hostPath = hostPath;
+    this.containerPath = containerPath;
+  }
 
-  SafariDriverCommandExecutor(DriverService service) {
-    super(service, SAFARI_COMMANDS);
+  public String getHostPath(SessionId id) {
+    return this.hostPath + File.separator + id;
+  }
+
+  public String getContainerPath(SessionId id) {
+    return this.containerPath + File.separator + id;
   }
 }

@@ -1229,6 +1229,19 @@ class WebDriver {
     if (target && cdpTargets.indexOf(target.toLowerCase()) === -1) {
       throw new error.InvalidArgumentError('invalid target value')
     }
+
+    if (debuggerAddress.match(/\/se\/cdp/)) {
+      if (debuggerAddress.match("ws:\/\/", "http:\/\/")) {
+        return debuggerAddress.replace("ws:\/\/", "http:\/\/") 
+      }
+      else if (debuggerAddress.match("wss:\/\/", "https:\/\/")) {
+        return debuggerAddress.replace("wss:\/\/", "https:\/\/") 
+      }
+      else {
+      return debuggerAddress
+      }
+    }
+
     const path = '/json/version'
     let request = new http.Request('GET', path)
     let client = new http.HttpClient('http://' + debuggerAddress)
@@ -1246,14 +1259,6 @@ class WebDriver {
    * @param connection CDP Connection
    */
   async register(username, password, connection) {
-    await connection.execute(
-      'Network.setCacheDisabled',
-      this.getRandomNumber(1, 10),
-      {
-        cacheDisabled: true,
-      },
-      null
-    )
 
     this._wsConnection.on('message', (message) => {
       const params = JSON.parse(message)
@@ -1292,8 +1297,69 @@ class WebDriver {
       },
       null
     )
+    await connection.execute(
+      'Network.setCacheDisabled',
+      this.getRandomNumber(1, 10),
+      {
+        cacheDisabled: true,
+      },
+      null
+    )
   }
 
+  /**
+   * Handle Network interception requests
+   * @param connection WebSocket connection to the browser
+   * @param httpResponse Object representing what we are intercepting
+   *                     as well as what should be returned.
+   * @param callback callback called when we intercept requests.
+   */
+  async onIntercept(connection, httpResponse, callback) {
+
+    this._wsConnection.on('message', (message) => {
+      const params = JSON.parse(message)
+      if (params.method === 'Fetch.requestPaused') {
+        const requestPausedParams = params['params']
+        if (requestPausedParams.request.url == httpResponse.urlToIntercept) {
+          connection.execute(
+            'Fetch.continueRequest',
+            this.getRandomNumber(1, 10),
+            {
+              requestId: requestPausedParams['requestId'],
+              url: httpResponse.urlToIntercept,
+              method: httpResponse.method,
+              headers: httpResponse.headers,
+              postData: httpResponse.body
+            }
+          )
+          callback()
+        } else {
+          connection.execute(
+            'Fetch.continueRequest',
+            this.getRandomNumber(1, 10),
+            {
+              requestId: requestPausedParams['requestId'],
+            }
+          )
+        }
+      }
+    })
+
+    await connection.execute(
+      'Fetch.enable',
+      1,
+      {},
+      null
+    )
+    await connection.execute(
+      'Network.setCacheDisabled',
+      this.getRandomNumber(1, 10),
+      {
+        cacheDisabled: true,
+      },
+      null
+    )
+  }
   /**
    *
    * @param connection
@@ -1301,12 +1367,7 @@ class WebDriver {
    * @returns {Promise<void>}
    */
   async onLogEvent(connection, callback) {
-    await connection.execute(
-      'Runtime.enable',
-      this.getRandomNumber(1, 10),
-      {},
-      null
-    )
+
 
     this._wsConnection.on('message', (message) => {
       const params = JSON.parse(message)
@@ -1322,6 +1383,12 @@ class WebDriver {
         callback(event)
       }
     })
+    await connection.execute(
+      'Runtime.enable',
+      this.getRandomNumber(1, 10),
+      {},
+      null
+    )
   }
 
   /**

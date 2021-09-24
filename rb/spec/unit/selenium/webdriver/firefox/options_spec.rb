@@ -125,8 +125,13 @@ module Selenium
         end
 
         describe '#add_option' do
-          it 'adds an option' do
+          it 'adds an option with ordered pairs' do
             options.add_option(:foo, 'bar')
+            expect(options.instance_variable_get('@options')[:foo]).to eq('bar')
+          end
+
+          it 'adds an option with Hash' do
+            options.add_option(foo: 'bar')
             expect(options.instance_variable_get('@options')[:foo]).to eq('bar')
           end
         end
@@ -143,9 +148,12 @@ module Selenium
             expect(options.as_json).to eq("browserName" => "firefox", "moz:firefoxOptions" => {})
           end
 
-          it 'returns added option' do
+          it 'returns added options' do
             options.add_option(:foo, 'bar')
-            expect(options.as_json).to eq("browserName" => "firefox", "moz:firefoxOptions" => {"foo" => "bar"})
+            options.add_option('foo:bar', {foo: 'bar'})
+            expect(options.as_json).to eq("browserName" => "firefox",
+                                          "foo:bar" => {"foo" => "bar"},
+                                          "moz:firefoxOptions" => {"foo" => "bar"})
           end
 
           it 'converts to a json hash' do
@@ -167,7 +175,8 @@ module Selenium
                                prefs: {foo: 'bar'},
                                foo: 'bar',
                                profile: profile,
-                               log_level: :debug)
+                               log_level: :debug,
+                               'custom:options': {foo: 'bar'})
 
             key = 'moz:firefoxOptions'
             expect(opts.as_json).to eq('browserName' => 'firefox',
@@ -181,6 +190,7 @@ module Selenium
                                                       'pageLoad' => 400000,
                                                       'implicit' => 1},
                                        'setWindowRect' => false,
+                                       'custom:options' => {'foo' => 'bar'},
                                        key => {'args' => %w[foo bar],
                                                'binary' => '/foo/bar',
                                                'prefs' => {'foo' => 'bar'},

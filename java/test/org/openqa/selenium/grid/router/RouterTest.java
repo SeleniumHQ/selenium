@@ -17,6 +17,13 @@
 
 package org.openqa.selenium.grid.router;
 
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.openqa.selenium.grid.data.Availability.DOWN;
+import static org.openqa.selenium.grid.data.Availability.UP;
+import static org.openqa.selenium.json.Json.MAP_TYPE;
+import static org.openqa.selenium.remote.http.HttpMethod.GET;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.Capabilities;
@@ -55,13 +62,6 @@ import java.time.Instant;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.openqa.selenium.grid.data.Availability.DOWN;
-import static org.openqa.selenium.grid.data.Availability.UP;
-import static org.openqa.selenium.json.Json.MAP_TYPE;
-import static org.openqa.selenium.remote.http.HttpMethod.GET;
-
 public class RouterTest {
 
   private Tracer tracer;
@@ -72,6 +72,17 @@ public class RouterTest {
   private Distributor distributor;
   private Router router;
   private Secret registrationSecret;
+
+  private static void waitUntilReady(Router router, Duration duration) {
+    new FluentWait<>(router)
+      .withTimeout(duration)
+      .pollingEvery(Duration.ofMillis(100))
+      .until(r -> {
+        HttpResponse response = r.execute(new HttpRequest(GET, "/status"));
+        Map<String, Object> status = Values.get(response, MAP_TYPE);
+        return Boolean.TRUE.equals(status.get("ready"));
+      });
+  }
 
   @Before
   public void setUp() {
@@ -104,7 +115,8 @@ public class RouterTest {
       new DefaultSlotSelector(),
       registrationSecret,
       Duration.ofMinutes(5),
-      false);
+      false,
+      Duration.ofSeconds(5));
     handler.addHandler(distributor);
 
     router = new Router(tracer, clientFactory, sessions, queue, distributor);
@@ -166,16 +178,5 @@ public class RouterTest {
     Map<String, Object> status = Values.get(response, MAP_TYPE);
     assertNotNull(status);
     return status;
-  }
-
-  private static void waitUntilReady(Router router, Duration duration) {
-    new FluentWait<>(router)
-      .withTimeout(duration)
-      .pollingEvery(Duration.ofMillis(100))
-      .until(r -> {
-        HttpResponse response = r.execute(new HttpRequest(GET, "/status"));
-        Map<String, Object> status = Values.get(response, MAP_TYPE);
-        return Boolean.TRUE.equals(status.get("ready"));
-      });
   }
 }

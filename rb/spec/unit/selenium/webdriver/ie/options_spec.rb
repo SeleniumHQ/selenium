@@ -102,9 +102,14 @@ module Selenium
         end
 
         describe '#add_option' do
-          it 'adds an option' do
+          it 'adds an option with ordered pairs' do
             options.add_option(:foo, 'bar')
-            expect(options.options[:foo]).to eq('bar')
+            expect(options.instance_variable_get('@options')[:foo]).to eq('bar')
+          end
+
+          it 'adds an option with Hash' do
+            options.add_option(foo: 'bar')
+            expect(options.instance_variable_get('@options')[:foo]).to eq('bar')
           end
         end
 
@@ -114,9 +119,11 @@ module Selenium
                                           "se:ieOptions" => {"nativeEvents" => true})
           end
 
-          it 'returns added option' do
+          it 'returns added options' do
             options.add_option(:foo, 'bar')
+            options.add_option('foo:bar', {foo: 'bar'})
             expect(options.as_json).to eq("browserName" => "internet explorer",
+                                          "foo:bar" => {"foo" => "bar"},
                                           "se:ieOptions" => {"nativeEvents" => true, "foo" => "bar"})
           end
 
@@ -148,7 +155,8 @@ module Selenium
                                use_per_process_proxy: true,
                                use_legacy_file_upload_dialog_handling: true,
                                attach_to_edge_chrome: true,
-                               edge_executable_path: '/path/to/edge')
+                               edge_executable_path: '/path/to/edge',
+                               'custom:options': {foo: 'bar'})
 
             key = 'se:ieOptions'
             expect(opts.as_json).to eq('browserName' => 'internet explorer',
@@ -162,6 +170,7 @@ module Selenium
                                                       'pageLoad' => 400000,
                                                       'implicit' => 1},
                                        'setWindowRect' => false,
+                                       'custom:options' => {'foo' => 'bar'},
                                        key => {'ie.browserCommandLineSwitches' => 'foo bar',
                                                'browserAttachTimeout' => 30000,
                                                'elementScrollBehavior' => 1,

@@ -216,6 +216,18 @@ namespace OpenQA.Selenium.Chromium
             return this.devToolsSession;
         }
 
+        /// <summary>
+        /// Resets a DevTools session
+        /// </summary>
+        public void ResetDevToolsSession()
+        {
+            if (this.devToolsSession != null)
+            {
+                this.devToolsSession.ActiveSessionId = null;
+                this.devToolsSession.InitializeSession().ConfigureAwait(false).GetAwaiter().GetResult();
+            }
+        }
+
         protected override void Dispose(bool disposing)
         {
             if (disposing)

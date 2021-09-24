@@ -43,6 +43,9 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicLong;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReadWriteLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.function.Consumer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -64,6 +67,7 @@ public class Connection implements Closeable {
   private static final AtomicLong NEXT_ID = new AtomicLong(1L);
   private final WebSocket socket;
   private final Map<Long, Consumer<Either<Throwable, JsonInput>>> methodCallbacks = new LinkedHashMap<>();
+  private final ReadWriteLock callbacksLock = new ReentrantReadWriteLock(true);
   private final Multimap<Event<?>, Consumer<?>> eventCallbacks = HashMultimap.create();
 
   public Connection(HttpClient client, String url) {
@@ -162,14 +166,22 @@ public class Connection implements Closeable {
     Require.nonNull("Event to listen for", event);
     Require.nonNull("Handler to call", handler);
 
-    synchronized (eventCallbacks) {
+    Lock lock = callbacksLock.writeLock();
+    lock.lock();
+    try {
       eventCallbacks.put(event, handler);
+    } finally {
+      lock.unlock();
     }
   }
 
   public void clearListeners() {
-    synchronized (eventCallbacks) {
+    Lock lock = callbacksLock.writeLock();
+    lock.lock();
+    try {
       eventCallbacks.clear();
+    } finally {
+      lock.unlock();
     }
   }
 
@@ -233,7 +245,9 @@ public class Connection implements Closeable {
       LOG.log(
         getDebugLogLevel(),
         String.format("Method %s called with %d callbacks available", raw.get("method"), eventCallbacks.keySet().size()));
-      synchronized (eventCallbacks) {
+      Lock lock = callbacksLock.readLock();
+      lock.lock();
+      try {
         // TODO: Also only decode once.
         eventCallbacks.keySet().stream()
           .peek(event -> LOG.log(
@@ -275,6 +289,8 @@ public class Connection implements Closeable {
               }
             }
           });
+      } finally {
+        lock.unlock();
       }
     } else {
       LOG.warning("Unhandled type: " + data);

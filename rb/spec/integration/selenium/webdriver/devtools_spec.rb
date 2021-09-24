@@ -149,49 +149,50 @@ module Selenium
 
       context 'network interception', except: {browser: :firefox_nightly,
                                                reason: 'Fetch.enable is not yet supported'} do
-        it 'allows to continue requests' do
+        it 'continues requests' do
           requests = []
-          driver.intercept do |request|
+          driver.intercept do |request, &continue|
             requests << request
-            request.continue
+            continue.call(request)
           end
           driver.navigate.to url_for('html5Page.html')
           expect(driver.title).to eq('HTML5')
           expect(requests).not_to be_empty
         end
 
-        it 'allows to stub responses' do
-          requests = []
-          driver.intercept do |request|
-            requests << request
-            request.respond(body: '<title>Intercepted!</title>')
+        it 'changes requests' do
+          driver.intercept do |request, &continue|
+            uri = URI(request.url)
+            if uri.path.match?(%r{/html5/.*\.jpg})
+              uri.path = '/beach.jpg'
+              request.url = uri.to_s
+            end
+            continue.call(request)
           end
           driver.navigate.to url_for('html5Page.html')
-          expect(driver.title).to eq('Intercepted!')
-          expect(requests).not_to be_empty
+          expect(driver.find_elements(tag_name: 'img').map(&:size).uniq).to eq([Dimension.new(640, 480)])
         end
 
-        it 'intercepts specific requests' do
-          stubbed = []
-          continued = []
-          driver.intercept do |request|
-            if request.method == 'GET' && request.url.include?('resultPage.html')
-              stubbed << request
-              request.respond(body: '<title>Intercepted!</title>')
-            else
-              continued << request
-              request.continue
+        it 'continues responses' do
+          responses = []
+          driver.intercept do |request, &continue|
+            continue.call(request) do |response|
+              responses << response
             end
           end
+          driver.navigate.to url_for('html5Page.html')
+          expect(driver.title).to eq('HTML5')
+          expect(responses).not_to be_empty
+        end
 
-          driver.navigate.to url_for('formPage.html')
-          expect(driver.title).to eq('We Leave From Here')
-          expect(stubbed).to be_empty
-          expect(continued).not_to be_empty
-
-          driver.find_element(id: 'submitButton').click
-          expect(driver.title).to eq('Intercepted!')
-          expect(stubbed).not_to be_empty
+        it 'changes responses' do
+          driver.intercept do |request, &continue|
+            continue.call(request) do |response|
+              response.body << '<h4 id="appended">Appended!</h4>' if request.url.include?('html5Page.html')
+            end
+          end
+          driver.navigate.to url_for('html5Page.html')
+          expect(driver.find_elements(id: "appended")).not_to be_empty
         end
       end
 

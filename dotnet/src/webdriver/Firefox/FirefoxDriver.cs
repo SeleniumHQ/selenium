@@ -301,11 +301,36 @@ namespace OpenQA.Selenium.Firefox
         }
 
         /// <summary>
+        /// Resets a DevTools session
+        /// </summary>
+        public void ResetDevToolsSession()
+        {
+            if (this.devToolsSession != null)
+            {
+                this.devToolsSession.ActiveSessionId = null;
+                this.devToolsSession.InitializeSession().ConfigureAwait(false).GetAwaiter().GetResult();
+            }
+        }
+
+        /// <summary>
         /// In derived classes, the <see cref="PrepareEnvironment"/> method prepares the environment for test execution.
         /// </summary>
         protected virtual void PrepareEnvironment()
         {
             // Does nothing, but provides a hook for subclasses to do "stuff"
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                if (this.devToolsSession != null)
+                {
+                    this.devToolsSession.Dispose();
+                }
+            }
+
+            base.Dispose(disposing);
         }
 
         private static ICapabilities ConvertOptionsToCapabilities(FirefoxOptions options)

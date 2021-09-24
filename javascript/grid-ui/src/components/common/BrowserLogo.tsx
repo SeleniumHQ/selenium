@@ -16,15 +16,16 @@
 // under the License.
 
 import React, { ReactNode } from 'react'
-import { StyleRules, Theme, withStyles } from '@material-ui/core/styles'
+import { StyleRules, withStyles } from '@material-ui/core/styles'
 import browserLogo from '../../util/browser-logo'
 import { Size } from '../../models/size'
 import clsx from 'clsx'
 
-const useStyles = (theme: Theme): StyleRules => (
+const useStyles = (): StyleRules => (
   {
     logo: {
-      marginRight: 0
+      marginRight: 0,
+      marginLeft: 0
     },
     small: {
       width: 24,

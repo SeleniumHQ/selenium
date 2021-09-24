@@ -17,7 +17,17 @@
 
 package org.openqa.selenium.grid.router;
 
+import static java.net.HttpURLConnection.HTTP_INTERNAL_ERROR;
+import static java.net.HttpURLConnection.HTTP_OK;
+import static java.util.concurrent.TimeUnit.SECONDS;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.fail;
+import static org.openqa.selenium.remote.http.Contents.asJson;
+import static org.openqa.selenium.remote.http.HttpMethod.DELETE;
+import static org.openqa.selenium.remote.http.HttpMethod.POST;
+
 import com.google.common.collect.ImmutableMap;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -68,20 +78,19 @@ import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeoutException;
 
-import static java.net.HttpURLConnection.HTTP_INTERNAL_ERROR;
-import static java.net.HttpURLConnection.HTTP_OK;
-import static java.util.concurrent.TimeUnit.SECONDS;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.fail;
-import static org.openqa.selenium.remote.http.Contents.asJson;
-import static org.openqa.selenium.remote.http.HttpMethod.DELETE;
-import static org.openqa.selenium.remote.http.HttpMethod.POST;
-
 public class SessionQueueGridTest {
   private static final Capabilities CAPS = new ImmutableCapabilities("browserName", "cheese");
   private HttpClient.Factory clientFactory;
   private Secret registrationSecret;
   private Server<?> server;
+
+  private static Server<?> createServer(HttpHandler handler) {
+    return new NettyServer(
+      new BaseServerOptions(
+        new MapConfig(
+          ImmutableMap.of("server", ImmutableMap.of("port", PortProber.findFreePort())))),
+      handler);
+  }
 
   @Before
   public void setup() throws URISyntaxException, MalformedURLException {
@@ -129,7 +138,8 @@ public class SessionQueueGridTest {
       new DefaultSlotSelector(),
       registrationSecret,
       Duration.ofMinutes(5),
-      false);
+      false,
+      Duration.ofSeconds(5));
     handler.addHandler(distributor);
 
     distributor.add(localNode);
@@ -226,14 +236,6 @@ public class SessionQueueGridTest {
   @After
   public void stopServer() {
     server.stop();
-  }
-
-  private static Server<?> createServer(HttpHandler handler) {
-    return new NettyServer(
-      new BaseServerOptions(
-        new MapConfig(
-          ImmutableMap.of("server", ImmutableMap.of("port", PortProber.findFreePort())))),
-      handler);
   }
 
   private HttpResponse createSession(ImmutableMap<String, String> caps) {

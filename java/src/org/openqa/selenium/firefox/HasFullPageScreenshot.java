@@ -15,27 +15,22 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.grid.docker;
+package org.openqa.selenium.firefox;
 
-import org.openqa.selenium.remote.SessionId;
+import org.openqa.selenium.Beta;
+import org.openqa.selenium.OutputType;
 
-import java.io.File;
+/**
+ * Used by classes to indicate that they can take a full page screenshot.
+ */
+@Beta
+public interface HasFullPageScreenshot {
 
-public class DockerAssetsPath {
-
-  private final String hostPath;
-  private final String containerPath;
-
-  public DockerAssetsPath(String hostPath, String containerPath) {
-    this.hostPath = hostPath;
-    this.containerPath = containerPath;
-  }
-
-  public String getHostPath(SessionId id) {
-    return this.hostPath + File.separator + id;
-  }
-
-  public String getContainerPath(SessionId id) {
-    return this.containerPath + File.separator + id;
-  }
+  /**
+   * Capture the full page screenshot and store it in the specified location.
+   *
+   * @param outputType target type, @see OutputType
+   * @return Object in which is stored information about the screenshot.
+   */
+    public <X> X getFullPageScreenshotAs(OutputType<X> outputType);
 }

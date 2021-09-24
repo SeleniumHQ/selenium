@@ -56,7 +56,6 @@ import org.openqa.selenium.grid.data.Session;
 import org.openqa.selenium.grid.data.SessionClosedEvent;
 import org.openqa.selenium.grid.data.Slot;
 import org.openqa.selenium.grid.data.SlotId;
-import org.openqa.selenium.grid.docker.DockerSession;
 import org.openqa.selenium.grid.jmx.JMXHelper;
 import org.openqa.selenium.grid.jmx.ManagedAttribute;
 import org.openqa.selenium.grid.jmx.ManagedService;
@@ -65,6 +64,7 @@ import org.openqa.selenium.grid.node.HealthCheck;
 import org.openqa.selenium.grid.node.Node;
 import org.openqa.selenium.grid.node.SessionFactory;
 import org.openqa.selenium.grid.node.config.NodeOptions;
+import org.openqa.selenium.grid.node.docker.DockerSession;
 import org.openqa.selenium.grid.security.Secret;
 import org.openqa.selenium.internal.Debug;
 import org.openqa.selenium.internal.Either;
@@ -152,7 +152,7 @@ public class LocalNode extends Node {
       .ticker(ticker)
       .removalListener((RemovalListener<SessionId, SessionSlot>) notification -> {
         // Attempt to stop the session
-        LOG.log(Debug.getDebugLogLevel(), "Stopping session %s", notification.getKey().toString());
+        LOG.log(Debug.getDebugLogLevel(), "Stopping session {0}", notification.getKey().toString());
         SessionSlot slot = notification.getValue();
         if (!slot.isAvailable()) {
           slot.stop();

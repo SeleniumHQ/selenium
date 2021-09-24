@@ -290,22 +290,25 @@ namespace OpenQA.Selenium.DevTools.V92
                     wrappedResponse.ResponseData.StatusCode = e.ResponseStatusCode.Value;
                 }
 
-                foreach (var header in e.ResponseHeaders)
+                if (e.ResponseHeaders != null)
                 {
-                    if (header.Name.ToLowerInvariant() == "set-cookie")
+                    foreach (var header in e.ResponseHeaders)
                     {
-                        wrappedResponse.ResponseData.CookieHeaders.Add(header.Value);
-                    }
-                    else
-                    {
-                        if (wrappedResponse.ResponseData.Headers.ContainsKey(header.Name))
+                        if (header.Name.ToLowerInvariant() == "set-cookie")
                         {
-                            string currentHeaderValue = wrappedResponse.ResponseData.Headers[header.Name];
-                            wrappedResponse.ResponseData.Headers[header.Name] = currentHeaderValue + ", " + header.Value;
+                            wrappedResponse.ResponseData.CookieHeaders.Add(header.Value);
                         }
                         else
                         {
-                            wrappedResponse.ResponseData.Headers.Add(header.Name, header.Value);
+                            if (wrappedResponse.ResponseData.Headers.ContainsKey(header.Name))
+                            {
+                                string currentHeaderValue = wrappedResponse.ResponseData.Headers[header.Name];
+                                wrappedResponse.ResponseData.Headers[header.Name] = currentHeaderValue + ", " + header.Value;
+                            }
+                            else
+                            {
+                                wrappedResponse.ResponseData.Headers.Add(header.Name, header.Value);
+                            }
                         }
                     }
                 }

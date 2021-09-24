@@ -24,11 +24,13 @@ import org.openqa.selenium.remote.codec.jwp.JsonHttpResponseCodec;
 import org.openqa.selenium.remote.codec.w3c.W3CHttpCommandCodec;
 import org.openqa.selenium.remote.codec.w3c.W3CHttpResponseCodec;
 
+import java.util.ServiceLoader;
+
 public enum Dialect {
   OSS {
     @Override
     public CommandCodec<HttpRequest> getCommandCodec() {
-      return new JsonHttpCommandCodec();
+      return bindAdditionalCommands(new JsonHttpCommandCodec());
     }
 
     @Override
@@ -49,7 +51,7 @@ public enum Dialect {
   W3C {
     @Override
     public CommandCodec<HttpRequest> getCommandCodec() {
-      return new W3CHttpCommandCodec();
+      return bindAdditionalCommands(new W3CHttpCommandCodec());
     }
 
     @Override
@@ -72,4 +74,16 @@ public enum Dialect {
   public abstract ResponseCodec<HttpResponse> getResponseCodec();
   public abstract String getEncodedElementKey();
   public abstract String getShadowRootElementKey();
+
+  private static CommandCodec<HttpRequest> bindAdditionalCommands(CommandCodec<HttpRequest> toCodec) {
+    ServiceLoader.load(AdditionalHttpCommands.class).forEach(cmds -> {
+      cmds.getAdditionalCommands().forEach((name, info) -> {
+        if (!toCodec.isSupported(name)) {
+          toCodec.defineCommand(name, info.getMethod(), info.getUrl());
+        }
+      });
+    });
+
+    return toCodec;
+  }
 }

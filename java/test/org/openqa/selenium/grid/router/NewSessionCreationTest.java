@@ -17,6 +17,12 @@
 
 package org.openqa.selenium.grid.router;
 
+import static java.net.HttpURLConnection.HTTP_INTERNAL_ERROR;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.openqa.selenium.json.Json.JSON_UTF_8;
+import static org.openqa.selenium.remote.http.Contents.asJson;
+import static org.openqa.selenium.remote.http.HttpMethod.POST;
+
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
@@ -64,12 +70,6 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import static java.net.HttpURLConnection.HTTP_INTERNAL_ERROR;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.openqa.selenium.json.Json.JSON_UTF_8;
-import static org.openqa.selenium.remote.http.Contents.asJson;
-import static org.openqa.selenium.remote.http.HttpMethod.POST;
-
 public class NewSessionCreationTest {
 
   private Tracer tracer;
@@ -111,7 +111,8 @@ public class NewSessionCreationTest {
       new DefaultSlotSelector(),
       registrationSecret,
       Duration.ofMinutes(5),
-      false);
+      false,
+      Duration.ofSeconds(5));
 
     Routable router = new Router(tracer, clientFactory, sessions, queue, distributor)
       .with(new EnsureSpecCompliantHeaders(ImmutableList.of(), ImmutableSet.of()));
@@ -209,7 +210,8 @@ public class NewSessionCreationTest {
       new DefaultSlotSelector(),
       registrationSecret,
       Duration.ofMinutes(5),
-      false);
+      false,
+      Duration.ofSeconds(5));
     handler.addHandler(distributor);
 
     distributor.add(localNode);
@@ -275,7 +277,8 @@ public class NewSessionCreationTest {
       new DefaultSlotSelector(),
       registrationSecret,
       Duration.ofMinutes(5),
-      true);
+      true,
+      Duration.ofSeconds(5));
     handler.addHandler(distributor);
 
     distributor.add(localNode);
