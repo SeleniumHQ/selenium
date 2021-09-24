@@ -22,6 +22,12 @@ module Selenium
     module DriverExtensions
       module HasLaunching
 
+        #
+        # Launches Chromium app specified by id.
+        #
+        # @param [String] id
+        #
+
         def launch_app(id)
           @bridge.launch_app(id)
         end
