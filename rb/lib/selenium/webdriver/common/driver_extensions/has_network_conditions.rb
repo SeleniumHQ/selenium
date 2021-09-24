@@ -45,6 +45,14 @@ module Selenium
           @bridge.network_conditions = conditions
         end
 
+        #
+        # Resets Chromium network emulation settings.
+        #
+
+        def delete_network_conditions
+          @bridge.delete_network_conditions
+        end
+
       end # HasNetworkConditions
     end # DriverExtensions
   end # WebDriver
