@@ -20,6 +20,9 @@
 module Selenium
   module WebDriver
     class DevTools
+      RESPONSE_WAIT_TIMEOUT = 30
+      RESPONSE_WAIT_INTERVAL = 0.1
+
       autoload :ConsoleEvent, 'selenium/webdriver/devtools/console_event'
       autoload :ExceptionEvent, 'selenium/webdriver/devtools/exception_event'
       autoload :MutationEvent, 'selenium/webdriver/devtools/mutation_event'
@@ -35,6 +38,10 @@ module Selenium
         process_handshake
         attach_socket_listener
         start_session
+      end
+
+      def close
+        socket.close
       end
 
       def callbacks
@@ -100,8 +107,8 @@ module Selenium
               next unless message['method']
 
               callbacks[message['method']].each do |callback|
-                params = message['params'] # take in current thread!
-                Thread.new { callback.call(params) }
+                callback_thread = Thread.new(message['params'], &callback)
+                callback_thread.abort_on_exception = true
               end
             end
           end
@@ -121,7 +128,7 @@ module Selenium
       end
 
       def wait
-        @wait ||= Wait.new(timeout: 10, interval: 0.1)
+        @wait ||= Wait.new(timeout: RESPONSE_WAIT_TIMEOUT, interval: RESPONSE_WAIT_INTERVAL)
       end
 
       def socket
