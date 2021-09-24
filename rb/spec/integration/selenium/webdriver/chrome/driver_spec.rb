@@ -151,6 +151,36 @@ module Selenium
             driver.stop_casting(device_name)
           end
         end
+
+        def get_permission(name)
+          driver.execute_async_script("callback = arguments[arguments.length - 1];" \
+          "callback(navigator.permissions.query({name: arguments[0]}));", name)['state']
+        end
+
+        it 'can set single permissions' do
+          driver.navigate.to url_for('xhtmlTest.html')
+
+          expect(get_permission('clipboard-read')).to eq('prompt')
+          expect(get_permission('clipboard-write')).to eq('granted')
+
+          driver.add_permission('clipboard-read', 'denied')
+          driver.add_permission('clipboard-write', 'prompt')
+
+          expect(get_permission('clipboard-read')).to eq('denied')
+          expect(get_permission('clipboard-write')).to eq('prompt')
+        end
+
+        it 'can set multiple permissions' do
+          driver.navigate.to url_for('xhtmlTest.html')
+
+          expect(get_permission('clipboard-read')).to eq('prompt')
+          expect(get_permission('clipboard-write')).to eq('granted')
+
+          driver.add_permissions('clipboard-read' => 'denied','clipboard-write' => 'prompt')
+
+          expect(get_permission('clipboard-read')).to eq('denied')
+          expect(get_permission('clipboard-write')).to eq('prompt')
+        end
       end
     end # Chrome
   end # WebDriver

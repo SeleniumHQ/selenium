@@ -19,22 +19,33 @@
 
 module Selenium
   module WebDriver
-    module Safari
+    module DriverExtensions
+      module HasApplePermissions
 
-      #
-      # Driver implementation for Safari.
-      # @api private
-      #
+        #
+        # Returns permissions.
+        #
+        # @return [Hash]
+        #
 
-      class Driver < WebDriver::Driver
-        EXTENSIONS = [DriverExtensions::HasDebugger,
-                      DriverExtensions::HasApplePermissions,
-                      DriverExtensions::HasWebStorage].freeze
-
-        def browser
-          :safari
+        def permissions
+          @bridge.permissions
         end
-      end # Driver
-    end # Safari
+
+        #
+        # Sets permissions.
+        #
+        # @example
+        #   driver.permissions = {'getUserMedia' => true}
+        #
+        # @param [Hash<Symbol, Boolean>] permissions
+        #
+
+        def permissions=(permissions)
+          @bridge.permissions = permissions
+        end
+
+      end # HasPermissions
+    end # DriverExtensions
   end # WebDriver
 end # Selenium
