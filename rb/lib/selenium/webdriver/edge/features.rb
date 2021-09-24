@@ -27,6 +27,11 @@ module Selenium
         include WebDriver::Chrome::Features
 
         EDGE_COMMANDS = {
+          get_cast_sinks: [:get, 'session/:session_id/ms/cast/get_sinks'],
+          set_cast_sink_to_use: [:post, 'session/:session_id/ms/cast/set_sink_to_use'],
+          start_cast_tab_mirroring: [:post, 'session/:session_id/ms/cast/start_tab_mirroring'],
+          get_cast_issue_message: [:get, 'session/:session_id/ms/cast/get_issue_message'],
+          stop_casting: [:post, 'session/:session_id/ms/cast/stop_casting'],
           send_command: [:post, 'session/:session_id/ms/cdp/execute']
         }.freeze
 

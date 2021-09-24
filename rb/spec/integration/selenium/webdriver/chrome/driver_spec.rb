@@ -125,6 +125,19 @@ module Selenium
             expect(entries.first).to be_kind_of(LogEntry)
           end
         end
+
+        # This requires cast sinks to run
+        it 'casts' do
+          # Does not get list correctly the first time for some reason
+          driver.cast_sinks
+          sleep 2
+          sinks = driver.cast_sinks
+          unless sinks.empty?
+            device_name = sinks.first['name']
+            driver.start_cast_tab_mirroring(device_name)
+            driver.stop_casting(device_name)
+          end
+        end
       end
     end # Chrome
   end # WebDriver
