@@ -54,14 +54,6 @@ class Options(ArgOptions):
         """
         self._binary_location = value
 
-    @property
-    def accept_insecure_certs(self) -> bool:
-        return self._caps.get('acceptInsecureCerts')
-
-    @accept_insecure_certs.setter
-    def accept_insecure_certs(self, value: bool):
-        self._caps['acceptInsecureCerts'] = value
-
     def to_capabilities(self) -> dict:
         """Marshals the  options to an desired capabilities object.
         """

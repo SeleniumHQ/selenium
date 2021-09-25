@@ -17,6 +17,8 @@
 
 from abc import ABCMeta, abstractmethod
 from typing import NoReturn
+from selenium.webdriver.common.proxy import Proxy
+from selenium.common.exceptions import InvalidArgumentException
 
 
 class BaseOptions(metaclass=ABCMeta):
@@ -75,6 +77,36 @@ class BaseOptions(metaclass=ABCMeta):
             self.mobile_options["androidActivity"] = android_activity
         if device_serial:
             self.mobile_options["androidDeviceSerial"] = device_serial
+
+    @property
+    def accept_insecure_certs(self) -> bool:
+        """
+        :returns: whether the session accepts insecure certificates
+        """
+        return self._caps.get('acceptInsecureCerts')
+
+    @accept_insecure_certs.setter
+    def accept_insecure_certs(self, value: bool) -> NoReturn:
+        """
+        Whether untrusted and self-signed TLS certificates are implicitly trusted:
+        https://w3c.github.io/webdriver/#dfn-insecure-tls-certificates
+
+        :param value: whether to accept insecure certificates
+        """
+        self._caps['acceptInsecureCerts'] = value
+
+    @property
+    def proxy(self) -> Proxy:
+        """
+        :Returns: Proxy if set, otherwise None.
+        """
+        return self._proxy
+
+    @proxy.setter
+    def proxy(self, value: Proxy):
+        if not isinstance(value, Proxy):
+            raise InvalidArgumentException("Only Proxy objects can be passed in.")
+        self._proxy = value
 
     @abstractmethod
     def to_capabilities(self):

@@ -16,9 +16,7 @@
 # under the License.
 from typing import Union
 import warnings
-from selenium.common.exceptions import InvalidArgumentException
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
-from selenium.webdriver.common.proxy import Proxy
 from selenium.webdriver.firefox.firefox_binary import FirefoxBinary
 from selenium.webdriver.firefox.firefox_profile import FirefoxProfile
 from selenium.webdriver.common.options import ArgOptions
@@ -73,14 +71,6 @@ class Options(ArgOptions):
         self.binary = value
 
     @property
-    def accept_insecure_certs(self) -> bool:
-        return self._caps.get('acceptInsecureCerts')
-
-    @accept_insecure_certs.setter
-    def accept_insecure_certs(self, value: bool):
-        self._caps['acceptInsecureCerts'] = value
-
-    @property
     def preferences(self) -> dict:
         """:Returns: A dict of preferences."""
         return self._preferences
@@ -88,19 +78,6 @@ class Options(ArgOptions):
     def set_preference(self, name: str, value: Union[str, int, bool]):
         """Sets a preference."""
         self._preferences[name] = value
-
-    @property
-    def proxy(self) -> Proxy:
-        """
-        :Returns: Proxy if set, otherwise None.
-        """
-        return self._proxy
-
-    @proxy.setter
-    def proxy(self, value: Proxy):
-        if not isinstance(value, Proxy):
-            raise InvalidArgumentException("Only Proxy objects can be passed in.")
-        self._proxy = value
 
     @property
     def profile(self) -> FirefoxProfile:
