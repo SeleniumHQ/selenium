@@ -31,6 +31,7 @@ import org.openqa.selenium.remote.http.Contents;
 import org.openqa.selenium.remote.http.Filter;
 import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.remote.http.Route;
+import org.openqa.selenium.testing.drivers.Browser;
 import org.openqa.selenium.testing.drivers.WebDriverBuilder;
 
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -53,6 +54,8 @@ public class NetworkInterceptorTest {
 
   @BeforeClass
   public static void shouldTestBeRunAtAll() {
+    // Until Firefox can initialise the Fetch domain, we can remove this check
+    assumeThat(Browser.detect()).isNotEqualTo(Browser.FIREFOX);
     assumeThat(Boolean.getBoolean("selenium.skiptest")).isFalse();
   }
 
