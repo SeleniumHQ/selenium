@@ -54,7 +54,7 @@ public class NetworkInterceptorTest {
 
   @BeforeClass
   public static void shouldTestBeRunAtAll() {
-    // Until Firefox can initialise the Fetch domain, we can remove this check
+    // Until Firefox can initialise the Fetch domain, we need this check
     assumeThat(Browser.detect()).isNotEqualTo(Browser.FIREFOX);
     assumeThat(Boolean.getBoolean("selenium.skiptest")).isFalse();
   }
