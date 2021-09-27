@@ -17,6 +17,8 @@
 
 package org.openqa.selenium.safari;
 
+import static org.openqa.selenium.remote.CapabilityType.BROWSER_NAME;
+
 import com.google.auto.service.AutoService;
 
 import org.openqa.selenium.Capabilities;
@@ -27,8 +29,6 @@ import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebDriverInfo;
 
 import java.util.Optional;
-
-import static org.openqa.selenium.remote.CapabilityType.BROWSER_NAME;
 
 @AutoService(WebDriverInfo.class)
 public class SafariTechPreviewDriverInfo implements WebDriverInfo {
@@ -63,7 +63,7 @@ public class SafariTechPreviewDriverInfo implements WebDriverInfo {
   @Override
   public boolean isAvailable() {
     try {
-      SafariDriverService.createDefaultService(getCanonicalCapabilities());
+      SafariTechPreviewDriverService.createDefaultService();
       return true;
     } catch (IllegalStateException | WebDriverException e) {
       return false;
@@ -82,6 +82,6 @@ public class SafariTechPreviewDriverInfo implements WebDriverInfo {
       return Optional.empty();
     }
 
-    return Optional.of(new SafariDriver(capabilities));
+    return Optional.of(new SafariDriver(new SafariOptions(capabilities)));
   }
 }

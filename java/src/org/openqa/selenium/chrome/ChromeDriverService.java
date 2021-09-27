@@ -81,8 +81,7 @@ public class ChromeDriverService extends DriverService {
    * System property that defines whether the chromedriver executable should check for build
    * version compatibility between chromedriver and the browser.
    */
-  public static final String
-    CHROME_DRIVER_DISABLE_BUILD_CHECK =
+  public static final String CHROME_DRIVER_DISABLE_BUILD_CHECK =
     "webdriver.chrome.disableBuildCheck";
 
   /**

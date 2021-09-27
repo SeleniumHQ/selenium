@@ -17,22 +17,21 @@
 
 package org.openqa.selenium.safari;
 
+import static java.util.stream.Collectors.toSet;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.remote.AcceptedW3CCapabilityKeys;
+import org.openqa.selenium.remote.BrowserType;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.testing.UnitTests;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Predicate;
-
-import static java.util.Collections.singletonMap;
-import static java.util.stream.Collectors.toSet;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 @Category(UnitTests.class)
 public class SafariOptionsTest {
@@ -50,26 +49,16 @@ public class SafariOptionsTest {
 
   @Test
   public void canConstructFromCapabilities() {
-    Map<String, Object> embeddedOptions = new HashMap<>();
-    embeddedOptions.put("technologyPreview", true);
-
     SafariOptions options = new SafariOptions();
     assertThat(options.getUseTechnologyPreview()).isFalse();
 
-    options = new SafariOptions(new ImmutableCapabilities(CapabilityType.BROWSER_NAME, "Safari Technology Preview"));
+    options = new SafariOptions(
+      new ImmutableCapabilities(CapabilityType.BROWSER_NAME, SafariOptions.SAFARI_TECH_PREVIEW));
     assertThat(options.getUseTechnologyPreview()).isTrue();
 
-    options = new SafariOptions(new ImmutableCapabilities(CapabilityType.BROWSER_NAME, "safari"));
+    options = new SafariOptions(
+      new ImmutableCapabilities(CapabilityType.BROWSER_NAME, BrowserType.SAFARI));
     assertThat(options.getUseTechnologyPreview()).isFalse();
-  }
-
-  @Test
-  public void newerStyleCapabilityWinsOverOlderStyle() {
-    SafariOptions options = new SafariOptions(new ImmutableCapabilities(
-        CapabilityType.BROWSER_NAME, "Safari Technology Preview",
-        SafariOptions.CAPABILITY, singletonMap("technologyPreview", false)));
-
-    assertThat(options.getUseTechnologyPreview()).isTrue();
   }
 
   @Test
@@ -87,13 +76,13 @@ public class SafariOptionsTest {
   @Test
   public void settingTechnologyPreviewModeAlsoChangesBrowserName() {
     SafariOptions options = new SafariOptions();
-    assertThat(options.getBrowserName()).isEqualTo("safari");
+    assertThat(options.getBrowserName()).isEqualTo(BrowserType.SAFARI);
 
     options.setUseTechnologyPreview(true);
-    assertThat(options.getBrowserName()).isEqualTo("Safari Technology Preview");
+    assertThat(options.getBrowserName()).isEqualTo(SafariOptions.SAFARI_TECH_PREVIEW);
 
     options.setUseTechnologyPreview(false);
-    assertThat(options.getBrowserName()).isEqualTo("safari");
+    assertThat(options.getBrowserName()).isEqualTo(BrowserType.SAFARI);
   }
 
   @Test

@@ -330,7 +330,8 @@ public class NodeOptions {
 
         builders.stream()
           .filter(builder -> builder.score(stereotype) > 0)
-          .forEach(builder -> {
+          .max(Comparator.comparingInt(builder -> builder.score(stereotype)))
+          .ifPresent(builder -> {
             int maxDriverSessions = getDriverMaxSessions(info, driverMaxSessions);
             for (int i = 0; i < maxDriverSessions; i++) {
               driverConfigs.putAll(driverInfoConfig, factoryFactory.apply(stereotype));
@@ -445,7 +446,8 @@ public class NodeOptions {
       Capabilities caps = enhanceStereotype(info.getCanonicalCapabilities());
       builders.stream()
         .filter(builder -> builder.score(caps) > 0)
-        .forEach(builder -> {
+        .max(Comparator.comparingInt(builder -> builder.score(caps)))
+        .ifPresent(builder -> {
           int maxDriverSessions = getDriverMaxSessions(info, maxSessions);
           for (int i = 0; i < maxDriverSessions; i++) {
             toReturn.putAll(info, factoryFactory.apply(caps));
