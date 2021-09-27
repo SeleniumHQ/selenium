@@ -11,11 +11,10 @@ java_export(
         "//visibility:public",
     ],
     exports = [
-        "//java/src/org/openqa/selenium/devtools",
+        "//java/src/org/openqa/selenium/remote",
     ],
     deps = [
         "//java:auto-service",
-        "//java/src/org/openqa/selenium/devtools",
         "//java/src/org/openqa/selenium/json",
         "//java/src/org/openqa/selenium/remote",
         artifact("com.google.guava:guava"),

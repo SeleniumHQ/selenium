@@ -48,7 +48,6 @@ java_selenium_test_suite(
     deps = [
         ":support",
         "//java/src/org/openqa/selenium/chrome",
-        "//java/src/org/openqa/selenium/devtools",
         "//java/src/org/openqa/selenium/firefox",
         "//java/src/org/openqa/selenium/json",
         "//java/src/org/openqa/selenium/remote",

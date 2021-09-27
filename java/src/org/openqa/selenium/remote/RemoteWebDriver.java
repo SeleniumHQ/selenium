@@ -43,6 +43,8 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.WindowType;
+import org.openqa.selenium.devtools.DevTools;
+import org.openqa.selenium.devtools.HasDevTools;
 import org.openqa.selenium.interactions.HasInputDevices;
 import org.openqa.selenium.interactions.Interactive;
 import org.openqa.selenium.interactions.Keyboard;
@@ -429,6 +431,16 @@ public class RemoteWebDriver implements WebDriver,
 
   @Override
   public void close() {
+    if (this instanceof HasDevTools) {
+      // This is a brute force approach to "solving" the problem of a hanging
+      // CDP connection. Take a look at https://github.com/aslushnikov/getting-started-with-cdp#session-hierarchy
+      // to get up to speed, but essentially if the page session of the
+      // first browser window is closed, the next CDP command will hang
+      // indefinitely. To prevent that from happening, we close the current
+      // connection. The next CDP command _should_ make us reconnect
+      ((HasDevTools) this).maybeGetDevTools().ifPresent(DevTools::disconnectSession);
+    }
+
     execute(DriverCommand.CLOSE);
   }
 

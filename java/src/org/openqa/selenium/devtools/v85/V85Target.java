@@ -21,6 +21,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import org.openqa.selenium.devtools.Command;
 import org.openqa.selenium.devtools.ConverterFunctions;
+import org.openqa.selenium.devtools.Event;
 import org.openqa.selenium.devtools.idealized.browser.model.BrowserContextID;
 import org.openqa.selenium.devtools.idealized.target.model.SessionID;
 import org.openqa.selenium.devtools.idealized.target.model.TargetID;
@@ -85,5 +86,17 @@ public class V85Target implements org.openqa.selenium.devtools.idealized.target.
   @Override
   public Command<Void> setAutoAttach() {
     return Target.setAutoAttach(true, false, Optional.of(true));
+  }
+
+  @Override
+  public Event<TargetID> detached() {
+    return new Event<>(
+      "Target.detachedFromTarget",
+      input -> {
+        Function<JsonInput, org.openqa.selenium.devtools.v85.target.model.TargetID> converter =
+          ConverterFunctions.map("targetId", org.openqa.selenium.devtools.v85.target.model.TargetID.class);
+        return new TargetID(converter.apply(input).toString());
+      }
+    );
   }
 }

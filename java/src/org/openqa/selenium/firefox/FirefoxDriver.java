@@ -331,20 +331,35 @@ public class FirefoxDriver extends RemoteWebDriver
   }
 
   @Override
-  public DevTools getDevTools() {
-    if (devTools == null) {
-      URI wsUri = cdpUri.orElseThrow(() ->
-          new DevToolsException("This version of Firefox or geckodriver does not support CDP"));
-
-      HttpClient.Factory clientFactory = HttpClient.Factory.createDefault();
-
-      ClientConfig wsConfig = ClientConfig.defaultConfig().baseUri(wsUri);
-      HttpClient wsClient = clientFactory.createClient(wsConfig);
-
-      Connection connection = new Connection(wsClient, wsUri.toString());
-      CdpInfo cdpInfo = new CdpVersionFinder().match("85.0").orElseGet(NoOpCdpInfo::new);
-      devTools = new DevTools(cdpInfo::getDomains, connection);
+  public Optional<DevTools> maybeGetDevTools() {
+    if (devTools != null) {
+      return Optional.of(devTools);
     }
-    return devTools;
+
+    if (!cdpUri.isPresent()) {
+      return Optional.empty();
+    }
+
+    URI wsUri = cdpUri.orElseThrow(() ->
+      new DevToolsException("This version of Firefox or geckodriver does not support CDP"));
+    HttpClient.Factory clientFactory = HttpClient.Factory.createDefault();
+
+    ClientConfig wsConfig = ClientConfig.defaultConfig().baseUri(wsUri);
+    HttpClient wsClient = clientFactory.createClient(wsConfig);
+
+    Connection connection = new Connection(wsClient, wsUri.toString());
+    CdpInfo cdpInfo = new CdpVersionFinder().match("85.0").orElseGet(NoOpCdpInfo::new);
+    devTools = new DevTools(cdpInfo::getDomains, connection);
+
+    return Optional.of(devTools);
+  }
+
+  @Override
+  public DevTools getDevTools() {
+    if (!cdpUri.isPresent()) {
+      throw new DevToolsException("This version of Firefox or geckodriver does not support CDP");
+    }
+
+    return maybeGetDevTools().orElseThrow(() -> new DevToolsException("Unable to initialize CDP connection"));
   }
 }
