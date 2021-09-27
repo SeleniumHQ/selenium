@@ -1,4 +1,3 @@
-
 # This file has been generated using `bazel run scripts:pinned_browsers`
 
 load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
@@ -82,4 +81,3 @@ def pin_browsers():
         sha256 = "ff4469d533dd09998fc99767468995b81b2ccd180811d961496e3b4f9d058284",
         build_file_content = "exports_files([\"chromedriver\"])",
     )
-

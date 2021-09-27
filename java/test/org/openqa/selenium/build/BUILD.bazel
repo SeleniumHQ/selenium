@@ -4,11 +4,7 @@ load("//java:defs.bzl", "java_library")
 java_library(
     name = "build",
     srcs = glob(["*.java"]),
-    visibility = [
-        "//java/test:__subpackages__",
-        "//java/test:__subpackages__",
-        "//java/test:__subpackages__",
-    ],
+    visibility = ["//java/test:__subpackages__"],
     deps = [
         "//java/src/org/openqa/selenium:core",
         "//java/src/org/openqa/selenium/os",

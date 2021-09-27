@@ -10,10 +10,10 @@ java_library(
     ],
     deps = [
         "//java:auto-service",
-        "//java/src/org/openqa/selenium/json",
-        "//java/src/org/openqa/selenium/remote",
         "//java/src/org/openqa/selenium/grid/data",
         "//java/src/org/openqa/selenium/grid/node",
+        "//java/src/org/openqa/selenium/json",
+        "//java/src/org/openqa/selenium/remote",
         artifact("com.beust:jcommander"),
         artifact("com.google.guava:guava"),
     ],

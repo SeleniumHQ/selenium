@@ -11,9 +11,9 @@ java_library(
     ],
     deps = [
         "//java/src/org/openqa/selenium:core",
-        "//java/src/org/openqa/selenium/json",
-        "//java/src/org/openqa/selenium/remote",
         "//java/src/org/openqa/selenium/events",
         "//java/src/org/openqa/selenium/grid/security",
+        "//java/src/org/openqa/selenium/json",
+        "//java/src/org/openqa/selenium/remote",
     ],
 )

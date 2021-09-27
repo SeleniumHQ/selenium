@@ -6,11 +6,11 @@ java_test_suite(
     size = "medium",
     srcs = glob(["*Test.java"]),
     deps = [
+        "//java/src/org/openqa/selenium/events/local",
+        "//java/src/org/openqa/selenium/grid/sessionmap/jdbc",
         "//java/src/org/openqa/selenium/remote",
         "//java/test/org/openqa/selenium/remote/tracing:tracing-support",
         "//java/test/org/openqa/selenium/testing:test-base",
-        "//java/src/org/openqa/selenium/events/local",
-        "//java/src/org/openqa/selenium/grid/sessionmap/jdbc",
         artifact("io.opentelemetry:opentelemetry-api"),
         artifact("junit:junit"),
         artifact("org.assertj:assertj-core"),

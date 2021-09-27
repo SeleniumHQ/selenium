@@ -5,11 +5,7 @@ java_library(
     name = "tracing-support",
     testonly = True,
     srcs = glob(["*.java"]),
-    visibility = [
-        "//java/test:__subpackages__",
-        "//java/test:__subpackages__",
-        "//java/test:__subpackages__",
-    ],
+    visibility = ["//java/test:__subpackages__"],
     deps = [
         "//java/src/org/openqa/selenium/remote/tracing",
         "//java/src/org/openqa/selenium/remote/tracing/opentelemetry",

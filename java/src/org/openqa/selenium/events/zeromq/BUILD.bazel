@@ -7,15 +7,15 @@ java_library(
     visibility = [
         "//java/src/org/openqa/selenium/grid:__subpackages__",
         "//java/test/org/openqa/selenium/events:__subpackages__",
-        "//java/test/org/openqa/selenium/grid/router:__pkg__",
         "//java/test/org/openqa/selenium/grid/distributor:__pkg__",
+        "//java/test/org/openqa/selenium/grid/router:__pkg__",
     ],
     deps = [
         "//java/src/org/openqa/selenium:core",
-        "//java/src/org/openqa/selenium/json",
         "//java/src/org/openqa/selenium/events",
         "//java/src/org/openqa/selenium/grid/config",
         "//java/src/org/openqa/selenium/grid/security",
+        "//java/src/org/openqa/selenium/json",
         artifact("com.google.guava:guava"),
         artifact("net.jodah:failsafe"),
         artifact("org.zeromq:jeromq"),

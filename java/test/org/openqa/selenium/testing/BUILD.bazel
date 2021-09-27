@@ -3,18 +3,19 @@ load("//java:defs.bzl", "java_library", "java_test_suite")
 
 java_library(
     name = "testing",
-    exports = [
-        ":annotations",
-        ":test-base",
-    ],
     testonly = True,
     visibility = [
         "//java/test:__subpackages__",
+    ],
+    exports = [
+        ":annotations",
+        ":test-base",
     ],
 )
 
 java_library(
     name = "annotations",
+    testonly = True,
     srcs = [
         "Ignore.java",
         "IgnoreList.java",
@@ -27,12 +28,7 @@ java_library(
         "SwitchToTopAfterTest.java",
         "UnitTests.java",
     ],
-    testonly = True,
-    visibility = [
-        "//java/test:__subpackages__",
-        "//java/test:__subpackages__",
-        "//java/test:__subpackages__",
-    ],
+    visibility = ["//java/test:__subpackages__"],
     exports = [
         "//java/test/org/openqa/selenium/testing/drivers:browser",
     ],
@@ -55,11 +51,7 @@ java_library(
         "TestIgnorance.java",
         "TestUtilities.java",
     ],
-    visibility = [
-        "//java/test:__subpackages__",
-        "//java/test:__subpackages__",
-        "//java/test:__subpackages__",
-    ],
+    visibility = ["//java/test:__subpackages__"],
     deps = [
         ":annotations",
         "//java/src/org/openqa/selenium:core",

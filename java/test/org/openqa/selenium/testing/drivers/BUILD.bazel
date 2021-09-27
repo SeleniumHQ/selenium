@@ -36,11 +36,7 @@ java_library(
         "--release",
         "11",
     ],
-    visibility = [
-        "//java/test:__subpackages__",
-        "//java/test:__subpackages__",
-        "//java/test:__subpackages__",
-    ],
+    visibility = ["//java/test:__subpackages__"],
     exports = [
         ":browser",
     ],

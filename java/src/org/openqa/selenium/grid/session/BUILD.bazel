@@ -12,10 +12,10 @@ java_library(
         "//java/src/org/openqa/selenium/remote/server:__subpackages__",
     ],
     deps = [
-        "//java/src/org/openqa/selenium/remote",
         "//java/src/org/openqa/selenium/grid/data",
         "//java/src/org/openqa/selenium/grid/jmx",
         "//java/src/org/openqa/selenium/grid/web",
+        "//java/src/org/openqa/selenium/remote",
         artifact("com.google.guava:guava"),
     ],
 )

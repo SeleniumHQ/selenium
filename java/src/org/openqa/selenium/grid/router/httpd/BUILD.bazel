@@ -11,7 +11,6 @@ java_library(
     ],
     deps = [
         "//java:auto-service",
-        "//java/src/org/openqa/selenium/remote",
         "//java/src/org/openqa/selenium/cli",
         "//java/src/org/openqa/selenium/grid:base-command",
         "//java/src/org/openqa/selenium/grid/config",
@@ -30,6 +29,7 @@ java_library(
         "//java/src/org/openqa/selenium/grid/sessionqueue/remote",
         "//java/src/org/openqa/selenium/grid/web",
         "//java/src/org/openqa/selenium/netty/server",
+        "//java/src/org/openqa/selenium/remote",
         artifact("com.beust:jcommander"),
         artifact("com.google.guava:guava"),
     ],
