@@ -10,6 +10,9 @@ java_selenium_test_suite(
         "--release",
         "11",
     ],
+    tags = [
+        "selenium-remote",
+    ],
     deps = [
         "//java/src/org/openqa/selenium:core",
         "//java/src/org/openqa/selenium/remote",
