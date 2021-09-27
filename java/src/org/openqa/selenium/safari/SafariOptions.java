@@ -17,17 +17,16 @@
 
 package org.openqa.selenium.safari;
 
+import static org.openqa.selenium.remote.CapabilityType.BROWSER_NAME;
+
 import org.openqa.selenium.Capabilities;
-import org.openqa.selenium.MutableCapabilities;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.AbstractDriverOptions;
+import org.openqa.selenium.remote.BrowserType;
 
 import java.util.Collections;
-import java.util.Map;
 import java.util.Set;
-
-import static org.openqa.selenium.remote.CapabilityType.BROWSER_NAME;
 
 /**
  * Class to manage options specific to {@link SafariDriver}.
@@ -50,28 +49,30 @@ public class SafariOptions extends AbstractDriverOptions<SafariOptions> {
 
   static final String SAFARI_TECH_PREVIEW = "Safari Technology Preview";
 
-  /**
-   * Key used to store SafariOptions in a {@link Capabilities} object.
-   * @deprecated No replacement. Use the methods on this class
-   */
-  @Deprecated
-  public static final String CAPABILITY = "safari.options";
-
-  private interface Option {
-    // Defined by Apple
-    String AUTOMATIC_INSPECTION  = "safari:automaticInspection";
-    String AUTOMATIC_PROFILING = "safari:automaticProfiling";
-  }
-
   public SafariOptions() {
     setUseTechnologyPreview(false);
-    setCapability(BROWSER_NAME, "safari");
+    setCapability(BROWSER_NAME, BrowserType.SAFARI);
   }
 
   public SafariOptions(Capabilities source) {
     this();
 
     source.getCapabilityNames().forEach(name -> setCapability(name, source.getCapability(name)));
+  }
+
+  /**
+   * Construct a {@link SafariOptions} instance from given capabilities.
+   *
+   * @param capabilities Desired capabilities from which the options are derived.
+   * @return SafariOptions
+   * @throws WebDriverException If an error occurred during the reconstruction of the options
+   */
+  public static SafariOptions fromCapabilities(Capabilities capabilities)
+    throws WebDriverException {
+    if (capabilities instanceof SafariOptions) {
+      return (SafariOptions) capabilities;
+    }
+    return new SafariOptions(capabilities);
   }
 
   @Override
@@ -87,27 +88,8 @@ public class SafariOptions extends AbstractDriverOptions<SafariOptions> {
     return newInstance;
   }
 
-  /**
-   * Construct a {@link SafariOptions} instance from given capabilities.
-   * When the {@link #CAPABILITY} capability is set, all other capabilities will be ignored!
-   *
-   * @param capabilities Desired capabilities from which the options are derived.
-   * @return SafariOptions
-   * @throws WebDriverException If an error occurred during the reconstruction of the options
-   */
-  public static SafariOptions fromCapabilities(Capabilities capabilities)
-      throws WebDriverException {
-    if (capabilities instanceof SafariOptions) {
-      return (SafariOptions) capabilities;
-    }
-    Object cap = capabilities.getCapability(SafariOptions.CAPABILITY);
-    if (cap instanceof SafariOptions) {
-      return (SafariOptions) cap;
-    } else if (cap instanceof Map) {
-      return new SafariOptions(new MutableCapabilities(((Map<String, ?>) cap)));
-    } else {
-      return new SafariOptions(capabilities);
-    }
+  public boolean getAutomaticInspection() {
+    return Boolean.TRUE.equals(getCapability(Option.AUTOMATIC_INSPECTION));
   }
 
   // Setters
@@ -124,16 +106,26 @@ public class SafariOptions extends AbstractDriverOptions<SafariOptions> {
     return this;
   }
 
+  public boolean getAutomaticProfiling() {
+    return Boolean.TRUE.equals(is(Option.AUTOMATIC_PROFILING));
+  }
+
   /**
    * Instruct the SafariDriver to enable the Automatic profiling if true, otherwise disable
    * the automatic profiling. Defaults to disabling the automatic profiling.
    *
    * @param automaticProfiling If true, the SafariDriver will enable the Automation Profiling,
-   *                            otherwise will disable.
+   *                           otherwise will disable.
    */
   public SafariOptions setAutomaticProfiling(boolean automaticProfiling) {
     setCapability(Option.AUTOMATIC_PROFILING, automaticProfiling);
     return this;
+  }
+
+  // Getters
+
+  public boolean getUseTechnologyPreview() {
+    return SAFARI_TECH_PREVIEW.equals(getBrowserName());
   }
 
   /**
@@ -141,26 +133,12 @@ public class SafariOptions extends AbstractDriverOptions<SafariOptions> {
    * release version of Safari. Defaults to using the release version of Safari.
    *
    * @param useTechnologyPreview If true, the SafariDriver will use the Safari Technology Preview,
-   *     otherwise will use the release version of Safari.
+   *                             otherwise will use the release version of Safari.
    */
   public SafariOptions setUseTechnologyPreview(boolean useTechnologyPreview) {
     // Use an object here, rather than a boolean to avoid a stack overflow
     super.setCapability(BROWSER_NAME, useTechnologyPreview ? SAFARI_TECH_PREVIEW : "safari");
     return this;
-  }
-
-  // Getters
-
-  public boolean getAutomaticInspection() {
-    return Boolean.TRUE.equals(getCapability(Option.AUTOMATIC_INSPECTION));
-  }
-
-  public boolean getAutomaticProfiling() {
-    return Boolean.TRUE.equals(is(Option.AUTOMATIC_PROFILING));
-  }
-
-  public boolean getUseTechnologyPreview() {
-    return SAFARI_TECH_PREVIEW.equals(getBrowserName());
   }
 
   @Override
@@ -171,5 +149,12 @@ public class SafariOptions extends AbstractDriverOptions<SafariOptions> {
   @Override
   protected Object getExtraCapability(String capabilityName) {
     return null;
+  }
+
+  private interface Option {
+
+    // Defined by Apple
+    String AUTOMATIC_INSPECTION = "safari:automaticInspection";
+    String AUTOMATIC_PROFILING = "safari:automaticProfiling";
   }
 }
