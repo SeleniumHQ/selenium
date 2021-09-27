@@ -32,17 +32,19 @@ module Selenium
 
       def initialize(url:)
         @callback_threads = ThreadGroup.new
+
         @messages = []
         @session_id = nil
         @url = url
 
         process_handshake
-        attach_socket_listener
+        @socket_thread = attach_socket_listener
         start_session
       end
 
       def close
         @callback_threads.list.each(&:exit)
+        @socket_thread.exit
         socket.close
       end
 
