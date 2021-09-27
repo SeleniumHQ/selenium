@@ -22,9 +22,7 @@ require_relative 'spec_helper'
 module Selenium
   module WebDriver
     describe DevTools, exclusive: {browser: %i[chrome edge firefox_nightly]} do
-      before(:all) { quit_driver }
-
-      after { quit_driver }
+      after { reset_driver! }
 
       it 'sends commands' do
         driver.devtools.page.navigate(url: url_for('xhtmlTest.html'))
@@ -40,6 +38,12 @@ module Selenium
         sleep 0.5
 
         expect(callback).to have_received(:call).at_least(:once)
+      end
+
+      it 'propagates errors in events' do
+        driver.devtools.page.enable
+        driver.devtools.page.on(:load_event_fired) { raise "This is fine!" }
+        expect { driver.navigate.to url_for('xhtmlTest.html') }.to raise_error(RuntimeError, "This is fine!")
       end
 
       context 'authentication', except: {browser: :firefox_nightly,
