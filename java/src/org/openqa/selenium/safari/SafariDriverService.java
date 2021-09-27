@@ -45,14 +45,20 @@ public class SafariDriverService extends DriverService {
   public static final String SAFARI_DRIVER_EXE_PROPERTY = "webdriver.safari.driver";
 
   private static final File SAFARI_DRIVER_EXECUTABLE = new File("/usr/bin/safaridriver");
+
+  /**
+   * @deprecated Directly use {@link SafariTechPreviewDriverService}
+   * Remove after deprecation policy is fulfilled
+   */
+  @Deprecated
   private static final File TP_SAFARI_DRIVER_EXECUTABLE =
-      new File("/Applications/Safari Technology Preview.app/Contents/MacOS/safaridriver");
+    new File("/Applications/Safari Technology Preview.app/Contents/MacOS/safaridriver");
 
   public SafariDriverService(
-      File executable,
-      int port,
-      List<String> args,
-      Map<String, String> environment) throws IOException {
+    File executable,
+    int port,
+    List<String> args,
+    Map<String, String> environment) throws IOException {
     super(executable, port, DEFAULT_TIMEOUT, args, environment);
   }
 
@@ -71,10 +77,6 @@ public class SafariDriverService extends DriverService {
 
   static SafariDriverService createDefaultService(SafariOptions options) {
     return new Builder().usingTechnologyPreview(options.getUseTechnologyPreview()).build();
-  }
-
-  static SafariDriverService createDefaultService(Capabilities caps) {
-    return createDefaultService(new SafariOptions(caps));
   }
 
   @Override
@@ -98,13 +100,17 @@ public class SafariDriverService extends DriverService {
 
       if (BrowserType.SAFARI.equals(capabilities.getBrowserName())) {
         score++;
-      } else if ("Safari Technology Preview".equals(capabilities.getBrowserName())) {
+      } else if (SafariOptions.SAFARI_TECH_PREVIEW.equals(capabilities.getBrowserName())) {
         score++;
       }
 
       return score;
     }
 
+    /**
+     * @deprecated Directly use {@link SafariTechPreviewDriverService}
+     */
+    @Deprecated
     public SafariDriverService.Builder usingTechnologyPreview(boolean useTechnologyPreview) {
       this.useTechnologyPreview = useTechnologyPreview;
       return this;

@@ -92,8 +92,6 @@ public class SafariOptions extends AbstractDriverOptions<SafariOptions> {
     return Boolean.TRUE.equals(getCapability(Option.AUTOMATIC_INSPECTION));
   }
 
-  // Setters
-
   /**
    * Instruct the SafariDriver to enable the Automatic Inspection if true, otherwise disable
    * the automatic inspection. Defaults to disabling the automatic inspection.
@@ -121,8 +119,6 @@ public class SafariOptions extends AbstractDriverOptions<SafariOptions> {
     setCapability(Option.AUTOMATIC_PROFILING, automaticProfiling);
     return this;
   }
-
-  // Getters
 
   public boolean getUseTechnologyPreview() {
     return SAFARI_TECH_PREVIEW.equals(getBrowserName());
