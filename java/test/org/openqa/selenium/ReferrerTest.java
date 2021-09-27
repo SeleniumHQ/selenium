@@ -33,7 +33,6 @@ import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.openqa.selenium.testing.Ignore;
-import org.openqa.selenium.testing.NeedsLocalEnvironment;
 import org.openqa.selenium.testing.SeleniumTestRule;
 import org.openqa.selenium.testing.SeleniumTestRunner;
 
@@ -138,7 +137,6 @@ public class ReferrerTest {
    * does not have a proxy configured.
    */
   @Test
-  @NeedsLocalEnvironment
   public void basicHistoryNavigationWithoutAProxy() {
     String page1Url = server1.whereIs(PAGE_1 + "?next=" + encode(server1.whereIs(PAGE_2)));
     String page2Url = server1.whereIs(PAGE_2 + "?next=" + encode(server1.whereIs(PAGE_3)));
@@ -155,7 +153,6 @@ public class ReferrerTest {
    * Tests navigation across multiple domains when the browser does not have a proxy configured.
    */
   @Test
-  @NeedsLocalEnvironment
   @Ignore(value = CHROME, reason = "https://developers.google.com/web/updates/2020/07/referrer-policy-new-chrome-default")
   @Ignore(value = FIREFOX, reason = "https://developers.google.com/web/updates/2020/07/referrer-policy-new-chrome-default")
   public void crossDomainHistoryNavigationWithoutAProxy() {
@@ -177,7 +174,6 @@ public class ReferrerTest {
    * configured to use a proxy that permits direct access to that domain.
    */
   @Test
-  @NeedsLocalEnvironment
   public void basicHistoryNavigationWithADirectProxy() {
     proxyServer.setPacFileContents("function FindProxyForURL(url, host) { return 'DIRECT'; }");
     WebDriver driver = createDriver(proxyServer.whereIs("/pac.js"));
@@ -199,7 +195,6 @@ public class ReferrerTest {
    * permits direct access to those domains.
    */
   @Test
-  @NeedsLocalEnvironment
   @Ignore(value = CHROME, reason = "https://developers.google.com/web/updates/2020/07/referrer-policy-new-chrome-default")
   @Ignore(value = FIREFOX, reason = "https://developers.google.com/web/updates/2020/07/referrer-policy-new-chrome-default")
   public void crossDomainHistoryNavigationWithADirectProxy() {
@@ -224,7 +219,6 @@ public class ReferrerTest {
    * redirects the second domain to another host.
    */
   @Test
-  @NeedsLocalEnvironment
   @Ignore(value = CHROME, reason = "https://developers.google.com/web/updates/2020/07/referrer-policy-new-chrome-default")
   @Ignore(value = FIREFOX, reason = "https://developers.google.com/web/updates/2020/07/referrer-policy-new-chrome-default")
   public void crossDomainHistoryNavigationWithAProxiedHost() {
@@ -256,7 +250,6 @@ public class ReferrerTest {
    * to connect directly to the target server.
    */
   @Test
-  @NeedsLocalEnvironment
   @Ignore(value = CHROME, reason = "https://developers.google.com/web/updates/2020/07/referrer-policy-new-chrome-default")
   @Ignore(value = FIREFOX, reason = "https://developers.google.com/web/updates/2020/07/referrer-policy-new-chrome-default")
   public void crossDomainHistoryNavigationWhenProxyInterceptsHostRequests() {
@@ -291,7 +284,6 @@ public class ReferrerTest {
     reason = "IEDriver does not disable automatic proxy caching, causing this test to fail, issue 6629")
   @Ignore(FIREFOX)
   @Ignore(value = LEGACY_FIREFOX_XPI, travis = true)
-  @NeedsLocalEnvironment
   @Ignore(value = CHROME, reason = "Flaky")
   public void navigationWhenProxyInterceptsASpecificUrl() {
     // Have our proxy intercept requests for page 2.

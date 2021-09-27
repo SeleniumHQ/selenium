@@ -42,7 +42,6 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.NeedsFreshDriver;
-import org.openqa.selenium.testing.NeedsLocalEnvironment;
 import org.openqa.selenium.testing.NoDriverAfterTest;
 import org.openqa.selenium.testing.NoDriverBeforeTest;
 import org.openqa.selenium.testing.NotYetImplemented;
@@ -67,7 +66,6 @@ public class PageLoadingTest extends JUnit4TestBase {
   }
 
   @Test
-  @NeedsLocalEnvironment
   @NoDriverBeforeTest
   @NoDriverAfterTest
   public void testNoneStrategyShouldNotWaitForPageToLoad() {
@@ -86,7 +84,6 @@ public class PageLoadingTest extends JUnit4TestBase {
   }
 
   @Test
-  @NeedsLocalEnvironment
   @NoDriverBeforeTest
   @NoDriverAfterTest
   @Ignore(value = CHROME, reason = "Flaky")
@@ -111,7 +108,6 @@ public class PageLoadingTest extends JUnit4TestBase {
   }
 
   @Test
-  @NeedsLocalEnvironment
   @NoDriverBeforeTest
   @NoDriverAfterTest
   public void testEagerStrategyShouldNotWaitForResources() {
@@ -133,7 +129,6 @@ public class PageLoadingTest extends JUnit4TestBase {
   }
 
   @Test
-  @NeedsLocalEnvironment
   @NoDriverBeforeTest
   @NoDriverAfterTest
   public void testEagerStrategyShouldNotWaitForResourcesOnRefresh() {
@@ -350,7 +345,6 @@ public class PageLoadingTest extends JUnit4TestBase {
   @Test
   @Ignore(LEGACY_FIREFOX_XPI)
   @NotYetImplemented(SAFARI)
-  @NeedsLocalEnvironment
   public void testPageLoadTimeoutCanBeChanged() {
     testPageLoadTimeoutIsEnforced(2);
     testPageLoadTimeoutIsEnforced(3);
@@ -359,7 +353,6 @@ public class PageLoadingTest extends JUnit4TestBase {
   @Test
   @Ignore(LEGACY_FIREFOX_XPI)
   @NotYetImplemented(SAFARI)
-  @NeedsLocalEnvironment
   public void testCanHandleSequentialPageLoadTimeouts() {
     long pageLoadTimeout = 2;
     long pageLoadTimeBuffer = 10;
@@ -369,7 +362,6 @@ public class PageLoadingTest extends JUnit4TestBase {
   }
 
   @Test
-  @NeedsLocalEnvironment
   public void testShouldTimeoutIfAPageTakesTooLongToLoad() {
     try {
       testPageLoadTimeoutIsEnforced(2);
@@ -386,7 +378,6 @@ public class PageLoadingTest extends JUnit4TestBase {
   @Ignore(value = LEGACY_FIREFOX_XPI, travis = true)
   @Ignore(HTMLUNIT)
   @Ignore(value = SAFARI, reason = "Flaky")
-  @NeedsLocalEnvironment
   public void testShouldTimeoutIfAPageTakesTooLongToLoadAfterClick() {
     driver.manage().timeouts().pageLoadTimeout(Duration.ofSeconds(2));
 
@@ -415,7 +406,6 @@ public class PageLoadingTest extends JUnit4TestBase {
   }
 
   @Test
-  @NeedsLocalEnvironment
   @Ignore(value = CHROME, reason = "Flaky")
   @Ignore(value = EDGE, reason = "Flaky")
   public void testShouldTimeoutIfAPageTakesTooLongToRefresh() {
@@ -452,7 +442,6 @@ public class PageLoadingTest extends JUnit4TestBase {
   @NotYetImplemented(EDGE)
   @NotYetImplemented(value = SAFARI)
   @NotYetImplemented(HTMLUNIT)
-  @NeedsLocalEnvironment
   public void testShouldNotStopLoadingPageAfterTimeout() {
     try {
       testPageLoadTimeoutIsEnforced(1);

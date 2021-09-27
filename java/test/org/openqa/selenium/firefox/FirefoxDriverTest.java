@@ -45,7 +45,6 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.NeedsFreshDriver;
-import org.openqa.selenium.testing.NeedsLocalEnvironment;
 import org.openqa.selenium.testing.NoDriverAfterTest;
 import org.openqa.selenium.testing.NotYetImplemented;
 import org.openqa.selenium.testing.drivers.WebDriverBuilder;
@@ -75,7 +74,6 @@ import static org.openqa.selenium.remote.CapabilityType.PAGE_LOAD_STRATEGY;
 import static org.openqa.selenium.support.ui.ExpectedConditions.titleIs;
 import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
 
-@NeedsLocalEnvironment(reason = "Requires local browser launching environment")
 public class FirefoxDriverTest extends JUnit4TestBase {
 
   private FirefoxDriver localDriver;

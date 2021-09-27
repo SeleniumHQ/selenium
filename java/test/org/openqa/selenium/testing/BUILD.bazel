@@ -20,7 +20,6 @@ java_library(
         "Ignore.java",
         "IgnoreList.java",
         "NeedsFreshDriver.java",
-        "NeedsLocalEnvironment.java",
         "NoDriverAfterTest.java",
         "NoDriverBeforeTest.java",
         "NotYetImplemented.java",
