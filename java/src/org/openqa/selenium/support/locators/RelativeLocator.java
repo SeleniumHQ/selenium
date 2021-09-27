@@ -36,6 +36,7 @@ import java.util.List;
 import java.util.Map;
 
 import static org.openqa.selenium.json.Json.MAP_TYPE;
+import static org.openqa.selenium.support.locators.RelativeLocatorScript.FIND_ELEMENTS;
 
 /**
  * Used for finding elements by their location on a page, rather than their
@@ -71,23 +72,6 @@ import static org.openqa.selenium.json.Json.MAP_TYPE;
 public class RelativeLocator {
 
   private static final Json JSON = new Json();
-  private static final String FIND_ELEMENTS;
-
-  static {
-    try {
-      String location = String.format(
-        "/%s/%s",
-        RelativeLocator.class.getPackage().getName().replace(".", "/"),
-        "findElements.js");
-
-      URL url = RelativeLocator.class.getResource(location);
-
-      String rawFunction = Resources.toString(url, StandardCharsets.UTF_8);
-      FIND_ELEMENTS = String.format("return (%s).apply(null, arguments);", rawFunction);
-    } catch (IOException e) {
-      throw new UncheckedIOException(e);
-    }
-  }
 
   private static final int CLOSE_IN_PIXELS = 100;
 
