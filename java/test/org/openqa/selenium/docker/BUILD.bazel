@@ -6,9 +6,9 @@ java_test_suite(
     size = "small",
     srcs = glob(["**/*Test.java"]),
     deps = [
+        "//java/src/org/openqa/selenium/docker",
         "//java/src/org/openqa/selenium/json",
         "//java/src/org/openqa/selenium/remote/http",
-        "//java/src/org/openqa/selenium/docker",
         artifact("junit:junit"),
         artifact("org.assertj:assertj-core"),
     ],

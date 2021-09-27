@@ -30,8 +30,6 @@ java_library(
     ],
     visibility = [
         "//java/src/com/thoughtworks/selenium:__subpackages__",
-        "//java/test/com/thoughtworks/selenium:__subpackages__",
-        "//java/src/com/thoughtworks/selenium:__subpackages__",
         "//java/src/org/openqa/selenium/server/htmlrunner:__pkg__",
         "//java/test/com/thoughtworks/selenium:__subpackages__",
     ],

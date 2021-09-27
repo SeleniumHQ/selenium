@@ -12,11 +12,11 @@ java_test_suite(
         "no-sandbox",
     ],
     deps = [
+        "//java/src/org/openqa/selenium/grid/web",
         "//java/src/org/openqa/selenium/json",
         "//java/src/org/openqa/selenium/remote",
         "//java/src/org/openqa/selenium/remote/http",
         "//java/test/org/openqa/selenium/remote/tracing:tracing-support",
-        "//java/src/org/openqa/selenium/grid/web",
         artifact("com.google.guava:guava"),
         artifact("junit:junit"),
         artifact("org.assertj:assertj-core"),

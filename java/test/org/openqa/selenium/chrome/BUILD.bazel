@@ -11,6 +11,10 @@ java_selenium_test_suite(
     data = [
         "//third_party/chrome_ext:backspace.crx",
     ],
+    javacopts = [
+        "--release",
+        "11",
+    ],
     deps = [
         "//java/src/org/openqa/selenium/chrome",
         "//java/src/org/openqa/selenium/remote",
@@ -21,9 +25,5 @@ java_selenium_test_suite(
         artifact("junit:junit"),
         artifact("org.assertj:assertj-core"),
         artifact("org.mockito:mockito-core"),
-    ],
-    javacopts = [
-        "--release",
-        "11",
     ],
 )

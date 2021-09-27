@@ -11,7 +11,6 @@ java_library(
     deps = [
         "//java:auto-service",
         "//java/src/org/openqa/selenium:core",
-        "//java/src/org/openqa/selenium/json",
         "//java/src/org/openqa/selenium/cli",
         "//java/src/org/openqa/selenium/grid:base-command",
         "//java/src/org/openqa/selenium/grid/config",
@@ -19,6 +18,7 @@ java_library(
         "//java/src/org/openqa/selenium/grid/sessionqueue",
         "//java/src/org/openqa/selenium/grid/sessionqueue/config",
         "//java/src/org/openqa/selenium/grid/sessionqueue/local",
+        "//java/src/org/openqa/selenium/json",
         "//java/src/org/openqa/selenium/netty/server",
         artifact("com.beust:jcommander"),
         artifact("com.google.guava:guava"),

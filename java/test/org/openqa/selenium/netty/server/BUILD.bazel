@@ -27,11 +27,11 @@ java_test_suite(
     ),
     deps = [
         "//java/src/org/openqa/selenium:core",
+        "//java/src/org/openqa/selenium/grid/config",
+        "//java/src/org/openqa/selenium/netty/server",
         "//java/src/org/openqa/selenium/remote/http",
         "//java/src/org/openqa/selenium/support",
         "//java/test/org/openqa/selenium/testing:test-base",
-        "//java/src/org/openqa/selenium/grid/config",
-        "//java/src/org/openqa/selenium/netty/server",
         artifact("com.google.guava:guava"),
         artifact("junit:junit"),
         artifact("org.assertj:assertj-core"),
