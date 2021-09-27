@@ -41,6 +41,7 @@ import org.openqa.selenium.remote.tracing.Tracer;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.List;
 import java.util.ServiceLoader;
 
@@ -100,7 +101,8 @@ public class LocalNodeFactory {
 
     builders.stream()
       .filter(builder -> builder.score(stereotype) > 0)
-      .forEach(builder -> {
+      .max(Comparator.comparingInt(builder -> builder.score(stereotype)))
+      .ifPresent(builder -> {
         DriverService.Builder<?, ?> driverServiceBuilder;
         Class<?> clazz = builder.getClass();
         try {
