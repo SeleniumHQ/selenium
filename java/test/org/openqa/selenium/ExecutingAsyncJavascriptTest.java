@@ -32,7 +32,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
-import org.openqa.selenium.testing.NeedsLocalEnvironment;
 import org.openqa.selenium.testing.NotYetImplemented;
 
 import java.time.Duration;
@@ -277,7 +276,6 @@ public class ExecutingAsyncJavascriptTest extends JUnit4TestBase {
   }
 
   @Test
-  @NeedsLocalEnvironment(reason = "Relies on timing")
   public void shouldBeAbleToMakeXMLHttpRequestsAndWaitForTheResponse() {
     String script =
         "var url = arguments[0];" +
@@ -315,7 +313,6 @@ public class ExecutingAsyncJavascriptTest extends JUnit4TestBase {
   @Ignore(IE)
   @Ignore(FIREFOX)
   @Ignore(value = SAFARI, reason = "Does not support alerts yet")
-  @NeedsLocalEnvironment(reason = "Relies on timing")
   public void throwsIfScriptTriggersAlert() {
     driver.get(pages.simpleTestPage);
     driver.manage().timeouts().setScriptTimeout(Duration.ofMillis(5000));
@@ -332,7 +329,6 @@ public class ExecutingAsyncJavascriptTest extends JUnit4TestBase {
   @Ignore(IE)
   @Ignore(FIREFOX)
   @Ignore(value = SAFARI, reason = "Does not support alerts yet")
-  @NeedsLocalEnvironment(reason = "Relies on timing")
   public void throwsIfAlertHappensDuringScript() {
     driver.get(pages.slowLoadingAlertPage);
     driver.manage().timeouts().setScriptTimeout(Duration.ofMillis(5000));
@@ -348,7 +344,6 @@ public class ExecutingAsyncJavascriptTest extends JUnit4TestBase {
   @Ignore(IE)
   @Ignore(FIREFOX)
   @Ignore(value = SAFARI, reason = "Does not support alerts yet")
-  @NeedsLocalEnvironment(reason = "Relies on timing")
   public void throwsIfScriptTriggersAlertWhichTimesOut() {
     driver.get(pages.simpleTestPage);
     driver.manage().timeouts().setScriptTimeout(Duration.ofMillis(5000));
@@ -365,7 +360,6 @@ public class ExecutingAsyncJavascriptTest extends JUnit4TestBase {
   @Ignore(IE)
   @Ignore(FIREFOX)
   @Ignore(value = SAFARI, reason = "Does not support alerts yet")
-  @NeedsLocalEnvironment(reason = "Relies on timing")
   public void throwsIfAlertHappensDuringScriptWhichTimesOut() {
     driver.get(pages.slowLoadingAlertPage);
     driver.manage().timeouts().setScriptTimeout(Duration.ofMillis(5000));
@@ -381,7 +375,6 @@ public class ExecutingAsyncJavascriptTest extends JUnit4TestBase {
   @Ignore(IE)
   @Ignore(FIREFOX)
   @Ignore(value = SAFARI, reason = "Does not support alerts yet")
-  @NeedsLocalEnvironment(reason = "Relies on timing")
   public void includesAlertTextInUnhandledAlertException() {
     driver.manage().timeouts().setScriptTimeout(Duration.ofMillis(5000));
     String alertText = "Look! An alert!";

@@ -41,7 +41,6 @@ import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
-import org.openqa.selenium.testing.NeedsLocalEnvironment;
 import org.openqa.selenium.testing.NoDriverAfterTest;
 import org.openqa.selenium.testing.NoDriverBeforeTest;
 import org.openqa.selenium.testing.Safely;
@@ -78,7 +77,6 @@ public class ProxySettingTest extends JUnit4TestBase {
 
   @Test
   @Ignore(SAFARI)
-  @NeedsLocalEnvironment
   @NoDriverBeforeTest
   @NoDriverAfterTest
   public void canConfigureManualHttpProxy() {
@@ -92,7 +90,6 @@ public class ProxySettingTest extends JUnit4TestBase {
 
   @Test
   @Ignore(SAFARI)
-  @NeedsLocalEnvironment
   @NoDriverBeforeTest
   @NoDriverAfterTest
   public void canConfigureNoProxy() {
@@ -110,7 +107,6 @@ public class ProxySettingTest extends JUnit4TestBase {
 
   @Test
   @Ignore(SAFARI)
-  @NeedsLocalEnvironment
   @NoDriverBeforeTest
   @NoDriverAfterTest
   public void canConfigureProxyThroughPACFile() {
@@ -132,7 +128,6 @@ public class ProxySettingTest extends JUnit4TestBase {
 
   @Test
   @Ignore(SAFARI)
-  @NeedsLocalEnvironment
   @NoDriverBeforeTest
   @NoDriverAfterTest
   @Ignore(value = FIREFOX, travis = true)

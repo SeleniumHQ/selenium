@@ -35,7 +35,6 @@ import org.junit.After;
 import org.junit.Test;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
-import org.openqa.selenium.testing.NeedsLocalEnvironment;
 import org.openqa.selenium.testing.NotYetImplemented;
 
 import java.util.Random;
@@ -71,7 +70,6 @@ public class FrameSwitchingTest extends JUnit4TestBase {
   }
 
   @Test(timeout = 10000)
-  @NeedsLocalEnvironment(reason = "it hangs at IE9 and event Test.timeout doesn't help")
   public void testShouldOpenPageWithBrokenFrameset() {
     driver.get(appServer.whereIs("framesetPage3.html"));
 

@@ -28,7 +28,6 @@ import org.openqa.selenium.Keys;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.openqa.selenium.build.InProject;
 import org.openqa.selenium.testing.JUnit4TestBase;
-import org.openqa.selenium.testing.NeedsLocalEnvironment;
 import org.openqa.selenium.testing.TestUtilities;
 
 import java.io.IOException;
@@ -49,7 +48,6 @@ public class ChromeOptionsFunctionalTest extends JUnit4TestBase {
     }
   }
 
-  @NeedsLocalEnvironment
   @Test
   public void canStartChromeWithCustomOptions() {
     ChromeOptions options = new ChromeOptions();
@@ -64,7 +62,6 @@ public class ChromeOptionsFunctionalTest extends JUnit4TestBase {
     assertThat(userAgent).isEqualTo("foo;bar");
   }
 
-  @NeedsLocalEnvironment
   @Test
   public void optionsStayEqualAfterSerialization() {
     ChromeOptions options1 = new ChromeOptions();
@@ -74,7 +71,6 @@ public class ChromeOptionsFunctionalTest extends JUnit4TestBase {
     assertThat(options2).isEqualTo(options1);
   }
 
-  @NeedsLocalEnvironment
   @Test
   public void canSetAcceptInsecureCerts() {
     ChromeOptions options = new ChromeOptions();
@@ -87,7 +83,6 @@ public class ChromeOptionsFunctionalTest extends JUnit4TestBase {
     assertThat(driver.getCapabilities().getCapability(ACCEPT_INSECURE_CERTS)).isEqualTo(true);
   }
 
-  @NeedsLocalEnvironment
   @Test
   public void canAddExtensionFromFile() {
     ChromeOptions options = new ChromeOptions();
@@ -106,7 +101,6 @@ public class ChromeOptionsFunctionalTest extends JUnit4TestBase {
     new WebDriverWait(driver, Duration.ofSeconds(10)).until(titleIs("clicks"));
   }
 
-  @NeedsLocalEnvironment
   @Test
   public void canAddExtensionFromStringEncodedInBase64() throws IOException {
     ChromeOptions options = new ChromeOptions();

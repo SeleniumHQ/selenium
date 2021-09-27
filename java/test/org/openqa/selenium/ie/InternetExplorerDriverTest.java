@@ -25,7 +25,6 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.testing.JUnit4TestBase;
-import org.openqa.selenium.testing.NeedsLocalEnvironment;
 import org.openqa.selenium.testing.NoDriverAfterTest;
 import org.openqa.selenium.testing.NoDriverBeforeTest;
 import org.openqa.selenium.testing.drivers.WebDriverBuilder;
@@ -35,7 +34,6 @@ import java.awt.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.openqa.selenium.ie.InternetExplorerDriver.ENABLE_PERSISTENT_HOVERING;
 
-@NeedsLocalEnvironment(reason = "Requires local browser launching environment")
 public class InternetExplorerDriverTest extends JUnit4TestBase {
 
   @Test
@@ -65,7 +63,6 @@ public class InternetExplorerDriverTest extends JUnit4TestBase {
 
   @NoDriverBeforeTest
   @NoDriverAfterTest
-  @NeedsLocalEnvironment
   @Test
   public void testPersistentHoverCanBeTurnedOff() throws Exception {
     createNewDriver(new ImmutableCapabilities(ENABLE_PERSISTENT_HOVERING, false));

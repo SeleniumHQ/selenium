@@ -28,9 +28,7 @@ import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
-import org.openqa.selenium.testing.NeedsLocalEnvironment;
 
-@NeedsLocalEnvironment(reason = "Requires local browser launching environment")
 public class CleanSessionTest extends JUnit4TestBase {
 
   private static final Cookie COOKIE = new Cookie("foo", "bar");

@@ -22,7 +22,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.After;
 import org.junit.Test;
 import org.openqa.selenium.testing.JUnit4TestBase;
-import org.openqa.selenium.testing.NeedsLocalEnvironment;
 
 /**
  * Functional tests for {@link OperaOptions}.
@@ -37,7 +36,6 @@ public class OperaOptionsFunctionalTest extends JUnit4TestBase {
     }
   }
 
-  @NeedsLocalEnvironment
   @Test
   public void canStartOperaWithCustomOptions() {
     OperaOptions options = new OperaOptions();
@@ -49,7 +47,6 @@ public class OperaOptionsFunctionalTest extends JUnit4TestBase {
     assertThat(userAgent).isEqualTo("foo;bar");
   }
 
-  @NeedsLocalEnvironment
   @Test
   public void optionsStayEqualAfterSerialization() {
     OperaOptions options1 = new OperaOptions();
