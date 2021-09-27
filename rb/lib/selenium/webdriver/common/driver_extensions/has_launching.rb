@@ -19,30 +19,20 @@
 
 module Selenium
   module WebDriver
-    class LogEntry
-      attr_reader :level, :timestamp, :message
+    module DriverExtensions
+      module HasLaunching
 
-      def initialize(level, timestamp, message)
-        @level = level
-        @timestamp = timestamp
-        @message = message
-      end
+        #
+        # Launches Chromium app specified by id.
+        #
+        # @param [String] id
+        #
 
-      def as_json(*)
-        {
-          'timestamp' => timestamp,
-          'level' => level,
-          'message' => message
-        }
-      end
+        def launch_app(id)
+          @bridge.launch_app(id)
+        end
 
-      def to_s
-        "#{time} #{level}: #{message}"
-      end
-
-      def time
-        Time.at timestamp / 1000
-      end
-    end # LogEntry
+      end # HasLaunching
+    end # DriverExtensions
   end # WebDriver
 end # Selenium

@@ -249,45 +249,20 @@ namespace OpenQA.Selenium.DevTools
         /// <summary>
         /// Asynchronously starts the session.
         /// </summary>
-        /// <param name="protocolVersion">The version of the protocol to use in communicating with the browswer.</param>
+        /// <param name="requestedProtocolVersion">The requested version of the protocol to use in communicating with the browswer.</param>
         /// <returns>A task that represents the asynchronous operation.</returns>
-        internal async Task Start(int protocolVersion)
+        internal async Task Start(int requestedProtocolVersion)
         {
-            if (this.websocketAddress == null)
-            {
-                string debuggerUrl = string.Format(CultureInfo.InvariantCulture, "http://{0}", this.debuggerEndpoint);
-                string rawVersionInfo = string.Empty;
-                using (HttpClient client = new HttpClient())
-                {
-                    client.BaseAddress = new Uri(debuggerUrl);
-                    rawVersionInfo = await client.GetStringAsync("/json/version");
-                }
-
-                var versionInfo = JsonConvert.DeserializeObject<DevToolsVersionInfo>(rawVersionInfo);
-                this.websocketAddress = versionInfo.WebSocketDebuggerUrl;
-
-                if (protocolVersion == AutoDetectDevToolsProtocolVersion)
-                {
-                    bool versionParsed = int.TryParse(versionInfo.BrowserMajorVersion, out protocolVersion);
-                    if (!versionParsed)
-                    {
-                        throw new WebDriverException(string.Format(CultureInfo.InvariantCulture, "Unable to parse version number received from browser. Reported browser version string is '{0}'", versionInfo.Browser));
-                    }
-                }
-            }
-            else
-            {
-                if (protocolVersion == AutoDetectDevToolsProtocolVersion)
-                {
-                    throw new WebDriverException("A WebSocket address for DevTools protocol has been detected, but the protocol version cannot be automatically detected. You must specify a protocol version.");
-                }
-            }
-
+            int protocolVersion = await InitializeProtocol(requestedProtocolVersion);
             this.domains = DevToolsDomains.InitializeDomains(protocolVersion, this);
+            await this.InitializeSession();
+        }
 
+        internal async Task InitializeSession()
+        {
             string targetId = null;
             var targets = await this.domains.Target.GetTargets();
-            foreach(var target in targets)
+            foreach (var target in targets)
             {
                 if (target.Type == "page")
                 {
@@ -312,6 +287,42 @@ namespace OpenQA.Selenium.DevTools
             catch (WebDriverException)
             {
             }
+        }
+
+        private async Task<int> InitializeProtocol(int requestedProtocolVersion)
+        {
+            int protocolVersion = requestedProtocolVersion;
+            if (this.websocketAddress == null)
+            {
+                string debuggerUrl = string.Format(CultureInfo.InvariantCulture, "http://{0}", this.debuggerEndpoint);
+                string rawVersionInfo = string.Empty;
+                using (HttpClient client = new HttpClient())
+                {
+                    client.BaseAddress = new Uri(debuggerUrl);
+                    rawVersionInfo = await client.GetStringAsync("/json/version");
+                }
+
+                var versionInfo = JsonConvert.DeserializeObject<DevToolsVersionInfo>(rawVersionInfo);
+                this.websocketAddress = versionInfo.WebSocketDebuggerUrl;
+
+                if (requestedProtocolVersion == AutoDetectDevToolsProtocolVersion)
+                {
+                    bool versionParsed = int.TryParse(versionInfo.BrowserMajorVersion, out protocolVersion);
+                    if (!versionParsed)
+                    {
+                        throw new WebDriverException(string.Format(CultureInfo.InvariantCulture, "Unable to parse version number received from browser. Reported browser version string is '{0}'", versionInfo.Browser));
+                    }
+                }
+            }
+            else
+            {
+                if (protocolVersion == AutoDetectDevToolsProtocolVersion)
+                {
+                    throw new WebDriverException("A WebSocket address for DevTools protocol has been detected, but the protocol version cannot be automatically detected. You must specify a protocol version.");
+                }
+            }
+
+            return protocolVersion;
         }
 
         private async Task OpenSessionConnection(CancellationToken cancellationToken)

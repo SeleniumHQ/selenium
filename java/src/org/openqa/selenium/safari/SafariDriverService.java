@@ -102,14 +102,6 @@ public class SafariDriverService extends DriverService {
         score++;
       }
 
-      if (capabilities.getCapability(SafariOptions.CAPABILITY) != null) {
-        score++;
-      }
-
-      if (capabilities.getCapability("se:safari:techPreview") != null) {
-        score++;
-      }
-
       return score;
     }
 

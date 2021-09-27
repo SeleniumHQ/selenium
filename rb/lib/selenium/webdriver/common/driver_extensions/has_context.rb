@@ -19,30 +19,27 @@
 
 module Selenium
   module WebDriver
-    class LogEntry
-      attr_reader :level, :timestamp, :message
+    module DriverExtensions
+      module HasContext
 
-      def initialize(level, timestamp, message)
-        @level = level
-        @timestamp = timestamp
-        @message = message
-      end
+        #
+        # Sets the context that Selenium commands are running in using
+        #         a `with` statement. The state of the context on the server is
+        #         saved before entering the block, and restored upon exiting it.
+        #
+        # @param [String] name which permission to set
+        # @param [String] value what to set the permission to
+        #
 
-      def as_json(*)
-        {
-          'timestamp' => timestamp,
-          'level' => level,
-          'message' => message
-        }
-      end
+        def context=(value)
+          @bridge.context = value
+        end
 
-      def to_s
-        "#{time} #{level}: #{message}"
-      end
+        def context
+          @bridge.context
+        end
 
-      def time
-        Time.at timestamp / 1000
-      end
-    end # LogEntry
+      end # HasContext
+    end # DriverExtensions
   end # WebDriver
 end # Selenium

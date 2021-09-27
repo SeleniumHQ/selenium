@@ -15,7 +15,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.support.devtools;
+package org.openqa.selenium.devtools;
 
 import com.google.common.net.MediaType;
 import org.junit.After;
@@ -25,11 +25,13 @@ import org.junit.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.devtools.HasDevTools;
+import org.openqa.selenium.devtools.NetworkInterceptor;
 import org.openqa.selenium.environment.webserver.NettyAppServer;
 import org.openqa.selenium.remote.http.Contents;
 import org.openqa.selenium.remote.http.Filter;
 import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.remote.http.Route;
+import org.openqa.selenium.testing.drivers.Browser;
 import org.openqa.selenium.testing.drivers.WebDriverBuilder;
 
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -52,6 +54,8 @@ public class NetworkInterceptorTest {
 
   @BeforeClass
   public static void shouldTestBeRunAtAll() {
+    // Until Firefox can initialise the Fetch domain, we need this check
+    assumeThat(Browser.detect()).isNotEqualTo(Browser.FIREFOX);
     assumeThat(Boolean.getBoolean("selenium.skiptest")).isFalse();
   }
 

@@ -23,26 +23,26 @@ module Selenium
       module HasPermissions
 
         #
-        # Returns permissions.
+        # Set one permission.
         #
-        # @return [Hash]
+        # @param [String] name which permission to set
+        # @param [String] value what to set the permission to
         #
 
-        def permissions
-          @bridge.permissions
+        def add_permission(name, value)
+          @bridge.set_permission(name, value)
         end
 
         #
-        # Sets permissions.
+        # Set multiple permissions.
         #
-        # @example
-        #   driver.permissions = {'getUserMedia' => true}
-        #
-        # @param [Hash<Symbol, Boolean>] permissions
+        # @param [Hash] opt key/value pairs to set permissions
         #
 
-        def permissions=(permissions)
-          @bridge.permissions = permissions
+        def add_permissions(opt)
+          opt.each do |key, value|
+            @bridge.set_permission(key, value)
+          end
         end
 
       end # HasPermissions

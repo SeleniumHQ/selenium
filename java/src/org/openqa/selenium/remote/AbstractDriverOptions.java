@@ -139,11 +139,13 @@ public abstract class AbstractDriverOptions<DO extends AbstractDriverOptions> ex
   private Map<String, Number> getTimeouts() {
     Map<String, Number> newTimeouts = new HashMap<>();
     Object raw = getCapability(TIMEOUTS);
-    ((Map<?, ?>) raw).forEach((key, value) -> {
-      if (key instanceof String && value instanceof Number) {
-        newTimeouts.put((String) key, (Number) value);
-      }
-    });
+    if (raw != null) {
+      ((Map<?, ?>) raw).forEach((key, value) -> {
+        if (key instanceof String && value instanceof Number) {
+          newTimeouts.put((String) key, (Number) value);
+        }
+      });
+    }
       return newTimeouts;
   }
 }

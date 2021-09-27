@@ -19,30 +19,33 @@
 
 module Selenium
   module WebDriver
-    class LogEntry
-      attr_reader :level, :timestamp, :message
+    module DriverExtensions
+      module HasApplePermissions
 
-      def initialize(level, timestamp, message)
-        @level = level
-        @timestamp = timestamp
-        @message = message
-      end
+        #
+        # Returns permissions.
+        #
+        # @return [Hash]
+        #
 
-      def as_json(*)
-        {
-          'timestamp' => timestamp,
-          'level' => level,
-          'message' => message
-        }
-      end
+        def permissions
+          @bridge.permissions
+        end
 
-      def to_s
-        "#{time} #{level}: #{message}"
-      end
+        #
+        # Sets permissions.
+        #
+        # @example
+        #   driver.permissions = {'getUserMedia' => true}
+        #
+        # @param [Hash<Symbol, Boolean>] permissions
+        #
 
-      def time
-        Time.at timestamp / 1000
-      end
-    end # LogEntry
+        def permissions=(permissions)
+          @bridge.permissions = permissions
+        end
+
+      end # HasPermissions
+    end # DriverExtensions
   end # WebDriver
 end # Selenium
