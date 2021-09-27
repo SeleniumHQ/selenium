@@ -217,8 +217,8 @@ public class ChromiumDriver extends RemoteWebDriver implements
   }
 
   @Override
-  public DevTools getDevTools() {
-    return devTools.orElseThrow(() -> new WebDriverException("Unable to create DevTools connection"));
+  public Optional<DevTools> maybeGetDevTools() {
+    return devTools;
   }
 
   public String getCastSinks() {

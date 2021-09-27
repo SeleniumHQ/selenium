@@ -1,7 +1,6 @@
 load("@rules_jvm_external//:defs.bzl", "artifact")
 load("//common:defs.bzl", "copy_file")
-load("//java:defs.bzl", "java_binary", "java_export", "java_library")
-load("//java:version.bzl", "SE_VERSION")
+load("//java:defs.bzl", "java_binary", "java_library")
 
 GENERATOR_SOURCES = [
     "CdpClientGenerator.java",
@@ -33,7 +32,25 @@ copy_file(
     out = "mutation-listener.js",
 )
 
-java_export(
+AUGMENTER_SRCS = [
+    "DevToolsProvider.java",
+]
+
+java_library(
+    name = "augmenter",
+    srcs = AUGMENTER_SRCS,
+    visibility = [
+        "//java/src/org/openqa/selenium/remote:__pkg__",
+    ],
+    deps = [
+        ":devtools",
+        "//java:auto-service",
+        "//java/src/org/openqa/selenium:core",
+        "//java/src/org/openqa/selenium/remote:api",
+    ],
+)
+
+java_library(
     name = "devtools",
     srcs = glob(
         [
@@ -42,18 +59,13 @@ java_export(
             "idealized/**/*.java",
             "noop/*.java",
         ],
-        exclude = PROTOTYPE_SOURCES + GENERATOR_SOURCES,
+        exclude = AUGMENTER_SRCS + GENERATOR_SOURCES + PROTOTYPE_SOURCES,
     ),
-    maven_coordinates = "org.seleniumhq.selenium:selenium-devtools:%s" % SE_VERSION,
-    opens_to = [
-        "org.openqa.selenium.json",
-    ],
-    pom_template = "//java/src/org/openqa/selenium:template-pom",
     resources = [
         ":mutation-listener",
     ],
     visibility = [
-        "//visibility:public",
+        "//java/src/org/openqa/selenium/remote:__pkg__",
     ],
     exports = [
         ":devtools-prototypes",
@@ -63,7 +75,7 @@ java_export(
         "//java:auto-service",
         "//java/src/org/openqa/selenium:core",
         "//java/src/org/openqa/selenium/json",
-        "//java/src/org/openqa/selenium/remote",
+        "//java/src/org/openqa/selenium/remote/http",
         artifact("com.google.guava:guava"),
     ],
 )

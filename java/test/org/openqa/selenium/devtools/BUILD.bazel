@@ -15,7 +15,6 @@ java_selenium_test_suite(
     ],
     deps = [
         ":test-lib",
-        "//java/src/org/openqa/selenium/devtools",
         "//java/src/org/openqa/selenium/grid/security",
         "//java/src/org/openqa/selenium/json",
         "//java/src/org/openqa/selenium/remote",
@@ -42,12 +41,12 @@ java_library(
     ),
     deps = [
         "//java/src/org/openqa/selenium/chrome",
-        "//java/src/org/openqa/selenium/devtools",
         "//java/src/org/openqa/selenium/remote",
         "//java/test/org/openqa/selenium/environment",
         "//java/test/org/openqa/selenium/testing:test-base",
         "//java/test/org/openqa/selenium/testing/drivers",
         artifact("junit:junit"),
         artifact("org.assertj:assertj-core"),
+        artifact("org.hamcrest:hamcrest"),
     ],
 )

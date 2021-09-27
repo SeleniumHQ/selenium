@@ -15,10 +15,8 @@ java_export(
         "//java:auto-service",
         "//java/src/org/openqa/selenium:core",
         "//java/src/org/openqa/selenium/chromium",
-        "//java/src/org/openqa/selenium/devtools",
         "//java/src/org/openqa/selenium/json",
         "//java/src/org/openqa/selenium/remote",
-        "//java/src/org/openqa/selenium/remote/http",
         artifact("com.google.guava:guava"),
     ],
 )

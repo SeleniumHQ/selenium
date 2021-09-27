@@ -53,6 +53,10 @@ public class DevTools implements Closeable {
 
   @Override
   public void close() {
+    disconnectSession();
+  }
+
+  public void disconnectSession() {
     if (cdpSession != null) {
       SessionID id = cdpSession;
       cdpSession = null;

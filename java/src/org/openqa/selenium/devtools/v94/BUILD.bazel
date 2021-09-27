@@ -23,9 +23,8 @@ java_export(
         ":cdp",
         "//java:auto-service",
         "//java/src/org/openqa/selenium:core",
-        "//java/src/org/openqa/selenium/devtools",
         "//java/src/org/openqa/selenium/json",
-        "//java/src/org/openqa/selenium/remote/http",
+        "//java/src/org/openqa/selenium/remote",
         artifact("com.google.guava:guava"),
     ],
 )
@@ -40,8 +39,8 @@ java_library(
     ],
     deps = [
         "//java/src/org/openqa/selenium:core",
-        "//java/src/org/openqa/selenium/devtools",
         "//java/src/org/openqa/selenium/json",
+        "//java/src/org/openqa/selenium/remote",
         artifact("com.google.guava:guava"),
     ],
 )

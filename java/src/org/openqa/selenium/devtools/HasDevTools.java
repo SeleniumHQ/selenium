@@ -17,8 +17,14 @@
 
 package org.openqa.selenium.devtools;
 
+import java.util.Optional;
+
 public interface HasDevTools {
 
-  DevTools getDevTools();
+  default DevTools getDevTools() {
+    return maybeGetDevTools().orElseThrow(() -> new DevToolsException("Unable to create DevTools connection"));
+  }
+
+  Optional<DevTools> maybeGetDevTools();
 
 }
