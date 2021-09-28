@@ -29,7 +29,7 @@ module Selenium
 
           extract_browser_from_bazel_target_name
 
-          @driver = (ENV['WD_SPEC_DRIVER'] || :firefox).to_sym
+          @driver = (ENV['WD_SPEC_DRIVER'] || :chrome).to_sym
           @driver_instance = nil
         end
 

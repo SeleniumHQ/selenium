@@ -34,7 +34,7 @@ module Selenium
 
         def save_print_page(path, **options)
           File.open(path, 'wb') do |file|
-            content = Base64.decode64 print_page(options)
+            content = Base64.decode64 print_page(**options)
             file << content
           end
         end
