@@ -296,6 +296,11 @@ public class FirefoxDriver extends RemoteWebDriver
     context.setContext(commandContext);
   }
 
+  @Override
+  public FirefoxCommandContext getContext() {
+    return context.getContext();
+  }
+
   private static Boolean forceMarionetteFromSystemProperty() {
     String useMarionette = System.getProperty(SystemProperty.DRIVER_USE_MARIONETTE);
     if (useMarionette == null) {

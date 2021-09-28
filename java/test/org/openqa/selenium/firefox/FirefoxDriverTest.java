@@ -516,21 +516,11 @@ public class FirefoxDriverTest extends JUnit4TestBase {
 
   @Test
   public void canSetContext() {
-    FirefoxOptions options = new FirefoxOptions();
-    String dir = "foo/bar";
-    options.addPreference("browser.download.dir", dir);
+    HasContext context = (HasContext) driver;
 
-    // Need to set the preference to be able to read it
-    WebDriver driver = new WebDriverBuilder().get(options);
-
-    try {
-      ((HasContext) driver).setContext(FirefoxCommandContext.CHROME);
-      String result = (String) ((JavascriptExecutor) driver)
-        .executeScript("return Services.prefs.getStringPref('browser.download.dir')");
-      assertThat(result).isEqualTo(dir);
-    } finally {
-      driver.quit();
-    }
+    assertThat(context.getContext()).isEqualTo(FirefoxCommandContext.CONTENT);
+    context.setContext(FirefoxCommandContext.CHROME);
+    assertThat(context.getContext()).isEqualTo(FirefoxCommandContext.CHROME);
   }
 
   private static class CustomFirefoxProfile extends FirefoxProfile {}
