@@ -62,6 +62,7 @@ namespace OpenQA.Selenium.Safari
     /// </example>
     public class SafariDriver : WebDriver
     {
+        private const string AttachDebuggerCommand = "attachDebugger";
         private const string GetPermissionsCommand = "getPermissions";
         private const string SetPermissionsCommand = "setPermissions";
 
@@ -144,8 +145,21 @@ namespace OpenQA.Selenium.Safari
         public SafariDriver(SafariDriverService service, SafariOptions options, TimeSpan commandTimeout)
             : base(new DriverServiceCommandExecutor(service, commandTimeout), ConvertOptionsToCapabilities(options))
         {
+            this.AddCustomSafariCommand(AttachDebuggerCommand, HttpCommandInfo.PostCommand, "/session/{sessionId}/apple/attach_debugger");
             this.AddCustomSafariCommand(GetPermissionsCommand, HttpCommandInfo.GetCommand, "/session/{sessionId}/apple/permissions");
             this.AddCustomSafariCommand(SetPermissionsCommand, HttpCommandInfo.PostCommand, "/session/{sessionId}/apple/permissions");
+        }
+
+        /// <summary>
+        /// This opens Safari's Web Inspector.
+        /// If driver subsequently executes script of "debugger;"
+        /// the execution will pause, no additional commands will be processed, and the code will time out.
+        /// </summary>
+        public void AttachDebugger()
+        {
+            Dictionary<string, object> parameters = new Dictionary<string, object>();
+            parameters["attachDebugger"] = null;
+            this.Execute(AttachDebuggerCommand, parameters);
         }
 
         /// <summary>
