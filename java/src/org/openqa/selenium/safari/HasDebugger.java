@@ -15,31 +15,20 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.firefox;
+package org.openqa.selenium.safari;
 
 import org.openqa.selenium.Beta;
 
-import java.nio.file.Path;
-
 /**
- * Used by classes to indicate that they can install and uninstall browser extensions on the fly.
+ * Used by classes to indicate that they can open the browser debugger.
  */
 @Beta
-public interface HasExtensions {
+public interface HasDebugger {
 
   /**
-   * Installs an extension.
-   *
-   * @param path absolute path to the extension file that should be installed.
-   * @return the unique identifier of the installed extension.
+   * This opens Safari's Web Inspector
+   * If driver subsequently executes script of "debugger;" the execution will pause, no additional commands will be processed,
+   *  and the code will time out.
    */
-  String installExtension(Path path);
-
-  /**
-   * Uninstall the extension by the given identifier.
-   * This value can be found in the extension's manifest, and typically ends with "@mozilla.org".
-   *
-   * @param extensionId The unique extension identifier returned by {{@link #installExtension(Path)}}
-   */
-  void uninstallExtension(String extensionId);
+  void attachDebugger();
 }

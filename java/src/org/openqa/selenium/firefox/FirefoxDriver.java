@@ -285,10 +285,14 @@ public class FirefoxDriver extends RemoteWebDriver
    */
   @Override
   public <X> X getFullPageScreenshotAs(OutputType<X> outputType) throws WebDriverException {
+    Require.nonNull("OutputType", outputType);
+
     return fullPageScreenshot.getFullPageScreenshotAs(outputType);
   }
 
-  @Override public void setContext(FirefoxCommandContext commandContext) {
+  @Override
+  public void setContext(FirefoxCommandContext commandContext) {
+    Require.nonNull("Firefox Command Context", commandContext);
     context.setContext(commandContext);
   }
 

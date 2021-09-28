@@ -15,31 +15,20 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.firefox;
+package org.openqa.selenium.chromium;
 
 import org.openqa.selenium.Beta;
 
-import java.nio.file.Path;
-
 /**
- * Used by classes to indicate that they can install and uninstall browser extensions on the fly.
+ * Used by classes to indicate that they can adjust permissions compatible items.
  */
 @Beta
-public interface HasExtensions {
+public interface HasPermissions {
 
   /**
-   * Installs an extension.
    *
-   * @param path absolute path to the extension file that should be installed.
-   * @return the unique identifier of the installed extension.
+   * @param name what item to set the permission on.
+   * @param value what to set the permission to.
    */
-  String installExtension(Path path);
-
-  /**
-   * Uninstall the extension by the given identifier.
-   * This value can be found in the extension's manifest, and typically ends with "@mozilla.org".
-   *
-   * @param extensionId The unique extension identifier returned by {{@link #installExtension(Path)}}
-   */
-  void uninstallExtension(String extensionId);
+  public void setPermission(String name, String value);
 }

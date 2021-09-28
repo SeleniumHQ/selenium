@@ -15,31 +15,29 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.firefox;
+package org.openqa.selenium.chromium;
 
 import org.openqa.selenium.Beta;
 
-import java.nio.file.Path;
+import java.util.Map;
 
 /**
- * Used by classes to indicate that they can install and uninstall browser extensions on the fly.
+ * Used by classes to indicate that they can execute Command DevTools commands.
  */
 @Beta
-public interface HasExtensions {
+public interface HasCdp {
 
   /**
-   * Installs an extension.
+   * Execute a Chrome DevTools Protocol command and get returned result. The
+   * command and command args should follow
+   * <a href="https://chromedevtools.github.io/devtools-protocol/">chrome
+   * devtools protocol domains/commands</a>.
    *
-   * @param path absolute path to the extension file that should be installed.
-   * @return the unique identifier of the installed extension.
-   */
-  String installExtension(Path path);
-
-  /**
-   * Uninstall the extension by the given identifier.
-   * This value can be found in the extension's manifest, and typically ends with "@mozilla.org".
+   * It is strongly encouraged to use {@link org.openqa.selenium.devtools.DevTools} API instead of this
    *
-   * @param extensionId The unique extension identifier returned by {{@link #installExtension(Path)}}
+   * @param commandName the command to execute with Chrome Dev Tools.
+   * @param parameters any information needed to execute the Dev Tools command.
+   * @return the name and value of the response.
    */
-  void uninstallExtension(String extensionId);
+  public Map<String, Object> executeCdpCommand(String commandName, Map<String, Object> parameters);
 }

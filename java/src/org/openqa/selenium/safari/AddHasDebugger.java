@@ -15,12 +15,11 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.firefox;
+package org.openqa.selenium.safari;
 
 import com.google.auto.service.AutoService;
 import com.google.common.collect.ImmutableMap;
 import org.openqa.selenium.Capabilities;
-import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.AdditionalHttpCommands;
 import org.openqa.selenium.remote.AugmenterProvider;
 import org.openqa.selenium.remote.CommandInfo;
@@ -30,15 +29,15 @@ import org.openqa.selenium.remote.http.HttpMethod;
 import java.util.Map;
 import java.util.function.Predicate;
 
-import static org.openqa.selenium.remote.BrowserType.FIREFOX;
+import static java.util.Collections.singletonMap;
 
 @AutoService({AdditionalHttpCommands.class, AugmenterProvider.class})
-public class AddHasContext implements AugmenterProvider<HasContext>, AdditionalHttpCommands {
+public class AddHasDebugger implements AugmenterProvider<HasDebugger>, AdditionalHttpCommands {
 
-  public static final String CONTEXT = "context";
+  public static final String ATTACH_DEBUGGER = "attachDebugger";
 
   private static final Map<String, CommandInfo> COMMANDS = ImmutableMap.of(
-    CONTEXT, new CommandInfo("/session/:sessionId/moz/context", HttpMethod.POST));
+    ATTACH_DEBUGGER, new CommandInfo("/session/:sessionId/apple/attach_debugger", HttpMethod.POST));
 
   @Override
   public Map<String, CommandInfo> getAdditionalCommands() {
@@ -47,24 +46,20 @@ public class AddHasContext implements AugmenterProvider<HasContext>, AdditionalH
 
   @Override
   public Predicate<Capabilities> isApplicable() {
-    return caps -> FIREFOX.equals(caps.getBrowserName());
+    return caps -> "Safari".equals(caps.getBrowserName());
   }
 
   @Override
-  public Class<HasContext> getDescribedInterface() {
-    return HasContext.class;
+  public Class<HasDebugger> getDescribedInterface() {
+    return HasDebugger.class;
   }
 
   @Override
-  public HasContext getImplementation(Capabilities capabilities, ExecuteMethod executeMethod) {
-    return new HasContext() {
+  public HasDebugger getImplementation(Capabilities capabilities, ExecuteMethod executeMethod) {
+    return new HasDebugger() {
       @Override
-      public void setContext(FirefoxCommandContext context) {
-        Require.nonNull("Firefox Command Context", context);
-
-        executeMethod.execute(
-          CONTEXT,
-          ImmutableMap.of(CONTEXT, context));
+      public void attachDebugger() {
+        executeMethod.execute(ATTACH_DEBUGGER, ImmutableMap.of(ATTACH_DEBUGGER, null));
       }
     };
   }

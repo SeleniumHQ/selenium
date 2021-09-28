@@ -21,8 +21,18 @@ import com.google.common.collect.ImmutableMap;
 import org.junit.After;
 import org.junit.Test;
 import org.mockito.ArgumentMatchers;
-import org.openqa.selenium.*;
+import org.openqa.selenium.By;
+import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.Dimension;
+import org.openqa.selenium.HasCapabilities;
+import org.openqa.selenium.ImmutableCapabilities;
+import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.OutputType;
+import org.openqa.selenium.ParallelTestRunner;
 import org.openqa.selenium.ParallelTestRunner.Worker;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.build.InProject;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.Command;
 import org.openqa.selenium.remote.CommandExecutor;
@@ -42,6 +52,7 @@ import org.openqa.selenium.testing.drivers.WebDriverBuilder;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Field;
+import java.nio.file.Path;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
@@ -486,6 +497,40 @@ public class FirefoxDriverTest extends JUnit4TestBase {
                  + "mouseup in over (handled by body)\n"
                  + "click in over (handled by over)\n"
                  + "click in over (handled by body)");
+  }
+
+  @Test
+  public void canAddRemoveExtensions() {
+    Path extension = InProject.locate("third_party/firebug/favourite_colour-1.1-an+fx.xpi");
+
+    ((HasExtensions) driver).installExtension(extension);
+    ((HasExtensions) driver).uninstallExtension("favourite-colour-examples@mozilla.org");
+  }
+
+  @Test
+  public void canTakeFullPageScreenshot() {
+    File tempFile = ((HasFullPageScreenshot) driver).getFullPageScreenshotAs(OutputType.FILE);
+    assertThat(tempFile.exists()).isTrue();
+    assertThat(tempFile.length()).isGreaterThan(0);
+  }
+
+  @Test
+  public void canSetContext() {
+    FirefoxOptions options = new FirefoxOptions();
+    String dir = "foo/bar";
+    options.addPreference("browser.download.dir", dir);
+
+    // Need to set the preference to be able to read it
+    WebDriver driver = new WebDriverBuilder().get(options);
+
+    try {
+      ((HasContext) driver).setContext(FirefoxCommandContext.CHROME);
+      String result = (String) ((JavascriptExecutor) driver)
+        .executeScript("return Services.prefs.getStringPref('browser.download.dir')");
+      assertThat(result).isEqualTo(dir);
+    } finally {
+      driver.quit();
+    }
   }
 
   private static class CustomFirefoxProfile extends FirefoxProfile {}

@@ -15,31 +15,34 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.firefox;
+package org.openqa.selenium.chromium;
 
 import org.openqa.selenium.Beta;
 
-import java.nio.file.Path;
-
 /**
- * Used by classes to indicate that they can install and uninstall browser extensions on the fly.
+ * Used by classes to indicate that they can simulate different network conditions.
  */
 @Beta
-public interface HasExtensions {
+public interface HasNetworkConditions {
 
   /**
-   * Installs an extension.
+   * Gets map of network conditions.
+   * These have to be set before they can be retrieved.
    *
-   * @param path absolute path to the extension file that should be installed.
-   * @return the unique identifier of the installed extension.
+   * @return the current network condition values.
    */
-  String installExtension(Path path);
+  ChromiumNetworkConditions getNetworkConditions();
 
   /**
-   * Uninstall the extension by the given identifier.
-   * This value can be found in the extension's manifest, and typically ends with "@mozilla.org".
+   * Set network limitations
    *
-   * @param extensionId The unique extension identifier returned by {{@link #installExtension(Path)}}
+   * @param networkConditions object containing valid network condition settings.
    */
-  void uninstallExtension(String extensionId);
+  void setNetworkConditions(ChromiumNetworkConditions networkConditions);
+
+  /**
+   * Resets the network conditions to the default settings.
+   */
+  void deleteNetworkConditions();
+
 }
