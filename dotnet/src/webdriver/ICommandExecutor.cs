@@ -26,10 +26,11 @@ namespace OpenQA.Selenium
     public interface ICommandExecutor : IDisposable
     {
         /// <summary>
-        /// Gets the repository of objects containin information about commands.
+        /// Attempts to add a command to the repository of commands known to this executor.
         /// </summary>
-        //CommandInfoRepository CommandInfoRepository { get; }
-
+        /// <param name="commandName">The name of the command to attempt to add.</param>
+        /// <param name="info">The <see cref="CommandInfo"/> describing the commnd to add.</param>
+        /// <returns><see langword="true"/> if the new command has been added successfully; otherwise, <see langword="false"/>.</returns>
         bool TryAddCommand(string commandName, CommandInfo info);
 
         /// <summary>
