@@ -49,6 +49,7 @@ namespace OpenQA.Selenium.Chromium
         private const string DeleteNetworkConditionsCommand = "deleteNetworkConditions";
         private const string SendChromeCommand = "sendChromeCommand";
         private const string SendChromeCommandWithResult = "sendChromeCommandWithResult";
+        private const string LaunchAppCommand = "launchAppCommand";
 
         private readonly string optionsCapabilityName;
         private DevToolsSession devToolsSession;
@@ -81,6 +82,7 @@ namespace OpenQA.Selenium.Chromium
             this.AddCustomChromeCommand(DeleteNetworkConditionsCommand, HttpCommandInfo.DeleteCommand, "/session/{sessionId}/chromium/network_conditions");
             this.AddCustomChromeCommand(SendChromeCommand, HttpCommandInfo.PostCommand, "/session/{sessionId}/chromium/send_command");
             this.AddCustomChromeCommand(SendChromeCommandWithResult, HttpCommandInfo.PostCommand, "/session/{sessionId}/chromium/send_command_and_get_result");
+            this.AddCustomChromeCommand(LaunchAppCommand, HttpCommandInfo.PostCommand, "/session/{sessionId}/chromium/launch_app");
         }
 
         /// <summary>
@@ -131,6 +133,22 @@ namespace OpenQA.Selenium.Chromium
                 parameters["network_conditions"] = value.ToDictionary();
                 this.Execute(SetNetworkConditionsCommand, parameters);
             }
+        }
+
+        /// <summary>
+        /// Launches a Chromium based application.
+        /// </summary>
+        /// <param name="id">ID of the chromium app to launch.</param>
+        public void LaunchApp(string id)
+        {
+            if (id == null)
+            {
+                throw new ArgumentNullException("id", "id must not be null");
+            }
+
+            Dictionary<string, object> parameters = new Dictionary<string, object>();
+            parameters["id"] = id;
+            this.Execute(LaunchAppCommand, parameters);
         }
 
         /// <summary>
