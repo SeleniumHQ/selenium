@@ -15,9 +15,8 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.firefox;
+package org.openqa.selenium.chromium;
 
-import com.google.auto.service.AutoService;
 import com.google.common.collect.ImmutableMap;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.internal.Require;
@@ -25,46 +24,41 @@ import org.openqa.selenium.remote.AdditionalHttpCommands;
 import org.openqa.selenium.remote.AugmenterProvider;
 import org.openqa.selenium.remote.CommandInfo;
 import org.openqa.selenium.remote.ExecuteMethod;
-import org.openqa.selenium.remote.http.HttpMethod;
 
 import java.util.Map;
 import java.util.function.Predicate;
 
-import static org.openqa.selenium.remote.BrowserType.FIREFOX;
+import static org.openqa.selenium.chromium.ChromiumDriver.KNOWN_CHROMIUM_BROWSERS;
 
-@AutoService({AdditionalHttpCommands.class, AugmenterProvider.class})
-public class AddHasContext implements AugmenterProvider<HasContext>, AdditionalHttpCommands {
+public abstract class AddHasCdp implements AugmenterProvider<HasCdp>, AdditionalHttpCommands {
 
-  public static final String CONTEXT = "context";
-
-  private static final Map<String, CommandInfo> COMMANDS = ImmutableMap.of(
-    CONTEXT, new CommandInfo("/session/:sessionId/moz/context", HttpMethod.POST));
+  public static final String EXECUTE_CDP = "executeCdpCommand";
 
   @Override
-  public Map<String, CommandInfo> getAdditionalCommands() {
-    return COMMANDS;
-  }
+  public abstract Map<String, CommandInfo> getAdditionalCommands();
 
   @Override
   public Predicate<Capabilities> isApplicable() {
-    return caps -> FIREFOX.equals(caps.getBrowserName());
+    return caps -> KNOWN_CHROMIUM_BROWSERS.contains(caps.getBrowserName());
   }
 
   @Override
-  public Class<HasContext> getDescribedInterface() {
-    return HasContext.class;
+  public Class<HasCdp> getDescribedInterface() {
+    return HasCdp.class;
   }
 
   @Override
-  public HasContext getImplementation(Capabilities capabilities, ExecuteMethod executeMethod) {
-    return new HasContext() {
+  public HasCdp getImplementation(Capabilities capabilities, ExecuteMethod executeMethod) {
+    return new HasCdp() {
       @Override
-      public void setContext(FirefoxCommandContext context) {
-        Require.nonNull("Firefox Command Context", context);
+      public Map<String, Object> executeCdpCommand(String commandName, Map<String, Object> parameters) {
+        Require.nonNull("Command name", commandName);
+        Require.nonNull("Parameters", parameters);
 
-        executeMethod.execute(
-          CONTEXT,
-          ImmutableMap.of(CONTEXT, context));
+        Map<String, Object> toReturn = (Map<String, Object>) executeMethod.execute(
+          EXECUTE_CDP, ImmutableMap.of("cmd", commandName, "params", parameters));
+
+        return ImmutableMap.copyOf(toReturn);
       }
     };
   }

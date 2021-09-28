@@ -15,7 +15,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.firefox;
+package org.openqa.selenium.chromium;
 
 import com.google.auto.service.AutoService;
 import com.google.common.collect.ImmutableMap;
@@ -30,15 +30,15 @@ import org.openqa.selenium.remote.http.HttpMethod;
 import java.util.Map;
 import java.util.function.Predicate;
 
-import static org.openqa.selenium.remote.BrowserType.FIREFOX;
+import static org.openqa.selenium.chromium.ChromiumDriver.KNOWN_CHROMIUM_BROWSERS;
 
 @AutoService({AdditionalHttpCommands.class, AugmenterProvider.class})
-public class AddHasContext implements AugmenterProvider<HasContext>, AdditionalHttpCommands {
+public class AddHasLaunchApp implements AugmenterProvider<HasLaunchApp>, AdditionalHttpCommands {
 
-  public static final String CONTEXT = "context";
+  public static final String LAUNCH_APP = "launchApp";
 
   private static final Map<String, CommandInfo> COMMANDS = ImmutableMap.of(
-    CONTEXT, new CommandInfo("/session/:sessionId/moz/context", HttpMethod.POST));
+    LAUNCH_APP, new CommandInfo("/session/:sessionId/chromium/launch_app", HttpMethod.POST));
 
   @Override
   public Map<String, CommandInfo> getAdditionalCommands() {
@@ -47,24 +47,22 @@ public class AddHasContext implements AugmenterProvider<HasContext>, AdditionalH
 
   @Override
   public Predicate<Capabilities> isApplicable() {
-    return caps -> FIREFOX.equals(caps.getBrowserName());
+    return caps -> KNOWN_CHROMIUM_BROWSERS.contains(caps.getBrowserName());
   }
 
   @Override
-  public Class<HasContext> getDescribedInterface() {
-    return HasContext.class;
+  public Class<HasLaunchApp> getDescribedInterface() {
+    return HasLaunchApp.class;
   }
 
   @Override
-  public HasContext getImplementation(Capabilities capabilities, ExecuteMethod executeMethod) {
-    return new HasContext() {
+  public HasLaunchApp getImplementation(Capabilities capabilities, ExecuteMethod executeMethod) {
+    return new HasLaunchApp() {
       @Override
-      public void setContext(FirefoxCommandContext context) {
-        Require.nonNull("Firefox Command Context", context);
+      public void launchApp(String id) {
+        Require.nonNull("id of Chromium App", id);
 
-        executeMethod.execute(
-          CONTEXT,
-          ImmutableMap.of(CONTEXT, context));
+        executeMethod.execute(LAUNCH_APP, ImmutableMap.of("id", id));
       }
     };
   }

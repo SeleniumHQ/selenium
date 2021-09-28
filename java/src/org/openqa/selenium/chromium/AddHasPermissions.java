@@ -15,7 +15,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.firefox;
+package org.openqa.selenium.chromium;
 
 import com.google.auto.service.AutoService;
 import com.google.common.collect.ImmutableMap;
@@ -30,15 +30,15 @@ import org.openqa.selenium.remote.http.HttpMethod;
 import java.util.Map;
 import java.util.function.Predicate;
 
-import static org.openqa.selenium.remote.BrowserType.FIREFOX;
+import static org.openqa.selenium.chromium.ChromiumDriver.KNOWN_CHROMIUM_BROWSERS;
 
 @AutoService({AdditionalHttpCommands.class, AugmenterProvider.class})
-public class AddHasContext implements AugmenterProvider<HasContext>, AdditionalHttpCommands {
+public class AddHasPermissions implements AugmenterProvider<HasPermissions>, AdditionalHttpCommands {
 
-  public static final String CONTEXT = "context";
+  public static final String SET_PERMISSION = "setPermission";
 
   private static final Map<String, CommandInfo> COMMANDS = ImmutableMap.of(
-    CONTEXT, new CommandInfo("/session/:sessionId/moz/context", HttpMethod.POST));
+    SET_PERMISSION, new CommandInfo("/session/:sessionId/permissions", HttpMethod.POST));
 
   @Override
   public Map<String, CommandInfo> getAdditionalCommands() {
@@ -47,24 +47,23 @@ public class AddHasContext implements AugmenterProvider<HasContext>, AdditionalH
 
   @Override
   public Predicate<Capabilities> isApplicable() {
-    return caps -> FIREFOX.equals(caps.getBrowserName());
+    return caps -> KNOWN_CHROMIUM_BROWSERS.contains(caps.getBrowserName());
   }
 
   @Override
-  public Class<HasContext> getDescribedInterface() {
-    return HasContext.class;
+  public Class<HasPermissions> getDescribedInterface() {
+    return HasPermissions.class;
   }
 
   @Override
-  public HasContext getImplementation(Capabilities capabilities, ExecuteMethod executeMethod) {
-    return new HasContext() {
+  public HasPermissions getImplementation(Capabilities capabilities, ExecuteMethod executeMethod) {
+    return new HasPermissions() {
       @Override
-      public void setContext(FirefoxCommandContext context) {
-        Require.nonNull("Firefox Command Context", context);
+      public void setPermission(String name, String value) {
+        Require.nonNull("Permission name", name);
+        Require.nonNull("Permission value", value);
 
-        executeMethod.execute(
-          CONTEXT,
-          ImmutableMap.of(CONTEXT, context));
+        executeMethod.execute(SET_PERMISSION, ImmutableMap.of("descriptor", ImmutableMap.of("name", name), "state", value));
       }
     };
   }

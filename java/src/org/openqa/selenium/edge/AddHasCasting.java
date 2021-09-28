@@ -15,30 +15,28 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.firefox;
+package org.openqa.selenium.edge;
 
 import com.google.auto.service.AutoService;
 import com.google.common.collect.ImmutableMap;
 import org.openqa.selenium.Capabilities;
-import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.AdditionalHttpCommands;
 import org.openqa.selenium.remote.AugmenterProvider;
 import org.openqa.selenium.remote.CommandInfo;
-import org.openqa.selenium.remote.ExecuteMethod;
 import org.openqa.selenium.remote.http.HttpMethod;
 
 import java.util.Map;
 import java.util.function.Predicate;
 
-import static org.openqa.selenium.remote.BrowserType.FIREFOX;
-
 @AutoService({AdditionalHttpCommands.class, AugmenterProvider.class})
-public class AddHasContext implements AugmenterProvider<HasContext>, AdditionalHttpCommands {
-
-  public static final String CONTEXT = "context";
+public class AddHasCasting extends org.openqa.selenium.chromium.AddHasCasting {
 
   private static final Map<String, CommandInfo> COMMANDS = ImmutableMap.of(
-    CONTEXT, new CommandInfo("/session/:sessionId/moz/context", HttpMethod.POST));
+    GET_CAST_SINKS, new CommandInfo("session/:sessionId/ms/cast/get_sinks", HttpMethod.GET),
+    SET_CAST_SINK_TO_USE, new CommandInfo("session/:sessionId/ms/cast/set_sink_to_use", HttpMethod.POST),
+    START_CAST_TAB_MIRRORING, new CommandInfo("session/:sessionId/ms/cast/start_tab_mirroring", HttpMethod.POST),
+    GET_CAST_ISSUE_MESSAGE, new CommandInfo("session/:sessionId/ms/cast/get_issue_message", HttpMethod.GET),
+    STOP_CASTING, new CommandInfo("session/:sessionId/ms/cast/stop_casting", HttpMethod.POST));
 
   @Override
   public Map<String, CommandInfo> getAdditionalCommands() {
@@ -47,25 +45,6 @@ public class AddHasContext implements AugmenterProvider<HasContext>, AdditionalH
 
   @Override
   public Predicate<Capabilities> isApplicable() {
-    return caps -> FIREFOX.equals(caps.getBrowserName());
-  }
-
-  @Override
-  public Class<HasContext> getDescribedInterface() {
-    return HasContext.class;
-  }
-
-  @Override
-  public HasContext getImplementation(Capabilities capabilities, ExecuteMethod executeMethod) {
-    return new HasContext() {
-      @Override
-      public void setContext(FirefoxCommandContext context) {
-        Require.nonNull("Firefox Command Context", context);
-
-        executeMethod.execute(
-          CONTEXT,
-          ImmutableMap.of(CONTEXT, context));
-      }
-    };
+    return caps -> "msedge".equals(caps.getBrowserName());
   }
 }

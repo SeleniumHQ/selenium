@@ -15,7 +15,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.chrome;
+package org.openqa.selenium.edge;
 
 import org.junit.Test;
 import org.openqa.selenium.JavascriptExecutor;
@@ -36,7 +36,7 @@ import java.util.Map;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
 
-public class ChromeDriverFunctionalTest extends JUnit4TestBase {
+public class EdgeDriverFunctionalTest extends JUnit4TestBase {
 
   private final String CLIPBOARD_READ = "clipboard-read";
   private final String CLIPBOARD_WRITE = "clipboard-write";
@@ -58,10 +58,10 @@ public class ChromeDriverFunctionalTest extends JUnit4TestBase {
 
   @Test
   public void canSetPermissionHeadless() {
-    ChromeOptions options = new ChromeOptions();
+    EdgeOptions options = new EdgeOptions();
     options.setHeadless(true);
 
-    //TestChromeDriver is not honoring headless request; using ChromeDriver instead
+    //TestEdgeDrivere is not honoring headless request; using EdgeDriver instead
     WebDriver driver = new WebDriverBuilder().get(options);
     try {
       HasPermissions permissions = (HasPermissions) driver;
@@ -84,9 +84,9 @@ public class ChromeDriverFunctionalTest extends JUnit4TestBase {
     @SuppressWarnings("unchecked")
     Map<String, Object> result = (Map<String, Object>) ((JavascriptExecutor) driver).executeAsyncScript(
       "callback = arguments[arguments.length - 1];"
-      + "callback(navigator.permissions.query({"
-      + "name: arguments[0]"
-      + "}));", permission);
+        + "callback(navigator.permissions.query({"
+        + "name: arguments[0]"
+        + "}));", permission);
     return result.get("state").toString();
   }
 
@@ -115,19 +115,19 @@ public class ChromeDriverFunctionalTest extends JUnit4TestBase {
     ChromiumNetworkConditions networkConditions = new ChromiumNetworkConditions();
     networkConditions.setLatency(Duration.ofMillis(200));
 
-      conditions.setNetworkConditions(networkConditions);
-      assertThat(conditions.getNetworkConditions().getLatency()).isEqualTo(Duration.ofMillis(200));
+    conditions.setNetworkConditions(networkConditions);
+    assertThat(conditions.getNetworkConditions().getLatency()).isEqualTo(Duration.ofMillis(200));
 
     conditions.deleteNetworkConditions();
 
-      try {
-        conditions.getNetworkConditions();
-        fail("If Network Conditions were deleted, should not be able to get Network Conditions");
-      } catch (WebDriverException e) {
-        if (!e.getMessage().contains("network conditions must be set before it can be retrieved")) {
-          throw e;
-        }
+    try {
+      conditions.getNetworkConditions();
+      fail("If Network Conditions were deleted, should not be able to get Network Conditions");
+    } catch (WebDriverException e) {
+      if (!e.getMessage().contains("network conditions must be set before it can be retrieved")) {
+        throw e;
       }
+    }
   }
 
   @Test

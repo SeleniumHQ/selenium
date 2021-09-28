@@ -15,12 +15,11 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.firefox;
+package org.openqa.selenium.safari;
 
 import com.google.auto.service.AutoService;
 import com.google.common.collect.ImmutableMap;
 import org.openqa.selenium.Capabilities;
-import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.AdditionalHttpCommands;
 import org.openqa.selenium.remote.AugmenterProvider;
 import org.openqa.selenium.remote.CommandInfo;
@@ -30,15 +29,15 @@ import org.openqa.selenium.remote.http.HttpMethod;
 import java.util.Map;
 import java.util.function.Predicate;
 
-import static org.openqa.selenium.remote.BrowserType.FIREFOX;
-
 @AutoService({AdditionalHttpCommands.class, AugmenterProvider.class})
-public class AddHasContext implements AugmenterProvider<HasContext>, AdditionalHttpCommands {
+public class AddHasPermissions implements AugmenterProvider<HasPermissions>, AdditionalHttpCommands {
 
-  public static final String CONTEXT = "context";
+  public static final String GET_PERMISSIONS = "getPermissions";
+  public static final String SET_PERMISSIONS = "setPermissions";
 
   private static final Map<String, CommandInfo> COMMANDS = ImmutableMap.of(
-    CONTEXT, new CommandInfo("/session/:sessionId/moz/context", HttpMethod.POST));
+    GET_PERMISSIONS, new CommandInfo("/session/:sessionId/apple/permissions",HttpMethod.GET),
+    SET_PERMISSIONS, new CommandInfo("/session/:sessionId/apple/permissions", HttpMethod.POST));
 
   @Override
   public Map<String, CommandInfo> getAdditionalCommands() {
@@ -47,24 +46,26 @@ public class AddHasContext implements AugmenterProvider<HasContext>, AdditionalH
 
   @Override
   public Predicate<Capabilities> isApplicable() {
-    return caps -> FIREFOX.equals(caps.getBrowserName());
+    return caps -> "Safari".equals(caps.getBrowserName());
   }
 
   @Override
-  public Class<HasContext> getDescribedInterface() {
-    return HasContext.class;
+  public Class<HasPermissions> getDescribedInterface() {
+    return HasPermissions.class;
   }
 
   @Override
-  public HasContext getImplementation(Capabilities capabilities, ExecuteMethod executeMethod) {
-    return new HasContext() {
+  public HasPermissions getImplementation(Capabilities capabilities, ExecuteMethod executeMethod) {
+    return new HasPermissions() {
       @Override
-      public void setContext(FirefoxCommandContext context) {
-        Require.nonNull("Firefox Command Context", context);
+      public void setPermissions(String permission, boolean value) {
+        executeMethod.execute(SET_PERMISSIONS, ImmutableMap.of("permissions", ImmutableMap.of(permission, value)));
+      }
 
-        executeMethod.execute(
-          CONTEXT,
-          ImmutableMap.of(CONTEXT, context));
+      @Override
+      public Map<String, Boolean> getPermissions() {
+        Map<String, Object> results = (Map<String, Object>) executeMethod.execute(GET_PERMISSIONS, null);
+        return (Map<String, Boolean>) results.get("permissions");
       }
     };
   }
