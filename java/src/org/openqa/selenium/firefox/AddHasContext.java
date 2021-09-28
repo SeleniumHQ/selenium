@@ -35,10 +35,12 @@ import static org.openqa.selenium.remote.Browser.FIREFOX;
 @AutoService({AdditionalHttpCommands.class, AugmenterProvider.class})
 public class AddHasContext implements AugmenterProvider<HasContext>, AdditionalHttpCommands {
 
-  public static final String CONTEXT = "context";
+  public static final String SET_CONTEXT = "setContext";
+  public static final String GET_CONTEXT = "getContext";
 
   private static final Map<String, CommandInfo> COMMANDS = ImmutableMap.of(
-    CONTEXT, new CommandInfo("/session/:sessionId/moz/context", HttpMethod.POST));
+    SET_CONTEXT, new CommandInfo("/session/:sessionId/moz/context", HttpMethod.POST),
+    GET_CONTEXT, new CommandInfo("/session/:sessionId/moz/context", HttpMethod.GET));
 
   @Override
   public Map<String, CommandInfo> getAdditionalCommands() {
@@ -63,8 +65,16 @@ public class AddHasContext implements AugmenterProvider<HasContext>, AdditionalH
         Require.nonNull("Firefox Command Context", context);
 
         executeMethod.execute(
-          CONTEXT,
-          ImmutableMap.of(CONTEXT, context));
+          SET_CONTEXT,
+          ImmutableMap.of("context", context));
+      }
+
+      @Override public FirefoxCommandContext getContext() {
+        String context = (String) executeMethod.execute(
+          GET_CONTEXT,
+          null);
+
+        return FirefoxCommandContext.fromString(context);
       }
     };
   }

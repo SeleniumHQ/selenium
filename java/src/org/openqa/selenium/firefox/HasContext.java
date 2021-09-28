@@ -33,4 +33,11 @@ public interface HasContext {
    */
   void setContext(FirefoxCommandContext context);
 
+  /**
+   * Current context commands are operating on.
+   *
+   * @return {@link FirefoxCommandContext} value currently operating on commands
+   */
+  FirefoxCommandContext getContext();
+
 }
