@@ -210,7 +210,7 @@ public class RemoteWebDriverInitializationTest {
         .baseUrl(new URL("http://localhost:4444/")).readTimeout(Duration.ofSeconds(1)),
       factory);
 
-    RemoteWebDriver driver = new RemoteWebDriver(executor, new ImmutableCapabilities());
+    new RemoteWebDriver(executor, new ImmutableCapabilities());
 
     ClientConfig usedConfig = config.getValue();
     assertThat(usedConfig.baseUrl()).isEqualTo(new URL("http://localhost:4444/"));
