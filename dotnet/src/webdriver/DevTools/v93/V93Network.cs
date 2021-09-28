@@ -101,6 +101,21 @@ namespace OpenQA.Selenium.DevTools.V93
         }
 
         /// <summary>
+        /// Asynchronously sets the override of the user agent settings.
+        /// </summary>
+        /// <param name="userAgent">A <see cref="UserAgent"/> object containing the user agent values to override.</param>
+        /// <returns>A task that represents the asynchronous operation.</returns>
+        public override async Task SetUserAgentOverride(UserAgent userAgent)
+        {
+            await network.SetUserAgentOverride(new SetUserAgentOverrideCommandSettings()
+            {
+                UserAgent = userAgent.UserAgentString,
+                AcceptLanguage = userAgent.AcceptLanguage,
+                Platform = userAgent.Platform
+            });
+        }
+
+        /// <summary>
         /// Asynchronously continues an intercepted network request.
         /// </summary>
         /// <param name="requestData">The <see cref="HttpRequestData"/> of the request.</param>

@@ -72,6 +72,23 @@ namespace OpenQA.Selenium.DevTools
         public abstract Task EnableFetchForAllPatterns();
 
         /// <summary>
+        /// Asynchronously sets the override of the user agent string.
+        /// </summary>
+        /// <param name="userAgent">The user agent string to set.</param>
+        /// <returns>A task that represents the asynchronous operation.</returns>
+        public async Task SetUserAgentOverride(string userAgent)
+        {
+            await SetUserAgentOverride(new UserAgent() { UserAgentString = userAgent });
+        }
+
+        /// <summary>
+        /// Asynchronously sets the override of the user agent settings.
+        /// </summary>
+        /// <param name="userAgent">A <see cref="UserAgent"/> object containing the user agent values to override.</param>
+        /// <returns>A task that represents the asynchronous operation.</returns>
+        public abstract Task SetUserAgentOverride(UserAgent userAgent);
+
+        /// <summary>
         /// Asynchronously diables the fetch domain.
         /// </summary>
         /// <returns>A task that represents the asynchronous operation.</returns>
