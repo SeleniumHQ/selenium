@@ -193,6 +193,7 @@ public class GeckoDriverService extends FirefoxDriverService {
     protected List<String> createArgs() {
       List<String> args = new ArrayList<>();
       args.add(String.format("--port=%d", getPort()));
+      args.add(String.format("--websocket-port=%d", PortProber.findFreePort()));
       if (firefoxBinary != null) {
         args.add("-b");
         args.add(firefoxBinary.getPath());
