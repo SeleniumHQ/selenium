@@ -25,6 +25,8 @@ import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 
+import java.io.IOException;
+import java.io.UncheckedIOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Map;
@@ -48,7 +50,13 @@ public class CdpEndpointFinder {
     ClientConfig config = ClientConfig.defaultConfig().baseUri(reportedUri);
     HttpClient client = clientFactory.createClient(config);
 
-    HttpResponse res = client.execute(new HttpRequest(GET, "/json/version"));
+    HttpResponse res;
+    try {
+      res = client.execute(new HttpRequest(GET, "/json/version"));
+    } catch (UncheckedIOException e) {
+      LOG.warning("Unable to connect to determine websocket url: " + e.getMessage());
+      return Optional.empty();
+    }
     if (res.getStatus() != HTTP_OK) {
       return Optional.empty();
     }
