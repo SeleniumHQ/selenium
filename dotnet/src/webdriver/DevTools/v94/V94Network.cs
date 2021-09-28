@@ -1,4 +1,4 @@
-// <copyright file="V92Network.cs" company="WebDriver Committers">
+// <copyright file="v94Network.cs" company="WebDriver Committers">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements. See the NOTICE file
 // distributed with this work for additional information
@@ -20,31 +20,30 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
-using OpenQA.Selenium.DevTools.V92.Fetch;
-using OpenQA.Selenium.DevTools.V92.Network;
+using OpenQA.Selenium.DevTools.v94.Fetch;
+using OpenQA.Selenium.DevTools.v94.Network;
 
-namespace OpenQA.Selenium.DevTools.V92
+namespace OpenQA.Selenium.DevTools.v94
 {
     /// <summary>
-    /// Class providing functionality for manipulating network calls using version 88 of the DevTools Protocol
+    /// Class providing functionality for manipulating network calls using version 89 of the DevTools Protocol
     /// </summary>
-    public class V92Network : DevTools.Network
+    public class v94Network : DevTools.Network
     {
         private FetchAdapter fetch;
         private NetworkAdapter network;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="V92Network"/> class.
+        /// Initializes a new instance of the <see cref="v94Network"/> class.
         /// </summary>
         /// <param name="network">The adapter for the Network domain.</param>
         /// <param name="fetch">The adapter for the Fetch domain.</param>
-        public V92Network(NetworkAdapter network, FetchAdapter fetch)
+        public v94Network(NetworkAdapter network, FetchAdapter fetch)
         {
             this.network = network;
             this.fetch = fetch;
             fetch.AuthRequired += OnFetchAuthRequired;
             fetch.RequestPaused += OnFetchRequestPaused;
-            
         }
 
         /// <summary>
@@ -81,12 +80,12 @@ namespace OpenQA.Selenium.DevTools.V92
         /// <returns>A task that represents the asynchronous operation.</returns>
         public override async Task EnableFetchForAllPatterns()
         {
-            await fetch.Enable(new OpenQA.Selenium.DevTools.V92.Fetch.EnableCommandSettings()
+            await fetch.Enable(new OpenQA.Selenium.DevTools.v94.Fetch.EnableCommandSettings()
             {
-                Patterns = new OpenQA.Selenium.DevTools.V92.Fetch.RequestPattern[]
+                Patterns = new OpenQA.Selenium.DevTools.v94.Fetch.RequestPattern[]
                 {
-                    new OpenQA.Selenium.DevTools.V92.Fetch.RequestPattern() { UrlPattern = "*", RequestStage = RequestStage.Request },
-                    new OpenQA.Selenium.DevTools.V92.Fetch.RequestPattern() { UrlPattern = "*", RequestStage = RequestStage.Response }
+                    new OpenQA.Selenium.DevTools.v94.Fetch.RequestPattern() { UrlPattern = "*", RequestStage = RequestStage.Request },
+                    new OpenQA.Selenium.DevTools.v94.Fetch.RequestPattern() { UrlPattern = "*", RequestStage = RequestStage.Response }
                 },
                 HandleAuthRequests = true
             });
@@ -194,9 +193,9 @@ namespace OpenQA.Selenium.DevTools.V92
             await fetch.ContinueWithAuth(new ContinueWithAuthCommandSettings()
             {
                 RequestId = requestId,
-                AuthChallengeResponse = new V92.Fetch.AuthChallengeResponse()
+                AuthChallengeResponse = new v94.Fetch.AuthChallengeResponse()
                 {
-                    Response = V92.Fetch.AuthChallengeResponseResponseValues.ProvideCredentials,
+                    Response = v94.Fetch.AuthChallengeResponseResponseValues.ProvideCredentials,
                     Username = userName,
                     Password = password
                 }
@@ -213,9 +212,9 @@ namespace OpenQA.Selenium.DevTools.V92
             await fetch.ContinueWithAuth(new ContinueWithAuthCommandSettings()
             {
                 RequestId = requestId,
-                AuthChallengeResponse = new OpenQA.Selenium.DevTools.V92.Fetch.AuthChallengeResponse()
+                AuthChallengeResponse = new OpenQA.Selenium.DevTools.v94.Fetch.AuthChallengeResponse()
                 {
-                    Response = V92.Fetch.AuthChallengeResponseResponseValues.CancelAuth
+                    Response = v94.Fetch.AuthChallengeResponseResponseValues.CancelAuth
                 }
             });
         }
