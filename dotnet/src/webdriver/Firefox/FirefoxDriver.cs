@@ -18,6 +18,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using OpenQA.Selenium.DevTools;
 using OpenQA.Selenium.Remote;
@@ -71,6 +72,7 @@ namespace OpenQA.Selenium.Firefox
         private const int FirefoxDevToolsProtocolVersion = 85;
         private const string FirefoxDevToolsCapabilityName = "moz:debuggerAddress";
         private const string SetContextCommand = "setContext";
+        private const string GetContextCommand = "getContext";
         private const string InstallAddOnCommand = "installAddOn";
         private const string UninstallAddOnCommand = "uninstallAddOn";
         private const string GetFullPageScreenshotCommand = "fullPageScreenshot";
@@ -157,6 +159,7 @@ namespace OpenQA.Selenium.Firefox
         {
             // Add the custom commands unique to Firefox
             this.AddCustomFirefoxCommand(SetContextCommand, HttpCommandInfo.PostCommand, "/session/{sessionId}/moz/context");
+            this.AddCustomFirefoxCommand(GetContextCommand, HttpCommandInfo.GetCommand, "/session/{sessionId}/moz/context");
             this.AddCustomFirefoxCommand(InstallAddOnCommand, HttpCommandInfo.PostCommand, "/session/{sessionId}/moz/addon/install");
             this.AddCustomFirefoxCommand(UninstallAddOnCommand, HttpCommandInfo.PostCommand, "/session/{sessionId}/moz/addon/uninstall");
             this.AddCustomFirefoxCommand(GetFullPageScreenshotCommand, HttpCommandInfo.GetCommand, "/session/{sessionId}/moz/screenshot/full");
@@ -181,13 +184,32 @@ namespace OpenQA.Selenium.Firefox
         /// <summary>
         /// Sets the command context used when issuing commands to geckodriver.
         /// </summary>
+        /// <exception cref="WebDriverException">If response is not recognized</exception>
+        /// <returns>The context of commands.</returns>
+        public FirefoxCommandContext GetContext()
+        {
+            FirefoxCommandContext output;
+            string response = this.Execute(GetContextCommand, null).Value.ToString();
+
+            bool success = Enum.TryParse<FirefoxCommandContext>(response, true, out output);
+            if (!success)
+            {
+                throw new WebDriverException(string.Format(CultureInfo.InvariantCulture, "Do not recognize response: {0}; expected Context or Chrome"));
+            }
+
+            return output;
+        }
+
+        /// <summary>
+        /// Sets the command context used when issuing commands to geckodriver.
+        /// </summary>
         /// <param name="context">The <see cref="FirefoxCommandContext"/> value to which to set the context.</param>
         public void SetContext(FirefoxCommandContext context)
         {
             string contextValue = context.ToString().ToLowerInvariant();
             Dictionary<string, object> parameters = new Dictionary<string, object>();
             parameters["context"] = contextValue;
-            Response response = this.Execute(SetContextCommand, parameters);
+            this.Execute(SetContextCommand, parameters);
         }
 
         /// <summary>
