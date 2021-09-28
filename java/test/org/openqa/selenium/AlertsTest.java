@@ -196,6 +196,7 @@ public class AlertsTest extends JUnit4TestBase {
   }
 
   @Test
+  @Ignore(value = FIREFOX, reason = "Firefox is incorrectly returning an UnsupportedOperationException")
   public void testSettingTheValueOfAnAlertThrows() {
     driver.get(alertPage("cheese"));
 
