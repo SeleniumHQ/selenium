@@ -21,18 +21,14 @@ import org.junit.Test;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
-import org.openqa.selenium.chromium.ChromiumDriver;
 import org.openqa.selenium.chromium.ChromiumNetworkConditions;
 import org.openqa.selenium.chromium.HasCasting;
 import org.openqa.selenium.chromium.HasCdp;
 import org.openqa.selenium.chromium.HasNetworkConditions;
 import org.openqa.selenium.chromium.HasPermissions;
-import org.openqa.selenium.remote.Augmenter;
-import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.testing.JUnit4TestBase;
+import org.openqa.selenium.testing.drivers.WebDriverBuilder;
 
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.time.Duration;
 import java.util.List;
 import java.util.Map;
@@ -45,61 +41,43 @@ public class ChromeDriverFunctionalTest extends JUnit4TestBase {
   private final String CLIPBOARD_READ = "clipboard-read";
   private final String CLIPBOARD_WRITE = "clipboard-write";
 
-  private ChromiumDriver driver = null;
-
   @Test
   public void canSetPermission() {
-    //Cast provided driver to enable ChromeSpecific calls
-    driver = (ChromiumDriver) super.driver;
+    HasPermissions permissions = (HasPermissions) driver;
 
     driver.get(pages.clicksPage);
     assertThat(checkPermission(driver, CLIPBOARD_READ)).isEqualTo("prompt");
     assertThat(checkPermission(driver, CLIPBOARD_WRITE)).isEqualTo("granted");
 
-    driver.setPermission(CLIPBOARD_READ, "denied");
-    driver.setPermission(CLIPBOARD_WRITE, "prompt");
+    permissions.setPermission(CLIPBOARD_READ, "denied");
+    permissions.setPermission(CLIPBOARD_WRITE, "prompt");
 
     assertThat(checkPermission(driver, CLIPBOARD_READ)).isEqualTo("denied");
     assertThat(checkPermission(driver, CLIPBOARD_WRITE)).isEqualTo("prompt");
   }
 
   @Test
-  public void shouldAllowRemoteWebDriverToAugmentHasPermissions() throws MalformedURLException {
-    WebDriver driver = new RemoteWebDriver(new URL("http://localhost:4444/"), new ChromeOptions());
-    WebDriver augmentedDriver = new Augmenter().augment(driver);
-
-    try {
-      driver.get(pages.clicksPage);
-      assertThat(checkPermission(driver, CLIPBOARD_READ)).isEqualTo("prompt");
-      assertThat(checkPermission(driver, CLIPBOARD_WRITE)).isEqualTo("granted");
-
-      ((HasPermissions) augmentedDriver).setPermission(CLIPBOARD_READ, "denied");
-      ((HasPermissions) augmentedDriver).setPermission(CLIPBOARD_WRITE, "prompt");
-
-      assertThat(checkPermission(driver, CLIPBOARD_READ)).isEqualTo("denied");
-      assertThat(checkPermission(driver, CLIPBOARD_WRITE)).isEqualTo("prompt");
-    } finally {
-      driver.quit();
-    }
-  }
-
-  @Test
   public void canSetPermissionHeadless() {
     ChromeOptions options = new ChromeOptions();
     options.setHeadless(true);
+
     //TestChromeDriver is not honoring headless request; using ChromeDriver instead
-    super.driver = new ChromeDriver(options);
-    driver = (ChromeDriver) super.driver;
+    WebDriver driver = new WebDriverBuilder().get(options);
+    try {
+      HasPermissions permissions = (HasPermissions) driver;
 
-    driver.get(pages.clicksPage);
-    assertThat(checkPermission(driver, CLIPBOARD_READ)).isEqualTo("prompt");
-    assertThat(checkPermission(driver, CLIPBOARD_WRITE)).isEqualTo("prompt");
+      driver.get(pages.clicksPage);
+      assertThat(checkPermission(driver, CLIPBOARD_READ)).isEqualTo("prompt");
+      assertThat(checkPermission(driver, CLIPBOARD_WRITE)).isEqualTo("prompt");
 
-    driver.setPermission(CLIPBOARD_READ, "granted");
-    driver.setPermission(CLIPBOARD_WRITE, "granted");
+      permissions.setPermission(CLIPBOARD_READ, "granted");
+      permissions.setPermission(CLIPBOARD_WRITE, "granted");
 
-    assertThat(checkPermission(driver, CLIPBOARD_READ)).isEqualTo("granted");
-    assertThat(checkPermission(driver, CLIPBOARD_WRITE)).isEqualTo("granted");
+      assertThat(checkPermission(driver, CLIPBOARD_READ)).isEqualTo("granted");
+      assertThat(checkPermission(driver, CLIPBOARD_WRITE)).isEqualTo("granted");
+    } finally {
+      driver.quit();
+    }
   }
 
   public String checkPermission(WebDriver driver, String permission){
@@ -113,60 +91,37 @@ public class ChromeDriverFunctionalTest extends JUnit4TestBase {
   }
 
   @Test
-  public void shouldCast() throws InterruptedException {
-    driver = (ChromiumDriver) super.driver;
+  public void canCast() throws InterruptedException {
+    HasCasting caster = (HasCasting) driver;
 
     // Does not get list the first time it is called
-    driver.getCastSinks();
+    caster.getCastSinks();
     Thread.sleep(1500);
-    List<Map<String, String>> castSinks = driver.getCastSinks();
+    List<Map<String, String>> castSinks = caster.getCastSinks();
 
     // Can not call these commands if there are no sinks available
     if (castSinks.size() > 0) {
       String deviceName = castSinks.get(0).get("name");
 
-      driver.startTabMirroring(deviceName);
-      driver.stopCasting(deviceName);
+      caster.startTabMirroring(deviceName);
+      caster.stopCasting(deviceName);
     }
   }
 
   @Test
-  public void shouldAllowRemoteWebDriverToAugmentHasCasting() throws InterruptedException, MalformedURLException {
-    WebDriver driver = new RemoteWebDriver(new URL("http://localhost:4444/"), new ChromeOptions());
-    WebDriver augmentedDriver = new Augmenter().augment(driver);
-
-    try {
-      // Does not get list the first time it is called
-      ((HasCasting) augmentedDriver).getCastSinks();
-      Thread.sleep(1000);
-      List<Map<String, String>> castSinks = ((HasCasting) augmentedDriver).getCastSinks();
-
-      // Can not call these commands if there are no sinks available
-      if (castSinks.size() > 0) {
-        String deviceName = castSinks.get(0).get("name");
-
-        ((HasCasting) augmentedDriver).startTabMirroring(deviceName);
-        ((HasCasting) augmentedDriver).stopCasting(deviceName);
-      }
-    } finally {
-      driver.quit();
-    }
-  }
-
-  @Test
-  public void shouldAllowChromiumToManageNetworkConditions() {
-    driver = (ChromiumDriver) super.driver;
+  public void canManageNetworkConditions() {
+    HasNetworkConditions conditions = (HasNetworkConditions) driver;
 
     ChromiumNetworkConditions networkConditions = new ChromiumNetworkConditions();
     networkConditions.setLatency(Duration.ofMillis(200));
 
-      driver.setNetworkConditions(networkConditions);
-      assertThat(driver.getNetworkConditions().getLatency()).isEqualTo(Duration.ofMillis(200));
+      conditions.setNetworkConditions(networkConditions);
+      assertThat(conditions.getNetworkConditions().getLatency()).isEqualTo(Duration.ofMillis(200));
 
-      driver.deleteNetworkConditions();
+    conditions.deleteNetworkConditions();
 
       try {
-        driver.getNetworkConditions();
+        conditions.getNetworkConditions();
         fail("If Network Conditions were deleted, should not be able to get Network Conditions");
       } catch (WebDriverException e) {
         if (!e.getMessage().contains("network conditions must be set before it can be retrieved")) {
@@ -176,54 +131,12 @@ public class ChromeDriverFunctionalTest extends JUnit4TestBase {
   }
 
   @Test
-  public void shouldAllowCdpCommands() {
-    driver = (ChromiumDriver) super.driver;
+  public void canExecuteCdpCommands() {
+    HasCdp cdp = (HasCdp) driver;
+
     Map<String, Object> parameters = Map.of("url", pages.simpleTestPage);
-    driver.executeCdpCommand("Page.navigate", parameters);
+    cdp.executeCdpCommand("Page.navigate", parameters);
 
     assertThat(driver.getTitle()).isEqualTo("Hello WebDriver");
   }
-
-  @Test
-  public void shouldAllowRemoteWebDriverToAugmentHasCdp() throws MalformedURLException {
-    WebDriver driver = new RemoteWebDriver(new URL("http://localhost:4444/"), new ChromeOptions());
-    WebDriver augmentedDriver = new Augmenter().augment(driver);
-
-    try {
-      Map<String, Object> parameters = Map.of("url", pages.simpleTestPage);
-      ((HasCdp) augmentedDriver).executeCdpCommand("Page.navigate", parameters);
-
-      assertThat(driver.getTitle()).isEqualTo("Hello WebDriver");
-    } finally {
-      driver.quit();
-    }
-  }
-
-  @Test
-  public void shouldAllowRemoteWebDriverToAugmentHasNetworkConditions() throws MalformedURLException {
-    WebDriver driver = new RemoteWebDriver(new URL("http://localhost:4444/"), new ChromeOptions());
-    WebDriver augmentedDriver = new Augmenter().augment(driver);
-
-    ChromiumNetworkConditions networkConditions = new ChromiumNetworkConditions();
-    networkConditions.setLatency(Duration.ofMillis(200));
-
-    try {
-      ((HasNetworkConditions) augmentedDriver).setNetworkConditions(networkConditions);
-      assertThat(((HasNetworkConditions) augmentedDriver).getNetworkConditions().getLatency()).isEqualTo(Duration.ofMillis(200));
-
-      ((HasNetworkConditions) augmentedDriver).deleteNetworkConditions();
-
-      try {
-        ((HasNetworkConditions) augmentedDriver).getNetworkConditions();
-        fail("If Network Conditions were deleted, should not be able to get Network Conditions");
-      } catch (WebDriverException e) {
-        if (!e.getMessage().contains("network conditions must be set before it can be retrieved")) {
-          throw e;
-        }
-      }
-    } finally {
-      driver.quit();
-    }
-  }
-
 }

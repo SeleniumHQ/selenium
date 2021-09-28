@@ -21,8 +21,18 @@ import com.google.common.collect.ImmutableMap;
 import org.junit.After;
 import org.junit.Test;
 import org.mockito.ArgumentMatchers;
-import org.openqa.selenium.*;
+import org.openqa.selenium.By;
+import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.Dimension;
+import org.openqa.selenium.HasCapabilities;
+import org.openqa.selenium.ImmutableCapabilities;
+import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.OutputType;
+import org.openqa.selenium.ParallelTestRunner;
 import org.openqa.selenium.ParallelTestRunner.Worker;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.build.InProject;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.Command;
 import org.openqa.selenium.remote.CommandExecutor;
@@ -42,6 +52,7 @@ import org.openqa.selenium.testing.drivers.WebDriverBuilder;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Field;
+import java.nio.file.Path;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
@@ -489,128 +500,33 @@ public class FirefoxDriverTest extends JUnit4TestBase {
   }
 
   @Test
-  public void shouldAddExtensions() {
+  public void canAddRemoveExtensions() {
     Path extension = InProject.locate("third_party/firebug/favourite_colour-1.1-an+fx.xpi");
 
-    ((FirefoxDriver) driver).installExtension(extension);
-    ((FirefoxDriver) driver).uninstallExtension("favourite-colour-examples@mozilla.org");
+    ((HasExtensions) driver).installExtension(extension);
+    ((HasExtensions) driver).uninstallExtension("favourite-colour-examples@mozilla.org");
   }
 
   @Test
-  public void shouldAllowRemoteWebDriverBuilderToUseHasExtensions() {
-    WebDriver driver = RemoteWebDriver.builder()
-      .oneOf(new FirefoxOptions())
-      .address("http://localhost:4444/")
-      .build();
-
-    try {
-      Path extension = InProject.locate("third_party/firebug/favourite_colour-1.1-an+fx.xpi");
-      ((HasExtensions) driver).installExtension(extension);
-      ((HasExtensions) driver).uninstallExtension("favourite-colour-examples@mozilla.org");
-    } finally {
-      driver.quit();
-    }
-  }
-
-  @Test
-  public void shouldAllowDriverToBeAugmentedWithHasExtensions() throws MalformedURLException {
-    WebDriver driver = new RemoteWebDriver(new URL("http://localhost:4444/"), new FirefoxOptions());
-    WebDriver augmentedDriver = new Augmenter().augment(driver);
-
-    try {
-      Path extension = InProject.locate("third_party/firebug/favourite_colour-1.1-an+fx.xpi");
-      ((HasExtensions) augmentedDriver).installExtension(extension);
-      ((HasExtensions) augmentedDriver).uninstallExtension("favourite-colour-examples@mozilla.org");
-    } finally {
-      driver.quit();
-    }
-  }
-
-  @Test
-  public void shouldTakeFullPageScreenshot() {
-    File tempFile = ((FirefoxDriver) driver).getFullPageScreenshotAs(OutputType.FILE);
+  public void canTakeFullPageScreenshot() {
+    File tempFile = ((HasFullPageScreenshot) driver).getFullPageScreenshotAs(OutputType.FILE);
     assertThat(tempFile.exists()).isTrue();
     assertThat(tempFile.length()).isGreaterThan(0);
   }
 
   @Test
-  public void shouldAllowRemoteWebDriverBuilderToUseHasFullPageScreenshot() {
-    WebDriver driver = RemoteWebDriver.builder()
-      .oneOf(new FirefoxOptions())
-      .address("http://localhost:4444/")
-      .build();
-
-    try {
-      File tempFile = ((HasFullPageScreenshot) driver).getFullPageScreenshotAs(OutputType.FILE);
-      assertThat(tempFile.exists()).isTrue();
-      assertThat(tempFile.length()).isGreaterThan(0);
-    } finally {
-      driver.quit();
-    }
-  }
-
-  @Test
-  public void shouldAllowDriverToBeAugmentedWithFullHasPageScreenshot() throws MalformedURLException {
-    WebDriver driver = new RemoteWebDriver(new URL("http://localhost:4444/"), new FirefoxOptions());
-    WebDriver augmentedDriver = new Augmenter().augment(driver);
-
-    try {
-      File tempFile = ((HasFullPageScreenshot) augmentedDriver).getFullPageScreenshotAs(OutputType.FILE);
-      assertThat(tempFile.exists()).isTrue();
-      assertThat(tempFile.length()).isGreaterThan(0);
-    } finally {
-      driver.quit();
-    }
-  }
-
-  @Test
-  public void shouldSetContext() {
+  public void canSetContext() {
     FirefoxOptions options = new FirefoxOptions();
     String dir = "foo/bar";
     options.addPreference("browser.download.dir", dir);
 
-    FirefoxDriver driver = new FirefoxDriver(options);
-
-    try {
-      driver.setContext(FirefoxCommandContext.CHROME);
-      String result = (String) driver.executeScript("return Services.prefs.getStringPref('browser.download.dir')");
-      assertThat(result).isEqualTo(dir);
-    } finally {
-      driver.quit();
-    }
-  }
-
-  @Test
-  public void shouldAllowRemoteWebDriverToAugmenterHasContext() throws MalformedURLException {
-    FirefoxOptions options = new FirefoxOptions();
-    String dir = "foo/bar";
-    options.addPreference("browser.download.dir", dir);
-    WebDriver driver = new RemoteWebDriver(new URL("http://localhost:4444/"), options);
-    WebDriver augmentedDriver = new Augmenter().augment(driver);
-
-    try {
-      ((HasContext) augmentedDriver).setContext(FirefoxCommandContext.CHROME);
-      String result = (String) ((JavascriptExecutor) driver).executeScript("return Services.prefs.getStringPref('browser.download.dir')");
-      assertThat(result).isEqualTo(dir);
-    } finally {
-      driver.quit();
-    }
-  }
-
-  @Test
-  public void shouldAllowRemoteWebDriverBuilderToUseHasContext() {
-    FirefoxOptions options = new FirefoxOptions();
-    String dir = "foo/bar";
-    options.addPreference("browser.download.dir", dir);
-
-    WebDriver driver = RemoteWebDriver.builder()
-      .oneOf(options)
-      .address("http://localhost:4444/")
-      .build();
+    // Need to set the preference to be able to read it
+    WebDriver driver = new WebDriverBuilder().get(options);
 
     try {
       ((HasContext) driver).setContext(FirefoxCommandContext.CHROME);
-      String result = (String) ((JavascriptExecutor) driver).executeScript("return Services.prefs.getStringPref('browser.download.dir')");
+      String result = (String) ((JavascriptExecutor) driver)
+        .executeScript("return Services.prefs.getStringPref('browser.download.dir')");
       assertThat(result).isEqualTo(dir);
     } finally {
       driver.quit();
