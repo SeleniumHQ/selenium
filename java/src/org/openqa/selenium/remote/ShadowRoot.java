@@ -26,7 +26,6 @@ import org.openqa.selenium.internal.Require;
 
 import java.util.List;
 import java.util.Map;
-import java.util.function.BiFunction;
 
 import static java.util.Collections.singletonMap;
 import static org.openqa.selenium.remote.Dialect.W3C;

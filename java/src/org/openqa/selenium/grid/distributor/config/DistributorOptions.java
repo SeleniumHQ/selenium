@@ -21,7 +21,6 @@ import org.openqa.selenium.grid.config.Config;
 import org.openqa.selenium.grid.config.ConfigException;
 import org.openqa.selenium.grid.data.SlotMatcher;
 import org.openqa.selenium.grid.distributor.Distributor;
-import org.openqa.selenium.grid.distributor.GridModel;
 import org.openqa.selenium.grid.distributor.selector.SlotSelector;
 
 import java.net.URI;

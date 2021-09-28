@@ -2,9 +2,6 @@ package org.openqa.selenium.remote.http;
 
 import org.junit.Test;
 
-import java.nio.charset.StandardCharsets;
-import java.util.logging.Level;
-
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.openqa.selenium.remote.http.Contents.string;

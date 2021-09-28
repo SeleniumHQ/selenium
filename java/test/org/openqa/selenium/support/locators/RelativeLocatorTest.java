@@ -19,11 +19,8 @@ package org.openqa.selenium.support.locators;
 
 import org.junit.Test;
 import org.openqa.selenium.By;
-import org.openqa.selenium.ImmutableCapabilities;
-import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.environment.webserver.Page;
-import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.testing.JUnit4TestBase;
 
 import java.util.List;

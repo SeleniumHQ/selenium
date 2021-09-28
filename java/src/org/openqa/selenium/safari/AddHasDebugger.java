@@ -29,8 +29,6 @@ import org.openqa.selenium.remote.http.HttpMethod;
 import java.util.Map;
 import java.util.function.Predicate;
 
-import static java.util.Collections.singletonMap;
-
 @AutoService({AdditionalHttpCommands.class, AugmenterProvider.class})
 public class AddHasDebugger implements AugmenterProvider<HasDebugger>, AdditionalHttpCommands {
 

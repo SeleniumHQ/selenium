@@ -20,7 +20,6 @@ package org.openqa.selenium.remote.html5;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.html5.WebStorage;
 import org.openqa.selenium.remote.AugmenterProvider;
-import org.openqa.selenium.remote.BrowserType;
 import org.openqa.selenium.remote.ExecuteMethod;
 
 import java.util.function.Predicate;
