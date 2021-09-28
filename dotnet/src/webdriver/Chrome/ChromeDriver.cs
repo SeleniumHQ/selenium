@@ -139,6 +139,11 @@ namespace OpenQA.Selenium.Chrome
             : base(service, options, commandTimeout)
         {
             this.AddCustomChromeCommand(ExecuteCdp, HttpCommandInfo.PostCommand, "/session/{sessionId}/goog/cdp/execute");
+            this.AddCustomChromeCommand(GetCastSinksCommand, HttpCommandInfo.GetCommand, "/session/{sessionId}/goog/cast/get_sinks");
+            this.AddCustomChromeCommand(SelectCastSinkCommand, HttpCommandInfo.PostCommand, "/session/{sessionId}/goog/cast/set_sink_to_use");
+            this.AddCustomChromeCommand(StartCastTabMirroringCommand, HttpCommandInfo.PostCommand, "/session/{sessionId}/goog/cast/start_tab_mirroring");
+            this.AddCustomChromeCommand(GetCastIssueMessageCommand, HttpCommandInfo.GetCommand, "/session/{sessionId}/goog/cast/get_issue_message");
+            this.AddCustomChromeCommand(StopCastingCommand, HttpCommandInfo.PostCommand, "/session/{sessionId}/goog/cast/stop_casting");
         }
 
     }

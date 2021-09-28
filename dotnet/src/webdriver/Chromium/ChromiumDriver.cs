@@ -38,12 +38,17 @@ namespace OpenQA.Selenium.Chromium
         /// </summary>
         public static readonly bool AcceptUntrustedCertificates = true;
 
+        protected const string ExecuteCdp = "executeCdpCommand";
+        protected const string GetCastSinksCommand = "getCastSinks";
+        protected const string SelectCastSinkCommand = "selectCastSink";
+        protected const string StartCastTabMirroringCommand = "startCastTabMirroring";
+        protected const string GetCastIssueMessageCommand = "getCastIssueMessage";
+        protected const string StopCastingCommand = "stopCasting";
         private const string GetNetworkConditionsCommand = "getNetworkConditions";
         private const string SetNetworkConditionsCommand = "setNetworkConditions";
         private const string DeleteNetworkConditionsCommand = "deleteNetworkConditions";
         private const string SendChromeCommand = "sendChromeCommand";
         private const string SendChromeCommandWithResult = "sendChromeCommandWithResult";
-        protected const string ExecuteCdp = "executeCdpCommand";
 
         private readonly string optionsCapabilityName;
         private DevToolsSession devToolsSession;
@@ -232,6 +237,74 @@ namespace OpenQA.Selenium.Chromium
                 this.devToolsSession.Dispose();
                 this.devToolsSession = null;
             }
+        }
+
+        /// <summary>
+        /// Returns the list of cast sinks (Cast devices) available to the Chrome media router.
+        /// </summary>
+        /// <returns>An object representing the list of available sinks.</returns>
+        public object GetCastSinks()
+        {
+            Response response = this.Execute(GetCastSinksCommand, null);
+            return response.Value;
+        }
+
+        /// <summary>
+        /// Selects a cast sink (Cast device) as the recipient of media router intents (connect or play).
+        /// </summary>
+        /// <param name="deviceName">Name of the target sink (device).</param>
+        public void SelectCastSink(string deviceName)
+        {
+            if (deviceName == null)
+            {
+                throw new ArgumentNullException("deviceName", "deviceName must not be null");
+            }
+
+            Dictionary<string, object> parameters = new Dictionary<string, object>();
+            parameters["sinkName"] = deviceName;
+            this.Execute(SelectCastSinkCommand, parameters);
+        }
+
+        /// <summary>
+        /// Initiates tab mirroring for the current browser tab on the specified device.
+        /// </summary>
+        /// <param name="deviceName">Name of the target sink (device).</param>
+        public void StartTabMirroring(string deviceName)
+        {
+            if (deviceName == null)
+            {
+                throw new ArgumentNullException("deviceName", "deviceName must not be null");
+            }
+
+            Dictionary<string, object> parameters = new Dictionary<string, object>();
+            parameters["sinkName"] = deviceName;
+            this.Execute(StartCastTabMirroringCommand, parameters);
+        }
+
+        /// <summary>
+        /// Returns the error message if there is any issue in a Cast session.
+        /// </summary>
+        /// <returns>An error message.</returns>
+        public String GetCastIssueMessage()
+        {
+            Response response = this.Execute(GetCastIssueMessageCommand, null);
+            return (string)response.Value;
+        }
+
+        /// <summary>
+        /// Stops casting from media router to the specified device, if connected.
+        /// </summary>
+        /// <param name="deviceName">Name of the target sink (device).</param>
+        public void StopCasting(string deviceName)
+        {
+            if (deviceName == null)
+            {
+                throw new ArgumentNullException("deviceName", "deviceName must not be null");
+            }
+
+            Dictionary<string, object> parameters = new Dictionary<string, object>();
+            parameters["sinkName"] = deviceName;
+            this.Execute(StopCastingCommand, parameters);
         }
 
         protected override void Dispose(bool disposing)
