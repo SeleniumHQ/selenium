@@ -24,10 +24,10 @@ import org.openqa.selenium.remote.ExecuteMethod;
 
 import java.util.function.Predicate;
 
-import static org.openqa.selenium.remote.BrowserType.CHROME;
-import static org.openqa.selenium.remote.BrowserType.EDGE;
-import static org.openqa.selenium.remote.BrowserType.FIREFOX;
-import static org.openqa.selenium.remote.BrowserType.OPERA;
+import static org.openqa.selenium.remote.Browser.CHROME;
+import static org.openqa.selenium.remote.Browser.EDGE;
+import static org.openqa.selenium.remote.Browser.FIREFOX;
+import static org.openqa.selenium.remote.Browser.OPERA;
 import static org.openqa.selenium.remote.CapabilityType.SUPPORTS_WEB_STORAGE;
 
 public class AddWebStorage implements AugmenterProvider<WebStorage> {
@@ -35,10 +35,10 @@ public class AddWebStorage implements AugmenterProvider<WebStorage> {
   @Override
   public Predicate<Capabilities> isApplicable() {
     return caps ->
-      FIREFOX.equals(caps.getBrowserName()) ||
-      CHROME.equals(caps.getBrowserName()) ||
-      EDGE.equals(caps.getBrowserName()) ||
-      OPERA.equals(caps.getBrowserName()) ||
+      FIREFOX.is(caps) ||
+      CHROME.is(caps) ||
+      EDGE.is(caps) ||
+      OPERA.is(caps) ||
       caps.is(SUPPORTS_WEB_STORAGE);
   }
 

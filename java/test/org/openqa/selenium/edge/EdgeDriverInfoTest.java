@@ -17,18 +17,19 @@
 
 package org.openqa.selenium.edge;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 import org.assertj.core.api.Condition;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
-import org.openqa.selenium.remote.BrowserType;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.testing.UnitTests;
 
 import java.util.Collections;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.openqa.selenium.remote.Browser.EDGE;
+import static org.openqa.selenium.remote.Browser.FIREFOX;
 
 @Category(UnitTests.class)
 public class EdgeDriverInfoTest {
@@ -36,33 +37,35 @@ public class EdgeDriverInfoTest {
   @Test
   public void canonicalCapabilitiesContainProperBrowserName() {
     Capabilities caps = new EdgeDriverInfo().getCanonicalCapabilities();
-    assertThat(caps.getBrowserName()).isEqualTo(BrowserType.EDGE);
+    assertThat(caps.getBrowserName()).isEqualTo(EDGE.browserName());
   }
 
   @Test
   public void isSupportingCapabilitiesWithProperBrowserNameOnly() {
     assertThat(new EdgeDriverInfo()).is(supporting(
-        new ImmutableCapabilities(CapabilityType.BROWSER_NAME, BrowserType.EDGE)));
+        new ImmutableCapabilities(CapabilityType.BROWSER_NAME, EDGE.browserName())));
   }
 
   @Test
   public void isNotSupportingEdgeHtml() {
     assertThat(new EdgeDriverInfo()).isNot(supporting(
-        new ImmutableCapabilities(CapabilityType.BROWSER_NAME, BrowserType.EDGE,
-                                  EdgeOptions.USE_CHROMIUM, false)));
+        new ImmutableCapabilities(
+          CapabilityType.BROWSER_NAME, EDGE.browserName(),
+          EdgeOptions.USE_CHROMIUM, false)));
   }
 
   @Test
   public void isSupportingEdgeWithExplicitlySetChromiumFlag() {
     assertThat(new EdgeDriverInfo()).is(supporting(
-        new ImmutableCapabilities(CapabilityType.BROWSER_NAME, BrowserType.EDGE,
-                                  EdgeOptions.USE_CHROMIUM, true)));
+        new ImmutableCapabilities(
+          CapabilityType.BROWSER_NAME, EDGE.browserName(),
+          EdgeOptions.USE_CHROMIUM, true)));
   }
 
   @Test
   public void isNotSupportingFirefox() {
     assertThat(new EdgeDriverInfo()).isNot(supporting(
-        new ImmutableCapabilities(CapabilityType.BROWSER_NAME, BrowserType.FIREFOX)));
+        new ImmutableCapabilities(CapabilityType.BROWSER_NAME, FIREFOX.browserName())));
   }
 
   @Test

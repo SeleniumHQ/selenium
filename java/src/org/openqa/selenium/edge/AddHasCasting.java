@@ -28,6 +28,8 @@ import org.openqa.selenium.remote.http.HttpMethod;
 import java.util.Map;
 import java.util.function.Predicate;
 
+import static org.openqa.selenium.remote.Browser.EDGE;
+
 @AutoService({AdditionalHttpCommands.class, AugmenterProvider.class})
 public class AddHasCasting extends org.openqa.selenium.chromium.AddHasCasting {
 
@@ -45,6 +47,6 @@ public class AddHasCasting extends org.openqa.selenium.chromium.AddHasCasting {
 
   @Override
   public Predicate<Capabilities> isApplicable() {
-    return caps -> "msedge".equals(caps.getBrowserName());
+    return EDGE::is;
   }
 }

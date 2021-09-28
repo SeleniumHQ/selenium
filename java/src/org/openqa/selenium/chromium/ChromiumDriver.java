@@ -44,6 +44,7 @@ import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.logging.EventType;
 import org.openqa.selenium.logging.HasLogEvents;
 import org.openqa.selenium.mobile.NetworkConnection;
+import org.openqa.selenium.remote.Browser;
 import org.openqa.selenium.remote.CommandExecutor;
 import org.openqa.selenium.remote.FileDetector;
 import org.openqa.selenium.remote.RemoteTouchScreen;
@@ -62,9 +63,9 @@ import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.logging.Logger;
 
-import static org.openqa.selenium.remote.BrowserType.CHROME;
-import static org.openqa.selenium.remote.BrowserType.EDGE;
-import static org.openqa.selenium.remote.BrowserType.OPERA;
+import static org.openqa.selenium.remote.Browser.CHROME;
+import static org.openqa.selenium.remote.Browser.EDGE;
+import static org.openqa.selenium.remote.Browser.OPERA;
 
 /**
  * A {@link WebDriver} implementation that controls a Chromium browser running on the local machine.
@@ -84,7 +85,10 @@ public class ChromiumDriver extends RemoteWebDriver implements
   NetworkConnection,
   WebStorage {
 
-  public static final List<String> KNOWN_CHROMIUM_BROWSERS = ImmutableList.of(CHROME, EDGE, OPERA, "msedge");
+  public static final Predicate<String> IS_CHROMIUM_BROWSER = name ->
+    CHROME.is(name) ||
+    EDGE.is(name) ||
+    OPERA.is(name);
   private static final Logger LOG = Logger.getLogger(ChromiumDriver.class.getName());
 
   private final Capabilities capabilities;

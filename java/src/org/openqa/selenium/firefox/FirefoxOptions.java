@@ -21,29 +21,19 @@ import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.AbstractDriverOptions;
-import org.openqa.selenium.remote.BrowserType;
 import org.openqa.selenium.remote.CapabilityType;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Set;
-import java.util.TreeMap;
-import java.util.TreeSet;
+import java.util.*;
 
 import static java.util.stream.Collectors.toMap;
 import static org.openqa.selenium.firefox.FirefoxDriver.Capability.BINARY;
 import static org.openqa.selenium.firefox.FirefoxDriver.Capability.MARIONETTE;
 import static org.openqa.selenium.firefox.FirefoxDriver.Capability.PROFILE;
+import static org.openqa.selenium.remote.Browser.FIREFOX;
 
 /**
  * Manage firefox specific settings in a way that geckodriver can understand.
@@ -64,7 +54,7 @@ public class FirefoxOptions extends AbstractDriverOptions<FirefoxOptions> {
   private boolean legacy;
 
   public FirefoxOptions() {
-    setCapability(CapabilityType.BROWSER_NAME, BrowserType.FIREFOX);
+    setCapability(CapabilityType.BROWSER_NAME, FIREFOX.browserName());
     setAcceptInsecureCerts(true);
     setCapability("moz:debuggerAddress", true);
   }

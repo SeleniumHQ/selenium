@@ -20,8 +20,9 @@ package org.openqa.selenium.chrome;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.chromium.ChromiumOptions;
 import org.openqa.selenium.internal.Require;
-import org.openqa.selenium.remote.BrowserType;
 import org.openqa.selenium.remote.CapabilityType;
+
+import static org.openqa.selenium.remote.Browser.CHROME;
 
 /**
  * Class to manage options specific to {@link ChromeDriver}.
@@ -53,8 +54,7 @@ public class ChromeOptions extends ChromiumOptions<ChromeOptions> {
   private ChromeDriverLogLevel logLevel;
 
   public ChromeOptions() {
-
-    super(CapabilityType.BROWSER_NAME, BrowserType.CHROME, CAPABILITY);
+    super(CapabilityType.BROWSER_NAME, CHROME.browserName(), CAPABILITY);
   }
 
   public ChromeOptions setLogLevel(ChromeDriverLogLevel logLevel){

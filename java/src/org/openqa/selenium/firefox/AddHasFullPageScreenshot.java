@@ -31,7 +31,7 @@ import org.openqa.selenium.remote.http.HttpMethod;
 import java.util.Map;
 import java.util.function.Predicate;
 
-import static org.openqa.selenium.remote.BrowserType.FIREFOX;
+import static org.openqa.selenium.remote.Browser.FIREFOX;
 
 @AutoService({AdditionalHttpCommands.class, AugmenterProvider.class})
 public class AddHasFullPageScreenshot<X> implements AugmenterProvider<HasFullPageScreenshot>, AdditionalHttpCommands {
@@ -48,7 +48,7 @@ public class AddHasFullPageScreenshot<X> implements AugmenterProvider<HasFullPag
 
   @Override
   public Predicate<Capabilities> isApplicable() {
-    return caps -> FIREFOX.equals(caps.getBrowserName());
+    return FIREFOX::is;
   }
 
   @Override

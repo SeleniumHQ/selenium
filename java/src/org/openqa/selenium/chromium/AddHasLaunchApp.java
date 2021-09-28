@@ -30,7 +30,7 @@ import org.openqa.selenium.remote.http.HttpMethod;
 import java.util.Map;
 import java.util.function.Predicate;
 
-import static org.openqa.selenium.chromium.ChromiumDriver.KNOWN_CHROMIUM_BROWSERS;
+import static org.openqa.selenium.chromium.ChromiumDriver.IS_CHROMIUM_BROWSER;
 
 @AutoService({AdditionalHttpCommands.class, AugmenterProvider.class})
 public class AddHasLaunchApp implements AugmenterProvider<HasLaunchApp>, AdditionalHttpCommands {
@@ -47,7 +47,7 @@ public class AddHasLaunchApp implements AugmenterProvider<HasLaunchApp>, Additio
 
   @Override
   public Predicate<Capabilities> isApplicable() {
-    return caps -> KNOWN_CHROMIUM_BROWSERS.contains(caps.getBrowserName());
+    return caps -> IS_CHROMIUM_BROWSER.test(caps.getBrowserName());
   }
 
   @Override

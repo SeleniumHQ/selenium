@@ -18,17 +18,16 @@
 package org.openqa.selenium.safari;
 
 import com.google.auto.service.AutoService;
-
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebDriverInfo;
-import org.openqa.selenium.remote.BrowserType;
 
 import java.util.Optional;
 
+import static org.openqa.selenium.remote.Browser.SAFARI;
 import static org.openqa.selenium.remote.CapabilityType.BROWSER_NAME;
 
 @AutoService(WebDriverInfo.class)
@@ -41,12 +40,12 @@ public class SafariDriverInfo implements WebDriverInfo {
 
   @Override
   public Capabilities getCanonicalCapabilities() {
-    return new ImmutableCapabilities(BROWSER_NAME, BrowserType.SAFARI);
+    return new ImmutableCapabilities(BROWSER_NAME, SAFARI.browserName());
   }
 
   @Override
   public boolean isSupporting(Capabilities capabilities) {
-    if (BrowserType.SAFARI.equalsIgnoreCase(capabilities.getBrowserName())) {
+    if (SAFARI.is(capabilities)) {
       return true;
     }
 

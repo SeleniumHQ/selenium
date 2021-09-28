@@ -28,7 +28,7 @@ import org.openqa.selenium.remote.ExecuteMethod;
 import java.util.Map;
 import java.util.function.Predicate;
 
-import static org.openqa.selenium.chromium.ChromiumDriver.KNOWN_CHROMIUM_BROWSERS;
+import static org.openqa.selenium.chromium.ChromiumDriver.IS_CHROMIUM_BROWSER;
 
 public abstract class AddHasCdp implements AugmenterProvider<HasCdp>, AdditionalHttpCommands {
 
@@ -39,7 +39,7 @@ public abstract class AddHasCdp implements AugmenterProvider<HasCdp>, Additional
 
   @Override
   public Predicate<Capabilities> isApplicable() {
-    return caps -> KNOWN_CHROMIUM_BROWSERS.contains(caps.getBrowserName());
+    return caps -> IS_CHROMIUM_BROWSER.test(caps.getBrowserName());
   }
 
   @Override

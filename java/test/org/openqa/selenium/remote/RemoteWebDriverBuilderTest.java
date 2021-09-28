@@ -52,8 +52,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.openqa.selenium.json.Json.JSON_UTF_8;
 import static org.openqa.selenium.json.Json.MAP_TYPE;
-import static org.openqa.selenium.remote.BrowserType.CHROME;
-import static org.openqa.selenium.remote.BrowserType.FIREFOX;
+import static org.openqa.selenium.remote.Browser.CHROME;
+import static org.openqa.selenium.remote.Browser.FIREFOX;
 
 import com.google.common.collect.ImmutableMap;
 
@@ -88,7 +88,7 @@ public class RemoteWebDriverBuilderTest {
 
     assertThat(caps).hasSize(1);
     List<Capabilities> caps0 = caps.get(0);
-    assertThat(caps0.get(0).getBrowserName()).isEqualTo(FIREFOX);
+    assertThat(caps0.get(0).getBrowserName()).isEqualTo(FIREFOX.browserName());
   }
 
   @Test
@@ -259,7 +259,7 @@ public class RemoteWebDriverBuilderTest {
       .address("http://localhost:34576")
       .connectingWith(config -> req -> {
         List<Capabilities> caps = listCapabilities(req);
-        allOk.set(caps.size() == 1 && caps.get(0).getBrowserName().equals(CHROME));
+        allOk.set(caps.size() == 1 && caps.get(0).getBrowserName().equals(CHROME.browserName()));
         return CANNED_SESSION_RESPONSE;
       })
       .build();

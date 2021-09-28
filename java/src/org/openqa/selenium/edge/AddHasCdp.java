@@ -28,6 +28,8 @@ import org.openqa.selenium.remote.http.HttpMethod;
 import java.util.Map;
 import java.util.function.Predicate;
 
+import static org.openqa.selenium.remote.Browser.EDGE;
+
 @AutoService({AdditionalHttpCommands.class, AugmenterProvider.class})
 public class AddHasCdp extends org.openqa.selenium.chromium.AddHasCdp {
 
@@ -41,6 +43,6 @@ public class AddHasCdp extends org.openqa.selenium.chromium.AddHasCdp {
 
   @Override
   public Predicate<Capabilities> isApplicable() {
-    return caps -> "msedge".equals(caps.getBrowserName());
+    return EDGE::is;
   }
 }
