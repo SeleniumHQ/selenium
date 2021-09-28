@@ -35,6 +35,7 @@ import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
+import static org.assertj.core.api.Assumptions.assumeThat;
 
 public class ChromeDriverFunctionalTest extends JUnit4TestBase {
 
@@ -46,8 +47,8 @@ public class ChromeDriverFunctionalTest extends JUnit4TestBase {
     HasPermissions permissions = (HasPermissions) driver;
 
     driver.get(pages.clicksPage);
-    assertThat(checkPermission(driver, CLIPBOARD_READ)).isEqualTo("prompt");
-    assertThat(checkPermission(driver, CLIPBOARD_WRITE)).isEqualTo("granted");
+    assumeThat(checkPermission(driver, CLIPBOARD_READ)).isEqualTo("prompt");
+    assumeThat(checkPermission(driver, CLIPBOARD_WRITE)).isEqualTo("granted");
 
     permissions.setPermission(CLIPBOARD_READ, "denied");
     permissions.setPermission(CLIPBOARD_WRITE, "prompt");
