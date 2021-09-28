@@ -99,6 +99,7 @@ namespace OpenQA.Selenium
         private string platformName;
         private Proxy proxy;
         private bool? acceptInsecureCertificates;
+        private bool? useWebSocketUrl;
         private bool useStrictFileInteractability;
         private UnhandledPromptBehavior unhandledPromptBehavior = UnhandledPromptBehavior.Default;
         private PageLoadStrategy pageLoadStrategy = PageLoadStrategy.Default;
@@ -118,6 +119,7 @@ namespace OpenQA.Selenium
             this.AddKnownCapabilityName(CapabilityType.UnhandledPromptBehavior, "UnhandledPromptBehavior property");
             this.AddKnownCapabilityName(CapabilityType.PageLoadStrategy, "PageLoadStrategy property");
             this.AddKnownCapabilityName(CapabilityType.UseStrictFileInteractability, "UseStrictFileInteractability property");
+            this.AddKnownCapabilityName(CapabilityType.WebSocketUrl, "UseWebSocketUrl property");
         }
 
         /// <summary>
@@ -155,6 +157,16 @@ namespace OpenQA.Selenium
         {
             get { return this.acceptInsecureCertificates; }
             set { this.acceptInsecureCertificates = value; }
+        }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether the driver should request a URL to
+        /// a WebSocket to be used for bidirectional communication.
+        /// </summary>
+        public bool? UseWebSocketUrl
+        {
+            get { return this.useWebSocketUrl; }
+            set { this.useWebSocketUrl = value; }
         }
 
         /// <summary>
@@ -448,6 +460,11 @@ namespace OpenQA.Selenium
             if (this.acceptInsecureCertificates.HasValue)
             {
                 capabilities.SetCapability(CapabilityType.AcceptInsecureCertificates, this.acceptInsecureCertificates);
+            }
+
+            if (this.useWebSocketUrl.HasValue)
+            {
+                capabilities.SetCapability(CapabilityType.WebSocketUrl, this.useWebSocketUrl);
             }
 
             if (this.useStrictFileInteractability)
