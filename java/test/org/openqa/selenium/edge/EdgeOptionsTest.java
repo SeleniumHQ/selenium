@@ -17,7 +17,6 @@
 
 package org.openqa.selenium.edge;
 
-import com.google.common.io.Files;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.openqa.selenium.ImmutableCapabilities;
@@ -29,6 +28,8 @@ import java.io.File;
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.Base64;
 import java.util.Collections;
@@ -66,8 +67,7 @@ public class EdgeOptionsTest {
   @Test
   public void canAddExtensions() throws IOException {
     EdgeOptions options = new EdgeOptions();
-    File tmpDir = File.createTempFile("webdriver", "tmp");
-    tmpDir.deleteOnExit();
+    Path tmpDir = Files.createTempDirectory("webdriver");
     File ext1 = createTempFile(tmpDir, "ext1 content");
     File ext2 = createTempFile(tmpDir, "ext2 content");
     options.addExtensions(ext1, ext2);
@@ -96,11 +96,11 @@ public class EdgeOptionsTest {
         .containsOnlyKeys("args", "extensions");
   }
 
-  private File createTempFile(File tmpDir, String content) {
+  private File createTempFile(Path tmpDir, String content) {
     try {
-      File ext = File.createTempFile("tmp", "ext", tmpDir);
-      Files.asCharSink(ext, Charset.defaultCharset()).write(content);
-      return ext;
+      Path file = Files.createTempFile(tmpDir, "tmp", "ext");
+      Files.write(file, content.getBytes(Charset.defaultCharset()));
+      return file.toFile();
     } catch (IOException e) {
       throw new UncheckedIOException(e);
     }
