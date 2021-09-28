@@ -1,22 +1,18 @@
 load("@rules_jvm_external//:defs.bzl", "artifact")
 load("//java/private:selenium_test.bzl", "BROWSERS")
-load("//java:defs.bzl", "java_test_suite")
+load("//java:defs.bzl", "java_selenium_test_suite")
 
-firefox = BROWSERS["firefox"]
-
-java_test_suite(
-    name = "MediumTests",
-    size = "medium",
+java_selenium_test_suite(
+    name = "LargeTests",
+    size = "large",
+    browsers = [
+        "firefox",
+    ],
     srcs = glob(["*Test.java"]),
-    data = firefox["data"],
     javacopts = [
-        "-source",
-        "11",
-        "-target",
+        "--release",
         "11",
     ],
-    jvm_flags = firefox["jvm_flags"],
-    tags = firefox["tags"],
     deps = [
         "//java/src/com/thoughtworks/selenium",
         "//java/src/org/openqa/selenium/remote",
@@ -30,5 +26,5 @@ java_test_suite(
         artifact("io.opentelemetry:opentelemetry-api"),
         artifact("junit:junit"),
         artifact("org.mockito:mockito-core"),
-    ] + firefox["deps"],
+    ],
 )
