@@ -422,23 +422,6 @@ namespace OpenQA.Selenium.DevTools
         [IgnoreBrowser(Selenium.Browser.IE, "IE does not support Chrome DevTools Protocol")]
         [IgnoreBrowser(Selenium.Browser.Firefox, "Firefox does not support Chrome DevTools Protocol")]
         [IgnoreBrowser(Selenium.Browser.Safari, "Safari does not support Chrome DevTools Protocol")]
-        public async Task DataSizeLimitsForTest()
-        {
-            var domains = session.GetVersionSpecificDomains<V93.DevToolsSessionDomains>();
-            await domains.Network.Enable(new V93.Network.EnableCommandSettings());
-
-            await domains.Network.SetDataSizeLimitsForTest(new V93.Network.SetDataSizeLimitsForTestCommandSettings()
-            {
-                MaxResourceSize = 10000,
-                MaxTotalSize = 100000
-            });
-        }
-
-        [Test]
-        [IgnoreBrowser(Selenium.Browser.EdgeLegacy, "Legacy Edge does not support Chrome DevTools Protocol")]
-        [IgnoreBrowser(Selenium.Browser.IE, "IE does not support Chrome DevTools Protocol")]
-        [IgnoreBrowser(Selenium.Browser.Firefox, "Firefox does not support Chrome DevTools Protocol")]
-        [IgnoreBrowser(Selenium.Browser.Safari, "Safari does not support Chrome DevTools Protocol")]
         public async Task VerifyEventSourceMessage()
         {
             var domains = session.GetVersionSpecificDomains<V93.DevToolsSessionDomains>();
