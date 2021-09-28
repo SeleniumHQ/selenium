@@ -30,5 +30,5 @@ public interface HasPermissions {
    * @param name what item to set the permission on.
    * @param value what to set the permission to.
    */
-  public void setPermission(String name, String value);
+  void setPermission(String name, String value);
 }

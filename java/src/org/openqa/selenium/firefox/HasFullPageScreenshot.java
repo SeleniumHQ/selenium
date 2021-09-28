@@ -32,5 +32,5 @@ public interface HasFullPageScreenshot {
    * @param outputType target type, @see OutputType
    * @return Object in which is stored information about the screenshot.
    */
-    public <X> X getFullPageScreenshotAs(OutputType<X> outputType);
+  <X> X getFullPageScreenshotAs(OutputType<X> outputType);
 }

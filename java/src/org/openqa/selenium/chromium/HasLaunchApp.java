@@ -29,5 +29,5 @@ public interface HasLaunchApp {
    *
    * @param id which Chromium app to launch.
    */
-  public void launchApp(String id);
+  void launchApp(String id);
 }
