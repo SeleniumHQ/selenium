@@ -54,6 +54,7 @@ import org.openqa.selenium.grid.testing.PassthroughHttpClient;
 import org.openqa.selenium.grid.testing.TestSessionFactory;
 import org.openqa.selenium.grid.web.CombinedHandler;
 import org.openqa.selenium.grid.web.EnsureSpecCompliantHeaders;
+import org.openqa.selenium.net.PortProber;
 import org.openqa.selenium.netty.server.NettyServer;
 import org.openqa.selenium.remote.http.Contents;
 import org.openqa.selenium.remote.http.HttpClient;
@@ -165,7 +166,8 @@ public class NewSessionCreationTest {
   @Test
   public void shouldNotRetryNewSessionRequestOnUnexpectedError() throws URISyntaxException {
     Capabilities capabilities = new ImmutableCapabilities("browserName", "cheese");
-    URI nodeUri = new URI("http://localhost:4444");
+    int nodePort = PortProber.findFreePort();
+    URI nodeUri = new URI("http://localhost:" + nodePort);
     CombinedHandler handler = new CombinedHandler();
 
     SessionMap sessions = new LocalSessionMap(tracer, events);
@@ -241,7 +243,8 @@ public class NewSessionCreationTest {
   @Test(timeout = 10000L)
   public void shouldRejectRequestForUnsupportedCaps() throws URISyntaxException {
     Capabilities capabilities = new ImmutableCapabilities("browserName", "cheese");
-    URI nodeUri = new URI("http://localhost:4444");
+    int nodePort = PortProber.findFreePort();
+    URI nodeUri = new URI("http://localhost:" + nodePort);
     CombinedHandler handler = new CombinedHandler();
 
     SessionMap sessions = new LocalSessionMap(tracer, events);
