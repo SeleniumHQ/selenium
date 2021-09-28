@@ -17,6 +17,7 @@
 // </copyright>
 
 using System;
+using System.Collections.Generic;
 using System.Net;
 
 namespace OpenQA.Selenium.Remote
@@ -29,6 +30,7 @@ namespace OpenQA.Selenium.Remote
         private string method;
         private string fullUrl;
         private string requestBody;
+        private Dictionary<string, string> headers = new Dictionary<string, string>();
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SendingRemoteHttpRequestEventArgs"/> class.
@@ -74,6 +76,40 @@ namespace OpenQA.Selenium.Remote
         public string RequestBody
         {
             get { return this.requestBody; }
+        }
+
+        /// <summary>
+        /// Gets a read-only dictionary of the headers of the HTTP request.
+        /// Does not include default headers of the web client making the request.
+        /// </summary>
+        public IReadOnlyDictionary<string, string> Headers
+        {
+            get { return this.headers; }
+        }
+
+        /// <summary>
+        /// Adds a header to the HTTP request.
+        /// </summary>
+        /// <param name="headerName">The name of the header to add.</param>
+        /// <param name="headerValue">The value of the header to add.</param>
+        /// <remarks>
+        /// Adding headers here will attempt to add them to the headers for the
+        /// HTTP request being sent; however, be aware they may be overwritten by
+        /// the client raising the event.
+        /// </remarks>
+        public void AddHeader(string headerName, string headerValue)
+        {
+            if (string.IsNullOrEmpty(headerName))
+            {
+                throw new ArgumentException("Header name may not be null or the empty string.", "headerName");
+            }
+
+            if (headerValue == null)
+            {
+                throw new ArgumentNullException("headerValue", "Header value may not be null.")
+            }
+
+            this.headers[headerName] = headerValue;
         }
     }
 }
