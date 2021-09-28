@@ -17,7 +17,6 @@
 
 package org.openqa.selenium;
 
-import com.google.common.base.Joiner;
 import com.google.common.net.HostAndPort;
 import org.junit.After;
 import org.junit.Before;
@@ -32,7 +31,6 @@ import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.support.ui.WebDriverWait;
-import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.SeleniumTestRule;
 import org.openqa.selenium.testing.SeleniumTestRunner;
 
@@ -57,10 +55,6 @@ import static org.openqa.selenium.remote.CapabilityType.PROXY;
 import static org.openqa.selenium.support.ui.ExpectedConditions.presenceOfElementLocated;
 import static org.openqa.selenium.support.ui.ExpectedConditions.titleIs;
 import static org.openqa.selenium.testing.Safely.safelyCall;
-import static org.openqa.selenium.testing.drivers.Browser.CHROME;
-import static org.openqa.selenium.testing.drivers.Browser.LEGACY_FIREFOX_XPI;
-import static org.openqa.selenium.testing.drivers.Browser.IE;
-import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
 
 /**
  * Tests that "Referer" headers are generated as expected under various conditions.
@@ -150,26 +144,6 @@ public class ReferrerTest {
   }
 
   /**
-   * Tests navigation across multiple domains when the browser does not have a proxy configured.
-   */
-  @Test
-  @Ignore(value = CHROME, reason = "https://developers.google.com/web/updates/2020/07/referrer-policy-new-chrome-default")
-  @Ignore(value = FIREFOX, reason = "https://developers.google.com/web/updates/2020/07/referrer-policy-new-chrome-default")
-  public void crossDomainHistoryNavigationWithoutAProxy() {
-    String page1Url = server1.whereIs(PAGE_1) + "?next=" + encode(server2.whereIs(PAGE_2));
-    String page2Url = server2.whereIs(PAGE_2) + "?next=" + encode(server1.whereIs(PAGE_3));
-
-    performNavigation(seleniumTestRule.getDriver(), page1Url);
-
-    assertThat(server1.getRequests()).containsExactly(
-      new ExpectedRequest(PAGE_1, null),
-      new ExpectedRequest(PAGE_3, page2Url));
-
-    assertThat(server2.getRequests()).containsExactly(
-      new ExpectedRequest(PAGE_2, page1Url));
-  }
-
-  /**
    * Tests navigation when all of the files are hosted on the same domain and the browser is
    * configured to use a proxy that permits direct access to that domain.
    */
@@ -188,126 +162,6 @@ public class ReferrerTest {
         new ExpectedRequest(PAGE_1, null),
         new ExpectedRequest(PAGE_2, page1Url),
         new ExpectedRequest(PAGE_3, page2Url));
-  }
-
-  /**
-   * Tests navigation across multiple domains when the browser is configured to use a proxy that
-   * permits direct access to those domains.
-   */
-  @Test
-  @Ignore(value = CHROME, reason = "https://developers.google.com/web/updates/2020/07/referrer-policy-new-chrome-default")
-  @Ignore(value = FIREFOX, reason = "https://developers.google.com/web/updates/2020/07/referrer-policy-new-chrome-default")
-  public void crossDomainHistoryNavigationWithADirectProxy() {
-    proxyServer.setPacFileContents("function FindProxyForURL(url, host) { return 'DIRECT'; }");
-    WebDriver driver = createDriver(proxyServer.whereIs("/pac.js"));
-
-    String page1Url = server1.whereIs(PAGE_1) + "?next=" + encode(server2.whereIs(PAGE_2));
-    String page2Url = server2.whereIs(PAGE_2) + "?next=" + encode(server1.whereIs(PAGE_3));
-
-    performNavigation(driver, page1Url);
-
-    assertThat(server1.getRequests()).containsExactly(
-      new ExpectedRequest(PAGE_1, null),
-      new ExpectedRequest(PAGE_3, page2Url));
-
-    assertThat(server2.getRequests()).containsExactly(
-      new ExpectedRequest(PAGE_2, page1Url));
-  }
-
-  /**
-   * Tests navigation across multiple domains when the browser is configured to use a proxy that
-   * redirects the second domain to another host.
-   */
-  @Test
-  @Ignore(value = CHROME, reason = "https://developers.google.com/web/updates/2020/07/referrer-policy-new-chrome-default")
-  @Ignore(value = FIREFOX, reason = "https://developers.google.com/web/updates/2020/07/referrer-policy-new-chrome-default")
-  public void crossDomainHistoryNavigationWithAProxiedHost() {
-    proxyServer.setPacFileContents(Joiner.on('\n').join(
-      "function FindProxyForURL(url, host) {",
-      "  if (host.indexOf('example') != -1) {",
-      "    return 'PROXY " + server2.getHostAndPort() + "';",
-      "  }",
-      "  return 'DIRECT';",
-      " }"));
-    WebDriver driver = createDriver(proxyServer.whereIs("/pac.js"));
-
-    String page1Url = server1.whereIs(PAGE_1) + "?next=" + encode("http://www.example.com" + PAGE_2);
-    String page2Url = "http://www.example.com" + PAGE_2 + "?next=" + encode(server1.whereIs(PAGE_3));
-
-    performNavigation(driver, page1Url);
-
-    assertThat(server1.getRequests()).containsExactly(
-      new ExpectedRequest(PAGE_1, null),
-      new ExpectedRequest(PAGE_3, page2Url));
-
-    assertThat(server2.getRequests()).containsExactly(
-      new ExpectedRequest("http://www.example.com" + PAGE_2, page1Url));
-  }
-
-  /**
-   * Tests navigation across multiple domains when the browser is configured to use a proxy that
-   * intercepts requests to a specific host (www.example.com) - all other requests are permitted
-   * to connect directly to the target server.
-   */
-  @Test
-  @Ignore(value = CHROME, reason = "https://developers.google.com/web/updates/2020/07/referrer-policy-new-chrome-default")
-  @Ignore(value = FIREFOX, reason = "https://developers.google.com/web/updates/2020/07/referrer-policy-new-chrome-default")
-  public void crossDomainHistoryNavigationWhenProxyInterceptsHostRequests() {
-    proxyServer.setPacFileContents(Joiner.on('\n').join(
-      "function FindProxyForURL(url, host) {",
-      "  if (host.indexOf('example') != -1) {",
-      "    return 'PROXY " + proxyServer.getHostAndPort() + "';",
-      "  }",
-      "  return 'DIRECT';",
-      " }"));
-    WebDriver driver = createDriver(proxyServer.whereIs("/pac.js"));
-
-    String page1Url = server1.whereIs(PAGE_1) + "?next=" + encode("http://www.example.com" + PAGE_2);
-    String page2Url = "http://www.example.com" + PAGE_2 + "?next=" + encode(server1.whereIs(PAGE_3));
-
-    performNavigation(driver, page1Url);
-
-    assertThat(server1.getRequests()).containsExactly(
-      new ExpectedRequest(PAGE_1, null),
-      new ExpectedRequest(PAGE_3, page2Url));
-
-    assertThat(proxyServer.getRequests()).containsExactly(
-      new ExpectedRequest("http://www.example.com" + PAGE_2, page1Url));
-  }
-
-  /**
-   * Tests navigation on a single domain where the browser is configured to use a proxy that
-   * intercepts requests for page 2.
-   */
-  @Test
-  @Ignore(value = IE,
-    reason = "IEDriver does not disable automatic proxy caching, causing this test to fail, issue 6629")
-  @Ignore(FIREFOX)
-  @Ignore(value = LEGACY_FIREFOX_XPI, travis = true)
-  @Ignore(value = CHROME, reason = "Flaky")
-  public void navigationWhenProxyInterceptsASpecificUrl() {
-    // Have our proxy intercept requests for page 2.
-    proxyServer.setPacFileContents(Joiner.on('\n').join(
-        "function FindProxyForURL(url, host) {",
-        "  if (url.indexOf('/page2.html?next') != -1) {",
-        "    return 'PROXY " + proxyServer.getHostAndPort() + "';",
-        "  }",
-        "  return 'DIRECT';",
-        " }"));
-    WebDriver driver = createDriver(proxyServer.whereIs("/pac.js"));
-
-
-    String page1Url = server1.whereIs(PAGE_1) + "?next=" + encode(server1.whereIs(PAGE_2));
-    String page2Url = server1.whereIs(PAGE_2 + "?next=" + encode(server1.whereIs(PAGE_3)));
-
-    performNavigation(driver, page1Url);
-
-    assertThat(server1.getRequests()).containsExactly(
-      new ExpectedRequest(PAGE_1, null),
-      new ExpectedRequest(PAGE_3, page2Url));
-
-    assertThat(proxyServer.getRequests()).containsExactly(
-      new ExpectedRequest(PAGE_2, page1Url));
   }
 
   private static String encode(String url) {
