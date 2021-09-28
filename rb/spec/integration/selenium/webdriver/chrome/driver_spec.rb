@@ -168,6 +168,8 @@ module Selenium
 
           expect(get_permission('clipboard-read')).to eq('denied')
           expect(get_permission('clipboard-write')).to eq('prompt')
+
+          reset_driver!
         end
 
         it 'can set multiple permissions' do

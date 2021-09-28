@@ -31,6 +31,7 @@ module Selenium
             'download_throughput' => 789,
             'upload_throughput' => 789
           )
+          driver.delete_network_conditions
         end
 
         it 'sets download path' do
