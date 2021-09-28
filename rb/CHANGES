@@ -1,3 +1,33 @@
+4.0.0.rc2 (Unreleased)
+=========================
+
+DevTools:
+  * Released selenium-devtools 0.93.0 (2021-09-01)
+    - adds CDP version 93
+    - removes CDP version 91
+  * Released selenium-devtools 0.94.0 (2021-09-22)
+    - adds CDP version 94
+    - removes CDP version 92
+  * Added support for mutating responses in network interception
+
+Ruby:
+  * Implemented Options#add_option to work for vendor extension capabilities
+  * Fixed bug for requiring uri (#9825 thanks @flanger001)
+  * Moved New Window functionality to TargetLocator#new_window to be used with Driver#switch_to
+  * Deprecated using Manager#new_window
+  * Changed order of logging output (#9850)
+
+Chromium:
+  * Implemented casting functionality
+  * Implemented ability to launch chromium app
+  * Implemented support for specifying permissions
+
+Firefox:
+  * Implemented context functionality
+
+Remote:
+  * Added support for file detector to install Firefox addons from client machine
+
 4.0.0.rc1 (2021-09-01)
 =========================
 
