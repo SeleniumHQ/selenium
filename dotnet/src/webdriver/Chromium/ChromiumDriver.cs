@@ -217,14 +217,14 @@ namespace OpenQA.Selenium.Chromium
         }
 
         /// <summary>
-        /// Resets a DevTools session
+        /// Closes a DevTools session.
         /// </summary>
-        public void ResetDevToolsSession()
+        public void CloseDevToolsSession()
         {
             if (this.devToolsSession != null)
             {
-                this.devToolsSession.ActiveSessionId = null;
-                this.devToolsSession.InitializeSession().ConfigureAwait(false).GetAwaiter().GetResult();
+                this.devToolsSession.Dispose();
+                this.devToolsSession = null;
             }
         }
 
@@ -232,10 +232,7 @@ namespace OpenQA.Selenium.Chromium
         {
             if (disposing)
             {
-                if (this.devToolsSession != null)
-                {
-                    this.devToolsSession.Dispose();
-                }
+                this.CloseDevToolsSession();
             }
 
             base.Dispose(disposing);

@@ -26,7 +26,7 @@ using OpenQA.Selenium.DevTools.V94.Target;
 namespace OpenQA.Selenium.DevTools.V94
 {
     /// <summary>
-    /// Class providing functionality for manipulating targets for version 89 of the DevTools Protocol
+    /// Class providing functionality for manipulating targets for version 94 of the DevTools Protocol
     /// </summary>
     public class V94Target : DevTools.Target
     {
@@ -39,6 +39,7 @@ namespace OpenQA.Selenium.DevTools.V94
         public V94Target(TargetAdapter adapter)
         {
             this.adapter = adapter;
+            adapter.DetachedFromTarget += OnDetachedFromTarget;
         }
 
         /// <summary>
@@ -109,6 +110,11 @@ namespace OpenQA.Selenium.DevTools.V94
         public override async Task SetAutoAttach()
         {
             await adapter.SetAutoAttach(new SetAutoAttachCommandSettings() { AutoAttach = true, WaitForDebuggerOnStart = false, Flatten = true });
+        }
+
+        private void OnDetachedFromTarget(object sender, DetachedFromTargetEventArgs e)
+        {
+            this.OnTargetDetached(new TargetDetachedEventArgs() { SessionId = e.SessionId, TargetId = e.TargetId });
         }
     }
 }
