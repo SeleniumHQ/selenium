@@ -1083,7 +1083,7 @@ public class RemoteWebDriver implements WebDriver,
      */
     @Override
     public void sendKeys(String keysToSend) {
-      if(keysToSend==null) {
+      if (keysToSend == null) {
         throw new IllegalArgumentException("Keys to send should be a not null CharSequence");
       }
       execute(DriverCommand.SET_ALERT_VALUE(keysToSend));
