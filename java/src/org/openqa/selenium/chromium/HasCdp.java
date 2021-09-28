@@ -39,5 +39,5 @@ public interface HasCdp {
    * @param parameters any information needed to execute the Dev Tools command.
    * @return the name and value of the response.
    */
-  public Map<String, Object> executeCdpCommand(String commandName, Map<String, Object> parameters);
+  Map<String, Object> executeCdpCommand(String commandName, Map<String, Object> parameters);
 }

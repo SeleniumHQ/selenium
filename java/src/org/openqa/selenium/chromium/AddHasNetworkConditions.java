@@ -42,8 +42,8 @@ public class AddHasNetworkConditions implements AugmenterProvider<HasNetworkCond
 
 
   private static final Map<String, CommandInfo> COMMANDS = ImmutableMap.of(
-    GET_NETWORK_CONDITIONS, new CommandInfo("/session/:sessionId/chromium/network_conditions",HttpMethod.GET),
-    SET_NETWORK_CONDITIONS, new CommandInfo("/session/:sessionId/chromium/network_conditions",HttpMethod.POST),
+    GET_NETWORK_CONDITIONS, new CommandInfo("/session/:sessionId/chromium/network_conditions", HttpMethod.GET),
+    SET_NETWORK_CONDITIONS, new CommandInfo("/session/:sessionId/chromium/network_conditions", HttpMethod.POST),
     DELETE_NETWORK_CONDITIONS, new CommandInfo("/session/:sessionId/chromium/network_conditions", HttpMethod.DELETE));
 
   @Override
@@ -66,6 +66,7 @@ public class AddHasNetworkConditions implements AugmenterProvider<HasNetworkCond
     return new HasNetworkConditions() {
       @Override
       public ChromiumNetworkConditions getNetworkConditions() {
+        @SuppressWarnings("unchecked")
         Map<String, Object> result = (Map<String, Object>) executeMethod.execute(GET_NETWORK_CONDITIONS, null);
         ChromiumNetworkConditions networkConditions = new ChromiumNetworkConditions();
         networkConditions.setOffline((Boolean) result.getOrDefault(ChromiumNetworkConditions.OFFLINE, false));
