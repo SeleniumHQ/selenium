@@ -57,13 +57,14 @@ _W3C_CAPABILITY_NAMES = frozenset([
     'acceptInsecureCerts',
     'browserName',
     'browserVersion',
-    'platformName',
     'pageLoadStrategy',
+    'platformName',
     'proxy',
     'setWindowRect',
+    'strictFileInteractability',
     'timeouts',
     'unhandledPromptBehavior',
-    'strictFileInteractability'
+    'webSocketUrl'
 ])
 
 _OSS_W3C_CONVERSION = {
