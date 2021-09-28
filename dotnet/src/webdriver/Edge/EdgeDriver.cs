@@ -107,6 +107,11 @@ namespace OpenQA.Selenium.Edge
             : base(service, options, commandTimeout)
         {
             this.AddCustomChromeCommand(ExecuteCdp, HttpCommandInfo.PostCommand, "/session/{sessionId}/ms/cdp/execute");
+            this.AddCustomChromeCommand(GetCastSinksCommand, HttpCommandInfo.GetCommand, "/session/{sessionId}/ms/cast/get_sinks");
+            this.AddCustomChromeCommand(SelectCastSinkCommand, HttpCommandInfo.PostCommand, "/session/{sessionId}/ms/cast/set_sink_to_use");
+            this.AddCustomChromeCommand(StartCastTabMirroringCommand, HttpCommandInfo.PostCommand, "/session/{sessionId}/ms/cast/start_tab_mirroring");
+            this.AddCustomChromeCommand(GetCastIssueMessageCommand, HttpCommandInfo.GetCommand, "/session/{sessionId}/ms/cast/get_issue_message");
+            this.AddCustomChromeCommand(StopCastingCommand, HttpCommandInfo.PostCommand, "/session/{sessionId}/ms/cast/stop_casting");
         }
     }
 }
