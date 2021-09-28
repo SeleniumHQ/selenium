@@ -24,10 +24,15 @@ import static org.openqa.selenium.support.ui.ExpectedConditions.titleIs;
 import org.junit.After;
 import org.junit.Test;
 import org.openqa.selenium.By;
+import org.openqa.selenium.HasCapabilities;
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.Keys;
+import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.build.InProject;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.openqa.selenium.testing.JUnit4TestBase;
+import org.openqa.selenium.testing.NotYetImplemented;
+import org.openqa.selenium.testing.drivers.WebDriverBuilder;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -38,7 +43,7 @@ public class EdgeOptionsFunctionalTest extends JUnit4TestBase {
 
   private static final String EXT_PATH = "third_party/chrome_ext/backspace.crx";
 
-  private EdgeDriver edgeDriver = null;
+  private WebDriver edgeDriver = null;
 
   @After
   public void tearDown() {
@@ -51,10 +56,10 @@ public class EdgeOptionsFunctionalTest extends JUnit4TestBase {
   public void canStartChromeWithCustomOptions() {
     EdgeOptions options = new EdgeOptions();
     options.addArguments("user-agent=foo;bar");
-    edgeDriver = new EdgeDriver(options);
+    edgeDriver = new WebDriverBuilder().get(options);
 
     edgeDriver.get(pages.clickJacker);
-    Object userAgent = edgeDriver.executeScript("return window.navigator.userAgent");
+    Object userAgent = ((JavascriptExecutor) edgeDriver).executeScript("return window.navigator.userAgent");
     assertThat(userAgent).isEqualTo("foo;bar");
   }
 
@@ -71,17 +76,18 @@ public class EdgeOptionsFunctionalTest extends JUnit4TestBase {
   public void canSetAcceptInsecureCerts() {
     EdgeOptions options = new EdgeOptions();
     options.setAcceptInsecureCerts(true);
-    edgeDriver = new EdgeDriver(options);
-    System.out.println(edgeDriver.getCapabilities());
+    edgeDriver = new WebDriverBuilder().get(options);
+    System.out.println(((HasCapabilities) edgeDriver).getCapabilities());
 
-    assertThat(edgeDriver.getCapabilities().getCapability(ACCEPT_INSECURE_CERTS)).isEqualTo(true);
+    assertThat(((HasCapabilities) edgeDriver).getCapabilities().getCapability(ACCEPT_INSECURE_CERTS)).isEqualTo(true);
   }
 
   @Test
+  @NotYetImplemented
   public void canAddExtensionFromFile() {
     EdgeOptions options = new EdgeOptions();
     options.addExtensions(InProject.locate(EXT_PATH).toFile());
-    edgeDriver = new EdgeDriver(options);
+    edgeDriver = new WebDriverBuilder().get(options);
 
     edgeDriver.get(pages.clicksPage);
 
@@ -93,11 +99,12 @@ public class EdgeOptionsFunctionalTest extends JUnit4TestBase {
   }
 
   @Test
+  @NotYetImplemented
   public void canAddExtensionFromStringEncodedInBase64() throws IOException {
     EdgeOptions options = new EdgeOptions();
     options.addEncodedExtensions(Base64.getEncoder().encodeToString(
         Files.readAllBytes(InProject.locate(EXT_PATH))));
-    edgeDriver = new EdgeDriver(options);
+    edgeDriver = new WebDriverBuilder().get(options);
 
     edgeDriver.get(pages.clicksPage);
 
