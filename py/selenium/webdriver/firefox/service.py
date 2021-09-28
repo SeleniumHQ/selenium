@@ -17,7 +17,7 @@
 
 from typing import List
 
-from selenium.webdriver.common import service
+from selenium.webdriver.common import (service, utils)
 
 
 class Service(service.Service):
@@ -48,9 +48,15 @@ class Service(service.Service):
         service.Service.__init__(
             self, executable_path, port=port, log_file=log_file, env=env)
         self.service_args = service_args or []
+        # Set a port for CDP
+        self.service_args.append("--websocket-port")
+        self.service_args.append("%d" % utils.free_port())
+        # Set the webdriver port
+        self.service_args.append("--port")
+        self.service_args.append("%d" % self.port)
 
     def command_line_args(self) -> List[str]:
-        return ["--port", "%d" % self.port] + self.service_args
+        return self.service_args
 
     def send_remote_shutdown_command(self):
         pass
