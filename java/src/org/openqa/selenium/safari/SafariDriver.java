@@ -20,6 +20,7 @@ package org.openqa.selenium.safari;
 import com.google.common.collect.ImmutableMap;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.CommandInfo;
 import org.openqa.selenium.remote.FileDetector;
 import org.openqa.selenium.remote.RemoteWebDriver;
@@ -90,6 +91,9 @@ public class SafariDriver extends RemoteWebDriver implements HasPermissions, Has
 
   @Override
   public void setPermissions(String permission, boolean value) {
+    Require.nonNull("Permission Name", permission);
+    Require.nonNull("Permission Value", value);
+
     this.permissions.setPermissions(permission, value);
   }
 

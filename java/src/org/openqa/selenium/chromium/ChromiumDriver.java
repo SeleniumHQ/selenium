@@ -189,6 +189,7 @@ public class ChromiumDriver extends RemoteWebDriver implements
 
   @Override
   public void setLocation(Location location) {
+    Require.nonNull("Location", location);
     locationContext.setLocation(location);
   }
 
@@ -204,16 +205,19 @@ public class ChromiumDriver extends RemoteWebDriver implements
 
   @Override
   public ConnectionType setNetworkConnection(ConnectionType type) {
+    Require.nonNull("Network Connection Type", type);
     return networkConnection.setNetworkConnection(type);
   }
 
   @Override
   public void launchApp(String id) {
+    Require.nonNull("Launch App ID", id);
     launch.launchApp(id);
   }
 
   @Override
   public Map<String, Object> executeCdpCommand(String commandName, Map<String, Object> parameters) {
+    Require.nonNull("Command Name", commandName);
     return cdp.executeCdpCommand(commandName, parameters);
   }
 
@@ -234,21 +238,26 @@ public class ChromiumDriver extends RemoteWebDriver implements
 
   @Override
   public void selectCastSink(String deviceName) {
+    Require.nonNull("Device Name", deviceName);
     casting.selectCastSink(deviceName);
   }
 
   @Override
   public void startTabMirroring(String deviceName) {
+    Require.nonNull("Device Name", deviceName);
     casting.startTabMirroring(deviceName);
   }
 
   @Override
   public void stopCasting(String deviceName) {
+    Require.nonNull("Device Name", deviceName);
     casting.stopCasting(deviceName);
   }
 
   @Override
   public void setPermission(String name, String value) {
+    Require.nonNull("Permission Name", name);
+    Require.nonNull("Permission Value", value);
     permissions.setPermission(name, value);
   }
 
@@ -259,6 +268,7 @@ public class ChromiumDriver extends RemoteWebDriver implements
 
   @Override
   public void setNetworkConditions(ChromiumNetworkConditions networkConditions) {
+    Require.nonNull("Network Conditions", networkConditions);
     this.networkConditions.setNetworkConditions(networkConditions);
   }
 

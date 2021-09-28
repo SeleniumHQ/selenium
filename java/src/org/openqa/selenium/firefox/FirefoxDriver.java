@@ -265,11 +265,13 @@ public class FirefoxDriver extends RemoteWebDriver
 
   @Override
   public String installExtension(Path path) {
+    Require.nonNull("Path", path);
     return extensions.installExtension(path);
   }
 
   @Override
   public void uninstallExtension(String extensionId) {
+    Require.nonNull("Extension ID", extensionId);
     extensions.uninstallExtension(extensionId);
   }
 
@@ -283,11 +285,14 @@ public class FirefoxDriver extends RemoteWebDriver
    */
   @Override
   public <X> X getFullPageScreenshotAs(OutputType<X> outputType) throws WebDriverException {
+    Require.nonNull("OutputType", outputType);
+
     return fullPageScreenshot.getFullPageScreenshotAs(outputType);
   }
 
   @Override
   public void setContext(FirefoxCommandContext commandContext) {
+    Require.nonNull("Firefox Command Context", commandContext);
     context.setContext(commandContext);
   }
 
