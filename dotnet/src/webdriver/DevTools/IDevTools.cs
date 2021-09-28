@@ -37,8 +37,8 @@ namespace OpenQA.Selenium.DevTools
         DevToolsSession GetDevToolsSession(int protocolVersion);
 
         /// <summary>
-        /// Resets a DevTools session
+        /// Closes a DevTools session
         /// </summary>
-        void ResetDevToolsSession();
+        void CloseDevToolsSession();
     }
 }
