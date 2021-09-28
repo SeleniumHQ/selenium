@@ -51,27 +51,33 @@ public abstract class AddHasCasting implements AugmenterProvider<HasCasting>, Ad
   @Override
   public HasCasting getImplementation(Capabilities capabilities, ExecuteMethod executeMethod) {
     return new HasCasting() {
-      @Override public List<Map<String, String>> getCastSinks() {
+      @SuppressWarnings("unchecked")
+      @Override
+      public List<Map<String, String>> getCastSinks() {
         return (List<Map<String, String>>) executeMethod.execute(GET_CAST_SINKS, null);
       }
 
-      @Override public void selectCastSink(String deviceName) {
+      @Override
+      public void selectCastSink(String deviceName) {
         Require.nonNull("Device Name", deviceName);
 
         executeMethod.execute(SET_CAST_SINK_TO_USE, ImmutableMap.of("sinkName", deviceName));
       }
 
-      @Override public void startTabMirroring(String deviceName) {
+      @Override
+      public void startTabMirroring(String deviceName) {
         Require.nonNull("Device Name", deviceName);
 
         executeMethod.execute(START_CAST_TAB_MIRRORING, ImmutableMap.of("sinkName", deviceName));
       }
 
-      @Override public String getCastIssueMessage() {
+      @Override
+      public String getCastIssueMessage() {
         return executeMethod.execute(GET_CAST_ISSUE_MESSAGE, null).toString();
       }
 
-      @Override public void stopCasting(String deviceName) {
+      @Override
+      public void stopCasting(String deviceName) {
         Require.nonNull("Device Name", deviceName);
 
         executeMethod.execute(STOP_CASTING, ImmutableMap.of("sinkName", deviceName));
