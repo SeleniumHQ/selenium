@@ -19,7 +19,10 @@ package org.openqa.selenium.remote;
 
 /**
  * All the browsers supported by selenium
+ *
+ * @deprecated Prefer to use {@link Browser}
  */
+@Deprecated
 public interface BrowserType {
   String FIREFOX = "firefox";
   String SAFARI = "safari";

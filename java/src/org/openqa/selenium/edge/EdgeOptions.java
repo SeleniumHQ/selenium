@@ -18,8 +18,9 @@ package org.openqa.selenium.edge;
 
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.chromium.ChromiumOptions;
-import org.openqa.selenium.remote.BrowserType;
 import org.openqa.selenium.remote.CapabilityType;
+
+import static org.openqa.selenium.remote.Browser.EDGE;
 
 /**
  * Class to manage options specific to {@link EdgeDriver}.
@@ -54,7 +55,7 @@ public class EdgeOptions extends ChromiumOptions<EdgeOptions> {
   public static final String CAPABILITY = "ms:edgeOptions";
 
   public EdgeOptions() {
-    super(CapabilityType.BROWSER_NAME, BrowserType.EDGE, CAPABILITY);
+    super(CapabilityType.BROWSER_NAME, EDGE.browserName(), CAPABILITY);
   }
 
   @Override

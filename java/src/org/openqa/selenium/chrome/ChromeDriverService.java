@@ -17,13 +17,9 @@
 
 package org.openqa.selenium.chrome;
 
-import static java.util.Collections.unmodifiableList;
-
 import com.google.auto.service.AutoService;
-
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriverException;
-import org.openqa.selenium.remote.BrowserType;
 import org.openqa.selenium.remote.service.DriverService;
 
 import java.io.File;
@@ -32,6 +28,9 @@ import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+
+import static java.util.Collections.unmodifiableList;
+import static org.openqa.selenium.remote.Browser.CHROME;
 
 /**
  * Manages the life and death of a ChromeDriver server.
@@ -160,7 +159,7 @@ public class ChromeDriverService extends DriverService {
     public int score(Capabilities capabilities) {
       int score = 0;
 
-      if (BrowserType.CHROME.equals(capabilities.getBrowserName())) {
+      if (CHROME.is(capabilities.getBrowserName())) {
         score++;
       }
 

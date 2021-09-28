@@ -17,17 +17,11 @@
 
 package org.openqa.selenium.edge;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.InstanceOfAssertFactories.LIST;
-import static org.assertj.core.api.InstanceOfAssertFactories.MAP;
-
 import com.google.common.io.Files;
-
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.PageLoadStrategy;
-import org.openqa.selenium.remote.BrowserType;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.testing.UnitTests;
 
@@ -41,6 +35,11 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.InstanceOfAssertFactories.LIST;
+import static org.assertj.core.api.InstanceOfAssertFactories.MAP;
+import static org.openqa.selenium.remote.Browser.EDGE;
 
 @Category(UnitTests.class)
 public class EdgeOptionsTest {
@@ -92,7 +91,7 @@ public class EdgeOptionsTest {
 
   private void checkCommonStructure(EdgeOptions options) {
     assertThat(options.asMap())
-        .containsEntry(CapabilityType.BROWSER_NAME, BrowserType.EDGE)
+        .containsEntry(CapabilityType.BROWSER_NAME, EDGE.browserName())
         .extracting(EdgeOptions.CAPABILITY).asInstanceOf(MAP)
         .containsOnlyKeys("args", "extensions");
   }

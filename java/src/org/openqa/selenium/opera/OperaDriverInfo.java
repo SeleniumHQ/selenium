@@ -25,10 +25,10 @@ import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebDriverInfo;
-import org.openqa.selenium.remote.BrowserType;
 
 import java.util.Optional;
 
+import static org.openqa.selenium.remote.Browser.OPERA;
 import static org.openqa.selenium.remote.CapabilityType.BROWSER_NAME;
 
 @AutoService(WebDriverInfo.class)
@@ -41,13 +41,12 @@ public class OperaDriverInfo implements WebDriverInfo {
 
   @Override
   public Capabilities getCanonicalCapabilities() {
-    return new ImmutableCapabilities(BROWSER_NAME, BrowserType.OPERA);
+    return new ImmutableCapabilities(BROWSER_NAME, OPERA.browserName());
   }
 
   @Override
   public boolean isSupporting(Capabilities capabilities) {
-    return BrowserType.OPERA_BLINK.equalsIgnoreCase(capabilities.getBrowserName()) ||
-           BrowserType.OPERA.equalsIgnoreCase(capabilities.getBrowserName());
+    return OPERA.is(capabilities.getBrowserName());
   }
 
   @Override

@@ -21,7 +21,6 @@ import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverInfo;
 import org.openqa.selenium.htmlunit.HtmlUnitDriver;
-import org.openqa.selenium.remote.BrowserType;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -42,7 +41,7 @@ public class DefaultDriverSupplier implements Supplier<WebDriver> {
     Function<Capabilities, WebDriver> driverConstructor;
 
     if (capabilities != null) {
-      if (capabilities.getBrowserName().equals(BrowserType.HTMLUNIT)) {
+      if (org.openqa.selenium.remote.Browser.HTMLUNIT.is(capabilities)) {
         return new HtmlUnitDriver();
       }
 

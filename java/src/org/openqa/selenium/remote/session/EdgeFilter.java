@@ -18,12 +18,12 @@
 package org.openqa.selenium.remote.session;
 
 import com.google.common.collect.ImmutableMap;
-
-import org.openqa.selenium.remote.BrowserType;
 import org.openqa.selenium.remote.CapabilityType;
 
 import java.util.Map;
 import java.util.Objects;
+
+import static org.openqa.selenium.remote.Browser.EDGE;
 
 public class EdgeFilter implements CapabilitiesFilter {
 
@@ -31,7 +31,7 @@ public class EdgeFilter implements CapabilitiesFilter {
   public Map<String, Object> apply(Map<String, Object> unmodifiedCaps) {
     ImmutableMap<String, Object> caps = unmodifiedCaps.entrySet().parallelStream()
       .filter(
-        entry -> (CapabilityType.BROWSER_NAME.equals(entry.getKey()) && BrowserType.EDGE.equals(entry.getValue())) ||
+        entry -> (CapabilityType.BROWSER_NAME.equals(entry.getKey()) && EDGE.is(String.valueOf(entry.getValue()))) ||
                  entry.getKey().startsWith("ms:"))
       .distinct()
       .filter(entry -> Objects.nonNull(entry.getValue()))

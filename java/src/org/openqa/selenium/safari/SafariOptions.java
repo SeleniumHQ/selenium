@@ -17,13 +17,13 @@
 
 package org.openqa.selenium.safari;
 
+import static org.openqa.selenium.remote.Browser.SAFARI;
 import static org.openqa.selenium.remote.CapabilityType.BROWSER_NAME;
 
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.AbstractDriverOptions;
-import org.openqa.selenium.remote.BrowserType;
 
 import java.util.Collections;
 import java.util.Set;
@@ -51,7 +51,7 @@ public class SafariOptions extends AbstractDriverOptions<SafariOptions> {
 
   public SafariOptions() {
     setUseTechnologyPreview(false);
-    setCapability(BROWSER_NAME, BrowserType.SAFARI);
+    setCapability(BROWSER_NAME, SAFARI.browserName());
   }
 
   public SafariOptions(Capabilities source) {

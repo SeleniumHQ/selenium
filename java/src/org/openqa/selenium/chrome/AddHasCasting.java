@@ -28,7 +28,7 @@ import org.openqa.selenium.remote.http.HttpMethod;
 import java.util.Map;
 import java.util.function.Predicate;
 
-import static org.openqa.selenium.remote.BrowserType.CHROME;
+import static org.openqa.selenium.remote.Browser.CHROME;
 
 @AutoService({AdditionalHttpCommands.class, AugmenterProvider.class})
 public class AddHasCasting extends org.openqa.selenium.chromium.AddHasCasting {
@@ -45,6 +45,6 @@ public class AddHasCasting extends org.openqa.selenium.chromium.AddHasCasting {
 
   @Override
   public Predicate<Capabilities> isApplicable() {
-    return caps -> CHROME.equals(caps.getBrowserName());
+    return CHROME::is;
   }
 }

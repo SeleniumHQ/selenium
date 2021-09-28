@@ -31,7 +31,7 @@ import java.nio.file.Path;
 import java.util.Map;
 import java.util.function.Predicate;
 
-import static org.openqa.selenium.remote.BrowserType.FIREFOX;
+import static org.openqa.selenium.remote.Browser.FIREFOX;
 
 @AutoService({AdditionalHttpCommands.class, AugmenterProvider.class})
 public class AddHasExtensions implements AugmenterProvider<HasExtensions>, AdditionalHttpCommands {
@@ -50,7 +50,7 @@ public class AddHasExtensions implements AugmenterProvider<HasExtensions>, Addit
 
   @Override
   public Predicate<Capabilities> isApplicable() {
-    return caps -> FIREFOX.equals(caps.getBrowserName());
+    return FIREFOX::is;
   }
 
   @Override

@@ -18,18 +18,17 @@
 package org.openqa.selenium.firefox;
 
 import com.google.auto.service.AutoService;
-
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebDriverInfo;
-import org.openqa.selenium.remote.BrowserType;
 
 import java.util.Optional;
 
 import static org.openqa.selenium.firefox.FirefoxDriver.Capability.MARIONETTE;
+import static org.openqa.selenium.remote.Browser.FIREFOX;
 import static org.openqa.selenium.remote.CapabilityType.BROWSER_NAME;
 
 @AutoService(WebDriverInfo.class)
@@ -42,7 +41,7 @@ public class GeckoDriverInfo implements WebDriverInfo {
 
   @Override
   public Capabilities getCanonicalCapabilities() {
-    return new ImmutableCapabilities(BROWSER_NAME, BrowserType.FIREFOX);
+    return new ImmutableCapabilities(BROWSER_NAME, FIREFOX.browserName());
   }
 
   @Override
@@ -51,7 +50,7 @@ public class GeckoDriverInfo implements WebDriverInfo {
       return false;
     }
 
-    if (BrowserType.FIREFOX.equalsIgnoreCase(capabilities.getBrowserName())) {
+    if (FIREFOX.is(capabilities)) {
       return true;
     }
 

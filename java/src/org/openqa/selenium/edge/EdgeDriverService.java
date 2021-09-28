@@ -16,14 +16,9 @@
 // under the License.
 package org.openqa.selenium.edge;
 
-import static java.util.Collections.unmodifiableList;
-import static java.util.Collections.unmodifiableMap;
-
 import com.google.auto.service.AutoService;
-
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriverException;
-import org.openqa.selenium.remote.BrowserType;
 import org.openqa.selenium.remote.service.DriverService;
 
 import java.io.File;
@@ -34,6 +29,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+
+import static java.util.Collections.unmodifiableList;
+import static java.util.Collections.unmodifiableMap;
+import static org.openqa.selenium.remote.Browser.EDGE;
 
 /**
  * Manages the life and death of the EdgeDriver (MicrosoftWebDriver or MSEdgeDriver).
@@ -122,7 +121,7 @@ public class EdgeDriverService extends DriverService {
     public int score(Capabilities capabilities) {
       int score = 0;
 
-      if (BrowserType.EDGE.equals(capabilities.getBrowserName())) {
+      if (EDGE.is(capabilities)) {
         score++;
       }
 

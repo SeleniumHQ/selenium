@@ -30,7 +30,6 @@ import org.openqa.selenium.ie.InternetExplorerDriverInfo;
 import org.openqa.selenium.ie.InternetExplorerOptions;
 import org.openqa.selenium.opera.OperaDriverInfo;
 import org.openqa.selenium.opera.OperaOptions;
-import org.openqa.selenium.remote.BrowserType;
 import org.openqa.selenium.safari.SafariDriverInfo;
 import org.openqa.selenium.safari.SafariOptions;
 
@@ -96,7 +95,8 @@ public enum Browser {
       return options;
     }
   },
-  HTMLUNIT(new ImmutableCapabilities(BROWSER_NAME, BrowserType.HTMLUNIT), "HtmlUnit", false),
+  HTMLUNIT(
+    new ImmutableCapabilities(BROWSER_NAME, org.openqa.selenium.remote.Browser.HTMLUNIT.browserName()), "HtmlUnit", false),
   LEGACY_FIREFOX_XPI(new FirefoxOptions().setLegacy(true), new XpiDriverInfo().getDisplayName(), false),
   IE(new InternetExplorerOptions(), new InternetExplorerDriverInfo().getDisplayName(), false) {
     @Override
