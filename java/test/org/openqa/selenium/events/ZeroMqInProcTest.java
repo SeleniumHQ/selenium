@@ -20,7 +20,6 @@ package org.openqa.selenium.events;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.openqa.selenium.events.local.GuavaEventBus;
 import org.openqa.selenium.events.zeromq.ZeroMqEventBus;
 import org.openqa.selenium.grid.security.Secret;
 import org.zeromq.ZContext;

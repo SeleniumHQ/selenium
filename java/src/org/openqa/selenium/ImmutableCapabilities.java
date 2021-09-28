@@ -21,8 +21,6 @@ import org.openqa.selenium.internal.Require;
 
 import java.util.Collections;
 import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
 import java.util.TreeMap;
 
 import static org.openqa.selenium.SharedCapabilitiesMethods.setCapability;

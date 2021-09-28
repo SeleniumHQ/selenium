@@ -19,7 +19,6 @@ package org.openqa.selenium.grid.security;
 
 import static java.util.Base64.getEncoder;
 
-import org.openqa.selenium.Credentials;
 import org.openqa.selenium.UsernameAndPassword;
 import org.openqa.selenium.grid.config.Config;
 import org.openqa.selenium.grid.config.ConfigException;

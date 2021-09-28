@@ -25,7 +25,6 @@ import org.openqa.selenium.NoSuchSessionException;
 import org.openqa.selenium.events.EventBus;
 import org.openqa.selenium.events.local.GuavaEventBus;
 import org.openqa.selenium.grid.data.Session;
-import org.openqa.selenium.grid.sessionmap.SessionMap;
 import org.openqa.selenium.net.PortProber;
 import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.remote.tracing.DefaultTestTracer;

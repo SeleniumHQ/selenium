@@ -20,9 +20,6 @@ package org.openqa.selenium.environment.webserver;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.time.format.DateTimeFormatter.RFC_1123_DATE_TIME;
 
-import com.google.common.base.Splitter;
-
-import org.openqa.selenium.Cookie;
 import org.openqa.selenium.remote.http.Contents;
 import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpRequest;
@@ -32,11 +29,6 @@ import java.io.UncheckedIOException;
 import java.time.Instant;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
-import java.time.temporal.TemporalAccessor;
-import java.util.Collection;
-import java.util.Date;
-import java.util.List;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 

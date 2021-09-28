@@ -25,7 +25,6 @@ import org.openqa.selenium.json.JsonInput;
 import java.io.Serializable;
 import java.time.Instant;
 import java.util.Objects;
-import java.util.Optional;
 
 public class Slot implements Serializable {
 
