@@ -1,5 +1,5 @@
 load("@rules_jvm_external//:defs.bzl", "artifact")
-load("//java:defs.bzl", "java_library", "java_test_suite")
+load("//java:defs.bzl", "java_library", "java_test_suite", "java_selenium_test_suite")
 
 java_library(
     name = "test-base",
@@ -28,9 +28,12 @@ java_library(
     ],
 )
 
-java_test_suite(
+java_selenium_test_suite(
     name = "LargeTests",
     size = "large",
+    browsers = [
+        "firefox",
+    ],
     srcs = glob(
         [
             "*.java",
@@ -50,7 +53,6 @@ java_test_suite(
     ],
     tags = [
         "flaky",
-        "no-sandbox",
     ],
     test_identifiers = [
         "Test",
