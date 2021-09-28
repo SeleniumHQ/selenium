@@ -96,7 +96,8 @@ public class SessionQueueGridTest {
   public void setup() throws URISyntaxException, MalformedURLException {
     Tracer tracer = DefaultTestTracer.createTracer();
     EventBus bus = new GuavaEventBus();
-    URI nodeUri = new URI("http://localhost:4444");
+    int nodePort = PortProber.findFreePort();
+    URI nodeUri = new URI("http://localhost:" + nodePort);
     CombinedHandler handler = new CombinedHandler();
     clientFactory = new RoutableHttpClientFactory(
       nodeUri.toURL(), handler,
