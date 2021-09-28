@@ -19,16 +19,16 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace OpenQA.Selenium.DevTools.v94
+namespace OpenQA.Selenium.DevTools.V94
 {
     /// <summary>
-    /// Class containing the domain implementation for version 90 of the DevTools Protocol.
+    /// Class containing the domain implementation for version 94 of the DevTools Protocol.
     /// </summary>
-    public class v94Domains : DevToolsDomains
+    public class V94Domains : DevToolsDomains
     {
         private DevToolsSessionDomains domains;
 
-        public v94Domains(DevToolsSession session)
+        public V94Domains(DevToolsSession session)
         {
             this.domains = new DevToolsSessionDomains(session);
         }
@@ -46,21 +46,21 @@ namespace OpenQA.Selenium.DevTools.v94
         /// <summary>
         /// Gets the object used for manipulating network information in the browser.
         /// </summary>
-        public override DevTools.Network Network => new v94Network(domains.Network, domains.Fetch);
+        public override DevTools.Network Network => new V94Network(domains.Network, domains.Fetch);
 
         /// <summary>
         /// Gets the object used for manipulating the browser's JavaScript execution.
         /// </summary>
-        public override JavaScript JavaScript => new v94JavaScript(domains.Runtime, domains.Page);
+        public override JavaScript JavaScript => new V94JavaScript(domains.Runtime, domains.Page);
 
         /// <summary>
         /// Gets the object used for manipulating DevTools Protocol targets.
         /// </summary>
-        public override DevTools.Target Target => new v94Target(domains.Target);
+        public override DevTools.Target Target => new V94Target(domains.Target);
 
         /// <summary>
         /// Gets the object used for manipulating the browser's logs.
         /// </summary>
-        public override DevTools.Log Log => new v94Log(domains.Log);
+        public override DevTools.Log Log => new V94Log(domains.Log);
     }
 }

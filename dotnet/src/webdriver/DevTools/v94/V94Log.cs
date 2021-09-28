@@ -20,22 +20,22 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using OpenQA.Selenium.DevTools.v94.Log;
+using OpenQA.Selenium.DevTools.V94.Log;
 
-namespace OpenQA.Selenium.DevTools.v94
+namespace OpenQA.Selenium.DevTools.V94
 {
     /// <summary>
     /// Class containing the browser's log as referenced by version 89 of the DevTools Protocol.
     /// </summary>
-    public class v94Log : DevTools.Log
+    public class V94Log : DevTools.Log
     {
         private LogAdapter adapter;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="v94Log"/> class.
+        /// Initializes a new instance of the <see cref="V94Log"/> class.
         /// </summary>
         /// <param name="adapter">The adapter for the Log domain.</param>
-        public v94Log(LogAdapter adapter)
+        public V94Log(LogAdapter adapter)
         {
             this.adapter = adapter;
             this.adapter.EntryAdded += OnAdapterEntryAdded;
