@@ -21,22 +21,22 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Text;
 using System.Threading.Tasks;
-using OpenQA.Selenium.DevTools.v94.Target;
+using OpenQA.Selenium.DevTools.V94.Target;
 
-namespace OpenQA.Selenium.DevTools.v94
+namespace OpenQA.Selenium.DevTools.V94
 {
     /// <summary>
     /// Class providing functionality for manipulating targets for version 89 of the DevTools Protocol
     /// </summary>
-    public class v94Target : DevTools.Target
+    public class V94Target : DevTools.Target
     {
         private TargetAdapter adapter;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="v94Target"/> class.
+        /// Initializes a new instance of the <see cref="V94Target"/> class.
         /// </summary>
         /// <param name="adapter">The adapter for the Target domain.</param>
-        public v94Target(TargetAdapter adapter)
+        public V94Target(TargetAdapter adapter)
         {
             this.adapter = adapter;
         }
