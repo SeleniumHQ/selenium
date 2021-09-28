@@ -50,6 +50,7 @@ namespace OpenQA.Selenium.Chromium
         private const string SendChromeCommand = "sendChromeCommand";
         private const string SendChromeCommandWithResult = "sendChromeCommandWithResult";
         private const string LaunchAppCommand = "launchAppCommand";
+        private const string SetPermissionCommand = "setPermission";
 
         private readonly string optionsCapabilityName;
         private DevToolsSession devToolsSession;
@@ -83,6 +84,7 @@ namespace OpenQA.Selenium.Chromium
             this.AddCustomChromeCommand(SendChromeCommand, HttpCommandInfo.PostCommand, "/session/{sessionId}/chromium/send_command");
             this.AddCustomChromeCommand(SendChromeCommandWithResult, HttpCommandInfo.PostCommand, "/session/{sessionId}/chromium/send_command_and_get_result");
             this.AddCustomChromeCommand(LaunchAppCommand, HttpCommandInfo.PostCommand, "/session/{sessionId}/chromium/launch_app");
+            this.AddCustomChromeCommand(SetPermissionCommand, HttpCommandInfo.PostCommand, "/session/{sessionId}/permissions");
         }
 
         /// <summary>
@@ -149,6 +151,31 @@ namespace OpenQA.Selenium.Chromium
             Dictionary<string, object> parameters = new Dictionary<string, object>();
             parameters["id"] = id;
             this.Execute(LaunchAppCommand, parameters);
+        }
+
+        /// <summary>
+        /// Set supported permission on browser.
+        /// </summary>
+        /// <param name="permissionName">Name of item to set the permission on.</param>
+        /// <param name="permissionValue">Value to set the permission to.</param>
+        public void SetPermission(string permissionName, string permissionValue)
+        {
+            if (permissionName == null)
+            {
+                throw new ArgumentNullException("permissionName", "name must not be null");
+            }
+
+            if (permissionValue == null)
+            {
+                throw new ArgumentNullException("permissionValue", "value must not be null");
+            }
+
+            Dictionary<string, object> nameParameter = new Dictionary<string, object>();
+            nameParameter["name"] = permissionName;
+            Dictionary<string, object> parameters = new Dictionary<string, object>();
+            parameters["descriptor"] = nameParameter;
+            parameters["state"] = permissionValue;
+            this.Execute(SetPermissionCommand, parameters);
         }
 
         /// <summary>
