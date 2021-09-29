@@ -17,11 +17,13 @@
 
 package org.openqa.selenium.remote;
 
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WrapsDriver;
 import org.openqa.selenium.internal.Require;
 
 import java.util.Map;
 
-public class RemoteExecuteMethod implements ExecuteMethod {
+public class RemoteExecuteMethod implements ExecuteMethod, WrapsDriver {
   private final RemoteWebDriver driver;
 
   public RemoteExecuteMethod(RemoteWebDriver driver) {
@@ -39,5 +41,9 @@ public class RemoteExecuteMethod implements ExecuteMethod {
     }
 
     return response.getValue();
+  }
+
+  @Override public WebDriver getWrappedDriver() {
+    return this.driver;
   }
 }
