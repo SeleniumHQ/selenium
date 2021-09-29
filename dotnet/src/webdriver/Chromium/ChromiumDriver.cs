@@ -287,11 +287,30 @@ namespace OpenQA.Selenium.Chromium
         /// <summary>
         /// Returns the list of cast sinks (Cast devices) available to the Chrome media router.
         /// </summary>
-        /// <returns>An object representing the list of available sinks.</returns>
-        public object GetCastSinks()
+        /// <returns>The list of available sinks.</returns>
+        public List<Dictionary<string, string>> GetCastSinks()
         {
+            List<Dictionary<string, string>> returnValue = new List<Dictionary<string, string>>();
             Response response = this.Execute(GetCastSinksCommand, null);
-            return response.Value;
+            object[] responseValue = response.Value as object[];
+            if (responseValue != null)
+            {
+                foreach (object entry in responseValue)
+                {
+                    Dictionary<string, object> entryValue = entry as Dictionary<string, object>;
+                    if (entryValue != null)
+                    {
+                        Dictionary<string, string> sink = new Dictionary<string, string>();
+                        foreach (KeyValuePair<string, object> pair in entryValue)
+                        {
+                            sink[pair.Key] = pair.Value.ToString();
+                        }
+
+                        returnValue.Add(sink);
+                    }
+                }
+            }
+            return returnValue;
         }
 
         /// <summary>
