@@ -110,6 +110,16 @@ public class FirefoxOptions extends AbstractDriverOptions<FirefoxOptions> {
     this.legacy = that.legacy;
   }
 
+  /**
+   * Configures the following:
+   * <dl>
+   *   <dt>Binary</dt>
+   *   <dd>{@code webdriver.firefox.bin} - the path to the firefox binary</dd>
+   *
+   *   <dt>Firefox profile</dt>
+   *   <dd>{@code webdriver.firefox.profile} - a named firefox profile</dd>
+   * </dl>
+   */
   public FirefoxOptions configureFromEnv() {
     // Read system properties and use those if they are set, allowing users to override them later
     // should they want to.
@@ -280,6 +290,31 @@ public class FirefoxOptions extends AbstractDriverOptions<FirefoxOptions> {
     return setFirefoxOption(Keys.ARGS, Collections.unmodifiableList(newArgs));
   }
 
+  public FirefoxOptions setAndroidPackage(String androidPackage) {
+    Require.nonNull("Android package", androidPackage);
+    return setFirefoxOption("androidPackage", androidPackage);
+  }
+
+  public FirefoxOptions setAndroidActivity(String activity) {
+    Require.nonNull("Android activity", activity);
+    return setFirefoxOption("androidActivity", activity);
+  }
+
+  public FirefoxOptions setAndroidDeviceSerialNumber(String serial) {
+    Require.nonNull("Android device serial number", serial);
+    return setFirefoxOption("androidDeviceSerial", serial);
+  }
+
+  public FirefoxOptions setAndroidIntentArguments(String[] args) {
+    Require.nonNull("Android intent arguments", args);
+    return setAndroidIntentArguments(Arrays.asList(args));
+  }
+
+  public FirefoxOptions setAndroidIntentArguments(List<String> args) {
+    Require.nonNull("Android intent arguments", args);
+    return setFirefoxOption("androidIntentArguments", args);
+  }
+
   @Override
   public void setCapability(String key, Object value) {
     Require.nonNull("Capability name", key);
@@ -326,8 +361,15 @@ public class FirefoxOptions extends AbstractDriverOptions<FirefoxOptions> {
   }
 
   private FirefoxOptions setFirefoxOption(Keys key, Object value) {
+    return setFirefoxOption(key.key(), value);
+  }
+
+  private FirefoxOptions setFirefoxOption(String key, Object value) {
+    Require.nonNull("Key", key);
+    Require.nonNull("Value", value);
+
     Map<String, Object> newOptions = new TreeMap<>(firefoxOptions);
-    newOptions.put(key.key(), value);
+    newOptions.put(key, value);
     firefoxOptions = Collections.unmodifiableMap(newOptions);
     return this;
   }
@@ -374,6 +416,17 @@ public class FirefoxOptions extends AbstractDriverOptions<FirefoxOptions> {
   }
 
   private enum Keys {
+    ANDROID_PACKAGE("androidPackage") {
+      @Override
+      public void amend(Map<String, Object> sourceOptions, Map<String, Object> toAmend) {
+
+      }
+
+      @Override
+      public Object mirror(Map<String, Object> first, Map<String, Object> second) {
+        return null;
+      }
+    },
     ARGS("args") {
       @Override
       public void amend(Map<String, Object> sourceOptions, Map<String, Object> toAmend) {
