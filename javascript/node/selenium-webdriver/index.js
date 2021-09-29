@@ -339,6 +339,19 @@ class Builder {
   getCapabilities() {
     return this.capabilities_
   }
+  
+  /**
+   * Sets the desired capability when requesting a new session. 
+   * If there is already a capability named key, its value will be overwritten with value. 
+   * This is a convenience wrapper around builder.getCapabilities().set(key, value) to support Builder method chaining.
+   * @param {string} key The capability key.
+   * @param {*} value The capability value.
+   * @return {!Builder} A self reference.
+   */
+  setCapability(key, value) {
+    this.capabilities_.set(key, value)
+    return this
+  }
 
   /**
    * Configures the target browser for clients created by this instance.
