@@ -29,7 +29,11 @@ module Selenium
         CAPABILITIES = {binary: 'binary',
                         args: 'args',
                         log: 'log',
-                        prefs: 'prefs'}.freeze
+                        prefs: 'prefs',
+                        android_package: 'androidPackage',
+                        android_activity: 'androidActivity',
+                        android_device_serial: 'androidDeviceSerial',
+                        android_intent_arguments: 'androidIntentArguments'}.freeze
         BROWSER = 'firefox'
 
         # NOTE: special handling of 'profile' to validate when set instead of when used
@@ -129,6 +133,25 @@ module Selenium
 
         def log_level=(level)
           @options[:log] = {level: level}
+        end
+
+        #
+        # Enables mobile browser use on Android.
+        #
+        # @see https://developer.mozilla.org/en-US/docs/Web/WebDriver/Capabilities/firefoxOptions#android
+        #
+        # @param [String] package The package name of the Chrome or WebView app.
+        # @param [String] serial_number The serial number of the device on which to launch the application.
+        #   If not specified and multiple devices are attached, an error will be returned.
+        # @param [String] activity The fully qualified class name of the activity to be launched.
+        # @param [Array] intent_arguments Arguments to launch the intent with.
+        #
+
+        def enable_android(package: 'org.mozilla.firefox', serial_number: nil, activity: nil, intent_arguments: nil)
+          @options[:android_package] = package
+          @options[:android_activity] = activity unless activity.nil?
+          @options[:android_device_serial] = serial_number unless serial_number.nil?
+          @options[:android_intent_arguments] = intent_arguments unless intent_arguments.nil?
         end
 
         private
