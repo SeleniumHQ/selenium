@@ -59,6 +59,7 @@ import org.openqa.selenium.grid.distributor.Distributor;
 import org.openqa.selenium.grid.distributor.GridModel;
 import org.openqa.selenium.grid.distributor.config.DistributorOptions;
 import org.openqa.selenium.grid.distributor.selector.SlotSelector;
+import org.openqa.selenium.grid.jmx.JMXHelper;
 import org.openqa.selenium.grid.log.LoggingOptions;
 import org.openqa.selenium.grid.node.HealthCheck;
 import org.openqa.selenium.grid.node.Node;
@@ -102,6 +103,9 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
+
+import javax.management.MalformedObjectNameException;
+import javax.management.ObjectName;
 
 public class LocalDistributor extends Distributor implements Closeable {
 
@@ -270,6 +274,7 @@ public class LocalDistributor extends Distributor implements Closeable {
     Runnable runnableHealthCheck = asRunnableHealthCheck(node);
     allChecks.put(node.getId(), runnableHealthCheck);
     hostChecker.submit(runnableHealthCheck, healthcheckInterval, Duration.ofSeconds(30));
+    addNodeMetrics(node);
 
     LOG.info(String.format(
       "Added node %s at %s. Health check every %ss",
@@ -280,6 +285,19 @@ public class LocalDistributor extends Distributor implements Closeable {
     bus.fire(new NodeAddedEvent(node.getId()));
 
     return this;
+  }
+
+  private void addNodeMetrics(Node node) {
+    new JMXHelper().register(node.getId());
+  }
+
+  private void removeNodeMetrics(NodeId nodeId){
+    try {
+      ObjectName oName = new ObjectName(nodeId.toString());
+      new JMXHelper().unregister(oName);
+    } catch (MalformedObjectNameException e){
+      LOG.warning("Could not remove Metrics for :"+nodeId+", due to"+e.getMessage());
+    }
   }
 
   private Runnable asRunnableHealthCheck(Node node) {
@@ -336,6 +354,7 @@ public class LocalDistributor extends Distributor implements Closeable {
     try {
       nodes.remove(nodeId);
       model.remove(nodeId);
+      removeNodeMetrics(nodeId);
       Runnable runnable = allChecks.remove(nodeId);
       if (runnable != null) {
         hostChecker.remove(runnable);
@@ -344,6 +363,8 @@ public class LocalDistributor extends Distributor implements Closeable {
       writeLock.unlock();
     }
   }
+
+
 
   @Override
   public DistributorStatus getStatus() {
