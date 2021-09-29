@@ -19,7 +19,6 @@ package org.openqa.selenium.support.locators;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
-import com.google.common.io.Resources;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.SearchContext;
@@ -28,14 +27,11 @@ import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.json.JsonException;
 
-import java.io.IOException;
-import java.io.UncheckedIOException;
-import java.net.URL;
-import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Map;
 
 import static org.openqa.selenium.json.Json.MAP_TYPE;
+import static org.openqa.selenium.support.locators.RelativeLocatorScript.FIND_ELEMENTS;
 
 /**
  * Used for finding elements by their location on a page, rather than their
@@ -71,23 +67,6 @@ import static org.openqa.selenium.json.Json.MAP_TYPE;
 public class RelativeLocator {
 
   private static final Json JSON = new Json();
-  private static final String FIND_ELEMENTS;
-
-  static {
-    try {
-      String location = String.format(
-        "/%s/%s",
-        RelativeLocator.class.getPackage().getName().replace(".", "/"),
-        "findElements.js");
-
-      URL url = RelativeLocator.class.getResource(location);
-
-      String rawFunction = Resources.toString(url, StandardCharsets.UTF_8);
-      FIND_ELEMENTS = String.format("return (%s).apply(null, arguments);", rawFunction);
-    } catch (IOException e) {
-      throw new UncheckedIOException(e);
-    }
-  }
 
   private static final int CLOSE_IN_PIXELS = 100;
 

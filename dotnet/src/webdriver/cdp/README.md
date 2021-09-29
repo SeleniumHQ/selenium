@@ -10,7 +10,8 @@ contents of the `//dotnet/src/webdriver/DevTools/v<N-1>` directory into it.
 3. Rename each of the `*.cs` files in `//dotnet/src/webdriver/DevTools/v<N>` so that
 the file names start with `V<N>` instead of `V<N-1>`.
 4. In each of the `*.cs` files in `//dotnet/src/webdriver/DevTools/v<N>`, update all
-occurances of `V<N-1>` to `V<N>`. 
+occurances of `V<N-1>` to `V<N>`. **IMPORTANT:** Do _not_ change the case of `V<N>` in
+each `.cs` file.
 5. In [`//dotnet/src/webdriver/DevTools/DevToolsDomains.cs`](https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/DevTools/DevToolsDomains.cs),
 add an entry for version `<N>` to the `SupportedDevToolsVersions` dictionary initialization.
 6. In [`//dotnet/src/webdriver:WebDriver.csproj.prebuild.cmd`](https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/WebDriver.csproj.prebuild.cmd),

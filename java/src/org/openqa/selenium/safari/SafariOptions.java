@@ -17,13 +17,13 @@
 
 package org.openqa.selenium.safari;
 
+import static org.openqa.selenium.remote.Browser.SAFARI;
 import static org.openqa.selenium.remote.CapabilityType.BROWSER_NAME;
 
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.AbstractDriverOptions;
-import org.openqa.selenium.remote.BrowserType;
 
 import java.util.Collections;
 import java.util.Set;
@@ -51,7 +51,7 @@ public class SafariOptions extends AbstractDriverOptions<SafariOptions> {
 
   public SafariOptions() {
     setUseTechnologyPreview(false);
-    setCapability(BROWSER_NAME, BrowserType.SAFARI);
+    setCapability(BROWSER_NAME, SAFARI.browserName());
   }
 
   public SafariOptions(Capabilities source) {
@@ -92,8 +92,6 @@ public class SafariOptions extends AbstractDriverOptions<SafariOptions> {
     return Boolean.TRUE.equals(getCapability(Option.AUTOMATIC_INSPECTION));
   }
 
-  // Setters
-
   /**
    * Instruct the SafariDriver to enable the Automatic Inspection if true, otherwise disable
    * the automatic inspection. Defaults to disabling the automatic inspection.
@@ -121,8 +119,6 @@ public class SafariOptions extends AbstractDriverOptions<SafariOptions> {
     setCapability(Option.AUTOMATIC_PROFILING, automaticProfiling);
     return this;
   }
-
-  // Getters
 
   public boolean getUseTechnologyPreview() {
     return SAFARI_TECH_PREVIEW.equals(getBrowserName());

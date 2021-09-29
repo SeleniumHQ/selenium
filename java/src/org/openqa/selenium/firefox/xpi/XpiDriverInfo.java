@@ -18,7 +18,6 @@
 package org.openqa.selenium.firefox.xpi;
 
 import com.google.auto.service.AutoService;
-
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.SessionNotCreatedException;
@@ -27,11 +26,11 @@ import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebDriverInfo;
 import org.openqa.selenium.firefox.FirefoxBinary;
 import org.openqa.selenium.firefox.FirefoxDriver;
-import org.openqa.selenium.remote.BrowserType;
 
 import java.util.Optional;
 
 import static org.openqa.selenium.firefox.FirefoxDriver.Capability.MARIONETTE;
+import static org.openqa.selenium.remote.Browser.FIREFOX;
 import static org.openqa.selenium.remote.CapabilityType.BROWSER_NAME;
 
 @Deprecated
@@ -45,7 +44,7 @@ public class XpiDriverInfo implements WebDriverInfo {
 
   @Override
   public Capabilities getCanonicalCapabilities() {
-    return new ImmutableCapabilities(BROWSER_NAME, BrowserType.FIREFOX, MARIONETTE, true);
+    return new ImmutableCapabilities(BROWSER_NAME, FIREFOX.browserName(), MARIONETTE, true);
   }
 
   @Override

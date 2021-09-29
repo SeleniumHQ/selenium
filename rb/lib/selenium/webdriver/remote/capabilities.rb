@@ -39,6 +39,7 @@ module Selenium
           :timeouts,
           :unhandled_prompt_behavior,
           :strict_file_interactability,
+          :web_socket_url,
 
           # remote-specific (webdriver.remote.sessionid)
           :remote_session_id

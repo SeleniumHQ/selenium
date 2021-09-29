@@ -17,13 +17,14 @@
 
 package org.openqa.selenium.remote.session;
 
-import org.openqa.selenium.remote.BrowserType;
 import org.openqa.selenium.remote.CapabilityType;
 
 import java.util.Map;
 import java.util.Objects;
 import java.util.TreeMap;
 import java.util.stream.Collectors;
+
+import static org.openqa.selenium.remote.Browser.FIREFOX;
 
 public class FirefoxFilter implements CapabilitiesFilter {
   // Note: we don't take a dependency on the FirefoxDriver jar as it might not be on the classpath
@@ -32,7 +33,7 @@ public class FirefoxFilter implements CapabilitiesFilter {
   public Map<String, Object> apply(Map<String, Object> unmodifiedCaps) {
     Map<String, Object> caps = unmodifiedCaps.entrySet().parallelStream()
       .filter(entry ->
-                (CapabilityType.BROWSER_NAME.equals(entry.getKey()) && BrowserType.FIREFOX.equals(entry.getValue())) ||
+                (CapabilityType.BROWSER_NAME.equals(entry.getKey()) && FIREFOX.is(String.valueOf(entry.getValue()))) ||
                 entry.getKey().startsWith("firefox_") ||
                 entry.getKey().startsWith("moz:"))
       .filter(entry -> Objects.nonNull(entry.getValue()))

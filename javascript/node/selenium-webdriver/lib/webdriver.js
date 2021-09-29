@@ -43,13 +43,14 @@ const W3C_CAPABILITY_NAMES = new Set([
   'acceptInsecureCerts',
   'browserName',
   'browserVersion',
-  'platformName',
   'pageLoadStrategy',
+  'platformName',
   'proxy',
   'setWindowRect',
-  'timeouts',
   'strictFileInteractability',
+  'timeouts',
   'unhandledPromptBehavior',
+  'webSocketUrl'
 ])
 
 /**
@@ -1232,13 +1233,13 @@ class WebDriver {
 
     if (debuggerAddress.match(/\/se\/cdp/)) {
       if (debuggerAddress.match("ws:\/\/", "http:\/\/")) {
-        return debuggerAddress.replace("ws:\/\/", "http:\/\/") 
+        return debuggerAddress.replace("ws:\/\/", "http:\/\/")
       }
       else if (debuggerAddress.match("wss:\/\/", "https:\/\/")) {
-        return debuggerAddress.replace("wss:\/\/", "https:\/\/") 
+        return debuggerAddress.replace("wss:\/\/", "https:\/\/")
       }
       else {
-      return debuggerAddress
+        return debuggerAddress
       }
     }
 

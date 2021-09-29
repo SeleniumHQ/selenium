@@ -31,14 +31,11 @@ import org.openqa.selenium.support.ui.Wait;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
-import org.openqa.selenium.testing.NeedsLocalEnvironment;
 import org.openqa.selenium.testing.NotYetImplemented;
 
 import java.time.Duration;
 import java.util.List;
 
-@NeedsLocalEnvironment(reason =
-    "Executing these tests over the wire doesn't work, because they relies on 100ms-specific timing")
 public class ImplicitWaitTest extends JUnit4TestBase {
 
   @Before

@@ -17,6 +17,22 @@
 
 package org.openqa.selenium.ie;
 
+import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.internal.Require;
+import org.openqa.selenium.remote.AbstractDriverOptions;
+
+import java.time.Duration;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
 import static java.util.stream.Collectors.toList;
 import static org.openqa.selenium.ie.InternetExplorerDriver.BROWSER_ATTACH_TIMEOUT;
 import static org.openqa.selenium.ie.InternetExplorerDriver.ELEMENT_SCROLL_BEHAVIOR;
@@ -30,24 +46,8 @@ import static org.openqa.selenium.ie.InternetExplorerDriver.INITIAL_BROWSER_URL;
 import static org.openqa.selenium.ie.InternetExplorerDriver.INTRODUCE_FLAKINESS_BY_IGNORING_SECURITY_DOMAINS;
 import static org.openqa.selenium.ie.InternetExplorerDriver.NATIVE_EVENTS;
 import static org.openqa.selenium.ie.InternetExplorerDriver.REQUIRE_WINDOW_FOCUS;
+import static org.openqa.selenium.remote.Browser.IE;
 import static org.openqa.selenium.remote.CapabilityType.BROWSER_NAME;
-
-import org.openqa.selenium.internal.Require;
-import org.openqa.selenium.remote.AbstractDriverOptions;
-import org.openqa.selenium.Capabilities;
-import org.openqa.selenium.remote.BrowserType;
-
-import java.time.Duration;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 /**
  * Options for configuring the use of IE. Can be used like so:
@@ -91,7 +91,7 @@ public class InternetExplorerOptions extends AbstractDriverOptions<InternetExplo
   private final Map<String, Object> ieOptions = new HashMap<>();
 
   public InternetExplorerOptions() {
-    setCapability(BROWSER_NAME, BrowserType.IE);
+    setCapability(BROWSER_NAME, IE.browserName());
     setCapability(IE_OPTIONS, ieOptions);
   }
 

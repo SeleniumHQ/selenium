@@ -18,20 +18,19 @@
 package org.openqa.selenium.remote.session;
 
 import com.google.common.collect.ImmutableMap;
-
-import org.openqa.selenium.remote.BrowserType;
 import org.openqa.selenium.remote.CapabilityType;
 
 import java.util.Map;
 import java.util.Objects;
+
+import static org.openqa.selenium.remote.Browser.OPERA;
 
 public class OperaFilter implements CapabilitiesFilter {
   @Override
   public Map<String, Object> apply(Map<String, Object> unmodifiedCaps) {
     ImmutableMap<String, Object> caps = unmodifiedCaps.entrySet().parallelStream()
       .filter(entry ->
-                (CapabilityType.BROWSER_NAME.equals(entry.getKey()) && BrowserType.OPERA.equals(entry.getValue())) ||
-                (CapabilityType.BROWSER_NAME.equals(entry.getKey()) && BrowserType.OPERA_BLINK.equals(entry.getValue())) ||
+                (CapabilityType.BROWSER_NAME.equals(entry.getKey()) && OPERA.is(String.valueOf(entry.getValue()))) ||
                 "operaOptions".equals(entry.getKey()))
       .distinct()
       .filter(entry -> Objects.nonNull(entry.getValue()))

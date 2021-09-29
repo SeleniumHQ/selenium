@@ -19,8 +19,6 @@ package org.openqa.selenium.environment;
 
 import java.util.function.Supplier;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 /**
  * Used to hold a TestEnvironment in a static class-level field.
  */

@@ -42,6 +42,12 @@ module Selenium
                                      page: {width: 30})).to include(magic_number)
           end
 
+          it 'can add and remove addons' do
+            ext = File.expand_path('../../../../../../third_party/firebug/favourite_colour-1.1-an+fx.xpi', __dir__)
+            driver.install_addon(ext)
+            driver.uninstall_addon('favourite-colour-examples@mozilla.org')
+          end
+
           it 'should print full page' do
             path = "#{Dir.tmpdir}/test#{SecureRandom.urlsafe_base64}.png"
             screenshot = driver.save_full_page_screenshot(path)

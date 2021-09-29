@@ -52,7 +52,6 @@ import static org.assertj.core.api.Assumptions.assumeThat;
 import static org.assertj.core.api.InstanceOfAssertFactories.LIST;
 import static org.assertj.core.api.InstanceOfAssertFactories.MAP;
 import static org.openqa.selenium.PageLoadStrategy.EAGER;
-import static org.openqa.selenium.firefox.FirefoxDriver.Capability.BINARY;
 import static org.openqa.selenium.firefox.FirefoxDriver.Capability.MARIONETTE;
 import static org.openqa.selenium.firefox.FirefoxDriver.SystemProperty.BROWSER_BINARY;
 import static org.openqa.selenium.firefox.FirefoxDriver.SystemProperty.BROWSER_PROFILE;

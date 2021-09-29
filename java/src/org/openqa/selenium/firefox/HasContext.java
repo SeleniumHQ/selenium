@@ -20,7 +20,7 @@ package org.openqa.selenium.firefox;
 import org.openqa.selenium.Beta;
 
 /**
- * Used by classes to indicate that they can install and uninstall browser extensions on the fly.
+ * Used by classes to indicate that they can change the context commands operate in.
  */
 @Beta
 public interface HasContext {
@@ -32,5 +32,12 @@ public interface HasContext {
    *
    */
   void setContext(FirefoxCommandContext context);
+
+  /**
+   * Current context commands are operating on.
+   *
+   * @return {@link FirefoxCommandContext} value currently operating on commands
+   */
+  FirefoxCommandContext getContext();
 
 }

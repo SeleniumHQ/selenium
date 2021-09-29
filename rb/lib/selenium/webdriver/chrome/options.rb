@@ -37,7 +37,11 @@ module Selenium
                         minidump_path: 'minidumpPath',
                         emulation: 'mobileEmulation',
                         perf_logging_prefs: 'perfLoggingPrefs',
-                        window_types: 'windowTypes'}.freeze
+                        window_types: 'windowTypes',
+                        android_package: 'androidPackage',
+                        android_activity: 'androidActivity',
+                        android_device_serial: 'androidDeviceSerial',
+                        android_use_running_app: 'androidUseRunningApp'}.freeze
 
         # NOTE: special handling of 'extensions' to validate when set instead of when used
         attr_reader :extensions
@@ -191,6 +195,25 @@ module Selenium
 
         def add_emulation(**opts)
           @options[:emulation] = opts
+        end
+
+        #
+        # Enables mobile browser use on Android.
+        #
+        # @see https://chromedriver.chromium.org/getting-started/getting-started---android
+        #
+        # @param [String] package The package name of the Chrome or WebView app.
+        # @param [String] serial_number The device serial number on which to launch the Chrome or WebView app.
+        # @param [String] use_running_app When true uses an already-running Chrome or WebView app,
+        #   instead of launching the app with a clear data directory.
+        # @param [String] activity Name of the Activity hosting the WebView (Not available on Chrome Apps).
+        #
+
+        def enable_android(package: 'com.android.chrome', serial_number: nil, use_running_app: nil, activity: nil)
+          @options[:android_package] = package
+          @options[:android_activity] = activity unless activity.nil?
+          @options[:android_device_serial] = serial_number unless serial_number.nil?
+          @options[:android_use_running_app] = use_running_app unless use_running_app.nil?
         end
 
         private

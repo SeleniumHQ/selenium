@@ -71,12 +71,12 @@ java_library(
     ],
     deps = [
         "//java/src/org/openqa/selenium:core",
-        "//java/src/org/openqa/selenium/remote/http",
         "//java/src/org/openqa/selenium/cli",
         "//java/src/org/openqa/selenium/grid/config",
         "//java/src/org/openqa/selenium/grid/log",
         "//java/src/org/openqa/selenium/grid/server",
         "//java/src/org/openqa/selenium/netty/server",
+        "//java/src/org/openqa/selenium/remote/http",
         artifact("com.beust:jcommander"),
         artifact("com.google.guava:guava"),
     ],
@@ -144,7 +144,6 @@ java_binary(
     visibility = [
         "//:__pkg__",
         "//deploys/docker:__pkg__",
-        "//java/test:__subpackages__",
         "//java/test:__subpackages__",
         "//javascript:__subpackages__",
         "//py:__pkg__",

@@ -18,6 +18,7 @@
 package org.openqa.selenium.devtools.idealized.target;
 
 import org.openqa.selenium.devtools.Command;
+import org.openqa.selenium.devtools.Event;
 import org.openqa.selenium.devtools.idealized.target.model.SessionID;
 import org.openqa.selenium.devtools.idealized.target.model.TargetID;
 import org.openqa.selenium.devtools.idealized.target.model.TargetInfo;
@@ -37,4 +38,6 @@ public interface Target {
   Command<SessionID> attachToTarget(TargetID targetId);
 
   Command<Void> setAutoAttach();
+
+  Event<TargetID> detached();
 }

@@ -25,18 +25,10 @@ import org.openqa.selenium.remote.AbstractDriverOptions;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Base64;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeMap;
+import java.util.*;
 
 import static java.util.Collections.unmodifiableList;
-import static org.openqa.selenium.remote.BrowserType.OPERA_BLINK;
+import static org.openqa.selenium.remote.Browser.OPERA;
 import static org.openqa.selenium.remote.CapabilityType.BROWSER_NAME;
 
 /**
@@ -72,7 +64,7 @@ public class OperaOptions extends AbstractDriverOptions<OperaOptions> {
   private Map<String, Object> experimentalOptions = new HashMap<>();
 
   public OperaOptions() {
-    setCapability(BROWSER_NAME, OPERA_BLINK);
+    setCapability(BROWSER_NAME, OPERA.browserName());
   }
 
   @Override

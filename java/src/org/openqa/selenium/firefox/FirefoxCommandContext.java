@@ -34,4 +34,15 @@ public enum FirefoxCommandContext {
   public String toString() {
     return String.valueOf(text);
   }
+
+  public static FirefoxCommandContext fromString(String text) {
+    if (text != null) {
+      for (FirefoxCommandContext b : FirefoxCommandContext.values()) {
+        if (text.equalsIgnoreCase(b.text)) {
+          return b;
+        }
+      }
+    }
+    return null;
+  }
 }

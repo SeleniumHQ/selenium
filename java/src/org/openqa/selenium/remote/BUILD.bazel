@@ -1,11 +1,10 @@
 load("@rules_jvm_external//:defs.bzl", "artifact")
 load("//common:defs.bzl", "copy_file")
-load("//java:defs.bzl", "java_export")
+load("//java:defs.bzl", "java_export", "java_library")
 load("//java:version.bzl", "SE_VERSION")
 
 java_export(
     name = "remote",
-    srcs = glob(["**/*.java"]),
     hides = [
         "org.openqa.selenium.remote.internal",
     ],
@@ -14,10 +13,6 @@ java_export(
         "org.openqa.selenium.json",
     ],
     pom_template = "//java/src/org/openqa/selenium:template-pom",
-    resources = [
-        ":get-attribute",
-        ":is-displayed",
-    ],
     uses = [
         "org.openqa.selenium.remote.AugmenterProvider",
         "org.openqa.selenium.remote.session.CapabilitiesFilter",
@@ -26,7 +21,10 @@ java_export(
     ],
     visibility = ["//visibility:public"],
     exports = [
+        ":api",
         "//java/src/org/openqa/selenium:core",
+        "//java/src/org/openqa/selenium/devtools",
+        "//java/src/org/openqa/selenium/devtools:augmenter",
         "//java/src/org/openqa/selenium/io",
         "//java/src/org/openqa/selenium/os",
         "//java/src/org/openqa/selenium/remote/http",
@@ -34,8 +32,23 @@ java_export(
         "//java/src/org/openqa/selenium/remote/tracing",
         "//java/src/org/openqa/selenium/remote/tracing/opentelemetry",
     ],
+)
+
+java_library(
+    name = "api",
+    srcs = glob(["**/*.java"]),
+    resources = [
+        ":get-attribute",
+        ":is-displayed",
+    ],
+    visibility = [
+        "//java/src/org/openqa/selenium/devtools:__pkg__",
+    ],
+    exports = [
+    ],
     deps = [
         "//java/src/org/openqa/selenium:core",
+        "//java/src/org/openqa/selenium/devtools",
         "//java/src/org/openqa/selenium/io",
         "//java/src/org/openqa/selenium/json",
         "//java/src/org/openqa/selenium/os",

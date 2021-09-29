@@ -9,12 +9,12 @@ java_library(
         "//java/test/org/openqa/selenium/grid:__subpackages__",
     ],
     deps = [
-        "//java/src/org/openqa/selenium/remote",
         "//java/src/org/openqa/selenium/events",
         "//java/src/org/openqa/selenium/grid/config",
         "//java/src/org/openqa/selenium/grid/data",
         "//java/src/org/openqa/selenium/grid/log",
         "//java/src/org/openqa/selenium/grid/server",
         "//java/src/org/openqa/selenium/grid/sessionmap",
+        "//java/src/org/openqa/selenium/remote",
     ],
 )

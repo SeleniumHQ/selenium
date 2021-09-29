@@ -14,6 +14,7 @@ v4.0.0-rc-2
 * Add strongly-typed methods for setting timeouts and other w3c
   capabilities on the base options class.
 * Enable live view for Dynamic Grid
+* Merged devtools maven artifact into the main remote driver
 
 v4.0.0-rc-1
 ===========

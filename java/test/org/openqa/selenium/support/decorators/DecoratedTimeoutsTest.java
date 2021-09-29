@@ -17,7 +17,6 @@
 
 package org.openqa.selenium.support.decorators;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -32,7 +31,6 @@ import org.openqa.selenium.testing.UnitTests;
 import java.time.Duration;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
-import java.util.function.Function;
 
 @Category(UnitTests.class)
 public class DecoratedTimeoutsTest {

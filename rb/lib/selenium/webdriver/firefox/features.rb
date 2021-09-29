@@ -35,6 +35,11 @@ module Selenium
         end
 
         def install_addon(path, temporary)
+          if @file_detector
+            local_file = @file_detector.call(path)
+            path = upload(local_file) if local_file
+          end
+
           payload = {path: path}
           payload[:temporary] = temporary unless temporary.nil?
           execute :install_addon, {}, payload

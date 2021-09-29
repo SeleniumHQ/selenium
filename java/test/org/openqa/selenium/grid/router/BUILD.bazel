@@ -23,12 +23,12 @@ java_library(
     ],
     deps = [
         "//java/src/org/openqa/selenium:core",
+        "//java/src/org/openqa/selenium/grid",
+        "//java/src/org/openqa/selenium/grid/config",
         "//java/src/org/openqa/selenium/json",
         "//java/src/org/openqa/selenium/remote/http",
         "//java/src/org/openqa/selenium/support",
         "//java/test/org/openqa/selenium/testing:test-base",
-        "//java/src/org/openqa/selenium/grid",
-        "//java/src/org/openqa/selenium/grid/config",
     ],
 )
 
@@ -48,7 +48,6 @@ java_selenium_test_suite(
     deps = [
         ":support",
         "//java/src/org/openqa/selenium/chrome",
-        "//java/src/org/openqa/selenium/devtools",
         "//java/src/org/openqa/selenium/firefox",
         "//java/src/org/openqa/selenium/json",
         "//java/src/org/openqa/selenium/remote",
@@ -78,14 +77,14 @@ java_test_suite(
     ],
     deps = [
         ":support",
+        "//java/src/org/openqa/selenium/grid",
+        "//java/src/org/openqa/selenium/grid/config",
         "//java/src/org/openqa/selenium/json",
         "//java/src/org/openqa/selenium/remote",
         "//java/src/org/openqa/selenium/support",
+        "//java/test/org/openqa/selenium/grid/testing",
         "//java/test/org/openqa/selenium/remote/tracing:tracing-support",
         "//java/test/org/openqa/selenium/testing:test-base",
-        "//java/src/org/openqa/selenium/grid",
-        "//java/src/org/openqa/selenium/grid/config",
-        "//java/test/org/openqa/selenium/grid/testing",
         artifact("com.google.guava:guava"),
         artifact("io.opentelemetry:opentelemetry-api"),
         artifact("junit:junit"),

@@ -10,8 +10,6 @@ java_library(
         "//java/test/org/openqa/selenium/grid:__subpackages__",
     ],
     deps = [
-        "//java/src/org/openqa/selenium/json",
-        "//java/src/org/openqa/selenium/remote",
         "//java/src/org/openqa/selenium/concurrent",
         "//java/src/org/openqa/selenium/events",
         "//java/src/org/openqa/selenium/grid/config",
@@ -29,6 +27,8 @@ java_library(
         "//java/src/org/openqa/selenium/grid/sessionqueue",
         "//java/src/org/openqa/selenium/grid/sessionqueue/config",
         "//java/src/org/openqa/selenium/grid/sessionqueue/remote",
+        "//java/src/org/openqa/selenium/json",
+        "//java/src/org/openqa/selenium/remote",
         artifact("com.google.guava:guava"),
     ],
 )

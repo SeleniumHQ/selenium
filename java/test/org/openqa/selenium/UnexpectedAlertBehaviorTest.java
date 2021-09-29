@@ -32,12 +32,10 @@ import org.openqa.selenium.support.ui.Wait;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
-import org.openqa.selenium.testing.NeedsLocalEnvironment;
 import org.openqa.selenium.testing.NoDriverBeforeTest;
 
 import java.time.Duration;
 
-@NeedsLocalEnvironment(reason = "Requires local browser launching environment")
 @Ignore(value = SAFARI, reason = "Does not support alerts yet")
 public class UnexpectedAlertBehaviorTest extends JUnit4TestBase {
 

@@ -17,17 +17,10 @@
 
 package org.openqa.selenium.edge;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.InstanceOfAssertFactories.LIST;
-import static org.assertj.core.api.InstanceOfAssertFactories.MAP;
-
-import com.google.common.io.Files;
-
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.PageLoadStrategy;
-import org.openqa.selenium.remote.BrowserType;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.testing.UnitTests;
 
@@ -35,12 +28,19 @@ import java.io.File;
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.Base64;
 import java.util.Collections;
 import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.InstanceOfAssertFactories.LIST;
+import static org.assertj.core.api.InstanceOfAssertFactories.MAP;
+import static org.openqa.selenium.remote.Browser.EDGE;
 
 @Category(UnitTests.class)
 public class EdgeOptionsTest {
@@ -65,10 +65,9 @@ public class EdgeOptionsTest {
   }
 
   @Test
-  public void canAddExtensions() {
+  public void canAddExtensions() throws IOException {
     EdgeOptions options = new EdgeOptions();
-    File tmpDir = Files.createTempDir();
-    tmpDir.deleteOnExit();
+    Path tmpDir = Files.createTempDirectory("webdriver");
     File ext1 = createTempFile(tmpDir, "ext1 content");
     File ext2 = createTempFile(tmpDir, "ext2 content");
     options.addExtensions(ext1, ext2);
@@ -92,16 +91,16 @@ public class EdgeOptionsTest {
 
   private void checkCommonStructure(EdgeOptions options) {
     assertThat(options.asMap())
-        .containsEntry(CapabilityType.BROWSER_NAME, BrowserType.EDGE)
+        .containsEntry(CapabilityType.BROWSER_NAME, EDGE.browserName())
         .extracting(EdgeOptions.CAPABILITY).asInstanceOf(MAP)
         .containsOnlyKeys("args", "extensions");
   }
 
-  private File createTempFile(File tmpDir, String content) {
+  private File createTempFile(Path tmpDir, String content) {
     try {
-      File ext = File.createTempFile("tmp", "ext", tmpDir);
-      Files.asCharSink(ext, Charset.defaultCharset()).write(content);
-      return ext;
+      Path file = Files.createTempFile(tmpDir, "tmp", "ext");
+      Files.write(file, content.getBytes(Charset.defaultCharset()));
+      return file.toFile();
     } catch (IOException e) {
       throw new UncheckedIOException(e);
     }

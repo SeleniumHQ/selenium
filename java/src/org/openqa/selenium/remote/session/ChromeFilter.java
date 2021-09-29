@@ -17,7 +17,6 @@
 
 package org.openqa.selenium.remote.session;
 
-import org.openqa.selenium.remote.BrowserType;
 import org.openqa.selenium.remote.CapabilityType;
 
 import java.util.Map;
@@ -25,13 +24,15 @@ import java.util.Objects;
 import java.util.TreeMap;
 import java.util.stream.Collectors;
 
+import static org.openqa.selenium.remote.Browser.CHROME;
+
 public class ChromeFilter implements CapabilitiesFilter {
   @Override
   public Map<String, Object> apply(Map<String, Object> unmodifiedCaps) {
     Map<String, Object> caps = unmodifiedCaps.entrySet().parallelStream()
       .filter(
         entry ->
-          (CapabilityType.BROWSER_NAME.equals(entry.getKey()) && BrowserType.CHROME.equals(entry.getValue())) ||
+          (CapabilityType.BROWSER_NAME.equals(entry.getKey()) && CHROME.is(String.valueOf(entry.getValue()))) ||
           entry.getKey().startsWith("goog:") ||
           "chromeOptions".equals(entry.getKey()) ||
           "loggingPrefs".equals(entry.getKey()))

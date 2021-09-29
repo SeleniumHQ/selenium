@@ -17,8 +17,7 @@
 
 package org.openqa.selenium.chromium;
 
-import com.google.common.collect.ImmutableMap;
-
+import com.google.common.collect.ImmutableList;
 import org.openqa.selenium.BuildInfo;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.Credentials;
@@ -45,6 +44,7 @@ import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.logging.EventType;
 import org.openqa.selenium.logging.HasLogEvents;
 import org.openqa.selenium.mobile.NetworkConnection;
+import org.openqa.selenium.remote.Browser;
 import org.openqa.selenium.remote.CommandExecutor;
 import org.openqa.selenium.remote.FileDetector;
 import org.openqa.selenium.remote.RemoteTouchScreen;
@@ -56,11 +56,16 @@ import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.mobile.RemoteNetworkConnection;
 
 import java.net.URI;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.logging.Logger;
+
+import static org.openqa.selenium.remote.Browser.CHROME;
+import static org.openqa.selenium.remote.Browser.EDGE;
+import static org.openqa.selenium.remote.Browser.OPERA;
 
 /**
  * A {@link WebDriver} implementation that controls a Chromium browser running on the local machine.
@@ -68,13 +73,22 @@ import java.util.logging.Logger;
  */
 public class ChromiumDriver extends RemoteWebDriver implements
   HasAuthentication,
+  HasCasting,
+  HasCdp,
   HasDevTools,
+  HasLaunchApp,
   HasLogEvents,
+  HasNetworkConditions,
+  HasPermissions,
   HasTouchScreen,
   LocationContext,
   NetworkConnection,
   WebStorage {
 
+  public static final Predicate<String> IS_CHROMIUM_BROWSER = name ->
+    CHROME.is(name) ||
+    EDGE.is(name) ||
+    OPERA.is(name);
   private static final Logger LOG = Logger.getLogger(ChromiumDriver.class.getName());
 
   private final Capabilities capabilities;
@@ -82,6 +96,11 @@ public class ChromiumDriver extends RemoteWebDriver implements
   private final RemoteWebStorage webStorage;
   private final TouchScreen touchScreen;
   private final RemoteNetworkConnection networkConnection;
+  private final HasNetworkConditions networkConditions;
+  private final HasPermissions permissions;
+  private final HasLaunchApp launch;
+  protected HasCasting casting;
+  protected HasCdp cdp;
   private final Optional<Connection> connection;
   private final Optional<DevTools> devTools;
 
@@ -89,8 +108,11 @@ public class ChromiumDriver extends RemoteWebDriver implements
     super(commandExecutor, capabilities);
     locationContext = new RemoteLocationContext(getExecuteMethod());
     webStorage = new RemoteWebStorage(getExecuteMethod());
+    permissions = new AddHasPermissions().getImplementation(getCapabilities(), getExecuteMethod());
     touchScreen = new RemoteTouchScreen(getExecuteMethod());
     networkConnection = new RemoteNetworkConnection(getExecuteMethod());
+    networkConditions = new AddHasNetworkConditions().getImplementation(getCapabilities(), getExecuteMethod());
+    launch = new AddHasLaunchApp().getImplementation(getCapabilities(), getExecuteMethod());
 
     HttpClient.Factory factory = HttpClient.Factory.createDefault();
     Capabilities originalCapabilities = super.getCapabilities();
@@ -171,6 +193,7 @@ public class ChromiumDriver extends RemoteWebDriver implements
 
   @Override
   public void setLocation(Location location) {
+    Require.nonNull("Location", location);
     locationContext.setLocation(location);
   }
 
@@ -186,66 +209,76 @@ public class ChromiumDriver extends RemoteWebDriver implements
 
   @Override
   public ConnectionType setNetworkConnection(ConnectionType type) {
+    Require.nonNull("Network Connection Type", type);
     return networkConnection.setNetworkConnection(type);
   }
 
-  /**
-   * Launches Chrome app specified by id.
-   *
-   * @param id Chrome app id.
-   */
+  @Override
   public void launchApp(String id) {
-    execute(ChromiumDriverCommand.LAUNCH_APP, ImmutableMap.of("id", id));
-  }
-
-  /**
-   * Execute a Chrome Devtools Protocol command and get returned result. The
-   * command and command args should follow
-   * <a href="https://chromedevtools.github.io/devtools-protocol/">chrome
-   * devtools protocol domains/commands</a>.
-   */
-  public Map<String, Object> executeCdpCommand(String commandName, Map<String, Object> parameters) {
-    Require.nonNull("Command name", commandName);
-    Require.nonNull("Parameters", parameters);
-
-    @SuppressWarnings("unchecked")
-    Map<String, Object> toReturn = (Map<String, Object>) getExecuteMethod().execute(
-      ChromiumDriverCommand.EXECUTE_CDP_COMMAND,
-      ImmutableMap.of("cmd", commandName, "params", parameters));
-
-    return ImmutableMap.copyOf(toReturn);
+    Require.nonNull("Launch App ID", id);
+    launch.launchApp(id);
   }
 
   @Override
-  public DevTools getDevTools() {
-    return devTools.orElseThrow(() -> new WebDriverException("Unable to create DevTools connection"));
+  public Map<String, Object> executeCdpCommand(String commandName, Map<String, Object> parameters) {
+    Require.nonNull("Command Name", commandName);
+    return cdp.executeCdpCommand(commandName, parameters);
   }
 
-  public String getCastSinks() {
-    Object response = getExecuteMethod().execute(ChromiumDriverCommand.GET_CAST_SINKS, null);
-    return response.toString();
+  @Override
+  public Optional<DevTools> maybeGetDevTools() {
+    return devTools;
   }
 
+  @Override
+  public List<Map<String, String>> getCastSinks() {
+    return casting.getCastSinks();
+  }
+
+  @Override
   public String getCastIssueMessage() {
-    Object response = getExecuteMethod().execute(ChromiumDriverCommand.GET_CAST_ISSUE_MESSAGE, null);
-    return response.toString();
+    return casting.getCastIssueMessage();
   }
 
+  @Override
   public void selectCastSink(String deviceName) {
-    getExecuteMethod().execute(ChromiumDriverCommand.SET_CAST_SINK_TO_USE, ImmutableMap.of("sinkName", deviceName));
+    Require.nonNull("Device Name", deviceName);
+    casting.selectCastSink(deviceName);
   }
 
+  @Override
   public void startTabMirroring(String deviceName) {
-    getExecuteMethod().execute(ChromiumDriverCommand.START_CAST_TAB_MIRRORING, ImmutableMap.of("sinkName", deviceName));
+    Require.nonNull("Device Name", deviceName);
+    casting.startTabMirroring(deviceName);
   }
 
+  @Override
   public void stopCasting(String deviceName) {
-    getExecuteMethod().execute(ChromiumDriverCommand.STOP_CASTING, ImmutableMap.of("sinkName", deviceName));
+    Require.nonNull("Device Name", deviceName);
+    casting.stopCasting(deviceName);
   }
 
+  @Override
   public void setPermission(String name, String value) {
-    getExecuteMethod().execute(ChromiumDriverCommand.SET_PERMISSION,
-      ImmutableMap.of("descriptor", ImmutableMap.of("name", name), "state", value));
+    Require.nonNull("Permission Name", name);
+    Require.nonNull("Permission Value", value);
+    permissions.setPermission(name, value);
+  }
+
+  @Override
+  public ChromiumNetworkConditions getNetworkConditions() {
+    return networkConditions.getNetworkConditions();
+  }
+
+  @Override
+  public void setNetworkConditions(ChromiumNetworkConditions networkConditions) {
+    Require.nonNull("Network Conditions", networkConditions);
+    this.networkConditions.setNetworkConditions(networkConditions);
+  }
+
+  @Override
+  public void deleteNetworkConditions() {
+    networkConditions.deleteNetworkConditions();
   }
 
   @Override

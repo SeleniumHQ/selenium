@@ -55,7 +55,6 @@ public class ElementDomAttributeTest extends JUnit4TestBase {
   }
 
   @Test
-  @NotYetImplemented(EDGE)
   public void testShouldReturnTheActualValueWhenGettingSrcAttributeOfAValidImgTag() {
     driver.get(pages.simpleTestPage);
     WebElement img = driver.findElement(By.id("validImgTag"));
@@ -64,7 +63,6 @@ public class ElementDomAttributeTest extends JUnit4TestBase {
   }
 
   @Test
-  @NotYetImplemented(EDGE)
   public void testShouldReturnTheActualValueWhenGettingHrefAttributeOfAValidAnchorTag() {
     driver.get(pages.simpleTestPage);
     WebElement img = driver.findElement(By.id("validAnchorTag"));
@@ -92,7 +90,6 @@ public class ElementDomAttributeTest extends JUnit4TestBase {
   }
 
   @Test
-  @NotYetImplemented(EDGE)
   public void testShouldNotReturnTheValueOfTheIndexAttributeIfItIsMissing() {
     driver.get(pages.formPage);
     WebElement multiSelect = driver.findElement(By.id("multi"));
@@ -180,7 +177,6 @@ public class ElementDomAttributeTest extends JUnit4TestBase {
   }
 
   @Test
-  @NotYetImplemented(EDGE)
   public void testShouldNotReturnTheContentsOfATextAreaAsItsValue() {
     driver.get(pages.formPage);
     String value = driver.findElement(By.id("withText")).getDomAttribute("value");
@@ -188,7 +184,6 @@ public class ElementDomAttributeTest extends JUnit4TestBase {
   }
 
   @Test
-  @NotYetImplemented(EDGE)
   public void testShouldNotReturnInnerHtmlProperty() {
     driver.get(pages.simpleTestPage);
     String html = driver.findElement(By.id("wrappingtext")).getDomAttribute("innerHTML");
@@ -211,7 +206,6 @@ public class ElementDomAttributeTest extends JUnit4TestBase {
   }
 
   @Test
-  @NotYetImplemented(EDGE)
   public void testShouldNotReturnTextContentProperty() {
     driver.get(pages.simpleTestPage);
     WebElement element = driver.findElement(By.id("hiddenline"));
@@ -274,7 +268,6 @@ public class ElementDomAttributeTest extends JUnit4TestBase {
   }
 
   @Test
-  @NotYetImplemented(EDGE)
   public void testCanRetrieveTheCurrentValueOfATextFormFieldWithPresetText() {
     driver.get(pages.formPage);
     WebElement element = driver.findElement(By.id("inputWithText"));
@@ -284,7 +277,6 @@ public class ElementDomAttributeTest extends JUnit4TestBase {
   }
 
   @Test
-  @NotYetImplemented(EDGE)
   public void testShouldNotReturnTextOfATextArea() {
     driver.get(pages.formPage);
     WebElement element = driver.findElement(By.id("withText"));
@@ -360,7 +352,6 @@ public class ElementDomAttributeTest extends JUnit4TestBase {
 
   @Test
   @NotYetImplemented(IE)
-  @NotYetImplemented(EDGE)
   @Ignore(LEGACY_FIREFOX_XPI)
   @NotYetImplemented(HTMLUNIT)
   @NotYetImplemented(SAFARI)

@@ -40,7 +40,6 @@ import static com.google.common.net.MediaType.XHTML_UTF_8;
 import static java.net.HttpURLConnection.HTTP_MOVED_TEMP;
 import static java.net.HttpURLConnection.HTTP_NOT_FOUND;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.fail;
 import static org.assertj.core.api.Assumptions.assumeThat;
 import static org.openqa.selenium.remote.http.Contents.utf8String;
 import static org.openqa.selenium.testing.Safely.safelyCall;

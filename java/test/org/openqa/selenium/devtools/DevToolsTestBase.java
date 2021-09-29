@@ -18,8 +18,10 @@
 package org.openqa.selenium.devtools;
 
 import static org.assertj.core.api.Assumptions.assumeThat;
+import static org.openqa.selenium.testing.TestUtilities.isFirefox;
 import static org.openqa.selenium.testing.TestUtilities.isFirefoxVersionOlderThan;
 
+import org.junit.AssumptionViolatedException;
 import org.junit.Before;
 import org.openqa.selenium.testing.JUnit4TestBase;
 
@@ -34,6 +36,15 @@ public abstract class DevToolsTestBase extends JUnit4TestBase {
 
     devTools = ((HasDevTools) driver).getDevTools();
     devTools.createSessionIfThereIsNotOne();
-    devTools.clearListeners();
+
+    try {
+      devTools.clearListeners();
+    } catch (DevToolsException e) {
+      if (isFirefox(driver)) {
+        throw new AssumptionViolatedException(
+          "Unable to clear listeners on Firefox because Fetch domain is not implemented");
+      }
+      throw e;
+    }
   }
 }

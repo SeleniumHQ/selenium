@@ -20,7 +20,6 @@ package org.openqa.selenium.events;
 import org.openqa.selenium.status.HasReadyState;
 
 import java.io.Closeable;
-import java.util.function.Consumer;
 
 public interface EventBus extends Closeable, HasReadyState {
 

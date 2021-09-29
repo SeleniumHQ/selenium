@@ -43,10 +43,7 @@ java_library(
         "WaitingConditions.java",
         "WrappedWebElement.java",
     ],
-    visibility = [
-        "//java/test:__subpackages__",
-        "//java/test:__subpackages__",
-    ],
+    visibility = ["//java/test:__subpackages__"],
     deps = [
         "//java/src/org/openqa/selenium:core",
         "//java/src/org/openqa/selenium/support",
@@ -68,6 +65,9 @@ java_selenium_test_suite(
     ],
     deps = [
         ":helpers",
+        "//java/src/org/openqa/selenium/grid/config",
+        "//java/src/org/openqa/selenium/jre/server",
+        "//java/src/org/openqa/selenium/netty/server",
         "//java/src/org/openqa/selenium/remote",
         "//java/src/org/openqa/selenium/support",
         "//java/test/org/openqa/selenium/build",
@@ -75,9 +75,6 @@ java_selenium_test_suite(
         "//java/test/org/openqa/selenium/testing:annotations",
         "//java/test/org/openqa/selenium/testing:test-base",
         "//java/test/org/openqa/selenium/testing/drivers",
-        "//java/src/org/openqa/selenium/grid/config",
-        "//java/src/org/openqa/selenium/jre/server",
-        "//java/src/org/openqa/selenium/netty/server",
         artifact("com.google.guava:guava"),
         artifact("io.netty:netty-codec-haproxy"),
         artifact("io.netty:netty-codec-http"),

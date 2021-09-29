@@ -17,20 +17,20 @@
 
 package org.openqa.selenium.safari;
 
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assume.assumeTrue;
-
 import org.junit.After;
 import org.junit.Test;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.net.PortProber;
 import org.openqa.selenium.testing.JUnit4TestBase;
+import org.openqa.selenium.testing.drivers.WebDriverBuilder;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assume.assumeTrue;
 
 public class SafariDriverTest extends JUnit4TestBase {
 
@@ -75,4 +75,26 @@ public class SafariDriverTest extends JUnit4TestBase {
     assertThat(driver2.getTitle()).isEqualTo("XHTML Test Page");
   }
 
+  @Test
+  public void canChangePermissions() {
+    HasPermissions permissions = (HasPermissions) driver;
+
+    assertThat(permissions.getPermissions().get("getUserMedia")).isEqualTo(true);
+
+    permissions.setPermissions("getUserMedia", false);
+
+    assertThat(permissions.getPermissions().get("getUserMedia")).isEqualTo(false);
+  }
+
+  @Test
+  public void canAttachDebugger() {
+    // Need to close driver after opening the inspector
+    WebDriver driver = new WebDriverBuilder().get(new SafariOptions());
+
+    try {
+      ((HasDebugger) driver).attachDebugger();
+    } finally {
+      driver.quit();
+    }
+  }
 }

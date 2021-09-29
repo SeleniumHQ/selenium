@@ -17,6 +17,7 @@
 
 package org.openqa.selenium.remote;
 
+import static org.openqa.selenium.remote.Browser.HTMLUNIT;
 import static org.openqa.selenium.remote.CapabilityType.ACCEPT_INSECURE_CERTS;
 import static org.openqa.selenium.remote.CapabilityType.BROWSER_NAME;
 import static org.openqa.selenium.remote.CapabilityType.PLATFORM;
@@ -112,6 +113,6 @@ public class DesiredCapabilities extends MutableCapabilities {
 
   @Deprecated
   public static DesiredCapabilities htmlUnit() {
-    return new DesiredCapabilities(BrowserType.HTMLUNIT, "", Platform.ANY);
+    return new DesiredCapabilities(HTMLUNIT.browserName(), "", Platform.ANY);
   }
 }

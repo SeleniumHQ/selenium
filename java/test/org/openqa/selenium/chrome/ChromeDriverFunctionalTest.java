@@ -18,33 +18,40 @@
 package org.openqa.selenium.chrome;
 
 import org.junit.Test;
-import org.openqa.selenium.chromium.ChromiumDriver;
-import org.openqa.selenium.testing.Ignore;
+import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.chromium.ChromiumNetworkConditions;
+import org.openqa.selenium.chromium.HasCasting;
+import org.openqa.selenium.chromium.HasCdp;
+import org.openqa.selenium.chromium.HasNetworkConditions;
+import org.openqa.selenium.chromium.HasPermissions;
 import org.openqa.selenium.testing.JUnit4TestBase;
-import org.openqa.selenium.testing.drivers.Browser;
+import org.openqa.selenium.testing.drivers.WebDriverBuilder;
 
+import java.time.Duration;
+import java.util.List;
 import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
+import static org.assertj.core.api.Assumptions.assumeThat;
 
 public class ChromeDriverFunctionalTest extends JUnit4TestBase {
 
   private final String CLIPBOARD_READ = "clipboard-read";
   private final String CLIPBOARD_WRITE = "clipboard-write";
 
-  private ChromiumDriver driver = null;
-
   @Test
   public void canSetPermission() {
-    //Cast provided driver to enable ChromeSpecific calls
-    driver = (ChromiumDriver) super.driver;
+    HasPermissions permissions = (HasPermissions) driver;
 
     driver.get(pages.clicksPage);
-    assertThat(checkPermission(driver, CLIPBOARD_READ)).isEqualTo("prompt");
-    assertThat(checkPermission(driver, CLIPBOARD_WRITE)).isEqualTo("granted");
+    assumeThat(checkPermission(driver, CLIPBOARD_READ)).isEqualTo("prompt");
+    assumeThat(checkPermission(driver, CLIPBOARD_WRITE)).isEqualTo("granted");
 
-    driver.setPermission(CLIPBOARD_READ, "denied");
-    driver.setPermission(CLIPBOARD_WRITE, "prompt");
+    permissions.setPermission(CLIPBOARD_READ, "denied");
+    permissions.setPermission(CLIPBOARD_WRITE, "prompt");
 
     assertThat(checkPermission(driver, CLIPBOARD_READ)).isEqualTo("denied");
     assertThat(checkPermission(driver, CLIPBOARD_WRITE)).isEqualTo("prompt");
@@ -54,28 +61,83 @@ public class ChromeDriverFunctionalTest extends JUnit4TestBase {
   public void canSetPermissionHeadless() {
     ChromeOptions options = new ChromeOptions();
     options.setHeadless(true);
+
     //TestChromeDriver is not honoring headless request; using ChromeDriver instead
-    super.driver = new ChromeDriver(options);
-    driver = (ChromeDriver) super.driver;
+    WebDriver driver = new WebDriverBuilder().get(options);
+    try {
+      HasPermissions permissions = (HasPermissions) driver;
 
-    driver.get(pages.clicksPage);
-    assertThat(checkPermission(driver, CLIPBOARD_READ)).isEqualTo("prompt");
-    assertThat(checkPermission(driver, CLIPBOARD_WRITE)).isEqualTo("prompt");
+      driver.get(pages.clicksPage);
+      assertThat(checkPermission(driver, CLIPBOARD_READ)).isEqualTo("prompt");
+      assertThat(checkPermission(driver, CLIPBOARD_WRITE)).isEqualTo("prompt");
 
-    driver.setPermission(CLIPBOARD_READ, "granted");
-    driver.setPermission(CLIPBOARD_WRITE, "granted");
+      permissions.setPermission(CLIPBOARD_READ, "granted");
+      permissions.setPermission(CLIPBOARD_WRITE, "granted");
 
-    assertThat(checkPermission(driver, CLIPBOARD_READ)).isEqualTo("granted");
-    assertThat(checkPermission(driver, CLIPBOARD_WRITE)).isEqualTo("granted");
+      assertThat(checkPermission(driver, CLIPBOARD_READ)).isEqualTo("granted");
+      assertThat(checkPermission(driver, CLIPBOARD_WRITE)).isEqualTo("granted");
+    } finally {
+      driver.quit();
+    }
   }
 
-  public String checkPermission(ChromiumDriver driver, String permission){
+  public String checkPermission(WebDriver driver, String permission){
     @SuppressWarnings("unchecked")
-    Map<String, Object> result = (Map<String, Object>) driver.executeAsyncScript(
+    Map<String, Object> result = (Map<String, Object>) ((JavascriptExecutor) driver).executeAsyncScript(
       "callback = arguments[arguments.length - 1];"
       + "callback(navigator.permissions.query({"
       + "name: arguments[0]"
       + "}));", permission);
     return result.get("state").toString();
+  }
+
+  @Test
+  public void canCast() throws InterruptedException {
+    HasCasting caster = (HasCasting) driver;
+
+    // Does not get list the first time it is called
+    caster.getCastSinks();
+    Thread.sleep(1500);
+    List<Map<String, String>> castSinks = caster.getCastSinks();
+
+    // Can not call these commands if there are no sinks available
+    if (castSinks.size() > 0) {
+      String deviceName = castSinks.get(0).get("name");
+
+      caster.startTabMirroring(deviceName);
+      caster.stopCasting(deviceName);
+    }
+  }
+
+  @Test
+  public void canManageNetworkConditions() {
+    HasNetworkConditions conditions = (HasNetworkConditions) driver;
+
+    ChromiumNetworkConditions networkConditions = new ChromiumNetworkConditions();
+    networkConditions.setLatency(Duration.ofMillis(200));
+
+      conditions.setNetworkConditions(networkConditions);
+      assertThat(conditions.getNetworkConditions().getLatency()).isEqualTo(Duration.ofMillis(200));
+
+    conditions.deleteNetworkConditions();
+
+      try {
+        conditions.getNetworkConditions();
+        fail("If Network Conditions were deleted, should not be able to get Network Conditions");
+      } catch (WebDriverException e) {
+        if (!e.getMessage().contains("network conditions must be set before it can be retrieved")) {
+          throw e;
+        }
+      }
+  }
+
+  @Test
+  public void canExecuteCdpCommands() {
+    HasCdp cdp = (HasCdp) driver;
+
+    Map<String, Object> parameters = Map.of("url", pages.simpleTestPage);
+    cdp.executeCdpCommand("Page.navigate", parameters);
+
+    assertThat(driver.getTitle()).isEqualTo("Hello WebDriver");
   }
 }
