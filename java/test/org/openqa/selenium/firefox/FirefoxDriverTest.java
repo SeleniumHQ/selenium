@@ -37,6 +37,7 @@ import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.Command;
 import org.openqa.selenium.remote.CommandExecutor;
 import org.openqa.selenium.remote.DriverCommand;
+import org.openqa.selenium.remote.LocalFileDetector;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.remote.UnreachableBrowserException;
@@ -503,8 +504,12 @@ public class FirefoxDriverTest extends JUnit4TestBase {
   public void canAddRemoveExtensions() {
     Path extension = InProject.locate("third_party/firebug/favourite_colour-1.1-an+fx.xpi");
 
-    ((HasExtensions) driver).installExtension(extension);
-    ((HasExtensions) driver).uninstallExtension("favourite-colour-examples@mozilla.org");
+    if (driver.getClass().equals(RemoteWebDriver.class)) {
+      ((RemoteWebDriver) driver).setFileDetector(new LocalFileDetector());
+    }
+
+    String id = ((HasExtensions) driver).installExtension(extension);
+    ((HasExtensions) driver).uninstallExtension(id);
   }
 
   @Test

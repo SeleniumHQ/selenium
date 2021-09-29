@@ -20,18 +20,26 @@ package org.openqa.selenium.firefox;
 import com.google.auto.service.AutoService;
 import com.google.common.collect.ImmutableMap;
 import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.WrapsDriver;
 import org.openqa.selenium.internal.Require;
+import org.openqa.selenium.io.Zip;
 import org.openqa.selenium.remote.AdditionalHttpCommands;
 import org.openqa.selenium.remote.AugmenterProvider;
 import org.openqa.selenium.remote.CommandInfo;
 import org.openqa.selenium.remote.ExecuteMethod;
+import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.remote.http.HttpMethod;
 
+import java.io.File;
+import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Map;
 import java.util.function.Predicate;
 
 import static org.openqa.selenium.remote.Browser.FIREFOX;
+import static org.openqa.selenium.remote.DriverCommand.UPLOAD_FILE;
 
 @AutoService({AdditionalHttpCommands.class, AugmenterProvider.class})
 public class AddHasExtensions implements AugmenterProvider<HasExtensions>, AdditionalHttpCommands {
@@ -65,9 +73,23 @@ public class AddHasExtensions implements AugmenterProvider<HasExtensions>, Addit
       public String installExtension(Path path) {
         Require.nonNull("Extension Path", path);
 
-        return (String) executeMethod.execute(
-          INSTALL_EXTENSION,
-          ImmutableMap.of("path", path.toAbsolutePath().toString(), "temporary", false));
+        if (executeMethod instanceof WrapsDriver) {
+          WebDriver wrapped = ((WrapsDriver) executeMethod).getWrappedDriver();
+          if (wrapped instanceof RemoteWebDriver) {
+            File localFile = ((RemoteWebDriver) wrapped).getFileDetector().getLocalFile(path.toString());
+            if (localFile != null) {
+              try {
+                String zip = Zip.zip(localFile);
+                String newPath = (String) executeMethod.execute(UPLOAD_FILE, ImmutableMap.of("file", zip));
+                return installExtensionAtPath(newPath);
+              } catch (IOException e) {
+                throw new WebDriverException("Cannot upload " + localFile, e);
+              }
+            }
+          }
+        }
+
+        return installExtensionAtPath(path.toString());
       }
 
       @Override
@@ -75,6 +97,12 @@ public class AddHasExtensions implements AugmenterProvider<HasExtensions>, Addit
         Require.nonNull("Extension ID", extensionId);
 
         executeMethod.execute(UNINSTALL_EXTENSION, ImmutableMap.of("id", extensionId));
+      }
+
+      private String installExtensionAtPath(String path) {
+        return (String) executeMethod.execute(
+          INSTALL_EXTENSION,
+          ImmutableMap.of("path", path, "temporary", false));
       }
     };
   }
