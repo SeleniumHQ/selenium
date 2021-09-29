@@ -69,3 +69,30 @@ test.suite(function (env) {
     })
   }
 })
+
+describe('Builder', function () {
+  describe('catches incorrect use of browser options class', function () {
+    function test(key, options) {
+      it(key, async function () {
+        let builder = new Builder().withCapabilities(
+          new Capabilities()
+            .set('browserName', 'fake-browser-should-not-try-to-start')
+            .set(key, new options())
+        )
+        try {
+          let driver = await builder.build()
+          await driver.quit()
+          return Promise.reject(Error('should have failed'))
+        } catch (ex) {
+          if (!(ex instanceof error.InvalidArgumentError)) {
+            throw ex
+          }
+        }
+      })
+    }
+
+    test('chromeOptions', chrome.Options)
+    test('moz:firefoxOptions', firefox.Options)
+    test('safari.options', safari.Options)
+  })
+})
