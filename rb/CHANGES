@@ -16,6 +16,7 @@ Ruby:
   * Moved New Window functionality to TargetLocator#new_window to be used with Driver#switch_to
   * Deprecated using Manager#new_window
   * Changed order of logging output (#9850)
+  * Added support for web_socket_url capability
 
 Chromium:
   * Implemented casting functionality
