@@ -61,6 +61,7 @@ namespace OpenQA.Selenium.Chromium
         private string mobileEmulationDeviceName;
         private ChromiumMobileEmulationDeviceSettings mobileEmulationDeviceSettings;
         private ChromiumPerformanceLoggingPreferences perfLoggingPreferences;
+        private ChromiumAndroidOptions androidOptions;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ChromiumOptions"/> class.
@@ -173,6 +174,15 @@ namespace OpenQA.Selenium.Chromium
         {
             get { return this.perfLoggingPreferences; }
             set { this.perfLoggingPreferences = value; }
+        }
+
+        /// <summary>
+        /// Gets or sets the options for automating Chromium applications on Android.
+        /// </summary>
+        public ChromiumAndroidOptions AndroidOptions
+        {
+            get { return this.androidOptions; }
+            set { this.androidOptions = value; }
         }
 
         /// <summary>
@@ -644,6 +654,11 @@ namespace OpenQA.Selenium.Chromium
                 chromeOptions[PerformanceLoggingPreferencesChromeOption] = this.GeneratePerformanceLoggingPreferencesDictionary();
             }
 
+            if (this.androidOptions != null)
+            {
+                this.AddAndroidOptions(chromeOptions);
+            }
+
             if (this.windowTypes.Count > 0)
             {
                 chromeOptions[WindowTypesChromeOption] = this.windowTypes;
@@ -655,6 +670,31 @@ namespace OpenQA.Selenium.Chromium
             }
 
             return chromeOptions;
+        }
+
+        private void AddAndroidOptions(Dictionary<string, object> chromeOptions)
+        {
+            chromeOptions["androidPackage"] = this.androidOptions.AndroidPackage;
+
+            if (!string.IsNullOrEmpty(this.androidOptions.AndroidDeviceSerial))
+            {
+                chromeOptions["androidDeviceSerial"] = this.androidOptions.AndroidDeviceSerial;
+            }
+
+            if (!string.IsNullOrEmpty(this.androidOptions.AndroidActivity))
+            {
+                chromeOptions["androidActivity"] = this.androidOptions.AndroidActivity;
+            }
+
+            if (!string.IsNullOrEmpty(this.androidOptions.AndroidProcess))
+            {
+                chromeOptions["androidProcess"] = this.androidOptions.AndroidProcess;
+            }
+
+            if (this.androidOptions.UseRunningApp)
+            {
+                chromeOptions["androidUseRunningApp"] = this.androidOptions.UseRunningApp;
+            }
         }
 
         private Dictionary<string, object> GeneratePerformanceLoggingPreferencesDictionary()
