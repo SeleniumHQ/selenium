@@ -106,7 +106,7 @@ namespace OpenQA.Selenium.Remote
 
             if (headerValue == null)
             {
-                throw new ArgumentNullException("headerValue", "Header value may not be null.")
+                throw new ArgumentNullException("headerValue", "Header value may not be null.");
             }
 
             this.headers[headerName] = headerValue;
