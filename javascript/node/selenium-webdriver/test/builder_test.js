@@ -27,6 +27,7 @@ const safari = require('../safari')
 const test = require('../lib/test')
 const { Browser } = require('../lib/capabilities')
 const { Pages } = require('../lib/test')
+const { Builder } = require('../../selenium-webdriver/index')
 
 test.suite(function (env) {
   const BROWSER_MAP = new Map([
@@ -67,6 +68,29 @@ test.suite(function (env) {
         )
       })
     })
+  }
+
+  if (BROWSER_MAP.has(env.browser.name)) {
+    describe('builder allows to set a single capability', function () {
+      let driver
+
+      after(() => driver && driver.quit())
+
+      it(env.browser.name, async function () {
+        let timeouts = { implicit: 0, pageLoad: 1000, script: 1000 }
+        driver = new Builder()
+          .setCapability('timeouts', timeouts)
+          .forBrowser(env.browser.name)
+          .build()
+
+        let caps = await getCaps(driver);
+        assert.deepEqual(caps.get('timeouts'), timeouts)
+      })
+    })
+  }
+
+  async function getCaps(driver) {
+    return driver.getCapabilities();
   }
 })
 
