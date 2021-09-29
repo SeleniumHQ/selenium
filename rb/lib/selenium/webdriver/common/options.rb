@@ -21,7 +21,8 @@ module Selenium
   module WebDriver
     class Options
       W3C_OPTIONS = %i[browser_name browser_version platform_name accept_insecure_certs page_load_strategy proxy
-                       set_window_rect timeouts unhandled_prompt_behavior strict_file_interactability].freeze
+                       set_window_rect timeouts unhandled_prompt_behavior strict_file_interactability
+                       web_socket_url].freeze
 
       class << self
         attr_reader :driver_path
