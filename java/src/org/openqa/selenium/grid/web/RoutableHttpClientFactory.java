@@ -17,6 +17,7 @@
 
 package org.openqa.selenium.grid.web;
 
+import org.openqa.selenium.UnsupportedCommandException;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.http.ClientConfig;
 import org.openqa.selenium.remote.http.HttpClient;
@@ -28,7 +29,9 @@ import java.io.UncheckedIOException;
 import java.net.URI;
 import java.net.URL;
 
-import static org.openqa.selenium.remote.http.Contents.utf8String;
+import static org.openqa.selenium.remote.http.Contents.asJson;
+
+import com.google.common.collect.ImmutableMap;
 
 public class RoutableHttpClientFactory implements HttpClient.Factory {
 
@@ -59,7 +62,10 @@ public class RoutableHttpClientFactory implements HttpClient.Factory {
 
           if (!handler.test(request)) {
             response.setStatus(404);
-            response.setContent(utf8String("Unable to route " + request));
+            response.setContent(asJson(ImmutableMap.of(
+              "value", request.getUri(),
+              "message", "Unable to route " + request,
+              "error", UnsupportedCommandException.class.getName())));
             return response;
           }
 
