@@ -1,3 +1,16 @@
+Selenium 4 Release Candidate 2
+
+* Add new websocketUrl capability
+* Force free ports for cdp in geckodriver
+* Add w3c capabilities to Python options (#9870)
+* expected_conditions and wait modules raises InvalidSelectorException for invalid xpaths (#9805)
+* implement chromium specific endpoint for setting permissions
+* implement chromium specific endpoint for deleting network conditions
+* update ruby, python and JS to add support for v94 and remove support for v92
+* Fix type hint on chrome option method (#9840)
+* Allows None to be set for the sameSite attribute (#9771)
+* Fix typo in python webdriver for IE (#9801)
+
 Selenium 4 Release Candidate 1
 
 * Remove cdp versions 88, 89, and 90
@@ -916,14 +929,3 @@ Selenium 2 Beta 2
 * Improved IEDriver
 * Basic Authentication support for Selenium 2
 * Ability to have multiple Firefox instances
-
-
-
-
-
-
-commit 5f4d8182e48da00f855a427293a1cd59f4b80503
-Author: David Burns <david.b@browserstack.com>
-Date:   Mon Jun 7 21:35:40 2021 +0100
-
-    [py] Update changelog and versions for B4
