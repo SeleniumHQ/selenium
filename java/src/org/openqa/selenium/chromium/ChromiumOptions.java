@@ -67,6 +67,7 @@ public class ChromiumOptions<T extends ChromiumOptions<?>> extends AbstractDrive
   private final List<File> extensionFiles = new ArrayList<>();
   private final List<String> extensions = new ArrayList<>();
   private final Map<String, Object> experimentalOptions = new HashMap<>();
+  private Map<String, Object> androidOptions = new HashMap<>();
 
   private final String capabilityName;
 
@@ -193,6 +194,43 @@ public class ChromiumOptions<T extends ChromiumOptions<?>> extends AbstractDrive
     return (T) this;
   }
 
+  public T setAndroidPackage(String androidPackage) {
+    Require.nonNull("Android package", androidPackage);
+    return setAndroidCapability("androidPackage", androidPackage);
+  }
+
+  public T setAndroidActivity(String activity) {
+    Require.nonNull("Android activity", activity);
+    return setAndroidCapability("androidActivity", activity);
+  }
+
+  public T setAndroidDeviceSerialNumber(String serial) {
+    Require.nonNull("Android device serial number", serial);
+    return setAndroidCapability("androidDeviceSerial", serial);
+  }
+
+  public T setUseRunningAndroidApp(boolean useIt) {
+    return setAndroidCapability("androidUseRunningApp", useIt);
+  }
+
+  /**
+   * Process name of the Activity hosting the WebView (as given by ps).
+   * If not set, the process name is assumed to be the same as androidPackage.
+   */
+  public T setAndroidProcess(String processName) {
+    Require.nonNull("Android process name", processName);
+    return setAndroidCapability("androidProcess", processName);
+  }
+
+  private T setAndroidCapability(String name, Object value) {
+    Require.nonNull("Name", name);
+    Require.nonNull("Value", value);
+    Map<String, Object> newOptions = new TreeMap<>(androidOptions);
+    newOptions.put(name, value);
+    androidOptions = Collections.unmodifiableMap(newOptions);
+    return (T) this;
+  }
+
   @Override
   protected Set<String> getExtraCapabilityNames() {
     return Collections.singleton(capabilityName);
@@ -227,6 +265,8 @@ public class ChromiumOptions<T extends ChromiumOptions<?>> extends AbstractDrive
           }),
         extensions.stream()
       ).collect(toList())));
+
+    options.putAll(androidOptions);
 
     return unmodifiableMap(options);
   }

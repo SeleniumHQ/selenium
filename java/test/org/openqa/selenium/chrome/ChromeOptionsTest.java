@@ -223,4 +223,16 @@ public class ChromeOptionsTest {
 
     assertThat(seen).isEmpty();
   }
+
+  @Test
+  public void shouldBeAbleToSetAnAndroidOption() {
+    Map<String, Object> converted = new ChromeOptions()
+      .setAndroidActivity("com.cheese.nom")
+      .asMap();
+
+    assertThat(converted)
+      .extractingByKey(ChromeOptions.CAPABILITY).asInstanceOf(MAP)
+      .extractingByKey("androidActivity")
+      .isEqualTo("com.cheese.nom");
+  }
 }
