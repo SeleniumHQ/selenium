@@ -288,17 +288,9 @@ public class LocalDistributor extends Distributor implements Closeable {
   }
 
   private void addNodeMetrics(Node node) {
-    new JMXHelper().register(node.getId());
+    new JMXHelper().register(node);
   }
 
-  private void removeNodeMetrics(NodeId nodeId){
-    try {
-      ObjectName oName = new ObjectName(nodeId.toString());
-      new JMXHelper().unregister(oName);
-    } catch (MalformedObjectNameException e){
-      LOG.warning("Could not remove Metrics for :"+nodeId+", due to"+e.getMessage());
-    }
-  }
 
   private Runnable asRunnableHealthCheck(Node node) {
     HealthCheck healthCheck = node.getHealthCheck();
@@ -354,7 +346,6 @@ public class LocalDistributor extends Distributor implements Closeable {
     try {
       nodes.remove(nodeId);
       model.remove(nodeId);
-      removeNodeMetrics(nodeId);
       Runnable runnable = allChecks.remove(nodeId);
       if (runnable != null) {
         hostChecker.remove(runnable);
