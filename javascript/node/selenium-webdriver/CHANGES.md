@@ -1,3 +1,14 @@
+## v4.0.0-rc-2
+
+* Fix builder test
+* Allow builder to set a single arbitrary capability (#9857)
+* Restore withCapabilities() to ensure backward compatibility
+* Add new websocketUrl capability
+* update ruby, python and JS to add support for v94 and remove support for v92
+* Add a check for Grid CDP endpoint
+* Implement network request interceptions
+* Update connections to devtools so it works in Firefox and Chrome
+
 ## v4.0.0-rc-1
 
 * Deprecates withCapabilities method and removes tests (#9701)
