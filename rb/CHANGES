@@ -1,4 +1,4 @@
-4.0.0.rc2 (Unreleased)
+4.0.0.rc2 (2021-09-30)
 =========================
 
 DevTools:
@@ -22,9 +22,11 @@ Chromium:
   * Implemented casting functionality
   * Implemented ability to launch chromium app
   * Implemented support for specifying permissions
+  * Added support for Chrome-specific Android functionality with #enable_android
 
 Firefox:
   * Implemented context functionality
+  * Added support for Firefox-specific Android functionality with #enable_android
 
 Remote:
   * Added support for file detector to install Firefox addons from client machine
