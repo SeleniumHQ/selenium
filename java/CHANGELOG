@@ -15,6 +15,7 @@ v4.0.0-rc-2
   capabilities on the base options class.
 * Enable live view for Dynamic Grid
 * Merged devtools maven artifact into the main remote driver
+* Added android capabilities to Chromium and Firefox options.
 
 v4.0.0-rc-1
 ===========
