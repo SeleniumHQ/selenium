@@ -81,7 +81,7 @@ public class FirefoxOptions extends AbstractDriverOptions<FirefoxOptions> {
       if (rawOptions != null) {
         // If `source` contains the keys we care about, then make sure they're good.
         Require.stateCondition(rawOptions instanceof Map, "Expected options to be a map: %s", rawOptions);
-        Map<String, Object> sourceOptions = (Map<String, Object>) rawOptions;
+        @SuppressWarnings("unchecked") Map<String, Object> sourceOptions = (Map<String, Object>) rawOptions;
         Map<String, Object> options = new TreeMap<>();
         for (Keys key : Keys.values()) {
           key.amend(sourceOptions, options);
@@ -261,9 +261,8 @@ public class FirefoxOptions extends AbstractDriverOptions<FirefoxOptions> {
     Object rawPrefs = firefoxOptions.getOrDefault(Keys.PREFS.key(), new HashMap<>());
     Require.stateCondition(rawPrefs instanceof Map, "Prefs are of unexpected type: %s", rawPrefs);
 
-    Map<String, Object> newPrefs = new TreeMap<>();
     @SuppressWarnings("unchecked") Map<String, Object> prefs = (Map<String, Object>) rawPrefs;
-    newPrefs.putAll(prefs);
+    Map<String, Object> newPrefs = new TreeMap<>(prefs);
     newPrefs.put(key, value);
 
     return setFirefoxOption(Keys.PREFS, Collections.unmodifiableMap(newPrefs));
