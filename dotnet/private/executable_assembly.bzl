@@ -91,7 +91,8 @@ def create_executable_assembly(ctx, extra_srcs, extra_deps):
         ctx.actions,
         ctx.file.runtimeconfig_template,
         result[0].out.basename.replace("." + result[0].out.extension, ""),
-        result[0].actual_tfm)
+        result[0].actual_tfm,
+    )
 
     data_runfiles = [] if ctx.attr.data == None else [d.files for d in ctx.attr.data]
 
@@ -99,7 +100,7 @@ def create_executable_assembly(ctx, extra_srcs, extra_deps):
 
     direct_runfiles = [result[0].out, result[0].pdb]
     if runtimeconfig != None:
-        direct_runfiles += [runtimeconfig]
+        direct_runfiles.append(runtimeconfig)
 
     result.append(DefaultInfo(
         executable = shell_file,

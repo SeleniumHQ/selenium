@@ -25,6 +25,14 @@ module Selenium
 
         VALID_PREFERENCE_TYPES = [TrueClass, FalseClass, Integer, Float, String].freeze
 
+        DEFAULT_PREFERENCES = {
+          "browser.newtabpage.enabled" => false,
+          "browser.startup.homepage" => "about:blank",
+          "browser.usedOnWindows10.introURL" => "about:blank",
+          "network.captive-portal-service.enabled" => false,
+          "security.csp.enable" => false
+        }.freeze
+
         attr_reader   :name, :log_file
         attr_writer   :secure_ssl, :load_no_focus_lib
 
@@ -179,10 +187,12 @@ module Selenium
 
         def update_user_prefs_in(directory)
           path = File.join(directory, 'user.js')
-          prefs = read_user_prefs(path).merge(@additional_prefs)
+          prefs = read_user_prefs(path)
+          prefs.merge! self.class::DEFAULT_PREFERENCES
+          prefs.merge!(@additional_prefs)
 
           # If the user sets the home page, we should also start up there
-          prefs['startup.homepage_welcome_url'] = prefs['browser.startup.homepage']
+          prefs['startup.homepage_welcome_url'] ||= prefs['browser.startup.homepage']
 
           write_prefs prefs, path
         end

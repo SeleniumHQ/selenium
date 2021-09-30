@@ -15,6 +15,7 @@
 # specific language governing permissions and limitations
 # under the License.
 
+from typing import NoReturn
 import warnings
 
 from selenium.webdriver.remote.webdriver import WebDriver as RemoteWebDriver
@@ -27,6 +28,7 @@ DEFAULT_PORT = 0
 DEFAULT_HOST = None
 DEFAULT_LOG_LEVEL = None
 DEFAULT_SERVICE_LOG_PATH = None
+DEFAULT_KEEP_ALIVE = None
 
 
 class WebDriver(RemoteWebDriver):
@@ -35,8 +37,8 @@ class WebDriver(RemoteWebDriver):
     def __init__(self, executable_path='IEDriverServer.exe', capabilities=None,
                  port=DEFAULT_PORT, timeout=DEFAULT_TIMEOUT, host=DEFAULT_HOST,
                  log_level=DEFAULT_LOG_LEVEL, service_log_path=DEFAULT_SERVICE_LOG_PATH,
-                 options=None, service=None,
-                 desired_capabilities=None, keep_alive=False):
+                 options: Options = None, service: Service = None,
+                 desired_capabilities=None, keep_alive=DEFAULT_KEEP_ALIVE):
         """
         Creates a new instance of the Ie driver.
 
@@ -52,13 +54,14 @@ class WebDriver(RemoteWebDriver):
          - service_log_path - Deprecated: target of logging of service, may be "stdout", "stderr" or file path.
          - options - IE Options instance, providing additional IE options
          - desired_capabilities - Deprecated: alias of capabilities; this will make the signature consistent with RemoteWebDriver.
-         - keep_alive - Whether to configure RemoteConnection to use HTTP keep-alive.
+         - keep_alive - Deprecated: Whether to configure RemoteConnection to use HTTP keep-alive.
         """
         if executable_path != 'IEDriverServer.exe':
             warnings.warn('executable_path has been deprecated, please pass in a Service object',
                           DeprecationWarning, stacklevel=2)
         if capabilities:
-            warnings.warn('capabilities has been deprecated, please pass in a Service object',
+            warnings.warn('capabilities has been deprecated, please pass in an Options object.'
+                          'This field will be ignored if an Options object is also used.',
                           DeprecationWarning, stacklevel=2)
         if port != DEFAULT_PORT:
             warnings.warn('port has been deprecated, please pass in a Service object',
@@ -69,13 +72,22 @@ class WebDriver(RemoteWebDriver):
         if host != DEFAULT_HOST:
             warnings.warn('host has been deprecated, please pass in a Service object',
                           DeprecationWarning, stacklevel=2)
-        self.host = host
         if log_level != DEFAULT_LOG_LEVEL:
             warnings.warn('log_level has been deprecated, please pass in a Service object',
                           DeprecationWarning, stacklevel=2)
         if service_log_path != DEFAULT_SERVICE_LOG_PATH:
             warnings.warn('service_log_path has been deprecated, please pass in a Service object',
                           DeprecationWarning, stacklevel=2)
+        if desired_capabilities:
+            warnings.warn('desired_capabilities has been deprecated, please pass in an Options object',
+                          DeprecationWarning, stacklevel=2)
+        if keep_alive != DEFAULT_KEEP_ALIVE:
+            warnings.warn('keep_alive has been deprecated, please pass in a Service object',
+                          DeprecationWarning, stacklevel=2)
+        else:
+            keep_alive = False
+
+        self.host = host
         self.port = port
         if self.port == 0:
             self.port = utils.free_port()
@@ -108,13 +120,13 @@ class WebDriver(RemoteWebDriver):
         RemoteWebDriver.__init__(
             self,
             command_executor=self.iedriver.service_url,
-            desired_capabilities=capabilities,
+            options=options,
             keep_alive=keep_alive)
         self._is_remote = False
 
-    def quit(self):
+    def quit(self) -> NoReturn:
         RemoteWebDriver.quit(self)
         self.iedriver.stop()
 
-    def create_options(self):
+    def create_options(self) -> Options:
         return Options()

@@ -61,7 +61,7 @@ namespace OpenQA.Selenium.IE
     /// }
     /// </code>
     /// </example>
-    public class InternetExplorerDriver : RemoteWebDriver
+    public class InternetExplorerDriver : WebDriver
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="InternetExplorerDriver"/> class.

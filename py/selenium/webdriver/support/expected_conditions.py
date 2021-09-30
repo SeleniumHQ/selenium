@@ -17,7 +17,7 @@
 
 import re
 
-from selenium.common.exceptions import NoSuchElementException
+from selenium.common.exceptions import NoSuchElementException, InvalidSelectorException
 from selenium.common.exceptions import NoSuchFrameException
 from selenium.common.exceptions import StaleElementReferenceException
 from selenium.common.exceptions import WebDriverException
@@ -34,6 +34,7 @@ def title_is(title):
     """An expectation for checking the title of a page.
     title is the expected title, which must be an exact match
     returns True if the title matches, false otherwise."""
+
     def _predicate(driver):
         return driver.title == title
 
@@ -45,6 +46,7 @@ def title_contains(title):
     substring. title is the fragment of title expected
     returns True when the title matches, False otherwise
     """
+
     def _predicate(driver):
         return title in driver.title
 
@@ -57,6 +59,7 @@ def presence_of_element_located(locator):
     locator - used to find the element
     returns the WebElement once it is located
     """
+
     def _predicate(driver):
         return driver.find_element(*locator)
 
@@ -69,6 +72,7 @@ def url_contains(url):
     url is the fragment of url expected,
     returns True when the url matches, False otherwise
     """
+
     def _predicate(driver):
         return url in driver.current_url
 
@@ -79,8 +83,9 @@ def url_matches(pattern):
     """An expectation for checking the current url.
     pattern is the expected pattern, which must be an exact match
     returns True if the url matches, false otherwise."""
+
     def _predicate(driver):
-        return bool(re.search(pattern, driver.current_url)) #note bool is necessary
+        return bool(re.search(pattern, driver.current_url))
 
     return _predicate
 
@@ -89,6 +94,7 @@ def url_to_be(url):
     """An expectation for checking the current url.
     url is the expected url, which must be an exact match
     returns True if the url matches, false otherwise."""
+
     def _predicate(driver):
         return url == driver.current_url
 
@@ -99,6 +105,7 @@ def url_changes(url):
     """An expectation for checking the current url.
     url is the expected url, which must not be an exact match
     returns True if the url is different, false otherwise."""
+
     def _predicate(driver):
         return url != driver.current_url
 
@@ -112,9 +119,12 @@ def visibility_of_element_located(locator):
     locator - used to find the element
     returns the WebElement once it is located and visible
     """
+
     def _predicate(driver):
         try:
             return _element_if_visible(driver.find_element(*locator))
+        except InvalidSelectorException as e:
+            raise e
         except StaleElementReferenceException:
             return False
 
@@ -128,6 +138,7 @@ def visibility_of(element):
     element is the WebElement
     returns the (same) WebElement once it is visible
     """
+
     def _predicate(_):
         return _element_if_visible(element)
 
@@ -144,6 +155,7 @@ def presence_of_all_elements_located(locator):
     locator is used to find the element
     returns the list of WebElements once they are located
     """
+
     def _predicate(driver):
         return driver.find_elements(*locator)
 
@@ -156,6 +168,7 @@ def visibility_of_any_elements_located(locator):
     locator is used to find the element
     returns the list of WebElements once they are located
     """
+
     def _predicate(driver):
         return [element for element in driver.find_elements(*locator) if _element_if_visible(element)]
 
@@ -169,6 +182,7 @@ def visibility_of_all_elements_located(locator):
     locator - used to find the elements
     returns the list of WebElements once they are located and visible
     """
+
     def _predicate(driver):
         try:
             elements = driver.find_elements(*locator)
@@ -176,6 +190,8 @@ def visibility_of_all_elements_located(locator):
                 if _element_if_visible(element, visibility=False):
                     return False
             return elements
+        except InvalidSelectorException as e:
+            raise e
         except StaleElementReferenceException:
             return False
 
@@ -187,10 +203,13 @@ def text_to_be_present_in_element(locator, text_):
     specified element.
     locator, text
     """
+
     def _predicate(driver):
         try:
             element_text = driver.find_element(*locator).text
             return text_ in element_text
+        except InvalidSelectorException as e:
+            raise e
         except StaleElementReferenceException:
             return False
 
@@ -202,10 +221,13 @@ def text_to_be_present_in_element_value(locator, text_):
     An expectation for checking if the given text is present in the element's
     locator, text
     """
+
     def _predicate(driver):
         try:
             element_text = driver.find_element(*locator).get_attribute("value")
             return text_ in element_text
+        except InvalidSelectorException as e:
+            raise e
         except StaleElementReferenceException:
             return False
 
@@ -217,6 +239,7 @@ def frame_to_be_available_and_switch_to_it(locator):
     switch to.  If the frame is available it switches the given driver to the
     specified frame.
     """
+
     def _predicate(driver):
         try:
             if hasattr(locator, '__iter__'):
@@ -224,6 +247,8 @@ def frame_to_be_available_and_switch_to_it(locator):
             else:
                 driver.switch_to.frame(locator)
             return True
+        except InvalidSelectorException as e:
+            raise e
         except NoSuchFrameException:
             return False
 
@@ -236,12 +261,15 @@ def invisibility_of_element_located(locator):
 
     locator used to find the element
     """
+
     def _predicate(driver):
         try:
             target = locator
             if not isinstance(target, WebElement):
                 target = driver.find_element(*target)
             return _element_if_visible(target, False)
+        except InvalidSelectorException as e:
+            raise e
         except (NoSuchElementException, StaleElementReferenceException):
             # In the case of NoSuchElement, returns true because the element is
             # not present in DOM. The try block checks if the element is present
@@ -262,13 +290,23 @@ def invisibility_of_element(element):
     return invisibility_of_element_located(element)
 
 
-def element_to_be_clickable(locator):
-    """ An Expectation for checking an element is visible and enabled such that
-    you can click it."""
+def element_to_be_clickable(mark):
+    """
+    An Expectation for checking an element is visible and enabled such that
+    you can click it.
+
+    element is either a locator (text) or an WebElement
+    """
+
+    # renamed argument to 'mark', to indicate that both locator
+    # and WebElement args are valid
     def _predicate(driver):
-        element = visibility_of_element_located(locator)(driver)
-        if element and element.is_enabled():
-            return element
+        target = mark
+        if not isinstance(target, WebElement):  # if given locator instead of WebElement
+            target = driver.find_element(*target)  # grab element at locator
+        target = visibility_of(target)(driver)
+        if target and target.is_enabled():
+            return target
         else:
             return False
 
@@ -280,11 +318,14 @@ def staleness_of(element):
     element is the element to wait for.
     returns False if the element is still attached to the DOM, true otherwise.
     """
+
     def _predicate(_):
         try:
             # Calling any method forces a staleness check
             element.is_enabled()
             return False
+        except InvalidSelectorException as e:
+            raise e
         except StaleElementReferenceException:
             return True
 
@@ -295,6 +336,7 @@ def element_to_be_selected(element):
     """ An expectation for checking the selection is selected.
     element is WebElement object
     """
+
     def _predicate(_):
         return element.is_selected()
 
@@ -304,6 +346,7 @@ def element_to_be_selected(element):
 def element_located_to_be_selected(locator):
     """An expectation for the element to be located is selected.
     locator is a tuple of (by, path)"""
+
     def _predicate(driver):
         return driver.find_element(*locator).is_selected()
 
@@ -315,6 +358,7 @@ def element_selection_state_to_be(element, is_selected):
     element is WebElement object
     is_selected is a Boolean."
     """
+
     def _predicate(_):
         return element.is_selected() == is_selected
 
@@ -327,10 +371,13 @@ def element_located_selection_state_to_be(locator, is_selected):
     locator is a tuple of (by, path)
     is_selected is a boolean
     """
+
     def _predicate(driver):
         try:
             element = driver.find_element(*locator)
             return element.is_selected() == is_selected
+        except InvalidSelectorException as e:
+            raise e
         except StaleElementReferenceException:
             return False
 
@@ -339,6 +386,7 @@ def element_located_selection_state_to_be(locator, is_selected):
 
 def number_of_windows_to_be(num_windows):
     """ An expectation for the number of windows to be a certain value."""
+
     def _predicate(driver):
         return len(driver.window_handles) == num_windows
 
@@ -348,6 +396,7 @@ def number_of_windows_to_be(num_windows):
 def new_window_is_opened(current_handles):
     """ An expectation that a new window will be opened and have the number of
     windows handles increase"""
+
     def _predicate(driver):
         return len(driver.window_handles) > len(current_handles)
 
@@ -364,10 +413,29 @@ def alert_is_present():
     return _predicate
 
 
+def element_attribute_to_include(locator, attribute_):
+    """ An expectation for checking if the given attribute is include in the
+    specified element.
+    locator, attribute
+    """
+
+    def _predicate(driver):
+        try:
+            element_attribute = driver.find_element(*locator).get_attribute(attribute_)
+            return element_attribute is not None
+        except InvalidSelectorException as e:
+            raise e
+        except StaleElementReferenceException:
+            return False
+
+    return _predicate
+
+
 def any_of(*expected_conditions):
     """ An expectation that any of multiple expected conditions is true.
     Equivalent to a logical 'OR'.
     Returns results of the first matching condition, or False if none do. """
+
     def any_of_condition(driver):
         for expected_condition in expected_conditions:
             try:
@@ -377,6 +445,7 @@ def any_of(*expected_conditions):
             except WebDriverException:
                 pass
         return False
+
     return any_of_condition
 
 
@@ -385,6 +454,7 @@ def all_of(*expected_conditions):
     Equivalent to a logical 'AND'.
     Returns: When any ExpectedCondition is not met: False.
     When all ExpectedConditions are met: A List with each ExpectedCondition's return value. """
+
     def all_of_condition(driver):
         results = []
         for expected_condition in expected_conditions:
@@ -396,6 +466,7 @@ def all_of(*expected_conditions):
             except WebDriverException:
                 return False
         return results
+
     return all_of_condition
 
 
@@ -403,6 +474,7 @@ def none_of(*expected_conditions):
     """ An expectation that none of 1 or multiple expected conditions is true.
     Equivalent to a logical 'NOT-OR'.
     Returns a Boolean """
+
     def none_of_condition(driver):
         for expected_condition in expected_conditions:
             try:
@@ -412,4 +484,5 @@ def none_of(*expected_conditions):
             except WebDriverException:
                 pass
         return True
+
     return none_of_condition

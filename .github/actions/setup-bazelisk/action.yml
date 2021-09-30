@@ -2,11 +2,11 @@ name: 'Setup bazelisk'
 inputs:
   version:  # id of input
     required: false
-    default: 'v1.7.4'
+    default: 'v1.7.5'
 runs:
   using: "composite"
   steps:
     - run: |
-        curl -L -o bazelisk "https://github.com/bazelbuild/bazelisk/releases/download/v1.7.4/bazelisk-linux-amd64"
+        curl -L -o bazelisk "https://github.com/bazelbuild/bazelisk/releases/download/v1.7.5/bazelisk-linux-amd64"
         chmod +x bazelisk && sudo mv bazelisk /usr/local/bin/bazel
       shell: bash

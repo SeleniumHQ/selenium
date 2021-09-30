@@ -21,13 +21,8 @@ require_relative 'spec_helper'
 
 module Selenium
   module WebDriver
-    describe DevTools, only: {driver: %i[chrome edge]} do
-      let(:username) { SpecSupport::RackServer::TestApp::BASIC_AUTH_CREDENTIALS.first }
-      let(:password) { SpecSupport::RackServer::TestApp::BASIC_AUTH_CREDENTIALS.last }
-
-      after do
-        quit_driver
-      end
+    describe DevTools, exclusive: {browser: %i[chrome edge firefox_nightly]} do
+      after { reset_driver! }
 
       it 'sends commands' do
         driver.devtools.page.navigate(url: url_for('xhtmlTest.html'))
@@ -40,26 +35,39 @@ module Selenium
         driver.devtools.page.enable
         driver.devtools.page.on(:load_event_fired) { callback.call }
         driver.navigate.to url_for('xhtmlTest.html')
+        sleep 0.5
 
-        expect(callback).to have_received(:call)
+        expect(callback).to have_received(:call).at_least(:once)
       end
 
-      it 'authenticates on any request' do
-        driver.register(username: username, password: password)
-
-        driver.navigate.to url_for('basicAuth')
-        expect(driver.find_element(tag_name: 'h1').text).to eq('authorized')
+      it 'propagates errors in events' do
+        driver.devtools.page.enable
+        driver.devtools.page.on(:load_event_fired) { raise "This is fine!" }
+        expect { driver.navigate.to url_for('xhtmlTest.html') }.to raise_error(RuntimeError, "This is fine!")
       end
 
-      it 'authenticates based on URL' do
-        auth_url = url_for('basicAuth')
-        driver.register(username: username, password: password, uri: /localhost/)
+      context 'authentication', except: {browser: :firefox_nightly,
+                                         reason: 'Fetch.enable is not yet supported'} do
+        let(:username) { SpecSupport::RackServer::TestApp::BASIC_AUTH_CREDENTIALS.first }
+        let(:password) { SpecSupport::RackServer::TestApp::BASIC_AUTH_CREDENTIALS.last }
 
-        driver.navigate.to auth_url.sub('localhost', '127.0.0.1')
-        expect { driver.find_element(tag_name: 'h1') }.to raise_error(Error::NoSuchElementError)
+        it 'on any request' do
+          driver.register(username: username, password: password)
 
-        driver.navigate.to auth_url
-        expect(driver.find_element(tag_name: 'h1').text).to eq('authorized')
+          driver.navigate.to url_for('basicAuth')
+          expect(driver.find_element(tag_name: 'h1').text).to eq('authorized')
+        end
+
+        it 'based on URL' do
+          auth_url = url_for('basicAuth')
+          driver.register(username: username, password: password, uri: /localhost/)
+
+          driver.navigate.to auth_url.sub('localhost', '127.0.0.1')
+          expect { driver.find_element(tag_name: 'h1') }.to raise_error(Error::NoSuchElementError)
+
+          driver.navigate.to auth_url
+          expect(driver.find_element(tag_name: 'h1').text).to eq('authorized')
+        end
       end
 
       it 'notifies about log messages' do
@@ -68,18 +76,49 @@ module Selenium
         driver.navigate.to url_for('javascriptPage.html')
 
         driver.execute_script("console.log('I like cheese');")
+        sleep 0.5
         driver.execute_script("console.log(true);")
+        sleep 0.5
         driver.execute_script("console.log(null);")
+        sleep 0.5
         driver.execute_script("console.log(undefined);")
+        sleep 0.5
         driver.execute_script("console.log(document);")
-        wait.until { logs.size == 5 }
+        sleep 0.5
 
         expect(logs).to include(
           an_object_having_attributes(type: :log, args: ['I like cheese']),
           an_object_having_attributes(type: :log, args: [true]),
           an_object_having_attributes(type: :log, args: [nil]),
-          an_object_having_attributes(type: :log, args: [{'type' => 'undefined'}]),
+          an_object_having_attributes(type: :log, args: [{'type' => 'undefined'}])
+        )
+      end
+
+      it 'notifies about document log messages', except: {browser: :firefox_nightly,
+                                                          reason: 'Firefox & Chrome parse document differently'} do
+        logs = []
+        driver.on_log_event(:console) { |log| logs.push(log) }
+        driver.navigate.to url_for('javascriptPage.html')
+
+        driver.execute_script("console.log(document);")
+        wait.until { !logs.empty? }
+
+        expect(logs).to include(
           an_object_having_attributes(type: :log, args: [hash_including('type' => 'object')])
+        )
+      end
+
+      it 'notifies about document log messages', only: {browser: :firefox_nightly,
+                                                        reason: 'Firefox & Chrome parse document differently'} do
+        logs = []
+        driver.on_log_event(:console) { |log| logs.push(log) }
+        driver.navigate.to url_for('javascriptPage.html')
+
+        driver.execute_script("console.log(document);")
+        wait.until { !logs.empty? }
+
+        expect(logs).to include(
+          an_object_having_attributes(type: :log, args: [hash_including('location')])
         )
       end
 
@@ -96,7 +135,8 @@ module Selenium
         expect(exception.stacktrace).not_to be_empty
       end
 
-      it 'notifies about DOM mutations' do
+      it 'notifies about DOM mutations', except: {browser: :firefox_nightly,
+                                                  reason: 'Runtime.addBinding not yet supported'} do
         mutations = []
         driver.on_log_event(:mutation) { |mutation| mutations.push(mutation) }
         driver.navigate.to url_for('dynamic.html')
@@ -109,6 +149,98 @@ module Selenium
         expect(mutation.attribute_name).to eq('style')
         expect(mutation.current_value).to eq('')
         expect(mutation.old_value).to eq('display:none;')
+      end
+
+      context 'network interception', except: {browser: :firefox_nightly,
+                                               reason: 'Fetch.enable is not yet supported'} do
+        it 'continues requests' do
+          requests = []
+          driver.intercept do |request, &continue|
+            requests << request
+            continue.call(request)
+          end
+          driver.navigate.to url_for('html5Page.html')
+          expect(driver.title).to eq('HTML5')
+          expect(requests).not_to be_empty
+        end
+
+        it 'changes requests' do
+          driver.intercept do |request, &continue|
+            uri = URI(request.url)
+            if uri.path.match?(%r{/html5/.*\.jpg})
+              uri.path = '/beach.jpg'
+              request.url = uri.to_s
+            end
+            continue.call(request)
+          end
+          driver.navigate.to url_for('html5Page.html')
+          expect(driver.find_elements(tag_name: 'img').map(&:size).uniq).to eq([Dimension.new(640, 480)])
+        end
+
+        it 'continues responses' do
+          responses = []
+          driver.intercept do |request, &continue|
+            continue.call(request) do |response|
+              responses << response
+            end
+          end
+          driver.navigate.to url_for('html5Page.html')
+          expect(driver.title).to eq('HTML5')
+          expect(responses).not_to be_empty
+        end
+
+        it 'changes responses' do
+          driver.intercept do |request, &continue|
+            continue.call(request) do |response|
+              response.body << '<h4 id="appended">Appended!</h4>' if request.url.include?('html5Page.html')
+            end
+          end
+          driver.navigate.to url_for('html5Page.html')
+          expect(driver.find_elements(id: "appended")).not_to be_empty
+        end
+      end
+
+      context 'script pinning' do
+        before do
+          driver.navigate.to url_for('xhtmlTest.html')
+        end
+
+        it 'allows to pin script' do
+          script = driver.pin_script('return document.title;')
+          expect(driver.pinned_scripts).to eq([script])
+          expect(driver.execute_script(script)).to eq('XHTML Test Page')
+        end
+
+        it 'ensures pinned script is available on new pages' do
+          script = driver.pin_script('return document.title;')
+          driver.navigate.to url_for('formPage.html')
+          expect(driver.execute_script(script)).to eq('We Leave From Here')
+        end
+
+        it 'allows to unpin script' do
+          script = driver.pin_script('return document.title;')
+          driver.unpin_script(script)
+          expect(driver.pinned_scripts).to be_empty
+          expect { driver.execute_script(script) }.to raise_error(Error::JavascriptError)
+        end
+
+        it 'ensures unpinned scripts are not available on new pages' do
+          script = driver.pin_script('return document.title;')
+          driver.unpin_script(script)
+          driver.navigate.to url_for('formPage.html')
+          expect { driver.execute_script(script) }.to raise_error(Error::JavascriptError)
+        end
+
+        it 'handles arguments in pinned script' do
+          script = driver.pin_script('return arguments;')
+          element = driver.find_element(id: 'id1')
+          expect(driver.execute_script(script, 1, true, element)).to eq([1, true, element])
+        end
+
+        it 'supports async pinned scripts' do
+          script = driver.pin_script('arguments[0]()')
+          expect { driver.execute_async_script(script) }.not_to raise_error
+        end
       end
     end
   end

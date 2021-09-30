@@ -29,9 +29,7 @@ module Selenium
       class Driver < WebDriver::Driver
         include DriverExtensions::UploadsFiles
         include DriverExtensions::HasSessionId
-        include DriverExtensions::Rotatable
         include DriverExtensions::HasRemoteStatus
-        include DriverExtensions::HasWebStorage
 
         def initialize(bridge: nil, listener: nil, **opts)
           desired_capabilities = opts[:desired_capabilities]
@@ -44,12 +42,18 @@ module Selenium
           end
           opts[:url] ||= "http://#{Platform.localhost}:4444/wd/hub"
           super
+          @bridge.file_detector = ->((filename, *)) { File.exist?(filename) && filename.to_s }
         end
 
-        def print_page(**options)
-          options[:page_ranges] &&= Array(options[:page_ranges])
+        private
 
-          @bridge.print_page(options)
+        def devtools_url
+          capabilities['se:cdp']
+        end
+
+        def devtools_version
+          capabilities['se:cdpVersion']&.split('.')&.first ||
+            raise(Error::WebDriverError, "DevTools is not supported by the Remote Server")
         end
       end # Driver
     end # Remote

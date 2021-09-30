@@ -60,7 +60,9 @@ namespace OpenQA.Selenium.Firefox
         private const string FirefoxPrefsCapability = "prefs";
         private const string FirefoxEnvCapability = "env";
         private const string FirefoxOptionsCapability = "moz:firefoxOptions";
+        private const string FirefoxEnableDevToolsProtocolCapability = "moz:debuggerAddress";
 
+        private bool enableDevToolsProtocol;
         private string browserBinaryLocation;
         private FirefoxDriverLogLevel logLevel = FirefoxDriverLogLevel.Default;
         private FirefoxProfile profile;
@@ -68,6 +70,7 @@ namespace OpenQA.Selenium.Firefox
         private Dictionary<string, object> profilePreferences = new Dictionary<string, object>();
         private Dictionary<string, object> additionalFirefoxOptions = new Dictionary<string, object>();
         private Dictionary<string, object> environmentVariables = new Dictionary<string, object>();
+        private FirefoxAndroidOptions androidOptions;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="FirefoxOptions"/> class.
@@ -86,6 +89,7 @@ namespace OpenQA.Selenium.Firefox
             this.AddKnownCapabilityName(FirefoxOptions.FirefoxLogCapability, "LogLevel property");
             this.AddKnownCapabilityName(FirefoxOptions.FirefoxLegacyProfileCapability, "Profile property");
             this.AddKnownCapabilityName(FirefoxOptions.FirefoxLegacyBinaryCapability, "BrowserExecutableLocation property");
+            this.AddKnownCapabilityName(FirefoxOptions.FirefoxEnableDevToolsProtocolCapability, "EnableDevToolsProtocol property");
         }
 
         /// <summary>
@@ -123,6 +127,21 @@ namespace OpenQA.Selenium.Firefox
         {
             get { return this.logLevel; }
             set { this.logLevel = value; }
+        }
+
+        public bool EnableDevToolsProtocol
+        {
+            get { return this.enableDevToolsProtocol; }
+            set { this.enableDevToolsProtocol = value; }
+        }
+
+        /// <summary>
+        /// Gets or sets the options for automating Firefox on Android.
+        /// </summary>
+        public FirefoxAndroidOptions AndroidOptions
+        {
+            get { return this.androidOptions; }
+            set { this.androidOptions = value; }
         }
 
         /// <summary>
@@ -318,6 +337,10 @@ namespace OpenQA.Selenium.Firefox
             IWritableCapabilities capabilities = GenerateDesiredCapabilities(true);
             Dictionary<string, object> firefoxOptions = this.GenerateFirefoxOptionsDictionary();
             capabilities.SetCapability(FirefoxOptionsCapability, firefoxOptions);
+            if (this.enableDevToolsProtocol)
+            {
+                capabilities.SetCapability(FirefoxEnableDevToolsProtocolCapability, true);
+            }
 
             return capabilities.AsReadOnly();
         }
@@ -364,6 +387,11 @@ namespace OpenQA.Selenium.Firefox
                 firefoxOptions[FirefoxEnvCapability] = this.environmentVariables;
             }
 
+            if (this.androidOptions != null)
+            {
+                this.AddAndroidOptions(firefoxOptions);
+            }
+
             foreach (KeyValuePair<string, object> pair in this.additionalFirefoxOptions)
             {
                 firefoxOptions.Add(pair.Key, pair.Value);
@@ -380,6 +408,32 @@ namespace OpenQA.Selenium.Firefox
             }
 
             this.profilePreferences[preferenceName] = preferenceValue;
+        }
+
+        private void AddAndroidOptions(Dictionary<string, object> firefoxOptions)
+        {
+            firefoxOptions["androidPackage"] = this.androidOptions.AndroidPackage;
+
+            if (!string.IsNullOrEmpty(this.androidOptions.AndroidDeviceSerial))
+            {
+                firefoxOptions["androidDeviceSerial"] = this.androidOptions.AndroidDeviceSerial;
+            }
+
+            if (!string.IsNullOrEmpty(this.androidOptions.AndroidActivity))
+            {
+                firefoxOptions["androidActivity"] = this.androidOptions.AndroidActivity;
+            }
+
+            if (this.androidOptions.AndroidIntentArguments.Count > 0)
+            {
+                List<object> args = new List<object>();
+                foreach (string argument in this.androidOptions.AndroidIntentArguments)
+                {
+                    args.Add(argument);
+                }
+
+                firefoxOptions["androidIntentArguments"] = args;
+            }
         }
     }
 }

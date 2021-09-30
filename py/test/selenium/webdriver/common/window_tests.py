@@ -58,6 +58,7 @@ def test_should_set_the_size_of_the_current_window(driver):
     assert new_size.get('height') == target_height
 
 
+@pytest.mark.xfail_chrome
 def test_should_get_the_position_of_the_current_window(driver):
     position = driver.get_window_position()
     assert position.get('x') >= 0
@@ -81,6 +82,7 @@ def test_should_set_the_position_of_the_current_window(driver):
 
 @pytest.mark.xfail_safari(raises=WebDriverException,
                           reason='Get Window Rect command not implemented')
+@pytest.mark.xfail_chrome
 def test_should_get_the_rect_of_the_current_window(driver):
     rect = driver.get_window_rect()
     assert rect.get('x') >= 0
@@ -110,6 +112,20 @@ def test_should_set_the_rect_of_the_current_window(driver):
     assert new_rect.get('y') == target_y
     assert new_rect.get('width') == target_width
     assert new_rect.get('height') == target_height
+
+
+def test_set_window_rect_should_accept_0_as_x_and_y(driver):
+    from selenium.common.exceptions import InvalidArgumentException
+    try:
+        driver.set_window_rect(x=0, y=0)
+    except InvalidArgumentException:
+        pytest.fail("Should not have thrown InvalidArgumentException")
+
+
+def test_set_window_rect_throws_when_height_and_width_are_0(driver):
+    from selenium.common.exceptions import InvalidArgumentException
+    with pytest.raises(InvalidArgumentException):
+        driver.set_window_rect(height=0, width=0)
 
 
 # @pytest.mark.xfail_safari(raises=WebDriverException,

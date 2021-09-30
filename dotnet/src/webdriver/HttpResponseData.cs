@@ -29,6 +29,7 @@ namespace OpenQA.Selenium
     public class HttpResponseData
     {
         private Dictionary<string, string> headers = new Dictionary<string, string>();
+        private List<string> cookies = new List<string>();
 
         /// <summary>
         /// Gets or sets the ID of the request that generated this response.
@@ -64,5 +65,10 @@ namespace OpenQA.Selenium
         /// Gets the headers of the HTTP response.
         /// </summary>
         public Dictionary<string, string> Headers => this.headers;
+
+        /// <summary>
+        /// Gets the cookie headers of the HTTP response.
+        /// </summary>
+        public List<string> CookieHeaders => this.cookies;
     }
 }

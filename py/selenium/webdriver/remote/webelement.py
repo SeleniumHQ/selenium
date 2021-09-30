@@ -16,7 +16,7 @@
 # under the License.
 
 import os
-from base64 import b64decode
+from base64 import b64decode, encodebytes
 from hashlib import md5 as md5_hash
 import pkgutil
 import warnings
@@ -29,29 +29,15 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.common.utils import keys_to_typing
 from .command import Command
 
-from six import add_metaclass
 
-# Python 3 imports
-try:
-    str = basestring
-except NameError:
-    pass
-
-try:
-    from base64 import encodebytes
-except ImportError:  # Python 2
-    from base64 import encodestring as encodebytes
-
-
-# TODO: when dropping Python 2.7, use built in importlib_resources.files
-# not relying on __package__ here as it can be `None` in some situations (see #4558)
+# TODO: When moving to supporting python 3.9 as the minimum version we can
+# use built in importlib_resources.files.
 _pkg = '.'.join(__name__.split('.')[:-1])
 getAttribute_js = pkgutil.get_data(_pkg, 'getAttribute.js').decode('utf8')
 isDisplayed_js = pkgutil.get_data(_pkg, 'isDisplayed.js').decode('utf8')
 
 
-@add_metaclass(ABCMeta)
-class BaseWebElement(object):
+class BaseWebElement(metaclass=ABCMeta):
     """
     Abstract Base Class for WebElement.
     ABC's will allow custom types to be registered as a WebElement to pass type checks.
@@ -71,45 +57,41 @@ class WebElement(BaseWebElement):
     ``StaleElementReferenceException`` is thrown, and all future calls to this
     instance will fail."""
 
-    def __init__(self, parent, id_, w3c=False):
+    def __init__(self, parent, id_):
         self._parent = parent
         self._id = id_
-        self._w3c = w3c
 
     def __repr__(self):
         return '<{0.__module__}.{0.__name__} (session="{1}", element="{2}")>'.format(
             type(self), self._parent.session_id, self._id)
 
     @property
-    def tag_name(self):
+    def tag_name(self) -> str:
         """This element's ``tagName`` property."""
         return self._execute(Command.GET_ELEMENT_TAG_NAME)['value']
 
     @property
-    def text(self):
+    def text(self) -> str:
         """The text of the element."""
         return self._execute(Command.GET_ELEMENT_TEXT)['value']
 
-    def click(self):
+    def click(self) -> None:
         """Clicks the element."""
         self._execute(Command.CLICK_ELEMENT)
 
     def submit(self):
         """Submits a form."""
-        if self._w3c:
-            form = self.find_element(By.XPATH, "./ancestor-or-self::form")
-            self._parent.execute_script(
-                "var e = arguments[0].ownerDocument.createEvent('Event');"
-                "e.initEvent('submit', true, true);"
-                "if (arguments[0].dispatchEvent(e)) { arguments[0].submit() }", form)
-        else:
-            self._execute(Command.SUBMIT_ELEMENT)
+        form = self.find_element(By.XPATH, "./ancestor-or-self::form")
+        self._parent.execute_script(
+            "var e = arguments[0].ownerDocument.createEvent('Event');"
+            "e.initEvent('submit', true, true);"
+            "if (arguments[0].dispatchEvent(e)) { arguments[0].submit() }", form)
 
-    def clear(self):
+    def clear(self) -> None:
         """Clears the text if it's a text entry element."""
         self._execute(Command.CLEAR_ELEMENT)
 
-    def get_property(self, name):
+    def get_property(self, name) -> str:
         """
         Gets the given property of the element.
 
@@ -127,7 +109,22 @@ class WebElement(BaseWebElement):
             # if we hit an end point that doesnt understand getElementProperty lets fake it
             return self.parent.execute_script('return arguments[0][arguments[1]]', self, name)
 
-    def get_attribute(self, name):
+    def get_dom_attribute(self, name) -> str:
+        """
+        Gets the given attribute of the element. Unlike :func:`~selenium.webdriver.remote.BaseWebElement.get_attribute`,
+        this method only returns attributes declared in the element's HTML markup.
+
+        :Args:
+            - name - Name of the attribute to retrieve.
+
+        :Usage:
+            ::
+
+                text_length = target_element.get_dom_attribute("class")
+        """
+        return self._execute(Command.GET_ELEMENT_ATTRIBUTE, {"name": name})["value"]
+
+    def get_attribute(self, name) -> str:
         """Gets the given attribute or property of the element.
 
         This method will first try to return the value of a property with the
@@ -140,6 +137,10 @@ class WebElement(BaseWebElement):
         as strings.  For attributes or properties which do not exist, ``None``
         is returned.
 
+        To obtain the exact value of the attribute or property,
+        use :func:`~selenium.webdriver.remote.BaseWebElement.get_dom_attribute` or
+        :func:`~selenium.webdriver.remote.BaseWebElement.get_property` methods respectively.
+
         :Args:
             - name - Name of the attribute/property to retrieve.
 
@@ -150,27 +151,19 @@ class WebElement(BaseWebElement):
 
         """
 
-        attribute_value = ''
-        if self._w3c:
-            attribute_value = self.parent.execute_script(
-                "return (%s).apply(null, arguments);" % getAttribute_js,
-                self, name)
-        else:
-            resp = self._execute(Command.GET_ELEMENT_ATTRIBUTE, {'name': name})
-            attribute_value = resp.get('value')
-            if attribute_value:
-                if name != 'value' and attribute_value.lower() in ('true', 'false'):
-                    attribute_value = attribute_value.lower()
+        attribute_value = self.parent.execute_script(
+            "return (%s).apply(null, arguments);" % getAttribute_js,
+            self, name)
         return attribute_value
 
-    def is_selected(self):
+    def is_selected(self) -> bool:
         """Returns whether the element is selected.
 
         Can be used to check if a checkbox or radio button is selected.
         """
         return self._execute(Command.IS_ELEMENT_SELECTED)['value']
 
-    def is_enabled(self):
+    def is_enabled(self) -> bool:
         """Returns whether the element is enabled."""
         return self._execute(Command.IS_ELEMENT_ENABLED)['value']
 
@@ -508,7 +501,7 @@ class WebElement(BaseWebElement):
         warnings.warn("find_elements_by_* commands are deprecated. Please use find_elements() instead")
         return self.find_elements(by=By.CSS_SELECTOR, value=css_selector)
 
-    def send_keys(self, *value):
+    def send_keys(self, *value) -> None:
         """Simulates typing into the element.
 
         :Args:
@@ -535,8 +528,8 @@ class WebElement(BaseWebElement):
         # the same behaviour as for java binding
         if self.parent._is_remote:
             local_files = list(map(lambda keys_to_send:
-                                   self.parent.file_detector.is_local_file(keys_to_send),
-                                   ''.join(value).split('\n')))
+                                   self.parent.file_detector.is_local_file(str(keys_to_send)),
+                                   ''.join(map(str, value)).split('\n')))
             if None not in local_files:
                 remote_files = []
                 for file in local_files:
@@ -548,18 +541,15 @@ class WebElement(BaseWebElement):
                        'value': keys_to_typing(value)})
 
     # RenderedWebElement Items
-    def is_displayed(self):
+    def is_displayed(self) -> bool:
         """Whether the element is visible to a user."""
         # Only go into this conditional for browsers that don't use the atom themselves
-        if self._w3c:
-            return self.parent.execute_script(
-                "return (%s).apply(null, arguments);" % isDisplayed_js,
-                self)
-        else:
-            return self._execute(Command.IS_ELEMENT_DISPLAYED)['value']
+        return self.parent.execute_script(
+            "return (%s).apply(null, arguments);" % isDisplayed_js,
+            self)
 
     @property
-    def location_once_scrolled_into_view(self):
+    def location_once_scrolled_into_view(self) -> dict:
         """THIS PROPERTY MAY CHANGE WITHOUT WARNING. Use this to discover
         where on the screen an element is so that we can click it. This method
         should cause the element to be scrolled into view.
@@ -568,55 +558,50 @@ class WebElement(BaseWebElement):
         the element is not visible.
 
         """
-        if self._w3c:
-            old_loc = self._execute(Command.W3C_EXECUTE_SCRIPT, {
-                'script': "arguments[0].scrollIntoView(true); return arguments[0].getBoundingClientRect()",
-                'args': [self]})['value']
-            return {"x": round(old_loc['x']),
-                    "y": round(old_loc['y'])}
-        else:
-            return self._execute(Command.GET_ELEMENT_LOCATION_ONCE_SCROLLED_INTO_VIEW)['value']
+        old_loc = self._execute(Command.W3C_EXECUTE_SCRIPT, {
+            'script': "arguments[0].scrollIntoView(true); return arguments[0].getBoundingClientRect()",
+            'args': [self]})['value']
+        return {"x": round(old_loc['x']),
+                "y": round(old_loc['y'])}
 
     @property
-    def size(self):
+    def size(self) -> dict:
         """The size of the element."""
-        size = {}
-        if self._w3c:
-            size = self._execute(Command.GET_ELEMENT_RECT)['value']
-        else:
-            size = self._execute(Command.GET_ELEMENT_SIZE)['value']
+        size = self._execute(Command.GET_ELEMENT_RECT)['value']
         new_size = {"height": size["height"],
                     "width": size["width"]}
         return new_size
 
-    def value_of_css_property(self, property_name):
+    def value_of_css_property(self, property_name) -> str:
         """The value of a CSS property."""
         return self._execute(Command.GET_ELEMENT_VALUE_OF_CSS_PROPERTY, {
             'propertyName': property_name})['value']
 
     @property
-    def location(self):
+    def location(self) -> dict:
         """The location of the element in the renderable canvas."""
-        if self._w3c:
-            old_loc = self._execute(Command.GET_ELEMENT_RECT)['value']
-        else:
-            old_loc = self._execute(Command.GET_ELEMENT_LOCATION)['value']
+        old_loc = self._execute(Command.GET_ELEMENT_RECT)['value']
         new_loc = {"x": round(old_loc['x']),
                    "y": round(old_loc['y'])}
         return new_loc
 
     @property
-    def rect(self):
+    def rect(self) -> dict:
         """A dictionary with the size and location of the element."""
-        if self._w3c:
-            return self._execute(Command.GET_ELEMENT_RECT)['value']
-        else:
-            rect = self.size.copy()
-            rect.update(self.location)
-            return rect
+        return self._execute(Command.GET_ELEMENT_RECT)['value']
 
     @property
-    def screenshot_as_base64(self):
+    def aria_role(self) -> str:
+        """ Returns the ARIA role of the current web element"""
+        return self._execute(Command.GET_ELEMENT_ARIA_ROLE)['value']
+
+    @property
+    def accessible_name(self) -> str:
+        """Returns the ARIA Lavel of the current webelement"""
+        return self._execute(Command.GET_ELEMENT_ARIA_LABEL)['value']
+
+    @property
+    def screenshot_as_base64(self) -> str:
         """
         Gets the screenshot of the current element as a base64 encoded string.
 
@@ -628,7 +613,7 @@ class WebElement(BaseWebElement):
         return self._execute(Command.ELEMENT_SCREENSHOT)['value']
 
     @property
-    def screenshot_as_png(self):
+    def screenshot_as_png(self) -> str:
         """
         Gets the screenshot of the current element as a binary data.
 
@@ -639,7 +624,7 @@ class WebElement(BaseWebElement):
         """
         return b64decode(self.screenshot_as_base64.encode('ascii'))
 
-    def screenshot(self, filename):
+    def screenshot(self, filename) -> bool:
         """
         Saves a screenshot of the current element to a PNG image file. Returns
            False if there is any IOError, else returns True. Use full paths in
@@ -673,7 +658,7 @@ class WebElement(BaseWebElement):
         return self._parent
 
     @property
-    def id(self):
+    def id(self) -> str:
         """Internal ID used by selenium.
 
         This is mainly for internal use. Simple use cases such as checking if 2
@@ -718,18 +703,17 @@ class WebElement(BaseWebElement):
 
         :rtype: WebElement
         """
-        if self._w3c:
-            if by == By.ID:
-                by = By.CSS_SELECTOR
-                value = '[id="%s"]' % value
-            elif by == By.TAG_NAME:
-                by = By.CSS_SELECTOR
-            elif by == By.CLASS_NAME:
-                by = By.CSS_SELECTOR
-                value = ".%s" % value
-            elif by == By.NAME:
-                by = By.CSS_SELECTOR
-                value = '[name="%s"]' % value
+        if by == By.ID:
+            by = By.CSS_SELECTOR
+            value = '[id="%s"]' % value
+        elif by == By.TAG_NAME:
+            by = By.CSS_SELECTOR
+        elif by == By.CLASS_NAME:
+            by = By.CSS_SELECTOR
+            value = ".%s" % value
+        elif by == By.NAME:
+            by = By.CSS_SELECTOR
+            value = '[name="%s"]' % value
 
         return self._execute(Command.FIND_CHILD_ELEMENT,
                              {"using": by, "value": value})['value']
@@ -745,18 +729,17 @@ class WebElement(BaseWebElement):
 
         :rtype: list of WebElement
         """
-        if self._w3c:
-            if by == By.ID:
-                by = By.CSS_SELECTOR
-                value = '[id="%s"]' % value
-            elif by == By.TAG_NAME:
-                by = By.CSS_SELECTOR
-            elif by == By.CLASS_NAME:
-                by = By.CSS_SELECTOR
-                value = ".%s" % value
-            elif by == By.NAME:
-                by = By.CSS_SELECTOR
-                value = '[name="%s"]' % value
+        if by == By.ID:
+            by = By.CSS_SELECTOR
+            value = '[id="%s"]' % value
+        elif by == By.TAG_NAME:
+            by = By.CSS_SELECTOR
+        elif by == By.CLASS_NAME:
+            by = By.CSS_SELECTOR
+            value = ".%s" % value
+        elif by == By.NAME:
+            by = By.CSS_SELECTOR
+            value = '[name="%s"]' % value
 
         return self._execute(Command.FIND_CHILD_ELEMENTS,
                              {"using": by, "value": value})['value']

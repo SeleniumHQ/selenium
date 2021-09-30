@@ -46,11 +46,14 @@ module Selenium
         raise ArgumentError, 'name is required' unless opts[:name]
         raise ArgumentError, 'value is required' unless opts[:value]
 
-        opts[:path] ||= '/'
+        # NOTE: This is required because of https://bugs.chromium.org/p/chromedriver/issues/detail?id=3732
         opts[:secure] ||= false
 
         same_site = opts.delete(:same_site)
         opts[:sameSite] = same_site if same_site
+
+        http_only = opts.delete(:http_only)
+        opts[:httpOnly] = http_only if http_only
 
         obj = opts.delete(:expires)
         opts[:expiry] = seconds_from(obj).to_i if obj
@@ -101,24 +104,19 @@ module Selenium
         @timeouts ||= Timeouts.new(@bridge)
       end
 
-      #
-      # @api beta This API may be changed or removed in a future release.
-      #
-
       def logs
+        WebDriver.logger.deprecate('Manager#logs', 'Chrome::Driver#logs')
         @logs ||= Logs.new(@bridge)
       end
 
       #
-      # Create a new top-level browsing context
-      # https://w3c.github.io/webdriver/#new-window
       # @param type [Symbol] Supports two values: :tab and :window.
-      #  Use :tab if you'd like the new window to share an OS-level window
-      #  with the current browsing context.
-      #  Use :window otherwise
       # @return [String] The value of the window handle
       #
       def new_window(type = :tab)
+        WebDriver.logger.deprecate('Manager#new_window', 'TargetLocator#new_window', id: :new_window) do
+          'e.g., `driver.switch_to.new_window(:tab)`'
+        end
         case type
         when :tab, :window
           result = @bridge.new_window(type)
@@ -132,10 +130,6 @@ module Selenium
                                "Try :tab or :window"
         end
       end
-
-      #
-      # @api beta This API may be changed or removed in a future release.
-      #
 
       def window
         @window ||= Window.new(@bridge)

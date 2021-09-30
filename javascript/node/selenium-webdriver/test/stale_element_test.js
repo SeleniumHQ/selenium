@@ -41,14 +41,14 @@ test.suite(function (env) {
         await driver.get(Pages.javascriptPage)
 
         var toBeDeleted = await driver.findElement(By.id('deleted'))
-        assert.equal(await toBeDeleted.getTagName(), 'p')
+        assert.strictEqual(await toBeDeleted.getTagName(), 'p')
 
         await driver.findElement(By.id('delete')).click()
         await driver.wait(until.stalenessOf(toBeDeleted), 5000)
       }
     )
 
-  it('an element found in a different frame is stale', async function () {
+  xit('an element found in a different frame is stale', async function () {
     await driver.get(Pages.missedJsReferencePage)
 
     var frame = await driver.findElement(By.css('iframe[name="inner"]'))
@@ -57,7 +57,10 @@ test.suite(function (env) {
     var el = await driver.findElement(By.id('oneline'))
     await driver.switchTo().defaultContent()
     return el.getText().then(assert.fail, function (e) {
-      assert.ok(e instanceof error.StaleElementReferenceError)
+      assert.ok(
+        e instanceof error.StaleElementReferenceError,
+        `The error is ${JSON.stringify(e)}`
+      )
     })
   })
 })

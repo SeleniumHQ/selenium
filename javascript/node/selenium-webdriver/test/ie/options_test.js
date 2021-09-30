@@ -37,7 +37,7 @@ test.suite(
         caps = caps.map_.get(ie.VENDOR_COMMAND_PREFIX)[
           ie.Key.FILE_UPLOAD_DIALOG_TIMEOUT
         ]
-        assert.equal(caps, timeOut)
+        assert.strictEqual(caps, timeOut)
         await driver.quit()
       })
 
@@ -51,7 +51,7 @@ test.suite(
         caps = caps.map_.get(ie.VENDOR_COMMAND_PREFIX)[
           ie.Key.BROWSER_ATTACH_TIMEOUT
         ]
-        assert.equal(caps, timeOut)
+        assert.strictEqual(caps, timeOut)
         await driver.quit()
       })
 
@@ -63,7 +63,7 @@ test.suite(
         caps = caps.map_.get(ie.VENDOR_COMMAND_PREFIX)[
           ie.Key.ELEMENT_SCROLL_BEHAVIOR
         ]
-        assert.equal(caps, ie.Behavior.TOP)
+        assert.strictEqual(caps, ie.Behavior.TOP)
         await driver.quit()
       })
 
@@ -75,7 +75,7 @@ test.suite(
         caps = caps.map_.get(ie.VENDOR_COMMAND_PREFIX)[
           ie.Key.ELEMENT_SCROLL_BEHAVIOR
         ]
-        assert.equal(caps, ie.Behavior.TOP)
+        assert.strictEqual(caps, ie.Behavior.TOP)
         await driver.quit()
       })
 
@@ -90,16 +90,16 @@ test.suite(
         caps = caps.map_.get(ie.VENDOR_COMMAND_PREFIX)[
           ie.Key.BROWSER_COMMAND_LINE_SWITCHES
         ]
-        assert.equal(caps, '-k -private')
+        assert.strictEqual(caps, '-k -private')
         await driver.quit()
       })
 
       it('can set capability', async function () {
         let caps = Capabilities.ie()
         assert.ok(!caps.has('silent'))
-        assert.equal(undefined, caps.get('silent'))
+        assert.strictEqual(undefined, caps.get('silent'))
         caps.set('silent', true)
-        assert.equal(true, caps.get('silent'))
+        assert.strictEqual(true, caps.get('silent'))
         assert.ok(caps.has('silent'))
       })
     })

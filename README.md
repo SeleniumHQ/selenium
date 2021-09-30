@@ -1,4 +1,10 @@
-# Selenium [![Travis Status](https://travis-ci.com/SeleniumHQ/selenium.svg?branch=trunk)](https://travis-ci.com/SeleniumHQ/selenium/builds) [![AppVeyor Status](https://ci.appveyor.com/api/projects/status/pg1f99p1aetp9mk9/branch/trunk?svg=true)](https://ci.appveyor.com/project/SeleniumHQ/selenium/branch/trunk)
+# Selenium
+
+[![Python workflow](https://github.com/SeleniumHQ/selenium/workflows/Python%20workflow/badge.svg)](https://github.com/SeleniumHQ/selenium/actions?query=workflow%3A%22Python+workflow%22)
+[![Ruby workflow](https://github.com/SeleniumHQ/selenium/workflows/Ruby%20workflow/badge.svg)](https://github.com/SeleniumHQ/selenium/actions?query=workflow%3A%22Ruby+workflow%22)
+[![JavaScript workflow](https://github.com/SeleniumHQ/selenium/workflows/JavaScript%20workflow/badge.svg)](https://github.com/SeleniumHQ/selenium/actions?query=workflow%3A%22JavaScript+workflow%22)
+[![Java workflow](https://github.com/SeleniumHQ/selenium/workflows/Java%20workflow/badge.svg)](https://github.com/SeleniumHQ/selenium/actions?query=workflow%3A%22Java+workflow%22)
+
 
 <a href="https://selenium.dev"><img src="https://selenium.dev/images/selenium_logo_square_green.png" width="180" alt="Selenium"/></a>
 
@@ -43,7 +49,6 @@ before submitting your pull requests.
   installed. If you're met with a list of command-line options, you're referencing the JDK properly.
 * [Python 3.7+](https://www.python.org/downloads/)
 * `python` on the PATH
-* [The Requests Library](http://python-requests.org) for Python: `pip install requests`
 * [The tox automation project](http://tox.readthedocs.org/) for Python: `pip install tox`
 * MacOS users should have the latest version of Xcode installed, including the command-line tools.
 The following command should work:
@@ -51,6 +56,10 @@ The following command should work:
 ```bash
 xcode-select --install
 ```
+
+* Users of Apple Silicon Macs should add `build
+  --host_platform=//:rosetta` to their `.bazelrc.local` file. We are working
+  to make sure this isn't required in the long run.
 
 * Windows users should have the latest version of Visual Studio command line tools and build tools installed
   * `BAZEL_VS` environment variable should point to the location of the build tools,
@@ -81,7 +90,7 @@ skipped silently if you are not building on Windows.
 ### Bazel
 
 [Bazel](https://bazel.build/) was built by the fine folks at Google. Bazel manages dependency
-downloads, generate the Selenium binaries, executes tests, and does it all rather quickly.
+downloads, generates the Selenium binaries, executes tests, and does it all rather quickly.
 
 More detailed instructions for getting Bazel running are below, but if you can successfully get
 the java and javascript folders to build without errors, you should be confident that you have the
@@ -95,6 +104,11 @@ You may have to update this from time to time.
 
 ### Common Build Targets
 
+#### Java
+
+<details>
+<summary>Click to see Java Build Steps</summary>
+
 To build the most commonly-used modules of Selenium from source, execute this command from the root
 project folder:
 
@@ -102,18 +116,100 @@ project folder:
 bazel build java/...
 ```
 
-If you have some extra time on your hands, you can run this command to get extra confidence
-that your build is successful. This will do a lot more work to build all the javascript artifacts:
+If you want to test you can run then you can do so by running the following command
 
 ```sh
-bazel build java/... javascript/...
+bazel test //java/... --test_size_filters=small,medium,large --test_tag_filters=<browser>
 ```
 
-If you're making changes to the java/ or javascript/ folders in this project, and this command
-executes without errors, you should be able to create a PR of your changes. (See also CONTRIBUTING.md)
+The `test_size_filters` argument takes small, medium, large. Small are akin to unit tests,
+medium is akin to integration tests, and large is akin to end to end tests.
+
+The `test_tag_filters` allow us to pass in browser names and a few different tags that we can
+find in the code base.
+</details>
+
+#### JavaScript
+<details>
+<summary>Click to see JavaScript Build Steps</summary>
+
+If you want to build all the JavaScript code you can run:
+
+```sh
+bazel build javascript/...
+```
+
+To build the NodeJS bindings you will need to run:
+
+```sh
+bazel build //javascript/node/selenium-webdriver
+```
+
+To run the tests run:
+
+```sh
+bazel test //javascript/node/selenium-webdriver:tests
+```
+
+You can pass in the environment variable `SELENIUM_BROWSER` with the name of the browser.
+
+To publish to NPM run:
+
+```sh
+bazel run //javascript/node/selenium-webdriver:selenium-webdriver.publish
+```
+</details>
+
+#### Python
+<details>
+<summary>Click to see Python Build Steps</summary>
+
+If you want to build the python bindings run:
+
+```sh
+bazel build //py:selenium
+```
+
+To run the tests run:
+
+```sh
+bazel test //py:test-<browsername>
+```
+
+If you add `--//common:pin_browsers` it will download the browsers and drivers for you to use.
+
+To publish run
+
+```sh
+bazel build //py:selenium-wheel
+twine upload bazel-bin/py/selenium-*.whl
+```
+</details>
+
+####  Ruby
+<details>
+<summary>Click to see Ruby Build Steps</summary>
+
+To build the Ruby code run:
+
+```sh
+bazel build //rb/...
+```
+</details>
+
+####  .NET
+<details>
+<summary>Click to see .NET Build Steps</summary>
+
+To build the .NET code run:
+
+```sh
+bazel build //dotnet/...
+```
+</details>
+
 
 ### Build Details
-
 * Bazel files are called BUILD.bazel
 * [crazyfun](https://github.com/SeleniumHQ/selenium/wiki/Crazy-Fun-Build) build files are called
 *build.desc*. This is an older build system, still in use in the project for Ruby bindings mostly.
@@ -130,7 +226,6 @@ In this case, `javascript/atoms` is the module directory,
 
 As you see *build targets* scroll past in the log,
 you may want to run them individually.
-
 
 
 ## Common Tasks (Bazel)
@@ -158,6 +253,24 @@ bazel test --test_size_filters=small,medium java/...
 
 Bazel's "test" command will run *all* tests in the package, including integration tests. Expect
 the ```test java/...``` to launch browsers and consume a considerable amount of time and resources.
+
+To bump the versions of the pinned browsers to their latest stable versions:
+
+```sh
+bazel run scripts:pinned_browsers > temp.bzl && mv temp.bzl common/repositories.bzl
+```
+
+## Editing Code
+
+Most of the team use either Intellij IDEA or VS.Code for their day-to-day editing. If you're
+working in IntelliJ, then we highly recommend installing the [Bazel IJ
+plugin](https://plugins.jetbrains.com/plugin/8609-bazel) which is documented on
+[its own site](https://plugins.jetbrains.com/plugin/8609-bazel).
+
+If you do use IntelliJ and the Bazel plugin, there is a project view checked into the tree
+in [scripts/ij.bazelproject](scripts/ij.bazelproject) which will make it easier to get up
+running, and editing code :)
+
 
 ## Tour
 
@@ -224,8 +337,7 @@ The maven jars should now be in your local `~/.m2/repository`.
 
 ## Useful Resources
 
-Refer to the [Building Web
-Driver](https://github.com/SeleniumHQ/selenium/wiki/Building-WebDriver)
+Refer to the [Build Instructions](https://github.com/SeleniumHQ/selenium/wiki/Build-Instructions)
 wiki page for the last word on building the bits and pieces of Selenium.
 
 ## Running Browser Tests on Linux
@@ -253,6 +365,13 @@ bazel test --run_under="xvfb-run -a" //java/... --test_tag_filters=chrome
 ```
 
 ## Bazel Installation/Troubleshooting
+
+### Selenium Build Docker Image
+
+If you're finding it hard to set up a development environment using bazel
+and you have access to Docker, then you can build a Docker image suitable
+for building and testing Selenium in from the Dockerfile in the 
+[dev image](scripts/dev-image/Dockerfile) directory.
 
 ### MacOS
 
@@ -289,3 +408,64 @@ The first command will prompt you for a password. The second step requires you t
 license, and then accept it by typing "agree".
 
 (Thanks to [this thread](https://github.com/bazelbuild/bazel/issues/4314) for these steps)
+
+## Releasing
+
+Begin by tagging the revision you're about to release, and push that tag to GitHub.
+
+Before running a release build, you must ensure that the `--stamp` flag is used by
+the build. The easiest way to do this is:
+
+```shell
+echo build --stamp >>.bazelrc.local
+```
+
+### GitHub Release Page
+
+* Draft a new (perhaps pre-release)
+* Make sure this release is for the tag you created earlier
+* Set the title to be whatever the release is.
+* Use `git log $PREV_RELEASE..$NEW_TAG --format=format:'* [`%h`](https://github.com/seleniumhq/selenium/commit/%H) - %s :: %an' | pbcopy`
+  to generate the list of changes. Make sure you've set
+  `$PREV_RELEASE` and `$NEW_TAG`!
+* The release notes are:
+```
+### Changelog
+
+For each component's detailed changelog, please check:
+* [Ruby](https://github.com/SeleniumHQ/selenium/blob/trunk/rb/CHANGES)
+* [Python](https://github.com/SeleniumHQ/selenium/blob/trunk/py/CHANGES)
+* [JavaScript](https://github.com/SeleniumHQ/selenium/blob/trunk/javascript/node/selenium-webdriver/CHANGES.md)
+* [Java](https://github.com/SeleniumHQ/selenium/blob/trunk/java/CHANGELOG)
+* [DotNet](https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/CHANGELOG)
+* [IEDriverServer](https://github.com/SeleniumHQ/selenium/blob/trunk/cpp/iedriverserver/CHANGELOG)
+
+### Commits in this release
+<details>
+<summary>Click to see all the commits included in this release</summary>
+
+   INSERT LIST OF CHANGES HERE!
+
+</details>
+ ```
+* Now publish the release.
+
+### Java
+
+To release the Java components, make sure you have permission to push to the OSS Sonatype
+repo. You will need these credentials when pushing the maven release.
+
+Make sure that the java `CHANGELOG` is up to date, then just run:
+
+```shell
+./go release-java
+```
+
+This will do two things:
+
+1. Build the publishable artifacts and push them to a staging repo on the
+   OSS Sonatype server.
+2. Create zip files to upload in `build/dist`
+
+You will need to manually release the maven artifacts, and also upload
+the artifacts from `build/dist` to the GitHub release.

@@ -27,21 +27,34 @@ module Selenium
       #
 
       class Driver < WebDriver::Driver
-        include DriverExtensions::HasAddons
-        include DriverExtensions::HasWebStorage
+        EXTENSIONS = [DriverExtensions::HasAddons,
+                      DriverExtensions::FullPageScreenshot,
+                      DriverExtensions::HasContext,
+                      DriverExtensions::HasDevTools,
+                      DriverExtensions::HasLogEvents,
+                      DriverExtensions::HasNetworkInterception,
+                      DriverExtensions::HasWebStorage,
+                      DriverExtensions::PrintsPage].freeze
 
         def browser
           :firefox
         end
 
-        def bridge_class
-          Bridge
+        private
+
+        def devtools_url
+          if capabilities['moz:debuggerAddress'].nil?
+            raise(Error::WebDriverError, "DevTools is not supported by this version of Firefox; use v85 or higher")
+          end
+
+          uri = URI("http://#{capabilities['moz:debuggerAddress']}")
+          response = Net::HTTP.get(uri.hostname, '/json/version', uri.port)
+
+          JSON.parse(response)['webSocketDebuggerUrl']
         end
 
-        def print_page(**options)
-          options[:page_ranges] &&= Array(options[:page_ranges])
-
-          @bridge.print_page(options)
+        def devtools_version
+          Firefox::DEVTOOLS_VERSION
         end
       end # Driver
     end # Firefox

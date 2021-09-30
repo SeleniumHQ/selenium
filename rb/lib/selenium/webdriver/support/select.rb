@@ -31,7 +31,7 @@ module Selenium
           raise ArgumentError, "unexpected tag name #{tag_name.inspect}" unless tag_name.casecmp('select').zero?
 
           @element = element
-          @multi = ![nil, 'false'].include?(element.attribute(:multiple))
+          @multi = ![nil, 'false'].include?(element.dom_attribute(:multiple))
         end
 
         #
@@ -258,7 +258,7 @@ module Selenium
         end
 
         def find_by_index(index)
-          options.select { |option| option.attribute(:index) == index.to_s }
+          options.select { |option| option.dom_attribute(:index) == index.to_s }
         end
 
         def find_by_value(value)

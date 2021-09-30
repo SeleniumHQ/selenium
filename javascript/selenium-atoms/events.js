@@ -44,9 +44,9 @@ core.events.shiftKeyDown_ = false;
 /**
  * @type {function(*): !Object}
  */
-var XPCNativeWrapper = XPCNativeWrapper || function(_) {};
+var XPCNativeWrapper = XPCNativeWrapper || function (_) { };
 
-core.events.getEventFactory_ = function(eventName) {
+core.events.getEventFactory_ = function (eventName) {
   var eventNameForFactory = '';
   if (eventName) {
     eventNameForFactory = eventName.toUpperCase();
@@ -57,7 +57,7 @@ core.events.getEventFactory_ = function(eventName) {
   }
 
   return {
-    create: function(target, opt_args) {
+    create: function (target, opt_args) {
       var doc = goog.dom.getOwnerDocument(target);
       var event;
 
@@ -81,7 +81,7 @@ core.events.getEventFactory_ = function(eventName) {
  * @param {string|!Element} locator The element to fire the event on.
  * @param {string} eventName The name of the event to fire.
  */
-core.events.fire = function(locator, eventName) {
+core.events.fire = function (locator, eventName) {
   var element = core.locators.findElement(locator);
   var type = core.events.getEventFactory_(eventName);
 
@@ -103,17 +103,17 @@ core.events.fire = function(locator, eventName) {
  * @return {{x: number, y: number}} The coordinates.
  * @private
  */
-core.events.parseCoordinates_ = function(coordString) {
+core.events.parseCoordinates_ = function (coordString) {
 
   if (goog.isString(coordString)) {
     // TODO: Tighten constraints on what a valid coordString is.
     var pieces = coordString.split(/,/);
     var x = parseInt(pieces[0], 0);
     var y = parseInt(pieces[1], 0);
-    return {x: x, y: y};
+    return { x: x, y: y };
   }
 
-  return {x: 0, y: 0};
+  return { x: 0, y: 0 };
 };
 
 
@@ -125,13 +125,13 @@ core.events.parseCoordinates_ = function(coordString) {
  * @param {string} eventName The name of the event to fire.
  * @param {string=} opt_coordString The coordinate string. "0,0" by default.
  */
-core.events.fireAt = function(locator, eventName, opt_coordString) {
+core.events.fireAt = function (locator, eventName, opt_coordString) {
   var element = core.locators.findElement(locator);
   var coords = core.events.parseCoordinates_(opt_coordString || '0,0');
 
   if (goog.userAgent.IE || goog.userAgent.product.CHROME ||
-      (goog.userAgent.product.FIREFOX &&
-          goog.userAgent.product.isVersion(27))) {
+    (goog.userAgent.product.FIREFOX &&
+      goog.userAgent.product.isVersion(27))) {
     var bounds = goog.style.getBounds(element);
     coords.x += bounds.left;
     coords.y += bounds.top;
@@ -139,16 +139,16 @@ core.events.fireAt = function(locator, eventName, opt_coordString) {
 
   var type = core.events.getEventFactory_(eventName);
   var args = {
-      clientX: coords.x,
-      clientY: coords.y,
-      button: 0,
-      altKey: false,
-      ctrlKey: false,
-      shiftKey: false,
-      metaKey: false,
-      relatedTarget: null
+    clientX: coords.x,
+    clientY: coords.y,
+    button: 0,
+    altKey: false,
+    ctrlKey: false,
+    shiftKey: false,
+    metaKey: false,
+    relatedTarget: null
   };
-  bot.events.fire(element, type, /** @type {!bot.events.MouseArgs} */ (args));
+  bot.events.fire(element, type, /** @type {!bot.events.MouseArgs} */(args));
 };
 
 
@@ -156,7 +156,7 @@ core.events.fireAt = function(locator, eventName, opt_coordString) {
  * @param {!Element} element The element to modify.
  * @param {string} value The value to use.
  */
-core.events.replaceText_ = function(element, value) {
+core.events.replaceText_ = function (element, value) {
   bot.events.fire(element, bot.events.EventType.FOCUS);
   bot.events.fire(element, bot.events.EventType.SELECT);
 
@@ -177,11 +177,6 @@ core.events.replaceText_ = function(element, value) {
         element.innerHTML = actualValue;
       }
     }
-  } else if (goog.userAgent.GECKO && bot.userAgent.FIREFOX_EXTENSION &&
-             bot.userAgent.isEngineVersion(8)) {
-    // Firefox 8+ fails with a security error if typing into (XPCNativeWrapper)
-    // unwrapped objects
-    XPCNativeWrapper(element).value = actualValue;
   } else {
     element.value = actualValue;
   }
@@ -189,9 +184,6 @@ core.events.replaceText_ = function(element, value) {
   // Is xpcnativewrappers to blame?
   try {
     var elem = element;
-//    if (bot.userAgent.FIREFOX_EXTENSION && Components && Components['classes'] && XPCNativeWrapper) {
-//      elem = new XPCNativeWrapper(element);
-//    }
     bot.events.fire(elem, bot.events.EventType.CHANGE);
   } catch (e) {
   }
@@ -207,17 +199,17 @@ core.events.replaceText_ = function(element, value) {
  * @param {string|!Element} locator The element locator.
  * @param {string} value The value to use.
  */
-core.events.setValue = function(locator, value) {
+core.events.setValue = function (locator, value) {
   if (core.events.controlKeyDown_ || core.events.altKeyDown_ || core.events.metaKeyDown_) {
     throw new core.Error('type not supported immediately after call to ' +
-        'controlKeyDown() or altKeyDown() or metaKeyDown()');
+      'controlKeyDown() or altKeyDown() or metaKeyDown()');
   }
 
   // TODO: fail if it can't be typed into.
   var element = core.locators.findElement(locator);
 
   var newValue = core.events.shiftKeyDown_ ?
-      new String(value).toUpperCase() : value;
+    new String(value).toUpperCase() : value;
 
   core.events.replaceText_(element, newValue);
 };

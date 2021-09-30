@@ -25,7 +25,7 @@ module Selenium
 
         PORT = 4444
 
-        attr_accessor :context, :http, :file_detector
+        attr_accessor :http, :file_detector
         attr_reader :capabilities
 
         #
@@ -35,7 +35,7 @@ module Selenium
         # @api private
         #
 
-        def initialize(http_client: nil, url:)
+        def initialize(url:, http_client: nil)
           uri = url.is_a?(URI) ? url : URI.parse(url)
           uri.path += '/' unless uri.path.end_with?('/')
 
@@ -49,7 +49,7 @@ module Selenium
         #
 
         def create_session(capabilities)
-          response = execute(:new_session, {}, {capabilities: {firstMatch: [capabilities]}})
+          response = execute(:new_session, {}, prepare_capabilities_payload(capabilities))
 
           @session_id = response['sessionId']
           capabilities = response['capabilities']
@@ -57,6 +57,17 @@ module Selenium
           raise Error::WebDriverError, 'no sessionId in returned payload' unless @session_id
 
           @capabilities = Capabilities.json_create(capabilities)
+
+          case @capabilities[:browser_name]
+          when 'chrome'
+            extend(WebDriver::Chrome::Features)
+          when 'firefox'
+            extend(WebDriver::Firefox::Features)
+          when 'msedge'
+            extend(WebDriver::Edge::Features)
+          when 'Safari', 'Safari Technology Preview'
+            extend(WebDriver::Safari::Features)
+          end
         end
 
         #
@@ -70,7 +81,7 @@ module Selenium
         def browser
           @browser ||= begin
             name = @capabilities.browser_name
-            name ? name.tr(' ', '_').to_sym : 'unknown'
+            name ? name.tr(' ', '_').downcase.to_sym : 'unknown'
           end
         end
 
@@ -207,7 +218,10 @@ module Selenium
         end
 
         def window_size(handle = :current)
-          raise Error::UnsupportedOperationError, 'Switch to desired window before getting its size' unless handle == :current
+          unless handle == :current
+            raise Error::UnsupportedOperationError,
+                  'Switch to desired window before getting its size'
+          end
 
           data = execute :get_window_rect
           Dimension.new data['width'], data['height']
@@ -218,7 +232,10 @@ module Selenium
         end
 
         def maximize_window(handle = :current)
-          raise Error::UnsupportedOperationError, 'Switch to desired window before changing its size' unless handle == :current
+          unless handle == :current
+            raise Error::UnsupportedOperationError,
+                  'Switch to desired window before changing its size'
+          end
 
           execute :maximize_window
         end
@@ -252,7 +269,7 @@ module Selenium
         end
 
         def element_screenshot(element)
-          execute :take_element_screenshot, id: element.ref
+          execute :take_element_screenshot, id: element
         end
 
         #
@@ -305,22 +322,6 @@ module Selenium
 
         def session_storage_size
           execute_script('return sessionStorage.length')
-        end
-
-        def location
-          raise Error::UnsupportedOperationError, 'The W3C standard does not currently support getting location'
-        end
-
-        def set_location(_lat, _lon, _alt)
-          raise Error::UnsupportedOperationError, 'The W3C standard does not currently support setting location'
-        end
-
-        def network_connection
-          raise Error::UnsupportedOperationError, 'The W3C standard does not currently support getting network connection'
-        end
-
-        def network_connection=(_type)
-          raise Error::UnsupportedOperationError, 'The W3C standard does not currently support setting network connection'
         end
 
         #
@@ -430,18 +431,10 @@ module Selenium
         end
 
         def submit_element(element)
-          form = find_element_by('xpath', "./ancestor-or-self::form", element)
+          form = find_element_by('xpath', "./ancestor-or-self::form", [:element, element])
           execute_script("var e = arguments[0].ownerDocument.createEvent('Event');" \
                             "e.initEvent('submit', true, true);" \
                             'if (arguments[0].dispatchEvent(e)) { arguments[0].submit() }', form.as_json)
-        end
-
-        def screen_orientation=(orientation)
-          execute :set_screen_orientation, {}, {orientation: orientation}
-        end
-
-        def screen_orientation
-          execute :get_screen_orientation
         end
 
         #
@@ -457,8 +450,20 @@ module Selenium
           execute_atom :getAttribute, element, name
         end
 
+        def element_dom_attribute(element, name)
+          execute :get_element_attribute, id: element, name: name
+        end
+
         def element_property(element, name)
-          execute :get_element_property, id: element.ref, name: name
+          execute :get_element_property, id: element, name: name
+        end
+
+        def element_aria_role(element)
+          execute :get_element_aria_role, id: element
+        end
+
+        def element_aria_label(element)
+          execute :get_element_aria_label, id: element
         end
 
         def element_value(element)
@@ -519,13 +524,17 @@ module Selenium
 
         alias_method :switch_to_active_element, :active_element
 
-        def find_element_by(how, what, parent = nil)
+        def find_element_by(how, what, parent_ref = [])
           how, what = convert_locator(how, what)
 
           return execute_atom(:findElements, Support::RelativeLocator.new(what).as_json).first if how == 'relative'
 
-          id = if parent
-                 execute :find_child_element, {id: parent}, {using: how, value: what.to_s}
+          parent_type, parent_id = parent_ref
+          id = case parent_type
+               when :element
+                 execute :find_child_element, {id: parent_id}, {using: how, value: what.to_s}
+               when :shadow_root
+                 execute :find_shadow_child_element, {id: parent_id}, {using: how, value: what.to_s}
                else
                  execute :find_element, {}, {using: how, value: what.to_s}
                end
@@ -533,18 +542,27 @@ module Selenium
           Element.new self, element_id_from(id)
         end
 
-        def find_elements_by(how, what, parent = nil)
+        def find_elements_by(how, what, parent_ref = [])
           how, what = convert_locator(how, what)
 
           return execute_atom :findElements, Support::RelativeLocator.new(what).as_json if how == 'relative'
 
-          ids = if parent
-                  execute :find_child_elements, {id: parent}, {using: how, value: what.to_s}
+          parent_type, parent_id = parent_ref
+          ids = case parent_type
+                when :element
+                  execute :find_child_elements, {id: parent_id}, {using: how, value: what.to_s}
+                when :shadow_root
+                  execute :find_shadow_child_elements, {id: parent_id}, {using: how, value: what.to_s}
                 else
                   execute :find_elements, {}, {using: how, value: what.to_s}
                 end
 
           ids.map { |id| Element.new self, element_id_from(id) }
+        end
+
+        def shadow_root(element)
+          id = execute :get_element_shadow_root, id: element
+          ShadowRoot.new self, shadow_root_id_from(id)
         end
 
         private
@@ -594,7 +612,16 @@ module Selenium
         end
 
         def element_id_from(id)
-          id['ELEMENT'] || id['element-6066-11e4-a52e-4f735466cecf']
+          id['ELEMENT'] || id[Element::ELEMENT_KEY]
+        end
+
+        def shadow_root_id_from(id)
+          id[ShadowRoot::ROOT_KEY]
+        end
+
+        def prepare_capabilities_payload(capabilities)
+          capabilities = {alwaysMatch: capabilities} if !capabilities['alwaysMatch'] && !capabilities['firstMatch']
+          {capabilities: capabilities}
         end
 
         def convert_locator(how, what)
@@ -624,7 +651,7 @@ module Selenium
           [how, what]
         end
 
-        ESCAPE_CSS_REGEXP = /(['"\\#.:;,!?+<>=~*^$|%&@`{}\-\[\]\(\)])/.freeze
+        ESCAPE_CSS_REGEXP = /(['"\\#.:;,!?+<>=~*^$|%&@`{}\-\[\]()])/.freeze
         UNICODE_CODE_POINT = 30
 
         # Escapes invalid characters in CSS selector.

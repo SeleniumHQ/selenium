@@ -4,6 +4,8 @@ require:
 
 AllCops:
   TargetRubyVersion: 2.5
+  Exclude:
+    - 'lib/selenium/devtools/**/*'
 
 Layout/EmptyLinesAroundAttributeAccessor:
   Enabled: true
@@ -15,7 +17,6 @@ Layout/EmptyLinesAroundModuleBody:
   Enabled: false
 
 Layout/LineLength:
-  Max: 130
   IgnoredPatterns:
       - '\s+# rubocop'
       - '^\s*#'
@@ -40,8 +41,9 @@ Lint/SuppressedException:
   Enabled: false
 
 Metrics/AbcSize:
-  Max: 27
+  Max: 28
   Exclude:
+    - 'lib/selenium/webdriver/remote/capabilities.rb'
     - 'lib/selenium/webdriver/remote/http/curb.rb'
     - 'lib/selenium/webdriver/support/color.rb'
 
@@ -49,19 +51,21 @@ Metrics/BlockLength:
   Max: 18
   Exclude:
     - 'spec/**/*.rb'
-    - 'selenium-webdriver.gemspec'
+    - 'selenium-*.gemspec'
 
 Metrics/ClassLength:
   CountComments: false
   Max: 160
   Exclude:
+    - 'lib/selenium/webdriver/common/driver.rb'
     - 'lib/selenium/webdriver/remote/bridge.rb'
     - 'lib/selenium/webdriver/remote/capabilities.rb'
+    - 'spec/integration/selenium/webdriver/spec_support/test_environment.rb'
 
 Metrics/CyclomaticComplexity:
   Max: 9
   Exclude:
-    - 'lib/selenium/webdriver/remote/capabilities.rb'
+    - 'lib/selenium/webdriver/support/color.rb'
 
 Metrics/MethodLength:
   CountComments: false
@@ -80,11 +84,8 @@ Metrics/ModuleLength:
 Metrics/ParameterLists:
   CountKeywordArgs: false
 
-# TODO: Refactor Chrome::Bridge#create_capabilities
 Metrics/PerceivedComplexity:
-  Max: 8
-  Exclude:
-    - 'lib/selenium/webdriver/remote/capabilities.rb'
+  Max: 9
 
 Naming/FileName:
   Exclude:
@@ -103,8 +104,7 @@ RSpec/AnyInstance:
   Enabled: false
 
 RSpec/BeforeAfterAll:
-  Exclude:
-    - 'spec/unit/selenium/webdriver/socket_poller_spec.rb'
+  Enabled: false
 
 RSpec/ContextWording:
   Enabled: false
@@ -132,6 +132,9 @@ RSpec/MessageSpies:
 RSpec/MultipleExpectations:
   Enabled: false
 
+RSpec/MultipleMemoizedHelpers:
+  Enabled: false
+
 Style/Alias:
   EnforcedStyle: prefer_alias_method
 
@@ -141,8 +144,10 @@ Style/BlockDelimiters:
 Style/CommentedKeyword:
   Enabled: false
 
+# __dir__ should be avoided when used with Bazel.
 Style/Dir:
   Exclude:
+    - 'selenium-devtools.gemspec'
     - 'selenium-webdriver.gemspec'
 
 # Consider documenting all top-level classes and modules
@@ -163,6 +168,9 @@ Style/HashTransformValues:
 
 # Port Integers do not need underscores
 Style/NumericLiterals:
+  Enabled: false
+
+Style/OptionalBooleanParameter:
   Enabled: false
 
 Style/RegexpLiteral:

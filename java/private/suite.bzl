@@ -1,55 +1,9 @@
-load("//common/private:selenium_test.bzl", "BROWSERS", "DEFAULT_BROWSER", "selenium_test")
+load(":library.bzl", "java_library", "java_test")
+load(":selenium_test.bzl", "BROWSERS", "selenium_test")
 load(":package.bzl", "package_name")
 
-def _test_class_name(src_file):
-    test_name = src_file[:-len(".java")]
-
-    pkg = package_name()
-    if pkg != None:
-        return pkg + "." + test_name.replace("/", ".")
-    return test_name.replace("/", ".")
-
-def _write_suite_impl(ctx):
-    src_file = ctx.actions.declare_file("%s.java" % ctx.attr.suite_name)
-
-    class_names = [t + ".class" for t in ctx.attr.test_classes]
-
-    contents = """
-package %s;
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-
-@RunWith(Suite.class)
-@Suite.SuiteClasses({
-%s
-})
-public class %s {
-}
-""" % (ctx.attr.package, ",\n".join(class_names), ctx.attr.suite_name)
-    ctx.actions.write(src_file, contents)
-
-    return [
-        DefaultInfo(
-            files = depset([src_file]),
-        )
-    ]
-
-_write_suite = rule(
-    _write_suite_impl,
-    attrs = {
-        "package": attr.string(),
-        "suite_name": attr.string(),
-        "test_classes": attr.string_list()
-    },
-)
-
-def _matches(identifiers, name):
-    for identifier in identifiers:
-        if name.startswith(identifier) or name.endswith(identifier):
-            return True
-    return False
-
 _test_attrs = [
+    "browsers",
     "deploy_manifest_lines",
     "flaky",
     "jvm_flags",
@@ -63,47 +17,82 @@ _test_attrs = [
     "use_testrunner",
 ]
 
-def _suite_name(name, suite_name):
-    if not suite_name:
-        return "".join([p.capitalize() for p in name.replace("-", " ").replace("_", " ").split(" ")])
-    return suite_name
+def _test_class_name(pkg, src_file):
+    test_name = src_file[:-len(".java")]
+    return pkg + test_name.replace("/", ".")
 
-def _generate_common_targets(
+def _matches(identifiers, name):
+    test_name = name.split("/")[-1]
+
+    for identifier in identifiers:
+        if test_name.startswith(identifier) or test_name.endswith(identifier):
+            return True
+    return False
+
+def _generate_test_suite(
         name,
+        create_test_target,
         size,
-        suite_name,
         srcs,
         deps,
         tags,
         test_identifiers,
         **kwargs):
-    suite_name = _suite_name(name, suite_name)
+    lib_srcs = [src for src in srcs if not _matches(test_identifiers, src)]
+    test_srcs = [src for src in srcs if _matches(test_identifiers, src)]
 
+    if len(lib_srcs):
+        libargs = {}
+        for (key, value) in kwargs.items():
+            if key not in _test_attrs:
+                libargs.update({key: value})
+
+        java_library(
+            name = "%s-support" % name,
+            testonly = True,
+            srcs = srcs,
+            deps = deps,
+            **libargs
+        )
+        deps = deps + [":%s-support" % name]
+
+    additional_tags = [] if size == "small" else ["no-sandbox"]
+    suite_targets = []
     pkg = package_name()
-    test_classes = [pkg + src[:-len(".java")].replace("/", ".") for src in srcs if _matches(test_identifiers, src)]
+    for test in test_srcs:
+        test_class = _test_class_name(pkg, test)
+        test_name = test_class.rpartition(".")[2]
 
-    libargs = {}
-    for (key, value) in kwargs.items():
-        if key not in _test_attrs:
-            libargs.update({key: value})
+        suite_targets.append(":%s" % test_name)
 
-    # Allow linting of sources we've written
-    native.java_library(
-        name = "%s-suite-lib" % name,
+        create_test_target(
+            name = test_name,
+            test_class = test_class,
+            size = size,
+            srcs = [test],
+            deps = deps,
+            tags = tags + additional_tags,
+            **kwargs
+        )
+
+    native.test_suite(
+        name = name,
+        tags = tags + ["manual"],
         testonly = True,
-        srcs = srcs,
-        deps = deps,
+        tests = suite_targets,
+    )
+
+def _create_java_test_target(
+        name,
+        test_class,
+        tags = [],
+        **kwargs):
+    java_test(
+        name = name,
         tags = tags,
-        **libargs,
+        test_class = test_class,
+        **kwargs
     )
-
-    _write_suite(
-        name = "%s-suite-src" % name,
-        package = pkg[:-1],
-        suite_name = suite_name,
-        test_classes = test_classes,
-    )
-
 
 def java_test_suite(
         name,
@@ -114,69 +103,50 @@ def java_test_suite(
         deps = [],
         tags = [],
         **kwargs):
-    suite_name = _suite_name(name, suite_name)
-    pkg = package_name()
-    test_classes = [pkg + src[:-len(".java")].replace("/", ".") for src in srcs if _matches(test_identifiers, src)]
-    additional_tags = [] if size == "small" else ["no-sandbox"]
-
-    _generate_common_targets(
-        name,
-        size,
-        suite_name,
-        srcs,
-        deps,
-        tags,
-        test_identifiers,
-        **kwargs,
+    _generate_test_suite(
+        name = name,
+        create_test_target = _create_java_test_target,
+        size = size,
+        srcs = srcs,
+        deps = deps,
+        tags = tags,
+        test_identifiers = test_identifiers,
+        **kwargs
     )
 
-    # Skip linting for the generated test suite
-    native.java_test(
+def _create_selenium_test_target(
+        name,
+        test_class,
+        tags = [],
+        **kwargs):
+    selenium_test(
         name = name,
-        test_class = pkg + suite_name,
-        size = size,
-        srcs = [":%s-suite-src" % name],
-        deps = deps + ["%s-suite-lib" % name],
-        shard_count = len(test_classes),
-        tags = tags + additional_tags,
-        **kwargs,
+        test_class = test_class,
+        tags = tags,
+        **kwargs
     )
 
 def java_selenium_test_suite(
         name,
         browsers = BROWSERS.keys(),
         srcs = None,
+        size = None,
         test_identifiers = ["Test.java"],
         deps = None,
-        data = [],
         jvm_flags = [],
         tags = [],
         **kwargs):
-    suite_name = _suite_name(name, None)
-    pkg = package_name()
-    test_classes = [pkg + src[:-len(".java")].replace("/", ".") for src in srcs if _matches(test_identifiers, src)]
+    args = {}
+    args.update(kwargs)
+    args.update({"browsers": browsers})
 
-    amended_flags = {k: v for (k, v) in kwargs.items() if k != "size"}
-
-    _generate_common_targets(
-        name,
-        "large",
-        suite_name,
-        srcs,
-        deps,
-        tags,
-        test_identifiers,
-        **amended_flags
-    )
-
-    selenium_test(
+    _generate_test_suite(
         name = name,
-        test_class = pkg + suite_name,
-        browsers = browsers,
-        size = "large",
-        srcs = [":%s-suite-src" % name],
-        deps = deps + ["%s-suite-lib" % name],
-        data = data,
-        jvm_flags = jvm_flags,
-        tags = tags
+        create_test_target = _create_selenium_test_target,
+        size = size,
+        srcs = srcs,
+        deps = deps,
+        tags = tags,
+        test_identifiers = test_identifiers,
+        **args
     )

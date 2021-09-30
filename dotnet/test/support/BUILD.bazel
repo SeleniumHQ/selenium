@@ -17,9 +17,9 @@ nunit_test(
         "--params=ActiveWebsiteConfig=HostsFileRedirect",
     ],
     data = [
-        "//dotnet/test/common:appconfig.json",
         "//common/src/web",
-        "//java/client/test/org/openqa/selenium/environment:appserver_deploy.jar",
+        "//dotnet/test/common:appconfig.json",
+        "//java/test/org/openqa/selenium/environment:appserver_deploy.jar",
     ],
     is_windows = select({
         "@bazel_tools//src/conditions:host_windows": True,

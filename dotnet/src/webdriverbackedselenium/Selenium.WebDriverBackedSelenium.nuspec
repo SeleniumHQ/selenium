@@ -39,7 +39,7 @@
       <group targetFramework="net47">
         <dependency id="Selenium.WebDriver" version="$version$" exclude="Build,Analyzers" />
       </group>
-      <group targetFramework="net38">
+      <group targetFramework="net48">
         <dependency id="Selenium.WebDriver" version="$version$" exclude="Build,Analyzers" />
       </group>
       <group targetFramework="netstandard2.0">

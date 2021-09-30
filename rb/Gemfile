@@ -1,4 +1,6 @@
 # frozen_string_literal: true
 
 source 'https://rubygems.org'
-gemspec
+Dir["#{__dir__}/*.gemspec"].each do |spec|
+  gemspec name: File.basename(spec, '.gemspec')
+end

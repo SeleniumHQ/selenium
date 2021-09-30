@@ -127,7 +127,10 @@ module Selenium
       end
 
       def type=(type)
-        raise ArgumentError, "invalid proxy type: #{type.inspect}, expected one of #{TYPES.keys.inspect}" unless TYPES.key? type
+        unless TYPES.key? type
+          raise ArgumentError,
+                "invalid proxy type: #{type.inspect}, expected one of #{TYPES.keys.inspect}"
+        end
 
         if defined?(@type) && type != @type
           raise ArgumentError, "incompatible proxy type #{type.inspect} (already set to #{@type.inspect})"
@@ -138,10 +141,10 @@ module Selenium
 
       def as_json(*)
         json_result = {
-          'proxyType' => TYPES[type],
+          'proxyType' => TYPES[type].downcase,
           'ftpProxy' => ftp,
           'httpProxy' => http,
-          'noProxy' => no_proxy,
+          'noProxy' => no_proxy.is_a?(String) ? no_proxy.split(', ') : no_proxy,
           'proxyAutoconfigUrl' => pac,
           'sslProxy' => ssl,
           'autodetect' => auto_detect,

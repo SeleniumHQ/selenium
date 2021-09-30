@@ -383,9 +383,9 @@ class Driver extends webdriver.WebDriver {
       caps = options.toCapabilities(caps)
     }
 
-    return /** @type {!Driver} */ (super.createSession(executor, caps, () =>
-      service.kill()
-    ))
+    return /** @type {!Driver} */ (
+      super.createSession(executor, caps, () => service.kill())
+    )
   }
 
   /**

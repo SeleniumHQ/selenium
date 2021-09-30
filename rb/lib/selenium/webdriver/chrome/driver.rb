@@ -27,37 +27,43 @@ module Selenium
       #
 
       class Driver < WebDriver::Driver
-        include DriverExtensions::HasNetworkConditions
-        include DriverExtensions::HasWebStorage
-        include DriverExtensions::HasLocation
-        include DriverExtensions::DownloadsFiles
-        include DriverExtensions::HasDevTools
-        include DriverExtensions::HasAuthentication
-        include DriverExtensions::HasLogEvents
+        EXTENSIONS = [DriverExtensions::HasCDP,
+                      DriverExtensions::HasCasting,
+                      DriverExtensions::HasNetworkConditions,
+                      DriverExtensions::HasNetworkInterception,
+                      DriverExtensions::HasWebStorage,
+                      DriverExtensions::HasLaunching,
+                      DriverExtensions::HasLocation,
+                      DriverExtensions::HasPermissions,
+                      DriverExtensions::DownloadsFiles,
+                      DriverExtensions::HasDevTools,
+                      DriverExtensions::HasAuthentication,
+                      DriverExtensions::HasLogs,
+                      DriverExtensions::HasLogEvents,
+                      DriverExtensions::HasPinnedScripts,
+                      DriverExtensions::PrintsPage].freeze
 
         def browser
           :chrome
         end
 
-        def bridge_class
-          Bridge
-        end
-
-        def execute_cdp(cmd, **params)
-          @bridge.send_command(cmd: cmd, params: params)
-        end
-
-        def print_page(**options)
-          options[:page_ranges] &&= Array(options[:page_ranges])
-
-          @bridge.print_page(options)
-        end
-
         private
 
-        def debugger_address
-          capabilities['goog:chromeOptions']['debuggerAddress']
+        def devtools_url
+          uri = URI(devtools_address)
+          response = Net::HTTP.get(uri.hostname, '/json/version', uri.port)
+
+          JSON.parse(response)['webSocketDebuggerUrl']
         end
+
+        def devtools_version
+          Integer(capabilities.browser_version.split('.').first)
+        end
+
+        def devtools_address
+          "http://#{capabilities['goog:chromeOptions']['debuggerAddress']}"
+        end
+
       end # Driver
     end # Chrome
   end # WebDriver

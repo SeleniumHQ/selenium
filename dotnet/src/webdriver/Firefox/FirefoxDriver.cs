@@ -18,7 +18,9 @@
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
+using OpenQA.Selenium.DevTools;
 using OpenQA.Selenium.Remote;
 
 namespace OpenQA.Selenium.Firefox
@@ -65,12 +67,17 @@ namespace OpenQA.Selenium.Firefox
     /// }
     /// </code>
     /// </example>
-    public class FirefoxDriver : RemoteWebDriver
+    public class FirefoxDriver : WebDriver, IDevTools
     {
+        private const int FirefoxDevToolsProtocolVersion = 85;
+        private const string FirefoxDevToolsCapabilityName = "moz:debuggerAddress";
         private const string SetContextCommand = "setContext";
+        private const string GetContextCommand = "getContext";
         private const string InstallAddOnCommand = "installAddOn";
         private const string UninstallAddOnCommand = "uninstallAddOn";
         private const string GetFullPageScreenshotCommand = "fullPageScreenshot";
+
+        private DevToolsSession devToolsSession;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="FirefoxDriver"/> class.
@@ -151,10 +158,11 @@ namespace OpenQA.Selenium.Firefox
             : base(new DriverServiceCommandExecutor(service, commandTimeout), ConvertOptionsToCapabilities(options))
         {
             // Add the custom commands unique to Firefox
-            this.AddCustomFirefoxCommand(SetContextCommand, CommandInfo.PostCommand, "/session/{sessionId}/moz/context");
-            this.AddCustomFirefoxCommand(InstallAddOnCommand, CommandInfo.PostCommand, "/session/{sessionId}/moz/addon/install");
-            this.AddCustomFirefoxCommand(UninstallAddOnCommand, CommandInfo.PostCommand, "/session/{sessionId}/moz/addon/uninstall");
-            this.AddCustomFirefoxCommand(GetFullPageScreenshotCommand, CommandInfo.GetCommand, "/session/{sessionId}/moz/screenshot/full");
+            this.AddCustomFirefoxCommand(SetContextCommand, HttpCommandInfo.PostCommand, "/session/{sessionId}/moz/context");
+            this.AddCustomFirefoxCommand(GetContextCommand, HttpCommandInfo.GetCommand, "/session/{sessionId}/moz/context");
+            this.AddCustomFirefoxCommand(InstallAddOnCommand, HttpCommandInfo.PostCommand, "/session/{sessionId}/moz/addon/install");
+            this.AddCustomFirefoxCommand(UninstallAddOnCommand, HttpCommandInfo.PostCommand, "/session/{sessionId}/moz/addon/uninstall");
+            this.AddCustomFirefoxCommand(GetFullPageScreenshotCommand, HttpCommandInfo.GetCommand, "/session/{sessionId}/moz/screenshot/full");
         }
 
         /// <summary>
@@ -176,13 +184,32 @@ namespace OpenQA.Selenium.Firefox
         /// <summary>
         /// Sets the command context used when issuing commands to geckodriver.
         /// </summary>
+        /// <exception cref="WebDriverException">If response is not recognized</exception>
+        /// <returns>The context of commands.</returns>
+        public FirefoxCommandContext GetContext()
+        {
+            FirefoxCommandContext output;
+            string response = this.Execute(GetContextCommand, null).Value.ToString();
+
+            bool success = Enum.TryParse<FirefoxCommandContext>(response, true, out output);
+            if (!success)
+            {
+                throw new WebDriverException(string.Format(CultureInfo.InvariantCulture, "Do not recognize response: {0}; expected Context or Chrome"));
+            }
+
+            return output;
+        }
+
+        /// <summary>
+        /// Sets the command context used when issuing commands to geckodriver.
+        /// </summary>
         /// <param name="context">The <see cref="FirefoxCommandContext"/> value to which to set the context.</param>
         public void SetContext(FirefoxCommandContext context)
         {
             string contextValue = context.ToString().ToLowerInvariant();
             Dictionary<string, object> parameters = new Dictionary<string, object>();
             parameters["context"] = contextValue;
-            Response response = this.Execute(SetContextCommand, parameters);
+            this.Execute(SetContextCommand, parameters);
         }
 
         /// <summary>
@@ -256,11 +283,73 @@ namespace OpenQA.Selenium.Firefox
         }
 
         /// <summary>
+        /// Creates a session to communicate with a browser using the Chromium Developer Tools debugging protocol.
+        /// </summary>
+        /// <param name="devToolsProtocolVersion">The version of the Chromium Developer Tools protocol to use. Defaults to autodetect the protocol version.</param>
+        /// <returns>The active session to use to communicate with the Chromium Developer Tools debugging protocol.</returns>
+        public DevToolsSession GetDevToolsSession()
+        {
+            return GetDevToolsSession(FirefoxDevToolsProtocolVersion);
+        }
+
+        /// <summary>
+        /// Creates a session to communicate with a browser using the Chromium Developer Tools debugging protocol.
+        /// </summary>
+        /// <param name="devToolsProtocolVersion">The version of the Chromium Developer Tools protocol to use. Defaults to autodetect the protocol version.</param>
+        /// <returns>The active session to use to communicate with the Chromium Developer Tools debugging protocol.</returns>
+        public DevToolsSession GetDevToolsSession(int devToolsProtocolVersion)
+        {
+            if (this.devToolsSession == null)
+            {
+                if (!this.Capabilities.HasCapability(FirefoxDevToolsCapabilityName))
+                {
+                    throw new WebDriverException("Cannot find " + FirefoxDevToolsCapabilityName + " capability for driver");
+                }
+
+                string debuggerAddress = this.Capabilities.GetCapability(FirefoxDevToolsCapabilityName).ToString();
+                try
+                {
+                    DevToolsSession session = new DevToolsSession(debuggerAddress);
+                    session.Start(devToolsProtocolVersion).ConfigureAwait(false).GetAwaiter().GetResult();
+                    this.devToolsSession = session;
+                }
+                catch (Exception e)
+                {
+                    throw new WebDriverException("Unexpected error creating WebSocket DevTools session.", e);
+                }
+            }
+
+            return this.devToolsSession;
+        }
+
+        /// <summary>
+        /// Closes a DevTools session.
+        /// </summary>
+        public void CloseDevToolsSession()
+        {
+            if (this.devToolsSession != null)
+            {
+                this.devToolsSession.Dispose();
+                this.devToolsSession = null;
+            }
+        }
+
+        /// <summary>
         /// In derived classes, the <see cref="PrepareEnvironment"/> method prepares the environment for test execution.
         /// </summary>
         protected virtual void PrepareEnvironment()
         {
             // Does nothing, but provides a hook for subclasses to do "stuff"
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                this.CloseDevToolsSession();
+            }
+
+            base.Dispose(disposing);
         }
 
         private static ICapabilities ConvertOptionsToCapabilities(FirefoxOptions options)
@@ -280,8 +369,8 @@ namespace OpenQA.Selenium.Firefox
 
         private void AddCustomFirefoxCommand(string commandName, string method, string resourcePath)
         {
-            CommandInfo commandInfoToAdd = new CommandInfo(method, resourcePath);
-            this.CommandExecutor.CommandInfoRepository.TryAddCommand(commandName, commandInfoToAdd);
+            HttpCommandInfo commandInfoToAdd = new HttpCommandInfo(method, resourcePath);
+            this.CommandExecutor.TryAddCommand(commandName, commandInfoToAdd);
         }
     }
 }

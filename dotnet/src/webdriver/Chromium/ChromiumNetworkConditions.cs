@@ -52,7 +52,7 @@ namespace OpenQA.Selenium.Chromium
         }
 
         /// <summary>
-        /// Gets or sets the throughput of the network connection in kb/second for downloading.
+        /// Gets or sets the throughput of the network connection in bytes/second for downloading.
         /// </summary>
         public long DownloadThroughput
         {
@@ -61,7 +61,7 @@ namespace OpenQA.Selenium.Chromium
         }
 
         /// <summary>
-        /// Gets or sets the throughput of the network connection in kb/second for uploading.
+        /// Gets or sets the throughput of the network connection in bytes/second for uploading.
         /// </summary>
         public long UploadThroughput
         {

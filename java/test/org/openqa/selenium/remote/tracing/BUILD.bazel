@@ -1,0 +1,18 @@
+load("@rules_jvm_external//:defs.bzl", "artifact")
+load("//java:defs.bzl", "java_library")
+
+java_library(
+    name = "tracing-support",
+    testonly = True,
+    srcs = glob(["*.java"]),
+    visibility = ["//java/test:__subpackages__"],
+    deps = [
+        "//java/src/org/openqa/selenium/remote/tracing",
+        "//java/src/org/openqa/selenium/remote/tracing/opentelemetry",
+        artifact("io.opentelemetry:opentelemetry-api"),
+        artifact("io.opentelemetry:opentelemetry-context"),
+        artifact("io.opentelemetry:opentelemetry-sdk"),
+        artifact("io.opentelemetry:opentelemetry-sdk-common"),
+        artifact("io.opentelemetry:opentelemetry-sdk-trace"),
+    ],
+)

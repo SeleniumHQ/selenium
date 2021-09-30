@@ -46,6 +46,10 @@ module Selenium
                                foo: 'bar',
                                profile: profile,
                                log_level: :debug,
+                               android_package: 'package',
+                               android_activity: 'activity',
+                               android_device_serial: '123',
+                               android_intent_arguments: %w[foo bar],
                                'custom:options': {foo: 'bar'})
 
             expect(opts.args.to_a).to eq(%w[foo bar])
@@ -63,14 +67,28 @@ module Selenium
             expect(opts.strict_file_interactability).to eq(true)
             expect(opts.timeouts).to eq(script: 40000, page_load: 400000, implicit: 1)
             expect(opts.set_window_rect).to eq(false)
+            expect(opts.android_package).to eq('package')
+            expect(opts.android_activity).to eq('activity')
+            expect(opts.android_device_serial).to eq('123')
+            expect(opts.android_intent_arguments).to eq(%w[foo bar])
             expect(opts.options[:'custom:options']).to eq(foo: 'bar')
           end
         end
 
-        describe '#binary=' do
+        describe 'accessors' do
+          it 'adds a command-line argument' do
+            options.args << 'foo'
+            expect(options.args).to eq(['foo'])
+          end
+
           it 'sets the binary path' do
             options.binary = '/foo/bar'
             expect(options.binary).to eq('/foo/bar')
+          end
+
+          it 'adds a preference' do
+            options.prefs[:foo] = 'bar'
+            expect(options.prefs[:foo]).to eq('bar')
           end
         end
 
@@ -94,8 +112,8 @@ module Selenium
             profile = Profile.new
             allow(profile).to receive(:encoded).and_return('encoded_profile')
 
-            expect(Profile).to receive(:from_name).with('foo').and_return(profile)
-            options.profile = 'foo'
+            allow(Profile).to receive(:from_name).with('custom_profile_name').and_return(profile)
+            options.profile = 'custom_profile_name'
             expect(options.profile).to eq(profile)
           end
         end
@@ -115,8 +133,13 @@ module Selenium
         end
 
         describe '#add_option' do
-          it 'adds an option' do
+          it 'adds an option with ordered pairs' do
             options.add_option(:foo, 'bar')
+            expect(options.instance_variable_get('@options')[:foo]).to eq('bar')
+          end
+
+          it 'adds an option with Hash' do
+            options.add_option(foo: 'bar')
             expect(options.instance_variable_get('@options')[:foo]).to eq('bar')
           end
         end
@@ -128,19 +151,44 @@ module Selenium
           end
         end
 
+        describe '#enable_android' do
+          it 'adds default android settings' do
+            options.enable_android
+
+            expect(options.android_package).to eq('org.mozilla.firefox')
+            expect(options.android_activity).to be_nil
+            expect(options.android_device_serial).to be_nil
+            expect(options.android_intent_arguments).to be_nil
+          end
+
+          it 'accepts parameters' do
+            options.enable_android(package: 'foo',
+                                   serial_number: '123',
+                                   activity: 'qualified',
+                                   intent_arguments: %w[foo bar])
+            expect(options.android_package).to eq('foo')
+            expect(options.android_activity).to eq('qualified')
+            expect(options.android_device_serial).to eq('123')
+            expect(options.android_intent_arguments).to eq(%w[foo bar])
+          end
+        end
+
         describe '#as_json' do
           it 'returns empty options by default' do
             expect(options.as_json).to eq("browserName" => "firefox", "moz:firefoxOptions" => {})
           end
 
-          it 'returns added option' do
+          it 'returns added options' do
             options.add_option(:foo, 'bar')
-            expect(options.as_json).to eq("browserName" => "firefox", "moz:firefoxOptions" => {"foo" => "bar"})
+            options.add_option('foo:bar', {foo: 'bar'})
+            expect(options.as_json).to eq("browserName" => "firefox",
+                                          "foo:bar" => {"foo" => "bar"},
+                                          "moz:firefoxOptions" => {"foo" => "bar"})
           end
 
           it 'converts to a json hash' do
             profile = Profile.new
-            expect(profile).to receive(:as_json).and_return('encoded_profile')
+            allow(profile).to receive(:as_json).and_return('encoded_profile')
 
             opts = Options.new(browser_version: '66',
                                platform_name: 'win10',
@@ -157,7 +205,12 @@ module Selenium
                                prefs: {foo: 'bar'},
                                foo: 'bar',
                                profile: profile,
-                               log_level: :debug)
+                               log_level: :debug,
+                               android_package: 'package',
+                               android_activity: 'activity',
+                               android_device_serial: '123',
+                               android_intent_arguments: %w[foo bar],
+                               'custom:options': {foo: 'bar'})
 
             key = 'moz:firefoxOptions'
             expect(opts.as_json).to eq('browserName' => 'firefox',
@@ -171,12 +224,17 @@ module Selenium
                                                       'pageLoad' => 400000,
                                                       'implicit' => 1},
                                        'setWindowRect' => false,
+                                       'custom:options' => {'foo' => 'bar'},
                                        key => {'args' => %w[foo bar],
                                                'binary' => '/foo/bar',
                                                'prefs' => {'foo' => 'bar'},
                                                'profile' => 'encoded_profile',
                                                'log' => {'level' => 'debug'},
-                                               'foo' => 'bar'})
+                                               'foo' => 'bar',
+                                               'androidPackage' => 'package',
+                                               'androidActivity' => 'activity',
+                                               'androidDeviceSerial' => '123',
+                                               'androidIntentArguments' => %w[foo bar]})
           end
         end
       end # Options

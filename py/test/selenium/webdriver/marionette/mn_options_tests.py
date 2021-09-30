@@ -17,10 +17,6 @@
 
 import pytest
 
-try:
-    basestring
-except NameError:  # Python 3.x
-    basestring = str
 
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
@@ -110,7 +106,7 @@ class TestUnit(object):
         caps = opts.to_capabilities()
         assert "moz:firefoxOptions" in caps
         assert "profile" in caps["moz:firefoxOptions"]
-        assert isinstance(caps["moz:firefoxOptions"]["profile"], basestring)
+        assert isinstance(caps["moz:firefoxOptions"]["profile"], str)
         assert caps["moz:firefoxOptions"]["profile"] == profile.encoded
 
         opts.add_argument("--foo")
@@ -124,7 +120,7 @@ class TestUnit(object):
         caps = opts.to_capabilities()
         assert "moz:firefoxOptions" in caps
         assert "binary" in caps["moz:firefoxOptions"]
-        assert isinstance(caps["moz:firefoxOptions"]["binary"], basestring)
+        assert isinstance(caps["moz:firefoxOptions"]["binary"], str)
         assert caps["moz:firefoxOptions"]["binary"] == binary._start_cmd
 
         opts.set_preference("spam", "ham")

@@ -29,7 +29,7 @@ namespace OpenQA.Selenium.IE
     public sealed class InternetExplorerDriverService : DriverService
     {
         private const string InternetExplorerDriverServiceFileName = "IEDriverServer.exe";
-        private static readonly Uri InternetExplorerDriverDownloadUrl = new Uri("http://selenium-release.storage.googleapis.com/index.html");
+        private static readonly Uri InternetExplorerDriverDownloadUrl = new Uri("https://www.selenium.dev/downloads/");
 
         private InternetExplorerDriverLogLevel loggingLevel = InternetExplorerDriverLogLevel.Fatal;
         private string host = string.Empty;

@@ -1,0 +1,16 @@
+cc_binary(
+    name = "noblur64",
+    srcs = glob([
+        "*.c",
+        "*.h",
+    ]),
+    copts = [
+        "-Wall",
+        "-shared",
+        "-fPIC",
+        "-Os",
+        "-fshort-wchar",
+        "-m64",
+    ],
+    linkshared = True,
+)

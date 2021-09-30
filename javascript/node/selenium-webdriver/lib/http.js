@@ -76,7 +76,7 @@ function requireAtom(module, bazelTarget) {
  * @return {string} The headers as a string.
  */
 function headersToString(headers) {
-  let ret = []
+  const ret = []
   headers.forEach(function (value, name) {
     ret.push(`${name.toLowerCase()}: ${value}`)
   })
@@ -234,6 +234,14 @@ const COMMAND_MAP = new Map([
   ],
   [cmd.Name.SUBMIT_ELEMENT, post('/session/:sessionId/element/:id/submit')],
   [cmd.Name.GET_ELEMENT_TEXT, get('/session/:sessionId/element/:id/text')],
+  [
+    cmd.Name.GET_COMPUTED_ROLE,
+    get('/session/:sessionId/element/:id/computedrole'),
+  ],
+  [
+    cmd.Name.GET_COMPUTED_LABEL,
+    get('/session/:sessionId/element/:id/computedlabel'),
+  ],
   [cmd.Name.GET_ELEMENT_TAG_NAME, get('/session/:sessionId/element/:id/name')],
   [
     cmd.Name.IS_ELEMENT_SELECTED,
@@ -297,35 +305,6 @@ const COMMAND_MAP = new Map([
   [cmd.Name.GET_AVAILABLE_LOG_TYPES, get('/session/:sessionId/log/types')],
   [cmd.Name.GET_SESSION_LOGS, post('/logs')],
   [cmd.Name.UPLOAD_FILE, post('/session/:sessionId/se/file')],
-  [cmd.Name.LEGACY_ACTION_CLICK, post('/session/:sessionId/click')],
-  [
-    cmd.Name.LEGACY_ACTION_DOUBLE_CLICK,
-    post('/session/:sessionId/doubleclick'),
-  ],
-  [cmd.Name.LEGACY_ACTION_MOUSE_DOWN, post('/session/:sessionId/buttondown')],
-  [cmd.Name.LEGACY_ACTION_MOUSE_UP, post('/session/:sessionId/buttonup')],
-  [cmd.Name.LEGACY_ACTION_MOUSE_MOVE, post('/session/:sessionId/moveto')],
-  [cmd.Name.LEGACY_ACTION_SEND_KEYS, post('/session/:sessionId/keys')],
-  [cmd.Name.LEGACY_ACTION_TOUCH_DOWN, post('/session/:sessionId/touch/down')],
-  [cmd.Name.LEGACY_ACTION_TOUCH_UP, post('/session/:sessionId/touch/up')],
-  [cmd.Name.LEGACY_ACTION_TOUCH_MOVE, post('/session/:sessionId/touch/move')],
-  [
-    cmd.Name.LEGACY_ACTION_TOUCH_SCROLL,
-    post('/session/:sessionId/touch/scroll'),
-  ],
-  [
-    cmd.Name.LEGACY_ACTION_TOUCH_LONG_PRESS,
-    post('/session/:sessionId/touch/longclick'),
-  ],
-  [cmd.Name.LEGACY_ACTION_TOUCH_FLICK, post('/session/:sessionId/touch/flick')],
-  [
-    cmd.Name.LEGACY_ACTION_TOUCH_SINGLE_TAP,
-    post('/session/:sessionId/touch/click'),
-  ],
-  [
-    cmd.Name.LEGACY_ACTION_TOUCH_DOUBLE_TAP,
-    post('/session/:sessionId/touch/doubleclick'),
-  ],
 ])
 
 /** @const {!Map<string, (CommandSpec|CommandTransformer)>} */
@@ -402,6 +381,14 @@ const W3C_COMMAND_MAP = new Map([
     post('/session/:sessionId/element/:id/value'),
   ],
   [cmd.Name.GET_ELEMENT_TEXT, get('/session/:sessionId/element/:id/text')],
+  [
+    cmd.Name.GET_COMPUTED_ROLE,
+    get('/session/:sessionId/element/:id/computedrole'),
+  ],
+  [
+    cmd.Name.GET_COMPUTED_LABEL,
+    get('/session/:sessionId/element/:id/computedlabel'),
+  ],
   [cmd.Name.IS_ELEMENT_ENABLED, get('/session/:sessionId/element/:id/enabled')],
   [
     cmd.Name.GET_ELEMENT_ATTRIBUTE,
@@ -503,7 +490,8 @@ function buildRequest(customCommands, w3c, command) {
   }
 }
 
-const CLIENTS = /** !WeakMap<!Executor, !(Client|IThenable<!Client>)> */ new WeakMap()
+const CLIENTS =
+  /** !WeakMap<!Executor, !(Client|IThenable<!Client>)> */ new WeakMap()
 
 /**
  * A command executor that communicates with the server using JSON over HTTP.

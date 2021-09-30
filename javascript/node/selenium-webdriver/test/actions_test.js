@@ -54,10 +54,10 @@ test.suite(function (env) {
       await driver.get(fileServer.whereIs('/data/actions/click.html'))
 
       let box = await driver.findElement(By.id('box'))
-      assert.equal(await box.getAttribute('class'), '')
+      assert.strictEqual(await box.getAttribute('class'), '')
 
       await driver.actions().click(box).perform()
-      assert.equal(await box.getAttribute('class'), 'green')
+      assert.strictEqual(await box.getAttribute('class'), 'green')
     })
 
     it('click(element) clicks in center of element', async function () {
@@ -65,12 +65,12 @@ test.suite(function (env) {
 
       const div = await driver.findElement(By.css('div'))
       const rect = await div.getRect()
-      assert.deepEqual(rect, { width: 500, height: 500, x: 0, y: 0 })
+      assert.deepStrictEqual(rect, { width: 500, height: 500, x: 0, y: 0 })
 
       await driver.actions().click(div).perform()
 
       const clicks = await driver.executeScript('return clicks')
-      assert.deepEqual(clicks, [[250, 250]])
+      assert.deepStrictEqual(clicks, [[250, 250]])
     })
 
     it('can move relative to element center', async function () {
@@ -78,7 +78,7 @@ test.suite(function (env) {
 
       const div = await driver.findElement(By.css('div'))
       const rect = await div.getRect()
-      assert.deepEqual(rect, { width: 500, height: 500, x: 0, y: 0 })
+      assert.deepStrictEqual(rect, { width: 500, height: 500, x: 0, y: 0 })
 
       await driver
         .actions()
@@ -87,7 +87,7 @@ test.suite(function (env) {
         .perform()
 
       const clicks = await driver.executeScript('return clicks')
-      assert.deepEqual(clicks, [[260, 260]])
+      assert.deepStrictEqual(clicks, [[260, 260]])
     })
 
     test
@@ -96,10 +96,10 @@ test.suite(function (env) {
         await driver.get(fileServer.whereIs('/data/actions/click.html'))
 
         let box = await driver.findElement(By.id('box'))
-        assert.equal(await box.getAttribute('class'), '')
+        assert.strictEqual(await box.getAttribute('class'), '')
 
         await driver.actions().doubleClick(box).perform()
-        assert.equal(await box.getAttribute('class'), 'blue')
+        assert.strictEqual(await box.getAttribute('class'), 'blue')
       })
 
     // For some reason for Chrome 75 we need to wrap this test in an extra
@@ -112,18 +112,18 @@ test.suite(function (env) {
         await driver.get(fileServer.whereIs('/data/actions/drag.html'))
 
         let slide = await driver.findElement(By.id('slide'))
-        assert.equal(await slide.getCssValue('left'), '0px')
-        assert.equal(await slide.getCssValue('top'), '0px')
+        assert.strictEqual(await slide.getCssValue('left'), '0px')
+        assert.strictEqual(await slide.getCssValue('top'), '0px')
 
         let br = await driver.findElement(By.id('BR'))
         await driver.actions().dragAndDrop(slide, br).perform()
-        assert.equal(await slide.getCssValue('left'), '206px')
-        assert.equal(await slide.getCssValue('top'), '206px')
+        assert.strictEqual(await slide.getCssValue('left'), '206px')
+        assert.strictEqual(await slide.getCssValue('top'), '206px')
 
         let tr = await driver.findElement(By.id('TR'))
         await driver.actions().dragAndDrop(slide, tr).perform()
-        assert.equal(await slide.getCssValue('left'), '206px')
-        assert.equal(await slide.getCssValue('top'), '1px')
+        assert.strictEqual(await slide.getCssValue('left'), '206px')
+        assert.strictEqual(await slide.getCssValue('top'), '1px')
       })
     })
 
@@ -131,8 +131,8 @@ test.suite(function (env) {
       await driver.get(fileServer.whereIs('/data/actions/drag.html'))
 
       let slide = await driver.findElement(By.id('slide'))
-      assert.equal(await slide.getCssValue('left'), '0px')
-      assert.equal(await slide.getCssValue('top'), '0px')
+      assert.strictEqual(await slide.getCssValue('left'), '0px')
+      assert.strictEqual(await slide.getCssValue('top'), '0px')
 
       await driver
         .actions()
@@ -141,8 +141,8 @@ test.suite(function (env) {
         .move({ x: 100, y: 100, origin: Origin.POINTER })
         .release()
         .perform()
-      assert.equal(await slide.getCssValue('left'), '101px')
-      assert.equal(await slide.getCssValue('top'), '101px')
+      assert.strictEqual(await slide.getCssValue('left'), '101px')
+      assert.strictEqual(await slide.getCssValue('top'), '101px')
     })
 
     it('can move to and click element in an iframe', async function () {
@@ -163,33 +163,33 @@ test.suite(function (env) {
       await driver.get(test.Pages.formPage)
 
       let el = await driver.findElement(By.id('email'))
-      assert.equal(await el.getAttribute('value'), '')
+      assert.strictEqual(await el.getAttribute('value'), '')
 
       await driver.executeScript('arguments[0].focus()', el)
 
       await driver.actions().sendKeys('foobar').perform()
 
-      assert.equal(await el.getAttribute('value'), 'foobar')
+      assert.strictEqual(await el.getAttribute('value'), 'foobar')
     })
 
     it('can get the property of element', async function () {
       await driver.get(test.Pages.formPage)
 
       let el = await driver.findElement(By.id('email'))
-      assert.equal(await el.getProperty('value'), '')
+      assert.strictEqual(await el.getProperty('value'), '')
 
       await driver.executeScript('arguments[0].focus()', el)
 
       await driver.actions().sendKeys('foobar').perform()
 
-      assert.equal(await el.getProperty('value'), 'foobar')
+      assert.strictEqual(await el.getProperty('value'), 'foobar')
     })
 
     it('can send keys to focused element (with modifiers)', async function () {
       await driver.get(test.Pages.formPage)
 
       let el = await driver.findElement(By.id('email'))
-      assert.equal(await el.getAttribute('value'), '')
+      assert.strictEqual(await el.getAttribute('value'), '')
 
       await driver.executeScript('arguments[0].focus()', el)
 
@@ -202,18 +202,18 @@ test.suite(function (env) {
         .sendKeys('ar')
         .perform()
 
-      assert.equal(await el.getAttribute('value'), 'foOBar')
+      assert.strictEqual(await el.getAttribute('value'), 'foOBar')
     })
 
     it('can interact with simple form elements', async function () {
       await driver.get(test.Pages.formPage)
 
       let el = await driver.findElement(By.id('email'))
-      assert.equal(await el.getAttribute('value'), '')
+      assert.strictEqual(await el.getAttribute('value'), '')
 
       await driver.actions().click(el).sendKeys('foobar').perform()
 
-      assert.equal(await el.getAttribute('value'), 'foobar')
+      assert.strictEqual(await el.getAttribute('value'), 'foobar')
     })
   })
 })

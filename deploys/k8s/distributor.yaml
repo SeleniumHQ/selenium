@@ -31,6 +31,10 @@ spec:
               value: "session-map"
             - name: SESSIONS_PORT
               value: "5556"
+            - name: SESSIONQUEUE_HOSTNAME
+              value: "session-queue"
+            - name: SESSIONQUEUE_PORT
+              value: "5559"
           resources:
             limits:
               memory: "512Mi"

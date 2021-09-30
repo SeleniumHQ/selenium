@@ -50,10 +50,11 @@ module Selenium
           wait.until { event_input.attribute(:value).length == 2 }
 
           expect(event_input.attribute(:value)).to eq('AB')
-          expect(keylogger.text.strip).to match(/^(focus )?keydown keydown keypress keyup keydown keypress keyup keyup$/)
+          expected = keylogger.text.strip
+          expect(expected).to match(/^(focus )?keydown keydown keypress keyup keydown keypress keyup keyup$/)
         end
 
-        it 'can press and release modifier keys', except: {browser: :safari} do
+        it 'can press and release modifier keys' do
           driver.navigate.to url_for('javascriptPage.html')
 
           event_input = driver.find_element(id: 'theworks')
@@ -102,7 +103,7 @@ module Selenium
           expect(input.attribute(:value)).to eq('abcd')
         end
 
-        it 'can release pressed keys via release action', except: {browser: :safari} do
+        it 'can release pressed keys via release action' do
           driver.navigate.to url_for('javascriptPage.html')
 
           event_input = driver.find_element(id: 'theworks')
@@ -159,9 +160,8 @@ module Selenium
           expect(element.attribute(:value)).to eq('ContextClicked')
         end
 
-        it 'can release pressed buttons via release action', except: [{browser: :safari},
-                                                                      {driver: :remote, browser: :ie}],
-                                                             only: {browser: %i[edge chrome firefox ie]} do
+        it 'can release pressed buttons via release action', except: [{browser: %i[safari safari_preview]},
+                                                                      {driver: :remote, browser: :ie}] do
           driver.navigate.to url_for('javascriptPage.html')
 
           event_input = driver.find_element(id: 'clickField')

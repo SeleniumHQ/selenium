@@ -15,15 +15,17 @@
 # specific language governing permissions and limitations
 # under the License.
 
-from selenium.webdriver.common import service
+from typing import List
+
+from selenium.webdriver.common import (service, utils)
 
 
 class Service(service.Service):
     """Object that manages the starting and stopping of the
     GeckoDriver."""
 
-    def __init__(self, executable_path, port=0, service_args=None,
-                 log_path="geckodriver.log", env=None):
+    def __init__(self, executable_path: str, port: int = 0, service_args: List[str] = None,
+                 log_path: str = "geckodriver.log", env: dict = None):
         """Creates a new instance of the GeckoDriver remote service proxy.
 
         GeckoDriver provides a HTTP interface speaking the W3C WebDriver
@@ -41,15 +43,20 @@ class Service(service.Service):
             in the services' environment.
 
         """
-        #the condition will fail on both "" and on None, so no need of `log_path is not None and log_path != ""`
         log_file = open(log_path, "a+") if log_path else None
 
         service.Service.__init__(
             self, executable_path, port=port, log_file=log_file, env=env)
         self.service_args = service_args or []
+        # Set a port for CDP
+        self.service_args.append("--websocket-port")
+        self.service_args.append("%d" % utils.free_port())
+        # Set the webdriver port
+        self.service_args.append("--port")
+        self.service_args.append("%d" % self.port)
 
-    def command_line_args(self):
-        return ["--port", "%d" % self.port] + self.service_args
+    def command_line_args(self) -> List[str]:
+        return self.service_args
 
     def send_remote_shutdown_command(self):
         pass

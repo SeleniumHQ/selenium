@@ -35,5 +35,10 @@ namespace OpenQA.Selenium.DevTools
         /// <param name="protocolVersion">The specific version of the Developer Tools debugging protocol to use.</param>
         /// <returns>The active session to use to communicate with the Developer Tools debugging protocol.</returns>
         DevToolsSession GetDevToolsSession(int protocolVersion);
+
+        /// <summary>
+        /// Closes a DevTools session
+        /// </summary>
+        void CloseDevToolsSession();
     }
 }

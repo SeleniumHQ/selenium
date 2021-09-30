@@ -39,15 +39,18 @@ module Selenium
       let(:search_context) { test_search_context.new(bridge) }
 
       context 'finding a single element' do
-        it 'accepts a hash' do # rubocop:disable RSpec/RepeatedExample
-          expect(bridge).to receive(:find_element_by).with('id', 'bar', nil).and_return(element)
+        it 'accepts a hash' do
+          allow(bridge).to receive(:find_element_by).with('id', 'bar', nil).and_return(element)
+
           expect(search_context.find_element(id: 'bar')).to eq(element)
+          expect(bridge).to have_received(:find_element_by).with('id', 'bar', nil)
         end
 
-        # TODO: Rewrite this test so it's not a duplicate of above or remove
-        it 'accepts two arguments' do # rubocop:disable RSpec/RepeatedExample
-          expect(bridge).to receive(:find_element_by).with('id', 'bar', nil).and_return(element)
-          expect(search_context.find_element(id: 'bar')).to eq(element)
+        it 'accepts two arguments' do
+          allow(bridge).to receive(:find_element_by).with('id', 'bar', nil).and_return(element)
+
+          expect(search_context.find_element(:id, 'bar')).to eq(element)
+          expect(bridge).to have_received(:find_element_by).with('id', 'bar', nil)
         end
 
         it "raises an error if given an invalid 'by'" do
@@ -66,15 +69,18 @@ module Selenium
       end
 
       context 'finding multiple elements' do
-        it 'accepts a hash' do # rubocop:disable RSpec/RepeatedExample
-          expect(bridge).to receive(:find_elements_by).with('id', 'bar', nil).and_return([])
+        it 'accepts a hash' do
+          allow(bridge).to receive(:find_elements_by).with('id', 'bar', nil).and_return([])
+
           expect(search_context.find_elements(id: 'bar')).to eq([])
+          expect(bridge).to have_received(:find_elements_by).with('id', 'bar', nil)
         end
 
-        # TODO: Rewrite this test so it's not a duplicate of above or remove
-        it 'accepts two arguments' do # rubocop:disable RSpec/RepeatedExample
-          expect(bridge).to receive(:find_elements_by).with('id', 'bar', nil).and_return([])
-          expect(search_context.find_elements(id: 'bar')).to eq([])
+        it 'accepts two arguments' do
+          allow(bridge).to receive(:find_elements_by).with('id', 'bar', nil).and_return([])
+
+          expect(search_context.find_elements(:id, 'bar')).to eq([])
+          expect(bridge).to have_received(:find_elements_by).with('id', 'bar', nil)
         end
 
         it "raises an error if given an invalid 'by'" do

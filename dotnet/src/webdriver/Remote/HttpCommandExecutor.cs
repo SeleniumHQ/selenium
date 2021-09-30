@@ -17,6 +17,7 @@
 // </copyright>
 
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
@@ -43,6 +44,7 @@ namespace OpenQA.Selenium.Remote
         private const string UserAgentHeaderTemplate = "selenium/{0} (.net {1})";
         private Uri remoteServerUri;
         private TimeSpan serverResponseTimeout;
+        private string userAgent;
         private bool enableKeepAlive;
         private bool isDisposed;
         private IWebProxy proxy;
@@ -78,6 +80,7 @@ namespace OpenQA.Selenium.Remote
                 addressOfRemoteServer = new Uri(addressOfRemoteServer.ToString() + "/");
             }
 
+            this.userAgent = string.Format(CultureInfo.InvariantCulture, UserAgentHeaderTemplate, ResourceUtilities.AssemblyVersion, ResourceUtilities.PlatformFamily);
             this.remoteServerUri = addressOfRemoteServer;
             this.serverResponseTimeout = timeout;
             this.enableKeepAlive = enableKeepAlive;
@@ -88,15 +91,6 @@ namespace OpenQA.Selenium.Remote
         /// request to the remote end WebDriver implementation.
         /// </summary>
         public event EventHandler<SendingRemoteHttpRequestEventArgs> SendingRemoteHttpRequest;
-
-        /// <summary>
-        /// Gets the repository of objects containin information about commands.
-        /// </summary>
-        public CommandInfoRepository CommandInfoRepository
-        {
-            get { return this.commandInfoRepository; }
-            protected set { this.commandInfoRepository = value; }
-        }
 
         /// <summary>
         /// Gets or sets an <see cref="IWebProxy"/> object to be used to proxy requests
@@ -121,6 +115,43 @@ namespace OpenQA.Selenium.Remote
         }
 
         /// <summary>
+        /// Gets or sets the user agent string used for HTTP communication
+        /// batween this <see cref="HttpCommandExecutor"/> and the remote end
+        /// WebDriver implementation
+        /// </summary>
+        public string UserAgent
+        {
+            get { return this.userAgent; }
+            set { this.userAgent = value; }
+        }
+
+        /// <summary>
+        /// Gets the repository of objects containing information about commands.
+        /// </summary>
+        protected CommandInfoRepository CommandInfoRepository
+        {
+            get { return this.commandInfoRepository; }
+            set { this.commandInfoRepository = value; }
+        }
+
+        /// <summary>
+        /// Attempts to add a command to the repository of commands known to this executor.
+        /// </summary>
+        /// <param name="commandName">The name of the command to attempt to add.</param>
+        /// <param name="info">The <see cref="CommandInfo"/> describing the commnd to add.</param>
+        /// <returns><see langword="true"/> if the new command has been added successfully; otherwise, <see langword="false"/>.</returns>
+        public bool TryAddCommand(string commandName, CommandInfo info)
+        {
+            HttpCommandInfo commandInfo = info as HttpCommandInfo;
+            if (commandInfo == null)
+            {
+                return false;
+            }
+
+            return this.commandInfoRepository.TryAddCommand(commandName, commandInfo);
+        }
+
+        /// <summary>
         /// Executes a command
         /// </summary>
         /// <param name="commandToExecute">The command you wish to execute</param>
@@ -132,7 +163,7 @@ namespace OpenQA.Selenium.Remote
                 throw new ArgumentNullException("commandToExecute", "commandToExecute cannot be null");
             }
 
-            CommandInfo info = this.commandInfoRepository.GetCommandInfo(commandToExecute.Name);
+            HttpCommandInfo info = this.commandInfoRepository.GetCommandInfo<HttpCommandInfo>(commandToExecute.Name);
             if (info == null)
             {
                 throw new NotImplementedException(string.Format("The command you are attempting to execute, {0}, does not exist in the protocol dialect used by the remote end.", commandToExecute.Name));
@@ -182,7 +213,7 @@ namespace OpenQA.Selenium.Remote
                 string unknownErrorMessage = "An unknown exception was encountered sending an HTTP request to the remote WebDriver server for URL {0}. The exception message was: {1}";
                 throw new WebDriverException(string.Format(CultureInfo.InvariantCulture, unknownErrorMessage, requestInfo.FullUri.AbsoluteUri, ex.Message), ex);
             }
-            catch(TaskCanceledException ex)
+            catch (TaskCanceledException ex)
             {
                 string timeoutMessage = "The HTTP request to the remote WebDriver server for URL {0} timed out after {1} seconds.";
                 throw new WebDriverException(string.Format(CultureInfo.InvariantCulture, timeoutMessage, requestInfo.FullUri.AbsoluteUri, this.serverResponseTimeout.TotalSeconds), ex);
@@ -221,12 +252,9 @@ namespace OpenQA.Selenium.Remote
             }
 
             httpClientHandler.Proxy = this.Proxy;
-            // httpClientHandler.MaxConnectionsPerServer = 2000;
 
             this.client = new HttpClient(httpClientHandler);
-            string userAgentString = string.Format(CultureInfo.InvariantCulture, UserAgentHeaderTemplate, ResourceUtilities.AssemblyVersion, ResourceUtilities.PlatformFamily);
-            this.client.DefaultRequestHeaders.UserAgent.ParseAdd(userAgentString);
-
+            this.client.DefaultRequestHeaders.UserAgent.ParseAdd(this.UserAgent);
             this.client.DefaultRequestHeaders.Accept.ParseAdd(RequestAcceptHeader);
             if (!this.IsKeepAliveEnabled)
             {
@@ -238,74 +266,61 @@ namespace OpenQA.Selenium.Remote
 
         private async Task<HttpResponseInfo> MakeHttpRequest(HttpRequestInfo requestInfo)
         {
-            SendingRemoteHttpRequestEventArgs eventArgs = new SendingRemoteHttpRequestEventArgs(null, requestInfo.RequestBody);
+            SendingRemoteHttpRequestEventArgs eventArgs = new SendingRemoteHttpRequestEventArgs(requestInfo.HttpMethod, requestInfo.FullUri.ToString(), requestInfo.RequestBody);
             this.OnSendingRemoteHttpRequest(eventArgs);
 
             HttpMethod method = new HttpMethod(requestInfo.HttpMethod);
-            HttpRequestMessage requestMessage = new HttpRequestMessage(method, requestInfo.FullUri);
-            if (requestInfo.HttpMethod == CommandInfo.GetCommand)
+            using (HttpRequestMessage requestMessage = new HttpRequestMessage(method, requestInfo.FullUri))
             {
-                CacheControlHeaderValue cacheControlHeader = new CacheControlHeaderValue();
-                cacheControlHeader.NoCache = true;
-                requestMessage.Headers.CacheControl = cacheControlHeader;
+                foreach (KeyValuePair<string, string> header in eventArgs.Headers)
+                {
+                    requestMessage.Headers.Add(header.Key, header.Value);
+                }
+
+                if (requestInfo.HttpMethod == HttpCommandInfo.GetCommand)
+                {
+                    CacheControlHeaderValue cacheControlHeader = new CacheControlHeaderValue();
+                    cacheControlHeader.NoCache = true;
+                    requestMessage.Headers.CacheControl = cacheControlHeader;
+                }
+
+                if (requestInfo.HttpMethod == HttpCommandInfo.PostCommand)
+                {
+                    MediaTypeWithQualityHeaderValue acceptHeader = new MediaTypeWithQualityHeaderValue(JsonMimeType);
+                    acceptHeader.CharSet = Utf8CharsetType;
+                    requestMessage.Headers.Accept.Add(acceptHeader);
+
+                    byte[] bytes = Encoding.UTF8.GetBytes(eventArgs.RequestBody);
+                    requestMessage.Content = new ByteArrayContent(bytes, 0, bytes.Length);
+
+                    MediaTypeHeaderValue contentTypeHeader = new MediaTypeHeaderValue(JsonMimeType);
+                    contentTypeHeader.CharSet = Utf8CharsetType;
+                    requestMessage.Content.Headers.ContentType = contentTypeHeader;
+                }
+
+                using (HttpResponseMessage responseMessage = await this.client.SendAsync(requestMessage))
+                {
+                    HttpResponseInfo httpResponseInfo = new HttpResponseInfo();
+                    httpResponseInfo.Body = await responseMessage.Content.ReadAsStringAsync();
+                    httpResponseInfo.ContentType = responseMessage.Content.Headers.ContentType.ToString();
+                    httpResponseInfo.StatusCode = responseMessage.StatusCode;
+
+                    return httpResponseInfo;
+                }
             }
-
-            if (requestInfo.HttpMethod == CommandInfo.PostCommand)
-            {
-                MediaTypeWithQualityHeaderValue acceptHeader = new MediaTypeWithQualityHeaderValue(JsonMimeType);
-                acceptHeader.CharSet = Utf8CharsetType;
-                requestMessage.Headers.Accept.Add(acceptHeader);
-
-                byte[] bytes = Encoding.UTF8.GetBytes(eventArgs.RequestBody);
-                requestMessage.Content = new ByteArrayContent(bytes, 0, bytes.Length);
-
-                MediaTypeHeaderValue contentTypeHeader = new MediaTypeHeaderValue(JsonMimeType);
-                contentTypeHeader.CharSet = Utf8CharsetType;
-                requestMessage.Content.Headers.ContentType = contentTypeHeader;
-            }
-
-            HttpResponseMessage responseMessage = await this.client.SendAsync(requestMessage);
-            HttpResponseInfo httpResponseInfo = new HttpResponseInfo();
-            httpResponseInfo.Body = await responseMessage.Content.ReadAsStringAsync();
-            httpResponseInfo.ContentType = responseMessage.Content.Headers.ContentType.ToString();
-            httpResponseInfo.StatusCode = responseMessage.StatusCode;
-            return httpResponseInfo;
         }
 
         private Response CreateResponse(HttpResponseInfo responseInfo)
         {
             Response response = new Response();
             string body = responseInfo.Body;
-            if (responseInfo.ContentType != null && responseInfo.ContentType.StartsWith("application/json", StringComparison.OrdinalIgnoreCase))
+            if (responseInfo.ContentType != null && responseInfo.ContentType.StartsWith(JsonMimeType, StringComparison.OrdinalIgnoreCase))
             {
                 response = Response.FromJson(body);
             }
             else
             {
                 response.Value = body;
-            }
-
-            if (this.CommandInfoRepository.SpecificationLevel < 1 && (responseInfo.StatusCode < HttpStatusCode.OK || responseInfo.StatusCode >= HttpStatusCode.BadRequest))
-            {
-                if (responseInfo.StatusCode >= HttpStatusCode.BadRequest && responseInfo.StatusCode < HttpStatusCode.InternalServerError)
-                {
-                    response.Status = WebDriverResult.UnhandledError;
-                }
-                else if (responseInfo.StatusCode >= HttpStatusCode.InternalServerError)
-                {
-                    if (responseInfo.StatusCode == HttpStatusCode.NotImplemented)
-                    {
-                        response.Status = WebDriverResult.UnknownCommand;
-                    }
-                    else if (response.Status == WebDriverResult.Success)
-                    {
-                        response.Status = WebDriverResult.UnhandledError;
-                    }
-                }
-                else
-                {
-                    response.Status = WebDriverResult.UnhandledError;
-                }
             }
 
             if (response.Value is string)
@@ -345,7 +360,7 @@ namespace OpenQA.Selenium.Remote
 
         private class HttpRequestInfo
         {
-            public HttpRequestInfo(Uri serverUri, Command commandToExecute, CommandInfo commandInfo)
+            public HttpRequestInfo(Uri serverUri, Command commandToExecute, HttpCommandInfo commandInfo)
             {
                 this.FullUri = commandInfo.CreateCommandUri(serverUri, commandToExecute);
                 this.HttpMethod = commandInfo.Method;

@@ -109,7 +109,7 @@
   </Match>
 
   <Match>
-    <Class name="org.openqa.selenium.grid.sessionqueue.config.NewSessionQueueFlags"/>
+    <Class name="org.openqa.selenium.grid.sessionqueue.config.SessionRequestFlags"/>
     <Bug pattern="URF_UNREAD_FIELD"/>
   </Match>
 

@@ -62,7 +62,7 @@ module Selenium
       end
 
       # https://github.com/mozilla/geckodriver/issues/245
-      it 'should send key presses chords', except: {browser: %i[firefox safari safari_preview]} do
+      it 'should send key presses chords', except: {browser: %i[firefox firefox_nightly safari safari_preview]} do
         driver.navigate.to url_for('javascriptPage.html')
         key_reporter = driver.find_element(id: 'keyReporter')
 
@@ -83,19 +83,310 @@ module Selenium
         expect(element.attribute('value')).to include(File.basename(path))
       end
 
-      it 'should get attribute value' do
-        driver.navigate.to url_for('formPage.html')
-        expect(driver.find_element(id: 'withText').attribute('rows')).to eq('5')
+      describe 'properties and attributes' do
+        before { driver.navigate.to url_for('formPage.html') }
+
+        context 'string type' do
+          let(:element) { driver.find_element(id: 'checky') }
+          let(:prop_or_attr) { 'type' }
+
+          it '#dom_attribute returns attribute value' do
+            expect(element.dom_attribute(prop_or_attr)).to eq 'checkbox'
+          end
+
+          it '#property returns property value' do
+            expect(element.property(prop_or_attr)).to eq 'checkbox'
+          end
+
+          it '#attribute returns value' do
+            expect(element.attribute(prop_or_attr)).to eq 'checkbox'
+          end
+        end
+
+        context 'numeric type' do
+          let(:element) { driver.find_element(id: 'withText') }
+          let(:prop_or_attr) { 'rows' }
+
+          it '#dom_attribute String' do
+            expect(element.dom_attribute(prop_or_attr)).to eq '5'
+          end
+
+          it '#property returns Number' do
+            expect(element.property(prop_or_attr)).to eq 5
+          end
+
+          it '#attribute returns String' do
+            expect(element.attribute(prop_or_attr)).to eq '5'
+          end
+        end
+
+        context 'boolean type of true' do
+          let(:element) { driver.find_element(id: 'checkedchecky') }
+          let(:prop_or_attr) { 'checked' }
+
+          it '#dom_attribute returns String', except: {browser: :safari} do
+            expect(element.dom_attribute(prop_or_attr)).to eq 'true'
+          end
+
+          it '#property returns true' do
+            expect(element.property(prop_or_attr)).to eq true
+          end
+
+          it '#attribute returns String' do
+            expect(element.attribute(prop_or_attr)).to eq 'true'
+          end
+
+          it '#dom_attribute does not update after click', except: {browser: :safari} do
+            element.click
+            expect(element.dom_attribute(prop_or_attr)).to eq 'true'
+          end
+
+          it '#property updates to false after click' do
+            element.click
+            expect(element.property(prop_or_attr)).to eq false
+          end
+
+          it '#attribute updates to nil after click' do
+            element.click
+            expect(element.attribute(prop_or_attr)).to eq nil
+          end
+        end
+
+        context 'boolean type of false' do
+          let(:element) { driver.find_element(id: 'checky') }
+          let(:prop_or_attr) { 'checked' }
+
+          it '#dom_attribute returns nil' do
+            expect(element.dom_attribute(prop_or_attr)).to be_nil
+          end
+
+          it '#property returns false' do
+            expect(element.property(prop_or_attr)).to eq false
+          end
+
+          it '#attribute returns nil' do
+            expect(element.attribute(prop_or_attr)).to be_nil
+          end
+
+          it '#dom_attribute does not update after click' do
+            element.click
+            expect(element.dom_attribute(prop_or_attr)).to eq nil
+          end
+
+          it '#property updates to true after click' do
+            element.click
+            expect(element.property(prop_or_attr)).to eq true
+          end
+
+          it '#attribute updates to String after click' do
+            element.click
+            expect(element.attribute(prop_or_attr)).to eq 'true'
+          end
+        end
+
+        context 'property exists but attribute does not' do
+          let(:element) { driver.find_element(id: 'withText') }
+          let(:prop_or_attr) { 'value' }
+
+          it '#dom_attribute returns nil' do
+            expect(element.dom_attribute(prop_or_attr)).to be_nil
+          end
+
+          it '#property returns default property' do
+            expect(element.property(prop_or_attr)).to eq 'Example text'
+          end
+
+          it '#attribute returns default property' do
+            expect(element.attribute(prop_or_attr)).to eq 'Example text'
+          end
+
+          it '#property returns updated property' do
+            element.clear
+            expect(element.property(prop_or_attr)).to be_empty
+          end
+
+          it '#attribute returns updated property' do
+            element.clear
+            expect(element.attribute(prop_or_attr)).to be_empty
+          end
+        end
+
+        context 'attribute exists but property does not' do
+          let(:element) { driver.find_element(id: 'vsearchGadget') }
+          let(:prop_or_attr) { 'accesskey' }
+
+          it '#dom_attribute returns attribute' do
+            expect(element.dom_attribute(prop_or_attr)).to eq '4'
+          end
+
+          it '#property returns nil' do
+            expect(element.property(prop_or_attr)).to be_nil
+          end
+
+          it '#attribute returns attribute' do
+            expect(element.attribute(prop_or_attr)).to eq '4'
+          end
+        end
+
+        context 'neither attribute nor property exists' do
+          let(:element) { driver.find_element(id: 'checky') }
+          let(:prop_or_attr) { 'nonexistent' }
+
+          it '#dom_attribute returns nil' do
+            expect(element.dom_attribute(prop_or_attr)).to be_nil
+          end
+
+          it '#property returns nil' do
+            expect(element.property(prop_or_attr)).to be_nil
+          end
+
+          it '#attribute returns nil' do
+            expect(element.attribute(prop_or_attr)).to be_nil
+          end
+        end
+
+        context 'style' do
+          before { driver.navigate.to url_for('clickEventPage.html') }
+
+          let(:element) { driver.find_element(id: 'result') }
+          let(:prop_or_attr) { 'style' }
+
+          it '#dom_attribute attribute with no formatting' do
+            expect(element.dom_attribute(prop_or_attr)).to eq 'width:300;height:60'
+          end
+
+          # TODO: This might not be correct behavior
+          it '#property returns object',
+             except: [{browser: :firefox,
+                       reason: 'https://github.com/mozilla/geckodriver/issues/1846'},
+                      {browser: :safari}] do
+            expect(element.property(prop_or_attr)).to eq %w[width height]
+          end
+
+          it '#attribute returns attribute with formatting' do
+            expect(element.attribute(prop_or_attr)).to eq 'width: 300px; height: 60px;'
+          end
+        end
+
+        context 'incorrect casing' do
+          let(:element) { driver.find_element(id: 'checky') }
+          let(:prop_or_attr) { 'nAme' }
+
+          it '#dom_attribute returns correctly cased attribute' do
+            expect(element.dom_attribute(prop_or_attr)).to eq 'checky'
+          end
+
+          it '#property returns nil' do
+            expect(element.property(prop_or_attr)).to be_nil
+          end
+
+          it '#attribute returns correctly cased attribute' do
+            expect(element.attribute(prop_or_attr)).to eq 'checky'
+          end
+        end
+
+        context 'property attribute case difference with attribute casing' do
+          let(:element) { driver.find_element(name: 'readonly') }
+          let(:prop_or_attr) { 'readonly' }
+
+          it '#dom_attribute returns a String', except: {browser: :safari} do
+            expect(element.dom_attribute(prop_or_attr)).to eq 'true'
+          end
+
+          it '#property returns nil' do
+            expect(element.property(prop_or_attr)).to be_nil
+          end
+
+          it '#attribute returns a String' do
+            expect(element.attribute(prop_or_attr)).to eq 'true'
+          end
+        end
+
+        context 'property attribute case difference with property casing' do
+          let(:element) { driver.find_element(name: 'readonly') }
+          let(:prop_or_attr) { 'readOnly' }
+
+          it '#dom_attribute returns a String',
+             except: [{browser: :firefox,
+                       reason: 'https://github.com/mozilla/geckodriver/issues/1850'},
+                      {browser: :safari}] do
+            expect(element.dom_attribute(prop_or_attr)).to eq 'true'
+          end
+
+          it '#property returns property as true' do
+            expect(element.property(prop_or_attr)).to eq true
+          end
+
+          it '#attribute returns property as String' do
+            expect(element.attribute(prop_or_attr)).to eq 'true'
+          end
+        end
+
+        context 'property attribute name difference with attribute naming' do
+          let(:element) { driver.find_element(id: 'wallace') }
+          let(:prop_or_attr) { 'class' }
+
+          it '#dom_attribute returns attribute value' do
+            expect(element.dom_attribute(prop_or_attr)).to eq 'gromit'
+          end
+
+          it '#property returns nil' do
+            expect(element.property(prop_or_attr)).to be_nil
+          end
+
+          it '#attribute returns attribute value' do
+            expect(element.attribute(prop_or_attr)).to eq 'gromit'
+          end
+        end
+
+        context 'property attribute name difference with property naming' do
+          let(:element) { driver.find_element(id: 'wallace') }
+          let(:prop_or_attr) { 'className' }
+
+          it '#dom_attribute returns nil' do
+            expect(element.dom_attribute(prop_or_attr)).to be_nil
+          end
+
+          it '#property returns property value' do
+            expect(element.property(prop_or_attr)).to eq 'gromit'
+          end
+
+          it '#attribute returns property value' do
+            expect(element.attribute(prop_or_attr)).to eq 'gromit'
+          end
+        end
+
+        context 'property attribute value difference' do
+          let(:element) { driver.find_element(tag_name: 'form') }
+          let(:prop_or_attr) { 'action' }
+
+          it '#dom_attribute returns attribute value' do
+            expect(element.dom_attribute(prop_or_attr)).to eq 'resultPage.html'
+          end
+
+          it '#property returns property value' do
+            expect(element.property(prop_or_attr)).to match(%r{http://(.+)/resultPage\.html})
+          end
+
+          it '#attribute returns property value' do
+            expect(element.attribute(prop_or_attr)).to match(%r{http://(.+)/resultPage\.html})
+          end
+        end
       end
 
-      it 'should return nil for non-existent attributes' do
-        driver.navigate.to url_for('formPage.html')
-        expect(driver.find_element(id: 'withText').attribute('nonexistent')).to be_nil
+      it 'returns ARIA role', only: {browser: %i[chrome edge]} do
+        driver.navigate.to "data:text/html," \
+                           "<div role='heading' aria-level='1'>Level 1 Header</div>" \
+                           "<h1>Level 1 Header</h1>" \
+                           "<h2 role='alert'>Level 2 Header</h2>"
+        expect(driver.find_element(tag_name: 'div').aria_role).to eq('heading')
+        expect(driver.find_element(tag_name: 'h1').aria_role).to eq('heading')
+        expect(driver.find_element(tag_name: 'h2').aria_role).to eq('alert')
       end
 
-      it 'should get property value' do
-        driver.navigate.to url_for('formPage.html')
-        expect(driver.find_element(id: 'withText').property('nodeName')).to eq('TEXTAREA')
+      it 'returns accessible name', only: {browser: %i[chrome edge]} do
+        driver.navigate.to "data:text/html,<h1>Level 1 Header</h1>"
+        expect(driver.find_element(tag_name: 'h1').accessible_name).to eq('Level 1 Header')
       end
 
       it 'should clear' do

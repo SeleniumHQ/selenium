@@ -1,146 +1,179 @@
-// https://github.com/vercel/next.js/issues/11230#issuecomment-643595034
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
+//
+//   http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
 
-import React, { useState } from "react";
-import { Link } from "react-router-dom";
-import { ReactComponent as SearchIcon } from "../../assets/icons/search2.svg";
-import { ReactComponent as TimesIcon } from "../../assets/icons/times.svg";
-import seleniumIcon from "../../assets/selenium.svg";
-import "../../css/icons.css";
-import styles from "./NavBar.module.css";
-import searchHighlight from "../../core/Search";
-import "./NavBar.css";
-import KeyBoardHelp from "../KeyBoard/KeyBoardHelp";
+import Divider from '@material-ui/core/Divider'
+import Drawer from '@material-ui/core/Drawer'
+import IconButton from '@material-ui/core/IconButton'
+import List from '@material-ui/core/List'
+import ListItem from '@material-ui/core/ListItem'
+import ListItemIcon from '@material-ui/core/ListItemIcon'
+import ListItemText from '@material-ui/core/ListItemText'
+import ChevronLeftIcon from '@material-ui/icons/ChevronLeft'
+import DashboardIcon from '@material-ui/icons/Dashboard'
+import AssessmentIcon from '@material-ui/icons/Assessment'
+import HelpIcon from '@material-ui/icons/Help'
+import clsx from 'clsx'
+import React, { ReactNode } from 'react'
+import {
+  Box,
+  createStyles,
+  Theme,
+  Typography,
+  withStyles
+} from '@material-ui/core'
+import { withRouter } from 'react-router'
+import { RouteComponentProps } from 'react-router-dom'
+import OverallConcurrency from './OverallConcurrency'
+import { StyleRules } from '@material-ui/core/styles'
 
-/**
- * 	NavBar component, includes search bar and search functions
- *  Look at `core/Search.ts` for the highlight function
- */
-export default function NavBar() {
-	let [prevSearch, setPrevSearch] = useState<any>();
-	let [prevTerm, setPrevTerm] = useState<string>("");
+const drawerWidth = 240
 
-	const searchTerminDOM = (term: string) => {
-		if (prevSearch) {
-			prevSearch.revert();
-		}
-		if (term && term !== "") {
-			prevSearch = searchHighlight(term);
-			setPrevSearch(prevSearch);
-		}
-		setPrevTerm(term);
-	};
+const useStyles = (theme: Theme): StyleRules => createStyles(
+  {
+    root: {
+      display: 'flex'
+    },
+    toolbarIcon: {
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'flex-end',
+      padding: '0 8px',
+      ...theme.mixins.toolbar,
+      backgroundColor: theme.palette.primary.main
+    },
+    drawerPaper: {
+      position: 'relative',
+      whiteSpace: 'nowrap',
+      width: drawerWidth,
+      minHeight: '100vh',
+      transition: theme.transitions.create('width', {
+        easing: theme.transitions.easing.sharp,
+        duration: theme.transitions.duration.enteringScreen
+      })
+    },
+    drawerPaperClose: {
+      overflowX: 'hidden',
+      minHeight: '100vh',
+      transition: theme.transitions.create('width', {
+        easing: theme.transitions.easing.sharp,
+        duration: theme.transitions.duration.leavingScreen
+      }),
+      width: theme.spacing(7),
+      [theme.breakpoints.up('sm')]: {
+        width: theme.spacing(9)
+      }
+    },
+    queueBackground: {
+      backgroundColor: theme.palette.secondary.main
+    }
 
-	const rerunSearch = () => searchTerminDOM(prevTerm);
-	window.rerunSearch = rerunSearch;
+  })
 
-	const clearSearch = () => {
-		const searchBar = document.getElementById("search-by") as HTMLInputElement;
-		searchBar.value = "";
-		// revert prev search as well
-		searchTerminDOM("");
-	};
-
-	return (
-		<React.Fragment>
-			<nav id="sidebar">
-				<div id="header-wrapper">
-					<div id="header" style={{ height: "70px" }}>
-						<Link id="logo" to="/home">
-							<img
-								src={seleniumIcon}
-								alt="logo"
-								className={styles.iconDetails}
-							/>
-							<div
-								style={{
-									marginLeft: "60px",
-									marginTop: "5px",
-								}}
-							>
-								<h3 className={styles.h4}>Selenium Grid</h3>
-							</div>
-						</Link>
-					</div>
-
-					<div className="searchbox">
-						<label htmlFor="search-by">
-							<SearchIcon className="icon-green" />
-						</label>
-						<input
-							data-search-input=""
-							id="search-by"
-							type="search"
-							placeholder="Search..."
-							autoComplete="off"
-							onChange={(ev) => searchTerminDOM(ev.target.value)}
-						/>
-						<span data-search-clear="">
-							<TimesIcon className="icon-green" onClick={clearSearch} />
-						</span>
-					</div>
-				</div>
-				<div className="highlightable ps-container ps-theme-default ps-active-y">
-					<ul className="topics">
-						<li data-nav-id="/console" title="Console" className="dd-item">
-							<Link to="/console">Console</Link>
-						</li>
-						<li data-nav-id="/docs/" title="Docs" className="dd-item parent">
-							<a href="https://www.selenium.dev/documentation/en/grid/">
-								Docs
-								<i className="fas fa-check read-icon"></i>
-							</a>
-
-							<ul>
-								<li
-									data-nav-id="/grid/purposes_and_main_functionalities/"
-									title="Purposes and main functionalities"
-									className="dd-item "
-								>
-									<a href="https://www.selenium.dev/documentation/en/grid/purposes_and_main_functionalities/">
-										Purposes and functionalities
-										<i className="fas fa-check read-icon"></i>
-									</a>
-								</li>
-
-								<li
-									data-nav-id="/grid/when_to_use_grid/"
-									title="When to use Grid"
-									className="dd-item "
-								>
-									<a href="https://www.selenium.dev/documentation/en/grid/when_to_use_grid/">
-										When to use Grid
-										<i className="fas fa-check read-icon"></i>
-									</a>
-								</li>
-
-								<li
-									data-nav-id="/grid/grid_4/"
-									title="Grid 4"
-									className="dd-item"
-								>
-									<a href="https://www.selenium.dev/documentation/en/grid/grid_4/">
-										Grid 4<i className="fas fa-check read-icon"></i>
-									</a>
-
-									<ul>
-										<li
-											data-nav-id="/grid/grid_4/components_of_a_grid/"
-											title="Components"
-											className="dd-item "
-										>
-											<a href="https://www.selenium.dev/documentation/en/grid/grid_4/components_of_a_grid/">
-												Components
-												<i className="fas fa-check read-icon"></i>
-											</a>
-										</li>
-									</ul>
-								</li>
-							</ul>
-						</li>
-					</ul>
-				</div>
-				<KeyBoardHelp />
-			</nav>
-		</React.Fragment>
-	);
+function ListItemLink (props): JSX.Element {
+  return <ListItem button component='a' {...props} />
 }
+
+interface NavBarProps extends RouteComponentProps {
+  open: boolean
+  maxSession: number
+  sessionCount: number
+  nodeCount: number
+  sessionQueueSize: number
+  classes: any
+}
+
+class NavBar extends React.Component<NavBarProps, {}> {
+  static defaultProps = {
+    open: false
+  }
+
+  render (): ReactNode {
+    const {
+      open,
+      maxSession,
+      sessionCount,
+      nodeCount,
+      sessionQueueSize,
+      classes,
+      location
+    } = this.props
+
+    // Not showing the overall status when the user is on the Overview page and there is only one node, because polling
+    // is not happening at the same time and it could be confusing for the user. So, displaying it when there is more
+    // than one node, or when the user is on a different page and there is at least one node registered.
+    const showOverallConcurrency = nodeCount > 1 || (location.pathname !== '/' && nodeCount > 0)
+
+    return (
+      <Drawer
+        variant='permanent'
+        classes={{
+          paper: clsx(classes.drawerPaper, !open && classes.drawerPaperClose)
+        }}
+        open={open}
+      >
+        <div className={classes.toolbarIcon}>
+          <IconButton color='secondary'>
+            <ChevronLeftIcon />
+          </IconButton>
+        </div>
+        <Divider />
+        <List>
+          <div>
+            <ListItemLink href='#'>
+              <ListItemIcon>
+                <DashboardIcon />
+              </ListItemIcon>
+              <ListItemText primary='Overview' />
+            </ListItemLink>
+            <ListItemLink href='#sessions'>
+              <ListItemIcon>
+                <AssessmentIcon/>
+              </ListItemIcon>
+              <ListItemText primary='Sessions'/>
+            </ListItemLink>
+            <ListItemLink href='#help'>
+              <ListItemIcon>
+                <HelpIcon/>
+              </ListItemIcon>
+              <ListItemText primary='Help'/>
+            </ListItemLink>
+          </div>
+        </List>
+        <Box flexGrow={1}/>
+        {open && (
+          <Box p={3} m={1} className={classes.queueBackground}>
+            <Typography
+              align='center'
+              gutterBottom
+              variant='h4'
+            >
+              Queue size: {sessionQueueSize}
+            </Typography>
+          </Box>
+        )}
+        {showOverallConcurrency && open && (
+          <OverallConcurrency
+            sessionCount={sessionCount}
+            maxSession={maxSession}
+          />
+        )}
+      </Drawer>
+    )
+  }
+}
+
+export default (withStyles(useStyles))(withRouter(NavBar))

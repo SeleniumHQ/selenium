@@ -33,3 +33,28 @@ def test_add_arguments(options):
 def test_get_arguments(options):
     options._arguments = ['foo']
     assert 'foo' in options.arguments
+
+
+def test_enables_mobile(options):
+    options.enable_mobile(android_package="cheese")
+    assert options.mobile_options["androidPackage"] == "cheese"
+    assert not hasattr(options.mobile_options, "androidActivity")
+    assert not hasattr(options.mobile_options, "androidDeviceSerial")
+
+
+def test_enable_mobile_errors_without_package(options):
+    with pytest.raises(AttributeError):
+        options.enable_mobile()
+
+
+def test_enable_mobile_with_activity(options):
+    options.enable_mobile(android_package="sausages",
+                          android_activity="eating")
+    assert options.mobile_options["androidActivity"] == "eating"
+
+
+def test_enable_mobile_with_device_serial(options):
+    options.enable_mobile(android_package="cheese",
+                          android_activity="crackers",
+                          device_serial="1234")
+    options.mobile_options["androidDeviceSerial"] == "1234"

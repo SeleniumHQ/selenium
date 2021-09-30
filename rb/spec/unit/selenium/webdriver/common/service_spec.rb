@@ -32,7 +32,7 @@ module Selenium
 
       describe '#new' do
         it 'uses default path and port' do
-          expect(Platform).to receive(:find_binary).and_return(service_path)
+          allow(Platform).to receive(:find_binary).and_return(service_path)
           expect(Service).to receive(:driver_path)
 
           service = Service.new
@@ -51,7 +51,7 @@ module Selenium
         end
 
         it 'does not create args by default' do
-          expect(Platform).to receive(:find_binary).and_return(service_path)
+          allow(Platform).to receive(:find_binary).and_return(service_path)
           expect(Service).to receive(:driver_path)
 
           service = Service.new
@@ -59,7 +59,7 @@ module Selenium
         end
 
         it 'uses provided args' do
-          expect(Platform).to receive(:find_binary).and_return(service_path)
+          allow(Platform).to receive(:find_binary).and_return(service_path)
           expect(Service).to receive(:driver_path)
 
           service = Service.new(args: ['--foo', '--bar'])

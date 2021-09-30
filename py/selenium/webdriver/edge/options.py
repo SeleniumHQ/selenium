@@ -24,26 +24,26 @@ class Options(ChromiumOptions):
 
     def __init__(self):
         super(Options, self).__init__()
-        self._use_chromium = False
+        self._use_chromium = True
         self._use_webview = False
 
     @property
-    def use_chromium(self):
+    def use_chromium(self) -> bool:
         return self._use_chromium
 
     @use_chromium.setter
-    def use_chromium(self, value):
+    def use_chromium(self, value: bool):
         self._use_chromium = bool(value)
 
     @property
-    def use_webview(self):
+    def use_webview(self) -> bool:
         return self._use_webview
 
     @use_webview.setter
-    def use_webview(self, value):
+    def use_webview(self, value: bool):
         self._use_webview = bool(value)
 
-    def to_capabilities(self):
+    def to_capabilities(self) -> dict:
         """
         Creates a capabilities with all the options that have been set and
         :Returns: A dictionary with everything
@@ -53,7 +53,7 @@ class Options(ChromiumOptions):
         if self._use_chromium:
             caps = super(Options, self).to_capabilities()
             if self._use_webview:
-                caps['browserName'] = 'WebView2'
+                caps['browserName'] = 'webview2'
         else:
             caps['platform'] = 'windows'
 
@@ -61,5 +61,5 @@ class Options(ChromiumOptions):
         return caps
 
     @property
-    def default_capabilities(self):
+    def default_capabilities(self) -> dict:
         return DesiredCapabilities.EDGE.copy()

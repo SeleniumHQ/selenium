@@ -1,7 +1,0 @@
-js_library(name = "wgxpath",
-  srcs = [
-    "*.js",
-  ],
-  deps = [
-    "//third_party/closure",
-  ])

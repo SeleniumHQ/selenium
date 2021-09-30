@@ -77,8 +77,9 @@ class HttpClient {
    *     Defaults to `http.globalAgent`.
    * @param {?string=} opt_proxy The proxy to use for the connection to the
    *     server. Default is to use no proxy.
+   * @param {?Object.<string,Object>} client_options
    */
-  constructor(serverUrl, opt_agent, opt_proxy) {
+  constructor(serverUrl, opt_agent, opt_proxy, client_options = {}) {
     /** @private {http.Agent} */
     this.agent_ = opt_agent || null
 
@@ -89,9 +90,30 @@ class HttpClient {
     this.options_ = getRequestOptions(serverUrl)
 
     /**
+     * client options, header overrides
+     */
+    this.client_options = client_options
+
+    /**
+     * sets keep-alive for the agent
+     * see https://stackoverflow.com/a/58332910
+     */
+    this.keepAlive = this.client_options['keep-alive']
+
+    /**
      * @private {?RequestOptions}
      */
     this.proxyOptions_ = opt_proxy ? getRequestOptions(opt_proxy) : null
+  }
+
+  get keepAlive() {
+    return this.agent_.keepAlive
+  }
+
+  set keepAlive(value) {
+    if (value === 'true' || value === true) {
+      this.agent_.keepAlive = true
+    }
   }
 
   /** @override */
@@ -106,7 +128,7 @@ class HttpClient {
       })
     }
 
-    headers['User-Agent'] = USER_AGENT
+    headers['User-Agent'] = this.client_options['user-agent'] || USER_AGENT
     headers['Content-Length'] = 0
     if (httpRequest.method == 'POST' || httpRequest.method == 'PUT') {
       data = JSON.stringify(httpRequest.data)
@@ -232,7 +254,7 @@ function sendRequest(options, onOk, onError, opt_data, opt_proxy, opt_retries) {
           hash: location.hash,
           headers: {
             Accept: 'application/json; charset=utf-8',
-            'User-Agent': USER_AGENT,
+            'User-Agent': options.headers['User-Agent'] || USER_AGENT,
           },
         },
         onOk,

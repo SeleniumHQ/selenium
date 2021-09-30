@@ -11,12 +11,12 @@ exports_files(
 
 java_binary(
     name = "spotbugs_cli",
+    testonly = True,
     main_class = "edu.umd.cs.findbugs.LaunchAppropriateUI",
+    visibility = [
+        "//visibility:public",
+    ],
     runtime_deps = [
         artifact("com.github.spotbugs:spotbugs"),
     ],
-    testonly = True,
-    visibility = [
-        "//visibility:public",
-    ]
 )

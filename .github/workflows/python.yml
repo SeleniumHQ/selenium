@@ -1,0 +1,222 @@
+name: Python workflow
+
+on:
+  push:
+    branches:
+      - trunk
+    paths:
+      - .bazel*
+      - .github/actions/**
+      - .github/workflows/python.yml
+      - common/**
+      - javascript/atoms/**
+      - javascript/cdp-support/**
+      - javascript/webdriver/**
+      - py/**
+  pull_request:
+    branches:
+      - trunk
+    paths:
+      - .bazel*
+      - .github/actions/**
+      - .github/workflows/python.yml
+      - common/**
+      - javascript/atoms/**
+      - javascript/cdp-support/**
+      - javascript/webdriver/**
+      - py/**
+
+jobs:
+  tox_flake8:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout source tree
+        uses: actions/checkout@v2
+      - name: Set up Python 3.7
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.7.10
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install tox==2.4.1
+      - name: Test with tox
+        run: tox -c py/tox.ini
+        env:
+          TOXENV: flake8
+
+  tox_docs:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout source tree
+        uses: actions/checkout@v2
+      - name: Set up Python 3.7
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.7.10
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install tox==2.4.1
+      - name: Test with tox
+        run: tox -c py/tox.ini
+        env:
+          TOXENV: docs
+
+  tox_mypy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout source tree
+        uses: actions/checkout@v2
+      - name: Set up Python 3.7
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.7.9
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install tox==2.4.1
+      - name: Test with tox
+        run: |
+          tox -c py/tox.ini -- --cobertura-xml-report ci || true
+          bash <(curl -s https://codecov.io/bash) -f py/ci/cobertura.xml
+        env:
+          TOXENV: mypy
+
+  unit_tests:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout source tree
+        uses: actions/checkout@v2
+      - name: Cache Bazel artifacts
+        uses: actions/cache@v2
+        with:
+          path: |
+            ~/.cache/bazel-disk
+            ~/.cache/bazel-repo
+          key: ${{ runner.os }}-bazel-python-unit-tests-${{ hashFiles('**/BUILD.bazel') }}
+          restore-keys: |
+            ${{ runner.os }}-bazel-python-unit-tests-
+      - name: Setup bazelisk
+        uses: ./.github/actions/setup-bazelisk
+      - name: Set up Python 3.7
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.7.10
+      - name: Setup Java
+        uses: actions/setup-java@v1
+        with:
+          java-version: '11'
+      - name: Run unit tests
+        uses: ./.github/actions/bazel
+        with:
+          command: test //py:unit
+
+  chrome_tests:
+    needs: unit_tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout source tree
+        uses: actions/checkout@v2
+      - name: Cache Bazel artifacts
+        uses: actions/cache@v2
+        with:
+          path: |
+            ~/.cache/bazel-disk
+            ~/.cache/bazel-repo
+          key: ${{ runner.os }}-bazel-chrome-tests-${{ hashFiles('**/BUILD.bazel') }}
+          restore-keys: |
+            ${{ runner.os }}-bazel-chrome-tests-
+            ${{ runner.os }}-bazel-python-unit-tests-
+      - name: Setup bazelisk
+        uses: ./.github/actions/setup-bazelisk
+      - name: Set up Python 3.7
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.7.10
+      - name: Setup Java
+        uses: actions/setup-java@v1
+        with:
+          java-version: '11'
+      - name: Start XVFB
+        run: Xvfb :99 &
+      - name: Run browser tests in Chrome
+        uses: ./.github/actions/bazel
+        with:
+          command: test //py:test-chrome
+        env:
+          DISPLAY: :99
+
+  firefox_tests_remote:
+    needs: unit_tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout source tree
+        uses: actions/checkout@v2
+      - name: Cache Bazel artifacts
+        uses: actions/cache@v2
+        with:
+          path: |
+            ~/.cache/bazel-disk
+            ~/.cache/bazel-repo
+          key: ${{ runner.os }}-bazel-firefox-tests-${{ hashFiles('**/BUILD.bazel') }}
+          restore-keys: |
+            ${{ runner.os }}-bazel-firefox-tests-
+            ${{ runner.os }}-bazel-python-unit-tests-
+      - name: Setup bazelisk
+        uses: ./.github/actions/setup-bazelisk
+      - name: Set up Python 3.7
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.7.10
+      - name: Setup Java
+        uses: actions/setup-java@v1
+        with:
+          java-version: '11'
+      - name: Setup Firefox and geckodriver
+        uses: ./.github/actions/setup-firefox
+      - name: Start XVFB
+        run: Xvfb :99 &
+      - name: Run browser tests in Firefox (Remote)
+        uses: ./.github/actions/bazel
+        with:
+          command: test --jobs 1 //py:test-remote
+        env:
+          DISPLAY: :99
+
+  firefox_tests:
+    needs: unit_tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout source tree
+        uses: actions/checkout@v2
+      - name: Cache Bazel artifacts
+        uses: actions/cache@v2
+        with:
+          path: |
+            ~/.cache/bazel-disk
+            ~/.cache/bazel-repo
+          key: ${{ runner.os }}-bazel-firefox-tests-${{ hashFiles('**/BUILD.bazel') }}
+          restore-keys: |
+            ${{ runner.os }}-bazel-firefox-tests-
+            ${{ runner.os }}-bazel-python-unit-tests-
+      - name: Setup bazelisk
+        uses: ./.github/actions/setup-bazelisk
+      - name: Set up Python 3.7
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.7.10
+      - name: Setup Java
+        uses: actions/setup-java@v1
+        with:
+          java-version: '11'
+      - name: Setup Firefox and geckodriver
+        uses: ./.github/actions/setup-firefox
+      - name: Start XVFB
+        run: Xvfb :99 &
+      - name: Run browser tests in Firefox
+        uses: ./.github/actions/bazel
+        with:
+          command: test //py:test-firefox
+        env:
+          DISPLAY: :99

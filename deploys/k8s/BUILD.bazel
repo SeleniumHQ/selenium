@@ -1,5 +1,4 @@
 load("@k8s_dev//:defaults.bzl", "k8s_dev")
-load("@io_bazel_rules_k8s//k8s:object.bzl", "k8s_object")
 load("@io_bazel_rules_k8s//k8s:objects.bzl", "k8s_objects")
 
 k8s_objects(
@@ -8,6 +7,7 @@ k8s_objects(
         # Ordered by nominal start order
         ":event-bus",
         ":session-map",
+        ":session-queue",
         ":distributor",
         ":router",
         ":chrome-node",
@@ -45,6 +45,14 @@ k8s_dev(
         "selenium/session-map:latest": "//deploys/docker:session-map-image",
     },
     template = "session-map.yaml",
+)
+
+k8s_dev(
+    name = "session-queue",
+    images = {
+        "selenium/session-queue:latest": "//deploys/docker:session-queue-image",
+    },
+    template = "session-queue.yaml",
 )
 
 k8s_dev(

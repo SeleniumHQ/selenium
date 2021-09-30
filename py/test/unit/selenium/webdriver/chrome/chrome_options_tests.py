@@ -92,7 +92,7 @@ def test_add_encoded_extension(options):
 def test_get_extensions_from_extension_files(options, mocker):
     null = 'NUL' if platform.system().lower() == 'windows' else '/dev/null'
     mocker.patch(
-        'selenium.webdriver.chromium.options.open'.format(__name__)).return_value = open(null)
+        'selenium.webdriver.chromium.options.open').return_value = open(null)
     mocker.patch('base64.b64encode').return_value = 'foo'.encode()
     options._extension_files = ['foo']
     assert 'foo' in options.extensions
@@ -155,3 +155,9 @@ def test_starts_with_default_capabilities(options):
 def test_is_a_baseoptions(options):
     from selenium.webdriver.common.options import BaseOptions
     assert isinstance(options, BaseOptions)
+
+
+def test_enables_chrome_mobile(options):
+    options.enable_mobile()
+    result_caps = options.to_capabilities()
+    assert result_caps["goog:chromeOptions"]["androidPackage"] == "com.android.chrome"

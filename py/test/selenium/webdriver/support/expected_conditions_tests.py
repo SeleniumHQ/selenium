@@ -64,3 +64,32 @@ def test_none_of_false(driver, pages):
     with pytest.raises(TimeoutException):
         WebDriverWait(driver, 0.1).until(EC.none_of(
             EC.title_is("Nope"), EC.title_is("Hello WebDriver")))
+
+
+def test_clickable_locator_true(driver, pages):
+    pages.load("simpleTest.html")
+    WebDriverWait(driver, 0.1).until(
+        EC.element_to_be_clickable((By.ID, "multilinelink")))
+
+
+def test_clickable_locator_false(driver, pages):
+    pages.load("simpleTest.html")
+    with pytest.raises(TimeoutException):
+        # text element, should not be clickable
+        WebDriverWait(driver, 0.1).until(
+            EC.element_to_be_clickable((By.ID, "hiddenline")))
+
+
+def test_clickable_element_true(driver, pages):
+    pages.load("simpleTest.html")
+    target = (By.ID, "multilinelink")
+    element = driver.find_element(*target)  # grab element at locator
+    WebDriverWait(driver, 0.1).until(EC.element_to_be_clickable(element))
+
+
+def test_clickable_element_false(driver, pages):
+    pages.load("simpleTest.html")
+    with pytest.raises(TimeoutException):
+        target = (By.ID, "hiddenline")  # text, should not be clickable
+        element = driver.find_element(*target)  # grab element at locator
+        WebDriverWait(driver, 0.1).until(EC.element_to_be_clickable(element))

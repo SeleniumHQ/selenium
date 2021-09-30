@@ -28,7 +28,7 @@ module Selenium
       #
 
       class Driver < WebDriver::Driver
-        include DriverExtensions::HasWebStorage
+        EXTENSIONS = [DriverExtensions::HasWebStorage].freeze
 
         def browser
           :internet_explorer

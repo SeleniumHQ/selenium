@@ -17,27 +17,28 @@
 
 from abc import ABCMeta, abstractmethod
 import os
+from typing import Optional
+from selenium.types import AnyKey
 from selenium.webdriver.common.utils import keys_to_typing
-from six import add_metaclass
 
 
-@add_metaclass(ABCMeta)
-class FileDetector(object):
+class FileDetector(metaclass=ABCMeta):
     """
     Used for identifying whether a sequence of chars represents the path to a
     file.
     """
 
     @abstractmethod
-    def is_local_file(self, *keys):
-        return
+    def is_local_file(self, *keys: AnyKey) -> Optional[str]:
+        return None
 
 
 class UselessFileDetector(FileDetector):
     """
     A file detector that never finds anything.
     """
-    def is_local_file(self, *keys):
+
+    def is_local_file(self, *keys: AnyKey) -> Optional[str]:
         return None
 
 
@@ -45,7 +46,8 @@ class LocalFileDetector(FileDetector):
     """
     Detects files on the local disk.
     """
-    def is_local_file(self, *keys):
+
+    def is_local_file(self, *keys: AnyKey) -> Optional[str]:
         file_path = ''.join(keys_to_typing(keys))
 
         if not file_path:

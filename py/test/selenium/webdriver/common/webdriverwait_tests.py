@@ -19,7 +19,7 @@ import time
 
 import pytest
 
-from selenium.common.exceptions import TimeoutException
+from selenium.common.exceptions import TimeoutException, InvalidSelectorException
 from selenium.common.exceptions import StaleElementReferenceException
 from selenium.common.exceptions import WebDriverException
 from selenium.common.exceptions import InvalidElementStateException
@@ -30,6 +30,12 @@ from selenium.webdriver.support.ui import WebDriverWait
 
 def throwSERE(driver):
     raise StaleElementReferenceException("test")
+
+
+def testShouldFailWithInvalidSelectorException(driver, pages):
+    pages.load("dynamic.html")
+    with pytest.raises(InvalidSelectorException):
+        WebDriverWait(driver, 0.7).until(EC.presence_of_element_located((By.XPATH, "//*[contains(@id,'something'")))
 
 
 def testShouldExplicitlyWaitForASingleElement(driver, pages):
@@ -206,6 +212,8 @@ def testExpectedConditionTextToBePresentInElementValue(driver, pages):
     assert 'Example Expected text' == driver.find_element(By.ID, 'inputRequired').get_attribute('value')
 
 
+# xfail can be removed after 23 March 2021
+@pytest.mark.xfail_firefox(reason="https://bugzilla.mozilla.org/show_bug.cgi?id=1691348")
 def testExpectedConditionFrameToBeAvailableAndSwitchToItByLocator(driver, pages):
     pages.load("blank.html")
     with pytest.raises(TimeoutException):
@@ -315,3 +323,11 @@ def testExpectedConditionAlertIsPresent(driver, pages):
     alert = driver.switch_to.alert
     assert 'alerty' == alert.text
     alert.dismiss()
+
+
+def testExpectedConditionAttributeToBeIncludeInElement(driver, pages):
+    pages.load('booleanAttributes.html')
+    with pytest.raises(TimeoutException):
+        WebDriverWait(driver, 1).until(EC.element_attribute_to_include((By.ID, 'inputRequired'), 'test'))
+    value = WebDriverWait(driver, 1).until(EC.element_attribute_to_include((By.ID, 'inputRequired'), 'value'))
+    assert value is not None

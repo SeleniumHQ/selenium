@@ -28,31 +28,13 @@ module Selenium
                         automatic_profiling: 'safari:automaticProfiling'}.freeze
         BROWSER = 'safari'
 
-        CAPABILITIES.each_key do |key|
-          define_method key do
-            @options[key]
-          end
+        def add_option(name, value = nil)
+          key = name.is_a?(Hash) ? name.keys.first : name
+          raise ArgumentError, 'Safari does not support options that are not namespaced' unless key.to_s.include?(':')
 
-          define_method "#{key}=" do |value|
-            @options[key] = value
-          end
-        end
-
-        #
-        # Create a new Options instance for W3C-capable versions of Safari.
-        #
-        # @example
-        #   options = Selenium::WebDriver::Safari::Options.new(automatic_inspection: true)
-        #   driver = Selenium::WebDriver.for :safari, options: options
-        #
-        # @param [Hash] opts the pre-defined options to create the Safari::Options with
-        # @option opts [Boolean] :automatic_inspection Preloads Web Inspector and JavaScript debugger. Default is false
-        # @option opts [Boolean] :automatic_profiling Preloads Web Inspector and starts a timeline recording. Default is false
-        #
-
-        def initialize(**opts)
           super
         end
+
       end # Options
     end # Safari
   end # WebDriver

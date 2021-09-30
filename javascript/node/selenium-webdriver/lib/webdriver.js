@@ -29,20 +29,28 @@ const input = require('./input')
 const logging = require('./logging')
 const promise = require('./promise')
 const Symbols = require('./symbols')
+const cdpTargets = ['page', 'browser']
+const cdp = require('../devtools/CDPConnection')
+const WebSocket = require('ws')
+const http = require('../http/index')
+const fs = require('fs')
 const { Capabilities } = require('./capabilities')
+const path = require('path')
+const { NoSuchElementError } = require('./error')
 
 // Capability names that are defined in the W3C spec.
 const W3C_CAPABILITY_NAMES = new Set([
   'acceptInsecureCerts',
   'browserName',
   'browserVersion',
-  'platformName',
   'pageLoadStrategy',
+  'platformName',
   'proxy',
   'setWindowRect',
-  'timeouts',
   'strictFileInteractability',
+  'timeouts',
   'unhandledPromptBehavior',
+  'webSocketUrl'
 ])
 
 /**
@@ -239,30 +247,30 @@ class IWebDriver {
    *     result.
    * @template T
    */
-  execute(command) {} // eslint-disable-line
+  execute(command) { } // eslint-disable-line
 
   /**
    * Sets the {@linkplain input.FileDetector file detector} that should be
    * used with this instance.
    * @param {input.FileDetector} detector The detector to use or `null`.
    */
-  setFileDetector(detector) {} // eslint-disable-line
+  setFileDetector(detector) { } // eslint-disable-line
 
   /**
    * @return {!command.Executor} The command executor used by this instance.
    */
-  getExecutor() {}
+  getExecutor() { }
 
   /**
    * @return {!Promise<!Session>} A promise for this client's session.
    */
-  getSession() {}
+  getSession() { }
 
   /**
    * @return {!Promise<!Capabilities>} A promise that will resolve with
    *     the this instance's capabilities.
    */
-  getCapabilities() {}
+  getCapabilities() { }
 
   /**
    * Terminates the browser session. After calling quit, this instance will be
@@ -272,7 +280,7 @@ class IWebDriver {
    * @return {!Promise<void>} A promise that will be resolved when the
    *     command has completed.
    */
-  quit() {}
+  quit() { }
 
   /**
    * Creates a new action sequence using this driver. The sequence will not be
@@ -285,7 +293,7 @@ class IWebDriver {
    *     for details).
    * @return {!input.Actions} A new action sequence for this instance.
    */
-  actions(options) {} // eslint-disable-line
+  actions(options) { } // eslint-disable-line
 
   /**
    * Executes a snippet of JavaScript in the context of the currently selected
@@ -323,7 +331,7 @@ class IWebDriver {
    *    scripts return value.
    * @template T
    */
-  executeScript(script, ...args) {} // eslint-disable-line
+  executeScript(script, ...args) { } // eslint-disable-line
 
   /**
    * Executes a snippet of asynchronous JavaScript in the context of the
@@ -400,7 +408,7 @@ class IWebDriver {
    *     value.
    * @template T
    */
-  executeAsyncScript(script, ...args) {} // eslint-disable-line
+  executeAsyncScript(script, ...args) { } // eslint-disable-line
 
   /**
    * Waits for a condition to evaluate to a "truthy" value. The condition may be
@@ -451,7 +459,7 @@ class IWebDriver {
     timeout = undefined, // eslint-disable-line
     message = undefined, // eslint-disable-line
     pollTimeout = undefined // eslint-disable-line
-  ) {}
+  ) { }
 
   /**
    * Makes the driver sleep for the given amount of time.
@@ -460,7 +468,7 @@ class IWebDriver {
    * @return {!Promise<void>} A promise that will be resolved when the sleep has
    *     finished.
    */
-  sleep(ms) {} // eslint-disable-line
+  sleep(ms) { } // eslint-disable-line
 
   /**
    * Retrieves the current window handle.
@@ -468,7 +476,7 @@ class IWebDriver {
    * @return {!Promise<string>} A promise that will be resolved with the current
    *     window handle.
    */
-  getWindowHandle() {}
+  getWindowHandle() { }
 
   /**
    * Retrieves a list of all available window handles.
@@ -476,7 +484,7 @@ class IWebDriver {
    * @return {!Promise<!Array<string>>} A promise that will be resolved with an
    *     array of window handles.
    */
-  getAllWindowHandles() {}
+  getAllWindowHandles() { }
 
   /**
    * Retrieves the current page's source. The returned source is a representation
@@ -486,7 +494,7 @@ class IWebDriver {
    * @return {!Promise<string>} A promise that will be resolved with the current
    *     page source.
    */
-  getPageSource() {}
+  getPageSource() { }
 
   /**
    * Closes the current window.
@@ -494,7 +502,7 @@ class IWebDriver {
    * @return {!Promise<void>} A promise that will be resolved when this command
    *     has completed.
    */
-  close() {}
+  close() { }
 
   /**
    * Navigates to the given URL.
@@ -503,7 +511,7 @@ class IWebDriver {
    * @return {!Promise<void>} A promise that will be resolved when the document
    *     has finished loading.
    */
-  get(url) {} // eslint-disable-line
+  get(url) { } // eslint-disable-line
 
   /**
    * Retrieves the URL for the current page.
@@ -511,7 +519,7 @@ class IWebDriver {
    * @return {!Promise<string>} A promise that will be resolved with the
    *     current URL.
    */
-  getCurrentUrl() {}
+  getCurrentUrl() { }
 
   /**
    * Retrieves the current page title.
@@ -519,7 +527,7 @@ class IWebDriver {
    * @return {!Promise<string>} A promise that will be resolved with the current
    *     page's title.
    */
-  getTitle() {}
+  getTitle() { }
 
   /**
    * Locates an element on the page. If the element cannot be found, a
@@ -559,7 +567,7 @@ class IWebDriver {
    *     commands against the located element. If the element is not found, the
    *     element will be invalidated and all scheduled commands aborted.
    */
-  findElement(locator) {} // eslint-disable-line
+  findElement(locator) { } // eslint-disable-line
 
   /**
    * Search for multiple elements on the page. Refer to the documentation on
@@ -569,7 +577,7 @@ class IWebDriver {
    * @return {!Promise<!Array<!WebElement>>} A promise that will resolve to an
    *     array of WebElements.
    */
-  findElements(locator) {} // eslint-disable-line
+  findElements(locator) { } // eslint-disable-line
 
   /**
    * Takes a screenshot of the current page. The driver makes a best effort to
@@ -583,23 +591,23 @@ class IWebDriver {
    * @return {!Promise<string>} A promise that will be resolved to the
    *     screenshot as a base-64 encoded PNG.
    */
-  takeScreenshot() {}
+  takeScreenshot() { }
 
   /**
    * @return {!Options} The options interface for this instance.
    */
-  manage() {}
+  manage() { }
 
   /**
    * @return {!Navigation} The navigation interface for this instance.
    */
-  navigate() {}
+  navigate() { }
 
   /**
    * @return {!TargetLocator} The target locator interface for this
    *     instance.
    */
-  switchTo() {}
+  switchTo() { }
 
   /**
    *
@@ -618,7 +626,7 @@ class IWebDriver {
    *         shrinkToFit: (boolean|undefined)
    *         pageRanges: (<Array>|undefined)}} options.
    */
-  printPage(options) {} // eslint-disable-line
+  printPage(options) { } // eslint-disable-line
 }
 
 /**
@@ -658,7 +666,7 @@ class WebDriver {
     // If session is a rejected promise, add a no-op rejection handler.
     // This effectively hides setup errors until users attempt to interact
     // with the session.
-    this.session_.catch(function () {})
+    this.session_.catch(function () { })
 
     /** @private {!command.Executor} */
     this.executor_ = executor
@@ -754,12 +762,12 @@ class WebDriver {
       this.session_ = Promise.reject(
         new error.NoSuchSessionError(
           'This driver instance does not have a valid session ID ' +
-            '(did you call WebDriver.quit()?) and may no longer be used.'
+          '(did you call WebDriver.quit()?) and may no longer be used.'
         )
       )
 
       // Only want the session rejection to bubble if accessed.
-      this.session_.catch(function () {})
+      this.session_.catch(function () { })
 
       if (this.onQuit_) {
         return this.onQuit_.call(void 0)
@@ -820,18 +828,15 @@ class WebDriver {
             let timeoutMessage = resolveWaitMessage(message)
             reject(
               new error.TimeoutError(
-                `${timeoutMessage}Timed out waiting for promise to resolve after ${
-                  Date.now() - start
+                `${timeoutMessage}Timed out waiting for promise to resolve after ${Date.now() - start
                 }ms`
               )
             )
           } catch (ex) {
             reject(
               new error.TimeoutError(
-                `${
-                  ex.message
-                }\nTimed out waiting for promise to resolve after ${
-                  Date.now() - start
+                `${ex.message
+                }\nTimed out waiting for promise to resolve after ${Date.now() - start
                 }ms`
               )
             )
@@ -861,7 +866,7 @@ class WebDriver {
     if (typeof fn !== 'function') {
       throw TypeError(
         'Wait condition must be a promise-like object, function, or a ' +
-          'Condition object'
+        'Condition object'
       )
     }
 
@@ -913,7 +918,7 @@ class WebDriver {
           if (!(value instanceof WebElement)) {
             throw TypeError(
               'WebElementCondition did not resolve to a WebElement: ' +
-                Object.prototype.toString.call(value)
+              Object.prototype.toString.call(value)
             )
           }
           return value
@@ -925,7 +930,7 @@ class WebDriver {
 
   /** @override */
   sleep(ms) {
-    return new Promise((resolve) => setTimeout(() => resolve(), ms))
+    return new Promise((resolve) => setTimeout(resolve, ms))
   }
 
   /** @override */
@@ -968,16 +973,46 @@ class WebDriver {
   /** @override */
   findElement(locator) {
     let id
-    locator = by.checkedLocator(locator)
+    let cmd = null
+
+    if (locator instanceof RelativeBy) {
+      cmd = new command.Command(
+        command.Name.FIND_ELEMENTS_RELATIVE
+      ).setParameter('args', locator.marshall())
+    } else {
+      locator = by.checkedLocator(locator)
+    }
+
     if (typeof locator === 'function') {
       id = this.findElementInternal_(locator, this)
-    } else {
-      let cmd = new command.Command(command.Name.FIND_ELEMENT)
+      return new WebElementPromise(this, id)
+    } else if (cmd === null) {
+      cmd = new command.Command(command.Name.FIND_ELEMENT)
         .setParameter('using', locator.using)
         .setParameter('value', locator.value)
-      id = this.execute(cmd)
     }
-    return new WebElementPromise(this, id)
+
+    id = this.execute(cmd)
+    if (locator instanceof RelativeBy) {
+      return this.normalize_(id)
+    } else {
+      return new WebElementPromise(this, id)
+    }
+  }
+
+  /**
+   * @param {!Function} webElementPromise The webElement in unresolved state
+   * @return {!Promise<!WebElement>} First single WebElement from array of resolved promises
+   */
+  async normalize_(webElementPromise) {
+    let result = await webElementPromise
+    if (result.length === 0) {
+      throw new NoSuchElementError(
+        'Cannot locate an element with provided parameters'
+      )
+    } else {
+      return result[0]
+    }
   }
 
   /**
@@ -1149,6 +1184,326 @@ class WebDriver {
     return this.execute(
       new command.Command(command.Name.PRINT_PAGE).setParameters(resultObj)
     )
+  }
+
+  /**
+   * Creates a new WebSocket connection.
+   * @return {!Promise<resolved>} A new CDP instance.
+   */
+  async createCDPConnection(target) {
+    const caps = await this.getCapabilities()
+    const seCdp = caps['map_'].get('se:cdp')
+    const vendorInfo =
+      caps['map_'].get(this.VENDOR_COMMAND_PREFIX + ':chromeOptions') ||
+      caps['map_'].get(this.VENDOR_CAPABILITY_PREFIX + ':edgeOptions') ||
+      caps['map_'].get('moz:debuggerAddress') ||
+      new Map()
+    const debuggerUrl = seCdp || vendorInfo['debuggerAddress'] || vendorInfo
+    this._wsUrl = await this.getWsUrl(debuggerUrl, target)
+
+    return new Promise((resolve, reject) => {
+      try {
+        this._wsConnection = new WebSocket(this._wsUrl)
+      } catch (err) {
+        reject(err)
+        return
+      }
+
+      this._wsConnection.on('open', () => {
+        this._cdpConnection = new cdp.CdpConnection(this._wsConnection)
+        resolve(this._cdpConnection)
+      })
+
+      this._wsConnection.on('error', (error) => {
+        reject(error)
+      })
+    })
+  }
+
+  /**
+   * Retrieves 'webSocketDebuggerUrl' by sending a http request using debugger address
+   * @param {string} debuggerAddress
+   * @param {string} target
+   * @return {string} Returns parsed webSocketDebuggerUrl obtained from the http request
+   */
+  async getWsUrl(debuggerAddress, target) {
+    if (target && cdpTargets.indexOf(target.toLowerCase()) === -1) {
+      throw new error.InvalidArgumentError('invalid target value')
+    }
+
+    if (debuggerAddress.match(/\/se\/cdp/)) {
+      if (debuggerAddress.match("ws:\/\/", "http:\/\/")) {
+        return debuggerAddress.replace("ws:\/\/", "http:\/\/")
+      }
+      else if (debuggerAddress.match("wss:\/\/", "https:\/\/")) {
+        return debuggerAddress.replace("wss:\/\/", "https:\/\/")
+      }
+      else {
+        return debuggerAddress
+      }
+    }
+
+    const path = '/json/version'
+    let request = new http.Request('GET', path)
+    let client = new http.HttpClient('http://' + debuggerAddress)
+    let response = await client.send(request)
+
+    return JSON.parse(response.body)['webSocketDebuggerUrl']
+  }
+
+  /**
+   * Sets a listener for Fetch.authRequired event from CDP
+   * If event is triggered, it enter username and password
+   * and allows the test to move forward
+   * @param {string} username
+   * @param {string} password
+   * @param connection CDP Connection
+   */
+  async register(username, password, connection) {
+
+    this._wsConnection.on('message', (message) => {
+      const params = JSON.parse(message)
+
+      if (params.method === 'Fetch.authRequired') {
+        const requestParams = params['params']
+        connection.execute(
+          'Fetch.continueWithAuth',
+          this.getRandomNumber(1, 10),
+          {
+            requestId: requestParams['requestId'],
+            authChallengeResponse: {
+              response: 'ProvideCredentials',
+              username: username,
+              password: password,
+            },
+          }
+        )
+      } else if (params.method === 'Fetch.requestPaused') {
+        const requestPausedParams = params['params']
+        connection.execute(
+          'Fetch.continueRequest',
+          this.getRandomNumber(1, 10),
+          {
+            requestId: requestPausedParams['requestId'],
+          }
+        )
+      }
+    })
+
+    await connection.execute(
+      'Fetch.enable',
+      1,
+      {
+        handleAuthRequests: true,
+      },
+      null
+    )
+    await connection.execute(
+      'Network.setCacheDisabled',
+      this.getRandomNumber(1, 10),
+      {
+        cacheDisabled: true,
+      },
+      null
+    )
+  }
+
+  /**
+   * Handle Network interception requests
+   * @param connection WebSocket connection to the browser
+   * @param httpResponse Object representing what we are intercepting
+   *                     as well as what should be returned.
+   * @param callback callback called when we intercept requests.
+   */
+  async onIntercept(connection, httpResponse, callback) {
+
+    this._wsConnection.on('message', (message) => {
+      const params = JSON.parse(message)
+      if (params.method === 'Fetch.requestPaused') {
+        const requestPausedParams = params['params']
+        if (requestPausedParams.request.url == httpResponse.urlToIntercept) {
+          connection.execute(
+            'Fetch.continueRequest',
+            this.getRandomNumber(1, 10),
+            {
+              requestId: requestPausedParams['requestId'],
+              url: httpResponse.urlToIntercept,
+              method: httpResponse.method,
+              headers: httpResponse.headers,
+              postData: httpResponse.body
+            }
+          )
+          callback()
+        } else {
+          connection.execute(
+            'Fetch.continueRequest',
+            this.getRandomNumber(1, 10),
+            {
+              requestId: requestPausedParams['requestId'],
+            }
+          )
+        }
+      }
+    })
+
+    await connection.execute(
+      'Fetch.enable',
+      1,
+      {},
+      null
+    )
+    await connection.execute(
+      'Network.setCacheDisabled',
+      this.getRandomNumber(1, 10),
+      {
+        cacheDisabled: true,
+      },
+      null
+    )
+  }
+  /**
+   *
+   * @param connection
+   * @param callback
+   * @returns {Promise<void>}
+   */
+  async onLogEvent(connection, callback) {
+
+
+    this._wsConnection.on('message', (message) => {
+      const params = JSON.parse(message)
+
+      if (params.method === 'Runtime.consoleAPICalled') {
+        const consoleEventParams = params['params']
+        let event = {
+          type: consoleEventParams['type'],
+          timestamp: new Date(consoleEventParams['timestamp']),
+          args: consoleEventParams['args'],
+        }
+
+        callback(event)
+      }
+    })
+    await connection.execute(
+      'Runtime.enable',
+      this.getRandomNumber(1, 10),
+      {},
+      null
+    )
+  }
+
+  /**
+   *
+   * @param connection
+   * @param callback
+   * @returns {Promise<void>}
+   */
+  async onLogException(connection, callback) {
+    await connection.execute(
+      'Runtime.enable',
+      this.getRandomNumber(1, 10),
+      {},
+      null
+    )
+
+    this._wsConnection.on('message', (message) => {
+      const params = JSON.parse(message)
+
+      if (params.method === 'Runtime.exceptionThrown') {
+        const exceptionEventParams = params['params']
+        let event = {
+          exceptionDetails: exceptionEventParams['exceptionDetails'],
+          timestamp: new Date(exceptionEventParams['timestamp']),
+        }
+
+        callback(event)
+      }
+    })
+  }
+
+  /**
+   * @param connection
+   * @param callback
+   * @returns {Promise<void>}
+   */
+  async logMutationEvents(connection, callback) {
+    await connection.execute(
+      'Runtime.enable',
+      this.getRandomNumber(1, 10),
+      {},
+      null
+    )
+    await connection.execute(
+      'Page.enable',
+      this.getRandomNumber(1, 10),
+      {},
+      null
+    )
+
+    await connection.execute(
+      'Runtime.addBinding',
+      this.getRandomNumber(1, 10),
+      {
+        name: '__webdriver_attribute',
+      },
+      null
+    )
+
+    let mutationListener = ''
+    try {
+      // Depending on what is running the code it could appear in 2 different places which is why we try
+      // here and then the other location
+      mutationListener = fs
+        .readFileSync(
+          './javascript/node/selenium-webdriver/lib/atoms/mutation-listener.js',
+          'utf-8'
+        )
+        .toString()
+    } catch {
+      mutationListener = fs
+        .readFileSync(
+          path.resolve(__dirname, './atoms/mutation-listener.js'),
+          'utf-8'
+        )
+        .toString()
+    }
+
+    this.executeScript(mutationListener)
+
+    await connection.execute(
+      'Page.addScriptToEvaluateOnNewDocument',
+      this.getRandomNumber(1, 10),
+      {
+        source: mutationListener,
+      },
+      null
+    )
+
+    this._wsConnection.on('message', async (message) => {
+      const params = JSON.parse(message)
+      if (params.method === 'Runtime.bindingCalled') {
+        let payload = JSON.parse(params['params']['payload'])
+        let elements = await this.findElements({
+          css: '*[data-__webdriver_id=' + payload['target'],
+        })
+
+        if (elements.length === 0) {
+          return
+        }
+
+        let event = {
+          element: elements[0],
+          attribute_name: payload['name'],
+          current_value: payload['value'],
+          old_value: payload['oldValue'],
+        }
+        callback(event)
+      }
+    })
+  }
+
+  getRandomNumber(min, max) {
+    return Math.floor(Math.random() * (max - min + 1) + min)
   }
 }
 
@@ -1431,7 +1786,7 @@ class Options {
       } else if (typeof value !== 'undefined') {
         throw TypeError(
           'invalid timeouts configuration:' +
-            ` expected "${key}" to be a number, got ${typeof value}`
+          ` expected "${key}" to be a number, got ${typeof value}`
         )
       }
     }
@@ -1492,7 +1847,7 @@ function legacyTimeout(driver, type, ms) {
  *
  * @record
  */
-Options.Cookie = function () {}
+Options.Cookie = function () { }
 
 /**
  * The name of the cookie.
@@ -2197,18 +2552,18 @@ class WebElement {
    */
   async sendKeys(...args) {
     let keys = []
-    ;(await Promise.all(args)).forEach((key) => {
-      let type = typeof key
-      if (type === 'number') {
-        key = String(key)
-      } else if (type !== 'string') {
-        throw TypeError('each key must be a number of string; got ' + type)
-      }
+      ; (await Promise.all(args)).forEach((key) => {
+        let type = typeof key
+        if (type === 'number') {
+          key = String(key)
+        } else if (type !== 'string') {
+          throw TypeError('each key must be a number of string; got ' + type)
+        }
 
-      // The W3C protocol requires keys to be specified as an array where
-      // each element is a single key.
-      keys.push(...key.split(''))
-    })
+        // The W3C protocol requires keys to be specified as an array where
+        // each element is a single key.
+        keys.push(...key.split(''))
+      })
 
     if (!this.driver_.fileDetector_) {
       return this.execute_(
@@ -2325,6 +2680,25 @@ class WebElement {
   }
 
   /**
+   * Get the computed WAI-ARIA role of element.
+   *
+   * @return {!Promise<string>} A promise that will be
+   *     resolved with the element's computed role.
+   */
+  getAriaRole() {
+    return this.execute_(new command.Command(command.Name.GET_COMPUTED_ROLE))
+  }
+
+  /**
+   * Get the computed WAI-ARIA label of element.
+   *
+   * @return {!Promise<string>} A promise that will be
+   *     resolved with the element's computed label.
+   */
+  getAccessibleName() {
+    return this.execute_(new command.Command(command.Name.GET_COMPUTED_LABEL))
+  }
+  /**
    * Returns an object describing an element's location, in pixels relative to
    * the document element, and the element's size in pixels.
    *
@@ -2408,18 +2782,12 @@ class WebElement {
    * Take a screenshot of the visible region encompassed by this element's
    * bounding rectangle.
    *
-   * @param {boolean=} scroll Optional argument that indicates whether the
-   *     element should be scrolled into view before taking a screenshot.
-   *     Defaults to false.
    * @return {!Promise<string>} A promise that will be
    *     resolved to the screenshot as a base-64 encoded PNG.
    */
-  takeScreenshot(scroll = false) {
+  takeScreenshot() {
     return this.execute_(
-      new command.Command(command.Name.TAKE_ELEMENT_SCREENSHOT).setParameter(
-        'scroll',
-        scroll
-      )
+      new command.Command(command.Name.TAKE_ELEMENT_SCREENSHOT)
     )
   }
 }

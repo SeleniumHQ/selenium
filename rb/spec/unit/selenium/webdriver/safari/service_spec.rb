@@ -112,6 +112,7 @@ module Selenium
         before do
           allow(Remote::Bridge).to receive(:new).and_return(bridge)
           allow(ServiceManager).to receive(:new).and_return(service_manager)
+          allow(bridge).to receive(:browser).and_return(:safari)
         end
 
         it 'is not created when :url is provided' do
@@ -122,9 +123,10 @@ module Selenium
         end
 
         it 'is created when :url is not provided' do
-          expect(Service).to receive(:new).and_return(service)
+          allow(Service).to receive(:new).and_return(service)
 
           driver.new
+          expect(Service).to have_received(:new).with(hash_excluding(url: anything))
         end
 
         it 'accepts :driver_path but throws deprecation notice' do

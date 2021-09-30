@@ -1,0 +1,74 @@
+diff --git a/private/rules/javadoc.bzl b/private/rules/javadoc.bzl
+index 8f02bcc..1dbeee8 100644
+--- a/private/rules/javadoc.bzl
++++ b/private/rules/javadoc.bzl
+@@ -11,10 +11,43 @@ def generate_javadoc(ctx, javadoc, source_jars, classpath, output):
+         arguments = [args],
+     )
+ 
++def _get_prefix_strings(third_party_prefixes):
++    path_prefixes = []
++    for prefix in third_party_prefixes:
++        if prefix.find(":") != -1:
++            fail("Target prefixes may only contain paths, not specific targets: %s" % prefix)
++
++        if prefix.startswith("@"):
++            if len(prefix) > 1:
++                path_prefixes.append("external/%s" % prefix[1:].replace("//", "/"))
++            else:
++                # Allow all external dependencies to be ignored
++                path_prefixes.append("external/")
++        elif prefix.startswith("//"):
++            if len(prefix) < 3:
++                fail("Prefixes for targets within this workspace must contain a path")
++            path_prefixes.append(prefix[2:])
++
++    # Now we have the prefixes, ensure that they do not end with a slash
++    return [path[:-1] if path.endswith("/") else path for path in path_prefixes]
++
++def _path_match(file, prefixes):
++    short_path = file.dirname[len(file.root.path) + 1:]
++
++    for prefix in prefixes:
++        if short_path.startswith(prefix):
++            return True
++    return False
++
+ def _javadoc_impl(ctx):
++    path_prefixes = _get_prefix_strings(ctx.attr.third_party_prefixes)
+     sources = []
++
+     for dep in ctx.attr.deps:
+-        sources.extend(dep[JavaInfo].source_jars)
++        dep_srcs = dep[JavaInfo].transitive_source_jars.to_list() if ctx.attr.transitive else dep[JavaInfo].source_jars
++        for jar in dep_srcs:
++            if not _path_match(jar, path_prefixes):
++                sources.append(jar)
+ 
+     jar_file = ctx.actions.declare_file("%s.jar" % ctx.attr.name)
+ 
+@@ -34,13 +67,23 @@ javadoc = rule(
+             doc = """The java libraries to generate javadocs for.
+ 
+           The source jars of each dep will be used to generate the javadocs.
+-          Currently docs for transitive dependencies are not generated.
++          By default docs for transitive dependencies are not generated.
+           """,
+             mandatory = True,
+             providers = [
+                 [JavaInfo],
+             ],
+         ),
++        "transitive": attr.bool(
++            doc = "Whether to generate docs for transitive dependencies too.",
++            default = False,
++        ),
++        "third_party_prefixes": attr.string_list(
++            doc = """Label prefixes to exclude from javadoc generation. This designed
++            to allow merging of all first party javadocs into a single jar whilst not
++            including any javadocs for third party packages the code may depend on.""",
++            default = ["@maven//"],
++        ),
+         "_javadoc": attr.label(
+             default = "//private/tools/java/rules/jvm/external/javadoc",
+             cfg = "host",

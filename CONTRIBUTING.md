@@ -42,13 +42,13 @@ understanding how things work and learning effective ways to exploit
 its potential.
 
 The [seleniumhq.github.io](https://github.com/SeleniumHQ/seleniumhq.github.io/)
-repository contains both Selenium’s site and documentation. This is an ongoing
-effort (not targeted at any specific release) to provide updated information on
-how to use Selenium effectively, how to get involved and how to contribute to Selenium.
+repository contains both Selenium’s site and documentation. This is an ongoing effort (not targeted
+at any specific release) to provide updated information on how to use Selenium effectively, how to
+get involved and how to contribute to Selenium.
 
-The official documentation of Selenium is at https://selenium.dev/documentation/.
-More details on how to get involved and contribute, please check the site's
-and documentation [contributing guidelines](https://selenium.dev/documentation/en/contributing/).
+The official documentation of Selenium is at https://selenium.dev/documentation/. More details on
+how to get involved and contribute, please check the site's and
+documentation [contributing guidelines](https://www.selenium.dev/documentation/about/contributing/).
 
 ## Code Contributions
 

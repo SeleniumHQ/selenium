@@ -1,0 +1,28 @@
+load("@rules_jvm_external//:defs.bzl", "artifact")
+load("//java:defs.bzl", "java_binary", "java_test_suite")
+
+java_test_suite(
+    name = "SmallTests",
+    size = "small",
+    srcs = glob(["*Test.java"]),
+    data = [
+        ":echo",
+    ],
+    deps = [
+        "//java/src/org/openqa/selenium:core",
+        "//java/src/org/openqa/selenium/os",
+        "//java/test/org/openqa/selenium/build",
+        "//java/test/org/openqa/selenium/testing:test-base",
+        artifact("org.assertj:assertj-core"),
+        artifact("junit:junit"),
+        artifact("org.mockito:mockito-core"),
+    ],
+)
+
+java_binary(
+    name = "echo",
+    srcs = [
+        "Echo.java",
+    ],
+    main_class = "org.openqa.selenium.os.Echo",
+)

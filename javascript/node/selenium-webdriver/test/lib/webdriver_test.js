@@ -60,7 +60,7 @@ describe('WebDriver', function () {
   function expectedError(ctor, message) {
     return function (e) {
       assertIsInstance(ctor, e)
-      assert.equal(message, e.message)
+      assert.strictEqual(message, e.message)
     }
   }
 
@@ -133,7 +133,7 @@ describe('WebDriver', function () {
     }
 
     execute(command) {
-      assert.deepEqual(command.getParameters(), this.parameters_)
+      assert.deepStrictEqual(command.getParameters(), this.parameters_)
       return this.toDo_(command)
     }
   }
@@ -152,7 +152,7 @@ describe('WebDriver', function () {
 
       let next = expectations[0]
       let result = next.execute(command)
-      if (next.times_ != Infinity) {
+      if (next.times_ !== Infinity) {
         next.times_ -= 1
         if (!next.times_) {
           expectations.shift()
@@ -202,14 +202,20 @@ describe('WebDriver', function () {
       return driver.getSession().then((v) => assert.strictEqual(v, aSession))
     })
 
-    it('happyPathWithCapabilitiesInstance', function () {
+    it('happy Path With Capabilities Instance', function () {
       let aSession = new Session(SESSION_ID, { browserName: 'firefox' })
       let executor = new FakeExecutor()
         .expect(CName.NEW_SESSION)
         .withParameters({
-          desiredCapabilities: { browserName: 'firefox' },
+          desiredCapabilities: {
+            'moz:debuggerAddress': true,
+            browserName: 'firefox',
+          },
           capabilities: {
-            alwaysMatch: { browserName: 'firefox' },
+            alwaysMatch: {
+              'moz:debuggerAddress': true,
+              browserName: 'firefox',
+            },
           },
         })
         .andReturnSuccess(aSession)
@@ -297,7 +303,7 @@ describe('WebDriver', function () {
     var driver = executor.createDriver()
     return driver
       .getTitle()
-      .then((title) => assert.equal('Google Search', title))
+      .then((title) => assert.strictEqual('Google Search', title))
   })
 
   it('testStopsCommandExecutionWhenAnErrorOccurs', function () {
@@ -352,7 +358,7 @@ describe('WebDriver', function () {
           return driver.getCurrentUrl()
         })
         .then(function (value) {
-          assert.equal('http://www.google.com', value)
+          assert.strictEqual('http://www.google.com', value)
         })
     })
 
@@ -375,7 +381,7 @@ describe('WebDriver', function () {
           assertIsStubError(e)
           return driver.getCurrentUrl()
         })
-        .then((url) => assert.equal('http://www.google.com', url))
+        .then((url) => assert.strictEqual('http://www.google.com', url))
     })
   })
 
@@ -402,7 +408,10 @@ describe('WebDriver', function () {
 
       el.resolve(new WebElement(driver, { ELEMENT: 'foo' }))
       return Promise.all(steps).then(function () {
-        assert.deepEqual(['element resolved', 'wire value resolved'], messages)
+        assert.deepStrictEqual(
+          ['element resolved', 'wire value resolved'],
+          messages
+        )
       })
     })
 
@@ -429,7 +438,7 @@ describe('WebDriver', function () {
       var driver = executor.createDriver()
       return driver
         .executeScript('return document.body;')
-        .then((result) => assert.equal(null, result))
+        .then((result) => assert.strictEqual(null, result))
     })
 
     it('primitiveReturnValue', function () {
@@ -445,7 +454,7 @@ describe('WebDriver', function () {
       var driver = executor.createDriver()
       return driver
         .executeScript('return document.body;')
-        .then((result) => assert.equal(123, result))
+        .then((result) => assert.strictEqual(123, result))
     })
 
     it('webElementReturnValue', function () {
@@ -464,7 +473,7 @@ describe('WebDriver', function () {
       return driver
         .executeScript('return document.body;')
         .then((element) => element.getId())
-        .then((id) => assert.equal(id, 'foo'))
+        .then((id) => assert.strictEqual(id, 'foo'))
     })
 
     it('arrayReturnValue', function () {
@@ -483,10 +492,10 @@ describe('WebDriver', function () {
       return driver
         .executeScript('return document.body;')
         .then(function (array) {
-          assert.equal(1, array.length)
+          assert.strictEqual(1, array.length)
           return array[0].getId()
         })
-        .then((id) => assert.equal('foo', id))
+        .then((id) => assert.strictEqual('foo', id))
     })
 
     it('objectReturnValue', function () {
@@ -505,7 +514,7 @@ describe('WebDriver', function () {
       return driver
         .executeScript('return document.body;')
         .then((obj) => obj['foo'].getId())
-        .then((id) => assert.equal(id, 'foo'))
+        .then((id) => assert.strictEqual(id, 'foo'))
     })
 
     it('scriptAsFunction', function () {
@@ -729,7 +738,10 @@ describe('WebDriver', function () {
         .findElement(By.js('return 123'))
         .then(assert.fail, function (e) {
           assertIsInstance(TypeError, e)
-          assert.equal('Custom locator did not return a WebElement', e.message)
+          assert.strictEqual(
+            'Custom locator did not return a WebElement',
+            e.message
+          )
         })
     })
 
@@ -759,7 +771,7 @@ describe('WebDriver', function () {
 
       var driver = executor.createDriver()
       var element = driver.findElement(function (d) {
-        assert.equal(driver, d)
+        assert.strictEqual(driver, d)
         return d.findElements(By.tagName('a'))
       })
       return element.click()
@@ -771,7 +783,10 @@ describe('WebDriver', function () {
         .findElement((_) => 1)
         .then(assert.fail, function (e) {
           assertIsInstance(TypeError, e)
-          assert.equal('Custom locator did not return a WebElement', e.message)
+          assert.strictEqual(
+            'Custom locator did not return a WebElement',
+            e.message
+          )
         })
     })
   })
@@ -795,7 +810,7 @@ describe('WebDriver', function () {
             })
           )
         })
-        .then((actual) => assert.deepEqual(ids, actual))
+        .then((actual) => assert.deepStrictEqual(ids, actual))
     })
 
     it('byJs', function () {
@@ -820,7 +835,7 @@ describe('WebDriver', function () {
             })
           )
         })
-        .then((actual) => assert.deepEqual(ids, actual))
+        .then((actual) => assert.deepStrictEqual(ids, actual))
     })
 
     it('byJs_filtersOutNonWebElementResponses', function () {
@@ -853,7 +868,7 @@ describe('WebDriver', function () {
             })
           )
         })
-        .then((actual) => assert.deepEqual(ids, actual))
+        .then((actual) => assert.deepStrictEqual(ids, actual))
     })
 
     it('byJs_convertsSingleWebElementResponseToArray', function () {
@@ -876,7 +891,7 @@ describe('WebDriver', function () {
             })
           )
         })
-        .then((actual) => assert.deepEqual(['foo'], actual))
+        .then((actual) => assert.deepStrictEqual(['foo'], actual))
     })
 
     it('byJs_canPassScriptArguments', function () {
@@ -903,7 +918,7 @@ describe('WebDriver', function () {
             })
           )
         })
-        .then((actual) => assert.deepEqual(['one', 'two'], actual))
+        .then((actual) => assert.deepStrictEqual(['one', 'two'], actual))
     })
   })
 
@@ -965,7 +980,7 @@ describe('WebDriver', function () {
       let driver = executor.createDriver()
       let handleFile = function (d, path) {
         assert.strictEqual(driver, d)
-        assert.equal(path, 'original/path')
+        assert.strictEqual(path, 'original/path')
         return Promise.resolve('modified/path')
       }
       driver.setFileDetector({ handleFile })
@@ -1035,7 +1050,7 @@ describe('WebDriver', function () {
         count++
         return true
       }
-      return driver.wait(condition, 1).then(() => assert.equal(1, count))
+      return driver.wait(condition, 1).then(() => assert.strictEqual(1, count))
     })
 
     it('on a simple counting condition', function () {
@@ -1045,7 +1060,9 @@ describe('WebDriver', function () {
       function condition() {
         return ++count === 3
       }
-      return driver.wait(condition, 250).then(() => assert.equal(3, count))
+      return driver
+        .wait(condition, 250)
+        .then(() => assert.strictEqual(3, count))
     })
 
     it('on a condition that returns a promise that resolves to true after a short timeout', function () {
@@ -1060,7 +1077,7 @@ describe('WebDriver', function () {
         })
       }
 
-      return driver.wait(condition, 75).then(() => assert.equal(1, count))
+      return driver.wait(condition, 75).then(() => assert.strictEqual(1, count))
     })
 
     it('on a condition that returns a promise', function () {
@@ -1077,7 +1094,7 @@ describe('WebDriver', function () {
 
       return driver
         .wait(condition, 100, null, 25)
-        .then(() => assert.equal(3, count))
+        .then(() => assert.strictEqual(3, count))
     })
 
     it('fails if condition throws', function () {
@@ -1215,7 +1232,7 @@ describe('WebDriver', function () {
       )
 
       return wait.then(fail, function (e) {
-        assert.equal(2, count)
+        assert.strictEqual(2, count)
         assert.ok(e instanceof error.TimeoutError, 'Unexpected error: ' + e)
         assert.ok(/^counting to 3\nWait timed out after \d+ms$/.test(e.message))
       })
@@ -1251,19 +1268,19 @@ describe('WebDriver', function () {
       let driver = executor.createDriver()
       let waitResult = driver.wait(d.promise).then(function (value) {
         messages.push('b')
-        assert.equal(1234, value)
+        assert.strictEqual(1234, value)
       })
 
       setTimeout(() => messages.push('a'), 5)
       return driver
         .sleep(10)
         .then(function () {
-          assert.deepEqual(['a'], messages)
+          assert.deepStrictEqual(['a'], messages)
           d.resolve(1234)
           return waitResult
         })
         .then(function () {
-          assert.deepEqual(['a', 'b'], messages)
+          assert.deepStrictEqual(['a', 'b'], messages)
         })
     })
 
@@ -1314,7 +1331,7 @@ describe('WebDriver', function () {
               .then((els) => els.length > 0)
           }, 25)
           .then(fail, function (e) {
-            assert.equal(
+            assert.strictEqual(
               'Wait timed out after ',
               e.message.substring(0, 'Wait timed out after '.length)
             )
@@ -1366,7 +1383,7 @@ describe('WebDriver', function () {
         })
 
         let driver = new FakeExecutor().createDriver()
-        return driver.wait(promise, 200).then((v) => assert.equal(v, 1))
+        return driver.wait(promise, 200).then((v) => assert.strictEqual(v, 1))
       })
 
       it('wait times out', function () {
@@ -1403,7 +1420,7 @@ describe('WebDriver', function () {
       let alert = new AlertPromise(driver, deferredText.promise)
 
       deferredText.resolve(new Alert(driver, 'foo'))
-      return alert.getText().then((text) => assert.equal(text, 'foo'))
+      return alert.getText().then((text) => assert.strictEqual(text, 'foo'))
     })
 
     it('cannotSwitchToAlertThatIsNotPresent', function () {
@@ -1459,17 +1476,17 @@ describe('WebDriver', function () {
       .logs()
       .get('browser')
       .then(function (entries) {
-        assert.equal(2, entries.length)
+        assert.strictEqual(2, entries.length)
 
         assert.ok(entries[0] instanceof logging.Entry)
-        assert.equal(logging.Level.INFO.value, entries[0].level.value)
-        assert.equal('hello', entries[0].message)
-        assert.equal(1234, entries[0].timestamp)
+        assert.strictEqual(logging.Level.INFO.value, entries[0].level.value)
+        assert.strictEqual('hello', entries[0].message)
+        assert.strictEqual(1234, entries[0].timestamp)
 
         assert.ok(entries[1] instanceof logging.Entry)
-        assert.equal(logging.Level.DEBUG.value, entries[1].level.value)
-        assert.equal('abc123', entries[1].message)
-        assert.equal(5678, entries[1].timestamp)
+        assert.strictEqual(logging.Level.DEBUG.value, entries[1].level.value)
+        assert.strictEqual('abc123', entries[1].message)
+        assert.strictEqual(5678, entries[1].timestamp)
       })
   })
 
@@ -1861,7 +1878,7 @@ describe('WebDriver', function () {
           .end()
         let driver = executor.createDriver()
         return driver.getCurrentUrl().then(function (got) {
-          assert.deepEqual(got, want)
+          assert.deepStrictEqual(got, want)
         })
       }
 
@@ -1870,7 +1887,7 @@ describe('WebDriver', function () {
           runDeserializeTest(1, 1),
           runDeserializeTest('', ''),
           runDeserializeTest(true, true),
-          runDeserializeTest(undefined, undefined),
+          runDeserializeTest(undefined, null),
           runDeserializeTest(null, null),
         ])
       })

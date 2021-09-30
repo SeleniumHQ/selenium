@@ -7,7 +7,7 @@ namespace Selenium.Tests.Environment
     public class SeleniumServer
     {
         private Process serverProcess;
-        private string serverJarName = @"build/java/client/test/org/openqa/selenium/v1/environment-standalone.jar";
+        private string serverJarName = @"build/java/test/org/openqa/selenium/v1/environment-standalone.jar";
         private string webserverClassName = "org.openqa.selenium.v1.SeleniumAppServer";
         private string projectRootPath;
         private bool autoStart;

@@ -32,7 +32,7 @@ module Selenium
         end
 
         def expect_request(body: nil, endpoint: nil)
-          body = (body || {capabilities: {firstMatch: [browserName: "firefox"]}}).to_json
+          body = (body || {capabilities: {alwaysMatch: {browserName: "firefox"}}}).to_json
           endpoint ||= "#{service_manager.uri}/session"
           stub_request(:post, endpoint).with(body: body).to_return(valid_response)
         end
@@ -49,7 +49,7 @@ module Selenium
 
         context 'with :desired capabilities' do
           it 'accepts value as a Symbol' do
-            expect_request(body: {capabilities: {firstMatch: [browserName: "firefox"]}})
+            expect_request(body: {capabilities: {alwaysMatch: {browserName: "firefox"}}})
 
             expect {
               expect { Driver.new(desired_capabilities: :firefox) }.to have_deprecated(:desired_capabilities)
@@ -58,7 +58,7 @@ module Selenium
 
           it 'accepts Capabilities.firefox' do
             capabilities = Remote::Capabilities.firefox(invalid: 'foobar')
-            expect_request(body: {capabilities: {firstMatch: [browserName: "firefox", invalid: 'foobar']}})
+            expect_request(body: {capabilities: {alwaysMatch: {browserName: "firefox", invalid: 'foobar'}}})
 
             expect {
               expect { Driver.new(desired_capabilities: capabilities) }.to have_deprecated(:desired_capabilities)
@@ -67,7 +67,7 @@ module Selenium
 
           it 'accepts constructed Capabilities with Snake Case as Symbols' do
             capabilities = Remote::Capabilities.new(browser_name: 'firefox', invalid: 'foobar')
-            expect_request(body: {capabilities: {firstMatch: [browserName: "firefox", invalid: 'foobar']}})
+            expect_request(body: {capabilities: {alwaysMatch: {browserName: "firefox", invalid: 'foobar'}}})
 
             expect {
               expect { Driver.new(desired_capabilities: capabilities) }.to have_deprecated(:desired_capabilities)
@@ -76,7 +76,7 @@ module Selenium
 
           it 'accepts constructed Capabilities with Camel Case as Symbols' do
             capabilities = Remote::Capabilities.new(browserName: 'firefox', invalid: 'foobar')
-            expect_request(body: {capabilities: {firstMatch: [browserName: "firefox", invalid: 'foobar']}})
+            expect_request(body: {capabilities: {alwaysMatch: {browserName: "firefox", invalid: 'foobar'}}})
 
             expect {
               expect { Driver.new(desired_capabilities: capabilities) }.to have_deprecated(:desired_capabilities)
@@ -85,7 +85,7 @@ module Selenium
 
           it 'accepts constructed Capabilities with Camel Case as Strings' do
             capabilities = Remote::Capabilities.new('browserName' => 'firefox', 'invalid' => 'foobar')
-            expect_request(body: {capabilities: {firstMatch: [browserName: "firefox", invalid: 'foobar']}})
+            expect_request(body: {capabilities: {alwaysMatch: {browserName: "firefox", invalid: 'foobar'}}})
 
             expect {
               expect { Driver.new(desired_capabilities: capabilities) }.to have_deprecated(:desired_capabilities)
@@ -94,7 +94,7 @@ module Selenium
 
           it 'accepts Hash with Camel Case keys as Symbols' do
             capabilities = {browserName: 'firefox', invalid: 'foobar'}
-            expect_request(body: {capabilities: {firstMatch: [browserName: "firefox", invalid: 'foobar']}})
+            expect_request(body: {capabilities: {alwaysMatch: {browserName: "firefox", invalid: 'foobar'}}})
 
             expect {
               expect { Driver.new(desired_capabilities: capabilities) }.to have_deprecated(:desired_capabilities)
@@ -103,7 +103,7 @@ module Selenium
 
           it 'accepts Hash with Camel Case keys as Strings' do
             capabilities = {"browserName" => 'firefox', "invalid" => 'foobar'}
-            expect_request(body: {capabilities: {firstMatch: [browserName: "firefox", invalid: 'foobar']}})
+            expect_request(body: {capabilities: {alwaysMatch: {browserName: "firefox", invalid: 'foobar'}}})
 
             expect {
               expect { Driver.new(desired_capabilities: capabilities) }.to have_deprecated(:desired_capabilities)
@@ -113,7 +113,7 @@ module Selenium
 
         it 'accepts provided Options as sole parameter' do
           opts = {invalid: 'foobar', args: ['-f']}
-          expect_request(body: {capabilities: {firstMatch: ["browserName": "firefox", "moz:firefoxOptions": opts]}})
+          expect_request(body: {capabilities: {alwaysMatch: {"browserName": "firefox", "moz:firefoxOptions": opts}}})
 
           expect {
             expect { Driver.new(options: Options.new(**opts)) }.to have_deprecated(:browser_options)
@@ -123,9 +123,9 @@ module Selenium
         it 'accepts combination of Options and Capabilities' do
           caps = Remote::Capabilities.firefox(invalid: 'foobar')
           browser_opts = {args: ['-f']}
-          expect_request(body: {capabilities: {firstMatch: ["browserName": "firefox",
-                                                            "invalid": "foobar",
-                                                            "moz:firefoxOptions": browser_opts]}})
+          expect_request(body: {capabilities: {alwaysMatch: {"browserName": "firefox",
+                                                             "invalid": "foobar",
+                                                             "moz:firefoxOptions": browser_opts}}})
 
           expect {
             expect {
@@ -141,41 +141,41 @@ module Selenium
 
         context 'with :capabilities' do
           it 'accepts value as a Symbol' do
-            expect_request(body: {capabilities: {firstMatch: [browserName: "firefox"]}})
+            expect_request(body: {capabilities: {alwaysMatch: {browserName: "firefox"}}})
             expect { Driver.new(capabilities: :firefox) }.not_to raise_exception
           end
 
           it 'accepts Capabilities.firefox' do
             capabilities = Remote::Capabilities.firefox(invalid: 'foobar')
-            expect_request(body: {capabilities: {firstMatch: [browserName: "firefox", invalid: 'foobar']}})
+            expect_request(body: {capabilities: {alwaysMatch: {browserName: "firefox", invalid: 'foobar'}}})
 
             expect { Driver.new(capabilities: capabilities) }.not_to raise_exception
           end
 
           it 'accepts constructed Capabilities with Snake Case as Symbols' do
             capabilities = Remote::Capabilities.new(browser_name: 'firefox', invalid: 'foobar')
-            expect_request(body: {capabilities: {firstMatch: [browserName: "firefox", invalid: 'foobar']}})
+            expect_request(body: {capabilities: {alwaysMatch: {browserName: "firefox", invalid: 'foobar'}}})
 
             expect { Driver.new(capabilities: capabilities) }.not_to raise_exception
           end
 
           it 'accepts constructed Capabilities with Camel Case as Symbols' do
             capabilities = Remote::Capabilities.new(browserName: 'firefox', invalid: 'foobar')
-            expect_request(body: {capabilities: {firstMatch: [browserName: "firefox", invalid: 'foobar']}})
+            expect_request(body: {capabilities: {alwaysMatch: {browserName: "firefox", invalid: 'foobar'}}})
 
             expect { Driver.new(capabilities: capabilities) }.not_to raise_exception
           end
 
           it 'accepts constructed Capabilities with Camel Case as Strings' do
             capabilities = Remote::Capabilities.new('browserName' => 'firefox', 'invalid' => 'foobar')
-            expect_request(body: {capabilities: {firstMatch: [browserName: "firefox", invalid: 'foobar']}})
+            expect_request(body: {capabilities: {alwaysMatch: {browserName: "firefox", invalid: 'foobar'}}})
 
             expect { Driver.new(capabilities: capabilities) }.not_to raise_exception
           end
 
           it 'accepts Hash with Camel Case keys as Symbols but is deprecated' do
             capabilities = {browserName: 'firefox', invalid: 'foobar'}
-            expect_request(body: {capabilities: {firstMatch: [browserName: "firefox", invalid: 'foobar']}})
+            expect_request(body: {capabilities: {alwaysMatch: {browserName: "firefox", invalid: 'foobar'}}})
 
             expect {
               expect { Driver.new(capabilities: capabilities) }.to have_deprecated(:capabilities_hash)
@@ -184,7 +184,7 @@ module Selenium
 
           it 'accepts Hash with Camel Case keys as Strings but is deprecated' do
             capabilities = {"browserName" => 'firefox', "invalid" => 'foobar'}
-            expect_request(body: {capabilities: {firstMatch: [browserName: "firefox", invalid: 'foobar']}})
+            expect_request(body: {capabilities: {alwaysMatch: {browserName: "firefox", invalid: 'foobar'}}})
 
             expect {
               expect { Driver.new(capabilities: capabilities) }.to have_deprecated(:capabilities_hash)
@@ -202,32 +202,32 @@ module Selenium
 
             it 'with Options instance' do
               options = Options.new(args: ['-f'])
-              expect_request(body: {capabilities: {firstMatch: [browserName: "firefox",
-                                                                'moz:firefoxOptions': {'args': ['-f']}]}})
+              expect_request(body: {capabilities: {alwaysMatch: {browserName: "firefox",
+                                                                 'moz:firefoxOptions': {'args': ['-f']}}}})
 
               expect { Driver.new(capabilities: [options]) }.not_to raise_exception
             end
 
             it 'with Capabilities instance' do
               capabilities = Remote::Capabilities.new(browser_name: 'firefox', invalid: 'foobar')
-              expect_request(body: {capabilities: {firstMatch: [browserName: "firefox", invalid: 'foobar']}})
+              expect_request(body: {capabilities: {alwaysMatch: {browserName: "firefox", invalid: 'foobar'}}})
 
               expect { Driver.new(capabilities: [capabilities]) }.not_to raise_exception
             end
 
             it 'with Options instance and an instance of a custom object responding to #as_json' do
-              expect_request(body: {capabilities: {firstMatch: [browserName: "firefox",
-                                                                'moz:firefoxOptions': {},
-                                                                'company:key': 'value']}})
+              expect_request(body: {capabilities: {alwaysMatch: {browserName: "firefox",
+                                                                 'moz:firefoxOptions': {},
+                                                                 'company:key': 'value'}}})
               expect { Driver.new(capabilities: [Options.new, as_json_object.new]) }.not_to raise_exception
             end
 
             it 'with Options instance, Capabilities instance and instance of a custom object responding to #as_json' do
               capabilities = Remote::Capabilities.new(browser_name: 'firefox', invalid: 'foobar')
               options = Options.new(args: ['-f'])
-              expect_request(body: {capabilities: {firstMatch: [browserName: "firefox", invalid: 'foobar',
-                                                                'moz:firefoxOptions': {'args': ['-f']},
-                                                                'company:key': 'value']}})
+              expect_request(body: {capabilities: {alwaysMatch: {browserName: "firefox", invalid: 'foobar',
+                                                                 'moz:firefoxOptions': {'args': ['-f']},
+                                                                 'company:key': 'value'}}})
 
               expect { Driver.new(capabilities: [capabilities, options, as_json_object.new]) }.not_to raise_exception
             end

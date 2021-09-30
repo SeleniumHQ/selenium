@@ -1,13 +1,17 @@
 try-import .bazelrc.local
 
+build --flag_alias=pin_browsers=//common:pin_browsers
+build --flag_alias=headless=//common:headless
+
 # Set the default java toolchain
-build --java_toolchain=@bazel_tools//tools/jdk:toolchain_java11
+build --java_runtime_version=remotejdk_11
+build --tool_java_language_version=11
 
 # We target java 8 by default
 build --javacopt="--release 8"
 
 # Require java dependencies to be used and first-order
-build --strict_java_deps=strict
+build --experimental_strict_java_deps=strict
 build --explicit_java_test_deps
 
 # Ensure builds are unpolluted by the user env
@@ -30,6 +34,7 @@ build --noexperimental_sandbox_default_allow_network
 build --test_env=CI
 build --test_env=DASHBOARD_URL
 build --test_env=DISPLAY
+build --test_env=FIREFOX_NIGHTLY_BINARY
 build --test_env=GITHUB_ACTIONS
 build --test_env=LOCALAPPDATA
 build --test_env=MOZ_HEADLESS
@@ -38,3 +43,5 @@ build --test_env=SELENIUM_BROWSER
 build --test_env=TRAVIS
 
 test --test_timeout=1800
+
+test:node_debug --test_output=streamed --test_strategy=exclusive --test_timeout=9999 --nocache_test_results

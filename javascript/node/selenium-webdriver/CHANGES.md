@@ -1,3 +1,62 @@
+## v4.0.0-rc-1
+
+* Deprecates withCapabilities method and removes tests (#9701)
+* expose `withLocator` method at the top level
+* Enables Mobile feature for Firefox (Still need to expand this to chromium based browsers)
+
+* Add the ability to do Relative Locators with all By types. Fixes #9559
+* Add default Opera capabilities. Fixes #9654
+* Add support for ChromeDriver `--enable-chrome-logs` (#9575) [Author: Mark Stacey]
+
+  The `--enable-chrome-logs` ChromeDriver option can now be enabled using
+  the Chromium (or Chrome) ServiceBuilder, similarly to the other options
+  provided by ChromeDriver.
+
+* Add the debuggerAddress option to chromium.js (#9561) [Author: Brandon Walderman]
+* Adds http client options (#9638)[Author: Dharin Shah]
+* Updating edge.js to extend chromium.driver (fixes #9626)
+
+
+## v4.0.0-beta.4
+
+* Add windowTypes option support for ChromiumDriver (#7897)
+* Allow relativeby with findElement  (#9396)
+
+## v4.0.0-beta.3
+
+* Removed support for legacy actions.
+  This will also remove "Bride Mode" support, which was introduced to translate of action class to legacy API.
+* Remove devtools support for v86,v87 and adding support for v89, v90, v91
+* make isPromise() return boolean value for null and undefined cases (#6785)
+* code cleanup  (#9158)
+* replacing asserts equal with strictEqual and deepEqual with deepStrictEqual
+
+
+## v4.0.0-beta.2
+
+* Removed support for Edge legacy.
+* Make the build silent for WebDriver Bidi generated code
+* resolve file path correctly (#9223)
+* Update example in edge.js (#9231)
+* Use a flat namespace for selenium options for finding WebDriver Bidi endpoint
+* Removing duplicate license text updated by update_copyright.js
+* Updating copyright text
+* Minor code cleanup
+* Removing duplicate variable declaration of IE from capabilities
+
+## v4.0.0-beta.1
+
+* JS Binding support for WebDriver Bidi in Firefox
+    - This requires Firefox 87 and Geckodriver 0.29 to be able to work
+* Update the supported CDP versions
+* Update tmp package version (#9155)
+* Adding support for /computedlabel (getAccessibleName) (#9073)
+* Adding support for computedrole (#8990)
+* Use subfolder for NPM package homepage (#8938)
+* Fix typo: tracingCategories -> traceCategories (#8976)
+* Package up mutation-listener for node. Fixes #8955
+* Adding support for `print` endpoint (#8880)
+
 ## v4.0.0-alpha.8
 
 * Rolling back native support for Opera Browser
@@ -7,7 +66,7 @@
     - setEdgeChromium
     - setScrollBehavior
     - For consistent naming, deprecating `addArguments(...args)` in favor of `addBrowserCommandSwitches(...args)`
-    
+
 * Added relative locators
 * Added Chrome DevTools Protocol (CDP) support
 * Added support for BASIC authentication.

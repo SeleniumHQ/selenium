@@ -1,0 +1,14 @@
+load("@rules_jvm_external//:defs.bzl", "artifact")
+load("//java:defs.bzl", "java_test_suite")
+
+java_test_suite(
+    name = "medium-tests",
+    size = "medium",
+    srcs = glob(["*Test.java"]),
+    deps = [
+        "//java/src/org/openqa/selenium/grid",
+        artifact("com.beust:jcommander"),
+        artifact("junit:junit"),
+        artifact("org.assertj:assertj-core"),
+    ],
+)

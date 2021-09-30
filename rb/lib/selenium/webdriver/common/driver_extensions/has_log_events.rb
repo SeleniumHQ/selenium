@@ -89,8 +89,14 @@ module Selenium
 
         def log_exception_events
           devtools.runtime.on(:exception_thrown) do |params|
+            description = if params.dig('exceptionDetails', 'exception')
+                            params.dig('exceptionDetails', 'exception', 'description')
+                          else
+                            params.dig('exceptionDetails', 'text')
+                          end
+
             event = DevTools::ExceptionEvent.new(
-              description: params.dig('exceptionDetails', 'exception', 'description'),
+              description: description,
               timestamp: params['timestamp'],
               stacktrace: params.dig('exceptionDetails', 'stackTrace', 'callFrames')
             )
@@ -106,8 +112,7 @@ module Selenium
 
           devtools.runtime.add_binding(name: '__webdriver_attribute')
           execute_script(mutation_listener)
-          script = devtools.page.add_script_to_evaluate_on_new_document(source: mutation_listener)
-          pinned_scripts[mutation_listener] = script['identifier']
+          devtools.page.add_script_to_evaluate_on_new_document(source: mutation_listener)
 
           devtools.runtime.on(:binding_called, &method(:log_mutation_event))
         end
@@ -131,10 +136,6 @@ module Selenium
 
         def mutation_listener
           @mutation_listener ||= read_atom(:mutationListener)
-        end
-
-        def pinned_scripts
-          @pinned_scripts ||= {}
         end
 
       end # HasLogEvents

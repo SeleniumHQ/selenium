@@ -14,15 +14,12 @@
 # KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
 # under the License.
-try:
-    basestring
-except NameError:  # Python 3.x
-    basestring = str
 
 from base64 import b64decode
 from shutil import rmtree
 import warnings
 from contextlib import contextmanager
+from typing import NoReturn
 
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 from selenium.webdriver.remote.webdriver import WebDriver as RemoteWebDriver
@@ -142,7 +139,7 @@ class WebDriver(RemoteWebDriver):
         capabilities = dict(capabilities)
 
         if capabilities.get("binary"):
-            self.binary = capabilities["binary"]
+            options.binary = capabilities["binary"]
 
         # options overrides capabilities
         if options:
@@ -154,12 +151,12 @@ class WebDriver(RemoteWebDriver):
         # firefox_binary and firefox_profile
         # override options
         if firefox_binary:
-            if isinstance(firefox_binary, basestring):
+            if isinstance(firefox_binary, str):
                 firefox_binary = FirefoxBinary(firefox_binary)
             self.binary = firefox_binary
             options.binary = firefox_binary
         if firefox_profile:
-            if isinstance(firefox_profile, basestring):
+            if isinstance(firefox_profile, str):
                 firefox_profile = FirefoxProfile(firefox_profile)
             self.profile = firefox_profile
             options.profile = firefox_profile
@@ -177,20 +174,18 @@ class WebDriver(RemoteWebDriver):
                 log_path=service_log_path)
         self.service.start()
 
-        capabilities.update(options.to_capabilities())
-
         executor = FirefoxRemoteConnection(
             remote_server_addr=self.service.service_url,
             ignore_proxy=options._ignore_local_proxy)
         RemoteWebDriver.__init__(
             self,
             command_executor=executor,
-            desired_capabilities=capabilities,
+            options=options,
             keep_alive=True)
 
         self._is_remote = False
 
-    def quit(self):
+    def quit(self) -> NoReturn:
         """Quits the driver and close every associated window."""
         try:
             RemoteWebDriver.quit(self)
@@ -198,10 +193,7 @@ class WebDriver(RemoteWebDriver):
             # We don't care about the message because something probably has gone wrong
             pass
 
-        if self.w3c:
-            self.service.stop()
-        else:
-            self.binary.kill()
+        self.service.stop()
 
         if self.profile:
             try:
@@ -217,7 +209,7 @@ class WebDriver(RemoteWebDriver):
 
     # Extension commands:
 
-    def set_context(self, context):
+    def set_context(self, context) -> NoReturn:
         self.execute("SET_CONTEXT", {"context": context})
 
     @contextmanager
@@ -242,7 +234,7 @@ class WebDriver(RemoteWebDriver):
         finally:
             self.set_context(initial_context)
 
-    def install_addon(self, path, temporary=None):
+    def install_addon(self, path, temporary=None) -> str:
         """
         Installs Firefox addon.
 
@@ -261,7 +253,7 @@ class WebDriver(RemoteWebDriver):
             payload["temporary"] = temporary
         return self.execute("INSTALL_ADDON", payload)["value"]
 
-    def uninstall_addon(self, identifier):
+    def uninstall_addon(self, identifier) -> NoReturn:
         """
         Uninstalls Firefox addon using its identifier.
 
@@ -272,7 +264,7 @@ class WebDriver(RemoteWebDriver):
         """
         self.execute("UNINSTALL_ADDON", {"id": identifier})
 
-    def get_full_page_screenshot_as_file(self, filename):
+    def get_full_page_screenshot_as_file(self, filename) -> bool:
         """
         Saves a full document screenshot of the current window to a PNG image file. Returns
            False if there is any IOError, else returns True. Use full paths in
@@ -300,7 +292,7 @@ class WebDriver(RemoteWebDriver):
             del png
         return True
 
-    def save_full_page_screenshot(self, filename):
+    def save_full_page_screenshot(self, filename) -> bool:
         """
         Saves a full document screenshot of the current window to a PNG image file. Returns
            False if there is any IOError, else returns True. Use full paths in
@@ -317,7 +309,7 @@ class WebDriver(RemoteWebDriver):
         """
         return self.get_full_page_screenshot_as_file(filename)
 
-    def get_full_page_screenshot_as_png(self):
+    def get_full_page_screenshot_as_png(self) -> str:
         """
         Gets the full document screenshot of the current window as a binary data.
 
@@ -328,7 +320,7 @@ class WebDriver(RemoteWebDriver):
         """
         return b64decode(self.get_full_page_screenshot_as_base64().encode('ascii'))
 
-    def get_full_page_screenshot_as_base64(self):
+    def get_full_page_screenshot_as_base64(self) -> str:
         """
         Gets the full document screenshot of the current window as a base64 encoded string
            which is useful in embedded images in HTML.
