@@ -20,6 +20,7 @@ package org.openqa.selenium.grid.router;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.RemovalListener;
+import com.google.common.collect.ImmutableMap;
 
 import org.openqa.selenium.NoSuchSessionException;
 import org.openqa.selenium.concurrent.Regularly;
@@ -50,6 +51,7 @@ import java.util.concurrent.Callable;
 import static org.openqa.selenium.remote.HttpSessionId.getSessionId;
 import static org.openqa.selenium.remote.RemoteTags.SESSION_ID;
 import static org.openqa.selenium.remote.RemoteTags.SESSION_ID_EVENT;
+import static org.openqa.selenium.remote.http.Contents.asJson;
 import static org.openqa.selenium.remote.tracing.Tags.EXCEPTION;
 import static org.openqa.selenium.remote.tracing.Tags.HTTP_REQUEST;
 import static org.openqa.selenium.remote.tracing.Tags.HTTP_REQUEST_EVENT;
@@ -114,16 +116,27 @@ class HandleSession implements HttpHandler {
         span.setAttribute("error", true);
         span.setStatus(Status.CANCELLED);
 
+        String errorMessage = "Unable to execute request for an existing session: " + e.getMessage();
         EXCEPTION.accept(attributeMap, e);
         attributeMap.put(AttributeKey.EXCEPTION_MESSAGE.getKey(),
-                         EventAttribute.setValue("Unable to execute request for an existing session: " + e.getMessage()));
+                         EventAttribute.setValue(errorMessage));
         span.addEvent(AttributeKey.EXCEPTION_EVENT.getKey(), attributeMap);
+
+        if (e instanceof NoSuchSessionException) {
+          HttpResponse response = new HttpResponse();
+          response.setStatus(404);
+          response.setContent(asJson(ImmutableMap.of(
+            "value", req.getUri(),
+            "message", errorMessage,
+            "error", NoSuchSessionException.class.getName())));
+          return response;
+        }
 
         Throwable cause = e.getCause();
         if (cause instanceof RuntimeException) {
           throw (RuntimeException) cause;
         }
-        throw new RuntimeException(cause);
+        throw new RuntimeException(errorMessage, cause);
       }
     }
   }
