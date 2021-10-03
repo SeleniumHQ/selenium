@@ -59,13 +59,6 @@
       "RemoteCapabilities": "MicrosoftEdge"
     },
 
-    "EdgeLegacy": {
-      "DriverTypeName": "OpenQA.Selenium.Edge.LegacyEdgeDriver",
-      "AssemblyName": "WebDriver.Common.Tests",
-      "BrowserValue": "EdgeLegacy",
-      "RemoteCapabilities": "MicrosoftEdge"
-    },
-
     "Firefox": {
       "DriverTypeName": "OpenQA.Selenium.Firefox.StableChannelFirefoxDriver",
       "AssemblyName": "WebDriver.Common.Tests",

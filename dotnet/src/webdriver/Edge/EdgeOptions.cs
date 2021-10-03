@@ -47,24 +47,7 @@ namespace OpenQA.Selenium.Edge
     {
         private const string DefaultBrowserNameValue = "MicrosoftEdge";
         private const string WebViewBrowserNameValue = "webview2";
-
-        // Engine switching
-        private const string UseChromiumCapability = "ms:edgeChromium";
-        private bool useChromium = true;
-
         private const string EdgeOptionsCapabilityName = "edgeOptions";
-
-        // Edge Legacy options
-        private const string UseInPrivateBrowsingCapability = "ms:inPrivate";
-        private const string ExtensionPathsCapability = "ms:extensionPaths";
-        private const string StartPageCapability = "ms:startPage";
-
-        private bool useInPrivateBrowsing;
-        private string startPage;
-        private List<string> extensionPaths = new List<string>();
-
-        // Additional Edge-specific Chromium options
-        private bool useWebView;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="EdgeOptions"/> class.
@@ -72,19 +55,6 @@ namespace OpenQA.Selenium.Edge
         public EdgeOptions() : base()
         {
             this.BrowserName = DefaultBrowserNameValue;
-            this.AddKnownCapabilityName(UseChromiumCapability, "UseChromium property");
-            this.AddKnownCapabilityName(UseInPrivateBrowsingCapability, "UseInPrivateBrowsing property");
-            this.AddKnownCapabilityName(StartPageCapability, "StartPage property");
-            this.AddKnownCapabilityName(ExtensionPathsCapability, "AddExtensionPaths method");
-        }
-
-        /// <summary>
-        /// Gets or sets a value indicating whether to launch Edge Chromium. Defaults to using Edge Legacy.
-        /// </summary>
-        public bool UseChromium
-        {
-            get { return this.useChromium; }
-            set { this.useChromium = value; }
         }
 
         /// <summary>
@@ -111,111 +81,6 @@ namespace OpenQA.Selenium.Edge
         {
             get { return this.BrowserName == WebViewBrowserNameValue; }
             set { this.BrowserName = value ? WebViewBrowserNameValue : DefaultBrowserNameValue; }
-        }
-
-
-        /// <summary>
-        /// Gets or sets a value indicating whether the browser should be launched using
-        /// InPrivate browsing.
-        /// </summary>
-        public bool UseInPrivateBrowsing
-        {
-            get { return this.useInPrivateBrowsing; }
-            set { this.useInPrivateBrowsing = value; }
-        }
-
-        /// <summary>
-        /// Gets or sets the URL of the page with which the browser will be navigated to on launch.
-        /// </summary>
-        public string StartPage
-        {
-            get { return this.startPage; }
-            set { this.startPage = value; }
-        }
-
-        /// <summary>
-        /// Adds a path to an extension that is to be used with the Edge Legacy driver.
-        /// </summary>
-        /// <param name="extensionPath">The full path and file name of the extension.</param>
-        public void AddExtensionPath(string extensionPath)
-        {
-            if (string.IsNullOrEmpty(extensionPath))
-            {
-                throw new ArgumentException("extensionPath must not be null or empty", "extensionPath");
-            }
-
-            this.AddExtensionPaths(extensionPath);
-        }
-
-        /// <summary>
-        /// Adds a list of paths to an extensions that are to be used with the Edge Legacy driver.
-        /// </summary>
-        /// <param name="extensionPathsToAdd">An array of full paths with file names of extensions to add.</param>
-        public void AddExtensionPaths(params string[] extensionPathsToAdd)
-        {
-            this.AddExtensionPaths(new List<string>(extensionPathsToAdd));
-        }
-
-        /// <summary>
-        /// Adds a list of paths to an extensions that are to be used with the Edge Legacy driver.
-        /// </summary>
-        /// <param name="extensionPathsToAdd">An <see cref="IEnumerable{T}"/> of full paths with file names of extensions to add.</param>
-        public void AddExtensionPaths(IEnumerable<string> extensionPathsToAdd)
-        {
-            if (extensionPathsToAdd == null)
-            {
-                throw new ArgumentNullException("extensionPathsToAdd", "extensionPathsToAdd must not be null");
-            }
-
-            this.extensionPaths.AddRange(extensionPathsToAdd);
-        }
-
-        /// <summary>
-        /// Returns DesiredCapabilities for Edge with these options included as
-        /// capabilities. This copies the options. Further changes will not be
-        /// reflected in the returned capabilities.
-        /// </summary>
-        /// <returns>The DesiredCapabilities for Edge with these options.</returns>
-        public override ICapabilities ToCapabilities()
-        {
-            return this.useChromium ? ToChromiumCapabilities() : ToLegacyCapabilities();
-        }
-
-        /// <summary>
-        /// Adds vendor-specific capabilities for Chromium-based browsers.
-        /// </summary>
-        /// <param name="capabilities">The capabilities to add.</param>
-        protected override void AddVendorSpecificChromiumCapabilities(IWritableCapabilities capabilities)
-        {
-            capabilities.SetCapability(EdgeOptions.UseChromiumCapability, this.useChromium);
-        }
-
-        private ICapabilities ToChromiumCapabilities()
-        {
-            return base.ToCapabilities();
-        }
-
-        private ICapabilities ToLegacyCapabilities()
-        {
-            IWritableCapabilities capabilities = this.GenerateDesiredCapabilities(true);
-            capabilities.SetCapability(EdgeOptions.UseChromiumCapability, this.useChromium);
-
-            if (this.useInPrivateBrowsing)
-            {
-                capabilities.SetCapability(UseInPrivateBrowsingCapability, true);
-            }
-
-            if (!string.IsNullOrEmpty(this.startPage))
-            {
-                capabilities.SetCapability(StartPageCapability, this.startPage);
-            }
-
-            if (this.extensionPaths.Count > 0)
-            {
-                capabilities.SetCapability(ExtensionPathsCapability, this.extensionPaths);
-            }
-
-            return capabilities.AsReadOnly();
         }
     }
 }
