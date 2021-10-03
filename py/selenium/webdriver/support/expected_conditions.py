@@ -218,13 +218,33 @@ def text_to_be_present_in_element(locator, text_):
 
 def text_to_be_present_in_element_value(locator, text_):
     """
-    An expectation for checking if the given text is present in the element's
+    An expectation for checking if the given text is present in the element's value.
     locator, text
     """
 
     def _predicate(driver):
         try:
             element_text = driver.find_element(*locator).get_attribute("value")
+            return text_ in element_text
+        except InvalidSelectorException as e:
+            raise e
+        except StaleElementReferenceException:
+            return False
+
+    return _predicate
+
+
+def text_to_be_present_in_element_attribute(locator, attribute_, text_):
+    """
+    An expectation for checking if the given text is present in the element's attribute.
+    locator, attribute, text
+    """
+
+    def _predicate(driver):
+        try:
+            if not element_attribute_to_include(locator, attribute_):
+                return False
+            element_text = driver.find_element(*locator).get_attribute(attribute_)
             return text_ in element_text
         except InvalidSelectorException as e:
             raise e
@@ -414,7 +434,7 @@ def alert_is_present():
 
 
 def element_attribute_to_include(locator, attribute_):
-    """ An expectation for checking if the given attribute is include in the
+    """ An expectation for checking if the given attribute is included in the
     specified element.
     locator, attribute
     """
