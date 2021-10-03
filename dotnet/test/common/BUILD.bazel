@@ -9,7 +9,6 @@ SUPPORTED_BROWSERS = [
     ("firefoxnightly", "FirefoxNightly"),
     ("ie", "IE"),
     ("edge", "Edge"),
-    ("edgelegacy", "EdgeLegacy"),
     ("safari", "Safari"),
     ("safaritechpreview", "SafariTechPreview"),
 ]
