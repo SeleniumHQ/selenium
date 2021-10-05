@@ -99,3 +99,4 @@ def selenium_java_deps():
         ],
         maven_install_json = "@selenium//java:maven_install.json",
     )
+
