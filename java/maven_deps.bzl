@@ -78,6 +78,7 @@ def selenium_java_deps():
             "xyz.rogfam:littleproxy:2.0.5",
             "org.seleniumhq.selenium:htmlunit-driver:2.53.0",
             "org.redisson:redisson:3.16.3",
+            "com.github.stephenc.jcip:jcip-annotations:1.0-1",
         ],
         excluded_artifacts = [
             "org.hamcrest:hamcrest-all",  # Replaced by hamcrest 2
