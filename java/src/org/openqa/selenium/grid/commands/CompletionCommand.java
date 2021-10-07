@@ -92,6 +92,11 @@ public class CompletionCommand implements CliCommand {
         commander.parse();
       }
 
+      if (commander.getParsedCommand() == null) {
+        err.println("No shell given. Possible shells are: zsh");
+        System.exit(1);
+      }
+
       switch (commander.getParsedCommand()) {
         case "zsh":
           outputZshCompletions(out);
@@ -186,6 +191,7 @@ public class CompletionCommand implements CliCommand {
         return ":(true false)";
 
       case "int":
+      case "integer":
         return ":int";
 
       case "list of strings":
