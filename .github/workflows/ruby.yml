@@ -143,7 +143,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        ruby: ['2.6', 'jruby-9.2.10.0']
+        ruby: ['2.6', 'jruby-9.2.19.0']
     steps:
       - uses: actions/checkout@v2
       - uses: ruby/setup-ruby@v1
