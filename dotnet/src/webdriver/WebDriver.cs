@@ -323,6 +323,16 @@ namespace OpenQA.Selenium
         }
 
         /// <summary>
+        /// Gets or sets the factory object used to create instances of <see cref="WebElement"/>
+        /// or its subclasses.
+        /// </summary>
+        protected WebElementFactory ElementFactory
+        {
+            get { return this.elementFactory; }
+            set { this.elementFactory = value; }
+        }
+
+        /// <summary>
         /// Closes the Browser
         /// </summary>
         public void Close()
