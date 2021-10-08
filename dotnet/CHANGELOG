@@ -1,27 +1,35 @@
+v4.0.0rc3
+=========
+ * Explicitly remove Expect header. When using the HttpClient class, the
+   behavior for an HTTP POST request is different between .NET Framework and
+   .NET Core. In the .NET Framework case, the client automatically adds an
+   `Expect: 100-Continue` header. When the remote end does not send a 100
+   response, the client hangs waiting for it. This change explicitly removes
+   that header for all HTTP requests. Fixes issue #9277.
+
 v4.0.0rc2
 =========
-
-  * Fix TouchActions Flick overload
-  * Fixing doc string for Network Conditions methods
-  * Adding support for Firefox and Chromium Android options
-  * Coercing return type of GetCastSinks() to proper datatype
-  * implement ability to open Safari inspector
-  * implement getting and setting permissions on Safari
-  * implement getting the context of Firefox commands
-  * implement ability for Chrome and Edge to set applicable permissions on browser
-  * implement ability to launch chromium application
-  * implement chrome and edge support for casting to devices
-  * Add --websocket-port command line argument for geckodriver
-  * Restore ability to add headers to WebDriver HTTP commands
-  * Move UserAgent class to main namespace
-  * mark deprecated chromedriver commands as obsolete and implement new preferred command
-  * Add version-independent method for overriding user agent via CDP
-  * Add Bidi-compliant webSocketUrl capability
-  * Make CDP sessions autodetect close of initial attached target
-  * Update supported version of CDP to 94, remove 92
-  * Rename TerminateDevToolsSession to ResetDevToolsSession
-  * Add ability to disconnect a CDP session
-  * Add transformation for network responses via CDP
+ * Fix TouchActions Flick overload
+ * Fixing doc string for Network Conditions methods
+ * Adding support for Firefox and Chromium Android options
+ * Coercing return type of GetCastSinks() to proper datatype
+ * implement ability to open Safari inspector
+ * implement getting and setting permissions on Safari
+ * implement getting the context of Firefox commands
+ * implement ability for Chrome and Edge to set applicable permissions on browser
+ * implement ability to launch chromium application
+ * implement chrome and edge support for casting to devices
+ * Add --websocket-port command line argument for geckodriver
+ * Restore ability to add headers to WebDriver HTTP commands
+ * Move UserAgent class to main namespace
+ * mark deprecated chromedriver commands as obsolete and implement new preferred command
+ * Add version-independent method for overriding user agent via CDP
+ * Add Bidi-compliant webSocketUrl capability
+ * Make CDP sessions autodetect close of initial attached target
+ * Update supported version of CDP to 94, remove 92
+ * Rename TerminateDevToolsSession to ResetDevToolsSession
+ * Add ability to disconnect a CDP session
+ * Add transformation for network responses via CDP
 
 v4.0.0rc1
 =========
