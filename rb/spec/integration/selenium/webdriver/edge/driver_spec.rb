@@ -34,6 +34,17 @@ module Selenium
           driver.delete_network_conditions
         end
 
+        it 'supports default network conditions' do
+          driver.network_conditions = {latency: 56}
+          expect(driver.network_conditions).to eq(
+            'offline' => false,
+            'latency' => 56,
+            'download_throughput' => -1,
+            'upload_throughput' => -1
+          )
+          driver.delete_network_conditions
+        end
+
         it 'sets download path' do
           driver.download_path = File.expand_path(__dir__)
           # there is no simple way to verify that it's now possible to download

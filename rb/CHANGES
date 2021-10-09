@@ -1,3 +1,9 @@
+4.0.0.rc3 (2021-10-08)
+=========================
+
+Ruby:
+  * Added support for getting timeout values from the driver
+
 4.0.0.rc2 (2021-09-30)
 =========================
 

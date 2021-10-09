@@ -20,6 +20,7 @@ java_library(
         artifact("io.opentelemetry:opentelemetry-exporter-logging"),
         artifact("io.opentelemetry:opentelemetry-sdk"),
         artifact("io.opentelemetry:opentelemetry-sdk-common"),
+        artifact("io.opentelemetry:opentelemetry-sdk-extension-autoconfigure-spi"),
         artifact("io.opentelemetry:opentelemetry-sdk-extension-autoconfigure"),
         artifact("io.opentelemetry:opentelemetry-sdk-trace"),
         artifact("io.opentelemetry:opentelemetry-semconv"),
