@@ -32,17 +32,17 @@ suite(
     beforeAll(async function () {
       driver = await env.builder().build()
     })
-    afterAll(() => driver.quit())
+    afterAll(async () => await driver.quit())
 
     it('sends Page.enable command using devtools', async function () {
-      const cdpConnection = await driver.createCDPConnection('page')
+      const cdpConnection = await driver.createCDPConnection()
       cdpConnection.execute('Page.enable', 1, {}, function (_res, err) {
         assert(!err)
       })
     })
 
     it('sends Network and Page command using devtools', async function () {
-      const cdpConnection = await driver.createCDPConnection('page')
+      const cdpConnection = await driver.createCDPConnection()
       cdpConnection.execute('Network.enable', 1, {}, function (_res, err) {
         assert(!err)
       })
@@ -59,7 +59,7 @@ suite(
 
     describe('JS CDP events', function () {
       it('calls the event listener for console.log', async function () {
-        const cdpConnection = await driver.createCDPConnection('page')
+        const cdpConnection = await driver.createCDPConnection()
         await driver.onLogEvent(cdpConnection, function (event) {
           assert.strictEqual(event['args'][0]['value'], 'here')
         })
@@ -67,7 +67,7 @@ suite(
       })
 
       it('calls the event listener for js exceptions', async function () {
-        const cdpConnection = await driver.createCDPConnection('page')
+        const cdpConnection = await driver.createCDPConnection()
         await driver.onLogException(cdpConnection, function (event) {
           assert.strictEqual(
             event['exceptionDetails']['stackTrace']['callFrames'][0][
@@ -84,7 +84,7 @@ suite(
 
     describe('JS DOM events', function () {
       it('calls the event listener on dom mutations', async function () {
-        const cdpConnection = await driver.createCDPConnection('page')
+        const cdpConnection = await driver.createCDPConnection()
         await driver.logMutationEvents(cdpConnection, function (event) {
           assert.strictEqual(event['attribute_name'], 'style')
           assert.strictEqual(event['current_value'], '')
@@ -103,7 +103,7 @@ suite(
     describe('Basic Auth Injection', function () {
       ignore(browsers(Browser.SAFARI, Browser.FIREFOX)).
         it('denies entry if username and password do not match', async function () {
-          const pageCdpConnection = await driver.createCDPConnection('page')
+          const pageCdpConnection = await driver.createCDPConnection()
 
           await driver.register('random', 'random', pageCdpConnection)
           await driver.get(fileServer.Pages.basicAuth)
@@ -116,7 +116,7 @@ suite(
 
       ignore(browsers(Browser.SAFARI, Browser.FIREFOX)).
         it('grants access if username and password are a match', async function () {
-          const pageCdpConnection = await driver.createCDPConnection('page')
+          const pageCdpConnection = await driver.createCDPConnection()
 
           await driver.register('genie', 'bottle', pageCdpConnection)
           await driver.get(fileServer.Pages.basicAuth)
@@ -128,7 +128,7 @@ suite(
     describe("Network Interception", function () {
       ignore(browsers(Browser.SAFARI, Browser.FIREFOX)).
         it('Allows network requests to be captured and mocked', async function () {
-          const connection = await driver.createCDPConnection('page')
+          const connection = await driver.createCDPConnection()
           let url = fileServer.whereIs("/cheese")
           let httpResponse = new HttpResponse(url)
           httpResponse.addHeaders("Content-Type", "UTF-8")
