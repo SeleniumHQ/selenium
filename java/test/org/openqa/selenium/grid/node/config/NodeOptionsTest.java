@@ -17,16 +17,7 @@
 
 package org.openqa.selenium.grid.node.config;
 
-import static java.util.Collections.emptyMap;
-import static java.util.Collections.emptySet;
-import static java.util.Collections.singletonMap;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.fail;
-import static org.junit.Assume.assumeFalse;
-import static org.junit.Assume.assumeTrue;
-
 import com.google.common.collect.ImmutableMap;
-
 import org.assertj.core.api.Condition;
 import org.junit.Test;
 import org.mockito.Mockito;
@@ -49,11 +40,21 @@ import org.openqa.selenium.internal.Either;
 import org.openqa.selenium.json.Json;
 
 import java.io.StringReader;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+
+import static java.util.Collections.emptyMap;
+import static java.util.Collections.emptySet;
+import static java.util.Collections.singletonMap;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.fail;
+import static org.junit.Assume.assumeFalse;
+import static org.junit.Assume.assumeTrue;
 
 @SuppressWarnings("DuplicatedCode")
 public class NodeOptionsTest {
@@ -456,6 +457,18 @@ public class NodeOptionsTest {
       .filter(capabilities -> "chrome".equalsIgnoreCase(capabilities.getBrowserName()))
       .count();
     assertThat(chromeSlots).isEqualTo(overriddenMaxSessions);
+  }
+
+  @Test
+  public void settingTheHubFlagSetsTheGridUrlAndEventBusFlags() {
+    String[] rawConfig = new String[]{
+      "[node]",
+      "hub-address = \"cheese.com\"",
+    };
+    Config config = new TomlConfig(new StringReader(String.join("\n", rawConfig)));
+
+    NodeOptions nodeOptions = new NodeOptions(config);
+    assertThat(nodeOptions.getPublicGridUri()).isEqualTo(Optional.of(URI.create("http://cheese.com:4444")));
   }
 
   private Condition<? super List<? extends Capabilities>> supporting(String name) {

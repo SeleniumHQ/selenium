@@ -21,12 +21,16 @@ import org.openqa.selenium.events.EventBus;
 import org.openqa.selenium.events.EventListener;
 import org.openqa.selenium.events.EventName;
 import org.openqa.selenium.grid.config.Config;
+import org.openqa.selenium.grid.config.ConfigException;
 import org.openqa.selenium.grid.security.Secret;
 import org.openqa.selenium.grid.security.SecretOptions;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.JsonInput;
+import org.openqa.selenium.net.Urls;
 import org.zeromq.ZContext;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.function.Consumer;
 
 import static org.openqa.selenium.events.zeromq.UnboundZmqEventBus.REJECTED_EVENT;
@@ -51,18 +55,44 @@ public class ZeroMqEventBus {
 
   public static EventBus create(Config config) {
     String publish = config.get(EVENTS_SECTION, "publish")
-        .orElseThrow(() -> new IllegalArgumentException(
+      .orElseGet(() -> {
+        URI uri = config.get("node", "hub-address")
+          .map(Urls::from)
+          .orElseThrow(() -> new IllegalArgumentException(
             "Unable to find address to publish events to."));
+        return mungeUri(uri, "tcp", 4442);
+      });
 
-    String subscribe = config.get(EVENTS_SECTION, "subscribe")
-        .orElseThrow(() -> new IllegalArgumentException(
+    String subscribe = config.get(EVENTS_SECTION, "publish")
+      .orElseGet(() -> {
+        URI uri = config.get("node", "hub-address")
+          .map(Urls::from)
+          .orElseThrow(() -> new IllegalArgumentException(
             "Unable to find address to subscribe for events from."));
+        return mungeUri(uri, "tcp", 4443);
+      });
 
     boolean bind = config.getBool(EVENTS_SECTION, "bind").orElse(false);
 
     SecretOptions secretOptions = new SecretOptions(config);
 
     return create(new ZContext(), publish, subscribe, bind, secretOptions.getRegistrationSecret());
+  }
+
+  private static String mungeUri(URI base, String scheme, int port) {
+    try {
+      return new URI(
+        scheme,
+        null,
+        base.getHost(),
+        port,
+        null,
+        null,
+        null)
+        .toString();
+    } catch (URISyntaxException e) {
+      throw new ConfigException("Unable to create URI from " + base);
+    }
   }
 
   public static EventListener<RejectedEvent> onRejectedEvent(Consumer<RejectedEvent> handler) {

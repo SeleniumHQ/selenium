@@ -37,6 +37,7 @@ import org.openqa.selenium.grid.node.SessionFactory;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.json.JsonOutput;
+import org.openqa.selenium.net.Urls;
 import org.openqa.selenium.remote.service.DriverService;
 
 import java.io.File;
@@ -89,13 +90,41 @@ public class NodeOptions {
   }
 
   public Optional<URI> getPublicGridUri() {
-    return config.get(NODE_SECTION, "grid-url").map(url -> {
+    Optional<URI> gridUri = config.get(NODE_SECTION, "grid-url").map(url -> {
       try {
         return new URI(url);
       } catch (URISyntaxException e) {
         throw new ConfigException("Unable to construct public URL: " + url);
       }
     });
+
+    if (gridUri.isPresent()) {
+      return gridUri;
+    }
+
+    Optional<String> hubAddress = config.get(NODE_SECTION, "hub-address");
+    if (!hubAddress.isPresent()) {
+      return Optional.empty();
+    }
+
+    URI base = hubAddress.map(Urls::from).get();
+    try {
+      URI baseUri = base;
+      if (baseUri.getPort() == -1) {
+        baseUri = new URI(
+          baseUri.getScheme() == null ? "http" : baseUri.getScheme(),
+          baseUri.getUserInfo(),
+          baseUri.getHost(),
+          4444,
+          baseUri.getPath(),
+          baseUri.getQuery(),
+          baseUri.getFragment());
+      }
+
+      return Optional.of(baseUri);
+    } catch (URISyntaxException e) {
+      throw new ConfigException("Unable to construct public URL: " + base);
+    }
   }
 
   public Node getNode() {

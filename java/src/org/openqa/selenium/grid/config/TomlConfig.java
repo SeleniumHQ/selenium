@@ -47,9 +47,10 @@ public class TomlConfig implements Config {
     } catch (IOException e) {
       throw new ConfigException("Unable to read TOML.", e);
     } catch (ParseException e) {
-      throw new ConfigException(e.getCause() +
-                                "\n Validate the config using https://www.toml-lint.com/. "
-                                + "\n Refer https://toml.io/en/ for TOML usage guidance. ");
+      throw new ConfigException(
+        e.getCause() +
+        "\n Validate the config using https://www.toml-lint.com/. " +
+        "\n Refer to https://toml.io/en/ for TOML usage guidance. ");
     }
   }
 
