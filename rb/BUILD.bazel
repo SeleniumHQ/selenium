@@ -13,6 +13,7 @@ CDP_VERSIONS = [
     "v85",
     "v93",
     "v94",
+    "v95"
 ]
 
 copy_file(
