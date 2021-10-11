@@ -13,7 +13,7 @@ CDP_VERSIONS = [
     "v85",
     "v93",
     "v94",
-    "v95"
+    "v95",
 ]
 
 copy_file(
@@ -609,5 +609,6 @@ rb_binary(
         ":firefox",
         ":ie",
         ":safari",
+        "@bundle//:pry",
     ],
 )
