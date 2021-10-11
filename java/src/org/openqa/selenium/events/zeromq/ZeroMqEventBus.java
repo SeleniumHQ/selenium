@@ -63,7 +63,7 @@ public class ZeroMqEventBus {
         return mungeUri(uri, "tcp", 4442);
       });
 
-    String subscribe = config.get(EVENTS_SECTION, "publish")
+    String subscribe = config.get(EVENTS_SECTION, "subscribe")
       .orElseGet(() -> {
         URI uri = config.get("node", "hub-address")
           .map(Urls::from)
