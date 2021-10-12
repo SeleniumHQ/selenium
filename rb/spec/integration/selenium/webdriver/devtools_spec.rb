@@ -167,14 +167,15 @@ module Selenium
         it 'changes requests' do
           driver.intercept do |request, &continue|
             uri = URI(request.url)
-            if uri.path.match?(%r{/html5/.*\.jpg})
-              uri.path = '/beach.jpg'
+            if uri.path.end_with?('one.js')
+              uri.path = '/devtools_request_interception_test/two.js'
               request.url = uri.to_s
             end
             continue.call(request)
           end
-          driver.navigate.to url_for('html5Page.html')
-          expect(driver.find_elements(tag_name: 'img').map(&:size).uniq).to eq([Dimension.new(640, 480)])
+          driver.navigate.to url_for('devToolsRequestInterceptionTest.html')
+          driver.find_element(tag_name: 'button').click
+          expect(driver.find_element(id: 'result').text).to eq('two')
         end
 
         it 'continues responses' do

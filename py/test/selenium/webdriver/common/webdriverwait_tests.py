@@ -212,6 +212,15 @@ def testExpectedConditionTextToBePresentInElementValue(driver, pages):
     assert 'Example Expected text' == driver.find_element(By.ID, 'inputRequired').get_attribute('value')
 
 
+def testExpectedConditionTextToBePresentInElementAttribute(driver, pages):
+    pages.load('booleanAttributes.html')
+    with pytest.raises(TimeoutException):
+        WebDriverWait(driver, 1).until(EC.text_to_be_present_in_element_attribute((By.ID, 'inputRequired'), 'value', 'Expected'))
+    driver.execute_script("setTimeout(function(){document.getElementById('inputRequired').value = 'Example Expected text'}, 200)")
+    WebDriverWait(driver, 1).until(EC.text_to_be_present_in_element_attribute((By.ID, 'inputRequired'), 'value', 'Expected'))
+    assert 'Example Expected text' == driver.find_element(By.ID, 'inputRequired').get_attribute('value')
+
+
 # xfail can be removed after 23 March 2021
 @pytest.mark.xfail_firefox(reason="https://bugzilla.mozilla.org/show_bug.cgi?id=1691348")
 def testExpectedConditionFrameToBeAvailableAndSwitchToItByLocator(driver, pages):

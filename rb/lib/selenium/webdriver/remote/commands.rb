@@ -114,6 +114,7 @@ module Selenium
           # timeouts
           #
 
+          get_timeouts: [:get, 'session/:session_id/timeouts'],
           set_timeout: [:post, 'session/:session_id/timeouts'],
 
           #

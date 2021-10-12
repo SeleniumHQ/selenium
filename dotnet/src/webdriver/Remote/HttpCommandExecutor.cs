@@ -256,6 +256,7 @@ namespace OpenQA.Selenium.Remote
             this.client = new HttpClient(httpClientHandler);
             this.client.DefaultRequestHeaders.UserAgent.ParseAdd(this.UserAgent);
             this.client.DefaultRequestHeaders.Accept.ParseAdd(RequestAcceptHeader);
+            this.client.DefaultRequestHeaders.ExpectContinue = false;
             if (!this.IsKeepAliveEnabled)
             {
                 this.client.DefaultRequestHeaders.Connection.ParseAdd("close");

@@ -29,6 +29,7 @@ import org.openqa.selenium.WebDriverInfo;
 import org.openqa.selenium.events.EventBus;
 import org.openqa.selenium.grid.config.Config;
 import org.openqa.selenium.grid.config.ConfigException;
+import org.openqa.selenium.grid.data.Availability;
 import org.openqa.selenium.grid.data.CreateSessionRequest;
 import org.openqa.selenium.grid.data.CreateSessionResponse;
 import org.openqa.selenium.grid.data.NodeDrainComplete;
@@ -39,6 +40,9 @@ import org.openqa.selenium.grid.data.Session;
 import org.openqa.selenium.grid.data.SessionClosedEvent;
 import org.openqa.selenium.grid.data.Slot;
 import org.openqa.selenium.grid.data.SlotId;
+import org.openqa.selenium.grid.jmx.JMXHelper;
+import org.openqa.selenium.grid.jmx.ManagedAttribute;
+import org.openqa.selenium.grid.jmx.ManagedService;
 import org.openqa.selenium.grid.log.LoggingOptions;
 import org.openqa.selenium.grid.node.HealthCheck;
 import org.openqa.selenium.grid.node.Node;
@@ -82,6 +86,8 @@ import static org.openqa.selenium.remote.http.HttpMethod.DELETE;
  * appropriately configured Kubernetes cluster to start a new node once the
  * session is finished.
  */
+@ManagedService(objectName = "org.seleniumhq.grid:type=Node,name=OneShotNode",
+  description = "Node for running a single webdriver session.")
 public class OneShotNode extends Node {
 
   private static final Logger LOG = Logger.getLogger(OneShotNode.class.getName());
@@ -116,6 +122,8 @@ public class OneShotNode extends Node {
     this.gridUri = Require.nonNull("Public Grid URI", gridUri);
     this.stereotype = ImmutableCapabilities.copyOf(Require.nonNull("Stereotype", stereotype));
     this.driverInfo = Require.nonNull("Driver info", driverInfo);
+
+    new JMXHelper().register(this);
   }
 
   public static Node create(Config config) {
@@ -364,5 +372,45 @@ public class OneShotNode extends Node {
   @Override
   public boolean isReady() {
     return events.isReady();
+  }
+
+  @ManagedAttribute(name = "MaxSessions")
+  public int getMaxSessionCount() {
+    return 1;
+  }
+
+  @ManagedAttribute(name = "Status")
+  public Availability getAvailability() {
+    return isDraining() ? DRAINING : UP;
+  }
+
+  @ManagedAttribute(name = "TotalSlots")
+  public int getTotalSlots() {
+    return 1;
+  }
+
+  @ManagedAttribute(name = "UsedSlots")
+  public long getUsedSlots() {
+    return client == null ? 0 : 1;
+  }
+
+  @ManagedAttribute(name = "Load")
+  public float getLoad() {
+    return client == null ? 0f : 100f;
+  }
+
+  @ManagedAttribute(name = "RemoteNodeUri")
+  public URI getExternalUri() {
+    return this.getUri();
+  }
+
+  @ManagedAttribute(name = "GridUri")
+  public URI getGridUri() {
+    return this.gridUri;
+  }
+
+  @ManagedAttribute(name = "NodeId")
+  public String getNodeId() {
+    return getId().toString();
   }
 }

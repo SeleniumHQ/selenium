@@ -173,6 +173,10 @@ module Selenium
                        Profile.from_name(profile)
                      end
         end
+
+        def camelize?(key)
+          key != :prefs
+        end
       end # Options
     end # Firefox
   end # WebDriver

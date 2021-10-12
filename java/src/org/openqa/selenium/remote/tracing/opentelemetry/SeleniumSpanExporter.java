@@ -21,7 +21,8 @@ import com.google.auto.service.AutoService;
 import io.opentelemetry.api.common.AttributeKey;
 import io.opentelemetry.api.common.Attributes;
 import io.opentelemetry.api.trace.StatusCode;
-import io.opentelemetry.sdk.autoconfigure.spi.SdkTracerProviderConfigurer;
+import io.opentelemetry.sdk.autoconfigure.spi.ConfigProperties;
+import io.opentelemetry.sdk.autoconfigure.spi.traces.SdkTracerProviderConfigurer;
 import io.opentelemetry.sdk.common.CompletableResultCode;
 import io.opentelemetry.sdk.trace.SdkTracerProviderBuilder;
 import io.opentelemetry.sdk.trace.data.EventData;
@@ -46,7 +47,7 @@ public class SeleniumSpanExporter implements SdkTracerProviderConfigurer {
   private final boolean httpLogs = OpenTelemetryTracer.getHttpLogs();
 
   @Override
-  public void configure(SdkTracerProviderBuilder tracerProvider) {
+  public void configure(SdkTracerProviderBuilder tracerProvider, ConfigProperties configProperties) {
     tracerProvider.addSpanProcessor(SimpleSpanProcessor.create(new SpanExporter() {
       @Override
       public CompletableResultCode export(Collection<SpanData> spans) {

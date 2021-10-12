@@ -93,17 +93,16 @@ module Selenium
           execute :get, {}, {url: url}
         end
 
-        def implicit_wait_timeout=(milliseconds)
-          timeout('implicit', milliseconds)
+        #
+        # timeouts
+        #
+
+        def timeouts
+          execute :get_timeouts, {}
         end
 
-        def script_timeout=(milliseconds)
-          timeout('script', milliseconds)
-        end
-
-        def timeout(type, milliseconds)
-          type = 'pageLoad' if type == 'page load'
-          execute :set_timeout, {}, {type => milliseconds}
+        def timeouts=(timeouts)
+          execute :set_timeout, {}, timeouts
         end
 
         #
@@ -658,7 +657,7 @@ module Selenium
         # @see https://mathiasbynens.be/notes/css-escapes
         def escape_css(string)
           string = string.gsub(ESCAPE_CSS_REGEXP) { |match| "\\#{match}" }
-          string = "\\#{UNICODE_CODE_POINT + Integer(string[0])} #{string[1..-1]}" if string[0]&.match?(/[[:digit:]]/)
+          string = "\\#{UNICODE_CODE_POINT + Integer(string[0])} #{string[1..]}" if string[0]&.match?(/[[:digit:]]/)
 
           string
         end

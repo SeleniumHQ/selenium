@@ -55,7 +55,7 @@ class DesiredCapabilities(object):
 
     INTERNETEXPLORER = {
         "browserName": "internet explorer",
-        "platformName": "WINDOWS",
+        "platformName": "windows",
     }
 
     EDGE = {
@@ -72,7 +72,7 @@ class DesiredCapabilities(object):
 
     SAFARI = {
         "browserName": "safari",
-        "platformName": "MAC",
+        "platformName": "mac",
     }
 
     HTMLUNIT = {
@@ -91,13 +91,13 @@ class DesiredCapabilities(object):
     IPHONE = {
         "browserName": "iPhone",
         "version": "",
-        "platform": "MAC",
+        "platform": "mac",
     }
 
     IPAD = {
         "browserName": "iPad",
         "version": "",
-        "platform": "MAC",
+        "platform": "mac",
     }
 
     WEBKITGTK = {

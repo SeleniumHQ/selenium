@@ -62,7 +62,7 @@ module Selenium
 
         # TODO: optimize since this approach is not assured on IE
         def ensure_single_window
-          driver_instance.window_handles[1..-1].each do |handle|
+          driver_instance.window_handles[1..].each do |handle|
             driver_instance.switch_to.window(handle)
             driver_instance.close
           end

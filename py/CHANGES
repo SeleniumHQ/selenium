@@ -1,3 +1,8 @@
+Selenium 4 Release Candidate 3
+
+* Fix CDP Code Generation broken by Chromium 94
+* Fix Deprecation warnings for IE Bindings. Fixes #9818
+
 Selenium 4 Release Candidate 2
 
 * Add new websocketUrl capability
