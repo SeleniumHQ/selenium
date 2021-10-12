@@ -1220,6 +1220,9 @@ class WebDriver(BaseWebDriver):
 
         :rtype: WebElement
         """
+        if isinstance(by, RelativeBy):
+            return self.find_elements(by=by, value=value)[0]
+
         if by == By.ID:
             by = By.CSS_SELECTOR
             value = '[id="%s"]' % value
