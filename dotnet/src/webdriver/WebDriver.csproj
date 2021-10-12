@@ -119,6 +119,10 @@
       <Visible>False</Visible>
       <LogicalName>find-elements.js</LogicalName>
     </EmbeddedResource>
+    <EmbeddedResource Include="$(ProjectDir)..\..\..\bazel-bin\javascript\cdp-support\mutation-listener.js">
+      <Visible>False</Visible>
+      <LogicalName>mutation-listener.js</LogicalName>
+    </EmbeddedResource>
   </ItemGroup>
 
   <ItemGroup Condition="'$(OS)' != 'WINDOWS_NT'">

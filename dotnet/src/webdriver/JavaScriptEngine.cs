@@ -19,8 +19,11 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.IO;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
 using OpenQA.Selenium.DevTools;
+using OpenQA.Selenium.Internal;
 
 namespace OpenQA.Selenium
 {
@@ -29,6 +32,8 @@ namespace OpenQA.Selenium
     /// </summary>
     public class JavaScriptEngine : IJavaScriptEngine
     {
+        private readonly string MonitorBindingName = "__webdriver_attribute";
+
         private IWebDriver driver;
         private Lazy<DevToolsSession> session;
         private Dictionary<string, InitializationScript> initializationScripts = new Dictionary<string, InitializationScript>();
@@ -74,6 +79,11 @@ namespace OpenQA.Selenium
         public event EventHandler<JavaScriptConsoleApiCalledEventArgs> JavaScriptConsoleApiCalled;
 
         /// <summary>
+        /// Occurs when a value of an attribute in an element is being changed.
+        /// </summary>
+        public event EventHandler<DomMutatedEventArgs> DomMutated;
+
+        /// <summary>
         /// Gets the read-only list of initialization scripts added for this JavaScript engine.
         /// </summary>
         public IReadOnlyList<InitializationScript> InitializationScripts
@@ -117,6 +127,30 @@ namespace OpenQA.Selenium
             this.session.Value.Domains.JavaScript.ConsoleApiCalled -= OnConsoleApiCalled;
             this.session.Value.Domains.JavaScript.ExceptionThrown -= OnJavaScriptExceptionThrown;
             this.session.Value.Domains.JavaScript.BindingCalled -= OnScriptBindingCalled;
+        }
+
+        /// <summary>
+        /// Enables monitoring for DOM changes.
+        /// </summary>
+        /// <returns>A task that represents the asynchronous operation.</returns>
+        public async Task EnableDomMutationMonitoring()
+        {
+            // Execute the script to have it enabled on the currently loaded page.
+            string script = GetMutationListenerScript();
+            await this.session.Value.Domains.JavaScript.Evaluate(script);
+
+            await this.AddScriptCallbackBinding(MonitorBindingName);
+            await this.AddInitializationScript(MonitorBindingName, script);
+        }
+
+        /// <summary>
+        /// Disables monitoring for DOM changes.
+        /// </summary>
+        /// <returns>A task that represents the asynchronous operation.</returns>
+        public async Task DisableDomMutationMonitoring()
+        {
+            await this.RemoveScriptCallbackBinding(MonitorBindingName);
+            await this.RemoveInitializationScript(MonitorBindingName);
         }
 
         /// <summary>
@@ -273,7 +307,7 @@ namespace OpenQA.Selenium
         /// <returns>A task that represents the asynchronous operation.</returns>
         public async Task Reset()
         {
-            StopEventMonitoring();
+            this.StopEventMonitoring();
             await ClearAll();
         }
 
@@ -298,8 +332,34 @@ namespace OpenQA.Selenium
             }
         }
 
+        private string GetMutationListenerScript()
+        {
+            string listenerScript = string.Empty;
+            using (Stream resourceStream = ResourceUtilities.GetResourceStream("mutation-listener.js", "mutation-listener.js"))
+            {
+                using (StreamReader resourceReader = new StreamReader(resourceStream))
+                {
+                    listenerScript = resourceReader.ReadToEnd();
+                }
+            }
+
+            return listenerScript;
+        }
+
         private void OnScriptBindingCalled(object sender, BindingCalledEventArgs e)
         {
+            if (e.Name == MonitorBindingName)
+            {
+                DomMutationData valueChangeData = JsonConvert.DeserializeObject<DomMutationData>(e.Payload);
+                if (this.DomMutated != null)
+                {
+                    this.DomMutated(this, new DomMutatedEventArgs()
+                    {
+                        AttributeData = valueChangeData
+                    });
+                }
+            }
+
             if (this.JavaScriptCallbackExecuted != null)
             {
                 this.JavaScriptCallbackExecuted(this, new JavaScriptCallbackExecutedEventArgs()
