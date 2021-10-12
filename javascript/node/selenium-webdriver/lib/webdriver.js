@@ -1199,7 +1199,7 @@ class WebDriver {
       caps['map_'].get('moz:debuggerAddress') ||
       new Map()
     const debuggerUrl = seCdp || vendorInfo['debuggerAddress'] || vendorInfo
-    this._wsUrl = this.getWsUrl(debuggerUrl, target, caps)
+    this._wsUrl = await this.getWsUrl(debuggerUrl, target, caps)
     return new Promise((resolve, reject) => {
       try {
         this._wsConnection = new WebSocket(this._wsUrl)
