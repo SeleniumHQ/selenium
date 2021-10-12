@@ -37,28 +37,30 @@ public class RelayFlags implements HasRoles {
 
   @Parameter(
     names = {"--service-url"},
-    description = "URL for connecting to the service"
+    description = "URL for connecting to the service that supports WebDriver commands, "
+                  + "like an Appium server or a cloud service."
   )
-  @ConfigValue(section = RELAY_SECTION, name = "url", example = "http://localhost:67853")
+  @ConfigValue(section = RELAY_SECTION, name = "url", example = "http://localhost:4723")
   private String serviceUrl;
 
   @Parameter(
     names = {"--service-host"},
-    description = "Host name where the service is running"
+    description = "Host name where the service that supports WebDriver commands is running"
   )
   @ConfigValue(section = RELAY_SECTION, name = "host", example = "\"localhost\"")
   private String serviceHost;
 
   @Parameter(
     names = {"--service-port"},
-    description = "Port where the service is running"
+    description = "Port where the service that supports WebDriver commands is running"
   )
-  @ConfigValue(section = RELAY_SECTION, name = "port", example = "67853")
+  @ConfigValue(section = RELAY_SECTION, name = "port", example = "4723")
   private Integer servicePort;
 
   @Parameter(
     names = {"--service-status-endpoint"},
-    description = "Endpoint to query the service status, an HTTP 200 response is expected"
+    description = "Endpoint to query the WebDriver service status, an HTTP 200 response "
+                  + "is expected"
   )
   @ConfigValue(section = RELAY_SECTION, name = "status-endpoint", example = "\"/status\"")
   private String serviceStatusEndpoint;
