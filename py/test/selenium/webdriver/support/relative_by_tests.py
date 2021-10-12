@@ -58,3 +58,14 @@ def test_should_be_able_to_use_xpath(driver, pages):
 
     ids = [el.get_attribute('id') for el in elements]
     assert "fourth" in ids
+
+
+def test_should_be_able_to_find_elements_above_another_with_locators(driver, pages):
+    pages.load("relative_locators.html")
+
+    elements = driver.find_elements(with_tag_name("p").above(by=By.ID, value="below"))
+
+    ids = [el.get_attribute('id') for el in elements]
+    assert "above" in ids
+    assert "mid" in ids
+
