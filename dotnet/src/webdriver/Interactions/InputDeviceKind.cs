@@ -1,4 +1,4 @@
-﻿// <copyright file="InputDeviceKind.cs" company="WebDriver Committers">
+// <copyright file="InputDeviceKind.cs" company="WebDriver Committers">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements. See the NOTICE file
 // distributed with this work for additional information
@@ -36,6 +36,11 @@ namespace OpenQA.Selenium.Interactions
         /// <summary>
         /// Represents a pointer-based device, such as a mouse, pen, or stylus.
         /// </summary>
-        Pointer
+        Pointer,
+
+        /// <summary>
+        /// Represents a wheel device.
+        /// </summary>
+        Wheel
     }
 }
