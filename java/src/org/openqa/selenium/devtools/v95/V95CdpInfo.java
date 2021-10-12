@@ -15,23 +15,15 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.grid.node.httpd;
+package org.openqa.selenium.devtools.v95;
 
-import com.google.common.collect.ImmutableMap;
+import com.google.auto.service.AutoService;
+import org.openqa.selenium.devtools.CdpInfo;
 
-import org.openqa.selenium.grid.config.MapConfig;
+@AutoService(CdpInfo.class)
+public class V95CdpInfo extends CdpInfo {
 
-class DefaultNodeConfig extends MapConfig {
-
-  DefaultNodeConfig() {
-    super(ImmutableMap.of(
-      "node", ImmutableMap.of(
-        // We use this instead of setting the default ports for
-        // the publish and subscribe ports of the event bus so
-        // that people can use the `--hub` flag safely.
-        "hub-address", "http://0.0.0.0:4444"
-      ),
-      "server", ImmutableMap.of(
-        "port", 5555)));
+  public V95CdpInfo() {
+    super(95, V95Domains::new);
   }
 }

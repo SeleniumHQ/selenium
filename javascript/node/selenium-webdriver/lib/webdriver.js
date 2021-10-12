@@ -29,7 +29,6 @@ const input = require('./input')
 const logging = require('./logging')
 const promise = require('./promise')
 const Symbols = require('./symbols')
-const cdpTargets = ['page', 'browser']
 const cdp = require('../devtools/CDPConnection')
 const WebSocket = require('ws')
 const http = require('../http/index')
@@ -1190,7 +1189,7 @@ class WebDriver {
    * Creates a new WebSocket connection.
    * @return {!Promise<resolved>} A new CDP instance.
    */
-  async createCDPConnection(target) {
+  async createCDPConnection() {
     const caps = await this.getCapabilities()
     const seCdp = caps['map_'].get('se:cdp')
     const vendorInfo =
@@ -1199,7 +1198,7 @@ class WebDriver {
       caps['map_'].get('moz:debuggerAddress') ||
       new Map()
     const debuggerUrl = seCdp || vendorInfo['debuggerAddress'] || vendorInfo
-    this._wsUrl = await this.getWsUrl(debuggerUrl, target)
+    this._wsUrl = await this.getWsUrl(debuggerUrl)
 
     return new Promise((resolve, reject) => {
       try {
@@ -1223,16 +1222,11 @@ class WebDriver {
   /**
    * Retrieves 'webSocketDebuggerUrl' by sending a http request using debugger address
    * @param {string} debuggerAddress
-   * @param {string} target
    * @return {string} Returns parsed webSocketDebuggerUrl obtained from the http request
    */
-  async getWsUrl(debuggerAddress, target) {
-    if (target && cdpTargets.indexOf(target.toLowerCase()) === -1) {
-      throw new error.InvalidArgumentError('invalid target value')
-    }
-
+  async getWsUrl(debuggerAddress) {
     if (debuggerAddress.match(/\/se\/cdp/)) {
-        return debuggerAddress 
+        return debuggerAddress
     }
 
     const path = '/json/version'

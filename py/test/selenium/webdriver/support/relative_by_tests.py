@@ -19,6 +19,15 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.relative_locator import with_tag_name, locate_with
 
 
+def test_should_be_able_to_find_first_one(driver, pages):
+    pages.load("relative_locators.html")
+    lowest = driver.find_element(By.ID, "below")
+
+    el = driver.find_element(with_tag_name("p").above(lowest))
+
+    assert el.get_attribute('id') == "mid"
+
+
 def test_should_be_able_to_find_elements_above_another(driver, pages):
     pages.load("relative_locators.html")
     lowest = driver.find_element(By.ID, "below")

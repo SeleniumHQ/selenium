@@ -1,3 +1,12 @@
+v4.0.0-rc-3
+===========
+
+* Supported CDP versions: 85, 93, 94, 95
+* Updated java dependencies
+* Fixed bug in zsh completions
+* Use the IANA port range for selecting random ports if there are
+  fewer than 5k ports to choose from
+
 v4.0.0-rc-2
 ===========
 
