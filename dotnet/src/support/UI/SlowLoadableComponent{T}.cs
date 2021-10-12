@@ -70,6 +70,22 @@ namespace OpenQA.Selenium.Support.UI
         }
 
         /// <summary>
+        /// Gets the timeout interval before which this component must be considered loaded.
+        /// </summary>
+        protected TimeSpan Timeout
+        {
+            get { return this.timeout; }
+        }
+
+        /// <summary>
+        /// Gets the clock object providing timing for monitoring the load status of this component.
+        /// </summary>
+        protected IClock Clock
+        {
+            get { return this.clock; }
+        }
+
+        /// <summary>
         /// Ensures that the component is currently loaded.
         /// </summary>
         /// <returns>The loaded component.</returns>
@@ -125,7 +141,10 @@ namespace OpenQA.Selenium.Support.UI
             // no-op by default
         }
 
-        private void Wait()
+        /// <summary>
+        /// Waits between polls of the load status of this component.
+        /// </summary>
+        protected virtual void Wait()
         {
             Thread.Sleep(this.sleepInterval);
         }
