@@ -36,6 +36,7 @@ const fs = require('fs')
 const { Capabilities } = require('./capabilities')
 const path = require('path')
 const { NoSuchElementError } = require('./error')
+const cdpTargets = ['page', 'browser']
 
 // Capability names that are defined in the W3C spec.
 const W3C_CAPABILITY_NAMES = new Set([
@@ -1189,7 +1190,7 @@ class WebDriver {
    * Creates a new WebSocket connection.
    * @return {!Promise<resolved>} A new CDP instance.
    */
-  async createCDPConnection() {
+  async createCDPConnection(target) {
     const caps = await this.getCapabilities()
     const seCdp = caps['map_'].get('se:cdp')
     const vendorInfo =
@@ -1198,8 +1199,7 @@ class WebDriver {
       caps['map_'].get('moz:debuggerAddress') ||
       new Map()
     const debuggerUrl = seCdp || vendorInfo['debuggerAddress'] || vendorInfo
-    this._wsUrl = await this.getWsUrl(debuggerUrl)
-
+    this._wsUrl = await this.getWsUrl(debuggerUrl, target, caps)
     return new Promise((resolve, reject) => {
       try {
         this._wsConnection = new WebSocket(this._wsUrl)
@@ -1222,19 +1222,38 @@ class WebDriver {
   /**
    * Retrieves 'webSocketDebuggerUrl' by sending a http request using debugger address
    * @param {string} debuggerAddress
+   * @param target
+   * @param caps
    * @return {string} Returns parsed webSocketDebuggerUrl obtained from the http request
    */
-  async getWsUrl(debuggerAddress) {
-    if (debuggerAddress.match(/\/se\/cdp/)) {
-        return debuggerAddress
+  async getWsUrl(debuggerAddress, target, caps) {
+    if (target && cdpTargets.indexOf(target.toLowerCase()) === -1) {
+      throw new error.InvalidArgumentError('invalid target value')
     }
 
-    const path = '/json/version'
+    if (debuggerAddress.match(/\/se\/cdp/)) {
+      return debuggerAddress;
+    }
+
+    let path
+    if (target === 'page' && caps['map_'].get('browserName')!=='firefox' ){
+      path = '/json'
+    } else if(target === 'page' && caps['map_'].get('browserName')==='firefox'){
+      path = '/json/list'
+    }
+    else {
+      path = '/json/version'
+    }
+
     let request = new http.Request('GET', path)
     let client = new http.HttpClient('http://' + debuggerAddress)
     let response = await client.send(request)
 
-    return JSON.parse(response.body)['webSocketDebuggerUrl']
+    if (target.toLowerCase() === 'page') {
+      return JSON.parse(response.body)[0]['webSocketDebuggerUrl']
+    } else {
+      return JSON.parse(response.body)['webSocketDebuggerUrl']
+    }
   }
 
   /**
