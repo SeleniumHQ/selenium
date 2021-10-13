@@ -72,4 +72,8 @@ public interface Browser {
       return browserName().equals(browserName) || "Safari".equals(browserName);
     }
   };
+
+  default String toJson() {
+    return browserName();
+  }
 }
