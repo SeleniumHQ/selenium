@@ -82,5 +82,25 @@ namespace OpenQA.Selenium.Edge
             get { return this.BrowserName == WebViewBrowserNameValue; }
             set { this.BrowserName = value ? WebViewBrowserNameValue : DefaultBrowserNameValue; }
         }
+
+        /// <summary>
+        /// Provides a means to add additional capabilities not yet added as type safe options
+        /// for the Edge driver.
+        /// </summary>
+        /// <param name="optionName">The name of the capability to add.</param>
+        /// <param name="optionValue">The value of the capability to add.</param>
+        /// <exception cref="ArgumentException">
+        /// thrown when attempting to add a capability for which there is already a type safe option, or
+        /// when <paramref name="optionName"/> is <see langword="null"/> or the empty string.
+        /// </exception>
+        /// <remarks>Calling <see cref="AddAdditionalEdgeOption(string, object)"/>
+        /// where <paramref name="optionName"/> has already been added will overwrite the
+        /// existing value with the new value in <paramref name="optionValue"/>.
+        /// Calling this method adds capabilities to the Edge-specific options object passed to
+        /// webdriver executable (property name 'ms:edgeOptions').</remarks>
+        public void AddAdditionalEdgeOption(string optionName, object optionValue)
+        {
+            this.AddAdditionalChromiumOption(optionName, optionValue);
+        }
     }
 }
