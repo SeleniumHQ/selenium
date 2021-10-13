@@ -51,7 +51,7 @@ namespace OpenQA.Selenium.Firefox
         /// <param name="arguments">The argument to add.</param>
         public void AddIntentArgument(string argument)
         {
-            this.ddIntentArguments(argument);
+            this.AddIntentArguments(argument);
         }
 
         /// <summary>
