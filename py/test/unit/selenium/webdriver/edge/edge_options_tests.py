@@ -59,16 +59,8 @@ def test_is_a_baseoptions(options):
     assert isinstance(options, BaseOptions)
 
 
-def test_use_chromium():
-    options = Options()
-    options.use_chromium = True
-    caps = options.to_capabilities()
-    assert caps['ms:edgeChromium'] is True
-
-
 def test_use_webview():
     options = Options()
-    options.use_chromium = True
     options.use_webview = True
     caps = options.to_capabilities()
     assert caps['browserName'] == "webview2"
