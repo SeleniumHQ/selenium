@@ -1,5 +1,9 @@
 v4.0.0
 ======
+ * Prevented getting bodies of responses for redirects, as this causes an
+   error in the DevTools protocol.
+ * (on behalf of Brandon Walderman) Made adding browser-specific options for
+   Chromium-based browsers more obvious.
  * (on behalf of Puja Jagani) Added constructor for creating a Cookie instance
    with all optional arguments. Fixes issue #9361.
  * Add infratructure for future support of previously unsupported interaction
