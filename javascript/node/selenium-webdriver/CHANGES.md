@@ -1,3 +1,10 @@
+## v4.0.0
+
+* Fixes cdp for Chrome and Firefox (#9909)
+* Add cdp 95 to python and JS
+* Removing unused target for cdpConnection
+
+
 ## v4.0.0-rc-2
 
 * Fix builder test
