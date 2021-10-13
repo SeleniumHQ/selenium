@@ -1,3 +1,16 @@
+4.0.0 (2021-10-13)
+=========================
+
+Ruby:
+  * Updated minimum required Ruby version to 2.6
+  * Updated minimum required rexml gem version due to vulnerability
+
+Chrome:
+  * Added default values for Network Conditions so no longer need to specify everything
+
+Firefox:
+  * Fixed bug where Firefox prefs were converting snake case to camel case
+
 4.0.0.rc3 (2021-10-08)
 =========================
 
