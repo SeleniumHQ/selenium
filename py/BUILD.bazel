@@ -308,7 +308,7 @@ py_test_suite(
     ]),
     args = [
         "--instafail",
-        "--driver=Edge",
+        "--driver=edge",
     ],
     tags = [
         "no-sandbox",
