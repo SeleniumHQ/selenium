@@ -72,16 +72,8 @@ module Selenium
         private
 
         def with_tmp_zip(&blk)
-          # can't use Tempfile here since it doesn't support File::BINARY mode on 1.8
-          # can't use Dir.mktmpdir(&blk) because of http://jira.codehaus.org/browse/JRUBY-4082
-          tmp_dir = Dir.mktmpdir
-          zip_path = File.join(tmp_dir, 'webdriver-zip')
-
-          begin
+          Tempfile.create do |zip_path|
             Zip::File.open(zip_path, Zip::File::CREATE, &blk)
-          ensure
-            FileUtils.rm_rf tmp_dir
-            FileUtils.rm_rf zip_path
           end
         end
 
