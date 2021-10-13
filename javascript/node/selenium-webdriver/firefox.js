@@ -411,6 +411,13 @@ class Options extends Capabilities {
     }
     return this
   }
+
+  /**
+   * Enables moz:debuggerAddress for firefox cdp
+   */
+  enableDebugger() {
+    return this.set('moz:debuggerAddress', true)
+  }
 }
 
 /**
