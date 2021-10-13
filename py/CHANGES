@@ -1,3 +1,11 @@
+Selenium 4.0.0
+
+* Add cdp 95 to python and JS
+* Remove Edge legacy options. (#9908)
+* Expected condition for checking attribute value (#9881)
+* implement relative locator for find_element (#9902)
+* Fix python generation code for CDP to optionals better
+
 Selenium 4 Release Candidate 3
 
 * Fix CDP Code Generation broken by Chromium 94
@@ -934,3 +942,4 @@ Selenium 2 Beta 2
 * Improved IEDriver
 * Basic Authentication support for Selenium 2
 * Ability to have multiple Firefox instances
+
