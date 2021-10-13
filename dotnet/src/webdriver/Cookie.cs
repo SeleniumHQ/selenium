@@ -17,6 +17,7 @@
 // </copyright>
 
 using System;
+using System.Linq;
 using System.Collections.Generic;
 using System.Globalization;
 using Newtonsoft.Json;
@@ -35,8 +36,11 @@ namespace OpenQA.Selenium
         private string cookieValue;
         private string cookiePath;
         private string cookieDomain;
+        private bool isHttpOnly;
         private string sameSite;
+        private bool secure; 
         private DateTime? cookieExpiry;
+        private readonly string[] sameSiteValues = {"Strict", "Lax", "None"};
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Cookie"/> class with a specific name,
@@ -98,6 +102,44 @@ namespace OpenQA.Selenium
         {
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ReturnedCookie"/> class with a specific name,
+        /// value, domain, path and expiration date.
+        /// </summary>
+        /// <param name="name">The name of the cookie.</param>
+        /// <param name="value">The value of the cookie.</param>
+        /// <param name="domain">The domain of the cookie.</param>
+        /// <param name="path">The path of the cookie.</param>
+        /// <param name="expiry">The expiration date of the cookie.</param>
+        /// <param name="isSecure"><see langword="true"/> if the cookie is secure; otherwise <see langword="false"/></param>
+        /// <param name="isHttpOnly"><see langword="true"/> if the cookie is an HTTP-only cookie; otherwise <see langword="false"/></param>
+        /// <param name="sameSite">The SameSite value of cookie.</param>
+        /// <exception cref="ArgumentException">If the name is <see langword="null"/> or an empty string,
+        /// or if it contains a semi-colon.</exception>
+        /// <exception cref="ArgumentNullException">If the value or currentUrl is <see langword="null"/>.</exception>
+        /// <exception cref="ArgumentNullException">If the same site value is not valid or same site value is "None" but secure is set to false.</exception>
+        public Cookie(string name, string value, string domain, string path, DateTime? expiry, bool secure, bool isHttpOnly, string sameSite)
+            : this(name, value, domain, path, expiry)
+        { 
+            this.isHttpOnly = isHttpOnly;
+            this.secure = secure;
+
+            if (!string.IsNullOrEmpty(sameSite))
+            {
+                if (!sameSiteValues.Contains(sameSite))
+                {
+                    throw new ArgumentException("Invalid sameSite cookie value. It should either \"Lax\", \"Strict\" or \"None\" ", "sameSite");
+                }
+
+                if ("None".Equals(sameSite) && !this.secure)
+                {
+                    throw new ArgumentException("Invalid cookie configuration: SameSite=None must be Secure");
+                }
+
+                this.sameSite = sameSite;
+            }
+        }
+            
         /// <summary>
         /// Initializes a new instance of the <see cref="Cookie"/> class with a specific name,
         /// value, and path.
@@ -168,7 +210,7 @@ namespace OpenQA.Selenium
         [JsonProperty("secure")]
         public virtual bool Secure
         {
-            get { return false; }
+            get { return this.secure; }
         }
 
         /// <summary>
@@ -177,7 +219,8 @@ namespace OpenQA.Selenium
         [JsonProperty("httpOnly")]
         public virtual bool IsHttpOnly
         {
-            get { return false; }
+            get { return this.isHttpOnly; }
+
         }
 
         /// <summary>
@@ -187,7 +230,6 @@ namespace OpenQA.Selenium
         public virtual string SameSite
         {
             get { return this.sameSite; }
-            protected set { this.sameSite = value; }
         }
 
         /// <summary>
@@ -287,7 +329,8 @@ namespace OpenQA.Selenium
             return this.cookieName + "=" + this.cookieValue
                 + (this.cookieExpiry == null ? string.Empty : "; expires=" + this.cookieExpiry.Value.ToUniversalTime().ToString("ddd MM dd yyyy hh:mm:ss UTC", CultureInfo.InvariantCulture))
                     + (string.IsNullOrEmpty(this.cookiePath) ? string.Empty : "; path=" + this.cookiePath)
-                    + (string.IsNullOrEmpty(this.cookieDomain) ? string.Empty : "; domain=" + this.cookieDomain);
+                    + (string.IsNullOrEmpty(this.cookieDomain) ? string.Empty : "; domain=" + this.cookieDomain)
+                    + "; isHttpOnly= " + this.isHttpOnly + "; secure= " + this.secure + (string.IsNullOrEmpty(this.sameSite) ? string.Empty : "; sameSite=" + this.sameSite);
         }
 
         /// <summary>
