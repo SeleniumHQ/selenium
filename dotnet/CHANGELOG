@@ -1,3 +1,17 @@
+v4.0.0
+======
+ * (on behalf of Puja Jagani) Added constructor for creating a Cookie instance
+   with all optional arguments. Fixes issue #9361.
+ * Add infratructure for future support of previously unsupported interaction
+   types.
+ * Made SlowLoadableComponent more extensible. Fixes issue #9009.
+ * (on behalf of elgatov) Made SlowLoadableComponent use UnableToLoadMessage
+   property. Fixes issue #8550.
+ * (on behalf of Brandon Walderman) Removed Edge Legacy options.
+ * Added CDP support for Chromium 95.
+ * Added ability to monitor DOM mutations.
+ * Restored protected ElementFactory property for use by downstream projects.
+
 v4.0.0rc3
 =========
  * Explicitly remove Expect header. When using the HttpClient class, the

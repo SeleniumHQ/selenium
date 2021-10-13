@@ -1,4 +1,4 @@
-// <copyright file="InputDeviceKind.cs" company="WebDriver Committers">
+// <copyright file="DomMutatedEventArgs.cs" company="WebDriver Committers">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements. See the NOTICE file
 // distributed with this work for additional information
@@ -16,31 +16,24 @@
 // limitations under the License.
 // </copyright>
 
-namespace OpenQA.Selenium.Interactions
+using System;
+
+namespace OpenQA.Selenium
 {
     /// <summary>
-    /// Enumerated values for the kinds of devices available.
+    /// Provides data for the AttributeValueChanged event
     /// </summary>
-    public enum InputDeviceKind
+    public class DomMutatedEventArgs : EventArgs
     {
-        /// <summary>
-        /// Represents the null device.
-        /// </summary>
-        None,
+        private DomMutationData attributeData;
 
         /// <summary>
-        /// Represents a key-based device, primarily for entering text.
+        /// Gets the data about the attribute being changed.
         /// </summary>
-        Key,
-
-        /// <summary>
-        /// Represents a pointer-based device, such as a mouse, pen, or stylus.
-        /// </summary>
-        Pointer,
-
-        /// <summary>
-        /// Represents a wheel device.
-        /// </summary>
-        Wheel
+        public DomMutationData AttributeData
+        {
+            get { return this.attributeData; }
+            internal set { this.attributeData = value; }
+        }
     }
 }

@@ -221,6 +221,15 @@ namespace OpenQA.Selenium.Interactions
         private class PointerDownInteraction : Interaction
         {
             private MouseButton button;
+            private double? width;
+            private double? height;
+            private double? pressure;
+            private double? tangentialPressure;
+            private int? tiltX;
+            private int? tiltY;
+            private int? twist;
+            private double? altitudeAngle;
+            private double? azimuthAngle;
 
             public PointerDownInteraction(InputDevice sourceDevice, MouseButton button)
                 : base(sourceDevice)
@@ -234,6 +243,51 @@ namespace OpenQA.Selenium.Interactions
                 toReturn["type"] = "pointerDown";
                 toReturn["button"] = Convert.ToInt32(this.button, CultureInfo.InvariantCulture);
 
+                if (this.width.HasValue)
+                {
+                    toReturn["width"] = this.width.Value;
+                }
+
+                if (this.height.HasValue)
+                {
+                    toReturn["height"] = this.width.Value;
+                }
+
+                if (this.pressure.HasValue)
+                {
+                    toReturn["pressure"] = this.width.Value;
+                }
+
+                if (this.tangentialPressure.HasValue)
+                {
+                    toReturn["tangentialPressure"] = this.width.Value;
+                }
+
+                if (this.tiltX.HasValue)
+                {
+                    toReturn["tiltX"] = this.width.Value;
+                }
+
+                if (this.tiltY.HasValue)
+                {
+                    toReturn["tiltY"] = this.width.Value;
+                }
+
+                if (this.twist.HasValue)
+                {
+                    toReturn["twist"] = this.width.Value;
+                }
+
+                if (this.altitudeAngle.HasValue)
+                {
+                    toReturn["altitudeAngle"] = this.width.Value;
+                }
+
+                if (this.azimuthAngle.HasValue)
+                {
+                    toReturn["azimuthAngle"] = this.width.Value;
+                }
+
                 return toReturn;
             }
 
@@ -246,6 +300,15 @@ namespace OpenQA.Selenium.Interactions
         private class PointerUpInteraction : Interaction
         {
             private MouseButton button;
+            private double? width;
+            private double? height;
+            private double? pressure;
+            private double? tangentialPressure;
+            private int? tiltX;
+            private int? tiltY;
+            private int? twist;
+            private double? altitudeAngle;
+            private double? azimuthAngle;
 
             public PointerUpInteraction(InputDevice sourceDevice, MouseButton button)
                 : base(sourceDevice)
@@ -258,6 +321,51 @@ namespace OpenQA.Selenium.Interactions
                 Dictionary<string, object> toReturn = new Dictionary<string, object>();
                 toReturn["type"] = "pointerUp";
                 toReturn["button"] = Convert.ToInt32(this.button, CultureInfo.InvariantCulture);
+
+                if (this.width.HasValue)
+                {
+                    toReturn["width"] = this.width.Value;
+                }
+
+                if (this.height.HasValue)
+                {
+                    toReturn["height"] = this.width.Value;
+                }
+
+                if (this.pressure.HasValue)
+                {
+                    toReturn["pressure"] = this.width.Value;
+                }
+
+                if (this.tangentialPressure.HasValue)
+                {
+                    toReturn["tangentialPressure"] = this.width.Value;
+                }
+
+                if (this.tiltX.HasValue)
+                {
+                    toReturn["tiltX"] = this.width.Value;
+                }
+
+                if (this.tiltY.HasValue)
+                {
+                    toReturn["tiltY"] = this.width.Value;
+                }
+
+                if (this.twist.HasValue)
+                {
+                    toReturn["twist"] = this.width.Value;
+                }
+
+                if (this.altitudeAngle.HasValue)
+                {
+                    toReturn["altitudeAngle"] = this.width.Value;
+                }
+
+                if (this.azimuthAngle.HasValue)
+                {
+                    toReturn["azimuthAngle"] = this.width.Value;
+                }
 
                 return toReturn;
             }
@@ -295,6 +403,15 @@ namespace OpenQA.Selenium.Interactions
             private int y = 0;
             private TimeSpan duration = TimeSpan.MinValue;
             private CoordinateOrigin origin = CoordinateOrigin.Pointer;
+            private double? width;
+            private double? height;
+            private double? pressure;
+            private double? tangentialPressure;
+            private int? tiltX;
+            private int? tiltY;
+            private int? twist;
+            private double? altitudeAngle;
+            private double? azimuthAngle;
 
             public PointerMoveInteraction(InputDevice sourceDevice, IWebElement target, CoordinateOrigin origin, int x, int y, TimeSpan duration)
                 : base(sourceDevice)
@@ -342,6 +459,51 @@ namespace OpenQA.Selenium.Interactions
 
                 toReturn["x"] = this.x;
                 toReturn["y"] = this.y;
+
+                if (this.width.HasValue)
+                {
+                    toReturn["width"] = this.width.Value;
+                }
+
+                if (this.height.HasValue)
+                {
+                    toReturn["height"] = this.width.Value;
+                }
+
+                if (this.pressure.HasValue)
+                {
+                    toReturn["pressure"] = this.width.Value;
+                }
+
+                if (this.tangentialPressure.HasValue)
+                {
+                    toReturn["tangentialPressure"] = this.width.Value;
+                }
+
+                if (this.tiltX.HasValue)
+                {
+                    toReturn["tiltX"] = this.width.Value;
+                }
+
+                if (this.tiltY.HasValue)
+                {
+                    toReturn["tiltY"] = this.width.Value;
+                }
+
+                if (this.twist.HasValue)
+                {
+                    toReturn["twist"] = this.width.Value;
+                }
+
+                if (this.altitudeAngle.HasValue)
+                {
+                    toReturn["altitudeAngle"] = this.width.Value;
+                }
+
+                if (this.azimuthAngle.HasValue)
+                {
+                    toReturn["azimuthAngle"] = this.width.Value;
+                }
 
                 return toReturn;
             }
