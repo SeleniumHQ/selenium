@@ -26,9 +26,7 @@ namespace OpenQA.Selenium.Internal
     /// </summary>
     public class ReturnedCookie : Cookie
     {
-        private bool isSecure;
-        private bool isHttpOnly;
-
+        
         /// <summary>
         /// Initializes a new instance of the <see cref="ReturnedCookie"/> class with a specific name,
         /// value, domain, path and expiration date.
@@ -64,27 +62,9 @@ namespace OpenQA.Selenium.Internal
         /// or if it contains a semi-colon.</exception>
         /// <exception cref="ArgumentNullException">If the value or currentUrl is <see langword="null"/>.</exception>
         public ReturnedCookie(string name, string value, string domain, string path, DateTime? expiry, bool isSecure, bool isHttpOnly, string sameSite)
-            : base(name, value, domain, path, expiry)
+            : base(name, value, domain, path, expiry, isSecure, isHttpOnly, sameSite)
         {
-            this.isSecure = isSecure;
-            this.isHttpOnly = isHttpOnly;
-            this.SameSite = sameSite;
-        }
-
-        /// <summary>
-        /// Gets a value indicating whether the cookie is secure.
-        /// </summary>
-        public override bool Secure
-        {
-            get { return this.isSecure; }
-        }
-
-        /// <summary>
-        /// Gets a value indicating whether the cookie is an HTTP-only cookie.
-        /// </summary>
-        public override bool IsHttpOnly
-        {
-            get { return this.isHttpOnly; }
+          
         }
 
         /// <summary>
@@ -97,8 +77,9 @@ namespace OpenQA.Selenium.Internal
                 + (this.Expiry == null ? string.Empty : "; expires=" + this.Expiry.Value.ToUniversalTime().ToString("ddd MM/dd/yyyy HH:mm:ss UTC", CultureInfo.InvariantCulture))
                     + (string.IsNullOrEmpty(this.Path) ? string.Empty : "; path=" + this.Path)
                     + (string.IsNullOrEmpty(this.Domain) ? string.Empty : "; domain=" + this.Domain)
-                    + (this.isSecure ? "; secure" : string.Empty)
-                    + (this.isHttpOnly ? "; httpOnly" : string.Empty);
+                    + (this.Secure ? "; secure" : string.Empty)
+                    + (this.IsHttpOnly ? "; httpOnly" : string.Empty)
+                    + (string.IsNullOrEmpty(this.SameSite) ? string.Empty : "; sameSite=" + this.SameSite);
         }
     }
 }
