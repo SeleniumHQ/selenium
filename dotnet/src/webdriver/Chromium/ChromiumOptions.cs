@@ -495,12 +495,12 @@ namespace OpenQA.Selenium.Chromium
         /// thrown when attempting to add a capability for which there is already a type safe option, or
         /// when <paramref name="optionName"/> is <see langword="null"/> or the empty string.
         /// </exception>
-        /// <remarks>Calling <see cref="AddAdditionalChromeOption(string, object)"/>
+        /// <remarks>Calling <see cref="AddAdditionalChromiumOption(string, object)"/>
         /// where <paramref name="optionName"/> has already been added will overwrite the
         /// existing value with the new value in <paramref name="optionValue"/>.
-        /// Calling this method adds capabilities to the Chrome-specific options object passed to
-        /// webdriver executable (property name 'goog:chromeOptions').</remarks>
-        public void AddAdditionalChromeOption(string optionName, object optionValue)
+        /// Calling this method adds capabilities to the Chromium-specific options object passed to
+        /// webdriver executable (e.g. property name 'goog:chromeOptions').</remarks>
+        protected void AddAdditionalChromiumOption(string optionName, object optionValue)
         {
             this.ValidateCapabilityName(optionName);
             this.additionalChromeOptions[optionName] = optionValue;
@@ -554,7 +554,7 @@ namespace OpenQA.Selenium.Chromium
             }
             else
             {
-                this.AddAdditionalChromeOption(capabilityName, capabilityValue);
+                this.AddAdditionalChromiumOption(capabilityName, capabilityValue);
             }
         }
 

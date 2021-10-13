@@ -146,7 +146,6 @@ def get_options(driver_class, config):
 
     if driver_class == 'ChromiumEdge':
         options = getattr(webdriver, 'EdgeOptions')()
-        options.use_chromium = True
 
     if browser_path or browser_args:
         if not options:

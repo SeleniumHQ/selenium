@@ -79,5 +79,25 @@ namespace OpenQA.Selenium.Chrome
         {
             get { return string.Format(CultureInfo.InvariantCulture, "{0}:{1}", this.VendorPrefix, ChromeOptionsCapabilityName); }
         }
+
+        /// <summary>
+        /// Provides a means to add additional capabilities not yet added as type safe options
+        /// for the Chrome driver.
+        /// </summary>
+        /// <param name="optionName">The name of the capability to add.</param>
+        /// <param name="optionValue">The value of the capability to add.</param>
+        /// <exception cref="ArgumentException">
+        /// thrown when attempting to add a capability for which there is already a type safe option, or
+        /// when <paramref name="optionName"/> is <see langword="null"/> or the empty string.
+        /// </exception>
+        /// <remarks>Calling <see cref="AddAdditionalChromeOption(string, object)"/>
+        /// where <paramref name="optionName"/> has already been added will overwrite the
+        /// existing value with the new value in <paramref name="optionValue"/>.
+        /// Calling this method adds capabilities to the Chrome-specific options object passed to
+        /// webdriver executable (property name 'goog:chromeOptions').</remarks>
+        public void AddAdditionalChromeOption(string optionName, object optionValue)
+        {
+            this.AddAdditionalChromiumOption(optionName, optionValue);
+        }
     }
 }

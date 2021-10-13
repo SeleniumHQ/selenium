@@ -241,14 +241,18 @@ namespace OpenQA.Selenium.DevTools.V85
         /// <returns>A task that represents the asynchronous operation.</returns>
         public override async Task AddResponseBody(HttpResponseData responseData)
         {
-            var bodyResponse = await fetch.GetResponseBody(new Fetch.GetResponseBodyCommandSettings() { RequestId = responseData.RequestId });
-            if (bodyResponse.Base64Encoded)
+            // If the response is a redirect, retrieving the body will throw an error in CDP.
+            if (responseData.StatusCode < 300 || responseData.StatusCode > 399)
             {
-                responseData.Body = Encoding.UTF8.GetString(Convert.FromBase64String(bodyResponse.Body));
-            }
-            else
-            {
-                responseData.Body = bodyResponse.Body;
+                var bodyResponse = await fetch.GetResponseBody(new Fetch.GetResponseBodyCommandSettings() { RequestId = responseData.RequestId });
+                if (bodyResponse.Base64Encoded)
+                {
+                    responseData.Body = Encoding.UTF8.GetString(Convert.FromBase64String(bodyResponse.Body));
+                }
+                else
+                {
+                    responseData.Body = bodyResponse.Body;
+                }
             }
         }
 

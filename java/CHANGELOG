@@ -1,3 +1,12 @@
+v4.0.0
+======
+
+* Supported CDP versions: 85, 93, 94, 95
+* Improved "relay" service description in help
+* Switch to different JCIP annotations for Apache 2 license
+* Deprecated USE_CHROMIUM so we can remove it after 4.0
+* Add a --hub flag for the Node
+
 v4.0.0-rc-3
 ===========
 
