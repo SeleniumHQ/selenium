@@ -125,11 +125,6 @@ public class EdgeDriverService extends DriverService {
         score++;
       }
 
-      Object useChromium = capabilities.getCapability(EdgeOptions.USE_CHROMIUM);
-      if (Objects.equals(useChromium, false)) {
-        score--;
-      }
-
       if (capabilities.getCapability(EdgeOptions.CAPABILITY) != null) {
         score++;
       }
