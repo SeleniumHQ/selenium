@@ -17,10 +17,6 @@
 
 package org.openqa.selenium.grid.node.config;
 
-import static org.openqa.selenium.remote.RemoteTags.CAPABILITIES;
-import static org.openqa.selenium.remote.RemoteTags.CAPABILITIES_EVENT;
-import static org.openqa.selenium.remote.tracing.Tags.EXCEPTION;
-
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.PersistentCapabilities;
@@ -61,6 +57,10 @@ import java.util.Set;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
+
+import static org.openqa.selenium.remote.RemoteTags.CAPABILITIES;
+import static org.openqa.selenium.remote.RemoteTags.CAPABILITIES_EVENT;
+import static org.openqa.selenium.remote.tracing.Tags.EXCEPTION;
 
 public class DriverServiceSessionFactory implements SessionFactory {
 
@@ -231,7 +231,10 @@ public class DriverServiceSessionFactory implements SessionFactory {
     String seVncEnabled = String.valueOf(requestedCaps.getCapability(seVncEnabledCap));
     boolean vncLocalAddressSet = requestedCaps.getCapabilityNames().contains("se:vncLocalAddress");
     if (Boolean.parseBoolean(seVncEnabled) && !vncLocalAddressSet) {
-      String noVncPort = System.getProperty("NO_VNC_PORT", "7900");
+      String noVncPort = System.getenv("NO_VNC_PORT");
+      if (noVncPort == null || noVncPort.isEmpty()) {
+        noVncPort = "7900";
+      }
       String vncLocalAddress = String.format("ws://%s:%s", getHost(), noVncPort);
       returnedCaps = new PersistentCapabilities(returnedCaps)
         .setCapability("se:vncLocalAddress", vncLocalAddress)
