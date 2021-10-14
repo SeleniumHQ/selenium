@@ -28,10 +28,10 @@ import java.util.Enumeration;
 import java.util.concurrent.TimeUnit;
 
 public class HostIdentifier {
-  private static final String HOST_NAME;
-  private static final String HOST_ADDRESS;
+  private static volatile String hostName;
+  private static volatile String hostAddress;
 
-  static {
+  private static String resolveHostName() {
     // Ideally, we'd use InetAddress.getLocalHost, but this does a reverse DNS lookup. On Windows
     // and Linux this is apparently pretty fast, so we don't get random hangs. On OS X it's
     // amazingly slow. That's less than ideal. Figure things out and cache.
@@ -70,8 +70,10 @@ public class HostIdentifier {
       }
     }
 
-    HOST_NAME = host;
+    return host;
+  }
 
+  private static String resolveHostAddress() {
     String address = null;
     // Now for the IP address. We're going to do silly shenanigans on OS X only.
     if (Platform.getCurrent().is(Platform.MAC)) {
@@ -94,14 +96,20 @@ public class HostIdentifier {
       }
     }
 
-    HOST_ADDRESS = address;
+    return address;
   }
 
-  public static String getHostName() {
-    return HOST_NAME;
+  public static synchronized String getHostName() {
+    if (hostName == null) {
+      hostName = resolveHostName();
+    }
+    return hostName;
   }
 
-  public static String getHostAddress() {
-    return HOST_ADDRESS;
+  public static synchronized String getHostAddress() {
+    if (hostAddress == null) {
+      hostAddress = resolveHostAddress();
+    }
+    return hostAddress;
   }
 }
