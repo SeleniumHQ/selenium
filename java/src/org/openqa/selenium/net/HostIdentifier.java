@@ -57,7 +57,7 @@ public class HostIdentifier {
       } catch (InterruptedException e) {
         Thread.currentThread().interrupt();
         throw new RuntimeException(e);
-      } catch (Exception e) {
+      } catch (Throwable e) {
         // fall through
       }
     }
@@ -65,7 +65,7 @@ public class HostIdentifier {
       // Give up.
       try {
         host = InetAddress.getLocalHost().getHostName();
-      } catch (Exception e) {
+      } catch (Throwable e) {
         host = "Unknown";  // At least we tried.
       }
     }
@@ -83,7 +83,7 @@ public class HostIdentifier {
         if (addresses.hasMoreElements()) {
           address = addresses.nextElement().getHostAddress();
         }
-      } catch (Exception e) {
+      } catch (Throwable e) {
         // Fall through and go the slow way.
       }
     }
@@ -91,7 +91,7 @@ public class HostIdentifier {
       // Alright. I give up.
       try {
         address = InetAddress.getLocalHost().getHostAddress();
-      } catch (Exception e) {
+      } catch (Throwable e) {
         address = "Unknown";
       }
     }
