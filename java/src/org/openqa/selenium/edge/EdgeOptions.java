@@ -44,13 +44,6 @@ import org.openqa.selenium.remote.CapabilityType;
 public class EdgeOptions extends ChromiumOptions<EdgeOptions> {
 
   /**
-   * Key used to indicate whether to use an Edge Chromium or Edge Legacy driver.
-   *
-   * @deprecated This will be removed as Chromium based Edge is the only supported one.
-   */
-  public static final String USE_CHROMIUM = "ms:edgeChromium";
-
-  /**
    * Key used to store a set of ChromeOptions in a {@link Capabilities}
    * object.
    */

@@ -47,22 +47,6 @@ public class EdgeDriverInfoTest {
   }
 
   @Test
-  public void isNotSupportingEdgeHtml() {
-    assertThat(new EdgeDriverInfo()).isNot(supporting(
-        new ImmutableCapabilities(
-          CapabilityType.BROWSER_NAME, EDGE.browserName(),
-          EdgeOptions.USE_CHROMIUM, false)));
-  }
-
-  @Test
-  public void isSupportingEdgeWithExplicitlySetChromiumFlag() {
-    assertThat(new EdgeDriverInfo()).is(supporting(
-        new ImmutableCapabilities(
-          CapabilityType.BROWSER_NAME, EDGE.browserName(),
-          EdgeOptions.USE_CHROMIUM, true)));
-  }
-
-  @Test
   public void isNotSupportingFirefox() {
     assertThat(new EdgeDriverInfo()).isNot(supporting(
         new ImmutableCapabilities(CapabilityType.BROWSER_NAME, FIREFOX.browserName())));
@@ -74,16 +58,6 @@ public class EdgeDriverInfoTest {
         new ImmutableCapabilities(EdgeOptions.CAPABILITY, Collections.emptyMap())));
     assertThat(new EdgeDriverInfo()).is(supporting(
         new ImmutableCapabilities("edgeOptions", Collections.emptyMap())));
-  }
-
-  @Test
-  public void canRejectEdgeHtmlByVendorSpecificCapability() {
-    assertThat(new EdgeDriverInfo()).isNot(supporting(
-        new ImmutableCapabilities(EdgeOptions.CAPABILITY, Collections.emptyMap(),
-                                  EdgeOptions.USE_CHROMIUM, false)));
-    assertThat(new EdgeDriverInfo()).isNot(supporting(
-        new ImmutableCapabilities("edgeOptions", Collections.emptyMap(),
-                                  EdgeOptions.USE_CHROMIUM, false)));
   }
 
   private Condition<EdgeDriverInfo> supporting(Capabilities capabilities) {
