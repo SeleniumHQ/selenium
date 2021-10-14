@@ -231,7 +231,8 @@ public class DriverServiceSessionFactory implements SessionFactory {
     String seVncEnabled = String.valueOf(requestedCaps.getCapability(seVncEnabledCap));
     boolean vncLocalAddressSet = requestedCaps.getCapabilityNames().contains("se:vncLocalAddress");
     if (Boolean.parseBoolean(seVncEnabled) && !vncLocalAddressSet) {
-      String vncLocalAddress = String.format("ws://%s:7900", getHost());
+      String noVncPort = System.getProperty("NO_VNC_PORT", "7900");
+      String vncLocalAddress = String.format("ws://%s:%s", getHost(), noVncPort);
       returnedCaps = new PersistentCapabilities(returnedCaps)
         .setCapability("se:vncLocalAddress", vncLocalAddress)
         .setCapability(seVncEnabledCap, true);
