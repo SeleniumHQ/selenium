@@ -6,6 +6,8 @@ load("//common:defs.bzl", "copy_file")
 load("//py:defs.bzl", "py_test_suite")
 load("//py/private:browsers.bzl", "BROWSERS")
 
+SE_VERSION = "4.0.0"
+
 BROWSER_VERSIONS = [
     "v85",
     "v93",
@@ -105,10 +107,6 @@ py_package(
     deps = [":selenium"],
 )
 
-pkg_tar(
-
-)
-
 py_wheel(
     name = "selenium-wheel",
     classifiers = [
@@ -139,7 +137,7 @@ py_wheel(
     strip_path_prefixes = [
         "py",
     ],
-    version = "4.0.0",
+    version = SE_VERSION,
     visibility = ["//visibility:public"],
     deps = [
         ":selenium-pkg",
