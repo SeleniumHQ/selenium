@@ -1,3 +1,4 @@
+load("@rules_pkg//:pkg.bzl", "pkg_tar")
 load("@rules_python//python:defs.bzl", "py_binary", "py_library")
 load("@rules_python//python:packaging.bzl", "py_package", "py_wheel")
 load("@dev_requirements//:requirements.bzl", "requirement")
@@ -102,6 +103,10 @@ py_package(
         "py.selenium.webdriver.safari",
     ],
     deps = [":selenium"],
+)
+
+pkg_tar(
+
 )
 
 py_wheel(
