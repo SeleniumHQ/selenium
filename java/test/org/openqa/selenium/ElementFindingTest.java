@@ -765,7 +765,7 @@ public class ElementFindingTest extends JUnit4TestBase {
   public void testShouldNotBeAbleToLocateASingleElementOnABlankPage() {
     // Note we're on the default start page for the browser at this point.
     assertThatExceptionOfType(NoSuchElementException.class)
-        .isThrownBy(() -> driver.findElement(By.id("nonExistantButton")));
+        .isThrownBy(() -> driver.findElement(By.id("nonExistentButton")));
   }
 
   @SwitchToTopAfterTest

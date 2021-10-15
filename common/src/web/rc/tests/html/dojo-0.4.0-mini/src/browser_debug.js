@@ -27,7 +27,7 @@ function removeComments(contents){
 dojo.hostenv.getRequiresAndProvides = function(contents){
 	// FIXME: should probably memoize this!
 	if(!contents){ return []; }
-	
+
 
 	// check to see if we need to load anything else first. Ugg.
 	var deps = [];
@@ -138,7 +138,7 @@ dojo.hostenv.loadUri = function(uri, cb /*optional*/){
 			var delayRequires = dojo.hostenv.getDelayRequiresAndProvides(text);
 			eval(delayRequires.join(";"));
 		}
-	}catch(e){ 
+	}catch(e){
 		alert(e);
 	}
 	return true;
@@ -161,7 +161,7 @@ dojo.hostenv.writeIncludes = function(willCallAgain){
 	}
 
 	dojo.hostenv._global_omit_module_check = true;
-	
+
 	for(var x= dojo.hostenv._loadedUrisListStart; x<depList.length; x++){
 		document.write("<script type='text/javascript' src='"+depList[x]+"'></script>");
 	}

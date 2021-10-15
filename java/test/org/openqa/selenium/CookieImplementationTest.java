@@ -307,7 +307,7 @@ public class CookieImplementationTest extends JUnit4TestBase {
     driver.manage().addCookie(cookie2);
 
     driver.get(domainHelper.getUrlForFirstValidHostname("child/grandchild/grandchildPage.html"));
-    Cookie cookie3 = new Cookie("dog", "dalmation", "/common/child/grandchild/");
+    Cookie cookie3 = new Cookie("dog", "dalmatian", "/common/child/grandchild/");
     driver.manage().addCookie(cookie3);
 
     driver.get(domainHelper.getUrlForFirstValidHostname("child/grandchild/grandchildPage.html"));

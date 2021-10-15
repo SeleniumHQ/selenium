@@ -15,9 +15,9 @@ namespace System.IO.Compression
         /// <summary>
         /// Compression method enumeration
         /// </summary>
-        public enum Compression : ushort { 
-            /// <summary>Uncompressed storage</summary> 
-            Store = 0, 
+        public enum Compression : ushort {
+            /// <summary>Uncompressed storage</summary>
+            Store = 0,
             /// <summary>Deflate compression method</summary>
             Deflate = 8 }
 
@@ -27,7 +27,7 @@ namespace System.IO.Compression
         public struct ZipFileEntry
         {
             /// <summary>Compression method</summary>
-            public Compression Method; 
+            public Compression Method;
             /// <summary>Full path and filename as stored in Zip</summary>
             public string FilenameInZip;
             /// <summary>Original file size</summary>
@@ -177,7 +177,7 @@ namespace System.IO.Compression
         /// <param name="_method">Compression method</param>
         /// <param name="_pathname">Full path of file to add to Zip storage</param>
         /// <param name="_filenameInZip">Filename and path as desired in Zip directory</param>
-        /// <param name="_comment">Comment for stored file</param>        
+        /// <param name="_comment">Comment for stored file</param>
         public void AddFile(Compression _method, string _pathname, string _filenameInZip, string _comment)
         {
             if (Access == FileAccess.Read)
@@ -268,7 +268,7 @@ namespace System.IO.Compression
             }
         }
         /// <summary>
-        /// Read all the file records in the central directory 
+        /// Read all the file records in the central directory
         /// </summary>
         /// <returns>List of all entries in directory</returns>
         public List<ZipFileEntry> ReadCentralDir()
@@ -342,7 +342,7 @@ namespace System.IO.Compression
 
             File.SetCreationTime(_filename, _zfe.ModifyTime);
             File.SetLastWriteTime(_filename, _zfe.ModifyTime);
-            
+
             return result;
         }
         /// <summary>
@@ -483,7 +483,7 @@ namespace System.IO.Compression
             byte[] encodedFilename = encoder.GetBytes(_zfe.FilenameInZip);
 
             this.ZipFileStream.Write(new byte[] { 80, 75, 3, 4, 20, 0}, 0, 6); // No extra header
-            this.ZipFileStream.Write(BitConverter.GetBytes((ushort)(_zfe.EncodeUTF8 ? 0x0800 : 0)), 0, 2); // filename and comment encoding 
+            this.ZipFileStream.Write(BitConverter.GetBytes((ushort)(_zfe.EncodeUTF8 ? 0x0800 : 0)), 0, 2); // filename and comment encoding
             this.ZipFileStream.Write(BitConverter.GetBytes((ushort)_zfe.Method), 0, 2);  // zipping method
             this.ZipFileStream.Write(BitConverter.GetBytes(DateTimeToDosTime(_zfe.ModifyTime)), 0, 4); // zipping date and time
             this.ZipFileStream.Write(new byte[] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }, 0, 12); // unused CRC, un/compressed size, updated later
@@ -523,7 +523,7 @@ namespace System.IO.Compression
             byte[] encodedComment = encoder.GetBytes(_zfe.Comment);
 
             this.ZipFileStream.Write(new byte[] { 80, 75, 1, 2, 23, 0xB, 20, 0 }, 0, 8);
-            this.ZipFileStream.Write(BitConverter.GetBytes((ushort)(_zfe.EncodeUTF8 ? 0x0800 : 0)), 0, 2); // filename and comment encoding 
+            this.ZipFileStream.Write(BitConverter.GetBytes((ushort)(_zfe.EncodeUTF8 ? 0x0800 : 0)), 0, 2); // filename and comment encoding
             this.ZipFileStream.Write(BitConverter.GetBytes((ushort)_zfe.Method), 0, 2);  // zipping method
             this.ZipFileStream.Write(BitConverter.GetBytes(DateTimeToDosTime(_zfe.ModifyTime)), 0, 4);  // zipping date and time
             this.ZipFileStream.Write(BitConverter.GetBytes(_zfe.Crc32), 0, 4); // file CRC
@@ -588,7 +588,7 @@ namespace System.IO.Compression
                 outStream = new DeflateStream(this.ZipFileStream, CompressionMode.Compress, true);
 
             _zfe.Crc32 = 0 ^ 0xffffffff;
-            
+
             do
             {
                 bytesRead = _source.Read(buffer, 0, buffer.Length);
@@ -624,19 +624,19 @@ namespace System.IO.Compression
             }
         }
         /* DOS Date and time:
-            MS-DOS date. The date is a packed value with the following format. Bits Description 
-                0-4 Day of the month (1–31) 
-                5-8 Month (1 = January, 2 = February, and so on) 
-                9-15 Year offset from 1980 (add 1980 to get actual year) 
-            MS-DOS time. The time is a packed value with the following format. Bits Description 
-                0-4 Second divided by 2 
-                5-10 Minute (0–59) 
-                11-15 Hour (0–23 on a 24-hour clock) 
+            MS-DOS date. The date is a packed value with the following format. Bits Description
+                0-4 Day of the month (1ï¿½31)
+                5-8 Month (1 = January, 2 = February, and so on)
+                9-15 Year offset from 1980 (add 1980 to get actual year)
+            MS-DOS time. The time is a packed value with the following format. Bits Description
+                0-4 Second divided by 2
+                5-10 Minute (0ï¿½59)
+                11-15 Hour (0ï¿½23 on a 24-hour clock)
         */
         private uint DateTimeToDosTime(DateTime _dt)
         {
             return (uint)(
-                (_dt.Second / 2) | (_dt.Minute << 5) | (_dt.Hour << 11) | 
+                (_dt.Second / 2) | (_dt.Minute << 5) | (_dt.Hour << 11) |
                 (_dt.Day<<16) | (_dt.Month << 21) | ((_dt.Year - 1980) << 25));
         }
         private DateTime DosTimeToDateTime(uint _dt)
@@ -651,7 +651,7 @@ namespace System.IO.Compression
         }
 
         /* CRC32 algorithm
-          The 'magic number' for the CRC is 0xdebb20e3.  
+          The 'magic number' for the CRC is 0xdebb20e3.
           The proper CRC pre and post conditioning
           is used, meaning that the CRC register is
           pre-conditioned with all ones (a starting value

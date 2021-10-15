@@ -44,7 +44,7 @@ public class ClearTest extends JUnit4TestBase {
   @Test
   public void testTextInputShouldNotClearWhenDisabled() {
     driver.get(pages.readOnlyPage);
-    WebElement element = driver.findElement(By.id("textInputnotenabled"));
+    WebElement element = driver.findElement(By.id("textInputNotEnabled"));
     assertThat(element.isEnabled()).isFalse();
     assertThatExceptionOfType(InvalidElementStateException.class)
         .isThrownBy(element::clear);
@@ -69,7 +69,7 @@ public class ClearTest extends JUnit4TestBase {
   @Test
   public void testTextAreaShouldNotClearWhenDisabled() {
     driver.get(pages.readOnlyPage);
-    WebElement element = driver.findElement(By.id("textAreaNotenabled"));
+    WebElement element = driver.findElement(By.id("textAreaNotEnabled"));
     assertThatExceptionOfType(InvalidElementStateException.class)
         .isThrownBy(element::clear);
   }
