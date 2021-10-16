@@ -149,6 +149,14 @@ module Selenium
             options.add_preference(:foo, 'bar')
             expect(options.prefs[:foo]).to eq('bar')
           end
+
+          it 'does not camelize preferences' do
+            options.add_preference('intl.accepted_languages', 'en-US')
+
+            prefs    = options.as_json['moz:firefoxOptions']['prefs']
+            expected = { 'intl.accepted_languages' => 'en-US' }
+            expect(prefs).to eq(expected)
+          end
         end
 
         describe '#enable_android' do
