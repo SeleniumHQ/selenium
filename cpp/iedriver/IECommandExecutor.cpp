@@ -1404,8 +1404,7 @@ BOOL CALLBACK IECommandExecutor::FindAllBrowserHandles(HWND hwnd, LPARAM arg) {
     return TRUE;
   }
 
-  if (strcmp("Internet Explorer_Server", name) == 0 ||
-    strcmp("Chrome_WidgetWin_1", name) == 0) {
+  if (strcmp("Internet Explorer_Server", name) == 0) {
     handles->push_back(hwnd);
   }
 

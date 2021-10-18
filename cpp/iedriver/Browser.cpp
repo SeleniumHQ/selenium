@@ -108,7 +108,7 @@ void __stdcall Browser::NewProcess(DWORD lCauseFlag,
   this->InitiateBrowserReattach();
 }
 
-BOOL CALLBACK FindAllBrowserHandles(HWND hwnd, LPARAM arg) {
+BOOL CALLBACK FindIEBrowserHandles(HWND hwnd, LPARAM arg) {
   std::vector<HWND>* handles = reinterpret_cast<std::vector<HWND>*>(arg);
 
   // Could this be an Internet Explorer Server window?
@@ -151,8 +151,8 @@ void __stdcall Browser::NewWindow3(IDispatch** ppDisp,
                                    BSTR bstrUrl) {
   LOG(TRACE) << "Entering Browser::NewWindow3";
 
+
   if (this->is_edge_chromium_) {
-    // When IEDriver is used to drive Edge in IEMode
     ::PostMessage(this->executor_handle(), WD_BEFORE_NEW_WINDOW, NULL, NULL);
 
     HWND top_level_handle = this->GetTopLevelWindowHandle();
@@ -165,7 +165,7 @@ void __stdcall Browser::NewWindow3(IDispatch** ppDisp,
     std::vector<HWND>* ie_window_handles = new std::vector<HWND>;
     for (auto& ewh : edge_window_handles) {
       std::vector<HWND> child_window_handles;
-      ::EnumChildWindows(ewh, &FindAllBrowserHandles,
+      ::EnumChildWindows(ewh, &FindIEBrowserHandles,
         reinterpret_cast<LPARAM>(&child_window_handles));
 
       for (auto& cwh : child_window_handles) {
