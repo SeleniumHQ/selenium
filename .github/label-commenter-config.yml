@@ -1,0 +1,59 @@
+# Configuration for Label Commenter - https://github.com/peaceiris/actions-label-commenter
+labels:
+  - name: needs-triaging
+    labeled:
+      issue:
+        body: |
+          @{{ issue.user.login }}, thank you for creating this issue. We will troubleshoot it as soon as we can.
+
+          ---
+          <details>
+            <summary>Info for maintainers</summary>
+            <div>
+              <br>
+              <p>
+                Triage this issue by using labels.
+              </p>
+              <p>
+                If information is missing, add a helpful comment and add the <code>I-issue-template</code> label.
+              </p>
+              <p>
+                If the issue is a question, add the <code>I-question</code> label.
+              </p>
+              <p>
+                If the issue is valid but there is no time to troubleshoot it, consider adding the <code>help wanted</code> label.
+              </p>
+              <p>
+                After troubleshooting the issuee, please add the <code>R-awaiting answer</code> label.
+              </p>
+              <p>
+                Thank you!
+              </p>
+            </div>
+          </details>
+  - name: I-issue-template
+    labeled:
+      issue:
+        body: |
+          Hi, @{{ issue.user.login }}.
+          Please follow the issue template, we need more information to reproduce the issue.
+
+          Either a complete code snippet (if more than one file is needed, provide a GitHub repo and instructions to run the code), the specific versions used, or a more detailed description to help us understand the issue.
+
+          Reply to this issuee when all information is provided, thank you.
+  - name: I-question
+    labeled:
+      issue:
+        body: |
+          💬 Please ask questions at:
+          * 📫 The [Selenium user group](https://groups.google.com/forum/#!forum/selenium-users)
+          * 📮 [StackOverflow](https://stackoverflow.com/questions/tagged/selenium)
+          * 🗣 Our [IRC/Slack/Matrix channels](https://www.selenium.dev/support/) where the community can help you as well
+        action: close
+  - name: help wanted
+    labeled:
+      issue:
+        body: |
+          This issue is looking for contributors.
+
+          Please comment below or reach out to us through our [IRC/Slack/Matrix channels](https://www.selenium.dev/support/) if you are interested.
