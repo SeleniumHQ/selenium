@@ -109,7 +109,7 @@ module Selenium
                 elsif File.exist?(built_jar) && ENV['DOWNLOAD_SERVER'].nil?
                   built_jar
                 else
-                  Selenium::Server.download(:latest)
+                  Selenium::Server.download
                 end
 
           WebDriver.logger.info "Server Location: #{jar}"

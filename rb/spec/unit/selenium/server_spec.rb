@@ -111,10 +111,11 @@ module Selenium
     end
 
     it 'downloads the specified version from the selenium site' do
-      required_version = '10.2.0'
-      expected_download_file_name = "selenium-server-standalone-#{required_version}.jar"
+      required_version = '10.0.0'
+      expected_download_file_name = "selenium-server-#{required_version}.jar"
+      download = 'https://github.com/seleniumhq/selenium/releases/download'
 
-      stub_request(:get, 'http://selenium-release.storage.googleapis.com/10.2/selenium-server-standalone-10.2.0.jar')
+      stub_request(:get, "#{download}/selenium-10.0.0/#{expected_download_file_name}")
         .to_return(body: 'this is pretending to be a jar file for testing purposes')
 
       begin
@@ -154,7 +155,7 @@ module Selenium
 
     it 'only downloads a jar if it is not present in the current directory' do
       required_version = '10.2.0'
-      expected_download_file_name = "selenium-server-standalone-#{required_version}.jar"
+      expected_download_file_name = "selenium-server-#{required_version}.jar"
 
       allow(File).to receive(:exist?).with(expected_download_file_name).and_return true
 
@@ -163,36 +164,23 @@ module Selenium
     end
 
     it 'should know what the latest version available is' do
-      latest_version = '2.42.2'
-      example_xml = +"<?xml version='1.0' encoding='UTF-8'?><ListBucketResult "
-      example_xml << "xmlns='http://doc.s3.amazonaws.com/2006-03-01'><Name>"
-      example_xml << 'selenium-release</Name><Contents><Key>2.39/'
-      example_xml << 'selenium-server-2.39.0.zip</Key></Contents><Contents>'
-      example_xml << "<Key>2.42/selenium-server-standalone-#{latest_version}.jar"
-      example_xml << '</Key></Contents></ListBucketResult>'
-      stub_request(:get, 'http://selenium-release.storage.googleapis.com/').to_return(body: example_xml)
+      expected_latest = '10.0.1'
+      repo = 'https://api.github.com/repos/seleniumhq/selenium/releases'
+      example_json = [{"url": "#{repo}/41272273",
+                       "assets": {
+                         "name": 'selenium-server-3.141.59.jar',
+                         "browser_download_url": "#{repo}/selenium-3.141.59/selenium-server-standalone-3.141.59.jar"
+                       }},
+                      {"url": "#{repo}/51272273",
+                       "assets": {
+                         "name": 'selenium-server-10.0.1.jar',
+                         "browser_download_url": "#{repo}/selenium-10.0.1/selenium-server-10.0.1.jar"
+                       }}
+      ]
 
-      expect(Selenium::Server.latest).to eq(latest_version)
-    end
+      stub_request(:get, repo).to_return(body: example_json.to_json)
 
-    it 'should download the latest version if that has been specified' do
-      required_version = '2.42.2'
-      minor_version = '2.42'
-      expected_download_file_name = "selenium-server-standalone-#{required_version}.jar"
-
-      allow(Selenium::Server).to receive(:latest).and_return required_version
-      stub_request(:get,
-                   "http://selenium-release.storage.googleapis.com/#{minor_version}/#{expected_download_file_name}")
-        .to_return(body: 'this is pretending to be a jar file for testing purposes')
-
-      begin
-        actual_download_file_name = Selenium::Server.download(:latest)
-        expect(actual_download_file_name).to eq(expected_download_file_name)
-        expect(File).to exist(expected_download_file_name)
-        expect(Selenium::Server).to have_received(:latest)
-      ensure
-        FileUtils.rm_rf expected_download_file_name
-      end
+      expect(Selenium::Server.latest).to eq(expected_latest)
     end
 
     it 'raises Selenium::Server::Error if the server is not launched within the timeout' do
