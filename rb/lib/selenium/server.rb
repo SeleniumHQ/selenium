@@ -90,8 +90,8 @@ module Selenium
 
           File.open(download_file_name, 'wb') do |destination|
             net_http_start('github-releases.githubusercontent.com') do |http|
-            request = Net::HTTP::Get.new redirected
-            resp = http.request(request) do |response|
+              request = Net::HTTP::Get.new redirected
+              resp = http.request(request) do |response|
                 total = response.content_length
                 progress = 0
                 segment_count = 0
@@ -127,17 +127,17 @@ module Selenium
 
       def latest
         @latest ||= begin
-                      net_http_start('api.github.com') do |http|
-                        json = http.get('/repos/seleniumhq/selenium/releases').body
-                        JSON.parse(json).map { |release|
-                          release['assets']
-                        }.flatten.map { |asset|
-                          asset['name'][/selenium-server-(\d+\.\d+\.\d+)\.jar/, 1]
-                        }.compact.map { |version|
-                          Gem::Version.new(version)
-                        }.max.version
-                      end
-                    end
+          net_http_start('api.github.com') do |http|
+            json = http.get('/repos/seleniumhq/selenium/releases').body
+            JSON.parse(json).map { |release|
+              release['assets']
+            }.flatten.map { |asset|
+              asset['name'][/selenium-server-(\d+\.\d+\.\d+)\.jar/, 1]
+            }.compact.map { |version|
+              Gem::Version.new(version)
+            }.max.version
+          end
+        end
       end
 
       # @api private
