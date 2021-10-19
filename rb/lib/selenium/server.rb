@@ -142,7 +142,7 @@ module Selenium
 
               if (segment_count % 15).zero?
                 percent = progress.fdiv(total) * 100
-                print "#{CL_RESET}Downloading #{download_file_name}: #{percent.to_i}% (#{progress} / #{total})"
+                print "#{CL_RESET}Downloading #{destination.path}: #{percent.to_i}% (#{progress} / #{total})"
                 segment_count = 0
               end
 
@@ -150,7 +150,7 @@ module Selenium
             end
           end
 
-          raise Error, "#{resp.code} for #{download_file_name}" unless resp.is_a? Net::HTTPSuccess
+          raise Error, "#{resp.code} for #{destination.path}" unless resp.is_a? Net::HTTPSuccess
         end
       end
     end
