@@ -27,7 +27,7 @@ public interface SearchContext {
    * @return A list of all {@link WebElement}s, or an empty list if nothing matches
    * @see org.openqa.selenium.By
    */
-  List<WebElement> findElements(By by);
+  <T extends WebElement> List<T> findElements(By by);
 
 
   /**
