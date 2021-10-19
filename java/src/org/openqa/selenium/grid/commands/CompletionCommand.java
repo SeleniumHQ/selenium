@@ -54,7 +54,7 @@ public class CompletionCommand implements CliCommand {
 
   @Override
   public Set<Role> getConfigurableRoles() {
-    return ALL_ROLES;
+    return Collections.singleton(Role.of("completion"));
   }
 
   @Override
@@ -114,10 +114,10 @@ public class CompletionCommand implements CliCommand {
     Map<CliCommand, Set<DescribedOption>> allCommands = listKnownCommands();
 
     // My kingdom for multiline strings
-    out.println("#compdef selenium");
-    out.println("local context state state_descr line");
+    out.println("#compdef _selenium selenium");
     out.println("typeset -A opt_args");
     out.println("_selenium() {");
+    out.println("  local context state state_descr line");
     out.println("  _arguments -C \\");
     out.println("    '(- :)--ext[Amend the classpath for Grid]: :->arg' \\");
     out.println("    '(-): :->command' \\");
@@ -130,7 +130,7 @@ public class CompletionCommand implements CliCommand {
     allCommands.keySet().stream()
       .sorted(Comparator.comparing(CliCommand::getName))
       .forEach(cmd -> {
-        out.println(String.format("        '%s:%s'", cmd.getName(), cmd.getDescription().replace("'", "\\'")));
+        out.println(String.format("        '%s:%s'", cmd.getName(), cmd.getDescription().replace("'", "'\\''")));
       });
 
     out.println("      )");
@@ -161,7 +161,11 @@ public class CompletionCommand implements CliCommand {
         .filter(opt -> !opt.flags().isEmpty())
         .sorted(Comparator.comparing(opt -> opt.flags().iterator().next()))
         .forEach(opt -> {
-          String quotedDesc = opt.description.replace("'", "\\''").replace(":", "\\:");
+          String quotedDesc = opt.description().replace("'", "'\\''");
+          int index = quotedDesc.indexOf("\n");
+          if (index != -1) {
+            quotedDesc = quotedDesc.substring(0, index);
+          }
 
           if (opt.flags().size() == 1) {
             out.println(String.format("    '%s[%s]%s'", opt.flags().iterator().next(), quotedDesc, getZshType(opt)));
@@ -181,8 +185,6 @@ public class CompletionCommand implements CliCommand {
       out.println("  _arguments $args && return");
       out.println("}\n\n");
     });
-
-    out.println("_selenium");
   }
 
   private String getZshType(DescribedOption option) {

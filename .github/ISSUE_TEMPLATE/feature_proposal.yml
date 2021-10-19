@@ -1,7 +1,7 @@
 name: 🚀 Feature Proposal
 description: Propose a feature
 title: "[🚀 Feature]: "
-labels: [ feature, needs-triaging ]
+labels: [ I-enhancement, needs-triaging ]
 body:
   - type: markdown
     attributes:
