@@ -89,29 +89,7 @@ module Selenium
           redirected = URI.parse released.header['location']
 
           File.open(download_file_name, 'wb') do |destination|
-            net_http_start('github-releases.githubusercontent.com') do |http|
-              request = Net::HTTP::Get.new redirected
-              resp = http.request(request) do |response|
-                total = response.content_length
-                progress = 0
-                segment_count = 0
-
-                response.read_body do |segment|
-                  progress += segment.length
-                  segment_count += 1
-
-                  if (segment_count % 15).zero?
-                    percent = progress.fdiv(total) * 100
-                    print "#{CL_RESET}Downloading #{download_file_name}: #{percent.to_i}% (#{progress} / #{total})"
-                    segment_count = 0
-                  end
-
-                  destination.write(segment)
-                end
-              end
-
-              raise Error, "#{resp.code} for #{download_file_name}" unless resp.is_a? Net::HTTPSuccess
-            end
+            download_server(redirected, destination)
           end
         rescue StandardError
           FileUtils.rm download_file_name if File.exist? download_file_name
@@ -129,13 +107,9 @@ module Selenium
         @latest ||= begin
           net_http_start('api.github.com') do |http|
             json = http.get('/repos/seleniumhq/selenium/releases').body
-            JSON.parse(json).map { |release|
-              release['assets']
-            }.flatten.map { |asset|
-              asset['name'][/selenium-server-(\d+\.\d+\.\d+)\.jar/, 1]
-            }.compact.map { |version|
-              Gem::Version.new(version)
-            }.max.version
+            all_assets = JSON.parse(json).map { |release| release['assets'] }.flatten
+            server_assets = all_assets.map { |asset| asset['name'][/selenium-server-(\d+\.\d+\.\d+)\.jar/, 1] }.compact
+            server_assets.map { |version| Gem::Version.new(version) }.max.version
           end
         end
       end
@@ -151,6 +125,32 @@ module Selenium
           Net::HTTP.start(address, nil, uri.host, uri.port, &block)
         else
           Net::HTTP.start(address, use_ssl: true, &block)
+        end
+      end
+
+      def download_server(uri, destination)
+        net_http_start('github-releases.githubusercontent.com') do |http|
+          request = Net::HTTP::Get.new uri
+          resp = http.request(request) do |response|
+            total = response.content_length
+            progress = 0
+            segment_count = 0
+
+            response.read_body do |segment|
+              progress += segment.length
+              segment_count += 1
+
+              if (segment_count % 15).zero?
+                percent = progress.fdiv(total) * 100
+                print "#{CL_RESET}Downloading #{download_file_name}: #{percent.to_i}% (#{progress} / #{total})"
+                segment_count = 0
+              end
+
+              destination.write(segment)
+            end
+          end
+
+          raise Error, "#{resp.code} for #{download_file_name}" unless resp.is_a? Net::HTTPSuccess
         end
       end
     end
