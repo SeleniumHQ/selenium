@@ -1,3 +1,11 @@
+4.0.1 (2021-10-19)
+=========================
+
+Server:
+  * Fixed download by pointing to new storage location.
+    - Only supports Selenium 4 versions
+  * Added default value for Server::get and Server::download to use the latest server version
+
 4.0.0 (2021-10-13)
 =========================
 
