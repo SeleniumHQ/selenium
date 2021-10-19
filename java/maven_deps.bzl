@@ -2,7 +2,7 @@ load("@rules_jvm_external//:defs.bzl", "maven_install")
 load("@rules_jvm_external//:specs.bzl", "maven")
 
 def selenium_java_deps():
-    netty_version = "4.1.67.Final"
+    netty_version = "4.1.69.Final"
     opentelemetry_version = "1.6.0"
 
     maven_install(
@@ -79,6 +79,8 @@ def selenium_java_deps():
             "org.seleniumhq.selenium:htmlunit-driver:2.53.0",
             "org.redisson:redisson:3.16.3",
             "com.github.stephenc.jcip:jcip-annotations:1.0-1",
+            "org.bouncycastle:bcpkix-jdk15on:1.69",
+            "org.bouncycastle:bcprov-jdk15on:1.69"        
         ],
         excluded_artifacts = [
             "org.hamcrest:hamcrest-all",  # Replaced by hamcrest 2
