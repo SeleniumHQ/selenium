@@ -116,6 +116,9 @@ module Selenium
       download = 'https://github.com/seleniumhq/selenium/releases/download'
 
       stub_request(:get, "#{download}/selenium-10.0.0/#{expected_download_file_name}")
+        .to_return(headers: {location: 'https://github-releases.githubusercontent.com/something'})
+
+      stub_request(:get, "https://github-releases.githubusercontent.com/something")
         .to_return(body: 'this is pretending to be a jar file for testing purposes')
 
       begin
@@ -175,8 +178,7 @@ module Selenium
                        "assets": {
                          "name": 'selenium-server-10.0.1.jar',
                          "browser_download_url": "#{repo}/selenium-10.0.1/selenium-server-10.0.1.jar"
-                       }}
-      ]
+                       }}]
 
       stub_request(:get, repo).to_return(body: example_json.to_json)
 
