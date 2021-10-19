@@ -57,25 +57,41 @@ module Selenium
 
     CL_RESET = WebDriver::Platform.windows? ? '' : "\r\e[0K"
 
-    def self.get(required_version, opts = {})
-      new(download(required_version), opts)
-    end
-
-    #
-    # Download the given version of the selenium-server-standalone jar.
-    #
-
     class << self
-      def download(required_version)
+      #
+      # Download the given version of the selenium-server jar and return instance
+      #
+      # @param [String, Symbol] required_version X.Y.Z defaults to ':latest'
+      # @param [Hash] opts
+      # @return [Selenium::Server]
+      #
+
+      def get(required_version = :latest, opts = {})
+        new(download(required_version), opts)
+      end
+
+      #
+      # Download the given version of the selenium-server jar and return location
+      #
+      # @param [String, Symbol] required_version X.Y.Z defaults to ':latest'
+      # @return [String] location of downloaded file
+      #
+
+      def download(required_version = :latest)
         required_version = latest if required_version == :latest
-        download_file_name = "selenium-server-standalone-#{required_version}.jar"
+        download_file_name = "selenium-server-#{required_version}.jar"
 
         return download_file_name if File.exist? download_file_name
 
         begin
+          server = 'https://github.com/seleniumhq/selenium/releases/download'
+          released = Net::HTTP.get_response(URI.parse("#{server}/selenium-#{required_version}/#{download_file_name}"))
+          redirected = URI.parse released.header['location']
+
           File.open(download_file_name, 'wb') do |destination|
-            net_http_start('selenium-release.storage.googleapis.com') do |http|
-              resp = http.request_get("/#{required_version[/(\d+\.\d+)\./, 1]}/#{download_file_name}") do |response|
+            net_http_start('github-releases.githubusercontent.com') do |http|
+            request = Net::HTTP::Get.new redirected
+            resp = http.request(request) do |response|
                 total = response.content_length
                 progress = 0
                 segment_count = 0
@@ -106,30 +122,35 @@ module Selenium
       end
 
       #
-      # Ask Google Code what the latest selenium-server-standalone version is.
+      # Ask GitHub what the latest selenium-server version is.
       #
 
       def latest
-        require 'rexml/document'
-        net_http_start('selenium-release.storage.googleapis.com') do |http|
-          versions = REXML::Document.new(http.get('/').body).root.get_elements('//Contents/Key').map do |e|
-            e.text[/selenium-server-standalone-(\d+\.\d+\.\d+)\.jar/, 1]
-          end
-
-          versions.compact.map { |version| Gem::Version.new(version) }.max.version
-        end
+        @latest ||= begin
+                      net_http_start('api.github.com') do |http|
+                        json = http.get('/repos/seleniumhq/selenium/releases').body
+                        JSON.parse(json).map { |release|
+                          release['assets']
+                        }.flatten.map { |asset|
+                          asset['name'][/selenium-server-(\d+\.\d+\.\d+)\.jar/, 1]
+                        }.compact.map { |version|
+                          Gem::Version.new(version)
+                        }.max.version
+                      end
+                    end
       end
+
+      # @api private
 
       def net_http_start(address, &block)
         http_proxy = ENV['http_proxy'] || ENV['HTTP_PROXY']
-
         if http_proxy
           http_proxy = "http://#{http_proxy}" unless http_proxy.start_with?('http://')
           uri = URI.parse(http_proxy)
 
           Net::HTTP.start(address, nil, uri.host, uri.port, &block)
         else
-          Net::HTTP.start(address, &block)
+          Net::HTTP.start(address, use_ssl: true, &block)
         end
       end
     end
@@ -200,10 +221,6 @@ module Selenium
 
     private
 
-    def selenium4?
-      @jar.match?(/[^.]4\./) || @jar.include?('deploy')
-    end
-
     def stop_process
       return unless @process.alive?
 
@@ -222,10 +239,7 @@ module Selenium
       @process ||= begin
         # extract any additional_args that start with -D as options
         properties = @additional_args.dup - @additional_args.delete_if { |arg| arg[/^-D/] }
-        args = ['-jar', @jar]
-        args << @role if selenium4?
-        args << (selenium4? ? '--port' : '-port')
-        args << @port.to_s
+        args = ['-jar', @jar, @role, '--port', @port.to_s]
         server_command = ['java'] + properties + args + @additional_args
         cp = ChildProcess.build(*server_command)
         WebDriver.logger.debug("Executing Process #{server_command}")
