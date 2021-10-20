@@ -1,0 +1,18 @@
+# Configuration for Label Commenter - https://github.com/peaceiris/actions-label-commenter
+name: Label Commenter
+
+on:
+  issues:
+    types: [ labeled ]
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  comment:
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v2
+      - name: Label Commenter
+        uses: peaceiris/actions-label-commenter@v1

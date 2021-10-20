@@ -1,0 +1,19 @@
+# Configuration for Stale - https://github.com/actions/stale
+name: 'Close stale issues'
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '15 10,20 * * *'
+
+jobs:
+  stale:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/stale@v4
+        with:
+          stale-issue-message: 'This issue is stale because it has been open 365 days with no activity. Remove stale label or comment or this will be closed in 14 days.'
+          close-issue-message: 'This issue was closed because it has been stalled for 14 days with no activity.'
+          stale-issue-label: 'I-stale'
+          exempt-issue-labels: 'help wanted'
+          days-before-stale: 365
+          days-before-close: 14
