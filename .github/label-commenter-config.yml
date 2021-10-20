@@ -15,7 +15,7 @@ labels:
                 Triage this issue by using labels.
               </p>
               <p>
-                If information is missing, add a helpful comment and add the <code>I-issue-template</code> label.
+                If information is missing, add a helpful comment and then <code>I-issue-template</code> label.
               </p>
               <p>
                 If the issue is a question, add the <code>I-question</code> label.
@@ -24,7 +24,7 @@ labels:
                 If the issue is valid but there is no time to troubleshoot it, consider adding the <code>help wanted</code> label.
               </p>
               <p>
-                After troubleshooting the issuee, please add the <code>R-awaiting answer</code> label.
+                After troubleshooting the issue, please add the <code>R-awaiting answer</code> label.
               </p>
               <p>
                 Thank you!
