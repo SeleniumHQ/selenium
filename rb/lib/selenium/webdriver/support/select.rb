@@ -258,7 +258,7 @@ module Selenium
         end
 
         def find_by_index(index)
-          options.select { |option| option.dom_attribute(:index) == index.to_s }
+          options.select { |option| option.property(:index) == index }
         end
 
         def find_by_value(value)
