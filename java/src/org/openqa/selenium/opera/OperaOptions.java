@@ -110,7 +110,7 @@ public class OperaOptions extends AbstractDriverOptions<OperaOptions> {
 
   /**
    * Adds additional command line arguments to be used when starting Opera.
-   * For example:
+   * <p>For example:
    * <pre><code>
    *   options.setArguments(
    *       "load-extension=/path/to/unpacked_extension",
