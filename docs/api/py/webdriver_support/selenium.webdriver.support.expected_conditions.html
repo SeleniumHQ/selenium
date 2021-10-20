@@ -63,7 +63,7 @@ Returns results of the first matching condition, or False if none do.</p>
 <dl class="function">
 <dt id="selenium.webdriver.support.expected_conditions.element_attribute_to_include">
 <code class="descclassname">selenium.webdriver.support.expected_conditions.</code><code class="descname">element_attribute_to_include</code><span class="sig-paren">(</span><em>locator</em>, <em>attribute_</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/webdriver/support/expected_conditions.html#element_attribute_to_include"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.support.expected_conditions.element_attribute_to_include" title="Permalink to this definition">¶</a></dt>
-<dd><p>An expectation for checking if the given attribute is include in the
+<dd><p>An expectation for checking if the given attribute is included in the
 specified element.
 locator, attribute</p>
 </dd></dl>
@@ -94,9 +94,10 @@ is_selected is a Boolean.”</p>
 
 <dl class="function">
 <dt id="selenium.webdriver.support.expected_conditions.element_to_be_clickable">
-<code class="descclassname">selenium.webdriver.support.expected_conditions.</code><code class="descname">element_to_be_clickable</code><span class="sig-paren">(</span><em>locator</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/webdriver/support/expected_conditions.html#element_to_be_clickable"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.support.expected_conditions.element_to_be_clickable" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">selenium.webdriver.support.expected_conditions.</code><code class="descname">element_to_be_clickable</code><span class="sig-paren">(</span><em>mark</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/webdriver/support/expected_conditions.html#element_to_be_clickable"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.support.expected_conditions.element_to_be_clickable" title="Permalink to this definition">¶</a></dt>
 <dd><p>An Expectation for checking an element is visible and enabled such that
 you can click it.</p>
+<p>element is either a locator (text) or an WebElement</p>
 </dd></dl>
 
 <dl class="function">
@@ -186,9 +187,16 @@ locator, text</p>
 </dd></dl>
 
 <dl class="function">
+<dt id="selenium.webdriver.support.expected_conditions.text_to_be_present_in_element_attribute">
+<code class="descclassname">selenium.webdriver.support.expected_conditions.</code><code class="descname">text_to_be_present_in_element_attribute</code><span class="sig-paren">(</span><em>locator</em>, <em>attribute_</em>, <em>text_</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/webdriver/support/expected_conditions.html#text_to_be_present_in_element_attribute"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.support.expected_conditions.text_to_be_present_in_element_attribute" title="Permalink to this definition">¶</a></dt>
+<dd><p>An expectation for checking if the given text is present in the element’s attribute.
+locator, attribute, text</p>
+</dd></dl>
+
+<dl class="function">
 <dt id="selenium.webdriver.support.expected_conditions.text_to_be_present_in_element_value">
 <code class="descclassname">selenium.webdriver.support.expected_conditions.</code><code class="descname">text_to_be_present_in_element_value</code><span class="sig-paren">(</span><em>locator</em>, <em>text_</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/webdriver/support/expected_conditions.html#text_to_be_present_in_element_value"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.support.expected_conditions.text_to_be_present_in_element_value" title="Permalink to this definition">¶</a></dt>
-<dd><p>An expectation for checking if the given text is present in the element’s
+<dd><p>An expectation for checking if the given text is present in the element’s value.
 locator, text</p>
 </dd></dl>
 

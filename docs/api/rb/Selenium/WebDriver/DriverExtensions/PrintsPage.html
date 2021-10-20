@@ -62,7 +62,7 @@
       <div id="content"><h1>Module: Selenium::WebDriver::DriverExtensions::PrintsPage
   
   
-  <span class="private note title">Private</span>
+  
 </h1>
 <div class="box_info">
   
@@ -74,34 +74,16 @@
   
 
   
-  <dl>
-    <dt>Included in:</dt>
-    <dd><span class='object_link'><a href="../Chrome/Driver.html" title="Selenium::WebDriver::Chrome::Driver (class)">Chrome::Driver</a></span>, <span class='object_link'><a href="../Firefox/Driver.html" title="Selenium::WebDriver::Firefox::Driver (class)">Firefox::Driver</a></span></dd>
-  </dl>
-  
 
   
   <dl>
     <dt>Defined in:</dt>
-    <dd>build/rb/lib/selenium/webdriver/common/driver_extensions/prints_page.rb</dd>
+    <dd>rb/lib/selenium/webdriver/common/driver_extensions/prints_page.rb</dd>
   </dl>
   
 </div>
 
-<div class="docstring">
-  <div class="discussion">
-    <p class="note private">
-  <strong>This module is part of a private API.</strong>
-  You should avoid using this module if possible, as it may be removed or be changed in the future.
-</p>
 
-
-  </div>
-</div>
-<div class="tags">
-  
-
-</div>
 
 
 
@@ -130,10 +112,36 @@
   
   
   
-  <span class="private note title">private</span>
+  
 
   
-    <span class="summary_desc"><div class='inline'></div></span>
+    <span class="summary_desc"><div class='inline'>
+<p>Return a Base64 encoded Print Page as a string.</p>
+</div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#save_print_page-instance_method" title="#save_print_page (instance method)">#<strong>save_print_page</strong>(path, **options)  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'>
+<p>Save a page as a PDF to the given path.</p>
+</div></span>
   
 </li>
 
@@ -158,10 +166,8 @@
   
 </h3><div class="docstring">
   <div class="discussion">
-    <p class="note private">
-  <strong>This method is part of a private API.</strong>
-  You should avoid using this method if possible, as it may be removed or be changed in the future.
-</p>
+    
+<p>Return a Base64 encoded Print Page as a string</p>
 
 
   </div>
@@ -169,25 +175,113 @@
 <div class="tags">
   
 
+  <p class="tag_title">See Also:</p>
+  <ul class="see">
+    
+      <li><a href="https://w3c.github.io/webdriver/#print-page" target="_parent" title="https://w3c.github.io/webdriver/#print-page">https://w3c.github.io/webdriver/#print-page</a></li>
+    
+  </ul>
+
 </div><table class="source_code">
   <tr>
     <td>
       <pre class="lines">
 
 
-24
-25
-26
-27
-28</pre>
+50
+51
+52
+53
+54
+55</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/driver_extensions/prints_page.rb', line 24</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/driver_extensions/prints_page.rb', line 50</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_print_page'>print_page</span><span class='lparen'>(</span><span class='op'>**</span><span class='id identifier rubyid_options'>options</span><span class='rparen'>)</span>
-  <span class='id identifier rubyid_options'>options</span><span class='lbracket'>[</span><span class='symbol'>:page_ranges</span><span class='rbracket'>]</span> <span class='op'>&amp;&amp;=</span> <span class='const'>Array</span><span class='lparen'>(</span><span class='id identifier rubyid_options'>options</span><span class='lbracket'>[</span><span class='symbol'>:page_ranges</span><span class='rbracket'>]</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_options'>options</span><span class='lbracket'>[</span><span class='symbol'>:pageRanges</span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='const'>Array</span><span class='lparen'>(</span><span class='id identifier rubyid_options'>options</span><span class='period'>.</span><span class='id identifier rubyid_delete'>delete</span><span class='lparen'>(</span><span class='symbol'>:page_ranges</span><span class='rparen'>)</span><span class='rparen'>)</span> <span class='op'>||</span> <span class='lbracket'>[</span><span class='rbracket'>]</span>
+  <span class='id identifier rubyid_options'>options</span><span class='lbracket'>[</span><span class='symbol'>:shrinkToFit</span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='id identifier rubyid_options'>options</span><span class='period'>.</span><span class='id identifier rubyid_delete'>delete</span><span class='lparen'>(</span><span class='symbol'>:shrink_to_fit</span><span class='rparen'>)</span> <span class='lbrace'>{</span> <span class='kw'>true</span> <span class='rbrace'>}</span>
 
   <span class='ivar'>@bridge</span><span class='period'>.</span><span class='id identifier rubyid_print_page'>print_page</span><span class='lparen'>(</span><span class='id identifier rubyid_options'>options</span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="save_print_page-instance_method">
+  
+    #<strong>save_print_page</strong>(path, **options)  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    
+<p>Save a page as a PDF to the given path</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+  <div class="examples">
+    <p class="tag_title">Examples:</p>
+    
+      
+        <p class="example_title"><div class='inline'>
+<p>Save Printed Page</p>
+</div></p>
+      
+      <pre class="example code"><code><span class='id identifier rubyid_driver'>driver</span><span class='period'>.</span><span class='id identifier rubyid_save_print_page'>save_print_page</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>../printed_page.pdf</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span></code></pre>
+    
+  </div>
+<p class="tag_title">Parameters:</p>
+<ul class="param">
+  
+    <li>
+      
+        <span class='name'>path</span>
+      
+      
+        <span class='type'>(<tt>String</tt>)</span>
+      
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>to where the pdf should be saved</p>
+</div>
+      
+    </li>
+  
+</ul>
+
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+35
+36
+37
+38
+39
+40</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/driver_extensions/prints_page.rb', line 35</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_save_print_page'>save_print_page</span><span class='lparen'>(</span><span class='id identifier rubyid_path'>path</span><span class='comma'>,</span> <span class='op'>**</span><span class='id identifier rubyid_options'>options</span><span class='rparen'>)</span>
+  <span class='const'>File</span><span class='period'>.</span><span class='id identifier rubyid_open'>open</span><span class='lparen'>(</span><span class='id identifier rubyid_path'>path</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>wb</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_file'>file</span><span class='op'>|</span>
+    <span class='id identifier rubyid_content'>content</span> <span class='op'>=</span> <span class='const'>Base64</span><span class='period'>.</span><span class='id identifier rubyid_decode64'>decode64</span> <span class='id identifier rubyid_print_page'>print_page</span><span class='lparen'>(</span><span class='op'>**</span><span class='id identifier rubyid_options'>options</span><span class='rparen'>)</span>
+    <span class='id identifier rubyid_file'>file</span> <span class='op'>&lt;&lt;</span> <span class='id identifier rubyid_content'>content</span>
+  <span class='kw'>end</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -199,9 +293,9 @@
 </div>
 
       <div id="footer">
-  Generated on Thu Mar 18 21:58:15 2021 by
+  Generated on Wed Oct 20 18:47:50 2021 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.26 (ruby-2.6.3).
+  0.9.26 (ruby-2.7.3).
 </div>
 
     </div>

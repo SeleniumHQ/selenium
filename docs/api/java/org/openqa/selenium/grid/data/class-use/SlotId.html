@@ -123,14 +123,6 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 </td>
 </tr>
 <tr class="altColor">
-<th class="colFirst" scope="row"><a href="#org.openqa.selenium.grid.distributor.local">org.openqa.selenium.grid.distributor.local</a></th>
-<td class="colLast">&nbsp;</td>
-</tr>
-<tr class="rowColor">
-<th class="colFirst" scope="row"><a href="#org.openqa.selenium.grid.distributor.remote">org.openqa.selenium.grid.distributor.remote</a></th>
-<td class="colLast">&nbsp;</td>
-</tr>
-<tr class="altColor">
 <th class="colFirst" scope="row"><a href="#org.openqa.selenium.grid.distributor.selector">org.openqa.selenium.grid.distributor.selector</a></th>
 <td class="colLast">&nbsp;</td>
 </tr>
@@ -167,10 +159,10 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 </tr>
 <tbody>
 <tr class="altColor">
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="../Slot.html#%3Cinit%3E(org.openqa.selenium.grid.data.SlotId,org.openqa.selenium.Capabilities,java.time.Instant,java.util.Optional)">Slot</a></span>&#8203;(<a href="../SlotId.html" title="class in org.openqa.selenium.grid.data">SlotId</a>&nbsp;id,
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="../Slot.html#%3Cinit%3E(org.openqa.selenium.grid.data.SlotId,org.openqa.selenium.Capabilities,java.time.Instant,org.openqa.selenium.grid.data.Session)">Slot</a></span>&#8203;(<a href="../SlotId.html" title="class in org.openqa.selenium.grid.data">SlotId</a>&nbsp;id,
     <a href="../../../Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&nbsp;stereotype,
     java.time.Instant&nbsp;lastStarted,
-    java.util.Optional&lt;<a href="../Session.html" title="class in org.openqa.selenium.grid.data">Session</a>&gt;&nbsp;session)</code></th>
+    <a href="../Session.html" title="class in org.openqa.selenium.grid.data">Session</a>&nbsp;session)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 </tbody>
@@ -191,66 +183,14 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 </tr>
 <tbody>
 <tr class="altColor">
-<td class="colFirst"><code>protected abstract <a href="../../../internal/Either.html" title="class in org.openqa.selenium.internal">Either</a>&lt;<a href="../../../SessionNotCreatedException.html" title="class in org.openqa.selenium">SessionNotCreatedException</a>,&#8203;<a href="../CreateSessionResponse.html" title="class in org.openqa.selenium.grid.data">CreateSessionResponse</a>&gt;</code></td>
-<th class="colSecond" scope="row"><span class="typeNameLabel">Distributor.</span><code><span class="memberNameLink"><a href="../../distributor/Distributor.html#reserve(org.openqa.selenium.grid.data.SlotId,org.openqa.selenium.grid.data.CreateSessionRequest)">reserve</a></span>&#8203;(<a href="../SlotId.html" title="class in org.openqa.selenium.grid.data">SlotId</a>&nbsp;slot,
-       <a href="../CreateSessionRequest.html" title="class in org.openqa.selenium.grid.data">CreateSessionRequest</a>&nbsp;request)</code></th>
-<td class="colLast">&nbsp;</td>
-</tr>
-</tbody>
-</table>
-</section>
-</li>
-<li class="blockList">
-<section role="region"><a id="org.openqa.selenium.grid.distributor.local">
-<!--   -->
-</a>
-<h3>Uses of <a href="../SlotId.html" title="class in org.openqa.selenium.grid.data">SlotId</a> in <a href="../../distributor/local/package-summary.html">org.openqa.selenium.grid.distributor.local</a></h3>
-<table class="useSummary">
-<caption><span>Methods in <a href="../../distributor/local/package-summary.html">org.openqa.selenium.grid.distributor.local</a> with parameters of type <a href="../SlotId.html" title="class in org.openqa.selenium.grid.data">SlotId</a></span><span class="tabEnd">&nbsp;</span></caption>
-<tr>
-<th class="colFirst" scope="col">Modifier and Type</th>
-<th class="colSecond" scope="col">Method</th>
-<th class="colLast" scope="col">Description</th>
-</tr>
-<tbody>
-<tr class="altColor">
 <td class="colFirst"><code>boolean</code></td>
-<th class="colSecond" scope="row"><span class="typeNameLabel">GridModel.</span><code><span class="memberNameLink"><a href="../../distributor/local/GridModel.html#reserve(org.openqa.selenium.grid.data.SlotId)">reserve</a></span>&#8203;(<a href="../SlotId.html" title="class in org.openqa.selenium.grid.data">SlotId</a>&nbsp;slotId)</code></th>
+<th class="colSecond" scope="row"><span class="typeNameLabel">GridModel.</span><code><span class="memberNameLink"><a href="../../distributor/GridModel.html#reserve(org.openqa.selenium.grid.data.SlotId)">reserve</a></span>&#8203;(<a href="../SlotId.html" title="class in org.openqa.selenium.grid.data">SlotId</a>&nbsp;slotId)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr class="rowColor">
-<td class="colFirst"><code>protected <a href="../../../internal/Either.html" title="class in org.openqa.selenium.internal">Either</a>&lt;<a href="../../../SessionNotCreatedException.html" title="class in org.openqa.selenium">SessionNotCreatedException</a>,&#8203;<a href="../CreateSessionResponse.html" title="class in org.openqa.selenium.grid.data">CreateSessionResponse</a>&gt;</code></td>
-<th class="colSecond" scope="row"><span class="typeNameLabel">LocalDistributor.</span><code><span class="memberNameLink"><a href="../../distributor/local/LocalDistributor.html#reserve(org.openqa.selenium.grid.data.SlotId,org.openqa.selenium.grid.data.CreateSessionRequest)">reserve</a></span>&#8203;(<a href="../SlotId.html" title="class in org.openqa.selenium.grid.data">SlotId</a>&nbsp;slotId,
-       <a href="../CreateSessionRequest.html" title="class in org.openqa.selenium.grid.data">CreateSessionRequest</a>&nbsp;request)</code></th>
-<td class="colLast">&nbsp;</td>
-</tr>
-<tr class="altColor">
 <td class="colFirst"><code>void</code></td>
-<th class="colSecond" scope="row"><span class="typeNameLabel">GridModel.</span><code><span class="memberNameLink"><a href="../../distributor/local/GridModel.html#setSession(org.openqa.selenium.grid.data.SlotId,org.openqa.selenium.grid.data.Session)">setSession</a></span>&#8203;(<a href="../SlotId.html" title="class in org.openqa.selenium.grid.data">SlotId</a>&nbsp;slotId,
+<th class="colSecond" scope="row"><span class="typeNameLabel">GridModel.</span><code><span class="memberNameLink"><a href="../../distributor/GridModel.html#setSession(org.openqa.selenium.grid.data.SlotId,org.openqa.selenium.grid.data.Session)">setSession</a></span>&#8203;(<a href="../SlotId.html" title="class in org.openqa.selenium.grid.data">SlotId</a>&nbsp;slotId,
           <a href="../Session.html" title="class in org.openqa.selenium.grid.data">Session</a>&nbsp;session)</code></th>
-<td class="colLast">&nbsp;</td>
-</tr>
-</tbody>
-</table>
-</section>
-</li>
-<li class="blockList">
-<section role="region"><a id="org.openqa.selenium.grid.distributor.remote">
-<!--   -->
-</a>
-<h3>Uses of <a href="../SlotId.html" title="class in org.openqa.selenium.grid.data">SlotId</a> in <a href="../../distributor/remote/package-summary.html">org.openqa.selenium.grid.distributor.remote</a></h3>
-<table class="useSummary">
-<caption><span>Methods in <a href="../../distributor/remote/package-summary.html">org.openqa.selenium.grid.distributor.remote</a> with parameters of type <a href="../SlotId.html" title="class in org.openqa.selenium.grid.data">SlotId</a></span><span class="tabEnd">&nbsp;</span></caption>
-<tr>
-<th class="colFirst" scope="col">Modifier and Type</th>
-<th class="colSecond" scope="col">Method</th>
-<th class="colLast" scope="col">Description</th>
-</tr>
-<tbody>
-<tr class="altColor">
-<td class="colFirst"><code>protected <a href="../../../internal/Either.html" title="class in org.openqa.selenium.internal">Either</a>&lt;<a href="../../../SessionNotCreatedException.html" title="class in org.openqa.selenium">SessionNotCreatedException</a>,&#8203;<a href="../CreateSessionResponse.html" title="class in org.openqa.selenium.grid.data">CreateSessionResponse</a>&gt;</code></td>
-<th class="colSecond" scope="row"><span class="typeNameLabel">RemoteDistributor.</span><code><span class="memberNameLink"><a href="../../distributor/remote/RemoteDistributor.html#reserve(org.openqa.selenium.grid.data.SlotId,org.openqa.selenium.grid.data.CreateSessionRequest)">reserve</a></span>&#8203;(<a href="../SlotId.html" title="class in org.openqa.selenium.grid.data">SlotId</a>&nbsp;slot,
-       <a href="../CreateSessionRequest.html" title="class in org.openqa.selenium.grid.data">CreateSessionRequest</a>&nbsp;request)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 </tbody>

@@ -147,6 +147,12 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 </td>
 </tr>
 <tr class="rowColor">
+<th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/remote/BrowserType.html" title="interface in org.openqa.selenium.remote">org.openqa.selenium.remote.BrowserType</a></th>
+<td class="colLast">
+<div class="deprecationComment">Prefer to use <a href="org/openqa/selenium/remote/Browser.html" title="interface in org.openqa.selenium.remote"><code>Browser</code></a></div>
+</td>
+</tr>
+<tr class="altColor">
 <th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/support/events/WebDriverEventListener.html" title="interface in org.openqa.selenium.support.events">org.openqa.selenium.support.events.WebDriverEventListener</a></th>
 <td class="colLast">
 <div class="deprecationComment">Use <a href="org/openqa/selenium/support/events/EventFiringDecorator.html" title="class in org.openqa.selenium.support.events"><code>EventFiringDecorator</code></a> and <a href="org/openqa/selenium/support/events/WebDriverListener.html" title="interface in org.openqa.selenium.support.events"><code>WebDriverListener</code></a> instead</div>
@@ -358,12 +364,14 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 </tr>
 <tr class="rowColor">
 <th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/remote/CapabilityType.html#PLATFORM">org.openqa.selenium.remote.CapabilityType.PLATFORM</a></th>
-<td class="colLast"></td>
+<td class="colLast">
+<div class="deprecationComment">Use <a href="org/openqa/selenium/remote/CapabilityType.html#PLATFORM_NAME"><code>CapabilityType.PLATFORM_NAME</code></a></div>
+</td>
 </tr>
 <tr class="altColor">
-<th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/safari/SafariOptions.html#CAPABILITY">org.openqa.selenium.safari.SafariOptions.CAPABILITY</a></th>
+<th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/remote/CapabilityType.html#VERSION">org.openqa.selenium.remote.CapabilityType.VERSION</a></th>
 <td class="colLast">
-<div class="deprecationComment">No replacement. Use the methods on this class</div>
+<div class="deprecationComment">Use <a href="org/openqa/selenium/remote/CapabilityType.html#BROWSER_VERSION"><code>CapabilityType.BROWSER_VERSION</code></a></div>
 </td>
 </tr>
 </tbody>
@@ -489,6 +497,12 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 </td>
 </tr>
 <tr class="altColor">
+<th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/safari/SafariDriverService.Builder.html#usingTechnologyPreview(boolean)">org.openqa.selenium.safari.SafariDriverService.Builder.usingTechnologyPreview&#8203;(boolean)</a></th>
+<td class="colLast">
+<div class="deprecationComment">Directly use <a href="org/openqa/selenium/safari/SafariTechPreviewDriverService.html" title="class in org.openqa.selenium.safari"><code>SafariTechPreviewDriverService</code></a></div>
+</td>
+</tr>
+<tr class="rowColor">
 <th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/WebDriver.Timeouts.html#implicitlyWait(long,java.util.concurrent.TimeUnit)">org.openqa.selenium.WebDriver.Timeouts.implicitlyWait&#8203;(long, TimeUnit)</a></th>
 <td class="colLast">
 <div class="deprecationComment">Use <a href="org/openqa/selenium/WebDriver.Timeouts.html#implicitlyWait(java.time.Duration)"><code>WebDriver.Timeouts.implicitlyWait(Duration)</code></a>
@@ -508,7 +522,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
  argument will be returned.</div>
 </td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/WebDriver.Timeouts.html#pageLoadTimeout(long,java.util.concurrent.TimeUnit)">org.openqa.selenium.WebDriver.Timeouts.pageLoadTimeout&#8203;(long, TimeUnit)</a></th>
 <td class="colLast">
 <div class="deprecationComment">Use <a href="org/openqa/selenium/WebDriver.Timeouts.html#pageLoadTimeout(java.time.Duration)"><code>WebDriver.Timeouts.pageLoadTimeout(Duration)</code></a>
@@ -518,7 +532,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
  invalid argument will be returned.</div>
 </td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/WebDriver.Timeouts.html#setScriptTimeout(long,java.util.concurrent.TimeUnit)">org.openqa.selenium.WebDriver.Timeouts.setScriptTimeout&#8203;(long, TimeUnit)</a></th>
 <td class="colLast">
 <div class="deprecationComment">Use <a href="org/openqa/selenium/WebDriver.Timeouts.html#setScriptTimeout(java.time.Duration)"><code>WebDriver.Timeouts.setScriptTimeout(Duration)</code></a>

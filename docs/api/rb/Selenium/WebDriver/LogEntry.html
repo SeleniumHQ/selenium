@@ -94,7 +94,7 @@
   
   <dl>
     <dt>Defined in:</dt>
-    <dd>build/rb/lib/selenium/webdriver/common/log_entry.rb</dd>
+    <dd>rb/lib/selenium/webdriver/common/log_entry.rb</dd>
   </dl>
   
 </div>
@@ -337,7 +337,7 @@
 29</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/log_entry.rb', line 25</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/log_entry.rb', line 25</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_initialize'>initialize</span><span class='lparen'>(</span><span class='id identifier rubyid_level'>level</span><span class='comma'>,</span> <span class='id identifier rubyid_timestamp'>timestamp</span><span class='comma'>,</span> <span class='id identifier rubyid_message'>message</span><span class='rparen'>)</span>
   <span class='ivar'>@level</span> <span class='op'>=</span> <span class='id identifier rubyid_level'>level</span>
@@ -387,7 +387,7 @@
 25</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/log_entry.rb', line 23</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/log_entry.rb', line 23</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_level'>level</span>
   <span class='ivar'>@level</span>
@@ -430,7 +430,7 @@
 25</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/log_entry.rb', line 23</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/log_entry.rb', line 23</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_message'>message</span>
   <span class='ivar'>@message</span>
@@ -473,7 +473,7 @@
 25</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/log_entry.rb', line 23</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/log_entry.rb', line 23</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_timestamp'>timestamp</span>
   <span class='ivar'>@timestamp</span>
@@ -514,12 +514,12 @@
 37</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/log_entry.rb', line 31</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/log_entry.rb', line 31</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_as_json'>as_json</span><span class='lparen'>(</span><span class='op'>*</span><span class='rparen'>)</span>
   <span class='lbrace'>{</span>
-    <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>level</span><span class='tstring_end'>&#39;</span></span> <span class='op'>=&gt;</span> <span class='id identifier rubyid_level'>level</span><span class='comma'>,</span>
     <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>timestamp</span><span class='tstring_end'>&#39;</span></span> <span class='op'>=&gt;</span> <span class='id identifier rubyid_timestamp'>timestamp</span><span class='comma'>,</span>
+    <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>level</span><span class='tstring_end'>&#39;</span></span> <span class='op'>=&gt;</span> <span class='id identifier rubyid_level'>level</span><span class='comma'>,</span>
     <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>message</span><span class='tstring_end'>&#39;</span></span> <span class='op'>=&gt;</span> <span class='id identifier rubyid_message'>message</span>
   <span class='rbrace'>}</span>
 <span class='kw'>end</span></pre>
@@ -548,7 +548,7 @@
 45</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/log_entry.rb', line 43</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/log_entry.rb', line 43</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_time'>time</span>
   <span class='const'>Time</span><span class='period'>.</span><span class='id identifier rubyid_at'>at</span> <span class='id identifier rubyid_timestamp'>timestamp</span> <span class='op'>/</span> <span class='int'>1000</span>
@@ -578,10 +578,10 @@
 41</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/log_entry.rb', line 39</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/log_entry.rb', line 39</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_to_s'>to_s</span>
-  <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_level'>level</span><span class='embexpr_end'>}</span><span class='tstring_content'> </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_time'>time</span><span class='embexpr_end'>}</span><span class='tstring_content'>: </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_message'>message</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span>
+  <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_time'>time</span><span class='embexpr_end'>}</span><span class='tstring_content'> </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_level'>level</span><span class='embexpr_end'>}</span><span class='tstring_content'>: </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_message'>message</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -593,9 +593,9 @@
 </div>
 
       <div id="footer">
-  Generated on Thu Mar 18 21:58:19 2021 by
+  Generated on Wed Oct 20 18:47:54 2021 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.26 (ruby-2.6.3).
+  0.9.26 (ruby-2.7.3).
 </div>
 
     </div>

@@ -27,7 +27,7 @@
     catch(err) {
     }
 //-->
-var data = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10,"i9":10,"i10":10,"i11":10,"i12":10};
+var data = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10,"i9":10,"i10":10,"i11":10};
 var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -137,7 +137,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <li class="blockList">
 <dl>
 <dt>All Implemented Interfaces:</dt>
-<dd><code><a href="Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a></code></dd>
+<dd><code>java.io.Serializable</code>, <code><a href="Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a></code></dd>
 </dl>
 <dl>
 <dt>Direct Known Subclasses:</dt>
@@ -147,6 +147,10 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <pre>public class <span class="typeNameLabel">MutableCapabilities</span>
 extends java.lang.Object
 implements <a href="Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a></pre>
+<dl>
+<dt><span class="seeLabel">See Also:</span></dt>
+<dd><a href="../../../serialized-form.html#org.openqa.selenium.MutableCapabilities">Serialized Form</a></dd>
+</dl>
 </li>
 </ul>
 </div>
@@ -197,38 +201,31 @@ implements <a href="Capabilities.html" title="interface in org.openqa.selenium">
 <th class="colLast" scope="col">Description</th>
 </tr>
 <tr id="i0" class="altColor">
-<td class="colFirst"><code>protected int</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#amendHashCode()">amendHashCode</a></span>()</code></th>
-<td class="colLast">
-<div class="block">Subclasses can use this to add information that isn't always in the capabilities map.</div>
-</td>
-</tr>
-<tr id="i1" class="rowColor">
 <td class="colFirst"><code>java.util.Map&lt;java.lang.String,&#8203;java.lang.Object&gt;</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#asMap()">asMap</a></span>()</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i2" class="altColor">
+<tr id="i1" class="rowColor">
 <td class="colFirst"><code>boolean</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#equals(java.lang.Object)">equals</a></span>&#8203;(java.lang.Object&nbsp;o)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i3" class="rowColor">
+<tr id="i2" class="altColor">
 <td class="colFirst"><code>java.lang.Object</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getCapability(java.lang.String)">getCapability</a></span>&#8203;(java.lang.String&nbsp;capabilityName)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i4" class="altColor">
+<tr id="i3" class="rowColor">
 <td class="colFirst"><code>java.util.Set&lt;java.lang.String&gt;</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getCapabilityNames()">getCapabilityNames</a></span>()</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i5" class="rowColor">
+<tr id="i4" class="altColor">
 <td class="colFirst"><code>int</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#hashCode()">hashCode</a></span>()</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i6" class="altColor">
+<tr id="i5" class="rowColor">
 <td class="colFirst"><code><a href="MutableCapabilities.html" title="class in org.openqa.selenium">MutableCapabilities</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#merge(org.openqa.selenium.Capabilities)">merge</a></span>&#8203;(<a href="Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&nbsp;other)</code></th>
 <td class="colLast">
@@ -236,36 +233,36 @@ implements <a href="Capabilities.html" title="interface in org.openqa.selenium">
  <a href="Capabilities.html" title="interface in org.openqa.selenium"><code>Capabilities</code></a> instance.</div>
 </td>
 </tr>
-<tr id="i7" class="rowColor">
+<tr id="i6" class="altColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setCapability(java.lang.String,boolean)">setCapability</a></span>&#8203;(java.lang.String&nbsp;capabilityName,
              boolean&nbsp;value)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i8" class="altColor">
+<tr id="i7" class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setCapability(java.lang.String,java.lang.Object)">setCapability</a></span>&#8203;(java.lang.String&nbsp;key,
              java.lang.Object&nbsp;value)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i9" class="rowColor">
+<tr id="i8" class="altColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setCapability(java.lang.String,java.lang.String)">setCapability</a></span>&#8203;(java.lang.String&nbsp;capabilityName,
              java.lang.String&nbsp;value)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i10" class="altColor">
+<tr id="i9" class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setCapability(java.lang.String,org.openqa.selenium.Platform)">setCapability</a></span>&#8203;(java.lang.String&nbsp;capabilityName,
              <a href="Platform.html" title="enum in org.openqa.selenium">Platform</a>&nbsp;value)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i11" class="rowColor">
+<tr id="i10" class="altColor">
 <td class="colFirst"><code>java.util.Map&lt;java.lang.String,&#8203;java.lang.Object&gt;</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#toJson()">toJson</a></span>()</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i12" class="altColor">
+<tr id="i11" class="rowColor">
 <td class="colFirst"><code>java.lang.String</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#toString()">toString</a></span>()</code></th>
 <td class="colLast">&nbsp;</td>
@@ -448,16 +445,6 @@ implements <a href="Capabilities.html" title="interface in org.openqa.selenium">
 <li class="blockList">
 <h4>toJson</h4>
 <pre class="methodSignature">public&nbsp;java.util.Map&lt;java.lang.String,&#8203;java.lang.Object&gt;&nbsp;toJson()</pre>
-</li>
-</ul>
-<a id="amendHashCode()">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>amendHashCode</h4>
-<pre class="methodSignature">protected&nbsp;int&nbsp;amendHashCode()</pre>
-<div class="block">Subclasses can use this to add information that isn't always in the capabilities map.</div>
 </li>
 </ul>
 <a id="hashCode()">

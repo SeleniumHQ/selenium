@@ -371,8 +371,8 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 </tr>
 <tr class="rowColor">
 <td class="colFirst"><code>java.util.List&lt;<a href="../WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&gt;</code></td>
-<th class="colSecond" scope="row"><span class="typeNameLabel">RemoteWebDriver.</span><code><span class="memberNameLink"><a href="../remote/RemoteWebDriver.html#findElements(org.openqa.selenium.remote.RemoteWebDriver,org.openqa.selenium.SearchContext,org.openqa.selenium.By)">findElements</a></span>&#8203;(<a href="../remote/RemoteWebDriver.html" title="class in org.openqa.selenium.remote">RemoteWebDriver</a>&nbsp;parent,
-            <a href="../SearchContext.html" title="interface in org.openqa.selenium">SearchContext</a>&nbsp;context,
+<th class="colSecond" scope="row"><span class="typeNameLabel">RemoteWebDriver.</span><code><span class="memberNameLink"><a href="../remote/RemoteWebDriver.html#findElements(org.openqa.selenium.SearchContext,java.util.function.BiFunction,org.openqa.selenium.By)">findElements</a></span>&#8203;(<a href="../SearchContext.html" title="interface in org.openqa.selenium">SearchContext</a>&nbsp;context,
+            java.util.function.BiFunction&lt;java.lang.String,&#8203;java.lang.Object,&#8203;<a href="../remote/CommandPayload.html" title="class in org.openqa.selenium.remote">CommandPayload</a>&gt;&nbsp;findCommand,
             <a href="../By.html" title="class in org.openqa.selenium">By</a>&nbsp;locator)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
@@ -627,6 +627,21 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 </tbody>
 </table>
 <table class="useSummary">
+<caption><span>Methods in <a href="../support/locators/package-summary.html">org.openqa.selenium.support.locators</a> that return <a href="../By.html" title="class in org.openqa.selenium">By</a></span><span class="tabEnd">&nbsp;</span></caption>
+<tr>
+<th class="colFirst" scope="col">Modifier and Type</th>
+<th class="colSecond" scope="col">Method</th>
+<th class="colLast" scope="col">Description</th>
+</tr>
+<tbody>
+<tr class="altColor">
+<td class="colFirst"><code><a href="../By.html" title="class in org.openqa.selenium">By</a></code></td>
+<th class="colSecond" scope="row"><span class="typeNameLabel">RelativeLocatorServerSide.</span><code><span class="memberNameLink"><a href="../support/locators/RelativeLocatorServerSide.html#createBy(java.lang.Object)">createBy</a></span>&#8203;(java.lang.Object&nbsp;usingParameter)</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+</tbody>
+</table>
+<table class="useSummary">
 <caption><span>Methods in <a href="../support/locators/package-summary.html">org.openqa.selenium.support.locators</a> with parameters of type <a href="../By.html" title="class in org.openqa.selenium">By</a></span><span class="tabEnd">&nbsp;</span></caption>
 <tr>
 <th class="colFirst" scope="col">Modifier and Type</th>
@@ -664,6 +679,13 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <td class="colFirst"><code><a href="../support/locators/RelativeLocator.RelativeBy.html" title="class in org.openqa.selenium.support.locators">RelativeLocator.RelativeBy</a></code></td>
 <th class="colSecond" scope="row"><span class="typeNameLabel">RelativeLocator.RelativeBy.</span><code><span class="memberNameLink"><a href="../support/locators/RelativeLocator.RelativeBy.html#toRightOf(org.openqa.selenium.By)">toRightOf</a></span>&#8203;(<a href="../By.html" title="class in org.openqa.selenium">By</a>&nbsp;locator)</code></th>
 <td class="colLast">&nbsp;</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>static <a href="../support/locators/RelativeLocator.RelativeBy.html" title="class in org.openqa.selenium.support.locators">RelativeLocator.RelativeBy</a></code></td>
+<th class="colSecond" scope="row"><span class="typeNameLabel">RelativeLocator.</span><code><span class="memberNameLink"><a href="../support/locators/RelativeLocator.html#with(org.openqa.selenium.By)">with</a></span>&#8203;(<a href="../By.html" title="class in org.openqa.selenium">By</a>&nbsp;by)</code></th>
+<td class="colLast">
+<div class="block">Start of a relative locator, finding elements by tag name.</div>
+</td>
 </tr>
 </tbody>
 </table>

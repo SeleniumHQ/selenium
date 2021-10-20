@@ -27,7 +27,7 @@
     catch(err) {
     }
 //-->
-var data = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10};
+var data = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10};
 var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -219,29 +219,23 @@ extends <a href="../Distributor.html" title="class in org.openqa.selenium.grid.d
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr id="i2" class="altColor">
-<td class="colFirst"><code>protected java.util.Set&lt;<a href="../../data/NodeStatus.html" title="class in org.openqa.selenium.grid.data">NodeStatus</a>&gt;</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getAvailableNodes()">getAvailableNodes</a></span>()</code></th>
-<td class="colLast">&nbsp;</td>
-</tr>
-<tr id="i3" class="rowColor">
 <td class="colFirst"><code><a href="../../data/DistributorStatus.html" title="class in org.openqa.selenium.grid.data">DistributorStatus</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getStatus()">getStatus</a></span>()</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i4" class="altColor">
+<tr id="i3" class="rowColor">
 <td class="colFirst"><code>boolean</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#isReady()">isReady</a></span>()</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr id="i4" class="altColor">
+<td class="colFirst"><code><a href="../../../internal/Either.html" title="class in org.openqa.selenium.internal">Either</a>&lt;<a href="../../../SessionNotCreatedException.html" title="class in org.openqa.selenium">SessionNotCreatedException</a>,&#8203;<a href="../../data/CreateSessionResponse.html" title="class in org.openqa.selenium.grid.data">CreateSessionResponse</a>&gt;</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#newSession(org.openqa.selenium.grid.data.SessionRequest)">newSession</a></span>&#8203;(<a href="../../data/SessionRequest.html" title="class in org.openqa.selenium.grid.data">SessionRequest</a>&nbsp;sessionRequest)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr id="i5" class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#remove(org.openqa.selenium.grid.data.NodeId)">remove</a></span>&#8203;(<a href="../../data/NodeId.html" title="class in org.openqa.selenium.grid.data">NodeId</a>&nbsp;nodeId)</code></th>
-<td class="colLast">&nbsp;</td>
-</tr>
-<tr id="i6" class="altColor">
-<td class="colFirst"><code>protected <a href="../../../internal/Either.html" title="class in org.openqa.selenium.internal">Either</a>&lt;<a href="../../../SessionNotCreatedException.html" title="class in org.openqa.selenium">SessionNotCreatedException</a>,&#8203;<a href="../../data/CreateSessionResponse.html" title="class in org.openqa.selenium.grid.data">CreateSessionResponse</a>&gt;</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#reserve(org.openqa.selenium.grid.data.SlotId,org.openqa.selenium.grid.data.CreateSessionRequest)">reserve</a></span>&#8203;(<a href="../../data/SlotId.html" title="class in org.openqa.selenium.grid.data">SlotId</a>&nbsp;slot,
-       <a href="../../data/CreateSessionRequest.html" title="class in org.openqa.selenium.grid.data">CreateSessionRequest</a>&nbsp;request)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 </table>
@@ -250,7 +244,7 @@ extends <a href="../Distributor.html" title="class in org.openqa.selenium.grid.d
 <!--   -->
 </a>
 <h3>Methods inherited from class&nbsp;org.openqa.selenium.grid.distributor.<a href="../Distributor.html" title="class in org.openqa.selenium.grid.distributor">Distributor</a></h3>
-<code><a href="../Distributor.html#execute(org.openqa.selenium.remote.http.HttpRequest)">execute</a>, <a href="../Distributor.html#matches(org.openqa.selenium.remote.http.HttpRequest)">matches</a>, <a href="../Distributor.html#newSession(org.openqa.selenium.remote.http.HttpRequest)">newSession</a>, <a href="../Distributor.html#test(org.openqa.selenium.remote.http.HttpRequest)">test</a></code></li>
+<code><a href="../Distributor.html#execute(org.openqa.selenium.remote.http.HttpRequest)">execute</a>, <a href="../Distributor.html#matches(org.openqa.selenium.remote.http.HttpRequest)">matches</a>, <a href="../Distributor.html#test(org.openqa.selenium.remote.http.HttpRequest)">test</a></code></li>
 </ul>
 <ul class="blockList">
 <li class="blockList"><a id="methods.inherited.from.class.java.lang.Object">
@@ -372,30 +366,19 @@ extends <a href="../Distributor.html" title="class in org.openqa.selenium.grid.d
 </dl>
 </li>
 </ul>
-<a id="getAvailableNodes()">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>getAvailableNodes</h4>
-<pre class="methodSignature">protected&nbsp;java.util.Set&lt;<a href="../../data/NodeStatus.html" title="class in org.openqa.selenium.grid.data">NodeStatus</a>&gt;&nbsp;getAvailableNodes()</pre>
-<dl>
-<dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
-<dd><code><a href="../Distributor.html#getAvailableNodes()">getAvailableNodes</a></code>&nbsp;in class&nbsp;<code><a href="../Distributor.html" title="class in org.openqa.selenium.grid.distributor">Distributor</a></code></dd>
-</dl>
-</li>
-</ul>
-<a id="reserve(org.openqa.selenium.grid.data.SlotId,org.openqa.selenium.grid.data.CreateSessionRequest)">
+<a id="newSession(org.openqa.selenium.grid.data.SessionRequest)">
 <!--   -->
 </a>
 <ul class="blockListLast">
 <li class="blockList">
-<h4>reserve</h4>
-<pre class="methodSignature">protected&nbsp;<a href="../../../internal/Either.html" title="class in org.openqa.selenium.internal">Either</a>&lt;<a href="../../../SessionNotCreatedException.html" title="class in org.openqa.selenium">SessionNotCreatedException</a>,&#8203;<a href="../../data/CreateSessionResponse.html" title="class in org.openqa.selenium.grid.data">CreateSessionResponse</a>&gt;&nbsp;reserve&#8203;(<a href="../../data/SlotId.html" title="class in org.openqa.selenium.grid.data">SlotId</a>&nbsp;slot,
-                                                                                 <a href="../../data/CreateSessionRequest.html" title="class in org.openqa.selenium.grid.data">CreateSessionRequest</a>&nbsp;request)</pre>
+<h4>newSession</h4>
+<pre class="methodSignature">public&nbsp;<a href="../../../internal/Either.html" title="class in org.openqa.selenium.internal">Either</a>&lt;<a href="../../../SessionNotCreatedException.html" title="class in org.openqa.selenium">SessionNotCreatedException</a>,&#8203;<a href="../../data/CreateSessionResponse.html" title="class in org.openqa.selenium.grid.data">CreateSessionResponse</a>&gt;&nbsp;newSession&#8203;(<a href="../../data/SessionRequest.html" title="class in org.openqa.selenium.grid.data">SessionRequest</a>&nbsp;sessionRequest)
+                                                                          throws <a href="../../../SessionNotCreatedException.html" title="class in org.openqa.selenium">SessionNotCreatedException</a></pre>
 <dl>
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
-<dd><code><a href="../Distributor.html#reserve(org.openqa.selenium.grid.data.SlotId,org.openqa.selenium.grid.data.CreateSessionRequest)">reserve</a></code>&nbsp;in class&nbsp;<code><a href="../Distributor.html" title="class in org.openqa.selenium.grid.distributor">Distributor</a></code></dd>
+<dd><code><a href="../Distributor.html#newSession(org.openqa.selenium.grid.data.SessionRequest)">newSession</a></code>&nbsp;in class&nbsp;<code><a href="../Distributor.html" title="class in org.openqa.selenium.grid.distributor">Distributor</a></code></dd>
+<dt><span class="throwsLabel">Throws:</span></dt>
+<dd><code><a href="../../../SessionNotCreatedException.html" title="class in org.openqa.selenium">SessionNotCreatedException</a></code></dd>
 </dl>
 </li>
 </ul>

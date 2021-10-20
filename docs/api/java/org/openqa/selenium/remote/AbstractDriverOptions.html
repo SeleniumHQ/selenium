@@ -27,8 +27,8 @@
     catch(err) {
     }
 //-->
-var data = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10};
-var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
+var data = {"i0":10,"i1":10,"i2":10,"i3":6,"i4":6,"i5":10,"i6":10,"i7":10,"i8":10,"i9":10,"i10":10,"i11":10,"i12":10,"i13":10,"i14":10};
+var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],4:["t3","Abstract Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
 var tableTab = "tableTab";
@@ -142,15 +142,19 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <li class="blockList">
 <dl>
 <dt>All Implemented Interfaces:</dt>
-<dd><code><a href="../Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a></code></dd>
+<dd><code>java.io.Serializable</code>, <code><a href="../Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a></code></dd>
 </dl>
 <dl>
 <dt>Direct Known Subclasses:</dt>
 <dd><code><a href="../chromium/ChromiumOptions.html" title="class in org.openqa.selenium.chromium">ChromiumOptions</a></code>, <code><a href="../firefox/FirefoxOptions.html" title="class in org.openqa.selenium.firefox">FirefoxOptions</a></code>, <code><a href="../ie/InternetExplorerOptions.html" title="class in org.openqa.selenium.ie">InternetExplorerOptions</a></code>, <code><a href="../opera/OperaOptions.html" title="class in org.openqa.selenium.opera">OperaOptions</a></code>, <code><a href="../safari/SafariOptions.html" title="class in org.openqa.selenium.safari">SafariOptions</a></code></dd>
 </dl>
 <hr>
-<pre>public class <span class="typeNameLabel">AbstractDriverOptions&lt;DO extends AbstractDriverOptions&gt;</span>
+<pre>public abstract class <span class="typeNameLabel">AbstractDriverOptions&lt;DO extends AbstractDriverOptions&gt;</span>
 extends <a href="../MutableCapabilities.html" title="class in org.openqa.selenium">MutableCapabilities</a></pre>
+<dl>
+<dt><span class="seeLabel">See Also:</span></dt>
+<dd><a href="../../../../serialized-form.html#org.openqa.selenium.remote.AbstractDriverOptions">Serialized Form</a></dd>
+</dl>
 </li>
 </ul>
 </div>
@@ -186,33 +190,83 @@ extends <a href="../MutableCapabilities.html" title="class in org.openqa.seleniu
 </a>
 <h3>Method Summary</h3>
 <table class="memberSummary">
-<caption><span id="t0" class="activeTableTab"><span>All Methods</span><span class="tabEnd">&nbsp;</span></span><span id="t2" class="tableTab"><span><a href="javascript:show(2);">Instance Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t4" class="tableTab"><span><a href="javascript:show(8);">Concrete Methods</a></span><span class="tabEnd">&nbsp;</span></span></caption>
+<caption><span id="t0" class="activeTableTab"><span>All Methods</span><span class="tabEnd">&nbsp;</span></span><span id="t2" class="tableTab"><span><a href="javascript:show(2);">Instance Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t3" class="tableTab"><span><a href="javascript:show(4);">Abstract Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t4" class="tableTab"><span><a href="javascript:show(8);">Concrete Methods</a></span><span class="tabEnd">&nbsp;</span></span></caption>
 <tr>
 <th class="colFirst" scope="col">Modifier and Type</th>
 <th class="colSecond" scope="col">Method</th>
 <th class="colLast" scope="col">Description</th>
 </tr>
 <tr id="i0" class="altColor">
+<td class="colFirst"><code>java.util.Map&lt;java.lang.String,&#8203;java.lang.Object&gt;</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#asMap()">asMap</a></span>()</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr id="i1" class="rowColor">
+<td class="colFirst"><code>java.lang.Object</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getCapability(java.lang.String)">getCapability</a></span>&#8203;(java.lang.String&nbsp;capabilityName)</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr id="i2" class="altColor">
+<td class="colFirst"><code>java.util.Set&lt;java.lang.String&gt;</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getCapabilityNames()">getCapabilityNames</a></span>()</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr id="i3" class="rowColor">
+<td class="colFirst"><code>protected abstract java.lang.Object</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getExtraCapability(java.lang.String)">getExtraCapability</a></span>&#8203;(java.lang.String&nbsp;capabilityName)</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr id="i4" class="altColor">
+<td class="colFirst"><code>protected abstract java.util.Set&lt;java.lang.String&gt;</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getExtraCapabilityNames()">getExtraCapabilityNames</a></span>()</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr id="i5" class="rowColor">
 <td class="colFirst"><code><a href="AbstractDriverOptions.html" title="type parameter in AbstractDriverOptions">DO</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setAcceptInsecureCerts(boolean)">setAcceptInsecureCerts</a></span>&#8203;(boolean&nbsp;acceptInsecureCerts)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i1" class="rowColor">
+<tr id="i6" class="altColor">
+<td class="colFirst"><code><a href="AbstractDriverOptions.html" title="type parameter in AbstractDriverOptions">DO</a></code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setBrowserVersion(java.lang.String)">setBrowserVersion</a></span>&#8203;(java.lang.String&nbsp;browserVersion)</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr id="i7" class="rowColor">
+<td class="colFirst"><code><a href="AbstractDriverOptions.html" title="type parameter in AbstractDriverOptions">DO</a></code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setImplicitWaitTimeout(java.time.Duration)">setImplicitWaitTimeout</a></span>&#8203;(java.time.Duration&nbsp;timeout)</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr id="i8" class="altColor">
 <td class="colFirst"><code><a href="AbstractDriverOptions.html" title="type parameter in AbstractDriverOptions">DO</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setPageLoadStrategy(org.openqa.selenium.PageLoadStrategy)">setPageLoadStrategy</a></span>&#8203;(<a href="../PageLoadStrategy.html" title="enum in org.openqa.selenium">PageLoadStrategy</a>&nbsp;strategy)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i2" class="altColor">
+<tr id="i9" class="rowColor">
+<td class="colFirst"><code><a href="AbstractDriverOptions.html" title="type parameter in AbstractDriverOptions">DO</a></code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setPageLoadTimeout(java.time.Duration)">setPageLoadTimeout</a></span>&#8203;(java.time.Duration&nbsp;timeout)</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr id="i10" class="altColor">
+<td class="colFirst"><code><a href="AbstractDriverOptions.html" title="type parameter in AbstractDriverOptions">DO</a></code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setPlatformName(java.lang.String)">setPlatformName</a></span>&#8203;(java.lang.String&nbsp;platformName)</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr id="i11" class="rowColor">
 <td class="colFirst"><code><a href="AbstractDriverOptions.html" title="type parameter in AbstractDriverOptions">DO</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setProxy(org.openqa.selenium.Proxy)">setProxy</a></span>&#8203;(<a href="../Proxy.html" title="class in org.openqa.selenium">Proxy</a>&nbsp;proxy)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i3" class="rowColor">
+<tr id="i12" class="altColor">
+<td class="colFirst"><code><a href="AbstractDriverOptions.html" title="type parameter in AbstractDriverOptions">DO</a></code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setScriptTimeout(java.time.Duration)">setScriptTimeout</a></span>&#8203;(java.time.Duration&nbsp;timeout)</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr id="i13" class="rowColor">
 <td class="colFirst"><code><a href="AbstractDriverOptions.html" title="type parameter in AbstractDriverOptions">DO</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setStrictFileInteractability(boolean)">setStrictFileInteractability</a></span>&#8203;(boolean&nbsp;strictFileInteractability)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i4" class="altColor">
+<tr id="i14" class="altColor">
 <td class="colFirst"><code><a href="AbstractDriverOptions.html" title="type parameter in AbstractDriverOptions">DO</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setUnhandledPromptBehaviour(org.openqa.selenium.UnexpectedAlertBehaviour)">setUnhandledPromptBehaviour</a></span>&#8203;(<a href="../UnexpectedAlertBehaviour.html" title="enum in org.openqa.selenium">UnexpectedAlertBehaviour</a>&nbsp;behaviour)</code></th>
 <td class="colLast">&nbsp;</td>
@@ -223,7 +277,7 @@ extends <a href="../MutableCapabilities.html" title="class in org.openqa.seleniu
 <!--   -->
 </a>
 <h3>Methods inherited from class&nbsp;org.openqa.selenium.<a href="../MutableCapabilities.html" title="class in org.openqa.selenium">MutableCapabilities</a></h3>
-<code><a href="../MutableCapabilities.html#amendHashCode()">amendHashCode</a>, <a href="../MutableCapabilities.html#asMap()">asMap</a>, <a href="../MutableCapabilities.html#equals(java.lang.Object)">equals</a>, <a href="../MutableCapabilities.html#getCapability(java.lang.String)">getCapability</a>, <a href="../MutableCapabilities.html#getCapabilityNames()">getCapabilityNames</a>, <a href="../MutableCapabilities.html#hashCode()">hashCode</a>, <a href="../MutableCapabilities.html#merge(org.openqa.selenium.Capabilities)">merge</a>, <a href="../MutableCapabilities.html#setCapability(java.lang.String,boolean)">setCapability</a>, <a href="../MutableCapabilities.html#setCapability(java.lang.String,java.lang.Object)">setCapability</a>, <a href="../MutableCapabilities.html#setCapability(java.lang.String,java.lang.String)">setCapability</a>, <a href="../MutableCapabilities.html#setCapability(java.lang.String,org.openqa.selenium.Platform)">setCapability</a>, <a href="../MutableCapabilities.html#toJson()">toJson</a>, <a href="../MutableCapabilities.html#toString()">toString</a></code></li>
+<code><a href="../MutableCapabilities.html#equals(java.lang.Object)">equals</a>, <a href="../MutableCapabilities.html#hashCode()">hashCode</a>, <a href="../MutableCapabilities.html#merge(org.openqa.selenium.Capabilities)">merge</a>, <a href="../MutableCapabilities.html#setCapability(java.lang.String,boolean)">setCapability</a>, <a href="../MutableCapabilities.html#setCapability(java.lang.String,java.lang.Object)">setCapability</a>, <a href="../MutableCapabilities.html#setCapability(java.lang.String,java.lang.String)">setCapability</a>, <a href="../MutableCapabilities.html#setCapability(java.lang.String,org.openqa.selenium.Platform)">setCapability</a>, <a href="../MutableCapabilities.html#toJson()">toJson</a>, <a href="../MutableCapabilities.html#toString()">toString</a></code></li>
 </ul>
 <ul class="blockList">
 <li class="blockList"><a id="methods.inherited.from.class.java.lang.Object">
@@ -274,6 +328,51 @@ extends <a href="../MutableCapabilities.html" title="class in org.openqa.seleniu
 <!--   -->
 </a>
 <h3>Method Detail</h3>
+<a id="setBrowserVersion(java.lang.String)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>setBrowserVersion</h4>
+<pre class="methodSignature">public&nbsp;<a href="AbstractDriverOptions.html" title="type parameter in AbstractDriverOptions">DO</a>&nbsp;setBrowserVersion&#8203;(java.lang.String&nbsp;browserVersion)</pre>
+</li>
+</ul>
+<a id="setPlatformName(java.lang.String)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>setPlatformName</h4>
+<pre class="methodSignature">public&nbsp;<a href="AbstractDriverOptions.html" title="type parameter in AbstractDriverOptions">DO</a>&nbsp;setPlatformName&#8203;(java.lang.String&nbsp;platformName)</pre>
+</li>
+</ul>
+<a id="setImplicitWaitTimeout(java.time.Duration)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>setImplicitWaitTimeout</h4>
+<pre class="methodSignature">public&nbsp;<a href="AbstractDriverOptions.html" title="type parameter in AbstractDriverOptions">DO</a>&nbsp;setImplicitWaitTimeout&#8203;(java.time.Duration&nbsp;timeout)</pre>
+</li>
+</ul>
+<a id="setPageLoadTimeout(java.time.Duration)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>setPageLoadTimeout</h4>
+<pre class="methodSignature">public&nbsp;<a href="AbstractDriverOptions.html" title="type parameter in AbstractDriverOptions">DO</a>&nbsp;setPageLoadTimeout&#8203;(java.time.Duration&nbsp;timeout)</pre>
+</li>
+</ul>
+<a id="setScriptTimeout(java.time.Duration)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>setScriptTimeout</h4>
+<pre class="methodSignature">public&nbsp;<a href="AbstractDriverOptions.html" title="type parameter in AbstractDriverOptions">DO</a>&nbsp;setScriptTimeout&#8203;(java.time.Duration&nbsp;timeout)</pre>
+</li>
+</ul>
 <a id="setPageLoadStrategy(org.openqa.selenium.PageLoadStrategy)">
 <!--   -->
 </a>
@@ -313,10 +412,81 @@ extends <a href="../MutableCapabilities.html" title="class in org.openqa.seleniu
 <a id="setProxy(org.openqa.selenium.Proxy)">
 <!--   -->
 </a>
-<ul class="blockListLast">
+<ul class="blockList">
 <li class="blockList">
 <h4>setProxy</h4>
 <pre class="methodSignature">public&nbsp;<a href="AbstractDriverOptions.html" title="type parameter in AbstractDriverOptions">DO</a>&nbsp;setProxy&#8203;(<a href="../Proxy.html" title="class in org.openqa.selenium">Proxy</a>&nbsp;proxy)</pre>
+</li>
+</ul>
+<a id="getCapabilityNames()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getCapabilityNames</h4>
+<pre class="methodSignature">public&nbsp;java.util.Set&lt;java.lang.String&gt;&nbsp;getCapabilityNames()</pre>
+<dl>
+<dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
+<dd><code><a href="../Capabilities.html#getCapabilityNames()">getCapabilityNames</a></code>&nbsp;in interface&nbsp;<code><a href="../Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a></code></dd>
+<dt><span class="overrideSpecifyLabel">Overrides:</span></dt>
+<dd><code><a href="../MutableCapabilities.html#getCapabilityNames()">getCapabilityNames</a></code>&nbsp;in class&nbsp;<code><a href="../MutableCapabilities.html" title="class in org.openqa.selenium">MutableCapabilities</a></code></dd>
+</dl>
+</li>
+</ul>
+<a id="getExtraCapabilityNames()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getExtraCapabilityNames</h4>
+<pre class="methodSignature">protected abstract&nbsp;java.util.Set&lt;java.lang.String&gt;&nbsp;getExtraCapabilityNames()</pre>
+</li>
+</ul>
+<a id="getCapability(java.lang.String)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getCapability</h4>
+<pre class="methodSignature">public&nbsp;java.lang.Object&nbsp;getCapability&#8203;(java.lang.String&nbsp;capabilityName)</pre>
+<dl>
+<dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
+<dd><code><a href="../Capabilities.html#getCapability(java.lang.String)">getCapability</a></code>&nbsp;in interface&nbsp;<code><a href="../Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a></code></dd>
+<dt><span class="overrideSpecifyLabel">Overrides:</span></dt>
+<dd><code><a href="../MutableCapabilities.html#getCapability(java.lang.String)">getCapability</a></code>&nbsp;in class&nbsp;<code><a href="../MutableCapabilities.html" title="class in org.openqa.selenium">MutableCapabilities</a></code></dd>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>capabilityName</code> - The capability to return.</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>The value, or null if not set.</dd>
+<dt><span class="seeLabel">See Also:</span></dt>
+<dd><a href="CapabilityType.html" title="interface in org.openqa.selenium.remote"><code>CapabilityType</code></a></dd>
+</dl>
+</li>
+</ul>
+<a id="getExtraCapability(java.lang.String)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getExtraCapability</h4>
+<pre class="methodSignature">protected abstract&nbsp;java.lang.Object&nbsp;getExtraCapability&#8203;(java.lang.String&nbsp;capabilityName)</pre>
+</li>
+</ul>
+<a id="asMap()">
+<!--   -->
+</a>
+<ul class="blockListLast">
+<li class="blockList">
+<h4>asMap</h4>
+<pre class="methodSignature">public&nbsp;java.util.Map&lt;java.lang.String,&#8203;java.lang.Object&gt;&nbsp;asMap()</pre>
+<dl>
+<dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
+<dd><code><a href="../Capabilities.html#asMap()">asMap</a></code>&nbsp;in interface&nbsp;<code><a href="../Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a></code></dd>
+<dt><span class="overrideSpecifyLabel">Overrides:</span></dt>
+<dd><code><a href="../MutableCapabilities.html#asMap()">asMap</a></code>&nbsp;in class&nbsp;<code><a href="../MutableCapabilities.html" title="class in org.openqa.selenium">MutableCapabilities</a></code></dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>The capabilities as a Map.</dd>
+</dl>
 </li>
 </ul>
 </li>

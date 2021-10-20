@@ -78,7 +78,7 @@
   
   <dl>
     <dt>Defined in:</dt>
-    <dd>build/rb/lib/selenium/webdriver/common/driver_extensions/has_network_connection.rb</dd>
+    <dd>rb/lib/selenium/webdriver/common/driver_extensions/has_network_connection.rb</dd>
   </dl>
   
 </div>
@@ -207,13 +207,15 @@
 
 25
 26
-27</pre>
+27
+28</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/driver_extensions/has_network_connection.rb', line 25</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/driver_extensions/has_network_connection.rb', line 25</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_network_connection_type'>network_connection_type</span>
-  <span class='id identifier rubyid_raise'>raise</span> <span class='const'><span class='object_link'><a href="../Error.html" title="Selenium::WebDriver::Error (module)">Error</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="../Error/UnsupportedOperationError.html" title="Selenium::WebDriver::Error::UnsupportedOperationError (class)">UnsupportedOperationError</a></span></span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>The W3C standard does not currently support getting network connection</span><span class='tstring_end'>&#39;</span></span>
+  <span class='id identifier rubyid_raise'>raise</span> <span class='const'><span class='object_link'><a href="../Error.html" title="Selenium::WebDriver::Error (module)">Error</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="../Error/UnsupportedOperationError.html" title="Selenium::WebDriver::Error::UnsupportedOperationError (class)">UnsupportedOperationError</a></span></span><span class='comma'>,</span>
+        <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>The W3C standard does not currently support getting network connection</span><span class='tstring_end'>&#39;</span></span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -261,15 +263,17 @@
       <pre class="lines">
 
 
-29
 30
-31</pre>
+31
+32
+33</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/driver_extensions/has_network_connection.rb', line 29</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/driver_extensions/has_network_connection.rb', line 30</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_network_connection_type='>network_connection_type=</span><span class='lparen'>(</span><span class='op'>*</span><span class='rparen'>)</span>
-  <span class='id identifier rubyid_raise'>raise</span> <span class='const'><span class='object_link'><a href="../Error.html" title="Selenium::WebDriver::Error (module)">Error</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="../Error/UnsupportedOperationError.html" title="Selenium::WebDriver::Error::UnsupportedOperationError (class)">UnsupportedOperationError</a></span></span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>The W3C standard does not currently support setting network connection</span><span class='tstring_end'>&#39;</span></span>
+  <span class='id identifier rubyid_raise'>raise</span> <span class='const'><span class='object_link'><a href="../Error.html" title="Selenium::WebDriver::Error (module)">Error</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="../Error/UnsupportedOperationError.html" title="Selenium::WebDriver::Error::UnsupportedOperationError (class)">UnsupportedOperationError</a></span></span><span class='comma'>,</span>
+        <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>The W3C standard does not currently support setting network connection</span><span class='tstring_end'>&#39;</span></span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -281,9 +285,9 @@
 </div>
 
       <div id="footer">
-  Generated on Thu Mar 18 21:58:16 2021 by
+  Generated on Wed Oct 20 18:47:51 2021 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.26 (ruby-2.6.3).
+  0.9.26 (ruby-2.7.3).
 </div>
 
     </div>

@@ -27,7 +27,7 @@
     catch(err) {
     }
 //-->
-var data = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":9,"i7":10,"i8":10,"i9":10,"i10":10,"i11":10,"i12":10,"i13":10};
+var data = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":9,"i9":10,"i10":10,"i11":10,"i12":10,"i13":10,"i14":10,"i15":10};
 var tabs = {65535:["t0","All Methods"],1:["t1","Static Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -159,71 +159,81 @@ extends java.lang.Object</pre>
 <th class="colLast" scope="col">Description</th>
 </tr>
 <tr id="i0" class="altColor">
+<td class="colFirst"><code><a href="ClientConfig.html" title="class in org.openqa.selenium.remote.http">ClientConfig</a></code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#authenticateAs(org.openqa.selenium.Credentials)">authenticateAs</a></span>&#8203;(<a href="../../Credentials.html" title="interface in org.openqa.selenium">Credentials</a>&nbsp;credentials)</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr id="i1" class="rowColor">
 <td class="colFirst"><code>java.net.URI</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#baseUri()">baseUri</a></span>()</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i1" class="rowColor">
+<tr id="i2" class="altColor">
 <td class="colFirst"><code><a href="ClientConfig.html" title="class in org.openqa.selenium.remote.http">ClientConfig</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#baseUri(java.net.URI)">baseUri</a></span>&#8203;(java.net.URI&nbsp;baseUri)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i2" class="altColor">
+<tr id="i3" class="rowColor">
 <td class="colFirst"><code>java.net.URL</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#baseUrl()">baseUrl</a></span>()</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i3" class="rowColor">
+<tr id="i4" class="altColor">
 <td class="colFirst"><code><a href="ClientConfig.html" title="class in org.openqa.selenium.remote.http">ClientConfig</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#baseUrl(java.net.URL)">baseUrl</a></span>&#8203;(java.net.URL&nbsp;baseUrl)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i4" class="altColor">
+<tr id="i5" class="rowColor">
 <td class="colFirst"><code>java.time.Duration</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#connectionTimeout()">connectionTimeout</a></span>()</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i5" class="rowColor">
+<tr id="i6" class="altColor">
 <td class="colFirst"><code><a href="ClientConfig.html" title="class in org.openqa.selenium.remote.http">ClientConfig</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#connectionTimeout(java.time.Duration)">connectionTimeout</a></span>&#8203;(java.time.Duration&nbsp;timeout)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i6" class="altColor">
+<tr id="i7" class="rowColor">
+<td class="colFirst"><code><a href="../../Credentials.html" title="interface in org.openqa.selenium">Credentials</a></code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#credentials()">credentials</a></span>()</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr id="i8" class="altColor">
 <td class="colFirst"><code>static <a href="ClientConfig.html" title="class in org.openqa.selenium.remote.http">ClientConfig</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#defaultConfig()">defaultConfig</a></span>()</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i7" class="rowColor">
+<tr id="i9" class="rowColor">
 <td class="colFirst"><code><a href="Filter.html" title="interface in org.openqa.selenium.remote.http">Filter</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#filter()">filter</a></span>()</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i8" class="altColor">
+<tr id="i10" class="altColor">
 <td class="colFirst"><code>java.net.Proxy</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#proxy()">proxy</a></span>()</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i9" class="rowColor">
+<tr id="i11" class="rowColor">
 <td class="colFirst"><code><a href="ClientConfig.html" title="class in org.openqa.selenium.remote.http">ClientConfig</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#proxy(java.net.Proxy)">proxy</a></span>&#8203;(java.net.Proxy&nbsp;proxy)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i10" class="altColor">
+<tr id="i12" class="altColor">
 <td class="colFirst"><code>java.time.Duration</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#readTimeout()">readTimeout</a></span>()</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i11" class="rowColor">
+<tr id="i13" class="rowColor">
 <td class="colFirst"><code><a href="ClientConfig.html" title="class in org.openqa.selenium.remote.http">ClientConfig</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#readTimeout(java.time.Duration)">readTimeout</a></span>&#8203;(java.time.Duration&nbsp;timeout)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i12" class="altColor">
+<tr id="i14" class="altColor">
 <td class="colFirst"><code>java.lang.String</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#toString()">toString</a></span>()</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i13" class="rowColor">
+<tr id="i15" class="rowColor">
 <td class="colFirst"><code><a href="ClientConfig.html" title="class in org.openqa.selenium.remote.http">ClientConfig</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#withFilter(org.openqa.selenium.remote.http.Filter)">withFilter</a></span>&#8203;(<a href="Filter.html" title="interface in org.openqa.selenium.remote.http">Filter</a>&nbsp;filter)</code></th>
 <td class="colLast">&nbsp;</td>
@@ -367,6 +377,24 @@ extends java.lang.Object</pre>
 <li class="blockList">
 <h4>proxy</h4>
 <pre class="methodSignature">public&nbsp;java.net.Proxy&nbsp;proxy()</pre>
+</li>
+</ul>
+<a id="authenticateAs(org.openqa.selenium.Credentials)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>authenticateAs</h4>
+<pre class="methodSignature">public&nbsp;<a href="ClientConfig.html" title="class in org.openqa.selenium.remote.http">ClientConfig</a>&nbsp;authenticateAs&#8203;(<a href="../../Credentials.html" title="interface in org.openqa.selenium">Credentials</a>&nbsp;credentials)</pre>
+</li>
+</ul>
+<a id="credentials()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>credentials</h4>
+<pre class="methodSignature">public&nbsp;<a href="../../Credentials.html" title="interface in org.openqa.selenium">Credentials</a>&nbsp;credentials()</pre>
 </li>
 </ul>
 <a id="toString()">

@@ -96,7 +96,7 @@
   
   <dl>
     <dt>Defined in:</dt>
-    <dd>build/rb/lib/selenium/webdriver/ie/options.rb</dd>
+    <dd>rb/lib/selenium/webdriver/ie/options.rb</dd>
   </dl>
   
 </div>
@@ -143,7 +143,9 @@
   <span class='label'>persistent_hover:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>enablePersistentHover</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span>
   <span class='label'>require_window_focus:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>requireWindowFocus</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span>
   <span class='label'>use_per_process_proxy:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>ie.usePerProcessProxy</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span>
-  <span class='label'>validate_cookie_document_type:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>ie.validateCookieDocumentType</span><span class='tstring_end'>&#39;</span></span>
+  <span class='label'>use_legacy_file_upload_dialog_handling:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>ie.useLegacyFileUploadDialogHandling</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span>
+  <span class='label'>attach_to_edge_chrome:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>ie.edgechromium</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span>
+  <span class='label'>edge_executable_path:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>ie.edgepath</span><span class='tstring_end'>&#39;</span></span>
 <span class='rbrace'>}</span><span class='period'>.</span><span class='id identifier rubyid_freeze'>freeze</span></pre></dd>
       
         <dt id="BROWSER-constant" class="">BROWSER =
@@ -276,7 +278,7 @@
   
   
   <h3 class="inherited">Methods inherited from <span class='object_link'><a href="../Options.html" title="Selenium::WebDriver::Options (class)">Options</a></span></h3>
-  <p class="inherited"><span class='object_link'><a href="../Options.html#add_option-instance_method" title="Selenium::WebDriver::Options#add_option (method)">#add_option</a></span>, <span class='object_link'><a href="../Options.html#as_json-instance_method" title="Selenium::WebDriver::Options#as_json (method)">#as_json</a></span>, <span class='object_link'><a href="../Options.html#set_capabilities-class_method" title="Selenium::WebDriver::Options.set_capabilities (method)">set_capabilities</a></span></p>
+  <p class="inherited"><span class='object_link'><a href="../Options.html#==-instance_method" title="Selenium::WebDriver::Options#== (method)">#==</a></span>, <span class='object_link'><a href="../Options.html#add_option-instance_method" title="Selenium::WebDriver::Options#add_option (method)">#add_option</a></span>, <span class='object_link'><a href="../Options.html#as_json-instance_method" title="Selenium::WebDriver::Options#as_json (method)">#as_json</a></span>, <span class='object_link'><a href="../Options.html#chrome-class_method" title="Selenium::WebDriver::Options.chrome (method)">chrome</a></span>, <span class='object_link'><a href="../Options.html#edge-class_method" title="Selenium::WebDriver::Options.edge (method)">edge</a></span>, <span class='object_link'><a href="../Options.html#firefox-class_method" title="Selenium::WebDriver::Options.firefox (method)">firefox</a></span>, <span class='object_link'><a href="../Options.html#ie-class_method" title="Selenium::WebDriver::Options.ie (method)">ie</a></span>, <span class='object_link'><a href="../Options.html#safari-class_method" title="Selenium::WebDriver::Options.safari (method)">safari</a></span>, <span class='object_link'><a href="../Options.html#set_capabilities-class_method" title="Selenium::WebDriver::Options.set_capabilities (method)">set_capabilities</a></span></p>
 <div id="constructor_details" class="method_details_list">
   <h2>Constructor Details</h2>
   
@@ -497,15 +499,15 @@
       <pre class="lines">
 
 
-79
-80
 81
 82
 83
-84</pre>
+84
+85
+86</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/ie/options.rb', line 79</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/ie/options.rb', line 81</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_initialize'>initialize</span><span class='lparen'>(</span><span class='op'>**</span><span class='id identifier rubyid_opts'>opts</span><span class='rparen'>)</span>
   <span class='ivar'>@args</span> <span class='op'>=</span> <span class='lparen'>(</span><span class='id identifier rubyid_opts'>opts</span><span class='period'>.</span><span class='id identifier rubyid_delete'>delete</span><span class='lparen'>(</span><span class='symbol'>:args</span><span class='rparen'>)</span> <span class='op'>||</span> <span class='lbracket'>[</span><span class='rbracket'>]</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_to_set'>to_set</span>
@@ -551,12 +553,12 @@
       <pre class="lines">
 
 
-46
-47
-48</pre>
+48
+49
+50</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/ie/options.rb', line 46</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/ie/options.rb', line 48</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_args'>args</span>
   <span class='ivar'>@args</span>
@@ -619,12 +621,12 @@
       <pre class="lines">
 
 
-92
-93
-94</pre>
+94
+95
+96</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/ie/options.rb', line 92</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/ie/options.rb', line 94</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_add_argument'>add_argument</span><span class='lparen'>(</span><span class='id identifier rubyid_arg'>arg</span><span class='rparen'>)</span>
   <span class='ivar'>@args</span> <span class='op'>&lt;&lt;</span> <span class='id identifier rubyid_arg'>arg</span>
@@ -639,9 +641,9 @@
 </div>
 
       <div id="footer">
-  Generated on Thu Mar 18 21:58:16 2021 by
+  Generated on Wed Oct 20 18:47:51 2021 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.26 (ruby-2.6.3).
+  0.9.26 (ruby-2.7.3).
 </div>
 
     </div>

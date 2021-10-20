@@ -27,7 +27,7 @@
     catch(err) {
     }
 //-->
-var data = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10,"i9":10,"i10":10,"i11":10,"i12":10,"i13":10,"i14":10,"i15":10,"i16":10,"i17":10,"i18":10,"i19":10};
+var data = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10,"i9":10,"i10":10,"i11":10,"i12":10,"i13":10,"i14":10,"i15":10,"i16":10,"i17":10,"i18":10,"i19":10,"i20":10,"i21":10,"i22":10,"i23":10};
 var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -94,13 +94,13 @@ loadScripts(document, 'script');</script>
 <ul class="subNavList">
 <li>Summary:&nbsp;</li>
 <li><a href="#nested.class.summary">Nested</a>&nbsp;|&nbsp;</li>
-<li>Field&nbsp;|&nbsp;</li>
+<li><a href="#field.summary">Field</a>&nbsp;|&nbsp;</li>
 <li><a href="#constructor.summary">Constr</a>&nbsp;|&nbsp;</li>
 <li><a href="#method.summary">Method</a></li>
 </ul>
 <ul class="subNavList">
 <li>Detail:&nbsp;</li>
-<li>Field&nbsp;|&nbsp;</li>
+<li><a href="#field.detail">Field</a>&nbsp;|&nbsp;</li>
 <li><a href="#constructor.detail">Constr</a>&nbsp;|&nbsp;</li>
 <li><a href="#method.detail">Method</a></li>
 </ul>
@@ -142,7 +142,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <li class="blockList">
 <dl>
 <dt>All Implemented Interfaces:</dt>
-<dd><code><a href="../devtools/HasDevTools.html" title="interface in org.openqa.selenium.devtools">HasDevTools</a></code>, <code><a href="../HasAuthentication.html" title="interface in org.openqa.selenium">HasAuthentication</a></code>, <code><a href="../HasCapabilities.html" title="interface in org.openqa.selenium">HasCapabilities</a></code>, <code><a href="../html5/LocationContext.html" title="interface in org.openqa.selenium.html5">LocationContext</a></code>, <code><a href="../html5/WebStorage.html" title="interface in org.openqa.selenium.html5">WebStorage</a></code>, <code><a href="../interactions/HasInputDevices.html" title="interface in org.openqa.selenium.interactions">HasInputDevices</a></code>, <code><a href="../interactions/HasTouchScreen.html" title="interface in org.openqa.selenium.interactions">HasTouchScreen</a></code>, <code><a href="../interactions/Interactive.html" title="interface in org.openqa.selenium.interactions">Interactive</a></code>, <code><a href="../JavascriptExecutor.html" title="interface in org.openqa.selenium">JavascriptExecutor</a></code>, <code><a href="../logging/HasLogEvents.html" title="interface in org.openqa.selenium.logging">HasLogEvents</a></code>, <code><a href="../mobile/NetworkConnection.html" title="interface in org.openqa.selenium.mobile">NetworkConnection</a></code>, <code><a href="../PrintsPage.html" title="interface in org.openqa.selenium">PrintsPage</a></code>, <code><a href="../SearchContext.html" title="interface in org.openqa.selenium">SearchContext</a></code>, <code><a href="../TakesScreenshot.html" title="interface in org.openqa.selenium">TakesScreenshot</a></code>, <code><a href="../virtualauthenticator/HasVirtualAuthenticator.html" title="interface in org.openqa.selenium.virtualauthenticator">HasVirtualAuthenticator</a></code>, <code><a href="../WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a></code></dd>
+<dd><code><a href="HasCasting.html" title="interface in org.openqa.selenium.chromium">HasCasting</a></code>, <code><a href="HasCdp.html" title="interface in org.openqa.selenium.chromium">HasCdp</a></code>, <code><a href="HasLaunchApp.html" title="interface in org.openqa.selenium.chromium">HasLaunchApp</a></code>, <code><a href="HasNetworkConditions.html" title="interface in org.openqa.selenium.chromium">HasNetworkConditions</a></code>, <code><a href="HasPermissions.html" title="interface in org.openqa.selenium.chromium">HasPermissions</a></code>, <code><a href="../devtools/HasDevTools.html" title="interface in org.openqa.selenium.devtools">HasDevTools</a></code>, <code><a href="../HasAuthentication.html" title="interface in org.openqa.selenium">HasAuthentication</a></code>, <code><a href="../HasCapabilities.html" title="interface in org.openqa.selenium">HasCapabilities</a></code>, <code><a href="../html5/LocationContext.html" title="interface in org.openqa.selenium.html5">LocationContext</a></code>, <code><a href="../html5/WebStorage.html" title="interface in org.openqa.selenium.html5">WebStorage</a></code>, <code><a href="../interactions/HasInputDevices.html" title="interface in org.openqa.selenium.interactions">HasInputDevices</a></code>, <code><a href="../interactions/HasTouchScreen.html" title="interface in org.openqa.selenium.interactions">HasTouchScreen</a></code>, <code><a href="../interactions/Interactive.html" title="interface in org.openqa.selenium.interactions">Interactive</a></code>, <code><a href="../JavascriptExecutor.html" title="interface in org.openqa.selenium">JavascriptExecutor</a></code>, <code><a href="../logging/HasLogEvents.html" title="interface in org.openqa.selenium.logging">HasLogEvents</a></code>, <code><a href="../mobile/NetworkConnection.html" title="interface in org.openqa.selenium.mobile">NetworkConnection</a></code>, <code><a href="../PrintsPage.html" title="interface in org.openqa.selenium">PrintsPage</a></code>, <code><a href="../SearchContext.html" title="interface in org.openqa.selenium">SearchContext</a></code>, <code><a href="../TakesScreenshot.html" title="interface in org.openqa.selenium">TakesScreenshot</a></code>, <code><a href="../virtualauthenticator/HasVirtualAuthenticator.html" title="interface in org.openqa.selenium.virtualauthenticator">HasVirtualAuthenticator</a></code>, <code><a href="../WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a></code></dd>
 </dl>
 <dl>
 <dt>Direct Known Subclasses:</dt>
@@ -151,7 +151,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <hr>
 <pre>public class <span class="typeNameLabel">ChromiumDriver</span>
 extends <a href="../remote/RemoteWebDriver.html" title="class in org.openqa.selenium.remote">RemoteWebDriver</a>
-implements <a href="../HasAuthentication.html" title="interface in org.openqa.selenium">HasAuthentication</a>, <a href="../devtools/HasDevTools.html" title="interface in org.openqa.selenium.devtools">HasDevTools</a>, <a href="../logging/HasLogEvents.html" title="interface in org.openqa.selenium.logging">HasLogEvents</a>, <a href="../interactions/HasTouchScreen.html" title="interface in org.openqa.selenium.interactions">HasTouchScreen</a>, <a href="../html5/LocationContext.html" title="interface in org.openqa.selenium.html5">LocationContext</a>, <a href="../mobile/NetworkConnection.html" title="interface in org.openqa.selenium.mobile">NetworkConnection</a>, <a href="../html5/WebStorage.html" title="interface in org.openqa.selenium.html5">WebStorage</a></pre>
+implements <a href="../HasAuthentication.html" title="interface in org.openqa.selenium">HasAuthentication</a>, <a href="HasCasting.html" title="interface in org.openqa.selenium.chromium">HasCasting</a>, <a href="HasCdp.html" title="interface in org.openqa.selenium.chromium">HasCdp</a>, <a href="../devtools/HasDevTools.html" title="interface in org.openqa.selenium.devtools">HasDevTools</a>, <a href="HasLaunchApp.html" title="interface in org.openqa.selenium.chromium">HasLaunchApp</a>, <a href="../logging/HasLogEvents.html" title="interface in org.openqa.selenium.logging">HasLogEvents</a>, <a href="HasNetworkConditions.html" title="interface in org.openqa.selenium.chromium">HasNetworkConditions</a>, <a href="HasPermissions.html" title="interface in org.openqa.selenium.chromium">HasPermissions</a>, <a href="../interactions/HasTouchScreen.html" title="interface in org.openqa.selenium.interactions">HasTouchScreen</a>, <a href="../html5/LocationContext.html" title="interface in org.openqa.selenium.html5">LocationContext</a>, <a href="../mobile/NetworkConnection.html" title="interface in org.openqa.selenium.mobile">NetworkConnection</a>, <a href="../html5/WebStorage.html" title="interface in org.openqa.selenium.html5">WebStorage</a></pre>
 <div class="block">A <a href="../WebDriver.html" title="interface in org.openqa.selenium"><code>WebDriver</code></a> implementation that controls a Chromium browser running on the local machine.
  It is used as the base class for Chromium-based browser drivers (Chrome, Edgium).</div>
 </li>
@@ -188,6 +188,39 @@ implements <a href="../HasAuthentication.html" title="interface in org.openqa.se
 <h3>Nested classes/interfaces inherited from interface&nbsp;org.openqa.selenium.<a href="../WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a></h3>
 <code><a href="../WebDriver.ImeHandler.html" title="interface in org.openqa.selenium">WebDriver.ImeHandler</a>, <a href="../WebDriver.Navigation.html" title="interface in org.openqa.selenium">WebDriver.Navigation</a>, <a href="../WebDriver.Options.html" title="interface in org.openqa.selenium">WebDriver.Options</a>, <a href="../WebDriver.TargetLocator.html" title="interface in org.openqa.selenium">WebDriver.TargetLocator</a>, <a href="../WebDriver.Timeouts.html" title="interface in org.openqa.selenium">WebDriver.Timeouts</a>, <a href="../WebDriver.Window.html" title="interface in org.openqa.selenium">WebDriver.Window</a></code></li>
 </ul>
+</li>
+</ul>
+</section>
+<!-- =========== FIELD SUMMARY =========== -->
+<section role="region">
+<ul class="blockList">
+<li class="blockList"><a id="field.summary">
+<!--   -->
+</a>
+<h3>Field Summary</h3>
+<table class="memberSummary">
+<caption><span>Fields</span><span class="tabEnd">&nbsp;</span></caption>
+<tr>
+<th class="colFirst" scope="col">Modifier and Type</th>
+<th class="colSecond" scope="col">Field</th>
+<th class="colLast" scope="col">Description</th>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>protected <a href="HasCasting.html" title="interface in org.openqa.selenium.chromium">HasCasting</a></code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#casting">casting</a></span></code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code>protected <a href="HasCdp.html" title="interface in org.openqa.selenium.chromium">HasCdp</a></code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#cdp">cdp</a></span></code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>static java.util.function.Predicate&lt;java.lang.String&gt;</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#IS_CHROMIUM_BROWSER">IS_CHROMIUM_BROWSER</a></span></code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+</table>
 </li>
 </ul>
 </section>
@@ -231,77 +264,96 @@ implements <a href="../HasAuthentication.html" title="interface in org.openqa.se
 <th class="colLast" scope="col">Description</th>
 </tr>
 <tr id="i0" class="altColor">
+<td class="colFirst"><code>void</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#deleteNetworkConditions()">deleteNetworkConditions</a></span>()</code></th>
+<td class="colLast">
+<div class="block">Resets the network conditions to the default settings.</div>
+</td>
+</tr>
+<tr id="i1" class="rowColor">
 <td class="colFirst"><code>java.util.Map&lt;java.lang.String,&#8203;java.lang.Object&gt;</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#executeCdpCommand(java.lang.String,java.util.Map)">executeCdpCommand</a></span>&#8203;(java.lang.String&nbsp;commandName,
                  java.util.Map&lt;java.lang.String,&#8203;java.lang.Object&gt;&nbsp;parameters)</code></th>
 <td class="colLast">
-<div class="block">Execute a Chrome Devtools Protocol command and get returned result.</div>
+<div class="block">Execute a Chrome DevTools Protocol command and get returned result.</div>
 </td>
 </tr>
-<tr id="i1" class="rowColor">
+<tr id="i2" class="altColor">
+<td class="colFirst"><code><a href="../Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a></code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getCapabilities()">getCapabilities</a></span>()</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr id="i3" class="rowColor">
 <td class="colFirst"><code>java.lang.String</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getCastIssueMessage()">getCastIssueMessage</a></span>()</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i2" class="altColor">
-<td class="colFirst"><code>java.lang.String</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getCastSinks()">getCastSinks</a></span>()</code></th>
-<td class="colLast">&nbsp;</td>
-</tr>
-<tr id="i3" class="rowColor">
-<td class="colFirst"><code><a href="../devtools/DevTools.html" title="class in org.openqa.selenium.devtools">DevTools</a></code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getDevTools()">getDevTools</a></span>()</code></th>
-<td class="colLast">&nbsp;</td>
-</tr>
 <tr id="i4" class="altColor">
+<td class="colFirst"><code>java.util.List&lt;java.util.Map&lt;java.lang.String,&#8203;java.lang.String&gt;&gt;</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getCastSinks()">getCastSinks</a></span>()</code></th>
+<td class="colLast">
+<div class="block">Returns the list of cast sinks (Cast devices) available to the Chrome media router.</div>
+</td>
+</tr>
+<tr id="i5" class="rowColor">
 <td class="colFirst"><code><a href="../html5/LocalStorage.html" title="interface in org.openqa.selenium.html5">LocalStorage</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getLocalStorage()">getLocalStorage</a></span>()</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i5" class="rowColor">
+<tr id="i6" class="altColor">
+<td class="colFirst"><code><a href="ChromiumNetworkConditions.html" title="class in org.openqa.selenium.chromium">ChromiumNetworkConditions</a></code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getNetworkConditions()">getNetworkConditions</a></span>()</code></th>
+<td class="colLast">
+<div class="block">Gets map of network conditions.</div>
+</td>
+</tr>
+<tr id="i7" class="rowColor">
 <td class="colFirst"><code><a href="../mobile/NetworkConnection.ConnectionType.html" title="class in org.openqa.selenium.mobile">NetworkConnection.ConnectionType</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getNetworkConnection()">getNetworkConnection</a></span>()</code></th>
 <td class="colLast">
 <div class="block">Query the driver for the Airplane Mode setting state</div>
 </td>
 </tr>
-<tr id="i6" class="altColor">
+<tr id="i8" class="altColor">
 <td class="colFirst"><code><a href="../html5/SessionStorage.html" title="interface in org.openqa.selenium.html5">SessionStorage</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getSessionStorage()">getSessionStorage</a></span>()</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i7" class="rowColor">
+<tr id="i9" class="rowColor">
 <td class="colFirst"><code><a href="../interactions/TouchScreen.html" title="interface in org.openqa.selenium.interactions">TouchScreen</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getTouch()">getTouch</a></span>()</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i8" class="altColor">
+<tr id="i10" class="altColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#launchApp(java.lang.String)">launchApp</a></span>&#8203;(java.lang.String&nbsp;id)</code></th>
-<td class="colLast">
-<div class="block">Launches Chrome app specified by id.</div>
-</td>
+<td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i9" class="rowColor">
+<tr id="i11" class="rowColor">
 <td class="colFirst"><code><a href="../html5/Location.html" title="class in org.openqa.selenium.html5">Location</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#location()">location</a></span>()</code></th>
 <td class="colLast">
 <div class="block">Gets the physical location of the browser.</div>
 </td>
 </tr>
-<tr id="i10" class="altColor">
+<tr id="i12" class="altColor">
+<td class="colFirst"><code>java.util.Optional&lt;<a href="../devtools/DevTools.html" title="class in org.openqa.selenium.devtools">DevTools</a>&gt;</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#maybeGetDevTools()">maybeGetDevTools</a></span>()</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr id="i13" class="rowColor">
 <td class="colFirst"><code>&lt;X&gt;&nbsp;void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#onLogEvent(org.openqa.selenium.logging.EventType)">onLogEvent</a></span>&#8203;(<a href="../logging/EventType.html" title="interface in org.openqa.selenium.logging">EventType</a>&lt;X&gt;&nbsp;kind)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i11" class="rowColor">
+<tr id="i14" class="altColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#quit()">quit</a></span>()</code></th>
 <td class="colLast">
 <div class="block">Quits this driver, closing every associated window.</div>
 </td>
 </tr>
-<tr id="i12" class="altColor">
+<tr id="i15" class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#register(java.util.function.Predicate,java.util.function.Supplier)">register</a></span>&#8203;(java.util.function.Predicate&lt;java.net.URI&gt;&nbsp;whenThisMatches,
         java.util.function.Supplier&lt;<a href="../Credentials.html" title="interface in org.openqa.selenium">Credentials</a>&gt;&nbsp;useTheseCredentials)</code></th>
@@ -310,26 +362,35 @@ implements <a href="../HasAuthentication.html" title="interface in org.openqa.se
  used for a particular site, identified by its URI.</div>
 </td>
 </tr>
-<tr id="i13" class="rowColor">
+<tr id="i16" class="altColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#selectCastSink(java.lang.String)">selectCastSink</a></span>&#8203;(java.lang.String&nbsp;deviceName)</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Selects a cast sink (Cast device) as the recipient of media router intents (connect or play).</div>
+</td>
 </tr>
-<tr id="i14" class="altColor">
+<tr id="i17" class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setFileDetector(org.openqa.selenium.remote.FileDetector)">setFileDetector</a></span>&#8203;(<a href="../remote/FileDetector.html" title="interface in org.openqa.selenium.remote">FileDetector</a>&nbsp;detector)</code></th>
 <td class="colLast">
 <div class="block">Set the file detector to be used when sending keyboard input.</div>
 </td>
 </tr>
-<tr id="i15" class="rowColor">
+<tr id="i18" class="altColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setLocation(org.openqa.selenium.html5.Location)">setLocation</a></span>&#8203;(<a href="../html5/Location.html" title="class in org.openqa.selenium.html5">Location</a>&nbsp;location)</code></th>
 <td class="colLast">
 <div class="block">Sets the physical location.</div>
 </td>
 </tr>
-<tr id="i16" class="altColor">
+<tr id="i19" class="rowColor">
+<td class="colFirst"><code>void</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setNetworkConditions(org.openqa.selenium.chromium.ChromiumNetworkConditions)">setNetworkConditions</a></span>&#8203;(<a href="ChromiumNetworkConditions.html" title="class in org.openqa.selenium.chromium">ChromiumNetworkConditions</a>&nbsp;networkConditions)</code></th>
+<td class="colLast">
+<div class="block">Set network limitations</div>
+</td>
+</tr>
+<tr id="i20" class="altColor">
 <td class="colFirst"><code><a href="../mobile/NetworkConnection.ConnectionType.html" title="class in org.openqa.selenium.mobile">NetworkConnection.ConnectionType</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setNetworkConnection(org.openqa.selenium.mobile.NetworkConnection.ConnectionType)">setNetworkConnection</a></span>&#8203;(<a href="../mobile/NetworkConnection.ConnectionType.html" title="class in org.openqa.selenium.mobile">NetworkConnection.ConnectionType</a>&nbsp;type)</code></th>
 <td class="colLast">
@@ -337,21 +398,25 @@ implements <a href="../HasAuthentication.html" title="interface in org.openqa.se
  of device and the remote endpoint will make a best effort to set the type as requested</div>
 </td>
 </tr>
-<tr id="i17" class="rowColor">
+<tr id="i21" class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setPermission(java.lang.String,java.lang.String)">setPermission</a></span>&#8203;(java.lang.String&nbsp;name,
              java.lang.String&nbsp;value)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i18" class="altColor">
+<tr id="i22" class="altColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#startTabMirroring(java.lang.String)">startTabMirroring</a></span>&#8203;(java.lang.String&nbsp;deviceName)</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Initiates tab mirroring for the current browser tab on the specified device.</div>
+</td>
 </tr>
-<tr id="i19" class="rowColor">
+<tr id="i23" class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#stopCasting(java.lang.String)">stopCasting</a></span>&#8203;(java.lang.String&nbsp;deviceName)</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Stops casting from media router to the specified device, if connected.</div>
+</td>
 </tr>
 </table>
 <ul class="blockList">
@@ -359,7 +424,7 @@ implements <a href="../HasAuthentication.html" title="interface in org.openqa.se
 <!--   -->
 </a>
 <h3>Methods inherited from class&nbsp;org.openqa.selenium.remote.<a href="../remote/RemoteWebDriver.html" title="class in org.openqa.selenium.remote">RemoteWebDriver</a></h3>
-<code><a href="../remote/RemoteWebDriver.html#addVirtualAuthenticator(org.openqa.selenium.virtualauthenticator.VirtualAuthenticatorOptions)">addVirtualAuthenticator</a>, <a href="../remote/RemoteWebDriver.html#builder()">builder</a>, <a href="../remote/RemoteWebDriver.html#close()">close</a>, <a href="../remote/RemoteWebDriver.html#execute(java.lang.String)">execute</a>, <a href="../remote/RemoteWebDriver.html#execute(java.lang.String,java.util.Map)">execute</a>, <a href="../remote/RemoteWebDriver.html#execute(org.openqa.selenium.remote.CommandPayload)">execute</a>, <a href="../remote/RemoteWebDriver.html#executeAsyncScript(java.lang.String,java.lang.Object...)">executeAsyncScript</a>, <a href="../remote/RemoteWebDriver.html#executeScript(java.lang.String,java.lang.Object...)">executeScript</a>, <a href="../remote/RemoteWebDriver.html#findElement(java.lang.String,java.lang.String)">findElement</a>, <a href="../remote/RemoteWebDriver.html#findElement(org.openqa.selenium.By)">findElement</a>, <a href="../remote/RemoteWebDriver.html#findElements(java.lang.String,java.lang.String)">findElements</a>, <a href="../remote/RemoteWebDriver.html#findElements(org.openqa.selenium.By)">findElements</a>, <a href="../remote/RemoteWebDriver.html#findElements(org.openqa.selenium.remote.RemoteWebDriver,org.openqa.selenium.SearchContext,org.openqa.selenium.By)">findElements</a>, <a href="../remote/RemoteWebDriver.html#get(java.lang.String)">get</a>, <a href="../remote/RemoteWebDriver.html#getCapabilities()">getCapabilities</a>, <a href="../remote/RemoteWebDriver.html#getCommandExecutor()">getCommandExecutor</a>, <a href="../remote/RemoteWebDriver.html#getCurrentUrl()">getCurrentUrl</a>, <a href="../remote/RemoteWebDriver.html#getElementConverter()">getElementConverter</a>, <a href="../remote/RemoteWebDriver.html#getErrorHandler()">getErrorHandler</a>, <a href="../remote/RemoteWebDriver.html#getExecuteMethod()">getExecuteMethod</a>, <a href="../remote/RemoteWebDriver.html#getFileDetector()">getFileDetector</a>, <a href="../remote/RemoteWebDriver.html#getKeyboard()">getKeyboard</a>, <a href="../remote/RemoteWebDriver.html#getMouse()">getMouse</a>, <a href="../remote/RemoteWebDriver.html#getPageSource()">getPageSource</a>, <a href="../remote/RemoteWebDriver.html#getScreenshotAs(org.openqa.selenium.OutputType)">getScreenshotAs</a>, <a href="../remote/RemoteWebDriver.html#getSessionId()">getSessionId</a>, <a href="../remote/RemoteWebDriver.html#getTitle()">getTitle</a>, <a href="../remote/RemoteWebDriver.html#getWindowHandle()">getWindowHandle</a>, <a href="../remote/RemoteWebDriver.html#getWindowHandles()">getWindowHandles</a>, <a href="../remote/RemoteWebDriver.html#log(org.openqa.selenium.remote.SessionId,java.lang.String,java.lang.Object,org.openqa.selenium.remote.RemoteWebDriver.When)">log</a>, <a href="../remote/RemoteWebDriver.html#manage()">manage</a>, <a href="../remote/RemoteWebDriver.html#navigate()">navigate</a>, <a href="../remote/RemoteWebDriver.html#perform(java.util.Collection)">perform</a>, <a href="../remote/RemoteWebDriver.html#print(org.openqa.selenium.print.PrintOptions)">print</a>, <a href="../remote/RemoteWebDriver.html#removeVirtualAuthenticator(org.openqa.selenium.virtualauthenticator.VirtualAuthenticator)">removeVirtualAuthenticator</a>, <a href="../remote/RemoteWebDriver.html#resetInputState()">resetInputState</a>, <a href="../remote/RemoteWebDriver.html#setCommandExecutor(org.openqa.selenium.remote.CommandExecutor)">setCommandExecutor</a>, <a href="../remote/RemoteWebDriver.html#setElementConverter(org.openqa.selenium.remote.JsonToWebElementConverter)">setElementConverter</a>, <a href="../remote/RemoteWebDriver.html#setErrorHandler(org.openqa.selenium.remote.ErrorHandler)">setErrorHandler</a>, <a href="../remote/RemoteWebDriver.html#setFoundBy(org.openqa.selenium.SearchContext,org.openqa.selenium.WebElement,java.lang.String,java.lang.String)">setFoundBy</a>, <a href="../remote/RemoteWebDriver.html#setLogLevel(java.util.logging.Level)">setLogLevel</a>, <a href="../remote/RemoteWebDriver.html#setSessionId(java.lang.String)">setSessionId</a>, <a href="../remote/RemoteWebDriver.html#startSession(org.openqa.selenium.Capabilities)">startSession</a>, <a href="../remote/RemoteWebDriver.html#switchTo()">switchTo</a>, <a href="../remote/RemoteWebDriver.html#toString()">toString</a></code></li>
+<code><a href="../remote/RemoteWebDriver.html#addVirtualAuthenticator(org.openqa.selenium.virtualauthenticator.VirtualAuthenticatorOptions)">addVirtualAuthenticator</a>, <a href="../remote/RemoteWebDriver.html#builder()">builder</a>, <a href="../remote/RemoteWebDriver.html#close()">close</a>, <a href="../remote/RemoteWebDriver.html#execute(java.lang.String)">execute</a>, <a href="../remote/RemoteWebDriver.html#execute(java.lang.String,java.util.Map)">execute</a>, <a href="../remote/RemoteWebDriver.html#execute(org.openqa.selenium.remote.CommandPayload)">execute</a>, <a href="../remote/RemoteWebDriver.html#executeAsyncScript(java.lang.String,java.lang.Object...)">executeAsyncScript</a>, <a href="../remote/RemoteWebDriver.html#executeScript(java.lang.String,java.lang.Object...)">executeScript</a>, <a href="../remote/RemoteWebDriver.html#findElement(java.lang.String,java.lang.String)">findElement</a>, <a href="../remote/RemoteWebDriver.html#findElement(org.openqa.selenium.By)">findElement</a>, <a href="../remote/RemoteWebDriver.html#findElements(java.lang.String,java.lang.String)">findElements</a>, <a href="../remote/RemoteWebDriver.html#findElements(org.openqa.selenium.By)">findElements</a>, <a href="../remote/RemoteWebDriver.html#findElements(org.openqa.selenium.SearchContext,java.util.function.BiFunction,org.openqa.selenium.By)">findElements</a>, <a href="../remote/RemoteWebDriver.html#get(java.lang.String)">get</a>, <a href="../remote/RemoteWebDriver.html#getCommandExecutor()">getCommandExecutor</a>, <a href="../remote/RemoteWebDriver.html#getCurrentUrl()">getCurrentUrl</a>, <a href="../remote/RemoteWebDriver.html#getElementConverter()">getElementConverter</a>, <a href="../remote/RemoteWebDriver.html#getErrorHandler()">getErrorHandler</a>, <a href="../remote/RemoteWebDriver.html#getExecuteMethod()">getExecuteMethod</a>, <a href="../remote/RemoteWebDriver.html#getFileDetector()">getFileDetector</a>, <a href="../remote/RemoteWebDriver.html#getKeyboard()">getKeyboard</a>, <a href="../remote/RemoteWebDriver.html#getMouse()">getMouse</a>, <a href="../remote/RemoteWebDriver.html#getPageSource()">getPageSource</a>, <a href="../remote/RemoteWebDriver.html#getScreenshotAs(org.openqa.selenium.OutputType)">getScreenshotAs</a>, <a href="../remote/RemoteWebDriver.html#getSessionId()">getSessionId</a>, <a href="../remote/RemoteWebDriver.html#getTitle()">getTitle</a>, <a href="../remote/RemoteWebDriver.html#getWindowHandle()">getWindowHandle</a>, <a href="../remote/RemoteWebDriver.html#getWindowHandles()">getWindowHandles</a>, <a href="../remote/RemoteWebDriver.html#log(org.openqa.selenium.remote.SessionId,java.lang.String,java.lang.Object,org.openqa.selenium.remote.RemoteWebDriver.When)">log</a>, <a href="../remote/RemoteWebDriver.html#manage()">manage</a>, <a href="../remote/RemoteWebDriver.html#navigate()">navigate</a>, <a href="../remote/RemoteWebDriver.html#perform(java.util.Collection)">perform</a>, <a href="../remote/RemoteWebDriver.html#print(org.openqa.selenium.print.PrintOptions)">print</a>, <a href="../remote/RemoteWebDriver.html#removeVirtualAuthenticator(org.openqa.selenium.virtualauthenticator.VirtualAuthenticator)">removeVirtualAuthenticator</a>, <a href="../remote/RemoteWebDriver.html#resetInputState()">resetInputState</a>, <a href="../remote/RemoteWebDriver.html#setCommandExecutor(org.openqa.selenium.remote.CommandExecutor)">setCommandExecutor</a>, <a href="../remote/RemoteWebDriver.html#setElementConverter(org.openqa.selenium.remote.JsonToWebElementConverter)">setElementConverter</a>, <a href="../remote/RemoteWebDriver.html#setErrorHandler(org.openqa.selenium.remote.ErrorHandler)">setErrorHandler</a>, <a href="../remote/RemoteWebDriver.html#setFoundBy(org.openqa.selenium.SearchContext,org.openqa.selenium.WebElement,java.lang.String,java.lang.String)">setFoundBy</a>, <a href="../remote/RemoteWebDriver.html#setLogLevel(java.util.logging.Level)">setLogLevel</a>, <a href="../remote/RemoteWebDriver.html#setSessionId(java.lang.String)">setSessionId</a>, <a href="../remote/RemoteWebDriver.html#startSession(org.openqa.selenium.Capabilities)">startSession</a>, <a href="../remote/RemoteWebDriver.html#switchTo()">switchTo</a>, <a href="../remote/RemoteWebDriver.html#toString()">toString</a></code></li>
 </ul>
 <ul class="blockList">
 <li class="blockList"><a id="methods.inherited.from.class.java.lang.Object">
@@ -374,6 +439,13 @@ implements <a href="../HasAuthentication.html" title="interface in org.openqa.se
 </a>
 <h3>Methods inherited from interface&nbsp;org.openqa.selenium.<a href="../HasAuthentication.html" title="interface in org.openqa.selenium">HasAuthentication</a></h3>
 <code><a href="../HasAuthentication.html#register(java.util.function.Supplier)">register</a></code></li>
+</ul>
+<ul class="blockList">
+<li class="blockList"><a id="methods.inherited.from.class.org.openqa.selenium.devtools.HasDevTools">
+<!--   -->
+</a>
+<h3>Methods inherited from interface&nbsp;org.openqa.selenium.devtools.<a href="../devtools/HasDevTools.html" title="interface in org.openqa.selenium.devtools">HasDevTools</a></h3>
+<code><a href="../devtools/HasDevTools.html#getDevTools()">getDevTools</a></code></li>
 </ul>
 <ul class="blockList">
 <li class="blockList"><a id="methods.inherited.from.class.org.openqa.selenium.JavascriptExecutor">
@@ -391,6 +463,43 @@ implements <a href="../HasAuthentication.html" title="interface in org.openqa.se
 <div class="details">
 <ul class="blockList">
 <li class="blockList">
+<!-- ============ FIELD DETAIL =========== -->
+<section role="region">
+<ul class="blockList">
+<li class="blockList"><a id="field.detail">
+<!--   -->
+</a>
+<h3>Field Detail</h3>
+<a id="IS_CHROMIUM_BROWSER">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>IS_CHROMIUM_BROWSER</h4>
+<pre>public static final&nbsp;java.util.function.Predicate&lt;java.lang.String&gt; IS_CHROMIUM_BROWSER</pre>
+</li>
+</ul>
+<a id="casting">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>casting</h4>
+<pre>protected&nbsp;<a href="HasCasting.html" title="interface in org.openqa.selenium.chromium">HasCasting</a> casting</pre>
+</li>
+</ul>
+<a id="cdp">
+<!--   -->
+</a>
+<ul class="blockListLast">
+<li class="blockList">
+<h4>cdp</h4>
+<pre>protected&nbsp;<a href="HasCdp.html" title="interface in org.openqa.selenium.chromium">HasCdp</a> cdp</pre>
+</li>
+</ul>
+</li>
+</ul>
+</section>
 <!-- ========= CONSTRUCTOR DETAIL ======== -->
 <section role="region">
 <ul class="blockList">
@@ -419,6 +528,23 @@ implements <a href="../HasAuthentication.html" title="interface in org.openqa.se
 <!--   -->
 </a>
 <h3>Method Detail</h3>
+<a id="getCapabilities()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getCapabilities</h4>
+<pre class="methodSignature">public&nbsp;<a href="../Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&nbsp;getCapabilities()</pre>
+<dl>
+<dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
+<dd><code><a href="../HasCapabilities.html#getCapabilities()">getCapabilities</a></code>&nbsp;in interface&nbsp;<code><a href="../HasCapabilities.html" title="interface in org.openqa.selenium">HasCapabilities</a></code></dd>
+<dt><span class="overrideSpecifyLabel">Overrides:</span></dt>
+<dd><code><a href="../remote/RemoteWebDriver.html#getCapabilities()">getCapabilities</a></code>&nbsp;in class&nbsp;<code><a href="../remote/RemoteWebDriver.html" title="class in org.openqa.selenium.remote">RemoteWebDriver</a></code></dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>The capabilities of the current driver.</dd>
+</dl>
+</li>
+</ul>
 <a id="setFileDetector(org.openqa.selenium.remote.FileDetector)">
 <!--   -->
 </a>
@@ -593,10 +719,11 @@ implements <a href="../HasAuthentication.html" title="interface in org.openqa.se
 <li class="blockList">
 <h4>launchApp</h4>
 <pre class="methodSignature">public&nbsp;void&nbsp;launchApp&#8203;(java.lang.String&nbsp;id)</pre>
-<div class="block">Launches Chrome app specified by id.</div>
 <dl>
+<dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
+<dd><code><a href="HasLaunchApp.html#launchApp(java.lang.String)">launchApp</a></code>&nbsp;in interface&nbsp;<code><a href="HasLaunchApp.html" title="interface in org.openqa.selenium.chromium">HasLaunchApp</a></code></dd>
 <dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>id</code> - Chrome app id.</dd>
+<dd><code>id</code> - which Chromium app to launch.</dd>
 </dl>
 </li>
 </ul>
@@ -608,22 +735,34 @@ implements <a href="../HasAuthentication.html" title="interface in org.openqa.se
 <h4>executeCdpCommand</h4>
 <pre class="methodSignature">public&nbsp;java.util.Map&lt;java.lang.String,&#8203;java.lang.Object&gt;&nbsp;executeCdpCommand&#8203;(java.lang.String&nbsp;commandName,
                                                                                 java.util.Map&lt;java.lang.String,&#8203;java.lang.Object&gt;&nbsp;parameters)</pre>
-<div class="block">Execute a Chrome Devtools Protocol command and get returned result. The
+<div class="block"><span class="descfrmTypeLabel">Description copied from interface:&nbsp;<code><a href="HasCdp.html#executeCdpCommand(java.lang.String,java.util.Map)">HasCdp</a></code></span></div>
+<div class="block">Execute a Chrome DevTools Protocol command and get returned result. The
  command and command args should follow
  <a href="https://chromedevtools.github.io/devtools-protocol/">chrome
- devtools protocol domains/commands</a>.</div>
+ devtools protocol domains/commands</a>.
+
+ It is strongly encouraged to use <a href="../devtools/DevTools.html" title="class in org.openqa.selenium.devtools"><code>DevTools</code></a> API instead of this</div>
+<dl>
+<dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
+<dd><code><a href="HasCdp.html#executeCdpCommand(java.lang.String,java.util.Map)">executeCdpCommand</a></code>&nbsp;in interface&nbsp;<code><a href="HasCdp.html" title="interface in org.openqa.selenium.chromium">HasCdp</a></code></dd>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>commandName</code> - the command to execute with Chrome Dev Tools.</dd>
+<dd><code>parameters</code> - any information needed to execute the Dev Tools command.</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>the name and value of the response.</dd>
+</dl>
 </li>
 </ul>
-<a id="getDevTools()">
+<a id="maybeGetDevTools()">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
-<h4>getDevTools</h4>
-<pre class="methodSignature">public&nbsp;<a href="../devtools/DevTools.html" title="class in org.openqa.selenium.devtools">DevTools</a>&nbsp;getDevTools()</pre>
+<h4>maybeGetDevTools</h4>
+<pre class="methodSignature">public&nbsp;java.util.Optional&lt;<a href="../devtools/DevTools.html" title="class in org.openqa.selenium.devtools">DevTools</a>&gt;&nbsp;maybeGetDevTools()</pre>
 <dl>
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
-<dd><code><a href="../devtools/HasDevTools.html#getDevTools()">getDevTools</a></code>&nbsp;in interface&nbsp;<code><a href="../devtools/HasDevTools.html" title="interface in org.openqa.selenium.devtools">HasDevTools</a></code></dd>
+<dd><code><a href="../devtools/HasDevTools.html#maybeGetDevTools()">maybeGetDevTools</a></code>&nbsp;in interface&nbsp;<code><a href="../devtools/HasDevTools.html" title="interface in org.openqa.selenium.devtools">HasDevTools</a></code></dd>
 </dl>
 </li>
 </ul>
@@ -633,7 +772,15 @@ implements <a href="../HasAuthentication.html" title="interface in org.openqa.se
 <ul class="blockList">
 <li class="blockList">
 <h4>getCastSinks</h4>
-<pre class="methodSignature">public&nbsp;java.lang.String&nbsp;getCastSinks()</pre>
+<pre class="methodSignature">public&nbsp;java.util.List&lt;java.util.Map&lt;java.lang.String,&#8203;java.lang.String&gt;&gt;&nbsp;getCastSinks()</pre>
+<div class="block"><span class="descfrmTypeLabel">Description copied from interface:&nbsp;<code><a href="HasCasting.html#getCastSinks()">HasCasting</a></code></span></div>
+<div class="block">Returns the list of cast sinks (Cast devices) available to the Chrome media router.</div>
+<dl>
+<dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
+<dd><code><a href="HasCasting.html#getCastSinks()">getCastSinks</a></code>&nbsp;in interface&nbsp;<code><a href="HasCasting.html" title="interface in org.openqa.selenium.chromium">HasCasting</a></code></dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>array of ID / Name pairs of available cast sink targets</dd>
+</dl>
 </li>
 </ul>
 <a id="getCastIssueMessage()">
@@ -643,6 +790,12 @@ implements <a href="../HasAuthentication.html" title="interface in org.openqa.se
 <li class="blockList">
 <h4>getCastIssueMessage</h4>
 <pre class="methodSignature">public&nbsp;java.lang.String&nbsp;getCastIssueMessage()</pre>
+<dl>
+<dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
+<dd><code><a href="HasCasting.html#getCastIssueMessage()">getCastIssueMessage</a></code>&nbsp;in interface&nbsp;<code><a href="HasCasting.html" title="interface in org.openqa.selenium.chromium">HasCasting</a></code></dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>an error message if there is any issue in a Cast session.</dd>
+</dl>
 </li>
 </ul>
 <a id="selectCastSink(java.lang.String)">
@@ -652,6 +805,14 @@ implements <a href="../HasAuthentication.html" title="interface in org.openqa.se
 <li class="blockList">
 <h4>selectCastSink</h4>
 <pre class="methodSignature">public&nbsp;void&nbsp;selectCastSink&#8203;(java.lang.String&nbsp;deviceName)</pre>
+<div class="block"><span class="descfrmTypeLabel">Description copied from interface:&nbsp;<code><a href="HasCasting.html#selectCastSink(java.lang.String)">HasCasting</a></code></span></div>
+<div class="block">Selects a cast sink (Cast device) as the recipient of media router intents (connect or play).</div>
+<dl>
+<dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
+<dd><code><a href="HasCasting.html#selectCastSink(java.lang.String)">selectCastSink</a></code>&nbsp;in interface&nbsp;<code><a href="HasCasting.html" title="interface in org.openqa.selenium.chromium">HasCasting</a></code></dd>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>deviceName</code> - name of the target device.</dd>
+</dl>
 </li>
 </ul>
 <a id="startTabMirroring(java.lang.String)">
@@ -661,6 +822,14 @@ implements <a href="../HasAuthentication.html" title="interface in org.openqa.se
 <li class="blockList">
 <h4>startTabMirroring</h4>
 <pre class="methodSignature">public&nbsp;void&nbsp;startTabMirroring&#8203;(java.lang.String&nbsp;deviceName)</pre>
+<div class="block"><span class="descfrmTypeLabel">Description copied from interface:&nbsp;<code><a href="HasCasting.html#startTabMirroring(java.lang.String)">HasCasting</a></code></span></div>
+<div class="block">Initiates tab mirroring for the current browser tab on the specified device.</div>
+<dl>
+<dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
+<dd><code><a href="HasCasting.html#startTabMirroring(java.lang.String)">startTabMirroring</a></code>&nbsp;in interface&nbsp;<code><a href="HasCasting.html" title="interface in org.openqa.selenium.chromium">HasCasting</a></code></dd>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>deviceName</code> - name of the target device.</dd>
+</dl>
 </li>
 </ul>
 <a id="stopCasting(java.lang.String)">
@@ -670,6 +839,14 @@ implements <a href="../HasAuthentication.html" title="interface in org.openqa.se
 <li class="blockList">
 <h4>stopCasting</h4>
 <pre class="methodSignature">public&nbsp;void&nbsp;stopCasting&#8203;(java.lang.String&nbsp;deviceName)</pre>
+<div class="block"><span class="descfrmTypeLabel">Description copied from interface:&nbsp;<code><a href="HasCasting.html#stopCasting(java.lang.String)">HasCasting</a></code></span></div>
+<div class="block">Stops casting from media router to the specified device, if connected.</div>
+<dl>
+<dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
+<dd><code><a href="HasCasting.html#stopCasting(java.lang.String)">stopCasting</a></code>&nbsp;in interface&nbsp;<code><a href="HasCasting.html" title="interface in org.openqa.selenium.chromium">HasCasting</a></code></dd>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>deviceName</code> - name of the target device.</dd>
+</dl>
 </li>
 </ul>
 <a id="setPermission(java.lang.String,java.lang.String)">
@@ -680,6 +857,63 @@ implements <a href="../HasAuthentication.html" title="interface in org.openqa.se
 <h4>setPermission</h4>
 <pre class="methodSignature">public&nbsp;void&nbsp;setPermission&#8203;(java.lang.String&nbsp;name,
                           java.lang.String&nbsp;value)</pre>
+<dl>
+<dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
+<dd><code><a href="HasPermissions.html#setPermission(java.lang.String,java.lang.String)">setPermission</a></code>&nbsp;in interface&nbsp;<code><a href="HasPermissions.html" title="interface in org.openqa.selenium.chromium">HasPermissions</a></code></dd>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>name</code> - what item to set the permission on.</dd>
+<dd><code>value</code> - what to set the permission to.</dd>
+</dl>
+</li>
+</ul>
+<a id="getNetworkConditions()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getNetworkConditions</h4>
+<pre class="methodSignature">public&nbsp;<a href="ChromiumNetworkConditions.html" title="class in org.openqa.selenium.chromium">ChromiumNetworkConditions</a>&nbsp;getNetworkConditions()</pre>
+<div class="block"><span class="descfrmTypeLabel">Description copied from interface:&nbsp;<code><a href="HasNetworkConditions.html#getNetworkConditions()">HasNetworkConditions</a></code></span></div>
+<div class="block">Gets map of network conditions.
+ These have to be set before they can be retrieved.</div>
+<dl>
+<dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
+<dd><code><a href="HasNetworkConditions.html#getNetworkConditions()">getNetworkConditions</a></code>&nbsp;in interface&nbsp;<code><a href="HasNetworkConditions.html" title="interface in org.openqa.selenium.chromium">HasNetworkConditions</a></code></dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>the current network condition values.</dd>
+</dl>
+</li>
+</ul>
+<a id="setNetworkConditions(org.openqa.selenium.chromium.ChromiumNetworkConditions)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>setNetworkConditions</h4>
+<pre class="methodSignature">public&nbsp;void&nbsp;setNetworkConditions&#8203;(<a href="ChromiumNetworkConditions.html" title="class in org.openqa.selenium.chromium">ChromiumNetworkConditions</a>&nbsp;networkConditions)</pre>
+<div class="block"><span class="descfrmTypeLabel">Description copied from interface:&nbsp;<code><a href="HasNetworkConditions.html#setNetworkConditions(org.openqa.selenium.chromium.ChromiumNetworkConditions)">HasNetworkConditions</a></code></span></div>
+<div class="block">Set network limitations</div>
+<dl>
+<dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
+<dd><code><a href="HasNetworkConditions.html#setNetworkConditions(org.openqa.selenium.chromium.ChromiumNetworkConditions)">setNetworkConditions</a></code>&nbsp;in interface&nbsp;<code><a href="HasNetworkConditions.html" title="interface in org.openqa.selenium.chromium">HasNetworkConditions</a></code></dd>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>networkConditions</code> - object containing valid network condition settings.</dd>
+</dl>
+</li>
+</ul>
+<a id="deleteNetworkConditions()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>deleteNetworkConditions</h4>
+<pre class="methodSignature">public&nbsp;void&nbsp;deleteNetworkConditions()</pre>
+<div class="block"><span class="descfrmTypeLabel">Description copied from interface:&nbsp;<code><a href="HasNetworkConditions.html#deleteNetworkConditions()">HasNetworkConditions</a></code></span></div>
+<div class="block">Resets the network conditions to the default settings.</div>
+<dl>
+<dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
+<dd><code><a href="HasNetworkConditions.html#deleteNetworkConditions()">deleteNetworkConditions</a></code>&nbsp;in interface&nbsp;<code><a href="HasNetworkConditions.html" title="interface in org.openqa.selenium.chromium">HasNetworkConditions</a></code></dd>
+</dl>
 </li>
 </ul>
 <a id="quit()">
@@ -756,13 +990,13 @@ implements <a href="../HasAuthentication.html" title="interface in org.openqa.se
 <ul class="subNavList">
 <li>Summary:&nbsp;</li>
 <li><a href="#nested.class.summary">Nested</a>&nbsp;|&nbsp;</li>
-<li>Field&nbsp;|&nbsp;</li>
+<li><a href="#field.summary">Field</a>&nbsp;|&nbsp;</li>
 <li><a href="#constructor.summary">Constr</a>&nbsp;|&nbsp;</li>
 <li><a href="#method.summary">Method</a></li>
 </ul>
 <ul class="subNavList">
 <li>Detail:&nbsp;</li>
-<li>Field&nbsp;|&nbsp;</li>
+<li><a href="#field.detail">Field</a>&nbsp;|&nbsp;</li>
 <li><a href="#constructor.detail">Constr</a>&nbsp;|&nbsp;</li>
 <li><a href="#method.detail">Method</a></li>
 </ul>

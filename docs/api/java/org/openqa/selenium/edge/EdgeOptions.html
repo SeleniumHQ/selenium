@@ -152,7 +152,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <li class="blockList">
 <dl>
 <dt>All Implemented Interfaces:</dt>
-<dd><code><a href="../Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a></code></dd>
+<dd><code>java.io.Serializable</code>, <code><a href="../Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a></code></dd>
 </dl>
 <hr>
 <pre>public class <span class="typeNameLabel">EdgeOptions</span>
@@ -173,6 +173,10 @@ extends <a href="../chromium/ChromiumOptions.html" title="class in org.openqa.se
      new URL("http://localhost:4444/"),
      new EdgeOptions());
  </code></pre></div>
+<dl>
+<dt><span class="seeLabel">See Also:</span></dt>
+<dd><a href="../../../../serialized-form.html#org.openqa.selenium.edge.EdgeOptions">Serialized Form</a></dd>
+</dl>
 </li>
 </ul>
 </div>
@@ -199,13 +203,6 @@ extends <a href="../chromium/ChromiumOptions.html" title="class in org.openqa.se
 <td class="colLast">
 <div class="block">Key used to store a set of ChromeOptions in a <a href="../Capabilities.html" title="interface in org.openqa.selenium"><code>Capabilities</code></a>
  object.</div>
-</td>
-</tr>
-<tr class="rowColor">
-<td class="colFirst"><code>static java.lang.String</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#USE_CHROMIUM">USE_CHROMIUM</a></span></code></th>
-<td class="colLast">
-<div class="block">Key used to indicate whether to use an Edge Chromium or Edge Legacy driver.</div>
 </td>
 </tr>
 </table>
@@ -261,21 +258,21 @@ extends <a href="../chromium/ChromiumOptions.html" title="class in org.openqa.se
 <!--   -->
 </a>
 <h3>Methods inherited from class&nbsp;org.openqa.selenium.chromium.<a href="../chromium/ChromiumOptions.html" title="class in org.openqa.selenium.chromium">ChromiumOptions</a></h3>
-<code><a href="../chromium/ChromiumOptions.html#addArguments(java.lang.String...)">addArguments</a>, <a href="../chromium/ChromiumOptions.html#addArguments(java.util.List)">addArguments</a>, <a href="../chromium/ChromiumOptions.html#addEncodedExtensions(java.lang.String...)">addEncodedExtensions</a>, <a href="../chromium/ChromiumOptions.html#addEncodedExtensions(java.util.List)">addEncodedExtensions</a>, <a href="../chromium/ChromiumOptions.html#addExtensions(java.io.File...)">addExtensions</a>, <a href="../chromium/ChromiumOptions.html#addExtensions(java.util.List)">addExtensions</a>, <a href="../chromium/ChromiumOptions.html#amendHashCode()">amendHashCode</a>, <a href="../chromium/ChromiumOptions.html#asMap()">asMap</a>, <a href="../chromium/ChromiumOptions.html#mergeInPlace(org.openqa.selenium.Capabilities)">mergeInPlace</a>, <a href="../chromium/ChromiumOptions.html#setBinary(java.io.File)">setBinary</a>, <a href="../chromium/ChromiumOptions.html#setBinary(java.lang.String)">setBinary</a>, <a href="../chromium/ChromiumOptions.html#setExperimentalOption(java.lang.String,java.lang.Object)">setExperimentalOption</a>, <a href="../chromium/ChromiumOptions.html#setHeadless(boolean)">setHeadless</a></code></li>
+<code><a href="../chromium/ChromiumOptions.html#addArguments(java.lang.String...)">addArguments</a>, <a href="../chromium/ChromiumOptions.html#addArguments(java.util.List)">addArguments</a>, <a href="../chromium/ChromiumOptions.html#addEncodedExtensions(java.lang.String...)">addEncodedExtensions</a>, <a href="../chromium/ChromiumOptions.html#addEncodedExtensions(java.util.List)">addEncodedExtensions</a>, <a href="../chromium/ChromiumOptions.html#addExtensions(java.io.File...)">addExtensions</a>, <a href="../chromium/ChromiumOptions.html#addExtensions(java.util.List)">addExtensions</a>, <a href="../chromium/ChromiumOptions.html#getExtraCapability(java.lang.String)">getExtraCapability</a>, <a href="../chromium/ChromiumOptions.html#getExtraCapabilityNames()">getExtraCapabilityNames</a>, <a href="../chromium/ChromiumOptions.html#mergeInPlace(org.openqa.selenium.Capabilities)">mergeInPlace</a>, <a href="../chromium/ChromiumOptions.html#setAndroidActivity(java.lang.String)">setAndroidActivity</a>, <a href="../chromium/ChromiumOptions.html#setAndroidDeviceSerialNumber(java.lang.String)">setAndroidDeviceSerialNumber</a>, <a href="../chromium/ChromiumOptions.html#setAndroidPackage(java.lang.String)">setAndroidPackage</a>, <a href="../chromium/ChromiumOptions.html#setAndroidProcess(java.lang.String)">setAndroidProcess</a>, <a href="../chromium/ChromiumOptions.html#setBinary(java.io.File)">setBinary</a>, <a href="../chromium/ChromiumOptions.html#setBinary(java.lang.String)">setBinary</a>, <a href="../chromium/ChromiumOptions.html#setExperimentalOption(java.lang.String,java.lang.Object)">setExperimentalOption</a>, <a href="../chromium/ChromiumOptions.html#setHeadless(boolean)">setHeadless</a>, <a href="../chromium/ChromiumOptions.html#setUseRunningAndroidApp(boolean)">setUseRunningAndroidApp</a></code></li>
 </ul>
 <ul class="blockList">
 <li class="blockList"><a id="methods.inherited.from.class.org.openqa.selenium.remote.AbstractDriverOptions">
 <!--   -->
 </a>
 <h3>Methods inherited from class&nbsp;org.openqa.selenium.remote.<a href="../remote/AbstractDriverOptions.html" title="class in org.openqa.selenium.remote">AbstractDriverOptions</a></h3>
-<code><a href="../remote/AbstractDriverOptions.html#setAcceptInsecureCerts(boolean)">setAcceptInsecureCerts</a>, <a href="../remote/AbstractDriverOptions.html#setPageLoadStrategy(org.openqa.selenium.PageLoadStrategy)">setPageLoadStrategy</a>, <a href="../remote/AbstractDriverOptions.html#setProxy(org.openqa.selenium.Proxy)">setProxy</a>, <a href="../remote/AbstractDriverOptions.html#setStrictFileInteractability(boolean)">setStrictFileInteractability</a>, <a href="../remote/AbstractDriverOptions.html#setUnhandledPromptBehaviour(org.openqa.selenium.UnexpectedAlertBehaviour)">setUnhandledPromptBehaviour</a></code></li>
+<code><a href="../remote/AbstractDriverOptions.html#asMap()">asMap</a>, <a href="../remote/AbstractDriverOptions.html#getCapability(java.lang.String)">getCapability</a>, <a href="../remote/AbstractDriverOptions.html#getCapabilityNames()">getCapabilityNames</a>, <a href="../remote/AbstractDriverOptions.html#setAcceptInsecureCerts(boolean)">setAcceptInsecureCerts</a>, <a href="../remote/AbstractDriverOptions.html#setBrowserVersion(java.lang.String)">setBrowserVersion</a>, <a href="../remote/AbstractDriverOptions.html#setImplicitWaitTimeout(java.time.Duration)">setImplicitWaitTimeout</a>, <a href="../remote/AbstractDriverOptions.html#setPageLoadStrategy(org.openqa.selenium.PageLoadStrategy)">setPageLoadStrategy</a>, <a href="../remote/AbstractDriverOptions.html#setPageLoadTimeout(java.time.Duration)">setPageLoadTimeout</a>, <a href="../remote/AbstractDriverOptions.html#setPlatformName(java.lang.String)">setPlatformName</a>, <a href="../remote/AbstractDriverOptions.html#setProxy(org.openqa.selenium.Proxy)">setProxy</a>, <a href="../remote/AbstractDriverOptions.html#setScriptTimeout(java.time.Duration)">setScriptTimeout</a>, <a href="../remote/AbstractDriverOptions.html#setStrictFileInteractability(boolean)">setStrictFileInteractability</a>, <a href="../remote/AbstractDriverOptions.html#setUnhandledPromptBehaviour(org.openqa.selenium.UnexpectedAlertBehaviour)">setUnhandledPromptBehaviour</a></code></li>
 </ul>
 <ul class="blockList">
 <li class="blockList"><a id="methods.inherited.from.class.org.openqa.selenium.MutableCapabilities">
 <!--   -->
 </a>
 <h3>Methods inherited from class&nbsp;org.openqa.selenium.<a href="../MutableCapabilities.html" title="class in org.openqa.selenium">MutableCapabilities</a></h3>
-<code><a href="../MutableCapabilities.html#equals(java.lang.Object)">equals</a>, <a href="../MutableCapabilities.html#getCapability(java.lang.String)">getCapability</a>, <a href="../MutableCapabilities.html#getCapabilityNames()">getCapabilityNames</a>, <a href="../MutableCapabilities.html#hashCode()">hashCode</a>, <a href="../MutableCapabilities.html#setCapability(java.lang.String,boolean)">setCapability</a>, <a href="../MutableCapabilities.html#setCapability(java.lang.String,java.lang.Object)">setCapability</a>, <a href="../MutableCapabilities.html#setCapability(java.lang.String,java.lang.String)">setCapability</a>, <a href="../MutableCapabilities.html#setCapability(java.lang.String,org.openqa.selenium.Platform)">setCapability</a>, <a href="../MutableCapabilities.html#toJson()">toJson</a>, <a href="../MutableCapabilities.html#toString()">toString</a></code></li>
+<code><a href="../MutableCapabilities.html#equals(java.lang.Object)">equals</a>, <a href="../MutableCapabilities.html#hashCode()">hashCode</a>, <a href="../MutableCapabilities.html#setCapability(java.lang.String,boolean)">setCapability</a>, <a href="../MutableCapabilities.html#setCapability(java.lang.String,java.lang.Object)">setCapability</a>, <a href="../MutableCapabilities.html#setCapability(java.lang.String,java.lang.String)">setCapability</a>, <a href="../MutableCapabilities.html#setCapability(java.lang.String,org.openqa.selenium.Platform)">setCapability</a>, <a href="../MutableCapabilities.html#toJson()">toJson</a>, <a href="../MutableCapabilities.html#toString()">toString</a></code></li>
 </ul>
 <ul class="blockList">
 <li class="blockList"><a id="methods.inherited.from.class.java.lang.Object">
@@ -307,20 +304,6 @@ extends <a href="../chromium/ChromiumOptions.html" title="class in org.openqa.se
 <!--   -->
 </a>
 <h3>Field Detail</h3>
-<a id="USE_CHROMIUM">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>USE_CHROMIUM</h4>
-<pre>public static final&nbsp;java.lang.String USE_CHROMIUM</pre>
-<div class="block">Key used to indicate whether to use an Edge Chromium or Edge Legacy driver.</div>
-<dl>
-<dt><span class="seeLabel">See Also:</span></dt>
-<dd><a href="../../../../constant-values.html#org.openqa.selenium.edge.EdgeOptions.USE_CHROMIUM">Constant Field Values</a></dd>
-</dl>
-</li>
-</ul>
 <a id="CAPABILITY">
 <!--   -->
 </a>

@@ -27,7 +27,7 @@
     catch(err) {
     }
 //-->
-var data = {"i0":10};
+var data = {"i0":10,"i1":10};
 var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -142,7 +142,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <li class="blockList">
 <dl>
 <dt>All Implemented Interfaces:</dt>
-<dd><code><a href="../../logging/NeedsLocalLogs.html" title="interface in org.openqa.selenium.logging">NeedsLocalLogs</a></code>, <code><a href="../CommandExecutor.html" title="interface in org.openqa.selenium.remote">CommandExecutor</a></code></dd>
+<dd><code>java.io.Closeable</code>, <code>java.lang.AutoCloseable</code>, <code><a href="../../logging/NeedsLocalLogs.html" title="interface in org.openqa.selenium.logging">NeedsLocalLogs</a></code>, <code><a href="../CommandExecutor.html" title="interface in org.openqa.selenium.remote">CommandExecutor</a></code></dd>
 </dl>
 <dl>
 <dt>Direct Known Subclasses:</dt>
@@ -150,7 +150,8 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 </dl>
 <hr>
 <pre>public class <span class="typeNameLabel">DriverCommandExecutor</span>
-extends <a href="../HttpCommandExecutor.html" title="class in org.openqa.selenium.remote">HttpCommandExecutor</a></pre>
+extends <a href="../HttpCommandExecutor.html" title="class in org.openqa.selenium.remote">HttpCommandExecutor</a>
+implements java.io.Closeable</pre>
 <div class="block">A specialized <a href="../HttpCommandExecutor.html" title="class in org.openqa.selenium.remote"><code>HttpCommandExecutor</code></a> that will use a <a href="DriverService.html" title="class in org.openqa.selenium.remote.service"><code>DriverService</code></a> that lives
  and dies with a single WebDriver session. The service will be restarted upon each new session
  request and shutdown after each quit command.</div>
@@ -210,6 +211,11 @@ extends <a href="../HttpCommandExecutor.html" title="class in org.openqa.seleniu
 <th class="colLast" scope="col">Description</th>
 </tr>
 <tr id="i0" class="altColor">
+<td class="colFirst"><code>void</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#close()">close</a></span>()</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr id="i1" class="rowColor">
 <td class="colFirst"><code><a href="../Response.html" title="class in org.openqa.selenium.remote">Response</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#execute(org.openqa.selenium.remote.Command)">execute</a></span>&#8203;(<a href="../Command.html" title="class in org.openqa.selenium.remote">Command</a>&nbsp;command)</code></th>
 <td class="colLast">
@@ -292,7 +298,7 @@ extends <a href="../HttpCommandExecutor.html" title="class in org.openqa.seleniu
 <a id="execute(org.openqa.selenium.remote.Command)">
 <!--   -->
 </a>
-<ul class="blockListLast">
+<ul class="blockList">
 <li class="blockList">
 <h4>execute</h4>
 <pre class="methodSignature">public&nbsp;<a href="../Response.html" title="class in org.openqa.selenium.remote">Response</a>&nbsp;execute&#8203;(<a href="../Command.html" title="class in org.openqa.selenium.remote">Command</a>&nbsp;command)
@@ -311,6 +317,21 @@ extends <a href="../HttpCommandExecutor.html" title="class in org.openqa.seleniu
 <dd>The command response.</dd>
 <dt><span class="throwsLabel">Throws:</span></dt>
 <dd><code>java.io.IOException</code> - If an I/O error occurs while sending the command.</dd>
+</dl>
+</li>
+</ul>
+<a id="close()">
+<!--   -->
+</a>
+<ul class="blockListLast">
+<li class="blockList">
+<h4>close</h4>
+<pre class="methodSignature">public&nbsp;void&nbsp;close()</pre>
+<dl>
+<dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
+<dd><code>close</code>&nbsp;in interface&nbsp;<code>java.lang.AutoCloseable</code></dd>
+<dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
+<dd><code>close</code>&nbsp;in interface&nbsp;<code>java.io.Closeable</code></dd>
 </dl>
 </li>
 </ul>

@@ -27,7 +27,7 @@
     catch(err) {
     }
 //-->
-var data = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10};
+var data = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10,"i9":10,"i10":10};
 var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -142,12 +142,12 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <li class="blockList">
 <dl>
 <dt>All Implemented Interfaces:</dt>
-<dd><code><a href="../devtools/HasDevTools.html" title="interface in org.openqa.selenium.devtools">HasDevTools</a></code>, <code><a href="HasExtensions.html" title="interface in org.openqa.selenium.firefox">HasExtensions</a></code>, <code><a href="../HasCapabilities.html" title="interface in org.openqa.selenium">HasCapabilities</a></code>, <code><a href="../html5/WebStorage.html" title="interface in org.openqa.selenium.html5">WebStorage</a></code>, <code><a href="../interactions/HasInputDevices.html" title="interface in org.openqa.selenium.interactions">HasInputDevices</a></code>, <code><a href="../interactions/Interactive.html" title="interface in org.openqa.selenium.interactions">Interactive</a></code>, <code><a href="../JavascriptExecutor.html" title="interface in org.openqa.selenium">JavascriptExecutor</a></code>, <code><a href="../PrintsPage.html" title="interface in org.openqa.selenium">PrintsPage</a></code>, <code><a href="../SearchContext.html" title="interface in org.openqa.selenium">SearchContext</a></code>, <code><a href="../TakesScreenshot.html" title="interface in org.openqa.selenium">TakesScreenshot</a></code>, <code><a href="../virtualauthenticator/HasVirtualAuthenticator.html" title="interface in org.openqa.selenium.virtualauthenticator">HasVirtualAuthenticator</a></code>, <code><a href="../WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a></code></dd>
+<dd><code><a href="../devtools/HasDevTools.html" title="interface in org.openqa.selenium.devtools">HasDevTools</a></code>, <code><a href="HasContext.html" title="interface in org.openqa.selenium.firefox">HasContext</a></code>, <code><a href="HasExtensions.html" title="interface in org.openqa.selenium.firefox">HasExtensions</a></code>, <code><a href="HasFullPageScreenshot.html" title="interface in org.openqa.selenium.firefox">HasFullPageScreenshot</a></code>, <code><a href="../HasCapabilities.html" title="interface in org.openqa.selenium">HasCapabilities</a></code>, <code><a href="../html5/WebStorage.html" title="interface in org.openqa.selenium.html5">WebStorage</a></code>, <code><a href="../interactions/HasInputDevices.html" title="interface in org.openqa.selenium.interactions">HasInputDevices</a></code>, <code><a href="../interactions/Interactive.html" title="interface in org.openqa.selenium.interactions">Interactive</a></code>, <code><a href="../JavascriptExecutor.html" title="interface in org.openqa.selenium">JavascriptExecutor</a></code>, <code><a href="../PrintsPage.html" title="interface in org.openqa.selenium">PrintsPage</a></code>, <code><a href="../SearchContext.html" title="interface in org.openqa.selenium">SearchContext</a></code>, <code><a href="../TakesScreenshot.html" title="interface in org.openqa.selenium">TakesScreenshot</a></code>, <code><a href="../virtualauthenticator/HasVirtualAuthenticator.html" title="interface in org.openqa.selenium.virtualauthenticator">HasVirtualAuthenticator</a></code>, <code><a href="../WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a></code></dd>
 </dl>
 <hr>
 <pre>public class <span class="typeNameLabel">FirefoxDriver</span>
 extends <a href="../remote/RemoteWebDriver.html" title="class in org.openqa.selenium.remote">RemoteWebDriver</a>
-implements <a href="../html5/WebStorage.html" title="interface in org.openqa.selenium.html5">WebStorage</a>, <a href="HasExtensions.html" title="interface in org.openqa.selenium.firefox">HasExtensions</a>, <a href="../devtools/HasDevTools.html" title="interface in org.openqa.selenium.devtools">HasDevTools</a></pre>
+implements <a href="../html5/WebStorage.html" title="interface in org.openqa.selenium.html5">WebStorage</a>, <a href="HasExtensions.html" title="interface in org.openqa.selenium.firefox">HasExtensions</a>, <a href="HasFullPageScreenshot.html" title="interface in org.openqa.selenium.firefox">HasFullPageScreenshot</a>, <a href="HasContext.html" title="interface in org.openqa.selenium.firefox">HasContext</a>, <a href="../devtools/HasDevTools.html" title="interface in org.openqa.selenium.devtools">HasDevTools</a></pre>
 <div class="block">An implementation of the {#link WebDriver} interface that drives Firefox.
  <p>
  The best way to construct a <code>FirefoxDriver</code> with various options is to make use of the
@@ -325,42 +325,66 @@ implements <a href="../html5/WebStorage.html" title="interface in org.openqa.sel
 <th class="colLast" scope="col">Description</th>
 </tr>
 <tr id="i0" class="altColor">
+<td class="colFirst"><code><a href="../Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a></code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getCapabilities()">getCapabilities</a></span>()</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr id="i1" class="rowColor">
+<td class="colFirst"><code><a href="FirefoxCommandContext.html" title="enum in org.openqa.selenium.firefox">FirefoxCommandContext</a></code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getContext()">getContext</a></span>()</code></th>
+<td class="colLast">
+<div class="block">Current context commands are operating on.</div>
+</td>
+</tr>
+<tr id="i2" class="altColor">
 <td class="colFirst"><code><a href="../devtools/DevTools.html" title="class in org.openqa.selenium.devtools">DevTools</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getDevTools()">getDevTools</a></span>()</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i1" class="rowColor">
+<tr id="i3" class="rowColor">
 <td class="colFirst"><code>&lt;X&gt;&nbsp;X</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getFullPageScreenshotAs(org.openqa.selenium.OutputType)">getFullPageScreenshotAs</a></span>&#8203;(<a href="../OutputType.html" title="interface in org.openqa.selenium">OutputType</a>&lt;X&gt;&nbsp;outputType)</code></th>
 <td class="colLast">
 <div class="block">Capture the full page screenshot and store it in the specified location.</div>
 </td>
 </tr>
-<tr id="i2" class="altColor">
+<tr id="i4" class="altColor">
 <td class="colFirst"><code><a href="../html5/LocalStorage.html" title="interface in org.openqa.selenium.html5">LocalStorage</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getLocalStorage()">getLocalStorage</a></span>()</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i3" class="rowColor">
+<tr id="i5" class="rowColor">
 <td class="colFirst"><code><a href="../html5/SessionStorage.html" title="interface in org.openqa.selenium.html5">SessionStorage</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getSessionStorage()">getSessionStorage</a></span>()</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i4" class="altColor">
+<tr id="i6" class="altColor">
 <td class="colFirst"><code>java.lang.String</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#installExtension(java.nio.file.Path)">installExtension</a></span>&#8203;(java.nio.file.Path&nbsp;path)</code></th>
 <td class="colLast">
 <div class="block">Installs an extension.</div>
 </td>
 </tr>
-<tr id="i5" class="rowColor">
+<tr id="i7" class="rowColor">
+<td class="colFirst"><code>java.util.Optional&lt;<a href="../devtools/DevTools.html" title="class in org.openqa.selenium.devtools">DevTools</a>&gt;</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#maybeGetDevTools()">maybeGetDevTools</a></span>()</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr id="i8" class="altColor">
+<td class="colFirst"><code>void</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setContext(org.openqa.selenium.firefox.FirefoxCommandContext)">setContext</a></span>&#8203;(<a href="FirefoxCommandContext.html" title="enum in org.openqa.selenium.firefox">FirefoxCommandContext</a>&nbsp;commandContext)</code></th>
+<td class="colLast">
+<div class="block">Context commands are operating on.</div>
+</td>
+</tr>
+<tr id="i9" class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setFileDetector(org.openqa.selenium.remote.FileDetector)">setFileDetector</a></span>&#8203;(<a href="../remote/FileDetector.html" title="interface in org.openqa.selenium.remote">FileDetector</a>&nbsp;detector)</code></th>
 <td class="colLast">
 <div class="block">Set the file detector to be used when sending keyboard input.</div>
 </td>
 </tr>
-<tr id="i6" class="altColor">
+<tr id="i10" class="altColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#uninstallExtension(java.lang.String)">uninstallExtension</a></span>&#8203;(java.lang.String&nbsp;extensionId)</code></th>
 <td class="colLast">
@@ -373,7 +397,7 @@ implements <a href="../html5/WebStorage.html" title="interface in org.openqa.sel
 <!--   -->
 </a>
 <h3>Methods inherited from class&nbsp;org.openqa.selenium.remote.<a href="../remote/RemoteWebDriver.html" title="class in org.openqa.selenium.remote">RemoteWebDriver</a></h3>
-<code><a href="../remote/RemoteWebDriver.html#addVirtualAuthenticator(org.openqa.selenium.virtualauthenticator.VirtualAuthenticatorOptions)">addVirtualAuthenticator</a>, <a href="../remote/RemoteWebDriver.html#builder()">builder</a>, <a href="../remote/RemoteWebDriver.html#close()">close</a>, <a href="../remote/RemoteWebDriver.html#execute(java.lang.String)">execute</a>, <a href="../remote/RemoteWebDriver.html#execute(java.lang.String,java.util.Map)">execute</a>, <a href="../remote/RemoteWebDriver.html#execute(org.openqa.selenium.remote.CommandPayload)">execute</a>, <a href="../remote/RemoteWebDriver.html#executeAsyncScript(java.lang.String,java.lang.Object...)">executeAsyncScript</a>, <a href="../remote/RemoteWebDriver.html#executeScript(java.lang.String,java.lang.Object...)">executeScript</a>, <a href="../remote/RemoteWebDriver.html#findElement(java.lang.String,java.lang.String)">findElement</a>, <a href="../remote/RemoteWebDriver.html#findElement(org.openqa.selenium.By)">findElement</a>, <a href="../remote/RemoteWebDriver.html#findElements(java.lang.String,java.lang.String)">findElements</a>, <a href="../remote/RemoteWebDriver.html#findElements(org.openqa.selenium.By)">findElements</a>, <a href="../remote/RemoteWebDriver.html#findElements(org.openqa.selenium.remote.RemoteWebDriver,org.openqa.selenium.SearchContext,org.openqa.selenium.By)">findElements</a>, <a href="../remote/RemoteWebDriver.html#get(java.lang.String)">get</a>, <a href="../remote/RemoteWebDriver.html#getCapabilities()">getCapabilities</a>, <a href="../remote/RemoteWebDriver.html#getCommandExecutor()">getCommandExecutor</a>, <a href="../remote/RemoteWebDriver.html#getCurrentUrl()">getCurrentUrl</a>, <a href="../remote/RemoteWebDriver.html#getElementConverter()">getElementConverter</a>, <a href="../remote/RemoteWebDriver.html#getErrorHandler()">getErrorHandler</a>, <a href="../remote/RemoteWebDriver.html#getExecuteMethod()">getExecuteMethod</a>, <a href="../remote/RemoteWebDriver.html#getFileDetector()">getFileDetector</a>, <a href="../remote/RemoteWebDriver.html#getKeyboard()">getKeyboard</a>, <a href="../remote/RemoteWebDriver.html#getMouse()">getMouse</a>, <a href="../remote/RemoteWebDriver.html#getPageSource()">getPageSource</a>, <a href="../remote/RemoteWebDriver.html#getScreenshotAs(org.openqa.selenium.OutputType)">getScreenshotAs</a>, <a href="../remote/RemoteWebDriver.html#getSessionId()">getSessionId</a>, <a href="../remote/RemoteWebDriver.html#getTitle()">getTitle</a>, <a href="../remote/RemoteWebDriver.html#getWindowHandle()">getWindowHandle</a>, <a href="../remote/RemoteWebDriver.html#getWindowHandles()">getWindowHandles</a>, <a href="../remote/RemoteWebDriver.html#log(org.openqa.selenium.remote.SessionId,java.lang.String,java.lang.Object,org.openqa.selenium.remote.RemoteWebDriver.When)">log</a>, <a href="../remote/RemoteWebDriver.html#manage()">manage</a>, <a href="../remote/RemoteWebDriver.html#navigate()">navigate</a>, <a href="../remote/RemoteWebDriver.html#perform(java.util.Collection)">perform</a>, <a href="../remote/RemoteWebDriver.html#print(org.openqa.selenium.print.PrintOptions)">print</a>, <a href="../remote/RemoteWebDriver.html#quit()">quit</a>, <a href="../remote/RemoteWebDriver.html#removeVirtualAuthenticator(org.openqa.selenium.virtualauthenticator.VirtualAuthenticator)">removeVirtualAuthenticator</a>, <a href="../remote/RemoteWebDriver.html#resetInputState()">resetInputState</a>, <a href="../remote/RemoteWebDriver.html#setCommandExecutor(org.openqa.selenium.remote.CommandExecutor)">setCommandExecutor</a>, <a href="../remote/RemoteWebDriver.html#setElementConverter(org.openqa.selenium.remote.JsonToWebElementConverter)">setElementConverter</a>, <a href="../remote/RemoteWebDriver.html#setErrorHandler(org.openqa.selenium.remote.ErrorHandler)">setErrorHandler</a>, <a href="../remote/RemoteWebDriver.html#setFoundBy(org.openqa.selenium.SearchContext,org.openqa.selenium.WebElement,java.lang.String,java.lang.String)">setFoundBy</a>, <a href="../remote/RemoteWebDriver.html#setLogLevel(java.util.logging.Level)">setLogLevel</a>, <a href="../remote/RemoteWebDriver.html#setSessionId(java.lang.String)">setSessionId</a>, <a href="../remote/RemoteWebDriver.html#startSession(org.openqa.selenium.Capabilities)">startSession</a>, <a href="../remote/RemoteWebDriver.html#switchTo()">switchTo</a>, <a href="../remote/RemoteWebDriver.html#toString()">toString</a></code></li>
+<code><a href="../remote/RemoteWebDriver.html#addVirtualAuthenticator(org.openqa.selenium.virtualauthenticator.VirtualAuthenticatorOptions)">addVirtualAuthenticator</a>, <a href="../remote/RemoteWebDriver.html#builder()">builder</a>, <a href="../remote/RemoteWebDriver.html#close()">close</a>, <a href="../remote/RemoteWebDriver.html#execute(java.lang.String)">execute</a>, <a href="../remote/RemoteWebDriver.html#execute(java.lang.String,java.util.Map)">execute</a>, <a href="../remote/RemoteWebDriver.html#execute(org.openqa.selenium.remote.CommandPayload)">execute</a>, <a href="../remote/RemoteWebDriver.html#executeAsyncScript(java.lang.String,java.lang.Object...)">executeAsyncScript</a>, <a href="../remote/RemoteWebDriver.html#executeScript(java.lang.String,java.lang.Object...)">executeScript</a>, <a href="../remote/RemoteWebDriver.html#findElement(java.lang.String,java.lang.String)">findElement</a>, <a href="../remote/RemoteWebDriver.html#findElement(org.openqa.selenium.By)">findElement</a>, <a href="../remote/RemoteWebDriver.html#findElements(java.lang.String,java.lang.String)">findElements</a>, <a href="../remote/RemoteWebDriver.html#findElements(org.openqa.selenium.By)">findElements</a>, <a href="../remote/RemoteWebDriver.html#findElements(org.openqa.selenium.SearchContext,java.util.function.BiFunction,org.openqa.selenium.By)">findElements</a>, <a href="../remote/RemoteWebDriver.html#get(java.lang.String)">get</a>, <a href="../remote/RemoteWebDriver.html#getCommandExecutor()">getCommandExecutor</a>, <a href="../remote/RemoteWebDriver.html#getCurrentUrl()">getCurrentUrl</a>, <a href="../remote/RemoteWebDriver.html#getElementConverter()">getElementConverter</a>, <a href="../remote/RemoteWebDriver.html#getErrorHandler()">getErrorHandler</a>, <a href="../remote/RemoteWebDriver.html#getExecuteMethod()">getExecuteMethod</a>, <a href="../remote/RemoteWebDriver.html#getFileDetector()">getFileDetector</a>, <a href="../remote/RemoteWebDriver.html#getKeyboard()">getKeyboard</a>, <a href="../remote/RemoteWebDriver.html#getMouse()">getMouse</a>, <a href="../remote/RemoteWebDriver.html#getPageSource()">getPageSource</a>, <a href="../remote/RemoteWebDriver.html#getScreenshotAs(org.openqa.selenium.OutputType)">getScreenshotAs</a>, <a href="../remote/RemoteWebDriver.html#getSessionId()">getSessionId</a>, <a href="../remote/RemoteWebDriver.html#getTitle()">getTitle</a>, <a href="../remote/RemoteWebDriver.html#getWindowHandle()">getWindowHandle</a>, <a href="../remote/RemoteWebDriver.html#getWindowHandles()">getWindowHandles</a>, <a href="../remote/RemoteWebDriver.html#log(org.openqa.selenium.remote.SessionId,java.lang.String,java.lang.Object,org.openqa.selenium.remote.RemoteWebDriver.When)">log</a>, <a href="../remote/RemoteWebDriver.html#manage()">manage</a>, <a href="../remote/RemoteWebDriver.html#navigate()">navigate</a>, <a href="../remote/RemoteWebDriver.html#perform(java.util.Collection)">perform</a>, <a href="../remote/RemoteWebDriver.html#print(org.openqa.selenium.print.PrintOptions)">print</a>, <a href="../remote/RemoteWebDriver.html#quit()">quit</a>, <a href="../remote/RemoteWebDriver.html#removeVirtualAuthenticator(org.openqa.selenium.virtualauthenticator.VirtualAuthenticator)">removeVirtualAuthenticator</a>, <a href="../remote/RemoteWebDriver.html#resetInputState()">resetInputState</a>, <a href="../remote/RemoteWebDriver.html#setCommandExecutor(org.openqa.selenium.remote.CommandExecutor)">setCommandExecutor</a>, <a href="../remote/RemoteWebDriver.html#setElementConverter(org.openqa.selenium.remote.JsonToWebElementConverter)">setElementConverter</a>, <a href="../remote/RemoteWebDriver.html#setErrorHandler(org.openqa.selenium.remote.ErrorHandler)">setErrorHandler</a>, <a href="../remote/RemoteWebDriver.html#setFoundBy(org.openqa.selenium.SearchContext,org.openqa.selenium.WebElement,java.lang.String,java.lang.String)">setFoundBy</a>, <a href="../remote/RemoteWebDriver.html#setLogLevel(java.util.logging.Level)">setLogLevel</a>, <a href="../remote/RemoteWebDriver.html#setSessionId(java.lang.String)">setSessionId</a>, <a href="../remote/RemoteWebDriver.html#startSession(org.openqa.selenium.Capabilities)">startSession</a>, <a href="../remote/RemoteWebDriver.html#switchTo()">switchTo</a>, <a href="../remote/RemoteWebDriver.html#toString()">toString</a></code></li>
 </ul>
 <ul class="blockList">
 <li class="blockList"><a id="methods.inherited.from.class.java.lang.Object">
@@ -549,6 +573,23 @@ public&nbsp;FirefoxDriver&#8203;(<a href="FirefoxDriverService.html" title="clas
 <!--   -->
 </a>
 <h3>Method Detail</h3>
+<a id="getCapabilities()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getCapabilities</h4>
+<pre class="methodSignature">public&nbsp;<a href="../Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&nbsp;getCapabilities()</pre>
+<dl>
+<dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
+<dd><code><a href="../HasCapabilities.html#getCapabilities()">getCapabilities</a></code>&nbsp;in interface&nbsp;<code><a href="../HasCapabilities.html" title="interface in org.openqa.selenium">HasCapabilities</a></code></dd>
+<dt><span class="overrideSpecifyLabel">Overrides:</span></dt>
+<dd><code><a href="../remote/RemoteWebDriver.html#getCapabilities()">getCapabilities</a></code>&nbsp;in class&nbsp;<code><a href="../remote/RemoteWebDriver.html" title="class in org.openqa.selenium.remote">RemoteWebDriver</a></code></dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>The capabilities of the current driver.</dd>
+</dl>
+</li>
+</ul>
 <a id="setFileDetector(org.openqa.selenium.remote.FileDetector)">
 <!--   -->
 </a>
@@ -624,7 +665,8 @@ public&nbsp;FirefoxDriver&#8203;(<a href="FirefoxDriverService.html" title="clas
 <h4>uninstallExtension</h4>
 <pre class="methodSignature">public&nbsp;void&nbsp;uninstallExtension&#8203;(java.lang.String&nbsp;extensionId)</pre>
 <div class="block"><span class="descfrmTypeLabel">Description copied from interface:&nbsp;<code><a href="HasExtensions.html#uninstallExtension(java.lang.String)">HasExtensions</a></code></span></div>
-<div class="block">Uninstall the extension by the given identifier.</div>
+<div class="block">Uninstall the extension by the given identifier.
+ This value can be found in the extension's manifest, and typically ends with "@mozilla.org".</div>
 <dl>
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
 <dd><code><a href="HasExtensions.html#uninstallExtension(java.lang.String)">uninstallExtension</a></code>&nbsp;in interface&nbsp;<code><a href="HasExtensions.html" title="interface in org.openqa.selenium.firefox">HasExtensions</a></code></dd>
@@ -643,6 +685,8 @@ public&nbsp;FirefoxDriver&#8203;(<a href="FirefoxDriverService.html" title="clas
                               throws <a href="../WebDriverException.html" title="class in org.openqa.selenium">WebDriverException</a></pre>
 <div class="block">Capture the full page screenshot and store it in the specified location.</div>
 <dl>
+<dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
+<dd><code><a href="HasFullPageScreenshot.html#getFullPageScreenshotAs(org.openqa.selenium.OutputType)">getFullPageScreenshotAs</a></code>&nbsp;in interface&nbsp;<code><a href="HasFullPageScreenshot.html" title="interface in org.openqa.selenium.firefox">HasFullPageScreenshot</a></code></dd>
 <dt><span class="paramLabel">Type Parameters:</span></dt>
 <dd><code>X</code> - Return type for getFullPageScreenshotAs.</dd>
 <dt><span class="paramLabel">Parameters:</span></dt>
@@ -651,6 +695,53 @@ public&nbsp;FirefoxDriver&#8203;(<a href="FirefoxDriverService.html" title="clas
 <dd>Object in which is stored information about the screenshot.</dd>
 <dt><span class="throwsLabel">Throws:</span></dt>
 <dd><code><a href="../WebDriverException.html" title="class in org.openqa.selenium">WebDriverException</a></code> - on failure.</dd>
+</dl>
+</li>
+</ul>
+<a id="setContext(org.openqa.selenium.firefox.FirefoxCommandContext)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>setContext</h4>
+<pre class="methodSignature">public&nbsp;void&nbsp;setContext&#8203;(<a href="FirefoxCommandContext.html" title="enum in org.openqa.selenium.firefox">FirefoxCommandContext</a>&nbsp;commandContext)</pre>
+<div class="block"><span class="descfrmTypeLabel">Description copied from interface:&nbsp;<code><a href="HasContext.html#setContext(org.openqa.selenium.firefox.FirefoxCommandContext)">HasContext</a></code></span></div>
+<div class="block">Context commands are operating on.</div>
+<dl>
+<dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
+<dd><code><a href="HasContext.html#setContext(org.openqa.selenium.firefox.FirefoxCommandContext)">setContext</a></code>&nbsp;in interface&nbsp;<code><a href="HasContext.html" title="interface in org.openqa.selenium.firefox">HasContext</a></code></dd>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>commandContext</code> - <a href="FirefoxCommandContext.html" title="enum in org.openqa.selenium.firefox"><code>FirefoxCommandContext</code></a> operating on page loaded in the browser or on browser elements hosting the page.</dd>
+</dl>
+</li>
+</ul>
+<a id="getContext()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getContext</h4>
+<pre class="methodSignature">public&nbsp;<a href="FirefoxCommandContext.html" title="enum in org.openqa.selenium.firefox">FirefoxCommandContext</a>&nbsp;getContext()</pre>
+<div class="block"><span class="descfrmTypeLabel">Description copied from interface:&nbsp;<code><a href="HasContext.html#getContext()">HasContext</a></code></span></div>
+<div class="block">Current context commands are operating on.</div>
+<dl>
+<dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
+<dd><code><a href="HasContext.html#getContext()">getContext</a></code>&nbsp;in interface&nbsp;<code><a href="HasContext.html" title="interface in org.openqa.selenium.firefox">HasContext</a></code></dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd><a href="FirefoxCommandContext.html" title="enum in org.openqa.selenium.firefox"><code>FirefoxCommandContext</code></a> value currently operating on commands</dd>
+</dl>
+</li>
+</ul>
+<a id="maybeGetDevTools()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>maybeGetDevTools</h4>
+<pre class="methodSignature">public&nbsp;java.util.Optional&lt;<a href="../devtools/DevTools.html" title="class in org.openqa.selenium.devtools">DevTools</a>&gt;&nbsp;maybeGetDevTools()</pre>
+<dl>
+<dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
+<dd><code><a href="../devtools/HasDevTools.html#maybeGetDevTools()">maybeGetDevTools</a></code>&nbsp;in interface&nbsp;<code><a href="../devtools/HasDevTools.html" title="interface in org.openqa.selenium.devtools">HasDevTools</a></code></dd>
 </dl>
 </li>
 </ul>

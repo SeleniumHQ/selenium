@@ -96,16 +96,17 @@
 <span class="sd">    another.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">driver</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">driver</span><span class="p">,</span> <span class="n">duration</span><span class="o">=</span><span class="mi">250</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Creates a new ActionChains.</span>
 
 <span class="sd">        :Args:</span>
 <span class="sd">         - driver: The WebDriver instance which performs user actions.</span>
+<span class="sd">         - duration: override the default 250 msecs of DEFAULT_MOVE_DURATION in PointerInput</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_driver</span> <span class="o">=</span> <span class="n">driver</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_actions</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">w3c_actions</span> <span class="o">=</span> <span class="n">ActionBuilder</span><span class="p">(</span><span class="n">driver</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">w3c_actions</span> <span class="o">=</span> <span class="n">ActionBuilder</span><span class="p">(</span><span class="n">driver</span><span class="p">,</span> <span class="n">duration</span><span class="o">=</span><span class="n">duration</span><span class="p">)</span>
 
 <div class="viewcode-block" id="ActionChains.perform"><a class="viewcode-back" href="../../../../webdriver/selenium.webdriver.common.action_chains.html#selenium.webdriver.common.action_chains.ActionChains.perform">[docs]</a>    <span class="k">def</span> <span class="nf">perform</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>

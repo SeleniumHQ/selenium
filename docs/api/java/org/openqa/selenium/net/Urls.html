@@ -27,7 +27,7 @@
     catch(err) {
     }
 //-->
-var data = {"i0":9,"i1":9};
+var data = {"i0":9,"i1":9,"i2":9};
 var tabs = {65535:["t0","All Methods"],1:["t1","Static Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -159,11 +159,18 @@ extends java.lang.Object</pre>
 <th class="colLast" scope="col">Description</th>
 </tr>
 <tr id="i0" class="altColor">
+<td class="colFirst"><code>static java.net.URI</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#from(java.lang.String)">from</a></span>&#8203;(java.lang.String&nbsp;rawUri)</code></th>
+<td class="colLast">
+<div class="block">Convert a string, which may just be a hostname, into a valid <code>URI</code>.</div>
+</td>
+</tr>
+<tr id="i1" class="rowColor">
 <td class="colFirst"><code>static java.net.URL</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#fromUri(java.net.URI)">fromUri</a></span>&#8203;(java.net.URI&nbsp;uri)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i1" class="rowColor">
+<tr id="i2" class="altColor">
 <td class="colFirst"><code>static java.lang.String</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#urlEncode(java.lang.String)">urlEncode</a></span>&#8203;(java.lang.String&nbsp;value)</code></th>
 <td class="colLast">
@@ -215,10 +222,29 @@ extends java.lang.Object</pre>
 <a id="fromUri(java.net.URI)">
 <!--   -->
 </a>
-<ul class="blockListLast">
+<ul class="blockList">
 <li class="blockList">
 <h4>fromUri</h4>
 <pre class="methodSignature">public static&nbsp;java.net.URL&nbsp;fromUri&#8203;(java.net.URI&nbsp;uri)</pre>
+</li>
+</ul>
+<a id="from(java.lang.String)">
+<!--   -->
+</a>
+<ul class="blockListLast">
+<li class="blockList">
+<h4>from</h4>
+<pre class="methodSignature">public static&nbsp;java.net.URI&nbsp;from&#8203;(java.lang.String&nbsp;rawUri)</pre>
+<div class="block">Convert a string, which may just be a hostname, into a valid <code>URI</code>.
+ If no scheme is given, it is set to <code>http</code> by default.
+ <p>
+ We prefer to use <code>URI</code> instead of <code>URL</code> since the latter
+ requires a scheme handler to be registered for types, so strings like
+ <code>docker://localhost:1234</code> would not generally be a valid <code>URL</code>
+ but would be a correct <code>URI</code>.
+ <p>
+ A known limitiation is that URI fragments are not handled. In the
+ expected use cases for this method, that is not a problem.</div>
 </li>
 </ul>
 </li>

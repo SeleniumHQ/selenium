@@ -115,8 +115,12 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr class="rowColor">
-<th class="colFirst" scope="row"><a href="#org.openqa.selenium.grid.distributor.local">org.openqa.selenium.grid.distributor.local</a></th>
-<td class="colLast">&nbsp;</td>
+<th class="colFirst" scope="row"><a href="#org.openqa.selenium.grid.distributor">org.openqa.selenium.grid.distributor</a></th>
+<td class="colLast">
+<div class="block">The <a href="../../distributor/Distributor.html" title="class in org.openqa.selenium.grid.distributor"><code>Distributor</code></a> is responsible
+ for assigning new calls to Create Session to a
+ <a href="../../node/Node.html" title="class in org.openqa.selenium.grid.node"><code>Node</code></a>.</div>
+</td>
 </tr>
 <tr class="altColor">
 <th class="colFirst" scope="row"><a href="#org.openqa.selenium.grid.node">org.openqa.selenium.grid.node</a></th>
@@ -170,18 +174,8 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <th class="colSecond" scope="row"><span class="typeNameLabel">NewSessionResponse.</span><code><span class="memberNameLink"><a href="../NewSessionResponse.html#getSession()">getSession</a></span>()</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-</tbody>
-</table>
-<table class="useSummary">
-<caption><span>Methods in <a href="../package-summary.html">org.openqa.selenium.grid.data</a> that return types with arguments of type <a href="../Session.html" title="class in org.openqa.selenium.grid.data">Session</a></span><span class="tabEnd">&nbsp;</span></caption>
-<tr>
-<th class="colFirst" scope="col">Modifier and Type</th>
-<th class="colSecond" scope="col">Method</th>
-<th class="colLast" scope="col">Description</th>
-</tr>
-<tbody>
 <tr class="altColor">
-<td class="colFirst"><code>java.util.Optional&lt;<a href="../Session.html" title="class in org.openqa.selenium.grid.data">Session</a>&gt;</code></td>
+<td class="colFirst"><code><a href="../Session.html" title="class in org.openqa.selenium.grid.data">Session</a></code></td>
 <th class="colSecond" scope="row"><span class="typeNameLabel">Slot.</span><code><span class="memberNameLink"><a href="../Slot.html#getSession()">getSession</a></span>()</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
@@ -205,20 +199,11 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
                   byte[]&nbsp;downstreamEncodedResponse)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-</tbody>
-</table>
-<table class="useSummary">
-<caption><span>Constructor parameters in <a href="../package-summary.html">org.openqa.selenium.grid.data</a> with type arguments of type <a href="../Session.html" title="class in org.openqa.selenium.grid.data">Session</a></span><span class="tabEnd">&nbsp;</span></caption>
-<tr>
-<th class="colFirst" scope="col">Constructor</th>
-<th class="colLast" scope="col">Description</th>
-</tr>
-<tbody>
 <tr class="altColor">
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="../Slot.html#%3Cinit%3E(org.openqa.selenium.grid.data.SlotId,org.openqa.selenium.Capabilities,java.time.Instant,java.util.Optional)">Slot</a></span>&#8203;(<a href="../SlotId.html" title="class in org.openqa.selenium.grid.data">SlotId</a>&nbsp;id,
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="../Slot.html#%3Cinit%3E(org.openqa.selenium.grid.data.SlotId,org.openqa.selenium.Capabilities,java.time.Instant,org.openqa.selenium.grid.data.Session)">Slot</a></span>&#8203;(<a href="../SlotId.html" title="class in org.openqa.selenium.grid.data">SlotId</a>&nbsp;id,
     <a href="../../../Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&nbsp;stereotype,
     java.time.Instant&nbsp;lastStarted,
-    java.util.Optional&lt;<a href="../Session.html" title="class in org.openqa.selenium.grid.data">Session</a>&gt;&nbsp;session)</code></th>
+    <a href="../Session.html" title="class in org.openqa.selenium.grid.data">Session</a>&nbsp;session)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 </tbody>
@@ -226,12 +211,12 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 </section>
 </li>
 <li class="blockList">
-<section role="region"><a id="org.openqa.selenium.grid.distributor.local">
+<section role="region"><a id="org.openqa.selenium.grid.distributor">
 <!--   -->
 </a>
-<h3>Uses of <a href="../Session.html" title="class in org.openqa.selenium.grid.data">Session</a> in <a href="../../distributor/local/package-summary.html">org.openqa.selenium.grid.distributor.local</a></h3>
+<h3>Uses of <a href="../Session.html" title="class in org.openqa.selenium.grid.data">Session</a> in <a href="../../distributor/package-summary.html">org.openqa.selenium.grid.distributor</a></h3>
 <table class="useSummary">
-<caption><span>Methods in <a href="../../distributor/local/package-summary.html">org.openqa.selenium.grid.distributor.local</a> with parameters of type <a href="../Session.html" title="class in org.openqa.selenium.grid.data">Session</a></span><span class="tabEnd">&nbsp;</span></caption>
+<caption><span>Methods in <a href="../../distributor/package-summary.html">org.openqa.selenium.grid.distributor</a> with parameters of type <a href="../Session.html" title="class in org.openqa.selenium.grid.data">Session</a></span><span class="tabEnd">&nbsp;</span></caption>
 <tr>
 <th class="colFirst" scope="col">Modifier and Type</th>
 <th class="colSecond" scope="col">Method</th>
@@ -240,7 +225,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <tbody>
 <tr class="altColor">
 <td class="colFirst"><code>void</code></td>
-<th class="colSecond" scope="row"><span class="typeNameLabel">GridModel.</span><code><span class="memberNameLink"><a href="../../distributor/local/GridModel.html#setSession(org.openqa.selenium.grid.data.SlotId,org.openqa.selenium.grid.data.Session)">setSession</a></span>&#8203;(<a href="../SlotId.html" title="class in org.openqa.selenium.grid.data">SlotId</a>&nbsp;slotId,
+<th class="colSecond" scope="row"><span class="typeNameLabel">GridModel.</span><code><span class="memberNameLink"><a href="../../distributor/GridModel.html#setSession(org.openqa.selenium.grid.data.SlotId,org.openqa.selenium.grid.data.Session)">setSession</a></span>&#8203;(<a href="../SlotId.html" title="class in org.openqa.selenium.grid.data">SlotId</a>&nbsp;slotId,
           <a href="../Session.html" title="class in org.openqa.selenium.grid.data">Session</a>&nbsp;session)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>

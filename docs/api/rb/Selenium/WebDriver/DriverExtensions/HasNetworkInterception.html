@@ -74,16 +74,11 @@
   
 
   
-  <dl>
-    <dt>Included in:</dt>
-    <dd><span class='object_link'><a href="../Chrome/Driver.html" title="Selenium::WebDriver::Chrome::Driver (class)">Chrome::Driver</a></span></dd>
-  </dl>
-  
 
   
   <dl>
     <dt>Defined in:</dt>
-    <dd>build/rb/lib/selenium/webdriver/common/driver_extensions/has_network_interception.rb</dd>
+    <dd>rb/lib/selenium/webdriver/common/driver_extensions/has_network_interception.rb</dd>
   </dl>
   
 </div>
@@ -119,7 +114,7 @@
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#intercept-instance_method" title="#intercept (instance method)">#<strong>intercept</strong> {|| ... } &#x21d2; Object </a>
+      <a href="#intercept-instance_method" title="#intercept (instance method)">#<strong>intercept</strong>(&amp;block) {|request, continue| ... } &#x21d2; Object </a>
     
 
     
@@ -152,7 +147,7 @@
       <div class="method_details first">
   <h3 class="signature first" id="intercept-instance_method">
   
-    #<strong>intercept</strong> {|| ... } &#x21d2; <tt>Object</tt> 
+    #<strong>intercept</strong>(&amp;block) {|request, continue| ... } &#x21d2; <tt>Object</tt> 
   
 
   
@@ -180,21 +175,42 @@
 <p>Log requests and pass through</p>
 </div></p>
       
-      <pre class="example code"><code><span class='id identifier rubyid_driver'>driver</span><span class='period'>.</span><span class='id identifier rubyid_intercept'>intercept</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_request'>request</span><span class='op'>|</span>
+      <pre class="example code"><code><span class='id identifier rubyid_driver'>driver</span><span class='period'>.</span><span class='id identifier rubyid_intercept'>intercept</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_request'>request</span><span class='comma'>,</span> <span class='op'>&amp;</span><span class='id identifier rubyid_continue'>continue</span><span class='op'>|</span>
   <span class='id identifier rubyid_puts'>puts</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_request'>request</span><span class='period'>.</span><span class='id identifier rubyid_method'>method</span><span class='embexpr_end'>}</span><span class='tstring_content'> </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_request'>request</span><span class='period'>.</span><span class='id identifier rubyid_url'>url</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span>
-  <span class='id identifier rubyid_request'>request</span><span class='period'>.</span><span class='id identifier rubyid_continue'>continue</span>
+  <span class='id identifier rubyid_continue'>continue</span><span class='period'>.</span><span class='id identifier rubyid_call'>call</span><span class='lparen'>(</span><span class='id identifier rubyid_request'>request</span><span class='rparen'>)</span>
 <span class='kw'>end</span></code></pre>
     
       
         <p class="example_title"><div class='inline'>
-<p>Stub response for image requests</p>
+<p>Stub requests for images</p>
 </div></p>
       
-      <pre class="example code"><code><span class='id identifier rubyid_driver'>driver</span><span class='period'>.</span><span class='id identifier rubyid_intercept'>intercept</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_request'>request</span><span class='op'>|</span>
+      <pre class="example code"><code><span class='id identifier rubyid_driver'>driver</span><span class='period'>.</span><span class='id identifier rubyid_intercept'>intercept</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_request'>request</span><span class='comma'>,</span> <span class='op'>&amp;</span><span class='id identifier rubyid_continue'>continue</span><span class='op'>|</span>
   <span class='kw'>if</span> <span class='id identifier rubyid_request'>request</span><span class='period'>.</span><span class='id identifier rubyid_url'>url</span><span class='period'>.</span><span class='id identifier rubyid_match?'>match?</span><span class='lparen'>(</span><span class='tstring'><span class='regexp_beg'>/</span><span class='tstring_content'>\.png$</span><span class='regexp_end'>/</span></span><span class='rparen'>)</span>
-    <span class='id identifier rubyid_request'>request</span><span class='period'>.</span><span class='id identifier rubyid_respond'>respond</span><span class='lparen'>(</span><span class='label'>body:</span> <span class='const'>File</span><span class='period'>.</span><span class='id identifier rubyid_read'>read</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>myfile.png</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span><span class='rparen'>)</span>
-  <span class='kw'>else</span>
-    <span class='id identifier rubyid_request'>request</span><span class='period'>.</span><span class='id identifier rubyid_continue'>continue</span>
+    <span class='id identifier rubyid_request'>request</span><span class='period'>.</span><span class='id identifier rubyid_url'>url</span> <span class='op'>=</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>https://upload.wikimedia.org/wikipedia/commons/d/d5/Selenium_Logo.png</span><span class='tstring_end'>&#39;</span></span>
+  <span class='kw'>end</span>
+  <span class='id identifier rubyid_continue'>continue</span><span class='period'>.</span><span class='id identifier rubyid_call'>call</span><span class='lparen'>(</span><span class='id identifier rubyid_request'>request</span><span class='rparen'>)</span>
+<span class='kw'>end</span></code></pre>
+    
+      
+        <p class="example_title"><div class='inline'>
+<p>Log responses and pass through</p>
+</div></p>
+      
+      <pre class="example code"><code><span class='id identifier rubyid_driver'>driver</span><span class='period'>.</span><span class='id identifier rubyid_intercept'>intercept</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_request'>request</span><span class='comma'>,</span> <span class='op'>&amp;</span><span class='id identifier rubyid_continue'>continue</span><span class='op'>|</span>
+  <span class='id identifier rubyid_continue'>continue</span><span class='period'>.</span><span class='id identifier rubyid_call'>call</span><span class='lparen'>(</span><span class='id identifier rubyid_request'>request</span><span class='rparen'>)</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_response'>response</span><span class='op'>|</span>
+    <span class='id identifier rubyid_puts'>puts</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_response'>response</span><span class='period'>.</span><span class='id identifier rubyid_code'>code</span><span class='embexpr_end'>}</span><span class='tstring_content'> </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_response'>response</span><span class='period'>.</span><span class='id identifier rubyid_body'>body</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span>
+  <span class='kw'>end</span>
+<span class='kw'>end</span></code></pre>
+    
+      
+        <p class="example_title"><div class='inline'>
+<p>Mutate specific response</p>
+</div></p>
+      
+      <pre class="example code"><code><span class='id identifier rubyid_driver'>driver</span><span class='period'>.</span><span class='id identifier rubyid_intercept'>intercept</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_request'>request</span><span class='comma'>,</span> <span class='op'>&amp;</span><span class='id identifier rubyid_continue'>continue</span><span class='op'>|</span>
+  <span class='id identifier rubyid_continue'>continue</span><span class='period'>.</span><span class='id identifier rubyid_call'>call</span><span class='lparen'>(</span><span class='id identifier rubyid_request'>request</span><span class='rparen'>)</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_response'>response</span><span class='op'>|</span>
+    <span class='id identifier rubyid_response'>response</span><span class='period'>.</span><span class='id identifier rubyid_body'>body</span> <span class='op'>&lt;&lt;</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>Added by Selenium!</span><span class='tstring_end'>&#39;</span></span> <span class='kw'>if</span> <span class='id identifier rubyid_request'>request</span><span class='period'>.</span><span class='id identifier rubyid_url'>url</span><span class='period'>.</span><span class='id identifier rubyid_include?'>include?</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>/myurl</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span>
   <span class='kw'>end</span>
 <span class='kw'>end</span></code></pre>
     
@@ -207,13 +223,13 @@
         <span class='name'>block</span>
       
       
-        <span class='type'>(<tt>#call</tt>)</span>
+        <span class='type'>(<tt>Proc</tt>)</span>
       
       
       
         &mdash;
         <div class='inline'>
-<p>which is called when request is interecepted</p>
+<p>which is called when request is intercepted</p>
 </div>
       
     </li>
@@ -225,12 +241,28 @@
   
     <li>
       
-        <span class='name'></span>
+        <span class='name'>request</span>
       
       
         <span class='type'>(<tt><span class='object_link'><a href="../DevTools/Request.html" title="Selenium::WebDriver::DevTools::Request (class)">DevTools::Request</a></span></tt>)</span>
       
       
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>continue</span>
+      
+      
+        <span class='type'>(<tt>Proc</tt>)</span>
+      
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>block which proceeds with the request and optionally yields response</p>
+</div>
       
     </li>
   
@@ -242,37 +274,33 @@
       <pre class="lines">
 
 
-49
-50
-51
-52
-53
-54
-55
-56
-57
-58
-59
-60
-61
-62</pre>
+63
+64
+65
+66
+67
+68
+69
+70
+71
+72
+73
+74</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/driver_extensions/has_network_interception.rb', line 49</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/driver_extensions/has_network_interception.rb', line 63</span>
 
-<span class='kw'>def</span> <span class='id identifier rubyid_intercept'>intercept</span>
+<span class='kw'>def</span> <span class='id identifier rubyid_intercept'>intercept</span><span class='lparen'>(</span><span class='op'>&amp;</span><span class='id identifier rubyid_block'>block</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_devtools'>devtools</span><span class='period'>.</span><span class='id identifier rubyid_network'>network</span><span class='period'>.</span><span class='id identifier rubyid_set_cache_disabled'>set_cache_disabled</span><span class='lparen'>(</span><span class='label'>cache_disabled:</span> <span class='kw'>true</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_devtools'>devtools</span><span class='period'>.</span><span class='id identifier rubyid_fetch'>fetch</span><span class='period'>.</span><span class='id identifier rubyid_on'>on</span><span class='lparen'>(</span><span class='symbol'>:request_paused</span><span class='rparen'>)</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_params'>params</span><span class='op'>|</span>
-    <span class='id identifier rubyid_request'>request</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="../DevTools.html" title="Selenium::WebDriver::DevTools (class)">DevTools</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="../DevTools/Request.html" title="Selenium::WebDriver::DevTools::Request (class)">Request</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="../DevTools/Request.html#initialize-instance_method" title="Selenium::WebDriver::DevTools::Request#initialize (method)">new</a></span></span><span class='lparen'>(</span>
-      <span class='label'>devtools:</span> <span class='id identifier rubyid_devtools'>devtools</span><span class='comma'>,</span>
-      <span class='label'>id:</span> <span class='id identifier rubyid_params'>params</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>requestId</span><span class='tstring_end'>&#39;</span></span><span class='rbracket'>]</span><span class='comma'>,</span>
-      <span class='label'>url:</span> <span class='id identifier rubyid_params'>params</span><span class='period'>.</span><span class='id identifier rubyid_dig'>dig</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>request</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>url</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span><span class='comma'>,</span>
-      <span class='label'>method:</span> <span class='id identifier rubyid_params'>params</span><span class='period'>.</span><span class='id identifier rubyid_dig'>dig</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>request</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>method</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span><span class='comma'>,</span>
-      <span class='label'>headers:</span> <span class='id identifier rubyid_params'>params</span><span class='period'>.</span><span class='id identifier rubyid_dig'>dig</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>request</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>headers</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span>
-    <span class='rparen'>)</span>
-    <span class='kw'>yield</span> <span class='id identifier rubyid_request'>request</span>
+    <span class='id identifier rubyid_id'>id</span> <span class='op'>=</span> <span class='id identifier rubyid_params'>params</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>requestId</span><span class='tstring_end'>&#39;</span></span><span class='rbracket'>]</span>
+    <span class='kw'>if</span> <span class='id identifier rubyid_params'>params</span><span class='period'>.</span><span class='id identifier rubyid_key?'>key?</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>responseStatusCode</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span> <span class='op'>||</span> <span class='id identifier rubyid_params'>params</span><span class='period'>.</span><span class='id identifier rubyid_key?'>key?</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>responseErrorReason</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span>
+      <span class='id identifier rubyid_intercept_response'>intercept_response</span><span class='lparen'>(</span><span class='id identifier rubyid_id'>id</span><span class='comma'>,</span> <span class='id identifier rubyid_params'>params</span><span class='comma'>,</span> <span class='op'>&amp;</span><span class='id identifier rubyid_pending_response_requests'>pending_response_requests</span><span class='period'>.</span><span class='id identifier rubyid_delete'>delete</span><span class='lparen'>(</span><span class='id identifier rubyid_id'>id</span><span class='rparen'>)</span><span class='rparen'>)</span>
+    <span class='kw'>else</span>
+      <span class='id identifier rubyid_intercept_request'>intercept_request</span><span class='lparen'>(</span><span class='id identifier rubyid_id'>id</span><span class='comma'>,</span> <span class='id identifier rubyid_params'>params</span><span class='comma'>,</span> <span class='op'>&amp;</span><span class='id identifier rubyid_block'>block</span><span class='rparen'>)</span>
+    <span class='kw'>end</span>
   <span class='kw'>end</span>
-  <span class='id identifier rubyid_devtools'>devtools</span><span class='period'>.</span><span class='id identifier rubyid_fetch'>fetch</span><span class='period'>.</span><span class='id identifier rubyid_enable'>enable</span>
+  <span class='id identifier rubyid_devtools'>devtools</span><span class='period'>.</span><span class='id identifier rubyid_fetch'>fetch</span><span class='period'>.</span><span class='id identifier rubyid_enable'>enable</span><span class='lparen'>(</span><span class='label'>patterns:</span> <span class='lbracket'>[</span><span class='lbrace'>{</span><span class='label'>requestStage:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>Request</span><span class='tstring_end'>&#39;</span></span><span class='rbrace'>}</span><span class='comma'>,</span> <span class='lbrace'>{</span><span class='label'>requestStage:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>Response</span><span class='tstring_end'>&#39;</span></span><span class='rbrace'>}</span><span class='rbracket'>]</span><span class='rparen'>)</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -284,9 +312,9 @@
 </div>
 
       <div id="footer">
-  Generated on Thu Mar 18 21:58:16 2021 by
+  Generated on Wed Oct 20 18:47:51 2021 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.26 (ruby-2.6.3).
+  0.9.26 (ruby-2.7.3).
 </div>
 
     </div>

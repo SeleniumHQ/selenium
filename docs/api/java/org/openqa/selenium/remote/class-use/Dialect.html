@@ -119,6 +119,14 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr class="altColor">
+<th class="colFirst" scope="row"><a href="#org.openqa.selenium.grid.session">org.openqa.selenium.grid.session</a></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr class="rowColor">
+<th class="colFirst" scope="row"><a href="#org.openqa.selenium.grid.session.remote">org.openqa.selenium.grid.session.remote</a></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr class="altColor">
 <th class="colFirst" scope="row"><a href="#org.openqa.selenium.grid.web">org.openqa.selenium.grid.web</a></th>
 <td class="colLast">&nbsp;</td>
 </tr>
@@ -149,6 +157,11 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <th class="colSecond" scope="row"><span class="typeNameLabel">CreateSessionRequest.</span><code><span class="memberNameLink"><a href="../../grid/data/CreateSessionRequest.html#getDownstreamDialects()">getDownstreamDialects</a></span>()</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
+<tr class="rowColor">
+<td class="colFirst"><code>java.util.Set&lt;<a href="../Dialect.html" title="enum in org.openqa.selenium.remote">Dialect</a>&gt;</code></td>
+<th class="colSecond" scope="row"><span class="typeNameLabel">SessionRequest.</span><code><span class="memberNameLink"><a href="../../grid/data/SessionRequest.html#getDownstreamDialects()">getDownstreamDialects</a></span>()</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
 </tbody>
 </table>
 <table class="useSummary">
@@ -162,6 +175,15 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="../../grid/data/CreateSessionRequest.html#%3Cinit%3E(java.util.Set,org.openqa.selenium.Capabilities,java.util.Map)">CreateSessionRequest</a></span>&#8203;(java.util.Set&lt;<a href="../Dialect.html" title="enum in org.openqa.selenium.remote">Dialect</a>&gt;&nbsp;downstreamDialects,
                     <a href="../../Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&nbsp;capabilities,
                     java.util.Map&lt;java.lang.String,&#8203;java.lang.Object&gt;&nbsp;metadata)</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr class="rowColor">
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="../../grid/data/SessionRequest.html#%3Cinit%3E(org.openqa.selenium.grid.data.RequestId,java.time.Instant,java.util.Set,java.util.Set,java.util.Map,java.util.Map)">SessionRequest</a></span>&#8203;(<a href="../../grid/data/RequestId.html" title="class in org.openqa.selenium.grid.data">RequestId</a>&nbsp;requestId,
+              java.time.Instant&nbsp;enqueued,
+              java.util.Set&lt;<a href="../Dialect.html" title="enum in org.openqa.selenium.remote">Dialect</a>&gt;&nbsp;downstreamDialects,
+              java.util.Set&lt;<a href="../../Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&gt;&nbsp;desiredCapabilities,
+              java.util.Map&lt;java.lang.String,&#8203;java.lang.Object&gt;&nbsp;metadata,
+              java.util.Map&lt;java.lang.String,&#8203;java.lang.String&gt;&nbsp;traceHeaders)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 </tbody>
@@ -252,6 +274,135 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 </section>
 </li>
 <li class="blockList">
+<section role="region"><a id="org.openqa.selenium.grid.session">
+<!--   -->
+</a>
+<h3>Uses of <a href="../Dialect.html" title="enum in org.openqa.selenium.remote">Dialect</a> in <a href="../../grid/session/package-summary.html">org.openqa.selenium.grid.session</a></h3>
+<table class="useSummary">
+<caption><span>Methods in <a href="../../grid/session/package-summary.html">org.openqa.selenium.grid.session</a> that return <a href="../Dialect.html" title="enum in org.openqa.selenium.remote">Dialect</a></span><span class="tabEnd">&nbsp;</span></caption>
+<tr>
+<th class="colFirst" scope="col">Modifier and Type</th>
+<th class="colSecond" scope="col">Method</th>
+<th class="colLast" scope="col">Description</th>
+</tr>
+<tbody>
+<tr class="altColor">
+<td class="colFirst"><code><a href="../Dialect.html" title="enum in org.openqa.selenium.remote">Dialect</a></code></td>
+<th class="colSecond" scope="row"><span class="typeNameLabel">ActiveSession.</span><code><span class="memberNameLink"><a href="../../grid/session/ActiveSession.html#getDownstreamDialect()">getDownstreamDialect</a></span>()</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code><a href="../Dialect.html" title="enum in org.openqa.selenium.remote">Dialect</a></code></td>
+<th class="colSecond" scope="row"><span class="typeNameLabel">ActiveSession.</span><code><span class="memberNameLink"><a href="../../grid/session/ActiveSession.html#getUpstreamDialect()">getUpstreamDialect</a></span>()</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+</tbody>
+</table>
+</section>
+</li>
+<li class="blockList">
+<section role="region"><a id="org.openqa.selenium.grid.session.remote">
+<!--   -->
+</a>
+<h3>Uses of <a href="../Dialect.html" title="enum in org.openqa.selenium.remote">Dialect</a> in <a href="../../grid/session/remote/package-summary.html">org.openqa.selenium.grid.session.remote</a></h3>
+<table class="useSummary">
+<caption><span>Methods in <a href="../../grid/session/remote/package-summary.html">org.openqa.selenium.grid.session.remote</a> that return <a href="../Dialect.html" title="enum in org.openqa.selenium.remote">Dialect</a></span><span class="tabEnd">&nbsp;</span></caption>
+<tr>
+<th class="colFirst" scope="col">Modifier and Type</th>
+<th class="colSecond" scope="col">Method</th>
+<th class="colLast" scope="col">Description</th>
+</tr>
+<tbody>
+<tr class="altColor">
+<td class="colFirst"><code><a href="../Dialect.html" title="enum in org.openqa.selenium.remote">Dialect</a></code></td>
+<th class="colSecond" scope="row"><span class="typeNameLabel">RemoteSession.</span><code><span class="memberNameLink"><a href="../../grid/session/remote/RemoteSession.html#getDownstreamDialect()">getDownstreamDialect</a></span>()</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code><a href="../Dialect.html" title="enum in org.openqa.selenium.remote">Dialect</a></code></td>
+<th class="colSecond" scope="row"><span class="typeNameLabel">RemoteSession.</span><code><span class="memberNameLink"><a href="../../grid/session/remote/RemoteSession.html#getUpstreamDialect()">getUpstreamDialect</a></span>()</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+</tbody>
+</table>
+<table class="useSummary">
+<caption><span>Methods in <a href="../../grid/session/remote/package-summary.html">org.openqa.selenium.grid.session.remote</a> with parameters of type <a href="../Dialect.html" title="enum in org.openqa.selenium.remote">Dialect</a></span><span class="tabEnd">&nbsp;</span></caption>
+<tr>
+<th class="colFirst" scope="col">Modifier and Type</th>
+<th class="colSecond" scope="col">Method</th>
+<th class="colLast" scope="col">Description</th>
+</tr>
+<tbody>
+<tr class="altColor">
+<td class="colFirst"><code>protected abstract <a href="../../grid/session/ActiveSession.html" title="interface in org.openqa.selenium.grid.session">ActiveSession</a></code></td>
+<th class="colSecond" scope="row"><span class="typeNameLabel">RemoteSession.Factory.</span><code><span class="memberNameLink"><a href="../../grid/session/remote/RemoteSession.Factory.html#newActiveSession(X,org.openqa.selenium.remote.Dialect,org.openqa.selenium.remote.Dialect,org.openqa.selenium.remote.http.HttpHandler,org.openqa.selenium.remote.SessionId,java.util.Map)">newActiveSession</a></span>&#8203;(<a href="../../grid/session/remote/RemoteSession.Factory.html" title="type parameter in RemoteSession.Factory">X</a>&nbsp;additionalData,
+                <a href="../Dialect.html" title="enum in org.openqa.selenium.remote">Dialect</a>&nbsp;downstream,
+                <a href="../Dialect.html" title="enum in org.openqa.selenium.remote">Dialect</a>&nbsp;upstream,
+                <a href="../http/HttpHandler.html" title="interface in org.openqa.selenium.remote.http">HttpHandler</a>&nbsp;codec,
+                <a href="../SessionId.html" title="class in org.openqa.selenium.remote">SessionId</a>&nbsp;id,
+                java.util.Map&lt;java.lang.String,&#8203;java.lang.Object&gt;&nbsp;capabilities)</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code>protected <a href="../../grid/session/remote/ServicedSession.html" title="class in org.openqa.selenium.grid.session.remote">ServicedSession</a></code></td>
+<th class="colSecond" scope="row"><span class="typeNameLabel">ServicedSession.Factory.</span><code><span class="memberNameLink"><a href="../../grid/session/remote/ServicedSession.Factory.html#newActiveSession(org.openqa.selenium.remote.service.DriverService,org.openqa.selenium.remote.Dialect,org.openqa.selenium.remote.Dialect,org.openqa.selenium.remote.http.HttpHandler,org.openqa.selenium.remote.SessionId,java.util.Map)">newActiveSession</a></span>&#8203;(<a href="../service/DriverService.html" title="class in org.openqa.selenium.remote.service">DriverService</a>&nbsp;service,
+                <a href="../Dialect.html" title="enum in org.openqa.selenium.remote">Dialect</a>&nbsp;downstream,
+                <a href="../Dialect.html" title="enum in org.openqa.selenium.remote">Dialect</a>&nbsp;upstream,
+                <a href="../http/HttpHandler.html" title="interface in org.openqa.selenium.remote.http">HttpHandler</a>&nbsp;codec,
+                <a href="../SessionId.html" title="class in org.openqa.selenium.remote">SessionId</a>&nbsp;id,
+                java.util.Map&lt;java.lang.String,&#8203;java.lang.Object&gt;&nbsp;capabilities)</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+</tbody>
+</table>
+<table class="useSummary">
+<caption><span>Method parameters in <a href="../../grid/session/remote/package-summary.html">org.openqa.selenium.grid.session.remote</a> with type arguments of type <a href="../Dialect.html" title="enum in org.openqa.selenium.remote">Dialect</a></span><span class="tabEnd">&nbsp;</span></caption>
+<tr>
+<th class="colFirst" scope="col">Modifier and Type</th>
+<th class="colSecond" scope="col">Method</th>
+<th class="colLast" scope="col">Description</th>
+</tr>
+<tbody>
+<tr class="altColor">
+<td class="colFirst"><code>protected java.util.Optional&lt;<a href="../../grid/session/ActiveSession.html" title="interface in org.openqa.selenium.grid.session">ActiveSession</a>&gt;</code></td>
+<th class="colSecond" scope="row"><span class="typeNameLabel">RemoteSession.Factory.</span><code><span class="memberNameLink"><a href="../../grid/session/remote/RemoteSession.Factory.html#performHandshake(org.openqa.selenium.remote.tracing.Tracer,X,java.net.URL,java.util.Set,org.openqa.selenium.Capabilities)">performHandshake</a></span>&#8203;(<a href="../tracing/Tracer.html" title="interface in org.openqa.selenium.remote.tracing">Tracer</a>&nbsp;tracer,
+                <a href="../../grid/session/remote/RemoteSession.Factory.html" title="type parameter in RemoteSession.Factory">X</a>&nbsp;additionalData,
+                java.net.URL&nbsp;url,
+                java.util.Set&lt;<a href="../Dialect.html" title="enum in org.openqa.selenium.remote">Dialect</a>&gt;&nbsp;downstreamDialects,
+                <a href="../../Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&nbsp;capabilities)</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+</tbody>
+</table>
+<table class="useSummary">
+<caption><span>Constructors in <a href="../../grid/session/remote/package-summary.html">org.openqa.selenium.grid.session.remote</a> with parameters of type <a href="../Dialect.html" title="enum in org.openqa.selenium.remote">Dialect</a></span><span class="tabEnd">&nbsp;</span></caption>
+<tr>
+<th class="colFirst" scope="col">Constructor</th>
+<th class="colLast" scope="col">Description</th>
+</tr>
+<tbody>
+<tr class="altColor">
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="../../grid/session/remote/RemoteSession.html#%3Cinit%3E(org.openqa.selenium.remote.Dialect,org.openqa.selenium.remote.Dialect,org.openqa.selenium.remote.http.HttpHandler,org.openqa.selenium.remote.SessionId,java.util.Map)">RemoteSession</a></span>&#8203;(<a href="../Dialect.html" title="enum in org.openqa.selenium.remote">Dialect</a>&nbsp;downstream,
+             <a href="../Dialect.html" title="enum in org.openqa.selenium.remote">Dialect</a>&nbsp;upstream,
+             <a href="../http/HttpHandler.html" title="interface in org.openqa.selenium.remote.http">HttpHandler</a>&nbsp;codec,
+             <a href="../SessionId.html" title="class in org.openqa.selenium.remote">SessionId</a>&nbsp;id,
+             java.util.Map&lt;java.lang.String,&#8203;java.lang.Object&gt;&nbsp;capabilities)</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr class="rowColor">
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="../../grid/session/remote/ServicedSession.html#%3Cinit%3E(org.openqa.selenium.remote.service.DriverService,org.openqa.selenium.remote.Dialect,org.openqa.selenium.remote.Dialect,org.openqa.selenium.remote.http.HttpHandler,org.openqa.selenium.remote.SessionId,java.util.Map)">ServicedSession</a></span>&#8203;(<a href="../service/DriverService.html" title="class in org.openqa.selenium.remote.service">DriverService</a>&nbsp;service,
+               <a href="../Dialect.html" title="enum in org.openqa.selenium.remote">Dialect</a>&nbsp;downstream,
+               <a href="../Dialect.html" title="enum in org.openqa.selenium.remote">Dialect</a>&nbsp;upstream,
+               <a href="../http/HttpHandler.html" title="interface in org.openqa.selenium.remote.http">HttpHandler</a>&nbsp;codec,
+               <a href="../SessionId.html" title="class in org.openqa.selenium.remote">SessionId</a>&nbsp;id,
+               java.util.Map&lt;java.lang.String,&#8203;java.lang.Object&gt;&nbsp;capabilities)</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+</tbody>
+</table>
+</section>
+</li>
+<li class="blockList">
 <section role="region"><a id="org.openqa.selenium.grid.web">
 <!--   -->
 </a>
@@ -318,7 +469,7 @@ the order they are declared.</div>
 </tr>
 <tbody>
 <tr class="altColor">
-<td class="colFirst"><code>com.google.common.collect.ImmutableSet&lt;<a href="../Dialect.html" title="enum in org.openqa.selenium.remote">Dialect</a>&gt;</code></td>
+<td class="colFirst"><code>java.util.Set&lt;<a href="../Dialect.html" title="enum in org.openqa.selenium.remote">Dialect</a>&gt;</code></td>
 <th class="colSecond" scope="row"><span class="typeNameLabel">NewSessionPayload.</span><code><span class="memberNameLink"><a href="../NewSessionPayload.html#getDownstreamDialects()">getDownstreamDialects</a></span>()</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>

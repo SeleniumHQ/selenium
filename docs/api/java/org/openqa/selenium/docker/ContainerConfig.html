@@ -27,7 +27,7 @@
     catch(err) {
     }
 //-->
-var data = {"i0":10,"i1":10,"i2":9,"i3":10,"i4":10};
+var data = {"i0":10,"i1":10,"i2":9,"i3":10,"i4":10,"i5":10,"i6":10};
 var tabs = {65535:["t0","All Methods"],1:["t1","Static Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -159,10 +159,12 @@ extends java.lang.Object</pre>
 <th class="colLast" scope="col">Description</th>
 </tr>
 <tr class="altColor">
-<th class="colConstructorName" scope="row"><code><span class="memberNameLink"><a href="#%3Cinit%3E(org.openqa.selenium.docker.Image,com.google.common.collect.Multimap,java.util.Map,java.util.Map)">ContainerConfig</a></span>&#8203;(<a href="Image.html" title="class in org.openqa.selenium.docker">Image</a>&nbsp;image,
+<th class="colConstructorName" scope="row"><code><span class="memberNameLink"><a href="#%3Cinit%3E(org.openqa.selenium.docker.Image,com.google.common.collect.Multimap,java.util.Map,java.util.Map,java.lang.String,long)">ContainerConfig</a></span>&#8203;(<a href="Image.html" title="class in org.openqa.selenium.docker">Image</a>&nbsp;image,
                com.google.common.collect.Multimap&lt;java.lang.String,&#8203;java.util.Map&lt;java.lang.String,&#8203;java.lang.Object&gt;&gt;&nbsp;portBindings,
                java.util.Map&lt;java.lang.String,&#8203;java.lang.String&gt;&nbsp;envVars,
-               java.util.Map&lt;java.lang.String,&#8203;java.lang.String&gt;&nbsp;volumeBinds)</code></th>
+               java.util.Map&lt;java.lang.String,&#8203;java.lang.String&gt;&nbsp;volumeBinds,
+               java.lang.String&nbsp;networkName,
+               long&nbsp;shmSize)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 </table>
@@ -205,6 +207,16 @@ extends java.lang.Object</pre>
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr id="i4" class="altColor">
+<td class="colFirst"><code><a href="ContainerConfig.html" title="class in org.openqa.selenium.docker">ContainerConfig</a></code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#network(java.lang.String)">network</a></span>&#8203;(java.lang.String&nbsp;networkName)</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr id="i5" class="rowColor">
+<td class="colFirst"><code><a href="ContainerConfig.html" title="class in org.openqa.selenium.docker">ContainerConfig</a></code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#shmMemorySize(long)">shmMemorySize</a></span>&#8203;(long&nbsp;shmSize)</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr id="i6" class="altColor">
 <td class="colFirst"><code>java.lang.String</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#toString()">toString</a></span>()</code></th>
 <td class="colLast">&nbsp;</td>
@@ -233,7 +245,7 @@ extends java.lang.Object</pre>
 <!--   -->
 </a>
 <h3>Constructor Detail</h3>
-<a id="&lt;init&gt;(org.openqa.selenium.docker.Image,com.google.common.collect.Multimap,java.util.Map,java.util.Map)">
+<a id="&lt;init&gt;(org.openqa.selenium.docker.Image,com.google.common.collect.Multimap,java.util.Map,java.util.Map,java.lang.String,long)">
 <!--   -->
 </a>
 <ul class="blockListLast">
@@ -242,7 +254,9 @@ extends java.lang.Object</pre>
 <pre>public&nbsp;ContainerConfig&#8203;(<a href="Image.html" title="class in org.openqa.selenium.docker">Image</a>&nbsp;image,
                        com.google.common.collect.Multimap&lt;java.lang.String,&#8203;java.util.Map&lt;java.lang.String,&#8203;java.lang.Object&gt;&gt;&nbsp;portBindings,
                        java.util.Map&lt;java.lang.String,&#8203;java.lang.String&gt;&nbsp;envVars,
-                       java.util.Map&lt;java.lang.String,&#8203;java.lang.String&gt;&nbsp;volumeBinds)</pre>
+                       java.util.Map&lt;java.lang.String,&#8203;java.lang.String&gt;&nbsp;volumeBinds,
+                       java.lang.String&nbsp;networkName,
+                       long&nbsp;shmSize)</pre>
 </li>
 </ul>
 </li>
@@ -290,6 +304,24 @@ extends java.lang.Object</pre>
 <li class="blockList">
 <h4>bind</h4>
 <pre class="methodSignature">public&nbsp;<a href="ContainerConfig.html" title="class in org.openqa.selenium.docker">ContainerConfig</a>&nbsp;bind&#8203;(java.util.Map&lt;java.lang.String,&#8203;java.lang.String&gt;&nbsp;volumeBinds)</pre>
+</li>
+</ul>
+<a id="network(java.lang.String)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>network</h4>
+<pre class="methodSignature">public&nbsp;<a href="ContainerConfig.html" title="class in org.openqa.selenium.docker">ContainerConfig</a>&nbsp;network&#8203;(java.lang.String&nbsp;networkName)</pre>
+</li>
+</ul>
+<a id="shmMemorySize(long)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>shmMemorySize</h4>
+<pre class="methodSignature">public&nbsp;<a href="ContainerConfig.html" title="class in org.openqa.selenium.docker">ContainerConfig</a>&nbsp;shmMemorySize&#8203;(long&nbsp;shmSize)</pre>
 </li>
 </ul>
 <a id="toString()">

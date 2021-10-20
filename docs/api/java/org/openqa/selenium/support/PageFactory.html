@@ -185,6 +185,25 @@ extends java.lang.Object</pre>
 <th class="colLast" scope="col">Description</th>
 </tr>
 <tr id="i0" class="altColor">
+<td class="colFirst"><code>static &lt;T&gt;&nbsp;T</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#initElements(org.openqa.selenium.SearchContext,java.lang.Class)">initElements</a></span>&#8203;(<a href="../SearchContext.html" title="interface in org.openqa.selenium">SearchContext</a>&nbsp;searchContext,
+            java.lang.Class&lt;T&gt;&nbsp;pageClassToProxy)</code></th>
+<td class="colLast">
+<div class="block">Instantiate an instance of the given class, and set a lazy proxy for each of the WebElement and
+ List&lt;WebElement&gt; fields that have been declared, assuming that the field
+ name is also the HTML element's "id" or "name".</div>
+</td>
+</tr>
+<tr id="i1" class="rowColor">
+<td class="colFirst"><code>static void</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#initElements(org.openqa.selenium.SearchContext,java.lang.Object)">initElements</a></span>&#8203;(<a href="../SearchContext.html" title="interface in org.openqa.selenium">SearchContext</a>&nbsp;searchContext,
+            java.lang.Object&nbsp;page)</code></th>
+<td class="colLast">
+<div class="block">As <a href="#initElements(org.openqa.selenium.SearchContext,java.lang.Class)"><code>initElements(SearchContext, Class)</code></a> but will only replace the fields of an already
+ instantiated Page Object.</div>
+</td>
+</tr>
+<tr id="i2" class="altColor">
 <td class="colFirst"><code>static void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#initElements(org.openqa.selenium.support.pagefactory.ElementLocatorFactory,java.lang.Object)">initElements</a></span>&#8203;(<a href="pagefactory/ElementLocatorFactory.html" title="interface in org.openqa.selenium.support.pagefactory">ElementLocatorFactory</a>&nbsp;factory,
             java.lang.Object&nbsp;page)</code></th>
@@ -193,32 +212,13 @@ extends java.lang.Object</pre>
  is used for providing the mechanism for finding elements.</div>
 </td>
 </tr>
-<tr id="i1" class="rowColor">
+<tr id="i3" class="rowColor">
 <td class="colFirst"><code>static void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#initElements(org.openqa.selenium.support.pagefactory.FieldDecorator,java.lang.Object)">initElements</a></span>&#8203;(<a href="pagefactory/FieldDecorator.html" title="interface in org.openqa.selenium.support.pagefactory">FieldDecorator</a>&nbsp;decorator,
             java.lang.Object&nbsp;page)</code></th>
 <td class="colLast">
 <div class="block">Similar to the other "initElements" methods, but takes an <a href="pagefactory/FieldDecorator.html" title="interface in org.openqa.selenium.support.pagefactory"><code>FieldDecorator</code></a> which is used
  for decorating each of the fields.</div>
-</td>
-</tr>
-<tr id="i2" class="altColor">
-<td class="colFirst"><code>static &lt;T&gt;&nbsp;T</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#initElements(org.openqa.selenium.WebDriver,java.lang.Class)">initElements</a></span>&#8203;(<a href="../WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&nbsp;driver,
-            java.lang.Class&lt;T&gt;&nbsp;pageClassToProxy)</code></th>
-<td class="colLast">
-<div class="block">Instantiate an instance of the given class, and set a lazy proxy for each of the WebElement and
- List&lt;WebElement&gt; fields that have been declared, assuming that the field
- name is also the HTML element's "id" or "name".</div>
-</td>
-</tr>
-<tr id="i3" class="rowColor">
-<td class="colFirst"><code>static void</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#initElements(org.openqa.selenium.WebDriver,java.lang.Object)">initElements</a></span>&#8203;(<a href="../WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&nbsp;driver,
-            java.lang.Object&nbsp;page)</code></th>
-<td class="colLast">
-<div class="block">As <a href="#initElements(org.openqa.selenium.WebDriver,java.lang.Class)"><code>initElements(WebDriver, Class)</code></a> but will only replace the fields of an already
- instantiated Page Object.</div>
 </td>
 </tr>
 </table>
@@ -264,13 +264,13 @@ extends java.lang.Object</pre>
 <!--   -->
 </a>
 <h3>Method Detail</h3>
-<a id="initElements(org.openqa.selenium.WebDriver,java.lang.Class)">
+<a id="initElements(org.openqa.selenium.SearchContext,java.lang.Class)">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
 <h4>initElements</h4>
-<pre class="methodSignature">public static&nbsp;&lt;T&gt;&nbsp;T&nbsp;initElements&#8203;(<a href="../WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&nbsp;driver,
+<pre class="methodSignature">public static&nbsp;&lt;T&gt;&nbsp;T&nbsp;initElements&#8203;(<a href="../SearchContext.html" title="interface in org.openqa.selenium">SearchContext</a>&nbsp;searchContext,
                                  java.lang.Class&lt;T&gt;&nbsp;pageClassToProxy)</pre>
 <div class="block">Instantiate an instance of the given class, and set a lazy proxy for each of the WebElement and
  List&lt;WebElement&gt; fields that have been declared, assuming that the field
@@ -292,7 +292,7 @@ extends java.lang.Object</pre>
 <dt><span class="paramLabel">Type Parameters:</span></dt>
 <dd><code>T</code> - Class of the PageObject</dd>
 <dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>driver</code> - The driver that will be used to look up the elements</dd>
+<dd><code>searchContext</code> - The search context that will be used to look up the elements</dd>
 <dd><code>pageClassToProxy</code> - A class which will be initialised.</dd>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>An instantiated instance of the class with WebElement and List&lt;WebElement&gt;
@@ -303,19 +303,19 @@ extends java.lang.Object</pre>
 </dl>
 </li>
 </ul>
-<a id="initElements(org.openqa.selenium.WebDriver,java.lang.Object)">
+<a id="initElements(org.openqa.selenium.SearchContext,java.lang.Object)">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
 <h4>initElements</h4>
-<pre class="methodSignature">public static&nbsp;void&nbsp;initElements&#8203;(<a href="../WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&nbsp;driver,
+<pre class="methodSignature">public static&nbsp;void&nbsp;initElements&#8203;(<a href="../SearchContext.html" title="interface in org.openqa.selenium">SearchContext</a>&nbsp;searchContext,
                                 java.lang.Object&nbsp;page)</pre>
-<div class="block">As <a href="#initElements(org.openqa.selenium.WebDriver,java.lang.Class)"><code>initElements(WebDriver, Class)</code></a> but will only replace the fields of an already
+<div class="block">As <a href="#initElements(org.openqa.selenium.SearchContext,java.lang.Class)"><code>initElements(SearchContext, Class)</code></a> but will only replace the fields of an already
  instantiated Page Object.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>driver</code> - The driver that will be used to look up the elements</dd>
+<dd><code>searchContext</code> - The driver that will be used to look up the elements</dd>
 <dd><code>page</code> - The object with WebElement and List&lt;WebElement&gt; fields that
                should be proxied.</dd>
 </dl>

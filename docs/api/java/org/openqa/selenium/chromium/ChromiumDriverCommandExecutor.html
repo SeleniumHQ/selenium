@@ -141,7 +141,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <li class="blockList">
 <dl>
 <dt>All Implemented Interfaces:</dt>
-<dd><code><a href="../logging/NeedsLocalLogs.html" title="interface in org.openqa.selenium.logging">NeedsLocalLogs</a></code>, <code><a href="../remote/CommandExecutor.html" title="interface in org.openqa.selenium.remote">CommandExecutor</a></code></dd>
+<dd><code>java.io.Closeable</code>, <code>java.lang.AutoCloseable</code>, <code><a href="../logging/NeedsLocalLogs.html" title="interface in org.openqa.selenium.logging">NeedsLocalLogs</a></code>, <code><a href="../remote/CommandExecutor.html" title="interface in org.openqa.selenium.remote">CommandExecutor</a></code></dd>
 </dl>
 <hr>
 <pre>public class <span class="typeNameLabel">ChromiumDriverCommandExecutor</span>
@@ -171,8 +171,8 @@ extends <a href="../remote/service/DriverCommandExecutor.html" title="class in o
 <th class="colLast" scope="col">Description</th>
 </tr>
 <tr class="altColor">
-<th class="colConstructorName" scope="row"><code><span class="memberNameLink"><a href="#%3Cinit%3E(java.lang.String,org.openqa.selenium.remote.service.DriverService)">ChromiumDriverCommandExecutor</a></span>&#8203;(java.lang.String&nbsp;vendorPrefix,
-                             <a href="../remote/service/DriverService.html" title="class in org.openqa.selenium.remote.service">DriverService</a>&nbsp;service)</code></th>
+<th class="colConstructorName" scope="row"><code><span class="memberNameLink"><a href="#%3Cinit%3E(org.openqa.selenium.remote.service.DriverService,java.util.Map)">ChromiumDriverCommandExecutor</a></span>&#8203;(<a href="../remote/service/DriverService.html" title="class in org.openqa.selenium.remote.service">DriverService</a>&nbsp;service,
+                             java.util.Map&lt;java.lang.String,&#8203;<a href="../remote/CommandInfo.html" title="class in org.openqa.selenium.remote">CommandInfo</a>&gt;&nbsp;extraCommands)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 </table>
@@ -191,7 +191,7 @@ extends <a href="../remote/service/DriverCommandExecutor.html" title="class in o
 <!--   -->
 </a>
 <h3>Methods inherited from class&nbsp;org.openqa.selenium.remote.service.<a href="../remote/service/DriverCommandExecutor.html" title="class in org.openqa.selenium.remote.service">DriverCommandExecutor</a></h3>
-<code><a href="../remote/service/DriverCommandExecutor.html#execute(org.openqa.selenium.remote.Command)">execute</a></code></li>
+<code><a href="../remote/service/DriverCommandExecutor.html#close()">close</a>, <a href="../remote/service/DriverCommandExecutor.html#execute(org.openqa.selenium.remote.Command)">execute</a></code></li>
 </ul>
 <ul class="blockList">
 <li class="blockList"><a id="methods.inherited.from.class.org.openqa.selenium.remote.HttpCommandExecutor">
@@ -223,14 +223,14 @@ extends <a href="../remote/service/DriverCommandExecutor.html" title="class in o
 <!--   -->
 </a>
 <h3>Constructor Detail</h3>
-<a id="&lt;init&gt;(java.lang.String,org.openqa.selenium.remote.service.DriverService)">
+<a id="&lt;init&gt;(org.openqa.selenium.remote.service.DriverService,java.util.Map)">
 <!--   -->
 </a>
 <ul class="blockListLast">
 <li class="blockList">
 <h4>ChromiumDriverCommandExecutor</h4>
-<pre>public&nbsp;ChromiumDriverCommandExecutor&#8203;(java.lang.String&nbsp;vendorPrefix,
-                                     <a href="../remote/service/DriverService.html" title="class in org.openqa.selenium.remote.service">DriverService</a>&nbsp;service)</pre>
+<pre>public&nbsp;ChromiumDriverCommandExecutor&#8203;(<a href="../remote/service/DriverService.html" title="class in org.openqa.selenium.remote.service">DriverService</a>&nbsp;service,
+                                     java.util.Map&lt;java.lang.String,&#8203;<a href="../remote/CommandInfo.html" title="class in org.openqa.selenium.remote">CommandInfo</a>&gt;&nbsp;extraCommands)</pre>
 </li>
 </ul>
 </li>

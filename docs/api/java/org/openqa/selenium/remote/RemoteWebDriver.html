@@ -146,7 +146,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <hr>
 <pre>public class <span class="typeNameLabel">RemoteWebDriver</span>
 extends java.lang.Object
-implements <a href="../WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>, <a href="../JavascriptExecutor.html" title="interface in org.openqa.selenium">JavascriptExecutor</a>, <a href="../interactions/HasInputDevices.html" title="interface in org.openqa.selenium.interactions">HasInputDevices</a>, <a href="../HasCapabilities.html" title="interface in org.openqa.selenium">HasCapabilities</a>, <a href="../interactions/Interactive.html" title="interface in org.openqa.selenium.interactions">Interactive</a>, <a href="../TakesScreenshot.html" title="interface in org.openqa.selenium">TakesScreenshot</a>, <a href="../virtualauthenticator/HasVirtualAuthenticator.html" title="interface in org.openqa.selenium.virtualauthenticator">HasVirtualAuthenticator</a>, <a href="../PrintsPage.html" title="interface in org.openqa.selenium">PrintsPage</a></pre>
+implements <a href="../WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>, <a href="../JavascriptExecutor.html" title="interface in org.openqa.selenium">JavascriptExecutor</a>, <a href="../interactions/HasInputDevices.html" title="interface in org.openqa.selenium.interactions">HasInputDevices</a>, <a href="../HasCapabilities.html" title="interface in org.openqa.selenium">HasCapabilities</a>, <a href="../virtualauthenticator/HasVirtualAuthenticator.html" title="interface in org.openqa.selenium.virtualauthenticator">HasVirtualAuthenticator</a>, <a href="../interactions/Interactive.html" title="interface in org.openqa.selenium.interactions">Interactive</a>, <a href="../PrintsPage.html" title="interface in org.openqa.selenium">PrintsPage</a>, <a href="../TakesScreenshot.html" title="interface in org.openqa.selenium">TakesScreenshot</a></pre>
 </li>
 </ul>
 </div>
@@ -335,8 +335,8 @@ implements <a href="../WebDriver.html" title="interface in org.openqa.selenium">
 </tr>
 <tr id="i12" class="altColor">
 <td class="colFirst"><code>java.util.List&lt;<a href="../WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&gt;</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#findElements(org.openqa.selenium.remote.RemoteWebDriver,org.openqa.selenium.SearchContext,org.openqa.selenium.By)">findElements</a></span>&#8203;(<a href="RemoteWebDriver.html" title="class in org.openqa.selenium.remote">RemoteWebDriver</a>&nbsp;parent,
-            <a href="../SearchContext.html" title="interface in org.openqa.selenium">SearchContext</a>&nbsp;context,
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#findElements(org.openqa.selenium.SearchContext,java.util.function.BiFunction,org.openqa.selenium.By)">findElements</a></span>&#8203;(<a href="../SearchContext.html" title="interface in org.openqa.selenium">SearchContext</a>&nbsp;context,
+            java.util.function.BiFunction&lt;java.lang.String,&#8203;java.lang.Object,&#8203;<a href="CommandPayload.html" title="class in org.openqa.selenium.remote">CommandPayload</a>&gt;&nbsp;findCommand,
             <a href="../By.html" title="class in org.openqa.selenium">By</a>&nbsp;locator)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
@@ -924,14 +924,14 @@ public static&nbsp;<a href="RemoteWebDriverBuilder.html" title="class in org.ope
 </dl>
 </li>
 </ul>
-<a id="findElements(org.openqa.selenium.remote.RemoteWebDriver,org.openqa.selenium.SearchContext,org.openqa.selenium.By)">
+<a id="findElements(org.openqa.selenium.SearchContext,java.util.function.BiFunction,org.openqa.selenium.By)">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
 <h4>findElements</h4>
-<pre class="methodSignature">public&nbsp;java.util.List&lt;<a href="../WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&gt;&nbsp;findElements&#8203;(<a href="RemoteWebDriver.html" title="class in org.openqa.selenium.remote">RemoteWebDriver</a>&nbsp;parent,
-                                               <a href="../SearchContext.html" title="interface in org.openqa.selenium">SearchContext</a>&nbsp;context,
+<pre class="methodSignature">public&nbsp;java.util.List&lt;<a href="../WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&gt;&nbsp;findElements&#8203;(<a href="../SearchContext.html" title="interface in org.openqa.selenium">SearchContext</a>&nbsp;context,
+                                               java.util.function.BiFunction&lt;java.lang.String,&#8203;java.lang.Object,&#8203;<a href="CommandPayload.html" title="class in org.openqa.selenium.remote">CommandPayload</a>&gt;&nbsp;findCommand,
                                                <a href="../By.html" title="class in org.openqa.selenium">By</a>&nbsp;locator)</pre>
 </li>
 </ul>

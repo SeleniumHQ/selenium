@@ -27,7 +27,7 @@
     catch(err) {
     }
 //-->
-var data = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10,"i9":42,"i10":10,"i11":10,"i12":10,"i13":10,"i14":10,"i15":10,"i16":42,"i17":10,"i18":10};
+var data = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10,"i9":42,"i10":10,"i11":10,"i12":10,"i13":10,"i14":10,"i15":10,"i16":10,"i17":10,"i18":10,"i19":10,"i20":10,"i21":42,"i22":10,"i23":10};
 var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"],32:["t6","Deprecated Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -147,7 +147,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <li class="blockList">
 <dl>
 <dt>All Implemented Interfaces:</dt>
-<dd><code><a href="../Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a></code></dd>
+<dd><code>java.io.Serializable</code>, <code><a href="../Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a></code></dd>
 </dl>
 <hr>
 <pre>public class <span class="typeNameLabel">FirefoxOptions</span>
@@ -161,6 +161,10 @@ extends <a href="../remote/AbstractDriverOptions.html" title="class in org.openq
       .addPreference("browser.startup.homepage", "https://www.google.co.uk");
     WebDriver driver = new FirefoxDriver(options);
  </pre></div>
+<dl>
+<dt><span class="seeLabel">See Also:</span></dt>
+<dd><a href="../../../../serialized-form.html#org.openqa.selenium.firefox.FirefoxOptions">Serialized Form</a></dd>
+</dl>
 </li>
 </ul>
 </div>
@@ -246,23 +250,20 @@ extends <a href="../remote/AbstractDriverOptions.html" title="class in org.openq
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr id="i3" class="rowColor">
-<td class="colFirst"><code>protected int</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#amendHashCode()">amendHashCode</a></span>()</code></th>
+<td class="colFirst"><code><a href="FirefoxOptions.html" title="class in org.openqa.selenium.firefox">FirefoxOptions</a></code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#configureFromEnv()">configureFromEnv</a></span>()</code></th>
 <td class="colLast">
-<div class="block">Subclasses can use this to add information that isn't always in the capabilities map.</div>
+<div class="block">Configures the following:
+ 
+   Binary
+   <code>webdriver.firefox.bin</code> - the path to the firefox binary
+
+   Firefox profile
+   <code>webdriver.firefox.profile</code> - a named firefox profile
+ </div>
 </td>
 </tr>
 <tr id="i4" class="altColor">
-<td class="colFirst"><code>java.util.Map&lt;java.lang.String,&#8203;java.lang.Object&gt;</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#asMap()">asMap</a></span>()</code></th>
-<td class="colLast">&nbsp;</td>
-</tr>
-<tr id="i5" class="rowColor">
-<td class="colFirst"><code><a href="FirefoxOptions.html" title="class in org.openqa.selenium.firefox">FirefoxOptions</a></code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#configureFromEnv()">configureFromEnv</a></span>()</code></th>
-<td class="colLast">&nbsp;</td>
-</tr>
-<tr id="i6" class="altColor">
 <td class="colFirst"><code><a href="FirefoxBinary.html" title="class in org.openqa.selenium.firefox">FirefoxBinary</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getBinary()">getBinary</a></span>()</code></th>
 <td class="colLast">
@@ -270,9 +271,19 @@ extends <a href="../remote/AbstractDriverOptions.html" title="class in org.openq
  useful when actually starting firefox.</div>
 </td>
 </tr>
-<tr id="i7" class="rowColor">
+<tr id="i5" class="rowColor">
 <td class="colFirst"><code>java.util.Optional&lt;<a href="FirefoxBinary.html" title="class in org.openqa.selenium.firefox">FirefoxBinary</a>&gt;</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getBinaryOrNull()">getBinaryOrNull</a></span>()</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr id="i6" class="altColor">
+<td class="colFirst"><code>protected java.lang.Object</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getExtraCapability(java.lang.String)">getExtraCapability</a></span>&#8203;(java.lang.String&nbsp;capabilityName)</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr id="i7" class="rowColor">
+<td class="colFirst"><code>protected java.util.Set&lt;java.lang.String&gt;</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getExtraCapabilityNames()">getExtraCapabilityNames</a></span>()</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr id="i8" class="altColor">
@@ -299,31 +310,56 @@ extends <a href="../remote/AbstractDriverOptions.html" title="class in org.openq
 </tr>
 <tr id="i11" class="rowColor">
 <td class="colFirst"><code><a href="FirefoxOptions.html" title="class in org.openqa.selenium.firefox">FirefoxOptions</a></code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setBinary(java.lang.String)">setBinary</a></span>&#8203;(java.lang.String&nbsp;path)</code></th>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setAndroidActivity(java.lang.String)">setAndroidActivity</a></span>&#8203;(java.lang.String&nbsp;activity)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr id="i12" class="altColor">
 <td class="colFirst"><code><a href="FirefoxOptions.html" title="class in org.openqa.selenium.firefox">FirefoxOptions</a></code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setBinary(java.nio.file.Path)">setBinary</a></span>&#8203;(java.nio.file.Path&nbsp;path)</code></th>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setAndroidDeviceSerialNumber(java.lang.String)">setAndroidDeviceSerialNumber</a></span>&#8203;(java.lang.String&nbsp;serial)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr id="i13" class="rowColor">
 <td class="colFirst"><code><a href="FirefoxOptions.html" title="class in org.openqa.selenium.firefox">FirefoxOptions</a></code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setBinary(org.openqa.selenium.firefox.FirefoxBinary)">setBinary</a></span>&#8203;(<a href="FirefoxBinary.html" title="class in org.openqa.selenium.firefox">FirefoxBinary</a>&nbsp;binary)</code></th>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setAndroidIntentArguments(java.lang.String%5B%5D)">setAndroidIntentArguments</a></span>&#8203;(java.lang.String[]&nbsp;args)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr id="i14" class="altColor">
+<td class="colFirst"><code><a href="FirefoxOptions.html" title="class in org.openqa.selenium.firefox">FirefoxOptions</a></code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setAndroidIntentArguments(java.util.List)">setAndroidIntentArguments</a></span>&#8203;(java.util.List&lt;java.lang.String&gt;&nbsp;args)</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr id="i15" class="rowColor">
+<td class="colFirst"><code><a href="FirefoxOptions.html" title="class in org.openqa.selenium.firefox">FirefoxOptions</a></code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setAndroidPackage(java.lang.String)">setAndroidPackage</a></span>&#8203;(java.lang.String&nbsp;androidPackage)</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr id="i16" class="altColor">
+<td class="colFirst"><code><a href="FirefoxOptions.html" title="class in org.openqa.selenium.firefox">FirefoxOptions</a></code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setBinary(java.lang.String)">setBinary</a></span>&#8203;(java.lang.String&nbsp;path)</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr id="i17" class="rowColor">
+<td class="colFirst"><code><a href="FirefoxOptions.html" title="class in org.openqa.selenium.firefox">FirefoxOptions</a></code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setBinary(java.nio.file.Path)">setBinary</a></span>&#8203;(java.nio.file.Path&nbsp;path)</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr id="i18" class="altColor">
+<td class="colFirst"><code><a href="FirefoxOptions.html" title="class in org.openqa.selenium.firefox">FirefoxOptions</a></code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setBinary(org.openqa.selenium.firefox.FirefoxBinary)">setBinary</a></span>&#8203;(<a href="FirefoxBinary.html" title="class in org.openqa.selenium.firefox">FirefoxBinary</a>&nbsp;binary)</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr id="i19" class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setCapability(java.lang.String,java.lang.Object)">setCapability</a></span>&#8203;(java.lang.String&nbsp;key,
              java.lang.Object&nbsp;value)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i15" class="rowColor">
+<tr id="i20" class="altColor">
 <td class="colFirst"><code><a href="FirefoxOptions.html" title="class in org.openqa.selenium.firefox">FirefoxOptions</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setHeadless(boolean)">setHeadless</a></span>&#8203;(boolean&nbsp;headless)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i16" class="altColor">
+<tr id="i21" class="rowColor">
 <td class="colFirst"><code><a href="FirefoxOptions.html" title="class in org.openqa.selenium.firefox">FirefoxOptions</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setLegacy(boolean)">setLegacy</a></span>&#8203;(boolean&nbsp;legacy)</code></th>
 <td class="colLast">
@@ -332,12 +368,12 @@ extends <a href="../remote/AbstractDriverOptions.html" title="class in org.openq
 </div>
 </td>
 </tr>
-<tr id="i17" class="rowColor">
+<tr id="i22" class="altColor">
 <td class="colFirst"><code><a href="FirefoxOptions.html" title="class in org.openqa.selenium.firefox">FirefoxOptions</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setLogLevel(org.openqa.selenium.firefox.FirefoxDriverLogLevel)">setLogLevel</a></span>&#8203;(<a href="FirefoxDriverLogLevel.html" title="enum in org.openqa.selenium.firefox">FirefoxDriverLogLevel</a>&nbsp;logLevel)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i18" class="altColor">
+<tr id="i23" class="rowColor">
 <td class="colFirst"><code><a href="FirefoxOptions.html" title="class in org.openqa.selenium.firefox">FirefoxOptions</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setProfile(org.openqa.selenium.firefox.FirefoxProfile)">setProfile</a></span>&#8203;(<a href="FirefoxProfile.html" title="class in org.openqa.selenium.firefox">FirefoxProfile</a>&nbsp;profile)</code></th>
 <td class="colLast">&nbsp;</td>
@@ -348,14 +384,14 @@ extends <a href="../remote/AbstractDriverOptions.html" title="class in org.openq
 <!--   -->
 </a>
 <h3>Methods inherited from class&nbsp;org.openqa.selenium.remote.<a href="../remote/AbstractDriverOptions.html" title="class in org.openqa.selenium.remote">AbstractDriverOptions</a></h3>
-<code><a href="../remote/AbstractDriverOptions.html#setAcceptInsecureCerts(boolean)">setAcceptInsecureCerts</a>, <a href="../remote/AbstractDriverOptions.html#setPageLoadStrategy(org.openqa.selenium.PageLoadStrategy)">setPageLoadStrategy</a>, <a href="../remote/AbstractDriverOptions.html#setProxy(org.openqa.selenium.Proxy)">setProxy</a>, <a href="../remote/AbstractDriverOptions.html#setStrictFileInteractability(boolean)">setStrictFileInteractability</a>, <a href="../remote/AbstractDriverOptions.html#setUnhandledPromptBehaviour(org.openqa.selenium.UnexpectedAlertBehaviour)">setUnhandledPromptBehaviour</a></code></li>
+<code><a href="../remote/AbstractDriverOptions.html#asMap()">asMap</a>, <a href="../remote/AbstractDriverOptions.html#getCapability(java.lang.String)">getCapability</a>, <a href="../remote/AbstractDriverOptions.html#getCapabilityNames()">getCapabilityNames</a>, <a href="../remote/AbstractDriverOptions.html#setAcceptInsecureCerts(boolean)">setAcceptInsecureCerts</a>, <a href="../remote/AbstractDriverOptions.html#setBrowserVersion(java.lang.String)">setBrowserVersion</a>, <a href="../remote/AbstractDriverOptions.html#setImplicitWaitTimeout(java.time.Duration)">setImplicitWaitTimeout</a>, <a href="../remote/AbstractDriverOptions.html#setPageLoadStrategy(org.openqa.selenium.PageLoadStrategy)">setPageLoadStrategy</a>, <a href="../remote/AbstractDriverOptions.html#setPageLoadTimeout(java.time.Duration)">setPageLoadTimeout</a>, <a href="../remote/AbstractDriverOptions.html#setPlatformName(java.lang.String)">setPlatformName</a>, <a href="../remote/AbstractDriverOptions.html#setProxy(org.openqa.selenium.Proxy)">setProxy</a>, <a href="../remote/AbstractDriverOptions.html#setScriptTimeout(java.time.Duration)">setScriptTimeout</a>, <a href="../remote/AbstractDriverOptions.html#setStrictFileInteractability(boolean)">setStrictFileInteractability</a>, <a href="../remote/AbstractDriverOptions.html#setUnhandledPromptBehaviour(org.openqa.selenium.UnexpectedAlertBehaviour)">setUnhandledPromptBehaviour</a></code></li>
 </ul>
 <ul class="blockList">
 <li class="blockList"><a id="methods.inherited.from.class.org.openqa.selenium.MutableCapabilities">
 <!--   -->
 </a>
 <h3>Methods inherited from class&nbsp;org.openqa.selenium.<a href="../MutableCapabilities.html" title="class in org.openqa.selenium">MutableCapabilities</a></h3>
-<code><a href="../MutableCapabilities.html#equals(java.lang.Object)">equals</a>, <a href="../MutableCapabilities.html#getCapability(java.lang.String)">getCapability</a>, <a href="../MutableCapabilities.html#getCapabilityNames()">getCapabilityNames</a>, <a href="../MutableCapabilities.html#hashCode()">hashCode</a>, <a href="../MutableCapabilities.html#setCapability(java.lang.String,boolean)">setCapability</a>, <a href="../MutableCapabilities.html#setCapability(java.lang.String,java.lang.String)">setCapability</a>, <a href="../MutableCapabilities.html#setCapability(java.lang.String,org.openqa.selenium.Platform)">setCapability</a>, <a href="../MutableCapabilities.html#toJson()">toJson</a>, <a href="../MutableCapabilities.html#toString()">toString</a></code></li>
+<code><a href="../MutableCapabilities.html#equals(java.lang.Object)">equals</a>, <a href="../MutableCapabilities.html#hashCode()">hashCode</a>, <a href="../MutableCapabilities.html#setCapability(java.lang.String,boolean)">setCapability</a>, <a href="../MutableCapabilities.html#setCapability(java.lang.String,java.lang.String)">setCapability</a>, <a href="../MutableCapabilities.html#setCapability(java.lang.String,org.openqa.selenium.Platform)">setCapability</a>, <a href="../MutableCapabilities.html#toJson()">toJson</a>, <a href="../MutableCapabilities.html#toString()">toString</a></code></li>
 </ul>
 <ul class="blockList">
 <li class="blockList"><a id="methods.inherited.from.class.java.lang.Object">
@@ -445,6 +481,14 @@ extends <a href="../remote/AbstractDriverOptions.html" title="class in org.openq
 <li class="blockList">
 <h4>configureFromEnv</h4>
 <pre class="methodSignature">public&nbsp;<a href="FirefoxOptions.html" title="class in org.openqa.selenium.firefox">FirefoxOptions</a>&nbsp;configureFromEnv()</pre>
+<div class="block">Configures the following:
+ <dl>
+   <dt>Binary</dt>
+   <dd><code>webdriver.firefox.bin</code> - the path to the firefox binary</dd>
+
+   <dt>Firefox profile</dt>
+   <dd><code>webdriver.firefox.profile</code> - a named firefox profile</dd>
+ </dl></div>
 </li>
 </ul>
 <a id="setLegacy(boolean)">
@@ -584,6 +628,51 @@ public&nbsp;boolean&nbsp;isLegacy()</pre>
 <pre class="methodSignature">public&nbsp;<a href="FirefoxOptions.html" title="class in org.openqa.selenium.firefox">FirefoxOptions</a>&nbsp;setHeadless&#8203;(boolean&nbsp;headless)</pre>
 </li>
 </ul>
+<a id="setAndroidPackage(java.lang.String)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>setAndroidPackage</h4>
+<pre class="methodSignature">public&nbsp;<a href="FirefoxOptions.html" title="class in org.openqa.selenium.firefox">FirefoxOptions</a>&nbsp;setAndroidPackage&#8203;(java.lang.String&nbsp;androidPackage)</pre>
+</li>
+</ul>
+<a id="setAndroidActivity(java.lang.String)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>setAndroidActivity</h4>
+<pre class="methodSignature">public&nbsp;<a href="FirefoxOptions.html" title="class in org.openqa.selenium.firefox">FirefoxOptions</a>&nbsp;setAndroidActivity&#8203;(java.lang.String&nbsp;activity)</pre>
+</li>
+</ul>
+<a id="setAndroidDeviceSerialNumber(java.lang.String)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>setAndroidDeviceSerialNumber</h4>
+<pre class="methodSignature">public&nbsp;<a href="FirefoxOptions.html" title="class in org.openqa.selenium.firefox">FirefoxOptions</a>&nbsp;setAndroidDeviceSerialNumber&#8203;(java.lang.String&nbsp;serial)</pre>
+</li>
+</ul>
+<a id="setAndroidIntentArguments(java.lang.String[])">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>setAndroidIntentArguments</h4>
+<pre class="methodSignature">public&nbsp;<a href="FirefoxOptions.html" title="class in org.openqa.selenium.firefox">FirefoxOptions</a>&nbsp;setAndroidIntentArguments&#8203;(java.lang.String[]&nbsp;args)</pre>
+</li>
+</ul>
+<a id="setAndroidIntentArguments(java.util.List)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>setAndroidIntentArguments</h4>
+<pre class="methodSignature">public&nbsp;<a href="FirefoxOptions.html" title="class in org.openqa.selenium.firefox">FirefoxOptions</a>&nbsp;setAndroidIntentArguments&#8203;(java.util.List&lt;java.lang.String&gt;&nbsp;args)</pre>
+</li>
+</ul>
 <a id="setCapability(java.lang.String,java.lang.Object)">
 <!--   -->
 </a>
@@ -598,27 +687,36 @@ public&nbsp;boolean&nbsp;isLegacy()</pre>
 </dl>
 </li>
 </ul>
-<a id="asMap()">
+<a id="getExtraCapabilityNames()">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
-<h4>asMap</h4>
-<pre class="methodSignature">public&nbsp;java.util.Map&lt;java.lang.String,&#8203;java.lang.Object&gt;&nbsp;asMap()</pre>
+<h4>getExtraCapabilityNames</h4>
+<pre class="methodSignature">protected&nbsp;java.util.Set&lt;java.lang.String&gt;&nbsp;getExtraCapabilityNames()</pre>
 <dl>
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
-<dd><code><a href="../Capabilities.html#asMap()">asMap</a></code>&nbsp;in interface&nbsp;<code><a href="../Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a></code></dd>
-<dt><span class="overrideSpecifyLabel">Overrides:</span></dt>
-<dd><code><a href="../MutableCapabilities.html#asMap()">asMap</a></code>&nbsp;in class&nbsp;<code><a href="../MutableCapabilities.html" title="class in org.openqa.selenium">MutableCapabilities</a></code></dd>
-<dt><span class="returnLabel">Returns:</span></dt>
-<dd>The capabilities as a Map.</dd>
+<dd><code><a href="../remote/AbstractDriverOptions.html#getExtraCapabilityNames()">getExtraCapabilityNames</a></code>&nbsp;in class&nbsp;<code><a href="../remote/AbstractDriverOptions.html" title="class in org.openqa.selenium.remote">AbstractDriverOptions</a>&lt;<a href="FirefoxOptions.html" title="class in org.openqa.selenium.firefox">FirefoxOptions</a>&gt;</code></dd>
+</dl>
+</li>
+</ul>
+<a id="getExtraCapability(java.lang.String)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getExtraCapability</h4>
+<pre class="methodSignature">protected&nbsp;java.lang.Object&nbsp;getExtraCapability&#8203;(java.lang.String&nbsp;capabilityName)</pre>
+<dl>
+<dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
+<dd><code><a href="../remote/AbstractDriverOptions.html#getExtraCapability(java.lang.String)">getExtraCapability</a></code>&nbsp;in class&nbsp;<code><a href="../remote/AbstractDriverOptions.html" title="class in org.openqa.selenium.remote">AbstractDriverOptions</a>&lt;<a href="FirefoxOptions.html" title="class in org.openqa.selenium.firefox">FirefoxOptions</a>&gt;</code></dd>
 </dl>
 </li>
 </ul>
 <a id="merge(org.openqa.selenium.Capabilities)">
 <!--   -->
 </a>
-<ul class="blockList">
+<ul class="blockListLast">
 <li class="blockList">
 <h4>merge</h4>
 <pre class="methodSignature">public&nbsp;<a href="FirefoxOptions.html" title="class in org.openqa.selenium.firefox">FirefoxOptions</a>&nbsp;merge&#8203;(<a href="../Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&nbsp;capabilities)</pre>
@@ -631,21 +729,6 @@ public&nbsp;boolean&nbsp;isLegacy()</pre>
 <dd><code><a href="../Capabilities.html#merge(org.openqa.selenium.Capabilities)">merge</a></code>&nbsp;in interface&nbsp;<code><a href="../Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a></code></dd>
 <dt><span class="overrideSpecifyLabel">Overrides:</span></dt>
 <dd><code><a href="../MutableCapabilities.html#merge(org.openqa.selenium.Capabilities)">merge</a></code>&nbsp;in class&nbsp;<code><a href="../MutableCapabilities.html" title="class in org.openqa.selenium">MutableCapabilities</a></code></dd>
-</dl>
-</li>
-</ul>
-<a id="amendHashCode()">
-<!--   -->
-</a>
-<ul class="blockListLast">
-<li class="blockList">
-<h4>amendHashCode</h4>
-<pre class="methodSignature">protected&nbsp;int&nbsp;amendHashCode()</pre>
-<div class="block"><span class="descfrmTypeLabel">Description copied from class:&nbsp;<code><a href="../MutableCapabilities.html#amendHashCode()">MutableCapabilities</a></code></span></div>
-<div class="block">Subclasses can use this to add information that isn't always in the capabilities map.</div>
-<dl>
-<dt><span class="overrideSpecifyLabel">Overrides:</span></dt>
-<dd><code><a href="../MutableCapabilities.html#amendHashCode()">amendHashCode</a></code>&nbsp;in class&nbsp;<code><a href="../MutableCapabilities.html" title="class in org.openqa.selenium">MutableCapabilities</a></code></dd>
 </dl>
 </li>
 </ul>

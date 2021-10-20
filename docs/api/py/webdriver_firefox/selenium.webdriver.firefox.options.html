@@ -57,11 +57,6 @@
 <dd></dd></dl>
 
 <dl class="attribute">
-<dt id="selenium.webdriver.firefox.options.Options.accept_insecure_certs">
-<code class="descname">accept_insecure_certs</code><a class="headerlink" href="#selenium.webdriver.firefox.options.Options.accept_insecure_certs" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
 <dt id="selenium.webdriver.firefox.options.Options.binary">
 <code class="descname">binary</code><a class="headerlink" href="#selenium.webdriver.firefox.options.Options.binary" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the FirefoxBinary instance</p>
@@ -86,6 +81,20 @@
 <dd><p>Return minimal capabilities necessary as a dictionary.</p>
 </dd></dl>
 
+<dl class="method">
+<dt id="selenium.webdriver.firefox.options.Options.enable_mobile">
+<code class="descname">enable_mobile</code><span class="sig-paren">(</span><em>android_package: str = 'org.mozilla.firefox'</em>, <em>android_activity=None</em>, <em>device_serial=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/webdriver/firefox/options.html#Options.enable_mobile"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.firefox.options.Options.enable_mobile" title="Permalink to this definition">¶</a></dt>
+<dd><p>Enables mobile browser use for browsers that support it</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Args:</th><td class="field-body">android_activity: The name of the android package to start</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
 <dl class="attribute">
 <dt id="selenium.webdriver.firefox.options.Options.headless">
 <code class="descname">headless</code><a class="headerlink" href="#selenium.webdriver.firefox.options.Options.headless" title="Permalink to this definition">¶</a></dt>
@@ -98,11 +107,6 @@
 </tbody>
 </table>
 </dd></dl>
-
-<dl class="attribute">
-<dt id="selenium.webdriver.firefox.options.Options.page_load_strategy">
-<code class="descname">page_load_strategy</code><a class="headerlink" href="#selenium.webdriver.firefox.options.Options.page_load_strategy" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
 
 <dl class="attribute">
 <dt id="selenium.webdriver.firefox.options.Options.preferences">
@@ -125,19 +129,6 @@
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">The Firefox profile to use.</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="selenium.webdriver.firefox.options.Options.proxy">
-<code class="descname">proxy</code><a class="headerlink" href="#selenium.webdriver.firefox.options.Options.proxy" title="Permalink to this definition">¶</a></dt>
-<dd><table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">Proxy if set, otherwise None.</td>
 </tr>
 </tbody>
 </table>

@@ -136,7 +136,6 @@
                     <span class="n">remote_server_addr</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">service</span><span class="o">.</span><span class="n">service_url</span><span class="p">,</span>
                     <span class="n">browser_name</span><span class="o">=</span><span class="n">browser_name</span><span class="p">,</span> <span class="n">vendor_prefix</span><span class="o">=</span><span class="n">vendor_prefix</span><span class="p">,</span>
                     <span class="n">keep_alive</span><span class="o">=</span><span class="n">keep_alive</span><span class="p">,</span> <span class="n">ignore_proxy</span><span class="o">=</span><span class="n">_ignore_proxy</span><span class="p">),</span>
-                <span class="n">desired_capabilities</span><span class="o">=</span><span class="n">desired_capabilities</span><span class="p">,</span>
                 <span class="n">options</span><span class="o">=</span><span class="n">options</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">quit</span><span class="p">()</span>
@@ -179,6 +178,26 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">&quot;setNetworkConditions&quot;</span><span class="p">,</span> <span class="p">{</span>
             <span class="s1">&#39;network_conditions&#39;</span><span class="p">:</span> <span class="n">network_conditions</span>
         <span class="p">})</span></div>
+
+<div class="viewcode-block" id="ChromiumDriver.delete_network_conditions"><a class="viewcode-back" href="../../../../webdriver_chromium/selenium.webdriver.chromium.webdriver.html#selenium.webdriver.chromium.webdriver.ChromiumDriver.delete_network_conditions">[docs]</a>    <span class="k">def</span> <span class="nf">delete_network_conditions</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">NoReturn</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Resets Chromium network emulation settings.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">&quot;deleteNetworkConditions&quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="ChromiumDriver.set_permissions"><a class="viewcode-back" href="../../../../webdriver_chromium/selenium.webdriver.chromium.webdriver.html#selenium.webdriver.chromium.webdriver.ChromiumDriver.set_permissions">[docs]</a>    <span class="k">def</span> <span class="nf">set_permissions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">NoReturn</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Sets Applicable Permission.</span>
+
+<span class="sd">        :Args:</span>
+<span class="sd">         - name: The item to set the permission on.</span>
+<span class="sd">         - value: The value to set on the item</span>
+
+<span class="sd">        :Usage:</span>
+<span class="sd">            ::</span>
+<span class="sd">                driver.set_permissions(&#39;clipboard-read&#39;, &#39;denied&#39;)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">&quot;setPermissions&quot;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;descriptor&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="n">name</span><span class="p">},</span> <span class="s1">&#39;state&#39;</span><span class="p">:</span> <span class="n">value</span><span class="p">})</span></div>
 
 <div class="viewcode-block" id="ChromiumDriver.execute_cdp_cmd"><a class="viewcode-back" href="../../../../webdriver_chromium/selenium.webdriver.chromium.webdriver.html#selenium.webdriver.chromium.webdriver.ChromiumDriver.execute_cdp_cmd">[docs]</a>    <span class="k">def</span> <span class="nf">execute_cdp_cmd</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cmd</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">cmd_args</span><span class="p">:</span> <span class="nb">dict</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>

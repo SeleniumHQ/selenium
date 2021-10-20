@@ -94,7 +94,7 @@
   
   <dl>
     <dt>Defined in:</dt>
-    <dd>build/rb/lib/selenium/webdriver/remote/capabilities.rb</dd>
+    <dd>rb/lib/selenium/webdriver/remote/capabilities.rb</dd>
   </dl>
   
 </div>
@@ -133,14 +133,10 @@
   <span class='symbol'>:timeouts</span><span class='comma'>,</span>
   <span class='symbol'>:unhandled_prompt_behavior</span><span class='comma'>,</span>
   <span class='symbol'>:strict_file_interactability</span><span class='comma'>,</span>
+  <span class='symbol'>:web_socket_url</span><span class='comma'>,</span>
 
-  <span class='comment'># remote-specific
-</span>  <span class='symbol'>:remote_session_id</span><span class='comma'>,</span>
-
-  <span class='comment'># TODO: (AR) deprecate compatibility with OSS-capabilities
-</span>  <span class='symbol'>:implicit_timeout</span><span class='comma'>,</span>
-  <span class='symbol'>:page_load_timeout</span><span class='comma'>,</span>
-  <span class='symbol'>:script_timeout</span>
+  <span class='comment'># remote-specific (webdriver.remote.sessionid)
+</span>  <span class='symbol'>:remote_session_id</span>
 <span class='rbracket'>]</span><span class='period'>.</span><span class='id identifier rubyid_freeze'>freeze</span></pre></dd>
       
     </dl>
@@ -159,6 +155,50 @@
     </h2>
 
     <ul class="summary">
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#always_match-class_method" title="always_match (class method)">.<strong>always_match</strong>(capabilities)  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#camel_case-class_method" title="camel_case (class method)">.<strong>camel_case</strong>(str_or_sym)  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
       
         <li class="public ">
   <span class="summary_signature">
@@ -189,6 +229,8 @@
     
 
     
+      (also: microsoftedge)
+    
   </span>
   
   
@@ -212,6 +254,28 @@
 
     
       (also: ff)
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#first_match-class_method" title="first_match (class method)">.<strong>first_match</strong>(*capabilities)  &#x21d2; Object </a>
+    
+
     
   </span>
   
@@ -422,6 +486,50 @@
         <li class="public ">
   <span class="summary_signature">
     
+      <a href="#implicit_timeout-instance_method" title="#implicit_timeout (instance method)">#<strong>implicit_timeout</strong>  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#implicit_timeout=-instance_method" title="#implicit_timeout= (instance method)">#<strong>implicit_timeout=</strong>(timeout)  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
       <a href="#initialize-instance_method" title="#initialize (instance method)">#<strong>initialize</strong>(opts = {})  &#x21d2; Capabilities </a>
     
 
@@ -470,7 +578,161 @@
         <li class="public ">
   <span class="summary_signature">
     
+      <a href="#page_load_timeout-instance_method" title="#page_load_timeout (instance method)">#<strong>page_load_timeout</strong>  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#page_load_timeout=-instance_method" title="#page_load_timeout= (instance method)">#<strong>page_load_timeout=</strong>(timeout)  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#proxy-instance_method" title="#proxy (instance method)">#<strong>proxy</strong>  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
       <a href="#proxy=-instance_method" title="#proxy= (instance method)">#<strong>proxy=</strong>(proxy)  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#script_timeout-instance_method" title="#script_timeout (instance method)">#<strong>script_timeout</strong>  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#script_timeout=-instance_method" title="#script_timeout= (instance method)">#<strong>script_timeout=</strong>(timeout)  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#timeouts-instance_method" title="#timeouts (instance method)">#<strong>timeouts</strong>  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#timeouts=-instance_method" title="#timeouts= (instance method)">#<strong>timeouts=</strong>(timeouts)  &#x21d2; Object </a>
     
 
     
@@ -644,17 +906,19 @@
       <pre class="lines">
 
 
-175
-176
 177
-178</pre>
+178
+179
+180
+181</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/remote/capabilities.rb', line 175</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/capabilities.rb', line 177</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_initialize'>initialize</span><span class='lparen'>(</span><span class='id identifier rubyid_opts'>opts</span> <span class='op'>=</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='rparen'>)</span>
-  <span class='ivar'>@capabilities</span> <span class='op'>=</span> <span class='id identifier rubyid_opts'>opts</span>
-  <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_proxy'>proxy</span> <span class='op'>=</span> <span class='id identifier rubyid_opts'>opts</span><span class='period'>.</span><span class='id identifier rubyid_delete'>delete</span><span class='lparen'>(</span><span class='symbol'>:proxy</span><span class='rparen'>)</span>
+  <span class='ivar'>@capabilities</span> <span class='op'>=</span> <span class='lbrace'>{</span><span class='rbrace'>}</span>
+  <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_proxy'>proxy</span> <span class='op'>=</span> <span class='id identifier rubyid_opts'>opts</span><span class='period'>.</span><span class='id identifier rubyid_delete'>delete</span><span class='lparen'>(</span><span class='symbol'>:proxy</span><span class='rparen'>)</span> <span class='kw'>if</span> <span class='id identifier rubyid_opts'>opts</span><span class='lbracket'>[</span><span class='symbol'>:proxy</span><span class='rbracket'>]</span>
+  <span class='ivar'>@capabilities</span><span class='period'>.</span><span class='id identifier rubyid_merge!'>merge!</span><span class='lparen'>(</span><span class='id identifier rubyid_opts'>opts</span><span class='rparen'>)</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -669,7 +933,67 @@
 
     
       <div class="method_details first">
-  <h3 class="signature first" id="chrome-class_method">
+  <h3 class="signature first" id="always_match-class_method">
+  
+    .<strong>always_match</strong>(capabilities)  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+112
+113
+114</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/capabilities.rb', line 112</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_always_match'>always_match</span><span class='lparen'>(</span><span class='id identifier rubyid_capabilities'>capabilities</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='label'>always_match:</span> <span class='id identifier rubyid_capabilities'>capabilities</span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="camel_case-class_method">
+  
+    .<strong>camel_case</strong>(str_or_sym)  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+151
+152
+153</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/capabilities.rb', line 151</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_camel_case'>camel_case</span><span class='lparen'>(</span><span class='id identifier rubyid_str_or_sym'>str_or_sym</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_str_or_sym'>str_or_sym</span><span class='period'>.</span><span class='id identifier rubyid_to_s'>to_s</span><span class='period'>.</span><span class='id identifier rubyid_gsub'>gsub</span><span class='lparen'>(</span><span class='tstring'><span class='regexp_beg'>/</span><span class='tstring_content'>_([a-z])</span><span class='regexp_end'>/</span></span><span class='rparen'>)</span> <span class='lbrace'>{</span> <span class='const'>Regexp</span><span class='period'>.</span><span class='id identifier rubyid_last_match'>last_match</span><span class='lparen'>(</span><span class='int'>1</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_upcase'>upcase</span> <span class='rbrace'>}</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="chrome-class_method">
   
     .<strong>chrome</strong>(opts = {})  &#x21d2; <tt>Object</tt> 
   
@@ -683,14 +1007,14 @@
       <pre class="lines">
 
 
-78
-79
-80
-81
-82</pre>
+72
+73
+74
+75
+76</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/remote/capabilities.rb', line 78</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/capabilities.rb', line 72</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_chrome'>chrome</span><span class='lparen'>(</span><span class='id identifier rubyid_opts'>opts</span> <span class='op'>=</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='lbrace'>{</span>
@@ -709,6 +1033,10 @@
   
 
   
+    <span class="aliases">Also known as:
+    <span class="names"><span id='microsoftedge-class_method'>microsoftedge</span></span>
+    </span>
+  
 
   
 </h3><table class="source_code">
@@ -717,14 +1045,14 @@
       <pre class="lines">
 
 
-84
-85
-86
-87
-88</pre>
+78
+79
+80
+81
+82</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/remote/capabilities.rb', line 84</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/capabilities.rb', line 78</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_edge'>edge</span><span class='lparen'>(</span><span class='id identifier rubyid_opts'>opts</span> <span class='op'>=</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='lbrace'>{</span>
@@ -755,29 +1083,49 @@
       <pre class="lines">
 
 
-90
-91
-92
-93
-94
-95
-96
-97
-98
-99</pre>
+85
+86
+87
+88
+89</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/remote/capabilities.rb', line 90</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/capabilities.rb', line 85</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_firefox'>firefox</span><span class='lparen'>(</span><span class='id identifier rubyid_opts'>opts</span> <span class='op'>=</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='rparen'>)</span>
-  <span class='id identifier rubyid_opts'>opts</span><span class='lbracket'>[</span><span class='symbol'>:browser_version</span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='id identifier rubyid_opts'>opts</span><span class='period'>.</span><span class='id identifier rubyid_delete'>delete</span><span class='lparen'>(</span><span class='symbol'>:version</span><span class='rparen'>)</span> <span class='kw'>if</span> <span class='id identifier rubyid_opts'>opts</span><span class='period'>.</span><span class='id identifier rubyid_key?'>key?</span><span class='lparen'>(</span><span class='symbol'>:version</span><span class='rparen'>)</span>
-  <span class='id identifier rubyid_opts'>opts</span><span class='lbracket'>[</span><span class='symbol'>:platform_name</span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='id identifier rubyid_opts'>opts</span><span class='period'>.</span><span class='id identifier rubyid_delete'>delete</span><span class='lparen'>(</span><span class='symbol'>:platform</span><span class='rparen'>)</span> <span class='kw'>if</span> <span class='id identifier rubyid_opts'>opts</span><span class='period'>.</span><span class='id identifier rubyid_key?'>key?</span><span class='lparen'>(</span><span class='symbol'>:platform</span><span class='rparen'>)</span>
-  <span class='id identifier rubyid_opts'>opts</span><span class='lbracket'>[</span><span class='symbol'>:timeouts</span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='lbrace'>{</span><span class='rbrace'>}</span>
-  <span class='id identifier rubyid_opts'>opts</span><span class='lbracket'>[</span><span class='symbol'>:timeouts</span><span class='rbracket'>]</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>implicit</span><span class='tstring_end'>&#39;</span></span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='id identifier rubyid_opts'>opts</span><span class='period'>.</span><span class='id identifier rubyid_delete'>delete</span><span class='lparen'>(</span><span class='symbol'>:implicit_timeout</span><span class='rparen'>)</span> <span class='kw'>if</span> <span class='id identifier rubyid_opts'>opts</span><span class='period'>.</span><span class='id identifier rubyid_key?'>key?</span><span class='lparen'>(</span><span class='symbol'>:implicit_timeout</span><span class='rparen'>)</span>
-  <span class='id identifier rubyid_opts'>opts</span><span class='lbracket'>[</span><span class='symbol'>:timeouts</span><span class='rbracket'>]</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>pageLoad</span><span class='tstring_end'>&#39;</span></span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='id identifier rubyid_opts'>opts</span><span class='period'>.</span><span class='id identifier rubyid_delete'>delete</span><span class='lparen'>(</span><span class='symbol'>:page_load_timeout</span><span class='rparen'>)</span> <span class='kw'>if</span> <span class='id identifier rubyid_opts'>opts</span><span class='period'>.</span><span class='id identifier rubyid_key?'>key?</span><span class='lparen'>(</span><span class='symbol'>:page_load_timeout</span><span class='rparen'>)</span>
-  <span class='id identifier rubyid_opts'>opts</span><span class='lbracket'>[</span><span class='symbol'>:timeouts</span><span class='rbracket'>]</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>script</span><span class='tstring_end'>&#39;</span></span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='id identifier rubyid_opts'>opts</span><span class='period'>.</span><span class='id identifier rubyid_delete'>delete</span><span class='lparen'>(</span><span class='symbol'>:script_timeout</span><span class='rparen'>)</span> <span class='kw'>if</span> <span class='id identifier rubyid_opts'>opts</span><span class='period'>.</span><span class='id identifier rubyid_key?'>key?</span><span class='lparen'>(</span><span class='symbol'>:script_timeout</span><span class='rparen'>)</span>
-  <span class='id identifier rubyid_opts'>opts</span><span class='period'>.</span><span class='id identifier rubyid_delete'>delete</span><span class='lparen'>(</span><span class='symbol'>:timeouts</span><span class='rparen'>)</span> <span class='kw'>if</span> <span class='id identifier rubyid_opts'>opts</span><span class='lbracket'>[</span><span class='symbol'>:timeouts</span><span class='rbracket'>]</span><span class='period'>.</span><span class='id identifier rubyid_empty?'>empty?</span>
-  <span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='lbrace'>{</span><span class='label'>browser_name:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>firefox</span><span class='tstring_end'>&#39;</span></span><span class='rbrace'>}</span><span class='period'>.</span><span class='id identifier rubyid_merge'>merge</span><span class='lparen'>(</span><span class='id identifier rubyid_opts'>opts</span><span class='rparen'>)</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='lbrace'>{</span>
+    <span class='label'>browser_name:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>firefox</span><span class='tstring_end'>&#39;</span></span>
+  <span class='rbrace'>}</span><span class='period'>.</span><span class='id identifier rubyid_merge'>merge</span><span class='lparen'>(</span><span class='id identifier rubyid_opts'>opts</span><span class='rparen'>)</span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="first_match-class_method">
+  
+    .<strong>first_match</strong>(*capabilities)  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+116
+117
+118</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/capabilities.rb', line 116</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_first_match'>first_match</span><span class='lparen'>(</span><span class='op'>*</span><span class='id identifier rubyid_capabilities'>capabilities</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='label'>first_match:</span> <span class='id identifier rubyid_capabilities'>capabilities</span><span class='rparen'>)</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -799,14 +1147,14 @@
       <pre class="lines">
 
 
-109
-110
-111
-112
-113</pre>
+98
+99
+100
+101
+102</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/remote/capabilities.rb', line 109</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/capabilities.rb', line 98</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_htmlunit'>htmlunit</span><span class='lparen'>(</span><span class='id identifier rubyid_opts'>opts</span> <span class='op'>=</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='lbrace'>{</span>
@@ -837,15 +1185,15 @@
       <pre class="lines">
 
 
-115
-116
-117
-118
-119
-120</pre>
+104
+105
+106
+107
+108
+109</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/remote/capabilities.rb', line 115</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/capabilities.rb', line 104</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_internet_explorer'>internet_explorer</span><span class='lparen'>(</span><span class='id identifier rubyid_opts'>opts</span> <span class='op'>=</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='lbrace'>{</span>
@@ -886,6 +1234,9 @@
       <pre class="lines">
 
 
+124
+125
+126
 127
 128
 129
@@ -908,22 +1259,14 @@
 146
 147
 148
-149
-150
-151</pre>
+149</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/remote/capabilities.rb', line 127</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/capabilities.rb', line 124</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_json_create'>json_create</span><span class='lparen'>(</span><span class='id identifier rubyid_data'>data</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_data'>data</span> <span class='op'>=</span> <span class='id identifier rubyid_data'>data</span><span class='period'>.</span><span class='id identifier rubyid_dup'>dup</span>
-
   <span class='id identifier rubyid_caps'>caps</span> <span class='op'>=</span> <span class='id identifier rubyid_new'>new</span>
-  <span class='id identifier rubyid_caps'>caps</span><span class='period'>.</span><span class='id identifier rubyid_browser_name'>browser_name</span> <span class='op'>=</span> <span class='id identifier rubyid_data'>data</span><span class='period'>.</span><span class='id identifier rubyid_delete'>delete</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>browserName</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span> <span class='kw'>if</span> <span class='id identifier rubyid_data'>data</span><span class='period'>.</span><span class='id identifier rubyid_key?'>key?</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>browserName</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span>
-  <span class='id identifier rubyid_caps'>caps</span><span class='period'>.</span><span class='id identifier rubyid_browser_version'>browser_version</span> <span class='op'>=</span> <span class='id identifier rubyid_data'>data</span><span class='period'>.</span><span class='id identifier rubyid_delete'>delete</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>browserVersion</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span> <span class='kw'>if</span> <span class='id identifier rubyid_data'>data</span><span class='period'>.</span><span class='id identifier rubyid_key?'>key?</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>browserVersion</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span>
-  <span class='id identifier rubyid_caps'>caps</span><span class='period'>.</span><span class='id identifier rubyid_platform_name'>platform_name</span> <span class='op'>=</span> <span class='id identifier rubyid_data'>data</span><span class='period'>.</span><span class='id identifier rubyid_delete'>delete</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>platformName</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span> <span class='kw'>if</span> <span class='id identifier rubyid_data'>data</span><span class='period'>.</span><span class='id identifier rubyid_key?'>key?</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>platformName</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span>
-  <span class='id identifier rubyid_caps'>caps</span><span class='period'>.</span><span class='id identifier rubyid_accept_insecure_certs'>accept_insecure_certs</span> <span class='op'>=</span> <span class='id identifier rubyid_data'>data</span><span class='period'>.</span><span class='id identifier rubyid_delete'>delete</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>acceptInsecureCerts</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span> <span class='kw'>if</span> <span class='id identifier rubyid_data'>data</span><span class='period'>.</span><span class='id identifier rubyid_key?'>key?</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>acceptInsecureCerts</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span>
-  <span class='id identifier rubyid_caps'>caps</span><span class='period'>.</span><span class='id identifier rubyid_page_load_strategy'>page_load_strategy</span> <span class='op'>=</span> <span class='id identifier rubyid_data'>data</span><span class='period'>.</span><span class='id identifier rubyid_delete'>delete</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>pageLoadStrategy</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span> <span class='kw'>if</span> <span class='id identifier rubyid_data'>data</span><span class='period'>.</span><span class='id identifier rubyid_key?'>key?</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>pageLoadStrategy</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span>
 
   <span class='id identifier rubyid_process_timeouts'>process_timeouts</span><span class='lparen'>(</span><span class='id identifier rubyid_caps'>caps</span><span class='comma'>,</span> <span class='id identifier rubyid_data'>data</span><span class='period'>.</span><span class='id identifier rubyid_delete'>delete</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>timeouts</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span><span class='rparen'>)</span>
 
@@ -933,7 +1276,14 @@
   <span class='kw'>end</span>
 
   <span class='comment'># Remote Server Specific
-</span>  <span class='id identifier rubyid_caps'>caps</span><span class='lbracket'>[</span><span class='symbol'>:remote_session_id</span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='id identifier rubyid_data'>data</span><span class='period'>.</span><span class='id identifier rubyid_delete'>delete</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>webdriver.remote.sessionid</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span> <span class='kw'>if</span> <span class='id identifier rubyid_data'>data</span><span class='period'>.</span><span class='id identifier rubyid_key?'>key?</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>webdriver.remote.sessionid</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span>
+</span>  <span class='kw'>if</span> <span class='id identifier rubyid_data'>data</span><span class='period'>.</span><span class='id identifier rubyid_key?'>key?</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>webdriver.remote.sessionid</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span>
+    <span class='id identifier rubyid_caps'>caps</span><span class='lbracket'>[</span><span class='symbol'>:remote_session_id</span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='id identifier rubyid_data'>data</span><span class='period'>.</span><span class='id identifier rubyid_delete'>delete</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>webdriver.remote.sessionid</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span>
+  <span class='kw'>end</span>
+
+  <span class='const'><span class='object_link'><a href="#KNOWN-constant" title="Selenium::WebDriver::Remote::Capabilities::KNOWN (constant)">KNOWN</a></span></span><span class='period'>.</span><span class='id identifier rubyid_each'>each</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_cap'>cap</span><span class='op'>|</span>
+    <span class='id identifier rubyid_data_value'>data_value</span> <span class='op'>=</span> <span class='id identifier rubyid_camel_case'>camel_case</span><span class='lparen'>(</span><span class='id identifier rubyid_cap'>cap</span><span class='rparen'>)</span>
+    <span class='id identifier rubyid_caps'>caps</span><span class='lbracket'>[</span><span class='id identifier rubyid_cap'>cap</span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='id identifier rubyid_data'>data</span><span class='period'>.</span><span class='id identifier rubyid_delete'>delete</span><span class='lparen'>(</span><span class='id identifier rubyid_data_value'>data_value</span><span class='rparen'>)</span> <span class='kw'>if</span> <span class='id identifier rubyid_data'>data</span><span class='period'>.</span><span class='id identifier rubyid_key?'>key?</span><span class='lparen'>(</span><span class='id identifier rubyid_data_value'>data_value</span><span class='rparen'>)</span>
+  <span class='kw'>end</span>
 
   <span class='comment'># any remaining pairs will be added as is, with no conversion
 </span>  <span class='id identifier rubyid_caps'>caps</span><span class='period'>.</span><span class='id identifier rubyid_merge!'>merge!</span><span class='lparen'>(</span><span class='id identifier rubyid_data'>data</span><span class='rparen'>)</span>
@@ -960,14 +1310,14 @@
       <pre class="lines">
 
 
-103
-104
-105
-106
-107</pre>
+92
+93
+94
+95
+96</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/remote/capabilities.rb', line 103</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/capabilities.rb', line 92</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_safari'>safari</span><span class='lparen'>(</span><span class='id identifier rubyid_opts'>opts</span> <span class='op'>=</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='lbrace'>{</span>
@@ -1004,14 +1354,14 @@
       <pre class="lines">
 
 
-246
-247
-248
-249
-250</pre>
+266
+267
+268
+269
+270</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/remote/capabilities.rb', line 246</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/capabilities.rb', line 266</span>
 
 <span class='kw'>def</span> <span class='op'>==</span><span class='lparen'>(</span><span class='id identifier rubyid_other'>other</span><span class='rparen'>)</span>
   <span class='kw'>return</span> <span class='kw'>false</span> <span class='kw'>unless</span> <span class='id identifier rubyid_other'>other</span><span class='period'>.</span><span class='id identifier rubyid_is_a?'>is_a?</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_class'>class</span>
@@ -1038,12 +1388,12 @@
       <pre class="lines">
 
 
-188
-189
-190</pre>
+191
+192
+193</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/remote/capabilities.rb', line 188</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/capabilities.rb', line 191</span>
 
 <span class='kw'>def</span> <span class='op'>[]</span><span class='lparen'>(</span><span class='id identifier rubyid_key'>key</span><span class='rparen'>)</span>
   <span class='ivar'>@capabilities</span><span class='lbracket'>[</span><span class='id identifier rubyid_key'>key</span><span class='rbracket'>]</span>
@@ -1079,12 +1429,12 @@
       <pre class="lines">
 
 
-184
-185
-186</pre>
+187
+188
+189</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/remote/capabilities.rb', line 184</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/capabilities.rb', line 187</span>
 
 <span class='kw'>def</span> <span class='op'>[]=</span><span class='lparen'>(</span><span class='id identifier rubyid_key'>key</span><span class='comma'>,</span> <span class='id identifier rubyid_value'>value</span><span class='rparen'>)</span>
   <span class='ivar'>@capabilities</span><span class='lbracket'>[</span><span class='id identifier rubyid_key'>key</span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='id identifier rubyid_value'>value</span>
@@ -1122,57 +1472,79 @@
       <pre class="lines">
 
 
-217
-218
-219
-220
-221
-222
-223
-224
-225
-226
-227
-228
-229
-230
-231
-232
-233
-234
-235
-236
-237
-238
-239
-240</pre>
+256
+257
+258
+259
+260</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/remote/capabilities.rb', line 217</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/capabilities.rb', line 256</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_as_json'>as_json</span><span class='lparen'>(</span><span class='op'>*</span><span class='rparen'>)</span>
-  <span class='id identifier rubyid_hash'>hash</span> <span class='op'>=</span> <span class='lbrace'>{</span><span class='rbrace'>}</span>
-
-  <span class='ivar'>@capabilities</span><span class='period'>.</span><span class='id identifier rubyid_each'>each</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_key'>key</span><span class='comma'>,</span> <span class='id identifier rubyid_value'>value</span><span class='op'>|</span>
-    <span class='kw'>case</span> <span class='id identifier rubyid_key'>key</span>
-    <span class='kw'>when</span> <span class='symbol'>:platform</span>
-      <span class='id identifier rubyid_hash'>hash</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>platform</span><span class='tstring_end'>&#39;</span></span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='id identifier rubyid_value'>value</span><span class='period'>.</span><span class='id identifier rubyid_to_s'>to_s</span><span class='period'>.</span><span class='id identifier rubyid_upcase'>upcase</span>
-    <span class='kw'>when</span> <span class='symbol'>:proxy</span>
-      <span class='kw'>if</span> <span class='id identifier rubyid_value'>value</span>
-        <span class='id identifier rubyid_hash'>hash</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>proxy</span><span class='tstring_end'>&#39;</span></span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='id identifier rubyid_value'>value</span><span class='period'>.</span><span class='id identifier rubyid_as_json'>as_json</span>
-        <span class='id identifier rubyid_hash'>hash</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>proxy</span><span class='tstring_end'>&#39;</span></span><span class='rbracket'>]</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>proxyType</span><span class='tstring_end'>&#39;</span></span><span class='rbracket'>]</span> <span class='op'>&amp;&amp;=</span> <span class='id identifier rubyid_hash'>hash</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>proxy</span><span class='tstring_end'>&#39;</span></span><span class='rbracket'>]</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>proxyType</span><span class='tstring_end'>&#39;</span></span><span class='rbracket'>]</span><span class='period'>.</span><span class='id identifier rubyid_downcase'>downcase</span>
-        <span class='id identifier rubyid_hash'>hash</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>proxy</span><span class='tstring_end'>&#39;</span></span><span class='rbracket'>]</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>noProxy</span><span class='tstring_end'>&#39;</span></span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='id identifier rubyid_hash'>hash</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>proxy</span><span class='tstring_end'>&#39;</span></span><span class='rbracket'>]</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>noProxy</span><span class='tstring_end'>&#39;</span></span><span class='rbracket'>]</span><span class='period'>.</span><span class='id identifier rubyid_split'>split</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>, </span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span> <span class='kw'>if</span> <span class='id identifier rubyid_hash'>hash</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>proxy</span><span class='tstring_end'>&#39;</span></span><span class='rbracket'>]</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>noProxy</span><span class='tstring_end'>&#39;</span></span><span class='rbracket'>]</span><span class='period'>.</span><span class='id identifier rubyid_is_a?'>is_a?</span><span class='lparen'>(</span><span class='const'>String</span><span class='rparen'>)</span>
-      <span class='kw'>end</span>
-    <span class='kw'>when</span> <span class='const'>String</span>
-      <span class='id identifier rubyid_hash'>hash</span><span class='lbracket'>[</span><span class='id identifier rubyid_key'>key</span><span class='period'>.</span><span class='id identifier rubyid_to_s'>to_s</span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='id identifier rubyid_value'>value</span>
-    <span class='kw'>when</span> <span class='const'>Symbol</span>
-      <span class='id identifier rubyid_hash'>hash</span><span class='lbracket'>[</span><span class='id identifier rubyid_camel_case'>camel_case</span><span class='lparen'>(</span><span class='id identifier rubyid_key'>key</span><span class='period'>.</span><span class='id identifier rubyid_to_s'>to_s</span><span class='rparen'>)</span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='id identifier rubyid_value'>value</span>
-    <span class='kw'>else</span>
-      <span class='id identifier rubyid_raise'>raise</span> <span class='const'>TypeError</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>expected String or Symbol, got </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_key'>key</span><span class='period'>.</span><span class='id identifier rubyid_inspect'>inspect</span><span class='embexpr_end'>}</span><span class='tstring_content'>:</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_key'>key</span><span class='period'>.</span><span class='id identifier rubyid_class'>class</span><span class='embexpr_end'>}</span><span class='tstring_content'> / </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_value'>value</span><span class='period'>.</span><span class='id identifier rubyid_inspect'>inspect</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span>
-    <span class='kw'>end</span>
+  <span class='ivar'>@capabilities</span><span class='period'>.</span><span class='id identifier rubyid_each_with_object'>each_with_object</span><span class='lparen'>(</span><span class='lbrace'>{</span><span class='rbrace'>}</span><span class='rparen'>)</span> <span class='kw'>do</span> <span class='op'>|</span><span class='lparen'>(</span><span class='id identifier rubyid_key'>key</span><span class='comma'>,</span> <span class='id identifier rubyid_value'>value</span><span class='rparen'>)</span><span class='comma'>,</span> <span class='id identifier rubyid_hash'>hash</span><span class='op'>|</span>
+    <span class='id identifier rubyid_hash'>hash</span><span class='lbracket'>[</span><span class='id identifier rubyid_convert_key'>convert_key</span><span class='lparen'>(</span><span class='id identifier rubyid_key'>key</span><span class='rparen'>)</span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='id identifier rubyid_process_capabilities'>process_capabilities</span><span class='lparen'>(</span><span class='id identifier rubyid_key'>key</span><span class='comma'>,</span> <span class='id identifier rubyid_value'>value</span><span class='comma'>,</span> <span class='id identifier rubyid_hash'>hash</span><span class='rparen'>)</span>
   <span class='kw'>end</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="implicit_timeout-instance_method">
+  
+    #<strong>implicit_timeout</strong>  &#x21d2; <tt>Object</tt> 
+  
 
-  <span class='id identifier rubyid_hash'>hash</span>
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+228
+229
+230</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/capabilities.rb', line 228</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_implicit_timeout'>implicit_timeout</span>
+  <span class='id identifier rubyid_timeouts'>timeouts</span><span class='lbracket'>[</span><span class='symbol'>:implicit</span><span class='rbracket'>]</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="implicit_timeout=-instance_method">
+  
+    #<strong>implicit_timeout=</strong>(timeout)  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+232
+233
+234</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/capabilities.rb', line 232</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_implicit_timeout='>implicit_timeout=</span><span class='lparen'>(</span><span class='id identifier rubyid_timeout'>timeout</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_timeouts'>timeouts</span><span class='lbracket'>[</span><span class='symbol'>:implicit</span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='id identifier rubyid_timeout'>timeout</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -1194,18 +1566,18 @@
       <pre class="lines">
 
 
-192
-193
-194
 195
 196
 197
 198
 199
-200</pre>
+200
+201
+202
+203</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/remote/capabilities.rb', line 192</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/capabilities.rb', line 195</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_merge!'>merge!</span><span class='lparen'>(</span><span class='id identifier rubyid_other'>other</span><span class='rparen'>)</span>
   <span class='kw'>if</span> <span class='id identifier rubyid_other'>other</span><span class='period'>.</span><span class='id identifier rubyid_respond_to?'>respond_to?</span><span class='lparen'>(</span><span class='symbol'>:capabilities</span><span class='comma'>,</span> <span class='kw'>true</span><span class='rparen'>)</span> <span class='op'>&amp;&amp;</span> <span class='id identifier rubyid_other'>other</span><span class='period'>.</span><span class='id identifier rubyid_capabilities'>capabilities</span><span class='period'>.</span><span class='id identifier rubyid_is_a?'>is_a?</span><span class='lparen'>(</span><span class='const'>Hash</span><span class='rparen'>)</span>
@@ -1215,6 +1587,96 @@
   <span class='kw'>else</span>
     <span class='id identifier rubyid_raise'>raise</span> <span class='const'>ArgumentError</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>argument should be a Hash or implement #capabilities</span><span class='tstring_end'>&#39;</span></span>
   <span class='kw'>end</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="page_load_timeout-instance_method">
+  
+    #<strong>page_load_timeout</strong>  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+236
+237
+238</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/capabilities.rb', line 236</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_page_load_timeout'>page_load_timeout</span>
+  <span class='id identifier rubyid_timeouts'>timeouts</span><span class='lbracket'>[</span><span class='symbol'>:page_load</span><span class='rbracket'>]</span> <span class='op'>||</span> <span class='id identifier rubyid_timeouts'>timeouts</span><span class='lbracket'>[</span><span class='symbol'>:pageLoad</span><span class='rbracket'>]</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="page_load_timeout=-instance_method">
+  
+    #<strong>page_load_timeout=</strong>(timeout)  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+240
+241
+242</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/capabilities.rb', line 240</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_page_load_timeout='>page_load_timeout=</span><span class='lparen'>(</span><span class='id identifier rubyid_timeout'>timeout</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_timeouts'>timeouts</span><span class='lbracket'>[</span><span class='symbol'>:page_load</span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='id identifier rubyid_timeout'>timeout</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="proxy-instance_method">
+  
+    #<strong>proxy</strong>  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+205
+206
+207</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/capabilities.rb', line 205</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_proxy'>proxy</span>
+  <span class='ivar'>@capabilities</span><span class='lbracket'>[</span><span class='symbol'>:proxy</span><span class='rbracket'>]</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -1236,19 +1698,19 @@
       <pre class="lines">
 
 
-202
-203
-204
-205
-206
-207
-208
 209
 210
-211</pre>
+211
+212
+213
+214
+215
+216
+217
+218</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/remote/capabilities.rb', line 202</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/capabilities.rb', line 209</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_proxy='>proxy=</span><span class='lparen'>(</span><span class='id identifier rubyid_proxy'>proxy</span><span class='rparen'>)</span>
   <span class='kw'>case</span> <span class='id identifier rubyid_proxy'>proxy</span>
@@ -1259,6 +1721,126 @@
   <span class='kw'>else</span>
     <span class='id identifier rubyid_raise'>raise</span> <span class='const'>TypeError</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>expected Hash or </span><span class='embexpr_beg'>#{</span><span class='const'><span class='object_link'><a href="../Proxy.html" title="Selenium::WebDriver::Proxy (class)">Proxy</a></span></span><span class='period'>.</span><span class='id identifier rubyid_name'>name</span><span class='embexpr_end'>}</span><span class='tstring_content'>, got </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_proxy'>proxy</span><span class='period'>.</span><span class='id identifier rubyid_inspect'>inspect</span><span class='embexpr_end'>}</span><span class='tstring_content'>:</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_proxy'>proxy</span><span class='period'>.</span><span class='id identifier rubyid_class'>class</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span>
   <span class='kw'>end</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="script_timeout-instance_method">
+  
+    #<strong>script_timeout</strong>  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+244
+245
+246</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/capabilities.rb', line 244</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_script_timeout'>script_timeout</span>
+  <span class='id identifier rubyid_timeouts'>timeouts</span><span class='lbracket'>[</span><span class='symbol'>:script</span><span class='rbracket'>]</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="script_timeout=-instance_method">
+  
+    #<strong>script_timeout=</strong>(timeout)  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+248
+249
+250</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/capabilities.rb', line 248</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_script_timeout='>script_timeout=</span><span class='lparen'>(</span><span class='id identifier rubyid_timeout'>timeout</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_timeouts'>timeouts</span><span class='lbracket'>[</span><span class='symbol'>:script</span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='id identifier rubyid_timeout'>timeout</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="timeouts-instance_method">
+  
+    #<strong>timeouts</strong>  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+220
+221
+222</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/capabilities.rb', line 220</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_timeouts'>timeouts</span>
+  <span class='ivar'>@capabilities</span><span class='lbracket'>[</span><span class='symbol'>:timeouts</span><span class='rbracket'>]</span> <span class='op'>||=</span> <span class='lbrace'>{</span><span class='rbrace'>}</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="timeouts=-instance_method">
+  
+    #<strong>timeouts=</strong>(timeouts)  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+224
+225
+226</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/capabilities.rb', line 224</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_timeouts='>timeouts=</span><span class='lparen'>(</span><span class='id identifier rubyid_timeouts'>timeouts</span><span class='rparen'>)</span>
+  <span class='ivar'>@capabilities</span><span class='lbracket'>[</span><span class='symbol'>:timeouts</span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='id identifier rubyid_timeouts'>timeouts</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -1280,12 +1862,12 @@
       <pre class="lines">
 
 
-242
-243
-244</pre>
+262
+263
+264</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/remote/capabilities.rb', line 242</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/capabilities.rb', line 262</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_to_json'>to_json</span><span class='lparen'>(</span><span class='op'>*</span><span class='rparen'>)</span>
   <span class='const'>JSON</span><span class='period'>.</span><span class='id identifier rubyid_generate'>generate</span> <span class='id identifier rubyid_as_json'>as_json</span>
@@ -1300,9 +1882,9 @@
 </div>
 
       <div id="footer">
-  Generated on Thu Mar 18 21:58:23 2021 by
+  Generated on Wed Oct 20 18:47:55 2021 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.26 (ruby-2.6.3).
+  0.9.26 (ruby-2.7.3).
 </div>
 
     </div>

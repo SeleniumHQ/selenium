@@ -58,25 +58,30 @@
 <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">The Utils methods.</span>
 <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Union</span>
+
 <span class="kn">import</span> <span class="nn">socket</span>
+<span class="kn">from</span> <span class="nn">selenium.types</span> <span class="kn">import</span> <span class="n">AnyKey</span>
 <span class="kn">from</span> <span class="nn">selenium.webdriver.common.keys</span> <span class="kn">import</span> <span class="n">Keys</span>
+
 
 <span class="n">_is_connectable_exceptions</span> <span class="o">=</span> <span class="p">(</span><span class="n">socket</span><span class="o">.</span><span class="n">error</span><span class="p">,</span> <span class="ne">ConnectionResetError</span><span class="p">)</span>
 
 
-<div class="viewcode-block" id="free_port"><a class="viewcode-back" href="../../../../webdriver/selenium.webdriver.common.utils.html#selenium.webdriver.common.utils.free_port">[docs]</a><span class="k">def</span> <span class="nf">free_port</span><span class="p">():</span>
+<div class="viewcode-block" id="free_port"><a class="viewcode-back" href="../../../../webdriver/selenium.webdriver.common.utils.html#selenium.webdriver.common.utils.free_port">[docs]</a><span class="k">def</span> <span class="nf">free_port</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Determines a free port using sockets.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">free_socket</span> <span class="o">=</span> <span class="n">socket</span><span class="o">.</span><span class="n">socket</span><span class="p">(</span><span class="n">socket</span><span class="o">.</span><span class="n">AF_INET</span><span class="p">,</span> <span class="n">socket</span><span class="o">.</span><span class="n">SOCK_STREAM</span><span class="p">)</span>
     <span class="n">free_socket</span><span class="o">.</span><span class="n">bind</span><span class="p">((</span><span class="s1">&#39;127.0.0.1&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
     <span class="n">free_socket</span><span class="o">.</span><span class="n">listen</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
-    <span class="n">port</span> <span class="o">=</span> <span class="n">free_socket</span><span class="o">.</span><span class="n">getsockname</span><span class="p">()[</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">port</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">free_socket</span><span class="o">.</span><span class="n">getsockname</span><span class="p">()[</span><span class="mi">1</span><span class="p">]</span>
     <span class="n">free_socket</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
     <span class="k">return</span> <span class="n">port</span></div>
 
 
-<div class="viewcode-block" id="find_connectable_ip"><a class="viewcode-back" href="../../../../webdriver/selenium.webdriver.common.utils.html#selenium.webdriver.common.utils.find_connectable_ip">[docs]</a><span class="k">def</span> <span class="nf">find_connectable_ip</span><span class="p">(</span><span class="n">host</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="find_connectable_ip"><a class="viewcode-back" href="../../../../webdriver/selenium.webdriver.common.utils.html#selenium.webdriver.common.utils.find_connectable_ip">[docs]</a><span class="k">def</span> <span class="nf">find_connectable_ip</span><span class="p">(</span><span class="n">host</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">bytes</span><span class="p">,</span> <span class="nb">bytearray</span><span class="p">,</span> <span class="kc">None</span><span class="p">],</span> <span class="n">port</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
     <span class="sd">&quot;&quot;&quot;Resolve a hostname to an IP, preferring IPv4 addresses.</span>
 
 <span class="sd">    We prefer IPv4 so that we don&#39;t change behavior from previous IPv4-only</span>
@@ -114,7 +119,7 @@
     <span class="k">return</span> <span class="n">ip</span></div>
 
 
-<div class="viewcode-block" id="join_host_port"><a class="viewcode-back" href="../../../../webdriver/selenium.webdriver.common.utils.html#selenium.webdriver.common.utils.join_host_port">[docs]</a><span class="k">def</span> <span class="nf">join_host_port</span><span class="p">(</span><span class="n">host</span><span class="p">,</span> <span class="n">port</span><span class="p">):</span>
+<div class="viewcode-block" id="join_host_port"><a class="viewcode-back" href="../../../../webdriver/selenium.webdriver.common.utils.html#selenium.webdriver.common.utils.join_host_port">[docs]</a><span class="k">def</span> <span class="nf">join_host_port</span><span class="p">(</span><span class="n">host</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">port</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Joins a hostname and port together.</span>
 
 <span class="sd">    This is a minimal implementation intended to cope with IPv6 literals. For</span>
@@ -130,7 +135,7 @@
     <span class="k">return</span> <span class="s1">&#39;</span><span class="si">%s</span><span class="s1">:</span><span class="si">%d</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">host</span><span class="p">,</span> <span class="n">port</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="is_connectable"><a class="viewcode-back" href="../../../../webdriver/selenium.webdriver.common.utils.html#selenium.webdriver.common.utils.is_connectable">[docs]</a><span class="k">def</span> <span class="nf">is_connectable</span><span class="p">(</span><span class="n">port</span><span class="p">,</span> <span class="n">host</span><span class="o">=</span><span class="s2">&quot;localhost&quot;</span><span class="p">):</span>
+<div class="viewcode-block" id="is_connectable"><a class="viewcode-back" href="../../../../webdriver/selenium.webdriver.common.utils.html#selenium.webdriver.common.utils.is_connectable">[docs]</a><span class="k">def</span> <span class="nf">is_connectable</span><span class="p">(</span><span class="n">port</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">host</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;localhost&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Tries to connect to the server at port to see if it is running.</span>
 
@@ -149,7 +154,7 @@
     <span class="k">return</span> <span class="n">result</span></div>
 
 
-<div class="viewcode-block" id="is_url_connectable"><a class="viewcode-back" href="../../../../webdriver/selenium.webdriver.common.utils.html#selenium.webdriver.common.utils.is_url_connectable">[docs]</a><span class="k">def</span> <span class="nf">is_url_connectable</span><span class="p">(</span><span class="n">port</span><span class="p">):</span>
+<div class="viewcode-block" id="is_url_connectable"><a class="viewcode-back" href="../../../../webdriver/selenium.webdriver.common.utils.html#selenium.webdriver.common.utils.is_url_connectable">[docs]</a><span class="k">def</span> <span class="nf">is_url_connectable</span><span class="p">(</span><span class="n">port</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Tries to connect to the HTTP server at /status path</span>
 <span class="sd">    and specified port to see if it responds successfully.</span>
@@ -160,7 +165,7 @@
     <span class="k">try</span><span class="p">:</span>
         <span class="kn">from</span> <span class="nn">urllib</span> <span class="kn">import</span> <span class="n">request</span> <span class="k">as</span> <span class="n">url_request</span>
     <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
-        <span class="kn">import</span> <span class="nn">urllib2</span> <span class="k">as</span> <span class="nn">url_request</span>
+        <span class="kn">import</span> <span class="nn">urllib2</span> <span class="k">as</span> <span class="nn">url_request</span>  <span class="c1"># type: ignore  # python2 stuff</span>
 
     <span class="k">try</span><span class="p">:</span>
         <span class="n">res</span> <span class="o">=</span> <span class="n">url_request</span><span class="o">.</span><span class="n">urlopen</span><span class="p">(</span><span class="s2">&quot;http://127.0.0.1:</span><span class="si">%s</span><span class="s2">/status&quot;</span> <span class="o">%</span> <span class="n">port</span><span class="p">)</span>
@@ -172,9 +177,9 @@
         <span class="k">return</span> <span class="kc">False</span></div>
 
 
-<div class="viewcode-block" id="keys_to_typing"><a class="viewcode-back" href="../../../../webdriver/selenium.webdriver.common.utils.html#selenium.webdriver.common.utils.keys_to_typing">[docs]</a><span class="k">def</span> <span class="nf">keys_to_typing</span><span class="p">(</span><span class="n">value</span><span class="p">):</span>
+<div class="viewcode-block" id="keys_to_typing"><a class="viewcode-back" href="../../../../webdriver/selenium.webdriver.common.utils.html#selenium.webdriver.common.utils.keys_to_typing">[docs]</a><span class="k">def</span> <span class="nf">keys_to_typing</span><span class="p">(</span><span class="n">value</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">AnyKey</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
     <span class="sd">&quot;&quot;&quot;Processes the values that will be typed in the element.&quot;&quot;&quot;</span>
-    <span class="n">typing</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">typing</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="k">for</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">value</span><span class="p">:</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="n">Keys</span><span class="p">):</span>
             <span class="n">typing</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>

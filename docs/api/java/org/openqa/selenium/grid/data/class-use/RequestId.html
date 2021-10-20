@@ -154,6 +154,16 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <th class="colSecond" scope="row"><span class="typeNameLabel">NewSessionResponse.</span><code><span class="memberNameLink"><a href="../NewSessionResponse.html#getRequestId()">getRequestId</a></span>()</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
+<tr class="altColor">
+<td class="colFirst"><code><a href="../RequestId.html" title="class in org.openqa.selenium.grid.data">RequestId</a></code></td>
+<th class="colSecond" scope="row"><span class="typeNameLabel">SessionRequest.</span><code><span class="memberNameLink"><a href="../SessionRequest.html#getRequestId()">getRequestId</a></span>()</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code><a href="../RequestId.html" title="class in org.openqa.selenium.grid.data">RequestId</a></code></td>
+<th class="colSecond" scope="row"><span class="typeNameLabel">SessionRequestCapability.</span><code><span class="memberNameLink"><a href="../SessionRequestCapability.html#getRequestId()">getRequestId</a></span>()</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
 </tbody>
 </table>
 <table class="useSummary">
@@ -199,18 +209,33 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr class="rowColor">
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="../NewSessionRequest.html#%3Cinit%3E(org.openqa.selenium.grid.data.RequestId,java.util.concurrent.CountDownLatch)">NewSessionRequest</a></span>&#8203;(<a href="../RequestId.html" title="class in org.openqa.selenium.grid.data">RequestId</a>&nbsp;requestId,
-                 java.util.concurrent.CountDownLatch&nbsp;latch)</code></th>
-<td class="colLast">&nbsp;</td>
-</tr>
-<tr class="altColor">
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="../NewSessionRequestEvent.html#%3Cinit%3E(org.openqa.selenium.grid.data.RequestId)">NewSessionRequestEvent</a></span>&#8203;(<a href="../RequestId.html" title="class in org.openqa.selenium.grid.data">RequestId</a>&nbsp;requestId)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="../NewSessionResponse.html#%3Cinit%3E(org.openqa.selenium.grid.data.RequestId,org.openqa.selenium.grid.data.Session,byte%5B%5D)">NewSessionResponse</a></span>&#8203;(<a href="../RequestId.html" title="class in org.openqa.selenium.grid.data">RequestId</a>&nbsp;requestId,
                   <a href="../Session.html" title="class in org.openqa.selenium.grid.data">Session</a>&nbsp;session,
                   byte[]&nbsp;downstreamEncodedResponse)</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr class="rowColor">
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="../SessionRequest.html#%3Cinit%3E(org.openqa.selenium.grid.data.RequestId,java.time.Instant,java.util.Set,java.util.Set,java.util.Map,java.util.Map)">SessionRequest</a></span>&#8203;(<a href="../RequestId.html" title="class in org.openqa.selenium.grid.data">RequestId</a>&nbsp;requestId,
+              java.time.Instant&nbsp;enqueued,
+              java.util.Set&lt;<a href="../../../remote/Dialect.html" title="enum in org.openqa.selenium.remote">Dialect</a>&gt;&nbsp;downstreamDialects,
+              java.util.Set&lt;<a href="../../../Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&gt;&nbsp;desiredCapabilities,
+              java.util.Map&lt;java.lang.String,&#8203;java.lang.Object&gt;&nbsp;metadata,
+              java.util.Map&lt;java.lang.String,&#8203;java.lang.String&gt;&nbsp;traceHeaders)</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr class="altColor">
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="../SessionRequest.html#%3Cinit%3E(org.openqa.selenium.grid.data.RequestId,org.openqa.selenium.remote.http.HttpRequest,java.time.Instant)">SessionRequest</a></span>&#8203;(<a href="../RequestId.html" title="class in org.openqa.selenium.grid.data">RequestId</a>&nbsp;requestId,
+              <a href="../../../remote/http/HttpRequest.html" title="class in org.openqa.selenium.remote.http">HttpRequest</a>&nbsp;request,
+              java.time.Instant&nbsp;enqueued)</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr class="rowColor">
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="../SessionRequestCapability.html#%3Cinit%3E(org.openqa.selenium.grid.data.RequestId,java.util.Set)">SessionRequestCapability</a></span>&#8203;(<a href="../RequestId.html" title="class in org.openqa.selenium.grid.data">RequestId</a>&nbsp;requestId,
+                        java.util.Set&lt;<a href="../../../Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&gt;&nbsp;desiredCapabilities)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 </tbody>
@@ -231,37 +256,14 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 </tr>
 <tbody>
 <tr class="altColor">
-<td class="colFirst"><code>void</code></td>
-<th class="colSecond" scope="row"><span class="typeNameLabel">NewSessionQueue.</span><code><span class="memberNameLink"><a href="../../sessionqueue/NewSessionQueue.html#addRequestHeaders(org.openqa.selenium.remote.http.HttpRequest,org.openqa.selenium.grid.data.RequestId)">addRequestHeaders</a></span>&#8203;(<a href="../../../remote/http/HttpRequest.html" title="class in org.openqa.selenium.remote.http">HttpRequest</a>&nbsp;request,
-                 <a href="../RequestId.html" title="class in org.openqa.selenium.grid.data">RequestId</a>&nbsp;reqId)</code></th>
+<td class="colFirst"><code>abstract void</code></td>
+<th class="colSecond" scope="row"><span class="typeNameLabel">NewSessionQueue.</span><code><span class="memberNameLink"><a href="../../sessionqueue/NewSessionQueue.html#complete(org.openqa.selenium.grid.data.RequestId,org.openqa.selenium.internal.Either)">complete</a></span>&#8203;(<a href="../RequestId.html" title="class in org.openqa.selenium.grid.data">RequestId</a>&nbsp;reqId,
+        <a href="../../../internal/Either.html" title="class in org.openqa.selenium.internal">Either</a>&lt;<a href="../../../SessionNotCreatedException.html" title="class in org.openqa.selenium">SessionNotCreatedException</a>,&#8203;<a href="../CreateSessionResponse.html" title="class in org.openqa.selenium.grid.data">CreateSessionResponse</a>&gt;&nbsp;result)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr class="rowColor">
-<td class="colFirst"><code>abstract boolean</code></td>
-<th class="colSecond" scope="row"><span class="typeNameLabel">NewSessionQueue.</span><code><span class="memberNameLink"><a href="../../sessionqueue/NewSessionQueue.html#offerFirst(org.openqa.selenium.remote.http.HttpRequest,org.openqa.selenium.grid.data.RequestId)">offerFirst</a></span>&#8203;(<a href="../../../remote/http/HttpRequest.html" title="class in org.openqa.selenium.remote.http">HttpRequest</a>&nbsp;request,
-          <a href="../RequestId.html" title="class in org.openqa.selenium.grid.data">RequestId</a>&nbsp;requestId)</code></th>
-<td class="colLast">&nbsp;</td>
-</tr>
-<tr class="altColor">
-<td class="colFirst"><code>abstract boolean</code></td>
-<th class="colSecond" scope="row"><span class="typeNameLabel">NewSessionQueue.</span><code><span class="memberNameLink"><a href="../../sessionqueue/NewSessionQueue.html#offerLast(org.openqa.selenium.remote.http.HttpRequest,org.openqa.selenium.grid.data.RequestId)">offerLast</a></span>&#8203;(<a href="../../../remote/http/HttpRequest.html" title="class in org.openqa.selenium.remote.http">HttpRequest</a>&nbsp;request,
-         <a href="../RequestId.html" title="class in org.openqa.selenium.grid.data">RequestId</a>&nbsp;requestId)</code></th>
-<td class="colLast">&nbsp;</td>
-</tr>
-<tr class="rowColor">
-<td class="colFirst"><code>abstract java.util.Optional&lt;<a href="../../../remote/http/HttpRequest.html" title="class in org.openqa.selenium.remote.http">HttpRequest</a>&gt;</code></td>
-<th class="colSecond" scope="row"><span class="typeNameLabel">NewSessionQueue.</span><code><span class="memberNameLink"><a href="../../sessionqueue/NewSessionQueue.html#remove(org.openqa.selenium.grid.data.RequestId)">remove</a></span>&#8203;(<a href="../RequestId.html" title="class in org.openqa.selenium.grid.data">RequestId</a>&nbsp;requestId)</code></th>
-<td class="colLast">&nbsp;</td>
-</tr>
-<tr class="altColor">
-<td class="colFirst"><code>abstract java.util.Optional&lt;<a href="../../../remote/http/HttpRequest.html" title="class in org.openqa.selenium.remote.http">HttpRequest</a>&gt;</code></td>
-<th class="colSecond" scope="row"><span class="typeNameLabel">NewSessionQueuer.</span><code><span class="memberNameLink"><a href="../../sessionqueue/NewSessionQueuer.html#remove(org.openqa.selenium.grid.data.RequestId)">remove</a></span>&#8203;(<a href="../RequestId.html" title="class in org.openqa.selenium.grid.data">RequestId</a>&nbsp;reqId)</code></th>
-<td class="colLast">&nbsp;</td>
-</tr>
-<tr class="rowColor">
-<td class="colFirst"><code>abstract boolean</code></td>
-<th class="colSecond" scope="row"><span class="typeNameLabel">NewSessionQueuer.</span><code><span class="memberNameLink"><a href="../../sessionqueue/NewSessionQueuer.html#retryAddToQueue(org.openqa.selenium.remote.http.HttpRequest,org.openqa.selenium.grid.data.RequestId)">retryAddToQueue</a></span>&#8203;(<a href="../../../remote/http/HttpRequest.html" title="class in org.openqa.selenium.remote.http">HttpRequest</a>&nbsp;request,
-               <a href="../RequestId.html" title="class in org.openqa.selenium.grid.data">RequestId</a>&nbsp;reqId)</code></th>
+<td class="colFirst"><code>abstract java.util.Optional&lt;<a href="../SessionRequest.html" title="class in org.openqa.selenium.grid.data">SessionRequest</a>&gt;</code></td>
+<th class="colSecond" scope="row"><span class="typeNameLabel">NewSessionQueue.</span><code><span class="memberNameLink"><a href="../../sessionqueue/NewSessionQueue.html#remove(org.openqa.selenium.grid.data.RequestId)">remove</a></span>&#8203;(<a href="../RequestId.html" title="class in org.openqa.selenium.grid.data">RequestId</a>&nbsp;reqId)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 </tbody>
@@ -274,21 +276,6 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 </a>
 <h3>Uses of <a href="../RequestId.html" title="class in org.openqa.selenium.grid.data">RequestId</a> in <a href="../../sessionqueue/local/package-summary.html">org.openqa.selenium.grid.sessionqueue.local</a></h3>
 <table class="useSummary">
-<caption><span>Methods in <a href="../../sessionqueue/local/package-summary.html">org.openqa.selenium.grid.sessionqueue.local</a> that return <a href="../RequestId.html" title="class in org.openqa.selenium.grid.data">RequestId</a></span><span class="tabEnd">&nbsp;</span></caption>
-<tr>
-<th class="colFirst" scope="col">Modifier and Type</th>
-<th class="colSecond" scope="col">Method</th>
-<th class="colLast" scope="col">Description</th>
-</tr>
-<tbody>
-<tr class="altColor">
-<td class="colFirst"><code><a href="../RequestId.html" title="class in org.openqa.selenium.grid.data">RequestId</a></code></td>
-<th class="colSecond" scope="row"><span class="typeNameLabel">SessionRequest.</span><code><span class="memberNameLink"><a href="../../sessionqueue/local/SessionRequest.html#getRequestId()">getRequestId</a></span>()</code></th>
-<td class="colLast">&nbsp;</td>
-</tr>
-</tbody>
-</table>
-<table class="useSummary">
 <caption><span>Methods in <a href="../../sessionqueue/local/package-summary.html">org.openqa.selenium.grid.sessionqueue.local</a> with parameters of type <a href="../RequestId.html" title="class in org.openqa.selenium.grid.data">RequestId</a></span><span class="tabEnd">&nbsp;</span></caption>
 <tr>
 <th class="colFirst" scope="col">Modifier and Type</th>
@@ -297,45 +284,14 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 </tr>
 <tbody>
 <tr class="altColor">
-<td class="colFirst"><code>boolean</code></td>
-<th class="colSecond" scope="row"><span class="typeNameLabel">LocalNewSessionQueue.</span><code><span class="memberNameLink"><a href="../../sessionqueue/local/LocalNewSessionQueue.html#offerFirst(org.openqa.selenium.remote.http.HttpRequest,org.openqa.selenium.grid.data.RequestId)">offerFirst</a></span>&#8203;(<a href="../../../remote/http/HttpRequest.html" title="class in org.openqa.selenium.remote.http">HttpRequest</a>&nbsp;request,
-          <a href="../RequestId.html" title="class in org.openqa.selenium.grid.data">RequestId</a>&nbsp;requestId)</code></th>
+<td class="colFirst"><code>void</code></td>
+<th class="colSecond" scope="row"><span class="typeNameLabel">LocalNewSessionQueue.</span><code><span class="memberNameLink"><a href="../../sessionqueue/local/LocalNewSessionQueue.html#complete(org.openqa.selenium.grid.data.RequestId,org.openqa.selenium.internal.Either)">complete</a></span>&#8203;(<a href="../RequestId.html" title="class in org.openqa.selenium.grid.data">RequestId</a>&nbsp;reqId,
+        <a href="../../../internal/Either.html" title="class in org.openqa.selenium.internal">Either</a>&lt;<a href="../../../SessionNotCreatedException.html" title="class in org.openqa.selenium">SessionNotCreatedException</a>,&#8203;<a href="../CreateSessionResponse.html" title="class in org.openqa.selenium.grid.data">CreateSessionResponse</a>&gt;&nbsp;result)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr class="rowColor">
-<td class="colFirst"><code>boolean</code></td>
-<th class="colSecond" scope="row"><span class="typeNameLabel">LocalNewSessionQueue.</span><code><span class="memberNameLink"><a href="../../sessionqueue/local/LocalNewSessionQueue.html#offerLast(org.openqa.selenium.remote.http.HttpRequest,org.openqa.selenium.grid.data.RequestId)">offerLast</a></span>&#8203;(<a href="../../../remote/http/HttpRequest.html" title="class in org.openqa.selenium.remote.http">HttpRequest</a>&nbsp;request,
-         <a href="../RequestId.html" title="class in org.openqa.selenium.grid.data">RequestId</a>&nbsp;requestId)</code></th>
-<td class="colLast">&nbsp;</td>
-</tr>
-<tr class="altColor">
-<td class="colFirst"><code>java.util.Optional&lt;<a href="../../../remote/http/HttpRequest.html" title="class in org.openqa.selenium.remote.http">HttpRequest</a>&gt;</code></td>
-<th class="colSecond" scope="row"><span class="typeNameLabel">LocalNewSessionQueue.</span><code><span class="memberNameLink"><a href="../../sessionqueue/local/LocalNewSessionQueue.html#remove(org.openqa.selenium.grid.data.RequestId)">remove</a></span>&#8203;(<a href="../RequestId.html" title="class in org.openqa.selenium.grid.data">RequestId</a>&nbsp;id)</code></th>
-<td class="colLast">&nbsp;</td>
-</tr>
-<tr class="rowColor">
-<td class="colFirst"><code>java.util.Optional&lt;<a href="../../../remote/http/HttpRequest.html" title="class in org.openqa.selenium.remote.http">HttpRequest</a>&gt;</code></td>
-<th class="colSecond" scope="row"><span class="typeNameLabel">LocalNewSessionQueuer.</span><code><span class="memberNameLink"><a href="../../sessionqueue/local/LocalNewSessionQueuer.html#remove(org.openqa.selenium.grid.data.RequestId)">remove</a></span>&#8203;(<a href="../RequestId.html" title="class in org.openqa.selenium.grid.data">RequestId</a>&nbsp;id)</code></th>
-<td class="colLast">&nbsp;</td>
-</tr>
-<tr class="altColor">
-<td class="colFirst"><code>boolean</code></td>
-<th class="colSecond" scope="row"><span class="typeNameLabel">LocalNewSessionQueuer.</span><code><span class="memberNameLink"><a href="../../sessionqueue/local/LocalNewSessionQueuer.html#retryAddToQueue(org.openqa.selenium.remote.http.HttpRequest,org.openqa.selenium.grid.data.RequestId)">retryAddToQueue</a></span>&#8203;(<a href="../../../remote/http/HttpRequest.html" title="class in org.openqa.selenium.remote.http">HttpRequest</a>&nbsp;request,
-               <a href="../RequestId.html" title="class in org.openqa.selenium.grid.data">RequestId</a>&nbsp;reqId)</code></th>
-<td class="colLast">&nbsp;</td>
-</tr>
-</tbody>
-</table>
-<table class="useSummary">
-<caption><span>Constructors in <a href="../../sessionqueue/local/package-summary.html">org.openqa.selenium.grid.sessionqueue.local</a> with parameters of type <a href="../RequestId.html" title="class in org.openqa.selenium.grid.data">RequestId</a></span><span class="tabEnd">&nbsp;</span></caption>
-<tr>
-<th class="colFirst" scope="col">Constructor</th>
-<th class="colLast" scope="col">Description</th>
-</tr>
-<tbody>
-<tr class="altColor">
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="../../sessionqueue/local/SessionRequest.html#%3Cinit%3E(org.openqa.selenium.grid.data.RequestId,org.openqa.selenium.remote.http.HttpRequest)">SessionRequest</a></span>&#8203;(<a href="../RequestId.html" title="class in org.openqa.selenium.grid.data">RequestId</a>&nbsp;requestId,
-              <a href="../../../remote/http/HttpRequest.html" title="class in org.openqa.selenium.remote.http">HttpRequest</a>&nbsp;request)</code></th>
+<td class="colFirst"><code>java.util.Optional&lt;<a href="../SessionRequest.html" title="class in org.openqa.selenium.grid.data">SessionRequest</a>&gt;</code></td>
+<th class="colSecond" scope="row"><span class="typeNameLabel">LocalNewSessionQueue.</span><code><span class="memberNameLink"><a href="../../sessionqueue/local/LocalNewSessionQueue.html#remove(org.openqa.selenium.grid.data.RequestId)">remove</a></span>&#8203;(<a href="../RequestId.html" title="class in org.openqa.selenium.grid.data">RequestId</a>&nbsp;reqId)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 </tbody>
@@ -356,14 +312,14 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 </tr>
 <tbody>
 <tr class="altColor">
-<td class="colFirst"><code>java.util.Optional&lt;<a href="../../../remote/http/HttpRequest.html" title="class in org.openqa.selenium.remote.http">HttpRequest</a>&gt;</code></td>
-<th class="colSecond" scope="row"><span class="typeNameLabel">RemoteNewSessionQueuer.</span><code><span class="memberNameLink"><a href="../../sessionqueue/remote/RemoteNewSessionQueuer.html#remove(org.openqa.selenium.grid.data.RequestId)">remove</a></span>&#8203;(<a href="../RequestId.html" title="class in org.openqa.selenium.grid.data">RequestId</a>&nbsp;reqId)</code></th>
+<td class="colFirst"><code>void</code></td>
+<th class="colSecond" scope="row"><span class="typeNameLabel">RemoteNewSessionQueue.</span><code><span class="memberNameLink"><a href="../../sessionqueue/remote/RemoteNewSessionQueue.html#complete(org.openqa.selenium.grid.data.RequestId,org.openqa.selenium.internal.Either)">complete</a></span>&#8203;(<a href="../RequestId.html" title="class in org.openqa.selenium.grid.data">RequestId</a>&nbsp;reqId,
+        <a href="../../../internal/Either.html" title="class in org.openqa.selenium.internal">Either</a>&lt;<a href="../../../SessionNotCreatedException.html" title="class in org.openqa.selenium">SessionNotCreatedException</a>,&#8203;<a href="../CreateSessionResponse.html" title="class in org.openqa.selenium.grid.data">CreateSessionResponse</a>&gt;&nbsp;result)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr class="rowColor">
-<td class="colFirst"><code>boolean</code></td>
-<th class="colSecond" scope="row"><span class="typeNameLabel">RemoteNewSessionQueuer.</span><code><span class="memberNameLink"><a href="../../sessionqueue/remote/RemoteNewSessionQueuer.html#retryAddToQueue(org.openqa.selenium.remote.http.HttpRequest,org.openqa.selenium.grid.data.RequestId)">retryAddToQueue</a></span>&#8203;(<a href="../../../remote/http/HttpRequest.html" title="class in org.openqa.selenium.remote.http">HttpRequest</a>&nbsp;request,
-               <a href="../RequestId.html" title="class in org.openqa.selenium.grid.data">RequestId</a>&nbsp;reqId)</code></th>
+<td class="colFirst"><code>java.util.Optional&lt;<a href="../SessionRequest.html" title="class in org.openqa.selenium.grid.data">SessionRequest</a>&gt;</code></td>
+<th class="colSecond" scope="row"><span class="typeNameLabel">RemoteNewSessionQueue.</span><code><span class="memberNameLink"><a href="../../sessionqueue/remote/RemoteNewSessionQueue.html#remove(org.openqa.selenium.grid.data.RequestId)">remove</a></span>&#8203;(<a href="../RequestId.html" title="class in org.openqa.selenium.grid.data">RequestId</a>&nbsp;reqId)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 </tbody>

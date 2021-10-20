@@ -64,16 +64,7 @@
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">Options</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_use_chromium</span> <span class="o">=</span> <span class="kc">True</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_use_webview</span> <span class="o">=</span> <span class="kc">False</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">use_chromium</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_use_chromium</span>
-
-    <span class="nd">@use_chromium</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">use_chromium</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">bool</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_use_chromium</span> <span class="o">=</span> <span class="nb">bool</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">use_webview</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
@@ -88,16 +79,10 @@
 <span class="sd">        Creates a capabilities with all the options that have been set and</span>
 <span class="sd">        :Returns: A dictionary with everything</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">caps</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_caps</span>
+        <span class="n">caps</span> <span class="o">=</span> <span class="nb">super</span><span class="p">(</span><span class="n">Options</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">to_capabilities</span><span class="p">()</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_use_webview</span><span class="p">:</span>
+            <span class="n">caps</span><span class="p">[</span><span class="s1">&#39;browserName&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;webview2&#39;</span>
 
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_use_chromium</span><span class="p">:</span>
-            <span class="n">caps</span> <span class="o">=</span> <span class="nb">super</span><span class="p">(</span><span class="n">Options</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">to_capabilities</span><span class="p">()</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_use_webview</span><span class="p">:</span>
-                <span class="n">caps</span><span class="p">[</span><span class="s1">&#39;browserName&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;webview2&#39;</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">caps</span><span class="p">[</span><span class="s1">&#39;platform&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;windows&#39;</span>
-
-        <span class="n">caps</span><span class="p">[</span><span class="s1">&#39;ms:edgeChromium&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_use_chromium</span>
         <span class="k">return</span> <span class="n">caps</span></div>
 
     <span class="nd">@property</span>

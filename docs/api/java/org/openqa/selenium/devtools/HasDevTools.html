@@ -27,8 +27,8 @@
     catch(err) {
     }
 //-->
-var data = {"i0":6};
-var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],4:["t3","Abstract Methods"]};
+var data = {"i0":18,"i1":6};
+var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],4:["t3","Abstract Methods"],16:["t5","Default Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
 var tableTab = "tableTab";
@@ -147,15 +147,20 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 </a>
 <h3>Method Summary</h3>
 <table class="memberSummary">
-<caption><span id="t0" class="activeTableTab"><span>All Methods</span><span class="tabEnd">&nbsp;</span></span><span id="t2" class="tableTab"><span><a href="javascript:show(2);">Instance Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t3" class="tableTab"><span><a href="javascript:show(4);">Abstract Methods</a></span><span class="tabEnd">&nbsp;</span></span></caption>
+<caption><span id="t0" class="activeTableTab"><span>All Methods</span><span class="tabEnd">&nbsp;</span></span><span id="t2" class="tableTab"><span><a href="javascript:show(2);">Instance Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t3" class="tableTab"><span><a href="javascript:show(4);">Abstract Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t5" class="tableTab"><span><a href="javascript:show(16);">Default Methods</a></span><span class="tabEnd">&nbsp;</span></span></caption>
 <tr>
 <th class="colFirst" scope="col">Modifier and Type</th>
 <th class="colSecond" scope="col">Method</th>
 <th class="colLast" scope="col">Description</th>
 </tr>
 <tr id="i0" class="altColor">
-<td class="colFirst"><code><a href="DevTools.html" title="class in org.openqa.selenium.devtools">DevTools</a></code></td>
+<td class="colFirst"><code>default <a href="DevTools.html" title="class in org.openqa.selenium.devtools">DevTools</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getDevTools()">getDevTools</a></span>()</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr id="i1" class="rowColor">
+<td class="colFirst"><code>java.util.Optional&lt;<a href="DevTools.html" title="class in org.openqa.selenium.devtools">DevTools</a>&gt;</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#maybeGetDevTools()">maybeGetDevTools</a></span>()</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 </table>
@@ -178,10 +183,19 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <a id="getDevTools()">
 <!--   -->
 </a>
-<ul class="blockListLast">
+<ul class="blockList">
 <li class="blockList">
 <h4>getDevTools</h4>
-<pre class="methodSignature"><a href="DevTools.html" title="class in org.openqa.selenium.devtools">DevTools</a>&nbsp;getDevTools()</pre>
+<pre class="methodSignature">default&nbsp;<a href="DevTools.html" title="class in org.openqa.selenium.devtools">DevTools</a>&nbsp;getDevTools()</pre>
+</li>
+</ul>
+<a id="maybeGetDevTools()">
+<!--   -->
+</a>
+<ul class="blockListLast">
+<li class="blockList">
+<h4>maybeGetDevTools</h4>
+<pre class="methodSignature">java.util.Optional&lt;<a href="DevTools.html" title="class in org.openqa.selenium.devtools">DevTools</a>&gt;&nbsp;maybeGetDevTools()</pre>
 </li>
 </ul>
 </li>

@@ -137,13 +137,13 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <li class="blockList">
 <dl>
 <dt>All Implemented Interfaces:</dt>
-<dd><code>io.opentelemetry.sdk.autoconfigure.spi.SdkTracerProviderConfigurer</code></dd>
+<dd><code>io.opentelemetry.sdk.autoconfigure.spi.traces.SdkTracerProviderConfigurer</code></dd>
 </dl>
 <hr>
-<pre>@AutoService(io.opentelemetry.sdk.autoconfigure.spi.SdkTracerProviderConfigurer.class)
+<pre>@AutoService(io.opentelemetry.sdk.autoconfigure.spi.traces.SdkTracerProviderConfigurer.class)
 public class <span class="typeNameLabel">SeleniumSpanExporter</span>
 extends java.lang.Object
-implements io.opentelemetry.sdk.autoconfigure.spi.SdkTracerProviderConfigurer</pre>
+implements io.opentelemetry.sdk.autoconfigure.spi.traces.SdkTracerProviderConfigurer</pre>
 </li>
 </ul>
 </div>
@@ -187,7 +187,8 @@ implements io.opentelemetry.sdk.autoconfigure.spi.SdkTracerProviderConfigurer</p
 </tr>
 <tr id="i0" class="altColor">
 <td class="colFirst"><code>void</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#configure(io.opentelemetry.sdk.trace.SdkTracerProviderBuilder)">configure</a></span>&#8203;(io.opentelemetry.sdk.trace.SdkTracerProviderBuilder&nbsp;tracerProvider)</code></th>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#configure(io.opentelemetry.sdk.trace.SdkTracerProviderBuilder,io.opentelemetry.sdk.autoconfigure.spi.ConfigProperties)">configure</a></span>&#8203;(io.opentelemetry.sdk.trace.SdkTracerProviderBuilder&nbsp;tracerProvider,
+         io.opentelemetry.sdk.autoconfigure.spi.ConfigProperties&nbsp;configProperties)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 </table>
@@ -233,16 +234,17 @@ implements io.opentelemetry.sdk.autoconfigure.spi.SdkTracerProviderConfigurer</p
 <!--   -->
 </a>
 <h3>Method Detail</h3>
-<a id="configure(io.opentelemetry.sdk.trace.SdkTracerProviderBuilder)">
+<a id="configure(io.opentelemetry.sdk.trace.SdkTracerProviderBuilder,io.opentelemetry.sdk.autoconfigure.spi.ConfigProperties)">
 <!--   -->
 </a>
 <ul class="blockListLast">
 <li class="blockList">
 <h4>configure</h4>
-<pre class="methodSignature">public&nbsp;void&nbsp;configure&#8203;(io.opentelemetry.sdk.trace.SdkTracerProviderBuilder&nbsp;tracerProvider)</pre>
+<pre class="methodSignature">public&nbsp;void&nbsp;configure&#8203;(io.opentelemetry.sdk.trace.SdkTracerProviderBuilder&nbsp;tracerProvider,
+                      io.opentelemetry.sdk.autoconfigure.spi.ConfigProperties&nbsp;configProperties)</pre>
 <dl>
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
-<dd><code>configure</code>&nbsp;in interface&nbsp;<code>io.opentelemetry.sdk.autoconfigure.spi.SdkTracerProviderConfigurer</code></dd>
+<dd><code>configure</code>&nbsp;in interface&nbsp;<code>io.opentelemetry.sdk.autoconfigure.spi.traces.SdkTracerProviderConfigurer</code></dd>
 </dl>
 </li>
 </ul>

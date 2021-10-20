@@ -41,7 +41,7 @@
 <p>The ActionChains implementation,</p>
 <dl class="class">
 <dt id="selenium.webdriver.common.action_chains.ActionChains">
-<em class="property">class </em><code class="descclassname">selenium.webdriver.common.action_chains.</code><code class="descname">ActionChains</code><span class="sig-paren">(</span><em>driver</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/webdriver/common/action_chains.html#ActionChains"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.common.action_chains.ActionChains" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">selenium.webdriver.common.action_chains.</code><code class="descname">ActionChains</code><span class="sig-paren">(</span><em>driver</em>, <em>duration=250</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/webdriver/common/action_chains.html#ActionChains"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.common.action_chains.ActionChains" title="Permalink to this definition">¶</a></dt>
 <dd><p>ActionChains are a way to automate low level interactions such as
 mouse movements, mouse button actions, key press, and context menu interactions.
 This is useful for doing more complex actions like hover over and drag and drop.</p>
@@ -78,6 +78,7 @@ another.</p>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Args:</th><td class="field-body"><ul class="first last simple">
 <li>driver: The WebDriver instance which performs user actions.</li>
+<li>duration: override the default 250 msecs of DEFAULT_MOVE_DURATION in PointerInput</li>
 </ul>
 </td>
 </tr>

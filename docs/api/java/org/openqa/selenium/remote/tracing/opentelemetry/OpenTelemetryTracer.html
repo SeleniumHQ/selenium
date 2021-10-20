@@ -27,7 +27,7 @@
     catch(err) {
     }
 //-->
-var data = {"i0":10,"i1":9,"i2":10};
+var data = {"i0":10,"i1":9,"i2":9,"i3":10,"i4":9};
 var tabs = {65535:["t0","All Methods"],1:["t1","Static Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -191,13 +191,23 @@ implements <a href="../Tracer.html" title="interface in org.openqa.selenium.remo
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr id="i1" class="rowColor">
+<td class="colFirst"><code>static boolean</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getHttpLogs()">getHttpLogs</a></span>()</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr id="i2" class="altColor">
 <td class="colFirst"><code>static <a href="OpenTelemetryTracer.html" title="class in org.openqa.selenium.remote.tracing.opentelemetry">OpenTelemetryTracer</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getInstance()">getInstance</a></span>()</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i2" class="altColor">
+<tr id="i3" class="rowColor">
 <td class="colFirst"><code><a href="../Propagator.html" title="interface in org.openqa.selenium.remote.tracing">Propagator</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getPropagator()">getPropagator</a></span>()</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr id="i4" class="altColor">
+<td class="colFirst"><code>static void</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setHttpLogs(boolean)">setHttpLogs</a></span>&#8203;(boolean&nbsp;value)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 </table>
@@ -244,6 +254,24 @@ implements <a href="../Tracer.html" title="interface in org.openqa.selenium.remo
 <!--   -->
 </a>
 <h3>Method Detail</h3>
+<a id="setHttpLogs(boolean)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>setHttpLogs</h4>
+<pre class="methodSignature">public static&nbsp;void&nbsp;setHttpLogs&#8203;(boolean&nbsp;value)</pre>
+</li>
+</ul>
+<a id="getHttpLogs()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getHttpLogs</h4>
+<pre class="methodSignature">public static&nbsp;boolean&nbsp;getHttpLogs()</pre>
+</li>
+</ul>
 <a id="getInstance()">
 <!--   -->
 </a>

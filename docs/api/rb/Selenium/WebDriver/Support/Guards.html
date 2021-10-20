@@ -87,11 +87,6 @@
   
   
   
-  <dl>
-      <dt>Includes:</dt>
-      <dd>Enumerable</dd>
-  </dl>
-  
   
 
   
@@ -99,8 +94,8 @@
   
   <dl>
     <dt>Defined in:</dt>
-    <dd>build/rb/lib/selenium/webdriver/support/guards.rb<span class="defines">,<br />
-  build/rb/lib/selenium/webdriver/support/guards/guard.rb</span>
+    <dd>rb/lib/selenium/webdriver/support/guards.rb<span class="defines">,<br />
+  rb/lib/selenium/webdriver/support/guards/guard.rb,<br /> rb/lib/selenium/webdriver/support/guards/guard_condition.rb</span>
 </dd>
   </dl>
   
@@ -112,7 +107,7 @@
     
   
     
-      <strong class="classes">Classes:</strong> <span class='object_link'><a href="Guards/Guard.html" title="Selenium::WebDriver::Support::Guards::Guard (class)">Guard</a></span>
+      <strong class="classes">Classes:</strong> <span class='object_link'><a href="Guards/Guard.html" title="Selenium::WebDriver::Support::Guards::Guard (class)">Guard</a></span>, <span class='object_link'><a href="Guards/GuardCondition.html" title="Selenium::WebDriver::Support::Guards::GuardCondition (class)">GuardCondition</a></span>
     
   
 </p>
@@ -125,11 +120,6 @@
 
     <dl class="constants">
       
-        <dt id="MESSAGES-constant" class="">MESSAGES =
-          
-        </dt>
-        <dd><pre class="code"><span class='lbrace'>{</span><span class='label'>unk:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>TODO: Investigate why this is failing and file bug</span><span class='tstring_end'>&#39;</span></span><span class='rbrace'>}</span><span class='period'>.</span><span class='id identifier rubyid_freeze'>freeze</span></pre></dd>
-      
         <dt id="GUARD_TYPES-constant" class="">GUARD_TYPES =
           
         </dt>
@@ -140,6 +130,67 @@
 
 
 
+
+  <h2>Instance Attribute Summary <small><a href="#" class="summary_toggle">collapse</a></small></h2>
+  <ul class="summary">
+    
+      <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#bug_tracker-instance_method" title="#bug_tracker (instance method)">#<strong>bug_tracker</strong>  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+    
+    
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'>
+<p>Returns the value of attribute bug_tracker.</p>
+</div></span>
+  
+</li>
+
+    
+      <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#messages-instance_method" title="#messages (instance method)">#<strong>messages</strong>  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+    
+      <span class="note title readonly">readonly</span>
+    
+    
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'>
+<p>Returns the value of attribute messages.</p>
+</div></span>
+  
+</li>
+
+    
+  </ul>
 
 
 
@@ -155,7 +206,7 @@
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#each-instance_method" title="#each (instance method)">#<strong>each</strong>(&amp;block)  &#x21d2; Object </a>
+      <a href="#add_condition-instance_method" title="#add_condition (instance method)">#<strong>add_condition</strong>(name, condition = nil, &amp;blk)  &#x21d2; Object </a>
     
 
     
@@ -177,7 +228,7 @@
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#except-instance_method" title="#except (instance method)">#<strong>except</strong>  &#x21d2; Object </a>
+      <a href="#add_message-instance_method" title="#add_message (instance method)">#<strong>add_message</strong>(name, message)  &#x21d2; Object </a>
     
 
     
@@ -199,7 +250,7 @@
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#exclude-instance_method" title="#exclude (instance method)">#<strong>exclude</strong>  &#x21d2; Object </a>
+      <a href="#disposition-instance_method" title="#disposition (instance method)">#<strong>disposition</strong>  &#x21d2; Object </a>
     
 
     
@@ -221,29 +272,7 @@
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#exclusive-instance_method" title="#exclusive (instance method)">#<strong>exclusive</strong>  &#x21d2; Object </a>
-    
-
-    
-  </span>
-  
-  
-  
-  
-  
-  
-  
-
-  
-    <span class="summary_desc"><div class='inline'></div></span>
-  
-</li>
-
-      
-        <li class="public ">
-  <span class="summary_signature">
-    
-      <a href="#initialize-instance_method" title="#initialize (instance method)">#<strong>initialize</strong>(example, guards = nil)  &#x21d2; Guards </a>
+      <a href="#initialize-instance_method" title="#initialize (instance method)">#<strong>initialize</strong>(example, bug_tracker: &#39;&#39;, conditions: nil)  &#x21d2; Guards </a>
     
 
     
@@ -269,51 +298,7 @@
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#only-instance_method" title="#only (instance method)">#<strong>only</strong>  &#x21d2; Object </a>
-    
-
-    
-  </span>
-  
-  
-  
-  
-  
-  
-  
-
-  
-    <span class="summary_desc"><div class='inline'></div></span>
-  
-</li>
-
-      
-        <li class="public ">
-  <span class="summary_signature">
-    
-      <a href="#satisfied-instance_method" title="#satisfied (instance method)">#<strong>satisfied</strong>  &#x21d2; Object </a>
-    
-
-    
-  </span>
-  
-  
-  
-  
-  
-  
-  
-
-  
-    <span class="summary_desc"><div class='inline'></div></span>
-  
-</li>
-
-      
-        <li class="public ">
-  <span class="summary_signature">
-    
-      <a href="#unsatisfied-instance_method" title="#unsatisfied (instance method)">#<strong>unsatisfied</strong>  &#x21d2; Object </a>
+      <a href="#satisfied%3F-instance_method" title="#satisfied? (instance method)">#<strong>satisfied?</strong>(guard)  &#x21d2; Boolean </a>
     
 
     
@@ -335,14 +320,13 @@
     </ul>
   
 
-
-  <div id="constructor_details" class="method_details_list">
+<div id="constructor_details" class="method_details_list">
   <h2>Constructor Details</h2>
   
     <div class="method_details first">
   <h3 class="signature first" id="initialize-instance_method">
   
-    #<strong>initialize</strong>(example, guards = nil)  &#x21d2; <tt><span class='object_link'><a href="" title="Selenium::WebDriver::Support::Guards (class)">Guards</a></span></tt> 
+    #<strong>initialize</strong>(example, bug_tracker: &#39;&#39;, conditions: nil)  &#x21d2; <tt><span class='object_link'><a href="" title="Selenium::WebDriver::Support::Guards (class)">Guards</a></span></tt> 
   
 
   
@@ -365,17 +349,23 @@
       <pre class="lines">
 
 
-30
-31
 32
-33</pre>
+33
+34
+35
+36
+37
+38</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/support/guards.rb', line 30</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/support/guards.rb', line 32</span>
 
-<span class='kw'>def</span> <span class='id identifier rubyid_initialize'>initialize</span><span class='lparen'>(</span><span class='id identifier rubyid_example'>example</span><span class='comma'>,</span> <span class='id identifier rubyid_guards'>guards</span> <span class='op'>=</span> <span class='kw'>nil</span><span class='rparen'>)</span>
+<span class='kw'>def</span> <span class='id identifier rubyid_initialize'>initialize</span><span class='lparen'>(</span><span class='id identifier rubyid_example'>example</span><span class='comma'>,</span> <span class='label'>bug_tracker:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>conditions:</span> <span class='kw'>nil</span><span class='rparen'>)</span>
   <span class='ivar'>@example</span> <span class='op'>=</span> <span class='id identifier rubyid_example'>example</span>
-  <span class='ivar'>@guards</span> <span class='op'>=</span> <span class='id identifier rubyid_guards'>guards</span> <span class='op'>||</span> <span class='id identifier rubyid_collect_example_guards'>collect_example_guards</span>
+  <span class='ivar'>@bug_tracker</span> <span class='op'>=</span> <span class='id identifier rubyid_bug_tracker'>bug_tracker</span>
+  <span class='ivar'>@guard_conditions</span> <span class='op'>=</span> <span class='id identifier rubyid_conditions'>conditions</span> <span class='op'>||</span> <span class='lbracket'>[</span><span class='rbracket'>]</span>
+  <span class='ivar'>@guards</span> <span class='op'>=</span> <span class='id identifier rubyid_collect_example_guards'>collect_example_guards</span>
+  <span class='ivar'>@messages</span> <span class='op'>=</span> <span class='lbrace'>{</span><span class='rbrace'>}</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -383,6 +373,97 @@
 </div>
   
 </div>
+
+  <div id="instance_attr_details" class="attr_details">
+    <h2>Instance Attribute Details</h2>
+    
+      
+      <span id="bug_tracker=-instance_method"></span>
+      <div class="method_details first">
+  <h3 class="signature first" id="bug_tracker-instance_method">
+  
+    #<strong>bug_tracker</strong>  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    
+<p>Returns the value of attribute bug_tracker.</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+30
+31
+32</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/support/guards.rb', line 30</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_bug_tracker'>bug_tracker</span>
+  <span class='ivar'>@bug_tracker</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      
+      <span id=""></span>
+      <div class="method_details ">
+  <h3 class="signature " id="messages-instance_method">
+  
+    #<strong>messages</strong>  &#x21d2; <tt>Object</tt>  <span class="extras">(readonly)</span>
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    
+<p>Returns the value of attribute messages.</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+29
+30
+31</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/support/guards.rb', line 29</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_messages'>messages</span>
+  <span class='ivar'>@messages</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+  </div>
 
 
   <div id="instance_method_details" class="method_details_list">
@@ -390,39 +471,9 @@
 
     
       <div class="method_details first">
-  <h3 class="signature first" id="each-instance_method">
+  <h3 class="signature first" id="add_condition-instance_method">
   
-    #<strong>each</strong>(&amp;block)  &#x21d2; <tt>Object</tt> 
-  
-
-  
-
-  
-</h3><table class="source_code">
-  <tr>
-    <td>
-      <pre class="lines">
-
-
-35
-36
-37</pre>
-    </td>
-    <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/support/guards.rb', line 35</span>
-
-<span class='kw'>def</span> <span class='id identifier rubyid_each'>each</span><span class='lparen'>(</span><span class='op'>&amp;</span><span class='id identifier rubyid_block'>block</span><span class='rparen'>)</span>
-  <span class='ivar'>@guards</span><span class='period'>.</span><span class='id identifier rubyid_each'>each</span><span class='lparen'>(</span><span class='op'>&amp;</span><span class='id identifier rubyid_block'>block</span><span class='rparen'>)</span>
-<span class='kw'>end</span></pre>
-    </td>
-  </tr>
-</table>
-</div>
-    
-      <div class="method_details ">
-  <h3 class="signature " id="except-instance_method">
-  
-    #<strong>except</strong>  &#x21d2; <tt>Object</tt> 
+    #<strong>add_condition</strong>(name, condition = nil, &amp;blk)  &#x21d2; <tt>Object</tt> 
   
 
   
@@ -434,15 +485,15 @@
       <pre class="lines">
 
 
-39
 40
-41</pre>
+41
+42</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/support/guards.rb', line 39</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/support/guards.rb', line 40</span>
 
-<span class='kw'>def</span> <span class='id identifier rubyid_except'>except</span>
-  <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_class'>class</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='ivar'>@example</span><span class='comma'>,</span> <span class='ivar'>@guards</span><span class='period'>.</span><span class='id identifier rubyid_select'>select</span><span class='lparen'>(</span><span class='op'>&amp;</span><span class='symbol'>:except?</span><span class='rparen'>)</span><span class='rparen'>)</span>
+<span class='kw'>def</span> <span class='id identifier rubyid_add_condition'>add_condition</span><span class='lparen'>(</span><span class='id identifier rubyid_name'>name</span><span class='comma'>,</span> <span class='id identifier rubyid_condition'>condition</span> <span class='op'>=</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='op'>&amp;</span><span class='id identifier rubyid_blk'>blk</span><span class='rparen'>)</span>
+  <span class='ivar'>@guard_conditions</span> <span class='op'>&lt;&lt;</span> <span class='const'><span class='object_link'><a href="Guards/GuardCondition.html" title="Selenium::WebDriver::Support::Guards::GuardCondition (class)">GuardCondition</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="Guards/GuardCondition.html#initialize-instance_method" title="Selenium::WebDriver::Support::Guards::GuardCondition#initialize (method)">new</a></span></span><span class='lparen'>(</span><span class='id identifier rubyid_name'>name</span><span class='comma'>,</span> <span class='id identifier rubyid_condition'>condition</span><span class='comma'>,</span> <span class='op'>&amp;</span><span class='id identifier rubyid_blk'>blk</span><span class='rparen'>)</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -450,9 +501,9 @@
 </div>
     
       <div class="method_details ">
-  <h3 class="signature " id="exclude-instance_method">
+  <h3 class="signature " id="add_message-instance_method">
   
-    #<strong>exclude</strong>  &#x21d2; <tt>Object</tt> 
+    #<strong>add_message</strong>(name, message)  &#x21d2; <tt>Object</tt> 
   
 
   
@@ -464,105 +515,57 @@
       <pre class="lines">
 
 
-47
+44
+45
+46</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/support/guards.rb', line 44</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_add_message'>add_message</span><span class='lparen'>(</span><span class='id identifier rubyid_name'>name</span><span class='comma'>,</span> <span class='id identifier rubyid_message'>message</span><span class='rparen'>)</span>
+  <span class='ivar'>@messages</span><span class='lbracket'>[</span><span class='id identifier rubyid_name'>name</span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='id identifier rubyid_message'>message</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="disposition-instance_method">
+  
+    #<strong>disposition</strong>  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
 48
-49</pre>
-    </td>
-    <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/support/guards.rb', line 47</span>
-
-<span class='kw'>def</span> <span class='id identifier rubyid_exclude'>exclude</span>
-  <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_class'>class</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='ivar'>@example</span><span class='comma'>,</span> <span class='ivar'>@guards</span><span class='period'>.</span><span class='id identifier rubyid_select'>select</span><span class='lparen'>(</span><span class='op'>&amp;</span><span class='symbol'>:exclude?</span><span class='rparen'>)</span><span class='rparen'>)</span>
-<span class='kw'>end</span></pre>
-    </td>
-  </tr>
-</table>
-</div>
-    
-      <div class="method_details ">
-  <h3 class="signature " id="exclusive-instance_method">
-  
-    #<strong>exclusive</strong>  &#x21d2; <tt>Object</tt> 
-  
-
-  
-
-  
-</h3><table class="source_code">
-  <tr>
-    <td>
-      <pre class="lines">
-
-
+49
+50
 51
 52
-53</pre>
-    </td>
-    <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/support/guards.rb', line 51</span>
-
-<span class='kw'>def</span> <span class='id identifier rubyid_exclusive'>exclusive</span>
-  <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_class'>class</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='ivar'>@example</span><span class='comma'>,</span> <span class='ivar'>@guards</span><span class='period'>.</span><span class='id identifier rubyid_select'>select</span><span class='lparen'>(</span><span class='op'>&amp;</span><span class='symbol'>:exclusive?</span><span class='rparen'>)</span><span class='rparen'>)</span>
-<span class='kw'>end</span></pre>
-    </td>
-  </tr>
-</table>
-</div>
-    
-      <div class="method_details ">
-  <h3 class="signature " id="only-instance_method">
-  
-    #<strong>only</strong>  &#x21d2; <tt>Object</tt> 
-  
-
-  
-
-  
-</h3><table class="source_code">
-  <tr>
-    <td>
-      <pre class="lines">
-
-
-43
-44
-45</pre>
-    </td>
-    <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/support/guards.rb', line 43</span>
-
-<span class='kw'>def</span> <span class='id identifier rubyid_only'>only</span>
-  <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_class'>class</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='ivar'>@example</span><span class='comma'>,</span> <span class='ivar'>@guards</span><span class='period'>.</span><span class='id identifier rubyid_select'>select</span><span class='lparen'>(</span><span class='op'>&amp;</span><span class='symbol'>:only?</span><span class='rparen'>)</span><span class='rparen'>)</span>
-<span class='kw'>end</span></pre>
-    </td>
-  </tr>
-</table>
-</div>
-    
-      <div class="method_details ">
-  <h3 class="signature " id="satisfied-instance_method">
-  
-    #<strong>satisfied</strong>  &#x21d2; <tt>Object</tt> 
-  
-
-  
-
-  
-</h3><table class="source_code">
-  <tr>
-    <td>
-      <pre class="lines">
-
-
+53
+54
 55
-56
-57</pre>
+56</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/support/guards.rb', line 55</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/support/guards.rb', line 48</span>
 
-<span class='kw'>def</span> <span class='id identifier rubyid_satisfied'>satisfied</span>
-  <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_class'>class</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='ivar'>@example</span><span class='comma'>,</span> <span class='ivar'>@guards</span><span class='period'>.</span><span class='id identifier rubyid_select'>select</span><span class='lparen'>(</span><span class='op'>&amp;</span><span class='symbol'>:satisfied?</span><span class='rparen'>)</span><span class='rparen'>)</span>
+<span class='kw'>def</span> <span class='id identifier rubyid_disposition'>disposition</span>
+  <span class='kw'>if</span> <span class='op'>!</span><span class='id identifier rubyid_skipping_guard'>skipping_guard</span><span class='period'>.</span><span class='id identifier rubyid_nil?'>nil?</span>
+    <span class='lbracket'>[</span><span class='symbol'>:skip</span><span class='comma'>,</span> <span class='id identifier rubyid_skipping_guard'>skipping_guard</span><span class='period'>.</span><span class='id identifier rubyid_message'>message</span><span class='rbracket'>]</span>
+  <span class='kw'>elsif</span> <span class='op'>!</span><span class='id identifier rubyid_pending_guard'>pending_guard</span><span class='period'>.</span><span class='id identifier rubyid_nil?'>nil?</span> <span class='op'>&amp;&amp;</span> <span class='const'>ENV</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>SKIP_PENDING</span><span class='tstring_end'>&#39;</span></span><span class='rbracket'>]</span>
+    <span class='lbracket'>[</span><span class='symbol'>:skip</span><span class='comma'>,</span> <span class='id identifier rubyid_pending_guard'>pending_guard</span><span class='period'>.</span><span class='id identifier rubyid_message'>message</span><span class='rbracket'>]</span>
+  <span class='kw'>elsif</span> <span class='op'>!</span><span class='id identifier rubyid_pending_guard'>pending_guard</span><span class='period'>.</span><span class='id identifier rubyid_nil?'>nil?</span>
+    <span class='lbracket'>[</span><span class='symbol'>:pending</span><span class='comma'>,</span> <span class='id identifier rubyid_pending_guard'>pending_guard</span><span class='period'>.</span><span class='id identifier rubyid_message'>message</span><span class='rbracket'>]</span>
+  <span class='kw'>end</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -570,29 +573,51 @@
 </div>
     
       <div class="method_details ">
-  <h3 class="signature " id="unsatisfied-instance_method">
+  <h3 class="signature " id="satisfied?-instance_method">
   
-    #<strong>unsatisfied</strong>  &#x21d2; <tt>Object</tt> 
-  
-
+    #<strong>satisfied?</strong>(guard)  &#x21d2; <tt>Boolean</tt> 
   
 
   
-</h3><table class="source_code">
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    
+
+  </div>
+</div>
+<div class="tags">
+  
+<p class="tag_title">Returns:</p>
+<ul class="return">
+  
+    <li>
+      
+      
+        <span class='type'>(<tt>Boolean</tt>)</span>
+      
+      
+      
+    </li>
+  
+</ul>
+
+</div><table class="source_code">
   <tr>
     <td>
       <pre class="lines">
 
 
+58
 59
-60
-61</pre>
+60</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/support/guards.rb', line 59</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/support/guards.rb', line 58</span>
 
-<span class='kw'>def</span> <span class='id identifier rubyid_unsatisfied'>unsatisfied</span>
-  <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_class'>class</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='ivar'>@example</span><span class='comma'>,</span> <span class='ivar'>@guards</span><span class='period'>.</span><span class='id identifier rubyid_reject'>reject</span><span class='lparen'>(</span><span class='op'>&amp;</span><span class='symbol'>:satisfied?</span><span class='rparen'>)</span><span class='rparen'>)</span>
+<span class='kw'>def</span> <span class='id identifier rubyid_satisfied?'>satisfied?</span><span class='lparen'>(</span><span class='id identifier rubyid_guard'>guard</span><span class='rparen'>)</span>
+  <span class='ivar'>@guard_conditions</span><span class='period'>.</span><span class='id identifier rubyid_all?'>all?</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid_condition'>condition</span><span class='op'>|</span> <span class='id identifier rubyid_condition'>condition</span><span class='period'>.</span><span class='id identifier rubyid_satisfied?'>satisfied?</span><span class='lparen'>(</span><span class='id identifier rubyid_guard'>guard</span><span class='rparen'>)</span> <span class='rbrace'>}</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -604,9 +629,9 @@
 </div>
 
       <div id="footer">
-  Generated on Thu Mar 18 21:58:19 2021 by
+  Generated on Wed Oct 20 18:47:54 2021 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.26 (ruby-2.6.3).
+  0.9.26 (ruby-2.7.3).
 </div>
 
     </div>

@@ -27,7 +27,7 @@
     catch(err) {
     }
 //-->
-var data = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10,"i9":10};
+var data = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10,"i9":10,"i10":10,"i11":10};
 var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -216,13 +216,23 @@ extends java.lang.Object</pre>
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr id="i5" class="rowColor">
+<td class="colFirst"><code><a href="RemoteWebDriverBuilder.html" title="class in org.openqa.selenium.remote">RemoteWebDriverBuilder</a></code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#augmentUsing(org.openqa.selenium.remote.Augmenter)">augmentUsing</a></span>&#8203;(<a href="Augmenter.html" title="class in org.openqa.selenium.remote">Augmenter</a>&nbsp;augmenter)</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr id="i6" class="altColor">
+<td class="colFirst"><code><a href="RemoteWebDriverBuilder.html" title="class in org.openqa.selenium.remote">RemoteWebDriverBuilder</a></code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#authenticateAs(org.openqa.selenium.UsernameAndPassword)">authenticateAs</a></span>&#8203;(<a href="../UsernameAndPassword.html" title="class in org.openqa.selenium">UsernameAndPassword</a>&nbsp;usernameAndPassword)</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr id="i7" class="rowColor">
 <td class="colFirst"><code><a href="../WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#build()">build</a></span>()</code></th>
 <td class="colLast">
 <div class="block">Actually create a new WebDriver session.</div>
 </td>
 </tr>
-<tr id="i6" class="altColor">
+<tr id="i8" class="altColor">
 <td class="colFirst"><code><a href="RemoteWebDriverBuilder.html" title="class in org.openqa.selenium.remote">RemoteWebDriverBuilder</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#config(org.openqa.selenium.remote.http.ClientConfig)">config</a></span>&#8203;(<a href="http/ClientConfig.html" title="class in org.openqa.selenium.remote.http">ClientConfig</a>&nbsp;config)</code></th>
 <td class="colLast">
@@ -230,7 +240,7 @@ extends java.lang.Object</pre>
  instances.</div>
 </td>
 </tr>
-<tr id="i7" class="rowColor">
+<tr id="i9" class="rowColor">
 <td class="colFirst"><code><a href="RemoteWebDriverBuilder.html" title="class in org.openqa.selenium.remote">RemoteWebDriverBuilder</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#oneOf(org.openqa.selenium.Capabilities,org.openqa.selenium.Capabilities...)">oneOf</a></span>&#8203;(<a href="../Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&nbsp;maybeThis,
      <a href="../Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>...&nbsp;orOneOfThese)</code></th>
@@ -239,7 +249,7 @@ extends java.lang.Object</pre>
  the arguments given to this method.</div>
 </td>
 </tr>
-<tr id="i8" class="altColor">
+<tr id="i10" class="altColor">
 <td class="colFirst"><code><a href="RemoteWebDriverBuilder.html" title="class in org.openqa.selenium.remote">RemoteWebDriverBuilder</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setCapability(java.lang.String,java.lang.Object)">setCapability</a></span>&#8203;(java.lang.String&nbsp;capabilityName,
              java.lang.Object&nbsp;value)</code></th>
@@ -247,7 +257,7 @@ extends java.lang.Object</pre>
 <div class="block">Sets a capability for every single alternative when the session is created.</div>
 </td>
 </tr>
-<tr id="i9" class="rowColor">
+<tr id="i11" class="rowColor">
 <td class="colFirst"><code><a href="RemoteWebDriverBuilder.html" title="class in org.openqa.selenium.remote">RemoteWebDriverBuilder</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#withDriverService(org.openqa.selenium.remote.service.DriverService)">withDriverService</a></span>&#8203;(<a href="service/DriverService.html" title="class in org.openqa.selenium.remote.service">DriverService</a>&nbsp;service)</code></th>
 <td class="colLast">
@@ -368,6 +378,15 @@ extends java.lang.Object</pre>
  <a href="#withDriverService(org.openqa.selenium.remote.service.DriverService)"><code>withDriverService(DriverService)</code></a>.</div>
 </li>
 </ul>
+<a id="authenticateAs(org.openqa.selenium.UsernameAndPassword)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>authenticateAs</h4>
+<pre class="methodSignature">public&nbsp;<a href="RemoteWebDriverBuilder.html" title="class in org.openqa.selenium.remote">RemoteWebDriverBuilder</a>&nbsp;authenticateAs&#8203;(<a href="../UsernameAndPassword.html" title="class in org.openqa.selenium">UsernameAndPassword</a>&nbsp;usernameAndPassword)</pre>
+</li>
+</ul>
 <a id="config(org.openqa.selenium.remote.http.ClientConfig)">
 <!--   -->
 </a>
@@ -389,6 +408,19 @@ extends java.lang.Object</pre>
 <pre class="methodSignature">public&nbsp;<a href="RemoteWebDriverBuilder.html" title="class in org.openqa.selenium.remote">RemoteWebDriverBuilder</a>&nbsp;withDriverService&#8203;(<a href="service/DriverService.html" title="class in org.openqa.selenium.remote.service">DriverService</a>&nbsp;service)</pre>
 <div class="block">Use the given <a href="service/DriverService.html" title="class in org.openqa.selenium.remote.service"><code>DriverService</code></a> to set up the webdriver instance. It is an error to set
  both this and also call <a href="#address(java.net.URI)"><code>address(URI)</code></a>.</div>
+</li>
+</ul>
+<a id="augmentUsing(org.openqa.selenium.remote.Augmenter)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>augmentUsing</h4>
+<pre class="methodSignature">public&nbsp;<a href="RemoteWebDriverBuilder.html" title="class in org.openqa.selenium.remote">RemoteWebDriverBuilder</a>&nbsp;augmentUsing&#8203;(<a href="Augmenter.html" title="class in org.openqa.selenium.remote">Augmenter</a>&nbsp;augmenter)</pre>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>augmenter</code> - The <a href="Augmenter.html" title="class in org.openqa.selenium.remote"><code>Augmenter</code></a> to use when creating the <a href="../WebDriver.html" title="interface in org.openqa.selenium"><code>WebDriver</code></a> instance.</dd>
+</dl>
 </li>
 </ul>
 <a id="build()">

@@ -27,7 +27,7 @@
     catch(err) {
     }
 //-->
-var data = {"i0":6,"i1":6,"i2":6,"i3":6,"i4":18,"i5":18,"i6":6,"i7":6,"i8":18,"i9":18,"i10":6,"i11":6,"i12":6,"i13":6,"i14":6,"i15":6,"i16":6,"i17":6,"i18":6,"i19":6};
+var data = {"i0":6,"i1":6,"i2":6,"i3":6,"i4":18,"i5":18,"i6":6,"i7":6,"i8":18,"i9":18,"i10":6,"i11":6,"i12":18,"i13":6,"i14":6,"i15":6,"i16":6,"i17":6,"i18":6,"i19":6,"i20":6};
 var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],4:["t3","Abstract Methods"],16:["t5","Default Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -248,27 +248,32 @@ extends <a href="SearchContext.html" title="interface in org.openqa.selenium">Se
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr id="i12" class="altColor">
+<td class="colFirst"><code>default <a href="SearchContext.html" title="interface in org.openqa.selenium">SearchContext</a></code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getShadowRoot()">getShadowRoot</a></span>()</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr id="i13" class="rowColor">
 <td class="colFirst"><code><a href="Dimension.html" title="class in org.openqa.selenium">Dimension</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getSize()">getSize</a></span>()</code></th>
 <td class="colLast">
 <div class="block">What is the width and height of the rendered element?</div>
 </td>
 </tr>
-<tr id="i13" class="rowColor">
+<tr id="i14" class="altColor">
 <td class="colFirst"><code>java.lang.String</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getTagName()">getTagName</a></span>()</code></th>
 <td class="colLast">
 <div class="block">Get the tag name of this element.</div>
 </td>
 </tr>
-<tr id="i14" class="altColor">
+<tr id="i15" class="rowColor">
 <td class="colFirst"><code>java.lang.String</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getText()">getText</a></span>()</code></th>
 <td class="colLast">
 <div class="block">Get the visible (i.e.</div>
 </td>
 </tr>
-<tr id="i15" class="rowColor">
+<tr id="i16" class="altColor">
 <td class="colFirst"><code>boolean</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#isDisplayed()">isDisplayed</a></span>()</code></th>
 <td class="colLast">
@@ -276,7 +281,7 @@ extends <a href="SearchContext.html" title="interface in org.openqa.selenium">Se
  element's "style" attribute.</div>
 </td>
 </tr>
-<tr id="i16" class="altColor">
+<tr id="i17" class="rowColor">
 <td class="colFirst"><code>boolean</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#isEnabled()">isEnabled</a></span>()</code></th>
 <td class="colLast">
@@ -284,21 +289,21 @@ extends <a href="SearchContext.html" title="interface in org.openqa.selenium">Se
  disabled input elements.</div>
 </td>
 </tr>
-<tr id="i17" class="rowColor">
+<tr id="i18" class="altColor">
 <td class="colFirst"><code>boolean</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#isSelected()">isSelected</a></span>()</code></th>
 <td class="colLast">
 <div class="block">Determine whether or not this element is selected or not.</div>
 </td>
 </tr>
-<tr id="i18" class="altColor">
+<tr id="i19" class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#sendKeys(java.lang.CharSequence...)">sendKeys</a></span>&#8203;(java.lang.CharSequence...&nbsp;keysToSend)</code></th>
 <td class="colLast">
 <div class="block">Use this method to simulate typing into an element, which may set its value.</div>
 </td>
 </tr>
-<tr id="i19" class="rowColor">
+<tr id="i20" class="altColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#submit()">submit</a></span>()</code></th>
 <td class="colLast">
@@ -674,6 +679,21 @@ extends <a href="SearchContext.html" title="interface in org.openqa.selenium">Se
 </dl>
 </li>
 </ul>
+<a id="getShadowRoot()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getShadowRoot</h4>
+<pre class="methodSignature">default&nbsp;<a href="SearchContext.html" title="interface in org.openqa.selenium">SearchContext</a>&nbsp;getShadowRoot()</pre>
+<dl>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>A representation of an element's shadow root for accessing the shadow DOM of a web component.</dd>
+<dt><span class="throwsLabel">Throws:</span></dt>
+<dd><code><a href="NoSuchShadowRootException.html" title="class in org.openqa.selenium">NoSuchShadowRootException</a></code> - If no shadow root is found</dd>
+</dl>
+</li>
+</ul>
 <a id="isDisplayed()">
 <!--   -->
 </a>
@@ -747,9 +767,12 @@ extends <a href="SearchContext.html" title="interface in org.openqa.selenium">Se
 <h4>getCssValue</h4>
 <pre class="methodSignature">java.lang.String&nbsp;getCssValue&#8203;(java.lang.String&nbsp;propertyName)</pre>
 <div class="block">Get the value of a given CSS property.
- Color values should be returned as rgba strings, so,
- for example if the "background-color" property is set as "green" in the
- HTML source, the returned value will be "rgba(0, 255, 0, 1)".
+ Color values could be returned as rgba or rgb strings.
+ This depends on whether the browser omits the implicit opacity value or not.
+
+ For example if the "background-color" property is set as "green" in the
+ HTML source, the returned value could be "rgba(0, 255, 0, 1)" if implicit opacity value is
+ preserved or "rgb(0, 255, 0)" if it is omitted.
 
  Note that shorthand CSS properties (e.g. background, font, border, border-top, margin,
  margin-top, padding, padding-top, list-style, outline, pause, cue) are not returned,

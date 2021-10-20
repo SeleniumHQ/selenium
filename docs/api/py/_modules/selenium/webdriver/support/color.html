@@ -55,6 +55,25 @@
 <span class="c1"># specific language governing permissions and limitations</span>
 <span class="c1"># under the License.</span>
 
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">,</span> <span class="n">TYPE_CHECKING</span>
+
+<span class="k">if</span> <span class="n">sys</span><span class="o">.</span><span class="n">version_info</span> <span class="o">&gt;=</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">9</span><span class="p">):</span>
+    <span class="kn">from</span> <span class="nn">re</span> <span class="kn">import</span> <span class="n">Match</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Match</span>
+
+<span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">SupportsInt</span><span class="p">,</span> <span class="n">SupportsFloat</span><span class="p">,</span> <span class="n">Union</span>
+    <span class="kn">from</span> <span class="nn">typing_extensions</span> <span class="kn">import</span> <span class="n">SupportsIndex</span>
+
+    <span class="n">ParseableFloat</span> <span class="o">=</span> <span class="n">Union</span><span class="p">[</span><span class="n">SupportsFloat</span><span class="p">,</span> <span class="n">SupportsIndex</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="nb">bytes</span><span class="p">,</span> <span class="nb">bytearray</span><span class="p">]</span>
+    <span class="n">ParseableInt</span> <span class="o">=</span> <span class="n">Union</span><span class="p">[</span><span class="n">SupportsInt</span><span class="p">,</span> <span class="n">SupportsIndex</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="nb">bytes</span><span class="p">]</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="n">ParseableFloat</span> <span class="o">=</span> <span class="n">Any</span>
+    <span class="n">ParseableInt</span> <span class="o">=</span> <span class="n">Any</span>
+
+
 <span class="n">RGB_PATTERN</span> <span class="o">=</span> <span class="sa">r</span><span class="s2">&quot;^\s*rgb\(\s*(\d{1,3})\s*,\s*(\d{1,3})\s*,\s*(\d{1,3})\s*\)\s*$&quot;</span>
 <span class="n">RGB_PCT_PATTERN</span> <span class="o">=</span> <span class="sa">r</span><span class="s2">&quot;^\s*rgb\(\s*(\d{1,3}|\d{1,2}\.\d+)%\s*,\s*(\d{1,3}|\d{1,2}\.\d+)%\s*,\s*(\d{1,3}|\d{1,2}\.\d+)%\s*\)\s*$&quot;</span>
 <span class="n">RGBA_PATTERN</span> <span class="o">=</span> <span class="sa">r</span><span class="s2">&quot;^\s*rgba\(\s*(\d{1,3})\s*,\s*(\d{1,3})\s*,\s*(\d{1,3})\s*,\s*(0|1|0\.\d+)\s*\)\s*$&quot;</span>
@@ -81,19 +100,21 @@
 <span class="sd">    &quot;&quot;&quot;</span>
 
 <div class="viewcode-block" id="Color.from_string"><a class="viewcode-back" href="../../../../webdriver_support/selenium.webdriver.support.color.html#selenium.webdriver.support.color.Color.from_string">[docs]</a>    <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">from_string</span><span class="p">(</span><span class="n">str_</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">from_string</span><span class="p">(</span><span class="n">str_</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;Color&quot;</span><span class="p">:</span>
         <span class="kn">import</span> <span class="nn">re</span>
 
         <span class="k">class</span> <span class="nc">Matcher</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-            <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <span class="n">match_obj</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Match</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span>
+
+            <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">match_obj</span> <span class="o">=</span> <span class="kc">None</span>
 
-            <span class="k">def</span> <span class="nf">match</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pattern</span><span class="p">,</span> <span class="n">str_</span><span class="p">):</span>
+            <span class="k">def</span> <span class="nf">match</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pattern</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">str_</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Match</span><span class="p">[</span><span class="nb">str</span><span class="p">]]:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">match_obj</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">pattern</span><span class="p">,</span> <span class="n">str_</span><span class="p">)</span>
                 <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">match_obj</span>
 
             <span class="nd">@property</span>
-            <span class="k">def</span> <span class="nf">groups</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <span class="k">def</span> <span class="nf">groups</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
                 <span class="k">return</span> <span class="p">()</span> <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">match_obj</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">match_obj</span><span class="o">.</span><span class="n">groups</span><span class="p">()</span>
 
         <span class="n">m</span> <span class="o">=</span> <span class="n">Matcher</span><span class="p">()</span>
@@ -106,7 +127,7 @@
         <span class="k">elif</span> <span class="n">m</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">RGBA_PATTERN</span><span class="p">,</span> <span class="n">str_</span><span class="p">):</span>
             <span class="k">return</span> <span class="n">Color</span><span class="p">(</span><span class="o">*</span><span class="n">m</span><span class="o">.</span><span class="n">groups</span><span class="p">)</span>
         <span class="k">elif</span> <span class="n">m</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">RGBA_PCT_PATTERN</span><span class="p">,</span> <span class="n">str_</span><span class="p">):</span>
-            <span class="n">rgba</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">([</span><span class="nb">float</span><span class="p">(</span><span class="n">each</span><span class="p">)</span> <span class="o">/</span> <span class="mi">100</span> <span class="o">*</span> <span class="mi">255</span> <span class="k">for</span> <span class="n">each</span> <span class="ow">in</span> <span class="n">m</span><span class="o">.</span><span class="n">groups</span><span class="p">[:</span><span class="mi">3</span><span class="p">]]</span> <span class="o">+</span> <span class="p">[</span><span class="n">m</span><span class="o">.</span><span class="n">groups</span><span class="p">[</span><span class="mi">3</span><span class="p">]])</span>
+            <span class="n">rgba</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">([</span><span class="nb">float</span><span class="p">(</span><span class="n">each</span><span class="p">)</span> <span class="o">/</span> <span class="mi">100</span> <span class="o">*</span> <span class="mi">255</span> <span class="k">for</span> <span class="n">each</span> <span class="ow">in</span> <span class="n">m</span><span class="o">.</span><span class="n">groups</span><span class="p">[:</span><span class="mi">3</span><span class="p">]]</span> <span class="o">+</span> <span class="p">[</span><span class="n">m</span><span class="o">.</span><span class="n">groups</span><span class="p">[</span><span class="mi">3</span><span class="p">]])</span>  <span class="c1"># type: ignore</span>
             <span class="k">return</span> <span class="n">Color</span><span class="p">(</span><span class="o">*</span><span class="n">rgba</span><span class="p">)</span>
         <span class="k">elif</span> <span class="n">m</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">HEX_PATTERN</span><span class="p">,</span> <span class="n">str_</span><span class="p">):</span>
             <span class="n">rgb</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">([</span><span class="nb">int</span><span class="p">(</span><span class="n">each</span><span class="p">,</span> <span class="mi">16</span><span class="p">)</span> <span class="k">for</span> <span class="n">each</span> <span class="ow">in</span> <span class="n">m</span><span class="o">.</span><span class="n">groups</span><span class="p">])</span>
@@ -122,7 +143,7 @@
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Could not convert </span><span class="si">%s</span><span class="s2"> into color&quot;</span> <span class="o">%</span> <span class="n">str_</span><span class="p">)</span></div>
 
     <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">_from_hsl</span><span class="p">(</span><span class="n">h</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="n">light</span><span class="p">,</span> <span class="n">a</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_from_hsl</span><span class="p">(</span><span class="n">h</span><span class="p">:</span> <span class="n">ParseableFloat</span><span class="p">,</span> <span class="n">s</span><span class="p">:</span> <span class="n">ParseableFloat</span><span class="p">,</span> <span class="n">light</span><span class="p">:</span> <span class="n">ParseableFloat</span><span class="p">,</span> <span class="n">a</span><span class="p">:</span> <span class="n">ParseableFloat</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;Color&quot;</span><span class="p">:</span>
         <span class="n">h</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">h</span><span class="p">)</span> <span class="o">/</span> <span class="mi">360</span>
         <span class="n">s</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="o">/</span> <span class="mi">100</span>
         <span class="n">_l</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">light</span><span class="p">)</span> <span class="o">/</span> <span class="mi">100</span>
@@ -135,7 +156,7 @@
             <span class="n">luminocity2</span> <span class="o">=</span> <span class="n">_l</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">s</span><span class="p">)</span> <span class="k">if</span> <span class="n">_l</span> <span class="o">&lt;</span> <span class="mf">0.5</span> <span class="k">else</span> <span class="n">_l</span> <span class="o">+</span> <span class="n">s</span> <span class="o">-</span> <span class="n">_l</span> <span class="o">*</span> <span class="n">s</span>
             <span class="n">luminocity1</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">_l</span> <span class="o">-</span> <span class="n">luminocity2</span>
 
-            <span class="k">def</span> <span class="nf">hue_to_rgb</span><span class="p">(</span><span class="n">lum1</span><span class="p">,</span> <span class="n">lum2</span><span class="p">,</span> <span class="n">hue</span><span class="p">):</span>
+            <span class="k">def</span> <span class="nf">hue_to_rgb</span><span class="p">(</span><span class="n">lum1</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">lum2</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">hue</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
                 <span class="k">if</span> <span class="n">hue</span> <span class="o">&lt;</span> <span class="mf">0.0</span><span class="p">:</span>
                     <span class="n">hue</span> <span class="o">+=</span> <span class="mi">1</span>
                 <span class="k">if</span> <span class="n">hue</span> <span class="o">&gt;</span> <span class="mf">1.0</span><span class="p">:</span>
@@ -156,42 +177,42 @@
 
         <span class="k">return</span> <span class="n">Color</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">r</span> <span class="o">*</span> <span class="mi">255</span><span class="p">),</span> <span class="nb">round</span><span class="p">(</span><span class="n">g</span> <span class="o">*</span> <span class="mi">255</span><span class="p">),</span> <span class="nb">round</span><span class="p">(</span><span class="n">b</span> <span class="o">*</span> <span class="mi">255</span><span class="p">),</span> <span class="n">a</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">red</span><span class="p">,</span> <span class="n">green</span><span class="p">,</span> <span class="n">blue</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">red</span><span class="p">:</span> <span class="n">ParseableInt</span><span class="p">,</span> <span class="n">green</span><span class="p">:</span> <span class="n">ParseableInt</span><span class="p">,</span> <span class="n">blue</span><span class="p">:</span> <span class="n">ParseableInt</span><span class="p">,</span> <span class="n">alpha</span><span class="p">:</span> <span class="n">ParseableFloat</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">red</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">red</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">green</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">green</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">blue</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">blue</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">alpha</span> <span class="o">=</span> <span class="s2">&quot;1&quot;</span> <span class="k">if</span> <span class="nb">float</span><span class="p">(</span><span class="n">alpha</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span> <span class="k">else</span> <span class="nb">str</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">alpha</span><span class="p">)</span> <span class="ow">or</span> <span class="mi">0</span><span class="p">)</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">rgb</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">rgb</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
         <span class="k">return</span> <span class="s2">&quot;rgb(</span><span class="si">%d</span><span class="s2">, </span><span class="si">%d</span><span class="s2">, </span><span class="si">%d</span><span class="s2">)&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">red</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">green</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">blue</span><span class="p">)</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">rgba</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">rgba</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
         <span class="k">return</span> <span class="s2">&quot;rgba(</span><span class="si">%d</span><span class="s2">, </span><span class="si">%d</span><span class="s2">, </span><span class="si">%d</span><span class="s2">, </span><span class="si">%s</span><span class="s2">)&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">red</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">green</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">blue</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">alpha</span><span class="p">)</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">hex</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">hex</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
         <span class="k">return</span> <span class="s2">&quot;#</span><span class="si">%02x%02x%02x</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">red</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">green</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">blue</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="fm">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="nb">object</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">Color</span><span class="p">):</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">rgba</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">rgba</span>
         <span class="k">return</span> <span class="bp">NotImplemented</span>
 
-    <span class="k">def</span> <span class="fm">__ne__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__ne__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
         <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="fm">__eq__</span><span class="p">(</span><span class="n">other</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">result</span> <span class="ow">is</span> <span class="bp">NotImplemented</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">result</span>
         <span class="k">return</span> <span class="ow">not</span> <span class="n">result</span>
 
-    <span class="k">def</span> <span class="fm">__hash__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__hash__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
         <span class="k">return</span> <span class="nb">hash</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">red</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">green</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">blue</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">alpha</span><span class="p">))</span>
 
-    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
         <span class="k">return</span> <span class="s2">&quot;Color(red=</span><span class="si">%d</span><span class="s2">, green=</span><span class="si">%d</span><span class="s2">, blue=</span><span class="si">%d</span><span class="s2">, alpha=</span><span class="si">%s</span><span class="s2">)&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">red</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">green</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">blue</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">alpha</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
         <span class="k">return</span> <span class="s2">&quot;Color: </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">rgba</span></div>
 
 

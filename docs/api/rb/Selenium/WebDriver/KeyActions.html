@@ -83,7 +83,7 @@
   
   <dl>
     <dt>Defined in:</dt>
-    <dd>build/rb/lib/selenium/webdriver/common/interactions/key_actions.rb</dd>
+    <dd>rb/lib/selenium/webdriver/common/interactions/key_actions.rb</dd>
   </dl>
   
 </div>
@@ -386,7 +386,7 @@
 49</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/interactions/key_actions.rb', line 47</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/interactions/key_actions.rb', line 47</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_key_down'>key_down</span><span class='lparen'>(</span><span class='op'>*</span><span class='id identifier rubyid_args'>args</span><span class='comma'>,</span> <span class='label'>device:</span> <span class='kw'>nil</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_key_action'>key_action</span><span class='lparen'>(</span><span class='op'>*</span><span class='id identifier rubyid_args'>args</span><span class='comma'>,</span> <span class='label'>action:</span> <span class='symbol'>:create_key_down</span><span class='comma'>,</span> <span class='label'>device:</span> <span class='id identifier rubyid_device'>device</span><span class='rparen'>)</span>
@@ -598,7 +598,7 @@
 76</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/interactions/key_actions.rb', line 74</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/interactions/key_actions.rb', line 74</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_key_up'>key_up</span><span class='lparen'>(</span><span class='op'>*</span><span class='id identifier rubyid_args'>args</span><span class='comma'>,</span> <span class='label'>device:</span> <span class='kw'>nil</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_key_action'>key_action</span><span class='lparen'>(</span><span class='op'>*</span><span class='id identifier rubyid_args'>args</span><span class='comma'>,</span> <span class='label'>action:</span> <span class='symbol'>:create_key_up</span><span class='comma'>,</span> <span class='label'>device:</span> <span class='id identifier rubyid_device'>device</span><span class='rparen'>)</span>
@@ -820,7 +820,7 @@
 111</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/interactions/key_actions.rb', line 104</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/interactions/key_actions.rb', line 104</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_send_keys'>send_keys</span><span class='lparen'>(</span><span class='op'>*</span><span class='id identifier rubyid_args'>args</span><span class='comma'>,</span> <span class='label'>device:</span> <span class='kw'>nil</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_click'>click</span><span class='lparen'>(</span><span class='id identifier rubyid_args'>args</span><span class='period'>.</span><span class='id identifier rubyid_shift'>shift</span><span class='rparen'>)</span> <span class='kw'>if</span> <span class='id identifier rubyid_args'>args</span><span class='period'>.</span><span class='id identifier rubyid_first'>first</span><span class='period'>.</span><span class='id identifier rubyid_is_a?'>is_a?</span> <span class='const'><span class='object_link'><a href="Element.html" title="Selenium::WebDriver::Element (class)">Element</a></span></span>
@@ -840,9 +840,9 @@
 </div>
 
       <div id="footer">
-  Generated on Thu Mar 18 21:58:15 2021 by
+  Generated on Wed Oct 20 18:47:50 2021 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.26 (ruby-2.6.3).
+  0.9.26 (ruby-2.7.3).
 </div>
 
     </div>

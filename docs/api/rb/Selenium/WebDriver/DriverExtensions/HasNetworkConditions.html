@@ -74,16 +74,11 @@
   
 
   
-  <dl>
-    <dt>Included in:</dt>
-    <dd><span class='object_link'><a href="../Chrome/Driver.html" title="Selenium::WebDriver::Chrome::Driver (class)">Chrome::Driver</a></span></dd>
-  </dl>
-  
 
   
   <dl>
     <dt>Defined in:</dt>
-    <dd>build/rb/lib/selenium/webdriver/common/driver_extensions/has_network_conditions.rb</dd>
+    <dd>rb/lib/selenium/webdriver/common/driver_extensions/has_network_conditions.rb</dd>
   </dl>
   
 </div>
@@ -115,6 +110,30 @@
     </h2>
 
     <ul class="summary">
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#delete_network_conditions-instance_method" title="#delete_network_conditions (instance method)">#<strong>delete_network_conditions</strong>  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  <span class="private note title">private</span>
+
+  
+    <span class="summary_desc"><div class='inline'>
+<p>Resets Chromium network emulation settings.</p>
+</div></span>
+  
+</li>
+
       
         <li class="public ">
   <span class="summary_signature">
@@ -174,7 +193,52 @@
 
     
       <div class="method_details first">
-  <h3 class="signature first" id="network_conditions-instance_method">
+  <h3 class="signature first" id="delete_network_conditions-instance_method">
+  
+    #<strong>delete_network_conditions</strong>  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    <p class="note private">
+  <strong>This method is part of a private API.</strong>
+  You should avoid using this method if possible, as it may be removed or be changed in the future.
+</p>
+
+<p>Resets Chromium network emulation settings.</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+61
+62
+63</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/driver_extensions/has_network_conditions.rb', line 61</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_delete_network_conditions'>delete_network_conditions</span>
+  <span class='ivar'>@bridge</span><span class='period'>.</span><span class='id identifier rubyid_delete_network_conditions'>delete_network_conditions</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="network_conditions-instance_method">
   
     #<strong>network_conditions</strong>  &#x21d2; <tt>Hash</tt> 
   
@@ -221,7 +285,7 @@
 33</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/driver_extensions/has_network_conditions.rb', line 31</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/driver_extensions/has_network_conditions.rb', line 31</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_network_conditions'>network_conditions</span>
   <span class='ivar'>@bridge</span><span class='period'>.</span><span class='id identifier rubyid_network_conditions'>network_conditions</span>
@@ -294,6 +358,24 @@
         </li>
       
         <li>
+          <span class="name">:upload_throughput</span>
+          <span class="type">(<tt>Integer</tt>)</span>
+          <span class="default">
+            
+          </span>
+          
+        </li>
+      
+        <li>
+          <span class="name">:download_throughput</span>
+          <span class="type">(<tt>Integer</tt>)</span>
+          <span class="default">
+            
+          </span>
+          
+        </li>
+      
+        <li>
           <span class="name">:offline</span>
           <span class="type">(<tt>Boolean</tt>)</span>
           <span class="default">
@@ -312,14 +394,28 @@
       <pre class="lines">
 
 
-44
-45
-46</pre>
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/driver_extensions/has_network_conditions.rb', line 44</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/driver_extensions/has_network_conditions.rb', line 46</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_network_conditions='>network_conditions=</span><span class='lparen'>(</span><span class='id identifier rubyid_conditions'>conditions</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_conditions'>conditions</span><span class='lbracket'>[</span><span class='symbol'>:latency</span><span class='rbracket'>]</span> <span class='op'>||=</span> <span class='int'>0</span>
+  <span class='kw'>unless</span> <span class='id identifier rubyid_conditions'>conditions</span><span class='period'>.</span><span class='id identifier rubyid_key?'>key?</span><span class='lparen'>(</span><span class='symbol'>:throughput</span><span class='rparen'>)</span>
+    <span class='id identifier rubyid_conditions'>conditions</span><span class='lbracket'>[</span><span class='symbol'>:download_throughput</span><span class='rbracket'>]</span> <span class='op'>||=</span> <span class='op'>-</span><span class='int'>1</span>
+    <span class='id identifier rubyid_conditions'>conditions</span><span class='lbracket'>[</span><span class='symbol'>:upload_throughput</span><span class='rbracket'>]</span> <span class='op'>||=</span> <span class='op'>-</span><span class='int'>1</span>
+  <span class='kw'>end</span>
+  <span class='id identifier rubyid_conditions'>conditions</span><span class='lbracket'>[</span><span class='symbol'>:offline</span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='kw'>false</span> <span class='kw'>unless</span> <span class='id identifier rubyid_conditions'>conditions</span><span class='period'>.</span><span class='id identifier rubyid_key?'>key?</span><span class='lparen'>(</span><span class='symbol'>:offline</span><span class='rparen'>)</span>
+
   <span class='ivar'>@bridge</span><span class='period'>.</span><span class='id identifier rubyid_network_conditions'>network_conditions</span> <span class='op'>=</span> <span class='id identifier rubyid_conditions'>conditions</span>
 <span class='kw'>end</span></pre>
     </td>
@@ -332,9 +428,9 @@
 </div>
 
       <div id="footer">
-  Generated on Thu Mar 18 21:58:16 2021 by
+  Generated on Wed Oct 20 18:47:51 2021 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.26 (ruby-2.6.3).
+  0.9.26 (ruby-2.7.3).
 </div>
 
     </div>

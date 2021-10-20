@@ -184,6 +184,26 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 </a>
 <h3>Class <a href="org/openqa/selenium/ImeNotAvailableException.html" title="class in org.openqa.selenium">org.openqa.selenium.ImeNotAvailableException</a> extends <a href="org/openqa/selenium/WebDriverException.html" title="class in org.openqa.selenium">WebDriverException</a> implements Serializable</h3>
 </li>
+<li class="blockList"><a id="org.openqa.selenium.ImmutableCapabilities">
+<!--   -->
+</a>
+<h3>Class <a href="org/openqa/selenium/ImmutableCapabilities.html" title="class in org.openqa.selenium">org.openqa.selenium.ImmutableCapabilities</a> extends java.lang.Object implements Serializable</h3>
+<ul class="blockList">
+<li class="blockList">
+<h3>Serialized Fields</h3>
+<ul class="blockList">
+<li class="blockList">
+<h4>delegate</h4>
+<pre>java.util.Map&lt;java.lang.String,&#8203;java.lang.Object&gt; delegate</pre>
+</li>
+<li class="blockListLast">
+<h4>hashCode</h4>
+<pre>int hashCode</pre>
+</li>
+</ul>
+</li>
+</ul>
+</li>
 <li class="blockList"><a id="org.openqa.selenium.InvalidArgumentException">
 <!--   -->
 </a>
@@ -208,6 +228,22 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <!--   -->
 </a>
 <h3>Class <a href="org/openqa/selenium/JavascriptException.html" title="class in org.openqa.selenium">org.openqa.selenium.JavascriptException</a> extends <a href="org/openqa/selenium/WebDriverException.html" title="class in org.openqa.selenium">WebDriverException</a> implements Serializable</h3>
+</li>
+<li class="blockList"><a id="org.openqa.selenium.MutableCapabilities">
+<!--   -->
+</a>
+<h3>Class <a href="org/openqa/selenium/MutableCapabilities.html" title="class in org.openqa.selenium">org.openqa.selenium.MutableCapabilities</a> extends java.lang.Object implements Serializable</h3>
+<ul class="blockList">
+<li class="blockList">
+<h3>Serialized Fields</h3>
+<ul class="blockList">
+<li class="blockListLast">
+<h4>caps</h4>
+<pre>java.util.Map&lt;java.lang.String,&#8203;java.lang.Object&gt; caps</pre>
+</li>
+</ul>
+</li>
+</ul>
 </li>
 <li class="blockList"><a id="org.openqa.selenium.NoAlertPresentException">
 <!--   -->
@@ -239,6 +275,11 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 </a>
 <h3>Class <a href="org/openqa/selenium/NoSuchSessionException.html" title="class in org.openqa.selenium">org.openqa.selenium.NoSuchSessionException</a> extends <a href="org/openqa/selenium/WebDriverException.html" title="class in org.openqa.selenium">WebDriverException</a> implements Serializable</h3>
 </li>
+<li class="blockList"><a id="org.openqa.selenium.NoSuchShadowRootException">
+<!--   -->
+</a>
+<h3>Class <a href="org/openqa/selenium/NoSuchShadowRootException.html" title="class in org.openqa.selenium">org.openqa.selenium.NoSuchShadowRootException</a> extends <a href="org/openqa/selenium/NotFoundException.html" title="class in org.openqa.selenium">NotFoundException</a> implements Serializable</h3>
+</li>
 <li class="blockList"><a id="org.openqa.selenium.NoSuchWindowException">
 <!--   -->
 </a>
@@ -248,6 +289,30 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <!--   -->
 </a>
 <h3>Class <a href="org/openqa/selenium/NotFoundException.html" title="class in org.openqa.selenium">org.openqa.selenium.NotFoundException</a> extends <a href="org/openqa/selenium/WebDriverException.html" title="class in org.openqa.selenium">WebDriverException</a> implements Serializable</h3>
+</li>
+<li class="blockList"><a id="org.openqa.selenium.PersistentCapabilities">
+<!--   -->
+</a>
+<h3>Class <a href="org/openqa/selenium/PersistentCapabilities.html" title="class in org.openqa.selenium">org.openqa.selenium.PersistentCapabilities</a> extends java.lang.Object implements Serializable</h3>
+<ul class="blockList">
+<li class="blockList">
+<h3>Serialized Fields</h3>
+<ul class="blockList">
+<li class="blockList">
+<h4>caps</h4>
+<pre><a href="org/openqa/selenium/ImmutableCapabilities.html" title="class in org.openqa.selenium">ImmutableCapabilities</a> caps</pre>
+</li>
+<li class="blockList">
+<h4>hashCode</h4>
+<pre>int hashCode</pre>
+</li>
+<li class="blockListLast">
+<h4>overrides</h4>
+<pre><a href="org/openqa/selenium/ImmutableCapabilities.html" title="class in org.openqa.selenium">ImmutableCapabilities</a> overrides</pre>
+</li>
+</ul>
+</li>
+</ul>
 </li>
 <li class="blockList"><a id="org.openqa.selenium.RetrySessionRequestException">
 <!--   -->
@@ -321,6 +386,76 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 </li>
 <li class="blockList">
 <section role="region">
+<h2 title="Package">Package&nbsp;org.openqa.selenium.chrome</h2>
+<ul class="blockList">
+<li class="blockList"><a id="org.openqa.selenium.chrome.ChromeOptions">
+<!--   -->
+</a>
+<h3>Class <a href="org/openqa/selenium/chrome/ChromeOptions.html" title="class in org.openqa.selenium.chrome">org.openqa.selenium.chrome.ChromeOptions</a> extends <a href="org/openqa/selenium/chromium/ChromiumOptions.html" title="class in org.openqa.selenium.chromium">ChromiumOptions</a>&lt;<a href="org/openqa/selenium/chrome/ChromeOptions.html" title="class in org.openqa.selenium.chrome">ChromeOptions</a>&gt; implements Serializable</h3>
+<ul class="blockList">
+<li class="blockList">
+<h3>Serialized Fields</h3>
+<ul class="blockList">
+<li class="blockListLast">
+<h4>logLevel</h4>
+<pre><a href="org/openqa/selenium/chrome/ChromeDriverLogLevel.html" title="enum in org.openqa.selenium.chrome">ChromeDriverLogLevel</a> logLevel</pre>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</section>
+</li>
+<li class="blockList">
+<section role="region">
+<h2 title="Package">Package&nbsp;org.openqa.selenium.chromium</h2>
+<ul class="blockList">
+<li class="blockList"><a id="org.openqa.selenium.chromium.ChromiumOptions">
+<!--   -->
+</a>
+<h3>Class <a href="org/openqa/selenium/chromium/ChromiumOptions.html" title="class in org.openqa.selenium.chromium">org.openqa.selenium.chromium.ChromiumOptions</a> extends <a href="org/openqa/selenium/remote/AbstractDriverOptions.html" title="class in org.openqa.selenium.remote">AbstractDriverOptions</a>&lt;<a href="org/openqa/selenium/chromium/ChromiumOptions.html" title="class in org.openqa.selenium.chromium">ChromiumOptions</a>&lt;?&gt;&gt; implements Serializable</h3>
+<ul class="blockList">
+<li class="blockList">
+<h3>Serialized Fields</h3>
+<ul class="blockList">
+<li class="blockList">
+<h4>androidOptions</h4>
+<pre>java.util.Map&lt;java.lang.String,&#8203;java.lang.Object&gt; androidOptions</pre>
+</li>
+<li class="blockList">
+<h4>args</h4>
+<pre>java.util.List&lt;java.lang.String&gt; args</pre>
+</li>
+<li class="blockList">
+<h4>binary</h4>
+<pre>java.lang.String binary</pre>
+</li>
+<li class="blockList">
+<h4>capabilityName</h4>
+<pre>java.lang.String capabilityName</pre>
+</li>
+<li class="blockList">
+<h4>experimentalOptions</h4>
+<pre>java.util.Map&lt;java.lang.String,&#8203;java.lang.Object&gt; experimentalOptions</pre>
+</li>
+<li class="blockList">
+<h4>extensionFiles</h4>
+<pre>java.util.List&lt;java.io.File&gt; extensionFiles</pre>
+</li>
+<li class="blockListLast">
+<h4>extensions</h4>
+<pre>java.util.List&lt;java.lang.String&gt; extensions</pre>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</section>
+</li>
+<li class="blockList">
+<section role="region">
 <h2 title="Package">Package&nbsp;org.openqa.selenium.devtools</h2>
 <ul class="blockList">
 <li class="blockList"><a id="org.openqa.selenium.devtools.DevToolsException">
@@ -345,8 +480,40 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 </li>
 <li class="blockList">
 <section role="region">
+<h2 title="Package">Package&nbsp;org.openqa.selenium.edge</h2>
+<ul class="blockList">
+<li class="blockList"><a id="org.openqa.selenium.edge.EdgeOptions">
+<!--   -->
+</a>
+<h3>Class <a href="org/openqa/selenium/edge/EdgeOptions.html" title="class in org.openqa.selenium.edge">org.openqa.selenium.edge.EdgeOptions</a> extends <a href="org/openqa/selenium/chromium/ChromiumOptions.html" title="class in org.openqa.selenium.chromium">ChromiumOptions</a>&lt;<a href="org/openqa/selenium/edge/EdgeOptions.html" title="class in org.openqa.selenium.edge">EdgeOptions</a>&gt; implements Serializable</h3>
+</li>
+</ul>
+</section>
+</li>
+<li class="blockList">
+<section role="region">
 <h2 title="Package">Package&nbsp;org.openqa.selenium.firefox</h2>
 <ul class="blockList">
+<li class="blockList"><a id="org.openqa.selenium.firefox.FirefoxOptions">
+<!--   -->
+</a>
+<h3>Class <a href="org/openqa/selenium/firefox/FirefoxOptions.html" title="class in org.openqa.selenium.firefox">org.openqa.selenium.firefox.FirefoxOptions</a> extends <a href="org/openqa/selenium/remote/AbstractDriverOptions.html" title="class in org.openqa.selenium.remote">AbstractDriverOptions</a>&lt;<a href="org/openqa/selenium/firefox/FirefoxOptions.html" title="class in org.openqa.selenium.firefox">FirefoxOptions</a>&gt; implements Serializable</h3>
+<ul class="blockList">
+<li class="blockList">
+<h3>Serialized Fields</h3>
+<ul class="blockList">
+<li class="blockList">
+<h4>firefoxOptions</h4>
+<pre>java.util.Map&lt;java.lang.String,&#8203;java.lang.Object&gt; firefoxOptions</pre>
+</li>
+<li class="blockListLast">
+<h4>legacy</h4>
+<pre>boolean legacy</pre>
+</li>
+</ul>
+</li>
+</ul>
+</li>
 <li class="blockList"><a id="org.openqa.selenium.firefox.UnableToCreateProfileException">
 <!--   -->
 </a>
@@ -363,6 +530,118 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <!--   -->
 </a>
 <h3>Class <a href="org/openqa/selenium/grid/config/ConfigException.html" title="class in org.openqa.selenium.grid.config">org.openqa.selenium.grid.config.ConfigException</a> extends java.lang.RuntimeException implements Serializable</h3>
+</li>
+</ul>
+</section>
+</li>
+<li class="blockList">
+<section role="region">
+<h2 title="Package">Package&nbsp;org.openqa.selenium.grid.data</h2>
+<ul class="blockList">
+<li class="blockList"><a id="org.openqa.selenium.grid.data.DefaultSlotMatcher">
+<!--   -->
+</a>
+<h3>Class <a href="org/openqa/selenium/grid/data/DefaultSlotMatcher.html" title="class in org.openqa.selenium.grid.data">org.openqa.selenium.grid.data.DefaultSlotMatcher</a> extends java.lang.Object implements Serializable</h3>
+</li>
+<li class="blockList"><a id="org.openqa.selenium.grid.data.NodeId">
+<!--   -->
+</a>
+<h3>Class <a href="org/openqa/selenium/grid/data/NodeId.html" title="class in org.openqa.selenium.grid.data">org.openqa.selenium.grid.data.NodeId</a> extends java.lang.Object implements Serializable</h3>
+<ul class="blockList">
+<li class="blockList">
+<h3>Serialized Fields</h3>
+<ul class="blockList">
+<li class="blockListLast">
+<h4>uuid</h4>
+<pre>java.util.UUID uuid</pre>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="blockList"><a id="org.openqa.selenium.grid.data.Session">
+<!--   -->
+</a>
+<h3>Class <a href="org/openqa/selenium/grid/data/Session.html" title="class in org.openqa.selenium.grid.data">org.openqa.selenium.grid.data.Session</a> extends java.lang.Object implements Serializable</h3>
+<ul class="blockList">
+<li class="blockList">
+<h3>Serialized Fields</h3>
+<ul class="blockList">
+<li class="blockList">
+<h4>capabilities</h4>
+<pre><a href="org/openqa/selenium/Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a> capabilities</pre>
+</li>
+<li class="blockList">
+<h4>id</h4>
+<pre><a href="org/openqa/selenium/remote/SessionId.html" title="class in org.openqa.selenium.remote">SessionId</a> id</pre>
+</li>
+<li class="blockList">
+<h4>startTime</h4>
+<pre>java.time.Instant startTime</pre>
+</li>
+<li class="blockList">
+<h4>stereotype</h4>
+<pre><a href="org/openqa/selenium/Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a> stereotype</pre>
+</li>
+<li class="blockListLast">
+<h4>uri</h4>
+<pre>java.net.URI uri</pre>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="blockList"><a id="org.openqa.selenium.grid.data.Slot">
+<!--   -->
+</a>
+<h3>Class <a href="org/openqa/selenium/grid/data/Slot.html" title="class in org.openqa.selenium.grid.data">org.openqa.selenium.grid.data.Slot</a> extends java.lang.Object implements Serializable</h3>
+<ul class="blockList">
+<li class="blockList">
+<h3>Serialized Fields</h3>
+<ul class="blockList">
+<li class="blockList">
+<h4>id</h4>
+<pre><a href="org/openqa/selenium/grid/data/SlotId.html" title="class in org.openqa.selenium.grid.data">SlotId</a> id</pre>
+</li>
+<li class="blockList">
+<h4>lastStarted</h4>
+<pre>java.time.Instant lastStarted</pre>
+</li>
+<li class="blockList">
+<h4>session</h4>
+<pre><a href="org/openqa/selenium/grid/data/Session.html" title="class in org.openqa.selenium.grid.data">Session</a> session</pre>
+</li>
+<li class="blockList">
+<h4>slotMatcher</h4>
+<pre><a href="org/openqa/selenium/grid/data/SlotMatcher.html" title="interface in org.openqa.selenium.grid.data">SlotMatcher</a> slotMatcher</pre>
+</li>
+<li class="blockListLast">
+<h4>stereotype</h4>
+<pre><a href="org/openqa/selenium/Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a> stereotype</pre>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="blockList"><a id="org.openqa.selenium.grid.data.SlotId">
+<!--   -->
+</a>
+<h3>Class <a href="org/openqa/selenium/grid/data/SlotId.html" title="class in org.openqa.selenium.grid.data">org.openqa.selenium.grid.data.SlotId</a> extends java.lang.Object implements Serializable</h3>
+<ul class="blockList">
+<li class="blockList">
+<h3>Serialized Fields</h3>
+<ul class="blockList">
+<li class="blockList">
+<h4>nodeId</h4>
+<pre><a href="org/openqa/selenium/grid/data/NodeId.html" title="class in org.openqa.selenium.grid.data">NodeId</a> nodeId</pre>
+</li>
+<li class="blockListLast">
+<h4>uuid</h4>
+<pre>java.util.UUID uuid</pre>
+</li>
+</ul>
+</li>
+</ul>
 </li>
 </ul>
 </section>
@@ -387,6 +666,29 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <!--   -->
 </a>
 <h3>Class <a href="org/openqa/selenium/grid/web/HandlerNotFoundException.html" title="class in org.openqa.selenium.grid.web">org.openqa.selenium.grid.web.HandlerNotFoundException</a> extends java.lang.RuntimeException implements Serializable</h3>
+</li>
+</ul>
+</section>
+</li>
+<li class="blockList">
+<section role="region">
+<h2 title="Package">Package&nbsp;org.openqa.selenium.ie</h2>
+<ul class="blockList">
+<li class="blockList"><a id="org.openqa.selenium.ie.InternetExplorerOptions">
+<!--   -->
+</a>
+<h3>Class <a href="org/openqa/selenium/ie/InternetExplorerOptions.html" title="class in org.openqa.selenium.ie">org.openqa.selenium.ie.InternetExplorerOptions</a> extends <a href="org/openqa/selenium/remote/AbstractDriverOptions.html" title="class in org.openqa.selenium.remote">AbstractDriverOptions</a>&lt;<a href="org/openqa/selenium/ie/InternetExplorerOptions.html" title="class in org.openqa.selenium.ie">InternetExplorerOptions</a>&gt; implements Serializable</h3>
+<ul class="blockList">
+<li class="blockList">
+<h3>Serialized Fields</h3>
+<ul class="blockList">
+<li class="blockListLast">
+<h4>ieOptions</h4>
+<pre>java.util.Map&lt;java.lang.String,&#8203;java.lang.Object&gt; ieOptions</pre>
+</li>
+</ul>
+</li>
+</ul>
 </li>
 </ul>
 </section>
@@ -461,8 +763,57 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 </li>
 <li class="blockList">
 <section role="region">
+<h2 title="Package">Package&nbsp;org.openqa.selenium.opera</h2>
+<ul class="blockList">
+<li class="blockList"><a id="org.openqa.selenium.opera.OperaOptions">
+<!--   -->
+</a>
+<h3>Class <a href="org/openqa/selenium/opera/OperaOptions.html" title="class in org.openqa.selenium.opera">org.openqa.selenium.opera.OperaOptions</a> extends <a href="org/openqa/selenium/remote/AbstractDriverOptions.html" title="class in org.openqa.selenium.remote">AbstractDriverOptions</a>&lt;<a href="org/openqa/selenium/opera/OperaOptions.html" title="class in org.openqa.selenium.opera">OperaOptions</a>&gt; implements Serializable</h3>
+<ul class="blockList">
+<li class="blockList">
+<h3>Serialized Fields</h3>
+<ul class="blockList">
+<li class="blockList">
+<h4>args</h4>
+<pre>java.util.List&lt;java.lang.String&gt; args</pre>
+</li>
+<li class="blockList">
+<h4>binary</h4>
+<pre>java.lang.String binary</pre>
+</li>
+<li class="blockList">
+<h4>experimentalOptions</h4>
+<pre>java.util.Map&lt;java.lang.String,&#8203;java.lang.Object&gt; experimentalOptions</pre>
+</li>
+<li class="blockList">
+<h4>extensionFiles</h4>
+<pre>java.util.List&lt;java.io.File&gt; extensionFiles</pre>
+</li>
+<li class="blockListLast">
+<h4>extensions</h4>
+<pre>java.util.List&lt;java.lang.String&gt; extensions</pre>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</section>
+</li>
+<li class="blockList">
+<section role="region">
 <h2 title="Package">Package&nbsp;org.openqa.selenium.remote</h2>
 <ul class="blockList">
+<li class="blockList"><a id="org.openqa.selenium.remote.AbstractDriverOptions">
+<!--   -->
+</a>
+<h3>Class <a href="org/openqa/selenium/remote/AbstractDriverOptions.html" title="class in org.openqa.selenium.remote">org.openqa.selenium.remote.AbstractDriverOptions</a> extends <a href="org/openqa/selenium/MutableCapabilities.html" title="class in org.openqa.selenium">MutableCapabilities</a> implements Serializable</h3>
+</li>
+<li class="blockList"><a id="org.openqa.selenium.remote.DesiredCapabilities">
+<!--   -->
+</a>
+<h3>Class <a href="org/openqa/selenium/remote/DesiredCapabilities.html" title="class in org.openqa.selenium.remote">org.openqa.selenium.remote.DesiredCapabilities</a> extends <a href="org/openqa/selenium/MutableCapabilities.html" title="class in org.openqa.selenium">MutableCapabilities</a> implements Serializable</h3>
+</li>
 <li class="blockList"><a id="org.openqa.selenium.remote.ErrorHandler.UnknownServerException">
 <!--   -->
 </a>
@@ -479,6 +830,22 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <li class="blockListLast">
 <h4>screenshot</h4>
 <pre>java.lang.String screenshot</pre>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="blockList"><a id="org.openqa.selenium.remote.SessionId">
+<!--   -->
+</a>
+<h3>Class <a href="org/openqa/selenium/remote/SessionId.html" title="class in org.openqa.selenium.remote">org.openqa.selenium.remote.SessionId</a> extends java.lang.Object implements Serializable</h3>
+<ul class="blockList">
+<li class="blockList">
+<h3>Serialized Fields</h3>
+<ul class="blockList">
+<li class="blockListLast">
+<h4>opaqueKey</h4>
+<pre>java.lang.String opaqueKey</pre>
 </li>
 </ul>
 </li>
@@ -512,6 +879,11 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <!--   -->
 </a>
 <h3>Class <a href="org/openqa/selenium/safari/ConnectionClosedException.html" title="class in org.openqa.selenium.safari">org.openqa.selenium.safari.ConnectionClosedException</a> extends <a href="org/openqa/selenium/WebDriverException.html" title="class in org.openqa.selenium">WebDriverException</a> implements Serializable</h3>
+</li>
+<li class="blockList"><a id="org.openqa.selenium.safari.SafariOptions">
+<!--   -->
+</a>
+<h3>Class <a href="org/openqa/selenium/safari/SafariOptions.html" title="class in org.openqa.selenium.safari">org.openqa.selenium.safari.SafariOptions</a> extends <a href="org/openqa/selenium/remote/AbstractDriverOptions.html" title="class in org.openqa.selenium.remote">AbstractDriverOptions</a>&lt;<a href="org/openqa/selenium/safari/SafariOptions.html" title="class in org.openqa.selenium.safari">SafariOptions</a>&gt; implements Serializable</h3>
 </li>
 </ul>
 </section>

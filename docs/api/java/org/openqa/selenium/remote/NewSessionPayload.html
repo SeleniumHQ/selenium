@@ -27,7 +27,7 @@
     catch(err) {
     }
 //-->
-var data = {"i0":10,"i1":9,"i2":9,"i3":9,"i4":10,"i5":10,"i6":10,"i7":10};
+var data = {"i0":10,"i1":9,"i2":9,"i3":9,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10};
 var tabs = {65535:["t0","All Methods"],1:["t1","Static Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -184,23 +184,28 @@ implements java.io.Closeable</pre>
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr id="i4" class="altColor">
-<td class="colFirst"><code>com.google.common.collect.ImmutableSet&lt;<a href="Dialect.html" title="enum in org.openqa.selenium.remote">Dialect</a>&gt;</code></td>
+<td class="colFirst"><code>java.util.Set&lt;<a href="Dialect.html" title="enum in org.openqa.selenium.remote">Dialect</a>&gt;</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getDownstreamDialects()">getDownstreamDialects</a></span>()</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr id="i5" class="rowColor">
+<td class="colFirst"><code>java.util.Map&lt;java.lang.String,&#8203;java.lang.Object&gt;</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getMetadata()">getMetadata</a></span>()</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr id="i6" class="altColor">
 <td class="colFirst"><code>java.util.stream.Stream&lt;<a href="../Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&gt;</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#stream()">stream</a></span>()</code></th>
 <td class="colLast">
 <div class="block">Stream the <a href="../Capabilities.html" title="interface in org.openqa.selenium"><code>Capabilities</code></a> encoded in the payload used to create this instance.</div>
 </td>
 </tr>
-<tr id="i6" class="altColor">
+<tr id="i7" class="rowColor">
 <td class="colFirst"><code>java.lang.String</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#toString()">toString</a></span>()</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i7" class="rowColor">
+<tr id="i8" class="altColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#writeTo(java.lang.Appendable)">writeTo</a></span>&#8203;(java.lang.Appendable&nbsp;appendable)</code></th>
 <td class="colLast">&nbsp;</td>
@@ -293,7 +298,16 @@ implements java.io.Closeable</pre>
 <ul class="blockList">
 <li class="blockList">
 <h4>getDownstreamDialects</h4>
-<pre class="methodSignature">public&nbsp;com.google.common.collect.ImmutableSet&lt;<a href="Dialect.html" title="enum in org.openqa.selenium.remote">Dialect</a>&gt;&nbsp;getDownstreamDialects()</pre>
+<pre class="methodSignature">public&nbsp;java.util.Set&lt;<a href="Dialect.html" title="enum in org.openqa.selenium.remote">Dialect</a>&gt;&nbsp;getDownstreamDialects()</pre>
+</li>
+</ul>
+<a id="getMetadata()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getMetadata</h4>
+<pre class="methodSignature">public&nbsp;java.util.Map&lt;java.lang.String,&#8203;java.lang.Object&gt;&nbsp;getMetadata()</pre>
 </li>
 </ul>
 <a id="close()">

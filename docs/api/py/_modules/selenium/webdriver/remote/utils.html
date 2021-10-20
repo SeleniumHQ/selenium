@@ -56,78 +56,15 @@
 <span class="c1"># under the License.</span>
 
 <span class="kn">import</span> <span class="nn">json</span>
-<span class="kn">import</span> <span class="nn">logging</span>
-<span class="kn">import</span> <span class="nn">os</span>
-<span class="kn">import</span> <span class="nn">tempfile</span>
-<span class="kn">import</span> <span class="nn">zipfile</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Union</span>
 
 
-<span class="n">LOGGER</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
-
-
-<div class="viewcode-block" id="format_json"><a class="viewcode-back" href="../../../../webdriver_remote/selenium.webdriver.remote.utils.html#selenium.webdriver.remote.utils.format_json">[docs]</a><span class="k">def</span> <span class="nf">format_json</span><span class="p">(</span><span class="n">json_struct</span><span class="p">):</span>
-    <span class="k">return</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">json_struct</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span></div>
-
-
-<div class="viewcode-block" id="dump_json"><a class="viewcode-back" href="../../../../webdriver_remote/selenium.webdriver.remote.utils.html#selenium.webdriver.remote.utils.dump_json">[docs]</a><span class="k">def</span> <span class="nf">dump_json</span><span class="p">(</span><span class="n">json_struct</span><span class="p">):</span>
+<div class="viewcode-block" id="dump_json"><a class="viewcode-back" href="../../../../webdriver_remote/selenium.webdriver.remote.utils.html#selenium.webdriver.remote.utils.dump_json">[docs]</a><span class="k">def</span> <span class="nf">dump_json</span><span class="p">(</span><span class="n">json_struct</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
     <span class="k">return</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">json_struct</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="load_json"><a class="viewcode-back" href="../../../../webdriver_remote/selenium.webdriver.remote.utils.html#selenium.webdriver.remote.utils.load_json">[docs]</a><span class="k">def</span> <span class="nf">load_json</span><span class="p">(</span><span class="n">s</span><span class="p">):</span>
+<div class="viewcode-block" id="load_json"><a class="viewcode-back" href="../../../../webdriver_remote/selenium.webdriver.remote.utils.html#selenium.webdriver.remote.utils.load_json">[docs]</a><span class="k">def</span> <span class="nf">load_json</span><span class="p">(</span><span class="n">s</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">bytes</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
     <span class="k">return</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">s</span><span class="p">)</span></div>
-
-
-<div class="viewcode-block" id="unzip_to_temp_dir"><a class="viewcode-back" href="../../../../webdriver_remote/selenium.webdriver.remote.utils.html#selenium.webdriver.remote.utils.unzip_to_temp_dir">[docs]</a><span class="k">def</span> <span class="nf">unzip_to_temp_dir</span><span class="p">(</span><span class="n">zip_file_name</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Unzip zipfile to a temporary directory.</span>
-
-<span class="sd">    The directory of the unzipped files is returned if success,</span>
-<span class="sd">    otherwise None is returned. &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="n">zip_file_name</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">zip_file_name</span><span class="p">):</span>
-        <span class="k">return</span> <span class="kc">None</span>
-
-    <span class="n">zf</span> <span class="o">=</span> <span class="n">zipfile</span><span class="o">.</span><span class="n">ZipFile</span><span class="p">(</span><span class="n">zip_file_name</span><span class="p">)</span>
-
-    <span class="k">if</span> <span class="n">zf</span><span class="o">.</span><span class="n">testzip</span><span class="p">():</span>
-        <span class="k">return</span> <span class="kc">None</span>
-
-    <span class="c1"># Unzip the files into a temporary directory</span>
-    <span class="n">LOGGER</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Extracting zipped file: </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">zip_file_name</span><span class="p">)</span>
-    <span class="n">tempdir</span> <span class="o">=</span> <span class="n">tempfile</span><span class="o">.</span><span class="n">mkdtemp</span><span class="p">()</span>
-
-    <span class="k">try</span><span class="p">:</span>
-        <span class="c1"># Create directories that don&#39;t exist</span>
-        <span class="k">for</span> <span class="n">zip_name</span> <span class="ow">in</span> <span class="n">zf</span><span class="o">.</span><span class="n">namelist</span><span class="p">():</span>
-            <span class="c1"># We have no knowledge on the os where the zipped file was</span>
-            <span class="c1"># created, so we restrict to zip files with paths without</span>
-            <span class="c1"># character &quot;\&quot; and &quot;/&quot;.</span>
-            <span class="n">name</span> <span class="o">=</span> <span class="p">(</span><span class="n">zip_name</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\\</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">sep</span><span class="p">)</span><span class="o">.</span>
-                    <span class="n">replace</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">sep</span><span class="p">))</span>
-            <span class="n">dest</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">tempdir</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
-            <span class="k">if</span> <span class="p">(</span><span class="n">name</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">sep</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">dest</span><span class="p">)):</span>
-                <span class="n">os</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">dest</span><span class="p">)</span>
-                <span class="n">LOGGER</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Directory </span><span class="si">%s</span><span class="s2"> created.&quot;</span> <span class="o">%</span> <span class="n">dest</span><span class="p">)</span>
-
-        <span class="c1"># Copy files</span>
-        <span class="k">for</span> <span class="n">zip_name</span> <span class="ow">in</span> <span class="n">zf</span><span class="o">.</span><span class="n">namelist</span><span class="p">():</span>
-            <span class="c1"># We have no knowledge on the os where the zipped file was</span>
-            <span class="c1"># created, so we restrict to zip files with paths without</span>
-            <span class="c1"># character &quot;\&quot; and &quot;/&quot;.</span>
-            <span class="n">name</span> <span class="o">=</span> <span class="p">(</span><span class="n">zip_name</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\\</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">sep</span><span class="p">)</span><span class="o">.</span>
-                    <span class="n">replace</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">sep</span><span class="p">))</span>
-            <span class="n">dest</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">tempdir</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="n">name</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">sep</span><span class="p">)):</span>
-                <span class="n">LOGGER</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Copying file </span><span class="si">%s</span><span class="s2">......&quot;</span> <span class="o">%</span> <span class="n">dest</span><span class="p">)</span>
-                <span class="n">outfile</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">dest</span><span class="p">,</span> <span class="s1">&#39;wb&#39;</span><span class="p">)</span>
-                <span class="n">outfile</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">zf</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">zip_name</span><span class="p">))</span>
-                <span class="n">outfile</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
-                <span class="n">LOGGER</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;File </span><span class="si">%s</span><span class="s2"> copied.&quot;</span> <span class="o">%</span> <span class="n">dest</span><span class="p">)</span>
-
-        <span class="n">LOGGER</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Unzipped file can be found at </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">tempdir</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">tempdir</span>
-
-    <span class="k">except</span> <span class="ne">IOError</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
-        <span class="n">LOGGER</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Error in extracting webdriver.xpi: </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">err</span><span class="p">)</span>
-        <span class="k">return</span> <span class="kc">None</span></div>
 </pre></div>
 
           </div>

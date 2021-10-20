@@ -94,14 +94,14 @@
   
   <dl>
     <dt>Defined in:</dt>
-    <dd>build/rb/lib/selenium/webdriver/common/options.rb</dd>
+    <dd>rb/lib/selenium/webdriver/common/options.rb</dd>
   </dl>
   
 </div>
 
 <div id="subclasses">
   <h2>Direct Known Subclasses</h2>
-  <p class="children"><span class='object_link'><a href="Chrome/Options.html" title="Selenium::WebDriver::Chrome::Options (class)">Chrome::Options</a></span>, <span class='object_link'><a href="EdgeHtml/Options.html" title="Selenium::WebDriver::EdgeHtml::Options (class)">EdgeHtml::Options</a></span>, <span class='object_link'><a href="Firefox/Options.html" title="Selenium::WebDriver::Firefox::Options (class)">Firefox::Options</a></span>, <span class='object_link'><a href="IE/Options.html" title="Selenium::WebDriver::IE::Options (class)">IE::Options</a></span>, <span class='object_link'><a href="Safari/Options.html" title="Selenium::WebDriver::Safari::Options (class)">Safari::Options</a></span></p>
+  <p class="children"><span class='object_link'><a href="Chrome/Options.html" title="Selenium::WebDriver::Chrome::Options (class)">Chrome::Options</a></span>, <span class='object_link'><a href="Firefox/Options.html" title="Selenium::WebDriver::Firefox::Options (class)">Firefox::Options</a></span>, <span class='object_link'><a href="IE/Options.html" title="Selenium::WebDriver::IE::Options (class)">IE::Options</a></span>, <span class='object_link'><a href="Safari/Options.html" title="Selenium::WebDriver::Safari::Options (class)">Safari::Options</a></span></p>
 </div>
 
   
@@ -116,13 +116,48 @@
           
         </dt>
         <dd><pre class="code"><span class='qsymbols_beg'>%i[</span><span class='tstring_content'>browser_name</span><span class='words_sep'> </span><span class='tstring_content'>browser_version</span><span class='words_sep'> </span><span class='tstring_content'>platform_name</span><span class='words_sep'> </span><span class='tstring_content'>accept_insecure_certs</span><span class='words_sep'> </span><span class='tstring_content'>page_load_strategy</span><span class='words_sep'> </span><span class='tstring_content'>proxy</span><span class='words_sep'>
-</span><span class='tstring_content'>set_window_rect</span><span class='words_sep'> </span><span class='tstring_content'>timeouts</span><span class='words_sep'> </span><span class='tstring_content'>unhandled_prompt_behavior</span><span class='words_sep'> </span><span class='tstring_content'>strict_file_interactability</span><span class='tstring_end'>]</span></span><span class='period'>.</span><span class='id identifier rubyid_freeze'>freeze</span></pre></dd>
+</span><span class='tstring_content'>set_window_rect</span><span class='words_sep'> </span><span class='tstring_content'>timeouts</span><span class='words_sep'> </span><span class='tstring_content'>unhandled_prompt_behavior</span><span class='words_sep'> </span><span class='tstring_content'>strict_file_interactability</span><span class='words_sep'>
+</span><span class='tstring_content'>web_socket_url</span><span class='tstring_end'>]</span></span><span class='period'>.</span><span class='id identifier rubyid_freeze'>freeze</span></pre></dd>
       
     </dl>
   
 
 
 
+
+  <h2>Class Attribute Summary <small><a href="#" class="summary_toggle">collapse</a></small></h2>
+  <ul class="summary">
+    
+      <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#driver_path-class_method" title="driver_path (class method)">.<strong>driver_path</strong>  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+    
+      <span class="note title readonly">readonly</span>
+    
+    
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'>
+<p>Returns the value of attribute driver_path.</p>
+</div></span>
+  
+</li>
+
+    
+  </ul>
 
   <h2>Instance Attribute Summary <small><a href="#" class="summary_toggle">collapse</a></small></h2>
   <ul class="summary">
@@ -170,6 +205,120 @@
         <li class="public ">
   <span class="summary_signature">
     
+      <a href="#chrome-class_method" title="chrome (class method)">.<strong>chrome</strong>(**opts)  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#edge-class_method" title="edge (class method)">.<strong>edge</strong>(**opts)  &#x21d2; Object </a>
+    
+
+    
+      (also: microsoftedge)
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#firefox-class_method" title="firefox (class method)">.<strong>firefox</strong>(**opts)  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#ie-class_method" title="ie (class method)">.<strong>ie</strong>(**opts)  &#x21d2; Object </a>
+    
+
+    
+      (also: internet_explorer)
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#safari-class_method" title="safari (class method)">.<strong>safari</strong>(**opts)  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
       <a href="#set_capabilities-class_method" title="set_capabilities (class method)">.<strong>set_capabilities</strong>  &#x21d2; Object </a>
     
 
@@ -201,7 +350,31 @@
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#add_option-instance_method" title="#add_option (instance method)">#<strong>add_option</strong>(name, value)  &#x21d2; Object </a>
+      <a href="#==-instance_method" title="#== (instance method)">#<strong>==</strong>(other)  &#x21d2; Object </a>
+    
+
+    
+      (also: #eql?)
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#add_option-instance_method" title="#add_option (instance method)">#<strong>add_option</strong>(name, value = nil)  &#x21d2; Object </a>
     
 
     
@@ -302,22 +475,22 @@
       <pre class="lines">
 
 
-42
-43
-44
-45
-46
-47
-48
-49
-50
-51
-52
-53
-54</pre>
+69
+70
+71
+72
+73
+74
+75
+76
+77
+78
+79
+80
+81</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/options.rb', line 42</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/options.rb', line 69</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_initialize'>initialize</span><span class='lparen'>(</span><span class='label'>options:</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='op'>**</span><span class='id identifier rubyid_opts'>opts</span><span class='rparen'>)</span>
   <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_class'>class</span><span class='period'>.</span><span class='id identifier rubyid_set_capabilities'>set_capabilities</span>
@@ -338,6 +511,54 @@
 </div>
   
 </div>
+
+  <div id="class_attr_details" class="attr_details">
+    <h2>Class Attribute Details</h2>
+    
+      
+      <span id=""></span>
+      <div class="method_details first">
+  <h3 class="signature first" id="driver_path-class_method">
+  
+    .<strong>driver_path</strong>  &#x21d2; <tt>Object</tt>  <span class="extras">(readonly)</span>
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    
+<p>Returns the value of attribute driver_path.</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+28
+29
+30</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/options.rb', line 28</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_driver_path'>driver_path</span>
+  <span class='ivar'>@driver_path</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+  </div>
 
   <div id="instance_attr_details" class="attr_details">
     <h2>Instance Attribute Details</h2>
@@ -370,12 +591,12 @@
       <pre class="lines">
 
 
-40
-41
-42</pre>
+67
+68
+69</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/options.rb', line 40</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/options.rb', line 67</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_options'>options</span>
   <span class='ivar'>@options</span>
@@ -393,7 +614,165 @@
 
     
       <div class="method_details first">
-  <h3 class="signature first" id="set_capabilities-class_method">
+  <h3 class="signature first" id="chrome-class_method">
+  
+    .<strong>chrome</strong>(**opts)  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+30
+31
+32</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/options.rb', line 30</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_chrome'>chrome</span><span class='lparen'>(</span><span class='op'>**</span><span class='id identifier rubyid_opts'>opts</span><span class='rparen'>)</span>
+  <span class='const'><span class='object_link'><a href="Chrome.html" title="Selenium::WebDriver::Chrome (module)">Chrome</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="Chrome/Options.html" title="Selenium::WebDriver::Chrome::Options (class)">Options</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="Chrome/Options.html#initialize-instance_method" title="Selenium::WebDriver::Chrome::Options#initialize (method)">new</a></span></span><span class='lparen'>(</span><span class='op'>**</span><span class='id identifier rubyid_opts'>opts</span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="edge-class_method">
+  
+    .<strong>edge</strong>(**opts)  &#x21d2; <tt>Object</tt> 
+  
+
+  
+    <span class="aliases">Also known as:
+    <span class="names"><span id='microsoftedge-class_method'>microsoftedge</span></span>
+    </span>
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+43
+44
+45</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/options.rb', line 43</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_edge'>edge</span><span class='lparen'>(</span><span class='op'>**</span><span class='id identifier rubyid_opts'>opts</span><span class='rparen'>)</span>
+  <span class='const'><span class='object_link'><a href="Edge.html" title="Selenium::WebDriver::Edge (module)">Edge</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="Edge/Options.html" title="Selenium::WebDriver::Edge::Options (class)">Options</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="Chrome/Options.html#initialize-instance_method" title="Selenium::WebDriver::Chrome::Options#initialize (method)">new</a></span></span><span class='lparen'>(</span><span class='op'>**</span><span class='id identifier rubyid_opts'>opts</span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="firefox-class_method">
+  
+    .<strong>firefox</strong>(**opts)  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+34
+35
+36</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/options.rb', line 34</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_firefox'>firefox</span><span class='lparen'>(</span><span class='op'>**</span><span class='id identifier rubyid_opts'>opts</span><span class='rparen'>)</span>
+  <span class='const'><span class='object_link'><a href="Firefox.html" title="Selenium::WebDriver::Firefox (module)">Firefox</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="Firefox/Options.html" title="Selenium::WebDriver::Firefox::Options (class)">Options</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="Firefox/Options.html#initialize-instance_method" title="Selenium::WebDriver::Firefox::Options#initialize (method)">new</a></span></span><span class='lparen'>(</span><span class='op'>**</span><span class='id identifier rubyid_opts'>opts</span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="ie-class_method">
+  
+    .<strong>ie</strong>(**opts)  &#x21d2; <tt>Object</tt> 
+  
+
+  
+    <span class="aliases">Also known as:
+    <span class="names"><span id='internet_explorer-class_method'>internet_explorer</span></span>
+    </span>
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+38
+39
+40</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/options.rb', line 38</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_ie'>ie</span><span class='lparen'>(</span><span class='op'>**</span><span class='id identifier rubyid_opts'>opts</span><span class='rparen'>)</span>
+  <span class='const'><span class='object_link'><a href="IE.html" title="Selenium::WebDriver::IE (module)">IE</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="IE/Options.html" title="Selenium::WebDriver::IE::Options (class)">Options</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="IE/Options.html#initialize-instance_method" title="Selenium::WebDriver::IE::Options#initialize (method)">new</a></span></span><span class='lparen'>(</span><span class='op'>**</span><span class='id identifier rubyid_opts'>opts</span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="safari-class_method">
+  
+    .<strong>safari</strong>(**opts)  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+48
+49
+50</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/options.rb', line 48</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_safari'>safari</span><span class='lparen'>(</span><span class='op'>**</span><span class='id identifier rubyid_opts'>opts</span><span class='rparen'>)</span>
+  <span class='const'><span class='object_link'><a href="Safari.html" title="Selenium::WebDriver::Safari (module)">Safari</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="Safari/Options.html" title="Selenium::WebDriver::Safari::Options (class)">Options</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="#initialize-instance_method" title="Selenium::WebDriver::Options#initialize (method)">new</a></span></span><span class='lparen'>(</span><span class='op'>**</span><span class='id identifier rubyid_opts'>opts</span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="set_capabilities-class_method">
   
     .<strong>set_capabilities</strong>  &#x21d2; <tt>Object</tt> 
   
@@ -407,24 +786,24 @@
       <pre class="lines">
 
 
-26
-27
-28
-29
-30
-31
-32
-33
-34
-35
-36
-37
-38</pre>
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/options.rb', line 26</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/options.rb', line 52</span>
 
-<span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_set_capabilities'>set_capabilities</span>
+<span class='kw'>def</span> <span class='id identifier rubyid_set_capabilities'>set_capabilities</span>
   <span class='lparen'>(</span><span class='const'><span class='object_link'><a href="#W3C_OPTIONS-constant" title="Selenium::WebDriver::Options::W3C_OPTIONS (constant)">W3C_OPTIONS</a></span></span> <span class='op'>+</span> <span class='kw'>self</span><span class='op'>::</span><span class='const'>CAPABILITIES</span><span class='period'>.</span><span class='id identifier rubyid_keys'>keys</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_each'>each</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_key'>key</span><span class='op'>|</span>
     <span class='kw'>next</span> <span class='kw'>if</span> <span class='id identifier rubyid_method_defined?'>method_defined?</span> <span class='id identifier rubyid_key'>key</span>
 
@@ -449,9 +828,47 @@
 
     
       <div class="method_details first">
-  <h3 class="signature first" id="add_option-instance_method">
+  <h3 class="signature first" id="==-instance_method">
   
-    #<strong>add_option</strong>(name, value)  &#x21d2; <tt>Object</tt> 
+    #<strong>==</strong>(other)  &#x21d2; <tt>Object</tt> 
+  
+
+  
+    <span class="aliases">Also known as:
+    <span class="names"><span id='eql?-instance_method'>eql?</span></span>
+    </span>
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+99
+100
+101
+102
+103</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/options.rb', line 99</span>
+
+<span class='kw'>def</span> <span class='op'>==</span><span class='lparen'>(</span><span class='id identifier rubyid_other'>other</span><span class='rparen'>)</span>
+  <span class='kw'>return</span> <span class='kw'>false</span> <span class='kw'>unless</span> <span class='id identifier rubyid_other'>other</span><span class='period'>.</span><span class='id identifier rubyid_is_a?'>is_a?</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_class'>class</span>
+
+  <span class='id identifier rubyid_as_json'>as_json</span> <span class='op'>==</span> <span class='id identifier rubyid_other'>other</span><span class='period'>.</span><span class='id identifier rubyid_as_json'>as_json</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="add_option-instance_method">
+  
+    #<strong>add_option</strong>(name, value = nil)  &#x21d2; <tt>Object</tt> 
   
 
   
@@ -506,6 +923,8 @@
         <span class='type'>(<tt>Boolean</tt>, <tt>String</tt>, <tt>Integer</tt>)</span>
       
       
+        <em class="default">(defaults to: <tt>nil</tt>)</em>
+      
       
         &mdash;
         <div class='inline'>
@@ -523,14 +942,16 @@
       <pre class="lines">
 
 
-67
-68
-69</pre>
+94
+95
+96
+97</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/options.rb', line 67</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/options.rb', line 94</span>
 
-<span class='kw'>def</span> <span class='id identifier rubyid_add_option'>add_option</span><span class='lparen'>(</span><span class='id identifier rubyid_name'>name</span><span class='comma'>,</span> <span class='id identifier rubyid_value'>value</span><span class='rparen'>)</span>
+<span class='kw'>def</span> <span class='id identifier rubyid_add_option'>add_option</span><span class='lparen'>(</span><span class='id identifier rubyid_name'>name</span><span class='comma'>,</span> <span class='id identifier rubyid_value'>value</span> <span class='op'>=</span> <span class='kw'>nil</span><span class='rparen'>)</span>
+  <span class='ivar'>@options</span><span class='lbracket'>[</span><span class='id identifier rubyid_name'>name</span><span class='period'>.</span><span class='id identifier rubyid_keys'>keys</span><span class='period'>.</span><span class='id identifier rubyid_first'>first</span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='id identifier rubyid_name'>name</span><span class='period'>.</span><span class='id identifier rubyid_values'>values</span><span class='period'>.</span><span class='id identifier rubyid_first'>first</span> <span class='kw'>if</span> <span class='id identifier rubyid_value'>value</span><span class='period'>.</span><span class='id identifier rubyid_nil?'>nil?</span> <span class='op'>&amp;&amp;</span> <span class='id identifier rubyid_name'>name</span><span class='period'>.</span><span class='id identifier rubyid_is_a?'>is_a?</span><span class='lparen'>(</span><span class='const'>Hash</span><span class='rparen'>)</span>
   <span class='ivar'>@options</span><span class='lbracket'>[</span><span class='id identifier rubyid_name'>name</span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='id identifier rubyid_value'>value</span>
 <span class='kw'>end</span></pre>
     </td>
@@ -566,34 +987,32 @@
       <pre class="lines">
 
 
-75
-76
-77
-78
-79
-80
-81
-82
-83
-84
-85
-86
-87
-88
-89</pre>
+111
+112
+113
+114
+115
+116
+117
+118
+119
+120
+121
+122
+123
+124</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/options.rb', line 75</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/options.rb', line 111</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_as_json'>as_json</span><span class='lparen'>(</span><span class='op'>*</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_options'>options</span> <span class='op'>=</span> <span class='ivar'>@options</span><span class='period'>.</span><span class='id identifier rubyid_dup'>dup</span>
 
-  <span class='id identifier rubyid_w3c_options'>w3c_options</span> <span class='op'>=</span> <span class='id identifier rubyid_options'>options</span><span class='period'>.</span><span class='id identifier rubyid_select'>select</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid_key'>key</span><span class='comma'>,</span> <span class='id identifier rubyid__val'>_val</span><span class='op'>|</span> <span class='const'><span class='object_link'><a href="#W3C_OPTIONS-constant" title="Selenium::WebDriver::Options::W3C_OPTIONS (constant)">W3C_OPTIONS</a></span></span><span class='period'>.</span><span class='id identifier rubyid_include?'>include?</span><span class='lparen'>(</span><span class='id identifier rubyid_key'>key</span><span class='rparen'>)</span> <span class='rbrace'>}</span>
-  <span class='id identifier rubyid_options'>options</span><span class='period'>.</span><span class='id identifier rubyid_delete_if'>delete_if</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid_key'>key</span><span class='comma'>,</span> <span class='id identifier rubyid__val'>_val</span><span class='op'>|</span> <span class='const'><span class='object_link'><a href="#W3C_OPTIONS-constant" title="Selenium::WebDriver::Options::W3C_OPTIONS (constant)">W3C_OPTIONS</a></span></span><span class='period'>.</span><span class='id identifier rubyid_include?'>include?</span><span class='lparen'>(</span><span class='id identifier rubyid_key'>key</span><span class='rparen'>)</span> <span class='rbrace'>}</span>
+  <span class='id identifier rubyid_w3c_options'>w3c_options</span> <span class='op'>=</span> <span class='id identifier rubyid_process_w3c_options'>process_w3c_options</span><span class='lparen'>(</span><span class='id identifier rubyid_options'>options</span><span class='rparen'>)</span>
 
   <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_class'>class</span><span class='op'>::</span><span class='const'>CAPABILITIES</span><span class='period'>.</span><span class='id identifier rubyid_each'>each</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_capability_alias'>capability_alias</span><span class='comma'>,</span> <span class='id identifier rubyid_capability_name'>capability_name</span><span class='op'>|</span>
     <span class='id identifier rubyid_capability_value'>capability_value</span> <span class='op'>=</span> <span class='id identifier rubyid_options'>options</span><span class='period'>.</span><span class='id identifier rubyid_delete'>delete</span><span class='lparen'>(</span><span class='id identifier rubyid_capability_alias'>capability_alias</span><span class='rparen'>)</span>
-    <span class='id identifier rubyid_options'>options</span><span class='lbracket'>[</span><span class='id identifier rubyid_capability_name'>capability_name</span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='id identifier rubyid_capability_value'>capability_value</span> <span class='kw'>unless</span> <span class='id identifier rubyid_capability_value'>capability_value</span><span class='period'>.</span><span class='id identifier rubyid_nil?'>nil?</span>
+    <span class='id identifier rubyid_options'>options</span><span class='lbracket'>[</span><span class='id identifier rubyid_capability_name'>capability_name</span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='id identifier rubyid_capability_value'>capability_value</span> <span class='kw'>if</span> <span class='op'>!</span><span class='id identifier rubyid_capability_value'>capability_value</span><span class='period'>.</span><span class='id identifier rubyid_nil?'>nil?</span> <span class='op'>&amp;&amp;</span> <span class='op'>!</span><span class='id identifier rubyid_options'>options</span><span class='period'>.</span><span class='id identifier rubyid_key?'>key?</span><span class='lparen'>(</span><span class='id identifier rubyid_capability_name'>capability_name</span><span class='rparen'>)</span>
   <span class='kw'>end</span>
   <span class='id identifier rubyid_browser_options'>browser_options</span> <span class='op'>=</span> <span class='kw'>defined?</span><span class='lparen'>(</span><span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_class'>class</span><span class='op'>::</span><span class='const'>KEY</span><span class='rparen'>)</span> <span class='op'>?</span> <span class='lbrace'>{</span><span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_class'>class</span><span class='op'>::</span><span class='const'>KEY</span> <span class='op'>=&gt;</span> <span class='id identifier rubyid_options'>options</span><span class='rbrace'>}</span> <span class='op'>:</span> <span class='id identifier rubyid_options'>options</span>
 
@@ -610,9 +1029,9 @@
 </div>
 
       <div id="footer">
-  Generated on Thu Mar 18 21:58:19 2021 by
+  Generated on Wed Oct 20 18:47:53 2021 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.26 (ruby-2.6.3).
+  0.9.26 (ruby-2.7.3).
 </div>
 
     </div>

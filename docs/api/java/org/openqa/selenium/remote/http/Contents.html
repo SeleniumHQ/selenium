@@ -27,7 +27,7 @@
     catch(err) {
     }
 //-->
-var data = {"i0":9,"i1":9,"i2":9,"i3":9,"i4":9,"i5":9,"i6":9,"i7":9,"i8":9,"i9":9,"i10":9,"i11":9,"i12":9};
+var data = {"i0":9,"i1":9,"i2":9,"i3":9,"i4":9,"i5":9,"i6":9,"i7":9,"i8":9,"i9":9,"i10":9,"i11":9,"i12":9,"i13":9};
 var tabs = {65535:["t0","All Methods"],1:["t1","Static Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -179,49 +179,55 @@ extends java.lang.Object</pre>
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr id="i4" class="altColor">
+<td class="colFirst"><code>static &lt;T&gt;&nbsp;T</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#fromJson(org.openqa.selenium.remote.http.HttpMessage,java.lang.reflect.Type)">fromJson</a></span>&#8203;(org.openqa.selenium.remote.http.HttpMessage&lt;?&gt;&nbsp;message,
+        java.lang.reflect.Type&nbsp;typeOfT)</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr id="i5" class="rowColor">
 <td class="colFirst"><code>static java.util.function.Supplier&lt;java.io.InputStream&gt;</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#memoize(java.util.function.Supplier)">memoize</a></span>&#8203;(java.util.function.Supplier&lt;java.io.InputStream&gt;&nbsp;delegate)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i5" class="rowColor">
+<tr id="i6" class="altColor">
 <td class="colFirst"><code>static java.io.Reader</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#reader(java.util.function.Supplier,java.nio.charset.Charset)">reader</a></span>&#8203;(java.util.function.Supplier&lt;java.io.InputStream&gt;&nbsp;supplier,
       java.nio.charset.Charset&nbsp;charset)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i6" class="altColor">
+<tr id="i7" class="rowColor">
 <td class="colFirst"><code>static java.io.Reader</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#reader(org.openqa.selenium.remote.http.HttpMessage)">reader</a></span>&#8203;(org.openqa.selenium.remote.http.HttpMessage&lt;?&gt;&nbsp;message)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i7" class="rowColor">
+<tr id="i8" class="altColor">
 <td class="colFirst"><code>static java.util.function.Supplier&lt;java.io.InputStream&gt;</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#string(java.lang.CharSequence,java.nio.charset.Charset)">string</a></span>&#8203;(java.lang.CharSequence&nbsp;value,
       java.nio.charset.Charset&nbsp;charset)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i8" class="altColor">
+<tr id="i9" class="rowColor">
 <td class="colFirst"><code>static java.lang.String</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#string(java.util.function.Supplier,java.nio.charset.Charset)">string</a></span>&#8203;(java.util.function.Supplier&lt;java.io.InputStream&gt;&nbsp;supplier,
       java.nio.charset.Charset&nbsp;charset)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i9" class="rowColor">
+<tr id="i10" class="altColor">
 <td class="colFirst"><code>static java.lang.String</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#string(org.openqa.selenium.remote.http.HttpMessage)">string</a></span>&#8203;(org.openqa.selenium.remote.http.HttpMessage&lt;?&gt;&nbsp;message)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i10" class="altColor">
+<tr id="i11" class="rowColor">
 <td class="colFirst"><code>static java.io.Reader</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#utf8Reader(java.util.function.Supplier)">utf8Reader</a></span>&#8203;(java.util.function.Supplier&lt;java.io.InputStream&gt;&nbsp;supplier)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i11" class="rowColor">
+<tr id="i12" class="altColor">
 <td class="colFirst"><code>static java.util.function.Supplier&lt;java.io.InputStream&gt;</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#utf8String(java.lang.CharSequence)">utf8String</a></span>&#8203;(java.lang.CharSequence&nbsp;value)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i12" class="altColor">
+<tr id="i13" class="rowColor">
 <td class="colFirst"><code>static java.lang.String</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#utf8String(java.util.function.Supplier)">utf8String</a></span>&#8203;(java.util.function.Supplier&lt;java.io.InputStream&gt;&nbsp;supplier)</code></th>
 <td class="colLast">&nbsp;</td>
@@ -363,6 +369,16 @@ extends java.lang.Object</pre>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>an <code>InputStream</code> containing the object converted to a UTF-8 JSON string.</dd>
 </dl>
+</li>
+</ul>
+<a id="fromJson(org.openqa.selenium.remote.http.HttpMessage,java.lang.reflect.Type)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>fromJson</h4>
+<pre class="methodSignature">public static&nbsp;&lt;T&gt;&nbsp;T&nbsp;fromJson&#8203;(org.openqa.selenium.remote.http.HttpMessage&lt;?&gt;&nbsp;message,
+                             java.lang.reflect.Type&nbsp;typeOfT)</pre>
 </li>
 </ul>
 <a id="memoize(java.util.function.Supplier)">

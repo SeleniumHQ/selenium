@@ -94,7 +94,7 @@
   
   <dl>
     <dt>Defined in:</dt>
-    <dd>build/rb/lib/selenium/webdriver/devtools/request.rb</dd>
+    <dd>rb/lib/selenium/webdriver/devtools/request.rb</dd>
   </dl>
   
 </div>
@@ -118,8 +118,6 @@
   
   
     
-      <span class="note title readonly">readonly</span>
-    
     
   
   
@@ -138,7 +136,7 @@
       <li class="public ">
   <span class="summary_signature">
     
-      <a href="#method-instance_method" title="#method (instance method)">#<strong>method</strong>  &#x21d2; Object </a>
+      <a href="#id-instance_method" title="#id (instance method)">#<strong>id</strong>  &#x21d2; Object </a>
     
 
     
@@ -148,6 +146,33 @@
   
     
       <span class="note title readonly">readonly</span>
+    
+    
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'>
+<p>Returns the value of attribute id.</p>
+</div></span>
+  
+</li>
+
+    
+      <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#method-instance_method" title="#method (instance method)">#<strong>method</strong>  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
     
     
   
@@ -167,7 +192,7 @@
       <li class="public ">
   <span class="summary_signature">
     
-      <a href="#url-instance_method" title="#url (instance method)">#<strong>url</strong>  &#x21d2; Object </a>
+      <a href="#post_data-instance_method" title="#post_data (instance method)">#<strong>post_data</strong>  &#x21d2; Object </a>
     
 
     
@@ -176,7 +201,32 @@
   
   
     
-      <span class="note title readonly">readonly</span>
+    
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'>
+<p>Returns the value of attribute post_data.</p>
+</div></span>
+  
+</li>
+
+    
+      <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#url-instance_method" title="#url (instance method)">#<strong>url</strong>  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
     
     
   
@@ -200,6 +250,39 @@
 
   
     <h2>
+      Class Method Summary
+      <small><a href="#" class="summary_toggle">collapse</a></small>
+    </h2>
+
+    <ul class="summary">
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#from-class_method" title="from (class method)">.<strong>from</strong>(id, params)  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  <span class="private note title">private</span>
+
+  
+    <span class="summary_desc"><div class='inline'>
+<p>Creates request from DevTools message.</p>
+</div></span>
+  
+</li>
+
+      
+    </ul>
+  
+    <h2>
       Instance Method Summary
       <small><a href="#" class="summary_toggle">collapse</a></small>
     </h2>
@@ -209,7 +292,7 @@
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#continue-instance_method" title="#continue (instance method)">#<strong>continue</strong>  &#x21d2; Object </a>
+      <a href="#==-instance_method" title="#== (instance method)">#<strong>==</strong>(other)  &#x21d2; Object </a>
     
 
     
@@ -231,7 +314,7 @@
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#initialize-instance_method" title="#initialize (instance method)">#<strong>initialize</strong>(devtools:, id:, url:, method:, headers:)  &#x21d2; Request </a>
+      <a href="#initialize-instance_method" title="#initialize (instance method)">#<strong>initialize</strong>(id:, url:, method:, headers:, post_data:)  &#x21d2; Request </a>
     
 
     
@@ -276,28 +359,6 @@
 </li>
 
       
-        <li class="public ">
-  <span class="summary_signature">
-    
-      <a href="#respond-instance_method" title="#respond (instance method)">#<strong>respond</strong>(code: 200, headers: {}, body: &#39;&#39;)  &#x21d2; Object </a>
-    
-
-    
-  </span>
-  
-  
-  
-  
-  
-  
-  
-
-  
-    <span class="summary_desc"><div class='inline'></div></span>
-  
-</li>
-
-      
     </ul>
   
 
@@ -307,7 +368,7 @@
     <div class="method_details first">
   <h3 class="signature first" id="initialize-instance_method">
   
-    #<strong>initialize</strong>(devtools:, id:, url:, method:, headers:)  &#x21d2; <tt><span class='object_link'><a href="" title="Selenium::WebDriver::DevTools::Request (class)">Request</a></span></tt> 
+    #<strong>initialize</strong>(id:, url:, method:, headers:, post_data:)  &#x21d2; <tt><span class='object_link'><a href="" title="Selenium::WebDriver::DevTools::Request (class)">Request</a></span></tt> 
   
 
   
@@ -330,23 +391,23 @@
       <pre class="lines">
 
 
-27
-28
-29
-30
-31
-32
-33</pre>
+43
+44
+45
+46
+47
+48
+49</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/devtools/request.rb', line 27</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/devtools/request.rb', line 43</span>
 
-<span class='kw'>def</span> <span class='id identifier rubyid_initialize'>initialize</span><span class='lparen'>(</span><span class='label'>devtools:</span><span class='comma'>,</span> <span class='label'>id:</span><span class='comma'>,</span> <span class='label'>url:</span><span class='comma'>,</span> <span class='label'>method:</span><span class='comma'>,</span> <span class='label'>headers:</span><span class='rparen'>)</span>
-  <span class='ivar'>@devtools</span> <span class='op'>=</span> <span class='id identifier rubyid_devtools'>devtools</span>
+<span class='kw'>def</span> <span class='id identifier rubyid_initialize'>initialize</span><span class='lparen'>(</span><span class='label'>id:</span><span class='comma'>,</span> <span class='label'>url:</span><span class='comma'>,</span> <span class='label'>method:</span><span class='comma'>,</span> <span class='label'>headers:</span><span class='comma'>,</span> <span class='label'>post_data:</span><span class='rparen'>)</span>
   <span class='ivar'>@id</span> <span class='op'>=</span> <span class='id identifier rubyid_id'>id</span>
   <span class='ivar'>@url</span> <span class='op'>=</span> <span class='id identifier rubyid_url'>url</span>
   <span class='ivar'>@method</span> <span class='op'>=</span> <span class='id identifier rubyid_method'>method</span>
   <span class='ivar'>@headers</span> <span class='op'>=</span> <span class='id identifier rubyid_headers'>headers</span>
+  <span class='ivar'>@post_data</span> <span class='op'>=</span> <span class='id identifier rubyid_post_data'>post_data</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -359,11 +420,11 @@
     <h2>Instance Attribute Details</h2>
     
       
-      <span id=""></span>
+      <span id="headers=-instance_method"></span>
       <div class="method_details first">
   <h3 class="signature first" id="headers-instance_method">
   
-    #<strong>headers</strong>  &#x21d2; <tt>Object</tt>  <span class="extras">(readonly)</span>
+    #<strong>headers</strong>  &#x21d2; <tt>Object</tt> 
   
 
   
@@ -391,7 +452,7 @@
 27</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/devtools/request.rb', line 25</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/devtools/request.rb', line 25</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_headers'>headers</span>
   <span class='ivar'>@headers</span>
@@ -404,9 +465,52 @@
       
       <span id=""></span>
       <div class="method_details ">
+  <h3 class="signature " id="id-instance_method">
+  
+    #<strong>id</strong>  &#x21d2; <tt>Object</tt>  <span class="extras">(readonly)</span>
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    
+<p>Returns the value of attribute id.</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+26
+27
+28</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/devtools/request.rb', line 26</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_id'>id</span>
+  <span class='ivar'>@id</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      
+      <span id="method=-instance_method"></span>
+      <div class="method_details ">
   <h3 class="signature " id="method-instance_method">
   
-    #<strong>method</strong>  &#x21d2; <tt>Object</tt>  <span class="extras">(readonly)</span>
+    #<strong>method</strong>  &#x21d2; <tt>Object</tt> 
   
 
   
@@ -434,7 +538,7 @@
 27</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/devtools/request.rb', line 25</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/devtools/request.rb', line 25</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_method'>method</span>
   <span class='ivar'>@method</span>
@@ -445,11 +549,54 @@
 </div>
     
       
-      <span id=""></span>
+      <span id="post_data=-instance_method"></span>
+      <div class="method_details ">
+  <h3 class="signature " id="post_data-instance_method">
+  
+    #<strong>post_data</strong>  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    
+<p>Returns the value of attribute post_data.</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+25
+26
+27</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/devtools/request.rb', line 25</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_post_data'>post_data</span>
+  <span class='ivar'>@post_data</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      
+      <span id="url=-instance_method"></span>
       <div class="method_details ">
   <h3 class="signature " id="url-instance_method">
   
-    #<strong>url</strong>  &#x21d2; <tt>Object</tt>  <span class="extras">(readonly)</span>
+    #<strong>url</strong>  &#x21d2; <tt>Object</tt> 
   
 
   
@@ -477,7 +624,7 @@
 27</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/devtools/request.rb', line 25</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/devtools/request.rb', line 25</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_url'>url</span>
   <span class='ivar'>@url</span>
@@ -490,14 +637,77 @@
   </div>
 
 
+  <div id="class_method_details" class="method_details_list">
+    <h2>Class Method Details</h2>
+
+    
+      <div class="method_details first">
+  <h3 class="signature first" id="from-class_method">
+  
+    .<strong>from</strong>(id, params)  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    <p class="note private">
+  <strong>This method is part of a private API.</strong>
+  You should avoid using this method if possible, as it may be removed or be changed in the future.
+</p>
+
+<p>Creates request from DevTools message.</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+33
+34
+35
+36
+37
+38
+39
+40
+41</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/devtools/request.rb', line 33</span>
+
+<span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_from'>from</span><span class='lparen'>(</span><span class='id identifier rubyid_id'>id</span><span class='comma'>,</span> <span class='id identifier rubyid_params'>params</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span>
+    <span class='label'>id:</span> <span class='id identifier rubyid_id'>id</span><span class='comma'>,</span>
+    <span class='label'>url:</span> <span class='id identifier rubyid_params'>params</span><span class='period'>.</span><span class='id identifier rubyid_dig'>dig</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>request</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>url</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span><span class='comma'>,</span>
+    <span class='label'>method:</span> <span class='id identifier rubyid_params'>params</span><span class='period'>.</span><span class='id identifier rubyid_dig'>dig</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>request</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>method</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span><span class='comma'>,</span>
+    <span class='label'>headers:</span> <span class='id identifier rubyid_params'>params</span><span class='period'>.</span><span class='id identifier rubyid_dig'>dig</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>request</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>headers</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span><span class='comma'>,</span>
+    <span class='label'>post_data:</span> <span class='id identifier rubyid_params'>params</span><span class='period'>.</span><span class='id identifier rubyid_dig'>dig</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>request</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>postData</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span>
+  <span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+  </div>
+
   <div id="instance_method_details" class="method_details_list">
     <h2>Instance Method Details</h2>
 
     
       <div class="method_details first">
-  <h3 class="signature first" id="continue-instance_method">
+  <h3 class="signature first" id="==-instance_method">
   
-    #<strong>continue</strong>  &#x21d2; <tt>Object</tt> 
+    #<strong>==</strong>(other)  &#x21d2; <tt>Object</tt> 
   
 
   
@@ -509,15 +719,25 @@
       <pre class="lines">
 
 
-35
-36
-37</pre>
+51
+52
+53
+54
+55
+56
+57
+58</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/devtools/request.rb', line 35</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/devtools/request.rb', line 51</span>
 
-<span class='kw'>def</span> <span class='id identifier rubyid_continue'>continue</span>
-  <span class='ivar'>@devtools</span><span class='period'>.</span><span class='id identifier rubyid_fetch'>fetch</span><span class='period'>.</span><span class='id identifier rubyid_continue_request'>continue_request</span><span class='lparen'>(</span><span class='label'>request_id:</span> <span class='ivar'>@id</span><span class='rparen'>)</span>
+<span class='kw'>def</span> <span class='op'>==</span><span class='lparen'>(</span><span class='id identifier rubyid_other'>other</span><span class='rparen'>)</span>
+  <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_class'>class</span> <span class='op'>==</span> <span class='id identifier rubyid_other'>other</span><span class='period'>.</span><span class='id identifier rubyid_class'>class</span> <span class='op'>&amp;&amp;</span>
+    <span class='id identifier rubyid_id'>id</span> <span class='op'>==</span> <span class='id identifier rubyid_other'>other</span><span class='period'>.</span><span class='id identifier rubyid_id'>id</span> <span class='op'>&amp;&amp;</span>
+    <span class='id identifier rubyid_url'>url</span> <span class='op'>==</span> <span class='id identifier rubyid_other'>other</span><span class='period'>.</span><span class='id identifier rubyid_url'>url</span> <span class='op'>&amp;&amp;</span>
+    <span class='id identifier rubyid_method'>method</span> <span class='op'>==</span> <span class='id identifier rubyid_other'>other</span><span class='period'>.</span><span class='id identifier rubyid_method'>method</span> <span class='op'>&amp;&amp;</span>
+    <span class='id identifier rubyid_headers'>headers</span> <span class='op'>==</span> <span class='id identifier rubyid_other'>other</span><span class='period'>.</span><span class='id identifier rubyid_headers'>headers</span> <span class='op'>&amp;&amp;</span>
+    <span class='id identifier rubyid_post_data'>post_data</span> <span class='op'>==</span> <span class='id identifier rubyid_other'>other</span><span class='period'>.</span><span class='id identifier rubyid_post_data'>post_data</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -539,59 +759,15 @@
       <pre class="lines">
 
 
-50
-51
-52</pre>
+60
+61
+62</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/devtools/request.rb', line 50</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/devtools/request.rb', line 60</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_inspect'>inspect</span>
-  <span class='tstring'><span class='tstring_beg'>%(</span><span class='tstring_content'>#&lt;</span><span class='embexpr_beg'>#{</span><span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_class'>class</span><span class='period'>.</span><span class='id identifier rubyid_name'>name</span><span class='embexpr_end'>}</span><span class='tstring_content'> @method=&quot;</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_method'>method</span><span class='embexpr_end'>}</span><span class='tstring_content'>&quot; @url=&quot;</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_url'>url</span><span class='embexpr_end'>}</span><span class='tstring_content'>&quot;</span><span class='tstring_end'>)</span></span>
-<span class='kw'>end</span></pre>
-    </td>
-  </tr>
-</table>
-</div>
-    
-      <div class="method_details ">
-  <h3 class="signature " id="respond-instance_method">
-  
-    #<strong>respond</strong>(code: 200, headers: {}, body: &#39;&#39;)  &#x21d2; <tt>Object</tt> 
-  
-
-  
-
-  
-</h3><table class="source_code">
-  <tr>
-    <td>
-      <pre class="lines">
-
-
-39
-40
-41
-42
-43
-44
-45
-46
-47
-48</pre>
-    </td>
-    <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/devtools/request.rb', line 39</span>
-
-<span class='kw'>def</span> <span class='id identifier rubyid_respond'>respond</span><span class='lparen'>(</span><span class='label'>code:</span> <span class='int'>200</span><span class='comma'>,</span> <span class='label'>headers:</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='comma'>,</span> <span class='label'>body:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span>
-  <span class='ivar'>@devtools</span><span class='period'>.</span><span class='id identifier rubyid_fetch'>fetch</span><span class='period'>.</span><span class='id identifier rubyid_fulfill_request'>fulfill_request</span><span class='lparen'>(</span>
-    <span class='label'>request_id:</span> <span class='ivar'>@id</span><span class='comma'>,</span>
-    <span class='label'>body:</span> <span class='const'>Base64</span><span class='period'>.</span><span class='id identifier rubyid_strict_encode64'>strict_encode64</span><span class='lparen'>(</span><span class='id identifier rubyid_body'>body</span><span class='rparen'>)</span><span class='comma'>,</span>
-    <span class='label'>response_code:</span> <span class='id identifier rubyid_code'>code</span><span class='comma'>,</span>
-    <span class='label'>response_headers:</span> <span class='id identifier rubyid_headers'>headers</span><span class='period'>.</span><span class='id identifier rubyid_map'>map</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_k'>k</span><span class='comma'>,</span> <span class='id identifier rubyid_v'>v</span><span class='op'>|</span>
-      <span class='lbrace'>{</span><span class='label'>name:</span> <span class='id identifier rubyid_k'>k</span><span class='comma'>,</span> <span class='label'>value:</span> <span class='id identifier rubyid_v'>v</span><span class='rbrace'>}</span>
-    <span class='kw'>end</span>
-  <span class='rparen'>)</span>
+  <span class='tstring'><span class='tstring_beg'>%(</span><span class='tstring_content'>#&lt;</span><span class='embexpr_beg'>#{</span><span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_class'>class</span><span class='period'>.</span><span class='id identifier rubyid_name'>name</span><span class='embexpr_end'>}</span><span class='tstring_content'> @id=&quot;</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_id'>id</span><span class='embexpr_end'>}</span><span class='tstring_content'>&quot; @method=&quot;</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_method'>method</span><span class='embexpr_end'>}</span><span class='tstring_content'>&quot; @url=&quot;</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_url'>url</span><span class='embexpr_end'>}</span><span class='tstring_content'>&quot;</span><span class='tstring_end'>)</span></span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -603,9 +779,9 @@
 </div>
 
       <div id="footer">
-  Generated on Thu Mar 18 21:58:20 2021 by
+  Generated on Wed Oct 20 18:47:54 2021 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.26 (ruby-2.6.3).
+  0.9.26 (ruby-2.7.3).
 </div>
 
     </div>

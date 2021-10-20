@@ -57,7 +57,7 @@
 
 <span class="kn">import</span> <span class="nn">re</span>
 
-<span class="kn">from</span> <span class="nn">selenium.common.exceptions</span> <span class="kn">import</span> <span class="n">NoSuchElementException</span>
+<span class="kn">from</span> <span class="nn">selenium.common.exceptions</span> <span class="kn">import</span> <span class="n">NoSuchElementException</span><span class="p">,</span> <span class="n">InvalidSelectorException</span>
 <span class="kn">from</span> <span class="nn">selenium.common.exceptions</span> <span class="kn">import</span> <span class="n">NoSuchFrameException</span>
 <span class="kn">from</span> <span class="nn">selenium.common.exceptions</span> <span class="kn">import</span> <span class="n">StaleElementReferenceException</span>
 <span class="kn">from</span> <span class="nn">selenium.common.exceptions</span> <span class="kn">import</span> <span class="n">WebDriverException</span>
@@ -74,6 +74,7 @@
     <span class="sd">&quot;&quot;&quot;An expectation for checking the title of a page.</span>
 <span class="sd">    title is the expected title, which must be an exact match</span>
 <span class="sd">    returns True if the title matches, false otherwise.&quot;&quot;&quot;</span>
+
     <span class="k">def</span> <span class="nf">_predicate</span><span class="p">(</span><span class="n">driver</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">driver</span><span class="o">.</span><span class="n">title</span> <span class="o">==</span> <span class="n">title</span>
 
@@ -85,6 +86,7 @@
 <span class="sd">    substring. title is the fragment of title expected</span>
 <span class="sd">    returns True when the title matches, False otherwise</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="k">def</span> <span class="nf">_predicate</span><span class="p">(</span><span class="n">driver</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">title</span> <span class="ow">in</span> <span class="n">driver</span><span class="o">.</span><span class="n">title</span>
 
@@ -97,6 +99,7 @@
 <span class="sd">    locator - used to find the element</span>
 <span class="sd">    returns the WebElement once it is located</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="k">def</span> <span class="nf">_predicate</span><span class="p">(</span><span class="n">driver</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">driver</span><span class="o">.</span><span class="n">find_element</span><span class="p">(</span><span class="o">*</span><span class="n">locator</span><span class="p">)</span>
 
@@ -109,6 +112,7 @@
 <span class="sd">    url is the fragment of url expected,</span>
 <span class="sd">    returns True when the url matches, False otherwise</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="k">def</span> <span class="nf">_predicate</span><span class="p">(</span><span class="n">driver</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">url</span> <span class="ow">in</span> <span class="n">driver</span><span class="o">.</span><span class="n">current_url</span>
 
@@ -119,6 +123,7 @@
     <span class="sd">&quot;&quot;&quot;An expectation for checking the current url.</span>
 <span class="sd">    pattern is the expected pattern, which must be an exact match</span>
 <span class="sd">    returns True if the url matches, false otherwise.&quot;&quot;&quot;</span>
+
     <span class="k">def</span> <span class="nf">_predicate</span><span class="p">(</span><span class="n">driver</span><span class="p">):</span>
         <span class="k">return</span> <span class="nb">bool</span><span class="p">(</span><span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">pattern</span><span class="p">,</span> <span class="n">driver</span><span class="o">.</span><span class="n">current_url</span><span class="p">))</span>
 
@@ -129,6 +134,7 @@
     <span class="sd">&quot;&quot;&quot;An expectation for checking the current url.</span>
 <span class="sd">    url is the expected url, which must be an exact match</span>
 <span class="sd">    returns True if the url matches, false otherwise.&quot;&quot;&quot;</span>
+
     <span class="k">def</span> <span class="nf">_predicate</span><span class="p">(</span><span class="n">driver</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">url</span> <span class="o">==</span> <span class="n">driver</span><span class="o">.</span><span class="n">current_url</span>
 
@@ -139,6 +145,7 @@
     <span class="sd">&quot;&quot;&quot;An expectation for checking the current url.</span>
 <span class="sd">    url is the expected url, which must not be an exact match</span>
 <span class="sd">    returns True if the url is different, false otherwise.&quot;&quot;&quot;</span>
+
     <span class="k">def</span> <span class="nf">_predicate</span><span class="p">(</span><span class="n">driver</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">url</span> <span class="o">!=</span> <span class="n">driver</span><span class="o">.</span><span class="n">current_url</span>
 
@@ -152,9 +159,12 @@
 <span class="sd">    locator - used to find the element</span>
 <span class="sd">    returns the WebElement once it is located and visible</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="k">def</span> <span class="nf">_predicate</span><span class="p">(</span><span class="n">driver</span><span class="p">):</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">_element_if_visible</span><span class="p">(</span><span class="n">driver</span><span class="o">.</span><span class="n">find_element</span><span class="p">(</span><span class="o">*</span><span class="n">locator</span><span class="p">))</span>
+        <span class="k">except</span> <span class="n">InvalidSelectorException</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">e</span>
         <span class="k">except</span> <span class="n">StaleElementReferenceException</span><span class="p">:</span>
             <span class="k">return</span> <span class="kc">False</span>
 
@@ -168,6 +178,7 @@
 <span class="sd">    element is the WebElement</span>
 <span class="sd">    returns the (same) WebElement once it is visible</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="k">def</span> <span class="nf">_predicate</span><span class="p">(</span><span class="n">_</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">_element_if_visible</span><span class="p">(</span><span class="n">element</span><span class="p">)</span>
 
@@ -184,6 +195,7 @@
 <span class="sd">    locator is used to find the element</span>
 <span class="sd">    returns the list of WebElements once they are located</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="k">def</span> <span class="nf">_predicate</span><span class="p">(</span><span class="n">driver</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">driver</span><span class="o">.</span><span class="n">find_elements</span><span class="p">(</span><span class="o">*</span><span class="n">locator</span><span class="p">)</span>
 
@@ -196,6 +208,7 @@
 <span class="sd">    locator is used to find the element</span>
 <span class="sd">    returns the list of WebElements once they are located</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="k">def</span> <span class="nf">_predicate</span><span class="p">(</span><span class="n">driver</span><span class="p">):</span>
         <span class="k">return</span> <span class="p">[</span><span class="n">element</span> <span class="k">for</span> <span class="n">element</span> <span class="ow">in</span> <span class="n">driver</span><span class="o">.</span><span class="n">find_elements</span><span class="p">(</span><span class="o">*</span><span class="n">locator</span><span class="p">)</span> <span class="k">if</span> <span class="n">_element_if_visible</span><span class="p">(</span><span class="n">element</span><span class="p">)]</span>
 
@@ -209,6 +222,7 @@
 <span class="sd">    locator - used to find the elements</span>
 <span class="sd">    returns the list of WebElements once they are located and visible</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="k">def</span> <span class="nf">_predicate</span><span class="p">(</span><span class="n">driver</span><span class="p">):</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">elements</span> <span class="o">=</span> <span class="n">driver</span><span class="o">.</span><span class="n">find_elements</span><span class="p">(</span><span class="o">*</span><span class="n">locator</span><span class="p">)</span>
@@ -216,6 +230,8 @@
                 <span class="k">if</span> <span class="n">_element_if_visible</span><span class="p">(</span><span class="n">element</span><span class="p">,</span> <span class="n">visibility</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
                     <span class="k">return</span> <span class="kc">False</span>
             <span class="k">return</span> <span class="n">elements</span>
+        <span class="k">except</span> <span class="n">InvalidSelectorException</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">e</span>
         <span class="k">except</span> <span class="n">StaleElementReferenceException</span><span class="p">:</span>
             <span class="k">return</span> <span class="kc">False</span>
 
@@ -227,10 +243,13 @@
 <span class="sd">    specified element.</span>
 <span class="sd">    locator, text</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="k">def</span> <span class="nf">_predicate</span><span class="p">(</span><span class="n">driver</span><span class="p">):</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">element_text</span> <span class="o">=</span> <span class="n">driver</span><span class="o">.</span><span class="n">find_element</span><span class="p">(</span><span class="o">*</span><span class="n">locator</span><span class="p">)</span><span class="o">.</span><span class="n">text</span>
             <span class="k">return</span> <span class="n">text_</span> <span class="ow">in</span> <span class="n">element_text</span>
+        <span class="k">except</span> <span class="n">InvalidSelectorException</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">e</span>
         <span class="k">except</span> <span class="n">StaleElementReferenceException</span><span class="p">:</span>
             <span class="k">return</span> <span class="kc">False</span>
 
@@ -239,13 +258,36 @@
 
 <div class="viewcode-block" id="text_to_be_present_in_element_value"><a class="viewcode-back" href="../../../../webdriver_support/selenium.webdriver.support.expected_conditions.html#selenium.webdriver.support.expected_conditions.text_to_be_present_in_element_value">[docs]</a><span class="k">def</span> <span class="nf">text_to_be_present_in_element_value</span><span class="p">(</span><span class="n">locator</span><span class="p">,</span> <span class="n">text_</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    An expectation for checking if the given text is present in the element&#39;s</span>
+<span class="sd">    An expectation for checking if the given text is present in the element&#39;s value.</span>
 <span class="sd">    locator, text</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="k">def</span> <span class="nf">_predicate</span><span class="p">(</span><span class="n">driver</span><span class="p">):</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">element_text</span> <span class="o">=</span> <span class="n">driver</span><span class="o">.</span><span class="n">find_element</span><span class="p">(</span><span class="o">*</span><span class="n">locator</span><span class="p">)</span><span class="o">.</span><span class="n">get_attribute</span><span class="p">(</span><span class="s2">&quot;value&quot;</span><span class="p">)</span>
             <span class="k">return</span> <span class="n">text_</span> <span class="ow">in</span> <span class="n">element_text</span>
+        <span class="k">except</span> <span class="n">InvalidSelectorException</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">e</span>
+        <span class="k">except</span> <span class="n">StaleElementReferenceException</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">False</span>
+
+    <span class="k">return</span> <span class="n">_predicate</span></div>
+
+
+<div class="viewcode-block" id="text_to_be_present_in_element_attribute"><a class="viewcode-back" href="../../../../webdriver_support/selenium.webdriver.support.expected_conditions.html#selenium.webdriver.support.expected_conditions.text_to_be_present_in_element_attribute">[docs]</a><span class="k">def</span> <span class="nf">text_to_be_present_in_element_attribute</span><span class="p">(</span><span class="n">locator</span><span class="p">,</span> <span class="n">attribute_</span><span class="p">,</span> <span class="n">text_</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    An expectation for checking if the given text is present in the element&#39;s attribute.</span>
+<span class="sd">    locator, attribute, text</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">_predicate</span><span class="p">(</span><span class="n">driver</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">element_attribute_to_include</span><span class="p">(</span><span class="n">locator</span><span class="p">,</span> <span class="n">attribute_</span><span class="p">):</span>
+                <span class="k">return</span> <span class="kc">False</span>
+            <span class="n">element_text</span> <span class="o">=</span> <span class="n">driver</span><span class="o">.</span><span class="n">find_element</span><span class="p">(</span><span class="o">*</span><span class="n">locator</span><span class="p">)</span><span class="o">.</span><span class="n">get_attribute</span><span class="p">(</span><span class="n">attribute_</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">text_</span> <span class="ow">in</span> <span class="n">element_text</span>
+        <span class="k">except</span> <span class="n">InvalidSelectorException</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">e</span>
         <span class="k">except</span> <span class="n">StaleElementReferenceException</span><span class="p">:</span>
             <span class="k">return</span> <span class="kc">False</span>
 
@@ -257,6 +299,7 @@
 <span class="sd">    switch to.  If the frame is available it switches the given driver to the</span>
 <span class="sd">    specified frame.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="k">def</span> <span class="nf">_predicate</span><span class="p">(</span><span class="n">driver</span><span class="p">):</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">locator</span><span class="p">,</span> <span class="s1">&#39;__iter__&#39;</span><span class="p">):</span>
@@ -264,6 +307,8 @@
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">driver</span><span class="o">.</span><span class="n">switch_to</span><span class="o">.</span><span class="n">frame</span><span class="p">(</span><span class="n">locator</span><span class="p">)</span>
             <span class="k">return</span> <span class="kc">True</span>
+        <span class="k">except</span> <span class="n">InvalidSelectorException</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">e</span>
         <span class="k">except</span> <span class="n">NoSuchFrameException</span><span class="p">:</span>
             <span class="k">return</span> <span class="kc">False</span>
 
@@ -276,12 +321,15 @@
 
 <span class="sd">    locator used to find the element</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="k">def</span> <span class="nf">_predicate</span><span class="p">(</span><span class="n">driver</span><span class="p">):</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">target</span> <span class="o">=</span> <span class="n">locator</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="n">WebElement</span><span class="p">):</span>
                 <span class="n">target</span> <span class="o">=</span> <span class="n">driver</span><span class="o">.</span><span class="n">find_element</span><span class="p">(</span><span class="o">*</span><span class="n">target</span><span class="p">)</span>
             <span class="k">return</span> <span class="n">_element_if_visible</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+        <span class="k">except</span> <span class="n">InvalidSelectorException</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">e</span>
         <span class="k">except</span> <span class="p">(</span><span class="n">NoSuchElementException</span><span class="p">,</span> <span class="n">StaleElementReferenceException</span><span class="p">):</span>
             <span class="c1"># In the case of NoSuchElement, returns true because the element is</span>
             <span class="c1"># not present in DOM. The try block checks if the element is present</span>
@@ -302,13 +350,23 @@
     <span class="k">return</span> <span class="n">invisibility_of_element_located</span><span class="p">(</span><span class="n">element</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="element_to_be_clickable"><a class="viewcode-back" href="../../../../webdriver_support/selenium.webdriver.support.expected_conditions.html#selenium.webdriver.support.expected_conditions.element_to_be_clickable">[docs]</a><span class="k">def</span> <span class="nf">element_to_be_clickable</span><span class="p">(</span><span class="n">locator</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot; An Expectation for checking an element is visible and enabled such that</span>
-<span class="sd">    you can click it.&quot;&quot;&quot;</span>
+<div class="viewcode-block" id="element_to_be_clickable"><a class="viewcode-back" href="../../../../webdriver_support/selenium.webdriver.support.expected_conditions.html#selenium.webdriver.support.expected_conditions.element_to_be_clickable">[docs]</a><span class="k">def</span> <span class="nf">element_to_be_clickable</span><span class="p">(</span><span class="n">mark</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    An Expectation for checking an element is visible and enabled such that</span>
+<span class="sd">    you can click it.</span>
+
+<span class="sd">    element is either a locator (text) or an WebElement</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># renamed argument to &#39;mark&#39;, to indicate that both locator</span>
+    <span class="c1"># and WebElement args are valid</span>
     <span class="k">def</span> <span class="nf">_predicate</span><span class="p">(</span><span class="n">driver</span><span class="p">):</span>
-        <span class="n">element</span> <span class="o">=</span> <span class="n">visibility_of_element_located</span><span class="p">(</span><span class="n">locator</span><span class="p">)(</span><span class="n">driver</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">element</span> <span class="ow">and</span> <span class="n">element</span><span class="o">.</span><span class="n">is_enabled</span><span class="p">():</span>
-            <span class="k">return</span> <span class="n">element</span>
+        <span class="n">target</span> <span class="o">=</span> <span class="n">mark</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="n">WebElement</span><span class="p">):</span>  <span class="c1"># if given locator instead of WebElement</span>
+            <span class="n">target</span> <span class="o">=</span> <span class="n">driver</span><span class="o">.</span><span class="n">find_element</span><span class="p">(</span><span class="o">*</span><span class="n">target</span><span class="p">)</span>  <span class="c1"># grab element at locator</span>
+        <span class="n">target</span> <span class="o">=</span> <span class="n">visibility_of</span><span class="p">(</span><span class="n">target</span><span class="p">)(</span><span class="n">driver</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">target</span> <span class="ow">and</span> <span class="n">target</span><span class="o">.</span><span class="n">is_enabled</span><span class="p">():</span>
+            <span class="k">return</span> <span class="n">target</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="kc">False</span>
 
@@ -320,11 +378,14 @@
 <span class="sd">    element is the element to wait for.</span>
 <span class="sd">    returns False if the element is still attached to the DOM, true otherwise.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="k">def</span> <span class="nf">_predicate</span><span class="p">(</span><span class="n">_</span><span class="p">):</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="c1"># Calling any method forces a staleness check</span>
             <span class="n">element</span><span class="o">.</span><span class="n">is_enabled</span><span class="p">()</span>
             <span class="k">return</span> <span class="kc">False</span>
+        <span class="k">except</span> <span class="n">InvalidSelectorException</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">e</span>
         <span class="k">except</span> <span class="n">StaleElementReferenceException</span><span class="p">:</span>
             <span class="k">return</span> <span class="kc">True</span>
 
@@ -335,6 +396,7 @@
     <span class="sd">&quot;&quot;&quot; An expectation for checking the selection is selected.</span>
 <span class="sd">    element is WebElement object</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="k">def</span> <span class="nf">_predicate</span><span class="p">(</span><span class="n">_</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">element</span><span class="o">.</span><span class="n">is_selected</span><span class="p">()</span>
 
@@ -344,6 +406,7 @@
 <div class="viewcode-block" id="element_located_to_be_selected"><a class="viewcode-back" href="../../../../webdriver_support/selenium.webdriver.support.expected_conditions.html#selenium.webdriver.support.expected_conditions.element_located_to_be_selected">[docs]</a><span class="k">def</span> <span class="nf">element_located_to_be_selected</span><span class="p">(</span><span class="n">locator</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;An expectation for the element to be located is selected.</span>
 <span class="sd">    locator is a tuple of (by, path)&quot;&quot;&quot;</span>
+
     <span class="k">def</span> <span class="nf">_predicate</span><span class="p">(</span><span class="n">driver</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">driver</span><span class="o">.</span><span class="n">find_element</span><span class="p">(</span><span class="o">*</span><span class="n">locator</span><span class="p">)</span><span class="o">.</span><span class="n">is_selected</span><span class="p">()</span>
 
@@ -355,6 +418,7 @@
 <span class="sd">    element is WebElement object</span>
 <span class="sd">    is_selected is a Boolean.&quot;</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="k">def</span> <span class="nf">_predicate</span><span class="p">(</span><span class="n">_</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">element</span><span class="o">.</span><span class="n">is_selected</span><span class="p">()</span> <span class="o">==</span> <span class="n">is_selected</span>
 
@@ -367,10 +431,13 @@
 <span class="sd">    locator is a tuple of (by, path)</span>
 <span class="sd">    is_selected is a boolean</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="k">def</span> <span class="nf">_predicate</span><span class="p">(</span><span class="n">driver</span><span class="p">):</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">element</span> <span class="o">=</span> <span class="n">driver</span><span class="o">.</span><span class="n">find_element</span><span class="p">(</span><span class="o">*</span><span class="n">locator</span><span class="p">)</span>
             <span class="k">return</span> <span class="n">element</span><span class="o">.</span><span class="n">is_selected</span><span class="p">()</span> <span class="o">==</span> <span class="n">is_selected</span>
+        <span class="k">except</span> <span class="n">InvalidSelectorException</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">e</span>
         <span class="k">except</span> <span class="n">StaleElementReferenceException</span><span class="p">:</span>
             <span class="k">return</span> <span class="kc">False</span>
 
@@ -379,6 +446,7 @@
 
 <div class="viewcode-block" id="number_of_windows_to_be"><a class="viewcode-back" href="../../../../webdriver_support/selenium.webdriver.support.expected_conditions.html#selenium.webdriver.support.expected_conditions.number_of_windows_to_be">[docs]</a><span class="k">def</span> <span class="nf">number_of_windows_to_be</span><span class="p">(</span><span class="n">num_windows</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot; An expectation for the number of windows to be a certain value.&quot;&quot;&quot;</span>
+
     <span class="k">def</span> <span class="nf">_predicate</span><span class="p">(</span><span class="n">driver</span><span class="p">):</span>
         <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="n">driver</span><span class="o">.</span><span class="n">window_handles</span><span class="p">)</span> <span class="o">==</span> <span class="n">num_windows</span>
 
@@ -388,6 +456,7 @@
 <div class="viewcode-block" id="new_window_is_opened"><a class="viewcode-back" href="../../../../webdriver_support/selenium.webdriver.support.expected_conditions.html#selenium.webdriver.support.expected_conditions.new_window_is_opened">[docs]</a><span class="k">def</span> <span class="nf">new_window_is_opened</span><span class="p">(</span><span class="n">current_handles</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot; An expectation that a new window will be opened and have the number of</span>
 <span class="sd">    windows handles increase&quot;&quot;&quot;</span>
+
     <span class="k">def</span> <span class="nf">_predicate</span><span class="p">(</span><span class="n">driver</span><span class="p">):</span>
         <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="n">driver</span><span class="o">.</span><span class="n">window_handles</span><span class="p">)</span> <span class="o">&gt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">current_handles</span><span class="p">)</span>
 
@@ -405,14 +474,17 @@
 
 
 <div class="viewcode-block" id="element_attribute_to_include"><a class="viewcode-back" href="../../../../webdriver_support/selenium.webdriver.support.expected_conditions.html#selenium.webdriver.support.expected_conditions.element_attribute_to_include">[docs]</a><span class="k">def</span> <span class="nf">element_attribute_to_include</span><span class="p">(</span><span class="n">locator</span><span class="p">,</span> <span class="n">attribute_</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot; An expectation for checking if the given attribute is include in the</span>
+    <span class="sd">&quot;&quot;&quot; An expectation for checking if the given attribute is included in the</span>
 <span class="sd">    specified element.</span>
 <span class="sd">    locator, attribute</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="k">def</span> <span class="nf">_predicate</span><span class="p">(</span><span class="n">driver</span><span class="p">):</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">element_attribute</span> <span class="o">=</span> <span class="n">driver</span><span class="o">.</span><span class="n">find_element</span><span class="p">(</span><span class="o">*</span><span class="n">locator</span><span class="p">)</span><span class="o">.</span><span class="n">get_attribute</span><span class="p">(</span><span class="n">attribute_</span><span class="p">)</span>
             <span class="k">return</span> <span class="n">element_attribute</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+        <span class="k">except</span> <span class="n">InvalidSelectorException</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">e</span>
         <span class="k">except</span> <span class="n">StaleElementReferenceException</span><span class="p">:</span>
             <span class="k">return</span> <span class="kc">False</span>
 
@@ -423,6 +495,7 @@
     <span class="sd">&quot;&quot;&quot; An expectation that any of multiple expected conditions is true.</span>
 <span class="sd">    Equivalent to a logical &#39;OR&#39;.</span>
 <span class="sd">    Returns results of the first matching condition, or False if none do. &quot;&quot;&quot;</span>
+
     <span class="k">def</span> <span class="nf">any_of_condition</span><span class="p">(</span><span class="n">driver</span><span class="p">):</span>
         <span class="k">for</span> <span class="n">expected_condition</span> <span class="ow">in</span> <span class="n">expected_conditions</span><span class="p">:</span>
             <span class="k">try</span><span class="p">:</span>
@@ -432,6 +505,7 @@
             <span class="k">except</span> <span class="n">WebDriverException</span><span class="p">:</span>
                 <span class="k">pass</span>
         <span class="k">return</span> <span class="kc">False</span>
+
     <span class="k">return</span> <span class="n">any_of_condition</span></div>
 
 
@@ -440,6 +514,7 @@
 <span class="sd">    Equivalent to a logical &#39;AND&#39;.</span>
 <span class="sd">    Returns: When any ExpectedCondition is not met: False.</span>
 <span class="sd">    When all ExpectedConditions are met: A List with each ExpectedCondition&#39;s return value. &quot;&quot;&quot;</span>
+
     <span class="k">def</span> <span class="nf">all_of_condition</span><span class="p">(</span><span class="n">driver</span><span class="p">):</span>
         <span class="n">results</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">expected_condition</span> <span class="ow">in</span> <span class="n">expected_conditions</span><span class="p">:</span>
@@ -451,6 +526,7 @@
             <span class="k">except</span> <span class="n">WebDriverException</span><span class="p">:</span>
                 <span class="k">return</span> <span class="kc">False</span>
         <span class="k">return</span> <span class="n">results</span>
+
     <span class="k">return</span> <span class="n">all_of_condition</span></div>
 
 
@@ -458,6 +534,7 @@
     <span class="sd">&quot;&quot;&quot; An expectation that none of 1 or multiple expected conditions is true.</span>
 <span class="sd">    Equivalent to a logical &#39;NOT-OR&#39;.</span>
 <span class="sd">    Returns a Boolean &quot;&quot;&quot;</span>
+
     <span class="k">def</span> <span class="nf">none_of_condition</span><span class="p">(</span><span class="n">driver</span><span class="p">):</span>
         <span class="k">for</span> <span class="n">expected_condition</span> <span class="ow">in</span> <span class="n">expected_conditions</span><span class="p">:</span>
             <span class="k">try</span><span class="p">:</span>
@@ -467,6 +544,7 @@
             <span class="k">except</span> <span class="n">WebDriverException</span><span class="p">:</span>
                 <span class="k">pass</span>
         <span class="k">return</span> <span class="kc">True</span>
+
     <span class="k">return</span> <span class="n">none_of_condition</span></div>
 </pre></div>
 

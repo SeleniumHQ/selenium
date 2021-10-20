@@ -209,19 +209,19 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 </tr>
 <tr class="altColor">
 <td class="colFirst"><code>protected abstract <a href="../Command.html" title="class in org.openqa.selenium.devtools">Command</a>&lt;java.lang.Void&gt;</code></td>
-<th class="colSecond" scope="row"><span class="typeNameLabel">Network.</span><code><span class="memberNameLink"><a href="../idealized/Network.html#continueWithAuth(AUTHREQUIRED,org.openqa.selenium.UsernameAndPassword)">continueWithAuth</a></span>&#8203;(<a href="../idealized/Network.html" title="type parameter in Network">AUTHREQUIRED</a>&nbsp;authRequired,
-                <a href="../../UsernameAndPassword.html" title="class in org.openqa.selenium">UsernameAndPassword</a>&nbsp;credentials)</code></th>
+<th class="colSecond" scope="row"><span class="typeNameLabel">Network.</span><code><span class="memberNameLink"><a href="../idealized/Network.html#continueRequest(REQUESTPAUSED,org.openqa.selenium.remote.http.HttpRequest)">continueRequest</a></span>&#8203;(<a href="../idealized/Network.html" title="type parameter in Network">REQUESTPAUSED</a>&nbsp;pausedReq,
+               <a href="../../remote/http/HttpRequest.html" title="class in org.openqa.selenium.remote.http">HttpRequest</a>&nbsp;req)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr class="rowColor">
 <td class="colFirst"><code>protected abstract <a href="../Command.html" title="class in org.openqa.selenium.devtools">Command</a>&lt;java.lang.Void&gt;</code></td>
-<th class="colSecond" scope="row"><span class="typeNameLabel">Network.</span><code><span class="memberNameLink"><a href="../idealized/Network.html#continueWithoutModification(REQUESTPAUSED)">continueWithoutModification</a></span>&#8203;(<a href="../idealized/Network.html" title="type parameter in Network">REQUESTPAUSED</a>&nbsp;pausedRequest)</code></th>
+<th class="colSecond" scope="row"><span class="typeNameLabel">Network.</span><code><span class="memberNameLink"><a href="../idealized/Network.html#continueWithAuth(AUTHREQUIRED,org.openqa.selenium.UsernameAndPassword)">continueWithAuth</a></span>&#8203;(<a href="../idealized/Network.html" title="type parameter in Network">AUTHREQUIRED</a>&nbsp;authRequired,
+                <a href="../../UsernameAndPassword.html" title="class in org.openqa.selenium">UsernameAndPassword</a>&nbsp;credentials)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr class="altColor">
 <td class="colFirst"><code>protected abstract <a href="../Command.html" title="class in org.openqa.selenium.devtools">Command</a>&lt;java.lang.Void&gt;</code></td>
-<th class="colSecond" scope="row"><span class="typeNameLabel">Network.</span><code><span class="memberNameLink"><a href="../idealized/Network.html#createResponse(REQUESTPAUSED,org.openqa.selenium.remote.http.HttpResponse)">createResponse</a></span>&#8203;(<a href="../idealized/Network.html" title="type parameter in Network">REQUESTPAUSED</a>&nbsp;pausedRequest,
-              <a href="../../remote/http/HttpResponse.html" title="class in org.openqa.selenium.remote.http">HttpResponse</a>&nbsp;response)</code></th>
+<th class="colSecond" scope="row"><span class="typeNameLabel">Network.</span><code><span class="memberNameLink"><a href="../idealized/Network.html#continueWithoutModification(REQUESTPAUSED)">continueWithoutModification</a></span>&#8203;(<a href="../idealized/Network.html" title="type parameter in Network">REQUESTPAUSED</a>&nbsp;pausedReq)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr class="rowColor">
@@ -286,10 +286,16 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 </tr>
 <tr class="rowColor">
 <td class="colFirst"><code>protected abstract <a href="../Command.html" title="class in org.openqa.selenium.devtools">Command</a>&lt;java.lang.Void&gt;</code></td>
-<th class="colSecond" scope="row"><span class="typeNameLabel">Javascript.</span><code><span class="memberNameLink"><a href="../idealized/Javascript.html#removeScriptToEvaluateOnNewDocument(SCRIPTID)">removeScriptToEvaluateOnNewDocument</a></span>&#8203;(<a href="../idealized/Javascript.html" title="type parameter in Javascript">SCRIPTID</a>&nbsp;id)</code></th>
+<th class="colSecond" scope="row"><span class="typeNameLabel">Network.</span><code><span class="memberNameLink"><a href="../idealized/Network.html#fulfillRequest(REQUESTPAUSED,org.openqa.selenium.remote.http.HttpResponse)">fulfillRequest</a></span>&#8203;(<a href="../idealized/Network.html" title="type parameter in Network">REQUESTPAUSED</a>&nbsp;pausedReq,
+              <a href="../../remote/http/HttpResponse.html" title="class in org.openqa.selenium.remote.http">HttpResponse</a>&nbsp;res)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr class="altColor">
+<td class="colFirst"><code>protected abstract <a href="../Command.html" title="class in org.openqa.selenium.devtools">Command</a>&lt;java.lang.Void&gt;</code></td>
+<th class="colSecond" scope="row"><span class="typeNameLabel">Javascript.</span><code><span class="memberNameLink"><a href="../idealized/Javascript.html#removeScriptToEvaluateOnNewDocument(SCRIPTID)">removeScriptToEvaluateOnNewDocument</a></span>&#8203;(<a href="../idealized/Javascript.html" title="type parameter in Javascript">SCRIPTID</a>&nbsp;id)</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr class="rowColor">
 <td class="colFirst"><code>protected abstract <a href="../Command.html" title="class in org.openqa.selenium.devtools">Command</a>&lt;java.lang.Void&gt;</code></td>
 <th class="colSecond" scope="row"><span class="typeNameLabel">Network.</span><code><span class="memberNameLink"><a href="../idealized/Network.html#setUserAgentOverride(org.openqa.selenium.devtools.idealized.Network.UserAgent)">setUserAgentOverride</a></span>&#8203;(<a href="../idealized/Network.UserAgent.html" title="class in org.openqa.selenium.devtools.idealized">Network.UserAgent</a>&nbsp;userAgent)</code></th>
 <td class="colLast">&nbsp;</td>

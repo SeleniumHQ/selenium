@@ -27,7 +27,7 @@
     catch(err) {
     }
 //-->
-var data = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10};
+var data = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10};
 var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -191,15 +191,20 @@ extends java.lang.Object</pre>
 </tr>
 <tr id="i2" class="altColor">
 <td class="colFirst"><code><a href="../NewSessionQueue.html" title="class in org.openqa.selenium.grid.sessionqueue">NewSessionQueue</a></code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getSessionQueue()">getSessionQueue</a></span>()</code></th>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getSessionQueue(java.lang.String)">getSessionQueue</a></span>&#8203;(java.lang.String&nbsp;implementation)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr id="i3" class="rowColor">
+<td class="colFirst"><code>java.net.URI</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getSessionQueueUri()">getSessionQueueUri</a></span>()</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr id="i4" class="altColor">
 <td class="colFirst"><code>java.time.Duration</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getSessionRequestRetryInterval()">getSessionRequestRetryInterval</a></span>()</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i4" class="altColor">
+<tr id="i5" class="rowColor">
 <td class="colFirst"><code>java.time.Duration</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getSessionRequestTimeout()">getSessionRequestTimeout</a></span>()</code></th>
 <td class="colLast">&nbsp;</td>
@@ -247,6 +252,15 @@ extends java.lang.Object</pre>
 <!--   -->
 </a>
 <h3>Method Detail</h3>
+<a id="getSessionQueueUri()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getSessionQueueUri</h4>
+<pre class="methodSignature">public&nbsp;java.net.URI&nbsp;getSessionQueueUri()</pre>
+</li>
+</ul>
 <a id="getSessionRequestTimeout()">
 <!--   -->
 </a>
@@ -283,13 +297,13 @@ extends java.lang.Object</pre>
 <pre class="methodSignature">public&nbsp;long&nbsp;getRetryIntervalSeconds()</pre>
 </li>
 </ul>
-<a id="getSessionQueue()">
+<a id="getSessionQueue(java.lang.String)">
 <!--   -->
 </a>
 <ul class="blockListLast">
 <li class="blockList">
 <h4>getSessionQueue</h4>
-<pre class="methodSignature">public&nbsp;<a href="../NewSessionQueue.html" title="class in org.openqa.selenium.grid.sessionqueue">NewSessionQueue</a>&nbsp;getSessionQueue()</pre>
+<pre class="methodSignature">public&nbsp;<a href="../NewSessionQueue.html" title="class in org.openqa.selenium.grid.sessionqueue">NewSessionQueue</a>&nbsp;getSessionQueue&#8203;(java.lang.String&nbsp;implementation)</pre>
 </li>
 </ul>
 </li>

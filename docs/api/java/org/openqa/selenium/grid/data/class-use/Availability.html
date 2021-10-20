@@ -115,8 +115,12 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr class="rowColor">
-<th class="colFirst" scope="row"><a href="#org.openqa.selenium.grid.distributor.local">org.openqa.selenium.grid.distributor.local</a></th>
-<td class="colLast">&nbsp;</td>
+<th class="colFirst" scope="row"><a href="#org.openqa.selenium.grid.distributor">org.openqa.selenium.grid.distributor</a></th>
+<td class="colLast">
+<div class="block">The <a href="../../distributor/Distributor.html" title="class in org.openqa.selenium.grid.distributor"><code>Distributor</code></a> is responsible
+ for assigning new calls to Create Session to a
+ <a href="../../node/Node.html" title="class in org.openqa.selenium.grid.node"><code>Node</code></a>.</div>
+</td>
 </tr>
 <tr class="altColor">
 <th class="colFirst" scope="row"><a href="#org.openqa.selenium.grid.graphql">org.openqa.selenium.grid.graphql</a></th>
@@ -193,12 +197,12 @@ the order they are declared.</div>
 </section>
 </li>
 <li class="blockList">
-<section role="region"><a id="org.openqa.selenium.grid.distributor.local">
+<section role="region"><a id="org.openqa.selenium.grid.distributor">
 <!--   -->
 </a>
-<h3>Uses of <a href="../Availability.html" title="enum in org.openqa.selenium.grid.data">Availability</a> in <a href="../../distributor/local/package-summary.html">org.openqa.selenium.grid.distributor.local</a></h3>
+<h3>Uses of <a href="../Availability.html" title="enum in org.openqa.selenium.grid.data">Availability</a> in <a href="../../distributor/package-summary.html">org.openqa.selenium.grid.distributor</a></h3>
 <table class="useSummary">
-<caption><span>Methods in <a href="../../distributor/local/package-summary.html">org.openqa.selenium.grid.distributor.local</a> that return <a href="../Availability.html" title="enum in org.openqa.selenium.grid.data">Availability</a></span><span class="tabEnd">&nbsp;</span></caption>
+<caption><span>Methods in <a href="../../distributor/package-summary.html">org.openqa.selenium.grid.distributor</a> that return <a href="../Availability.html" title="enum in org.openqa.selenium.grid.data">Availability</a></span><span class="tabEnd">&nbsp;</span></caption>
 <tr>
 <th class="colFirst" scope="col">Modifier and Type</th>
 <th class="colSecond" scope="col">Method</th>
@@ -207,14 +211,14 @@ the order they are declared.</div>
 <tbody>
 <tr class="altColor">
 <td class="colFirst"><code><a href="../Availability.html" title="enum in org.openqa.selenium.grid.data">Availability</a></code></td>
-<th class="colSecond" scope="row"><span class="typeNameLabel">GridModel.</span><code><span class="memberNameLink"><a href="../../distributor/local/GridModel.html#setAvailability(org.openqa.selenium.grid.data.NodeId,org.openqa.selenium.grid.data.Availability)">setAvailability</a></span>&#8203;(<a href="../NodeId.html" title="class in org.openqa.selenium.grid.data">NodeId</a>&nbsp;id,
+<th class="colSecond" scope="row"><span class="typeNameLabel">GridModel.</span><code><span class="memberNameLink"><a href="../../distributor/GridModel.html#setAvailability(org.openqa.selenium.grid.data.NodeId,org.openqa.selenium.grid.data.Availability)">setAvailability</a></span>&#8203;(<a href="../NodeId.html" title="class in org.openqa.selenium.grid.data">NodeId</a>&nbsp;id,
                <a href="../Availability.html" title="enum in org.openqa.selenium.grid.data">Availability</a>&nbsp;availability)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 </tbody>
 </table>
 <table class="useSummary">
-<caption><span>Methods in <a href="../../distributor/local/package-summary.html">org.openqa.selenium.grid.distributor.local</a> with parameters of type <a href="../Availability.html" title="enum in org.openqa.selenium.grid.data">Availability</a></span><span class="tabEnd">&nbsp;</span></caption>
+<caption><span>Methods in <a href="../../distributor/package-summary.html">org.openqa.selenium.grid.distributor</a> with parameters of type <a href="../Availability.html" title="enum in org.openqa.selenium.grid.data">Availability</a></span><span class="tabEnd">&nbsp;</span></caption>
 <tr>
 <th class="colFirst" scope="col">Modifier and Type</th>
 <th class="colSecond" scope="col">Method</th>
@@ -223,8 +227,14 @@ the order they are declared.</div>
 <tbody>
 <tr class="altColor">
 <td class="colFirst"><code><a href="../Availability.html" title="enum in org.openqa.selenium.grid.data">Availability</a></code></td>
-<th class="colSecond" scope="row"><span class="typeNameLabel">GridModel.</span><code><span class="memberNameLink"><a href="../../distributor/local/GridModel.html#setAvailability(org.openqa.selenium.grid.data.NodeId,org.openqa.selenium.grid.data.Availability)">setAvailability</a></span>&#8203;(<a href="../NodeId.html" title="class in org.openqa.selenium.grid.data">NodeId</a>&nbsp;id,
+<th class="colSecond" scope="row"><span class="typeNameLabel">GridModel.</span><code><span class="memberNameLink"><a href="../../distributor/GridModel.html#setAvailability(org.openqa.selenium.grid.data.NodeId,org.openqa.selenium.grid.data.Availability)">setAvailability</a></span>&#8203;(<a href="../NodeId.html" title="class in org.openqa.selenium.grid.data">NodeId</a>&nbsp;id,
                <a href="../Availability.html" title="enum in org.openqa.selenium.grid.data">Availability</a>&nbsp;availability)</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code>void</code></td>
+<th class="colSecond" scope="row"><span class="typeNameLabel">GridModel.</span><code><span class="memberNameLink"><a href="../../distributor/GridModel.html#updateHealthCheckCount(org.openqa.selenium.grid.data.NodeId,org.openqa.selenium.grid.data.Availability)">updateHealthCheckCount</a></span>&#8203;(<a href="../NodeId.html" title="class in org.openqa.selenium.grid.data">NodeId</a>&nbsp;id,
+                      <a href="../Availability.html" title="enum in org.openqa.selenium.grid.data">Availability</a>&nbsp;availability)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 </tbody>

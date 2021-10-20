@@ -111,14 +111,14 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 </tr>
 <tbody>
 <tr class="altColor">
-<th class="colFirst" scope="row"><a href="#org.openqa.selenium.grid.distributor">org.openqa.selenium.grid.distributor</a></th>
-<td class="colLast">
-<div class="block">The <a href="../../Distributor.html" title="class in org.openqa.selenium.grid.distributor"><code>Distributor</code></a> is responsible
- for assigning new calls to Create Session to a
- <a href="../../../node/Node.html" title="class in org.openqa.selenium.grid.node"><code>Node</code></a>.</div>
-</td>
+<th class="colFirst" scope="row"><a href="#org.openqa.selenium.grid.distributor.config">org.openqa.selenium.grid.distributor.config</a></th>
+<td class="colLast">&nbsp;</td>
 </tr>
 <tr class="rowColor">
+<th class="colFirst" scope="row"><a href="#org.openqa.selenium.grid.distributor.local">org.openqa.selenium.grid.distributor.local</a></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr class="altColor">
 <th class="colFirst" scope="row"><a href="#org.openqa.selenium.grid.distributor.selector">org.openqa.selenium.grid.distributor.selector</a></th>
 <td class="colLast">&nbsp;</td>
 </tr>
@@ -128,23 +128,50 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <li class="blockList">
 <ul class="blockList">
 <li class="blockList">
-<section role="region"><a id="org.openqa.selenium.grid.distributor">
+<section role="region"><a id="org.openqa.selenium.grid.distributor.config">
 <!--   -->
 </a>
-<h3>Uses of <a href="../SlotSelector.html" title="interface in org.openqa.selenium.grid.distributor.selector">SlotSelector</a> in <a href="../../package-summary.html">org.openqa.selenium.grid.distributor</a></h3>
+<h3>Uses of <a href="../SlotSelector.html" title="interface in org.openqa.selenium.grid.distributor.selector">SlotSelector</a> in <a href="../../config/package-summary.html">org.openqa.selenium.grid.distributor.config</a></h3>
 <table class="useSummary">
-<caption><span>Constructors in <a href="../../package-summary.html">org.openqa.selenium.grid.distributor</a> with parameters of type <a href="../SlotSelector.html" title="interface in org.openqa.selenium.grid.distributor.selector">SlotSelector</a></span><span class="tabEnd">&nbsp;</span></caption>
+<caption><span>Methods in <a href="../../config/package-summary.html">org.openqa.selenium.grid.distributor.config</a> that return <a href="../SlotSelector.html" title="interface in org.openqa.selenium.grid.distributor.selector">SlotSelector</a></span><span class="tabEnd">&nbsp;</span></caption>
+<tr>
+<th class="colFirst" scope="col">Modifier and Type</th>
+<th class="colSecond" scope="col">Method</th>
+<th class="colLast" scope="col">Description</th>
+</tr>
+<tbody>
+<tr class="altColor">
+<td class="colFirst"><code><a href="../SlotSelector.html" title="interface in org.openqa.selenium.grid.distributor.selector">SlotSelector</a></code></td>
+<th class="colSecond" scope="row"><span class="typeNameLabel">DistributorOptions.</span><code><span class="memberNameLink"><a href="../../config/DistributorOptions.html#getSlotSelector()">getSlotSelector</a></span>()</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+</tbody>
+</table>
+</section>
+</li>
+<li class="blockList">
+<section role="region"><a id="org.openqa.selenium.grid.distributor.local">
+<!--   -->
+</a>
+<h3>Uses of <a href="../SlotSelector.html" title="interface in org.openqa.selenium.grid.distributor.selector">SlotSelector</a> in <a href="../../local/package-summary.html">org.openqa.selenium.grid.distributor.local</a></h3>
+<table class="useSummary">
+<caption><span>Constructors in <a href="../../local/package-summary.html">org.openqa.selenium.grid.distributor.local</a> with parameters of type <a href="../SlotSelector.html" title="interface in org.openqa.selenium.grid.distributor.selector">SlotSelector</a></span><span class="tabEnd">&nbsp;</span></caption>
 <tr>
 <th class="colFirst" scope="col">Constructor</th>
 <th class="colLast" scope="col">Description</th>
 </tr>
 <tbody>
 <tr class="altColor">
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="../../Distributor.html#%3Cinit%3E(org.openqa.selenium.remote.tracing.Tracer,org.openqa.selenium.remote.http.HttpClient.Factory,org.openqa.selenium.grid.distributor.selector.SlotSelector,org.openqa.selenium.grid.sessionmap.SessionMap,org.openqa.selenium.grid.security.Secret)">Distributor</a></span>&#8203;(<a href="../../../../remote/tracing/Tracer.html" title="interface in org.openqa.selenium.remote.tracing">Tracer</a>&nbsp;tracer,
-           <a href="../../../../remote/http/HttpClient.Factory.html" title="interface in org.openqa.selenium.remote.http">HttpClient.Factory</a>&nbsp;httpClientFactory,
-           <a href="../SlotSelector.html" title="interface in org.openqa.selenium.grid.distributor.selector">SlotSelector</a>&nbsp;slotSelector,
-           <a href="../../../sessionmap/SessionMap.html" title="class in org.openqa.selenium.grid.sessionmap">SessionMap</a>&nbsp;sessions,
-           <a href="../../../security/Secret.html" title="class in org.openqa.selenium.grid.security">Secret</a>&nbsp;registrationSecret)</code></th>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="../../local/LocalDistributor.html#%3Cinit%3E(org.openqa.selenium.remote.tracing.Tracer,org.openqa.selenium.events.EventBus,org.openqa.selenium.remote.http.HttpClient.Factory,org.openqa.selenium.grid.sessionmap.SessionMap,org.openqa.selenium.grid.sessionqueue.NewSessionQueue,org.openqa.selenium.grid.distributor.selector.SlotSelector,org.openqa.selenium.grid.security.Secret,java.time.Duration,boolean,java.time.Duration)">LocalDistributor</a></span>&#8203;(<a href="../../../../remote/tracing/Tracer.html" title="interface in org.openqa.selenium.remote.tracing">Tracer</a>&nbsp;tracer,
+                <a href="../../../../events/EventBus.html" title="interface in org.openqa.selenium.events">EventBus</a>&nbsp;bus,
+                <a href="../../../../remote/http/HttpClient.Factory.html" title="interface in org.openqa.selenium.remote.http">HttpClient.Factory</a>&nbsp;clientFactory,
+                <a href="../../../sessionmap/SessionMap.html" title="class in org.openqa.selenium.grid.sessionmap">SessionMap</a>&nbsp;sessions,
+                <a href="../../../sessionqueue/NewSessionQueue.html" title="class in org.openqa.selenium.grid.sessionqueue">NewSessionQueue</a>&nbsp;sessionQueue,
+                <a href="../SlotSelector.html" title="interface in org.openqa.selenium.grid.distributor.selector">SlotSelector</a>&nbsp;slotSelector,
+                <a href="../../../security/Secret.html" title="class in org.openqa.selenium.grid.security">Secret</a>&nbsp;registrationSecret,
+                java.time.Duration&nbsp;healthcheckInterval,
+                boolean&nbsp;rejectUnsupportedCaps,
+                java.time.Duration&nbsp;sessionRequestRetryInterval)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 </tbody>
@@ -167,6 +194,21 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <tr class="altColor">
 <td class="colFirst"><code>class&nbsp;</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="../DefaultSlotSelector.html" title="class in org.openqa.selenium.grid.distributor.selector">DefaultSlotSelector</a></span></code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+</tbody>
+</table>
+<table class="useSummary">
+<caption><span>Methods in <a href="../package-summary.html">org.openqa.selenium.grid.distributor.selector</a> that return <a href="../SlotSelector.html" title="interface in org.openqa.selenium.grid.distributor.selector">SlotSelector</a></span><span class="tabEnd">&nbsp;</span></caption>
+<tr>
+<th class="colFirst" scope="col">Modifier and Type</th>
+<th class="colSecond" scope="col">Method</th>
+<th class="colLast" scope="col">Description</th>
+</tr>
+<tbody>
+<tr class="altColor">
+<td class="colFirst"><code>static <a href="../SlotSelector.html" title="interface in org.openqa.selenium.grid.distributor.selector">SlotSelector</a></code></td>
+<th class="colSecond" scope="row"><span class="typeNameLabel">DefaultSlotSelector.</span><code><span class="memberNameLink"><a href="../DefaultSlotSelector.html#create(org.openqa.selenium.grid.config.Config)">create</a></span>&#8203;(<a href="../../../config/Config.html" title="interface in org.openqa.selenium.grid.config">Config</a>&nbsp;config)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 </tbody>

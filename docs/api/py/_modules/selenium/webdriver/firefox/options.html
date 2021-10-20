@@ -56,9 +56,7 @@
 <span class="c1"># under the License.</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Union</span>
 <span class="kn">import</span> <span class="nn">warnings</span>
-<span class="kn">from</span> <span class="nn">selenium.common.exceptions</span> <span class="kn">import</span> <span class="n">InvalidArgumentException</span>
 <span class="kn">from</span> <span class="nn">selenium.webdriver.common.desired_capabilities</span> <span class="kn">import</span> <span class="n">DesiredCapabilities</span>
-<span class="kn">from</span> <span class="nn">selenium.webdriver.common.proxy</span> <span class="kn">import</span> <span class="n">Proxy</span>
 <span class="kn">from</span> <span class="nn">selenium.webdriver.firefox.firefox_binary</span> <span class="kn">import</span> <span class="n">FirefoxBinary</span>
 <span class="kn">from</span> <span class="nn">selenium.webdriver.firefox.firefox_profile</span> <span class="kn">import</span> <span class="n">FirefoxProfile</span>
 <span class="kn">from</span> <span class="nn">selenium.webdriver.common.options</span> <span class="kn">import</span> <span class="n">ArgOptions</span>
@@ -113,14 +111,6 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">binary</span> <span class="o">=</span> <span class="n">value</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">accept_insecure_certs</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_caps</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;acceptInsecureCerts&#39;</span><span class="p">)</span>
-
-    <span class="nd">@accept_insecure_certs</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">accept_insecure_certs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">bool</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_caps</span><span class="p">[</span><span class="s1">&#39;acceptInsecureCerts&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
-
-    <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">preferences</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;:Returns: A dict of preferences.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_preferences</span>
@@ -130,28 +120,16 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_preferences</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span></div>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">proxy</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Proxy</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        :Returns: Proxy if set, otherwise None.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_proxy</span>
-
-    <span class="nd">@proxy</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">proxy</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">Proxy</span><span class="p">):</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">Proxy</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="n">InvalidArgumentException</span><span class="p">(</span><span class="s2">&quot;Only Proxy objects can be passed in.&quot;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_proxy</span> <span class="o">=</span> <span class="n">value</span>
-
-    <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">profile</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">FirefoxProfile</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        :Returns: The Firefox profile to use.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
-            <span class="s2">&quot;Getting a profile has been deprecated.&quot;</span><span class="p">,</span>
-            <span class="ne">DeprecationWarning</span><span class="p">,</span>
-            <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span>
-        <span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_profile</span><span class="p">:</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+                <span class="s2">&quot;Getting a profile has been deprecated.&quot;</span><span class="p">,</span>
+                <span class="ne">DeprecationWarning</span><span class="p">,</span>
+                <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span>
+            <span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_profile</span>
 
     <span class="nd">@profile</span><span class="o">.</span><span class="n">setter</span>
@@ -189,16 +167,8 @@
         <span class="k">elif</span> <span class="s1">&#39;-headless&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_arguments</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_arguments</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="s1">&#39;-headless&#39;</span><span class="p">)</span>
 
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">page_load_strategy</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_caps</span><span class="p">[</span><span class="s2">&quot;pageLoadStrategy&quot;</span><span class="p">]</span>
-
-    <span class="nd">@page_load_strategy</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">page_load_strategy</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">strategy</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
-        <span class="k">if</span> <span class="n">strategy</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;normal&quot;</span><span class="p">,</span> <span class="s2">&quot;eager&quot;</span><span class="p">,</span> <span class="s2">&quot;none&quot;</span><span class="p">]:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">set_capability</span><span class="p">(</span><span class="s2">&quot;pageLoadStrategy&quot;</span><span class="p">,</span> <span class="n">strategy</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Strategy can only be one of the following: normal, eager, none&quot;</span><span class="p">)</span>
+<div class="viewcode-block" id="Options.enable_mobile"><a class="viewcode-back" href="../../../../webdriver_firefox/selenium.webdriver.firefox.options.html#selenium.webdriver.firefox.options.Options.enable_mobile">[docs]</a>    <span class="k">def</span> <span class="nf">enable_mobile</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">android_package</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;org.mozilla.firefox&quot;</span><span class="p">,</span> <span class="n">android_activity</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">device_serial</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">enable_mobile</span><span class="p">(</span><span class="n">android_package</span><span class="p">,</span> <span class="n">android_activity</span><span class="p">,</span> <span class="n">device_serial</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Options.to_capabilities"><a class="viewcode-back" href="../../../../webdriver_firefox/selenium.webdriver.firefox.options.html#selenium.webdriver.firefox.options.Options.to_capabilities">[docs]</a>    <span class="k">def</span> <span class="nf">to_capabilities</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Marshals the Firefox options to a `moz:firefoxOptions`</span>
@@ -221,6 +191,8 @@
             <span class="n">opts</span><span class="p">[</span><span class="s2">&quot;profile&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_profile</span><span class="o">.</span><span class="n">encoded</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_arguments</span><span class="p">:</span>
             <span class="n">opts</span><span class="p">[</span><span class="s2">&quot;args&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_arguments</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">mobile_options</span><span class="p">:</span>
+            <span class="n">opts</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mobile_options</span><span class="p">)</span>
 
         <span class="n">opts</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">to_capabilities</span><span class="p">())</span>
 

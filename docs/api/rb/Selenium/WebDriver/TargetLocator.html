@@ -94,7 +94,7 @@
   
   <dl>
     <dt>Defined in:</dt>
-    <dd>build/rb/lib/selenium/webdriver/common/target_locator.rb</dd>
+    <dd>rb/lib/selenium/webdriver/common/target_locator.rb</dd>
   </dl>
   
 </div>
@@ -239,6 +239,30 @@
         <li class="public ">
   <span class="summary_signature">
     
+      <a href="#new_window-instance_method" title="#new_window (instance method)">#<strong>new_window</strong>(type = :window)  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'>
+<p>Switch to a new top-level browsing context.</p>
+</div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
       <a href="#parent_frame-instance_method" title="#parent_frame (instance method)">#<strong>parent_frame</strong>  &#x21d2; Object </a>
     
 
@@ -325,7 +349,7 @@
 29</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/target_locator.rb', line 27</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/target_locator.rb', line 27</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_initialize'>initialize</span><span class='lparen'>(</span><span class='id identifier rubyid_bridge'>bridge</span><span class='rparen'>)</span>
   <span class='ivar'>@bridge</span> <span class='op'>=</span> <span class='id identifier rubyid_bridge'>bridge</span>
@@ -381,12 +405,12 @@
       <pre class="lines">
 
 
-90
-91
-92</pre>
+118
+119
+120</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/target_locator.rb', line 90</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/target_locator.rb', line 118</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_active_element'>active_element</span>
   <span class='ivar'>@bridge</span><span class='period'>.</span><span class='id identifier rubyid_switch_to_active_element'>switch_to_active_element</span>
@@ -422,12 +446,12 @@
       <pre class="lines">
 
 
-106
-107
-108</pre>
+134
+135
+136</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/target_locator.rb', line 106</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/target_locator.rb', line 134</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_alert'>alert</span>
   <span class='const'><span class='object_link'><a href="Alert.html" title="Selenium::WebDriver::Alert (class)">Alert</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="Alert.html#initialize-instance_method" title="Selenium::WebDriver::Alert#initialize (method)">new</a></span></span><span class='lparen'>(</span><span class='ivar'>@bridge</span><span class='rparen'>)</span>
@@ -463,12 +487,12 @@
       <pre class="lines">
 
 
-98
-99
-100</pre>
+126
+127
+128</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/target_locator.rb', line 98</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/target_locator.rb', line 126</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_default_content'>default_content</span>
   <span class='ivar'>@bridge</span><span class='period'>.</span><span class='id identifier rubyid_switch_to_default_content'>switch_to_default_content</span>
@@ -509,10 +533,109 @@
 37</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/target_locator.rb', line 35</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/target_locator.rb', line 35</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_frame'>frame</span><span class='lparen'>(</span><span class='id identifier rubyid_id'>id</span><span class='rparen'>)</span>
   <span class='ivar'>@bridge</span><span class='period'>.</span><span class='id identifier rubyid_switch_to_frame'>switch_to_frame</span> <span class='id identifier rubyid_id'>id</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="new_window-instance_method">
+  
+    #<strong>new_window</strong>(type = :window)  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    
+<p>Switch to a new top-level browsing context</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  <p class="tag_title">Parameters:</p>
+<ul class="param">
+  
+    <li>
+      
+        <span class='name'>type</span>
+      
+      
+        <span class='type'></span>
+      
+      
+        <em class="default">(defaults to: <tt>:window</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>either :tab or :window</p>
+</div>
+      
+    </li>
+  
+</ul>
+
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+71
+72
+73</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/target_locator.rb', line 53</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_new_window'>new_window</span><span class='lparen'>(</span><span class='id identifier rubyid_type'>type</span> <span class='op'>=</span> <span class='symbol'>:window</span><span class='rparen'>)</span>
+  <span class='kw'>unless</span> <span class='qsymbols_beg'>%i[</span><span class='tstring_content'>window</span><span class='words_sep'> </span><span class='tstring_content'>tab</span><span class='tstring_end'>]</span></span><span class='period'>.</span><span class='id identifier rubyid_include?'>include?</span><span class='lparen'>(</span><span class='id identifier rubyid_type'>type</span><span class='rparen'>)</span>
+    <span class='id identifier rubyid_raise'>raise</span> <span class='const'>ArgumentError</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>Valid types are :tab and :window, received: </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_type'>type</span><span class='period'>.</span><span class='id identifier rubyid_inspect'>inspect</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span>
+  <span class='kw'>end</span>
+
+  <span class='id identifier rubyid_handle'>handle</span> <span class='op'>=</span> <span class='ivar'>@bridge</span><span class='period'>.</span><span class='id identifier rubyid_new_window'>new_window</span><span class='lparen'>(</span><span class='id identifier rubyid_type'>type</span><span class='rparen'>)</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>handle</span><span class='tstring_end'>&#39;</span></span><span class='rbracket'>]</span>
+
+  <span class='kw'>if</span> <span class='id identifier rubyid_block_given?'>block_given?</span>
+    <span class='id identifier rubyid_execute_and_close'>execute_and_close</span> <span class='op'>=</span> <span class='id identifier rubyid_proc'>proc</span> <span class='kw'>do</span>
+      <span class='kw'>yield</span><span class='lparen'>(</span><span class='kw'>self</span><span class='rparen'>)</span>
+      <span class='kw'>begin</span>
+        <span class='ivar'>@bridge</span><span class='period'>.</span><span class='id identifier rubyid_close'>close</span>
+      <span class='kw'>rescue</span> <span class='const'><span class='object_link'><a href="Error.html" title="Selenium::WebDriver::Error (module)">Error</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="Error/NoSuchWindowError.html" title="Selenium::WebDriver::Error::NoSuchWindowError (class)">NoSuchWindowError</a></span></span>
+        <span class='comment'># window already closed
+</span>      <span class='kw'>end</span>
+    <span class='kw'>end</span>
+    <span class='id identifier rubyid_window'>window</span><span class='lparen'>(</span><span class='id identifier rubyid_handle'>handle</span><span class='comma'>,</span> <span class='op'>&amp;</span><span class='id identifier rubyid_execute_and_close'>execute_and_close</span><span class='rparen'>)</span>
+  <span class='kw'>else</span>
+    <span class='id identifier rubyid_window'>window</span><span class='lparen'>(</span><span class='id identifier rubyid_handle'>handle</span><span class='rparen'>)</span>
+  <span class='kw'>end</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -550,7 +673,7 @@
 45</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/target_locator.rb', line 43</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/target_locator.rb', line 43</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_parent_frame'>parent_frame</span>
   <span class='ivar'>@bridge</span><span class='period'>.</span><span class='id identifier rubyid_switch_to_parent_frame'>switch_to_parent_frame</span>
@@ -608,35 +731,35 @@
       <pre class="lines">
 
 
-57
-58
-59
-60
-61
-62
-63
-64
-65
-66
-67
-68
-69
-70
-71
-72
-73
-74
-75
-76
-77
-78
-79
-80
-81
-82</pre>
+85
+86
+87
+88
+89
+90
+91
+92
+93
+94
+95
+96
+97
+98
+99
+100
+101
+102
+103
+104
+105
+106
+107
+108
+109
+110</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/target_locator.rb', line 57</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/target_locator.rb', line 85</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_window'>window</span><span class='lparen'>(</span><span class='id identifier rubyid_id'>id</span><span class='rparen'>)</span>
   <span class='kw'>if</span> <span class='id identifier rubyid_block_given?'>block_given?</span>
@@ -674,9 +797,9 @@
 </div>
 
       <div id="footer">
-  Generated on Thu Mar 18 21:58:26 2021 by
+  Generated on Wed Oct 20 18:47:55 2021 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.26 (ruby-2.6.3).
+  0.9.26 (ruby-2.7.3).
 </div>
 
     </div>

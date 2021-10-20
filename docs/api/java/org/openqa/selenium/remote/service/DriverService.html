@@ -27,7 +27,7 @@
     catch(err) {
     }
 //-->
-var data = {"i0":9,"i1":9,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10,"i9":10,"i10":10,"i11":10,"i12":10,"i13":10};
+var data = {"i0":9,"i1":10,"i2":9,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10,"i9":10,"i10":10,"i11":10,"i12":10,"i13":10,"i14":10};
 var tabs = {65535:["t0","All Methods"],1:["t1","Static Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -136,12 +136,17 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <ul class="blockList">
 <li class="blockList">
 <dl>
+<dt>All Implemented Interfaces:</dt>
+<dd><code>java.io.Closeable</code>, <code>java.lang.AutoCloseable</code></dd>
+</dl>
+<dl>
 <dt>Direct Known Subclasses:</dt>
-<dd><code><a href="../../chrome/ChromeDriverService.html" title="class in org.openqa.selenium.chrome">ChromeDriverService</a></code>, <code><a href="../../edge/EdgeDriverService.html" title="class in org.openqa.selenium.edge">EdgeDriverService</a></code>, <code><a href="../../firefox/FirefoxDriverService.html" title="class in org.openqa.selenium.firefox">FirefoxDriverService</a></code>, <code><a href="../../ie/InternetExplorerDriverService.html" title="class in org.openqa.selenium.ie">InternetExplorerDriverService</a></code>, <code><a href="../../opera/OperaDriverService.html" title="class in org.openqa.selenium.opera">OperaDriverService</a></code>, <code><a href="../../safari/SafariDriverService.html" title="class in org.openqa.selenium.safari">SafariDriverService</a></code></dd>
+<dd><code><a href="../../chrome/ChromeDriverService.html" title="class in org.openqa.selenium.chrome">ChromeDriverService</a></code>, <code><a href="../../edge/EdgeDriverService.html" title="class in org.openqa.selenium.edge">EdgeDriverService</a></code>, <code><a href="../../firefox/FirefoxDriverService.html" title="class in org.openqa.selenium.firefox">FirefoxDriverService</a></code>, <code><a href="../../ie/InternetExplorerDriverService.html" title="class in org.openqa.selenium.ie">InternetExplorerDriverService</a></code>, <code><a href="../../opera/OperaDriverService.html" title="class in org.openqa.selenium.opera">OperaDriverService</a></code>, <code><a href="../../safari/SafariDriverService.html" title="class in org.openqa.selenium.safari">SafariDriverService</a></code>, <code><a href="../../safari/SafariTechPreviewDriverService.html" title="class in org.openqa.selenium.safari">SafariTechPreviewDriverService</a></code></dd>
 </dl>
 <hr>
 <pre>public class <span class="typeNameLabel">DriverService</span>
-extends java.lang.Object</pre>
+extends java.lang.Object
+implements java.io.Closeable</pre>
 <div class="block">Manages the life and death of a native executable driver server.
 
  It is expected that the driver server implements the
@@ -255,6 +260,11 @@ extends java.lang.Object</pre>
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr id="i1" class="rowColor">
+<td class="colFirst"><code>void</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#close()">close</a></span>()</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr id="i2" class="altColor">
 <td class="colFirst"><code>protected static java.io.File</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#findExecutable(java.lang.String,java.lang.String,java.lang.String,java.lang.String)">findExecutable</a></span>&#8203;(java.lang.String&nbsp;exeName,
               java.lang.String&nbsp;exeProperty,
@@ -262,68 +272,68 @@ extends java.lang.Object</pre>
               java.lang.String&nbsp;exeDownload)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i2" class="altColor">
+<tr id="i3" class="rowColor">
 <td class="colFirst"><code>protected java.util.List&lt;java.lang.String&gt;</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getArgs()">getArgs</a></span>()</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i3" class="rowColor">
+<tr id="i4" class="altColor">
 <td class="colFirst"><code>protected java.util.Map&lt;java.lang.String,&#8203;java.lang.String&gt;</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getEnvironment()">getEnvironment</a></span>()</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i4" class="altColor">
+<tr id="i5" class="rowColor">
 <td class="colFirst"><code>protected java.io.OutputStream</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getOutputStream()">getOutputStream</a></span>()</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i5" class="rowColor">
+<tr id="i6" class="altColor">
 <td class="colFirst"><code>protected java.time.Duration</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getTimeout()">getTimeout</a></span>()</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i6" class="altColor">
+<tr id="i7" class="rowColor">
 <td class="colFirst"><code>java.net.URL</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getUrl()">getUrl</a></span>()</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i7" class="rowColor">
+<tr id="i8" class="altColor">
 <td class="colFirst"><code>protected java.net.URL</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getUrl(int)">getUrl</a></span>&#8203;(int&nbsp;port)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i8" class="altColor">
+<tr id="i9" class="rowColor">
 <td class="colFirst"><code>protected boolean</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#hasShutdownEndpoint()">hasShutdownEndpoint</a></span>()</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i9" class="rowColor">
+<tr id="i10" class="altColor">
 <td class="colFirst"><code>boolean</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#isRunning()">isRunning</a></span>()</code></th>
 <td class="colLast">
 <div class="block">Checks whether the driver child process is currently running.</div>
 </td>
 </tr>
-<tr id="i10" class="altColor">
+<tr id="i11" class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#sendOutputTo(java.io.OutputStream)">sendOutputTo</a></span>&#8203;(java.io.OutputStream&nbsp;outputStream)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i11" class="rowColor">
+<tr id="i12" class="altColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#start()">start</a></span>()</code></th>
 <td class="colLast">
 <div class="block">Starts this service if it is not already running.</div>
 </td>
 </tr>
-<tr id="i12" class="altColor">
+<tr id="i13" class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#stop()">stop</a></span>()</code></th>
 <td class="colLast">
 <div class="block">Stops this service if it is currently running.</div>
 </td>
 </tr>
-<tr id="i13" class="rowColor">
+<tr id="i14" class="altColor">
 <td class="colFirst"><code>protected void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#waitUntilAvailable()">waitUntilAvailable</a></span>()</code></th>
 <td class="colLast">&nbsp;</td>
@@ -416,6 +426,38 @@ extends java.lang.Object</pre>
 <!--   -->
 </a>
 <h3>Method Detail</h3>
+<a id="findExecutable(java.lang.String,java.lang.String,java.lang.String,java.lang.String)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>findExecutable</h4>
+<pre class="methodSignature">protected static&nbsp;java.io.File&nbsp;findExecutable&#8203;(java.lang.String&nbsp;exeName,
+                                             java.lang.String&nbsp;exeProperty,
+                                             java.lang.String&nbsp;exeDocs,
+                                             java.lang.String&nbsp;exeDownload)</pre>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>exeName</code> - Name of the executable file to look for in PATH</dd>
+<dd><code>exeProperty</code> - Name of a system property that specifies the path to the executable file</dd>
+<dd><code>exeDocs</code> - The link to the driver documentation page</dd>
+<dd><code>exeDownload</code> - The link to the driver download page</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>The driver executable as a <code>File</code> object</dd>
+<dt><span class="throwsLabel">Throws:</span></dt>
+<dd><code>java.lang.IllegalStateException</code> - If the executable not found or cannot be executed</dd>
+</dl>
+</li>
+</ul>
+<a id="checkExecutable(java.io.File)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>checkExecutable</h4>
+<pre class="methodSignature">protected static&nbsp;void&nbsp;checkExecutable&#8203;(java.io.File&nbsp;exe)</pre>
+</li>
+</ul>
 <a id="getArgs()">
 <!--   -->
 </a>
@@ -459,38 +501,6 @@ extends java.lang.Object</pre>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>The base URL for the managed driver server.</dd>
 </dl>
-</li>
-</ul>
-<a id="findExecutable(java.lang.String,java.lang.String,java.lang.String,java.lang.String)">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>findExecutable</h4>
-<pre class="methodSignature">protected static&nbsp;java.io.File&nbsp;findExecutable&#8203;(java.lang.String&nbsp;exeName,
-                                             java.lang.String&nbsp;exeProperty,
-                                             java.lang.String&nbsp;exeDocs,
-                                             java.lang.String&nbsp;exeDownload)</pre>
-<dl>
-<dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>exeName</code> - Name of the executable file to look for in PATH</dd>
-<dd><code>exeProperty</code> - Name of a system property that specifies the path to the executable file</dd>
-<dd><code>exeDocs</code> - The link to the driver documentation page</dd>
-<dd><code>exeDownload</code> - The link to the driver download page</dd>
-<dt><span class="returnLabel">Returns:</span></dt>
-<dd>The driver executable as a <code>File</code> object</dd>
-<dt><span class="throwsLabel">Throws:</span></dt>
-<dd><code>java.lang.IllegalStateException</code> - If the executable not found or cannot be executed</dd>
-</dl>
-</li>
-</ul>
-<a id="checkExecutable(java.io.File)">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>checkExecutable</h4>
-<pre class="methodSignature">protected static&nbsp;void&nbsp;checkExecutable&#8203;(java.io.File&nbsp;exe)</pre>
 </li>
 </ul>
 <a id="isRunning()">
@@ -579,10 +589,25 @@ extends java.lang.Object</pre>
 <a id="getOutputStream()">
 <!--   -->
 </a>
-<ul class="blockListLast">
+<ul class="blockList">
 <li class="blockList">
 <h4>getOutputStream</h4>
 <pre class="methodSignature">protected&nbsp;java.io.OutputStream&nbsp;getOutputStream()</pre>
+</li>
+</ul>
+<a id="close()">
+<!--   -->
+</a>
+<ul class="blockListLast">
+<li class="blockList">
+<h4>close</h4>
+<pre class="methodSignature">public&nbsp;void&nbsp;close()</pre>
+<dl>
+<dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
+<dd><code>close</code>&nbsp;in interface&nbsp;<code>java.lang.AutoCloseable</code></dd>
+<dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
+<dd><code>close</code>&nbsp;in interface&nbsp;<code>java.io.Closeable</code></dd>
+</dl>
 </li>
 </ul>
 </li>

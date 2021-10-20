@@ -83,7 +83,7 @@
   
   <dl>
     <dt>Defined in:</dt>
-    <dd>build/rb/lib/selenium/webdriver/common/interactions/pointer_actions.rb</dd>
+    <dd>rb/lib/selenium/webdriver/common/interactions/pointer_actions.rb</dd>
   </dl>
   
 </div>
@@ -463,7 +463,7 @@
 31</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/interactions/pointer_actions.rb', line 29</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/interactions/pointer_actions.rb', line 29</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_default_move_duration'>default_move_duration</span>
   <span class='ivar'>@default_move_duration</span> <span class='op'>||=</span> <span class='float'>0.25</span> <span class='comment'># 250 milliseconds
@@ -599,7 +599,7 @@
 240</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/interactions/pointer_actions.rb', line 235</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/interactions/pointer_actions.rb', line 235</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_click'>click</span><span class='lparen'>(</span><span class='id identifier rubyid_element'>element</span> <span class='op'>=</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='label'>device:</span> <span class='kw'>nil</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_move_to'>move_to</span><span class='lparen'>(</span><span class='id identifier rubyid_element'>element</span><span class='comma'>,</span> <span class='label'>device:</span> <span class='id identifier rubyid_device'>device</span><span class='rparen'>)</span> <span class='kw'>if</span> <span class='id identifier rubyid_element'>element</span>
@@ -720,7 +720,7 @@
 193</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/interactions/pointer_actions.rb', line 189</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/interactions/pointer_actions.rb', line 189</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_click_and_hold'>click_and_hold</span><span class='lparen'>(</span><span class='id identifier rubyid_element'>element</span> <span class='op'>=</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='label'>device:</span> <span class='kw'>nil</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_move_to'>move_to</span><span class='lparen'>(</span><span class='id identifier rubyid_element'>element</span><span class='comma'>,</span> <span class='label'>device:</span> <span class='id identifier rubyid_device'>device</span><span class='rparen'>)</span> <span class='kw'>if</span> <span class='id identifier rubyid_element'>element</span>
@@ -848,7 +848,7 @@
 297</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/interactions/pointer_actions.rb', line 292</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/interactions/pointer_actions.rb', line 292</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_context_click'>context_click</span><span class='lparen'>(</span><span class='id identifier rubyid_element'>element</span> <span class='op'>=</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='label'>device:</span> <span class='kw'>nil</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_move_to'>move_to</span><span class='lparen'>(</span><span class='id identifier rubyid_element'>element</span><span class='comma'>,</span> <span class='label'>device:</span> <span class='id identifier rubyid_device'>device</span><span class='rparen'>)</span> <span class='kw'>if</span> <span class='id identifier rubyid_element'>element</span>
@@ -980,7 +980,7 @@
 269</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/interactions/pointer_actions.rb', line 264</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/interactions/pointer_actions.rb', line 264</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_double_click'>double_click</span><span class='lparen'>(</span><span class='id identifier rubyid_element'>element</span> <span class='op'>=</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='label'>device:</span> <span class='kw'>nil</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_move_to'>move_to</span><span class='lparen'>(</span><span class='id identifier rubyid_element'>element</span><span class='comma'>,</span> <span class='label'>device:</span> <span class='id identifier rubyid_device'>device</span><span class='rparen'>)</span> <span class='kw'>if</span> <span class='id identifier rubyid_element'>element</span>
@@ -1114,7 +1114,7 @@
 323</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/interactions/pointer_actions.rb', line 318</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/interactions/pointer_actions.rb', line 318</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_drag_and_drop'>drag_and_drop</span><span class='lparen'>(</span><span class='id identifier rubyid_source'>source</span><span class='comma'>,</span> <span class='id identifier rubyid_target'>target</span><span class='comma'>,</span> <span class='label'>device:</span> <span class='kw'>nil</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_click_and_hold'>click_and_hold</span><span class='lparen'>(</span><span class='id identifier rubyid_source'>source</span><span class='comma'>,</span> <span class='label'>device:</span> <span class='id identifier rubyid_device'>device</span><span class='rparen'>)</span>
@@ -1263,7 +1263,7 @@
 347</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/interactions/pointer_actions.rb', line 342</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/interactions/pointer_actions.rb', line 342</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_drag_and_drop_by'>drag_and_drop_by</span><span class='lparen'>(</span><span class='id identifier rubyid_source'>source</span><span class='comma'>,</span> <span class='id identifier rubyid_right_by'>right_by</span><span class='comma'>,</span> <span class='id identifier rubyid_down_by'>down_by</span><span class='comma'>,</span> <span class='label'>device:</span> <span class='kw'>nil</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_click_and_hold'>click_and_hold</span><span class='lparen'>(</span><span class='id identifier rubyid_source'>source</span><span class='comma'>,</span> <span class='label'>device:</span> <span class='id identifier rubyid_device'>device</span><span class='rparen'>)</span>
@@ -1416,7 +1416,7 @@
 144</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/interactions/pointer_actions.rb', line 136</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/interactions/pointer_actions.rb', line 136</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_move_by'>move_by</span><span class='lparen'>(</span><span class='id identifier rubyid_right_by'>right_by</span><span class='comma'>,</span> <span class='id identifier rubyid_down_by'>down_by</span><span class='comma'>,</span> <span class='label'>device:</span> <span class='kw'>nil</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_pointer'>pointer</span> <span class='op'>=</span> <span class='id identifier rubyid_get_pointer'>get_pointer</span><span class='lparen'>(</span><span class='id identifier rubyid_device'>device</span><span class='rparen'>)</span>
@@ -1595,7 +1595,7 @@
 117</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/interactions/pointer_actions.rb', line 98</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/interactions/pointer_actions.rb', line 98</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_move_to'>move_to</span><span class='lparen'>(</span><span class='id identifier rubyid_element'>element</span><span class='comma'>,</span> <span class='id identifier rubyid_right_by'>right_by</span> <span class='op'>=</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='id identifier rubyid_down_by'>down_by</span> <span class='op'>=</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='label'>device:</span> <span class='kw'>nil</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_pointer'>pointer</span> <span class='op'>=</span> <span class='id identifier rubyid_get_pointer'>get_pointer</span><span class='lparen'>(</span><span class='id identifier rubyid_device'>device</span><span class='rparen'>)</span>
@@ -1762,7 +1762,7 @@
 171</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/interactions/pointer_actions.rb', line 163</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/interactions/pointer_actions.rb', line 163</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_move_to_location'>move_to_location</span><span class='lparen'>(</span><span class='id identifier rubyid_x'>x</span><span class='comma'>,</span> <span class='id identifier rubyid_y'>y</span><span class='comma'>,</span> <span class='label'>device:</span> <span class='kw'>nil</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_pointer'>pointer</span> <span class='op'>=</span> <span class='id identifier rubyid_get_pointer'>get_pointer</span><span class='lparen'>(</span><span class='id identifier rubyid_device'>device</span><span class='rparen'>)</span>
@@ -1881,7 +1881,7 @@
 50</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/interactions/pointer_actions.rb', line 48</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/interactions/pointer_actions.rb', line 48</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_pointer_down'>pointer_down</span><span class='lparen'>(</span><span class='id identifier rubyid_button'>button</span><span class='comma'>,</span> <span class='label'>device:</span> <span class='kw'>nil</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_button_action'>button_action</span><span class='lparen'>(</span><span class='id identifier rubyid_button'>button</span><span class='comma'>,</span> <span class='label'>action:</span> <span class='symbol'>:create_pointer_down</span><span class='comma'>,</span> <span class='label'>device:</span> <span class='id identifier rubyid_device'>device</span><span class='rparen'>)</span>
@@ -1991,7 +1991,7 @@
 67</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/interactions/pointer_actions.rb', line 65</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/interactions/pointer_actions.rb', line 65</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_pointer_up'>pointer_up</span><span class='lparen'>(</span><span class='id identifier rubyid_button'>button</span><span class='comma'>,</span> <span class='label'>device:</span> <span class='kw'>nil</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_button_action'>button_action</span><span class='lparen'>(</span><span class='id identifier rubyid_button'>button</span><span class='comma'>,</span> <span class='label'>action:</span> <span class='symbol'>:create_pointer_up</span><span class='comma'>,</span> <span class='label'>device:</span> <span class='id identifier rubyid_device'>device</span><span class='rparen'>)</span>
@@ -2087,7 +2087,7 @@
 211</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/interactions/pointer_actions.rb', line 208</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/interactions/pointer_actions.rb', line 208</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_release'>release</span><span class='lparen'>(</span><span class='label'>device:</span> <span class='kw'>nil</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_pointer_up'>pointer_up</span><span class='lparen'>(</span><span class='symbol'>:left</span><span class='comma'>,</span> <span class='label'>device:</span> <span class='id identifier rubyid_device'>device</span><span class='rparen'>)</span>
@@ -2103,9 +2103,9 @@
 </div>
 
       <div id="footer">
-  Generated on Thu Mar 18 21:58:15 2021 by
+  Generated on Wed Oct 20 18:47:50 2021 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.26 (ruby-2.6.3).
+  0.9.26 (ruby-2.7.3).
 </div>
 
     </div>

@@ -27,7 +27,7 @@
     catch(err) {
     }
 //-->
-var data = {"i0":10,"i1":10,"i2":10};
+var data = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10};
 var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -163,6 +163,11 @@ extends java.lang.Object</pre>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#DEFAULT_HEALTHCHECK_INTERVAL">DEFAULT_HEALTHCHECK_INTERVAL</a></span></code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
+<tr class="rowColor">
+<td class="colFirst"><code>static java.lang.String</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#DISTRIBUTOR_SECTION">DISTRIBUTOR_SECTION</a></span></code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
 </table>
 </li>
 </ul>
@@ -217,6 +222,21 @@ extends java.lang.Object</pre>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getHealthCheckInterval()">getHealthCheckInterval</a></span>()</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
+<tr id="i3" class="rowColor">
+<td class="colFirst"><code><a href="../../data/SlotMatcher.html" title="interface in org.openqa.selenium.grid.data">SlotMatcher</a></code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getSlotMatcher()">getSlotMatcher</a></span>()</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr id="i4" class="altColor">
+<td class="colFirst"><code><a href="../selector/SlotSelector.html" title="interface in org.openqa.selenium.grid.distributor.selector">SlotSelector</a></code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getSlotSelector()">getSlotSelector</a></span>()</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr id="i5" class="rowColor">
+<td class="colFirst"><code>boolean</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#shouldRejectUnsupportedCaps()">shouldRejectUnsupportedCaps</a></span>()</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
 </table>
 <ul class="blockList">
 <li class="blockList"><a id="methods.inherited.from.class.java.lang.Object">
@@ -244,13 +264,26 @@ extends java.lang.Object</pre>
 <a id="DEFAULT_HEALTHCHECK_INTERVAL">
 <!--   -->
 </a>
-<ul class="blockListLast">
+<ul class="blockList">
 <li class="blockList">
 <h4>DEFAULT_HEALTHCHECK_INTERVAL</h4>
 <pre>public static final&nbsp;int DEFAULT_HEALTHCHECK_INTERVAL</pre>
 <dl>
 <dt><span class="seeLabel">See Also:</span></dt>
 <dd><a href="../../../../../../constant-values.html#org.openqa.selenium.grid.distributor.config.DistributorOptions.DEFAULT_HEALTHCHECK_INTERVAL">Constant Field Values</a></dd>
+</dl>
+</li>
+</ul>
+<a id="DISTRIBUTOR_SECTION">
+<!--   -->
+</a>
+<ul class="blockListLast">
+<li class="blockList">
+<h4>DISTRIBUTOR_SECTION</h4>
+<pre>public static final&nbsp;java.lang.String DISTRIBUTOR_SECTION</pre>
+<dl>
+<dt><span class="seeLabel">See Also:</span></dt>
+<dd><a href="../../../../../../constant-values.html#org.openqa.selenium.grid.distributor.config.DistributorOptions.DISTRIBUTOR_SECTION">Constant Field Values</a></dd>
 </dl>
 </li>
 </ul>
@@ -304,10 +337,37 @@ extends java.lang.Object</pre>
 <a id="getDistributor()">
 <!--   -->
 </a>
-<ul class="blockListLast">
+<ul class="blockList">
 <li class="blockList">
 <h4>getDistributor</h4>
 <pre class="methodSignature">public&nbsp;<a href="../Distributor.html" title="class in org.openqa.selenium.grid.distributor">Distributor</a>&nbsp;getDistributor()</pre>
+</li>
+</ul>
+<a id="getSlotMatcher()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getSlotMatcher</h4>
+<pre class="methodSignature">public&nbsp;<a href="../../data/SlotMatcher.html" title="interface in org.openqa.selenium.grid.data">SlotMatcher</a>&nbsp;getSlotMatcher()</pre>
+</li>
+</ul>
+<a id="getSlotSelector()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getSlotSelector</h4>
+<pre class="methodSignature">public&nbsp;<a href="../selector/SlotSelector.html" title="interface in org.openqa.selenium.grid.distributor.selector">SlotSelector</a>&nbsp;getSlotSelector()</pre>
+</li>
+</ul>
+<a id="shouldRejectUnsupportedCaps()">
+<!--   -->
+</a>
+<ul class="blockListLast">
+<li class="blockList">
+<h4>shouldRejectUnsupportedCaps</h4>
+<pre class="methodSignature">public&nbsp;boolean&nbsp;shouldRejectUnsupportedCaps()</pre>
 </li>
 </ul>
 </li>

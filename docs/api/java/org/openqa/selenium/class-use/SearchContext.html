@@ -198,6 +198,21 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 </tbody>
 </table>
 <table class="useSummary">
+<caption><span>Methods in <a href="../package-summary.html">org.openqa.selenium</a> that return <a href="../SearchContext.html" title="interface in org.openqa.selenium">SearchContext</a></span><span class="tabEnd">&nbsp;</span></caption>
+<tr>
+<th class="colFirst" scope="col">Modifier and Type</th>
+<th class="colSecond" scope="col">Method</th>
+<th class="colLast" scope="col">Description</th>
+</tr>
+<tbody>
+<tr class="altColor">
+<td class="colFirst"><code>default <a href="../SearchContext.html" title="interface in org.openqa.selenium">SearchContext</a></code></td>
+<th class="colSecond" scope="row"><span class="typeNameLabel">WebElement.</span><code><span class="memberNameLink"><a href="../WebElement.html#getShadowRoot()">getShadowRoot</a></span>()</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+</tbody>
+</table>
+<table class="useSummary">
 <caption><span>Methods in <a href="../package-summary.html">org.openqa.selenium</a> with parameters of type <a href="../SearchContext.html" title="interface in org.openqa.selenium">SearchContext</a></span><span class="tabEnd">&nbsp;</span></caption>
 <tr>
 <th class="colFirst" scope="col">Modifier and Type</th>
@@ -402,6 +417,21 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 </tbody>
 </table>
 <table class="useSummary">
+<caption><span>Methods in <a href="../remote/package-summary.html">org.openqa.selenium.remote</a> that return <a href="../SearchContext.html" title="interface in org.openqa.selenium">SearchContext</a></span><span class="tabEnd">&nbsp;</span></caption>
+<tr>
+<th class="colFirst" scope="col">Modifier and Type</th>
+<th class="colSecond" scope="col">Method</th>
+<th class="colLast" scope="col">Description</th>
+</tr>
+<tbody>
+<tr class="altColor">
+<td class="colFirst"><code><a href="../SearchContext.html" title="interface in org.openqa.selenium">SearchContext</a></code></td>
+<th class="colSecond" scope="row"><span class="typeNameLabel">RemoteWebElement.</span><code><span class="memberNameLink"><a href="../remote/RemoteWebElement.html#getShadowRoot()">getShadowRoot</a></span>()</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+</tbody>
+</table>
+<table class="useSummary">
 <caption><span>Methods in <a href="../remote/package-summary.html">org.openqa.selenium.remote</a> with parameters of type <a href="../SearchContext.html" title="interface in org.openqa.selenium">SearchContext</a></span><span class="tabEnd">&nbsp;</span></caption>
 <tr>
 <th class="colFirst" scope="col">Modifier and Type</th>
@@ -411,8 +441,8 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <tbody>
 <tr class="altColor">
 <td class="colFirst"><code>java.util.List&lt;<a href="../WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&gt;</code></td>
-<th class="colSecond" scope="row"><span class="typeNameLabel">RemoteWebDriver.</span><code><span class="memberNameLink"><a href="../remote/RemoteWebDriver.html#findElements(org.openqa.selenium.remote.RemoteWebDriver,org.openqa.selenium.SearchContext,org.openqa.selenium.By)">findElements</a></span>&#8203;(<a href="../remote/RemoteWebDriver.html" title="class in org.openqa.selenium.remote">RemoteWebDriver</a>&nbsp;parent,
-            <a href="../SearchContext.html" title="interface in org.openqa.selenium">SearchContext</a>&nbsp;context,
+<th class="colSecond" scope="row"><span class="typeNameLabel">RemoteWebDriver.</span><code><span class="memberNameLink"><a href="../remote/RemoteWebDriver.html#findElements(org.openqa.selenium.SearchContext,java.util.function.BiFunction,org.openqa.selenium.By)">findElements</a></span>&#8203;(<a href="../SearchContext.html" title="interface in org.openqa.selenium">SearchContext</a>&nbsp;context,
+            java.util.function.BiFunction&lt;java.lang.String,&#8203;java.lang.Object,&#8203;<a href="../remote/CommandPayload.html" title="class in org.openqa.selenium.remote">CommandPayload</a>&gt;&nbsp;findCommand,
             <a href="../By.html" title="class in org.openqa.selenium">By</a>&nbsp;locator)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
@@ -482,6 +512,25 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <td class="colFirst"><code>java.util.List&lt;<a href="../WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&gt;</code></td>
 <th class="colSecond" scope="row"><span class="typeNameLabel">ByIdOrName.</span><code><span class="memberNameLink"><a href="../support/ByIdOrName.html#findElements(org.openqa.selenium.SearchContext)">findElements</a></span>&#8203;(<a href="../SearchContext.html" title="interface in org.openqa.selenium">SearchContext</a>&nbsp;context)</code></th>
 <td class="colLast">&nbsp;</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>static &lt;T&gt;&nbsp;T</code></td>
+<th class="colSecond" scope="row"><span class="typeNameLabel">PageFactory.</span><code><span class="memberNameLink"><a href="../support/PageFactory.html#initElements(org.openqa.selenium.SearchContext,java.lang.Class)">initElements</a></span>&#8203;(<a href="../SearchContext.html" title="interface in org.openqa.selenium">SearchContext</a>&nbsp;searchContext,
+            java.lang.Class&lt;T&gt;&nbsp;pageClassToProxy)</code></th>
+<td class="colLast">
+<div class="block">Instantiate an instance of the given class, and set a lazy proxy for each of the WebElement and
+ List&lt;WebElement&gt; fields that have been declared, assuming that the field
+ name is also the HTML element's "id" or "name".</div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code>static void</code></td>
+<th class="colSecond" scope="row"><span class="typeNameLabel">PageFactory.</span><code><span class="memberNameLink"><a href="../support/PageFactory.html#initElements(org.openqa.selenium.SearchContext,java.lang.Object)">initElements</a></span>&#8203;(<a href="../SearchContext.html" title="interface in org.openqa.selenium">SearchContext</a>&nbsp;searchContext,
+            java.lang.Object&nbsp;page)</code></th>
+<td class="colLast">
+<div class="block">As <a href="../support/PageFactory.html#initElements(org.openqa.selenium.SearchContext,java.lang.Class)"><code>PageFactory.initElements(SearchContext, Class)</code></a> but will only replace the fields of an already
+ instantiated Page Object.</div>
+</td>
 </tr>
 </tbody>
 </table>

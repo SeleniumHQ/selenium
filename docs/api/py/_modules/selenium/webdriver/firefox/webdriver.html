@@ -179,7 +179,7 @@
         <span class="n">capabilities</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">capabilities</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">capabilities</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;binary&quot;</span><span class="p">):</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">binary</span> <span class="o">=</span> <span class="n">capabilities</span><span class="p">[</span><span class="s2">&quot;binary&quot;</span><span class="p">]</span>
+            <span class="n">options</span><span class="o">.</span><span class="n">binary</span> <span class="o">=</span> <span class="n">capabilities</span><span class="p">[</span><span class="s2">&quot;binary&quot;</span><span class="p">]</span>
 
         <span class="c1"># options overrides capabilities</span>
         <span class="k">if</span> <span class="n">options</span><span class="p">:</span>
@@ -214,15 +214,13 @@
                 <span class="n">log_path</span><span class="o">=</span><span class="n">service_log_path</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">service</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
 
-        <span class="n">capabilities</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">options</span><span class="o">.</span><span class="n">to_capabilities</span><span class="p">())</span>
-
         <span class="n">executor</span> <span class="o">=</span> <span class="n">FirefoxRemoteConnection</span><span class="p">(</span>
             <span class="n">remote_server_addr</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">service</span><span class="o">.</span><span class="n">service_url</span><span class="p">,</span>
             <span class="n">ignore_proxy</span><span class="o">=</span><span class="n">options</span><span class="o">.</span><span class="n">_ignore_local_proxy</span><span class="p">)</span>
         <span class="n">RemoteWebDriver</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span>
             <span class="n">command_executor</span><span class="o">=</span><span class="n">executor</span><span class="p">,</span>
-            <span class="n">desired_capabilities</span><span class="o">=</span><span class="n">capabilities</span><span class="p">,</span>
+            <span class="n">options</span><span class="o">=</span><span class="n">options</span><span class="p">,</span>
             <span class="n">keep_alive</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_is_remote</span> <span class="o">=</span> <span class="kc">False</span>

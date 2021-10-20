@@ -27,7 +27,7 @@
     catch(err) {
     }
 //-->
-var data = {"i0":10,"i1":6,"i2":10,"i3":10,"i4":10,"i5":9,"i6":10,"i7":9,"i8":9};
+var data = {"i0":10,"i1":6,"i2":10,"i3":10,"i4":10,"i5":9,"i6":10,"i7":9,"i8":10,"i9":9};
 var tabs = {65535:["t0","All Methods"],1:["t1","Static Methods"],2:["t2","Instance Methods"],4:["t3","Abstract Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -270,6 +270,11 @@ implements <a href="../CommandCodec.html" title="interface in org.openqa.seleniu
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr id="i8" class="altColor">
+<td class="colFirst"><code>boolean</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#isSupported(java.lang.String)">isSupported</a></span>&#8203;(java.lang.String&nbsp;commandName)</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr id="i9" class="rowColor">
 <td class="colFirst"><code>protected static <a href="AbstractHttpCommandCodec.CommandSpec.html" title="class in org.openqa.selenium.remote.codec">AbstractHttpCommandCodec.CommandSpec</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#post(java.lang.String)">post</a></span>&#8203;(java.lang.String&nbsp;path)</code></th>
 <td class="colLast">&nbsp;</td>
@@ -317,6 +322,21 @@ implements <a href="../CommandCodec.html" title="interface in org.openqa.seleniu
 <!--   -->
 </a>
 <h3>Method Detail</h3>
+<a id="isSupported(java.lang.String)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>isSupported</h4>
+<pre class="methodSignature">public&nbsp;boolean&nbsp;isSupported&#8203;(java.lang.String&nbsp;commandName)</pre>
+<dl>
+<dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
+<dd><code><a href="../CommandCodec.html#isSupported(java.lang.String)">isSupported</a></code>&nbsp;in interface&nbsp;<code><a href="../CommandCodec.html" title="interface in org.openqa.selenium.remote">CommandCodec</a>&lt;<a href="../http/HttpRequest.html" title="class in org.openqa.selenium.remote.http">HttpRequest</a>&gt;</code></dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>Whether this <a href="../CommandCodec.html" title="interface in org.openqa.selenium.remote"><code>CommandCodec</code></a> supports the given command name.</dd>
+</dl>
+</li>
+</ul>
 <a id="encode(org.openqa.selenium.remote.Command)">
 <!--   -->
 </a>

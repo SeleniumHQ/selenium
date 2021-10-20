@@ -101,17 +101,6 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_overlay_scrollbars_enabled</span> <span class="o">=</span> <span class="n">value</span>
 
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">page_load_strategy</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_caps</span><span class="p">[</span><span class="s2">&quot;pageLoadStrategy&quot;</span><span class="p">]</span>
-
-    <span class="nd">@page_load_strategy</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">page_load_strategy</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">strategy</span><span class="p">):</span>
-        <span class="k">if</span> <span class="n">strategy</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;normal&quot;</span><span class="p">,</span> <span class="s2">&quot;eager&quot;</span><span class="p">,</span> <span class="s2">&quot;none&quot;</span><span class="p">]:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">set_capability</span><span class="p">(</span><span class="s2">&quot;pageLoadStrategy&quot;</span><span class="p">,</span> <span class="n">strategy</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Strategy can only be one of the following: normal, eager, none&quot;</span><span class="p">)</span>
-
 <div class="viewcode-block" id="Options.to_capabilities"><a class="viewcode-back" href="../../../../webdriver_webkitgtk/selenium.webdriver.webkitgtk.options.html#selenium.webdriver.webkitgtk.options.Options.to_capabilities">[docs]</a>    <span class="k">def</span> <span class="nf">to_capabilities</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Creates a capabilities with all the options that have been set and</span>

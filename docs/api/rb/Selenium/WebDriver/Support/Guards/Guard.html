@@ -62,7 +62,7 @@
       <div id="content"><h1>Class: Selenium::WebDriver::Support::Guards::Guard
   
   
-  
+  <span class="private note title">Private</span>
 </h1>
 <div class="box_info">
   
@@ -94,14 +94,142 @@
   
   <dl>
     <dt>Defined in:</dt>
-    <dd>build/rb/lib/selenium/webdriver/support/guards/guard.rb</dd>
+    <dd>rb/lib/selenium/webdriver/support/guards/guard.rb</dd>
   </dl>
   
 </div>
 
+<h2>Overview</h2><div class="docstring">
+  <div class="discussion">
+    <p class="note private">
+  <strong>This class is part of a private API.</strong>
+  You should avoid using this class if possible, as it may be removed or be changed in the future.
+</p>
+
+<p>Guard derived from RSpec example metadata.</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div>
 
 
 
+  <h2>Instance Attribute Summary <small><a href="#" class="summary_toggle">collapse</a></small></h2>
+  <ul class="summary">
+    
+      <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#guarded-instance_method" title="#guarded (instance method)">#<strong>guarded</strong>  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+    
+      <span class="note title readonly">readonly</span>
+    
+    
+  
+  
+  
+  
+  <span class="private note title">private</span>
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+    
+      <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#messages-instance_method" title="#messages (instance method)">#<strong>messages</strong>  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+    
+      <span class="note title readonly">readonly</span>
+    
+    
+  
+  
+  
+  
+  <span class="private note title">private</span>
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+    
+      <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#reason-instance_method" title="#reason (instance method)">#<strong>reason</strong>  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+    
+      <span class="note title readonly">readonly</span>
+    
+    
+  
+  
+  
+  
+  <span class="private note title">private</span>
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+    
+      <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#type-instance_method" title="#type (instance method)">#<strong>type</strong>  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+    
+      <span class="note title readonly">readonly</span>
+    
+    
+  
+  
+  
+  
+  <span class="private note title">private</span>
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+    
+  </ul>
 
 
 
@@ -128,7 +256,7 @@
   
   
   
-  
+  <span class="private note title">private</span>
 
   
     <span class="summary_desc"><div class='inline'>
@@ -152,7 +280,7 @@
   
   
   
-  
+  <span class="private note title">private</span>
 
   
     <span class="summary_desc"><div class='inline'>
@@ -176,7 +304,7 @@
   
   
   
-  
+  <span class="private note title">private</span>
 
   
     <span class="summary_desc"><div class='inline'>
@@ -189,7 +317,7 @@
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#initialize-instance_method" title="#initialize (instance method)">#<strong>initialize</strong>(guard, type)  &#x21d2; Guard </a>
+      <a href="#initialize-instance_method" title="#initialize (instance method)">#<strong>initialize</strong>(guarded, type, guards = nil)  &#x21d2; Guard </a>
     
 
     
@@ -202,7 +330,7 @@
   
   
   
-  
+  <span class="private note title">private</span>
 
   
     <span class="summary_desc"><div class='inline'>
@@ -226,7 +354,7 @@
   
   
   
-  
+  <span class="private note title">private</span>
 
   
     <span class="summary_desc"><div class='inline'></div></span>
@@ -248,34 +376,12 @@
   
   
   
-  
+  <span class="private note title">private</span>
 
   
     <span class="summary_desc"><div class='inline'>
 <p>Bug is present on all configurations not specified.</p>
 </div></span>
-  
-</li>
-
-      
-        <li class="public ">
-  <span class="summary_signature">
-    
-      <a href="#satisfied%3F-instance_method" title="#satisfied? (instance method)">#<strong>satisfied?</strong>  &#x21d2; Boolean </a>
-    
-
-    
-  </span>
-  
-  
-  
-  
-  
-  
-  
-
-  
-    <span class="summary_desc"><div class='inline'></div></span>
   
 </li>
 
@@ -289,7 +395,7 @@
     <div class="method_details first">
   <h3 class="signature first" id="initialize-instance_method">
   
-    #<strong>initialize</strong>(guard, type)  &#x21d2; <tt><span class='object_link'><a href="" title="Selenium::WebDriver::Support::Guards::Guard (class)">Guard</a></span></tt> 
+    #<strong>initialize</strong>(guarded, type, guards = nil)  &#x21d2; <tt><span class='object_link'><a href="" title="Selenium::WebDriver::Support::Guards::Guard (class)">Guard</a></span></tt> 
   
 
   
@@ -297,7 +403,11 @@
   
 </h3><div class="docstring">
   <div class="discussion">
-    
+    <p class="note private">
+  <strong>This method is part of a private API.</strong>
+  You should avoid using this method if possible, as it may be removed or be changed in the future.
+</p>
+
 <p>Returns a new instance of Guard.</p>
 
 
@@ -312,37 +422,27 @@
       <pre class="lines">
 
 
-26
-27
-28
-29
-30
-31
-32
-33
 34
 35
 36
 37
 38
-39</pre>
+39
+40
+41
+42</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/support/guards/guard.rb', line 26</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/support/guards/guard.rb', line 34</span>
 
-<span class='kw'>def</span> <span class='id identifier rubyid_initialize'>initialize</span><span class='lparen'>(</span><span class='id identifier rubyid_guard'>guard</span><span class='comma'>,</span> <span class='id identifier rubyid_type'>type</span><span class='rparen'>)</span>
+<span class='kw'>def</span> <span class='id identifier rubyid_initialize'>initialize</span><span class='lparen'>(</span><span class='id identifier rubyid_guarded'>guarded</span><span class='comma'>,</span> <span class='id identifier rubyid_type'>type</span><span class='comma'>,</span> <span class='id identifier rubyid_guards'>guards</span> <span class='op'>=</span> <span class='kw'>nil</span><span class='rparen'>)</span>
+  <span class='ivar'>@guarded</span> <span class='op'>=</span> <span class='id identifier rubyid_guarded'>guarded</span>
+  <span class='ivar'>@tracker</span> <span class='op'>=</span> <span class='id identifier rubyid_guards'>guards</span><span class='op'>&amp;.</span><span class='id identifier rubyid_bug_tracker'>bug_tracker</span> <span class='op'>||</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_end'>&#39;</span></span>
+  <span class='ivar'>@messages</span> <span class='op'>=</span> <span class='id identifier rubyid_guards'>guards</span><span class='op'>&amp;.</span><span class='id identifier rubyid_messages'>messages</span> <span class='op'>||</span> <span class='lbrace'>{</span><span class='rbrace'>}</span>
+  <span class='ivar'>@messages</span><span class='lbracket'>[</span><span class='symbol'>:unknown</span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>TODO: Investigate why this is failing and file a bug report</span><span class='tstring_end'>&#39;</span></span>
   <span class='ivar'>@type</span> <span class='op'>=</span> <span class='id identifier rubyid_type'>type</span>
 
-  <span class='ivar'>@reason</span> <span class='op'>=</span> <span class='id identifier rubyid_guard'>guard</span><span class='period'>.</span><span class='id identifier rubyid_delete'>delete</span><span class='lparen'>(</span><span class='symbol'>:reason</span><span class='rparen'>)</span>
-
-  <span class='ivar'>@drivers</span> <span class='op'>=</span> <span class='lbracket'>[</span><span class='rbracket'>]</span>
-  <span class='ivar'>@browsers</span> <span class='op'>=</span> <span class='lbracket'>[</span><span class='rbracket'>]</span>
-  <span class='ivar'>@platforms</span> <span class='op'>=</span> <span class='lbracket'>[</span><span class='rbracket'>]</span>
-
-  <span class='id identifier rubyid_expand_window_manager'>expand_window_manager</span><span class='lparen'>(</span><span class='id identifier rubyid_guard'>guard</span><span class='rparen'>)</span>
-  <span class='id identifier rubyid_expand_drivers'>expand_drivers</span><span class='lparen'>(</span><span class='id identifier rubyid_guard'>guard</span><span class='rparen'>)</span>
-  <span class='id identifier rubyid_expand_browsers'>expand_browsers</span><span class='lparen'>(</span><span class='id identifier rubyid_guard'>guard</span><span class='rparen'>)</span>
-  <span class='id identifier rubyid_expand_platforms'>expand_platforms</span><span class='lparen'>(</span><span class='id identifier rubyid_guard'>guard</span><span class='rparen'>)</span>
+  <span class='ivar'>@reason</span> <span class='op'>=</span> <span class='ivar'>@guarded</span><span class='period'>.</span><span class='id identifier rubyid_delete'>delete</span><span class='lparen'>(</span><span class='symbol'>:reason</span><span class='rparen'>)</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -350,6 +450,191 @@
 </div>
   
 </div>
+
+  <div id="instance_attr_details" class="attr_details">
+    <h2>Instance Attribute Details</h2>
+    
+      
+      <span id=""></span>
+      <div class="method_details first">
+  <h3 class="signature first" id="guarded-instance_method">
+  
+    #<strong>guarded</strong>  &#x21d2; <tt>Object</tt>  <span class="extras">(readonly)</span>
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    <p class="note private">
+  <strong>This method is part of a private API.</strong>
+  You should avoid using this method if possible, as it may be removed or be changed in the future.
+</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+32
+33
+34</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/support/guards/guard.rb', line 32</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_guarded'>guarded</span>
+  <span class='ivar'>@guarded</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      
+      <span id=""></span>
+      <div class="method_details ">
+  <h3 class="signature " id="messages-instance_method">
+  
+    #<strong>messages</strong>  &#x21d2; <tt>Object</tt>  <span class="extras">(readonly)</span>
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    <p class="note private">
+  <strong>This method is part of a private API.</strong>
+  You should avoid using this method if possible, as it may be removed or be changed in the future.
+</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+32
+33
+34</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/support/guards/guard.rb', line 32</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_messages'>messages</span>
+  <span class='ivar'>@messages</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      
+      <span id=""></span>
+      <div class="method_details ">
+  <h3 class="signature " id="reason-instance_method">
+  
+    #<strong>reason</strong>  &#x21d2; <tt>Object</tt>  <span class="extras">(readonly)</span>
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    <p class="note private">
+  <strong>This method is part of a private API.</strong>
+  You should avoid using this method if possible, as it may be removed or be changed in the future.
+</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+32
+33
+34</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/support/guards/guard.rb', line 32</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_reason'>reason</span>
+  <span class='ivar'>@reason</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      
+      <span id=""></span>
+      <div class="method_details ">
+  <h3 class="signature " id="type-instance_method">
+  
+    #<strong>type</strong>  &#x21d2; <tt>Object</tt>  <span class="extras">(readonly)</span>
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    <p class="note private">
+  <strong>This method is part of a private API.</strong>
+  You should avoid using this method if possible, as it may be removed or be changed in the future.
+</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+32
+33
+34</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/support/guards/guard.rb', line 32</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_type'>type</span>
+  <span class='ivar'>@type</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+  </div>
 
 
   <div id="instance_method_details" class="method_details_list">
@@ -367,7 +652,11 @@
   
 </h3><div class="docstring">
   <div class="discussion">
-    
+    <p class="note private">
+  <strong>This method is part of a private API.</strong>
+  You should avoid using this method if possible, as it may be removed or be changed in the future.
+</p>
+
 <p>Bug is present on all configurations specified</p>
 
 
@@ -395,12 +684,12 @@
       <pre class="lines">
 
 
-64
-65
-66</pre>
+67
+68
+69</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/support/guards/guard.rb', line 64</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/support/guards/guard.rb', line 67</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_except?'>except?</span>
   <span class='ivar'>@type</span> <span class='op'>==</span> <span class='symbol'>:except</span>
@@ -421,7 +710,11 @@
   
 </h3><div class="docstring">
   <div class="discussion">
-    
+    <p class="note private">
+  <strong>This method is part of a private API.</strong>
+  You should avoid using this method if possible, as it may be removed or be changed in the future.
+</p>
+
 <p>Bug is present on all configurations specified, but test can not be run because it breaks other tests</p>
 
 
@@ -449,12 +742,12 @@
       <pre class="lines">
 
 
-74
-75
-76</pre>
+77
+78
+79</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/support/guards/guard.rb', line 74</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/support/guards/guard.rb', line 77</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_exclude?'>exclude?</span>
   <span class='ivar'>@type</span> <span class='op'>==</span> <span class='symbol'>:exclude</span>
@@ -475,7 +768,11 @@
   
 </h3><div class="docstring">
   <div class="discussion">
-    
+    <p class="note private">
+  <strong>This method is part of a private API.</strong>
+  You should avoid using this method if possible, as it may be removed or be changed in the future.
+</p>
+
 <p>Test only applies to configurations specified</p>
 
 
@@ -503,12 +800,12 @@
       <pre class="lines">
 
 
-79
-80
-81</pre>
+82
+83
+84</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/support/guards/guard.rb', line 79</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/support/guards/guard.rb', line 82</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_exclusive?'>exclusive?</span>
   <span class='ivar'>@type</span> <span class='op'>==</span> <span class='symbol'>:exclusive</span>
@@ -527,15 +824,25 @@
   
 
   
-</h3><table class="source_code">
+</h3><div class="docstring">
+  <div class="discussion">
+    <p class="note private">
+  <strong>This method is part of a private API.</strong>
+  You should avoid using this method if possible, as it may be removed or be changed in the future.
+</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
   <tr>
     <td>
       <pre class="lines">
 
 
-41
-42
-43
 44
 45
 46
@@ -553,17 +860,20 @@
 58
 59
 60
-61</pre>
+61
+62
+63
+64</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/support/guards/guard.rb', line 41</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/support/guards/guard.rb', line 44</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_message'>message</span>
   <span class='id identifier rubyid_details'>details</span> <span class='op'>=</span> <span class='kw'>case</span> <span class='ivar'>@reason</span>
             <span class='kw'>when</span> <span class='const'>Integer</span>
-              <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>Bug Filed: https://github.com/SeleniumHQ/selenium/issues/</span><span class='embexpr_beg'>#{</span><span class='ivar'>@reason</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span>
+              <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>Bug Filed: </span><span class='embexpr_beg'>#{</span><span class='ivar'>@tracker</span><span class='embexpr_end'>}</span><span class='tstring_content'>/</span><span class='embexpr_beg'>#{</span><span class='ivar'>@reason</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span>
             <span class='kw'>when</span> <span class='const'>Symbol</span>
-              <span class='const'><span class='object_link'><a href="../Guards.html" title="Selenium::WebDriver::Support::Guards (class)">Guards</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="../Guards.html#MESSAGES-constant" title="Selenium::WebDriver::Support::Guards::MESSAGES (constant)">MESSAGES</a></span></span><span class='lbracket'>[</span><span class='ivar'>@reason</span><span class='rbracket'>]</span>
+              <span class='ivar'>@messages</span><span class='lbracket'>[</span><span class='ivar'>@reason</span><span class='rbracket'>]</span>
             <span class='kw'>when</span> <span class='const'>String</span>
               <span class='ivar'>@reason</span>
             <span class='kw'>else</span>
@@ -595,7 +905,11 @@
   
 </h3><div class="docstring">
   <div class="discussion">
-    
+    <p class="note private">
+  <strong>This method is part of a private API.</strong>
+  You should avoid using this method if possible, as it may be removed or be changed in the future.
+</p>
+
 <p>Bug is present on all configurations not specified</p>
 
 
@@ -623,67 +937,15 @@
       <pre class="lines">
 
 
-69
-70
-71</pre>
+72
+73
+74</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/support/guards/guard.rb', line 69</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/support/guards/guard.rb', line 72</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_only?'>only?</span>
   <span class='ivar'>@type</span> <span class='op'>==</span> <span class='symbol'>:only</span>
-<span class='kw'>end</span></pre>
-    </td>
-  </tr>
-</table>
-</div>
-    
-      <div class="method_details ">
-  <h3 class="signature " id="satisfied?-instance_method">
-  
-    #<strong>satisfied?</strong>  &#x21d2; <tt>Boolean</tt> 
-  
-
-  
-
-  
-</h3><div class="docstring">
-  <div class="discussion">
-    
-
-  </div>
-</div>
-<div class="tags">
-  
-<p class="tag_title">Returns:</p>
-<ul class="return">
-  
-    <li>
-      
-      
-        <span class='type'>(<tt>Boolean</tt>)</span>
-      
-      
-      
-    </li>
-  
-</ul>
-
-</div><table class="source_code">
-  <tr>
-    <td>
-      <pre class="lines">
-
-
-83
-84
-85</pre>
-    </td>
-    <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/support/guards/guard.rb', line 83</span>
-
-<span class='kw'>def</span> <span class='id identifier rubyid_satisfied?'>satisfied?</span>
-  <span class='id identifier rubyid_satisfies_driver?'>satisfies_driver?</span> <span class='op'>&amp;&amp;</span> <span class='id identifier rubyid_satisfies_browser?'>satisfies_browser?</span> <span class='op'>&amp;&amp;</span> <span class='id identifier rubyid_satisfies_platform?'>satisfies_platform?</span> <span class='op'>&amp;&amp;</span> <span class='id identifier rubyid_satisfies_window_manager?'>satisfies_window_manager?</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -695,9 +957,9 @@
 </div>
 
       <div id="footer">
-  Generated on Thu Mar 18 21:58:25 2021 by
+  Generated on Wed Oct 20 18:47:55 2021 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.26 (ruby-2.6.3).
+  0.9.26 (ruby-2.7.3).
 </div>
 
     </div>

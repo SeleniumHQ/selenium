@@ -94,7 +94,7 @@
   
   <dl>
     <dt>Defined in:</dt>
-    <dd>build/rb/lib/selenium/webdriver/common/manager.rb</dd>
+    <dd>rb/lib/selenium/webdriver/common/manager.rb</dd>
   </dl>
   
 </div>
@@ -300,7 +300,7 @@
 
   
     <span class="summary_desc"><div class='inline'>
-<p>Create a new top-level browsing context <a href="https://w3c.github.io/webdriver/#new-window">w3c.github.io/webdriver/#new-window</a>.</p>
+<p>The value of the window handle.</p>
 </div></span>
   
 </li>
@@ -391,7 +391,7 @@
 29</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/manager.rb', line 27</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/manager.rb', line 27</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_initialize'>initialize</span><span class='lparen'>(</span><span class='id identifier rubyid_bridge'>bridge</span><span class='rparen'>)</span>
   <span class='ivar'>@bridge</span> <span class='op'>=</span> <span class='id identifier rubyid_bridge'>bridge</span>
@@ -593,7 +593,7 @@
 62</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/manager.rb', line 45</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/manager.rb', line 45</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_add_cookie'>add_cookie</span><span class='lparen'>(</span><span class='id identifier rubyid_opts'>opts</span> <span class='op'>=</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_raise'>raise</span> <span class='const'>ArgumentError</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>name is required</span><span class='tstring_end'>&#39;</span></span> <span class='kw'>unless</span> <span class='id identifier rubyid_opts'>opts</span><span class='lbracket'>[</span><span class='symbol'>:name</span><span class='rbracket'>]</span>
@@ -667,7 +667,7 @@
 101</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/manager.rb', line 99</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/manager.rb', line 99</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_all_cookies'>all_cookies</span>
   <span class='ivar'>@bridge</span><span class='period'>.</span><span class='id identifier rubyid_cookies'>cookies</span><span class='period'>.</span><span class='id identifier rubyid_map'>map</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid_cookie'>cookie</span><span class='op'>|</span> <span class='id identifier rubyid_convert_cookie'>convert_cookie</span><span class='lparen'>(</span><span class='id identifier rubyid_cookie'>cookie</span><span class='rparen'>)</span> <span class='rbrace'>}</span>
@@ -746,7 +746,7 @@
 73</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/manager.rb', line 71</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/manager.rb', line 71</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_cookie_named'>cookie_named</span><span class='lparen'>(</span><span class='id identifier rubyid_name'>name</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_convert_cookie'>convert_cookie</span><span class='lparen'>(</span><span class='ivar'>@bridge</span><span class='period'>.</span><span class='id identifier rubyid_cookie'>cookie</span><span class='lparen'>(</span><span class='id identifier rubyid_name'>name</span><span class='rparen'>)</span><span class='rparen'>)</span>
@@ -787,7 +787,7 @@
 91</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/manager.rb', line 89</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/manager.rb', line 89</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_delete_all_cookies'>delete_all_cookies</span>
   <span class='ivar'>@bridge</span><span class='period'>.</span><span class='id identifier rubyid_delete_all_cookies'>delete_all_cookies</span>
@@ -848,7 +848,7 @@
 83</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/manager.rb', line 81</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/manager.rb', line 81</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_delete_cookie'>delete_cookie</span><span class='lparen'>(</span><span class='id identifier rubyid_name'>name</span><span class='rparen'>)</span>
   <span class='ivar'>@bridge</span><span class='period'>.</span><span class='id identifier rubyid_delete_cookie'>delete_cookie</span> <span class='id identifier rubyid_name'>name</span>
@@ -867,28 +867,19 @@
   
 
   
-</h3><div class="docstring">
-  <div class="discussion">
-    
-
-  </div>
-</div>
-<div class="tags">
-  
-
-</div><table class="source_code">
+</h3><table class="source_code">
   <tr>
     <td>
       <pre class="lines">
 
 
-111
-112
-113
-114</pre>
+107
+108
+109
+110</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/manager.rb', line 111</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/manager.rb', line 107</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_logs'>logs</span>
   <span class='const'><span class='object_link'><a href="../WebDriver.html" title="Selenium::WebDriver (module)">WebDriver</a></span></span><span class='period'>.</span><span class='id identifier rubyid_logger'><span class='object_link'><a href="../WebDriver.html#logger-class_method" title="Selenium::WebDriver.logger (method)">logger</a></span></span><span class='period'>.</span><span class='id identifier rubyid_deprecate'><span class='object_link'><a href="Logger.html#deprecate-instance_method" title="Selenium::WebDriver::Logger#deprecate (method)">deprecate</a></span></span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>Manager#logs</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>Chrome::Driver#logs</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span>
@@ -911,7 +902,7 @@
 </h3><div class="docstring">
   <div class="discussion">
     
-<p>Create a new top-level browsing context <a href="https://w3c.github.io/webdriver/#new-window">w3c.github.io/webdriver/#new-window</a></p>
+<p>Returns The value of the window handle.</p>
 
 
   </div>
@@ -933,7 +924,7 @@
       
         &mdash;
         <div class='inline'>
-<p>Supports two values: :tab and :window. Use :tab if you&#39;d like the new window to share an OS-level window with the current browsing context. Use :window otherwise</p>
+<p>Supports two values: :tab and :window.</p>
 </div>
       
     </li>
@@ -965,6 +956,15 @@
       <pre class="lines">
 
 
+116
+117
+118
+119
+120
+121
+122
+123
+124
 125
 126
 127
@@ -972,18 +972,15 @@
 129
 130
 131
-132
-133
-134
-135
-136
-137
-138</pre>
+132</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/manager.rb', line 125</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/manager.rb', line 116</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_new_window'>new_window</span><span class='lparen'>(</span><span class='id identifier rubyid_type'>type</span> <span class='op'>=</span> <span class='symbol'>:tab</span><span class='rparen'>)</span>
+  <span class='const'><span class='object_link'><a href="../WebDriver.html" title="Selenium::WebDriver (module)">WebDriver</a></span></span><span class='period'>.</span><span class='id identifier rubyid_logger'><span class='object_link'><a href="../WebDriver.html#logger-class_method" title="Selenium::WebDriver.logger (method)">logger</a></span></span><span class='period'>.</span><span class='id identifier rubyid_deprecate'><span class='object_link'><a href="Logger.html#deprecate-instance_method" title="Selenium::WebDriver::Logger#deprecate (method)">deprecate</a></span></span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>Manager#new_window</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>TargetLocator#new_window</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>id:</span> <span class='symbol'>:new_window</span><span class='rparen'>)</span> <span class='kw'>do</span>
+    <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>e.g., `driver.switch_to.new_window(:tab)`</span><span class='tstring_end'>&#39;</span></span>
+  <span class='kw'>end</span>
   <span class='kw'>case</span> <span class='id identifier rubyid_type'>type</span>
   <span class='kw'>when</span> <span class='symbol'>:tab</span><span class='comma'>,</span> <span class='symbol'>:window</span>
     <span class='id identifier rubyid_result'>result</span> <span class='op'>=</span> <span class='ivar'>@bridge</span><span class='period'>.</span><span class='id identifier rubyid_new_window'>new_window</span><span class='lparen'>(</span><span class='id identifier rubyid_type'>type</span><span class='rparen'>)</span>
@@ -1022,7 +1019,7 @@
 105</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/manager.rb', line 103</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/manager.rb', line 103</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_timeouts'>timeouts</span>
   <span class='ivar'>@timeouts</span> <span class='op'>||=</span> <span class='const'><span class='object_link'><a href="Timeouts.html" title="Selenium::WebDriver::Timeouts (class)">Timeouts</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="Timeouts.html#initialize-instance_method" title="Selenium::WebDriver::Timeouts#initialize (method)">new</a></span></span><span class='lparen'>(</span><span class='ivar'>@bridge</span><span class='rparen'>)</span>
@@ -1041,27 +1038,18 @@
   
 
   
-</h3><div class="docstring">
-  <div class="discussion">
-    
-
-  </div>
-</div>
-<div class="tags">
-  
-
-</div><table class="source_code">
+</h3><table class="source_code">
   <tr>
     <td>
       <pre class="lines">
 
 
-144
-145
-146</pre>
+134
+135
+136</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/manager.rb', line 144</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/manager.rb', line 134</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_window'>window</span>
   <span class='ivar'>@window</span> <span class='op'>||=</span> <span class='const'><span class='object_link'><a href="Window.html" title="Selenium::WebDriver::Window (class)">Window</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="Window.html#initialize-instance_method" title="Selenium::WebDriver::Window#initialize (method)">new</a></span></span><span class='lparen'>(</span><span class='ivar'>@bridge</span><span class='rparen'>)</span>
@@ -1076,9 +1064,9 @@
 </div>
 
       <div id="footer">
-  Generated on Thu Mar 18 21:58:18 2021 by
+  Generated on Wed Oct 20 18:47:53 2021 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.26 (ruby-2.6.3).
+  0.9.26 (ruby-2.7.3).
 </div>
 
     </div>

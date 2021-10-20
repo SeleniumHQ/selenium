@@ -27,7 +27,7 @@
     catch(err) {
     }
 //-->
-var data = {"i0":10,"i1":10,"i2":10,"i3":42,"i4":10,"i5":42,"i6":10,"i7":42,"i8":10};
+var data = {"i0":10,"i1":10,"i2":10,"i3":42,"i4":10,"i5":42,"i6":10,"i7":10,"i8":42,"i9":10};
 var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"],32:["t6","Deprecated Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -246,13 +246,21 @@ implements <a href="../WebDriver.Timeouts.html" title="interface in org.openqa.s
 </tr>
 <tr id="i7" class="rowColor">
 <td class="colFirst"><code><a href="../WebDriver.Timeouts.html" title="interface in org.openqa.selenium">WebDriver.Timeouts</a></code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#scriptTimeout(java.time.Duration)">scriptTimeout</a></span>&#8203;(java.time.Duration&nbsp;duration)</code></th>
+<td class="colLast">
+<div class="block">Sets the amount of time to wait for an asynchronous script to finish execution before
+ throwing an error.</div>
+</td>
+</tr>
+<tr id="i8" class="altColor">
+<td class="colFirst"><code><a href="../WebDriver.Timeouts.html" title="interface in org.openqa.selenium">WebDriver.Timeouts</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setScriptTimeout(long,java.util.concurrent.TimeUnit)">setScriptTimeout</a></span>&#8203;(long&nbsp;time,
                 java.util.concurrent.TimeUnit&nbsp;unit)</code></th>
 <td class="colLast">
 <div class="block"><span class="deprecatedLabel">Deprecated.</span></div>
 </td>
 </tr>
-<tr id="i8" class="altColor">
+<tr id="i9" class="rowColor">
 <td class="colFirst"><code><a href="../WebDriver.Timeouts.html" title="interface in org.openqa.selenium">WebDriver.Timeouts</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setScriptTimeout(java.time.Duration)">setScriptTimeout</a></span>&#8203;(java.time.Duration&nbsp;duration)</code></th>
 <td class="colLast">
@@ -414,6 +422,31 @@ public&nbsp;<a href="../WebDriver.Timeouts.html" title="interface in org.openqa.
 <dl>
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
 <dd><code><a href="../WebDriver.Timeouts.html#setScriptTimeout(java.time.Duration)">setScriptTimeout</a></code>&nbsp;in interface&nbsp;<code><a href="../WebDriver.Timeouts.html" title="interface in org.openqa.selenium">WebDriver.Timeouts</a></code></dd>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>duration</code> - The timeout value.</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>A self reference.</dd>
+<dt><span class="seeLabel">See Also:</span></dt>
+<dd><a href="../JavascriptExecutor.html#executeAsyncScript(java.lang.String,java.lang.Object...)"><code>JavascriptExecutor.executeAsyncScript(String, Object...)</code></a>, 
+<a href="https://www.w3.org/TR/webdriver/#set-timeouts">W3C WebDriver</a>, 
+<a href="https://www.w3.org/TR/webdriver/#dfn-timeouts-configuration">W3C WebDriver</a></dd>
+</dl>
+</li>
+</ul>
+<a id="scriptTimeout(java.time.Duration)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>scriptTimeout</h4>
+<pre class="methodSignature">public&nbsp;<a href="../WebDriver.Timeouts.html" title="interface in org.openqa.selenium">WebDriver.Timeouts</a>&nbsp;scriptTimeout&#8203;(java.time.Duration&nbsp;duration)</pre>
+<div class="block"><span class="descfrmTypeLabel">Description copied from interface:&nbsp;<code><a href="../WebDriver.Timeouts.html#scriptTimeout(java.time.Duration)">WebDriver.Timeouts</a></code></span></div>
+<div class="block">Sets the amount of time to wait for an asynchronous script to finish execution before
+ throwing an error. If the timeout is negative, not null, or greater than 2e16 - 1, an
+ error code with invalid argument will be returned.</div>
+<dl>
+<dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
+<dd><code><a href="../WebDriver.Timeouts.html#scriptTimeout(java.time.Duration)">scriptTimeout</a></code>&nbsp;in interface&nbsp;<code><a href="../WebDriver.Timeouts.html" title="interface in org.openqa.selenium">WebDriver.Timeouts</a></code></dd>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>duration</code> - The timeout value.</dd>
 <dt><span class="returnLabel">Returns:</span></dt>

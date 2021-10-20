@@ -94,7 +94,7 @@
   
   <dl>
     <dt>Defined in:</dt>
-    <dd>build/rb/lib/selenium/webdriver/common/service.rb</dd>
+    <dd>rb/lib/selenium/webdriver/common/service.rb</dd>
   </dl>
   
 </div>
@@ -112,7 +112,7 @@
 
 </div><div id="subclasses">
   <h2>Direct Known Subclasses</h2>
-  <p class="children"><span class='object_link'><a href="Chrome/Service.html" title="Selenium::WebDriver::Chrome::Service (class)">Chrome::Service</a></span>, <span class='object_link'><a href="EdgeHtml/Service.html" title="Selenium::WebDriver::EdgeHtml::Service (class)">EdgeHtml::Service</a></span>, <span class='object_link'><a href="Firefox/Service.html" title="Selenium::WebDriver::Firefox::Service (class)">Firefox::Service</a></span>, <span class='object_link'><a href="IE/Service.html" title="Selenium::WebDriver::IE::Service (class)">IE::Service</a></span>, <span class='object_link'><a href="Safari/Service.html" title="Selenium::WebDriver::Safari::Service (class)">Selenium::WebDriver::Safari::Service</a></span></p>
+  <p class="children"><span class='object_link'><a href="Chrome/Service.html" title="Selenium::WebDriver::Chrome::Service (class)">Chrome::Service</a></span>, <span class='object_link'><a href="Firefox/Service.html" title="Selenium::WebDriver::Firefox::Service (class)">Firefox::Service</a></span>, <span class='object_link'><a href="IE/Service.html" title="Selenium::WebDriver::IE::Service (class)">IE::Service</a></span>, <span class='object_link'><a href="Safari/Service.html" title="Selenium::WebDriver::Safari::Service (class)">Selenium::WebDriver::Safari::Service</a></span></p>
 </div>
 
 
@@ -308,6 +308,8 @@
       <a href="#edge-class_method" title="edge (class method)">.<strong>edge</strong>(**opts)  &#x21d2; Object </a>
     
 
+    
+      (also: microsoftedge)
     
   </span>
   
@@ -520,7 +522,6 @@
       <pre class="lines">
 
 
-67
 68
 69
 70
@@ -532,10 +533,11 @@
 76
 77
 78
-79</pre>
+79
+80</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/service.rb', line 67</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/service.rb', line 68</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_initialize'>initialize</span><span class='lparen'>(</span><span class='label'>path:</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='label'>port:</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='label'>args:</span> <span class='kw'>nil</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_path'>path</span> <span class='op'>||=</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_class'>class</span><span class='period'>.</span><span class='id identifier rubyid_driver_path'>driver_path</span>
@@ -593,7 +595,7 @@
 31</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/service.rb', line 29</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/service.rb', line 29</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_driver_path'>driver_path</span>
   <span class='ivar'>@driver_path</span>
@@ -636,12 +638,12 @@
       <pre class="lines">
 
 
-59
 60
-61</pre>
+61
+62</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/service.rb', line 59</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/service.rb', line 60</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_executable_path'>executable_path</span>
   <span class='ivar'>@executable_path</span>
@@ -679,12 +681,12 @@
       <pre class="lines">
 
 
-59
 60
-61</pre>
+61
+62</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/service.rb', line 59</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/service.rb', line 60</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_extra_args'>extra_args</span>
   <span class='ivar'>@extra_args</span>
@@ -722,12 +724,12 @@
       <pre class="lines">
 
 
-58
 59
-60</pre>
+60
+61</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/service.rb', line 58</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/service.rb', line 59</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_host'>host</span>
   <span class='ivar'>@host</span>
@@ -765,12 +767,12 @@
       <pre class="lines">
 
 
-59
 60
-61</pre>
+61
+62</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/service.rb', line 59</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/service.rb', line 60</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_port'>port</span>
   <span class='ivar'>@port</span>
@@ -807,7 +809,7 @@
 33</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/service.rb', line 31</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/service.rb', line 31</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_chrome'>chrome</span><span class='lparen'>(</span><span class='op'>**</span><span class='id identifier rubyid_opts'>opts</span><span class='rparen'>)</span>
   <span class='const'><span class='object_link'><a href="Chrome.html" title="Selenium::WebDriver::Chrome (module)">Chrome</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="Chrome/Service.html" title="Selenium::WebDriver::Chrome::Service (class)">Service</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="#initialize-instance_method" title="Selenium::WebDriver::Service#initialize (method)">new</a></span></span><span class='lparen'>(</span><span class='op'>**</span><span class='id identifier rubyid_opts'>opts</span><span class='rparen'>)</span>
@@ -824,6 +826,10 @@
   
 
   
+    <span class="aliases">Also known as:
+    <span class="names"><span id='microsoftedge-class_method'>microsoftedge</span></span>
+    </span>
+  
 
   
 </h3><table class="source_code">
@@ -837,7 +843,7 @@
 46</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/service.rb', line 44</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/service.rb', line 44</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_edge'>edge</span><span class='lparen'>(</span><span class='op'>**</span><span class='id identifier rubyid_opts'>opts</span><span class='rparen'>)</span>
   <span class='const'><span class='object_link'><a href="Edge.html" title="Selenium::WebDriver::Edge (module)">Edge</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="Edge/Service.html" title="Selenium::WebDriver::Edge::Service (class)">Service</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="#initialize-instance_method" title="Selenium::WebDriver::Service#initialize (method)">new</a></span></span><span class='lparen'>(</span><span class='op'>**</span><span class='id identifier rubyid_opts'>opts</span><span class='rparen'>)</span>
@@ -867,7 +873,7 @@
 37</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/service.rb', line 35</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/service.rb', line 35</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_firefox'>firefox</span><span class='lparen'>(</span><span class='op'>**</span><span class='id identifier rubyid_opts'>opts</span><span class='rparen'>)</span>
   <span class='const'><span class='object_link'><a href="Firefox.html" title="Selenium::WebDriver::Firefox (module)">Firefox</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="Firefox/Service.html" title="Selenium::WebDriver::Firefox::Service (class)">Service</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="#initialize-instance_method" title="Selenium::WebDriver::Service#initialize (method)">new</a></span></span><span class='lparen'>(</span><span class='op'>**</span><span class='id identifier rubyid_opts'>opts</span><span class='rparen'>)</span>
@@ -901,7 +907,7 @@
 41</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/service.rb', line 39</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/service.rb', line 39</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_ie'>ie</span><span class='lparen'>(</span><span class='op'>**</span><span class='id identifier rubyid_opts'>opts</span><span class='rparen'>)</span>
   <span class='const'><span class='object_link'><a href="IE.html" title="Selenium::WebDriver::IE (module)">IE</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="IE/Service.html" title="Selenium::WebDriver::IE::Service (class)">Service</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="#initialize-instance_method" title="Selenium::WebDriver::Service#initialize (method)">new</a></span></span><span class='lparen'>(</span><span class='op'>**</span><span class='id identifier rubyid_opts'>opts</span><span class='rparen'>)</span>
@@ -926,12 +932,12 @@
       <pre class="lines">
 
 
-48
 49
-50</pre>
+50
+51</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/service.rb', line 48</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/service.rb', line 49</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_safari'>safari</span><span class='lparen'>(</span><span class='op'>**</span><span class='id identifier rubyid_opts'>opts</span><span class='rparen'>)</span>
   <span class='const'><span class='object_link'><a href="Safari.html" title="Selenium::WebDriver::Safari (module)">Safari</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="Safari/Service.html" title="Selenium::WebDriver::Safari::Service (class)">Service</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="#initialize-instance_method" title="Selenium::WebDriver::Service#initialize (method)">new</a></span></span><span class='lparen'>(</span><span class='op'>**</span><span class='id identifier rubyid_opts'>opts</span><span class='rparen'>)</span>
@@ -962,14 +968,14 @@
       <pre class="lines">
 
 
-81
 82
 83
 84
-85</pre>
+85
+86</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/service.rb', line 81</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/service.rb', line 82</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_launch'>launch</span>
   <span class='id identifier rubyid_sm'>sm</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="ServiceManager.html" title="Selenium::WebDriver::ServiceManager (class)">ServiceManager</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="ServiceManager.html#initialize-instance_method" title="Selenium::WebDriver::ServiceManager#initialize (method)">new</a></span></span><span class='lparen'>(</span><span class='kw'>self</span><span class='rparen'>)</span>
@@ -996,12 +1002,12 @@
       <pre class="lines">
 
 
-87
 88
-89</pre>
+89
+90</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/service.rb', line 87</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/service.rb', line 88</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_shutdown_supported'>shutdown_supported</span>
   <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_class'>class</span><span class='op'>::</span><span class='const'>SHUTDOWN_SUPPORTED</span>
@@ -1016,9 +1022,9 @@
 </div>
 
       <div id="footer">
-  Generated on Thu Mar 18 21:58:19 2021 by
+  Generated on Wed Oct 20 18:47:53 2021 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.26 (ruby-2.6.3).
+  0.9.26 (ruby-2.7.3).
 </div>
 
     </div>

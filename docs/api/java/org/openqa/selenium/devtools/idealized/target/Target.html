@@ -27,7 +27,7 @@
     catch(err) {
     }
 //-->
-var data = {"i0":6,"i1":6,"i2":6,"i3":6};
+var data = {"i0":6,"i1":6,"i2":6,"i3":6,"i4":6};
 var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],4:["t3","Abstract Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -155,6 +155,11 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr id="i1" class="rowColor">
+<td class="colFirst"><code><a href="../../Event.html" title="class in org.openqa.selenium.devtools">Event</a>&lt;<a href="model/TargetID.html" title="class in org.openqa.selenium.devtools.idealized.target.model">TargetID</a>&gt;</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#detached()">detached</a></span>()</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr id="i2" class="altColor">
 <td class="colFirst"><code><a href="../../Command.html" title="class in org.openqa.selenium.devtools">Command</a>&lt;java.lang.Void&gt;</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#detachFromTarget(java.util.Optional,java.util.Optional)">detachFromTarget</a></span>&#8203;(java.util.Optional&lt;<a href="model/SessionID.html" title="class in org.openqa.selenium.devtools.idealized.target.model">SessionID</a>&gt;&nbsp;sessionId,
                 java.util.Optional&lt;<a href="model/TargetID.html" title="class in org.openqa.selenium.devtools.idealized.target.model">TargetID</a>&gt;&nbsp;targetId)</code></th>
@@ -162,12 +167,12 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <div class="block">Detaches session with given id.</div>
 </td>
 </tr>
-<tr id="i2" class="altColor">
+<tr id="i3" class="rowColor">
 <td class="colFirst"><code><a href="../../Command.html" title="class in org.openqa.selenium.devtools">Command</a>&lt;java.util.List&lt;<a href="model/TargetInfo.html" title="class in org.openqa.selenium.devtools.idealized.target.model">TargetInfo</a>&gt;&gt;</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getTargets()">getTargets</a></span>()</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i3" class="rowColor">
+<tr id="i4" class="altColor">
 <td class="colFirst"><code><a href="../../Command.html" title="class in org.openqa.selenium.devtools">Command</a>&lt;java.lang.Void&gt;</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setAutoAttach()">setAutoAttach</a></span>()</code></th>
 <td class="colLast">&nbsp;</td>
@@ -221,10 +226,19 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <a id="setAutoAttach()">
 <!--   -->
 </a>
-<ul class="blockListLast">
+<ul class="blockList">
 <li class="blockList">
 <h4>setAutoAttach</h4>
 <pre class="methodSignature"><a href="../../Command.html" title="class in org.openqa.selenium.devtools">Command</a>&lt;java.lang.Void&gt;&nbsp;setAutoAttach()</pre>
+</li>
+</ul>
+<a id="detached()">
+<!--   -->
+</a>
+<ul class="blockListLast">
+<li class="blockList">
+<h4>detached</h4>
+<pre class="methodSignature"><a href="../../Event.html" title="class in org.openqa.selenium.devtools">Event</a>&lt;<a href="model/TargetID.html" title="class in org.openqa.selenium.devtools.idealized.target.model">TargetID</a>&gt;&nbsp;detached()</pre>
 </li>
 </ul>
 </li>

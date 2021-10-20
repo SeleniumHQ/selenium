@@ -27,7 +27,7 @@
     catch(err) {
     }
 //-->
-var data = {"i0":18,"i1":18,"i2":18,"i3":38,"i4":18,"i5":38,"i6":18,"i7":38,"i8":18};
+var data = {"i0":18,"i1":18,"i2":18,"i3":38,"i4":18,"i5":38,"i6":18,"i7":18,"i8":38,"i9":50};
 var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],4:["t3","Abstract Methods"],16:["t5","Default Methods"],32:["t6","Deprecated Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -225,6 +225,14 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 </td>
 </tr>
 <tr id="i7" class="rowColor">
+<td class="colFirst"><code>default <a href="WebDriver.Timeouts.html" title="interface in org.openqa.selenium">WebDriver.Timeouts</a></code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#scriptTimeout(java.time.Duration)">scriptTimeout</a></span>&#8203;(java.time.Duration&nbsp;duration)</code></th>
+<td class="colLast">
+<div class="block">Sets the amount of time to wait for an asynchronous script to finish execution before
+ throwing an error.</div>
+</td>
+</tr>
+<tr id="i8" class="altColor">
 <td class="colFirst"><code><a href="WebDriver.Timeouts.html" title="interface in org.openqa.selenium">WebDriver.Timeouts</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setScriptTimeout(long,java.util.concurrent.TimeUnit)">setScriptTimeout</a></span>&#8203;(long&nbsp;time,
                 java.util.concurrent.TimeUnit&nbsp;unit)</code></th>
@@ -237,12 +245,13 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 </div>
 </td>
 </tr>
-<tr id="i8" class="altColor">
+<tr id="i9" class="rowColor">
 <td class="colFirst"><code>default <a href="WebDriver.Timeouts.html" title="interface in org.openqa.selenium">WebDriver.Timeouts</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setScriptTimeout(java.time.Duration)">setScriptTimeout</a></span>&#8203;(java.time.Duration&nbsp;duration)</code></th>
 <td class="colLast">
-<div class="block">Sets the amount of time to wait for an asynchronous script to finish execution before
- throwing an error.</div>
+<div class="block"><span class="deprecatedLabel">Deprecated.</span>
+<div class="deprecationComment">Use <a href="#scriptTimeout(java.time.Duration)"><code>scriptTimeout(Duration)</code></a></div>
+</div>
 </td>
 </tr>
 </table>
@@ -377,7 +386,33 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <ul class="blockList">
 <li class="blockList">
 <h4>setScriptTimeout</h4>
-<pre class="methodSignature">default&nbsp;<a href="WebDriver.Timeouts.html" title="interface in org.openqa.selenium">WebDriver.Timeouts</a>&nbsp;setScriptTimeout&#8203;(java.time.Duration&nbsp;duration)</pre>
+<pre class="methodSignature">@Deprecated
+default&nbsp;<a href="WebDriver.Timeouts.html" title="interface in org.openqa.selenium">WebDriver.Timeouts</a>&nbsp;setScriptTimeout&#8203;(java.time.Duration&nbsp;duration)</pre>
+<div class="deprecationBlock"><span class="deprecatedLabel">Deprecated.</span>
+<div class="deprecationComment">Use <a href="#scriptTimeout(java.time.Duration)"><code>scriptTimeout(Duration)</code></a></div>
+</div>
+<div class="block">Sets the amount of time to wait for an asynchronous script to finish execution before
+ throwing an error. If the timeout is negative, not null, or greater than 2e16 - 1, an
+ error code with invalid argument will be returned.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>duration</code> - The timeout value.</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>A self reference.</dd>
+<dt><span class="seeLabel">See Also:</span></dt>
+<dd><a href="JavascriptExecutor.html#executeAsyncScript(java.lang.String,java.lang.Object...)"><code>JavascriptExecutor.executeAsyncScript(String, Object...)</code></a>, 
+<a href="https://www.w3.org/TR/webdriver/#set-timeouts">W3C WebDriver</a>, 
+<a href="https://www.w3.org/TR/webdriver/#dfn-timeouts-configuration">W3C WebDriver</a></dd>
+</dl>
+</li>
+</ul>
+<a id="scriptTimeout(java.time.Duration)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>scriptTimeout</h4>
+<pre class="methodSignature">default&nbsp;<a href="WebDriver.Timeouts.html" title="interface in org.openqa.selenium">WebDriver.Timeouts</a>&nbsp;scriptTimeout&#8203;(java.time.Duration&nbsp;duration)</pre>
 <div class="block">Sets the amount of time to wait for an asynchronous script to finish execution before
  throwing an error. If the timeout is negative, not null, or greater than 2e16 - 1, an
  error code with invalid argument will be returned.</div>

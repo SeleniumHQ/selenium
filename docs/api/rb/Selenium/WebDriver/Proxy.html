@@ -94,7 +94,7 @@
   
   <dl>
     <dt>Defined in:</dt>
-    <dd>build/rb/lib/selenium/webdriver/common/proxy.rb</dd>
+    <dd>rb/lib/selenium/webdriver/common/proxy.rb</dd>
   </dl>
   
 </div>
@@ -580,7 +580,7 @@
 72</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/proxy.rb', line 58</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/proxy.rb', line 58</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_initialize'>initialize</span><span class='lparen'>(</span><span class='id identifier rubyid_opts'>opts</span> <span class='op'>=</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_not_allowed'>not_allowed</span> <span class='op'>=</span> <span class='lbracket'>[</span><span class='rbracket'>]</span>
@@ -638,7 +638,7 @@
 56</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/proxy.rb', line 45</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/proxy.rb', line 45</span>
 
 <span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_json_create'>json_create</span><span class='lparen'>(</span><span class='id identifier rubyid_data'>data</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_data'>data</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>proxyType</span><span class='tstring_end'>&#39;</span></span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='id identifier rubyid_data'>data</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>proxyType</span><span class='tstring_end'>&#39;</span></span><span class='rbracket'>]</span><span class='period'>.</span><span class='id identifier rubyid_downcase'>downcase</span><span class='period'>.</span><span class='id identifier rubyid_to_sym'>to_sym</span>
@@ -687,7 +687,7 @@
 76</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/proxy.rb', line 74</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/proxy.rb', line 74</span>
 
 <span class='kw'>def</span> <span class='op'>==</span><span class='lparen'>(</span><span class='id identifier rubyid_other'>other</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_other'>other</span><span class='period'>.</span><span class='id identifier rubyid_is_a?'>is_a?</span><span class='lparen'>(</span><span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_class'>class</span><span class='rparen'>)</span> <span class='op'>&amp;&amp;</span> <span class='id identifier rubyid_as_json'>as_json</span> <span class='op'>==</span> <span class='id identifier rubyid_other'>other</span><span class='period'>.</span><span class='id identifier rubyid_as_json'>as_json</span>
@@ -712,9 +712,6 @@
       <pre class="lines">
 
 
-139
-140
-141
 142
 143
 144
@@ -728,17 +725,20 @@
 152
 153
 154
-155</pre>
+155
+156
+157
+158</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/proxy.rb', line 139</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/proxy.rb', line 142</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_as_json'>as_json</span><span class='lparen'>(</span><span class='op'>*</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_json_result'>json_result</span> <span class='op'>=</span> <span class='lbrace'>{</span>
-    <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>proxyType</span><span class='tstring_end'>&#39;</span></span> <span class='op'>=&gt;</span> <span class='const'><span class='object_link'><a href="#TYPES-constant" title="Selenium::WebDriver::Proxy::TYPES (constant)">TYPES</a></span></span><span class='lbracket'>[</span><span class='id identifier rubyid_type'>type</span><span class='rbracket'>]</span><span class='comma'>,</span>
+    <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>proxyType</span><span class='tstring_end'>&#39;</span></span> <span class='op'>=&gt;</span> <span class='const'><span class='object_link'><a href="#TYPES-constant" title="Selenium::WebDriver::Proxy::TYPES (constant)">TYPES</a></span></span><span class='lbracket'>[</span><span class='id identifier rubyid_type'>type</span><span class='rbracket'>]</span><span class='period'>.</span><span class='id identifier rubyid_downcase'>downcase</span><span class='comma'>,</span>
     <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>ftpProxy</span><span class='tstring_end'>&#39;</span></span> <span class='op'>=&gt;</span> <span class='id identifier rubyid_ftp'>ftp</span><span class='comma'>,</span>
     <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>httpProxy</span><span class='tstring_end'>&#39;</span></span> <span class='op'>=&gt;</span> <span class='id identifier rubyid_http'>http</span><span class='comma'>,</span>
-    <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>noProxy</span><span class='tstring_end'>&#39;</span></span> <span class='op'>=&gt;</span> <span class='id identifier rubyid_no_proxy'>no_proxy</span><span class='comma'>,</span>
+    <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>noProxy</span><span class='tstring_end'>&#39;</span></span> <span class='op'>=&gt;</span> <span class='id identifier rubyid_no_proxy'>no_proxy</span><span class='period'>.</span><span class='id identifier rubyid_is_a?'>is_a?</span><span class='lparen'>(</span><span class='const'>String</span><span class='rparen'>)</span> <span class='op'>?</span> <span class='id identifier rubyid_no_proxy'>no_proxy</span><span class='period'>.</span><span class='id identifier rubyid_split'>split</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>, </span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span> <span class='op'>:</span> <span class='id identifier rubyid_no_proxy'>no_proxy</span><span class='comma'>,</span>
     <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>proxyAutoconfigUrl</span><span class='tstring_end'>&#39;</span></span> <span class='op'>=&gt;</span> <span class='id identifier rubyid_pac'>pac</span><span class='comma'>,</span>
     <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>sslProxy</span><span class='tstring_end'>&#39;</span></span> <span class='op'>=&gt;</span> <span class='id identifier rubyid_ssl'>ssl</span><span class='comma'>,</span>
     <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>autodetect</span><span class='tstring_end'>&#39;</span></span> <span class='op'>=&gt;</span> <span class='id identifier rubyid_auto_detect'>auto_detect</span><span class='comma'>,</span>
@@ -776,7 +776,7 @@
 107</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/proxy.rb', line 104</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/proxy.rb', line 104</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_auto_detect='>auto_detect=</span><span class='lparen'>(</span><span class='id identifier rubyid_bool'>bool</span><span class='rparen'>)</span>
   <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_type'>type</span> <span class='op'>=</span> <span class='symbol'>:auto_detect</span>
@@ -808,7 +808,7 @@
 82</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/proxy.rb', line 79</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/proxy.rb', line 79</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_ftp='>ftp=</span><span class='lparen'>(</span><span class='id identifier rubyid_value'>value</span><span class='rparen'>)</span>
   <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_type'>type</span> <span class='op'>=</span> <span class='symbol'>:manual</span>
@@ -840,7 +840,7 @@
 87</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/proxy.rb', line 84</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/proxy.rb', line 84</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_http='>http=</span><span class='lparen'>(</span><span class='id identifier rubyid_value'>value</span><span class='rparen'>)</span>
   <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_type'>type</span> <span class='op'>=</span> <span class='symbol'>:manual</span>
@@ -872,7 +872,7 @@
 92</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/proxy.rb', line 89</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/proxy.rb', line 89</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_no_proxy='>no_proxy=</span><span class='lparen'>(</span><span class='id identifier rubyid_value'>value</span><span class='rparen'>)</span>
   <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_type'>type</span> <span class='op'>=</span> <span class='symbol'>:manual</span>
@@ -904,7 +904,7 @@
 102</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/proxy.rb', line 99</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/proxy.rb', line 99</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_pac='>pac=</span><span class='lparen'>(</span><span class='id identifier rubyid_url'>url</span><span class='rparen'>)</span>
   <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_type'>type</span> <span class='op'>=</span> <span class='symbol'>:pac</span>
@@ -936,7 +936,7 @@
 112</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/proxy.rb', line 109</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/proxy.rb', line 109</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_socks='>socks=</span><span class='lparen'>(</span><span class='id identifier rubyid_value'>value</span><span class='rparen'>)</span>
   <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_type'>type</span> <span class='op'>=</span> <span class='symbol'>:manual</span>
@@ -968,7 +968,7 @@
 122</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/proxy.rb', line 119</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/proxy.rb', line 119</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_socks_password='>socks_password=</span><span class='lparen'>(</span><span class='id identifier rubyid_value'>value</span><span class='rparen'>)</span>
   <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_type'>type</span> <span class='op'>=</span> <span class='symbol'>:manual</span>
@@ -1000,7 +1000,7 @@
 117</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/proxy.rb', line 114</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/proxy.rb', line 114</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_socks_username='>socks_username=</span><span class='lparen'>(</span><span class='id identifier rubyid_value'>value</span><span class='rparen'>)</span>
   <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_type'>type</span> <span class='op'>=</span> <span class='symbol'>:manual</span>
@@ -1032,7 +1032,7 @@
 127</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/proxy.rb', line 124</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/proxy.rb', line 124</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_socks_version='>socks_version=</span><span class='lparen'>(</span><span class='id identifier rubyid_value'>value</span><span class='rparen'>)</span>
   <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_type'>type</span> <span class='op'>=</span> <span class='symbol'>:manual</span>
@@ -1064,7 +1064,7 @@
 97</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/proxy.rb', line 94</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/proxy.rb', line 94</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_ssl='>ssl=</span><span class='lparen'>(</span><span class='id identifier rubyid_value'>value</span><span class='rparen'>)</span>
   <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_type'>type</span> <span class='op'>=</span> <span class='symbol'>:manual</span>
@@ -1090,12 +1090,12 @@
       <pre class="lines">
 
 
-157
-158
-159</pre>
+160
+161
+162</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/proxy.rb', line 157</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/proxy.rb', line 160</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_to_json'>to_json</span><span class='lparen'>(</span><span class='op'>*</span><span class='rparen'>)</span>
   <span class='const'>JSON</span><span class='period'>.</span><span class='id identifier rubyid_generate'>generate</span> <span class='id identifier rubyid_as_json'>as_json</span>
@@ -1114,29 +1114,7 @@
   
 
   
-</h3><div class="docstring">
-  <div class="discussion">
-    
-
-  </div>
-</div>
-<div class="tags">
-  
-<p class="tag_title">Raises:</p>
-<ul class="raise">
-  
-    <li>
-      
-      
-        <span class='type'>(<tt>ArgumentError</tt>)</span>
-      
-      
-      
-    </li>
-  
-</ul>
-
-</div><table class="source_code">
+</h3><table class="source_code">
   <tr>
     <td>
       <pre class="lines">
@@ -1150,13 +1128,19 @@
 134
 135
 136
-137</pre>
+137
+138
+139
+140</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/proxy.rb', line 129</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/proxy.rb', line 129</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_type='>type=</span><span class='lparen'>(</span><span class='id identifier rubyid_type'>type</span><span class='rparen'>)</span>
-  <span class='id identifier rubyid_raise'>raise</span> <span class='const'>ArgumentError</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>invalid proxy type: </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_type'>type</span><span class='period'>.</span><span class='id identifier rubyid_inspect'>inspect</span><span class='embexpr_end'>}</span><span class='tstring_content'>, expected one of </span><span class='embexpr_beg'>#{</span><span class='const'><span class='object_link'><a href="#TYPES-constant" title="Selenium::WebDriver::Proxy::TYPES (constant)">TYPES</a></span></span><span class='period'>.</span><span class='id identifier rubyid_keys'>keys</span><span class='period'>.</span><span class='id identifier rubyid_inspect'>inspect</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span> <span class='kw'>unless</span> <span class='const'><span class='object_link'><a href="#TYPES-constant" title="Selenium::WebDriver::Proxy::TYPES (constant)">TYPES</a></span></span><span class='period'>.</span><span class='id identifier rubyid_key?'>key?</span> <span class='id identifier rubyid_type'>type</span>
+  <span class='kw'>unless</span> <span class='const'><span class='object_link'><a href="#TYPES-constant" title="Selenium::WebDriver::Proxy::TYPES (constant)">TYPES</a></span></span><span class='period'>.</span><span class='id identifier rubyid_key?'>key?</span> <span class='id identifier rubyid_type'>type</span>
+    <span class='id identifier rubyid_raise'>raise</span> <span class='const'>ArgumentError</span><span class='comma'>,</span>
+          <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>invalid proxy type: </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_type'>type</span><span class='period'>.</span><span class='id identifier rubyid_inspect'>inspect</span><span class='embexpr_end'>}</span><span class='tstring_content'>, expected one of </span><span class='embexpr_beg'>#{</span><span class='const'><span class='object_link'><a href="#TYPES-constant" title="Selenium::WebDriver::Proxy::TYPES (constant)">TYPES</a></span></span><span class='period'>.</span><span class='id identifier rubyid_keys'>keys</span><span class='period'>.</span><span class='id identifier rubyid_inspect'>inspect</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span>
+  <span class='kw'>end</span>
 
   <span class='kw'>if</span> <span class='kw'>defined?</span><span class='lparen'>(</span><span class='ivar'>@type</span><span class='rparen'>)</span> <span class='op'>&amp;&amp;</span> <span class='id identifier rubyid_type'>type</span> <span class='op'>!=</span> <span class='ivar'>@type</span>
     <span class='id identifier rubyid_raise'>raise</span> <span class='const'>ArgumentError</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>incompatible proxy type </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_type'>type</span><span class='period'>.</span><span class='id identifier rubyid_inspect'>inspect</span><span class='embexpr_end'>}</span><span class='tstring_content'> (already set to </span><span class='embexpr_beg'>#{</span><span class='ivar'>@type</span><span class='period'>.</span><span class='id identifier rubyid_inspect'>inspect</span><span class='embexpr_end'>}</span><span class='tstring_content'>)</span><span class='tstring_end'>&quot;</span></span>
@@ -1174,9 +1158,9 @@
 </div>
 
       <div id="footer">
-  Generated on Thu Mar 18 21:58:17 2021 by
+  Generated on Wed Oct 20 18:47:52 2021 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.26 (ruby-2.6.3).
+  0.9.26 (ruby-2.7.3).
 </div>
 
     </div>

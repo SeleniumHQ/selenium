@@ -115,11 +115,11 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr class="rowColor">
-<th class="colFirst" scope="row"><a href="#org.openqa.selenium.docker.v1_40">org.openqa.selenium.docker.v1_40</a></th>
+<th class="colFirst" scope="row"><a href="#org.openqa.selenium.docker.v1_41">org.openqa.selenium.docker.v1_41</a></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr class="altColor">
-<th class="colFirst" scope="row"><a href="#org.openqa.selenium.grid.docker">org.openqa.selenium.grid.docker</a></th>
+<th class="colFirst" scope="row"><a href="#org.openqa.selenium.grid.node.docker">org.openqa.selenium.grid.node.docker</a></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 </tbody>
@@ -175,10 +175,12 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 </tr>
 <tbody>
 <tr class="altColor">
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="../ContainerConfig.html#%3Cinit%3E(org.openqa.selenium.docker.Image,com.google.common.collect.Multimap,java.util.Map,java.util.Map)">ContainerConfig</a></span>&#8203;(<a href="../Image.html" title="class in org.openqa.selenium.docker">Image</a>&nbsp;image,
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="../ContainerConfig.html#%3Cinit%3E(org.openqa.selenium.docker.Image,com.google.common.collect.Multimap,java.util.Map,java.util.Map,java.lang.String,long)">ContainerConfig</a></span>&#8203;(<a href="../Image.html" title="class in org.openqa.selenium.docker">Image</a>&nbsp;image,
                com.google.common.collect.Multimap&lt;java.lang.String,&#8203;java.util.Map&lt;java.lang.String,&#8203;java.lang.Object&gt;&gt;&nbsp;portBindings,
                java.util.Map&lt;java.lang.String,&#8203;java.lang.String&gt;&nbsp;envVars,
-               java.util.Map&lt;java.lang.String,&#8203;java.lang.String&gt;&nbsp;volumeBinds)</code></th>
+               java.util.Map&lt;java.lang.String,&#8203;java.lang.String&gt;&nbsp;volumeBinds,
+               java.lang.String&nbsp;networkName,
+               long&nbsp;shmSize)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 </tbody>
@@ -186,12 +188,12 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 </section>
 </li>
 <li class="blockList">
-<section role="region"><a id="org.openqa.selenium.docker.v1_40">
+<section role="region"><a id="org.openqa.selenium.docker.v1_41">
 <!--   -->
 </a>
-<h3>Uses of <a href="../Image.html" title="class in org.openqa.selenium.docker">Image</a> in <a href="../v1_40/package-summary.html">org.openqa.selenium.docker.v1_40</a></h3>
+<h3>Uses of <a href="../Image.html" title="class in org.openqa.selenium.docker">Image</a> in <a href="../v1_41/package-summary.html">org.openqa.selenium.docker.v1_41</a></h3>
 <table class="useSummary">
-<caption><span>Methods in <a href="../v1_40/package-summary.html">org.openqa.selenium.docker.v1_40</a> that return <a href="../Image.html" title="class in org.openqa.selenium.docker">Image</a></span><span class="tabEnd">&nbsp;</span></caption>
+<caption><span>Methods in <a href="../v1_41/package-summary.html">org.openqa.selenium.docker.v1_41</a> that return <a href="../Image.html" title="class in org.openqa.selenium.docker">Image</a></span><span class="tabEnd">&nbsp;</span></caption>
 <tr>
 <th class="colFirst" scope="col">Modifier and Type</th>
 <th class="colSecond" scope="col">Method</th>
@@ -200,7 +202,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <tbody>
 <tr class="altColor">
 <td class="colFirst"><code><a href="../Image.html" title="class in org.openqa.selenium.docker">Image</a></code></td>
-<th class="colSecond" scope="row"><span class="typeNameLabel">V140Docker.</span><code><span class="memberNameLink"><a href="../v1_40/V140Docker.html#getImage(java.lang.String)">getImage</a></span>&#8203;(java.lang.String&nbsp;imageName)</code></th>
+<th class="colSecond" scope="row"><span class="typeNameLabel">V141Docker.</span><code><span class="memberNameLink"><a href="../v1_41/V141Docker.html#getImage(java.lang.String)">getImage</a></span>&#8203;(java.lang.String&nbsp;imageName)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 </tbody>
@@ -208,26 +210,28 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 </section>
 </li>
 <li class="blockList">
-<section role="region"><a id="org.openqa.selenium.grid.docker">
+<section role="region"><a id="org.openqa.selenium.grid.node.docker">
 <!--   -->
 </a>
-<h3>Uses of <a href="../Image.html" title="class in org.openqa.selenium.docker">Image</a> in <a href="../../grid/docker/package-summary.html">org.openqa.selenium.grid.docker</a></h3>
+<h3>Uses of <a href="../Image.html" title="class in org.openqa.selenium.docker">Image</a> in <a href="../../grid/node/docker/package-summary.html">org.openqa.selenium.grid.node.docker</a></h3>
 <table class="useSummary">
-<caption><span>Constructors in <a href="../../grid/docker/package-summary.html">org.openqa.selenium.grid.docker</a> with parameters of type <a href="../Image.html" title="class in org.openqa.selenium.docker">Image</a></span><span class="tabEnd">&nbsp;</span></caption>
+<caption><span>Constructors in <a href="../../grid/node/docker/package-summary.html">org.openqa.selenium.grid.node.docker</a> with parameters of type <a href="../Image.html" title="class in org.openqa.selenium.docker">Image</a></span><span class="tabEnd">&nbsp;</span></caption>
 <tr>
 <th class="colFirst" scope="col">Constructor</th>
 <th class="colLast" scope="col">Description</th>
 </tr>
 <tbody>
 <tr class="altColor">
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="../../grid/docker/DockerSessionFactory.html#%3Cinit%3E(org.openqa.selenium.remote.tracing.Tracer,org.openqa.selenium.remote.http.HttpClient.Factory,org.openqa.selenium.docker.Docker,java.net.URI,org.openqa.selenium.docker.Image,org.openqa.selenium.Capabilities,org.openqa.selenium.docker.Image,org.openqa.selenium.grid.docker.DockerAssetsPath)">DockerSessionFactory</a></span>&#8203;(<a href="../../remote/tracing/Tracer.html" title="interface in org.openqa.selenium.remote.tracing">Tracer</a>&nbsp;tracer,
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="../../grid/node/docker/DockerSessionFactory.html#%3Cinit%3E(org.openqa.selenium.remote.tracing.Tracer,org.openqa.selenium.remote.http.HttpClient.Factory,org.openqa.selenium.docker.Docker,java.net.URI,org.openqa.selenium.docker.Image,org.openqa.selenium.Capabilities,org.openqa.selenium.docker.Image,org.openqa.selenium.grid.node.docker.DockerAssetsPath,java.lang.String,boolean)">DockerSessionFactory</a></span>&#8203;(<a href="../../remote/tracing/Tracer.html" title="interface in org.openqa.selenium.remote.tracing">Tracer</a>&nbsp;tracer,
                     <a href="../../remote/http/HttpClient.Factory.html" title="interface in org.openqa.selenium.remote.http">HttpClient.Factory</a>&nbsp;clientFactory,
                     <a href="../Docker.html" title="class in org.openqa.selenium.docker">Docker</a>&nbsp;docker,
                     java.net.URI&nbsp;dockerUri,
                     <a href="../Image.html" title="class in org.openqa.selenium.docker">Image</a>&nbsp;browserImage,
                     <a href="../../Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&nbsp;stereotype,
                     <a href="../Image.html" title="class in org.openqa.selenium.docker">Image</a>&nbsp;videoImage,
-                    <a href="../../grid/docker/DockerAssetsPath.html" title="class in org.openqa.selenium.grid.docker">DockerAssetsPath</a>&nbsp;assetsPath)</code></th>
+                    <a href="../../grid/node/docker/DockerAssetsPath.html" title="class in org.openqa.selenium.grid.node.docker">DockerAssetsPath</a>&nbsp;assetsPath,
+                    java.lang.String&nbsp;networkName,
+                    boolean&nbsp;runningInDocker)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 </tbody>

@@ -93,7 +93,7 @@ loadScripts(document, 'script');</script>
 <div>
 <ul class="subNavList">
 <li>Summary:&nbsp;</li>
-<li><a href="#nested.class.summary">Nested</a>&nbsp;|&nbsp;</li>
+<li>Nested&nbsp;|&nbsp;</li>
 <li>Field&nbsp;|&nbsp;</li>
 <li><a href="#constructor.summary">Constr</a>&nbsp;|&nbsp;</li>
 <li><a href="#method.summary">Method</a></li>
@@ -142,40 +142,18 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <li class="blockList">
 <dl>
 <dt>All Implemented Interfaces:</dt>
-<dd><code>java.util.function.Predicate&lt;<a href="../../../remote/http/HttpRequest.html" title="class in org.openqa.selenium.remote.http">HttpRequest</a>&gt;</code>, <code><a href="../../../remote/http/HttpHandler.html" title="interface in org.openqa.selenium.remote.http">HttpHandler</a></code>, <code><a href="../../../remote/http/Routable.html" title="interface in org.openqa.selenium.remote.http">Routable</a></code>, <code><a href="../../../status/HasReadyState.html" title="interface in org.openqa.selenium.status">HasReadyState</a></code></dd>
+<dd><code>java.io.Closeable</code>, <code>java.lang.AutoCloseable</code>, <code>java.util.function.Predicate&lt;<a href="../../../remote/http/HttpRequest.html" title="class in org.openqa.selenium.remote.http">HttpRequest</a>&gt;</code>, <code><a href="../../../remote/http/HttpHandler.html" title="interface in org.openqa.selenium.remote.http">HttpHandler</a></code>, <code><a href="../../../remote/http/Routable.html" title="interface in org.openqa.selenium.remote.http">Routable</a></code>, <code><a href="../../../status/HasReadyState.html" title="interface in org.openqa.selenium.status">HasReadyState</a></code></dd>
 </dl>
 <hr>
 <pre>public class <span class="typeNameLabel">LocalDistributor</span>
-extends <a href="../Distributor.html" title="class in org.openqa.selenium.grid.distributor">Distributor</a></pre>
+extends <a href="../Distributor.html" title="class in org.openqa.selenium.grid.distributor">Distributor</a>
+implements java.io.Closeable</pre>
 </li>
 </ul>
 </div>
 <div class="summary">
 <ul class="blockList">
 <li class="blockList">
-<!-- ======== NESTED CLASS SUMMARY ======== -->
-<section role="region">
-<ul class="blockList">
-<li class="blockList"><a id="nested.class.summary">
-<!--   -->
-</a>
-<h3>Nested Class Summary</h3>
-<table class="memberSummary">
-<caption><span>Nested Classes</span><span class="tabEnd">&nbsp;</span></caption>
-<tr>
-<th class="colFirst" scope="col">Modifier and Type</th>
-<th class="colSecond" scope="col">Class</th>
-<th class="colLast" scope="col">Description</th>
-</tr>
-<tr class="altColor">
-<td class="colFirst"><code>class&nbsp;</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="LocalDistributor.NewSessionRunnable.html" title="class in org.openqa.selenium.grid.distributor.local">LocalDistributor.NewSessionRunnable</a></span></code></th>
-<td class="colLast">&nbsp;</td>
-</tr>
-</table>
-</li>
-</ul>
-</section>
 <!-- ======== CONSTRUCTOR SUMMARY ======== -->
 <section role="region">
 <ul class="blockList">
@@ -190,13 +168,16 @@ extends <a href="../Distributor.html" title="class in org.openqa.selenium.grid.d
 <th class="colLast" scope="col">Description</th>
 </tr>
 <tr class="altColor">
-<th class="colConstructorName" scope="row"><code><span class="memberNameLink"><a href="#%3Cinit%3E(org.openqa.selenium.remote.tracing.Tracer,org.openqa.selenium.events.EventBus,org.openqa.selenium.remote.http.HttpClient.Factory,org.openqa.selenium.grid.sessionmap.SessionMap,org.openqa.selenium.grid.sessionqueue.NewSessionQueuer,org.openqa.selenium.grid.security.Secret,java.time.Duration)">LocalDistributor</a></span>&#8203;(<a href="../../../remote/tracing/Tracer.html" title="interface in org.openqa.selenium.remote.tracing">Tracer</a>&nbsp;tracer,
+<th class="colConstructorName" scope="row"><code><span class="memberNameLink"><a href="#%3Cinit%3E(org.openqa.selenium.remote.tracing.Tracer,org.openqa.selenium.events.EventBus,org.openqa.selenium.remote.http.HttpClient.Factory,org.openqa.selenium.grid.sessionmap.SessionMap,org.openqa.selenium.grid.sessionqueue.NewSessionQueue,org.openqa.selenium.grid.distributor.selector.SlotSelector,org.openqa.selenium.grid.security.Secret,java.time.Duration,boolean,java.time.Duration)">LocalDistributor</a></span>&#8203;(<a href="../../../remote/tracing/Tracer.html" title="interface in org.openqa.selenium.remote.tracing">Tracer</a>&nbsp;tracer,
                 <a href="../../../events/EventBus.html" title="interface in org.openqa.selenium.events">EventBus</a>&nbsp;bus,
                 <a href="../../../remote/http/HttpClient.Factory.html" title="interface in org.openqa.selenium.remote.http">HttpClient.Factory</a>&nbsp;clientFactory,
                 <a href="../../sessionmap/SessionMap.html" title="class in org.openqa.selenium.grid.sessionmap">SessionMap</a>&nbsp;sessions,
-                <a href="../../sessionqueue/NewSessionQueuer.html" title="class in org.openqa.selenium.grid.sessionqueue">NewSessionQueuer</a>&nbsp;sessionRequests,
+                <a href="../../sessionqueue/NewSessionQueue.html" title="class in org.openqa.selenium.grid.sessionqueue">NewSessionQueue</a>&nbsp;sessionQueue,
+                <a href="../selector/SlotSelector.html" title="interface in org.openqa.selenium.grid.distributor.selector">SlotSelector</a>&nbsp;slotSelector,
                 <a href="../../security/Secret.html" title="class in org.openqa.selenium.grid.security">Secret</a>&nbsp;registrationSecret,
-                java.time.Duration&nbsp;healthcheckInterval)</code></th>
+                java.time.Duration&nbsp;healthcheckInterval,
+                boolean&nbsp;rejectUnsupportedCaps,
+                java.time.Duration&nbsp;sessionRequestRetryInterval)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 </table>
@@ -224,7 +205,7 @@ extends <a href="../Distributor.html" title="class in org.openqa.selenium.grid.d
 </tr>
 <tr id="i1" class="rowColor">
 <td class="colFirst"><code>void</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#callExecutorShutdown()">callExecutorShutdown</a></span>()</code></th>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#close()">close</a></span>()</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr id="i2" class="altColor">
@@ -253,19 +234,18 @@ extends <a href="../Distributor.html" title="class in org.openqa.selenium.grid.d
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr id="i7" class="rowColor">
-<td class="colFirst"><code>void</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#refresh()">refresh</a></span>()</code></th>
+<td class="colFirst"><code><a href="../../../internal/Either.html" title="class in org.openqa.selenium.internal">Either</a>&lt;<a href="../../../SessionNotCreatedException.html" title="class in org.openqa.selenium">SessionNotCreatedException</a>,&#8203;<a href="../../data/CreateSessionResponse.html" title="class in org.openqa.selenium.grid.data">CreateSessionResponse</a>&gt;</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#newSession(org.openqa.selenium.grid.data.SessionRequest)">newSession</a></span>&#8203;(<a href="../../data/SessionRequest.html" title="class in org.openqa.selenium.grid.data">SessionRequest</a>&nbsp;request)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr id="i8" class="altColor">
 <td class="colFirst"><code>void</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#remove(org.openqa.selenium.grid.data.NodeId)">remove</a></span>&#8203;(<a href="../../data/NodeId.html" title="class in org.openqa.selenium.grid.data">NodeId</a>&nbsp;nodeId)</code></th>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#refresh()">refresh</a></span>()</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr id="i9" class="rowColor">
-<td class="colFirst"><code>protected <a href="../../../internal/Either.html" title="class in org.openqa.selenium.internal">Either</a>&lt;<a href="../../../SessionNotCreatedException.html" title="class in org.openqa.selenium">SessionNotCreatedException</a>,&#8203;<a href="../../data/CreateSessionResponse.html" title="class in org.openqa.selenium.grid.data">CreateSessionResponse</a>&gt;</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#reserve(org.openqa.selenium.grid.data.SlotId,org.openqa.selenium.grid.data.CreateSessionRequest)">reserve</a></span>&#8203;(<a href="../../data/SlotId.html" title="class in org.openqa.selenium.grid.data">SlotId</a>&nbsp;slotId,
-       <a href="../../data/CreateSessionRequest.html" title="class in org.openqa.selenium.grid.data">CreateSessionRequest</a>&nbsp;request)</code></th>
+<td class="colFirst"><code>void</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#remove(org.openqa.selenium.grid.data.NodeId)">remove</a></span>&#8203;(<a href="../../data/NodeId.html" title="class in org.openqa.selenium.grid.data">NodeId</a>&nbsp;nodeId)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 </table>
@@ -274,7 +254,7 @@ extends <a href="../Distributor.html" title="class in org.openqa.selenium.grid.d
 <!--   -->
 </a>
 <h3>Methods inherited from class&nbsp;org.openqa.selenium.grid.distributor.<a href="../Distributor.html" title="class in org.openqa.selenium.grid.distributor">Distributor</a></h3>
-<code><a href="../Distributor.html#execute(org.openqa.selenium.remote.http.HttpRequest)">execute</a>, <a href="../Distributor.html#matches(org.openqa.selenium.remote.http.HttpRequest)">matches</a>, <a href="../Distributor.html#newSession(org.openqa.selenium.remote.http.HttpRequest)">newSession</a>, <a href="../Distributor.html#test(org.openqa.selenium.remote.http.HttpRequest)">test</a></code></li>
+<code><a href="../Distributor.html#execute(org.openqa.selenium.remote.http.HttpRequest)">execute</a>, <a href="../Distributor.html#matches(org.openqa.selenium.remote.http.HttpRequest)">matches</a>, <a href="../Distributor.html#test(org.openqa.selenium.remote.http.HttpRequest)">test</a></code></li>
 </ul>
 <ul class="blockList">
 <li class="blockList"><a id="methods.inherited.from.class.java.lang.Object">
@@ -313,7 +293,7 @@ extends <a href="../Distributor.html" title="class in org.openqa.selenium.grid.d
 <!--   -->
 </a>
 <h3>Constructor Detail</h3>
-<a id="&lt;init&gt;(org.openqa.selenium.remote.tracing.Tracer,org.openqa.selenium.events.EventBus,org.openqa.selenium.remote.http.HttpClient.Factory,org.openqa.selenium.grid.sessionmap.SessionMap,org.openqa.selenium.grid.sessionqueue.NewSessionQueuer,org.openqa.selenium.grid.security.Secret,java.time.Duration)">
+<a id="&lt;init&gt;(org.openqa.selenium.remote.tracing.Tracer,org.openqa.selenium.events.EventBus,org.openqa.selenium.remote.http.HttpClient.Factory,org.openqa.selenium.grid.sessionmap.SessionMap,org.openqa.selenium.grid.sessionqueue.NewSessionQueue,org.openqa.selenium.grid.distributor.selector.SlotSelector,org.openqa.selenium.grid.security.Secret,java.time.Duration,boolean,java.time.Duration)">
 <!--   -->
 </a>
 <ul class="blockListLast">
@@ -323,9 +303,12 @@ extends <a href="../Distributor.html" title="class in org.openqa.selenium.grid.d
                         <a href="../../../events/EventBus.html" title="interface in org.openqa.selenium.events">EventBus</a>&nbsp;bus,
                         <a href="../../../remote/http/HttpClient.Factory.html" title="interface in org.openqa.selenium.remote.http">HttpClient.Factory</a>&nbsp;clientFactory,
                         <a href="../../sessionmap/SessionMap.html" title="class in org.openqa.selenium.grid.sessionmap">SessionMap</a>&nbsp;sessions,
-                        <a href="../../sessionqueue/NewSessionQueuer.html" title="class in org.openqa.selenium.grid.sessionqueue">NewSessionQueuer</a>&nbsp;sessionRequests,
+                        <a href="../../sessionqueue/NewSessionQueue.html" title="class in org.openqa.selenium.grid.sessionqueue">NewSessionQueue</a>&nbsp;sessionQueue,
+                        <a href="../selector/SlotSelector.html" title="interface in org.openqa.selenium.grid.distributor.selector">SlotSelector</a>&nbsp;slotSelector,
                         <a href="../../security/Secret.html" title="class in org.openqa.selenium.grid.security">Secret</a>&nbsp;registrationSecret,
-                        java.time.Duration&nbsp;healthcheckInterval)</pre>
+                        java.time.Duration&nbsp;healthcheckInterval,
+                        boolean&nbsp;rejectUnsupportedCaps,
+                        java.time.Duration&nbsp;sessionRequestRetryInterval)</pre>
 </li>
 </ul>
 </li>
@@ -354,6 +337,10 @@ extends <a href="../Distributor.html" title="class in org.openqa.selenium.grid.d
 <li class="blockList">
 <h4>isReady</h4>
 <pre class="methodSignature">public&nbsp;boolean&nbsp;isReady()</pre>
+<dl>
+<dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
+<dd><code><a href="../../../status/HasReadyState.html#isReady()">isReady</a></code>&nbsp;in interface&nbsp;<code><a href="../../../status/HasReadyState.html" title="interface in org.openqa.selenium.status">HasReadyState</a></code></dd>
+</dl>
 </li>
 </ul>
 <a id="add(org.openqa.selenium.grid.node.Node)">
@@ -425,33 +412,37 @@ public&nbsp;void&nbsp;refresh()</pre>
 <li class="blockList">
 <h4>getAvailableNodes</h4>
 <pre class="methodSignature">protected&nbsp;java.util.Set&lt;<a href="../../data/NodeStatus.html" title="class in org.openqa.selenium.grid.data">NodeStatus</a>&gt;&nbsp;getAvailableNodes()</pre>
-<dl>
-<dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
-<dd><code><a href="../Distributor.html#getAvailableNodes()">getAvailableNodes</a></code>&nbsp;in class&nbsp;<code><a href="../Distributor.html" title="class in org.openqa.selenium.grid.distributor">Distributor</a></code></dd>
-</dl>
 </li>
 </ul>
-<a id="reserve(org.openqa.selenium.grid.data.SlotId,org.openqa.selenium.grid.data.CreateSessionRequest)">
+<a id="newSession(org.openqa.selenium.grid.data.SessionRequest)">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
-<h4>reserve</h4>
-<pre class="methodSignature">protected&nbsp;<a href="../../../internal/Either.html" title="class in org.openqa.selenium.internal">Either</a>&lt;<a href="../../../SessionNotCreatedException.html" title="class in org.openqa.selenium">SessionNotCreatedException</a>,&#8203;<a href="../../data/CreateSessionResponse.html" title="class in org.openqa.selenium.grid.data">CreateSessionResponse</a>&gt;&nbsp;reserve&#8203;(<a href="../../data/SlotId.html" title="class in org.openqa.selenium.grid.data">SlotId</a>&nbsp;slotId,
-                                                                                 <a href="../../data/CreateSessionRequest.html" title="class in org.openqa.selenium.grid.data">CreateSessionRequest</a>&nbsp;request)</pre>
+<h4>newSession</h4>
+<pre class="methodSignature">public&nbsp;<a href="../../../internal/Either.html" title="class in org.openqa.selenium.internal">Either</a>&lt;<a href="../../../SessionNotCreatedException.html" title="class in org.openqa.selenium">SessionNotCreatedException</a>,&#8203;<a href="../../data/CreateSessionResponse.html" title="class in org.openqa.selenium.grid.data">CreateSessionResponse</a>&gt;&nbsp;newSession&#8203;(<a href="../../data/SessionRequest.html" title="class in org.openqa.selenium.grid.data">SessionRequest</a>&nbsp;request)
+                                                                          throws <a href="../../../SessionNotCreatedException.html" title="class in org.openqa.selenium">SessionNotCreatedException</a></pre>
 <dl>
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
-<dd><code><a href="../Distributor.html#reserve(org.openqa.selenium.grid.data.SlotId,org.openqa.selenium.grid.data.CreateSessionRequest)">reserve</a></code>&nbsp;in class&nbsp;<code><a href="../Distributor.html" title="class in org.openqa.selenium.grid.distributor">Distributor</a></code></dd>
+<dd><code><a href="../Distributor.html#newSession(org.openqa.selenium.grid.data.SessionRequest)">newSession</a></code>&nbsp;in class&nbsp;<code><a href="../Distributor.html" title="class in org.openqa.selenium.grid.distributor">Distributor</a></code></dd>
+<dt><span class="throwsLabel">Throws:</span></dt>
+<dd><code><a href="../../../SessionNotCreatedException.html" title="class in org.openqa.selenium">SessionNotCreatedException</a></code></dd>
 </dl>
 </li>
 </ul>
-<a id="callExecutorShutdown()">
+<a id="close()">
 <!--   -->
 </a>
 <ul class="blockListLast">
 <li class="blockList">
-<h4>callExecutorShutdown</h4>
-<pre class="methodSignature">public&nbsp;void&nbsp;callExecutorShutdown()</pre>
+<h4>close</h4>
+<pre class="methodSignature">public&nbsp;void&nbsp;close()</pre>
+<dl>
+<dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
+<dd><code>close</code>&nbsp;in interface&nbsp;<code>java.lang.AutoCloseable</code></dd>
+<dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
+<dd><code>close</code>&nbsp;in interface&nbsp;<code>java.io.Closeable</code></dd>
+</dl>
 </li>
 </ul>
 </li>
@@ -510,7 +501,7 @@ public&nbsp;void&nbsp;refresh()</pre>
 <div>
 <ul class="subNavList">
 <li>Summary:&nbsp;</li>
-<li><a href="#nested.class.summary">Nested</a>&nbsp;|&nbsp;</li>
+<li>Nested&nbsp;|&nbsp;</li>
 <li>Field&nbsp;|&nbsp;</li>
 <li><a href="#constructor.summary">Constr</a>&nbsp;|&nbsp;</li>
 <li><a href="#method.summary">Method</a></li>

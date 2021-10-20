@@ -69,6 +69,12 @@ capabilities only, such as “proxy” or “loggingPref”.</li>
 <dd></dd></dl>
 
 <dl class="method">
+<dt id="selenium.webdriver.chromium.webdriver.ChromiumDriver.delete_network_conditions">
+<code class="descname">delete_network_conditions</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; NoReturn<a class="reference internal" href="../_modules/selenium/webdriver/chromium/webdriver.html#ChromiumDriver.delete_network_conditions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.chromium.webdriver.ChromiumDriver.delete_network_conditions" title="Permalink to this definition">¶</a></dt>
+<dd><p>Resets Chromium network emulation settings.</p>
+</dd></dl>
+
+<dl class="method">
 <dt id="selenium.webdriver.chromium.webdriver.ChromiumDriver.execute_cdp_cmd">
 <code class="descname">execute_cdp_cmd</code><span class="sig-paren">(</span><em>cmd: str</em>, <em>cmd_args: dict</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/webdriver/chromium/webdriver.html#ChromiumDriver.execute_cdp_cmd"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.chromium.webdriver.ChromiumDriver.execute_cdp_cmd" title="Permalink to this definition">¶</a></dt>
 <dd><p>Execute Chrome Devtools Protocol command and get returned result
@@ -176,6 +182,31 @@ that is started when starting the ChromiumDriver</p>
 </pre></div>
 </div>
 <p class="last">Note: ‘throughput’ can be used to set both (for download and upload).</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.chromium.webdriver.ChromiumDriver.set_permissions">
+<code class="descname">set_permissions</code><span class="sig-paren">(</span><em>name: str</em>, <em>value: str</em><span class="sig-paren">)</span> &#x2192; NoReturn<a class="reference internal" href="../_modules/selenium/webdriver/chromium/webdriver.html#ChromiumDriver.set_permissions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.chromium.webdriver.ChromiumDriver.set_permissions" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets Applicable Permission.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Args:</th><td class="field-body"><ul class="first simple">
+<li>name: The item to set the permission on.</li>
+<li>value: The value to set on the item</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Usage:</th><td class="field-body"><dl class="first last docutils">
+<dt>::</dt>
+<dd><p class="first last">driver.set_permissions(‘clipboard-read’, ‘denied’)</p>
+</dd>
+</dl>
 </td>
 </tr>
 </tbody>

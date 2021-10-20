@@ -54,17 +54,23 @@
 <span class="c1"># KIND, either express or implied.  See the License for the</span>
 <span class="c1"># specific language governing permissions and limitations</span>
 <span class="c1"># under the License.</span>
-<span class="kn">from</span> <span class="nn">selenium.common.exceptions</span> <span class="kn">import</span> <span class="n">WebDriverException</span>
 
 <span class="k">try</span><span class="p">:</span>
     <span class="kn">import</span> <span class="nn">http.client</span> <span class="k">as</span> <span class="nn">http_client</span>
 <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
     <span class="kn">import</span> <span class="nn">httplib</span> <span class="k">as</span> <span class="nn">http_client</span>
 
+<span class="kn">import</span> <span class="nn">warnings</span>
+
+<span class="kn">from</span> <span class="nn">selenium.common.exceptions</span> <span class="kn">import</span> <span class="n">WebDriverException</span>
 <span class="kn">from</span> <span class="nn">selenium.webdriver.common.desired_capabilities</span> <span class="kn">import</span> <span class="n">DesiredCapabilities</span>
 <span class="kn">from</span> <span class="nn">selenium.webdriver.remote.webdriver</span> <span class="kn">import</span> <span class="n">WebDriver</span> <span class="k">as</span> <span class="n">RemoteWebDriver</span>
+<span class="kn">from</span> <span class="nn">.options</span> <span class="kn">import</span> <span class="n">Options</span>
 <span class="kn">from</span> <span class="nn">.service</span> <span class="kn">import</span> <span class="n">Service</span>
 <span class="kn">from</span> <span class="nn">.remote_connection</span> <span class="kn">import</span> <span class="n">SafariRemoteConnection</span>
+
+<span class="n">DEFAULT_EXECUTABLE_PATH</span> <span class="o">=</span> <span class="s2">&quot;/usr/bin/safaridriver&quot;</span>
+<span class="n">DEFAULT_SAFARI_CAPS</span> <span class="o">=</span> <span class="n">DesiredCapabilities</span><span class="o">.</span><span class="n">SAFARI</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
 
 
 <div class="viewcode-block" id="WebDriver"><a class="viewcode-back" href="../../../../webdriver_safari/selenium.webdriver.safari.webdriver.html#selenium.webdriver.safari.webdriver.WebDriver">[docs]</a><span class="k">class</span> <span class="nc">WebDriver</span><span class="p">(</span><span class="n">RemoteWebDriver</span><span class="p">):</span>
@@ -73,9 +79,9 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">executable_path</span><span class="o">=</span><span class="s2">&quot;/usr/bin/safaridriver&quot;</span><span class="p">,</span> <span class="n">reuse_service</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-                 <span class="n">desired_capabilities</span><span class="o">=</span><span class="n">DesiredCapabilities</span><span class="o">.</span><span class="n">SAFARI</span><span class="p">,</span> <span class="n">quiet</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-                 <span class="n">keep_alive</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">service_args</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">executable_path</span><span class="o">=</span><span class="n">DEFAULT_EXECUTABLE_PATH</span><span class="p">,</span> <span class="n">reuse_service</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                 <span class="n">desired_capabilities</span><span class="o">=</span><span class="n">DEFAULT_SAFARI_CAPS</span><span class="p">,</span> <span class="n">quiet</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                 <span class="n">keep_alive</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">service_args</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">options</span><span class="p">:</span> <span class="n">Options</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">service</span><span class="p">:</span> <span class="n">Service</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="sd">        Creates a new Safari driver instance and launches or finds a running safaridriver service.</span>
@@ -87,12 +93,38 @@
 <span class="sd">         - desired_capabilities: Dictionary object with desired capabilities (Can be used to provide various Safari switches).</span>
 <span class="sd">         - quiet - If True, the driver&#39;s stdout and stderr is suppressed.</span>
 <span class="sd">         - keep_alive - Whether to configure SafariRemoteConnection to use</span>
-<span class="sd">             HTTP keep-alive. Defaults to False.</span>
+<span class="sd">             HTTP keep-alive. Defaults to True.</span>
 <span class="sd">         - service_args : List of args to pass to the safaridriver service</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">port</span><span class="p">:</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;port has been deprecated, please set it via the service class&quot;</span><span class="p">,</span>
+                          <span class="ne">DeprecationWarning</span><span class="p">,</span> <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">executable_path</span> <span class="o">!=</span> <span class="n">DEFAULT_EXECUTABLE_PATH</span><span class="p">:</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;executable_path has been deprecated, please use the Options class to set it&quot;</span><span class="p">,</span>
+                          <span class="ne">DeprecationWarning</span><span class="p">,</span> <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">reuse_service</span><span class="p">:</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;reuse_service has been deprecated, please use the Service class to set it&quot;</span><span class="p">,</span>
+                          <span class="ne">DeprecationWarning</span><span class="p">,</span> <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">desired_capabilities</span> <span class="o">!=</span> <span class="n">DEFAULT_SAFARI_CAPS</span><span class="p">:</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;desired_capabilities has been deprecated, please use the Options class to set it&quot;</span><span class="p">,</span>
+                          <span class="ne">DeprecationWarning</span><span class="p">,</span> <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">quiet</span><span class="p">:</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;quiet has been deprecated, please use the Service class to set it&quot;</span><span class="p">,</span>
+                          <span class="ne">DeprecationWarning</span><span class="p">,</span> <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">keep_alive</span><span class="p">:</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;keep_alive has been deprecated, please use the Service class to set it&quot;</span><span class="p">,</span>
+                          <span class="ne">DeprecationWarning</span><span class="p">,</span> <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">service_args</span><span class="p">:</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;service_args has been deprecated, please use the Service class to set it&quot;</span><span class="p">,</span>
+                          <span class="ne">DeprecationWarning</span><span class="p">,</span> <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_reuse_service</span> <span class="o">=</span> <span class="n">reuse_service</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">service</span> <span class="o">=</span> <span class="n">Service</span><span class="p">(</span><span class="n">executable_path</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="n">port</span><span class="p">,</span> <span class="n">quiet</span><span class="o">=</span><span class="n">quiet</span><span class="p">,</span> <span class="n">service_args</span><span class="o">=</span><span class="n">service_args</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">service</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">service</span> <span class="o">=</span> <span class="n">service</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">service</span> <span class="o">=</span> <span class="n">Service</span><span class="p">(</span><span class="n">executable_path</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="n">port</span><span class="p">,</span> <span class="n">quiet</span><span class="o">=</span><span class="n">quiet</span><span class="p">,</span> <span class="n">service_args</span><span class="o">=</span><span class="n">service_args</span><span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">reuse_service</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">service</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
 
