@@ -2167,7 +2167,7 @@ class TargetLocator {
    * @return {!WebElementPromise} The active element.
    */
   activeElement() {
-    var id = this.driver_.execute(
+    const id = this.driver_.execute(
       new command.Command(command.Name.GET_ACTIVE_ELEMENT)
     )
     return new WebElementPromise(this.driver_, id)
@@ -2259,7 +2259,7 @@ class TargetLocator {
    *     when the driver has changed focus to the new window.
    */
   newWindow(typeHint) {
-    var driver = this.driver_
+    const driver = this.driver_
     return this.driver_
       .execute(
         new command.Command(command.Name.SWITCH_TO_NEW_WINDOW).setParameter(
@@ -2281,10 +2281,10 @@ class TargetLocator {
    * @return {!AlertPromise} The open alert.
    */
   alert() {
-    var text = this.driver_.execute(
+    const text = this.driver_.execute(
       new command.Command(command.Name.GET_ALERT_TEXT)
     )
-    var driver = this.driver_
+    const driver = this.driver_
     return new AlertPromise(
       driver,
       text.then(function (text) {
@@ -2614,7 +2614,7 @@ class WebElement {
    *     requested CSS value.
    */
   getCssValue(cssStyleProperty) {
-    var name = command.Name.GET_ELEMENT_VALUE_OF_CSS_PROPERTY
+    const name = command.Name.GET_ELEMENT_VALUE_OF_CSS_PROPERTY
     return this.execute_(
       new command.Command(name).setParameter('propertyName', cssStyleProperty)
     )
@@ -2758,7 +2758,10 @@ class WebElement {
    *     when the form has been submitted.
    */
   submit() {
-    return this.execute_(new command.Command(command.Name.SUBMIT_ELEMENT))
+    const form = this.findElement({xpath:"./ancestor-or-self::form"});
+    this.driver_.executeScript("var e = arguments[0].ownerDocument.createEvent('Event');"+
+    "e.initEvent('submit', true, true);"+
+    "if (arguments[0].dispatchEvent(e)) { arguments[0].submit() }", form)
   }
 
   /**
