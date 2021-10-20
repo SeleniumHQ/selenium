@@ -154,7 +154,7 @@ module Selenium
             options.add_preference('intl.accepted_languages', 'en-US')
 
             prefs    = options.as_json['moz:firefoxOptions']['prefs']
-            expected = { 'intl.accepted_languages' => 'en-US' }
+            expected = {'intl.accepted_languages' => 'en-US'}
             expect(prefs).to eq(expected)
           end
         end
