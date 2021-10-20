@@ -172,7 +172,7 @@ namespace OpenQA.Selenium
         {
             if (idToFind == null)
             {
-                throw new ArgumentNullException("idToFind", "Cannot find elements with a null id attribute.");
+                throw new ArgumentNullException(nameof(idToFind), "Cannot find elements with a null id attribute.");
             }
 
             string selector = By.EscapeCssSelector(idToFind);
@@ -199,7 +199,7 @@ namespace OpenQA.Selenium
         {
             if (linkTextToFind == null)
             {
-                throw new ArgumentNullException("linkTextToFind", "Cannot find elements when link text is null.");
+                throw new ArgumentNullException(nameof(linkTextToFind), "Cannot find elements when link text is null.");
             }
 
             By by = new By(LinkTextMechanism, linkTextToFind);
@@ -216,7 +216,7 @@ namespace OpenQA.Selenium
         {
             if (nameToFind == null)
             {
-                throw new ArgumentNullException("nameToFind", "Cannot find elements when name text is null.");
+                throw new ArgumentNullException(nameof(nameToFind), "Cannot find elements when name text is null.");
             }
 
             string selector = "*[name =\"" + By.EscapeCssSelector(nameToFind) + "\"]";
@@ -237,7 +237,7 @@ namespace OpenQA.Selenium
         {
             if (xpathToFind == null)
             {
-                throw new ArgumentNullException("xpathToFind", "Cannot find elements when the XPath expression is null.");
+                throw new ArgumentNullException(nameof(xpathToFind), "Cannot find elements when the XPath expression is null.");
             }
 
             By by = new By(XPathSelectorMechanism, xpathToFind);
@@ -257,7 +257,7 @@ namespace OpenQA.Selenium
         {
             if (classNameToFind == null)
             {
-                throw new ArgumentNullException("classNameToFind", "Cannot find elements when the class name expression is null.");
+                throw new ArgumentNullException(nameof(classNameToFind), "Cannot find elements when the class name expression is null.");
             }
 
             string selector = "." + By.EscapeCssSelector(classNameToFind);
@@ -284,7 +284,7 @@ namespace OpenQA.Selenium
         {
             if (partialLinkTextToFind == null)
             {
-                throw new ArgumentNullException("partialLinkTextToFind", "Cannot find elements when partial link text is null.");
+                throw new ArgumentNullException(nameof(partialLinkTextToFind), "Cannot find elements when partial link text is null.");
             }
 
             By by = new By(PartialLinkTextMechanism, partialLinkTextToFind);
@@ -301,7 +301,7 @@ namespace OpenQA.Selenium
         {
             if (tagNameToFind == null)
             {
-                throw new ArgumentNullException("tagNameToFind", "Cannot find elements when name tag name is null.");
+                throw new ArgumentNullException(nameof(tagNameToFind), "Cannot find elements when name tag name is null.");
             }
 
             By by = new By(TagNameMechanism, tagNameToFind);
@@ -318,7 +318,7 @@ namespace OpenQA.Selenium
         {
             if (cssSelectorToFind == null)
             {
-                throw new ArgumentNullException("cssSelectorToFind", "Cannot find elements when name CSS selector is null.");
+                throw new ArgumentNullException(nameof(cssSelectorToFind), "Cannot find elements when name CSS selector is null.");
             }
 
             By by = new By(CssSelectorMechanism, cssSelectorToFind);

@@ -64,7 +64,7 @@ namespace OpenQA.Selenium
         {
             if (by == null)
             {
-                throw new ArgumentNullException("by", "by cannot be null");
+                throw new ArgumentNullException(nameof(@by), "by cannot be null");
             }
 
             Dictionary<string, object> parameters = new Dictionary<string, object>();
@@ -86,7 +86,7 @@ namespace OpenQA.Selenium
         {
             if (by == null)
             {
-                throw new ArgumentNullException("by", "by cannot be null");
+                throw new ArgumentNullException(nameof(@by), "by cannot be null");
             }
 
             Dictionary<string, object> parameters = new Dictionary<string, object>();

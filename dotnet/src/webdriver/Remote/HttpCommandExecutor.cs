@@ -72,7 +72,7 @@ namespace OpenQA.Selenium.Remote
         {
             if (addressOfRemoteServer == null)
             {
-                throw new ArgumentNullException("addressOfRemoteServer", "You must specify a remote address to connect to");
+                throw new ArgumentNullException(nameof(addressOfRemoteServer), "You must specify a remote address to connect to");
             }
 
             if (!addressOfRemoteServer.AbsoluteUri.EndsWith("/", StringComparison.OrdinalIgnoreCase))
@@ -160,7 +160,7 @@ namespace OpenQA.Selenium.Remote
         {
             if (commandToExecute == null)
             {
-                throw new ArgumentNullException("commandToExecute", "commandToExecute cannot be null");
+                throw new ArgumentNullException(nameof(commandToExecute), "commandToExecute cannot be null");
             }
 
             HttpCommandInfo info = this.commandInfoRepository.GetCommandInfo<HttpCommandInfo>(commandToExecute.Name);
@@ -231,7 +231,7 @@ namespace OpenQA.Selenium.Remote
         {
             if (eventArgs == null)
             {
-                throw new ArgumentNullException("eventArgs", "eventArgs must not be null");
+                throw new ArgumentNullException(nameof(eventArgs), "eventArgs must not be null");
             }
 
             if (this.SendingRemoteHttpRequest != null)

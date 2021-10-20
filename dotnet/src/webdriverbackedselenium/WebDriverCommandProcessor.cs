@@ -60,7 +60,7 @@ namespace Selenium
         {
             if (baseUrl == null)
             {
-                throw new ArgumentNullException("baseUrl", "baseUrl cannot be null");
+                throw new ArgumentNullException(nameof(baseUrl), "baseUrl cannot be null");
             }
 
             this.driver = baseDriver;

@@ -38,7 +38,7 @@ namespace OpenQA.Selenium
         private string cookieDomain;
         private string sameSite;
         private bool isHttpOnly;
-        private bool secure; 
+        private bool secure;
         private DateTime? cookieExpiry;
         private readonly string[] sameSiteValues = {"Strict", "Lax", "None"};
 
@@ -123,17 +123,17 @@ namespace OpenQA.Selenium
         {
             if (string.IsNullOrEmpty(name))
             {
-                throw new ArgumentException("Cookie name cannot be null or empty string", "name");
+                throw new ArgumentException("Cookie name cannot be null or empty string", nameof(name));
             }
 
             if (value == null)
             {
-                throw new ArgumentNullException("value", "Cookie value cannot be null");
+                throw new ArgumentNullException(nameof(value), "Cookie value cannot be null");
             }
 
             if (name.IndexOf(';') != -1)
             {
-                throw new ArgumentException("Cookie names cannot contain a ';': " + name, "name");
+                throw new ArgumentException("Cookie names cannot contain a ';': " + name, nameof(name));
             }
 
             this.cookieName = name;
@@ -157,7 +157,7 @@ namespace OpenQA.Selenium
             {
                 if (!sameSiteValues.Contains(sameSite))
                 {
-                    throw new ArgumentException("Invalid sameSite cookie value. It should either \"Lax\", \"Strict\" or \"None\" ", "sameSite");
+                    throw new ArgumentException("Invalid sameSite cookie value. It should either \"Lax\", \"Strict\" or \"None\" ", nameof(sameSite));
                 }
 
                 this.sameSite = sameSite;
@@ -267,7 +267,7 @@ namespace OpenQA.Selenium
         {
             if (rawCookie == null)
             {
-                throw new ArgumentNullException("rawCookie", "Dictionary cannot be null");
+                throw new ArgumentNullException(nameof(rawCookie), "Dictionary cannot be null");
             }
 
             string name = rawCookie["name"].ToString();

@@ -204,7 +204,7 @@ namespace OpenQA.Selenium.Chromium
         {
             if (string.IsNullOrEmpty(argument))
             {
-                throw new ArgumentException("argument must not be null or empty", "argument");
+                throw new ArgumentException("argument must not be null or empty", nameof(argument));
             }
 
             this.AddArguments(argument);
@@ -227,7 +227,7 @@ namespace OpenQA.Selenium.Chromium
         {
             if (argumentsToAdd == null)
             {
-                throw new ArgumentNullException("argumentsToAdd", "argumentsToAdd must not be null");
+                throw new ArgumentNullException(nameof(argumentsToAdd), "argumentsToAdd must not be null");
             }
 
             this.arguments.AddRange(argumentsToAdd);
@@ -242,7 +242,7 @@ namespace OpenQA.Selenium.Chromium
         {
             if (string.IsNullOrEmpty(argument))
             {
-                throw new ArgumentException("argument must not be null or empty", "argument");
+                throw new ArgumentException("argument must not be null or empty", nameof(argument));
             }
 
             this.AddExcludedArguments(argument);
@@ -267,7 +267,7 @@ namespace OpenQA.Selenium.Chromium
         {
             if (argumentsToExclude == null)
             {
-                throw new ArgumentNullException("argumentsToExclude", "argumentsToExclude must not be null");
+                throw new ArgumentNullException(nameof(argumentsToExclude), "argumentsToExclude must not be null");
             }
 
             this.excludedSwitches.AddRange(argumentsToExclude);
@@ -282,7 +282,7 @@ namespace OpenQA.Selenium.Chromium
         {
             if (string.IsNullOrEmpty(pathToExtension))
             {
-                throw new ArgumentException("pathToExtension must not be null or empty", "pathToExtension");
+                throw new ArgumentException("pathToExtension must not be null or empty", nameof(pathToExtension));
             }
 
             this.AddExtensions(pathToExtension);
@@ -307,7 +307,7 @@ namespace OpenQA.Selenium.Chromium
         {
             if (extensions == null)
             {
-                throw new ArgumentNullException("extensions", "extensions must not be null");
+                throw new ArgumentNullException(nameof(extensions), "extensions must not be null");
             }
 
             foreach (string extension in extensions)
@@ -330,7 +330,7 @@ namespace OpenQA.Selenium.Chromium
         {
             if (string.IsNullOrEmpty(extension))
             {
-                throw new ArgumentException("extension must not be null or empty", "extension");
+                throw new ArgumentException("extension must not be null or empty", nameof(extension));
             }
 
             this.AddEncodedExtensions(extension);
@@ -356,7 +356,7 @@ namespace OpenQA.Selenium.Chromium
         {
             if (extensions == null)
             {
-                throw new ArgumentNullException("extensions", "extensions must not be null");
+                throw new ArgumentNullException(nameof(extensions), "extensions must not be null");
             }
 
             foreach (string extension in extensions)
@@ -437,7 +437,7 @@ namespace OpenQA.Selenium.Chromium
             this.mobileEmulationDeviceName = null;
             if (deviceSettings != null && string.IsNullOrEmpty(deviceSettings.UserAgent))
             {
-                throw new ArgumentException("Device settings must include a user agent string.", "deviceSettings");
+                throw new ArgumentException("Device settings must include a user agent string.", nameof(deviceSettings));
             }
 
             this.mobileEmulationDeviceSettings = deviceSettings;
@@ -454,7 +454,7 @@ namespace OpenQA.Selenium.Chromium
         {
             if (string.IsNullOrEmpty(windowType))
             {
-                throw new ArgumentException("windowType must not be null or empty", "windowType");
+                throw new ArgumentException("windowType must not be null or empty", nameof(windowType));
             }
 
             this.AddWindowTypes(windowType);
@@ -479,7 +479,7 @@ namespace OpenQA.Selenium.Chromium
         {
             if (windowTypesToAdd == null)
             {
-                throw new ArgumentNullException("windowTypesToAdd", "windowTypesToAdd must not be null");
+                throw new ArgumentNullException(nameof(windowTypesToAdd), "windowTypesToAdd must not be null");
             }
 
             this.windowTypes.AddRange(windowTypesToAdd);

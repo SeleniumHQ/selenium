@@ -37,7 +37,7 @@ namespace OpenQA.Selenium.Internal
         {
             if (string.IsNullOrEmpty(androidPackage))
             {
-                throw new ArgumentException("The Android package cannot be null or the empty string", "androidPackage");
+                throw new ArgumentException("The Android package cannot be null or the empty string", nameof(androidPackage));
             }
 
             this.androidPackage = androidPackage;
