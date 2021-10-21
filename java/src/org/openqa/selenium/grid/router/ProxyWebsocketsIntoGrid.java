@@ -71,7 +71,7 @@ public class ProxyWebsocketsIntoGrid implements BiFunction<String, Consumer<Mess
       return Optional.of(upstream::send);
 
     } catch (NoSuchSessionException e) {
-      LOG.info("Attempt to connect to non-existant session: " + uri);
+      LOG.info("Attempt to connect to non-existent session: " + uri);
       return Optional.empty();
     }
   }

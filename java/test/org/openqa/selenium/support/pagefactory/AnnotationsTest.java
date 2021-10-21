@@ -232,7 +232,7 @@ public class AnnotationsTest {
   }
 
   /*
-   * Example of how teams making their own @FinyBy alikes would experience a general purpose
+   * Example of how teams making their own @FindBy alike would experience a general purpose
    * capability.
    *
    * @See @FindByXXXX (above)

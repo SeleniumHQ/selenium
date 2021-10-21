@@ -247,7 +247,7 @@ public class ElementAttributeTest extends JUnit4TestBase {
   }
 
   @Test
-  public void testShouldGetNumericAtribute() {
+  public void testShouldGetNumericAttribute() {
     driver.get(pages.formPage);
     WebElement element = driver.findElement(By.id("withText"));
     assertThat(element.getAttribute("rows")).isEqualTo("5");

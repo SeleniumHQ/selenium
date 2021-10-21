@@ -61,7 +61,7 @@ public class RelativeLocatorTest extends JUnit4TestBase {
   }
 
   @Test
-  public void shouldBeAbleToFindElementsAboveAnotherwithCssSelector() {
+  public void shouldBeAbleToFindElementsAboveAnotherWithCssSelector() {
     driver.get(appServer.whereIs("relative_locators.html"));
 
     WebElement lowest = driver.findElement(By.id("below"));
@@ -121,7 +121,7 @@ public class RelativeLocatorTest extends JUnit4TestBase {
     // 2. Directly below (short vertical distance, later in DOM)
     // 3. Directly left (slight longer distance horizontally, first in DOM)
     // 4. Directly right (slight longer distance horizontally, later in DOM)
-    // 5-8. Diagonally close (pythagorus sorting, with top row first
+    // 5-8. Diagonally close (pythagoras sorting, with top row first
     //    because of DOM insertion order)
     List<String> ids = seen.stream().map(e -> e.getAttribute("id")).collect(Collectors.toList());
     assertThat(ids).containsExactly("second", "eighth", "fourth", "sixth", "first", "third", "seventh", "ninth");
@@ -140,7 +140,7 @@ public class RelativeLocatorTest extends JUnit4TestBase {
     // 2. Directly below (short vertical distance, later in DOM)
     // 3. Directly left (slight longer distance horizontally, first in DOM)
     // 4. Directly right (slight longer distance horizontally, later in DOM)
-    // 5-8. Diagonally close (pythagorus sorting, with top row first
+    // 5-8. Diagonally close (pythagoras sorting, with top row first
     //    because of DOM insertion order)
     List<String> ids = seen.stream().map(e -> e.getAttribute("id")).collect(Collectors.toList());
 
@@ -160,7 +160,7 @@ public class RelativeLocatorTest extends JUnit4TestBase {
     // 2. Directly below (short vertical distance, later in DOM)
     // 3. Directly left (slight longer distance horizontally, first in DOM)
     // 4. Directly right (slight longer distance horizontally, later in DOM)
-    // 5-8. Diagonally close (pythagorus sorting, with top row first
+    // 5-8. Diagonally close (pythagoras sorting, with top row first
     //    because of DOM insertion order)
     List<String> ids = seen.stream().map(e -> e.getAttribute("id")).collect(Collectors.toList());
     assertThat(ids).containsExactly("second", "eighth", "fourth", "sixth", "first", "third", "seventh", "ninth");
