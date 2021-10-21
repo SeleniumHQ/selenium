@@ -799,7 +799,7 @@ public class RemoteWebDriverUnitTest {
   }
 
   @Test
-  public void noArgConstuctorEmptyCapabilitiesTest() {
+  public void noArgConstructorEmptyCapabilitiesTest() {
     RemoteWebDriver driver = new RemoteWebDriver() {}; // anonymous subclass
     assertThat(driver.getCapabilities()).isEqualTo(new ImmutableCapabilities());
   }

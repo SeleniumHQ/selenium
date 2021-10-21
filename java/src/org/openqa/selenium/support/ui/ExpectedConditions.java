@@ -532,7 +532,7 @@ public class ExpectedConditions {
 
   /**
    * An expectation for checking whether the given frame is available to switch to. <p> If the frame
-   * is available it switches the given driver to the specified webelement.
+   * is available it switches the given driver to the specified web element.
    *
    * @param frameLocator used to find the frame (webelement)
    * @return WebDriver instance after frame has been switched

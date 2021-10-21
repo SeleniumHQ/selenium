@@ -471,8 +471,8 @@ public class BasicMouseInterfaceTest extends JUnit4TestBase {
     wait.until(attributeToBe(redbox, "background-color", Colors.GREEN.getColorValue().asRgba()));
   }
 
-  private boolean fuzzyPositionMatching(int expectedX, int expectedY, String locationTouple) {
-    String[] splitString = locationTouple.split(",");
+  private boolean fuzzyPositionMatching(int expectedX, int expectedY, String locationTuple) {
+    String[] splitString = locationTuple.split(",");
     int gotX = Integer.parseInt(splitString[0].trim());
     int gotY = Integer.parseInt(splitString[1].trim());
 

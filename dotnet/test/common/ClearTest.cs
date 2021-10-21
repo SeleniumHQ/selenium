@@ -19,7 +19,7 @@ namespace OpenQA.Selenium
         public void TextInputShouldNotClearWhenDisabled()
         {
             driver.Url = readOnlyPage;
-            IWebElement element = driver.FindElement(By.Id("textInputnotenabled"));
+            IWebElement element = driver.FindElement(By.Id("textInputNotEnabled"));
             Assert.That(element.Enabled, Is.False);
             Assert.That(() => element.Clear(), Throws.InstanceOf<InvalidElementStateException>());
         }
@@ -46,7 +46,7 @@ namespace OpenQA.Selenium
         public void TextAreaShouldNotClearWhenDisabled()
         {
             driver.Url = readOnlyPage;
-            IWebElement element = driver.FindElement(By.Id("textAreaNotenabled"));
+            IWebElement element = driver.FindElement(By.Id("textAreaNotEnabled"));
             Assert.That(() => element.Clear(), Throws.InstanceOf<InvalidElementStateException>());
         }
 

@@ -532,7 +532,7 @@ public class TracerTest {
           child.close();
         }
 
-        // At this point, the parent span is undefind, but shouldn't be null
+        // At this point, the parent span is undefined, but shouldn't be null
 
         assertThat(parent.getId()).isNotEqualTo(tracer.getCurrentContext().getId());
         assertThat(child.getId()).isNotEqualTo(tracer.getCurrentContext().getId());

@@ -50,9 +50,9 @@ public class DefaultSeleniumStartErrorHandlingTest {
       new DefaultSelenium(failOnStartCommandProcessor).start();
       fail("Did not catch RuntimeException as expected");
     } catch (RuntimeException expected) {
-      /* Catching RuntimeEception as expected */
-      assertTrue(-1 != expected.getMessage().indexOf("Could not start Selenium session: "));
-      assertTrue(-1 != expected.getMessage().indexOf("some crazy unexpected exception"));
+      /* Catching RuntimeException as expected */
+      assertTrue(expected.getMessage().contains("Could not start Selenium session: "));
+      assertTrue(expected.getMessage().contains("some crazy unexpected exception"));
     }
   }
 
