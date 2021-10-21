@@ -206,7 +206,7 @@ public class NewSessionPayloadTest {
   }
 
   @Test
-  public void convertEverythingToFirstMatchOnlyifPayloadContainsAlwaysMatchSectionAndOssCapabilities() {
+  public void convertEverythingToFirstMatchOnlyIfPayloadContainsAlwaysMatchSectionAndOssCapabilities() {
     List<Capabilities> capabilities = create(ImmutableMap.of(
         "desiredCapabilities", ImmutableMap.of(
             "browserName", "firefox",

@@ -150,6 +150,12 @@ class RemoteConnection(object):
                 DeprecationWarning)
         self.keep_alive = keep_alive
         self._url = remote_server_addr
+
+        # Env var NO_PROXY will override this part of the code
+        _no_proxy = os.environ.get('no_proxy', os.environ.get('NO_PROXY'))
+        if _no_proxy is not None:
+            ignore_proxy = _no_proxy
+
         self._proxy_url = self._get_proxy_url() if not ignore_proxy else None
         if keep_alive:
             self._conn = self._get_connection_manager()

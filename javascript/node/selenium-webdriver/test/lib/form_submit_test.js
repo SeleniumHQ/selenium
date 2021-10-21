@@ -1,3 +1,4 @@
+
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -15,22 +16,30 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package com.thoughtworks.selenium.corebased;
+'use strict'
 
-import com.thoughtworks.selenium.InternalSelenseTestBase;
+const assert = require('assert')
+const test = require('../../lib/test')
+const until = require('../../lib/until')
+const Pages = test.Pages
 
-import org.junit.Ignore;
-import org.junit.Test;
+test.suite(function (env) {
+  let driver
 
-public class TestTable extends InternalSelenseTestBase {
-  /* See https://github.com/SeleniumHQ/selenium-google-code-issue-archive/issues/2255 */
-  @Test @Ignore
-  public void getValueFromTableTwiceInARowShouldWork() {
-    selenium.open("test_table.html");
+  before(async function () {
+    driver = await env.builder().build()
+  })
 
-    String value1 = selenium.getTable("test_table.0.0");
-    String value2 = selenium.getTable("test_table.0.0");
-    assertEquals("cell 1", value1);
-    assertEquals(value1, value2);
-  }
-}
+  after(async function () {
+    return await driver.quit()
+  })
+
+  it('should be able to submit form in W3c mode', async function () {
+    await driver.get(Pages.formPage);
+    const form = await driver.findElement({id: 'submitButton'})
+    await form.submit();
+    await driver.wait(until.titleIs('We Arrive Here'), 2500)
+    const success = driver.findElement({id: 'greeting'})
+    assert.deepStrictEqual(await success.getText(), 'Success!');
+  })
+},  { browsers: ['chrome', 'firefox'] })

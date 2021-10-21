@@ -1,3 +1,15 @@
+4.0.3 (2021-10-20)
+=========================
+
+Firefox:
+  * Fixed bug avoiding camel casing prefs (#9944 thanks @glaszig)
+
+Ruby:
+  * Fixed bug in Select class for finding by index (#9945)
+
+Remote:
+  * Fixed bug preventing sending keys with an empty value
+
 4.0.2 (2021-10-19)
 =========================
 

@@ -404,7 +404,7 @@ module Selenium
         def send_keys_to_element(element, keys)
           # TODO: rework file detectors before Selenium 4.0
           if @file_detector
-            local_files = keys.first.split("\n").map { |key| @file_detector.call(Array(key)) }.compact
+            local_files = keys.first&.split("\n")&.map { |key| @file_detector.call(Array(key)) }&.compact
             if local_files.any?
               keys = local_files.map { |local_file| upload(local_file) }
               keys = Array(keys.join("\n"))

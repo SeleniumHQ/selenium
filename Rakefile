@@ -300,7 +300,10 @@ task javadocs: %i[//java/src/org/openqa/selenium/grid:all-javadocs] do
   rm_rf 'build/javadoc'
   mkdir_p 'build/javadoc'
 
-  out = Rake::Task['//java/src/org/openqa/selenium/grid:all-javadocs'].out
+  # Temporary hack, bazel is not outputting where things are so we need to do it manually.
+  # This will only work on Posix based OSes
+  Rake::Task['//java/src/org/openqa/selenium/grid:all-javadocs']
+  out = 'bazel-bin/java/src/org/openqa/selenium/grid/all-javadocs.jar'
 
   cmd = %{cd build/javadoc && jar xf "../../#{out}" 2>&1}
   if SeleniumRake::Checks.windows?

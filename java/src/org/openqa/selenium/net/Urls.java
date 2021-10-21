@@ -67,7 +67,7 @@ public class Urls {
    * {@code docker://localhost:1234} would not generally be a valid {@link URL}
    * but would be a correct {@link URI}.
    * <p>
-   * A known limitiation is that URI fragments are not handled. In the
+   * A known limitation is that URI fragments are not handled. In the
    * expected use cases for this method, that is not a problem.
    */
   public static URI from(String rawUri) {
@@ -86,8 +86,8 @@ public class Urls {
         return createHttpUri(rawUri);
       }
 
-      // Check the characters preceeding the colon. If they're all numbers
-      // (or there's no preceeding character), we're dealing with a short form
+      // Check the characters preceding the colon. If they're all numbers
+      // (or there's no preceding character), we're dealing with a short form
       // ip6 address.
       if (colonIndex != -1) {
         if (colonIndex == 0) {

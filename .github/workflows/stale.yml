@@ -17,3 +17,4 @@ jobs:
           exempt-issue-labels: 'help wanted'
           days-before-stale: 365
           days-before-close: 14
+          operations-per-run: 100
