@@ -107,7 +107,7 @@ public class PreferencesTest {
   }
 
   @Test
-  public void cannotOverrideAFozenPrefence() {
+  public void cannotOverrideAFrozenPreference() {
     StringReader reader = new StringReader("{\"frozen\": {\"frozen.pref\": true }, \"mutable\": {}}");
     Preferences preferences = new Preferences(reader);
     preferences.setPreference("frozen.pref", false);

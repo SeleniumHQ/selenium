@@ -107,14 +107,14 @@ public class InternetExplorerDriverService extends DriverService {
     private Boolean silent = null;
 
     @Override
-    public int score(Capabilities capabilites) {
+    public int score(Capabilities capabilities) {
       int score = 0;
 
-      if (IE.is(capabilites)) {
+      if (IE.is(capabilities)) {
         score++;
       }
 
-      if (capabilites.getCapability(InternetExplorerOptions.IE_OPTIONS) != null) {
+      if (capabilities.getCapability(InternetExplorerOptions.IE_OPTIONS) != null) {
         score++;
       }
 

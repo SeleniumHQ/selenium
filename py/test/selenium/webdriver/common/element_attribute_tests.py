@@ -200,7 +200,7 @@ def testShouldTreatReadonlyAsAValue(driver, pages):
     assert readOnlyAttribute != notReadOnly
 
 
-def testShouldGetNumericAtribute(driver, pages):
+def testShouldGetNumericAttribute(driver, pages):
     pages.load("formPage.html")
     element = driver.find_element(By.ID, "withText")
     assert "5" == element.get_attribute("rows")

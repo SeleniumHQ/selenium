@@ -486,7 +486,7 @@ public class EventFiringWebDriverTest {
   }
 
   @Test
-  public void shouldReturnCapabilitiesWhenUnderlyingDriverImplementsInterfac() {
+  public void shouldReturnCapabilitiesWhenUnderlyingDriverImplementsInterface() {
     WebDriver mockedDriver = mock(WebDriver.class, withSettings().extraInterfaces(HasCapabilities.class));
     EventFiringWebDriver testedDriver = new EventFiringWebDriver(mockedDriver);
 
@@ -497,7 +497,7 @@ public class EventFiringWebDriverTest {
   }
 
   @Test
-  public void shouldThrowExceptionWhenUnderlyingDriverDoesNotImplementInterfac() {
+  public void shouldThrowExceptionWhenUnderlyingDriverDoesNotImplementInterface() {
     WebDriver mockedDriver = mock(WebDriver.class);
     EventFiringWebDriver testedDriver = new EventFiringWebDriver(mockedDriver);
 

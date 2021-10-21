@@ -23,7 +23,7 @@ import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class ConcatentatingConfigTest {
+public class ConcatenatingConfigTest {
 
   @Test
   public void shouldReturnSectionNames() {

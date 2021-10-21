@@ -20,7 +20,7 @@ v4.0.0-rc-2
 ===========
 
 * Supported CDP versions: 85, 93, 94
-* Moved NetworkInterceptor to org.opeqa.selenium.devtools
+* Moved NetworkInterceptor to org.openqa.selenium.devtools
 * NetworkInterceptor now takes a Filter to allow responses to be
   captured and rewritten.
 * Added a "relay" option to better support forwarding sessions to
@@ -77,7 +77,7 @@ v4.0.0-beta-3
   (#9273)
 * Selenium-created sessions supporting CDP have a `se:cdp` capability,
   pointing to the websocket address for CDP communication, and a
-  `se:cdpVersion` which indictaes the version of the CDP to use.
+  `se:cdpVersion` which indicates the version of the CDP to use.
 * Correctly indicate the Firefox supports CDP v85
 * Add support for CDP v90 and v91 and remove support for CDP v86 and
   v87.
@@ -131,7 +131,7 @@ v4.0.0-beta-1
 * Relative locators now return elements by proximity to last search
   term.
 * Refreshed Grid UI
-* Legay XPI driver marked as deprecated
+* Legacy XPI driver marked as deprecated
 * Removed reactor-netty httpclient
 * Reworked how custom element locators work. They will try to be
   remoted directly, before using a local implementation if remoting
@@ -169,7 +169,7 @@ v4.0.0-alpha-7
 * Add support for listening out for console log events.
 * Experimental support for script pinning.
 * Support multiple versions of CDP simultaneously.
-* Fix getText atom for unicode charater middle of word (#8736)
+* Fix getText atom for unicode character middle of word (#8736)
 * Include original stack trace when throwing TimeoutException.
 * Removed okhttp implementation of the http client.
 * Add experimental "reactor" http client.
@@ -204,7 +204,7 @@ v4.0.0-alpha-6
 * Ability to set maximum number of concurrent sessions on a node.
 * New reactor-based http client implementation. Set the
   `webdriver.http.factory` system property to `reactor` try it out.
-* Bumped OpenTelemetry verison to 0.4.0
+* Bumped OpenTelemetry version to 0.4.0
 * Selenium Standalone and Hub now also accept requests to `/wd/hub`
 * Implementing file uploading for distributed grid (and deleting
   uploaded files when session is closed)
@@ -398,7 +398,7 @@ v3.14.0
   https://snyk.io/research/zip-slip-vulnerability
 * Allow temporary installation of FF extension (#1) (#5751)
 * Fix windowSize option in Firefox in Javascript (#6075)
-* Make ConnectionType searilize as integer (#6176)
+* Make ConnectionType serialize as integer (#6176)
 * Pass found elements to the EventListener's afterFind method (#6191)
 * Add native events under se:ieOptions. (#6183)
 
@@ -569,7 +569,7 @@ v3.6.0
 
 * Remove direct dependency on HTMLUnit and PhantomJS from Maven
   artifacts.
-* All `*Option` classes now extend `MutableCapbilities`
+* All `*Option` classes now extend `MutableCapabilities`
   `new RemoteWebDriver(new ChromeOptions());`
 * Deprecating constructors that don't take strongly-typed `*Options`.
 * Improved exceptions when a `Wait` times out when using a
@@ -678,7 +678,7 @@ Important note:
 * Attempt to kill processes before draining input, error, and output
   streams. This should reduce apparent hanging when closing Firefox in
   particular.
-* Grid will make use of W3C capabilities in prefernce to the JSON Wire
+* Grid will make use of W3C capabilities in preference to the JSON Wire
   Protocol ones.
 * Fixing boolean command line arguments (#3877)
 
@@ -996,7 +996,7 @@ WebDriver:
     * Fix a NullPointerException in RemoteWebDriver.getCurrentUrl
     * Reduces time wasted in when using a native driver
     * add the useful information about the session / capabilities in the exception when the 'browser may have died'
-    * give the cleaner almost double the time to clean up the sessions (a whopping 9 more ms). Hopefull will deflake this test in CI.
+    * give the cleaner almost double the time to clean up the sessions (a whopping 9 more ms). Hopefully will deflake this test in CI.
     * Adding El Capitan (OS X 10.11) to Platform
     * Updating IE driver to fix clearing of <input type='number'> fields
     * Treat a null response to getCookies as [].

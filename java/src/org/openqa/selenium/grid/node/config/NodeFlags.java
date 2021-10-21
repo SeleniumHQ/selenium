@@ -56,7 +56,7 @@ public class NodeFlags implements HasRoles {
   @Parameter(
     names = {"--override-max-sessions"},
     arity = 1,
-    description = "The # of available processos is the recommended max sessions value (1 browser "
+    description = "The # of available processors is the recommended max sessions value (1 browser "
                   + "session per processor). Setting this flag to true allows the recommended max "
                   + "value to be overwritten. Session stability and reliability might suffer as "
                   + "the host could run out of resources.")

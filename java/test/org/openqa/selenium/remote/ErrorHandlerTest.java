@@ -241,9 +241,9 @@ public class ErrorHandlerTest {
           assertStackTracesEqual(expectedTrace, cause.getStackTrace());
         });
   }
-  
+
   @Test
-  public void testShoulNotBuildWebDriverExceptionIfClassAndStackTraceIsNull() {
+  public void testShouldNotBuildWebDriverExceptionIfClassAndStackTraceIsNull() {
     Map<String, Object> data = new HashMap<>();
     data.put("message", "some error message");
     data.put("class", null);
@@ -256,9 +256,9 @@ public class ErrorHandlerTest {
             "some error message (WARNING: The server did not provide any stacktrace information)\nCommand duration or timeout: 123 milliseconds",
             new WebDriverException()).getMessage());
   }
-  
+
   @Test
-  public void testShoulNotBuildWebDriverExceptionIfClassNullAndStackTraceNotNull() {
+  public void testShouldNotBuildWebDriverExceptionIfClassNullAndStackTraceNotNull() {
     Map<String, Object> data = new HashMap<>();
     data.put("message", "some error message");
     data.put("class", null);
@@ -275,9 +275,9 @@ public class ErrorHandlerTest {
             "some error message\nCommand duration or timeout: 123 milliseconds",
             new WebDriverException()).getMessage());
   }
-  
+
   @Test
-  public void testShoulNotBuildWebDriverExceptionIfClassNotNullAndStackTraceNull() {
+  public void testShouldNotBuildWebDriverExceptionIfClassNotNullAndStackTraceNull() {
     Map<String, Object> data = new HashMap<>();
     data.put("message", "some error message");
     data.put("class", "a");
@@ -296,7 +296,7 @@ public class ErrorHandlerTest {
     Map<String, ?> data = ImmutableMap.of(
         "message", "some error message",
         "stackTrace", Collections.singletonList(
-            ImmutableMap.of("lineNumber", "some string, might be empty or 'Not avalable'",
+            ImmutableMap.of("lineNumber", "some string, might be empty or 'Not available'",
                             "methodName", "someMethod",
                             "className", "MyClass",
                             "fileName", "Resource.m")));

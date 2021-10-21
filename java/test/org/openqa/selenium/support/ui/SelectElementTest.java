@@ -65,7 +65,7 @@ public class SelectElementTest extends JUnit4TestBase {
   }
 
   @Test
-  public void shouldNotIndicateThatANormalSelectSupportsMulitpleOptions() {
+  public void shouldNotIndicateThatANormalSelectSupportsMultipleOptions() {
     WebElement selectElement = driver.findElement(By.name("selectomatic"));
     Select select = new Select(selectElement);
     assertThat(select.isMultiple()).isFalse();

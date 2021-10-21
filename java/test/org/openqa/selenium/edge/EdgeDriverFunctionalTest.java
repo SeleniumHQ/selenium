@@ -62,7 +62,7 @@ public class EdgeDriverFunctionalTest extends JUnit4TestBase {
     EdgeOptions options = new EdgeOptions();
     options.setHeadless(true);
 
-    //TestEdgeDrivere is not honoring headless request; using EdgeDriver instead
+    //TestEdgeDriver is not honoring headless request; using EdgeDriver instead
     WebDriver driver = new WebDriverBuilder().get(options);
     try {
       HasPermissions permissions = (HasPermissions) driver;

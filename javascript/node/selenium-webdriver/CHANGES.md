@@ -516,7 +516,7 @@ This release requires [geckodriver 0.15.0](https://github.com/mozilla/geckodrive
   DriverService instances that run in a child-process. The
   `chrome.ServiceBuilder`, `edge.ServiceBuilder`, and `opera.ServiceBuilder`
   classes now all extend this base class with browser-specific options.
-* For each of the ServiceBuilder clases, renamed `usingPort` and
+* For each of the ServiceBuilder classes, renamed `usingPort` and
   `withEnvironment` to `setPort` and `setEnvironment`, respectively.
 * Renamed `chrome.ServiceBuilder#setUrlBasePath` to `#setPath`
 * Changed the signature of the `firefox.Driver` from `(config, flow, executor)`
