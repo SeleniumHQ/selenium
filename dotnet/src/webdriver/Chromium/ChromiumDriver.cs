@@ -114,6 +114,14 @@ namespace OpenQA.Selenium.Chromium
         }
 
         /// <summary>
+        /// Gets a value indicating whether a DevTools session is active.
+        /// </summary>
+        public bool HasActiveDevToolsSession
+        {
+            get { return this.devToolsSession != null; }
+        }
+
+        /// <summary>
         /// Gets or sets the network condition emulation for Chromium.
         /// </summary>
         public ChromiumNetworkConditions NetworkConditions
@@ -260,7 +268,7 @@ namespace OpenQA.Selenium.Chromium
                 try
                 {
                     DevToolsSession session = new DevToolsSession(debuggerAddress);
-                    session.Start(devToolsProtocolVersion).ConfigureAwait(false).GetAwaiter().GetResult();
+                    session.StartSession(devToolsProtocolVersion).ConfigureAwait(false).GetAwaiter().GetResult();
                     this.devToolsSession = session;
                 }
                 catch (Exception e)
@@ -279,8 +287,7 @@ namespace OpenQA.Selenium.Chromium
         {
             if (this.devToolsSession != null)
             {
-                this.devToolsSession.Dispose();
-                this.devToolsSession = null;
+                this.devToolsSession.StopSession(true).ConfigureAwait(false).GetAwaiter().GetResult();
             }
         }
 
@@ -375,7 +382,11 @@ namespace OpenQA.Selenium.Chromium
         {
             if (disposing)
             {
-                this.CloseDevToolsSession();
+                if (this.devToolsSession != null)
+                {
+                    this.devToolsSession.Dispose();
+                    this.devToolsSession = null;
+                }
             }
 
             base.Dispose(disposing);
