@@ -16,6 +16,7 @@
 # under the License.
 
 
+from selenium.webdriver.remote import remote_connection
 import urllib3
 import pytest
 
@@ -103,6 +104,12 @@ def test_get_connection_manager_with_proxy(mock_proxy_settings):
     assert conn.proxy.port == 8080
 
 
+def test_get_connection_manager_when_no_proxy_set(mock_no_proxy_settings):
+    remote_connection = RemoteConnection("https://remote")
+    conn = remote_connection._get_connection_manager()
+    assert type(conn) == urllib3.PoolManager
+
+
 def test_ignore_proxy_env_vars(mock_proxy_settings):
     remote_connection = RemoteConnection("http://remote", ignore_proxy=True)
     conn = remote_connection._get_connection_manager()
@@ -123,7 +130,7 @@ class MockResponse:
         pass
 
 
-@pytest.fixture
+@pytest.fixture(scope="function")
 def mock_proxy_settings_missing(monkeypatch):
     monkeypatch.delenv("HTTPS_PROXY", raising=False)
     monkeypatch.delenv("HTTP_PROXY", raising=False)
@@ -131,7 +138,7 @@ def mock_proxy_settings_missing(monkeypatch):
     monkeypatch.delenv("http_proxy", raising=False)
 
 
-@pytest.fixture
+@pytest.fixture(scope="function")
 def mock_proxy_settings(monkeypatch):
     http_proxy = 'http://http_proxy.com:8080'
     https_proxy = 'http://https_proxy.com:8080'
@@ -139,3 +146,15 @@ def mock_proxy_settings(monkeypatch):
     monkeypatch.setenv("HTTP_PROXY", http_proxy)
     monkeypatch.setenv("https_proxy", https_proxy)
     monkeypatch.setenv("http_proxy", http_proxy)
+
+
+@pytest.fixture(scope="function")
+def mock_no_proxy_settings(monkeypatch):
+    http_proxy = 'http://http_proxy.com:8080'
+    https_proxy = 'http://https_proxy.com:8080'
+    monkeypatch.setenv("HTTPS_PROXY", https_proxy)
+    monkeypatch.setenv("HTTP_PROXY", http_proxy)
+    monkeypatch.setenv("https_proxy", https_proxy)
+    monkeypatch.setenv("http_proxy", http_proxy)
+    monkeypatch.setenv("no_proxy", "localhost")
+    monkeypatch.setenv("NO_PROXY", "localhost")
