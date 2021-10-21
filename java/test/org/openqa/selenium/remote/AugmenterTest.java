@@ -30,9 +30,11 @@ import org.openqa.selenium.ScreenOrientation;
 import org.openqa.selenium.SearchContext;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.devtools.HasDevTools;
 import org.openqa.selenium.firefox.FirefoxOptions;
 import org.openqa.selenium.html5.LocationContext;
 import org.openqa.selenium.html5.WebStorage;
+import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.testing.UnitTests;
 
 import java.util.ArrayList;
@@ -201,6 +203,28 @@ public class AugmenterTest {
     assertThat(seen).isSameAs(element);
   }
 
+  @Test
+  public void shouldAugmentMultipleInterfaces() {
+    final Capabilities caps = new ImmutableCapabilities("magic.numbers", true,
+                                                        "numbers", true);
+    WebDriver driver = new RemoteWebDriver(new StubExecutor(caps), caps);
+
+    WebDriver returned = getAugmenter()
+      .addDriverAugmentation("magic.numbers", HasMagicNumbers.class, (c, exe) -> () -> 42)
+      .addDriverAugmentation("numbers", HasNumbers.class, (c, exe) ->  webDriver -> {
+        Require.precondition(webDriver instanceof HasMagicNumbers, "Driver must implement HasMagicNumbers");
+        return ((HasMagicNumbers)webDriver).getMagicNumber();
+      })
+      .augment(driver);
+
+    assertThat(returned).isNotSameAs(driver);
+    assertThat(returned).isInstanceOf(HasMagicNumbers.class);
+    assertThat(returned).isInstanceOf(HasNumbers.class);
+
+    int number = ((HasNumbers)returned).getNumbers(returned);
+    assertThat(number).isEqualTo(42);
+  }
+
   private static class ByMagic extends By {
     private final String magicWord;
 
@@ -325,6 +349,10 @@ public class AugmenterTest {
 
   public interface HasMagicNumbers {
     int getMagicNumber();
+  }
+
+  public interface HasNumbers {
+    int getNumbers(WebDriver driver);
   }
 
   public static class ChildRemoteDriver extends RemoteWebDriver implements HasMagicNumbers {
