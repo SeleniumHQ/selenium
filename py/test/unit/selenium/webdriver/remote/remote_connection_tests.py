@@ -19,10 +19,9 @@
 import urllib3
 import pytest
 
-try:
-    from urllib import parse
-except ImportError:  # above is available in py3+, below is py2.7
-    import urlparse as parse
+
+from urllib import parse
+
 
 from selenium import __version__
 from selenium.webdriver.remote.remote_connection import (

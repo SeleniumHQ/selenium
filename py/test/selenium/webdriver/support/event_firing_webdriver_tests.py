@@ -15,10 +15,8 @@
 # specific language governing permissions and limitations
 # under the License.
 
-try:
-    from io import BytesIO
-except ImportError:
-    from cStringIO import StringIO as BytesIO
+
+from io import BytesIO
 
 import pytest
 

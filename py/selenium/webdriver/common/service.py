@@ -14,6 +14,7 @@
 # KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
 # under the License.
+from subprocess import DEVNULL
 
 import errno
 import os
@@ -24,12 +25,8 @@ from time import sleep
 from selenium.common.exceptions import WebDriverException
 from selenium.webdriver.common import utils
 
-try:
-    from subprocess import DEVNULL
-    _HAS_NATIVE_DEVNULL = True
-except ImportError:
-    DEVNULL = -3
-    _HAS_NATIVE_DEVNULL = False
+
+_HAS_NATIVE_DEVNULL = True
 
 
 class Service(object):
@@ -119,13 +116,8 @@ class Service(object):
         return utils.is_connectable(self.port)
 
     def send_remote_shutdown_command(self):
-        try:
-            from urllib import request as url_request
-            URLError = url_request.URLError
-        except ImportError:
-            import urllib2 as url_request
-            import urllib2
-            URLError = urllib2.URLError
+        from urllib import request as url_request
+        URLError = url_request.URLError
 
         try:
             url_request.urlopen("%s/shutdown" % self.service_url)

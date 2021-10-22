@@ -15,10 +15,8 @@
 # specific language governing permissions and limitations
 # under the License.
 
-try:
-    import http.client as http_client
-except ImportError:
-    import httplib as http_client
+import http.client as http_client
+
 
 from selenium.webdriver.remote.webdriver import WebDriver as RemoteWebDriver
 from .service import Service
