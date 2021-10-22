@@ -16,7 +16,6 @@
 # under the License.
 
 
-from selenium.webdriver.remote import remote_connection
 import urllib3
 import pytest
 
