@@ -107,7 +107,7 @@ def test_get_connection_manager_with_proxy(mock_proxy_settings):
 @pytest.mark.parametrize("url",
                          ["*", ".localhost", "localhost:80", "locahost", "127.0.0.1",
                           "LOCALHOST", "LOCALHOST:80", "http://localhost", "https://localhost",
-                          "test.localhost", " localhost"])
+                          "test.localhost", " localhost", "::1", "127.0.0.2"])
 def test_get_connection_manager_when_no_proxy_set(mock_no_proxy_settings, url):
     remote_connection = RemoteConnection(url)
     conn = remote_connection._get_connection_manager()
@@ -160,5 +160,5 @@ def mock_no_proxy_settings(monkeypatch):
     monkeypatch.setenv("HTTP_PROXY", http_proxy)
     monkeypatch.setenv("https_proxy", https_proxy)
     monkeypatch.setenv("http_proxy", http_proxy)
-    monkeypatch.setenv("no_proxy", "65.253.214.253,localhost,127.0.0.1,*zyz.xx")
-    monkeypatch.setenv("NO_PROXY", "65.253.214.253,localhost,127.0.0.1,*zyz.xx")
+    monkeypatch.setenv("no_proxy", "65.253.214.253,localhost,127.0.0.1,*zyz.xx,::1")
+    monkeypatch.setenv("NO_PROXY", "65.253.214.253,localhost,127.0.0.1,*zyz.xx,::1,127.0.0.0/8")
