@@ -108,116 +108,75 @@ void __stdcall Browser::NewProcess(DWORD lCauseFlag,
   this->InitiateBrowserReattach();
 }
 
-BOOL CALLBACK FindIEBrowserHandles(HWND hwnd, LPARAM arg) {
-  std::vector<HWND>* handles = reinterpret_cast<std::vector<HWND>*>(arg);
-
-  // Could this be an Internet Explorer Server window?
-  // 25 == "Internet Explorer_Server\0"
-  char name[25];
-  if (::GetClassNameA(hwnd, name, 25) == 0) {
-    // No match found. Skip
-    return TRUE;
-  }
-
-  if (strcmp("Internet Explorer_Server", name) == 0) {
-    handles->push_back(hwnd);
-  }
-
-  return TRUE;
-}
-
-BOOL CALLBACK FindEdgeBrowserHandles(HWND hwnd, LPARAM arg) {
-  std::vector<HWND>* handles = reinterpret_cast<std::vector<HWND>*>(arg);
-
-  // Could this be an Internet Explorer Server window?
-  // 25 == "Internet Explorer_Server\0"
-  char name[25];
-  if (::GetClassNameA(hwnd, name, 25) == 0) {
-    // No match found. Skip
-    return TRUE;
-  }
-
-  if (strcmp("Chrome_WidgetWin_1", name) == 0) {
-    handles->push_back(hwnd);
-  }
-
-  return TRUE;
-}
-
 void __stdcall Browser::NewWindow3(IDispatch** ppDisp,
                                    VARIANT_BOOL* pbCancel,
                                    DWORD dwFlags,
                                    BSTR bstrUrlContext,
                                    BSTR bstrUrl) {
   LOG(TRACE) << "Entering Browser::NewWindow3";
-
+  ::PostMessage(this->executor_handle(), WD_BEFORE_NEW_WINDOW, NULL, NULL);
+  std::vector<HWND>* ie_window_handles = nullptr;
 
   if (this->is_edge_chromium_) {
-    ::PostMessage(this->executor_handle(), WD_BEFORE_NEW_WINDOW, NULL, NULL);
-
     HWND top_level_handle = this->GetTopLevelWindowHandle();
     // 1) find all Edge browser window handles
     std::vector<HWND>edge_window_handles;
-    ::EnumWindows(&FindEdgeBrowserHandles,
+    ::EnumWindows(&BrowserFactory::FindEdgeBrowserHandles,
                   reinterpret_cast<LPARAM>(&edge_window_handles));
 
     // 2) find all IE browser window handlers as child window when Edge runs in IEMode
-    std::vector<HWND>* ie_window_handles = new std::vector<HWND>;
-    for (auto& ewh : edge_window_handles) {
+    ie_window_handles = new std::vector<HWND>;
+    for (HWND& ewh : edge_window_handles) {
       std::vector<HWND> child_window_handles;
-      ::EnumChildWindows(ewh, &FindIEBrowserHandles,
+      ::EnumChildWindows(ewh, &BrowserFactory::FindIEBrowserHandles,
         reinterpret_cast<LPARAM>(&child_window_handles));
 
-      for (auto& cwh : child_window_handles) {
+      for (HWND& cwh : child_window_handles) {
         ie_window_handles->push_back(cwh);
       }
     }
+  } else {
+    // Handle the NewWindow3 event to allow us to immediately hook
+    // the events of the new browser window opened by the user action.
+    // The three ways we can respond to this event are documented at
+    // http://msdn.microsoft.com/en-us/library/aa768337%28v=vs.85%29.aspx
+    // We potentially use two of those response methods.
+    // This will not allow us to handle windows created by the JavaScript
+    // showModalDialog function().
+    std::wstring url = bstrUrl;
+    IWebBrowser2* browser;
+    NewWindowInfo info;
+    info.target_url = StringUtilities::ToString(url);
+    LRESULT create_result = ::SendMessage(this->executor_handle(),
+                                          WD_BROWSER_NEW_WINDOW,
+                                          NULL,
+                                          reinterpret_cast<LPARAM>(&info));
+    if (create_result != 0) {
+      // The new, blank IWebBrowser2 object was not created,
+      // so we can't really do anything appropriate here.
+      // Note this is "response method 2" of the aforementioned
+      // documentation.
+      LOG(WARN) << "A valid IWebBrowser2 object could not be created.";
+      *pbCancel = VARIANT_TRUE;
+      ::PostMessage(this->executor_handle(), WD_AFTER_NEW_WINDOW, NULL, NULL);
+      return;
+    }
 
-    // 3) pass all IE window handles to WD_AFTER_NEW_WINDOW
-    ::PostMessage(this->executor_handle(), WD_AFTER_NEW_WINDOW, 1000,
-      reinterpret_cast<LPARAM>(ie_window_handles));
+    // We received a valid IWebBrowser2 pointer, so deserialize it onto this
+    // thread, and pass the result back to the caller.
+    HRESULT hr = ::CoGetInterfaceAndReleaseStream(info.browser_stream,
+                                                  IID_IWebBrowser2,
+                                                  reinterpret_cast<void**>(&browser));
+    if (FAILED(hr)) {
+      LOGHR(WARN, hr) << "Failed to marshal IWebBrowser2 interface from stream.";
+    }
 
-    return;
-  }
-  
-  // Handle the NewWindow3 event to allow us to immediately hook
-  // the events of the new browser window opened by the user action.
-  // The three ways we can respond to this event are documented at
-  // http://msdn.microsoft.com/en-us/library/aa768337%28v=vs.85%29.aspx
-  // We potentially use two of those response methods.
-  // This will not allow us to handle windows created by the JavaScript
-  // showModalDialog function().
-  ::PostMessage(this->executor_handle(), WD_BEFORE_NEW_WINDOW, NULL, NULL);
-  std::wstring url = bstrUrl;
-  IWebBrowser2* browser;
-  NewWindowInfo info;
-  info.target_url = StringUtilities::ToString(url);
-  LRESULT create_result = ::SendMessage(this->executor_handle(),
-                                        WD_BROWSER_NEW_WINDOW,
-                                        NULL,
-                                        reinterpret_cast<LPARAM>(&info));
-  if (create_result != 0) {
-    // The new, blank IWebBrowser2 object was not created,
-    // so we can't really do anything appropriate here.
-    // Note this is "response method 2" of the aforementioned
-    // documentation.
-    LOG(WARN) << "A valid IWebBrowser2 object could not be created.";
-    *pbCancel = VARIANT_TRUE;
-    ::PostMessage(this->executor_handle(), WD_AFTER_NEW_WINDOW, NULL, NULL);
-    return;
-  }
-
-  // We received a valid IWebBrowser2 pointer, so deserialize it onto this
-  // thread, and pass the result back to the caller.
-  HRESULT hr = ::CoGetInterfaceAndReleaseStream(info.browser_stream,
-                                                IID_IWebBrowser2,
-                                                reinterpret_cast<void**>(&browser));
-  if (FAILED(hr)) {
-    LOGHR(WARN, hr) << "Failed to marshal IWebBrowser2 interface from stream.";
+    *ppDisp = browser;
   }
 
-  *ppDisp = browser;
-  ::PostMessage(this->executor_handle(), WD_AFTER_NEW_WINDOW, 1000, NULL);
+  // 3) pass all IE window handles to WD_AFTER_NEW_WINDOW
+  ::PostMessage(this->executor_handle(), WD_AFTER_NEW_WINDOW, 1000,
+    reinterpret_cast<LPARAM>(ie_window_handles));
 }
 
 void __stdcall Browser::DocumentComplete(IDispatch* pDisp, VARIANT* URL) {

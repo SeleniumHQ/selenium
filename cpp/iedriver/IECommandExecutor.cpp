@@ -278,8 +278,6 @@ LRESULT IECommandExecutor::OnBeforeNewWindow(UINT uMsg,
   return 0;
 }
 
-extern BOOL CALLBACK FindEdgeBrowserHandles(HWND hwnd, LPARAM arg);
-
 LRESULT IECommandExecutor::OnAfterNewWindow(UINT uMsg,
                                             WPARAM wParam,
                                             LPARAM lParam,
@@ -307,13 +305,13 @@ LRESULT IECommandExecutor::OnAfterNewWindow(UINT uMsg,
       ::Sleep(500);
 
       std::vector<HWND> edge_window_handles;
-      ::EnumWindows(&FindEdgeBrowserHandles,
+      ::EnumWindows(&BrowserFactory::FindEdgeBrowserHandles,
         reinterpret_cast<LPARAM>(&edge_window_handles));
 
       std::vector<HWND> new_ie_window_handles;
       for (auto& ewh : edge_window_handles) {
         std::vector<HWND> child_window_handles;
-        ::EnumChildWindows(ewh, &FindAllBrowserHandles,
+        ::EnumChildWindows(ewh, &BrowserFactory::FindIEBrowserHandles,
           reinterpret_cast<LPARAM>(&child_window_handles));
 
         for (auto& cwh : child_window_handles) {
@@ -1309,7 +1307,7 @@ std::string IECommandExecutor::OpenNewBrowserTab(const std::wstring& url) {
 
   std::vector<HWND> original_handles;
   ::EnumChildWindows(top_level_handle,
-                     &IECommandExecutor::FindAllBrowserHandles,
+                     &BrowserFactory::FindIEBrowserHandles,
                      reinterpret_cast<LPARAM>(&original_handles));
   std::sort(original_handles.begin(), original_handles.end());
 
@@ -1329,13 +1327,13 @@ std::string IECommandExecutor::OpenNewBrowserTab(const std::wstring& url) {
   clock_t end_time = clock() + 5 * CLOCKS_PER_SEC;
   std::vector<HWND> new_handles;
   ::EnumChildWindows(top_level_handle,
-                     &IECommandExecutor::FindAllBrowserHandles,
+                     &BrowserFactory::FindIEBrowserHandles,
                      reinterpret_cast<LPARAM>(&new_handles));
   while (new_handles.size() <= original_handles.size() &&
          clock() < end_time) {
     ::Sleep(50);
     ::EnumChildWindows(top_level_handle,
-                       &FindAllBrowserHandles,
+                       &BrowserFactory::FindIEBrowserHandles,
                        reinterpret_cast<LPARAM>(&new_handles));
   }
   std::sort(new_handles.begin(), new_handles.end());
@@ -1391,24 +1389,6 @@ std::string IECommandExecutor::OpenNewBrowserTab(const std::wstring& url) {
   new_tab_wrapper->Wait(NORMAL_PAGE_LOAD_STRATEGY);
   this->AddManagedBrowser(new_tab_wrapper);
   return new_tab_wrapper->browser_id();
-}
-
-BOOL CALLBACK IECommandExecutor::FindAllBrowserHandles(HWND hwnd, LPARAM arg) {
-  std::vector<HWND>* handles = reinterpret_cast<std::vector<HWND>*>(arg);
-
-  // Could this be an Internet Explorer Server window?
-  // 25 == "Internet Explorer_Server\0"
-  char name[25];
-  if (::GetClassNameA(hwnd, name, 25) == 0) {
-    // No match found. Skip
-    return TRUE;
-  }
-
-  if (strcmp("Internet Explorer_Server", name) == 0) {
-    handles->push_back(hwnd);
-  }
-
-  return TRUE;
 }
 
 int IECommandExecutor::CreateNewBrowser(std::string* error_message) {
