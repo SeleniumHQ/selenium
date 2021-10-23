@@ -50,7 +50,7 @@ const W3C_CAPABILITY_NAMES = new Set([
   'strictFileInteractability',
   'timeouts',
   'unhandledPromptBehavior',
-  'webSocketUrl'
+  'webSocketUrl',
 ])
 
 /**
@@ -247,30 +247,30 @@ class IWebDriver {
    *     result.
    * @template T
    */
-  execute(command) { } // eslint-disable-line
+  execute(command) {} // eslint-disable-line
 
   /**
    * Sets the {@linkplain input.FileDetector file detector} that should be
    * used with this instance.
    * @param {input.FileDetector} detector The detector to use or `null`.
    */
-  setFileDetector(detector) { } // eslint-disable-line
+  setFileDetector(detector) {} // eslint-disable-line
 
   /**
    * @return {!command.Executor} The command executor used by this instance.
    */
-  getExecutor() { }
+  getExecutor() {}
 
   /**
    * @return {!Promise<!Session>} A promise for this client's session.
    */
-  getSession() { }
+  getSession() {}
 
   /**
    * @return {!Promise<!Capabilities>} A promise that will resolve with
    *     the this instance's capabilities.
    */
-  getCapabilities() { }
+  getCapabilities() {}
 
   /**
    * Terminates the browser session. After calling quit, this instance will be
@@ -280,7 +280,7 @@ class IWebDriver {
    * @return {!Promise<void>} A promise that will be resolved when the
    *     command has completed.
    */
-  quit() { }
+  quit() {}
 
   /**
    * Creates a new action sequence using this driver. The sequence will not be
@@ -293,7 +293,7 @@ class IWebDriver {
    *     for details).
    * @return {!input.Actions} A new action sequence for this instance.
    */
-  actions(options) { } // eslint-disable-line
+  actions(options) {} // eslint-disable-line
 
   /**
    * Executes a snippet of JavaScript in the context of the currently selected
@@ -331,7 +331,7 @@ class IWebDriver {
    *    scripts return value.
    * @template T
    */
-  executeScript(script, ...args) { } // eslint-disable-line
+  executeScript(script, ...args) {} // eslint-disable-line
 
   /**
    * Executes a snippet of asynchronous JavaScript in the context of the
@@ -408,7 +408,7 @@ class IWebDriver {
    *     value.
    * @template T
    */
-  executeAsyncScript(script, ...args) { } // eslint-disable-line
+  executeAsyncScript(script, ...args) {} // eslint-disable-line
 
   /**
    * Waits for a condition to evaluate to a "truthy" value. The condition may be
@@ -459,7 +459,7 @@ class IWebDriver {
     timeout = undefined, // eslint-disable-line
     message = undefined, // eslint-disable-line
     pollTimeout = undefined // eslint-disable-line
-  ) { }
+  ) {}
 
   /**
    * Makes the driver sleep for the given amount of time.
@@ -468,7 +468,7 @@ class IWebDriver {
    * @return {!Promise<void>} A promise that will be resolved when the sleep has
    *     finished.
    */
-  sleep(ms) { } // eslint-disable-line
+  sleep(ms) {} // eslint-disable-line
 
   /**
    * Retrieves the current window handle.
@@ -476,7 +476,7 @@ class IWebDriver {
    * @return {!Promise<string>} A promise that will be resolved with the current
    *     window handle.
    */
-  getWindowHandle() { }
+  getWindowHandle() {}
 
   /**
    * Retrieves a list of all available window handles.
@@ -484,7 +484,7 @@ class IWebDriver {
    * @return {!Promise<!Array<string>>} A promise that will be resolved with an
    *     array of window handles.
    */
-  getAllWindowHandles() { }
+  getAllWindowHandles() {}
 
   /**
    * Retrieves the current page's source. The returned source is a representation
@@ -494,7 +494,7 @@ class IWebDriver {
    * @return {!Promise<string>} A promise that will be resolved with the current
    *     page source.
    */
-  getPageSource() { }
+  getPageSource() {}
 
   /**
    * Closes the current window.
@@ -502,7 +502,7 @@ class IWebDriver {
    * @return {!Promise<void>} A promise that will be resolved when this command
    *     has completed.
    */
-  close() { }
+  close() {}
 
   /**
    * Navigates to the given URL.
@@ -511,7 +511,7 @@ class IWebDriver {
    * @return {!Promise<void>} A promise that will be resolved when the document
    *     has finished loading.
    */
-  get(url) { } // eslint-disable-line
+  get(url) {} // eslint-disable-line
 
   /**
    * Retrieves the URL for the current page.
@@ -519,7 +519,7 @@ class IWebDriver {
    * @return {!Promise<string>} A promise that will be resolved with the
    *     current URL.
    */
-  getCurrentUrl() { }
+  getCurrentUrl() {}
 
   /**
    * Retrieves the current page title.
@@ -527,7 +527,7 @@ class IWebDriver {
    * @return {!Promise<string>} A promise that will be resolved with the current
    *     page's title.
    */
-  getTitle() { }
+  getTitle() {}
 
   /**
    * Locates an element on the page. If the element cannot be found, a
@@ -567,7 +567,7 @@ class IWebDriver {
    *     commands against the located element. If the element is not found, the
    *     element will be invalidated and all scheduled commands aborted.
    */
-  findElement(locator) { } // eslint-disable-line
+  findElement(locator) {} // eslint-disable-line
 
   /**
    * Search for multiple elements on the page. Refer to the documentation on
@@ -577,7 +577,7 @@ class IWebDriver {
    * @return {!Promise<!Array<!WebElement>>} A promise that will resolve to an
    *     array of WebElements.
    */
-  findElements(locator) { } // eslint-disable-line
+  findElements(locator) {} // eslint-disable-line
 
   /**
    * Takes a screenshot of the current page. The driver makes a best effort to
@@ -591,23 +591,23 @@ class IWebDriver {
    * @return {!Promise<string>} A promise that will be resolved to the
    *     screenshot as a base-64 encoded PNG.
    */
-  takeScreenshot() { }
+  takeScreenshot() {}
 
   /**
    * @return {!Options} The options interface for this instance.
    */
-  manage() { }
+  manage() {}
 
   /**
    * @return {!Navigation} The navigation interface for this instance.
    */
-  navigate() { }
+  navigate() {}
 
   /**
    * @return {!TargetLocator} The target locator interface for this
    *     instance.
    */
-  switchTo() { }
+  switchTo() {}
 
   /**
    *
@@ -626,7 +626,7 @@ class IWebDriver {
    *         shrinkToFit: (boolean|undefined)
    *         pageRanges: (<Array>|undefined)}} options.
    */
-  printPage(options) { } // eslint-disable-line
+  printPage(options) {} // eslint-disable-line
 }
 
 /**
@@ -666,7 +666,7 @@ class WebDriver {
     // If session is a rejected promise, add a no-op rejection handler.
     // This effectively hides setup errors until users attempt to interact
     // with the session.
-    this.session_.catch(function () { })
+    this.session_.catch(function () {})
 
     /** @private {!command.Executor} */
     this.executor_ = executor
@@ -762,12 +762,12 @@ class WebDriver {
       this.session_ = Promise.reject(
         new error.NoSuchSessionError(
           'This driver instance does not have a valid session ID ' +
-          '(did you call WebDriver.quit()?) and may no longer be used.'
+            '(did you call WebDriver.quit()?) and may no longer be used.'
         )
       )
 
       // Only want the session rejection to bubble if accessed.
-      this.session_.catch(function () { })
+      this.session_.catch(function () {})
 
       if (this.onQuit_) {
         return this.onQuit_.call(void 0)
@@ -828,15 +828,18 @@ class WebDriver {
             let timeoutMessage = resolveWaitMessage(message)
             reject(
               new error.TimeoutError(
-                `${timeoutMessage}Timed out waiting for promise to resolve after ${Date.now() - start
+                `${timeoutMessage}Timed out waiting for promise to resolve after ${
+                  Date.now() - start
                 }ms`
               )
             )
           } catch (ex) {
             reject(
               new error.TimeoutError(
-                `${ex.message
-                }\nTimed out waiting for promise to resolve after ${Date.now() - start
+                `${
+                  ex.message
+                }\nTimed out waiting for promise to resolve after ${
+                  Date.now() - start
                 }ms`
               )
             )
@@ -866,7 +869,7 @@ class WebDriver {
     if (typeof fn !== 'function') {
       throw TypeError(
         'Wait condition must be a promise-like object, function, or a ' +
-        'Condition object'
+          'Condition object'
       )
     }
 
@@ -918,7 +921,7 @@ class WebDriver {
           if (!(value instanceof WebElement)) {
             throw TypeError(
               'WebElementCondition did not resolve to a WebElement: ' +
-              Object.prototype.toString.call(value)
+                Object.prototype.toString.call(value)
             )
           }
           return value
@@ -1208,7 +1211,7 @@ class WebDriver {
         reject(err)
         return
       }
-  
+
       this._wsConnection.on('open', async () => {
         await this.getCdpTargets()
       })
@@ -1218,15 +1221,16 @@ class WebDriver {
         if (params.result) {
           if (params.result.targetInfos) {
             const targets = params.result.targetInfos
-            const page = targets.find(info => info.type === 'page')
+            const page = targets.find((info) => info.type === 'page')
             if (page) {
               this.targetID = page.targetId
               this._cdpConnection.execute(
-                'Target.attachToTarget',  
-                { targetId: this.targetID, flatten: true }, 
-                null)
+                'Target.attachToTarget',
+                { targetId: this.targetID, flatten: true },
+                null
+              )
             } else {
-              reject("Unable to find Page target.")
+              reject('Unable to find Page target.')
             }
           }
           if (params.result.sessionId) {
@@ -1260,16 +1264,18 @@ class WebDriver {
     }
 
     if (debuggerAddress.match(/\/se\/cdp/)) {
-      return debuggerAddress;
+      return debuggerAddress
     }
 
     let path
-    if (target === 'page' && caps['map_'].get('browserName')!=='firefox' ){
+    if (target === 'page' && caps['map_'].get('browserName') !== 'firefox') {
       path = '/json'
-    } else if(target === 'page' && caps['map_'].get('browserName')==='firefox'){
+    } else if (
+      target === 'page' &&
+      caps['map_'].get('browserName') === 'firefox'
+    ) {
       path = '/json/list'
-    }
-    else {
+    } else {
       path = '/json/version'
     }
 
@@ -1293,31 +1299,24 @@ class WebDriver {
    * @param connection CDP Connection
    */
   async register(username, password, connection) {
-
     this._wsConnection.on('message', (message) => {
       const params = JSON.parse(message)
 
       if (params.method === 'Fetch.authRequired') {
         const requestParams = params['params']
-        connection.execute(
-          'Fetch.continueWithAuth',
-          {
-            requestId: requestParams['requestId'],
-            authChallengeResponse: {
-              response: 'ProvideCredentials',
-              username: username,
-              password: password,
-            },
-          }
-        )
+        connection.execute('Fetch.continueWithAuth', {
+          requestId: requestParams['requestId'],
+          authChallengeResponse: {
+            response: 'ProvideCredentials',
+            username: username,
+            password: password,
+          },
+        })
       } else if (params.method === 'Fetch.requestPaused') {
         const requestPausedParams = params['params']
-        connection.execute(
-          'Fetch.continueRequest',
-          {
-            requestId: requestPausedParams['requestId'],
-          }
-        )
+        connection.execute('Fetch.continueRequest', {
+          requestId: requestPausedParams['requestId'],
+        })
       }
     })
 
@@ -1345,39 +1344,28 @@ class WebDriver {
    * @param callback callback called when we intercept requests.
    */
   async onIntercept(connection, httpResponse, callback) {
-
     this._wsConnection.on('message', (message) => {
       const params = JSON.parse(message)
       if (params.method === 'Fetch.requestPaused') {
         const requestPausedParams = params['params']
         if (requestPausedParams.request.url == httpResponse.urlToIntercept) {
-          connection.execute(
-            'Fetch.continueRequest',
-            {
-              requestId: requestPausedParams['requestId'],
-              url: httpResponse.urlToIntercept,
-              method: httpResponse.method,
-              headers: httpResponse.headers,
-              postData: httpResponse.body
-            }
-          )
+          connection.execute('Fetch.continueRequest', {
+            requestId: requestPausedParams['requestId'],
+            url: httpResponse.urlToIntercept,
+            method: httpResponse.method,
+            headers: httpResponse.headers,
+            postData: httpResponse.body,
+          })
           callback()
         } else {
-          connection.execute(
-            'Fetch.continueRequest',
-            {
-              requestId: requestPausedParams['requestId'],
-            }
-          )
+          connection.execute('Fetch.continueRequest', {
+            requestId: requestPausedParams['requestId'],
+          })
         }
       }
     })
 
-    await connection.execute(
-      'Fetch.enable',
-      {},
-      null
-    )
+    await connection.execute('Fetch.enable', {}, null)
     await connection.execute(
       'Network.setCacheDisabled',
       {
@@ -1393,12 +1381,9 @@ class WebDriver {
    * @returns {Promise<void>}
    */
   async onLogEvent(connection, callback) {
-
-
     this._wsConnection.on('message', (message) => {
       const params = JSON.parse(message)
       if (params.method === 'Runtime.consoleAPICalled') {
-
         const consoleEventParams = params['params']
         let event = {
           type: consoleEventParams['type'],
@@ -1409,11 +1394,7 @@ class WebDriver {
         callback(event)
       }
     })
-    await connection.execute(
-      'Runtime.enable',
-      {},
-      null
-    )
+    await connection.execute('Runtime.enable', {}, null)
   }
 
   /**
@@ -1423,11 +1404,7 @@ class WebDriver {
    * @returns {Promise<void>}
    */
   async onLogException(connection, callback) {
-    await connection.execute(
-      'Runtime.enable',
-      {},
-      null
-    )
+    await connection.execute('Runtime.enable', {}, null)
 
     this._wsConnection.on('message', (message) => {
       const params = JSON.parse(message)
@@ -1450,16 +1427,8 @@ class WebDriver {
    * @returns {Promise<void>}
    */
   async logMutationEvents(connection, callback) {
-    await connection.execute(
-      'Runtime.enable',
-      {},
-      null
-    )
-    await connection.execute(
-      'Page.enable',
-      {},
-      null
-    )
+    await connection.execute('Runtime.enable', {}, null)
+    await connection.execute('Page.enable', {}, null)
 
     await connection.execute(
       'Runtime.addBinding',
@@ -1801,7 +1770,7 @@ class Options {
       } else if (typeof value !== 'undefined') {
         throw TypeError(
           'invalid timeouts configuration:' +
-          ` expected "${key}" to be a number, got ${typeof value}`
+            ` expected "${key}" to be a number, got ${typeof value}`
         )
       }
     }
@@ -1862,7 +1831,7 @@ function legacyTimeout(driver, type, ms) {
  *
  * @record
  */
-Options.Cookie = function () { }
+Options.Cookie = function () {}
 
 /**
  * The name of the cookie.
@@ -2567,18 +2536,18 @@ class WebElement {
    */
   async sendKeys(...args) {
     let keys = []
-      ; (await Promise.all(args)).forEach((key) => {
-        let type = typeof key
-        if (type === 'number') {
-          key = String(key)
-        } else if (type !== 'string') {
-          throw TypeError('each key must be a number of string; got ' + type)
-        }
+    ;(await Promise.all(args)).forEach((key) => {
+      let type = typeof key
+      if (type === 'number') {
+        key = String(key)
+      } else if (type !== 'string') {
+        throw TypeError('each key must be a number of string; got ' + type)
+      }
 
-        // The W3C protocol requires keys to be specified as an array where
-        // each element is a single key.
-        keys.push(...key.split(''))
-      })
+      // The W3C protocol requires keys to be specified as an array where
+      // each element is a single key.
+      keys.push(...key.split(''))
+    })
 
     if (!this.driver_.fileDetector_) {
       return this.execute_(
@@ -2768,10 +2737,13 @@ class WebElement {
    *     when the form has been submitted.
    */
   submit() {
-    const form = this.findElement({xpath:"./ancestor-or-self::form"});
-    this.driver_.executeScript("var e = arguments[0].ownerDocument.createEvent('Event');"+
-    "e.initEvent('submit', true, true);"+
-    "if (arguments[0].dispatchEvent(e)) { arguments[0].submit() }", form)
+    const form = this.findElement({ xpath: './ancestor-or-self::form' })
+    this.driver_.executeScript(
+      "var e = arguments[0].ownerDocument.createEvent('Event');" +
+        "e.initEvent('submit', true, true);" +
+        'if (arguments[0].dispatchEvent(e)) { arguments[0].submit() }',
+      form
+    )
   }
 
   /**

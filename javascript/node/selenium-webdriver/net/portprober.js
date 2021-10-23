@@ -29,7 +29,7 @@ const net = require('net')
  */
 function isFree(port, opt_host) {
   return new Promise((resolve, reject) => {
-    let server = net.createServer().on('error', function (e) {
+    const server = net.createServer().on('error', function (e) {
       if (e.code === 'EADDRINUSE' || e.code === 'EACCES') {
         resolve(false)
       } else {
