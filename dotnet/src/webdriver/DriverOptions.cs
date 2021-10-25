@@ -355,14 +355,14 @@ namespace OpenQA.Selenium
         {
             if (string.IsNullOrEmpty(capabilityName))
             {
-                throw new ArgumentException("Capability name may not be null an empty string.", "capabilityName");
+                throw new ArgumentException("Capability name may not be null an empty string.", nameof(capabilityName));
             }
 
             if (this.IsKnownCapabilityName(capabilityName))
             {
                 string typeSafeOptionName = this.GetTypeSafeOptionName(capabilityName);
                 string message = string.Format(CultureInfo.InvariantCulture, "There is already an option for the {0} capability. Please use the {1} instead.", capabilityName, typeSafeOptionName);
-                throw new ArgumentException(message, "capabilityName");
+                throw new ArgumentException(message, nameof(capabilityName));
             }
         }
 

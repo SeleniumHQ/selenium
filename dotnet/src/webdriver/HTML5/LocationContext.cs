@@ -59,7 +59,7 @@ namespace OpenQA.Selenium.Html5
             {
                 if (value == null)
                 {
-                    throw new ArgumentNullException("value", "value cannot be null");
+                    throw new ArgumentNullException(nameof(value), "value cannot be null");
                 }
 
                 Dictionary<string, object> loc = new Dictionary<string, object>();

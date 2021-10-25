@@ -153,7 +153,7 @@ namespace OpenQA.Selenium.Firefox
         {
             if (string.IsNullOrEmpty(argumentName))
             {
-                throw new ArgumentException("argumentName must not be null or empty", "argumentName");
+                throw new ArgumentException("argumentName must not be null or empty", nameof(argumentName));
             }
 
             this.AddArguments(argumentName);
@@ -177,7 +177,7 @@ namespace OpenQA.Selenium.Firefox
         {
             if (argumentsToAdd == null)
             {
-                throw new ArgumentNullException("argumentsToAdd", "argumentsToAdd must not be null");
+                throw new ArgumentNullException(nameof(argumentsToAdd), "argumentsToAdd must not be null");
             }
 
             this.firefoxArguments.AddRange(argumentsToAdd);
@@ -404,7 +404,7 @@ namespace OpenQA.Selenium.Firefox
         {
             if (string.IsNullOrEmpty(preferenceName))
             {
-                throw new ArgumentException("Preference name may not be null an empty string.", "preferenceName");
+                throw new ArgumentException("Preference name may not be null an empty string.", nameof(preferenceName));
             }
 
             this.profilePreferences[preferenceName] = preferenceValue;

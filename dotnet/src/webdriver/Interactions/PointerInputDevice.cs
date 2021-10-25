@@ -203,7 +203,7 @@ namespace OpenQA.Selenium.Interactions
         {
             if (origin == CoordinateOrigin.Element)
             {
-                throw new ArgumentException("Using a value of CoordinateOrigin.Element without an element is not supported.", "origin");
+                throw new ArgumentException("Using a value of CoordinateOrigin.Element without an element is not supported.", nameof(origin));
             }
 
             return new PointerMoveInteraction(this, null, origin, xOffset, yOffset, duration);

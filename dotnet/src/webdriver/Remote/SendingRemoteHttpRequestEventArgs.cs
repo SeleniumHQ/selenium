@@ -101,12 +101,12 @@ namespace OpenQA.Selenium.Remote
         {
             if (string.IsNullOrEmpty(headerName))
             {
-                throw new ArgumentException("Header name may not be null or the empty string.", "headerName");
+                throw new ArgumentException("Header name may not be null or the empty string.", nameof(headerName));
             }
 
             if (headerValue == null)
             {
-                throw new ArgumentNullException("headerValue", "Header value may not be null.");
+                throw new ArgumentNullException(nameof(headerValue), "Header value may not be null.");
             }
 
             this.headers[headerName] = headerValue;

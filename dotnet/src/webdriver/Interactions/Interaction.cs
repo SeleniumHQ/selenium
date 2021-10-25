@@ -38,7 +38,7 @@ namespace OpenQA.Selenium.Interactions
         {
             if (sourceDevice == null)
             {
-                throw new ArgumentNullException("sourceDevice", "Source device cannot be null");
+                throw new ArgumentNullException(nameof(sourceDevice), "Source device cannot be null");
             }
 
             this.sourceDevice = sourceDevice;

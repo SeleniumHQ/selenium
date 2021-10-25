@@ -171,7 +171,7 @@ namespace OpenQA.Selenium.Safari
         {
             if (string.IsNullOrEmpty(permissionName))
             {
-                throw new ArgumentNullException("permissionName", "permission must not be null or the empty string");
+                throw new ArgumentNullException(nameof(permissionName), "permission must not be null or the empty string");
             }
 
             Dictionary<string, object> permissions = new Dictionary<string, object>();
@@ -211,7 +211,7 @@ namespace OpenQA.Selenium.Safari
         {
             if (options == null)
             {
-                throw new ArgumentNullException("options", "options must not be null");
+                throw new ArgumentNullException(nameof(options), "options must not be null");
             }
 
             return options.ToCapabilities();

@@ -481,7 +481,7 @@ namespace OpenQA.Selenium.Remote
         {
             if (options == null)
             {
-                throw new ArgumentNullException("options", "Driver options must not be null");
+                throw new ArgumentNullException(nameof(options), "Driver options must not be null");
             }
 
             return options.ToCapabilities();
