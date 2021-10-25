@@ -41,6 +41,7 @@ public class BaseServerOptions {
 
   private static final Logger LOG = Logger.getLogger(BaseServerOptions.class.getName());
   private final Config config;
+  private int port = -1;
 
   public BaseServerOptions(Config config) {
     this.config = config;
@@ -53,13 +54,17 @@ public class BaseServerOptions {
 
   @ManagedAttribute(name = "Port")
   public int getPort() {
-    int port = config.getInt(SERVER_SECTION, "port")
-      .orElseGet(PortProber::findFreePort);
     if (port == -1) {
-      return PortProber.findFreePort();
-    }
-    if (port < 0) {
-      throw new ConfigException("Port cannot be less than 0: " + port);
+      int newPort = config.getInt(SERVER_SECTION, "port")
+        .orElseGet(PortProber::findFreePort);
+      if (newPort == -1) {
+        newPort = PortProber.findFreePort();
+      }
+      if (newPort < 0) {
+        throw new ConfigException("Port cannot be less than 0: " + port);
+      }
+
+      port = newPort;
     }
     return port;
   }
