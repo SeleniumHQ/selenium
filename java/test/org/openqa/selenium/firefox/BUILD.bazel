@@ -52,13 +52,13 @@ java_selenium_test_suite(
         "//third_party/firebug:firebug-1.5.0-fx.xpi",
         "//third_party/firebug:mooltipass-1.1.87.xpi",
     ],
-     tags = [
-         "selenium-remote",
-     ],
     resources = [
         "//third_party/firebug:favourite_colour-1.1-an+fx.xpi",
         "//third_party/firebug:firebug-1.5.0-fx.xpi",
         "//third_party/firebug:mooltipass-1.1.87.xpi",
+    ],
+    tags = [
+        "selenium-remote",
     ],
     deps = [
         "//java/src/org/openqa/selenium/firefox",
@@ -107,7 +107,6 @@ java_selenium_test_suite(
         artifact("org.assertj:assertj-core"),
     ],
 )
-
 
 copy_file(
     name = "firebug_xpi",
