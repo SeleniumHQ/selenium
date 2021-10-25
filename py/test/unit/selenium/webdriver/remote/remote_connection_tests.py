@@ -16,14 +16,12 @@
 # under the License.
 
 
-from selenium.webdriver.remote import remote_connection
 import urllib3
 import pytest
 
-try:
-    from urllib import parse
-except ImportError:  # above is available in py3+, below is py2.7
-    import urlparse as parse
+
+from urllib import parse
+
 
 from selenium import __version__
 from selenium.webdriver.remote.remote_connection import (
@@ -104,8 +102,12 @@ def test_get_connection_manager_with_proxy(mock_proxy_settings):
     assert conn.proxy.port == 8080
 
 
-def test_get_connection_manager_when_no_proxy_set(mock_no_proxy_settings):
-    remote_connection = RemoteConnection("https://remote")
+@pytest.mark.parametrize("url",
+                         ["*", ".localhost", "localhost:80", "locahost", "127.0.0.1",
+                          "LOCALHOST", "LOCALHOST:80", "http://localhost", "https://localhost",
+                          "test.localhost", " localhost", "::1", "127.0.0.2"])
+def test_get_connection_manager_when_no_proxy_set(mock_no_proxy_settings, url):
+    remote_connection = RemoteConnection(url)
     conn = remote_connection._get_connection_manager()
     assert type(conn) == urllib3.PoolManager
 
@@ -156,5 +158,5 @@ def mock_no_proxy_settings(monkeypatch):
     monkeypatch.setenv("HTTP_PROXY", http_proxy)
     monkeypatch.setenv("https_proxy", https_proxy)
     monkeypatch.setenv("http_proxy", http_proxy)
-    monkeypatch.setenv("no_proxy", "localhost")
-    monkeypatch.setenv("NO_PROXY", "localhost")
+    monkeypatch.setenv("no_proxy", "65.253.214.253,localhost,127.0.0.1,*zyz.xx,::1")
+    monkeypatch.setenv("NO_PROXY", "65.253.214.253,localhost,127.0.0.1,*zyz.xx,::1,127.0.0.0/8")

@@ -57,14 +57,15 @@ public class BaseServerOptions {
     if (port == -1) {
       int newPort = config.getInt(SERVER_SECTION, "port")
         .orElseGet(PortProber::findFreePort);
-
+      if (newPort == -1) {
+        newPort = PortProber.findFreePort();
+      }
       if (newPort < 0) {
-        throw new ConfigException("Port cannot be less than 0: " + newPort);
+        throw new ConfigException("Port cannot be less than 0: " + port);
       }
 
       port = newPort;
     }
-
     return port;
   }
 

@@ -26,10 +26,7 @@ import platform
 
 from base64 import b64encode
 
-try:
-    from urllib import parse
-except ImportError:  # above is available in py3+, below is py2.7
-    import urlparse as parse
+from urllib import parse
 from selenium import __version__
 from .command import Command
 from .errorhandler import ErrorCode
@@ -153,8 +150,22 @@ class RemoteConnection(object):
 
         # Env var NO_PROXY will override this part of the code
         _no_proxy = os.environ.get('no_proxy', os.environ.get('NO_PROXY'))
-        if _no_proxy is not None:
-            ignore_proxy = _no_proxy
+        if _no_proxy:
+            for npu in _no_proxy.split(','):
+                npu = npu.strip()
+                if npu == "*":
+                    ignore_proxy = True
+                    break
+                n_url = parse.urlparse(npu)
+                remote_add = parse.urlparse(self._url)
+                if n_url.netloc:
+                    if remote_add.netloc == n_url.netloc:
+                        ignore_proxy = True
+                        break
+                else:
+                    if n_url.path in remote_add.netloc:
+                        ignore_proxy = True
+                        break
 
         self._proxy_url = self._get_proxy_url() if not ignore_proxy else None
         if keep_alive:
