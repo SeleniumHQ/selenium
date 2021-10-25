@@ -70,6 +70,8 @@ class BrowserFactory {
   static BOOL CALLBACK FindChildWindowForProcess(HWND hwnd, LPARAM arg);
   static BOOL CALLBACK FindEdgeChildWindowForProcess(HWND hwnd, LPARAM arg);
   static BOOL CALLBACK FindDialogWindowForProcess(HWND hwnd, LPARAM arg);
+  static BOOL CALLBACK FindIEBrowserHandles(HWND hwnd, LPARAM arg);
+  static BOOL CALLBACK FindEdgeBrowserHandles(HWND hwnd, LPARAM arg);
 
   static bool IsWindowsVistaOrGreater(void);
 

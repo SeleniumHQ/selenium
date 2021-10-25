@@ -260,7 +260,6 @@ class IECommandExecutor : public CWindowImpl<IECommandExecutor>, public IElement
                                      const std::string& url);
   std::string OpenNewBrowserWindow(const std::wstring& url);
   std::string OpenNewBrowserTab(const std::wstring& url);
-  static BOOL CALLBACK FindAllBrowserHandles(HWND hwnd, LPARAM arg);
 
   BrowserMap managed_browsers_;
   ElementRepository* managed_elements_;
