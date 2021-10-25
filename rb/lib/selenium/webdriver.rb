@@ -75,7 +75,7 @@ module Selenium
     #
     #   WebDriver.for :firefox, profile: 'some-profile'
     #   WebDriver.for :firefox, profile: Profile.new
-    #   WebDriver.for :remote,  url: "http://localhost:4444/wd/hub", desired_capabilities: caps
+    #   WebDriver.for :remote,  url: "http://localhost:4444/wd/hub", capabilities: caps
     #
     # One special argument is not passed on to the bridges, :listener.
     # You can pass a listener for this option to get notified of WebDriver events.
