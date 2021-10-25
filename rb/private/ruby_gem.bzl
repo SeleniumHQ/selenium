@@ -1,4 +1,4 @@
-def _rb_gem_impl(ctx):
+def _ruby_gem_impl(ctx):
     gem_builder = ctx.actions.declare_file("gem_builder.rb")
 
     ctx.actions.expand_template(
@@ -20,8 +20,8 @@ def _rb_gem_impl(ctx):
         },
     )
 
-rb_gem = rule(
-    _rb_gem_impl,
+ruby_gem = rule(
+    _ruby_gem_impl,
     attrs = {
         "gemspec": attr.label(
             allow_single_file = True,

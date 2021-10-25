@@ -1,10 +1,11 @@
 load("//common:defs.bzl", "copy_file")
-load("//rb:defs.bzl", "rb_gem")
+load("//rb:defs.bzl", "ruby_gem")
+
 load(
-    "@coinbase_rules_ruby//ruby:defs.bzl",
-    "rb_binary",
-    "rb_library",
-    "rb_test",
+    "@bazelruby_rules_ruby//ruby:defs.bzl",
+    "ruby_binary",
+    "ruby_library",
+    "ruby_test",
 )
 
 package(default_visibility = ["//:__subpackages__"])
@@ -56,7 +57,7 @@ genrule(
     cmd = "cp $(locations //:license) $(@D)",
 )
 
-rb_gem(
+ruby_gem(
     name = "selenium-webdriver",
     gemspec = "selenium-webdriver.gemspec",
     deps = [
@@ -70,13 +71,13 @@ rb_gem(
     ],
 )
 
-rb_gem(
+ruby_gem(
     name = "selenium-devtools",
     gemspec = "selenium-devtools.gemspec",
     deps = [":devtools"],
 )
 
-rb_library(
+ruby_library(
     name = "bidi",
     srcs = glob([
         "lib/selenium/webdriver/devtools/**/*.rb",
@@ -85,7 +86,7 @@ rb_library(
     deps = [":common"],
 )
 
-rb_library(
+ruby_library(
     name = "chrome",
     srcs = glob([
         "lib/selenium/webdriver/chrome/**/*.rb",
@@ -94,7 +95,7 @@ rb_library(
     deps = [":common"],
 )
 
-rb_library(
+ruby_library(
     name = "common",
     srcs = glob([
         "lib/selenium/webdriver/atoms.rb",
@@ -125,7 +126,7 @@ rb_library(
     ],
 )
 
-rb_library(
+ruby_library(
     name = "edge",
     srcs = glob([
         "lib/selenium/webdriver/edge/**/*.rb",
@@ -134,7 +135,7 @@ rb_library(
     deps = [":chrome"],
 )
 
-rb_library(
+ruby_library(
     name = "firefox",
     srcs = glob([
         "lib/selenium/webdriver/firefox/**/*.rb",
@@ -143,7 +144,7 @@ rb_library(
     deps = [":common"],
 )
 
-rb_library(
+ruby_library(
     name = "ie",
     srcs = glob([
         "lib/selenium/webdriver/ie/**/*.rb",
@@ -152,7 +153,7 @@ rb_library(
     deps = [":common"],
 )
 
-rb_library(
+ruby_library(
     name = "remote",
     srcs = glob([
         "lib/selenium/webdriver/remote/**/*.rb",
@@ -161,7 +162,7 @@ rb_library(
     deps = [":common"],
 )
 
-rb_library(
+ruby_library(
     name = "safari",
     srcs = glob([
         "lib/selenium/webdriver/safari/**/*.rb",
@@ -170,7 +171,7 @@ rb_library(
     deps = [":common"],
 )
 
-rb_library(
+ruby_library(
     name = "devtools",
     srcs = glob([
         "Gemfile",
@@ -195,7 +196,7 @@ rb_library(
     tools = [":cdp-generate"],
 ) for n in CDP_VERSIONS]
 
-rb_binary(
+ruby_binary(
     name = "cdp-generate",
     srcs = glob([
         "lib/selenium/webdriver/support/cdp",
@@ -206,7 +207,7 @@ rb_binary(
     rubyopt = ["-w"],
 )
 
-rb_library(
+ruby_library(
     name = "specs",
     deps = [
         "@bundle//:ffi",
@@ -217,7 +218,7 @@ rb_library(
     ],
 )
 
-rb_test(
+ruby_test(
     name = "chrome-test",
     srcs = glob([
         "spec/integration/selenium/webdriver/*_spec.rb",
@@ -244,7 +245,7 @@ rb_test(
     ],
 )
 
-rb_test(
+ruby_test(
     name = "edge-test",
     srcs = glob([
         "spec/integration/selenium/webdriver/*_spec.rb",
@@ -271,7 +272,7 @@ rb_test(
     ],
 )
 
-rb_test(
+ruby_test(
     name = "firefox-test",
     srcs = glob([
         "spec/integration/selenium/webdriver/*_spec.rb",
@@ -297,7 +298,7 @@ rb_test(
     ],
 )
 
-rb_test(
+ruby_test(
     name = "firefox-nightly-test",
     srcs = glob([
         "spec/integration/selenium/webdriver/*_spec.rb",
@@ -324,7 +325,7 @@ rb_test(
     ],
 )
 
-rb_test(
+ruby_test(
     name = "safari-test",
     srcs = glob([
         "spec/integration/selenium/webdriver/*_spec.rb",
@@ -350,7 +351,7 @@ rb_test(
     ],
 )
 
-rb_test(
+ruby_test(
     name = "safari-preview-test",
     srcs = glob([
         "spec/integration/selenium/webdriver/*_spec.rb",
@@ -376,7 +377,7 @@ rb_test(
     ],
 )
 
-rb_test(
+ruby_test(
     name = "unit-test",
     srcs = glob([
         "spec/unit/selenium/webdriver/**/*_spec.rb",
@@ -405,7 +406,7 @@ rb_test(
     ],
 )
 
-rb_test(
+ruby_test(
     name = "remote-chrome-test",
     srcs = glob([
         "spec/integration/selenium/webdriver/*_spec.rb",
@@ -434,7 +435,7 @@ rb_test(
     ],
 )
 
-rb_test(
+ruby_test(
     name = "remote-edge-test",
     srcs = glob([
         "spec/integration/selenium/webdriver/*_spec.rb",
@@ -463,7 +464,7 @@ rb_test(
     ],
 )
 
-rb_test(
+ruby_test(
     name = "remote-firefox-test",
     srcs = glob([
         "spec/integration/selenium/webdriver/*_spec.rb",
@@ -491,7 +492,7 @@ rb_test(
     ],
 )
 
-rb_test(
+ruby_test(
     name = "remote-safari-test",
     srcs = glob([
         "spec/integration/selenium/webdriver/*_spec.rb",
@@ -519,7 +520,7 @@ rb_test(
     ],
 )
 
-rb_test(
+ruby_test(
     name = "remote-safari-preview-test",
     srcs = glob([
         "spec/integration/selenium/webdriver/*_spec.rb",
@@ -547,7 +548,7 @@ rb_test(
     ],
 )
 
-rb_binary(
+ruby_binary(
     name = "docs",
     srcs = glob([
         "lib/**/*.rb",
@@ -565,7 +566,7 @@ rb_binary(
     deps = ["@bundle//:yard"],
 )
 
-rb_binary(
+ruby_binary(
     name = "lint",
     srcs = glob([
         "lib/**/*.rb",
@@ -592,7 +593,7 @@ rb_binary(
     ],
 )
 
-rb_binary(
+ruby_binary(
     name = "console",
     args = [
         "-rselenium-webdriver",
