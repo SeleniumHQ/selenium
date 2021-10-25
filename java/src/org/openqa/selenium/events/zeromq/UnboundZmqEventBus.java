@@ -27,6 +27,7 @@ import org.openqa.selenium.events.EventName;
 import org.openqa.selenium.grid.security.Secret;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.Json;
+import org.openqa.selenium.json.JsonException;
 import org.openqa.selenium.json.JsonOutput;
 import org.zeromq.SocketType;
 import org.zeromq.ZContext;
@@ -256,6 +257,9 @@ class UnboundZmqEventBus implements EventBus {
         } catch (Exception e) {
           if (e.getCause() instanceof AssertionError) {
             // Do nothing.
+          } else if (e instanceof JsonException) {
+            LOG.log(Level.WARNING, e, () -> "Caught exception while parsing for event bus messages: "
+                                            + e.getMessage());
           } else {
             LOG.log(Level.WARNING, e, () -> "Caught exception while polling for event bus messages: "
               + e.getMessage());
