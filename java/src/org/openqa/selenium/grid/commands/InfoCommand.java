@@ -50,7 +50,7 @@ public class InfoCommand implements CliCommand {
 
   @Override
   public Set<Role> getConfigurableRoles() {
-    return Collections.emptySet();
+    return Collections.singleton(Role.of("info"));
   }
 
   @Override

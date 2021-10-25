@@ -54,7 +54,7 @@ suite(function (env) {
       it('should fail if ID not present on page', async function () {
         await driver.get(Pages.formPage)
         return driver
-          .findElement(By.id('nonExistantButton'))
+          .findElement(By.id('nonExistentButton'))
           .then(assert.fail, function (e) {
             assert.ok(e instanceof error.NoSuchElementError)
           })
@@ -230,7 +230,7 @@ suite(function (env) {
 
         let start = new Date()
         return driver
-          .findElement(By.id('nonExistantButton'))
+          .findElement(By.id('nonExistentButton'))
           .then(assert.fail, function (e) {
             let end = new Date()
             assert.ok(e instanceof error.NoSuchElementError)

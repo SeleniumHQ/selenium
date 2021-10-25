@@ -60,7 +60,7 @@ public class DockerFlags implements HasRoles {
   @Parameter(
     names = {"--docker", "-D"},
     description = "Docker configs which map image name to stereotype capabilities (example " +
-                  "`-D selenium/standalone-firefox:latest '{\"browserName\": \"firefox\"}')",
+                  "`-D selenium/standalone-firefox:latest '{\"browserName\": \"firefox\"}'`)",
     arity = 2,
     variableArity = true,
     splitter = NonSplittingSplitter.class)

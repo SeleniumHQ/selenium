@@ -182,6 +182,14 @@ namespace OpenQA.Selenium.Firefox
         }
 
         /// <summary>
+        /// Gets a value indicating whether a DevTools session is active.
+        /// </summary>
+        public bool HasActiveDevToolsSession
+        {
+            get { return this.devToolsSession != null; }
+        }
+
+        /// <summary>
         /// Sets the command context used when issuing commands to geckodriver.
         /// </summary>
         /// <exception cref="WebDriverException">If response is not recognized</exception>
@@ -310,7 +318,7 @@ namespace OpenQA.Selenium.Firefox
                 try
                 {
                     DevToolsSession session = new DevToolsSession(debuggerAddress);
-                    session.Start(devToolsProtocolVersion).ConfigureAwait(false).GetAwaiter().GetResult();
+                    session.StartSession(devToolsProtocolVersion).ConfigureAwait(false).GetAwaiter().GetResult();
                     this.devToolsSession = session;
                 }
                 catch (Exception e)
@@ -329,8 +337,7 @@ namespace OpenQA.Selenium.Firefox
         {
             if (this.devToolsSession != null)
             {
-                this.devToolsSession.Dispose();
-                this.devToolsSession = null;
+                this.devToolsSession.StopSession(true).ConfigureAwait(false).GetAwaiter().GetResult();
             }
         }
 
@@ -346,7 +353,11 @@ namespace OpenQA.Selenium.Firefox
         {
             if (disposing)
             {
-                this.CloseDevToolsSession();
+                if (this.devToolsSession != null)
+                {
+                    this.devToolsSession.Dispose();
+                    this.devToolsSession = null;
+                }
             }
 
             base.Dispose(disposing);

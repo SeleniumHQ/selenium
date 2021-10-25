@@ -120,7 +120,7 @@ public class NetworkInterceptorTest {
   }
 
   @Test
-  public void shouldBeAbleToReturnAMagicResponseThatCausesTheOriginalRequestToProceeed() {
+  public void shouldBeAbleToReturnAMagicResponseThatCausesTheOriginalRequestToProceed() {
     AtomicBoolean seen = new AtomicBoolean(false);
 
     interceptor = new NetworkInterceptor(

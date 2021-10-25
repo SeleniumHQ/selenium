@@ -15,10 +15,8 @@
 # specific language governing permissions and limitations
 # under the License.
 
-try:
-    import http.client as http_client
-except ImportError:
-    import httplib as http_client
+import http.client as http_client
+
 
 import warnings
 

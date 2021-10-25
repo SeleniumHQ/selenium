@@ -29,10 +29,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 def close_windows(driver):
     main_windows_handle = driver.current_window_handle
     yield
-    try:
-        from urllib import request as url_request
-    except ImportError:
-        import urllib2 as url_request
+    from urllib import request as url_request
     URLError = url_request.URLError
 
     try:

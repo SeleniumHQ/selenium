@@ -165,11 +165,11 @@ public class HttpCommandProcessor implements CommandProcessor {
 
   protected String getCommandResponseAsString(String command) throws IOException {
     String responseString = null;
-    int responsecode = HttpURLConnection.HTTP_MOVED_PERM;
+    int responseCode = HttpURLConnection.HTTP_MOVED_PERM;
     HttpURLConnection uc = null;
     Writer wr = null;
     Reader rdr = null;
-    while (responsecode == HttpURLConnection.HTTP_MOVED_PERM) {
+    while (responseCode == HttpURLConnection.HTTP_MOVED_PERM) {
       URL result = new URL(pathToServlet);
       String body = buildCommandBody(command);
       try {
@@ -180,10 +180,10 @@ public class HttpCommandProcessor implements CommandProcessor {
         wr = getOutputStreamWriter(uc);
         wr.write(body);
         wr.flush();
-        responsecode = getResponseCode(uc);
-        if (responsecode == HttpURLConnection.HTTP_MOVED_PERM) {
+        responseCode = getResponseCode(uc);
+        if (responseCode == HttpURLConnection.HTTP_MOVED_PERM) {
           pathToServlet = uc.getHeaderField("Location");
-        } else if (responsecode != HttpURLConnection.HTTP_OK) {
+        } else if (responseCode != HttpURLConnection.HTTP_OK) {
           throwAssertionFailureExceptionOrError(uc.getResponseMessage() + " URL: " + result);
         } else {
           rdr = getInputStreamReader(uc);

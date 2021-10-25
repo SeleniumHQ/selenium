@@ -74,7 +74,7 @@ public class FilterTest {
   }
 
   @Test
-  public void eachFilterShouldOnlybeCalledOnce() {
+  public void eachFilterShouldOnlyBeCalledOnce() {
     AtomicInteger rootCalls = new AtomicInteger(0);
 
     HttpHandler root = req -> {

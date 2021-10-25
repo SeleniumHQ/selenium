@@ -17,11 +17,13 @@
 
 package org.openqa.selenium.logging;
 
+import org.openqa.selenium.WebDriver;
+
 @FunctionalInterface
 public interface EventType<X> {
   void consume(X event);
 
-  default void initializeListener(HasLogEvents loggable) {
+  default void initializeListener(WebDriver webDriver) {
     // no-op
   }
 }

@@ -166,8 +166,8 @@ public class RedisBackedSessionMap extends SessionMap {
       String capabilitiesKey = capabilitiesKey(id);
       String rawCapabilities = connection.get(capabilitiesKey);
 
-      String sterotypeKey = stereotypeKey(id);
-      String rawStereotype = connection.get(sterotypeKey);
+      String stereotypeKey = stereotypeKey(id);
+      String rawStereotype = connection.get(stereotypeKey);
 
       span.setAttribute(REDIS_CAPABILITIES_KEY, capabilitiesKey);
       attributeMap.put(REDIS_CAPABILITIES_KEY, EventAttribute.setValue(capabilitiesKey));
@@ -180,7 +180,7 @@ public class RedisBackedSessionMap extends SessionMap {
         new ImmutableCapabilities() :
         JSON.toType(rawCapabilities, Capabilities.class);
 
-      Capabilities sterotype = rawStereotype == null ?
+      Capabilities stereotype = rawStereotype == null ?
         new ImmutableCapabilities() :
         JSON.toType(rawStereotype, Capabilities.class);
 
@@ -191,7 +191,7 @@ public class RedisBackedSessionMap extends SessionMap {
       CAPABILITIES_EVENT.accept(attributeMap, caps);
 
       span.addEvent("Retrieved session from the database", attributeMap);
-      return new Session(id, uri, sterotype, caps, start);
+      return new Session(id, uri, stereotype, caps, start);
     }
   }
 

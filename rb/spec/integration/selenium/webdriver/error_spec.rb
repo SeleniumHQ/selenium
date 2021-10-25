@@ -26,7 +26,7 @@ module Selenium
         driver.navigate.to url_for('xhtmlTest.html')
 
         expect {
-          driver.find_element(id: 'nonexistant')
+          driver.find_element(id: 'nonexistent')
         }.to raise_error(WebDriver::Error::NoSuchElementError)
       end
     end
