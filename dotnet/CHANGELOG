@@ -14,6 +14,9 @@ v4.0.1
    DevTools session is attached. This should make that transition more
    seamless and prevent errors on attaching to a new target when the next
    DevTools command is issued.
+ * Refactored Cookie constructors to allow SameSite cookies to not necessarily
+   have the Secure flag set. This allows Chromium-based browsers that do not
+   fully comply with SameSite cookies to work.
 
 v4.0.0
 ======
