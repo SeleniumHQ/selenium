@@ -65,8 +65,8 @@ body:
     id: selenium-version
     attributes:
       label: Selenium version
-      description: What version of Selenium and proramming language are you using?
-      placeholder: 4.0.0? Please use the full version number.
+      description: What programming language release version of Selenium?
+      placeholder: Java 4.0.0? Ruby 4.0.3? (please use the full version number).
     validations:
       required: true
   - type: input
