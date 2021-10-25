@@ -22,6 +22,7 @@ import org.openqa.selenium.net.HostIdentifier;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -34,7 +35,7 @@ public class WebDriverException extends RuntimeException {
   private static final String HOST_NAME = HostIdentifier.getHostName();
   private static final String HOST_ADDRESS = HostIdentifier.getHostAddress();
 
-  private final Map<String, String> extraInfo = new HashMap<>();
+  private final Map<String, String> extraInfo = new ConcurrentHashMap<>();
 
   public WebDriverException() {
     super();
