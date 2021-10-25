@@ -132,7 +132,7 @@ public abstract class By {
    * @param context A context to use to find the elements.
    * @return A list of WebElements matching the selector.
    */
-  public abstract List<WebElement> findElements(SearchContext context);
+  public abstract <T extends WebElement> List<T> findElements(SearchContext context);
 
   protected WebDriver getWebDriver(SearchContext context) {
     if (context instanceof WebDriver) {
@@ -400,7 +400,7 @@ public abstract class By {
     }
 
     @Override
-    public List<WebElement> findElements(SearchContext context) {
+    public <T extends WebElement> List<T> findElements(SearchContext context) {
       Require.nonNull("Search Context", context);
       return context.findElements(this);
     }
@@ -430,7 +430,7 @@ public abstract class By {
     }
 
     @Override
-    public List<WebElement> findElements(SearchContext context) {
+    public <T extends WebElement> List<T> findElements(SearchContext context) {
       return context.findElements(fallback);
     }
 

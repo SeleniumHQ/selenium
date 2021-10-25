@@ -184,11 +184,11 @@ public class RelativeLocator {
     }
 
     @Override
-    public List<WebElement> findElements(SearchContext context) {
+    public <T extends WebElement> List<T> findElements(SearchContext context) {
       JavascriptExecutor js = getJavascriptExecutor(context);
 
       @SuppressWarnings("unchecked")
-      List<WebElement> elements = (List<WebElement>) js.executeScript(FIND_ELEMENTS, asAtomLocatorParameter(this));
+      List<T> elements = (List<T>) js.executeScript(FIND_ELEMENTS, asAtomLocatorParameter(this));
       return elements;
     }
 
