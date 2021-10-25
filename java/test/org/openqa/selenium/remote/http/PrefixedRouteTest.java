@@ -47,7 +47,7 @@ public class PrefixedRouteTest {
   }
 
   @Test
-  public void pathWhichCoincidentallyStartsWithThePrefixIsNotMacthed() {
+  public void pathWhichCoincidentallyStartsWithThePrefixIsNotMatched() {
     Route route = Route.prefix("/cheese").to(Route.matching(req -> true).to(() -> req -> new HttpResponse()));
 
     assertThat(route.matches(new HttpRequest(GET, "/cheeseandpeas"))).isFalse();

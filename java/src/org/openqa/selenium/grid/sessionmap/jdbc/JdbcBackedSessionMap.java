@@ -181,7 +181,7 @@ public class JdbcBackedSessionMap extends SessionMap implements Closeable {
     Require.nonNull("Session ID", id);
 
     URI uri = null;
-    Capabilities sterotype = null;
+    Capabilities stereotype = null;
     Capabilities caps = null;
     Instant start = null;
     String rawUri = null;
@@ -229,7 +229,7 @@ public class JdbcBackedSessionMap extends SessionMap implements Closeable {
 
           String rawStereotype = sessions.getString(SESSION_STEREOTYPE_COL);
 
-          sterotype = rawStereotype == null ?
+          stereotype = rawStereotype == null ?
             new ImmutableCapabilities() :
             JSON.toType(rawStereotype, Capabilities.class);
 
@@ -261,7 +261,7 @@ public class JdbcBackedSessionMap extends SessionMap implements Closeable {
         }
 
         span.addEvent("Retrieved session from the database", attributeMap);
-        return new Session(id, uri, sterotype, caps, start);
+        return new Session(id, uri, stereotype, caps, start);
       } catch (SQLException e) {
         span.setAttribute("error", true);
         span.setStatus(Status.CANCELLED);

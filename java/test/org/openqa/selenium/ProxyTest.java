@@ -397,7 +397,7 @@ public class ProxyTest {
 
   @Test
   @Ignore
-  public void serialiazesAndDeserializesWithoutError() {
+  public void serializesAndDeserializesWithoutError() {
     Proxy proxy = new Proxy();
     proxy.setProxyAutoconfigUrl("http://www.example.com/config.pac");
 

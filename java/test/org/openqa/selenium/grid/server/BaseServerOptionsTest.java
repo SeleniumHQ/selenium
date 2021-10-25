@@ -15,22 +15,25 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package com.thoughtworks.selenium.corebased;
+package org.openqa.selenium.grid.server;
 
-import com.thoughtworks.selenium.InternalSelenseTestBase;
-
-import org.junit.Ignore;
 import org.junit.Test;
+import org.openqa.selenium.grid.config.MapConfig;
 
-public class TestTable extends InternalSelenseTestBase {
-  /* See https://github.com/SeleniumHQ/selenium-google-code-issue-archive/issues/2255 */
-  @Test @Ignore
-  public void getValueFromTableTwiceInARowShouldWork() {
-    selenium.open("test_table.html");
+import java.util.Map;
 
-    String value1 = selenium.getTable("test_table.0.0");
-    String value2 = selenium.getTable("test_table.0.0");
-    assertEquals("cell 1", value1);
-    assertEquals(value1, value2);
+import static org.assertj.core.api.Assertions.assertThat;
+
+public class BaseServerOptionsTest {
+
+  @Test
+  public void readingThePortTwiceShouldGiveTheSameResult() {
+    BaseServerOptions options = new BaseServerOptions(new MapConfig(Map.of("server", Map.of("port", -1))));
+
+    int first = options.getPort();
+    int second = options.getPort();
+
+    assertThat(first).isEqualTo(second);
   }
+
 }

@@ -11,12 +11,12 @@ java_selenium_test_suite(
     data = [
         "//third_party/chrome_ext:backspace.crx",
     ],
-    tags = [
-        "selenium-remote",
-    ],
     javacopts = [
         "--release",
         "11",
+    ],
+    tags = [
+        "selenium-remote",
     ],
     deps = [
         "//java/src/org/openqa/selenium/chrome",

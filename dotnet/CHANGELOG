@@ -1,3 +1,20 @@
+v4.0.1
+======
+ * Refactored WebSocket handling of CDP. The handling of sending and receiving
+   data via WebSocket for use with Chrome DevTools Protocol (CDP) messages was
+   previously haphazard, and did not follow proper patterns of behavior with
+   the .NET core WebSocket library. This commit reworks the WebSocket code to
+   better fit the .NET processing model. The public API of the DevTools
+   integration is largely unchanged. with the exception of the addition of the
+   HasActiveDevToolsSession property to the IDevTools interface, allowing a
+   user to query whether an active session exists without calling
+   GetDevToolsSession().
+ * Refactored how the driver behaves when a window is closed with
+   driver.Close() that contains the page which is the target to which the
+   DevTools session is attached. This should make that transition more
+   seamless and prevent errors on attaching to a new target when the next
+   DevTools command is issued.
+
 v4.0.0
 ======
  * Prevented getting bodies of responses for redirects, as this causes an

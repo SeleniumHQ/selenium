@@ -97,7 +97,7 @@ public class BrowserConfigurationOptionsTest {
   }
 
   @Test
-  public void testSetBrowserExcecutablePathWithValidPath() {
+  public void testSetBrowserExecutablePathWithValidPath() {
     String path = "c:\\chrome\\is\\cool.exe with_arg";
     BrowserConfigurationOptions bco =
         new BrowserConfigurationOptions().setBrowserExecutablePath(path);

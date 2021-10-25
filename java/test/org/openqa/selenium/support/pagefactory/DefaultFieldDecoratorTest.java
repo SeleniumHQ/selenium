@@ -43,7 +43,7 @@ import org.openqa.selenium.testing.UnitTests;
 @Category(UnitTests.class)
 public class DefaultFieldDecoratorTest {
 
-  // Unusued fields are used by tests. Do not remove!
+  // Unused fields are used by tests. Do not remove!
   @SuppressWarnings("unused") private WebElement element1;
   @SuppressWarnings("unused") private WebElement element2;
   @SuppressWarnings("unused") private List<WebElement> list1;

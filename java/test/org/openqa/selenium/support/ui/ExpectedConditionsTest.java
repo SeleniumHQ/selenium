@@ -561,7 +561,7 @@ public class ExpectedConditionsTest {
   }
 
   @Test
-  public void waitingForAttributetToBeNotEmptyForElementLocatedThrowsTimeoutExceptionWhenAttributeIsEmpty() {
+  public void waitingForAttributeToBeNotEmptyForElementLocatedThrowsTimeoutExceptionWhenAttributeIsEmpty() {
     String attributeName = "test";
     when(mockElement.getAttribute(attributeName)).thenReturn("");
     when(mockElement.getCssValue(attributeName)).thenReturn("");
@@ -764,7 +764,7 @@ public class ExpectedConditionsTest {
   }
 
   @Test
-  public void waitingForPresenseOfNestedElementWhenElementPresents() {
+  public void waitingForPresenceOfNestedElementWhenElementPresents() {
     String testSelector = "testSelector";
     when(mockElement.findElement(By.cssSelector(testSelector))).thenReturn(mockNestedElement);
     wait.until(presenceOfNestedElementLocatedBy(mockElement, By.cssSelector(testSelector)));
@@ -786,7 +786,7 @@ public class ExpectedConditionsTest {
   }
 
   @Test
-  public void waitingForPresenseOfNestedElementByLocatorWhenElementPresents() {
+  public void waitingForPresenceOfNestedElementByLocatorWhenElementPresents() {
     String testSelector = "testSelector";
     String testNestedSelector = "testNestedSelector";
     when(mockDriver.findElement(By.cssSelector(testSelector))).thenReturn(mockElement);
@@ -796,7 +796,7 @@ public class ExpectedConditionsTest {
   }
 
   @Test
-  public void waitingForPresenseOfNestedElementsWhenElementsPresent() {
+  public void waitingForPresenceOfNestedElementsWhenElementsPresent() {
     By parent = By.cssSelector("parent");
     By child = By.cssSelector("child");
 

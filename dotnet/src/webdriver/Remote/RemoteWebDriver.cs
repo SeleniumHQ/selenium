@@ -127,6 +127,14 @@ namespace OpenQA.Selenium.Remote
         }
 
         /// <summary>
+        /// Gets a value indicating whether a DevTools session is active.
+        /// </summary>
+        public bool HasActiveDevToolsSession
+        {
+            get { return this.devToolsSession != null; }
+        }
+
+        /// <summary>
         /// Finds the first element in the page that matches the ID supplied
         /// </summary>
         /// <param name="id">ID of the element</param>
@@ -432,7 +440,7 @@ namespace OpenQA.Selenium.Remote
                 try
                 {
                     DevToolsSession session = new DevToolsSession(debuggerAddress);
-                    session.Start(devToolsProtocolVersion).ConfigureAwait(false).GetAwaiter().GetResult();
+                    session.StartSession(devToolsProtocolVersion).ConfigureAwait(false).GetAwaiter().GetResult();
                     this.devToolsSession = session;
                 }
                 catch (Exception e)
@@ -451,8 +459,7 @@ namespace OpenQA.Selenium.Remote
         {
             if (this.devToolsSession != null)
             {
-                this.devToolsSession.Dispose();
-                this.devToolsSession = null;
+                this.devToolsSession.StopSession(true).ConfigureAwait(false).GetAwaiter().GetResult();
             }
         }
 
@@ -460,7 +467,11 @@ namespace OpenQA.Selenium.Remote
         {
             if (disposing)
             {
-                this.CloseDevToolsSession();
+                if (this.devToolsSession != null)
+                {
+                    this.devToolsSession.Dispose();
+                    this.devToolsSession = null;
+                }
             }
 
             base.Dispose(disposing);
