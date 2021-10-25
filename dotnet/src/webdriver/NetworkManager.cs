@@ -99,17 +99,17 @@ namespace OpenQA.Selenium
         {
             if (handler == null)
             {
-                throw new ArgumentNullException("handler", "Request handler cannot be null");
+                throw new ArgumentNullException(nameof(handler), "Request handler cannot be null");
             }
 
             if (handler.RequestMatcher == null)
             {
-                throw new ArgumentException("Matcher for request cannot be null", "handler");
+                throw new ArgumentException("Matcher for request cannot be null", nameof(handler));
             }
 
             if (handler.RequestTransformer == null && handler.ResponseSupplier == null)
             {
-                throw new ArgumentException("Request transformer and response supplier cannot both be null", "handler");
+                throw new ArgumentException("Request transformer and response supplier cannot both be null", nameof(handler));
             }
 
             this.requestHandlers.Add(handler);
@@ -132,23 +132,23 @@ namespace OpenQA.Selenium
         {
             if (handler == null)
             {
-                throw new ArgumentNullException("handler", "Authentication handler cannot be null");
+                throw new ArgumentNullException(nameof(handler), "Authentication handler cannot be null");
             }
 
             if (handler.UriMatcher == null)
             {
-                throw new ArgumentException("Matcher for delegate for URL cannot be null", "handler");
+                throw new ArgumentException("Matcher for delegate for URL cannot be null", nameof(handler));
             }
 
             if (handler.Credentials == null)
             {
-                throw new ArgumentException("Credentials to use for authentication cannot be null", "handler");
+                throw new ArgumentException("Credentials to use for authentication cannot be null", nameof(handler));
             }
 
             var passwordCredentials = handler.Credentials as PasswordCredentials;
             if (passwordCredentials == null)
             {
-                throw new ArgumentException("Credentials must contain user name and password (PasswordCredentials)", "handler");
+                throw new ArgumentException("Credentials must contain user name and password (PasswordCredentials)", nameof(handler));
             }
 
             this.authenticationHandlers.Add(handler);
@@ -171,12 +171,12 @@ namespace OpenQA.Selenium
         {
             if (handler == null)
             {
-                throw new ArgumentNullException("handler", "Request handler cannot be null");
+                throw new ArgumentNullException(nameof(handler), "Request handler cannot be null");
             }
 
             if (handler.ResponseMatcher == null)
             {
-                throw new ArgumentException("Matcher for response cannot be null", "handler");
+                throw new ArgumentException("Matcher for response cannot be null", nameof(handler));
             }
 
             this.responseHandlers.Add(handler);

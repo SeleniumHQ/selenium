@@ -42,7 +42,7 @@ namespace OpenQA.Selenium
         {
             if (string.IsNullOrEmpty(fileName))
             {
-                throw new ArgumentException("The file name to be saved cannot be null or the empty string", "fileName");
+                throw new ArgumentException("The file name to be saved cannot be null or the empty string", nameof(fileName));
             }
 
             using (MemoryStream imageStream = new MemoryStream(this.AsByteArray))

@@ -69,7 +69,7 @@ namespace OpenQA.Selenium
         {
             if (url == null)
             {
-                throw new ArgumentNullException("url", "URL cannot be null.");
+                throw new ArgumentNullException(nameof(url), "URL cannot be null.");
             }
 
             this.driver.Url = url.ToString();

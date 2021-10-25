@@ -90,7 +90,7 @@ namespace OpenQA.Selenium.DevTools
         {
             if (versionRange < 0)
             {
-                throw new ArgumentException("Version range must be positive", "versionRange");
+                throw new ArgumentException("Version range must be positive", nameof(versionRange));
             }
 
             DevToolsDomains domains = null;

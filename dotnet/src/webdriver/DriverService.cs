@@ -59,7 +59,7 @@ namespace OpenQA.Selenium
         {
             if (string.IsNullOrEmpty(servicePath))
             {
-                throw new ArgumentException("Path to locate driver executable cannot be null or empty.", "servicePath");
+                throw new ArgumentException("Path to locate driver executable cannot be null or empty.", nameof(servicePath));
             }
 
             string executablePath = Path.Combine(servicePath, driverServiceExecutableName);
@@ -326,7 +326,7 @@ namespace OpenQA.Selenium
         {
             if (eventArgs == null)
             {
-                throw new ArgumentNullException("eventArgs", "eventArgs must not be null");
+                throw new ArgumentNullException(nameof(eventArgs), "eventArgs must not be null");
             }
 
             if (this.DriverProcessStarting != null)
@@ -343,7 +343,7 @@ namespace OpenQA.Selenium
         {
             if (eventArgs == null)
             {
-                throw new ArgumentNullException("eventArgs", "eventArgs must not be null");
+                throw new ArgumentNullException(nameof(eventArgs), "eventArgs must not be null");
             }
 
             if (this.DriverProcessStarted != null)

@@ -228,12 +228,12 @@ namespace OpenQA.Selenium.Firefox
         {
             if (string.IsNullOrEmpty(addOnFileToInstall))
             {
-                throw new ArgumentNullException("addOnFileToInstall", "Add-on file name must not be null or the empty string");
+                throw new ArgumentNullException(nameof(addOnFileToInstall), "Add-on file name must not be null or the empty string");
             }
 
             if (!File.Exists(addOnFileToInstall))
             {
-                throw new ArgumentException("File " + addOnFileToInstall + " does not exist", "addOnFileToInstall");
+                throw new ArgumentException("File " + addOnFileToInstall + " does not exist", nameof(addOnFileToInstall));
             }
 
             // Implementation note: There is a version of the install add-on
@@ -255,7 +255,7 @@ namespace OpenQA.Selenium.Firefox
         {
             if (string.IsNullOrEmpty(base64EncodedAddOn))
             {
-                throw new ArgumentNullException("base64EncodedAddOn", "Base64 encoded add-on must not be null or the empty string");
+                throw new ArgumentNullException(nameof(base64EncodedAddOn), "Base64 encoded add-on must not be null or the empty string");
             }
 
             Dictionary<string, object> parameters = new Dictionary<string, object>();
@@ -271,7 +271,7 @@ namespace OpenQA.Selenium.Firefox
         {
             if (string.IsNullOrEmpty(addOnId))
             {
-                throw new ArgumentNullException("addOnId", "Base64 encoded add-on must not be null or the empty string");
+                throw new ArgumentNullException(nameof(addOnId), "Base64 encoded add-on must not be null or the empty string");
             }
 
             Dictionary<string, object> parameters = new Dictionary<string, object>();
@@ -367,7 +367,7 @@ namespace OpenQA.Selenium.Firefox
         {
             if (options == null)
             {
-                throw new ArgumentNullException("options", "options must not be null");
+                throw new ArgumentNullException(nameof(options), "options must not be null");
             }
 
             return options.ToCapabilities();

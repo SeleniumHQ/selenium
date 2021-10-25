@@ -153,7 +153,7 @@ namespace OpenQA.Selenium.Opera
         {
             if (options == null)
             {
-                throw new ArgumentNullException("options", "options must not be null");
+                throw new ArgumentNullException(nameof(options), "options must not be null");
             }
 
             return options.ToCapabilities();

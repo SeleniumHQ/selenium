@@ -50,7 +50,7 @@ namespace OpenQA.Selenium.Interactions
         {
             if (duration < TimeSpan.Zero)
             {
-                throw new ArgumentException("Duration must be greater than or equal to zero", "duration");
+                throw new ArgumentException("Duration must be greater than or equal to zero", nameof(duration));
             }
 
             this.duration = duration;
