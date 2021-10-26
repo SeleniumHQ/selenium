@@ -27,6 +27,7 @@ import java.time.temporal.ChronoUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import static com.google.common.net.HttpHeaders.CONTENT_LENGTH;
 import static java.net.HttpURLConnection.HTTP_INTERNAL_ERROR;
 import static java.net.HttpURLConnection.HTTP_UNAVAILABLE;
 
@@ -62,7 +63,7 @@ public class RetryRequest implements Filter {
   private static final RetryPolicy<HttpResponse> serverErrorPolicy =
     new RetryPolicy<HttpResponse>()
       .handleResultIf(response -> response.getStatus() == HTTP_INTERNAL_ERROR &&
-        Contents.bytes(response.getContent()).length == 0)
+                                  Integer.parseInt(response.getHeader(CONTENT_LENGTH)) == 0)
       .handleResultIf(response -> response.getStatus() == HTTP_UNAVAILABLE)
       .withBackoff(1, 2, ChronoUnit.SECONDS)
       .withMaxRetries(2)

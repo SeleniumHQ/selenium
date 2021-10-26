@@ -28,7 +28,6 @@ import org.openqa.selenium.remote.http.netty.NettyClient;
 import java.io.UncheckedIOException;
 import java.net.MalformedURLException;
 import java.net.URI;
-import java.net.URL;
 import java.time.Duration;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -47,7 +46,7 @@ public class RetryRequestTest {
   @Before
   public void setUp() throws MalformedURLException {
     ClientConfig config = ClientConfig.defaultConfig()
-      .baseUrl(new URL("http://example.com"))
+      .baseUrl(URI.create("http://localhost:2345").toURL())
       .readTimeout(Duration.ofMillis(1000));
     client = new NettyClient.Factory().createClient(config);
   }
