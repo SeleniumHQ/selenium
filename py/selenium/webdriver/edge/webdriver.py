@@ -48,6 +48,7 @@ class WebDriver(ChromiumDriver):
          - capabilities - Deprecated: Dictionary object with non-browser specific
            capabilities only, such as "proxy" or "loggingPref".
          - service_log_path - Deprecated: Where to log information from the driver.
+         - service - Service object for handling the browser driver if you need to pass extra details
          - keep_alive - Whether to configure EdgeRemoteConnection to use HTTP keep-alive.
          - verbose - whether to set verbose logging in the service.
          """

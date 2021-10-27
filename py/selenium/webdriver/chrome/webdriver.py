@@ -45,6 +45,7 @@ class WebDriver(ChromiumDriver):
          - executable_path - Deprecated: path to the executable. If the default is used it assumes the executable is in the $PATH
          - port - Deprecated: port you would like the service to run, if left as 0, a free port will be found.
          - options - this takes an instance of ChromeOptions
+         - service - Service object for handling the browser driver if you need to pass extra details
          - service_args - Deprecated: List of args to pass to the driver service
          - desired_capabilities - Deprecated: Dictionary object with non-browser specific
            capabilities only, such as "proxy" or "loggingPref".
