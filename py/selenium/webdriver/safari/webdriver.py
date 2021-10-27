@@ -53,6 +53,7 @@ class WebDriver(RemoteWebDriver):
          - keep_alive - Whether to configure SafariRemoteConnection to use
              HTTP keep-alive. Defaults to True.
          - service_args : List of args to pass to the safaridriver service
+         - service - Service object for handling the browser driver if you need to pass extra details
         """
         if port:
             warnings.warn("port has been deprecated, please set it via the service class",
