@@ -38,7 +38,7 @@ import static org.openqa.selenium.support.locators.RelativeLocatorScript.FIND_EL
  * position on the DOM. Elements are returned ordered by their proximity to
  * the last anchor element used for finding them. As an example:
  * <pre>
- *   List<WebElement> elements = driver.findElements(withTagName("p").above(lowest));
+ *   List<WebElement> elements = driver.findElements(with(tagName("p")).above(lowest));
  * </pre>
  * Would return all {@code p} elements above the {@link WebElement}
  * {@code lowest} sorted by the proximity to {@code lowest}.

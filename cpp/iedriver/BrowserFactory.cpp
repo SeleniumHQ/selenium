@@ -1037,6 +1037,42 @@ BOOL CALLBACK BrowserFactory::FindEdgeWindow(HWND hwnd, LPARAM arg) {
   return EnumChildWindows(hwnd, FindEdgeChildWindowForProcess, arg);
 }
 
+BOOL CALLBACK BrowserFactory::FindIEBrowserHandles(HWND hwnd, LPARAM arg) {
+  std::vector<HWND>* handles = reinterpret_cast<std::vector<HWND>*>(arg);
+
+  // Could this be an Internet Explorer Server window?
+  // 25 == "Internet Explorer_Server\0"
+  char name[25];
+  if (::GetClassNameA(hwnd, name, 25) == 0) {
+    // No match found. Skip
+    return TRUE;
+  }
+
+  if (strcmp("Internet Explorer_Server", name) == 0) {
+    handles->push_back(hwnd);
+  }
+
+  return TRUE;
+}
+
+BOOL CALLBACK BrowserFactory::FindEdgeBrowserHandles(HWND hwnd, LPARAM arg) {
+  std::vector<HWND>* handles = reinterpret_cast<std::vector<HWND>*>(arg);
+
+  // Could this be an Internet Explorer Server window?
+  // 19 == "Chrome_WidgetWin_1\0"
+  char name[20];
+  if (::GetClassNameA(hwnd, name, 20) == 0) {
+    // No match found. Skip
+    return TRUE;
+  }
+
+  if (strcmp("Chrome_WidgetWin_1", name) == 0) {
+    handles->push_back(hwnd);
+  }
+
+  return TRUE;
+}
+
 BOOL CALLBACK BrowserFactory::FindChildWindowForProcess(HWND hwnd, LPARAM arg) {
   ProcessWindowInfo *process_window_info = reinterpret_cast<ProcessWindowInfo*>(arg);
 

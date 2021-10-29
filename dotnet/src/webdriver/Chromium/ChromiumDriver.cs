@@ -114,6 +114,14 @@ namespace OpenQA.Selenium.Chromium
         }
 
         /// <summary>
+        /// Gets a value indicating whether a DevTools session is active.
+        /// </summary>
+        public bool HasActiveDevToolsSession
+        {
+            get { return this.devToolsSession != null; }
+        }
+
+        /// <summary>
         /// Gets or sets the network condition emulation for Chromium.
         /// </summary>
         public ChromiumNetworkConditions NetworkConditions
@@ -128,7 +136,7 @@ namespace OpenQA.Selenium.Chromium
             {
                 if (value == null)
                 {
-                    throw new ArgumentNullException("value", "value must not be null");
+                    throw new ArgumentNullException(nameof(value), "value must not be null");
                 }
 
                 Dictionary<string, object> parameters = new Dictionary<string, object>();
@@ -145,7 +153,7 @@ namespace OpenQA.Selenium.Chromium
         {
             if (id == null)
             {
-                throw new ArgumentNullException("id", "id must not be null");
+                throw new ArgumentNullException(nameof(id), "id must not be null");
             }
 
             Dictionary<string, object> parameters = new Dictionary<string, object>();
@@ -162,12 +170,12 @@ namespace OpenQA.Selenium.Chromium
         {
             if (permissionName == null)
             {
-                throw new ArgumentNullException("permissionName", "name must not be null");
+                throw new ArgumentNullException(nameof(permissionName), "name must not be null");
             }
 
             if (permissionValue == null)
             {
-                throw new ArgumentNullException("permissionValue", "value must not be null");
+                throw new ArgumentNullException(nameof(permissionValue), "value must not be null");
             }
 
             Dictionary<string, object> nameParameter = new Dictionary<string, object>();
@@ -188,7 +196,7 @@ namespace OpenQA.Selenium.Chromium
         {
             if (commandName == null)
             {
-                throw new ArgumentNullException("commandName", "commandName must not be null");
+                throw new ArgumentNullException(nameof(commandName), "commandName must not be null");
             }
 
             Dictionary<string, object> parameters = new Dictionary<string, object>();
@@ -260,7 +268,7 @@ namespace OpenQA.Selenium.Chromium
                 try
                 {
                     DevToolsSession session = new DevToolsSession(debuggerAddress);
-                    session.Start(devToolsProtocolVersion).ConfigureAwait(false).GetAwaiter().GetResult();
+                    session.StartSession(devToolsProtocolVersion).ConfigureAwait(false).GetAwaiter().GetResult();
                     this.devToolsSession = session;
                 }
                 catch (Exception e)
@@ -279,8 +287,7 @@ namespace OpenQA.Selenium.Chromium
         {
             if (this.devToolsSession != null)
             {
-                this.devToolsSession.Dispose();
-                this.devToolsSession = null;
+                this.devToolsSession.StopSession(true).ConfigureAwait(false).GetAwaiter().GetResult();
             }
         }
 
@@ -321,7 +328,7 @@ namespace OpenQA.Selenium.Chromium
         {
             if (deviceName == null)
             {
-                throw new ArgumentNullException("deviceName", "deviceName must not be null");
+                throw new ArgumentNullException(nameof(deviceName), "deviceName must not be null");
             }
 
             Dictionary<string, object> parameters = new Dictionary<string, object>();
@@ -337,7 +344,7 @@ namespace OpenQA.Selenium.Chromium
         {
             if (deviceName == null)
             {
-                throw new ArgumentNullException("deviceName", "deviceName must not be null");
+                throw new ArgumentNullException(nameof(deviceName), "deviceName must not be null");
             }
 
             Dictionary<string, object> parameters = new Dictionary<string, object>();
@@ -363,7 +370,7 @@ namespace OpenQA.Selenium.Chromium
         {
             if (deviceName == null)
             {
-                throw new ArgumentNullException("deviceName", "deviceName must not be null");
+                throw new ArgumentNullException(nameof(deviceName), "deviceName must not be null");
             }
 
             Dictionary<string, object> parameters = new Dictionary<string, object>();
@@ -375,7 +382,11 @@ namespace OpenQA.Selenium.Chromium
         {
             if (disposing)
             {
-                this.CloseDevToolsSession();
+                if (this.devToolsSession != null)
+                {
+                    this.devToolsSession.Dispose();
+                    this.devToolsSession = null;
+                }
             }
 
             base.Dispose(disposing);
@@ -385,7 +396,7 @@ namespace OpenQA.Selenium.Chromium
         {
             if (options == null)
             {
-                throw new ArgumentNullException("options", "options must not be null");
+                throw new ArgumentNullException(nameof(options), "options must not be null");
             }
 
             return options.ToCapabilities();

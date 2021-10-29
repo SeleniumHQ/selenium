@@ -55,11 +55,11 @@ def release_version
 end
 
 def google_storage_version
-  '4.0-rc-2'
+  '4.0.0'
 end
 
 def version
-  "#{release_version}.0-rc-2"
+  "#{release_version}.0"
 end
 
 # The build system used by webdriver is layered on top of rake, and we call it
@@ -106,6 +106,7 @@ JAVA_RELEASE_TARGETS = %w[
   //java/src/org/openqa/selenium/devtools/v85:v85.publish
   //java/src/org/openqa/selenium/devtools/v93:v93.publish
   //java/src/org/openqa/selenium/devtools/v94:v94.publish
+  //java/src/org/openqa/selenium/devtools/v95:v95.publish
   //java/src/org/openqa/selenium/edge:edge.publish
   //java/src/org/openqa/selenium/firefox/xpi:xpi.publish
   //java/src/org/openqa/selenium/firefox:firefox.publish
@@ -299,7 +300,10 @@ task javadocs: %i[//java/src/org/openqa/selenium/grid:all-javadocs] do
   rm_rf 'build/javadoc'
   mkdir_p 'build/javadoc'
 
-  out = Rake::Task['//java/src/org/openqa/selenium/grid:all-javadocs'].out
+  # Temporary hack, bazel is not outputting where things are so we need to do it manually.
+  # This will only work on Posix based OSes
+  Rake::Task['//java/src/org/openqa/selenium/grid:all-javadocs']
+  out = 'bazel-bin/java/src/org/openqa/selenium/grid/all-javadocs.jar'
 
   cmd = %{cd build/javadoc && jar xf "../../#{out}" 2>&1}
   if SeleniumRake::Checks.windows?

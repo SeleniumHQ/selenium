@@ -41,7 +41,7 @@ namespace OpenQA.Selenium.Support.UI
         {
             if (element == null)
             {
-                throw new ArgumentNullException("element", "element cannot be null");
+                throw new ArgumentNullException(nameof(element), "element cannot be null");
             }
 
             string tagName = element.TagName;
@@ -138,7 +138,7 @@ namespace OpenQA.Selenium.Support.UI
         {
             if (text == null)
             {
-                throw new ArgumentNullException("text", "text must not be null");
+                throw new ArgumentNullException(nameof(text), "text must not be null");
             }
 
             bool matched = false;

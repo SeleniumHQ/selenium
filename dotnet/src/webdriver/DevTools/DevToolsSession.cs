@@ -40,6 +40,7 @@ namespace OpenQA.Selenium.DevTools
 
         private readonly string debuggerEndpoint;
         private string websocketAddress;
+        private readonly TimeSpan openConnectionWaitTimeSpan = TimeSpan.FromSeconds(30);
         private readonly TimeSpan closeConnectionWaitTimeSpan = TimeSpan.FromSeconds(2);
 
         private bool isDisposed = false;
@@ -51,6 +52,7 @@ namespace OpenQA.Selenium.DevTools
 
         private DevToolsDomains domains;
 
+        private CancellationTokenSource receiveCancellationToken;
         private Task receiveTask;
 
         /// <summary>
@@ -59,20 +61,17 @@ namespace OpenQA.Selenium.DevTools
         /// <param name="endpointAddress"></param>
         public DevToolsSession(string endpointAddress)
         {
-            if (String.IsNullOrWhiteSpace(endpointAddress))
+            if (string.IsNullOrWhiteSpace(endpointAddress))
             {
                 throw new ArgumentNullException(nameof(endpointAddress));
             }
 
-            CommandTimeout = TimeSpan.FromSeconds(5);
+            this.CommandTimeout = TimeSpan.FromSeconds(5);
             this.debuggerEndpoint = endpointAddress;
             if (endpointAddress.StartsWith("ws:"))
             {
                 this.websocketAddress = endpointAddress;
             }
-
-            sessionSocket = new ClientWebSocket();
-            sessionSocket.Options.KeepAliveInterval = TimeSpan.Zero;
         }
 
         /// <summary>
@@ -93,7 +92,7 @@ namespace OpenQA.Selenium.DevTools
         /// <summary>
         /// Gets or sets the active session ID of the connection.
         /// </summary>
-        public string ActiveSessionId { get; set; }
+        public string ActiveSessionId { get; private set; }
 
         /// <summary>
         /// Gets the endpoint address of the session.
@@ -111,7 +110,7 @@ namespace OpenQA.Selenium.DevTools
         /// <typeparam name="T">
         /// A <see cref="DevToolsSessionDomains"/> object containing the version-specific DevTools Protocol domain implementations.</typeparam>
         /// <returns>The version-specific DevTools Protocol domain implementation.</returns>
-        public T GetVersionSpecificDomains<T>() where T: DevToolsSessionDomains
+        public T GetVersionSpecificDomains<T>() where T : DevToolsSessionDomains
         {
             T versionSpecificDomains = this.domains.VersionSpecificDomains as T;
             if (versionSpecificDomains == null)
@@ -189,60 +188,74 @@ namespace OpenQA.Selenium.DevTools
         /// Returns a JToken based on a command created with the specified command name and params.
         /// </summary>
         /// <param name="commandName">The name of the command to send.</param>
-        /// <param name="params">The parameters of the command as a JToken object</param>
+        /// <param name="commandParameters">The parameters of the command as a JToken object</param>
         /// <param name="cancellationToken">A CancellationToken object to allow for cancellation of the command.</param>
         /// <param name="millisecondsTimeout">The execution timeout of the command in milliseconds.</param>
         /// <param name="throwExceptionIfResponseNotReceived"><see langword="true"/> to throw an exception if a response is not received; otherwise, <see langword="false"/>.</param>
         /// <returns>The command response object implementing the <see cref="ICommandResponse{T}"/> interface.</returns>
         //[DebuggerStepThrough]
-        public async Task<JToken> SendCommand(string commandName, JToken @params, CancellationToken cancellationToken = default(CancellationToken), int? millisecondsTimeout = null, bool throwExceptionIfResponseNotReceived = true)
+        public async Task<JToken> SendCommand(string commandName, JToken commandParameters, CancellationToken cancellationToken = default(CancellationToken), int? millisecondsTimeout = null, bool throwExceptionIfResponseNotReceived = true)
         {
-            var message = new DevToolsCommandData(Interlocked.Increment(ref currentCommandId), ActiveSessionId, commandName, @params);
-
             if (millisecondsTimeout.HasValue == false)
             {
                 millisecondsTimeout = Convert.ToInt32(CommandTimeout.TotalMilliseconds);
             }
 
-            await OpenSessionConnection(cancellationToken);
-
-            LogTrace("Sending {0} {1}: {2}", message.CommandId, message.CommandName, @params.ToString());
-            
-            var contents = JsonConvert.SerializeObject(message);
-            var contentBuffer = Encoding.UTF8.GetBytes(contents);
-
-            pendingCommands.TryAdd(message.CommandId, message);
-            await sessionSocket.SendAsync(new ArraySegment<byte>(contentBuffer), WebSocketMessageType.Text, true, cancellationToken);
-
-            var responseWasReceived = await Task.Run(() => message.SyncEvent.Wait(millisecondsTimeout.Value, cancellationToken));
-
-            if (!responseWasReceived && throwExceptionIfResponseNotReceived)
+            if (this.attachedTargetId == null)
             {
-                throw new InvalidOperationException($"A command response was not received: {commandName}");
+                LogTrace("Session not currently attached to a target; reattaching");
+                await this.InitializeSession();
             }
 
-            DevToolsCommandData modified;
-            if (pendingCommands.TryRemove(message.CommandId, out modified))
+            var message = new DevToolsCommandData(Interlocked.Increment(ref this.currentCommandId), this.ActiveSessionId, commandName, commandParameters);
+
+            if (this.sessionSocket != null && this.sessionSocket.State == WebSocketState.Open)
             {
-                if (modified.IsError)
+                LogTrace("Sending {0} {1}: {2}", message.CommandId, message.CommandName, commandParameters.ToString());
+
+                var contents = JsonConvert.SerializeObject(message);
+                var contentBuffer = Encoding.UTF8.GetBytes(contents);
+
+                this.pendingCommands.TryAdd(message.CommandId, message);
+                await this.sessionSocket.SendAsync(new ArraySegment<byte>(contentBuffer), WebSocketMessageType.Text, true, cancellationToken);
+
+                var responseWasReceived = await Task.Run(() => message.SyncEvent.Wait(millisecondsTimeout.Value, cancellationToken));
+
+                if (!responseWasReceived && throwExceptionIfResponseNotReceived)
                 {
-                    var errorMessage = modified.Result.Value<string>("message");
-                    var errorData = modified.Result.Value<string>("data");
-
-                    var exceptionMessage = $"{commandName}: {errorMessage}";
-                    if (!string.IsNullOrWhiteSpace(errorData))
-                    {
-                        exceptionMessage = $"{exceptionMessage} - {errorData}";
-                    }
-
-                    LogTrace("Recieved Error Response {0}: {1} {2}", modified.CommandId, message, errorData);
-                    throw new CommandResponseException(exceptionMessage)
-                    {
-                        Code = modified.Result.Value<long>("code")
-                    };
+                    throw new InvalidOperationException($"A command response was not received: {commandName}");
                 }
 
-                return modified.Result;
+                DevToolsCommandData modified;
+                if (this.pendingCommands.TryRemove(message.CommandId, out modified))
+                {
+                    if (modified.IsError)
+                    {
+                        var errorMessage = modified.Result.Value<string>("message");
+                        var errorData = modified.Result.Value<string>("data");
+
+                        var exceptionMessage = $"{commandName}: {errorMessage}";
+                        if (!string.IsNullOrWhiteSpace(errorData))
+                        {
+                            exceptionMessage = $"{exceptionMessage} - {errorData}";
+                        }
+
+                        LogTrace("Recieved Error Response {0}: {1} {2}", modified.CommandId, message, errorData);
+                        throw new CommandResponseException(exceptionMessage)
+                        {
+                            Code = modified.Result.Value<long>("code")
+                        };
+                    }
+
+                    return modified.Result;
+                }
+            }
+            else
+            {
+                if (this.sessionSocket != null)
+                {
+                    LogTrace("WebSocket is not connected (current state is {0}); not sending {1}", this.sessionSocket.State, message.CommandName);
+                }
             }
 
             return null;
@@ -261,12 +274,12 @@ namespace OpenQA.Selenium.DevTools
         /// </summary>
         /// <param name="requestedProtocolVersion">The requested version of the protocol to use in communicating with the browswer.</param>
         /// <returns>A task that represents the asynchronous operation.</returns>
-        internal async Task Start(int requestedProtocolVersion)
+        internal async Task StartSession(int requestedProtocolVersion)
         {
             int protocolVersion = await InitializeProtocol(requestedProtocolVersion);
             this.domains = DevToolsDomains.InitializeDomains(protocolVersion, this);
+            await this.InitializeSocketConnection();
             await this.InitializeSession();
-            this.domains.Target.TargetDetached += OnTargetDetached;
             try
             {
                 // Wrap this in a try-catch, because it's not the end of the
@@ -279,87 +292,44 @@ namespace OpenQA.Selenium.DevTools
             }
         }
 
-        internal async Task InitializeSession()
+        /// <summary>
+        /// Asynchronously stops the session.
+        /// </summary>
+        /// <param name="manualDetach"><see langword="true"/> to manually detach the session
+        /// from its attached target; otherswise <see langword="false""/>.</param>
+        /// <returns>A task that represents the asynchronous operation.</returns>
+        internal async Task StopSession(bool manualDetach)
         {
-            LogTrace("Initializing session");
-            var targets = await this.domains.Target.GetTargets();
-            foreach (var target in targets)
+            if (this.attachedTargetId != null)
             {
-                if (target.Type == "page")
+                this.Domains.Target.TargetDetached -= this.OnTargetDetached;
+                string sessionId = this.ActiveSessionId;
+                this.ActiveSessionId = null;
+                if (manualDetach)
                 {
-                    this.attachedTargetId = target.TargetId;
-                    LogTrace("Found Target ID {0}.", this.attachedTargetId);
-                    string sessionId = await this.domains.Target.AttachToTarget(this.attachedTargetId);
-                    LogTrace("Target ID {0} attached. Active session ID: {1}", this.attachedTargetId, sessionId);
-                    this.ActiveSessionId = sessionId;
-                    break;
+                    await this.Domains.Target.DetachFromTarget(sessionId, this.attachedTargetId);
                 }
-            }
 
-            await this.domains.Target.SetAutoAttach();
-            LogTrace("AutoAttach is set.", this.attachedTargetId);
+                this.attachedTargetId = null;
+            }
         }
 
         protected void Dispose(bool disposing)
         {
-            if (!isDisposed)
+            if (!this.isDisposed)
             {
                 if (disposing)
                 {
-                    this.domains.Target.TargetDetached -= OnTargetDetached;
-                    if (sessionSocket != null)
-                    {
-                        if (receiveTask != null)
-                        {
-                            if (sessionSocket.State == WebSocketState.Open)
-                            {
-                                try
-                                {
-                                    // Since Chromium-based DevTools does not respond to the close
-                                    // request with a correctly echoed WebSocket close packet, but
-                                    // rather just terminates the socket connection, so we have to
-                                    // catch the exception thrown when the socket is terminated
-                                    // unexpectedly. Also, because we are using async, waiting for
-                                    // the task to complete might throw a TaskCanceledException,
-                                    // which we should also catch. Additiionally, there are times
-                                    // when mulitple failure modes can be seen, which will throw an
-                                    // AggregateException, consolidating several exceptions into one,
-                                    // and this too must be caught. Finally, the call to CloseAsync
-                                    // will hang even though the connection is already severed.
-                                    // Wait for the task to complete for a short time (since we're
-                                    // restricted to localhost, the default of 2 seconds should be
-                                    // plenty; if not, change the initialization of the timout),
-                                    // and if the task is still running, then we assume the connection
-                                    // is properly closed.
-                                    Task closeTask = Task.Run(() => sessionSocket.CloseAsync(WebSocketCloseStatus.NormalClosure, string.Empty, CancellationToken.None));
-                                    closeTask.Wait(closeConnectionWaitTimeSpan);
-                                }
-                                catch (WebSocketException)
-                                {
-                                }
-                                catch (TaskCanceledException)
-                                {
-                                }
-                                catch (AggregateException)
-                                {
-                                }
-                            }
+                    this.Domains.Target.TargetDetached -= this.OnTargetDetached;
+                    this.pendingCommands.Clear();
+                    this.TerminateSocketConnection();
 
-                            // Wait for the recieve task to be completely exited (for
-                            // whatever reason) before attempting to dispose it.
-                            receiveTask.Wait();
-                            receiveTask.Dispose();
-                            receiveTask = null;
-                        }
-
-                        sessionSocket.Dispose();
-                        sessionSocket = null;
-                    }
-
-                    pendingCommands.Clear();
+                    // Note: Canceling the receive task will dispose of
+                    // the underlying ClientWebSocket instance.
+                    this.CancelReceiveTask();
                 }
 
-                isDisposed = true;
+                this.isDisposed = true;
             }
         }
 
@@ -399,80 +369,177 @@ namespace OpenQA.Selenium.DevTools
             return protocolVersion;
         }
 
-        private async Task OpenSessionConnection(CancellationToken cancellationToken)
+        private async Task InitializeSocketConnection()
         {
-            if (sessionSocket == null)
+            LogTrace("Creating WebSocket");
+            this.sessionSocket = new ClientWebSocket();
+            this.sessionSocket.Options.KeepAliveInterval = TimeSpan.Zero;
+
+            try
             {
-                return;
+                var timeoutTokenSource = new CancellationTokenSource(this.openConnectionWaitTimeSpan);
+                await this.sessionSocket.ConnectAsync(new Uri(this.websocketAddress), timeoutTokenSource.Token);
+                while (this.sessionSocket.State != WebSocketState.Open && !timeoutTokenSource.Token.IsCancellationRequested) ;
+            }
+            catch (OperationCanceledException e)
+            {
+                throw new WebDriverException(string.Format(CultureInfo.InvariantCulture, "Could not establish WebSocket connection within {0} seconds.", this.openConnectionWaitTimeSpan.TotalSeconds), e);
             }
 
-            // Try to prevent "System.InvalidOperationException: The WebSocket has already been started."
-            while (sessionSocket.State == WebSocketState.Connecting)
+            LogTrace("WebSocket created; starting message listener");
+            this.receiveCancellationToken = new CancellationTokenSource();
+            this.receiveTask = Task.Run(() => ReceiveMessage().ConfigureAwait(false));
+        }
+
+        private async Task InitializeSession()
+        {
+            LogTrace("Creating session");
+            if (this.attachedTargetId == null)
             {
-                if (cancellationToken.IsCancellationRequested)
+                // Set the attached target ID to a "pending connection" value
+                // (any non-null will do, so we choose the empty string), so
+                // that when getting the available targets, we won't
+                // recursively try to call InitializeSession.
+                this.attachedTargetId = "";
+                var targets = await this.domains.Target.GetTargets();
+                foreach (var target in targets)
                 {
-                    return;
+                    if (target.Type == "page")
+                    {
+                        this.attachedTargetId = target.TargetId;
+                        LogTrace("Found Target ID {0}.", this.attachedTargetId);
+                        break;
+                    }
                 }
-
-                await Task.Delay(10);
             }
 
-            if (sessionSocket.State != WebSocketState.Open)
+            if (this.attachedTargetId == "")
             {
-                await sessionSocket.ConnectAsync(new Uri(websocketAddress), cancellationToken);
+                this.attachedTargetId = null;
+                throw new WebDriverException("Unable to find target to attach to, no taargets of type 'page' available");
+            }
 
-                receiveTask = Task.Run(async () => await ReceiveMessage(cancellationToken));
+            string sessionId = await this.domains.Target.AttachToTarget(this.attachedTargetId);
+            LogTrace("Target ID {0} attached. Active session ID: {1}", this.attachedTargetId, sessionId);
+            this.ActiveSessionId = sessionId;
+
+            await this.domains.Target.SetAutoAttach();
+            LogTrace("AutoAttach is set.", this.attachedTargetId);
+
+            this.domains.Target.TargetDetached += this.OnTargetDetached;
+        }
+
+        private async void OnTargetDetached(object sender, TargetDetachedEventArgs e)
+        {
+            if (e.SessionId == this.ActiveSessionId && e.TargetId == this.attachedTargetId)
+            {
+                await this.StopSession(false);
             }
         }
 
-        private async Task ReceiveMessage(CancellationToken cancellationToken)
+        private void TerminateSocketConnection()
         {
-            while (sessionSocket.State == WebSocketState.Open)
+            if (this.sessionSocket != null && this.sessionSocket.State == WebSocketState.Open)
             {
-                WebSocketReceiveResult result = null;
-                var buffer = WebSocket.CreateClientBuffer(1024, 1024);
+                var closeConnectionTokenSource = new CancellationTokenSource(this.closeConnectionWaitTimeSpan);
                 try
                 {
-                    result = await sessionSocket.ReceiveAsync(buffer, cancellationToken);
-                }
-                catch (OperationCanceledException)
-                {
+                    // Since Chromium-based DevTools does not respond to the close
+                    // request with a correctly echoed WebSocket close packet, but
+                    // rather just terminates the socket connection, so we have to
+                    // catch the exception thrown when the socket is terminated
+                    // unexpectedly. Also, because we are using async, waiting for
+                    // the task to complete might throw a TaskCanceledException,
+                    // which we should also catch. Additiionally, there are times
+                    // when mulitple failure modes can be seen, which will throw an
+                    // AggregateException, consolidating several exceptions into one,
+                    // and this too must be caught. Finally, the call to CloseAsync
+                    // will hang even though the connection is already severed.
+                    // Wait for the task to complete for a short time (since we're
+                    // restricted to localhost, the default of 2 seconds should be
+                    // plenty; if not, change the initialization of the timout),
+                    // and if the task is still running, then we assume the connection
+                    // is properly closed.
+                    LogTrace("Sending socket close request");
+                    Task closeTask = Task.Run(async () => await this.sessionSocket.CloseOutputAsync(WebSocketCloseStatus.NormalClosure, string.Empty, closeConnectionTokenSource.Token));
+                    closeTask.Wait();
                 }
                 catch (WebSocketException)
                 {
-                    // If we receive a WebSocketException, there's not much we can do
-                    // so we'll just terminate our listener.
-                    break;
                 }
+                catch (TaskCanceledException)
+                {
+                }
+                catch (AggregateException)
+                {
+                }
+            }
+        }
 
-                if (cancellationToken.IsCancellationRequested)
-                {
-                    break;
-                }
+        private void CancelReceiveTask()
+        {
+            if (this.receiveTask != null)
+            {
+                // Wait for the recieve task to be completely exited (for
+                // whatever reason) before attempting to dispose it. Also
+                // note that canceling the receive task will dispose of the
+                // underlying WebSocket.
+                this.receiveCancellationToken.Cancel();
+                this.receiveTask.Wait();
+                this.receiveTask.Dispose();
+                this.receiveTask = null;
+            }
+        }
 
-                if (result.MessageType == WebSocketMessageType.Close)
+        private async Task ReceiveMessage()
+        {
+            var cancellationToken = this.receiveCancellationToken.Token;
+            try
+            {
+                var buffer = WebSocket.CreateClientBuffer(1024, 1024);
+                while (this.sessionSocket.State != WebSocketState.Closed && !cancellationToken.IsCancellationRequested)
                 {
-                    break;
-                }
-                else
-                {
-                    using (var stream = new MemoryStream())
+                    WebSocketReceiveResult result = await this.sessionSocket.ReceiveAsync(buffer, cancellationToken);
+                    if (!cancellationToken.IsCancellationRequested)
                     {
-                        stream.Write(buffer.Array, 0, result.Count);
-                        while (!result.EndOfMessage)
+                        if (result.MessageType == WebSocketMessageType.Close && this.sessionSocket.State == WebSocketState.CloseReceived)
                         {
-                            result = await sessionSocket.ReceiveAsync(buffer, cancellationToken);
-                            stream.Write(buffer.Array, 0, result.Count);
+                            LogTrace("Got WebSocket close message from browser");
+                            await this.sessionSocket.CloseOutputAsync(WebSocketCloseStatus.NormalClosure, string.Empty, cancellationToken);
                         }
+                    }
 
-                        stream.Seek(0, SeekOrigin.Begin);
-                        using (var reader = new StreamReader(stream, Encoding.UTF8))
+                    if (this.sessionSocket.State == WebSocketState.Open && result.MessageType != WebSocketMessageType.Close)
+                    {
+                        using (var stream = new MemoryStream())
                         {
-                            string message = reader.ReadToEnd();
-                            ProcessIncomingMessage(message);
+                            stream.Write(buffer.Array, 0, result.Count);
+                            while (!result.EndOfMessage)
+                            {
+                                result = await this.sessionSocket.ReceiveAsync(buffer, cancellationToken);
+                                stream.Write(buffer.Array, 0, result.Count);
+                            }
+
+                            stream.Seek(0, SeekOrigin.Begin);
+                            using (var reader = new StreamReader(stream, Encoding.UTF8))
+                            {
+                                string message = reader.ReadToEnd();
+                                ProcessIncomingMessage(message);
+                            }
                         }
                     }
                 }
+            }
+            catch (OperationCanceledException)
+            {
+            }
+            catch (WebSocketException)
+            {
+            }
+            finally
+            {
+                this.sessionSocket.Dispose();
+                this.sessionSocket = null;
             }
         }
 
@@ -485,7 +552,7 @@ namespace OpenQA.Selenium.DevTools
                 var commandId = idProperty.Value<long>();
 
                 DevToolsCommandData commandInfo;
-                if (pendingCommands.TryGetValue(commandId, out commandInfo))
+                if (this.pendingCommands.TryGetValue(commandId, out commandInfo))
                 {
                     if (messageObject.TryGetValue("error", out var errorProperty))
                     {
@@ -502,7 +569,7 @@ namespace OpenQA.Selenium.DevTools
                 }
                 else
                 {
-                     LogError("Recieved Unknown Response {0}: {1}", commandId, message);
+                    LogError("Recieved Unknown Response {0}: {1}", commandId, message);
                 }
 
                 return;
@@ -520,17 +587,6 @@ namespace OpenQA.Selenium.DevTools
             }
 
             LogTrace("Recieved Other: {0}", message);
-        }
-
-        private async void OnTargetDetached(object sender, TargetDetachedEventArgs e)
-        {
-            if (e.TargetId == this.attachedTargetId)
-            {
-                LogTrace("TargetDetached event received for session attached target (Target ID: {0}); reinitializing session", e.TargetId);
-                this.attachedTargetId = null;
-                this.ActiveSessionId = null;
-                await this.InitializeSession();
-            }
         }
 
         private void OnDevToolsEventReceived(DevToolsEventReceivedEventArgs e)

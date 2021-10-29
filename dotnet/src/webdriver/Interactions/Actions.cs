@@ -60,7 +60,7 @@ namespace OpenQA.Selenium.Interactions
             IActionExecutor actionExecutor = GetDriverAs<IActionExecutor>(driver);
             if (actionExecutor == null)
             {
-                throw new ArgumentException("The IWebDriver object must implement or wrap a driver that implements IActionExecutor.", "driver");
+                throw new ArgumentException("The IWebDriver object must implement or wrap a driver that implements IActionExecutor.", nameof(driver));
             }
 
             this.actionExecutor = actionExecutor;
@@ -102,7 +102,7 @@ namespace OpenQA.Selenium.Interactions
         {
             if (string.IsNullOrEmpty(theKey))
             {
-                throw new ArgumentException("The key value must not be null or empty", "theKey");
+                throw new ArgumentException("The key value must not be null or empty", nameof(theKey));
             }
 
             ILocatable target = GetLocatableFromElement(element);
@@ -146,7 +146,7 @@ namespace OpenQA.Selenium.Interactions
         {
             if (string.IsNullOrEmpty(theKey))
             {
-                throw new ArgumentException("The key value must not be null or empty", "theKey");
+                throw new ArgumentException("The key value must not be null or empty", nameof(theKey));
             }
 
             ILocatable target = GetLocatableFromElement(element);
@@ -181,7 +181,7 @@ namespace OpenQA.Selenium.Interactions
         {
             if (string.IsNullOrEmpty(keysToSend))
             {
-                throw new ArgumentException("The key value must not be null or empty", "keysToSend");
+                throw new ArgumentException("The key value must not be null or empty", nameof(keysToSend));
             }
 
             ILocatable target = GetLocatableFromElement(element);
@@ -298,7 +298,7 @@ namespace OpenQA.Selenium.Interactions
         {
             if (toElement == null)
             {
-                throw new ArgumentException("MoveToElement cannot move to a null element with no offset.", "toElement");
+                throw new ArgumentException("MoveToElement cannot move to a null element with no offset.", nameof(toElement));
             }
 
             ILocatable target = GetLocatableFromElement(toElement);
@@ -457,7 +457,7 @@ namespace OpenQA.Selenium.Interactions
 
             if (target == null)
             {
-                throw new ArgumentException("The IWebElement object must implement or wrap an element that implements ILocatable.", "element");
+                throw new ArgumentException("The IWebElement object must implement or wrap an element that implements ILocatable.", nameof(element));
             }
 
             return target;

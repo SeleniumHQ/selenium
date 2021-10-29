@@ -133,7 +133,7 @@ def testShouldBeAbleToSelectARadioButtonByClickingOnIt(driver, pages):
     assert radioButton.is_selected() is True
 
 
-def testShouldReturnStateOfRadioButtonsBeforeInteration(driver, pages):
+def testShouldReturnStateOfRadioButtonsBeforeInteraction(driver, pages):
     pages.load("formPage.html")
     radioButton = driver.find_element(By.ID, "cheese_and_peas")
     assert radioButton.is_selected() is True

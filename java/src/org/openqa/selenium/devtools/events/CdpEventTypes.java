@@ -55,10 +55,10 @@ public class CdpEventTypes {
       }
 
       @Override
-      public void initializeListener(HasLogEvents loggable) {
-        Require.precondition(loggable instanceof HasDevTools, "Loggable must implement HasDevTools");
+      public void initializeListener(WebDriver webDriver) {
+        Require.precondition(webDriver instanceof HasDevTools, "Loggable must implement HasDevTools");
 
-        DevTools tools = ((HasDevTools) loggable).getDevTools();
+        DevTools tools = ((HasDevTools) webDriver).getDevTools();
         tools.createSessionIfThereIsNotOne();
 
         tools.getDomains().events().addConsoleListener(handler);
@@ -87,16 +87,14 @@ public class CdpEventTypes {
       }
 
       @Override
-      public void initializeListener(HasLogEvents loggable) {
-        Require.precondition(loggable instanceof WebDriver, "Loggable must be a WebDriver");
-        Require.precondition(loggable instanceof HasDevTools, "Loggable must implement HasDevTools");
+      public void initializeListener(WebDriver driver) {
+        Require.precondition(driver instanceof HasDevTools, "Loggable must implement HasDevTools");
 
-        DevTools tools = ((HasDevTools) loggable).getDevTools();
+        DevTools tools = ((HasDevTools) driver).getDevTools();
         tools.createSessionIfThereIsNotOne();
 
         tools.getDomains().javascript().pin("__webdriver_attribute", script);
 
-        WebDriver driver = (WebDriver) loggable;
         // And add the script to the current page
         ((JavascriptExecutor) driver).executeScript(script);
 

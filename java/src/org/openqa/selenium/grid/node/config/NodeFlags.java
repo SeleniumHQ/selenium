@@ -56,7 +56,7 @@ public class NodeFlags implements HasRoles {
   @Parameter(
     names = {"--override-max-sessions"},
     arity = 1,
-    description = "The # of available processos is the recommended max sessions value (1 browser "
+    description = "The # of available processors is the recommended max sessions value (1 browser "
                   + "session per processor). Setting this flag to true allows the recommended max "
                   + "value to be overwritten. Session stability and reliability might suffer as "
                   + "the host could run out of resources.")
@@ -109,6 +109,19 @@ public class NodeFlags implements HasRoles {
                   "or the Router)")
   @ConfigValue(section = NODE_SECTION, name = "grid-url", example = "\"https://grid.example.com\"")
   public String gridUri;
+
+  @Parameter(
+    names = {"--hub"},
+    description = "The address of the Hub in a Hub-and-Node configuration. This can " +
+      "be a plain hostname or IP address (`hostname`), in which case the Hub will be " +
+      "assumed to be `http://hostname:4444`, the `--grid-url` will be the same, " +
+      "`--publish-events` will be `tcp://hostname:4442` and `--subscribe-events` will " +
+      "be `tcp://hostname:4443`. If `hostname` contains a port number, that will be used " +
+      "for `--grid-url` but the URIs for the event bus will remain the same. Any of these " +
+      "default values may be overridden but setting the correct flags. If the hostname has " +
+      "a protocol (such as `https`) that will be used too.")
+  @ConfigValue(section = NODE_SECTION, name = "hub-address", example = "hub.grid.example.com")
+  public String hub;
 
   @Parameter(
     names = {"--driver-configuration"},

@@ -28,7 +28,6 @@ namespace OpenQA.Selenium.Edge
                 // property to the below options: BinaryLocation = <path to MSEdge.exe>
                 return new EdgeOptions()
                 {
-                    UseChromium = true,
                     BinaryLocation = @"C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe"
                 };
             }
@@ -38,7 +37,7 @@ namespace OpenQA.Selenium.Edge
         {
             get
             {
-                EdgeDriverService service = EdgeDriverService.CreateChromiumService(ServicePath);
+                EdgeDriverService service = EdgeDriverService.CreateDefaultService(ServicePath);
                 return service;
             }
         }

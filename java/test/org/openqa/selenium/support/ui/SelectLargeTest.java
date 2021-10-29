@@ -32,7 +32,7 @@ import java.util.List;
  */
 public class SelectLargeTest extends JUnit4TestBase {
   @Test
-  public void multipleSelectShouldBePossibleIfMulitpleAttributeEmpty() {
+  public void multipleSelectShouldBePossibleIfMultipleAttributeEmpty() {
     driver.get(pages.formPage);
 
     WebElement selectElement = driver.findElement(By.name("select_empty_multiple"));

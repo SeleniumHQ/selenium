@@ -8,7 +8,7 @@ tox -c py/tox.ini -e docs || exit
 cd rb
 bundle install || exit
 cd ..
-./go //rb:docs || exit
+bazel run //rb:docs || exit
 
 git checkout rb/Gemfile.lock
 

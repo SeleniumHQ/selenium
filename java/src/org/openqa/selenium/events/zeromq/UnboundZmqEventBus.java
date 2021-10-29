@@ -17,9 +17,13 @@
 
 package org.openqa.selenium.events.zeromq;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
+
 import com.google.common.collect.EvictingQueue;
+
 import net.jodah.failsafe.Failsafe;
 import net.jodah.failsafe.RetryPolicy;
+
 import org.openqa.selenium.events.Event;
 import org.openqa.selenium.events.EventBus;
 import org.openqa.selenium.events.EventListener;
@@ -27,6 +31,7 @@ import org.openqa.selenium.events.EventName;
 import org.openqa.selenium.grid.security.Secret;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.Json;
+import org.openqa.selenium.json.JsonException;
 import org.openqa.selenium.json.JsonOutput;
 import org.zeromq.SocketType;
 import org.zeromq.ZContext;
@@ -52,8 +57,6 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Consumer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-import static java.nio.charset.StandardCharsets.UTF_8;
 
 class UnboundZmqEventBus implements EventBus {
 
@@ -225,8 +228,16 @@ class UnboundZmqEventBus implements EventBus {
               ZMQ.Socket socket = poller.getSocket(i);
 
               EventName eventName = new EventName(new String(socket.recv(), UTF_8));
-              Secret eventSecret =
-                JSON.toType(new String(socket.recv(), UTF_8), Secret.class);
+
+              Secret eventSecret;
+              String receivedEventSecret = new String(socket.recv(), UTF_8);
+              try {
+                eventSecret = JSON.toType(receivedEventSecret, Secret.class);
+              } catch (JsonException e) {
+                rejectEvent(eventName, receivedEventSecret);
+                return;
+              }
+
               UUID id = UUID.fromString(new String(socket.recv(), UTF_8));
               String data = new String(socket.recv(), UTF_8);
 
@@ -241,15 +252,10 @@ class UnboundZmqEventBus implements EventBus {
               recentMessages.add(id);
 
               if (!Secret.matches(secret, eventSecret)) {
-                LOG.log(Level.SEVERE, "Received message without a valid secret. Rejecting. {0} -> {1}",
-                  new Object[]{event, data}); // String formatting only applied if needed
-                Event rejectedEvent =
-                  new Event(REJECTED_EVENT, new ZeroMqEventBus.RejectedEvent(eventName, data));
-
-                notifyListeners(REJECTED_EVENT, rejectedEvent);
-
+                rejectEvent(eventName, data);
                 return;
               }
+
               notifyListeners(eventName, event);
             }
           }
@@ -257,13 +263,24 @@ class UnboundZmqEventBus implements EventBus {
           if (e.getCause() instanceof AssertionError) {
             // Do nothing.
           } else {
-            LOG.log(Level.WARNING, e, () -> "Caught exception while polling for event bus messages: "
-              + e.getMessage());
-            throw e;
+            LOG.log(Level.WARNING, e,
+                    () -> "Caught exception while polling for event bus messages: " +
+                          e.getMessage());
           }
         }
       }
     }
+
+    private void rejectEvent(EventName eventName, String data) {
+      Event rejectedEvent = new Event(REJECTED_EVENT,
+                                      new ZeroMqEventBus.RejectedEvent(eventName, data));
+      LOG.log(Level.SEVERE,
+              "Received message without a valid secret. Rejecting. {0} -> {1}",
+              new Object[]{rejectedEvent, data}); // String formatting only applied if needed
+
+      notifyListeners(REJECTED_EVENT, rejectedEvent);
+    }
+
 
     private void notifyListeners(EventName eventName, Event event) {
       List<Consumer<Event>> eventListeners = listeners.getOrDefault(eventName, new ArrayList<>());

@@ -872,7 +872,7 @@ namespace OpenQA.Selenium.Support.Events
             {
                 if (url == null)
                 {
-                    throw new ArgumentNullException("url", "url cannot be null");
+                    throw new ArgumentNullException(nameof(url), "url cannot be null");
                 }
 
                 try

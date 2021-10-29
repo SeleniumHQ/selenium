@@ -1,4 +1,5 @@
 package(default_visibility = [
+    "//dotnet/src/webdriver:__pkg__",
     "//java/src/org/openqa/selenium/devtools:__pkg__",
 ])
 

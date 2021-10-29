@@ -32,7 +32,7 @@ suite(
     beforeAll(async function () {
       driver = await env.builder().build()
     })
-    afterAll(() => driver.quit())
+    afterAll(async () => await driver.quit())
 
     it('sends Page.enable command using devtools', async function () {
       const cdpConnection = await driver.createCDPConnection('page')

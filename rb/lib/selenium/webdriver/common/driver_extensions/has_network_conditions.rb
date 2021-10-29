@@ -38,10 +38,19 @@ module Selenium
         # @param [Hash] conditions
         # @option conditions [Integer] :latency
         # @option conditions [Integer] :throughput
+        # @option conditions [Integer] :upload_throughput
+        # @option conditions [Integer] :download_throughput
         # @option conditions [Boolean] :offline
         #
 
         def network_conditions=(conditions)
+          conditions[:latency] ||= 0
+          unless conditions.key?(:throughput)
+            conditions[:download_throughput] ||= -1
+            conditions[:upload_throughput] ||= -1
+          end
+          conditions[:offline] = false unless conditions.key?(:offline)
+
           @bridge.network_conditions = conditions
         end
 

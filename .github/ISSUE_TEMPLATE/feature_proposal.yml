@@ -1,0 +1,31 @@
+name: 🚀 Feature Proposal
+description: Propose a feature
+title: "[🚀 Feature]: "
+labels: [ I-enhancement, needs-triaging ]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to propose a feature!
+  - type: textarea
+    id: feature-description
+    attributes:
+      label: Feature and motivation
+      description: |
+        Describe clearly and concisely the feature you are proposing, what is the motivation
+        behind it.
+      placeholder: |
+        Help us to understand your proposal by adding as many details as possible, we will look into
+        it and give you feedback as soon as possible.
+    validations:
+      required: true
+  - type: textarea
+    id: feature-example
+    attributes:
+      label: Usage example
+      description: |
+        How would you use this feature?
+      placeholder: |
+        A clear example showing how this feature is useful for you and the Selenium community.
+    validations:
+      required: true

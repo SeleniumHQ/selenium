@@ -81,18 +81,18 @@ namespace OpenQA.Selenium
         {
             if (string.IsNullOrEmpty(commandName))
             {
-                throw new ArgumentNullException("commandName", "The name of the command cannot be null or the empty string.");
+                throw new ArgumentNullException(nameof(commandName), "The name of the command cannot be null or the empty string.");
             }
 
             if (commandInfo == null)
             {
-                throw new ArgumentNullException("commandInfo", "The command information object cannot be null.");
+                throw new ArgumentNullException(nameof(commandInfo), "The command information object cannot be null.");
             }
 
             if (!typeof(T).IsAssignableFrom(this.RepositoryCommandInfoType))
             {
                 string message = string.Format(CultureInfo.InvariantCulture, "{0} is not a valid command type for this repository; command info must be of type {1}", typeof(T), this.RepositoryCommandInfoType);
-                throw new ArgumentException(message, "commandInfo");
+                throw new ArgumentException(message, nameof(commandInfo));
             }
 
             if (this.commandDictionary.ContainsKey(commandName))

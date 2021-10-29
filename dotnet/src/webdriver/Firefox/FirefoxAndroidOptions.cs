@@ -27,9 +27,6 @@ namespace OpenQA.Selenium.Firefox
     /// </summary>
     public class FirefoxAndroidOptions : AndroidOptions
     {
-        private string androidPackage;
-        private string androidDeviceSerial;
-        private string androidActivity;
         private List<string> androidIntentArguments = new List<string>();
 
         /// <summary>

@@ -315,7 +315,7 @@ namespace OpenQA.Selenium
         {
             if (by == null)
             {
-                throw new ArgumentNullException("by", "by cannot be null");
+                throw new ArgumentNullException(nameof(@by), "by cannot be null");
             }
 
             return by.FindElement(this);
@@ -348,7 +348,7 @@ namespace OpenQA.Selenium
         {
             if (by == null)
             {
-                throw new ArgumentNullException("by", "by cannot be null");
+                throw new ArgumentNullException(nameof(@by), "by cannot be null");
             }
 
             return by.FindElements(this);
@@ -588,7 +588,7 @@ namespace OpenQA.Selenium
         {
             if (text == null)
             {
-                throw new ArgumentNullException("text", "text cannot be null");
+                throw new ArgumentNullException(nameof(text), "text cannot be null");
             }
 
             var fileNames = text.Split('\n');

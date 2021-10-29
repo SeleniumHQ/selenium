@@ -73,16 +73,10 @@ module Selenium
         def from_json(json)
           data = decoded(json)
 
-          # can't use Tempfile here since it doesn't support File::BINARY mode on 1.8
-          # can't use Dir.mktmpdir(&blk) because of http://jira.codehaus.org/browse/JRUBY-4082
-          tmp_dir = Dir.mktmpdir
-          begin
-            zip_path = File.join(tmp_dir, "webdriver-profile-duplicate-#{json.hash}.zip")
+          Tempfile.create do |zip_path|
             File.open(zip_path, 'wb') { |zip_file| zip_file << Base64.decode64(data) }
 
             new Zipper.unzip(zip_path)
-          ensure
-            FileUtils.rm_rf tmp_dir
           end
         end
       end # ClassMethods

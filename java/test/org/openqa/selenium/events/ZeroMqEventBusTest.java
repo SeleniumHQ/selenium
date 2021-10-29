@@ -60,5 +60,4 @@ public class ZeroMqEventBusTest {
 
     Assertions.assertThatThrownBy(() -> badFuture.get(5, SECONDS)).getCause().isSameAs(errorException);
   }
-
 }

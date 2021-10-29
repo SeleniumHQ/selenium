@@ -433,7 +433,7 @@ public class FrameSwitchingTest extends JUnit4TestBase {
 
   @Test
   @Ignore(SAFARI)
-  public void testShouldBeAbleToSwitchToTheTopIfTheFrameIsDeletedFromUnderUsWithWebelement() {
+  public void testShouldBeAbleToSwitchToTheTopIfTheFrameIsDeletedFromUnderUsWithWebElement() {
     driver.get(appServer.whereIs("frame_switching_tests/deletingFrame.html"));
     WebElement iframe = driver.findElement(By.id("iframe1"));
     wait.until(frameToBeAvailableAndSwitchToIt(iframe));

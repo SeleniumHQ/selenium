@@ -86,7 +86,7 @@ public class ActionsTest {
   }
 
   @Test
-  public void throwsIllegalArgumentExceptionOverridenIfKeysNull() {
+  public void throwsIllegalArgumentExceptionOverriddenIfKeysNull() {
     assertThatExceptionOfType(IllegalArgumentException.class)
         .isThrownBy(() -> new Actions(driver).sendKeys(dummyLocatableElement).perform());
   }
@@ -221,10 +221,10 @@ public class ActionsTest {
   }
 
 
-  private WebElement mockLocatableElementWithCoordinates(Coordinates coord) {
+  private WebElement mockLocatableElementWithCoordinates(Coordinates coordinates) {
     WebElement element = mock(WebElement.class,
                               withSettings().extraInterfaces(Locatable.class));
-    when(((Locatable) element).getCoordinates()).thenReturn(coord);
+    when(((Locatable) element).getCoordinates()).thenReturn(coordinates);
     return element;
   }
 }

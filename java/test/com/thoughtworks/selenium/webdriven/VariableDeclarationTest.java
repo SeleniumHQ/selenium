@@ -47,7 +47,7 @@ public class VariableDeclarationTest {
   }
 
   @Test
-  public void testShouldAddDeclarationIfNecesssary() {
+  public void testShouldAddDeclarationIfNecessary() {
     StringBuilder builder = new StringBuilder();
     declaration.mutate("selenium.browserbot.findElement", builder);
 

@@ -17,6 +17,7 @@
 
 package org.openqa.selenium.netty.server;
 
+import java.net.InetSocketAddress;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.Channel;
 import io.netty.channel.EventLoopGroup;
@@ -53,6 +54,7 @@ public class NettyServer implements Server<NettyServer> {
   private final EventLoopGroup bossGroup;
   private final EventLoopGroup workerGroup;
   private final int port;
+  private final String host;
   private final URL externalUrl;
   private final HttpHandler handler;
   private final BiFunction<String, Consumer<Message>, Optional<Consumer<Message>>> websocketHandler;
@@ -103,6 +105,7 @@ public class NettyServer implements Server<NettyServer> {
     workerGroup = new NioEventLoopGroup();
 
     port = options.getPort();
+    host = options.getHostname().orElse("0.0.0.0");
     allowCors = options.getAllowCORS();
 
     try {
@@ -147,7 +150,7 @@ public class NettyServer implements Server<NettyServer> {
       .childHandler(new SeleniumHttpInitializer(sslCtx, handler, websocketHandler, allowCors));
 
     try {
-      channel = b.bind(port).sync().channel();
+      channel = b.bind(new InetSocketAddress(host, port)).sync().channel();
     } catch (InterruptedException e) {
       Thread.currentThread().interrupt();
       throw new UncheckedIOException(new IOException("Start up interrupted", e));

@@ -95,7 +95,7 @@ namespace OpenQA.Selenium.Remote
         {
             if (commandToExecute == null)
             {
-                throw new ArgumentNullException("commandToExecute", "Command to execute cannot be null");
+                throw new ArgumentNullException(nameof(commandToExecute), "Command to execute cannot be null");
             }
 
             Response toReturn = null;

@@ -21,6 +21,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Globalization;
+using OpenQA.Selenium.DevTools;
 using OpenQA.Selenium.Html5;
 using OpenQA.Selenium.Interactions;
 using OpenQA.Selenium.Internal;
@@ -132,7 +133,7 @@ namespace OpenQA.Selenium
             {
                 if (value == null)
                 {
-                    throw new ArgumentNullException("value", "Argument 'url' cannot be null.");
+                    throw new ArgumentNullException(nameof(value), "Argument 'url' cannot be null.");
                 }
 
                 Dictionary<string, object> parameters = new Dictionary<string, object>();
@@ -232,7 +233,7 @@ namespace OpenQA.Selenium
             {
                 if (value == null)
                 {
-                    throw new ArgumentNullException("value", "FileDetector cannot be null");
+                    throw new ArgumentNullException(nameof(value), "FileDetector cannot be null");
                 }
 
                 this.fileDetector = value;
@@ -323,6 +324,16 @@ namespace OpenQA.Selenium
         }
 
         /// <summary>
+        /// Gets or sets the factory object used to create instances of <see cref="WebElement"/>
+        /// or its subclasses.
+        /// </summary>
+        protected WebElementFactory ElementFactory
+        {
+            get { return this.elementFactory; }
+            set { this.elementFactory = value; }
+        }
+
+        /// <summary>
         /// Closes the Browser
         /// </summary>
         public void Close()
@@ -388,7 +399,7 @@ namespace OpenQA.Selenium
         {
             if (by == null)
             {
-                throw new ArgumentNullException("by", "by cannot be null");
+                throw new ArgumentNullException(nameof(@by), "by cannot be null");
             }
 
             return by.FindElement(this);
@@ -424,7 +435,7 @@ namespace OpenQA.Selenium
         {
             if (by == null)
             {
-                throw new ArgumentNullException("by", "by cannot be null");
+                throw new ArgumentNullException(nameof(@by), "by cannot be null");
             }
 
             return by.FindElements(this);
@@ -476,7 +487,7 @@ namespace OpenQA.Selenium
         {
             if (actionSequenceList == null)
             {
-                throw new ArgumentNullException("actionSequenceList", "List of action sequences must not be null");
+                throw new ArgumentNullException(nameof(actionSequenceList), "List of action sequences must not be null");
             }
 
             List<object> objectList = new List<object>();
@@ -907,7 +918,7 @@ namespace OpenQA.Selenium
             }
             else
             {
-                throw new ArgumentException("Argument is of an illegal type" + arg.ToString(), "arg");
+                throw new ArgumentException("Argument is of an illegal type" + arg.ToString(), nameof(arg));
             }
 
             return converted;

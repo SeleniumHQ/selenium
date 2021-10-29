@@ -24,6 +24,11 @@ namespace OpenQA.Selenium.DevTools
     public interface IDevTools
     {
         /// <summary>
+        /// Gets a value indicating whether a DevTools session is active.
+        /// </summary>
+        bool HasActiveDevToolsSession { get; }
+
+        /// <summary>
         /// Creates a session to communicate with a browser using a Developer Tools debugging protocol.
         /// </summary>
         /// <returns>The active session to use to communicate with the Developer Tools debugging protocol.</returns>

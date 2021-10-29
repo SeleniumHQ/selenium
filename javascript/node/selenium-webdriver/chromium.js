@@ -725,11 +725,11 @@ class Driver extends webdriver.WebDriver {
   }
 
   /**
-   * ends an arbitrary devtools command to the browser and get the result.
+   * Sends an arbitrary devtools command to the browser and get the result.
    *
    * @param {string} cmd The name of the command to send.
    * @param {Object=} params The command parameters.
-   * @return {!Promise<void>} A promise that will be resolved when the command
+   * @return {!Promise<string>} A promise that will be resolved when the command
    *     has finished.
    * @see <https://chromedevtools.github.io/devtools-protocol/>
    */

@@ -25,9 +25,12 @@ class DefaultNodeConfig extends MapConfig {
 
   DefaultNodeConfig() {
     super(ImmutableMap.of(
-        "events", ImmutableMap.of(
-            "publish", "tcp://*:4442",
-            "subscribe", "tcp://*:4443"),
+      "node", ImmutableMap.of(
+        // We use this instead of setting the default ports for
+        // the publish and subscribe ports of the event bus so
+        // that people can use the `--hub` flag safely.
+        "hub-address", "http://0.0.0.0:4444"
+      ),
       "server", ImmutableMap.of(
         "port", 5555)));
   }

@@ -29,7 +29,6 @@ const input = require('./input')
 const logging = require('./logging')
 const promise = require('./promise')
 const Symbols = require('./symbols')
-const cdpTargets = ['page', 'browser']
 const cdp = require('../devtools/CDPConnection')
 const WebSocket = require('ws')
 const http = require('../http/index')
@@ -37,6 +36,7 @@ const fs = require('fs')
 const { Capabilities } = require('./capabilities')
 const path = require('path')
 const { NoSuchElementError } = require('./error')
+const cdpTargets = ['page', 'browser']
 
 // Capability names that are defined in the W3C spec.
 const W3C_CAPABILITY_NAMES = new Set([
@@ -1199,8 +1199,7 @@ class WebDriver {
       caps['map_'].get('moz:debuggerAddress') ||
       new Map()
     const debuggerUrl = seCdp || vendorInfo['debuggerAddress'] || vendorInfo
-    this._wsUrl = await this.getWsUrl(debuggerUrl, target)
-
+    this._wsUrl = await this.getWsUrl(debuggerUrl, target, caps)
     return new Promise((resolve, reject) => {
       try {
         this._wsConnection = new WebSocket(this._wsUrl)
@@ -1223,32 +1222,38 @@ class WebDriver {
   /**
    * Retrieves 'webSocketDebuggerUrl' by sending a http request using debugger address
    * @param {string} debuggerAddress
-   * @param {string} target
+   * @param target
+   * @param caps
    * @return {string} Returns parsed webSocketDebuggerUrl obtained from the http request
    */
-  async getWsUrl(debuggerAddress, target) {
+  async getWsUrl(debuggerAddress, target, caps) {
     if (target && cdpTargets.indexOf(target.toLowerCase()) === -1) {
       throw new error.InvalidArgumentError('invalid target value')
     }
 
     if (debuggerAddress.match(/\/se\/cdp/)) {
-      if (debuggerAddress.match("ws:\/\/", "http:\/\/")) {
-        return debuggerAddress.replace("ws:\/\/", "http:\/\/")
-      }
-      else if (debuggerAddress.match("wss:\/\/", "https:\/\/")) {
-        return debuggerAddress.replace("wss:\/\/", "https:\/\/")
-      }
-      else {
-        return debuggerAddress
-      }
+      return debuggerAddress;
     }
 
-    const path = '/json/version'
+    let path
+    if (target === 'page' && caps['map_'].get('browserName')!=='firefox' ){
+      path = '/json'
+    } else if(target === 'page' && caps['map_'].get('browserName')==='firefox'){
+      path = '/json/list'
+    }
+    else {
+      path = '/json/version'
+    }
+
     let request = new http.Request('GET', path)
     let client = new http.HttpClient('http://' + debuggerAddress)
     let response = await client.send(request)
 
-    return JSON.parse(response.body)['webSocketDebuggerUrl']
+    if (target.toLowerCase() === 'page') {
+      return JSON.parse(response.body)[0]['webSocketDebuggerUrl']
+    } else {
+      return JSON.parse(response.body)['webSocketDebuggerUrl']
+    }
   }
 
   /**
@@ -2162,7 +2167,7 @@ class TargetLocator {
    * @return {!WebElementPromise} The active element.
    */
   activeElement() {
-    var id = this.driver_.execute(
+    const id = this.driver_.execute(
       new command.Command(command.Name.GET_ACTIVE_ELEMENT)
     )
     return new WebElementPromise(this.driver_, id)
@@ -2254,7 +2259,7 @@ class TargetLocator {
    *     when the driver has changed focus to the new window.
    */
   newWindow(typeHint) {
-    var driver = this.driver_
+    const driver = this.driver_
     return this.driver_
       .execute(
         new command.Command(command.Name.SWITCH_TO_NEW_WINDOW).setParameter(
@@ -2276,10 +2281,10 @@ class TargetLocator {
    * @return {!AlertPromise} The open alert.
    */
   alert() {
-    var text = this.driver_.execute(
+    const text = this.driver_.execute(
       new command.Command(command.Name.GET_ALERT_TEXT)
     )
-    var driver = this.driver_
+    const driver = this.driver_
     return new AlertPromise(
       driver,
       text.then(function (text) {
@@ -2609,7 +2614,7 @@ class WebElement {
    *     requested CSS value.
    */
   getCssValue(cssStyleProperty) {
-    var name = command.Name.GET_ELEMENT_VALUE_OF_CSS_PROPERTY
+    const name = command.Name.GET_ELEMENT_VALUE_OF_CSS_PROPERTY
     return this.execute_(
       new command.Command(name).setParameter('propertyName', cssStyleProperty)
     )
@@ -2753,7 +2758,10 @@ class WebElement {
    *     when the form has been submitted.
    */
   submit() {
-    return this.execute_(new command.Command(command.Name.SUBMIT_ELEMENT))
+    const form = this.findElement({xpath:"./ancestor-or-self::form"});
+    this.driver_.executeScript("var e = arguments[0].ownerDocument.createEvent('Event');"+
+    "e.initEvent('submit', true, true);"+
+    "if (arguments[0].dispatchEvent(e)) { arguments[0].submit() }", form)
   }
 
   /**
