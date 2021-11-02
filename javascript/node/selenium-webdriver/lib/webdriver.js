@@ -1203,20 +1203,49 @@ class WebDriver {
     return new Promise((resolve, reject) => {
       try {
         this._wsConnection = new WebSocket(this._wsUrl)
+        this._cdpConnection = new cdp.CdpConnection(this._wsConnection)
       } catch (err) {
         reject(err)
         return
       }
+  
+      this._wsConnection.on('open', async () => {
+        await this.getCdpTargets()
+      })
 
-      this._wsConnection.on('open', () => {
-        this._cdpConnection = new cdp.CdpConnection(this._wsConnection)
-        resolve(this._cdpConnection)
+      this._wsConnection.on('message', async (message) => {
+        const params = JSON.parse(message)
+        if (params.result) {
+          if (params.result.targetInfos) {
+            const targets = params.result.targetInfos
+            const page = targets.find(info => info.type === 'page')
+            if (page) {
+              this.targetID = page.targetId
+              this._cdpConnection.execute(
+                'Target.attachToTarget', 
+                1, 
+                { targetId: this.targetID, flatten: true }, 
+                null)
+            } else {
+              reject("Unable to find Page target.")
+            }
+          }
+          if (params.result.sessionId) {
+            this.sessionId = params.result.sessionId
+            this._cdpConnection.sessionId = this.sessionId
+            resolve(this._cdpConnection)
+          }
+        }
       })
 
       this._wsConnection.on('error', (error) => {
         reject(error)
       })
     })
+  }
+
+  async getCdpTargets() {
+    this._cdpConnection.execute('Target.getTargets')
   }
 
   /**
@@ -1377,8 +1406,8 @@ class WebDriver {
 
     this._wsConnection.on('message', (message) => {
       const params = JSON.parse(message)
-
       if (params.method === 'Runtime.consoleAPICalled') {
+
         const consoleEventParams = params['params']
         let event = {
           type: consoleEventParams['type'],
