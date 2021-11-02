@@ -335,21 +335,19 @@ void BrowserFactory::LaunchBrowserUsingCreateProcess(PROCESS_INFORMATION* proc_i
   delete[] command_line;
 }
 
-bool DirectoryExists(std::wstring& dirName) {
-  DWORD attribs = ::GetFileAttributesW(dirName.c_str());
+bool BrowserFactory::DirectoryExists(std::wstring& dir_name) {
+  DWORD attribs = ::GetFileAttributes(dir_name.c_str());
   if (attribs == INVALID_FILE_ATTRIBUTES) {
     return false;
   }
   return (attribs & FILE_ATTRIBUTE_DIRECTORY);
 }
 
-bool CreateUniqueTempDir(std::wstring &temp_dir) {
-  char temp[128];
-  std::wstring wtemp;
-
+bool BrowserFactory::CreateUniqueTempDir(std::wstring &temp_dir) {
   // get temporary folder for the current user
-  GetTempPathA(128, temp);
-  wtemp = StringUtilities::ToWString(temp);
+  wchar_t temp[128];
+  ::GetTempPath(128, temp);
+  std::wstring wtemp = temp;
   if (!DirectoryExists(wtemp)) return false;
 
   // create a IEDriver temporary folder inside the user level temporary folder
@@ -358,7 +356,7 @@ bool CreateUniqueTempDir(std::wstring &temp_dir) {
     std::wstring output = wtemp + L"IEDriver-" + StringUtilities::CreateGuid();
     if (DirectoryExists(output)) continue;
 
-    CreateDirectoryW(output.c_str(), NULL);
+    ::CreateDirectory(output.c_str(), NULL);
     if (!DirectoryExists(output)) continue;
 
     temp_dir = output;
@@ -1436,49 +1434,45 @@ bool BrowserFactory::IsEdgeMode() const {
 }
 
 // delete a folder recursively
-int DeleteDirectory(const std::wstring &dir_name) {
+int BrowserFactory::DeleteDirectory(const std::wstring &dir_name) {
   WIN32_FIND_DATA file_info;      
 
   std::wstring file_pattern = dir_name + L"\\*.*";
-  HANDLE hFile = ::FindFirstFileW(file_pattern.c_str(), &file_info);
-  if(hFile != INVALID_HANDLE_VALUE) {
+  HANDLE file_handle = ::FindFirstFile(file_pattern.c_str(), &file_info);
+  if (file_handle != INVALID_HANDLE_VALUE) {
     do {
-      if(file_info.cFileName[0] == '.') continue;
+      if (file_info.cFileName[0] == '.') continue;
       std::wstring file_path = dir_name + L"\\" + file_info.cFileName;
 
-      if(file_info.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) {
-        int iRC = DeleteDirectory(file_path);
-        if(iRC) return iRC;
+      if (file_info.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) {
+        int return_value = DeleteDirectory(file_path);
+        if(return_value) return return_value;
       } else {
-        if(::SetFileAttributesW(file_path.c_str(), FILE_ATTRIBUTE_NORMAL) == FALSE)
+        if (::SetFileAttributes(file_path.c_str(), FILE_ATTRIBUTE_NORMAL) == FALSE)
           return ::GetLastError();
 
-        if(::DeleteFileW(file_path.c_str()) == FALSE)
+        if (::DeleteFile(file_path.c_str()) == FALSE)
           return ::GetLastError();
       }
-    } while(::FindNextFileW(hFile, &file_info) == TRUE);
+    } while(::FindNextFile(file_handle, &file_info) == TRUE);
 
-    ::FindClose(hFile);
+    ::FindClose(file_handle);
     DWORD dwError = ::GetLastError();
     if(dwError != ERROR_NO_MORE_FILES) 
       return dwError;
 
-    if(::SetFileAttributesW(dir_name.c_str(), FILE_ATTRIBUTE_NORMAL) == FALSE)
+    if(::SetFileAttributes(dir_name.c_str(), FILE_ATTRIBUTE_NORMAL) == FALSE)
       return ::GetLastError();
 
-    if(::RemoveDirectoryW(dir_name.c_str()) == FALSE)
+    if(::RemoveDirectory(dir_name.c_str()) == FALSE)
       return ::GetLastError();
   }
 
   return 0;
 }
 
-void BrowserFactory::DeleteEdgeTempDir() {
-  // delete IEDriver temporary folder when IEDriver drvies Edge in IEMode
-  if (this->edge_ie_mode_ && this->edge_user_data_dir_!=L"") {
-    LOG(TRACE) << "Deleting IEDriver Edge temporary folder " << LOGWSTRING(this->edge_user_data_dir_) << ".";
-    DeleteDirectory(this->edge_user_data_dir_);
-  }
+std::wstring BrowserFactory::GetEdgeTempDir() {
+  return this->edge_user_data_dir_;
 }
 
 } // namespace webdriver

@@ -119,6 +119,7 @@ LRESULT IECommandExecutor::OnCreate(UINT uMsg,
   this->command_handlers_ = new CommandHandlerRepository();
 
   this->is_edge_chromium_ = false;
+  this->edge_temp_dir_ = L"";
 
   return 0;
 }
@@ -466,10 +467,23 @@ LRESULT IECommandExecutor::OnBrowserQuit(UINT uMsg,
     LOG(WARN) << "Unable to find browser to quit with ID " << browser_id;
   }
 
-  ::Sleep(3000);
-  // delete IEDriver temporary folder when IEDriver drvies Edge in IEMode
-  if (this->factory_) {
-    this->factory_->DeleteEdgeTempDir();
+  // Delete IEDriver temporary folder when IEDriver drvies Edge in IEMode.
+  // Note that the this->factory_ object might have been deleted.
+  if (this->edge_temp_dir_ != L"") {
+    for (int i=0;i<100;i++) {
+      ::Sleep(100); // wait for the Edge browser completing read/write work
+      // the delete usually completes in 1 retries
+      if (BrowserFactory::DeleteDirectory(edge_temp_dir_)) {
+        // directory delete failed when some files/folders are locked
+        LOG(TRACE) << "Failed to delete Edge temporary user data directory " << LOGWSTRING(edge_temp_dir_) 
+                  << ", retrying " << i+1 << "...";
+      } else {
+        // the temporary folder has been deleted
+        LOG(TRACE) << "Deleted Edge temporary user data directory " << LOGWSTRING(edge_temp_dir_) << ".";
+        break;
+      }
+    }
+    this->edge_temp_dir_ = L"";
   }
 
   return 0;
@@ -1437,6 +1451,7 @@ int IECommandExecutor::CreateNewBrowser(std::string* error_message) {
     LOG(WARN) << "Browser was launched and attached to, but is still busy.";
   }
   wrapper->SetFocusToBrowser();
+  this->edge_temp_dir_ = this->factory_->GetEdgeTempDir();
   return WD_SUCCESS;
 }
 
