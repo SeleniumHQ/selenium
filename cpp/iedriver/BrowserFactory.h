@@ -76,6 +76,7 @@ class BrowserFactory {
   static bool IsWindowsVistaOrGreater(void);
 
   bool IsEdgeMode(void) const;
+  void DeleteEdgeTempDir(void);
  private:
   static BOOL CALLBACK FindBrowserWindow(HWND hwnd, LPARAM param);
 
@@ -131,6 +132,7 @@ class BrowserFactory {
 
   bool edge_ie_mode_;
   std::wstring edge_executable_location_;
+  std::wstring edge_user_data_dir_;
 };
 
 } // namespace webdriver

@@ -465,6 +465,13 @@ LRESULT IECommandExecutor::OnBrowserQuit(UINT uMsg,
   } else {
     LOG(WARN) << "Unable to find browser to quit with ID " << browser_id;
   }
+
+  ::Sleep(3000);
+  // delete IEDriver temporary folder when IEDriver drvies Edge in IEMode
+  if (this->factory_) {
+    this->factory_->DeleteEdgeTempDir();
+  }
+
   return 0;
 }
 
