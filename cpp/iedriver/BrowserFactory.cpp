@@ -1446,7 +1446,7 @@ int BrowserFactory::DeleteDirectory(const std::wstring &dir_name) {
 
       if (file_info.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) {
         int return_value = DeleteDirectory(file_path);
-        if(return_value) return return_value;
+        if (return_value) return return_value;
       } else {
         if (::SetFileAttributes(file_path.c_str(), FILE_ATTRIBUTE_NORMAL) == FALSE)
           return ::GetLastError();
@@ -1454,17 +1454,17 @@ int BrowserFactory::DeleteDirectory(const std::wstring &dir_name) {
         if (::DeleteFile(file_path.c_str()) == FALSE)
           return ::GetLastError();
       }
-    } while(::FindNextFile(file_handle, &file_info) == TRUE);
+    } while (::FindNextFile(file_handle, &file_info) == TRUE);
 
     ::FindClose(file_handle);
     DWORD dwError = ::GetLastError();
-    if(dwError != ERROR_NO_MORE_FILES) 
+    if (dwError != ERROR_NO_MORE_FILES) 
       return dwError;
 
-    if(::SetFileAttributes(dir_name.c_str(), FILE_ATTRIBUTE_NORMAL) == FALSE)
+    if (::SetFileAttributes(dir_name.c_str(), FILE_ATTRIBUTE_NORMAL) == FALSE)
       return ::GetLastError();
 
-    if(::RemoveDirectory(dir_name.c_str()) == FALSE)
+    if (::RemoveDirectory(dir_name.c_str()) == FALSE)
       return ::GetLastError();
   }
 
