@@ -18,11 +18,7 @@
 
 using System;
 using System.Collections.Generic;
-using System.Globalization;
-using System.Net.Http;
-using System.Threading.Tasks;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
+using System.Collections.ObjectModel;
 using OpenQA.Selenium.DevTools;
 using OpenQA.Selenium.Remote;
 
@@ -31,40 +27,91 @@ namespace OpenQA.Selenium.Chromium
     /// <summary>
     /// Provides an abstract way to access Chromium-based browsers to run tests.
     /// </summary>
-    public abstract class ChromiumDriver : WebDriver, ISupportsLogs, IDevTools
+    public class ChromiumDriver : WebDriver, ISupportsLogs, IDevTools
     {
         /// <summary>
         /// Accept untrusted SSL Certificates
         /// </summary>
         public static readonly bool AcceptUntrustedCertificates = true;
 
-        protected const string ExecuteCdp = "executeCdpCommand";
-        protected const string GetCastSinksCommand = "getCastSinks";
-        protected const string SelectCastSinkCommand = "selectCastSink";
-        protected const string StartCastTabMirroringCommand = "startCastTabMirroring";
-        protected const string GetCastIssueMessageCommand = "getCastIssueMessage";
-        protected const string StopCastingCommand = "stopCasting";
-        private const string GetNetworkConditionsCommand = "getNetworkConditions";
-        private const string SetNetworkConditionsCommand = "setNetworkConditions";
-        private const string DeleteNetworkConditionsCommand = "deleteNetworkConditions";
-        private const string SendChromeCommand = "sendChromeCommand";
-        private const string SendChromeCommandWithResult = "sendChromeCommandWithResult";
-        private const string LaunchAppCommand = "launchAppCommand";
-        private const string SetPermissionCommand = "setPermission";
+        /// <summary>
+        /// Command for executing a Chrome DevTools Protocol command in a driver for a Chromium-based browser.
+        /// </summary>
+        public static readonly string ExecuteCdp = "executeCdpCommand";
+
+        /// <summary>
+        /// Command for getting cast sinks in a driver for a Chromium-based browser.
+        /// </summary>
+        public static readonly string GetCastSinksCommand = "getCastSinks";
+
+        /// <summary>
+        /// Command for selecting a cast sink in a driver for a Chromium-based browser.
+        /// </summary>
+        public static readonly string SelectCastSinkCommand = "selectCastSink";
+
+        /// <summary>
+        /// Command for starting cast tab mirroring in a driver for a Chromium-based browser.
+        /// </summary>
+        public static readonly string StartCastTabMirroringCommand = "startCastTabMirroring";
+
+        /// <summary>
+        /// Command for getting a cast issued message in a driver for a Chromium-based browser.
+        /// </summary>
+        public static readonly string GetCastIssueMessageCommand = "getCastIssueMessage";
+
+        /// <summary>
+        /// Command for stopping casting in a driver for a Chromium-based browser.
+        /// </summary>
+        public static readonly string StopCastingCommand = "stopCasting";
+
+        /// <summary>
+        /// Command for getting the simulated network conditions in a driver for a Chromium-based browser.
+        /// </summary>
+        public static readonly string GetNetworkConditionsCommand = "getNetworkConditions";
+
+        /// <summary>
+        /// Command for setting the simulated network conditions in a driver for a Chromium-based browser.
+        /// </summary>
+        public static readonly string SetNetworkConditionsCommand = "setNetworkConditions";
+
+        /// <summary>
+        /// Command for deleting the simulated network conditions in a driver for a Chromium-based browser.
+        /// </summary>
+        public static readonly string DeleteNetworkConditionsCommand = "deleteNetworkConditions";
+
+        /// <summary>
+        /// Command for executing a Chrome DevTools Protocol command in a driver for a Chromium-based browser.
+        /// </summary>
+        public static readonly string SendChromeCommand = "sendChromeCommand";
+
+        /// <summary>
+        /// Command for executing a Chrome DevTools Protocol command that returns a result in a driver for a Chromium-based browser.
+        /// </summary>
+        public static readonly string SendChromeCommandWithResult = "sendChromeCommandWithResult";
+
+        /// <summary>
+        /// Command for launching an app in a driver for a Chromium-based browser.
+        /// </summary>
+        public static readonly string LaunchAppCommand = "launchAppCommand";
+
+        /// <summary>
+        /// Command for setting permissions in a driver for a Chromium-based browser.
+        /// </summary>
+        public static readonly string SetPermissionCommand = "setPermission";
 
         private readonly string optionsCapabilityName;
         private DevToolsSession devToolsSession;
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="ChromiumDriver"/> class using the specified
-        /// <see cref="ChromiumDriverService"/> and options.
-        /// </summary>
-        /// <param name="service">The <see cref="ChromiumDriverService"/> to use.</param>
-        /// <param name="options">The <see cref="ChromiumOptions"/> used to initialize the driver.</param>
-        public ChromiumDriver(ChromiumDriverService service, ChromiumOptions options)
-            : this(service, options, RemoteWebDriver.DefaultCommandTimeout)
+        private static Dictionary<string, CommandInfo> chromiumCustomCommands = new Dictionary<string, CommandInfo>()
         {
-        }
+            { GetNetworkConditionsCommand, new HttpCommandInfo(HttpCommandInfo.GetCommand, "/session/{sessionId}/chromium/network_conditions") },
+            { SetNetworkConditionsCommand, new HttpCommandInfo(HttpCommandInfo.PostCommand, "/session/{sessionId}/chromium/network_conditions") },
+            { DeleteNetworkConditionsCommand, new HttpCommandInfo(HttpCommandInfo.DeleteCommand, "/session/{sessionId}/chromium/network_conditions") },
+            { SendChromeCommand, new HttpCommandInfo(HttpCommandInfo.PostCommand, "/session/{sessionId}/chromium/send_command") },
+            { SendChromeCommandWithResult, new HttpCommandInfo(HttpCommandInfo.PostCommand, "/session/{sessionId}/chromium/send_command_and_get_result") },
+            { LaunchAppCommand, new HttpCommandInfo(HttpCommandInfo.PostCommand, "/session/{sessionId}/chromium/launch_app") },
+            { SetPermissionCommand, new HttpCommandInfo(HttpCommandInfo.PostCommand, "/session/{sessionId}/permissions") }
+        };
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ChromiumDriver"/> class using the specified <see cref="ChromiumDriverService"/>.
@@ -72,29 +119,15 @@ namespace OpenQA.Selenium.Chromium
         /// <param name="service">The <see cref="ChromiumDriverService"/> to use.</param>
         /// <param name="options">The <see cref="ChromiumOptions"/> to be used with the ChromiumDriver.</param>
         /// <param name="commandTimeout">The maximum amount of time to wait for each command.</param>
-        public ChromiumDriver(ChromiumDriverService service, ChromiumOptions options, TimeSpan commandTimeout)
+        protected ChromiumDriver(ChromiumDriverService service, ChromiumOptions options, TimeSpan commandTimeout)
             : base(new DriverServiceCommandExecutor(service, commandTimeout), ConvertOptionsToCapabilities(options))
         {
             this.optionsCapabilityName = options.CapabilityName;
-
-            // Add the custom commands unique to Chrome
-            this.AddCustomChromeCommand(GetNetworkConditionsCommand, HttpCommandInfo.GetCommand, "/session/{sessionId}/chromium/network_conditions");
-            this.AddCustomChromeCommand(SetNetworkConditionsCommand, HttpCommandInfo.PostCommand, "/session/{sessionId}/chromium/network_conditions");
-            this.AddCustomChromeCommand(DeleteNetworkConditionsCommand, HttpCommandInfo.DeleteCommand, "/session/{sessionId}/chromium/network_conditions");
-            this.AddCustomChromeCommand(SendChromeCommand, HttpCommandInfo.PostCommand, "/session/{sessionId}/chromium/send_command");
-            this.AddCustomChromeCommand(SendChromeCommandWithResult, HttpCommandInfo.PostCommand, "/session/{sessionId}/chromium/send_command_and_get_result");
-            this.AddCustomChromeCommand(LaunchAppCommand, HttpCommandInfo.PostCommand, "/session/{sessionId}/chromium/launch_app");
-            this.AddCustomChromeCommand(SetPermissionCommand, HttpCommandInfo.PostCommand, "/session/{sessionId}/permissions");
         }
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="ChromiumDriver"/> class
-        /// </summary>
-        /// <param name="commandExecutor">An <see cref="ICommandExecutor"/> object which executes commands for the driver.</param>
-        /// <param name="desiredCapabilities">An <see cref="ICapabilities"/> object containing the desired capabilities of the browser.</param>
-        protected ChromiumDriver(ICommandExecutor commandExecutor, ICapabilities desiredCapabilities)
-            : base(commandExecutor, desiredCapabilities)
+        protected static IReadOnlyDictionary<string, CommandInfo> ChromiumCustomCommands
         {
+            get { return new ReadOnlyDictionary<string, CommandInfo>(chromiumCustomCommands); }
         }
 
         /// <summary>
@@ -140,7 +173,7 @@ namespace OpenQA.Selenium.Chromium
                 }
 
                 Dictionary<string, object> parameters = new Dictionary<string, object>();
-                parameters["network_conditions"] = value.ToDictionary();
+                parameters["network_conditions"] = value;
                 this.Execute(SetNetworkConditionsCommand, parameters);
             }
         }
@@ -292,6 +325,14 @@ namespace OpenQA.Selenium.Chromium
         }
 
         /// <summary>
+        /// Clears simulated network conditions.
+        /// </summary>
+        public void ClearNetworkConditions()
+        {
+            this.Execute(DeleteNetworkConditionsCommand, null);
+        }
+
+        /// <summary>
         /// Returns the list of cast sinks (Cast devices) available to the Chrome media router.
         /// </summary>
         /// <returns>The list of available sinks.</returns>
@@ -400,12 +441,6 @@ namespace OpenQA.Selenium.Chromium
             }
 
             return options.ToCapabilities();
-        }
-
-        protected void AddCustomChromeCommand(string commandName, string method, string resourcePath)
-        {
-            HttpCommandInfo commandInfoToAdd = new HttpCommandInfo(method, resourcePath);
-            this.CommandExecutor.TryAddCommand(commandName, commandInfoToAdd);
         }
     }
 }

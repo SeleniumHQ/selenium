@@ -18,6 +18,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Globalization;
 using System.IO;
 using OpenQA.Selenium.DevTools;
@@ -71,11 +72,40 @@ namespace OpenQA.Selenium.Firefox
     {
         private const int FirefoxDevToolsProtocolVersion = 85;
         private const string FirefoxDevToolsCapabilityName = "moz:debuggerAddress";
-        private const string SetContextCommand = "setContext";
-        private const string GetContextCommand = "getContext";
-        private const string InstallAddOnCommand = "installAddOn";
-        private const string UninstallAddOnCommand = "uninstallAddOn";
-        private const string GetFullPageScreenshotCommand = "fullPageScreenshot";
+
+        /// <summary>
+        /// Command for setting the command context of a Firefox driver.
+        /// </summary>
+        public static readonly string SetContextCommand = "setContext";
+
+        /// <summary>
+        /// Command for getting the command context of a Firefox driver.
+        /// </summary>
+        public static readonly string GetContextCommand = "getContext";
+
+        /// <summary>
+        /// Command for installing an addon to a Firefox driver.
+        /// </summary>
+        public static readonly string InstallAddOnCommand = "installAddOn";
+
+        /// <summary>
+        /// Command for uninstalling an addon from a Firefox driver.
+        /// </summary>
+        public static readonly string UninstallAddOnCommand = "uninstallAddOn";
+
+        /// <summary>
+        /// Command for getting aa full page screenshot from a Firefox driver.
+        /// </summary>
+        public static readonly string GetFullPageScreenshotCommand = "fullPageScreenshot";
+
+        private static Dictionary<string, CommandInfo> firefoxCustomCommands = new Dictionary<string, CommandInfo>()
+        {
+            { SetContextCommand, new HttpCommandInfo(HttpCommandInfo.PostCommand, "/session/{sessionId}/moz/context") },
+            { GetContextCommand, new HttpCommandInfo(HttpCommandInfo.GetCommand, "/session/{sessionId}/moz/context") },
+            { InstallAddOnCommand, new HttpCommandInfo(HttpCommandInfo.PostCommand, "/session/{sessionId}/moz/addon/install") },
+            { UninstallAddOnCommand, new HttpCommandInfo(HttpCommandInfo.PostCommand, "/session/{sessionId}/moz/addon/uninstall") },
+            { GetFullPageScreenshotCommand, new HttpCommandInfo(HttpCommandInfo.GetCommand, "/session/{sessionId}/moz/screenshot/full") }
+        };
 
         private DevToolsSession devToolsSession;
 
@@ -158,11 +188,17 @@ namespace OpenQA.Selenium.Firefox
             : base(new DriverServiceCommandExecutor(service, commandTimeout), ConvertOptionsToCapabilities(options))
         {
             // Add the custom commands unique to Firefox
-            this.AddCustomFirefoxCommand(SetContextCommand, HttpCommandInfo.PostCommand, "/session/{sessionId}/moz/context");
-            this.AddCustomFirefoxCommand(GetContextCommand, HttpCommandInfo.GetCommand, "/session/{sessionId}/moz/context");
-            this.AddCustomFirefoxCommand(InstallAddOnCommand, HttpCommandInfo.PostCommand, "/session/{sessionId}/moz/addon/install");
-            this.AddCustomFirefoxCommand(UninstallAddOnCommand, HttpCommandInfo.PostCommand, "/session/{sessionId}/moz/addon/uninstall");
-            this.AddCustomFirefoxCommand(GetFullPageScreenshotCommand, HttpCommandInfo.GetCommand, "/session/{sessionId}/moz/screenshot/full");
+            this.AddCustomFirefoxCommands();
+        }
+
+        /// <summary>
+        /// Gets a read-only dictionary of the custom WebDriver commands defined for FirefoxDriver.
+        /// The keys of the dictionary are the names assigned to the command; the values are the
+        /// <see cref="CommandInfo"/> objects describing the command behavior.
+        /// </summary>
+        public static IReadOnlyDictionary<string, CommandInfo> CustomCommandDefinitions
+        {
+            get { return new ReadOnlyDictionary<string, CommandInfo>(firefoxCustomCommands); }
         }
 
         /// <summary>
@@ -378,10 +414,12 @@ namespace OpenQA.Selenium.Firefox
             return FirefoxDriverService.CreateDefaultService();
         }
 
-        private void AddCustomFirefoxCommand(string commandName, string method, string resourcePath)
+        private void AddCustomFirefoxCommands()
         {
-            HttpCommandInfo commandInfoToAdd = new HttpCommandInfo(method, resourcePath);
-            this.CommandExecutor.TryAddCommand(commandName, commandInfoToAdd);
+            foreach (KeyValuePair<string, CommandInfo> entry in CustomCommandDefinitions)
+            {
+                this.RegisterInternalDriverCommand(entry.Key, entry.Value);
+            }
         }
     }
 }

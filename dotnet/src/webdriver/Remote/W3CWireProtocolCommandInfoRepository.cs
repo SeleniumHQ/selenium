@@ -124,36 +124,9 @@ namespace OpenQA.Selenium.Remote
             // Commands below here are not included in the W3C specification,
             // but are required for full fidelity of execution with Selenium's
             // local-end implementation of WebDriver.
-            this.TryAddCommand(DriverCommand.GetSessionCapabilities, new HttpCommandInfo(HttpCommandInfo.GetCommand, "/session/{sessionId}"));
             this.TryAddCommand(DriverCommand.IsElementDisplayed, new HttpCommandInfo(HttpCommandInfo.GetCommand, "/session/{sessionId}/element/{id}/displayed"));
             this.TryAddCommand(DriverCommand.ElementEquals, new HttpCommandInfo(HttpCommandInfo.GetCommand, "/session/{sessionId}/element/{id}/equals/{other}"));
-            this.TryAddCommand(DriverCommand.DefineDriverMapping, new HttpCommandInfo(HttpCommandInfo.PostCommand, "/config/drivers"));
             this.TryAddCommand(DriverCommand.UploadFile, new HttpCommandInfo(HttpCommandInfo.PostCommand, "/session/{sessionId}/se/file"));
-            this.TryAddCommand(DriverCommand.SetAlertCredentials, new HttpCommandInfo(HttpCommandInfo.PostCommand, "/session/{sessionId}/alert/credentials"));
-            this.TryAddCommand(DriverCommand.GetSessionList, new HttpCommandInfo(HttpCommandInfo.GetCommand, "/sessions"));
-            this.TryAddCommand(DriverCommand.GetElementLocationOnceScrolledIntoView, new HttpCommandInfo(HttpCommandInfo.GetCommand, "/session/{sessionId}/element/{id}/location_in_view"));
-            this.TryAddCommand(DriverCommand.DescribeElement, new HttpCommandInfo(HttpCommandInfo.GetCommand, "/session/{sessionId}/element/{id}"));
-            this.TryAddCommand(DriverCommand.GetOrientation, new HttpCommandInfo(HttpCommandInfo.GetCommand, "/session/{sessionId}/orientation"));
-            this.TryAddCommand(DriverCommand.SetOrientation, new HttpCommandInfo(HttpCommandInfo.PostCommand, "/session/{sessionId}/orientation"));
-
-            // HTML5 commands
-            this.TryAddCommand(DriverCommand.GetLocation, new HttpCommandInfo(HttpCommandInfo.GetCommand, "/session/{sessionId}/location"));
-            this.TryAddCommand(DriverCommand.SetLocation, new HttpCommandInfo(HttpCommandInfo.PostCommand, "/session/{sessionId}/location"));
-            this.TryAddCommand(DriverCommand.GetAppCache, new HttpCommandInfo(HttpCommandInfo.GetCommand, "/session/{sessionId}/application_cache"));
-            this.TryAddCommand(DriverCommand.GetAppCacheStatus, new HttpCommandInfo(HttpCommandInfo.GetCommand, "/session/{sessionId}/application_cache/status"));
-            this.TryAddCommand(DriverCommand.ClearAppCache, new HttpCommandInfo(HttpCommandInfo.DeleteCommand, "/session/{sessionId}/application_cache/clear"));
-            this.TryAddCommand(DriverCommand.GetLocalStorageKeys, new HttpCommandInfo(HttpCommandInfo.GetCommand, "/session/{sessionId}/local_storage"));
-            this.TryAddCommand(DriverCommand.SetLocalStorageItem, new HttpCommandInfo(HttpCommandInfo.PostCommand, "/session/{sessionId}/local_storage"));
-            this.TryAddCommand(DriverCommand.ClearLocalStorage, new HttpCommandInfo(HttpCommandInfo.DeleteCommand, "/session/{sessionId}/local_storage"));
-            this.TryAddCommand(DriverCommand.GetLocalStorageItem, new HttpCommandInfo(HttpCommandInfo.GetCommand, "/session/{sessionId}/local_storage/key/{key}"));
-            this.TryAddCommand(DriverCommand.RemoveLocalStorageItem, new HttpCommandInfo(HttpCommandInfo.DeleteCommand, "/session/{sessionId}/local_storage/key/{key}"));
-            this.TryAddCommand(DriverCommand.GetLocalStorageSize, new HttpCommandInfo(HttpCommandInfo.GetCommand, "/session/{sessionId}/local_storage/size"));
-            this.TryAddCommand(DriverCommand.GetSessionStorageKeys, new HttpCommandInfo(HttpCommandInfo.GetCommand, "/session/{sessionId}/session_storage"));
-            this.TryAddCommand(DriverCommand.SetSessionStorageItem, new HttpCommandInfo(HttpCommandInfo.PostCommand, "/session/{sessionId}/session_storage"));
-            this.TryAddCommand(DriverCommand.ClearSessionStorage, new HttpCommandInfo(HttpCommandInfo.DeleteCommand, "/session/{sessionId}/session_storage"));
-            this.TryAddCommand(DriverCommand.GetSessionStorageItem, new HttpCommandInfo(HttpCommandInfo.GetCommand, "/session/{sessionId}/session_storage/key/{key}"));
-            this.TryAddCommand(DriverCommand.RemoveSessionStorageItem, new HttpCommandInfo(HttpCommandInfo.DeleteCommand, "/session/{sessionId}/session_storage/key/{key}"));
-            this.TryAddCommand(DriverCommand.GetSessionStorageSize, new HttpCommandInfo(HttpCommandInfo.GetCommand, "/session/{sessionId}/session_storage/size"));
         }
     }
 }
