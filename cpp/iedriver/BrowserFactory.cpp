@@ -348,16 +348,22 @@ bool BrowserFactory::CreateUniqueTempDir(std::wstring &temp_dir) {
   wchar_t temp[128];
   ::GetTempPath(128, temp);
   std::wstring wtemp = temp;
-  if (!DirectoryExists(wtemp)) return false;
+  if (!DirectoryExists(wtemp)) {
+    return false;
+  }
 
   // create a IEDriver temporary folder inside the user level temporary folder
   bool temp_dir_created = false;
   for (int i=0; i<10; i++) {
     std::wstring output = wtemp + L"IEDriver-" + StringUtilities::CreateGuid();
-    if (DirectoryExists(output)) continue;
+    if (DirectoryExists(output)) {
+      continue;
+    }
 
     ::CreateDirectory(output.c_str(), NULL);
-    if (!DirectoryExists(output)) continue;
+    if (!DirectoryExists(output)) {
+      continue;
+    }
 
     temp_dir = output;
     temp_dir_created = true;
@@ -1441,31 +1447,40 @@ int BrowserFactory::DeleteDirectory(const std::wstring &dir_name) {
   HANDLE file_handle = ::FindFirstFile(file_pattern.c_str(), &file_info);
   if (file_handle != INVALID_HANDLE_VALUE) {
     do {
-      if (file_info.cFileName[0] == '.') continue;
+      if (file_info.cFileName[0] == '.') {
+        continue;
+      }
       std::wstring file_path = dir_name + L"\\" + file_info.cFileName;
 
       if (file_info.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) {
         int return_value = DeleteDirectory(file_path);
-        if (return_value) return return_value;
+        if (return_value) {
+          return return_value;
+        }
       } else {
-        if (::SetFileAttributes(file_path.c_str(), FILE_ATTRIBUTE_NORMAL) == FALSE)
+        if (::SetFileAttributes(file_path.c_str(), FILE_ATTRIBUTE_NORMAL) == FALSE) {
           return ::GetLastError();
+        }
 
-        if (::DeleteFile(file_path.c_str()) == FALSE)
+        if (::DeleteFile(file_path.c_str()) == FALSE) {
           return ::GetLastError();
+        }
       }
     } while (::FindNextFile(file_handle, &file_info) == TRUE);
 
     ::FindClose(file_handle);
     DWORD dwError = ::GetLastError();
-    if (dwError != ERROR_NO_MORE_FILES) 
+    if (dwError != ERROR_NO_MORE_FILES) {
       return dwError;
+    }
 
-    if (::SetFileAttributes(dir_name.c_str(), FILE_ATTRIBUTE_NORMAL) == FALSE)
+    if (::SetFileAttributes(dir_name.c_str(), FILE_ATTRIBUTE_NORMAL) == FALSE) {
       return ::GetLastError();
+    }
 
-    if (::RemoveDirectory(dir_name.c_str()) == FALSE)
+    if (::RemoveDirectory(dir_name.c_str()) == FALSE) {
       return ::GetLastError();
+    }
   }
 
   return 0;
