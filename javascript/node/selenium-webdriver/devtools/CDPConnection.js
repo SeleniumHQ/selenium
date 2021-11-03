@@ -23,7 +23,7 @@ class CDPConnection {
     this.sessionId = null
   }
 
-  execute(method, id, params, callback) {
+  execute(method, params, callback) {
     let message = {
       method,
       id: this.cmd_id++,
