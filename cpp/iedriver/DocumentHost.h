@@ -85,6 +85,9 @@ class DocumentHost {
   void SetFocusedFrameToParent(void);
   bool SetFocusToBrowser(void);
 
+  bool is_edge_chromium(void) const { return this->is_edge_chromium_; }
+  void set_is_edge_chromium(const bool value) { this->is_edge_chromium_ = value; }
+
   bool wait_required(void) const { return this->wait_required_; }
   void set_wait_required(const bool value) { this->wait_required_ = value; }
 
@@ -133,6 +136,7 @@ class DocumentHost {
   bool script_wait_required_;
   bool is_closing_;
   bool is_awaiting_new_process_;
+  bool is_edge_chromium_;
 };
 
 } // namespace webdriver

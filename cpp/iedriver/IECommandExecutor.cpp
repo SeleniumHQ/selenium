@@ -296,10 +296,10 @@ LRESULT IECommandExecutor::OnAfterNewWindow(UINT uMsg,
       HWND top_level_handle = browser_wrapper->GetTopLevelWindowHandle();
 
       std::vector<HWND>* current_window_handles =
-        reinterpret_cast<std::vector<HWND>*>(lParam);
+          reinterpret_cast<std::vector<HWND>*>(lParam);
       std::unordered_set<HWND> current_window_set(
-        current_window_handles->begin(),
-        current_window_handles->end());
+          current_window_handles->begin(),
+          current_window_handles->end());
       delete current_window_handles;
 
       // sleep 0.5s then get current window handles
@@ -307,23 +307,25 @@ LRESULT IECommandExecutor::OnAfterNewWindow(UINT uMsg,
 
       std::vector<HWND> edge_window_handles;
       ::EnumWindows(&BrowserFactory::FindEdgeBrowserHandles,
-        reinterpret_cast<LPARAM>(&edge_window_handles));
+                    reinterpret_cast<LPARAM>(&edge_window_handles));
 
       std::vector<HWND> new_ie_window_handles;
-      for (auto& ewh : edge_window_handles) {
+      for (auto& edge_window_handle : edge_window_handles) {
         std::vector<HWND> child_window_handles;
-        ::EnumChildWindows(ewh, &BrowserFactory::FindIEBrowserHandles,
-          reinterpret_cast<LPARAM>(&child_window_handles));
+        ::EnumChildWindows(edge_window_handle,
+                           &BrowserFactory::FindIEBrowserHandles,
+                           reinterpret_cast<LPARAM>(&child_window_handles));
 
-        for (auto& cwh : child_window_handles) {
-          new_ie_window_handles.push_back(cwh);
+        for (auto& child_window_handle : child_window_handles) {
+          new_ie_window_handles.push_back(child_window_handle);
         }
       }
 
       std::vector<HWND> diff;
       for (auto& window_handle : new_ie_window_handles) {
-        if (current_window_set.find(window_handle) != current_window_set.end())
+        if (current_window_set.find(window_handle) != current_window_set.end()) {
           continue;
+        }
         diff.push_back(window_handle);
       }
 
@@ -347,10 +349,9 @@ LRESULT IECommandExecutor::OnAfterNewWindow(UINT uMsg,
         info.pBrowser = NULL; 
         std::string error_message = "";
         this->factory_->AttachToBrowser(&info, &error_message);
-        BrowserHandle new_window_wrapper(new Browser(info.pBrowser,
-          NULL,
-          this->m_hWnd,
-          true));
+        BrowserHandle new_window_wrapper(
+            new Browser(info.pBrowser, NULL, this->m_hWnd, true));
+
         // Force a wait cycle to make sure the browser is finished initializing.
         new_window_wrapper->Wait(NORMAL_PAGE_LOAD_STRATEGY);
         this->AddManagedBrowser(new_window_wrapper);
@@ -1273,7 +1274,7 @@ std::string IECommandExecutor::OpenNewBrowsingContext(const std::string& window_
 }
 
 std::string IECommandExecutor::OpenNewBrowsingContext(const std::string& window_type,
-                                                      const std::string& url) {
+  const std::string& url) {
   LOG(TRACE) << "Entering IECommandExecutor::OpenNewBrowsingContext";
   std::wstring target_url = StringUtilities::ToWString(url);
   std::string new_browser_id = "";
@@ -1351,48 +1352,74 @@ std::string IECommandExecutor::OpenNewBrowserTab(const std::wstring& url) {
                                         NULL);
   ::Sleep(500);
 
-  clock_t end_time = clock() + 5 * CLOCKS_PER_SEC;
+  HWND new_tab_window = NULL;
   std::vector<HWND> new_handles;
   ::EnumChildWindows(top_level_handle,
                      &BrowserFactory::FindIEBrowserHandles,
                      reinterpret_cast<LPARAM>(&new_handles));
-  while (new_handles.size() <= original_handles.size() &&
-         clock() < end_time) {
-    ::Sleep(50);
-    ::EnumChildWindows(top_level_handle,
-                       &BrowserFactory::FindIEBrowserHandles,
-                       reinterpret_cast<LPARAM>(&new_handles));
-  }
-  std::sort(new_handles.begin(), new_handles.end());
-
-  if (new_handles.size() <= original_handles.size()) {
-    LOG(WARN) << "No new window handle found after attempt to open";
-    return "";
-  }
-
-  // We are guaranteed to have at least one HWND difference
-  // between the two vectors if we reach this point, because
-  // we know the vectors are different sizes.
-  std::vector<HWND> diff(new_handles.size());
-  std::vector<HWND>::iterator it = std::set_difference(new_handles.begin(),
-                                                       new_handles.end(),
-                                                       original_handles.begin(),
-                                                       original_handles.end(),
-                                                       diff.begin());
-  diff.resize(it - diff.begin());
-  if (diff.size() > 1) {
-    std::string handle_list = "";
-    std::vector<HWND>::const_iterator it = diff.begin();
-    for (; it != diff.end(); ++it) {
-      if (handle_list.size() > 0) {
-        handle_list.append(", ");
+  clock_t end_time = clock() + 5 * CLOCKS_PER_SEC;
+  if (browser_wrapper->is_edge_chromium()) {
+    // It appears that for Chromium-based Edge in IE Mode, there will only
+    // ever be one active child window  of the top-level window with window
+    // class "Internet Explorer_Server", which is the active tab. Inactive
+    // tabs are re-parented until brought back to being the active tab.
+    while ((new_handles.size() == 0 || new_handles[0] == original_handles[0])
+           && clock() < end_time) {
+      if (new_handles.size() != 0) {
+        new_handles.clear();
       }
-      handle_list.append(StringUtilities::Format("0x%08x", *it));
+
+      ::Sleep(50);
+      ::EnumChildWindows(top_level_handle,
+                         &BrowserFactory::FindIEBrowserHandles,
+                         reinterpret_cast<LPARAM>(&new_handles));
     }
-    LOG(DEBUG) << "Found more than one new window handles! Found "
-               << diff.size() << "windows [" << handle_list << "]";
+
+    if (new_handles.size() == 0 || new_handles[0] == original_handles[0]) {
+      LOG(WARN) << "No new window handle found after attempt to open";
+      return "";
+    }
+
+    new_tab_window = new_handles[0];
+  } else {
+    while (new_handles.size() <= original_handles.size() &&
+           clock() < end_time) {
+      ::Sleep(50);
+      ::EnumChildWindows(top_level_handle,
+                         &BrowserFactory::FindIEBrowserHandles,
+                         reinterpret_cast<LPARAM>(&new_handles));
+    }
+    std::sort(new_handles.begin(), new_handles.end());
+
+    if (new_handles.size() <= original_handles.size()) {
+      LOG(WARN) << "No new window handle found after attempt to open";
+      return "";
+    }
+
+    // We are guaranteed to have at least one HWND difference
+    // between the two vectors if we reach this point, because
+    // we know the vectors are different sizes.
+    std::vector<HWND> diff(new_handles.size());
+    std::vector<HWND>::iterator it = std::set_difference(new_handles.begin(),
+                                                         new_handles.end(),
+                                                         original_handles.begin(),
+                                                         original_handles.end(),
+                                                         diff.begin());
+    diff.resize(it - diff.begin());
+    if (diff.size() > 1) {
+      std::string handle_list = "";
+      std::vector<HWND>::const_iterator it = diff.begin();
+      for (; it != diff.end(); ++it) {
+        if (handle_list.size() > 0) {
+          handle_list.append(", ");
+        }
+        handle_list.append(StringUtilities::Format("0x%08x", *it));
+      }
+      LOG(DEBUG) << "Found more than one new window handles! Found "
+                 << diff.size() << "windows [" << handle_list << "]";
+    }
+    new_tab_window = diff[0];
   }
-  HWND new_tab_window = diff[0];
 
   DWORD process_id;
   ::GetWindowThreadProcessId(new_tab_window, &process_id);

@@ -1062,7 +1062,8 @@ BOOL CALLBACK BrowserFactory::FindBrowserWindow(HWND hwnd, LPARAM arg) {
   }
 
   if (strcmp(IE_FRAME_WINDOW_CLASS, name) != 0 &&
-      strcmp(SHELL_DOCOBJECT_VIEW_WINDOW_CLASS, name) != 0) {
+      strcmp(SHELL_DOCOBJECT_VIEW_WINDOW_CLASS, name) != 0 &&
+      strcmp(ANDIE_FRAME_WINDOW_CLASS, name) != 0) {
     return TRUE;
   }
 
