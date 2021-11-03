@@ -345,17 +345,18 @@ bool BrowserFactory::DirectoryExists(std::wstring& dir_name) {
 
 bool BrowserFactory::CreateUniqueTempDir(std::wstring &temp_dir) {
   // get temporary folder for the current user
-  wchar_t temp[128];
-  ::GetTempPath(128, temp);
-  std::wstring wtemp = temp;
-  if (!DirectoryExists(wtemp)) {
+  wchar_t temp_path_array[128];
+  ::GetTempPath(128, temp_path_array);
+  std::wstring temp_path = temp_path_array;
+  if (!DirectoryExists(temp_path)) {
     return false;
   }
 
   // create a IEDriver temporary folder inside the user level temporary folder
   bool temp_dir_created = false;
-  for (int i=0; i<10; i++) {
-    std::wstring output = wtemp + L"IEDriver-" + StringUtilities::CreateGuid();
+  for (int i = 0; i < 10; i++) {
+    std::wstring output =
+        temp_path + L"IEDriver-" + StringUtilities::CreateGuid();
     if (DirectoryExists(output)) {
       continue;
     }
@@ -1293,7 +1294,7 @@ bool BrowserFactory::ProtectedModeSettingsAreValid() {
   bool settings_are_valid = true;
   LOG(DEBUG) << "Detected IE version: " << this->ie_major_version_
              << ", Windows version supports Protected Mode: "
-	           << IsWindowsVistaOrGreater() ? "true" : "false";
+             << IsWindowsVistaOrGreater() ? "true" : "false";
   // Only need to check Protected Mode settings on IE 7 or higher
   // and on Windows Vista or higher. Otherwise, Protected Mode
   // doesn't come into play, and are valid.

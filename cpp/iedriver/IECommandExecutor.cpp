@@ -457,7 +457,9 @@ LRESULT IECommandExecutor::OnBrowserQuit(UINT uMsg,
   LPCSTR str = reinterpret_cast<LPCSTR>(lParam);
   std::string browser_id(str);
   delete[] str;
-  BrowserMap::iterator found_iterator = this->managed_browsers_.find(browser_id);
+  BrowserMap::iterator found_iterator =
+      this->managed_browsers_.find(browser_id);
+
   if (found_iterator != this->managed_browsers_.end()) {
     this->managed_browsers_.erase(browser_id);
     if (this->managed_browsers_.size() == 0) {
@@ -470,16 +472,19 @@ LRESULT IECommandExecutor::OnBrowserQuit(UINT uMsg,
   // Delete IEDriver temporary folder when IEDriver drvies Edge in IEMode.
   // Note that the this->factory_ object might have been deleted.
   if (this->edge_temp_dir_ != L"") {
-    for (int i=0;i<100;i++) {
-      ::Sleep(100); // wait for the Edge browser completing read/write work
+    for (int i = 0; i < 100; i++) {
+      // wait for the Edge browser completing read/write work
       // the delete usually completes in 1 retries
+      ::Sleep(100);
       if (BrowserFactory::DeleteDirectory(edge_temp_dir_)) {
         // directory delete failed when some files/folders are locked
-        LOG(TRACE) << "Failed to delete Edge temporary user data directory " << LOGWSTRING(edge_temp_dir_) 
-                  << ", retrying " << i+1 << "...";
+        LOG(TRACE) << "Failed to delete Edge temporary user data directory "
+                   << LOGWSTRING(edge_temp_dir_)  << ", retrying "
+                   << i + 1 << "...";
       } else {
         // the temporary folder has been deleted
-        LOG(TRACE) << "Deleted Edge temporary user data directory " << LOGWSTRING(edge_temp_dir_) << ".";
+        LOG(TRACE) << "Deleted Edge temporary user data directory "
+                   << LOGWSTRING(edge_temp_dir_) << ".";
         break;
       }
     }
