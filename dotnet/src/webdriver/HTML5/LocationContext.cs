@@ -36,6 +36,8 @@ namespace OpenQA.Selenium.Html5
         public LocationContext(WebDriver driver)
         {
             this.driver = driver;
+            driver.RegisterDriverCommand(DriverCommand.GetLocation, new HttpCommandInfo(HttpCommandInfo.GetCommand, "/session/{sessionId}/location"), true);
+            driver.RegisterDriverCommand(DriverCommand.SetLocation, new HttpCommandInfo(HttpCommandInfo.PostCommand, "/session/{sessionId}/location"), true);
         }
 
         /// <summary>
