@@ -47,14 +47,14 @@ import java.util.logging.Logger;
  * To use this decorator you have to prepare a listener, create a decorator using this listener,
  * decorate the original WebDriver instance with this decorator and use the new WebDriver
  * instance created by the decorator instead of the original one:
- * <code>
+ * <pre><code>
  *   WebDriver original = new FirefoxDriver();
  *   WebDriverListener listener = new MyListener();
  *   WebDriver decorated = new EventFiringDecorator(listener).decorate(original);
  *   decorated.get("http://example.com/");
  *   WebElement header = decorated.findElement(By.tagName("h1"));
  *   String headerText = header.getText();
- * </code>
+ * </code></pre>
  * <p>
  * The instance of WebDriver created by the decorator implements all the same interfaces as
  * the original driver.
@@ -67,56 +67,56 @@ import java.util.logging.Logger;
  * the target method to be watched. The listener methods for "before"-events receive the parameters
  * passed to the decorated method. The listener methods for "after"-events receive the parameters
  * passed to the decorated method as well as the result returned by this method.
- * <code>
+ * <pre><code>
  *   WebDriverListener listener = new WebDriverListener() {
- *     @Override
+ *     &#x40;Override
  *     public void beforeGet(WebDriver driver, String url) {
  *       logger.log("About to open a page %s", url);
  *     }
- *     @Override
+ *     &#x40;Override
  *     public void afterGetText(WebElement element, String result) {
  *       logger.log("Element %s has text '%s'", element, result);
  *     }
  *   };
- * </code>
+ * </code></pre>
  * <p>
  * To subscribe to a "generic" event a listener should implement a method with a name derived from
  * the class to be watched:
- * <code>
+ * <pre><code>
  *   WebDriverListener listener = new WebDriverListener() {
- *     @Override
+ *     &#x40;Override
  *     public void beforeAnyWebElementCall(WebElement element, Method method, Object[] args) {
  *       logger.log("About to call a method %s in element %s with parameters %s",
  *                  method, element, args);
  *     }
- *     @Override
+ *     &#x40;Override
  *     public void afterAnyWebElementCall(WebElement element, Method method, Object[] args, Object result) {
  *       logger.log("Method %s called in element %s with parameters %s returned %s",
  *                  method, element, args, result);
  *     }
  *   };
- * </code>
+ * </code></pre>
  * <p>
  * There are also listener methods for "super-generic" events:
- * <code>
+ * <pre><code>
  *   WebDriverListener listener = new WebDriverListener() {
- *     @Override
+ *     &#x40;Override
  *     public void beforeAnyCall(Object target, Method method, Object[] args) {
  *       logger.log("About to call a method %s in %s with parameters %s",
  *                  method, target, args);
  *     }
- *     @Override
+ *     &#x40;Override
  *     public void afterAnyCall(Object target, Method method, Object[] args, Object result) {
  *       logger.log("Method %s called in %s with parameters %s returned %s",
  *                  method, target, args, result);
  *     }
  *   };
- * </code>
+ * </code></pre>
  * <p>
  * A listener can subscribe to both "specific" and "generic" events at the same time. In this case
  * "before"-events are fired in order from the most generic to the most specific,
  * and "after"-events are fired in the opposite order, for example:
- * <code>
+ * <pre><code>
  *   beforeAnyCall
  *   beforeAnyWebDriverCall
  *   beforeGet
@@ -124,7 +124,7 @@ import java.util.logging.Logger;
  *   afterGet
  *   afterAnyWebDriverCall
  *   afterAnyCall
- * </code>
+ * </code></pre>
  * <p>
  * One of the most obvious use of this decorator is logging. But it can be used to modify behavior
  * of the original driver to some extent because listener methods are executed in the same thread
@@ -132,9 +132,9 @@ import java.util.logging.Logger;
  * <p>
  * For example, a listener can be used to slow down execution for demonstration purposes, just
  * make a listener that adds a pause before some operations:
- * <code>
+ * <pre><code>
  *   WebDriverListener listener = new WebDriverListener() {
- *     @Override
+ *     &#x40;Override
  *     public void beforeClick(WebElement element) {
  *       try {
  *         Thread.sleep(3000);
@@ -143,7 +143,7 @@ import java.util.logging.Logger;
  *       }
  *     }
  *   };
- * </code>
+ * </code></pre>
  * <p>
  * Just be careful to not block the current thread in a listener method!
  * <p>

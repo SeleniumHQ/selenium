@@ -43,14 +43,14 @@ import static org.openqa.selenium.remote.http.Contents.utf8String;
  * <p>
  * Example usage:
  * <p>
- * <code>
+ * <pre><code>
  *   Route route = Route.matching(req -&gt; GET == req.getMethod() &amp;&amp; req.getUri().endsWith("/example"))
  *     .to(() -&gt; req -&gt; new HttpResponse().setContent(Contents.utf8String("Hello, World!")));
  *
  *   try (NetworkInterceptor interceptor = new NetworkInterceptor(driver, route)) {
  *     // Your code here.
  *   }
- * </code>
+ * </code></pre>
  * <p>
  * It is also possible to intercept and modify responses that the browser will
  * receive. Do this by calling {@link #NetworkInterceptor(WebDriver, Filter)}.
