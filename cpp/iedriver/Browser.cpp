@@ -432,13 +432,8 @@ void Browser::Close() {
   // make any sense.
   this->SetFocusedFrameByElement(NULL);
 
-  //HRESULT hr = S_OK;
-  //if (this->is_edge_chromium_) {
-  //  hr = PostMessage(GetTopLevelWindowHandle(), WM_CLOSE, 0, 0);
-  //} else {
-  //  hr = this->browser_->Quit();
-  //}
-  HRESULT hr = this->browser_->Quit();
+  HRESULT hr = S_OK;
+  hr = this->browser_->Quit();
 
   if (FAILED(hr)) {
     LOGHR(WARN, hr) << "Call to IWebBrowser2::Quit failed";
