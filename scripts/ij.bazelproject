@@ -5,8 +5,7 @@ directories:
   -dotnet
 
 test_sources:
-  java/client/test
-  java/server/test
+  java/test
   py/test
 
 # Automatically includes all relevant targets under the 'directories' above

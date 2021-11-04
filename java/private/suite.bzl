@@ -22,8 +22,10 @@ def _test_class_name(pkg, src_file):
     return pkg + test_name.replace("/", ".")
 
 def _matches(identifiers, name):
+    test_name = name.split("/")[-1]
+
     for identifier in identifiers:
-        if name.startswith(identifier) or name.endswith(identifier):
+        if test_name.startswith(identifier) or test_name.endswith(identifier):
             return True
     return False
 

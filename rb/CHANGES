@@ -1,3 +1,99 @@
+4.0.3 (2021-10-20)
+=========================
+
+Firefox:
+  * Fixed bug avoiding camel casing prefs (#9944 thanks @glaszig)
+
+Ruby:
+  * Fixed bug in Select class for finding by index (#9945)
+
+Remote:
+  * Fixed bug preventing sending keys with an empty value
+
+4.0.2 (2021-10-19)
+=========================
+
+Server:
+  * Fixed bug in new download code.
+
+4.0.1 (2021-10-19)
+=========================
+
+Server:
+  * Fixed download by pointing to new storage location.
+    - Only supports Selenium 4 versions
+  * Added default value for Server::get and Server::download to use the latest server version
+
+4.0.0 (2021-10-13)
+=========================
+
+Ruby:
+  * Updated minimum required Ruby version to 2.6
+  * Updated minimum required rexml gem version due to vulnerability
+
+Chrome:
+  * Added default values for Network Conditions so no longer need to specify everything
+
+Firefox:
+  * Fixed bug where Firefox prefs were converting snake case to camel case
+
+4.0.0.rc3 (2021-10-08)
+=========================
+
+Ruby:
+  * Added support for getting timeout values from the driver
+
+4.0.0.rc2 (2021-09-30)
+=========================
+
+DevTools:
+  * Released selenium-devtools 0.93.0 (2021-09-01)
+    - adds CDP version 93
+    - removes CDP version 91
+  * Released selenium-devtools 0.94.0 (2021-09-22)
+    - adds CDP version 94
+    - removes CDP version 92
+  * Added support for mutating responses in network interception
+
+Ruby:
+  * Implemented Options#add_option to work for vendor extension capabilities
+  * Fixed bug for requiring uri (#9825 thanks @flanger001)
+  * Moved New Window functionality to TargetLocator#new_window to be used with Driver#switch_to
+  * Deprecated using Manager#new_window
+  * Changed order of logging output (#9850)
+  * Added support for web_socket_url capability
+
+Chromium:
+  * Implemented casting functionality
+  * Implemented ability to launch chromium app
+  * Implemented support for specifying permissions
+  * Added support for Chrome-specific Android functionality with #enable_android
+
+Firefox:
+  * Implemented context functionality
+  * Added support for Firefox-specific Android functionality with #enable_android
+
+Remote:
+  * Added support for file detector to install Firefox addons from client machine
+
+4.0.0.rc1 (2021-09-01)
+=========================
+
+DevTools:
+  * Released selenium-devtools 0.92.0 (2021-08-21) which:
+    - adds CDP versions 92
+    - removes CDP versions 88, 89, 90
+
+IE:
+  * Added options for running Microsoft Edge in IE mode with IE Driver
+
+Remote:
+  * Added default file detector for remote driver
+
+Ruby:
+  * Fixed bug for getting valid capability that has not been set
+  * Fixed bug preventing loading of ServerError class
+
 4.0.0.beta4 (2021-06-07)
 =========================
 

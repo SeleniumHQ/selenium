@@ -30,10 +30,11 @@ namespace OpenQA.Selenium
     {
         private Lazy<DevToolsSession> session;
         private List<NetworkRequestHandler> requestHandlers = new List<NetworkRequestHandler>();
+        private List<NetworkResponseHandler> responseHandlers = new List<NetworkResponseHandler>();
         private List<NetworkAuthenticationHandler> authenticationHandlers = new List<NetworkAuthenticationHandler>();
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="RemoteNetwork"/> class.
+        /// Initializes a new instance of the <see cref="NetworkManager"/> class.
         /// </summary>
         /// <param name="driver">The <see cref="IWebDriver"/> instance on which the network should be monitored.</param>
         public NetworkManager(IWebDriver driver)
@@ -61,7 +62,7 @@ namespace OpenQA.Selenium
         /// <summary>
         /// Occurs when a browser receives a network response.
         /// </summary>
-        public event EventHandler<NetworkResponseRecievedEventArgs> NetworkResponseReceived;
+        public event EventHandler<NetworkResponseReceivedEventArgs> NetworkResponseReceived;
 
         /// <summary>
         /// Asynchronously starts monitoring for network traffic.
@@ -98,17 +99,17 @@ namespace OpenQA.Selenium
         {
             if (handler == null)
             {
-                throw new ArgumentNullException("handler", "Request handler cannot be null");
+                throw new ArgumentNullException(nameof(handler), "Request handler cannot be null");
             }
 
             if (handler.RequestMatcher == null)
             {
-                throw new ArgumentException("Matcher for request cannot be null", "handler");
+                throw new ArgumentException("Matcher for request cannot be null", nameof(handler));
             }
 
             if (handler.RequestTransformer == null && handler.ResponseSupplier == null)
             {
-                throw new ArgumentException("Request transformer and response supplier cannot both be null", "handler");
+                throw new ArgumentException("Request transformer and response supplier cannot both be null", nameof(handler));
             }
 
             this.requestHandlers.Add(handler);
@@ -131,23 +132,23 @@ namespace OpenQA.Selenium
         {
             if (handler == null)
             {
-                throw new ArgumentNullException("handler", "Authentication handler cannot be null");
+                throw new ArgumentNullException(nameof(handler), "Authentication handler cannot be null");
             }
 
             if (handler.UriMatcher == null)
             {
-                throw new ArgumentException("Matcher for delegate for URL cannot be null", "handler");
+                throw new ArgumentException("Matcher for delegate for URL cannot be null", nameof(handler));
             }
 
             if (handler.Credentials == null)
             {
-                throw new ArgumentException("Credentials to use for authentication cannot be null", "handler");
+                throw new ArgumentException("Credentials to use for authentication cannot be null", nameof(handler));
             }
 
             var passwordCredentials = handler.Credentials as PasswordCredentials;
             if (passwordCredentials == null)
             {
-                throw new ArgumentException("Credentials must contain user name and password (PasswordCredentials)", "handler");
+                throw new ArgumentException("Credentials must contain user name and password (PasswordCredentials)", nameof(handler));
             }
 
             this.authenticationHandlers.Add(handler);
@@ -159,6 +160,34 @@ namespace OpenQA.Selenium
         public void ClearAuthenticationHandlers()
         {
             this.authenticationHandlers.Clear();
+        }
+
+        /// <summary>
+        /// Adds a <see cref="NetworkResponseHandler"/> to examine received network responses,
+        /// and optionally modify the response. 
+        /// </summary>
+        /// <param name="handler">The <see cref="NetworkResponseHandler"/> to add.</param>
+        public void AddResponseHandler(NetworkResponseHandler handler)
+        {
+            if (handler == null)
+            {
+                throw new ArgumentNullException(nameof(handler), "Request handler cannot be null");
+            }
+
+            if (handler.ResponseMatcher == null)
+            {
+                throw new ArgumentException("Matcher for response cannot be null", nameof(handler));
+            }
+
+            this.responseHandlers.Add(handler);
+        }
+
+        /// <summary>
+        /// Clears all added <see cref="NetworkResponseHandler"/> instances.
+        /// </summary>
+        public void ClearResponseHandlers()
+        {
+            this.responseHandlers.Clear();
         }
 
         private async void OnAuthRequired(object sender, AuthRequiredEventArgs e)
@@ -213,12 +242,32 @@ namespace OpenQA.Selenium
 
         private async void OnResponsePaused(object sender, ResponsePausedEventArgs e)
         {
-            await this.session.Value.Domains.Network.AddResponseBody(e.ResponseData);
-            await this.session.Value.Domains.Network.ContinueResponseWithoutModification(e.ResponseData);
+            if (e.ResponseData.Headers.Count > 0)
+            {
+                // If no headers are present, the body cannot be retrieved.
+                await this.session.Value.Domains.Network.AddResponseBody(e.ResponseData);
+            }
+
             if (this.NetworkResponseReceived != null)
             {
-                this.NetworkResponseReceived(this, new NetworkResponseRecievedEventArgs(e.ResponseData));
+                this.NetworkResponseReceived(this, new NetworkResponseReceivedEventArgs(e.ResponseData));
             }
+
+            foreach (var handler in this.responseHandlers)
+            {
+                if (handler.ResponseMatcher.Invoke(e.ResponseData))
+                {
+                    // NOTE: We create a dummy HttpRequestData object here, because the ContinueRequestWithResponse
+                    // method demands one; however, the only property used by that method is the RequestId property.
+                    // It might be better to refactor that method signature to simply pass the request ID, or
+                    // alternatively, just pass the response data, which should also contain the request ID anyway.
+                    HttpRequestData requestData = new HttpRequestData() { RequestId = e.ResponseData.RequestId };
+                    await this.session.Value.Domains.Network.ContinueRequestWithResponse(requestData, handler.ResponseTransformer(e.ResponseData));
+                    return;
+                }
+            }
+
+            await this.session.Value.Domains.Network.ContinueResponseWithoutModification(e.ResponseData);
         }
     }
 }

@@ -5,7 +5,7 @@ package_group(
     name = "webdriver_backed_selenium_implementations",
     packages = [
         "//dotnet/src/webdriverbackedselenium",
-        "//java/client/src/com/thoughtworks/selenium/webdriven",
+        "//java/src/com/thoughtworks/selenium/webdriven",
     ],
 )
 

@@ -19,7 +19,7 @@ import time
 
 import pytest
 
-from selenium.common.exceptions import TimeoutException
+from selenium.common.exceptions import TimeoutException, InvalidSelectorException
 from selenium.common.exceptions import StaleElementReferenceException
 from selenium.common.exceptions import WebDriverException
 from selenium.common.exceptions import InvalidElementStateException
@@ -30,6 +30,12 @@ from selenium.webdriver.support.ui import WebDriverWait
 
 def throwSERE(driver):
     raise StaleElementReferenceException("test")
+
+
+def testShouldFailWithInvalidSelectorException(driver, pages):
+    pages.load("dynamic.html")
+    with pytest.raises(InvalidSelectorException):
+        WebDriverWait(driver, 0.7).until(EC.presence_of_element_located((By.XPATH, "//*[contains(@id,'something'")))
 
 
 def testShouldExplicitlyWaitForASingleElement(driver, pages):
@@ -203,6 +209,15 @@ def testExpectedConditionTextToBePresentInElementValue(driver, pages):
         WebDriverWait(driver, 1).until(EC.text_to_be_present_in_element_value((By.ID, 'inputRequired'), 'Expected'))
     driver.execute_script("setTimeout(function(){document.getElementById('inputRequired').value = 'Example Expected text'}, 200)")
     WebDriverWait(driver, 1).until(EC.text_to_be_present_in_element_value((By.ID, 'inputRequired'), 'Expected'))
+    assert 'Example Expected text' == driver.find_element(By.ID, 'inputRequired').get_attribute('value')
+
+
+def testExpectedConditionTextToBePresentInElementAttribute(driver, pages):
+    pages.load('booleanAttributes.html')
+    with pytest.raises(TimeoutException):
+        WebDriverWait(driver, 1).until(EC.text_to_be_present_in_element_attribute((By.ID, 'inputRequired'), 'value', 'Expected'))
+    driver.execute_script("setTimeout(function(){document.getElementById('inputRequired').value = 'Example Expected text'}, 200)")
+    WebDriverWait(driver, 1).until(EC.text_to_be_present_in_element_attribute((By.ID, 'inputRequired'), 'value', 'Expected'))
     assert 'Example Expected text' == driver.find_element(By.ID, 'inputRequired').get_attribute('value')
 
 

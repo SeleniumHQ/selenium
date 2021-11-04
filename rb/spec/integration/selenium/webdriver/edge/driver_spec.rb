@@ -31,6 +31,18 @@ module Selenium
             'download_throughput' => 789,
             'upload_throughput' => 789
           )
+          driver.delete_network_conditions
+        end
+
+        it 'supports default network conditions' do
+          driver.network_conditions = {latency: 56}
+          expect(driver.network_conditions).to eq(
+            'offline' => false,
+            'latency' => 56,
+            'download_throughput' => -1,
+            'upload_throughput' => -1
+          )
+          driver.delete_network_conditions
         end
 
         it 'sets download path' do
@@ -87,6 +99,19 @@ module Selenium
             entries = driver.logs.get(:performance)
             expect(entries).not_to be_empty
             expect(entries.first).to be_kind_of(LogEntry)
+          end
+        end
+
+        # This requires cast sinks to run
+        it 'casts' do
+          # Does not get list correctly the first time for some reason
+          driver.cast_sinks
+          sleep 2
+          sinks = driver.cast_sinks
+          unless sinks.empty?
+            device_name = sinks.first['name']
+            driver.start_cast_tab_mirroring(device_name)
+            driver.stop_casting(device_name)
           end
         end
       end

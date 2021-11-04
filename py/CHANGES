@@ -1,3 +1,48 @@
+Selenium 4.0.0
+
+* Add cdp 95 to python and JS
+* Remove Edge legacy options. (#9908)
+* Expected condition for checking attribute value (#9881)
+* implement relative locator for find_element (#9902)
+* Fix python generation code for CDP to optionals better
+
+Selenium 4 Release Candidate 3
+
+* Fix CDP Code Generation broken by Chromium 94
+* Fix Deprecation warnings for IE Bindings. Fixes #9818
+
+Selenium 4 Release Candidate 2
+
+* Add new websocketUrl capability
+* Force free ports for cdp in geckodriver
+* Add w3c capabilities to Python options (#9870)
+* expected_conditions and wait modules raises InvalidSelectorException for invalid xpaths (#9805)
+* implement chromium specific endpoint for setting permissions
+* implement chromium specific endpoint for deleting network conditions
+* update ruby, python and JS to add support for v94 and remove support for v92
+* Fix type hint on chrome option method (#9840)
+* Allows None to be set for the sameSite attribute (#9771)
+* Fix typo in python webdriver for IE (#9801)
+
+Selenium 4 Release Candidate 1
+
+* Remove cdp versions 88, 89, and 90
+* Replace v91 with v93 in bazel files
+* update IE options class in each language to match the currently supported capabilities in the IE Driver
+* Specify that the "find_element_by_* ..." warning is a deprecation warning (#9700)
+* clean up imports
+* Use options when passing things to remote webdriver instead of capabilities (#9678)
+* Correct deprecation message in IE handling code
+* Rewrite the logging module for bidi connections
+* remove non-w3c compliant parameters from default capabilities
+* Run type checks in CI and report typing coverage to codecov (#9523)
+* PEP 484 Type Hints added
+* Handle first/always match better when it hits lists/dicts. Fixes #9538
+* correct tox warnings
+* Fix deprecation warnings for Safari (#9577)
+* Allow 0 coordinates for the window position. Fixes #9574
+* Fix incorrect use of 'NoReturn' type annotation. (#9540)
+
 Selenium 4 Beta 4 (The Final Beta)
 
 * Returning fixed IP in GitHub actions (#9550)
@@ -746,7 +791,7 @@ Selenium 2.25
 * EventFiringWebDriver added to Support module - Bug 2267
 * Added IEDriverServer logging that can be accessed via desired capabilities
 * Fixed by data being passed into find_elements - bug 3735
-* Removed deprecated ChromeDriver items around desiredcapabilites in favour of chrome options
+* Removed deprecated ChromeDriver items around desiredcapabilities in favour of chrome options
 * Added default values for a number of action_chains calls
 
 Selenium 2.24
@@ -897,7 +942,4 @@ Selenium 2 Beta 2
 * Improved IEDriver
 * Basic Authentication support for Selenium 2
 * Ability to have multiple Firefox instances
-
-
-
 

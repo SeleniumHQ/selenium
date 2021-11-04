@@ -62,7 +62,7 @@ namespace OpenQA.Selenium
         {
             if (frameName == null)
             {
-                throw new ArgumentNullException("frameName", "Frame name cannot be null");
+                throw new ArgumentNullException(nameof(frameName), "Frame name cannot be null");
             }
 
             string name = Regex.Replace(frameName, @"(['""\\#.:;,!?+<>=~*^$|%&@`{}\-/\[\]\(\)])", @"\$1");
@@ -88,7 +88,7 @@ namespace OpenQA.Selenium
         {
             if (frameElement == null)
             {
-                throw new ArgumentNullException("frameElement", "Frame element cannot be null");
+                throw new ArgumentNullException(nameof(frameElement), "Frame element cannot be null");
             }
 
             IWebElementReference elementReference = frameElement as IWebElementReference;
@@ -103,7 +103,7 @@ namespace OpenQA.Selenium
 
             if (elementReference == null)
             {
-                throw new ArgumentException("frameElement cannot be converted to IWebElementReference", "frameElement");
+                throw new ArgumentException("frameElement cannot be converted to IWebElementReference", nameof(frameElement));
             }
 
             // TODO: Remove "ELEMENT" addition when all remote ends are spec-compliant.

@@ -5,12 +5,13 @@ load("//common:defs.bzl", "copy_file")
 load("//py:defs.bzl", "py_test_suite")
 load("//py/private:browsers.bzl", "BROWSERS")
 
+SE_VERSION = "4.0.0"
+
 BROWSER_VERSIONS = [
     "v85",
-    "v88",
-    "v90",
-    "v91",
-    "v92"
+    "v93",
+    "v94",
+    "v95",
 ]
 
 TEST_DEPS = [
@@ -55,7 +56,7 @@ copy_file(
 copy_file(
     name = "mutation-listener",
     src = "//javascript/cdp-support:mutation-listener.js",
-    out = "selenium/webdriver/remote/mutation-listener.js",
+    out = "selenium/webdriver/common/mutation-listener.js",
 )
 
 copy_file(
@@ -135,7 +136,7 @@ py_wheel(
     strip_path_prefixes = [
         "py",
     ],
-    version = "4.0.0.b4",
+    version = SE_VERSION,
     visibility = ["//visibility:public"],
     deps = [
         ":selenium-pkg",
@@ -310,7 +311,7 @@ py_test_suite(
     ]),
     args = [
         "--instafail",
-        "--driver=Edge",
+        "--driver=edge",
     ],
     tags = [
         "no-sandbox",
@@ -357,7 +358,7 @@ py_test_suite(
         "--driver=remote",
     ],
     data = [
-        "//java/server/src/org/openqa/selenium/grid:selenium_server_deploy.jar",
+        "//java/src/org/openqa/selenium/grid:selenium_server_deploy.jar",
     ],
     tags = [
         "no-sandbox",

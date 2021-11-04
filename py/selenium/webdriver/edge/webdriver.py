@@ -28,8 +28,7 @@ DEFAULT_SERVICE_LOG_PATH = None
 class WebDriver(ChromiumDriver):
     """
     Controls the Microsoft Edge driver and allows you to drive the browser.
-    You will need to download either the MicrosoftWebDriver (Legacy)
-    or MSEdgeDriver (Chromium) executable from
+    You will need to download the MSEdgeDriver (Chromium) executable from
     https://developer.microsoft.com/en-us/microsoft-edge/tools/webdriver/
     """
 
@@ -49,6 +48,7 @@ class WebDriver(ChromiumDriver):
          - capabilities - Deprecated: Dictionary object with non-browser specific
            capabilities only, such as "proxy" or "loggingPref".
          - service_log_path - Deprecated: Where to log information from the driver.
+         - service - Service object for handling the browser driver if you need to pass extra details
          - keep_alive - Whether to configure EdgeRemoteConnection to use HTTP keep-alive.
          - verbose - whether to set verbose logging in the service.
          """

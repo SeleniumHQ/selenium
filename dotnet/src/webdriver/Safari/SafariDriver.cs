@@ -17,6 +17,7 @@
 // </copyright>
 
 using System;
+using System.Collections.Generic;
 using OpenQA.Selenium.Remote;
 
 namespace OpenQA.Selenium.Safari
@@ -61,6 +62,10 @@ namespace OpenQA.Selenium.Safari
     /// </example>
     public class SafariDriver : WebDriver
     {
+        private const string AttachDebuggerCommand = "attachDebugger";
+        private const string GetPermissionsCommand = "getPermissions";
+        private const string SetPermissionsCommand = "setPermissions";
+
         /// <summary>
         /// Initializes a new instance of the <see cref="SafariDriver"/> class.
         /// </summary>
@@ -140,6 +145,50 @@ namespace OpenQA.Selenium.Safari
         public SafariDriver(SafariDriverService service, SafariOptions options, TimeSpan commandTimeout)
             : base(new DriverServiceCommandExecutor(service, commandTimeout), ConvertOptionsToCapabilities(options))
         {
+            this.AddCustomSafariCommand(AttachDebuggerCommand, HttpCommandInfo.PostCommand, "/session/{sessionId}/apple/attach_debugger");
+            this.AddCustomSafariCommand(GetPermissionsCommand, HttpCommandInfo.GetCommand, "/session/{sessionId}/apple/permissions");
+            this.AddCustomSafariCommand(SetPermissionsCommand, HttpCommandInfo.PostCommand, "/session/{sessionId}/apple/permissions");
+        }
+
+        /// <summary>
+        /// This opens Safari's Web Inspector.
+        /// If driver subsequently executes script of "debugger;"
+        /// the execution will pause, no additional commands will be processed, and the code will time out.
+        /// </summary>
+        public void AttachDebugger()
+        {
+            Dictionary<string, object> parameters = new Dictionary<string, object>();
+            parameters["attachDebugger"] = null;
+            this.Execute(AttachDebuggerCommand, parameters);
+        }
+
+        /// <summary>
+        /// Set permission of an item on the browser. The only supported permission at this time is "getUserMedia".
+        /// </summary>
+        /// <param name="permissionName">The name of the item to set permission on.</param>
+        /// <param name="permissionValue">Whether the permission has been granted.</param>
+        public void SetPermission(string permissionName, bool permissionValue)
+        {
+            if (string.IsNullOrEmpty(permissionName))
+            {
+                throw new ArgumentNullException(nameof(permissionName), "permission must not be null or the empty string");
+            }
+
+            Dictionary<string, object> permissions = new Dictionary<string, object>();
+            permissions[permissionName] = permissionValue;
+            Dictionary<string, object> parameters = new Dictionary<string, object>();
+            parameters["permissions"] = permissions;
+            this.Execute(SetPermissionsCommand, parameters);
+        }
+
+        /// <summary>
+        /// Returns Each available permission item and whether it is allowed or not.
+        /// </summary>
+        /// <returns>whether the item is allowed or not.</returns>
+        public Object GetPermissions()
+        {
+            Response response = this.Execute(GetPermissionsCommand, null);
+            return response.Value;
         }
 
         /// <summary>
@@ -162,10 +211,16 @@ namespace OpenQA.Selenium.Safari
         {
             if (options == null)
             {
-                throw new ArgumentNullException("options", "options must not be null");
+                throw new ArgumentNullException(nameof(options), "options must not be null");
             }
 
             return options.ToCapabilities();
+        }
+
+        private void AddCustomSafariCommand(string commandName, string method, string resourcePath)
+        {
+            HttpCommandInfo commandInfoToAdd = new HttpCommandInfo(method, resourcePath);
+            this.CommandExecutor.TryAddCommand(commandName, commandInfoToAdd);
         }
     }
 }

@@ -89,6 +89,9 @@ namespace OpenQA.Selenium.IE
         private const string ForceShellWindowsApiCapability = "ie.forceShellWindowsApi";
         private const string FileUploadDialogTimeoutCapability = "ie.fileUploadDialogTimeout";
         private const string EnableFullPageScreenshotCapability = "ie.enableFullPageScreenshot";
+        private const string EdgeExecutablePathCapability = "ie.edgepath";
+        private const string LegacyFileUploadDialogHandlingCapability = "ie.useLegacyFileUploadDialogHandling";
+        private const string AttachToEdgeChromeCapability = "ie.edgechromium";
 
         private bool ignoreProtectedModeSettings;
         private bool ignoreZoomLevel;
@@ -100,10 +103,13 @@ namespace OpenQA.Selenium.IE
         private bool usePerProcessProxy;
         private bool ensureCleanSession;
         private bool enableFullPageScreenshot = true;
+        private bool legacyFileUploadDialogHandling;
+        private bool attachToEdgeChrome;
         private TimeSpan browserAttachTimeout = TimeSpan.MinValue;
         private TimeSpan fileUploadDialogTimeout = TimeSpan.MinValue;
         private string initialBrowserUrl = string.Empty;
         private string browserCommandLineArguments = string.Empty;
+        private string edgeExecutablePath = string.Empty;
         private InternetExplorerElementScrollBehavior elementScrollBehavior = InternetExplorerElementScrollBehavior.Default;
         private Dictionary<string, object> additionalInternetExplorerOptions = new Dictionary<string, object>();
 
@@ -131,6 +137,9 @@ namespace OpenQA.Selenium.IE
             this.AddKnownCapabilityName(EnsureCleanSessionCapability, "EnsureCleanSession property");
             this.AddKnownCapabilityName(FileUploadDialogTimeoutCapability, "FileUploadDialogTimeout property");
             this.AddKnownCapabilityName(EnableFullPageScreenshotCapability, "EnableFullPageScreenshot property");
+            this.AddKnownCapabilityName(LegacyFileUploadDialogHandlingCapability, "LegacyFileUploadDialogHanlding property");
+            this.AddKnownCapabilityName(AttachToEdgeChromeCapability, "AttachToEdgeChrome property");
+            this.AddKnownCapabilityName(EdgeExecutablePathCapability, "EdgeExecutablePath property");
         }
 
         /// <summary>
@@ -280,6 +289,33 @@ namespace OpenQA.Selenium.IE
         {
             get { return this.ensureCleanSession; }
             set { this.ensureCleanSession = value; }
+        }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether to use the legacy handling for file upload dialogs.
+        /// </summary>
+        public bool LegacyFileUploadDialogHanlding
+        {
+            get { return this.legacyFileUploadDialogHandling; }
+            set { this.legacyFileUploadDialogHandling = value; }
+        }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether to attach to Edge Chrome browser.
+        /// </summary>
+        public bool AttachToEdgeChrome
+        {
+            get { return this.attachToEdgeChrome; }
+            set { this.attachToEdgeChrome = value; }
+        }
+
+        /// <summary>
+        /// Gets or sets the path to the Edge Browser Executable.
+        /// </summary>
+        public string EdgeExecutablePath
+        {
+            get { return this.edgeExecutablePath; }
+            set { this.edgeExecutablePath = value; }
         }
 
         /// <summary>
@@ -445,6 +481,21 @@ namespace OpenQA.Selenium.IE
             if (!this.enableFullPageScreenshot)
             {
                 internetExplorerOptionsDictionary[EnableFullPageScreenshotCapability] = false;
+            }
+
+            if (this.legacyFileUploadDialogHandling)
+            {
+                internetExplorerOptionsDictionary[LegacyFileUploadDialogHandlingCapability] = true;
+            }
+
+            if (this.attachToEdgeChrome)
+            {
+                internetExplorerOptionsDictionary[AttachToEdgeChromeCapability] = true;
+            }
+
+            if (!string.IsNullOrEmpty(this.edgeExecutablePath))
+            {
+                internetExplorerOptionsDictionary[EdgeExecutablePathCapability] = this.edgeExecutablePath;
             }
 
             foreach (KeyValuePair<string, object> pair in this.additionalInternetExplorerOptions)

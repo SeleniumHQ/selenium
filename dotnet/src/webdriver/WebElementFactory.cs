@@ -95,7 +95,7 @@ namespace OpenQA.Selenium
         {
             if (elementDictionary == null)
             {
-                throw new ArgumentNullException("elementDictionary", "The dictionary containing the element reference cannot be null");
+                throw new ArgumentNullException(nameof(elementDictionary), "The dictionary containing the element reference cannot be null");
             }
 
             if (elementDictionary.ContainsKey(WebElement.ElementReferencePropertyName))

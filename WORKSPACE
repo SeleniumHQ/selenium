@@ -50,8 +50,8 @@ bazel_skylib_workspace()
 
 http_archive(
     name = "rules_python",
-    sha256 = "778197e26c5fbeb07ac2a2c5ae405b30f6cb7ad1f5510ea6fdac03bded96cc6f",
-    url = "https://github.com/bazelbuild/rules_python/releases/download/0.2.0/rules_python-0.2.0.tar.gz",
+    url = "https://github.com/bazelbuild/rules_python/releases/download/0.5.0/rules_python-0.5.0.tar.gz",
+    sha256 = "cd6730ed53a002c56ce4e2f396ba3b3be262fd7cb68339f0377a45e8227fe332",
 )
 
 # This one is only needed if you're using the packaging rules.
@@ -123,21 +123,19 @@ selenium_register_dotnet()
 
 http_archive(
     name = "build_bazel_rules_nodejs",
-    sha256 = "8f5f192ba02319254aaf2cdcca00ec12eaafeb979a80a1e946773c520ae0a2c9",
-    urls = ["https://github.com/bazelbuild/rules_nodejs/releases/download/3.7.0/rules_nodejs-3.7.0.tar.gz"],
+    sha256 = "3aa6296f453ddc784e1377e0811a59e1e6807da364f44b27856e34f5042043fe",
+    urls = ["https://github.com/bazelbuild/rules_nodejs/releases/download/4.4.2/rules_nodejs-4.4.2.tar.gz"],
 )
 
-load("@build_bazel_rules_nodejs//:index.bzl", "node_repositories")
+load("@build_bazel_rules_nodejs//:index.bzl", "node_repositories", "npm_install")
 
 node_repositories(
-  package_json = [
-    "//:package.json",
-    "//javascript/grid-ui:package.json",
-  ],
-  node_version = "16.4.1",
+    node_version = "16.4.1",
+    package_json = [
+        "//:package.json",
+        "//javascript/grid-ui:package.json",
+    ],
 )
-
-load("@build_bazel_rules_nodejs//:index.bzl", "npm_install")
 
 npm_install(
     name = "npm",
@@ -162,12 +160,16 @@ rules_closure_toolchains()
 
 http_archive(
     name = "rules_pkg",
-    sha256 = "038f1caa773a7e35b3663865ffb003169c6a71dc995e39bf4815792f385d837d",
+    sha256 = "a89e203d3cf264e564fcb96b6e06dd70bc0557356eb48400ce4b5d97c2c3720d",
     urls = [
-        "https://github.com/bazelbuild/rules_pkg/releases/download/0.4.0/rules_pkg-0.4.0.tar.gz",
-        "https://mirror.bazel.build/github.com/bazelbuild/rules_pkg/releases/download/0.4.0/rules_pkg-0.4.0.tar.gz",
+        "https://mirror.bazel.build/github.com/bazelbuild/rules_pkg/releases/download/0.5.1/rules_pkg-0.5.1.tar.gz",
+        "https://github.com/bazelbuild/rules_pkg/releases/download/0.5.1/rules_pkg-0.5.1.tar.gz",
     ],
 )
+
+load("@rules_pkg//:deps.bzl", "rules_pkg_dependencies")
+
+rules_pkg_dependencies()
 
 http_archive(
     name = "io_bazel_rules_docker",
@@ -197,7 +199,7 @@ load(
 container_pull(
     name = "java_image_base",
     # This pulls the java 11 version of the java base image
-    digest = "sha256:ae5d32ed4da6d2207fd34accde64f5b1264cbdd1340fa8c1cfa70cdf1841f9db",
+    digest = "sha256:97c7eae86c65819664fcb7f36e8dee54bbbbc09c2cb6b448cbee06e1b42df81b",
     registry = "gcr.io",
     repository = "distroless/java",
 )
@@ -205,7 +207,7 @@ container_pull(
 container_pull(
     name = "firefox_standalone",
     # selenium/standalone-firefox-debug:3.141.59
-    digest = "sha256:ac284138b2b8d581b9d3b1a15282ab0a679aa06cc34146f473e5e5aee5f5303d",
+    digest = "sha256:ecc9861eafb3c2f999126fa4cc0434e9fbe6658ba1241998457bb088c99dd0d0",
     registry = "index.docker.io",
     repository = "selenium/standalone-firefox-debug",
 )
@@ -213,7 +215,7 @@ container_pull(
 container_pull(
     name = "chrome_standalone",
     # selenium/standalone-chrome-debug:3.141.59
-    digest = "sha256:75edd7f58f4faeb4c7b11d81bfa4c720e007253846defe3117bc3f692922894c",
+    digest = "sha256:c3a2174ac31b3918ae9d93c43ed8165fc2346b8c9e16d38ebac691fbb242667f",
     registry = "index.docker.io",
     repository = "selenium/standalone-chrome-debug",
 )
@@ -256,25 +258,24 @@ load("//common:repositories.bzl", "pin_browsers")
 pin_browsers()
 
 http_archive(
-    name = "coinbase_rules_ruby",
-    sha256 = "f83da569318a6af9f1bd2d320d747c6717e4f8a1d30eb7f9d4e793939b62144e",
-    strip_prefix = "rules_ruby-4239b06d1af6c9f036a74e2c6c61213d5f19e487",
-    url = "https://github.com/p0deje/rules_ruby/archive/4239b06d1af6c9f036a74e2c6c61213d5f19e487.tar.gz",
+    name = "bazelruby_rules_ruby",
+    sha256 = "14861aed0c9be47577808757ce2e54aa7c729f58d4c99ed907834df2a2245c6d",
+    strip_prefix = "rules_ruby-1-36893fe82ea490cb4cc0ec0a5542298e2b45fb1c",
+    url = "https://github.com/p0deje/rules_ruby-1/archive/36893fe82ea490cb4cc0ec0a5542298e2b45fb1c.tar.gz",
 )
 
 load(
-    "@coinbase_rules_ruby//ruby:deps.bzl",
-    "ruby_register_toolchains",
+    "@bazelruby_rules_ruby//ruby:deps.bzl",
     "rules_ruby_dependencies",
+    "rules_ruby_select_sdk",
 )
 
 rules_ruby_dependencies()
+rules_ruby_select_sdk(version = "host")
 
-ruby_register_toolchains()
+load("@bazelruby_rules_ruby//ruby:defs.bzl", "ruby_bundle")
 
-load("@coinbase_rules_ruby//ruby:defs.bzl", "rb_bundle")
-
-rb_bundle(
+ruby_bundle(
     name = "bundle",
     srcs = [
         "//:rb/lib/selenium/devtools/version.rb",
@@ -282,6 +283,5 @@ rb_bundle(
         "//:rb/selenium-devtools.gemspec",
         "//:rb/selenium-webdriver.gemspec",
     ],
-    bundler_version = "2.1.4",
     gemfile = "//:rb/Gemfile",
 )

@@ -30,7 +30,7 @@ def testWritableTextInputShouldClear(driver, pages):
 
 def testTextInputShouldNotClearWhenDisabled(driver, pages):
     pages.load("readOnlyPage.html")
-    element = driver.find_element(By.ID, "textInputnotenabled")
+    element = driver.find_element(By.ID, "textInputNotEnabled")
     assert not element.is_enabled()
     with pytest.raises(InvalidElementStateException):
         element.clear()
@@ -52,7 +52,7 @@ def testWritableTextAreaShouldClear(driver, pages):
 
 def testTextAreaShouldNotClearWhenDisabled(driver, pages):
     pages.load("readOnlyPage.html")
-    element = driver.find_element(By.ID, "textAreaNotenabled")
+    element = driver.find_element(By.ID, "textAreaNotEnabled")
     with pytest.raises(InvalidElementStateException):
         element.clear()
 

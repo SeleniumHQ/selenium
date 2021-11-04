@@ -103,7 +103,7 @@ function ensureFileDetectorsAreEnabled(ctor) {
  */
 class ThenableWebDriver {
   /** @param {...?} args */
-  static createSession(...args) {} // eslint-disable-line
+  static createSession(...args) { } // eslint-disable-line
 }
 
 /**
@@ -162,7 +162,7 @@ function createDriver(ctor, ...args) {
  *   option always takes precedence over {@code SELENIUM_SERVER_JAR}.
  *
  * - {@code SELENIUM_SERVER_JAR}: defines the path to the
- *   <a href="http://selenium-release.storage.googleapis.com/index.html">
+ *   <a href="https://www.selenium.dev/downloads/">
  *   standalone Selenium server</a> jar to use. The server will be started the
  *   first time a WebDriver instance and be killed when the process exits.
  *
@@ -318,6 +318,8 @@ class Builder {
   }
 
   /**
+   * Recommended way is to use set*Options where * is the browser(eg setChromeOptions)
+   *
    * Sets the desired capabilities when requesting a new session. This will
    * overwrite any previously set capabilities.
    * @param {!(Object|Capabilities)} capabilities The desired capabilities for
@@ -336,6 +338,19 @@ class Builder {
    */
   getCapabilities() {
     return this.capabilities_
+  }
+
+  /**
+   * Sets the desired capability when requesting a new session.
+   * If there is already a capability named key, its value will be overwritten with value.
+   * This is a convenience wrapper around builder.getCapabilities().set(key, value) to support Builder method chaining.
+   * @param {string} key The capability key.
+   * @param {*} value The capability value.
+   * @return {!Builder} A self reference.
+   */
+  setCapability(key, value) {
+    this.capabilities_.set(key, value)
+    return this
   }
 
   /**
@@ -615,7 +630,7 @@ class Builder {
     if (typeof browser !== 'string') {
       throw TypeError(
         `Target browser must be a string, but is <${typeof browser}>;` +
-          ' did you forget to call forBrowser()?'
+        ' did you forget to call forBrowser()?'
       )
     }
 
@@ -736,8 +751,8 @@ class Builder {
       default:
         throw new Error(
           'Do not know how to build driver: ' +
-            browser +
-            '; did you forget to call usingServer(url)?'
+          browser +
+          '; did you forget to call usingServer(url)?'
         )
     }
   }
@@ -793,9 +808,9 @@ function checkOptions(caps, key, optionType, setMethod) {
   if (val instanceof optionType) {
     throw new error.InvalidArgumentError(
       'Options class extends Capabilities and should not be set as key ' +
-        `"${key}"; set browser-specific options with ` +
-        `Builder.${setMethod}(). For more information, see the ` +
-        'documentation attached to the function that threw this error'
+      `"${key}"; set browser-specific options with ` +
+      `Builder.${setMethod}(). For more information, see the ` +
+      'documentation attached to the function that threw this error'
     )
   }
 }
@@ -807,6 +822,7 @@ exports.Builder = Builder
 exports.Button = input.Button
 exports.By = by.By
 exports.withTagName = by.withTagName
+exports.locateWith = by.locateWith
 exports.Capabilities = capabilities.Capabilities
 exports.Capability = capabilities.Capability
 exports.Condition = webdriver.Condition

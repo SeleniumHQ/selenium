@@ -125,6 +125,64 @@ module Selenium
             expect(entries.first).to be_kind_of(LogEntry)
           end
         end
+
+        it 'manages network features' do
+          driver.network_conditions = {offline: false, latency: 56, download_throughput: 789, upload_throughput: 600}
+          conditions = driver.network_conditions
+          expect(conditions['offline']).to eq false
+          expect(conditions['latency']).to eq 56
+          expect(conditions['download_throughput']).to eq 789
+          expect(conditions['upload_throughput']).to eq 600
+          driver.delete_network_conditions
+
+          error = /network conditions must be set before it can be retrieved/
+          expect { driver.network_conditions }.to raise_error(Error::UnknownError, error)
+        end
+
+        # This requires cast sinks to run
+        it 'casts' do
+          # Does not get list correctly the first time for some reason
+          driver.cast_sinks
+          sleep 2
+          sinks = driver.cast_sinks
+          unless sinks.empty?
+            device_name = sinks.first['name']
+            driver.start_cast_tab_mirroring(device_name)
+            driver.stop_casting(device_name)
+          end
+        end
+
+        def get_permission(name)
+          driver.execute_async_script("callback = arguments[arguments.length - 1];" \
+          "callback(navigator.permissions.query({name: arguments[0]}));", name)['state']
+        end
+
+        it 'can set single permissions' do
+          driver.navigate.to url_for('xhtmlTest.html')
+
+          expect(get_permission('clipboard-read')).to eq('prompt')
+          expect(get_permission('clipboard-write')).to eq('granted')
+
+          driver.add_permission('clipboard-read', 'denied')
+          driver.add_permission('clipboard-write', 'prompt')
+
+          expect(get_permission('clipboard-read')).to eq('denied')
+          expect(get_permission('clipboard-write')).to eq('prompt')
+
+          reset_driver!
+        end
+
+        it 'can set multiple permissions' do
+          driver.navigate.to url_for('xhtmlTest.html')
+
+          expect(get_permission('clipboard-read')).to eq('prompt')
+          expect(get_permission('clipboard-write')).to eq('granted')
+
+          driver.add_permissions('clipboard-read' => 'denied', 'clipboard-write' => 'prompt')
+
+          expect(get_permission('clipboard-read')).to eq('denied')
+          expect(get_permission('clipboard-write')).to eq('prompt')
+        end
       end
     end # Chrome
   end # WebDriver

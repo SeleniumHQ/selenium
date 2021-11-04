@@ -260,7 +260,6 @@ class IECommandExecutor : public CWindowImpl<IECommandExecutor>, public IElement
                                      const std::string& url);
   std::string OpenNewBrowserWindow(const std::wstring& url);
   std::string OpenNewBrowserTab(const std::wstring& url);
-  static BOOL CALLBACK FindAllBrowserHandles(HWND hwnd, LPARAM arg);
 
   BrowserMap managed_browsers_;
   ElementRepository* managed_elements_;
@@ -290,6 +289,7 @@ class IECommandExecutor : public CWindowImpl<IECommandExecutor>, public IElement
   bool use_strict_file_interactability_;
   bool is_edge_chromium_;
   std::string edge_executable_path_;
+  std::wstring edge_temp_dir_;
 
   Command current_command_;
   std::string serialized_response_;

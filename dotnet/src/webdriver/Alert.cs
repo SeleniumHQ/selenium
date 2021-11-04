@@ -73,7 +73,7 @@ namespace OpenQA.Selenium
         {
             if (keysToSend == null)
             {
-                throw new ArgumentNullException("keysToSend", "Keys to send must not be null.");
+                throw new ArgumentNullException(nameof(keysToSend), "Keys to send must not be null.");
             }
 
             Dictionary<string, object> parameters = new Dictionary<string, object>();

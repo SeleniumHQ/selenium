@@ -55,32 +55,24 @@ class DesiredCapabilities(object):
 
     INTERNETEXPLORER = {
         "browserName": "internet explorer",
-        "version": "",
-        "platform": "WINDOWS",
+        "platformName": "windows",
     }
 
     EDGE = {
         "browserName": "MicrosoftEdge",
-        "version": "",
-        "platform": "ANY"
     }
 
     CHROME = {
         "browserName": "chrome",
-        "version": "",
-        "platform": "ANY",
     }
 
     OPERA = {
         "browserName": "opera",
-        "version": "",
-        "platform": "ANY",
     }
 
     SAFARI = {
         "browserName": "safari",
-        "version": "",
-        "platform": "MAC",
+        "platformName": "mac",
     }
 
     HTMLUNIT = {
@@ -99,13 +91,13 @@ class DesiredCapabilities(object):
     IPHONE = {
         "browserName": "iPhone",
         "version": "",
-        "platform": "MAC",
+        "platform": "mac",
     }
 
     IPAD = {
         "browserName": "iPad",
         "version": "",
-        "platform": "MAC",
+        "platform": "mac",
     }
 
     WEBKITGTK = {

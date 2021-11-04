@@ -16,6 +16,7 @@
 # under the License.
 from selenium.common.exceptions import InvalidSelectorException
 from selenium.webdriver.common.by import By
+from selenium.webdriver.common.log import Log
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 
@@ -24,43 +25,51 @@ import pytest
 
 @pytest.mark.xfail_safari
 async def test_check_console_messages(driver, pages):
-    pages.load("javascriptPage.html")
-    from selenium.webdriver.common.bidi.console import Console
-    async with driver.log.add_listener(Console.ALL) as messages:
-        driver.execute_script("console.log('I love cheese')")
-    assert messages["message"] == "I love cheese"
+    async with driver.bidi_connection() as session:
+        log = Log(driver, session)
+        pages.load("javascriptPage.html")
+        from selenium.webdriver.common.bidi.console import Console
+        async with log.add_listener(Console.ALL) as messages:
+            driver.execute_script("console.log('I love cheese')")
+        assert messages["message"] == "I love cheese"
 
 
 @pytest.mark.xfail_safari
 async def test_check_error_console_messages(driver, pages):
-    pages.load("javascriptPage.html")
-    from selenium.webdriver.common.bidi.console import Console
-    async with driver.log.add_listener(Console.ERROR) as messages:
-        driver.execute_script("console.error(\"I don't cheese\")")
-        driver.execute_script("console.log('I love cheese')")
-    assert messages["message"] == "I don't cheese"
+    async with driver.bidi_connection() as session:
+        log = Log(driver, session)
+        pages.load("javascriptPage.html")
+        from selenium.webdriver.common.bidi.console import Console
+        async with log.add_listener(Console.ERROR) as messages:
+            driver.execute_script("console.error(\"I don't cheese\")")
+            driver.execute_script("console.log('I love cheese')")
+        assert messages["message"] == "I don't cheese"
 
 
 @pytest.mark.xfail_firefox
 @pytest.mark.xfail_safari
 @pytest.mark.xfail_remote
 async def test_collect_js_exceptions(driver, pages):
-    pages.load("javascriptPage.html")
-    async with driver.log.add_js_error_listener() as exceptions:
-        driver.find_element(By.ID, "throwing-mouseover").click()
-    assert exceptions is not None
-    assert exceptions.exception_details.stack_trace.call_frames[0].function_name == "onmouseover"
+    async with driver.bidi_connection() as session:
+        log = Log(driver, session)
+        pages.load("javascriptPage.html")
+        async with log.add_js_error_listener() as exceptions:
+            driver.find_element(By.ID, "throwing-mouseover").click()
+        assert exceptions is not None
+        assert exceptions.exception_details.stack_trace.call_frames[0].function_name == "onmouseover"
 
 
 @pytest.mark.xfail_firefox
 @pytest.mark.xfail_safari
 @pytest.mark.xfail_remote
 async def test_collect_log_mutations(driver, pages):
-    async with driver.log.mutation_events() as event:
-        pages.load("dynamic.html")
-        driver.find_element(By.ID, "reveal").click()
-        WebDriverWait(driver, 5, ignored_exceptions=InvalidSelectorException)\
-            .until(EC.visibility_of(driver.find_element(By.ID, "revealed")))
+    async with driver.bidi_connection() as session:
+        log = Log(driver, session)
+        async with log.mutation_events() as event:
+            pages.load("dynamic.html")
+            driver.find_element(By.ID, "reveal").click()
+            WebDriverWait(driver, 5, ignored_exceptions=InvalidSelectorException)\
+                .until(EC.visibility_of(driver.find_element(By.ID, "revealed")))
 
     assert event["attribute_name"] == "style"
     assert event["current_value"] == ""

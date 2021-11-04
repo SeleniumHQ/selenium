@@ -4,10 +4,9 @@ load("//common:defs.bzl", "copy_file")
 
 BROWSER_VERSIONS = [
     "v85",
-    "v88",
-    "v89",
-    "v90",
-    "v91",
+    "v93",
+    "v94",
+    "v95",
 ]
 
 SRC_FILES = [
@@ -28,6 +27,7 @@ SRC_FILES = [
 
 pkg_npm(
     name = "selenium-webdriver",
+    package_name = "selenium-webdriver",
     srcs = SRC_FILES,
     deps = [
         ":license",

@@ -45,6 +45,13 @@
       "RemoteCapabilities": "internet explorer"
     },
 
+    "EdgeIEMode": {
+      "DriverTypeName": "OpenQA.Selenium.IE.EdgeInternetExplorerModeDriver",
+      "AssemblyName": "WebDriver.Common.Tests",
+      "BrowserValue": "IE",
+      "RemoteCapabilities": "internet explorer"
+    },
+
     "Edge": {
       "DriverTypeName": "OpenQA.Selenium.Edge.StableChannelEdgeDriver",
       "AssemblyName": "WebDriver.Common.Tests",
@@ -56,13 +63,6 @@
       "DriverTypeName": "OpenQA.Selenium.Edge.DevChannelEdgeDriver",
       "AssemblyName": "WebDriver.Common.Tests",
       "BrowserValue": "Edge",
-      "RemoteCapabilities": "MicrosoftEdge"
-    },
-
-    "EdgeLegacy": {
-      "DriverTypeName": "OpenQA.Selenium.Edge.LegacyEdgeDriver",
-      "AssemblyName": "WebDriver.Common.Tests",
-      "BrowserValue": "EdgeLegacy",
       "RemoteCapabilities": "MicrosoftEdge"
     },
 

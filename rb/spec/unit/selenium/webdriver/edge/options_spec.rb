@@ -53,6 +53,10 @@ module Selenium
                                minidump_path: 'linux/only',
                                perf_logging_prefs: {enable_network: true},
                                window_types: %w[normal devtools],
+                               android_package: 'package',
+                               android_activity: 'activity',
+                               android_device_serial: '123',
+                               android_use_running_app: true,
                                'custom:options': {foo: 'bar'})
 
             expect(opts.args.to_a).to eq(%w[foo bar])
@@ -77,6 +81,10 @@ module Selenium
             expect(opts.strict_file_interactability).to eq(true)
             expect(opts.timeouts).to eq(script: 40000, page_load: 400000, implicit: 1)
             expect(opts.set_window_rect).to eq(false)
+            expect(opts.android_package).to eq('package')
+            expect(opts.android_activity).to eq('activity')
+            expect(opts.android_device_serial).to eq('123')
+            expect(opts.android_use_running_app).to eq(true)
             expect(opts.options[:'custom:options']).to eq(foo: 'bar')
           end
         end
@@ -133,8 +141,13 @@ module Selenium
         end
 
         describe '#add_option' do
-          it 'adds an option' do
+          it 'adds an option with ordered pairs' do
             options.add_option(:foo, 'bar')
+            expect(options.instance_variable_get('@options')[:foo]).to eq('bar')
+          end
+
+          it 'adds an option with Hash' do
+            options.add_option(foo: 'bar')
             expect(options.instance_variable_get('@options')[:foo]).to eq('bar')
           end
         end
@@ -163,14 +176,39 @@ module Selenium
           end
         end
 
+        describe '#enable_android' do
+          it 'adds default android settings' do
+            options.enable_android
+
+            expect(options.android_package).to eq('com.android.chrome')
+            expect(options.android_activity).to be_nil
+            expect(options.android_device_serial).to be_nil
+            expect(options.android_use_running_app).to be_nil
+          end
+
+          it 'accepts parameters' do
+            options.enable_android(package: 'foo',
+                                   serial_number: '123',
+                                   activity: 'qualified',
+                                   use_running_app: true)
+            expect(options.android_package).to eq('foo')
+            expect(options.android_activity).to eq('qualified')
+            expect(options.android_device_serial).to eq('123')
+            expect(options.android_use_running_app).to eq(true)
+          end
+        end
+
         describe '#as_json' do
           it 'returns empty options by default' do
             expect(options.as_json).to eq("browserName" => "MicrosoftEdge", "ms:edgeOptions" => {})
           end
 
-          it 'returns added option' do
+          it 'returns added options' do
             options.add_option(:foo, 'bar')
-            expect(options.as_json).to eq("browserName" => "MicrosoftEdge", "ms:edgeOptions" => {"foo" => "bar"})
+            options.add_option('foo:bar', {foo: 'bar'})
+            expect(options.as_json).to eq("browserName" => "MicrosoftEdge",
+                                          "foo:bar" => {"foo" => "bar"},
+                                          "ms:edgeOptions" => {"foo" => "bar"})
           end
 
           it 'returns a JSON hash' do
@@ -202,7 +240,12 @@ module Selenium
                                exclude_switches: %w[foobar barfoo],
                                minidump_path: 'linux/only',
                                perf_logging_prefs: {'enable_network': true},
-                               window_types: %w[normal devtools])
+                               window_types: %w[normal devtools],
+                               android_package: 'package',
+                               android_activity: 'activity',
+                               android_device_serial: '123',
+                               android_use_running_app: true,
+                               'custom:options': {foo: 'bar'})
 
             key = 'ms:edgeOptions'
             expect(opts.as_json).to eq('browserName' => 'MicrosoftEdge',
@@ -216,6 +259,7 @@ module Selenium
                                                       'pageLoad' => 400000,
                                                       'implicit' => 1},
                                        'setWindowRect' => false,
+                                       'custom:options' => {'foo' => 'bar'},
                                        key => {'args' => %w[foo bar],
                                                'prefs' => {'foo' => 'bar',
                                                            'key_that_should_not_be_camelcased' => 'baz'},
@@ -229,7 +273,11 @@ module Selenium
                                                'excludeSwitches' => %w[foobar barfoo],
                                                'minidumpPath' => 'linux/only',
                                                'perfLoggingPrefs' => {'enableNetwork' => true},
-                                               'windowTypes' => %w[normal devtools]})
+                                               'windowTypes' => %w[normal devtools],
+                                               'androidPackage' => 'package',
+                                               'androidActivity' => 'activity',
+                                               'androidDeviceSerial' => '123',
+                                               'androidUseRunningApp' => true})
           end
         end
       end

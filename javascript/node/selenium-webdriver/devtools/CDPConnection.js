@@ -18,16 +18,21 @@
 class CDPConnection {
   constructor(wsConnection) {
     this._wsConnection = wsConnection
+    this.cmd_id = 0
+    this.targetID = null;
+    this.sessionId = null
   }
 
-  execute(method, id, params, callback) {
-    const message = {
+  execute(method, params, callback) {
+    let message = {
       method,
-      id: id,
+      id: this.cmd_id++,
+    }
+    if (this.sessionId) {
+      message['sessionId'] = this.sessionId
     }
 
     const mergedMessage = Object.assign({ params: params }, message)
-
     this._wsConnection.send(JSON.stringify(mergedMessage), callback)
   }
 }

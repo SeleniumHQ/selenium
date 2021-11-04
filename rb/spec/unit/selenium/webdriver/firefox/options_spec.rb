@@ -46,6 +46,10 @@ module Selenium
                                foo: 'bar',
                                profile: profile,
                                log_level: :debug,
+                               android_package: 'package',
+                               android_activity: 'activity',
+                               android_device_serial: '123',
+                               android_intent_arguments: %w[foo bar],
                                'custom:options': {foo: 'bar'})
 
             expect(opts.args.to_a).to eq(%w[foo bar])
@@ -63,6 +67,10 @@ module Selenium
             expect(opts.strict_file_interactability).to eq(true)
             expect(opts.timeouts).to eq(script: 40000, page_load: 400000, implicit: 1)
             expect(opts.set_window_rect).to eq(false)
+            expect(opts.android_package).to eq('package')
+            expect(opts.android_activity).to eq('activity')
+            expect(opts.android_device_serial).to eq('123')
+            expect(opts.android_intent_arguments).to eq(%w[foo bar])
             expect(opts.options[:'custom:options']).to eq(foo: 'bar')
           end
         end
@@ -125,8 +133,13 @@ module Selenium
         end
 
         describe '#add_option' do
-          it 'adds an option' do
+          it 'adds an option with ordered pairs' do
             options.add_option(:foo, 'bar')
+            expect(options.instance_variable_get('@options')[:foo]).to eq('bar')
+          end
+
+          it 'adds an option with Hash' do
+            options.add_option(foo: 'bar')
             expect(options.instance_variable_get('@options')[:foo]).to eq('bar')
           end
         end
@@ -136,6 +149,36 @@ module Selenium
             options.add_preference(:foo, 'bar')
             expect(options.prefs[:foo]).to eq('bar')
           end
+
+          it 'does not camelize preferences' do
+            options.add_preference('intl.accepted_languages', 'en-US')
+
+            prefs    = options.as_json['moz:firefoxOptions']['prefs']
+            expected = {'intl.accepted_languages' => 'en-US'}
+            expect(prefs).to eq(expected)
+          end
+        end
+
+        describe '#enable_android' do
+          it 'adds default android settings' do
+            options.enable_android
+
+            expect(options.android_package).to eq('org.mozilla.firefox')
+            expect(options.android_activity).to be_nil
+            expect(options.android_device_serial).to be_nil
+            expect(options.android_intent_arguments).to be_nil
+          end
+
+          it 'accepts parameters' do
+            options.enable_android(package: 'foo',
+                                   serial_number: '123',
+                                   activity: 'qualified',
+                                   intent_arguments: %w[foo bar])
+            expect(options.android_package).to eq('foo')
+            expect(options.android_activity).to eq('qualified')
+            expect(options.android_device_serial).to eq('123')
+            expect(options.android_intent_arguments).to eq(%w[foo bar])
+          end
         end
 
         describe '#as_json' do
@@ -143,9 +186,12 @@ module Selenium
             expect(options.as_json).to eq("browserName" => "firefox", "moz:firefoxOptions" => {})
           end
 
-          it 'returns added option' do
+          it 'returns added options' do
             options.add_option(:foo, 'bar')
-            expect(options.as_json).to eq("browserName" => "firefox", "moz:firefoxOptions" => {"foo" => "bar"})
+            options.add_option('foo:bar', {foo: 'bar'})
+            expect(options.as_json).to eq("browserName" => "firefox",
+                                          "foo:bar" => {"foo" => "bar"},
+                                          "moz:firefoxOptions" => {"foo" => "bar"})
           end
 
           it 'converts to a json hash' do
@@ -167,7 +213,12 @@ module Selenium
                                prefs: {foo: 'bar'},
                                foo: 'bar',
                                profile: profile,
-                               log_level: :debug)
+                               log_level: :debug,
+                               android_package: 'package',
+                               android_activity: 'activity',
+                               android_device_serial: '123',
+                               android_intent_arguments: %w[foo bar],
+                               'custom:options': {foo: 'bar'})
 
             key = 'moz:firefoxOptions'
             expect(opts.as_json).to eq('browserName' => 'firefox',
@@ -181,12 +232,17 @@ module Selenium
                                                       'pageLoad' => 400000,
                                                       'implicit' => 1},
                                        'setWindowRect' => false,
+                                       'custom:options' => {'foo' => 'bar'},
                                        key => {'args' => %w[foo bar],
                                                'binary' => '/foo/bar',
                                                'prefs' => {'foo' => 'bar'},
                                                'profile' => 'encoded_profile',
                                                'log' => {'level' => 'debug'},
-                                               'foo' => 'bar'})
+                                               'foo' => 'bar',
+                                               'androidPackage' => 'package',
+                                               'androidActivity' => 'activity',
+                                               'androidDeviceSerial' => '123',
+                                               'androidIntentArguments' => %w[foo bar]})
           end
         end
       end # Options

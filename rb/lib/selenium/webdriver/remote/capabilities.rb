@@ -39,6 +39,7 @@ module Selenium
           :timeouts,
           :unhandled_prompt_behavior,
           :strict_file_interactability,
+          :web_socket_url,
 
           # remote-specific (webdriver.remote.sessionid)
           :remote_session_id
@@ -46,7 +47,7 @@ module Selenium
 
         (KNOWN - %i[proxy timeouts]).each do |key|
           define_method key do
-            @capabilities.fetch(key)
+            @capabilities[key]
           end
 
           define_method "#{key}=" do |value|
@@ -202,7 +203,7 @@ module Selenium
         end
 
         def proxy
-          @capabilities.fetch(:proxy)
+          @capabilities[:proxy]
         end
 
         def proxy=(proxy)

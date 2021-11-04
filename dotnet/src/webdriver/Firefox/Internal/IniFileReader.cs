@@ -38,7 +38,7 @@ namespace OpenQA.Selenium.Firefox.Internal
         {
             if (string.IsNullOrEmpty(fileName))
             {
-                throw new ArgumentNullException("fileName", "File name must not be null or empty");
+                throw new ArgumentNullException(nameof(fileName), "File name must not be null or empty");
             }
 
             if (!File.Exists(fileName))
@@ -104,28 +104,28 @@ namespace OpenQA.Selenium.Firefox.Internal
         {
             if (string.IsNullOrEmpty(sectionName))
             {
-                throw new ArgumentNullException("sectionName", "Section name cannot be null or empty");
+                throw new ArgumentNullException(nameof(sectionName), "Section name cannot be null or empty");
             }
 
             string lowerCaseSectionName = sectionName.ToUpperInvariant();
 
             if (string.IsNullOrEmpty(valueName))
             {
-                throw new ArgumentNullException("valueName", "Value name cannot be null or empty");
+                throw new ArgumentNullException(nameof(valueName), "Value name cannot be null or empty");
             }
 
             string lowerCaseValueName = valueName.ToUpperInvariant();
 
             if (!this.iniFileStore.ContainsKey(lowerCaseSectionName))
             {
-                throw new ArgumentException("Section does not exist: " + sectionName, "sectionName");
+                throw new ArgumentException("Section does not exist: " + sectionName, nameof(sectionName));
             }
 
             Dictionary<string, string> section = this.iniFileStore[lowerCaseSectionName];
 
             if (!section.ContainsKey(lowerCaseValueName))
             {
-                throw new ArgumentException("Value does not exist: " + valueName, "valueName");
+                throw new ArgumentException("Value does not exist: " + valueName, nameof(valueName));
             }
 
             return section[lowerCaseValueName];

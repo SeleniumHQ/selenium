@@ -162,7 +162,7 @@ namespace OpenQA.Selenium.Interactions
             int offsetX = Convert.ToInt32(Math.Round(speedX * DefaultFlickDuration.TotalSeconds, 0));
             int offsetY = Convert.ToInt32(Math.Round(speedY * DefaultFlickDuration.TotalSeconds, 0));
             this.actionBuilder.AddAction(this.defaultTouchscreen.CreatePointerDown(MouseButton.Touch));
-            this.actionBuilder.AddAction(this.defaultTouchscreen.CreatePointerMove(CoordinateOrigin.Viewport, offsetX, offsetX, DefaultFlickDuration));
+            this.actionBuilder.AddAction(this.defaultTouchscreen.CreatePointerMove(CoordinateOrigin.Viewport, offsetX, offsetY, DefaultFlickDuration));
             this.actionBuilder.AddAction(this.defaultTouchscreen.CreatePointerUp(MouseButton.Touch));
             return this;
         }

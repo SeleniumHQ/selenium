@@ -97,7 +97,7 @@ namespace OpenQA.Selenium
         {
             if (settings == null)
             {
-                throw new ArgumentNullException("settings", "settings dictionary cannot be null");
+                throw new ArgumentNullException(nameof(settings), "settings dictionary cannot be null");
             }
 
             if (settings.ContainsKey("proxyType") && settings["proxyType"] != null)
@@ -432,7 +432,7 @@ namespace OpenQA.Selenium
         {
             if (string.IsNullOrEmpty(address))
             {
-                throw new ArgumentException("address must not be null or empty", "address");
+                throw new ArgumentException("address must not be null or empty", nameof(address));
             }
 
             this.AddBypassAddresses(address);
@@ -455,7 +455,7 @@ namespace OpenQA.Selenium
         {
             if (addressesToAdd == null)
             {
-                throw new ArgumentNullException("addressesToAdd", "addressesToAdd must not be null");
+                throw new ArgumentNullException(nameof(addressesToAdd), "addressesToAdd must not be null");
             }
 
             this.VerifyProxyTypeCompatilibily(ProxyKind.Manual);

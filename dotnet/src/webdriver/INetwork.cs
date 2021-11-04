@@ -37,7 +37,7 @@ namespace OpenQA.Selenium
         /// <summary>
         /// Occurs when a browser receives a network response.
         /// </summary>
-        event EventHandler<NetworkResponseRecievedEventArgs> NetworkResponseReceived;
+        event EventHandler<NetworkResponseReceivedEventArgs> NetworkResponseReceived;
 
         /// <summary>
         /// Adds a <see cref="NetworkRequestHandler"/> to examine incoming network requests,
@@ -62,6 +62,18 @@ namespace OpenQA.Selenium
         /// Clears all added <see cref="NetworkAuthenticationHandler"/> instances.
         /// </summary>
         void ClearAuthenticationHandlers();
+
+        /// <summary>
+        /// Adds a <see cref="NetworkResponseHandler"/> to examine received network responses,
+        /// and optionally modify the response. 
+        /// </summary>
+        /// <param name="handler">The <see cref="NetworkResponseHandler"/> to add.</param>
+        void AddResponseHandler(NetworkResponseHandler handler);
+
+        /// <summary>
+        /// Clears all added <see cref="NetworkResponseHandler"/> instances.
+        /// </summary>
+        void ClearResponseHandlers();
 
         /// <summary>
         /// Asynchronously starts monitoring for network traffic.

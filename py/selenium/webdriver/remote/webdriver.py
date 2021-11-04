@@ -18,8 +18,10 @@
 """The WebDriver implementation."""
 
 import copy
+from importlib import import_module
 
 import pkgutil
+
 import sys
 from typing import Dict, List, Optional, Union
 
@@ -27,12 +29,12 @@ import warnings
 
 from abc import ABCMeta
 from base64 import b64decode
-from contextlib import contextmanager
+from contextlib import asynccontextmanager, contextmanager
 
+from .bidi_connection import BidiConnection
 from .command import Command
 from .errorhandler import ErrorHandler
 from .file_detector import FileDetector, LocalFileDetector
-from .log import Log
 from .mobile import Mobile
 from .remote_connection import RemoteConnection
 from .script_key import ScriptKey
@@ -55,13 +57,14 @@ _W3C_CAPABILITY_NAMES = frozenset([
     'acceptInsecureCerts',
     'browserName',
     'browserVersion',
-    'platformName',
     'pageLoadStrategy',
+    'platformName',
     'proxy',
     'setWindowRect',
+    'strictFileInteractability',
     'timeouts',
     'unhandledPromptBehavior',
-    'strictFileInteractability'
+    'webSocketUrl'
 ])
 
 _OSS_W3C_CONVERSION = {
@@ -71,7 +74,13 @@ _OSS_W3C_CONVERSION = {
 }
 
 
-devtools = None
+cdp = None
+
+
+def import_cdp():
+    global cdp
+    if not cdp:
+        cdp = import_module("selenium.webdriver.common.bidi.cdp")
 
 
 def _make_w3c_caps(caps):
@@ -449,7 +458,11 @@ class WebDriver(BaseWebDriver):
 
                 element = driver.find_element_by_id('foo')
         """
-        warnings.warn("find_element_by_* commands are deprecated. Please use find_element() instead")
+        warnings.warn(
+            "find_element_by_* commands are deprecated. Please use find_element() instead",
+            DeprecationWarning,
+            stacklevel=2,
+        )
         return self.find_element(by=By.ID, value=id_)
 
     def find_elements_by_id(self, id_) -> WebElement:
@@ -468,7 +481,11 @@ class WebDriver(BaseWebDriver):
 
                 elements = driver.find_elements_by_id('foo')
         """
-        warnings.warn("find_elements_by_* commands are deprecated. Please use find_elements() instead")
+        warnings.warn(
+            "find_elements_by_* commands are deprecated. Please use find_elements() instead",
+            DeprecationWarning,
+            stacklevel=2,
+        )
         return self.find_elements(by=By.ID, value=id_)
 
     def find_element_by_xpath(self, xpath) -> WebElement:
@@ -489,7 +506,11 @@ class WebDriver(BaseWebDriver):
 
                 element = driver.find_element_by_xpath('//div/td[1]')
         """
-        warnings.warn("find_element_by_* commands are deprecated. Please use find_element() instead")
+        warnings.warn(
+            "find_element_by_* commands are deprecated. Please use find_element() instead",
+            DeprecationWarning,
+            stacklevel=2,
+        )
         return self.find_element(by=By.XPATH, value=xpath)
 
     def find_elements_by_xpath(self, xpath) -> WebElement:
@@ -508,7 +529,11 @@ class WebDriver(BaseWebDriver):
 
                 elements = driver.find_elements_by_xpath("//div[contains(@class, 'foo')]")
         """
-        warnings.warn("find_elements_by_* commands are deprecated. Please use find_elements() instead")
+        warnings.warn(
+            "find_elements_by_* commands are deprecated. Please use find_elements() instead",
+            DeprecationWarning,
+            stacklevel=2,
+        )
         return self.find_elements(by=By.XPATH, value=xpath)
 
     def find_element_by_link_text(self, link_text) -> WebElement:
@@ -529,7 +554,11 @@ class WebDriver(BaseWebDriver):
 
                 element = driver.find_element_by_link_text('Sign In')
         """
-        warnings.warn("find_element_by_* commands are deprecated. Please use find_element() instead")
+        warnings.warn(
+            "find_element_by_* commands are deprecated. Please use find_element() instead",
+            DeprecationWarning,
+            stacklevel=2,
+        )
         return self.find_element(by=By.LINK_TEXT, value=link_text)
 
     def find_elements_by_link_text(self, text) -> WebElement:
@@ -548,7 +577,11 @@ class WebDriver(BaseWebDriver):
 
                 elements = driver.find_elements_by_link_text('Sign In')
         """
-        warnings.warn("find_elements_by_* commands are deprecated. Please use find_elements() instead")
+        warnings.warn(
+            "find_elements_by_* commands are deprecated. Please use find_elements() instead",
+            DeprecationWarning,
+            stacklevel=2,
+        )
         return self.find_elements(by=By.LINK_TEXT, value=text)
 
     def find_element_by_partial_link_text(self, link_text) -> WebElement:
@@ -569,7 +602,11 @@ class WebDriver(BaseWebDriver):
 
                 element = driver.find_element_by_partial_link_text('Sign')
         """
-        warnings.warn("find_element_by_* commands are deprecated. Please use find_element() instead")
+        warnings.warn(
+            "find_element_by_* commands are deprecated. Please use find_element() instead",
+            DeprecationWarning,
+            stacklevel=2,
+        )
         return self.find_element(by=By.PARTIAL_LINK_TEXT, value=link_text)
 
     def find_elements_by_partial_link_text(self, link_text) -> WebElement:
@@ -588,7 +625,11 @@ class WebDriver(BaseWebDriver):
 
                 elements = driver.find_elements_by_partial_link_text('Sign')
         """
-        warnings.warn("find_elements_by_* commands are deprecated. Please use find_elements() instead")
+        warnings.warn(
+            "find_elements_by_* commands are deprecated. Please use find_elements() instead",
+            DeprecationWarning,
+            stacklevel=2,
+        )
         return self.find_elements(by=By.PARTIAL_LINK_TEXT, value=link_text)
 
     def find_element_by_name(self, name) -> WebElement:
@@ -609,7 +650,11 @@ class WebDriver(BaseWebDriver):
 
                 element = driver.find_element_by_name('foo')
         """
-        warnings.warn("find_element_by_* commands are deprecated. Please use find_element() instead")
+        warnings.warn(
+            "find_element_by_* commands are deprecated. Please use find_element() instead",
+            DeprecationWarning,
+            stacklevel=2,
+        )
         return self.find_element(by=By.NAME, value=name)
 
     def find_elements_by_name(self, name) -> WebElement:
@@ -628,7 +673,11 @@ class WebDriver(BaseWebDriver):
 
                 elements = driver.find_elements_by_name('foo')
         """
-        warnings.warn("find_elements_by_* commands are deprecated. Please use find_elements() instead")
+        warnings.warn(
+            "find_elements_by_* commands are deprecated. Please use find_elements() instead",
+            DeprecationWarning,
+            stacklevel=2,
+        )
         return self.find_elements(by=By.NAME, value=name)
 
     def find_element_by_tag_name(self, name) -> WebElement:
@@ -649,7 +698,11 @@ class WebDriver(BaseWebDriver):
 
                 element = driver.find_element_by_tag_name('h1')
         """
-        warnings.warn("find_element_by_* commands are deprecated. Please use find_element() instead")
+        warnings.warn(
+            "find_element_by_* commands are deprecated. Please use find_element() instead",
+            DeprecationWarning,
+            stacklevel=2,
+        )
         return self.find_element(by=By.TAG_NAME, value=name)
 
     def find_elements_by_tag_name(self, name) -> WebElement:
@@ -668,7 +721,11 @@ class WebDriver(BaseWebDriver):
 
                 elements = driver.find_elements_by_tag_name('h1')
         """
-        warnings.warn("find_elements_by_* commands are deprecated. Please use find_elements() instead")
+        warnings.warn(
+            "find_elements_by_* commands are deprecated. Please use find_elements() instead",
+            DeprecationWarning,
+            stacklevel=2,
+        )
         return self.find_elements(by=By.TAG_NAME, value=name)
 
     def find_element_by_class_name(self, name) -> WebElement:
@@ -689,7 +746,11 @@ class WebDriver(BaseWebDriver):
 
                 element = driver.find_element_by_class_name('foo')
         """
-        warnings.warn("find_element_by_* commands are deprecated. Please use find_element() instead")
+        warnings.warn(
+            "find_element_by_* commands are deprecated. Please use find_element() instead",
+            DeprecationWarning,
+            stacklevel=2,
+        )
         return self.find_element(by=By.CLASS_NAME, value=name)
 
     def find_elements_by_class_name(self, name) -> WebElement:
@@ -708,7 +769,11 @@ class WebDriver(BaseWebDriver):
 
                 elements = driver.find_elements_by_class_name('foo')
         """
-        warnings.warn("find_elements_by_* commands are deprecated. Please use find_elements() instead")
+        warnings.warn(
+            "find_elements_by_* commands are deprecated. Please use find_elements() instead",
+            DeprecationWarning,
+            stacklevel=2,
+        )
         return self.find_elements(by=By.CLASS_NAME, value=name)
 
     def find_element_by_css_selector(self, css_selector) -> WebElement:
@@ -729,7 +794,11 @@ class WebDriver(BaseWebDriver):
 
                 element = driver.find_element_by_css_selector('#foo')
         """
-        warnings.warn("find_element_by_* commands are deprecated. Please use find_element() instead")
+        warnings.warn(
+            "find_element_by_* commands are deprecated. Please use find_element() instead",
+            DeprecationWarning,
+            stacklevel=2,
+        )
         return self.find_element(by=By.CSS_SELECTOR, value=css_selector)
 
     def find_elements_by_css_selector(self, css_selector) -> WebElement:
@@ -748,7 +817,11 @@ class WebDriver(BaseWebDriver):
 
                 elements = driver.find_elements_by_css_selector('.foo')
         """
-        warnings.warn("find_elements_by_* commands are deprecated. Please use find_elements() instead")
+        warnings.warn(
+            "find_elements_by_* commands are deprecated. Please use find_elements() instead",
+            DeprecationWarning,
+            stacklevel=2,
+        )
         return self.find_elements(by=By.CSS_SELECTOR, value=css_selector)
 
     def pin_script(self, script, script_key=None) -> ScriptKey:
@@ -1045,7 +1118,7 @@ class WebDriver(BaseWebDriver):
 
         """
         if 'sameSite' in cookie_dict:
-            assert cookie_dict['sameSite'] in ['Strict', 'Lax']
+            assert cookie_dict['sameSite'] in ['Strict', 'Lax', 'None']
             self.execute(Command.ADD_COOKIE, {'cookie': cookie_dict})
         else:
             self.execute(Command.ADD_COOKIE, {'cookie': cookie_dict})
@@ -1147,6 +1220,9 @@ class WebDriver(BaseWebDriver):
 
         :rtype: WebElement
         """
+        if isinstance(by, RelativeBy):
+            return self.find_elements(by=by, value=value)[0]
+
         if by == By.ID:
             by = By.CSS_SELECTOR
             value = '[id="%s"]' % value
@@ -1473,7 +1549,53 @@ class WebDriver(BaseWebDriver):
         """
         return self.execute(Command.GET_LOG, {'type': log_type})['value']
 
-    @property
-    def log(self) -> Log:
+    @asynccontextmanager
+    async def bidi_connection(self):
         assert sys.version_info >= (3, 7)
-        return Log(self)
+        global cdp
+        import_cdp()
+        ws_url = None
+        if self.caps.get("se:cdp"):
+            ws_url = self.caps.get("se:cdp")
+            version = self.caps.get("se:cdpVersion").split(".")[0]
+        else:
+            version, ws_url = self._get_cdp_details()
+
+        if not ws_url:
+            raise WebDriverException("Unable to find url to connect to from capabilities")
+
+        cdp.import_devtools(version)
+
+        devtools = import_module("selenium.webdriver.common.devtools.v{}".format(version))
+        async with cdp.open_cdp(ws_url) as conn:
+            targets = await conn.execute(devtools.target.get_targets())
+            target_id = targets[0].target_id
+            async with conn.open_session(target_id) as session:
+                yield BidiConnection(session, cdp, devtools)
+
+    def _get_cdp_details(self):
+        import json
+        import urllib3
+
+        http = urllib3.PoolManager()
+        _firefox = False
+        if self.caps.get("browserName") == "chrome":
+            debugger_address = self.caps.get(f"{self.vendor_prefix}:{self.caps.get('browserName')}Options").get("debuggerAddress")
+        else:
+            _firefox = True
+            debugger_address = self.caps.get("moz:debuggerAddress")
+        res = http.request('GET', f"http://{debugger_address}/json/version")
+        data = json.loads(res.data)
+
+        browser_version = data.get("Browser")
+        websocket_url = data.get("webSocketDebuggerUrl")
+
+        import re
+        if _firefox:
+            # Mozilla Automation Team asked to only support 85
+            # until WebDriver Bidi is available.
+            version = 85
+        else:
+            version = re.search(r".*/(\d+)\.", browser_version).group(1)
+
+        return version, websocket_url

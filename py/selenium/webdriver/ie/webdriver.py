@@ -60,7 +60,8 @@ class WebDriver(RemoteWebDriver):
             warnings.warn('executable_path has been deprecated, please pass in a Service object',
                           DeprecationWarning, stacklevel=2)
         if capabilities:
-            warnings.warn('capabilities has been deprecated, please pass in a Service object',
+            warnings.warn('capabilities has been deprecated, please pass in an Options object.'
+                          'This field will be ignored.',
                           DeprecationWarning, stacklevel=2)
         if port != DEFAULT_PORT:
             warnings.warn('port has been deprecated, please pass in a Service object',
@@ -78,32 +79,23 @@ class WebDriver(RemoteWebDriver):
             warnings.warn('service_log_path has been deprecated, please pass in a Service object',
                           DeprecationWarning, stacklevel=2)
         if desired_capabilities:
-            warnings.warn('desired_capabilities has been deprecated, please pass in a Service object',
+            warnings.warn('desired_capabilities has been deprecated, please pass in an Options object.'
+                          'This field will be ignored',
                           DeprecationWarning, stacklevel=2)
         if keep_alive != DEFAULT_KEEP_ALIVE:
             warnings.warn('keep_alive has been deprecated, please pass in a Service object',
                           DeprecationWarning, stacklevel=2)
         else:
-            keep_alive = False
+            keep_alive = True
 
         self.host = host
         self.port = port
         if self.port == 0:
             self.port = utils.free_port()
 
-        # If both capabilities and desired capabilities are set, ignore desired capabilities.
-        if not capabilities and desired_capabilities:
-            capabilities = desired_capabilities
-
         if not options:
-            if not capabilities:
-                capabilities = self.create_options().to_capabilities()
-        else:
-            if not capabilities:
-                capabilities = options.to_capabilities()
-            else:
-                # desired_capabilities stays as passed in
-                capabilities.update(options.to_capabilities())
+            options = self.create_options()
+
         if service:
             self.iedriver = service
         else:
@@ -119,7 +111,7 @@ class WebDriver(RemoteWebDriver):
         RemoteWebDriver.__init__(
             self,
             command_executor=self.iedriver.service_url,
-            desired_capabilities=capabilities,
+            options=options,
             keep_alive=keep_alive)
         self._is_remote = False
 

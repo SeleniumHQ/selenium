@@ -18,6 +18,8 @@
 
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Globalization;
 using System.IO;
 using OpenQA.Selenium.DevTools;
 using OpenQA.Selenium.Remote;
@@ -70,10 +72,40 @@ namespace OpenQA.Selenium.Firefox
     {
         private const int FirefoxDevToolsProtocolVersion = 85;
         private const string FirefoxDevToolsCapabilityName = "moz:debuggerAddress";
-        private const string SetContextCommand = "setContext";
-        private const string InstallAddOnCommand = "installAddOn";
-        private const string UninstallAddOnCommand = "uninstallAddOn";
-        private const string GetFullPageScreenshotCommand = "fullPageScreenshot";
+
+        /// <summary>
+        /// Command for setting the command context of a Firefox driver.
+        /// </summary>
+        public static readonly string SetContextCommand = "setContext";
+
+        /// <summary>
+        /// Command for getting the command context of a Firefox driver.
+        /// </summary>
+        public static readonly string GetContextCommand = "getContext";
+
+        /// <summary>
+        /// Command for installing an addon to a Firefox driver.
+        /// </summary>
+        public static readonly string InstallAddOnCommand = "installAddOn";
+
+        /// <summary>
+        /// Command for uninstalling an addon from a Firefox driver.
+        /// </summary>
+        public static readonly string UninstallAddOnCommand = "uninstallAddOn";
+
+        /// <summary>
+        /// Command for getting aa full page screenshot from a Firefox driver.
+        /// </summary>
+        public static readonly string GetFullPageScreenshotCommand = "fullPageScreenshot";
+
+        private static Dictionary<string, CommandInfo> firefoxCustomCommands = new Dictionary<string, CommandInfo>()
+        {
+            { SetContextCommand, new HttpCommandInfo(HttpCommandInfo.PostCommand, "/session/{sessionId}/moz/context") },
+            { GetContextCommand, new HttpCommandInfo(HttpCommandInfo.GetCommand, "/session/{sessionId}/moz/context") },
+            { InstallAddOnCommand, new HttpCommandInfo(HttpCommandInfo.PostCommand, "/session/{sessionId}/moz/addon/install") },
+            { UninstallAddOnCommand, new HttpCommandInfo(HttpCommandInfo.PostCommand, "/session/{sessionId}/moz/addon/uninstall") },
+            { GetFullPageScreenshotCommand, new HttpCommandInfo(HttpCommandInfo.GetCommand, "/session/{sessionId}/moz/screenshot/full") }
+        };
 
         private DevToolsSession devToolsSession;
 
@@ -156,10 +188,17 @@ namespace OpenQA.Selenium.Firefox
             : base(new DriverServiceCommandExecutor(service, commandTimeout), ConvertOptionsToCapabilities(options))
         {
             // Add the custom commands unique to Firefox
-            this.AddCustomFirefoxCommand(SetContextCommand, HttpCommandInfo.PostCommand, "/session/{sessionId}/moz/context");
-            this.AddCustomFirefoxCommand(InstallAddOnCommand, HttpCommandInfo.PostCommand, "/session/{sessionId}/moz/addon/install");
-            this.AddCustomFirefoxCommand(UninstallAddOnCommand, HttpCommandInfo.PostCommand, "/session/{sessionId}/moz/addon/uninstall");
-            this.AddCustomFirefoxCommand(GetFullPageScreenshotCommand, HttpCommandInfo.GetCommand, "/session/{sessionId}/moz/screenshot/full");
+            this.AddCustomFirefoxCommands();
+        }
+
+        /// <summary>
+        /// Gets a read-only dictionary of the custom WebDriver commands defined for FirefoxDriver.
+        /// The keys of the dictionary are the names assigned to the command; the values are the
+        /// <see cref="CommandInfo"/> objects describing the command behavior.
+        /// </summary>
+        public static IReadOnlyDictionary<string, CommandInfo> CustomCommandDefinitions
+        {
+            get { return new ReadOnlyDictionary<string, CommandInfo>(firefoxCustomCommands); }
         }
 
         /// <summary>
@@ -179,6 +218,33 @@ namespace OpenQA.Selenium.Firefox
         }
 
         /// <summary>
+        /// Gets a value indicating whether a DevTools session is active.
+        /// </summary>
+        public bool HasActiveDevToolsSession
+        {
+            get { return this.devToolsSession != null; }
+        }
+
+        /// <summary>
+        /// Sets the command context used when issuing commands to geckodriver.
+        /// </summary>
+        /// <exception cref="WebDriverException">If response is not recognized</exception>
+        /// <returns>The context of commands.</returns>
+        public FirefoxCommandContext GetContext()
+        {
+            FirefoxCommandContext output;
+            string response = this.Execute(GetContextCommand, null).Value.ToString();
+
+            bool success = Enum.TryParse<FirefoxCommandContext>(response, true, out output);
+            if (!success)
+            {
+                throw new WebDriverException(string.Format(CultureInfo.InvariantCulture, "Do not recognize response: {0}; expected Context or Chrome"));
+            }
+
+            return output;
+        }
+
+        /// <summary>
         /// Sets the command context used when issuing commands to geckodriver.
         /// </summary>
         /// <param name="context">The <see cref="FirefoxCommandContext"/> value to which to set the context.</param>
@@ -187,7 +253,7 @@ namespace OpenQA.Selenium.Firefox
             string contextValue = context.ToString().ToLowerInvariant();
             Dictionary<string, object> parameters = new Dictionary<string, object>();
             parameters["context"] = contextValue;
-            Response response = this.Execute(SetContextCommand, parameters);
+            this.Execute(SetContextCommand, parameters);
         }
 
         /// <summary>
@@ -198,12 +264,12 @@ namespace OpenQA.Selenium.Firefox
         {
             if (string.IsNullOrEmpty(addOnFileToInstall))
             {
-                throw new ArgumentNullException("addOnFileToInstall", "Add-on file name must not be null or the empty string");
+                throw new ArgumentNullException(nameof(addOnFileToInstall), "Add-on file name must not be null or the empty string");
             }
 
             if (!File.Exists(addOnFileToInstall))
             {
-                throw new ArgumentException("File " + addOnFileToInstall + " does not exist", "addOnFileToInstall");
+                throw new ArgumentException("File " + addOnFileToInstall + " does not exist", nameof(addOnFileToInstall));
             }
 
             // Implementation note: There is a version of the install add-on
@@ -225,7 +291,7 @@ namespace OpenQA.Selenium.Firefox
         {
             if (string.IsNullOrEmpty(base64EncodedAddOn))
             {
-                throw new ArgumentNullException("base64EncodedAddOn", "Base64 encoded add-on must not be null or the empty string");
+                throw new ArgumentNullException(nameof(base64EncodedAddOn), "Base64 encoded add-on must not be null or the empty string");
             }
 
             Dictionary<string, object> parameters = new Dictionary<string, object>();
@@ -241,7 +307,7 @@ namespace OpenQA.Selenium.Firefox
         {
             if (string.IsNullOrEmpty(addOnId))
             {
-                throw new ArgumentNullException("addOnId", "Base64 encoded add-on must not be null or the empty string");
+                throw new ArgumentNullException(nameof(addOnId), "Base64 encoded add-on must not be null or the empty string");
             }
 
             Dictionary<string, object> parameters = new Dictionary<string, object>();
@@ -288,7 +354,7 @@ namespace OpenQA.Selenium.Firefox
                 try
                 {
                     DevToolsSession session = new DevToolsSession(debuggerAddress);
-                    session.Start(devToolsProtocolVersion).ConfigureAwait(false).GetAwaiter().GetResult();
+                    session.StartSession(devToolsProtocolVersion).ConfigureAwait(false).GetAwaiter().GetResult();
                     this.devToolsSession = session;
                 }
                 catch (Exception e)
@@ -301,6 +367,17 @@ namespace OpenQA.Selenium.Firefox
         }
 
         /// <summary>
+        /// Closes a DevTools session.
+        /// </summary>
+        public void CloseDevToolsSession()
+        {
+            if (this.devToolsSession != null)
+            {
+                this.devToolsSession.StopSession(true).ConfigureAwait(false).GetAwaiter().GetResult();
+            }
+        }
+
+        /// <summary>
         /// In derived classes, the <see cref="PrepareEnvironment"/> method prepares the environment for test execution.
         /// </summary>
         protected virtual void PrepareEnvironment()
@@ -308,11 +385,25 @@ namespace OpenQA.Selenium.Firefox
             // Does nothing, but provides a hook for subclasses to do "stuff"
         }
 
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                if (this.devToolsSession != null)
+                {
+                    this.devToolsSession.Dispose();
+                    this.devToolsSession = null;
+                }
+            }
+
+            base.Dispose(disposing);
+        }
+
         private static ICapabilities ConvertOptionsToCapabilities(FirefoxOptions options)
         {
             if (options == null)
             {
-                throw new ArgumentNullException("options", "options must not be null");
+                throw new ArgumentNullException(nameof(options), "options must not be null");
             }
 
             return options.ToCapabilities();
@@ -323,10 +414,12 @@ namespace OpenQA.Selenium.Firefox
             return FirefoxDriverService.CreateDefaultService();
         }
 
-        private void AddCustomFirefoxCommand(string commandName, string method, string resourcePath)
+        private void AddCustomFirefoxCommands()
         {
-            HttpCommandInfo commandInfoToAdd = new HttpCommandInfo(method, resourcePath);
-            this.CommandExecutor.TryAddCommand(commandName, commandInfoToAdd);
+            foreach (KeyValuePair<string, CommandInfo> entry in CustomCommandDefinitions)
+            {
+                this.RegisterInternalDriverCommand(entry.Key, entry.Value);
+            }
         }
     }
 }

@@ -96,7 +96,6 @@ class ChromiumDriver(RemoteWebDriver):
                     remote_server_addr=self.service.service_url,
                     browser_name=browser_name, vendor_prefix=vendor_prefix,
                     keep_alive=keep_alive, ignore_proxy=_ignore_proxy),
-                desired_capabilities=desired_capabilities,
                 options=options)
         except Exception:
             self.quit()
@@ -139,6 +138,26 @@ class ChromiumDriver(RemoteWebDriver):
         self.execute("setNetworkConditions", {
             'network_conditions': network_conditions
         })
+
+    def delete_network_conditions(self) -> NoReturn:
+        """
+        Resets Chromium network emulation settings.
+        """
+        self.execute("deleteNetworkConditions")
+
+    def set_permissions(self, name: str, value: str) -> NoReturn:
+        """
+        Sets Applicable Permission.
+
+        :Args:
+         - name: The item to set the permission on.
+         - value: The value to set on the item
+
+        :Usage:
+            ::
+                driver.set_permissions('clipboard-read', 'denied')
+        """
+        self.execute("setPermissions", {'descriptor': {'name': name}, 'state': value})
 
     def execute_cdp_cmd(self, cmd: str, cmd_args: dict):
         """

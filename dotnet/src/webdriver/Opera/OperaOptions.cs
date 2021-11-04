@@ -173,7 +173,7 @@ namespace OpenQA.Selenium.Opera
         {
             if (string.IsNullOrEmpty(argument))
             {
-                throw new ArgumentException("argument must not be null or empty", "argument");
+                throw new ArgumentException("argument must not be null or empty", nameof(argument));
             }
 
             this.AddArguments(argument);
@@ -196,7 +196,7 @@ namespace OpenQA.Selenium.Opera
         {
             if (argumentsToAdd == null)
             {
-                throw new ArgumentNullException("argumentsToAdd", "argumentsToAdd must not be null");
+                throw new ArgumentNullException(nameof(argumentsToAdd), "argumentsToAdd must not be null");
             }
 
             this.arguments.AddRange(argumentsToAdd);
@@ -211,7 +211,7 @@ namespace OpenQA.Selenium.Opera
         {
             if (string.IsNullOrEmpty(argument))
             {
-                throw new ArgumentException("argument must not be null or empty", "argument");
+                throw new ArgumentException("argument must not be null or empty", nameof(argument));
             }
 
             this.AddExcludedArguments(argument);
@@ -236,7 +236,7 @@ namespace OpenQA.Selenium.Opera
         {
             if (argumentsToExclude == null)
             {
-                throw new ArgumentNullException("argumentsToExclude", "argumentsToExclude must not be null");
+                throw new ArgumentNullException(nameof(argumentsToExclude), "argumentsToExclude must not be null");
             }
 
             this.excludedSwitches.AddRange(argumentsToExclude);
@@ -251,7 +251,7 @@ namespace OpenQA.Selenium.Opera
         {
             if (string.IsNullOrEmpty(pathToExtension))
             {
-                throw new ArgumentException("pathToExtension must not be null or empty", "pathToExtension");
+                throw new ArgumentException("pathToExtension must not be null or empty", nameof(pathToExtension));
             }
 
             this.AddExtensions(pathToExtension);
@@ -276,7 +276,7 @@ namespace OpenQA.Selenium.Opera
         {
             if (extensions == null)
             {
-                throw new ArgumentNullException("extensions", "extensions must not be null");
+                throw new ArgumentNullException(nameof(extensions), "extensions must not be null");
             }
 
             foreach (string extension in extensions)
@@ -299,7 +299,7 @@ namespace OpenQA.Selenium.Opera
         {
             if (string.IsNullOrEmpty(extension))
             {
-                throw new ArgumentException("extension must not be null or empty", "extension");
+                throw new ArgumentException("extension must not be null or empty", nameof(extension));
             }
 
             this.AddEncodedExtensions(extension);
@@ -325,7 +325,7 @@ namespace OpenQA.Selenium.Opera
         {
             if (extensions == null)
             {
-                throw new ArgumentNullException("extensions", "extensions must not be null");
+                throw new ArgumentNullException(nameof(extensions), "extensions must not be null");
             }
 
             foreach (string extension in extensions)

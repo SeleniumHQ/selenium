@@ -1,0 +1,19 @@
+load("@rules_jvm_external//:defs.bzl", "artifact")
+load("//java:defs.bzl", "java_export")
+load("//java:version.bzl", "SE_VERSION")
+
+java_export(
+    name = "lift",
+    srcs = glob(["**/*.java"]),
+    maven_coordinates = "org.seleniumhq.selenium:lift:%s" % SE_VERSION,
+    pom_template = "//java/src/org/openqa/selenium:template-pom",
+    visibility = [
+        "//visibility:public",
+    ],
+    deps = [
+        "//java/src/org/openqa/selenium:core",
+        "//java/src/org/openqa/selenium/support",
+        artifact("org.hamcrest:hamcrest"),
+        artifact("junit:junit"),
+    ],
+)

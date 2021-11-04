@@ -1,3 +1,40 @@
+## v4.0.0
+
+* Fixes cdp for Chrome and Firefox (#9909)
+* Add cdp 95 to python and JS
+* Removing unused target for cdpConnection
+
+
+## v4.0.0-rc-2
+
+* Fix builder test
+* Allow builder to set a single arbitrary capability (#9857)
+* Restore withCapabilities() to ensure backward compatibility
+* Add new websocketUrl capability
+* update ruby, python and JS to add support for v94 and remove support for v92
+* Add a check for Grid CDP endpoint
+* Implement network request interceptions
+* Update connections to devtools so it works in Firefox and Chrome
+
+## v4.0.0-rc-1
+
+* Deprecates withCapabilities method and removes tests (#9701)
+* expose `withLocator` method at the top level
+* Enables Mobile feature for Firefox (Still need to expand this to chromium based browsers)
+
+* Add the ability to do Relative Locators with all By types. Fixes #9559
+* Add default Opera capabilities. Fixes #9654
+* Add support for ChromeDriver `--enable-chrome-logs` (#9575) [Author: Mark Stacey]
+
+  The `--enable-chrome-logs` ChromeDriver option can now be enabled using
+  the Chromium (or Chrome) ServiceBuilder, similarly to the other options
+  provided by ChromeDriver.
+
+* Add the debuggerAddress option to chromium.js (#9561) [Author: Brandon Walderman]
+* Adds http client options (#9638)[Author: Dharin Shah]
+* Updating edge.js to extend chromium.driver (fixes #9626)
+
+
 ## v4.0.0-beta.4
 
 * Add windowTypes option support for ChromiumDriver (#7897)
@@ -479,7 +516,7 @@ This release requires [geckodriver 0.15.0](https://github.com/mozilla/geckodrive
   DriverService instances that run in a child-process. The
   `chrome.ServiceBuilder`, `edge.ServiceBuilder`, and `opera.ServiceBuilder`
   classes now all extend this base class with browser-specific options.
-* For each of the ServiceBuilder clases, renamed `usingPort` and
+* For each of the ServiceBuilder classes, renamed `usingPort` and
   `withEnvironment` to `setPort` and `setEnvironment`, respectively.
 * Renamed `chrome.ServiceBuilder#setUrlBasePath` to `#setPath`
 * Changed the signature of the `firefox.Driver` from `(config, flow, executor)`

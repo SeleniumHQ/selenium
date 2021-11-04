@@ -20,20 +20,32 @@
 module Selenium
   module WebDriver
     class DevTools
+      RESPONSE_WAIT_TIMEOUT = 30
+      RESPONSE_WAIT_INTERVAL = 0.1
+
       autoload :ConsoleEvent, 'selenium/webdriver/devtools/console_event'
       autoload :ExceptionEvent, 'selenium/webdriver/devtools/exception_event'
       autoload :MutationEvent, 'selenium/webdriver/devtools/mutation_event'
       autoload :PinnedScript, 'selenium/webdriver/devtools/pinned_script'
       autoload :Request, 'selenium/webdriver/devtools/request'
+      autoload :Response, 'selenium/webdriver/devtools/response'
 
       def initialize(url:)
+        @callback_threads = ThreadGroup.new
+
         @messages = []
         @session_id = nil
         @url = url
 
         process_handshake
-        attach_socket_listener
+        @socket_thread = attach_socket_listener
         start_session
+      end
+
+      def close
+        @callback_threads.list.each(&:exit)
+        @socket_thread.exit
+        socket.close
       end
 
       def callbacks
@@ -85,27 +97,24 @@ module Selenium
       end
 
       def attach_socket_listener
-        socket_listener = Thread.new do
+        Thread.new do
+          Thread.current.abort_on_exception = true
+          Thread.current.report_on_exception = false
+
           until socket.eof?
             incoming_frame << socket.readpartial(1024)
 
             while (frame = incoming_frame.next)
-              # Firefox will periodically fail on unparsable empty frame
-              break if frame.to_s.empty?
-
-              message = JSON.parse(frame.to_s)
-              @messages << message
-              WebDriver.logger.debug "DevTools <- #{message}"
+              message = process_frame(frame)
               next unless message['method']
 
+              params = message['params']
               callbacks[message['method']].each do |callback|
-                params = message['params'] # take in current thread!
-                Thread.new { callback.call(params) }
+                @callback_threads.add(callback_thread(params, &callback))
               end
             end
           end
         end
-        socket_listener.abort_on_exception = true
       end
 
       def start_session
@@ -119,8 +128,36 @@ module Selenium
         @incoming_frame ||= WebSocket::Frame::Incoming::Client.new(version: ws.version)
       end
 
+      def process_frame(frame)
+        message = frame.to_s
+
+        # Firefox will periodically fail on unparsable empty frame
+        return {} if message.empty?
+
+        message = JSON.parse(message)
+        @messages << message
+        WebDriver.logger.debug "DevTools <- #{message}"
+
+        message
+      end
+
+      def callback_thread(params)
+        Thread.new do
+          Thread.current.abort_on_exception = true
+
+          # We might end up blocked forever when we have an error in event.
+          # For example, if network interception event raises error,
+          # the browser will keep waiting for the request to be proceeded
+          # before returning back to the original thread. In this case,
+          # we should at least print the error.
+          Thread.current.report_on_exception = true
+
+          yield params
+        end
+      end
+
       def wait
-        @wait ||= Wait.new(timeout: 10, interval: 0.1)
+        @wait ||= Wait.new(timeout: RESPONSE_WAIT_TIMEOUT, interval: RESPONSE_WAIT_INTERVAL)
       end
 
       def socket

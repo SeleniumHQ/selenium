@@ -168,21 +168,21 @@ namespace OpenQA.Selenium.Safari
         }
 
         /// <summary>
-        /// Creates a default instance of the SafariDriverService using a specified path to the ChromeDriver executable.
+        /// Creates a default instance of the SafariDriverService using a specified path to the SafariDriver executable.
         /// </summary>
-        /// <param name="driverPath">The directory containing the ChromeDriver executable.</param>
-        /// <returns>A ChromeDriverService using a random port.</returns>
+        /// <param name="driverPath">The directory containing the SafariDriver executable.</param>
+        /// <returns>A SafariDriverService using a random port.</returns>
         public static SafariDriverService CreateDefaultService(string driverPath)
         {
             return CreateDefaultService(driverPath, DefaultSafariDriverServiceExecutableName);
         }
 
         /// <summary>
-        /// Creates a default instance of the SafariDriverService using a specified path to the ChromeDriver executable with the given name.
+        /// Creates a default instance of the SafariDriverService using a specified path to the SafariDriver executable with the given name.
         /// </summary>
-        /// <param name="driverPath">The directory containing the ChromeDriver executable.</param>
-        /// <param name="driverExecutableFileName">The name of the ChromeDriver executable file.</param>
-        /// <returns>A ChromeDriverService using a random port.</returns>
+        /// <param name="driverPath">The directory containing the SafariDriver executable.</param>
+        /// <param name="driverExecutableFileName">The name of the SafariDriver executable file.</param>
+        /// <returns>A SafariDriverService using a random port.</returns>
         public static SafariDriverService CreateDefaultService(string driverPath, string driverExecutableFileName)
         {
             return new SafariDriverService(driverPath, driverExecutableFileName, PortUtilities.FindFreePort());

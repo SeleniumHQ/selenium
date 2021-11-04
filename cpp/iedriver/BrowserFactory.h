@@ -70,18 +70,23 @@ class BrowserFactory {
   static BOOL CALLBACK FindChildWindowForProcess(HWND hwnd, LPARAM arg);
   static BOOL CALLBACK FindEdgeChildWindowForProcess(HWND hwnd, LPARAM arg);
   static BOOL CALLBACK FindDialogWindowForProcess(HWND hwnd, LPARAM arg);
+  static BOOL CALLBACK FindIEBrowserHandles(HWND hwnd, LPARAM arg);
+  static BOOL CALLBACK FindEdgeBrowserHandles(HWND hwnd, LPARAM arg);
 
   static bool IsWindowsVistaOrGreater(void);
+  static int DeleteDirectory(const std::wstring &dir_name);
 
   bool IsEdgeMode(void) const;
+  std::wstring GetEdgeTempDir(void);
  private:
   static BOOL CALLBACK FindBrowserWindow(HWND hwnd, LPARAM param);
-
-
   static BOOL CALLBACK FindEdgeWindow(HWND hwnd, LPARAM param);
   static bool IsWindowsVersionOrGreater(unsigned short major_version,
                                         unsigned short minor_version,
                                         unsigned short service_pack);
+
+  static bool DirectoryExists(std::wstring& dir_name);
+  static bool CreateUniqueTempDir(std::wstring &temp_dir);
 
   UINT html_getobject_msg_;
   HINSTANCE oleacc_instance_handle_;
@@ -129,6 +134,7 @@ class BrowserFactory {
 
   bool edge_ie_mode_;
   std::wstring edge_executable_location_;
+  std::wstring edge_user_data_dir_;
 };
 
 } // namespace webdriver

@@ -195,6 +195,8 @@ namespace OpenQA.Selenium.Firefox
                     argsBuilder.Append(" --jsdebugger");
                 }
 
+                argsBuilder.Append(string.Format(CultureInfo.InvariantCulture, " --websocket-port {0}", PortUtilities.FindFreePort()));
+
                 return argsBuilder.ToString().Trim();
             }
         }

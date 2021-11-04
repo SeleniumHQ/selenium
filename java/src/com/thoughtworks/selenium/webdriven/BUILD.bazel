@@ -1,0 +1,109 @@
+load("@rules_jvm_external//:defs.bzl", "artifact")
+load("//common:defs.bzl", "copy_file")
+load("//java:defs.bzl", "java_export", "java_library")
+load("//java:version.bzl", "SE_VERSION")
+
+exports_files([
+    "htmlutils.js",
+    "injectableSelenium.js",
+])
+
+java_export(
+    name = "webdriven",
+    srcs = [
+        "CompoundMutator.java",
+        "ExplodingSupplier.java",
+        "FunctionDeclaration.java",
+        "SeleniumMutator.java",
+        "VariableDeclaration.java",
+        "WebDriverBackedSelenium.java",
+        "WebDriverBackedSeleniumHandler.java",
+        "WebDriverCommandProcessor.java",
+    ],
+    maven_coordinates = "org.seleniumhq.selenium:selenium-leg-rc:%s" % SE_VERSION,
+    pom_template = "//java/src/org/openqa/selenium:template-pom",
+    resources = [
+        "htmlutils.js",
+        "injectableSelenium.js",
+        ":findElement",
+        ":findOption",
+        ":fireEvent",
+        ":fireEventAt",
+        ":getAttribute",
+        ":getText",
+        ":isElementPresent",
+        ":isSomethingSelected",
+        ":isTextPresent",
+        ":isVisible",
+        ":linkLocator",
+        ":setCursorPosition",
+        ":sizzle",
+        ":type",
+    ],
+    visibility = [
+        "//visibility:public",
+    ],
+    deps = [
+        ":emulation-api",
+        "//java/src/com/thoughtworks/selenium",
+        "//java/src/com/thoughtworks/selenium/webdriven/commands",
+        "//java/src/org/openqa/selenium:core",
+        "//java/src/org/openqa/selenium/chrome",
+        "//java/src/org/openqa/selenium/edge",
+        "//java/src/org/openqa/selenium/firefox",
+        "//java/src/org/openqa/selenium/grid",
+        "//java/src/org/openqa/selenium/ie",
+        "//java/src/org/openqa/selenium/opera",
+        "//java/src/org/openqa/selenium/remote",
+        "//java/src/org/openqa/selenium/remote/server",
+        "//java/src/org/openqa/selenium/safari",
+        artifact("com.google.guava:guava"),
+    ],
+)
+
+java_library(
+    name = "emulation-api",
+    srcs = [
+        "ElementFinder.java",
+        "JavascriptLibrary.java",
+        "ScriptMutator.java",
+        "SeleneseCommand.java",
+        "Timer.java",
+        "Windows.java",
+    ],
+    visibility = [
+        "//java/src/com/thoughtworks/selenium:__subpackages__",
+        "//java/test/com/thoughtworks/selenium:__subpackages__",
+    ],
+    deps = [
+        "//java/src/com/thoughtworks/selenium",
+        "//java/src/org/openqa/selenium:core",
+        artifact("com.google.guava:guava"),
+    ],
+)
+
+[copy_file(
+    name = name,
+    src = "//javascript/selenium-atoms:%s.js" % name,
+    out = "%s.js" % name,
+) for name in [
+    "findElement",
+    "findOption",
+    "fireEvent",
+    "fireEventAt",
+    "getAttribute",
+    "getText",
+    "linkLocator",
+    "isElementPresent",
+    "isSomethingSelected",
+    "isTextPresent",
+    "isVisible",
+    "setCursorPosition",
+    "type",
+]]
+
+copy_file(
+    name = "sizzle",
+    src = "//third_party/js/sizzle",
+    out = "sizzle.js",
+)

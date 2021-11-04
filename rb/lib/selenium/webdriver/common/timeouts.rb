@@ -25,12 +25,30 @@ module Selenium
       end
 
       #
+      # Gets the amount of time the driver should wait when searching for elements.
+      #
+
+      def implicit_wait
+        Float(@bridge.timeouts['implicit']) / 1000
+      end
+
+      #
       # Set the amount of time the driver should wait when searching for elements.
       #
 
       def implicit_wait=(seconds)
-        @bridge.implicit_wait_timeout = Integer(seconds * 1000)
+        @bridge.timeouts = {'implicit' => Integer(seconds * 1000)}
       end
+
+      #
+      # Gets the amount of time to wait for an asynchronous script to finish
+      # execution before throwing an error.
+      #
+
+      def script
+        Float(@bridge.timeouts['script']) / 1000
+      end
+      alias_method :script_timeout, :script
 
       #
       # Sets the amount of time to wait for an asynchronous script to finish
@@ -38,8 +56,17 @@ module Selenium
       # script will be allowed to run indefinitely.
       #
 
-      def script_timeout=(seconds)
-        @bridge.script_timeout = Integer(seconds * 1000)
+      def script=(seconds)
+        @bridge.timeouts = {'script' => Integer(seconds * 1000)}
+      end
+      alias_method :script_timeout=, :script=
+
+      #
+      # Gets the amount of time to wait for a page load to complete before throwing an error.
+      #
+
+      def page_load
+        Float(@bridge.timeouts['pageLoad']) / 1000
       end
 
       #
@@ -48,7 +75,7 @@ module Selenium
       #
 
       def page_load=(seconds)
-        @bridge.timeout 'page load', Integer(seconds * 1000)
+        @bridge.timeouts = {'pageLoad' => Integer(seconds * 1000)}
       end
     end # Timeouts
   end # WebDriver

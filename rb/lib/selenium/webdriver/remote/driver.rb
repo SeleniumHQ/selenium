@@ -42,6 +42,7 @@ module Selenium
           end
           opts[:url] ||= "http://#{Platform.localhost}:4444/wd/hub"
           super
+          @bridge.file_detector = ->((filename, *)) { File.exist?(filename) && filename.to_s }
         end
 
         private
@@ -51,7 +52,8 @@ module Selenium
         end
 
         def devtools_version
-          capabilities['se:cdpVersion'].split('.').first
+          capabilities['se:cdpVersion']&.split('.')&.first ||
+            raise(Error::WebDriverError, "DevTools is not supported by the Remote Server")
         end
       end # Driver
     end # Remote

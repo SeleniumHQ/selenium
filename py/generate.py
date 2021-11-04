@@ -631,9 +631,18 @@ class CdpCommand:
         code += f'def {self.py_name}('
         ret = f') -> {ret_type}:\n'
         if self.parameters:
+            params = [p.generate_code() for p in self.parameters]
+            optional = False
+            clean_params = []
+            for para in params:
+                if "= None" in para:
+                    optional = True
+                if optional and "= None" not in para:
+                    para += ' = None'
+                clean_params.append(para)
             code += '\n'
             code += indent(
-                ',\n'.join(p.generate_code() for p in self.parameters), 8)
+                ',\n'.join(clean_params), 8)
             code += '\n'
             code += indent(ret, 4)
         else:

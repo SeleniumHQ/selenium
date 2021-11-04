@@ -62,7 +62,7 @@ module Selenium
 
         # TODO: optimize since this approach is not assured on IE
         def ensure_single_window
-          driver_instance.window_handles[1..-1].each do |handle|
+          driver_instance.window_handles[1..].each do |handle|
             driver_instance.switch_to.window(handle)
             driver_instance.close
           end
@@ -103,13 +103,13 @@ module Selenium
 
         def remote_server_jar
           test_jar = "#{Pathname.new(Dir.pwd).join('rb')}/selenium_server_deploy.jar"
-          built_jar = root.join('bazel-bin/java/server/src/org/openqa/selenium/grid/selenium_server_deploy.jar')
+          built_jar = root.join('bazel-bin/java/src/org/openqa/selenium/grid/selenium_server_deploy.jar')
           jar = if File.exist?(test_jar) && ENV['DOWNLOAD_SERVER'].nil?
                   test_jar
                 elsif File.exist?(built_jar) && ENV['DOWNLOAD_SERVER'].nil?
                   built_jar
                 else
-                  Selenium::Server.download(:latest)
+                  Selenium::Server.download
                 end
 
           WebDriver.logger.info "Server Location: #{jar}"

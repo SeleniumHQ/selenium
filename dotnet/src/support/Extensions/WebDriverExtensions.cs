@@ -37,7 +37,7 @@ namespace OpenQA.Selenium.Support.Extensions
         /// indicate that it cannot take screenshots.</exception>
         public static Screenshot TakeScreenshot(this IWebDriver driver)
         {
-            ITakesScreenshot screenshotDriver = driver as ITakesScreenshot;
+            ITakesScreenshot screenshotDriver = GetDriverAs<ITakesScreenshot>(driver);
             if (screenshotDriver == null)
             {
                 IHasCapabilities capabilitiesDriver = driver as IHasCapabilities;
@@ -115,13 +115,33 @@ namespace OpenQA.Selenium.Support.Extensions
 
         private static object ExecuteJavaScriptInternal(IWebDriver driver, string script, object[] args)
         {
-            IJavaScriptExecutor executor = driver as IJavaScriptExecutor;
+            IJavaScriptExecutor executor = GetDriverAs<IJavaScriptExecutor>(driver);
             if (executor == null)
             {
                 throw new WebDriverException("Driver does not implement IJavaScriptExecutor");
             }
 
             return executor.ExecuteScript(script, args);
+        }
+
+        private static T GetDriverAs<T>(IWebDriver driver) where T : class
+        {
+            T convertedDriver = driver as T;
+            if (convertedDriver == null)
+            {
+                // If the driver doesn't directly implement the desired interface, but does
+                // implement IWrapsDriver, walk up the hierarchy of wrapped drivers until
+                // either we find a class that does implement the desired interface, or is
+                // no longer wrapping a driver.
+                IWrapsDriver driverWrapper = driver as IWrapsDriver;
+                while (convertedDriver == null && driverWrapper != null)
+                {
+                    convertedDriver = driverWrapper.WrappedDriver as T;
+                    driverWrapper = driverWrapper.WrappedDriver as IWrapsDriver;
+                }
+            }
+
+            return convertedDriver;
         }
     }
 }

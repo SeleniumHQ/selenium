@@ -31,6 +31,20 @@ module Selenium
           expect(driver).to be_kind_of(DriverExtensions::HasRemoteStatus)
           expect(driver.remote_status).to be_kind_of(Hash)
         end
+
+        it 'uses a default file detector' do
+          driver.navigate.to url_for('upload.html')
+
+          driver.find_element(id: 'upload').send_keys(__FILE__)
+          driver.find_element(id: 'go').submit
+          wait.until { driver.find_element(id: 'upload_label').displayed? }
+
+          driver.switch_to.frame('upload_target')
+          wait.until { driver.find_element(xpath: '//body') }
+
+          body = driver.find_element(xpath: '//body')
+          expect(body.text.scan('Licensed to the Software Freedom Conservancy').count).to eq(2)
+        end
       end
     end # Remote
   end # WebDriver

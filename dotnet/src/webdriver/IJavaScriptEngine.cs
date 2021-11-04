@@ -43,6 +43,11 @@ namespace OpenQA.Selenium
         event EventHandler<JavaScriptConsoleApiCalledEventArgs> JavaScriptConsoleApiCalled;
 
         /// <summary>
+        /// Occurs when a value of an attribute in an element is being changed.
+        /// </summary>
+        event EventHandler<DomMutatedEventArgs> DomMutated;
+
+        /// <summary>
         /// Gets the read-only list of initialization scripts added for this JavaScript engine.
         /// </summary>
         IReadOnlyList<InitializationScript> InitializationScripts { get; }
@@ -62,6 +67,18 @@ namespace OpenQA.Selenium
         /// Stops monitoring for events from the browser's JavaScript engine.
         /// </summary>
         void StopEventMonitoring();
+
+        /// <summary>
+        /// Enables monitoring for DOM changes.
+        /// </summary>
+        /// <returns>A task that represents the asynchronous operation.</returns>
+        Task EnableDomMutationMonitoring();
+
+        /// <summary>
+        /// Disables monitoring for DOM changes.
+        /// </summary>
+        /// <returns>A task that represents the asynchronous operation.</returns>
+        Task DisableDomMutationMonitoring();
 
         /// <summary>
         /// Asynchronously adds JavaScript to be loaded on every document load.
@@ -84,6 +101,21 @@ namespace OpenQA.Selenium
         /// </summary>
         /// <returns>A task that represents the asynchronous operation.</returns>
         Task ClearInitializationScripts();
+
+        /// <summary>
+        /// Pins a JavaScript snippet for execution in the browser without transmitting the
+        /// entire script across the wire for every execution.
+        /// </summary>
+        /// <param name="script">The JavaScript to pin</param>
+        /// <returns>A task containing a <see cref="PinnedScript"/> object to use to execute the script.</returns>
+        Task<PinnedScript> PinScript(string script);
+
+        /// <summary>
+        /// Unpins a previously pinned script from the browser.
+        /// </summary>
+        /// <param name="script">The <see cref="PinnedScript"/> object to unpin.</param>
+        /// <returns>A task that represents the asynchronous operation.</returns>
+        Task UnpinScript(PinnedScript script);
 
         /// <summary>
         /// Asynchronously adds a binding to a callback method that will raise

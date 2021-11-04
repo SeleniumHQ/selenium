@@ -55,6 +55,7 @@ generated_assembly_info(
     resources = [
         "//javascript/atoms/fragments:find-elements.js",
         "//javascript/atoms/fragments:is-displayed.js",
+        "//javascript/cdp-support:mutation-listener.js",
         "//javascript/webdriver/atoms:get-attribute.js",
         "//third_party/js/selenium:webdriver_json",
     ],
@@ -100,6 +101,7 @@ generated_assembly_info(
     resources = [
         "//javascript/atoms/fragments:find-elements.js",
         "//javascript/atoms/fragments:is-displayed.js",
+        "//javascript/cdp-support:mutation-listener.js",
         "//javascript/webdriver/atoms:get-attribute.js",
         "//third_party/js/selenium:webdriver_json",
     ],
@@ -137,6 +139,7 @@ generated_assembly_info(
     resources = [
         "//javascript/atoms/fragments:find-elements.js",
         "//javascript/atoms/fragments:is-displayed.js",
+        "//javascript/cdp-support:mutation-listener.js",
         "//javascript/webdriver/atoms:get-attribute.js",
         "//third_party/js/selenium:webdriver_json",
     ],
@@ -183,6 +186,7 @@ generated_assembly_info(
     resources = [
         "//javascript/atoms/fragments:find-elements.js",
         "//javascript/atoms/fragments:is-displayed.js",
+        "//javascript/cdp-support:mutation-listener.js",
         "//javascript/webdriver/atoms:get-attribute.js",
         "//third_party/js/selenium:webdriver_json",
     ],

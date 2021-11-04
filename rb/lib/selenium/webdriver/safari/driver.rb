@@ -28,7 +28,7 @@ module Selenium
 
       class Driver < WebDriver::Driver
         EXTENSIONS = [DriverExtensions::HasDebugger,
-                      DriverExtensions::HasPermissions,
+                      DriverExtensions::HasApplePermissions,
                       DriverExtensions::HasWebStorage].freeze
 
         def browser

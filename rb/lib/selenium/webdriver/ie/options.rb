@@ -39,7 +39,9 @@ module Selenium
           persistent_hover: 'enablePersistentHover',
           require_window_focus: 'requireWindowFocus',
           use_per_process_proxy: 'ie.usePerProcessProxy',
-          validate_cookie_document_type: 'ie.validateCookieDocumentType'
+          use_legacy_file_upload_dialog_handling: 'ie.useLegacyFileUploadDialogHandling',
+          attach_to_edge_chrome: 'ie.edgechromium',
+          edge_executable_path: 'ie.edgepath'
         }.freeze
         BROWSER = 'internet explorer'
 

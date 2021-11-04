@@ -155,6 +155,12 @@ namespace OpenQA.Selenium
         /// </summary>
         public static readonly string UseStrictFileInteractability = "strictFileInteractability";
 
+        /// <summary>
+        /// Capability name used to get a value indicating whether to request URL of a WebSocket
+        /// connection for bidirectional communication with a driver.
+        /// </summary>
+        public static readonly string WebSocketUrl = "webSocketUrl";
+
         private static readonly List<string> KnownSpecCompliantCapabilityNames = new List<string>() {
             BrowserName,
             BrowserVersion,
@@ -165,7 +171,8 @@ namespace OpenQA.Selenium
             SetWindowRect,
             Timeouts,
             UnhandledPromptBehavior,
-            UseStrictFileInteractability
+            UseStrictFileInteractability,
+            WebSocketUrl
         };
 
         /// <summary>

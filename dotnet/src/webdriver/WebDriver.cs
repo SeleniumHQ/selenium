@@ -27,7 +27,7 @@ using OpenQA.Selenium.Internal;
 
 namespace OpenQA.Selenium
 {
-    public class WebDriver : IWebDriver, ISearchContext, IJavaScriptExecutor, IFindsElement, ITakesScreenshot, ISupportsPrint, IActionExecutor, IAllowsFileDetection, IHasCapabilities, IHasCommandExecutor, IHasSessionId
+    public class WebDriver : IWebDriver, ISearchContext, IJavaScriptExecutor, IFindsElement, ITakesScreenshot, ISupportsPrint, IActionExecutor, IAllowsFileDetection, IHasCapabilities, IHasCommandExecutor, IHasSessionId, ICustomDriverCommandExecutor
     {
         /// <summary>
         /// The default command timeout for HTTP requests in a RemoteWebDriver instance.
@@ -40,6 +40,7 @@ namespace OpenQA.Selenium
         private NetworkManager network;
         private WebElementFactory elementFactory;
         private SessionId sessionId;
+        private List<string> registeredCommands = new List<string>();
 
         // These member variables exist to support obsolete protocol end points.
         // They should be removed at the earliest available opportunity.
@@ -58,13 +59,14 @@ namespace OpenQA.Selenium
             this.StartSession(capabilities);
             this.elementFactory = new WebElementFactory(this);
             this.network = new NetworkManager(this);
+            this.registeredCommands.AddRange(DriverCommand.KnownCommands);
 
             if ((this as ISupportsLogs) != null)
             {
                 // Only add the legacy log commands if the driver supports
                 // retrieving the logs via the extension end points.
-                this.CommandExecutor.TryAddCommand(DriverCommand.GetAvailableLogTypes, new HttpCommandInfo(HttpCommandInfo.GetCommand, "/session/{sessionId}/se/log/types"));
-                this.CommandExecutor.TryAddCommand(DriverCommand.GetLog, new HttpCommandInfo(HttpCommandInfo.PostCommand, "/session/{sessionId}/se/log"));
+                this.RegisterDriverCommand(DriverCommand.GetAvailableLogTypes, new HttpCommandInfo(HttpCommandInfo.GetCommand, "/session/{sessionId}/se/log/types"), true);
+                this.RegisterDriverCommand(DriverCommand.GetLog, new HttpCommandInfo(HttpCommandInfo.PostCommand, "/session/{sessionId}/se/log"), true);
             }
 
             // These below code exists solely to support obsolete protocol end points.
@@ -132,7 +134,7 @@ namespace OpenQA.Selenium
             {
                 if (value == null)
                 {
-                    throw new ArgumentNullException("value", "Argument 'url' cannot be null.");
+                    throw new ArgumentNullException(nameof(value), "Argument 'url' cannot be null.");
                 }
 
                 Dictionary<string, object> parameters = new Dictionary<string, object>();
@@ -232,7 +234,7 @@ namespace OpenQA.Selenium
             {
                 if (value == null)
                 {
-                    throw new ArgumentNullException("value", "FileDetector cannot be null");
+                    throw new ArgumentNullException(nameof(value), "FileDetector cannot be null");
                 }
 
                 this.fileDetector = value;
@@ -323,6 +325,16 @@ namespace OpenQA.Selenium
         }
 
         /// <summary>
+        /// Gets or sets the factory object used to create instances of <see cref="WebElement"/>
+        /// or its subclasses.
+        /// </summary>
+        protected WebElementFactory ElementFactory
+        {
+            get { return this.elementFactory; }
+            set { this.elementFactory = value; }
+        }
+
+        /// <summary>
         /// Closes the Browser
         /// </summary>
         public void Close()
@@ -363,6 +375,17 @@ namespace OpenQA.Selenium
         }
 
         /// <summary>
+        /// Executes JavaScript in the context of the currently selected frame or window
+        /// </summary>
+        /// <param name="script">A <see cref="PinnedScript"/> object containing the JavaScript code to execute.</param>
+        /// <param name="args">The arguments to the script.</param>
+        /// <returns>The value returned by the script.</returns>
+        public object ExecuteScript(PinnedScript script, params object[] args)
+        {
+            return this.ExecuteScript(script.ExecutionScript, args);
+        }
+
+        /// <summary>
         /// Finds the first element in the page that matches the <see cref="By"/> object
         /// </summary>
         /// <param name="by">By mechanism to find the object</param>
@@ -377,7 +400,7 @@ namespace OpenQA.Selenium
         {
             if (by == null)
             {
-                throw new ArgumentNullException("by", "by cannot be null");
+                throw new ArgumentNullException(nameof(@by), "by cannot be null");
             }
 
             return by.FindElement(this);
@@ -413,7 +436,7 @@ namespace OpenQA.Selenium
         {
             if (by == null)
             {
-                throw new ArgumentNullException("by", "by cannot be null");
+                throw new ArgumentNullException(nameof(@by), "by cannot be null");
             }
 
             return by.FindElements(this);
@@ -465,7 +488,7 @@ namespace OpenQA.Selenium
         {
             if (actionSequenceList == null)
             {
-                throw new ArgumentNullException("actionSequenceList", "List of action sequences must not be null");
+                throw new ArgumentNullException(nameof(actionSequenceList), "List of action sequences must not be null");
             }
 
             List<object> objectList = new List<object>();
@@ -518,6 +541,63 @@ namespace OpenQA.Selenium
         public INavigation Navigate()
         {
             return new Navigator(this);
+        }
+
+        /// <summary>
+        /// Executes a command with this driver.
+        /// </summary>
+        /// <param name="driverCommandToExecute">The name of the command to execute. The command name must be registered with the command executor, and must not be a command name known to this driver type.</param>
+        /// <param name="parameters">A <see cref="Dictionary{K, V}"/> containing the names and values of the parameters of the command.</param>
+        /// <returns>A <see cref="Response"/> containing information about the success or failure of the command and any data returned by the command.</returns>
+        public object ExecuteCustomDriverCommand(string driverCommandToExecute, Dictionary<string, object> parameters)
+        {
+            if (this.registeredCommands.Contains(driverCommandToExecute))
+            {
+                throw new WebDriverException(string.Format(CultureInfo.InvariantCulture, "A command named '{0}' is predefined by the driver class and cannot be executed with ExecuteCustomDriverCommand. It should be executed using a named method instead.", driverCommandToExecute));
+            }
+
+            return this.Execute(driverCommandToExecute, parameters).Value;
+        }
+
+        /// <summary>
+        /// Registers a set of commands to be executed with this driver instance.
+        /// </summary>
+        /// <param name="commands">An <see cref="IReadOnlyDictionary{string, CommandInfo}"/> where the keys are the names of the commands to register, and the values are the <see cref="CommandInfo"/> objects describing the commands.</param>
+        public void RegisterCustomDriverCommands(IReadOnlyDictionary<string, CommandInfo> commands)
+        {
+            foreach (KeyValuePair<string, CommandInfo> entry in commands)
+            {
+                this.RegisterCustomDriverCommand(entry.Key, entry.Value);
+            }
+        }
+
+        /// <summary>
+        /// Registers a command to be executed with this driver instance.
+        /// </summary>
+        /// <param name="commandName">The unique name of the command to register.</param>
+        /// <param name="commandInfo">The <see cref="CommandInfo"/> object describing the command.</param>
+        /// <returns><see langword="true"/> if the command was registered; otherwise, <see langword="false"/>.</returns>
+        public bool RegisterCustomDriverCommand(string commandName, CommandInfo commandInfo)
+        {
+            return this.RegisterDriverCommand(commandName, commandInfo, false);
+        }
+
+        /// <summary>
+        /// Registers a command to be executed with this driver instance.
+        /// </summary>
+        /// <param name="commandName">The unique name of the command to register.</param>
+        /// <param name="commandInfo">The <see cref="CommandInfo"/> object describing the command.</param>
+        /// <param name="isInternalCommand"><see langword="true"/> if the registered command is internal to the driver; otherwise <see langword="false"/>.</param>
+        /// <returns><see langword="true"/> if the command was registered; otherwise, <see langword="false"/>.</returns>
+        internal bool RegisterDriverCommand(string commandName, CommandInfo commandInfo, bool isInternalCommand)
+        {
+            bool commandAdded = this.CommandExecutor.TryAddCommand(commandName, commandInfo);
+            if (commandAdded && isInternalCommand)
+            {
+                this.registeredCommands.Add(commandName);
+            }
+
+            return commandAdded;
         }
 
         /// <summary>
@@ -679,6 +759,17 @@ namespace OpenQA.Selenium
         }
 
         /// <summary>
+        /// Registers a command to be executed with this driver instance as an internally known driver command.
+        /// </summary>
+        /// <param name="commandName">The unique name of the command to register.</param>
+        /// <param name="commandInfo">The <see cref="CommandInfo"/> object describing the command.</param>
+        /// <returns><see langword="true"/> if the command was registered; otherwise, <see langword="false"/>.</returns>
+        protected bool RegisterInternalDriverCommand(string commandName, CommandInfo commandInfo)
+        {
+            return this.RegisterDriverCommand(commandName, commandInfo, true);
+        }
+
+        /// <summary>
         /// Stops the client from running
         /// </summary>
         /// <param name="disposing">if its in the process of disposing</param>
@@ -701,6 +792,8 @@ namespace OpenQA.Selenium
             {
                 this.sessionId = null;
             }
+
+            this.executor.Dispose();
         }
 
         private static void UnpackAndThrowOnError(Response errorResponse)
@@ -894,7 +987,7 @@ namespace OpenQA.Selenium
             }
             else
             {
-                throw new ArgumentException("Argument is of an illegal type" + arg.ToString(), "arg");
+                throw new ArgumentException("Argument is of an illegal type" + arg.ToString(), nameof(arg));
             }
 
             return converted;

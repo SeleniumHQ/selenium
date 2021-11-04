@@ -21,7 +21,8 @@ module Selenium
   module WebDriver
     class Options
       W3C_OPTIONS = %i[browser_name browser_version platform_name accept_insecure_certs page_load_strategy proxy
-                       set_window_rect timeouts unhandled_prompt_behavior strict_file_interactability].freeze
+                       set_window_rect timeouts unhandled_prompt_behavior strict_file_interactability
+                       web_socket_url].freeze
 
       class << self
         attr_reader :driver_path
@@ -90,7 +91,8 @@ module Selenium
       # @param [Boolean, String, Integer] value Value of the option
       #
 
-      def add_option(name, value)
+      def add_option(name, value = nil)
+        @options[name.keys.first] = name.values.first if value.nil? && name.is_a?(Hash)
         @options[name] = value
       end
 
@@ -123,10 +125,14 @@ module Selenium
 
       private
 
+      def w3c?(key)
+        W3C_OPTIONS.include?(key) || key.to_s.include?(':')
+      end
+
       def process_w3c_options(options)
-        w3c_options = options.select { |key, _val| W3C_OPTIONS.include?(key) }
+        w3c_options = options.select { |key, _val| w3c?(key) }
         w3c_options[:unhandled_prompt_behavior] &&= w3c_options[:unhandled_prompt_behavior]&.to_s&.tr('_', ' ')
-        options.delete_if { |key, _val| W3C_OPTIONS.include?(key) }
+        options.delete_if { |key, _val| w3c?(key) }
         w3c_options
       end
 

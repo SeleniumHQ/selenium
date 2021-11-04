@@ -127,6 +127,14 @@ namespace OpenQA.Selenium.Remote
         }
 
         /// <summary>
+        /// Gets a value indicating whether a DevTools session is active.
+        /// </summary>
+        public bool HasActiveDevToolsSession
+        {
+            get { return this.devToolsSession != null; }
+        }
+
+        /// <summary>
         /// Finds the first element in the page that matches the ID supplied
         /// </summary>
         /// <param name="id">ID of the element</param>
@@ -432,7 +440,7 @@ namespace OpenQA.Selenium.Remote
                 try
                 {
                     DevToolsSession session = new DevToolsSession(debuggerAddress);
-                    session.Start(devToolsProtocolVersion).ConfigureAwait(false).GetAwaiter().GetResult();
+                    session.StartSession(devToolsProtocolVersion).ConfigureAwait(false).GetAwaiter().GetResult();
                     this.devToolsSession = session;
                 }
                 catch (Exception e)
@@ -444,11 +452,36 @@ namespace OpenQA.Selenium.Remote
             return this.devToolsSession;
         }
 
+        /// <summary>
+        /// Closes a DevTools session.
+        /// </summary>
+        public void CloseDevToolsSession()
+        {
+            if (this.devToolsSession != null)
+            {
+                this.devToolsSession.StopSession(true).ConfigureAwait(false).GetAwaiter().GetResult();
+            }
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                if (this.devToolsSession != null)
+                {
+                    this.devToolsSession.Dispose();
+                    this.devToolsSession = null;
+                }
+            }
+
+            base.Dispose(disposing);
+        }
+
         private static ICapabilities ConvertOptionsToCapabilities(DriverOptions options)
         {
             if (options == null)
             {
-                throw new ArgumentNullException("options", "Driver options must not be null");
+                throw new ArgumentNullException(nameof(options), "Driver options must not be null");
             }
 
             return options.ToCapabilities();

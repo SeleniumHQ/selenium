@@ -96,11 +96,11 @@
   </ItemGroup>
 
   <ItemGroup Condition="'$(OS)' == 'WINDOWS_NT'">
-    <EmbeddedResource Include="$(ProjectDir)..\..\..\java\client\src\com\thoughtworks\selenium\webdriven\injectableSelenium.js">
+    <EmbeddedResource Include="$(ProjectDir)..\..\..\java\src\com\thoughtworks\selenium\webdriven\injectableSelenium.js">
       <Visible>False</Visible>
       <LogicalName>injectableSelenium.js</LogicalName>
     </EmbeddedResource>
-    <EmbeddedResource Include="$(ProjectDir)..\..\..\java\client\src\com\thoughtworks\selenium\webdriven\htmlutils.js">
+    <EmbeddedResource Include="$(ProjectDir)..\..\..\java\src\com\thoughtworks\selenium\webdriven\htmlutils.js">
       <Visible>False</Visible>
       <LogicalName>htmlutils.js</LogicalName>
     </EmbeddedResource>
@@ -147,11 +147,11 @@
   </ItemGroup>
 
   <ItemGroup Condition="'$(OS)' != 'WINDOWS_NT'">
-    <EmbeddedResource Include="$(ProjectDir)../../../java/client/src/com/thoughtworks/selenium/webdriven/injectableSelenium.js">
+    <EmbeddedResource Include="$(ProjectDir)../../../java/src/com/thoughtworks/selenium/webdriven/injectableSelenium.js">
       <Visible>False</Visible>
       <LogicalName>injectableSelenium.js</LogicalName>
     </EmbeddedResource>
-    <EmbeddedResource Include="$(ProjectDir)../../../java/client/src/com/thoughtworks/selenium/webdriven/htmlutils.js">
+    <EmbeddedResource Include="$(ProjectDir)../../../java/src/com/thoughtworks/selenium/webdriven/htmlutils.js">
       <Visible>False</Visible>
       <LogicalName>htmlutils.js</LogicalName>
     </EmbeddedResource>

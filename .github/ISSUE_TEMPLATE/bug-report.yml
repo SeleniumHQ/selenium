@@ -1,0 +1,93 @@
+name: 🐛 Bug Report
+description: File a bug report
+title: "[🐛 Bug]: "
+labels: [ I-defect, needs-triaging ]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to fill out this bug report!
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened?
+      description: |
+        Describe clearly and concisely the bug including instructions showing how to reproduce it.
+      placeholder: |
+        Please add as many details as possible to avoid assumptions from our side. How do you
+        trigger this bug? What did you expect to happen? Please walk us through it step by step.
+        Notes:
+        If the issue is with Google Chrome consider logging an issue with ChromeDriver instead:
+        https://bugs.chromium.org/p/chromedriver
+        If the issue is with Firefox GeckoDriver (aka Marionette) consider logging an issue with
+        Mozilla: https://bugzilla.mozilla.org/buglist.cgi?product=Testing&component=Marionette
+        If the issue is with Microsoft Edge consider logging an issue with Microsoft instead:
+        https://developer.microsoft.com/en-us/microsoft-edge/platform/issues/
+        If the issue is with Safari, only Safari 10+ is supported. Please log any Safari issue
+        with Apple: https://bugreport.apple.com/
+    validations:
+      required: true
+  - type: textarea
+    id: repro-command
+    attributes:
+      label: How can we reproduce the issue?
+      description: |
+        Share with a code snippet or a GitHub repo to reproduce the issue.
+      placeholder: |
+        Please share the code script to reproduce the issue. If more than one file is needed,
+        create a GitHub repository and share the link.
+        This will be automatically formatted into code, so no need for backticks.
+        Be sure to include an SSCCE (Short, Self Contained, Correct
+        [compilable] example) http://sscce.org/
+        Issues without a reproduction script are likely to stall and eventually be closed.
+      render: shell
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: Relevant log output
+      description: |
+        Please copy and paste any relevant log output. This will be automatically formatted, so
+        no need for backticks.
+      render: shell
+    validations:
+      required: true
+  - type: input
+    id: operating-system
+    attributes:
+      label: Operating System
+      description: What host operating system are you using to run Selenium?
+      placeholder: Windows 10? macOS BigSur? Ubuntu?
+    validations:
+      required: true
+  - type: input
+    id: selenium-version
+    attributes:
+      label: Selenium version
+      description: What programming language release version of Selenium?
+      placeholder: Java 4.0.0? Ruby 4.0.3? (please use the full version number).
+    validations:
+      required: true
+  - type: input
+    id: browser-versions
+    attributes:
+      label: What are the browser(s) and version(s) where you see this issue?
+      description: What browser and versions are you using?
+      placeholder: Example - Chrome 90, Firefox 88, etc.
+    validations:
+      required: true
+  - type: input
+    id: browser-driver-versions
+    attributes:
+      label: What are the browser driver(s) and version(s) where you see this issue?
+      description: What browser driver(s) are you using?
+      placeholder: Example - ChromeDriver 94.0.4606.61, GeckoDriver 0.30.0, etc.
+    validations:
+      required: true
+  - type: input
+    id: selenium-grid-version
+    attributes:
+      label: Are you using Selenium Grid?
+      description: What version of Selenium Grid are you using?
+      placeholder: Example - 4.0.0

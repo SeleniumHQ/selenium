@@ -101,6 +101,21 @@ namespace OpenQA.Selenium.DevTools.V85
         }
 
         /// <summary>
+        /// Asynchronously sets the override of the user agent settings.
+        /// </summary>
+        /// <param name="userAgent">A <see cref="UserAgent"/> object containing the user agent values to override.</param>
+        /// <returns>A task that represents the asynchronous operation.</returns>
+        public override async Task SetUserAgentOverride(UserAgent userAgent)
+        {
+            await network.SetUserAgentOverride(new SetUserAgentOverrideCommandSettings()
+            {
+                UserAgent = userAgent.UserAgentString,
+                AcceptLanguage = userAgent.AcceptLanguage,
+                Platform = userAgent.Platform
+            });
+        }
+
+        /// <summary>
         /// Asynchronously continues an intercepted network request.
         /// </summary>
         /// <param name="requestData">The <see cref="HttpRequestData"/> of the request.</param>
@@ -226,14 +241,18 @@ namespace OpenQA.Selenium.DevTools.V85
         /// <returns>A task that represents the asynchronous operation.</returns>
         public override async Task AddResponseBody(HttpResponseData responseData)
         {
-            var bodyResponse = await fetch.GetResponseBody(new Fetch.GetResponseBodyCommandSettings() { RequestId = responseData.RequestId });
-            if (bodyResponse.Base64Encoded)
+            // If the response is a redirect, retrieving the body will throw an error in CDP.
+            if (responseData.StatusCode < 300 || responseData.StatusCode > 399)
             {
-                responseData.Body = Encoding.UTF8.GetString(Convert.FromBase64String(bodyResponse.Body));
-            }
-            else
-            {
-                responseData.Body = bodyResponse.Body;
+                var bodyResponse = await fetch.GetResponseBody(new Fetch.GetResponseBodyCommandSettings() { RequestId = responseData.RequestId });
+                if (bodyResponse.Base64Encoded)
+                {
+                    responseData.Body = Encoding.UTF8.GetString(Convert.FromBase64String(bodyResponse.Body));
+                }
+                else
+                {
+                    responseData.Body = bodyResponse.Body;
+                }
             }
         }
 
@@ -289,22 +308,25 @@ namespace OpenQA.Selenium.DevTools.V85
                     wrappedResponse.ResponseData.StatusCode = e.ResponseStatusCode.Value;
                 }
 
-                foreach (var header in e.ResponseHeaders)
+                if (e.ResponseHeaders != null)
                 {
-                    if (header.Name.ToLowerInvariant() == "set-cookie")
+                    foreach (var header in e.ResponseHeaders)
                     {
-                        wrappedResponse.ResponseData.CookieHeaders.Add(header.Value);
-                    }
-                    else
-                    {
-                        if (wrappedResponse.ResponseData.Headers.ContainsKey(header.Name))
+                        if (header.Name.ToLowerInvariant() == "set-cookie")
                         {
-                            string currentHeaderValue = wrappedResponse.ResponseData.Headers[header.Name];
-                            wrappedResponse.ResponseData.Headers[header.Name] = currentHeaderValue + ", " + header.Value;
+                            wrappedResponse.ResponseData.CookieHeaders.Add(header.Value);
                         }
                         else
                         {
-                            wrappedResponse.ResponseData.Headers.Add(header.Name, header.Value);
+                            if (wrappedResponse.ResponseData.Headers.ContainsKey(header.Name))
+                            {
+                                string currentHeaderValue = wrappedResponse.ResponseData.Headers[header.Name];
+                                wrappedResponse.ResponseData.Headers[header.Name] = currentHeaderValue + ", " + header.Value;
+                            }
+                            else
+                            {
+                                wrappedResponse.ResponseData.Headers.Add(header.Name, header.Value);
+                            }
                         }
                     }
                 }

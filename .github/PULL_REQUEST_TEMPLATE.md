@@ -1,8 +1,3 @@
-<!-- NOTE
-Please be aware that the Selenium Grid 3.x is being deprecated in favour of the
-upcoming version 4.x. We won't be receiving any PRs related to the Grid 3.x code. Thanks!
--->
-
 **Thanks for contributing to Selenium!**
 **A PR well described will help maintainers to quickly review and merge it**
 

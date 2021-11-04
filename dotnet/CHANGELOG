@@ -1,3 +1,106 @@
+v4.0.1
+======
+ * Refactored WebSocket handling of CDP. The handling of sending and receiving
+   data via WebSocket for use with Chrome DevTools Protocol (CDP) messages was
+   previously haphazard, and did not follow proper patterns of behavior with
+   the .NET core WebSocket library. This commit reworks the WebSocket code to
+   better fit the .NET processing model. The public API of the DevTools
+   integration is largely unchanged. with the exception of the addition of the
+   HasActiveDevToolsSession property to the IDevTools interface, allowing a
+   user to query whether an active session exists without calling
+   GetDevToolsSession().
+ * Refactored how the driver behaves when a window is closed with
+   driver.Close() that contains the page which is the target to which the
+   DevTools session is attached. This should make that transition more
+   seamless and prevent errors on attaching to a new target when the next
+   DevTools command is issued.
+ * Refactored Cookie constructors to allow SameSite cookies to not necessarily
+   have the Secure flag set. This allows Chromium-based browsers that do not
+   fully comply with SameSite cookies to work.
+
+v4.0.0
+======
+ * Prevented getting bodies of responses for redirects, as this causes an
+   error in the DevTools protocol.
+ * (on behalf of Brandon Walderman) Made adding browser-specific options for
+   Chromium-based browsers more obvious.
+ * (on behalf of Puja Jagani) Added constructor for creating a Cookie instance
+   with all optional arguments. Fixes issue #9361.
+ * Add infratructure for future support of previously unsupported interaction
+   types.
+ * Made SlowLoadableComponent more extensible. Fixes issue #9009.
+ * (on behalf of elgatov) Made SlowLoadableComponent use UnableToLoadMessage
+   property. Fixes issue #8550.
+ * (on behalf of Brandon Walderman) Removed Edge Legacy options.
+ * Added CDP support for Chromium 95.
+ * Added ability to monitor DOM mutations.
+ * Restored protected ElementFactory property for use by downstream projects.
+
+v4.0.0rc3
+=========
+ * Explicitly remove Expect header. When using the HttpClient class, the
+   behavior for an HTTP POST request is different between .NET Framework and
+   .NET Core. In the .NET Framework case, the client automatically adds an
+   `Expect: 100-Continue` header. When the remote end does not send a 100
+   response, the client hangs waiting for it. This change explicitly removes
+   that header for all HTTP requests. Fixes issue #9277.
+
+v4.0.0rc2
+=========
+ * Fix TouchActions Flick overload
+ * Fixing doc string for Network Conditions methods
+ * Adding support for Firefox and Chromium Android options
+ * Coercing return type of GetCastSinks() to proper datatype
+ * implement ability to open Safari inspector
+ * implement getting and setting permissions on Safari
+ * implement getting the context of Firefox commands
+ * implement ability for Chrome and Edge to set applicable permissions on browser
+ * implement ability to launch chromium application
+ * implement chrome and edge support for casting to devices
+ * Add --websocket-port command line argument for geckodriver
+ * Restore ability to add headers to WebDriver HTTP commands
+ * Move UserAgent class to main namespace
+ * mark deprecated chromedriver commands as obsolete and implement new preferred command
+ * Add version-independent method for overriding user agent via CDP
+ * Add Bidi-compliant webSocketUrl capability
+ * Make CDP sessions autodetect close of initial attached target
+ * Update supported version of CDP to 94, remove 92
+ * Rename TerminateDevToolsSession to ResetDevToolsSession
+ * Add ability to disconnect a CDP session
+ * Add transformation for network responses via CDP
+
+v4.0.0rc1
+=========
+ * Set available versions of Chrome DevTools Protocol to 85, 92, and 93.
+ * Enabled script pinning. This allows the user to add a snippet of JavaScript
+   to a page that will be available on all subsquent pages, and not have to
+   pass the script across the wire every time. For exceptionally large blobs
+   of JavaScript, this may represent a significant savings in bandwidth and
+   data sent to the remote end of the WebDriver protocol. This feature is
+   currently only available for browsers that implement the Chrome DevTools
+   Protocol.
+ * Added ability to use By object with relative locators. This change also
+   marks RelativeBy.WithTagName as obsolete. Users should change their calls
+   to `RelativeBy.WithLocator(By.TagName(...))`.
+ * Allow network interception to handle duplicate response headers.
+   Headers in HTTP responses may be repeated. The previous implementation
+   of CDP network response handling did not take this into account. Now, if
+   a response has duplicate headers, the values will be combined into a
+   single header with the correct name, and a comma-separated list for the
+   value. This is complaint with RFC2616. There is an exception for the
+   Set-Cookie header, however, which is allowed to occur multiple times,
+   but is not combinable as to the rules of the aforementioned RFC. To
+   account for this, a new property on HttpResponseData has been added to
+   list the cookie headers (the `CookieHeaders` property) as found in the
+   response.
+ * (on behalf of Nikolay Borisenko) Modified to dispose HttpRequestMessage
+   and HttpResponseMessage when making HTTP calls across the wire.
+ * Updated the InternetExplorerOptions class to match the existing capabilities
+   of the IE driver.
+ * Updatde the events in HttpCommandExecutor to allow the user to capture
+   the commands sent to the remote end of a WebDriver session.
+ * Fixed the PrintOptions class to handle page ranges. Fixes issue #9755.
+
 v4.0.0b4
 ========
  * 4.0.0b3 was skipped for the .NET bindings and not released publicly.
@@ -2172,3 +2275,4 @@ v2.2.0
     through the IDE or through the command line will now produce signed
   assemblies.
   * Updating .NET bindings JSON.NET from 3.5 to 4.0.
+

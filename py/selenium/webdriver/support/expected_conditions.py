@@ -17,7 +17,7 @@
 
 import re
 
-from selenium.common.exceptions import NoSuchElementException
+from selenium.common.exceptions import NoSuchElementException, InvalidSelectorException
 from selenium.common.exceptions import NoSuchFrameException
 from selenium.common.exceptions import StaleElementReferenceException
 from selenium.common.exceptions import WebDriverException
@@ -123,6 +123,8 @@ def visibility_of_element_located(locator):
     def _predicate(driver):
         try:
             return _element_if_visible(driver.find_element(*locator))
+        except InvalidSelectorException as e:
+            raise e
         except StaleElementReferenceException:
             return False
 
@@ -188,6 +190,8 @@ def visibility_of_all_elements_located(locator):
                 if _element_if_visible(element, visibility=False):
                     return False
             return elements
+        except InvalidSelectorException as e:
+            raise e
         except StaleElementReferenceException:
             return False
 
@@ -204,6 +208,8 @@ def text_to_be_present_in_element(locator, text_):
         try:
             element_text = driver.find_element(*locator).text
             return text_ in element_text
+        except InvalidSelectorException as e:
+            raise e
         except StaleElementReferenceException:
             return False
 
@@ -212,7 +218,7 @@ def text_to_be_present_in_element(locator, text_):
 
 def text_to_be_present_in_element_value(locator, text_):
     """
-    An expectation for checking if the given text is present in the element's
+    An expectation for checking if the given text is present in the element's value.
     locator, text
     """
 
@@ -220,6 +226,28 @@ def text_to_be_present_in_element_value(locator, text_):
         try:
             element_text = driver.find_element(*locator).get_attribute("value")
             return text_ in element_text
+        except InvalidSelectorException as e:
+            raise e
+        except StaleElementReferenceException:
+            return False
+
+    return _predicate
+
+
+def text_to_be_present_in_element_attribute(locator, attribute_, text_):
+    """
+    An expectation for checking if the given text is present in the element's attribute.
+    locator, attribute, text
+    """
+
+    def _predicate(driver):
+        try:
+            if not element_attribute_to_include(locator, attribute_):
+                return False
+            element_text = driver.find_element(*locator).get_attribute(attribute_)
+            return text_ in element_text
+        except InvalidSelectorException as e:
+            raise e
         except StaleElementReferenceException:
             return False
 
@@ -239,6 +267,8 @@ def frame_to_be_available_and_switch_to_it(locator):
             else:
                 driver.switch_to.frame(locator)
             return True
+        except InvalidSelectorException as e:
+            raise e
         except NoSuchFrameException:
             return False
 
@@ -258,6 +288,8 @@ def invisibility_of_element_located(locator):
             if not isinstance(target, WebElement):
                 target = driver.find_element(*target)
             return _element_if_visible(target, False)
+        except InvalidSelectorException as e:
+            raise e
         except (NoSuchElementException, StaleElementReferenceException):
             # In the case of NoSuchElement, returns true because the element is
             # not present in DOM. The try block checks if the element is present
@@ -312,6 +344,8 @@ def staleness_of(element):
             # Calling any method forces a staleness check
             element.is_enabled()
             return False
+        except InvalidSelectorException as e:
+            raise e
         except StaleElementReferenceException:
             return True
 
@@ -362,6 +396,8 @@ def element_located_selection_state_to_be(locator, is_selected):
         try:
             element = driver.find_element(*locator)
             return element.is_selected() == is_selected
+        except InvalidSelectorException as e:
+            raise e
         except StaleElementReferenceException:
             return False
 
@@ -398,7 +434,7 @@ def alert_is_present():
 
 
 def element_attribute_to_include(locator, attribute_):
-    """ An expectation for checking if the given attribute is include in the
+    """ An expectation for checking if the given attribute is included in the
     specified element.
     locator, attribute
     """
@@ -407,6 +443,8 @@ def element_attribute_to_include(locator, attribute_):
         try:
             element_attribute = driver.find_element(*locator).get_attribute(attribute_)
             return element_attribute is not None
+        except InvalidSelectorException as e:
+            raise e
         except StaleElementReferenceException:
             return False
 

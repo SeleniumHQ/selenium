@@ -128,6 +128,8 @@ def testShouldAllowAUserToSetTheValueOfAPrompt(driver, pages):
     assert "cheese" == result
 
 
+@pytest.mark.xfail_firefox
+@pytest.mark.xfail_remote
 def testSettingTheValueOfAnAlertThrows(driver, pages):
     pages.load("alerts.html")
     driver.find_element(By.ID, "alert").click()

@@ -29,6 +29,7 @@ module Selenium
       class Driver < WebDriver::Driver
         EXTENSIONS = [DriverExtensions::HasAddons,
                       DriverExtensions::FullPageScreenshot,
+                      DriverExtensions::HasContext,
                       DriverExtensions::HasDevTools,
                       DriverExtensions::HasLogEvents,
                       DriverExtensions::HasNetworkInterception,
@@ -42,6 +43,10 @@ module Selenium
         private
 
         def devtools_url
+          if capabilities['moz:debuggerAddress'].nil?
+            raise(Error::WebDriverError, "DevTools is not supported by this version of Firefox; use v85 or higher")
+          end
+
           uri = URI("http://#{capabilities['moz:debuggerAddress']}")
           response = Net::HTTP.get(uri.hostname, '/json/version', uri.port)
 

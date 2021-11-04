@@ -121,7 +121,7 @@ class ChromiumOptions(ArgOptions):
         """
         return self._experimental_options
 
-    def add_experimental_option(self, name: str, value: Union[str, int, dict]):
+    def add_experimental_option(self, name: str, value: Union[str, int, dict, List[str]]):
         """
         Adds an experimental option which is passed to chromium.
 
@@ -150,17 +150,6 @@ class ChromiumOptions(ArgOptions):
             self._arguments.extend(args)
         else:
             self._arguments = list(set(self._arguments) - args)
-
-    @property
-    def page_load_strategy(self) -> str:
-        return self._caps["pageLoadStrategy"]
-
-    @page_load_strategy.setter
-    def page_load_strategy(self, strategy: str):
-        if strategy in ["normal", "eager", "none"]:
-            self.set_capability("pageLoadStrategy", strategy)
-        else:
-            raise ValueError("Strategy can only be one of the following: normal, eager, none")
 
     def to_capabilities(self) -> dict:
         """

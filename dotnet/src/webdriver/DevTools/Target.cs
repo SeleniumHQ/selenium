@@ -16,7 +16,7 @@
 // limitations under the License.
 // </copyright>
 
-using System.Collections.Generic;
+using System;
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 
@@ -27,6 +27,11 @@ namespace OpenQA.Selenium.DevTools
     /// </summary>
     public abstract class Target
     {
+        /// <summary>
+        /// Occurs when a target is detached.
+        /// </summary>
+        public event EventHandler<TargetDetachedEventArgs> TargetDetached;
+
         /// <summary>
         /// Asynchronously gets the targets available for this session.
         /// </summary>
@@ -62,5 +67,17 @@ namespace OpenQA.Selenium.DevTools
         /// </summary>
         /// <returns>A task that represents the asynchronous operation.</returns>
         public abstract Task SetAutoAttach();
+
+        /// <summary>
+        /// Raises the TargetDetached event.
+        /// </summary>
+        /// <param name="e">An <see cref="TargetDetachedEventArgs"/> that contains the event data.</param>
+        protected virtual void OnTargetDetached(TargetDetachedEventArgs e)
+        {
+            if (this.TargetDetached != null)
+            {
+                this.TargetDetached(this, e);
+            }
+        }
     }
 }
