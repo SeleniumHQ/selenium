@@ -289,6 +289,7 @@ class IECommandExecutor : public CWindowImpl<IECommandExecutor>, public IElement
   bool use_strict_file_interactability_;
   bool is_edge_chromium_;
   std::string edge_executable_path_;
+  std::wstring edge_temp_dir_;
 
   Command current_command_;
   std::string serialized_response_;

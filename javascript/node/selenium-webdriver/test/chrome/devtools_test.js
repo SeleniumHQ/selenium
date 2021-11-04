@@ -74,20 +74,19 @@ test.suite(
 
     it('sends Page.enable command using devtools', async function () {
       const cdpConnection = await driver.createCDPConnection('page')
-      cdpConnection.execute('Page.enable', 1, {}, function (_res, err) {
+      cdpConnection.execute('Page.enable', {}, function (_res, err) {
         assert(!err)
       })
     })
 
     it('sends Network and Page command using devtools', async function () {
       const cdpConnection = await driver.createCDPConnection('page')
-      cdpConnection.execute('Network.enable', 1, {}, function (_res, err) {
+      cdpConnection.execute('Network.enable', {}, function (_res, err) {
         assert(!err)
       })
 
       cdpConnection.execute(
         'Page.navigate',
-        1,
         { url: 'chrome://newtab/' },
         function (_res, err) {
           assert(!err)

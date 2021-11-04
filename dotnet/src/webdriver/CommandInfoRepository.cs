@@ -51,6 +51,34 @@ namespace OpenQA.Selenium
         protected abstract Type RepositoryCommandInfoType { get; }
 
         /// <summary>
+        /// Gets a value indicating whether a command with a given name has been defined.
+        /// </summary>
+        /// <param name="commandName">The name of the command to check.</param>
+        /// <returns><see langword="true"/> if the command name is defined</returns>
+        public bool IsCommandNameDefined(string commandName)
+        {
+            return this.commandDictionary.ContainsKey(commandName);
+        }
+
+        /// <summary>
+        /// Finds a command name for a given <see cref="CommandInfo"/>.
+        /// </summary>
+        /// <param name="commandInfo">The <see cref="CommandInfo"/> object for which to find the command name.</param>
+        /// <returns>The name of the command defined by the command info, or <see langword=""="null"/> if the command is not defined.</returns>
+        public string FindCommandName(CommandInfo commandInfo)
+        {
+            foreach(KeyValuePair<string, CommandInfo> pair in this.commandDictionary)
+            {
+                if (pair.Value == commandInfo)
+                {
+                    return pair.Key;
+                }
+            }
+
+            return null;
+        }
+
+        /// <summary>
         /// Gets the <see cref="HttpCommandInfo"/> for a <see cref="DriverCommand"/>.
         /// </summary>
         /// <param name="commandName">The <see cref="DriverCommand"/> for which to get the information.</param>

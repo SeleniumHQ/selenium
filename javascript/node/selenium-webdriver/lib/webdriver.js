@@ -1203,20 +1203,48 @@ class WebDriver {
     return new Promise((resolve, reject) => {
       try {
         this._wsConnection = new WebSocket(this._wsUrl)
+        this._cdpConnection = new cdp.CdpConnection(this._wsConnection)
       } catch (err) {
         reject(err)
         return
       }
+  
+      this._wsConnection.on('open', async () => {
+        await this.getCdpTargets()
+      })
 
-      this._wsConnection.on('open', () => {
-        this._cdpConnection = new cdp.CdpConnection(this._wsConnection)
-        resolve(this._cdpConnection)
+      this._wsConnection.on('message', async (message) => {
+        const params = JSON.parse(message)
+        if (params.result) {
+          if (params.result.targetInfos) {
+            const targets = params.result.targetInfos
+            const page = targets.find(info => info.type === 'page')
+            if (page) {
+              this.targetID = page.targetId
+              this._cdpConnection.execute(
+                'Target.attachToTarget',  
+                { targetId: this.targetID, flatten: true }, 
+                null)
+            } else {
+              reject("Unable to find Page target.")
+            }
+          }
+          if (params.result.sessionId) {
+            this.sessionId = params.result.sessionId
+            this._cdpConnection.sessionId = this.sessionId
+            resolve(this._cdpConnection)
+          }
+        }
       })
 
       this._wsConnection.on('error', (error) => {
         reject(error)
       })
     })
+  }
+
+  async getCdpTargets() {
+    this._cdpConnection.execute('Target.getTargets')
   }
 
   /**
@@ -1273,7 +1301,6 @@ class WebDriver {
         const requestParams = params['params']
         connection.execute(
           'Fetch.continueWithAuth',
-          this.getRandomNumber(1, 10),
           {
             requestId: requestParams['requestId'],
             authChallengeResponse: {
@@ -1287,7 +1314,6 @@ class WebDriver {
         const requestPausedParams = params['params']
         connection.execute(
           'Fetch.continueRequest',
-          this.getRandomNumber(1, 10),
           {
             requestId: requestPausedParams['requestId'],
           }
@@ -1297,7 +1323,6 @@ class WebDriver {
 
     await connection.execute(
       'Fetch.enable',
-      1,
       {
         handleAuthRequests: true,
       },
@@ -1305,7 +1330,6 @@ class WebDriver {
     )
     await connection.execute(
       'Network.setCacheDisabled',
-      this.getRandomNumber(1, 10),
       {
         cacheDisabled: true,
       },
@@ -1329,7 +1353,6 @@ class WebDriver {
         if (requestPausedParams.request.url == httpResponse.urlToIntercept) {
           connection.execute(
             'Fetch.continueRequest',
-            this.getRandomNumber(1, 10),
             {
               requestId: requestPausedParams['requestId'],
               url: httpResponse.urlToIntercept,
@@ -1342,7 +1365,6 @@ class WebDriver {
         } else {
           connection.execute(
             'Fetch.continueRequest',
-            this.getRandomNumber(1, 10),
             {
               requestId: requestPausedParams['requestId'],
             }
@@ -1353,13 +1375,11 @@ class WebDriver {
 
     await connection.execute(
       'Fetch.enable',
-      1,
       {},
       null
     )
     await connection.execute(
       'Network.setCacheDisabled',
-      this.getRandomNumber(1, 10),
       {
         cacheDisabled: true,
       },
@@ -1377,8 +1397,8 @@ class WebDriver {
 
     this._wsConnection.on('message', (message) => {
       const params = JSON.parse(message)
-
       if (params.method === 'Runtime.consoleAPICalled') {
+
         const consoleEventParams = params['params']
         let event = {
           type: consoleEventParams['type'],
@@ -1391,7 +1411,6 @@ class WebDriver {
     })
     await connection.execute(
       'Runtime.enable',
-      this.getRandomNumber(1, 10),
       {},
       null
     )
@@ -1406,7 +1425,6 @@ class WebDriver {
   async onLogException(connection, callback) {
     await connection.execute(
       'Runtime.enable',
-      this.getRandomNumber(1, 10),
       {},
       null
     )
@@ -1434,20 +1452,17 @@ class WebDriver {
   async logMutationEvents(connection, callback) {
     await connection.execute(
       'Runtime.enable',
-      this.getRandomNumber(1, 10),
       {},
       null
     )
     await connection.execute(
       'Page.enable',
-      this.getRandomNumber(1, 10),
       {},
       null
     )
 
     await connection.execute(
       'Runtime.addBinding',
-      this.getRandomNumber(1, 10),
       {
         name: '__webdriver_attribute',
       },
@@ -1477,7 +1492,6 @@ class WebDriver {
 
     await connection.execute(
       'Page.addScriptToEvaluateOnNewDocument',
-      this.getRandomNumber(1, 10),
       {
         source: mutationListener,
       },
@@ -1505,10 +1519,6 @@ class WebDriver {
         callback(event)
       }
     })
-  }
-
-  getRandomNumber(min, max) {
-    return Math.floor(Math.random() * (max - min + 1) + min)
   }
 }
 

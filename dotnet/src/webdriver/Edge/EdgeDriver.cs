@@ -17,6 +17,8 @@
 // </copyright>
 
 using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using OpenQA.Selenium.Chromium;
 using OpenQA.Selenium.Remote;
 
@@ -27,6 +29,16 @@ namespace OpenQA.Selenium.Edge
     /// </summary>
     public class EdgeDriver : ChromiumDriver
     {
+        private static Dictionary<string, CommandInfo> edgeCustomCommands = new Dictionary<string, CommandInfo>()
+        {
+            { ExecuteCdp, new HttpCommandInfo(HttpCommandInfo.PostCommand, "/session/{sessionId}/ms/cdp/execute") },
+            { GetCastSinksCommand, new HttpCommandInfo(HttpCommandInfo.GetCommand, "/session/{sessionId}/ms/cast/get_sinks") },
+            { SelectCastSinkCommand, new HttpCommandInfo(HttpCommandInfo.PostCommand, "/session/{sessionId}/ms/cast/set_sink_to_use") },
+            { StartCastTabMirroringCommand, new HttpCommandInfo(HttpCommandInfo.PostCommand, "/session/{sessionId}/ms/cast/start_tab_mirroring") },
+            { GetCastIssueMessageCommand, new HttpCommandInfo(HttpCommandInfo.GetCommand, "/session/{sessionId}/ms/cast/get_issue_message") },
+            { StopCastingCommand, new HttpCommandInfo(HttpCommandInfo.PostCommand, "/session/{sessionId}/ms/cast/stop_casting") }
+        };
+
         /// <summary>
         /// Initializes a new instance of the <see cref="EdgeDriver"/> class.
         /// </summary>
@@ -106,12 +118,39 @@ namespace OpenQA.Selenium.Edge
         public EdgeDriver(EdgeDriverService service, EdgeOptions options, TimeSpan commandTimeout)
             : base(service, options, commandTimeout)
         {
-            this.AddCustomChromeCommand(ExecuteCdp, HttpCommandInfo.PostCommand, "/session/{sessionId}/ms/cdp/execute");
-            this.AddCustomChromeCommand(GetCastSinksCommand, HttpCommandInfo.GetCommand, "/session/{sessionId}/ms/cast/get_sinks");
-            this.AddCustomChromeCommand(SelectCastSinkCommand, HttpCommandInfo.PostCommand, "/session/{sessionId}/ms/cast/set_sink_to_use");
-            this.AddCustomChromeCommand(StartCastTabMirroringCommand, HttpCommandInfo.PostCommand, "/session/{sessionId}/ms/cast/start_tab_mirroring");
-            this.AddCustomChromeCommand(GetCastIssueMessageCommand, HttpCommandInfo.GetCommand, "/session/{sessionId}/ms/cast/get_issue_message");
-            this.AddCustomChromeCommand(StopCastingCommand, HttpCommandInfo.PostCommand, "/session/{sessionId}/ms/cast/stop_casting");
+            this.AddCustomEdgeCommands();
+        }
+
+        /// <summary>
+        /// Gets a read-only dictionary of the custom WebDriver commands defined for ChromeDriver.
+        /// The keys of the dictionary are the names assigned to the command; the values are the
+        /// <see cref="CommandInfo"/> objects describing the command behavior.
+        /// </summary>
+        public static IReadOnlyDictionary<string, CommandInfo> CustomCommandDefinitions
+        {
+            get
+            {
+                Dictionary<string, CommandInfo> customCommands = new Dictionary<string, CommandInfo>();
+                foreach (KeyValuePair<string, CommandInfo> entry in ChromiumCustomCommands)
+                {
+                    customCommands[entry.Key] = entry.Value;
+                }
+
+                foreach (KeyValuePair<string, CommandInfo> entry in edgeCustomCommands)
+                {
+                    customCommands[entry.Key] = entry.Value;
+                }
+
+                return new ReadOnlyDictionary<string, CommandInfo>(customCommands);
+            }
+        }
+
+        private void AddCustomEdgeCommands()
+        {
+            foreach (KeyValuePair<string, CommandInfo> entry in CustomCommandDefinitions)
+            {
+                this.RegisterInternalDriverCommand(entry.Key, entry.Value);
+            }
         }
     }
 }

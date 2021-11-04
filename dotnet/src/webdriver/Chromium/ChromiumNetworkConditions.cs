@@ -18,24 +18,25 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using Newtonsoft.Json;
 
 namespace OpenQA.Selenium.Chromium
 {
     /// <summary>
     /// Provides manipulation of getting and setting network conditions from Chromium.
     /// </summary>
+    [JsonObject(MemberSerialization.OptIn)]
     public class ChromiumNetworkConditions
     {
         private bool offline;
         private TimeSpan latency = TimeSpan.Zero;
-        private long downloadThroughput = -1;
-        private long uploadThroughput = -1;
+        private long downloadThroughput = 0;
+        private long uploadThroughput = 0;
 
         /// <summary>
         /// Gets or sets a value indicating whether the network is offline. Defaults to <see langword="false"/>.
         /// </summary>
+        [JsonProperty("offline")]
         public bool IsOffline
         {
             get { return this.offline; }
@@ -54,22 +55,49 @@ namespace OpenQA.Selenium.Chromium
         /// <summary>
         /// Gets or sets the throughput of the network connection in bytes/second for downloading.
         /// </summary>
+        [JsonProperty("download_throughput")]
         public long DownloadThroughput
         {
             get { return this.downloadThroughput; }
-            set { this.downloadThroughput = value; }
+            set
+            {
+                if (value < 0)
+                {
+                    throw new WebDriverException("Downlod throughput cannot be negative.");
+                }
+
+                this.downloadThroughput = value;
+            }
         }
 
         /// <summary>
         /// Gets or sets the throughput of the network connection in bytes/second for uploading.
         /// </summary>
+        [JsonProperty("upload_throughput")]
         public long UploadThroughput
         {
             get { return this.uploadThroughput; }
-            set { this.uploadThroughput = value; }
+            set
+            {
+                if (value < 0)
+                {
+                    throw new WebDriverException("Upload throughput cannot be negative.");
+                }
+
+                this.uploadThroughput = value;
+            }
         }
 
-        static internal ChromiumNetworkConditions FromDictionary(Dictionary<string, object> dictionary)
+        [JsonProperty("latency", NullValueHandling = NullValueHandling.Ignore)]
+        internal long? SerializableLatency
+        {
+            get
+            {
+                return Convert.ToInt64(this.latency.TotalMilliseconds);
+            }
+        }
+
+        public static ChromiumNetworkConditions FromDictionary(Dictionary<string, object> dictionary)
         {
             ChromiumNetworkConditions conditions = new ChromiumNetworkConditions();
             if (dictionary.ContainsKey("offline"))
@@ -95,26 +123,19 @@ namespace OpenQA.Selenium.Chromium
             return conditions;
         }
 
-        internal Dictionary<string, object> ToDictionary()
+        /// <summary>
+        /// Sets the upload and download throughput properties to the same value.
+        /// </summary>
+        /// <param name="throughput">The throughput of the network connection in bytes/second for both upload and download.</param>
+        public void SetBidirectionalThroughput(long throughput)
         {
-            Dictionary<string, object> dictionary = new Dictionary<string, object>();
-            dictionary["offline"] = this.offline;
-            if (this.latency != TimeSpan.Zero)
+            if (throughput < 0)
             {
-                dictionary["latency"] = Convert.ToInt64(this.latency.TotalMilliseconds);
+                throw new ArgumentException("Throughput values cannot be negative.", nameof(throughput));
             }
 
-            if (this.downloadThroughput >= 0)
-            {
-                dictionary["download_throughput"] = this.downloadThroughput;
-            }
-
-            if (this.uploadThroughput >= 0)
-            {
-                dictionary["upload_throughput"] = this.uploadThroughput;
-            }
-
-            return dictionary;
+            this.uploadThroughput = throughput;
+            this.downloadThroughput = throughput;
         }
     }
 }

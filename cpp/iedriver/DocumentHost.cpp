@@ -466,7 +466,7 @@ bool DocumentHost::SetFocusToBrowser() {
         CComPtr<IUIAutomationWindowPattern> window_pattern;
         hr = parent_window->GetCurrentPatternAs(UIA_WindowPatternId,
           IID_PPV_ARGS(&window_pattern));
-        if (SUCCEEDED(hr)) {
+        if (SUCCEEDED(hr) && window_pattern != nullptr) {
           BOOL is_topmost;
           hr = window_pattern->get_CurrentIsTopmost(&is_topmost);
           WindowVisualState visual_state;

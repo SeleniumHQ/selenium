@@ -31,14 +31,14 @@ import java.util.Objects;
  * though it is expected that all subclasses rely on the basic finding mechanisms provided
  * through static methods of this class:
  *
- * <code>
+ * <pre><code>
  * public WebElement findElement(WebDriver driver) {
  *     WebElement element = driver.findElement(By.id(getSelector()));
  *     if (element == null)
  *       element = driver.findElement(By.name(getSelector());
  *     return element;
  * }
- * </code>
+ * </code></pre>
  */
 public abstract class By {
   /**
