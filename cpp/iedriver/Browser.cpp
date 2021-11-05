@@ -426,6 +426,16 @@ void Browser::DetachEvents() {
 
 void Browser::Close() {
   LOG(TRACE) << "Entering Browser::Close";
+  if (this->is_edge_chromium()) {
+    // For Edge in IE Mode, cache the top-level hosting Chromium window
+    // handle so they can be properly closed on quit.
+    HWND top_level_window_handle = this->GetTopLevelWindowHandle();
+    ::SendMessage(this->executor_handle(),
+                  WD_ADD_CHROMIUM_WINDOW_HANDLE,
+                  reinterpret_cast<WPARAM>(top_level_window_handle),
+                  NULL);
+  }
+
   this->is_explicit_close_requested_ = true;
   this->set_is_closing(true);
   // Closing the browser, so having focus on a frame doesn't
@@ -433,6 +443,7 @@ void Browser::Close() {
   this->SetFocusedFrameByElement(NULL);
 
   HRESULT hr = S_OK;
+  hr = this->browser_->Stop();
   hr = this->browser_->Quit();
 
   if (FAILED(hr)) {
