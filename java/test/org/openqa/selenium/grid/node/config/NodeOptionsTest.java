@@ -17,7 +17,16 @@
 
 package org.openqa.selenium.grid.node.config;
 
+import static java.util.Collections.emptyMap;
+import static java.util.Collections.emptySet;
+import static java.util.Collections.singletonMap;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.fail;
+import static org.junit.Assume.assumeFalse;
+import static org.junit.Assume.assumeTrue;
+
 import com.google.common.collect.ImmutableMap;
+
 import org.assertj.core.api.Condition;
 import org.junit.Test;
 import org.mockito.Mockito;
@@ -38,6 +47,7 @@ import org.openqa.selenium.grid.node.ActiveSession;
 import org.openqa.selenium.grid.node.SessionFactory;
 import org.openqa.selenium.internal.Either;
 import org.openqa.selenium.json.Json;
+import org.openqa.selenium.net.NetworkUtils;
 
 import java.io.StringReader;
 import java.net.URI;
@@ -47,14 +57,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-
-import static java.util.Collections.emptyMap;
-import static java.util.Collections.emptySet;
-import static java.util.Collections.singletonMap;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.fail;
-import static org.junit.Assume.assumeFalse;
-import static org.junit.Assume.assumeTrue;
 
 @SuppressWarnings("DuplicatedCode")
 public class NodeOptionsTest {
@@ -470,6 +472,20 @@ public class NodeOptionsTest {
     NodeOptions nodeOptions = new NodeOptions(config);
     assertThat(nodeOptions.getPublicGridUri())
       .isEqualTo(Optional.of(URI.create("http://cheese.com:4444")));
+  }
+
+  @Test
+  public void settingTheHubWithDefaultValueSetsTheGridUrlToTheNonLoopbackAddress() {
+    String[] rawConfig = new String[]{
+      "[node]",
+      "hub = \"http://0.0.0.0:4444\"",
+      };
+    Config config = new TomlConfig(new StringReader(String.join("\n", rawConfig)));
+    String nonLoopbackAddress = new NetworkUtils().getNonLoopbackAddressOfThisMachine();
+    String nonLoopbackAddressUrl = String.format("http://%s:4444", nonLoopbackAddress);
+    NodeOptions nodeOptions = new NodeOptions(config);
+    assertThat(nodeOptions.getPublicGridUri())
+      .isEqualTo(Optional.of(URI.create(nonLoopbackAddressUrl)));
   }
 
   private Condition<? super List<? extends Capabilities>> supporting(String name) {

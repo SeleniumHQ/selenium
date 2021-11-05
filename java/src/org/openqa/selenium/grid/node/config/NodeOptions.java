@@ -29,6 +29,7 @@ import org.openqa.selenium.PersistentCapabilities;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebDriverInfo;
 import org.openqa.selenium.grid.config.Config;
 import org.openqa.selenium.grid.config.ConfigException;
@@ -37,6 +38,7 @@ import org.openqa.selenium.grid.node.SessionFactory;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.json.JsonOutput;
+import org.openqa.selenium.net.NetworkUtils;
 import org.openqa.selenium.net.Urls;
 import org.openqa.selenium.remote.service.DriverService;
 
@@ -120,7 +122,22 @@ public class NodeOptions {
           baseUri.getQuery(),
           baseUri.getFragment());
       }
-
+      String nonLoopbackAddress = "0.0.0.0";
+      if (nonLoopbackAddress.equals(baseUri.getHost())) {
+        try {
+          nonLoopbackAddress = new NetworkUtils().getNonLoopbackAddressOfThisMachine();
+        } catch (WebDriverException ignore) {
+          // ignore this path as we still use "0.0.0.0"
+        }
+        baseUri = new URI(
+          baseUri.getScheme(),
+          baseUri.getUserInfo(),
+          nonLoopbackAddress,
+          baseUri.getPort(),
+          baseUri.getPath(),
+          baseUri.getQuery(),
+          baseUri.getFragment());
+      }
       return Optional.of(baseUri);
     } catch (URISyntaxException e) {
       throw new ConfigException("Unable to construct public URL: " + base);
