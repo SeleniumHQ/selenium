@@ -54,10 +54,6 @@ def release_version
   '4.0'
 end
 
-def google_storage_version
-  '4.0.0'
-end
-
 def version
   "#{release_version}.0"
 end
