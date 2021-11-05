@@ -102,7 +102,7 @@ public class NodeOptions {
       return gridUri;
     }
 
-    Optional<String> hubAddress = config.get(NODE_SECTION, "hub-address");
+    Optional<String> hubAddress = config.get(NODE_SECTION, "hub");
     if (!hubAddress.isPresent()) {
       return Optional.empty();
     }

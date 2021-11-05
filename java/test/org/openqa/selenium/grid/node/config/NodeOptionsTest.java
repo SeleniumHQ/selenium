@@ -463,12 +463,13 @@ public class NodeOptionsTest {
   public void settingTheHubFlagSetsTheGridUrlAndEventBusFlags() {
     String[] rawConfig = new String[]{
       "[node]",
-      "hub-address = \"cheese.com\"",
-    };
+      "hub = \"cheese.com\"",
+      };
     Config config = new TomlConfig(new StringReader(String.join("\n", rawConfig)));
 
     NodeOptions nodeOptions = new NodeOptions(config);
-    assertThat(nodeOptions.getPublicGridUri()).isEqualTo(Optional.of(URI.create("http://cheese.com:4444")));
+    assertThat(nodeOptions.getPublicGridUri())
+      .isEqualTo(Optional.of(URI.create("http://cheese.com:4444")));
   }
 
   private Condition<? super List<? extends Capabilities>> supporting(String name) {

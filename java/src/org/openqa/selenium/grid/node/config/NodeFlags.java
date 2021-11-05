@@ -113,14 +113,15 @@ public class NodeFlags implements HasRoles {
   @Parameter(
     names = {"--hub"},
     description = "The address of the Hub in a Hub-and-Node configuration. This can " +
-      "be a plain hostname or IP address (`hostname`), in which case the Hub will be " +
-      "assumed to be `http://hostname:4444`, the `--grid-url` will be the same, " +
-      "`--publish-events` will be `tcp://hostname:4442` and `--subscribe-events` will " +
-      "be `tcp://hostname:4443`. If `hostname` contains a port number, that will be used " +
-      "for `--grid-url` but the URIs for the event bus will remain the same. Any of these " +
-      "default values may be overridden but setting the correct flags. If the hostname has " +
-      "a protocol (such as `https`) that will be used too.")
-  @ConfigValue(section = NODE_SECTION, name = "hub-address", example = "hub.grid.example.com")
+                  "be a plain hostname or IP address (`hostname`), in which case the Hub will be " +
+                  "assumed to be `http://hostname:4444`, the `--grid-url` will be the same, " +
+                  "`--publish-events` will be `tcp://hostname:4442` and `--subscribe-events` " +
+                  "will be `tcp://hostname:4443`. If `hostname` contains a port number, that " +
+                  "will be used for `--grid-url` but the URIs for the event bus will remain " +
+                  "the same. Any of these default values may be overridden but setting the " +
+                  "correct flags. If the hostname has  a protocol (such as `https`) that will " +
+                  "be used too.")
+  @ConfigValue(section = NODE_SECTION, name = "hub", example = "hub.grid.example.com")
   public String hub;
 
   @Parameter(
