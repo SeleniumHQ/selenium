@@ -464,7 +464,7 @@ class SeleniumServer extends DriverService {
       throw Error('Path to the Selenium jar not specified')
     }
 
-    var options = opt_options || {}
+    const options = opt_options || {}
 
     if (options.port < 0) {
       throw Error('Port must be >= 0: ' + options.port)

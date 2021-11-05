@@ -83,7 +83,7 @@ const Platform = {
  *
  * @record
  */
-function Timeouts() { }
+function Timeouts() {}
 
 /**
  * Defines when, in milliseconds, to interrupt a script that is being

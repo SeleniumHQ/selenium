@@ -17,13 +17,13 @@
 
 'use strict'
 
-const assert = require('assert'),
-  http = require('http'),
-  url = require('url')
+const assert = require('assert')
+const http = require('http')
+const url = require('url')
 
-const net = require('../../net'),
-  portprober = require('../../net/portprober'),
-  promise = require('../..').promise
+const net = require('../../net')
+const portprober = require('../../net/portprober')
+const promise = require('../..').promise
 
 /**
  * Encapsulates a simple HTTP server for testing. The {@code onrequest}
