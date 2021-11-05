@@ -19,10 +19,16 @@
 
 const assert = require('assert')
 const fs = require('fs')
+const path = require('path')
 
 const edge = require('../../edge')
 const symbols = require('../../lib/symbols')
 const test = require('../../lib/test')
+
+const WEBEXTENSION_CRX = path.join(
+  __dirname,
+  '../../lib/test/data/chrome/webextension.crx'
+)
 
 describe('edge.Options', function () {
   describe('addArguments', function () {
@@ -65,7 +71,8 @@ describe('edge.Options', function () {
       assert.strictEqual(options.options_.extensions, undefined)
 
       options.addExtensions('a', 'b')
-      assert.deepStrictEqual(options.options_.extensions, ['a', 'b'])
+      assert.deepStrictEqual(options.options_.extensions.extensions,
+                             ['a', 'b'])
     })
 
     it('flattens input arrays', function () {
@@ -73,7 +80,7 @@ describe('edge.Options', function () {
       assert.strictEqual(options.options_.extensions, undefined)
 
       options.addExtensions(['a', 'b'], 'c', [1, 2], 3)
-      assert.deepStrictEqual(options.options_.extensions, [
+      assert.deepStrictEqual(options.options_.extensions.extensions, [
         'a',
         'b',
         'c',
@@ -86,13 +93,14 @@ describe('edge.Options', function () {
 
   describe('serialize', function () {
     it('base64 encodes extensions', async function () {
-      let expected = fs.readFileSync(__filename, 'base64')
+      let expected = fs.readFileSync(WEBEXTENSION_CRX, 'base64')
       let wire = new edge.Options()
-        .addExtensions(__filename)
+        .addExtensions(WEBEXTENSION_CRX)
         [symbols.serialize]()
 
-      assert.strictEqual(wire['ms:edgeOptions'].extensions.length, 1)
-      assert.strictEqual(await wire['ms:edgeOptions'].extensions[0], expected)
+      let extensions = wire['ms:edgeOptions'].extensions[symbols.serialize]()
+      assert.strictEqual(extensions.length, 1)
+      assert.strictEqual(await extensions[0], expected)
     })
   })
 
@@ -126,8 +134,12 @@ test.suite(
   function (env) {
     var driver
 
+    beforeEach(function() {
+      driver = null;
+    })
+
     afterEach(function () {
-      return driver.quit()
+      return driver && driver.quit()
     })
 
     describe('Edge options', function () {
@@ -160,6 +172,36 @@ test.suite(
           upload_throughput: 0,
         })
       })
+
+      it('can install an extension from path', async function () {
+        let options = new edge.Options().addExtensions(WEBEXTENSION_CRX)
+
+        driver = await env.builder().setEdgeOptions(options).build()
+
+        await driver.get(test.Pages.echoPage)
+        await verifyWebExtensionWasInstalled()
+      })
+
+      it('can install an extension from Buffer', async function () {
+        let options = new edge.Options()
+          .addExtensions(fs.readFileSync(WEBEXTENSION_CRX))
+
+        driver = await env.builder().setEdgeOptions(options).build()
+
+        await driver.get(test.Pages.echoPage)
+        await verifyWebExtensionWasInstalled()
+      })
+
+      async function verifyWebExtensionWasInstalled() {
+        let footer = await driver.findElement({
+          id: 'webextensions-selenium-example',
+        })
+        let text = await footer.getText()
+        assert.strictEqual(
+          text,
+          'Content injected by webextensions-selenium-example'
+        )
+      }
     })
   },
   { browsers: ['MicrosoftEdge'] }
