@@ -94,7 +94,7 @@ public class OpenTelemetryTracer implements org.openqa.selenium.remote.tracing.T
 
   @Override
   public TraceContext getCurrentContext() {
-    return new OpenTelemetryContext(tracer, context!= null ? context : Context.current());
+    return new OpenTelemetryContext(tracer, context != null ? context : Context.current());
   }
 
   @Override
