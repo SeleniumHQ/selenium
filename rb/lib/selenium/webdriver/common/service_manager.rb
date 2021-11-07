@@ -62,7 +62,7 @@ module Selenium
         return unless @shutdown_supported
 
         stop_server
-        @process.poll_for_exit STOP_TIMEOUT
+        @process.poll_for_exit STOP_TIMEOUT if process_running?
       rescue ChildProcess::TimeoutError
         nil # noop
       ensure
