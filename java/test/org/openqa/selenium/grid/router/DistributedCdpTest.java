@@ -17,7 +17,11 @@
 
 package org.openqa.selenium.grid.router;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assumptions.assumeThat;
+
 import com.google.common.collect.ImmutableMap;
+
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.openqa.selenium.By;
@@ -45,9 +49,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assumptions.assumeThat;
-
 public class DistributedCdpTest {
 
   @BeforeClass
@@ -58,7 +59,7 @@ public class DistributedCdpTest {
   }
 
   @Test
-  public void ensureBasicFunctionality() throws InterruptedException {
+  public void ensureBasicFunctionality() {
     Browser browser = Browser.detect();
 
     Deployment deployment = DeploymentTypes.DISTRIBUTED.start(
