@@ -17,6 +17,9 @@
 
 package org.openqa.selenium.grid.router;
 
+import static org.openqa.selenium.json.Json.MAP_TYPE;
+import static org.openqa.selenium.remote.http.HttpMethod.GET;
+
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.grid.commands.EventBusCommand;
 import org.openqa.selenium.grid.commands.Hub;
@@ -51,9 +54,6 @@ import java.time.Duration;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-
-import static org.openqa.selenium.json.Json.MAP_TYPE;
-import static org.openqa.selenium.remote.http.HttpMethod.GET;
 
 public enum DeploymentTypes {
 
@@ -232,8 +232,11 @@ public enum DeploymentTypes {
           sharedConfig)))
         .start();
 
+      MapConfig nodeConfig = new MapConfig(Map.of("node", Map.of("hub", router.getUrl())));
+
       Server<?> nodeServer = new NodeServer()
         .asServer(new MemoizedConfig(new CompoundConfig(
+          nodeConfig,
           setRandomPort(),
           sharedConfig,
           sessionMapConfig,
@@ -253,8 +256,7 @@ public enum DeploymentTypes {
         newSessionQueueServer::stop,
         eventServer::stop);
     }
-  }
-  ;
+  };
 
   private static Config setRandomPort() {
     return new MapConfig(Map.of("server", Map.of("port", PortProber.findFreePort())));
