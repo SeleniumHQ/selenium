@@ -17,7 +17,21 @@
 
 package org.openqa.selenium.firefox;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.fail;
+import static org.junit.Assume.assumeNotNull;
+import static org.mockito.Mockito.atLeastOnce;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.verify;
+import static org.openqa.selenium.WaitingConditions.elementValueToEqual;
+import static org.openqa.selenium.remote.CapabilityType.ACCEPT_SSL_CERTS;
+import static org.openqa.selenium.support.ui.ExpectedConditions.titleIs;
+import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
+
 import com.google.common.collect.ImmutableMap;
+
 import org.junit.After;
 import org.junit.Test;
 import org.mockito.ArgumentMatchers;
@@ -59,22 +73,22 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.fail;
-import static org.junit.Assume.assumeNotNull;
-import static org.mockito.Mockito.atLeastOnce;
-import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.verify;
-import static org.openqa.selenium.WaitingConditions.elementValueToEqual;
-import static org.openqa.selenium.remote.CapabilityType.ACCEPT_SSL_CERTS;
-import static org.openqa.selenium.support.ui.ExpectedConditions.titleIs;
-import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
-
 public class FirefoxDriverTest extends JUnit4TestBase {
 
+  private static char[] CHARS =
+      "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890!\"§$%&/()+*~#',.-_:;\\"
+          .toCharArray();
+  private static Random RANDOM = new Random();
   private WebDriver localDriver;
+
+  private static String randomString() {
+    int n = 20 + RANDOM.nextInt(80);
+    StringBuilder sb = new StringBuilder(n);
+    for (int i = 0; i < n; ++i) {
+      sb.append(CHARS[RANDOM.nextInt(CHARS.length)]);
+    }
+    return sb.toString();
+  }
 
   @After
   public void quitDriver() {
@@ -299,7 +313,6 @@ public class FirefoxDriverTest extends JUnit4TestBase {
     assertThat(size.height).isLessThan(650);
   }
 
-
   @Test
   public void canBlockInvalidSslCertificates() {
     FirefoxProfile profile = new FirefoxProfile();
@@ -335,8 +348,8 @@ public class FirefoxDriverTest extends JUnit4TestBase {
   public void shouldAllowTwoInstancesOfFirefoxAtTheSameTimeInDifferentThreads()
       throws InterruptedException {
     class FirefoxRunner implements Runnable {
-      private volatile WebDriver myDriver;
       private final String url;
+      private volatile WebDriver myDriver;
 
       public FirefoxRunner(String url) {
         this.url = url;
@@ -378,20 +391,6 @@ public class FirefoxDriverTest extends JUnit4TestBase {
       runnable2.quit();
     }
 
-  }
-
-  private static char[] CHARS =
-      "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890!\"§$%&/()+*~#',.-_:;\\"
-          .toCharArray();
-  private static Random RANDOM = new Random();
-
-  private static String randomString() {
-    int n = 20 + RANDOM.nextInt(80);
-    StringBuilder sb = new StringBuilder(n);
-    for (int i = 0; i < n; ++i) {
-      sb.append(CHARS[RANDOM.nextInt(CHARS.length)]);
-    }
-    return sb.toString();
   }
 
   @Test
@@ -519,6 +518,8 @@ public class FirefoxDriverTest extends JUnit4TestBase {
     assertThat(tempFile.length()).isGreaterThan(0);
   }
 
+  @NeedsFreshDriver
+  @NoDriverAfterTest
   @Test
   public void canSetContext() {
     HasContext context = (HasContext) driver;
@@ -528,6 +529,8 @@ public class FirefoxDriverTest extends JUnit4TestBase {
     assertThat(context.getContext()).isEqualTo(FirefoxCommandContext.CHROME);
   }
 
-  private static class CustomFirefoxProfile extends FirefoxProfile {}
+  private static class CustomFirefoxProfile extends FirefoxProfile {
+
+  }
 
 }
