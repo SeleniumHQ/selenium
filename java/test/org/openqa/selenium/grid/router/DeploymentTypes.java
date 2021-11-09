@@ -119,15 +119,18 @@ public enum DeploymentTypes {
           new TomlConfig(new StringReader(String.join("\n", rawConfig)))));
 
       Config hubConfig = new MemoizedConfig(
-          new CompoundConfig(
-              setRandomPort(),
-              new MapConfig(Map.of("events", Map.of("bind", true))),
-              baseConfig));
+        new CompoundConfig(
+          setRandomPort(),
+          new MapConfig(Map.of("events", Map.of("bind", true))),
+          baseConfig));
 
       Server<?> hub = new Hub().asServer(hubConfig).start();
 
+      MapConfig additionalNodeConfig = new MapConfig(Map.of("node", Map.of("hub", hub.getUrl())));
+
       Config nodeConfig = new MemoizedConfig(
         new CompoundConfig(
+          additionalNodeConfig,
           setRandomPort(),
           baseConfig));
       Server<?> node = new NodeServer().asServer(nodeConfig).start();
