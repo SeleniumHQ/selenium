@@ -23,8 +23,7 @@ import org.junit.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.devtools.events.ConsoleEvent;
 import org.openqa.selenium.environment.webserver.Page;
-import org.openqa.selenium.testing.NotYetImplemented;
-import org.openqa.selenium.testing.drivers.Browser;
+import org.openqa.selenium.testing.Ignore;
 
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
@@ -34,7 +33,7 @@ import java.util.concurrent.TimeoutException;
 public class ConsoleEventsTest extends DevToolsTestBase {
 
   @Test
-  @NotYetImplemented(value = Browser.FIREFOX, reason = "`Log` domain not yet supported")
+  @Ignore(gitHubActions = true)
   public void canWatchConsoleEvents() throws InterruptedException, ExecutionException, TimeoutException {
     String page = appServer.create(
       new Page()

@@ -17,6 +17,10 @@
 
 package org.openqa.selenium.chrome;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
+import static org.assertj.core.api.Assumptions.assumeThat;
+
 import org.junit.Test;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
@@ -26,16 +30,13 @@ import org.openqa.selenium.chromium.HasCasting;
 import org.openqa.selenium.chromium.HasCdp;
 import org.openqa.selenium.chromium.HasNetworkConditions;
 import org.openqa.selenium.chromium.HasPermissions;
+import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.drivers.WebDriverBuilder;
 
 import java.time.Duration;
 import java.util.List;
 import java.util.Map;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.fail;
-import static org.assertj.core.api.Assumptions.assumeThat;
 
 public class ChromeDriverFunctionalTest extends JUnit4TestBase {
 
@@ -92,6 +93,7 @@ public class ChromeDriverFunctionalTest extends JUnit4TestBase {
   }
 
   @Test
+  @Ignore(gitHubActions = true)
   public void canCast() throws InterruptedException {
     HasCasting caster = (HasCasting) driver;
 
