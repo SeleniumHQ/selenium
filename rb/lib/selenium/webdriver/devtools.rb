@@ -45,7 +45,7 @@ module Selenium
       def close
         @callback_threads.list.each(&:exit)
         @socket_thread.exit
-        socket.close
+        @socket.close
       end
 
       def callbacks
@@ -60,7 +60,7 @@ module Selenium
         WebDriver.logger.debug "DevTools -> #{data}"
 
         out_frame = WebSocket::Frame::Outgoing::Client.new(version: ws.version, data: data, type: 'text')
-        socket.write(out_frame.to_s)
+        @socket.write(out_frame.to_s)
 
         message = wait.until do
           @messages.find { |m| m['id'] == id }
@@ -92,8 +92,8 @@ module Selenium
       private
 
       def process_handshake
-        socket.print(ws.to_s)
-        ws << socket.readpartial(1024)
+        create_socket.print(ws.to_s)
+        ws << @socket.readpartial(1024)
       end
 
       def attach_socket_listener
@@ -101,8 +101,8 @@ module Selenium
           Thread.current.abort_on_exception = true
           Thread.current.report_on_exception = false
 
-          until socket.eof?
-            incoming_frame << socket.readpartial(1024)
+          until @socket.eof?
+            incoming_frame << @socket.readpartial(1024)
 
             while (frame = incoming_frame.next)
               message = process_frame(frame)
@@ -160,8 +160,17 @@ module Selenium
         @wait ||= Wait.new(timeout: RESPONSE_WAIT_TIMEOUT, interval: RESPONSE_WAIT_INTERVAL)
       end
 
-      def socket
-        @socket ||= TCPSocket.new(ws.host, ws.port)
+      def create_socket
+        uri = URI.parse(@url)
+        if(uri.scheme == 'wss') 
+          tcp_socket= TCPSocket.new(ws.host, ws.port)
+          ssl_context = OpenSSL::SSL::SSLContext.new()
+          @socket ||= OpenSSL::SSL::SSLSocket.new(tcp_socket, ssl_context)
+          @socket.sync_close = true
+          @socket.connect
+        else 
+          @socket = TCPSocket.new(ws.host, ws.port)
+        end
       end
 
       def ws
