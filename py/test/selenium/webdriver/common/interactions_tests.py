@@ -21,6 +21,7 @@ import pytest
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.action_chains import ActionChains
+from selenium.webdriver.common.actions import interaction
 from selenium.webdriver.support.ui import WebDriverWait
 
 
@@ -233,7 +234,7 @@ def test_can_reset_interactions(driver, pages):
     actions = ActionChains(driver)
     actions.click()
     actions.key_down('A')
-    assert all((len(device.actions) > 0 for device in actions.w3c_actions.devices))
+    assert all((len(device.actions) > 0 for device in actions.w3c_actions.devices if device.type != interaction.WHEEL))
 
     actions.reset_actions()
 
@@ -257,3 +258,38 @@ def test_can_pause(driver, pages):
     assert pause_time < end - start
     assert "Clicked" == toClick.get_attribute('value')
     assert "Clicked" == toDoubleClick.get_attribute('value')
+
+
+def test_can_scroll_mouse_wheel(driver, pages):
+    pages.load("scrollingPage.html")
+    driver.execute_script("document.scrollingElement.scrollTop = 0")
+
+    scrollable = driver.find_element(By.CSS_SELECTOR, "#scrollable")
+    ActionChains(driver).scroll(0, 0, 5, 10, origin=scrollable).perform()
+    #wheel_chain.scroll(0, 0, 5, 10, origin=scrollable).perform()
+    events = _get_events(driver)
+    assert len(events) == 1
+    assert events[0]["type"] == "wheel"
+    assert events[0]["deltaX"] >= 5
+    assert events[0]["deltaY"] >= 10
+    assert events[0]["deltaZ"] == 0
+    assert events[0]["target"] == "scrollContent"
+
+
+def _get_events(driver):
+    """Return list of key events recorded in the test_keys_page fixture."""
+    events = driver.execute_script("return allEvents.events;") or []
+    # `key` values in `allEvents` may be escaped (see `escapeSurrogateHalf` in
+    # test_keys_wdspec.html), so this converts them back into unicode literals.
+    for e in events:
+        # example: turn "U+d83d" (6 chars) into u"\ud83d" (1 char)
+        if "key" in e and e["key"].startswith(u"U+"):
+            key = e["key"]
+            hex_suffix = key[key.index("+") + 1:]
+            e["key"] = unichr(int(hex_suffix, 16))
+
+        # WebKit sets code as 'Unidentified' for unidentified key codes, but
+        # tests expect ''.
+        if "code" in e and e["code"] == "Unidentified":
+            e["code"] = ""
+    return events

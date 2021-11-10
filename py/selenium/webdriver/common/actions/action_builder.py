@@ -21,17 +21,22 @@ from .key_actions import KeyActions
 from .key_input import KeyInput
 from .pointer_actions import PointerActions
 from .pointer_input import PointerInput
+from .wheel_input import WheelInput
+from .wheel_actions import WheelActions
 
 
 class ActionBuilder(object):
-    def __init__(self, driver, mouse=None, keyboard=None, duration=250):
+    def __init__(self, driver, mouse=None, wheel=None, keyboard=None, duration=250):
         if not mouse:
             mouse = PointerInput(interaction.POINTER_MOUSE, "mouse")
         if not keyboard:
             keyboard = KeyInput(interaction.KEY)
-        self.devices = [mouse, keyboard]
+        if not wheel:
+            wheel = WheelInput(interaction.WHEEL)
+        self.devices = [mouse, keyboard, wheel]
         self._key_action = KeyActions(keyboard)
         self._pointer_action = PointerActions(mouse, duration=duration)
+        self._wheel_action = WheelActions(wheel)
         self.driver = driver
 
     def get_device_with(self, name):
@@ -57,6 +62,10 @@ class ActionBuilder(object):
     def pointer_action(self):
         return self._pointer_action
 
+    @property
+    def wheel_action(self):
+        return self._wheel_action
+
     def add_key_input(self, name):
         new_input = KeyInput(name)
         self._add_input(new_input)
@@ -64,6 +73,11 @@ class ActionBuilder(object):
 
     def add_pointer_input(self, kind, name):
         new_input = PointerInput(kind, name)
+        self._add_input(new_input)
+        return new_input
+
+    def add_wheel_input(self, kind, name):
+        new_input = WheelInput(kind, name)
         self._add_input(new_input)
         return new_input
 

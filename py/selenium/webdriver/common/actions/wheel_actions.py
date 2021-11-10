@@ -14,38 +14,23 @@
 # KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
 # under the License.
+from . import interaction
+from .wheel_input import WheelInput
+from .interaction import Interaction
+from selenium.webdriver.remote.webelement import WebElement
 
 
-KEY = "key"
-POINTER = "pointer"
-NONE = "none"
-WHEEL = "wheel"
-SOURCE_TYPES = set([KEY, POINTER, NONE])
+class WheelActions(Interaction):
 
-POINTER_MOUSE = "mouse"
-POINTER_TOUCH = "touch"
-POINTER_PEN = "pen"
+    def __init__(self, source: WheelInput = None):
+        if not source:
+            source = WheelInput("wheel")
+        super(WheelActions, self).__init__(source)
 
-POINTER_KINDS = set([POINTER_MOUSE, POINTER_TOUCH, POINTER_PEN])
+    def pause(self, duration=0):
+        self.source.create_pause(duration)
+        return self
 
-
-class Interaction(object):
-
-    PAUSE = "pause"
-
-    def __init__(self, source):
-        self.source = source
-
-
-class Pause(Interaction):
-
-    def __init__(self, source, duration=0):
-        super(Interaction, self).__init__()
-        self.source = source
-        self.duration = duration
-
-    def encode(self):
-        return {
-            "type": self.PAUSE,
-            "duration": int(self.duration * 1000)
-        }
+    def scroll(self, x, y, delta_x, delta_y, duration, origin):
+        self.source.create_scroll(x, y, delta_x, delta_y, duration, origin)
+        return self
