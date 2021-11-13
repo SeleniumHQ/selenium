@@ -45,6 +45,13 @@
       "RemoteCapabilities": "internet explorer"
     },
 
+    "EdgeIEMode": {
+      "DriverTypeName": "OpenQA.Selenium.IE.EdgeInternetExplorerModeDriver",
+      "AssemblyName": "WebDriver.Common.Tests",
+      "BrowserValue": "IE",
+      "RemoteCapabilities": "internet explorer"
+    },
+
     "Edge": {
       "DriverTypeName": "OpenQA.Selenium.Edge.StableChannelEdgeDriver",
       "AssemblyName": "WebDriver.Common.Tests",

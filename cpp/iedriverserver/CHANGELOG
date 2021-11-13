@@ -9,6 +9,14 @@ available via the project downloads page. Changes in "revision" field indicate
 private releases checked into the prebuilts directory of the source tree, but
 not made generally available on the downloads page.
 
+v4.0.0.0
+========
+ * (on behalf of Gavin Xu) Updated atoms to allow IE driver to find elements.
+ * (on behalf of Gavin Xu) Fixed use of NewWindow3 API for use with Microsoft
+   Edge in IE Mode.
+ * Made further improvements for using the driver with Microsoft Edge in IE
+   Mode.
+
 v3.150.2.0
 ==========
  * Updates to JavaScript automation atoms.

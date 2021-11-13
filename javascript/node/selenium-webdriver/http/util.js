@@ -21,12 +21,12 @@
 
 'use strict'
 
-const Executor = require('./index').Executor,
-  HttpClient = require('./index').HttpClient,
-  HttpRequest = require('./index').Request,
-  Command = require('../lib/command').Command,
-  CommandName = require('../lib/command').Name,
-  error = require('../lib/error')
+const Executor = require('./index').Executor
+const HttpClient = require('./index').HttpClient
+const HttpRequest = require('./index').Request
+const Command = require('../lib/command').Command
+const CommandName = require('../lib/command').Name
+const error = require('../lib/error')
 
 /**
  * Queries a WebDriver server for its current status.
@@ -43,18 +43,6 @@ function getStatus(url) {
 
 class CancellationError {}
 
-// PUBLIC API
-
-/**
- * Queries a WebDriver server for its current status.
- * @param {string} url Base URL of the server to query.
- * @return {!Promise<!Object>} A promise that resolves with
- *     a hash of the server status.
- */
-exports.getStatus = getStatus
-
-exports.CancellationError = CancellationError
-
 /**
  * Waits for a WebDriver server to be healthy and accepting requests.
  * @param {string} url Base URL of the server to query.
@@ -65,7 +53,7 @@ exports.CancellationError = CancellationError
  * @return {!Promise} A promise that will resolve when the server is ready, or
  *     if the wait is cancelled.
  */
-exports.waitForServer = function (url, timeout, opt_cancelToken) {
+function waitForServer(url, timeout, opt_cancelToken) {
   return new Promise((onResolve, onReject) => {
     let start = Date.now()
 
@@ -120,7 +108,7 @@ exports.waitForServer = function (url, timeout, opt_cancelToken) {
  * @return {!Promise} A promise that will resolve when a 2xx is received from
  *     the given URL, or if the wait is cancelled.
  */
-exports.waitForUrl = function (url, timeout, opt_cancelToken) {
+function waitForUrl(url, timeout, opt_cancelToken) {
   return new Promise((onResolve, onReject) => {
     let client = new HttpClient(url)
     let request = new HttpRequest('GET', '')
@@ -170,3 +158,9 @@ exports.waitForUrl = function (url, timeout, opt_cancelToken) {
     }
   })
 }
+
+// PUBLIC API
+module.exports.getStatus = getStatus
+module.exports.CancellationError = CancellationError
+module.exports.waitForServer = waitForServer
+module.exports.waitForUrl = waitForUrl

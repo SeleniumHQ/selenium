@@ -17,8 +17,6 @@
 
 package org.openqa.selenium.remote.http.netty;
 
-import static org.openqa.selenium.internal.ShutdownHooks.HookExecutionStrategy.AT_END;
-
 import com.google.auto.service.AutoService;
 
 import org.asynchttpclient.AsyncHttpClient;
@@ -29,7 +27,6 @@ import org.asynchttpclient.config.AsyncHttpClientConfigDefaults;
 import org.openqa.selenium.Credentials;
 import org.openqa.selenium.UsernameAndPassword;
 import org.openqa.selenium.internal.Require;
-import org.openqa.selenium.internal.ShutdownHooks;
 import org.openqa.selenium.remote.http.ClientConfig;
 import org.openqa.selenium.remote.http.Filter;
 import org.openqa.selenium.remote.http.HttpClient;
@@ -43,17 +40,13 @@ import io.netty.util.HashedWheelTimer;
 import io.netty.util.Timer;
 import io.netty.util.concurrent.DefaultThreadFactory;
 
-import java.io.IOException;
-import java.io.UncheckedIOException;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.BiFunction;
 
 public class NettyClient implements HttpClient {
 
   private static final Timer TIMER;
-  private static final AtomicBoolean addedHook = new AtomicBoolean();
   private static final AsyncHttpClient client = createHttpClient(ClientConfig.defaultConfig());
 
   static {
@@ -73,10 +66,6 @@ public class NettyClient implements HttpClient {
     this.config = Require.nonNull("HTTP client config", config);
     this.handler = new NettyHttpHandler(config, client).with(config.filter());
     this.toWebSocket = NettyWebSocket.create(config, client);
-    if (!addedHook.get()) {
-      ShutdownHooks.add(new Thread(this::shutdownClient), AT_END);
-      addedHook.set(true);
-    }
   }
 
   /**
@@ -137,15 +126,7 @@ public class NettyClient implements HttpClient {
 
   @Override
   public void close() {
-    // no-op -- done by the shutdown hook
-  }
-
-  private void shutdownClient() {
-    try {
-      client.close();
-    } catch (IOException e) {
-      throw new UncheckedIOException(e);
-    }
+    // no-op -- closing the client when the JVM shuts down
   }
 
   @AutoService(HttpClient.Factory.class)

@@ -81,10 +81,10 @@ exports.rmDir = function (dirPath) {
  */
 exports.copy = function (src, dst) {
   return new Promise(function (fulfill, reject) {
-    var rs = fs.createReadStream(src)
+    const rs = fs.createReadStream(src)
     rs.on('error', reject)
 
-    var ws = fs.createWriteStream(dst)
+    const ws = fs.createWriteStream(dst)
     ws.on('error', reject)
     ws.on('close', () => fulfill(dst))
 
@@ -103,19 +103,18 @@ exports.copy = function (src, dst) {
  *     directory's path once all files have been copied.
  */
 exports.copyDir = function (src, dst, opt_exclude) {
-  var predicate = opt_exclude
+  let predicate = opt_exclude
   if (opt_exclude && typeof opt_exclude !== 'function') {
     predicate = function (p) {
       return !opt_exclude.test(p)
     }
   }
 
-  // TODO(jleyba): Make this function completely async.
   if (!fs.existsSync(dst)) {
     fs.mkdirSync(dst)
   }
 
-  var files = fs.readdirSync(src)
+  let files = fs.readdirSync(src)
   files = files.map(function (file) {
     return path.join(src, file)
   })
@@ -153,8 +152,7 @@ exports.exists = function (aPath) {
     if (type !== 'string') {
       reject(TypeError(`expected string path, but got ${type}`))
     } else {
-      // eslint-disable-next-line node/no-deprecated-api
-      fs.exists(aPath, fulfill)
+      fulfill(fs.existsSync(aPath))
     }
   })
 }
@@ -177,15 +175,14 @@ exports.stat = function stat(aPath) {
 exports.unlink = function (aPath) {
   return new Promise(function (fulfill, reject) {
     // eslint-disable-next-line node/no-deprecated-api
-    fs.exists(aPath, function (exists) {
-      if (exists) {
-        fs.unlink(aPath, function (err) {
-          ;(err && reject(err)) || fulfill()
-        })
-      } else {
-        fulfill()
-      }
-    })
+    const exists = fs.existsSync(aPath)
+    if (exists) {
+      fs.unlink(aPath, function (err) {
+        ;(err && reject(err)) || fulfill()
+      })
+    } else {
+      fulfill()
+    }
   })
 }
 

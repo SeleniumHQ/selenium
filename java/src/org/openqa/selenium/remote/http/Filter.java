@@ -27,16 +27,16 @@ import java.util.function.Function;
  * {@link HttpRequest}s or outgoing {@link HttpResponse}s using the well-known "Filter" pattern.
  * This is very similar to the Servlet spec's {@link javax.servlet.Filter}, but takes advantage of
  * lambdas:
- * <pre>{@code
- * Filter filter = next -> {
- *   return req -> {
+ * <pre><code>
+ * Filter filter = next -&gt; {
+ *   return req -&gt; {
  *     req.addHeader("cheese", "brie");
  *     HttpResponse res = next.apply(req);
  *     res.addHeader("vegetable", "peas");
  *     return res;
  *   };
  * }
- * }</pre>
+ * </code></pre>
  *
  *<p>Because each filter returns an {@link HttpHandler}, it's easy to do processing before, or after
  * each request, as well as short-circuit things if necessary.

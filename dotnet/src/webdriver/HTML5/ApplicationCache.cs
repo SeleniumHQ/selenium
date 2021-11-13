@@ -35,6 +35,9 @@ namespace OpenQA.Selenium.Html5
         public ApplicationCache(WebDriver driver)
         {
             this.driver = driver;
+            driver.RegisterDriverCommand(DriverCommand.GetAppCache, new HttpCommandInfo(HttpCommandInfo.GetCommand, "/session/{sessionId}/application_cache"), true);
+            driver.RegisterDriverCommand(DriverCommand.GetAppCacheStatus, new HttpCommandInfo(HttpCommandInfo.GetCommand, "/session/{sessionId}/application_cache/status"), true);
+            driver.RegisterDriverCommand(DriverCommand.ClearAppCache, new HttpCommandInfo(HttpCommandInfo.DeleteCommand, "/session/{sessionId}/application_cache/clear"), true);
         }
 
         /// <summary>

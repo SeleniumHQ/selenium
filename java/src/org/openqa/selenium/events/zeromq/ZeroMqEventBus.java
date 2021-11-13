@@ -17,6 +17,8 @@
 
 package org.openqa.selenium.events.zeromq;
 
+import static org.openqa.selenium.events.zeromq.UnboundZmqEventBus.REJECTED_EVENT;
+
 import org.openqa.selenium.events.EventBus;
 import org.openqa.selenium.events.EventListener;
 import org.openqa.selenium.events.EventName;
@@ -32,8 +34,6 @@ import org.zeromq.ZContext;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.function.Consumer;
-
-import static org.openqa.selenium.events.zeromq.UnboundZmqEventBus.REJECTED_EVENT;
 
 /**
  * An {@link EventBus} backed by ZeroMQ.
@@ -56,7 +56,7 @@ public class ZeroMqEventBus {
   public static EventBus create(Config config) {
     String publish = config.get(EVENTS_SECTION, "publish")
       .orElseGet(() -> {
-        URI uri = config.get("node", "hub-address")
+        URI uri = config.get("node", "hub")
           .map(Urls::from)
           .orElseThrow(() -> new IllegalArgumentException(
             "Unable to find address to publish events to."));
@@ -65,7 +65,7 @@ public class ZeroMqEventBus {
 
     String subscribe = config.get(EVENTS_SECTION, "subscribe")
       .orElseGet(() -> {
-        URI uri = config.get("node", "hub-address")
+        URI uri = config.get("node", "hub")
           .map(Urls::from)
           .orElseThrow(() -> new IllegalArgumentException(
             "Unable to find address to subscribe for events from."));
@@ -109,14 +109,6 @@ public class ZeroMqEventBus {
       this.data = data;
     }
 
-    public EventName getName() {
-      return name;
-    }
-
-    public Object getData() {
-      return data;
-    }
-
     private static RejectedEvent fromJson(JsonInput input) {
       EventName name = null;
       Object data = null;
@@ -140,6 +132,14 @@ public class ZeroMqEventBus {
       input.endObject();
 
       return new RejectedEvent(name, data);
+    }
+
+    public EventName getName() {
+      return name;
+    }
+
+    public Object getData() {
+      return data;
     }
   }
 }

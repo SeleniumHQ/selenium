@@ -335,6 +335,45 @@ void BrowserFactory::LaunchBrowserUsingCreateProcess(PROCESS_INFORMATION* proc_i
   delete[] command_line;
 }
 
+bool BrowserFactory::DirectoryExists(std::wstring& dir_name) {
+  DWORD attribs = ::GetFileAttributes(dir_name.c_str());
+  if (attribs == INVALID_FILE_ATTRIBUTES) {
+    return false;
+  }
+  return (attribs & FILE_ATTRIBUTE_DIRECTORY);
+}
+
+bool BrowserFactory::CreateUniqueTempDir(std::wstring &temp_dir) {
+  // get temporary folder for the current user
+  wchar_t temp_path_array[128];
+  ::GetTempPath(128, temp_path_array);
+  std::wstring temp_path = temp_path_array;
+  if (!DirectoryExists(temp_path)) {
+    return false;
+  }
+
+  // create a IEDriver temporary folder inside the user level temporary folder
+  bool temp_dir_created = false;
+  for (int i = 0; i < 10; i++) {
+    std::wstring output =
+        temp_path + L"IEDriver-" + StringUtilities::CreateGuid();
+    if (DirectoryExists(output)) {
+      continue;
+    }
+
+    ::CreateDirectory(output.c_str(), NULL);
+    if (!DirectoryExists(output)) {
+      continue;
+    }
+
+    temp_dir = output;
+    temp_dir_created = true;
+    break;
+  }
+
+  return temp_dir_created;
+}
+
 void BrowserFactory::LaunchEdgeInIEMode(PROCESS_INFORMATION* proc_info,
                                         std::string* error_message) {
   LOG(TRACE) << "Entering BrowserFactory::LaunchEdgeInIEMode";
@@ -352,6 +391,19 @@ void BrowserFactory::LaunchEdgeInIEMode(PROCESS_INFORMATION* proc_info,
   // These flags force Edge into a mode where it will only run MSHTML
   executable_and_url.append(L" --ie-mode-force");
   executable_and_url.append(L" --internet-explorer-integration=iemode");
+
+  // create a temporary directory for IEDriver test
+  std::wstring temp_dir;
+  if (CreateUniqueTempDir(temp_dir)) {
+    LOG(TRACE) << L"Using temporary folder " << LOGWSTRING(temp_dir) << ".";
+    executable_and_url.append(L" --user-data-dir=" + temp_dir);
+    this->edge_user_data_dir_ = temp_dir;
+  }
+
+  executable_and_url.append(L" --no-first-run");
+  executable_and_url.append(L" --no-service-autorun");
+  executable_and_url.append(L" --disable-sync");
+  executable_and_url.append(L" --disable-features=msImplicitSignin");
 
   executable_and_url.append(L" ");
   executable_and_url.append(this->initial_browser_url_);
@@ -1015,7 +1067,8 @@ BOOL CALLBACK BrowserFactory::FindBrowserWindow(HWND hwnd, LPARAM arg) {
   }
 
   if (strcmp(IE_FRAME_WINDOW_CLASS, name) != 0 &&
-      strcmp(SHELL_DOCOBJECT_VIEW_WINDOW_CLASS, name) != 0) {
+      strcmp(SHELL_DOCOBJECT_VIEW_WINDOW_CLASS, name) != 0 &&
+      strcmp(ANDIE_FRAME_WINDOW_CLASS, name) != 0) {
     return TRUE;
   }
 
@@ -1247,7 +1300,7 @@ bool BrowserFactory::ProtectedModeSettingsAreValid() {
   bool settings_are_valid = true;
   LOG(DEBUG) << "Detected IE version: " << this->ie_major_version_
              << ", Windows version supports Protected Mode: "
-	           << IsWindowsVistaOrGreater() ? "true" : "false";
+             << IsWindowsVistaOrGreater() ? "true" : "false";
   // Only need to check Protected Mode settings on IE 7 or higher
   // and on Windows Vista or higher. Otherwise, Protected Mode
   // doesn't come into play, and are valid.
@@ -1391,6 +1444,57 @@ bool BrowserFactory::IsWindowsVistaOrGreater() {
 
 bool BrowserFactory::IsEdgeMode() const {
   return this->edge_ie_mode_;
+}
+
+// delete a folder recursively
+int BrowserFactory::DeleteDirectory(const std::wstring &dir_name) {
+  WIN32_FIND_DATA file_info;      
+
+  std::wstring file_pattern = dir_name + L"\\*.*";
+  HANDLE file_handle = ::FindFirstFile(file_pattern.c_str(), &file_info);
+  if (file_handle != INVALID_HANDLE_VALUE) {
+    do {
+      if (file_info.cFileName[0] == '.') {
+        continue;
+      }
+      std::wstring file_path = dir_name + L"\\" + file_info.cFileName;
+
+      if (file_info.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) {
+        int return_value = DeleteDirectory(file_path);
+        if (return_value) {
+          return return_value;
+        }
+      } else {
+        if (::SetFileAttributes(file_path.c_str(), FILE_ATTRIBUTE_NORMAL) == FALSE) {
+          return ::GetLastError();
+        }
+
+        if (::DeleteFile(file_path.c_str()) == FALSE) {
+          return ::GetLastError();
+        }
+      }
+    } while (::FindNextFile(file_handle, &file_info) == TRUE);
+
+    ::FindClose(file_handle);
+    DWORD dwError = ::GetLastError();
+    if (dwError != ERROR_NO_MORE_FILES) {
+      return dwError;
+    }
+
+    if (::SetFileAttributes(dir_name.c_str(), FILE_ATTRIBUTE_NORMAL) == FALSE) {
+      return ::GetLastError();
+    }
+
+    if (::RemoveDirectory(dir_name.c_str()) == FALSE) {
+      return ::GetLastError();
+    }
+  }
+
+  return 0;
+}
+
+std::wstring BrowserFactory::GetEdgeTempDir() {
+  return this->edge_user_data_dir_;
 }
 
 } // namespace webdriver

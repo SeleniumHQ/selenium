@@ -32,6 +32,18 @@ namespace OpenQA.Selenium.Html5
         public WebStorage(WebDriver driver)
         {
             this.driver = driver;
+            driver.RegisterDriverCommand(DriverCommand.GetLocalStorageKeys, new HttpCommandInfo(HttpCommandInfo.GetCommand, "/session/{sessionId}/local_storage"), true);
+            driver.RegisterDriverCommand(DriverCommand.SetLocalStorageItem, new HttpCommandInfo(HttpCommandInfo.PostCommand, "/session/{sessionId}/local_storage"), true);
+            driver.RegisterDriverCommand(DriverCommand.ClearLocalStorage, new HttpCommandInfo(HttpCommandInfo.DeleteCommand, "/session/{sessionId}/local_storage"), true);
+            driver.RegisterDriverCommand(DriverCommand.GetLocalStorageItem, new HttpCommandInfo(HttpCommandInfo.GetCommand, "/session/{sessionId}/local_storage/key/{key}"), true);
+            driver.RegisterDriverCommand(DriverCommand.RemoveLocalStorageItem, new HttpCommandInfo(HttpCommandInfo.DeleteCommand, "/session/{sessionId}/local_storage/key/{key}"), true);
+            driver.RegisterDriverCommand(DriverCommand.GetLocalStorageSize, new HttpCommandInfo(HttpCommandInfo.GetCommand, "/session/{sessionId}/local_storage/size"), true);
+            driver.RegisterDriverCommand(DriverCommand.GetSessionStorageKeys, new HttpCommandInfo(HttpCommandInfo.GetCommand, "/session/{sessionId}/session_storage"), true);
+            driver.RegisterDriverCommand(DriverCommand.SetSessionStorageItem, new HttpCommandInfo(HttpCommandInfo.PostCommand, "/session/{sessionId}/session_storage"), true);
+            driver.RegisterDriverCommand(DriverCommand.ClearSessionStorage, new HttpCommandInfo(HttpCommandInfo.DeleteCommand, "/session/{sessionId}/session_storage"), true);
+            driver.RegisterDriverCommand(DriverCommand.GetSessionStorageItem, new HttpCommandInfo(HttpCommandInfo.GetCommand, "/session/{sessionId}/session_storage/key/{key}"), true);
+            driver.RegisterDriverCommand(DriverCommand.RemoveSessionStorageItem, new HttpCommandInfo(HttpCommandInfo.DeleteCommand, "/session/{sessionId}/session_storage/key/{key}"), true);
+            driver.RegisterDriverCommand(DriverCommand.GetSessionStorageSize, new HttpCommandInfo(HttpCommandInfo.GetCommand, "/session/{sessionId}/session_storage/size"), true);
         }
 
         /// <summary>

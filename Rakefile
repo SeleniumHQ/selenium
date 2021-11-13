@@ -51,11 +51,7 @@ $DEBUG = true if ENV['debug'] == 'true'
 verbose($DEBUG)
 
 def release_version
-  '4.0'
-end
-
-def google_storage_version
-  '4.0.0'
+  '4.1'
 end
 
 def version
