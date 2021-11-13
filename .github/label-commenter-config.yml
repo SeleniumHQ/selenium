@@ -24,8 +24,9 @@ labels:
                 If the issue is valid but there is no time to troubleshoot it, consider adding the <code>help wanted</code> label.
               </p>
               <p>
-                If the issue requires changes or fixes from an external project (e.g., chromedriver, geckodriver, w3c),
-          add the applicable <code>G-*</code> label, and it will provide the correct link and auto-close the issue.
+                If the issue requires changes or fixes from an external project (e.g., ChromeDriver, GeckoDriver, W3C),
+               add the applicable <code>G-*</code> label, and it will provide the correct link and auto-close the 
+               issue.
               </p>
               <p>
                 After troubleshooting the issue, please add the <code>R-awaiting answer</code> label.
