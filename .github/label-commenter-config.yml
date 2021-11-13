@@ -39,7 +39,7 @@ labels:
           This issue has been determined to require a change to the
           [WebDriver W3C Specification](https://w3c.github.io/webdriver/) for Selenium to be able to support it.
 
-          Please [Create an Issue](https://github.com/w3c/webdriver/issues/new) with the webdriver project.
+          Please [create an issue](https://github.com/w3c/webdriver/issues/new) with the WebDriver project.
 
           Feel free to comment the issues that you raise back in this issue. Thank you.
         action: close
@@ -48,11 +48,11 @@ labels:
       issue:
         body: |
           Hi, @{{ issue.user.login }}.
-          This issue has been determined to require fixes in [chromedriver](https://chromedriver.chromium.org/home).
+          This issue has been determined to require fixes in [ChromeDriver](https://chromedriver.chromium.org/home).
 
           You can see if the feature is passing in the [Web Platform Tests](https://wpt.fyi/results/webdriver/tests).
 
-          If it is something new, please [Create an Issue](https://bugs.chromium.org/p/chromedriver/issues/list) with the chromedriver team.
+          If it is something new, please [create an issue](https://bugs.chromium.org/p/chromedriver/issues/list) with the ChromeDriver team.
           Feel free to comment the issues that you raise back in this issue. Thank you.
 
         action: close
@@ -61,11 +61,11 @@ labels:
       issue:
         body: |
           Hi, @{{ issue.user.login }}.
-          This issue has been determined to require fixes in [geckodriver](https://firefox-source-docs.mozilla.org/testing/geckodriver/).
+          This issue has been determined to require fixes in [GeckoDriver](https://firefox-source-docs.mozilla.org/testing/geckodriver/).
 
           You can see if the feature is passing in the [Web Platform Tests](https://wpt.fyi/results/webdriver/tests).
 
-          If it is something new, please [Create an Issue](https://github.com/mozilla/geckodriver/issues/new) with the geckodriver team.
+          If it is something new, please [Create an Issue](https://github.com/mozilla/geckodriver/issues/new) with the GeckoDriver team.
 
           Feel free to comment the issues that you raise back in this issue. Thank you.
         action: close
