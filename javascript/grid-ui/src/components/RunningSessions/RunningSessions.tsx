@@ -79,7 +79,7 @@ function createSessionData (
   nodeUri: string,
   sessionDurationMillis: number,
   slot: any,
-  hostname: string
+  origin: string
 ): SessionData {
   const parsed = JSON.parse(capabilities) as Capabilities
   const browserName = parsed.browserName
@@ -88,8 +88,10 @@ function createSessionData (
   let vnc: string = parsed['se:vnc'] ?? ''
   if (vnc.length > 0) {
     try {
-      const url = new URL(vnc)
-      url.hostname = hostname
+      const url = new URL(origin)
+      const vncUrl = new URL(vnc)
+      url.pathname = vncUrl.pathname
+      url.protocol = 'https:' === url.protocol ? 'wss:' : 'ws:'
       vnc = url.href
     } catch (error) {
       console.log(error)
@@ -252,7 +254,7 @@ const useStyles = (theme: Theme): StyleRules => createStyles(
 
 interface RunningSessionsProps {
   sessions: SessionData[]
-  hostname: string
+  origin: string
   classes: any
 }
 
@@ -373,7 +375,7 @@ class RunningSessions extends React.Component<RunningSessionsProps, RunningSessi
   }
 
   render (): ReactNode {
-    const { sessions, hostname, classes } = this.props
+    const { sessions, origin, classes } = this.props
     const {
       dense,
       order,
@@ -394,7 +396,7 @@ class RunningSessions extends React.Component<RunningSessionsProps, RunningSessi
         session.nodeUri,
         session.sessionDurationMillis,
         session.slot,
-        hostname
+        origin
       )
     })
     const emptyRows = rowsPerPage - Math.min(rowsPerPage, rows.length - page * rowsPerPage)
