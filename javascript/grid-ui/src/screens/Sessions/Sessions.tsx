@@ -119,7 +119,7 @@ class Sessions extends React.Component<SessionsProps, SessionsState> {
       <Grid container spacing={3}>
         <RunningSessions
           sessions={data.sessionsInfo.sessions}
-          hostname={window.location.hostname}
+          origin={window.location.origin}
         />
         <QueuedSessions
           sessionQueueRequests={data.sessionsInfo.sessionQueueRequests}/>
