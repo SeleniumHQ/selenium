@@ -152,6 +152,10 @@ public interface DriverCommand {
   static CommandPayload SUBMIT_ELEMENT(String id) {
     return new CommandPayload(SUBMIT_ELEMENT, ImmutableMap.of("id", id));
   }
+  String UPLOAD_SE_FILE = "uploadSeFile";
+  static CommandPayload UPLOAD_SE_FILE(String file) {
+    return new CommandPayload(UPLOAD_SE_FILE, ImmutableMap.of("file", file));
+  }
   String UPLOAD_FILE = "uploadFile";
   static CommandPayload UPLOAD_FILE(String file) {
     return new CommandPayload(UPLOAD_FILE, ImmutableMap.of("file", file));

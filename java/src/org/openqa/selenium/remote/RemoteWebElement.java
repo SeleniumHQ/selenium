@@ -47,6 +47,11 @@ import static org.openqa.selenium.remote.DriverCommand.FIND_CHILD_ELEMENTS;
 
 public class RemoteWebElement implements WebElement, Locatable, TakesScreenshot, WrapsDriver  {
 
+  private static final String UPLOAD_MODE_PROP = "selenium.uploadFileMode";
+  private static final String DEFAULT_UPLOAD_MODE = "selenium-server";
+
+  private final String uploadFileMode = System.getProperty(UPLOAD_MODE_PROP, "selenium-server");
+
   private String foundBy;
   protected String id;
   protected RemoteWebDriver parent;
@@ -114,7 +119,13 @@ public class RemoteWebElement implements WebElement, Locatable, TakesScreenshot,
 
     try {
       String zip = Zip.zip(localFile);
-      Response response = execute(DriverCommand.UPLOAD_FILE(zip));
+      CommandPayload command;
+      if (DEFAULT_UPLOAD_MODE.equals(uploadFileMode)) {
+        command = DriverCommand.UPLOAD_SE_FILE(zip);
+      } else {
+        command = DriverCommand.UPLOAD_FILE(zip);
+      }
+      Response response = execute(command);
       return (String) response.getValue();
     } catch (IOException e) {
       throw new WebDriverException("Cannot upload " + localFile, e);
