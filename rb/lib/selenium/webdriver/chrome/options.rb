@@ -50,7 +50,7 @@ module Selenium
         #
         # @example
         #   options = Selenium::WebDriver::Chrome::Options.new(args: ['start-maximized', 'user-data-dir=/tmp/temp_profile'])
-        #   driver = Selenium::WebDriver.for(:chrome, options: options)
+        #   driver = Selenium::WebDriver.for(:chrome, capabilities: options)
         #
         # @param [Profile] :profile An instance of a Chrome::Profile Class
         # @param [Array] :encoded_extensions List of extensions that do not need to be Base64 encoded
