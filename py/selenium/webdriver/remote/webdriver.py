@@ -38,6 +38,7 @@ from .file_detector import FileDetector, LocalFileDetector
 from .mobile import Mobile
 from .remote_connection import RemoteConnection
 from .script_key import ScriptKey
+from .shadowroot import ShadowRoot
 from .switch_to import SwitchTo
 from .webelement import WebElement
 
@@ -188,6 +189,7 @@ class WebDriver(BaseWebDriver):
     """
 
     _web_element_cls = WebElement
+    _shadowroot_cls = ShadowRoot
 
     def __init__(self, command_executor='http://127.0.0.1:4444',
                  desired_capabilities=None, browser_profile=None, proxy=None,
@@ -373,6 +375,8 @@ class WebDriver(BaseWebDriver):
             return converted
         elif isinstance(value, self._web_element_cls):
             return {'element-6066-11e4-a52e-4f735466cecf': value.id}
+        elif isinstance(value, self._shadowroot_cls):
+            return {'shadow-6066-11e4-a52e-4f735466cecf': value.id}
         elif isinstance(value, list):
             return list(self._wrap_value(item) for item in value)
         else:
@@ -386,6 +390,8 @@ class WebDriver(BaseWebDriver):
         if isinstance(value, dict):
             if 'element-6066-11e4-a52e-4f735466cecf' in value:
                 return self.create_web_element(value['element-6066-11e4-a52e-4f735466cecf'])
+            elif 'shadow-6066-11e4-a52e-4f735466cecf' in value:
+                return self._shadowroot_cls(self, value['shadow-6066-11e4-a52e-4f735466cecf'])
             else:
                 for key, val in value.items():
                     value[key] = self._unwrap_value(val)

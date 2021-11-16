@@ -35,6 +35,7 @@ from selenium.common.exceptions import (ElementClickInterceptedException,
                                         NoSuchCookieException,
                                         NoSuchElementException,
                                         NoSuchFrameException,
+                                        NoSuchShadowRootException,
                                         NoSuchWindowException,
                                         NoAlertPresentException,
                                         ScreenshotException,
@@ -59,6 +60,7 @@ class ErrorCode(object):
     SUCCESS = 0
     NO_SUCH_ELEMENT = [7, 'no such element']
     NO_SUCH_FRAME = [8, 'no such frame']
+    NO_SUCH_SHADOW_ROOT = ["no such shadow root"]
     UNKNOWN_COMMAND = [9, 'unknown command']
     STALE_ELEMENT_REFERENCE = [10, 'stale element reference']
     ELEMENT_NOT_VISIBLE = [11, 'element not visible']
@@ -143,6 +145,8 @@ class ErrorHandler(object):
             exception_class = NoSuchElementException
         elif status in ErrorCode.NO_SUCH_FRAME:
             exception_class = NoSuchFrameException
+        elif status in ErrorCode.NO_SUCH_SHADOW_ROOT:
+            exception_class = NoSuchShadowRootException
         elif status in ErrorCode.NO_SUCH_WINDOW:
             exception_class = NoSuchWindowException
         elif status in ErrorCode.STALE_ELEMENT_REFERENCE:
