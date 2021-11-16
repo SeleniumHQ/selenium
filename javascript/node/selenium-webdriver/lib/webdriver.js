@@ -1472,7 +1472,7 @@ class WebDriver {
       if (params.method === 'Runtime.bindingCalled') {
         let payload = JSON.parse(params['params']['payload'])
         let elements = await this.findElements({
-          css: '*[data-__webdriver_id=' + payload['target'],
+          css: '*[data-__webdriver_id=' + by.escapeCss(payload['target']) + ']',
         })
 
         if (elements.length === 0) {

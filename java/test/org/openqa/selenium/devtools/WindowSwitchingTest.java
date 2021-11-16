@@ -1,18 +1,21 @@
 package org.openqa.selenium.devtools;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
+
 import org.junit.Test;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WindowType;
 import org.openqa.selenium.devtools.idealized.target.model.TargetInfo;
 import org.openqa.selenium.remote.Augmenter;
+import org.openqa.selenium.testing.Ignore;
 
 import java.util.List;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 public class WindowSwitchingTest extends DevToolsTestBase {
 
   @Test
+  @Ignore(FIREFOX)
   public void shouldBeAbleToSwitchWindowsAndCloseTheOriginal() {
     WebDriver driver = new Augmenter().augment(this.driver);
 

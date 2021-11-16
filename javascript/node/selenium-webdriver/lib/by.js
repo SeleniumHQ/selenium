@@ -429,4 +429,5 @@ module.exports = {
   withTagName: withTagName,
   locateWith: locateWith,
   checkedLocator: check,
+  escapeCss: escapeCss
 }

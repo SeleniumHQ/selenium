@@ -54,7 +54,6 @@ import org.openqa.selenium.grid.server.EventBusOptions;
 import org.openqa.selenium.grid.server.NetworkOptions;
 import org.openqa.selenium.grid.server.Server;
 import org.openqa.selenium.internal.Require;
-import org.openqa.selenium.internal.ShutdownHooks;
 import org.openqa.selenium.netty.server.NettyServer;
 import org.openqa.selenium.remote.http.Contents;
 import org.openqa.selenium.remote.http.HttpClient;
@@ -227,7 +226,7 @@ public class NodeServer extends TemplateGridServerCommand {
   protected void execute(Config config) {
     Require.nonNull("Config", config);
 
-    ShutdownHooks.add(shutdownHook);
+    Runtime.getRuntime().addShutdownHook(shutdownHook);
     Server<?> server = asServer(config).start();
 
     BuildInfo info = new BuildInfo();

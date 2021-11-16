@@ -17,7 +17,21 @@
 
 package org.openqa.selenium;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.fail;
+import static org.junit.Assume.assumeTrue;
+import static org.openqa.selenium.support.ui.ExpectedConditions.frameToBeAvailableAndSwitchToIt;
+import static org.openqa.selenium.support.ui.ExpectedConditions.titleIs;
+import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOfAllElementsLocatedBy;
+import static org.openqa.selenium.testing.drivers.Browser.CHROME;
+import static org.openqa.selenium.testing.drivers.Browser.EDGE;
+import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
+import static org.openqa.selenium.testing.drivers.Browser.IE;
+import static org.openqa.selenium.testing.drivers.Browser.LEGACY_FIREFOX_XPI;
+import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
+
 import com.google.common.collect.Sets;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
@@ -28,7 +42,6 @@ import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.NotYetImplemented;
 import org.openqa.selenium.testing.SwitchToTopAfterTest;
 
-import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.awt.image.Raster;
 import java.io.ByteArrayInputStream;
@@ -38,18 +51,7 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.TreeSet;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.fail;
-import static org.junit.Assume.assumeTrue;
-import static org.openqa.selenium.support.ui.ExpectedConditions.frameToBeAvailableAndSwitchToIt;
-import static org.openqa.selenium.support.ui.ExpectedConditions.titleIs;
-import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOfAllElementsLocatedBy;
-import static org.openqa.selenium.testing.drivers.Browser.CHROME;
-import static org.openqa.selenium.testing.drivers.Browser.EDGE;
-import static org.openqa.selenium.testing.drivers.Browser.LEGACY_FIREFOX_XPI;
-import static org.openqa.selenium.testing.drivers.Browser.IE;
-import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
-import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
+import javax.imageio.ImageIO;
 
 /**
  * Test screenshot feature.
@@ -120,6 +122,7 @@ public class TakesScreenshotTest extends JUnit4TestBase {
   }
 
   @Test
+  @Ignore(value = CHROME, gitHubActions = true)
   public void testShouldCaptureScreenshotOfCurrentViewport() {
     driver.get(appServer.whereIs("screen/screen.html"));
 
@@ -138,6 +141,7 @@ public class TakesScreenshotTest extends JUnit4TestBase {
   }
 
   @Ignore(LEGACY_FIREFOX_XPI)
+  @Ignore(value = CHROME, gitHubActions = true)
   @Test
   public void testShouldCaptureScreenshotOfAnElement() throws Exception {
     driver.get(appServer.whereIs("screen/screen.html"));
@@ -276,6 +280,7 @@ public class TakesScreenshotTest extends JUnit4TestBase {
   }
 
   @Test
+  @Ignore(value = CHROME, gitHubActions = true)
   public void testShouldCaptureScreenshotAtFramePage() {
     driver.get(appServer.whereIs("screen/screen_frames.html"));
     wait.until(frameToBeAvailableAndSwitchToIt(By.id("frame1")));
@@ -336,6 +341,7 @@ public class TakesScreenshotTest extends JUnit4TestBase {
   @SwitchToTopAfterTest
   @Test
   @Ignore(FIREFOX)
+  @Ignore(value = CHROME, gitHubActions = true)
   public void testShouldCaptureScreenshotAtFramePageAfterSwitching() {
     driver.get(appServer.whereIs("screen/screen_frames.html"));
 
