@@ -9,7 +9,6 @@ SE_VERSION = "4.0.0"
 
 BROWSER_VERSIONS = [
     "v85",
-    "v93",
     "v94",
     "v95",
     "v96",
