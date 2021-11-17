@@ -23,6 +23,7 @@ module Selenium
   module WebDriver
     describe ShadowRoot, only: {browser: :chrome} do
       before { driver.navigate.to url_for('webComponents.html') }
+
       let(:custom_element) { driver.find_element(css: 'custom-checkbox-element') }
 
       it 'gets shadow root from driver' do
