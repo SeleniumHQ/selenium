@@ -62,6 +62,7 @@ public class HostIdentifier {
           }
         }
       } catch (InterruptedException e) {
+        log.log(WARNING, "Failed to resolve host name", e);
         Thread.currentThread().interrupt();
         throw new RuntimeException(e);
       } catch (Throwable e) {
