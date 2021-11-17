@@ -78,13 +78,25 @@ function createSessionData (
   nodeId: string,
   nodeUri: string,
   sessionDurationMillis: number,
-  slot: any
+  slot: any,
+  origin: string
 ): SessionData {
   const parsed = JSON.parse(capabilities) as Capabilities
   const browserName = parsed.browserName
   const browserVersion = parsed.browserVersion ?? parsed.version
   const platformName = parsed.platformName ?? parsed.platform
-  const vnc: string = parsed['se:vnc'] ?? ''
+  let vnc: string = parsed['se:vnc'] ?? ''
+  if (vnc.length > 0) {
+    try {
+      const url = new URL(origin)
+      const vncUrl = new URL(vnc)
+      url.pathname = vncUrl.pathname
+      url.protocol = 'https:' === url.protocol ? 'wss:' : 'ws:'
+      vnc = url.href
+    } catch (error) {
+      console.log(error)
+    }
+  }
   const name: string = parsed['se:name'] ?? id
   return {
     id,
@@ -242,6 +254,7 @@ const useStyles = (theme: Theme): StyleRules => createStyles(
 
 interface RunningSessionsProps {
   sessions: SessionData[]
+  origin: string
   classes: any
 }
 
@@ -362,8 +375,16 @@ class RunningSessions extends React.Component<RunningSessionsProps, RunningSessi
   }
 
   render (): ReactNode {
-    const { sessions, classes } = this.props
-    const { dense, order, orderBy, page, rowOpen, rowLiveViewOpen, rowsPerPage } = this.state
+    const { sessions, origin, classes } = this.props
+    const {
+      dense,
+      order,
+      orderBy,
+      page,
+      rowOpen,
+      rowLiveViewOpen,
+      rowsPerPage
+    } = this.state
 
     const rows = sessions.map((session) => {
       return createSessionData(
@@ -374,7 +395,8 @@ class RunningSessions extends React.Component<RunningSessionsProps, RunningSessi
         session.nodeId,
         session.nodeUri,
         session.sessionDurationMillis,
-        session.slot
+        session.slot,
+        origin
       )
     })
     const emptyRows = rowsPerPage - Math.min(rowsPerPage, rows.length - page * rowsPerPage)

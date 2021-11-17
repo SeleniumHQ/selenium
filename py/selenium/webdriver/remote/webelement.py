@@ -28,6 +28,7 @@ from selenium.common.exceptions import WebDriverException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.utils import keys_to_typing
 from .command import Command
+from .shadowroot import ShadowRoot
 
 
 # TODO: When moving to supporting python 3.9 as the minimum version we can
@@ -539,6 +540,22 @@ class WebElement(BaseWebElement):
         self._execute(Command.SEND_KEYS_TO_ELEMENT,
                       {'text': "".join(keys_to_typing(value)),
                        'value': keys_to_typing(value)})
+
+    @property
+    def shadow_root(self) -> ShadowRoot:
+        """
+            Returns a shadow root of the element if there is one or an error. Only works from
+            Chromium 96 onwards. Previous versions of Chromium based browsers will throw an
+            assertion exception.
+
+            :Returns:
+              - ShadowRoot object or
+              - NoSuchShadowRoot - if no shadow root was attached to element
+        """
+        browser_main_version = int(self._parent.caps["browserVersion"].split(".")[0])
+        assert self._parent.caps["browserName"].lower() not in ["firefox", "safari"], "This only currently works in Chromium based browsers"
+        assert not browser_main_version <= 95, f"Please use Chromium based browsers with version 96 or later. Version used {self._parent.caps['browserVersion']}"
+        return self._execute(Command.GET_SHADOW_ROOT)['value']
 
     # RenderedWebElement Items
     def is_displayed(self) -> bool:

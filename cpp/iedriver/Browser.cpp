@@ -40,7 +40,7 @@ Browser::Browser(IWebBrowser2* browser, HWND hwnd, HWND session_handle, bool is_
   this->is_navigation_started_ = false;
   this->browser_ = browser;
   this->AttachEvents();
-  this->is_edge_chromium_ = is_edge_chromium;
+  this->set_is_edge_chromium(is_edge_chromium);
 }
 
 Browser::~Browser(void) {
@@ -116,9 +116,11 @@ void __stdcall Browser::NewWindow3(IDispatch** ppDisp,
   LOG(TRACE) << "Entering Browser::NewWindow3";
   ::PostMessage(this->executor_handle(), WD_BEFORE_NEW_WINDOW, NULL, NULL);
   std::vector<HWND>* ie_window_handles = nullptr;
+  WPARAM param_flag = 0;
 
-  if (this->is_edge_chromium_) {
-    HWND top_level_handle = this->GetTopLevelWindowHandle();
+  if (this->is_edge_chromium()) {
+    param_flag = 1000;
+    //HWND top_level_handle = this->GetTopLevelWindowHandle();
     // 1) find all Edge browser window handles
     std::vector<HWND>edge_window_handles;
     ::EnumWindows(&BrowserFactory::FindEdgeBrowserHandles,
@@ -126,13 +128,14 @@ void __stdcall Browser::NewWindow3(IDispatch** ppDisp,
 
     // 2) find all IE browser window handlers as child window when Edge runs in IEMode
     ie_window_handles = new std::vector<HWND>;
-    for (HWND& ewh : edge_window_handles) {
+    for (HWND& edge_window_handle : edge_window_handles) {
       std::vector<HWND> child_window_handles;
-      ::EnumChildWindows(ewh, &BrowserFactory::FindIEBrowserHandles,
-        reinterpret_cast<LPARAM>(&child_window_handles));
+      ::EnumChildWindows(edge_window_handle,
+                         &BrowserFactory::FindIEBrowserHandles,
+                         reinterpret_cast<LPARAM>(&child_window_handles));
 
-      for (HWND& cwh : child_window_handles) {
-        ie_window_handles->push_back(cwh);
+      for (HWND& child_window_handle : child_window_handles) {
+        ie_window_handles->push_back(child_window_handle);
       }
     }
   } else {
@@ -175,8 +178,10 @@ void __stdcall Browser::NewWindow3(IDispatch** ppDisp,
   }
 
   // 3) pass all IE window handles to WD_AFTER_NEW_WINDOW
-  ::PostMessage(this->executor_handle(), WD_AFTER_NEW_WINDOW, 1000,
-    reinterpret_cast<LPARAM>(ie_window_handles));
+  ::PostMessage(this->executor_handle(),
+                WD_AFTER_NEW_WINDOW,
+                param_flag,
+                reinterpret_cast<LPARAM>(ie_window_handles));
 }
 
 void __stdcall Browser::DocumentComplete(IDispatch* pDisp, VARIANT* URL) {
@@ -421,6 +426,16 @@ void Browser::DetachEvents() {
 
 void Browser::Close() {
   LOG(TRACE) << "Entering Browser::Close";
+  if (this->is_edge_chromium()) {
+    // For Edge in IE Mode, cache the top-level hosting Chromium window
+    // handle so they can be properly closed on quit.
+    HWND top_level_window_handle = this->GetTopLevelWindowHandle();
+    ::SendMessage(this->executor_handle(),
+                  WD_ADD_CHROMIUM_WINDOW_HANDLE,
+                  reinterpret_cast<WPARAM>(top_level_window_handle),
+                  NULL);
+  }
+
   this->is_explicit_close_requested_ = true;
   this->set_is_closing(true);
   // Closing the browser, so having focus on a frame doesn't
@@ -428,11 +443,8 @@ void Browser::Close() {
   this->SetFocusedFrameByElement(NULL);
 
   HRESULT hr = S_OK;
-  if (this->is_edge_chromium_) {
-    hr = PostMessage(GetTopLevelWindowHandle(), WM_CLOSE, 0, 0);
-  } else {
-    hr = this->browser_->Quit();
-  }
+  hr = this->browser_->Stop();
+  hr = this->browser_->Quit();
 
   if (FAILED(hr)) {
     LOGHR(WARN, hr) << "Call to IWebBrowser2::Quit failed";

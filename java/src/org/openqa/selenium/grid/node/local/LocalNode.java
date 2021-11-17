@@ -69,7 +69,6 @@ import org.openqa.selenium.grid.security.Secret;
 import org.openqa.selenium.internal.Debug;
 import org.openqa.selenium.internal.Either;
 import org.openqa.selenium.internal.Require;
-import org.openqa.selenium.internal.ShutdownHooks;
 import org.openqa.selenium.io.TemporaryFilesystem;
 import org.openqa.selenium.io.Zip;
 import org.openqa.selenium.json.Json;
@@ -189,7 +188,7 @@ public class LocalNode extends Node {
       }
     }));
 
-    ShutdownHooks.add(new Thread(this::stopAllSessions));
+    Runtime.getRuntime().addShutdownHook(new Thread(this::stopAllSessions));
     new JMXHelper().register(this);
   }
 

@@ -3,6 +3,7 @@ CDP_VERSIONS = [
     "v93",
     "v94",
     "v95",
+    "v96",
 ]
 
 CDP_DEPS = ["//java/src/org/openqa/selenium/devtools/%s" % v for v in CDP_VERSIONS]

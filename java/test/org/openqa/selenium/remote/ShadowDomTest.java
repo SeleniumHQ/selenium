@@ -23,6 +23,7 @@ import org.junit.experimental.categories.Category;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.NoSuchShadowRootException;
 import org.openqa.selenium.SearchContext;
@@ -174,5 +175,30 @@ public class ShadowDomTest {
 
     assertThatExceptionOfType(NoSuchElementException.class)
       .isThrownBy(() -> context.findElement(By.cssSelector("#cheese")));
+  }
+
+  @Test
+  public void shouldBeAbleToGetShadowRootFromExecuteScript() {
+    String shadowId = UUID.randomUUID().toString();
+
+    HttpRequest execute = new HttpRequest(POST, String.format("/session/%s/execute/sync", id));
+
+    cannedResponses.put(
+      execute,
+      new HttpResponse()
+        .setContent(Contents.asJson(
+          singletonMap("value", singletonMap("shadow-6066-11e4-a52e-4f735466cecf", shadowId)))));
+
+    HttpRequest shadow = new HttpRequest(GET, String.format("/session/%s/element/%s/shadow", id, elementId));
+    cannedResponses.put(
+      shadow,
+      new HttpResponse()
+        .setContent(Contents.asJson(
+          singletonMap("value", singletonMap("shadow-6066-11e4-a52e-4f735466cecf", shadowId))))
+    );
+
+    ShadowRoot shadowContext = (ShadowRoot) element.getShadowRoot();
+    ShadowRoot executeContext = (ShadowRoot)((JavascriptExecutor)driver).executeScript("return Arguments[0].shadowRoot");
+    assertThat(shadowContext.getId()).isEqualTo(executeContext.getId());
   }
 }

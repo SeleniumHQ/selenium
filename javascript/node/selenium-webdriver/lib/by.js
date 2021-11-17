@@ -190,11 +190,9 @@ class By {
    * @return {function(!./webdriver.WebDriver): !Promise}
    *     A new JavaScript-based locator function.
    */
-  static js(script, var_args) { // eslint-disable-line
-    // eslint-disable-line
-    let args = Array.prototype.slice.call(arguments, 0)
+  static js(script, ...var_args) {
     return function (driver) {
-      return driver.executeScript.apply(driver, args)
+      return driver.executeScript.call(driver, script, ...var_args)
     }
   }
 
@@ -277,7 +275,7 @@ function withTagName(tagName) {
  * @returns {RelativeBy}
  */
 function locateWith(by) {
-  return new RelativeBy(getLocator(by));
+  return new RelativeBy(getLocator(by))
 }
 
 function getLocator(locatorOrElement) {
@@ -431,4 +429,5 @@ module.exports = {
   withTagName: withTagName,
   locateWith: locateWith,
   checkedLocator: check,
+  escapeCss: escapeCss
 }

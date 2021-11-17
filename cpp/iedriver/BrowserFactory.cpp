@@ -400,6 +400,11 @@ void BrowserFactory::LaunchEdgeInIEMode(PROCESS_INFORMATION* proc_info,
     this->edge_user_data_dir_ = temp_dir;
   }
 
+  executable_and_url.append(L" --no-first-run");
+  executable_and_url.append(L" --no-service-autorun");
+  executable_and_url.append(L" --disable-sync");
+  executable_and_url.append(L" --disable-features=msImplicitSignin");
+
   executable_and_url.append(L" ");
   executable_and_url.append(this->initial_browser_url_);
 
@@ -1062,7 +1067,8 @@ BOOL CALLBACK BrowserFactory::FindBrowserWindow(HWND hwnd, LPARAM arg) {
   }
 
   if (strcmp(IE_FRAME_WINDOW_CLASS, name) != 0 &&
-      strcmp(SHELL_DOCOBJECT_VIEW_WINDOW_CLASS, name) != 0) {
+      strcmp(SHELL_DOCOBJECT_VIEW_WINDOW_CLASS, name) != 0 &&
+      strcmp(ANDIE_FRAME_WINDOW_CLASS, name) != 0) {
     return TRUE;
   }
 

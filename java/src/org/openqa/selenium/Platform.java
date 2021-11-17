@@ -196,9 +196,22 @@ public enum Platform {
     public Platform family() {
       return MAC;
     }
+
     @Override
     public String toString() {
       return "macOS 11.0";
+    }
+  },
+
+  MONTERREY("monterrey", "os x 12.0", "macos 12.0") {
+    @Override
+    public Platform family() {
+      return MAC;
+    }
+
+    @Override
+    public String toString() {
+      return "macOS 12.0";
     }
   },
 
@@ -246,6 +259,7 @@ public enum Platform {
     }
   };
 
+  private static Platform current;
   private final String[] partOfOsName;
   private int minorVersion = 0;
   private int majorVersion = 0;
@@ -253,12 +267,6 @@ public enum Platform {
   Platform(String... partOfOsName) {
     this.partOfOsName = partOfOsName;
   }
-
-  public String[] getPartOfOsName() {
-    return Arrays.copyOf(partOfOsName, partOfOsName.length);
-  }
-
-  private static Platform current;
 
   /**
    * Get current platform (not necessarily the same as operating system).
@@ -380,6 +388,10 @@ public enum Platform {
    */
   private static boolean isBetterMatch(String previous, String matcher) {
     return previous == null || matcher.length() >= previous.length();
+  }
+
+  public String[] getPartOfOsName() {
+    return Arrays.copyOf(partOfOsName, partOfOsName.length);
   }
 
   /**

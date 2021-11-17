@@ -84,14 +84,14 @@ test.suite(function (env) {
           .forBrowser(env.browser.name)
           .build()
 
-        let caps = await getCaps(driver);
+        let caps = await getCaps(driver)
         assert.deepEqual(caps.get('timeouts'), timeouts)
       })
     })
   }
 
   async function getCaps(driver) {
-    return driver.getCapabilities();
+    return driver.getCapabilities()
   }
 
   describe('Builder', function () {
