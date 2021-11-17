@@ -36,7 +36,7 @@ namespace OpenQA.Selenium.DevTools.V96
         /// <summary>
         /// Gets the DevTools Protocol version for which this class is valid.
         /// </summary>
-        public static int DevToolsVersion => 95;
+        public static int DevToolsVersion => 96;
 
         /// <summary>
         /// Gets the version-specific domains for the DevTools session. This value must be cast to a version specific type to be at all useful.
