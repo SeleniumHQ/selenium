@@ -24,6 +24,11 @@ labels:
                 If the issue is valid but there is no time to troubleshoot it, consider adding the <code>help wanted</code> label.
               </p>
               <p>
+                If the issue requires changes or fixes from an external project (e.g., ChromeDriver, GeckoDriver, W3C),
+               add the applicable <code>G-*</code> label, and it will provide the correct link and auto-close the 
+               issue.
+              </p>
+              <p>
                 After troubleshooting the issue, please add the <code>R-awaiting answer</code> label.
               </p>
               <p>
@@ -31,6 +36,44 @@ labels:
               </p>
             </div>
           </details>
+  - name: G-w3c
+    labeled:
+      issue:
+        body: |
+          Hi, @{{ issue.user.login }}.
+          This issue has been determined to require a change to the
+          [WebDriver W3C Specification](https://w3c.github.io/webdriver/) for Selenium to be able to support it.
+
+          Please [create an issue](https://github.com/w3c/webdriver/issues/new) with the WebDriver project.
+
+          Feel free to comment the issues that you raise back in this issue. Thank you.
+        action: close
+  - name: G-chromedriver
+    labeled:
+      issue:
+        body: |
+          Hi, @{{ issue.user.login }}.
+          This issue has been determined to require fixes in [ChromeDriver](https://chromedriver.chromium.org/home).
+
+          You can see if the feature is passing in the [Web Platform Tests](https://wpt.fyi/results/webdriver/tests).
+
+          If it is something new, please [create an issue](https://bugs.chromium.org/p/chromedriver/issues/list) with the ChromeDriver team.
+          Feel free to comment the issues that you raise back in this issue. Thank you.
+
+        action: close
+  - name: G-geckodriver
+    labeled:
+      issue:
+        body: |
+          Hi, @{{ issue.user.login }}.
+          This issue has been determined to require fixes in [GeckoDriver](https://firefox-source-docs.mozilla.org/testing/geckodriver/).
+
+          You can see if the feature is passing in the [Web Platform Tests](https://wpt.fyi/results/webdriver/tests).
+
+          If it is something new, please [Create an Issue](https://github.com/mozilla/geckodriver/issues/new) with the GeckoDriver team.
+
+          Feel free to comment the issues that you raise back in this issue. Thank you.
+        action: close
   - name: I-issue-template
     labeled:
       issue:
@@ -40,7 +83,7 @@ labels:
 
           Either a complete code snippet (if more than one file is needed, provide a GitHub repo and instructions to run the code), the specific versions used, or a more detailed description to help us understand the issue.
 
-          Reply to this issuee when all information is provided, thank you.
+          Reply to this issue when all information is provided, thank you.
   - name: I-question
     labeled:
       issue:

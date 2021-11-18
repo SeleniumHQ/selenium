@@ -176,3 +176,8 @@ class Command(object):
     CURRENT_CONTEXT_HANDLE = "getCurrentContextHandle"
     CONTEXT_HANDLES = "getContextHandles"
     SWITCH_TO_CONTEXT = "switchToContext"
+
+    # Web Components
+    GET_SHADOW_ROOT = "getShadowRoot"
+    FIND_ELEMENT_FROM_SHADOW_ROOT = "findElementFromShadowRoot"
+    FIND_ELEMENTS_FROM_SHADOW_ROOT = "findElementsFromShadowRoot"

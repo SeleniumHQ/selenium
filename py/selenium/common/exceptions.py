@@ -93,6 +93,14 @@ class NoSuchAttributeException(WebDriverException):
     pass
 
 
+class NoSuchShadowRootException(WebDriverException):
+    """
+    Thrown when trying to access the shadow root of an element when it does not
+    have a shadow root attached.
+    """
+    pass
+
+
 class StaleElementReferenceException(WebDriverException):
     """
     Thrown when a reference to an element is now "stale".
@@ -128,6 +136,7 @@ class UnexpectedAlertPresentException(WebDriverException):
     Usually raised when  an unexpected modal is blocking the webdriver from executing
     commands.
     """
+
     def __init__(self, msg: Optional[str] = None, screen: Optional[str] = None, stacktrace: Optional[Sequence[str]] = None, alert_text: Optional[str] = None) -> None:
         super(UnexpectedAlertPresentException, self).__init__(msg, screen, stacktrace)
         self.alert_text = alert_text

@@ -123,8 +123,8 @@ selenium_register_dotnet()
 
 http_archive(
     name = "build_bazel_rules_nodejs",
-    sha256 = "3aa6296f453ddc784e1377e0811a59e1e6807da364f44b27856e34f5042043fe",
-    urls = ["https://github.com/bazelbuild/rules_nodejs/releases/download/4.4.2/rules_nodejs-4.4.2.tar.gz"],
+    sha256 = "f7037c8e295fdc921f714962aee7c496110052511e2b14076bd8e2d46bc9819c",
+    urls = ["https://github.com/bazelbuild/rules_nodejs/releases/download/4.4.5/rules_nodejs-4.4.5.tar.gz"],
 )
 
 load("@build_bazel_rules_nodejs//:index.bzl", "node_repositories", "npm_install")
@@ -259,9 +259,9 @@ pin_browsers()
 
 http_archive(
     name = "bazelruby_rules_ruby",
-    sha256 = "14861aed0c9be47577808757ce2e54aa7c729f58d4c99ed907834df2a2245c6d",
-    strip_prefix = "rules_ruby-1-36893fe82ea490cb4cc0ec0a5542298e2b45fb1c",
-    url = "https://github.com/p0deje/rules_ruby-1/archive/36893fe82ea490cb4cc0ec0a5542298e2b45fb1c.tar.gz",
+    sha256 = "43e1dc0b747d51617dcbc02c15c4a1383cb572d58bef3accc10b9c8bd1e06b62",
+    strip_prefix = "rules_ruby-2caa1f20d5ba22080af653470037c72bf219af45",
+    url = "https://github.com/bazelruby/rules_ruby/archive/2caa1f20d5ba22080af653470037c72bf219af45.tar.gz",
 )
 
 load(

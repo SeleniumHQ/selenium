@@ -1,3 +1,10 @@
+v4.1.0
+======
+* add CDP support for v96 and remove v93
+* Adding test configuration for Edge in IE Mode
+* Refactor registration and execution of custom WebDriver commands
+
+
 v4.0.1
 ======
  * Refactored WebSocket handling of CDP. The handling of sending and receiving

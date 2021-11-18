@@ -244,6 +244,12 @@ class RemoteConnection(object):
                 ('GET', '/session/$sessionId/element/$id/computedrole'),
             Command.GET_ELEMENT_ARIA_LABEL:
                 ('GET', '/session/$sessionId/element/$id/computedlabel'),
+            Command.GET_SHADOW_ROOT:
+                ('GET', '/session/$sessionId/element/$id/shadow'),
+            Command.FIND_ELEMENT_FROM_SHADOW_ROOT:
+                ('POST', '/session/$sessionId/shadow/$shadowId/element'),
+            Command.FIND_ELEMENTS_FROM_SHADOW_ROOT:
+                ('POST', '/session/$sessionId/shadow/$shadowId/elements'),
             Command.GET_ALL_COOKIES: ('GET', '/session/$sessionId/cookie'),
             Command.ADD_COOKIE: ('POST', '/session/$sessionId/cookie'),
             Command.GET_COOKIE: ('GET', '/session/$sessionId/cookie/$name'),

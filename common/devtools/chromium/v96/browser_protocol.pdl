@@ -208,7 +208,12 @@ experimental domain Accessibility
     parameters
       # The maximum depth at which descendants of the root node should be retrieved.
       # If omitted, the full tree is returned.
-      optional integer max_depth
+      optional integer depth
+      # Deprecated. This parameter has been renamed to `depth`. If depth is not provided, max_depth will be used.
+      deprecated optional integer max_depth
+      # The frame for whose document the AX tree should be retrieved.
+      # If omited, the root frame is used.
+      optional Page.FrameId frameId
     returns
       array of AXNode nodes
 
@@ -217,6 +222,9 @@ experimental domain Accessibility
   experimental command getChildAXNodes
     parameters
       AXNodeId id
+      # The frame in whose document the node resides.
+      # If omitted, the root frame is used.
+      optional Page.FrameId frameId
     returns
       array of AXNode nodes
 
@@ -400,85 +408,6 @@ experimental domain Animation
       # Animation that was started.
       Animation animation
 
-experimental domain ApplicationCache
-  depends on Page
-
-  # Detailed application cache resource information.
-  type ApplicationCacheResource extends object
-    properties
-      # Resource url.
-      string url
-      # Resource size.
-      integer size
-      # Resource type.
-      string type
-
-  # Detailed application cache information.
-  type ApplicationCache extends object
-    properties
-      # Manifest URL.
-      string manifestURL
-      # Application cache size.
-      number size
-      # Application cache creation time.
-      number creationTime
-      # Application cache update time.
-      number updateTime
-      # Application cache resources.
-      array of ApplicationCacheResource resources
-
-  # Frame identifier - manifest URL pair.
-  type FrameWithManifest extends object
-    properties
-      # Frame identifier.
-      Page.FrameId frameId
-      # Manifest URL.
-      string manifestURL
-      # Application cache status.
-      integer status
-
-  # Enables application cache domain notifications.
-  command enable
-
-  # Returns relevant application cache data for the document in given frame.
-  command getApplicationCacheForFrame
-    parameters
-      # Identifier of the frame containing document whose application cache is retrieved.
-      Page.FrameId frameId
-    returns
-      # Relevant application cache data for the document in given frame.
-      ApplicationCache applicationCache
-
-  # Returns array of frame identifiers with manifest urls for each frame containing a document
-  # associated with some application cache.
-  command getFramesWithManifests
-    returns
-      # Array of frame identifiers with manifest urls for each frame containing a document
-      # associated with some application cache.
-      array of FrameWithManifest frameIds
-
-  # Returns manifest URL for document in the given frame.
-  command getManifestForFrame
-    parameters
-      # Identifier of the frame containing document whose manifest is retrieved.
-      Page.FrameId frameId
-    returns
-      # Manifest URL for document in the given frame.
-      string manifestURL
-
-  event applicationCacheStatusUpdated
-    parameters
-      # Identifier of the frame containing document whose application cache updated status.
-      Page.FrameId frameId
-      # Manifest URL.
-      string manifestURL
-      # Updated application cache status.
-      integer status
-
-  event networkStateUpdated
-    parameters
-      boolean isNowOnline
-
 # Audits domain allows investigation of page violations and possible improvements.
 experimental domain Audits
   depends on Network
@@ -509,6 +438,8 @@ experimental domain Audits
       ExcludeSameSiteNoneInsecure
       ExcludeSameSiteLax
       ExcludeSameSiteStrict
+      ExcludeInvalidSameParty
+      ExcludeSamePartyCrossPartyContext
 
   type SameSiteCookieWarningReason extends string
     enum
@@ -531,7 +462,12 @@ experimental domain Audits
   # information without the cookie.
   type SameSiteCookieIssueDetails extends object
     properties
-      AffectedCookie cookie
+      # If AffectedCookie is not set then rawCookieLine contains the raw
+      # Set-Cookie header string. This hints at a problem where the
+      # cookie line is syntactically or semantically malformed in a way
+      # that no valid cookie could be created.
+      optional AffectedCookie cookie
+      optional string rawCookieLine
       array of SameSiteCookieWarningReason cookieWarningReasons
       array of SameSiteCookieExclusionReason cookieExclusionReasons
       # Optionally identifies the site-for-cookies and the cookie url, which
@@ -723,6 +659,8 @@ experimental domain Audits
       InvalidAttributionData
       AttributionSourceUntrustworthyOrigin
       AttributionUntrustworthyOrigin
+      AttributionTriggerDataTooLarge
+      AttributionEventSourceTriggerDataTooLarge
 
   # Details for issues around "Attribution Reporting API" usage.
   # Explainer: https://github.com/WICG/conversion-measurement-api
@@ -751,6 +689,24 @@ experimental domain Audits
       string url
       optional SourceCodeLocation location
 
+  type WasmCrossOriginModuleSharingIssueDetails extends object
+    properties
+      string wasmModuleUrl
+      string sourceOrigin
+      string targetOrigin
+      boolean isWarning
+
+  type GenericIssueErrorType extends string
+    enum
+      CrossOriginPortalPostMessageError
+
+  # Depending on the concrete errorType, different properties are set.
+  type GenericIssueDetails extends object
+    properties
+      # Issues with the same errorType are aggregated in the frontend.
+      GenericIssueErrorType errorType
+      optional Page.FrameId frameId
+
   # A unique identifier for the type of issue. Each type may use one of the
   # optional fields in InspectorIssueDetails to convey more specific
   # information about the kind of issue.
@@ -768,6 +724,8 @@ experimental domain Audits
       AttributionReportingIssue
       QuirksModeIssue
       NavigatorUserAgentIssue
+      WasmCrossOriginModuleSharingIssue
+      GenericIssue
 
   # This struct holds a list of optional fields with additional information
   # specific to the kind of issue. When adding a new issue code, please also
@@ -786,12 +744,21 @@ experimental domain Audits
       optional AttributionReportingIssueDetails attributionReportingIssueDetails
       optional QuirksModeIssueDetails quirksModeIssueDetails
       optional NavigatorUserAgentIssueDetails navigatorUserAgentIssueDetails
+      optional WasmCrossOriginModuleSharingIssueDetails wasmCrossOriginModuleSharingIssue
+      optional GenericIssueDetails genericIssueDetails
+
+  # A unique id for a DevTools inspector issue. Allows other entities (e.g.
+  # exceptions, CDP message, console messages, etc.) to reference an issue.
+  type IssueId extends string
 
   # An inspector issue reported from the back-end.
   type InspectorIssue extends object
     properties
       InspectorIssueCode code
       InspectorIssueDetails details
+      # A unique id for this issue. May be omitted if no other entity (e.g.
+      # exception, CDP message, etc.) is referencing this issue.
+      optional IssueId issueId
 
   # Returns the response body and size if it were re-encoded with the specified settings. Only
   # applies to images.
@@ -1256,7 +1223,9 @@ experimental domain CSS
       StyleSheetId styleSheetId
       # Owner frame identifier.
       Page.FrameId frameId
-      # Stylesheet resource URL.
+      # Stylesheet resource URL. Empty if this is a constructed stylesheet created using
+      # new CSSStyleSheet() (but non-empty if this is a constructed sylesheet imported
+      # as a CSS module script).
       string sourceURL
       # URL of source map associated with the stylesheet (if any).
       optional string sourceMapURL
@@ -1278,7 +1247,8 @@ experimental domain CSS
       # <link> element's stylesheets become mutable only if DevTools modifies them.
       # Constructed stylesheets (new CSSStyleSheet()) are mutable immediately after creation.
       boolean isMutable
-      # Whether this stylesheet is a constructed stylesheet (created using new CSSStyleSheet()).
+      # True if this stylesheet is created through new CSSStyleSheet() or imported as a
+      # CSS module script.
       boolean isConstructed
       # Line offset of the stylesheet within the resource (zero based).
       number startLine
@@ -1306,6 +1276,9 @@ experimental domain CSS
       # Media list array (for rules involving media queries). The array enumerates media queries
       # starting with the innermost one, going outwards.
       optional array of CSSMedia media
+      # Container query list array (for rules involving container queries).
+      # The array enumerates container queries starting with the innermost one, going outwards.
+      experimental optional array of CSSContainerQuery containerQueries
 
   # CSS coverage information.
   type RuleUsage extends object
@@ -1428,6 +1401,19 @@ experimental domain CSS
       optional SourceRange valueRange
       # Computed length of media query expression (if applicable).
       optional number computedLength
+
+  # CSS container query rule descriptor.
+  experimental type CSSContainerQuery extends object
+    properties
+      # Container query text.
+      string text
+      # The associated rule header range in the enclosing stylesheet (if
+      # available).
+      optional SourceRange range
+      # Identifier of the stylesheet containing this object (if exists).
+      optional StyleSheetId styleSheetId
+      # Optional name for the container.
+      optional string name
 
   # Information about amount of glyphs that were rendered with given font.
   type PlatformFontUsage extends object
@@ -1674,6 +1660,16 @@ experimental domain CSS
     returns
       # The resulting CSS media rule after modification.
       CSSMedia media
+
+  # Modifies the expression of a container query.
+  experimental command setContainerQueryText
+    parameters
+      StyleSheetId styleSheetId
+      SourceRange range
+      string text
+    returns
+      # The resulting CSS container query rule after modification.
+      CSSContainerQuery containerQuery
 
   # Modifies the rule selector.
   command setRuleSelector
@@ -1955,6 +1951,7 @@ domain DOM
       target-text
       spelling-error
       grammar-error
+      highlight
       first-line-inherited
       scrollbar
       scrollbar-thumb
@@ -2572,6 +2569,27 @@ domain DOM
       # Id of the node at given coordinates, only when enabled and requested document.
       optional NodeId nodeId
 
+  # Returns the container of the given node based on container query conditions.
+  # If containerName is given, it will find the nearest container with a matching name;
+  # otherwise it will find the nearest container regardless of its container name.
+  experimental command getContainerForNode
+    parameters
+      NodeId nodeId
+      optional string containerName
+    returns
+      # The container node for the given node, or null if not found.
+      optional NodeId nodeId
+
+  # Returns the descendants of a container query container that have
+  # container queries against this container.
+  experimental command getQueryingDescendantsForContainer
+    parameters
+      # Id of the container node to find querying descendants from.
+      NodeId nodeId
+    returns
+      # Descendant nodes with container queries against the given container.
+      array of NodeId nodeIds
+
   # Fired when `Element`'s attribute is modified.
   event attributeModified
     parameters
@@ -2987,6 +3005,8 @@ experimental domain DOMSnapshot
       optional array of integer parentIndex
       # `Node`'s nodeType.
       optional array of integer nodeType
+      # Type of the shadow root the `Node` is in. String values are equal to the `ShadowRootType` enum.
+      optional RareStringData shadowRootType
       # `Node`'s nodeName.
       optional array of StringIndex nodeName
       # `Node`'s nodeValue.
@@ -3326,6 +3346,13 @@ domain Emulation
     parameters
       # Whether to enable to disable focus emulation.
       boolean enabled
+
+  # Automatically render all web contents using a dark theme.
+  experimental command setAutoDarkModeOverride
+    parameters
+      # Whether to enable or disable automatic dark mode.
+      # If not specified, any existing override will be cleared.
+      optional boolean enabled
 
   # Enables CPU throttling to emulate slow CPUs.
   experimental command setCPUThrottlingRate
@@ -3879,6 +3906,8 @@ domain Input
   experimental type DragData extends object
     properties
       array of DragDataItem items
+      # List of filenames that should be included when dropping
+      optional array of string files
       # Bit field representing allowed drag operations. Copy = 1, Link = 2, Move = 16
       integer dragOperationsMask
 
@@ -3952,6 +3981,22 @@ domain Input
     parameters
       # The text to insert.
       string text
+
+  # This method sets the current candidate text for ime.
+  # Use imeCommitComposition to commit the final text.
+  # Use imeSetComposition with empty string as text to cancel composition.
+  experimental command imeSetComposition
+    parameters
+      # The text to insert
+      string text
+      # selection start
+      integer selectionStart
+      # selection end
+      integer selectionEnd
+      # replacement start
+      optional integer replacementStart
+      # replacement end
+      optional integer replacementEnd
 
   # Dispatches a mouse event to the page.
   command dispatchMouseEvent
@@ -4348,6 +4393,8 @@ domain Log
         error
       # Logged text.
       string text
+      optional enum category
+        cors
       # Timestamp when this entry was added.
       Runtime.Timestamp timestamp
       # URL of the resource if known.
@@ -4685,6 +4732,9 @@ domain Network
       # Set for requests when the TrustToken API is used. Contains the parameters
       # passed by the developer (e.g. via "fetch") as understood by the backend.
       experimental optional TrustTokenParams trustTokenParams
+      # True if this resource request is considered to be the 'same site' as the
+      # request correspondinfg to the main frame.
+      experimental optional boolean isSameSite
 
   # Details of a signed certificate timestamp (SCT).
   type SignedCertificateTimestamp extends object
@@ -4786,7 +4836,14 @@ domain Network
       MethodDisallowedByPreflightResponse
       HeaderDisallowedByPreflightResponse
       RedirectContainsCredentials
+      # Request was a private network request initiated by a non-secure context.
       InsecurePrivateNetwork
+      # Request carried a target IP address space property that did not match
+      # the target resource's address space.
+      InvalidPrivateNetworkAccess
+      # Request was a private network request yet did not carry a target IP
+      # address space.
+      UnexpectedPrivateNetworkAccess
       NoCorsRedirectModeNotFollow
 
   type CorsErrorStatus extends object
@@ -4839,14 +4896,14 @@ domain Network
       string statusText
       # HTTP response headers.
       Headers headers
-      # HTTP response headers text.
-      optional string headersText
+      # HTTP response headers text. This has been replaced by the headers in Network.responseReceivedExtraInfo.
+      deprecated optional string headersText
       # Resource mimeType as determined by the browser.
       string mimeType
       # Refined HTTP request headers that were actually transmitted over the network.
       optional Headers requestHeaders
-      # HTTP request headers text.
-      optional string requestHeadersText
+      # HTTP request headers text. This has been replaced by the headers in Network.requestWillBeSentExtraInfo.
+      deprecated optional string requestHeadersText
       # Specifies whether physical connection was actually reused for this request.
       boolean connectionReused
       # Physical connection id that was actually used for this request.
@@ -5035,6 +5092,9 @@ domain Network
       # (which is required in order to use "SameParty"); or specified the "SameSite=Strict"
       # attribute (which is forbidden when using "SameParty").
       SamePartyConflictsWithOtherAttributes
+      # The cookie's name/value pair size exceeded the size limit defined in
+      # RFC6265bis.
+      NameValuePairExceedsMaxSize
 
   # Types of reasons why a cookie may not be sent with a request.
   experimental type CookieBlockedReason extends string
@@ -5079,6 +5139,9 @@ domain Network
       SchemefulSameSiteUnspecifiedTreatedAsLax
       # The cookie had the "SameParty" attribute and the request was made from a cross-party context.
       SamePartyFromCrossPartyContext
+      # The cookie's name/value pair size exceeded the size limit defined in
+      # RFC6265bis.
+      NameValuePairExceedsMaxSize
 
   # A cookie which was not stored from a response with the corresponding reason.
   experimental type BlockedSetCookieWithReason extends object
@@ -5513,14 +5576,6 @@ domain Network
       # Cookies to be set.
       array of CookieParam cookies
 
-  # For testing.
-  experimental command setDataSizeLimitsForTest
-    parameters
-      # Maximum total buffer size.
-      integer maxTotalSize
-      # Maximum per-resource size.
-      integer maxResourceSize
-
   # Specifies whether to always send extra HTTP headers with the requests from this page.
   command setExtraHTTPHeaders
     parameters
@@ -5818,6 +5873,8 @@ domain Network
       Allow
       BlockFromInsecureToMorePrivate
       WarnFromInsecureToMorePrivate
+      PreflightBlock
+      PreflightWarn
 
   experimental type IPAddressSpace extends string
     enum
@@ -5825,6 +5882,13 @@ domain Network
       Private
       Public
       Unknown
+
+  experimental type ConnectTiming extends object
+    properties
+      # Timing's requestTime is a baseline in seconds, while the other numbers are ticks in
+      # milliseconds relatively to this requestTime. Matches ResourceTiming's requestTime for
+      # the same request (but not for redirected requests).
+      number requestTime
 
   experimental type ClientSecurityState extends object
     properties
@@ -5845,6 +5909,8 @@ domain Network
       array of BlockedCookieWithReason associatedCookies
       # Raw request headers as they will be sent over the wire.
       Headers headers
+      # Connection timing information for the request.
+      experimental ConnectTiming connectTiming
       # The client security state set for the request.
       optional ClientSecurityState clientSecurityState
 
@@ -5864,6 +5930,10 @@ domain Network
       # The IP address space of the resource. The address space can only be determined once the transport
       # established the connection, so we can't send it in `requestWillBeSentExtraInfo`.
       IPAddressSpace resourceIPAddressSpace
+      # The status code of the response. This is useful in cases the request failed and no responseReceived
+      # event is triggered, which is the case for, e.g., CORS errors. This is also the correct status code
+      # for cached requests, where the status in responseReceived is a 200 and this will be 304.
+      integer statusCode
       # Raw response header text as it was received over the wire. The raw text may not always be
       # available, such as in the case of HTTP/2 or QUIC.
       optional string headersText
@@ -5898,6 +5968,50 @@ domain Network
       # The number of obtained Trust Tokens on a successful "Issuance" operation.
       optional integer issuedTokenCount
 
+  # Fired once when parsing the .wbn file has succeeded.
+  # The event contains the information about the web bundle contents.
+  experimental event subresourceWebBundleMetadataReceived
+    parameters
+      # Request identifier. Used to match this information to another event.
+      RequestId requestId
+      # A list of URLs of resources in the subresource Web Bundle.
+      array of string urls
+
+  # Fired once when parsing the .wbn file has failed.
+  experimental event subresourceWebBundleMetadataError
+    parameters
+      # Request identifier. Used to match this information to another event.
+      RequestId requestId
+      # Error message
+      string errorMessage
+
+  # Fired when handling requests for resources within a .wbn file.
+  # Note: this will only be fired for resources that are requested by the webpage.
+  experimental event subresourceWebBundleInnerResponseParsed
+    parameters
+      # Request identifier of the subresource request
+      RequestId innerRequestId
+      # URL of the subresource resource.
+      string innerRequestURL
+      # Bundle request identifier. Used to match this information to another event.
+      # This made be absent in case when the instrumentation was enabled only
+      # after webbundle was parsed.
+      optional RequestId bundleRequestId
+
+  # Fired when request for resources within a .wbn file failed.
+  experimental event subresourceWebBundleInnerResponseError
+    parameters
+      # Request identifier of the subresource request
+      RequestId innerRequestId
+      # URL of the subresource resource.
+      string innerRequestURL
+      # Error message
+      string errorMessage
+      # Bundle request identifier. Used to match this information to another event.
+      # This made be absent in case when the instrumentation was enabled only
+      # after webbundle was parsed.
+      optional RequestId bundleRequestId
+
   experimental type CrossOriginOpenerPolicyValue extends string
     enum
       SameOrigin
@@ -5915,7 +6029,7 @@ domain Network
   experimental type CrossOriginEmbedderPolicyValue extends string
     enum
       None
-      CorsOrCredentialless
+      Credentialless
       RequireCorp
 
   experimental type CrossOriginEmbedderPolicyStatus extends object
@@ -5937,6 +6051,59 @@ domain Network
       optional Page.FrameId frameId
     returns
       SecurityIsolationStatus status
+
+  # Enables tracking for the Reporting API, events generated by the Reporting API will now be delivered to the client.
+  # Enabling triggers 'reportingApiReportAdded' for all existing reports.
+  experimental command enableReportingApi
+    parameters
+      # Whether to enable or disable events for the Reporting API
+      boolean enable
+
+  # The status of a Reporting API report.
+  experimental type ReportStatus extends string
+    enum
+      # Report has been queued and no attempt has been made to deliver it yet,
+      # or attempted previous upload failed (impermanently).
+      Queued
+      # There is an ongoing attempt to upload this report.
+      Pending
+      # Deletion of this report was requested while it was pending, so it will
+      # be removed after possibly outstanding upload attempts complete (successful
+      # or not).
+      MarkedForRemoval
+      # Successfully uploaded and MarkedForRemoval.
+      Success
+
+  experimental type ReportId extends string
+
+  # An object representing a report generated by the Reporting API.
+  experimental type ReportingApiReport extends object
+    properties
+      ReportId id
+      # The URL of the document that triggered the report.
+      string initiatorUrl
+      # The name of the endpoint group that should be used to deliver the report.
+      string destination
+      # The type of the report (specifies the set of data that is contained in the report body).
+      string type
+      # When the report was generated.
+      Network.TimeSinceEpoch timestamp
+      # How many uploads deep the related request was.
+      integer depth
+      # The number of delivery attempts made so far, not including an active attempt.
+      integer completedAttempts
+      object body
+      ReportStatus status
+
+  # Is sent whenever a new report is added.
+  # And after 'enableReportingApi' for all existing reports.
+  experimental event reportingApiReportAdded
+    parameters
+      ReportingApiReport report
+
+  experimental event reportingApiReportUpdated
+    parameters
+      ReportingApiReport report
 
   # An object providing the result of a network resource load.
   experimental type LoadNetworkResourcePageResult extends object
@@ -5961,8 +6128,9 @@ domain Network
   # Fetches the resource and returns the content.
   experimental command loadNetworkResource
     parameters
-      # Frame id to get the resource for.
-      Page.FrameId frameId
+      # Frame id to get the resource for. Mandatory for frame targets, and
+      # should be omitted for worker targets.
+      optional Page.FrameId frameId
       # URL of the resource to get content for.
       string url
       # Options for the request.
@@ -6121,6 +6289,8 @@ experimental domain Overlay
       optional FlexItemHighlightConfig flexItemHighlightConfig
       # The contrast algorithm to use for the contrast ratio (default: aa).
       optional ContrastAlgorithm contrastAlgorithm
+      # The container query container highlight configuration (default: all transparent).
+      optional ContainerQueryContainerHighlightConfig containerQueryContainerHighlightConfig
 
   type ColorFormat extends string
     enum
@@ -6170,6 +6340,36 @@ experimental domain Overlay
       optional DOM.RGBA contentColor
       # The content box highlight outline color (default: transparent).
       optional DOM.RGBA outlineColor
+
+  type ContainerQueryHighlightConfig extends object
+    properties
+      # A descriptor for the highlight appearance of container query containers.
+      ContainerQueryContainerHighlightConfig containerQueryContainerHighlightConfig
+      # Identifier of the container node to highlight.
+      DOM.NodeId nodeId
+
+  type ContainerQueryContainerHighlightConfig extends object
+    properties
+      # The style of the container border.
+      optional LineStyle containerBorder
+      # The style of the descendants' borders.
+      optional LineStyle descendantBorder
+
+  type IsolatedElementHighlightConfig extends object
+    properties
+      # A descriptor for the highlight appearance of an element in isolation mode.
+      IsolationModeHighlightConfig isolationModeHighlightConfig
+      # Identifier of the isolated element to highlight.
+      DOM.NodeId nodeId
+
+  type IsolationModeHighlightConfig extends object
+    properties
+      # The fill color of the resizers (default: transparent).
+      optional DOM.RGBA resizerColor
+      # The fill color for resizer handles (default: transparent).
+      optional DOM.RGBA resizerHandleColor
+      # The fill color for the mask covering non-isolated elements (default: transparent).
+      optional DOM.RGBA maskColor
 
   type InspectMode extends string
     enum
@@ -6224,7 +6424,10 @@ experimental domain Overlay
   command hideHighlight
 
   # Highlights owner element of the frame with given id.
-  command highlightFrame
+  # Deprecated: Doesn't work reliablity and cannot be fixed due to process
+  # separatation (the owner node might be in a different process). Determine
+  # the owner node in the client and use highlightNode.
+  deprecated command highlightFrame
     parameters
       # Identifier of the frame to highlight.
       Page.FrameId frameId
@@ -6336,6 +6539,11 @@ experimental domain Overlay
       # An array of node identifiers and descriptors for the highlight appearance.
       array of ScrollSnapHighlightConfig scrollSnapHighlightConfigs
 
+  command setShowContainerQueryOverlays
+    parameters
+      # An array of node identifiers and descriptors for the highlight appearance.
+      array of ContainerQueryHighlightConfig containerQueryHighlightConfigs
+
   # Requests that backend shows paint rectangles
   command setShowPaintRects
     parameters
@@ -6377,6 +6585,12 @@ experimental domain Overlay
       # hinge data, null means hideHinge
       optional HingeConfig hingeConfig
 
+  # Show elements in isolation mode with overlays.
+  command setShowIsolatedElements
+    parameters
+      # An array of node identifiers and descriptors for the highlight appearance.
+      array of IsolatedElementHighlightConfig isolatedElementHighlightConfigs
+
   # Fired when the node should be inspected. This happens after call to `setInspectMode` or when
   # user manually inspects an element.
   event inspectNodeRequested
@@ -6417,6 +6631,18 @@ domain Page
       child
       # This frame is the root of an ad frame.
       root
+
+  experimental type AdFrameExplanation extends string
+    enum
+      ParentIsAd
+      CreatedByAdScript
+      MatchedBlockingRule
+
+  # Indicates whether a frame has been identified as an ad and why.
+  experimental type AdFrameStatus extends object
+    properties
+      AdFrameType adFrameType
+      optional array of AdFrameExplanation explanations
 
   # Indicates whether the frame is a secure context and why it is the case.
   experimental type SecureContextType extends string
@@ -6460,16 +6686,18 @@ domain Page
       ch-device-memory
       ch-downlink
       ch-ect
-      ch-lang
       ch-prefers-color-scheme
       ch-rtt
       ch-ua
       ch-ua-arch
+      ch-ua-bitness
       ch-ua-platform
       ch-ua-model
       ch-ua-mobile
       ch-ua-full-version
       ch-ua-platform-version
+      ch-ua-reduced
+      ch-viewport-height
       ch-viewport-width
       ch-width
       clipboard-read
@@ -6543,6 +6771,7 @@ domain Page
       FeatureDisabled
       TokenDisabled
       FeatureDisabledForUser
+      UnknownTrial
 
   # Status for an Origin Trial.
   experimental type OriginTrialStatus extends string
@@ -6586,7 +6815,7 @@ domain Page
       # Frame unique identifier.
       FrameId id
       # Parent frame identifier.
-      optional string parentId
+      optional FrameId parentId
       # Identifier of the loader associated with this frame.
       Network.LoaderId loaderId
       # Frame's name as specified in the tag.
@@ -6606,16 +6835,14 @@ domain Page
       string mimeType
       # If the frame failed to load, this contains the URL that could not be loaded. Note that unlike url above, this URL may contain a fragment.
       experimental optional string unreachableUrl
-      # Indicates whether this frame was tagged as an ad.
-      experimental optional AdFrameType adFrameType
+      # Indicates whether this frame was tagged as an ad and why.
+      experimental optional AdFrameStatus adFrameStatus
       # Indicates whether the main document is a secure context and explains why that is the case.
       experimental SecureContextType secureContextType
       # Indicates whether this is a cross origin isolated context.
       experimental CrossOriginIsolatedContextType crossOriginIsolatedContextType
       # Indicated which gated APIs / features are available.
       experimental array of GatedAPIFeatures gatedAPIFeatures
-      # Frame document's origin trials with at least one token present.
-      experimental optional array of OriginTrial originTrials
 
   # Information about the Resource on the page.
   experimental type FrameResource extends object
@@ -6890,6 +7117,7 @@ domain Page
       optional enum format
         jpeg
         png
+        webp
       # Compression quality from range [0..100] (jpeg only).
       optional integer quality
       # Capture the screenshot of a given region only.
@@ -6975,6 +7203,15 @@ domain Page
   experimental command getManifestIcons
     returns
       optional binary primaryIcon
+
+  # Returns the unique (PWA) app id.
+  # Only returns values if the feature flag 'WebAppEnableManifestId' is enabled
+  experimental command getAppId
+    returns
+      # App id, either from manifest's id attribute or computed from start_url
+      optional string appId
+      # Recommendation for manifest's id attribute to match current id computed from start_url
+      optional string recommendedId
 
   # Returns all browser cookies. Depending on the backend support, will return detailed cookie
   # information in the `cookies` field.
@@ -7187,6 +7424,13 @@ domain Page
       FrameId frameId
     returns
       array of PermissionsPolicyFeatureState states
+
+  # Get Origin Trials on given frame.
+  experimental command getOriginTrials
+    parameters
+      FrameId frameId
+    returns
+      array of OriginTrial originTrials
 
   # Overrides the values of device screen dimensions (window.screen.width, window.screen.height,
   # window.innerWidth, window.innerHeight, and "device-width"/"device-height"-related CSS media
@@ -7556,6 +7800,152 @@ domain Page
       string name
       Network.MonotonicTime timestamp
 
+  # List of not restored reasons for back-forward cache.
+  experimental type BackForwardCacheNotRestoredReason extends string
+    enum
+      NotMainFrame
+      BackForwardCacheDisabled
+      RelatedActiveContentsExist
+      HTTPStatusNotOK
+      SchemeNotHTTPOrHTTPS
+      Loading
+      WasGrantedMediaAccess
+      DisableForRenderFrameHostCalled
+      DomainNotAllowed
+      HTTPMethodNotGET
+      SubframeIsNavigating
+      Timeout
+      CacheLimit
+      JavaScriptExecution
+      RendererProcessKilled
+      RendererProcessCrashed
+      GrantedMediaStreamAccess
+      SchedulerTrackedFeatureUsed
+      ConflictingBrowsingInstance
+      CacheFlushed
+      ServiceWorkerVersionActivation
+      SessionRestored
+      ServiceWorkerPostMessage
+      EnteredBackForwardCacheBeforeServiceWorkerHostAdded
+      RenderFrameHostReused_SameSite
+      RenderFrameHostReused_CrossSite
+      ServiceWorkerClaim
+      IgnoreEventAndEvict
+      HaveInnerContents
+      TimeoutPuttingInCache
+      BackForwardCacheDisabledByLowMemory
+      BackForwardCacheDisabledByCommandLine
+      NetworkRequestDatapipeDrainedAsBytesConsumer
+      NetworkRequestRedirected
+      NetworkRequestTimeout
+      NetworkExceedsBufferLimit
+      NavigationCancelledWhileRestoring
+      NotMostRecentNavigationEntry
+      BackForwardCacheDisabledForPrerender
+      UserAgentOverrideDiffers
+      ForegroundCacheLimit
+      BrowsingInstanceNotSwapped
+      BackForwardCacheDisabledForDelegate
+      OptInUnloadHeaderNotPresent
+      UnloadHandlerExistsInMainFrame
+      UnloadHandlerExistsInSubFrame
+      ServiceWorkerUnregistration
+      CacheControlNoStore
+      CacheControlNoStoreCookieModified
+      CacheControlNoStoreHTTPOnlyCookieModified
+      NoResponseHead
+      Unknown
+      ActivationNavigationsDisallowedForBug1234857
+      #Blocklisted features
+      WebSocket
+      WebTransport
+      WebRTC
+      MainResourceHasCacheControlNoStore
+      MainResourceHasCacheControlNoCache
+      SubresourceHasCacheControlNoStore
+      SubresourceHasCacheControlNoCache
+      ContainsPlugins
+      DocumentLoaded
+      DedicatedWorkerOrWorklet
+      OutstandingNetworkRequestOthers
+      OutstandingIndexedDBTransaction
+      RequestedNotificationsPermission
+      RequestedMIDIPermission
+      RequestedAudioCapturePermission
+      RequestedVideoCapturePermission
+      RequestedBackForwardCacheBlockedSensors
+      RequestedBackgroundWorkPermission
+      BroadcastChannel
+      IndexedDBConnection
+      WebXR
+      SharedWorker
+      WebLocks
+      WebHID
+      WebShare
+      RequestedStorageAccessGrant
+      WebNfc
+      OutstandingNetworkRequestFetch
+      OutstandingNetworkRequestXHR
+      AppBanner
+      Printing
+      WebDatabase
+      PictureInPicture
+      Portal
+      SpeechRecognizer
+      IdleManager
+      PaymentManager
+      SpeechSynthesis
+      KeyboardLock
+      WebOTPService
+      OutstandingNetworkRequestDirectSocket
+      InjectedJavascript
+      InjectedStyleSheet
+      Dummy
+      # Disabled for render frame host reasons
+      # See content/browser/renderer_host/back_forward_cache_disable.h for explanations.
+      ContentSecurityHandler
+      ContentWebAuthenticationAPI
+      ContentFileChooser
+      ContentSerial
+      ContentFileSystemAccess
+      ContentMediaDevicesDispatcherHost
+      ContentWebBluetooth
+      ContentWebUSB
+      ContentMediaSession
+      ContentMediaSessionService
+      ContentMediaPlay
+
+      # See components/back_forward_cache/back_forward_cache_disable.h for explanations.
+      EmbedderPopupBlockerTabHelper
+      EmbedderSafeBrowsingTriggeredPopupBlocker
+      EmbedderSafeBrowsingThreatDetails
+      EmbedderAppBannerManager
+      EmbedderDomDistillerViewerSource
+      EmbedderDomDistillerSelfDeletingRequestDelegate
+      EmbedderOomInterventionTabHelper
+      EmbedderOfflinePage
+      EmbedderChromePasswordManagerClientBindCredentialManager
+      EmbedderPermissionRequestManager
+      EmbedderModalDialog
+      EmbedderExtensions
+      EmbedderExtensionMessaging
+      EmbedderExtensionMessagingForOpenPort
+      EmbedderExtensionSentMessageToCachedFrame
+
+  # Types of not restored reasons for back-forward cache.
+  experimental type BackForwardCacheNotRestoredReasonType extends string
+    enum
+      SupportPending
+      PageSupportNeeded
+      Circumstantial
+
+  experimental type BackForwardCacheNotRestoredExplanation extends object
+    properties
+      # Type of the reason
+      BackForwardCacheNotRestoredReasonType type
+      # Not restored reason
+      BackForwardCacheNotRestoredReason reason
+
   # Fired for failed bfcache history navigations if BackForwardCache feature is enabled. Do
   # not assume any ordering with the Page.frameNavigated event. This event is fired only for
   # main-frame history navigation where the document changes (non-same-document navigations),
@@ -7566,6 +7956,8 @@ domain Page
       Network.LoaderId loaderId
       # The frame id of the associated frame.
       FrameId frameId
+      # Array of reasons why the page could not be cached. This must not be empty.
+      array of BackForwardCacheNotRestoredExplanation notRestoredExplanations
 
   event loadEventFired
     parameters
@@ -8497,6 +8889,8 @@ domain Target
   # Controls whether to automatically attach to new targets which are considered to be related to
   # this one. When turned on, attaches to all existing related targets as well. When turned off,
   # automatically detaches from all currently attached targets.
+  # This also clears all targets added by `autoAttachRelated` from the list of targets to watch
+  # for creation of related targets.
   experimental command setAutoAttach
     parameters
       # Whether to auto-attach to related targets.
@@ -8508,6 +8902,18 @@ domain Target
       # We plan to make this the default, deprecate non-flattened mode,
       # and eventually retire it. See crbug.com/991325.
       optional boolean flatten
+
+  # Adds the specified target to the list of targets that will be monitored for any related target
+  # creation (such as child frames, child workers and new versions of service worker) and reported
+  # through `attachedToTarget`. The specified target is also auto-attached.
+  # This cancels the effect of any previous `setAutoAttach` and is also cancelled by subsequent
+  # `setAutoAttach`. Only available at the Browser target.
+  experimental command autoAttachRelated
+    parameters
+      TargetID targetId
+      # Whether to pause new targets when attaching to them. Use `Runtime.runIfWaitingForDebugger`
+      # to run paused targets.
+      boolean waitForDebuggerOnStart
 
   # Controls whether to discover available targets and notify via
   # `targetCreated/targetInfoChanged/targetDestroyed` events.
@@ -8848,7 +9254,9 @@ domain Fetch
       # need to represent some non-UTF8 values that can't be transmitted
       # over the protocol as text.
       optional binary binaryResponseHeaders
-      # A response body.
+      # A response body. If absent, original response body will be used if
+      # the request is intercepted at the response stage and empty body
+      # will be used if the request is intercepted at the request stage.
       optional binary body
       # A textual representation of responseCode.
       # If absent, a standard phrase matching responseCode is used.
@@ -8867,6 +9275,8 @@ domain Fetch
       optional binary postData
       # If set, overrides the request headers.
       optional array of HeaderEntry headers
+      # If set, overrides response interception behavior for this request.
+      experimental optional boolean interceptResponse
 
   # Continues a request supplying authChallengeResponse following authRequired event.
   command continueWithAuth
@@ -8875,6 +9285,26 @@ domain Fetch
       RequestId requestId
       # Response to  with an authChallenge.
       AuthChallengeResponse authChallengeResponse
+
+  # Continues loading of the paused response, optionally modifying the
+  # response headers. If either responseCode or headers are modified, all of them
+  # must be present.
+  experimental command continueResponse
+    parameters
+      # An id the client received in requestPaused event.
+      RequestId requestId
+      # An HTTP response code. If absent, original response code will be used.
+      optional integer responseCode
+      # A textual representation of responseCode.
+      # If absent, a standard phrase matching responseCode is used.
+      optional string responsePhrase
+      # Response headers. If absent, original response headers will be used.
+      optional array of HeaderEntry responseHeaders
+      # Alternative way of specifying response headers as a \0-separated
+      # series of name: value pairs. Prefer the above method unless you
+      # need to represent some non-UTF8 values that can't be transmitted
+      # over the protocol as text.
+      optional binary binaryResponseHeaders
 
   # Causes the body of the response to be received from the server and
   # returned as a single string. May only be issued for a request that
@@ -8928,6 +9358,8 @@ domain Fetch
       optional Network.ErrorReason responseErrorReason
       # Response code if intercepted at response stage.
       optional integer responseStatusCode
+      # Response status text if intercepted at response stage.
+      optional string responseStatusText
       # Response headers if intercepted at the response stage.
       optional array of HeaderEntry responseHeaders
       # If the intercepted request had a corresponding Network.requestWillBeSent event fired for it,

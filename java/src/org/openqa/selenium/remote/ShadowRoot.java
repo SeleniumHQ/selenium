@@ -63,6 +63,10 @@ class ShadowRoot implements SearchContext, WrapsDriver {
     return parent;
   }
 
+  public String getId() {
+    return this.id;
+  }
+
   private Map<String, Object> toJson() {
     return singletonMap(W3C.getShadowRootElementKey(), id);
   }
