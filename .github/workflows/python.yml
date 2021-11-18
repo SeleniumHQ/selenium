@@ -138,6 +138,8 @@ jobs:
         uses: actions/setup-java@v1
         with:
           java-version: '11'
+      - name: Setup Chrome and ChromeDriver
+        uses: ./.github/actions/setup-chrome
       - name: Start XVFB
         run: Xvfb :99 &
       - name: Run browser tests in Chrome
@@ -173,7 +175,7 @@ jobs:
         uses: actions/setup-java@v1
         with:
           java-version: '11'
-      - name: Setup Firefox and geckodriver
+      - name: Setup Firefox and GeckoDriver
         uses: ./.github/actions/setup-firefox
       - name: Start XVFB
         run: Xvfb :99 &
@@ -210,7 +212,7 @@ jobs:
         uses: actions/setup-java@v1
         with:
           java-version: '11'
-      - name: Setup Firefox and geckodriver
+      - name: Setup Firefox and GeckoDriver
         uses: ./.github/actions/setup-firefox
       - name: Start XVFB
         run: Xvfb :99 &

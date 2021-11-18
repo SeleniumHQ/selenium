@@ -209,6 +209,9 @@ function fromWireValue(driver, value) {
   } else if (WebElement.isId(value)) {
     let id = WebElement.extractId(value)
     value = new WebElement(driver, id)
+  } else if (ShadowRoot.isId(value)) {
+    let id = ShadowRoot.extractId(value)
+    value = new ShadowRoot(driver, id)
   } else if (value && typeof value === 'object') {
     let result = {}
     for (let key in value) {
@@ -247,30 +250,30 @@ class IWebDriver {
    *     result.
    * @template T
    */
-  execute(command) {} // eslint-disable-line
+  execute(command) { } // eslint-disable-line
 
   /**
    * Sets the {@linkplain input.FileDetector file detector} that should be
    * used with this instance.
    * @param {input.FileDetector} detector The detector to use or `null`.
    */
-  setFileDetector(detector) {} // eslint-disable-line
+  setFileDetector(detector) { } // eslint-disable-line
 
   /**
    * @return {!command.Executor} The command executor used by this instance.
    */
-  getExecutor() {}
+  getExecutor() { }
 
   /**
    * @return {!Promise<!Session>} A promise for this client's session.
    */
-  getSession() {}
+  getSession() { }
 
   /**
    * @return {!Promise<!Capabilities>} A promise that will resolve with
    *     the this instance's capabilities.
    */
-  getCapabilities() {}
+  getCapabilities() { }
 
   /**
    * Terminates the browser session. After calling quit, this instance will be
@@ -280,7 +283,7 @@ class IWebDriver {
    * @return {!Promise<void>} A promise that will be resolved when the
    *     command has completed.
    */
-  quit() {}
+  quit() { }
 
   /**
    * Creates a new action sequence using this driver. The sequence will not be
@@ -293,7 +296,7 @@ class IWebDriver {
    *     for details).
    * @return {!input.Actions} A new action sequence for this instance.
    */
-  actions(options) {} // eslint-disable-line
+  actions(options) { } // eslint-disable-line
 
   /**
    * Executes a snippet of JavaScript in the context of the currently selected
@@ -331,7 +334,7 @@ class IWebDriver {
    *    scripts return value.
    * @template T
    */
-  executeScript(script, ...args) {} // eslint-disable-line
+  executeScript(script, ...args) { } // eslint-disable-line
 
   /**
    * Executes a snippet of asynchronous JavaScript in the context of the
@@ -408,7 +411,7 @@ class IWebDriver {
    *     value.
    * @template T
    */
-  executeAsyncScript(script, ...args) {} // eslint-disable-line
+  executeAsyncScript(script, ...args) { } // eslint-disable-line
 
   /**
    * Waits for a condition to evaluate to a "truthy" value. The condition may be
@@ -459,7 +462,7 @@ class IWebDriver {
     timeout = undefined, // eslint-disable-line
     message = undefined, // eslint-disable-line
     pollTimeout = undefined // eslint-disable-line
-  ) {}
+  ) { }
 
   /**
    * Makes the driver sleep for the given amount of time.
@@ -468,7 +471,7 @@ class IWebDriver {
    * @return {!Promise<void>} A promise that will be resolved when the sleep has
    *     finished.
    */
-  sleep(ms) {} // eslint-disable-line
+  sleep(ms) { } // eslint-disable-line
 
   /**
    * Retrieves the current window handle.
@@ -476,7 +479,7 @@ class IWebDriver {
    * @return {!Promise<string>} A promise that will be resolved with the current
    *     window handle.
    */
-  getWindowHandle() {}
+  getWindowHandle() { }
 
   /**
    * Retrieves a list of all available window handles.
@@ -484,7 +487,7 @@ class IWebDriver {
    * @return {!Promise<!Array<string>>} A promise that will be resolved with an
    *     array of window handles.
    */
-  getAllWindowHandles() {}
+  getAllWindowHandles() { }
 
   /**
    * Retrieves the current page's source. The returned source is a representation
@@ -494,7 +497,7 @@ class IWebDriver {
    * @return {!Promise<string>} A promise that will be resolved with the current
    *     page source.
    */
-  getPageSource() {}
+  getPageSource() { }
 
   /**
    * Closes the current window.
@@ -502,7 +505,7 @@ class IWebDriver {
    * @return {!Promise<void>} A promise that will be resolved when this command
    *     has completed.
    */
-  close() {}
+  close() { }
 
   /**
    * Navigates to the given URL.
@@ -511,7 +514,7 @@ class IWebDriver {
    * @return {!Promise<void>} A promise that will be resolved when the document
    *     has finished loading.
    */
-  get(url) {} // eslint-disable-line
+  get(url) { } // eslint-disable-line
 
   /**
    * Retrieves the URL for the current page.
@@ -519,7 +522,7 @@ class IWebDriver {
    * @return {!Promise<string>} A promise that will be resolved with the
    *     current URL.
    */
-  getCurrentUrl() {}
+  getCurrentUrl() { }
 
   /**
    * Retrieves the current page title.
@@ -527,7 +530,7 @@ class IWebDriver {
    * @return {!Promise<string>} A promise that will be resolved with the current
    *     page's title.
    */
-  getTitle() {}
+  getTitle() { }
 
   /**
    * Locates an element on the page. If the element cannot be found, a
@@ -567,7 +570,7 @@ class IWebDriver {
    *     commands against the located element. If the element is not found, the
    *     element will be invalidated and all scheduled commands aborted.
    */
-  findElement(locator) {} // eslint-disable-line
+  findElement(locator) { } // eslint-disable-line
 
   /**
    * Search for multiple elements on the page. Refer to the documentation on
@@ -577,7 +580,7 @@ class IWebDriver {
    * @return {!Promise<!Array<!WebElement>>} A promise that will resolve to an
    *     array of WebElements.
    */
-  findElements(locator) {} // eslint-disable-line
+  findElements(locator) { } // eslint-disable-line
 
   /**
    * Takes a screenshot of the current page. The driver makes a best effort to
@@ -591,23 +594,23 @@ class IWebDriver {
    * @return {!Promise<string>} A promise that will be resolved to the
    *     screenshot as a base-64 encoded PNG.
    */
-  takeScreenshot() {}
+  takeScreenshot() { }
 
   /**
    * @return {!Options} The options interface for this instance.
    */
-  manage() {}
+  manage() { }
 
   /**
    * @return {!Navigation} The navigation interface for this instance.
    */
-  navigate() {}
+  navigate() { }
 
   /**
    * @return {!TargetLocator} The target locator interface for this
    *     instance.
    */
-  switchTo() {}
+  switchTo() { }
 
   /**
    *
@@ -626,7 +629,7 @@ class IWebDriver {
    *         shrinkToFit: (boolean|undefined)
    *         pageRanges: (<Array>|undefined)}} options.
    */
-  printPage(options) {} // eslint-disable-line
+  printPage(options) { } // eslint-disable-line
 }
 
 /**
@@ -666,7 +669,7 @@ class WebDriver {
     // If session is a rejected promise, add a no-op rejection handler.
     // This effectively hides setup errors until users attempt to interact
     // with the session.
-    this.session_.catch(function () {})
+    this.session_.catch(function () { })
 
     /** @private {!command.Executor} */
     this.executor_ = executor
@@ -762,12 +765,12 @@ class WebDriver {
       this.session_ = Promise.reject(
         new error.NoSuchSessionError(
           'This driver instance does not have a valid session ID ' +
-            '(did you call WebDriver.quit()?) and may no longer be used.'
+          '(did you call WebDriver.quit()?) and may no longer be used.'
         )
       )
 
       // Only want the session rejection to bubble if accessed.
-      this.session_.catch(function () {})
+      this.session_.catch(function () { })
 
       if (this.onQuit_) {
         return this.onQuit_.call(void 0)
@@ -828,18 +831,15 @@ class WebDriver {
             let timeoutMessage = resolveWaitMessage(message)
             reject(
               new error.TimeoutError(
-                `${timeoutMessage}Timed out waiting for promise to resolve after ${
-                  Date.now() - start
+                `${timeoutMessage}Timed out waiting for promise to resolve after ${Date.now() - start
                 }ms`
               )
             )
           } catch (ex) {
             reject(
               new error.TimeoutError(
-                `${
-                  ex.message
-                }\nTimed out waiting for promise to resolve after ${
-                  Date.now() - start
+                `${ex.message
+                }\nTimed out waiting for promise to resolve after ${Date.now() - start
                 }ms`
               )
             )
@@ -869,7 +869,7 @@ class WebDriver {
     if (typeof fn !== 'function') {
       throw TypeError(
         'Wait condition must be a promise-like object, function, or a ' +
-          'Condition object'
+        'Condition object'
       )
     }
 
@@ -921,7 +921,7 @@ class WebDriver {
           if (!(value instanceof WebElement)) {
             throw TypeError(
               'WebElementCondition did not resolve to a WebElement: ' +
-                Object.prototype.toString.call(value)
+              Object.prototype.toString.call(value)
             )
           }
           return value
@@ -1393,6 +1393,19 @@ class WebDriver {
 
         callback(event)
       }
+      
+      if (params.method === 'Log.entryAdded') {
+        const logEventParams = params['params']
+        const logEntry = logEventParams['entry']
+        let event = {
+          level: logEntry['level'],
+          timestamp: new Date(logEntry['timestamp']),
+          message: logEntry['text'],
+        }
+
+        callback(event)
+      }
+
     })
     await connection.execute('Runtime.enable', {}, null)
   }
@@ -1770,7 +1783,7 @@ class Options {
       } else if (typeof value !== 'undefined') {
         throw TypeError(
           'invalid timeouts configuration:' +
-            ` expected "${key}" to be a number, got ${typeof value}`
+          ` expected "${key}" to be a number, got ${typeof value}`
         )
       }
     }
@@ -1831,7 +1844,7 @@ function legacyTimeout(driver, type, ms) {
  *
  * @record
  */
-Options.Cookie = function () {}
+Options.Cookie = function () { }
 
 /**
  * The name of the cookie.
@@ -2281,6 +2294,7 @@ class TargetLocator {
 
 const LEGACY_ELEMENT_ID_KEY = 'ELEMENT'
 const ELEMENT_ID_KEY = 'element-6066-11e4-a52e-4f735466cecf'
+const SHADOWROOT_ID_KEY = 'shadow-6066-11e4-a52e-4f735466cecf'
 
 /**
  * Represents a DOM element. WebElements can be found by searching from the
@@ -2536,18 +2550,18 @@ class WebElement {
    */
   async sendKeys(...args) {
     let keys = []
-    ;(await Promise.all(args)).forEach((key) => {
-      let type = typeof key
-      if (type === 'number') {
-        key = String(key)
-      } else if (type !== 'string') {
-        throw TypeError('each key must be a number of string; got ' + type)
-      }
+      ; (await Promise.all(args)).forEach((key) => {
+        let type = typeof key
+        if (type === 'number') {
+          key = String(key)
+        } else if (type !== 'string') {
+          throw TypeError('each key must be a number of string; got ' + type)
+        }
 
-      // The W3C protocol requires keys to be specified as an array where
-      // each element is a single key.
-      keys.push(...key.split(''))
-    })
+        // The W3C protocol requires keys to be specified as an array where
+        // each element is a single key.
+        keys.push(...key.split(''))
+      })
 
     if (!this.driver_.fileDetector_) {
       return this.execute_(
@@ -2653,6 +2667,16 @@ class WebElement {
   }
 
   /**
+   * Get the shadow root of the current web element.
+   * @returns {!Promise<ShadowRoot>} A promise that will be
+   *      resolved with the elements shadow root or rejected
+   *      with {@link NoSuchShadowRootError}
+   */
+  getShadowRoot() {
+    return this.execute_(new command.Command(command.Name.GET_SHADOW_ROOT))
+  }
+
+  /**
    * Get the visible (i.e. not hidden by CSS) innerText of this element,
    * including sub-elements, without any leading or trailing whitespace.
    *
@@ -2740,8 +2764,8 @@ class WebElement {
     const form = this.findElement({ xpath: './ancestor-or-self::form' })
     this.driver_.executeScript(
       "var e = arguments[0].ownerDocument.createEvent('Event');" +
-        "e.initEvent('submit', true, true);" +
-        'if (arguments[0].dispatchEvent(e)) { arguments[0].submit() }',
+      "e.initEvent('submit', true, true);" +
+      'if (arguments[0].dispatchEvent(e)) { arguments[0].submit() }',
       form
     )
   }
@@ -2821,6 +2845,186 @@ class WebElementPromise extends WebElement {
     this.getId = function () {
       return el.then(function (el) {
         return el.getId()
+      })
+    }
+  }
+}
+
+//////////////////////////////////////////////////////////////////////////////
+//
+//  ShadowRoot
+//
+//////////////////////////////////////////////////////////////////////////////
+
+/**
+ * Represents a ShadowRoot of a {@link WebElement}. Provides functions to
+ * retrieve elements that live in the DOM below the ShadowRoot.
+ */
+class ShadowRoot {
+
+  constructor(driver, id) {
+    this.driver_ = driver
+    this.id_ = id
+  }
+
+  /**
+   * Extracts the encoded ShadowRoot ID from the object.
+   *
+   * @param {?} obj The object to extract the ID from.
+   * @return {string} the extracted ID.
+   * @throws {TypeError} if the object is not a valid encoded ID.
+   */
+  static extractId(obj) {
+    if (obj && typeof obj === 'object') {
+      if (typeof obj[SHADOWROOT_ID_KEY] === 'string') {
+        return obj[SHADOWROOT_ID_KEY]
+      }
+    }
+    throw new TypeError('object is not a ShadowRoot ID')
+  }
+
+  /**
+   * @param {?} obj the object to test.
+   * @return {boolean} whether the object is a valid encoded WebElement ID.
+   */
+  static isId(obj) {
+    return (
+      obj &&
+      typeof obj === 'object' &&
+      typeof obj[SHADOWROOT_ID_KEY] === 'string')
+  }
+
+  /**
+   * @return {!Object} Returns the serialized representation of this ShadowRoot.
+   */
+  [Symbols.serialize]() {
+    return this.getId()
+  }
+
+  /**
+   * Schedules a command that targets this element with the parent WebDriver
+   * instance. Will ensure this element's ID is included in the command
+   * parameters under the "id" key.
+   *
+   * @param {!command.Command} command The command to schedule.
+   * @return {!Promise<T>} A promise that will be resolved with the result.
+   * @template T
+   * @see WebDriver#schedule
+   * @private
+   */
+  execute_(command) {
+    command.setParameter('id', this)
+    return this.driver_.execute(command)
+  }
+
+  /**
+   * Schedule a command to find a descendant of this ShadowROot. If the element
+   * cannot be found, the returned promise will be rejected with a
+   * {@linkplain error.NoSuchElementError NoSuchElementError}.
+   *
+   * The search criteria for an element may be defined using one of the static
+   * factories on the {@link by.By} class, or as a short-hand
+   * {@link ./by.ByHash} object. For example, the following two statements
+   * are equivalent:
+   *
+   *     var e1 = shadowroot.findElement(By.id('foo'));
+   *     var e2 = shadowroot.findElement({id:'foo'});
+   *
+   * You may also provide a custom locator function, which takes as input this
+   * instance and returns a {@link WebElement}, or a promise that will resolve
+   * to a WebElement. If the returned promise resolves to an array of
+   * WebElements, WebDriver will use the first element. For example, to find the
+   * first visible link on a page, you could write:
+   *
+   *     var link = element.findElement(firstVisibleLink);
+   *
+   *     function firstVisibleLink(shadowRoot) {
+   *       var links = shadowRoot.findElements(By.tagName('a'));
+   *       return promise.filter(links, function(link) {
+   *         return link.isDisplayed();
+   *       });
+   *     }
+   *
+   * @param {!(by.By|Function)} locator The locator strategy to use when
+   *     searching for the element.
+   * @return {!WebElementPromise} A WebElement that can be used to issue
+   *     commands against the located element. If the element is not found, the
+   *     element will be invalidated and all scheduled commands aborted.
+   */
+  findElement(locator) {
+    locator = by.checkedLocator(locator)
+    let id
+    if (typeof locator === 'function') {
+      id = this.driver_.findElementInternal_(locator, this)
+    } else {
+      let cmd = new command.Command(command.Name.FIND_ELEMENT_FROM_SHADOWROOT)
+        .setParameter('using', locator.using)
+        .setParameter('value', locator.value)
+      id = this.execute_(cmd)
+    }
+    return new ShadowRootPromise(this.driver_, id)
+  }
+
+  /**
+   * Locates all of the descendants of this element that match the given search
+   * criteria.
+   *
+   * @param {!(by.By|Function)} locator The locator strategy to use when
+   *     searching for the element.
+   * @return {!Promise<!Array<!WebElement>>} A promise that will resolve to an
+   *     array of WebElements.
+   */
+  async findElements(locator) {
+    locator = by.checkedLocator(locator)
+    if (typeof locator === 'function') {
+      return this.driver_.findElementsInternal_(locator, this)
+    } else {
+      let cmd = new command.Command(command.Name.FIND_ELEMENTS_FROM_SHADOWROOT)
+        .setParameter('using', locator.using)
+        .setParameter('value', locator.value)
+      let result = await this.execute_(cmd)
+      return Array.isArray(result) ? result : []
+    }
+  }
+
+  getId() {
+    return this.id_
+  }
+}
+
+/**
+ * ShadowRootPromise is a promise that will be fulfilled with a WebElement.
+ * This serves as a forward proxy on ShadowRoot, allowing calls to be
+ * scheduled without directly on this instance before the underlying
+ * ShadowRoot has been fulfilled.
+ *
+ * @implements { IThenable<!ShadowRoot>}
+ * @final
+ */
+class ShadowRootPromise extends ShadowRoot {
+  /**
+   * @param {!WebDriver} driver The parent WebDriver instance for this
+   *     element.
+   * @param {!Promise<!ShadowRoot>} el A promise
+   *     that will resolve to the promised element.
+   */
+  constructor(driver, shadow) {
+    super(driver, 'unused')
+
+    /** @override */
+    this.then = shadow.then.bind(shadow)
+
+    /** @override */
+    this.catch = shadow.catch.bind(shadow)
+
+    /**
+     * Defers returning the ShadowRoot ID until the wrapped WebElement has been
+     * resolved.
+     * @override
+     */
+    this.getId = function () {
+      return shadow.then(function (shadow) {
+        return shadow.getId()
       })
     }
   }
@@ -2983,6 +3187,7 @@ module.exports = {
   Logs,
   Navigation,
   Options,
+  ShadowRoot,
   TargetLocator,
   IWebDriver,
   WebDriver,

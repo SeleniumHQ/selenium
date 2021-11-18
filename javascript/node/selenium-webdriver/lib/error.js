@@ -40,6 +40,16 @@ class WebDriverError extends Error {
 }
 
 /**
+ * Indicates the shadow root is no longer attached to the DOM
+ */
+class DetachedShadowRootError extends WebDriverError {
+  /** @param {string=} opt_error the error message, if any. */
+  constructor(opt_error) {
+    super(opt_error)
+  }
+}
+
+/**
  * Indicates a {@linkplain ./webdriver.WebElement#click click command} could not
  * completed because the click target is obscured by other elements on the
  * page.
@@ -198,6 +208,16 @@ class NoSuchElementError extends WebDriverError {
   /** @param {string=} opt_error the error message, if any. */
   constructor(opt_error) {
     super(opt_error)
+  }
+}
+
+/**
+ * A ShadowRoot could not be located on the element
+ */
+class NoSuchShadowRootError extends WebDriverError {
+  /** @param {string=} opt_error the error message, if any. */
+  constructor(opt_error) {
+    super(opt_error);
   }
 }
 
@@ -420,6 +440,7 @@ const LEGACY_ERROR_CODE_TO_TYPE = new Map([
 
 const ERROR_CODE_TO_TYPE = new Map([
   ['unknown error', WebDriverError],
+  ['detached shadow root', DetachedShadowRootError],
   ['element click intercepted', ElementClickInterceptedError],
   ['element not interactable', ElementNotInteractableError],
   ['element not selectable', ElementNotSelectableError],
@@ -436,6 +457,7 @@ const ERROR_CODE_TO_TYPE = new Map([
   ['no such cookie', NoSuchCookieError],
   ['no such element', NoSuchElementError],
   ['no such frame', NoSuchFrameError],
+  ['no such shadow root', NoSuchShadowRootError],
   ['no such window', NoSuchWindowError],
   ['script timeout', ScriptTimeoutError],
   ['session not created', SessionNotCreatedError],
@@ -569,6 +591,7 @@ module.exports = {
   ErrorCode,
 
   WebDriverError,
+  DetachedShadowRootError,
   ElementClickInterceptedError,
   ElementNotInteractableError,
   ElementNotSelectableError,
@@ -584,6 +607,7 @@ module.exports = {
   NoSuchCookieError,
   NoSuchElementError,
   NoSuchFrameError,
+  NoSuchShadowRootError,
   NoSuchSessionError,
   NoSuchWindowError,
   ScriptTimeoutError,
