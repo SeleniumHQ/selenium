@@ -72,7 +72,7 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
   lint:
-    needs: small_tests
+    needs: build
     runs-on: ubuntu-latest
     steps:
       - name: Checkout source tree
@@ -166,7 +166,7 @@ jobs:
 
 
   server_tests:
-    needs: small_tests
+    needs: [ chrome_tests, firefox_tests ]
     runs-on: ubuntu-latest
     steps:
       - name: Checkout source tree
@@ -177,8 +177,10 @@ jobs:
           path: |
             ~/.cache/bazel-disk
             ~/.cache/bazel-repo
-          key: ${{ runner.os }}-bazel-firefox-tests-${{ hashFiles('**/BUILD.bazel') }}
+          key: ${{ runner.os }}-bazel-server-tests-${{ hashFiles('**/BUILD.bazel') }}
           restore-keys: |
+            ${{ runner.os }}-bazel-server-tests-
+            ${{ runner.os }}-bazel-chrome-tests-
             ${{ runner.os }}-bazel-firefox-tests-
             ${{ runner.os }}-bazel-build-
       - name: Setup bazelisk
@@ -189,7 +191,7 @@ jobs:
           java-version: '11'
       - name: Setup Chrome and ChromeDriver
         uses: ./.github/actions/setup-chrome
-      - name: Setup Firefox and geckodriver
+      - name: Setup Firefox and GeckoDriver
         uses: ./.github/actions/setup-firefox
       - name: Start XVFB
         run: Xvfb :99 &
