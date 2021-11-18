@@ -1393,6 +1393,19 @@ class WebDriver {
 
         callback(event)
       }
+      
+      if (params.method === 'Log.entryAdded') {
+        const logEventParams = params['params']
+        const logEntry = logEventParams['entry']
+        let event = {
+          level: logEntry['level'],
+          timestamp: new Date(logEntry['timestamp']),
+          message: logEntry['text'],
+        }
+
+        callback(event)
+      }
+
     })
     await connection.execute('Runtime.enable', {}, null)
   }
