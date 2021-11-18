@@ -140,5 +140,5 @@ suite(
         })
     })
   },
-  { browsers: ['chrome', 'firefox'] }
+  { browsers: ['firefox'] }
 )
