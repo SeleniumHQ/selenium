@@ -1,3 +1,15 @@
+Selenium 4.1.0
+
+* Add CDP for v96, remove support for v92 and v93
+* Add support for shadow dom end points
+* Upgrade sphinx to use latest
+* Correct docstrings around Service usage
+* XFail alert tests due to https://bugzilla.mozilla.org/show_bug.cgi\?id\=1731795
+* Remove py2 import code
+* Check the values in NO_PROXY and set the poolmanager accordingly (#9925, #9967)
+* Move python version to a variable to be shared about in build steps
+* Bump Bazel rules_pkg to 0.5.1
+
 Selenium 4.0.0
 
 * Add cdp 95 to python and JS
