@@ -1,3 +1,20 @@
+## v4.1.0
+
+* add support for handling Shadow DOM elements
+* Capture browser console logs when using BiDi onLogEvent api
+* add CDP support for v96 and remove v93
+* remove useless package, change io public api import to more common approach (#10037)
+* Fix flaky CDP dom mutation (#10029)
+* Fix edge test failures (#10012)
+* code cleanup second iteration (#9979)
+* Ensure correct serialization of extensions in chromium.Options (#6676)
+* Remove explicit id passing for CDP commands
+* Attach to page target while creating a CDP connection (#10005)
+* Add support for form submit in W3C mode (fixes #9916) (#9936)
+* Fixes relative locator 'locateWith' export
+* update doc string for CDP Commands (#9929)
+
+
 ## v4.0.0
 
 * Fixes cdp for Chrome and Firefox (#9909)
