@@ -1,3 +1,16 @@
+4.1.0 (2021-11-18)
+=========================
+
+DevTools:
+  * Released selenium-devtools 0.95.0 (supports CDP v85, v93, v94, v95)
+  * Released selenium-devtools 0.96.0 (supports CDP v85, v94, v95, v96)
+  * Added support for secure websockets (#10017)
+
+Ruby:
+  * Execute Script supports ShadowRoots (#10019)
+  * Fixed bug preventing zipping temp files on Windows (#9987)
+  * Sang Pumpkin Carol (thanks Jari!)
+
 4.0.3 (2021-10-20)
 =========================
 
