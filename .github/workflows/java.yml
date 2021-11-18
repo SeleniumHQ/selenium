@@ -160,7 +160,7 @@ jobs:
       - name: Run browser tests in Firefox
         uses: ./.github/actions/bazel-test
         with:
-          query: attr(tags, firefox, tests(//java/...)) except attr(tags, remote, tests(//java/...))
+          query: attr(tags, firefox, tests(//java/...)) except attr(tags, 'rc|remote', tests(//java/...))
         env:
           DISPLAY: :99
 
@@ -196,7 +196,40 @@ jobs:
       - name: Run server tests
         uses: ./.github/actions/bazel-test
         with:
-          query: tests(//java/...) except attr(tags, 'lint|ie|edge|edgehtml|safari', tests(//java/...))
+          query: tests(//java/...) except attr(tags, 'rc|lint|ie|edge|edgehtml|safari', tests(//java/...))
+        env:
+          DISPLAY: :99
+
+  rc_tests:
+    needs: small_tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout source tree
+        uses: actions/checkout@v2
+      - name: Cache Bazel artifacts
+        uses: actions/cache@v2
+        with:
+          path: |
+            ~/.cache/bazel-disk
+            ~/.cache/bazel-repo
+          key: ${{ runner.os }}-bazel-firefox-tests-${{ hashFiles('**/BUILD.bazel') }}
+          restore-keys: |
+            ${{ runner.os }}-bazel-firefox-tests-
+            ${{ runner.os }}-bazel-build-
+      - name: Setup bazelisk
+        uses: ./.github/actions/setup-bazelisk
+      - name: Setup Java
+        uses: actions/setup-java@v1
+        with:
+          java-version: '11'
+      - name: Setup Firefox and GeckoDriver
+        uses: ./.github/actions/setup-firefox
+      - name: Start XVFB
+        run: Xvfb :99 &
+      - name: Run browser tests in Firefox
+        uses: ./.github/actions/bazel-test
+        with:
+          query: attr(tags, rc, tests(//java/...))
         env:
           DISPLAY: :99
 
