@@ -28,12 +28,11 @@ from .firefox_binary import FirefoxBinary
 from .firefox_profile import FirefoxProfile
 from .options import Options
 from .remote_connection import FirefoxRemoteConnection
-from .service import Service
+from .service import DEFAULT_EXECUTABLE_PATH, Service
 
 
 # Default for log_path variable. To be deleted when deprecations for arguments are removed.
 DEFAULT_LOG_PATH = None
-DEFAULT_EXECUTABLE_PATH = "geckodriver"
 DEFAULT_SERVICE_LOG_PATH = "geckodriver.log"
 
 
