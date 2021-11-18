@@ -32,9 +32,6 @@ public class WebDriverException extends RuntimeException {
   public static final String DRIVER_INFO = "Driver info";
   protected static final String BASE_SUPPORT_URL = "https://selenium.dev/exceptions/";
 
-  private static final String HOST_NAME = HostIdentifier.getHostName();
-  private static final String HOST_ADDRESS = HostIdentifier.getHostAddress();
-
   private final Map<String, String> extraInfo = new ConcurrentHashMap<>();
 
   public WebDriverException() {
@@ -72,7 +69,6 @@ public class WebDriverException extends RuntimeException {
    * Returns the simple message string of this exception.
    *
    * @return the simple message string of this exception.
-   *
    * @see #getMessage()
    */
   public String getRawMessage() {
@@ -96,7 +92,7 @@ public class WebDriverException extends RuntimeException {
   public String getSystemInformation() {
     return String.format(
       "System info: host: '%s', ip: '%s', os.name: '%s', os.arch: '%s', os.version: '%s', java.version: '%s'",
-      HOST_NAME, HOST_ADDRESS,
+      HostIdentifier.getHostName(), HostIdentifier.getHostAddress(),
       System.getProperty("os.name"), System.getProperty("os.arch"),
       System.getProperty("os.version"), System.getProperty("java.version"));
   }
