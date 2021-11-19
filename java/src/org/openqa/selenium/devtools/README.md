@@ -11,6 +11,12 @@ They are typically downloaded from the
 * Copy the most recent `//java/src/org/openqa/selenium/devtools/vXX` to
   `//java/src/org/openqa/selenium/devtools/vXX+1`.
 * Do a search and replace in that directory, converting `XX` to `XX+1`
-* Compile the code 3:38 Fix the places where signatures have changed.
+* Add the `vXX` version to the [versions][] file.
+* Add `//java/src/org/openqa/selenium/devtools/vXX:vXX.publish` version to the [Rakefile][].
+* Compile the code and fix the places where signatures have changed.
 
 [README]: https://github.com/SeleniumHQ/selenium/tree/trunk/common/devtools
+
+[versions]: https://github.com/SeleniumHQ/selenium/blob/trunk/java/src/org/openqa/selenium/devtools/versions.bzl
+
+[Rakefile]: https://github.com/SeleniumHQ/selenium/blob/trunk/Rakefile#L102-L105

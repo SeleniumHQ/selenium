@@ -1,0 +1,22 @@
+{
+  "$schema": "https://aka.ms/codetour-schema",
+  "title": "Bazel",
+  "steps": [
+    {
+      "file": "WORKSPACE",
+      "description": "This is the main file creating the Bazel Workspace for this repository",
+      "line": 1
+    },
+    {
+      "file": "WORKSPACE",
+      "description": "These are the packages that support our rules and give us the extra functionality that we can use. There are a number of imported rules for different programming languages and extra features we need",
+      "line": 11
+    },
+    {
+      "file": "BUILD.bazel",
+      "description": "These are aliases to some of the most common build targets. To build a target you can run `bazel build <alias>` e.g. `bazel build grid`",
+      "line": 14
+    }
+  ],
+  "ref": "trunk"
+}

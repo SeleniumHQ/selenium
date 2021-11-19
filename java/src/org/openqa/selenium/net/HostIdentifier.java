@@ -17,6 +17,8 @@
 
 package org.openqa.selenium.net;
 
+import static java.util.logging.Level.WARNING;
+
 import org.openqa.selenium.Platform;
 
 import java.io.BufferedReader;
@@ -26,12 +28,16 @@ import java.net.NetworkInterface;
 import java.nio.charset.Charset;
 import java.util.Enumeration;
 import java.util.concurrent.TimeUnit;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class HostIdentifier {
-  private static final String HOST_NAME;
-  private static final String HOST_ADDRESS;
+  private static final Logger log = Logger.getLogger(HostIdentifier.class.getName());
 
-  static {
+  private static volatile String hostName;
+  private static volatile String hostAddress;
+
+  private static String resolveHostName() {
     // Ideally, we'd use InetAddress.getLocalHost, but this does a reverse DNS lookup. On Windows
     // and Linux this is apparently pretty fast, so we don't get random hangs. On OS X it's
     // amazingly slow. That's less than ideal. Figure things out and cache.
@@ -49,29 +55,35 @@ public class HostIdentifier {
           process.waitFor(2, TimeUnit.SECONDS);
         }
         if (process.exitValue() == 0) {
-          try (InputStreamReader isr = new InputStreamReader(process.getInputStream(), Charset.defaultCharset());
+          try (InputStreamReader isr = new InputStreamReader(process.getInputStream(),
+                                                             Charset.defaultCharset());
                BufferedReader reader = new BufferedReader(isr)) {
             host = reader.readLine();
           }
         }
       } catch (InterruptedException e) {
+        log.log(WARNING, "Failed to resolve host name", e);
         Thread.currentThread().interrupt();
         throw new RuntimeException(e);
-      } catch (Exception e) {
+      } catch (Throwable e) {
         // fall through
+        log.log(WARNING, "Failed to resolve host name", e);
       }
     }
     if (host == null) {
       // Give up.
       try {
         host = InetAddress.getLocalHost().getHostName();
-      } catch (Exception e) {
+      } catch (Throwable e) {
         host = "Unknown";  // At least we tried.
+        log.log(WARNING, "Failed to resolve host name", e);
       }
     }
 
-    HOST_NAME = host;
+    return host;
+  }
 
+  private static String resolveHostAddress() {
     String address = null;
     // Now for the IP address. We're going to do silly shenanigans on OS X only.
     if (Platform.getCurrent().is(Platform.MAC)) {
@@ -81,27 +93,35 @@ public class HostIdentifier {
         if (addresses.hasMoreElements()) {
           address = addresses.nextElement().getHostAddress();
         }
-      } catch (Exception e) {
+      } catch (Throwable e) {
         // Fall through and go the slow way.
+        log.log(WARNING, "Failed to resolve host address", e);
       }
     }
     if (address == null) {
       // Alright. I give up.
       try {
         address = InetAddress.getLocalHost().getHostAddress();
-      } catch (Exception e) {
+      } catch (Throwable e) {
         address = "Unknown";
+        log.log(WARNING, "Failed to resolve host address", e);
       }
     }
 
-    HOST_ADDRESS = address;
+    return address;
   }
 
-  public static String getHostName() {
-    return HOST_NAME;
+  public static synchronized String getHostName() {
+    if (hostName == null) {
+      hostName = resolveHostName();
+    }
+    return hostName;
   }
 
-  public static String getHostAddress() {
-    return HOST_ADDRESS;
+  public static synchronized String getHostAddress() {
+    if (hostAddress == null) {
+      hostAddress = resolveHostAddress();
+    }
+    return hostAddress;
   }
 }

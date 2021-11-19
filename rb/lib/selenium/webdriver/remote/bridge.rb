@@ -604,6 +604,9 @@ module Selenium
             element_id = element_id_from(arg)
             return Element.new(self, element_id) if element_id
 
+            shadow_root_id = shadow_root_id_from(arg)
+            return ShadowRoot.new self, shadow_root_id if shadow_root_id
+
             arg.each { |k, v| arg[k] = unwrap_script_result(v) }
           else
             arg
