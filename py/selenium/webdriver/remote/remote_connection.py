@@ -74,7 +74,7 @@ class RemoteConnection(object):
     def get_certificate_bundle_path(cls):
         """
         :Returns:
-            Paths of the .pem encoded certificate to verify connection to comand executor
+            Paths of the .pem encoded certificate to verify connection to command executor
         """
         return cls._ca_certs
 

@@ -180,7 +180,7 @@ class ChromiumDriver(RemoteWebDriver):
 
     def get_sinks(self) -> list:
         """
-        :Returns: A list of sinks avaliable for Cast.
+        :Returns: A list of sinks available for Cast.
         """
         return self.execute('getSinks')['value']
 

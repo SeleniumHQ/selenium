@@ -1378,7 +1378,7 @@ class WebDriver(BaseWebDriver):
                 driver.set_window_size(800,600)
         """
         if windowHandle != 'current':
-            warnings.warn("Only 'current' window is supported for W3C compatibile browsers.")
+            warnings.warn("Only 'current' window is supported for W3C compatible browsers.")
         self.set_window_rect(width=int(width), height=int(height))
 
     def get_window_size(self, windowHandle='current') -> dict:
@@ -1392,7 +1392,7 @@ class WebDriver(BaseWebDriver):
         """
 
         if windowHandle != 'current':
-            warnings.warn("Only 'current' window is supported for W3C compatibile browsers.")
+            warnings.warn("Only 'current' window is supported for W3C compatible browsers.")
         size = self.get_window_rect()
 
         if size.get('value', None):
@@ -1414,7 +1414,7 @@ class WebDriver(BaseWebDriver):
                 driver.set_window_position(0,0)
         """
         if windowHandle != 'current':
-            warnings.warn("Only 'current' window is supported for W3C compatibile browsers.")
+            warnings.warn("Only 'current' window is supported for W3C compatible browsers.")
         return self.set_window_rect(x=int(x), y=int(y))
 
     def get_window_position(self, windowHandle='current') -> dict:
@@ -1428,7 +1428,7 @@ class WebDriver(BaseWebDriver):
         """
 
         if windowHandle != 'current':
-            warnings.warn("Only 'current' window is supported for W3C compatibile browsers.")
+            warnings.warn("Only 'current' window is supported for W3C compatible browsers.")
         position = self.get_window_rect()
 
         return {k: position[k] for k in ('x', 'y')}
