@@ -1341,7 +1341,7 @@ class WebDriver(BaseWebDriver):
         """
         return self.get_screenshot_as_file(filename)
 
-    def get_screenshot_as_png(self) -> str:
+    def get_screenshot_as_png(self) -> bytes:
         """
         Gets the screenshot of the current window as a binary data.
 
