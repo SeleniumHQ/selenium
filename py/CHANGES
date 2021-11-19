@@ -1,3 +1,15 @@
+Selenium 4.1.0
+
+* Add CDP for v96, remove support for v92 and v93
+* Add support for shadow dom end points
+* Upgrade sphinx to use latest
+* Correct docstrings around Service usage
+* XFail alert tests due to https://bugzilla.mozilla.org/show_bug.cgi\?id\=1731795
+* Remove py2 import code
+* Check the values in NO_PROXY and set the poolmanager accordingly (#9925, #9967)
+* Move python version to a variable to be shared about in build steps
+* Bump Bazel rules_pkg to 0.5.1
+
 Selenium 4.0.0
 
 * Add cdp 95 to python and JS
@@ -180,7 +192,7 @@ Selenium 4.0 Alpha 6
 * Update tests and docs to not use deprecated methods
 * mark various tests as failing in Firefox
 * Use callback functions instead callable objects as expected conditions (#7765)
-* Fix error in webelemet not created, verifing if is str or dict. (#3481)
+* Fix error in webelemet not created, verifying if is str or dict. (#3481)
 * verify command_executor ssl certificate by default (#6536)
 * Correct documentation for ChromiumDriver
 * Deprecating find_element(s)_* calls in event firing webdriver
@@ -206,7 +218,7 @@ Selenium 4.0 Alpha 5
 * Add support for relative locators
 * Fix clear actions in ActionChains (#7943)
 * Automate RemoteConnection subclass selection  (#8010)
-* Fix capabilties to support macOS platform (#7980)
+* Fix capabilities to support macOS platform (#7980)
 * fix: DeprecationWarning of base64.encodestring() (#7446)
 * Build python code with Bazel
 * Parse python docstring example as code snippet
@@ -307,7 +319,7 @@ Selenium 3.13.0
 
 Selenium 3.12.0
 
-* Add desired_capabilities keyword to IE and Firefox drivers for driver consitency
+* Add desired_capabilities keyword to IE and Firefox drivers for driver consistency
 * Fix bug with creating Safari webdriver instance (#5578)
 * Add support for Safari extension command
 * Deprecate Options `set_headless` methods in favor of property setter
@@ -531,7 +543,7 @@ Selenium 2.53.0
 * Adding Options object for use with Python FirefoxDriver
 * Fixed improper usage of super in exceptions module
 * create a temp file for cookies in phantomjs if not specified
-* Pass in the executable that FirefoxBinary finds to the service if there isnt one passed in as a kwarg or capability
+* Pass in the executable that FirefoxBinary finds to the service if there isn't one passed in as a kwarg or capability
 * Applied some DRY and extracted out the keys_to_typing()
 * Fix deselecting options in <select>
 
@@ -639,7 +651,7 @@ Selenium 2.44.0
 
 Selenium 2.43.0
 * Expand WebElement.get_attribute API docs
-* firefox may be installed without admininstrator privileges
+* firefox may be installed without administrator privileges
     and therefore there may be no HKEY_LOCAL_MACHINE entry. Issue #7784
 * UnexpectedAlertPresentException should contain the alert text in python too. Issue #7745
 * don't mutate the global 'ignored exceptions', take a copy of the globally specified ones, change the
@@ -828,7 +840,7 @@ Selenium 2.20
 * Fixed Issue 3438
 
 Selenium 2.19
-* WebDriverBackedSelenium is now avalaible to all languages
+* WebDriverBackedSelenium is now available to all languages
 * Addon installation fixes
 
 Selenium 2.18
@@ -851,12 +863,12 @@ Selenium 2.14
 * A fix for Error Handling
 
 Selenium 2.13
-* Fixed switch_to_window so that it didnt crash Firefox Bug 2633
+* Fixed switch_to_window so that it didn't crash Firefox Bug 2633
 * Fixed Screenshot handling to work in all browsers. Bug 2829
 * Force Firefox to the Foreground
 
 Selenium 2.12
-* Added Select as a support pacakge
+* Added Select as a support package
 * Added Beta window size / position api's
 * Bug Fixes
 

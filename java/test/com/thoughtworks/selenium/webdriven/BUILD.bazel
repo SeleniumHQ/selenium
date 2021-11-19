@@ -12,6 +12,9 @@ java_selenium_test_suite(
         "--release",
         "11",
     ],
+    tags = [
+        "rc",
+    ],
     deps = [
         "//java/src/com/thoughtworks/selenium",
         "//java/src/com/thoughtworks/selenium/webdriven",

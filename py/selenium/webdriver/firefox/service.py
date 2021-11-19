@@ -20,11 +20,15 @@ from typing import List
 from selenium.webdriver.common import (service, utils)
 
 
+DEFAULT_EXECUTABLE_PATH = "geckodriver"
+
+
 class Service(service.Service):
     """Object that manages the starting and stopping of the
     GeckoDriver."""
 
-    def __init__(self, executable_path: str, port: int = 0, service_args: List[str] = None,
+    def __init__(self, executable_path: str = DEFAULT_EXECUTABLE_PATH,
+                 port: int = 0, service_args: List[str] = None,
                  log_path: str = "geckodriver.log", env: dict = None):
         """Creates a new instance of the GeckoDriver remote service proxy.
 

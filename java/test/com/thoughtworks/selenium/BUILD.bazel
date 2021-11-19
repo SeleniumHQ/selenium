@@ -52,7 +52,7 @@ java_selenium_test_suite(
         "testHelpers.js",
     ],
     tags = [
-        "flaky",
+        "rc",
     ],
     test_identifiers = [
         "Test",

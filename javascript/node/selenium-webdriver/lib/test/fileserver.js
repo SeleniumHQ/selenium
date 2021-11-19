@@ -102,6 +102,7 @@ const Pages = (function () {
   addPage('unicodeLtrPage', 'utf8/unicode_ltr.html')
   addPage('uploadPage', 'upload.html')
   addPage('veryLargeCanvas', 'veryLargeCanvas.html')
+  addPage('webComponents', 'webComponents.html')
   addPage('xhtmlTestPage', 'xhtmlTest.html')
   addPage('uploadInvisibleTestPage', 'upload_invisible.html')
 

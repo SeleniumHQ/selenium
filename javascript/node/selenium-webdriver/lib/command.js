@@ -168,6 +168,11 @@ const Name = {
   GET_ALERT_TEXT: 'getAlertText',
   SET_ALERT_TEXT: 'setAlertValue',
 
+  // Shadow DOM Commands
+  GET_SHADOW_ROOT: 'getShadowRoot',
+  FIND_ELEMENT_FROM_SHADOWROOT: 'findElementFromShadowRoot',
+  FIND_ELEMENTS_FROM_SHADOWROOT: 'findElementsFromShadowRoot',
+
   GET_AVAILABLE_LOG_TYPES: 'getAvailableLogTypes',
   GET_LOG: 'getLog',
   GET_SESSION_LOGS: 'getSessionLogs',
