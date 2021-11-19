@@ -107,7 +107,7 @@ class WebElement(BaseWebElement):
         try:
             return self._execute(Command.GET_ELEMENT_PROPERTY, {"name": name})["value"]
         except WebDriverException:
-            # if we hit an end point that doesnt understand getElementProperty lets fake it
+            # if we hit an end point that doesn't understand getElementProperty lets fake it
             return self.parent.execute_script('return arguments[0][arguments[1]]', self, name)
 
     def get_dom_attribute(self, name) -> str:
@@ -614,7 +614,7 @@ class WebElement(BaseWebElement):
 
     @property
     def accessible_name(self) -> str:
-        """Returns the ARIA Lavel of the current webelement"""
+        """Returns the ARIA Level of the current webelement"""
         return self._execute(Command.GET_ELEMENT_ARIA_LABEL)['value']
 
     @property
