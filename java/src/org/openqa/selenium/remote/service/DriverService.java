@@ -286,7 +286,7 @@ public class DriverService implements Closeable {
     } finally {
       process = null;
       lock.unlock();
-      executorService.shutdownNow();
+      executorService.shutdown();
     }
 
     if (toThrow != null) {
@@ -308,7 +308,7 @@ public class DriverService implements Closeable {
 
   @Override
   public void close() {
-    executorService.shutdownNow();
+    executorService.shutdown();
   }
 
   private enum StartOrDie {

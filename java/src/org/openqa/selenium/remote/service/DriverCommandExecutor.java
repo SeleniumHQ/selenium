@@ -131,7 +131,7 @@ public class DriverCommandExecutor extends HttpCommandExecutor implements Closea
         Thread.currentThread().interrupt();
         throw new WebDriverException("Timed out waiting for driver server to stop.", e);
       } finally {
-        executorService.shutdownNow();
+        executorService.shutdown();
       }
 
     } else {
@@ -166,6 +166,6 @@ public class DriverCommandExecutor extends HttpCommandExecutor implements Closea
 
   @Override
   public void close() {
-    executorService.shutdownNow();
+    executorService.shutdown();
   }
 }

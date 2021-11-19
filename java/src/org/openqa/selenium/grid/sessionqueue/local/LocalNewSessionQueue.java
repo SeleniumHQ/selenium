@@ -407,7 +407,7 @@ public class LocalNewSessionQueue extends NewSessionQueue implements Closeable {
 
   @Override
   public void close() throws IOException {
-    service.shutdownNow();
+    service.shutdown();
   }
 
   private void failDueToTimeout(RequestId reqId) {
