@@ -76,10 +76,12 @@ import java.util.Base64;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.function.BiFunction;
@@ -112,7 +114,7 @@ public class RemoteWebDriver implements WebDriver,
 
   private ErrorHandler errorHandler = new ErrorHandler();
   private CommandExecutor executor;
-  private Capabilities capabilities;
+  protected Capabilities capabilities;
   private SessionId sessionId;
   private FileDetector fileDetector = new UselessFileDetector();
   private ExecuteMethod executeMethod;
@@ -321,6 +323,10 @@ public class RemoteWebDriver implements WebDriver,
       return new ImmutableCapabilities();
     }
     return capabilities;
+  }
+
+  private void setCapabilities(Capabilities newCapabilities) {
+    this.capabilities =  newCapabilities;
   }
 
   @Override
@@ -827,6 +833,7 @@ public class RemoteWebDriver implements WebDriver,
       @Override
       public Timeouts implicitlyWait(Duration duration) {
         execute(DriverCommand.SET_IMPLICIT_WAIT_TIMEOUT(duration));
+        updateCapabilitiesWithNewTimeout("implicit", duration);
         return this;
       }
 
@@ -852,6 +859,7 @@ public class RemoteWebDriver implements WebDriver,
       @Override
       public Timeouts scriptTimeout(Duration duration) {
         execute(DriverCommand.SET_SCRIPT_TIMEOUT(duration));
+        updateCapabilitiesWithNewTimeout("script", duration);
         return this;
       }
 
@@ -872,6 +880,7 @@ public class RemoteWebDriver implements WebDriver,
       @Override
       public Timeouts pageLoadTimeout(Duration duration) {
         execute(DriverCommand.SET_PAGE_LOAD_TIMEOUT(duration));
+        updateCapabilitiesWithNewTimeout("pageLoad", duration);
         return this;
       }
 
@@ -881,6 +890,24 @@ public class RemoteWebDriver implements WebDriver,
         Map<String, Object> rawSize = (Map<String, Object>) response.getValue();
         long timeout = ((Number) rawSize.get("pageLoad")).longValue();
         return Duration.ofMillis(timeout);
+      }
+
+      // If timeout exception is thrown then this ensures capabilities displayed in the error message show the updated timeout values
+      public void updateCapabilitiesWithNewTimeout(String key, Duration duration) {
+        Optional<Map<String,Long>> maybeTimeouts =
+          Optional.ofNullable((Map<String, Long>) getCapabilities()
+            .asMap()
+            .get(CapabilityType.TIMEOUTS));
+
+        if(maybeTimeouts.isPresent()){
+          Map<String, Long> timeoutMap = maybeTimeouts.get();
+          Map<String, Long> mutableTimeoutMap = new HashMap<>();
+          timeoutMap.forEach(mutableTimeoutMap::put);
+          mutableTimeoutMap.put(key, duration.toMillis());
+
+          setCapabilities(
+            getCapabilities().merge(new ImmutableCapabilities("timeouts", mutableTimeoutMap)));
+        }
       }
     } // timeouts class.
 

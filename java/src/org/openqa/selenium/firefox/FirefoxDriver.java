@@ -151,7 +151,6 @@ public class FirefoxDriver extends RemoteWebDriver
     }
   }
 
-  private final Capabilities capabilities;
   protected FirefoxBinary binary;
   private final RemoteWebStorage webStorage;
   private final HasExtensions extensions;
@@ -207,7 +206,7 @@ public class FirefoxDriver extends RemoteWebDriver
       .flatMap(reported -> CdpEndpointFinder.getCdpEndPoint(clientFactory, reported));
 
     this.cdpUri = cdpUri;
-    this.capabilities = cdpUri.map(uri ->
+    super.capabilities = cdpUri.map(uri ->
         new ImmutableCapabilities(
             new PersistentCapabilities(capabilities)
                 .setCapability("se:cdp", uri.toString())
@@ -230,11 +229,6 @@ public class FirefoxDriver extends RemoteWebDriver
             .findFirst().orElseThrow(WebDriverException::new);
 
     return new FirefoxDriverCommandExecutor(builder.withOptions(options).build());
-  }
-
-  @Override
-  public Capabilities getCapabilities() {
-    return capabilities;
   }
 
   @Override

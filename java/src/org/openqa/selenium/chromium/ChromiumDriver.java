@@ -91,7 +91,6 @@ public class ChromiumDriver extends RemoteWebDriver implements
     OPERA.is(name);
   private static final Logger LOG = Logger.getLogger(ChromiumDriver.class.getName());
 
-  private final Capabilities capabilities;
   private final RemoteLocationContext locationContext;
   private final RemoteWebStorage webStorage;
   private final TouchScreen touchScreen;
@@ -141,17 +140,12 @@ public class ChromiumDriver extends RemoteWebDriver implements
 
     devTools = connection.map(conn -> new DevTools(cdpInfo::getDomains, conn));
 
-    this.capabilities = cdpUri.map(uri -> new ImmutableCapabilities(
+    super.capabilities = cdpUri.map(uri -> new ImmutableCapabilities(
         new PersistentCapabilities(originalCapabilities)
             .setCapability("se:cdp", uri.toString())
             .setCapability(
                 "se:cdpVersion", originalCapabilities.getBrowserVersion())))
         .orElse(new ImmutableCapabilities(originalCapabilities));
-  }
-
-  @Override
-  public Capabilities getCapabilities() {
-    return capabilities;
   }
 
   @Override
