@@ -72,7 +72,7 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
   lint:
-    needs: small_tests
+    needs: build
     runs-on: ubuntu-latest
     steps:
       - name: Checkout source tree
@@ -120,7 +120,7 @@ jobs:
         uses: actions/setup-java@v1
         with:
           java-version: '11'
-      - name: Setup Chrome and chromedriver
+      - name: Setup Chrome and ChromeDriver
         uses: ./.github/actions/setup-chrome
       - name: Start XVFB
         run: Xvfb :99 &
@@ -153,19 +153,56 @@ jobs:
         uses: actions/setup-java@v1
         with:
           java-version: '11'
-      - name: Setup Firefox and geckodriver
+      - name: Setup Firefox and GeckoDriver
         uses: ./.github/actions/setup-firefox
       - name: Start XVFB
         run: Xvfb :99 &
       - name: Run browser tests in Firefox
         uses: ./.github/actions/bazel-test
         with:
-          query: attr(tags, firefox, tests(//java/...)) except attr(tags, remote, tests(//java/...))
+          query: attr(tags, firefox, tests(//java/...)) except attr(tags, 'rc|remote', tests(//java/...))
         env:
           DISPLAY: :99
 
 
   server_tests:
+    needs: [ chrome_tests, firefox_tests ]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout source tree
+        uses: actions/checkout@v2
+      - name: Cache Bazel artifacts
+        uses: actions/cache@v2
+        with:
+          path: |
+            ~/.cache/bazel-disk
+            ~/.cache/bazel-repo
+          key: ${{ runner.os }}-bazel-server-tests-${{ hashFiles('**/BUILD.bazel') }}
+          restore-keys: |
+            ${{ runner.os }}-bazel-server-tests-
+            ${{ runner.os }}-bazel-chrome-tests-
+            ${{ runner.os }}-bazel-firefox-tests-
+            ${{ runner.os }}-bazel-build-
+      - name: Setup bazelisk
+        uses: ./.github/actions/setup-bazelisk
+      - name: Setup Java
+        uses: actions/setup-java@v1
+        with:
+          java-version: '11'
+      - name: Setup Chrome and ChromeDriver
+        uses: ./.github/actions/setup-chrome
+      - name: Setup Firefox and GeckoDriver
+        uses: ./.github/actions/setup-firefox
+      - name: Start XVFB
+        run: Xvfb :99 &
+      - name: Run server tests
+        uses: ./.github/actions/bazel-test
+        with:
+          query: tests(//java/...) except attr(tags, 'rc|lint|ie|edge|edgehtml|safari', tests(//java/...))
+        env:
+          DISPLAY: :99
+
+  rc_tests:
     needs: small_tests
     runs-on: ubuntu-latest
     steps:
@@ -187,16 +224,14 @@ jobs:
         uses: actions/setup-java@v1
         with:
           java-version: '11'
-      - name: Setup Chrome and chromedriver
-        uses: ./.github/actions/setup-chrome
-      - name: Setup Firefox and geckodriver
+      - name: Setup Firefox and GeckoDriver
         uses: ./.github/actions/setup-firefox
       - name: Start XVFB
         run: Xvfb :99 &
-      - name: Run server tests
+      - name: Run browser tests in Firefox
         uses: ./.github/actions/bazel-test
         with:
-          query: tests(//java/...) except attr(tags, 'lint|ie|edge|edgehtml|safari', tests(//java/...))
+          query: attr(tags, rc, tests(//java/...))
         env:
           DISPLAY: :99
 

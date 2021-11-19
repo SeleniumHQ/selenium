@@ -1,3 +1,20 @@
+v4.1.0
+======
+
+* Supported CDP versions: 85, 94, 95, 96
+* Removed USE_CHROMIUM from EdgeOptions as new Edge is the default
+* [grid] Fixed command completion for ZSH when using the Selenium Server
+* Pass WebDriver instead of Loggable to allow augmentation of HasLogEvents
+* [grid] Using a random port when "-1" is set as port number for the Selenium Server
+* Handle Json parsing error such that future messages are not blocked
+* [grid] Fix host option
+* Changing type of extraInfo from HashMap to ConcurrentHasMap to avoid
+  ConcurrentModificationException while reading exception message by parallel threads
+* Add retry http request filter for transient errors.
+* Fix Javadoc code block formatting
+* [grid] Using non-loopback address when default config is used
+* Fix classloading error in host identifier
+
 v4.0.0
 ======
 
