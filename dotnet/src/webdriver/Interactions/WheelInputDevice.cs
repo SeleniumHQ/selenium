@@ -178,13 +178,13 @@ namespace OpenQA.Selenium.Interactions
 
             private Dictionary<string, object> ConvertElement()
             {
-                IWebElementReference elementReference = this.target as IWebElementReference;
+                IWebDriverObjectReference elementReference = this.target as IWebDriverObjectReference;
                 if (elementReference == null)
                 {
                     IWrapsElement elementWrapper = this.target as IWrapsElement;
                     if (elementWrapper != null)
                     {
-                        elementReference = elementWrapper.WrappedElement as IWebElementReference;
+                        elementReference = elementWrapper.WrappedElement as IWebDriverObjectReference;
                     }
                 }
 

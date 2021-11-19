@@ -19,13 +19,14 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using OpenQA.Selenium.Internal;
 
 namespace OpenQA.Selenium
 {
     /// <summary>
     /// Provides a representation of an element's shadow root.
     /// </summary>
-    public class ShadowRoot : ISearchContext, IWrapsDriver
+    public class ShadowRoot : ISearchContext, IWrapsDriver, IWebDriverObjectReference
     {
         /// <summary>
         /// The property name that represents an element shadow root in the wire protocol.
@@ -52,6 +53,29 @@ namespace OpenQA.Selenium
         public IWebDriver WrappedDriver
         {
             get { return this.driver; }
+        }
+
+        /// <summary>
+        /// Gets the internal ID for this ShadowRoot.
+        /// </summary>
+        string IWebDriverObjectReference.ObjectReferenceId
+        {
+            get { return this.shadowRootId; }
+        }
+
+        internal static bool ContainsShadowRootReference(Dictionary<string, object> shadowRootDictionary)
+        {
+            if (shadowRootDictionary == null)
+            {
+                throw new ArgumentNullException(nameof(shadowRootDictionary), "The dictionary containing the shadow root reference cannot be null");
+            }
+
+            return shadowRootDictionary.ContainsKey(ShadowRootReferencePropertyName);
+        }
+
+        internal static ShadowRoot FromDictionary(WebDriver driver, Dictionary<string, object> shadowRootDictionary)
+        {
+            return new ShadowRoot(driver, shadowRootDictionary[ShadowRoot.ShadowRootReferencePropertyName].ToString());
         }
 
         /// <summary>
@@ -95,6 +119,13 @@ namespace OpenQA.Selenium
             parameters.Add("value", by.Criteria);
             Response commandResponse = this.driver.InternalExecute(DriverCommand.FindShadowChildElements, parameters);
             return this.driver.GetElementsFromResponse(commandResponse);
+        }
+
+        Dictionary<string, object> IWebDriverObjectReference.ToDictionary()
+        {
+            Dictionary<string, object> shadowRootDictionary = new Dictionary<string, object>();
+            shadowRootDictionary.Add(ShadowRootReferencePropertyName, this.shadowRootId);
+            return shadowRootDictionary;
         }
     }
 }
