@@ -940,13 +940,13 @@ namespace OpenQA.Selenium
         private static object ConvertObjectToJavaScriptObject(object arg)
         {
             IWrapsElement argAsWrapsElement = arg as IWrapsElement;
-            IWebElementReference argAsElementReference = arg as IWebElementReference;
+            IWebDriverObjectReference argAsObjectReference = arg as IWebDriverObjectReference;
             IEnumerable argAsEnumerable = arg as IEnumerable;
             IDictionary argAsDictionary = arg as IDictionary;
 
-            if (argAsElementReference == null && argAsWrapsElement != null)
+            if (argAsObjectReference == null && argAsWrapsElement != null)
             {
-                argAsElementReference = argAsWrapsElement.WrappedElement as IWebElementReference;
+                argAsObjectReference = argAsWrapsElement.WrappedElement as IWebDriverObjectReference;
             }
 
             object converted = null;
@@ -955,11 +955,11 @@ namespace OpenQA.Selenium
             {
                 converted = arg;
             }
-            else if (argAsElementReference != null)
+            else if (argAsObjectReference != null)
             {
                 // TODO: Remove "ELEMENT" addition when all remote ends are spec-compliant.
-                Dictionary<string, object> elementDictionary = argAsElementReference.ToDictionary();
-                converted = elementDictionary;
+                Dictionary<string, object> webDriverObjectReferenceDictionary = argAsObjectReference.ToDictionary();
+                converted = webDriverObjectReferenceDictionary;
             }
             else if (argAsDictionary != null)
             {
@@ -1025,6 +1025,10 @@ namespace OpenQA.Selenium
                 if (this.elementFactory.ContainsElementReference(resultAsDictionary))
                 {
                     returnValue = this.elementFactory.CreateElement(resultAsDictionary);
+                }
+                else if (ShadowRoot.ContainsShadowRootReference(resultAsDictionary))
+                {
+                    returnValue = ShadowRoot.FromDictionary(this, resultAsDictionary);
                 }
                 else
                 {

@@ -70,7 +70,7 @@ namespace OpenQA.Selenium
         {
             get
             {
-                IWebElementReference elementReference = this.element as IWebElementReference;
+                IWebDriverObjectReference elementReference = this.element as IWebDriverObjectReference;
                 if (elementReference == null)
                 {
                     return null;
@@ -80,7 +80,7 @@ namespace OpenQA.Selenium
                 // uses the raw ID of the element, not an element reference. To use this,
                 // extract the ID using the well-known key to the dictionary for element
                 // references.
-                return elementReference.ElementReferenceId;
+                return elementReference.ObjectReferenceId;
             }
         }
     }

@@ -1,4 +1,4 @@
-﻿// <copyright file="IWebElementReference.cs" company="WebDriver Committers">
+// <copyright file="IWebElementReference.cs" company="WebDriver Committers">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements. See the NOTICE file
 // distributed with this work for additional information
@@ -26,12 +26,12 @@ namespace OpenQA.Selenium.Internal
     /// <summary>
     /// Defines the interface through which the framework can serialize an element to the wire protocol.
     /// </summary>
-    internal interface IWebElementReference
+    internal interface IWebDriverObjectReference
     {
         /// <summary>
-        /// Gets the internal ID of the element.
+        /// Gets the internal ID of the WebDriver object.
         /// </summary>
-        string ElementReferenceId { get; }
+        string ObjectReferenceId { get; }
 
         /// <summary>
         /// Converts an object into an object that represents an element for the wire protocol.

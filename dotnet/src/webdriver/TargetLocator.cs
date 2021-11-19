@@ -91,13 +91,13 @@ namespace OpenQA.Selenium
                 throw new ArgumentNullException(nameof(frameElement), "Frame element cannot be null");
             }
 
-            IWebElementReference elementReference = frameElement as IWebElementReference;
+            IWebDriverObjectReference elementReference = frameElement as IWebDriverObjectReference;
             if (elementReference == null)
             {
                 IWrapsElement elementWrapper = frameElement as IWrapsElement;
                 if (elementWrapper != null)
                 {
-                    elementReference = elementWrapper.WrappedElement as IWebElementReference;
+                    elementReference = elementWrapper.WrappedElement as IWebDriverObjectReference;
                 }
             }
 
@@ -108,7 +108,7 @@ namespace OpenQA.Selenium
 
             // TODO: Remove "ELEMENT" addition when all remote ends are spec-compliant.
             Dictionary<string, object> elementDictionary = elementReference.ToDictionary();
-            elementDictionary.Add("ELEMENT", elementReference.ElementReferenceId);
+            elementDictionary.Add("ELEMENT", elementReference.ObjectReferenceId);
 
             Dictionary<string, object> parameters = new Dictionary<string, object>();
             parameters.Add("id", elementDictionary);
