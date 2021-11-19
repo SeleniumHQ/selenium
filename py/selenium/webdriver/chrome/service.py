@@ -19,12 +19,16 @@ from typing import List
 from selenium.webdriver.chromium import service
 
 
+DEFAULT_EXECUTEABLE_PATH = "chromedriver"
+
+
 class Service(service.ChromiumService):
     """
     Object that manages the starting and stopping of the ChromeDriver
     """
 
-    def __init__(self, executable_path: str, port: int = 0, service_args: List[str] = None,
+    def __init__(self, executable_path: str = DEFAULT_EXECUTEABLE_PATH,
+                 port: int = 0, service_args: List[str] = None,
                  log_path: str = None, env: str = None):
         """
         Creates a new instance of the Service
