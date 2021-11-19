@@ -20,12 +20,16 @@ from selenium.webdriver.common import service, utils
 from subprocess import PIPE
 
 
+DEFAULT_EXECUTABLE_PATH = "/usr/bin/safaridriver"
+
+
 class Service(service.Service):
     """
     Object that manages the starting and stopping of the SafariDriver
     """
 
-    def __init__(self, executable_path, port=0, quiet=False, service_args=None):
+    def __init__(self, executable_path: str = DEFAULT_EXECUTABLE_PATH,
+                 port=0, quiet=False, service_args=None):
         """
         Creates a new instance of the Service
 

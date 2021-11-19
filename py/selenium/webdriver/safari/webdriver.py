@@ -24,10 +24,10 @@ from selenium.common.exceptions import WebDriverException
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 from selenium.webdriver.remote.webdriver import WebDriver as RemoteWebDriver
 from .options import Options
-from .service import Service
+from .service import DEFAULT_EXECUTABLE_PATH, Service
 from .remote_connection import SafariRemoteConnection
 
-DEFAULT_EXECUTABLE_PATH = "/usr/bin/safaridriver"
+
 DEFAULT_SAFARI_CAPS = DesiredCapabilities.SAFARI.copy()
 
 
