@@ -19,7 +19,7 @@ import time
 from selenium.common.exceptions import NoSuchElementException, InvalidSelectorException
 from selenium.common.exceptions import TimeoutException
 
-POLL_FREQUENCY = 0.5  # How long to sleep inbetween calls to the method
+POLL_FREQUENCY = 0.5  # How long to sleep in between calls to the method
 IGNORED_EXCEPTIONS = (NoSuchElementException,)  # exceptions ignored during calls to the method
 
 
