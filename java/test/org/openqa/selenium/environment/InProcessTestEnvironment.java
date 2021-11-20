@@ -19,14 +19,32 @@ package org.openqa.selenium.environment;
 
 import org.openqa.selenium.environment.webserver.AppServer;
 import org.openqa.selenium.environment.webserver.NettyAppServer;
+import org.openqa.selenium.netty.server.PortAlreadyInUseException;
+
+import java.util.logging.Logger;
 
 public class InProcessTestEnvironment implements TestEnvironment {
+  private static final Logger log = Logger.getLogger(InProcessTestEnvironment.class.getName());
 
   private AppServer appServer;
 
   public InProcessTestEnvironment() {
-    appServer = new NettyAppServer();
-    appServer.start();
+    int maxRetries = 5;
+    for (int retry = 1; retry <= maxRetries; retry++) {
+      try {
+        AppServer server = new NettyAppServer();
+        server.start();
+        this.appServer = server;
+        break;
+      }
+      catch (PortAlreadyInUseException portAlreadyInUse) {
+        if (retry == maxRetries) {
+          throw portAlreadyInUse;
+        }
+        log.warning(String.format("Failed to start app server: %s (try %s out of %s), retrying...",
+                                  portAlreadyInUse.getMessage(), retry, maxRetries));
+      }
+    }
   }
 
   @Override
