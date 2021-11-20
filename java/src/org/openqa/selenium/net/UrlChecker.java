@@ -17,6 +17,9 @@
 
 package org.openqa.selenium.net;
 
+import static java.util.concurrent.TimeUnit.MILLISECONDS;
+import static java.util.concurrent.TimeUnit.NANOSECONDS;
+
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -28,9 +31,6 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Logger;
-
-import static java.util.concurrent.TimeUnit.MILLISECONDS;
-import static java.util.concurrent.TimeUnit.NANOSECONDS;
 
 /**
  * Polls a URL until a HTTP 200 response is received.
@@ -130,9 +130,7 @@ public class UrlChecker {
       throw new TimeoutException(String.format(
           "Timed out waiting for %s to become unavailable after %d ms",
           url, MILLISECONDS.convert(System.nanoTime() - start, NANOSECONDS)), e);
-    } catch (RuntimeException e) {
-      throw e;
-    } catch (Exception e) {
+    } catch (InterruptedException | ExecutionException e) {
       throw new RuntimeException(e);
     }
   }

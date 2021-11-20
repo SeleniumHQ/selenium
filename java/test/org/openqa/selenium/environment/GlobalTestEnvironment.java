@@ -37,12 +37,8 @@ public class GlobalTestEnvironment {
   public static synchronized TestEnvironment getOrCreate(
       Supplier<TestEnvironment> startThisIfNothingIsAlreadyRunning) {
     if (environment == null) {
-      try {
-        environment = startThisIfNothingIsAlreadyRunning.get();
-        environment.assertIsValid();
-      } catch (Exception e) {
-        throw new RuntimeException(e);
-      }
+      environment = startThisIfNothingIsAlreadyRunning.get();
+      environment.assertIsValid();
     }
     return environment;
   }

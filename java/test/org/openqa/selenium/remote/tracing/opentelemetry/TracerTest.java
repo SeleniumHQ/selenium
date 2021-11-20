@@ -570,7 +570,7 @@ public class TracerTest {
           }
         });
         toReturn.get();
-      } catch (Exception e) {
+      } catch (InterruptedException | ExecutionException e) {
         throw new RuntimeException(e);
       }
       return new HttpResponse();
