@@ -17,7 +17,14 @@
 
 package org.openqa.selenium.netty.server;
 
-import java.net.InetSocketAddress;
+import org.openqa.selenium.grid.server.BaseServerOptions;
+import org.openqa.selenium.grid.server.Server;
+import org.openqa.selenium.internal.Require;
+import org.openqa.selenium.remote.AddWebDriverSpecHeaders;
+import org.openqa.selenium.remote.ErrorFilter;
+import org.openqa.selenium.remote.http.HttpHandler;
+import org.openqa.selenium.remote.http.Message;
+
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.Channel;
 import io.netty.channel.EventLoopGroup;
@@ -30,24 +37,19 @@ import io.netty.handler.ssl.SslContextBuilder;
 import io.netty.handler.ssl.util.SelfSignedCertificate;
 import io.netty.util.internal.logging.InternalLoggerFactory;
 import io.netty.util.internal.logging.JdkLoggerFactory;
-import org.openqa.selenium.remote.AddWebDriverSpecHeaders;
-import org.openqa.selenium.grid.server.BaseServerOptions;
-import org.openqa.selenium.grid.server.Server;
-import org.openqa.selenium.remote.ErrorFilter;
-import org.openqa.selenium.internal.Require;
-import org.openqa.selenium.remote.http.HttpHandler;
-import org.openqa.selenium.remote.http.Message;
 
-import javax.net.ssl.SSLException;
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.net.BindException;
+import java.net.InetSocketAddress;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.security.cert.CertificateException;
 import java.util.Optional;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
+
+import javax.net.ssl.SSLException;
 
 public class NettyServer implements Server<NettyServer> {
 
@@ -156,7 +158,7 @@ public class NettyServer implements Server<NettyServer> {
       throw new UncheckedIOException(new IOException("Start up interrupted", e));
     } catch (Exception e) {
       if (e instanceof BindException) {
-        throw new UncheckedIOException(new IOException(String.format("Port %s already in use", port), e));
+        throw new PortAlreadyInUseException(port, (BindException) e);
       }
       throw e;
     }
