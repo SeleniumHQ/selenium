@@ -19,7 +19,7 @@ import http.client as http_client
 
 
 from selenium.webdriver.remote.webdriver import WebDriver as RemoteWebDriver
-from .service import Service
+from .service import DEFAULT_EXECUTABLE_PATH, Service
 from .options import Options
 
 
@@ -28,8 +28,8 @@ class WebDriver(RemoteWebDriver):
     Controls the WebKitGTKDriver and allows you to drive the browser.
     """
 
-    def __init__(self, executable_path="WebKitWebDriver", port=0, options=None,
-                 desired_capabilities=None,
+    def __init__(self, executable_path=DEFAULT_EXECUTABLE_PATH,
+                 port=0, options=None, desired_capabilities=None,
                  service_log_path=None, keep_alive=False):
         """
         Creates a new instance of the WebKitGTK driver.

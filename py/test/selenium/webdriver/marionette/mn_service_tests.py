@@ -19,7 +19,7 @@ from selenium.webdriver.firefox.service import Service
 
 
 def test_command_line_args():
-    service = Service("geckodriver", service_args=["--log", "trace"])
+    service = Service(service_args=["--log", "trace"])
     found = False
 
     args = service.command_line_args()

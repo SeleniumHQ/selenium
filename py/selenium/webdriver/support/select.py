@@ -87,7 +87,7 @@ class Select(object):
             raise NoSuchElementException("Cannot locate option with value: %s" % value)
 
     def select_by_index(self, index):
-        """Select the option at the given index. This is done by examing the "index" attribute of an
+        """Select the option at the given index. This is done by examining the "index" attribute of an
            element, and not merely by counting.
 
            :Args:
@@ -171,7 +171,7 @@ class Select(object):
             raise NoSuchElementException("Could not locate element with value: %s" % value)
 
     def deselect_by_index(self, index):
-        """Deselect the option at the given index. This is done by examing the "index" attribute of an
+        """Deselect the option at the given index. This is done by examining the "index" attribute of an
            element, and not merely by counting.
 
            :Args:

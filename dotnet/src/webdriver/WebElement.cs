@@ -29,7 +29,7 @@ using OpenQA.Selenium.Internal;
 
 namespace OpenQA.Selenium
 {
-    public class WebElement : IWebElement, IFindsElement, IWrapsDriver, ILocatable, ITakesScreenshot, IWebElementReference
+    public class WebElement : IWebElement, IFindsElement, IWrapsDriver, ILocatable, ITakesScreenshot, IWebDriverObjectReference
     {
         /// <summary>
         /// The property name that represents a web element in the wire protocol.
@@ -250,7 +250,7 @@ namespace OpenQA.Selenium
         /// <summary>
         /// Gets the internal ID of the element.
         /// </summary>
-        string IWebElementReference.ElementReferenceId
+        string IWebDriverObjectReference.ObjectReferenceId
         {
             get { return this.elementId; }
         }
@@ -695,7 +695,7 @@ namespace OpenQA.Selenium
             return false;
         }
 
-        Dictionary<string, object> IWebElementReference.ToDictionary()
+        Dictionary<string, object> IWebDriverObjectReference.ToDictionary()
         {
             Dictionary<string, object> elementDictionary = new Dictionary<string, object>();
             elementDictionary.Add(ElementReferencePropertyName, this.elementId);
@@ -753,9 +753,10 @@ namespace OpenQA.Selenium
                 throw new WebDriverException("Cannot upload " + localFile, e);
             }
         }
-        private IWebElementReference ToElementReference()
+
+        private IWebDriverObjectReference ToElementReference()
         {
-            return this as IWebElementReference;
+            return this as IWebDriverObjectReference;
         }
     }
 }
