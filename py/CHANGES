@@ -1,5 +1,10 @@
 Selenium 4.1.0
 
+* add warning if people set w3c to false as it may break their tests
+* Fix wrong type annotations for "env" it's a dict not a string (#10072)
+* Added default executable path in service module for (#10057)
+* Fix typos for docstrings (#10052)
+* Fix return type hint in get_screenshot_as_png (#10060)
 * Add CDP for v96, remove support for v92 and v93
 * Add support for shadow dom end points
 * Upgrade sphinx to use latest
