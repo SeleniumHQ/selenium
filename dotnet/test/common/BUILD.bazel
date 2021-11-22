@@ -60,8 +60,8 @@ config_setting(
     ],
     target_frameworks = select({
         ":netframework": ["net471"],
-        ":netcore": ["netcoreapp2.1"],
-        "//conditions:default": ["netcoreapp2.1"],
+        ":netcore": ["netcoreapp3.1"],
+        "//conditions:default": ["netcoreapp3.1"],
     }),
     visibility = ["//visibility:public"],
     deps = select({
@@ -72,13 +72,13 @@ config_setting(
             "@moq//:Moq",
         ],
         ":netcore": [
-            "//dotnet/src/webdriver:netstandard2.0",
+            "//dotnet/src/webdriver:netstandard2.1",
             "@json.net//:Newtonsoft.Json",
             "@benderproxy//:BenderProxy",
             "@moq//:Moq",
         ],
         "//conditions:default": [
-            "//dotnet/src/webdriver:netstandard2.0",
+            "//dotnet/src/webdriver:netstandard2.1",
             "@json.net//:Newtonsoft.Json",
             "@benderproxy//:BenderProxy",
             "@moq//:Moq",
