@@ -17,6 +17,7 @@
 
 import base64
 import os
+import warnings
 from typing import List, NoReturn, Union
 
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
@@ -129,6 +130,8 @@ class ChromiumOptions(ArgOptions):
           name: The experimental option name.
           value: The option value.
         """
+        if name.lower() == "w3c" and (value == "false" or value == False):
+            warnings.warn(UserWarning("Manipulating `w3c` setting can have unintended consequences."))
         self._experimental_options[name] = value
 
     @property
