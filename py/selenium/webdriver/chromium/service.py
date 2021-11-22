@@ -25,7 +25,7 @@ class ChromiumService(service.Service):
     """
 
     def __init__(self, executable_path: str, port: int = 0, service_args: List[str] = None,
-                 log_path: str = None, env: str = None, start_error_message: str = None):
+                 log_path: str = None, env: dict = None, start_error_message: str = None):
         """
         Creates a new instance of the Service
 
