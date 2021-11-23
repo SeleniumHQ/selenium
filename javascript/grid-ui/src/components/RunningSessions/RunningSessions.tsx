@@ -182,8 +182,8 @@ function EnhancedTableHead (props: EnhancedTableProps): JSX.Element {
         {headCells.map((headCell) => (
           <TableCell
             key={headCell.id}
-            align='left'
-            padding='default'
+            align="left"
+            padding="normal"
             sortDirection={orderBy === headCell.id ? order : false}
           >
             <TableSortLabel

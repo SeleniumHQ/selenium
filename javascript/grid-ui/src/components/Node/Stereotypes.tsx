@@ -57,7 +57,8 @@ class Stereotypes extends React.Component<StereotypesProps, {}> {
       return (
         <Grid item key={index}>
           <Grid container alignItems="center" spacing={1}>
-            <Tooltip title={JSON.stringify(slotStereotype.rawData.stereotype)}>
+            <Tooltip
+              title={JSON.stringify(slotStereotype.rawData.stereotype) ?? ''}>
               <Badge badgeContent={slotStereotype.slotCount} color={'primary'}
                      className={classes.boxStyle}>
                 <Grid item className={classes.browserVersion}>
