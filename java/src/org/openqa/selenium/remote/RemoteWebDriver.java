@@ -894,12 +894,12 @@ public class RemoteWebDriver implements WebDriver,
 
       // If timeout exception is thrown then this ensures capabilities displayed in the error message show the updated timeout values
       public void updateCapabilitiesWithNewTimeout(String key, Duration duration) {
-        Optional<Map<String,Long>> maybeTimeouts =
+        Optional<Map<String, Long>> maybeTimeouts =
           Optional.ofNullable((Map<String, Long>) getCapabilities()
             .asMap()
             .get(CapabilityType.TIMEOUTS));
 
-        if(maybeTimeouts.isPresent()){
+        if (maybeTimeouts.isPresent()) {
           Map<String, Long> timeoutMap = maybeTimeouts.get();
           Map<String, Long> mutableTimeoutMap = new HashMap<>();
           timeoutMap.forEach(mutableTimeoutMap::put);
