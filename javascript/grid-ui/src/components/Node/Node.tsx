@@ -70,7 +70,7 @@ class Node extends React.Component<NodeProps, {}> {
         <CardContent className={classes.paddingContent}>
           <Grid
             container
-            justify='space-between'
+            justifyContent="space-between"
             spacing={1}
           >
             <Grid item xs={10}>
