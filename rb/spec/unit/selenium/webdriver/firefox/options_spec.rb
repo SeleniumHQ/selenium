@@ -43,6 +43,7 @@ module Selenium
                                args: %w[foo bar],
                                binary: '/foo/bar',
                                prefs: {foo: 'bar'},
+                               env: {'FOO' => 'bar'},
                                foo: 'bar',
                                profile: profile,
                                log_level: :debug,
@@ -55,6 +56,7 @@ module Selenium
             expect(opts.args.to_a).to eq(%w[foo bar])
             expect(opts.binary).to eq('/foo/bar')
             expect(opts.prefs[:foo]).to eq('bar')
+            expect(opts.env['FOO']).to eq('bar')
             expect(opts.instance_variable_get('@options')[:foo]).to eq('bar')
             expect(opts.profile).to eq(profile)
             expect(opts.log_level).to eq(:debug)
@@ -89,6 +91,11 @@ module Selenium
           it 'adds a preference' do
             options.prefs[:foo] = 'bar'
             expect(options.prefs[:foo]).to eq('bar')
+          end
+
+          it 'adds an ENV' do
+            options.env['FOO'] = 'bar'
+            expect(options.env['FOO']).to eq('bar')
           end
         end
 
@@ -211,6 +218,7 @@ module Selenium
                                args: %w[foo bar],
                                binary: '/foo/bar',
                                prefs: {foo: 'bar'},
+                               env: {'FOO' => 'bar'},
                                foo: 'bar',
                                profile: profile,
                                log_level: :debug,
@@ -236,6 +244,7 @@ module Selenium
                                        key => {'args' => %w[foo bar],
                                                'binary' => '/foo/bar',
                                                'prefs' => {'foo' => 'bar'},
+                                               'env' => {'FOO' => 'bar'},
                                                'profile' => 'encoded_profile',
                                                'log' => {'level' => 'debug'},
                                                'foo' => 'bar',
