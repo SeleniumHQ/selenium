@@ -14,6 +14,7 @@ v4.1.0
 * Fix Javadoc code block formatting
 * [grid] Using non-loopback address when default config is used
 * Fix classloading error in host identifier
+* Split OpenTelemetry command in order to facilitate search by tags
 
 v4.0.0
 ======
