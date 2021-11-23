@@ -25,11 +25,12 @@ module Selenium
 
         KEY = 'moz:firefoxOptions'
 
-        # see: https://firefox-source-docs.mozilla.org/testing/geckodriver/Capabilities.html
+        # see: https://developer.mozilla.org/en-US/docs/Web/WebDriver/Capabilities/firefoxOptions
         CAPABILITIES = {binary: 'binary',
                         args: 'args',
                         log: 'log',
                         prefs: 'prefs',
+                        env: 'env',
                         android_package: 'androidPackage',
                         android_activity: 'androidActivity',
                         android_device_serial: 'androidDeviceSerial',
@@ -62,6 +63,7 @@ module Selenium
 
           @options[:args] ||= []
           @options[:prefs] ||= {}
+          @options[:env] ||= {}
           @options[:log] ||= {level: log_level} if log_level
 
           process_profile(@options.delete(:profile))
