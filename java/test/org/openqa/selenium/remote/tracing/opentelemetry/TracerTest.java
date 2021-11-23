@@ -23,6 +23,7 @@ import io.opentelemetry.api.common.Attributes;
 import io.opentelemetry.api.common.AttributesBuilder;
 import io.opentelemetry.api.trace.StatusCode;
 import io.opentelemetry.api.trace.propagation.W3CTraceContextPropagator;
+import io.opentelemetry.context.Context;
 import io.opentelemetry.context.propagation.ContextPropagators;
 import io.opentelemetry.sdk.OpenTelemetrySdk;
 import io.opentelemetry.sdk.common.CompletableResultCode;
@@ -102,7 +103,6 @@ public class TracerTest {
         StatusCode.ERROR);
     assertThat(values).element(0)
         .extracting(el -> el.getAttributes().get(AttributeKey.stringKey("cheese"))).isEqualTo("gouda");
-
   }
 
   @Test
@@ -585,6 +585,33 @@ public class TracerTest {
     });
 
     routable.execute(new HttpRequest(GET, "/"));
+  }
+
+  @Test
+  public void shouldBeAbleToSetExternalContextAndCreatedSpansAreItsChildren() {
+    List<SpanData> allSpans = new ArrayList<>();
+    Tracer tracer = createTracer(allSpans);
+
+    OpenTelemetrySdk openTelemetrySdk = OpenTelemetrySdk.builder().build();
+    io.opentelemetry.api.trace.Span externalSpan = openTelemetrySdk
+        .getTracer("externalTracer")
+        .spanBuilder("externalSpan")
+        .startSpan();
+    Context parentContext = Context.current().with(externalSpan);
+    tracer.setOpenTelemetryContext(parentContext);
+
+    Span parent = tracer.getCurrentContext().createSpan("parent");
+    try (Span child = parent.createSpan("child")) {
+    }
+    parent.close();
+
+    assertThat(allSpans).hasSize(2);
+    assertThat(allSpans.get(0).getName()).isEqualTo("child");
+    assertThat(allSpans.get(0).getParentSpanId())
+        .isEqualTo(parent.getId());
+    assertThat(allSpans.get(1).getName()).isEqualTo("parent");
+    assertThat(allSpans.get(1).getParentSpanId())
+        .isEqualTo(externalSpan.getSpanContext().getSpanId());
   }
 
   private Tracer createTracer(List<SpanData> exportTo) {
