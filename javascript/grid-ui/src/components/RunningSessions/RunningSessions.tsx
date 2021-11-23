@@ -576,12 +576,12 @@ class RunningSessions extends React.Component<RunningSessionsProps, RunningSessi
               </TableContainer>
               <TablePagination
                 rowsPerPageOptions={[5, 10, 15]}
-                component='div'
+                component="div"
                 count={rows.length}
                 rowsPerPage={rowsPerPage}
                 page={page}
-                onChangePage={this.handleChangePage}
-                onChangeRowsPerPage={this.handleChangeRowsPerPage}
+                onPageChange={this.handleChangePage}
+                onRowsPerPageChange={this.handleChangeRowsPerPage}
               />
             </Paper>
             <FormControlLabel
