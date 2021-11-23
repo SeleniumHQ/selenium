@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>net5.0;net471;netcoreapp2.1</TargetFrameworks>
+    <TargetFrameworks>net5.0;net471;netcoreapp3.1</TargetFrameworks>
     <AssemblyName>WebDriver.Support.Tests</AssemblyName>
   </PropertyGroup>
 
@@ -30,7 +30,7 @@
 
   <ItemGroup>
     <PackageReference Include="Moq" Version="4.13.0" />
-    <PackageReference Include="NUnit" Version="3.12.0" />
+    <PackageReference Include="NUnit" Version="3.13.2" />
     <PackageReference Include="NUnit3TestAdapter" Version="3.16.1" />
   </ItemGroup>
 
