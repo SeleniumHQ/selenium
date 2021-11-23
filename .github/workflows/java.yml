@@ -166,6 +166,7 @@ jobs:
 
 
   server_tests:
+    if: ${{ always() }}
     needs: [ chrome_tests, firefox_tests ]
     runs-on: ubuntu-latest
     steps:
