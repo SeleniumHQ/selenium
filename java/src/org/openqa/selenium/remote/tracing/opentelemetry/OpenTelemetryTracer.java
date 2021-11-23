@@ -83,6 +83,7 @@ public class OpenTelemetryTracer implements org.openqa.selenium.remote.tracing.T
 
   private final Tracer tracer;
   private final OpenTelemetryPropagator telemetryPropagator;
+  private Context context;
 
   public OpenTelemetryTracer(Tracer tracer, TextMapPropagator propagator) {
     this.tracer = Require.nonNull("Tracer", tracer);
@@ -93,11 +94,16 @@ public class OpenTelemetryTracer implements org.openqa.selenium.remote.tracing.T
 
   @Override
   public TraceContext getCurrentContext() {
-    return new OpenTelemetryContext(tracer, Context.current());
+    return new OpenTelemetryContext(tracer, context != null ? context : Context.current());
   }
 
   @Override
   public Propagator getPropagator() {
     return telemetryPropagator;
+  }
+
+  @Override
+  public void setOpenTelemetryContext(Context context) {
+    this.context = context;
   }
 }
