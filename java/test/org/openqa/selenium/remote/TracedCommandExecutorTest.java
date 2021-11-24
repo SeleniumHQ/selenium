@@ -77,6 +77,22 @@ public class TracedCommandExecutorTest {
   }
 
   @Test
+  public void canCreateSpanFromNullParameter() throws IOException {
+    SessionId sessionId = new SessionId(UUID.randomUUID());
+    Map<String, Object> parameters = new HashMap<>();
+    parameters.put("param1", null);
+    Command command = new Command(sessionId, "findElement", parameters);
+
+    tracedCommandExecutor.execute(command);
+
+    verify(span, times(1)).setAttribute("sessionId", sessionId.toString());
+    verify(span, times(1)).setAttribute("command", "findElement");
+    verify(span, times(1)).setAttribute("parameter.param1", "null");
+    verify(span, times(1)).close();
+    verifyNoMoreInteractions(span);
+  }
+
+  @Test
   public void canCreateSpanWithSessionIdAndCommandName() throws IOException {
     SessionId sessionId = new SessionId(UUID.randomUUID());
     Command command = new Command(sessionId, "findElement");
