@@ -17,6 +17,10 @@
 
 package org.openqa.selenium.remote.service;
 
+import static java.util.Collections.emptyMap;
+import static java.util.concurrent.TimeUnit.SECONDS;
+import static org.openqa.selenium.concurrent.ExecutorServices.shutdownGracefully;
+
 import com.google.common.collect.ImmutableMap;
 
 import org.openqa.selenium.Beta;
@@ -46,9 +50,6 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.concurrent.locks.ReentrantLock;
 
-import static java.util.Collections.emptyMap;
-import static java.util.concurrent.TimeUnit.SECONDS;
-
 /**
  * Manages the life and death of a native executable driver server.
  *
@@ -60,10 +61,12 @@ import static java.util.concurrent.TimeUnit.SECONDS;
  */
 public class DriverService implements Closeable {
 
+  private static final String NAME = "Driver Service Executor";
   protected static final Duration DEFAULT_TIMEOUT = Duration.ofSeconds(20);
+
   private final ExecutorService executorService = Executors.newFixedThreadPool(2, r -> {
     Thread thread = new Thread(r);
-    thread.setName("Driver Service Executor");
+    thread.setName(NAME);
     thread.setDaemon(true);
     return thread;
   });
@@ -286,7 +289,7 @@ public class DriverService implements Closeable {
     } finally {
       process = null;
       lock.unlock();
-      executorService.shutdownNow();
+      close();
     }
 
     if (toThrow != null) {
@@ -308,7 +311,7 @@ public class DriverService implements Closeable {
 
   @Override
   public void close() {
-    executorService.shutdownNow();
+    shutdownGracefully(NAME, executorService);
   }
 
   private enum StartOrDie {
