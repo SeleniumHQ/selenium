@@ -42,12 +42,6 @@ module Selenium
                                      page: {width: 30})).to include(magic_number)
           end
 
-          it 'can add and remove addons' do
-            ext = File.expand_path('../../../../../../third_party/firebug/favourite_colour-1.1-an+fx.xpi', __dir__)
-            driver.install_addon(ext)
-            driver.uninstall_addon('favourite-colour-examples@mozilla.org')
-          end
-
           it 'should print full page' do
             path = "#{Dir.tmpdir}/test#{SecureRandom.urlsafe_base64}.png"
             screenshot = driver.save_full_page_screenshot(path)
@@ -55,19 +49,41 @@ module Selenium
           ensure
             File.delete(path) if File.exist?(path)
           end
+        end
 
-          it 'can get and set context' do
-            options = Options.new(prefs: {'browser.download.dir': 'foo/bar'})
-            create_driver!(capabilities: options) do |driver|
-              expect(driver.context).to eq 'content'
+        describe '#install_addon' do
+          let(:extension) { '../../../../../../third_party/firebug/favourite_colour-1.1-an+fx.xpi' }
 
-              driver.context = 'chrome'
-              expect(driver.context).to eq 'chrome'
+          it 'with path as parameter' do
+            ext = File.expand_path(extension, __dir__)
+            driver.install_addon(ext)
+          end
 
-              # This call can not be made when context is set to 'content'
-              dir = driver.execute_script("return Services.prefs.getStringPref('browser.download.dir')")
-              expect(dir).to eq 'foo/bar'
-            end
+          it 'with temporary as parameter' do
+            ext = File.expand_path(extension, __dir__)
+            driver.install_addon(ext, true)
+          end
+        end
+
+        describe '#uninstall_addon' do
+          it 'uninstalls based on id' do
+            ext = File.expand_path('../../../../../../third_party/firebug/favourite_colour-1.1-an+fx.xpi', __dir__)
+            id = driver.install_addon(path: ext)
+            driver.uninstall_addon(id)
+          end
+        end
+
+        it 'can get and set context' do
+          options = Options.new(prefs: {'browser.download.dir': 'foo/bar'})
+          create_driver!(capabilities: options) do |driver|
+            expect(driver.context).to eq 'content'
+
+            driver.context = 'chrome'
+            expect(driver.context).to eq 'chrome'
+
+            # This call can not be made when context is set to 'content'
+            dir = driver.execute_script("return Services.prefs.getStringPref('browser.download.dir')")
+            expect(dir).to eq 'foo/bar'
           end
         end
       end
