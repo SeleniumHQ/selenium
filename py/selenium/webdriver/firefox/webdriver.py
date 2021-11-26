@@ -14,8 +14,7 @@
 # KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
 # under the License.
-
-from base64 import b64decode
+import base64
 from shutil import rmtree
 import warnings
 from contextlib import contextmanager
@@ -247,7 +246,11 @@ class WebDriver(RemoteWebDriver):
 
                 driver.install_addon('/path/to/firebug.xpi')
         """
-        payload = {"path": path}
+        file_ = open(path, 'rb')
+        addon = (base64.b64encode(file_.read()).decode('UTF-8'))
+        file_.close()
+
+        payload = {"addon": addon}
         if temporary:
             payload["temporary"] = temporary
         return self.execute("INSTALL_ADDON", payload)["value"]
@@ -317,7 +320,7 @@ class WebDriver(RemoteWebDriver):
 
                 driver.get_full_page_screenshot_as_png()
         """
-        return b64decode(self.get_full_page_screenshot_as_base64().encode('ascii'))
+        return base64.b64decode(self.get_full_page_screenshot_as_base64().encode('ascii'))
 
     def get_full_page_screenshot_as_base64(self) -> str:
         """

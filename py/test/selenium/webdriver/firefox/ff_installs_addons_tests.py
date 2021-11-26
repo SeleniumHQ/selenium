@@ -1,0 +1,36 @@
+# Licensed to the Software Freedom Conservancy (SFC) under one
+# or more contributor license agreements.  See the NOTICE file
+# distributed with this work for additional information
+# regarding copyright ownership.  The SFC licenses this file
+# to you under the Apache License, Version 2.0 (the
+# "License"); you may not use this file except in compliance
+# with the License.  You may obtain a copy of the License at
+#
+#   http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing,
+# software distributed under the License is distributed on an
+# "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+# KIND, either express or implied.  See the License for the
+# specific language governing permissions and limitations
+# under the License.
+
+import os
+from pathlib import Path
+
+from selenium.common.exceptions import WebDriverException
+
+
+def test_install_addon(driver, pages):
+    extension = os.path.join(Path(__file__).absolute().parents[5], 'third_party/firebug/favourite_colour-1.1-an+fx.xpi')
+    id = driver.install_addon(extension)
+    assert id == 'favourite-colour-examples@mozilla.org'
+
+
+def test_uninstall_addon(driver, pages):
+    extension = os.path.join(Path(__file__).absolute().parents[5], 'third_party/firebug/favourite_colour-1.1-an+fx.xpi')
+    id = driver.install_addon(extension)
+    try:
+        driver.uninstall_addon(id)
+    except WebDriverException as exc:
+        assert False, exc
