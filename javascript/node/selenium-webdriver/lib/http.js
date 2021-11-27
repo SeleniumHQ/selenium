@@ -31,7 +31,7 @@ const error = require('./error')
 const logging = require('./logging')
 const promise = require('./promise')
 const { Session } = require('./session')
-const { WebElement, ShadowRoot } = require('./webdriver')
+const { WebElement } = require('./webdriver')
 
 const getAttribute = requireAtom(
   'get-attribute.js',
@@ -63,8 +63,8 @@ function requireAtom(module, bazelTarget) {
       console.log(ex2)
       throw Error(
         `Failed to import atoms module ${module}. If running in dev mode, you` +
-        ` need to run \`bazel build ${bazelTarget}\` from the project` +
-        `root: ${ex}`
+          ` need to run \`bazel build ${bazelTarget}\` from the project` +
+          `root: ${ex}`
       )
     }
   }
@@ -173,7 +173,7 @@ var CommandSpec // eslint-disable-line
 /** @typedef {function(!cmd.Command): !cmd.Command} */
 var CommandTransformer // eslint-disable-line
 
-class InternalTypeError extends TypeError { }
+class InternalTypeError extends TypeError {}
 
 /**
  * @param {!cmd.Command} command The initial command.
@@ -423,8 +423,14 @@ const W3C_COMMAND_MAP = new Map([
   [cmd.Name.PRINT_PAGE, post('/session/:sessionId/print')],
   // Shadow Root
   [cmd.Name.GET_SHADOW_ROOT, get('/session/:sessionId/element/:id/shadow')],
-  [cmd.Name.FIND_ELEMENT_FROM_SHADOWROOT, post('/session/:sessionId/shadow/:id/element')],
-  [cmd.Name.FIND_ELEMENTS_FROM_SHADOWROOT, post('/session/:sessionId/shadow/:id/elements')],
+  [
+    cmd.Name.FIND_ELEMENT_FROM_SHADOWROOT,
+    post('/session/:sessionId/shadow/:id/element'),
+  ],
+  [
+    cmd.Name.FIND_ELEMENTS_FROM_SHADOWROOT,
+    post('/session/:sessionId/shadow/:id/elements'),
+  ],
   // Log extensions.
   [cmd.Name.GET_LOG, post('/session/:sessionId/se/log')],
   [cmd.Name.GET_AVAILABLE_LOG_TYPES, get('/session/:sessionId/se/log/types')],
@@ -445,7 +451,7 @@ class Client {
    * @return {!Promise<Response>} A promise that will be fulfilled with the
    *     server's response.
    */
-  send(httpRequest) { } // eslint-disable-line
+   send(httpRequest) { } // eslint-disable-line
 }
 
 /**
@@ -588,7 +594,7 @@ class Executor {
       // No implementations use the `capabilities` key yet...
       let capabilities = value.capabilities || value.value
       return new Session(
-        /** @type {{sessionId: string}} */(value).sessionId,
+        /** @type {{sessionId: string}} */ (value).sessionId,
         capabilities
       )
     }
