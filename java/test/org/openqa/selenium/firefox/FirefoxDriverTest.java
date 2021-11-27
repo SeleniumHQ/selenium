@@ -17,21 +17,7 @@
 
 package org.openqa.selenium.firefox;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.fail;
-import static org.junit.Assume.assumeNotNull;
-import static org.mockito.Mockito.atLeastOnce;
-import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.verify;
-import static org.openqa.selenium.WaitingConditions.elementValueToEqual;
-import static org.openqa.selenium.remote.CapabilityType.ACCEPT_SSL_CERTS;
-import static org.openqa.selenium.support.ui.ExpectedConditions.titleIs;
-import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
-
 import com.google.common.collect.ImmutableMap;
-
 import org.junit.After;
 import org.junit.Test;
 import org.mockito.ArgumentMatchers;
@@ -45,13 +31,13 @@ import org.openqa.selenium.OutputType;
 import org.openqa.selenium.ParallelTestRunner;
 import org.openqa.selenium.ParallelTestRunner.Worker;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.build.InProject;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.Command;
 import org.openqa.selenium.remote.CommandExecutor;
 import org.openqa.selenium.remote.DriverCommand;
-import org.openqa.selenium.remote.LocalFileDetector;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.remote.UnreachableBrowserException;
@@ -72,6 +58,19 @@ import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.fail;
+import static org.junit.Assume.assumeNotNull;
+import static org.mockito.Mockito.atLeastOnce;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.verify;
+import static org.openqa.selenium.WaitingConditions.elementValueToEqual;
+import static org.openqa.selenium.remote.CapabilityType.ACCEPT_SSL_CERTS;
+import static org.openqa.selenium.support.ui.ExpectedConditions.titleIs;
+import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
 
 public class FirefoxDriverTest extends JUnit4TestBase {
 
@@ -503,12 +502,14 @@ public class FirefoxDriverTest extends JUnit4TestBase {
   public void canAddRemoveExtensions() {
     Path extension = InProject.locate("third_party/firebug/favourite_colour-1.1-an+fx.xpi");
 
-    if (driver.getClass().equals(RemoteWebDriver.class)) {
-      ((RemoteWebDriver) driver).setFileDetector(new LocalFileDetector());
-    }
-
     String id = ((HasExtensions) driver).installExtension(extension);
-    ((HasExtensions) driver).uninstallExtension(id);
+    assertThat(id).isEqualTo("favourite-colour-examples@mozilla.org");
+
+    try {
+      ((HasExtensions) driver).uninstallExtension(id);
+    } catch (WebDriverException ex) {
+      fail(ex.getMessage());
+    }
   }
 
   @Test
