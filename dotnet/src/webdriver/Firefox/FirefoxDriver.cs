@@ -262,6 +262,16 @@ namespace OpenQA.Selenium.Firefox
         /// <param name="addOnFileToInstall">Full path and file name of the add-on to install.</param>
         public void InstallAddOnFromFile(string addOnFileToInstall)
         {
+            InstallAddOnFromFile(addOnFileToInstall, false);
+        }
+
+        /// <summary>
+        /// Installs a Firefox add-on from a file, typically a .xpi file.
+        /// </summary>
+        /// <param name="addOnFileToInstall">Full path and file name of the add-on to install.</param>
+        /// <param name="temporary">Whether the add-on is temporary.</param>
+        public void InstallAddOnFromFile(string addOnFileToInstall, bool temporary)
+        {
             if (string.IsNullOrEmpty(addOnFileToInstall))
             {
                 throw new ArgumentNullException(nameof(addOnFileToInstall), "Add-on file name must not be null or the empty string");
@@ -280,7 +290,7 @@ namespace OpenQA.Selenium.Firefox
             // instead.
             byte[] addOnBytes = File.ReadAllBytes(addOnFileToInstall);
             string base64AddOn = Convert.ToBase64String(addOnBytes);
-            this.InstallAddOn(base64AddOn);
+            this.InstallAddOn(base64AddOn, temporary);
         }
 
         /// <summary>
@@ -289,6 +299,16 @@ namespace OpenQA.Selenium.Firefox
         /// <param name="base64EncodedAddOn">The base64-encoded string representation of the add-on binary.</param>
         public void InstallAddOn(string base64EncodedAddOn)
         {
+            InstallAddOn(base64EncodedAddOn, false);
+        }
+
+        /// <summary>
+        /// Installs a Firefox add-on.
+        /// </summary>
+        /// <param name="base64EncodedAddOn">The base64-encoded string representation of the add-on binary.</param>
+        /// <param name="temporary">Whether the add-on is temporary.</param>
+        public void InstallAddOn(string base64EncodedAddOn, bool temporary)
+        {
             if (string.IsNullOrEmpty(base64EncodedAddOn))
             {
                 throw new ArgumentNullException(nameof(base64EncodedAddOn), "Base64 encoded add-on must not be null or the empty string");
@@ -296,6 +316,7 @@ namespace OpenQA.Selenium.Firefox
 
             Dictionary<string, object> parameters = new Dictionary<string, object>();
             parameters["addon"] = base64EncodedAddOn;
+            parameters["temporary"] = temporary;
             this.Execute(InstallAddOnCommand, parameters);
         }
 
