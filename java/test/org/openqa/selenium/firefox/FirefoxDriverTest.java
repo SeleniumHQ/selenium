@@ -513,6 +513,20 @@ public class FirefoxDriverTest extends JUnit4TestBase {
   }
 
   @Test
+  public void canAddRemoveTempExtensions() {
+    Path extension = InProject.locate("third_party/firebug/favourite_colour-1.1-an+fx.xpi");
+
+    String id = ((HasExtensions) driver).installExtension(extension, true);
+    assertThat(id).isEqualTo("favourite-colour-examples@mozilla.org");
+
+    try {
+      ((HasExtensions) driver).uninstallExtension(id);
+    } catch (WebDriverException ex) {
+      fail(ex.getMessage());
+    }
+  }
+
+  @Test
   public void canTakeFullPageScreenshot() {
     File tempFile = ((HasFullPageScreenshot) driver).getFullPageScreenshotAs(OutputType.FILE);
     assertThat(tempFile.exists()).isTrue();
