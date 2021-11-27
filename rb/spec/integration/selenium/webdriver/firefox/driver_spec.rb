@@ -23,6 +23,8 @@ module Selenium
   module WebDriver
     module Firefox
       describe Driver, exclusive: {browser: :firefox} do
+        let(:extension) { '../../../../../../third_party/firebug/favourite_colour-1.1-an+fx.xpi' }
+
         describe '#print_options' do
           let(:magic_number) { 'JVBER' }
 
@@ -52,8 +54,6 @@ module Selenium
         end
 
         describe '#install_addon' do
-          let(:extension) { '../../../../../../third_party/firebug/favourite_colour-1.1-an+fx.xpi' }
-
           it 'with path as parameter' do
             ext = File.expand_path(extension, __dir__)
             driver.install_addon(ext)
@@ -67,8 +67,8 @@ module Selenium
 
         describe '#uninstall_addon' do
           it 'uninstalls based on id' do
-            ext = File.expand_path('../../../../../../third_party/firebug/favourite_colour-1.1-an+fx.xpi', __dir__)
-            id = driver.install_addon(path: ext)
+            ext = File.expand_path(extension, __dir__)
+            id = driver.install_addon(ext)
             driver.uninstall_addon(id)
           end
         end
