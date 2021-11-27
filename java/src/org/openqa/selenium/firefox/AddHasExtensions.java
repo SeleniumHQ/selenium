@@ -67,7 +67,13 @@ public class AddHasExtensions implements AugmenterProvider<HasExtensions>, Addit
     return new HasExtensions() {
       @Override
       public String installExtension(Path path) {
+        return installExtension(path, false);
+      }
+
+      @Override
+      public String installExtension(Path path, Boolean temporary) {
         Require.nonNull("Extension Path", path);
+        Require.nonNull("Temporary", temporary);
 
         String encoded;
         try {
@@ -78,7 +84,7 @@ public class AddHasExtensions implements AugmenterProvider<HasExtensions>, Addit
 
         return (String) executeMethod.execute(
           INSTALL_EXTENSION,
-          ImmutableMap.of("addon", encoded, "temporary", false));
+          ImmutableMap.of("addon", encoded, "temporary", temporary));
       }
 
       @Override

@@ -35,6 +35,8 @@ public interface HasExtensions {
    */
   String installExtension(Path path);
 
+  String installExtension(Path path, Boolean temporary);
+
   /**
    * Uninstall the extension by the given identifier.
    * This value can be found in the extension's manifest, and typically ends with "@mozilla.org".
