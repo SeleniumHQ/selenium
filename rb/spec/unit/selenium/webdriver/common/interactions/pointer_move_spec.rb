@@ -30,6 +30,13 @@ module Selenium
         let(:x) { 25 }
         let(:y) { 50 }
 
+        describe '#initialize' do
+          it 'raises a TypeError if source is not a PointerInput' do
+            key = Interactions.key('key')
+            expect { PointerMove.new(key, duration, x, y) }.to raise_error(TypeError)
+          end
+        end
+
         describe '#type' do
           it 'equals :pointerMove' do
             move = PointerMove.new(source, duration, x, y)

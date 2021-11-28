@@ -28,10 +28,11 @@ module Selenium
           super(source)
           @direction = assert_direction(direction)
           @button = assert_button(button)
+          @type = @direction
         end
 
-        def type
-          @direction
+        def assert_source(source)
+          raise TypeError, "#{source.type} is not a valid input type" unless source.is_a? PointerInput
         end
 
         def assert_button(button)

@@ -29,6 +29,10 @@ module Selenium
           @key = Keys.encode_key(key)
         end
 
+        def assert_source(source)
+          raise TypeError, "#{source.type} is not a valid input type" unless source.is_a? KeyInput
+        end
+
         def assert_type(type)
           raise TypeError, "#{type.inspect} is not a valid key subtype" unless KeyInput::SUBTYPES.key? type
 

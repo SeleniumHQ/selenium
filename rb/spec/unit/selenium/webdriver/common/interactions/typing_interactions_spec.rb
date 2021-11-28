@@ -28,12 +28,21 @@ module Selenium
         let(:typing) { TypingInteraction.new(source, type, key) }
         let(:key) { 'a' }
 
-        it 'stores type as KeyInput::SUBTYPES' do
-          expect(typing.type).to eq KeyInput::SUBTYPES[type]
+        describe '#initialize' do
+          it 'raises a TypeError if the passed source is not a KeyInput' do
+            mouse = Interactions.pointer(:mouse)
+            expect { TypingInteraction.new(mouse, type, key) }.to raise_error(TypeError)
+          end
+
+          it 'raises a TypeError if the passed type is not a key in KeyInput::SUBTYPES' do
+            expect { TypingInteraction.new(source, :none, key) }.to raise_error(TypeError)
+          end
         end
 
-        it 'raises a TypeError if the passed type is not a key in KeyInput::SUBTYPES' do
-          expect { TypingInteraction.new(source, :none, key) }.to raise_error(TypeError)
+        describe '#type' do
+          it 'stores type as KeyInput::SUBTYPES' do
+            expect(typing.type).to eq KeyInput::SUBTYPES[type]
+          end
         end
 
         describe '#encode' do

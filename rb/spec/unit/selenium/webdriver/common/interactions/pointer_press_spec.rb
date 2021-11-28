@@ -33,7 +33,12 @@ module Selenium
             expect { PointerPress.new(source, direction, :none) }.to raise_error(ArgumentError)
           end
 
-          it 'raises an TypeError if button is not a symbol or integer' do
+          it 'raises a TypeError if source is not a PointerInput' do
+            key = Interactions.key('key')
+            expect { PointerPress.new(key, direction, 'wrong') }.to raise_error(TypeError)
+          end
+
+          it 'raises a TypeError if button is not a Symbol or Integer' do
             expect { PointerPress.new(source, direction, 'wrong') }.to raise_error(TypeError)
           end
 

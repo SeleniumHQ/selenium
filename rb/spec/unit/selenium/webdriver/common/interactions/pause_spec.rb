@@ -27,6 +27,18 @@ module Selenium
         let(:pause) { Pause.new(source) }
         let(:duration) { 5 }
 
+        describe '#initialize' do
+          it 'accepts key input' do
+            key = Interactions.key('key')
+            expect { Pause.new(key) }.not_to raise_error
+          end
+
+          it 'accepts pointer input' do
+            mouse = Interactions.pointer(:mouse)
+            expect { Pause.new(mouse) }.not_to raise_error
+          end
+        end
+
         describe '#type' do
           it 'returns :pause' do
             expect(pause.type).to eq(:pause)

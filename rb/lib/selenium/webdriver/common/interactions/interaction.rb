@@ -21,17 +21,14 @@ module Selenium
   module WebDriver
     module Interactions
       class Interaction
-        PAUSE = :pause
-
-        attr_reader :source
+        attr_reader :type
 
         def initialize(source)
-          unless Interactions::SOURCE_TYPES.include? source.type
-            raise TypeError,
-                  "#{source.type} is not a valid input type"
-          end
+          assert_source(source)
+        end
 
-          @source = source
+        def assert_source(_source)
+          raise NotImplementedError, 'subclass responsibility'
         end
       end
     end # Interactions

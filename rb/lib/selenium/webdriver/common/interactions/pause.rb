@@ -24,10 +24,11 @@ module Selenium
         def initialize(source, duration = nil)
           super(source)
           @duration = duration
+          @type = :pause
         end
 
-        def type
-          PAUSE
+        def assert_source(source)
+          raise TypeError, "#{source.type} is not a valid input type" unless source.is_a? InputDevice
         end
 
         def encode
