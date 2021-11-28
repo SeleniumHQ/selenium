@@ -45,7 +45,7 @@ module Selenium
         end
 
         def no_actions? # Determine if only pauses are present
-          actions = @actions.reject { |action| action.type == Interaction::PAUSE }
+          actions = @actions.reject { |action| action.type == :pause }
           actions.empty?
         end
       end # InputDevice

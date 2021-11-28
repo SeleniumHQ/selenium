@@ -31,10 +31,11 @@ module Selenium
           @x_offset = x
           @y_offset = y
           @origin = element || origin || :viewport
+          @type = :pointerMove
         end
 
-        def type
-          :pointerMove
+        def assert_source(source)
+          raise TypeError, "#{source.type} is not a valid input type" unless source.is_a? PointerInput
         end
 
         def encode

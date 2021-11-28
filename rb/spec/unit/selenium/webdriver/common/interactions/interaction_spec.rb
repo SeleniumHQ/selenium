@@ -22,17 +22,73 @@ require File.expand_path('../../spec_helper', __dir__)
 module Selenium
   module WebDriver
     module Interactions
-      describe Interaction do
-        let(:source) { NoneInput.new }
-        let(:interaction) { Interaction.new(source) }
-
-        it 'returns valid source when provided' do
-          expect(interaction.source).to eq source
+      class NewDevice < InputDevice
+        def type
+          :special
         end
 
-        it 'raises a TypeError if the provided source is invalid' do
-          allow(source).to receive(:type).and_return(:no_type)
-          expect { interaction }.to raise_error(TypeError)
+        def encode
+          {type: type, name: name, actions: @actions.map(&:encode)}
+        end
+
+        def create_special(val)
+          add_action(NewInteraction.new(self, val))
+        end
+      end
+
+      class NewInteraction < Interaction
+        def initialize(source, special)
+          super(source)
+          @special = special
+          @type = :newType
+        end
+
+        def assert_source(source)
+          raise TypeError, "#{source.type} is not a valid input type" unless source.is_a? NewDevice
+        end
+
+        def encode
+          {type: type, special: @special}
+        end
+      end
+
+      class SubActionBuilder < ActionBuilder
+        def initialize(bridge, mouse, keyboard, async = nil)
+          super
+          @devices << NewDevice.new('new')
+        end
+
+        def special_action(special, device: nil)
+          special_input(device).create_special(special)
+          self
+        end
+
+        def special_inputs
+          @devices.select { |device| device.is_a? NewDevice }
+        end
+
+        private
+
+        def special_input(device = nil)
+          device ? get_device(device) : special_inputs.first
+        end
+      end
+
+      describe Interaction do
+        it 'can create subclass' do
+          bridge = instance_double(Remote::Bridge)
+          allow(bridge).to receive(:send_actions)
+          sub_action_builder = SubActionBuilder.new(bridge, Interactions.pointer(:mouse), Interactions.key('key'))
+          sub_action_builder.special_action('special').perform
+
+          expect(bridge).to have_received(:send_actions).with([{type: :special,
+                                                                name: 'new',
+                                                                actions: [{type: :newType,
+                                                                           special: 'special'}]}])
+        end
+
+        it 'raises a NotImplementedError if not a subclass' do
+          expect { Interaction.new(NoneInput.new) }.to raise_error(NotImplementedError)
         end
       end
     end # Interactions

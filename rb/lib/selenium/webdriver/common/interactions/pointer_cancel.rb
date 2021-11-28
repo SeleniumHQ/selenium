@@ -21,8 +21,13 @@ module Selenium
   module WebDriver
     module Interactions
       class PointerCancel < Interaction
-        def type
-          :pointerCancel
+        def initialize(source)
+          super(source)
+          @type = :pointerCancel
+        end
+
+        def assert_source(source)
+          raise TypeError, "#{source.type} is not a valid input type" unless source.is_a? PointerInput
         end
 
         def encode
