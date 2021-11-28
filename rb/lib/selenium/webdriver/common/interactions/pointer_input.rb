@@ -48,8 +48,8 @@ module Selenium
           KIND[pointer]
         end
 
-        def create_pointer_move(duration: 0, x: 0, y: 0, element: nil, origin: nil)
-          add_action(PointerMove.new(self, duration, x, y, element: element, origin: origin))
+        def create_pointer_move(duration: 0, x: 0, y: 0, origin: nil)
+          add_action(PointerMove.new(self, duration, x, y, origin: origin))
         end
 
         def create_pointer_down(button)
@@ -115,7 +115,7 @@ module Selenium
           @duration = duration * 1000
           @x_offset = x
           @y_offset = y
-          @origin = element || origin
+          @origin = element || origin || :viewport
         end
 
         def type
@@ -123,11 +123,9 @@ module Selenium
         end
 
         def encode
-          output = {type: type, duration: @duration.to_i, x: @x_offset, y: @y_offset}
-          output[:origin] = @origin
-          output
+          {type: type, duration: @duration.to_i, x: @x_offset, y: @y_offset, origin: @origin}
         end
-      end # Move
+      end # PointerMove
 
       class PointerCancel < Interaction
         def type
@@ -137,7 +135,7 @@ module Selenium
         def encode
           {type: type}
         end
-      end # Cancel
+      end # PointerCancel
     end # Interactions
   end # WebDriver
 end # Selenium
