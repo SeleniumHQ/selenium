@@ -134,12 +134,17 @@ module Selenium
       #
 
       def key_action(*args, action: nil, device: nil)
-        key_input = get_device(device) || key_inputs.first
+        key_input = key_input(device)
         click(args.shift) if args.first.is_a? Element
         key_input.send(action, args.last)
         tick(key_input)
         self
       end
+
+      def key_input(device = nil)
+        device ? get_device(device) : key_inputs.first
+      end
+
     end # KeyActions
   end # WebDriver
 end # Selenium

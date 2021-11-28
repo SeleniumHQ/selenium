@@ -96,7 +96,7 @@ module Selenium
       #
 
       def move_to(element, right_by = nil, down_by = nil, device: nil)
-        pointer = get_pointer(device)
+        pointer = pointer_input(device)
         # New actions offset is from center of element
         if right_by || down_by
           size = element.size
@@ -134,7 +134,7 @@ module Selenium
       #
 
       def move_by(right_by, down_by, device: nil)
-        pointer = get_pointer(device)
+        pointer = pointer_input(device)
         pointer.create_pointer_move(duration: default_move_duration,
                                     x: Integer(right_by),
                                     y: Integer(down_by),
@@ -161,7 +161,7 @@ module Selenium
       #
 
       def move_to_location(x, y, device: nil)
-        pointer = get_pointer(device)
+        pointer = pointer_input(device)
         pointer.create_pointer_move(duration: default_move_duration,
                                     x: Integer(x),
                                     y: Integer(y),
@@ -349,14 +349,14 @@ module Selenium
       private
 
       def button_action(button, action: nil, device: nil)
-        pointer = get_pointer(device)
+        pointer = pointer_input(device)
         pointer.send(action, button)
         tick(pointer)
         self
       end
 
-      def get_pointer(device = nil)
-        get_device(device) || pointer_inputs.first
+      def pointer_input(device = nil)
+        device ? get_device(device) : pointer_inputs.first
       end
     end # PointerActions
   end # WebDriver

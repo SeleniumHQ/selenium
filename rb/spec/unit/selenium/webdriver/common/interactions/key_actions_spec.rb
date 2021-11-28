@@ -35,6 +35,10 @@ module Selenium
           expect(builder.send(:key_input, keyboard.name)).to eq keyboard
         end
 
+        it 'raises ArgumentError if no device exists with that name' do
+          expect { builder.send(:key_input, 'none') }.to raise_error(ArgumentError)
+        end
+
         it 'gets default key input' do
           expect(builder.send(:key_input)).to eq keyboard
         end
