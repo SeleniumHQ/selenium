@@ -22,8 +22,8 @@ require File.expand_path('../../spec_helper', __dir__)
 module Selenium
   module WebDriver
     describe PointerActions do
-      let(:keyboard) { instance_double(Interactions::KeyInput) }
-      let(:mouse) { instance_double(Interactions::PointerInput) }
+      let(:keyboard) { Interactions::KeyInput.new('keyboard') }
+      let(:mouse) { Interactions::PointerInput.new(:mouse, name: 'pointer') }
       let(:bridge) { instance_double('Bridge').as_null_object }
       let(:builder) { ActionBuilder.new(bridge, mouse, keyboard) }
       let(:element) { Element.new(bridge, 'element') }
@@ -31,471 +31,443 @@ module Selenium
       let(:duration) { builder.default_move_duration }
       let(:dimension) { 100 }
 
-      it 'should get a pointer by device name' do
-        allow(builder).to receive(:get_device).with('name').and_return(mouse)
+      describe '#pointer_input' do
+        it 'gets key input by name' do
+          expect(builder.send(:pointer_input, mouse.name)).to eq mouse
+        end
 
-        builder.send('get_pointer', 'name')
-        expect(builder).to have_received(:get_device).with('name')
+        it 'gets default key input' do
+          expect(builder.send(:pointer_input)).to eq mouse
+        end
       end
 
-      it 'should get the first pointer_input when no device name is supplied' do
-        expect(builder).to receive(:get_device).with(nil)
-        allow(builder).to receive(:pointer_inputs).and_return([mouse])
+      describe '#pointer_down' do
+        it 'gets pointer_input' do
+          allow(builder).to receive(:pointer_input).and_call_original
 
-        builder.send('get_pointer')
-        expect(builder).to have_received(:pointer_inputs)
+          builder.pointer_down :left, device: mouse.name
+
+          expect(builder).to have_received(:pointer_input).with(mouse.name)
+        end
+
+        it 'passes the pointer to the #tick method' do
+          allow(builder).to receive(:tick)
+
+          builder.pointer_down :left
+          expect(builder).to have_received(:tick).with(mouse)
+        end
+
+        it 'returns itself' do
+          expect(builder.pointer_down(:left)).to eq(builder)
+        end
       end
 
-      context 'when performing a button action' do
-        it 'should get the pointer device to use' do
-          allow(builder).to receive(:get_pointer).and_return(mouse)
-          allow(mouse).to receive(:create_pointer_down)
+      describe '#pointer_up' do
+        it 'gets pointer_input' do
+          allow(builder).to receive(:pointer_input).and_call_original
+
+          builder.pointer_up :left, device: mouse.name
+
+          expect(builder).to have_received(:pointer_input).with(mouse.name)
+        end
+
+        it 'calls #create_pointer_up' do
+          allow(mouse).to receive(:create_pointer_up)
+          builder.pointer_up :left
+
+          expect(mouse).to have_received :create_pointer_up
+        end
+
+        it 'passes the pointer to the #tick method' do
           allow(builder).to receive(:tick)
 
-          builder.send('button_action', :left, action: :create_pointer_down)
-          expect(builder).to have_received(:get_pointer)
+          builder.pointer_up :left
+          expect(builder).to have_received(:tick).with(mouse)
         end
 
-        it 'should create a pointer_down action for the pointer' do
-          allow(builder).to receive(:get_pointer).and_return(mouse)
-          expect(mouse).to receive(:create_pointer_down).with(:left)
-          allow(builder).to receive(:tick)
-
-          builder.send('button_action', :left, action: :create_pointer_down)
+        it 'returns itself' do
+          expect(builder.pointer_up(:left)).to eq(builder)
         end
-
-        it 'should create a pointer_up action for the pointer' do
-          allow(builder).to receive(:get_pointer).and_return(mouse)
-          expect(mouse).to receive(:create_pointer_up).with(:left)
-          allow(builder).to receive(:tick)
-
-          builder.send('button_action', :left, action: :create_pointer_up)
-        end
-
-        it 'should pass the pointer to the #tick method' do
-          allow(builder).to receive(:get_pointer).and_return(mouse)
-          allow(mouse).to receive(:create_pointer_down)
-          expect(builder).to receive(:tick).with(mouse)
-
-          builder.send('button_action', :left, action: :create_pointer_down)
-        end
-
-        it 'should return itself' do
-          allow(builder).to receive(:get_pointer).and_return(mouse)
-          allow(mouse).to receive(:create_pointer_down)
-          allow(builder).to receive(:tick).with(mouse)
-
-          expect(builder.send('button_action', :left, action: :create_pointer_down)).to eq(builder)
-        end
-      end # when performing a button action
-
-      it 'should create a pointer_down action' do
-        expect(builder).to receive(:button_action).with(:left, action: :create_pointer_down, device: 'name')
-        builder.pointer_down(:left, device: 'name')
       end
 
-      it 'should create a pointer_up action' do
-        expect(builder).to receive(:button_action).with(:left, action: :create_pointer_up, device: 'name')
-        builder.pointer_up(:left, device: 'name')
-      end
+      describe '#move_to' do
+        it 'gets pointer_input' do
+          allow(builder).to receive(:pointer_input).and_call_original
 
-      context 'when moving the pointer to an element' do
-        it 'should get the pointer device to use' do
-          allow(builder).to receive(:get_pointer).and_return(mouse)
-          allow(mouse).to receive(:create_pointer_move)
-          allow(builder).to receive(:tick)
+          builder.move_to element, 5, 5, device: mouse.name
 
-          builder.move_to(element)
-          expect(builder).to have_received(:get_pointer)
+          expect(builder).to have_received(:pointer_input).with(mouse.name)
         end
 
-        it 'should create a move with the element' do
-          allow(builder).to receive(:get_pointer).and_return(mouse)
-          expect(mouse).to receive(:create_pointer_move).with(hash_including(element: element))
-          allow(builder).to receive(:tick)
-
-          builder.move_to(element)
-        end
-
-        it 'should create a move with the default move duration' do
-          allow(builder).to receive(:get_pointer).and_return(mouse)
-          expect(mouse).to receive(:create_pointer_move).with(hash_including(duration: duration))
-          allow(builder).to receive(:tick)
-
-          builder.move_to(element)
-        end
-
-        it 'should create a move with x and y as 0 when no offsets are passed' do
-          allow(builder).to receive(:get_pointer).and_return(mouse)
-          allow(mouse).to receive(:create_pointer_move).with(hash_including(x: 0, y: 0))
-          allow(builder).to receive(:tick)
-
-          builder.move_to(element)
-          expect(mouse).to have_received(:create_pointer_move).with(hash_including(x: 0, y: 0))
-        end
-
-        it 'should calculate the x value from the element left 0 location when x offset is passed' do
-          right_by = 10
-          left = right_by - (dimension / 2)
-          allow(builder).to receive(:get_pointer).and_return(mouse)
+        it 'calls create_pointer_move with offsets' do
+          allow(mouse).to receive(:create_pointer_move).and_call_original
           allow(element).to receive(:size).and_return(width: dimension, height: dimension)
-          allow(mouse).to receive(:create_pointer_move).with(hash_including(x: left))
-          allow(builder).to receive(:tick)
 
-          builder.move_to(element, right_by)
-          expect(mouse).to have_received(:create_pointer_move).with(hash_including(x: left))
+          right_by = 5
+          down_by = 8
+
+          builder.move_to(element, right_by, down_by)
+          expect(mouse).to have_received(:create_pointer_move).with(duration: duration,
+                                                                    x: right_by - dimension / 2,
+                                                                    y: down_by - dimension / 2,
+                                                                    element: element)
         end
 
-        it 'should calculate the y value from the element top 0 location when y offset is passed' do
-          down_by = 10
-          top = down_by - (dimension / 2)
-          allow(builder).to receive(:get_pointer).and_return(mouse)
-          allow(element).to receive(:size).and_return(width: dimension, height: dimension)
-          allow(mouse).to receive(:create_pointer_move).with(hash_including(y: top))
+        it 'passes the pointer to the #tick method' do
           allow(builder).to receive(:tick)
-
-          builder.move_to(element, 0, down_by)
-          expect(mouse).to have_received(:create_pointer_move).with(hash_including(y: top))
-        end
-
-        it 'should pass the pointer to the #tick method' do
-          allow(builder).to receive(:get_pointer).and_return(mouse)
-          allow(mouse).to receive(:create_pointer_move)
-          allow(builder).to receive(:tick).with(mouse)
 
           builder.move_to(element)
           expect(builder).to have_received(:tick).with(mouse)
         end
 
-        it 'should return itself' do
-          allow(builder).to receive(:get_pointer).and_return(mouse)
-          allow(mouse).to receive(:create_pointer_move)
-          allow(builder).to receive(:tick).with(mouse)
-
+        it 'returns itself' do
           expect(builder.move_to(element)).to eq(builder)
         end
-      end # when moving the pointer to an element
+      end
 
-      context 'when moving the pointer from current location' do
-        it 'should get the pointer device to use' do
-          allow(builder).to receive(:get_pointer).and_return(mouse)
-          allow(mouse).to receive(:create_pointer_move)
+      describe '#move_by' do
+        it 'gets pointer_input' do
+          allow(builder).to receive(:pointer_input).and_call_original
+
+          builder.move_by 5, 5, device: mouse.name
+
+          expect(builder).to have_received(:pointer_input).with(mouse.name)
+        end
+
+        it 'calls create_pointer_move with offsets' do
+          allow(mouse).to receive(:create_pointer_move).and_call_original
+
+          builder.move_by(5, 5)
+
+          expect(mouse).to have_received(:create_pointer_move).with(duration: duration, origin: :pointer, x: 5, y: 5)
+        end
+
+        it 'passes the pointer to the #tick method' do
           allow(builder).to receive(:tick)
 
           builder.move_by(5, 5)
-          expect(builder).to have_received(:get_pointer)
-        end
 
-        it 'should create a move with the default move duration' do
-          allow(builder).to receive(:get_pointer).and_return(mouse)
-          allow(mouse).to receive(:create_pointer_move).with(hash_including(duration: duration))
-          allow(builder).to receive(:tick)
-
-          builder.move_by(5, 5)
-          expect(mouse).to have_received(:create_pointer_move).with(hash_including(duration: duration))
-        end
-
-        it 'should create a move with the pointer as the origin' do
-          allow(builder).to receive(:get_pointer).and_return(mouse)
-          allow(mouse).to receive(:create_pointer_move).with(hash_including(origin: Interactions::PointerMove::POINTER))
-          allow(builder).to receive(:tick)
-
-          builder.move_by(5, 5)
-          expect(mouse).to have_received(:create_pointer_move)
-            .with(hash_including(origin: Interactions::PointerMove::POINTER))
-        end
-
-        it 'should create a move with given offsets' do
-          allow(builder).to receive(:get_pointer).and_return(mouse)
-          allow(mouse).to receive(:create_pointer_move).with(hash_including(x: 5, y: 5))
-          allow(builder).to receive(:tick)
-
-          builder.move_by(5, 5)
-          expect(mouse).to have_received(:create_pointer_move).with(hash_including(x: 5, y: 5))
-        end
-
-        it 'should pass the pointer to the #tick method' do
-          allow(builder).to receive(:get_pointer).and_return(mouse)
-          allow(mouse).to receive(:create_pointer_move)
-          allow(builder).to receive(:tick).with(mouse)
-
-          builder.move_by(5, 5)
           expect(builder).to have_received(:tick).with(mouse)
         end
 
-        it 'should return itself' do
-          allow(builder).to receive(:get_pointer).and_return(mouse)
-          allow(mouse).to receive(:create_pointer_move)
-          allow(builder).to receive(:tick).with(mouse)
-
+        it 'returns itself' do
           expect(builder.move_by(5, 5)).to eq(builder)
         end
-      end # when moving the pointer from current location
+      end
 
-      context 'when moving the pointer to a specific location' do
-        it 'should get the pointer device to use' do
-          allow(builder).to receive(:get_pointer).and_return(mouse)
-          allow(mouse).to receive(:create_pointer_move)
-          allow(builder).to receive(:tick)
+      describe '#move_to_location' do
+        it 'gets pointer_input' do
+          allow(builder).to receive(:pointer_input).and_call_original
 
-          builder.move_to_location(5, 5)
-          expect(builder).to have_received(:get_pointer)
+          builder.move_to_location 5, 5, device: mouse.name
+
+          expect(builder).to have_received(:pointer_input).with(mouse.name)
         end
 
-        it 'should create a move with the default move duration' do
-          allow(builder).to receive(:get_pointer).and_return(mouse)
-          allow(mouse).to receive(:create_pointer_move).with(hash_including(duration: duration))
-          allow(builder).to receive(:tick)
+        it 'calls create_pointer_move with offsets' do
+          allow(mouse).to receive(:create_pointer_move).and_call_original
 
           builder.move_to_location(5, 5)
-          expect(mouse).to have_received(:create_pointer_move).with(hash_including(duration: duration))
+
+          expect(mouse).to have_received(:create_pointer_move).with(duration: duration, origin: :viewport, x: 5, y: 5)
         end
 
-        it 'should create a move with the viewport as the origin' do
-          allow(builder).to receive(:get_pointer).and_return(mouse)
-          allow(mouse).to receive(:create_pointer_move)
-            .with(hash_including(origin: Interactions::PointerMove::VIEWPORT))
+        it 'passes the pointer to the #tick method' do
           allow(builder).to receive(:tick)
-
-          builder.move_to_location(5, 5)
-          expect(mouse).to have_received(:create_pointer_move)
-            .with(hash_including(origin: Interactions::PointerMove::VIEWPORT))
-        end
-
-        it 'should create a move with given location' do
-          allow(builder).to receive(:get_pointer).and_return(mouse)
-          allow(mouse).to receive(:create_pointer_move).with(hash_including(x: 5, y: 5))
-          allow(builder).to receive(:tick)
-
-          builder.move_to_location(5, 5)
-          expect(mouse).to have_received(:create_pointer_move).with(hash_including(x: 5, y: 5))
-        end
-
-        it 'should pass the pointer to the #tick method' do
-          allow(builder).to receive(:get_pointer).and_return(mouse)
-          allow(mouse).to receive(:create_pointer_move)
-          allow(builder).to receive(:tick).with(mouse)
 
           builder.move_to_location(5, 5)
           expect(builder).to have_received(:tick).with(mouse)
         end
 
-        it 'should return itself' do
-          allow(builder).to receive(:get_pointer).and_return(mouse)
-          allow(mouse).to receive(:create_pointer_move)
-          allow(builder).to receive(:tick).with(mouse)
-
+        it 'returns itself' do
           expect(builder.move_to_location(5, 5)).to eq(builder)
         end
-      end # when moving the pointer from current location
+      end
 
-      context 'when performing a click and hold with the left mouse button' do
-        it 'should move to the element if a WebElement is passed' do
-          allow(builder).to receive(:move_to).with(element, device: 'name')
+      describe '#click_and_hold' do
+        it 'calls move_to and pointer_down with specified pointer' do
           allow(builder).to receive(:pointer_down)
-
-          builder.click_and_hold(element, device: 'name')
-          expect(builder).to have_received(:move_to).with(element, device: 'name')
-        end
-
-        it 'should perform a pointer_down action with the left mouse button' do
-          allow(builder).to receive(:pointer_down).with(:left, device: 'name')
-
-          builder.click_and_hold(device: 'name')
-          expect(builder).to have_received(:pointer_down).with(:left, device: 'name')
-        end
-
-        it 'should return itself' do
-          allow(builder).to receive(:pointer_down)
-
-          expect(builder.click_and_hold(device: 'name')).to eq(builder)
-        end
-      end # when performing a click and hold with the left mouse button
-
-      context 'when releasing the left mouse button' do
-        it 'should perform a pointer_up action with the left mouse button' do
-          allow(builder).to receive(:get_pointer).and_return(mouse)
-          allow(builder).to receive(:pointer_up).with(:left, device: 'name')
-
-          builder.release(device: 'name')
-          expect(builder).to have_received(:pointer_up).with(:left, device: 'name')
-        end
-
-        it 'should return itself' do
-          allow(builder).to receive(:get_pointer).and_return(mouse)
-          allow(builder).to receive(:pointer_up)
-
-          expect(builder.release(device: 'name')).to eq(builder)
-        end
-      end # when releasing the left mouse button
-
-      context 'when performing a click with the left mouse button' do
-        it 'should perform a #move_to if a WebElement is passed' do
-          allow(builder).to receive(:move_to).with(element, device: 'name')
-          allow(builder).to receive(:pointer_down)
-          allow(builder).to receive(:pointer_up)
-
-          builder.click(element, device: 'name')
-          expect(builder).to have_received(:move_to).with(element, device: 'name')
-        end
-
-        it 'should perform a #pointer_down with the left mouse button' do
           allow(builder).to receive(:move_to)
-          allow(builder).to receive(:pointer_down).with(:left, device: 'name')
-          allow(builder).to receive(:pointer_up)
 
-          builder.click(device: 'name')
-          expect(builder).to have_received(:pointer_down).with(:left, device: 'name')
+          builder.click_and_hold(element, device: 'pointer')
+
+          expect(builder).to have_received(:pointer_down).with(:left, device: 'pointer')
+          expect(builder).to have_received(:move_to).with(element, device: 'pointer')
         end
 
-        it 'should perform a pointer_up action with the left mouse button' do
+        it 'calls move_to and pointer_down with the supplied pointer by default' do
+          allow(builder).to receive(:pointer_down)
           allow(builder).to receive(:move_to)
-          allow(builder).to receive(:pointer_down)
-          allow(builder).to receive(:pointer_up).with(:left, device: 'name')
 
-          builder.click(device: 'name')
-          expect(builder).to have_received(:pointer_up).with(:left, device: 'name')
+          builder.click_and_hold(element)
+
+          expect(builder).to have_received(:pointer_down).with(:left, device: nil)
+          expect(builder).to have_received(:move_to).with(element, device: nil)
         end
 
-        it 'should return itself' do
-          allow(builder).to receive(:pointer_down)
+        it 'returns itself' do
+          expect(builder.click_and_hold(element)).to eq(builder)
+        end
+      end
+
+      describe '#release' do
+        it 'calls pointer_up with specified pointer' do
           allow(builder).to receive(:pointer_up)
 
-          expect(builder.click(device: 'name')).to eq(builder)
-        end
-      end # when performing a click with the left mouse button
+          builder.release(device: 'pointer')
 
-      context 'when performing a double-click with the left mouse button' do
-        it 'should perform a #move_to if a WebElement is passed' do
-          expect(builder).to receive(:move_to).with(element, device: 'name')
-          expect(builder).to receive(:click).twice
-
-          builder.double_click(element, device: 'name')
+          expect(builder).to have_received(:pointer_up).with(:left, device: 'pointer')
         end
 
-        it 'should perform a #click twice with the left mouse button' do
-          expect(builder).to receive(:click).twice
-
-          builder.double_click(device: 'name')
-        end
-
-        it 'should return itself' do
-          allow(builder).to receive(:move_to)
-          allow(builder).to receive(:click)
-
-          expect(builder.double_click(device: 'name')).to eq(builder)
-        end
-      end # when performing a double-click with the left mouse button
-
-      context 'when performing a context_click with the right mouse button' do
-        it 'should perform a #move_to if a WebElement is passed' do
-          allow(builder).to receive(:move_to).with(element, device: 'name')
-          allow(builder).to receive(:pointer_down)
+        it 'calls pointer_up with the supplied pointer by default' do
           allow(builder).to receive(:pointer_up)
 
-          builder.context_click(element, device: 'name')
-          expect(builder).to have_received(:move_to).with(element, device: 'name')
+          builder.release
+          expect(builder).to have_received(:pointer_up).with(:left, device: nil)
         end
 
-        it 'should perform a #pointer_down with the left mouse button' do
-          allow(builder).to receive(:move_to)
-          allow(builder).to receive(:pointer_down).with(:right, device: 'name')
-          allow(builder).to receive(:pointer_up)
+        it 'returns itself' do
+          expect(builder.release).to eq(builder)
+        end
+      end
 
-          builder.context_click(device: 'name')
-          expect(builder).to have_received(:pointer_down).with(:right, device: 'name')
+      describe '#click' do
+        context 'with element specified' do
+          it 'calls move and presses with specified pointer' do
+            allow(builder).to receive(:move_to)
+            allow(builder).to receive(:pointer_down)
+            allow(builder).to receive(:pointer_up)
+
+            builder.click(element, device: 'pointer')
+
+            expect(builder).to have_received(:move_to).with(element, device: 'pointer')
+            expect(builder).to have_received(:pointer_down).with(:left, device: 'pointer')
+            expect(builder).to have_received(:pointer_up).with(:left, device: 'pointer')
+          end
+
+          it 'calls move and presses with the supplied pointer by default' do
+            allow(builder).to receive(:move_to)
+            allow(builder).to receive(:pointer_down)
+            allow(builder).to receive(:pointer_up)
+
+            builder.click(element)
+
+            expect(builder).to have_received(:move_to).with(element, device: nil)
+            expect(builder).to have_received(:pointer_down).with(:left, device: nil)
+            expect(builder).to have_received(:pointer_up).with(:left, device: nil)
+          end
         end
 
-        it 'should perform a pointer_up action with the left mouse button' do
-          allow(builder).to receive(:move_to)
-          allow(builder).to receive(:pointer_down)
-          allow(builder).to receive(:pointer_up).with(:right, device: 'name')
+        context 'without element specified' do
+          it 'calls presses with specified pointer' do
+            allow(builder).to receive(:move_to)
+            allow(builder).to receive(:pointer_down)
+            allow(builder).to receive(:pointer_up)
 
-          builder.context_click(device: 'name')
-          expect(builder).to have_received(:pointer_up).with(:right, device: 'name')
+            builder.click(device: 'pointer')
+
+            expect(builder).not_to have_received(:move_to)
+            expect(builder).to have_received(:pointer_down).with(:left, device: 'pointer')
+            expect(builder).to have_received(:pointer_up).with(:left, device: 'pointer')
+          end
+
+          it 'calls presses with the supplied pointer by default' do
+            allow(builder).to receive(:move_to)
+            allow(builder).to receive(:pointer_down)
+            allow(builder).to receive(:pointer_up)
+
+            builder.click
+
+            expect(builder).not_to have_received(:move_to)
+            expect(builder).to have_received(:pointer_down).with(:left, device: nil)
+            expect(builder).to have_received(:pointer_up).with(:left, device: nil)
+          end
         end
 
-        it 'should return itself' do
-          allow(builder).to receive(:pointer_down)
-          allow(builder).to receive(:pointer_up)
-
-          expect(builder.context_click(device: 'name')).to eq(builder)
+        it 'returns itself' do
+          expect(builder.click(element)).to eq(builder)
         end
-      end # when performing a context_click with the right mouse button
+      end
 
-      context 'when performing a drag_and_drop' do
-        it 'should perform a #click_and_hold on the source WebElement' do
-          allow(builder).to receive(:click_and_hold).with(element, device: 'name')
+      describe '#double_click' do
+        context 'with element specified' do
+          it 'calls move and presses with specified pointer' do
+            allow(builder).to receive(:move_to)
+            allow(builder).to receive(:pointer_down)
+            allow(builder).to receive(:pointer_up)
+
+            builder.double_click(element, device: 'pointer')
+
+            expect(builder).to have_received(:move_to).with(element, device: 'pointer')
+            expect(builder).to have_received(:pointer_down).with(:left, device: 'pointer').twice
+            expect(builder).to have_received(:pointer_up).with(:left, device: 'pointer').twice
+          end
+
+          it 'calls move and presses with the supplied pointer by default' do
+            allow(builder).to receive(:move_to)
+            allow(builder).to receive(:pointer_down)
+            allow(builder).to receive(:pointer_up)
+
+            builder.double_click(element)
+
+            expect(builder).to have_received(:move_to).with(element, device: nil)
+            expect(builder).to have_received(:pointer_down).with(:left, device: nil).twice
+            expect(builder).to have_received(:pointer_up).with(:left, device: nil).twice
+          end
+        end
+
+        context 'without element specified' do
+          it 'calls presses with specified pointer' do
+            allow(builder).to receive(:move_to)
+            allow(builder).to receive(:pointer_down)
+            allow(builder).to receive(:pointer_up)
+
+            builder.double_click(device: 'pointer')
+
+            expect(builder).not_to have_received(:move_to)
+            expect(builder).to have_received(:pointer_down).with(:left, device: 'pointer').twice
+            expect(builder).to have_received(:pointer_up).with(:left, device: 'pointer').twice
+          end
+
+          it 'calls presses with the supplied pointer by default' do
+            allow(builder).to receive(:move_to)
+            allow(builder).to receive(:pointer_down)
+            allow(builder).to receive(:pointer_up)
+
+            builder.double_click
+
+            expect(builder).not_to have_received(:move_to)
+            expect(builder).to have_received(:pointer_down).with(:left, device: nil).twice
+            expect(builder).to have_received(:pointer_up).with(:left, device: nil).twice
+          end
+        end
+
+        it 'returns itself' do
+          expect(builder.double_click(element)).to eq(builder)
+        end
+      end
+
+      describe '#context_click' do
+        context 'with element specified' do
+          it 'calls move and presses with specified pointer' do
+            allow(builder).to receive(:move_to)
+            allow(builder).to receive(:pointer_down)
+            allow(builder).to receive(:pointer_up)
+
+            builder.context_click(element, device: 'pointer')
+
+            expect(builder).to have_received(:move_to).with(element, device: 'pointer')
+            expect(builder).to have_received(:pointer_down).with(:right, device: 'pointer')
+            expect(builder).to have_received(:pointer_up).with(:right, device: 'pointer')
+          end
+
+          it 'calls move and presses with the supplied pointer by default' do
+            allow(builder).to receive(:move_to)
+            allow(builder).to receive(:pointer_down)
+            allow(builder).to receive(:pointer_up)
+
+            builder.context_click(element)
+
+            expect(builder).to have_received(:move_to).with(element, device: nil)
+            expect(builder).to have_received(:pointer_down).with(:right, device: nil)
+            expect(builder).to have_received(:pointer_up).with(:right, device: nil)
+          end
+        end
+
+        context 'without element specified' do
+          it 'calls presses with specified pointer' do
+            allow(builder).to receive(:move_to)
+            allow(builder).to receive(:pointer_down)
+            allow(builder).to receive(:pointer_up)
+
+            builder.context_click(device: 'pointer')
+
+            expect(builder).not_to have_received(:move_to)
+            expect(builder).to have_received(:pointer_down).with(:right, device: 'pointer')
+            expect(builder).to have_received(:pointer_up).with(:right, device: 'pointer')
+          end
+
+          it 'calls presses with the supplied pointer by default' do
+            allow(builder).to receive(:move_to)
+            allow(builder).to receive(:pointer_down)
+            allow(builder).to receive(:pointer_up)
+
+            builder.context_click
+
+            expect(builder).not_to have_received(:move_to)
+            expect(builder).to have_received(:pointer_down).with(:right, device: nil)
+            expect(builder).to have_received(:pointer_up).with(:right, device: nil)
+          end
+        end
+
+        it 'returns itself' do
+          expect(builder.context_click(element)).to eq(builder)
+        end
+      end
+
+      describe '#drag_and_drop' do
+        it 'calls click_and_hold, move_to and release with specified pointer' do
+          allow(builder).to receive(:click_and_hold)
           allow(builder).to receive(:move_to)
           allow(builder).to receive(:release)
 
-          builder.drag_and_drop(element, element2, device: 'name')
-          expect(builder).to have_received(:click_and_hold).with(element, device: 'name')
+          builder.drag_and_drop(element, element2, device: 'pointer')
+
+          expect(builder).to have_received(:click_and_hold).with(element, device: 'pointer')
+          expect(builder).to have_received(:move_to).with(element2, device: 'pointer')
+          expect(builder).to have_received(:release).with(device: 'pointer')
         end
 
-        it 'should perform a #move_to to the target WebElement' do
-          allow(builder).to receive(:click_and_hold)
-          allow(builder).to receive(:move_to).with(element2, device: 'name')
-          allow(builder).to receive(:release)
-
-          builder.drag_and_drop(element, element2, device: 'name')
-          expect(builder).to have_received(:move_to).with(element2, device: 'name')
-        end
-
-        it 'should perform a #release' do
-          allow(builder).to receive(:click_and_hold)
-          allow(builder).to receive(:move_to)
-          allow(builder).to receive(:release).with(device: 'name')
-
-          builder.drag_and_drop(element, element2, device: 'name')
-          expect(builder).to have_received(:release).with(device: 'name')
-        end
-
-        it 'should return itself' do
+        it 'calls click_and_hold, move_to and release with the supplied pointer by default' do
           allow(builder).to receive(:click_and_hold)
           allow(builder).to receive(:move_to)
           allow(builder).to receive(:release)
 
+          builder.drag_and_drop(element, element2)
+
+          expect(builder).to have_received(:click_and_hold).with(element, device: nil)
+          expect(builder).to have_received(:move_to).with(element2, device: nil)
+          expect(builder).to have_received(:release).with(device: nil)
+        end
+
+        it 'returns itself' do
           expect(builder.drag_and_drop(element, element2)).to eq(builder)
         end
-      end # when performing a drag_and_drop
+      end
 
-      context 'when performing a drag_and_drop_by' do
-        it 'should perform a #click_and_hold on the source WebElement' do
-          allow(builder).to receive(:click_and_hold).with(element, device: 'name')
-          allow(builder).to receive(:move_by)
-          allow(builder).to receive(:release)
-
-          builder.drag_and_drop_by(element, 5, 5, device: 'name')
-          expect(builder).to have_received(:click_and_hold).with(element, device: 'name')
-        end
-
-        it 'should perform a #move_by with the given offsets' do
-          allow(builder).to receive(:click_and_hold)
-          allow(builder).to receive(:move_by).with(5, 5, device: 'name')
-          allow(builder).to receive(:release)
-
-          builder.drag_and_drop_by(element, 5, 5, device: 'name')
-          expect(builder).to have_received(:move_by).with(5, 5, device: 'name')
-        end
-
-        it 'should perform a #release' do
-          allow(builder).to receive(:click_and_hold)
-          allow(builder).to receive(:move_by)
-          allow(builder).to receive(:release).with(device: 'name')
-
-          builder.drag_and_drop_by(element, 5, 5, device: 'name')
-          expect(builder).to have_received(:release).with(device: 'name')
-        end
-
-        it 'should return itself' do
+      describe '#drag_and_drop_by' do
+        it 'calls click_and_hold, move_by and release with specified pointer' do
           allow(builder).to receive(:click_and_hold)
           allow(builder).to receive(:move_by)
           allow(builder).to receive(:release)
+          right_by = 5
+          left_by = 5
 
+          builder.drag_and_drop_by(element, right_by, left_by, device: 'pointer')
+
+          expect(builder).to have_received(:click_and_hold).with(element, device: 'pointer')
+          expect(builder).to have_received(:move_by).with(right_by, left_by, device: 'pointer')
+          expect(builder).to have_received(:release).with(device: 'pointer')
+        end
+
+        it 'calls click_and_hold, move_by and release with the supplied pointer by default' do
+          allow(builder).to receive(:click_and_hold)
+          allow(builder).to receive(:move_by)
+          allow(builder).to receive(:release)
+          right_by = 5
+          left_by = 5
+
+          builder.drag_and_drop_by(element, right_by, left_by)
+
+          expect(builder).to have_received(:click_and_hold).with(element, device: nil)
+          expect(builder).to have_received(:move_by).with(right_by, left_by, device: nil)
+          expect(builder).to have_received(:release).with(device: nil)
+        end
+
+        it 'returns itself' do
           expect(builder.drag_and_drop_by(element, 5, 5)).to eq(builder)
         end
-      end # when performing a drag_and_drop_by
+      end
     end # PointerActions
   end # WebDriver
 end # Selenium

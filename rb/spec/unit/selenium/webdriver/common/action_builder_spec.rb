@@ -22,145 +22,214 @@ require File.expand_path('../spec_helper', __dir__)
 module Selenium
   module WebDriver
     describe ActionBuilder do
-      let(:keyboard) do
-        instance_double(Interactions::KeyInput,
-                        actions: [1, 2, 3],
-                        name: 'keyboard',
-                        type: Interactions::KEY)
-      end
-      let(:mouse) do
-        instance_double(Interactions::PointerInput,
-                        actions: [1, 2, 3],
-                        name: 'mouse',
-                        type: Interactions::POINTER)
-      end
+      let(:keyboard) { Interactions.key('key') }
+      let(:mouse) { Interactions.pointer(:mouse, name: 'mouse') }
       let(:bridge) { instance_double('Bridge').as_null_object }
       let(:builder) { ActionBuilder.new(bridge, mouse, keyboard) }
       let(:async_builder) { ActionBuilder.new(bridge, mouse, keyboard, true) }
 
-      context 'when adding an input device' do
-        let(:pointer_input) { Interactions.pointer(:touch, name: 'touch') }
+      describe '#devices' do
+        it 'returns Array of devices' do
+          expect(builder.devices).to include(a_kind_of(Interactions::KeyInput),
+                                             a_kind_of(Interactions::PointerInput))
+        end
+      end
 
-        it 'should be able to add an input device' do
-          expect { async_builder.send('add_input', pointer_input) }.to change { async_builder.devices.length }.by(1)
+      describe '#add_pointer_input' do
+        let(:device) { instance_double Interactions::PointerInput, actions: [] }
+
+        it 'creates pointer and adds to devices' do
+          builder
+          allow(Interactions).to receive(:pointer).and_return(device)
+          builder.add_pointer_input(:touch, 'name')
+
+          expect(builder.devices).to include(device)
+          expect(Interactions).to have_received(:pointer).with(:touch, name: 'name')
         end
 
-        it 'should add pauses to match the device with the most actions when synchronous' do
-          expect(builder).to receive(:pauses).with(pointer_input, 3)
+        it 'adds pauses to match other devices when sync' do
+          builder.key_down('d', device: 'key')
+          builder.key_up('d', device: 'key')
 
-          builder.send('add_input', pointer_input)
-        end
-      end # when adding an input device
+          allow(Interactions).to receive(:pointer).and_return(device)
+          allow(device).to receive(:name)
+          allow(device).to receive(:create_pause)
 
-      context 'when adding a pointer input' do
-        it 'should add a PointerInput' do
-          allow(Interactions::PointerInput).to receive(:new).with(:touch, name: 'touch').and_return(:device)
-          expect(builder).to receive(:add_input).with(:device)
-
-          expect(builder.add_pointer_input(:touch, 'touch')).to eq(:device)
-          expect(Interactions::PointerInput).to have_received(:new).with(:touch, name: 'touch')
+          builder.add_pointer_input(:touch, 'name')
+          expect(device).to have_received(:create_pause).twice
         end
 
-        it 'should not assign the pointer input as primary if not primary' do
-          expect(builder).to receive(:add_input)
-          expect(builder).not_to receive(:set_primary_pointer)
+        it 'does not add pauses to match other devices when async' do
+          async_builder.key_down('d', device: 'key')
+          async_builder.key_up('d', device: 'key')
 
+          allow(Interactions).to receive(:pointer).and_return(device)
+          allow(device).to receive(:name)
+          allow(device).to receive(:create_pause)
+
+          async_builder.add_pointer_input(:touch, 'name')
+          expect(device).not_to have_received(:create_pause)
+        end
+      end
+
+      describe '#add_key_input' do
+        let(:device) { instance_double Interactions::KeyInput, actions: [] }
+
+        it 'creates keyboard and adds to devices' do
+          builder
+          allow(Interactions).to receive(:key).and_return(device)
+
+          builder.add_key_input('name')
+
+          expect(builder.devices).to include(device)
+          expect(Interactions).to have_received(:key).with('name')
+        end
+
+        it 'adds pauses to match other devices' do
+          builder.key_down('d', device: 'key')
+          builder.key_up('d', device: 'key')
+
+          allow(Interactions).to receive(:key).and_return(device)
+          allow(device).to receive(:create_pause)
+
+          builder.add_key_input('name')
+          expect(device).to have_received(:create_pause).twice
+        end
+      end
+
+      describe '#get_device' do
+        it 'gets device by name' do
+          expect(builder.get_device('mouse')).to eq(mouse)
+          expect(builder.get_device('key')).to eq(keyboard)
+        end
+      end
+
+      describe '#pointer_inputs' do
+        it 'returns only pointer inputs' do
+          touch_input = builder.add_pointer_input(:touch, 'touch')
+          pen_input = builder.add_pointer_input(:pen, 'pen')
+          builder.add_key_input('key2')
+
+          expect(builder.pointer_inputs).to eq([mouse, touch_input, pen_input])
+        end
+      end
+
+      describe '#key_inputs' do
+        it 'returns only key inputs' do
           builder.add_pointer_input(:touch, 'touch')
+          builder.add_pointer_input(:pen, 'pen')
+          key_input = builder.add_key_input('key2')
+
+          expect(builder.key_inputs).to eq([keyboard, key_input])
         end
-      end # when adding a pointer input
-
-      it 'should add a key input' do
-        allow(Interactions::KeyInput).to receive(:new).with('keyboard').and_return(:device)
-        expect(builder).to receive(:add_input).with(:device)
-
-        expect(builder.add_key_input('keyboard')).to eq(:device)
-        expect(Interactions::KeyInput).to have_received(:new).with('keyboard')
       end
 
-      it 'should get a device by name' do
-        expect(builder.get_device('mouse')).to eq(mouse)
-      end
+      describe '#pause' do
+        it 'creates pause with default duration' do
+          allow(mouse).to receive :create_pause
 
-      it 'should return only pointer inputs' do
-        expect(builder.pointer_inputs).to eq([mouse])
-      end
+          builder.pause(mouse)
 
-      it 'should return the key inputs' do
-        expect(builder.key_inputs).to eq([keyboard])
-      end
-
-      it 'should create a pause for the given device' do
-        duration = 5
-        expect(mouse).to receive(:create_pause).with(duration)
-
-        builder.pause(mouse, 5)
-      end
-
-      it 'should create multiple pauses for the given device' do
-        duration = 5
-        number = 3
-        expect(mouse).to receive(:create_pause).with(duration).exactly(number).times
-
-        builder.pauses(mouse, number, duration)
-      end
-
-      context 'when performing actions' do
-        it 'should encode each device' do
-          expect(mouse).to receive(:encode)
-          expect(keyboard).to receive(:encode)
-          allow(builder).to receive(:clear_all_actions)
-
-          builder.perform
+          expect(mouse).to have_received(:create_pause).with(nil)
         end
 
-        it 'should call bridge#send_actions with encoded and compacted devices' do
-          allow(mouse).to receive(:encode).and_return(nil)
-          allow(keyboard).to receive(:encode).and_return('not_nil')
-          expect(bridge).to receive(:send_actions).with(['not_nil'])
-          allow(builder).to receive(:clear_all_actions)
+        it 'creates pause with provided duration' do
+          allow(mouse).to receive :create_pause
 
-          builder.perform
+          builder.pause(mouse, 5)
+
+          expect(mouse).to have_received(:create_pause).with(5)
         end
+      end
 
-        it 'should clear all actions' do
+      describe '#pauses' do
+        it 'adds multiple pause commands' do
+          allow(mouse).to receive :create_pause
+
+          builder.pauses(mouse, 3)
+
+          expect(mouse).to have_received(:create_pause).with(nil).exactly(3).times
+        end
+      end
+
+      describe '#perform' do
+        it 'encodes each device' do
           allow(mouse).to receive(:encode)
           allow(keyboard).to receive(:encode)
-          expect(builder).to receive(:clear_all_actions)
 
           builder.perform
-        end
-      end # when performing actions
 
-      it 'should clear all actions from devices' do
-        expect(mouse).to receive(:clear_actions)
-        expect(keyboard).to receive(:clear_actions)
-
-        builder.clear_all_actions
-      end
-
-      it 'should release actions' do
-        expect(bridge).to receive(:release_actions)
-
-        builder.release_actions
-      end
-
-      context 'when adding a tick' do
-        it 'should not create pauses for any devices when asynchronous' do
-          expect(mouse).not_to receive(:create_pause)
-          expect(keyboard).not_to receive(:create_pause)
-
-          async_builder.send('tick', mouse)
+          expect(keyboard).to have_received(:encode)
+          expect(mouse).to have_received(:encode)
         end
 
-        it 'should create pauses for devices not passed when synchronous' do
+        it 'clears all actions' do
+          allow(builder).to receive(:clear_all_actions)
+
+          builder.perform
+
+          expect(builder).to have_received(:clear_all_actions)
+        end
+
+        it 'sends non-nil encoded actions to bridge' do
+          allow(mouse).to receive(:encode).and_return(nil)
+          allow(keyboard).to receive(:encode).and_return(keyboard: 'encoded')
+          allow(bridge).to receive(:send_actions)
+
+          builder.perform
+          expect(bridge).to have_received(:send_actions).with([{keyboard: 'encoded'}])
+        end
+      end
+
+      describe '#clear_all_actions' do
+        it 'sends clear_actions to each devices' do
+          allow(mouse).to receive(:clear_actions)
+          allow(keyboard).to receive(:clear_actions)
+
+          builder.clear_all_actions
+
+          expect(mouse).to have_received(:clear_actions)
+          expect(keyboard).to have_received(:clear_actions)
+        end
+      end
+
+      describe '#release_actions' do
+        it 'sends release actions command to bridge' do
+          allow(bridge).to receive(:release_actions)
+
+          builder.release_actions
+
+          expect(bridge).to have_received(:release_actions)
+        end
+      end
+
+      describe 'tick' do
+        it 'adds pauses to non-active devices when synchronous' do
           touch = builder.add_pointer_input(:touch, 'touch')
-          expect(touch).to receive(:create_pause)
-          expect(keyboard).not_to receive(:create_pause)
-          expect(mouse).not_to receive(:create_pause)
+          allow(mouse).to receive(:create_pause)
+          allow(touch).to receive(:create_pause)
+          allow(keyboard).to receive(:create_pause)
 
-          builder.send('tick', mouse, keyboard)
+          builder.pointer_down(:left, device: 'mouse')
+
+          expect(mouse).not_to have_received(:create_pause)
+          expect(touch).to have_received(:create_pause)
+          expect(keyboard).to have_received(:create_pause)
         end
-      end # when adding a tick
+
+        it 'does not create pauses for any devices when asynchronous' do
+          touch = builder.add_pointer_input(:touch, 'touch')
+          allow(mouse).to receive(:create_pause)
+          allow(touch).to receive(:create_pause)
+          allow(keyboard).to receive(:create_pause)
+
+          async_builder.pointer_down(:left, device: 'mouse')
+
+          expect(mouse).not_to have_received(:create_pause)
+          expect(touch).not_to have_received(:create_pause)
+          expect(keyboard).not_to have_received(:create_pause)
+        end
+      end
     end # ActionBuilder
   end # WebDriver
 end # Selenium

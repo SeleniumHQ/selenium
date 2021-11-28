@@ -23,52 +23,40 @@ module Selenium
   module WebDriver
     module Interactions
       describe Interaction do
-        let(:source) { instance_double(NoneInput) }
+        let(:source) { NoneInput.new }
         let(:interaction) { Interaction.new(source) }
 
-        it 'should provide access to source' do
-          allow(source).to receive(:type).and_return(Interactions::NONE)
-          expect(interaction).to respond_to(:source)
+        it 'returns valid source when provided' do
+          expect(interaction.source).to eq source
         end
 
-        it 'should raise a TypeError if the type of the source device is not in Interactions::SOURCE_TYPES' do
+        it 'raises a TypeError if the provided source is invalid' do
           allow(source).to receive(:type).and_return(:no_type)
-          expect { Interaction.new(source) }.to raise_error(TypeError)
+          expect { interaction }.to raise_error(TypeError)
         end
-      end # Interaction
+      end
 
       describe Pause do
-        let(:source) { instance_double(NoneInput) }
+        let(:source) { NoneInput.new }
         let(:pause) { Pause.new(source) }
         let(:duration) { 5 }
 
-        it 'should have a type of :pause' do
-          allow(source).to receive(:type).and_return(Interactions::NONE)
-          expect(pause.type).to eq(:pause)
+        describe '#type' do
+          it 'returns :pause' do
+            expect(pause.type).to eq(:pause)
+          end
         end
 
-        context 'when encoding' do
-          it 'should return a hash' do
-            allow(source).to receive(:type).and_return(Interactions::NONE)
-            expect(pause.encode).to be_a(Hash)
+        describe '#encode' do
+          it 'returns Hash with type' do
+            expect(pause.encode).to eq(type: :pause)
           end
 
-          it 'should contain a type key with the value :pause' do
-            allow(source).to receive(:type).and_return(Interactions::NONE)
-            expect(pause.encode).to include(type: :pause)
-          end
-
-          it 'should not contain a duration key when duration is nil' do
-            allow(source).to receive(:type).and_return(Interactions::NONE)
-            expect(pause.encode).not_to include(:duration)
-          end
-
-          it 'should contain a duration key with the duration value multiplied by 1000 is not nil' do
-            allow(source).to receive(:type).and_return(Interactions::NONE)
+          it 'returns Hash with duration in ms if provided' do
             expect(Pause.new(source, duration).encode).to include(duration: duration * 1000)
           end
-        end # when encoding
-      end # Pause
+        end
+      end
     end # Interactions
   end # WebDriver
 end # Selenium

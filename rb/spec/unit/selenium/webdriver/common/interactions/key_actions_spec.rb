@@ -22,137 +22,138 @@ require File.expand_path('../../spec_helper', __dir__)
 module Selenium
   module WebDriver
     describe KeyActions do
-      let(:keyboard) { instance_double(Interactions::KeyInput) }
-      let(:mouse) { instance_double(Interactions::PointerInput) }
+      let(:keyboard) { Interactions::KeyInput.new('keyboard') }
+      let(:mouse) { Interactions::PointerInput.new(:mouse, name: 'pointer') }
       let(:bridge) { instance_double('Bridge').as_null_object }
       let(:builder) { Selenium::WebDriver::ActionBuilder.new(bridge, mouse, keyboard) }
       let(:element) { Selenium::WebDriver::Element.new(bridge, 'element') }
       let(:key) { 'a' }
       let(:keys) { 'abc' }
 
-      context 'when performing a key action' do
-        it 'should get the device if device name is supplied' do
-          allow(builder).to receive(:get_device).with('name').and_return(keyboard)
-          allow(keyboard).to receive(:create_key_down)
-          allow(builder).to receive(:tick)
-
-          builder.send('key_action', key, action: :create_key_down, device: 'name')
-          expect(builder).to have_received(:get_device).with('name')
+      describe '#key_input' do
+        it 'gets key input by name' do
+          expect(builder.send(:key_input, keyboard.name)).to eq keyboard
         end
 
-        it 'should get the first key_input when no device name is supplied' do
-          allow(builder).to receive(:get_device).with(nil)
-          allow(builder).to receive(:key_inputs).and_return([keyboard])
-          allow(keyboard).to receive(:create_key_down)
-          allow(builder).to receive(:tick)
-
-          builder.send('key_action', key, action: :create_key_down)
+        it 'gets default key input' do
+          expect(builder.send(:key_input)).to eq keyboard
         end
-
-        it 'should click the element if the first argument is a WebElement' do
-          allow(builder).to receive(:get_device).and_return(keyboard)
-          expect(builder).to receive(:click).with(element)
-          allow(keyboard).to receive(:create_key_down)
-          allow(builder).to receive(:tick)
-
-          builder.send('key_action', element, key, action: :create_key_down)
-        end
-
-        it 'should create a key_down action for the key_input' do
-          allow(builder).to receive(:get_device).and_return(keyboard)
-          expect(keyboard).to receive(:create_key_down).with(key)
-          allow(builder).to receive(:tick)
-
-          builder.send('key_action', key, action: :create_key_down)
-        end
-
-        it 'should create a key_up action for the key_input' do
-          allow(builder).to receive(:get_device).and_return(keyboard)
-          expect(keyboard).to receive(:create_key_up).with(key)
-          allow(builder).to receive(:tick)
-
-          builder.send('key_action', key, action: :create_key_up)
-        end
-
-        it 'should pass the key_input to the #tick method' do
-          allow(builder).to receive(:get_device).and_return(keyboard)
-          allow(keyboard).to receive(:create_key_down)
-          expect(builder).to receive(:tick).with(keyboard)
-
-          builder.send('key_action', key, action: :create_key_down)
-        end
-
-        it 'should return itself' do
-          allow(builder).to receive(:get_device).and_return(keyboard)
-          allow(keyboard).to receive(:create_key_down)
-          allow(builder).to receive(:tick).with(keyboard)
-
-          expect(builder.send('key_action', key, action: :create_key_down)).to eq(builder)
-        end
-      end # when performing a key action
-
-      it 'should create a key_down action' do
-        expect(builder).to receive(:key_action).with(element, key, action: :create_key_down, device: 'name')
-        builder.key_down(element, key, device: 'name')
       end
 
-      it 'should create a key_up action' do
-        expect(builder).to receive(:key_action).with(element, key, action: :create_key_up, device: 'name')
-        builder.key_up(element, key, device: 'name')
+      describe '#key_down' do
+        it 'gets key_input' do
+          allow(builder).to receive(:key_input).and_call_original
+
+          builder.key_down key, device: keyboard.name
+
+          expect(builder).to have_received(:key_input).with(keyboard.name)
+        end
+
+        it 'creates key_down' do
+          allow(keyboard).to receive(:create_key_down)
+
+          builder.key_down key
+
+          expect(keyboard).to have_received :create_key_down
+        end
+
+        it 'clicks provided element first' do
+          allow(builder).to receive(:click).and_call_original
+
+          builder.key_down element, key
+
+          expect(keyboard.actions[0]).to be_a(Interactions::Pause)
+          expect(keyboard.actions[1]).to be_a(Interactions::Pause)
+          expect(keyboard.actions[2]).to be_a(Interactions::Pause)
+
+          expect(builder).to have_received(:click).with(element)
+        end
+
+        it 'passes the key input to the #tick method' do
+          allow(builder).to receive(:tick)
+
+          builder.key_down key
+          expect(builder).to have_received(:tick).with(keyboard)
+        end
+
+        it 'returns itself' do
+          expect(builder.key_down(key)).to eq(builder)
+        end
       end
 
-      context 'when sending keys' do
-        it 'should click the element if the first argument is a WebElement' do
-          expect(builder).to receive(:click).with(element)
-          allow(builder).to receive(:key_down)
-          allow(builder).to receive(:key_up)
+      describe '#key_up' do
+        it 'gets key_input' do
+          allow(builder).to receive(:key_input).and_call_original
 
-          builder.send_keys(element, keys)
+          builder.key_up key, device: keyboard.name
+
+          expect(builder).to have_received(:key_input).with(keyboard.name)
         end
 
-        it 'should call key_down for each key passed' do
-          expect(builder).to receive(:key_down).with(keys[0], device: nil)
-          expect(builder).to receive(:key_down).with(keys[1], device: nil)
-          expect(builder).to receive(:key_down).with(keys[2], device: nil)
-          allow(builder).to receive(:key_up)
+        it 'clicks provided element first' do
+          allow(builder).to receive(:click).and_call_original
 
-          builder.send_keys(keys)
+          builder.key_up element, key
+
+          expect(keyboard.actions[0]).to be_a(Interactions::Pause)
+          expect(keyboard.actions[1]).to be_a(Interactions::Pause)
+          expect(keyboard.actions[2]).to be_a(Interactions::Pause)
+
+          expect(builder).to have_received(:click).with(element)
         end
 
-        it 'should call key_up for each key passed' do
-          allow(builder).to receive(:key_down)
-          expect(builder).to receive(:key_up).with(keys[0], device: nil)
-          expect(builder).to receive(:key_up).with(keys[1], device: nil)
-          expect(builder).to receive(:key_up).with(keys[2], device: nil)
+        it 'passes the key input to the #tick method' do
+          allow(builder).to receive(:tick)
 
-          builder.send_keys(keys)
+          builder.key_up key
+          expect(builder).to have_received(:tick).with(keyboard)
         end
 
-        it 'should pass the device name to key_down and key_up commands' do
-          expect(builder).to receive(:key_down).with(key, device: 'name')
-          expect(builder).to receive(:key_up).with(key, device: 'name')
+        it 'returns itself' do
+          expect(builder.key_down(key)).to eq(builder)
+        end
+      end
 
-          builder.send_keys(key, device: 'name')
+      describe '#send_keys' do
+        it 'clicks provided element first' do
+          allow(builder).to receive(:click).and_call_original
+
+          builder.send_keys element, keys
+
+          expect(keyboard.actions[0]).to be_a(Interactions::Pause)
+          expect(keyboard.actions[1]).to be_a(Interactions::Pause)
+          expect(keyboard.actions[2]).to be_a(Interactions::Pause)
+
+          expect(builder).to have_received(:click).with(element)
         end
 
-        it 'should allow multiple string arguments' do
-          expect(builder).to receive(:key_down).with('a', device: nil)
-          expect(builder).to receive(:key_down).with('b', device: nil)
-          expect(builder).to receive(:key_down).with('c', device: nil)
-          allow(builder).to receive(:key_up)
+        it 'accepts Strings and characters as arguments' do
+          allow(keyboard).to receive(:create_key_down).and_call_original
+          allow(keyboard).to receive(:create_key_up).and_call_original
 
-          builder.send_keys('a', 'b', 'c')
+          builder.send_keys keys, keys[0], keys[1], keys[2]
+          expect(keyboard).to have_received(:create_key_down).exactly(6).times
+          expect(keyboard).to have_received(:create_key_up).exactly(6).times
         end
 
-        it 'should allow string and symbol arguments' do
-          expect(builder).to receive(:key_down).with('a', device: nil)
-          expect(builder).to receive(:key_down).with(:shift, device: nil)
-          expect(builder).to receive(:key_down).with('c', device: nil)
-          allow(builder).to receive(:key_up)
+        it 'accepts symbol arguments' do
+          allow(keyboard).to receive(:create_key_down).and_call_original
+          allow(keyboard).to receive(:create_key_up).and_call_original
 
-          builder.send_keys('a', :shift, 'c')
+          builder.send_keys keys[0], :shift, keys[1], keys[2]
+          expect(keyboard).to have_received(:create_key_down).exactly(4).times
+          expect(keyboard).to have_received(:create_key_up).exactly(4).times
         end
-      end # when sending keys
+
+        it 'pushes things at the same time' do
+          allow(keyboard).to receive(:create_key_down).and_call_original
+          allow(keyboard).to receive(:create_key_up).and_call_original
+
+          builder.send_keys [keys[0], :shift], keys[1], keys[2]
+          expect(keyboard).to have_received(:create_key_down).exactly(4).times
+          expect(keyboard).to have_received(:create_key_up).exactly(4).times
+        end
+      end
     end # KeyActions
   end # WebDriver
 end # Selenium

@@ -24,48 +24,35 @@ module Selenium
     module Interactions
       describe NoneInput do
         let(:none) { NoneInput.new(:name) }
+        let(:interaction) { Pause.new(none, 1) }
 
-        it 'should have a type of :none' do
-          expect(none.type).to eq(:none)
+        describe '#type' do
+          it 'returns :key' do
+            expect(none.type).to eq(:none)
+          end
         end
 
-        context 'when encoding' do
-          it 'should return nil if no_actions? is true' do
+        describe '#encode' do
+          it 'returns nil if no_actions? is true' do
             allow(none).to receive(:no_actions?).and_return(true)
             expect(none.encode).to eq(nil)
           end
 
-          it 'should return a hash if no_actions? is false' do
+          it 'returns Hash with expected parameters if no_actions? is false' do
             allow(none).to receive(:no_actions?).and_return(false)
-            expect(none.encode).to be_a(Hash)
+            expect(none.encode).to eq(type: :none, id: :name, actions: [])
           end
 
-          it 'should contain a type key with the value :none' do
+          it 'encodes each action' do
             allow(none).to receive(:no_actions?).and_return(false)
-            expect(none.encode).to include(type: :none)
-          end
+            allow(interaction).to receive(:encode).and_call_original
+            2.times { none.add_action(interaction) }
 
-          it 'should contain an id key with the name of the input' do
-            allow(none).to receive(:no_actions?).and_return(false)
-            expect(none.encode).to include(id: none.name)
-          end
-
-          it 'should call the #encode method on all actions' do
-            allow(none).to receive(:no_actions?).and_return(false)
-            2.times { none.create_pause }
-            act1, act2 = none.actions
-            expect(act1).to receive(:encode)
-            expect(act2).to receive(:encode)
             none.encode
-          end
 
-          it 'should contain an actions key with an array of actions' do
-            allow(none).to receive(:no_actions?).and_return(false)
-            allow(none.actions).to receive(:map).and_return([1, 2, 3])
-
-            expect(none.encode).to include(actions: [1, 2, 3])
+            expect(interaction).to have_received(:encode).twice
           end
-        end # when encoding
+        end
       end # NoneInput
     end # Interactions
   end # WebDriver
