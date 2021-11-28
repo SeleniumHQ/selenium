@@ -45,7 +45,7 @@ const Capabilities = capabilities.Capabilities
 const Capability = capabilities.Capability
 const WebDriver = webdriver.WebDriver
 
-var seleniumServer
+let seleniumServer
 
 /**
  * Starts an instance of the Selenium server if not yet running.

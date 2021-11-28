@@ -72,12 +72,12 @@
 
 'use strict'
 
-const http = require('./http'),
-  io = require('./io'),
-  capabilities = require('./lib/capabilities'),
-  Symbols = require('./lib/symbols'),
-  webdriver = require('./lib/webdriver'),
-  remote = require('./remote')
+const http = require('./http')
+const io = require('./io')
+const capabilities = require('./lib/capabilities')
+const Symbols = require('./lib/symbols')
+const webdriver = require('./lib/webdriver')
+const remote = require('./remote')
 
 /**
  * Name of the OperaDriver executable.
@@ -153,7 +153,7 @@ class ServiceBuilder extends remote.DriverService.Builder {
 }
 
 /** @type {remote.DriverService} */
-var defaultService = null
+let defaultService = null
 
 /**
  * Sets the default service to use for new OperaDriver instances.
@@ -187,7 +187,7 @@ function getDefaultService() {
  * @type {string}
  * @const
  */
-var OPTIONS_CAPABILITY_KEY = 'chromeOptions'
+const OPTIONS_CAPABILITY_KEY = 'chromeOptions'
 
 /**
  * Class for managing {@linkplain Driver OperaDriver} specific options.
@@ -217,8 +217,8 @@ class Options {
    * @return {!Options} The OperaDriver options.
    */
   static fromCapabilities(caps) {
-    var options
-    var o = caps.get(OPTIONS_CAPABILITY_KEY)
+    let options
+    const o = caps.get(OPTIONS_CAPABILITY_KEY)
     if (o instanceof Options) {
       options = o
     } else if (o) {
@@ -249,8 +249,8 @@ class Options {
    * @param {...(string|!Array.<string>)} var_args The arguments to add.
    * @return {!Options} A self reference.
    */
-  addArguments(var_args) { // eslint-disable-line
-    this.args_ = this.args_.concat.apply(this.args_, arguments)
+  addArguments(...var_args) {
+    this.args_ = this.args_.concat.apply(this.args_, var_args)
     return this
   }
 
@@ -262,11 +262,8 @@ class Options {
    *     extensions to add.
    * @return {!Options} A self reference.
    */
-  addExtensions(var_args) { // eslint-disable-line
-    this.extensions_ = this.extensions_.concat.apply(
-      this.extensions_,
-      arguments
-    )
+  addExtensions(...var_args) {
+    this.extensions_ = this.extensions_.concat.apply(this.extensions_, var_args)
     return this
   }
 
@@ -358,11 +355,11 @@ class Driver extends webdriver.WebDriver {
    * @return {!Driver} A new driver instance.
    */
   static createSession(opt_config, opt_service) {
-    var service = opt_service || getDefaultService()
-    var client = service.start().then((url) => new http.HttpClient(url))
-    var executor = new http.Executor(client)
+    const service = opt_service || getDefaultService()
+    const client = service.start().then((url) => new http.HttpClient(url))
+    const executor = new http.Executor(client)
 
-    var caps =
+    let caps =
       opt_config instanceof Options
         ? opt_config.toCapabilities()
         : opt_config || capabilities.Capabilities.opera()
@@ -370,7 +367,7 @@ class Driver extends webdriver.WebDriver {
     // On Linux, the OperaDriver does not look for Opera on the PATH, so we
     // must explicitly find it. See: operachromiumdriver #9.
     if (process.platform === 'linux') {
-      var options = Options.fromCapabilities(caps)
+      const options = Options.fromCapabilities(caps)
       if (!options.binary_) {
         let exe = io.findInPath('opera', true)
         if (!exe) {
