@@ -472,6 +472,6 @@ module Selenium
           expect(builder.drag_and_drop_by(element, 5, 5)).to eq(builder)
         end
       end
-    end # PointerActions
+    end
   end # WebDriver
 end # Selenium

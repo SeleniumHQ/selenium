@@ -75,29 +75,7 @@ module Selenium
             expect(key_input).to have_received(:add_action).with(interaction)
           end
         end
-      end # KeyInput
-
-      describe TypingInteraction do
-        let(:source) { Interactions.key('keyboard') }
-        let(:type) { :down }
-        let(:typing) { TypingInteraction.new(source, type, key) }
-        let(:key) { 'a' }
-
-        it 'stores type as KeyInput::SUBTYPES' do
-          expect(typing.type).to eq KeyInput::SUBTYPES[type]
-        end
-
-        it 'raises a TypeError if the passed type is not a key in KeyInput::SUBTYPES' do
-          expect { TypingInteraction.new(source, :none, key) }.to raise_error(TypeError)
-        end
-
-        describe '#encode' do
-          it 'returns a Hash with type and value' do
-            expect(typing.encode).to eq(type: typing.type, value: key)
-          end
-        end
-      end # TypingInteraction
-
+      end
     end # Interactions
   end # WebDriver
 end # Selenium

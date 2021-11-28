@@ -158,6 +158,6 @@ module Selenium
           expect(keyboard).to have_received(:create_key_up).exactly(4).times
         end
       end
-    end # KeyActions
+    end
   end # WebDriver
 end # Selenium

@@ -22,35 +22,23 @@ require File.expand_path('../../spec_helper', __dir__)
 module Selenium
   module WebDriver
     module Interactions
-      describe NoneInput do
-        let(:none) { NoneInput.new(:name) }
-        let(:interaction) { Pause.new(none, 1) }
+      describe TypingInteraction do
+        let(:source) { Interactions.key('keyboard') }
+        let(:type) { :down }
+        let(:typing) { TypingInteraction.new(source, type, key) }
+        let(:key) { 'a' }
 
-        describe '#type' do
-          it 'returns :key' do
-            expect(none.type).to eq(:none)
-          end
+        it 'stores type as KeyInput::SUBTYPES' do
+          expect(typing.type).to eq KeyInput::SUBTYPES[type]
+        end
+
+        it 'raises a TypeError if the passed type is not a key in KeyInput::SUBTYPES' do
+          expect { TypingInteraction.new(source, :none, key) }.to raise_error(TypeError)
         end
 
         describe '#encode' do
-          it 'returns nil if no_actions? is true' do
-            allow(none).to receive(:no_actions?).and_return(true)
-            expect(none.encode).to eq(nil)
-          end
-
-          it 'returns Hash with expected parameters if no_actions? is false' do
-            allow(none).to receive(:no_actions?).and_return(false)
-            expect(none.encode).to eq(type: :none, id: :name, actions: [])
-          end
-
-          it 'encodes each action' do
-            allow(none).to receive(:no_actions?).and_return(false)
-            allow(interaction).to receive(:encode).and_call_original
-            2.times { none.add_action(interaction) }
-
-            none.encode
-
-            expect(interaction).to have_received(:encode).twice
+          it 'returns a Hash with type and value' do
+            expect(typing.encode).to eq(type: typing.type, value: key)
           end
         end
       end

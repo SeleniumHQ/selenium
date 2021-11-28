@@ -33,6 +33,6 @@ module Selenium
       it 'creates a new none input' do
         expect(Interactions.none).to be_a(Interactions::NoneInput)
       end
-    end # Interactions
+    end
   end # WebDriver
 end # Selenium

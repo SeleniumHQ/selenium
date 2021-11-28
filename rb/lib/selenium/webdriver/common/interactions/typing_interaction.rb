@@ -20,20 +20,25 @@
 module Selenium
   module WebDriver
     module Interactions
-      class Interaction
-        PAUSE = :pause
+      class TypingInteraction < Interaction
+        attr_reader :type
 
-        attr_reader :source
-
-        def initialize(source)
-          unless Interactions::SOURCE_TYPES.include? source.type
-            raise TypeError,
-                  "#{source.type} is not a valid input type"
-          end
-
-          @source = source
+        def initialize(source, type, key)
+          super(source)
+          @type = assert_type(type)
+          @key = Keys.encode_key(key)
         end
-      end
+
+        def assert_type(type)
+          raise TypeError, "#{type.inspect} is not a valid key subtype" unless KeyInput::SUBTYPES.key? type
+
+          KeyInput::SUBTYPES[type]
+        end
+
+        def encode
+          {type: @type, value: @key}
+        end
+      end # TypingInteraction
     end # Interactions
   end # WebDriver
 end # Selenium
