@@ -92,7 +92,7 @@ module Selenium
       #
 
       def get_device(name)
-        @devices.find { |device| device.name == name.to_s }
+        @devices.find { |device| device.name == name.to_s } || raise(ArgumentError, "Can not find device: #{name}")
       end
 
       #

@@ -36,6 +36,10 @@ module Selenium
           expect(builder.send(:pointer_input, mouse.name)).to eq mouse
         end
 
+        it 'raises ArgumentError if no device exists with that name' do
+          expect { builder.send(:pointer_input, 'none') }.to raise_error(ArgumentError)
+        end
+
         it 'gets default key input' do
           expect(builder.send(:pointer_input)).to eq mouse
         end
