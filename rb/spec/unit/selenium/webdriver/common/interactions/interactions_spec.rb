@@ -22,15 +22,15 @@ require File.expand_path('../../spec_helper', __dir__)
 module Selenium
   module WebDriver
     describe Interactions do
-      it 'be able to create a new key input' do
+      it 'creates a new key input' do
         expect(Interactions.key(:name)).to be_a(Interactions::KeyInput)
       end
 
-      it 'be able to create a new pointer input' do
+      it 'creates a new pointer input' do
         expect(Interactions.pointer(:mouse)).to be_a(Interactions::PointerInput)
       end
 
-      it 'be able to create a new none input' do
+      it 'creates a new none input' do
         expect(Interactions.none).to be_a(Interactions::NoneInput)
       end
     end # Interactions
