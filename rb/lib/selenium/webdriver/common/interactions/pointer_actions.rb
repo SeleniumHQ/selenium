@@ -111,7 +111,7 @@ module Selenium
         pointer.create_pointer_move(duration: default_move_duration,
                                     x: left,
                                     y: top,
-                                    element: element)
+                                    origin: element)
         tick(pointer)
         self
       end

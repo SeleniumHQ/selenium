@@ -68,7 +68,7 @@ module Selenium
 
         describe '#create_pointer_move' do
           it 'executes #add_action with created interaction' do
-            allow(PointerMove).to receive(:new).with(pointer, 50, 51, 52, element: nil, origin: nil)
+            allow(PointerMove).to receive(:new).with(pointer, 50, 51, 52, origin: nil)
                                                .and_return(interaction)
             allow(pointer).to receive(:add_action).and_call_original
 
@@ -171,7 +171,7 @@ module Selenium
         describe '#encode' do
           context 'with element' do
             it 'returns a Hash with source, duration, x and y' do
-              move = PointerMove.new(source, duration, x, y, element: element)
+              move = PointerMove.new(source, duration, x, y, origin: element)
 
               ms = (duration * 1000).to_i
               expect(move.encode).to eq(type: move.type, origin: element, duration: ms, x: x, y: y)

@@ -114,7 +114,7 @@ module Selenium
           expect(mouse).to have_received(:create_pointer_move).with(duration: duration,
                                                                     x: right_by - dimension / 2,
                                                                     y: down_by - dimension / 2,
-                                                                    element: element)
+                                                                    origin: element)
         end
 
         it 'passes the pointer to the #tick method' do
