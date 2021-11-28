@@ -20,6 +20,13 @@
 module Selenium
   module WebDriver
     module Interactions
+      #
+      # Creates actions specific to null input source
+      # This is primarily used for adding pauses
+      #
+      # @api private
+      #
+
       class NoneInput < InputDevice
         def type
           Interactions::NONE

@@ -20,6 +20,12 @@
 module Selenium
   module WebDriver
     module Interactions
+      #
+      # Actions related to moving the pointer.
+      #
+      # @api private
+      #
+
       class PointerMove < Interaction
         VIEWPORT = :viewport
         POINTER = :pointer

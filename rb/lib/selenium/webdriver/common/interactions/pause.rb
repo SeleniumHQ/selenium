@@ -20,6 +20,13 @@
 module Selenium
   module WebDriver
     module Interactions
+      #
+      # Action to create a waiting period between actions
+      # Also used for synchronizing actions across devices
+      #
+      # @api private
+      #
+
       class Pause < Interaction
         def initialize(source, duration = nil)
           super(source)

@@ -20,6 +20,13 @@
 module Selenium
   module WebDriver
     module Interactions
+      #
+      # Superclass for classes defining actions
+      # Do not initialize directly, only use subclass
+      #
+      # @api private
+      #
+
       class Interaction
         attr_reader :type
 

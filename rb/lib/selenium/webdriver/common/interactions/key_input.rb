@@ -20,6 +20,12 @@
 module Selenium
   module WebDriver
     module Interactions
+      #
+      # Creates actions specific to Key Input devices
+      #
+      # @api private
+      #
+
       class KeyInput < InputDevice
         SUBTYPES = {down: :keyDown, up: :keyUp, pause: :pause}.freeze
 

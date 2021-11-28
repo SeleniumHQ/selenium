@@ -20,6 +20,12 @@
 module Selenium
   module WebDriver
     module Interactions
+      #
+      # Actions related to pressing keys.
+      #
+      # @api private
+      #
+
       class TypingInteraction < Interaction
         attr_reader :type
 

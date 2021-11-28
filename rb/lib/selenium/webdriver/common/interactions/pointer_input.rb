@@ -20,6 +20,12 @@
 module Selenium
   module WebDriver
     module Interactions
+      #
+      # Creates actions specific to Pointer Input devices
+      #
+      # @api private
+      #
+
       class PointerInput < InputDevice
         KIND = {mouse: :mouse, pen: :pen, touch: :touch}.freeze
 

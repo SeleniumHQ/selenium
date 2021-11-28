@@ -22,6 +22,13 @@ require 'securerandom'
 module Selenium
   module WebDriver
     module Interactions
+      #
+      # Superclass for the input device sources
+      # Manages Array of Interaction instances for the device
+      #
+      # @api private
+      #
+
       class InputDevice
         attr_reader :name, :actions
 
