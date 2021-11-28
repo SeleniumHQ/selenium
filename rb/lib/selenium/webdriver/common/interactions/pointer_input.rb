@@ -80,18 +80,22 @@ module Selenium
         end
 
         def assert_button(button)
-          if button.is_a? Symbol
-            raise TypeError, "#{button.inspect} is not a valid button!" unless BUTTONS.key? button
+          case button
+          when Symbol
+            raise ArgumentError, "#{button} is not a valid button!" unless BUTTONS.key? button
 
-            button = BUTTONS[button]
+            BUTTONS[button]
+          when Integer
+            raise ArgumentError, 'Button number cannot be negative!' if button.negative?
+
+            button
+          else
+            raise TypeError, "button must be a positive integer or one of #{BUTTONS.keys}, not #{button.class}"
           end
-          raise ArgumentError, 'Button number cannot be negative!' unless button >= 0
-
-          button
         end
 
         def assert_direction(direction)
-          raise TypeError, "#{direction.inspect} is not a valid button direction" unless DIRECTIONS.key? direction
+          raise ArgumentError, "#{direction.inspect} is not a valid button direction" unless DIRECTIONS.key? direction
 
           DIRECTIONS[direction]
         end

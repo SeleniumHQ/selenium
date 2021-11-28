@@ -119,8 +119,12 @@ module Selenium
         let(:press) { PointerPress.new(source, direction, button) }
 
         describe '#initialize' do
-          it 'raises a TypeError if invalid button symbol' do
-            expect { PointerPress.new(source, direction, :none) }.to raise_error(TypeError)
+          it 'raises a ArgumentError if invalid button symbol' do
+            expect { PointerPress.new(source, direction, :none) }.to raise_error(ArgumentError)
+          end
+
+          it 'raises an TypeError if button is not a symbol or integer' do
+            expect { PointerPress.new(source, direction, 'wrong') }.to raise_error(TypeError)
           end
 
           it 'raises an ArgumentError if button is negative' do
@@ -131,8 +135,8 @@ module Selenium
             expect { PointerPress.new(source, direction, 1141) }.not_to raise_error
           end
 
-          it 'raises a TypeError if invalid direction' do
-            expect { PointerPress.new(source, :none, button) }.to raise_error(TypeError)
+          it 'raises a ArgumentError if invalid direction' do
+            expect { PointerPress.new(source, :none, button) }.to raise_error(ArgumentError)
           end
         end
 
