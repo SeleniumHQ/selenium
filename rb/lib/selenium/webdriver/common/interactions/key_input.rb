@@ -20,6 +20,26 @@
 module Selenium
   module WebDriver
     module Interactions
+      class TypingInteraction < Interaction
+        attr_reader :type
+
+        def initialize(source, type, key)
+          super(source)
+          @type = assert_type(type)
+          @key = Keys.encode_key(key)
+        end
+
+        def assert_type(type)
+          raise TypeError, "#{type.inspect} is not a valid key subtype" unless KeyInput::SUBTYPES.key? type
+
+          KeyInput::SUBTYPES[type]
+        end
+
+        def encode
+          {type: @type, value: @key}
+        end
+      end # TypingInteraction
+
       class KeyInput < InputDevice
         SUBTYPES = {down: :keyDown, up: :keyUp, pause: :pause}.freeze
 
@@ -41,25 +61,8 @@ module Selenium
           add_action(TypingInteraction.new(self, :up, key))
         end
 
-        class TypingInteraction < Interaction
-          attr_reader :type
-
-          def initialize(source, type, key)
-            super(source)
-            @type = assert_type(type)
-            @key = Keys.encode_key(key)
-          end
-
-          def assert_type(type)
-            raise TypeError, "#{type.inspect} is not a valid key subtype" unless KeyInput::SUBTYPES.key? type
-
-            KeyInput::SUBTYPES[type]
-          end
-
-          def encode
-            {type: @type, value: @key}
-          end
-        end # TypingInteraction
+        # Backward compatibility in case anyone called this directly
+        class TypingInteraction < Interactions::TypingInteraction; end
       end # KeyInput
     end # Interactions
   end # WebDriver
