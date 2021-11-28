@@ -23,7 +23,10 @@ module Selenium
       KEY = :key
       POINTER = :pointer
       NONE = :none
-      SOURCE_TYPES = [KEY, POINTER, NONE].freeze
+
+      #
+      # Class methods for initializing known Input devices
+      #
 
       class << self
         def key(name)

@@ -20,6 +20,12 @@
 module Selenium
   module WebDriver
     module Interactions
+      #
+      # Actions related to clicking, tapping or pressing the pointer.
+      #
+      # @api private
+      #
+
       class PointerPress < Interaction
         BUTTONS = {left: 0, middle: 1, right: 2}.freeze
         DIRECTIONS = {down: :pointerDown, up: :pointerUp}.freeze

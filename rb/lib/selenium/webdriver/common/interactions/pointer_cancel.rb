@@ -20,6 +20,12 @@
 module Selenium
   module WebDriver
     module Interactions
+      #
+      # Action to cancel any other Pointer Action.
+      #
+      # @api private
+      #
+
       class PointerCancel < Interaction
         def initialize(source)
           super(source)
