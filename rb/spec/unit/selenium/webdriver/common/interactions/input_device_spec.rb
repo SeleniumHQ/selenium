@@ -83,7 +83,7 @@ module Selenium
         end
 
         describe '#no_actions?' do
-          let(:typing) { instance_double(KeyInput::TypingInteraction, type: :not_pause) }
+          let(:typing) { instance_double(TypingInteraction, type: :not_pause) }
 
           it 'returns true when all actions are pauses' do
             allow(device).to receive(:type).and_return(:none)
@@ -93,7 +93,7 @@ module Selenium
 
           it 'returns false when not all actions are pauses' do
             allow(device).to receive(:type).and_return(:none)
-            allow(typing).to receive(:class).and_return(KeyInput::TypingInteraction)
+            allow(typing).to receive(:class).and_return(TypingInteraction)
             device.create_pause
             device.add_action(typing)
             expect(device.no_actions?).to be false

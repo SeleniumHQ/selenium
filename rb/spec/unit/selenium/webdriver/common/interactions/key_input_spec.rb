@@ -25,7 +25,7 @@ module Selenium
       describe KeyInput do
         let(:key_input) { KeyInput.new(:name) }
         let(:key) { 'a' }
-        let(:interaction) { KeyInput::TypingInteraction.new(key_input, :up, 'a') }
+        let(:interaction) { TypingInteraction.new(key_input, :up, 'a') }
 
         describe '#type' do
           it 'returns :key' do
@@ -56,7 +56,7 @@ module Selenium
 
         describe '#create_key_down' do
           it 'executes #add_action with created interaction' do
-            allow(KeyInput::TypingInteraction).to receive(:new).with(key_input, :down, key).and_return(interaction)
+            allow(TypingInteraction).to receive(:new).with(key_input, :down, key).and_return(interaction)
             allow(key_input).to receive(:add_action).and_call_original
 
             key_input.create_key_down(key)
@@ -67,7 +67,7 @@ module Selenium
 
         describe '#create_key_up' do
           it 'executes #add_action with created interaction' do
-            allow(KeyInput::TypingInteraction).to receive(:new).with(key_input, :up, key).and_return(interaction)
+            allow(TypingInteraction).to receive(:new).with(key_input, :up, key).and_return(interaction)
             allow(key_input).to receive(:add_action).and_call_original
 
             key_input.create_key_up(key)
@@ -75,27 +75,29 @@ module Selenium
             expect(key_input).to have_received(:add_action).with(interaction)
           end
         end
-
-        describe 'KeyInput::TypingInteraction' do
-          let(:source) { Interactions.key('keyboard') }
-          let(:type) { :down }
-          let(:typing) { KeyInput::TypingInteraction.new(source, type, key) }
-
-          it 'stores type as KeyInput::SUBTYPES' do
-            expect(typing.type).to eq KeyInput::SUBTYPES[type]
-          end
-
-          it 'raises a TypeError if the passed type is not a key in KeyInput::SUBTYPES' do
-            expect { KeyInput::TypingInteraction.new(source, :none, key) }.to raise_error(TypeError)
-          end
-
-          describe '#encode' do
-            it 'returns a Hash with type and value' do
-              expect(typing.encode).to eq(type: typing.type, value: key)
-            end
-          end
-        end # KeyInput::TypingInteraction
       end # KeyInput
+
+      describe TypingInteraction do
+        let(:source) { Interactions.key('keyboard') }
+        let(:type) { :down }
+        let(:typing) { TypingInteraction.new(source, type, key) }
+        let(:key) { 'a' }
+
+        it 'stores type as KeyInput::SUBTYPES' do
+          expect(typing.type).to eq KeyInput::SUBTYPES[type]
+        end
+
+        it 'raises a TypeError if the passed type is not a key in KeyInput::SUBTYPES' do
+          expect { TypingInteraction.new(source, :none, key) }.to raise_error(TypeError)
+        end
+
+        describe '#encode' do
+          it 'returns a Hash with type and value' do
+            expect(typing.encode).to eq(type: typing.type, value: key)
+          end
+        end
+      end # TypingInteraction
+
     end # Interactions
   end # WebDriver
 end # Selenium
