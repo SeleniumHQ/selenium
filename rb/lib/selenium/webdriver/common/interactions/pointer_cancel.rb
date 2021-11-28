@@ -20,20 +20,15 @@
 module Selenium
   module WebDriver
     module Interactions
-      class Interaction
-        PAUSE = :pause
-
-        attr_reader :source
-
-        def initialize(source)
-          unless Interactions::SOURCE_TYPES.include? source.type
-            raise TypeError,
-                  "#{source.type} is not a valid input type"
-          end
-
-          @source = source
+      class PointerCancel < Interaction
+        def type
+          :pointerCancel
         end
-      end
+
+        def encode
+          {type: type}
+        end
+      end # PointerCancel
     end # Interactions
   end # WebDriver
 end # Selenium

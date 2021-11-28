@@ -35,28 +35,6 @@ module Selenium
           expect { interaction }.to raise_error(TypeError)
         end
       end
-
-      describe Pause do
-        let(:source) { NoneInput.new }
-        let(:pause) { Pause.new(source) }
-        let(:duration) { 5 }
-
-        describe '#type' do
-          it 'returns :pause' do
-            expect(pause.type).to eq(:pause)
-          end
-        end
-
-        describe '#encode' do
-          it 'returns Hash with type' do
-            expect(pause.encode).to eq(type: :pause)
-          end
-
-          it 'returns Hash with duration in ms if provided' do
-            expect(Pause.new(source, duration).encode).to include(duration: duration * 1000)
-          end
-        end
-      end
     end # Interactions
   end # WebDriver
 end # Selenium

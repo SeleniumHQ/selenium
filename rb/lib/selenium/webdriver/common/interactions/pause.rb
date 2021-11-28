@@ -20,20 +20,22 @@
 module Selenium
   module WebDriver
     module Interactions
-      class Interaction
-        PAUSE = :pause
-
-        attr_reader :source
-
-        def initialize(source)
-          unless Interactions::SOURCE_TYPES.include? source.type
-            raise TypeError,
-                  "#{source.type} is not a valid input type"
-          end
-
-          @source = source
+      class Pause < Interaction
+        def initialize(source, duration = nil)
+          super(source)
+          @duration = duration
         end
-      end
+
+        def type
+          PAUSE
+        end
+
+        def encode
+          output = {type: type}
+          output[:duration] = (@duration * 1000).to_i if @duration
+          output
+        end
+      end # Pause
     end # Interactions
   end # WebDriver
 end # Selenium

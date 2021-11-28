@@ -22,35 +22,24 @@ require File.expand_path('../../spec_helper', __dir__)
 module Selenium
   module WebDriver
     module Interactions
-      describe NoneInput do
-        let(:none) { NoneInput.new(:name) }
-        let(:interaction) { Pause.new(none, 1) }
+      describe Pause do
+        let(:source) { NoneInput.new }
+        let(:pause) { Pause.new(source) }
+        let(:duration) { 5 }
 
         describe '#type' do
-          it 'returns :key' do
-            expect(none.type).to eq(:none)
+          it 'returns :pause' do
+            expect(pause.type).to eq(:pause)
           end
         end
 
         describe '#encode' do
-          it 'returns nil if no_actions? is true' do
-            allow(none).to receive(:no_actions?).and_return(true)
-            expect(none.encode).to eq(nil)
+          it 'returns Hash with type' do
+            expect(pause.encode).to eq(type: :pause)
           end
 
-          it 'returns Hash with expected parameters if no_actions? is false' do
-            allow(none).to receive(:no_actions?).and_return(false)
-            expect(none.encode).to eq(type: :none, id: :name, actions: [])
-          end
-
-          it 'encodes each action' do
-            allow(none).to receive(:no_actions?).and_return(false)
-            allow(interaction).to receive(:encode).and_call_original
-            2.times { none.add_action(interaction) }
-
-            none.encode
-
-            expect(interaction).to have_received(:encode).twice
+          it 'returns Hash with duration in ms if provided' do
+            expect(Pause.new(source, duration).encode).to include(duration: duration * 1000)
           end
         end
       end

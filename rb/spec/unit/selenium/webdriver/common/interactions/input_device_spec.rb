@@ -99,7 +99,7 @@ module Selenium
             expect(device.no_actions?).to be false
           end
         end
-      end # InputDevice
+      end
     end # Interactions
   end # WebDriver
 end # Selenium

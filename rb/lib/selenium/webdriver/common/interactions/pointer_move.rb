@@ -20,20 +20,27 @@
 module Selenium
   module WebDriver
     module Interactions
-      class Interaction
-        PAUSE = :pause
+      class PointerMove < Interaction
+        VIEWPORT = :viewport
+        POINTER = :pointer
+        ORIGINS = [VIEWPORT, POINTER].freeze
 
-        attr_reader :source
-
-        def initialize(source)
-          unless Interactions::SOURCE_TYPES.include? source.type
-            raise TypeError,
-                  "#{source.type} is not a valid input type"
-          end
-
-          @source = source
+        def initialize(source, duration, x, y, element: nil, origin: nil)
+          super(source)
+          @duration = duration * 1000
+          @x_offset = x
+          @y_offset = y
+          @origin = element || origin || :viewport
         end
-      end
+
+        def type
+          :pointerMove
+        end
+
+        def encode
+          {type: type, duration: @duration.to_i, x: @x_offset, y: @y_offset, origin: @origin}
+        end
+      end # PointerMove
     end # Interactions
   end # WebDriver
 end # Selenium

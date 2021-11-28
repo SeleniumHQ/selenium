@@ -22,35 +22,38 @@ require File.expand_path('../../spec_helper', __dir__)
 module Selenium
   module WebDriver
     module Interactions
-      describe NoneInput do
-        let(:none) { NoneInput.new(:name) }
-        let(:interaction) { Pause.new(none, 1) }
+      describe PointerMove do
+        let(:source) { Interactions.pointer(:mouse) }
+        let(:element) { instance_double(Element) }
+        let(:origin) { PointerMove::POINTER }
+        let(:duration) { 0.5 }
+        let(:x) { 25 }
+        let(:y) { 50 }
 
         describe '#type' do
-          it 'returns :key' do
-            expect(none.type).to eq(:none)
+          it 'equals :pointerMove' do
+            move = PointerMove.new(source, duration, x, y)
+            expect(move.type).to eq(:pointerMove)
           end
         end
 
         describe '#encode' do
-          it 'returns nil if no_actions? is true' do
-            allow(none).to receive(:no_actions?).and_return(true)
-            expect(none.encode).to eq(nil)
+          context 'with element' do
+            it 'returns a Hash with source, duration, x and y' do
+              move = PointerMove.new(source, duration, x, y, origin: element)
+
+              ms = (duration * 1000).to_i
+              expect(move.encode).to eq(type: move.type, origin: element, duration: ms, x: x, y: y)
+            end
           end
 
-          it 'returns Hash with expected parameters if no_actions? is false' do
-            allow(none).to receive(:no_actions?).and_return(false)
-            expect(none.encode).to eq(type: :none, id: :name, actions: [])
-          end
+          context 'with origin' do
+            it 'returns a Hash with source, duration, x and y' do
+              move = PointerMove.new(source, duration, x, y, origin: :pointer)
 
-          it 'encodes each action' do
-            allow(none).to receive(:no_actions?).and_return(false)
-            allow(interaction).to receive(:encode).and_call_original
-            2.times { none.add_action(interaction) }
-
-            none.encode
-
-            expect(interaction).to have_received(:encode).twice
+              ms = (duration * 1000).to_i
+              expect(move.encode).to eq(type: move.type, origin: :pointer, duration: ms, x: x, y: y)
+            end
           end
         end
       end
