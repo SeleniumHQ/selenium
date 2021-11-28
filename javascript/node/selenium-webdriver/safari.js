@@ -154,9 +154,9 @@ class Driver extends webdriver.WebDriver {
       service.start().then((url) => new http.HttpClient(url))
     )
 
-    return /** @type {!Driver} */ (super.createSession(executor, caps, () =>
-      service.kill()
-    ))
+    return /** @type {!Driver} */ (
+      super.createSession(executor, caps, () => service.kill())
+    )
   }
 }
 

@@ -217,7 +217,7 @@ class NoSuchElementError extends WebDriverError {
 class NoSuchShadowRootError extends WebDriverError {
   /** @param {string=} opt_error the error message, if any. */
   constructor(opt_error) {
-    super(opt_error);
+    super(opt_error)
   }
 }
 

@@ -42,8 +42,6 @@ function checkedCall(fn) {
   })
 }
 
-// PUBLIC API
-
 /**
  * Recursively removes a directory and all of its contents. This is equivalent
  * to {@code rm -rf} on a POSIX system.
@@ -114,18 +112,18 @@ function copyDir(src, dst, opt_exclude) {
     files = files.filter(/** @type {function(string): boolean} */ (predicate))
   }
 
-  var results = []
+  const results = []
   files.forEach(function (file) {
-    var stats = fs.statSync(file)
-    var target = path.join(dst, path.basename(file))
+    const stats = fs.statSync(file)
+    const target = path.join(dst, path.basename(file))
 
     if (stats.isDirectory()) {
       if (!fs.existsSync(target)) {
         fs.mkdirSync(target, stats.mode)
       }
-      results.push(exports.copyDir(file, target, predicate))
+      results.push(copyDir(file, target, predicate))
     } else {
-      results.push(exports.copy(file, target))
+      results.push(copy(file, target))
     }
   })
 
@@ -137,7 +135,7 @@ function copyDir(src, dst, opt_exclude) {
  * @param {string} aPath The path to test.
  * @return {!Promise<boolean>} A promise for whether the file exists.
  */
-exports.exists = function (aPath) {
+function exists(aPath) {
   return new Promise(function (fulfill, reject) {
     let type = typeof aPath
     if (type !== 'string') {
@@ -153,7 +151,7 @@ exports.exists = function (aPath) {
  * @param {string} aPath The path to stat.
  * @return {!Promise<!fs.Stats>} A promise for the file stats.
  */
-exports.stat = function stat(aPath) {
+function stat(aPath) {
   return checkedCall((callback) => fs.stat(aPath, callback))
 }
 
@@ -335,15 +333,19 @@ function walkDir(rootPath) {
 }
 
 // PUBLIC API
-module.exports.walkDir = walkDir
-module.exports.rmDir = rmDir
-module.exports.mkdirp = mkdirp
-module.exports.mkdir = mkdir
-module.exports.write = write
-module.exports.read = read
-module.exports.findInPath = findInPath
-module.exports.tmpFile = tmpFile
-module.exports.tmpDir = tmpDir
-module.exports.unlink = unlink
-module.exports.copy = copy
-module.exports.copyDir = copyDir
+module.exports = {
+  walkDir,
+  rmDir,
+  mkdirp,
+  mkdir,
+  write,
+  read,
+  findInPath,
+  tmpFile,
+  tmpDir,
+  unlink,
+  copy,
+  copyDir,
+  exists,
+  stat,
+}

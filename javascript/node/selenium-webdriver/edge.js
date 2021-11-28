@@ -210,9 +210,11 @@ Driver.getDefaultService = getDefaultService
 
 // PUBLIC API
 
-exports.Driver = Driver
-exports.Options = Options
-exports.ServiceBuilder = ServiceBuilder
-exports.getDefaultService = getDefaultService
-exports.setDefaultService = setDefaultService
-exports.locateSynchronously = locateSynchronously
+module.exports = {
+  Driver,
+  Options,
+  ServiceBuilder,
+  getDefaultService,
+  setDefaultService,
+  locateSynchronously,
+}
