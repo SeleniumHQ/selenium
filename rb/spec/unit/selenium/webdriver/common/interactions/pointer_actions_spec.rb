@@ -22,10 +22,9 @@ require File.expand_path('../../spec_helper', __dir__)
 module Selenium
   module WebDriver
     describe PointerActions do
-      let(:keyboard) { Interactions::KeyInput.new('keyboard') }
       let(:mouse) { Interactions::PointerInput.new(:mouse, name: 'pointer') }
       let(:bridge) { instance_double('Bridge').as_null_object }
-      let(:builder) { ActionBuilder.new(bridge, devices: [mouse, keyboard]) }
+      let(:builder) { ActionBuilder.new(bridge, devices: [mouse]) }
       let(:element) { Element.new(bridge, 'element') }
       let(:element2) { Element.new(bridge, 'element2') }
       let(:duration) { builder.default_move_duration }
@@ -40,7 +39,7 @@ module Selenium
           expect { builder.send(:pointer_input, 'none') }.to raise_error(ArgumentError)
         end
 
-        it 'gets default key input' do
+        it 'gets default pointer input' do
           expect(builder.send(:pointer_input)).to eq mouse
         end
       end

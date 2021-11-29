@@ -34,14 +34,8 @@ module Selenium
         end
 
         describe '#encode' do
-          it 'returns nil if no_actions? is true' do
-            allow(key_input).to receive(:no_actions?).and_return(true)
+          it 'returns nil if no actions' do
             expect(key_input.encode).to eq(nil)
-          end
-
-          it 'returns Hash with expected parameters if no_actions? is false' do
-            allow(key_input).to receive(:no_actions?).and_return(false)
-            expect(key_input.encode).to eq(type: :key, id: :name, actions: [])
           end
 
           it 'encodes each action' do

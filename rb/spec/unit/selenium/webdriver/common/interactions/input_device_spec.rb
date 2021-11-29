@@ -81,24 +81,6 @@ module Selenium
             expect(device).to have_received(:add_action).with(action)
           end
         end
-
-        describe '#no_actions?' do
-          let(:typing) { instance_double(TypingInteraction, type: :not_pause) }
-
-          it 'returns true when all actions are pauses' do
-            allow(device).to receive(:type).and_return(:none)
-            2.times { device.create_pause }
-            expect(device.no_actions?).to be true
-          end
-
-          it 'returns false when not all actions are pauses' do
-            allow(device).to receive(:type).and_return(:none)
-            allow(typing).to receive(:class).and_return(TypingInteraction)
-            device.create_pause
-            device.add_action(typing)
-            expect(device.no_actions?).to be false
-          end
-        end
       end
     end # Interactions
   end # WebDriver

@@ -29,8 +29,9 @@ module Selenium
       class KeyInput < InputDevice
         SUBTYPES = {down: :keyDown, up: :keyUp, pause: :pause}.freeze
 
-        def type
-          Interactions::KEY
+        def initialize(name = nil)
+          super
+          @type = Interactions::KEY
         end
 
         def create_key_down(key)

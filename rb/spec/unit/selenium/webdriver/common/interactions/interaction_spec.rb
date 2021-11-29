@@ -23,8 +23,9 @@ module Selenium
   module WebDriver
     module Interactions
       class NewDevice < InputDevice
-        def type
-          :special
+        def initialize(name = nil)
+          super
+          @type = :special
         end
 
         def create_special(val)
@@ -54,14 +55,10 @@ module Selenium
           self
         end
 
-        def special_inputs
-          @devices.select { |device| device.is_a? NewDevice }
-        end
-
         private
 
-        def special_input(device = nil)
-          device ? get_device(device) : special_inputs.first
+        def special_input(name = nil)
+          device(name: name, type: :newType) || add_input(NewDevice.new('new'))
         end
       end
 
@@ -69,7 +66,7 @@ module Selenium
         it 'can create subclass' do
           bridge = instance_double(Remote::Bridge)
           allow(bridge).to receive(:send_actions)
-          sub_action_builder = SubActionBuilder.new(bridge, devices: [NewDevice.new('new')])
+          sub_action_builder = SubActionBuilder.new(bridge)
           sub_action_builder.special_action('special').perform
 
           expect(bridge).to have_received(:send_actions).with([{type: :special,

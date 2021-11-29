@@ -355,8 +355,8 @@ module Selenium
         self
       end
 
-      def pointer_input(device = nil)
-        device ? get_device(device) : pointer_inputs.first
+      def pointer_input(name = nil)
+        device(name: name, type: Interactions::POINTER) || add_pointer_input(:mouse, 'mouse')
       end
     end # PointerActions
   end # WebDriver
