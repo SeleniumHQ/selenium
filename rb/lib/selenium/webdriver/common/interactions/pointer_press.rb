@@ -27,15 +27,24 @@ module Selenium
       #
 
       class PointerPress < Interaction
+        include PointerEventProperties
+
         BUTTONS = {left: 0, middle: 1, right: 2}.freeze
         DIRECTIONS = {down: :pointerDown, up: :pointerUp}.freeze
 
-        def initialize(source, direction, button)
+        def initialize(source, direction, button, **opts)
           super(source)
           @direction = assert_direction(direction)
           @button = assert_button(button)
           @type = @direction
+          @opts = opts
         end
+
+        def encode
+          process_opts.merge('type' => type.to_s, 'button' => @button)
+        end
+
+        private
 
         def assert_source(source)
           raise TypeError, "#{source.type} is not a valid input type" unless source.is_a? PointerInput
@@ -60,10 +69,6 @@ module Selenium
           raise ArgumentError, "#{direction.inspect} is not a valid button direction" unless DIRECTIONS.key? direction
 
           DIRECTIONS[direction]
-        end
-
-        def encode
-          {type: type, button: @button}
         end
       end # PointerPress
     end # Interactions

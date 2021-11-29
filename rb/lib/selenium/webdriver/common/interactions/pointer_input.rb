@@ -49,16 +49,16 @@ module Selenium
           KIND[pointer]
         end
 
-        def create_pointer_move(duration: 0, x: 0, y: 0, origin: nil)
-          add_action(PointerMove.new(self, duration, x, y, origin: origin))
+        def create_pointer_move(duration: 0, x: 0, y: 0, origin: nil, **opts)
+          add_action(PointerMove.new(self, duration, x, y, origin: origin, **opts))
         end
 
-        def create_pointer_down(button)
-          add_action(PointerPress.new(self, :down, button))
+        def create_pointer_down(button, **opts)
+          add_action(PointerPress.new(self, :down, button, **opts))
         end
 
-        def create_pointer_up(button)
-          add_action(PointerPress.new(self, :up, button))
+        def create_pointer_up(button, **opts)
+          add_action(PointerPress.new(self, :up, button, **opts))
         end
 
         def create_pointer_cancel
