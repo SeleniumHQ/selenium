@@ -149,8 +149,8 @@ def mock_proxy_settings_missing(monkeypatch):
 
 @pytest.fixture(scope="function")
 def mock_socks_proxy_settings(monkeypatch):
-    http_proxy = 'socks5://http_proxy.com:8080'
-    https_proxy = 'socks5://https_proxy.com:8080'
+    http_proxy = 'SOCKS5://http_proxy.com:8080'
+    https_proxy = 'SOCKS5://https_proxy.com:8080'
     monkeypatch.setenv("HTTPS_PROXY", https_proxy)
     monkeypatch.setenv("HTTP_PROXY", http_proxy)
     monkeypatch.setenv("https_proxy", https_proxy)
