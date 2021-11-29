@@ -137,7 +137,7 @@ class RemoteConnection(object):
             pool_manager_init_args['ca_certs'] = self._ca_certs
 
         if self._proxy_url:
-            if self._proxy_url.startswith('sock'):
+            if self._proxy_url.lower().startswith('sock'):
                 from urllib3.contrib.socks import SOCKSProxyManager
                 return SOCKSProxyManager(self._proxy_url, **pool_manager_init_args)
             return urllib3.ProxyManager(self._proxy_url, **pool_manager_init_args)
