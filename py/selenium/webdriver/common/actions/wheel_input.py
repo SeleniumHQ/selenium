@@ -17,7 +17,6 @@
 from . import interaction
 from .input_device import InputDevice
 
-from selenium.common.exceptions import InvalidArgumentException
 from selenium.webdriver.remote.webelement import WebElement
 
 
