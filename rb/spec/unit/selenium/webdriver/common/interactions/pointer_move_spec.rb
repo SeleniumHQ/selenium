@@ -29,6 +29,15 @@ module Selenium
         let(:duration) { 0.5 }
         let(:x) { 25 }
         let(:y) { 50 }
+        let(:opts) { {width: 0,
+                      height: 0,
+                      pressure: 0.5,
+                      tangential_pressure: 0.4,
+                      tilt_x: -40,
+                      tilt_y: -10,
+                      twist: 177,
+                      altitude_angle: 1.0,
+                      azimuth_angle: 0.5} }
 
         describe '#initialize' do
           it 'raises a TypeError if source is not a PointerInput' do
@@ -45,12 +54,35 @@ module Selenium
         end
 
         describe '#encode' do
+          it 'processes opts' do
+            move = PointerMove.new(source, duration, x, y, origin: element, **opts)
+
+            expect(move.encode).to eq('type' => move.type.to_s,
+                                      'origin' => element,
+                                      'duration' => (duration * 1000).to_i,
+                                      'x' => x,
+                                      'y' => y,
+                                      'width' => 0,
+                                      'height' => 0,
+                                      'pressure' => 0.5,
+                                      'tangentialPressure' => 0.4,
+                                      'tiltX' => -40,
+                                      'tiltY' => -10,
+                                      'twist' => 177,
+                                      'altitudeAngle' => 1.0,
+                                      'azimuthAngle' => 0.5)
+          end
+
           context 'with element' do
             it 'returns a Hash with source, duration, x and y' do
               move = PointerMove.new(source, duration, x, y, origin: element)
 
               ms = (duration * 1000).to_i
-              expect(move.encode).to eq(type: move.type, origin: element, duration: ms, x: x, y: y)
+              expect(move.encode).to eq('type' => move.type.to_s,
+                                        'origin' => element,
+                                        'duration' => ms,
+                                        'x' => x,
+                                        'y' => y)
             end
           end
 
@@ -59,7 +91,11 @@ module Selenium
               move = PointerMove.new(source, duration, x, y, origin: :pointer)
 
               ms = (duration * 1000).to_i
-              expect(move.encode).to eq(type: move.type, origin: :pointer, duration: ms, x: x, y: y)
+              expect(move.encode).to eq('type' => move.type.to_s,
+                                        'origin' => :pointer,
+                                        'duration' => ms,
+                                        'x' => x,
+                                        'y' => y)
             end
           end
         end

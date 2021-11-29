@@ -45,8 +45,8 @@ module Selenium
       # @return [ActionBuilder] A self reference.
       #
 
-      def pointer_down(button, device: nil)
-        button_action(button, action: :create_pointer_down, device: device)
+      def pointer_down(button, device: nil, **opts)
+        button_action(button, :create_pointer_down, device: device, **opts)
       end
 
       #
@@ -62,8 +62,8 @@ module Selenium
       # @return [ActionBuilder] A self reference.
       #
 
-      def pointer_up(button, device: nil)
-        button_action(button, action: :create_pointer_up, device: device)
+      def pointer_up(button, device: nil, **opts)
+        button_action(button, :create_pointer_up, device: device, **opts)
       end
 
       #
@@ -95,7 +95,7 @@ module Selenium
       # @return [ActionBuilder] A self reference.
       #
 
-      def move_to(element, right_by = nil, down_by = nil, device: nil)
+      def move_to(element, right_by = nil, down_by = nil, device: nil, **opts)
         pointer = pointer_input(device)
         # New actions offset is from center of element
         if right_by || down_by
@@ -111,7 +111,8 @@ module Selenium
         pointer.create_pointer_move(duration: default_move_duration,
                                     x: left,
                                     y: top,
-                                    origin: element)
+                                    origin: element,
+                                    **opts)
         tick(pointer)
         self
       end
@@ -348,9 +349,9 @@ module Selenium
 
       private
 
-      def button_action(button, action: nil, device: nil)
+      def button_action(button, action, device: nil, **opts)
         pointer = pointer_input(device)
-        pointer.send(action, button)
+        pointer.send(action, button, **opts)
         tick(pointer)
         self
       end

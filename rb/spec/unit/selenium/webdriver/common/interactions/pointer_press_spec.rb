@@ -27,6 +27,15 @@ module Selenium
         let(:direction) { :down }
         let(:button) { :left }
         let(:press) { PointerPress.new(source, direction, button) }
+        let(:opts) { {width: 0,
+                      height: 0,
+                      pressure: 0.5,
+                      tangential_pressure: 0.4,
+                      tilt_x: -40,
+                      tilt_y: -10,
+                      twist: 177,
+                      altitude_angle: 1.0,
+                      azimuth_angle: 0.5} }
 
         describe '#initialize' do
           it 'raises a ArgumentError if invalid button symbol' do
@@ -62,8 +71,25 @@ module Selenium
         end
 
         describe '#encode' do
+          it 'processes opts' do
+            press = PointerPress.new(source, direction, button, **opts)
+
+            expect(press.encode).to eq('type' => PointerPress::DIRECTIONS[direction].to_s,
+                                       'button' => 0,
+                                       'width' => 0,
+                                       'height' => 0,
+                                       'pressure' => 0.5,
+                                       'tangentialPressure' => 0.4,
+                                       'tiltX' => -40,
+                                       'tiltY' => -10,
+                                       'twist' => 177,
+                                       'altitudeAngle' => 1.0,
+                                       'azimuthAngle' => 0.5)
+          end
+
           it 'returns a Hash with type and button' do
-            expect(press.encode).to eq(type: PointerPress::DIRECTIONS[direction], button: 0)
+            expect(press.encode).to eq('type' => PointerPress::DIRECTIONS[direction].to_s,
+                                       'button' => 0)
           end
         end
       end
