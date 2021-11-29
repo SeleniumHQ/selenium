@@ -53,11 +53,6 @@ module Selenium
       end
 
       class SubActionBuilder < ActionBuilder
-        def initialize(bridge, mouse, keyboard, async = nil)
-          super
-          @devices << NewDevice.new('new')
-        end
-
         def special_action(special, device: nil)
           special_input(device).create_special(special)
           self
@@ -78,7 +73,7 @@ module Selenium
         it 'can create subclass' do
           bridge = instance_double(Remote::Bridge)
           allow(bridge).to receive(:send_actions)
-          sub_action_builder = SubActionBuilder.new(bridge, Interactions.pointer(:mouse), Interactions.key('key'))
+          sub_action_builder = SubActionBuilder.new(bridge, devices: [NewDevice.new('new')])
           sub_action_builder.special_action('special').perform
 
           expect(bridge).to have_received(:send_actions).with([{type: :special,

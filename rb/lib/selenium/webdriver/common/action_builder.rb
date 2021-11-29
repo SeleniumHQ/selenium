@@ -31,19 +31,42 @@ module Selenium
       # the mouse is moving. Keep in mind that pauses must be added for other devices in order to line up the actions
       # correctly when using asynchronous.
       #
-      # @param [Selenium::WebDriver::Remote::Bridge] bridge the bridge for the current driver instance
-      # @param [Selenium::WebDriver::Interactions::PointerInput] mouse PointerInput for the mouse.
-      # @param [Selenium::WebDriver::Interactions::KeyInput] keyboard KeyInput for the keyboard.
-      # @param [Boolean] async Whether to perform the actions asynchronously per device. Defaults to false for
-      #   backwards compatibility.
+      # @param [Selenium::WebDriver::Remote::Bridge] bridge the bridge for the current driver instance.
+      # @param [Selenium::WebDriver::Interactions::PointerInput] deprecated_mouse PointerInput for the mouse.
+      # @param [Selenium::WebDriver::Interactions::KeyInput] deprecated_keyboard KeyInput for the keyboard.
+      # @param [Boolean] deprecated_async Whether to perform the actions asynchronously per device.
+      #   Defaults to false for backwards compatibility.
+      # @param [Array<Selenium::WebDriver::Interactions::InputDevices>] devices list of valid sources of input.
+      # @param [Boolean] async Whether to perform the actions asynchronously per device.
       # @return [ActionBuilder] A self reference.
       #
 
-      def initialize(bridge, mouse, keyboard, async = false)
-        # For backwards compatibility, automatically include mouse & keyboard
+      def initialize(bridge, deprecated_mouse = nil, deprecated_keyboard = nil, deprecated_async = nil,
+                     devices: [], async: false)
         @bridge = bridge
-        @devices = [mouse, keyboard]
-        @async = async
+
+        @async = if deprecated_async.nil?
+                   async
+                 else
+                   WebDriver.logger.deprecate('initializing ActionBuilder with async parameter',
+                                              ':async keyword',
+                                              id: :action_async)
+                   deprecated_async
+                 end
+
+        @devices = []
+        if deprecated_keyboard || deprecated_mouse
+          WebDriver.logger.deprecate "initializing ActionBuilder with keyboard and mouse parameters",
+                                     "devices keyword or, even better, Driver#action",
+                                     id: :action_devices
+          add_input(deprecated_mouse)
+          add_input(deprecated_keyboard)
+        elsif devices.empty?
+          add_pointer_input(:mouse, 'mouse')
+          add_key_input('keyboard')
+        else
+          devices.each { |device| add_input(device) }
+        end
       end
 
       #
@@ -202,12 +225,16 @@ module Selenium
       #
 
       def add_input(device)
+        raise TypeError, "#{device.inspect} is not a valid InputDevice" unless device.is_a?(Interactions::InputDevice)
+
         unless @async
           max_device = @devices.max { |a, b| a.actions.length <=> b.actions.length }
-          pauses(device, max_device.actions.length)
+          pauses(device, max_device.actions.length) if max_device
         end
         @devices << device
       end
-    end # ActionBuilder
+    end
+
+    # ActionBuilder
   end # WebDriver
 end # Selenium

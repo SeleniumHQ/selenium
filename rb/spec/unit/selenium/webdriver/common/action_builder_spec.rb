@@ -25,8 +25,59 @@ module Selenium
       let(:keyboard) { Interactions.key('key') }
       let(:mouse) { Interactions.pointer(:mouse, name: 'mouse') }
       let(:bridge) { instance_double('Bridge').as_null_object }
-      let(:builder) { ActionBuilder.new(bridge, mouse, keyboard) }
-      let(:async_builder) { ActionBuilder.new(bridge, mouse, keyboard, true) }
+      let(:builder) { ActionBuilder.new(bridge, devices: [mouse, keyboard]) }
+      let(:async_builder) { ActionBuilder.new(bridge, devices: [mouse, keyboard], async: true) }
+
+      describe '#initialize' do
+        it 'creates default mouse and keyboard when none are provided' do
+          action_builder = ActionBuilder.new(bridge)
+          expect(action_builder.devices).to include(a_kind_of(Interactions::KeyInput),
+                                                    a_kind_of(Interactions::PointerInput))
+        end
+
+        it 'deprecates using mouse and keyboard directly' do
+          expect {
+            action_builder = ActionBuilder.new(bridge, mouse, keyboard)
+            expect(action_builder.devices).to eq([mouse, keyboard])
+          }.to have_deprecated(:action_devices)
+        end
+
+        it 'deprecates using async parameter' do
+          expect {
+            action_builder = ActionBuilder.new(bridge, nil, nil, true)
+            expect(action_builder.devices).to include(a_kind_of(Interactions::PointerInput))
+            expect(action_builder.devices).to include(a_kind_of(Interactions::KeyInput))
+          }.to have_deprecated(:action_async)
+        end
+
+        it 'accepts mouse and keyboard with devices keyword' do
+          action_builder = ActionBuilder.new(bridge, devices: [mouse, keyboard])
+          expect(action_builder.devices).to eq([mouse, keyboard])
+        end
+
+        it 'accepts multiple devices with devices keyword' do
+          none = Interactions.none('none')
+          touch = Interactions.pointer(:touch, name: 'touch')
+          action_builder = ActionBuilder.new(bridge, devices: [mouse, keyboard, none, touch])
+
+          expect(action_builder.devices).to eq([mouse, keyboard, none, touch])
+        end
+
+        it 'does not accept additional devices if deprecated parameters are used' do
+          none = Interactions.none('none')
+          touch = Interactions.pointer(:touch, name: 'touch')
+          expect {
+            action_builder = ActionBuilder.new(bridge, mouse, keyboard, devices: [none, touch])
+            expect(action_builder.devices).to eq([mouse, keyboard])
+          }.to have_deprecated(:action_devices)
+        end
+
+        it 'raises a TypeError if a non InputDevice is passed into devices' do
+          expect {
+            ActionBuilder.new(bridge, devices: [mouse, keyboard, "banana"])
+          }.to raise_error(TypeError)
+        end
+      end
 
       describe '#devices' do
         it 'returns Array of devices' do
@@ -36,7 +87,7 @@ module Selenium
       end
 
       describe '#add_pointer_input' do
-        let(:device) { instance_double Interactions::PointerInput, actions: [] }
+        let(:device) { Interactions.pointer :mouse }
 
         it 'creates pointer and adds to devices' do
           builder
@@ -73,7 +124,7 @@ module Selenium
       end
 
       describe '#add_key_input' do
-        let(:device) { instance_double Interactions::KeyInput, actions: [] }
+        let(:device) { Interactions.key }
 
         it 'creates keyboard and adds to devices' do
           builder
