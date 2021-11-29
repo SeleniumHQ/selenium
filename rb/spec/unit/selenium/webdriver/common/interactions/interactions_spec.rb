@@ -22,16 +22,58 @@ require File.expand_path('../../spec_helper', __dir__)
 module Selenium
   module WebDriver
     describe Interactions do
-      it 'creates a new key input' do
-        expect(Interactions.key(:name)).to be_a(Interactions::KeyInput)
+      describe '#key' do
+        it 'creates a new key input with provided name' do
+          device = Interactions.key(:name)
+
+          expect(device).to be_a(Interactions::KeyInput)
+          expect(device.name).to eq(:name)
+        end
+
+        it 'sets name to a random UUID if no name is provided' do
+          allow(SecureRandom).to receive(:uuid).and_return(:id)
+
+          device = Interactions.key
+
+          expect(device).to be_a(Interactions::KeyInput)
+          expect(device.name).to eq(:id)
+        end
       end
 
-      it 'creates a new pointer input' do
-        expect(Interactions.pointer(:mouse)).to be_a(Interactions::PointerInput)
+      describe '#pointer' do
+        it 'creates a new pointer input with a provided name' do
+          device = Interactions.pointer(:mouse, name: :name)
+
+          expect(device).to be_a(Interactions::PointerInput)
+          expect(device.name).to eq(:name)
+        end
+
+        it 'sets name to a random UUID if no name is provided' do
+          allow(SecureRandom).to receive(:uuid).and_return(:id)
+
+          device = Interactions.pointer(:mouse)
+
+          expect(device).to be_a(Interactions::PointerInput)
+          expect(device.name).to eq(:id)
+        end
       end
 
-      it 'creates a new none input' do
-        expect(Interactions.none).to be_a(Interactions::NoneInput)
+      describe '#none' do
+        it 'creates a new pointer input with a provided name' do
+          device = Interactions.none(:name)
+
+          expect(device).to be_a(Interactions::NoneInput)
+          expect(device.name).to eq(:name)
+        end
+
+        it 'sets name to a random UUID if no name is provided' do
+          allow(SecureRandom).to receive(:uuid).and_return(:id)
+
+          device = Interactions.none
+
+          expect(device).to be_a(Interactions::NoneInput)
+          expect(device.name).to eq(:id)
+        end
       end
     end
   end # WebDriver
