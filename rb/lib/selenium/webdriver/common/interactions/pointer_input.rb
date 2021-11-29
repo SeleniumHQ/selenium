@@ -41,10 +41,8 @@ module Selenium
         end
 
         def encode
-          return nil if no_actions?
-
-          output = {type: type, id: name, actions: @actions.map(&:encode)}
-          output[:parameters] = {pointerType: kind}
+          output = super
+          output[:parameters] = {pointerType: kind} if output
           output
         end
 

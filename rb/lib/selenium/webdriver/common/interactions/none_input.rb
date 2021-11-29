@@ -31,12 +31,6 @@ module Selenium
         def type
           Interactions::NONE
         end
-
-        def encode
-          return nil if no_actions?
-
-          {type: type, id: name, actions: @actions.map(&:encode)}
-        end
       end # NoneInput
     end # Interactions
   end # WebDriver

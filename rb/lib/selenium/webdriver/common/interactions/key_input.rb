@@ -33,12 +33,6 @@ module Selenium
           Interactions::KEY
         end
 
-        def encode
-          return nil if no_actions?
-
-          {type: type, id: name, actions: @actions.map(&:encode)}
-        end
-
         def create_key_down(key)
           add_action(TypingInteraction.new(self, :down, key))
         end

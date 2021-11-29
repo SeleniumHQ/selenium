@@ -27,10 +27,6 @@ module Selenium
           :special
         end
 
-        def encode
-          {type: type, name: name, actions: @actions.map(&:encode)}
-        end
-
         def create_special(val)
           add_action(NewInteraction.new(self, val))
         end
@@ -77,7 +73,7 @@ module Selenium
           sub_action_builder.special_action('special').perform
 
           expect(bridge).to have_received(:send_actions).with([{type: :special,
-                                                                name: 'new',
+                                                                id: 'new',
                                                                 actions: [{type: :newType,
                                                                            special: 'special'}]}])
         end
