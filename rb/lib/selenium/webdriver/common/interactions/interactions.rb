@@ -29,12 +29,12 @@ module Selenium
       #
 
       class << self
-        def key(name)
+        def key(name = nil)
           KeyInput.new(name)
         end
 
-        def pointer(kind, **kwargs)
-          PointerInput.new(kind, **kwargs)
+        def pointer(kind = :mouse, name: nil)
+          PointerInput.new(kind, name: name)
         end
 
         def none(name = nil)
