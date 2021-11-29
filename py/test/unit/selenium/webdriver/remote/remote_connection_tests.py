@@ -118,6 +118,13 @@ def test_ignore_proxy_env_vars(mock_proxy_settings):
     assert type(conn) == urllib3.PoolManager
 
 
+def test_get_socks_proxy_when_set(mock_socks_proxy_settings):
+    remote_connection = RemoteConnection("http://127.0.0.1:4444/wd/hub")
+    conn = remote_connection._get_connection_manager()
+    from urllib3.contrib.socks import SOCKSProxyManager
+    assert type(conn) == SOCKSProxyManager
+
+
 class MockResponse:
     code = 200
     headers = []
@@ -138,6 +145,16 @@ def mock_proxy_settings_missing(monkeypatch):
     monkeypatch.delenv("HTTP_PROXY", raising=False)
     monkeypatch.delenv("https_proxy", raising=False)
     monkeypatch.delenv("http_proxy", raising=False)
+
+
+@pytest.fixture(scope="function")
+def mock_socks_proxy_settings(monkeypatch):
+    http_proxy = 'socks5://http_proxy.com:8080'
+    https_proxy = 'socks5://https_proxy.com:8080'
+    monkeypatch.setenv("HTTPS_PROXY", https_proxy)
+    monkeypatch.setenv("HTTP_PROXY", http_proxy)
+    monkeypatch.setenv("https_proxy", https_proxy)
+    monkeypatch.setenv("http_proxy", http_proxy)
 
 
 @pytest.fixture(scope="function")
