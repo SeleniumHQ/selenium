@@ -34,10 +34,7 @@ module Selenium
         def initialize(kind, name: nil)
           super(name)
           @kind = assert_kind(kind)
-        end
-
-        def type
-          Interactions::POINTER
+          @type = Interactions::POINTER
         end
 
         def encode

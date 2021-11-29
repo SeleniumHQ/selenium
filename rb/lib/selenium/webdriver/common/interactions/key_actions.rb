@@ -141,10 +141,9 @@ module Selenium
         self
       end
 
-      def key_input(device = nil)
-        device ? get_device(device) : key_inputs.first
+      def key_input(name = nil)
+        device(name: name, type: Interactions::KEY) || add_key_input('keyboard')
       end
-
     end # KeyActions
   end # WebDriver
 end # Selenium

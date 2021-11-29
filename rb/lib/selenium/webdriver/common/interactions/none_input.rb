@@ -28,8 +28,9 @@ module Selenium
       #
 
       class NoneInput < InputDevice
-        def type
-          Interactions::NONE
+        def initialize(name = nil)
+          super
+          @type = Interactions::NONE
         end
       end # NoneInput
     end # Interactions

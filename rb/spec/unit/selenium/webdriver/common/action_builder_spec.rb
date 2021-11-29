@@ -29,10 +29,9 @@ module Selenium
       let(:async_builder) { ActionBuilder.new(bridge, devices: [mouse, keyboard], async: true) }
 
       describe '#initialize' do
-        it 'creates default mouse and keyboard when none are provided' do
+        it 'does not create input devices when not provided' do
           action_builder = ActionBuilder.new(bridge)
-          expect(action_builder.devices).to include(a_kind_of(Interactions::KeyInput),
-                                                    a_kind_of(Interactions::PointerInput))
+          expect(action_builder.devices).to be_empty
         end
 
         it 'deprecates using mouse and keyboard directly' do
@@ -44,9 +43,7 @@ module Selenium
 
         it 'deprecates using async parameter' do
           expect {
-            action_builder = ActionBuilder.new(bridge, nil, nil, true)
-            expect(action_builder.devices).to include(a_kind_of(Interactions::PointerInput))
-            expect(action_builder.devices).to include(a_kind_of(Interactions::KeyInput))
+            ActionBuilder.new(bridge, nil, nil, true)
           }.to have_deprecated(:action_async)
         end
 
@@ -90,12 +87,9 @@ module Selenium
         let(:device) { Interactions.pointer :mouse }
 
         it 'creates pointer and adds to devices' do
-          builder
-          allow(Interactions).to receive(:pointer).and_return(device)
-          builder.add_pointer_input(:touch, 'name')
+          device = builder.add_pointer_input(:touch, 'name')
 
           expect(builder.devices).to include(device)
-          expect(Interactions).to have_received(:pointer).with(:touch, name: 'name')
         end
 
         it 'adds pauses to match other devices when sync' do
@@ -127,13 +121,9 @@ module Selenium
         let(:device) { Interactions.key }
 
         it 'creates keyboard and adds to devices' do
-          builder
-          allow(Interactions).to receive(:key).and_return(device)
-
-          builder.add_key_input('name')
+          device = builder.add_key_input('name')
 
           expect(builder.devices).to include(device)
-          expect(Interactions).to have_received(:key).with('name')
         end
 
         it 'adds pauses to match other devices' do
@@ -148,10 +138,29 @@ module Selenium
         end
       end
 
-      describe '#get_device' do
+      describe '#device' do
         it 'gets device by name' do
-          expect(builder.get_device('mouse')).to eq(mouse)
-          expect(builder.get_device('key')).to eq(keyboard)
+          expect(builder.device(name: 'mouse')).to eq(mouse)
+        end
+
+        it 'raises ArgumentError when name not found' do
+          expect { builder.device(name: 'none', type: Interactions::NONE) }.to raise_error(ArgumentError)
+        end
+
+        it 'gets device by type' do
+          expect(builder.device(type: Interactions::POINTER)).to eq(mouse)
+        end
+
+        it 'returns nil when type not found' do
+          expect(builder.device(type: Interactions::NONE)).to be_nil
+        end
+      end
+
+      describe '#get_device' do
+        it 'gets device by name with deprecation' do
+          expect {
+            expect(builder.get_device('mouse')).to eq(mouse)
+          }.to have_deprecated(:get_device)
         end
       end
 

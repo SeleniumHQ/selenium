@@ -30,7 +30,7 @@ module Selenium
       #
 
       class InputDevice
-        attr_reader :name, :actions
+        attr_reader :name, :actions, :type
 
         def initialize(name = nil)
           @name = name || SecureRandom.uuid
@@ -51,13 +51,8 @@ module Selenium
           add_action(Pause.new(self, duration))
         end
 
-        def no_actions? # Determine if only pauses are present
-          actions = @actions.reject { |action| action.type == :pause }
-          actions.empty?
-        end
-
         def encode
-          {type: type, id: name, actions: @actions.map(&:encode)} unless no_actions?
+          {type: type, id: name, actions: @actions.map(&:encode)} unless @actions.empty?
         end
       end # InputDevice
     end # Interactions

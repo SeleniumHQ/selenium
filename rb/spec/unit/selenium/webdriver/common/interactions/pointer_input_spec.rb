@@ -46,14 +46,8 @@ module Selenium
         end
 
         describe '#encode' do
-          it 'returns nil if no_actions? is true' do
-            allow(pointer).to receive(:no_actions?).and_return(true)
+          it 'returns nil if no actions' do
             expect(pointer.encode).to eq(nil)
-          end
-
-          it 'returns Hash with expected parameters if no_actions? is false' do
-            allow(pointer).to receive(:no_actions?).and_return(false)
-            expect(pointer.encode).to eq(type: :pointer, id: :name, parameters: {pointerType: :mouse}, actions: [])
           end
 
           it 'encodes each action' do

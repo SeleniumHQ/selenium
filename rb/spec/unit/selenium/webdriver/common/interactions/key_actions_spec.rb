@@ -22,10 +22,9 @@ require File.expand_path('../../spec_helper', __dir__)
 module Selenium
   module WebDriver
     describe KeyActions do
-      let(:keyboard) { Interactions::KeyInput.new('keyboard') }
-      let(:mouse) { Interactions::PointerInput.new(:mouse, name: 'pointer') }
+      let(:keyboard) { Interactions::KeyInput.new('key_input') }
       let(:bridge) { instance_double('Bridge').as_null_object }
-      let(:builder) { Selenium::WebDriver::ActionBuilder.new(bridge, devices: [mouse, keyboard]) }
+      let(:builder) { Selenium::WebDriver::ActionBuilder.new(bridge, devices: [keyboard]) }
       let(:element) { Selenium::WebDriver::Element.new(bridge, 'element') }
       let(:key) { 'a' }
       let(:keys) { 'abc' }
@@ -41,6 +40,11 @@ module Selenium
 
         it 'gets default key input' do
           expect(builder.send(:key_input)).to eq keyboard
+        end
+
+        it 'creates a new default key input if one not defined' do
+          action_builder = Selenium::WebDriver::ActionBuilder.new(bridge)
+          expect(action_builder.send(:key_input).name).to eq 'keyboard'
         end
       end
 

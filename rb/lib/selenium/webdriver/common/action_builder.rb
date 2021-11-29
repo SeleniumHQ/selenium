@@ -61,9 +61,6 @@ module Selenium
                                      id: :action_devices
           add_input(deprecated_mouse)
           add_input(deprecated_keyboard)
-        elsif devices.empty?
-          add_pointer_input(:mouse, 'mouse')
-          add_key_input('keyboard')
         else
           devices.each { |device| add_input(device) }
         end
@@ -84,9 +81,7 @@ module Selenium
       #
 
       def add_pointer_input(kind, name)
-        new_input = Interactions.pointer(kind, name: name)
-        add_input(new_input)
-        new_input
+        add_input(Interactions.pointer(kind, name: name))
       end
 
       #
@@ -102,9 +97,7 @@ module Selenium
       #
 
       def add_key_input(name)
-        new_input = Interactions.key(name)
-        add_input(new_input)
-        new_input
+        add_input(Interactions.key(name))
       end
 
       #
@@ -115,7 +108,26 @@ module Selenium
       #
 
       def get_device(name)
-        @devices.find { |device| device.name == name.to_s } || raise(ArgumentError, "Can not find device: #{name}")
+        WebDriver.logger.deprecate('#get_device with name parameter',
+                                   '#device with :name or :type keyword',
+                                   id: :get_device)
+        device(name: name)
+      end
+
+      #
+      # Retrieves the input device for the given name or type
+      #
+      # @param [String] name name of the input device
+      # @param [String] type name of the input device
+      # @return [Selenium::WebDriver::Interactions::InputDevice] input device with given name or type
+      #
+
+      def device(name: nil, type: nil)
+        input = @devices.find { |device| (device.name == name.to_s || name.nil?) && (device.type == type || type.nil?) }
+
+        raise(ArgumentError, "Can not find device: #{name}") if name && input.nil?
+
+        input
       end
 
       #
@@ -232,9 +244,8 @@ module Selenium
           pauses(device, max_device.actions.length) if max_device
         end
         @devices << device
+        device
       end
-    end
-
-    # ActionBuilder
+    end # ActionBuilder
   end # WebDriver
 end # Selenium
