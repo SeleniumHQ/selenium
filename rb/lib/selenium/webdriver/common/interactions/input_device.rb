@@ -55,6 +55,10 @@ module Selenium
           actions = @actions.reject { |action| action.type == :pause }
           actions.empty?
         end
+
+        def encode
+          {type: type, id: name, actions: @actions.map(&:encode)} unless no_actions?
+        end
       end # InputDevice
     end # Interactions
   end # WebDriver
