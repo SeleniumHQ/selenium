@@ -45,7 +45,8 @@ from .webelement import WebElement
 from selenium.common.exceptions import (InvalidArgumentException,
                                         JavascriptException,
                                         WebDriverException,
-                                        NoSuchCookieException)
+                                        NoSuchCookieException,
+                                        NoSuchElementException)
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.options import BaseOptions
 from selenium.webdriver.common.print_page_options import PrintOptions
@@ -1227,7 +1228,10 @@ class WebDriver(BaseWebDriver):
         :rtype: WebElement
         """
         if isinstance(by, RelativeBy):
-            return self.find_elements(by=by, value=value)[0]
+            elements = self.find_elements(by=by, value=value)
+            if not elements:
+                raise NoSuchElementException(f"Cannot locate relative element with: {by.root}")
+            return elements[0]
 
         if by == By.ID:
             by = By.CSS_SELECTOR
