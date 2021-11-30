@@ -20,5 +20,5 @@ sortedcontainers
 sniffio
 trio~=0.17
 trio_websocket~=0.9
-urllib3~=1.26
+urllib3[secure, socks]~=1.26
 zipp

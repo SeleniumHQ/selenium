@@ -266,7 +266,6 @@ def test_can_scroll_mouse_wheel(driver, pages):
 
     scrollable = driver.find_element(By.CSS_SELECTOR, "#scrollable")
     ActionChains(driver).scroll(0, 0, 5, 10, origin=scrollable).perform()
-    #wheel_chain.scroll(0, 0, 5, 10, origin=scrollable).perform()
     events = _get_events(driver)
     assert len(events) == 1
     assert events[0]["type"] == "wheel"
@@ -286,7 +285,7 @@ def _get_events(driver):
         if "key" in e and e["key"].startswith(u"U+"):
             key = e["key"]
             hex_suffix = key[key.index("+") + 1:]
-            e["key"] = unichr(int(hex_suffix, 16))
+            e["key"] = chr(int(hex_suffix, 16))
 
         # WebKit sets code as 'Unidentified' for unidentified key codes, but
         # tests expect ''.
