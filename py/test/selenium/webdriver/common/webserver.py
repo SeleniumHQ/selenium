@@ -17,7 +17,7 @@
 
 """A simple web server for testing purpose.
 It serves the testing html pages that are needed by the webdriver unit tests."""
-
+import contextlib
 import logging
 import os
 import re
@@ -75,7 +75,7 @@ class HtmlOnlyHandler(BaseHTTPRequestHandler):
             self.end_headers()
             self.wfile.write(html)
         except IOError:
-            self.send_error(404, 'File Not Found: %s' % path)
+            self.send_error(404, f"File Not Found: {path}")
 
     def do_POST(self):
         """POST method handler."""
@@ -141,7 +141,7 @@ class SimpleWebServer(object):
                 self.port = port
                 break
             except socket.error:
-                LOGGER.debug("port %d is in use, trying to next one" % port)
+                LOGGER.debug(f"port {port} is in use, trying to next one")
                 port += 1
 
         self.thread = threading.Thread(target=self._run_web_server)
@@ -160,14 +160,11 @@ class SimpleWebServer(object):
     def stop(self):
         """Stops the server."""
         self.stop_serving = True
-        try:
-            # This is to force stop the server loop
-            urllib_request.URLopener().open("http://%s:%d" % (self.host, self.port))
-        except IOError:
-            pass
+        with contextlib.suppress(IOError):
+            _ = urllib_request.urlopen(f"http://{self.host}:{self.port}")
 
-    def where_is(self, path):
-        return "http://%s:%d/%s" % (self.host, self.port, path)
+    def where_is(self, path) -> str:
+        return f"http://{self.host}:{self.port}/{path}"
 
 
 def main(argv=None):
@@ -180,16 +177,16 @@ def main(argv=None):
 
     parser = OptionParser("%prog [options]")
     parser.add_option("-p", "--port", dest="port", type="int",
-                      help="port to listen (default: %s)" % DEFAULT_PORT,
+                      help=f"port to listen (default: {DEFAULT_PORT})",
                       default=DEFAULT_PORT)
 
     opts, args = parser.parse_args(argv[1:])
     if args:
         parser.error("wrong number of arguments")  # Will exit
 
-    server = SimpleWebServer(opts.port)
+    server = SimpleWebServer(port=opts.port)
     server.start()
-    print("Server started on port %s, hit CTRL-C to quit" % opts.port)
+    print(f"Server started on port {opts.port}, hit CTRL-C to quit")
     try:
         while 1:
             sleep(0.1)
