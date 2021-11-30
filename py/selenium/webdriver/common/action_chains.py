@@ -321,7 +321,22 @@ class ActionChains(object):
         self.send_keys(*keys_to_send)
         return self
 
+    def scroll(self, x: int, y: int, delta_x: int, delta_y: int, duration: int = 0, origin: str = "viewport"):
+        """
+        Sends wheel scroll information to the browser to be processed.
+
+        :Args:
+         - x: starting X coordinate
+         - y: starting Y coordinate
+         - delta_x: the distance the mouse will scroll on the x axis
+         - delta_y: the distance the mouse will scroll on the y axis
+        """
+        self.w3c_actions.wheel_action.scroll(x=x, y=y, delta_x=delta_x, delta_y=delta_y,
+                                             duration=duration, origin=origin)
+        return self
+
     # Context manager so ActionChains can be used in a 'with .. as' statements.
+
     def __enter__(self):
         return self  # Return created instance of self.
 

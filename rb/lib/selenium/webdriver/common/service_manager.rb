@@ -60,6 +60,7 @@ module Selenium
 
       def stop
         return unless @shutdown_supported
+        return if process_exited?
 
         stop_server
         @process.poll_for_exit STOP_TIMEOUT
@@ -109,15 +110,11 @@ module Selenium
       end
 
       def stop_process
-        return if process_exited?
-
         @process.stop STOP_TIMEOUT
         @process.io.stdout.close if Platform.jruby? && !WebDriver.logger.debug?
       end
 
       def stop_server
-        return if process_exited?
-
         connect_to_server do |http|
           headers = WebDriver::Remote::Http::Common::DEFAULT_HEADERS.dup
           http.get('/shutdown', headers)

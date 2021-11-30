@@ -15,11 +15,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
-import {
-  Box,
-  Grid,
-  Typography
-} from '@material-ui/core'
+import { Box, Grid, Typography } from '@material-ui/core'
 import React, { ReactNode } from 'react'
 import NodeInfo from '../../models/node-info'
 import LinearProgress, { LinearProgressProps } from '@material-ui/core/LinearProgress'
@@ -51,7 +47,7 @@ class NodeLoad extends React.Component<{ node: NodeInfo }, {}> {
       <Grid item xs={12}>
         <Grid
           container
-          justify='space-between'
+          justifyContent="space-between"
           spacing={2}
         >
           <Grid item xs={3}>

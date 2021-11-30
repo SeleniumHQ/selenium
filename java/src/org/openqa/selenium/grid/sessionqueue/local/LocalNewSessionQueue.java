@@ -2,6 +2,7 @@ package org.openqa.selenium.grid.sessionqueue.local;
 
 import static java.net.HttpURLConnection.HTTP_INTERNAL_ERROR;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
+import static org.openqa.selenium.concurrent.ExecutorServices.shutdownGracefully;
 
 import com.google.common.annotations.VisibleForTesting;
 
@@ -85,6 +86,7 @@ import java.util.stream.Collectors;
   description = "New session queue")
 public class LocalNewSessionQueue extends NewSessionQueue implements Closeable {
 
+  private static final String NAME = "Local New Session Queue";
   private final EventBus bus;
   private final SlotMatcher slotMatcher;
   private final Duration requestTimeout;
@@ -95,7 +97,7 @@ public class LocalNewSessionQueue extends NewSessionQueue implements Closeable {
   private final ScheduledExecutorService service = Executors.newSingleThreadScheduledExecutor(r -> {
     Thread thread = new Thread(r);
     thread.setDaemon(true);
-    thread.setName("Local New Session Queue");
+    thread.setName(NAME);
     return thread;
   });
 
@@ -407,7 +409,7 @@ public class LocalNewSessionQueue extends NewSessionQueue implements Closeable {
 
   @Override
   public void close() throws IOException {
-    service.shutdownNow();
+    shutdownGracefully(NAME, service);
   }
 
   private void failDueToTimeout(RequestId reqId) {
@@ -418,7 +420,7 @@ public class LocalNewSessionQueue extends NewSessionQueue implements Closeable {
     public final Instant endTime;
     public Either<SessionNotCreatedException, CreateSessionResponse> result;
     private boolean complete;
-    private CountDownLatch latch = new CountDownLatch(1);
+    private final CountDownLatch latch = new CountDownLatch(1);
 
     public Data(Instant enqueued) {
       this.endTime = enqueued.plus(requestTimeout);

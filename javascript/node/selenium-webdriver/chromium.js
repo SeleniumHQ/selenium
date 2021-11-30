@@ -217,8 +217,8 @@ class ServiceBuilder extends remote.DriverService.Builder {
    * Enables Chrome logging.
    * @returns {!ServiceBuilder} A self reference.
    */
-   enableChromeLogging() {
-    return this.addArguments('--enable-chrome-logs');
+  enableChromeLogging() {
+    return this.addArguments('--enable-chrome-logs')
   }
 
   /**
@@ -292,7 +292,7 @@ class Options extends Capabilities {
    * @return {!Options} A self reference.
    */
   debuggerAddress(address) {
-    this.options_.debuggerAddress = address;
+    this.options_.debuggerAddress = address
     return this
   }
 
@@ -882,6 +882,8 @@ class Driver extends webdriver.WebDriver {
 
 // PUBLIC API
 
-exports.Driver = Driver
-exports.Options = Options
-exports.ServiceBuilder = ServiceBuilder
+module.exports = {
+  Driver,
+  Options,
+  ServiceBuilder,
+}
