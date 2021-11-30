@@ -129,7 +129,7 @@ py_wheel(
     python_requires = "~=3.7",
     python_tag = "py3",
     requires = [
-        "urllib3[secure]~=1.26",
+        "urllib3[secure, socks]~=1.26",
         "trio~=0.17",
         "trio-websocket~=0.9",
     ],

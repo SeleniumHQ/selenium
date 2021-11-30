@@ -169,26 +169,6 @@ describe('http', function () {
       describe('uses correct URL', function () {
         beforeEach(() => (executor = new http.Executor(client)))
 
-        describe('in legacy mode', function () {
-          test(
-            CommandName.MAXIMIZE_WINDOW,
-            { sessionId: 's123' },
-            false,
-            'POST',
-            '/session/s123/window/current/maximize'
-          )
-
-          // This is consistent b/w legacy and W3C, just making sure.
-          test(
-            CommandName.GET,
-            { sessionId: 's123', url: 'http://www.example.com' },
-            false,
-            'POST',
-            '/session/s123/url',
-            { url: 'http://www.example.com' }
-          )
-        })
-
         describe('in W3C mode', function () {
           test(
             CommandName.MAXIMIZE_WINDOW,

@@ -35,12 +35,9 @@ module Selenium
         end
 
         def install_addon(path, temporary)
-          if @file_detector
-            local_file = @file_detector.call(path)
-            path = upload(local_file) if local_file
-          end
+          addon = File.open(path, 'rb') { |crx_file| Base64.strict_encode64 crx_file.read }
 
-          payload = {path: path}
+          payload = {addon: addon}
           payload[:temporary] = temporary unless temporary.nil?
           execute :install_addon, {}, payload
         end

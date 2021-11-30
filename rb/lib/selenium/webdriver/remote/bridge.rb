@@ -146,9 +146,7 @@ module Selenium
         end
 
         def page_source
-          execute_script('var source = document.documentElement.outerHTML;' \
-                            'if (!source) { source = new XMLSerializer().serializeToString(document); }' \
-                            'return source;')
+          execute :get_page_source
         end
 
         #

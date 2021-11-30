@@ -76,7 +76,8 @@ class Result {
   }
 }
 
-const COMMAND_RESULT = /** !WeakMap<!Command, !Promise<!Result>> */ new WeakMap()
+const COMMAND_RESULT =
+  /** !WeakMap<!Command, !Promise<!Result>> */ new WeakMap()
 const KILL_HOOK = /** !WeakMap<!Command, function(string)> */ new WeakMap()
 
 /**

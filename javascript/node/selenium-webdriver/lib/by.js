@@ -424,10 +424,10 @@ function check(locator) {
 // PUBLIC API
 
 module.exports = {
-  By: By,
-  RelativeBy: RelativeBy,
-  withTagName: withTagName,
-  locateWith: locateWith,
+  By,
+  RelativeBy,
+  withTagName,
+  locateWith,
+  escapeCss,
   checkedLocator: check,
-  escapeCss: escapeCss
 }
