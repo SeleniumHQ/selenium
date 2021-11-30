@@ -27,7 +27,7 @@ from selenium.webdriver.common.options import ArgOptions
 class ChromiumOptions(ArgOptions):
     KEY = "goog:chromeOptions"
 
-    def __init__(self):
+    def __init__(self) -> None:
         super(ChromiumOptions, self).__init__()
         self._binary_location = ''
         self._extension_files = []
@@ -43,7 +43,7 @@ class ChromiumOptions(ArgOptions):
         return self._binary_location
 
     @binary_location.setter
-    def binary_location(self, value: str):
+    def binary_location(self, value: str) -> NoReturn:
         """
         Allows you to set where the chromium binary lives
         :Args:
@@ -52,14 +52,14 @@ class ChromiumOptions(ArgOptions):
         self._binary_location = value
 
     @property
-    def debugger_address(self: str):
+    def debugger_address(self: str) -> str:
         """
         :Returns: The address of the remote devtools instance
         """
         return self._debugger_address
 
     @debugger_address.setter
-    def debugger_address(self, value: str):
+    def debugger_address(self, value: str) -> NoReturn:
         """
         Allows you to set the address of the remote devtools instance
         that the ChromeDriver instance will try to connect to during an
@@ -122,7 +122,7 @@ class ChromiumOptions(ArgOptions):
         """
         return self._experimental_options
 
-    def add_experimental_option(self, name: str, value: Union[str, int, dict, List[str]]):
+    def add_experimental_option(self, name: str, value: Union[str, int, dict, List[str]]) -> NoReturn:
         """
         Adds an experimental option which is passed to chromium.
 
@@ -142,7 +142,7 @@ class ChromiumOptions(ArgOptions):
         return '--headless' in self._arguments
 
     @headless.setter
-    def headless(self, value: bool):
+    def headless(self, value: bool) -> NoReturn:
         """
         Sets the headless argument
         :Args:

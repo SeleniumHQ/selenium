@@ -17,6 +17,8 @@
 
 package org.openqa.selenium.remote.service;
 
+import static org.openqa.selenium.concurrent.ExecutorServices.shutdownGracefully;
+
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Throwables;
 
@@ -46,10 +48,11 @@ import java.util.concurrent.TimeoutException;
  */
 public class DriverCommandExecutor extends HttpCommandExecutor implements Closeable {
 
+  private static final String NAME = "Driver Command Executor";
   private final DriverService service;
   private final ExecutorService executorService = Executors.newFixedThreadPool(2, r -> {
     Thread thread = new Thread(r);
-    thread.setName("Driver Command Executor");
+    thread.setName(NAME);
     thread.setDaemon(true);
     return thread;
   });
@@ -131,7 +134,7 @@ public class DriverCommandExecutor extends HttpCommandExecutor implements Closea
         Thread.currentThread().interrupt();
         throw new WebDriverException("Timed out waiting for driver server to stop.", e);
       } finally {
-        executorService.shutdownNow();
+        close();
       }
 
     } else {
@@ -166,6 +169,6 @@ public class DriverCommandExecutor extends HttpCommandExecutor implements Closea
 
   @Override
   public void close() {
-    executorService.shutdownNow();
+    shutdownGracefully(NAME, executorService);
   }
 }

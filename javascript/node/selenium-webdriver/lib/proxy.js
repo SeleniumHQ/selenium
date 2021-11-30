@@ -130,7 +130,7 @@ ManualConfig.prototype.socksVersion
  * Configures WebDriver to bypass all browser proxies.
  * @return {!Config} A new proxy configuration object.
  */
-exports.direct = function () {
+function direct() {
   return { proxyType: Type.DIRECT }
 }
 
@@ -155,7 +155,7 @@ exports.direct = function () {
  *     configuration options.
  * @return {!ManualConfig} A new proxy configuration object.
  */
-exports.manual = function ({ ftp, http, https, bypass }) {
+function manual({ ftp, http, https, bypass }) {
   return {
     proxyType: Type.MANUAL,
     ftpProxy: ftp,
@@ -185,7 +185,7 @@ exports.manual = function ({ ftp, http, https, bypass }) {
  * @return {!ManualConfig} A new proxy configuration object.
  * @see https://en.wikipedia.org/wiki/SOCKS
  */
-exports.socks = function (socksProxy, socksVersion = undefined) {
+function socks(socksProxy, socksVersion = undefined) {
   return /** @type {!Config} */ ({
     proxyType: Type.MANUAL,
     socksProxy,
@@ -199,7 +199,7 @@ exports.socks = function (socksProxy, socksVersion = undefined) {
  * @param {string} proxyAutoconfigUrl URL for the PAC proxy to use.
  * @return {!PacConfig} A new proxy configuration object.
  */
-exports.pac = function (proxyAutoconfigUrl) {
+function pac(proxyAutoconfigUrl) {
   return { proxyType: Type.PAC, proxyAutoconfigUrl }
 }
 
@@ -207,6 +207,16 @@ exports.pac = function (proxyAutoconfigUrl) {
  * Configures WebDriver to use the current system's proxy.
  * @return {!Config} A new proxy configuration object.
  */
-exports.system = function () {
+function system() {
   return { proxyType: Type.SYSTEM }
+}
+
+// PUBLIC API
+
+module.exports = {
+  system,
+  pac,
+  socks,
+  manual,
+  direct,
 }

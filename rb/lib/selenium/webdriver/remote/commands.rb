@@ -60,10 +60,6 @@ module Selenium
           fullscreen_window: [:post, 'session/:session_id/window/fullscreen'],
           minimize_window: [:post, 'session/:session_id/window/minimize'],
           maximize_window: [:post, 'session/:session_id/window/maximize'],
-          set_window_size: [:post, 'session/:session_id/window/size'],
-          get_window_size: [:get, 'session/:session_id/window/size'],
-          set_window_position: [:post, 'session/:session_id/window/position'],
-          get_window_position: [:get, 'session/:session_id/window/position'],
           set_window_rect: [:post, 'session/:session_id/window/rect'],
           get_window_rect: [:get, 'session/:session_id/window/rect'],
           switch_to_frame: [:post, 'session/:session_id/frame'],
@@ -130,7 +126,6 @@ module Selenium
           #
 
           element_click: [:post, 'session/:session_id/element/:id/click'],
-          element_tap: [:post, 'session/:session_id/element/:id/tap'],
           element_clear: [:post, 'session/:session_id/element/:id/clear'],
           element_send_keys: [:post, 'session/:session_id/element/:id/value'],
 
