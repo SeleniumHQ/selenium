@@ -33,7 +33,7 @@ module Selenium
         end
 
         def create_scroll(duration: 0, x: 0, y: 0, delta_x: 0, delta_y: 0, origin: nil)
-          add_action(Scroll.new(self, duration, origin, x, y, delta_x, delta_y))
+          add_action(Scroll.new(self, duration, delta_x, delta_y, origin: origin, x: x, y: y))
         end
       end # PointerInput
     end # Interactions

@@ -28,9 +28,9 @@ module Selenium
         let(:duration) { 0.5 }
         let(:x) { 25 }
         let(:y) { 50 }
-        let(:delta_x) { 30}
+        let(:delta_x) { 30 }
         let(:delta_y) { 60 }
-        let(:scroll) { Scroll.new(wheel, duration, origin, x, y, delta_x, delta_y) }
+        let(:scroll) { Scroll.new(wheel, duration, delta_x, delta_y, origin: origin, x: x, y: y) }
 
         describe '#type' do
           it 'returns :wheel' do
@@ -40,7 +40,8 @@ module Selenium
 
         describe '#create_scroll' do
           it 'executes #add_action with created interaction' do
-            allow(Scroll).to receive(:new).with(wheel, duration, origin, x, y, delta_x, delta_y).and_return(scroll)
+            allow(Scroll).to receive(:new).with(wheel, duration, delta_x, delta_y, origin: origin, x: x, y: y)
+                                          .and_return(scroll)
             allow(wheel).to receive(:add_action).and_call_original
 
             wheel.create_scroll(duration: duration, x: x, y: y, delta_x: delta_x, delta_y: delta_y, origin: origin)

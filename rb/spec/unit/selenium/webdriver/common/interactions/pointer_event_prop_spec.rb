@@ -31,18 +31,20 @@ module Selenium
               @opts = opts
             end
 
-            def assert_source(*) ; end
+            def assert_source(*); end
           end
         end
-        let(:opts) { {width: 0,
-                      height: 0,
-                      pressure: 0.5,
-                      tangential_pressure: 0.4,
-                      tilt_x: -40,
-                      tilt_y: -10,
-                      twist: 177,
-                      altitude_angle: 1.0,
-                      azimuth_angle: 0.5} }
+        let(:opts) do
+          {width: 0,
+           height: 0,
+           pressure: 0.5,
+           tangential_pressure: 0.4,
+           tilt_x: -40,
+           tilt_y: -10,
+           twist: 177,
+           altitude_angle: 1.0,
+           azimuth_angle: 0.5}
+        end
 
         describe '#process_opts' do
           it 'validates all pointer event properties' do
@@ -63,7 +65,6 @@ module Selenium
             pointer.process_opts
             expect(pointer).to have_received(:assert_number).exactly(7).times
           end
-
         end
 
         describe '#assert_number' do
