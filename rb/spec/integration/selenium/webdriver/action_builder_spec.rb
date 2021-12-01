@@ -257,6 +257,95 @@ module Selenium
           expect(element.attribute(:value)).to eq('Clicked')
         end
       end
+
+      def in_viewport?(element)
+        in_viewport = <<-IN_VIEWPORT
+for(var e=arguments[0],f=e.offsetTop,t=e.offsetLeft,o=e.offsetWidth,n=e.offsetHeight;
+e.offsetParent;)f+=(e=e.offsetParent).offsetTop,t+=e.offsetLeft;
+return f<window.pageYOffset+window.innerHeight&&t<window.pageXOffset+window.innerWidth&&f+n>
+window.pageYOffset&&t+o>window.pageXOffset
+        IN_VIEWPORT
+
+        driver.execute_script(in_viewport, element)
+      end
+
+      describe '#scroll_to' do
+        it 'scrolls to element' do
+          driver.navigate.to url_for('scrolling_tests/frame_with_nested_scrolling_frame_out_of_view.html')
+          iframe = driver.find_element(tag_name: 'iframe')
+          expect(in_viewport?(iframe)).to eq false
+
+          driver.action.scroll_to(iframe).perform
+
+          expect(in_viewport?(iframe)).to eq true
+        end
+      end
+
+      describe '#scroll_from' do
+        it 'scrolls from element by the provided amount' do
+          driver.navigate.to url_for('scrolling_tests/frame_with_nested_scrolling_frame_out_of_view.html')
+
+          iframe = driver.find_element(tag_name: 'iframe')
+          driver.action.scroll_from(iframe, 0, 200).perform
+
+          driver.switch_to.frame(iframe)
+          checkbox = driver.find_element(name: 'scroll_checkbox')
+          expect(in_viewport?(checkbox)).to eq true
+        end
+
+        it 'scrolls from element with offset by the provided amount' do
+          driver.navigate.to url_for('scrolling_tests/frame_with_nested_scrolling_frame_out_of_view.html')
+
+          footer = driver.find_element(tag_name: 'footer')
+          driver.action.scroll_from(footer, 0, 200, origin_offset_x: 0, origin_offset_y: -50).perform
+
+          driver.switch_to.frame(driver.find_element(tag_name: 'iframe'))
+          checkbox = driver.find_element(name: 'scroll_checkbox')
+          expect(in_viewport?(checkbox)).to eq true
+        end
+
+        it 'throws MoveTargetOutOfBoundsError when origin offset is out of viewport' do
+          driver.navigate.to url_for('scrolling_tests/frame_with_nested_scrolling_frame_out_of_view.html')
+
+          footer = driver.find_element(tag_name: 'footer')
+
+          expect {
+            driver.action.scroll_from(footer, 0, 200, origin_offset_x: 0, origin_offset_y: 50).perform
+          }.to raise_error(Error::MoveTargetOutOfBoundsError)
+        end
+      end
+
+      describe '#scroll_by' do
+        it 'scrolls by amount provided' do
+          driver.navigate.to url_for('scrolling_tests/frame_with_nested_scrolling_frame_out_of_view.html')
+
+          footer = driver.find_element(tag_name: 'footer')
+          y = footer.rect.y
+
+          driver.action.scroll_by(0, y).perform
+
+          expect(in_viewport?(footer)).to eq true
+        end
+      end
+
+      it 'scrolls by amount provided from provided origin' do
+        driver.navigate.to url_for('scrolling_tests/frame_with_nested_scrolling_frame.html')
+
+        iframe = driver.find_element(tag_name: 'iframe')
+        driver.action.scroll_by(0, 200, origin_x: 10, origin_y: 10).perform
+
+        driver.switch_to.frame(iframe)
+        checkbox = driver.find_element(name: 'scroll_checkbox')
+        expect(in_viewport?(checkbox)).to eq true
+      end
+
+      it 'throws MoveTargetOutOfBoundsError when origin offset is out of viewport' do
+        driver.navigate.to url_for('scrolling_tests/frame_with_nested_scrolling_frame.html')
+
+        expect {
+          driver.action.scroll_by(0, 200, origin_x: -10, origin_y: -10).perform
+        }.to raise_error(Error::MoveTargetOutOfBoundsError)
+      end
     end # ActionBuilder
   end # WebDriver
 end # Selenium

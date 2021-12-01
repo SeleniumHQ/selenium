@@ -22,6 +22,7 @@ module Selenium
     class ActionBuilder
       include KeyActions # Actions specific to key inputs
       include PointerActions # Actions specific to pointer inputs
+      include WheelActions # Actions specific to wheel inputs
 
       attr_reader :devices
 
@@ -101,6 +102,22 @@ module Selenium
       end
 
       #
+      # Adds a WheelInput device
+      #
+      # @example Add a wheel input device
+      #
+      #    builder = device.action
+      #    builder.add_wheel_input('wheel2')
+      #
+      # @param [String] name name for the device
+      # @return [Interactions::WheelInput] The wheel input added
+      #
+
+      def add_wheel_input(name)
+        add_input(Interactions.wheel(name))
+      end
+
+      #
       # Retrieves the input device for the given name
       #
       # @param [String] name name of the input device
@@ -148,6 +165,16 @@ module Selenium
 
       def key_inputs
         @devices.select { |device| device.type == Interactions::KEY }
+      end
+
+      #
+      # Retrieves the current WheelInput device
+      #
+      # @return [Selenium::WebDriver::Interactions::InputDevice] current WheelInput devices
+      #
+
+      def wheel_inputs
+        @devices.select { |device| device.type == Interactions::WHEEL }
       end
 
       #
