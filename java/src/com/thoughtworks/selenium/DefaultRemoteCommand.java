@@ -52,7 +52,7 @@ public class DefaultRemoteCommand implements RemoteCommand {
 
   @Override
   public String getCommandURLString() {
-    StringBuilder sb = new StringBuilder("cmd=");
+    StringBuffer sb = new StringBuffer("cmd=");
     sb.append(Urls.urlEncode(command));
     if (args == null) return sb.toString();
     for (int i = 0; i < args.length; i++) {

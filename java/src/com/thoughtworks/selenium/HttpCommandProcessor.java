@@ -131,7 +131,7 @@ public class HttpCommandProcessor implements CommandProcessor {
   }
 
   private String stringContentsOfInputStream(Reader rdr) throws IOException {
-    StringBuilder sb = new StringBuilder();
+    StringBuffer sb = new StringBuffer();
     int c;
     try {
       while ((c = rdr.read()) != -1) {
@@ -219,7 +219,7 @@ public class HttpCommandProcessor implements CommandProcessor {
   }
 
   private String buildCommandBody(String command) {
-    StringBuilder sb = new StringBuilder();
+    StringBuffer sb = new StringBuffer();
     sb.append(command);
     if (sessionId != null) {
       sb.append("&sessionId=");
@@ -307,7 +307,7 @@ public class HttpCommandProcessor implements CommandProcessor {
    */
   public static String[] parseCSV(String input) {
     List<String> output = new ArrayList<>();
-    StringBuilder sb = new StringBuilder();
+    StringBuffer sb = new StringBuffer();
     for (int i = 0; i < input.length(); i++) {
       char c = input.charAt(i);
       switch (c) {
