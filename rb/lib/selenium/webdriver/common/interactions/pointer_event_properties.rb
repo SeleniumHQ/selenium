@@ -29,7 +29,7 @@ module Selenium
                  tilt_y: {'tiltY' => {min: -90, max: 90}},
                  twist: {'twist' => {min: 0, max: 359}},
                  altitude_angle: {'altitudeAngle' => {min: 0.0, max: (Math::PI / 2)}},
-                 azimuth_angle: {'azimuthAngle' => {min: 0.0, max: (Math::PI * 2)}}}
+                 azimuth_angle: {'azimuthAngle' => {min: 0.0, max: (Math::PI * 2)}}}.freeze
 
         def process_opts
           raise ArgumentError, "Unknown options found: #{@opts.inspect}" unless (@opts.keys - VALID.keys).empty?

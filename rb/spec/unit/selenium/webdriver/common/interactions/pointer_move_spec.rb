@@ -29,15 +29,17 @@ module Selenium
         let(:duration) { 0.5 }
         let(:x) { 25 }
         let(:y) { 50 }
-        let(:opts) { {width: 0,
-                      height: 0,
-                      pressure: 0.5,
-                      tangential_pressure: 0.4,
-                      tilt_x: -40,
-                      tilt_y: -10,
-                      twist: 177,
-                      altitude_angle: 1.0,
-                      azimuth_angle: 0.5} }
+        let(:opts) do
+          {width: 0,
+           height: 0,
+           pressure: 0.5,
+           tangential_pressure: 0.4,
+           tilt_x: -40,
+           tilt_y: -10,
+           twist: 177,
+           altitude_angle: 1.0,
+           azimuth_angle: 0.5}
+        end
 
         describe '#initialize' do
           it 'raises a TypeError if source is not a PointerInput' do

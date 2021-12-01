@@ -259,11 +259,11 @@ module Selenium
       end
 
       def in_viewport?(element)
-        in_viewport = <<-IN_VIEWPORT
-for(var e=arguments[0],f=e.offsetTop,t=e.offsetLeft,o=e.offsetWidth,n=e.offsetHeight;
-e.offsetParent;)f+=(e=e.offsetParent).offsetTop,t+=e.offsetLeft;
-return f<window.pageYOffset+window.innerHeight&&t<window.pageXOffset+window.innerWidth&&f+n>
-window.pageYOffset&&t+o>window.pageXOffset
+        in_viewport = <<~IN_VIEWPORT
+          for(var e=arguments[0],f=e.offsetTop,t=e.offsetLeft,o=e.offsetWidth,n=e.offsetHeight;
+          e.offsetParent;)f+=(e=e.offsetParent).offsetTop,t+=e.offsetLeft;
+          return f<window.pageYOffset+window.innerHeight&&t<window.pageXOffset+window.innerWidth&&f+n>
+          window.pageYOffset&&t+o>window.pageXOffset
         IN_VIEWPORT
 
         driver.execute_script(in_viewport, element)

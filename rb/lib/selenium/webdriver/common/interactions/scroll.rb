@@ -30,7 +30,7 @@ module Selenium
         VIEWPORT = :viewport
         POINTER = :pointer
 
-        def initialize(source, duration, origin, x, y, delta_x, delta_y)
+        def initialize(source, duration, delta_x, delta_y, origin: VIEWPORT, x: 0, y: 0)
           super(source)
           @type = :scroll
           @duration = duration * 1000
