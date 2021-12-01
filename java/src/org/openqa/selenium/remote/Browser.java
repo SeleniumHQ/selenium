@@ -59,7 +59,7 @@ public interface Browser {
 
     @Override
     public boolean is(String browserName) {
-      return browserName().equals(browserName) || "operablink".equals(browserName);
+      return browserName().equals(browserName);
     }
   };
   Browser SAFARI = new Browser() {

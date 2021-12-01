@@ -26,11 +26,6 @@ package org.openqa.selenium.remote;
 public interface BrowserType {
   String FIREFOX = "firefox";
   String SAFARI = "safari";
-  /**
-   * @deprecated Use {@link #OPERA}
-   */
-  @Deprecated
-  String OPERA_BLINK = "operablink";
   String OPERA = "opera";
   String EDGE = "MicrosoftEdge";
   String EDGEHTML = "EdgeHTML";
