@@ -367,11 +367,8 @@ module Selenium
         # actions
         #
 
-        def action(async = false)
-          ActionBuilder.new self,
-                            Interactions.pointer(:mouse, name: 'mouse'),
-                            Interactions.key('keyboard'),
-                            async
+        def action(deprecated_async = nil, async: false, devices: [])
+          ActionBuilder.new self, nil, nil, deprecated_async, async: async, devices: devices
         end
         alias_method :actions, :action
 

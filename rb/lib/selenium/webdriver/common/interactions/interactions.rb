@@ -23,19 +23,27 @@ module Selenium
       KEY = :key
       POINTER = :pointer
       NONE = :none
-      SOURCE_TYPES = [KEY, POINTER, NONE].freeze
+      WHEEL = :wheel
+
+      #
+      # Class methods for initializing known Input devices
+      #
 
       class << self
-        def key(name)
+        def key(name = nil)
           KeyInput.new(name)
         end
 
-        def pointer(kind, **kwargs)
-          PointerInput.new(kind, **kwargs)
+        def pointer(kind = :mouse, name: nil)
+          PointerInput.new(kind, name: name)
         end
 
         def none(name = nil)
           NoneInput.new(name)
+        end
+
+        def wheel(name = nil)
+          WheelInput.new(name)
         end
       end
     end # Interactions

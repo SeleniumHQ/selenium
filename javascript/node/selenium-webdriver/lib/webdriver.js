@@ -1951,21 +1951,6 @@ class Window {
         new command.Command(command.Name.GET_WINDOW_RECT)
       )
     } catch (ex) {
-      if (ex instanceof error.UnknownCommandError) {
-        let { width, height } = await this.driver_.execute(
-          new command.Command(command.Name.GET_WINDOW_SIZE).setParameter(
-            'windowHandle',
-            'current'
-          )
-        )
-        let { x, y } = await this.driver_.execute(
-          new command.Command(command.Name.GET_WINDOW_POSITION).setParameter(
-            'windowHandle',
-            'current'
-          )
-        )
-        return { x, y, width, height }
-      }
       throw ex
     }
   }
@@ -1995,26 +1980,6 @@ class Window {
         })
       )
     } catch (ex) {
-      if (ex instanceof error.UnknownCommandError) {
-        if (typeof x === 'number' && typeof y === 'number') {
-          await this.driver_.execute(
-            new command.Command(command.Name.SET_WINDOW_POSITION)
-              .setParameter('windowHandle', 'current')
-              .setParameter('x', x)
-              .setParameter('y', y)
-          )
-        }
-
-        if (typeof width === 'number' && typeof height === 'number') {
-          await this.driver_.execute(
-            new command.Command(command.Name.SET_WINDOW_SIZE)
-              .setParameter('windowHandle', 'current')
-              .setParameter('width', width)
-              .setParameter('height', height)
-          )
-        }
-        return this.getRect()
-      }
       throw ex
     }
   }
@@ -2654,6 +2619,36 @@ class WebElement {
   }
 
   /**
+   * Get the value of the given attribute of the element.
+   * <p>
+   * This method, unlike {@link #getAttribute(String)}, returns the value of the attribute with the
+   * given name but not the property with the same name.
+   * <p>
+   * The following are deemed to be "boolean" attributes, and will return either "true" or null:
+   * <p>
+   * async, autofocus, autoplay, checked, compact, complete, controls, declare, defaultchecked,
+   * defaultselected, defer, disabled, draggable, ended, formnovalidate, hidden, indeterminate,
+   * iscontenteditable, ismap, itemscope, loop, multiple, muted, nohref, noresize, noshade,
+   * novalidate, nowrap, open, paused, pubdate, readonly, required, reversed, scoped, seamless,
+   * seeking, selected, truespeed, willvalidate
+   * <p>
+   * See <a href="https://w3c.github.io/webdriver/#get-element-attribute">W3C WebDriver specification</a>
+   * for more details.
+   *
+   * @param attributeName The name of the attribute.
+   * @return The attribute's value or null if the value is not set.
+   */
+
+  getDomAttribute(attributeName) {
+    return this.execute_(
+      new command.Command(command.Name.GET_DOM_ATTRIBUTE).setParameter(
+        'name',
+        attributeName
+      )
+    )
+  }
+
+  /**
    * Get the given property of the referenced web element
    * @param {string} propertyName The name of the attribute to query.
    * @return {!Promise<string>} A promise that will be
@@ -2721,15 +2716,7 @@ class WebElement {
         new command.Command(command.Name.GET_ELEMENT_RECT)
       )
     } catch (err) {
-      if (err instanceof error.UnknownCommandError) {
-        const { width, height } = await this.execute_(
-          new command.Command(command.Name.GET_ELEMENT_SIZE)
-        )
-        const { x, y } = await this.execute_(
-          new command.Command(command.Name.GET_ELEMENT_LOCATION)
-        )
-        return { x, y, width, height }
-      }
+        throw err;
     }
   }
 
