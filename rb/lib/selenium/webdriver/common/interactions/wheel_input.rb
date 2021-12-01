@@ -21,40 +21,21 @@ module Selenium
   module WebDriver
     module Interactions
       #
-      # Action related to moving the pointer.
+      # Creates actions specific to Pointer Input devices
       #
       # @api private
       #
 
-      class PointerMove < Interaction
-        include PointerEventProperties
-
-        VIEWPORT = :viewport
-        POINTER = :pointer
-        ORIGINS = [VIEWPORT, POINTER].freeze
-
-        def initialize(source, duration, x, y, element: nil, origin: nil, **opts)
-          super(source)
-          @duration = duration * 1000
-          @x_offset = x
-          @y_offset = y
-          @origin = element || origin || :viewport
-          @type = :pointerMove
-          @opts = opts
+      class WheelInput < InputDevice
+        def initialize(name = nil)
+          super(name)
+          @type = Interactions::WHEEL
         end
 
-        def assert_source(source)
-          raise TypeError, "#{source.type} is not a valid input type" unless source.is_a? PointerInput
+        def create_scroll(duration: 0, x: 0, y: 0, delta_x: 0, delta_y: 0, origin: nil)
+          add_action(Scroll.new(self, duration, origin, x, y, delta_x, delta_y))
         end
-
-        def encode
-          process_opts.merge('type' => type.to_s,
-                             'duration' => @duration.to_i,
-                             'x' => @x_offset,
-                             'y' => @y_offset,
-                             'origin' => @origin)
-        end
-      end # PointerMove
+      end # PointerInput
     end # Interactions
   end # WebDriver
 end # Selenium

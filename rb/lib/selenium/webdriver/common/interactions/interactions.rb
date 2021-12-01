@@ -23,6 +23,7 @@ module Selenium
       KEY = :key
       POINTER = :pointer
       NONE = :none
+      WHEEL = :wheel
 
       #
       # Class methods for initializing known Input devices
@@ -39,6 +40,10 @@ module Selenium
 
         def none(name = nil)
           NoneInput.new(name)
+        end
+
+        def wheel(name = nil)
+          WheelInput.new(name)
         end
       end
     end # Interactions
