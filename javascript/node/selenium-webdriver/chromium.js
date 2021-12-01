@@ -105,6 +105,7 @@ const Command = {
 /**
  * Creates a command executor with support for Chromium's custom commands.
  * @param {!Promise<string>} url The server's URL.
+ * @param vendorPrefix
  * @return {!command.Executor} The new command executor.
  */
 function createExecutor(url, vendorPrefix) {

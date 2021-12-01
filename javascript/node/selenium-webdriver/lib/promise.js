@@ -262,8 +262,7 @@ async function fullyResolveKeys(obj) {
     ) {
       return
     }
-    let resolvedValue = await fullyResolved(partialValue)
-    obj[key] = resolvedValue
+    obj[key] = await fullyResolved(partialValue)
   })
   return obj
 }

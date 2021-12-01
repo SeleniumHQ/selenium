@@ -30,26 +30,26 @@ describe('HttpClient', function () {
     // eslint-disable-next-line node/no-deprecated-api
     const parsedUrl = url.parse(req.url)
 
-    if (req.method == 'GET' && req.url == '/echo') {
+    if (req.method === 'GET' && req.url === '/echo') {
       res.writeHead(200)
       res.end(JSON.stringify(req.headers))
-    } else if (req.method == 'GET' && req.url == '/redirect') {
+    } else if (req.method === 'GET' && req.url === '/redirect') {
       res.writeHead(303, { Location: server.url('/hello') })
       res.end()
-    } else if (req.method == 'GET' && req.url == '/hello') {
+    } else if (req.method === 'GET' && req.url === '/hello') {
       res.writeHead(200, { 'content-type': 'text/plain' })
       res.end('hello, world!')
-    } else if (req.method == 'GET' && req.url == '/chunked') {
+    } else if (req.method === 'GET' && req.url === '/chunked') {
       res.writeHead(200, {
         'content-type': 'text/html; charset=utf-8',
         'transfer-encoding': 'chunked',
       })
       res.write('<!DOCTYPE html>')
       setTimeout(() => res.end('<h1>Hello, world!</h1>'), 20)
-    } else if (req.method == 'GET' && req.url == '/badredirect') {
+    } else if (req.method === 'GET' && req.url === '/badredirect') {
       res.writeHead(303, {})
       res.end()
-    } else if (req.method == 'GET' && req.url == '/protected') {
+    } else if (req.method === 'GET' && req.url === '/protected') {
       const denyAccess = function () {
         res.writeHead(401, { 'WWW-Authenticate': 'Basic realm="test"' })
         res.end('Access denied')
@@ -74,7 +74,7 @@ describe('HttpClient', function () {
       res.writeHead(200, { 'content-type': 'text/plain' })
       res.end('Access granted!')
     } else if (
-      req.method == 'GET' &&
+      req.method === 'GET' &&
       parsedUrl.pathname &&
       parsedUrl.pathname.endsWith('/proxy')
     ) {
@@ -83,7 +83,7 @@ describe('HttpClient', function () {
       res.writeHead(200, headers)
       res.end()
     } else if (
-      req.method == 'GET' &&
+      req.method === 'GET' &&
       parsedUrl.pathname &&
       parsedUrl.pathname.endsWith('/proxy/redirect')
     ) {

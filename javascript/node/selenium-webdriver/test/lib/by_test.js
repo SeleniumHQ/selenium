@@ -17,8 +17,8 @@
 
 'use strict'
 
-var assert = require('assert')
-var by = require('../../lib/by')
+const assert = require('assert')
+const by = require('../../lib/by')
 
 describe('by', function () {
   describe('By', function () {

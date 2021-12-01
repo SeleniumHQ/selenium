@@ -17,15 +17,15 @@
 
 'use strict'
 
-var assert = require('assert'),
+const assert = require('assert'),
   fs = require('fs'),
   path = require('path')
 
-var io = require('../../io')
+const io = require('../../io')
 
 describe('io', function () {
   describe('copy', function () {
-    var tmpDir
+    let tmpDir
 
     before(function () {
       return io.tmpDir().then(function (d) {
@@ -229,7 +229,7 @@ describe('io', function () {
   })
 
   describe('unlink', function () {
-    var dir
+    let dir
 
     before(function () {
       return io.tmpDir().then(function (d) {
@@ -242,7 +242,7 @@ describe('io', function () {
     })
 
     it('deletes files', function () {
-      var file = path.join(dir, 'foo')
+      const file = path.join(dir, 'foo')
       fs.writeFileSync(file, '')
       return io
         .exists(file)
@@ -339,7 +339,7 @@ describe('io', function () {
   })
 
   describe('read', function () {
-    var tmpDir
+    let tmpDir
 
     before(function () {
       return io.tmpDir().then(function (d) {

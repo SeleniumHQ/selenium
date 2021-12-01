@@ -24,7 +24,7 @@ const test = require('../../lib/test')
 test.suite(
   function (_env) {
     describe('chromedriver', function () {
-      var service
+      let service
       afterEach(function () {
         if (service) {
           return service.kill()
