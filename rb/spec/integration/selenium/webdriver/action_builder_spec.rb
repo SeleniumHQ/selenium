@@ -176,6 +176,7 @@ module Selenium
           driver.navigate.to url_for('javascriptPage.html')
           element = driver.find_element(id: 'doubleClickField')
 
+          sleep 0.5
           driver.action.double_click(element).perform
           expect(element.attribute(:value)).to eq('DoubleClicked')
         end
@@ -252,7 +253,7 @@ module Selenium
           driver.navigate.to url_for('javascriptPage.html')
           element = driver.find_element(id: 'clickField')
           rect = element.rect
-          driver.action.move_to_location(rect.x, rect.y).click.perform
+          driver.action.move_to_location(rect.x.ceil, rect.y.ceil).click.perform
 
           expect(element.attribute(:value)).to eq('Clicked')
         end
@@ -269,7 +270,7 @@ module Selenium
         driver.execute_script(in_viewport, element)
       end
 
-      describe '#scroll_to' do
+      describe '#scroll_to', only: {browser: %i[chrome edge]} do
         it 'scrolls to element' do
           driver.navigate.to url_for('scrolling_tests/frame_with_nested_scrolling_frame_out_of_view.html')
           iframe = driver.find_element(tag_name: 'iframe')
@@ -281,7 +282,7 @@ module Selenium
         end
       end
 
-      describe '#scroll_from' do
+      describe '#scroll_from', only: {browser: %i[chrome edge]} do
         it 'scrolls from element by the provided amount' do
           driver.navigate.to url_for('scrolling_tests/frame_with_nested_scrolling_frame_out_of_view.html')
 
@@ -315,7 +316,7 @@ module Selenium
         end
       end
 
-      describe '#scroll_by' do
+      describe '#scroll_by', only: {browser: %i[chrome edge]} do
         it 'scrolls by amount provided' do
           driver.navigate.to url_for('scrolling_tests/frame_with_nested_scrolling_frame_out_of_view.html')
 
@@ -326,25 +327,25 @@ module Selenium
 
           expect(in_viewport?(footer)).to eq true
         end
-      end
 
-      it 'scrolls by amount provided from provided origin' do
-        driver.navigate.to url_for('scrolling_tests/frame_with_nested_scrolling_frame.html')
+        it 'scrolls by amount provided from provided origin' do
+          driver.navigate.to url_for('scrolling_tests/frame_with_nested_scrolling_frame.html')
 
-        iframe = driver.find_element(tag_name: 'iframe')
-        driver.action.scroll_by(0, 200, origin_x: 10, origin_y: 10).perform
+          iframe = driver.find_element(tag_name: 'iframe')
+          driver.action.scroll_by(0, 200, origin_x: 10, origin_y: 10).perform
 
-        driver.switch_to.frame(iframe)
-        checkbox = driver.find_element(name: 'scroll_checkbox')
-        expect(in_viewport?(checkbox)).to eq true
-      end
+          driver.switch_to.frame(iframe)
+          checkbox = driver.find_element(name: 'scroll_checkbox')
+          expect(in_viewport?(checkbox)).to eq true
+        end
 
-      it 'throws MoveTargetOutOfBoundsError when origin offset is out of viewport' do
-        driver.navigate.to url_for('scrolling_tests/frame_with_nested_scrolling_frame.html')
+        it 'throws MoveTargetOutOfBoundsError when origin offset is out of viewport' do
+          driver.navigate.to url_for('scrolling_tests/frame_with_nested_scrolling_frame.html')
 
-        expect {
-          driver.action.scroll_by(0, 200, origin_x: -10, origin_y: -10).perform
-        }.to raise_error(Error::MoveTargetOutOfBoundsError)
+          expect {
+            driver.action.scroll_by(0, 200, origin_x: -10, origin_y: -10).perform
+          }.to raise_error(Error::MoveTargetOutOfBoundsError)
+        end
       end
     end # ActionBuilder
   end # WebDriver

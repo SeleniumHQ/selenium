@@ -74,7 +74,7 @@ module Selenium
 
         describe '#create_pointer_down' do
           it 'executes #add_action with created interaction' do
-            allow(PointerPress).to receive(:new).with(pointer, :down, :left).and_return(interaction)
+            allow(PointerPress).to receive(:new).with(pointer, :down, :left, {}).and_return(interaction)
             allow(pointer).to receive(:add_action).and_call_original
 
             pointer.create_pointer_down(:left)
@@ -85,7 +85,7 @@ module Selenium
 
         describe '#create_pointer_up' do
           it 'executes #add_action with created interaction' do
-            allow(PointerPress).to receive(:new).with(pointer, :up, :left).and_return(interaction)
+            allow(PointerPress).to receive(:new).with(pointer, :up, :left, {}).and_return(interaction)
             allow(pointer).to receive(:add_action).and_call_original
 
             pointer.create_pointer_up(:left)
