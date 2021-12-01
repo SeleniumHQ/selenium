@@ -208,7 +208,7 @@ test.suite(function (env) {
           'File took longer than 10 seconds to upload!'
         )
 
-        var frame = await driver.findElement(By.id('upload_target'))
+        const frame = await driver.findElement(By.id('upload_target'))
         await driver.switchTo().frame(frame)
         assert.strictEqual(
           await driver.findElement(By.css('body')).getText(),

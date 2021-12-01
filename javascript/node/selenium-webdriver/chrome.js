@@ -286,9 +286,13 @@ Driver.getDefaultService = getDefaultService
 Driver.prototype.VENDOR_COMMAND_PREFIX = 'goog'
 
 // PUBLIC API
-exports.Driver = Driver
-exports.Options = Options
-exports.ServiceBuilder = ServiceBuilder
-exports.getDefaultService = getDefaultService
-exports.setDefaultService = setDefaultService
-exports.locateSynchronously = locateSynchronously
+
+module.exports = {
+  Driver: Driver,
+  Options,
+  ServiceBuilder ,
+  getDefaultService,
+  setDefaultService,
+  locateSynchronously
+}
+

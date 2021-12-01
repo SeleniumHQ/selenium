@@ -2994,7 +2994,7 @@ class ShadowRootPromise extends ShadowRoot {
   /**
    * @param {!WebDriver} driver The parent WebDriver instance for this
    *     element.
-   * @param {!Promise<!ShadowRoot>} el A promise
+   * @param {!Promise<!ShadowRoot>} shadow A promise
    *     that will resolve to the promised element.
    */
   constructor(driver, shadow) {

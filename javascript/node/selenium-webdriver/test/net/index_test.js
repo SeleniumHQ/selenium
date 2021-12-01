@@ -17,8 +17,8 @@
 
 'use strict'
 
-var assert = require('assert')
-var net = require('../../net')
+const assert = require('assert')
+const net = require('../../net')
 
 describe('net.splitHostAndPort', function () {
   it('hostname with no port', function () {

@@ -20,9 +20,10 @@
 const assert = require('assert')
 const net = require('net')
 const portprober = require('../../net/portprober')
+const host = '127.0.0.1'
 
 describe('isFree', function () {
-  var server
+  let server
 
   beforeEach(function () {
     server = net.createServer(function () {})
@@ -37,8 +38,8 @@ describe('isFree', function () {
 
   it('should work for INADDR_ANY', function (done) {
     server.listen(0, function () {
-      var port = server.address().port
-      assertPortNotfree(port)
+      const port = server.address().port
+      assertPortNotFree(port)
         .then(function () {
           return new Promise((resolve) => {
             server.close(function () {
@@ -54,10 +55,9 @@ describe('isFree', function () {
   })
 
   it('should work for a specific host', function (done) {
-    var host = '127.0.0.1'
     server.listen(0, host, function () {
-      var port = server.address().port
-      assertPortNotfree(port, host)
+      const port = server.address().port
+      assertPortNotFree(port, host)
         .then(function () {
           return new Promise((resolve) => {
             server.close(function () {
@@ -74,7 +74,7 @@ describe('isFree', function () {
 })
 
 describe('findFreePort', function () {
-  var server
+  let server
 
   beforeEach(function () {
     server = net.createServer(function () {})
@@ -90,7 +90,7 @@ describe('findFreePort', function () {
   it('should work for INADDR_ANY', function (done) {
     portprober.findFreePort().then(function (port) {
       server.listen(port, function () {
-        assertPortNotfree(port)
+        assertPortNotFree(port)
           .then(function () {
             return new Promise((resolve) => {
               server.close(function () {
@@ -107,10 +107,9 @@ describe('findFreePort', function () {
   })
 
   it('should work for a specific host', function (done) {
-    var host = '127.0.0.1'
     portprober.findFreePort(host).then(function (port) {
       server.listen(port, host, function () {
-        assertPortNotfree(port, host)
+        assertPortNotFree(port, host)
           .then(function () {
             return new Promise((resolve) => {
               server.close(function () {
@@ -133,7 +132,7 @@ function assertPortIsFree(port, opt_host) {
   })
 }
 
-function assertPortNotfree(port, opt_host) {
+function assertPortNotFree(port, opt_host) {
   return portprober.isFree(port, opt_host).then(function (free) {
     assert.ok(!free, 'port should is not free')
   })
