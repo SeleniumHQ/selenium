@@ -133,7 +133,7 @@ class RelativeBy(object):
 
     def near(self, element_or_locator_distance: Union[WebElement, Dict, int] = None) -> "RelativeBy":
         """
-            Add a filter to look for elements above.
+            Add a filter to look for elements near.
             :Args:
                 - element_or_locator_distance: Element to look near by the element or within a distance
         """

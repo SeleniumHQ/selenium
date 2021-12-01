@@ -83,7 +83,6 @@ class Command {
  * will support.
  * @enum {string}
  */
-// TODO: Delete obsolete command names.
 const Name = {
   GET_SERVER_STATUS: 'getStatus',
 
@@ -115,14 +114,9 @@ const Name = {
   CLEAR_ELEMENT: 'clearElement',
   CLICK_ELEMENT: 'clickElement',
   SEND_KEYS_TO_ELEMENT: 'sendKeysToElement',
-  SUBMIT_ELEMENT: 'submitElement',
 
   GET_CURRENT_WINDOW_HANDLE: 'getCurrentWindowHandle',
   GET_WINDOW_HANDLES: 'getWindowHandles',
-  GET_WINDOW_POSITION: 'getWindowPosition',
-  SET_WINDOW_POSITION: 'setWindowPosition',
-  GET_WINDOW_SIZE: 'getWindowSize',
-  SET_WINDOW_SIZE: 'setWindowSize',
   GET_WINDOW_RECT: 'getWindowRect',
   SET_WINDOW_RECT: 'setWindowRect',
   MAXIMIZE_WINDOW: 'maximizeWindow',
@@ -146,17 +140,14 @@ const Name = {
   IS_ELEMENT_SELECTED: 'isElementSelected',
   IS_ELEMENT_ENABLED: 'isElementEnabled',
   IS_ELEMENT_DISPLAYED: 'isElementDisplayed',
-  GET_ELEMENT_LOCATION: 'getElementLocation',
-  GET_ELEMENT_LOCATION_IN_VIEW: 'getElementLocationOnceScrolledIntoView',
   GET_ELEMENT_RECT: 'getElementRect',
-  GET_ELEMENT_SIZE: 'getElementSize',
   GET_ELEMENT_ATTRIBUTE: 'getElementAttribute',
+  GET_DOM_ATTRIBUTE: 'getDomAttribute',
   GET_ELEMENT_VALUE_OF_CSS_PROPERTY: 'getElementValueOfCssProperty',
   GET_ELEMENT_PROPERTY: 'getElementProperty',
 
   SCREENSHOT: 'screenshot',
   TAKE_ELEMENT_SCREENSHOT: 'takeElementScreenshot',
-  SET_SCRIPT_TIMEOUT: 'setScriptTimeout',
 
   PRINT_PAGE: 'printPage',
 
@@ -175,7 +166,6 @@ const Name = {
 
   GET_AVAILABLE_LOG_TYPES: 'getAvailableLogTypes',
   GET_LOG: 'getLog',
-  GET_SESSION_LOGS: 'getSessionLogs',
 
   // Non-standard commands used by the standalone Selenium server.
   UPLOAD_FILE: 'uploadFile',

@@ -218,6 +218,4 @@ function unzip(src, dst) {
 }
 
 // PUBLIC API
-module.exports.Zip = Zip
-module.exports.load = load
-module.exports.unzip = unzip
+module.exports = { Zip, load, unzip }
