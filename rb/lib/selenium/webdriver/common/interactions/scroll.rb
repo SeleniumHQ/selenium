@@ -21,30 +21,40 @@ module Selenium
   module WebDriver
     module Interactions
       #
-      # Creates actions specific to Key Input devices
+      # Action related to scrolling a wheel.
       #
       # @api private
       #
 
-      class KeyInput < InputDevice
-        SUBTYPES = {down: :keyDown, up: :keyUp, pause: :pause}.freeze
+      class Scroll < Interaction
+        VIEWPORT = :viewport
+        POINTER = :pointer
 
-        def initialize(name = nil)
-          super
-          @type = Interactions::KEY
+        def initialize(source, duration, delta_x, delta_y, origin: VIEWPORT, x: 0, y: 0)
+          super(source)
+          @type = :scroll
+          @duration = duration * 1000
+          @origin = origin
+          @x_offset = x
+          @y_offset = y
+          @delta_x = delta_x
+          @delta_y = delta_y
         end
 
-        def create_key_down(key)
-          add_action(TypingInteraction.new(self, :down, key))
+        def assert_source(source)
+          raise TypeError, "#{source.type} is not a valid input type" unless source.is_a? WheelInput
         end
 
-        def create_key_up(key)
-          add_action(TypingInteraction.new(self, :up, key))
+        def encode
+          {'type' => type.to_s,
+           'duration' => @duration.to_i,
+           'x' => @x_offset,
+           'y' => @y_offset,
+           'deltaX' => @delta_x,
+           'deltaY' => @delta_y,
+           'origin' => @origin.is_a?(Element) ? @origin : @origin.to_s}
         end
-
-        # Backward compatibility in case anyone called this directly
-        class TypingInteraction < Interactions::TypingInteraction; end
-      end # KeyInput
+      end # PointerPress
     end # Interactions
   end # WebDriver
 end # Selenium

@@ -21,30 +21,40 @@ module Selenium
   module WebDriver
     module Interactions
       #
-      # Creates actions specific to Key Input devices
+      # Action related to moving the pointer.
       #
       # @api private
       #
 
-      class KeyInput < InputDevice
-        SUBTYPES = {down: :keyDown, up: :keyUp, pause: :pause}.freeze
+      class PointerMove < Interaction
+        include PointerEventProperties
 
-        def initialize(name = nil)
-          super
-          @type = Interactions::KEY
+        VIEWPORT = :viewport
+        POINTER = :pointer
+        ORIGINS = [VIEWPORT, POINTER].freeze
+
+        def initialize(source, duration, x, y, element: nil, origin: nil, **opts)
+          super(source)
+          @duration = duration * 1000
+          @x_offset = x
+          @y_offset = y
+          @origin = element || origin || :viewport
+          @type = :pointerMove
+          @opts = opts
         end
 
-        def create_key_down(key)
-          add_action(TypingInteraction.new(self, :down, key))
+        def assert_source(source)
+          raise TypeError, "#{source.type} is not a valid input type" unless source.is_a? PointerInput
         end
 
-        def create_key_up(key)
-          add_action(TypingInteraction.new(self, :up, key))
+        def encode
+          process_opts.merge('type' => type.to_s,
+                             'duration' => @duration.to_i,
+                             'x' => @x_offset,
+                             'y' => @y_offset,
+                             'origin' => @origin)
         end
-
-        # Backward compatibility in case anyone called this directly
-        class TypingInteraction < Interactions::TypingInteraction; end
-      end # KeyInput
+      end # PointerMove
     end # Interactions
   end # WebDriver
 end # Selenium

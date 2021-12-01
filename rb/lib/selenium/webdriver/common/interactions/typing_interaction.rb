@@ -17,37 +17,38 @@
 # specific language governing permissions and limitations
 # under the License.
 
-require File.expand_path('../../spec_helper', __dir__)
-
 module Selenium
   module WebDriver
     module Interactions
-      describe NoneInput do
-        let(:none) { NoneInput.new(:name) }
-        let(:interaction) { Pause.new(none, 1) }
+      #
+      # Actions related to pressing keys.
+      #
+      # @api private
+      #
 
-        describe '#type' do
-          it 'returns :key' do
-            expect(none.type).to eq(:none)
-          end
+      class TypingInteraction < Interaction
+        attr_reader :type
+
+        def initialize(source, type, key)
+          super(source)
+          @type = assert_type(type)
+          @key = Keys.encode_key(key)
         end
 
-        describe '#encode' do
-          it 'returns nil if no actions' do
-            expect(none.encode).to eq(nil)
-          end
-
-          it 'encodes each action' do
-            allow(none).to receive(:no_actions?).and_return(false)
-            allow(interaction).to receive(:encode).and_call_original
-            2.times { none.add_action(interaction) }
-
-            none.encode
-
-            expect(interaction).to have_received(:encode).twice
-          end
+        def assert_source(source)
+          raise TypeError, "#{source.type} is not a valid input type" unless source.is_a? KeyInput
         end
-      end
+
+        def assert_type(type)
+          raise TypeError, "#{type.inspect} is not a valid key subtype" unless KeyInput::SUBTYPES.key? type
+
+          KeyInput::SUBTYPES[type]
+        end
+
+        def encode
+          {type: @type, value: @key}
+        end
+      end # TypingInteraction
     end # Interactions
   end # WebDriver
 end # Selenium

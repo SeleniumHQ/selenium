@@ -22,29 +22,31 @@ require File.expand_path('../../spec_helper', __dir__)
 module Selenium
   module WebDriver
     module Interactions
-      describe NoneInput do
-        let(:none) { NoneInput.new(:name) }
-        let(:interaction) { Pause.new(none, 1) }
+      describe WheelInput do
+        let(:wheel) { WheelInput.new(name: :name) }
+        let(:origin) { Scroll::VIEWPORT }
+        let(:duration) { 0.5 }
+        let(:x) { 25 }
+        let(:y) { 50 }
+        let(:delta_x) { 30 }
+        let(:delta_y) { 60 }
+        let(:scroll) { Scroll.new(wheel, duration, delta_x, delta_y, origin: origin, x: x, y: y) }
 
         describe '#type' do
-          it 'returns :key' do
-            expect(none.type).to eq(:none)
+          it 'returns :wheel' do
+            expect(wheel.type).to eq(:wheel)
           end
         end
 
-        describe '#encode' do
-          it 'returns nil if no actions' do
-            expect(none.encode).to eq(nil)
-          end
+        describe '#create_scroll' do
+          it 'executes #add_action with created interaction' do
+            allow(Scroll).to receive(:new).with(wheel, duration, delta_x, delta_y, origin: origin, x: x, y: y)
+                                          .and_return(scroll)
+            allow(wheel).to receive(:add_action).and_call_original
 
-          it 'encodes each action' do
-            allow(none).to receive(:no_actions?).and_return(false)
-            allow(interaction).to receive(:encode).and_call_original
-            2.times { none.add_action(interaction) }
+            wheel.create_scroll(duration: duration, x: x, y: y, delta_x: delta_x, delta_y: delta_y, origin: origin)
 
-            none.encode
-
-            expect(interaction).to have_received(:encode).twice
+            expect(wheel).to have_received(:add_action).with(scroll)
           end
         end
       end

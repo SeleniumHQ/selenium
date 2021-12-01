@@ -17,37 +17,25 @@
 # specific language governing permissions and limitations
 # under the License.
 
-require File.expand_path('../../spec_helper', __dir__)
-
 module Selenium
   module WebDriver
     module Interactions
-      describe NoneInput do
-        let(:none) { NoneInput.new(:name) }
-        let(:interaction) { Pause.new(none, 1) }
+      #
+      # Creates actions specific to Pointer Input devices
+      #
+      # @api private
+      #
 
-        describe '#type' do
-          it 'returns :key' do
-            expect(none.type).to eq(:none)
-          end
+      class WheelInput < InputDevice
+        def initialize(name = nil)
+          super(name)
+          @type = Interactions::WHEEL
         end
 
-        describe '#encode' do
-          it 'returns nil if no actions' do
-            expect(none.encode).to eq(nil)
-          end
-
-          it 'encodes each action' do
-            allow(none).to receive(:no_actions?).and_return(false)
-            allow(interaction).to receive(:encode).and_call_original
-            2.times { none.add_action(interaction) }
-
-            none.encode
-
-            expect(interaction).to have_received(:encode).twice
-          end
+        def create_scroll(duration: 0, x: 0, y: 0, delta_x: 0, delta_y: 0, origin: nil)
+          add_action(Scroll.new(self, duration, delta_x, delta_y, origin: origin, x: x, y: y))
         end
-      end
+      end # PointerInput
     end # Interactions
   end # WebDriver
 end # Selenium

@@ -266,7 +266,7 @@ const W3C_COMMAND_MAP = new Map([
   ],
   // Element interaction.
   [cmd.Name.GET_ELEMENT_TAG_NAME, get('/session/:sessionId/element/:id/name')],
-  [cmd.Name.GET_DOM_ATTRIBUTE, get('/session/:sessionId/element/:id/attribute/name')],
+  [cmd.Name.GET_DOM_ATTRIBUTE, get('/session/:sessionId/element/:id/attribute/:name')],
   [
     cmd.Name.GET_ELEMENT_ATTRIBUTE,
     (cmd) => {
