@@ -370,7 +370,7 @@ public enum Platform {
 
     for (Platform os : Platform.values()) {
       for (String matcher : os.partOfOsName) {
-        if (name.toLowerCase().equals(matcher.toLowerCase())) {
+        if (name.equalsIgnoreCase(matcher)) {
           return os;
         }
       }

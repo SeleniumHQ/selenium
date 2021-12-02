@@ -250,7 +250,7 @@ function checkCodePoint(key) {
   }
 
   key = key.normalize()
-  if (Array.from(key).length != 1) {
+  if (Array.from(key).length !== 1) {
     throw new InvalidArgumentError(
       `key input is not a single code point: ${key}`
     )

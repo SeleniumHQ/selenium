@@ -38,7 +38,7 @@ test.suite(
         .setChromeOptions(new chrome.Options().headless())
         .build()
     })
-    after(() => driver.quit())
+    after(async () => await driver.quit())
 
     it('can send commands to devtools', async function () {
       await driver.get(test.Pages.ajaxyPage)

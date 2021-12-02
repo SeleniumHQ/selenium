@@ -145,13 +145,13 @@ test.suite(
 
     describe('Chrome options', function () {
       it('can start Chrome with custom args', async function () {
-        var options = new chrome.Options().addArguments('user-agent=foo;bar')
+        const options = new chrome.Options().addArguments('user-agent=foo;bar')
 
         driver = await env.builder().setChromeOptions(options).build()
 
         await driver.get(test.Pages.ajaxyPage)
 
-        var userAgent = await driver.executeScript(
+        const userAgent = await driver.executeScript(
           'return window.navigator.userAgent'
         )
         assert.strictEqual(userAgent, 'foo;bar')

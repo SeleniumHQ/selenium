@@ -196,7 +196,7 @@ describe('WebDriver', function () {
         .andReturnSuccess(aSession)
         .end()
 
-      var driver = WebDriver.createSession(executor, {
+      const driver = WebDriver.createSession(executor, {
         browserName: 'firefox',
       })
       return driver.getSession().then((v) => assert.strictEqual(v, aSession))
@@ -221,7 +221,7 @@ describe('WebDriver', function () {
         .andReturnSuccess(aSession)
         .end()
 
-      var driver = WebDriver.createSession(executor, Capabilities.firefox())
+      const driver = WebDriver.createSession(executor, Capabilities.firefox())
       return driver.getSession().then((v) => assert.strictEqual(v, aSession))
     })
 
@@ -238,7 +238,7 @@ describe('WebDriver', function () {
         .andReturnSuccess(aSession)
         .end()
 
-      var driver = WebDriver.createSession(executor, {
+      const driver = WebDriver.createSession(executor, {
         browserName: 'firefox',
         foo: 'bar',
       })
@@ -257,7 +257,8 @@ describe('WebDriver', function () {
         .andReturnError(new StubError())
         .end()
 
-      var driver = WebDriver.createSession(executor, { browserName: 'firefox' })
+      const driver = WebDriver.createSession(executor,
+        { browserName: 'firefox' })
       return driver.getSession().then(fail, assertIsStubError)
     })
 
@@ -287,7 +288,7 @@ describe('WebDriver', function () {
   })
 
   it('testDoesNotExecuteCommandIfSessionDoesNotResolve', function () {
-    var session = Promise.reject(new StubError())
+    const session = Promise.reject(new StubError())
     return new FakeExecutor()
       .createDriver(session)
       .getTitle()
@@ -300,7 +301,7 @@ describe('WebDriver', function () {
       .andReturnSuccess('Google Search')
       .end()
 
-    var driver = executor.createDriver()
+    const driver = executor.createDriver()
     return driver
       .getTitle()
       .then((title) => assert.strictEqual('Google Search', title))
@@ -351,7 +352,7 @@ describe('WebDriver', function () {
         .andReturnSuccess('http://www.google.com')
         .end()
 
-      var driver = executor.createDriver()
+      const driver = executor.createDriver()
       return driver
         .getTitle()
         .then(function () {
@@ -373,7 +374,7 @@ describe('WebDriver', function () {
         .andReturnSuccess('http://www.google.com')
         .end()
 
-      var driver = executor.createDriver()
+      const driver = executor.createDriver()
       return driver
         .switchTo()
         .window('foo')
@@ -396,10 +397,10 @@ describe('WebDriver', function () {
     })
 
     it('resolvesBeforeCallbacksOnWireValueTrigger', function () {
-      var el = defer()
+      const el = defer()
 
-      var element = new WebElementPromise(driver, el.promise)
-      var messages = []
+      const element = new WebElementPromise(driver, el.promise)
+      const messages = []
 
       let steps = [
         element.then((_) => messages.push('element resolved')),
@@ -435,7 +436,7 @@ describe('WebDriver', function () {
         .andReturnSuccess(null)
         .end()
 
-      var driver = executor.createDriver()
+      const driver = executor.createDriver()
       return driver
         .executeScript('return document.body;')
         .then((result) => assert.strictEqual(null, result))
@@ -451,14 +452,14 @@ describe('WebDriver', function () {
         .andReturnSuccess(123)
         .end()
 
-      var driver = executor.createDriver()
+      const driver = executor.createDriver()
       return driver
         .executeScript('return document.body;')
         .then((result) => assert.strictEqual(123, result))
     })
 
     it('webElementReturnValue', function () {
-      var json = WebElement.buildId('foo')
+      const json = WebElement.buildId('foo')
 
       let executor = new FakeExecutor()
         .expect(CName.EXECUTE_SCRIPT)
@@ -469,7 +470,7 @@ describe('WebDriver', function () {
         .andReturnSuccess(json)
         .end()
 
-      var driver = executor.createDriver()
+      const driver = executor.createDriver()
       return driver
         .executeScript('return document.body;')
         .then((element) => element.getId())
@@ -477,7 +478,7 @@ describe('WebDriver', function () {
     })
 
     it('arrayReturnValue', function () {
-      var json = [WebElement.buildId('foo')]
+      const json = [WebElement.buildId('foo')]
 
       let executor = new FakeExecutor()
         .expect(CName.EXECUTE_SCRIPT)
@@ -488,7 +489,7 @@ describe('WebDriver', function () {
         .andReturnSuccess(json)
         .end()
 
-      var driver = executor.createDriver()
+      const driver = executor.createDriver()
       return driver
         .executeScript('return document.body;')
         .then(function (array) {
@@ -499,7 +500,7 @@ describe('WebDriver', function () {
     })
 
     it('objectReturnValue', function () {
-      var json = { foo: WebElement.buildId('foo') }
+      const json = { foo: WebElement.buildId('foo') }
 
       let executor = new FakeExecutor()
         .expect(CName.EXECUTE_SCRIPT)
@@ -510,7 +511,7 @@ describe('WebDriver', function () {
         .andReturnSuccess(json)
         .end()
 
-      var driver = executor.createDriver()
+      const driver = executor.createDriver()
       return driver
         .executeScript('return document.body;')
         .then((obj) => obj['foo'].getId())
@@ -527,7 +528,7 @@ describe('WebDriver', function () {
         .andReturnSuccess(null)
         .end()
 
-      var driver = executor.createDriver()
+      const driver = executor.createDriver()
       return driver.executeScript(function () {})
     })
 
@@ -541,7 +542,7 @@ describe('WebDriver', function () {
         .andReturnSuccess(null)
         .end()
 
-      var driver = executor.createDriver()
+      const driver = executor.createDriver()
       return driver.executeScript('return 1;', 'abc', 123, true, [
         123,
         { foo: 'bar' },
@@ -549,7 +550,7 @@ describe('WebDriver', function () {
     })
 
     it('webElementArgumentConversion', function () {
-      var elementJson = WebElement.buildId('fefifofum')
+      const elementJson = WebElement.buildId('fefifofum')
 
       let executor = new FakeExecutor()
         .expect(CName.EXECUTE_SCRIPT)
@@ -560,7 +561,7 @@ describe('WebDriver', function () {
         .andReturnSuccess(null)
         .end()
 
-      var driver = executor.createDriver()
+      const driver = executor.createDriver()
       return driver.executeScript(
         'return 1;',
         new WebElement(driver, 'fefifofum')
@@ -568,7 +569,7 @@ describe('WebDriver', function () {
     })
 
     it('webElementPromiseArgumentConversion', function () {
-      var elementJson = WebElement.buildId('bar')
+      const elementJson = WebElement.buildId('bar')
 
       let executor = new FakeExecutor()
         .expect(CName.FIND_ELEMENT, {
@@ -584,13 +585,13 @@ describe('WebDriver', function () {
         .andReturnSuccess(null)
         .end()
 
-      var driver = executor.createDriver()
-      var element = driver.findElement(By.id('foo'))
+      const driver = executor.createDriver()
+      const element = driver.findElement(By.id('foo'))
       return driver.executeScript('return 1;', element)
     })
 
     it('argumentConversion', function () {
-      var elementJson = WebElement.buildId('fefifofum')
+      const elementJson = WebElement.buildId('fefifofum')
 
       let executor = new FakeExecutor()
         .expect(CName.EXECUTE_SCRIPT)
@@ -601,8 +602,8 @@ describe('WebDriver', function () {
         .andReturnSuccess(null)
         .end()
 
-      var driver = executor.createDriver()
-      var element = new WebElement(driver, 'fefifofum')
+      const driver = executor.createDriver()
+      const element = new WebElement(driver, 'fefifofum')
       return driver.executeScript('return 1;', 'abc', 123, true, element, [
         123,
         { foo: 'bar' },
@@ -618,7 +619,7 @@ describe('WebDriver', function () {
         })
         .andReturnError(new StubError())
         .end()
-      var driver = executor.createDriver()
+      const driver = executor.createDriver()
       return driver
         .executeScript('throw Error(arguments[0]);', 'bam')
         .then(fail, assertIsStubError)
@@ -627,10 +628,10 @@ describe('WebDriver', function () {
     it('failsIfArgumentIsARejectedPromise', function () {
       let executor = new FakeExecutor()
 
-      var arg = Promise.reject(new StubError())
+      const arg = Promise.reject(new StubError())
       arg.catch(function () {}) // Suppress default handler.
 
-      var driver = executor.createDriver()
+      const driver = executor.createDriver()
       return driver
         .executeScript(function () {}, arg)
         .then(fail, assertIsStubError)
@@ -639,10 +640,10 @@ describe('WebDriver', function () {
 
   describe('executeAsyncScript', function () {
     it('failsIfArgumentIsARejectedPromise', function () {
-      var arg = Promise.reject(new StubError())
+      const arg = Promise.reject(new StubError())
       arg.catch(function () {}) // Suppress default handler.
 
-      var driver = new FakeExecutor().createDriver()
+      const driver = new FakeExecutor().createDriver()
       return driver
         .executeAsyncScript(function () {}, arg)
         .then(fail, assertIsStubError)
@@ -659,7 +660,7 @@ describe('WebDriver', function () {
         .andReturnError(new StubError())
         .end()
 
-      var driver = executor.createDriver()
+      const driver = executor.createDriver()
       return driver
         .findElement(By.id('foo'))
         .then(assert.fail, assertIsStubError)
@@ -674,7 +675,7 @@ describe('WebDriver', function () {
         .andReturnError(new StubError())
         .end()
 
-      var driver = executor.createDriver()
+      const driver = executor.createDriver()
       return Promise.resolve()
         .then((_) => driver.findElement(By.id('foo')))
         .then(assert.fail, assertIsStubError)
@@ -691,8 +692,8 @@ describe('WebDriver', function () {
         .andReturnSuccess()
         .end()
 
-      var driver = executor.createDriver()
-      var element = driver.findElement(By.id('foo'))
+      const driver = executor.createDriver()
+      const element = driver.findElement(By.id('foo'))
       return element.click()
     })
 
@@ -707,7 +708,7 @@ describe('WebDriver', function () {
         .andReturnSuccess()
         .end()
 
-      var driver = executor.createDriver()
+      const driver = executor.createDriver()
       return driver.findElement(By.id('foo')).then((e) => e.click())
     })
 
@@ -721,7 +722,7 @@ describe('WebDriver', function () {
         .expect(CName.CLICK_ELEMENT, { id: WebElement.buildId('bar') })
         .end()
 
-      var driver = executor.createDriver()
+      const driver = executor.createDriver()
       return driver
         .findElement(By.js('return document.body'))
         .then((e) => e.click())
@@ -733,7 +734,7 @@ describe('WebDriver', function () {
         .andReturnSuccess(123)
         .end()
 
-      var driver = executor.createDriver()
+      const driver = executor.createDriver()
       return driver
         .findElement(By.js('return 123'))
         .then(assert.fail, function (e) {
@@ -746,7 +747,7 @@ describe('WebDriver', function () {
     })
 
     it('byJs_canPassArguments', function () {
-      var script = 'return document.getElementsByTagName(arguments[0]);'
+      const script = 'return document.getElementsByTagName(arguments[0]);'
       let executor = new FakeExecutor()
         .expect(CName.EXECUTE_SCRIPT, {
           script: script,
@@ -754,7 +755,7 @@ describe('WebDriver', function () {
         })
         .andReturnSuccess(WebElement.buildId('one'))
         .end()
-      var driver = executor.createDriver()
+      const driver = executor.createDriver()
       return driver.findElement(By.js(script, 'div'))
     })
 
@@ -769,8 +770,8 @@ describe('WebDriver', function () {
         .andReturnSuccess()
         .end()
 
-      var driver = executor.createDriver()
-      var element = driver.findElement(function (d) {
+      const driver = executor.createDriver()
+      const element = driver.findElement(function (d) {
         assert.strictEqual(driver, d)
         return d.findElements(By.tagName('a'))
       })
@@ -778,7 +779,7 @@ describe('WebDriver', function () {
     })
 
     it('customLocatorThrowsIfresultIsNotAWebElement', function () {
-      var driver = new FakeExecutor().createDriver()
+      const driver = new FakeExecutor().createDriver()
       return driver
         .findElement((_) => 1)
         .then(assert.fail, function (e) {
@@ -793,13 +794,13 @@ describe('WebDriver', function () {
 
   describe('findElements', function () {
     it('returnsMultipleElements', function () {
-      var ids = ['foo', 'bar', 'baz']
+      const ids = ['foo', 'bar', 'baz']
       let executor = new FakeExecutor()
         .expect(CName.FIND_ELEMENTS, { using: 'css selector', value: 'a' })
         .andReturnSuccess(ids.map(WebElement.buildId))
         .end()
 
-      var driver = executor.createDriver()
+      const driver = executor.createDriver()
       return driver
         .findElements(By.tagName('a'))
         .then(function (elements) {
@@ -814,7 +815,7 @@ describe('WebDriver', function () {
     })
 
     it('byJs', function () {
-      var ids = ['foo', 'bar', 'baz']
+      const ids = ['foo', 'bar', 'baz']
       let executor = new FakeExecutor()
         .expect(CName.EXECUTE_SCRIPT, {
           script: 'return document.getElementsByTagName("div");',
@@ -823,7 +824,7 @@ describe('WebDriver', function () {
         .andReturnSuccess(ids.map(WebElement.buildId))
         .end()
 
-      var driver = executor.createDriver()
+      const driver = executor.createDriver()
 
       return driver
         .findElements(By.js('return document.getElementsByTagName("div");'))
@@ -839,8 +840,8 @@ describe('WebDriver', function () {
     })
 
     it('byJs_filtersOutNonWebElementResponses', function () {
-      var ids = ['foo', 'bar', 'baz']
-      var json = [
+      const ids = ['foo', 'bar', 'baz']
+      const json = [
         WebElement.buildId(ids[0]),
         123,
         'a',
@@ -857,7 +858,7 @@ describe('WebDriver', function () {
         .andReturnSuccess(json)
         .end()
 
-      var driver = executor.createDriver()
+      const driver = executor.createDriver()
       return driver
         .findElements(By.js('return document.getElementsByTagName("div");'))
         .then(function (elements) {
@@ -880,7 +881,7 @@ describe('WebDriver', function () {
         .andReturnSuccess(WebElement.buildId('foo'))
         .end()
 
-      var driver = executor.createDriver()
+      const driver = executor.createDriver()
       return driver
         .findElements(By.js('return document.getElementsByTagName("div");'))
         .then(function (elements) {
@@ -895,7 +896,7 @@ describe('WebDriver', function () {
     })
 
     it('byJs_canPassScriptArguments', function () {
-      var script = 'return document.getElementsByTagName(arguments[0]);'
+      const script = 'return document.getElementsByTagName(arguments[0]);'
       let executor = new FakeExecutor()
         .expect(CName.EXECUTE_SCRIPT, {
           script: script,
@@ -907,7 +908,7 @@ describe('WebDriver', function () {
         ])
         .end()
 
-      var driver = executor.createDriver()
+      const driver = executor.createDriver()
       return driver
         .findElements(By.js(script, 'div'))
         .then(function (elements) {
@@ -933,8 +934,8 @@ describe('WebDriver', function () {
         .andReturnSuccess()
         .end()
 
-      var driver = executor.createDriver()
-      var element = new WebElement(driver, 'one')
+      const driver = executor.createDriver()
+      const element = new WebElement(driver, 'one')
       return element.sendKeys(1, 2, 'abc', 3)
     })
 
@@ -953,8 +954,8 @@ describe('WebDriver', function () {
         .andReturnSuccess()
         .end()
 
-      var driver = executor.createDriver()
-      var element = driver.findElement(By.id('foo'))
+      const driver = executor.createDriver()
+      const element = driver.findElement(By.id('foo'))
       return element.sendKeys(
         Promise.resolve('abc'),
         123,
@@ -1026,16 +1027,16 @@ describe('WebDriver', function () {
 
   describe('elementEquality', function () {
     it('isReflexive', function () {
-      var a = new WebElement(new FakeExecutor().createDriver(), 'foo')
+      const a = new WebElement(new FakeExecutor().createDriver(), 'foo')
       return WebElement.equals(a, a).then(assert.ok)
     })
 
     it('failsIfAnInputElementCouldNotBeFound', function () {
       let id = Promise.reject(new StubError())
 
-      var driver = new FakeExecutor().createDriver()
-      var a = new WebElement(driver, 'foo')
-      var b = new WebElementPromise(driver, id)
+      const driver = new FakeExecutor().createDriver()
+      const a = new WebElement(driver, 'foo')
+      const b = new WebElementPromise(driver, id)
 
       return WebElement.equals(a, b).then(fail, assertIsStubError)
     })
@@ -1300,7 +1301,7 @@ describe('WebDriver', function () {
           .andReturnSuccess([WebElement.buildId('bar')])
           .end()
 
-        var driver = executor.createDriver()
+        const driver = executor.createDriver()
         return driver.wait(
           function () {
             return driver
@@ -1323,7 +1324,7 @@ describe('WebDriver', function () {
           .anyTimes()
           .end()
 
-        var driver = executor.createDriver()
+        const driver = executor.createDriver()
         return driver
           .wait(function () {
             return driver
@@ -1444,10 +1445,10 @@ describe('WebDriver', function () {
         .andReturnError(e)
         .end()
 
-      var driver = executor.createDriver()
-      var alert = driver.switchTo().alert()
+      const driver = executor.createDriver()
+      const alert = driver.switchTo().alert()
 
-      var expectError = (v) => assert.strictEqual(v, e)
+      const expectError = (v) => assert.strictEqual(v, e)
 
       return alert
         .getText()
@@ -1470,7 +1471,7 @@ describe('WebDriver', function () {
       ])
       .end()
 
-    var driver = executor.createDriver()
+    const driver = executor.createDriver()
     return driver
       .manage()
       .logs()
@@ -1491,17 +1492,17 @@ describe('WebDriver', function () {
   })
 
   it('testCommandsFailIfInitialSessionCreationFailed', function () {
-    var session = Promise.reject(new StubError())
+    const session = Promise.reject(new StubError())
 
-    var driver = new FakeExecutor().createDriver(session)
-    var navigateResult = driver.get('some-url').then(fail, assertIsStubError)
-    var quitResult = driver.quit().then(fail, assertIsStubError)
+    const driver = new FakeExecutor().createDriver(session)
+    const navigateResult = driver.get('some-url').then(fail, assertIsStubError)
+    const quitResult = driver.quit().then(fail, assertIsStubError)
     return Promise.all([navigateResult, quitResult])
   })
 
   it('testWebElementCommandsFailIfInitialDriverCreationFailed', function () {
-    var session = Promise.reject(new StubError())
-    var driver = new FakeExecutor().createDriver(session)
+    const session = Promise.reject(new StubError())
+    const driver = new FakeExecutor().createDriver(session)
     return driver
       .findElement(By.id('foo'))
       .click()
@@ -1518,7 +1519,7 @@ describe('WebDriver', function () {
       .andReturnError(e)
       .end()
 
-    var driver = executor.createDriver()
+    const driver = executor.createDriver()
     return driver
       .findElement(By.id('foo'))
       .click()
@@ -1535,7 +1536,7 @@ describe('WebDriver', function () {
       .andReturnError(e)
       .end()
 
-    var driver = executor.createDriver()
+    const driver = executor.createDriver()
     return driver
       .findElement(By.id('foo'))
       .findElement(By.id('bar'))
@@ -1734,10 +1735,10 @@ describe('WebDriver', function () {
       })
 
       it('Capabilities', function () {
-        var prefs = new logging.Preferences()
+        const prefs = new logging.Preferences()
         prefs.setLevel(logging.Type.BROWSER, logging.Level.DEBUG)
 
-        var caps = Capabilities.chrome()
+        const caps = Capabilities.chrome()
         caps.setLoggingPrefs(prefs)
 
         return runSerializeTest(caps, {
@@ -1788,7 +1789,7 @@ describe('WebDriver', function () {
         })
 
         it('complex array', function () {
-          var expected = [
+          const expected = [
             'abc',
             123,
             true,
@@ -1796,8 +1797,8 @@ describe('WebDriver', function () {
             [123, { foo: 'bar' }],
           ]
 
-          var element = new WebElement(FAKE_DRIVER, 'fefifofum')
-          var input = ['abc', 123, true, element, [123, { foo: 'bar' }]]
+          const element = new WebElement(FAKE_DRIVER, 'fefifofum')
+          const input = ['abc', 123, true, element, [123, { foo: 'bar' }]]
           return runSerializeTest(input, expected)
         })
 
@@ -1811,12 +1812,12 @@ describe('WebDriver', function () {
 
       describe('an object', function () {
         it('literal', function () {
-          var expected = { sessionId: 'foo' }
+          const expected = { sessionId: 'foo' }
           return runSerializeTest({ sessionId: 'foo' }, expected)
         })
 
         it('with sub-objects', function () {
-          var expected = { sessionId: { value: 'foo' } }
+          const expected = { sessionId: { value: 'foo' } }
           return runSerializeTest({ sessionId: { value: 'foo' } }, expected)
         })
 
@@ -1832,15 +1833,15 @@ describe('WebDriver', function () {
         })
 
         it('nested', function () {
-          var elementJson = WebElement.buildId('fefifofum')
-          var expected = {
+          const elementJson = WebElement.buildId('fefifofum')
+          const expected = {
             script: 'return 1',
             args: ['abc', 123, true, elementJson, [123, { foo: 'bar' }]],
             sessionId: 'foo',
           }
 
-          var element = new WebElement(FAKE_DRIVER, 'fefifofum')
-          var parameters = {
+          const element = new WebElement(FAKE_DRIVER, 'fefifofum')
+          const parameters = {
             script: 'return 1',
             args: ['abc', 123, true, element, [123, { foo: 'bar' }]],
             sessionId: new Session('foo', {}),
