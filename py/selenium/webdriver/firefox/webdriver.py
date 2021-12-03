@@ -246,9 +246,8 @@ class WebDriver(RemoteWebDriver):
 
                 driver.install_addon('/path/to/firebug.xpi')
         """
-        file_ = open(path, 'rb')
-        addon = (base64.b64encode(file_.read()).decode('UTF-8'))
-        file_.close()
+        with open(path, 'rb') as file:
+            addon = (base64.b64encode(file.read()).decode('UTF-8'))
 
         payload = {"addon": addon}
         if temporary:
