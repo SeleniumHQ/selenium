@@ -5,6 +5,7 @@ import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static org.openqa.selenium.concurrent.ExecutorServices.shutdownGracefully;
 
 import com.google.common.annotations.VisibleForTesting;
+import com.google.common.collect.ImmutableMap;
 
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.SessionNotCreatedException;
@@ -221,7 +222,10 @@ public class LocalNewSessionQueue extends NewSessionQueue implements Closeable {
         res.setContent(Contents.bytes(result.right().getDownstreamEncodedResponse()));
       } else {
         res.setStatus(HTTP_INTERNAL_ERROR)
-          .setContent(Contents.asJson(Collections.singletonMap("value", result.left())));
+          .setContent(Contents.asJson(ImmutableMap.of(
+            "value", ImmutableMap.of("error", "session not created",
+                                     "message", result.left().getMessage(),
+                                     "stacktrace", result.left().getStackTrace()))));
       }
 
       return res;
