@@ -85,11 +85,12 @@ module Selenium
 
         describe '#create_pointer_up' do
           it 'executes #add_action with created interaction' do
-            allow(PointerPress).to receive(:new).with(pointer, :up, :left, {}).and_return(interaction)
+            allow(PointerPress).to receive(:new).and_return(interaction)
             allow(pointer).to receive(:add_action).and_call_original
 
             pointer.create_pointer_up(:left)
 
+            expect(PointerPress).to have_received(:new).with(pointer, :up, :left, {})
             expect(pointer).to have_received(:add_action).with(interaction)
           end
         end
