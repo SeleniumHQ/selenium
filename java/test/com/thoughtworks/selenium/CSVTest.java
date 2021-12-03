@@ -22,7 +22,6 @@ import static org.junit.Assert.assertEquals;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 
@@ -48,7 +47,7 @@ public class CSVTest {
     String[] output;
     try {
       output = (String[]) CSV.invoke(null, input);
-    } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+    } catch (Exception e) {
       throw new RuntimeException(e);
     }
     System.out.println(Arrays.asList(output).toString());

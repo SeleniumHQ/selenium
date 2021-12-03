@@ -46,8 +46,8 @@ import java.util.List;
 public class HttpCommandProcessor implements CommandProcessor {
 
   private String pathToServlet;
-  private final String browserStartCommand;
-  private final String browserURL;
+  private String browserStartCommand;
+  private String browserURL;
   private String sessionId;
   private String extensionJs;
   private String rcServerLocation;
@@ -65,7 +65,8 @@ public class HttpCommandProcessor implements CommandProcessor {
    */
   public HttpCommandProcessor(String serverHost, int serverPort, String browserStartCommand,
       String browserURL) {
-    rcServerLocation = serverHost + ":" + serverPort;
+    rcServerLocation = serverHost +
+        ":" + Integer.toString(serverPort);
     this.pathToServlet = "http://" + rcServerLocation + "/selenium-server/driver/";
     this.browserStartCommand = browserStartCommand;
     this.browserURL = browserURL;
@@ -337,7 +338,7 @@ public class HttpCommandProcessor implements CommandProcessor {
     }
     if (n instanceof Long && n.intValue() == n.longValue()) {
       // SRC-315 we should return Integers if possible
-      return n.intValue();
+      return Integer.valueOf(n.intValue());
     }
     return n;
   }
