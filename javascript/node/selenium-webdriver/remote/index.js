@@ -623,5 +623,5 @@ module.exports = {
   FileDetector,
   SeleniumServer,
   // Exported for API docs.
-  ServiceOptions
+  ServiceOptions,
 }
