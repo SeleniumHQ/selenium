@@ -21,11 +21,10 @@
 
 'use strict'
 
-const Executor = require('./index').Executor
-const HttpClient = require('./index').HttpClient
-const HttpRequest = require('./index').Request
-const Command = require('../lib/command').Command
-const CommandName = require('../lib/command').Name
+const { Command } = require('../lib/command')
+const { HttpClient } = require('./index')
+const { Request, Executor } = require('../lib/http')
+const { Name } = require('../lib/command')
 const error = require('../lib/error')
 
 /**
@@ -37,7 +36,7 @@ const error = require('../lib/error')
 function getStatus(url) {
   const client = new HttpClient(url)
   const executor = new Executor(client)
-  const command = new Command(CommandName.GET_SERVER_STATUS)
+  const command = new Command(Name.GET_SERVER_STATUS)
   return executor.execute(command)
 }
 
@@ -111,7 +110,7 @@ function waitForServer(url, timeout, opt_cancelToken) {
 function waitForUrl(url, timeout, opt_cancelToken) {
   return new Promise((onResolve, onReject) => {
     let client = new HttpClient(url)
-    let request = new HttpRequest('GET', '')
+    let request = new Request('GET', '')
     let start = Date.now()
 
     let done = false
@@ -160,7 +159,10 @@ function waitForUrl(url, timeout, opt_cancelToken) {
 }
 
 // PUBLIC API
-module.exports.getStatus = getStatus
-module.exports.CancellationError = CancellationError
-module.exports.waitForServer = waitForServer
-module.exports.waitForUrl = waitForUrl
+
+module.exports = {
+  getStatus,
+  CancellationError,
+  waitForServer,
+  waitForUrl,
+}

@@ -26,7 +26,7 @@ const http = require('http')
 const https = require('https')
 const url = require('url')
 
-const httpLib = require('../lib/http')
+const { Response } = require('../lib/http')
 
 /**
  * @typedef {{protocol: (?string|undefined),
@@ -177,8 +177,8 @@ class HttpClient {
  * @param {number=} opt_retries The current number of retries.
  */
 function sendRequest(options, onOk, onError, opt_data, opt_proxy, opt_retries) {
-  var hostname = options.hostname
-  var port = options.port
+  const hostname = options.hostname
+  const port = options.port
 
   if (opt_proxy) {
     let proxy = /** @type {RequestOptions} */ (opt_proxy)
@@ -215,7 +215,7 @@ function sendRequest(options, onOk, onError, opt_data, opt_proxy, opt_retries) {
   }
 
   let requestFn = options.protocol === 'https:' ? https.request : http.request
-  var request = requestFn(options, function onResponse(response) {
+  const request = requestFn(options, function onResponse(response) {
     if (response.statusCode == 302 || response.statusCode == 303) {
       let location
       try {
@@ -227,7 +227,7 @@ function sendRequest(options, onOk, onError, opt_data, opt_proxy, opt_retries) {
             'Failed to parse "Location" header for server redirect: ' +
               ex.message +
               '\nResponse was: \n' +
-              new httpLib.Response(response.statusCode, response.headers, '')
+              new Response(response.statusCode, response.headers, '')
           )
         )
         return
@@ -267,7 +267,7 @@ function sendRequest(options, onOk, onError, opt_data, opt_proxy, opt_retries) {
     const body = []
     response.on('data', body.push.bind(body))
     response.on('end', function () {
-      const resp = new httpLib.Response(
+      const resp = new Response(
         /** @type {number} */ (response.statusCode),
         /** @type {!Object<string>} */ (response.headers),
         Buffer.concat(body).toString('utf8').replace(/\0/g, '')
@@ -338,8 +338,7 @@ function isRetryableNetworkError(err) {
 
 // PUBLIC API
 
-module.exports.Agent = http.Agent
-module.exports.Executor = httpLib.Executor
-module.exports.HttpClient = HttpClient
-module.exports.Request = httpLib.Request
-module.exports.Response = httpLib.Response
+module.exports = {
+  HttpClient,
+  Agent: http.Agent,
+}

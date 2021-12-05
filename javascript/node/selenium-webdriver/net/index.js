@@ -56,8 +56,6 @@ function getIPAddress(loopback, family) {
   return undefined
 }
 
-// PUBLIC API
-
 /**
  * Retrieves the external IP address for this host.
  * @param {string=} family The IP family to retrieve. Defaults to "IPv4".

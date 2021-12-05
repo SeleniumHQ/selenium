@@ -37,6 +37,7 @@ const { Capabilities } = require('./capabilities')
 const path = require('path')
 const { NoSuchElementError } = require('./error')
 const cdpTargets = ['page', 'browser']
+const { Request } = require('./http')
 
 // Capability names that are defined in the W3C spec.
 const W3C_CAPABILITY_NAMES = new Set([
@@ -1282,7 +1283,7 @@ class WebDriver {
       path = '/json/version'
     }
 
-    let request = new http.Request('GET', path)
+    let request = new Request('GET', path)
     let client = new http.HttpClient('http://' + debuggerAddress)
     let response = await client.send(request)
 
@@ -1946,13 +1947,9 @@ class Window {
    *     A promise that will resolve to the window rect of the current window.
    */
   async getRect() {
-    try {
-      return await this.driver_.execute(
-        new command.Command(command.Name.GET_WINDOW_RECT)
-      )
-    } catch (ex) {
-      throw ex
-    }
+    return await this.driver_.execute(
+      new command.Command(command.Name.GET_WINDOW_RECT)
+    )
   }
 
   /**
@@ -1970,18 +1967,14 @@ class Window {
    *     rect.
    */
   async setRect({ x, y, width, height }) {
-    try {
-      return await this.driver_.execute(
-        new command.Command(command.Name.SET_WINDOW_RECT).setParameters({
-          x,
-          y,
-          width,
-          height,
-        })
-      )
-    } catch (ex) {
-      throw ex
-    }
+    return await this.driver_.execute(
+      new command.Command(command.Name.SET_WINDOW_RECT).setParameters({
+        x,
+        y,
+        width,
+        height,
+      })
+    )
   }
 
   /**
@@ -2711,13 +2704,9 @@ class WebElement {
    *     A promise that will resolve with the element's rect.
    */
   async getRect() {
-    try {
-      return await this.execute_(
-        new command.Command(command.Name.GET_ELEMENT_RECT)
-      )
-    } catch (err) {
-        throw err;
-    }
+    return await this.execute_(
+      new command.Command(command.Name.GET_ELEMENT_RECT)
+    )
   }
 
   /**

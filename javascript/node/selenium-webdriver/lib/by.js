@@ -43,7 +43,7 @@
  *     {tagName: string}|
  *     {xpath: string})}
  */
-var ByHash // eslint-disable-line
+let ByHash // eslint-disable-line
 
 /**
  * Error thrown if an invalid character is encountered while escaping a CSS

@@ -107,25 +107,25 @@ test.suite(function (env) {
     // This appears to be a quirk of the timing around mocha tests and not
     // necessarily a bug in the chromedriver.
     // TODO(jleyba): dig into this more so we can remove this hack.
-   // describe('dragAndDrop()', function () {
-      it('dragAndDrop()', async function () {
-        await driver.get(fileServer.whereIs('/data/actions/drag.html'))
+    // describe('dragAndDrop()', function () {
+    it('dragAndDrop()', async function () {
+      await driver.get(fileServer.whereIs('/data/actions/drag.html'))
 
-        let slide = await driver.findElement(By.id('slide'))
-        assert.strictEqual(await slide.getCssValue('left'), '0px')
-        assert.strictEqual(await slide.getCssValue('top'), '0px')
+      let slide = await driver.findElement(By.id('slide'))
+      assert.strictEqual(await slide.getCssValue('left'), '0px')
+      assert.strictEqual(await slide.getCssValue('top'), '0px')
 
-        let br = await driver.findElement(By.id('BR'))
-        await driver.actions().dragAndDrop(slide, br).perform()
-        assert.strictEqual(await slide.getCssValue('left'), '206px')
-        assert.strictEqual(await slide.getCssValue('top'), '206px')
+      let br = await driver.findElement(By.id('BR'))
+      await driver.actions().dragAndDrop(slide, br).perform()
+      assert.strictEqual(await slide.getCssValue('left'), '206px')
+      assert.strictEqual(await slide.getCssValue('top'), '206px')
 
-        let tr = await driver.findElement(By.id('TR'))
-        await driver.actions().dragAndDrop(slide, tr).perform()
-        assert.strictEqual(await slide.getCssValue('left'), '206px')
-        assert.strictEqual(await slide.getCssValue('top'), '1px')
-      })
-  //  })
+      let tr = await driver.findElement(By.id('TR'))
+      await driver.actions().dragAndDrop(slide, tr).perform()
+      assert.strictEqual(await slide.getCssValue('left'), '206px')
+      assert.strictEqual(await slide.getCssValue('top'), '1px')
+    })
+    //  })
 
     it('move()', async function () {
       await driver.get(fileServer.whereIs('/data/actions/drag.html'))

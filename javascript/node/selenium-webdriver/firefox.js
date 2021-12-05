@@ -123,6 +123,7 @@ const http = require('./http')
 const io = require('./io')
 const remote = require('./remote')
 const webdriver = require('./lib/webdriver')
+const { Executor } = require('./lib/http')
 const zip = require('./io/zip')
 const { Browser, Capabilities } = require('./lib/capabilities')
 const { Zip } = require('./io/zip')
@@ -506,14 +507,14 @@ const ExtensionCommand = {
  */
 function createExecutor(serverUrl) {
   let client = serverUrl.then((url) => new http.HttpClient(url))
-  let executor = new http.Executor(client)
+  let executor = new Executor(client)
   configureExecutor(executor)
   return executor
 }
 
 /**
  * Configures the given executor with Firefox-specific commands.
- * @param {!http.Executor} executor the executor to configure.
+ * @param {!Executor} executor the executor to configure.
  */
 function configureExecutor(executor) {
   executor.defineCommand(
@@ -578,7 +579,7 @@ class Driver extends webdriver.WebDriver {
    * @param {(Options|Capabilities|Object)=} opt_config The
    *    configuration options for this driver, specified as either an
    *    {@link Options} or {@link Capabilities}, or as a raw hash object.
-   * @param {(http.Executor|remote.DriverService)=} opt_executor Either a
+   * @param {(Executor|remote.DriverService)=} opt_executor Either a
    *   pre-configured command executor to use for communicating with an
    *   externally managed remote end (which is assumed to already be running),
    *   or the `DriverService` to use to start the geckodriver in a child
@@ -601,7 +602,7 @@ class Driver extends webdriver.WebDriver {
     let executor
     let onQuit
 
-    if (opt_executor instanceof http.Executor) {
+    if (opt_executor instanceof Executor) {
       executor = opt_executor
       configureExecutor(executor)
     } else if (opt_executor instanceof remote.DriverService) {

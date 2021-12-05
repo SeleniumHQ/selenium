@@ -257,8 +257,9 @@ describe('WebDriver', function () {
         .andReturnError(new StubError())
         .end()
 
-      const driver = WebDriver.createSession(executor,
-        { browserName: 'firefox' })
+      const driver = WebDriver.createSession(executor, {
+        browserName: 'firefox',
+      })
       return driver.getSession().then(fail, assertIsStubError)
     })
 

@@ -17,16 +17,16 @@
 
 'use strict'
 
-const assert = require('assert'),
-  sinon = require('sinon')
+const assert = require('assert')
+const sinon = require('sinon')
 
-const Capabilities = require('../../lib/capabilities').Capabilities,
-  Command = require('../../lib/command').Command,
-  CommandName = require('../../lib/command').Name,
-  error = require('../../lib/error'),
-  http = require('../../lib/http'),
-  Session = require('../../lib/session').Session,
-  WebElement = require('../../lib/webdriver').WebElement
+const Capabilities = require('../../lib/capabilities').Capabilities
+const Command = require('../../lib/command').Command
+const CommandName = require('../../lib/command').Name
+const error = require('../../lib/error')
+const http = require('../../lib/http')
+const Session = require('../../lib/session').Session
+const WebElement = require('../../lib/webdriver').WebElement
 
 describe('http', function () {
   describe('buildPath', function () {
@@ -433,10 +433,8 @@ describe('http', function () {
         function test(value) {
           it(`value=${value}`, function () {
             const command = new Command(
-              CommandName.GET_CURRENT_URL).setParameter(
-              'sessionId',
-              's123'
-            )
+              CommandName.GET_CURRENT_URL
+            ).setParameter('sessionId', 's123')
 
             send.returns(
               Promise.resolve(

@@ -236,7 +236,8 @@ function init(force = false) {
 }
 
 const TARGET_MAP = /** !WeakMap<!Environment, !TargetBrowser> */ new WeakMap()
-const URL_MAP = /** !WeakMap<!Environment, ?(string|remote.SeleniumServer)> */ new WeakMap()
+const URL_MAP =
+  /** !WeakMap<!Environment, ?(string|remote.SeleniumServer)> */ new WeakMap()
 
 /**
  * Defines the environment a {@linkplain suite test suite} is running against.
@@ -249,9 +250,9 @@ class Environment {
    *     Selenium server to test against.
    */
   constructor(browser, url = undefined) {
-    browser = /** @type {!TargetBrowser} */ (Object.seal(
-      Object.assign({}, browser)
-    ))
+    browser = /** @type {!TargetBrowser} */ (
+      Object.seal(Object.assign({}, browser))
+    )
 
     TARGET_MAP.set(this, browser)
     URL_MAP.set(this, url || null)

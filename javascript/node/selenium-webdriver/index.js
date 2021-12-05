@@ -78,7 +78,7 @@ function startSeleniumServer(jar) {
 function ensureFileDetectorsAreEnabled(ctor) {
   return class extends ctor {
     /** @param {input.FileDetector} detector */
-    setFileDetector (detector) {
+    setFileDetector(detector) {
       webdriver.WebDriver.prototype.setFileDetector.call(this, detector)
     }
   }
