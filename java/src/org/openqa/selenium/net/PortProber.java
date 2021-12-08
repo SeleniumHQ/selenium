@@ -20,6 +20,7 @@ package org.openqa.selenium.net;
 import org.openqa.selenium.Platform;
 
 import java.io.IOException;
+import java.io.UncheckedIOException;
 import java.net.ConnectException;
 import java.net.InetSocketAddress;
 import java.net.ServerSocket;
@@ -113,7 +114,7 @@ public class PortProber {
       } catch (ConnectException | SocketTimeoutException e) {
         // Ignore this
       } catch (IOException e) {
-        throw new RuntimeException(e);
+        throw new UncheckedIOException(e);
       }
     }
   }
