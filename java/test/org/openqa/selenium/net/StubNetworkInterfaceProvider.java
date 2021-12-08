@@ -16,6 +16,7 @@
 // under the License.
 package org.openqa.selenium.net;
 
+import java.io.UncheckedIOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.Arrays;
@@ -47,7 +48,7 @@ public class StubNetworkInterfaceProvider {
       InetAddress tmp = InetAddress.getByName(addressString);
       return InetAddress.getByAddress(host, tmp.getAddress());
     } catch (UnknownHostException e) {
-      throw new RuntimeException(e);
+      throw new UncheckedIOException(e);
     }
   }
 
@@ -58,7 +59,7 @@ public class StubNetworkInterfaceProvider {
       InetAddress tmp = InetAddress.getByName(addressString);
       return InetAddress.getByAddress(addressString, tmp.getAddress());
     } catch (UnknownHostException e) {
-      throw new RuntimeException(e);
+      throw new UncheckedIOException(e);
     }
   }
 
