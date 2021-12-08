@@ -19,6 +19,7 @@ package org.openqa.selenium.server.htmlrunner;
 
 import java.io.IOException;
 import java.io.StringReader;
+import java.io.UncheckedIOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -48,7 +49,7 @@ public class HTMLSuiteResult {
       parser.parse(s, p, true);
     } catch (IOException e) {
       // DGF aw, this won't really happen! (will it?)
-      throw new RuntimeException(e);
+      throw new UncheckedIOException(e);
     }
     hrefs = p.hrefList;
     StringBuilder sb = new StringBuilder();

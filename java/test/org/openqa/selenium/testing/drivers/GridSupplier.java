@@ -17,6 +17,8 @@
 
 package org.openqa.selenium.testing.drivers;
 
+import static org.openqa.selenium.remote.http.Contents.string;
+
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.firefox.FirefoxOptions;
@@ -31,12 +33,11 @@ import org.openqa.selenium.support.ui.FluentWait;
 import org.openqa.selenium.support.ui.Wait;
 
 import java.io.IOException;
+import java.io.UncheckedIOException;
 import java.net.URL;
 import java.time.Duration;
 import java.util.Map;
 import java.util.function.Supplier;
-
-import static org.openqa.selenium.remote.http.Contents.string;
 
 public class GridSupplier implements Supplier<WebDriver> {
 
@@ -80,7 +81,7 @@ public class GridSupplier implements Supplier<WebDriver> {
           "-role", "node",
           "-hub", String.valueOf(hubUrl));
     } catch (IOException e) {
-      throw new RuntimeException(e);
+      throw new UncheckedIOException(e);
     }
 
     // Keep polling the status page of the hub until it claims to be ready
