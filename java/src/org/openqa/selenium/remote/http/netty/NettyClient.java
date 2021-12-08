@@ -89,7 +89,8 @@ public class NettyClient implements HttpClient {
         .setConnectTimeout(toClampedInt(config.connectionTimeout().toMillis()))
         .setReadTimeout(toClampedInt(config.readTimeout().toMillis()))
         .setUseProxyProperties(true)
-        .setUseProxySelector(true);
+        .setUseProxySelector(true)
+        .setFollowRedirect(true);
 
     if (config.credentials() != null) {
       Credentials credentials = config.credentials();
@@ -97,7 +98,8 @@ public class NettyClient implements HttpClient {
         throw new IllegalArgumentException("Credentials must be a username and password");
       }
       UsernameAndPassword uap = (UsernameAndPassword) credentials;
-      builder.setRealm(new Realm.Builder(uap.username(), uap.password()).setUsePreemptiveAuth(true));
+      builder.setRealm(
+        new Realm.Builder(uap.username(), uap.password()).setUsePreemptiveAuth(true));
     }
 
     return Dsl.asyncHttpClient(builder);
