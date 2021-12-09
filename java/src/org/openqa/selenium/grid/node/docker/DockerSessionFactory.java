@@ -27,6 +27,7 @@ import static org.openqa.selenium.remote.tracing.Tags.EXCEPTION;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.ImmutableCapabilities;
+import org.openqa.selenium.PersistentCapabilities;
 import org.openqa.selenium.RetrySessionRequestException;
 import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.TimeoutException;
@@ -211,7 +212,11 @@ public class DockerSessionFactory implements SessionFactory {
 
       SessionId id = new SessionId(response.getSessionId());
       Capabilities capabilities = new ImmutableCapabilities((Map<?, ?>) response.getValue());
-      Capabilities mergedCapabilities = capabilities.merge(sessionRequest.getDesiredCapabilities());
+      Capabilities mergedCapabilities = sessionRequest.getDesiredCapabilities().merge(capabilities);
+      mergedCapabilities = addForwardCdpEndpoint(mergedCapabilities,
+                                                 containerIp,
+                                                 port,
+                                                 id.toString());
 
       Container videoContainer = null;
       Optional<DockerAssetsPath> path = ofNullable(this.assetsPath);
@@ -235,10 +240,10 @@ public class DockerSessionFactory implements SessionFactory {
 
       span.addEvent("Docker driver service created session", attributeMap);
       LOG.fine(String.format(
-          "Created session: %s - %s (container id: %s)",
-          id,
-          capabilities,
-          container.getId()));
+        "Created session: %s - %s (container id: %s)",
+        id,
+        mergedCapabilities,
+        container.getId()));
       return Either.right(new DockerSession(
         container,
         videoContainer,
@@ -252,6 +257,22 @@ public class DockerSessionFactory implements SessionFactory {
         result.getDialect(),
         Instant.now()));
     }
+  }
+
+  private Capabilities addForwardCdpEndpoint(Capabilities sessionCapabilities, String containerIp,
+                                             int port, String sessionId) {
+    // We add this endpoint to go around the situation where a user wants to do CDP over
+    // Dynamic Grid. In a conventional Grid setup, this is not needed because the browser will
+    // be running on the same host where the Node is running. However, in Dynamic Grid, the Docker
+    // Node is running on a different host/container. Therefore, we need to forward the websocket
+    // connection to the container where the actual browser is running.
+    String forwardCdpPath = String.format(
+      "ws://%s:%s/session/%s/se/fwd",
+      containerIp,
+      port,
+      sessionId);
+    return new PersistentCapabilities(sessionCapabilities)
+      .setCapability("se:forwardCdp", forwardCdpPath);
   }
 
   private Container createBrowserContainer(int port, Capabilities sessionCapabilities) {
@@ -378,8 +399,7 @@ public class DockerSessionFactory implements SessionFactory {
         Paths.get(path, "sessionCapabilities.json"),
         capsToJson.getBytes(Charset.defaultCharset()));
     } catch (IOException e) {
-      LOG.log(Level.WARNING,
-              "Failed to save session capabilities", e);
+      LOG.log(Level.WARNING, "Failed to save session capabilities", e);
     }
   }
 
