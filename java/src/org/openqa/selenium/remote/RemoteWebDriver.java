@@ -17,8 +17,16 @@
 
 package org.openqa.selenium.remote;
 
+import static java.util.Collections.singleton;
+import static java.util.concurrent.TimeUnit.SECONDS;
+import static org.openqa.selenium.remote.CapabilityType.LOGGING_PREFS;
+import static org.openqa.selenium.remote.CapabilityType.PLATFORM;
+import static org.openqa.selenium.remote.CapabilityType.PLATFORM_NAME;
+import static org.openqa.selenium.remote.CapabilityType.SUPPORTS_JAVASCRIPT;
+
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
+
 import org.openqa.selenium.Alert;
 import org.openqa.selenium.Beta;
 import org.openqa.selenium.By;
@@ -88,13 +96,6 @@ import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static java.util.Collections.singleton;
-import static java.util.concurrent.TimeUnit.SECONDS;
-import static org.openqa.selenium.remote.CapabilityType.LOGGING_PREFS;
-import static org.openqa.selenium.remote.CapabilityType.PLATFORM;
-import static org.openqa.selenium.remote.CapabilityType.PLATFORM_NAME;
-import static org.openqa.selenium.remote.CapabilityType.SUPPORTS_JAVASCRIPT;
-
 @Augmentable
 public class RemoteWebDriver implements WebDriver,
   JavascriptExecutor,
@@ -107,9 +108,8 @@ public class RemoteWebDriver implements WebDriver,
 
   // TODO: This static logger should be unified with the per-instance localLogs
   private static final Logger logger = Logger.getLogger(RemoteWebDriver.class.getName());
-  private Level level = Level.FINE;
   private final ElementLocation elementLocation = new ElementLocation();
-
+  private Level level = Level.FINE;
   private ErrorHandler errorHandler = new ErrorHandler();
   private CommandExecutor executor;
   private Capabilities capabilities;
@@ -129,14 +129,6 @@ public class RemoteWebDriver implements WebDriver,
     this.capabilities = init(new ImmutableCapabilities());
   }
 
-  private static URL getDefaultServerURL() {
-    try {
-      return new URL(System.getProperty("webdriver.remote.server", "http://localhost:4444/"));
-    } catch (MalformedURLException e) {
-      throw new WebDriverException(e);
-    }
-  }
-
   public RemoteWebDriver(Capabilities capabilities) {
     this(getDefaultServerURL(),
          Require.nonNull("Capabilities", capabilities));
@@ -145,15 +137,6 @@ public class RemoteWebDriver implements WebDriver,
   public RemoteWebDriver(URL remoteAddress, Capabilities capabilities) {
     this(createTracedExecutorWithTracedHttpClient(Require.nonNull("Server URL", remoteAddress)),
          Require.nonNull("Capabilities", capabilities));
-  }
-
-  private static CommandExecutor createTracedExecutorWithTracedHttpClient(URL remoteAddress) {
-    Tracer tracer = OpenTelemetryTracer.getInstance();
-    CommandExecutor executor = new HttpCommandExecutor(
-      Collections.emptyMap(),
-      ClientConfig.defaultConfig().baseUrl(remoteAddress),
-      new TracedHttpClient.Factory(tracer, HttpClient.Factory.createDefault()));
-    return new TracedCommandExecutor(executor, tracer);
   }
 
   public RemoteWebDriver(CommandExecutor executor, Capabilities capabilities) {
@@ -175,6 +158,23 @@ public class RemoteWebDriver implements WebDriver,
 
       throw e;
     }
+  }
+
+  private static URL getDefaultServerURL() {
+    try {
+      return new URL(System.getProperty("webdriver.remote.server", "http://localhost:4444/"));
+    } catch (MalformedURLException e) {
+      throw new WebDriverException(e);
+    }
+  }
+
+  private static CommandExecutor createTracedExecutorWithTracedHttpClient(URL remoteAddress) {
+    Tracer tracer = OpenTelemetryTracer.getInstance();
+    CommandExecutor executor = new HttpCommandExecutor(
+      Collections.emptyMap(),
+      ClientConfig.defaultConfig().baseUrl(remoteAddress),
+      new TracedHttpClient.Factory(tracer, HttpClient.Factory.createDefault()));
+    return new TracedCommandExecutor(executor, tracer);
   }
 
   @Beta
@@ -216,22 +216,6 @@ public class RemoteWebDriver implements WebDriver,
     remoteLogs = new RemoteLogs(executeMethod, localLogs);
 
     return capabilities;
-  }
-
-  /**
-   * Set the file detector to be used when sending keyboard input. By default, this is set to a file
-   * detector that does nothing.
-   *
-   * @param detector The detector to use. Must not be null.
-   * @see FileDetector
-   * @see LocalFileDetector
-   * @see UselessFileDetector
-   */
-  public void setFileDetector(FileDetector detector) {
-    if (detector == null) {
-      throw new WebDriverException("You may not set a file detector that is null");
-    }
-    fileDetector = detector;
   }
 
   public SessionId getSessionId() {
@@ -422,12 +406,12 @@ public class RemoteWebDriver implements WebDriver,
     }
   }
 
-  // Misc
-
   @Override
   public String getPageSource() {
     return (String) execute(DriverCommand.GET_PAGE_SOURCE).getValue();
   }
+
+  // Misc
 
   @Override
   public void close() {
@@ -528,12 +512,12 @@ public class RemoteWebDriver implements WebDriver,
     return new RemoteWebDriverOptions();
   }
 
-  protected void setElementConverter(JsonToWebElementConverter converter) {
-    this.converter = Require.nonNull("Element converter", converter);
-  }
-
   protected JsonToWebElementConverter getElementConverter() {
     return converter;
+  }
+
+  protected void setElementConverter(JsonToWebElementConverter converter) {
+    this.converter = Require.nonNull("Element converter", converter);
   }
 
   /**
@@ -674,7 +658,14 @@ public class RemoteWebDriver implements WebDriver,
         text = text.substring(0, 100) + "...";
       }
     }
-    switch(when) {
+    // No need to log a screenshot response.
+    if ((commandName.equals(DriverCommand.SCREENSHOT)
+         || commandName.equals(DriverCommand.ELEMENT_SCREENSHOT)) && toLog instanceof Response) {
+      Response responseToLog = (Response) toLog;
+      responseToLog.setValue("*Screenshot response suppressed*");
+      text = String.valueOf(responseToLog);
+    }
+    switch (when) {
       case BEFORE:
         logger.log(level, "Executing: " + commandName + " " + text);
         break;
@@ -692,6 +683,52 @@ public class RemoteWebDriver implements WebDriver,
 
   public FileDetector getFileDetector() {
     return fileDetector;
+  }
+
+  /**
+   * Set the file detector to be used when sending keyboard input. By default, this is set to a file
+   * detector that does nothing.
+   *
+   * @param detector The detector to use. Must not be null.
+   * @see FileDetector
+   * @see LocalFileDetector
+   * @see UselessFileDetector
+   */
+  public void setFileDetector(FileDetector detector) {
+    if (detector == null) {
+      throw new WebDriverException("You may not set a file detector that is null");
+    }
+    fileDetector = detector;
+  }
+
+  @Override
+  public String toString() {
+    Capabilities caps = getCapabilities();
+    if (caps == null) {
+      return super.toString();
+    }
+
+    // w3c name first
+    Object platform = caps.getCapability(PLATFORM_NAME);
+    if (!(platform instanceof String)) {
+      platform = caps.getCapability(PLATFORM);
+    }
+    if (platform == null) {
+      platform = "unknown";
+    }
+
+    return String.format(
+      "%s: %s on %s (%s)",
+      getClass().getSimpleName(),
+      caps.getBrowserName(),
+      platform,
+      getSessionId());
+  }
+
+  public enum When {
+    BEFORE,
+    AFTER,
+    EXCEPTION
   }
 
   protected class RemoteWebDriverOptions implements Options {
@@ -887,15 +924,7 @@ public class RemoteWebDriver implements WebDriver,
     @Beta
     protected class RemoteWindow implements Window {
 
-      @Override
-      public void setSize(Dimension targetSize) {
-        execute(DriverCommand.SET_CURRENT_WINDOW_SIZE(targetSize));
-      }
-
-      @Override
-      public void setPosition(Point targetPosition) {
-        execute(DriverCommand.SET_CURRENT_WINDOW_POSITION(targetPosition));
-      }
+      Map<String, Object> rawPoint;
 
       @Override
       @SuppressWarnings({"unchecked"})
@@ -910,7 +939,11 @@ public class RemoteWebDriver implements WebDriver,
         return new Dimension(width, height);
       }
 
-      Map<String, Object> rawPoint;
+      @Override
+      public void setSize(Dimension targetSize) {
+        execute(DriverCommand.SET_CURRENT_WINDOW_SIZE(targetSize));
+      }
+
       @Override
       @SuppressWarnings("unchecked")
       public Point getPosition() {
@@ -921,6 +954,11 @@ public class RemoteWebDriver implements WebDriver,
         int y = ((Number) rawPoint.get("y")).intValue();
 
         return new Point(x, y);
+      }
+
+      @Override
+      public void setPosition(Point targetPosition) {
+        execute(DriverCommand.SET_CURRENT_WINDOW_POSITION(targetPosition));
       }
 
       @Override
@@ -1139,35 +1177,5 @@ public class RemoteWebDriver implements WebDriver,
       execute(DriverCommand.SET_USER_VERIFIED,
           ImmutableMap.of("authenticatorId", id, "isUserVerified", verified));
     }
-  }
-
-  public enum When {
-    BEFORE,
-    AFTER,
-    EXCEPTION
-  }
-
-  @Override
-  public String toString() {
-    Capabilities caps = getCapabilities();
-    if (caps == null) {
-      return super.toString();
-    }
-
-    // w3c name first
-    Object platform = caps.getCapability(PLATFORM_NAME);
-    if (!(platform instanceof String)) {
-      platform = caps.getCapability(PLATFORM);
-    }
-    if (platform == null) {
-      platform = "unknown";
-    }
-
-    return String.format(
-        "%s: %s on %s (%s)",
-        getClass().getSimpleName(),
-        caps.getBrowserName(),
-        platform,
-        getSessionId());
   }
 }
