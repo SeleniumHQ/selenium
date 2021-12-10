@@ -88,9 +88,11 @@ public class HostIdentifier {
     if (Platform.getCurrent().is(Platform.MAC)) {
       try {
         NetworkInterface en0 = NetworkInterface.getByName("en0");
-        Enumeration<InetAddress> addresses = en0.getInetAddresses();
-        if (addresses.hasMoreElements()) {
-          address = addresses.nextElement().getHostAddress();
+        if (en0 != null) {
+          Enumeration<InetAddress> addresses = en0.getInetAddresses();
+          if (addresses.hasMoreElements()) {
+            address = addresses.nextElement().getHostAddress();
+          }
         }
       } catch (Throwable e) {
         // Fall through and go the slow way.
