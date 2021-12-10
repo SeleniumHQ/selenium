@@ -210,8 +210,7 @@ module Selenium
           x_offset = (destination_rect.x - origin_rect.x).ceil
           y_offset = (destination_rect.y - origin_rect.y).ceil
 
-          driver.action.move_to(origin, x_offset, y_offset).click.perform
-          sleep 0.2
+          driver.action.move_to(origin, x_offset, y_offset).pause(duration: 1).click.perform
           expect(destination.attribute(:value)).to eq('Clicked')
         end
       end
