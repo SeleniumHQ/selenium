@@ -188,27 +188,47 @@ module Selenium
         it 'creates pause with default duration' do
           allow(mouse).to receive :create_pause
 
-          builder.pause(mouse)
+          builder.pause(device: mouse)
 
-          expect(mouse).to have_received(:create_pause).with(nil)
+          expect(mouse).to have_received(:create_pause).with(0)
         end
 
         it 'creates pause with provided duration' do
           allow(mouse).to receive :create_pause
 
-          builder.pause(mouse, 5)
+          builder.pause(device: mouse, duration: 5)
 
           expect(mouse).to have_received(:create_pause).with(5)
+        end
+
+        it 'has deprecated ordered parameters' do
+          expect {
+            builder.pause(mouse, 3)
+          }.to have_deprecated(:pause)
         end
       end
 
       describe '#pauses' do
+        it 'adds 2 pauses to a pointer device by default' do
+          allow(mouse).to receive :create_pause
+
+          builder.pauses
+
+          expect(mouse).to have_received(:create_pause).with(0).exactly(2).times
+        end
+
         it 'adds multiple pause commands' do
           allow(mouse).to receive :create_pause
 
-          builder.pauses(mouse, 3)
+          builder.pauses(device: mouse, number: 3)
 
-          expect(mouse).to have_received(:create_pause).with(nil).exactly(3).times
+          expect(mouse).to have_received(:create_pause).with(0).exactly(3).times
+        end
+
+        it 'has deprecated ordered parameters' do
+          expect {
+            builder.pauses(mouse, 3)
+          }.to have_deprecated(:pauses)
         end
       end
 
