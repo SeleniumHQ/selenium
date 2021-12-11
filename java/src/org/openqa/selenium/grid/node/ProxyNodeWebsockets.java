@@ -17,6 +17,9 @@
 
 package org.openqa.selenium.grid.node;
 
+import static org.openqa.selenium.internal.Debug.getDebugLogLevel;
+import static org.openqa.selenium.remote.http.HttpMethod.GET;
+
 import com.google.common.collect.ImmutableSet;
 
 import org.openqa.selenium.Capabilities;
@@ -41,14 +44,13 @@ import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-import static org.openqa.selenium.internal.Debug.getDebugLogLevel;
-import static org.openqa.selenium.remote.http.HttpMethod.GET;
+import java.util.stream.Stream;
 
 public class ProxyNodeWebsockets implements BiFunction<String, Consumer<Message>,
   Optional<Consumer<Message>>> {
 
   private static final UrlTemplate CDP_TEMPLATE = new UrlTemplate("/session/{sessionId}/se/cdp");
+  private static final UrlTemplate FWD_TEMPLATE = new UrlTemplate("/session/{sessionId}/se/fwd");
   private static final UrlTemplate VNC_TEMPLATE = new UrlTemplate("/session/{sessionId}/se/vnc");
   private static final Logger LOG = Logger.getLogger(ProxyNodeWebsockets.class.getName());
   private static final ImmutableSet<String> CDP_ENDPOINT_CAPS =
@@ -66,16 +68,20 @@ public class ProxyNodeWebsockets implements BiFunction<String, Consumer<Message>
 
   @Override
   public Optional<Consumer<Message>> apply(String uri, Consumer<Message> downstream) {
+    UrlTemplate.Match fwdMatch = FWD_TEMPLATE.match(uri);
     UrlTemplate.Match cdpMatch = CDP_TEMPLATE.match(uri);
     UrlTemplate.Match vncMatch = VNC_TEMPLATE.match(uri);
 
-    if (cdpMatch == null && vncMatch == null) {
+    if (cdpMatch == null && vncMatch == null && fwdMatch == null) {
       return Optional.empty();
     }
 
-    String sessionId = cdpMatch != null ?
-                       cdpMatch.getParameters().get("sessionId") :
-                       vncMatch.getParameters().get("sessionId");
+    String sessionId = Stream.of(fwdMatch, cdpMatch, vncMatch)
+      .filter(Objects::nonNull)
+      .findFirst()
+      .get()
+      .getParameters()
+      .get("sessionId");
 
     LOG.fine("Matching websockets for session id: " + sessionId);
     SessionId id = new SessionId(sessionId);
@@ -89,10 +95,20 @@ public class ProxyNodeWebsockets implements BiFunction<String, Consumer<Message>
     Capabilities caps = session.getCapabilities();
     LOG.fine("Scanning for endpoint: " + caps);
 
-    if (cdpMatch != null) {
+    if (vncMatch != null) {
+      return findVncEndpoint(downstream, caps);
+    }
+
+    // This match happens when a user wants to do CDP over Dynamic Grid
+    if (fwdMatch != null) {
+      LOG.info("Matched endpoint where CDP connection is being forwarded");
       return findCdpEndpoint(downstream, caps);
     }
-    return findVncEndpoint(downstream, caps);
+    if (caps.getCapabilityNames().contains("se:forwardCdp")) {
+      LOG.info("Found endpoint where CDP connection needs to be forwarded");
+      return findForwardCdpEndpoint(downstream, caps);
+    }
+    return findCdpEndpoint(downstream, caps);
   }
 
   private Optional<Consumer<Message>> findCdpEndpoint(Consumer<Message> downstream,
@@ -107,6 +123,18 @@ public class ProxyNodeWebsockets implements BiFunction<String, Consumer<Message>
       }
     }
     return Optional.empty();
+  }
+
+  private Optional<Consumer<Message>> findForwardCdpEndpoint(Consumer<Message> downstream,
+                                                             Capabilities caps) {
+    // When using Dynamic Grid, we need to connect to a container before using the debuggerAddress
+    try {
+      URI uri = new URI(String.valueOf(caps.getCapability("se:forwardCdp")));
+      return Optional.of(uri).map(cdp -> createWsEndPoint(cdp, downstream));
+    } catch (URISyntaxException e) {
+      LOG.warning("Unable to create URI from: " + caps.getCapability("se:forwardCdp"));
+      return Optional.empty();
+    }
   }
 
   private Optional<Consumer<Message>> findVncEndpoint(Consumer<Message> downstream,
