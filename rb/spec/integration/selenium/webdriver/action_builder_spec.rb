@@ -201,7 +201,7 @@ module Selenium
           expect(element.attribute(:value)).to eq('Clicked')
         end
 
-        it 'moves to element with offset' do
+        it 'moves to element with offset', exclude: {browser: :firefox, platform: :linux} do
           driver.navigate.to url_for('javascriptPage.html')
           origin = driver.find_element(id: 'keyUpArea')
           destination = driver.find_element(id: 'clickField')
@@ -210,7 +210,7 @@ module Selenium
           x_offset = (destination_rect.x - origin_rect.x).ceil
           y_offset = (destination_rect.y - origin_rect.y).ceil
 
-          driver.action.move_to(origin, x_offset, y_offset).pause(duration: 1).click.perform
+          driver.action.move_to(origin, x_offset, y_offset).click.perform
           expect(destination.attribute(:value)).to eq('Clicked')
         end
       end
