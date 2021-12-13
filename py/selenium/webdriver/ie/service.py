@@ -20,7 +20,7 @@ from typing import List
 from selenium.webdriver.common import service
 
 
-DEFAULT_EXECUTEABLE_PATH = 'IEDriverServer.exe'
+DEFAULT_EXECUTABLE_PATH = 'IEDriverServer.exe'
 
 
 class Service(service.Service):
@@ -28,7 +28,7 @@ class Service(service.Service):
     Object that manages the starting and stopping of the IEDriver
     """
 
-    def __init__(self, executable_path: str = DEFAULT_EXECUTEABLE_PATH,
+    def __init__(self, executable_path: str = DEFAULT_EXECUTABLE_PATH,
                  port: int = 0, host: str = None,
                  log_level: str = None, log_file: str = None):
         """
