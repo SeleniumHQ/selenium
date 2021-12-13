@@ -21,7 +21,7 @@ from .command import Command
 from ..common.by import By
 
 
-class ShadowRoot():
+class ShadowRoot:
 
     # TODO: We should look and see  how we can create a search context like Java/.NET
 
@@ -33,20 +33,25 @@ class ShadowRoot():
         return self._id == other_shadowroot._id
 
     def __hash__(self):
-        return int(md5_hash(self._id.encode('utf-8')).hexdigest(), 16)
+        return int(md5_hash(self._id.encode("utf-8")).hexdigest(), 16)
 
     def __ne__(self, other_shadowroot):
         return not self.__eq__(other_shadowroot)
 
     def __repr__(self):
         return '<{0.__module__}.{0.__name__} (session="{1}", element="{2}")>'.format(
-            type(self), self.session.session_id, self._id)
+            type(self), self.session.session_id, self._id
+        )
 
-    def find_element(self, by=By.ID, value=None):
-        return self._execute(Command.FIND_ELEMENT_FROM_SHADOW_ROOT, {"using": by, "value": value})['value']
+    def find_element(self, by: By = By.ID, value: str = None):
+        return self._execute(
+            Command.FIND_ELEMENT_FROM_SHADOW_ROOT, {"using": by, "value": value}
+        )["value"]
 
-    def find_elements(self, by=By.ID, value=None):
-        return self._execute(Command.FIND_ELEMENTS_FROM_SHADOW_ROOT, {"using": by, "value": value})['value']
+    def find_elements(self, by: By = By.ID, value: str = None):
+        return self._execute(
+            Command.FIND_ELEMENTS_FROM_SHADOW_ROOT, {"using": by, "value": value}
+        )["value"]
 
     # Private Methods
     def _execute(self, command, params=None):
@@ -61,5 +66,5 @@ class ShadowRoot():
         """
         if not params:
             params = {}
-        params['shadowId'] = self._id
+        params["shadowId"] = self._id
         return self.session.execute(command, params)
