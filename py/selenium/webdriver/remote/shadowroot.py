@@ -18,6 +18,7 @@
 from hashlib import md5 as md5_hash
 
 from .command import Command
+from ..common.by import By
 
 
 class ShadowRoot():
@@ -41,11 +42,11 @@ class ShadowRoot():
         return '<{0.__module__}.{0.__name__} (session="{1}", element="{2}")>'.format(
             type(self), self.session.session_id, self._id)
 
-    def find_element(self, using, value):
-        return self._execute(Command.FIND_ELEMENT_FROM_SHADOW_ROOT, {"using": using, "value": value})['value']
+    def find_element(self, by=By.ID, value=None):
+        return self._execute(Command.FIND_ELEMENT_FROM_SHADOW_ROOT, {"using": by, "value": value})['value']
 
-    def find_elements(self, using, value):
-        return self._execute(Command.FIND_ELEMENTS_FROM_SHADOW_ROOT, {"using": using, "value": value})['value']
+    def find_elements(self, by=By.ID, value=None):
+        return self._execute(Command.FIND_ELEMENTS_FROM_SHADOW_ROOT, {"using": by, "value": value})['value']
 
     # Private Methods
     def _execute(self, command, params=None):
