@@ -662,8 +662,11 @@ public class RemoteWebDriver implements WebDriver,
     if ((commandName.equals(DriverCommand.SCREENSHOT)
          || commandName.equals(DriverCommand.ELEMENT_SCREENSHOT)) && toLog instanceof Response) {
       Response responseToLog = (Response) toLog;
-      responseToLog.setValue("*Screenshot response suppressed*");
-      text = String.valueOf(responseToLog);
+      Response copyToLog = new Response(new SessionId((responseToLog).getSessionId()));
+      copyToLog.setValue("*Screenshot response suppressed*");
+      copyToLog.setStatus(responseToLog.getStatus());
+      copyToLog.setState(responseToLog.getState());
+      text = String.valueOf(copyToLog);
     }
     switch (when) {
       case BEFORE:
