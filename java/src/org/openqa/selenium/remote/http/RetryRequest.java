@@ -17,19 +17,20 @@
 
 package org.openqa.selenium.remote.http;
 
+import static com.google.common.net.HttpHeaders.CONTENT_LENGTH;
+import static java.net.HttpURLConnection.HTTP_INTERNAL_ERROR;
+import static java.net.HttpURLConnection.HTTP_UNAVAILABLE;
+import static org.openqa.selenium.internal.Debug.getDebugLogLevel;
+
 import net.jodah.failsafe.Failsafe;
 import net.jodah.failsafe.RetryPolicy;
+
 import org.openqa.selenium.TimeoutException;
 
 import java.net.ConnectException;
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
-import java.util.logging.Level;
 import java.util.logging.Logger;
-
-import static com.google.common.net.HttpHeaders.CONTENT_LENGTH;
-import static java.net.HttpURLConnection.HTTP_INTERNAL_ERROR;
-import static java.net.HttpURLConnection.HTTP_UNAVAILABLE;
 
 public class RetryRequest implements Filter {
 
@@ -43,7 +44,7 @@ public class RetryRequest implements Filter {
       .withMaxRetries(3)
       .withMaxDuration(Duration.ofSeconds(10))
       .onRetry(e -> LOG.log(
-        Level.WARNING,
+        getDebugLogLevel(),
         "Connection failure #{0}. Retrying.",
         e.getAttemptCount()));
 
@@ -55,7 +56,7 @@ public class RetryRequest implements Filter {
       .withMaxRetries(3)
       .withMaxDuration(Duration.ofSeconds(10))
       .onRetry(e -> LOG.log(
-        Level.WARNING,
+        getDebugLogLevel(),
         "Read timeout #{0}. Retrying.",
         e.getAttemptCount()));
 
@@ -69,7 +70,7 @@ public class RetryRequest implements Filter {
       .withMaxRetries(2)
       .withMaxDuration(Duration.ofSeconds(3))
       .onRetry(e -> LOG.log(
-        Level.WARNING,
+        getDebugLogLevel(),
         "Failure due to server error #{0}. Retrying.",
         e.getAttemptCount()));
 
