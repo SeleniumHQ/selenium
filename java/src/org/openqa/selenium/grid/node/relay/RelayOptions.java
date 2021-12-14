@@ -124,7 +124,7 @@ public class RelayOptions {
     for (int i = 0; i < allConfigs.size(); i++) {
       int maxSessions;
       try {
-        maxSessions = Integer.parseInt(allConfigs.get(i));
+        maxSessions = Integer.parseInt(extractConfiguredValue(allConfigs.get(i)));
       } catch (NumberFormatException e) {
         throw new ConfigException("Unable parse value as number. " + allConfigs.get(i));
       }
@@ -132,7 +132,9 @@ public class RelayOptions {
       if (i == allConfigs.size()) {
         throw new ConfigException("Unable to find stereotype config. " + allConfigs);
       }
-      Capabilities stereotype = JSON.toType(allConfigs.get(i), Capabilities.class);
+      Capabilities stereotype = JSON.toType(
+        extractConfiguredValue(allConfigs.get(i)),
+        Capabilities.class);
       parsedConfigs.put(maxSessions, stereotype);
     }
 
@@ -151,6 +153,13 @@ public class RelayOptions {
       LOG.info(String.format("Mapping %s, %d times", stereotype, maxSessions));
     });
     return factories.build().asMap();
+  }
+
+  private String extractConfiguredValue(String keyValue) {
+    if (keyValue.contains("=")) {
+      return keyValue.substring(keyValue.indexOf("=") + 1);
+    }
+    return keyValue;
   }
 
 }
