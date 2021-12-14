@@ -820,6 +820,7 @@ exports.Browser = capabilities.Browser
 exports.Builder = Builder
 exports.Button = input.Button
 exports.By = by.By
+exports.RelativeBy = by.RelativeBy
 exports.withTagName = by.withTagName
 exports.locateWith = by.locateWith
 exports.Capabilities = capabilities.Capabilities
