@@ -199,7 +199,7 @@ jobs:
       - name: Run server tests
         uses: ./.github/actions/bazel-test
         with:
-          query: tests(//java/...) except attr(tags, 'rc|lint|ie|edge|edgehtml|safari', tests(//java/...))
+          query: tests(//java/...) except (attr(tags, 'rc|lint|ie|edge|edgehtml|safari', tests(//java/...)) union attr(size, small, tests(//java/...)))
         env:
           DISPLAY: :99
 
