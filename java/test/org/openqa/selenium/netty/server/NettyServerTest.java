@@ -19,6 +19,7 @@ package org.openqa.selenium.netty.server;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.openqa.selenium.remote.http.Contents.utf8String;
@@ -107,7 +108,6 @@ public class NettyServerTest {
     BaseServerOptions options = new BaseServerOptions(cfg);
     assertTrue("Allow CORS should be enabled", options.getAllowCORS());
 
-    // TODO: Server setup
     Server<?> server = new NettyServer(
       options,
       req -> new HttpResponse()
@@ -124,6 +124,22 @@ public class NettyServerTest {
       "Access-Control-Allow-Origin should be equal to origin in request header",
       "*",
       response.getHeader("Access-Control-Allow-Origin"));
+  }
+
+  @Test
+  public void shouldNotBindToHost() {
+    Config cfg = new CompoundConfig(
+      new MapConfig(ImmutableMap.of("server", ImmutableMap.of(
+        "bind-host", "false", "host", "anyRandomHost"))));
+    BaseServerOptions options = new BaseServerOptions(cfg);
+    assertFalse("Bind to host should be disabled", options.getBindHost());
+
+    Server<?> server = new NettyServer(
+      options,
+      req -> new HttpResponse()
+    ).start();
+
+    assertEquals("anyRandomHost", server.getUrl().getHost());
   }
 
   private void outputHeaders(HttpResponse res) {
