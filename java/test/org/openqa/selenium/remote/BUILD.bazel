@@ -1,7 +1,7 @@
 load("@rules_jvm_external//:defs.bzl", "artifact")
 load("//java:defs.bzl", "java_selenium_test_suite", "java_test_suite")
 
-LARGE_TESTS = [
+REMOTE_TESTS = [
     "ParallelSessionsTest.java",
     "RemoteWebDriverScreenshotTest.java",
 ]
@@ -11,7 +11,7 @@ java_test_suite(
     size = "small",
     srcs = glob(
         ["*.java"],
-        exclude = LARGE_TESTS,
+        exclude = REMOTE_TESTS,
     ),
     javacopts = [
         "--release",
@@ -39,7 +39,10 @@ java_test_suite(
 java_selenium_test_suite(
     name = "large-tests",
     size = "large",
-    srcs = LARGE_TESTS,
+    tags = [
+        "selenium-remote",
+    ],
+    srcs = REMOTE_TESTS,
     deps = [
         "//java/src/org/openqa/selenium/remote",
         "//java/test/org/openqa/selenium/testing:annotations",
