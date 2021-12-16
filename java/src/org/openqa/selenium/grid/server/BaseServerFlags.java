@@ -43,6 +43,16 @@ public class BaseServerFlags implements HasRoles {
   private String host;
 
   @Parameter(
+    names = "--bind-host",
+    description = "Whether the server should bind to the host address/name, or only use it to" +
+                  " report its reachable url. Helpful in complex network topologies where the" +
+                  " server cannot report itself with the current IP/hostname but rather an" +
+                  " external IP or hostname (e.g. inside a Docker container).",
+    arity = 1)
+  @ConfigValue(section = SERVER_SECTION, name = "bind-host", example = "true")
+  private Boolean bindHost = true;
+
+  @Parameter(
     description = "Port to listen on. There is no default as this parameter is used by "
                   + "different components, for example Router/Hub/Standalone will use 4444 and "
                   + "Node will use 5555.",
