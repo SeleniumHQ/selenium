@@ -123,8 +123,10 @@ jobs:
         uses: actions/setup-java@v1
         with:
           java-version: '11'
-      - name: Setup browser and browser driver
-        uses: ./.github/actions/setup-${{ matrix.browser }}
+      - name: Setup Firefox and GeckoDriver
+        uses: ./.github/actions/setup-firefox
+      - name: Setup Chrome and ChromeDriver
+        uses: ./.github/actions/setup-chrome
       - name: Start XVFB
         run: Xvfb :99 &
       - name: Run browser tests in ${{ matrix.browser }}
@@ -161,8 +163,10 @@ jobs:
         uses: actions/setup-java@v1
         with:
           java-version: '11'
-      - name: Setup browser and browser driver
-        uses: ./.github/actions/setup-${{ matrix.browser }}
+      - name: Setup Firefox and GeckoDriver
+        uses: ./.github/actions/setup-firefox
+      - name: Setup Chrome and ChromeDriver
+        uses: ./.github/actions/setup-chrome
       - name: Start XVFB
         run: Xvfb :99 &
       - name: Run server tests
