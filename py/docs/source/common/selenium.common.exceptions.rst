@@ -42,6 +42,7 @@
       NoSuchCookieException
       NoSuchElementException
       NoSuchFrameException
+      NoSuchShadowRootException
       NoSuchWindowException
       RemoteDriverServerException
       ScreenshotException
