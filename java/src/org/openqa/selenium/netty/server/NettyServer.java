@@ -164,7 +164,9 @@ public class NettyServer implements Server<NettyServer> {
       throw new UncheckedIOException(new IOException("Start up interrupted", e));
     } catch (Exception e) {
       if (e instanceof BindException) {
-        throw new UncheckedIOException(new IOException(String.format("Port %s already in use", port), e));
+        String errorMessage = String.format(
+          "Could not bind to address or port is already in use. Host %s, Port %s", host, port);
+        throw new UncheckedIOException(new IOException(errorMessage, e));
       }
       throw e;
     }
