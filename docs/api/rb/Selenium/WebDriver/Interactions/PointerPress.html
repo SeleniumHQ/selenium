@@ -6,7 +6,7 @@
 <title>
   Class: Selenium::WebDriver::Interactions::PointerPress
   
-    &mdash; Documentation by YARD 0.9.26
+    &mdash; Documentation by YARD 0.9.27
   
 </title>
 
@@ -62,7 +62,7 @@
       <div id="content"><h1>Class: Selenium::WebDriver::Interactions::PointerPress
   
   
-  
+  <span class="private note title">Private</span>
 </h1>
 <div class="box_info">
   
@@ -89,6 +89,11 @@
   
   
   
+  <dl>
+      <dt>Includes:</dt>
+      <dd><span class='object_link'><a href="PointerEventProperties.html" title="Selenium::WebDriver::Interactions::PointerEventProperties (module)">PointerEventProperties</a></span></dd>
+  </dl>
+  
   
 
   
@@ -96,15 +101,19 @@
   
   <dl>
     <dt>Defined in:</dt>
-    <dd>rb/lib/selenium/webdriver/common/interactions/pointer_input.rb</dd>
+    <dd>rb/lib/selenium/webdriver/common/interactions/pointer_press.rb</dd>
   </dl>
   
 </div>
 
 <h2>Overview</h2><div class="docstring">
   <div class="discussion">
-    
-<p>PointerInput</p>
+    <p class="note private">
+  <strong>This class is part of a private API.</strong>
+  You should avoid using this class if possible, as it may be removed or be changed in the future.
+</p>
+
+<p>Actions related to clicking, tapping or pressing the pointer.</p>
 
 
   </div>
@@ -122,12 +131,38 @@
     <dl class="constants">
       
         <dt id="BUTTONS-constant" class="">BUTTONS =
-          
+          <div class="docstring">
+  <div class="discussion">
+    <p class="note private">
+  <strong>This constant is part of a private API.</strong>
+  You should avoid using this constant if possible, as it may be removed or be changed in the future.
+</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div>
         </dt>
         <dd><pre class="code"><span class='lbrace'>{</span><span class='label'>left:</span> <span class='int'>0</span><span class='comma'>,</span> <span class='label'>middle:</span> <span class='int'>1</span><span class='comma'>,</span> <span class='label'>right:</span> <span class='int'>2</span><span class='rbrace'>}</span><span class='period'>.</span><span class='id identifier rubyid_freeze'>freeze</span></pre></dd>
       
         <dt id="DIRECTIONS-constant" class="">DIRECTIONS =
-          
+          <div class="docstring">
+  <div class="discussion">
+    <p class="note private">
+  <strong>This constant is part of a private API.</strong>
+  You should avoid using this constant if possible, as it may be removed or be changed in the future.
+</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div>
         </dt>
         <dd><pre class="code"><span class='lbrace'>{</span><span class='label'>down:</span> <span class='symbol'>:pointerDown</span><span class='comma'>,</span> <span class='label'>up:</span> <span class='symbol'>:pointerUp</span><span class='rbrace'>}</span><span class='period'>.</span><span class='id identifier rubyid_freeze'>freeze</span></pre></dd>
       
@@ -138,9 +173,9 @@
 
   
   
-  <h3 class="inherited">Constants inherited
-     from <span class='object_link'><a href="Interaction.html" title="Selenium::WebDriver::Interactions::Interaction (class)">Interaction</a></span></h3>
-  <p class="inherited"><span class='object_link'><a href="Interaction.html#PAUSE-constant" title="Selenium::WebDriver::Interactions::Interaction::PAUSE (constant)">Interaction::PAUSE</a></span></p>
+  <h3 class="inherited">Constants included
+     from <span class='object_link'><a href="PointerEventProperties.html" title="Selenium::WebDriver::Interactions::PointerEventProperties (module)">PointerEventProperties</a></span></h3>
+  <p class="inherited"><span class='object_link'><a href="PointerEventProperties.html#VALID-constant" title="Selenium::WebDriver::Interactions::PointerEventProperties::VALID (constant)">Selenium::WebDriver::Interactions::PointerEventProperties::VALID</a></span></p>
 
 
 
@@ -148,7 +183,7 @@
   <h2>Instance Attribute Summary</h2>
   
   <h3 class="inherited">Attributes inherited from <span class='object_link'><a href="Interaction.html" title="Selenium::WebDriver::Interactions::Interaction (class)">Interaction</a></span></h3>
-  <p class="inherited"><span class='object_link'><a href="Interaction.html#source-instance_method" title="Selenium::WebDriver::Interactions::Interaction#source (method)">#source</a></span></p>
+  <p class="inherited"><span class='object_link'><a href="Interaction.html#type-instance_method" title="Selenium::WebDriver::Interactions::Interaction#type (method)">#type</a></span></p>
 
 
   
@@ -158,50 +193,6 @@
     </h2>
 
     <ul class="summary">
-      
-        <li class="public ">
-  <span class="summary_signature">
-    
-      <a href="#assert_button-instance_method" title="#assert_button (instance method)">#<strong>assert_button</strong>(button)  &#x21d2; Object </a>
-    
-
-    
-  </span>
-  
-  
-  
-  
-  
-  
-  
-
-  
-    <span class="summary_desc"><div class='inline'></div></span>
-  
-</li>
-
-      
-        <li class="public ">
-  <span class="summary_signature">
-    
-      <a href="#assert_direction-instance_method" title="#assert_direction (instance method)">#<strong>assert_direction</strong>(direction)  &#x21d2; Object </a>
-    
-
-    
-  </span>
-  
-  
-  
-  
-  
-  
-  
-
-  
-    <span class="summary_desc"><div class='inline'></div></span>
-  
-</li>
-
       
         <li class="public ">
   <span class="summary_signature">
@@ -217,7 +208,7 @@
   
   
   
-  
+  <span class="private note title">private</span>
 
   
     <span class="summary_desc"><div class='inline'></div></span>
@@ -228,7 +219,7 @@
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#initialize-instance_method" title="#initialize (instance method)">#<strong>initialize</strong>(source, direction, button)  &#x21d2; PointerPress </a>
+      <a href="#initialize-instance_method" title="#initialize (instance method)">#<strong>initialize</strong>(source, direction, button, **opts)  &#x21d2; PointerPress </a>
     
 
     
@@ -241,34 +232,12 @@
   
   
   
-  
+  <span class="private note title">private</span>
 
   
     <span class="summary_desc"><div class='inline'>
 <p>A new instance of PointerPress.</p>
 </div></span>
-  
-</li>
-
-      
-        <li class="public ">
-  <span class="summary_signature">
-    
-      <a href="#type-instance_method" title="#type (instance method)">#<strong>type</strong>  &#x21d2; Object </a>
-    
-
-    
-  </span>
-  
-  
-  
-  
-  
-  
-  
-
-  
-    <span class="summary_desc"><div class='inline'></div></span>
   
 </li>
 
@@ -282,13 +251,24 @@
   
   
   
+  
+  
+  
+  <h3 class="inherited">Methods included from <span class='object_link'><a href="PointerEventProperties.html" title="Selenium::WebDriver::Interactions::PointerEventProperties (module)">PointerEventProperties</a></span></h3>
+  <p class="inherited"><span class='object_link'><a href="PointerEventProperties.html#process_opts-instance_method" title="Selenium::WebDriver::Interactions::PointerEventProperties#process_opts (method)">#process_opts</a></span></p>
+
+  
+  
+  
+  
+  
   <div id="constructor_details" class="method_details_list">
   <h2>Constructor Details</h2>
   
     <div class="method_details first">
   <h3 class="signature first" id="initialize-instance_method">
   
-    #<strong>initialize</strong>(source, direction, button)  &#x21d2; <tt><span class='object_link'><a href="" title="Selenium::WebDriver::Interactions::PointerPress (class)">PointerPress</a></span></tt> 
+    #<strong>initialize</strong>(source, direction, button, **opts)  &#x21d2; <tt><span class='object_link'><a href="" title="Selenium::WebDriver::Interactions::PointerPress (class)">PointerPress</a></span></tt> 
   
 
   
@@ -296,7 +276,11 @@
   
 </h3><div class="docstring">
   <div class="discussion">
-    
+    <p class="note private">
+  <strong>This method is part of a private API.</strong>
+  You should avoid using this method if possible, as it may be removed or be changed in the future.
+</p>
+
 <p>Returns a new instance of PointerPress.</p>
 
 
@@ -311,19 +295,23 @@
       <pre class="lines">
 
 
-72
-73
-74
-75
-76</pre>
+35
+36
+37
+38
+39
+40
+41</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/interactions/pointer_input.rb', line 72</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/interactions/pointer_press.rb', line 35</span>
 
-<span class='kw'>def</span> <span class='id identifier rubyid_initialize'>initialize</span><span class='lparen'>(</span><span class='id identifier rubyid_source'>source</span><span class='comma'>,</span> <span class='id identifier rubyid_direction'>direction</span><span class='comma'>,</span> <span class='id identifier rubyid_button'>button</span><span class='rparen'>)</span>
+<span class='kw'>def</span> <span class='id identifier rubyid_initialize'>initialize</span><span class='lparen'>(</span><span class='id identifier rubyid_source'>source</span><span class='comma'>,</span> <span class='id identifier rubyid_direction'>direction</span><span class='comma'>,</span> <span class='id identifier rubyid_button'>button</span><span class='comma'>,</span> <span class='op'>**</span><span class='id identifier rubyid_opts'>opts</span><span class='rparen'>)</span>
   <span class='kw'>super</span><span class='lparen'>(</span><span class='id identifier rubyid_source'>source</span><span class='rparen'>)</span>
   <span class='ivar'>@direction</span> <span class='op'>=</span> <span class='id identifier rubyid_assert_direction'>assert_direction</span><span class='lparen'>(</span><span class='id identifier rubyid_direction'>direction</span><span class='rparen'>)</span>
   <span class='ivar'>@button</span> <span class='op'>=</span> <span class='id identifier rubyid_assert_button'>assert_button</span><span class='lparen'>(</span><span class='id identifier rubyid_button'>button</span><span class='rparen'>)</span>
+  <span class='ivar'>@type</span> <span class='op'>=</span> <span class='ivar'>@direction</span>
+  <span class='ivar'>@opts</span> <span class='op'>=</span> <span class='id identifier rubyid_opts'>opts</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -338,129 +326,7 @@
 
     
       <div class="method_details first">
-  <h3 class="signature first" id="assert_button-instance_method">
-  
-    #<strong>assert_button</strong>(button)  &#x21d2; <tt>Object</tt> 
-  
-
-  
-
-  
-</h3><div class="docstring">
-  <div class="discussion">
-    
-
-  </div>
-</div>
-<div class="tags">
-  
-<p class="tag_title">Raises:</p>
-<ul class="raise">
-  
-    <li>
-      
-      
-        <span class='type'>(<tt>ArgumentError</tt>)</span>
-      
-      
-      
-    </li>
-  
-</ul>
-
-</div><table class="source_code">
-  <tr>
-    <td>
-      <pre class="lines">
-
-
-82
-83
-84
-85
-86
-87
-88
-89
-90
-91</pre>
-    </td>
-    <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/interactions/pointer_input.rb', line 82</span>
-
-<span class='kw'>def</span> <span class='id identifier rubyid_assert_button'>assert_button</span><span class='lparen'>(</span><span class='id identifier rubyid_button'>button</span><span class='rparen'>)</span>
-  <span class='kw'>if</span> <span class='id identifier rubyid_button'>button</span><span class='period'>.</span><span class='id identifier rubyid_is_a?'>is_a?</span> <span class='const'>Symbol</span>
-    <span class='id identifier rubyid_raise'>raise</span> <span class='const'>TypeError</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_button'>button</span><span class='period'>.</span><span class='id identifier rubyid_inspect'>inspect</span><span class='embexpr_end'>}</span><span class='tstring_content'> is not a valid button!</span><span class='tstring_end'>&quot;</span></span> <span class='kw'>unless</span> <span class='const'><span class='object_link'><a href="#BUTTONS-constant" title="Selenium::WebDriver::Interactions::PointerPress::BUTTONS (constant)">BUTTONS</a></span></span><span class='period'>.</span><span class='id identifier rubyid_key?'>key?</span> <span class='id identifier rubyid_button'>button</span>
-
-    <span class='id identifier rubyid_button'>button</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="#BUTTONS-constant" title="Selenium::WebDriver::Interactions::PointerPress::BUTTONS (constant)">BUTTONS</a></span></span><span class='lbracket'>[</span><span class='id identifier rubyid_button'>button</span><span class='rbracket'>]</span>
-  <span class='kw'>end</span>
-  <span class='id identifier rubyid_raise'>raise</span> <span class='const'>ArgumentError</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>Button number cannot be negative!</span><span class='tstring_end'>&#39;</span></span> <span class='kw'>unless</span> <span class='id identifier rubyid_button'>button</span> <span class='op'>&gt;=</span> <span class='int'>0</span>
-
-  <span class='id identifier rubyid_button'>button</span>
-<span class='kw'>end</span></pre>
-    </td>
-  </tr>
-</table>
-</div>
-    
-      <div class="method_details ">
-  <h3 class="signature " id="assert_direction-instance_method">
-  
-    #<strong>assert_direction</strong>(direction)  &#x21d2; <tt>Object</tt> 
-  
-
-  
-
-  
-</h3><div class="docstring">
-  <div class="discussion">
-    
-
-  </div>
-</div>
-<div class="tags">
-  
-<p class="tag_title">Raises:</p>
-<ul class="raise">
-  
-    <li>
-      
-      
-        <span class='type'>(<tt>TypeError</tt>)</span>
-      
-      
-      
-    </li>
-  
-</ul>
-
-</div><table class="source_code">
-  <tr>
-    <td>
-      <pre class="lines">
-
-
-93
-94
-95
-96
-97</pre>
-    </td>
-    <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/interactions/pointer_input.rb', line 93</span>
-
-<span class='kw'>def</span> <span class='id identifier rubyid_assert_direction'>assert_direction</span><span class='lparen'>(</span><span class='id identifier rubyid_direction'>direction</span><span class='rparen'>)</span>
-  <span class='id identifier rubyid_raise'>raise</span> <span class='const'>TypeError</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_direction'>direction</span><span class='period'>.</span><span class='id identifier rubyid_inspect'>inspect</span><span class='embexpr_end'>}</span><span class='tstring_content'> is not a valid button direction</span><span class='tstring_end'>&quot;</span></span> <span class='kw'>unless</span> <span class='const'><span class='object_link'><a href="#DIRECTIONS-constant" title="Selenium::WebDriver::Interactions::PointerPress::DIRECTIONS (constant)">DIRECTIONS</a></span></span><span class='period'>.</span><span class='id identifier rubyid_key?'>key?</span> <span class='id identifier rubyid_direction'>direction</span>
-
-  <span class='const'><span class='object_link'><a href="#DIRECTIONS-constant" title="Selenium::WebDriver::Interactions::PointerPress::DIRECTIONS (constant)">DIRECTIONS</a></span></span><span class='lbracket'>[</span><span class='id identifier rubyid_direction'>direction</span><span class='rbracket'>]</span>
-<span class='kw'>end</span></pre>
-    </td>
-  </tr>
-</table>
-</div>
-    
-      <div class="method_details ">
-  <h3 class="signature " id="encode-instance_method">
+  <h3 class="signature first" id="encode-instance_method">
   
     #<strong>encode</strong>  &#x21d2; <tt>Object</tt> 
   
@@ -468,51 +334,34 @@
   
 
   
-</h3><table class="source_code">
+</h3><div class="docstring">
+  <div class="discussion">
+    <p class="note private">
+  <strong>This method is part of a private API.</strong>
+  You should avoid using this method if possible, as it may be removed or be changed in the future.
+</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
   <tr>
     <td>
       <pre class="lines">
 
 
-99
-100
-101</pre>
+43
+44
+45</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/interactions/pointer_input.rb', line 99</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/interactions/pointer_press.rb', line 43</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_encode'>encode</span>
-  <span class='lbrace'>{</span><span class='label'>type:</span> <span class='id identifier rubyid_type'>type</span><span class='comma'>,</span> <span class='label'>button:</span> <span class='ivar'>@button</span><span class='rbrace'>}</span>
-<span class='kw'>end</span></pre>
-    </td>
-  </tr>
-</table>
-</div>
-    
-      <div class="method_details ">
-  <h3 class="signature " id="type-instance_method">
-  
-    #<strong>type</strong>  &#x21d2; <tt>Object</tt> 
-  
-
-  
-
-  
-</h3><table class="source_code">
-  <tr>
-    <td>
-      <pre class="lines">
-
-
-78
-79
-80</pre>
-    </td>
-    <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/interactions/pointer_input.rb', line 78</span>
-
-<span class='kw'>def</span> <span class='id identifier rubyid_type'>type</span>
-  <span class='ivar'>@direction</span>
+  <span class='id identifier rubyid_process_opts'>process_opts</span><span class='period'>.</span><span class='id identifier rubyid_merge'>merge</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>type</span><span class='tstring_end'>&#39;</span></span> <span class='op'>=&gt;</span> <span class='id identifier rubyid_type'>type</span><span class='period'>.</span><span class='id identifier rubyid_to_s'>to_s</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>button</span><span class='tstring_end'>&#39;</span></span> <span class='op'>=&gt;</span> <span class='ivar'>@button</span><span class='rparen'>)</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -524,9 +373,9 @@
 </div>
 
       <div id="footer">
-  Generated on Wed Oct 20 19:09:26 2021 by
+  Generated on Sat Dec 18 00:26:35 2021 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.26 (ruby-2.7.3).
+  0.9.27 (ruby-3.0.2).
 </div>
 
     </div>

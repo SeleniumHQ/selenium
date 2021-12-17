@@ -1,19 +1,19 @@
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
   <head>
-    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>selenium.webdriver.remote.errorhandler &#8212; Selenium 4.0.0 documentation</title>
-    <link rel="stylesheet" href="../_static/classic.css" type="text/css" />
-    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>selenium.webdriver.remote.errorhandler &#8212; Selenium 4.1.0 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/classic.css" />
     
-    <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
-    <script type="text/javascript" src="../_static/jquery.js"></script>
-    <script type="text/javascript" src="../_static/underscore.js"></script>
-    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
     
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" /> 
@@ -27,7 +27,8 @@
         <li class="right" >
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">Selenium 4.0.0 documentation</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="../index.html">Selenium 4.1.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">selenium.webdriver.remote.errorhandler</a></li> 
       </ul>
     </div>  
 
@@ -36,224 +37,27 @@
         <div class="bodywrapper">
           <div class="body" role="main">
             
-  <div class="section" id="module-selenium.webdriver.remote.errorhandler">
+  <section id="module-selenium.webdriver.remote.errorhandler">
 <span id="selenium-webdriver-remote-errorhandler"></span><h1>selenium.webdriver.remote.errorhandler<a class="headerlink" href="#module-selenium.webdriver.remote.errorhandler" title="Permalink to this headline">¶</a></h1>
-<dl class="class">
-<dt id="selenium.webdriver.remote.errorhandler.ErrorCode">
-<em class="property">class </em><code class="descclassname">selenium.webdriver.remote.errorhandler.</code><code class="descname">ErrorCode</code><a class="reference internal" href="../_modules/selenium/webdriver/remote/errorhandler.html#ErrorCode"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.remote.errorhandler.ErrorCode" title="Permalink to this definition">¶</a></dt>
-<dd><p>Error codes defined in the WebDriver wire protocol.</p>
-<dl class="attribute">
-<dt id="selenium.webdriver.remote.errorhandler.ErrorCode.ELEMENT_CLICK_INTERCEPTED">
-<code class="descname">ELEMENT_CLICK_INTERCEPTED</code><em class="property"> = [64, 'element click intercepted']</em><a class="headerlink" href="#selenium.webdriver.remote.errorhandler.ErrorCode.ELEMENT_CLICK_INTERCEPTED" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt id="selenium.webdriver.remote.errorhandler.ErrorCode.ELEMENT_IS_NOT_SELECTABLE">
-<code class="descname">ELEMENT_IS_NOT_SELECTABLE</code><em class="property"> = [15, 'element not selectable']</em><a class="headerlink" href="#selenium.webdriver.remote.errorhandler.ErrorCode.ELEMENT_IS_NOT_SELECTABLE" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt id="selenium.webdriver.remote.errorhandler.ErrorCode.ELEMENT_NOT_INTERACTABLE">
-<code class="descname">ELEMENT_NOT_INTERACTABLE</code><em class="property"> = [60, 'element not interactable']</em><a class="headerlink" href="#selenium.webdriver.remote.errorhandler.ErrorCode.ELEMENT_NOT_INTERACTABLE" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt id="selenium.webdriver.remote.errorhandler.ErrorCode.ELEMENT_NOT_VISIBLE">
-<code class="descname">ELEMENT_NOT_VISIBLE</code><em class="property"> = [11, 'element not visible']</em><a class="headerlink" href="#selenium.webdriver.remote.errorhandler.ErrorCode.ELEMENT_NOT_VISIBLE" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt id="selenium.webdriver.remote.errorhandler.ErrorCode.IME_ENGINE_ACTIVATION_FAILED">
-<code class="descname">IME_ENGINE_ACTIVATION_FAILED</code><em class="property"> = [31, 'ime engine activation failed']</em><a class="headerlink" href="#selenium.webdriver.remote.errorhandler.ErrorCode.IME_ENGINE_ACTIVATION_FAILED" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt id="selenium.webdriver.remote.errorhandler.ErrorCode.IME_NOT_AVAILABLE">
-<code class="descname">IME_NOT_AVAILABLE</code><em class="property"> = [30, 'ime not available']</em><a class="headerlink" href="#selenium.webdriver.remote.errorhandler.ErrorCode.IME_NOT_AVAILABLE" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt id="selenium.webdriver.remote.errorhandler.ErrorCode.INSECURE_CERTIFICATE">
-<code class="descname">INSECURE_CERTIFICATE</code><em class="property"> = ['insecure certificate']</em><a class="headerlink" href="#selenium.webdriver.remote.errorhandler.ErrorCode.INSECURE_CERTIFICATE" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt id="selenium.webdriver.remote.errorhandler.ErrorCode.INVALID_ARGUMENT">
-<code class="descname">INVALID_ARGUMENT</code><em class="property"> = [61, 'invalid argument']</em><a class="headerlink" href="#selenium.webdriver.remote.errorhandler.ErrorCode.INVALID_ARGUMENT" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt id="selenium.webdriver.remote.errorhandler.ErrorCode.INVALID_COOKIE_DOMAIN">
-<code class="descname">INVALID_COOKIE_DOMAIN</code><em class="property"> = [24, 'invalid cookie domain']</em><a class="headerlink" href="#selenium.webdriver.remote.errorhandler.ErrorCode.INVALID_COOKIE_DOMAIN" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt id="selenium.webdriver.remote.errorhandler.ErrorCode.INVALID_COORDINATES">
-<code class="descname">INVALID_COORDINATES</code><em class="property"> = ['invalid coordinates']</em><a class="headerlink" href="#selenium.webdriver.remote.errorhandler.ErrorCode.INVALID_COORDINATES" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt id="selenium.webdriver.remote.errorhandler.ErrorCode.INVALID_ELEMENT_COORDINATES">
-<code class="descname">INVALID_ELEMENT_COORDINATES</code><em class="property"> = [29, 'invalid element coordinates']</em><a class="headerlink" href="#selenium.webdriver.remote.errorhandler.ErrorCode.INVALID_ELEMENT_COORDINATES" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt id="selenium.webdriver.remote.errorhandler.ErrorCode.INVALID_ELEMENT_STATE">
-<code class="descname">INVALID_ELEMENT_STATE</code><em class="property"> = [12, 'invalid element state']</em><a class="headerlink" href="#selenium.webdriver.remote.errorhandler.ErrorCode.INVALID_ELEMENT_STATE" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt id="selenium.webdriver.remote.errorhandler.ErrorCode.INVALID_SELECTOR">
-<code class="descname">INVALID_SELECTOR</code><em class="property"> = [32, 'invalid selector']</em><a class="headerlink" href="#selenium.webdriver.remote.errorhandler.ErrorCode.INVALID_SELECTOR" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt id="selenium.webdriver.remote.errorhandler.ErrorCode.INVALID_SESSION_ID">
-<code class="descname">INVALID_SESSION_ID</code><em class="property"> = ['invalid session id']</em><a class="headerlink" href="#selenium.webdriver.remote.errorhandler.ErrorCode.INVALID_SESSION_ID" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt id="selenium.webdriver.remote.errorhandler.ErrorCode.INVALID_XPATH_SELECTOR">
-<code class="descname">INVALID_XPATH_SELECTOR</code><em class="property"> = [51, 'invalid selector']</em><a class="headerlink" href="#selenium.webdriver.remote.errorhandler.ErrorCode.INVALID_XPATH_SELECTOR" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt id="selenium.webdriver.remote.errorhandler.ErrorCode.INVALID_XPATH_SELECTOR_RETURN_TYPER">
-<code class="descname">INVALID_XPATH_SELECTOR_RETURN_TYPER</code><em class="property"> = [52, 'invalid selector']</em><a class="headerlink" href="#selenium.webdriver.remote.errorhandler.ErrorCode.INVALID_XPATH_SELECTOR_RETURN_TYPER" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt id="selenium.webdriver.remote.errorhandler.ErrorCode.JAVASCRIPT_ERROR">
-<code class="descname">JAVASCRIPT_ERROR</code><em class="property"> = [17, 'javascript error']</em><a class="headerlink" href="#selenium.webdriver.remote.errorhandler.ErrorCode.JAVASCRIPT_ERROR" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt id="selenium.webdriver.remote.errorhandler.ErrorCode.METHOD_NOT_ALLOWED">
-<code class="descname">METHOD_NOT_ALLOWED</code><em class="property"> = [405, 'unsupported operation']</em><a class="headerlink" href="#selenium.webdriver.remote.errorhandler.ErrorCode.METHOD_NOT_ALLOWED" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt id="selenium.webdriver.remote.errorhandler.ErrorCode.MOVE_TARGET_OUT_OF_BOUNDS">
-<code class="descname">MOVE_TARGET_OUT_OF_BOUNDS</code><em class="property"> = [34, 'move target out of bounds']</em><a class="headerlink" href="#selenium.webdriver.remote.errorhandler.ErrorCode.MOVE_TARGET_OUT_OF_BOUNDS" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt id="selenium.webdriver.remote.errorhandler.ErrorCode.NO_ALERT_OPEN">
-<code class="descname">NO_ALERT_OPEN</code><em class="property"> = [27, 'no such alert']</em><a class="headerlink" href="#selenium.webdriver.remote.errorhandler.ErrorCode.NO_ALERT_OPEN" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt id="selenium.webdriver.remote.errorhandler.ErrorCode.NO_SUCH_COOKIE">
-<code class="descname">NO_SUCH_COOKIE</code><em class="property"> = [62, 'no such cookie']</em><a class="headerlink" href="#selenium.webdriver.remote.errorhandler.ErrorCode.NO_SUCH_COOKIE" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt id="selenium.webdriver.remote.errorhandler.ErrorCode.NO_SUCH_ELEMENT">
-<code class="descname">NO_SUCH_ELEMENT</code><em class="property"> = [7, 'no such element']</em><a class="headerlink" href="#selenium.webdriver.remote.errorhandler.ErrorCode.NO_SUCH_ELEMENT" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt id="selenium.webdriver.remote.errorhandler.ErrorCode.NO_SUCH_FRAME">
-<code class="descname">NO_SUCH_FRAME</code><em class="property"> = [8, 'no such frame']</em><a class="headerlink" href="#selenium.webdriver.remote.errorhandler.ErrorCode.NO_SUCH_FRAME" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt id="selenium.webdriver.remote.errorhandler.ErrorCode.NO_SUCH_WINDOW">
-<code class="descname">NO_SUCH_WINDOW</code><em class="property"> = [23, 'no such window']</em><a class="headerlink" href="#selenium.webdriver.remote.errorhandler.ErrorCode.NO_SUCH_WINDOW" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt id="selenium.webdriver.remote.errorhandler.ErrorCode.SCRIPT_TIMEOUT">
-<code class="descname">SCRIPT_TIMEOUT</code><em class="property"> = [28, 'script timeout']</em><a class="headerlink" href="#selenium.webdriver.remote.errorhandler.ErrorCode.SCRIPT_TIMEOUT" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt id="selenium.webdriver.remote.errorhandler.ErrorCode.SESSION_NOT_CREATED">
-<code class="descname">SESSION_NOT_CREATED</code><em class="property"> = [33, 'session not created']</em><a class="headerlink" href="#selenium.webdriver.remote.errorhandler.ErrorCode.SESSION_NOT_CREATED" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt id="selenium.webdriver.remote.errorhandler.ErrorCode.STALE_ELEMENT_REFERENCE">
-<code class="descname">STALE_ELEMENT_REFERENCE</code><em class="property"> = [10, 'stale element reference']</em><a class="headerlink" href="#selenium.webdriver.remote.errorhandler.ErrorCode.STALE_ELEMENT_REFERENCE" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt id="selenium.webdriver.remote.errorhandler.ErrorCode.SUCCESS">
-<code class="descname">SUCCESS</code><em class="property"> = 0</em><a class="headerlink" href="#selenium.webdriver.remote.errorhandler.ErrorCode.SUCCESS" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt id="selenium.webdriver.remote.errorhandler.ErrorCode.TIMEOUT">
-<code class="descname">TIMEOUT</code><em class="property"> = [21, 'timeout']</em><a class="headerlink" href="#selenium.webdriver.remote.errorhandler.ErrorCode.TIMEOUT" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt id="selenium.webdriver.remote.errorhandler.ErrorCode.UNABLE_TO_CAPTURE_SCREEN">
-<code class="descname">UNABLE_TO_CAPTURE_SCREEN</code><em class="property"> = [63, 'unable to capture screen']</em><a class="headerlink" href="#selenium.webdriver.remote.errorhandler.ErrorCode.UNABLE_TO_CAPTURE_SCREEN" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt id="selenium.webdriver.remote.errorhandler.ErrorCode.UNABLE_TO_SET_COOKIE">
-<code class="descname">UNABLE_TO_SET_COOKIE</code><em class="property"> = [25, 'unable to set cookie']</em><a class="headerlink" href="#selenium.webdriver.remote.errorhandler.ErrorCode.UNABLE_TO_SET_COOKIE" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt id="selenium.webdriver.remote.errorhandler.ErrorCode.UNEXPECTED_ALERT_OPEN">
-<code class="descname">UNEXPECTED_ALERT_OPEN</code><em class="property"> = [26, 'unexpected alert open']</em><a class="headerlink" href="#selenium.webdriver.remote.errorhandler.ErrorCode.UNEXPECTED_ALERT_OPEN" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt id="selenium.webdriver.remote.errorhandler.ErrorCode.UNKNOWN_COMMAND">
-<code class="descname">UNKNOWN_COMMAND</code><em class="property"> = [9, 'unknown command']</em><a class="headerlink" href="#selenium.webdriver.remote.errorhandler.ErrorCode.UNKNOWN_COMMAND" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt id="selenium.webdriver.remote.errorhandler.ErrorCode.UNKNOWN_ERROR">
-<code class="descname">UNKNOWN_ERROR</code><em class="property"> = [13, 'unknown error']</em><a class="headerlink" href="#selenium.webdriver.remote.errorhandler.ErrorCode.UNKNOWN_ERROR" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt id="selenium.webdriver.remote.errorhandler.ErrorCode.UNKNOWN_METHOD">
-<code class="descname">UNKNOWN_METHOD</code><em class="property"> = ['unknown method exception']</em><a class="headerlink" href="#selenium.webdriver.remote.errorhandler.ErrorCode.UNKNOWN_METHOD" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt id="selenium.webdriver.remote.errorhandler.ErrorCode.XPATH_LOOKUP_ERROR">
-<code class="descname">XPATH_LOOKUP_ERROR</code><em class="property"> = [19, 'invalid selector']</em><a class="headerlink" href="#selenium.webdriver.remote.errorhandler.ErrorCode.XPATH_LOOKUP_ERROR" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
-<dl class="class">
-<dt id="selenium.webdriver.remote.errorhandler.ErrorHandler">
-<em class="property">class </em><code class="descclassname">selenium.webdriver.remote.errorhandler.</code><code class="descname">ErrorHandler</code><a class="reference internal" href="../_modules/selenium/webdriver/remote/errorhandler.html#ErrorHandler"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.remote.errorhandler.ErrorHandler" title="Permalink to this definition">¶</a></dt>
-<dd><p>Handles errors returned by the WebDriver server.</p>
-<dl class="method">
-<dt id="selenium.webdriver.remote.errorhandler.ErrorHandler.check_response">
-<code class="descname">check_response</code><span class="sig-paren">(</span><em>response: Dict[str, Any]</em><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="../_modules/selenium/webdriver/remote/errorhandler.html#ErrorHandler.check_response"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.remote.errorhandler.ErrorHandler.check_response" title="Permalink to this definition">¶</a></dt>
-<dd><p>Checks that a JSON response from the WebDriver does not have an error.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Args:</th><td class="field-body"><ul class="first simple">
-<li>response - The JSON response from the WebDriver server as a dictionary
-object.</li>
-</ul>
-</td>
+<p class="rubric">Classes</p>
+<table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">ErrorCode</span></code>()</p></td>
+<td><p>Error codes defined in the WebDriver wire protocol.</p></td>
 </tr>
-<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><p class="first last">If the response contains an error message.</p>
-</td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">ErrorHandler</span></code>()</p></td>
+<td><p>Handles errors returned by the WebDriver server.</p></td>
 </tr>
 </tbody>
 </table>
-</dd></dl>
-
-</dd></dl>
-
-</div>
+</section>
 
 
+            <div class="clearer"></div>
           </div>
         </div>
       </div>
@@ -267,17 +71,15 @@ object.</li>
     </ul>
    </div>
 <div id="searchbox" style="display: none" role="search">
-  <h3>Quick search</h3>
+  <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="../search.html" method="get">
-      <input type="text" name="q" />
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
       <input type="submit" value="Go" />
-      <input type="hidden" name="check_keywords" value="yes" />
-      <input type="hidden" name="area" value="default" />
     </form>
     </div>
 </div>
-<script type="text/javascript">$('#searchbox').show(0);</script>
+<script>$('#searchbox').show(0);</script>
         </div>
       </div>
       <div class="clearer"></div>
@@ -291,7 +93,8 @@ object.</li>
         <li class="right" >
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">Selenium 4.0.0 documentation</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="../index.html">Selenium 4.1.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">selenium.webdriver.remote.errorhandler</a></li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">

@@ -4,7 +4,7 @@
  *
  * Sphinx JavaScript utilities for all documentation.
  *
- * :copyright: Copyright 2007-2018 by the Sphinx team, see AUTHORS.
+ * :copyright: Copyright 2007-2021 by the Sphinx team, see AUTHORS.
  * :license: BSD, see LICENSE for details.
  *
  */
@@ -29,9 +29,14 @@ if (!window.console || !console.firebug) {
 
 /**
  * small helper function to urldecode strings
+ *
+ * See https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/decodeURIComponent#Decoding_query_parameters_from_a_URL
  */
 jQuery.urldecode = function(x) {
-  return decodeURIComponent(x).replace(/\+/g, ' ');
+  if (!x) {
+    return x
+  }
+  return decodeURIComponent(x.replace(/\+/g, ' '));
 };
 
 /**
@@ -87,14 +92,13 @@ jQuery.fn.highlightText = function(text, className) {
           node.nextSibling));
         node.nodeValue = val.substr(0, pos);
         if (isInSVG) {
-          var bbox = span.getBBox();
           var rect = document.createElementNS("http://www.w3.org/2000/svg", "rect");
-       	  rect.x.baseVal.value = bbox.x;
+          var bbox = node.parentElement.getBBox();
+          rect.x.baseVal.value = bbox.x;
           rect.y.baseVal.value = bbox.y;
           rect.width.baseVal.value = bbox.width;
           rect.height.baseVal.value = bbox.height;
           rect.setAttribute('class', className);
-          var parentOfText = node.parentNode.parentNode;
           addItems.push({
               "parent": node.parentNode,
               "target": rect});
@@ -284,10 +288,12 @@ var Documentation = {
   },
 
   initOnKeyListeners: function() {
-    $(document).keyup(function(event) {
+    $(document).keydown(function(event) {
       var activeElementType = document.activeElement.tagName;
-      // don't navigate when in search box or textarea
-      if (activeElementType !== 'TEXTAREA' && activeElementType !== 'INPUT' && activeElementType !== 'SELECT') {
+      // don't navigate when in search box, textarea, dropdown or button
+      if (activeElementType !== 'TEXTAREA' && activeElementType !== 'INPUT' && activeElementType !== 'SELECT'
+          && activeElementType !== 'BUTTON' && !event.altKey && !event.ctrlKey && !event.metaKey
+          && !event.shiftKey) {
         switch (event.keyCode) {
           case 37: // left
             var prevHref = $('link[rel="prev"]').prop('href');
@@ -295,12 +301,14 @@ var Documentation = {
               window.location.href = prevHref;
               return false;
             }
+            break;
           case 39: // right
             var nextHref = $('link[rel="next"]').prop('href');
             if (nextHref) {
               window.location.href = nextHref;
               return false;
             }
+            break;
         }
       }
     });

@@ -637,25 +637,6 @@ implements <a href="../WebDriver.html" title="interface in org.openqa.selenium">
 public static&nbsp;<a href="RemoteWebDriverBuilder.html" title="class in org.openqa.selenium.remote">RemoteWebDriverBuilder</a>&nbsp;builder()</pre>
 </li>
 </ul>
-<a id="setFileDetector(org.openqa.selenium.remote.FileDetector)">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>setFileDetector</h4>
-<pre class="methodSignature">public&nbsp;void&nbsp;setFileDetector&#8203;(<a href="FileDetector.html" title="interface in org.openqa.selenium.remote">FileDetector</a>&nbsp;detector)</pre>
-<div class="block">Set the file detector to be used when sending keyboard input. By default, this is set to a file
- detector that does nothing.</div>
-<dl>
-<dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>detector</code> - The detector to use. Must not be null.</dd>
-<dt><span class="seeLabel">See Also:</span></dt>
-<dd><a href="FileDetector.html" title="interface in org.openqa.selenium.remote"><code>FileDetector</code></a>, 
-<a href="LocalFileDetector.html" title="class in org.openqa.selenium.remote"><code>LocalFileDetector</code></a>, 
-<a href="UselessFileDetector.html" title="class in org.openqa.selenium.remote"><code>UselessFileDetector</code></a></dd>
-</dl>
-</li>
-</ul>
 <a id="getSessionId()">
 <!--   -->
 </a>
@@ -1273,15 +1254,6 @@ protected&nbsp;java.util.List&lt;<a href="../WebElement.html" title="interface i
 </dl>
 </li>
 </ul>
-<a id="setElementConverter(org.openqa.selenium.remote.JsonToWebElementConverter)">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>setElementConverter</h4>
-<pre class="methodSignature">protected&nbsp;void&nbsp;setElementConverter&#8203;(<a href="JsonToWebElementConverter.html" title="class in org.openqa.selenium.remote">JsonToWebElementConverter</a>&nbsp;converter)</pre>
-</li>
-</ul>
 <a id="getElementConverter()">
 <!--   -->
 </a>
@@ -1289,6 +1261,15 @@ protected&nbsp;java.util.List&lt;<a href="../WebElement.html" title="interface i
 <li class="blockList">
 <h4>getElementConverter</h4>
 <pre class="methodSignature">protected&nbsp;<a href="JsonToWebElementConverter.html" title="class in org.openqa.selenium.remote">JsonToWebElementConverter</a>&nbsp;getElementConverter()</pre>
+</li>
+</ul>
+<a id="setElementConverter(org.openqa.selenium.remote.JsonToWebElementConverter)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>setElementConverter</h4>
+<pre class="methodSignature">protected&nbsp;void&nbsp;setElementConverter&#8203;(<a href="JsonToWebElementConverter.html" title="class in org.openqa.selenium.remote">JsonToWebElementConverter</a>&nbsp;converter)</pre>
 </li>
 </ul>
 <a id="setLogLevel(java.util.logging.Level)">
@@ -1454,6 +1435,25 @@ protected&nbsp;java.util.List&lt;<a href="../WebElement.html" title="interface i
 <li class="blockList">
 <h4>getFileDetector</h4>
 <pre class="methodSignature">public&nbsp;<a href="FileDetector.html" title="interface in org.openqa.selenium.remote">FileDetector</a>&nbsp;getFileDetector()</pre>
+</li>
+</ul>
+<a id="setFileDetector(org.openqa.selenium.remote.FileDetector)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>setFileDetector</h4>
+<pre class="methodSignature">public&nbsp;void&nbsp;setFileDetector&#8203;(<a href="FileDetector.html" title="interface in org.openqa.selenium.remote">FileDetector</a>&nbsp;detector)</pre>
+<div class="block">Set the file detector to be used when sending keyboard input. By default, this is set to a file
+ detector that does nothing.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>detector</code> - The detector to use. Must not be null.</dd>
+<dt><span class="seeLabel">See Also:</span></dt>
+<dd><a href="FileDetector.html" title="interface in org.openqa.selenium.remote"><code>FileDetector</code></a>, 
+<a href="LocalFileDetector.html" title="class in org.openqa.selenium.remote"><code>LocalFileDetector</code></a>, 
+<a href="UselessFileDetector.html" title="class in org.openqa.selenium.remote"><code>UselessFileDetector</code></a></dd>
+</dl>
 </li>
 </ul>
 <a id="toString()">

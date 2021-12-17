@@ -1,19 +1,19 @@
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
   <head>
-    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>selenium.webdriver.safari.webdriver &#8212; Selenium 4.0.0 documentation</title>
-    <link rel="stylesheet" href="../_static/classic.css" type="text/css" />
-    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>selenium.webdriver.safari.webdriver &#8212; Selenium 4.1.0 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/classic.css" />
     
-    <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
-    <script type="text/javascript" src="../_static/jquery.js"></script>
-    <script type="text/javascript" src="../_static/underscore.js"></script>
-    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
     
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" /> 
@@ -27,7 +27,8 @@
         <li class="right" >
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">Selenium 4.0.0 documentation</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="../index.html">Selenium 4.1.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">selenium.webdriver.safari.webdriver</a></li> 
       </ul>
     </div>  
 
@@ -36,61 +37,12 @@
         <div class="bodywrapper">
           <div class="body" role="main">
             
-  <div class="section" id="module-selenium.webdriver.safari.webdriver">
-<span id="selenium-webdriver-safari-webdriver"></span><h1>selenium.webdriver.safari.webdriver<a class="headerlink" href="#module-selenium.webdriver.safari.webdriver" title="Permalink to this headline">¶</a></h1>
-<dl class="class">
-<dt id="selenium.webdriver.safari.webdriver.WebDriver">
-<em class="property">class </em><code class="descclassname">selenium.webdriver.safari.webdriver.</code><code class="descname">WebDriver</code><span class="sig-paren">(</span><em>port=0</em>, <em>executable_path='/usr/bin/safaridriver'</em>, <em>reuse_service=False</em>, <em>desired_capabilities={'browserName': 'safari'</em>, <em>'platformName': 'mac'}</em>, <em>quiet=False</em>, <em>keep_alive=True</em>, <em>service_args=None</em>, <em>options: selenium.webdriver.safari.options.Options = None</em>, <em>service: selenium.webdriver.safari.service.Service = None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/webdriver/safari/webdriver.html#WebDriver"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.safari.webdriver.WebDriver" title="Permalink to this definition">¶</a></dt>
-<dd><p>Controls the SafariDriver and allows you to drive the browser.</p>
-<p>Creates a new Safari driver instance and launches or finds a running safaridriver service.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Args:</th><td class="field-body"><ul class="first last simple">
-<li>port - The port on which the safaridriver service should listen for new connections. If zero, a free port will be found.</li>
-<li>executable_path - Path to a custom safaridriver executable to be used. If absent, /usr/bin/safaridriver is used.</li>
-<li>reuse_service - If True, do not spawn a safaridriver instance; instead, connect to an already-running service that was launched externally.</li>
-<li>desired_capabilities: Dictionary object with desired capabilities (Can be used to provide various Safari switches).</li>
-<li>quiet - If True, the driver’s stdout and stderr is suppressed.</li>
-<li><dl class="first docutils">
-<dt>keep_alive - Whether to configure SafariRemoteConnection to use</dt>
-<dd>HTTP keep-alive. Defaults to True.</dd>
-</dl>
-</li>
-<li>service_args : List of args to pass to the safaridriver service</li>
-</ul>
-</td>
-</tr>
-</tbody>
-</table>
-<dl class="method">
-<dt id="selenium.webdriver.safari.webdriver.WebDriver.debug">
-<code class="descname">debug</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/webdriver/safari/webdriver.html#WebDriver.debug"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.safari.webdriver.WebDriver.debug" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="selenium.webdriver.safari.webdriver.WebDriver.get_permission">
-<code class="descname">get_permission</code><span class="sig-paren">(</span><em>permission</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/webdriver/safari/webdriver.html#WebDriver.get_permission"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.safari.webdriver.WebDriver.get_permission" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="selenium.webdriver.safari.webdriver.WebDriver.quit">
-<code class="descname">quit</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/webdriver/safari/webdriver.html#WebDriver.quit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.safari.webdriver.WebDriver.quit" title="Permalink to this definition">¶</a></dt>
-<dd><p>Closes the browser and shuts down the SafariDriver executable
-that is started when starting the SafariDriver</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="selenium.webdriver.safari.webdriver.WebDriver.set_permission">
-<code class="descname">set_permission</code><span class="sig-paren">(</span><em>permission</em>, <em>value</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/webdriver/safari/webdriver.html#WebDriver.set_permission"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.safari.webdriver.WebDriver.set_permission" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
-</div>
+  <section id="selenium-webdriver-safari-webdriver">
+<h1>selenium.webdriver.safari.webdriver<a class="headerlink" href="#selenium-webdriver-safari-webdriver" title="Permalink to this headline">¶</a></h1>
+</section>
 
 
+            <div class="clearer"></div>
           </div>
         </div>
       </div>
@@ -104,17 +56,15 @@ that is started when starting the SafariDriver</p>
     </ul>
    </div>
 <div id="searchbox" style="display: none" role="search">
-  <h3>Quick search</h3>
+  <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="../search.html" method="get">
-      <input type="text" name="q" />
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
       <input type="submit" value="Go" />
-      <input type="hidden" name="check_keywords" value="yes" />
-      <input type="hidden" name="area" value="default" />
     </form>
     </div>
 </div>
-<script type="text/javascript">$('#searchbox').show(0);</script>
+<script>$('#searchbox').show(0);</script>
         </div>
       </div>
       <div class="clearer"></div>
@@ -128,7 +78,8 @@ that is started when starting the SafariDriver</p>
         <li class="right" >
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">Selenium 4.0.0 documentation</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="../index.html">Selenium 4.1.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">selenium.webdriver.safari.webdriver</a></li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">

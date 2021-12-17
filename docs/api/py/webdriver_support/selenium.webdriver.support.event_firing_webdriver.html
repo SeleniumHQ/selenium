@@ -1,19 +1,19 @@
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
   <head>
-    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>selenium.webdriver.support.event_firing_webdriver &#8212; Selenium 4.0.0 documentation</title>
-    <link rel="stylesheet" href="../_static/classic.css" type="text/css" />
-    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>selenium.webdriver.support.event_firing_webdriver &#8212; Selenium 4.1.0 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/classic.css" />
     
-    <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
-    <script type="text/javascript" src="../_static/jquery.js"></script>
-    <script type="text/javascript" src="../_static/underscore.js"></script>
-    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
     
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" /> 
@@ -27,7 +27,8 @@
         <li class="right" >
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">Selenium 4.0.0 documentation</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="../index.html">Selenium 4.1.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">selenium.webdriver.support.event_firing_webdriver</a></li> 
       </ul>
     </div>  
 
@@ -36,295 +37,12 @@
         <div class="bodywrapper">
           <div class="body" role="main">
             
-  <div class="section" id="module-selenium.webdriver.support.event_firing_webdriver">
-<span id="selenium-webdriver-support-event-firing-webdriver"></span><h1>selenium.webdriver.support.event_firing_webdriver<a class="headerlink" href="#module-selenium.webdriver.support.event_firing_webdriver" title="Permalink to this headline">¶</a></h1>
-<dl class="class">
-<dt id="selenium.webdriver.support.event_firing_webdriver.EventFiringWebDriver">
-<em class="property">class </em><code class="descclassname">selenium.webdriver.support.event_firing_webdriver.</code><code class="descname">EventFiringWebDriver</code><span class="sig-paren">(</span><em>driver</em>, <em>event_listener</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/webdriver/support/event_firing_webdriver.html#EventFiringWebDriver"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.support.event_firing_webdriver.EventFiringWebDriver" title="Permalink to this definition">¶</a></dt>
-<dd><p>A wrapper around an arbitrary WebDriver instance which supports firing events</p>
-<p>Creates a new instance of the EventFiringWebDriver</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Args:</th><td class="field-body"><ul class="first last simple">
-<li>driver : A WebDriver instance</li>
-<li>event_listener : Instance of a class that subclasses AbstractEventListener and implements it fully or partially</li>
-</ul>
-</td>
-</tr>
-</tbody>
-</table>
-<p>Example:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">selenium.webdriver</span> <span class="kn">import</span> <span class="n">Firefox</span>
-<span class="kn">from</span> <span class="nn">selenium.webdriver.support.events</span> <span class="kn">import</span> <span class="n">EventFiringWebDriver</span><span class="p">,</span> <span class="n">AbstractEventListener</span>
-
-<span class="k">class</span> <span class="nc">MyListener</span><span class="p">(</span><span class="n">AbstractEventListener</span><span class="p">):</span>
-    <span class="k">def</span> <span class="nf">before_navigate_to</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">url</span><span class="p">,</span> <span class="n">driver</span><span class="p">):</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Before navigate to </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">url</span><span class="p">)</span>
-    <span class="k">def</span> <span class="nf">after_navigate_to</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">url</span><span class="p">,</span> <span class="n">driver</span><span class="p">):</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;After navigate to </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">url</span><span class="p">)</span>
-
-<span class="n">driver</span> <span class="o">=</span> <span class="n">Firefox</span><span class="p">()</span>
-<span class="n">ef_driver</span> <span class="o">=</span> <span class="n">EventFiringWebDriver</span><span class="p">(</span><span class="n">driver</span><span class="p">,</span> <span class="n">MyListener</span><span class="p">())</span>
-<span class="n">ef_driver</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;http://www.google.co.in/&quot;</span><span class="p">)</span>
-</pre></div>
-</div>
-<dl class="method">
-<dt id="selenium.webdriver.support.event_firing_webdriver.EventFiringWebDriver.back">
-<code class="descname">back</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/webdriver/support/event_firing_webdriver.html#EventFiringWebDriver.back"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.support.event_firing_webdriver.EventFiringWebDriver.back" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="selenium.webdriver.support.event_firing_webdriver.EventFiringWebDriver.close">
-<code class="descname">close</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/webdriver/support/event_firing_webdriver.html#EventFiringWebDriver.close"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.support.event_firing_webdriver.EventFiringWebDriver.close" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="selenium.webdriver.support.event_firing_webdriver.EventFiringWebDriver.execute_async_script">
-<code class="descname">execute_async_script</code><span class="sig-paren">(</span><em>script</em>, <em>*args</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/webdriver/support/event_firing_webdriver.html#EventFiringWebDriver.execute_async_script"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.support.event_firing_webdriver.EventFiringWebDriver.execute_async_script" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="selenium.webdriver.support.event_firing_webdriver.EventFiringWebDriver.execute_script">
-<code class="descname">execute_script</code><span class="sig-paren">(</span><em>script</em>, <em>*args</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/webdriver/support/event_firing_webdriver.html#EventFiringWebDriver.execute_script"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.support.event_firing_webdriver.EventFiringWebDriver.execute_script" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="selenium.webdriver.support.event_firing_webdriver.EventFiringWebDriver.find_element">
-<code class="descname">find_element</code><span class="sig-paren">(</span><em>by='id'</em>, <em>value=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/webdriver/support/event_firing_webdriver.html#EventFiringWebDriver.find_element"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.support.event_firing_webdriver.EventFiringWebDriver.find_element" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="selenium.webdriver.support.event_firing_webdriver.EventFiringWebDriver.find_element_by_class_name">
-<code class="descname">find_element_by_class_name</code><span class="sig-paren">(</span><em>name</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/webdriver/support/event_firing_webdriver.html#EventFiringWebDriver.find_element_by_class_name"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.support.event_firing_webdriver.EventFiringWebDriver.find_element_by_class_name" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="selenium.webdriver.support.event_firing_webdriver.EventFiringWebDriver.find_element_by_css_selector">
-<code class="descname">find_element_by_css_selector</code><span class="sig-paren">(</span><em>css_selector</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/webdriver/support/event_firing_webdriver.html#EventFiringWebDriver.find_element_by_css_selector"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.support.event_firing_webdriver.EventFiringWebDriver.find_element_by_css_selector" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="selenium.webdriver.support.event_firing_webdriver.EventFiringWebDriver.find_element_by_id">
-<code class="descname">find_element_by_id</code><span class="sig-paren">(</span><em>id_</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/webdriver/support/event_firing_webdriver.html#EventFiringWebDriver.find_element_by_id"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.support.event_firing_webdriver.EventFiringWebDriver.find_element_by_id" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="selenium.webdriver.support.event_firing_webdriver.EventFiringWebDriver.find_element_by_link_text">
-<code class="descname">find_element_by_link_text</code><span class="sig-paren">(</span><em>link_text</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/webdriver/support/event_firing_webdriver.html#EventFiringWebDriver.find_element_by_link_text"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.support.event_firing_webdriver.EventFiringWebDriver.find_element_by_link_text" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="selenium.webdriver.support.event_firing_webdriver.EventFiringWebDriver.find_element_by_name">
-<code class="descname">find_element_by_name</code><span class="sig-paren">(</span><em>name</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/webdriver/support/event_firing_webdriver.html#EventFiringWebDriver.find_element_by_name"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.support.event_firing_webdriver.EventFiringWebDriver.find_element_by_name" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="selenium.webdriver.support.event_firing_webdriver.EventFiringWebDriver.find_element_by_partial_link_text">
-<code class="descname">find_element_by_partial_link_text</code><span class="sig-paren">(</span><em>link_text</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/webdriver/support/event_firing_webdriver.html#EventFiringWebDriver.find_element_by_partial_link_text"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.support.event_firing_webdriver.EventFiringWebDriver.find_element_by_partial_link_text" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="selenium.webdriver.support.event_firing_webdriver.EventFiringWebDriver.find_element_by_tag_name">
-<code class="descname">find_element_by_tag_name</code><span class="sig-paren">(</span><em>name</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/webdriver/support/event_firing_webdriver.html#EventFiringWebDriver.find_element_by_tag_name"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.support.event_firing_webdriver.EventFiringWebDriver.find_element_by_tag_name" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="selenium.webdriver.support.event_firing_webdriver.EventFiringWebDriver.find_element_by_xpath">
-<code class="descname">find_element_by_xpath</code><span class="sig-paren">(</span><em>xpath</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/webdriver/support/event_firing_webdriver.html#EventFiringWebDriver.find_element_by_xpath"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.support.event_firing_webdriver.EventFiringWebDriver.find_element_by_xpath" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="selenium.webdriver.support.event_firing_webdriver.EventFiringWebDriver.find_elements">
-<code class="descname">find_elements</code><span class="sig-paren">(</span><em>by='id'</em>, <em>value=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/webdriver/support/event_firing_webdriver.html#EventFiringWebDriver.find_elements"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.support.event_firing_webdriver.EventFiringWebDriver.find_elements" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="selenium.webdriver.support.event_firing_webdriver.EventFiringWebDriver.find_elements_by_class_name">
-<code class="descname">find_elements_by_class_name</code><span class="sig-paren">(</span><em>name</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/webdriver/support/event_firing_webdriver.html#EventFiringWebDriver.find_elements_by_class_name"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.support.event_firing_webdriver.EventFiringWebDriver.find_elements_by_class_name" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="selenium.webdriver.support.event_firing_webdriver.EventFiringWebDriver.find_elements_by_css_selector">
-<code class="descname">find_elements_by_css_selector</code><span class="sig-paren">(</span><em>css_selector</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/webdriver/support/event_firing_webdriver.html#EventFiringWebDriver.find_elements_by_css_selector"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.support.event_firing_webdriver.EventFiringWebDriver.find_elements_by_css_selector" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="selenium.webdriver.support.event_firing_webdriver.EventFiringWebDriver.find_elements_by_id">
-<code class="descname">find_elements_by_id</code><span class="sig-paren">(</span><em>id_</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/webdriver/support/event_firing_webdriver.html#EventFiringWebDriver.find_elements_by_id"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.support.event_firing_webdriver.EventFiringWebDriver.find_elements_by_id" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="selenium.webdriver.support.event_firing_webdriver.EventFiringWebDriver.find_elements_by_link_text">
-<code class="descname">find_elements_by_link_text</code><span class="sig-paren">(</span><em>text</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/webdriver/support/event_firing_webdriver.html#EventFiringWebDriver.find_elements_by_link_text"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.support.event_firing_webdriver.EventFiringWebDriver.find_elements_by_link_text" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="selenium.webdriver.support.event_firing_webdriver.EventFiringWebDriver.find_elements_by_name">
-<code class="descname">find_elements_by_name</code><span class="sig-paren">(</span><em>name</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/webdriver/support/event_firing_webdriver.html#EventFiringWebDriver.find_elements_by_name"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.support.event_firing_webdriver.EventFiringWebDriver.find_elements_by_name" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="selenium.webdriver.support.event_firing_webdriver.EventFiringWebDriver.find_elements_by_partial_link_text">
-<code class="descname">find_elements_by_partial_link_text</code><span class="sig-paren">(</span><em>link_text</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/webdriver/support/event_firing_webdriver.html#EventFiringWebDriver.find_elements_by_partial_link_text"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.support.event_firing_webdriver.EventFiringWebDriver.find_elements_by_partial_link_text" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="selenium.webdriver.support.event_firing_webdriver.EventFiringWebDriver.find_elements_by_tag_name">
-<code class="descname">find_elements_by_tag_name</code><span class="sig-paren">(</span><em>name</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/webdriver/support/event_firing_webdriver.html#EventFiringWebDriver.find_elements_by_tag_name"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.support.event_firing_webdriver.EventFiringWebDriver.find_elements_by_tag_name" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="selenium.webdriver.support.event_firing_webdriver.EventFiringWebDriver.find_elements_by_xpath">
-<code class="descname">find_elements_by_xpath</code><span class="sig-paren">(</span><em>xpath</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/webdriver/support/event_firing_webdriver.html#EventFiringWebDriver.find_elements_by_xpath"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.support.event_firing_webdriver.EventFiringWebDriver.find_elements_by_xpath" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="selenium.webdriver.support.event_firing_webdriver.EventFiringWebDriver.forward">
-<code class="descname">forward</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/webdriver/support/event_firing_webdriver.html#EventFiringWebDriver.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.support.event_firing_webdriver.EventFiringWebDriver.forward" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="selenium.webdriver.support.event_firing_webdriver.EventFiringWebDriver.get">
-<code class="descname">get</code><span class="sig-paren">(</span><em>url</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/webdriver/support/event_firing_webdriver.html#EventFiringWebDriver.get"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.support.event_firing_webdriver.EventFiringWebDriver.get" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="selenium.webdriver.support.event_firing_webdriver.EventFiringWebDriver.quit">
-<code class="descname">quit</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/webdriver/support/event_firing_webdriver.html#EventFiringWebDriver.quit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.support.event_firing_webdriver.EventFiringWebDriver.quit" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt id="selenium.webdriver.support.event_firing_webdriver.EventFiringWebDriver.wrapped_driver">
-<code class="descname">wrapped_driver</code><a class="headerlink" href="#selenium.webdriver.support.event_firing_webdriver.EventFiringWebDriver.wrapped_driver" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns the WebDriver instance wrapped by this EventsFiringWebDriver</p>
-</dd></dl>
-
-</dd></dl>
-
-<dl class="class">
-<dt id="selenium.webdriver.support.event_firing_webdriver.EventFiringWebElement">
-<em class="property">class </em><code class="descclassname">selenium.webdriver.support.event_firing_webdriver.</code><code class="descname">EventFiringWebElement</code><span class="sig-paren">(</span><em>webelement</em>, <em>ef_driver</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/webdriver/support/event_firing_webdriver.html#EventFiringWebElement"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.support.event_firing_webdriver.EventFiringWebElement" title="Permalink to this definition">¶</a></dt>
-<dd><p>”
-A wrapper around WebElement instance which supports firing events</p>
-<p>Creates a new instance of the EventFiringWebElement</p>
-<dl class="method">
-<dt id="selenium.webdriver.support.event_firing_webdriver.EventFiringWebElement.clear">
-<code class="descname">clear</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/webdriver/support/event_firing_webdriver.html#EventFiringWebElement.clear"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.support.event_firing_webdriver.EventFiringWebElement.clear" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="selenium.webdriver.support.event_firing_webdriver.EventFiringWebElement.click">
-<code class="descname">click</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/webdriver/support/event_firing_webdriver.html#EventFiringWebElement.click"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.support.event_firing_webdriver.EventFiringWebElement.click" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="selenium.webdriver.support.event_firing_webdriver.EventFiringWebElement.find_element">
-<code class="descname">find_element</code><span class="sig-paren">(</span><em>by='id'</em>, <em>value=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/webdriver/support/event_firing_webdriver.html#EventFiringWebElement.find_element"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.support.event_firing_webdriver.EventFiringWebElement.find_element" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="selenium.webdriver.support.event_firing_webdriver.EventFiringWebElement.find_element_by_class_name">
-<code class="descname">find_element_by_class_name</code><span class="sig-paren">(</span><em>name</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/webdriver/support/event_firing_webdriver.html#EventFiringWebElement.find_element_by_class_name"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.support.event_firing_webdriver.EventFiringWebElement.find_element_by_class_name" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="selenium.webdriver.support.event_firing_webdriver.EventFiringWebElement.find_element_by_css_selector">
-<code class="descname">find_element_by_css_selector</code><span class="sig-paren">(</span><em>css_selector</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/webdriver/support/event_firing_webdriver.html#EventFiringWebElement.find_element_by_css_selector"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.support.event_firing_webdriver.EventFiringWebElement.find_element_by_css_selector" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="selenium.webdriver.support.event_firing_webdriver.EventFiringWebElement.find_element_by_id">
-<code class="descname">find_element_by_id</code><span class="sig-paren">(</span><em>id_</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/webdriver/support/event_firing_webdriver.html#EventFiringWebElement.find_element_by_id"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.support.event_firing_webdriver.EventFiringWebElement.find_element_by_id" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="selenium.webdriver.support.event_firing_webdriver.EventFiringWebElement.find_element_by_link_text">
-<code class="descname">find_element_by_link_text</code><span class="sig-paren">(</span><em>link_text</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/webdriver/support/event_firing_webdriver.html#EventFiringWebElement.find_element_by_link_text"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.support.event_firing_webdriver.EventFiringWebElement.find_element_by_link_text" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="selenium.webdriver.support.event_firing_webdriver.EventFiringWebElement.find_element_by_name">
-<code class="descname">find_element_by_name</code><span class="sig-paren">(</span><em>name</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/webdriver/support/event_firing_webdriver.html#EventFiringWebElement.find_element_by_name"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.support.event_firing_webdriver.EventFiringWebElement.find_element_by_name" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="selenium.webdriver.support.event_firing_webdriver.EventFiringWebElement.find_element_by_partial_link_text">
-<code class="descname">find_element_by_partial_link_text</code><span class="sig-paren">(</span><em>link_text</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/webdriver/support/event_firing_webdriver.html#EventFiringWebElement.find_element_by_partial_link_text"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.support.event_firing_webdriver.EventFiringWebElement.find_element_by_partial_link_text" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="selenium.webdriver.support.event_firing_webdriver.EventFiringWebElement.find_element_by_tag_name">
-<code class="descname">find_element_by_tag_name</code><span class="sig-paren">(</span><em>name</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/webdriver/support/event_firing_webdriver.html#EventFiringWebElement.find_element_by_tag_name"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.support.event_firing_webdriver.EventFiringWebElement.find_element_by_tag_name" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="selenium.webdriver.support.event_firing_webdriver.EventFiringWebElement.find_element_by_xpath">
-<code class="descname">find_element_by_xpath</code><span class="sig-paren">(</span><em>xpath</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/webdriver/support/event_firing_webdriver.html#EventFiringWebElement.find_element_by_xpath"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.support.event_firing_webdriver.EventFiringWebElement.find_element_by_xpath" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="selenium.webdriver.support.event_firing_webdriver.EventFiringWebElement.find_elements">
-<code class="descname">find_elements</code><span class="sig-paren">(</span><em>by='id'</em>, <em>value=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/webdriver/support/event_firing_webdriver.html#EventFiringWebElement.find_elements"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.support.event_firing_webdriver.EventFiringWebElement.find_elements" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="selenium.webdriver.support.event_firing_webdriver.EventFiringWebElement.find_elements_by_class_name">
-<code class="descname">find_elements_by_class_name</code><span class="sig-paren">(</span><em>name</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/webdriver/support/event_firing_webdriver.html#EventFiringWebElement.find_elements_by_class_name"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.support.event_firing_webdriver.EventFiringWebElement.find_elements_by_class_name" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="selenium.webdriver.support.event_firing_webdriver.EventFiringWebElement.find_elements_by_css_selector">
-<code class="descname">find_elements_by_css_selector</code><span class="sig-paren">(</span><em>css_selector</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/webdriver/support/event_firing_webdriver.html#EventFiringWebElement.find_elements_by_css_selector"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.support.event_firing_webdriver.EventFiringWebElement.find_elements_by_css_selector" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="selenium.webdriver.support.event_firing_webdriver.EventFiringWebElement.find_elements_by_id">
-<code class="descname">find_elements_by_id</code><span class="sig-paren">(</span><em>id_</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/webdriver/support/event_firing_webdriver.html#EventFiringWebElement.find_elements_by_id"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.support.event_firing_webdriver.EventFiringWebElement.find_elements_by_id" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="selenium.webdriver.support.event_firing_webdriver.EventFiringWebElement.find_elements_by_link_text">
-<code class="descname">find_elements_by_link_text</code><span class="sig-paren">(</span><em>link_text</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/webdriver/support/event_firing_webdriver.html#EventFiringWebElement.find_elements_by_link_text"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.support.event_firing_webdriver.EventFiringWebElement.find_elements_by_link_text" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="selenium.webdriver.support.event_firing_webdriver.EventFiringWebElement.find_elements_by_name">
-<code class="descname">find_elements_by_name</code><span class="sig-paren">(</span><em>name</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/webdriver/support/event_firing_webdriver.html#EventFiringWebElement.find_elements_by_name"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.support.event_firing_webdriver.EventFiringWebElement.find_elements_by_name" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="selenium.webdriver.support.event_firing_webdriver.EventFiringWebElement.find_elements_by_partial_link_text">
-<code class="descname">find_elements_by_partial_link_text</code><span class="sig-paren">(</span><em>link_text</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/webdriver/support/event_firing_webdriver.html#EventFiringWebElement.find_elements_by_partial_link_text"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.support.event_firing_webdriver.EventFiringWebElement.find_elements_by_partial_link_text" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="selenium.webdriver.support.event_firing_webdriver.EventFiringWebElement.find_elements_by_tag_name">
-<code class="descname">find_elements_by_tag_name</code><span class="sig-paren">(</span><em>name</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/webdriver/support/event_firing_webdriver.html#EventFiringWebElement.find_elements_by_tag_name"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.support.event_firing_webdriver.EventFiringWebElement.find_elements_by_tag_name" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="selenium.webdriver.support.event_firing_webdriver.EventFiringWebElement.find_elements_by_xpath">
-<code class="descname">find_elements_by_xpath</code><span class="sig-paren">(</span><em>xpath</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/webdriver/support/event_firing_webdriver.html#EventFiringWebElement.find_elements_by_xpath"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.support.event_firing_webdriver.EventFiringWebElement.find_elements_by_xpath" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="selenium.webdriver.support.event_firing_webdriver.EventFiringWebElement.send_keys">
-<code class="descname">send_keys</code><span class="sig-paren">(</span><em>*value</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/webdriver/support/event_firing_webdriver.html#EventFiringWebElement.send_keys"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.support.event_firing_webdriver.EventFiringWebElement.send_keys" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt id="selenium.webdriver.support.event_firing_webdriver.EventFiringWebElement.wrapped_element">
-<code class="descname">wrapped_element</code><a class="headerlink" href="#selenium.webdriver.support.event_firing_webdriver.EventFiringWebElement.wrapped_element" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns the WebElement wrapped by this EventFiringWebElement instance</p>
-</dd></dl>
-
-</dd></dl>
-
-</div>
+  <section id="selenium-webdriver-support-event-firing-webdriver">
+<h1>selenium.webdriver.support.event_firing_webdriver<a class="headerlink" href="#selenium-webdriver-support-event-firing-webdriver" title="Permalink to this headline">¶</a></h1>
+</section>
 
 
+            <div class="clearer"></div>
           </div>
         </div>
       </div>
@@ -338,17 +56,15 @@ A wrapper around WebElement instance which supports firing events</p>
     </ul>
    </div>
 <div id="searchbox" style="display: none" role="search">
-  <h3>Quick search</h3>
+  <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="../search.html" method="get">
-      <input type="text" name="q" />
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
       <input type="submit" value="Go" />
-      <input type="hidden" name="check_keywords" value="yes" />
-      <input type="hidden" name="area" value="default" />
     </form>
     </div>
 </div>
-<script type="text/javascript">$('#searchbox').show(0);</script>
+<script>$('#searchbox').show(0);</script>
         </div>
       </div>
       <div class="clearer"></div>
@@ -362,7 +78,8 @@ A wrapper around WebElement instance which supports firing events</p>
         <li class="right" >
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">Selenium 4.0.0 documentation</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="../index.html">Selenium 4.1.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">selenium.webdriver.support.event_firing_webdriver</a></li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">

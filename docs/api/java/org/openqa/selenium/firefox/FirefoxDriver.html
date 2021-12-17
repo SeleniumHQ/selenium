@@ -27,7 +27,7 @@
     catch(err) {
     }
 //-->
-var data = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10,"i9":10,"i10":10};
+var data = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10,"i9":10,"i10":10,"i11":10};
 var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -366,25 +366,31 @@ implements <a href="../html5/WebStorage.html" title="interface in org.openqa.sel
 </td>
 </tr>
 <tr id="i7" class="rowColor">
+<td class="colFirst"><code>java.lang.String</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#installExtension(java.nio.file.Path,java.lang.Boolean)">installExtension</a></span>&#8203;(java.nio.file.Path&nbsp;path,
+                java.lang.Boolean&nbsp;temporary)</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr id="i8" class="altColor">
 <td class="colFirst"><code>java.util.Optional&lt;<a href="../devtools/DevTools.html" title="class in org.openqa.selenium.devtools">DevTools</a>&gt;</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#maybeGetDevTools()">maybeGetDevTools</a></span>()</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i8" class="altColor">
+<tr id="i9" class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setContext(org.openqa.selenium.firefox.FirefoxCommandContext)">setContext</a></span>&#8203;(<a href="FirefoxCommandContext.html" title="enum in org.openqa.selenium.firefox">FirefoxCommandContext</a>&nbsp;commandContext)</code></th>
 <td class="colLast">
 <div class="block">Context commands are operating on.</div>
 </td>
 </tr>
-<tr id="i9" class="rowColor">
+<tr id="i10" class="altColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setFileDetector(org.openqa.selenium.remote.FileDetector)">setFileDetector</a></span>&#8203;(<a href="../remote/FileDetector.html" title="interface in org.openqa.selenium.remote">FileDetector</a>&nbsp;detector)</code></th>
 <td class="colLast">
 <div class="block">Set the file detector to be used when sending keyboard input.</div>
 </td>
 </tr>
-<tr id="i10" class="altColor">
+<tr id="i11" class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#uninstallExtension(java.lang.String)">uninstallExtension</a></span>&#8203;(java.lang.String&nbsp;extensionId)</code></th>
 <td class="colLast">
@@ -654,6 +660,20 @@ public&nbsp;FirefoxDriver&#8203;(<a href="FirefoxDriverService.html" title="clas
 <dd><code>path</code> - absolute path to the extension file that should be installed.</dd>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>the unique identifier of the installed extension.</dd>
+</dl>
+</li>
+</ul>
+<a id="installExtension(java.nio.file.Path,java.lang.Boolean)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>installExtension</h4>
+<pre class="methodSignature">public&nbsp;java.lang.String&nbsp;installExtension&#8203;(java.nio.file.Path&nbsp;path,
+                                         java.lang.Boolean&nbsp;temporary)</pre>
+<dl>
+<dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
+<dd><code><a href="HasExtensions.html#installExtension(java.nio.file.Path,java.lang.Boolean)">installExtension</a></code>&nbsp;in interface&nbsp;<code><a href="HasExtensions.html" title="interface in org.openqa.selenium.firefox">HasExtensions</a></code></dd>
 </dl>
 </li>
 </ul>

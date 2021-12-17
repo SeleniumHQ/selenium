@@ -151,14 +151,14 @@ implements java.lang.AutoCloseable</pre>
  <p>
  Example usage:
  <p>
- <code>
+ <pre><code>
    Route route = Route.matching(req -&gt; GET == req.getMethod() &amp;&amp; req.getUri().endsWith("/example"))
      .to(() -&gt; req -&gt; new HttpResponse().setContent(Contents.utf8String("Hello, World!")));
 
    try (NetworkInterceptor interceptor = new NetworkInterceptor(driver, route)) {
      // Your code here.
    }
- </code>
+ </code></pre>
  <p>
  It is also possible to intercept and modify responses that the browser will
  receive. Do this by calling <a href="#%3Cinit%3E(org.openqa.selenium.WebDriver,org.openqa.selenium.remote.http.Filter)"><code>NetworkInterceptor(WebDriver, Filter)</code></a>.</div>

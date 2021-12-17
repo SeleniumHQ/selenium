@@ -283,48 +283,6 @@ implements <a href="../WebDriver.Window.html" title="interface in org.openqa.sel
 <!--   -->
 </a>
 <h3>Method Detail</h3>
-<a id="setSize(org.openqa.selenium.Dimension)">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>setSize</h4>
-<pre class="methodSignature">public&nbsp;void&nbsp;setSize&#8203;(<a href="../Dimension.html" title="class in org.openqa.selenium">Dimension</a>&nbsp;targetSize)</pre>
-<div class="block"><span class="descfrmTypeLabel">Description copied from interface:&nbsp;<code><a href="../WebDriver.Window.html#setSize(org.openqa.selenium.Dimension)">WebDriver.Window</a></code></span></div>
-<div class="block">Set the size of the current window. This will change the outer window dimension,
- not just the view port, synonymous to window.resizeTo() in JS.
- <p>
- See <a href="https://w3c.github.io/webdriver/#set-window-rect">W3C WebDriver specification</a>
- for more details.</div>
-<dl>
-<dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
-<dd><code><a href="../WebDriver.Window.html#setSize(org.openqa.selenium.Dimension)">setSize</a></code>&nbsp;in interface&nbsp;<code><a href="../WebDriver.Window.html" title="interface in org.openqa.selenium">WebDriver.Window</a></code></dd>
-<dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>targetSize</code> - The target size.</dd>
-</dl>
-</li>
-</ul>
-<a id="setPosition(org.openqa.selenium.Point)">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>setPosition</h4>
-<pre class="methodSignature">public&nbsp;void&nbsp;setPosition&#8203;(<a href="../Point.html" title="class in org.openqa.selenium">Point</a>&nbsp;targetPosition)</pre>
-<div class="block"><span class="descfrmTypeLabel">Description copied from interface:&nbsp;<code><a href="../WebDriver.Window.html#setPosition(org.openqa.selenium.Point)">WebDriver.Window</a></code></span></div>
-<div class="block">Set the position of the current window. This is relative to the upper left corner of the
- screen, synonymous to window.moveTo() in JS.
- <p>
- See <a href="https://w3c.github.io/webdriver/#set-window-rect">W3C WebDriver specification</a>
- for more details.</div>
-<dl>
-<dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
-<dd><code><a href="../WebDriver.Window.html#setPosition(org.openqa.selenium.Point)">setPosition</a></code>&nbsp;in interface&nbsp;<code><a href="../WebDriver.Window.html" title="interface in org.openqa.selenium">WebDriver.Window</a></code></dd>
-<dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>targetPosition</code> - The target position of the window.</dd>
-</dl>
-</li>
-</ul>
 <a id="getSize()">
 <!--   -->
 </a>
@@ -346,6 +304,27 @@ implements <a href="../WebDriver.Window.html" title="interface in org.openqa.sel
 </dl>
 </li>
 </ul>
+<a id="setSize(org.openqa.selenium.Dimension)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>setSize</h4>
+<pre class="methodSignature">public&nbsp;void&nbsp;setSize&#8203;(<a href="../Dimension.html" title="class in org.openqa.selenium">Dimension</a>&nbsp;targetSize)</pre>
+<div class="block"><span class="descfrmTypeLabel">Description copied from interface:&nbsp;<code><a href="../WebDriver.Window.html#setSize(org.openqa.selenium.Dimension)">WebDriver.Window</a></code></span></div>
+<div class="block">Set the size of the current window. This will change the outer window dimension,
+ not just the view port, synonymous to window.resizeTo() in JS.
+ <p>
+ See <a href="https://w3c.github.io/webdriver/#set-window-rect">W3C WebDriver specification</a>
+ for more details.</div>
+<dl>
+<dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
+<dd><code><a href="../WebDriver.Window.html#setSize(org.openqa.selenium.Dimension)">setSize</a></code>&nbsp;in interface&nbsp;<code><a href="../WebDriver.Window.html" title="interface in org.openqa.selenium">WebDriver.Window</a></code></dd>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>targetSize</code> - The target size.</dd>
+</dl>
+</li>
+</ul>
 <a id="getPosition()">
 <!--   -->
 </a>
@@ -363,6 +342,27 @@ implements <a href="../WebDriver.Window.html" title="interface in org.openqa.sel
 <dd><code><a href="../WebDriver.Window.html#getPosition()">getPosition</a></code>&nbsp;in interface&nbsp;<code><a href="../WebDriver.Window.html" title="interface in org.openqa.selenium">WebDriver.Window</a></code></dd>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>The current window position.</dd>
+</dl>
+</li>
+</ul>
+<a id="setPosition(org.openqa.selenium.Point)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>setPosition</h4>
+<pre class="methodSignature">public&nbsp;void&nbsp;setPosition&#8203;(<a href="../Point.html" title="class in org.openqa.selenium">Point</a>&nbsp;targetPosition)</pre>
+<div class="block"><span class="descfrmTypeLabel">Description copied from interface:&nbsp;<code><a href="../WebDriver.Window.html#setPosition(org.openqa.selenium.Point)">WebDriver.Window</a></code></span></div>
+<div class="block">Set the position of the current window. This is relative to the upper left corner of the
+ screen, synonymous to window.moveTo() in JS.
+ <p>
+ See <a href="https://w3c.github.io/webdriver/#set-window-rect">W3C WebDriver specification</a>
+ for more details.</div>
+<dl>
+<dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
+<dd><code><a href="../WebDriver.Window.html#setPosition(org.openqa.selenium.Point)">setPosition</a></code>&nbsp;in interface&nbsp;<code><a href="../WebDriver.Window.html" title="interface in org.openqa.selenium">WebDriver.Window</a></code></dd>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>targetPosition</code> - The target position of the window.</dd>
 </dl>
 </li>
 </ul>

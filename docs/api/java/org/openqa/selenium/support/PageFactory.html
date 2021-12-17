@@ -276,15 +276,15 @@ extends java.lang.Object</pre>
  List&lt;WebElement&gt; fields that have been declared, assuming that the field
  name is also the HTML element's "id" or "name". This means that for the class:
 
- <code> public class Page { private WebElement submit; } </code>
+ <pre><code> public class Page { private WebElement submit; } </code></pre>
 
  there will be an element that can be located using the xpath expression "//*[@id='submit']" or
  "//*[@name='submit']"
-
+ <p>
  By default, the element or the list is looked up each and every time a method is called upon
  it. To change this behaviour, simply annotate the field with the <a href="CacheLookup.html" title="annotation in org.openqa.selenium.support"><code>CacheLookup</code></a>. To change
  how the element is located, use the <a href="FindBy.html" title="annotation in org.openqa.selenium.support"><code>FindBy</code></a> annotation.
-
+ <p>
  This method will attempt to instantiate the class given to it, preferably using a constructor
  which takes a WebDriver instance as its only argument or falling back on a no-arg constructor.
  An exception will be thrown if the class cannot be instantiated.</div>

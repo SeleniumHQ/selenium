@@ -27,7 +27,7 @@
     catch(err) {
     }
 //-->
-var data = {"i0":10,"i1":10};
+var data = {"i0":10,"i1":10,"i2":10};
 var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -194,6 +194,11 @@ implements <a href="../Tracer.html" title="interface in org.openqa.selenium.remo
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getPropagator()">getPropagator</a></span>()</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
+<tr id="i2" class="altColor">
+<td class="colFirst"><code>void</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setOpenTelemetryContext(io.opentelemetry.context.Context)">setOpenTelemetryContext</a></span>&#8203;(io.opentelemetry.context.Context&nbsp;context)</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
 </table>
 <ul class="blockList">
 <li class="blockList"><a id="methods.inherited.from.class.java.lang.Object">
@@ -253,13 +258,26 @@ implements <a href="../Tracer.html" title="interface in org.openqa.selenium.remo
 <a id="getPropagator()">
 <!--   -->
 </a>
-<ul class="blockListLast">
+<ul class="blockList">
 <li class="blockList">
 <h4>getPropagator</h4>
 <pre class="methodSignature">public&nbsp;<a href="../Propagator.html" title="interface in org.openqa.selenium.remote.tracing">Propagator</a>&nbsp;getPropagator()</pre>
 <dl>
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
 <dd><code><a href="../Tracer.html#getPropagator()">getPropagator</a></code>&nbsp;in interface&nbsp;<code><a href="../Tracer.html" title="interface in org.openqa.selenium.remote.tracing">Tracer</a></code></dd>
+</dl>
+</li>
+</ul>
+<a id="setOpenTelemetryContext(io.opentelemetry.context.Context)">
+<!--   -->
+</a>
+<ul class="blockListLast">
+<li class="blockList">
+<h4>setOpenTelemetryContext</h4>
+<pre class="methodSignature">public&nbsp;void&nbsp;setOpenTelemetryContext&#8203;(io.opentelemetry.context.Context&nbsp;context)</pre>
+<dl>
+<dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
+<dd><code><a href="../Tracer.html#setOpenTelemetryContext(io.opentelemetry.context.Context)">setOpenTelemetryContext</a></code>&nbsp;in interface&nbsp;<code><a href="../Tracer.html" title="interface in org.openqa.selenium.remote.tracing">Tracer</a></code></dd>
 </dl>
 </li>
 </ul>
