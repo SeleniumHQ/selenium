@@ -115,6 +115,10 @@ public class BaseServerOptions {
     return config.getBool(SERVER_SECTION, "allow-cors").orElse(false);
   }
 
+  public boolean getBindHost() {
+    return config.getBool(SERVER_SECTION, "bind-host").orElse(true);
+  }
+
   public boolean isSecure() {
     return config.get(SERVER_SECTION, "https-private-key").isPresent()
            && config.get(SERVER_SECTION, "https-certificate").isPresent();
