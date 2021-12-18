@@ -17,7 +17,13 @@
 
 package org.openqa.selenium.environment.webserver;
 
+import static com.google.common.net.HttpHeaders.CONTENT_TYPE;
+import static java.util.Collections.singletonMap;
+import static org.openqa.selenium.json.Json.JSON_UTF_8;
+import static org.openqa.selenium.remote.http.Contents.string;
+
 import com.google.common.collect.ImmutableMap;
+
 import org.openqa.selenium.grid.config.CompoundConfig;
 import org.openqa.selenium.grid.config.Config;
 import org.openqa.selenium.grid.config.MapConfig;
@@ -26,7 +32,6 @@ import org.openqa.selenium.grid.server.BaseServerOptions;
 import org.openqa.selenium.grid.server.Server;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.io.TemporaryFilesystem;
-import org.openqa.selenium.net.PortProber;
 import org.openqa.selenium.netty.server.NettyServer;
 import org.openqa.selenium.remote.http.Contents;
 import org.openqa.selenium.remote.http.HttpClient;
@@ -40,11 +45,6 @@ import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.net.MalformedURLException;
 import java.net.URL;
-
-import static com.google.common.net.HttpHeaders.CONTENT_TYPE;
-import static java.util.Collections.singletonMap;
-import static org.openqa.selenium.json.Json.JSON_UTF_8;
-import static org.openqa.selenium.remote.http.Contents.string;
 
 public class NettyAppServer implements AppServer {
 
@@ -93,8 +93,26 @@ public class NettyAppServer implements AppServer {
   }
 
   private static Config createDefaultConfig() {
-    return new MemoizedConfig(new MapConfig(
-      singletonMap("server", singletonMap("port", PortProber.findFreePort()))));
+    // using 0 as port to have the server pick one for us, this should make tests more stable
+    return new MemoizedConfig(new MapConfig(singletonMap("server", singletonMap("port", 0))));
+  }
+
+  public static void main(String[] args) {
+    MemoizedConfig config = new MemoizedConfig(
+      new MapConfig(singletonMap("server", singletonMap("port", 2310))));
+    BaseServerOptions options = new BaseServerOptions(config);
+
+    HttpHandler handler = new HandlersForTests(
+      options.getHostname().orElse("localhost"),
+      options.getPort(),
+      TemporaryFilesystem.getDefaultTmpFS().createTempDir("netty", "server").toPath());
+
+    NettyAppServer server = new NettyAppServer(
+      config,
+      handler);
+    server.start();
+
+    System.out.printf("Server started. Root URL: %s%n", server.whereIs("/"));
   }
 
   @Override
@@ -180,22 +198,5 @@ public class NettyAppServer implements AppServer {
   @Override
   public String getAlternateHostName() {
     return AppServer.detectAlternateHostname();
-  }
-
-  public static void main(String[] args) {
-    MemoizedConfig config = new MemoizedConfig(new MapConfig(singletonMap("server", singletonMap("port", 2310))));
-    BaseServerOptions options = new BaseServerOptions(config);
-
-    HttpHandler handler = new HandlersForTests(
-      options.getHostname().orElse("localhost"),
-      options.getPort(),
-      TemporaryFilesystem.getDefaultTmpFS().createTempDir("netty", "server").toPath());
-
-    NettyAppServer server = new NettyAppServer(
-      config,
-      handler);
-    server.start();
-
-    System.out.printf("Server started. Root URL: %s%n", server.whereIs("/"));
   }
 }

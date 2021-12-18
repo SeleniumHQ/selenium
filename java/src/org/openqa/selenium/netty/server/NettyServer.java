@@ -43,27 +43,31 @@ import java.io.UncheckedIOException;
 import java.net.BindException;
 import java.net.InetSocketAddress;
 import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.security.cert.CertificateException;
 import java.util.Optional;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.net.ssl.SSLException;
 
 public class NettyServer implements Server<NettyServer> {
 
+  private static final Logger LOG = Logger.getLogger(NettyServer.class.getName());
   private final EventLoopGroup bossGroup;
   private final EventLoopGroup workerGroup;
-  private final int port;
   private final String host;
   private final boolean bindHost;
-  private final URL externalUrl;
   private final HttpHandler handler;
   private final BiFunction<String, Consumer<Message>, Optional<Consumer<Message>>> websocketHandler;
   private final SslContext sslCtx;
   private final boolean allowCors;
-
+  private final int port;
+  private URL externalUrl;
   private Channel channel;
 
   public NettyServer(
@@ -169,6 +173,25 @@ public class NettyServer implements Server<NettyServer> {
         throw new UncheckedIOException(new IOException(errorMessage, e));
       }
       throw e;
+    }
+
+    // If server was passed 0 as port, it means the system picked a port. We need to retrieve it.
+    if (port == 0) {
+      int serverPort = ((InetSocketAddress) channel.localAddress()).getPort();
+      try {
+        externalUrl = new URI(
+          externalUrl.getProtocol(),
+          null,
+          host,
+          serverPort,
+          null,
+          null,
+          null).toURL();
+      } catch (MalformedURLException | URISyntaxException e) {
+        LOG.log(Level.WARNING,
+                "Could not build the server external url after using port 0",
+                e);
+      }
     }
 
     return this;
