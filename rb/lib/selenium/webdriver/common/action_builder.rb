@@ -193,8 +193,11 @@ module Selenium
       # @return [ActionBuilder] A self reference.
       #
 
-      def pause(device, duration = nil)
-        device.create_pause(duration)
+      def pause(deprecated_device = nil, deprecated_duration = nil, device: nil, duration: 0)
+        deprecate_method(deprecated_device, deprecated_duration)
+
+        device ||= deprecated_device || pointer_input
+        device.create_pause(duration || deprecated_duration)
         self
       end
 
@@ -214,7 +217,14 @@ module Selenium
       # @return [ActionBuilder] A self reference.
       #
 
-      def pauses(device, number, duration = nil)
+      def pauses(deprecated_device = nil, deprecated_number = nil, deprecated_duration = nil,
+                 device: nil, number: nil, duration: 0)
+        deprecate_method(deprecated_device, deprecated_duration, deprecated_number, method: :pauses)
+
+        number ||= deprecated_number || 2
+        device ||= deprecated_device || pointer_input
+        duration ||= deprecated_duration || 0
+
         number.times { device.create_pause(duration) }
         self
       end
@@ -268,11 +278,20 @@ module Selenium
 
         unless @async
           max_device = @devices.max { |a, b| a.actions.length <=> b.actions.length }
-          pauses(device, max_device.actions.length) if max_device
+          pauses(device: device, number: max_device.actions.length) if max_device
         end
         @devices << device
         device
       end
+
+      def deprecate_method(device = nil, duration = nil, number = nil, method: :pause)
+        return unless device || number || duration
+
+        WebDriver.logger.deprecate "ActionBuilder##{method} with ordered parameters",
+                                   ':device, :duration, :number keywords',
+                                   id: method
+      end
+
     end # ActionBuilder
   end # WebDriver
 end # Selenium
