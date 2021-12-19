@@ -1,3 +1,22 @@
+v4.1.1
+======
+
+* Supported CDP versions: 85, 94, 95, 96
+* Allow custom tracing to integrate with existing OpenTelemetry tracing
+* Avoiding NoClassDefFoundError by waiting for completion of already started tasks
+* use addon parameter with base64 encoding instead of path parameter
+  that requires using file detector and upload
+* support installing temporary addon in Firefox
+* Remove references to opera_blink in favour of opera
+* BugFix: Handle null parameters in TracedCommandExecutor
+* BugFix: Following redirects by default in HttpClient
+* BugFix: Forwarding CDP/BiDi connections to the container in Dynamic Grid
+* BugFix: Do not log screenshots payload in debug mode
+* BugFix: Mapping Slot fields properly for json payloads
+* BugFix: Configuring relay service via CLI
+* BugFix: Adding a "bind-host" flag to start Grid properly when the
+  server cannot bind to the host, fixes this for environments like Docker
+
 v4.1.0
 ======
 
@@ -12,7 +31,7 @@ v4.1.0
   ConcurrentModificationException while reading exception message by parallel threads
 * Add retry http request filter for transient errors.
 * Fix Javadoc code block formatting
-* [grid] Using non-loopback address when default config is used
+* [grid] Using non-loopback ad  dress when default config is used
 * Fix classloading error in host identifier
 * Split OpenTelemetry command in order to facilitate search by tags
 
