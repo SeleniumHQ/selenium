@@ -31,7 +31,7 @@ v4.1.0
   ConcurrentModificationException while reading exception message by parallel threads
 * Add retry http request filter for transient errors.
 * Fix Javadoc code block formatting
-* [grid] Using non-loopback ad  dress when default config is used
+* [grid] Using non-loopback address when default config is used
 * Fix classloading error in host identifier
 * Split OpenTelemetry command in order to facilitate search by tags
 
