@@ -19,12 +19,12 @@ from typing import List
 from selenium.webdriver.chromium import service
 
 
-DEFAULT_EXECUTEABLE_PATH = 'msedgedriver'
+DEFAULT_EXECUTABLE_PATH = 'msedgedriver'
 
 
 class Service(service.ChromiumService):
 
-    def __init__(self, executable_path: str = DEFAULT_EXECUTEABLE_PATH,
+    def __init__(self, executable_path: str = DEFAULT_EXECUTABLE_PATH,
                  port: int = 0, verbose: bool = False, log_path: str = None,
                  service_args: List[str] = None, env=None):
         """
