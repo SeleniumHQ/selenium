@@ -17,7 +17,7 @@
 import warnings
 from selenium.webdriver.chromium.webdriver import ChromiumDriver
 from .options import Options
-from .service import DEFAULT_EXECUTEABLE_PATH, Service
+from .service import DEFAULT_EXECUTABLE_PATH, Service
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 
 
@@ -33,7 +33,7 @@ class WebDriver(ChromiumDriver):
     http://chromedriver.storage.googleapis.com/index.html
     """
 
-    def __init__(self, executable_path=DEFAULT_EXECUTEABLE_PATH, port=DEFAULT_PORT,
+    def __init__(self, executable_path=DEFAULT_EXECUTABLE_PATH, port=DEFAULT_PORT,
                  options: Options = None, service_args=None,
                  desired_capabilities=None, service_log_path=DEFAULT_SERVICE_LOG_PATH,
                  chrome_options=None, service: Service = None, keep_alive=DEFAULT_KEEP_ALIVE):
