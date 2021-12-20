@@ -16,6 +16,11 @@
 // under the License.
 package org.openqa.selenium.net;
 
+import static java.lang.System.currentTimeMillis;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.openqa.selenium.remote.http.Contents.utf8String;
+import static org.openqa.selenium.testing.Safely.safelyCall;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -28,11 +33,6 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
-import static java.lang.System.currentTimeMillis;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.openqa.selenium.remote.http.Contents.utf8String;
-import static org.openqa.selenium.testing.Safely.safelyCall;
-
 public class UrlCheckerTest {
 
   private final UrlChecker urlChecker = new UrlChecker();
@@ -44,14 +44,16 @@ public class UrlCheckerTest {
   public void buildServer() throws MalformedURLException, UrlChecker.TimeoutException {
     // Warming NettyServer up
     final NettyAppServer server = createServer();
-    executorService.submit(() -> {
-      server.start();
-      return null;
-    });
+    server.start();
+//    executorService.submit(() -> {
+//      server.start();
+//      return null;
+//    });
     urlChecker.waitUntilAvailable(10, TimeUnit.SECONDS, new URL(server.whereIs("/")));
     server.stop();
 
     this.server = createServer();
+    this.server.start();
     this.url = new URL(this.server.whereIs("/"));
   }
 
