@@ -102,6 +102,7 @@ jobs:
     needs: small_tests
     runs-on: ubuntu-latest
     strategy:
+      fail-fast: false
       matrix:
         browser: [ chrome, firefox ]
     steps:
@@ -137,10 +138,10 @@ jobs:
           DISPLAY: :99
 
   server_tests:
-    if: ${{ always() }}
-    needs: [ browser_tests ]
+    needs: small_tests
     runs-on: ubuntu-latest
     strategy:
+      fail-fast: false
       matrix:
         browser: [ chrome, firefox ]
     steps:
