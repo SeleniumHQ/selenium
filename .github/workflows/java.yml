@@ -206,11 +206,9 @@ jobs:
       - name: Run browser tests in Firefox
         uses: nick-invision/retry@v2
         with:
-          max_attempts: 2
-          timeout_minutes: 20
-          action: ./.github/actions/bazel-test
-            with: |
-              query: attr(tags, rc, tests(//java/...))
+          timeout_minutes: 10
+          max_attempts: 3
+          command: bazel query "attr(tags, rc, tests(//java/...))" | xargs bazel test
         env:
           DISPLAY: :99
 
