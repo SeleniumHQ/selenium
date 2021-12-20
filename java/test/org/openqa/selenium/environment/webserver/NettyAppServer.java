@@ -37,6 +37,7 @@ import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.io.TemporaryFilesystem;
 import org.openqa.selenium.net.PortProber;
 import org.openqa.selenium.netty.server.NettyServer;
+import org.openqa.selenium.netty.server.ServerBindException;
 import org.openqa.selenium.remote.http.Contents;
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpHandler;
@@ -63,9 +64,9 @@ public class NettyAppServer implements AppServer {
   private final RetryPolicy<Object> retryPolicy = new RetryPolicy<>()
     .withMaxAttempts(5)
     .withDelay(100, 1000, ChronoUnit.MILLIS)
-    .onFailedAttempt(e -> LOG.log(Level.WARNING, "Failed to start NettyAppServer"))
+    .handleIf(failure -> failure.getCause() instanceof ServerBindException)
     .onRetry(
-      e -> LOG.log(Level.WARNING, String.format("Failure #%s. Retrying.", e.getAttemptCount())))
+      e -> LOG.log(Level.WARNING, String.format("NettyAppServer retry #%s. ", e.getAttemptCount())))
     .onRetriesExceeded(e -> LOG.log(Level.WARNING, "NettyAppServer start aborted."));
 
   public NettyAppServer() {
