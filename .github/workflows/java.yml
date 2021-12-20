@@ -102,6 +102,7 @@ jobs:
     needs: small_tests
     runs-on: ubuntu-latest
     strategy:
+      fail-fast: false
       matrix:
         browser: [ chrome, firefox ]
     steps:
