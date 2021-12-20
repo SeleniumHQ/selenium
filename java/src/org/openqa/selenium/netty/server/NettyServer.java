@@ -48,24 +48,22 @@ import java.security.cert.CertificateException;
 import java.util.Optional;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import javax.net.ssl.SSLException;
 
 public class NettyServer implements Server<NettyServer> {
 
-  private static final Logger log = Logger.getLogger(NettyServer.class.getName());
   private final EventLoopGroup bossGroup;
   private final EventLoopGroup workerGroup;
   private final int port;
   private final String host;
   private final boolean bindHost;
+  private final URL externalUrl;
   private final HttpHandler handler;
   private final BiFunction<String, Consumer<Message>, Optional<Consumer<Message>>> websocketHandler;
   private final SslContext sslCtx;
   private final boolean allowCors;
-  private URL externalUrl;
+
   private Channel channel;
 
   public NettyServer(
@@ -171,19 +169,6 @@ public class NettyServer implements Server<NettyServer> {
         throw new UncheckedIOException(new IOException(errorMessage, e));
       }
       throw e;
-    }
-
-    if (port == 0) {
-      try {
-        int systemPickedPort = ((InetSocketAddress) channel.localAddress()).getPort();
-        externalUrl = new URL(
-          externalUrl.getProtocol(),
-          externalUrl.getHost(),
-          systemPickedPort,
-          externalUrl.getFile());
-      } catch (MalformedURLException e) {
-        log.log(Level.WARNING, "Could not retrieve system picked port to build external url", e);
-      }
     }
 
     return this;
