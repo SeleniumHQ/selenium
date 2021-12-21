@@ -25,6 +25,8 @@ class BaseOptions(metaclass=ABCMeta):
     Base class for individual browser options
     """
 
+    _ignore_local_proxy: bool = False
+
     def __init__(self):
         super(BaseOptions, self).__init__()
         self._caps = self.default_capabilities
@@ -224,11 +226,9 @@ class BaseOptions(metaclass=ABCMeta):
 
 
 class ArgOptions(BaseOptions):
-
     def __init__(self):
         super(ArgOptions, self).__init__()
         self._arguments = []
-        self._ignore_local_proxy = False
 
     @property
     def arguments(self):
