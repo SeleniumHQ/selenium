@@ -59,38 +59,20 @@ public class NettyAppServer implements AppServer {
   private final static Config sslConfig = new MapConfig(
     singletonMap("server", singletonMap("https-self-signed", true)));
   private static final Logger LOG = Logger.getLogger(NettyAppServer.class.getName());
-  private final Server<?> server;
-  private final Server<?> secure;
+  private Server<?> server;
+  private Server<?> secure;
   private final RetryPolicy<Object> retryPolicy = new RetryPolicy<>()
     .withMaxAttempts(5)
     .withDelay(100, 1000, ChronoUnit.MILLIS)
     .handleIf(failure -> failure.getCause() instanceof ServerBindException)
-    .onRetry(
-      e -> LOG.log(Level.WARNING, String.format("NettyAppServer retry #%s. ", e.getAttemptCount())))
+    .onRetry(e -> {
+      LOG.log(Level.WARNING, String.format("NettyAppServer retry #%s. ", e.getAttemptCount()));
+      initValues();
+    })
     .onRetriesExceeded(e -> LOG.log(Level.WARNING, "NettyAppServer start aborted."));
 
   public NettyAppServer() {
-    Config config = createDefaultConfig();
-    BaseServerOptions options = new BaseServerOptions(config);
-
-    File tempDir = TemporaryFilesystem.getDefaultTmpFS().createTempDir("generated", "pages");
-
-    HttpHandler handler = new HandlersForTests(
-      options.getHostname().orElse("localhost"),
-      options.getPort(),
-      tempDir.toPath());
-
-    server = new NettyServer(options, handler);
-
-    Config secureConfig = new CompoundConfig(sslConfig, createDefaultConfig());
-    BaseServerOptions secureOptions = new BaseServerOptions(secureConfig);
-
-    HttpHandler secureHandler = new HandlersForTests(
-      secureOptions.getHostname().orElse("localhost"),
-      secureOptions.getPort(),
-      tempDir.toPath());
-
-    secure = new NettyServer(secureOptions, secureHandler);
+    initValues();
   }
 
   public NettyAppServer(HttpHandler handler) {
@@ -129,6 +111,30 @@ public class NettyAppServer implements AppServer {
     server.start();
 
     System.out.printf("Server started. Root URL: %s%n", server.whereIs("/"));
+  }
+
+  private void initValues() {
+    Config config = createDefaultConfig();
+    BaseServerOptions options = new BaseServerOptions(config);
+
+    File tempDir = TemporaryFilesystem.getDefaultTmpFS().createTempDir("generated", "pages");
+
+    HttpHandler handler = new HandlersForTests(
+      options.getHostname().orElse("localhost"),
+      options.getPort(),
+      tempDir.toPath());
+
+    server = new NettyServer(options, handler);
+
+    Config secureConfig = new CompoundConfig(sslConfig, createDefaultConfig());
+    BaseServerOptions secureOptions = new BaseServerOptions(secureConfig);
+
+    HttpHandler secureHandler = new HandlersForTests(
+      secureOptions.getHostname().orElse("localhost"),
+      secureOptions.getPort(),
+      tempDir.toPath());
+
+    secure = new NettyServer(secureOptions, secureHandler);
   }
 
   @Override
