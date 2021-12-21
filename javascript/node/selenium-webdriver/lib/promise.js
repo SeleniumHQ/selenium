@@ -142,14 +142,12 @@ async function map(array, fn, self = undefined) {
   }
 
   const arr = /** @type {!Array} */ (v)
-  const n = arr.length
-  const values = new Array(n)
+  const values = []
 
-  for (let i = 0; i < n; i++) {
-    if (i in arr) {
-      values[i] = await Promise.resolve(fn.call(self, arr[i], i, arr))
-    }
+  for (const [index, item] of arr.entries()) {
+    values.push(await Promise.resolve(fn.call(self, item, index, arr)))
   }
+
   return values
 }
 
@@ -181,19 +179,17 @@ async function filter(array, fn, self = undefined) {
   }
 
   const arr = /** @type {!Array} */ (v)
-  const n = arr.length
   const values = []
-  let valuesLength = 0
 
-  for (let i = 0; i < n; i++) {
-    if (i in arr) {
-      const value = arr[i]
-      const include = await fn.call(self, value, i, arr)
-      if (include) {
-        values[valuesLength++] = value
-      }
+  for (const [index, item] of arr.entries()) {
+    const isConditionTrue = await Promise.resolve(
+      fn.call(self, item, index, arr)
+    )
+    if (isConditionTrue) {
+      values.push(item)
     }
   }
+
   return values
 }
 
@@ -266,8 +262,7 @@ async function fullyResolveKeys(obj) {
     ) {
       return
     }
-    let resolvedValue = await fullyResolved(partialValue)
-    obj[key] = resolvedValue
+    obj[key] = await fullyResolved(partialValue)
   })
   return obj
 }

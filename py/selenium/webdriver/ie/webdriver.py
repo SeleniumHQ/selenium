@@ -19,7 +19,7 @@ from typing import NoReturn
 import warnings
 
 from selenium.webdriver.remote.webdriver import WebDriver as RemoteWebDriver
-from .service import DEFAULT_EXECUTEABLE_PATH, Service
+from .service import DEFAULT_EXECUTABLE_PATH, Service
 from .options import Options
 from selenium.webdriver.common import utils
 
@@ -34,7 +34,7 @@ DEFAULT_KEEP_ALIVE = None
 class WebDriver(RemoteWebDriver):
     """ Controls the IEServerDriver and allows you to drive Internet Explorer """
 
-    def __init__(self, executable_path=DEFAULT_EXECUTEABLE_PATH, capabilities=None,
+    def __init__(self, executable_path=DEFAULT_EXECUTABLE_PATH, capabilities=None,
                  port=DEFAULT_PORT, timeout=DEFAULT_TIMEOUT, host=DEFAULT_HOST,
                  log_level=DEFAULT_LOG_LEVEL, service_log_path=DEFAULT_SERVICE_LOG_PATH,
                  options: Options = None, service: Service = None,

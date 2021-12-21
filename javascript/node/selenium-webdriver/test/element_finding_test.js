@@ -22,6 +22,7 @@ const promise = require('../lib/promise')
 const { Browser, By, error, withTagName, until } = require('..')
 const { Pages, ignore, suite, whereIs } = require('../lib/test')
 const { locateWith } = require('../lib/by')
+const { RelativeBy } = require('../')
 
 suite(function (env) {
   const browsers = (...args) => env.browsers(...args)
@@ -466,7 +467,10 @@ suite(function (env) {
 
       it('should search by passing in a by object', async function () {
         await driver.get(Pages.relativeLocators)
-        let element = await driver.findElement(locateWith(By.css('p')).above(await driver.findElement(By.id('below'))))
+        let relativeLocator = locateWith(By.css('p')).above(await driver.findElement(By.id('below')))
+        assert.ok(relativeLocator instanceof RelativeBy)
+
+        let element = await driver.findElement(relativeLocator)
         assert.deepStrictEqual(await element.getAttribute('id'), 'mid')
       })
     })

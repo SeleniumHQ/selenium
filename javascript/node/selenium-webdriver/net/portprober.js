@@ -70,6 +70,7 @@ function findFreePort(opt_host) {
 }
 
 // PUBLIC API
-
-exports.findFreePort = findFreePort
-exports.isFree = isFree
+module.exports = {
+  findFreePort,
+  isFree,
+}

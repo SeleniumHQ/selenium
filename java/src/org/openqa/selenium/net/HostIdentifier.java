@@ -28,7 +28,6 @@ import java.net.NetworkInterface;
 import java.nio.charset.Charset;
 import java.util.Enumeration;
 import java.util.concurrent.TimeUnit;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class HostIdentifier {
@@ -61,6 +60,10 @@ public class HostIdentifier {
             host = reader.readLine();
           }
         }
+      } catch (InterruptedException e) {
+        log.log(WARNING, "Failed to resolve host name", e);
+        Thread.currentThread().interrupt();
+        throw new RuntimeException(e);
       } catch (Throwable e) {
         // fall through
         log.log(WARNING, "Failed to resolve host name", e);
@@ -85,9 +88,11 @@ public class HostIdentifier {
     if (Platform.getCurrent().is(Platform.MAC)) {
       try {
         NetworkInterface en0 = NetworkInterface.getByName("en0");
-        Enumeration<InetAddress> addresses = en0.getInetAddresses();
-        if (addresses.hasMoreElements()) {
-          address = addresses.nextElement().getHostAddress();
+        if (en0 != null) {
+          Enumeration<InetAddress> addresses = en0.getInetAddresses();
+          if (addresses.hasMoreElements()) {
+            address = addresses.nextElement().getHostAddress();
+          }
         }
       } catch (Throwable e) {
         // Fall through and go the slow way.

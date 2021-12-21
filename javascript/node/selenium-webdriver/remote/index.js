@@ -33,12 +33,12 @@ const portprober = require('../net/portprober')
 /**
  * @typedef {(string|!Array<string|number|!stream.Stream|null|undefined>)}
  */
-var StdIoOptions // eslint-disable-line
+let StdIoOptions // eslint-disable-line
 
 /**
  * @typedef {(string|!IThenable<string>)}
  */
-var CommandLineFlag // eslint-disable-line
+let CommandLineFlag // eslint-disable-line
 
 /**
  * A record object that defines the configuration options for a DriverService
@@ -196,8 +196,8 @@ class DriverService {
       return this.address_
     }
 
-    var timeout = opt_timeoutMs || DriverService.DEFAULT_START_TIMEOUT_MS
-    var self = this
+    const timeout = opt_timeoutMs || DriverService.DEFAULT_START_TIMEOUT_MS
+    const self = this
 
     let resolveCommand
     this.command_ = new Promise((resolve) => (resolveCommand = resolve))
@@ -567,7 +567,7 @@ SeleniumServer.Options = class {
  * When a file path on the local machine running this script is entered with
  * {@link webdriver.WebElement#sendKeys WebElement#sendKeys}, this file detector
  * will transfer the specified file to the Selenium server's host; the sendKeys
- * command will be updated to use the transfered file's path.
+ * command will be updated to use the transferred file's path.
  *
  * __Note:__ This class depends on a non-standard command supported on the
  * Java Selenium server. The file detector will fail if used with a server that
@@ -618,7 +618,10 @@ class FileDetector extends input.FileDetector {
 
 // PUBLIC API
 
-exports.DriverService = DriverService
-exports.FileDetector = FileDetector
-exports.SeleniumServer = SeleniumServer
-exports.ServiceOptions = ServiceOptions // Exported for API docs.
+module.exports = {
+  DriverService,
+  FileDetector,
+  SeleniumServer,
+  // Exported for API docs.
+  ServiceOptions,
+}

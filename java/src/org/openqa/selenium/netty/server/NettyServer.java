@@ -57,6 +57,7 @@ public class NettyServer implements Server<NettyServer> {
   private final EventLoopGroup workerGroup;
   private final int port;
   private final String host;
+  private final boolean bindHost;
   private final URL externalUrl;
   private final HttpHandler handler;
   private final BiFunction<String, Consumer<Message>, Optional<Consumer<Message>>> websocketHandler;
@@ -108,6 +109,7 @@ public class NettyServer implements Server<NettyServer> {
 
     port = options.getPort();
     host = options.getHostname().orElse("0.0.0.0");
+    bindHost = options.getBindHost();
     allowCors = options.getAllowCORS();
 
     try {
@@ -152,12 +154,19 @@ public class NettyServer implements Server<NettyServer> {
       .childHandler(new SeleniumHttpInitializer(sslCtx, handler, websocketHandler, allowCors));
 
     try {
-      channel = b.bind(new InetSocketAddress(host, port)).sync().channel();
+      // Using a flag to avoid binding to the host, useful in environments like Docker,
+      // where the "host" value can be the IP of the Docker host machine, which cannot
+      // be bind inside the container.
+      channel = bindHost ? b.bind(new InetSocketAddress(host, port)).sync().channel() :
+                b.bind(port).sync().channel();
     } catch (InterruptedException e) {
       Thread.currentThread().interrupt();
       throw new UncheckedIOException(new IOException("Start up interrupted", e));
     } catch (Exception e) {
       if (e instanceof BindException) {
+        String errorMessage = String.format(
+          "Could not bind to address or port is already in use. Host %s, Port %s", host, port);
+        throw new UncheckedIOException(new IOException(errorMessage, e));
         throw new PortAlreadyInUseException(port, (BindException) e);
       }
       throw e;

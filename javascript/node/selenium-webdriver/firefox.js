@@ -222,7 +222,7 @@ async function buildProfile(template, extensions) {
     dir = await io.tmpDir()
     if (template) {
       await io.copyDir(
-        /** @type {string} */(template),
+        /** @type {string} */ (template),
         dir,
         /(parent\.lock|lock|\.parentlock)/
       )
@@ -400,7 +400,11 @@ class Options extends Capabilities {
    * @param {string} androidPackage The package to use
    * @return {!Options} A self reference
    */
-  enableMobile(androidPackage = "org.mozilla.firefox", androidActivity = null, deviceSerial = null) {
+  enableMobile(
+    androidPackage = 'org.mozilla.firefox',
+    androidActivity = null,
+    deviceSerial = null
+  ) {
     this.firefoxOptions_().androidPackage = androidPackage
 
     if (androidActivity) {
@@ -457,11 +461,11 @@ function findGeckoDriver() {
   if (!exe) {
     throw Error(
       'The ' +
-      GECKO_DRIVER_EXE +
-      ' executable could not be found on the current ' +
-      'PATH. Please download the latest version from ' +
-      'https://github.com/mozilla/geckodriver/releases/ ' +
-      'and ensure it can be found on your PATH.'
+        GECKO_DRIVER_EXE +
+        ' executable could not be found on the current ' +
+        'PATH. Please download the latest version from ' +
+        'https://github.com/mozilla/geckodriver/releases/ ' +
+        'and ensure it can be found on your PATH.'
     )
   }
   return exe
@@ -482,8 +486,8 @@ function findInProgramFiles(file) {
     return exists
       ? files[0]
       : io.exists(files[1]).then(function (exists) {
-        return exists ? files[1] : null
-      })
+          return exists ? files[1] : null
+        })
   })
 }
 
@@ -617,7 +621,7 @@ class Driver extends webdriver.WebDriver {
    * implementation.
    * @override
    */
-  setFileDetector() { }
+  setFileDetector() {}
 
   /**
    * Get the context that is currently in effect.
@@ -805,9 +809,11 @@ Channel.NIGHTLY = new Channel(
 
 // PUBLIC API
 
-exports.Channel = Channel
-exports.Context = Context
-exports.Driver = Driver
-exports.Options = Options
-exports.ServiceBuilder = ServiceBuilder
-exports.locateSynchronously = locateSynchronously
+module.exports = {
+  Channel,
+  Context,
+  Driver,
+  Options,
+  ServiceBuilder,
+  locateSynchronously,
+}

@@ -21,6 +21,7 @@ import org.junit.Test;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.build.InProject;
 import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.NoDriverAfterTest;
@@ -31,6 +32,7 @@ import java.net.MalformedURLException;
 import java.nio.file.Path;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.fail;
 
 public class RemoteFirefoxDriverTest extends JUnit4TestBase {
 
@@ -38,8 +40,14 @@ public class RemoteFirefoxDriverTest extends JUnit4TestBase {
   @NoDriverAfterTest
   public void shouldAllowRemoteWebDriverBuilderToUseHasExtensions() {
     Path extension = InProject.locate("third_party/firebug/favourite_colour-1.1-an+fx.xpi");
-    ((HasExtensions) driver).installExtension(extension);
-    ((HasExtensions) driver).uninstallExtension("favourite-colour-examples@mozilla.org");
+    String id = ((HasExtensions) driver).installExtension(extension);
+    assertThat(id).isEqualTo("favourite-colour-examples@mozilla.org");
+
+    try {
+      ((HasExtensions) driver).uninstallExtension(id);
+    } catch (WebDriverException ex) {
+      fail(ex.getMessage());
+    }
   }
 
   @Test

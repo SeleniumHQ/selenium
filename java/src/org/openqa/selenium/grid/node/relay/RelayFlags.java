@@ -26,14 +26,37 @@ import com.beust.jcommander.Parameter;
 
 import org.openqa.selenium.grid.config.ConfigValue;
 import org.openqa.selenium.grid.config.HasRoles;
+import org.openqa.selenium.grid.config.NonSplittingSplitter;
 import org.openqa.selenium.grid.config.Role;
 
 import java.util.Collections;
+import java.util.List;
 import java.util.Set;
 
 @SuppressWarnings("unused")
 @AutoService(HasRoles.class)
 public class RelayFlags implements HasRoles {
+
+  @Parameter(
+    names = {"--service-configuration"},
+    description = "Configuration for the service where calls will be relayed to. " +
+                  "It is recommended to provide this type of configuration through a toml config " +
+                  "file to improve readability. Command line example: " +
+                  "--service-configuration max-sessions=2 " +
+                  "stereotype='{\"browserName\": \"safari\", \"platformName\": \"iOS\", " +
+                  "\"appium:platformVersion\": \"14.5\"}}'",
+    arity = 4,
+    variableArity = true,
+    splitter = NonSplittingSplitter.class)
+  @ConfigValue(
+    section = RELAY_SECTION,
+    name = "configs",
+    prefixed = true,
+    example = "\n" +
+              "max-sessions = 2\n" +
+              "stereotype = \"{\"browserName\": \"safari\", \"platformName\": \"iOS\", " +
+              "\"appium:platformVersion\": \"14.5\" }}\"")
+  public List<String> driverConfiguration;
 
   @Parameter(
     names = {"--service-url"},
@@ -42,21 +65,18 @@ public class RelayFlags implements HasRoles {
   )
   @ConfigValue(section = RELAY_SECTION, name = "url", example = "http://localhost:4723")
   private String serviceUrl;
-
   @Parameter(
     names = {"--service-host"},
     description = "Host name where the service that supports WebDriver commands is running"
   )
   @ConfigValue(section = RELAY_SECTION, name = "host", example = "\"localhost\"")
   private String serviceHost;
-
   @Parameter(
     names = {"--service-port"},
     description = "Port where the service that supports WebDriver commands is running"
   )
   @ConfigValue(section = RELAY_SECTION, name = "port", example = "4723")
   private Integer servicePort;
-
   @Parameter(
     names = {"--service-status-endpoint"},
     description = "Endpoint to query the WebDriver service status, an HTTP 200 response "

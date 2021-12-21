@@ -25,7 +25,7 @@ labels:
               </p>
               <p>
                 If the issue requires changes or fixes from an external project (e.g., ChromeDriver, GeckoDriver, W3C),
-               add the applicable <code>G-*</code> label, and it will provide the correct link and auto-close the 
+               add the applicable <code>G-*</code> label, and it will provide the correct link and auto-close the
                issue.
               </p>
               <p>
@@ -81,7 +81,9 @@ labels:
           Hi, @{{ issue.user.login }}.
           Please follow the issue template, we need more information to reproduce the issue.
 
-          Either a complete code snippet (if more than one file is needed, provide a GitHub repo and instructions to run the code), the specific versions used, or a more detailed description to help us understand the issue.
+          Either a complete code snippet and URL/HTML (if more than one file is needed, provide a GitHub repo and instructions to run the code), the specific versions used, or a more detailed description to help us understand the issue.
+
+          Note: If you cannot share your code and URL/HTML, any complete code snippet and URL/HTML that reproduces the issue is good enough.
 
           Reply to this issue when all information is provided, thank you.
   - name: I-question

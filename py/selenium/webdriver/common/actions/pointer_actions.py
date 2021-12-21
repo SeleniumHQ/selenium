@@ -37,15 +37,25 @@ class PointerActions(Interaction):
         self._duration = duration
         super(PointerActions, self).__init__(source)
 
-    def pointer_down(self, button=MouseButton.LEFT):
-        self._button_action("create_pointer_down", button=button)
+    def pointer_down(self, button=MouseButton.LEFT, width=None, height=None, pressure=None,
+                     tangential_pressure=None, tilt_x=None, tilt_y=None, twist=None,
+                     altitude_angle=None, azimuth_angle=None):
+        self._button_action("create_pointer_down", button=button, width=width, height=height,
+                            pressure=pressure, tangential_pressure=tangential_pressure,
+                            tilt_x=tilt_x, tilt_y=tilt_y, twist=twist,
+                            altitude_angle=altitude_angle, azimuth_angle=azimuth_angle)
+        return self
 
     def pointer_up(self, button=MouseButton.LEFT):
         self._button_action("create_pointer_up", button=button)
+        return self
 
-    def move_to(self, element, x=None, y=None):
+    def move_to(self, element, x=0, y=0, width=None, height=None, pressure=None,
+                tangential_pressure=None, tilt_x=None, tilt_y=None, twist=None,
+                altitude_angle=None, azimuth_angle=None):
         if not isinstance(element, WebElement):
             raise AttributeError("move_to requires a WebElement")
+
         if x or y:
             el_rect = element.rect
             left_offset = el_rect['width'] / 2
@@ -55,7 +65,12 @@ class PointerActions(Interaction):
         else:
             left = 0
             top = 0
-        self.source.create_pointer_move(origin=element, duration=self._duration, x=int(left), y=int(top))
+
+        self.source.create_pointer_move(origin=element, duration=self._duration, x=int(left), y=int(top),
+                                        width=width, height=height, pressure=pressure,
+                                        tangential_pressure=tangential_pressure,
+                                        tilt_x=tilt_x, tilt_y=tilt_y, twist=twist,
+                                        altitude_angle=altitude_angle, azimuth_angle=azimuth_angle)
         return self
 
     def move_by(self, x, y):
@@ -103,7 +118,7 @@ class PointerActions(Interaction):
         self.source.create_pause(duration)
         return self
 
-    def _button_action(self, action, button=MouseButton.LEFT):
+    def _button_action(self, action, **kwargs):
         meth = getattr(self.source, action)
-        meth(button)
+        meth(**kwargs)
         return self

@@ -217,7 +217,7 @@ class NoSuchElementError extends WebDriverError {
 class NoSuchShadowRootError extends WebDriverError {
   /** @param {string=} opt_error the error message, if any. */
   constructor(opt_error) {
-    super(opt_error);
+    super(opt_error)
   }
 }
 
@@ -496,23 +496,6 @@ function encodeError(err) {
 }
 
 /**
- * Checks a response object from a server that adheres to the W3C WebDriver
- * protocol.
- * @param {*} data The response data to check.
- * @return {*} The response data if it was not an encoded error.
- * @throws {WebDriverError} the decoded error, if present in the data object.
- * @deprecated Use {@link #throwDecodedError(data)} instead.
- * @see https://w3c.github.io/webdriver/webdriver-spec.html#protocol
- */
-function checkResponse(data) {
-  if (data && typeof data.error === 'string') {
-    let ctor = ERROR_CODE_TO_TYPE.get(data.error) || WebDriverError
-    throw new ctor(data.message)
-  }
-  return data
-}
-
-/**
  * Tests if the given value is a valid error response object according to the
  * W3C WebDriver spec.
  *
@@ -620,8 +603,6 @@ module.exports = {
   UnknownCommandError,
   UnknownMethodError,
   UnsupportedOperationError,
-
-  checkResponse,
   checkLegacyResponse,
   encodeError,
   isErrorResponse,

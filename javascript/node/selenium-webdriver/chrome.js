@@ -236,10 +236,9 @@ class Driver extends chromium.Driver {
    */
   static createSession(opt_config, opt_serviceExecutor) {
     let caps = opt_config || new Options()
-    return /** @type {!Driver} */ (super.createSession(
-      caps,
-      opt_serviceExecutor
-    ))
+    return /** @type {!Driver} */ (
+      super.createSession(caps, opt_serviceExecutor)
+    )
   }
 }
 
@@ -287,9 +286,13 @@ Driver.getDefaultService = getDefaultService
 Driver.prototype.VENDOR_COMMAND_PREFIX = 'goog'
 
 // PUBLIC API
-exports.Driver = Driver
-exports.Options = Options
-exports.ServiceBuilder = ServiceBuilder
-exports.getDefaultService = getDefaultService
-exports.setDefaultService = setDefaultService
-exports.locateSynchronously = locateSynchronously
+
+module.exports = {
+  Driver: Driver,
+  Options,
+  ServiceBuilder ,
+  getDefaultService,
+  setDefaultService,
+  locateSynchronously
+}
+

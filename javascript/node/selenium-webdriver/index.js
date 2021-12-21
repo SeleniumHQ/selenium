@@ -45,7 +45,7 @@ const Capabilities = capabilities.Capabilities
 const Capability = capabilities.Capability
 const WebDriver = webdriver.WebDriver
 
-var seleniumServer
+let seleniumServer
 
 /**
  * Starts an instance of the Selenium server if not yet running.
@@ -76,13 +76,12 @@ function startSeleniumServer(jar) {
  * @return {function(new: webdriver.WebDriver, ...?)}
  */
 function ensureFileDetectorsAreEnabled(ctor) {
-  const mixin = class extends ctor {
+  return class extends ctor {
     /** @param {input.FileDetector} detector */
-    setFileDetector(detector) {
+    setFileDetector (detector) {
       webdriver.WebDriver.prototype.setFileDetector.call(this, detector)
     }
   }
-  return mixin
 }
 
 /**
@@ -821,6 +820,7 @@ exports.Browser = capabilities.Browser
 exports.Builder = Builder
 exports.Button = input.Button
 exports.By = by.By
+exports.RelativeBy = by.RelativeBy
 exports.withTagName = by.withTagName
 exports.locateWith = by.locateWith
 exports.Capabilities = capabilities.Capabilities

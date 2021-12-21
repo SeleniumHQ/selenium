@@ -2,8 +2,8 @@ load("@rules_jvm_external//:defs.bzl", "maven_install")
 load("@rules_jvm_external//:specs.bzl", "maven")
 
 def selenium_java_deps():
-    netty_version = "4.1.69.Final"
-    opentelemetry_version = "1.9.0"
+    netty_version = "4.1.70.Final"
+    opentelemetry_version = "1.9.1"
 
     maven_install(
         artifacts = [
@@ -22,7 +22,8 @@ def selenium_java_deps():
             "com.google.auto:auto-common:1.2.1",
             "com.google.auto.service:auto-service:1.0.1",
             "com.google.auto.service:auto-service-annotations:1.0.1",
-            "com.graphql-java:graphql-java:17.0",
+            "com.graphql-java:graphql-java:17.3",
+            "com.graphql-java:java-dataloader:3.1.1",
             "io.grpc:grpc-context:1.42.1",
             "io.lettuce:lettuce-core:6.1.5.RELEASE",
             "io.netty:netty-buffer:%s" % netty_version,
@@ -33,10 +34,8 @@ def selenium_java_deps():
             "io.netty:netty-handler:%s" % netty_version,
             "io.netty:netty-handler-proxy:%s" % netty_version,
             "io.netty:netty-transport:%s" % netty_version,
-            "io.netty:netty-transport-native-epoll:%s" % netty_version,
-            "io.netty:netty-transport-native-epoll:jar:linux-x86_64:%s" % netty_version,
-            "io.netty:netty-transport-native-kqueue:%s" % netty_version,
-            "io.netty:netty-transport-native-kqueue:jar:osx-x86_64:%s" % netty_version,
+            "io.netty:netty-transport-classes-epoll:%s" % netty_version,
+            "io.netty:netty-transport-classes-kqueue:%s" % netty_version,
             "io.netty:netty-transport-native-unix-common:%s" % netty_version,
             "io.opentelemetry:opentelemetry-api:%s" % opentelemetry_version,
             "io.opentelemetry:opentelemetry-context:%s" % opentelemetry_version,
@@ -61,7 +60,7 @@ def selenium_java_deps():
                     "org.hamcrest:hamcrest-library",
                 ],
             ),
-            "net.bytebuddy:byte-buddy:1.12.1",
+            "net.bytebuddy:byte-buddy:1.12.2",
             "net.jodah:failsafe:2.4.4",
             "net.sourceforge.htmlunit:htmlunit-core-js:2.55.0",
             "org.apache.commons:commons-exec:1.3",
@@ -70,7 +69,7 @@ def selenium_java_deps():
             "org.eclipse.mylyn.github:org.eclipse.egit.github.core:2.1.5",
             "org.hamcrest:hamcrest:2.2",
             "org.hsqldb:hsqldb:2.6.1",
-            "org.mockito:mockito-core:4.0.0",
+            "org.mockito:mockito-core:4.1.0",
             "org.slf4j:slf4j-api:1.7.32",
             "org.slf4j:slf4j-jdk14:1.7.32",
             "org.testng:testng:7.4.0",

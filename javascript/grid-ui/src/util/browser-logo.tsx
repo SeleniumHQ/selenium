@@ -20,8 +20,6 @@ const browserLogo = (browser: string): string => {
       return edgeLogo
     case 'msedge':
       return edgeLogo
-    case 'operablink':
-      return operaLogo
     case 'opera':
       return operaLogo
     case 'firefox':

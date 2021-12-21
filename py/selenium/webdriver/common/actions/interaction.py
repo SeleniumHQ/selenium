@@ -19,6 +19,7 @@
 KEY = "key"
 POINTER = "pointer"
 NONE = "none"
+WHEEL = "wheel"
 SOURCE_TYPES = set([KEY, POINTER, NONE])
 
 POINTER_MOUSE = "mouse"

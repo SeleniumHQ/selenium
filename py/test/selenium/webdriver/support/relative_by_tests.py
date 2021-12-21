@@ -14,9 +14,10 @@
 # KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
 # under the License.
-
+from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.relative_locator import with_tag_name, locate_with
+import pytest
 
 
 def test_should_be_able_to_find_first_one(driver, pages):
@@ -67,3 +68,11 @@ def test_should_be_able_to_use_xpath(driver, pages):
 
     ids = [el.get_attribute('id') for el in elements]
     assert "fourth" in ids
+
+
+def test_no_such_element_is_raised_rather_than_index_error(driver, pages):
+    pages.load("relative_locators.html")
+    with pytest.raises(NoSuchElementException) as exc:
+        anchor = driver.find_element(By.ID, "second")
+        driver.find_element(locate_with(By.ID, "nonexistentid").above(anchor))
+    assert exc.value.msg == "Cannot locate relative element with: {'id': 'nonexistentid'}"

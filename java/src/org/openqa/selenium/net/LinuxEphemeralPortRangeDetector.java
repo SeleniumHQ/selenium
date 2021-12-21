@@ -22,6 +22,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
+import java.io.UncheckedIOException;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 
@@ -36,7 +37,7 @@ public class LinuxEphemeralPortRangeDetector implements EphemeralPortRangeDetect
       try (Reader inputFil = Files.newBufferedReader(file.toPath(), Charset.defaultCharset())) {
         return new LinuxEphemeralPortRangeDetector(inputFil);
       } catch (IOException e) {
-        throw new RuntimeException(e);
+        throw new UncheckedIOException(e);
       }
     }
     return new LinuxEphemeralPortRangeDetector(new StringReader("49152 65535"));

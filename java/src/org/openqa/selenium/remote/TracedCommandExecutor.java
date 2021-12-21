@@ -22,6 +22,7 @@ import org.openqa.selenium.remote.tracing.Tracer;
 
 import java.io.IOException;
 import java.util.Map;
+import java.util.Objects;
 
 public class TracedCommandExecutor implements CommandExecutor {
 
@@ -44,7 +45,7 @@ public class TracedCommandExecutor implements CommandExecutor {
       Map<String, ?> parameters = command.getParameters();
       if (parameters != null && parameters.size() > 0) {
         for (Map.Entry<String, ?> parameter : parameters.entrySet()) {
-          commandSpan.setAttribute("parameter." + parameter.getKey(), parameter.getValue().toString());
+          commandSpan.setAttribute("parameter." + parameter.getKey(), Objects.toString(parameter.getValue(), "null"));
         }
       }
       return delegate.execute(command);

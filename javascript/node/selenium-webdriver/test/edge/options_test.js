@@ -132,7 +132,7 @@ describe('edge.Options', function () {
 
 test.suite(
   function (env) {
-    var driver
+    let driver
 
     beforeEach(function() {
       driver = null;
@@ -144,7 +144,7 @@ test.suite(
 
     describe('Edge options', function () {
       it('can start edge with custom args', async function () {
-        var options = new edge.Options().addArguments('user-agent=foo;bar')
+        const options = new edge.Options().addArguments('user-agent=foo;bar')
 
         driver = await env.builder().setEdgeOptions(options).build()
 
