@@ -64,7 +64,7 @@ public class NettyAppServer implements AppServer {
   private final RetryPolicy<Object> retryPolicy = new RetryPolicy<>()
     .withMaxAttempts(5)
     .withDelay(100, 1000, ChronoUnit.MILLIS)
-    .handleIf(failure -> failure.getCause() instanceof ServerBindException)
+    .handle(ServerBindException.class)
     .onRetry(e -> {
       LOG.log(Level.WARNING, String.format("NettyAppServer retry #%s. ", e.getAttemptCount()));
       initValues();
