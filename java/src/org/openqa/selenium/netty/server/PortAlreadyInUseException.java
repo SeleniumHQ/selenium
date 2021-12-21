@@ -4,7 +4,9 @@ import java.io.IOException;
 import java.io.UncheckedIOException;
 
 public class PortAlreadyInUseException extends UncheckedIOException {
-  public PortAlreadyInUseException(int port, IOException cause) {
-    super(String.format("Port %s already in use", port), cause);
+  public PortAlreadyInUseException(String host, int port, IOException cause) {
+    super(String.format(
+      "Could not bind to address or port is already in use. Host %s, Port %s", host, port),
+      cause);
   }
 }
