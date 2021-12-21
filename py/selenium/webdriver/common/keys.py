@@ -92,4 +92,4 @@ class Keys(object):
 
     META = u'\ue03d'
     COMMAND = u'\ue03d'
-    ZENKAKU_HANKAKU = u'\uE040'
+    ZENKAKU_HANKAKU = u'\ue040'
