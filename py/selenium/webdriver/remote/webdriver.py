@@ -23,7 +23,7 @@ from importlib import import_module
 import pkgutil
 
 import sys
-from typing import Dict, List, Optional, Union
+from typing import Any, Dict, List, Optional, TypedDict, Union
 
 import warnings
 
@@ -132,9 +132,9 @@ def get_remote_connection(capabilities, command_executor, keep_alive, ignore_loc
     return handler(command_executor, keep_alive=keep_alive, ignore_proxy=ignore_local_proxy)
 
 
-def create_matches(options: List[BaseOptions]) -> Dict:
-    capabilities = {"capabilities": {}}
-    opts = []
+def create_matches(options: List[BaseOptions]) -> Dict[str, Dict[str, Any]]:
+    capabilities: Dict[str, Dict[str, Any]] = {"capabilities": {}}
+    opts: List[dict] = []
     for opt in options:
         opts.append(opt.to_capabilities())
     opts_size = len(opts)
@@ -156,14 +156,20 @@ def create_matches(options: List[BaseOptions]) -> Dict:
     for k, v in samesies.items():
         always[k] = v
 
-    for i in opts:
+    for o in opts:
         for k in always.keys():
-            del i[k]
+            del o[k]
 
     capabilities["capabilities"]["alwaysMatch"] = always
     capabilities["capabilities"]["firstMatch"] = opts
 
     return capabilities
+
+
+class ExecuteResponse(TypedDict):
+    success: int
+    value: Any
+    sessionId: str
 
 
 class BaseWebDriver(metaclass=ABCMeta):
@@ -402,7 +408,7 @@ class WebDriver(BaseWebDriver):
         else:
             return value
 
-    def execute(self, driver_command: str, params: dict = None) -> dict:
+    def execute(self, driver_command: str, params: dict = None) -> ExecuteResponse:
         """
         Sends a command to be executed by a command.CommandExecutor.
 

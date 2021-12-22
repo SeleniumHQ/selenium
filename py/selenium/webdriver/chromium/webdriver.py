@@ -22,7 +22,7 @@ from selenium.webdriver.chrome.options import Options as ChromeOptions
 import warnings
 
 from selenium.webdriver.chromium.remote_connection import ChromiumRemoteConnection
-from selenium.webdriver.remote.webdriver import WebDriver as RemoteWebDriver
+from selenium.webdriver.remote.webdriver import ExecuteResponse, WebDriver as RemoteWebDriver
 
 DEFAULT_PORT = 0
 DEFAULT_SERVICE_LOG_PATH = None
@@ -189,7 +189,7 @@ class ChromiumDriver(RemoteWebDriver):
         """
         return self.execute('getIssueMessage')['value']
 
-    def set_sink_to_use(self, sink_name: str) -> str:
+    def set_sink_to_use(self, sink_name: str) -> ExecuteResponse:
         """
         Sets a specific sink, using its name, as a Cast session receiver target.
 
@@ -198,7 +198,7 @@ class ChromiumDriver(RemoteWebDriver):
         """
         return self.execute('setSinkToUse', {'sinkName': sink_name})
 
-    def start_tab_mirroring(self, sink_name: str) -> str:
+    def start_tab_mirroring(self, sink_name: str) -> ExecuteResponse:
         """
         Starts a tab mirroring session on a specific receiver target.
 
@@ -207,7 +207,7 @@ class ChromiumDriver(RemoteWebDriver):
         """
         return self.execute('startTabMirroring', {'sinkName': sink_name})
 
-    def stop_casting(self, sink_name: str) -> str:
+    def stop_casting(self, sink_name: str) -> ExecuteResponse:
         """
         Stops the existing Cast session on a specific receiver target.
 
