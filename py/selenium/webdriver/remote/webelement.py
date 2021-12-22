@@ -23,6 +23,7 @@ import warnings
 import zipfile
 from abc import ABCMeta
 from io import BytesIO
+from typing import cast
 
 from selenium.common.exceptions import WebDriverException
 from selenium.webdriver.common.by import By
@@ -34,8 +35,8 @@ from .shadowroot import ShadowRoot
 # TODO: When moving to supporting python 3.9 as the minimum version we can
 # use built in importlib_resources.files.
 _pkg = '.'.join(__name__.split('.')[:-1])
-getAttribute_js = pkgutil.get_data(_pkg, 'getAttribute.js').decode('utf8')
-isDisplayed_js = pkgutil.get_data(_pkg, 'isDisplayed.js').decode('utf8')
+getAttribute_js = cast(bytes, pkgutil.get_data(_pkg, 'getAttribute.js')).decode('utf8')
+isDisplayed_js = cast(bytes, pkgutil.get_data(_pkg, 'isDisplayed.js')).decode('utf8')
 
 
 class BaseWebElement(metaclass=ABCMeta):
@@ -535,11 +536,11 @@ class WebElement(BaseWebElement):
                 remote_files = []
                 for file in local_files:
                     remote_files.append(self._upload(file))
-                value = '\n'.join(remote_files)
+                output = '\n'.join(remote_files)
 
         self._execute(Command.SEND_KEYS_TO_ELEMENT,
-                      {'text': "".join(keys_to_typing(value)),
-                       'value': keys_to_typing(value)})
+                      {'text': "".join(keys_to_typing(output)),
+                       'value': keys_to_typing(output)})
 
     @property
     def shadow_root(self) -> ShadowRoot:
@@ -630,7 +631,7 @@ class WebElement(BaseWebElement):
         return self._execute(Command.ELEMENT_SCREENSHOT)['value']
 
     @property
-    def screenshot_as_png(self) -> str:
+    def screenshot_as_png(self) -> bytes:
         """
         Gets the screenshot of the current element as a binary data.
 

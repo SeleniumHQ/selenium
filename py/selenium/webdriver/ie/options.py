@@ -259,7 +259,7 @@ class Options(ArgOptions):
         self._options[self.PERSISTENT_HOVER] = value
 
     @property
-    def require_window_focus(self: bool):
+    def require_window_focus(self) -> bool:
         """:Returns: The options Require Window Focus value """
         return self._options.get(self.REQUIRE_WINDOW_FOCUS)
 

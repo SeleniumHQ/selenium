@@ -23,7 +23,7 @@ from importlib import import_module
 import pkgutil
 
 import sys
-from typing import Any, Dict, List, Optional, TypedDict, Union
+from typing import Any, Dict, List, Optional, TYPE_CHECKING, TypedDict, Union, cast
 
 import warnings
 
@@ -53,6 +53,9 @@ from selenium.webdriver.common.print_page_options import PrintOptions
 from selenium.webdriver.common.timeouts import Timeouts
 from selenium.webdriver.common.html5.application_cache import ApplicationCache
 from selenium.webdriver.support.relative_locator import RelativeBy
+
+if TYPE_CHECKING:
+    from selenium.webdriver.common.print_page_options import _PrintOpts
 
 
 _W3C_CAPABILITY_NAMES = frozenset([
@@ -265,8 +268,8 @@ class WebDriver(BaseWebDriver):
                                                           ignore_local_proxy=_ignore_local_proxy)
         self._is_remote = True
         self.session_id = None
-        self.caps = {}
-        self.pinned_scripts = {}
+        self.caps: Dict[str, Any] = {}
+        self.pinned_scripts: Dict[str, Any] = {}
         self.error_handler = ErrorHandler()
         self._switch_to = SwitchTo(self)
         self._mobile = Mobile(self)
@@ -1007,11 +1010,11 @@ class WebDriver(BaseWebDriver):
         Takes PDF of the current page.
         The driver makes a best effort to return a PDF based on the provided parameters.
         """
-        options = {}
+        options: '_PrintOpts' = {}
         if print_options:
             options = print_options.to_dict()
 
-        return self.execute(Command.PRINT_PAGE, options)['value']
+        return self.execute(Command.PRINT_PAGE, cast(dict, options))['value']
 
     @property
     def switch_to(self) -> SwitchTo:
@@ -1079,7 +1082,7 @@ class WebDriver(BaseWebDriver):
         """
         return self.execute(Command.GET_ALL_COOKIES)['value']
 
-    def get_cookie(self, name) -> dict:
+    def get_cookie(self, name) -> Optional[dict]:
         """
         Get a single cookie by name. Returns the cookie if found, None if not.
 
@@ -1268,7 +1271,7 @@ class WebDriver(BaseWebDriver):
         """
         if isinstance(by, RelativeBy):
             _pkg = '.'.join(__name__.split('.')[:-1])
-            raw_function = pkgutil.get_data(_pkg, 'findElements.js').decode('utf8')
+            raw_function = cast(bytes, pkgutil.get_data(_pkg, 'findElements.js')).decode('utf8')
             find_element_js = "return ({}).apply(null, arguments);".format(raw_function)
             return self.execute_script(find_element_js, by.to_dict())
 
@@ -1374,7 +1377,7 @@ class WebDriver(BaseWebDriver):
         """
         return self.execute(Command.SCREENSHOT)['value']
 
-    def set_window_size(self, width, height, windowHandle='current') -> dict:
+    def set_window_size(self, width, height, windowHandle='current') -> None:
         """
         Sets the width and height of the current window. (window.resizeTo)
 

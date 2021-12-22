@@ -18,6 +18,7 @@
 import logging
 import socket
 import string
+from typing import Optional
 
 import os
 import certifi
@@ -41,7 +42,7 @@ class RemoteConnection(object):
     Communicates with the server using the WebDriver wire protocol:
     https://github.com/SeleniumHQ/selenium/wiki/JsonWireProtocol"""
 
-    browser_name = None
+    browser_name: Optional[str] = None
     _timeout = socket._GLOBAL_DEFAULT_TIMEOUT
     _ca_certs = certifi.where()
 

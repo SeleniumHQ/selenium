@@ -14,7 +14,7 @@
 # KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
 # under the License.
-from typing import Union
+from typing import Optional, Union
 import warnings
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 from selenium.webdriver.firefox.firefox_binary import FirefoxBinary
@@ -68,7 +68,7 @@ class Options(ArgOptions):
     @binary_location.setter  # noqa
     def binary_location(self, value: str):
         """ Sets the location of the browser binary by string """
-        self.binary = value
+        self.binary = FirefoxBinary(value)
 
     @property
     def preferences(self) -> dict:
@@ -127,7 +127,9 @@ class Options(ArgOptions):
         elif '-headless' in self._arguments:
             self._arguments.remove('-headless')
 
-    def enable_mobile(self, android_package: str = "org.mozilla.firefox", android_activity=None, device_serial=None):
+    def enable_mobile(
+        self, android_package: Optional[str] = "org.mozilla.firefox", android_activity: str = None, device_serial: str = None
+    ):
         super().enable_mobile(android_package, android_activity, device_serial)
 
     def to_capabilities(self) -> dict:
