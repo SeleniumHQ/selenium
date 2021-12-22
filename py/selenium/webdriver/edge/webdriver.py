@@ -17,7 +17,7 @@
 import warnings
 from selenium.webdriver.chromium.webdriver import ChromiumDriver
 from .options import Options
-from .service import DEFAULT_EXECUTEABLE_PATH, Service
+from .service import DEFAULT_EXECUTABLE_PATH, Service
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 
 
@@ -32,7 +32,7 @@ class WebDriver(ChromiumDriver):
     https://developer.microsoft.com/en-us/microsoft-edge/tools/webdriver/
     """
 
-    def __init__(self, executable_path=DEFAULT_EXECUTEABLE_PATH, port=DEFAULT_PORT,
+    def __init__(self, executable_path=DEFAULT_EXECUTABLE_PATH, port=DEFAULT_PORT,
                  options: Options = Options(), service_args=None,
                  capabilities=None, service_log_path=DEFAULT_SERVICE_LOG_PATH,
                  service: Service = None, keep_alive=False, verbose=False):
