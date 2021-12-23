@@ -84,8 +84,8 @@ module Selenium
         return download_file_name if File.exist? download_file_name
 
         begin
-          server = 'https://github.com/seleniumhq/selenium/releases/download'
-          released = Net::HTTP.get_response(URI.parse("#{server}/selenium-#{required_version}/#{download_file_name}"))
+          download_location = available_assets[download_file_name]['browser_download_url']
+          released = Net::HTTP.get_response(URI.parse(download_location))
           redirected = URI.parse released.header['location']
 
           File.open(download_file_name, 'wb') do |destination|
@@ -105,16 +105,23 @@ module Selenium
 
       def latest
         @latest ||= begin
-          net_http_start('api.github.com') do |http|
-            json = http.get('/repos/seleniumhq/selenium/releases').body
-            all_assets = JSON.parse(json).map { |release| release['assets'] }.flatten
-            server_assets = all_assets.map { |asset| asset['name'][/selenium-server-(\d+\.\d+\.\d+)\.jar/, 1] }.compact
-            server_assets.map { |version| Gem::Version.new(version) }.max.version
-          end
+          available = available_assets.keys.map { |key| key[/selenium-server-(\d+\.\d+\.\d+)\.jar/, 1] }
+          available.map { |asset| Gem::Version.new(asset) }.max.to_s
         end
       end
 
       # @api private
+
+      def available_assets
+        @available_assets ||= begin
+          net_http_start('api.github.com') do |http|
+            json = http.get('/repos/seleniumhq/selenium/releases').body
+            all_assets = JSON.parse(json).map { |release| release['assets'] }.flatten
+            server_assets = all_assets.select { |asset| asset['name'].match(/selenium-server-(\d+\.\d+\.\d+)\.jar/) }
+            server_assets.each_with_object({}) { |asset, hash| hash[asset.delete('name')] = asset }
+          end
+        end
+      end
 
       def net_http_start(address, &block)
         http_proxy = ENV['http_proxy'] || ENV['HTTP_PROXY']
