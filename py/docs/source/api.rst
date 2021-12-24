@@ -25,6 +25,7 @@ Webdriver.common
    selenium.webdriver.common.by
    selenium.webdriver.common.desired_capabilities
    selenium.webdriver.common.keys
+   selenium.webdriver.common.log
    selenium.webdriver.common.print_page_options
    selenium.webdriver.common.proxy
    selenium.webdriver.common.touch_actions
