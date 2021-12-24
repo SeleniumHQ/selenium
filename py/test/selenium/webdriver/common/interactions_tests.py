@@ -260,6 +260,7 @@ def test_can_pause(driver, pages):
     assert "Clicked" == toDoubleClick.get_attribute('value')
 
 
+@pytest.mark.xfail_firefox
 def test_can_scroll_mouse_wheel(driver, pages):
     pages.load("scrollingPage.html")
     driver.execute_script("document.scrollingElement.scrollTop = 0")
