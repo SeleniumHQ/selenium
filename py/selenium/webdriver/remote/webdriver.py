@@ -472,7 +472,7 @@ class WebDriver(BaseWebDriver):
         )
         return self.find_element(by=By.ID, value=id_)
 
-    def find_elements_by_id(self, id_) -> WebElement:
+    def find_elements_by_id(self, id_) -> List[WebElement]:
         """
         Finds multiple elements by id.
 
@@ -520,7 +520,7 @@ class WebDriver(BaseWebDriver):
         )
         return self.find_element(by=By.XPATH, value=xpath)
 
-    def find_elements_by_xpath(self, xpath) -> WebElement:
+    def find_elements_by_xpath(self, xpath) -> List[WebElement]:
         """
         Finds multiple elements by xpath.
 
@@ -568,7 +568,7 @@ class WebDriver(BaseWebDriver):
         )
         return self.find_element(by=By.LINK_TEXT, value=link_text)
 
-    def find_elements_by_link_text(self, text) -> WebElement:
+    def find_elements_by_link_text(self, text) -> List[WebElement]:
         """
         Finds elements by link text.
 
@@ -616,7 +616,7 @@ class WebDriver(BaseWebDriver):
         )
         return self.find_element(by=By.PARTIAL_LINK_TEXT, value=link_text)
 
-    def find_elements_by_partial_link_text(self, link_text) -> WebElement:
+    def find_elements_by_partial_link_text(self, link_text) -> List[WebElement]:
         """
         Finds elements by a partial match of their link text.
 
@@ -664,7 +664,7 @@ class WebDriver(BaseWebDriver):
         )
         return self.find_element(by=By.NAME, value=name)
 
-    def find_elements_by_name(self, name) -> WebElement:
+    def find_elements_by_name(self, name) -> List[WebElement]:
         """
         Finds elements by name.
 
@@ -712,7 +712,7 @@ class WebDriver(BaseWebDriver):
         )
         return self.find_element(by=By.TAG_NAME, value=name)
 
-    def find_elements_by_tag_name(self, name) -> WebElement:
+    def find_elements_by_tag_name(self, name) -> List[WebElement]:
         """
         Finds elements by tag name.
 
@@ -760,7 +760,7 @@ class WebDriver(BaseWebDriver):
         )
         return self.find_element(by=By.CLASS_NAME, value=name)
 
-    def find_elements_by_class_name(self, name) -> WebElement:
+    def find_elements_by_class_name(self, name) -> List[WebElement]:
         """
         Finds elements by class name.
 
@@ -808,7 +808,7 @@ class WebDriver(BaseWebDriver):
         )
         return self.find_element(by=By.CSS_SELECTOR, value=css_selector)
 
-    def find_elements_by_css_selector(self, css_selector) -> WebElement:
+    def find_elements_by_css_selector(self, css_selector) -> List[WebElement]:
         """
         Finds elements by css selector.
 
