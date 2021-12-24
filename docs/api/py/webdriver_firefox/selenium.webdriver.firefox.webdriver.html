@@ -1,19 +1,19 @@
 
-<!DOCTYPE html>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
-<html>
+<html xmlns="http://www.w3.org/1999/xhtml">
   <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <title>selenium.webdriver.firefox.webdriver &#8212; Selenium 4.1.0 documentation</title>
-    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../_static/classic.css" />
+    <link rel="stylesheet" href="../_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     
-    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
-    <script src="../_static/jquery.js"></script>
-    <script src="../_static/underscore.js"></script>
-    <script src="../_static/doctools.js"></script>
+    <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
     
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" /> 
@@ -27,8 +27,7 @@
         <li class="right" >
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">Selenium 4.1.0 documentation</a> &#187;</li>
-        <li class="nav-item nav-item-this"><a href="">selenium.webdriver.firefox.webdriver</a></li> 
+        <li class="nav-item nav-item-0"><a href="../index.html">Selenium 4.1.0 documentation</a> &#187;</li> 
       </ul>
     </div>  
 
@@ -37,12 +36,259 @@
         <div class="bodywrapper">
           <div class="body" role="main">
             
-  <section id="selenium-webdriver-firefox-webdriver">
-<h1>selenium.webdriver.firefox.webdriver<a class="headerlink" href="#selenium-webdriver-firefox-webdriver" title="Permalink to this headline">¶</a></h1>
-</section>
+  <div class="section" id="module-selenium.webdriver.firefox.webdriver">
+<span id="selenium-webdriver-firefox-webdriver"></span><h1>selenium.webdriver.firefox.webdriver<a class="headerlink" href="#module-selenium.webdriver.firefox.webdriver" title="Permalink to this headline">¶</a></h1>
+<p class="rubric">Classes</p>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="#selenium.webdriver.firefox.webdriver.WebDriver" title="selenium.webdriver.firefox.webdriver.WebDriver"><code class="xref py py-obj docutils literal notranslate"><span class="pre">WebDriver</span></code></a>([firefox_profile,&nbsp;firefox_binary,&nbsp;…])</td>
+<td>Starts a new local session of Firefox.</td>
+</tr>
+</tbody>
+</table>
+<dl class="class">
+<dt id="selenium.webdriver.firefox.webdriver.WebDriver">
+<em class="property">class </em><code class="descclassname">selenium.webdriver.firefox.webdriver.</code><code class="descname">WebDriver</code><span class="sig-paren">(</span><em>firefox_profile=None</em>, <em>firefox_binary=None</em>, <em>capabilities=None</em>, <em>proxy=None</em>, <em>executable_path='geckodriver'</em>, <em>options=None</em>, <em>service_log_path='geckodriver.log'</em>, <em>service_args=None</em>, <em>service=None</em>, <em>desired_capabilities=None</em>, <em>log_path=None</em>, <em>keep_alive=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/webdriver/firefox/webdriver.html#WebDriver"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.firefox.webdriver.WebDriver" title="Permalink to this definition">¶</a></dt>
+<dd><p>Starts a new local session of Firefox.</p>
+<p>Based on the combination and specificity of the various keyword
+arguments, a capabilities dictionary will be constructed that
+is passed to the remote end.</p>
+<p>The keyword arguments given to this constructor are helpers to
+more easily allow Firefox WebDriver sessions to be customised
+with different options.  They are mapped on to a capabilities
+dictionary that is passed on to the remote end.</p>
+<p>As some of the options, such as <cite>firefox_profile</cite> and
+<cite>options.profile</cite> are mutually exclusive, precedence is
+given from how specific the setting is.  <cite>capabilities</cite> is the
+least specific keyword argument, followed by <cite>options</cite>,
+followed by <cite>firefox_binary</cite> and <cite>firefox_profile</cite>.</p>
+<p>In practice this means that if <cite>firefox_profile</cite> and
+<cite>options.profile</cite> are both set, the selected profile
+instance will always come from the most specific variable.
+In this case that would be <cite>firefox_profile</cite>.  This will result in
+<cite>options.profile</cite> to be ignored because it is considered
+a less specific setting than the top-level <cite>firefox_profile</cite>
+keyword argument.  Similarly, if you had specified a
+<cite>capabilities[“moz:firefoxOptions”][“profile”]</cite> Base64 string,
+this would rank below <cite>options.profile</cite>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>firefox_profile</strong> – Deprecated: Instance of <code class="docutils literal notranslate"><span class="pre">FirefoxProfile</span></code> object
+or a string.  If undefined, a fresh profile will be created
+in a temporary location on the system.</li>
+<li><strong>firefox_binary</strong> – Deprecated: Instance of <code class="docutils literal notranslate"><span class="pre">FirefoxBinary</span></code> or full
+path to the Firefox binary.  If undefined, the system default
+Firefox installation will  be used.</li>
+<li><strong>capabilities</strong> – Deprecated: Dictionary of desired capabilities.</li>
+<li><strong>proxy</strong> – Deprecated: The proxy settings to use when communicating with
+Firefox via the extension connection.</li>
+<li><strong>executable_path</strong> – Deprecated: Full path to override which geckodriver
+binary to use for Firefox 47.0.1 and greater, which
+defaults to picking up the binary from the system path.</li>
+<li><strong>options</strong> – Instance of <code class="docutils literal notranslate"><span class="pre">options.Options</span></code>.</li>
+<li><strong>service_log_path</strong> – Deprecated: Where to log information from the driver.</li>
+<li><strong>service_args</strong> – Deprecated: List of args to pass to the driver service</li>
+<li><strong>desired_capabilities</strong> – Deprecated: alias of capabilities. In future
+versions of this library, this will replace ‘capabilities’.
+This will make the signature consistent with RemoteWebDriver.</li>
+<li><strong>keep_alive</strong> – Whether to configure remote_connection.RemoteConnection to use
+HTTP keep-alive.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="attribute">
+<dt id="selenium.webdriver.firefox.webdriver.WebDriver.CONTEXT_CHROME">
+<code class="descname">CONTEXT_CHROME</code><em class="property"> = 'chrome'</em><a class="headerlink" href="#selenium.webdriver.firefox.webdriver.WebDriver.CONTEXT_CHROME" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="selenium.webdriver.firefox.webdriver.WebDriver.CONTEXT_CONTENT">
+<code class="descname">CONTEXT_CONTENT</code><em class="property"> = 'content'</em><a class="headerlink" href="#selenium.webdriver.firefox.webdriver.WebDriver.CONTEXT_CONTENT" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.firefox.webdriver.WebDriver.context">
+<code class="descname">context</code><span class="sig-paren">(</span><em>context</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/webdriver/firefox/webdriver.html#WebDriver.context"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.firefox.webdriver.WebDriver.context" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets the context that Selenium commands are running in using
+a <cite>with</cite> statement. The state of the context on the server is
+saved before entering the block, and restored upon exiting it.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>context</strong> – Context, may be one of the class properties
+<cite>CONTEXT_CHROME</cite> or <cite>CONTEXT_CONTENT</cite>.</td>
+</tr>
+</tbody>
+</table>
+<p>Usage example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="n">selenium</span><span class="o">.</span><span class="n">context</span><span class="p">(</span><span class="n">selenium</span><span class="o">.</span><span class="n">CONTEXT_CHROME</span><span class="p">):</span>
+    <span class="c1"># chrome scope</span>
+    <span class="o">...</span> <span class="n">do</span> <span class="n">stuff</span> <span class="o">...</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="selenium.webdriver.firefox.webdriver.WebDriver.firefox_profile">
+<code class="descname">firefox_profile</code><a class="headerlink" href="#selenium.webdriver.firefox.webdriver.WebDriver.firefox_profile" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.firefox.webdriver.WebDriver.get_full_page_screenshot_as_base64">
+<code class="descname">get_full_page_screenshot_as_base64</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; str<a class="reference internal" href="../_modules/selenium/webdriver/firefox/webdriver.html#WebDriver.get_full_page_screenshot_as_base64"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.firefox.webdriver.WebDriver.get_full_page_screenshot_as_base64" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="docutils">
+<dt>Gets the full document screenshot of the current window as a base64 encoded string</dt>
+<dd>which is useful in embedded images in HTML.</dd>
+</dl>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Usage:</th><td class="field-body"><div class="first last highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">driver</span><span class="o">.</span><span class="n">get_full_page_screenshot_as_base64</span><span class="p">()</span>
+</pre></div>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.firefox.webdriver.WebDriver.get_full_page_screenshot_as_file">
+<code class="descname">get_full_page_screenshot_as_file</code><span class="sig-paren">(</span><em>filename</em><span class="sig-paren">)</span> &#x2192; bool<a class="reference internal" href="../_modules/selenium/webdriver/firefox/webdriver.html#WebDriver.get_full_page_screenshot_as_file"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.firefox.webdriver.WebDriver.get_full_page_screenshot_as_file" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="docutils">
+<dt>Saves a full document screenshot of the current window to a PNG image file. Returns</dt>
+<dd>False if there is any IOError, else returns True. Use full paths in
+your filename.</dd>
+</dl>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Args:</th><td class="field-body"><ul class="first simple">
+<li>filename: The full path you wish to save your screenshot to. This
+should end with a <cite>.png</cite> extension.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Usage:</th><td class="field-body"><div class="first last highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">driver</span><span class="o">.</span><span class="n">get_full_page_screenshot_as_file</span><span class="p">(</span><span class="s1">&#39;/Screenshots/foo.png&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.firefox.webdriver.WebDriver.get_full_page_screenshot_as_png">
+<code class="descname">get_full_page_screenshot_as_png</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; str<a class="reference internal" href="../_modules/selenium/webdriver/firefox/webdriver.html#WebDriver.get_full_page_screenshot_as_png"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.firefox.webdriver.WebDriver.get_full_page_screenshot_as_png" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets the full document screenshot of the current window as a binary data.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Usage:</th><td class="field-body"><div class="first last highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">driver</span><span class="o">.</span><span class="n">get_full_page_screenshot_as_png</span><span class="p">()</span>
+</pre></div>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.firefox.webdriver.WebDriver.install_addon">
+<code class="descname">install_addon</code><span class="sig-paren">(</span><em>path</em>, <em>temporary=None</em><span class="sig-paren">)</span> &#x2192; str<a class="reference internal" href="../_modules/selenium/webdriver/firefox/webdriver.html#WebDriver.install_addon"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.firefox.webdriver.WebDriver.install_addon" title="Permalink to this definition">¶</a></dt>
+<dd><p>Installs Firefox addon.</p>
+<p>Returns identifier of installed addon. This identifier can later
+be used to uninstall addon.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>path</strong> – Absolute path to the addon that will be installed.</p>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Usage:</th><td class="field-body"><div class="first last highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">driver</span><span class="o">.</span><span class="n">install_addon</span><span class="p">(</span><span class="s1">&#39;/path/to/firebug.xpi&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.firefox.webdriver.WebDriver.quit">
+<code class="descname">quit</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; NoReturn<a class="reference internal" href="../_modules/selenium/webdriver/firefox/webdriver.html#WebDriver.quit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.firefox.webdriver.WebDriver.quit" title="Permalink to this definition">¶</a></dt>
+<dd><p>Quits the driver and close every associated window.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.firefox.webdriver.WebDriver.save_full_page_screenshot">
+<code class="descname">save_full_page_screenshot</code><span class="sig-paren">(</span><em>filename</em><span class="sig-paren">)</span> &#x2192; bool<a class="reference internal" href="../_modules/selenium/webdriver/firefox/webdriver.html#WebDriver.save_full_page_screenshot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.firefox.webdriver.WebDriver.save_full_page_screenshot" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="docutils">
+<dt>Saves a full document screenshot of the current window to a PNG image file. Returns</dt>
+<dd>False if there is any IOError, else returns True. Use full paths in
+your filename.</dd>
+</dl>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Args:</th><td class="field-body"><ul class="first simple">
+<li>filename: The full path you wish to save your screenshot to. This
+should end with a <cite>.png</cite> extension.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Usage:</th><td class="field-body"><div class="first last highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">driver</span><span class="o">.</span><span class="n">save_full_page_screenshot</span><span class="p">(</span><span class="s1">&#39;/Screenshots/foo.png&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.firefox.webdriver.WebDriver.set_context">
+<code class="descname">set_context</code><span class="sig-paren">(</span><em>context</em><span class="sig-paren">)</span> &#x2192; NoReturn<a class="reference internal" href="../_modules/selenium/webdriver/firefox/webdriver.html#WebDriver.set_context"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.firefox.webdriver.WebDriver.set_context" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.firefox.webdriver.WebDriver.uninstall_addon">
+<code class="descname">uninstall_addon</code><span class="sig-paren">(</span><em>identifier</em><span class="sig-paren">)</span> &#x2192; NoReturn<a class="reference internal" href="../_modules/selenium/webdriver/firefox/webdriver.html#WebDriver.uninstall_addon"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.firefox.webdriver.WebDriver.uninstall_addon" title="Permalink to this definition">¶</a></dt>
+<dd><p>Uninstalls Firefox addon using its identifier.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Usage:</th><td class="field-body"><div class="first last highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">driver</span><span class="o">.</span><span class="n">uninstall_addon</span><span class="p">(</span><span class="s1">&#39;addon@foo.com&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
 
 
-            <div class="clearer"></div>
           </div>
         </div>
       </div>
@@ -56,15 +302,17 @@
     </ul>
    </div>
 <div id="searchbox" style="display: none" role="search">
-  <h3 id="searchlabel">Quick search</h3>
+  <h3>Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="../search.html" method="get">
-      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="text" name="q" />
       <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
     </form>
     </div>
 </div>
-<script>$('#searchbox').show(0);</script>
+<script type="text/javascript">$('#searchbox').show(0);</script>
         </div>
       </div>
       <div class="clearer"></div>
@@ -78,8 +326,7 @@
         <li class="right" >
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">Selenium 4.1.0 documentation</a> &#187;</li>
-        <li class="nav-item nav-item-this"><a href="">selenium.webdriver.firefox.webdriver</a></li> 
+        <li class="nav-item nav-item-0"><a href="../index.html">Selenium 4.1.0 documentation</a> &#187;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">

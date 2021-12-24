@@ -1,19 +1,19 @@
 
-<!DOCTYPE html>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
-<html>
+<html xmlns="http://www.w3.org/1999/xhtml">
   <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <title>selenium.webdriver.ie.webdriver &#8212; Selenium 4.1.0 documentation</title>
-    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../_static/classic.css" />
+    <link rel="stylesheet" href="../_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     
-    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
-    <script src="../_static/jquery.js"></script>
-    <script src="../_static/underscore.js"></script>
-    <script src="../_static/doctools.js"></script>
+    <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
     
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" /> 
@@ -27,8 +27,7 @@
         <li class="right" >
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">Selenium 4.1.0 documentation</a> &#187;</li>
-        <li class="nav-item nav-item-this"><a href="">selenium.webdriver.ie.webdriver</a></li> 
+        <li class="nav-item nav-item-0"><a href="../index.html">Selenium 4.1.0 documentation</a> &#187;</li> 
       </ul>
     </div>  
 
@@ -37,12 +36,73 @@
         <div class="bodywrapper">
           <div class="body" role="main">
             
-  <section id="selenium-webdriver-ie-webdriver">
-<h1>selenium.webdriver.ie.webdriver<a class="headerlink" href="#selenium-webdriver-ie-webdriver" title="Permalink to this headline">¶</a></h1>
-</section>
+  <div class="section" id="module-selenium.webdriver.ie.webdriver">
+<span id="selenium-webdriver-ie-webdriver"></span><h1>selenium.webdriver.ie.webdriver<a class="headerlink" href="#module-selenium.webdriver.ie.webdriver" title="Permalink to this headline">¶</a></h1>
+<p class="rubric">Classes</p>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="#selenium.webdriver.ie.webdriver.WebDriver" title="selenium.webdriver.ie.webdriver.WebDriver"><code class="xref py py-obj docutils literal notranslate"><span class="pre">WebDriver</span></code></a>([executable_path,&nbsp;capabilities,&nbsp;…])</td>
+<td>Controls the IEServerDriver and allows you to drive Internet Explorer</td>
+</tr>
+</tbody>
+</table>
+<dl class="class">
+<dt id="selenium.webdriver.ie.webdriver.WebDriver">
+<em class="property">class </em><code class="descclassname">selenium.webdriver.ie.webdriver.</code><code class="descname">WebDriver</code><span class="sig-paren">(</span><em>executable_path='IEDriverServer.exe'</em>, <em>capabilities=None</em>, <em>port=0</em>, <em>timeout=30</em>, <em>host=None</em>, <em>log_level=None</em>, <em>service_log_path=None</em>, <em>options: selenium.webdriver.ie.options.Options = None</em>, <em>service: selenium.webdriver.ie.service.Service = None</em>, <em>desired_capabilities=None</em>, <em>keep_alive=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/webdriver/ie/webdriver.html#WebDriver"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.ie.webdriver.WebDriver" title="Permalink to this definition">¶</a></dt>
+<dd><p>Controls the IEServerDriver and allows you to drive Internet Explorer</p>
+<p>Creates a new instance of the Ie driver.</p>
+<p>Starts the service and then creates new instance of Ie driver.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Args:</th><td class="field-body"><ul class="first last simple">
+<li>executable_path - Deprecated: path to the executable. If the default is used it assumes the executable is in the $PATH</li>
+<li>capabilities - Deprecated: capabilities Dictionary object</li>
+<li>port - Deprecated: port you would like the service to run, if left as 0, a free port will be found.</li>
+<li>timeout - Deprecated: no longer used, kept for backward compatibility</li>
+<li>host - Deprecated: IP address for the service</li>
+<li>log_level - Deprecated: log level you would like the service to run.</li>
+<li>service_log_path - Deprecated: target of logging of service, may be “stdout”, “stderr” or file path.</li>
+<li>options - IE Options instance, providing additional IE options</li>
+<li>desired_capabilities - Deprecated: alias of capabilities; this will make the signature consistent with RemoteWebDriver.</li>
+<li>keep_alive - Deprecated: Whether to configure RemoteConnection to use HTTP keep-alive.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="selenium.webdriver.ie.webdriver.WebDriver.create_options">
+<code class="descname">create_options</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; selenium.webdriver.ie.options.Options<a class="reference internal" href="../_modules/selenium/webdriver/ie/webdriver.html#WebDriver.create_options"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.ie.webdriver.WebDriver.create_options" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.ie.webdriver.WebDriver.quit">
+<code class="descname">quit</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; NoReturn<a class="reference internal" href="../_modules/selenium/webdriver/ie/webdriver.html#WebDriver.quit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.ie.webdriver.WebDriver.quit" title="Permalink to this definition">¶</a></dt>
+<dd><p>Quits the driver and closes every associated window.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Usage:</th><td class="field-body"><div class="first last highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">driver</span><span class="o">.</span><span class="n">quit</span><span class="p">()</span>
+</pre></div>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
 
 
-            <div class="clearer"></div>
           </div>
         </div>
       </div>
@@ -56,15 +116,17 @@
     </ul>
    </div>
 <div id="searchbox" style="display: none" role="search">
-  <h3 id="searchlabel">Quick search</h3>
+  <h3>Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="../search.html" method="get">
-      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="text" name="q" />
       <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
     </form>
     </div>
 </div>
-<script>$('#searchbox').show(0);</script>
+<script type="text/javascript">$('#searchbox').show(0);</script>
         </div>
       </div>
       <div class="clearer"></div>
@@ -78,8 +140,7 @@
         <li class="right" >
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">Selenium 4.1.0 documentation</a> &#187;</li>
-        <li class="nav-item nav-item-this"><a href="">selenium.webdriver.ie.webdriver</a></li> 
+        <li class="nav-item nav-item-0"><a href="../index.html">Selenium 4.1.0 documentation</a> &#187;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">

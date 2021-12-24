@@ -1,19 +1,19 @@
 
-<!DOCTYPE html>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
-<html>
+<html xmlns="http://www.w3.org/1999/xhtml">
   <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <title>selenium.common.exceptions &#8212; Selenium 4.1.0 documentation</title>
-    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../_static/classic.css" />
+    <link rel="stylesheet" href="../_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     
-    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
-    <script src="../_static/jquery.js"></script>
-    <script src="../_static/underscore.js"></script>
-    <script src="../_static/doctools.js"></script>
+    <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
     
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" /> 
@@ -27,8 +27,7 @@
         <li class="right" >
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">Selenium 4.1.0 documentation</a> &#187;</li>
-        <li class="nav-item nav-item-this"><a href="">selenium.common.exceptions</a></li> 
+        <li class="nav-item nav-item-0"><a href="../index.html">Selenium 4.1.0 documentation</a> &#187;</li> 
       </ul>
     </div>  
 
@@ -37,121 +36,368 @@
         <div class="bodywrapper">
           <div class="body" role="main">
             
-  <section id="module-selenium.common.exceptions">
+  <div class="section" id="module-selenium.common.exceptions">
 <span id="selenium-common-exceptions"></span><h1>selenium.common.exceptions<a class="headerlink" href="#module-selenium.common.exceptions" title="Permalink to this headline">¶</a></h1>
 <p>Exceptions that may happen in all the webdriver code.</p>
 <p class="rubric">Exceptions</p>
-<table class="longtable docutils align-default">
+<table border="1" class="longtable docutils">
 <colgroup>
-<col style="width: 10%" />
-<col style="width: 90%" />
+<col width="10%" />
+<col width="90%" />
 </colgroup>
-<tbody>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">ElementClickInterceptedException</span></code>([msg, ...])</p></td>
-<td><p>The Element Click command could not be completed because the element receiving the events is obscuring the element that was requested to be clicked.</p></td>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="#selenium.common.exceptions.ElementClickInterceptedException" title="selenium.common.exceptions.ElementClickInterceptedException"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ElementClickInterceptedException</span></code></a>(msg,&nbsp;…)</td>
+<td>The Element Click command could not be completed because the element receiving the events is obscuring the element that was requested to be clicked.</td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">ElementNotInteractableException</span></code>([msg, ...])</p></td>
-<td><p>Thrown when an element is present in the DOM but interactions with that element will hit another element due to paint order</p></td>
+<tr class="row-even"><td><a class="reference internal" href="#selenium.common.exceptions.ElementNotInteractableException" title="selenium.common.exceptions.ElementNotInteractableException"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ElementNotInteractableException</span></code></a>(msg,&nbsp;screen,&nbsp;…)</td>
+<td>Thrown when an element is present in the DOM but interactions with that element will hit another element due to paint order</td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">ElementNotSelectableException</span></code>([msg, screen, ...])</p></td>
-<td><p>Thrown when trying to select an unselectable element.</p></td>
+<tr class="row-odd"><td><a class="reference internal" href="#selenium.common.exceptions.ElementNotSelectableException" title="selenium.common.exceptions.ElementNotSelectableException"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ElementNotSelectableException</span></code></a>(msg,&nbsp;screen,&nbsp;…)</td>
+<td>Thrown when trying to select an unselectable element.</td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">ElementNotVisibleException</span></code>([msg, screen, ...])</p></td>
-<td><p>Thrown when an element is present on the DOM, but it is not visible, and so is not able to be interacted with.</p></td>
+<tr class="row-even"><td><a class="reference internal" href="#selenium.common.exceptions.ElementNotVisibleException" title="selenium.common.exceptions.ElementNotVisibleException"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ElementNotVisibleException</span></code></a>(msg,&nbsp;screen,&nbsp;…)</td>
+<td>Thrown when an element is present on the DOM, but it is not visible, and so is not able to be interacted with.</td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">ImeActivationFailedException</span></code>([msg, screen, ...])</p></td>
-<td><p>Thrown when activating an IME engine has failed.</p></td>
+<tr class="row-odd"><td><a class="reference internal" href="#selenium.common.exceptions.ImeActivationFailedException" title="selenium.common.exceptions.ImeActivationFailedException"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ImeActivationFailedException</span></code></a>(msg,&nbsp;screen,&nbsp;…)</td>
+<td>Thrown when activating an IME engine has failed.</td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">ImeNotAvailableException</span></code>([msg, screen, ...])</p></td>
-<td><p>Thrown when IME support is not available.</p></td>
+<tr class="row-even"><td><a class="reference internal" href="#selenium.common.exceptions.ImeNotAvailableException" title="selenium.common.exceptions.ImeNotAvailableException"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ImeNotAvailableException</span></code></a>(msg,&nbsp;screen,&nbsp;stacktrace)</td>
+<td>Thrown when IME support is not available.</td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">InsecureCertificateException</span></code>([msg, screen, ...])</p></td>
-<td><p>Navigation caused the user agent to hit a certificate warning, which is usually the result of an expired or invalid TLS certificate.</p></td>
+<tr class="row-odd"><td><a class="reference internal" href="#selenium.common.exceptions.InsecureCertificateException" title="selenium.common.exceptions.InsecureCertificateException"><code class="xref py py-obj docutils literal notranslate"><span class="pre">InsecureCertificateException</span></code></a>(msg,&nbsp;screen,&nbsp;…)</td>
+<td>Navigation caused the user agent to hit a certificate warning, which is usually the result of an expired or invalid TLS certificate.</td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">InvalidArgumentException</span></code>([msg, screen, ...])</p></td>
-<td><p>The arguments passed to a command are either invalid or malformed.</p></td>
+<tr class="row-even"><td><a class="reference internal" href="#selenium.common.exceptions.InvalidArgumentException" title="selenium.common.exceptions.InvalidArgumentException"><code class="xref py py-obj docutils literal notranslate"><span class="pre">InvalidArgumentException</span></code></a>(msg,&nbsp;screen,&nbsp;stacktrace)</td>
+<td>The arguments passed to a command are either invalid or malformed.</td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">InvalidCookieDomainException</span></code>([msg, screen, ...])</p></td>
-<td><p>Thrown when attempting to add a cookie under a different domain than the current URL.</p></td>
+<tr class="row-odd"><td><a class="reference internal" href="#selenium.common.exceptions.InvalidCookieDomainException" title="selenium.common.exceptions.InvalidCookieDomainException"><code class="xref py py-obj docutils literal notranslate"><span class="pre">InvalidCookieDomainException</span></code></a>(msg,&nbsp;screen,&nbsp;…)</td>
+<td>Thrown when attempting to add a cookie under a different domain than the current URL.</td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">InvalidCoordinatesException</span></code>([msg, screen, ...])</p></td>
-<td><p>The coordinates provided to an interaction's operation are invalid.</p></td>
+<tr class="row-even"><td><a class="reference internal" href="#selenium.common.exceptions.InvalidCoordinatesException" title="selenium.common.exceptions.InvalidCoordinatesException"><code class="xref py py-obj docutils literal notranslate"><span class="pre">InvalidCoordinatesException</span></code></a>(msg,&nbsp;screen,&nbsp;…)</td>
+<td>The coordinates provided to an interaction’s operation are invalid.</td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">InvalidElementStateException</span></code>([msg, screen, ...])</p></td>
-<td><p>Thrown when a command could not be completed because the element is in an invalid state.</p></td>
+<tr class="row-odd"><td><a class="reference internal" href="#selenium.common.exceptions.InvalidElementStateException" title="selenium.common.exceptions.InvalidElementStateException"><code class="xref py py-obj docutils literal notranslate"><span class="pre">InvalidElementStateException</span></code></a>(msg,&nbsp;screen,&nbsp;…)</td>
+<td>Thrown when a command could not be completed because the element is in an invalid state.</td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">InvalidSelectorException</span></code>([msg, screen, ...])</p></td>
-<td><p>Thrown when the selector which is used to find an element does not return a WebElement.</p></td>
+<tr class="row-even"><td><a class="reference internal" href="#selenium.common.exceptions.InvalidSelectorException" title="selenium.common.exceptions.InvalidSelectorException"><code class="xref py py-obj docutils literal notranslate"><span class="pre">InvalidSelectorException</span></code></a>(msg,&nbsp;screen,&nbsp;stacktrace)</td>
+<td>Thrown when the selector which is used to find an element does not return a WebElement.</td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">InvalidSessionIdException</span></code>([msg, screen, ...])</p></td>
-<td><p>Occurs if the given session id is not in the list of active sessions, meaning the session either does not exist or that it's not active.</p></td>
+<tr class="row-odd"><td><a class="reference internal" href="#selenium.common.exceptions.InvalidSessionIdException" title="selenium.common.exceptions.InvalidSessionIdException"><code class="xref py py-obj docutils literal notranslate"><span class="pre">InvalidSessionIdException</span></code></a>(msg,&nbsp;screen,&nbsp;…)</td>
+<td>Occurs if the given session id is not in the list of active sessions, meaning the session either does not exist or that it’s not active.</td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">InvalidSwitchToTargetException</span></code>([msg, ...])</p></td>
-<td><p>Thrown when frame or window target to be switched doesn't exist.</p></td>
+<tr class="row-even"><td><a class="reference internal" href="#selenium.common.exceptions.InvalidSwitchToTargetException" title="selenium.common.exceptions.InvalidSwitchToTargetException"><code class="xref py py-obj docutils literal notranslate"><span class="pre">InvalidSwitchToTargetException</span></code></a>(msg,&nbsp;screen,&nbsp;…)</td>
+<td>Thrown when frame or window target to be switched doesn’t exist.</td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">JavascriptException</span></code>([msg, screen, stacktrace])</p></td>
-<td><p>An error occurred while executing JavaScript supplied by the user.</p></td>
+<tr class="row-odd"><td><a class="reference internal" href="#selenium.common.exceptions.JavascriptException" title="selenium.common.exceptions.JavascriptException"><code class="xref py py-obj docutils literal notranslate"><span class="pre">JavascriptException</span></code></a>(msg,&nbsp;screen,&nbsp;stacktrace)</td>
+<td>An error occurred while executing JavaScript supplied by the user.</td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">MoveTargetOutOfBoundsException</span></code>([msg, ...])</p></td>
-<td><p>Thrown when the target provided to the <cite>ActionsChains</cite> move() method is invalid, i.e. out of document.</p></td>
+<tr class="row-even"><td><a class="reference internal" href="#selenium.common.exceptions.MoveTargetOutOfBoundsException" title="selenium.common.exceptions.MoveTargetOutOfBoundsException"><code class="xref py py-obj docutils literal notranslate"><span class="pre">MoveTargetOutOfBoundsException</span></code></a>(msg,&nbsp;screen,&nbsp;…)</td>
+<td>Thrown when the target provided to the <cite>ActionsChains</cite> move() method is invalid, i.e.</td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">NoAlertPresentException</span></code>([msg, screen, ...])</p></td>
-<td><p>Thrown when switching to no presented alert.</p></td>
+<tr class="row-odd"><td><a class="reference internal" href="#selenium.common.exceptions.NoAlertPresentException" title="selenium.common.exceptions.NoAlertPresentException"><code class="xref py py-obj docutils literal notranslate"><span class="pre">NoAlertPresentException</span></code></a>(msg,&nbsp;screen,&nbsp;stacktrace)</td>
+<td>Thrown when switching to no presented alert.</td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">NoSuchAttributeException</span></code>([msg, screen, ...])</p></td>
-<td><p>Thrown when the attribute of element could not be found.</p></td>
+<tr class="row-even"><td><a class="reference internal" href="#selenium.common.exceptions.NoSuchAttributeException" title="selenium.common.exceptions.NoSuchAttributeException"><code class="xref py py-obj docutils literal notranslate"><span class="pre">NoSuchAttributeException</span></code></a>(msg,&nbsp;screen,&nbsp;stacktrace)</td>
+<td>Thrown when the attribute of element could not be found.</td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">NoSuchCookieException</span></code>([msg, screen, stacktrace])</p></td>
-<td><p>No cookie matching the given path name was found amongst the associated cookies of the current browsing context's active document.</p></td>
+<tr class="row-odd"><td><a class="reference internal" href="#selenium.common.exceptions.NoSuchCookieException" title="selenium.common.exceptions.NoSuchCookieException"><code class="xref py py-obj docutils literal notranslate"><span class="pre">NoSuchCookieException</span></code></a>(msg,&nbsp;screen,&nbsp;stacktrace)</td>
+<td>No cookie matching the given path name was found amongst the associated cookies of the current browsing context’s active document.</td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">NoSuchElementException</span></code>([msg, screen, stacktrace])</p></td>
-<td><p>Thrown when element could not be found.</p></td>
+<tr class="row-even"><td><a class="reference internal" href="#selenium.common.exceptions.NoSuchElementException" title="selenium.common.exceptions.NoSuchElementException"><code class="xref py py-obj docutils literal notranslate"><span class="pre">NoSuchElementException</span></code></a>(msg,&nbsp;screen,&nbsp;stacktrace)</td>
+<td>Thrown when element could not be found.</td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">NoSuchFrameException</span></code>([msg, screen, stacktrace])</p></td>
-<td><p>Thrown when frame target to be switched doesn't exist.</p></td>
+<tr class="row-odd"><td><a class="reference internal" href="#selenium.common.exceptions.NoSuchFrameException" title="selenium.common.exceptions.NoSuchFrameException"><code class="xref py py-obj docutils literal notranslate"><span class="pre">NoSuchFrameException</span></code></a>(msg,&nbsp;screen,&nbsp;stacktrace)</td>
+<td>Thrown when frame target to be switched doesn’t exist.</td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">NoSuchShadowRootException</span></code>([msg, screen, ...])</p></td>
-<td><p>Thrown when trying to access the shadow root of an element when it does not have a shadow root attached.</p></td>
+<tr class="row-even"><td><a class="reference internal" href="#selenium.common.exceptions.NoSuchWindowException" title="selenium.common.exceptions.NoSuchWindowException"><code class="xref py py-obj docutils literal notranslate"><span class="pre">NoSuchWindowException</span></code></a>(msg,&nbsp;screen,&nbsp;stacktrace)</td>
+<td>Thrown when window target to be switched doesn’t exist.</td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">NoSuchWindowException</span></code>([msg, screen, stacktrace])</p></td>
-<td><p>Thrown when window target to be switched doesn't exist.</p></td>
+<tr class="row-odd"><td><a class="reference internal" href="#selenium.common.exceptions.RemoteDriverServerException" title="selenium.common.exceptions.RemoteDriverServerException"><code class="xref py py-obj docutils literal notranslate"><span class="pre">RemoteDriverServerException</span></code></a>(msg,&nbsp;screen,&nbsp;…)</td>
+<td></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">RemoteDriverServerException</span></code>([msg, screen, ...])</p></td>
-<td><p></p></td>
+<tr class="row-even"><td><a class="reference internal" href="#selenium.common.exceptions.ScreenshotException" title="selenium.common.exceptions.ScreenshotException"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ScreenshotException</span></code></a>(msg,&nbsp;screen,&nbsp;stacktrace)</td>
+<td>A screen capture was made impossible.</td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">ScreenshotException</span></code>([msg, screen, stacktrace])</p></td>
-<td><p>A screen capture was made impossible.</p></td>
+<tr class="row-odd"><td><a class="reference internal" href="#selenium.common.exceptions.SessionNotCreatedException" title="selenium.common.exceptions.SessionNotCreatedException"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SessionNotCreatedException</span></code></a>(msg,&nbsp;screen,&nbsp;…)</td>
+<td>A new session could not be created.</td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">SessionNotCreatedException</span></code>([msg, screen, ...])</p></td>
-<td><p>A new session could not be created.</p></td>
+<tr class="row-even"><td><a class="reference internal" href="#selenium.common.exceptions.StaleElementReferenceException" title="selenium.common.exceptions.StaleElementReferenceException"><code class="xref py py-obj docutils literal notranslate"><span class="pre">StaleElementReferenceException</span></code></a>(msg,&nbsp;screen,&nbsp;…)</td>
+<td>Thrown when a reference to an element is now “stale”.</td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">StaleElementReferenceException</span></code>([msg, ...])</p></td>
-<td><p>Thrown when a reference to an element is now &quot;stale&quot;.</p></td>
+<tr class="row-odd"><td><a class="reference internal" href="#selenium.common.exceptions.TimeoutException" title="selenium.common.exceptions.TimeoutException"><code class="xref py py-obj docutils literal notranslate"><span class="pre">TimeoutException</span></code></a>(msg,&nbsp;screen,&nbsp;stacktrace)</td>
+<td>Thrown when a command does not complete in enough time.</td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">TimeoutException</span></code>([msg, screen, stacktrace])</p></td>
-<td><p>Thrown when a command does not complete in enough time.</p></td>
+<tr class="row-even"><td><a class="reference internal" href="#selenium.common.exceptions.UnableToSetCookieException" title="selenium.common.exceptions.UnableToSetCookieException"><code class="xref py py-obj docutils literal notranslate"><span class="pre">UnableToSetCookieException</span></code></a>(msg,&nbsp;screen,&nbsp;…)</td>
+<td>Thrown when a driver fails to set a cookie.</td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">UnableToSetCookieException</span></code>([msg, screen, ...])</p></td>
-<td><p>Thrown when a driver fails to set a cookie.</p></td>
+<tr class="row-odd"><td><a class="reference internal" href="#selenium.common.exceptions.UnexpectedAlertPresentException" title="selenium.common.exceptions.UnexpectedAlertPresentException"><code class="xref py py-obj docutils literal notranslate"><span class="pre">UnexpectedAlertPresentException</span></code></a>(msg,&nbsp;screen,&nbsp;…)</td>
+<td>Thrown when an unexpected alert has appeared.</td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">UnexpectedAlertPresentException</span></code>([msg, ...])</p></td>
-<td><p>Thrown when an unexpected alert has appeared.</p></td>
+<tr class="row-even"><td><a class="reference internal" href="#selenium.common.exceptions.UnexpectedTagNameException" title="selenium.common.exceptions.UnexpectedTagNameException"><code class="xref py py-obj docutils literal notranslate"><span class="pre">UnexpectedTagNameException</span></code></a>(msg,&nbsp;screen,&nbsp;…)</td>
+<td>Thrown when a support class did not get an expected web element.</td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">UnexpectedTagNameException</span></code>([msg, screen, ...])</p></td>
-<td><p>Thrown when a support class did not get an expected web element.</p></td>
+<tr class="row-odd"><td><a class="reference internal" href="#selenium.common.exceptions.UnknownMethodException" title="selenium.common.exceptions.UnknownMethodException"><code class="xref py py-obj docutils literal notranslate"><span class="pre">UnknownMethodException</span></code></a>(msg,&nbsp;screen,&nbsp;stacktrace)</td>
+<td>The requested command matched a known URL but did not match any methods for that URL.</td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">UnknownMethodException</span></code>([msg, screen, stacktrace])</p></td>
-<td><p>The requested command matched a known URL but did not match any methods for that URL.</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">WebDriverException</span></code>([msg, screen, stacktrace])</p></td>
-<td><p>Base webdriver exception.</p></td>
+<tr class="row-even"><td><a class="reference internal" href="#selenium.common.exceptions.WebDriverException" title="selenium.common.exceptions.WebDriverException"><code class="xref py py-obj docutils literal notranslate"><span class="pre">WebDriverException</span></code></a>(msg,&nbsp;screen,&nbsp;stacktrace)</td>
+<td>Base webdriver exception.</td>
 </tr>
 </tbody>
 </table>
-</section>
+<dl class="exception">
+<dt id="selenium.common.exceptions.ElementClickInterceptedException">
+<em class="property">exception </em><code class="descclassname">selenium.common.exceptions.</code><code class="descname">ElementClickInterceptedException</code><span class="sig-paren">(</span><em>msg: Optional[str] = None</em>, <em>screen: Optional[str] = None</em>, <em>stacktrace: Optional[Sequence[str]] = None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/common/exceptions.html#ElementClickInterceptedException"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.common.exceptions.ElementClickInterceptedException" title="Permalink to this definition">¶</a></dt>
+<dd><p>The Element Click command could not be completed because the element receiving the events
+is obscuring the element that was requested to be clicked.</p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="selenium.common.exceptions.ElementNotInteractableException">
+<em class="property">exception </em><code class="descclassname">selenium.common.exceptions.</code><code class="descname">ElementNotInteractableException</code><span class="sig-paren">(</span><em>msg: Optional[str] = None</em>, <em>screen: Optional[str] = None</em>, <em>stacktrace: Optional[Sequence[str]] = None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/common/exceptions.html#ElementNotInteractableException"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.common.exceptions.ElementNotInteractableException" title="Permalink to this definition">¶</a></dt>
+<dd><p>Thrown when an element is present in the DOM but interactions
+with that element will hit another element due to paint order</p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="selenium.common.exceptions.ElementNotSelectableException">
+<em class="property">exception </em><code class="descclassname">selenium.common.exceptions.</code><code class="descname">ElementNotSelectableException</code><span class="sig-paren">(</span><em>msg: Optional[str] = None</em>, <em>screen: Optional[str] = None</em>, <em>stacktrace: Optional[Sequence[str]] = None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/common/exceptions.html#ElementNotSelectableException"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.common.exceptions.ElementNotSelectableException" title="Permalink to this definition">¶</a></dt>
+<dd><p>Thrown when trying to select an unselectable element.</p>
+<p>For example, selecting a ‘script’ element.</p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="selenium.common.exceptions.ElementNotVisibleException">
+<em class="property">exception </em><code class="descclassname">selenium.common.exceptions.</code><code class="descname">ElementNotVisibleException</code><span class="sig-paren">(</span><em>msg: Optional[str] = None</em>, <em>screen: Optional[str] = None</em>, <em>stacktrace: Optional[Sequence[str]] = None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/common/exceptions.html#ElementNotVisibleException"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.common.exceptions.ElementNotVisibleException" title="Permalink to this definition">¶</a></dt>
+<dd><p>Thrown when an element is present on the DOM, but
+it is not visible, and so is not able to be interacted with.</p>
+<p>Most commonly encountered when trying to click or read text
+of an element that is hidden from view.</p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="selenium.common.exceptions.ImeActivationFailedException">
+<em class="property">exception </em><code class="descclassname">selenium.common.exceptions.</code><code class="descname">ImeActivationFailedException</code><span class="sig-paren">(</span><em>msg: Optional[str] = None</em>, <em>screen: Optional[str] = None</em>, <em>stacktrace: Optional[Sequence[str]] = None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/common/exceptions.html#ImeActivationFailedException"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.common.exceptions.ImeActivationFailedException" title="Permalink to this definition">¶</a></dt>
+<dd><p>Thrown when activating an IME engine has failed.</p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="selenium.common.exceptions.ImeNotAvailableException">
+<em class="property">exception </em><code class="descclassname">selenium.common.exceptions.</code><code class="descname">ImeNotAvailableException</code><span class="sig-paren">(</span><em>msg: Optional[str] = None</em>, <em>screen: Optional[str] = None</em>, <em>stacktrace: Optional[Sequence[str]] = None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/common/exceptions.html#ImeNotAvailableException"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.common.exceptions.ImeNotAvailableException" title="Permalink to this definition">¶</a></dt>
+<dd><p>Thrown when IME support is not available. This exception is thrown for every IME-related
+method call if IME support is not available on the machine.</p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="selenium.common.exceptions.InsecureCertificateException">
+<em class="property">exception </em><code class="descclassname">selenium.common.exceptions.</code><code class="descname">InsecureCertificateException</code><span class="sig-paren">(</span><em>msg: Optional[str] = None</em>, <em>screen: Optional[str] = None</em>, <em>stacktrace: Optional[Sequence[str]] = None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/common/exceptions.html#InsecureCertificateException"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.common.exceptions.InsecureCertificateException" title="Permalink to this definition">¶</a></dt>
+<dd><p>Navigation caused the user agent to hit a certificate warning, which is usually the result
+of an expired or invalid TLS certificate.</p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="selenium.common.exceptions.InvalidArgumentException">
+<em class="property">exception </em><code class="descclassname">selenium.common.exceptions.</code><code class="descname">InvalidArgumentException</code><span class="sig-paren">(</span><em>msg: Optional[str] = None</em>, <em>screen: Optional[str] = None</em>, <em>stacktrace: Optional[Sequence[str]] = None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/common/exceptions.html#InvalidArgumentException"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.common.exceptions.InvalidArgumentException" title="Permalink to this definition">¶</a></dt>
+<dd><p>The arguments passed to a command are either invalid or malformed.</p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="selenium.common.exceptions.InvalidCookieDomainException">
+<em class="property">exception </em><code class="descclassname">selenium.common.exceptions.</code><code class="descname">InvalidCookieDomainException</code><span class="sig-paren">(</span><em>msg: Optional[str] = None</em>, <em>screen: Optional[str] = None</em>, <em>stacktrace: Optional[Sequence[str]] = None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/common/exceptions.html#InvalidCookieDomainException"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.common.exceptions.InvalidCookieDomainException" title="Permalink to this definition">¶</a></dt>
+<dd><p>Thrown when attempting to add a cookie under a different domain
+than the current URL.</p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="selenium.common.exceptions.InvalidCoordinatesException">
+<em class="property">exception </em><code class="descclassname">selenium.common.exceptions.</code><code class="descname">InvalidCoordinatesException</code><span class="sig-paren">(</span><em>msg: Optional[str] = None</em>, <em>screen: Optional[str] = None</em>, <em>stacktrace: Optional[Sequence[str]] = None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/common/exceptions.html#InvalidCoordinatesException"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.common.exceptions.InvalidCoordinatesException" title="Permalink to this definition">¶</a></dt>
+<dd><p>The coordinates provided to an interaction’s operation are invalid.</p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="selenium.common.exceptions.InvalidElementStateException">
+<em class="property">exception </em><code class="descclassname">selenium.common.exceptions.</code><code class="descname">InvalidElementStateException</code><span class="sig-paren">(</span><em>msg: Optional[str] = None</em>, <em>screen: Optional[str] = None</em>, <em>stacktrace: Optional[Sequence[str]] = None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/common/exceptions.html#InvalidElementStateException"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.common.exceptions.InvalidElementStateException" title="Permalink to this definition">¶</a></dt>
+<dd><p>Thrown when a command could not be completed because the element is in an invalid state.</p>
+<p>This can be caused by attempting to clear an element that isn’t both editable and resettable.</p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="selenium.common.exceptions.InvalidSelectorException">
+<em class="property">exception </em><code class="descclassname">selenium.common.exceptions.</code><code class="descname">InvalidSelectorException</code><span class="sig-paren">(</span><em>msg: Optional[str] = None</em>, <em>screen: Optional[str] = None</em>, <em>stacktrace: Optional[Sequence[str]] = None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/common/exceptions.html#InvalidSelectorException"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.common.exceptions.InvalidSelectorException" title="Permalink to this definition">¶</a></dt>
+<dd><p>Thrown when the selector which is used to find an element does not return
+a WebElement. Currently this only happens when the selector is an xpath
+expression and it is either syntactically invalid (i.e. it is not a
+xpath expression) or the expression does not select WebElements
+(e.g. “count(//input)”).</p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="selenium.common.exceptions.InvalidSessionIdException">
+<em class="property">exception </em><code class="descclassname">selenium.common.exceptions.</code><code class="descname">InvalidSessionIdException</code><span class="sig-paren">(</span><em>msg: Optional[str] = None</em>, <em>screen: Optional[str] = None</em>, <em>stacktrace: Optional[Sequence[str]] = None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/common/exceptions.html#InvalidSessionIdException"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.common.exceptions.InvalidSessionIdException" title="Permalink to this definition">¶</a></dt>
+<dd><p>Occurs if the given session id is not in the list of active sessions, meaning the session
+either does not exist or that it’s not active.</p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="selenium.common.exceptions.InvalidSwitchToTargetException">
+<em class="property">exception </em><code class="descclassname">selenium.common.exceptions.</code><code class="descname">InvalidSwitchToTargetException</code><span class="sig-paren">(</span><em>msg: Optional[str] = None</em>, <em>screen: Optional[str] = None</em>, <em>stacktrace: Optional[Sequence[str]] = None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/common/exceptions.html#InvalidSwitchToTargetException"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.common.exceptions.InvalidSwitchToTargetException" title="Permalink to this definition">¶</a></dt>
+<dd><p>Thrown when frame or window target to be switched doesn’t exist.</p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="selenium.common.exceptions.JavascriptException">
+<em class="property">exception </em><code class="descclassname">selenium.common.exceptions.</code><code class="descname">JavascriptException</code><span class="sig-paren">(</span><em>msg: Optional[str] = None</em>, <em>screen: Optional[str] = None</em>, <em>stacktrace: Optional[Sequence[str]] = None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/common/exceptions.html#JavascriptException"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.common.exceptions.JavascriptException" title="Permalink to this definition">¶</a></dt>
+<dd><p>An error occurred while executing JavaScript supplied by the user.</p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="selenium.common.exceptions.MoveTargetOutOfBoundsException">
+<em class="property">exception </em><code class="descclassname">selenium.common.exceptions.</code><code class="descname">MoveTargetOutOfBoundsException</code><span class="sig-paren">(</span><em>msg: Optional[str] = None</em>, <em>screen: Optional[str] = None</em>, <em>stacktrace: Optional[Sequence[str]] = None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/common/exceptions.html#MoveTargetOutOfBoundsException"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.common.exceptions.MoveTargetOutOfBoundsException" title="Permalink to this definition">¶</a></dt>
+<dd><p>Thrown when the target provided to the <cite>ActionsChains</cite> move()
+method is invalid, i.e. out of document.</p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="selenium.common.exceptions.NoAlertPresentException">
+<em class="property">exception </em><code class="descclassname">selenium.common.exceptions.</code><code class="descname">NoAlertPresentException</code><span class="sig-paren">(</span><em>msg: Optional[str] = None</em>, <em>screen: Optional[str] = None</em>, <em>stacktrace: Optional[Sequence[str]] = None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/common/exceptions.html#NoAlertPresentException"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.common.exceptions.NoAlertPresentException" title="Permalink to this definition">¶</a></dt>
+<dd><p>Thrown when switching to no presented alert.</p>
+<p>This can be caused by calling an operation on the Alert() class when an alert is
+not yet on the screen.</p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="selenium.common.exceptions.NoSuchAttributeException">
+<em class="property">exception </em><code class="descclassname">selenium.common.exceptions.</code><code class="descname">NoSuchAttributeException</code><span class="sig-paren">(</span><em>msg: Optional[str] = None</em>, <em>screen: Optional[str] = None</em>, <em>stacktrace: Optional[Sequence[str]] = None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/common/exceptions.html#NoSuchAttributeException"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.common.exceptions.NoSuchAttributeException" title="Permalink to this definition">¶</a></dt>
+<dd><p>Thrown when the attribute of element could not be found.</p>
+<p>You may want to check if the attribute exists in the particular browser you are
+testing against.  Some browsers may have different property names for the same
+property.  (IE8’s .innerText vs. Firefox .textContent)</p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="selenium.common.exceptions.NoSuchCookieException">
+<em class="property">exception </em><code class="descclassname">selenium.common.exceptions.</code><code class="descname">NoSuchCookieException</code><span class="sig-paren">(</span><em>msg: Optional[str] = None</em>, <em>screen: Optional[str] = None</em>, <em>stacktrace: Optional[Sequence[str]] = None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/common/exceptions.html#NoSuchCookieException"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.common.exceptions.NoSuchCookieException" title="Permalink to this definition">¶</a></dt>
+<dd><p>No cookie matching the given path name was found amongst the associated cookies of the
+current browsing context’s active document.</p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="selenium.common.exceptions.NoSuchElementException">
+<em class="property">exception </em><code class="descclassname">selenium.common.exceptions.</code><code class="descname">NoSuchElementException</code><span class="sig-paren">(</span><em>msg: Optional[str] = None</em>, <em>screen: Optional[str] = None</em>, <em>stacktrace: Optional[Sequence[str]] = None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/common/exceptions.html#NoSuchElementException"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.common.exceptions.NoSuchElementException" title="Permalink to this definition">¶</a></dt>
+<dd><p>Thrown when element could not be found.</p>
+<dl class="docutils">
+<dt>If you encounter this exception, you may want to check the following:</dt>
+<dd><ul class="first last simple">
+<li>Check your selector used in your find_by…</li>
+<li>Element may not yet be on the screen at the time of the find operation,
+(webpage is still loading) see selenium.webdriver.support.wait.WebDriverWait()
+for how to write a wait wrapper to wait for an element to appear.</li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="exception">
+<dt id="selenium.common.exceptions.NoSuchFrameException">
+<em class="property">exception </em><code class="descclassname">selenium.common.exceptions.</code><code class="descname">NoSuchFrameException</code><span class="sig-paren">(</span><em>msg: Optional[str] = None</em>, <em>screen: Optional[str] = None</em>, <em>stacktrace: Optional[Sequence[str]] = None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/common/exceptions.html#NoSuchFrameException"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.common.exceptions.NoSuchFrameException" title="Permalink to this definition">¶</a></dt>
+<dd><p>Thrown when frame target to be switched doesn’t exist.</p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="selenium.common.exceptions.NoSuchShadowRootException">
+<em class="property">exception </em><code class="descclassname">selenium.common.exceptions.</code><code class="descname">NoSuchShadowRootException</code><span class="sig-paren">(</span><em>msg: Optional[str] = None</em>, <em>screen: Optional[str] = None</em>, <em>stacktrace: Optional[Sequence[str]] = None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/common/exceptions.html#NoSuchShadowRootException"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.common.exceptions.NoSuchShadowRootException" title="Permalink to this definition">¶</a></dt>
+<dd><p>Thrown when trying to access the shadow root of an element when it does not
+have a shadow root attached.</p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="selenium.common.exceptions.NoSuchWindowException">
+<em class="property">exception </em><code class="descclassname">selenium.common.exceptions.</code><code class="descname">NoSuchWindowException</code><span class="sig-paren">(</span><em>msg: Optional[str] = None</em>, <em>screen: Optional[str] = None</em>, <em>stacktrace: Optional[Sequence[str]] = None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/common/exceptions.html#NoSuchWindowException"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.common.exceptions.NoSuchWindowException" title="Permalink to this definition">¶</a></dt>
+<dd><p>Thrown when window target to be switched doesn’t exist.</p>
+<p>To find the current set of active window handles, you can get a list
+of the active window handles in the following way:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span> <span class="n">driver</span><span class="o">.</span><span class="n">window_handles</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="exception">
+<dt id="selenium.common.exceptions.RemoteDriverServerException">
+<em class="property">exception </em><code class="descclassname">selenium.common.exceptions.</code><code class="descname">RemoteDriverServerException</code><span class="sig-paren">(</span><em>msg: Optional[str] = None</em>, <em>screen: Optional[str] = None</em>, <em>stacktrace: Optional[Sequence[str]] = None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/common/exceptions.html#RemoteDriverServerException"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.common.exceptions.RemoteDriverServerException" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="exception">
+<dt id="selenium.common.exceptions.ScreenshotException">
+<em class="property">exception </em><code class="descclassname">selenium.common.exceptions.</code><code class="descname">ScreenshotException</code><span class="sig-paren">(</span><em>msg: Optional[str] = None</em>, <em>screen: Optional[str] = None</em>, <em>stacktrace: Optional[Sequence[str]] = None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/common/exceptions.html#ScreenshotException"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.common.exceptions.ScreenshotException" title="Permalink to this definition">¶</a></dt>
+<dd><p>A screen capture was made impossible.</p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="selenium.common.exceptions.SessionNotCreatedException">
+<em class="property">exception </em><code class="descclassname">selenium.common.exceptions.</code><code class="descname">SessionNotCreatedException</code><span class="sig-paren">(</span><em>msg: Optional[str] = None</em>, <em>screen: Optional[str] = None</em>, <em>stacktrace: Optional[Sequence[str]] = None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/common/exceptions.html#SessionNotCreatedException"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.common.exceptions.SessionNotCreatedException" title="Permalink to this definition">¶</a></dt>
+<dd><p>A new session could not be created.</p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="selenium.common.exceptions.StaleElementReferenceException">
+<em class="property">exception </em><code class="descclassname">selenium.common.exceptions.</code><code class="descname">StaleElementReferenceException</code><span class="sig-paren">(</span><em>msg: Optional[str] = None</em>, <em>screen: Optional[str] = None</em>, <em>stacktrace: Optional[Sequence[str]] = None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/common/exceptions.html#StaleElementReferenceException"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.common.exceptions.StaleElementReferenceException" title="Permalink to this definition">¶</a></dt>
+<dd><p>Thrown when a reference to an element is now “stale”.</p>
+<p>Stale means the element no longer appears on the DOM of the page.</p>
+<dl class="docutils">
+<dt>Possible causes of StaleElementReferenceException include, but not limited to:</dt>
+<dd><ul class="first last simple">
+<li>You are no longer on the same page, or the page may have refreshed since the element
+was located.</li>
+<li>The element may have been removed and re-added to the screen, since it was located.
+Such as an element being relocated.
+This can happen typically with a javascript framework when values are updated and the
+node is rebuilt.</li>
+<li>Element may have been inside an iframe or another context which was refreshed.</li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="exception">
+<dt id="selenium.common.exceptions.TimeoutException">
+<em class="property">exception </em><code class="descclassname">selenium.common.exceptions.</code><code class="descname">TimeoutException</code><span class="sig-paren">(</span><em>msg: Optional[str] = None</em>, <em>screen: Optional[str] = None</em>, <em>stacktrace: Optional[Sequence[str]] = None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/common/exceptions.html#TimeoutException"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.common.exceptions.TimeoutException" title="Permalink to this definition">¶</a></dt>
+<dd><p>Thrown when a command does not complete in enough time.</p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="selenium.common.exceptions.UnableToSetCookieException">
+<em class="property">exception </em><code class="descclassname">selenium.common.exceptions.</code><code class="descname">UnableToSetCookieException</code><span class="sig-paren">(</span><em>msg: Optional[str] = None</em>, <em>screen: Optional[str] = None</em>, <em>stacktrace: Optional[Sequence[str]] = None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/common/exceptions.html#UnableToSetCookieException"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.common.exceptions.UnableToSetCookieException" title="Permalink to this definition">¶</a></dt>
+<dd><p>Thrown when a driver fails to set a cookie.</p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="selenium.common.exceptions.UnexpectedAlertPresentException">
+<em class="property">exception </em><code class="descclassname">selenium.common.exceptions.</code><code class="descname">UnexpectedAlertPresentException</code><span class="sig-paren">(</span><em>msg: Optional[str] = None</em>, <em>screen: Optional[str] = None</em>, <em>stacktrace: Optional[Sequence[str]] = None</em>, <em>alert_text: Optional[str] = None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/common/exceptions.html#UnexpectedAlertPresentException"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.common.exceptions.UnexpectedAlertPresentException" title="Permalink to this definition">¶</a></dt>
+<dd><p>Thrown when an unexpected alert has appeared.</p>
+<p>Usually raised when  an unexpected modal is blocking the webdriver from executing
+commands.</p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="selenium.common.exceptions.UnexpectedTagNameException">
+<em class="property">exception </em><code class="descclassname">selenium.common.exceptions.</code><code class="descname">UnexpectedTagNameException</code><span class="sig-paren">(</span><em>msg: Optional[str] = None</em>, <em>screen: Optional[str] = None</em>, <em>stacktrace: Optional[Sequence[str]] = None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/common/exceptions.html#UnexpectedTagNameException"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.common.exceptions.UnexpectedTagNameException" title="Permalink to this definition">¶</a></dt>
+<dd><p>Thrown when a support class did not get an expected web element.</p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="selenium.common.exceptions.UnknownMethodException">
+<em class="property">exception </em><code class="descclassname">selenium.common.exceptions.</code><code class="descname">UnknownMethodException</code><span class="sig-paren">(</span><em>msg: Optional[str] = None</em>, <em>screen: Optional[str] = None</em>, <em>stacktrace: Optional[Sequence[str]] = None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/common/exceptions.html#UnknownMethodException"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.common.exceptions.UnknownMethodException" title="Permalink to this definition">¶</a></dt>
+<dd><p>The requested command matched a known URL but did not match any methods for that URL.</p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="selenium.common.exceptions.WebDriverException">
+<em class="property">exception </em><code class="descclassname">selenium.common.exceptions.</code><code class="descname">WebDriverException</code><span class="sig-paren">(</span><em>msg: Optional[str] = None</em>, <em>screen: Optional[str] = None</em>, <em>stacktrace: Optional[Sequence[str]] = None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/common/exceptions.html#WebDriverException"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.common.exceptions.WebDriverException" title="Permalink to this definition">¶</a></dt>
+<dd><p>Base webdriver exception.</p>
+</dd></dl>
+
+</div>
 
 
-            <div class="clearer"></div>
           </div>
         </div>
       </div>
@@ -165,15 +411,17 @@
     </ul>
    </div>
 <div id="searchbox" style="display: none" role="search">
-  <h3 id="searchlabel">Quick search</h3>
+  <h3>Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="../search.html" method="get">
-      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="text" name="q" />
       <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
     </form>
     </div>
 </div>
-<script>$('#searchbox').show(0);</script>
+<script type="text/javascript">$('#searchbox').show(0);</script>
         </div>
       </div>
       <div class="clearer"></div>
@@ -187,8 +435,7 @@
         <li class="right" >
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">Selenium 4.1.0 documentation</a> &#187;</li>
-        <li class="nav-item nav-item-this"><a href="">selenium.common.exceptions</a></li> 
+        <li class="nav-item nav-item-0"><a href="../index.html">Selenium 4.1.0 documentation</a> &#187;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">

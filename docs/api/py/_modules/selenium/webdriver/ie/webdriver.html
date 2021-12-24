@@ -1,0 +1,204 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>selenium.webdriver.ie.webdriver &#8212; Selenium 4.1.0 documentation</title>
+    <link rel="stylesheet" href="../../../../_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript" id="documentation_options" data-url_root="../../../../" src="../../../../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../../_static/doctools.js"></script>
+    
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">Selenium 4.1.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../../index.html" accesskey="U">Module code</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for selenium.webdriver.ie.webdriver</h1><div class="highlight"><pre>
+<span></span><span class="c1"># Licensed to the Software Freedom Conservancy (SFC) under one</span>
+<span class="c1"># or more contributor license agreements.  See the NOTICE file</span>
+<span class="c1"># distributed with this work for additional information</span>
+<span class="c1"># regarding copyright ownership.  The SFC licenses this file</span>
+<span class="c1"># to you under the Apache License, Version 2.0 (the</span>
+<span class="c1"># &quot;License&quot;); you may not use this file except in compliance</span>
+<span class="c1"># with the License.  You may obtain a copy of the License at</span>
+<span class="c1">#</span>
+<span class="c1">#   http://www.apache.org/licenses/LICENSE-2.0</span>
+<span class="c1">#</span>
+<span class="c1"># Unless required by applicable law or agreed to in writing,</span>
+<span class="c1"># software distributed under the License is distributed on an</span>
+<span class="c1"># &quot;AS IS&quot; BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY</span>
+<span class="c1"># KIND, either express or implied.  See the License for the</span>
+<span class="c1"># specific language governing permissions and limitations</span>
+<span class="c1"># under the License.</span>
+
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">NoReturn</span>
+<span class="kn">import</span> <span class="nn">warnings</span>
+
+<span class="kn">from</span> <span class="nn">selenium.webdriver.remote.webdriver</span> <span class="kn">import</span> <span class="n">WebDriver</span> <span class="k">as</span> <span class="n">RemoteWebDriver</span>
+<span class="kn">from</span> <span class="nn">.service</span> <span class="kn">import</span> <span class="n">DEFAULT_EXECUTEABLE_PATH</span><span class="p">,</span> <span class="n">Service</span>
+<span class="kn">from</span> <span class="nn">.options</span> <span class="kn">import</span> <span class="n">Options</span>
+<span class="kn">from</span> <span class="nn">selenium.webdriver.common</span> <span class="kn">import</span> <span class="n">utils</span>
+
+<span class="n">DEFAULT_TIMEOUT</span> <span class="o">=</span> <span class="mi">30</span>
+<span class="n">DEFAULT_PORT</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">DEFAULT_HOST</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="n">DEFAULT_LOG_LEVEL</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="n">DEFAULT_SERVICE_LOG_PATH</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="n">DEFAULT_KEEP_ALIVE</span> <span class="o">=</span> <span class="kc">None</span>
+
+
+<div class="viewcode-block" id="WebDriver"><a class="viewcode-back" href="../../../../webdriver_ie/selenium.webdriver.ie.webdriver.html#selenium.webdriver.ie.webdriver.WebDriver">[docs]</a><span class="k">class</span> <span class="nc">WebDriver</span><span class="p">(</span><span class="n">RemoteWebDriver</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Controls the IEServerDriver and allows you to drive Internet Explorer &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">executable_path</span><span class="o">=</span><span class="n">DEFAULT_EXECUTEABLE_PATH</span><span class="p">,</span> <span class="n">capabilities</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">port</span><span class="o">=</span><span class="n">DEFAULT_PORT</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="n">DEFAULT_TIMEOUT</span><span class="p">,</span> <span class="n">host</span><span class="o">=</span><span class="n">DEFAULT_HOST</span><span class="p">,</span>
+                 <span class="n">log_level</span><span class="o">=</span><span class="n">DEFAULT_LOG_LEVEL</span><span class="p">,</span> <span class="n">service_log_path</span><span class="o">=</span><span class="n">DEFAULT_SERVICE_LOG_PATH</span><span class="p">,</span>
+                 <span class="n">options</span><span class="p">:</span> <span class="n">Options</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">service</span><span class="p">:</span> <span class="n">Service</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="n">desired_capabilities</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">keep_alive</span><span class="o">=</span><span class="n">DEFAULT_KEEP_ALIVE</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Creates a new instance of the Ie driver.</span>
+
+<span class="sd">        Starts the service and then creates new instance of Ie driver.</span>
+
+<span class="sd">        :Args:</span>
+<span class="sd">         - executable_path - Deprecated: path to the executable. If the default is used it assumes the executable is in the $PATH</span>
+<span class="sd">         - capabilities - Deprecated: capabilities Dictionary object</span>
+<span class="sd">         - port - Deprecated: port you would like the service to run, if left as 0, a free port will be found.</span>
+<span class="sd">         - timeout - Deprecated: no longer used, kept for backward compatibility</span>
+<span class="sd">         - host - Deprecated: IP address for the service</span>
+<span class="sd">         - log_level - Deprecated: log level you would like the service to run.</span>
+<span class="sd">         - service_log_path - Deprecated: target of logging of service, may be &quot;stdout&quot;, &quot;stderr&quot; or file path.</span>
+<span class="sd">         - options - IE Options instance, providing additional IE options</span>
+<span class="sd">         - desired_capabilities - Deprecated: alias of capabilities; this will make the signature consistent with RemoteWebDriver.</span>
+<span class="sd">         - keep_alive - Deprecated: Whether to configure RemoteConnection to use HTTP keep-alive.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">executable_path</span> <span class="o">!=</span> <span class="s1">&#39;IEDriverServer.exe&#39;</span><span class="p">:</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s1">&#39;executable_path has been deprecated, please pass in a Service object&#39;</span><span class="p">,</span>
+                          <span class="ne">DeprecationWarning</span><span class="p">,</span> <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">capabilities</span><span class="p">:</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s1">&#39;capabilities has been deprecated, please pass in an Options object.&#39;</span>
+                          <span class="s1">&#39;This field will be ignored.&#39;</span><span class="p">,</span>
+                          <span class="ne">DeprecationWarning</span><span class="p">,</span> <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">port</span> <span class="o">!=</span> <span class="n">DEFAULT_PORT</span><span class="p">:</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s1">&#39;port has been deprecated, please pass in a Service object&#39;</span><span class="p">,</span>
+                          <span class="ne">DeprecationWarning</span><span class="p">,</span> <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">timeout</span> <span class="o">!=</span> <span class="n">DEFAULT_TIMEOUT</span><span class="p">:</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s1">&#39;timeout has been deprecated, please pass in a Service object&#39;</span><span class="p">,</span>
+                          <span class="ne">DeprecationWarning</span><span class="p">,</span> <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">host</span> <span class="o">!=</span> <span class="n">DEFAULT_HOST</span><span class="p">:</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s1">&#39;host has been deprecated, please pass in a Service object&#39;</span><span class="p">,</span>
+                          <span class="ne">DeprecationWarning</span><span class="p">,</span> <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">log_level</span> <span class="o">!=</span> <span class="n">DEFAULT_LOG_LEVEL</span><span class="p">:</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s1">&#39;log_level has been deprecated, please pass in a Service object&#39;</span><span class="p">,</span>
+                          <span class="ne">DeprecationWarning</span><span class="p">,</span> <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">service_log_path</span> <span class="o">!=</span> <span class="n">DEFAULT_SERVICE_LOG_PATH</span><span class="p">:</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s1">&#39;service_log_path has been deprecated, please pass in a Service object&#39;</span><span class="p">,</span>
+                          <span class="ne">DeprecationWarning</span><span class="p">,</span> <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">desired_capabilities</span><span class="p">:</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s1">&#39;desired_capabilities has been deprecated, please pass in an Options object.&#39;</span>
+                          <span class="s1">&#39;This field will be ignored&#39;</span><span class="p">,</span>
+                          <span class="ne">DeprecationWarning</span><span class="p">,</span> <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">keep_alive</span> <span class="o">!=</span> <span class="n">DEFAULT_KEEP_ALIVE</span><span class="p">:</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s1">&#39;keep_alive has been deprecated, please pass in a Service object&#39;</span><span class="p">,</span>
+                          <span class="ne">DeprecationWarning</span><span class="p">,</span> <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">keep_alive</span> <span class="o">=</span> <span class="kc">True</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">host</span> <span class="o">=</span> <span class="n">host</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">port</span> <span class="o">=</span> <span class="n">port</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">port</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">port</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">free_port</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">options</span><span class="p">:</span>
+            <span class="n">options</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">create_options</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="n">service</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">iedriver</span> <span class="o">=</span> <span class="n">service</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">iedriver</span> <span class="o">=</span> <span class="n">Service</span><span class="p">(</span>
+                <span class="n">executable_path</span><span class="p">,</span>
+                <span class="n">port</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">port</span><span class="p">,</span>
+                <span class="n">host</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">host</span><span class="p">,</span>
+                <span class="n">log_level</span><span class="o">=</span><span class="n">log_level</span><span class="p">,</span>
+                <span class="n">log_file</span><span class="o">=</span><span class="n">service_log_path</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">iedriver</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+
+        <span class="n">RemoteWebDriver</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span>
+            <span class="n">command_executor</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">iedriver</span><span class="o">.</span><span class="n">service_url</span><span class="p">,</span>
+            <span class="n">options</span><span class="o">=</span><span class="n">options</span><span class="p">,</span>
+            <span class="n">keep_alive</span><span class="o">=</span><span class="n">keep_alive</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_is_remote</span> <span class="o">=</span> <span class="kc">False</span>
+
+<div class="viewcode-block" id="WebDriver.quit"><a class="viewcode-back" href="../../../../webdriver_ie/selenium.webdriver.ie.webdriver.html#selenium.webdriver.ie.webdriver.WebDriver.quit">[docs]</a>    <span class="k">def</span> <span class="nf">quit</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">NoReturn</span><span class="p">:</span>
+        <span class="n">RemoteWebDriver</span><span class="o">.</span><span class="n">quit</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">iedriver</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="WebDriver.create_options"><a class="viewcode-back" href="../../../../webdriver_ie/selenium.webdriver.ie.webdriver.html#selenium.webdriver.ie.webdriver.WebDriver.create_options">[docs]</a>    <span class="k">def</span> <span class="nf">create_options</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Options</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">Options</span><span class="p">()</span></div></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">Selenium 4.1.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../../index.html" >Module code</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2011, plightbo, simon.m.stewart, hbchai, jrhuggins, et al..
+    </div>
+  </body>
+</html>

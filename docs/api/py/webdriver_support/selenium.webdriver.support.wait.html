@@ -1,19 +1,19 @@
 
-<!DOCTYPE html>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
-<html>
+<html xmlns="http://www.w3.org/1999/xhtml">
   <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <title>selenium.webdriver.support.wait &#8212; Selenium 4.1.0 documentation</title>
-    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../_static/classic.css" />
+    <link rel="stylesheet" href="../_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     
-    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
-    <script src="../_static/jquery.js"></script>
-    <script src="../_static/underscore.js"></script>
-    <script src="../_static/doctools.js"></script>
+    <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
     
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" /> 
@@ -27,8 +27,7 @@
         <li class="right" >
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">Selenium 4.1.0 documentation</a> &#187;</li>
-        <li class="nav-item nav-item-this"><a href="">selenium.webdriver.support.wait</a></li> 
+        <li class="nav-item nav-item-0"><a href="../index.html">Selenium 4.1.0 documentation</a> &#187;</li> 
       </ul>
     </div>  
 
@@ -37,12 +36,104 @@
         <div class="bodywrapper">
           <div class="body" role="main">
             
-  <section id="selenium-webdriver-support-wait">
-<h1>selenium.webdriver.support.wait<a class="headerlink" href="#selenium-webdriver-support-wait" title="Permalink to this headline">¶</a></h1>
-</section>
+  <div class="section" id="module-selenium.webdriver.support.wait">
+<span id="selenium-webdriver-support-wait"></span><h1>selenium.webdriver.support.wait<a class="headerlink" href="#module-selenium.webdriver.support.wait" title="Permalink to this headline">¶</a></h1>
+<p class="rubric">Classes</p>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="#selenium.webdriver.support.wait.WebDriverWait" title="selenium.webdriver.support.wait.WebDriverWait"><code class="xref py py-obj docutils literal notranslate"><span class="pre">WebDriverWait</span></code></a>(driver,&nbsp;timeout[,&nbsp;…])</td>
+<td>Constructor, takes a WebDriver instance and timeout in seconds.</td>
+</tr>
+</tbody>
+</table>
+<dl class="class">
+<dt id="selenium.webdriver.support.wait.WebDriverWait">
+<em class="property">class </em><code class="descclassname">selenium.webdriver.support.wait.</code><code class="descname">WebDriverWait</code><span class="sig-paren">(</span><em>driver</em>, <em>timeout</em>, <em>poll_frequency=0.5</em>, <em>ignored_exceptions=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/webdriver/support/wait.html#WebDriverWait"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.support.wait.WebDriverWait" title="Permalink to this definition">¶</a></dt>
+<dd><p>Constructor, takes a WebDriver instance and timeout in seconds.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Args:</th><td class="field-body"><ul class="first last simple">
+<li>driver - Instance of WebDriver (Ie, Firefox, Chrome or Remote)</li>
+<li>timeout - Number of seconds before timing out</li>
+<li>poll_frequency - sleep interval between calls
+By default, it is 0.5 second.</li>
+<li>ignored_exceptions - iterable structure of exception classes ignored during calls.
+By default, it contains NoSuchElementException only.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p>Example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">selenium.webdriver.support.wait</span> <span class="kn">import</span> <span class="n">WebDriverWait</span> 
+
+<span class="n">element</span> <span class="o">=</span> <span class="n">WebDriverWait</span><span class="p">(</span><span class="n">driver</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span><span class="o">.</span><span class="n">until</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">find_element</span><span class="p">(</span><span class="n">By</span><span class="o">.</span><span class="n">ID</span><span class="p">,</span> <span class="s2">&quot;someId&quot;</span><span class="p">))</span> 
+
+<span class="n">is_disappeared</span> <span class="o">=</span> <span class="n">WebDriverWait</span><span class="p">(</span><span class="n">driver</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="p">(</span><span class="n">ElementNotVisibleException</span><span class="p">))</span><span class="o">.</span>\ 
+
+            <span class="n">until_not</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">find_element</span><span class="p">(</span><span class="n">By</span><span class="o">.</span><span class="n">ID</span><span class="p">,</span> <span class="s2">&quot;someId&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">is_displayed</span><span class="p">())</span>
+</pre></div>
+</div>
+<dl class="method">
+<dt id="selenium.webdriver.support.wait.WebDriverWait.until">
+<code class="descname">until</code><span class="sig-paren">(</span><em>method</em>, <em>message=''</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/webdriver/support/wait.html#WebDriverWait.until"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.support.wait.WebDriverWait.until" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calls the method provided with the driver as an argument until the         return value does not evaluate to <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>method</strong> – callable(WebDriver)</li>
+<li><strong>message</strong> – optional message for <code class="xref py py-exc docutils literal notranslate"><span class="pre">TimeoutException</span></code></li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">the result of the last call to <cite>method</cite></p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Raises:</th><td class="field-body"><p class="first last"><a class="reference internal" href="../common/selenium.common.exceptions.html#selenium.common.exceptions.TimeoutException" title="selenium.common.exceptions.TimeoutException"><code class="xref py py-exc docutils literal notranslate"><span class="pre">selenium.common.exceptions.TimeoutException</span></code></a> if timeout occurs</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.support.wait.WebDriverWait.until_not">
+<code class="descname">until_not</code><span class="sig-paren">(</span><em>method</em>, <em>message=''</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/webdriver/support/wait.html#WebDriverWait.until_not"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.support.wait.WebDriverWait.until_not" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calls the method provided with the driver as an argument until the         return value evaluates to <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>method</strong> – callable(WebDriver)</li>
+<li><strong>message</strong> – optional message for <code class="xref py py-exc docutils literal notranslate"><span class="pre">TimeoutException</span></code></li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">the result of the last call to <cite>method</cite>, or
+<code class="docutils literal notranslate"><span class="pre">True</span></code> if <cite>method</cite> has raised one of the ignored exceptions</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Raises:</th><td class="field-body"><p class="first last"><a class="reference internal" href="../common/selenium.common.exceptions.html#selenium.common.exceptions.TimeoutException" title="selenium.common.exceptions.TimeoutException"><code class="xref py py-exc docutils literal notranslate"><span class="pre">selenium.common.exceptions.TimeoutException</span></code></a> if timeout occurs</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
 
 
-            <div class="clearer"></div>
           </div>
         </div>
       </div>
@@ -56,15 +147,17 @@
     </ul>
    </div>
 <div id="searchbox" style="display: none" role="search">
-  <h3 id="searchlabel">Quick search</h3>
+  <h3>Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="../search.html" method="get">
-      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="text" name="q" />
       <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
     </form>
     </div>
 </div>
-<script>$('#searchbox').show(0);</script>
+<script type="text/javascript">$('#searchbox').show(0);</script>
         </div>
       </div>
       <div class="clearer"></div>
@@ -78,8 +171,7 @@
         <li class="right" >
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">Selenium 4.1.0 documentation</a> &#187;</li>
-        <li class="nav-item nav-item-this"><a href="">selenium.webdriver.support.wait</a></li> 
+        <li class="nav-item nav-item-0"><a href="../index.html">Selenium 4.1.0 documentation</a> &#187;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
