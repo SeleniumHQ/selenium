@@ -31,5 +31,6 @@ class ChromiumRemoteConnection(RemoteConnection):
         self._commands['getSinks'] = ('GET', '/session/$sessionId/{}/cast/get_sinks'.format(vendor_prefix))
         self._commands['getIssueMessage'] = ('GET', '/session/$sessionId/{}/cast/get_issue_message'.format(vendor_prefix))
         self._commands['setSinkToUse'] = ('POST', '/session/$sessionId/{}/cast/set_sink_to_use'.format(vendor_prefix))
+        self._commands['startDesktopMirroring'] = ('POST', '/session/$sessionId/{}/cast/start_desktop_mirroring'.format(vendor_prefix))
         self._commands['startTabMirroring'] = ('POST', '/session/$sessionId/{}/cast/start_tab_mirroring'.format(vendor_prefix))
         self._commands['stopCasting'] = ('POST', '/session/$sessionId/{}/cast/stop_casting'.format(vendor_prefix))
