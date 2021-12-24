@@ -15,6 +15,7 @@
 # specific language governing permissions and limitations
 # under the License.
 
+from typing import Union, List
 from selenium.webdriver.remote.command import Command
 from . import interaction
 from .key_actions import KeyActions
@@ -26,7 +27,7 @@ from .wheel_actions import WheelActions
 
 
 class ActionBuilder(object):
-    def __init__(self, driver, mouse=None, wheel=None, keyboard=None, duration=250):
+    def __init__(self, driver, mouse=None, wheel=None, keyboard=None, duration=250) -> None:
         if not mouse:
             mouse = PointerInput(interaction.POINTER_MOUSE, "mouse")
         if not keyboard:
@@ -39,49 +40,45 @@ class ActionBuilder(object):
         self._wheel_action = WheelActions(wheel)
         self.driver = driver
 
-    def get_device_with(self, name):
-        try:
-            idx = self.devices.index(name)
-            return self.devices[idx]
-        except Exception:
-            pass
+    def get_device_with(self, name) -> Union["WheelInput","PointerInput","KeyInput"]:
+        return next(filter(lambda x: x == name, self.devices), None)
 
     @property
-    def pointer_inputs(self):
+    def pointer_inputs(self) -> List[PointerInput]:
         return [device for device in self.devices if device.type == interaction.POINTER]
 
     @property
-    def key_inputs(self):
+    def key_inputs(self) -> List[KeyInput]:
         return [device for device in self.devices if device.type == interaction.KEY]
 
     @property
-    def key_action(self):
+    def key_action(self) -> KeyActions:
         return self._key_action
 
     @property
-    def pointer_action(self):
+    def pointer_action(self) -> PointerActions:
         return self._pointer_action
 
     @property
-    def wheel_action(self):
+    def wheel_action(self) -> WheelActions:
         return self._wheel_action
 
-    def add_key_input(self, name):
+    def add_key_input(self, name) -> KeyInput:
         new_input = KeyInput(name)
         self._add_input(new_input)
         return new_input
 
-    def add_pointer_input(self, kind, name):
+    def add_pointer_input(self, kind, name) -> PointerInput:
         new_input = PointerInput(kind, name)
         self._add_input(new_input)
         return new_input
 
-    def add_wheel_input(self, kind, name):
+    def add_wheel_input(self, kind, name) -> WheelInput:
         new_input = WheelInput(kind, name)
         self._add_input(new_input)
         return new_input
 
-    def perform(self):
+    def perform(self) -> None:
         enc = {"actions": []}
         for device in self.devices:
             encoded = device.encode()
@@ -90,11 +87,11 @@ class ActionBuilder(object):
                 device.actions = []
         self.driver.execute(Command.W3C_ACTIONS, enc)
 
-    def clear_actions(self):
+    def clear_actions(self) -> None:
         """
             Clears actions that are already stored on the remote end
         """
         self.driver.execute(Command.W3C_CLEAR_ACTIONS)
 
-    def _add_input(self, input):
+    def _add_input(self, input) -> None:
         self.devices.append(input)
