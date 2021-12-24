@@ -122,6 +122,7 @@ Webdriver.remote
    selenium.webdriver.remote.errorhandler
    selenium.webdriver.remote.mobile
    selenium.webdriver.remote.remote_connection
+   selenium.webdriver.remote.shadowroot
    selenium.webdriver.remote.utils
    selenium.webdriver.remote.webdriver
    selenium.webdriver.remote.webelement
