@@ -16,7 +16,6 @@
 # under the License.
 
 from abc import ABCMeta, abstractmethod
-from typing import NoReturn
 from selenium.webdriver.common.proxy import Proxy
 from selenium.common.exceptions import InvalidArgumentException
 
@@ -48,7 +47,7 @@ class BaseOptions(metaclass=ABCMeta):
         return self._caps["browserVersion"]
 
     @browser_version.setter
-    def browser_version(self, version: str) -> NoReturn:
+    def browser_version(self, version: str) -> None:
         """
         Requires the major version of the browser to match provided value:
         https://w3c.github.io/webdriver/#dfn-browser-version
@@ -65,7 +64,7 @@ class BaseOptions(metaclass=ABCMeta):
         return self._caps["platformName"]
 
     @platform_name.setter
-    def platform_name(self, platform: str) -> NoReturn:
+    def platform_name(self, platform: str) -> None:
         """
         Requires the platform to match the provided value: https://w3c.github.io/webdriver/#dfn-platform-name
 
@@ -81,7 +80,7 @@ class BaseOptions(metaclass=ABCMeta):
         return self._caps["pageLoadStrategy"]
 
     @page_load_strategy.setter
-    def page_load_strategy(self, strategy: str) -> NoReturn:
+    def page_load_strategy(self, strategy: str) -> None:
         """
         Determines the point at which a navigation command is returned:
         https://w3c.github.io/webdriver/#dfn-table-of-page-load-strategies
@@ -101,7 +100,7 @@ class BaseOptions(metaclass=ABCMeta):
         return self._caps["unhandledPromptBehavior"]
 
     @unhandled_prompt_behavior.setter
-    def unhandled_prompt_behavior(self, behavior: str) -> NoReturn:
+    def unhandled_prompt_behavior(self, behavior: str) -> None:
         """
         How the driver should respond when an alert is present and the command sent is not handling the alert:
         https://w3c.github.io/webdriver/#dfn-table-of-page-load-strategies
@@ -122,7 +121,7 @@ class BaseOptions(metaclass=ABCMeta):
         return self._caps["timeouts"]
 
     @timeouts.setter
-    def timeouts(self, timeouts: dict) -> NoReturn:
+    def timeouts(self, timeouts: dict) -> None:
         """
         How long the driver should wait for actions to complete before returning an error
         https://w3c.github.io/webdriver/#timeouts
@@ -159,7 +158,7 @@ class BaseOptions(metaclass=ABCMeta):
         return self._caps.get('acceptInsecureCerts')
 
     @accept_insecure_certs.setter
-    def accept_insecure_certs(self, value: bool) -> NoReturn:
+    def accept_insecure_certs(self, value: bool) -> None:
         """
         Whether untrusted and self-signed TLS certificates are implicitly trusted:
         https://w3c.github.io/webdriver/#dfn-insecure-tls-certificates
