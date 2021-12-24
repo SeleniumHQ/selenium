@@ -1,6 +1,7 @@
 name: Python workflow
 
 on:
+  workflow_dispatch:
   push:
     branches:
       - trunk
@@ -25,7 +26,6 @@ on:
       - javascript/cdp-support/**
       - javascript/webdriver/**
       - py/**
-  workflow_dispatch:
 
 jobs:
   tox_flake8:
