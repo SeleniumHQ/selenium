@@ -6,7 +6,7 @@
 <title>
   Class: Selenium::WebDriver::ServiceManager
   
-    &mdash; Documentation by YARD 0.9.27
+    &mdash; Documentation by YARD 0.9.26
   
 </title>
 
@@ -465,15 +465,13 @@
 67
 68
 69
-70
-71</pre>
+70</pre>
     </td>
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/service_manager.rb', line 61</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_stop'>stop</span>
   <span class='kw'>return</span> <span class='kw'>unless</span> <span class='ivar'>@shutdown_supported</span>
-  <span class='kw'>return</span> <span class='kw'>if</span> <span class='id identifier rubyid_process_exited?'>process_exited?</span>
 
   <span class='id identifier rubyid_stop_server'>stop_server</span>
   <span class='ivar'>@process</span><span class='period'>.</span><span class='id identifier rubyid_poll_for_exit'>poll_for_exit</span> <span class='const'><span class='object_link'><a href="#STOP_TIMEOUT-constant" title="Selenium::WebDriver::ServiceManager::STOP_TIMEOUT (constant)">STOP_TIMEOUT</a></span></span>
@@ -515,12 +513,12 @@
       <pre class="lines">
 
 
+72
 73
-74
-75</pre>
+74</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/service_manager.rb', line 73</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/service_manager.rb', line 72</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_uri'>uri</span>
   <span class='ivar'>@uri</span> <span class='op'>||=</span> <span class='const'>URI</span><span class='period'>.</span><span class='id identifier rubyid_parse'>parse</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>http://</span><span class='embexpr_beg'>#{</span><span class='ivar'>@host</span><span class='embexpr_end'>}</span><span class='tstring_content'>:</span><span class='embexpr_beg'>#{</span><span class='ivar'>@port</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span>
@@ -535,9 +533,9 @@
 </div>
 
       <div id="footer">
-  Generated on Sat Dec 18 00:26:34 2021 by
+  Generated on Wed Oct 20 19:09:25 2021 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.27 (ruby-3.0.2).
+  0.9.26 (ruby-2.7.3).
 </div>
 
     </div>
