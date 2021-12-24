@@ -25,6 +25,7 @@ on:
       - javascript/cdp-support/**
       - javascript/webdriver/**
       - py/**
+  workflow_dispatch:
 
 jobs:
   tox_flake8:
