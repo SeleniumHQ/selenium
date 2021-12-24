@@ -1,13 +1,13 @@
 name: Java workflow
 
 on:
+  workflow_dispatch:
   push:
     branches:
       - trunk
   pull_request:
     branches:
       - trunk
-  workflow_dispatch:
 
 env:
   NODE_VERSION: '13.x'

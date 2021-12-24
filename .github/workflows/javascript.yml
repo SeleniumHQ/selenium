@@ -1,6 +1,7 @@
 name: JavaScript workflow
 
 on:
+  workflow_dispatch:
   push:
     branches:
       - trunk
@@ -23,7 +24,6 @@ on:
       - common/**
       - package.json
       - package-lock.json
-  workflow_dispatch:
 jobs:
   node_tests:
     runs-on: ubuntu-latest
