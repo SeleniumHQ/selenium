@@ -327,7 +327,7 @@ class ActionChains(object):
 
         :Args:
          - x: starting X coordinate
-         - y: starting Y coordinate
+         - y: starting Y coordinate
          - delta_x: the distance the mouse will scroll on the x axis
          - delta_y: the distance the mouse will scroll on the y axis
         """
