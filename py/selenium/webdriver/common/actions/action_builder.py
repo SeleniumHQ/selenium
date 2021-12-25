@@ -40,7 +40,7 @@ class ActionBuilder(object):
         self._wheel_action = WheelActions(wheel)
         self.driver = driver
 
-    def get_device_with(self, name) -> Union["WheelInput","PointerInput","KeyInput"]:
+    def get_device_with(self, name) -> Union["WheelInput", "PointerInput", "KeyInput"]:
         return next(filter(lambda x: x == name, self.devices), None)
 
     @property
