@@ -339,6 +339,9 @@ py_test_suite(
     tags = [
         "no-sandbox",
     ],
+    data = [
+      "//third_party/firebug:favourite_colour-1.1-an+fx.xpi",
+    ],
     deps = [
         ":init-tree",
         ":selenium",
@@ -359,6 +362,7 @@ py_test_suite(
     ],
     data = [
         "//java/src/org/openqa/selenium/grid:selenium_server_deploy.jar",
+        "//third_party/firebug:favourite_colour-1.1-an+fx.xpi",
     ],
     tags = [
         "no-sandbox",
