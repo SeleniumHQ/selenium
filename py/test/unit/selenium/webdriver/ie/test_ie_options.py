@@ -131,10 +131,23 @@ def test_use_per_process_proxy(opts):
     assert opts.options.get(Options.USE_PER_PROCESS_PROXY) is True
 
 
-def test_validate_cookie_document_type(opts):
-    opts.validate_cookie_document_type = True
-    assert opts.validate_cookie_document_type is True
-    assert opts.options.get(Options.VALIDATE_COOKIE_DOCUMENT_TYPE) is True
+def test_use_legacy_file_upload_dialog_handling(opts):
+    opts.use_legacy_file_upload_dialog_handling = True
+    assert opts.use_legacy_file_upload_dialog_handling is True
+    assert opts.options.get(Options.USE_LEGACY_FILE_UPLOAD_DIALOG_HANDLING) is True
+
+
+def test_attach_to_edge_chrome(opts):
+    opts.attach_to_edge_chrome = True
+    assert opts.attach_to_edge_chrome is True
+    assert opts.options.get(Options.ATTACH_TO_EDGE_CHROME) is True
+
+
+def test_edge_executable_path(opts):
+    path = '/path/to/edge'
+    opts.edge_executable_path = path
+    assert opts.edge_executable_path == path
+    assert opts.options.get(Options.EDGE_EXECUTABLE_PATH) == path
 
 
 def test_additional_options(opts):
