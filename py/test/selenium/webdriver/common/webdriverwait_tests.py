@@ -58,7 +58,7 @@ def testShouldExplicitlyWaituntilAtLeastOneElementIsFoundWhenSearchingForMany(dr
     add.click()
     add.click()
 
-    elements = WebDriverWait(driver, 2).until(EC.presence_of_all_elements_located((By.CLASS_NAME, "redbox")))
+    elements = WebDriverWait(driver, 3).until(EC.presence_of_all_elements_located((By.CLASS_NAME, "redbox")))
     assert len(elements) >= 1
 
 
@@ -86,7 +86,7 @@ def testShouldWaitUntilAtLeastOneVisibleElementsIsFoundWhenSearchingForMany(driv
             elements = [element for element in driver.find_elements(*self.locator) if EC._element_if_visible(element)]
             return elements if len(elements) == 2 else False
 
-    elements = WebDriverWait(driver, 2).until(wait_for_two_elements((By.CLASS_NAME, "redbox")))
+    elements = WebDriverWait(driver, 3).until(wait_for_two_elements((By.CLASS_NAME, "redbox")))
     assert len(elements) == 2
 
 
@@ -103,7 +103,7 @@ def testShouldWaitUntilAllVisibleElementsAreFoundWhenSearchingForMany(driver, pa
     add_visible.click()
     add_visible.click()
 
-    elements = WebDriverWait(driver, 2).until(EC.visibility_of_all_elements_located((By.CLASS_NAME, "redbox")))
+    elements = WebDriverWait(driver, 3).until(EC.visibility_of_all_elements_located((By.CLASS_NAME, "redbox")))
     assert len(elements) == 2
 
 
@@ -167,7 +167,7 @@ def testExpectedConditionTitleIs(driver, pages):
 def testExpectedConditionTitleContains(driver, pages):
     pages.load("blank.html")
     driver.execute_script("setTimeout(function(){document.title='not blank'}, 200)")
-    WebDriverWait(driver, 1).until(EC.title_contains("not"))
+    WebDriverWait(driver, 2).until(EC.title_contains("not"))
     assert driver.title == 'not blank'
     with pytest.raises(TimeoutException):
         WebDriverWait(driver, 0.7).until(EC.title_contains("blanket"))
@@ -199,7 +199,7 @@ def testExpectedConditionTextToBePresentInElement(driver, pages):
     with pytest.raises(TimeoutException):
         WebDriverWait(driver, 0.7).until(EC.text_to_be_present_in_element((By.ID, 'unwrappable'), 'Expected'))
     driver.execute_script("setTimeout(function(){var el = document.getElementById('unwrappable'); el.textContent = el.innerText = 'Unwrappable Expected text'}, 200)")
-    WebDriverWait(driver, 1).until(EC.text_to_be_present_in_element((By.ID, 'unwrappable'), 'Expected'))
+    WebDriverWait(driver, 2).until(EC.text_to_be_present_in_element((By.ID, 'unwrappable'), 'Expected'))
     assert 'Unwrappable Expected text' == driver.find_element(By.ID, 'unwrappable').text
 
 
@@ -208,7 +208,7 @@ def testExpectedConditionTextToBePresentInElementValue(driver, pages):
     with pytest.raises(TimeoutException):
         WebDriverWait(driver, 1).until(EC.text_to_be_present_in_element_value((By.ID, 'inputRequired'), 'Expected'))
     driver.execute_script("setTimeout(function(){document.getElementById('inputRequired').value = 'Example Expected text'}, 200)")
-    WebDriverWait(driver, 1).until(EC.text_to_be_present_in_element_value((By.ID, 'inputRequired'), 'Expected'))
+    WebDriverWait(driver, 2).until(EC.text_to_be_present_in_element_value((By.ID, 'inputRequired'), 'Expected'))
     assert 'Example Expected text' == driver.find_element(By.ID, 'inputRequired').get_attribute('value')
 
 
@@ -217,18 +217,16 @@ def testExpectedConditionTextToBePresentInElementAttribute(driver, pages):
     with pytest.raises(TimeoutException):
         WebDriverWait(driver, 1).until(EC.text_to_be_present_in_element_attribute((By.ID, 'inputRequired'), 'value', 'Expected'))
     driver.execute_script("setTimeout(function(){document.getElementById('inputRequired').value = 'Example Expected text'}, 200)")
-    WebDriverWait(driver, 1).until(EC.text_to_be_present_in_element_attribute((By.ID, 'inputRequired'), 'value', 'Expected'))
+    WebDriverWait(driver, 2).until(EC.text_to_be_present_in_element_attribute((By.ID, 'inputRequired'), 'value', 'Expected'))
     assert 'Example Expected text' == driver.find_element(By.ID, 'inputRequired').get_attribute('value')
 
 
-# xfail can be removed after 23 March 2021
-@pytest.mark.xfail_firefox(reason="https://bugzilla.mozilla.org/show_bug.cgi?id=1691348")
 def testExpectedConditionFrameToBeAvailableAndSwitchToItByLocator(driver, pages):
     pages.load("blank.html")
     with pytest.raises(TimeoutException):
         WebDriverWait(driver, 1).until(EC.frame_to_be_available_and_switch_to_it((By.ID, 'myFrame')))
     driver.execute_script("setTimeout(function(){var f = document.createElement('iframe'); f.id='myFrame'; f.src = '" + pages.url('iframeWithAlert.html') + "'; document.body.appendChild(f)}, 200)")
-    WebDriverWait(driver, 1).until(EC.frame_to_be_available_and_switch_to_it((By.ID, 'myFrame')))
+    WebDriverWait(driver, 2).until(EC.frame_to_be_available_and_switch_to_it((By.ID, 'myFrame')))
     assert 'click me' == driver.find_element(By.ID, 'alertInFrame').text
 
 
@@ -239,7 +237,7 @@ def testExpectedConditionInvisiblityOfElement(driver, pages):
     with pytest.raises(TimeoutException):
         WebDriverWait(driver, 0.7).until(EC.invisibility_of_element(target))
     driver.execute_script("delayedShowHide(200, false)")
-    element = WebDriverWait(driver, 0.7).until(EC.invisibility_of_element(target))
+    element = WebDriverWait(driver, 2).until(EC.invisibility_of_element(target))
     assert element.is_displayed() is False
     assert target == element
 
@@ -250,7 +248,7 @@ def testExpectedConditionInvisiblityOfElementLocated(driver, pages):
     with pytest.raises(TimeoutException):
         WebDriverWait(driver, 0.7).until(EC.invisibility_of_element_located((By.ID, 'clickToHide')))
     driver.execute_script("delayedShowHide(200, false)")
-    element = WebDriverWait(driver, 0.7).until(EC.invisibility_of_element_located((By.ID, 'clickToHide')))
+    element = WebDriverWait(driver, 2).until(EC.invisibility_of_element_located((By.ID, 'clickToHide')))
     assert element.is_displayed() is False
 
 
@@ -263,7 +261,7 @@ def testExpectedConditionElementToBeClickable(driver, pages):
     WebDriverWait(driver, 0.7).until(EC.element_to_be_clickable((By.ID, 'clickToHide')))
     element = driver.find_element(By.ID, 'clickToHide')
     element.click()
-    WebDriverWait(driver, 3.5).until(EC.invisibility_of_element_located((By.ID, 'clickToHide')))
+    WebDriverWait(driver, 4.5).until(EC.invisibility_of_element_located((By.ID, 'clickToHide')))
     assert element.is_displayed() is False
 
 
@@ -271,10 +269,10 @@ def testExpectedConditionStalenessOf(driver, pages):
     pages.load('dynamicallyModifiedPage.html')
     element = driver.find_element(By.ID, 'element-to-remove')
     with pytest.raises(TimeoutException):
-        WebDriverWait(driver, 0.7).until(EC.staleness_of(element))
+        WebDriverWait(driver, .7).until(EC.staleness_of(element))
     driver.find_element(By.ID, 'buttonDelete').click()
     assert 'element' == element.text
-    WebDriverWait(driver, 0.7).until(EC.staleness_of(element))
+    WebDriverWait(driver, 2).until(EC.staleness_of(element))
     with pytest.raises(StaleElementReferenceException):
         element.text
 
@@ -285,7 +283,7 @@ def testExpectedConditionElementToBeSelected(driver, pages):
     with pytest.raises(TimeoutException):
         WebDriverWait(driver, 0.7).until(EC.element_to_be_selected(element))
     driver.execute_script("setTimeout(function(){document.getElementById('checky').checked = true}, 200)")
-    WebDriverWait(driver, 0.7).until(EC.element_to_be_selected(element))
+    WebDriverWait(driver, 2).until(EC.element_to_be_selected(element))
     assert element.is_selected() is True
 
 
@@ -295,7 +293,7 @@ def testExpectedConditionElementLocatedToBeSelected(driver, pages):
     with pytest.raises(TimeoutException):
         WebDriverWait(driver, 0.7).until(EC.element_located_to_be_selected((By.ID, 'checky')))
     driver.execute_script("setTimeout(function(){document.getElementById('checky').checked = true}, 200)")
-    WebDriverWait(driver, 0.7).until(EC.element_located_to_be_selected((By.ID, 'checky')))
+    WebDriverWait(driver, 2).until(EC.element_located_to_be_selected((By.ID, 'checky')))
     assert element.is_selected() is True
 
 
@@ -307,7 +305,7 @@ def testExpectedConditionElementSelectionStateToBe(driver, pages):
     with pytest.raises(TimeoutException):
         WebDriverWait(driver, 0.7).until(EC.element_selection_state_to_be(element, True))
     driver.execute_script("setTimeout(function(){document.getElementById('checky').checked = true}, 200)")
-    WebDriverWait(driver, 0.7).until(EC.element_selection_state_to_be(element, True))
+    WebDriverWait(driver, 2).until(EC.element_selection_state_to_be(element, True))
     assert element.is_selected() is True
 
 
@@ -319,7 +317,7 @@ def testExpectedConditionElementLocatedSelectionStateToBe(driver, pages):
     with pytest.raises(TimeoutException):
         WebDriverWait(driver, 0.7).until(EC.element_located_selection_state_to_be((By.ID, 'checky'), True))
     driver.execute_script("setTimeout(function(){document.getElementById('checky').checked = true}, 200)")
-    WebDriverWait(driver, 0.7).until(EC.element_located_selection_state_to_be((By.ID, 'checky'), True))
+    WebDriverWait(driver, 2).until(EC.element_located_selection_state_to_be((By.ID, 'checky'), True))
     assert element.is_selected() is True
 
 
@@ -328,7 +326,7 @@ def testExpectedConditionAlertIsPresent(driver, pages):
     with pytest.raises(TimeoutException):
         WebDriverWait(driver, 0.7).until(EC.alert_is_present())
     driver.execute_script("setTimeout(function(){alert('alerty')}, 200)")
-    WebDriverWait(driver, 0.7).until(EC.alert_is_present())
+    WebDriverWait(driver, 2).until(EC.alert_is_present())
     alert = driver.switch_to.alert
     assert 'alerty' == alert.text
     alert.dismiss()
@@ -338,5 +336,5 @@ def testExpectedConditionAttributeToBeIncludeInElement(driver, pages):
     pages.load('booleanAttributes.html')
     with pytest.raises(TimeoutException):
         WebDriverWait(driver, 1).until(EC.element_attribute_to_include((By.ID, 'inputRequired'), 'test'))
-    value = WebDriverWait(driver, 1).until(EC.element_attribute_to_include((By.ID, 'inputRequired'), 'value'))
+    value = WebDriverWait(driver, 2).until(EC.element_attribute_to_include((By.ID, 'inputRequired'), 'value'))
     assert value is not None
