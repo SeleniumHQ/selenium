@@ -261,6 +261,7 @@ def test_can_pause(driver, pages):
 
 
 @pytest.mark.xfail_firefox
+@pytest.mark.xfail_remote
 def test_can_scroll_mouse_wheel(driver, pages):
     pages.load("scrollingPage.html")
     driver.execute_script("document.scrollingElement.scrollTop = 0")
