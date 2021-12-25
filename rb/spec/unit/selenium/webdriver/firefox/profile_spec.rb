@@ -32,6 +32,15 @@ module Selenium
           File.read(File.join(dir, 'user.js'))
         end
 
+        it '#from_name' do
+          ini = instance_double(ProfilesIni)
+          allow(Profile).to receive(:ini).and_return(ini)
+          allow(ini).to receive(:[]).and_return('not nil')
+          Profile.from_name('default')
+
+          expect(ini).to have_received(:[]).with('default')
+        end
+
         it 'uses default preferences' do
           expect(read_generated_prefs).to include('user_pref("browser.newtabpage.enabled", false)',
                                                   'user_pref("browser.startup.homepage", "about:blank")',
