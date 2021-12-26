@@ -1115,7 +1115,7 @@ class WebDriver(BaseWebDriver):
 
         :Args:
          - cookie_dict: A dictionary object, with required keys - "name" and "value";
-            optional keys - "path", "domain", "secure", "expiry", "sameSite"
+            optional keys - "path", "domain", "secure", "httpOnly", "expiry", "sameSite"
 
         Usage:
             driver.add_cookie({'name' : 'foo', 'value' : 'bar'})
