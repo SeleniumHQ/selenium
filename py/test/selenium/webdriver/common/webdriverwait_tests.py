@@ -158,7 +158,7 @@ def testExpectedConditionTitleIs(driver, pages):
     pages.load("blank.html")
     WebDriverWait(driver, 1).until(EC.title_is("blank"))
     driver.execute_script("setTimeout(function(){document.title='not blank'}, 200)")
-    WebDriverWait(driver, 1).until(EC.title_is("not blank"))
+    WebDriverWait(driver, 2).until(EC.title_is("not blank"))
     assert driver.title == 'not blank'
     with pytest.raises(TimeoutException):
         WebDriverWait(driver, 0.7).until(EC.title_is("blank"))
@@ -258,7 +258,7 @@ def testExpectedConditionElementToBeClickable(driver, pages):
     with pytest.raises(TimeoutException):
         WebDriverWait(driver, 0.7).until(EC.element_to_be_clickable((By.ID, 'clickToHide')))
     driver.execute_script("delayedShowHide(200, true)")
-    WebDriverWait(driver, 0.7).until(EC.element_to_be_clickable((By.ID, 'clickToHide')))
+    WebDriverWait(driver, 2).until(EC.element_to_be_clickable((By.ID, 'clickToHide')))
     element = driver.find_element(By.ID, 'clickToHide')
     element.click()
     WebDriverWait(driver, 4.5).until(EC.invisibility_of_element_located((By.ID, 'clickToHide')))
