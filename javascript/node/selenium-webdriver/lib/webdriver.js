@@ -2538,10 +2538,15 @@ class WebElement {
       )
     }
 
-    keys = await this.driver_.fileDetector_.handleFile(
-      this.driver_,
-      keys.join('')
-    )
+    try {
+      keys = await this.driver_.fileDetector_.handleFile(
+        this.driver_,
+        keys.join('')
+      )
+    } catch (ex) {
+      console.log('Error trying parse string as a file with file detector; sending keys instead' + ex)
+    }
+
     return this.execute_(
       new command.Command(command.Name.SEND_KEYS_TO_ELEMENT)
         .setParameter('text', keys)
