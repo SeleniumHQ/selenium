@@ -216,49 +216,6 @@ def test_pen_pointer_properties(driver, pages):
     assert events[6]["twist"] == 0
 
 
-@pytest.mark.xfail_firefox
-@pytest.mark.xfail_remote
-def test_touch_pointer_properties(driver, pages):
-    pages.load("pointerActionsPage.html")
-    pointerArea = driver.find_element(By.CSS_SELECTOR, "#pointerArea")
-    center = _get_inview_center(pointerArea.rect, _get_viewport_rect(driver))
-    touch_input = PointerInput(interaction.POINTER_TOUCH, "touch")
-    touch_chain = ActionBuilder(driver, mouse=touch_input)
-    touch_chain.pointer_action.move_to(pointerArea, x=50, y=25) \
-        .pointer_down(width=23, height=31, pressure=0.78, tilt_x=21, tilt_y=-8, twist=355) \
-        .move_to(pointerArea, x=60, y=35, width=39, height=35, pressure=0.91, tilt_x=-19, tilt_y=62, twist=345) \
-        .pointer_up() \
-        .move_to(pointerArea, x=80, y=50)
-    touch_chain.perform()
-    events = _get_events(driver)
-    assert len(events) == 7
-    event_types = [e["type"] for e in events]
-    assert ["pointerover", "pointerenter", "pointerdown", "pointermove",
-            "pointerup", "pointerout", "pointerleave"] == event_types
-    assert events[2]["type"] == "pointerdown"
-    assert events[2]["pageX"] == pytest.approx(center["x"], abs=1.0)
-    assert events[2]["pageY"] == pytest.approx(center["y"], abs=1.0)
-    assert events[2]["target"] == "pointerArea"
-    assert events[2]["pointerType"] == "touch"
-    assert round(events[2]["width"], 2) == 23
-    assert round(events[2]["height"], 2) == 31
-    assert round(events[2]["pressure"], 2) == 0.78
-    assert events[2]["tiltX"] == 21
-    assert events[2]["tiltY"] == -8
-    assert events[2]["twist"] == 355
-    assert events[3]["type"] == "pointermove"
-    assert events[3]["pageX"] == pytest.approx(center["x"] + 10, abs=1.0)
-    assert events[3]["pageY"] == pytest.approx(center["y"] + 10, abs=1.0)
-    assert events[3]["target"] == "pointerArea"
-    assert events[3]["pointerType"] == "touch"
-    assert round(events[3]["width"], 2) == 39
-    assert round(events[3]["height"], 2) == 35
-    assert round(events[3]["pressure"], 2) == 0.91
-    assert events[3]["tiltX"] == -19
-    assert events[3]["tiltY"] == 62
-    assert events[3]["twist"] == 345
-
-
 def _performDragAndDropWithMouse(driver, pages):
     """Copied from org.openqa.selenium.interactions.TestBasicMouseInterface."""
     pages.load("draggableLists.html")
