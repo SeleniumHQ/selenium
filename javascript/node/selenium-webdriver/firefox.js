@@ -116,6 +116,7 @@
 
 'use strict'
 
+const fs = require('fs')
 const path = require('path')
 const Symbols = require('./lib/symbols')
 const command = require('./lib/command')
@@ -670,7 +671,15 @@ class Driver extends webdriver.WebDriver {
    * @see #uninstallAddon
    */
   async installAddon(path, temporary = false) {
-    let buf = await io.read(path)
+    let stats = fs.statSync(path)
+    let buf;
+    if (stats.isDirectory()) {
+      let zip = new Zip()
+      await zip.addDir(path)
+      buf = await zip.toBuffer('DEFLATE')
+    } else {
+      buf = await io.read(path)
+    }
     return this.execute(
       new command.Command(ExtensionCommand.INSTALL_ADDON)
         .setParameter('addon', buf.toString('base64'))
