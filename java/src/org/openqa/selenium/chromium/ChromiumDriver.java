@@ -247,6 +247,12 @@ public class ChromiumDriver extends RemoteWebDriver implements
   }
 
   @Override
+  public void startDesktopMirroring(String deviceName) {
+    Require.nonNull("Device Name", deviceName);
+    casting.startDesktopMirroring(deviceName);
+  }
+
+  @Override
   public void startTabMirroring(String deviceName) {
     Require.nonNull("Device Name", deviceName);
     casting.startTabMirroring(deviceName);

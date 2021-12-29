@@ -112,6 +112,25 @@ public class ChromeDriverFunctionalTest extends JUnit4TestBase {
   }
 
   @Test
+  @Ignore(gitHubActions = true)
+  public void canCastOnDesktop() throws InterruptedException {
+    HasCasting caster = (HasCasting) driver;
+
+    // Does not get list the first time it is called
+    caster.getCastSinks();
+    Thread.sleep(1500);
+    List<Map<String, String>> castSinks = caster.getCastSinks();
+
+    // Can not call these commands if there are no sinks available
+    if (castSinks.size() > 0) {
+      String deviceName = castSinks.get(0).get("name");
+
+      caster.startDesktopMirroring(deviceName);
+      caster.stopCasting(deviceName);
+    }
+  }
+
+  @Test
   public void canManageNetworkConditions() {
     HasNetworkConditions conditions = (HasNetworkConditions) driver;
 
