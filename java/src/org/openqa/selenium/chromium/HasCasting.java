@@ -44,6 +44,13 @@ public interface HasCasting {
   void selectCastSink(String deviceName);
 
   /**
+   * Initiates desktop mirroring for the current browser tab on the specified device.
+   *
+   * @param deviceName name of the target device.
+   */
+  void startDesktopMirroring(String deviceName);
+
+  /**
    * Initiates tab mirroring for the current browser tab on the specified device.
    *
    * @param deviceName name of the target device.
