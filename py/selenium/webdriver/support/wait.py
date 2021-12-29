@@ -66,6 +66,7 @@ class WebDriverWait(object):
 
         :param method: callable(WebDriver)
         :param message: optional message for :exc:`TimeoutException`
+        :param capture_stacktrace: adds stack trace into exception output
         :returns: the result of the last call to `method`
         :raises: :exc:`selenium.common.exceptions.TimeoutException` if timeout occurs
         """
