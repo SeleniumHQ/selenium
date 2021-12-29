@@ -97,7 +97,7 @@ const Command = {
   SET_PERMISSION: 'setPermission',
   GET_CAST_SINKS: 'getCastSinks',
   SET_CAST_SINK_TO_USE: 'setCastSinkToUse',
-  START_DESKTOP_MIRRORING: 'startDesktopMirroring',
+  START_CAST_DESKTOP_MIRRORING: 'startDesktopMirroring',
   START_CAST_TAB_MIRRORING: 'setCastTabMirroring',
   GET_CAST_ISSUE_MESSAGE: 'getCastIssueMessage',
   STOP_CASTING: 'stopCasting',
@@ -163,7 +163,7 @@ function configureExecutor(executor, vendorPrefix) {
     `/session/:sessionId/${vendorPrefix}/cast/set_sink_to_use`
   )
   executor.defineCommand(
-    Command.START_DESKTOP_MIRRORING,
+    Command.START_CAST_DESKTOP_MIRRORING,
     'POST',
     `/session/:sessionId/${vendorPrefix}/cast/start_desktop_mirroring`
   )
@@ -849,7 +849,7 @@ class Driver extends webdriver.WebDriver {
    */
    startDesktopMirroring(deviceName) {
     return this.schedule(
-      new command.Command(Command.START_DESKTOP_MIRRORING).setParameter(
+      new command.Command(Command.START_CAST_DESKTOP_MIRRORING).setParameter(
         'sinkName',
         deviceName
       ),
