@@ -34,7 +34,7 @@ public abstract class AddHasCasting implements AugmenterProvider<HasCasting>, Ad
   public static final String GET_CAST_SINKS = "getCastSinks";
   public static final String SET_CAST_SINK_TO_USE = "selectCastSink";
   public static final String START_CAST_TAB_MIRRORING = "startCastTabMirroring";
-  public static final String START_DESKTOP_MIRRORING = "startDesktopMirroring";
+  public static final String START_CAST_DESKTOP_MIRRORING = "startDesktopMirroring";
   public static final String GET_CAST_ISSUE_MESSAGE = "getCastIssueMessage";
   public static final String STOP_CASTING = "stopCasting";
 
@@ -69,7 +69,7 @@ public abstract class AddHasCasting implements AugmenterProvider<HasCasting>, Ad
       public void startDesktopMirroring(String deviceName) {
         Require.nonNull("Device Name", deviceName);
 
-        executeMethod.execute(START_DESKTOP_MIRRORING, ImmutableMap.of("sinkName", deviceName));
+        executeMethod.execute(START_CAST_DESKTOP_MIRRORING, ImmutableMap.of("sinkName", deviceName));
       }
 
       @Override
