@@ -60,7 +60,7 @@ class WebDriverWait(object):
         return '<{0.__module__}.{0.__name__} (session="{1}")>'.format(
             type(self), self._driver.session_id)
 
-    def until(self, method, message=''):
+    def until(self, method, message='', capture_stacktrace=True):
         """Calls the method provided with the driver as an argument until the \
         return value does not evaluate to ``False``.
 
@@ -82,7 +82,8 @@ class WebDriverWait(object):
                 raise e
             except self._ignored_exceptions as exc:
                 screen = getattr(exc, 'screen', None)
-                stacktrace = getattr(exc, 'stacktrace', None)
+                if capture_stacktrace:
+                    stacktrace = getattr(exc, 'stacktrace', None)
             time.sleep(self._poll)
             if time.time() > end_time:
                 break
