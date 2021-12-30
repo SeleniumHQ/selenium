@@ -23,9 +23,10 @@ import warnings
 import zipfile
 from abc import ABCMeta
 from io import BytesIO
-from typing import cast
+from typing import Iterable, cast
 
 from selenium.common.exceptions import WebDriverException
+from selenium.types import AnyKey
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.utils import keys_to_typing
 from .command import Command
@@ -503,7 +504,7 @@ class WebElement(BaseWebElement):
         warnings.warn("find_elements_by_* commands are deprecated. Please use find_elements() instead")
         return self.find_elements(by=By.CSS_SELECTOR, value=css_selector)
 
-    def send_keys(self, *value) -> None:
+    def send_keys(self, *value: AnyKey) -> None:
         """Simulates typing into the element.
 
         :Args:
@@ -528,6 +529,9 @@ class WebElement(BaseWebElement):
         """
         # transfer file to another machine only if remote driver is used
         # the same behaviour as for java binding
+
+        output: Iterable[AnyKey]
+
         if self.parent._is_remote:
             local_files = list(map(lambda keys_to_send:
                                    self.parent.file_detector.is_local_file(str(keys_to_send)),
@@ -537,6 +541,8 @@ class WebElement(BaseWebElement):
                 for file in local_files:
                     remote_files.append(self._upload(file))
                 output = '\n'.join(remote_files)
+        else:
+            output = value
 
         self._execute(Command.SEND_KEYS_TO_ELEMENT,
                       {'text': "".join(keys_to_typing(output)),
