@@ -15,6 +15,8 @@
 # specific language governing permissions and limitations
 # under the License.
 
+from abc import abstractmethod
+from typing import Any, Dict
 import uuid
 
 
@@ -41,3 +43,7 @@ class InputDevice(object):
 
     def create_pause(self, duration=0):
         pass
+
+    @abstractmethod
+    def encode(self) -> Dict[str, Any]:
+        raise NotImplementedError()

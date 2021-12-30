@@ -15,9 +15,10 @@
 # specific language governing permissions and limitations
 # under the License.
 
-from typing import Any, Dict, Optional, Union, List
+from typing import Any, Dict, Optional, List
 from selenium.webdriver.remote.command import Command
 from . import interaction
+from .input_device import InputDevice
 from .key_actions import KeyActions
 from .key_input import KeyInput
 from .pointer_actions import PointerActions
@@ -27,6 +28,8 @@ from .wheel_actions import WheelActions
 
 
 class ActionBuilder(object):
+    devices: List[InputDevice]
+
     def __init__(self, driver, mouse=None, wheel=None, keyboard=None, duration=250) -> None:
         if not mouse:
             mouse = PointerInput(interaction.POINTER_MOUSE, "mouse")
@@ -40,16 +43,16 @@ class ActionBuilder(object):
         self._wheel_action = WheelActions(wheel)
         self.driver = driver
 
-    def get_device_with(self, name) -> Optional[Union["WheelInput", "PointerInput", "KeyInput"]]:
+    def get_device_with(self, name) -> Optional[InputDevice]:
         return next(filter(lambda x: x == name, self.devices), None)
 
     @property
     def pointer_inputs(self) -> List[PointerInput]:
-        return [device for device in self.devices if device.type == interaction.POINTER]
+        return [device for device in self.devices if isinstance(device, PointerInput)]
 
     @property
     def key_inputs(self) -> List[KeyInput]:
-        return [device for device in self.devices if device.type == interaction.KEY]
+        return [device for device in self.devices if isinstance(device, KeyInput)]
 
     @property
     def key_action(self) -> KeyActions:
