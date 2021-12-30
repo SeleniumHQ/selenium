@@ -15,7 +15,7 @@
 # specific language governing permissions and limitations
 # under the License.
 
-from typing import Optional, Union, List
+from typing import Any, Dict, Optional, Union, List
 from selenium.webdriver.remote.command import Command
 from . import interaction
 from .key_actions import KeyActions
@@ -79,7 +79,7 @@ class ActionBuilder(object):
         return new_input
 
     def perform(self) -> None:
-        enc = {"actions": []}
+        enc: Dict[str, List[Dict[str, Any]]] = {"actions": []}
         for device in self.devices:
             encoded = device.encode()
             if encoded['actions']:
