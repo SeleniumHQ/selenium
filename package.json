@@ -52,7 +52,7 @@
     "react-dom": "^17.0.1",
     "react-modal": "^3.14.3",
     "react-router-dom": "^5.2.0",
-    "react-scripts": "^4.0.3",
+    "react-scripts": "^5.0.0",
     "rimraf": "^2.7.1",
     "source-map-explorer": "^2.5.2",
     "tmp": "^0.2.1",
