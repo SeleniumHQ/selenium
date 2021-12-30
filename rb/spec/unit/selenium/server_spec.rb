@@ -23,7 +23,20 @@ require 'selenium/server'
 module Selenium
   describe Server do
     let(:mock_process) { instance_double(ChildProcess::AbstractProcess).as_null_object }
-    let(:mock_poller)  { instance_double('SocketPoller', connected?: true, closed?: true) }
+    let(:mock_poller) { instance_double('SocketPoller', connected?: true, closed?: true) }
+    let(:repo) { 'https://api.github.com/repos/seleniumhq/selenium/releases' }
+    let(:example_json) do
+      [{"url": "#{repo}/41272273",
+        "assets": {
+          "name": 'selenium-server-3.141.59.jar',
+          "browser_download_url": "#{repo}/selenium-3.141.59/selenium-server-standalone-3.141.59.jar"
+        }},
+       {"url": "#{repo}/51272273",
+        "assets": {
+          "name": 'selenium-server-10.0.1.jar',
+          "browser_download_url": "#{repo}/selenium-10.0.1/selenium-server-10.0.1.jar"
+        }}].to_json
+    end
 
     it 'raises an error if the jar file does not exist' do
       expect {
@@ -111,11 +124,12 @@ module Selenium
     end
 
     it 'downloads the specified version from the selenium site' do
-      required_version = '10.0.0'
+      required_version = '10.0.1'
       expected_download_file_name = "selenium-server-#{required_version}.jar"
-      download = 'https://github.com/seleniumhq/selenium/releases/download'
 
-      stub_request(:get, "#{download}/selenium-10.0.0/#{expected_download_file_name}")
+      stub_request(:get, repo).to_return(body: example_json)
+
+      stub_request(:get, "#{repo}/selenium-10.0.1/#{expected_download_file_name}")
         .to_return(headers: {location: 'https://github-releases.githubusercontent.com/something'})
 
       stub_request(:get, "https://github-releases.githubusercontent.com/something")
@@ -168,19 +182,8 @@ module Selenium
 
     it 'should know what the latest version available is' do
       expected_latest = '10.0.1'
-      repo = 'https://api.github.com/repos/seleniumhq/selenium/releases'
-      example_json = [{"url": "#{repo}/41272273",
-                       "assets": {
-                         "name": 'selenium-server-3.141.59.jar',
-                         "browser_download_url": "#{repo}/selenium-3.141.59/selenium-server-standalone-3.141.59.jar"
-                       }},
-                      {"url": "#{repo}/51272273",
-                       "assets": {
-                         "name": 'selenium-server-10.0.1.jar',
-                         "browser_download_url": "#{repo}/selenium-10.0.1/selenium-server-10.0.1.jar"
-                       }}]
 
-      stub_request(:get, repo).to_return(body: example_json.to_json)
+      stub_request(:get, repo).to_return(body: example_json)
 
       expect(Selenium::Server.latest).to eq(expected_latest)
     end

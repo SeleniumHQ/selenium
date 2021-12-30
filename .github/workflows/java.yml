@@ -1,6 +1,7 @@
 name: Java workflow
 
 on:
+  workflow_dispatch:
   push:
     branches:
       - trunk

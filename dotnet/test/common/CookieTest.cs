@@ -20,6 +20,12 @@ namespace OpenQA.Selenium
         }
 
         [Test]
+        public void ShouldThrowAnExceptionWhenNameAndValueAreEmpty()
+        {
+            Assert.That(() => new ReturnedCookie("", "", null, null, DateTime.Now, false, false), Throws.InstanceOf<ArgumentException>());
+        }
+
+        [Test]
         public void ShouldThrowAnExceptionWhenTheNameIsNull()
         {
             Assert.That(() => new ReturnedCookie(null, "value", null, null, DateTime.Now, false, false), Throws.InstanceOf<ArgumentException>());

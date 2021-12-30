@@ -97,6 +97,7 @@ const Command = {
   SET_PERMISSION: 'setPermission',
   GET_CAST_SINKS: 'getCastSinks',
   SET_CAST_SINK_TO_USE: 'setCastSinkToUse',
+  START_CAST_DESKTOP_MIRRORING: 'startDesktopMirroring',
   START_CAST_TAB_MIRRORING: 'setCastTabMirroring',
   GET_CAST_ISSUE_MESSAGE: 'getCastIssueMessage',
   STOP_CASTING: 'stopCasting',
@@ -160,6 +161,11 @@ function configureExecutor(executor, vendorPrefix) {
     Command.SET_CAST_SINK_TO_USE,
     'POST',
     `/session/:sessionId/${vendorPrefix}/cast/set_sink_to_use`
+  )
+  executor.defineCommand(
+    Command.START_CAST_DESKTOP_MIRRORING,
+    'POST',
+    `/session/:sessionId/${vendorPrefix}/cast/start_desktop_mirroring`
   )
   executor.defineCommand(
     Command.START_CAST_TAB_MIRRORING,
@@ -831,6 +837,23 @@ class Driver extends webdriver.WebDriver {
         deviceName
       ),
       'Driver.setCastSinkToUse(' + deviceName + ')'
+    )
+  }
+
+  /**
+   * Initiates desktop mirroring for the current browser tab on the specified device.
+   *
+   * @param {String} deviceName name of the target device.
+   * @return {!promise.Thenable<void>} A promise that will be resolved
+   *     when the mirror command has been issued to the device.
+   */
+   startDesktopMirroring(deviceName) {
+    return this.schedule(
+      new command.Command(Command.START_CAST_DESKTOP_MIRRORING).setParameter(
+        'sinkName',
+        deviceName
+      ),
+      'Driver.startDesktopMirroring(' + deviceName + ')'
     )
   }
 

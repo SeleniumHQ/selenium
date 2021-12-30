@@ -115,20 +115,25 @@ namespace OpenQA.Selenium
         /// <param name="isSecure"><see langword="true"/> if the cookie is secure; otherwise <see langword="false"/></param>
         /// <param name="isHttpOnly"><see langword="true"/> if the cookie is an HTTP-only cookie; otherwise <see langword="false"/></param>
         /// <param name="sameSite">The SameSite value of cookie.</param>
-        /// <exception cref="ArgumentException">If the name is <see langword="null"/> or an empty string,
-        /// or if it contains a semi-colon.</exception>
-        /// <exception cref="ArgumentNullException">If the value or currentUrl is <see langword="null"/>.</exception>
+        /// <exception cref="ArgumentException">If the name and value are both an empty string,
+        /// or if the name contains a semi-colon.</exception>
+        /// <exception cref="ArgumentNullException">If the name, value or currentUrl is <see langword="null"/>.</exception>
         /// <exception cref="ArgumentNullException">If the same site value is not valid or same site value is "None" but secure is set to false.</exception>
         public Cookie(string name, string value, string domain, string path, DateTime? expiry, bool secure, bool isHttpOnly, string sameSite)
         {
-            if (string.IsNullOrEmpty(name))
+            if (name == null)
             {
-                throw new ArgumentException("Cookie name cannot be null or empty string", nameof(name));
+                throw new ArgumentNullException(nameof(value), "Cookie name cannot be null");
             }
 
             if (value == null)
             {
                 throw new ArgumentNullException(nameof(value), "Cookie value cannot be null");
+            }
+
+            if (name == string.Empty && value == string.Empty)
+            {
+                throw new ArgumentException("Cookie name and value cannot both be empty string");
             }
 
             if (name.IndexOf(';') != -1)
