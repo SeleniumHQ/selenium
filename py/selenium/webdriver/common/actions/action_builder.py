@@ -15,7 +15,7 @@
 # specific language governing permissions and limitations
 # under the License.
 
-from typing import Union, List
+from typing import Optional, Union, List
 from selenium.webdriver.remote.command import Command
 from . import interaction
 from .key_actions import KeyActions
@@ -40,7 +40,7 @@ class ActionBuilder(object):
         self._wheel_action = WheelActions(wheel)
         self.driver = driver
 
-    def get_device_with(self, name) -> Union["WheelInput", "PointerInput", "KeyInput"]:
+    def get_device_with(self, name) -> Optional[Union["WheelInput", "PointerInput", "KeyInput"]]:
         return next(filter(lambda x: x == name, self.devices), None)
 
     @property
