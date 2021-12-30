@@ -36,18 +36,10 @@ import org.openqa.selenium.WindowType;
 import org.openqa.selenium.WrapsDriver;
 import org.openqa.selenium.WrapsElement;
 import org.openqa.selenium.interactions.Coordinates;
-import org.openqa.selenium.interactions.HasInputDevices;
-import org.openqa.selenium.interactions.HasTouchScreen;
 import org.openqa.selenium.interactions.Interactive;
-import org.openqa.selenium.interactions.Keyboard;
 import org.openqa.selenium.interactions.Locatable;
-import org.openqa.selenium.interactions.Mouse;
 import org.openqa.selenium.interactions.Sequence;
-import org.openqa.selenium.interactions.TouchScreen;
 import org.openqa.selenium.logging.Logs;
-import org.openqa.selenium.support.events.internal.EventFiringKeyboard;
-import org.openqa.selenium.support.events.internal.EventFiringMouse;
-import org.openqa.selenium.support.events.internal.EventFiringTouch;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Proxy;
@@ -75,8 +67,6 @@ public class EventFiringWebDriver implements
   JavascriptExecutor,
   TakesScreenshot,
   WrapsDriver,
-  HasInputDevices,
-  HasTouchScreen,
   Interactive,
   HasCapabilities {
 
@@ -336,33 +326,6 @@ public class EventFiringWebDriver implements
   private WebElement createWebElement(WebElement from) {
     return new EventFiringWebElement(from);
   }
-
-  @Override
-  public Keyboard getKeyboard() {
-    if (driver instanceof HasInputDevices) {
-      return new EventFiringKeyboard(driver, dispatcher);
-    }
-    throw new UnsupportedOperationException("Underlying driver does not implement advanced"
-        + " user interactions yet.");
-  }
-
-  @Override
-  public Mouse getMouse() {
-    if (driver instanceof HasInputDevices) {
-      return new EventFiringMouse(driver, dispatcher);
-    }
-    throw new UnsupportedOperationException("Underlying driver does not implement advanced"
-        + " user interactions yet.");
-  }
-
-  @Override
-  public TouchScreen getTouch() {
-    if (driver instanceof HasTouchScreen) {
-      return new EventFiringTouch(driver, dispatcher);
-    }
-    throw new UnsupportedOperationException("Underlying driver does not implement advanced"
-        + " user interactions yet.");
- }
 
   @Override
   public void perform(Collection<Sequence> actions) {
