@@ -769,6 +769,9 @@ public class CdpClientGenerator {
       if (type.equals("object")) {
         toJson.setType("java.util.Map<String, Object>");
         toJson.getBody().get().addStatement(String.format("return %s;", propertyName));
+      } else if (type.equals("number")) {
+        toJson.setType(Number.class);
+        toJson.getBody().get().addStatement(String.format("return %s;", propertyName));
       } else if (type.equals("integer")) {
         toJson.setType(Integer.class);
         toJson.getBody().get().addStatement(String.format("return %s;", propertyName));
