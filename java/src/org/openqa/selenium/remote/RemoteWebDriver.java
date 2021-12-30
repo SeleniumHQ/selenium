@@ -17,16 +17,8 @@
 
 package org.openqa.selenium.remote;
 
-import static java.util.Collections.singleton;
-import static java.util.concurrent.TimeUnit.SECONDS;
-import static org.openqa.selenium.remote.CapabilityType.LOGGING_PREFS;
-import static org.openqa.selenium.remote.CapabilityType.PLATFORM;
-import static org.openqa.selenium.remote.CapabilityType.PLATFORM_NAME;
-import static org.openqa.selenium.remote.CapabilityType.SUPPORTS_JAVASCRIPT;
-
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
-
 import org.openqa.selenium.Alert;
 import org.openqa.selenium.Beta;
 import org.openqa.selenium.By;
@@ -53,10 +45,7 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.WindowType;
 import org.openqa.selenium.devtools.DevTools;
 import org.openqa.selenium.devtools.HasDevTools;
-import org.openqa.selenium.interactions.HasInputDevices;
 import org.openqa.selenium.interactions.Interactive;
-import org.openqa.selenium.interactions.Keyboard;
-import org.openqa.selenium.interactions.Mouse;
 import org.openqa.selenium.interactions.Sequence;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.logging.LocalLogs;
@@ -96,10 +85,16 @@ import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static java.util.Collections.singleton;
+import static java.util.concurrent.TimeUnit.SECONDS;
+import static org.openqa.selenium.remote.CapabilityType.LOGGING_PREFS;
+import static org.openqa.selenium.remote.CapabilityType.PLATFORM;
+import static org.openqa.selenium.remote.CapabilityType.PLATFORM_NAME;
+import static org.openqa.selenium.remote.CapabilityType.SUPPORTS_JAVASCRIPT;
+
 @Augmentable
 public class RemoteWebDriver implements WebDriver,
   JavascriptExecutor,
-  HasInputDevices,
   HasCapabilities,
   HasVirtualAuthenticator,
   Interactive,
@@ -119,8 +114,6 @@ public class RemoteWebDriver implements WebDriver,
 
   private JsonToWebElementConverter converter;
 
-  private RemoteKeyboard keyboard;
-  private RemoteMouse mouse;
   private Logs remoteLogs;
   private LocalLogs localLogs;
 
@@ -189,8 +182,6 @@ public class RemoteWebDriver implements WebDriver,
 
     converter = new JsonToWebElementConverter(this);
     executeMethod = new RemoteExecuteMethod(this);
-    keyboard = new RemoteKeyboard(executeMethod);
-    mouse = new RemoteMouse(executeMethod);
 
     ImmutableSet.Builder<String> builder = new ImmutableSet.Builder<>();
 
@@ -614,16 +605,6 @@ public class RemoteWebDriver implements WebDriver,
   @Override
   public void resetInputState() {
     execute(DriverCommand.CLEAR_ACTIONS_STATE);
-  }
-
-  @Override
-  public Keyboard getKeyboard() {
-    return keyboard;
-  }
-
-  @Override
-  public Mouse getMouse() {
-    return mouse;
   }
 
   @Override
