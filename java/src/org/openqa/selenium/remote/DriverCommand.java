@@ -147,7 +147,6 @@ public interface DriverCommand {
   static CommandPayload SEND_KEYS_TO_ELEMENT(String id, CharSequence[] keysToSend) {
     return new CommandPayload(SEND_KEYS_TO_ELEMENT, ImmutableMap.of("id", id, "value", keysToSend));
   }
-  String SEND_KEYS_TO_ACTIVE_ELEMENT = "sendKeysToActiveElement";
   String SUBMIT_ELEMENT = "submitElement";
   static CommandPayload SUBMIT_ELEMENT(String id) {
     return new CommandPayload(SUBMIT_ELEMENT, ImmutableMap.of("id", id));
@@ -345,14 +344,6 @@ public interface DriverCommand {
   }
   String CLEAR_ACTIONS_STATE = "clearActionState";
 
-  // These belong to the Advanced user interactions - an element is
-  // optional for these commands.
-  String CLICK = "mouseClick";
-  String DOUBLE_CLICK = "mouseDoubleClick";
-  String MOUSE_DOWN = "mouseButtonDown";
-  String MOUSE_UP = "mouseButtonUp";
-  String MOVE_TO = "mouseMoveTo";
-
   // Those allow interactions with the Input Methods installed on
   // the system.
   String IME_GET_AVAILABLE_ENGINES = "imeGetAvailableEngines";
@@ -363,16 +354,6 @@ public interface DriverCommand {
   static CommandPayload IME_ACTIVATE_ENGINE(String engine) {
     return new CommandPayload(SET_ALERT_VALUE, ImmutableMap.of("engine", engine));
   }
-
-  // These belong to the Advanced Touch API
-  String TOUCH_SINGLE_TAP = "touchSingleTap";
-  String TOUCH_DOWN = "touchDown";
-  String TOUCH_UP = "touchUp";
-  String TOUCH_MOVE = "touchMove";
-  String TOUCH_SCROLL = "touchScroll";
-  String TOUCH_DOUBLE_TAP = "touchDoubleTap";
-  String TOUCH_LONG_PRESS = "touchLongPress";
-  String TOUCH_FLICK = "touchFlick";
 
   // Window API
   String SET_CURRENT_WINDOW_POSITION = "setWindowPosition";
