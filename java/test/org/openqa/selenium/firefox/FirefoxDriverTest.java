@@ -39,8 +39,10 @@ import org.openqa.selenium.remote.Command;
 import org.openqa.selenium.remote.CommandExecutor;
 import org.openqa.selenium.remote.DriverCommand;
 import org.openqa.selenium.remote.RemoteWebDriver;
+import org.openqa.selenium.remote.RemoteWebDriverBuilder;
 import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.remote.UnreachableBrowserException;
+import org.openqa.selenium.remote.http.ClientConfig;
 import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.openqa.selenium.testing.Ignore;
@@ -60,6 +62,7 @@ import java.util.List;
 import java.util.Random;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.junit.Assert.fail;
 import static org.junit.Assume.assumeNotNull;
 import static org.mockito.Mockito.atLeastOnce;
@@ -110,6 +113,16 @@ public class FirefoxDriverTest extends JUnit4TestBase {
     assertThat(driver.manage().timeouts().getImplicitWaitTimeout()).isEqualTo(Duration.ofMillis(1));
 
     driver.quit();
+  }
+
+  @Test
+  public void builderWithClientConfigthrowsException() {
+    ClientConfig clientConfig = ClientConfig.defaultConfig().readTimeout(Duration.ofMinutes(1));
+    RemoteWebDriverBuilder builder = FirefoxDriver.builder().config(clientConfig);
+
+    assertThatExceptionOfType(IllegalArgumentException.class)
+      .isThrownBy(builder::build)
+      .withMessage("ClientConfig instances do not work for Local Drivers");
   }
 
   @Test
