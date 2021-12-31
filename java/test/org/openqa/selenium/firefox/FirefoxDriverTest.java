@@ -97,6 +97,22 @@ public class FirefoxDriverTest extends JUnit4TestBase {
   }
 
   @Test
+  public void builderGeneratesDefaultChromeOptions() {
+    WebDriver driver = FirefoxDriver.builder().build();
+    driver.quit();
+  }
+
+  @Test
+  public void builderOverridesDefaultChromeOptions() {
+    FirefoxOptions options = new FirefoxOptions();
+    options.setImplicitWaitTimeout(Duration.ofMillis(1));
+    WebDriver driver = FirefoxDriver.builder().oneOf(options).build();
+    assertThat(driver.manage().timeouts().getImplicitWaitTimeout()).isEqualTo(Duration.ofMillis(1));
+
+    driver.quit();
+  }
+
+  @Test
   public void canStartDriverWithNoParameters() {
     localDriver = new WebDriverBuilder().get();
     assertThat(((HasCapabilities) localDriver).getCapabilities().getBrowserName()).isEqualTo("firefox");

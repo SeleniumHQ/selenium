@@ -30,11 +30,28 @@ import org.openqa.selenium.testing.NoDriverBeforeTest;
 import org.openqa.selenium.testing.drivers.WebDriverBuilder;
 
 import java.awt.*;
+import java.time.Duration;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.openqa.selenium.ie.InternetExplorerDriver.ENABLE_PERSISTENT_HOVERING;
 
 public class InternetExplorerDriverTest extends JUnit4TestBase {
+
+  @Test
+  public void builderGeneratesDefaultChromeOptions() {
+    WebDriver driver = InternetExplorerDriver.builder().build();
+    driver.quit();
+  }
+
+  @Test
+  public void builderOverridesDefaultChromeOptions() {
+    InternetExplorerOptions options = new InternetExplorerOptions();
+    options.setImplicitWaitTimeout(Duration.ofMillis(1));
+    WebDriver driver = InternetExplorerDriver.builder().oneOf(options).build();
+    assertThat(driver.manage().timeouts().getImplicitWaitTimeout()).isEqualTo(Duration.ofMillis(1));
+
+    driver.quit();
+  }
 
   @Test
   @NoDriverBeforeTest
