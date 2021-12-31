@@ -65,6 +65,7 @@ namespace OpenQA.Selenium.Chrome
             { GetCastSinksCommand, new HttpCommandInfo(HttpCommandInfo.GetCommand, "/session/{sessionId}/goog/cast/get_sinks") },
             { SelectCastSinkCommand, new HttpCommandInfo(HttpCommandInfo.PostCommand, "/session/{sessionId}/goog/cast/set_sink_to_use") },
             { StartCastTabMirroringCommand, new HttpCommandInfo(HttpCommandInfo.PostCommand, "/session/{sessionId}/goog/cast/start_tab_mirroring") },
+            { StartCastDesktopMirroringCommand, new HttpCommandInfo(HttpCommandInfo.PostCommand, "/session/{sessionId}/goog/cast/start_desktop_mirroring") },
             { GetCastIssueMessageCommand, new HttpCommandInfo(HttpCommandInfo.GetCommand, "/session/{sessionId}/goog/cast/get_issue_message") },
             { StopCastingCommand, new HttpCommandInfo(HttpCommandInfo.PostCommand, "/session/{sessionId}/goog/cast/stop_casting") }
         };
