@@ -18,12 +18,14 @@
 package org.openqa.selenium.chrome;
 
 import com.google.common.collect.ImmutableMap;
+import org.openqa.selenium.Beta;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chromium.ChromiumDriver;
 import org.openqa.selenium.chromium.ChromiumDriverCommandExecutor;
 import org.openqa.selenium.remote.CommandInfo;
 import org.openqa.selenium.remote.RemoteWebDriver;
+import org.openqa.selenium.remote.RemoteWebDriverBuilder;
 import org.openqa.selenium.remote.service.DriverService;
 
 import java.util.Map;
@@ -104,6 +106,11 @@ public class ChromeDriver extends ChromiumDriver {
     super(new ChromeDriverCommandExecutor(service), capabilities, ChromeOptions.CAPABILITY);
     casting = new AddHasCasting().getImplementation(getCapabilities(), getExecuteMethod());
     cdp = new AddHasCdp().getImplementation(getCapabilities(), getExecuteMethod());
+  }
+
+  @Beta
+  public static RemoteWebDriverBuilder builder() {
+    return RemoteWebDriver.builder().oneOf(new ChromeOptions());
   }
 
   private static class ChromeDriverCommandExecutor extends ChromiumDriverCommandExecutor {

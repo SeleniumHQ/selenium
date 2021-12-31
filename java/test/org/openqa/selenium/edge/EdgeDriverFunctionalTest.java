@@ -43,6 +43,22 @@ public class EdgeDriverFunctionalTest extends JUnit4TestBase {
   private final String CLIPBOARD_WRITE = "clipboard-write";
 
   @Test
+  public void builderGeneratesDefaultChromeOptions() {
+    WebDriver driver = EdgeDriver.builder().build();
+    driver.quit();
+  }
+
+  @Test
+  public void builderOverridesDefaultChromeOptions() {
+    EdgeOptions options = new EdgeOptions();
+    options.setImplicitWaitTimeout(Duration.ofMillis(1));
+    WebDriver driver = EdgeDriver.builder().oneOf(options).build();
+    assertThat(driver.manage().timeouts().getImplicitWaitTimeout()).isEqualTo(Duration.ofMillis(1));
+
+    driver.quit();
+  }
+
+  @Test
   public void canSetPermission() {
     HasPermissions permissions = (HasPermissions) driver;
 

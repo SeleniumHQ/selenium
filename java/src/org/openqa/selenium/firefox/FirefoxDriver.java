@@ -20,6 +20,7 @@ package org.openqa.selenium.firefox;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
+import org.openqa.selenium.Beta;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.MutableCapabilities;
@@ -42,6 +43,7 @@ import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.CommandInfo;
 import org.openqa.selenium.remote.FileDetector;
 import org.openqa.selenium.remote.RemoteWebDriver;
+import org.openqa.selenium.remote.RemoteWebDriverBuilder;
 import org.openqa.selenium.remote.html5.RemoteWebStorage;
 import org.openqa.selenium.remote.http.ClientConfig;
 import org.openqa.selenium.remote.http.HttpClient;
@@ -135,6 +137,11 @@ public class FirefoxDriver extends RemoteWebDriver
     public static final String BINARY = "firefox_binary";
     public static final String PROFILE = "firefox_profile";
     public static final String MARIONETTE = "marionette";
+  }
+
+  @Beta
+  public static RemoteWebDriverBuilder builder() {
+    return RemoteWebDriver.builder().oneOf(new FirefoxOptions());
   }
 
   private static class FirefoxDriverCommandExecutor extends DriverCommandExecutor {
