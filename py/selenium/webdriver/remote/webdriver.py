@@ -23,7 +23,11 @@ from importlib import import_module
 import pkgutil
 
 import sys
-from typing import Any, Dict, List, Optional, TYPE_CHECKING, TypedDict, Union, cast
+from typing import Any, Dict, List, Optional, TYPE_CHECKING, Union, cast
+if sys.version_info >= (3, 8):
+    from typing import TypedDict
+else:
+    from typing_extensions import TypedDict
 
 import warnings
 
