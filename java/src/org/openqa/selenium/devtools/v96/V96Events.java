@@ -64,7 +64,7 @@ public class V96Events extends Events<ConsoleAPICalled, ExceptionThrown> {
 
   @Override
   protected ConsoleEvent toConsoleEvent(ConsoleAPICalled event) {
-    long ts = new BigDecimal(event.getTimestamp().toJson()).longValue();
+    long ts = event.getTimestamp().toJson().longValue();
 
     List<Object> modifiedArgs = event.getArgs().stream()
       .map(obj -> new RemoteObject(
