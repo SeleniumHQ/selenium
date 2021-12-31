@@ -49,8 +49,8 @@ import java.util.function.Supplier;
  *   // Waiting 30 seconds for an element to be present on the page, checking
  *   // for its presence once every 5 seconds.
  *   Wait&lt;WebDriver&gt; wait = new FluentWait&lt;WebDriver&gt;(driver)
- *       .withTimeout(30, SECONDS)
- *       .pollingEvery(5, SECONDS)
+ *       .withTimeout(Duration.ofSeconds(30L))
+ *       .pollingEvery(Duration.ofSeconds(5L))
  *       .ignoring(NoSuchElementException.class);
  *
  *   WebElement foo = wait.until(new Function&lt;WebDriver, WebElement&gt;() {
