@@ -114,7 +114,7 @@ public class CombinedInputActionsTest extends JUnit4TestBase {
   @Ignore(IE)
   @Ignore(LEGACY_FIREFOX_XPI)
   @NotYetImplemented(SAFARI)
-  public void testPenAndKeyboardCombination() {
+  public void testMultipleInputs() {
     driver.get(pages.formSelectionPage);
 
     List<WebElement> options = driver.findElements(By.tagName("option"));
@@ -125,10 +125,21 @@ public class CombinedInputActionsTest extends JUnit4TestBase {
       .addAction(defaultPen.createPointerDown(0))
       .addAction(defaultPen.createPointerUp(0))
       .addAction(new Pause(defaultPen, Duration.ZERO))
-      .addAction(defaultPen.createPointerMove(Duration.ZERO, PointerInput.Origin.fromElement(options.get(3)), 0, 0))
-      .addAction(defaultPen.createPointerDown(0))
-      .addAction(defaultPen.createPointerUp(0))
+      .addAction(new Pause(defaultPen, Duration.ZERO))
+      .addAction(new Pause(defaultPen, Duration.ZERO))
+      .addAction(new Pause(defaultPen, Duration.ZERO))
       .addAction(new Pause(defaultPen, Duration.ZERO));
+
+    PointerInput defaultMouse = new PointerInput(PointerInput.Kind.MOUSE, "default mouse");
+    Sequence actionListMouse = new Sequence(defaultMouse, 0)
+      .addAction(new Pause(defaultPen, Duration.ZERO))
+      .addAction(new Pause(defaultPen, Duration.ZERO))
+      .addAction(new Pause(defaultPen, Duration.ZERO))
+      .addAction(new Pause(defaultMouse, Duration.ZERO))
+      .addAction(defaultMouse.createPointerMove(Duration.ZERO, PointerInput.Origin.fromElement(options.get(3)), 0, 0))
+      .addAction(defaultMouse.createPointerDown(0))
+      .addAction(defaultMouse.createPointerUp(0))
+      .addAction(new Pause(defaultMouse, Duration.ZERO));
 
     KeyInput defaultKeyboard = new KeyInput("default keyboard");
     Sequence actionListKeyboard = new Sequence(defaultKeyboard, 0)
@@ -141,7 +152,7 @@ public class CombinedInputActionsTest extends JUnit4TestBase {
       .addAction(new Pause(defaultPen, Duration.ZERO))
       .addAction(defaultKeyboard.createKeyUp(Keys.SHIFT.getCodePoint()));
 
-    ((RemoteWebDriver) driver).perform(Arrays.asList(actionListKeyboard, actionListPen));
+    ((RemoteWebDriver) driver).perform(Arrays.asList(actionListKeyboard, actionListPen, actionListMouse));
 
     WebElement showButton = driver.findElement(By.name("showselected"));
     showButton.click();
