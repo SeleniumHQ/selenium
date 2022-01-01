@@ -17,16 +17,6 @@
 
 package org.openqa.selenium.interactions;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.junit.Assume.assumeFalse;
-import static org.openqa.selenium.testing.TestUtilities.getEffectivePlatform;
-import static org.openqa.selenium.testing.drivers.Browser.CHROME;
-import static org.openqa.selenium.testing.drivers.Browser.HTMLUNIT;
-import static org.openqa.selenium.testing.drivers.Browser.IE;
-import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
-import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
-
 import org.junit.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
@@ -40,10 +30,19 @@ import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.NotYetImplemented;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.junit.Assume.assumeFalse;
+import static org.openqa.selenium.testing.TestUtilities.getEffectivePlatform;
+import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
+import static org.openqa.selenium.testing.drivers.Browser.HTMLUNIT;
+import static org.openqa.selenium.testing.drivers.Browser.IE;
+import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
+
 /**
  * Tests interaction through the advanced gestures API of keyboard handling.
  */
-public class BasicKeyboardInterfaceTest extends JUnit4TestBase {
+public class DefaultKeyboardTest extends JUnit4TestBase {
   private Actions getBuilder(WebDriver driver) {
     return new Actions(driver);
   }
@@ -221,7 +220,6 @@ public class BasicKeyboardInterfaceTest extends JUnit4TestBase {
 
   @Test
   @NotYetImplemented(value = FIREFOX, reason = "https://bugzilla.mozilla.org/show_bug.cgi?id=1422583")
-  @NotYetImplemented(CHROME)
   public void testSelectionSelectBySymbol() {
     driver.get(appServer.whereIs("single_text_input.html"));
 
@@ -245,7 +243,6 @@ public class BasicKeyboardInterfaceTest extends JUnit4TestBase {
   @Test
   @Ignore(IE)
   @NotYetImplemented(value = FIREFOX, reason = "https://bugzilla.mozilla.org/show_bug.cgi?id=1422583")
-  @NotYetImplemented(CHROME)
   public void testSelectionSelectByWord() {
     assumeFalse(
         "MacOS has alternative keyboard",
