@@ -34,6 +34,11 @@ public class KeyInput implements InputSource, Encodable {
   }
 
   @Override
+  public String getName() {
+    return this.name;
+  }
+
+  @Override
   public SourceType getInputType() {
     return SourceType.KEY;
   }
