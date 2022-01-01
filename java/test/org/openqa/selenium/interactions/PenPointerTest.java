@@ -227,7 +227,7 @@ public class PenPointerTest extends JUnit4TestBase {
   @NotYetImplemented(SAFARI)
   public void testHoverPersists() throws Exception {
     driver.get(pages.javascriptPage);
-    // Move to a different element to make sure the mouse is not over the
+    // Move to a different element to make sure the pen is not over the
     // element with id 'item1' (from a previous test).
 
     WebElement dynamo = driver.findElement(By.id("dynamo"));
@@ -256,7 +256,7 @@ public class PenPointerTest extends JUnit4TestBase {
 
   @Test
   @NotYetImplemented(HTMLUNIT)
-  public void testMovingMouseByRelativeOffset() {
+  public void testMovingPenByRelativeOffset() {
     driver.get(pages.mouseTrackerPage);
 
     WebElement trackerDiv = driver.findElement(By.id("mousetracker"));
@@ -278,7 +278,7 @@ public class PenPointerTest extends JUnit4TestBase {
 
   @Test
   @NotYetImplemented(HTMLUNIT)
-  public void testMovingMouseToRelativeElementOffset() {
+  public void testMovingPenToRelativeElementOffset() {
     driver.get(pages.mouseTrackerPage);
 
     WebElement trackerDiv = driver.findElement(By.id("mousetracker"));
@@ -294,7 +294,7 @@ public class PenPointerTest extends JUnit4TestBase {
 
   @Test
   @NotYetImplemented(HTMLUNIT)
-  public void testMovingMouseToRelativeZeroElementOffset() {
+  public void testMovingPenToRelativeZeroElementOffset() {
     driver.get(pages.mouseTrackerPage);
 
     WebElement trackerDiv = driver.findElement(By.id("mousetracker"));
@@ -334,7 +334,7 @@ public class PenPointerTest extends JUnit4TestBase {
   @Ignore(value = FIREFOX, issue = "https://github.com/mozilla/geckodriver/issues/789")
   @NotYetImplemented(HTMLUNIT)
   @NotYetImplemented(SAFARI)
-  public void testMoveMouseByOffsetOverAndOutOfAnElement() {
+  public void testMovePenByOffsetOverAndOutOfAnElement() {
     driver.get(pages.mouseOverPage);
 
     WebElement greenbox = driver.findElement(By.id("greenbox"));

@@ -43,11 +43,14 @@ import org.openqa.selenium.Platform;
 import org.openqa.selenium.Point;
 import org.openqa.selenium.WaitingConditions;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.NotYetImplemented;
 import org.openqa.selenium.testing.SwitchToTopAfterTest;
 
+import java.time.Duration;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -105,6 +108,48 @@ public class CombinedInputActionsTest extends JUnit4TestBase {
     assertThat(resultElement.getText())
         .describedAs("Should have picked the last three options")
         .isEqualTo("roquefort parmigiano cheddar");
+  }
+
+  @Test
+  @Ignore(IE)
+  @Ignore(LEGACY_FIREFOX_XPI)
+  @NotYetImplemented(SAFARI)
+  public void testPenAndKeyboardCombination() {
+    driver.get(pages.formSelectionPage);
+
+    List<WebElement> options = driver.findElements(By.tagName("option"));
+
+    PointerInput defaultPen = new PointerInput(PointerInput.Kind.PEN, "default pen");
+    Sequence actionListPen = new Sequence(defaultPen, 0)
+      .addAction(defaultPen.createPointerMove(Duration.ZERO, PointerInput.Origin.fromElement(options.get(1)), 0, 0))
+      .addAction(defaultPen.createPointerDown(0))
+      .addAction(defaultPen.createPointerUp(0))
+      .addAction(new Pause(defaultPen, Duration.ZERO))
+      .addAction(defaultPen.createPointerMove(Duration.ZERO, PointerInput.Origin.fromElement(options.get(3)), 0, 0))
+      .addAction(defaultPen.createPointerDown(0))
+      .addAction(defaultPen.createPointerUp(0))
+      .addAction(new Pause(defaultPen, Duration.ZERO));
+
+    KeyInput defaultKeyboard = new KeyInput("default keyboard");
+    Sequence actionListKeyboard = new Sequence(defaultKeyboard, 0)
+      .addAction(new Pause(defaultPen, Duration.ZERO))
+      .addAction(new Pause(defaultPen, Duration.ZERO))
+      .addAction(new Pause(defaultPen, Duration.ZERO))
+      .addAction(defaultKeyboard.createKeyDown(Keys.SHIFT.getCodePoint()))
+      .addAction(new Pause(defaultPen, Duration.ZERO))
+      .addAction(new Pause(defaultPen, Duration.ZERO))
+      .addAction(new Pause(defaultPen, Duration.ZERO))
+      .addAction(defaultKeyboard.createKeyUp(Keys.SHIFT.getCodePoint()));
+
+    ((RemoteWebDriver) driver).perform(Arrays.asList(actionListKeyboard, actionListPen));
+
+    WebElement showButton = driver.findElement(By.name("showselected"));
+    showButton.click();
+
+    WebElement resultElement = driver.findElement(By.id("result"));
+    assertThat(resultElement.getText())
+      .describedAs("Should have picked the last three options")
+      .isEqualTo("roquefort parmigiano cheddar");
   }
 
   @Test
