@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Licensed to the Software Freedom Conservancy (SFC) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -15,13 +17,30 @@
 # specific language governing permissions and limitations
 # under the License.
 
-import pytest
+module Selenium
+  module WebDriver
+    module Firefox
+      # @api private
+      module Util
+        module_function
 
-from selenium.webdriver import Firefox
+        def app_data_path
+          case Platform.os
+          when :windows
+            "#{ENV['APPDATA']}\\Mozilla\\Firefox"
+          when :macosx
+            "#{Platform.home}/Library/Application Support/Firefox"
+          when :unix, :linux
+            "#{Platform.home}/.mozilla/firefox"
+          else
+            raise "Unknown os: #{Platform.os}"
+          end
+        end
 
-
-@pytest.fixture
-def driver():
-    driver = Firefox()
-    yield driver
-    driver.quit()
+        def stringified?(str)
+          str =~ /^".*"$/
+        end
+      end # Util
+    end # Firefox
+  end # WebDriver
+end # Selenium

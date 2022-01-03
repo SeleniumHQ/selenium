@@ -27,6 +27,7 @@ module Selenium
           get_cast_sinks: [:get, 'session/:session_id/goog/cast/get_sinks'],
           set_cast_sink_to_use: [:post, 'session/:session_id/goog/cast/set_sink_to_use'],
           start_cast_tab_mirroring: [:post, 'session/:session_id/goog/cast/start_tab_mirroring'],
+          start_cast_desktop_mirroring: [:post, 'session/:session_id/goog/cast/start_desktop_mirroring'],
           get_cast_issue_message: [:get, 'session/:session_id/goog/cast/get_issue_message'],
           stop_casting: [:post, 'session/:session_id/goog/cast/stop_casting'],
           get_network_conditions: [:get, 'session/:session_id/chromium/network_conditions'],
@@ -60,6 +61,10 @@ module Selenium
 
         def start_cast_tab_mirroring(name)
           execute :start_cast_tab_mirroring, {}, {sinkName: name}
+        end
+
+        def start_cast_desktop_mirroring(name)
+          execute :start_cast_desktop_mirroring, {}, {sinkName: name}
         end
 
         def stop_casting(name)

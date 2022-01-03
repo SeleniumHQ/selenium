@@ -15,13 +15,25 @@
 # specific language governing permissions and limitations
 # under the License.
 
-import pytest
+import os
 
-from selenium.webdriver import Firefox
+from selenium.common.exceptions import WebDriverException
 
 
-@pytest.fixture
-def driver():
-    driver = Firefox()
-    yield driver
-    driver.quit()
+def test_install_addon(driver):
+    extension = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
+                             '../../../../third_party/firebug/favourite_colour-1.1-an+fx.xpi')
+
+    id = driver.install_addon(extension)
+    assert id == 'favourite-colour-examples@mozilla.org'
+
+
+def test_uninstall_addon(driver):
+    extension = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
+                             '../../../../third_party/firebug/favourite_colour-1.1-an+fx.xpi')
+
+    id = driver.install_addon(extension)
+    try:
+        driver.uninstall_addon(id)
+    except WebDriverException as exc:
+        assert False, exc

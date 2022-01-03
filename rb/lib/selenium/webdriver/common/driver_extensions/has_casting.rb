@@ -53,6 +53,16 @@ module Selenium
         end
 
         #
+        # Starts a tab mirroring session on a specific receiver target.
+        #
+        # @param [String] name the sink to use as the target
+        #
+
+        def start_cast_desktop_mirroring(name)
+          @bridge.start_cast_desktop_mirroring(name)
+        end
+
+        #
         # Gets error messages when there is any issue in a Cast session.
         #
         # @return [String] the error message

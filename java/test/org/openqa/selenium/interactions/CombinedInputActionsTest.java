@@ -43,11 +43,14 @@ import org.openqa.selenium.Platform;
 import org.openqa.selenium.Point;
 import org.openqa.selenium.WaitingConditions;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.NotYetImplemented;
 import org.openqa.selenium.testing.SwitchToTopAfterTest;
 
+import java.time.Duration;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -110,6 +113,59 @@ public class CombinedInputActionsTest extends JUnit4TestBase {
   @Test
   @Ignore(IE)
   @Ignore(LEGACY_FIREFOX_XPI)
+  @NotYetImplemented(SAFARI)
+  public void testMultipleInputs() {
+    driver.get(pages.formSelectionPage);
+
+    List<WebElement> options = driver.findElements(By.tagName("option"));
+
+    PointerInput defaultPen = new PointerInput(PointerInput.Kind.PEN, "default pen");
+    Sequence actionListPen = new Sequence(defaultPen, 0)
+      .addAction(defaultPen.createPointerMove(Duration.ZERO, PointerInput.Origin.fromElement(options.get(1)), 0, 0))
+      .addAction(defaultPen.createPointerDown(0))
+      .addAction(defaultPen.createPointerUp(0))
+      .addAction(new Pause(defaultPen, Duration.ZERO))
+      .addAction(new Pause(defaultPen, Duration.ZERO))
+      .addAction(new Pause(defaultPen, Duration.ZERO))
+      .addAction(new Pause(defaultPen, Duration.ZERO))
+      .addAction(new Pause(defaultPen, Duration.ZERO));
+
+    PointerInput defaultMouse = new PointerInput(PointerInput.Kind.MOUSE, "default mouse");
+    Sequence actionListMouse = new Sequence(defaultMouse, 0)
+      .addAction(new Pause(defaultPen, Duration.ZERO))
+      .addAction(new Pause(defaultPen, Duration.ZERO))
+      .addAction(new Pause(defaultPen, Duration.ZERO))
+      .addAction(new Pause(defaultMouse, Duration.ZERO))
+      .addAction(defaultMouse.createPointerMove(Duration.ZERO, PointerInput.Origin.fromElement(options.get(3)), 0, 0))
+      .addAction(defaultMouse.createPointerDown(0))
+      .addAction(defaultMouse.createPointerUp(0))
+      .addAction(new Pause(defaultMouse, Duration.ZERO));
+
+    KeyInput defaultKeyboard = new KeyInput("default keyboard");
+    Sequence actionListKeyboard = new Sequence(defaultKeyboard, 0)
+      .addAction(new Pause(defaultPen, Duration.ZERO))
+      .addAction(new Pause(defaultPen, Duration.ZERO))
+      .addAction(new Pause(defaultPen, Duration.ZERO))
+      .addAction(defaultKeyboard.createKeyDown(Keys.SHIFT.getCodePoint()))
+      .addAction(new Pause(defaultPen, Duration.ZERO))
+      .addAction(new Pause(defaultPen, Duration.ZERO))
+      .addAction(new Pause(defaultPen, Duration.ZERO))
+      .addAction(defaultKeyboard.createKeyUp(Keys.SHIFT.getCodePoint()));
+
+    ((RemoteWebDriver) driver).perform(Arrays.asList(actionListKeyboard, actionListPen, actionListMouse));
+
+    WebElement showButton = driver.findElement(By.name("showselected"));
+    showButton.click();
+
+    WebElement resultElement = driver.findElement(By.id("result"));
+    assertThat(resultElement.getText())
+      .describedAs("Should have picked the last three options")
+      .isEqualTo("roquefort parmigiano cheddar");
+  }
+
+  @Test
+  @Ignore(IE)
+  @Ignore(LEGACY_FIREFOX_XPI)
   @Ignore(value = FIREFOX, travis = true)
   public void testControlClickingOnMultiSelectionList() {
     assumeFalse("FIXME: macs don't have CONTROL key",
@@ -140,9 +196,8 @@ public class CombinedInputActionsTest extends JUnit4TestBase {
   @Ignore(IE)
   @Ignore(value = FIREFOX, travis = true)
   public void testControlClickingOnCustomMultiSelectionList() {
-    assumeFalse("FIXME: macs don't have CONTROL key",
-                getEffectivePlatform(driver).is(Platform.MAC));
     driver.get(pages.selectableItemsPage);
+    Keys key = getEffectivePlatform(driver).is(Platform.MAC) ? Keys.COMMAND : Keys.CONTROL;
 
     WebElement reportingElement = driver.findElement(By.id("infodiv"));
 
@@ -151,11 +206,11 @@ public class CombinedInputActionsTest extends JUnit4TestBase {
     List<WebElement> listItems = driver.findElements(By.tagName("li"));
 
     Actions actions = new Actions(driver);
-    Action selectThreeItems = actions.keyDown(Keys.CONTROL)
+    Action selectThreeItems = actions.keyDown(key)
         .click(listItems.get(1))
         .click(listItems.get(3))
         .click(listItems.get(5))
-        .keyUp(Keys.CONTROL)
+        .keyUp(key)
         .build();
 
     selectThreeItems.perform();
@@ -166,6 +221,66 @@ public class CombinedInputActionsTest extends JUnit4TestBase {
     actions = new Actions(driver);
     actions.click(listItems.get(6)).build().perform();
     assertThat(reportingElement.getText()).isEqualTo("#item7");
+  }
+
+  @Test
+  @Ignore(IE)
+  @Ignore(value = FIREFOX, travis = true)
+  public void testControlClickingWithMultiplePointers() {
+    driver.get(pages.selectableItemsPage);
+
+    Keys key = getEffectivePlatform(driver).is(Platform.MAC) ? Keys.COMMAND : Keys.CONTROL;
+    WebElement reportingElement = driver.findElement(By.id("infodiv"));
+
+    assertThat(reportingElement.getText()).isEqualTo("no info");
+
+    List<WebElement> listItems = driver.findElements(By.tagName("li"));
+
+    PointerInput defaultPen = new PointerInput(PointerInput.Kind.PEN, "default pen");
+    Sequence actionListPen = new Sequence(defaultPen, 0)
+      .addAction(new Pause(defaultPen, Duration.ZERO))
+      .addAction(defaultPen.createPointerMove(Duration.ZERO, PointerInput.Origin.fromElement(listItems.get(1)), 0, 0))
+      .addAction(defaultPen.createPointerDown(0))
+      .addAction(defaultPen.createPointerUp(0))
+      .addAction(new Pause(defaultPen, Duration.ZERO))
+      .addAction(new Pause(defaultPen, Duration.ZERO))
+      .addAction(new Pause(defaultPen, Duration.ZERO))
+      .addAction(defaultPen.createPointerMove(Duration.ZERO, PointerInput.Origin.fromElement(listItems.get(3)), 0, 0))
+      .addAction(defaultPen.createPointerDown(0))
+      .addAction(defaultPen.createPointerUp(0))
+      .addAction(new Pause(defaultPen, Duration.ZERO));
+
+    PointerInput defaultMouse = new PointerInput(PointerInput.Kind.MOUSE, "default mouse");
+    Sequence actionListMouse = new Sequence(defaultMouse, 0)
+      .addAction(new Pause(defaultMouse, Duration.ZERO))
+      .addAction(new Pause(defaultMouse, Duration.ZERO))
+      .addAction(new Pause(defaultMouse, Duration.ZERO))
+      .addAction(new Pause(defaultMouse, Duration.ZERO))
+      .addAction(defaultMouse.createPointerMove(Duration.ZERO, PointerInput.Origin.fromElement(listItems.get(5)), 0, 0))
+      .addAction(defaultMouse.createPointerDown(0))
+      .addAction(defaultMouse.createPointerUp(0))
+      .addAction(new Pause(defaultMouse, Duration.ZERO))
+      .addAction(new Pause(defaultMouse, Duration.ZERO))
+      .addAction(new Pause(defaultMouse, Duration.ZERO))
+      .addAction(new Pause(defaultMouse, Duration.ZERO));
+
+    KeyInput defaultKeyboard = new KeyInput("default keyboard");
+    Sequence actionListKeyboard = new Sequence(defaultKeyboard, 0)
+      .addAction(defaultKeyboard.createKeyDown(key.getCodePoint()))
+      .addAction(new Pause(defaultKeyboard, Duration.ZERO))
+      .addAction(new Pause(defaultKeyboard, Duration.ZERO))
+      .addAction(new Pause(defaultKeyboard, Duration.ZERO))
+      .addAction(new Pause(defaultKeyboard, Duration.ZERO))
+      .addAction(new Pause(defaultKeyboard, Duration.ZERO))
+      .addAction(new Pause(defaultKeyboard, Duration.ZERO))
+      .addAction(new Pause(defaultKeyboard, Duration.ZERO))
+      .addAction(new Pause(defaultKeyboard, Duration.ZERO))
+      .addAction(new Pause(defaultKeyboard, Duration.ZERO))
+      .addAction(defaultKeyboard.createKeyUp(key.getCodePoint()));
+
+    ((RemoteWebDriver) driver).perform(Arrays.asList(actionListKeyboard, actionListPen, actionListMouse));
+
+    assertThat(reportingElement.getText()).isEqualTo("#item2 #item4 #item6");
   }
 
   private void navigateToClicksPageAndClickLink() {

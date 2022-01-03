@@ -44,11 +44,35 @@ class ShadowRoot:
         )
 
     def find_element(self, by: By = By.ID, value: str = None):
+        if by == By.ID:
+            by = By.CSS_SELECTOR
+            value = '[id="%s"]' % value
+        elif by == By.TAG_NAME:
+            by = By.CSS_SELECTOR
+        elif by == By.CLASS_NAME:
+            by = By.CSS_SELECTOR
+            value = ".%s" % value
+        elif by == By.NAME:
+            by = By.CSS_SELECTOR
+            value = '[name="%s"]' % value
+
         return self._execute(
             Command.FIND_ELEMENT_FROM_SHADOW_ROOT, {"using": by, "value": value}
         )["value"]
 
     def find_elements(self, by: By = By.ID, value: str = None):
+        if by == By.ID:
+            by = By.CSS_SELECTOR
+            value = '[id="%s"]' % value
+        elif by == By.TAG_NAME:
+            by = By.CSS_SELECTOR
+        elif by == By.CLASS_NAME:
+            by = By.CSS_SELECTOR
+            value = ".%s" % value
+        elif by == By.NAME:
+            by = By.CSS_SELECTOR
+            value = '[name="%s"]' % value
+
         return self._execute(
             Command.FIND_ELEMENTS_FROM_SHADOW_ROOT, {"using": by, "value": value}
         )["value"]

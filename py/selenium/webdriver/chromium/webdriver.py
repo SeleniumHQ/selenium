@@ -199,6 +199,15 @@ class ChromiumDriver(RemoteWebDriver):
         """
         return self.execute('setSinkToUse', {'sinkName': sink_name})
 
+    def start_desktop_mirroring(self, sink_name: str) -> str:
+        """
+        Starts a desktop mirroring session on a specific receiver target.
+
+        :Args:
+         - sink_name: Name of the sink to use as the target.
+        """
+        return self.execute('startDesktopMirroring', {'sinkName': sink_name})
+
     def start_tab_mirroring(self, sink_name: str) -> str:
         """
         Starts a tab mirroring session on a specific receiver target.

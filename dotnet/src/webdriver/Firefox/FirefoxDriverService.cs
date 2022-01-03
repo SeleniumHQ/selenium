@@ -159,6 +159,10 @@ namespace OpenQA.Selenium.Firefox
                 {
                     argsBuilder.Append(" --connect-existing");
                 }
+                else
+                {
+                    argsBuilder.Append(string.Format(CultureInfo.InvariantCulture, " --websocket-port {0}", PortUtilities.FindFreePort()));
+                }
 
                 if (this.browserCommunicationPort > 0)
                 {
@@ -194,8 +198,6 @@ namespace OpenQA.Selenium.Firefox
                 {
                     argsBuilder.Append(" --jsdebugger");
                 }
-
-                argsBuilder.Append(string.Format(CultureInfo.InvariantCulture, " --websocket-port {0}", PortUtilities.FindFreePort()));
 
                 return argsBuilder.ToString().Trim();
             }

@@ -25,9 +25,9 @@ Webdriver.common
    selenium.webdriver.common.by
    selenium.webdriver.common.desired_capabilities
    selenium.webdriver.common.keys
+   selenium.webdriver.common.log
    selenium.webdriver.common.print_page_options
    selenium.webdriver.common.proxy
-   selenium.webdriver.common.touch_actions
    selenium.webdriver.common.utils
    selenium.webdriver.common.service
    selenium.webdriver.common.html5.application_cache
@@ -121,6 +121,7 @@ Webdriver.remote
    selenium.webdriver.remote.errorhandler
    selenium.webdriver.remote.mobile
    selenium.webdriver.remote.remote_connection
+   selenium.webdriver.remote.shadowroot
    selenium.webdriver.remote.utils
    selenium.webdriver.remote.webdriver
    selenium.webdriver.remote.webelement

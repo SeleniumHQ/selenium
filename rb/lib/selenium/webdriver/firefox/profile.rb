@@ -96,7 +96,7 @@ module Selenium
             raise TypeError, "expected one of #{VALID_PREFERENCE_TYPES.inspect}, got #{value.inspect}:#{value.class}"
           end
 
-          if value.is_a?(String) && stringified?(value)
+          if value.is_a?(String) && Util.stringified?(value)
             raise ArgumentError, "preference values must be plain strings: #{key.inspect} => #{value.inspect}"
           end
 
@@ -220,10 +220,6 @@ module Selenium
               file.puts %{user_pref("#{key}", #{value.to_json});}
             end
           end
-        end
-
-        def stringified?(str)
-          /^".*"$/.match?(str)
         end
       end # Profile
     end # Firefox
