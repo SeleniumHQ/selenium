@@ -56,6 +56,7 @@ java_library(
         "//java/src/org/openqa/selenium/remote/http",
         "//java/test/org/openqa/selenium/build",
         artifact("com.google.guava:guava"),
+        artifact("net.jodah:failsafe"),
         artifact("org.assertj:assertj-core"),
     ],
 )

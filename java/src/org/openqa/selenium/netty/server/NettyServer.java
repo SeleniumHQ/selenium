@@ -166,7 +166,7 @@ public class NettyServer implements Server<NettyServer> {
       if (e instanceof BindException) {
         String errorMessage = String.format(
           "Could not bind to address or port is already in use. Host %s, Port %s", host, port);
-        throw new UncheckedIOException(new IOException(errorMessage, e));
+        throw new ServerBindException(errorMessage, (BindException) e);
       }
       throw e;
     }
