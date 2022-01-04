@@ -25,19 +25,14 @@ const io = require('../io')
 const { Browser } = require('../')
 const { Context } = require('../firefox')
 const { Pages, suite } = require('../lib/test')
+const { locate } = require('../lib/test/resources')
 
-const WEBEXTENSION_EXTENSION_XPI = path.join(
-  __dirname,
-  '../lib/test/data/firefox/webextension.xpi'
-)
-const WEBEXTENSION_EXTENSION_ZIP = path.join(
-  __dirname,
-  '../lib/test/data/firefox/webextension.zip'
-)
-const WEBEXTENSION_EXTENSION_DIR = path.join(
-  __dirname,
-  '../lib/test/data/firefox/webextension'
-)
+const WEBEXTENSION_EXTENSION_XPI = locate(
+  'common/extensions/webextensions-selenium-example.xpi')
+const WEBEXTENSION_EXTENSION_ZIP = locate(
+  'common/extensions/webextensions-selenium-example.zip')
+const WEBEXTENSION_EXTENSION_DIR = locate(
+  'common/extensions/webextensions-selenium-example')
 
 const WEBEXTENSION_EXTENSION_ID =
   'webextensions-selenium-example@example.com.xpi'

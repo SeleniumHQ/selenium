@@ -1,0 +1,10 @@
+filegroup(
+    name = "extensions",
+    srcs = glob([
+        "*",
+        "**/*",
+    ]),
+    visibility = [
+        "//javascript/node/selenium-webdriver:__pkg__",
+    ],
+)
