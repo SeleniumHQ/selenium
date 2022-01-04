@@ -17,7 +17,7 @@
 
 from selenium.webdriver.chromium.options import ChromiumOptions
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
-from typing import Optional, NoReturn
+from typing import Optional
 
 
 class Options(ChromiumOptions):
@@ -30,5 +30,5 @@ class Options(ChromiumOptions):
                       android_package: str = "com.android.chrome",
                       android_activity: Optional[str] = None,
                       device_serial: Optional[str] = None
-                      ) -> NoReturn:
+                      ) -> None:
         super().enable_mobile(android_package, android_activity, device_serial)
