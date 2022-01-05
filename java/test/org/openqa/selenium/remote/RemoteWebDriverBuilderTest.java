@@ -38,6 +38,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URL;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -302,6 +303,19 @@ public class RemoteWebDriverBuilderTest {
       .build();
 
     assertThat(seen.get()).isEqualTo(uri);
+  }
+
+  @Test
+  public void shouldThrowErrorIfCustomConfigIfSetForLocalDriver() {
+    ClientConfig config = ClientConfig.defaultConfig()
+      .connectionTimeout(Duration.ofMinutes(5))
+      .readTimeout(Duration.ofMinutes(4));
+
+    RemoteWebDriverBuilder builder = RemoteWebDriver.builder()
+      .oneOf(new FirefoxOptions())
+      .config(config);
+
+    assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(builder::build);
   }
 
   @Test
