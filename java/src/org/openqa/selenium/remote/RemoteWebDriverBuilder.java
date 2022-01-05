@@ -126,6 +126,7 @@ public class RemoteWebDriverBuilder {
   private URI remoteHost = null;
   private DriverService driverService;
   private Credentials credentials = null;
+  private boolean useCustomConfig;
   private Augmenter augmenter = new Augmenter();
 
   RemoteWebDriverBuilder() {
@@ -273,6 +274,7 @@ public class RemoteWebDriverBuilder {
     }
 
     this.clientConfig = config;
+    this.useCustomConfig = true;
 
     return this;
   }
@@ -336,7 +338,13 @@ public class RemoteWebDriverBuilder {
       throw new SessionNotCreatedException("Unable to find matching driver for capabilities");
     }
 
-    return first.get().get();
+    WebDriver localDriver = first.get().get();
+
+    if (localDriver != null && this.useCustomConfig) {
+      throw new IllegalArgumentException("Custom client config is not supported in local drivers");
+    }
+
+    return localDriver;
   }
 
   /**
