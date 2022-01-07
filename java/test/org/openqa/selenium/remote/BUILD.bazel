@@ -21,6 +21,7 @@ java_test_suite(
         "no-sandbox",
     ],
     deps = [
+        "//java:auto-service",
         "//java/src/org/openqa/selenium:core",
         "//java/src/org/openqa/selenium/chrome",
         "//java/src/org/openqa/selenium/firefox",

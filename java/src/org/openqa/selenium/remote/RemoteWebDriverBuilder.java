@@ -341,7 +341,7 @@ public class RemoteWebDriverBuilder {
     WebDriver localDriver = first.get().get();
 
     if (localDriver != null && this.useCustomConfig) {
-      throw new IllegalArgumentException("Custom client config is not supported in local drivers");
+      throw new IllegalArgumentException("ClientConfig instances do not work for Local Drivers");
     }
 
     return localDriver;
