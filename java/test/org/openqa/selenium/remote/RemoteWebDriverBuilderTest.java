@@ -51,6 +51,7 @@ import static java.util.Collections.emptyMap;
 import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.openqa.selenium.json.Json.JSON_UTF_8;
 import static org.openqa.selenium.json.Json.MAP_TYPE;
 import static org.openqa.selenium.remote.Browser.CHROME;
@@ -312,10 +313,13 @@ public class RemoteWebDriverBuilderTest {
       .readTimeout(Duration.ofMinutes(4));
 
     RemoteWebDriverBuilder builder = RemoteWebDriver.builder()
-      .oneOf(new FirefoxOptions())
-      .config(config);
+      .oneOf(new ImmutableCapabilities("browser", "selenium-test"))
+      .config(config)
+      .connectingWith(clientConfig -> req -> CANNED_SESSION_RESPONSE);
 
-    assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(builder::build);
+    assertThatIllegalArgumentException()
+      .isThrownBy(builder::build)
+      .withMessage("ClientConfig instances do not work for Local Drivers");
   }
 
   @Test
