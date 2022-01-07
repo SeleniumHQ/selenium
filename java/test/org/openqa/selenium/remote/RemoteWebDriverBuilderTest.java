@@ -313,10 +313,13 @@ public class RemoteWebDriverBuilderTest {
       .readTimeout(Duration.ofMinutes(4));
 
     RemoteWebDriverBuilder builder = RemoteWebDriver.builder()
-      .oneOf(new ChromeOptions())
-      .config(config);
+      .oneOf(new ImmutableCapabilities("browser", "selenium-test"))
+      .config(config)
+      .connectingWith(clientConfig -> req -> CANNED_SESSION_RESPONSE);
 
-    assertThatIllegalArgumentException().isThrownBy(builder::build);
+    assertThatIllegalArgumentException()
+      .isThrownBy(builder::build)
+      .withMessage("Custom client config is not supported in local drivers");
   }
 
   @Test
