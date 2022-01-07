@@ -319,7 +319,7 @@ public class RemoteWebDriverBuilderTest {
 
     assertThatIllegalArgumentException()
       .isThrownBy(builder::build)
-      .withMessage("Custom client config is not supported in local drivers");
+      .withMessage("ClientConfig instances do not work for Local Drivers");
   }
 
   @Test
