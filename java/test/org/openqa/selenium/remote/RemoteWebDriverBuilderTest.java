@@ -313,7 +313,7 @@ public class RemoteWebDriverBuilderTest {
       .readTimeout(Duration.ofMinutes(4));
 
     RemoteWebDriverBuilder builder = RemoteWebDriver.builder()
-      .oneOf(new FirefoxOptions())
+      .oneOf(new ChromeOptions())
       .config(config);
 
     assertThatIllegalArgumentException().isThrownBy(builder::build);
