@@ -51,6 +51,7 @@ import static java.util.Collections.emptyMap;
 import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.openqa.selenium.json.Json.JSON_UTF_8;
 import static org.openqa.selenium.json.Json.MAP_TYPE;
 import static org.openqa.selenium.remote.Browser.CHROME;
@@ -315,7 +316,7 @@ public class RemoteWebDriverBuilderTest {
       .oneOf(new FirefoxOptions())
       .config(config);
 
-    assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(builder::build);
+    assertThatIllegalArgumentException().isThrownBy(builder::build);
   }
 
   @Test
