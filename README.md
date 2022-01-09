@@ -177,8 +177,15 @@ bazel test //py:test-<browsername>
 ```
 
 If you add `--//common:pin_browsers` it will download the browsers and drivers for you to use.
+  
+To install locally run:
+  
+```sh
+bazel build //py:selenium-wheel
+pip install bazel-bin/py/selenium-*.whl
+```
 
-To publish run
+To publish run:
 
 ```sh
 bazel build //py:selenium-wheel
