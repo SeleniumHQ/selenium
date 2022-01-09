@@ -286,12 +286,19 @@ class Environment {
     const builder = new Builder()
     builder.disableEnvironmentOverrides()
 
+
+
     const realBuild = builder.build
     builder.build = function () {
       builder.forBrowser(browser.name, browser.version, browser.platform);
 
+
       if (browser.capabilities) {
-        builder.getCapabilities().merge(browser.capabilities)
+        builder.getCapabilities().merge(browser.capabilities);
+      }
+
+      if(browser.name === 'firefox') {
+        builder.setCapability('moz:debuggerAddress', true);
       }
 
       if (typeof urlOrServer === 'string') {
