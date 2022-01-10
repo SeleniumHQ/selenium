@@ -9,6 +9,7 @@ import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverInfo;
+import org.openqa.selenium.devtools.HasDevTools;
 
 import java.util.Optional;
 
@@ -32,7 +33,7 @@ public class FakeWebDriverInfo implements WebDriverInfo {
 
   @Override
   public boolean isSupportingCdp() {
-    return false;
+    return true;
   }
 
   @Override
@@ -52,7 +53,7 @@ public class FakeWebDriverInfo implements WebDriverInfo {
     return Optional.of(new FakeWebDriver());
   }
 
-  private static class FakeWebDriver extends RemoteWebDriver {
+  public static class FakeWebDriver extends RemoteWebDriver {
 
     @Override
     protected void startSession(Capabilities capabilities) {
