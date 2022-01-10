@@ -42,7 +42,6 @@ public class RetryRequest implements Filter {
       .handleIf(failure -> failure.getCause() instanceof ConnectException)
       .withBackoff(1, 4, ChronoUnit.SECONDS)
       .withMaxRetries(3)
-      .withMaxDuration(Duration.ofSeconds(10))
       .onRetry(e -> LOG.log(
         getDebugLogLevel(),
         "Connection failure #{0}. Retrying.",
@@ -54,7 +53,6 @@ public class RetryRequest implements Filter {
       .handle(TimeoutException.class)
       .withBackoff(1, 4, ChronoUnit.SECONDS)
       .withMaxRetries(3)
-      .withMaxDuration(Duration.ofSeconds(10))
       .onRetry(e -> LOG.log(
         getDebugLogLevel(),
         "Read timeout #{0}. Retrying.",
@@ -68,7 +66,6 @@ public class RetryRequest implements Filter {
       .handleResultIf(response -> response.getStatus() == HTTP_UNAVAILABLE)
       .withBackoff(1, 2, ChronoUnit.SECONDS)
       .withMaxRetries(2)
-      .withMaxDuration(Duration.ofSeconds(3))
       .onRetry(e -> LOG.log(
         getDebugLogLevel(),
         "Failure due to server error #{0}. Retrying.",
