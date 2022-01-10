@@ -59,8 +59,8 @@ import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
 public class PenPointerTest extends JUnit4TestBase {
   private final PointerInput defaultPen = new PointerInput(PointerInput.Kind.PEN, "default pen");
 
-  private Actions getBuilder(WebDriver driver) {
-    return new Actions(driver);
+  private Actions setDefaultPen(WebDriver driver) {
+    return new Actions(driver).setActivePointer(PointerInput.Kind.PEN, "default pen");
   }
 
   private void performDragAndDropWithPen() {
@@ -72,16 +72,28 @@ public class PenPointerTest extends JUnit4TestBase {
     WebElement dragInto = driver.findElement(By.id("sortable1"));
     WebElement leftItem = driver.findElement(By.id("leftitem-4"));
 
-    Sequence actionList = new Sequence(defaultPen, 0)
-      .addAction(defaultPen.createPointerMove(Duration.ZERO, PointerInput.Origin.fromElement(toDrag), 0, 0))
-      .addAction(defaultPen.createPointerDown(0))
-      .addAction(defaultPen.createPointerMove(Duration.ZERO, PointerInput.Origin.fromElement(leftItem), 0, 0))
-      .addAction(defaultPen.createPointerMove(Duration.ZERO, PointerInput.Origin.fromElement(dragInto), 0, 0))
-      .addAction(defaultPen.createPointerUp(0));
+    Action moveToSpecificItem = setDefaultPen(driver)
+      .moveToElement(leftItem).build();
 
-    assertThat(dragReporter.getText()).isEqualTo("Nothing happened.");
+    Action holdItem = setDefaultPen(driver)
+      .clickAndHold(toDrag).build();
 
-    ((RemoteWebDriver) driver).perform(Collections.singletonList(actionList));
+    Action moveToOtherList = setDefaultPen(driver)
+      .moveToElement(dragInto).build();
+
+    Action drop = setDefaultPen(driver)
+      .release(dragInto).build();
+
+    try {
+      holdItem.perform();
+      moveToSpecificItem.perform();
+      moveToOtherList.perform();
+
+      String text = dragReporter.getText();
+      assertThat(text).matches("Nothing happened. (?:DragOut *)+");
+    } finally {
+      drop.perform();
+    }
   }
 
   @Test
@@ -133,12 +145,13 @@ public class PenPointerTest extends JUnit4TestBase {
     WebElement toDrag = driver.findElement(By.id("draggable"));
     WebElement dropInto = driver.findElement(By.id("droppable"));
 
-    Sequence actionList = new Sequence(defaultPen, 0)
-      .addAction(defaultPen.createPointerMove(Duration.ZERO, PointerInput.Origin.fromElement(toDrag), 0, 0))
-      .addAction(defaultPen.createPointerDown(0))
-      .addAction(defaultPen.createPointerMove(Duration.ZERO, PointerInput.Origin.fromElement(dropInto), 0, 0))
-      .addAction(defaultPen.createPointerUp(0));
-    ((RemoteWebDriver) driver).perform(Collections.singletonList(actionList));
+    Action holdDrag = setDefaultPen(driver).clickAndHold(toDrag).build();
+    Action move = setDefaultPen(driver).moveToElement(dropInto).build();
+    Action drop = setDefaultPen(driver).release(dropInto).build();
+
+    holdDrag.perform();
+    move.perform();
+    drop.perform();
 
     String text = dropInto.findElement(By.tagName("p")).getText();
 
@@ -151,11 +164,8 @@ public class PenPointerTest extends JUnit4TestBase {
 
     WebElement toClick = driver.findElement(By.id("clickField"));
 
-    Sequence actionList = new Sequence(defaultPen, 0)
-      .addAction(defaultPen.createPointerMove(Duration.ZERO, PointerInput.Origin.fromElement(toClick), 0, 0))
-      .addAction(defaultPen.createPointerDown(0))
-      .addAction(defaultPen.createPointerUp(0));
-    ((RemoteWebDriver) driver).perform(Collections.singletonList(actionList));
+    Action contextClick = setDefaultPen(driver).moveToElement(toClick).click().build();
+    contextClick.perform();
 
     wait.until(elementValueToEqual(toClick, "Clicked"));
 
@@ -166,23 +176,15 @@ public class PenPointerTest extends JUnit4TestBase {
   public void testCannotMoveToANullLocator() {
     driver.get(pages.javascriptPage);
     assertThatExceptionOfType(IllegalArgumentException.class)
-        .isThrownBy(() -> {
-          Sequence actionList = new Sequence(defaultPen, 0)
-            .addAction(defaultPen.createPointerMove(Duration.ZERO, PointerInput.Origin.fromElement(null), 0, 0));
-          ((RemoteWebDriver) driver).perform(Collections.singletonList(actionList));
-        });
+      .isThrownBy(() -> setDefaultPen(driver).moveToElement(null).build());
   }
 
   @Test
-  @Ignore(value = HTMLUNIT, reason="test should enable JavaScript")
+  @Ignore(value = HTMLUNIT, reason = "test should enable JavaScript")
   @NotYetImplemented(SAFARI)
   public void testMovingPastViewPortThrowsException() {
     assertThatExceptionOfType(MoveTargetOutOfBoundsException.class)
-      .isThrownBy(() -> {
-        Sequence actionList = new Sequence(defaultPen, 0)
-          .addAction(defaultPen.createPointerMove(Duration.ZERO, PointerInput.Origin.viewport(), -1000, -1000));
-        ((RemoteWebDriver) driver).perform(Collections.singletonList(actionList));
-      });
+      .isThrownBy(() -> setDefaultPen(driver).moveByOffset(-1000, -1000).perform());
   }
 
   @SwitchToTopAfterTest
@@ -192,11 +194,7 @@ public class PenPointerTest extends JUnit4TestBase {
     driver.switchTo().frame("source");
     WebElement element = driver.findElement(By.id("otherframe"));
 
-    Sequence actionList = new Sequence(defaultPen, 0)
-      .addAction(defaultPen.createPointerMove(Duration.ZERO, PointerInput.Origin.fromElement(element), 0, 0))
-      .addAction(defaultPen.createPointerDown(0))
-      .addAction(defaultPen.createPointerUp(0));
-    ((RemoteWebDriver) driver).perform(Collections.singletonList(actionList));
+    setDefaultPen(driver).moveToElement(element).click().perform();
 
     driver.switchTo().defaultContent()
         .switchTo().frame("target");
@@ -215,9 +213,7 @@ public class PenPointerTest extends JUnit4TestBase {
 
     ((JavascriptExecutor) driver).executeScript("arguments[0].style.background = 'green'", element);
 
-    Sequence actionList = new Sequence(defaultPen, 0)
-      .addAction(defaultPen.createPointerMove(Duration.ZERO, PointerInput.Origin.fromElement(element), 0, 0));
-    ((RemoteWebDriver) driver).perform(Collections.singletonList(actionList));
+    setDefaultPen(driver).moveToElement(element).build().perform();
 
     wait.until(not(elementTextToEqual(item, "")));
     assertThat(item.getText()).isEqualTo("Item 1");
@@ -230,10 +226,7 @@ public class PenPointerTest extends JUnit4TestBase {
     // Move to a different element to make sure the pen is not over the
     // element with id 'item1' (from a previous test).
 
-    WebElement dynamo = driver.findElement(By.id("dynamo"));
-    Sequence actionList = new Sequence(defaultPen, 0)
-      .addAction(defaultPen.createPointerMove(Duration.ZERO, PointerInput.Origin.fromElement(dynamo), 0, 0));
-    ((RemoteWebDriver) driver).perform(Collections.singletonList(actionList));
+    setDefaultPen(driver).moveToElement(driver.findElement(By.id("dynamo"))).build().perform();
 
     WebElement element = driver.findElement(By.id("menu1"));
 
@@ -242,9 +235,7 @@ public class PenPointerTest extends JUnit4TestBase {
 
     ((JavascriptExecutor) driver).executeScript("arguments[0].style.background = 'green'", element);
 
-    Sequence actionList2 = new Sequence(defaultPen, 0)
-      .addAction(defaultPen.createPointerMove(Duration.ZERO, PointerInput.Origin.fromElement(element), 0, 0));
-    ((RemoteWebDriver) driver).perform(Collections.singletonList(actionList2));
+    setDefaultPen(driver).moveToElement(element).build().perform();
 
     // Intentionally wait to make sure hover persists.
     Thread.sleep(2000);
@@ -261,17 +252,13 @@ public class PenPointerTest extends JUnit4TestBase {
 
     WebElement trackerDiv = driver.findElement(By.id("mousetracker"));
 
-    Sequence actionList = new Sequence(defaultPen, 0)
-      .addAction(defaultPen.createPointerMove(Duration.ZERO, PointerInput.Origin.fromElement(trackerDiv), 0, 0));
-    ((RemoteWebDriver) driver).perform(Collections.singletonList(actionList));
+    setDefaultPen(driver).moveToElement(trackerDiv).perform();
 
     WebElement reporter = driver.findElement(By.id("status"));
 
     wait.until(fuzzyMatchingOfCoordinates(reporter, 50, 200));
 
-    Sequence actionList2 = new Sequence(defaultPen, 0)
-      .addAction(defaultPen.createPointerMove(Duration.ZERO, PointerInput.Origin.pointer(), 10, 20));
-    ((RemoteWebDriver) driver).perform(Collections.singletonList(actionList2));
+    setDefaultPen(driver).moveByOffset(10, 20).build().perform();
 
     wait.until(fuzzyMatchingOfCoordinates(reporter, 60, 220));
   }
@@ -283,9 +270,7 @@ public class PenPointerTest extends JUnit4TestBase {
 
     WebElement trackerDiv = driver.findElement(By.id("mousetracker"));
     Dimension size = trackerDiv.getSize();
-    Sequence actionList = new Sequence(defaultPen, 0)
-      .addAction(defaultPen.createPointerMove(Duration.ZERO, PointerInput.Origin.fromElement(trackerDiv), 95 - size.getWidth() / 2, 195 - size.getHeight() / 2));
-    ((RemoteWebDriver) driver).perform(Collections.singletonList(actionList));
+    setDefaultPen(driver).moveToElement(trackerDiv, 95 - size.getWidth() / 2, 195 - size.getHeight() / 2).perform();
 
     WebElement reporter = driver.findElement(By.id("status"));
 
@@ -298,9 +283,7 @@ public class PenPointerTest extends JUnit4TestBase {
     driver.get(pages.mouseTrackerPage);
 
     WebElement trackerDiv = driver.findElement(By.id("mousetracker"));
-    Sequence actionList = new Sequence(defaultPen, 0)
-      .addAction(defaultPen.createPointerMove(Duration.ZERO, PointerInput.Origin.fromElement(trackerDiv), 0, 0));
-    ((RemoteWebDriver) driver).perform(Collections.singletonList(actionList));
+    setDefaultPen(driver).moveToElement(trackerDiv, 0, 0).perform();
 
     WebElement reporter = driver.findElement(By.id("status"));
 
@@ -316,9 +299,7 @@ public class PenPointerTest extends JUnit4TestBase {
     try {
       driver.get(pages.mouseTrackerPage);
 
-      Sequence actionList = new Sequence(defaultPen, 0)
-        .addAction(defaultPen.createPointerMove(Duration.ZERO, PointerInput.Origin.pointer(), 50, 100));
-      ((RemoteWebDriver) driver).perform(Collections.singletonList(actionList));
+      setDefaultPen(driver).moveByOffset(50, 100).perform();
 
       WebElement reporter = driver.findElement(By.id("status"));
 
@@ -348,24 +329,17 @@ public class PenPointerTest extends JUnit4TestBase {
     int xOffset = 2 - greenBoxSize.getWidth() / 2;
     int yOffset = 2 - greenBoxSize.getHeight() / 2;
 
-    Sequence actionList = new Sequence(defaultPen, 0)
-      .addAction(defaultPen.createPointerMove(Duration.ZERO, PointerInput.Origin.fromElement(greenbox), xOffset, yOffset));
-    ((RemoteWebDriver) driver).perform(Collections.singletonList(actionList));
+    setDefaultPen(driver).moveToElement(greenbox, xOffset, yOffset).perform();
 
     shortWait.until(attributeToBe(redbox, "background-color", Colors.GREEN.getColorValue().asRgba()));
 
-    Sequence actionList2 = new Sequence(defaultPen, 0)
-      .addAction(defaultPen.createPointerMove(Duration.ZERO, PointerInput.Origin.fromElement(greenbox), xOffset, yOffset))
-      .addAction(defaultPen.createPointerMove(Duration.ZERO, PointerInput.Origin.pointer(), shiftX, shiftY));
-    ((RemoteWebDriver) driver).perform(Collections.singletonList(actionList2));
-
+    setDefaultPen(driver).moveToElement(greenbox, xOffset, yOffset)
+      .moveByOffset(shiftX, shiftY).perform();
     shortWait.until(attributeToBe(redbox, "background-color", Colors.RED.getColorValue().asRgba()));
 
-    Sequence actionList3 = new Sequence(defaultPen, 0)
-      .addAction(defaultPen.createPointerMove(Duration.ZERO, PointerInput.Origin.fromElement(greenbox), xOffset, yOffset))
-      .addAction(defaultPen.createPointerMove(Duration.ZERO, PointerInput.Origin.pointer(), shiftX, shiftY))
-      .addAction(defaultPen.createPointerMove(Duration.ZERO, PointerInput.Origin.pointer(), -shiftX, -shiftY));
-    ((RemoteWebDriver) driver).perform(Collections.singletonList(actionList3));
+    setDefaultPen(driver).moveToElement(greenbox, xOffset, yOffset)
+      .moveByOffset(shiftX, shiftY)
+      .moveByOffset(-shiftX, -shiftY).perform();
 
     shortWait.until(attributeToBe(redbox, "background-color", Colors.GREEN.getColorValue().asRgba()));
   }
@@ -382,25 +356,17 @@ public class PenPointerTest extends JUnit4TestBase {
     Dimension greenSize = greenbox.getSize();
     Dimension redSize = redbox.getSize();
 
-    Sequence actionList = new Sequence(defaultPen, 0)
-      .addAction(defaultPen.createPointerMove(Duration.ZERO, PointerInput.Origin.fromElement(greenbox), 1 - greenSize.getWidth() / 2, 1 - greenSize.getHeight() / 2));
-    ((RemoteWebDriver) driver).perform(Collections.singletonList(actionList));
+    setDefaultPen(driver).moveToElement(greenbox, 1 - greenSize.getWidth() / 2, 1 - greenSize.getHeight() / 2).perform();
 
     assertThat(Color.fromString(redbox.getCssValue("background-color")))
-        .isEqualTo(GREEN.getColorValue());
+      .isEqualTo(GREEN.getColorValue());
 
-    Sequence actionList2 = new Sequence(defaultPen, 0)
-      .addAction(defaultPen.createPointerMove(Duration.ZERO, PointerInput.Origin.fromElement(redbox), 0, 0));
-    ((RemoteWebDriver) driver).perform(Collections.singletonList(actionList2));
-
+    setDefaultPen(driver).moveToElement(redbox).perform();
     assertThat(Color.fromString(redbox.getCssValue("background-color")))
-        .isEqualTo(RED.getColorValue());
+      .isEqualTo(RED.getColorValue());
 
-    getBuilder(driver).moveToElement(redbox, redSize.getWidth() / 1 + 1, redSize.getHeight() / 1 + 1)
-        .perform();
-    Sequence actionList3 = new Sequence(defaultPen, 0)
-      .addAction(defaultPen.createPointerMove(Duration.ZERO, PointerInput.Origin.fromElement(redbox), redSize.getWidth() / 1 + 1, redSize.getHeight() / 1 + 1));
-    ((RemoteWebDriver) driver).perform(Collections.singletonList(actionList3));
+    setDefaultPen(driver).moveToElement(redbox, redSize.getWidth() / 1 + 1, redSize.getHeight() / 1 + 1)
+      .perform();
 
     wait.until(attributeToBe(redbox, "background-color", Colors.GREEN.getColorValue().asRgba()));
   }

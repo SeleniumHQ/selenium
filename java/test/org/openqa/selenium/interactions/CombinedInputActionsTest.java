@@ -43,14 +43,11 @@ import org.openqa.selenium.Platform;
 import org.openqa.selenium.Point;
 import org.openqa.selenium.WaitingConditions;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.NotYetImplemented;
 import org.openqa.selenium.testing.SwitchToTopAfterTest;
 
-import java.time.Duration;
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -119,40 +116,16 @@ public class CombinedInputActionsTest extends JUnit4TestBase {
 
     List<WebElement> options = driver.findElements(By.tagName("option"));
 
-    PointerInput defaultPen = new PointerInput(PointerInput.Kind.PEN, "default pen");
-    Sequence actionListPen = new Sequence(defaultPen, 0)
-      .addAction(defaultPen.createPointerMove(Duration.ZERO, PointerInput.Origin.fromElement(options.get(1)), 0, 0))
-      .addAction(defaultPen.createPointerDown(0))
-      .addAction(defaultPen.createPointerUp(0))
-      .addAction(new Pause(defaultPen, Duration.ZERO))
-      .addAction(new Pause(defaultPen, Duration.ZERO))
-      .addAction(new Pause(defaultPen, Duration.ZERO))
-      .addAction(new Pause(defaultPen, Duration.ZERO))
-      .addAction(new Pause(defaultPen, Duration.ZERO));
+    Actions actions = new Actions(driver);
+    Action selectThreeOptions = actions.setActivePointer(PointerInput.Kind.PEN, "default pen")
+      .keyDown(Keys.SHIFT)
+      .click(options.get(1))
+      .setActivePointer(PointerInput.Kind.MOUSE, "default mouse")
+      .click(options.get(3))
+      .keyUp(Keys.SHIFT)
+      .build();
 
-    PointerInput defaultMouse = new PointerInput(PointerInput.Kind.MOUSE, "default mouse");
-    Sequence actionListMouse = new Sequence(defaultMouse, 0)
-      .addAction(new Pause(defaultPen, Duration.ZERO))
-      .addAction(new Pause(defaultPen, Duration.ZERO))
-      .addAction(new Pause(defaultPen, Duration.ZERO))
-      .addAction(new Pause(defaultMouse, Duration.ZERO))
-      .addAction(defaultMouse.createPointerMove(Duration.ZERO, PointerInput.Origin.fromElement(options.get(3)), 0, 0))
-      .addAction(defaultMouse.createPointerDown(0))
-      .addAction(defaultMouse.createPointerUp(0))
-      .addAction(new Pause(defaultMouse, Duration.ZERO));
-
-    KeyInput defaultKeyboard = new KeyInput("default keyboard");
-    Sequence actionListKeyboard = new Sequence(defaultKeyboard, 0)
-      .addAction(new Pause(defaultPen, Duration.ZERO))
-      .addAction(new Pause(defaultPen, Duration.ZERO))
-      .addAction(new Pause(defaultPen, Duration.ZERO))
-      .addAction(defaultKeyboard.createKeyDown(Keys.SHIFT.getCodePoint()))
-      .addAction(new Pause(defaultPen, Duration.ZERO))
-      .addAction(new Pause(defaultPen, Duration.ZERO))
-      .addAction(new Pause(defaultPen, Duration.ZERO))
-      .addAction(defaultKeyboard.createKeyUp(Keys.SHIFT.getCodePoint()));
-
-    ((RemoteWebDriver) driver).perform(Arrays.asList(actionListKeyboard, actionListPen, actionListMouse));
+    selectThreeOptions.perform();
 
     WebElement showButton = driver.findElement(By.name("showselected"));
     showButton.click();
@@ -236,49 +209,19 @@ public class CombinedInputActionsTest extends JUnit4TestBase {
 
     List<WebElement> listItems = driver.findElements(By.tagName("li"));
 
-    PointerInput defaultPen = new PointerInput(PointerInput.Kind.PEN, "default pen");
-    Sequence actionListPen = new Sequence(defaultPen, 0)
-      .addAction(new Pause(defaultPen, Duration.ZERO))
-      .addAction(defaultPen.createPointerMove(Duration.ZERO, PointerInput.Origin.fromElement(listItems.get(1)), 0, 0))
-      .addAction(defaultPen.createPointerDown(0))
-      .addAction(defaultPen.createPointerUp(0))
-      .addAction(new Pause(defaultPen, Duration.ZERO))
-      .addAction(new Pause(defaultPen, Duration.ZERO))
-      .addAction(new Pause(defaultPen, Duration.ZERO))
-      .addAction(defaultPen.createPointerMove(Duration.ZERO, PointerInput.Origin.fromElement(listItems.get(3)), 0, 0))
-      .addAction(defaultPen.createPointerDown(0))
-      .addAction(defaultPen.createPointerUp(0))
-      .addAction(new Pause(defaultPen, Duration.ZERO));
+    Actions actions = new Actions(driver);
+    Action selectThreeItems = actions
+      .keyDown(key)
+      .setActivePointer(PointerInput.Kind.PEN, "default pen")
+      .click(listItems.get(1))
+      .setActivePointer(PointerInput.Kind.MOUSE, "default mouse")
+      .click(listItems.get(3))
+      .setActivePointer(PointerInput.Kind.PEN, "default pen")
+      .click(listItems.get(5))
+      .keyUp(key)
+      .build();
 
-    PointerInput defaultMouse = new PointerInput(PointerInput.Kind.MOUSE, "default mouse");
-    Sequence actionListMouse = new Sequence(defaultMouse, 0)
-      .addAction(new Pause(defaultMouse, Duration.ZERO))
-      .addAction(new Pause(defaultMouse, Duration.ZERO))
-      .addAction(new Pause(defaultMouse, Duration.ZERO))
-      .addAction(new Pause(defaultMouse, Duration.ZERO))
-      .addAction(defaultMouse.createPointerMove(Duration.ZERO, PointerInput.Origin.fromElement(listItems.get(5)), 0, 0))
-      .addAction(defaultMouse.createPointerDown(0))
-      .addAction(defaultMouse.createPointerUp(0))
-      .addAction(new Pause(defaultMouse, Duration.ZERO))
-      .addAction(new Pause(defaultMouse, Duration.ZERO))
-      .addAction(new Pause(defaultMouse, Duration.ZERO))
-      .addAction(new Pause(defaultMouse, Duration.ZERO));
-
-    KeyInput defaultKeyboard = new KeyInput("default keyboard");
-    Sequence actionListKeyboard = new Sequence(defaultKeyboard, 0)
-      .addAction(defaultKeyboard.createKeyDown(key.getCodePoint()))
-      .addAction(new Pause(defaultKeyboard, Duration.ZERO))
-      .addAction(new Pause(defaultKeyboard, Duration.ZERO))
-      .addAction(new Pause(defaultKeyboard, Duration.ZERO))
-      .addAction(new Pause(defaultKeyboard, Duration.ZERO))
-      .addAction(new Pause(defaultKeyboard, Duration.ZERO))
-      .addAction(new Pause(defaultKeyboard, Duration.ZERO))
-      .addAction(new Pause(defaultKeyboard, Duration.ZERO))
-      .addAction(new Pause(defaultKeyboard, Duration.ZERO))
-      .addAction(new Pause(defaultKeyboard, Duration.ZERO))
-      .addAction(defaultKeyboard.createKeyUp(key.getCodePoint()));
-
-    ((RemoteWebDriver) driver).perform(Arrays.asList(actionListKeyboard, actionListPen, actionListMouse));
+    selectThreeItems.perform();
 
     assertThat(reportingElement.getText()).isEqualTo("#item2 #item4 #item6");
   }
