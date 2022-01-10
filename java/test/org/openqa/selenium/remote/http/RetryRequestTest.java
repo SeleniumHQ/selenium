@@ -20,7 +20,6 @@ package org.openqa.selenium.remote.http;
 import com.google.common.collect.ImmutableMap;
 import org.junit.Before;
 import org.junit.Test;
-import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.environment.webserver.AppServer;
 import org.openqa.selenium.environment.webserver.NettyAppServer;
 import org.openqa.selenium.remote.http.netty.NettyClient;
@@ -33,7 +32,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import static java.net.HttpURLConnection.HTTP_INTERNAL_ERROR;
 import static java.net.HttpURLConnection.HTTP_OK;
-import static java.net.HttpURLConnection.HTTP_UNAVAILABLE;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.openqa.selenium.remote.http.Contents.asJson;
 import static org.openqa.selenium.remote.http.HttpMethod.GET;
@@ -47,7 +45,7 @@ public class RetryRequestTest {
   public void setUp() throws MalformedURLException {
     ClientConfig config = ClientConfig.defaultConfig()
       .baseUrl(URI.create("http://localhost:2345").toURL())
-      .readTimeout(Duration.ofMillis(1000));
+      .readTimeout(Duration.ofSeconds(1));
     client = new NettyClient.Factory().createClient(config);
   }
 
@@ -77,7 +75,11 @@ public class RetryRequestTest {
     AtomicInteger count = new AtomicInteger(0);
     AppServer server = new NettyAppServer(req -> {
       count.incrementAndGet();
-      return new HttpResponse().setStatus(500);
+      if (count.get() <= 2) {
+        return new HttpResponse().setStatus(500);
+      } else {
+        return new HttpResponse();
+      }
     });
     server.start();
 
@@ -87,7 +89,7 @@ public class RetryRequestTest {
       String.format(REQUEST_PATH, uri.getHost(), uri.getPort()));
     HttpResponse response = client.execute(request);
 
-    assertThat(response).extracting(HttpResponse::getStatus).isEqualTo(HTTP_INTERNAL_ERROR);
+    assertThat(response).extracting(HttpResponse::getStatus).isEqualTo(HTTP_OK);
     assertThat(count.get()).isEqualTo(3);
 
     server.stop();
@@ -121,9 +123,13 @@ public class RetryRequestTest {
     AtomicInteger count = new AtomicInteger(0);
     AppServer server = new NettyAppServer(req -> {
       count.incrementAndGet();
-      return new HttpResponse()
-        .setStatus(503)
-        .setContent(asJson(ImmutableMap.of("error", "server down")));
+      if (count.get() <= 2) {
+        return new HttpResponse()
+          .setStatus(503)
+          .setContent(asJson(ImmutableMap.of("error", "server down")));
+      } else {
+        return new HttpResponse();
+      }
     });
     server.start();
 
@@ -132,8 +138,7 @@ public class RetryRequestTest {
       GET,
       String.format(REQUEST_PATH, uri.getHost(), uri.getPort()));
     HttpResponse response = client.execute(request);
-
-    assertThat(response).extracting(HttpResponse::getStatus).isEqualTo(HTTP_UNAVAILABLE);
+    assertThat(response).extracting(HttpResponse::getStatus).isEqualTo(HTTP_OK);
     assertThat(count.get()).isEqualTo(3);
 
     server.stop();
@@ -144,10 +149,12 @@ public class RetryRequestTest {
     AtomicInteger count = new AtomicInteger(0);
     AppServer server = new NettyAppServer(req -> {
       count.incrementAndGet();
-      try {
-        Thread.sleep(2000);
-      } catch (InterruptedException e) {
-        e.printStackTrace();
+      if (count.get() <= 3) {
+        try {
+          Thread.sleep(2000);
+        } catch (InterruptedException e) {
+          e.printStackTrace();
+        }
       }
       return new HttpResponse();
     });
@@ -158,13 +165,11 @@ public class RetryRequestTest {
       GET,
       String.format(REQUEST_PATH, uri.getHost(), uri.getPort()));
 
-    try {
-      client.execute(request);
-    } catch (TimeoutException e) {
-      assertThat(count.get()).isEqualTo(4);
-    } finally {
-      server.stop();
-    }
+    HttpResponse response = client.execute(request);
+    assertThat(response).extracting(HttpResponse::getStatus).isEqualTo(HTTP_OK);
+    assertThat(count.get()).isEqualTo(4);
+
+    server.stop();
   }
 
   @Test(expected = UncheckedIOException.class)
