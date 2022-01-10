@@ -17,10 +17,6 @@
 
 package org.openqa.selenium.chrome;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.fail;
-import static org.assertj.core.api.Assumptions.assumeThat;
-
 import org.junit.Test;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
@@ -30,6 +26,8 @@ import org.openqa.selenium.chromium.HasCasting;
 import org.openqa.selenium.chromium.HasCdp;
 import org.openqa.selenium.chromium.HasNetworkConditions;
 import org.openqa.selenium.chromium.HasPermissions;
+import org.openqa.selenium.remote.RemoteWebDriverBuilder;
+import org.openqa.selenium.remote.http.ClientConfig;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.drivers.WebDriverBuilder;
@@ -38,10 +36,41 @@ import java.time.Duration;
 import java.util.List;
 import java.util.Map;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.assertj.core.api.Assertions.fail;
+import static org.assertj.core.api.Assumptions.assumeThat;
+
 public class ChromeDriverFunctionalTest extends JUnit4TestBase {
 
   private final String CLIPBOARD_READ = "clipboard-read";
   private final String CLIPBOARD_WRITE = "clipboard-write";
+
+  @Test
+  public void builderGeneratesDefaultChromeOptions() {
+    WebDriver driver = ChromeDriver.builder().build();
+    driver.quit();
+  }
+
+  @Test
+  public void builderOverridesDefaultChromeOptions() {
+    ChromeOptions options = new ChromeOptions();
+    options.setImplicitWaitTimeout(Duration.ofMillis(1));
+    WebDriver driver = ChromeDriver.builder().oneOf(options).build();
+    assertThat(driver.manage().timeouts().getImplicitWaitTimeout()).isEqualTo(Duration.ofMillis(1));
+
+    driver.quit();
+  }
+
+  @Test
+  public void builderWithClientConfigthrowsException() {
+    ClientConfig clientConfig = ClientConfig.defaultConfig().readTimeout(Duration.ofMinutes(1));
+    RemoteWebDriverBuilder builder = ChromeDriver.builder().config(clientConfig);
+
+    assertThatExceptionOfType(IllegalArgumentException.class)
+      .isThrownBy(builder::build)
+      .withMessage("ClientConfig instances do not work for Local Drivers");
+  }
 
   @Test
   public void canSetPermission() {

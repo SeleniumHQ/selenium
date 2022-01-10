@@ -38,6 +38,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URL;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -50,6 +51,7 @@ import static java.util.Collections.emptyMap;
 import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.openqa.selenium.json.Json.JSON_UTF_8;
 import static org.openqa.selenium.json.Json.MAP_TYPE;
 import static org.openqa.selenium.remote.Browser.CHROME;
@@ -302,6 +304,22 @@ public class RemoteWebDriverBuilderTest {
       .build();
 
     assertThat(seen.get()).isEqualTo(uri);
+  }
+
+  @Test
+  public void shouldThrowErrorIfCustomConfigIfSetForLocalDriver() {
+    ClientConfig config = ClientConfig.defaultConfig()
+      .connectionTimeout(Duration.ofMinutes(5))
+      .readTimeout(Duration.ofMinutes(4));
+
+    RemoteWebDriverBuilder builder = RemoteWebDriver.builder()
+      .oneOf(new ImmutableCapabilities("browser", "selenium-test"))
+      .config(config)
+      .connectingWith(clientConfig -> req -> CANNED_SESSION_RESPONSE);
+
+    assertThatIllegalArgumentException()
+      .isThrownBy(builder::build)
+      .withMessage("ClientConfig instances do not work for Local Drivers");
   }
 
   @Test
