@@ -24,11 +24,10 @@ const path = require('path')
 const edge = require('../../edge')
 const symbols = require('../../lib/symbols')
 const test = require('../../lib/test')
+const { locate } = require('../../lib/test/resources')
 
-const WEBEXTENSION_CRX = path.join(
-  __dirname,
-  '../../lib/test/data/chrome/webextension.crx'
-)
+const WEBEXTENSION_CRX = locate(
+  'common/extensions/webextensions-selenium-example.crx')
 
 describe('edge.Options', function () {
   describe('addArguments', function () {
