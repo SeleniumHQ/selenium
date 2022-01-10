@@ -72,6 +72,7 @@ jasmine_node_test(
     data = TEST_DATA + [
         "tools/init_jasmine.js",
         "//common/src/web",
+        "//common/extensions",
         "@npm//express",
         "@npm//multer",
         "@npm//serve-index",
