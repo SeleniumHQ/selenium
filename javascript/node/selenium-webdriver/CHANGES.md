@@ -1,3 +1,18 @@
+## v4.1.1
+
+* Add support for installing unpacked addons at runtime in Firefox webdriver (#10216)
+* Enables firefox debugger for devtools test
+* Sets correct browserName when set via SELENIUM_BROWSER fixes #10218
+* add support for Chrome v97
+* Adds new desktop cast command for Chromium #10190 (#10191)
+* ignore errors arising from trying to use file detector fixes #6343
+* Added RelativeBy class on the main api (#10148)
+* Code cleanup and minor improvements
+* Implements 'getDomAttribute' to get attribute value as defined by w3c spec and removes legacy command usages
+* Remove legacy JWP support and w3c<boolean> switch (#10095)
+* update map/filter clean up to common format (#10094)
+
+
 ## v4.1.0
 
 * add support for handling Shadow DOM elements
