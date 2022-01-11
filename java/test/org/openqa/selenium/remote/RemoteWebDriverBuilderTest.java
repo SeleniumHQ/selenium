@@ -23,6 +23,7 @@ import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.SessionNotCreatedException;
+import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.firefox.FirefoxOptions;
 import org.openqa.selenium.ie.InternetExplorerOptions;
@@ -351,10 +352,36 @@ public class RemoteWebDriverBuilderTest {
 
   @Test
   public void shouldUseWebDriverInfoToFindAMatchingDriverImplementationForRequestedCapabilitiesIfRemoteUrlNotSet() {
+    WebDriver driver = RemoteWebDriver.builder()
+      .oneOf(new ImmutableCapabilities("browser", "selenium-test"))
+      .connectingWith(config -> req -> CANNED_SESSION_RESPONSE)
+      .build();
+
+    assertThat(driver).isInstanceOf(FakeWebDriverInfo.FakeWebDriver.class);
   }
 
   @Test
   public void shouldAugmentDriverIfPossible() {
+    HttpResponse response = new HttpResponse()
+      .setContent(Contents.asJson(ImmutableMap.of(
+        "value", ImmutableMap.of(
+          "sessionId", SESSION_ID,
+          "capabilities", new ImmutableCapabilities("firefox", "caps")))));
+
+    Augmenter augmenter = new Augmenter().addDriverAugmentation("firefox",
+                                                                AugmenterTest.HasMagicNumbers.class,
+                                                                (c, exe) -> () -> 1);
+    WebDriver driver = RemoteWebDriver.builder()
+      .oneOf(new FirefoxOptions())
+      .augmentUsing(augmenter)
+      .address("http://localhost:34576")
+      .connectingWith(config -> req -> response)
+      .build();
+
+    int number = ((AugmenterTest.HasMagicNumbers)driver).getMagicNumber();
+
+    assertThat(driver).isInstanceOf(AugmenterTest.HasMagicNumbers.class);
+    assertThat(number).isEqualTo(1);
   }
 
   @SuppressWarnings("unchecked")
