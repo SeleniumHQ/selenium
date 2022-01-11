@@ -1,26 +1,57 @@
-# Java
-./go javadocs || exit
+#!/usr/bin/env bash
 
-# Python
-tox -c py/tox.ini -e docs || exit
+API_DOCS_LANGUAGE=$1
 
-# Ruby
-cd rb
-bundle install || exit
-cd ..
-bazel run //rb:docs || exit
-
-git checkout rb/Gemfile.lock
+case ${API_DOCS_LANGUAGE} in
+java)
+  ./go javadocs || exit
+  ;;
+py)
+  tox -c py/tox.ini -e docs || exit
+  ;;
+rb)
+  cd rb || exit
+  bundle install || exit
+  cd ..
+  bazel run //rb:docs || exit
+  git checkout rb/Gemfile.lock || true
+  ;;
+*)
+  echo "Selenium API docs generation"
+  echo "ERROR: unknown parameter \"$API_DOCS_LANGUAGE\""
+  echo "Usage:"
+  echo ""
+  echo "./generate_api_docs.sh java|rb|py"
+  echo -e "\t Example:"
+  echo -e "\t Genrating API docs for the Ruby bindings"
+  echo -e "\t ./generate_api_docs.sh rb"
+  exit 1
+  ;;
+esac
 
 # switch to gh-pages and copy the files
 git checkout gh-pages || exit
 # make sure that our local version is up to date.
 git pull || exit
-rm -rf docs/api/java docs/api/py docs/api/rb
 
-mv build/javadoc docs/api/java
-mv build/docs/api/py docs/api/py
-mv bazel-bin/rb/docs.runfiles/selenium/docs/api/rb docs/api/rb
+case ${API_DOCS_LANGUAGE} in
+java)
+  rm -rf docs/api/java
+  mv build/javadoc docs/api/java
+  ;;
+py)
+  rm -rf docs/api/py
+  mv build/docs/api/py docs/api/py
+  ;;
+rb)
+  rm -rf docs/api/rb
+  mv bazel-bin/rb/docs.runfiles/selenium/docs/api/rb docs/api/rb
+  ;;
+*)
+  echo "ERROR: unknown parameter \"$API_DOCS_LANGUAGE\""
+  exit 1
+  ;;
+esac
 
 git add -A docs/api
 
@@ -31,9 +62,9 @@ if [ -z $changes ]; then
 fi
 
 case "$changes" in
-  Y|y) echo "";;
-  N|n) exit;;
-  *) exit;;
+Y | y) echo "" ;;
+N | n) exit ;;
+*) exit ;;
 esac
 
 echo "Committing changes"
