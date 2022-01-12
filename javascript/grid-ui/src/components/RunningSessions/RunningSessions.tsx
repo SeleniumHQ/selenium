@@ -449,12 +449,12 @@ class RunningSessions extends React.Component<RunningSessionsProps, RunningSessi
                                 (row.vnc as string).length > 0 &&
                                 this.displayLiveView(row.id as string)
                               }
-                              {row.id}
+                              {row.name}
                               {
                                 (row.vnc as string).length > 0 &&
                                 <Dialog
                                   onClose={this.handleLiveViewClose}
-                                  aria-labelledby='live-view-dialog'
+                                  aria-labelledby="live-view-dialog"
                                   open={rowLiveViewOpen === row.id}
                                   fullWidth={true}
                                   maxWidth={'xl'}
@@ -462,15 +462,15 @@ class RunningSessions extends React.Component<RunningSessionsProps, RunningSessi
                                   TransitionComponent={Transition}
                                 >
                                   <DialogTitle id='live-view-dialog'>
-                                    <Typography gutterBottom component='span'
+                                    <Typography gutterBottom component="span"
                                                 className={classes.textPadding}
                                     >
-                                      <Box fontWeight='fontWeightBold'
+                                      <Box fontWeight="fontWeightBold"
                                            mr={1}
-                                           display='inline'>
+                                           display="inline">
                                         Session
                                       </Box>
-                                      {row.name}
+                                      {row.name} - {row.id}
                                     </Typography>
                                     <OsLogo
                                       osName={row.platformName as string}/>
@@ -515,15 +515,15 @@ class RunningSessions extends React.Component<RunningSessionsProps, RunningSessi
                                 maxWidth={'md'}
                               >
                                 <DialogTitle id='session-info-dialog'>
-                                  <Typography gutterBottom component='span'
+                                  <Typography gutterBottom component="span"
                                               className={classes.textPadding}
                                   >
-                                    <Box fontWeight='fontWeightBold'
+                                    <Box fontWeight="fontWeightBold"
                                          mr={1}
-                                         display='inline'>
+                                         display="inline">
                                       Session
                                     </Box>
-                                    {row.name}
+                                    {row.name} - {row.id}
                                   </Typography>
                                   <OsLogo osName={row.platformName as string}/>
                                   <BrowserLogo
