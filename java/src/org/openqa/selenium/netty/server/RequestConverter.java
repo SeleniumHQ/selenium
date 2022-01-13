@@ -17,7 +17,17 @@
 
 package org.openqa.selenium.netty.server;
 
+import static io.netty.handler.codec.http.HttpMethod.HEAD;
+import static org.openqa.selenium.remote.http.Contents.memoize;
+
 import com.google.common.io.ByteStreams;
+
+import org.openqa.selenium.internal.Debug;
+import org.openqa.selenium.remote.http.HttpMethod;
+import org.openqa.selenium.remote.http.HttpRequest;
+import org.openqa.selenium.remote.http.HttpResponse;
+import org.openqa.selenium.remote.tracing.AttributeKey;
+
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufInputStream;
 import io.netty.channel.ChannelHandlerContext;
@@ -31,10 +41,6 @@ import io.netty.handler.codec.http.HttpVersion;
 import io.netty.handler.codec.http.LastHttpContent;
 import io.netty.handler.codec.http.QueryStringDecoder;
 import io.netty.util.ReferenceCountUtil;
-import org.openqa.selenium.remote.http.HttpMethod;
-import org.openqa.selenium.remote.http.HttpRequest;
-import org.openqa.selenium.remote.http.HttpResponse;
-import org.openqa.selenium.remote.tracing.AttributeKey;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -44,9 +50,6 @@ import java.io.UncheckedIOException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.logging.Logger;
-
-import static io.netty.handler.codec.http.HttpMethod.HEAD;
-import static org.openqa.selenium.remote.http.Contents.memoize;
 
 class RequestConverter extends SimpleChannelInboundHandler<HttpObject> {
 
@@ -133,23 +136,32 @@ class RequestConverter extends SimpleChannelInboundHandler<HttpObject> {
       try {
         method = HttpMethod.valueOf(nettyRequest.method().name());
       } catch (IllegalArgumentException e) {
-        ctx.writeAndFlush(new DefaultFullHttpResponse(HttpVersion.HTTP_1_1, HttpResponseStatus.METHOD_NOT_ALLOWED));
+        ctx.writeAndFlush(
+          new DefaultFullHttpResponse(HttpVersion.HTTP_1_1, HttpResponseStatus.METHOD_NOT_ALLOWED));
         return null;
       }
     }
 
-    QueryStringDecoder decoder = new QueryStringDecoder(nettyRequest.uri());
+    // Attempt to decode parameters
+    try {
+      QueryStringDecoder decoder = new QueryStringDecoder(nettyRequest.uri());
 
-    HttpRequest req = new HttpRequest(
-      method,
-      decoder.path());
+      HttpRequest req = new HttpRequest(
+        method,
+        decoder.path());
 
-    decoder.parameters().forEach((key, values) -> values.forEach(value -> req.addQueryParameter(key, value)));
+      decoder.parameters()
+        .forEach((key, values) -> values.forEach(value -> req.addQueryParameter(key, value)));
 
-    nettyRequest.headers().entries().stream()
-      .filter(entry -> entry.getKey() != null)
-      .forEach(entry -> req.addHeader(entry.getKey(), entry.getValue()));
-
-    return req;
+      nettyRequest.headers().entries().stream()
+        .filter(entry -> entry.getKey() != null)
+        .forEach(entry -> req.addHeader(entry.getKey(), entry.getValue()));
+      return req;
+    } catch (Exception e) {
+      ctx.writeAndFlush(
+        new DefaultFullHttpResponse(HttpVersion.HTTP_1_1, HttpResponseStatus.BAD_REQUEST));
+      LOG.log(Debug.getDebugLogLevel(), "Not possible to decode parameters.", e);
+      return null;
+    }
   }
 }
