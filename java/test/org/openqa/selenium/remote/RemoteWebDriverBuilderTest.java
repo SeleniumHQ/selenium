@@ -310,7 +310,6 @@ public class RemoteWebDriverBuilderTest {
   @Test
   public void shouldThrowErrorIfCustomConfigIfSetForLocalDriver() {
     ClientConfig config = ClientConfig.defaultConfig()
-      .connectionTimeout(Duration.ofMinutes(5))
       .readTimeout(Duration.ofMinutes(4));
 
     RemoteWebDriverBuilder builder = RemoteWebDriver.builder()
