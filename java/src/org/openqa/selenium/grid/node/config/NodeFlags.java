@@ -145,9 +145,9 @@ public class NodeFlags implements HasRoles {
               "display-name = \"Firefox Nightly\"\n" +
               "webdriver-executable = \"/usr/local/bin/geckodriver\"\n" +
               "max-sessions = 2\n" +
-              "stereotype = \"{\"browserName\": \"firefox\", \"browserVersion\": \"86\", " +
-              "\"moz:firefoxOptions\": " +
-              "{\"binary\":\"/Applications/Firefox Nightly.app/Contents/MacOS/firefox-bin\"}}\"")
+              "stereotype = \"{\\\"browserName\\\": \\\"firefox\\\", \\\"browserVersion\\\": \\\"86\\\", " +
+              "\\\"moz:firefoxOptions\\\": " +
+              "{\\\"binary\\\":\\\"/Applications/Firefox Nightly.app/Contents/MacOS/firefox-bin\\\"}}\"")
   public List<String> driverConfiguration;
 
   @Parameter(

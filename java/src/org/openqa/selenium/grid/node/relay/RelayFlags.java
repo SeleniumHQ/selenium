@@ -54,8 +54,8 @@ public class RelayFlags implements HasRoles {
     prefixed = true,
     example = "\n" +
               "max-sessions = 2\n" +
-              "stereotype = \"{\"browserName\": \"safari\", \"platformName\": \"iOS\", " +
-              "\"appium:platformVersion\": \"14.5\" }}\"")
+              "stereotype = \"{\\\"browserName\\\": \\\"safari\\\", \\\"platformName\\\": \\\"iOS\\\", " +
+              "\\\"appium:platformVersion\\\": \\\"14.5\\\" }}\"")
   public List<String> driverConfiguration;
 
   @Parameter(
@@ -63,7 +63,7 @@ public class RelayFlags implements HasRoles {
     description = "URL for connecting to the service that supports WebDriver commands, "
                   + "like an Appium server or a cloud service."
   )
-  @ConfigValue(section = RELAY_SECTION, name = "url", example = "http://localhost:4723")
+  @ConfigValue(section = RELAY_SECTION, name = "url", example = "\"http://localhost:4723\"")
   private String serviceUrl;
   @Parameter(
     names = {"--service-host"},
