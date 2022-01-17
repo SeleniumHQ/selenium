@@ -63,8 +63,8 @@ function requireAtom(module, bazelTarget) {
       console.log(ex2)
       throw Error(
         `Failed to import atoms module ${module}. If running in dev mode, you` +
-        ` need to run \`bazel build ${bazelTarget}\` from the project` +
-        `root: ${ex}`
+          ` need to run \`bazel build ${bazelTarget}\` from the project` +
+          `root: ${ex}`
       )
     }
   }
@@ -197,7 +197,6 @@ function toExecuteAtomCommand(command, atom, ...params) {
 
 /** @const {!Map<string, (CommandSpec|CommandTransformer)>} */
 const W3C_COMMAND_MAP = new Map([
-
   // Session management.
   [cmd.Name.NEW_SESSION, post('/session')],
   [cmd.Name.QUIT, del('/session/:sessionId')],
@@ -245,7 +244,6 @@ const W3C_COMMAND_MAP = new Map([
   [cmd.Name.CLEAR_ACTIONS, del('/session/:sessionId/actions')],
   [cmd.Name.PRINT_PAGE, post('/session/:sessionId/print')],
 
-
   // Locating elements.
   [cmd.Name.GET_ACTIVE_ELEMENT, get('/session/:sessionId/element/active')],
   [cmd.Name.FIND_ELEMENT, post('/session/:sessionId/element')],
@@ -266,7 +264,10 @@ const W3C_COMMAND_MAP = new Map([
   ],
   // Element interaction.
   [cmd.Name.GET_ELEMENT_TAG_NAME, get('/session/:sessionId/element/:id/name')],
-  [cmd.Name.GET_DOM_ATTRIBUTE, get('/session/:sessionId/element/:id/attribute/:name')],
+  [
+    cmd.Name.GET_DOM_ATTRIBUTE,
+    get('/session/:sessionId/element/:id/attribute/:name'),
+  ],
   [
     cmd.Name.GET_ELEMENT_ATTRIBUTE,
     (cmd) => {
@@ -363,7 +364,7 @@ class Client {
    * @return {!Promise<Response>} A promise that will be fulfilled with the
    *     server's response.
    */
-  send(httpRequest) { } // eslint-disable-line
+  send(httpRequest) {} // eslint-disable-line
 }
 
 /**
@@ -609,5 +610,5 @@ module.exports = {
   Request: Request,
   Response: Response,
   // Exported for testing.
-  buildPath: buildPath
+  buildPath: buildPath,
 }
