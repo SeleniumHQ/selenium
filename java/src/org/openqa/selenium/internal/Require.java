@@ -40,9 +40,9 @@ public final class Require {
   private static final String MUST_EXIST = "%s must exist: %s";
   private static final String MUST_BE_DIR = "%s must be a directory: %s";
   private static final String MUST_BE_FILE = "%s must be a regular file: %s";
-  private static final String MUST_BE_EQUAL = "%s must be equal to: %s";
+  private static final String MUST_BE_EQUAL = "%s must be equal to `%s`";
   private static final String MUST_BE_NON_NEGATIVE = "%s must be 0 or greater";
-  private static final String MUST_BE_POSITIVE = "%s must greater than 0";
+  private static final String MUST_BE_POSITIVE = "%s must be greater than 0";
 
   private Require() {
     // An utility class
@@ -89,6 +89,26 @@ public final class Require {
     }
     if (arg.isNegative()) {
       throw new IllegalArgumentException(String.format(MUST_BE_NON_NEGATIVE, "Duration"));
+    }
+    return arg;
+  }
+
+  public static Duration positive(String argName, Duration arg) {
+    if (arg == null) {
+      throw new IllegalArgumentException(String.format(MUST_BE_SET, argName));
+    }
+    if (arg.isNegative() || arg.isZero()) {
+      throw new IllegalArgumentException(String.format(MUST_BE_POSITIVE, argName));
+    }
+    return arg;
+  }
+
+  public static Duration positive(Duration arg) {
+    if (arg == null) {
+      throw new IllegalArgumentException(String.format(MUST_BE_SET, "Duration"));
+    }
+    if (arg.isNegative() || arg.isZero()) {
+      throw new IllegalArgumentException(String.format(MUST_BE_POSITIVE, "Duration"));
     }
     return arg;
   }
