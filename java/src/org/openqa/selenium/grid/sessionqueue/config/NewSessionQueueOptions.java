@@ -35,7 +35,7 @@ public class NewSessionQueueOptions {
 
   static final String SESSION_QUEUE_SECTION = "sessionqueue";
   static final int DEFAULT_REQUEST_TIMEOUT = 300;
-  static final int DEFAULT_RETRY_INTERVAL = 5;
+  static final int DEFAULT_RETRY_INTERVAL = 0;
 
   private final Config config;
 
@@ -97,11 +97,11 @@ public class NewSessionQueueOptions {
   }
 
   public Duration getSessionRequestRetryInterval() {
-    // If the user sets 0 or less, we default to 1s.
+    // If the user sets 0 or less, we default to 0s.
     int interval = Math.max(
       config.getInt(SESSION_QUEUE_SECTION, "session-retry-interval")
         .orElse(DEFAULT_RETRY_INTERVAL),
-      1);
+      0);
     return Duration.ofSeconds(interval);
   }
 
