@@ -42,7 +42,6 @@ import java.io.Closeable;
 import java.io.IOException;
 import java.time.Duration;
 import java.time.Instant;
-import java.util.Collections;
 import java.util.Deque;
 import java.util.Iterator;
 import java.util.List;
@@ -113,21 +112,20 @@ public class LocalNewSessionQueue extends NewSessionQueue implements Closeable {
 
     this.slotMatcher = Require.nonNull("Slot matcher", slotMatcher);
     this.bus = Require.nonNull("Event bus", bus);
-    Require.nonNull("Retry period", retryPeriod);
-    if (retryPeriod.isNegative() || retryPeriod.isZero()) {
-      throw new IllegalArgumentException("Retry period must be positive");
-    }
+    Require.nonNegative("Retry period", retryPeriod);
 
-    this.requestTimeout = Require.nonNull("Request timeout", requestTimeout);
-    if (requestTimeout.isNegative() || requestTimeout.isZero()) {
-      throw new IllegalArgumentException("Request timeout must be positive");
-    }
+    this.requestTimeout = Require.positive("Request timeout", requestTimeout);
 
     this.requests = new ConcurrentHashMap<>();
     this.queue = new ConcurrentLinkedDeque<>();
     this.contexts = new ConcurrentHashMap<>();
 
-    service.scheduleAtFixedRate(this::timeoutSessions, retryPeriod.toMillis(), retryPeriod.toMillis(), MILLISECONDS);
+    // if retryPeriod is 0, we will schedule timeout checks every second
+    long period = this.requestTimeout.isZero() ? 1000 : this.requestTimeout.toMillis();
+    service.scheduleAtFixedRate(
+      this::timeoutSessions,
+      retryPeriod.toMillis(),
+      period, MILLISECONDS);
 
     new JMXHelper().register(this);
   }
@@ -421,10 +419,11 @@ public class LocalNewSessionQueue extends NewSessionQueue implements Closeable {
   }
 
   private class Data {
+
     public final Instant endTime;
+    private final CountDownLatch latch = new CountDownLatch(1);
     public Either<SessionNotCreatedException, CreateSessionResponse> result;
     private boolean complete;
-    private final CountDownLatch latch = new CountDownLatch(1);
 
     public Data(Instant enqueued) {
       this.endTime = enqueued.plus(requestTimeout);
