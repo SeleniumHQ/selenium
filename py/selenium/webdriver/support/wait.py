@@ -18,6 +18,7 @@
 import time
 from selenium.common.exceptions import NoSuchElementException, InvalidSelectorException
 from selenium.common.exceptions import TimeoutException
+from selenium.webdriver.common.by import By
 
 POLL_FREQUENCY = 0.5  # How long to sleep in between calls to the method
 IGNORED_EXCEPTIONS = (NoSuchElementException,)  # exceptions ignored during calls to the method
@@ -112,3 +113,59 @@ class WebDriverWait(object):
             if time.time() > end_time:
                 break
         raise TimeoutException(message)
+
+
+
+def until(waiter, function, *args, **kwargs):
+    return waiter.until(function(*args, **kwargs))
+
+def until_not(waiter, function, *args, **kwargs):
+    return waiter.until_not(function(*args, **kwargs))
+
+def id_until(waiter, function, expression, *args, **kwargs):
+    return waiter.until(function((By.ID, expression), *args, **kwargs))
+
+def id_until_not(waiter, function, expression, *args, **kwargs):
+    return waiter.until_not(function((By.ID, expression), *args, **kwargs))
+
+def name_until(waiter, function, expression, *args, **kwargs):
+    return waiter.until(function((By.NAME, expression), *args, **kwargs))
+
+def name_until_not(waiter, function, expression, *args, **kwargs):
+    return waiter.until_not(function((By.NAME, expression), *args, **kwargs))
+
+def class_name_until(waiter, function, expression, *args, **kwargs):
+    return waiter.until(function((By.CLASS_NAME, expression), *args, **kwargs))
+
+def class_name_until_not(waiter, function, expression, *args, **kwargs):
+    return waiter.until_not(function((By.CLASS_NAME, expression), *args, **kwargs))
+
+def tag_name_until(waiter, function, expression, *args, **kwargs):
+    return waiter.until(function((By.TAG_NAME, expression), *args, **kwargs))
+
+def tag_name_until_not(waiter, function, expression, *args, **kwargs):
+    return waiter.until_not(function((By.TAG_NAME, expression), *args, **kwargs))
+
+def css_selector_until(waiter, function, expression, *args, **kwargs):
+    return waiter.until(function((By.CSS_SELECTOR, expression), *args, **kwargs))
+
+def css_selector_until_not(waiter, function, expression, *args, **kwargs):
+    return waiter.until_not(function((By.CSS_SELECTOR, expression), *args, **kwargs))
+
+def link_text_until(waiter, function, expression, *args, **kwargs):
+    return waiter.until(function((By.LINK_TEXT, expression), *args, **kwargs))
+
+def link_text_until_not(waiter, function, expression, *args, **kwargs):
+    return waiter.until_not(function((By.LINK_TEXT, expression), *args, **kwargs))
+
+def partial_link_text_until(waiter, function, expression, *args, **kwargs):
+    return waiter.until(function((By.PARTIAL_LINK_TEXT, expression), *args, **kwargs))
+
+def partial_link_text_until_not(waiter, function, expression, *args, **kwargs):
+    return waiter.until_not(function((By.PARTIAL_LINK_TEXT, expression), *args, **kwargs))
+
+def xpath_until(waiter, function, expression, *args, **kwargs):
+    return waiter.until(function((By.XPATH, expression), *args, **kwargs))
+
+def xpath_until_not(waiter, function, expression, *args, **kwargs):
+    return waiter.until_not(function((By.XPATH, expression), *args, **kwargs))
