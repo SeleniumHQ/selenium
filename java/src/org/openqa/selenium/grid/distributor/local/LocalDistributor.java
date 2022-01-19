@@ -424,7 +424,7 @@ public class LocalDistributor extends Distributor implements Closeable {
       boolean retry = false;
       SessionNotCreatedException lastFailure = new SessionNotCreatedException("Unable to create new session");
       for (Capabilities caps : request.getDesiredCapabilities()) {
-        if (!isSupported(caps)) {
+        if (isNotSupported(caps)) {
           continue;
         }
 
@@ -561,8 +561,8 @@ public class LocalDistributor extends Distributor implements Closeable {
     }
   }
 
-  private boolean isSupported(Capabilities caps) {
-    return getAvailableNodes().stream().anyMatch(node -> node.hasCapability(caps));
+  private boolean isNotSupported(Capabilities caps) {
+    return getAvailableNodes().stream().noneMatch(node -> node.hasCapability(caps));
   }
 
   private boolean reserve(SlotId id) {
@@ -630,7 +630,7 @@ public class LocalDistributor extends Distributor implements Closeable {
     private void checkMatchingSlot(List<SessionRequestCapability> sessionRequests) {
       for(SessionRequestCapability request : sessionRequests) {
         long unmatchableCount = request.getDesiredCapabilities().stream()
-          .filter(caps -> !isSupported(caps))
+          .filter(LocalDistributor.this::isNotSupported)
           .count();
 
         if (unmatchableCount == request.getDesiredCapabilities().size()) {
