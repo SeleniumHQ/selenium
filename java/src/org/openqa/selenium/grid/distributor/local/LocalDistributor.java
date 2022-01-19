@@ -96,6 +96,8 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
@@ -122,6 +124,16 @@ public class LocalDistributor extends Distributor implements Closeable {
   private final GridModel model;
   private final Map<NodeId, Node> nodes;
 
+  private final ScheduledExecutorService sessionService =
+    Executors.newSingleThreadScheduledExecutor(
+      r -> {
+        Thread thread = new Thread(r);
+        thread.setDaemon(true);
+        thread.setName("Local Distributor New Session Queue");
+        return thread;
+      });
+
+
   private final Executor sessionCreatorExecutor = Executors.newFixedThreadPool(
     Runtime.getRuntime().availableProcessors(),
     r -> {
@@ -132,7 +144,6 @@ public class LocalDistributor extends Distributor implements Closeable {
     }
   );
   private final NewSessionQueue sessionQueue;
-  private final Regularly createNewSession;
 
   private final boolean rejectUnsupportedCaps;
 
@@ -172,21 +183,20 @@ public class LocalDistributor extends Distributor implements Closeable {
       }
     }));
 
-    createNewSession = new Regularly(
-      Executors.newSingleThreadScheduledExecutor(
-        r -> {
-          Thread thread = new Thread(r);
-          thread.setName("Local Distributor new session queue");
-          thread.setDaemon(true);
-          return thread;
-        }));
-
     NewSessionRunnable newSessionRunnable = new NewSessionRunnable();
     bus.addListener(NodeDrainComplete.listener(this::remove));
 
     purgeDeadNodes.submit(model::purgeDeadNodes, Duration.ofSeconds(30), Duration.ofSeconds(30));
-    createNewSession
-      .submit(newSessionRunnable, sessionRequestRetryInterval, sessionRequestRetryInterval);
+
+    // if sessionRequestRetryInterval is 0, we will schedule session creation every 10 millis
+    long period = sessionRequestRetryInterval.isZero() ?
+                  10 : sessionRequestRetryInterval.toMillis();
+    sessionService.scheduleAtFixedRate(
+      newSessionRunnable,
+      sessionRequestRetryInterval.toMillis(),
+      period,
+      TimeUnit.MILLISECONDS
+    );
   }
 
   public static Distributor create(Config config) {
@@ -578,7 +588,7 @@ public class LocalDistributor extends Distributor implements Closeable {
     LOG.info("Shutting down Distributor executor service");
     purgeDeadNodes.shutdown();
     hostChecker.shutdown();
-    createNewSession.shutdown();
+    sessionService.shutdown();
   }
 
   private class NewSessionRunnable implements Runnable {
