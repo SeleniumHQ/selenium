@@ -71,6 +71,7 @@ import org.openqa.selenium.grid.sessionmap.SessionMap;
 import org.openqa.selenium.grid.sessionmap.config.SessionMapOptions;
 import org.openqa.selenium.grid.sessionqueue.NewSessionQueue;
 import org.openqa.selenium.grid.sessionqueue.config.NewSessionQueueOptions;
+import org.openqa.selenium.internal.Debug;
 import org.openqa.selenium.internal.Either;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.SessionId;
@@ -436,7 +437,10 @@ public class LocalDistributor extends Distributor implements Closeable {
         // in this next block of code.
         SlotId selectedSlot = reserveSlot(request.getRequestId(), caps);
         if (selectedSlot == null) {
-          LOG.info(String.format("Unable to find slot for request %s. May retry: %s ", request.getRequestId(), caps));
+          LOG.info(
+            String.format("Unable to find a free slot for request %s. %s ",
+                          request.getRequestId(),
+                          caps));
           retry = true;
           continue;
         }
@@ -595,35 +599,37 @@ public class LocalDistributor extends Distributor implements Closeable {
 
     @Override
     public void run() {
-      List<SessionRequestCapability> queueContents = sessionQueue.getQueueContents();
-      if (rejectUnsupportedCaps) {
-        checkMatchingSlot(queueContents);
-      }
-      int initialSize = queueContents.size();
-      boolean retry = initialSize != 0;
-
-      while (retry) {
+      boolean loop = true;
+      while (loop) {
         // We deliberately run this outside of a lock: if we're unsuccessful
         // starting the session, we just put the request back on the queue.
         // This does mean, however, that under high contention, we might end
         // up starving a session request.
         Set<Capabilities> stereotypes =
-            getAvailableNodes().stream()
-                .filter(NodeStatus::hasCapacity)
-                .map(
-                    node ->
-                        node.getSlots().stream()
-                            .map(Slot::getStereotype)
-                            .collect(Collectors.toSet()))
-                .flatMap(Collection::stream)
-                .collect(Collectors.toSet());
+          getAvailableNodes()
+            .stream()
+            .filter(NodeStatus::hasCapacity)
+            .map(
+              node ->
+                node
+                  .getSlots()
+                  .stream()
+                  .map(Slot::getStereotype)
+                  .collect(Collectors.toSet()))
+            .flatMap(Collection::stream)
+            .collect(Collectors.toSet());
 
-        Optional<SessionRequest> maybeRequest = sessionQueue.getNextAvailable(stereotypes);
-        maybeRequest.ifPresent(req -> sessionCreatorExecutor.execute(() -> handleNewSessionRequest(req)));
-
-        int currentSize = sessionQueue.getQueueContents().size();
-        retry = currentSize != 0 && currentSize != initialSize;
-        initialSize = currentSize;
+        if (!stereotypes.isEmpty()) {
+          Optional<SessionRequest> maybeRequest = sessionQueue.getNextAvailable(stereotypes);
+          maybeRequest.ifPresent(
+            req -> sessionCreatorExecutor.execute(() -> handleNewSessionRequest(req)));
+          loop = maybeRequest.isPresent();
+        } else {
+          loop = false;
+        }
+      }
+      if (rejectUnsupportedCaps) {
+        checkMatchingSlot(sessionQueue.getQueueContents());
       }
     }
 
@@ -659,7 +665,8 @@ public class LocalDistributor extends Distributor implements Closeable {
 
         if (response.isLeft() && response.left() instanceof RetrySessionRequestException) {
           try(Span childSpan = span.createSpan("distributor.retry")) {
-            LOG.info("Retrying");
+            LOG.log(Debug.getDebugLogLevel(),
+                    String.format("Retrying %s", sessionRequest.getDesiredCapabilities()));
             boolean retried = sessionQueue.retryAddToQueue(sessionRequest);
 
             attributeMap.put("request.retry_add", EventAttribute.setValue(retried));
