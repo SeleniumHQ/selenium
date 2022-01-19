@@ -17,7 +17,12 @@
 
 package org.openqa.selenium.grid.distributor;
 
+import static org.openqa.selenium.grid.data.Availability.DOWN;
+import static org.openqa.selenium.grid.data.Availability.DRAINING;
+import static org.openqa.selenium.grid.data.Availability.UP;
+
 import com.google.common.collect.ImmutableSet;
+
 import org.openqa.selenium.events.EventBus;
 import org.openqa.selenium.grid.config.Config;
 import org.openqa.selenium.grid.data.Availability;
@@ -48,10 +53,6 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.logging.Logger;
-
-import static org.openqa.selenium.grid.data.Availability.DOWN;
-import static org.openqa.selenium.grid.data.Availability.DRAINING;
-import static org.openqa.selenium.grid.data.Availability.UP;
 
 public class GridModel {
 
@@ -430,9 +431,9 @@ public class GridModel {
         return;
       }
 
-      Session current = maybeSession;
-      if (!RESERVED.equals(current.getId())) {
-        LOG.warning("Grid model and reality have diverged. Slot has session and is not reserved. " + slotId);
+      if (!RESERVED.equals(maybeSession.getId())) {
+        LOG.warning(
+          "Grid model and reality have diverged. Slot has session and is not reserved. " + slotId);
         return;
       }
 
