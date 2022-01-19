@@ -30,8 +30,8 @@ module Selenium
 
         #
         # Initializes the bridge with the given server URL
-        # @param [String, URI] :url url for the remote server
-        # @param [Object] :http_client an HTTP client instance that implements the same protocol as Http::Default
+        # @param [String, URI] url url for the remote server
+        # @param [Object] http_client an HTTP client instance that implements the same protocol as Http::Default
         # @api private
         #
 
