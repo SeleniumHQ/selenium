@@ -21,6 +21,7 @@ import static org.openqa.selenium.grid.config.StandardGridRoles.NODE_ROLE;
 import static org.openqa.selenium.grid.node.config.NodeOptions.DEFAULT_DETECT_DRIVERS;
 import static org.openqa.selenium.grid.node.config.NodeOptions.DEFAULT_HEARTBEAT_PERIOD;
 import static org.openqa.selenium.grid.node.config.NodeOptions.DEFAULT_MAX_SESSIONS;
+import static org.openqa.selenium.grid.node.config.NodeOptions.DEFAULT_NODE_IMPLEMENTATION;
 import static org.openqa.selenium.grid.node.config.NodeOptions.DEFAULT_REGISTER_CYCLE;
 import static org.openqa.selenium.grid.node.config.NodeOptions.DEFAULT_REGISTER_PERIOD;
 import static org.openqa.selenium.grid.node.config.NodeOptions.DEFAULT_SESSION_TIMEOUT;
@@ -42,7 +43,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-@SuppressWarnings("unused")
+@SuppressWarnings({"unused", "FieldMayBeFinal"})
 @AutoService(HasRoles.class)
 public class NodeFlags implements HasRoles {
 
@@ -179,6 +180,14 @@ public class NodeFlags implements HasRoles {
                   "available or not.")
   @ConfigValue(section = NODE_SECTION, name = "vnc-env-var", example = "START_XVFB")
   public String vncEnvVar = DEFAULT_VNC_ENV_VAR;
+
+  @Parameter(
+    names = {"--node-implementation"},
+    description = "Full classname of non-default Node implementation. This is used to manage "
+                  + "a session's lifecycle.")
+  @ConfigValue(section = NODE_SECTION, name = "implementation",
+    example = DEFAULT_NODE_IMPLEMENTATION)
+  private String nodeImplementation = DEFAULT_NODE_IMPLEMENTATION;
 
   @Override
   public Set<Role> getRoles() {
