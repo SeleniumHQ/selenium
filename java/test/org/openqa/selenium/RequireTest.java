@@ -109,31 +109,51 @@ public class RequireTest {
   @Test
   public void canCheckDurationArgument() {
     assertThatExceptionOfType(IllegalArgumentException.class)
-        .isThrownBy(() -> Require.nonNegative((Duration) null))
-        .withMessage("Duration must be set");
+      .isThrownBy(() -> Require.nonNegative((Duration) null))
+      .withMessage("Duration must be set");
     assertThatExceptionOfType(IllegalArgumentException.class)
-        .isThrownBy(() -> Require.nonNegative("Timeout", (Duration) null))
-        .withMessage("Timeout must be set");
+      .isThrownBy(() -> Require.nonNegative("Timeout", (Duration) null))
+      .withMessage("Timeout must be set");
     assertThatExceptionOfType(IllegalArgumentException.class)
-        .isThrownBy(() -> Require.nonNegative(Duration.ofSeconds(-5)))
-        .withMessage("Duration must be set to 0 or more");
+      .isThrownBy(() -> Require.nonNegative(Duration.ofSeconds(-5)))
+      .withMessage("Duration must be 0 or greater");
     assertThatExceptionOfType(IllegalArgumentException.class)
-        .isThrownBy(() -> Require.nonNegative("Timeout", Duration.ofSeconds(-5)))
-        .withMessage("Timeout must be set to 0 or more");
+      .isThrownBy(() -> Require.nonNegative("Timeout", Duration.ofSeconds(-5)))
+      .withMessage("Timeout must be 0 or greater");
+
+    assertThatExceptionOfType(IllegalArgumentException.class)
+      .isThrownBy(() -> Require.positive((Duration) null))
+      .withMessage("Duration must be set");
+    assertThatExceptionOfType(IllegalArgumentException.class)
+      .isThrownBy(() -> Require.positive("Timeout", (Duration) null))
+      .withMessage("Timeout must be set");
+    assertThatExceptionOfType(IllegalArgumentException.class)
+      .isThrownBy(() -> Require.positive(Duration.ofSeconds(0)))
+      .withMessage("Duration must be greater than 0");
+    assertThatExceptionOfType(IllegalArgumentException.class)
+      .isThrownBy(() -> Require.positive("Timeout", Duration.ofSeconds(-5)))
+      .withMessage("Timeout must be greater than 0");
+
     assertThat(Require.nonNegative(Duration.ofSeconds(0))).isEqualTo(Duration.ofSeconds(0));
-    assertThat(Require.nonNegative("Timeout", Duration.ofSeconds(0))).isEqualTo(Duration.ofSeconds(0));
+    assertThat(Require.nonNegative("Timeout", Duration.ofSeconds(0)))
+      .isEqualTo(Duration.ofSeconds(0));
     assertThat(Require.nonNegative(Duration.ofSeconds(5))).isEqualTo(Duration.ofSeconds(5));
-    assertThat(Require.nonNegative("Timeout", Duration.ofSeconds(5))).isEqualTo(Duration.ofSeconds(5));
+    assertThat(Require.nonNegative("Timeout", Duration.ofSeconds(5)))
+      .isEqualTo(Duration.ofSeconds(5));
+
+    assertThat(Require.positive(Duration.ofSeconds(10))).isEqualTo(Duration.ofSeconds(10));
+    assertThat(Require.positive("Timeout", Duration.ofSeconds(10)))
+      .isEqualTo(Duration.ofSeconds(10));
   }
 
   @Test
   public void canCheckIntegerArgument() {
     assertThatExceptionOfType(IllegalArgumentException.class)
-        .isThrownBy(() -> Require.nonNegative("Timeout", (Integer) null))
-        .withMessage("Timeout must be set");
+      .isThrownBy(() -> Require.nonNegative("Timeout", (Integer) null))
+      .withMessage("Timeout must be set");
     assertThatExceptionOfType(IllegalArgumentException.class)
-        .isThrownBy(() -> Require.nonNegative("Timeout", -5))
-        .withMessage("Timeout cannot be less than 0");
+      .isThrownBy(() -> Require.nonNegative("Timeout", -5))
+      .withMessage("Timeout must be 0 or greater");
     assertThat(Require.nonNegative("Timeout", 0)).isEqualTo(0);
     assertThat(Require.nonNegative("Timeout", 5)).isEqualTo(5);
 

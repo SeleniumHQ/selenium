@@ -71,6 +71,7 @@ import org.openqa.selenium.grid.sessionmap.SessionMap;
 import org.openqa.selenium.grid.sessionmap.config.SessionMapOptions;
 import org.openqa.selenium.grid.sessionqueue.NewSessionQueue;
 import org.openqa.selenium.grid.sessionqueue.config.NewSessionQueueOptions;
+import org.openqa.selenium.internal.Debug;
 import org.openqa.selenium.internal.Either;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.SessionId;
@@ -96,6 +97,8 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
@@ -122,6 +125,16 @@ public class LocalDistributor extends Distributor implements Closeable {
   private final GridModel model;
   private final Map<NodeId, Node> nodes;
 
+  private final ScheduledExecutorService sessionService =
+    Executors.newSingleThreadScheduledExecutor(
+      r -> {
+        Thread thread = new Thread(r);
+        thread.setDaemon(true);
+        thread.setName("Local Distributor New Session Queue");
+        return thread;
+      });
+
+
   private final Executor sessionCreatorExecutor = Executors.newFixedThreadPool(
     Runtime.getRuntime().availableProcessors(),
     r -> {
@@ -132,7 +145,6 @@ public class LocalDistributor extends Distributor implements Closeable {
     }
   );
   private final NewSessionQueue sessionQueue;
-  private final Regularly createNewSession;
 
   private final boolean rejectUnsupportedCaps;
 
@@ -172,21 +184,20 @@ public class LocalDistributor extends Distributor implements Closeable {
       }
     }));
 
-    createNewSession = new Regularly(
-      Executors.newSingleThreadScheduledExecutor(
-        r -> {
-          Thread thread = new Thread(r);
-          thread.setName("Local Distributor new session queue");
-          thread.setDaemon(true);
-          return thread;
-        }));
-
     NewSessionRunnable newSessionRunnable = new NewSessionRunnable();
     bus.addListener(NodeDrainComplete.listener(this::remove));
 
     purgeDeadNodes.submit(model::purgeDeadNodes, Duration.ofSeconds(30), Duration.ofSeconds(30));
-    createNewSession
-      .submit(newSessionRunnable, sessionRequestRetryInterval, sessionRequestRetryInterval);
+
+    // if sessionRequestRetryInterval is 0, we will schedule session creation every 10 millis
+    long period = sessionRequestRetryInterval.isZero() ?
+                  10 : sessionRequestRetryInterval.toMillis();
+    sessionService.scheduleAtFixedRate(
+      newSessionRunnable,
+      sessionRequestRetryInterval.toMillis(),
+      period,
+      TimeUnit.MILLISECONDS
+    );
   }
 
   public static Distributor create(Config config) {
@@ -414,7 +425,7 @@ public class LocalDistributor extends Distributor implements Closeable {
       boolean retry = false;
       SessionNotCreatedException lastFailure = new SessionNotCreatedException("Unable to create new session");
       for (Capabilities caps : request.getDesiredCapabilities()) {
-        if (!isSupported(caps)) {
+        if (isNotSupported(caps)) {
           continue;
         }
 
@@ -426,7 +437,10 @@ public class LocalDistributor extends Distributor implements Closeable {
         // in this next block of code.
         SlotId selectedSlot = reserveSlot(request.getRequestId(), caps);
         if (selectedSlot == null) {
-          LOG.info(String.format("Unable to find slot for request %s. May retry: %s ", request.getRequestId(), caps));
+          LOG.info(
+            String.format("Unable to find a free slot for request %s. %s ",
+                          request.getRequestId(),
+                          caps));
           retry = true;
           continue;
         }
@@ -551,8 +565,8 @@ public class LocalDistributor extends Distributor implements Closeable {
     }
   }
 
-  private boolean isSupported(Capabilities caps) {
-    return getAvailableNodes().stream().anyMatch(node -> node.hasCapability(caps));
+  private boolean isNotSupported(Capabilities caps) {
+    return getAvailableNodes().stream().noneMatch(node -> node.hasCapability(caps));
   }
 
   private boolean reserve(SlotId id) {
@@ -578,49 +592,51 @@ public class LocalDistributor extends Distributor implements Closeable {
     LOG.info("Shutting down Distributor executor service");
     purgeDeadNodes.shutdown();
     hostChecker.shutdown();
-    createNewSession.shutdown();
+    sessionService.shutdown();
   }
 
   private class NewSessionRunnable implements Runnable {
 
     @Override
     public void run() {
-      List<SessionRequestCapability> queueContents = sessionQueue.getQueueContents();
-      if (rejectUnsupportedCaps) {
-        checkMatchingSlot(queueContents);
-      }
-      int initialSize = queueContents.size();
-      boolean retry = initialSize != 0;
-
-      while (retry) {
+      boolean loop = true;
+      while (loop) {
         // We deliberately run this outside of a lock: if we're unsuccessful
         // starting the session, we just put the request back on the queue.
         // This does mean, however, that under high contention, we might end
         // up starving a session request.
         Set<Capabilities> stereotypes =
-            getAvailableNodes().stream()
-                .filter(NodeStatus::hasCapacity)
-                .map(
-                    node ->
-                        node.getSlots().stream()
-                            .map(Slot::getStereotype)
-                            .collect(Collectors.toSet()))
-                .flatMap(Collection::stream)
-                .collect(Collectors.toSet());
+          getAvailableNodes()
+            .stream()
+            .filter(NodeStatus::hasCapacity)
+            .map(
+              node ->
+                node
+                  .getSlots()
+                  .stream()
+                  .map(Slot::getStereotype)
+                  .collect(Collectors.toSet()))
+            .flatMap(Collection::stream)
+            .collect(Collectors.toSet());
 
-        Optional<SessionRequest> maybeRequest = sessionQueue.getNextAvailable(stereotypes);
-        maybeRequest.ifPresent(req -> sessionCreatorExecutor.execute(() -> handleNewSessionRequest(req)));
-
-        int currentSize = sessionQueue.getQueueContents().size();
-        retry = currentSize != 0 && currentSize != initialSize;
-        initialSize = currentSize;
+        if (!stereotypes.isEmpty()) {
+          Optional<SessionRequest> maybeRequest = sessionQueue.getNextAvailable(stereotypes);
+          maybeRequest.ifPresent(
+            req -> sessionCreatorExecutor.execute(() -> handleNewSessionRequest(req)));
+          loop = maybeRequest.isPresent();
+        } else {
+          loop = false;
+        }
+      }
+      if (rejectUnsupportedCaps) {
+        checkMatchingSlot(sessionQueue.getQueueContents());
       }
     }
 
     private void checkMatchingSlot(List<SessionRequestCapability> sessionRequests) {
       for(SessionRequestCapability request : sessionRequests) {
         long unmatchableCount = request.getDesiredCapabilities().stream()
-          .filter(caps -> !isSupported(caps))
+          .filter(LocalDistributor.this::isNotSupported)
           .count();
 
         if (unmatchableCount == request.getDesiredCapabilities().size()) {
@@ -649,7 +665,8 @@ public class LocalDistributor extends Distributor implements Closeable {
 
         if (response.isLeft() && response.left() instanceof RetrySessionRequestException) {
           try(Span childSpan = span.createSpan("distributor.retry")) {
-            LOG.info("Retrying");
+            LOG.log(Debug.getDebugLogLevel(),
+                    String.format("Retrying %s", sessionRequest.getDesiredCapabilities()));
             boolean retried = sessionQueue.retryAddToQueue(sessionRequest);
 
             attributeMap.put("request.retry_add", EventAttribute.setValue(retried));
