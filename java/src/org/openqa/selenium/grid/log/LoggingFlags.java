@@ -66,9 +66,9 @@ public class LoggingFlags implements HasRoles {
 
   @Parameter(description = "File to write out logs. "
                            + "Ensure the file path is compatible with the operating system's file path.\n"
-                           + "Windows path example : \\\\path\\to\\file\\gridlog.log OR "
+                           + "# Windows path example : \\\\path\\to\\file\\gridlog.log OR "
                            + "C:\\path\\path\\to\\file\\gridlog.log \n"
-                           + "Linux/Unix/MacOS path example : /path/to/file/gridlog.log \n"
+                           + "# Linux/Unix/MacOS path example : /path/to/file/gridlog.log \n"
     , names = "--log", arity = 1)
   @ConfigValue(section = LOGGING_SECTION, name = "log-file", example = {"'\\\\path\\to\\file\\gridlog.log'",
                                                                         "'C:\\path\\path\\to\\file\\gridlog.log'",
@@ -76,7 +76,7 @@ public class LoggingFlags implements HasRoles {
   private String logFile;
 
   @Parameter(description = "Log encoding", names = "--log-encoding", arity = 1)
-  @ConfigValue(section = LOGGING_SECTION, name = "log-encoding", example = "UTF-8")
+  @ConfigValue(section = LOGGING_SECTION, name = "log-encoding", example = "\"UTF-8\"")
   private String logEncoding;
 
   @Parameter(description =
