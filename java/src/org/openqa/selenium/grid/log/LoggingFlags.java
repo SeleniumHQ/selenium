@@ -17,6 +17,15 @@
 
 package org.openqa.selenium.grid.log;
 
+import static org.openqa.selenium.grid.config.StandardGridRoles.ALL_ROLES;
+import static org.openqa.selenium.grid.log.LoggingOptions.DEFAULT_CONFIGURE_LOGGING;
+import static org.openqa.selenium.grid.log.LoggingOptions.DEFAULT_HTTP_LOGS;
+import static org.openqa.selenium.grid.log.LoggingOptions.DEFAULT_LOG_LEVEL;
+import static org.openqa.selenium.grid.log.LoggingOptions.DEFAULT_PLAIN_LOGS;
+import static org.openqa.selenium.grid.log.LoggingOptions.DEFAULT_STRUCTURED_LOGS;
+import static org.openqa.selenium.grid.log.LoggingOptions.DEFAULT_TRACING_ENABLED;
+import static org.openqa.selenium.grid.log.LoggingOptions.LOGGING_SECTION;
+
 import com.google.auto.service.AutoService;
 
 import com.beust.jcommander.Parameter;
@@ -26,15 +35,6 @@ import org.openqa.selenium.grid.config.HasRoles;
 import org.openqa.selenium.grid.config.Role;
 
 import java.util.Set;
-
-import static org.openqa.selenium.grid.config.StandardGridRoles.ALL_ROLES;
-import static org.openqa.selenium.grid.log.LoggingOptions.DEFAULT_CONFIGURE_LOGGING;
-import static org.openqa.selenium.grid.log.LoggingOptions.DEFAULT_HTTP_LOGS;
-import static org.openqa.selenium.grid.log.LoggingOptions.DEFAULT_LOG_LEVEL;
-import static org.openqa.selenium.grid.log.LoggingOptions.DEFAULT_PLAIN_LOGS;
-import static org.openqa.selenium.grid.log.LoggingOptions.DEFAULT_STRUCTURED_LOGS;
-import static org.openqa.selenium.grid.log.LoggingOptions.DEFAULT_TRACING_ENABLED;
-import static org.openqa.selenium.grid.log.LoggingOptions.LOGGING_SECTION;
 
 @SuppressWarnings("FieldMayBeFinal")
 @AutoService(HasRoles.class)
@@ -65,10 +65,10 @@ public class LoggingFlags implements HasRoles {
   private Boolean httpLogs = DEFAULT_HTTP_LOGS;
 
   @Parameter(description = "File to write out logs. "
-                           + "Ensure the file path is compatible with the operating system's file path.\n"
-                           + "# Windows path example : \\\\path\\to\\file\\gridlog.log OR "
-                           + "C:\\path\\path\\to\\file\\gridlog.log \n"
-                           + "# Linux/Unix/MacOS path example : /path/to/file/gridlog.log \n"
+                           + "Ensure the file path is compatible with the operating system's file path. "
+                           + "Windows path example: \\\\path\\to\\file\\gridlog.log OR "
+                           + "C:\\path\\path\\to\\file\\gridlog.log "
+                           + "Linux/Unix/MacOS path example: /path/to/file/gridlog.log"
     , names = "--log", arity = 1)
   @ConfigValue(section = LOGGING_SECTION, name = "log-file", example = {"'\\\\path\\to\\file\\gridlog.log'",
                                                                         "'C:\\path\\path\\to\\file\\gridlog.log'",
