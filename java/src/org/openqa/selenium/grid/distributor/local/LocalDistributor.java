@@ -28,15 +28,19 @@ import static org.openqa.selenium.remote.RemoteTags.SESSION_ID_EVENT;
 import static org.openqa.selenium.remote.tracing.AttributeKey.SESSION_URI;
 import static org.openqa.selenium.remote.tracing.Tags.EXCEPTION;
 
+import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
+
+import net.jodah.failsafe.Failsafe;
+import net.jodah.failsafe.RetryPolicy;
 
 import org.openqa.selenium.Beta;
 import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.HealthCheckFailedException;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.RetrySessionRequestException;
 import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.WebDriverException;
-import org.openqa.selenium.concurrent.Regularly;
 import org.openqa.selenium.events.EventBus;
 import org.openqa.selenium.grid.config.Config;
 import org.openqa.selenium.grid.data.CreateSessionRequest;
@@ -116,7 +120,6 @@ public class LocalDistributor extends Distributor implements Closeable {
   private final SessionMap sessions;
   private final SlotSelector slotSelector;
   private final Secret registrationSecret;
-  private final Regularly hostChecker = new Regularly("distributor host checker");
   private final Map<NodeId, Runnable> allChecks = new HashMap<>();
   private final Duration healthcheckInterval;
 
@@ -139,6 +142,15 @@ public class LocalDistributor extends Distributor implements Closeable {
         Thread thread = new Thread(r);
         thread.setDaemon(true);
         thread.setName("Local Distributor - Purge Dead Nodes");
+        return thread;
+      });
+
+  private final ScheduledExecutorService nodeHealthCheckService =
+    Executors.newSingleThreadScheduledExecutor(
+      r -> {
+        Thread thread = new Thread(r);
+        thread.setDaemon(true);
+        thread.setName("Local Distributor - Node Health Check");
         return thread;
       });
 
@@ -196,6 +208,12 @@ public class LocalDistributor extends Distributor implements Closeable {
 
     Runnable purgeDeadNodes = model::purgeDeadNodes;
     purgeDeadNodesService.scheduleAtFixedRate(purgeDeadNodes, 30, 30, TimeUnit.SECONDS);
+
+    nodeHealthCheckService.scheduleAtFixedRate(
+      runNodeHealthChecks(),
+      this.healthcheckInterval.toMillis(),
+      this.healthcheckInterval.toMillis(),
+      TimeUnit.MILLISECONDS);
 
     // if sessionRequestRetryInterval is 0, we will schedule session creation every 10 millis
     long period = sessionRequestRetryInterval.isZero() ?
@@ -281,14 +299,26 @@ public class LocalDistributor extends Distributor implements Closeable {
     try {
       model.add(node.getStatus());
       nodes.put(node.getId(), node);
-    } catch (Exception e){
+    } catch (Exception e) {
       return this;
     }
 
     // Extract the health check
     Runnable runnableHealthCheck = asRunnableHealthCheck(node);
     allChecks.put(node.getId(), runnableHealthCheck);
-    hostChecker.submit(runnableHealthCheck, healthcheckInterval, Duration.ofSeconds(30));
+
+    // Running the health check right after the Node registers itself. We retry the
+    // execution because the Node might on a complex network topology. For example,
+    // Kubernetes pods with IPs that take a while before they are reachable.
+    RetryPolicy<Object> initialHealthCheckPolicy = new RetryPolicy<>()
+      .withMaxAttempts(-1)
+      .withMaxDuration(Duration.ofSeconds(90))
+      .withDelay(Duration.ofSeconds(15))
+      .abortIf(result -> true);
+
+    LOG.log(getDebugLogLevel(), "Running initial health check for Node " + node.getId());
+    Executors.newSingleThreadExecutor().submit(
+      () -> Failsafe.with(initialHealthCheckPolicy).run(runnableHealthCheck::run));
 
     LOG.info(String.format(
       "Added node %s at %s. Health check every %ss",
@@ -301,10 +331,21 @@ public class LocalDistributor extends Distributor implements Closeable {
     return this;
   }
 
+  private Runnable runNodeHealthChecks() {
+    return () -> {
+      ImmutableMap<NodeId, Runnable> nodeHealthChecks = ImmutableMap.copyOf(allChecks);
+      for (Runnable nodeHealthCheck : nodeHealthChecks.values()) {
+        nodeHealthCheck.run();
+      }
+    };
+  }
+
   private Runnable asRunnableHealthCheck(Node node) {
     HealthCheck healthCheck = node.getHealthCheck();
     NodeId id = node.getId();
     return () -> {
+      boolean checkFailed = false;
+      Exception failedCheckException = null;
       LOG.log(getDebugLogLevel(), "Running health check for " + node.getId());
 
       HealthCheck.Result result;
@@ -313,6 +354,8 @@ public class LocalDistributor extends Distributor implements Closeable {
       } catch (Exception e) {
         LOG.log(Level.WARNING, "Unable to process node " + id, e);
         result = new HealthCheck.Result(DOWN, "Unable to run healthcheck. Assuming down");
+        checkFailed = true;
+        failedCheckException = e;
       }
 
       Lock writeLock = lock.writeLock();
@@ -320,11 +363,17 @@ public class LocalDistributor extends Distributor implements Closeable {
       try {
         LOG.log(
           getDebugLogLevel(),
-          String.format("Health check result for %s was %s", node.getId(), result.getAvailability()));
+          String.format(
+            "Health check result for %s was %s",
+            node.getId(),
+            result.getAvailability()));
         model.setAvailability(id, result.getAvailability());
         model.updateHealthCheckCount(id, result.getAvailability());
       } finally {
         writeLock.unlock();
+      }
+      if (checkFailed) {
+        throw new HealthCheckFailedException("Node " + id, failedCheckException);
       }
     };
   }
@@ -355,10 +404,7 @@ public class LocalDistributor extends Distributor implements Closeable {
     try {
       nodes.remove(nodeId);
       model.remove(nodeId);
-      Runnable runnable = allChecks.remove(nodeId);
-      if (runnable != null) {
-        hostChecker.remove(runnable);
-      }
+      allChecks.remove(nodeId);
     } finally {
       writeLock.unlock();
     }
@@ -599,7 +645,7 @@ public class LocalDistributor extends Distributor implements Closeable {
   public void close() {
     LOG.info("Shutting down Distributor executor service");
     purgeDeadNodesService.shutdown();
-    hostChecker.shutdown();
+    nodeHealthCheckService.shutdown();
     newSessionService.shutdown();
   }
 
