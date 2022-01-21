@@ -64,11 +64,16 @@ react_scripts(
 )
 
 zip_file(
-    name = "react_jar",
+    name = "react_zip",
     srcs = [
         ":build",
     ],
     extension = "jar",
+)
+
+java_import(
+    name = "react_jar",
+    jars = ["react_zip"],
     visibility = [
         "//java/src/org/openqa/selenium/grid:__pkg__",
     ],
