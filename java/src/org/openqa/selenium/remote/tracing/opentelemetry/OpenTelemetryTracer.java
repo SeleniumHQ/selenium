@@ -21,7 +21,7 @@ import io.opentelemetry.api.trace.Tracer;
 import io.opentelemetry.context.Context;
 import io.opentelemetry.context.propagation.TextMapPropagator;
 import io.opentelemetry.sdk.OpenTelemetrySdk;
-import io.opentelemetry.sdk.autoconfigure.OpenTelemetrySdkAutoConfiguration;
+import io.opentelemetry.sdk.autoconfigure.AutoConfiguredOpenTelemetrySdk;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.tracing.Propagator;
 import org.openqa.selenium.remote.tracing.TraceContext;
@@ -74,7 +74,7 @@ public class OpenTelemetryTracer implements org.openqa.selenium.remote.tracing.T
     if(exporter == null) {
       System.setProperty("otel.traces.exporter", "none");
     }
-    OpenTelemetrySdk autoConfiguredSdk = OpenTelemetrySdkAutoConfiguration.initialize();
+    OpenTelemetrySdk autoConfiguredSdk = AutoConfiguredOpenTelemetrySdk.initialize().getOpenTelemetrySdk();
 
     return new OpenTelemetryTracer(
       autoConfiguredSdk.getTracer("default"),
