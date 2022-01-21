@@ -137,18 +137,17 @@ selenium_register_dotnet()
 
 http_archive(
     name = "build_bazel_rules_nodejs",
-    sha256 = "ad3e5afa52ef9aac4da426f61e339c054ecbc0e6665cec2109f8846b4c8339e3",
-    urls = ["https://github.com/bazelbuild/rules_nodejs/releases/download/4.6.3/rules_nodejs-4.6.3.tar.gz"],
+    sha256 = "e328cb2c9401be495fa7d79c306f5ee3040e8a03b2ebb79b022e15ca03770096",
+    urls = ["https://github.com/bazelbuild/rules_nodejs/releases/download/5.4.2/rules_nodejs-5.4.2.tar.gz"],
 )
+load("@build_bazel_rules_nodejs//:repositories.bzl", "build_bazel_rules_nodejs_dependencies")
+
+build_bazel_rules_nodejs_dependencies()
 
 load("@build_bazel_rules_nodejs//:index.bzl", "node_repositories", "npm_install")
 
 node_repositories(
     node_version = "16.4.2",
-    package_json = [
-        "//:package.json",
-        "//javascript/grid-ui:package.json",
-    ],
 )
 
 npm_install(

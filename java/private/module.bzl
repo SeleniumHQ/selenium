@@ -58,7 +58,7 @@ def _java_module_aspect_impl(target, ctx):
     derived = "unknown"
     if JavaModuleInfo in target:
         module_path = target[JavaModuleInfo].module_path
-        jars = target[JavaInfo].runtime_output_jars
+        jars = depset(target[JavaInfo].runtime_output_jars)
         source_jars = target[JavaInfo].source_jars
         java_info = target[JavaInfo]
     elif name:
@@ -97,7 +97,7 @@ def _java_module_impl(ctx):
 
     all_infos = [dep[_GatheredModuleInfo] for dep in ctx.attr.deps] + [dep[_GatheredModuleInfo] for dep in ctx.attr.exports]
 
-    included_jars = depset([ctx.file.target], transitive = [depset(info.jars) for info in all_infos])
+    included_jars = depset(direct = [ctx.file.target], transitive = [info.jars for info in all_infos])
 
     # Now that we have a single jar, derive the module info.
     all_jars = depset(transitive = [info.module_path for info in all_infos]).to_list()
@@ -152,11 +152,10 @@ def _java_module_impl(ctx):
         actions = ctx.actions,
         output_source_jar = ctx.actions.declare_file("lib%s-src.jar" % ctx.attr.name),
         source_jars = depset(
-            items = ctx.attr.target[JavaInfo].source_jars,
+            direct = ctx.attr.target[JavaInfo].source_jars,
             transitive = [info.source_jars for info in all_infos if not info.name],
         ).to_list(),
         java_toolchain = ctx.attr._java_toolchain[java_common.JavaToolchainInfo],
-        host_javabase = ctx.attr._javabase[java_common.JavaRuntimeInfo],
     )
 
     # TODO: This JavaInfo needs to have the JavaInfos of all jars included in module stripped
