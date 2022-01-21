@@ -489,7 +489,7 @@ class WebDriver(BaseWebDriver):
                 elements = driver.find_elements_by_id('foo')
         """
         warnings.warn(
-            "find_elements_by_* commands are deprecated. Please use find_elements() instead",
+            "find_elements_by_id is deprecated. Please use find_elements(by=By.ID, value=id_) instead",
             DeprecationWarning,
             stacklevel=2,
         )
@@ -514,7 +514,7 @@ class WebDriver(BaseWebDriver):
                 element = driver.find_element_by_xpath('//div/td[1]')
         """
         warnings.warn(
-            "find_element_by_* commands are deprecated. Please use find_element() instead",
+            "find_element_by_xpath is deprecated. Please use find_element(by=By.XPATH, value=xpath) instead",
             DeprecationWarning,
             stacklevel=2,
         )
@@ -537,7 +537,7 @@ class WebDriver(BaseWebDriver):
                 elements = driver.find_elements_by_xpath("//div[contains(@class, 'foo')]")
         """
         warnings.warn(
-            "find_elements_by_* commands are deprecated. Please use find_elements() instead",
+            "find_elements_by_xpath is deprecated. Please use find_elements(by=By.XPATH, value=xpath) instead",
             DeprecationWarning,
             stacklevel=2,
         )
@@ -562,7 +562,7 @@ class WebDriver(BaseWebDriver):
                 element = driver.find_element_by_link_text('Sign In')
         """
         warnings.warn(
-            "find_element_by_* commands are deprecated. Please use find_element() instead",
+            "find_element_by_link_text is deprecated. Please use find_element(by=By.LINK_TEXT, value=link_text) instead",
             DeprecationWarning,
             stacklevel=2,
         )
@@ -585,7 +585,7 @@ class WebDriver(BaseWebDriver):
                 elements = driver.find_elements_by_link_text('Sign In')
         """
         warnings.warn(
-            "find_elements_by_* commands are deprecated. Please use find_elements() instead",
+            "find_elements_by_link_text is deprecated. Please use find_elements(by=By.LINK_TEXT, value=text) instead",
             DeprecationWarning,
             stacklevel=2,
         )
@@ -610,7 +610,7 @@ class WebDriver(BaseWebDriver):
                 element = driver.find_element_by_partial_link_text('Sign')
         """
         warnings.warn(
-            "find_element_by_* commands are deprecated. Please use find_element() instead",
+            "find_element_by_partial_link_text is deprecated. Please use find_element(by=By.PARTIAL_LINK_TEXT, value=link_text) instead",
             DeprecationWarning,
             stacklevel=2,
         )
@@ -633,7 +633,7 @@ class WebDriver(BaseWebDriver):
                 elements = driver.find_elements_by_partial_link_text('Sign')
         """
         warnings.warn(
-            "find_elements_by_* commands are deprecated. Please use find_elements() instead",
+            "find_elements_by_partial_link_text is deprecated. Please use find_elements(by=By.PARTIAL_LINK_TEXT, value=link_text) instead",
             DeprecationWarning,
             stacklevel=2,
         )
@@ -658,7 +658,7 @@ class WebDriver(BaseWebDriver):
                 element = driver.find_element_by_name('foo')
         """
         warnings.warn(
-            "find_element_by_* commands are deprecated. Please use find_element() instead",
+            "find_element_by_name is deprecated. Please use find_element(by=By.NAME, value=name) instead",
             DeprecationWarning,
             stacklevel=2,
         )
@@ -681,7 +681,7 @@ class WebDriver(BaseWebDriver):
                 elements = driver.find_elements_by_name('foo')
         """
         warnings.warn(
-            "find_elements_by_* commands are deprecated. Please use find_elements() instead",
+            "find_elements_by_name is deprecated. Please use find_elements(by=By.NAME, value=name)=By.NAME, value=name) instead",
             DeprecationWarning,
             stacklevel=2,
         )
@@ -706,7 +706,7 @@ class WebDriver(BaseWebDriver):
                 element = driver.find_element_by_tag_name('h1')
         """
         warnings.warn(
-            "find_element_by_* commands are deprecated. Please use find_element() instead",
+            "find_element_by_tag_name is deprecated. Please use find_element(by=By.TAG_NAME, value=name) instead",
             DeprecationWarning,
             stacklevel=2,
         )
@@ -729,7 +729,7 @@ class WebDriver(BaseWebDriver):
                 elements = driver.find_elements_by_tag_name('h1')
         """
         warnings.warn(
-            "find_elements_by_* commands are deprecated. Please use find_elements() instead",
+            "find_elements_by_tag_name is deprecated. Please use find_elements(by=By.TAG_NAME, value=name) instead",
             DeprecationWarning,
             stacklevel=2,
         )
@@ -754,7 +754,7 @@ class WebDriver(BaseWebDriver):
                 element = driver.find_element_by_class_name('foo')
         """
         warnings.warn(
-            "find_element_by_* commands are deprecated. Please use find_element() instead",
+            "find_element_by_class_name is deprecated. Please use find_element(by=By.CLASS_NAME, value=name) instead",
             DeprecationWarning,
             stacklevel=2,
         )
@@ -777,7 +777,7 @@ class WebDriver(BaseWebDriver):
                 elements = driver.find_elements_by_class_name('foo')
         """
         warnings.warn(
-            "find_elements_by_* commands are deprecated. Please use find_elements() instead",
+            "find_elements_by_class_name is deprecated. Please use find_elements(by=By.CLASS_NAME, value=name) instead",
             DeprecationWarning,
             stacklevel=2,
         )
@@ -802,7 +802,7 @@ class WebDriver(BaseWebDriver):
                 element = driver.find_element_by_css_selector('#foo')
         """
         warnings.warn(
-            "find_element_by_* commands are deprecated. Please use find_element() instead",
+            "find_element_by_css_selector is deprecated. Please use find_element(by=By.CSS_SELECTOR, value=css_selector) instead",
             DeprecationWarning,
             stacklevel=2,
         )
@@ -825,7 +825,7 @@ class WebDriver(BaseWebDriver):
                 elements = driver.find_elements_by_css_selector('.foo')
         """
         warnings.warn(
-            "find_elements_by_* commands are deprecated. Please use find_elements() instead",
+            "find_elements_by_css_selector is deprecated. Please use find_elements(by=By.CSS_SELECTOR, value=css_selector) instead",
             DeprecationWarning,
             stacklevel=2,
         )
