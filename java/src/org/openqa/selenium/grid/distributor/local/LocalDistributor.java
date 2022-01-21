@@ -117,7 +117,6 @@ public class LocalDistributor extends Distributor implements Closeable {
   private final SlotSelector slotSelector;
   private final Secret registrationSecret;
   private final Regularly hostChecker = new Regularly("distributor host checker");
-  private final Regularly purgeDeadNodes = new Regularly("Purge deadNodes");
   private final Map<NodeId, Runnable> allChecks = new HashMap<>();
   private final Duration healthcheckInterval;
 
@@ -130,16 +129,24 @@ public class LocalDistributor extends Distributor implements Closeable {
       r -> {
         Thread thread = new Thread(r);
         thread.setDaemon(true);
-        thread.setName("Local Distributor New Session Queue");
+        thread.setName("Local Distributor - New Session Queue");
         return thread;
       });
 
+  private final ScheduledExecutorService purgeDeadNodesService =
+    Executors.newSingleThreadScheduledExecutor(
+      r -> {
+        Thread thread = new Thread(r);
+        thread.setDaemon(true);
+        thread.setName("Local Distributor - Purge Dead Nodes");
+        return thread;
+      });
 
   private final Executor sessionCreatorExecutor = Executors.newFixedThreadPool(
     Runtime.getRuntime().availableProcessors(),
     r -> {
       Thread thread = new Thread(r);
-      thread.setName("Local Distributor session creation");
+      thread.setName("Local Distributor - Session Creation");
       thread.setDaemon(true);
       return thread;
     }
@@ -187,7 +194,8 @@ public class LocalDistributor extends Distributor implements Closeable {
     NewSessionRunnable newSessionRunnable = new NewSessionRunnable();
     bus.addListener(NodeDrainComplete.listener(this::remove));
 
-    purgeDeadNodes.submit(model::purgeDeadNodes, Duration.ofSeconds(30), Duration.ofSeconds(30));
+    Runnable purgeDeadNodes = model::purgeDeadNodes;
+    purgeDeadNodesService.scheduleAtFixedRate(purgeDeadNodes, 30, 30, TimeUnit.SECONDS);
 
     // if sessionRequestRetryInterval is 0, we will schedule session creation every 10 millis
     long period = sessionRequestRetryInterval.isZero() ?
@@ -590,7 +598,7 @@ public class LocalDistributor extends Distributor implements Closeable {
   @Override
   public void close() {
     LOG.info("Shutting down Distributor executor service");
-    purgeDeadNodes.shutdown();
+    purgeDeadNodesService.shutdown();
     hostChecker.shutdown();
     newSessionService.shutdown();
   }
