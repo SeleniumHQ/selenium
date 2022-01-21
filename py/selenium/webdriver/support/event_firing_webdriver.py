@@ -139,7 +139,7 @@ class EventFiringWebDriver(object):
         return self.find_element(by=By.PARTIAL_LINK_TEXT, value=link_text)
 
     def find_elements_by_partial_link_text(self, link_text):
-        warnings.warn("find_elements_by_partial_link_text is deprecated. find_elements(by=By.PARTIAL_LINK_TEXT, value=link_text) instead")
+        warnings.warn("find_elements_by_partial_link_text is deprecated. Please use find_elements(by=By.PARTIAL_LINK_TEXT, value=link_text) instead")
         return self.find_elements(by=By.PARTIAL_LINK_TEXT, value=link_text)
 
     def find_element_by_name(self, name):
