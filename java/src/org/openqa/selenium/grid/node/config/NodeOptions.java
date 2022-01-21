@@ -464,11 +464,14 @@ public class NodeOptions {
       })
       .collect(Collectors.toList());
 
-    allDrivers.entrySet().stream()
+    Optional<Map.Entry<WebDriverInfo, Collection<SessionFactory>>> first = allDrivers.entrySet().stream()
       .filter(entry -> drivers.contains(entry.getKey().getDisplayName().toLowerCase()))
-      .findFirst()
-      .orElseThrow(() ->
-                     new ConfigException("No drivers were found for %s", drivers.toString()));
+      .findFirst();
+
+    if (!first.isPresent()) {
+      throw new ConfigException("No drivers were found for %s", drivers.toString());
+    }
+
 
     allDrivers.entrySet().stream()
       .filter(entry -> drivers.contains(entry.getKey().getDisplayName().toLowerCase()))

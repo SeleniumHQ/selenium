@@ -93,9 +93,6 @@ java_export(
         "org.openqa.selenium.json",
     ],
     pom_template = "//java/src/org/openqa/selenium:template-pom",
-    resource_jars = [
-        "//javascript/grid-ui:react_jar",
-    ],
     uses = [
         "org.openqa.selenium.WebDriverInfo",
         "org.openqa.selenium.cli.CliCommand",
@@ -122,6 +119,7 @@ java_export(
         "//java/src/org/openqa/selenium/grid/session",
         "//java/src/org/openqa/selenium/grid/sessionmap/httpd",
         "//java/src/org/openqa/selenium/grid/sessionqueue/httpd",
+        "//javascript/grid-ui:react_jar",
     ] + CDP_DEPS,
     deps = [
         ":base-command",
