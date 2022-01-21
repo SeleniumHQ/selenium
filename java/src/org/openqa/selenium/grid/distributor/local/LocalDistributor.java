@@ -125,7 +125,7 @@ public class LocalDistributor extends Distributor implements Closeable {
   private final GridModel model;
   private final Map<NodeId, Node> nodes;
 
-  private final ScheduledExecutorService sessionService =
+  private final ScheduledExecutorService newSessionService =
     Executors.newSingleThreadScheduledExecutor(
       r -> {
         Thread thread = new Thread(r);
@@ -192,7 +192,7 @@ public class LocalDistributor extends Distributor implements Closeable {
     // if sessionRequestRetryInterval is 0, we will schedule session creation every 10 millis
     long period = sessionRequestRetryInterval.isZero() ?
                   10 : sessionRequestRetryInterval.toMillis();
-    sessionService.scheduleAtFixedRate(
+    newSessionService.scheduleAtFixedRate(
       newSessionRunnable,
       sessionRequestRetryInterval.toMillis(),
       period,
@@ -592,7 +592,7 @@ public class LocalDistributor extends Distributor implements Closeable {
     LOG.info("Shutting down Distributor executor service");
     purgeDeadNodes.shutdown();
     hostChecker.shutdown();
-    sessionService.shutdown();
+    newSessionService.shutdown();
   }
 
   private class NewSessionRunnable implements Runnable {
