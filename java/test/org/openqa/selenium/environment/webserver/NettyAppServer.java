@@ -95,9 +95,8 @@ public class NettyAppServer implements AppServer {
   }
 
   public static void main(String[] args) {
-    MemoizedConfig
-      config =
-      new MemoizedConfig(new MapConfig(singletonMap("server", singletonMap("port", 2310))));
+    MemoizedConfig config = new MemoizedConfig(
+      new MapConfig(singletonMap("server", singletonMap("port", 2310))));
     BaseServerOptions options = new BaseServerOptions(config);
 
     HttpHandler handler = new HandlersForTests(
