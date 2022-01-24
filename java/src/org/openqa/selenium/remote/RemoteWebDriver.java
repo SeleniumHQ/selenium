@@ -131,11 +131,21 @@ public class RemoteWebDriver implements WebDriver,
 
   public RemoteWebDriver(Capabilities capabilities) {
     this(getDefaultServerURL(),
-         Require.nonNull("Capabilities", capabilities));
+         Require.nonNull("Capabilities", capabilities), true);
+  }
+
+  public RemoteWebDriver(Capabilities capabilities, boolean enableTracing) {
+    this(getDefaultServerURL(),
+         Require.nonNull("Capabilities", capabilities), enableTracing);
   }
 
   public RemoteWebDriver(URL remoteAddress, Capabilities capabilities) {
-    this(createTracedExecutorWithTracedHttpClient(Require.nonNull("Server URL", remoteAddress)),
+    this(createExecutor(Require.nonNull("Server URL", remoteAddress), true),
+         Require.nonNull("Capabilities", capabilities));
+  }
+
+  public RemoteWebDriver(URL remoteAddress, Capabilities capabilities, boolean enableTracing) {
+    this(createExecutor(Require.nonNull("Server URL", remoteAddress), enableTracing),
          Require.nonNull("Capabilities", capabilities));
   }
 
@@ -168,13 +178,18 @@ public class RemoteWebDriver implements WebDriver,
     }
   }
 
-  private static CommandExecutor createTracedExecutorWithTracedHttpClient(URL remoteAddress) {
-    Tracer tracer = OpenTelemetryTracer.getInstance();
-    CommandExecutor executor = new HttpCommandExecutor(
-      Collections.emptyMap(),
-      ClientConfig.defaultConfig().baseUrl(remoteAddress),
-      new TracedHttpClient.Factory(tracer, HttpClient.Factory.createDefault()));
-    return new TracedCommandExecutor(executor, tracer);
+  private static CommandExecutor createExecutor(URL remoteAddress, boolean enableTracing) {
+    ClientConfig config = ClientConfig.defaultConfig().baseUrl(remoteAddress);
+    if (enableTracing) {
+      Tracer tracer = OpenTelemetryTracer.getInstance();
+      CommandExecutor executor = new HttpCommandExecutor(
+        Collections.emptyMap(),
+        config,
+        new TracedHttpClient.Factory(tracer, HttpClient.Factory.createDefault()));
+      return new TracedCommandExecutor(executor, tracer);
+    } else {
+      return new HttpCommandExecutor(config);
+    }
   }
 
   @Beta
