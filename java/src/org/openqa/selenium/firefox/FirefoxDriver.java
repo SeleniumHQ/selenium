@@ -17,9 +17,12 @@
 
 package org.openqa.selenium.firefox;
 
+import static org.openqa.selenium.remote.CapabilityType.PROXY;
+
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
+
 import org.openqa.selenium.Beta;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
@@ -58,8 +61,6 @@ import java.util.ServiceLoader;
 import java.util.Set;
 import java.util.stream.StreamSupport;
 
-import static org.openqa.selenium.remote.CapabilityType.PROXY;
-
 /**
  * An implementation of the {#link WebDriver} interface that drives Firefox.
  * <p>
@@ -77,6 +78,251 @@ import static org.openqa.selenium.remote.CapabilityType.PROXY;
  */
 public class FirefoxDriver extends RemoteWebDriver
   implements WebStorage, HasExtensions, HasFullPageScreenshot, HasContext, HasDevTools {
+
+  /**
+   * @deprecated Use {@link Capability#BINARY}
+   */
+  @Deprecated
+  public static final String BINARY = Capability.BINARY;
+  /**
+   * @deprecated Use {@link Capability#PROFILE}
+   */
+  @Deprecated
+  public static final String PROFILE = Capability.PROFILE;
+  /**
+   * @deprecated Use {@link Capability#MARIONETTE}
+   */
+  @Deprecated
+  public static final String MARIONETTE = Capability.MARIONETTE;
+  private final Capabilities capabilities;
+  private final RemoteWebStorage webStorage;
+  private final HasExtensions extensions;
+  private final HasFullPageScreenshot fullPageScreenshot;
+  private final HasContext context;
+  private final Optional<URI> cdpUri;
+  protected FirefoxBinary binary;
+  private DevTools devTools;
+  public FirefoxDriver() {
+    this(new FirefoxOptions());
+  }
+  /**
+   * @deprecated Use {@link #FirefoxDriver(FirefoxOptions)}.
+   */
+  @Deprecated
+  public FirefoxDriver(Capabilities desiredCapabilities) {
+    this(new FirefoxOptions(Require.nonNull("Capabilities", desiredCapabilities)));
+  }
+  /**
+   * @deprecated Use {@link #FirefoxDriver(FirefoxDriverService, FirefoxOptions)}.
+   */
+  @Deprecated
+  public FirefoxDriver(FirefoxDriverService service, Capabilities desiredCapabilities) {
+    this(
+        Require.nonNull("Driver service", service),
+        new FirefoxOptions(desiredCapabilities));
+  }
+  public FirefoxDriver(FirefoxOptions options) {
+    this(toExecutor(options), options);
+  }
+
+  public FirefoxDriver(FirefoxDriverService service) {
+    this(service, new FirefoxOptions());
+  }
+
+  public FirefoxDriver(FirefoxDriverService service, FirefoxOptions options) {
+    this(new FirefoxDriverCommandExecutor(service), options);
+  }
+
+  private FirefoxDriver(FirefoxDriverCommandExecutor executor, FirefoxOptions options) {
+    super(executor, dropCapabilities(options));
+    webStorage = new RemoteWebStorage(getExecuteMethod());
+    extensions = new AddHasExtensions().getImplementation(getCapabilities(), getExecuteMethod());
+    fullPageScreenshot = new AddHasFullPageScreenshot().getImplementation(getCapabilities(), getExecuteMethod());
+    context = new AddHasContext().getImplementation(getCapabilities(), getExecuteMethod());
+
+    Capabilities capabilities = super.getCapabilities();
+    HttpClient.Factory clientFactory = HttpClient.Factory.createDefault();
+    Optional<URI> cdpUri = CdpEndpointFinder.getReportedUri("moz:debuggerAddress", capabilities)
+      .flatMap(reported -> CdpEndpointFinder.getCdpEndPoint(clientFactory, reported));
+
+    this.cdpUri = cdpUri;
+    this.capabilities = cdpUri.map(uri ->
+                                     new ImmutableCapabilities(
+                                       new PersistentCapabilities(capabilities)
+                                         .setCapability("se:cdp", uri.toString())
+                                         .setCapability("se:cdpVersion", "85.0")))
+      .orElse(new ImmutableCapabilities(capabilities));
+  }
+
+  @Beta
+  public static RemoteWebDriverBuilder builder() {
+    return RemoteWebDriver.builder().oneOf(new FirefoxOptions());
+  }
+
+  private static FirefoxDriverCommandExecutor toExecutor(FirefoxOptions options) {
+    Require.nonNull("Options to construct executor from", options);
+
+    String sysProperty = System.getProperty(SystemProperty.DRIVER_USE_MARIONETTE);
+    boolean isLegacy = (sysProperty != null && !Boolean.parseBoolean(sysProperty))
+                       || options.isLegacy();
+
+    FirefoxDriverService.Builder<?, ?> builder =
+      StreamSupport.stream(ServiceLoader.load(DriverService.Builder.class).spliterator(), false)
+        .filter(b -> b instanceof FirefoxDriverService.Builder)
+        .map(FirefoxDriverService.Builder.class::cast)
+        .filter(b -> b.isLegacy() == isLegacy)
+        .findFirst().orElseThrow(WebDriverException::new);
+
+    return new FirefoxDriverCommandExecutor(builder.withOptions(options).build());
+  }
+
+  private static boolean isLegacy(Capabilities desiredCapabilities) {
+    Boolean forceMarionette = forceMarionetteFromSystemProperty();
+    if (forceMarionette != null) {
+      return !forceMarionette;
+    }
+    Object marionette = desiredCapabilities.getCapability(Capability.MARIONETTE);
+    return marionette instanceof Boolean && !(Boolean) marionette;
+  }
+
+  private static Boolean forceMarionetteFromSystemProperty() {
+    String useMarionette = System.getProperty(SystemProperty.DRIVER_USE_MARIONETTE);
+    if (useMarionette == null) {
+      return null;
+    }
+    return Boolean.valueOf(useMarionette);
+  }
+
+  /**
+   * Drops capabilities that we shouldn't send over the wire.
+   *
+   * Used for capabilities which aren't BeanToJson-convertable, and are only used by the local
+   * launcher.
+   */
+  private static Capabilities dropCapabilities(Capabilities capabilities) {
+    if (capabilities == null) {
+      return new ImmutableCapabilities();
+    }
+
+    MutableCapabilities caps;
+
+    if (isLegacy(capabilities)) {
+      final Set<String> toRemove = Sets.newHashSet(Capability.BINARY, Capability.PROFILE);
+      caps = new MutableCapabilities(
+        Maps.filterKeys(capabilities.asMap(), key -> !toRemove.contains(key)));
+    } else {
+      caps = new MutableCapabilities(capabilities);
+    }
+
+    // Ensure that the proxy is in a state fit to be sent to the extension
+    Proxy proxy = Proxy.extractFrom(capabilities);
+    if (proxy != null) {
+      caps.setCapability(PROXY, proxy);
+    }
+
+    return caps;
+  }
+
+  @Override
+  public Capabilities getCapabilities() {
+    return capabilities;
+  }
+
+  @Override
+  public void setFileDetector(FileDetector detector) {
+    throw new WebDriverException(
+      "Setting the file detector only works on remote webdriver instances obtained " +
+      "via RemoteWebDriver");
+  }
+
+  @Override
+  public LocalStorage getLocalStorage() {
+    return webStorage.getLocalStorage();
+  }
+
+  @Override
+  public SessionStorage getSessionStorage() {
+    return webStorage.getSessionStorage();
+  }
+
+  @Override
+  public String installExtension(Path path) {
+    Require.nonNull("Path", path);
+    return extensions.installExtension(path);
+  }
+
+  @Override
+  public String installExtension(Path path, Boolean temporary) {
+    Require.nonNull("Path", path);
+    Require.nonNull("Temporary", temporary);
+    return extensions.installExtension(path, temporary);
+  }
+
+  @Override
+  public void uninstallExtension(String extensionId) {
+    Require.nonNull("Extension ID", extensionId);
+    extensions.uninstallExtension(extensionId);
+  }
+
+  /**
+   * Capture the full page screenshot and store it in the specified location.
+   *
+   * @param <X> Return type for getFullPageScreenshotAs.
+   * @param outputType target type, @see OutputType
+   * @return Object in which is stored information about the screenshot.
+   * @throws WebDriverException on failure.
+   */
+  @Override
+  public <X> X getFullPageScreenshotAs(OutputType<X> outputType) throws WebDriverException {
+    Require.nonNull("OutputType", outputType);
+
+    return fullPageScreenshot.getFullPageScreenshotAs(outputType);
+  }
+
+  @Override
+  public FirefoxCommandContext getContext() {
+    return context.getContext();
+  }
+
+  @Override
+  public void setContext(FirefoxCommandContext commandContext) {
+    Require.nonNull("Firefox Command Context", commandContext);
+    context.setContext(commandContext);
+  }
+
+  @Override
+  public Optional<DevTools> maybeGetDevTools() {
+    if (devTools != null) {
+      return Optional.of(devTools);
+    }
+
+    if (!cdpUri.isPresent()) {
+      return Optional.empty();
+    }
+
+    URI wsUri = cdpUri.orElseThrow(() ->
+      new DevToolsException("This version of Firefox or geckodriver does not support CDP"));
+    HttpClient.Factory clientFactory = HttpClient.Factory.createDefault();
+
+    ClientConfig wsConfig = ClientConfig.defaultConfig().baseUri(wsUri);
+    HttpClient wsClient = clientFactory.createClient(wsConfig);
+
+    Connection connection = new Connection(wsClient, wsUri.toString());
+    CdpInfo cdpInfo = new CdpVersionFinder().match("85.0").orElseGet(NoOpCdpInfo::new);
+    devTools = new DevTools(cdpInfo::getDomains, connection);
+
+    return Optional.of(devTools);
+  }
+
+  @Override
+  public DevTools getDevTools() {
+    if (!cdpUri.isPresent()) {
+      throw new DevToolsException("This version of Firefox or geckodriver does not support CDP");
+    }
+
+    return maybeGetDevTools()
+      .orElseThrow(() -> new DevToolsException("Unable to initialize CDP connection"));
+  }
 
   public static final class SystemProperty {
 
@@ -115,36 +361,15 @@ public class FirefoxDriver extends RemoteWebDriver
     public static final String DRIVER_USE_MARIONETTE = "webdriver.firefox.marionette";
   }
 
-  /**
-   * @deprecated Use {@link Capability#BINARY}
-   */
-  @Deprecated
-  public static final String BINARY = Capability.BINARY;
-
-  /**
-   * @deprecated Use {@link Capability#PROFILE}
-   */
-  @Deprecated
-  public static final String PROFILE = Capability.PROFILE;
-
-  /**
-   * @deprecated Use {@link Capability#MARIONETTE}
-   */
-  @Deprecated
-  public static final String MARIONETTE = Capability.MARIONETTE;
-
   public static final class Capability {
+
     public static final String BINARY = "firefox_binary";
     public static final String PROFILE = "firefox_profile";
     public static final String MARIONETTE = "marionette";
   }
 
-  @Beta
-  public static RemoteWebDriverBuilder builder() {
-    return RemoteWebDriver.builder().oneOf(new FirefoxOptions());
-  }
-
   private static class FirefoxDriverCommandExecutor extends DriverCommandExecutor {
+
     public FirefoxDriverCommandExecutor(DriverService service) {
       super(service, getExtraCommands());
     }
@@ -156,233 +381,5 @@ public class FirefoxDriver extends RemoteWebDriver
         .putAll(new AddHasFullPageScreenshot().getAdditionalCommands())
         .build();
     }
-  }
-
-  private final Capabilities capabilities;
-  protected FirefoxBinary binary;
-  private final RemoteWebStorage webStorage;
-  private final HasExtensions extensions;
-  private final HasFullPageScreenshot fullPageScreenshot;
-  private final HasContext context;
-  private final Optional<URI> cdpUri;
-  private DevTools devTools;
-
-  public FirefoxDriver() {
-    this(new FirefoxOptions());
-  }
-
-  /**
-   * @deprecated Use {@link #FirefoxDriver(FirefoxOptions)}.
-   */
-  @Deprecated
-  public FirefoxDriver(Capabilities desiredCapabilities) {
-    this(new FirefoxOptions(Require.nonNull("Capabilities", desiredCapabilities)));
-  }
-
-  /**
-   * @deprecated Use {@link #FirefoxDriver(FirefoxDriverService, FirefoxOptions)}.
-   */
-  @Deprecated
-  public FirefoxDriver(FirefoxDriverService service, Capabilities desiredCapabilities) {
-    this(
-        Require.nonNull("Driver service", service),
-        new FirefoxOptions(desiredCapabilities));
-  }
-
-  public FirefoxDriver(FirefoxOptions options) {
-    this(toExecutor(options), options);
-  }
-
-  public FirefoxDriver(FirefoxDriverService service) {
-    this(service, new FirefoxOptions());
-  }
-
-  public FirefoxDriver(FirefoxDriverService service, FirefoxOptions options) {
-    this(new FirefoxDriverCommandExecutor(service), options);
-  }
-
-  private FirefoxDriver(FirefoxDriverCommandExecutor executor, FirefoxOptions options) {
-    super(executor, dropCapabilities(options));
-    webStorage = new RemoteWebStorage(getExecuteMethod());
-    extensions = new AddHasExtensions().getImplementation(getCapabilities(), getExecuteMethod());
-    fullPageScreenshot = new AddHasFullPageScreenshot().getImplementation(getCapabilities(), getExecuteMethod());
-    context = new AddHasContext().getImplementation(getCapabilities(), getExecuteMethod());
-
-    Capabilities capabilities = super.getCapabilities();
-    HttpClient.Factory clientFactory = HttpClient.Factory.createDefault();
-    Optional<URI> cdpUri = CdpEndpointFinder.getReportedUri("moz:debuggerAddress", capabilities)
-      .flatMap(reported -> CdpEndpointFinder.getCdpEndPoint(clientFactory, reported));
-
-    this.cdpUri = cdpUri;
-    this.capabilities = cdpUri.map(uri ->
-        new ImmutableCapabilities(
-            new PersistentCapabilities(capabilities)
-                .setCapability("se:cdp", uri.toString())
-                .setCapability("se:cdpVersion", "85")))
-        .orElse(new ImmutableCapabilities(capabilities));
-  }
-
-  private static FirefoxDriverCommandExecutor toExecutor(FirefoxOptions options) {
-    Require.nonNull("Options to construct executor from", options);
-
-    String sysProperty = System.getProperty(SystemProperty.DRIVER_USE_MARIONETTE);
-    boolean isLegacy = (sysProperty != null && ! Boolean.parseBoolean(sysProperty))
-                       || options.isLegacy();
-
-    FirefoxDriverService.Builder<?, ?> builder =
-        StreamSupport.stream(ServiceLoader.load(DriverService.Builder.class).spliterator(), false)
-            .filter(b -> b instanceof FirefoxDriverService.Builder)
-            .map(FirefoxDriverService.Builder.class::cast)
-            .filter(b -> b.isLegacy() == isLegacy)
-            .findFirst().orElseThrow(WebDriverException::new);
-
-    return new FirefoxDriverCommandExecutor(builder.withOptions(options).build());
-  }
-
-  @Override
-  public Capabilities getCapabilities() {
-    return capabilities;
-  }
-
-  @Override
-  public void setFileDetector(FileDetector detector) {
-    throw new WebDriverException(
-        "Setting the file detector only works on remote webdriver instances obtained " +
-        "via RemoteWebDriver");
-  }
-
-  @Override
-  public LocalStorage getLocalStorage() {
-    return webStorage.getLocalStorage();
-  }
-
-  @Override
-  public SessionStorage getSessionStorage() {
-    return webStorage.getSessionStorage();
-  }
-
-  private static boolean isLegacy(Capabilities desiredCapabilities) {
-    Boolean forceMarionette = forceMarionetteFromSystemProperty();
-    if (forceMarionette != null) {
-      return !forceMarionette;
-    }
-    Object marionette = desiredCapabilities.getCapability(Capability.MARIONETTE);
-    return marionette instanceof Boolean && ! (Boolean) marionette;
-  }
-
-  @Override
-  public String installExtension(Path path) {
-    Require.nonNull("Path", path);
-    return extensions.installExtension(path);
-  }
-
-  @Override
-  public String installExtension(Path path, Boolean temporary) {
-    Require.nonNull("Path", path);
-    Require.nonNull("Temporary", temporary);
-    return extensions.installExtension(path, temporary);
-  }
-
-  @Override
-  public void uninstallExtension(String extensionId) {
-    Require.nonNull("Extension ID", extensionId);
-    extensions.uninstallExtension(extensionId);
-  }
-
-  /**
-   * Capture the full page screenshot and store it in the specified location.
-   *
-   * @param <X> Return type for getFullPageScreenshotAs.
-   * @param outputType target type, @see OutputType
-   * @return Object in which is stored information about the screenshot.
-   * @throws WebDriverException on failure.
-   */
-  @Override
-  public <X> X getFullPageScreenshotAs(OutputType<X> outputType) throws WebDriverException {
-    Require.nonNull("OutputType", outputType);
-
-    return fullPageScreenshot.getFullPageScreenshotAs(outputType);
-  }
-
-  @Override
-  public void setContext(FirefoxCommandContext commandContext) {
-    Require.nonNull("Firefox Command Context", commandContext);
-    context.setContext(commandContext);
-  }
-
-  @Override
-  public FirefoxCommandContext getContext() {
-    return context.getContext();
-  }
-
-  private static Boolean forceMarionetteFromSystemProperty() {
-    String useMarionette = System.getProperty(SystemProperty.DRIVER_USE_MARIONETTE);
-    if (useMarionette == null) {
-      return null;
-    }
-    return Boolean.valueOf(useMarionette);
-  }
-
-  /**
-   * Drops capabilities that we shouldn't send over the wire.
-   *
-   * Used for capabilities which aren't BeanToJson-convertable, and are only used by the local
-   * launcher.
-   */
-  private static Capabilities dropCapabilities(Capabilities capabilities) {
-    if (capabilities == null) {
-      return new ImmutableCapabilities();
-    }
-
-    MutableCapabilities caps;
-
-    if (isLegacy(capabilities)) {
-      final Set<String> toRemove = Sets.newHashSet(Capability.BINARY, Capability.PROFILE);
-      caps = new MutableCapabilities(
-          Maps.filterKeys(capabilities.asMap(), key -> !toRemove.contains(key)));
-    } else {
-      caps = new MutableCapabilities(capabilities);
-    }
-
-    // Ensure that the proxy is in a state fit to be sent to the extension
-    Proxy proxy = Proxy.extractFrom(capabilities);
-    if (proxy != null) {
-      caps.setCapability(PROXY, proxy);
-    }
-
-    return caps;
-  }
-
-  @Override
-  public Optional<DevTools> maybeGetDevTools() {
-    if (devTools != null) {
-      return Optional.of(devTools);
-    }
-
-    if (!cdpUri.isPresent()) {
-      return Optional.empty();
-    }
-
-    URI wsUri = cdpUri.orElseThrow(() ->
-      new DevToolsException("This version of Firefox or geckodriver does not support CDP"));
-    HttpClient.Factory clientFactory = HttpClient.Factory.createDefault();
-
-    ClientConfig wsConfig = ClientConfig.defaultConfig().baseUri(wsUri);
-    HttpClient wsClient = clientFactory.createClient(wsConfig);
-
-    Connection connection = new Connection(wsClient, wsUri.toString());
-    CdpInfo cdpInfo = new CdpVersionFinder().match("85.0").orElseGet(NoOpCdpInfo::new);
-    devTools = new DevTools(cdpInfo::getDomains, connection);
-
-    return Optional.of(devTools);
-  }
-
-  @Override
-  public DevTools getDevTools() {
-    if (!cdpUri.isPresent()) {
-      throw new DevToolsException("This version of Firefox or geckodriver does not support CDP");
-    }
-
-    return maybeGetDevTools().orElseThrow(() -> new DevToolsException("Unable to initialize CDP connection"));
   }
 }
