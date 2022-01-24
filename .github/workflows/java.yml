@@ -132,11 +132,9 @@ jobs:
       - name: Start XVFB
         run: Xvfb :99 &
       - name: Run browser tests in ${{ matrix.browser }}
-        uses: nick-invision/retry@v2
+        uses: ./.github/actions/bazel-test
         with:
-          timeout_minutes: 20
-          max_attempts: 3
-          command: bazel query "attr(tags, ${{ matrix.browser }}, tests(//java/...)) except attr(tags, 'lint|rc|remote', tests(//java/...))" | xargs bazel test
+          query: attr(tags, ${{ matrix.browser }}, tests(//java/...)) except attr(tags, 'lint|rc|remote', tests(//java/...))
         env:
           DISPLAY: :99
 
@@ -174,11 +172,9 @@ jobs:
       - name: Start XVFB
         run: Xvfb :99 &
       - name: Run server tests
-        uses: nick-invision/retry@v2
+        uses: ./.github/actions/bazel-test
         with:
-          timeout_minutes: 20
-          max_attempts: 3
-          command: bazel query "attr(tags, ${{ matrix.browser }}, tests(//java/...)) intersect attr(tags, 'remote', tests(//java/...))" | xargs bazel test
+          query: attr(tags, ${{ matrix.browser }}, tests(//java/...)) intersect attr(tags, 'remote', tests(//java/...))
         env:
           DISPLAY: :99
 
