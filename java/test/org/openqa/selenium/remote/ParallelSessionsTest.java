@@ -17,6 +17,9 @@
 
 package org.openqa.selenium.remote;
 
+import static java.util.concurrent.TimeUnit.SECONDS;
+import static org.openqa.selenium.testing.Safely.safelyCall;
+
 import org.junit.Test;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.testing.JUnit4TestBase;
@@ -28,11 +31,9 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
-import static java.util.concurrent.TimeUnit.SECONDS;
-import static org.openqa.selenium.testing.Safely.safelyCall;
-
 public class ParallelSessionsTest extends JUnit4TestBase {
-  private ExecutorService service = Executors.newFixedThreadPool(3);
+
+  private final ExecutorService service = Executors.newFixedThreadPool(3);
 
   @Test
   public void shouldBeAbleToRunMultipleBrowsersAtTheSameTime() throws Exception {
