@@ -75,10 +75,10 @@ public class NodeOptions {
   static final String DEFAULT_VNC_ENV_VAR = "START_XVFB";
   static final int DEFAULT_REGISTER_CYCLE = 10;
   static final int DEFAULT_REGISTER_PERIOD = 120;
-
+  static final String DEFAULT_NODE_IMPLEMENTATION =
+    "org.openqa.selenium.grid.node.local.LocalNodeFactory";
   private static final Logger LOG = Logger.getLogger(NodeOptions.class.getName());
   private static final Json JSON = new Json();
-  private static final String DEFAULT_IMPL = "org.openqa.selenium.grid.node.local.LocalNodeFactory";
   private static final Platform CURRENT_PLATFORM = Platform.getCurrent();
   private static final ImmutableSet<String>
     SINGLE_SESSION_DRIVERS = ImmutableSet.of("safari", "safari technology preview");
@@ -145,7 +145,7 @@ public class NodeOptions {
   }
 
   public Node getNode() {
-    return config.getClass(NODE_SECTION, "implementation", Node.class, DEFAULT_IMPL);
+    return config.getClass(NODE_SECTION, "implementation", Node.class, DEFAULT_NODE_IMPLEMENTATION);
   }
 
   public Duration getRegisterCycle() {
