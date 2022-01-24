@@ -209,7 +209,7 @@ public class DriverServiceSessionFactory implements SessionFactory {
 
     Function<Capabilities, Optional<DevToolsInfo>> firefox = c ->
       CdpEndpointFinder.getReportedUri("moz:debuggerAddress", c)
-        .map(uri -> new DevToolsInfo(uri, "85"));
+        .map(uri -> new DevToolsInfo(uri, "85.0"));
 
     Optional<DevToolsInfo> maybeInfo = Stream.of(chrome, edge, firefox)
       .map(finder -> finder.apply(caps))
