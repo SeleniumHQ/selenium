@@ -7,5 +7,5 @@ runs:
   steps:
     - run: |
         cp .github/.bazelrc.local .
-        bazel query "${{ inputs.query }}" | xargs bazel test
+        bazel query "${{ inputs.query }}" | xargs bazel test --flaky_test_attempts=3
       shell: bash
