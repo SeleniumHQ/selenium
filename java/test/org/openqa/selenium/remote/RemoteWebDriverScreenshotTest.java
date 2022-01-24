@@ -17,6 +17,12 @@
 
 package org.openqa.selenium.remote;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.openqa.selenium.OutputType.BASE64;
+import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
+import static org.openqa.selenium.testing.drivers.Browser.HTMLUNIT;
+
 import org.junit.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
@@ -24,11 +30,6 @@ import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.openqa.selenium.OutputType.BASE64;
-import static org.openqa.selenium.testing.drivers.Browser.HTMLUNIT;
 
 @Ignore(HTMLUNIT)
 public class RemoteWebDriverScreenshotTest extends JUnit4TestBase {
@@ -50,6 +51,9 @@ public class RemoteWebDriverScreenshotTest extends JUnit4TestBase {
   }
 
   @Test
+  @Ignore(value = FIREFOX, gitHubActions = true,
+    reason = "Augmenter does not work well with Firefox and RemoteWebDriver, "
+             + "connection to CDP cannot be established")
   public void testCanAugmentWebDriverInstanceIfNecessary() {
     if (!(driver instanceof RemoteWebDriver)) {
       System.out.println("Skipping test: driver is not a remote webdriver");
