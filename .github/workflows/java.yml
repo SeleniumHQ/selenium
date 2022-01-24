@@ -205,11 +205,9 @@ jobs:
       - name: Start XVFB
         run: Xvfb :99 &
       - name: Run browser tests in Firefox
-        uses: nick-invision/retry@v2
+        uses: ./.github/actions/bazel-test
         with:
-          timeout_minutes: 20
-          max_attempts: 3
-          command: bazel query "attr(tags, rc, tests(//java/...))" | xargs bazel test
+          query: attr(tags, rc, tests(//java/...))
         env:
           DISPLAY: :99
 
