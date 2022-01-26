@@ -530,7 +530,7 @@ class WebElement(BaseWebElement):
         # transfer file to another machine only if remote driver is used
         # the same behaviour as for java binding
 
-        output: Iterable[AnyKey]
+        output: Iterable[AnyKey] = value
 
         if self.parent._is_remote:
             local_files = list(map(lambda keys_to_send:
@@ -541,8 +541,6 @@ class WebElement(BaseWebElement):
                 for file in local_files:
                     remote_files.append(self._upload(file))
                 output = '\n'.join(remote_files)
-        else:
-            output = value
 
         self._execute(Command.SEND_KEYS_TO_ELEMENT,
                       {'text': "".join(keys_to_typing(output)),
