@@ -125,6 +125,32 @@ public abstract class By {
     }
     return allElements.get(0);
   }
+  
+  /**
+  * Mechanism used to locate elements within a document but No need add the wait 
+  * pass the value in seconds and user not need to write driver.findElement(By.xpath(xpathExpression))
+  * 
+  *
+  * <pre><code>
+  * getElementByXpath("ADD_YOUR_XPATH");
+  * </code></pre>
+  */
+  
+  /**
+   * Find a single element. Override this method if necessary.
+   *
+   * @param xpathExpression A xpathExpression to use to find the element.
+   * @param timeOutInSeconds A timeOutInSeconds to add seconds
+   * @return The WebElement that matches the selector.
+   */
+    public static WebElement getElementByXpath (String xpathExpression, long timeOutInSeconds) {
+      // using web driver wait 
+      WebDriverWait wait = new WebDriverWait(driver, timeOutInSeconds);
+      //wait until the element is visible
+      wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath(xpathExpression)));
+      // return 
+		return driver.findElement(By.xpath(xpathExpression));
+	}
 
   /**
    * Find many elements.
