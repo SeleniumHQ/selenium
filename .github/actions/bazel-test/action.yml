@@ -1,11 +1,14 @@
 name: 'Run bazel query and pass found targets to bazel test'
 inputs:
-  query:  # id of input
+  query: # id of input
     required: true
+  attempts:
+    required: false
+    default: 1
 runs:
   using: "composite"
   steps:
     - run: |
         cp .github/.bazelrc.local .
-        bazel query "${{ inputs.query }}" | xargs bazel test
+        bazel query "${{ inputs.query }}" | xargs bazel test --flaky_test_attempts=${{ inputs.attempts }}
       shell: bash

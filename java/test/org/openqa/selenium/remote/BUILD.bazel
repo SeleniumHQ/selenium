@@ -2,7 +2,6 @@ load("@rules_jvm_external//:defs.bzl", "artifact")
 load("//java:defs.bzl", "java_selenium_test_suite", "java_test_suite")
 
 REMOTE_TESTS = [
-    "ParallelSessionsTest.java",
     "RemoteWebDriverScreenshotTest.java",
 ]
 

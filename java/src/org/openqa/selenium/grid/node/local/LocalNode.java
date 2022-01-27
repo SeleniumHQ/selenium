@@ -463,7 +463,7 @@ public class LocalNode extends Node {
       .copyOf(requestCapabilities.merge(other.getCapabilities()));
 
     // Add se:cdp if necessary to send the cdp url back
-    if (isSupportingCdp || requestCapabilities.getCapability("se:cdp") != null) {
+    if (isSupportingCdp || toUse.getCapability("se:cdp") != null) {
       String cdpPath = String.format("/session/%s/se/cdp", other.getId());
       toUse = new PersistentCapabilities(toUse).setCapability("se:cdp", rewrite(cdpPath));
     }

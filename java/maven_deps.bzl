@@ -2,7 +2,7 @@ load("@rules_jvm_external//:defs.bzl", "maven_install")
 load("@rules_jvm_external//:specs.bzl", "maven")
 
 def selenium_java_deps():
-    netty_version = "4.1.70.Final"
+    netty_version = "4.1.71.Final"
     opentelemetry_version = "1.9.1"
 
     maven_install(
@@ -36,6 +36,12 @@ def selenium_java_deps():
             "io.netty:netty-transport:%s" % netty_version,
             "io.netty:netty-transport-classes-epoll:%s" % netty_version,
             "io.netty:netty-transport-classes-kqueue:%s" % netty_version,
+            # Start - Needed to support unix domain sockets
+            "io.netty:netty-transport-native-epoll:%s" % netty_version,
+            "io.netty:netty-transport-native-epoll:jar:linux-x86_64:%s" % netty_version,
+            "io.netty:netty-transport-native-kqueue:%s" % netty_version,
+            "io.netty:netty-transport-native-kqueue:jar:osx-x86_64:%s" % netty_version,
+            # End - Needed to support unix domain sockets
             "io.netty:netty-transport-native-unix-common:%s" % netty_version,
             "io.opentelemetry:opentelemetry-api:%s" % opentelemetry_version,
             "io.opentelemetry:opentelemetry-context:%s" % opentelemetry_version,
