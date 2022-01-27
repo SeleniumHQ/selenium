@@ -28,9 +28,9 @@ import org.openqa.selenium.testing.UnitTests;
 @Category(UnitTests.class)
 public class InterfacesTest {
 
-  private interface SomeOtherInterface {}
+  protected interface SomeOtherInterface {}
 
-  private interface ExtendedDriver extends WebDriver, SomeOtherInterface {}
+  protected interface ExtendedDriver extends WebDriver, SomeOtherInterface {}
 
   @Test
   public void shouldNotAddInterfacesNotAvailableInTheOriginalDriver() {
