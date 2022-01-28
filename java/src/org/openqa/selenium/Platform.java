@@ -203,7 +203,7 @@ public enum Platform {
     }
   },
 
-  MONTERREY("monterrey", "os x 12.0", "macos 12.0") {
+  MONTEREY("monterey", "os x 12.0", "macos 12.0") {
     @Override
     public Platform family() {
       return MAC;
