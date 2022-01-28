@@ -101,6 +101,10 @@ correct binaries on your system.
 Ensure that you have Firefox installed and the latest
 [`geckodriver`](https://github.com/mozilla/geckodriver/releases/) on your `$PATH`.
 You may have to update this from time to time.
+The easiest way to ensure this is added to path is to add the following line to your code.
+```java
+System.setProperty("webdriver.gecko.driver", fileLocationString);
+```
 
 ### Common Build Targets
 
