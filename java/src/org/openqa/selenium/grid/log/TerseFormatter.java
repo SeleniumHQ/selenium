@@ -60,10 +60,10 @@ public class TerseFormatter extends Formatter {
   private final StringBuilder buffer;
   private final SimpleDateFormat timestampFormatter;
 
-  public TerseFormatter() {
+  public TerseFormatter(String logTimestampFormat) {
     buffer = new StringBuilder();
     buffer.append(PREFIX);
-    timestampFormatter = new SimpleDateFormat("HH:mm:ss.SSS");
+    timestampFormatter = new SimpleDateFormat(logTimestampFormat);
   }
 
   /**
