@@ -86,6 +86,10 @@ public class LoggingFlags implements HasRoles {
   @ConfigValue(section = LOGGING_SECTION, name = "log-level", example = "INFO")
   private String logLevel = DEFAULT_LOG_LEVEL;
 
+  @Parameter(description = "Format of the timestamp in log output", names = "--log-timestamp-format", arity = 1)
+  @ConfigValue(section = LOGGING_SECTION, name = "log-timestamp-format", example = "HH:mm:ss.SSS")
+  private String logTimestampFormat;
+
   @Override
   public Set<Role> getRoles() {
     return ALL_ROLES;

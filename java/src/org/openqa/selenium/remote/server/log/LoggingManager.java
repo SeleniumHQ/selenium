@@ -17,6 +17,7 @@
 
 package org.openqa.selenium.remote.server.log;
 
+import org.openqa.selenium.grid.log.LoggingOptions;
 import org.openqa.selenium.grid.log.TerseFormatter;
 
 import java.util.logging.ConsoleHandler;
@@ -32,7 +33,7 @@ import java.util.logging.SimpleFormatter;
 public class LoggingManager {
 
   private static PerSessionLogHandler perSessionLogHandler =
-    new PerSessionLogHandler(4000, new TerseFormatter(), false);
+    new PerSessionLogHandler(4000, new TerseFormatter(LoggingOptions.DEFAULT_LOG_TIMESTAMP_FORMAT), false);
 
   public static synchronized void configureLogging(boolean debugMode) {
     final Logger currentLogger;
@@ -67,14 +68,14 @@ public class LoggingManager {
            * DGF - Nobody likes the SimpleFormatter; surely they wanted our terse formatter instead.
            */
           originalLevel = handler.getLevel();
-          handler.setFormatter(new TerseFormatter());
+          handler.setFormatter(new TerseFormatter(LoggingOptions.DEFAULT_LOG_TIMESTAMP_FORMAT));
           handler.setLevel(Level.WARNING);
 
           /*
            * Furthermore, we all want DEBUG/INFO on stdout and WARN/ERROR on stderr
            */
           stdOutHandler = new StdOutHandler();
-          stdOutHandler.setFormatter(new TerseFormatter());
+          stdOutHandler.setFormatter(new TerseFormatter(LoggingOptions.DEFAULT_LOG_TIMESTAMP_FORMAT));
           stdOutHandler.setFilter(new MaxLevelFilter(Level.INFO));
           stdOutHandler.setLevel(originalLevel);
           logger.addHandler(stdOutHandler);
