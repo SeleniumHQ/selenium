@@ -27,8 +27,8 @@
     catch(err) {
     }
 //-->
-var data = {"i0":10,"i1":10,"i2":10,"i3":10};
-var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
+var data = {"i0":10,"i1":9,"i2":10,"i3":10,"i4":10};
+var tabs = {65535:["t0","All Methods"],1:["t1","Static Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
 var tableTab = "tableTab";
@@ -240,7 +240,7 @@ implements <a href="HasPermissions.html" title="interface in org.openqa.selenium
 </a>
 <h3>Method Summary</h3>
 <table class="memberSummary">
-<caption><span id="t0" class="activeTableTab"><span>All Methods</span><span class="tabEnd">&nbsp;</span></span><span id="t2" class="tableTab"><span><a href="javascript:show(2);">Instance Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t4" class="tableTab"><span><a href="javascript:show(8);">Concrete Methods</a></span><span class="tabEnd">&nbsp;</span></span></caption>
+<caption><span id="t0" class="activeTableTab"><span>All Methods</span><span class="tabEnd">&nbsp;</span></span><span id="t1" class="tableTab"><span><a href="javascript:show(1);">Static Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t2" class="tableTab"><span><a href="javascript:show(2);">Instance Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t4" class="tableTab"><span><a href="javascript:show(8);">Concrete Methods</a></span><span class="tabEnd">&nbsp;</span></span></caption>
 <tr>
 <th class="colFirst" scope="col">Modifier and Type</th>
 <th class="colSecond" scope="col">Method</th>
@@ -256,18 +256,23 @@ implements <a href="HasPermissions.html" title="interface in org.openqa.selenium
 </td>
 </tr>
 <tr id="i1" class="rowColor">
+<td class="colFirst"><code>static <a href="../remote/RemoteWebDriverBuilder.html" title="class in org.openqa.selenium.remote">RemoteWebDriverBuilder</a></code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#builder()">builder</a></span>()</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr id="i2" class="altColor">
 <td class="colFirst"><code>java.util.Map&lt;java.lang.String,&#8203;java.lang.Boolean&gt;</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getPermissions()">getPermissions</a></span>()</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i2" class="altColor">
+<tr id="i3" class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setFileDetector(org.openqa.selenium.remote.FileDetector)">setFileDetector</a></span>&#8203;(<a href="../remote/FileDetector.html" title="interface in org.openqa.selenium.remote">FileDetector</a>&nbsp;detector)</code></th>
 <td class="colLast">
 <div class="block">Set the file detector to be used when sending keyboard input.</div>
 </td>
 </tr>
-<tr id="i3" class="rowColor">
+<tr id="i4" class="altColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setPermissions(java.lang.String,boolean)">setPermissions</a></span>&#8203;(java.lang.String&nbsp;permission,
               boolean&nbsp;value)</code></th>
@@ -281,7 +286,7 @@ implements <a href="HasPermissions.html" title="interface in org.openqa.selenium
 <!--   -->
 </a>
 <h3>Methods inherited from class&nbsp;org.openqa.selenium.remote.<a href="../remote/RemoteWebDriver.html" title="class in org.openqa.selenium.remote">RemoteWebDriver</a></h3>
-<code><a href="../remote/RemoteWebDriver.html#addVirtualAuthenticator(org.openqa.selenium.virtualauthenticator.VirtualAuthenticatorOptions)">addVirtualAuthenticator</a>, <a href="../remote/RemoteWebDriver.html#builder()">builder</a>, <a href="../remote/RemoteWebDriver.html#close()">close</a>, <a href="../remote/RemoteWebDriver.html#execute(java.lang.String)">execute</a>, <a href="../remote/RemoteWebDriver.html#execute(java.lang.String,java.util.Map)">execute</a>, <a href="../remote/RemoteWebDriver.html#execute(org.openqa.selenium.remote.CommandPayload)">execute</a>, <a href="../remote/RemoteWebDriver.html#executeAsyncScript(java.lang.String,java.lang.Object...)">executeAsyncScript</a>, <a href="../remote/RemoteWebDriver.html#executeScript(java.lang.String,java.lang.Object...)">executeScript</a>, <a href="../remote/RemoteWebDriver.html#findElement(java.lang.String,java.lang.String)">findElement</a>, <a href="../remote/RemoteWebDriver.html#findElement(org.openqa.selenium.By)">findElement</a>, <a href="../remote/RemoteWebDriver.html#findElements(java.lang.String,java.lang.String)">findElements</a>, <a href="../remote/RemoteWebDriver.html#findElements(org.openqa.selenium.By)">findElements</a>, <a href="../remote/RemoteWebDriver.html#findElements(org.openqa.selenium.SearchContext,java.util.function.BiFunction,org.openqa.selenium.By)">findElements</a>, <a href="../remote/RemoteWebDriver.html#get(java.lang.String)">get</a>, <a href="../remote/RemoteWebDriver.html#getCapabilities()">getCapabilities</a>, <a href="../remote/RemoteWebDriver.html#getCommandExecutor()">getCommandExecutor</a>, <a href="../remote/RemoteWebDriver.html#getCurrentUrl()">getCurrentUrl</a>, <a href="../remote/RemoteWebDriver.html#getElementConverter()">getElementConverter</a>, <a href="../remote/RemoteWebDriver.html#getErrorHandler()">getErrorHandler</a>, <a href="../remote/RemoteWebDriver.html#getExecuteMethod()">getExecuteMethod</a>, <a href="../remote/RemoteWebDriver.html#getFileDetector()">getFileDetector</a>, <a href="../remote/RemoteWebDriver.html#getKeyboard()">getKeyboard</a>, <a href="../remote/RemoteWebDriver.html#getMouse()">getMouse</a>, <a href="../remote/RemoteWebDriver.html#getPageSource()">getPageSource</a>, <a href="../remote/RemoteWebDriver.html#getScreenshotAs(org.openqa.selenium.OutputType)">getScreenshotAs</a>, <a href="../remote/RemoteWebDriver.html#getSessionId()">getSessionId</a>, <a href="../remote/RemoteWebDriver.html#getTitle()">getTitle</a>, <a href="../remote/RemoteWebDriver.html#getWindowHandle()">getWindowHandle</a>, <a href="../remote/RemoteWebDriver.html#getWindowHandles()">getWindowHandles</a>, <a href="../remote/RemoteWebDriver.html#log(org.openqa.selenium.remote.SessionId,java.lang.String,java.lang.Object,org.openqa.selenium.remote.RemoteWebDriver.When)">log</a>, <a href="../remote/RemoteWebDriver.html#manage()">manage</a>, <a href="../remote/RemoteWebDriver.html#navigate()">navigate</a>, <a href="../remote/RemoteWebDriver.html#perform(java.util.Collection)">perform</a>, <a href="../remote/RemoteWebDriver.html#print(org.openqa.selenium.print.PrintOptions)">print</a>, <a href="../remote/RemoteWebDriver.html#quit()">quit</a>, <a href="../remote/RemoteWebDriver.html#removeVirtualAuthenticator(org.openqa.selenium.virtualauthenticator.VirtualAuthenticator)">removeVirtualAuthenticator</a>, <a href="../remote/RemoteWebDriver.html#resetInputState()">resetInputState</a>, <a href="../remote/RemoteWebDriver.html#setCommandExecutor(org.openqa.selenium.remote.CommandExecutor)">setCommandExecutor</a>, <a href="../remote/RemoteWebDriver.html#setElementConverter(org.openqa.selenium.remote.JsonToWebElementConverter)">setElementConverter</a>, <a href="../remote/RemoteWebDriver.html#setErrorHandler(org.openqa.selenium.remote.ErrorHandler)">setErrorHandler</a>, <a href="../remote/RemoteWebDriver.html#setFoundBy(org.openqa.selenium.SearchContext,org.openqa.selenium.WebElement,java.lang.String,java.lang.String)">setFoundBy</a>, <a href="../remote/RemoteWebDriver.html#setLogLevel(java.util.logging.Level)">setLogLevel</a>, <a href="../remote/RemoteWebDriver.html#setSessionId(java.lang.String)">setSessionId</a>, <a href="../remote/RemoteWebDriver.html#startSession(org.openqa.selenium.Capabilities)">startSession</a>, <a href="../remote/RemoteWebDriver.html#switchTo()">switchTo</a>, <a href="../remote/RemoteWebDriver.html#toString()">toString</a></code></li>
+<code><a href="../remote/RemoteWebDriver.html#addVirtualAuthenticator(org.openqa.selenium.virtualauthenticator.VirtualAuthenticatorOptions)">addVirtualAuthenticator</a>, <a href="../remote/RemoteWebDriver.html#close()">close</a>, <a href="../remote/RemoteWebDriver.html#execute(java.lang.String)">execute</a>, <a href="../remote/RemoteWebDriver.html#execute(java.lang.String,java.util.Map)">execute</a>, <a href="../remote/RemoteWebDriver.html#execute(org.openqa.selenium.remote.CommandPayload)">execute</a>, <a href="../remote/RemoteWebDriver.html#executeAsyncScript(java.lang.String,java.lang.Object...)">executeAsyncScript</a>, <a href="../remote/RemoteWebDriver.html#executeScript(java.lang.String,java.lang.Object...)">executeScript</a>, <a href="../remote/RemoteWebDriver.html#findElement(java.lang.String,java.lang.String)">findElement</a>, <a href="../remote/RemoteWebDriver.html#findElement(org.openqa.selenium.By)">findElement</a>, <a href="../remote/RemoteWebDriver.html#findElements(java.lang.String,java.lang.String)">findElements</a>, <a href="../remote/RemoteWebDriver.html#findElements(org.openqa.selenium.By)">findElements</a>, <a href="../remote/RemoteWebDriver.html#findElements(org.openqa.selenium.SearchContext,java.util.function.BiFunction,org.openqa.selenium.By)">findElements</a>, <a href="../remote/RemoteWebDriver.html#get(java.lang.String)">get</a>, <a href="../remote/RemoteWebDriver.html#getCapabilities()">getCapabilities</a>, <a href="../remote/RemoteWebDriver.html#getCommandExecutor()">getCommandExecutor</a>, <a href="../remote/RemoteWebDriver.html#getCurrentUrl()">getCurrentUrl</a>, <a href="../remote/RemoteWebDriver.html#getElementConverter()">getElementConverter</a>, <a href="../remote/RemoteWebDriver.html#getErrorHandler()">getErrorHandler</a>, <a href="../remote/RemoteWebDriver.html#getExecuteMethod()">getExecuteMethod</a>, <a href="../remote/RemoteWebDriver.html#getFileDetector()">getFileDetector</a>, <a href="../remote/RemoteWebDriver.html#getKeyboard()">getKeyboard</a>, <a href="../remote/RemoteWebDriver.html#getMouse()">getMouse</a>, <a href="../remote/RemoteWebDriver.html#getPageSource()">getPageSource</a>, <a href="../remote/RemoteWebDriver.html#getScreenshotAs(org.openqa.selenium.OutputType)">getScreenshotAs</a>, <a href="../remote/RemoteWebDriver.html#getSessionId()">getSessionId</a>, <a href="../remote/RemoteWebDriver.html#getTitle()">getTitle</a>, <a href="../remote/RemoteWebDriver.html#getWindowHandle()">getWindowHandle</a>, <a href="../remote/RemoteWebDriver.html#getWindowHandles()">getWindowHandles</a>, <a href="../remote/RemoteWebDriver.html#log(org.openqa.selenium.remote.SessionId,java.lang.String,java.lang.Object,org.openqa.selenium.remote.RemoteWebDriver.When)">log</a>, <a href="../remote/RemoteWebDriver.html#manage()">manage</a>, <a href="../remote/RemoteWebDriver.html#navigate()">navigate</a>, <a href="../remote/RemoteWebDriver.html#perform(java.util.Collection)">perform</a>, <a href="../remote/RemoteWebDriver.html#print(org.openqa.selenium.print.PrintOptions)">print</a>, <a href="../remote/RemoteWebDriver.html#quit()">quit</a>, <a href="../remote/RemoteWebDriver.html#removeVirtualAuthenticator(org.openqa.selenium.virtualauthenticator.VirtualAuthenticator)">removeVirtualAuthenticator</a>, <a href="../remote/RemoteWebDriver.html#resetInputState()">resetInputState</a>, <a href="../remote/RemoteWebDriver.html#setCommandExecutor(org.openqa.selenium.remote.CommandExecutor)">setCommandExecutor</a>, <a href="../remote/RemoteWebDriver.html#setElementConverter(org.openqa.selenium.remote.JsonToWebElementConverter)">setElementConverter</a>, <a href="../remote/RemoteWebDriver.html#setErrorHandler(org.openqa.selenium.remote.ErrorHandler)">setErrorHandler</a>, <a href="../remote/RemoteWebDriver.html#setFoundBy(org.openqa.selenium.SearchContext,org.openqa.selenium.WebElement,java.lang.String,java.lang.String)">setFoundBy</a>, <a href="../remote/RemoteWebDriver.html#setLogLevel(java.util.logging.Level)">setLogLevel</a>, <a href="../remote/RemoteWebDriver.html#setSessionId(java.lang.String)">setSessionId</a>, <a href="../remote/RemoteWebDriver.html#startSession(org.openqa.selenium.Capabilities)">startSession</a>, <a href="../remote/RemoteWebDriver.html#switchTo()">switchTo</a>, <a href="../remote/RemoteWebDriver.html#toString()">toString</a></code></li>
 </ul>
 <ul class="blockList">
 <li class="blockList"><a id="methods.inherited.from.class.java.lang.Object">
@@ -452,7 +457,7 @@ public&nbsp;SafariDriver&#8203;(<a href="../Capabilities.html" title="interface 
 <a id="setFileDetector(org.openqa.selenium.remote.FileDetector)">
 <!--   -->
 </a>
-<ul class="blockListLast">
+<ul class="blockList">
 <li class="blockList">
 <h4>setFileDetector</h4>
 <pre class="methodSignature">public&nbsp;void&nbsp;setFileDetector&#8203;(<a href="../remote/FileDetector.html" title="interface in org.openqa.selenium.remote">FileDetector</a>&nbsp;detector)</pre>
@@ -469,6 +474,16 @@ public&nbsp;SafariDriver&#8203;(<a href="../Capabilities.html" title="interface 
 <a href="../remote/LocalFileDetector.html" title="class in org.openqa.selenium.remote"><code>LocalFileDetector</code></a>, 
 <a href="../remote/UselessFileDetector.html" title="class in org.openqa.selenium.remote"><code>UselessFileDetector</code></a></dd>
 </dl>
+</li>
+</ul>
+<a id="builder()">
+<!--   -->
+</a>
+<ul class="blockListLast">
+<li class="blockList">
+<h4>builder</h4>
+<pre class="methodSignature"><a href="../Beta.html" title="annotation in org.openqa.selenium">@Beta</a>
+public static&nbsp;<a href="../remote/RemoteWebDriverBuilder.html" title="class in org.openqa.selenium.remote">RemoteWebDriverBuilder</a>&nbsp;builder()</pre>
 </li>
 </ul>
 </li>
