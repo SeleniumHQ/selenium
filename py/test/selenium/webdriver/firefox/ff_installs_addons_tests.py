@@ -20,11 +20,18 @@ import os
 from selenium.common.exceptions import WebDriverException
 
 
+def test_install_addon_temporary(driver):
+    extension = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
+                             '../../../../third_party/firebug/favourite_colour-1.1-an+fx.xpi')
+
+    id = driver.install_addon(extension, True)
+    assert id == 'favourite-colour-examples@mozilla.org'
+
 def test_install_addon(driver):
     extension = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
                              '../../../../third_party/firebug/favourite_colour-1.1-an+fx.xpi')
 
-    id = driver.install_addon(extension)
+    id = driver.install_addon(extension, False)
     assert id == 'favourite-colour-examples@mozilla.org'
 
 
