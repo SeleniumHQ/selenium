@@ -27,12 +27,14 @@ def test_install_addon_temporary(driver):
     id = driver.install_addon(extension, True)
     assert id == 'favourite-colour-examples@mozilla.org'
 
+
 def test_install_addon(driver):
     extension = os.path.join(os.path.dirname(os.path.abspath(__file__)),
                             'favourite_colour-1.1-an+fx.xpi')
 
     id = driver.install_addon(extension, False)
     assert id == 'favourite-colour-examples@mozilla.org'
+
 
 def test_uninstall_addon(driver):
     extension = os.path.join(os.path.dirname(os.path.abspath(__file__)),
