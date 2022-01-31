@@ -193,5 +193,9 @@ public class ProtocolHandshake {
     public String toString() {
       return String.format("%s: %s", dialect, capabilities);
     }
+
+    public Map<String, ?> getCapabilities() {
+      return capabilities;
+    }
   }
 }

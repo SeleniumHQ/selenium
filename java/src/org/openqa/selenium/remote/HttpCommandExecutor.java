@@ -154,6 +154,8 @@ public class HttpCommandExecutor implements CommandExecutor, NeedsLocalLogs {
       ProtocolHandshake handshake = new ProtocolHandshake();
       log(LogType.PROFILER, new HttpProfilerLogEntry(command.getName(), true));
       ProtocolHandshake.Result result = handshake.createSession(client, command);
+
+      command.setNodeInfo((String) result.getCapabilities().get("se:forwardCdp"));
       Dialect dialect = result.getDialect();
       commandCodec = dialect.getCommandCodec();
       for (Map.Entry<String, CommandInfo> entry : additionalCommands.entrySet()) {

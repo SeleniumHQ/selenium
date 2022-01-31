@@ -584,6 +584,7 @@ public class RemoteWebDriver implements WebDriver,
       }
       populateWebDriverException(toThrow);
       toThrow.addInfo("Command", command.toString());
+      toThrow.addInfo("Node Info: ",command.getNodeInfo());
       throw toThrow;
     } finally {
       Thread.currentThread().setName(currentName);

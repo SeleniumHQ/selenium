@@ -29,6 +29,7 @@ public class Command {
 
   private final SessionId sessionId;
   private final CommandPayload payload;
+  private String nodeInfo;
 
   public Command(SessionId sessionId, String name) {
     this(sessionId, name, new HashMap<>());
@@ -107,5 +108,13 @@ public class Command {
     input.endObject();
 
     return new Command(sessionId, name, parameters);
+  }
+
+  public String getNodeInfo() {
+    return nodeInfo;
+  }
+
+  public void setNodeInfo(String nodeInfo) {
+    this.nodeInfo = nodeInfo;
   }
 }
