@@ -1,3 +1,30 @@
+v4.1.2
+======
+
+* Supported CDP versions: 85, 95, 96, 97
+* Add new desktop cast command for Chromium
+* BugFix: Update toJson() method creation for integer type in CdpClientGenerator
+* Fix Javadocs FluentWait's sample usage wrt durations
+* [grid] Throw ServerBindException when server cannot start due to network issues
+* Add support for CDP Chrome 97
+* Throw error when using custom client config with local driver
+* Adding a builder() to all drivers to generate the correct default options instance
+* Use class' class loader when looking up `HttpClient` factory
+* Remove max duration value to allow retries during network connection failures
+* allow setting a different keyboard or pointer for actions on input devices
+* [grid] Guarding how the server reads parameters to keep it stable
+* Remove connection timeout setter, a static 10s value is used
+* [grid] Getting session requests from the queue faster
+* [grid] Reworking how new session requests are processed, querying queue only
+  when Grid has availability
+* [grid] Fix added missing quotation marks in examples (cli help)
+* Replace deprecated OpenTelemetrySdk creation API
+* [grid] Improving Node health check execution
+* [grid] Adding back support for unix domain sockets
+* Allow disabling tracing in RemoteWebDriver
+* Replace dynamic proxy with ByteBuddy for WebDriverDecorator
+* Log Timestamp flag added
+
 v4.1.1
 ======
 
