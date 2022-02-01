@@ -11,10 +11,9 @@ jobs:
     steps:
       - uses: actions/stale@v4
         with:
-          stale-issue-message: 'This issue is stale because it has been open 365 days with no activity. Remove stale label or comment or this will be closed in 14 days.'
+          stale-issue-message: 'This issue is stale because it has been open 280 days with no activity. Remove stale label or comment or this will be closed in 14 days.'
           close-issue-message: 'This issue was closed because it has been stalled for 14 days with no activity.'
           stale-issue-label: 'I-stale'
-          exempt-issue-labels: 'help wanted'
-          days-before-stale: 365
+          days-before-stale: 280
           days-before-close: 14
           operations-per-run: 200
