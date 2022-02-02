@@ -23,16 +23,16 @@ import static org.openqa.selenium.WaitingConditions.elementValueToEqual;
 import static org.openqa.selenium.WaitingConditions.windowHandleCountToBe;
 import static org.openqa.selenium.support.ui.ExpectedConditions.presenceOfElementLocated;
 import static org.openqa.selenium.support.ui.ExpectedConditions.titleIs;
-import static org.openqa.selenium.testing.drivers.Browser.CHROME;
-import static org.openqa.selenium.testing.drivers.Browser.LEGACY_FIREFOX_XPI;
-import static org.openqa.selenium.testing.drivers.Browser.HTMLUNIT;
-import static org.openqa.selenium.testing.drivers.Browser.IE;
-import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
-import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
 import static org.openqa.selenium.testing.TestUtilities.getEffectivePlatform;
 import static org.openqa.selenium.testing.TestUtilities.getIEVersion;
 import static org.openqa.selenium.testing.TestUtilities.isInternetExplorer;
 import static org.openqa.selenium.testing.TestUtilities.isNativeEventsEnabled;
+import static org.openqa.selenium.testing.drivers.Browser.CHROME;
+import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
+import static org.openqa.selenium.testing.drivers.Browser.HTMLUNIT;
+import static org.openqa.selenium.testing.drivers.Browser.IE;
+import static org.openqa.selenium.testing.drivers.Browser.LEGACY_FIREFOX_XPI;
+import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
 
 import org.junit.Test;
 import org.openqa.selenium.By;
@@ -43,14 +43,11 @@ import org.openqa.selenium.Platform;
 import org.openqa.selenium.Point;
 import org.openqa.selenium.WaitingConditions;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.NotYetImplemented;
 import org.openqa.selenium.testing.SwitchToTopAfterTest;
 
-import java.time.Duration;
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -114,34 +111,22 @@ public class CombinedInputActionsTest extends JUnit4TestBase {
   @Ignore(IE)
   @Ignore(LEGACY_FIREFOX_XPI)
   @NotYetImplemented(SAFARI)
-  public void testPenAndKeyboardCombination() {
+  public void testMultipleInputs() {
     driver.get(pages.formSelectionPage);
 
     List<WebElement> options = driver.findElements(By.tagName("option"));
 
-    PointerInput defaultPen = new PointerInput(PointerInput.Kind.PEN, "default pen");
-    Sequence actionListPen = new Sequence(defaultPen, 0)
-      .addAction(defaultPen.createPointerMove(Duration.ZERO, PointerInput.Origin.fromElement(options.get(1)), 0, 0))
-      .addAction(defaultPen.createPointerDown(0))
-      .addAction(defaultPen.createPointerUp(0))
-      .addAction(new Pause(defaultPen, Duration.ZERO))
-      .addAction(defaultPen.createPointerMove(Duration.ZERO, PointerInput.Origin.fromElement(options.get(3)), 0, 0))
-      .addAction(defaultPen.createPointerDown(0))
-      .addAction(defaultPen.createPointerUp(0))
-      .addAction(new Pause(defaultPen, Duration.ZERO));
+    Actions actions = new Actions(driver);
+    Action selectThreeOptions = actions.setActivePointer(PointerInput.Kind.PEN, "default pen")
+      .click(options.get(1))
+      .keyDown(Keys.SHIFT)
+      .click(options.get(1))
+      .setActivePointer(PointerInput.Kind.MOUSE, "default mouse")
+      .click(options.get(3))
+      .keyUp(Keys.SHIFT)
+      .build();
 
-    KeyInput defaultKeyboard = new KeyInput("default keyboard");
-    Sequence actionListKeyboard = new Sequence(defaultKeyboard, 0)
-      .addAction(new Pause(defaultPen, Duration.ZERO))
-      .addAction(new Pause(defaultPen, Duration.ZERO))
-      .addAction(new Pause(defaultPen, Duration.ZERO))
-      .addAction(defaultKeyboard.createKeyDown(Keys.SHIFT.getCodePoint()))
-      .addAction(new Pause(defaultPen, Duration.ZERO))
-      .addAction(new Pause(defaultPen, Duration.ZERO))
-      .addAction(new Pause(defaultPen, Duration.ZERO))
-      .addAction(defaultKeyboard.createKeyUp(Keys.SHIFT.getCodePoint()));
-
-    ((RemoteWebDriver) driver).perform(Arrays.asList(actionListKeyboard, actionListPen));
+    selectThreeOptions.perform();
 
     WebElement showButton = driver.findElement(By.name("showselected"));
     showButton.click();
@@ -185,9 +170,8 @@ public class CombinedInputActionsTest extends JUnit4TestBase {
   @Ignore(IE)
   @Ignore(value = FIREFOX, travis = true)
   public void testControlClickingOnCustomMultiSelectionList() {
-    assumeFalse("FIXME: macs don't have CONTROL key",
-                getEffectivePlatform(driver).is(Platform.MAC));
     driver.get(pages.selectableItemsPage);
+    Keys key = getEffectivePlatform(driver).is(Platform.MAC) ? Keys.COMMAND : Keys.CONTROL;
 
     WebElement reportingElement = driver.findElement(By.id("infodiv"));
 
@@ -196,11 +180,11 @@ public class CombinedInputActionsTest extends JUnit4TestBase {
     List<WebElement> listItems = driver.findElements(By.tagName("li"));
 
     Actions actions = new Actions(driver);
-    Action selectThreeItems = actions.keyDown(Keys.CONTROL)
+    Action selectThreeItems = actions.keyDown(key)
         .click(listItems.get(1))
         .click(listItems.get(3))
         .click(listItems.get(5))
-        .keyUp(Keys.CONTROL)
+        .keyUp(key)
         .build();
 
     selectThreeItems.perform();
@@ -211,6 +195,36 @@ public class CombinedInputActionsTest extends JUnit4TestBase {
     actions = new Actions(driver);
     actions.click(listItems.get(6)).build().perform();
     assertThat(reportingElement.getText()).isEqualTo("#item7");
+  }
+
+  @Test
+  @Ignore(IE)
+  @Ignore(value = FIREFOX, travis = true)
+  public void testControlClickingWithMultiplePointers() {
+    driver.get(pages.selectableItemsPage);
+
+    Keys key = getEffectivePlatform(driver).is(Platform.MAC) ? Keys.COMMAND : Keys.CONTROL;
+    WebElement reportingElement = driver.findElement(By.id("infodiv"));
+
+    assertThat(reportingElement.getText()).isEqualTo("no info");
+
+    List<WebElement> listItems = driver.findElements(By.tagName("li"));
+
+    Actions actions = new Actions(driver);
+    Action selectThreeItems = actions
+      .keyDown(key)
+      .setActivePointer(PointerInput.Kind.PEN, "default pen")
+      .click(listItems.get(1))
+      .setActivePointer(PointerInput.Kind.MOUSE, "default mouse")
+      .click(listItems.get(3))
+      .setActivePointer(PointerInput.Kind.PEN, "default pen")
+      .click(listItems.get(5))
+      .keyUp(key)
+      .build();
+
+    selectThreeItems.perform();
+
+    assertThat(reportingElement.getText()).isEqualTo("#item2 #item4 #item6");
   }
 
   private void navigateToClicksPageAndClickLink() {

@@ -15,15 +15,15 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.devtools.v94;
+package org.openqa.selenium.netty.server;
 
-import com.google.auto.service.AutoService;
-import org.openqa.selenium.devtools.CdpInfo;
+import java.io.IOException;
+import java.io.UncheckedIOException;
 
-@AutoService(CdpInfo.class)
-public class V94CdpInfo extends CdpInfo {
+public class ServerBindException extends UncheckedIOException {
 
-  public V94CdpInfo() {
-    super(94, V94Domains::new);
+  public ServerBindException(String message, IOException cause) {
+    super(message, cause);
   }
+
 }

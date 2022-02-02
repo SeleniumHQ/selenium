@@ -23,6 +23,7 @@ import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.SessionNotCreatedException;
+import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.firefox.FirefoxOptions;
 import org.openqa.selenium.ie.InternetExplorerOptions;
@@ -38,6 +39,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URL;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -50,6 +52,7 @@ import static java.util.Collections.emptyMap;
 import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.openqa.selenium.json.Json.JSON_UTF_8;
 import static org.openqa.selenium.json.Json.MAP_TYPE;
 import static org.openqa.selenium.remote.Browser.CHROME;
@@ -305,6 +308,21 @@ public class RemoteWebDriverBuilderTest {
   }
 
   @Test
+  public void shouldThrowErrorIfCustomConfigIfSetForLocalDriver() {
+    ClientConfig config = ClientConfig.defaultConfig()
+      .readTimeout(Duration.ofMinutes(4));
+
+    RemoteWebDriverBuilder builder = RemoteWebDriver.builder()
+      .oneOf(new ImmutableCapabilities("browser", "selenium-test"))
+      .config(config)
+      .connectingWith(clientConfig -> req -> CANNED_SESSION_RESPONSE);
+
+    assertThatIllegalArgumentException()
+      .isThrownBy(builder::build)
+      .withMessage("ClientConfig instances do not work for Local Drivers");
+  }
+
+  @Test
   public void shouldSetSessionIdFromW3CResponse() {
     RemoteWebDriver driver = (RemoteWebDriver) RemoteWebDriver.builder()
       .oneOf(new FirefoxOptions())
@@ -333,10 +351,36 @@ public class RemoteWebDriverBuilderTest {
 
   @Test
   public void shouldUseWebDriverInfoToFindAMatchingDriverImplementationForRequestedCapabilitiesIfRemoteUrlNotSet() {
+    WebDriver driver = RemoteWebDriver.builder()
+      .oneOf(new ImmutableCapabilities("browser", "selenium-test"))
+      .connectingWith(config -> req -> CANNED_SESSION_RESPONSE)
+      .build();
+
+    assertThat(driver).isInstanceOf(FakeWebDriverInfo.FakeWebDriver.class);
   }
 
   @Test
   public void shouldAugmentDriverIfPossible() {
+    HttpResponse response = new HttpResponse()
+      .setContent(Contents.asJson(ImmutableMap.of(
+        "value", ImmutableMap.of(
+          "sessionId", SESSION_ID,
+          "capabilities", new ImmutableCapabilities("firefox", "caps")))));
+
+    Augmenter augmenter = new Augmenter().addDriverAugmentation("firefox",
+                                                                AugmenterTest.HasMagicNumbers.class,
+                                                                (c, exe) -> () -> 1);
+    WebDriver driver = RemoteWebDriver.builder()
+      .oneOf(new FirefoxOptions())
+      .augmentUsing(augmenter)
+      .address("http://localhost:34576")
+      .connectingWith(config -> req -> response)
+      .build();
+
+    int number = ((AugmenterTest.HasMagicNumbers)driver).getMagicNumber();
+
+    assertThat(driver).isInstanceOf(AugmenterTest.HasMagicNumbers.class);
+    assertThat(number).isEqualTo(1);
   }
 
   @SuppressWarnings("unchecked")

@@ -18,12 +18,14 @@
 package org.openqa.selenium.safari;
 
 import com.google.common.collect.ImmutableMap;
+import org.openqa.selenium.Beta;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.CommandInfo;
 import org.openqa.selenium.remote.FileDetector;
 import org.openqa.selenium.remote.RemoteWebDriver;
+import org.openqa.selenium.remote.RemoteWebDriverBuilder;
 import org.openqa.selenium.remote.service.DriverCommandExecutor;
 import org.openqa.selenium.remote.service.DriverService;
 
@@ -125,5 +127,10 @@ public class SafariDriver extends RemoteWebDriver implements HasPermissions, Has
     throw new WebDriverException(
         "Setting the file detector only works on remote webdriver instances obtained " +
         "via RemoteWebDriver");
+  }
+
+  @Beta
+  public static RemoteWebDriverBuilder builder() {
+    return RemoteWebDriver.builder().oneOf(new SafariOptions());
   }
 }

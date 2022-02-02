@@ -24,17 +24,47 @@ import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
+import org.openqa.selenium.remote.RemoteWebDriverBuilder;
+import org.openqa.selenium.remote.http.ClientConfig;
 import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.NoDriverAfterTest;
 import org.openqa.selenium.testing.NoDriverBeforeTest;
 import org.openqa.selenium.testing.drivers.WebDriverBuilder;
 
 import java.awt.*;
+import java.time.Duration;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.openqa.selenium.ie.InternetExplorerDriver.ENABLE_PERSISTENT_HOVERING;
 
 public class InternetExplorerDriverTest extends JUnit4TestBase {
+
+  @Test
+  public void builderGeneratesDefaultChromeOptions() {
+    WebDriver driver = InternetExplorerDriver.builder().build();
+    driver.quit();
+  }
+
+  @Test
+  public void builderOverridesDefaultChromeOptions() {
+    InternetExplorerOptions options = new InternetExplorerOptions();
+    options.setImplicitWaitTimeout(Duration.ofMillis(1));
+    WebDriver driver = InternetExplorerDriver.builder().oneOf(options).build();
+    assertThat(driver.manage().timeouts().getImplicitWaitTimeout()).isEqualTo(Duration.ofMillis(1));
+
+    driver.quit();
+  }
+
+  @Test
+  public void builderWithClientConfigthrowsException() {
+    ClientConfig clientConfig = ClientConfig.defaultConfig().readTimeout(Duration.ofMinutes(1));
+    RemoteWebDriverBuilder builder = InternetExplorerDriver.builder().config(clientConfig);
+
+    assertThatExceptionOfType(IllegalArgumentException.class)
+      .isThrownBy(builder::build)
+      .withMessage("ClientConfig instances do not work for Local Drivers");
+  }
 
   @Test
   @NoDriverBeforeTest

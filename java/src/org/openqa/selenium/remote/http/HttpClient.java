@@ -48,7 +48,7 @@ public interface HttpClient extends Closeable, HttpHandler {
      * @throws IllegalStateException if more than one implementation with the given name can be found
      */
     static Factory create(String name) {
-      ServiceLoader<HttpClient.Factory> loader = ServiceLoader.load(HttpClient.Factory.class);
+      ServiceLoader<HttpClient.Factory> loader = ServiceLoader.load(HttpClient.Factory.class, HttpClient.Factory.class.getClassLoader());
       Set<Factory> factories = StreamSupport.stream(loader.spliterator(), true)
           .filter(p -> p.getClass().isAnnotationPresent(HttpClientName.class))
           .filter(p -> name.equals(p.getClass().getAnnotation(HttpClientName.class).value()))

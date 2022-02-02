@@ -135,6 +135,7 @@ jobs:
         uses: ./.github/actions/bazel-test
         with:
           query: attr(tags, ${{ matrix.browser }}, tests(//java/...)) except attr(tags, 'lint|rc|remote', tests(//java/...))
+          attempts: 3
         env:
           DISPLAY: :99
 
@@ -175,6 +176,7 @@ jobs:
         uses: ./.github/actions/bazel-test
         with:
           query: attr(tags, ${{ matrix.browser }}, tests(//java/...)) intersect attr(tags, 'remote', tests(//java/...))
+          attempts: 3
         env:
           DISPLAY: :99
 
@@ -208,6 +210,7 @@ jobs:
         uses: ./.github/actions/bazel-test
         with:
           query: attr(tags, rc, tests(//java/...))
+          attempts: 3
         env:
           DISPLAY: :99
 

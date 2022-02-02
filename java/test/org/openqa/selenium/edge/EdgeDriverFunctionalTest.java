@@ -26,6 +26,8 @@ import org.openqa.selenium.chromium.HasCasting;
 import org.openqa.selenium.chromium.HasCdp;
 import org.openqa.selenium.chromium.HasNetworkConditions;
 import org.openqa.selenium.chromium.HasPermissions;
+import org.openqa.selenium.remote.RemoteWebDriverBuilder;
+import org.openqa.selenium.remote.http.ClientConfig;
 import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.drivers.WebDriverBuilder;
 
@@ -34,6 +36,7 @@ import java.util.List;
 import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.assertj.core.api.Assertions.fail;
 import static org.assertj.core.api.Assumptions.assumeThat;
 
@@ -41,6 +44,32 @@ public class EdgeDriverFunctionalTest extends JUnit4TestBase {
 
   private final String CLIPBOARD_READ = "clipboard-read";
   private final String CLIPBOARD_WRITE = "clipboard-write";
+
+  @Test
+  public void builderGeneratesDefaultChromeOptions() {
+    WebDriver driver = EdgeDriver.builder().build();
+    driver.quit();
+  }
+
+  @Test
+  public void builderOverridesDefaultChromeOptions() {
+    EdgeOptions options = new EdgeOptions();
+    options.setImplicitWaitTimeout(Duration.ofMillis(1));
+    WebDriver driver = EdgeDriver.builder().oneOf(options).build();
+    assertThat(driver.manage().timeouts().getImplicitWaitTimeout()).isEqualTo(Duration.ofMillis(1));
+
+    driver.quit();
+  }
+
+  @Test
+  public void builderWithClientConfigthrowsException() {
+    ClientConfig clientConfig = ClientConfig.defaultConfig().readTimeout(Duration.ofMinutes(1));
+    RemoteWebDriverBuilder builder = EdgeDriver.builder().config(clientConfig);
+
+    assertThatExceptionOfType(IllegalArgumentException.class)
+      .isThrownBy(builder::build)
+      .withMessage("ClientConfig instances do not work for Local Drivers");
+  }
 
   @Test
   public void canSetPermission() {

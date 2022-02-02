@@ -2,7 +2,6 @@ load("@rules_jvm_external//:defs.bzl", "artifact")
 load("//java:defs.bzl", "java_selenium_test_suite", "java_test_suite")
 
 REMOTE_TESTS = [
-    "ParallelSessionsTest.java",
     "RemoteWebDriverScreenshotTest.java",
 ]
 
@@ -21,6 +20,7 @@ java_test_suite(
         "no-sandbox",
     ],
     deps = [
+        "//java:auto-service",
         "//java/src/org/openqa/selenium:core",
         "//java/src/org/openqa/selenium/chrome",
         "//java/src/org/openqa/selenium/firefox",
@@ -28,6 +28,7 @@ java_test_suite(
         "//java/src/org/openqa/selenium/ie",
         "//java/src/org/openqa/selenium/json",
         "//java/src/org/openqa/selenium/remote",
+        "//java/src/org/openqa/selenium/support/decorators",
         "//java/test/org/openqa/selenium/testing:annotations",
         artifact("org.assertj:assertj-core"),
         artifact("com.google.guava:guava"),

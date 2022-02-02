@@ -162,18 +162,18 @@ test.suite(
         const dir = await io.tmpDir()
         await driver.setDownloadPath(dir)
 
-        const url = fileServer.whereIs('/data/firefox/webextension.xpi')
+        const url = fileServer.whereIs('/data/chrome/download.bin')
         await driver.get(`data:text/html,<!DOCTYPE html>
   <div><a download="" href="${url}">Go!</a></div>`)
 
         await driver.findElement({ css: 'a' }).click()
 
-        const downloadPath = path.join(dir, 'webextension.xpi')
+        const downloadPath = path.join(dir, 'download.bin')
         await driver.wait(() => io.exists(downloadPath), 5000)
 
         const goldenPath = path.join(
           __dirname,
-          '../../lib/test/data/firefox/webextension.xpi'
+          '../../lib/test/data/chrome/download.bin'
         )
         assert.strictEqual(
           fs.readFileSync(downloadPath, 'binary'),

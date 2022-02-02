@@ -42,7 +42,6 @@ import org.openqa.selenium.NoSuchSessionException;
 import org.openqa.selenium.PersistentCapabilities;
 import org.openqa.selenium.RetrySessionRequestException;
 import org.openqa.selenium.WebDriverException;
-import org.openqa.selenium.concurrent.Regularly;
 import org.openqa.selenium.events.EventBus;
 import org.openqa.selenium.grid.data.Availability;
 import org.openqa.selenium.grid.data.CreateSessionRequest;
@@ -96,6 +95,9 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
@@ -169,13 +171,41 @@ public class LocalNode extends Node {
       })
       .build();
 
-    Regularly sessionCleanup = new Regularly("Session Cleanup Node: " + externalUri);
-    sessionCleanup.submit(currentSessions::cleanUp, Duration.ofSeconds(30), Duration.ofSeconds(30));
-    Regularly tmpFileCleanup = new Regularly("TempFile Cleanup Node: " + externalUri);
-    tmpFileCleanup.submit(tempFileSystems::cleanUp, Duration.ofSeconds(30), Duration.ofSeconds(30));
-    Regularly regularHeartBeat = new Regularly("Heartbeat Node: " + externalUri);
-    regularHeartBeat.submit(() -> bus.fire(new NodeHeartBeatEvent(getStatus())), heartbeatPeriod,
-                            heartbeatPeriod);
+    ScheduledExecutorService sessionCleanupNodeService =
+      Executors.newSingleThreadScheduledExecutor(
+        r -> {
+          Thread thread = new Thread(r);
+          thread.setDaemon(true);
+          thread.setName("Session Cleanup Node " + externalUri);
+          return thread;
+        });
+    sessionCleanupNodeService.scheduleAtFixedRate(
+      currentSessions::cleanUp, 30, 30, TimeUnit.SECONDS);
+
+    ScheduledExecutorService tempFileCleanupNodeService =
+      Executors.newSingleThreadScheduledExecutor(
+        r -> {
+          Thread thread = new Thread(r);
+          thread.setDaemon(true);
+          thread.setName("TempFile Cleanup Node " + externalUri);
+          return thread;
+        });
+    tempFileCleanupNodeService.scheduleAtFixedRate(
+      tempFileSystems::cleanUp, 30, 30, TimeUnit.SECONDS);
+
+    ScheduledExecutorService heartbeatNodeService =
+      Executors.newSingleThreadScheduledExecutor(
+        r -> {
+          Thread thread = new Thread(r);
+          thread.setDaemon(true);
+          thread.setName("TempFile Cleanup Node " + externalUri);
+          return thread;
+        });
+    heartbeatNodeService.scheduleAtFixedRate(
+      () -> bus.fire(new NodeHeartBeatEvent(getStatus())),
+      heartbeatPeriod.getSeconds(),
+      heartbeatPeriod.getSeconds(),
+      TimeUnit.SECONDS);
 
     bus.addListener(SessionClosedEvent.listener(id -> {
       // Listen to session terminated events so we know when to fire the NodeDrainComplete event
@@ -330,9 +360,11 @@ public class LocalNode extends Node {
 
         // The session we return has to look like it came from the node, since we might be dealing
         // with a webdriver implementation that only accepts connections from localhost
-        boolean isSupportingCdp = slotToUse.isSupportingCdp() ||
-                                  caps.getCapability("se:cdp") != null;
-        Session externalSession = createExternalSession(session, externalUri, isSupportingCdp);
+        Session externalSession = createExternalSession(
+          session,
+          externalUri,
+          slotToUse.isSupportingCdp(),
+          sessionRequest.getDesiredCapabilities());
         return Either.right(new CreateSessionResponse(
           externalSession,
           getEncoder(session.getDownstreamDialect()).apply(externalSession)));
@@ -360,7 +392,11 @@ public class LocalNode extends Node {
       throw new NoSuchSessionException("Cannot find session with id: " + id);
     }
 
-    return createExternalSession(slot.getSession(), externalUri, slot.isSupportingCdp());
+    return createExternalSession(
+      slot.getSession(),
+      externalUri,
+      slot.isSupportingCdp(),
+      slot.getSession().getCapabilities());
   }
 
   @Override
@@ -450,11 +486,14 @@ public class LocalNode extends Node {
   }
 
   private Session createExternalSession(ActiveSession other, URI externalUri,
-                                        boolean isSupportingCdp) {
-    Capabilities toUse = ImmutableCapabilities.copyOf(other.getCapabilities());
+                                        boolean isSupportingCdp, Capabilities requestCapabilities) {
+    // We merge the session request capabilities and the session ones to keep the values sent
+    // by the user in the session information
+    Capabilities toUse = ImmutableCapabilities
+      .copyOf(requestCapabilities.merge(other.getCapabilities()));
 
     // Add se:cdp if necessary to send the cdp url back
-    if (isSupportingCdp) {
+    if (isSupportingCdp || toUse.getCapability("se:cdp") != null) {
       String cdpPath = String.format("/session/%s/se/cdp", other.getId());
       toUse = new PersistentCapabilities(toUse).setCapability("se:cdp", rewrite(cdpPath));
     }

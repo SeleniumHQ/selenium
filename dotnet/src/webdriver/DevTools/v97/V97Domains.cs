@@ -1,4 +1,4 @@
-// <copyright file="v94Domains.cs" company="WebDriver Committers">
+// <copyright file="V97Domains.cs" company="WebDriver Committers">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements. See the NOTICE file
 // distributed with this work for additional information
@@ -19,16 +19,16 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace OpenQA.Selenium.DevTools.V94
+namespace OpenQA.Selenium.DevTools.V97
 {
     /// <summary>
-    /// Class containing the domain implementation for version 94 of the DevTools Protocol.
+    /// Class containing the domain implementation for version 97 of the DevTools Protocol.
     /// </summary>
-    public class V94Domains : DevToolsDomains
+    public class V97Domains : DevToolsDomains
     {
         private DevToolsSessionDomains domains;
 
-        public V94Domains(DevToolsSession session)
+        public V97Domains(DevToolsSession session)
         {
             this.domains = new DevToolsSessionDomains(session);
         }
@@ -36,7 +36,7 @@ namespace OpenQA.Selenium.DevTools.V94
         /// <summary>
         /// Gets the DevTools Protocol version for which this class is valid.
         /// </summary>
-        public static int DevToolsVersion => 94;
+        public static int DevToolsVersion => 97;
 
         /// <summary>
         /// Gets the version-specific domains for the DevTools session. This value must be cast to a version specific type to be at all useful.
@@ -46,21 +46,21 @@ namespace OpenQA.Selenium.DevTools.V94
         /// <summary>
         /// Gets the object used for manipulating network information in the browser.
         /// </summary>
-        public override DevTools.Network Network => new V94Network(domains.Network, domains.Fetch);
+        public override DevTools.Network Network => new V97Network(domains.Network, domains.Fetch);
 
         /// <summary>
         /// Gets the object used for manipulating the browser's JavaScript execution.
         /// </summary>
-        public override JavaScript JavaScript => new V94JavaScript(domains.Runtime, domains.Page);
+        public override JavaScript JavaScript => new V97JavaScript(domains.Runtime, domains.Page);
 
         /// <summary>
         /// Gets the object used for manipulating DevTools Protocol targets.
         /// </summary>
-        public override DevTools.Target Target => new V94Target(domains.Target);
+        public override DevTools.Target Target => new V97Target(domains.Target);
 
         /// <summary>
         /// Gets the object used for manipulating the browser's logs.
         /// </summary>
-        public override DevTools.Log Log => new V94Log(domains.Log);
+        public override DevTools.Log Log => new V97Log(domains.Log);
     }
 }
