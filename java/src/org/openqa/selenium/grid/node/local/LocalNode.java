@@ -42,7 +42,6 @@ import org.openqa.selenium.NoSuchSessionException;
 import org.openqa.selenium.PersistentCapabilities;
 import org.openqa.selenium.RetrySessionRequestException;
 import org.openqa.selenium.WebDriverException;
-import org.openqa.selenium.concurrent.Regularly;
 import org.openqa.selenium.events.EventBus;
 import org.openqa.selenium.grid.data.Availability;
 import org.openqa.selenium.grid.data.CreateSessionRequest;
@@ -96,6 +95,9 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
@@ -169,13 +171,41 @@ public class LocalNode extends Node {
       })
       .build();
 
-    Regularly sessionCleanup = new Regularly("Session Cleanup Node: " + externalUri);
-    sessionCleanup.submit(currentSessions::cleanUp, Duration.ofSeconds(30), Duration.ofSeconds(30));
-    Regularly tmpFileCleanup = new Regularly("TempFile Cleanup Node: " + externalUri);
-    tmpFileCleanup.submit(tempFileSystems::cleanUp, Duration.ofSeconds(30), Duration.ofSeconds(30));
-    Regularly regularHeartBeat = new Regularly("Heartbeat Node: " + externalUri);
-    regularHeartBeat.submit(() -> bus.fire(new NodeHeartBeatEvent(getStatus())), heartbeatPeriod,
-                            heartbeatPeriod);
+    ScheduledExecutorService sessionCleanupNodeService =
+      Executors.newSingleThreadScheduledExecutor(
+        r -> {
+          Thread thread = new Thread(r);
+          thread.setDaemon(true);
+          thread.setName("Session Cleanup Node " + externalUri);
+          return thread;
+        });
+    sessionCleanupNodeService.scheduleAtFixedRate(
+      currentSessions::cleanUp, 30, 30, TimeUnit.SECONDS);
+
+    ScheduledExecutorService tempFileCleanupNodeService =
+      Executors.newSingleThreadScheduledExecutor(
+        r -> {
+          Thread thread = new Thread(r);
+          thread.setDaemon(true);
+          thread.setName("TempFile Cleanup Node " + externalUri);
+          return thread;
+        });
+    tempFileCleanupNodeService.scheduleAtFixedRate(
+      tempFileSystems::cleanUp, 30, 30, TimeUnit.SECONDS);
+
+    ScheduledExecutorService heartbeatNodeService =
+      Executors.newSingleThreadScheduledExecutor(
+        r -> {
+          Thread thread = new Thread(r);
+          thread.setDaemon(true);
+          thread.setName("TempFile Cleanup Node " + externalUri);
+          return thread;
+        });
+    heartbeatNodeService.scheduleAtFixedRate(
+      () -> bus.fire(new NodeHeartBeatEvent(getStatus())),
+      heartbeatPeriod.getSeconds(),
+      heartbeatPeriod.getSeconds(),
+      TimeUnit.SECONDS);
 
     bus.addListener(SessionClosedEvent.listener(id -> {
       // Listen to session terminated events so we know when to fire the NodeDrainComplete event
