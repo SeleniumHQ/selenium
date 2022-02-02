@@ -22,10 +22,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.junit.Assume.assumeFalse;
 import static org.openqa.selenium.WaitingConditions.elementValueToEqual;
-import static org.openqa.selenium.testing.drivers.Browser.IE;
-import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
-import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
 import static org.openqa.selenium.testing.TestUtilities.getEffectivePlatform;
+import static org.openqa.selenium.testing.drivers.Browser.CHROME;
+import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
+import static org.openqa.selenium.testing.drivers.Browser.IE;
+import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
 
 import org.junit.Test;
 import org.openqa.selenium.support.ui.ExpectedConditions;
@@ -35,6 +36,17 @@ import org.openqa.selenium.testing.NotYetImplemented;
 import org.openqa.selenium.testing.drivers.Browser;
 
 public class TypingTest extends JUnit4TestBase {
+
+  private static void checkRecordedKeySequence(WebElement element, int expectedKeyCode) {
+    assertThat(element.getText().trim()).contains(
+      String.format("down: %1$d", expectedKeyCode),
+      String.format("up: %1$d", expectedKeyCode));
+  }
+
+  private static String getValueText(WebElement el) {
+    // Standardize on \n and strip any trailing whitespace.
+    return el.getAttribute("value").replace("\r\n", "\n").trim();
+  }
 
   @Test
   public void testShouldFireKeyPressEvents() {
@@ -237,12 +249,6 @@ public class TypingTest extends JUnit4TestBase {
     assertThat(result.getText().trim()).isEqualTo("focus keydown keypress keyup");
   }
 
-  private static void checkRecordedKeySequence(WebElement element, int expectedKeyCode) {
-    assertThat(element.getText().trim()).contains(
-        String.format("down: %1$d", expectedKeyCode),
-        String.format("up: %1$d", expectedKeyCode));
-  }
-
   @Test
   public void testShouldReportKeyCodeOfArrowKeys() {
     assumeFalse(Browser.detect() == Browser.LEGACY_OPERA &&
@@ -422,7 +428,8 @@ public class TypingTest extends JUnit4TestBase {
   @Test
   @NotYetImplemented(value = FIREFOX)
   @NotYetImplemented(value = SAFARI, reason = "Enters dot instead of comma")
-  public void testNumberpadKeys() {
+  @Ignore(value = CHROME, reason = "https://bugs.chromium.org/p/chromedriver/issues/detail?id=3999")
+  public void testNumberPadKeys() {
     driver.get(pages.javascriptPage);
 
     WebElement element = driver.findElement(By.id("keyReporter"));
@@ -482,6 +489,9 @@ public class TypingTest extends JUnit4TestBase {
     assertThat(element.getAttribute("value")).isEqualTo("");
   }
 
+  // control-x control-v here for cut & paste tests, these work on windows
+  // and linux, but not on the MAC.
+
   @Test
   @NotYetImplemented(value = FIREFOX, reason = "https://github.com/mozilla/geckodriver/issues/646")
   public void testChordReveseShiftHomeSelectionDeletes() {
@@ -510,10 +520,8 @@ public class TypingTest extends JUnit4TestBase {
     assertThat(element.getAttribute("value")).isEqualTo("");
   }
 
-  // control-x control-v here for cut & paste tests, these work on windows
-  // and linux, but not on the MAC.
-
   @Test
+  @Ignore(value = CHROME, reason = "https://bugs.chromium.org/p/chromedriver/issues/detail?id=3999")
   @NotYetImplemented(value = FIREFOX, reason = "https://github.com/mozilla/geckodriver/issues/646")
   public void testChordControlCutAndPaste() {
     assumeFalse("FIXME: macs don't have HOME keys, would PGUP work?",
@@ -669,10 +677,5 @@ public class TypingTest extends JUnit4TestBase {
     WebElement element = driver.findElement(By.id("emptyTextArea"));
     element.sendKeys("\n\n\n");
     shortWait.until(ExpectedConditions.attributeToBe(element, "value", "\n\n\n"));
-  }
-
-  private static String getValueText(WebElement el) {
-    // Standardize on \n and strip any trailing whitespace.
-    return el.getAttribute("value").replace("\r\n", "\n").trim();
   }
 }
