@@ -23,10 +23,9 @@ import static org.junit.Assume.assumeFalse;
 import static org.openqa.selenium.support.ui.ExpectedConditions.presenceOfElementLocated;
 import static org.openqa.selenium.support.ui.ExpectedConditions.titleIs;
 import static org.openqa.selenium.testing.drivers.Browser.ALL;
-import static org.openqa.selenium.testing.drivers.Browser.LEGACY_FIREFOX_XPI;
+import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
 import static org.openqa.selenium.testing.drivers.Browser.HTMLUNIT;
 import static org.openqa.selenium.testing.drivers.Browser.IE;
-import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
 import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
 
 import org.junit.Test;
@@ -111,7 +110,6 @@ public class ClickScrollingTest extends JUnit4TestBase {
 
   @Test
   @Ignore(value = IE, issue = "716")
-  @Ignore(value = LEGACY_FIREFOX_XPI, issue = "716")
   public void testShouldBeAbleToClickOnAnElementPartiallyHiddenByOverflow() {
     driver.get(appServer.whereIs("scrolling_tests/page_with_partially_hidden_element.html"));
 
@@ -132,7 +130,6 @@ public class ClickScrollingTest extends JUnit4TestBase {
 
   @Test
   @NotYetImplemented(IE)
-  @NotYetImplemented(LEGACY_FIREFOX_XPI)
   public void testShouldNotScrollIfAlreadyScrolledAndElementIsInView() {
     driver.get(appServer.whereIs("scroll3.html"));
     driver.findElement(By.id("button2")).click();

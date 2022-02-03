@@ -10,11 +10,15 @@ def _generate_devtools_impl(ctx):
         },
     )
 
+    template_files = []
+    for template_file in ctx.attr.templates:
+        template_files.append(template_file.files.to_list()[0])
+
     args = ctx.actions.args()
     args.add_all("-s", [settings_template_file])
     args.add_all("-b", [ctx.attr.browser_protocol.files.to_list()[0]])
     args.add_all("-j", [ctx.attr.js_protocol.files.to_list()[0]])
-    args.add_all("-t", [ctx.attr.template.files.to_list()[0]])
+    args.add_all("-t", [template_files[0]])
     args.add("-q")
     args.add_all("-o", [outdir.path])
 
@@ -29,8 +33,7 @@ def _generate_devtools_impl(ctx):
             settings_template_file,
             ctx.file.browser_protocol,
             ctx.file.js_protocol,
-            ctx.file.template,
-        ],
+        ] + template_files,
         use_default_shell_env = True,
     )
 
@@ -51,8 +54,8 @@ generate_devtools = rule(
         "js_protocol": attr.label(
             allow_single_file = True,
         ),
-        "template": attr.label(
-            allow_single_file = True,
+        "templates": attr.label_list(
+            allow_files = True
         ),
         "out": attr.string(
             doc = "File name, without extension, of the built assembly.",

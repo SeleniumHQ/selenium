@@ -22,10 +22,9 @@ import static org.junit.Assert.fail;
 import static org.junit.Assume.assumeFalse;
 import static org.openqa.selenium.WaitingConditions.elementLocationToBe;
 import static org.openqa.selenium.testing.drivers.Browser.CHROME;
-import static org.openqa.selenium.testing.drivers.Browser.LEGACY_FIREFOX_XPI;
+import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
 import static org.openqa.selenium.testing.drivers.Browser.HTMLUNIT;
 import static org.openqa.selenium.testing.drivers.Browser.IE;
-import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
 import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
 
 import org.junit.Test;
@@ -45,6 +44,14 @@ import org.openqa.selenium.testing.drivers.Browser;
 
 @Ignore(value = HTMLUNIT, reason = "Advanced mouse actions only implemented in rendered browsers")
 public class DragAndDropTest extends JUnit4TestBase {
+
+  private static void sleep(int ms) {
+    try {
+      Thread.sleep(ms);
+    } catch (InterruptedException e) {
+      throw new RuntimeException("Interrupted: " + e.toString());
+    }
+  }
 
   @Test
   public void testDragAndDropRelative() {
@@ -129,7 +136,6 @@ public class DragAndDropTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(LEGACY_FIREFOX_XPI)
   public void testDragTooFar() {
     driver.get(pages.dragAndDropPage);
     Actions actions = new Actions(driver);
@@ -221,14 +227,6 @@ public class DragAndDropTest extends JUnit4TestBase {
     new Actions(driver).dragAndDropBy(toDrag, 0, yOffset).perform();
 
     assertThat(toDrag.getLocation()).isEqualTo(dragTo.getLocation());
-  }
-
-  private static void sleep(int ms) {
-    try {
-      Thread.sleep(ms);
-    } catch (InterruptedException e) {
-      throw new RuntimeException("Interrupted: " + e.toString());
-    }
   }
 
 }

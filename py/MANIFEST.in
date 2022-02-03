@@ -15,6 +15,7 @@ recursive-include selenium/webdriver/remote *.py *.js
 recursive-include selenium/webdriver/support *.py
 include selenium/selenium.py
 include selenium/__init__.py
+include selenium/py.typed
 include CHANGES
 include README.rst
 include LICENSE
