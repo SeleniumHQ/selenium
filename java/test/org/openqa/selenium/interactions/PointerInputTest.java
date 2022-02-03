@@ -60,6 +60,16 @@ public class PointerInputTest {
     assertThat(firstAction.origin).containsEntry(W3C.getEncodedElementKey(), "12345");
   }
 
+  @Test
+  public void acceptsPointerEventProperties() {
+    PointerInput pen = new PointerInput(PointerInput.Kind.PEN, "my pen");
+    Interaction pointerDown = pen.createPointerDown(PointerInput.eventProperties().setHeight(12).setTiltX(30));
+
+    Map<String, Object> encode = ((Encodable) pointerDown).encode();
+
+    assertThat(encode.get("height")).isEqualTo((float) 12);
+  }
+
   private static class ActionSequenceJson {
     List<ActionJson> actions;
   }
