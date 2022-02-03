@@ -15,7 +15,6 @@ java_library(
         "//java/src/org/openqa/selenium/chrome",
         "//java/src/org/openqa/selenium/edge",
         "//java/src/org/openqa/selenium/firefox",
-        "//java/src/org/openqa/selenium/firefox/xpi",
         "//java/src/org/openqa/selenium/ie",
         "//java/src/org/openqa/selenium/opera",
         "//java/src/org/openqa/selenium/remote",
