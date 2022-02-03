@@ -20,8 +20,6 @@ package org.openqa.selenium.firefox;
 import static org.openqa.selenium.remote.CapabilityType.PROXY;
 
 import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.Maps;
-import com.google.common.collect.Sets;
 
 import org.openqa.selenium.Beta;
 import org.openqa.selenium.Capabilities;
@@ -58,7 +56,6 @@ import java.nio.file.Path;
 import java.util.Map;
 import java.util.Optional;
 import java.util.ServiceLoader;
-import java.util.Set;
 import java.util.stream.StreamSupport;
 
 /**
@@ -134,7 +131,7 @@ public class FirefoxDriver extends RemoteWebDriver
   }
 
   private FirefoxDriver(FirefoxDriverCommandExecutor executor, FirefoxOptions options) {
-    super(executor, dropCapabilities(options));
+    super(executor, checkCapabilitiesAndProxy(options));
     webStorage = new RemoteWebStorage(getExecuteMethod());
     extensions = new AddHasExtensions().getImplementation(getCapabilities(), getExecuteMethod());
     fullPageScreenshot = new AddHasFullPageScreenshot().getImplementation(getCapabilities(), getExecuteMethod());
@@ -171,43 +168,15 @@ public class FirefoxDriver extends RemoteWebDriver
     return new FirefoxDriverCommandExecutor(builder.withOptions(options).build());
   }
 
-  private static boolean isLegacy(Capabilities desiredCapabilities) {
-    Boolean forceMarionette = forceMarionetteFromSystemProperty();
-    if (forceMarionette != null) {
-      return !forceMarionette;
-    }
-    Object marionette = desiredCapabilities.getCapability(Capability.MARIONETTE);
-    return marionette instanceof Boolean && !(Boolean) marionette;
-  }
-
-  private static Boolean forceMarionetteFromSystemProperty() {
-    String useMarionette = System.getProperty(SystemProperty.DRIVER_USE_MARIONETTE);
-    if (useMarionette == null) {
-      return null;
-    }
-    return Boolean.valueOf(useMarionette);
-  }
-
   /**
-   * Drops capabilities that we shouldn't send over the wire.
-   *
-   * Used for capabilities which aren't BeanToJson-convertable, and are only used by the local
-   * launcher.
+   * Check capabilities and proxy if it is set
    */
-  private static Capabilities dropCapabilities(Capabilities capabilities) {
+  private static Capabilities checkCapabilitiesAndProxy(Capabilities capabilities) {
     if (capabilities == null) {
       return new ImmutableCapabilities();
     }
 
-    MutableCapabilities caps;
-
-    if (isLegacy(capabilities)) {
-      final Set<String> toRemove = Sets.newHashSet(Capability.BINARY, Capability.PROFILE);
-      caps = new MutableCapabilities(
-        Maps.filterKeys(capabilities.asMap(), key -> !toRemove.contains(key)));
-    } else {
-      caps = new MutableCapabilities(capabilities);
-    }
+    MutableCapabilities caps = new MutableCapabilities(capabilities);
 
     // Ensure that the proxy is in a state fit to be sent to the extension
     Proxy proxy = Proxy.extractFrom(capabilities);
