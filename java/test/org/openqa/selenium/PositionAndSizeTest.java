@@ -20,10 +20,9 @@ package org.openqa.selenium;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.openqa.selenium.testing.drivers.Browser.CHROME;
 import static org.openqa.selenium.testing.drivers.Browser.EDGE;
-import static org.openqa.selenium.testing.drivers.Browser.LEGACY_FIREFOX_XPI;
+import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
 import static org.openqa.selenium.testing.drivers.Browser.HTMLUNIT;
 import static org.openqa.selenium.testing.drivers.Browser.IE;
-import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
 import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
 
 import org.junit.Test;
@@ -137,7 +136,6 @@ public class PositionAndSizeTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(LEGACY_FIREFOX_XPI)
   public void testShouldGetCoordinatesOfAnElementWithFixedPosition() {
     driver.get(appServer.whereIs("coordinates_tests/page_with_fixed_element.html"));
     assertThat(getLocationInViewPort(By.id("fixed")).getY()).isEqualTo(0);

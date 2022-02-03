@@ -25,9 +25,8 @@ import static org.openqa.selenium.support.ui.ExpectedConditions.titleIs;
 import static org.openqa.selenium.testing.drivers.Browser.ALL;
 import static org.openqa.selenium.testing.drivers.Browser.CHROME;
 import static org.openqa.selenium.testing.drivers.Browser.EDGE;
-import static org.openqa.selenium.testing.drivers.Browser.LEGACY_FIREFOX_XPI;
-import static org.openqa.selenium.testing.drivers.Browser.IE;
 import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
+import static org.openqa.selenium.testing.drivers.Browser.IE;
 import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
 
 import org.junit.Before;
@@ -255,7 +254,6 @@ public class ClickTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(LEGACY_FIREFOX_XPI)
   @NotYetImplemented(value = FIREFOX, reason = "https://bugzilla.mozilla.org/show_bug.cgi?id=1422272")
   @NotYetImplemented(SAFARI)
   public void testShouldBeAbleToClickOnAnElementGreaterThanTwoViewports() {

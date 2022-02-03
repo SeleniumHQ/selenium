@@ -20,8 +20,6 @@ package org.openqa.selenium.firefox;
 import static org.openqa.selenium.remote.CapabilityType.PROXY;
 
 import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.Maps;
-import com.google.common.collect.Sets;
 
 import org.openqa.selenium.Beta;
 import org.openqa.selenium.Capabilities;
@@ -58,7 +56,6 @@ import java.nio.file.Path;
 import java.util.Map;
 import java.util.Optional;
 import java.util.ServiceLoader;
-import java.util.Set;
 import java.util.stream.StreamSupport;
 
 /**
@@ -89,11 +86,6 @@ public class FirefoxDriver extends RemoteWebDriver
    */
   @Deprecated
   public static final String PROFILE = Capability.PROFILE;
-  /**
-   * @deprecated Use {@link Capability#MARIONETTE}
-   */
-  @Deprecated
-  public static final String MARIONETTE = Capability.MARIONETTE;
   private final Capabilities capabilities;
   private final RemoteWebStorage webStorage;
   private final HasExtensions extensions;
@@ -134,7 +126,7 @@ public class FirefoxDriver extends RemoteWebDriver
   }
 
   private FirefoxDriver(FirefoxDriverCommandExecutor executor, FirefoxOptions options) {
-    super(executor, dropCapabilities(options));
+    super(executor, checkCapabilitiesAndProxy(options));
     webStorage = new RemoteWebStorage(getExecuteMethod());
     extensions = new AddHasExtensions().getImplementation(getCapabilities(), getExecuteMethod());
     fullPageScreenshot = new AddHasFullPageScreenshot().getImplementation(getCapabilities(), getExecuteMethod());
@@ -162,57 +154,24 @@ public class FirefoxDriver extends RemoteWebDriver
   private static FirefoxDriverCommandExecutor toExecutor(FirefoxOptions options) {
     Require.nonNull("Options to construct executor from", options);
 
-    String sysProperty = System.getProperty(SystemProperty.DRIVER_USE_MARIONETTE);
-    boolean isLegacy = (sysProperty != null && !Boolean.parseBoolean(sysProperty))
-                       || options.isLegacy();
-
     FirefoxDriverService.Builder<?, ?> builder =
       StreamSupport.stream(ServiceLoader.load(DriverService.Builder.class).spliterator(), false)
         .filter(b -> b instanceof FirefoxDriverService.Builder)
         .map(FirefoxDriverService.Builder.class::cast)
-        .filter(b -> b.isLegacy() == isLegacy)
         .findFirst().orElseThrow(WebDriverException::new);
 
     return new FirefoxDriverCommandExecutor(builder.withOptions(options).build());
   }
 
-  private static boolean isLegacy(Capabilities desiredCapabilities) {
-    Boolean forceMarionette = forceMarionetteFromSystemProperty();
-    if (forceMarionette != null) {
-      return !forceMarionette;
-    }
-    Object marionette = desiredCapabilities.getCapability(Capability.MARIONETTE);
-    return marionette instanceof Boolean && !(Boolean) marionette;
-  }
-
-  private static Boolean forceMarionetteFromSystemProperty() {
-    String useMarionette = System.getProperty(SystemProperty.DRIVER_USE_MARIONETTE);
-    if (useMarionette == null) {
-      return null;
-    }
-    return Boolean.valueOf(useMarionette);
-  }
-
   /**
-   * Drops capabilities that we shouldn't send over the wire.
-   *
-   * Used for capabilities which aren't BeanToJson-convertable, and are only used by the local
-   * launcher.
+   * Check capabilities and proxy if it is set
    */
-  private static Capabilities dropCapabilities(Capabilities capabilities) {
+  private static Capabilities checkCapabilitiesAndProxy(Capabilities capabilities) {
     if (capabilities == null) {
       return new ImmutableCapabilities();
     }
 
-    MutableCapabilities caps;
-
-    if (isLegacy(capabilities)) {
-      final Set<String> toRemove = Sets.newHashSet(Capability.BINARY, Capability.PROFILE);
-      caps = new MutableCapabilities(
-        Maps.filterKeys(capabilities.asMap(), key -> !toRemove.contains(key)));
-    } else {
-      caps = new MutableCapabilities(capabilities);
-    }
+    MutableCapabilities caps = new MutableCapabilities(capabilities);
 
     // Ensure that the proxy is in a state fit to be sent to the extension
     Proxy proxy = Proxy.extractFrom(capabilities);
@@ -337,28 +296,11 @@ public class FirefoxDriver extends RemoteWebDriver
     public static final String BROWSER_LOGFILE = "webdriver.firefox.logfile";
 
     /**
-     * System property that defines the additional library path (Linux only).
-     */
-    public static final String BROWSER_LIBRARY_PATH = "webdriver.firefox.library.path";
-
-    /**
      * System property that defines the profile that should be used as a template.
      * When the driver starts, it will make a copy of the profile it is using,
      * rather than using that profile directly.
      */
     public static final String BROWSER_PROFILE = "webdriver.firefox.profile";
-
-    /**
-     * System property that defines the location of the webdriver.xpi browser extension to install
-     * in the browser. If not set, the prebuilt extension bundled with this class will be used.
-     */
-    public static final String DRIVER_XPI_PROPERTY = "webdriver.firefox.driver";
-
-    /**
-     * Boolean system property that instructs FirefoxDriver to use Marionette backend,
-     * overrides any capabilities specified by the user
-     */
-    public static final String DRIVER_USE_MARIONETTE = "webdriver.firefox.marionette";
   }
 
   public static final class Capability {

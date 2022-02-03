@@ -17,9 +17,19 @@
 
 package org.openqa.selenium.remote.server;
 
+import static org.openqa.selenium.remote.Browser.CHROME;
+import static org.openqa.selenium.remote.Browser.EDGE;
+import static org.openqa.selenium.remote.Browser.FIREFOX;
+import static org.openqa.selenium.remote.Browser.HTMLUNIT;
+import static org.openqa.selenium.remote.Browser.IE;
+import static org.openqa.selenium.remote.Browser.OPERA;
+import static org.openqa.selenium.remote.Browser.SAFARI;
+import static org.openqa.selenium.remote.CapabilityType.BROWSER_NAME;
+
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.WebDriver;
@@ -39,15 +49,6 @@ import java.util.function.Predicate;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
 import java.util.stream.StreamSupport;
-
-import static org.openqa.selenium.remote.Browser.CHROME;
-import static org.openqa.selenium.remote.Browser.EDGE;
-import static org.openqa.selenium.remote.Browser.FIREFOX;
-import static org.openqa.selenium.remote.Browser.HTMLUNIT;
-import static org.openqa.selenium.remote.Browser.IE;
-import static org.openqa.selenium.remote.Browser.OPERA;
-import static org.openqa.selenium.remote.Browser.SAFARI;
-import static org.openqa.selenium.remote.CapabilityType.BROWSER_NAME;
 
 /**
  * Used to create new {@link ActiveSession} instances as required.
@@ -75,12 +76,6 @@ public class ActiveSessionFactory implements SessionFactory {
         .forEach(p -> builder.add(new InMemorySession.Factory(p)));
 
     ImmutableMap.<Predicate<Capabilities>, String>builder()
-        .put(caps -> {
-               Object marionette = caps.getCapability("marionette");
-
-               return marionette instanceof Boolean && !(Boolean) marionette;
-             },
-             "org.openqa.selenium.firefox.xpi.XpiDriverService")
         .put(browserName(CHROME.browserName()), "org.openqa.selenium.chrome.ChromeDriverService")
         .put(containsKey("chromeOptions"), "org.openqa.selenium.chrome.ChromeDriverService")
         .put(browserName(EDGE.browserName()), "org.openqa.selenium.edge.ChromiumEdgeDriverService")
@@ -102,6 +97,20 @@ public class ActiveSessionFactory implements SessionFactory {
          new ImmutableCapabilities(BROWSER_NAME, HTMLUNIT.browserName()));
 
     this.factories = builder.build();
+  }
+
+  private static Predicate<Capabilities> browserName(String browserName) {
+    Require.nonNull("Browser name", browserName);
+    return toCompare -> browserName.equals(toCompare.getBrowserName());
+  }
+
+  private static Predicate<Capabilities> containsKey(String keyName) {
+    Require.nonNull("Key name", keyName);
+    return toCompare -> toCompare.getCapability(keyName) != null;
+  }
+
+  private static Predicate<Capabilities> containsKey(Pattern pattern) {
+    return toCompare -> toCompare.asMap().keySet().stream().anyMatch(pattern.asPredicate());
   }
 
   public synchronized ActiveSessionFactory bind(
@@ -142,20 +151,6 @@ public class ActiveSessionFactory implements SessionFactory {
     } catch (ClassCastException ignored) {
       // Just carry on. Everything is fine.
     }
-  }
-
-  private static Predicate<Capabilities> browserName(String browserName) {
-    Require.nonNull("Browser name", browserName);
-    return toCompare -> browserName.equals(toCompare.getBrowserName());
-  }
-
-  private static Predicate<Capabilities> containsKey(String keyName) {
-    Require.nonNull("Key name", keyName);
-    return toCompare -> toCompare.getCapability(keyName) != null;
-  }
-
-  private static Predicate<Capabilities> containsKey(Pattern pattern) {
-    return toCompare -> toCompare.asMap().keySet().stream().anyMatch(pattern.asPredicate());
   }
 
   @Override

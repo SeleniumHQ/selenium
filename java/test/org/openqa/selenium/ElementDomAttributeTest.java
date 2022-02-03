@@ -17,14 +17,6 @@
 
 package org.openqa.selenium;
 
-import org.junit.Test;
-import org.openqa.selenium.environment.webserver.Page;
-import org.openqa.selenium.testing.Ignore;
-import org.openqa.selenium.testing.JUnit4TestBase;
-import org.openqa.selenium.testing.NotYetImplemented;
-
-import java.util.List;
-
 import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
@@ -33,8 +25,14 @@ import static org.openqa.selenium.testing.drivers.Browser.EDGE;
 import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
 import static org.openqa.selenium.testing.drivers.Browser.HTMLUNIT;
 import static org.openqa.selenium.testing.drivers.Browser.IE;
-import static org.openqa.selenium.testing.drivers.Browser.LEGACY_FIREFOX_XPI;
 import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
+
+import org.junit.Test;
+import org.openqa.selenium.environment.webserver.Page;
+import org.openqa.selenium.testing.JUnit4TestBase;
+import org.openqa.selenium.testing.NotYetImplemented;
+
+import java.util.List;
 
 public class ElementDomAttributeTest extends JUnit4TestBase {
 
@@ -352,7 +350,6 @@ public class ElementDomAttributeTest extends JUnit4TestBase {
 
   @Test
   @NotYetImplemented(IE)
-  @Ignore(LEGACY_FIREFOX_XPI)
   @NotYetImplemented(HTMLUNIT)
   @NotYetImplemented(SAFARI)
   public void shouldTreatDraggableAsEnumeratedButNotBoolean() {

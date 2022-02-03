@@ -104,7 +104,6 @@ JAVA_RELEASE_TARGETS = %w[
   //java/src/org/openqa/selenium/devtools/v96:v96.publish
   //java/src/org/openqa/selenium/devtools/v97:v97.publish
   //java/src/org/openqa/selenium/edge:edge.publish
-  //java/src/org/openqa/selenium/firefox/xpi:xpi.publish
   //java/src/org/openqa/selenium/firefox:firefox.publish
   //java/src/org/openqa/selenium/grid/sessionmap/jdbc:jdbc.publish
   //java/src/org/openqa/selenium/grid/sessionmap/redis:redis.publish
