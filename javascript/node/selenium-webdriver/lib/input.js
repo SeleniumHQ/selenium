@@ -783,131 +783,130 @@ class Actions {
    * @param {number} duration duration ratio be the ratio of time delta and duration
    * @returns {!Action} An action to scroll with this device.
    */
-  */
-scroll(x, y, targetDeltaX, targetDeltaY, origin, duration) {
-  return this.insert(this.wheel_, this.wheel_.scroll(x, y, targetDeltaX, targetDeltaY, origin, duration))
-}
-
-/**
- * Inserts an action for moving the mouse `x` and `y` pixels relative to the
- * specified `origin`. The `origin` may be defined as the mouse's
- * {@linkplain ./input.Origin.POINTER current position}, the
- * {@linkplain ./input.Origin.VIEWPORT viewport}, or the center of a specific
- * {@linkplain ./webdriver.WebElement WebElement}.
- *
- * You may adjust how long the remote end should take, in milliseconds, to
- * perform the move using the `duration` parameter (defaults to 100 ms).
- * The number of incremental move events generated over this duration is an
- * implementation detail for the remote end.
- *
- * @param {{
- *   x: (number|undefined),
- *   y: (number|undefined),
- *   duration: (number|undefined),
- *   origin: (!Origin|!./webdriver.WebElement|undefined),
- * }=} options The move options. Defaults to moving the mouse to the top-left
- *     corner of the viewport over 100ms.
- * @return {!Actions} a self reference.
- */
-move({ x = 0, y = 0, duration = 100, origin = Origin.VIEWPORT } = {}) {
-  return this.insert(
-    this.mouse_,
-    this.mouse_.move({ x, y, duration, origin })
-  )
-}
-
-/**
- * Short-hand for performing a simple left-click (down/up) with the mouse.
- *
- * @param {./webdriver.WebElement=} element If specified, the mouse will
- *     first be moved to the center of the element before performing the
- *     click.
- * @return {!Actions} a self reference.
- */
-click(element) {
-  if (element) {
-    this.move({ origin: element })
+  scroll(x, y, targetDeltaX, targetDeltaY, origin, duration) {
+    return this.insert(this.wheel_, this.wheel_.scroll(x, y, targetDeltaX, targetDeltaY, origin, duration))
   }
-  return this.press().release()
-}
 
-/**
- * Short-hand for performing a simple right-click (down/up) with the mouse.
- *
- * @param {./webdriver.WebElement=} element If specified, the mouse will
- *     first be moved to the center of the element before performing the
- *     click.
- * @return {!Actions} a self reference.
- */
-contextClick(element) {
-  if (element) {
-    this.move({ origin: element })
-  }
-  return this.press(Button.RIGHT).release(Button.RIGHT)
-}
-
-/**
- * Short-hand for performing a double left-click with the mouse.
- *
- * @param {./webdriver.WebElement=} element If specified, the mouse will
- *     first be moved to the center of the element before performing the
- *     click.
- * @return {!Actions} a self reference.
- */
-doubleClick(element) {
-  return this.click(element).press().release()
-}
-
-/**
- * Configures a drag-and-drop action consisting of the following steps:
- *
- * 1.  Move to the center of the `from` element (element to be dragged).
- * 2.  Press the left mouse button.
- * 3.  If the `to` target is a {@linkplain ./webdriver.WebElement WebElement},
- *     move the mouse to its center. Otherwise, move the mouse by the
- *     specified offset.
- * 4.  Release the left mouse button.
- *
- * @param {!./webdriver.WebElement} from The element to press the left mouse
- *     button on to start the drag.
- * @param {(!./webdriver.WebElement|{x: number, y: number})} to Either another
- *     element to drag to (will drag to the center of the element), or an
- *     object specifying the offset to drag by, in pixels.
- * @return {!Actions} a self reference.
- */
-dragAndDrop(from, to) {
-  // Do not require up top to avoid a cycle that breaks static analysis.
-  const { WebElement } = require('./webdriver')
-  if (
-    !(to instanceof WebElement) &&
-    (!to || typeof to.x !== 'number' || typeof to.y !== 'number')
-  ) {
-    throw new InvalidArgumentError(
-      'Invalid drag target; must specify a WebElement or {x, y} offset'
+  /**
+   * Inserts an action for moving the mouse `x` and `y` pixels relative to the
+   * specified `origin`. The `origin` may be defined as the mouse's
+   * {@linkplain ./input.Origin.POINTER current position}, the
+   * {@linkplain ./input.Origin.VIEWPORT viewport}, or the center of a specific
+   * {@linkplain ./webdriver.WebElement WebElement}.
+   *
+   * You may adjust how long the remote end should take, in milliseconds, to
+   * perform the move using the `duration` parameter (defaults to 100 ms).
+   * The number of incremental move events generated over this duration is an
+   * implementation detail for the remote end.
+   *
+   * @param {{
+   *   x: (number|undefined),
+   *   y: (number|undefined),
+   *   duration: (number|undefined),
+   *   origin: (!Origin|!./webdriver.WebElement|undefined),
+   * }=} options The move options. Defaults to moving the mouse to the top-left
+   *     corner of the viewport over 100ms.
+   * @return {!Actions} a self reference.
+   */
+  move({ x = 0, y = 0, duration = 100, origin = Origin.VIEWPORT } = {}) {
+    return this.insert(
+      this.mouse_,
+      this.mouse_.move({ x, y, duration, origin })
     )
   }
 
-  this.move({ origin: from }).press()
-  if (to instanceof WebElement) {
-    this.move({ origin: to })
-  } else {
-    this.move({ x: to.x, y: to.y, origin: Origin.POINTER })
+  /**
+   * Short-hand for performing a simple left-click (down/up) with the mouse.
+   *
+   * @param {./webdriver.WebElement=} element If specified, the mouse will
+   *     first be moved to the center of the element before performing the
+   *     click.
+   * @return {!Actions} a self reference.
+   */
+  click(element) {
+    if (element) {
+      this.move({ origin: element })
+    }
+    return this.press().release()
   }
-  return this.release()
-}
 
-/**
- * Releases all keys, pointers, and clears internal state.
- *
- * @return {!Promise<void>} a promise that will resolve when finished
- *     clearing all action state.
- */
-clear() {
-  for (const s of this.sequences_.values()) {
-    s.length = 0
+  /**
+   * Short-hand for performing a simple right-click (down/up) with the mouse.
+   *
+   * @param {./webdriver.WebElement=} element If specified, the mouse will
+   *     first be moved to the center of the element before performing the
+   *     click.
+   * @return {!Actions} a self reference.
+   */
+  contextClick(element) {
+    if (element) {
+      this.move({ origin: element })
+    }
+    return this.press(Button.RIGHT).release(Button.RIGHT)
   }
-  return this.executor_.execute(new Command(Name.CLEAR_ACTIONS))
-}
+
+  /**
+   * Short-hand for performing a double left-click with the mouse.
+   *
+   * @param {./webdriver.WebElement=} element If specified, the mouse will
+   *     first be moved to the center of the element before performing the
+   *     click.
+   * @return {!Actions} a self reference.
+   */
+  doubleClick(element) {
+    return this.click(element).press().release()
+  }
+
+  /**
+   * Configures a drag-and-drop action consisting of the following steps:
+   *
+   * 1.  Move to the center of the `from` element (element to be dragged).
+   * 2.  Press the left mouse button.
+   * 3.  If the `to` target is a {@linkplain ./webdriver.WebElement WebElement},
+   *     move the mouse to its center. Otherwise, move the mouse by the
+   *     specified offset.
+   * 4.  Release the left mouse button.
+   *
+   * @param {!./webdriver.WebElement} from The element to press the left mouse
+   *     button on to start the drag.
+   * @param {(!./webdriver.WebElement|{x: number, y: number})} to Either another
+   *     element to drag to (will drag to the center of the element), or an
+   *     object specifying the offset to drag by, in pixels.
+   * @return {!Actions} a self reference.
+   */
+  dragAndDrop(from, to) {
+    // Do not require up top to avoid a cycle that breaks static analysis.
+    const { WebElement } = require('./webdriver')
+    if (
+      !(to instanceof WebElement) &&
+      (!to || typeof to.x !== 'number' || typeof to.y !== 'number')
+    ) {
+      throw new InvalidArgumentError(
+        'Invalid drag target; must specify a WebElement or {x, y} offset'
+      )
+    }
+
+    this.move({ origin: from }).press()
+    if (to instanceof WebElement) {
+      this.move({ origin: to })
+    } else {
+      this.move({ x: to.x, y: to.y, origin: Origin.POINTER })
+    }
+    return this.release()
+  }
+
+  /**
+   * Releases all keys, pointers, and clears internal state.
+   *
+   * @return {!Promise<void>} a promise that will resolve when finished
+   *     clearing all action state.
+   */
+  clear() {
+    for (const s of this.sequences_.values()) {
+      s.length = 0
+    }
+    return this.executor_.execute(new Command(Name.CLEAR_ACTIONS))
+  }
 
   /**
    * Performs the configured action sequence.
@@ -916,22 +915,22 @@ clear() {
    *     been completed.
    */
   async perform() {
-  const _actions = []
-  this.sequences_.forEach((actions, device) => {
-    if (!isIdle(actions)) {
-      actions = actions.concat() // Defensive copy.
-      _actions.push(Object.assign({ actions }, device.toJSON()))
+    const _actions = []
+    this.sequences_.forEach((actions, device) => {
+      if (!isIdle(actions)) {
+        actions = actions.concat() // Defensive copy.
+        _actions.push(Object.assign({ actions }, device.toJSON()))
+      }
+    })
+
+    if (_actions.length === 0) {
+      return Promise.resolve()
     }
-  })
 
-  if (_actions.length === 0) {
-    return Promise.resolve()
+    await this.executor_.execute(
+      new Command(Name.ACTIONS).setParameter('actions', _actions)
+    )
   }
-
-  await this.executor_.execute(
-    new Command(Name.ACTIONS).setParameter('actions', _actions)
-  )
-}
 }
 
 /**
