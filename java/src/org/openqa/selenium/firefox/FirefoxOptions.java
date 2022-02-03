@@ -19,7 +19,6 @@ package org.openqa.selenium.firefox;
 
 import static java.util.stream.Collectors.toMap;
 import static org.openqa.selenium.firefox.FirefoxDriver.Capability.BINARY;
-import static org.openqa.selenium.firefox.FirefoxDriver.Capability.MARIONETTE;
 import static org.openqa.selenium.firefox.FirefoxDriver.Capability.PROFILE;
 import static org.openqa.selenium.remote.Browser.FIREFOX;
 
@@ -61,7 +60,6 @@ public class FirefoxOptions extends AbstractDriverOptions<FirefoxOptions> {
   public static final String FIREFOX_OPTIONS = "moz:firefoxOptions";
 
   private Map<String, Object> firefoxOptions = Collections.unmodifiableMap(new TreeMap<>());
-  private boolean legacy;
 
   public FirefoxOptions() {
     setCapability(CapabilityType.BROWSER_NAME, FIREFOX.browserName());
@@ -99,10 +97,6 @@ public class FirefoxOptions extends AbstractDriverOptions<FirefoxOptions> {
 
         this.firefoxOptions = Collections.unmodifiableMap(options);
       }
-
-      if (source.getCapability(MARIONETTE) == Boolean.FALSE) {
-        this.legacy = true;
-      }
     }
   }
 
@@ -117,7 +111,6 @@ public class FirefoxOptions extends AbstractDriverOptions<FirefoxOptions> {
     }
 
     this.firefoxOptions = Collections.unmodifiableMap(newOptions);
-    this.legacy = that.legacy;
   }
 
   /**
@@ -150,20 +143,6 @@ public class FirefoxOptions extends AbstractDriverOptions<FirefoxOptions> {
       setProfile(profile);
     }
 
-    String forceMarionette = System.getProperty(FirefoxDriver.SystemProperty.DRIVER_USE_MARIONETTE);
-    if (forceMarionette != null && !Boolean.getBoolean(FirefoxDriver.SystemProperty.DRIVER_USE_MARIONETTE)) {
-      setLegacy(true);
-    }
-
-    return this;
-  }
-
-  /**
-   * @deprecated This method will be deleted and will not be replaced.
-   */
-  @Deprecated
-  public FirefoxOptions setLegacy(boolean legacy) {
-    setCapability(MARIONETTE, !legacy);
     return this;
   }
 
@@ -334,12 +313,6 @@ public class FirefoxOptions extends AbstractDriverOptions<FirefoxOptions> {
         }
         break;
 
-      case MARIONETTE:
-        if (value instanceof Boolean) {
-          legacy = !(Boolean) value;
-        }
-        break;
-
       case PROFILE:
         if (value instanceof FirefoxProfile) {
           setProfile((FirefoxProfile) value);
@@ -380,9 +353,6 @@ public class FirefoxOptions extends AbstractDriverOptions<FirefoxOptions> {
     Set<String> names = new TreeSet<>();
 
     names.add(FIREFOX_OPTIONS);
-    if (legacy) {
-      names.add(MARIONETTE);
-    }
 
     return Collections.unmodifiableSet(names);
   }
@@ -391,16 +361,10 @@ public class FirefoxOptions extends AbstractDriverOptions<FirefoxOptions> {
   protected Object getExtraCapability(String capabilityName) {
     Require.nonNull("Capability name", capabilityName);
 
-    switch (capabilityName) {
-      case FIREFOX_OPTIONS:
-        return Collections.unmodifiableMap(firefoxOptions);
-
-      case MARIONETTE:
-        return !legacy;
-
-      default:
-        return null;
+    if (FIREFOX_OPTIONS.equals(capabilityName)) {
+      return Collections.unmodifiableMap(firefoxOptions);
     }
+    return null;
   }
 
   @Override
