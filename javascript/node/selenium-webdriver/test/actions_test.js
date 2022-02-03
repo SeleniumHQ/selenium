@@ -20,11 +20,11 @@
 const assert = require('assert')
 const error = require('../lib/error')
 const fileServer = require('../lib/test/fileserver')
-const test = require('../lib/test')
+const { ignore, Pages, suite } = require('../lib/test')
 const { Key, Origin } = require('../lib/input')
 const { Browser, By, until } = require('..')
 
-test.suite(function (env) {
+suite(function (env) {
   describe('WebDriver.actions()', function () {
     let driver
 
@@ -90,8 +90,7 @@ test.suite(function (env) {
       assert.deepStrictEqual(clicks, [[260, 260]])
     })
 
-    test
-      .ignore(env.browsers(Browser.SAFARI))
+    ignore(env.browsers(Browser.SAFARI))
       .it('doubleClick(element)', async function () {
         await driver.get(fileServer.whereIs('/data/actions/click.html'))
 
@@ -160,7 +159,7 @@ test.suite(function (env) {
     })
 
     it('can send keys to focused element', async function () {
-      await driver.get(test.Pages.formPage)
+      await driver.get(Pages.formPage)
 
       let el = await driver.findElement(By.id('email'))
       assert.strictEqual(await el.getAttribute('value'), '')
@@ -173,7 +172,7 @@ test.suite(function (env) {
     })
 
     it('can get the property of element', async function () {
-      await driver.get(test.Pages.formPage)
+      await driver.get(Pages.formPage)
 
       let el = await driver.findElement(By.id('email'))
       assert.strictEqual(await el.getProperty('value'), '')
@@ -186,7 +185,7 @@ test.suite(function (env) {
     })
 
     it('can send keys to focused element (with modifiers)', async function () {
-      await driver.get(test.Pages.formPage)
+      await driver.get(Pages.formPage)
 
       let el = await driver.findElement(By.id('email'))
       assert.strictEqual(await el.getAttribute('value'), '')
@@ -206,7 +205,7 @@ test.suite(function (env) {
     })
 
     it('can interact with simple form elements', async function () {
-      await driver.get(test.Pages.formPage)
+      await driver.get(Pages.formPage)
 
       let el = await driver.findElement(By.id('email'))
       assert.strictEqual(await el.getAttribute('value'), '')
@@ -216,10 +215,9 @@ test.suite(function (env) {
       assert.strictEqual(await el.getAttribute('value'), 'foobar')
     })
 
-    test
-      .ignore(env.browsers(Browser.SAFARI, Browser.Firefox))
+    ignore(env.browsers(Browser.FIREFOX, Browser.SAFARI))
       .it('can scroll with the wheel input', async function () {
-        await driver.get(test.Pages.scrollingPage)
+        await driver.get(Pages.scrollingPage)
         let scrollable = await driver.findElement(By.id("scrollable"))
 
         await driver.actions().scroll(0, 0, 5, 10, scrollable).perform()
