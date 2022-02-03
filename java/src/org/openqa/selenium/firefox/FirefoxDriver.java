@@ -162,15 +162,10 @@ public class FirefoxDriver extends RemoteWebDriver
   private static FirefoxDriverCommandExecutor toExecutor(FirefoxOptions options) {
     Require.nonNull("Options to construct executor from", options);
 
-    String sysProperty = System.getProperty(SystemProperty.DRIVER_USE_MARIONETTE);
-    boolean isLegacy = (sysProperty != null && !Boolean.parseBoolean(sysProperty))
-                       || options.isLegacy();
-
     FirefoxDriverService.Builder<?, ?> builder =
       StreamSupport.stream(ServiceLoader.load(DriverService.Builder.class).spliterator(), false)
         .filter(b -> b instanceof FirefoxDriverService.Builder)
         .map(FirefoxDriverService.Builder.class::cast)
-        .filter(b -> b.isLegacy() == isLegacy)
         .findFirst().orElseThrow(WebDriverException::new);
 
     return new FirefoxDriverCommandExecutor(builder.withOptions(options).build());

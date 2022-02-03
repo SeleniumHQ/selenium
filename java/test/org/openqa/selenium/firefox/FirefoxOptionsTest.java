@@ -17,7 +17,28 @@
 
 package org.openqa.selenium.firefox;
 
+import static java.nio.file.StandardOpenOption.DELETE_ON_CLOSE;
+import static java.util.Collections.emptyMap;
+import static java.util.Collections.singleton;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.assertj.core.api.Assertions.assertThatNoException;
+import static org.assertj.core.api.Assumptions.assumeThat;
+import static org.assertj.core.api.InstanceOfAssertFactories.LIST;
+import static org.assertj.core.api.InstanceOfAssertFactories.MAP;
+import static org.openqa.selenium.PageLoadStrategy.EAGER;
+import static org.openqa.selenium.firefox.FirefoxDriver.Capability.MARIONETTE;
+import static org.openqa.selenium.firefox.FirefoxDriver.SystemProperty.BROWSER_BINARY;
+import static org.openqa.selenium.firefox.FirefoxDriver.SystemProperty.BROWSER_PROFILE;
+import static org.openqa.selenium.firefox.FirefoxDriverLogLevel.DEBUG;
+import static org.openqa.selenium.firefox.FirefoxDriverLogLevel.ERROR;
+import static org.openqa.selenium.firefox.FirefoxDriverLogLevel.WARN;
+import static org.openqa.selenium.firefox.FirefoxOptions.FIREFOX_OPTIONS;
+import static org.openqa.selenium.remote.CapabilityType.ACCEPT_INSECURE_CERTS;
+import static org.openqa.selenium.remote.CapabilityType.PAGE_LOAD_STRATEGY;
+
 import com.google.common.collect.ImmutableMap;
+
 import org.assertj.core.api.InstanceOfAssertFactories;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -41,27 +62,6 @@ import java.nio.file.attribute.PosixFilePermission;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-
-import static java.nio.file.StandardOpenOption.DELETE_ON_CLOSE;
-import static java.util.Collections.emptyMap;
-import static java.util.Collections.singleton;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.assertj.core.api.Assertions.assertThatNoException;
-import static org.assertj.core.api.Assumptions.assumeThat;
-import static org.assertj.core.api.InstanceOfAssertFactories.LIST;
-import static org.assertj.core.api.InstanceOfAssertFactories.MAP;
-import static org.openqa.selenium.PageLoadStrategy.EAGER;
-import static org.openqa.selenium.firefox.FirefoxDriver.Capability.MARIONETTE;
-import static org.openqa.selenium.firefox.FirefoxDriver.SystemProperty.BROWSER_BINARY;
-import static org.openqa.selenium.firefox.FirefoxDriver.SystemProperty.BROWSER_PROFILE;
-import static org.openqa.selenium.firefox.FirefoxDriver.SystemProperty.DRIVER_USE_MARIONETTE;
-import static org.openqa.selenium.firefox.FirefoxDriverLogLevel.DEBUG;
-import static org.openqa.selenium.firefox.FirefoxDriverLogLevel.ERROR;
-import static org.openqa.selenium.firefox.FirefoxDriverLogLevel.WARN;
-import static org.openqa.selenium.firefox.FirefoxOptions.FIREFOX_OPTIONS;
-import static org.openqa.selenium.remote.CapabilityType.ACCEPT_INSECURE_CERTS;
-import static org.openqa.selenium.remote.CapabilityType.PAGE_LOAD_STRATEGY;
 
 @Category(UnitTests.class)
 public class FirefoxOptionsTest {
@@ -165,43 +165,6 @@ public class FirefoxOptionsTest {
         options.getBinaryOrNull().orElseThrow(() -> new AssertionError("No binary"));
 
       assertThat(firefoxBinary.getPath()).isEqualTo(binary.toString());
-    } finally {
-      property.reset();
-    }
-  }
-
-  @Test
-  public void shouldPickUpLegacyValueFromSystemProperty() {
-    JreSystemProperty property = new JreSystemProperty(DRIVER_USE_MARIONETTE);
-
-    try {
-      // No value should default to using Marionette
-      property.set(null);
-      FirefoxOptions options = new FirefoxOptions().configureFromEnv();
-      assertThat(options.isLegacy()).isFalse();
-
-      property.set("false");
-      options = new FirefoxOptions().configureFromEnv();
-      assertThat(options.isLegacy()).isTrue();
-
-      property.set("true");
-      options = new FirefoxOptions().configureFromEnv();
-      assertThat(options.isLegacy()).isFalse();
-    } finally {
-      property.reset();
-    }
-  }
-
-  @Test
-  public void settingMarionetteToFalseAsASystemPropertyDoesNotPrecedence() {
-    JreSystemProperty property = new JreSystemProperty(DRIVER_USE_MARIONETTE);
-
-    try {
-      Capabilities caps = new ImmutableCapabilities(MARIONETTE, true);
-
-      property.set("false");
-      FirefoxOptions options = new FirefoxOptions().configureFromEnv().merge(caps);
-      assertThat(options.isLegacy()).isTrue();
     } finally {
       property.reset();
     }
@@ -366,6 +329,17 @@ public class FirefoxOptionsTest {
       .containsEntry("opt3", "val3");
   }
 
+  @Test
+  public void firefoxOptionsShouldEqualEquivalentImmutableCapabilities() {
+    FirefoxOptions
+      options =
+      new FirefoxOptions().addArguments("hello").setPageLoadStrategy(EAGER).setHeadless(true);
+    Capabilities caps = new ImmutableCapabilities(options);
+
+    assertThat(caps).isEqualTo(options);
+    assertThat(caps.getCapabilityNames()).contains(FIREFOX_OPTIONS);
+  }
+
   private static class JreSystemProperty {
 
     private final String name;
@@ -391,14 +365,5 @@ public class FirefoxOptionsTest {
     public void reset() {
       set(originalValue);
     }
-  }
-
-  @Test
-  public void firefoxOptionsShouldEqualEquivalentImmutableCapabilities() {
-    FirefoxOptions options = new FirefoxOptions().addArguments("hello").setPageLoadStrategy(EAGER).setHeadless(true);
-    Capabilities caps = new ImmutableCapabilities(options);
-
-    assertThat(caps).isEqualTo(options);
-    assertThat(caps.getCapabilityNames()).contains(FIREFOX_OPTIONS);
   }
 }
