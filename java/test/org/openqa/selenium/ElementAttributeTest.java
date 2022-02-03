@@ -22,16 +22,14 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.openqa.selenium.testing.drivers.Browser.CHROME;
 import static org.openqa.selenium.testing.drivers.Browser.EDGE;
-import static org.openqa.selenium.testing.drivers.Browser.LEGACY_FIREFOX_XPI;
+import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
 import static org.openqa.selenium.testing.drivers.Browser.HTMLUNIT;
 import static org.openqa.selenium.testing.drivers.Browser.IE;
-import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
 import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
 
 import org.junit.Test;
 import org.openqa.selenium.environment.webserver.Page;
 import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.NotYetImplemented;
 
@@ -410,7 +408,6 @@ public class ElementAttributeTest extends JUnit4TestBase {
   @NotYetImplemented(CHROME)
   @NotYetImplemented(EDGE)
   @NotYetImplemented(FIREFOX)
-  @Ignore(LEGACY_FIREFOX_XPI)
   @NotYetImplemented(HTMLUNIT)
   @NotYetImplemented(SAFARI)
   public void shouldTreatDraggableAsEnumeratedButNotBoolean() {
