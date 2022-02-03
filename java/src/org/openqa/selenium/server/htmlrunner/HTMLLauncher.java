@@ -17,13 +17,17 @@
 
 package org.openqa.selenium.server.htmlrunner;
 
+import static java.util.concurrent.TimeUnit.SECONDS;
+
+import com.google.common.collect.ImmutableMap;
+
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.Parameter;
 import com.beust.jcommander.ParameterException;
 import com.beust.jcommander.internal.Console;
-import com.google.common.collect.ImmutableMap;
 import com.thoughtworks.selenium.Selenium;
 import com.thoughtworks.selenium.webdriven.WebDriverBackedSelenium;
+
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -58,8 +62,6 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import static java.util.concurrent.TimeUnit.SECONDS;
-
 /**
  * Runs HTML Selenium test suites.
  */
@@ -71,6 +73,100 @@ public class HTMLLauncher {
   private static Logger log = Logger.getLogger(HTMLLauncher.class.getName());
 
   private Server<?> server;
+
+  private static String printUsage(JCommander commander) {
+    StringBuilder usage = new StringBuilder();
+    commander.setConsole(new Console() {
+      @Override
+      public void print(String msg) {
+        usage.append(msg);
+      }
+
+      @Override
+      public void println(String msg) {
+        usage.append(msg).append("\n");
+      }
+
+      @Override
+      public char[] readPassword(boolean echoInput) {
+        throw new UnsupportedOperationException("readPassword");
+      }
+    });
+    commander.usage();
+
+    return usage.toString();
+  }
+
+  public static int mainInt(String... args) throws Exception {
+    Args processed = new Args();
+    JCommander jCommander = new JCommander(processed);
+    jCommander.setCaseSensitiveOptions(false);
+    try {
+      jCommander.parse(args);
+    } catch (ParameterException ex) {
+      System.err.print(ex.getMessage() + "\n" + printUsage(jCommander));
+      return 0;
+    }
+
+    if (processed.help) {
+      System.err.print(printUsage(jCommander));
+      return 0;
+    }
+
+    warnAboutLegacyOptions(processed);
+
+    Path resultsPath = Paths.get(processed.htmlSuite.get(3));
+    Files.createDirectories(resultsPath);
+
+    String suite = processed.htmlSuite.get(2);
+    String startURL = processed.htmlSuite.get(1);
+    String[] browsers = new String[] {processed.htmlSuite.get(0)};
+
+    HTMLLauncher launcher = new HTMLLauncher();
+
+    boolean passed = true;
+    for (String browser : browsers) {
+      // Turns out that Windows doesn't like "*" in a path name
+      String reportFileName = browser.contains(" ") ? browser.substring(0, browser.indexOf(' ')) : browser;
+      File results = resultsPath.resolve(reportFileName.substring(1) + ".results.html").toFile();
+      String result = "FAILED";
+
+      try {
+        long timeout;
+        try {
+          timeout = Long.parseLong(processed.timeout);
+        } catch (NumberFormatException e) {
+          System.err.println("Timeout does not appear to be a number: " + processed.timeout);
+          return -2;
+        }
+        result = launcher.runHTMLSuite(browser, startURL, suite, results, timeout, processed.userExtensions);
+        passed &= "PASSED".equals(result);
+      } catch (Throwable e) {
+        log.log(Level.WARNING, "Test of browser failed: " + browser, e);
+        passed = false;
+      }
+    }
+
+    return passed ? 1 : 0;
+  }
+
+  private static void warnAboutLegacyOptions(Args processed) {
+    if (processed.multiWindow) {
+      System.err.println("Multi-window mode is no longer used as an option and will be ignored.");
+    }
+
+    if (processed.port != 0) {
+      System.err.println("Port is no longer used as an option and will be ignored.");
+    }
+
+    if (processed.trustAllSSLCertificates) {
+      System.err.println("Trusting all ssl certificates is no longer a user-settable option.");
+    }
+  }
+
+  public static void main(String[] args) throws Exception {
+    System.exit(mainInt(args));
+  }
 
   /**
    * Launches a single HTML Selenium test suite.
@@ -193,100 +289,6 @@ public class HTMLLauncher {
     return url;
  }
 
-  private static String printUsage(JCommander commander) {
-    StringBuilder usage = new StringBuilder();
-    commander.setConsole(new Console() {
-      @Override
-      public void print(String msg) {
-        usage.append(msg);
-      }
-
-      @Override
-      public void println(String msg) {
-        usage.append(msg).append("\n");
-      }
-
-      @Override
-      public char[] readPassword(boolean echoInput) {
-        throw new UnsupportedOperationException("readPassword");
-      }
-    });
-    commander.usage();
-
-    return usage.toString();
-  }
-
-  public static int mainInt(String... args) throws Exception {
-    Args processed = new Args();
-    JCommander jCommander = new JCommander(processed);
-    jCommander.setCaseSensitiveOptions(false);
-    try {
-      jCommander.parse(args);
-    } catch (ParameterException ex) {
-      System.err.print(ex.getMessage() + "\n" + printUsage(jCommander));
-      return 0;
-    }
-
-    if (processed.help) {
-      System.err.print(printUsage(jCommander));
-      return 0;
-    }
-
-    warnAboutLegacyOptions(processed);
-
-    Path resultsPath = Paths.get(processed.htmlSuite.get(3));
-    Files.createDirectories(resultsPath);
-
-    String suite = processed.htmlSuite.get(2);
-    String startURL = processed.htmlSuite.get(1);
-    String[] browsers = new String[] {processed.htmlSuite.get(0)};
-
-    HTMLLauncher launcher = new HTMLLauncher();
-
-    boolean passed = true;
-    for (String browser : browsers) {
-      // Turns out that Windows doesn't like "*" in a path name
-      String reportFileName = browser.contains(" ") ? browser.substring(0, browser.indexOf(' ')) : browser;
-      File results = resultsPath.resolve(reportFileName.substring(1) + ".results.html").toFile();
-      String result = "FAILED";
-
-      try {
-        long timeout;
-        try {
-          timeout = Long.parseLong(processed.timeout);
-        } catch (NumberFormatException e) {
-          System.err.println("Timeout does not appear to be a number: " + processed.timeout);
-          return -2;
-        }
-        result = launcher.runHTMLSuite(browser, startURL, suite, results, timeout, processed.userExtensions);
-        passed &= "PASSED".equals(result);
-      } catch (Throwable e) {
-        log.log(Level.WARNING, "Test of browser failed: " + browser, e);
-        passed = false;
-      }
-    }
-
-    return passed ? 1 : 0;
-  }
-
-  private static void warnAboutLegacyOptions(Args processed) {
-    if (processed.multiWindow) {
-      System.err.println("Multi-window mode is no longer used as an option and will be ignored.");
-    }
-
-    if (processed.port != 0) {
-      System.err.println("Port is no longer used as an option and will be ignored.");
-    }
-
-    if (processed.trustAllSSLCertificates) {
-      System.err.println("Trusting all ssl certificates is no longer a user-settable option.");
-    }
-  }
-
-  public static void main(String[] args) throws Exception {
-    System.exit(mainInt(args));
-  }
-
   private WebDriver createDriver(String browser) {
     String[] parts = browser.split(" ", 2);
     browser = parts[0];
@@ -296,7 +298,7 @@ public class HTMLLauncher {
       case "*firefoxproxy":
       case "*firefoxchrome":
       case "*pifirefox":
-        FirefoxOptions options = new FirefoxOptions().setLegacy(false);
+        FirefoxOptions options = new FirefoxOptions();
         if (parts.length > 1) {
           options.setBinary(parts[1]);
         }

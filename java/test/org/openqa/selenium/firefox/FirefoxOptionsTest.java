@@ -264,7 +264,6 @@ public class FirefoxOptionsTest {
   @Test
   public void roundTrippingToCapabilitiesAndBackWorks() {
     FirefoxOptions expected = new FirefoxOptions()
-      .setLegacy(true)
       .addPreference("cake", "walk");
 
     // Convert to a Map so we can create a standalone capabilities instance, which we then use to

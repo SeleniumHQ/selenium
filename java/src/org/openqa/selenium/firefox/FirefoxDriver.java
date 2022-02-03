@@ -86,11 +86,6 @@ public class FirefoxDriver extends RemoteWebDriver
    */
   @Deprecated
   public static final String PROFILE = Capability.PROFILE;
-  /**
-   * @deprecated Use {@link Capability#MARIONETTE}
-   */
-  @Deprecated
-  public static final String MARIONETTE = Capability.MARIONETTE;
   private final Capabilities capabilities;
   private final RemoteWebStorage webStorage;
   private final HasExtensions extensions;
@@ -301,28 +296,11 @@ public class FirefoxDriver extends RemoteWebDriver
     public static final String BROWSER_LOGFILE = "webdriver.firefox.logfile";
 
     /**
-     * System property that defines the additional library path (Linux only).
-     */
-    public static final String BROWSER_LIBRARY_PATH = "webdriver.firefox.library.path";
-
-    /**
      * System property that defines the profile that should be used as a template.
      * When the driver starts, it will make a copy of the profile it is using,
      * rather than using that profile directly.
      */
     public static final String BROWSER_PROFILE = "webdriver.firefox.profile";
-
-    /**
-     * System property that defines the location of the webdriver.xpi browser extension to install
-     * in the browser. If not set, the prebuilt extension bundled with this class will be used.
-     */
-    public static final String DRIVER_XPI_PROPERTY = "webdriver.firefox.driver";
-
-    /**
-     * Boolean system property that instructs FirefoxDriver to use Marionette backend,
-     * overrides any capabilities specified by the user
-     */
-    public static final String DRIVER_USE_MARIONETTE = "webdriver.firefox.marionette";
   }
 
   public static final class Capability {
