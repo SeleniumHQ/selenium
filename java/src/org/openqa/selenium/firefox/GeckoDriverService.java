@@ -17,8 +17,13 @@
 
 package org.openqa.selenium.firefox;
 
+import static java.util.Collections.unmodifiableList;
+import static java.util.concurrent.TimeUnit.MILLISECONDS;
+import static org.openqa.selenium.remote.Browser.FIREFOX;
+
 import com.google.auto.service.AutoService;
 import com.google.common.io.ByteStreams;
+
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.internal.Require;
@@ -33,10 +38,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-
-import static java.util.Collections.unmodifiableList;
-import static java.util.concurrent.TimeUnit.MILLISECONDS;
-import static org.openqa.selenium.remote.Browser.FIREFOX;
 
 /**
  * Manages the life and death of an GeckoDriver aka 'wires'.
@@ -134,11 +135,6 @@ public class GeckoDriverService extends FirefoxDriverService {
     private FirefoxBinary firefoxBinary;
 
     public Builder() {
-    }
-
-    @Override
-    protected boolean isLegacy() {
-      return false;
     }
 
     @Override

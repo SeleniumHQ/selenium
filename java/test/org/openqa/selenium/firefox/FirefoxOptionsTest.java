@@ -27,7 +27,6 @@ import static org.assertj.core.api.Assumptions.assumeThat;
 import static org.assertj.core.api.InstanceOfAssertFactories.LIST;
 import static org.assertj.core.api.InstanceOfAssertFactories.MAP;
 import static org.openqa.selenium.PageLoadStrategy.EAGER;
-import static org.openqa.selenium.firefox.FirefoxDriver.Capability.MARIONETTE;
 import static org.openqa.selenium.firefox.FirefoxDriver.SystemProperty.BROWSER_BINARY;
 import static org.openqa.selenium.firefox.FirefoxDriver.SystemProperty.BROWSER_PROFILE;
 import static org.openqa.selenium.firefox.FirefoxDriverLogLevel.DEBUG;
@@ -69,11 +68,9 @@ public class FirefoxOptionsTest {
   @Test
   public void canInitFirefoxOptionsWithCapabilities() {
     FirefoxOptions options = new FirefoxOptions(new ImmutableCapabilities(
-      MARIONETTE, false,
       PAGE_LOAD_STRATEGY, PageLoadStrategy.EAGER,
       ACCEPT_INSECURE_CERTS, true));
 
-    assertThat(options.isLegacy()).isTrue();
     assertThat(options.getCapability(PAGE_LOAD_STRATEGY)).isEqualTo(EAGER);
     assertThat(options.getCapability(ACCEPT_INSECURE_CERTS)).isEqualTo(true);
   }

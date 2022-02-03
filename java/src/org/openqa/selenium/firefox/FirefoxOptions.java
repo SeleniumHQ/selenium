@@ -17,6 +17,12 @@
 
 package org.openqa.selenium.firefox;
 
+import static java.util.stream.Collectors.toMap;
+import static org.openqa.selenium.firefox.FirefoxDriver.Capability.BINARY;
+import static org.openqa.selenium.firefox.FirefoxDriver.Capability.MARIONETTE;
+import static org.openqa.selenium.firefox.FirefoxDriver.Capability.PROFILE;
+import static org.openqa.selenium.remote.Browser.FIREFOX;
+
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.internal.Require;
@@ -27,13 +33,17 @@ import java.io.File;
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.nio.file.Path;
-import java.util.*;
-
-import static java.util.stream.Collectors.toMap;
-import static org.openqa.selenium.firefox.FirefoxDriver.Capability.BINARY;
-import static org.openqa.selenium.firefox.FirefoxDriver.Capability.MARIONETTE;
-import static org.openqa.selenium.firefox.FirefoxDriver.Capability.PROFILE;
-import static org.openqa.selenium.remote.Browser.FIREFOX;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
+import java.util.TreeMap;
+import java.util.TreeSet;
 
 /**
  * Manage firefox specific settings in a way that geckodriver can understand.
@@ -158,11 +168,11 @@ public class FirefoxOptions extends AbstractDriverOptions<FirefoxOptions> {
   }
 
   /**
-   * @deprecated This method will be deleted and will not be replaced.
+   * Constructs a {@link FirefoxBinary} and returns that to be used, and because of this is only
+   * useful when actually starting firefox.
    */
-  @Deprecated
-  public boolean isLegacy() {
-    return legacy;
+  public FirefoxBinary getBinary() {
+    return getBinaryOrNull().orElseGet(FirefoxBinary::new);
   }
 
   public FirefoxOptions setBinary(FirefoxBinary binary) {
@@ -179,14 +189,6 @@ public class FirefoxOptions extends AbstractDriverOptions<FirefoxOptions> {
   public FirefoxOptions setBinary(String path) {
     Require.nonNull("Binary", path);
     return setFirefoxOption(Keys.BINARY, path);
-  }
-
-  /**
-   * Constructs a {@link FirefoxBinary} and returns that to be used, and because of this is only
-   * useful when actually starting firefox.
-   */
-  public FirefoxBinary getBinary() {
-    return getBinaryOrNull().orElseGet(FirefoxBinary::new);
   }
 
   public Optional<FirefoxBinary> getBinaryOrNull() {
@@ -207,16 +209,6 @@ public class FirefoxOptions extends AbstractDriverOptions<FirefoxOptions> {
     return Optional.of(toReturn);
   }
 
-  public FirefoxOptions setProfile(FirefoxProfile profile) {
-    Require.nonNull("Profile", profile);
-
-    try {
-      return setFirefoxOption(Keys.PROFILE, profile.toJson());
-    } catch (IOException e) {
-      throw new UncheckedIOException(e);
-    }
-  }
-
   public FirefoxProfile getProfile() {
     Object rawProfile = firefoxOptions.get(Keys.PROFILE.key());
     if (rawProfile == null) {
@@ -229,6 +221,16 @@ public class FirefoxOptions extends AbstractDriverOptions<FirefoxOptions> {
 
     try {
       return FirefoxProfile.fromJson((String) rawProfile);
+    } catch (IOException e) {
+      throw new UncheckedIOException(e);
+    }
+  }
+
+  public FirefoxOptions setProfile(FirefoxProfile profile) {
+    Require.nonNull("Profile", profile);
+
+    try {
+      return setFirefoxOption(Keys.PROFILE, profile.toJson());
     } catch (IOException e) {
       throw new UncheckedIOException(e);
     }
