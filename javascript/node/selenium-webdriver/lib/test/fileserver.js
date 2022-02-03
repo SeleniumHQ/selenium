@@ -89,6 +89,7 @@ const Pages = (function () {
   addPage('resultPage', 'resultPage.html')
   addPage('richTextPage', 'rich_text.html')
   addPage('printPage', 'printPage.html')
+  addPage('scrollingPage', 'scrollingPage.html')
   addPage('selectableItemsPage', 'selectableItems.html')
   addPage('selectPage', 'selectPage.html')
   addPage('simpleTestPage', 'simpleTest.html')
