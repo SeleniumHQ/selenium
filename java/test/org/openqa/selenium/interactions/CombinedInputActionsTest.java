@@ -31,7 +31,6 @@ import static org.openqa.selenium.testing.drivers.Browser.CHROME;
 import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
 import static org.openqa.selenium.testing.drivers.Browser.HTMLUNIT;
 import static org.openqa.selenium.testing.drivers.Browser.IE;
-import static org.openqa.selenium.testing.drivers.Browser.LEGACY_FIREFOX_XPI;
 import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
 
 import org.junit.Test;
@@ -57,7 +56,6 @@ public class CombinedInputActionsTest extends JUnit4TestBase {
 
   @Test
   @Ignore(IE)
-  @Ignore(LEGACY_FIREFOX_XPI)
   @NotYetImplemented(SAFARI)
   public void testPlainClickingOnMultiSelectionList() {
     driver.get(pages.formSelectionPage);
@@ -82,7 +80,6 @@ public class CombinedInputActionsTest extends JUnit4TestBase {
 
   @Test
   @Ignore(IE)
-  @Ignore(LEGACY_FIREFOX_XPI)
   @NotYetImplemented(SAFARI)
   public void testShiftClickingOnMultiSelectionList() {
     driver.get(pages.formSelectionPage);
@@ -109,7 +106,6 @@ public class CombinedInputActionsTest extends JUnit4TestBase {
 
   @Test
   @Ignore(IE)
-  @Ignore(LEGACY_FIREFOX_XPI)
   @NotYetImplemented(SAFARI)
   public void testMultipleInputs() {
     driver.get(pages.formSelectionPage);
@@ -139,7 +135,6 @@ public class CombinedInputActionsTest extends JUnit4TestBase {
 
   @Test
   @Ignore(IE)
-  @Ignore(LEGACY_FIREFOX_XPI)
   @Ignore(value = FIREFOX, travis = true)
   public void testControlClickingOnMultiSelectionList() {
     assumeFalse("FIXME: macs don't have CONTROL key",
