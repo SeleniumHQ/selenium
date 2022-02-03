@@ -107,25 +107,25 @@ test.suite(function (env) {
     // This appears to be a quirk of the timing around mocha tests and not
     // necessarily a bug in the chromedriver.
     // TODO(jleyba): dig into this more so we can remove this hack.
-   // describe('dragAndDrop()', function () {
-      it('dragAndDrop()', async function () {
-        await driver.get(fileServer.whereIs('/data/actions/drag.html'))
+    // describe('dragAndDrop()', function () {
+    it('dragAndDrop()', async function () {
+      await driver.get(fileServer.whereIs('/data/actions/drag.html'))
 
-        let slide = await driver.findElement(By.id('slide'))
-        assert.strictEqual(await slide.getCssValue('left'), '0px')
-        assert.strictEqual(await slide.getCssValue('top'), '0px')
+      let slide = await driver.findElement(By.id('slide'))
+      assert.strictEqual(await slide.getCssValue('left'), '0px')
+      assert.strictEqual(await slide.getCssValue('top'), '0px')
 
-        let br = await driver.findElement(By.id('BR'))
-        await driver.actions().dragAndDrop(slide, br).perform()
-        assert.strictEqual(await slide.getCssValue('left'), '206px')
-        assert.strictEqual(await slide.getCssValue('top'), '206px')
+      let br = await driver.findElement(By.id('BR'))
+      await driver.actions().dragAndDrop(slide, br).perform()
+      assert.strictEqual(await slide.getCssValue('left'), '206px')
+      assert.strictEqual(await slide.getCssValue('top'), '206px')
 
-        let tr = await driver.findElement(By.id('TR'))
-        await driver.actions().dragAndDrop(slide, tr).perform()
-        assert.strictEqual(await slide.getCssValue('left'), '206px')
-        assert.strictEqual(await slide.getCssValue('top'), '1px')
-      })
-  //  })
+      let tr = await driver.findElement(By.id('TR'))
+      await driver.actions().dragAndDrop(slide, tr).perform()
+      assert.strictEqual(await slide.getCssValue('left'), '206px')
+      assert.strictEqual(await slide.getCssValue('top'), '1px')
+    })
+    //  })
 
     it('move()', async function () {
       await driver.get(fileServer.whereIs('/data/actions/drag.html'))
@@ -215,5 +215,24 @@ test.suite(function (env) {
 
       assert.strictEqual(await el.getAttribute('value'), 'foobar')
     })
+
+    test
+      .ignore(env.browsers(Browser.SAFARI, Browser.Firefox))
+      .it('can scroll with the wheel input', async function () {
+        await driver.get(test.Pages.scrollingPage)
+        let scrollable = await driver.findElement(By.id("scrollable"))
+
+        await driver.actions().scroll(0, 0, 5, 10, scrollable).perform()
+        let events = await _getEvents(driver)
+        assert.strictEqual(events[0].type, "wheel")
+        assert.ok(events[0].deltaX >= 5)
+        assert.ok(events[0].deltaY >= 10)
+        assert.strictEqual(events[0].deltaZ, 0)
+        assert.strictEqual(events[0].target, "scrollContent")
+      })
+
+    async function _getEvents(driver) {
+      return await driver.executeScript("return allEvents.events;") || []
+    }
   })
 })

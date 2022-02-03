@@ -73,6 +73,11 @@ describe('input.Actions', function () {
                 parameters: { pointerType: 'mouse' },
                 actions: [{ type: 'pause', duration: 1 }],
               },
+              {
+                id: 'default wheel',
+                type: 'wheel',
+                actions: [{ type: 'pause', duration: 1 }],
+              },
             ],
           },
         },
@@ -144,6 +149,16 @@ describe('input.Actions', function () {
                 parameters: { pointerType: 'mouse' },
                 actions: [{ type: 'pause', duration: 3 }],
               },
+              {
+                id: 'default wheel',
+                type: 'wheel',
+                actions: [
+                  {
+                    duration: 3,
+                    type: 'pause'
+                  }
+                ],
+              }
             ],
           },
         },
@@ -172,6 +187,14 @@ describe('input.Actions', function () {
                 id: 'default mouse',
                 type: 'pointer',
                 parameters: { pointerType: 'mouse' },
+                actions: [
+                  { type: 'pause', duration: 0 },
+                  { type: 'pause', duration: 3 },
+                ],
+              },
+              {
+                id: 'default wheel',
+                type: 'wheel',
                 actions: [
                   { type: 'pause', duration: 0 },
                   { type: 'pause', duration: 3 },
