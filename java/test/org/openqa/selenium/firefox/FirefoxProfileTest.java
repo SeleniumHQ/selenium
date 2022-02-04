@@ -18,15 +18,14 @@
 package org.openqa.selenium.firefox;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
+import org.openqa.selenium.build.InProject;
 import org.openqa.selenium.io.FileHandler;
 import org.openqa.selenium.io.Zip;
-import org.openqa.selenium.build.InProject;
 import org.openqa.selenium.testing.UnitTests;
 
 import java.io.BufferedReader;
@@ -133,22 +132,9 @@ public class FirefoxProfileTest {
   }
 
   @Test
-  public void shouldSetDefaultPreferences() throws Exception {
-    assertPreferenceValueEquals("network.http.phishy-userpass-length", 255);
-  }
-
-  @Test
   public void shouldAllowSettingFrozenPreferences() throws Exception {
     profile.setPreference("network.http.phishy-userpass-length", 1024);
     assertPreferenceValueEquals("network.http.phishy-userpass-length", 1024);
-  }
-
-  @Test
-  public void shouldAllowCheckingForChangesInFrozenPreferences() {
-    profile.setPreference("network.http.phishy-userpass-length", 1024);
-    assertThatExceptionOfType(IllegalStateException.class).isThrownBy(
-        () -> profile.checkForChangesInFrozenPreferences()
-    ).withMessageContaining("network.http.phishy-userpass-length");
   }
 
   @Test
