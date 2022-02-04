@@ -76,16 +76,6 @@ import java.util.stream.StreamSupport;
 public class FirefoxDriver extends RemoteWebDriver
   implements WebStorage, HasExtensions, HasFullPageScreenshot, HasContext, HasDevTools {
 
-  /**
-   * @deprecated Use {@link Capability#BINARY}
-   */
-  @Deprecated
-  public static final String BINARY = Capability.BINARY;
-  /**
-   * @deprecated Use {@link Capability#PROFILE}
-   */
-  @Deprecated
-  public static final String PROFILE = Capability.PROFILE;
   private final Capabilities capabilities;
   private final RemoteWebStorage webStorage;
   private final HasExtensions extensions;
