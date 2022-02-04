@@ -83,10 +83,7 @@ public class SafariTechPreviewDriverService extends DriverService {
       int score = 0;
 
       if (SafariOptions.SAFARI_TECH_PREVIEW.equals(capabilities.getBrowserName())) {
-        // Returning this value so this service is preferred over SafariDriverService
-        // Needs to be reestablished to "score++" when the deprecated methods at SafariDriverService
-        // get removed.
-        score = 10;
+        score++;
       }
 
       return score;
