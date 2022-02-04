@@ -8,7 +8,6 @@ java_export(
     srcs = glob(["*.java"]),
     maven_coordinates = "org.seleniumhq.selenium:selenium-firefox-driver:%s" % SE_VERSION,
     pom_template = "//java/src/org/openqa/selenium:template-pom",
-    resources = [":prefs"],
     visibility = ["//visibility:public"],
     deps = [
         "//java:auto-service",
@@ -19,8 +18,3 @@ java_export(
     ],
 )
 
-copy_file(
-    name = "prefs",
-    src = "//third_party/js/selenium:webdriver_json",
-    out = "webdriver_prefs.json",
-)
