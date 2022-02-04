@@ -18,6 +18,7 @@
 package org.openqa.selenium.safari;
 
 import com.google.common.collect.ImmutableMap;
+
 import org.openqa.selenium.Beta;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriverException;
@@ -68,7 +69,7 @@ public class SafariDriver extends RemoteWebDriver implements HasPermissions, Has
    * @param safariOptions safari specific options / capabilities for the driver
    */
   public SafariDriver(SafariOptions safariOptions) {
-    this(SafariDriverService.createDefaultService(safariOptions), safariOptions);
+    this(SafariDriverService.createDefaultService(), safariOptions);
   }
 
   /**
@@ -91,6 +92,11 @@ public class SafariDriver extends RemoteWebDriver implements HasPermissions, Has
     debugger = new AddHasDebugger().getImplementation(getCapabilities(), getExecuteMethod());
   }
 
+  @Beta
+  public static RemoteWebDriverBuilder builder() {
+    return RemoteWebDriver.builder().oneOf(new SafariOptions());
+  }
+
   @Override
   public void setPermissions(String permission, boolean value) {
     Require.nonNull("Permission Name", permission);
@@ -109,6 +115,13 @@ public class SafariDriver extends RemoteWebDriver implements HasPermissions, Has
     debugger.attachDebugger();
   }
 
+  @Override
+  public void setFileDetector(FileDetector detector) {
+    throw new WebDriverException(
+        "Setting the file detector only works on remote webdriver instances obtained " +
+        "via RemoteWebDriver");
+  }
+
   private static class SafariDriverCommandExecutor extends DriverCommandExecutor {
     public SafariDriverCommandExecutor(DriverService service) {
       super(service, getExtraCommands());
@@ -120,17 +133,5 @@ public class SafariDriver extends RemoteWebDriver implements HasPermissions, Has
         .putAll(new AddHasDebugger().getAdditionalCommands())
         .build();
     }
-  }
-
-  @Override
-  public void setFileDetector(FileDetector detector) {
-    throw new WebDriverException(
-        "Setting the file detector only works on remote webdriver instances obtained " +
-        "via RemoteWebDriver");
-  }
-
-  @Beta
-  public static RemoteWebDriverBuilder builder() {
-    return RemoteWebDriver.builder().oneOf(new SafariOptions());
   }
 }
