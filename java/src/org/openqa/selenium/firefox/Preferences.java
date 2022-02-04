@@ -57,10 +57,13 @@ class Preferences {
    * not match that line because Firefox never generates lines like that.
    */
   private static final Pattern PREFERENCE_PATTERN =
-      Pattern.compile("user_pref\\(\"([^\"]+)\", (\"?.+?\"?)\\);");
+    Pattern.compile("user_pref\\(\"([^\"]+)\", (\"?.+?\"?)\\);");
 
   private Map<String, Object> immutablePrefs = new HashMap<>();
   private Map<String, Object> allPrefs = new HashMap<>();
+
+  public Preferences() {
+  }
 
   public Preferences(Reader defaults) {
     readDefaultPreferences(defaults);
@@ -75,6 +78,10 @@ class Preferences {
     }
   }
 
+  public Preferences(File userPrefs) {
+    readUserPrefs(userPrefs);
+  }
+
   public Preferences(Reader defaults, Reader reader) {
     readDefaultPreferences(defaults);
     try {
@@ -86,6 +93,14 @@ class Preferences {
         Closeables.close(reader, true);
       } catch (IOException ignored) {
       }
+    }
+  }
+
+  private void readUserPrefs(File userPrefs) {
+    try (Reader reader = Files.newBufferedReader(userPrefs.toPath(), Charset.defaultCharset())) {
+      readPreferences(reader);
+    } catch (IOException e) {
+      throw new WebDriverException(e);
     }
   }
 
