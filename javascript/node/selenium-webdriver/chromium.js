@@ -92,6 +92,7 @@ const Command = {
   LAUNCH_APP: 'launchApp',
   GET_NETWORK_CONDITIONS: 'getNetworkConditions',
   SET_NETWORK_CONDITIONS: 'setNetworkConditions',
+  DELETE_NETWORK_CONDITIONS: 'deleteNetworkConditions',
   SEND_DEVTOOLS_COMMAND: 'sendDevToolsCommand',
   SEND_AND_GET_DEVTOOLS_COMMAND: 'sendAndGetDevToolsCommand',
   SET_PERMISSION: 'setPermission',
@@ -135,6 +136,11 @@ function configureExecutor(executor, vendorPrefix) {
   executor.defineCommand(
     Command.SET_NETWORK_CONDITIONS,
     'POST',
+    '/session/:sessionId/chromium/network_conditions'
+  )
+  executor.defineCommand(
+    Command.DELETE_NETWORK_CONDITIONS,
+    'DELETE',
     '/session/:sessionId/chromium/network_conditions'
   )
   executor.defineCommand(
@@ -704,6 +710,15 @@ class Driver extends webdriver.WebDriver {
    */
   getNetworkConditions() {
     return this.execute(new command.Command(Command.GET_NETWORK_CONDITIONS))
+  }
+
+  /**
+   * Schedules a command to delete Chromium network emulation settings.
+   * @return {!Promise} A promise that will be resolved when network
+   *     emulation settings have been deleted.
+   */
+  deleteNetworkConditions() {
+    return this.execute(new command.Command(Command.DELETE_NETWORK_CONDITIONS))
   }
 
   /**
