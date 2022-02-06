@@ -83,7 +83,7 @@ public class Actions {
    * Note that the modifier key is <b>never</b> released implicitly - either
    * <i>keyUp(theKey)</i> or <i>sendKeys(Keys.NULL)</i>
    * must be called to release the modifier.
-   * @param key Either {@link Keys#SHIFT}, {@link Keys#ALT} or {@link Keys#CONTROL}. If the
+   * @param key Either {@link Keys#META}, {@link Keys#COMMAND}, {@link Keys#SHIFT}, {@link Keys#ALT} or {@link Keys#CONTROL}. If the
    * provided key is none of those, {@link IllegalArgumentException} is thrown.
    * @return A self reference.
    */
@@ -99,7 +99,7 @@ public class Actions {
    * <i>Actions.click(element).sendKeys(theKey);</i>
    * @see #keyDown(CharSequence)
    *
-   * @param key Either {@link Keys#SHIFT}, {@link Keys#ALT} or {@link Keys#CONTROL}. If the
+   * @param key Either {@link Keys#META}, {@link Keys#COMMAND}, {@link Keys#SHIFT}, {@link Keys#ALT} or {@link Keys#CONTROL}. If the
    * provided key is none of those, {@link IllegalArgumentException} is thrown.
    * @param target WebElement to perform the action
    * @return A self reference.
@@ -116,7 +116,7 @@ public class Actions {
    * Performs a modifier key release. Releasing a non-depressed modifier key will yield undefined
    * behaviour.
    *
-   * @param key Either {@link Keys#SHIFT}, {@link Keys#ALT} or {@link Keys#CONTROL}.
+   * @param key Either {@link Keys#META}, {@link Keys#COMMAND}, {@link Keys#SHIFT}, {@link Keys#ALT} or {@link Keys#CONTROL}.
    * @return A self reference.
    */
   public Actions keyUp(CharSequence key) {
@@ -132,7 +132,7 @@ public class Actions {
    * <i>Actions.click(element).sendKeys(theKey);</i>
    * @see #keyUp(CharSequence) on behaviour regarding non-depressed modifier keys.
    *
-   * @param key Either {@link Keys#SHIFT}, {@link Keys#ALT} or {@link Keys#CONTROL}.
+   * @param key Either {@link Keys#META}, {@link Keys#COMMAND}, {@link Keys#SHIFT}, {@link Keys#ALT} or {@link Keys#CONTROL}.
    * @param target WebElement to perform the action on
    * @return A self reference.
    */
