@@ -17,6 +17,8 @@
 
 package org.openqa.selenium.testing.drivers;
 
+import static org.openqa.selenium.remote.CapabilityType.BROWSER_NAME;
+
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.chrome.ChromeDriverInfo;
@@ -25,7 +27,6 @@ import org.openqa.selenium.edge.EdgeDriverInfo;
 import org.openqa.selenium.edge.EdgeOptions;
 import org.openqa.selenium.firefox.FirefoxOptions;
 import org.openqa.selenium.firefox.GeckoDriverInfo;
-import org.openqa.selenium.firefox.xpi.XpiDriverInfo;
 import org.openqa.selenium.ie.InternetExplorerDriverInfo;
 import org.openqa.selenium.ie.InternetExplorerOptions;
 import org.openqa.selenium.opera.OperaDriverInfo;
@@ -37,8 +38,6 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Logger;
-
-import static org.openqa.selenium.remote.CapabilityType.BROWSER_NAME;
 
 public enum Browser {
   ALL(new ImmutableCapabilities(), "any", false),
@@ -97,7 +96,6 @@ public enum Browser {
   },
   HTMLUNIT(
     new ImmutableCapabilities(BROWSER_NAME, org.openqa.selenium.remote.Browser.HTMLUNIT.browserName()), "HtmlUnit", false),
-  LEGACY_FIREFOX_XPI(new FirefoxOptions().setLegacy(true), new XpiDriverInfo().getDisplayName(), false),
   IE(new InternetExplorerOptions(), new InternetExplorerDriverInfo().getDisplayName(), false) {
     @Override
     public Capabilities getCapabilities() {
@@ -165,12 +163,7 @@ public enum Browser {
     }
 
     if ("ff".equalsIgnoreCase(browserName) || "firefox".equalsIgnoreCase(browserName)) {
-      if (System.getProperty("webdriver.firefox.marionette") == null ||
-          Boolean.getBoolean("webdriver.firefox.marionette")) {
-        return FIREFOX;
-      } else {
-        return LEGACY_FIREFOX_XPI;
-      }
+      return FIREFOX;
     }
 
     if ("edge".equalsIgnoreCase(browserName)) {

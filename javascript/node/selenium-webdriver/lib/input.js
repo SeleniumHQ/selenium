@@ -200,6 +200,7 @@ Action.Type = {
   POINTER_UP: 'pointerUp',
   POINTER_MOVE: 'pointerMove',
   POINTER_CANCEL: 'pointerCancel',
+  SCROLL: 'scroll',
 }
 
 /**
@@ -233,6 +234,7 @@ Device.Type = {
   KEY: 'key',
   NONE: 'none',
   POINTER: 'pointer',
+  WHEEL: 'wheel',
 }
 
 /**
@@ -392,6 +394,34 @@ Pointer.Type = {
   TOUCH: 'touch',
 }
 
+class Wheel extends Device {
+  /**
+   * @param {string} id the device ID.
+   * @param {Pointer.Type} type the pointer type.
+   */
+  constructor(id, type) {
+    super(Device.Type.WHEEL, id)
+  }
+
+  /**
+   * Scrolls a page via the coordinates given
+   * @param {number} x starting x coordinate
+   * @param {number} y starting y coordinate
+   * @param {number} deltaX Delta X to scroll to target
+   * @param {number} deltaY Delta Y to scroll to target
+   * @param {number} duration duration ratio be the ratio of time delta and duration
+   * @returns {!Action} An action to scroll with this device.
+   */
+  scroll(x, y, deltaX, deltaY, origin, duration) {
+    return {
+      type: Action.Type.SCROLL,
+      duration: duration, x: x, y: y,
+      deltaX: deltaX, deltaY: deltaY,
+      origin: origin
+    }
+  }
+}
+
 /**
  * User facing API for generating complex user gestures. This class should not
  * be instantiated directly. Instead, users should create new instances by
@@ -509,10 +539,14 @@ class Actions {
     /** @private @const */
     this.mouse_ = new Pointer('default mouse', Pointer.Type.MOUSE)
 
+    /** @private @const */
+    this.wheel_ = new Wheel('default wheel')
+
     /** @private @const {!Map<!Device, !Array<!Action>>} */
     this.sequences_ = new Map([
       [this.keyboard_, []],
       [this.mouse_, []],
+      [this.wheel_, []],
     ])
   }
 
@@ -524,6 +558,11 @@ class Actions {
   /** @return {!Pointer} the mouse pointer device handle. */
   mouse() {
     return this.mouse_
+  }
+
+  /** @return {!Wheel} the wheel device handle. */
+  wheel() {
+    return this.wheel_
   }
 
   /**
@@ -733,6 +772,19 @@ class Actions {
    */
   release(button = Button.LEFT) {
     return this.insert(this.mouse_, this.mouse_.release(button))
+  }
+
+  /**
+   * scrolls a page via the coordinates given
+   * @param {number} x starting x coordinate
+   * @param {number} y starting y coordinate
+   * @param {number} deltax delta x to scroll to target
+   * @param {number} deltay delta y to scroll to target
+   * @param {number} duration duration ratio be the ratio of time delta and duration
+   * @returns {!Action} An action to scroll with this device.
+   */
+  scroll(x, y, targetDeltaX, targetDeltaY, origin, duration) {
+    return this.insert(this.wheel_, this.wheel_.scroll(x, y, targetDeltaX, targetDeltaY, origin, duration))
   }
 
   /**

@@ -27,7 +27,6 @@ import static org.openqa.selenium.testing.drivers.Browser.CHROME;
 import static org.openqa.selenium.testing.drivers.Browser.EDGE;
 import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
 import static org.openqa.selenium.testing.drivers.Browser.IE;
-import static org.openqa.selenium.testing.drivers.Browser.LEGACY_FIREFOX_XPI;
 import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
 
 import com.google.common.collect.Sets;
@@ -140,7 +139,6 @@ public class TakesScreenshotTest extends JUnit4TestBase {
     compareColors(expectedColors, actualColors);
   }
 
-  @Ignore(LEGACY_FIREFOX_XPI)
   @Ignore(value = CHROME, gitHubActions = true)
   @Test
   public void testShouldCaptureScreenshotOfAnElement() throws Exception {
@@ -209,7 +207,6 @@ public class TakesScreenshotTest extends JUnit4TestBase {
 
   @Test
   @Ignore(value = IE, reason = "cuts captured image at driver level")
-  @Ignore(value = LEGACY_FIREFOX_XPI, reason = "captured image is cut at driver level")
   @Ignore(value = CHROME, reason = "takes only visible viewport")
   @Ignore(value = EDGE, reason = "takes only visible viewport")
   @Ignore(FIREFOX)
@@ -233,7 +230,6 @@ public class TakesScreenshotTest extends JUnit4TestBase {
 
   @Test
   @Ignore(value = IE, reason = "cuts captured image at driver level")
-  @Ignore(value = LEGACY_FIREFOX_XPI, reason = "captured image is cut at driver level")
   @Ignore(value = CHROME, reason = "takes only visible viewport")
   @Ignore(value = EDGE, reason = "takes only visible viewport")
   @Ignore(FIREFOX)
@@ -257,7 +253,6 @@ public class TakesScreenshotTest extends JUnit4TestBase {
 
   @Test
   @Ignore(value = IE, reason = "returns null")
-  @Ignore(value = LEGACY_FIREFOX_XPI, reason = "failed due NS_ERROR_FAILURE at context.drawWindow")
   @NotYetImplemented(value = SAFARI, reason = "An unknown server-side error")
   @Ignore(value = CHROME, reason = "takes only visible viewport")
   @Ignore(value = EDGE, reason = "takes only visible viewport")

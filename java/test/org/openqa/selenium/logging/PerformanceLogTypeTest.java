@@ -18,10 +18,9 @@
 package org.openqa.selenium.logging;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.openqa.selenium.testing.drivers.Browser.LEGACY_FIREFOX_XPI;
+import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
 import static org.openqa.selenium.testing.drivers.Browser.HTMLUNIT;
 import static org.openqa.selenium.testing.drivers.Browser.IE;
-import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
 import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
 
 import org.junit.After;
@@ -41,7 +40,6 @@ import java.util.logging.Level;
 @Ignore(IE)
 @Ignore(FIREFOX)
 @Ignore(SAFARI)
-@Ignore(LEGACY_FIREFOX_XPI)
 public class PerformanceLogTypeTest extends JUnit4TestBase {
 
   private WebDriver localDriver;

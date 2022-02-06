@@ -25,14 +25,13 @@ import static org.openqa.selenium.WaitingConditions.windowHandleCountToBe;
 import static org.openqa.selenium.WaitingConditions.windowHandleCountToBeGreaterThan;
 import static org.openqa.selenium.support.ui.ExpectedConditions.alertIsPresent;
 import static org.openqa.selenium.testing.TestUtilities.getEffectivePlatform;
-import static org.openqa.selenium.testing.drivers.Browser.LEGACY_FIREFOX_XPI;
+import static org.openqa.selenium.testing.TestUtilities.isInternetExplorer;
+import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
 import static org.openqa.selenium.testing.drivers.Browser.HTMLUNIT;
 import static org.openqa.selenium.testing.drivers.Browser.IE;
-import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
 import static org.openqa.selenium.testing.drivers.Browser.LEGACY_OPERA;
 import static org.openqa.selenium.testing.drivers.Browser.OPERA;
 import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
-import static org.openqa.selenium.testing.TestUtilities.isInternetExplorer;
 
 import org.junit.After;
 import org.junit.Before;
@@ -342,7 +341,6 @@ public class WindowSwitchingTest extends JUnit4TestBase {
   @Test
   @NotYetImplemented(HTMLUNIT)
   @NotYetImplemented(OPERA)
-  @Ignore(LEGACY_FIREFOX_XPI)
   @Ignore(LEGACY_OPERA)
   public void canOpenANewWindow() {
     driver.get(pages.xhtmlTestPage);

@@ -206,8 +206,7 @@ public class LocalDistributor extends Distributor implements Closeable {
     NewSessionRunnable newSessionRunnable = new NewSessionRunnable();
     bus.addListener(NodeDrainComplete.listener(this::remove));
 
-    Runnable purgeDeadNodes = model::purgeDeadNodes;
-    purgeDeadNodesService.scheduleAtFixedRate(purgeDeadNodes, 30, 30, TimeUnit.SECONDS);
+    purgeDeadNodesService.scheduleAtFixedRate(model::purgeDeadNodes, 30, 30, TimeUnit.SECONDS);
 
     nodeHealthCheckService.scheduleAtFixedRate(
       runNodeHealthChecks(),
