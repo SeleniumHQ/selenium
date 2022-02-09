@@ -18,13 +18,21 @@
 # under the License.
 
 module Selenium
-  module DevTools
-    class << self
-      attr_accessor :version
+  module WebDriver
+    module DriverExtensions
+      module HasBiDi
 
-      def load_version
-        require "selenium/devtools/v#{@version}"
-      end
-    end
-  end # DevTools
+        #
+        # Retrieves WebDriver BiDi connection.
+        #
+        # @return [BiDi]
+        #
+
+        def bidi
+          @bidi ||= Selenium::WebDriver::BiDi.new(url: capabilities[:web_socket_url])
+        end
+
+      end # HasBiDi
+    end # DriverExtensions
+  end # WebDriver
 end # Selenium

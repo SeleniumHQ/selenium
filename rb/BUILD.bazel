@@ -80,6 +80,8 @@ ruby_gem(
 ruby_library(
     name = "bidi",
     srcs = glob([
+        "lib/selenium/webdriver/bidi/**/*.rb",
+        "lib/selenium/webdriver/bidi.rb",
         "lib/selenium/webdriver/devtools/**/*.rb",
         "lib/selenium/webdriver/devtools.rb",
     ]) + [":mutation-listener"],
