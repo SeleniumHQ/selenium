@@ -41,6 +41,7 @@ import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.RetrySessionRequestException;
 import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.concurrent.GuardedRunnable;
 import org.openqa.selenium.events.EventBus;
 import org.openqa.selenium.grid.config.Config;
 import org.openqa.selenium.grid.data.CreateSessionRequest;
@@ -206,7 +207,8 @@ public class LocalDistributor extends Distributor implements Closeable {
     NewSessionRunnable newSessionRunnable = new NewSessionRunnable();
     bus.addListener(NodeDrainComplete.listener(this::remove));
 
-    purgeDeadNodesService.scheduleAtFixedRate(model::purgeDeadNodes, 30, 30, TimeUnit.SECONDS);
+    purgeDeadNodesService.scheduleAtFixedRate(
+      GuardedRunnable.guard(model::purgeDeadNodes), 30, 30, TimeUnit.SECONDS);
 
     nodeHealthCheckService.scheduleAtFixedRate(
       runNodeHealthChecks(),
@@ -218,7 +220,7 @@ public class LocalDistributor extends Distributor implements Closeable {
     long period = sessionRequestRetryInterval.isZero() ?
                   10 : sessionRequestRetryInterval.toMillis();
     newSessionService.scheduleAtFixedRate(
-      newSessionRunnable,
+      GuardedRunnable.guard(newSessionRunnable),
       sessionRequestRetryInterval.toMillis(),
       period,
       TimeUnit.MILLISECONDS
@@ -334,7 +336,7 @@ public class LocalDistributor extends Distributor implements Closeable {
     return () -> {
       ImmutableMap<NodeId, Runnable> nodeHealthChecks = ImmutableMap.copyOf(allChecks);
       for (Runnable nodeHealthCheck : nodeHealthChecks.values()) {
-        nodeHealthCheck.run();
+        GuardedRunnable.guard(nodeHealthCheck).run();
       }
     };
   }

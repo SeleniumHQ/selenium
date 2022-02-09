@@ -9,6 +9,7 @@ import com.google.common.collect.ImmutableMap;
 
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.SessionNotCreatedException;
+import org.openqa.selenium.concurrent.GuardedRunnable;
 import org.openqa.selenium.events.EventBus;
 import org.openqa.selenium.grid.config.Config;
 import org.openqa.selenium.grid.data.CreateSessionResponse;
@@ -123,7 +124,7 @@ public class LocalNewSessionQueue extends NewSessionQueue implements Closeable {
     // if retryPeriod is 0, we will schedule timeout checks every second
     long period = this.requestTimeout.isZero() ? 1000 : this.requestTimeout.toMillis();
     service.scheduleAtFixedRate(
-      this::timeoutSessions,
+      GuardedRunnable.guard(this::timeoutSessions),
       retryPeriod.toMillis(),
       period, MILLISECONDS);
 
