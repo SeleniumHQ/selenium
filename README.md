@@ -44,34 +44,26 @@ before submitting your pull requests.
   the version of Bazel specified in `.bazelversion` file and transparently passes through all
   command-line arguments to the real Bazel binary.
 * The latest version of the [Java 11 OpenJDK](https://openjdk.java.net/)
-* `java` and `jar` on the PATH (make sure you use `java` executable from JDK but not JRE).
+* `java` and `jar` on the `$PATH` (make sure you use `java` executable from JDK but not JRE).
   * To test this, try running the command `javac`. This command won't exist if you only have the JRE
   installed. If you're met with a list of command-line options, you're referencing the JDK properly.
-* [Python 3.7+](https://www.python.org/downloads/)
-* `python` on the PATH
+* [Python 3.7+](https://www.python.org/downloads/) and `python` on the `PATH`
+* [Ruby 3+](https://www.ruby-lang.org/en/documentation/installation/) and `ruby` on the `PATH`
 * [The tox automation project](http://tox.readthedocs.org/) for Python: `pip install tox`
-* MacOS users should have the latest version of Xcode installed, including the command-line tools.
-The following command should work:
-
-```bash
-xcode-select --install
-```
-
-* Users of Apple Silicon Macs should add `build
-  --host_platform=//:rosetta` to their `.bazelrc.local` file. We are working
+* macOS users:
+  * Install the latest version of Xcode including the command-line tools. This command should work `xcode-select --install` 
+  * Apple Silicon Macs should add `build --host_platform=//:rosetta` to their `.bazelrc.local` file. We are working
   to make sure this isn't required in the long run.
-
-* Windows users should have the latest version of Visual Studio command line tools and build tools installed
+* Windows users:
+  *  Latest version of [Visual Studio](https://www.visualstudio.com/) with command line tools and build tools installed
   * `BAZEL_VS` environment variable should point to the location of the build tools,
      e.g. `C:\Program Files (x86)\Microsoft Visual Studio\2019\BuildTools`
   * `BAZEL_VC` environment variable should point to the location of the command line tools,
      e.g. `C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC`
   * `BAZEL_VC_FULL_VERSION` environment variable should contain the version of the installed command line tools,
      e.g. `14.27.29110`
-
-### Optional Requirements
-
-* Ruby 2.0
+  * A detailed setup guide can be seen on Jim Evan's [post](http://jimevansmusic.blogspot.com/2020/04/setting-up-windows-development.html)
+  * If the Jim's blog instructions were followed, also make sure `C:\tools\msys65\usr\bin` is on the `PATH`.
 
 ### Internet Explorer Driver
 
@@ -127,6 +119,15 @@ medium is akin to integration tests, and large is akin to end to end tests.
 
 The `test_tag_filters` allow us to pass in browser names and a few different tags that we can
 find in the code base.
+  
+To build the Grid deployment jar, run this command:
+
+```sh
+bazel build grid
+```
+
+The log will show where the output jar is located.
+  
 </details>
 
 #### JavaScript
@@ -213,16 +214,20 @@ To build the .NET code run:
 ```sh
 bazel build //dotnet/...
 ```
+
+Also
+```sh
+bazel build //dotnet/test/common:chrome
+```
+  
 </details>
 
 
 ### Build Details
-* Bazel files are called BUILD.bazel
-* [crazyfun](https://github.com/SeleniumHQ/selenium/wiki/Crazy-Fun-Build) build files are called
-*build.desc*. This is an older build system, still in use in the project for Ruby bindings mostly.
 
-The order the modules are built is determined by the build system. If you want to build an
-individual module (assuming all dependent modules have previously been built), try the following:
+Bazel files are called BUILD.bazel, and the order the modules are built is determined 
+by the build system. If you want to build an individual module (assuming all dependent 
+modules have previously been built), try the following:
 
 ```sh
 bazel test javascript/atoms:test
@@ -234,20 +239,18 @@ In this case, `javascript/atoms` is the module directory,
 As you see *build targets* scroll past in the log,
 you may want to run them individually.
 
+### Build Output
 
-## Common Tasks (Bazel)
+`bazel` makes a top-level group of directories with the  `bazel-` prefix on each directory.
+
+
+### Common Tasks (Bazel)
 
 To build the bulk of the Selenium binaries from source, run the
 following command from the root folder:
 
 ```sh
 bazel build java/... javascript/...
-```
-
-To build the grid deployment jar, run this command:
-
-```sh
-bazel build grid
 ```
 
 To run tests within a particular area of the project, use the "test" command, followed
@@ -267,7 +270,7 @@ To bump the versions of the pinned browsers to their latest stable versions:
 bazel run scripts:pinned_browsers > temp.bzl && mv temp.bzl common/repositories.bzl
 ```
 
-## Editing Code
+### Editing Code
 
 Most of the team use either Intellij IDEA or VS.Code for their day-to-day editing. If you're
 working in IntelliJ, then we highly recommend installing the [Bazel IJ
@@ -282,9 +285,8 @@ running, and editing code :)
 ## Tour
 
 The codebase is generally segmented around the languages used to
-write the component.  Selenium makes extensive use of JavaScript, so
-let's start there.  Working on the JavaScript is easy.  First of all,
-start the development server:
+write the component. Selenium makes extensive use of JavaScript, so
+let's start there. First of all, start the development server:
 
 ```sh
 bazel run debug-server
@@ -293,22 +295,12 @@ bazel run debug-server
 Now, navigate to
 [http://localhost:2310/javascript](http://localhost:2310/javascript).
 You'll find the contents of the `javascript/` directory being shown.
-We use the [Closure
-Library](https://developers.google.com/closure/library/) for
-developing much of the JavaScript, so now navigate to
+We use the [Closure Library](https://developers.google.com/closure/library/) 
+for developing much of the JavaScript, so now navigate to
 [http://localhost:2310/javascript/atoms/test](http://localhost:2310/javascript/atoms/test).
 
 The tests in this directory are normal HTML files with names ending
 with `_test.html`.  Click on one to load the page and run the test.
-
-## Maven POM files
-
-Here is the [public Selenium Maven
-repository](https://repo1.maven.org/maven2/org/seleniumhq/selenium/).
-
-## Build Output
-
-`bazel` makes a top-level group of directories with the  `bazel-` prefix on each directory.
 
 ## Help with `go`
 
@@ -318,21 +310,21 @@ More general, but basic, help for `go`…
 ./go --help
 ```
 
-`go` is just a wrapper around
+`go` is a wrapper around
 [Rake](http://rake.rubyforge.org/), so you can use the standard
 commands such as `rake -T` to get more information about available
 targets.
 
 ## Maven _per se_
 
-If it is not clear already, Selenium is not built with Maven. It is
-built with `bazel`, though that is invoked with `go` as outlined above,
+Selenium is not built with Maven. It is built with `bazel`, 
+though that is invoked with `go` as outlined above,
 so you do not have to learn too much about that.
 
 That said, it is possible to relatively quickly build Selenium pieces
 for Maven to use. You are only really going to want to do this when
 you are testing the cutting-edge of Selenium development (which we
-welcome) against your application.  Here is the quickest way to build
+welcome) against your application. Here is the quickest way to build
 and deploy into your local maven repository (`~/.m2/repository`), while
 skipping Selenium's own tests.
 
@@ -342,12 +334,7 @@ skipping Selenium's own tests.
 
 The maven jars should now be in your local `~/.m2/repository`.
 
-## Useful Resources
-
-Refer to the [Build Instructions](https://github.com/SeleniumHQ/selenium/wiki/Build-Instructions)
-wiki page for the last word on building the bits and pieces of Selenium.
-
-## Running Browser Tests on Linux
+## Running browser tests on Linux
 
 In order to run Browser tests, you first need to install the browser-specific drivers,
 such as [`geckodriver`](https://github.com/mozilla/geckodriver/releases),
