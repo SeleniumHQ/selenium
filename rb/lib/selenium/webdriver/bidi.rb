@@ -18,13 +18,38 @@
 # under the License.
 
 module Selenium
-  module DevTools
-    class << self
-      attr_accessor :version
+  module WebDriver
+    class BiDi
+      autoload :Session, 'selenium/webdriver/bidi/session'
 
-      def load_version
-        require "selenium/devtools/v#{@version}"
+      def initialize(url:)
+        @ws = WebSocketConnection.new(url: url)
       end
-    end
-  end # DevTools
+
+      def close
+        @ws.close
+      end
+
+      def callbacks
+        @ws.callbacks
+      end
+
+      def session
+        Session.new(self)
+      end
+
+      def send_cmd(method, **params)
+        data = {method: method, params: params.reject { |_, v| v.nil? }}
+        message = @ws.send_cmd(**data)
+        raise Error::WebDriverError, error_message(message) if message['error']
+
+        message['result']
+      end
+
+      def error_message(message)
+        "#{message['error']}: #{message['message']}\n#{message['stacktrace']}"
+      end
+
+    end # BiDi
+  end # WebDriver
 end # Selenium

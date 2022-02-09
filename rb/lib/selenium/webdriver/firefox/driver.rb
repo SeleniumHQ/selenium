@@ -30,6 +30,7 @@ module Selenium
         EXTENSIONS = [DriverExtensions::HasAddons,
                       DriverExtensions::FullPageScreenshot,
                       DriverExtensions::HasContext,
+                      DriverExtensions::HasBiDi,
                       DriverExtensions::HasDevTools,
                       DriverExtensions::HasLogEvents,
                       DriverExtensions::HasNetworkInterception,

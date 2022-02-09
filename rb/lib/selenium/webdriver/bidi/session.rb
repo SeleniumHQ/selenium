@@ -18,13 +18,21 @@
 # under the License.
 
 module Selenium
-  module DevTools
-    class << self
-      attr_accessor :version
+  module WebDriver
+    class BiDi
+      class Session
+        Status = Struct.new(:ready, :message)
 
-      def load_version
-        require "selenium/devtools/v#{@version}"
-      end
-    end
-  end # DevTools
+        def initialize(bidi)
+          @bidi = bidi
+        end
+
+        def status
+          status = @bidi.send_cmd('session.status')
+          Status.new(status['ready'], status['message'])
+        end
+
+      end # Session
+    end # BiDi
+  end # WebDriver
 end # Selenium
