@@ -235,7 +235,24 @@ public class Cookie implements Serializable {
     toReturn.put("httpOnly", isHttpOnly());
 
     if (getSameSite() != null) {
-      toReturn.put("sameSite", getSameSite());
+      String sameSiteValue = getSameSite();
+      // ChromeDriver is overly restrictive in which SameSite values are accepted.
+      switch (sameSiteValue.toLowerCase()) {
+        case "strict":
+          sameSiteValue = "Strict";
+          break;
+        case "lax":
+          sameSiteValue = "Lax";
+          break;
+        case "none":
+          sameSiteValue = "None";
+          break;
+        default:
+          // Continue letting ChromeDriver throw an exception if the value doesn't match these
+          // known-allowed values, as they're not supported yet anyway.
+          break;
+      }
+      toReturn.put("sameSite", sameSiteValue);
     }
 
     return toReturn;
