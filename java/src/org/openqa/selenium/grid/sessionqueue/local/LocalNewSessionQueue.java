@@ -6,6 +6,7 @@ import static org.openqa.selenium.concurrent.ExecutorServices.shutdownGracefully
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableSet;
 
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.SessionNotCreatedException;
@@ -159,19 +160,11 @@ public class LocalNewSessionQueue extends NewSessionQueue implements Closeable {
       ids = requests.entrySet().stream()
         .filter(entry -> isTimedOut(now, entry.getValue()))
         .map(Map.Entry::getKey)
-        .collect(Collectors.toSet());
+        .collect(ImmutableSet.toImmutableSet());
     } finally {
       readLock.unlock();
     }
-
-    Lock writeLock = lock.writeLock();
-    try {
-      for (RequestId id : ids) {
-        failDueToTimeout(id);
-      }
-    } finally {
-      writeLock.unlock();
-    }
+    ids.forEach(this::failDueToTimeout);
   }
 
   private boolean isTimedOut(Instant now, Data data) {
@@ -184,7 +177,7 @@ public class LocalNewSessionQueue extends NewSessionQueue implements Closeable {
     Require.nonNull("Request id", request.getRequestId());
 
     TraceContext context = TraceSessionRequest.extract(tracer, request);
-    try (Span span = context.createSpan("sessionqueue.add_to_queue")) {
+    try (Span ignored = context.createSpan("sessionqueue.add_to_queue")) {
       contexts.put(request.getRequestId(), context);
 
       Data data = injectIntoQueue(request);
@@ -257,7 +250,7 @@ public class LocalNewSessionQueue extends NewSessionQueue implements Closeable {
 
     boolean added;
     TraceContext context = contexts.getOrDefault(request.getRequestId(), tracer.getCurrentContext());
-    try (Span span = context.createSpan("sessionqueue.retry")) {
+    try (Span ignored = context.createSpan("sessionqueue.retry")) {
       Lock writeLock = lock.writeLock();
       writeLock.lock();
       try {
@@ -319,9 +312,7 @@ public class LocalNewSessionQueue extends NewSessionQueue implements Closeable {
               .filter(req -> req.getDesiredCapabilities().stream().anyMatch(matchesStereotype))
               .findFirst();
 
-      maybeRequest.ifPresent(req -> {
-        this.remove(req.getRequestId());
-      });
+      maybeRequest.ifPresent(req -> this.remove(req.getRequestId()));
 
       return maybeRequest;
     } finally {
@@ -334,7 +325,7 @@ public class LocalNewSessionQueue extends NewSessionQueue implements Closeable {
     Require.nonNull("New session request", reqId);
     Require.nonNull("Result", result);
     TraceContext context = contexts.getOrDefault(reqId, tracer.getCurrentContext());
-    try (Span span = context.createSpan("sessionqueue.completed")) {
+    try (Span ignored = context.createSpan("sessionqueue.completed")) {
       Lock readLock = lock.readLock();
       readLock.lock();
       Data data;
