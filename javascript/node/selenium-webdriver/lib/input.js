@@ -349,8 +349,14 @@ class Pointer extends Device {
    * @return {!Action} An action to press the specified button with this device.
    * @package
    */
-  press(button = Button.LEFT) {
-    return { type: Action.Type.POINTER_DOWN, button }
+  press(button = Button.LEFT, width = 0, height = 0, pressure = 0,
+    tangentialPressure = 0, tiltX = 0, tiltY = 0, twist = 0,
+    altitudeAngle = 0, azimuthAngle = 0) {
+    return {
+      type: Action.Type.POINTER_DOWN, button, width, height,
+      pressure, tangentialPressure, tiltX, tiltY, twist,
+      altitudeAngle, azimuthAngle
+    }
   }
 
   /**
@@ -379,8 +385,16 @@ class Pointer extends Device {
    * @return {!Action} The new action.
    * @package
    */
-  move({ x = 0, y = 0, duration = 100, origin = Origin.VIEWPORT }) {
-    return { type: Action.Type.POINTER_MOVE, origin, duration, x, y }
+  move({ x = 0, y = 0, duration = 100, origin = Origin.VIEWPORT,
+    width = 0, height = 0, pressure = 0,
+    tangentialPressure = 0, tiltX = 0, tiltY = 0, twist = 0,
+    altitudeAngle = 0, azimuthAngle = 0
+  }) {
+    return {
+      type: Action.Type.POINTER_MOVE, origin, duration, x, y,
+      width, height, pressure, tangentialPressure, tiltX, tiltY, twist,
+      altitudeAngle, azimuthAngle
+    }
   }
 }
 
