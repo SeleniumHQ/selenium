@@ -334,7 +334,7 @@ describe('WebDriver', function () {
     let verifyError = expectedError(
       error.NoSuchSessionError,
       'This driver instance does not have a valid session ID ' +
-        '(did you call WebDriver.quit()?) and may no longer be used.'
+      '(did you call WebDriver.quit()?) and may no longer be used.'
     )
 
     let driver = executor.createDriver()
@@ -522,14 +522,14 @@ describe('WebDriver', function () {
       let executor = new FakeExecutor()
         .expect(CName.EXECUTE_SCRIPT)
         .withParameters({
-          script: 'return (' + function () {} + ').apply(null, arguments);',
+          script: 'return (' + function () { } + ').apply(null, arguments);',
           args: [],
         })
         .andReturnSuccess(null)
         .end()
 
       const driver = executor.createDriver()
-      return driver.executeScript(function () {})
+      return driver.executeScript(function () { })
     })
 
     it('simpleArgumentConversion', function () {
@@ -629,11 +629,11 @@ describe('WebDriver', function () {
       let executor = new FakeExecutor()
 
       const arg = Promise.reject(new StubError())
-      arg.catch(function () {}) // Suppress default handler.
+      arg.catch(function () { }) // Suppress default handler.
 
       const driver = executor.createDriver()
       return driver
-        .executeScript(function () {}, arg)
+        .executeScript(function () { }, arg)
         .then(fail, assertIsStubError)
     })
   })
@@ -641,11 +641,11 @@ describe('WebDriver', function () {
   describe('executeAsyncScript', function () {
     it('failsIfArgumentIsARejectedPromise', function () {
       const arg = Promise.reject(new StubError())
-      arg.catch(function () {}) // Suppress default handler.
+      arg.catch(function () { }) // Suppress default handler.
 
       const driver = new FakeExecutor().createDriver()
       return driver
-        .executeAsyncScript(function () {}, arg)
+        .executeAsyncScript(function () { }, arg)
         .then(fail, assertIsStubError)
     })
   })
@@ -1563,6 +1563,15 @@ describe('WebDriver', function () {
                     type: 'pointerMove',
                     x: 0,
                     y: 125,
+                    altitudeAngle: 0,
+                    azimuthAngle: 0,
+                    width: 0,
+                    height: 0,
+                    pressure: 0,
+                    tangentialPressure: 0,
+                    tiltX: 0,
+                    tiltY: 0,
+                    twist: 0,
                   },
                 ],
               },
@@ -1597,6 +1606,15 @@ describe('WebDriver', function () {
                     type: 'pointerMove',
                     x: 0,
                     y: 125,
+                    altitudeAngle: 0,
+                    azimuthAngle: 0,
+                    width: 0,
+                    height: 0,
+                    pressure: 0,
+                    tangentialPressure: 0,
+                    tiltX: 0,
+                    tiltY: 0,
+                    twist: 0,
                   },
                 ],
               },
@@ -1909,7 +1927,7 @@ describe('WebDriver', function () {
       })
 
       it('passes through function properties', function () {
-        function bar() {}
+        function bar() { }
         return runDeserializeTest(
           [{ foo: { bar: 123 }, func: bar }],
           [{ foo: { bar: 123 }, func: bar }]
