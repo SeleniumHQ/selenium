@@ -17,14 +17,16 @@
 # specific language governing permissions and limitations
 # under the License.
 
-module Selenium
-  module DevTools
-    class << self
-      attr_accessor :version
+require_relative 'spec_helper'
 
-      def load_version
-        require "selenium/devtools/v#{@version}"
+module Selenium
+  module WebDriver
+    describe BiDi, exclusive: {browser: %i[firefox_nightly]} do
+      it 'gets session status' do
+        status = driver.bidi.session.status
+        expect(status.ready).to be_false
+        expect(status.message).to eq('Session already started')
       end
     end
-  end # DevTools
-end # Selenium
+  end
+end
