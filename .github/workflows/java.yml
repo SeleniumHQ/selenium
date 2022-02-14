@@ -106,6 +106,10 @@ jobs:
       fail-fast: false
       matrix:
         browser: [ chrome, firefox ]
+        version: [ latest ]
+        include:
+          - browser: 'firefox'
+            version: 'latest-devedition'
     steps:
       - name: Checkout source tree
         uses: actions/checkout@v2
@@ -125,10 +129,20 @@ jobs:
         uses: actions/setup-java@v1
         with:
           java-version: '11'
-      - name: Setup Firefox and GeckoDriver
+      - name: Setup Firefox
+        uses: browser-actions/setup-firefox@latest
+        if: |
+          matrix.browser == 'firefox'
+        with:
+          firefox-version: ${{ matrix.version }}
+      - name: Setup GeckoDriver
         uses: ./.github/actions/setup-firefox
+        if: |
+          matrix.browser == 'firefox'
       - name: Setup Chrome and ChromeDriver
         uses: ./.github/actions/setup-chrome
+        if: |
+          matrix.browser == 'chrome'
       - name: Start XVFB
         run: Xvfb :99 &
       - name: Run browser tests in ${{ matrix.browser }}
@@ -146,6 +160,10 @@ jobs:
       fail-fast: false
       matrix:
         browser: [ chrome, firefox ]
+        version: [ latest ]
+        include:
+          - browser: 'firefox'
+            version: 'latest-devedition'
     steps:
       - name: Checkout source tree
         uses: actions/checkout@v2
@@ -166,10 +184,20 @@ jobs:
         uses: actions/setup-java@v1
         with:
           java-version: '11'
-      - name: Setup Firefox and GeckoDriver
+      - name: Setup Firefox
+        uses: browser-actions/setup-firefox@latest
+        if: |
+          matrix.browser == 'firefox'
+        with:
+          firefox-version: ${{ matrix.version }}
+      - name: Setup GeckoDriver
         uses: ./.github/actions/setup-firefox
+        if: |
+          matrix.browser == 'firefox'
       - name: Setup Chrome and ChromeDriver
         uses: ./.github/actions/setup-chrome
+        if: |
+          matrix.browser == 'chrome'
       - name: Start XVFB
         run: Xvfb :99 &
       - name: Run server tests
@@ -202,7 +230,7 @@ jobs:
         uses: actions/setup-java@v1
         with:
           java-version: '11'
-      - name: Setup Firefox and GeckoDriver
+      - name: Setup GeckoDriver
         uses: ./.github/actions/setup-firefox
       - name: Start XVFB
         run: Xvfb :99 &
