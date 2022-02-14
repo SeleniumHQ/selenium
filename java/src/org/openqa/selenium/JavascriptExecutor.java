@@ -105,7 +105,7 @@ public interface JavascriptExecutor {
    *   ((JavascriptExecutor) driver).executeAsyncScript(
    *       "window.setTimeout(arguments[arguments.length - 1], 500);");
    *   System.out.println(
-   *       "Elapsed time: " + System.currentTimeMillis() - start);
+   *       "Elapsed time: " + (System.currentTimeMillis() - start));
    * }</pre>
    *
    * <p>
