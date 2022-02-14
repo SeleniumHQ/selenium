@@ -24,6 +24,7 @@ import org.asynchttpclient.DefaultAsyncHttpClientConfig;
 import org.asynchttpclient.Dsl;
 import org.asynchttpclient.Realm;
 import org.asynchttpclient.config.AsyncHttpClientConfigDefaults;
+import org.asynchttpclient.proxy.ProxyServer;
 import org.openqa.selenium.Credentials;
 import org.openqa.selenium.UsernameAndPassword;
 import org.openqa.selenium.internal.Require;
@@ -40,6 +41,7 @@ import io.netty.util.HashedWheelTimer;
 import io.netty.util.Timer;
 import io.netty.util.concurrent.DefaultThreadFactory;
 
+import java.net.InetSocketAddress;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
 import java.util.function.BiFunction;
@@ -88,18 +90,30 @@ public class NettyClient implements HttpClient {
         .setRequestTimeout(toClampedInt(config.readTimeout().toMillis()))
         .setConnectTimeout(toClampedInt(config.connectionTimeout().toMillis()))
         .setReadTimeout(toClampedInt(config.readTimeout().toMillis()))
-        .setUseProxyProperties(true)
-        .setUseProxySelector(true)
         .setFollowRedirect(true);
 
+    Realm.Builder realmBuilder = null;
     if (config.credentials() != null) {
       Credentials credentials = config.credentials();
       if (!(credentials instanceof UsernameAndPassword)) {
         throw new IllegalArgumentException("Credentials must be a username and password");
       }
       UsernameAndPassword uap = (UsernameAndPassword) credentials;
-      builder.setRealm(
-        new Realm.Builder(uap.username(), uap.password()).setUsePreemptiveAuth(true));
+      realmBuilder = new Realm.Builder(uap.username(), uap.password());
+      builder.setRealm(realmBuilder.setUsePreemptiveAuth(true));
+    }
+
+    if (config.proxy() != null) {
+      InetSocketAddress address = (InetSocketAddress) config.proxy().address();
+      ProxyServer.Builder proxyBuilder = new ProxyServer.Builder(
+        address.getHostName(), address.getPort());
+      if (realmBuilder != null) {
+        proxyBuilder.setRealm(realmBuilder);
+      }
+      builder.setProxyServer(proxyBuilder);
+    } else {
+      builder.setUseProxyProperties(true)
+        .setUseProxySelector(true);
     }
 
     return Dsl.asyncHttpClient(builder);
