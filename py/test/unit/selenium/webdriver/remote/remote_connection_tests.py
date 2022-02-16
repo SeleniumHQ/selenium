@@ -122,7 +122,7 @@ def test_get_connection_manager_with_proxy(mock_proxy_settings):
 
 def test_get_connection_manager_with_auth_proxy(mock_proxy_auth_settings):
     proxy_auth_header = urllib3.make_headers(
-       proxy_basic_auth="user:password"
+        proxy_basic_auth="user:password"
     )
     remote_connection = RemoteConnection('http://remote', keep_alive=False)
     conn = remote_connection._get_connection_manager()

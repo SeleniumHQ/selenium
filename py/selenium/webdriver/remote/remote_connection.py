@@ -130,7 +130,7 @@ class RemoteConnection(object):
 
     def _identify_http_proxy_auth(self):
         url = self._proxy_url
-        url = url[url.find(":") + 3:] # remove protocol
+        url = url[url.find(":") + 3:]
         return True if "@" in url and len(url[:url.find('@')]) > 0 else False
 
     def _seperate_http_proxy_auth(self):
@@ -138,7 +138,7 @@ class RemoteConnection(object):
         protocol = url[:url.find(":") + 3]
         no_protocol = url[len(protocol):]
         auth = no_protocol[:no_protocol.find('@')]
-        proxy_without_auth = protocol + no_protocol[len(auth)+1:]
+        proxy_without_auth = protocol + no_protocol[len(auth) + 1:]
         return proxy_without_auth, auth
 
     def _get_connection_manager(self):
