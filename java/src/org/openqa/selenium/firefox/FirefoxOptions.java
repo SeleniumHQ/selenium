@@ -64,6 +64,7 @@ public class FirefoxOptions extends AbstractDriverOptions<FirefoxOptions> {
   public FirefoxOptions() {
     setCapability(CapabilityType.BROWSER_NAME, FIREFOX.browserName());
     setAcceptInsecureCerts(true);
+    addPreference("remote.active-protocols", 2);
     setCapability("moz:debuggerAddress", true);
   }
 
