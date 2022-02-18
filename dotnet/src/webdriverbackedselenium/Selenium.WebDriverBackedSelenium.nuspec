@@ -59,6 +59,7 @@
   <files>
     <file src="**/Selenium.WebDriverBackedSelenium.dll" target="lib" />
     <file src="**/Selenium.WebDriverBackedSelenium.pdb" target="lib" />
+    <file src="**/Selenium.WebDriverBackedSelenium.xml" target="lib" />
     <file src="../icon.png" target="images\"/>
   </files>
 </package>

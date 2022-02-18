@@ -55,6 +55,7 @@
   <files>
     <file src="**/WebDriver.Support.dll" target="lib" />
     <file src="**/WebDriver.Support.pdb" target="lib" />
+    <file src="**/WebDriver.Support.xml" target="lib" />
     <file src="../icon.png" target="images\"/>
   </files>
 </package>
