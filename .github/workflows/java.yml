@@ -105,13 +105,13 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        browser: [ chrome, firefox ]
-        version: [ latest ]
         include:
-          - browser: 'firefox'
-            version: 'latest-devedition'
-          - browser: 'firefox'
-            version: 'latest-beta'
+          - { browser: chrome, version: stable }
+          - { browser: chrome, version: beta }
+          - { browser: chrome, version: dev }
+          - { browser: firefox, version: latest }
+          - { browser: firefox, version: latest-beta }
+          - { browser: firefox, version: latest-devedition }
     steps:
       - name: Checkout source tree
         uses: actions/checkout@v2
@@ -141,8 +141,14 @@ jobs:
         uses: browser-actions/setup-geckodriver@latest
         if: |
           matrix.browser == 'firefox'
-      - name: Setup Chrome and ChromeDriver
-        uses: ./.github/actions/setup-chrome
+      - name: Setup Chrome
+        uses: browser-actions/setup-chrome@latest
+        if: |
+          matrix.browser == 'chrome'
+        with:
+          chrome-version: ${{ matrix.version }}
+      - name: Setup ChromeDriver
+        uses: nanasess/setup-chromedriver@v1
         if: |
           matrix.browser == 'chrome'
       - name: Start XVFB
@@ -161,13 +167,13 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        browser: [ chrome, firefox ]
-        version: [ latest ]
         include:
-          - browser: 'firefox'
-            version: 'latest-devedition'
-          - browser: 'firefox'
-            version: 'latest-beta'
+          - { browser: chrome, version: stable }
+          - { browser: chrome, version: beta }
+          - { browser: chrome, version: dev }
+          - { browser: firefox, version: latest }
+          - { browser: firefox, version: latest-beta }
+          - { browser: firefox, version: latest-devedition }
     steps:
       - name: Checkout source tree
         uses: actions/checkout@v2
@@ -198,8 +204,14 @@ jobs:
         uses: browser-actions/setup-geckodriver@latest
         if: |
           matrix.browser == 'firefox'
-      - name: Setup Chrome and ChromeDriver
-        uses: ./.github/actions/setup-chrome
+      - name: Setup Chrome
+        uses: browser-actions/setup-chrome@latest
+        if: |
+          matrix.browser == 'chrome'
+        with:
+          chrome-version: ${{ matrix.version }}
+      - name: Setup ChromeDriver
+        uses: nanasess/setup-chromedriver@v1
         if: |
           matrix.browser == 'chrome'
       - name: Start XVFB
