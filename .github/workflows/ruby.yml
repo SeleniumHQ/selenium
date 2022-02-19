@@ -109,7 +109,10 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-bazel-ruby-${{ matrix.target }}-
       - uses: ./.github/actions/setup-bazelisk
-      - uses: ./.github/actions/setup-firefox
+      - name: Setup Firefox
+        uses: browser-actions/setup-firefox@latest
+      - name: Setup GeckoDriver
+        uses: browser-actions/setup-geckodriver@latest
       - run: Xvfb :99 &
       - uses: ./.github/actions/bazel
         with:
