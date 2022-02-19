@@ -110,6 +110,8 @@ jobs:
         include:
           - browser: 'firefox'
             version: 'latest-devedition'
+          - browser: 'firefox'
+            version: 'latest-beta'
     steps:
       - name: Checkout source tree
         uses: actions/checkout@v2
@@ -164,6 +166,8 @@ jobs:
         include:
           - browser: 'firefox'
             version: 'latest-devedition'
+          - browser: 'firefox'
+            version: 'latest-beta'
     steps:
       - name: Checkout source tree
         uses: actions/checkout@v2
