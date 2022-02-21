@@ -32,6 +32,7 @@ import com.google.common.cache.RemovalListener;
 import com.google.common.collect.ImmutableMap;
 
 import org.openqa.selenium.NoSuchSessionException;
+import org.openqa.selenium.concurrent.GuardedRunnable;
 import org.openqa.selenium.grid.data.Session;
 import org.openqa.selenium.grid.sessionmap.SessionMap;
 import org.openqa.selenium.grid.web.ReverseProxyHandler;
@@ -88,7 +89,7 @@ class HandleSession implements HttpHandler {
           return thread;
         });
     cleanUpHttpClientsCacheService.scheduleAtFixedRate(
-      httpClients::cleanUp, 1, 1, TimeUnit.MINUTES);
+      GuardedRunnable.guard(httpClients::cleanUp), 1, 1, TimeUnit.MINUTES);
   }
 
   @Override

@@ -17,27 +17,26 @@
 
 package org.openqa.selenium.concurrent;
 
-import static java.util.concurrent.TimeUnit.SECONDS;
-import static java.util.logging.Level.WARNING;
-
-import java.util.concurrent.ExecutorService;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class ExecutorServices {
+/**
+ * Meant to be used together with {#link @ScheduledExecutedService.scheduleAtFixedRate}.
+ * When scheduleAtFixedRate is used, and the Runnable fails, the subsequent executions are
+ * suspended.
+ * Using this class helps to guard the execution and keeps the scheduleAtFixedRate working.
+ */
+public class GuardedRunnable {
 
-  private static final Logger LOG = Logger.getLogger(ExecutorServices.class.getName());
+  private static final Logger LOG = Logger.getLogger(GuardedRunnable.class.getName());
 
-  public static void shutdownGracefully(String name, ExecutorService service) {
-    service.shutdown();
-    try {
-      if (!service.awaitTermination(5, SECONDS)) {
-        LOG.warning(String.format("Failed to shutdown %s", name));
-        service.shutdownNow();
+  public static Runnable guard(Runnable runnable) {
+    return () -> {
+      try {
+        runnable.run();
+      } catch (Exception e) {
+        LOG.log(Level.WARNING, "Unable to execute task ", e);
       }
-    } catch (InterruptedException e) {
-      Thread.currentThread().interrupt();
-      LOG.log(WARNING, String.format("Failed to shutdown %s", name), e);
-      service.shutdownNow();
-    }
+    };
   }
 }
