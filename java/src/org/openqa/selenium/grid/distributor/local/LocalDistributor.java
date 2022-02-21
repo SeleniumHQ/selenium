@@ -301,6 +301,10 @@ public class LocalDistributor extends Distributor implements Closeable {
       model.add(node.getStatus());
       nodes.put(node.getId(), node);
     } catch (Exception e) {
+      LOG.log(
+        Debug.getDebugLogLevel(),
+        String.format("Exception while adding Node %s", node.getUri()),
+        e);
       return this;
     }
 
