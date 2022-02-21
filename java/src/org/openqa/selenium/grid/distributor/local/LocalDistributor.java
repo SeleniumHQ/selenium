@@ -317,7 +317,7 @@ public class LocalDistributor extends Distributor implements Closeable {
       .withDelay(Duration.ofSeconds(15))
       .abortIf(result -> true);
 
-    LOG.log(getDebugLogLevel(), "Running initial health check for Node " + node.getId());
+    LOG.log(getDebugLogLevel(), "Running initial health check for Node " + node.getUri());
     Executors.newSingleThreadExecutor().submit(
       () -> Failsafe.with(initialHealthCheckPolicy).run(runnableHealthCheck::run));
 
@@ -347,7 +347,7 @@ public class LocalDistributor extends Distributor implements Closeable {
     return () -> {
       boolean checkFailed = false;
       Exception failedCheckException = null;
-      LOG.log(getDebugLogLevel(), "Running health check for " + node.getId());
+      LOG.log(getDebugLogLevel(), "Running health check for " + node.getUri());
 
       HealthCheck.Result result;
       try {
@@ -366,7 +366,7 @@ public class LocalDistributor extends Distributor implements Closeable {
           getDebugLogLevel(),
           String.format(
             "Health check result for %s was %s",
-            node.getId(),
+            node.getUri(),
             result.getAvailability()));
         model.setAvailability(id, result.getAvailability());
         model.updateHealthCheckCount(id, result.getAvailability());
