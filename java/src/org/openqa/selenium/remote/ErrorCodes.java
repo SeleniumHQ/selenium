@@ -21,8 +21,6 @@ import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Iterables;
 import org.openqa.selenium.ElementClickInterceptedException;
 import org.openqa.selenium.ElementNotInteractableException;
-import org.openqa.selenium.ElementNotSelectableException;
-import org.openqa.selenium.ElementNotVisibleException;
 import org.openqa.selenium.ImeActivationFailedException;
 import org.openqa.selenium.ImeNotAvailableException;
 import org.openqa.selenium.InvalidArgumentException;
@@ -45,7 +43,6 @@ import org.openqa.selenium.UnableToSetCookieException;
 import org.openqa.selenium.UnhandledAlertException;
 import org.openqa.selenium.UnsupportedCommandException;
 import org.openqa.selenium.WebDriverException;
-import org.openqa.selenium.interactions.InvalidCoordinatesException;
 import org.openqa.selenium.interactions.MoveTargetOutOfBoundsException;
 
 import java.util.Comparator;
@@ -72,10 +69,8 @@ public class ErrorCodes {
   public static final int NO_SUCH_FRAME = 8;
   public static final int UNKNOWN_COMMAND = 9;
   public static final int STALE_ELEMENT_REFERENCE = 10;
-  public static final int ELEMENT_NOT_VISIBLE = 11;
   public static final int INVALID_ELEMENT_STATE = 12;
   public static final int UNHANDLED_ERROR = 13;
-  public static final int ELEMENT_NOT_SELECTABLE = 15;
   public static final int JAVASCRIPT_ERROR = 17;
   public static final int XPATH_LOOKUP_ERROR = 19;
   public static final int TIMEOUT = 21;
@@ -85,7 +80,6 @@ public class ErrorCodes {
   public static final int UNEXPECTED_ALERT_PRESENT = 26;
   public static final int NO_ALERT_PRESENT = 27;
   public static final int ASYNC_SCRIPT_TIMEOUT = 28;
-  public static final int INVALID_ELEMENT_COORDINATES = 29;
   public static final int IME_NOT_AVAILABLE = 30;
   public static final int IME_ENGINE_ACTIVATION_FAILED = 31;
   public static final int INVALID_SELECTOR_ERROR = 32;
@@ -226,14 +220,11 @@ public class ErrorCodes {
   private static final ImmutableSet<KnownError> KNOWN_ERRORS = ImmutableSet.<KnownError>builder()
     .add(new KnownError(ASYNC_SCRIPT_TIMEOUT, "script timeout", 500, ScriptTimeoutException.class, true, true))
     .add(new KnownError(ELEMENT_CLICK_INTERCEPTED, "element click intercepted", 400, ElementClickInterceptedException.class, true, true))
-    .add(new KnownError(ELEMENT_NOT_SELECTABLE, "element not selectable", 400, ElementNotSelectableException.class, true, true))
     .add(new KnownError(ELEMENT_NOT_INTERACTABLE, "element not interactable", 400, ElementNotInteractableException.class, true, true))
-    .add(new KnownError(ELEMENT_NOT_VISIBLE, "element not visible", 400, ElementNotVisibleException.class, true, true))
     .add(new KnownError(IME_ENGINE_ACTIVATION_FAILED, "unsupported operation", 500, ImeActivationFailedException.class, true, false))
     .add(new KnownError(IME_NOT_AVAILABLE, "unsupported operation", 500, ImeNotAvailableException.class, true, false))
     .add(new KnownError(INVALID_ARGUMENT, "invalid argument", 400, InvalidArgumentException.class, true, true))
     .add(new KnownError(INVALID_COOKIE_DOMAIN, "invalid cookie domain", 400, InvalidCookieDomainException.class, true, true))
-    .add(new KnownError(INVALID_ELEMENT_COORDINATES, "invalid element coordinates", 400, InvalidCoordinatesException.class, true, true))
     .add(new KnownError(INVALID_ELEMENT_STATE, "invalid element state", 400, InvalidElementStateException.class, true, true))
     .add(new KnownError(INVALID_SELECTOR_ERROR, "invalid selector", 400, InvalidSelectorException.class, true, true))
     .add(new KnownError(INVALID_XPATH_SELECTOR, "invalid selector", 400, InvalidSelectorException.class, false, false))

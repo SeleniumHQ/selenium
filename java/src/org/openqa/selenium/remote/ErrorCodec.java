@@ -23,8 +23,6 @@ import com.google.common.collect.ImmutableSet;
 
 import org.openqa.selenium.ElementClickInterceptedException;
 import org.openqa.selenium.ElementNotInteractableException;
-import org.openqa.selenium.ElementNotSelectableException;
-import org.openqa.selenium.ElementNotVisibleException;
 import org.openqa.selenium.InvalidArgumentException;
 import org.openqa.selenium.InvalidCookieDomainException;
 import org.openqa.selenium.InvalidElementStateException;
@@ -44,7 +42,6 @@ import org.openqa.selenium.UnableToSetCookieException;
 import org.openqa.selenium.UnhandledAlertException;
 import org.openqa.selenium.UnsupportedCommandException;
 import org.openqa.selenium.WebDriverException;
-import org.openqa.selenium.interactions.InvalidCoordinatesException;
 import org.openqa.selenium.interactions.MoveTargetOutOfBoundsException;
 import org.openqa.selenium.internal.Require;
 
@@ -62,12 +59,9 @@ public class ErrorCodec {
   private static final Set<W3CError> ERRORS = ImmutableSet.<W3CError>builder()
       .add(new W3CError("script timeout", ScriptTimeoutException.class, 500))
       .add(new W3CError("element click intercepted", ElementClickInterceptedException.class, 400))
-      .add(new W3CError("element not selectable", ElementNotSelectableException.class, 400))
       .add(new W3CError("element not interactable", ElementNotInteractableException.class, 400))
-      .add(new W3CError("element not visible", ElementNotVisibleException.class, 400))
       .add(new W3CError("invalid argument", InvalidArgumentException.class, 400))
       .add(new W3CError("invalid cookie domain", InvalidCookieDomainException.class, 400))
-      .add(new W3CError("invalid element coordinates", InvalidCoordinatesException.class, 400))
       .add(new W3CError("invalid element state", InvalidElementStateException.class, 400))
       .add(new W3CError("invalid selector", InvalidSelectorException.class, 400))
       .add(new W3CError("invalid session id", NoSuchSessionException.class, 404))
