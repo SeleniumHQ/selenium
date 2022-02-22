@@ -31,12 +31,35 @@ import org.openqa.selenium.remote.html5.RemoteLocationContext;
 import org.openqa.selenium.remote.html5.RemoteWebStorage;
 import org.openqa.selenium.remote.service.DriverCommandExecutor;
 
+import java.io.File;
+
 /**
  * A {@link WebDriver} implementation that controls a Blink-based Opera browser running on the local
  * machine. It requires an <code>operadriver</code> executable to be available in PATH.
  *
  * @see <a href="https://github.com/operasoftware/operachromiumdriver">operadriver</a>
+ * 
+ * Since operadriver does not support w3c, Selenium will remove the support in the next version.
+ * @deprecated Use {@link org.openqa.selenium.chrome.ChromeDriver} with
+ * {@link org.openqa.selenium.chrome.ChromeOptions#setBinary(File)} or {@link org.openqa.selenium.chrome.ChromeOptions#setBinary(String)}
+ * to set the path to the Opera browser.
+ *
+ * <p>Example usage:
+ * <pre><code>
+ * ChromeOptions options = new ChromeOptions()
+ * options.setBinary(new File("/path/to/opera"));
+ *
+ * // For using Opera browser with ChromeDriver:
+ * ChromeDriver driver = new ChromeDriver(options);
+ *
+ * // For use with RemoteWebDriver:
+ * ChromeOptions options = new ChromeOptions();
+ * options.setBinary(new File("/path/to/opera"));
+ * RemoteWebDriver driver = new RemoteWebDriver(
+ *     new URL("http://localhost:4444/"), options);
+ * </code></pre>
  */
+@Deprecated
 public class OperaDriver extends RemoteWebDriver
     implements LocationContext, WebStorage {
 
