@@ -1,3 +1,32 @@
+Selenium 4.1.1
+
+* add support for Chrome 98 and remove support for Chrome 95
+* Add py.typed file (#10310)
+* Elaborate find_element deprecation message (#10273)
+* add support for Chrome v97
+* convert selectors for finding elements in shadow dom
+* missing self for service args
+* don't use websocket-port if user sets connect-existing (a4dc6e)
+* update tests for current IE options
+* fix firefox addon tests
+* Support new Cast command added to Chrome Devtools (#10150)
+* send Base64 encoded addon to driver instead of path String
+* Reflect how find_elements returns a list, not just one WebElement. (#10172)
+* add shadowroot to api docs
+* add log reference to api rst file
+* remove non breaking space for doc generation
+* Updating exceptions file for docs
+* Add type hinting to Shadowroot
+* update ShadowRoot find element signatures to match those in WebElement (#10138)
+* add Zenkaku/Hankaku key
+* raise `NoSuchElementException` for relative failures instead of `IndexError` (#10078)
+* Remove legacy in favour of W3C endpoints. (#10075)
+* Tidy relativeby docs, use non deprecated methods in webserver (#10077, #10103, #10108, #10186, #10212, #10120)
+* PEP 484 type hints s (#10099)
+* Handle Socks Proxy for Remote Connections. Fixes #10091
+* Add extra attributes to pointer down and pointer move actions
+* Add Scroll via Wheel Inputs and Wheel Actions
+
 Selenium 4.1.0
 
 * add warning if people set w3c to false as it may break their tests
@@ -228,7 +257,7 @@ Selenium 4.0 Alpha 5
 * Build python code with Bazel
 * Parse python docstring example as code snippet
 * correct python_requires in setup
-*  Fix grammar typo in exceptions.py (#7657)
+* Fix grammar typo in exceptions.py (#7657)
 * Fixed references to chromedriver website
 
 Selenium 4.0 Alpha 3
@@ -259,6 +288,7 @@ Selenium 4.0 Alpha 3
 * Raise error for unsupported method for set_window_rect
 
 Selenium 4.0 Alpha 1
+
 * Update driver initialisation to use service and option objects
 * turn on keep-alive by default for remote connections (#7072)
 * Fix ConnectionResetError
@@ -286,8 +316,8 @@ Selenium 4.0 Alpha 1
 * Deprecate Blackberry Driver support
 * Fixing/tidying docstring.
 
-
 Selenium 3.141.0
+
 * Bump version to a better approximation of Π
 * Improved Test build targets
 * fix os path in test for Windows
@@ -298,6 +328,7 @@ Selenium 3.141.0
 * Improved WebExtension support
 
 Selenium 3.14.1
+
 * Fix ability to set timeout for urllib3 (#6286)
 * get_cookie uses w3c endpoint when compliant
 * Remove body from GET requests (#6250)
@@ -310,6 +341,7 @@ Selenium 3.14.1
 * isDisplayed atom is now used for all w3c compliant browser, fixing issue with Safari 12
 
 Selenium 3.14.0
+
 * Fix doc of URL-related ExpectedCondition (#6236)
 * Added ExpectedCondition invisibility_of_element
 * Swap out httplib for urllib3
@@ -418,6 +450,7 @@ Selenium 3.5.0
 * add warning when saving incorrectly named screenshot (#4141)
 
 Selenium 3.4.3
+
 * Fix EventFiringWebdriver and WebElement to raise AttributeError on missing attributes. (#4107)
 * unwrap WebElements inside dicts
 
@@ -429,9 +462,11 @@ Selenium 3.4.2
 * Add Chrome options module to API docs.
 
 Selenium 3.4.1
+
 * Add back the ability to set profile when using Firefox 45ESR. Fixes #3897
 
 Selenium 3.4.0
+
 * Correct usage of newSession around `firstMatch` and `alwaysMatch`
 * Remove superfluous capabilities that are not needed
 * Add expected condition that waits for all found elements to be visible (#3532)
@@ -473,6 +508,7 @@ Selenium 3.3.2
 * Fix non-W3C page load timeout setting.
 
 Selenium 3.3.1
+
 * Fix encoding of basic auth header when using Python 3 Fixes #3622
 * Add initial unit test suite
 * Update W3C Timeout setting to be in line with the specification
@@ -481,7 +517,8 @@ Selenium 3.3.1
 * Fix flake8 issues (#3628)
 
 Selenium 3.3.0
-** Note ** If you are updating to this version, please also update GeckoDriver to v0.15.0
+**Note** If you are updating to this version, please also update GeckoDriver to v0.15.0
+
 * Fix python HTTPS encoding for python driver (#3379)
 * Allow Firefox preferences to be set directly in Options
 * Fix shutdown and process termination (#3263)
@@ -494,6 +531,7 @@ Selenium 3.3.0
 * fix docs output directory
 
 Selenium 3.0.2
+
 * Add support for W3C Get Active Element
 * Return when we use executeScript for faking WebElement.get_property
 * Expand user paths and resolve absolute path for Chrome extensions
@@ -506,10 +544,12 @@ Selenium 3.0.2
 * Added context manager for chrome/content in Firefox
 
 Selenium 3.0.1
+
 * Fix regressions with python 3
 * Add support for Safari Technology Preview
 
 Selenium 3.0.0
+
 * new FirefoxDriver ctor precedence logic and moz:firefoxOptions support (#2882)
 * Add W3C Set Window Position and W3C Get Window Position
 * enable log path setting from firefox webdriver (#2700)
@@ -517,14 +557,17 @@ Selenium 3.0.0
 * Encode the isDisplayed atom and only load it once
 
 Selenium 3.0.0.b3
+
 * Use atoms for get_attribute and is_displayed when communicating with
   a w3c compliant remote end.
 * Make it possible to specialise web element
 
 Selenium 3.0.0.b2
+
 * Updated Marionette port argument to match other drivers.
 
 Selenium 3.0.0.b1
+
 * Fix basestring reference to work with python 3. Fixes #1820
 * Correct Length conditional when filtering in PhantomJS. Fixes #1817
 * Fix send keys when using PUA keys e.g. Keys.RIGHT #1839
@@ -538,13 +581,14 @@ Selenium 3.0.0.b1
 * Add Firefox options to capabilities
 * Visibility_of_all implies it only returns elements if all visible (#2052)
 * Find visible elements (#2041)
-*  Pass the firefox_profile as a desired capability in the Python client when using a remote server
+* Pass the firefox_profile as a desired capability in the Python client when using a remote server
 * Avoid checking exception details for invalid locators due to differences in server implementations
 * Handle capabilities better with Marionette and GeckoDriver
 * Updated the maxVersion of FirefoxDriver xpi maxVersion to work with Firefox 47.0.1
 * Remove Selenium RC support
 
 Selenium 2.53.0
+
 * Adding Options object for use with Python FirefoxDriver
 * Fixed improper usage of super in exceptions module
 * create a temp file for cookies in phantomjs if not specified
@@ -552,28 +596,33 @@ Selenium 2.53.0
 * Applied some DRY and extracted out the keys_to_typing()
 * Fix deselecting options in <select>
 
-
 Selenium 2.52.0
+
 * Fixing case where UnexpectedAlertException doesn't get the alert_text in the error object
 * Firefox: Actually use launch_browser timeout Fixes #1300
 
 Selenium 2.51.1
+
 * correcting bundling issue missing README.rst file
 
 Selenium 2.51.0
+
 * Firefox updates (see java changelog)
 
 Selenium 2.50.1
+
 * Fixing error message handling. Fixes issue #1497
 * Fixing error message handling. Fixes issue #1507
 * Update webelement to handle W3C commands for size/location and rect
 * rewrite click scrolling tests to match the Java ones
 
 Selenium 2.50.0
+
 * handle potential URLError from sending shutdown, set self.process to None after it's already been quit
 * Add support for submit() with W3C compliant endpoint
 
 Selenium 2.49.1
+
 * Ensure you can close stream before attempting to close it.
 * message response may cause json loads ValueError when it's not actually json
   and just a string (like the message that occurs when firefox driver thinks
@@ -581,6 +630,7 @@ Selenium 2.49.1
 * Cleanup some error handling when sniffing what protocol you are speaking
 
 Selenium 2.49.0
+
 * Have Firefox service write to a file instead of PIPE
 * on osx for firefox, fallback to checking homebrew install, if the default isn't there
 * Added Firefox path variable for string placeholder
@@ -592,6 +642,7 @@ Selenium 2.49.0
 * Bug fixes: #1294, #1186
 
 Selenium 2.48.0
+
 * Update error pulling to match spec when we encounter a spec compliant browser.
 * Disable tests that are not working with Marionette when running Marionette tests
 * Add the ability to run python marionette tests
@@ -599,23 +650,28 @@ Selenium 2.48.0
 * changing casing of children finding tests
 
 Selenium 2.47.3
+
 * Bring back py 3 support
 
 Selenium 2.47.2
+
 * Fix running Edge driver locally on win10
 * adding repr to WebDriver and WebElement
 
 Selenium 2.47.1
+
 * Fix the issue of deleting the profile when shutting down Firefox
 * WebElement __eq__ compares against more types
 * Issues fixed: 850
 
 Selenium 2.47.0
+
 * Add in support for when communicating with a Spec compliant browsers
 * Initial support for Edge using EdgeDriver
 * Issues fixed: 818
 
 Selenium 2.46.1
+
 * Adding ability to make remote call for webelement screenshots in accordance to the W3C spec
 * Adding api to authenticate HTTP Auth modal dialogs via driver.switch_to.alert (beta)
 * Add rebeccapurple to Color Object
@@ -631,6 +687,7 @@ Selenium 2.46.1
 * Issues fixed (Github): 478, 612, 734, 780
 
 Selenium 2.46.0
+
 * Firefox support up to 38
 * BlackBerry browser support
 * remove Presto-Opera support
@@ -641,6 +698,7 @@ Selenium 2.46.0
 * Issues Fixed: (github) 401
 
 Selenium 2.45.0
+
 * Firefox support up to 35, support for native events up to 34.
 * Make Opera driver support also the new Blink based Opera
 * README: Fix the Yahoo example
@@ -652,9 +710,11 @@ Selenium 2.45.0
 * Issues Fixed: 8065, 8310, 8539
 
 Selenium 2.44.0
+
 * (previous release person forgot to add release notes! DAVID!)
 
 Selenium 2.43.0
+
 * Expand WebElement.get_attribute API docs
 * firefox may be installed without administrator privileges
     and therefore there may be no HKEY_LOCAL_MACHINE entry. Issue #7784
@@ -670,11 +730,13 @@ Selenium 2.43.0
 * Use 127.0.0.1 as localhost name resolving might fail on some systems
 
 Selenium 2.42.1
+
 * Fixed Py3 issues
 * Make firefox_binary.py and firefox_profile.py not executable
 * Make exceptions Python 3 compatible
 
 Selenium 2.42
+
 * Support for Firefox 29 Native Events
 * "remote_url" and "remote_browser" parameters for "./go test_remote".
 * missing __init__ in new android module
@@ -684,33 +746,41 @@ Selenium 2.42
 * command_executor should also support unicode strings as well.
 
 Selenium 2.41
+
 * Support for Firefox 28
 * deprecating switch_to_* in favour of driver.switch_to.*
 
 Selenium 2.40
+
 * Support for Firefox 27
 * Fixes related to http connection
 * Fix for phantomjs running on windows #6736
 
 Selenium 2.39
+
 * Support for Firefox 26
 
 Selenium 2.38.4
+
 * keep-alive can't be used for phantomjs / IE, fix for that and tested for py3 :)
 
 Selenium 2.38.3
+
 * really supporting py3 :)
 
 Selenium 2.38.2
+
 * py3 support (once again)
 
 Selenium 2.38.1
+
 * fix packaging problem where firefox/webdriver_prefs.json was missing
 
 Selenium 2.38
+
 * Support for Firefox 25
 * FirefoxProfile now using common webdriver.json instead of having our own copy in py
-  - behavior change to the preferences is that they now should be treated
+  * behavior change to the preferences is that they now should be treated
     like raw types rather than strings and allow the json library to translate
     the types appropriated (e.g. True => true)
 
@@ -725,19 +795,22 @@ Selenium 2.38
 
 * Other Bugs Fixed: #6531, #6513, #4569, #6454
 
-
 Selenium 2.37.2
+
 * fix regression added with unicode fix
 * Bug fix #6360
 
 Selenium 2.37.1
+
 * fix find_elements on webelement using unicode locators and py 2.7
 
 Selenium 2.37
+
 * repackage with fix for Firefox native events on Linux
 * fix issue with unicode By locators w/ python 2.7 #6430
 
 Selenium 2.36
+
 * Added Safari WebDriver. Fixes issue 5352.
 * fix platform for safari caps
 * Convert all offsets/coordinates/speeds into integers
@@ -752,10 +825,12 @@ Selenium 2.36
 * Bugs fixed: #6165, #6231
 
 Selenium 2.35
+
 * Remove duplicate 'get screenshot as file' methods.  Add method 'get_screenshot_as_png'
 * fixing UnicodeEncodeError on get attribute of webelement
 
 Selenium 2.34
+
 * Corrected webdriverbackedselenium session handling. Fixes issue 4283
 * Corrected use of basestring for python 3. Fixes issue 5924
 * Support for Firefox 22
@@ -764,6 +839,7 @@ Selenium 2.34
 * Corrected handling of chrome extensions. Fixes issue 5762
 
 Selenium 2.33
+
 * getText() ignores elements in the <head>
 * Adding both official and informal string representations to Color object.
 * Replace distutils.dir_util by shutil
@@ -771,39 +847,47 @@ Selenium 2.33
 * Py3 compatible winreg import and content-type access
 
 Selenium 2.32
+
 * Support for FF20 Native Events
 * Python 3 support
 * Misc Python 3 patches
 * Allow easy FirefoxBinary subclassing
 
 Selenium 2.31
+
 * Support for FF19 native events
 * web element equality is now in conformance with other language bindings
 
 Selenium 2.30
+
 * Allow env to be specified for the chromedriver service
 * Allow log path to be specified for phantomjs driver service.
 * Bug Fixes: 4608 4940 4974 5034 5075
 
 Selenium 2.29
+
 * Allow subclassing of driver and have the ability to send_keys Issue 4877, 5017
 * Simplifying save_screenshot and allow phantomjs to take screenshots
 
 Selenium 2.28
+
 * "null" can now be passed to executeScript
 * Add transparent and extended colour keywords to color support module. Fixes issue 4866
 
 Selenium 2.27
+
 * Added support for phantomjs / ghostdriver
 * Fix python client, avoid duplicate chrome option items after reusing options class. Fixes Issue 4744.
 * adding colour support to Python. fixes issue 4623
 * Adding log_path/service_log_path as named kwargs for chrome
 
 Selenium 2.26
+
 * Added location_when_scrolled_into_view - Bug 4357
 * Added new expected_conditions support module to be used with WebDriverWait
 
 Selenium 2.25
+
 * Jython 2.7 Support - Bug 3988
 * EventFiringWebDriver added to Support module - Bug 2267
 * Added IEDriverServer logging that can be accessed via desired capabilities
@@ -812,117 +896,146 @@ Selenium 2.25
 * Added default values for a number of action_chains calls
 
 Selenium 2.24
+
 * Removing the ctypes approach of invoking IEDriver, you will need to download the IEDriverServer from
-  https://code.google.com/p/selenium/downloads/list
+  <https://code.google.com/p/selenium/downloads/list>
 
 Selenium 2.23
+
 * Support for FF13 native events
 
 Selenium 2.22
+
 * Moving IEDriver to be able to use IEDriverServer
 
 Selenium 2.21.3
+
 * Fix for File Upload to remote servers
 * Better handling of typing in input=file. Bug 3831, 3736
 * Better handling of unicode URLS Bug 3740
 
 Selenium 2.21.2
+
 * Fix typing to file input when not using Selenium Server. Bug 3736
 
 Selenium 2.21.1
+
 * focusmanager.testmode messes with native events, removing it.
 
 Selenium 2.21
+
 * Local File upload capabilities for non-remote browser
 * Adding maximize_window api call
 * Updating default firefox profile to set focusmanager.testmode to true
-    see https://bugzilla.mozilla.org/show_bug.cgi?id=704583
+    see <https://bugzilla.mozilla.org/show_bug.cgi?id=704583>
 * bugs fixed: 3506, 3528, 3607
 
 Selenium 2.20
+
 * disable native events for FF on Mac by default
 * fix webdriverwait to execute at least once when using 0 timeout
 * Fixed Issue 3438
 
 Selenium 2.19
+
 * WebDriverBackedSelenium is now available to all languages
 * Addon installation fixes
 
 Selenium 2.18
+
 * Proxy capabilities passing
 
 Selenium 2.17
+
 * OperaDriver can now be invoked by webdriver.Opera()
 * Support has been added for ChomeOptions. This deprecates support passing in DesiredCapabilities
 * Proxy class to tell the browser a proxy is in use. Currently only for Firefox
 
 Selenium 2.16
+
 * bug fixes
 
 Selenium 2.15
+
 * bug fixes
 
 Selenium 2.14
+
 * Fix for LD_PRELOAD being polluted by WebDriver
 * Added Orientation API
 * A fix for Error Handling
 
 Selenium 2.13
+
 * Fixed switch_to_window so that it didn't crash Firefox Bug 2633
 * Fixed Screenshot handling to work in all browsers. Bug 2829
 * Force Firefox to the Foreground
 
 Selenium 2.12
+
 * Added Select as a support package
 * Added Beta window size / position api's
 * Bug Fixes
 
 Selenium 2.11.0 2.11.1
+
 * no changes just packaging
 
 Selenum 2.10
+
 * "Choose which apps" dialog has been disabled
 * Bug Fixes
 
 Selenium 2.9
+
 * Bug Fixes
 * Documentation
 
 Selenium 2.8
+
 * Actions updates
 * Bug Fixes
 
 Selenium 2.6
+
 * Documentation fixes
 
 Selenium 2.5
+
 * Fixed x64 IE Support
 * Bug Fixes
 
 Selenium 2.4
+
 * Bug Fixes
 * x64 IE Support
 * Added WebDriverWait as a support package
 
 Selenium 2.3
+
 * Bug Fixes
 
 Selenium 2.2
+
 * Ability to get screenshots from Exceptions if they are given
 * Access to Remote StackTrace on error
 
 Selenium 2.1
+
 * Bug Fixes
 
 Selenium 2
+
 * Removed toggle() and select()
 
 Selenium 2 RC 3
+
 * Added Opera to Desired Capabilities
 * Removed deprecrated methods
 * Deprecated toggle() and select() methods. This will be removed in the next release
 
 Selenium 2 Beta 4
+
 * Fix for using existing Firefox Profiles
 * Alerts Support in IE
 * Fix to dictionary returned from size
@@ -937,6 +1050,7 @@ Selenium 2 Beta 4
 * Profiles now delete their temp folders when driver.quit() is called
 
 Selenium 2 Beta 3
+
 * Accept Untrusted Certificates in Firefox
 * Fixed Screenshots
 * Added DesiredCapabilities to simplify choosing Drivers
@@ -959,4 +1073,3 @@ Selenium 2 Beta 2
 * Improved IEDriver
 * Basic Authentication support for Selenium 2
 * Ability to have multiple Firefox instances
-
