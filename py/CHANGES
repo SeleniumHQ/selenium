@@ -1,3 +1,7 @@
+Selenium 4.1.2
+
+* Make sure py.typed file is included in the library
+
 Selenium 4.1.1
 
 * add support for Chrome 98 and remove support for Chrome 95
