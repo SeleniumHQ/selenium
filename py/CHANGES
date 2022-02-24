@@ -1,3 +1,7 @@
+Selenium 4.1.2
+
+* Include `py.typed` in the library
+
 Selenium 4.1.1
 
 * add support for Chrome 98 and remove support for Chrome 95
@@ -661,7 +665,7 @@ Selenium 2.47.2
 Selenium 2.47.1
 
 * Fix the issue of deleting the profile when shutting down Firefox
-* WebElement __eq__ compares against more types
+* WebElement **eq** compares against more types
 * Issues fixed: 850
 
 Selenium 2.47.0
@@ -739,8 +743,8 @@ Selenium 2.42
 
 * Support for Firefox 29 Native Events
 * "remote_url" and "remote_browser" parameters for "./go test_remote".
-* missing __init__ in new android module
-* issue #7304 Fix memory leak caused by __del__ in PhantomJS
+* missing **init** in new android module
+* issue #7304 Fix memory leak caused by **del** in PhantomJS
 * File upload using remotedriver on python3
 * Updating xpi install to align with mozprofile
 * command_executor should also support unicode strings as well.
