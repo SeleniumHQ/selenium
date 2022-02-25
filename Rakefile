@@ -261,8 +261,7 @@ task test_rb_remote: [
   '//rb:remote-firefox-test',
   ('//rb:remote-firefox-nightly-test' if ENV['FIREFOX_NIGHTLY_BINARY']),
   ('//rb:remote-safari-test' if SeleniumRake::Checks.mac?),
-  # BUG - https://github.com/SeleniumHQ/selenium/issues/6791
-  # ('//rb:remote-safari-preview-test' if SeleniumRake::Checks.mac?),
+  ('//rb:remote-safari-preview-test' if SeleniumRake::Checks.mac?),
   ('//rb:remote-ie-test' if SeleniumRake::Checks.windows?),
   ('//rb:remote-edge-test' unless SeleniumRake::Checks.linux?)
 ].compact
