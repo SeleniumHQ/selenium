@@ -39,18 +39,18 @@ def pin_browsers():
         
     pkg_archive(
         name = "mac_edge",
-        url = "https://officecdn-microsoft-com.akamaized.net/pr/C1297A47-86C4-4C1F-97FA-950631F94777/MacAutoupdate/MicrosoftEdge-98.0.1108.62.pkg?platform=Mac&Consent=0&channel=Stable",
-        sha256 = "5686213b227d0af11757596c5828e720784b7b9caea6c44412c366a65ec3d006",
+        url = "https://officecdn-microsoft-com.akamaized.net/pr/C1297A47-86C4-4C1F-97FA-950631F94777/MacAutoupdate/MicrosoftEdge-98.0.1108.56.pkg?platform=Mac&Consent=0&channel=Stable",
+        sha256 = "7ab569106dd266d852ab75a2f795d64b6722bf335bf8a58bebdf8e488d47520e",
         move = {
-            "MicrosoftEdge-98.0.1108.62.pkg/Payload/Microsoft Edge.app": "Edge.app",
+            "MicrosoftEdge-98.0.1108.56.pkg/Payload/Microsoft Edge.app": "Edge.app",
         },
         build_file_content = "exports_files([\"Edge.app\"])",
     )
     
     http_archive(
         name = "mac_edgedriver",
-        url = "https://msedgedriver.azureedge.net/98.0.1108.62/edgedriver_mac64.zip",
-        sha256 = "6d57166f128fff7399d23399c4adfae33405dcb3f97a02b2c456298e0edd0993",
+        url = "https://msedgedriver.azureedge.net/98.0.1108.56/edgedriver_mac64.zip",
+        sha256 = "4a4a8f1808fecc50da8fef6576c9b03cc89e099c89ecaea5106826e06b65a80d",
         build_file_content = "exports_files([\"msedgedriver\"])",
     )
     
