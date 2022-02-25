@@ -77,6 +77,7 @@ import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
 
 public class FirefoxDriverTest extends JUnit4TestBase {
 
+  private static final String EXT_PATH = "common/extensions/webextensions-selenium-example.xpi";
   private static char[] CHARS =
       "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890!\"§$%&/()+*~#',.-_:;\\"
           .toCharArray();
@@ -529,10 +530,10 @@ public class FirefoxDriverTest extends JUnit4TestBase {
 
   @Test
   public void canAddRemoveExtensions() {
-    Path extension = InProject.locate("third_party/firebug/favourite_colour-1.1-an+fx.xpi");
+    Path extension = InProject.locate(EXT_PATH);
 
     String id = ((HasExtensions) driver).installExtension(extension);
-    assertThat(id).isEqualTo("favourite-colour-examples@mozilla.org");
+    assertThat(id).isEqualTo("webextensions-selenium-example@example.com");
 
     try {
       ((HasExtensions) driver).uninstallExtension(id);
@@ -543,10 +544,10 @@ public class FirefoxDriverTest extends JUnit4TestBase {
 
   @Test
   public void canAddRemoveTempExtensions() {
-    Path extension = InProject.locate("third_party/firebug/favourite_colour-1.1-an+fx.xpi");
+    Path extension = InProject.locate(EXT_PATH);
 
     String id = ((HasExtensions) driver).installExtension(extension, true);
-    assertThat(id).isEqualTo("favourite-colour-examples@mozilla.org");
+    assertThat(id).isEqualTo("webextensions-selenium-example@example.com");
 
     try {
       ((HasExtensions) driver).uninstallExtension(id);
