@@ -135,7 +135,7 @@ py_wheel(
         "trio-websocket~=0.9",
     ],
     strip_path_prefixes = [
-        "py",
+        "py/",
     ],
     version = SE_VERSION,
     visibility = ["//visibility:public"],
