@@ -39,7 +39,7 @@ import java.nio.file.Path;
 
 public class MarionetteTest extends JUnit4TestBase {
 
-  private static final String MOOLTIPASS_PATH = "third_party/firebug/mooltipass-1.1.87.xpi";
+  private static final String EXT_PATH = "common/extensions/webextensions-selenium-example.xpi";
 
   private FirefoxDriver localDriver;
 
@@ -233,8 +233,9 @@ public class MarionetteTest extends JUnit4TestBase {
   public void canInstallAndUninstallExtensionsOnTheFly() {
     assumeTrue(driver instanceof FirefoxDriver);
     FirefoxDriver localDriver = (FirefoxDriver) driver;
-    Path extension = InProject.locate(MOOLTIPASS_PATH);
+    Path extension = InProject.locate(EXT_PATH);
     String extId = localDriver.installExtension(extension);
+    assertThat(extId).isEqualTo("webextensions-selenium-example@example.com");
     localDriver.uninstallExtension(extId);
   }
 

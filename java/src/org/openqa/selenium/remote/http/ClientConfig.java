@@ -17,6 +17,9 @@
 
 package org.openqa.selenium.remote.http;
 
+import org.openqa.selenium.Credentials;
+import org.openqa.selenium.internal.Require;
+
 import java.io.UncheckedIOException;
 import java.net.MalformedURLException;
 import java.net.Proxy;
@@ -25,12 +28,11 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.time.Duration;
 
-import org.openqa.selenium.Credentials;
-import org.openqa.selenium.internal.Require;
-
 public class ClientConfig {
 
-  private static final Filter DEFAULT_FILTER = new AddSeleniumUserAgent().andThen(new RetryRequest());
+  private static final Filter RETRY_FILTER = new RetryRequest();
+  private static final Filter SELENIUM_USER_AGENT_FILTER = new AddSeleniumUserAgent();
+  private static final Filter DEFAULT_FILTERS = SELENIUM_USER_AGENT_FILTER.andThen(RETRY_FILTER);
   private final URI baseUri;
   private final Duration connectionTimeout;
   private final Duration readTimeout;
@@ -39,12 +41,12 @@ public class ClientConfig {
   private final Credentials credentials;
 
   private ClientConfig(
-      URI baseUri,
-      Duration connectionTimeout,
-      Duration readTimeout,
-      Filter filters,
-      Proxy proxy,
-      Credentials credentials) {
+    URI baseUri,
+    Duration connectionTimeout,
+    Duration readTimeout,
+    Filter filters,
+    Proxy proxy,
+    Credentials credentials) {
     this.baseUri = baseUri;
     this.connectionTimeout = Require.nonNegative("Connection timeout", connectionTimeout);
     this.readTimeout = Require.nonNegative("Read timeout", readTimeout);
@@ -58,7 +60,7 @@ public class ClientConfig {
       null,
       Duration.ofSeconds(10),
       Duration.ofMinutes(3),
-      DEFAULT_FILTER,
+      DEFAULT_FILTERS,
       null,
       null);
   }
@@ -111,14 +113,25 @@ public class ClientConfig {
     return readTimeout;
   }
 
-  public ClientConfig withFilter(Filter filter) {
+  public ClientConfig filter(Filter filter) {
     return new ClientConfig(
-        baseUri,
-        connectionTimeout,
-        readTimeout,
-        filter == null ? DEFAULT_FILTER : filter.andThen(DEFAULT_FILTER),
-        proxy,
-        credentials);
+      baseUri,
+      connectionTimeout,
+      readTimeout,
+      Require.nonNull("Filter", filter),
+      proxy,
+      credentials);
+  }
+
+  public ClientConfig withFilter(Filter filter) {
+    Require.nonNull("Filter", filter);
+    return new ClientConfig(
+      baseUri,
+      connectionTimeout,
+      readTimeout,
+      filter.andThen(DEFAULT_FILTERS),
+      proxy,
+      credentials);
   }
 
   public Filter filter() {

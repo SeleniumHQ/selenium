@@ -102,7 +102,7 @@ JAVA_RELEASE_TARGETS = %w[
   //java/src/org/openqa/selenium/devtools/v85:v85.publish
   //java/src/org/openqa/selenium/devtools/v96:v96.publish
   //java/src/org/openqa/selenium/devtools/v97:v97.publish
-  //java/src/org/openqa/selenium/devtools/v98:v97\8.publish
+  //java/src/org/openqa/selenium/devtools/v98:v98.publish
   //java/src/org/openqa/selenium/edge:edge.publish
   //java/src/org/openqa/selenium/firefox:firefox.publish
   //java/src/org/openqa/selenium/grid/sessionmap/jdbc:jdbc.publish
@@ -261,8 +261,7 @@ task test_rb_remote: [
   '//rb:remote-firefox-test',
   ('//rb:remote-firefox-nightly-test' if ENV['FIREFOX_NIGHTLY_BINARY']),
   ('//rb:remote-safari-test' if SeleniumRake::Checks.mac?),
-  # BUG - https://github.com/SeleniumHQ/selenium/issues/6791
-  # ('//rb:remote-safari-preview-test' if SeleniumRake::Checks.mac?),
+  ('//rb:remote-safari-preview-test' if SeleniumRake::Checks.mac?),
   ('//rb:remote-ie-test' if SeleniumRake::Checks.windows?),
   ('//rb:remote-edge-test' unless SeleniumRake::Checks.linux?)
 ].compact

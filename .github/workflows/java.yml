@@ -110,6 +110,8 @@ jobs:
         include:
           - browser: 'firefox'
             version: 'latest-devedition'
+          - browser: 'firefox'
+            version: 'latest-beta'
     steps:
       - name: Checkout source tree
         uses: actions/checkout@v2
@@ -136,7 +138,7 @@ jobs:
         with:
           firefox-version: ${{ matrix.version }}
       - name: Setup GeckoDriver
-        uses: ./.github/actions/setup-firefox
+        uses: browser-actions/setup-geckodriver@latest
         if: |
           matrix.browser == 'firefox'
       - name: Setup Chrome and ChromeDriver
@@ -164,6 +166,8 @@ jobs:
         include:
           - browser: 'firefox'
             version: 'latest-devedition'
+          - browser: 'firefox'
+            version: 'latest-beta'
     steps:
       - name: Checkout source tree
         uses: actions/checkout@v2
@@ -191,7 +195,7 @@ jobs:
         with:
           firefox-version: ${{ matrix.version }}
       - name: Setup GeckoDriver
-        uses: ./.github/actions/setup-firefox
+        uses: browser-actions/setup-geckodriver@latest
         if: |
           matrix.browser == 'firefox'
       - name: Setup Chrome and ChromeDriver
@@ -230,8 +234,10 @@ jobs:
         uses: actions/setup-java@v1
         with:
           java-version: '11'
+      - name: Setup Firefox
+        uses: browser-actions/setup-firefox@latest
       - name: Setup GeckoDriver
-        uses: ./.github/actions/setup-firefox
+        uses: browser-actions/setup-geckodriver@latest
       - name: Start XVFB
         run: Xvfb :99 &
       - name: Run browser tests in Firefox
