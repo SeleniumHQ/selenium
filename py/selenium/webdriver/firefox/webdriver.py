@@ -15,10 +15,13 @@
 # specific language governing permissions and limitations
 # under the License.
 import base64
+from io import BytesIO
+import os
 from shutil import rmtree
 import warnings
 from contextlib import contextmanager
 from typing import NoReturn
+import zipfile
 
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 from selenium.webdriver.remote.webdriver import WebDriver as RemoteWebDriver
@@ -232,7 +235,7 @@ class WebDriver(RemoteWebDriver):
         finally:
             self.set_context(initial_context)
 
-    def install_addon(self, path, temporary=None) -> str:
+    def install_addon(self, path, temporary=False) -> str:
         """
         Installs Firefox addon.
 
@@ -246,12 +249,21 @@ class WebDriver(RemoteWebDriver):
 
                 driver.install_addon('/path/to/firebug.xpi')
         """
-        with open(path, 'rb') as file:
-            addon = (base64.b64encode(file.read()).decode('UTF-8'))
 
-        payload = {"addon": addon}
-        if temporary:
-            payload["temporary"] = temporary
+        if(os.path.isdir(path)):
+            fp = BytesIO()
+            path_root = len(path) + 1  # account for trailing slash
+            with zipfile.ZipFile(fp, 'w', zipfile.ZIP_DEFLATED) as zipped:
+                for base, dirs, files in os.walk(path):
+                    for fyle in files:
+                        filename = os.path.join(base, fyle)
+                        zipped.write(filename, filename[path_root:])
+            addon = base64.b64encode(fp.getvalue()).decode('UTF-8')
+        else:
+            with open(path, 'rb') as file:
+                addon = (base64.b64encode(file.read()).decode('UTF-8'))
+
+        payload = {"addon": addon, "temporary": temporary}
         return self.execute("INSTALL_ADDON", payload)["value"]
 
     def uninstall_addon(self, identifier) -> NoReturn:
