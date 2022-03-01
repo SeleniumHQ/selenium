@@ -20,14 +20,16 @@ for bazel_target in $affected_files ; do
 done
 
 echo "::set-output name=bazel-targets::${bazel_targets[*]}"
+echo "::set-output name=should-workflow-run::false"
+
 if (( ${#bazel_targets[@]} == 0 )); then
     echo "No bazel targets found after checking the diff."
-    echo "::set-output name=should-workflow-run::false"
+    exit 0
 fi
 
 if [[ " ${bazel_targets[*]} " == *"$BAZEL_TARGET_PREFIX"* ]]; then
     echo "::set-output name=should-workflow-run::true"
 fi
 
-echo "::set-output name=should-workflow-run::false"
+
 
