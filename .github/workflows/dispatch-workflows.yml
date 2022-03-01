@@ -32,6 +32,10 @@ jobs:
         with:
           commit-range: ${COMMIT_RANGE}
           bazel-target-prefix: "//java"
+      - name: Show GitHub context
+        env:
+          GITHUB_CONTEXT: ${{ toJson(github) }}
+        run: echo "$GITHUB_CONTEXT"
       - name: Dispatch Java workflow
         uses: actions/github-script@v6
         with:
