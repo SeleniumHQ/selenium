@@ -65,6 +65,12 @@ copy_file(
     out = "selenium/webdriver/firefox/webdriver_prefs.json",
 )
 
+copy_file(
+    name = "favourite_color",
+    src = "//third_party/firebug:favourite_colour-1.1-an+fx.xpi",
+    out = "test/selenium/webdriver/firefox/favourite_colour-1.1-an+fx.xpi",
+)
+
 py_library(
     name = "selenium",
     srcs = glob(
@@ -78,6 +84,7 @@ py_library(
         ":get-attribute",
         ":is-displayed",
         ":mutation-listener",
+        ":favourite_color"
     ] + [":create-cdp-srcs-" + n for n in BROWSER_VERSIONS],
     imports = ["."],
     visibility = ["//visibility:public"],
