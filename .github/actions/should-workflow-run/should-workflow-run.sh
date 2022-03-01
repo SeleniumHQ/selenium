@@ -10,7 +10,7 @@ BAZEL_TARGET_PREFIX=${BAZEL_TARGET_PREFIX:-""}
 cd "$(git rev-parse --show-toplevel)" || true
 
 # Get list of affected files by the diff
-affected_files=$(git diff --name-only "${COMMIT_RANGE}")
+affected_files=$(git diff --name-only ${COMMIT_RANGE})
 
 # Get a list of the current targets in package form by querying Bazel.
 bazel_targets=()
