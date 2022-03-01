@@ -40,11 +40,5 @@ jobs:
                 repo: context.repo.repo,
                 workflow_id: 'java.yml',
                 ref: context.ref,
-            }).catch(error => error).then(response => {
-              core.debug(response);
-              if (response.status !== 204) {
-                core.setFailed(`Create workflow_dispatch received status code ${response.status}`);
-              }
             });
-          debug: true
         if: ${{ steps.should-workflow-run.outputs.should-workflow-run }}
