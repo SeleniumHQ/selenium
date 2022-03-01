@@ -11,7 +11,7 @@ inputs:
 outputs:
   should-workflow-run:
     description: 'Boolean to be used in the job to decide if the job runs or not'
-    value: ${{ steps.check-workflow-run.outputs.run-workflow }}
+    value: ${{ steps.check-workflow-run.outputs.should-workflow-run }}
   bazel-targets:
     description: 'If the workflow should be run, bazel targets are returned'
     value: ${{ steps.check-workflow-run.outputs.bazel-targets }}
