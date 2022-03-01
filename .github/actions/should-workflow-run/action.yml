@@ -23,8 +23,7 @@ runs:
       shell: bash
     - id: check-workflow-run
       run: |
-        .github/actions/should-workflow-run/should-workflow-run.sh
+        COMMIT_RANGE=${{ inputs.commit-range }} .github/actions/should-workflow-run/should-workflow-run.sh
       shell: bash
       env:
-        COMMIT_RANGE: ${{ inputs.commit-range }}
         BAZEL_TARGET_PREFIX: ${{ inputs.bazel-target-prefix }}
