@@ -30,6 +30,9 @@ jobs:
         uses: ./.github/actions/should-workflow-run
         with:
           bazel-target-prefix: "//java"
+      - name: Set workflow ref
+        run: echo "WORKFLOW_REF=${{ github.event.pull_request.head.ref }}" >> $GITHUB_ENV
+        if: ${{ github.event_name == 'pull_request' }}
       - name: Dispatch Java workflow
         uses: actions/github-script@v6
         with:
@@ -39,6 +42,6 @@ jobs:
                 owner: context.repo.owner,
                 repo: context.repo.repo,
                 workflow_id: 'java.yml',
-                ref: context.ref,
+                ref: process.env.GITHUB_REF_NAME,
             });
         if: ${{ steps.should-workflow-run.outputs.should-workflow-run }}
