@@ -89,23 +89,23 @@ class Options(ArgOptions):
     def automatic_inspection(self) -> bool:
         """:Returns: The option Automatic Inspection value """
         return self._caps.get(self.AUTOMATIC_INSPECTION)
-    
+
     @automatic_inspection.setter
     def automatic_inspection(self, value: bool):
         """
         Sets the option Automatic Inspection to value
-        
+
         :Args:
          - value: boolean value
 
         """
         self.set_capability(self.AUTOMATIC_INSPECTION, value)
 
-    @property 
+    @property
     def automatic_profiling(self) -> bool:
         """:Returns: The options Automatic Profiling value """
         return self._caps.get(self.AUTOMATIC_PROFILING)
-    
+
     @automatic_profiling.setter
     def automatic_profiling(self, value: bool):
         """
@@ -121,14 +121,14 @@ class Options(ArgOptions):
     def use_technology_preview(self) -> bool:
         """:Returns: whether BROWSER_NAME is equal to Safari Technology Preview"""
         return self._caps.get('browserName') == self.SAFARI_TECH_PREVIEW
-    
+
     @use_technology_preview.setter
     def use_technology_preview(self, value: bool):
         """
         Sets browser name to Safari Technology Preview if value else to safari.
-        
+
         :Args:
          - value: boolean value
-        
-        """        
+
+        """
         self.set_capability('browserName', self.SAFARI_TECH_PREVIEW if value else 'safari')

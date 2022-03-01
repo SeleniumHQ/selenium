@@ -71,11 +71,11 @@ def test_can_set_automatic_profiling(options):
 
 def test_setting_technology_preview_changes_browser_name(options):
     from selenium.webdriver import DesiredCapabilities
-    BROWSER_NAME =  'browserName'
+    BROWSER_NAME = 'browserName'
     assert options._caps.get(BROWSER_NAME) == DesiredCapabilities.SAFARI[BROWSER_NAME]
-   
+
     options.use_technology_preview = True
     assert options._caps.get(BROWSER_NAME) == options.SAFARI_TECH_PREVIEW
-   
+
     options.use_technology_preview = False
     assert options._caps.get(BROWSER_NAME) == DesiredCapabilities.SAFARI[BROWSER_NAME]
