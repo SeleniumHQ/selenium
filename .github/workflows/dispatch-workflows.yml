@@ -41,7 +41,7 @@ jobs:
             await github.rest.actions.createWorkflowDispatch({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
-                workflow_id: 'java.yml',
+                workflow_id: 'java-ci.yml',
                 ref: process.env.WORKFLOW_REF,
             });
         if: ${{ steps.should-workflow-run.outputs.should-workflow-run }}
