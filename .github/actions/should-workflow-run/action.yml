@@ -18,9 +18,11 @@ outputs:
 runs:
   using: "composite"
   steps:
+    - run: |
+        cp .github/.bazelrc.local .
+      shell: bash
     - id: check-workflow-run
       run: |
-        cp .github/.bazelrc.local .
         .github/actions/should-workflow-run/should-workflow-run.sh
       shell: bash
       env:
