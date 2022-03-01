@@ -46,4 +46,5 @@ jobs:
                 core.setFailed(`Create workflow_dispatch received status code ${response.status}`);
               }
             });
+          debug: true
         if: ${{ steps.should-workflow-run.outputs.should-workflow-run }}
