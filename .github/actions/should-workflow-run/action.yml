@@ -1,0 +1,28 @@
+name: 'Should workflow run?'
+description: 'Determines if workflow should run when bazel targets were affected in the diff'
+inputs:
+  commit-range:
+    description: "Commits considered to determine bazel targets"
+    required: false
+    default: "HEAD^..HEAD"
+  bazel-target-prefix:
+    description: "Bazel target prefix used to determine if the code path will be used"
+    required: true
+outputs:
+  should-workflow-run:
+    description: 'Boolean to be used in the job to decide if the job runs or not'
+    value: ${{ steps.check-workflow-run.outputs.run-workflow }}
+  bazel-targets:
+    description: 'If the workflow should be run, bazel targets are returned'
+    value: ${{ steps.check-workflow-run.outputs.bazel-targets }}
+runs:
+  using: "composite"
+  steps:
+    - id: check-workflow-run
+      run: |
+        cp .github/.bazelrc.local .
+        .github/actions/should-workflow-run/should-workflow-run.sh
+      shell: bash
+      env:
+        COMMIT_RANGE: ${{ inputs.commit-range }}
+        BAZEL_TARGET_PREFIX: ${{ inputs.bazel-target-prefix }}

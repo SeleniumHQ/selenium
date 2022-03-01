@@ -1,0 +1,51 @@
+name: Dispatch workflows
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - trunk
+  pull_request:
+    branches:
+      - trunk
+
+jobs:
+  dispatch_java_workflow:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout source tree
+        uses: actions/checkout@v2
+      - name: Setup bazelisk
+        uses: ./.github/actions/setup-bazelisk
+      - name: Setup Java
+        uses: actions/setup-java@v1
+        with:
+          java-version: '11'
+      - name: Sets default commit range
+        run: echo "COMMIT_RANGE='HEAD^..HEAD'" >> $GITHUB_ENV
+      - name: Sets commit range if pull request
+        run: echo "COMMIT_RANGE='$(git merge-base origin/trunk HEAD)..${GITHUB_SHA}'" >> $GITHUB_ENV
+        if: ${{ github.event_name == 'pull_request' }}
+      - name: Check if workflow should run
+        id: should-workflow-run
+        uses: ./.github/actions/should-workflow-run
+        with:
+          commit-range: ${COMMIT_RANGE}
+          bazel-target-prefix: "//java"
+      - name: Dispatch Java workflow
+        uses: actions/github-script@v6
+        with:
+          github-token: ${{secrets.DISPATCH_WORKFLOW_CI_TOKEN}}
+          script: |-
+            await github.actions.createWorkflowDispatch({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                workflow_id: 'java.yml',
+                ref: context.ref,
+            }).catch(error => error).then(response => {
+              core.debug(response);
+              if (response.status !== 204) {
+                core.setFailed(`Create workflow_dispatch received status code ${response.status}`);
+              }
+            });
+        if: ${{ steps.should-workflow-run.outputs.should-workflow-run }}
