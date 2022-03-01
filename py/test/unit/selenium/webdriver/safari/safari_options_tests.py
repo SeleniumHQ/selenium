@@ -55,3 +55,27 @@ def test_starts_with_default_capabilities(options):
 def test_is_a_baseoptions(options):
     from selenium.webdriver.common.options import BaseOptions
     assert isinstance(options, BaseOptions)
+
+
+def test_can_set_automatic_inspection(options):
+    options.automatic_inspection = True
+    assert options.automatic_inspection is True
+    assert options._caps.get(Options.AUTOMATIC_INSPECTION) is True
+
+
+def test_can_set_automatic_profiling(options):
+    options.automatic_profiling = True
+    assert options.automatic_profiling is True
+    assert options._caps.get(Options.AUTOMATIC_PROFILING) is True
+
+
+def test_setting_technology_preview_changes_browser_name(options):
+    from selenium.webdriver import DesiredCapabilities
+    BROWSER_NAME = 'browserName'
+    assert options._caps.get(BROWSER_NAME) == DesiredCapabilities.SAFARI[BROWSER_NAME]
+
+    options.use_technology_preview = True
+    assert options._caps.get(BROWSER_NAME) == options.SAFARI_TECH_PREVIEW
+
+    options.use_technology_preview = False
+    assert options._caps.get(BROWSER_NAME) == DesiredCapabilities.SAFARI[BROWSER_NAME]
