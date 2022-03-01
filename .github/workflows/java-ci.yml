@@ -1,5 +1,8 @@
 name: Java CI
 on:
+  push:
+    branches:
+      - trunk
   workflow_dispatch:
   schedule:
     - cron: '15 9,21 * * *'
