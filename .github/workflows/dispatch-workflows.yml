@@ -24,12 +24,11 @@ jobs:
         with:
           java-version: '11'
       - name: Sets commit range
-        run: echo "COMMIT_INTERVAL=HEAD^..HEAD" >> $GITHUB_ENV
+        run: echo "COMMIT_RANGE=HEAD^..HEAD" >> $GITHUB_ENV
       - name: Check if workflow should run
         id: should-workflow-run
         uses: ./.github/actions/should-workflow-run
         with:
-          commit-range: ${COMMIT_INTERVAL}
           bazel-target-prefix: "//java"
       - name: Dispatch Java workflow
         uses: actions/github-script@v6
