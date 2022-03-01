@@ -35,7 +35,7 @@ jobs:
         with:
           github-token: ${{secrets.DISPATCH_WORKFLOW_CI_TOKEN}}
           script: |-
-            await github.actions.createWorkflowDispatch({
+            await github.rest.actions.createWorkflowDispatch({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
                 workflow_id: 'java.yml',
