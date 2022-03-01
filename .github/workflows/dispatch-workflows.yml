@@ -24,7 +24,9 @@ jobs:
       - name: Sets default commit range
         run: echo "COMMIT_RANGE='HEAD^..HEAD'" >> $GITHUB_ENV
       - name: Sets commit range if pull request
-        run: echo "COMMIT_RANGE='$(git merge-base ${GITHUB_BASE_REF} HEAD)..${GITHUB_SHA}'" >> $GITHUB_ENV
+        run: echo "COMMIT_RANGE='$(git merge-base ${BASE_SHA} HEAD)..${GITHUB_SHA}'" >> $GITHUB_ENV
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
         if: ${{ github.event_name == 'pull_request' }}
       - name: Check if workflow should run
         id: should-workflow-run
