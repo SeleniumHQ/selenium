@@ -91,7 +91,7 @@ public class GridModel {
       while (iterator.hasNext()) {
         NodeStatus next = iterator.next();
 
-        // If the ID the same and the URI is the same, use the same
+        // If the ID and the URI are the same, use the same
         // availability as the version we have now: we're just refreshing
         // an existing node.
         if (next.getNodeId().equals(node.getNodeId()) && next.getExternalUri().equals(node.getExternalUri())) {
@@ -106,7 +106,7 @@ public class GridModel {
           return;
         }
 
-        // If the URI is the same but NodeId is different then the Node has restarted
+        // If the URI is the same but NodeId is different, then the Node has restarted
         if(!next.getNodeId().equals(node.getNodeId()) &&
            next.getExternalUri().equals(node.getExternalUri())) {
           LOG.info(String.format("Re-adding node with id %s and URI %s.", node.getNodeId(), node.getExternalUri()));
@@ -220,11 +220,11 @@ public class GridModel {
         Instant deadTime = lastTouched.plus(node.getHeartbeatPeriod().multipliedBy(PURGE_TIMEOUT_MULTIPLIER));
 
         if (node.getAvailability() == UP && lostTime.isBefore(now)) {
-          LOG.info(String.format("Switching node %s from UP to DOWN", node.getNodeId()));
+          LOG.info(String.format("Switching Node %s from UP to DOWN", node.getExternalUri()));
           replacements.put(node, rewrite(node, DOWN));
         }
         if (node.getAvailability() == DOWN && deadTime.isBefore(now)) {
-          LOG.info(String.format("Removing node %s that is DOWN for too long", node.getNodeId()));
+          LOG.info(String.format("Removing Node %s, DOWN for too long", node.getExternalUri()));
           toRemove.add(node);
         }
       }

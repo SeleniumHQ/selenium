@@ -55,8 +55,6 @@ import java.net.URI;
 import java.nio.file.Path;
 import java.util.Map;
 import java.util.Optional;
-import java.util.ServiceLoader;
-import java.util.stream.StreamSupport;
 
 /**
  * An implementation of the {#link WebDriver} interface that drives Firefox.
@@ -103,8 +101,9 @@ public class FirefoxDriver extends RemoteWebDriver
         Require.nonNull("Driver service", service),
         new FirefoxOptions(desiredCapabilities));
   }
+
   public FirefoxDriver(FirefoxOptions options) {
-    this(toExecutor(options), options);
+    this(new FirefoxDriverCommandExecutor(GeckoDriverService.createDefaultService()), options);
   }
 
   public FirefoxDriver(FirefoxDriverService service) {
@@ -139,18 +138,6 @@ public class FirefoxDriver extends RemoteWebDriver
   @Beta
   public static RemoteWebDriverBuilder builder() {
     return RemoteWebDriver.builder().oneOf(new FirefoxOptions());
-  }
-
-  private static FirefoxDriverCommandExecutor toExecutor(FirefoxOptions options) {
-    Require.nonNull("Options to construct executor from", options);
-
-    FirefoxDriverService.Builder<?, ?> builder =
-      StreamSupport.stream(ServiceLoader.load(DriverService.Builder.class).spliterator(), false)
-        .filter(b -> b instanceof FirefoxDriverService.Builder)
-        .map(FirefoxDriverService.Builder.class::cast)
-        .findFirst().orElseThrow(WebDriverException::new);
-
-    return new FirefoxDriverCommandExecutor(builder.withOptions(options).build());
   }
 
   /**

@@ -31,7 +31,7 @@ public interface Coordinates {
    * before calculating its coordinates.
    *
    * @return coordinates on the element relative to the top-left corner of the monitor (screen).
-   * @throws org.openqa.selenium.ElementNotVisibleException if the element can't be scrolled into view.
+   * @throws org.openqa.selenium.ElementNotInteractableException if the element can't be scrolled into view.
    */
   Point onScreen();
 
@@ -41,7 +41,7 @@ public interface Coordinates {
    * scrolls the page and/or frames to make element visible in viewport before calculating its coordinates.
    *
    * @return coordinates on the element relative to the top-left corner of the browser window's viewport.
-   * @throws org.openqa.selenium.ElementNotVisibleException if the element can't be scrolled into view.
+   * @throws org.openqa.selenium.ElementNotInteractableException if the element can't be scrolled into view.
    */
   Point inViewPort();
 

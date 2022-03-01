@@ -28,6 +28,7 @@ import org.openqa.selenium.HasCapabilities;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.build.InProject;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.openqa.selenium.testing.JUnit4TestBase;
@@ -41,7 +42,7 @@ import java.util.Base64;
 
 public class EdgeOptionsFunctionalTest extends JUnit4TestBase {
 
-  private static final String EXT_PATH = "third_party/chrome_ext/backspace.crx";
+  private static final String EXT_PATH = "common/extensions/webextensions-selenium-example.crx";
 
   private WebDriver edgeDriver = null;
 
@@ -89,13 +90,13 @@ public class EdgeOptionsFunctionalTest extends JUnit4TestBase {
     options.addExtensions(InProject.locate(EXT_PATH).toFile());
     edgeDriver = new WebDriverBuilder().get(options);
 
-    edgeDriver.get(pages.clicksPage);
+    edgeDriver.get(pages.echoPage);
 
-    edgeDriver.findElement(By.id("normal")).click();
-    new WebDriverWait(edgeDriver, Duration.ofSeconds(10)).until(titleIs("XHTML Test Page"));
+    WebElement footerElement = driver.findElement(By.id("webextensions-selenium-example"));
 
-    edgeDriver.findElement(By.tagName("body")).sendKeys(Keys.BACK_SPACE);
-    new WebDriverWait(edgeDriver, Duration.ofSeconds(10)).until(titleIs("clicks"));
+    String footText = footerElement.getText();
+    assertThat(footText).isEqualTo("Content injected by webextensions-selenium-example");
+
   }
 
   @Test
@@ -106,13 +107,12 @@ public class EdgeOptionsFunctionalTest extends JUnit4TestBase {
         Files.readAllBytes(InProject.locate(EXT_PATH))));
     edgeDriver = new WebDriverBuilder().get(options);
 
-    edgeDriver.get(pages.clicksPage);
+    edgeDriver.get(pages.echoPage);
 
-    edgeDriver.findElement(By.id("normal")).click();
-    new WebDriverWait(edgeDriver, Duration.ofSeconds(10)).until(titleIs("XHTML Test Page"));
+    WebElement footerElement = driver.findElement(By.id("webextensions-selenium-example"));
 
-    edgeDriver.findElement(By.tagName("body")).sendKeys(Keys.BACK_SPACE);
-    new WebDriverWait(edgeDriver, Duration.ofSeconds(10)).until(titleIs("clicks"));
+    String footText = footerElement.getText();
+    assertThat(footText).isEqualTo("Content injected by webextensions-selenium-example");
   }
 
 }

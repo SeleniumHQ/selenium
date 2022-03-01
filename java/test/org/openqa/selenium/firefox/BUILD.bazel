@@ -20,9 +20,8 @@ java_test_suite(
         exclude = LARGE_TESTS + REMOTE_TESTS,
     ),
     data = [
-        ":firebug_xpi",
-        "//third_party/firebug:firebug-1.5.0-fx.xpi",
-        "//third_party/firebug:mooltipass-1.1.87.xpi",
+        ":webextensions_selenium_example",
+        "//common/extensions",
     ],
     tags = [
         "requires-network",
@@ -48,14 +47,10 @@ java_selenium_test_suite(
         "firefox",
     ],
     data = [
-        "//third_party/firebug:favourite_colour-1.1-an+fx.xpi",
-        "//third_party/firebug:firebug-1.5.0-fx.xpi",
-        "//third_party/firebug:mooltipass-1.1.87.xpi",
+        "//common/extensions",
     ],
     resources = [
-        "//third_party/firebug:favourite_colour-1.1-an+fx.xpi",
-        "//third_party/firebug:firebug-1.5.0-fx.xpi",
-        "//third_party/firebug:mooltipass-1.1.87.xpi",
+        "//common/extensions",
     ],
     deps = [
         "//java/src/org/openqa/selenium/firefox",
@@ -81,14 +76,10 @@ java_selenium_test_suite(
         "firefox",
     ],
     data = [
-        "//third_party/firebug:favourite_colour-1.1-an+fx.xpi",
-        "//third_party/firebug:firebug-1.5.0-fx.xpi",
-        "//third_party/firebug:mooltipass-1.1.87.xpi",
+        "//common/extensions"
     ],
     resources = [
-        "//third_party/firebug:favourite_colour-1.1-an+fx.xpi",
-        "//third_party/firebug:firebug-1.5.0-fx.xpi",
-        "//third_party/firebug:mooltipass-1.1.87.xpi",
+        "//common/extensions"
     ],
     tags = [
         "selenium-remote",
@@ -106,7 +97,7 @@ java_selenium_test_suite(
 )
 
 copy_file(
-    name = "firebug_xpi",
-    src = "//third_party/firebug:firebug-1.5.0-fx.xpi",
-    out = "firebug-1.5.0-fx.xpi",
+    name = "webextensions_selenium_example",
+    src = "//common/extensions:webextensions-selenium-example.xpi",
+    out = "webextensions-selenium-example.xpi",
 )
