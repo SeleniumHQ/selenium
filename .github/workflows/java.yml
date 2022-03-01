@@ -1,9 +1,10 @@
 name: Java workflow
+
 on:
   workflow_dispatch:
   schedule:
     - cron: '15 9,21 * * *'
-    
+
 env:
   NODE_VERSION: '13.x'
 
