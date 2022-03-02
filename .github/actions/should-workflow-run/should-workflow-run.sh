@@ -1,10 +1,12 @@
 #!/usr/bin/env bash
 # Print commands
-set -x
+# set -x
 # Extracted from https://github.com/bazelbuild/bazel/blob/master/scripts/ci/ci.sh
 
 COMMIT_RANGE=${COMMIT_RANGE:-"HEAD^..HEAD"}
 BAZEL_TARGET_PREFIX=${BAZEL_TARGET_PREFIX:-""}
+
+echo ${COMMIT_RANGE}
 
 # Go to the root of the repo
 cd "$(git rev-parse --show-toplevel)" || true
