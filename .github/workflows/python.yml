@@ -2,6 +2,9 @@ name: Python workflow
 
 on:
   workflow_dispatch:
+  workflow_call:
+  schedule:
+    - cron: '05 9,21 * * *'
 
 jobs:
   tox_flake8:
