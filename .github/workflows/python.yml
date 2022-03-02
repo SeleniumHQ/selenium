@@ -2,30 +2,9 @@ name: Python workflow
 
 on:
   workflow_dispatch:
-  push:
-    branches:
-      - trunk
-    paths:
-      - .bazel*
-      - .github/actions/**
-      - .github/workflows/python.yml
-      - common/**
-      - javascript/atoms/**
-      - javascript/cdp-support/**
-      - javascript/webdriver/**
-      - py/**
-  pull_request:
-    branches:
-      - trunk
-    paths:
-      - .bazel*
-      - .github/actions/**
-      - .github/workflows/python.yml
-      - common/**
-      - javascript/atoms/**
-      - javascript/cdp-support/**
-      - javascript/webdriver/**
-      - py/**
+  workflow_call:
+  schedule:
+    - cron: '05 9,21 * * *'
 
 jobs:
   tox_flake8:

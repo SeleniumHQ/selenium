@@ -1,0 +1,51 @@
+name: Dispatch
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - trunk
+  pull_request:
+    branches:
+      - trunk
+
+jobs:
+  check_java:
+    uses: ./.github/workflows/should-workflow-run.yml
+    with:
+      bazel-target-prefix: '//java'
+
+  run_java:
+    uses: ./.github/workflows/java.yml
+    needs: check_java
+    if: ${{ needs.check_java.outputs.result == 'true' }}
+
+  check_python:
+    uses: ./.github/workflows/should-workflow-run.yml
+    with:
+      bazel-target-prefix: '//py'
+
+  run_python:
+    uses: ./.github/workflows/python.yml
+    needs: check_python
+    if: ${{ needs.check_python.outputs.result == 'true' }}
+
+  check_ruby:
+    uses: ./.github/workflows/should-workflow-run.yml
+    with:
+      bazel-target-prefix: '//rb'
+
+  run_ruby:
+    uses: ./.github/workflows/ruby.yml
+    needs: check_ruby
+    if: ${{ needs.check_ruby.outputs.result == 'true' }}
+
+  check_javascript:
+    uses: ./.github/workflows/should-workflow-run.yml
+    with:
+      bazel-target-prefix: '//javascript'
+
+  run_javascript:
+    uses: ./.github/workflows/javascript.yml
+    needs: check_javascript
+    if: ${{ needs.check_ruby.outputs.result == 'true' }}

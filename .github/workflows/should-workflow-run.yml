@@ -1,0 +1,46 @@
+name: Should workflow run?
+
+on:
+  workflow_call:
+    inputs:
+      commit-range:
+        description: Commits considered to determine bazel targets
+        required: false
+        type: string
+        default: HEAD^..HEAD
+      bazel-target-prefix:
+        description: Bazel target prefix used to determine if the code path will be used
+        required: true
+        type: string
+
+    outputs:
+      result:
+        description: "Boolean to be used in the job to decide if the job runs or not"
+        value: ${{ jobs.check_workflow_run.outputs.result }}
+
+jobs:
+  check_workflow_run:
+    runs-on: ubuntu-latest
+    outputs:
+      result: ${{ steps.check-bazel-target-prefix.outputs.run-workflow }}
+    steps:
+      - name: Checkout source tree
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 50
+      - name: Setup bazelisk
+        uses: ./.github/actions/setup-bazelisk
+      - name: Setup Java
+        uses: actions/setup-java@v1
+        with:
+          java-version: '11'
+      - name: Copy bazelrc
+        run: cp .github/.bazelrc.local .
+        shell: bash
+      - name: Check bazel target prefix
+        id: check-bazel-target-prefix
+        run: |
+          ./scripts/github-actions/should-workflow-run.sh
+        shell: bash
+        env:
+          BAZEL_TARGET_PREFIX: ${{ inputs.bazel-target-prefix }}

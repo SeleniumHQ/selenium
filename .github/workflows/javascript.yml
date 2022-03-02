@@ -2,28 +2,10 @@ name: JavaScript workflow
 
 on:
   workflow_dispatch:
-  push:
-    branches:
-      - trunk
-    paths:
-      - .bazel*
-      - .github/actions/**
-      - .github/workflows/javascript.yml
-      - javascript/**
-      - common/**
-      - package.json
-      - package-lock.json
-  pull_request:
-    branches:
-      - trunk
-    paths:
-      - .bazel*
-      - .github/actions/**
-      - .github/workflows/javascript.yml
-      - javascript/**
-      - common/**
-      - package.json
-      - package-lock.json
+  workflow_call:
+  schedule:
+    - cron: '45 9,21 * * *'
+
 jobs:
   node_tests:
     runs-on: ubuntu-latest

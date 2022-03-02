@@ -1,12 +1,8 @@
 name: Java workflow
+
 on:
-  push:
-    branches:
-      - trunk
-  pull_request:
-    branches:
-      - trunk
   workflow_dispatch:
+  workflow_call:
   schedule:
     - cron: '15 9,21 * * *'
 
