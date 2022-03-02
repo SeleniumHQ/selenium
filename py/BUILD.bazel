@@ -85,7 +85,7 @@ py_library(
         ":is-displayed",
         ":mutation-listener",
         ":favourite_color"
-    ] + [":create-cdp-srcs-" + n for n in BROWSER_VERSIONS],
+    ],
     imports = ["."],
     visibility = ["//visibility:public"],
     deps = [
@@ -93,7 +93,14 @@ py_library(
         requirement("trio_websocket"),
         requirement("urllib3"),
         requirement("certifi"),
+        ":selenium-cdp-lib",
     ],
+)
+
+py_library(
+    name = "selenium-cdp-lib",
+    srcs = [":create-cdp-srcs-" + n for n in BROWSER_VERSIONS],
+    visibility = ["//visibility:public"],
 )
 
 py_package(
@@ -112,6 +119,14 @@ py_package(
         "py.selenium.webdriver.safari",
     ],
     deps = [":selenium"],
+)
+
+py_package(
+    name = "selenium-cdp-pkg",
+    packages = [
+        "selenium.webdriver.common.devtools",
+    ],
+    deps = [":selenium-cdp-lib"],
 )
 
 py_wheel(
@@ -140,6 +155,7 @@ py_wheel(
         "urllib3[secure, socks]~=1.26",
         "trio~=0.17",
         "trio-websocket~=0.9",
+        "selenium-cdp"
     ],
     strip_path_prefixes = [
         "py/",
@@ -149,6 +165,34 @@ py_wheel(
     deps = [
         ":selenium-pkg",
     ],
+)
+
+py_wheel(
+    name = "selenium-cdp-wheel",
+    classifiers = [
+        "Development Status :: 5 - Production/Stable",
+        "Intended Audience :: Developers",
+        "License :: OSI Approved :: Apache Software License",
+        "Operating System :: POSIX",
+        "Operating System :: Microsoft :: Windows",
+        "Operating System :: MacOS :: MacOS X",
+        "Topic :: Software Development :: Testing",
+        "Topic :: Software Development :: Libraries",
+        "Programming Language :: Python",
+        "Programming Language :: Python :: 3.7",
+        "Programming Language :: Python :: 3.8",
+        "Programming Language :: Python :: 3.9",
+        "Programming Language :: Python :: 3.10",
+    ],
+    description_file = "README.rst",
+    distribution = "selenium-cdp",
+    homepage = "https://www.selenium.dev",
+    license = "Apache 2.0",
+    python_requires = "~=3.7",
+    python_tag = "py3",
+    version = "0.1",
+    visibility = ["//visibility:public"],
+    deps = ["selenium-cdp-pkg"],
 )
 
 py_library(
