@@ -40,12 +40,13 @@ jobs:
       - name: Check bazel target prefix
         id: check-bazel-target-prefix
         run: |
-          ./scripts/github-actions/should-workflow-run.sh
+          echo "::set-output name=run-workflow::false"
         shell: bash
         env:
           BAZEL_TARGET_PREFIX: ${{ inputs.bazel-target-prefix }}
 
 #      - name: Check bazel target prefix
+# ./scripts/github-actions/should-workflow-run.sh
 #        id: check-bazel-target-prefix
 #        run: |
 #          affected_files=$(git diff --name-only ${{ inputs.commit-range }})
