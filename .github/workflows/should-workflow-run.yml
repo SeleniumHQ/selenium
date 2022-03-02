@@ -40,19 +40,24 @@ jobs:
       - name: Check bazel target prefix
         id: check-bazel-target-prefix
         run: |
-          affected_files=$(git diff --name-only ${{ inputs.commit-range }})
-          bazel_targets=()
-          for bazel_target in $affected_files ; do
-            bazel_targets+=($(bazel query "$bazel_target"))
-            bazel query "$bazel_target"
-          done
-          echo "::set-output name=bazel-targets::${bazel_targets[*]}"
-          if [[ " ${bazel_targets[*]} " == *"$BAZEL_TARGET_PREFIX"* ]]; then
-            echo "::set-output name=run-workflow::true"
-          else
-            echo "::set-output name=run-workflow::false"
-          fi
+          echo "::set-output name=run-workflow::true"
         shell: bash
+#      - name: Check bazel target prefix
+#        id: check-bazel-target-prefix
+#        run: |
+#          affected_files=$(git diff --name-only ${{ inputs.commit-range }})
+#          bazel_targets=()
+#          for bazel_target in $affected_files ; do
+#            bazel_targets+=($(bazel query "$bazel_target"))
+#            bazel query "$bazel_target"
+#          done
+#          echo "::set-output name=bazel-targets::${bazel_targets[*]}"
+#          if [[ " ${bazel_targets[*]} " == *"$BAZEL_TARGET_PREFIX"* ]]; then
+#            echo "::set-output name=run-workflow::true"
+#          else
+#            echo "::set-output name=run-workflow::false"
+#          fi
+#        shell: bash
 
 #      - name: Check if workflow should run
 #        id: check-workflow
