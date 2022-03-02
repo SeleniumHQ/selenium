@@ -15,14 +15,14 @@ on:
 
     outputs:
       result:
-        description: Boolean to be used in the job to decide if the job runs or not
+        description: "Boolean to be used in the job to decide if the job runs or not"
         value: ${{ jobs.check_workflow_run.outputs.result }}
 
 jobs:
   check_workflow_run:
     runs-on: ubuntu-latest
     outputs:
-      result: ${{ steps.check-bazel-target-prefix.run-workflow }}
+      result: ${{ steps.check-bazel-target-prefix.outputs.run-workflow }}
     steps:
       - name: Checkout source tree
         uses: actions/checkout@v2
@@ -42,6 +42,7 @@ jobs:
         run: |
           echo "::set-output name=run-workflow::true"
         shell: bash
+
 #      - name: Check bazel target prefix
 #        id: check-bazel-target-prefix
 #        run: |

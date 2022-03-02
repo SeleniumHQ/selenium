@@ -25,6 +25,7 @@ jobs:
     needs: check_java_workflow
     steps:
       - run: echo ${{ needs.check_java_workflow.outputs.result }}
+
 #    runs-on: ubuntu-latest
 #    steps:
 #      - name: Checkout source tree
