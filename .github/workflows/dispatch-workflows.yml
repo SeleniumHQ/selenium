@@ -18,5 +18,14 @@ jobs:
   run_java:
     uses: ./.github/workflows/java.yml
     needs: check_java
-    if: ${{ needs.check_java_workflow.outputs.result == 'true' }}
+    if: ${{ needs.check_java.outputs.result == 'true' }}
 
+  check_python:
+    uses: ./.github/workflows/should-workflow-run.yml
+    with:
+      bazel-target-prefix: '//py'
+
+  run_python:
+    uses: ./.github/workflows/python.yml
+    needs: check_python
+    if: ${{ needs.check_python.outputs.result == 'true' }}
