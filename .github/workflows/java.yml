@@ -1,15 +1,15 @@
 name: Java workflow
 
 on:
-  push:
-    branches:
-      - trunk
-  pull_request:
-    branches:
-      - trunk
   workflow_dispatch:
   schedule:
     - cron: '15 9,21 * * *'
+#  push:
+#    branches:
+#      - trunk
+#  pull_request:
+#    branches:
+#      - trunk
 
 env:
   NODE_VERSION: '13.x'
