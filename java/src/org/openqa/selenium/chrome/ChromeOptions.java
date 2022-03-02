@@ -58,7 +58,7 @@ public class ChromeOptions extends ChromiumOptions<ChromeOptions> {
   }
 
   public ChromeOptions setLogLevel(ChromeDriverLogLevel logLevel){
-    this.logLevel = Require.nonNull("ChromeDriverLogLevel level", logLevel);
+    this.logLevel = Require.nonNull("Log level", logLevel);
     return this;
   }
 

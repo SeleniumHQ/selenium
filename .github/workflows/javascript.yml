@@ -2,6 +2,9 @@ name: JavaScript workflow
 
 on:
   workflow_dispatch:
+  workflow_call:
+  schedule:
+    - cron: '45 9,21 * * *'
 
 jobs:
   node_tests:
