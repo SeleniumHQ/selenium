@@ -2,30 +2,9 @@ name: Ruby workflow
 
 on:
   workflow_dispatch:
-  push:
-    branches:
-      - trunk
-    paths:
-      - .bazel*
-      - .github/actions/**
-      - .github/workflows/ruby.yml
-      - common/**
-      - javascript/atoms/**
-      - javascript/cdp-support/**
-      - javascript/webdriver/**
-      - rb/**
-  pull_request:
-    branches:
-      - trunk
-    paths:
-      - .bazel*
-      - .github/actions/**
-      - .github/workflows/ruby.yml
-      - common/**
-      - javascript/atoms/**
-      - javascript/cdp-support/**
-      - javascript/webdriver/**
-      - rb/**
+  workflow_call:
+  schedule:
+    - cron: '35 9,21 * * *'
 
 jobs:
   build:
