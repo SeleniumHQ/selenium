@@ -40,7 +40,7 @@ jobs:
       - name: Check bazel target prefix
         id: check-bazel-target-prefix
         run: |
-          ./scripts/github-actions/shoudl-workflow-run.sh
+          ./scripts/github-actions/should-workflow-run.sh
         shell: bash
         env:
           BAZEL_TARGET_PREFIX: ${{ inputs.bazel-target-prefix }}
