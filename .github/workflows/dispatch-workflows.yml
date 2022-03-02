@@ -17,6 +17,6 @@ jobs:
 
   run_java:
     uses: ./.github/workflows/java.yml
-    needs: check_java_workflow
+    needs: check_java
     if: ${{ needs.check_java_workflow.outputs.result == 'true' }}
 
