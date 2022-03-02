@@ -1,0 +1,47 @@
+name: Dispatch workflows
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - trunk
+  pull_request:
+    branches:
+      - trunk
+
+jobs:
+  dispatch_workflow:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout source tree
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 10
+      - name: Setup bazelisk
+        uses: ./.github/actions/setup-bazelisk
+      - name: Setup Java
+        uses: actions/setup-java@v1
+        with:
+          java-version: '11'
+      - name: Sets commit range
+        run: echo "COMMIT_RANGE=HEAD^..HEAD" >> $GITHUB_ENV
+      - name: Check if workflow should run
+        id: should-workflow-run
+        uses: ./.github/actions/should-workflow-run
+        with:
+          bazel-target-prefix: "//java"
+      - name: Set workflow ref
+        run: echo "WORKFLOW_REF=${{ github.event.pull_request.head.ref }}" >> $GITHUB_ENV
+        if: ${{ github.event_name == 'pull_request' }}
+      - name: Dispatch Java workflow
+        uses: actions/github-script@v6
+        with:
+          github-token: ${{secrets.DISPATCH_WORKFLOW_CI_TOKEN}}
+          script: |-
+            await github.rest.actions.createWorkflowDispatch({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                workflow_id: 'java.yml',
+                ref: process.env.WORKFLOW_REF,
+            });
+        if: ${{ steps.should-workflow-run.outputs.should-workflow-run }}
