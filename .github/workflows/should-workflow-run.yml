@@ -1,0 +1,42 @@
+name: Dispatch workflows
+
+on:
+  workflow_call:
+    inputs:
+      commit-range:
+        description: Commits considered to determine bazel targets
+        required: false
+        type: string
+        default: HEAD^..HEAD
+      bazel-target-prefix:
+        description: Bazel target prefix used to determine if the code path will be used
+        required: true
+        type: string
+
+    outputs:
+      should-workflow-run:
+        description: Boolean to be used in the job to decide if the job runs or not
+        value: ${{ jobs.check-workflow-run.outputs.result }}
+
+jobs:
+  check_workflow_run:
+    runs-on: ubuntu-latest
+    outputs:
+      result: ${{ steps.check-workflow.should-workflow-run }}
+    steps:
+      - name: Checkout source tree
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 10
+      - name: Setup bazelisk
+        uses: ./.github/actions/setup-bazelisk
+      - name: Setup Java
+        uses: actions/setup-java@v1
+        with:
+          java-version: '11'
+      - name: Check if workflow should run
+        id: check-workflow
+        uses: ./.github/actions/should-workflow-run
+        with:
+          bazel-target-prefix: ${{ inputs.bazel-target-prefix }}
+          commit-range: ${{ inputs.commit-range }}

@@ -2,6 +2,7 @@ name: Java CI
 
 on:
   workflow_dispatch:
+  workflow_call:
   schedule:
     - cron: '15 9,21 * * *'
 
