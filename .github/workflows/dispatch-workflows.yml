@@ -18,7 +18,7 @@ jobs:
   run_java_workflow:
     uses: ./.github/workflows/java-ci.yml
     needs: check_java_workflow
-    if: ${{ needs.check_java_workflow.outputs.should-workflow-run }}
+    if: ${{ needs.check_java_workflow.outputs.result }}
 #    runs-on: ubuntu-latest
 #    steps:
 #      - name: Checkout source tree

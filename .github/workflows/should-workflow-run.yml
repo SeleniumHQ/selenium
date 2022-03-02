@@ -1,4 +1,4 @@
-name: Dispatch workflows
+name: Should workflow run?
 
 on:
   workflow_call:
@@ -14,7 +14,7 @@ on:
         type: string
 
     outputs:
-      should-workflow-run:
+      result:
         description: Boolean to be used in the job to decide if the job runs or not
         value: ${{ jobs.check_workflow_run.outputs.result }}
 
@@ -22,7 +22,7 @@ jobs:
   check_workflow_run:
     runs-on: ubuntu-latest
     outputs:
-      result: ${{ steps.check-workflow.should-workflow-run }}
+      result: ${{ steps.check-bazel-target-prefix.run-workflow }}
     steps:
       - name: Checkout source tree
         uses: actions/checkout@v2
@@ -34,9 +34,29 @@ jobs:
         uses: actions/setup-java@v1
         with:
           java-version: '11'
-      - name: Check if workflow should run
-        id: check-workflow
-        uses: ./.github/actions/should-workflow-run
-        with:
-          bazel-target-prefix: ${{ inputs.bazel-target-prefix }}
-          commit-range: ${{ inputs.commit-range }}
+      - name: Copy bazelrc
+        run: cp .github/.bazelrc.local .
+        shell: bash
+      - name: Check bazel target prefix
+        id: check-bazel-target-prefix
+        run: |
+          affected_files=$(git diff --name-only ${{ inputs.commit-range }})
+          bazel_targets=()
+          for bazel_target in $affected_files ; do
+            bazel_targets+=($(bazel query "$bazel_target"))
+            bazel query "$bazel_target"
+          done
+          echo "::set-output name=bazel-targets::${bazel_targets[*]}"
+          if [[ " ${bazel_targets[*]} " == *"$BAZEL_TARGET_PREFIX"* ]]; then
+            echo "::set-output name=run-workflow::true"
+          else
+            echo "::set-output name=run-workflow::false"
+          fi
+        shell: bash
+
+#      - name: Check if workflow should run
+#        id: check-workflow
+#        uses: ./.github/actions/should-workflow-run
+#        with:
+#          bazel-target-prefix: ${{ inputs.bazel-target-prefix }}
+#          commit-range: ${{ inputs.commit-range }}
