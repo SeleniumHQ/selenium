@@ -27,7 +27,7 @@ jobs:
       - name: Checkout source tree
         uses: actions/checkout@v2
         with:
-          fetch-depth: 10
+          fetch-depth: 50
       - name: Setup bazelisk
         uses: ./.github/actions/setup-bazelisk
       - name: Setup Java

@@ -15,18 +15,22 @@ jobs:
     steps:
       - name: Checkout source tree
         uses: actions/checkout@v2
+      - name: Cache Bazel artifacts
+        uses: actions/cache@v2
         with:
-          fetch-depth: 10
+          path: |
+            ~/.cache/bazel-disk
+            ~/.cache/bazel-repo
+          key: ${{ runner.os }}-bazel-build-${{ hashFiles('**/BUILD.bazel') }}
+          restore-keys: |
+            ${{ runner.os }}-bazel-build-
       - name: Setup bazelisk
         uses: ./.github/actions/setup-bazelisk
       - name: Setup Java
         uses: actions/setup-java@v1
         with:
           java-version: '11'
-      - name: Sets commit range
-        run: echo "COMMIT_RANGE=HEAD^..HEAD" >> $GITHUB_ENV
-      - name: Check if workflow should run
-        id: should-workflow-run
-        uses: ./.github/actions/should-workflow-run
+      - name: Build grid
+        uses: ./.github/actions/bazel
         with:
-          bazel-target-prefix: "//java"
+          command: build grid

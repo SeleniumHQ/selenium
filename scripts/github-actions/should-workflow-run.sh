@@ -30,7 +30,7 @@ if (( ${#bazel_targets[@]} == 0 )); then
 fi
 
 if [[ " ${bazel_targets[*]} " == *"$BAZEL_TARGET_PREFIX"* ]]; then
-    echo "::set-output name=should-run-workflow::true"
+    echo "::set-output name=run-workflow::true"
 fi
 
 
