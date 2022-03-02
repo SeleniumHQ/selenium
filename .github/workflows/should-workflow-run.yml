@@ -16,7 +16,7 @@ on:
     outputs:
       should-workflow-run:
         description: Boolean to be used in the job to decide if the job runs or not
-        value: ${{ jobs.check-workflow-run.outputs.result }}
+        value: ${{ jobs.check_workflow_run.outputs.result }}
 
 jobs:
   check_workflow_run:
