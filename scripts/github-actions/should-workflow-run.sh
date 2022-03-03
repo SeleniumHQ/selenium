@@ -25,12 +25,13 @@ echo "::set-output name=bazel-targets::${bazel_targets[*]}"
 echo "::set-output name=run-workflow::false"
 
 if (( ${#bazel_targets[@]} == 0 )); then
-    echo "No bazel targets found after checking the diff."
-    exit 0
+  echo "No bazel targets found after checking the diff."
+  exit 0
 fi
 
 if [[ " ${bazel_targets[*]} " == *"$BAZEL_TARGET_PREFIX"* ]]; then
-    echo "::set-output name=run-workflow::true"
+  echo "::set-output name=run-workflow::true"
+  echo "Bazel targets found: ${bazel_targets[*]}."
 fi
 
 
