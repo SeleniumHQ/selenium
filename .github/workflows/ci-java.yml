@@ -1,4 +1,5 @@
 # Configuration for Java CI
+# To force the execution of this workflow, add [run java] to your commit message
 name: 'CI - Java'
 
 on:
@@ -24,7 +25,7 @@ jobs:
       bazel-target-prefix: '//java'
 
   build:
-    if: ${{ needs.check_workflow.outputs.result == 'true' || github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' }}
+    if: ${{ needs.check_workflow.outputs.result == 'true' || github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' || contains(toJson(github.event.commits), '[run java]') == true }}
     needs: check_workflow
     runs-on: ubuntu-latest
     steps:
@@ -51,7 +52,7 @@ jobs:
           command: build grid
 
   small_tests:
-    if: ${{ needs.check_workflow.outputs.result == 'true' || github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' }}
+    if: ${{ needs.check_workflow.outputs.result == 'true' || github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' || contains(toJson(github.event.commits), '[run java]') == true }}
     needs: [ check_workflow, build ]
     runs-on: ubuntu-latest
     steps:
@@ -86,7 +87,7 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
   lint:
-    if: ${{ needs.check_workflow.outputs.result == 'true' || github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' }}
+    if: ${{ needs.check_workflow.outputs.result == 'true' || github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' || contains(toJson(github.event.commits), '[run java]') == true }}
     needs: [ check_workflow, build ]
     runs-on: ubuntu-latest
     steps:
@@ -114,7 +115,7 @@ jobs:
           query: attr(tags, lint, tests(//java/...))
 
   browser_tests:
-    if: ${{ needs.check_workflow.outputs.result == 'true' || github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' }}
+    if: ${{ needs.check_workflow.outputs.result == 'true' || github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' || contains(toJson(github.event.commits), '[run java]') == true }}
     needs: [ check_workflow, small_tests ]
     runs-on: ubuntu-latest
     strategy:
@@ -171,7 +172,7 @@ jobs:
           DISPLAY: :99
 
   server_tests:
-    if: ${{ needs.check_workflow.outputs.result == 'true' || github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' }}
+    if: ${{ needs.check_workflow.outputs.result == 'true' || github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' || contains(toJson(github.event.commits), '[run java]') == true }}
     needs: [ check_workflow, small_tests ]
     runs-on: ubuntu-latest
     strategy:
@@ -229,7 +230,7 @@ jobs:
           DISPLAY: :99
 
   rc_tests:
-    if: ${{ needs.check_workflow.outputs.result == 'true' || github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' }}
+    if: ${{ needs.check_workflow.outputs.result == 'true' || github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' || contains(toJson(github.event.commits), '[run java]') == true }}
     needs: [ check_workflow, small_tests ]
     runs-on: ubuntu-latest
     steps:
@@ -266,7 +267,7 @@ jobs:
           DISPLAY: :99
 
   javadoc:
-    if: ${{ needs.check_workflow.outputs.result == 'true' || github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' }}
+    if: ${{ needs.check_workflow.outputs.result == 'true' || github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' || contains(toJson(github.event.commits), '[run java]') == true }}
     needs: [ check_workflow, build ]
     runs-on: ubuntu-latest
     steps:
