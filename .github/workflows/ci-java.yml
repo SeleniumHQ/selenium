@@ -1,4 +1,4 @@
-name: CI Java
+name: 'CI Java'
 on:
   workflow_dispatch:
   schedule:

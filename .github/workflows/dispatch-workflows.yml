@@ -10,16 +10,6 @@ on:
       - trunk
 
 jobs:
-  check_java:
-    uses: ./.github/workflows/should-workflow-run.yml
-    with:
-      bazel-target-prefix: '//java'
-
-  run_java:
-    uses: ./.github/workflows/java.yml
-    needs: check_java
-    if: ${{ needs.check_java.outputs.result == 'true' }}
-
   check_python:
     uses: ./.github/workflows/should-workflow-run.yml
     with:
