@@ -1,13 +1,29 @@
-name: Python workflow
+# Configuration for Python CI
+# To force the execution of this workflow, add [run python] to your commit message
+name: 'CI - Python'
 
 on:
   workflow_dispatch:
-  workflow_call:
+
   schedule:
     - cron: '05 9,21 * * *'
 
+  push:
+    branches:
+      - trunk
+  pull_request:
+    branches:
+      - trunk
+
 jobs:
+  check_workflow:
+    uses: ./.github/workflows/should-workflow-run.yml
+    with:
+      bazel-target-prefix: '//py'
+
   tox_flake8:
+    if: ${{ needs.check_workflow.outputs.result == 'true' || github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' || contains(toJson(github.event.commits), '[run python]') == true }}
+    needs: check_workflow
     runs-on: ubuntu-latest
     steps:
       - name: Checkout source tree
@@ -26,6 +42,8 @@ jobs:
           TOXENV: flake8
 
   tox_docs:
+    if: ${{ needs.check_workflow.outputs.result == 'true' || github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' || contains(toJson(github.event.commits), '[run python]') == true }}
+    needs: check_workflow
     runs-on: ubuntu-latest
     steps:
       - name: Checkout source tree
@@ -44,6 +62,8 @@ jobs:
           TOXENV: docs
 
   tox_mypy:
+    if: ${{ needs.check_workflow.outputs.result == 'true' || github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' || contains(toJson(github.event.commits), '[run python]') == true }}
+    needs: check_workflow
     runs-on: ubuntu-latest
     steps:
       - name: Checkout source tree
@@ -64,6 +84,8 @@ jobs:
           TOXENV: mypy
 
   unit_tests:
+    if: ${{ needs.check_workflow.outputs.result == 'true' || github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' || contains(toJson(github.event.commits), '[run python]') == true }}
+    needs: check_workflow
     runs-on: ubuntu-latest
     steps:
       - name: Checkout source tree
@@ -93,7 +115,8 @@ jobs:
           command: test //py:unit
 
   chrome_tests:
-    needs: unit_tests
+    if: ${{ needs.check_workflow.outputs.result == 'true' || github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' || contains(toJson(github.event.commits), '[run python]') == true }}
+    needs: [ check_workflow, unit_tests ]
     runs-on: ubuntu-latest
     steps:
       - name: Checkout source tree
@@ -130,7 +153,8 @@ jobs:
           DISPLAY: :99
 
   firefox_tests_remote:
-    needs: unit_tests
+    if: ${{ needs.check_workflow.outputs.result == 'true' || github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' || contains(toJson(github.event.commits), '[run python]') == true }}
+    needs: [ check_workflow, unit_tests ]
     runs-on: ubuntu-latest
     steps:
       - name: Checkout source tree
@@ -169,7 +193,8 @@ jobs:
           DISPLAY: :99
 
   firefox_tests:
-    needs: unit_tests
+    if: ${{ needs.check_workflow.outputs.result == 'true' || github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' || contains(toJson(github.event.commits), '[run python]') == true }}
+    needs: [ check_workflow, unit_tests ]
     runs-on: ubuntu-latest
     steps:
       - name: Checkout source tree
@@ -206,3 +231,4 @@ jobs:
           command: test //py:test-firefox
         env:
           DISPLAY: :99
+
