@@ -1,13 +1,29 @@
-name: JavaScript workflow
+# Configuration for JavaScript CI
+# To force the execution of this workflow, add [run javascript] to your commit message
+name: 'CI - JavaScript'
 
 on:
   workflow_dispatch:
-  workflow_call:
+
   schedule:
     - cron: '45 9,21 * * *'
 
+  push:
+    branches:
+      - trunk
+  pull_request:
+    branches:
+      - trunk
+
 jobs:
+  check_workflow:
+    uses: ./.github/workflows/should-workflow-run.yml
+    with:
+      bazel-target-prefix: '//javascript'
+
   node_tests:
+    if: ${{ needs.check_workflow.outputs.result == 'true' || github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' || contains(toJson(github.event.commits), '[run javascript]') == true }}
+    needs: check_workflow
     runs-on: ubuntu-latest
     steps:
       - name: Checkout source tree
@@ -47,6 +63,8 @@ jobs:
           SELENIUM_BROWSER: firefox
 
   firefox_atom_tests:
+    if: ${{ needs.check_workflow.outputs.result == 'true' || github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' || contains(toJson(github.event.commits), '[run javascript]') == true }}
+    needs: check_workflow
     runs-on: ubuntu-latest
     steps:
       - name: Checkout source tree
@@ -83,6 +101,8 @@ jobs:
   # As soon as this gets merged https://github.com/facebook/jest/pull/9351, we should upgrade Jest and
   # run bazel test javascript/grid-ui:test for these tests
   grid_ui_unit_tests:
+    if: ${{ needs.check_workflow.outputs.result == 'true' || github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' || contains(toJson(github.event.commits), '[run javascript]') == true }}
+    needs: check_workflow
     runs-on: ubuntu-latest
     steps:
       - name: Checkout source tree
