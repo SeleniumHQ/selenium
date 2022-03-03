@@ -31,8 +31,19 @@ fi
 
 if [[ " ${bazel_targets[*]} " == *"$BAZEL_TARGET_PREFIX"* ]]; then
   echo "::set-output name=run-workflow::true"
-  echo "Bazel targets found: ${bazel_targets[*]}."
+  echo "Bazel targets found: ${bazel_targets[*]}"
+  exit 0
 fi
 
+# Now check if we need to run some tests based on this change
+# E.g. A change in Grid needs to trigger remote tests in other bindings
+tests=$(bazel query \
+    --keep_going \
+    --noshow_progress \
+    "kind(test, rdeps(//..., set(${bazel_targets[*]})))")
 
-
+if [[ " ${tests[*]} " == *"$BAZEL_TARGET_PREFIX"* ]]; then
+  echo "::set-output name=run-workflow::true"
+  echo "Test targets found: ${tests[*]}"
+  exit 0
+fi
