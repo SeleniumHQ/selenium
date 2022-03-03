@@ -3,9 +3,10 @@ name: 'CI - Java'
 
 on:
   workflow_dispatch:
+
   schedule:
     - cron: '15 9,21 * * *'
-  workflow_call:
+
   push:
     branches:
       - trunk
