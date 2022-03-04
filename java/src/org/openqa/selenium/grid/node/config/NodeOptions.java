@@ -73,6 +73,7 @@ public class NodeOptions {
   static final boolean DEFAULT_DETECT_DRIVERS = true;
   static final boolean OVERRIDE_MAX_SESSIONS = false;
   static final String DEFAULT_VNC_ENV_VAR = "START_XVFB";
+  static final int DEFAULT_NO_VNC_PORT = 7900;
   static final int DEFAULT_REGISTER_CYCLE = 10;
   static final int DEFAULT_REGISTER_PERIOD = 120;
   static final String DEFAULT_NODE_IMPLEMENTATION =
@@ -238,6 +239,11 @@ public class NodeOptions {
       vncEnabled.set(Boolean.parseBoolean(System.getenv(vncEnvVar)));
     }
     return vncEnabled.get();
+  }
+
+  @VisibleForTesting
+  int noVncPort() {
+    return config.getInt(NODE_SECTION, "no-vnc-port").orElse(DEFAULT_NO_VNC_PORT);
   }
 
   private void addDriverFactoriesFromConfig(ImmutableMultimap.Builder<Capabilities,
@@ -572,7 +578,8 @@ public class NodeOptions {
     }
     if (isVncEnabled()) {
       capabilities = new PersistentCapabilities(capabilities)
-        .setCapability("se:vncEnabled", true);
+        .setCapability("se:vncEnabled", true)
+        .setCapability("se:noVncPort", noVncPort());
     }
     return capabilities;
   }
