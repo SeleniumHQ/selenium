@@ -198,7 +198,7 @@ public class NodeServer extends TemplateGridServerCommand {
           .withDelay(nodeOptions.getRegisterCycle())
           .handleResultIf(result -> true);
 
-        LOG.info("Starting registration process for node id " + node.getId());
+        LOG.info("Starting registration process for Node " + node.getUri());
         Executors.newSingleThreadExecutor().submit(() -> {
           Failsafe.with(registrationPolicy).run(
             () -> {

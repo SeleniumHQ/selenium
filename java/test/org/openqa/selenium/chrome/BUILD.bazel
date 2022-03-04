@@ -9,7 +9,7 @@ java_selenium_test_suite(
         "chrome",
     ],
     data = [
-        "//third_party/chrome_ext:backspace.crx",
+        "//common/extensions",
     ],
     javacopts = [
         "--release",

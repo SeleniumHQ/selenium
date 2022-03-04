@@ -28,7 +28,6 @@ import net.jodah.failsafe.RetryPolicy;
 import org.openqa.selenium.TimeoutException;
 
 import java.net.ConnectException;
-import java.time.Duration;
 import java.time.temporal.ChronoUnit;
 import java.util.logging.Logger;
 

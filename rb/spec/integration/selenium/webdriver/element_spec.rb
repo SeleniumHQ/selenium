@@ -62,8 +62,7 @@ module Selenium
       end
 
       # https://github.com/mozilla/geckodriver/issues/245
-      # https://bugs.chromium.org/p/chromedriver/issues/detail?id=3999
-      it 'should send key presses chords', except: {browser: %i[chrome firefox firefox_nightly safari safari_preview]} do
+      it 'should send key presses chords', except: {browser: %i[firefox firefox_nightly safari safari_preview]} do
         driver.navigate.to url_for('javascriptPage.html')
         key_reporter = driver.find_element(id: 'keyReporter')
 

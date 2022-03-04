@@ -1,7 +1,13 @@
-name: Java workflow
+# Configuration for Java CI
+# To force the execution of this workflow, add [run java] to your commit message
+name: 'CI - Java'
 
 on:
   workflow_dispatch:
+
+  schedule:
+    - cron: '15 9,21 * * *'
+
   push:
     branches:
       - trunk
@@ -13,7 +19,14 @@ env:
   NODE_VERSION: '13.x'
 
 jobs:
+  check_workflow:
+    uses: ./.github/workflows/should-workflow-run.yml
+    with:
+      bazel-target-prefix: '//java'
+
   build:
+    if: ${{ needs.check_workflow.outputs.result == 'true' || github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' || contains(toJson(github.event.commits), '[run java]') == true }}
+    needs: check_workflow
     runs-on: ubuntu-latest
     steps:
       - name: Checkout source tree
@@ -39,7 +52,8 @@ jobs:
           command: build grid
 
   small_tests:
-    needs: build
+    if: ${{ needs.check_workflow.outputs.result == 'true' || github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' || contains(toJson(github.event.commits), '[run java]') == true }}
+    needs: [ check_workflow, build ]
     runs-on: ubuntu-latest
     steps:
       - name: Checkout source tree
@@ -73,7 +87,8 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
   lint:
-    needs: build
+    if: ${{ needs.check_workflow.outputs.result == 'true' || github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' || contains(toJson(github.event.commits), '[run java]') == true }}
+    needs: [ check_workflow, build ]
     runs-on: ubuntu-latest
     steps:
       - name: Checkout source tree
@@ -100,12 +115,19 @@ jobs:
           query: attr(tags, lint, tests(//java/...))
 
   browser_tests:
-    needs: small_tests
+    if: ${{ needs.check_workflow.outputs.result == 'true' || github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' || contains(toJson(github.event.commits), '[run java]') == true }}
+    needs: [ check_workflow, small_tests ]
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
         browser: [ chrome, firefox ]
+        version: [ latest ]
+        include:
+          - browser: 'firefox'
+            version: 'latest-devedition'
+          - browser: 'firefox'
+            version: 'latest-beta'
     steps:
       - name: Checkout source tree
         uses: actions/checkout@v2
@@ -125,10 +147,20 @@ jobs:
         uses: actions/setup-java@v1
         with:
           java-version: '11'
-      - name: Setup Firefox and GeckoDriver
-        uses: ./.github/actions/setup-firefox
+      - name: Setup Firefox
+        uses: browser-actions/setup-firefox@latest
+        if: |
+          matrix.browser == 'firefox'
+        with:
+          firefox-version: ${{ matrix.version }}
+      - name: Setup GeckoDriver
+        uses: browser-actions/setup-geckodriver@latest
+        if: |
+          matrix.browser == 'firefox'
       - name: Setup Chrome and ChromeDriver
         uses: ./.github/actions/setup-chrome
+        if: |
+          matrix.browser == 'chrome'
       - name: Start XVFB
         run: Xvfb :99 &
       - name: Run browser tests in ${{ matrix.browser }}
@@ -140,12 +172,19 @@ jobs:
           DISPLAY: :99
 
   server_tests:
-    needs: small_tests
+    if: ${{ needs.check_workflow.outputs.result == 'true' || github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' || contains(toJson(github.event.commits), '[run java]') == true }}
+    needs: [ check_workflow, small_tests ]
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
         browser: [ chrome, firefox ]
+        version: [ latest ]
+        include:
+          - browser: 'firefox'
+            version: 'latest-devedition'
+          - browser: 'firefox'
+            version: 'latest-beta'
     steps:
       - name: Checkout source tree
         uses: actions/checkout@v2
@@ -166,10 +205,20 @@ jobs:
         uses: actions/setup-java@v1
         with:
           java-version: '11'
-      - name: Setup Firefox and GeckoDriver
-        uses: ./.github/actions/setup-firefox
+      - name: Setup Firefox
+        uses: browser-actions/setup-firefox@latest
+        if: |
+          matrix.browser == 'firefox'
+        with:
+          firefox-version: ${{ matrix.version }}
+      - name: Setup GeckoDriver
+        uses: browser-actions/setup-geckodriver@latest
+        if: |
+          matrix.browser == 'firefox'
       - name: Setup Chrome and ChromeDriver
         uses: ./.github/actions/setup-chrome
+        if: |
+          matrix.browser == 'chrome'
       - name: Start XVFB
         run: Xvfb :99 &
       - name: Run server tests
@@ -181,7 +230,8 @@ jobs:
           DISPLAY: :99
 
   rc_tests:
-    needs: small_tests
+    if: ${{ needs.check_workflow.outputs.result == 'true' || github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' || contains(toJson(github.event.commits), '[run java]') == true }}
+    needs: [ check_workflow, small_tests ]
     runs-on: ubuntu-latest
     steps:
       - name: Checkout source tree
@@ -202,8 +252,10 @@ jobs:
         uses: actions/setup-java@v1
         with:
           java-version: '11'
-      - name: Setup Firefox and GeckoDriver
-        uses: ./.github/actions/setup-firefox
+      - name: Setup Firefox
+        uses: browser-actions/setup-firefox@latest
+      - name: Setup GeckoDriver
+        uses: browser-actions/setup-geckodriver@latest
       - name: Start XVFB
         run: Xvfb :99 &
       - name: Run browser tests in Firefox
@@ -215,7 +267,8 @@ jobs:
           DISPLAY: :99
 
   javadoc:
-    needs: build
+    if: ${{ needs.check_workflow.outputs.result == 'true' || github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' || contains(toJson(github.event.commits), '[run java]') == true }}
+    needs: [ check_workflow, build ]
     runs-on: ubuntu-latest
     steps:
       - name: Checkout source tree
