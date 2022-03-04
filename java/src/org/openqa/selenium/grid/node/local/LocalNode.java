@@ -157,11 +157,16 @@ public class LocalNode extends Node {
       .expireAfterAccess(sessionTimeout)
       .ticker(ticker)
       .removalListener((RemovalListener<SessionId, SessionSlot>) notification -> {
-        // Attempt to stop the session
-        LOG.log(Debug.getDebugLogLevel(), "Stopping session {0}", notification.getKey().toString());
-        SessionSlot slot = notification.getValue();
-        if (!slot.isAvailable()) {
-          slot.stop();
+        if (notification.getKey() != null && notification.getValue() != null) {
+          // Attempt to stop the session
+          LOG.log(Debug.getDebugLogLevel(), "Stopping session {0}",
+                  notification.getKey().toString());
+          SessionSlot slot = notification.getValue();
+          if (!slot.isAvailable()) {
+            slot.stop();
+          }
+        } else {
+          LOG.log(Debug.getDebugLogLevel(), "Received stop session notification with null values");
         }
       })
       .build();
