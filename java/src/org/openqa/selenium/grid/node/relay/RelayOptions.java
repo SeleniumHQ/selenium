@@ -161,6 +161,7 @@ public class RelayOptions {
             tracer,
             clientFactory,
             getServiceUri(),
+            getServiceStatusUri(),
             stereotype));
       }
       LOG.info(String.format("Mapping %s, %d times", stereotype, maxSessions));

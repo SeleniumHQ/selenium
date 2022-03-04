@@ -18,6 +18,7 @@
 package org.openqa.selenium.grid.node.local;
 
 import static com.google.common.collect.ImmutableSet.toImmutableSet;
+import static org.openqa.selenium.grid.data.Availability.DOWN;
 import static org.openqa.selenium.grid.data.Availability.DRAINING;
 import static org.openqa.selenium.grid.data.Availability.UP;
 import static org.openqa.selenium.grid.node.CapabilityResponseEncoder.getEncoder;
@@ -93,6 +94,7 @@ import java.time.Instant;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
@@ -144,10 +146,12 @@ public class LocalNode extends Node {
     Require.nonNull("Registration secret", registrationSecret);
 
     this.healthCheck = healthCheck == null ?
-                       () -> new HealthCheck.Result(
-                         isDraining() ? DRAINING : UP,
-                         String.format("%s is %s", uri, isDraining() ? "draining" : "up")) :
-                       healthCheck;
+                       () -> {
+                         NodeStatus status = getStatus();
+                         return new HealthCheck.Result(
+                           status.getAvailability(),
+                           String.format("%s is %s", uri, status.getAvailability()));
+                       } : healthCheck;
 
     this.currentSessions = CacheBuilder.newBuilder()
       .expireAfterAccess(sessionTimeout)
@@ -552,12 +556,22 @@ public class LocalNode extends Node {
       })
       .collect(toImmutableSet());
 
+    Availability availability = isDraining() ? DRAINING : UP;
+
+    // Check status in case this Node is a RelayNode
+    Optional<SessionSlot> relaySlot = factories.stream()
+      .filter(SessionSlot::hasRelayFactory)
+      .findFirst();
+    if (relaySlot.isPresent() && !relaySlot.get().isRelayServiceUp()) {
+      availability = DOWN;
+    }
+
     return new NodeStatus(
       getId(),
       externalUri,
       maxSessionCount,
       slots,
-      isDraining() ? DRAINING : UP,
+      availability,
       heartbeatPeriod,
       getNodeVersion(),
       getOsInfo());

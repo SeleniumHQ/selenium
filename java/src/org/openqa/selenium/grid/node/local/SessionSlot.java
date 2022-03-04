@@ -29,6 +29,7 @@ import org.openqa.selenium.grid.data.CreateSessionRequest;
 import org.openqa.selenium.grid.data.SessionClosedEvent;
 import org.openqa.selenium.grid.node.ActiveSession;
 import org.openqa.selenium.grid.node.SessionFactory;
+import org.openqa.selenium.grid.node.relay.RelaySessionFactory;
 import org.openqa.selenium.internal.Either;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.SessionId;
@@ -163,4 +164,13 @@ public class SessionSlot implements
       .filter(webDriverInfo -> webDriverInfo.isSupporting(stereotype))
       .anyMatch(WebDriverInfo::isSupportingCdp);
   }
+
+  public boolean hasRelayFactory() {
+    return factory instanceof RelaySessionFactory;
+  }
+
+  public boolean isRelayServiceUp() {
+    return hasRelayFactory() && ((RelaySessionFactory) factory).isServiceUp();
+  }
+
 }

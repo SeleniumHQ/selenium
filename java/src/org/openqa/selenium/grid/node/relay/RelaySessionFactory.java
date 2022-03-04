@@ -29,8 +29,6 @@ import static org.openqa.selenium.remote.tracing.AttributeKey.UPSTREAM_DIALECT;
 import static org.openqa.selenium.remote.tracing.EventAttribute.setValue;
 import static org.openqa.selenium.remote.tracing.Tags.EXCEPTION;
 
-import com.google.common.annotations.VisibleForTesting;
-
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.SessionNotCreatedException;
@@ -39,6 +37,7 @@ import org.openqa.selenium.grid.data.CreateSessionRequest;
 import org.openqa.selenium.grid.node.ActiveSession;
 import org.openqa.selenium.grid.node.ProtocolConvertingSession;
 import org.openqa.selenium.grid.node.SessionFactory;
+import org.openqa.selenium.internal.Debug;
 import org.openqa.selenium.internal.Either;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.Command;
@@ -47,7 +46,13 @@ import org.openqa.selenium.remote.DriverCommand;
 import org.openqa.selenium.remote.ProtocolHandshake;
 import org.openqa.selenium.remote.Response;
 import org.openqa.selenium.remote.SessionId;
+import org.openqa.selenium.remote.http.AddSeleniumUserAgent;
+import org.openqa.selenium.remote.http.ClientConfig;
+import org.openqa.selenium.remote.http.Contents;
 import org.openqa.selenium.remote.http.HttpClient;
+import org.openqa.selenium.remote.http.HttpMethod;
+import org.openqa.selenium.remote.http.HttpRequest;
+import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.remote.tracing.EventAttributeValue;
 import org.openqa.selenium.remote.tracing.Span;
 import org.openqa.selenium.remote.tracing.Status;
@@ -61,6 +66,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class RelaySessionFactory implements SessionFactory {
@@ -70,16 +76,19 @@ public class RelaySessionFactory implements SessionFactory {
   private final Tracer tracer;
   private final HttpClient.Factory clientFactory;
   private final URL serviceUrl;
+  private final URL serviceStatusUrl;
   private final Capabilities stereotype;
 
   public RelaySessionFactory(
     Tracer tracer,
     HttpClient.Factory clientFactory,
     URI serviceUri,
+    URI serviceStatusUri,
     Capabilities stereotype) {
     this.tracer = Require.nonNull("Tracer", tracer);
     this.clientFactory = Require.nonNull("HTTP client", clientFactory);
-    this.serviceUrl = createServiceUrl(Require.nonNull("Service URL", serviceUri));
+    this.serviceUrl = createUrlFromUri(Require.nonNull("Service URL", serviceUri));
+    this.serviceStatusUrl = createUrlFromUri(serviceStatusUri);
     this.stereotype = ImmutableCapabilities
       .copyOf(Require.nonNull("Stereotype", stereotype));
   }
@@ -186,14 +195,32 @@ public class RelaySessionFactory implements SessionFactory {
     }
   }
 
-  @VisibleForTesting
-  URL getServiceUrl() {
-    return serviceUrl;
+  public boolean isServiceUp() {
+    if (serviceStatusUrl == null) {
+      // If no status endpoint was configured, we assume the server is up.
+      return true;
+    }
+    try {
+      ClientConfig config = ClientConfig.defaultConfig()
+        .baseUri(serviceStatusUrl.toURI())
+        .filter(new AddSeleniumUserAgent());
+      HttpClient client = clientFactory.createClient(config);
+      HttpResponse response = client
+        .execute(new HttpRequest(HttpMethod.GET, serviceStatusUrl.toString()));
+      LOG.log(Debug.getDebugLogLevel(), Contents.string(response));
+      return response.getStatus() == 200;
+    } catch (Exception e) {
+      LOG.log(Level.WARNING, "Error checking service status " + serviceStatusUrl, e);
+    }
+    return false;
   }
 
-  private URL createServiceUrl(URI serviceUri) {
+  private URL createUrlFromUri(URI uri) {
+    if (uri == null) {
+      return null;
+    }
     try {
-      return serviceUri.toURL();
+      return uri.toURL();
     } catch (MalformedURLException e) {
       throw new RuntimeException(e.getMessage(), e);
     }
