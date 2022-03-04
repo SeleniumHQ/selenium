@@ -155,7 +155,9 @@ public class NodeOptionsTest {
     });
 
     assertThat(reported)
-      .filteredOn(capabilities -> capabilities.getCapability("se:vncEnabled") != null)
+      .filteredOn(capabilities ->
+                    capabilities.getCapability("se:vncEnabled") != null &&
+                    capabilities.getCapability("se:noVncPort") != null)
       .hasSize(reported.size());
   }
 
@@ -173,7 +175,9 @@ public class NodeOptionsTest {
     });
 
     assertThat(reported)
-      .filteredOn(capabilities -> capabilities.getCapability("se:vncEnabled") == null)
+      .filteredOn(capabilities ->
+                    capabilities.getCapability("se:vncEnabled") == null &&
+                    capabilities.getCapability("se:noVncPort") == null)
       .hasSize(reported.size());
   }
 
