@@ -55,7 +55,7 @@ public class RelayOptions {
     this.config = Require.nonNull("Config", config);
   }
 
-  private URI getServiceUri() {
+  public URI getServiceUri() {
     try {
       Optional<String> possibleUri = config.get(RELAY_SECTION, "url");
       if (possibleUri.isPresent()) {
@@ -88,17 +88,30 @@ public class RelayOptions {
     }
   }
 
-  private boolean isServerUp(HttpClient client) {
-    if (!config.get(RELAY_SECTION, "status-endpoint").isPresent()) {
+  public URI getServiceStatusUri() {
+    try {
+      if (!config.get(RELAY_SECTION, "status-endpoint").isPresent()) {
+        return null;
+      }
+      String statusEndpoint = config.get(RELAY_SECTION, "status-endpoint").orElse("/status");
+      if (!statusEndpoint.startsWith("/")) {
+        statusEndpoint = "/" + statusEndpoint;
+      }
+      URI serviceUri = getServiceUri();
+      return new URI(serviceUri.toString() + statusEndpoint);
+    } catch (URISyntaxException e) {
+      throw new ConfigException("Unable to determine the service status url", e);
+    }
+  }
+
+  private boolean isServiceUp(HttpClient client) {
+    URI serviceStatusUri = getServiceStatusUri();
+    if (serviceStatusUri == null) {
       // If no status endpoint was configured, we assume the server is up.
       return true;
     }
-    String statusEndpoint = config.get(RELAY_SECTION, "status-endpoint").orElse("/status");
-    if (!statusEndpoint.startsWith("/")) {
-      statusEndpoint = "/" + statusEndpoint;
-    }
     try {
-      HttpResponse response = client.execute(new HttpRequest(GET, statusEndpoint));
+      HttpResponse response = client.execute(new HttpRequest(GET, serviceStatusUri.toString()));
       LOG.fine(string(response));
       return 200 == response.getStatus();
     } catch (Exception e) {
@@ -113,7 +126,7 @@ public class RelayOptions {
     HttpClient client = clientFactory
       .createClient(ClientConfig.defaultConfig().baseUri(getServiceUri()));
 
-    if (!isServerUp(client)) {
+    if (!isServiceUp(client)) {
       throw new ConfigException("Unable to reach the service at " + getServiceUri());
     }
 
