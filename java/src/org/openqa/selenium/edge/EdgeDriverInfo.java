@@ -80,6 +80,6 @@ public class EdgeDriverInfo extends ChromiumDriverInfo {
       return Optional.empty();
     }
 
-    return Optional.of(new EdgeDriver(capabilities));
+    return Optional.of(new EdgeDriver(new EdgeOptions().merge(capabilities)));
   }
 }
