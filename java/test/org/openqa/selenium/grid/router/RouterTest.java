@@ -17,6 +17,7 @@
 
 package org.openqa.selenium.grid.router;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.openqa.selenium.grid.data.Availability.DOWN;
@@ -129,6 +130,13 @@ public class RouterTest {
   }
 
   @Test
+  public void shouldReturnServerErrorCodeWhenGridIsNotReady() {
+    HttpResponse response = getStatusHttpResponse(router);
+    assertNotNull(response);
+    assertEquals(503, response.getStatus());
+  }
+
+  @Test
   public void addingANodeThatIsDownMeansTheGridIsNotReady() throws URISyntaxException {
     Capabilities capabilities = new ImmutableCapabilities("cheese", "peas");
     URI uri = new URI("http://exmaple.com");
@@ -178,5 +186,9 @@ public class RouterTest {
     Map<String, Object> status = Values.get(response, MAP_TYPE);
     assertNotNull(status);
     return status;
+  }
+
+  private HttpResponse getStatusHttpResponse(Router router) {
+    return router.execute(new HttpRequest(GET, "/status"));
   }
 }
