@@ -51,19 +51,6 @@ public class SafariDriver extends RemoteWebDriver implements HasPermissions, Has
   }
 
   /**
-   * Converts the specified {@link Capabilities} to a {@link SafariOptions}
-   * instance and initializes a new SafariDriver using these options.
-   * @see SafariOptions#fromCapabilities(Capabilities)
-   *
-   * @param desiredCapabilities capabilities requested of the driver
-   * @deprecated Use {@link SafariDriver(SafariOptions)} instead.
-   */
-  @Deprecated
-  public SafariDriver(Capabilities desiredCapabilities) {
-    this(SafariOptions.fromCapabilities(desiredCapabilities));
-  }
-
-  /**
    * Initializes a new SafariDriver using the specified {@link SafariOptions}.
    *
    * @param safariOptions safari specific options / capabilities for the driver

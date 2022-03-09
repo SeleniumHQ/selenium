@@ -60,19 +60,6 @@ public class ChromeDriver extends ChromiumDriver {
   }
 
   /**
-   * Creates a new ChromeDriver instance. The {@code capabilities} will be passed to the
-   * ChromeDriver service.
-   *
-   * @param capabilities The capabilities required from the ChromeDriver.
-   * @see #ChromeDriver(ChromeDriverService, Capabilities)
-   * @deprecated Use {@link ChromeDriver(ChromeOptions)} instead.
-   */
-  @Deprecated
-  public ChromeDriver(Capabilities capabilities) {
-    this(ChromeDriverService.createDefaultService(), capabilities);
-  }
-
-  /**
    * Creates a new ChromeDriver instance with the specified options.
    *
    * @param options The options to use.

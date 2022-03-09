@@ -103,7 +103,7 @@ public class MarionetteTest extends JUnit4TestBase {
   public void canPassCapabilities() {
     Capabilities caps = new ImmutableCapabilities(CapabilityType.PAGE_LOAD_STRATEGY, "none");
 
-    localDriver = new FirefoxDriver(caps);
+    localDriver = new FirefoxDriver(new FirefoxOptions().merge(caps));
 
     verifyItIsMarionette(localDriver);
     assertThat(localDriver.getCapabilities().getCapability(PAGE_LOAD_STRATEGY)).isEqualTo("none");
@@ -143,7 +143,7 @@ public class MarionetteTest extends JUnit4TestBase {
 
     Capabilities caps = new ImmutableCapabilities(FirefoxDriver.Capability.PROFILE, profile);
 
-    localDriver = new FirefoxDriver(caps);
+    localDriver = new FirefoxDriver(new FirefoxOptions().merge(caps));
     wait.until($ -> "XHTML Test Page".equals(localDriver.getTitle()));
 
     verifyItIsMarionette(localDriver);

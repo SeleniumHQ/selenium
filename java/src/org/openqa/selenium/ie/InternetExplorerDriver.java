@@ -144,14 +144,6 @@ public class InternetExplorerDriver extends RemoteWebDriver {
     this(null, null);
   }
 
-  /**
-   * @deprecated Use {@link #InternetExplorerDriver(InternetExplorerOptions)}
-   */
-  @Deprecated
-  public InternetExplorerDriver(Capabilities capabilities) {
-    this(null, capabilities);
-  }
-
   public InternetExplorerDriver(InternetExplorerOptions options) {
     this(null, options);
   }

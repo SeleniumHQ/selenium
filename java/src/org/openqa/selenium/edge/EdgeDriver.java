@@ -54,11 +54,6 @@ public class EdgeDriver extends ChromiumDriver {
     cdp = new AddHasCdp().getImplementation(getCapabilities(), getExecuteMethod());
   }
 
-  @Deprecated
-  public EdgeDriver(Capabilities capabilities) {
-    this(new EdgeDriverService.Builder().build(), new EdgeOptions().merge(capabilities));
-  }
-
   @Beta
   public static RemoteWebDriverBuilder builder() {
     return RemoteWebDriver.builder().oneOf(new EdgeOptions());
