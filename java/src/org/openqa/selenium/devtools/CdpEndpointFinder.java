@@ -76,6 +76,24 @@ public class CdpEndpointFinder {
     }
   }
 
+  public static Optional<URI> getReportedUri(Capabilities caps) {
+    String key;
+    switch (caps.getBrowserName()) {
+      case "chrome":
+        key = "goog:chromeOptions";
+        break;
+      case "msedge":
+        key = "ms:edgeOptions";
+        break;
+      case "firefox":
+        key = "moz:debuggerAddress";
+        break;
+      default:
+        return Optional.empty();
+    }
+    return getReportedUri(key, caps);
+  }
+
   public static Optional<URI> getReportedUri(String capabilityKey, Capabilities caps) {
     Object raw = caps.getCapability(capabilityKey);
 
