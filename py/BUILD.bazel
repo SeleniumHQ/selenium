@@ -5,7 +5,7 @@ load("//common:defs.bzl", "copy_file")
 load("//py:defs.bzl", "py_test_suite")
 load("//py/private:browsers.bzl", "BROWSERS")
 
-SE_VERSION = "4.1.2"
+SE_VERSION = "4.1.3"
 
 BROWSER_VERSIONS = [
     "v85",
