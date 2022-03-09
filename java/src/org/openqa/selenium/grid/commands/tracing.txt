@@ -18,7 +18,7 @@ on macOS:
        -Dotel.resource.attributes=service.name=selenium-standalone \
        -jar selenium.jar \
        --ext $(coursier fetch -p \
-          io.opentelemetry:opentelemetry-exporter-jaeger:1.9.1 \
+          io.opentelemetry:opentelemetry-exporter-jaeger:1.10.1 \
           io.grpc:grpc-netty:1.41.0) \
        standalone
 ```
