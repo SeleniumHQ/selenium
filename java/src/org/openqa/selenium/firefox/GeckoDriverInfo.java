@@ -92,6 +92,6 @@ public class GeckoDriverInfo implements WebDriverInfo {
       return Optional.empty();
     }
 
-    return Optional.of(new FirefoxDriver(capabilities));
+    return Optional.of(new FirefoxDriver(new FirefoxOptions().merge(capabilities)));
   }
 }
