@@ -40,6 +40,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeoutException;
 
+import static java.net.HttpURLConnection.HTTP_UNAVAILABLE;
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static java.util.stream.Collectors.toList;
 import static org.openqa.selenium.grid.data.Availability.UP;
@@ -145,10 +146,15 @@ class GridStatusHandler implements HttpHandler {
 
       HttpResponse res = new HttpResponse()
         .setContent(asJson(ImmutableMap.of("value", value.build())));
+      if (ready) {
+        span.setStatus(Status.OK);
+      } else {
+        res.setStatus(HTTP_UNAVAILABLE);
+        span.setStatus(Status.UNAVAILABLE);
+      }
       HTTP_RESPONSE.accept(span, res);
       HTTP_RESPONSE_EVENT.accept(attributeMap, res);
       attributeMap.put("grid.status", EventAttribute.setValue(ready));
-      span.setStatus(Status.OK);
       span.addEvent("Computed grid status", attributeMap);
       return res;
     }
