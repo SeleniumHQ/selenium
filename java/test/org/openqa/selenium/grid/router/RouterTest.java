@@ -17,24 +17,36 @@
 
 package org.openqa.selenium.grid.router;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 import static org.openqa.selenium.grid.data.Availability.DOWN;
 import static org.openqa.selenium.grid.data.Availability.UP;
 import static org.openqa.selenium.json.Json.MAP_TYPE;
 import static org.openqa.selenium.remote.http.Contents.reader;
+import static org.openqa.selenium.remote.Dialect.OSS;
+import static org.openqa.selenium.remote.Dialect.W3C;
 import static org.openqa.selenium.remote.http.HttpMethod.GET;
+
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableSet;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
+import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.events.EventBus;
 import org.openqa.selenium.events.local.GuavaEventBus;
 import org.openqa.selenium.grid.data.Availability;
+import org.openqa.selenium.grid.data.CreateSessionResponse;
 import org.openqa.selenium.grid.data.DefaultSlotMatcher;
+import org.openqa.selenium.grid.data.RequestId;
 import org.openqa.selenium.grid.data.Session;
+import org.openqa.selenium.grid.data.SessionRequest;
 import org.openqa.selenium.grid.distributor.Distributor;
 import org.openqa.selenium.grid.distributor.local.LocalDistributor;
 import org.openqa.selenium.grid.distributor.selector.DefaultSlotSelector;
@@ -52,6 +64,7 @@ import org.openqa.selenium.grid.web.CombinedHandler;
 import org.openqa.selenium.grid.web.Values;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.json.JsonInput;
+import org.openqa.selenium.internal.Either;
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
@@ -65,7 +78,9 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.time.Duration;
 import java.time.Instant;
+import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import java.util.concurrent.atomic.AtomicReference;
 
 public class RouterTest {
@@ -214,13 +229,85 @@ public class RouterTest {
   }
 
   @Test
-  public void shouldListAllNodesTheDistributorIsAwareOf() {
+  public void shouldListAllNodesTheDistributorIsAwareOf() throws URISyntaxException, IOException {
+    Capabilities chromeCapabilities = new ImmutableCapabilities("browser", "chrome");
+    Capabilities firefoxCapabilities = new ImmutableCapabilities("browser", "firefox");
+    URI firstNodeUri = new URI("http://example1.com");
+    URI secondNodeUri = new URI("http://example2.com");
 
+    AtomicReference<Availability> isUp = new AtomicReference<>(UP);
+
+    Node firstNode = LocalNode.builder(tracer, bus, firstNodeUri, firstNodeUri, registrationSecret)
+      .add(chromeCapabilities, new TestSessionFactory((id, caps) -> new Session(id, firstNodeUri, new ImmutableCapabilities(), caps, Instant.now())))
+      .advanced()
+      .healthCheck(() -> new HealthCheck.Result(isUp.get(), "TL;DR"))
+      .build();
+
+    Node secondNode = LocalNode.builder(tracer, bus, secondNodeUri, secondNodeUri, registrationSecret)
+      .add(firefoxCapabilities, new TestSessionFactory((id, caps) -> new Session(id, secondNodeUri, new ImmutableCapabilities(), caps, Instant.now())))
+      .advanced()
+      .healthCheck(() -> new HealthCheck.Result(isUp.get(), "TL;DR"))
+      .build();
+
+    distributor.add(firstNode);
+    distributor.add(secondNode);
+
+    waitUntilReady(router, Duration.ofSeconds(5));
+
+    Map<String, Object> status = getStatus(router);
+    List<Map<String,Object>> nodes = (List<Map<String, Object>>) status.get("nodes");
+
+    assertEquals(2, nodes.size());
+
+    String firstNodeId = (String) nodes.get(0).get("id");
+    String secondNodeId = (String) nodes.get(1).get("id");
+
+    assertFalse(firstNodeId.equals(secondNodeId));
   }
 
   @Test
-  public void ifNodesHaveSpareSlotsButAlreadyHaveMaxSessionsGridIsNotReady() {
+  public void ifNodesHaveSpareSlotsButAlreadyHaveMaxSessionsGridIsReady()
+    throws URISyntaxException, IOException {
+    Capabilities chromeCapabilities = new ImmutableCapabilities("browser", "chrome");
+    Capabilities firefoxCapabilities = new ImmutableCapabilities("browser", "firefox");
+    URI uri = new URI("http://example.com");
 
+    AtomicReference<Availability> isUp = new AtomicReference<>(UP);
+
+    Node node = LocalNode.builder(tracer, bus, uri, uri, registrationSecret)
+      .add(chromeCapabilities, new TestSessionFactory(
+        (id, caps) -> new Session(id, uri, new ImmutableCapabilities(), caps, Instant.now())))
+      .add(firefoxCapabilities, new TestSessionFactory(
+        (id, caps) -> new Session(id, uri, new ImmutableCapabilities(), caps, Instant.now())))
+      .maximumConcurrentSessions(1)
+      .advanced()
+      .healthCheck(() -> new HealthCheck.Result(isUp.get(), "TL;DR"))
+      .build();
+    distributor.add(node);
+
+    waitUntilReady(router, Duration.ofSeconds(5));
+
+    Map<String, Object> status = getStatus(router);
+    assertTrue(status.toString(), (Boolean) status.get("ready"));
+
+    SessionRequest sessionRequest = new SessionRequest(
+      new RequestId(UUID.randomUUID()),
+      Instant.now(),
+      ImmutableSet.of(OSS, W3C),
+      ImmutableSet.of(chromeCapabilities),
+      ImmutableMap.of(),
+      ImmutableMap.of());
+
+    Either<SessionNotCreatedException, CreateSessionResponse> response =
+      distributor.newSession(sessionRequest);
+
+    if (response.isRight()) {
+      Session session = response.right().getSession();
+      assertThat(session).isNotNull();
+      assertTrue(status.toString(), (Boolean) status.get("ready"));
+    } else {
+      fail("Session creation failed", response.left());
+    }
   }
 
   private Map<String, Object> getStatus(Router router) throws IOException {
