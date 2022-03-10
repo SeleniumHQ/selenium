@@ -37,4 +37,4 @@ from .common.action_chains import ActionChains  # noqa
 from .common.proxy import Proxy  # noqa
 from .common.keys import Keys  # noqa
 
-__version__ = '4.1.2'
+__version__ = '4.1.3'
