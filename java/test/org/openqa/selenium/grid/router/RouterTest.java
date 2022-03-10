@@ -23,6 +23,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.openqa.selenium.grid.data.Availability.DOWN;
 import static org.openqa.selenium.grid.data.Availability.UP;
 import static org.openqa.selenium.json.Json.MAP_TYPE;
+import static org.openqa.selenium.remote.http.Contents.reader;
 import static org.openqa.selenium.remote.http.HttpMethod.GET;
 
 import org.junit.Before;
@@ -49,6 +50,8 @@ import org.openqa.selenium.grid.testing.PassthroughHttpClient;
 import org.openqa.selenium.grid.testing.TestSessionFactory;
 import org.openqa.selenium.grid.web.CombinedHandler;
 import org.openqa.selenium.grid.web.Values;
+import org.openqa.selenium.json.Json;
+import org.openqa.selenium.json.JsonInput;
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
@@ -56,6 +59,8 @@ import org.openqa.selenium.remote.tracing.DefaultTestTracer;
 import org.openqa.selenium.remote.tracing.Tracer;
 import org.openqa.selenium.support.ui.FluentWait;
 
+import java.io.IOException;
+import java.io.Reader;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.time.Duration;
@@ -73,6 +78,8 @@ public class RouterTest {
   private Distributor distributor;
   private Router router;
   private Secret registrationSecret;
+  private HttpClient.Factory clientFactory;
+  private Json JSON = new Json();
 
   private static void waitUntilReady(Router router, Duration duration) {
     new FluentWait<>(router)
@@ -85,13 +92,23 @@ public class RouterTest {
       });
   }
 
+  private static void waitUntilNotReady(Router router, Duration duration) {
+    new FluentWait<>(router)
+      .withTimeout(duration)
+      .pollingEvery(Duration.ofMillis(100))
+      .until(r -> {
+        HttpResponse response = r.execute(new HttpRequest(GET, "/status"));
+        return response.getStatus()!=200;
+      });
+  }
+
   @Before
   public void setUp() {
     tracer = DefaultTestTracer.createTracer();
     bus = new GuavaEventBus();
 
     handler = new CombinedHandler();
-    HttpClient.Factory clientFactory = new PassthroughHttpClient.Factory(handler);
+    clientFactory = new PassthroughHttpClient.Factory(handler);
 
     sessions = new LocalSessionMap(tracer, bus);
     handler.addHandler(sessions);
@@ -124,7 +141,9 @@ public class RouterTest {
   }
 
   @Test
-  public void shouldListAnEmptyDistributorAsMeaningTheGridIsNotReady() {
+  public void shouldListAnEmptyDistributorAsMeaningTheGridIsNotReady() throws IOException {
+    HttpResponse response = getStatusHttpResponse(router);
+    assertNotNull(response);
     Map<String, Object> status = getStatus(router);
     assertFalse((Boolean) status.get("ready"));
   }
@@ -137,21 +156,44 @@ public class RouterTest {
   }
 
   @Test
-  public void addingANodeThatIsDownMeansTheGridIsNotReady() throws URISyntaxException {
+  public void addingANodeThatIsDownMeansTheGridIsNotReady()
+    throws URISyntaxException, IOException {
+    distributor = new LocalDistributor(
+      tracer,
+      bus,
+      clientFactory,
+      sessions,
+      queue,
+      new DefaultSlotSelector(),
+      registrationSecret,
+      Duration.ofSeconds(1),
+      false,
+      Duration.ofSeconds(5));
+    handler.addHandler(distributor);
+
+    router = new Router(tracer, clientFactory, sessions, queue, distributor);
+
     Capabilities capabilities = new ImmutableCapabilities("cheese", "peas");
     URI uri = new URI("http://exmaple.com");
 
-    AtomicReference<Availability> isUp = new AtomicReference<>(DOWN);
+    AtomicReference<Availability> isUp = new AtomicReference<>(UP);
 
     Node node = LocalNode.builder(tracer, bus, uri, uri, registrationSecret)
-      .add(capabilities, new TestSessionFactory((id, caps) -> new Session(id, uri, new ImmutableCapabilities(), caps, Instant.now())))
+      .add(capabilities, new TestSessionFactory(
+        (id, caps) -> new Session(id, uri, new ImmutableCapabilities(), caps, Instant.now())))
       .advanced()
       .healthCheck(() -> new HealthCheck.Result(isUp.get(), "TL;DR"))
       .build();
     distributor.add(node);
 
+    waitUntilReady(router, Duration.ofSeconds(5));
+    isUp.set(DOWN);
+    waitUntilNotReady(router, Duration.ofSeconds(5));
+
+    HttpResponse response = getStatusHttpResponse(router);
+    assertNotNull(response);
     Map<String, Object> status = getStatus(router);
-    assertFalse(status.toString(), (Boolean) status.get("ready"));
+    assertFalse((Boolean) status.get("ready"));
   }
 
   @Test
@@ -181,9 +223,21 @@ public class RouterTest {
 
   }
 
-  private Map<String, Object> getStatus(Router router) {
+  private Map<String, Object> getStatus(Router router) throws IOException {
     HttpResponse response = router.execute(new HttpRequest(GET, "/status"));
-    Map<String, Object> status = Values.get(response, MAP_TYPE);
+    Map<String, Object> status = null;
+    try (Reader reader = reader(response);
+         JsonInput input = JSON.newInput(reader)) {
+      input.beginObject();
+
+      while (input.hasNext()) {
+        if ("value".equals(input.nextName())) {
+          status = input.read(MAP_TYPE);
+        } else {
+          input.skipValue();
+        }
+      }
+    }
     assertNotNull(status);
     return status;
   }
