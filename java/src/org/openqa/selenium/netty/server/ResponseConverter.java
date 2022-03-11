@@ -17,6 +17,7 @@
 
 package org.openqa.selenium.netty.server;
 
+import com.google.common.io.ByteStreams;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelHandlerContext;
@@ -59,7 +60,7 @@ public class ResponseConverter extends ChannelOutboundHandlerAdapter {
     // We may not know how large the response is, but figure it out if we can.
     byte[] ary = new byte[CHUNK_SIZE];
     InputStream is = seResponse.getContent().get();
-    int byteCount = is.read(ary);
+    int byteCount = ByteStreams.read(is, ary, 0, ary.length);
     // If there are no bytes left to read, then -1 is returned by read, and this is bad.
     byteCount = byteCount == -1 ? 0 : byteCount;
 
@@ -84,7 +85,7 @@ public class ResponseConverter extends ChannelOutboundHandlerAdapter {
       // We need to write the first response.
       ctx.write(new DefaultHttpContent(Unpooled.wrappedBuffer(ary)));
 
-      HttpChunkedInput writer = new HttpChunkedInput(new ChunkedStream(is));
+      HttpChunkedInput writer = new HttpChunkedInput(new ChunkedStream(is, CHUNK_SIZE));
       ChannelFuture future = ctx.write(writer);
       future.addListener(ignored -> {
         is.close();
