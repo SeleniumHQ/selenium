@@ -69,8 +69,8 @@ public class WheelInputTest {
     WheelInput wheelInput = new WheelInput("test-wheel");
     Map<String, Object> encodedResult = wheelInput.encode();
 
-    assertThat(encodedResult.get("id")).isEqualTo("test-wheel");
-    assertThat(encodedResult.get("type")).isEqualTo("wheel");
+    assertThat(encodedResult).containsEntry("id", "test-wheel");
+    assertThat(encodedResult).containsEntry("type", "wheel");
   }
 
   @Test
@@ -86,13 +86,13 @@ public class WheelInputTest {
       Origin.viewport());
 
     Map<String, Object> encodedResult = interaction.encode();
-    assertThat(encodedResult.get("type")).isEqualTo("scroll");
-    assertThat(encodedResult.get("x")).isEqualTo(25);
-    assertThat(encodedResult.get("y")).isEqualTo(50);
-    assertThat(encodedResult.get("deltaX")).isEqualTo(30);
-    assertThat(encodedResult.get("deltaY")).isEqualTo(60);
-    assertThat(encodedResult.get("duration")).isEqualTo(1000L);
-    assertThat(encodedResult.get("origin")).isEqualTo("viewport");
+    assertThat(encodedResult).containsEntry("type", "scroll");
+    assertThat(encodedResult).containsEntry("x", 25);
+    assertThat(encodedResult).containsEntry("y", 50);
+    assertThat(encodedResult).containsEntry("deltaX", 30);
+    assertThat(encodedResult).containsEntry("deltaY", 60);
+    assertThat(encodedResult).containsEntry("duration", 1000L);
+    assertThat(encodedResult).containsEntry("origin", "viewport");
   }
 
   @Test
@@ -111,13 +111,13 @@ public class WheelInputTest {
       Origin.fromElement(innerElement));
 
     Map<String, Object> encodedResult = interaction.encode();
-    assertThat(encodedResult.get("type")).isEqualTo("scroll");
-    assertThat(encodedResult.get("x")).isEqualTo(25);
-    assertThat(encodedResult.get("y")).isEqualTo(50);
-    assertThat(encodedResult.get("deltaX")).isEqualTo(30);
-    assertThat(encodedResult.get("deltaY")).isEqualTo(60);
-    assertThat(encodedResult.get("duration")).isEqualTo(1000L);
-    assertThat(encodedResult.get("origin")).isEqualTo(innerElement);
+    assertThat(encodedResult).containsEntry("type", "scroll");
+    assertThat(encodedResult).containsEntry("x", 25);
+    assertThat(encodedResult).containsEntry("y", 50);
+    assertThat(encodedResult).containsEntry("deltaX", 30);
+    assertThat(encodedResult).containsEntry("deltaY", 60);
+    assertThat(encodedResult).containsEntry("duration", 1000L);
+    assertThat(encodedResult).containsEntry("origin", innerElement);
   }
 
   @Test(expected = IllegalArgumentException.class)
