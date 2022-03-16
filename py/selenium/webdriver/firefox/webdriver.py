@@ -132,8 +132,8 @@ class WebDriver(RemoteWebDriver):
         if not capabilities and desired_capabilities:
             capabilities = desired_capabilities
 
-        if not capabilities:
-            capabilities = DesiredCapabilities.FIREFOX.copy()
+        if capabilities is None:
+            capabilities = {}
         if not options:
             options = Options()
 
