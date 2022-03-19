@@ -33,7 +33,7 @@ def test_launch_with_invalid_executable_path_raises_exception(driver_class):
 
 
 @pytest.mark.skipif(not os.path.exists('/Applications/Safari Technology Preview.app/Contents/MacOS/safaridriver'), reason="Preview not installed")
-class TestTechnologyPreview(object):
+class TestTechnologyPreview:
 
     @pytest.fixture
     def driver_kwargs(self):

@@ -36,7 +36,7 @@ else:
     JSONTimeouts = Dict[str, int]
 
 
-class Timeouts(object):
+class Timeouts:
 
     def __init__(self, implicit_wait: float = 0, page_load: float = 0, script: float = 0) -> None:
         """

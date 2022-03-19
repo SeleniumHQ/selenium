@@ -41,7 +41,7 @@ def test_web_element_not_subclassed():
 
 def test_webdriver_not_subclassed():
     """A registered subtype of WebDriver should work with isinstance checks."""
-    class MyWebDriver(object):
+    class MyWebDriver:
         def __init__(self, *args, **kwargs):
             super(MyWebDriver, self).__init__(*args, **kwargs)
 

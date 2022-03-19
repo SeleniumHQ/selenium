@@ -20,7 +20,7 @@ The By implementation.
 """
 
 
-class By(object):
+class By:
     """
     Set of supported locator strategies.
     """

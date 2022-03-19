@@ -16,7 +16,7 @@
 # under the License.
 
 
-class Command(object):
+class Command:
     """
     Defines constants for the standard WebDriver commands.
 
