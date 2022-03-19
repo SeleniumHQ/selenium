@@ -182,7 +182,7 @@ class FirefoxProfile:
         """
         with open(self.userPrefs, "w") as f:
             for key, value in user_prefs.items():
-                f.write('user_pref("%s", %s);\n' % (key, json.dumps(value)))
+                f.write(f'user_pref("{key}", {json.dumps(value)});\n')
 
     def _read_existing_userjs(self, userjs):
         import warnings

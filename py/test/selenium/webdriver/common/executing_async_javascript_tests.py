@@ -142,7 +142,7 @@ def testShouldDetectPageLoadsWhileWaitingOnAnAsyncScriptAndReturnAnError(driver,
     driver.set_script_timeout(0.1)
     with pytest.raises(WebDriverException):
         url = pages.url("dynamic.html")
-        driver.execute_async_script("window.location = '{0}';".format(url))
+        driver.execute_async_script(f"window.location = '{url}';")
 
 
 def testShouldCatchErrorsWhenExecutingInitialScript(driver, pages):

@@ -163,7 +163,7 @@ def testGetAttribute(driver, pages):
     driver.get(url)
     elem = driver.find_element(By.ID, "id1")
     attr = elem.get_attribute("href")
-    assert '{0}#'.format(url) == attr
+    assert f'{url}#' == attr
 
 
 def testGetImplicitAttribute(driver, pages):
