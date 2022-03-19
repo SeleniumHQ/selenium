@@ -939,7 +939,7 @@ def parse(json_path, output_path):
     :returns: a list of CDP domain objects
     '''
     global current_version
-    with open(json_path, "r") as json_file:
+    with open(json_path) as json_file:
         schema = json.load(json_file)
     version = schema['version']
     assert (version['major'], version['minor']) == ('1', '3')

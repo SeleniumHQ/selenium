@@ -67,7 +67,7 @@ class HtmlOnlyHandler(BaseHTTPRequestHandler):
                 </body></html>""".format(page_number=path[5:])
                 html = html.encode('utf-8')
             else:
-                with open(os.path.join(HTML_ROOT, path), 'r', encoding='latin-1') as f:
+                with open(os.path.join(HTML_ROOT, path), encoding='latin-1') as f:
                     html = f.read().encode('utf-8')
             self.send_response(200)
             self.send_header('Content-type', 'text/html')

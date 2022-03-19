@@ -322,10 +322,10 @@ class FirefoxProfile:
             elif os.path.isdir(addon_path):
                 manifest_json_filename = os.path.join(addon_path, 'manifest.json')
                 if os.path.exists(manifest_json_filename):
-                    with open(manifest_json_filename, 'r') as f:
+                    with open(manifest_json_filename) as f:
                         return parse_manifest_json(f.read())
 
-                with open(os.path.join(addon_path, 'install.rdf'), 'r') as f:
+                with open(os.path.join(addon_path, 'install.rdf')) as f:
                     manifest = f.read()
             else:
                 raise OSError('Add-on path is neither an XPI nor a directory: %s' % addon_path)
