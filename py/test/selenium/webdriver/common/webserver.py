@@ -21,7 +21,6 @@ import contextlib
 import logging
 import os
 import re
-import socket
 import threading
 from io import open
 try:
@@ -74,7 +73,7 @@ class HtmlOnlyHandler(BaseHTTPRequestHandler):
             self.send_header('Content-type', 'text/html')
             self.end_headers()
             self.wfile.write(html)
-        except IOError:
+        except OSError:
             self.send_error(404, f"File Not Found: {path}")
 
     def do_POST(self):
@@ -140,7 +139,7 @@ class SimpleWebServer:
                 self.host = host
                 self.port = port
                 break
-            except socket.error:
+            except OSError:
                 LOGGER.debug(f"port {port} is in use, trying to next one")
                 port += 1
 

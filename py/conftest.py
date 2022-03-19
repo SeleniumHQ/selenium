@@ -213,7 +213,7 @@ def server(request):
             try:
                 urlopen(url)
                 return 1
-            except IOError:
+            except OSError:
                 time.sleep(0.2)
         return 0
 

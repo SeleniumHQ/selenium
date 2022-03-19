@@ -98,7 +98,7 @@ class ChromiumOptions(ArgOptions):
             if os.path.exists(extension_to_add):
                 self._extension_files.append(extension_to_add)
             else:
-                raise IOError("Path to the extension doesn't exist")
+                raise OSError("Path to the extension doesn't exist")
         else:
             raise ValueError("argument can not be null")
 

@@ -304,7 +304,7 @@ class FirefoxProfile:
             }
 
         if not os.path.exists(addon_path):
-            raise IOError('Add-on path does not exist: %s' % addon_path)
+            raise OSError('Add-on path does not exist: %s' % addon_path)
 
         try:
             if zipfile.is_zipfile(addon_path):
@@ -328,8 +328,8 @@ class FirefoxProfile:
                 with open(os.path.join(addon_path, 'install.rdf'), 'r') as f:
                     manifest = f.read()
             else:
-                raise IOError('Add-on path is neither an XPI nor a directory: %s' % addon_path)
-        except (IOError, KeyError) as e:
+                raise OSError('Add-on path is neither an XPI nor a directory: %s' % addon_path)
+        except (OSError, KeyError) as e:
             raise AddonFormatError(str(e), sys.exc_info()[2])
 
         try:

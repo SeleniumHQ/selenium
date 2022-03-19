@@ -1322,7 +1322,7 @@ class WebDriver(BaseWebDriver):
         try:
             with open(filename, 'wb') as f:
                 f.write(png)
-        except IOError:
+        except OSError:
             return False
         finally:
             del png
