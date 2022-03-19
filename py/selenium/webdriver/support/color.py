@@ -82,7 +82,7 @@ class Color:
         if m.match(RGB_PATTERN, str_):
             return Color(*m.groups)
         elif m.match(RGB_PCT_PATTERN, str_):
-            rgb = tuple([float(each) / 100 * 255 for each in m.groups])
+            rgb = tuple(float(each) / 100 * 255 for each in m.groups)
             return Color(*rgb)
         elif m.match(RGBA_PATTERN, str_):
             return Color(*m.groups)
@@ -90,10 +90,10 @@ class Color:
             rgba = tuple([float(each) / 100 * 255 for each in m.groups[:3]] + [m.groups[3]])  # type: ignore
             return Color(*rgba)
         elif m.match(HEX_PATTERN, str_):
-            rgb = tuple([int(each, 16) for each in m.groups])
+            rgb = tuple(int(each, 16) for each in m.groups)
             return Color(*rgb)
         elif m.match(HEX3_PATTERN, str_):
-            rgb = tuple([int(each * 2, 16) for each in m.groups])
+            rgb = tuple(int(each * 2, 16) for each in m.groups)
             return Color(*rgb)
         elif m.match(HSL_PATTERN, str_) or m.match(HSLA_PATTERN, str_):
             return Color._from_hsl(*m.groups)
