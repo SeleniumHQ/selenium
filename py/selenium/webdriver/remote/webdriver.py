@@ -1576,7 +1576,7 @@ class WebDriver(BaseWebDriver):
 
         cdp.import_devtools(version)
 
-        devtools = import_module("selenium.webdriver.common.devtools.v{}".format(version))
+        devtools = import_module(f"selenium.webdriver.common.devtools.v{version}")
         async with cdp.open_cdp(ws_url) as conn:
             targets = await conn.execute(devtools.target.get_targets())
             target_id = targets[0].target_id
