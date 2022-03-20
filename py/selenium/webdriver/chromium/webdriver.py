@@ -15,7 +15,6 @@
 # specific language governing permissions and limitations
 # under the License.
 
-from typing import NoReturn
 from selenium.webdriver.common.options import BaseOptions
 from selenium.webdriver.common.service import Service
 from selenium.webdriver.edge.options import Options as EdgeOptions
@@ -117,7 +116,7 @@ class ChromiumDriver(RemoteWebDriver):
         """
         return self.execute("getNetworkConditions")['value']
 
-    def set_network_conditions(self, **network_conditions) -> NoReturn:
+    def set_network_conditions(self, **network_conditions) -> None:
         """
         Sets Chromium network emulation settings.
 
@@ -139,13 +138,13 @@ class ChromiumDriver(RemoteWebDriver):
             'network_conditions': network_conditions
         })
 
-    def delete_network_conditions(self) -> NoReturn:
+    def delete_network_conditions(self) -> None:
         """
         Resets Chromium network emulation settings.
         """
         self.execute("deleteNetworkConditions")
 
-    def set_permissions(self, name: str, value: str) -> NoReturn:
+    def set_permissions(self, name: str, value: str) -> None:
         """
         Sets Applicable Permission.
 
@@ -226,7 +225,7 @@ class ChromiumDriver(RemoteWebDriver):
         """
         return self.execute('stopCasting', {'sinkName': sink_name})
 
-    def quit(self) -> NoReturn:
+    def quit(self) -> None:
         """
         Closes the browser and shuts down the ChromiumDriver executable
         that is started when starting the ChromiumDriver
