@@ -20,7 +20,7 @@ The Keys implementation.
 """
 
 
-class Keys(object):
+class Keys:
     """
     Set of special keys codes.
     """

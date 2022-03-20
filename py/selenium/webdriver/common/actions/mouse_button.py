@@ -16,7 +16,7 @@
 # under the License.
 
 
-class MouseButton(object):
+class MouseButton:
 
     LEFT = 0
     MIDDLE = 1

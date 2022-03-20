@@ -21,7 +21,7 @@ from results_page import ResultsPage
 from page_loader import require_loaded
 
 
-class GoogleOneBox(object):
+class GoogleOneBox:
     """This class models a page that has a google search bar."""
 
     def __init__(self, driver, url):

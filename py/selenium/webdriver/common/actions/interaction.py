@@ -29,7 +29,7 @@ POINTER_PEN = "pen"
 POINTER_KINDS = set([POINTER_MOUSE, POINTER_TOUCH, POINTER_PEN])
 
 
-class Interaction(object):
+class Interaction:
 
     PAUSE = "pause"
 
