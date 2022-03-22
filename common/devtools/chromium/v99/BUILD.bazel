@@ -16,7 +16,7 @@ genrule(
     outs = [
         "browser_protocol.json",
     ],
-    cmd = "python3 $(location //common/devtools:pdl_to_json) $(location :browser_protocol.pdl)  --map_binary_to_string=true $@",
+    cmd = "$(location //common/devtools:pdl_to_json) $(location :browser_protocol.pdl)  --map_binary_to_string=true $@",
     tools = [
         "//common/devtools:pdl_to_json",
     ],
@@ -30,7 +30,7 @@ genrule(
     outs = [
         "js_protocol.json",
     ],
-    cmd = "python3 $(location //common/devtools:pdl_to_json) $(location :js_protocol.pdl) --map_binary_to_string=true $@",
+    cmd = "$(location //common/devtools:pdl_to_json) $(location :js_protocol.pdl) --map_binary_to_string=true $@",
     tools = [
         "//common/devtools:pdl_to_json",
     ],
