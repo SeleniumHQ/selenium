@@ -149,6 +149,12 @@ npm_install(
 
 http_archive(
     name = "io_bazel_rules_closure",
+    patch_args = [
+        "-p1",
+    ],
+    patches = [
+        "//javascript:rules_closure_shell.patch",
+    ],
     sha256 = "d66deed38a0bb20581c15664f0ab62270af5940786855c7adc3087b27168b529",
     strip_prefix = "rules_closure-0.11.0",
     urls = [

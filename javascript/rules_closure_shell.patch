@@ -1,0 +1,12 @@
+diff --git a/closure/compiler/closure_js_deps.bzl b/closure/compiler/closure_js_deps.bzl
+index 197c621..6db3aa8 100644
+--- a/closure/compiler/closure_js_deps.bzl
++++ b/closure/compiler/closure_js_deps.bzl
+@@ -52,6 +52,7 @@ def _impl(ctx):
+                          )
+                      ]),
+         executable = ctx.executable._depswriter,
++        use_default_shell_env = True,
+         progress_message = "Calculating %d JavaScript deps to %s" % (
+             len(js.srcs.to_list()),
+             ctx.outputs.out.short_path,
