@@ -52,8 +52,8 @@ before submitting your pull requests.
 * [The tox automation project](http://tox.readthedocs.org/) for Python: `pip install tox`
 * macOS users:
   * Install the latest version of Xcode including the command-line tools. This command should work `xcode-select --install` 
-  * Apple Silicon Macs should add `build --host_platform=//:rosetta` to their `.bazelrc.local` file. We are working
-  to make sure this isn't required in the long run.
+  * Apple Silicon Macs should add `build --host_platform=//:rosetta` to their `.bazelrc.local` file 
+  (Location: /selenium/.github/.bazelrc.local). We are working to make sure this isn't required in the long run.
 * Windows users:
   *  Latest version of [Visual Studio](https://www.visualstudio.com/) with command line tools and build tools installed
   * `BAZEL_VS` environment variable should point to the location of the build tools,
