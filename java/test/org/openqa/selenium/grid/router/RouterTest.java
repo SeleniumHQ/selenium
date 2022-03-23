@@ -241,6 +241,8 @@ public class RouterTest {
     assertTrue(response.isRight());
     Session session = response.right().getSession();
     assertThat(session).isNotNull();
+
+    waitUntilNotReady(router, Duration.ofSeconds(5));
   }
 
   private Node getNode(Capabilities capabilities, URI uri,
