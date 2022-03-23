@@ -17,20 +17,6 @@
 
 package org.openqa.selenium.grid.router;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.fail;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.openqa.selenium.grid.data.Availability.DOWN;
-import static org.openqa.selenium.grid.data.Availability.UP;
-import static org.openqa.selenium.json.Json.MAP_TYPE;
-import static org.openqa.selenium.remote.http.Contents.reader;
-import static org.openqa.selenium.remote.Dialect.OSS;
-import static org.openqa.selenium.remote.Dialect.W3C;
-import static org.openqa.selenium.remote.http.HttpMethod.GET;
-
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 
@@ -62,8 +48,6 @@ import org.openqa.selenium.grid.testing.PassthroughHttpClient;
 import org.openqa.selenium.grid.testing.TestSessionFactory;
 import org.openqa.selenium.grid.web.CombinedHandler;
 import org.openqa.selenium.grid.web.Values;
-import org.openqa.selenium.json.Json;
-import org.openqa.selenium.json.JsonInput;
 import org.openqa.selenium.internal.Either;
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpRequest;
@@ -72,8 +56,6 @@ import org.openqa.selenium.remote.tracing.DefaultTestTracer;
 import org.openqa.selenium.remote.tracing.Tracer;
 import org.openqa.selenium.support.ui.FluentWait;
 
-import java.io.IOException;
-import java.io.Reader;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.time.Duration;
@@ -83,54 +65,41 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicReference;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.openqa.selenium.grid.data.Availability.DOWN;
+import static org.openqa.selenium.grid.data.Availability.UP;
+import static org.openqa.selenium.json.Json.MAP_TYPE;
+import static org.openqa.selenium.remote.Dialect.OSS;
+import static org.openqa.selenium.remote.Dialect.W3C;
+import static org.openqa.selenium.remote.http.HttpMethod.GET;
+
 public class RouterTest {
 
   private Tracer tracer;
   private EventBus bus;
-  private CombinedHandler handler;
-  private SessionMap sessions;
-  private NewSessionQueue queue;
   private Distributor distributor;
   private Router router;
   private Secret registrationSecret;
-  private HttpClient.Factory clientFactory;
-  private Json JSON = new Json();
-
-  private static void waitUntilReady(Router router, Duration duration) {
-    new FluentWait<>(router)
-      .withTimeout(duration)
-      .pollingEvery(Duration.ofMillis(100))
-      .until(r -> {
-        HttpResponse response = r.execute(new HttpRequest(GET, "/status"));
-        Map<String, Object> status = Values.get(response, MAP_TYPE);
-        return Boolean.TRUE.equals(status.get("ready"));
-      });
-  }
-
-  private static void waitUntilNotReady(Router router, Duration duration) {
-    new FluentWait<>(router)
-      .withTimeout(duration)
-      .pollingEvery(Duration.ofMillis(100))
-      .until(r -> {
-        HttpResponse response = r.execute(new HttpRequest(GET, "/status"));
-        return response.getStatus()!=200;
-      });
-  }
 
   @Before
   public void setUp() {
     tracer = DefaultTestTracer.createTracer();
     bus = new GuavaEventBus();
 
-    handler = new CombinedHandler();
-    clientFactory = new PassthroughHttpClient.Factory(handler);
+    CombinedHandler handler = new CombinedHandler();
+    HttpClient.Factory clientFactory = new PassthroughHttpClient.Factory(handler);
 
-    sessions = new LocalSessionMap(tracer, bus);
+    SessionMap sessions = new LocalSessionMap(tracer, bus);
     handler.addHandler(sessions);
 
     registrationSecret = new Secret("stinking bishop");
 
-    queue = new LocalNewSessionQueue(
+    NewSessionQueue queue = new LocalNewSessionQueue(
       tracer,
       bus,
       new DefaultSlotMatcher(),
@@ -147,107 +116,74 @@ public class RouterTest {
       queue,
       new DefaultSlotSelector(),
       registrationSecret,
-      Duration.ofMinutes(5),
-      false,
-      Duration.ofSeconds(5));
-    handler.addHandler(distributor);
-
-    router = new Router(tracer, clientFactory, sessions, queue, distributor);
-  }
-
-  @Test
-  public void shouldListAnEmptyDistributorAsMeaningTheGridIsNotReady() throws IOException {
-    HttpResponse response = getStatusHttpResponse(router);
-    assertNotNull(response);
-    Map<String, Object> status = getStatus(router);
-    assertFalse((Boolean) status.get("ready"));
-  }
-
-  @Test
-  public void shouldReturnServerErrorCodeWhenGridIsNotReady() {
-    HttpResponse response = getStatusHttpResponse(router);
-    assertNotNull(response);
-    assertEquals(503, response.getStatus());
-  }
-
-  @Test
-  public void addingANodeThatIsDownMeansTheGridIsNotReady()
-    throws URISyntaxException, IOException {
-    distributor = new LocalDistributor(
-      tracer,
-      bus,
-      clientFactory,
-      sessions,
-      queue,
-      new DefaultSlotSelector(),
-      registrationSecret,
       Duration.ofSeconds(1),
       false,
       Duration.ofSeconds(5));
     handler.addHandler(distributor);
 
     router = new Router(tracer, clientFactory, sessions, queue, distributor);
+  }
 
-    Capabilities capabilities = new ImmutableCapabilities("cheese", "peas");
-    URI uri = new URI("http://exmaple.com");
+  @Test
+  public void shouldListAnEmptyDistributorAsMeaningTheGridIsNotReady() {
+    Map<String, Object> status = getStatus(router);
+    assertFalse((Boolean) status.get("ready"));
+  }
+
+  @Test
+  public void addingANodeThatIsDownMeansTheGridIsNotReady() throws URISyntaxException {
+    Capabilities capabilities = new ImmutableCapabilities("cheese", "amsterdam");
+    URI uri = new URI("https://example.com");
 
     AtomicReference<Availability> isUp = new AtomicReference<>(UP);
-
-    Node node = LocalNode.builder(tracer, bus, uri, uri, registrationSecret)
-      .add(capabilities, new TestSessionFactory(
-        (id, caps) -> new Session(id, uri, new ImmutableCapabilities(), caps, Instant.now())))
-      .advanced()
-      .healthCheck(() -> new HealthCheck.Result(isUp.get(), "TL;DR"))
-      .build();
+    Node node = getNode(capabilities, uri, isUp);
     distributor.add(node);
 
     waitUntilReady(router, Duration.ofSeconds(5));
     isUp.set(DOWN);
     waitUntilNotReady(router, Duration.ofSeconds(5));
 
-    HttpResponse response = getStatusHttpResponse(router);
-    assertNotNull(response);
     Map<String, Object> status = getStatus(router);
-    assertFalse((Boolean) status.get("ready"));
+    assertFalse(status.toString(), (Boolean) status.get("ready"));
   }
 
   @Test
   public void aNodeThatIsUpAndHasSpareSessionsMeansTheGridIsReady() throws URISyntaxException {
     Capabilities capabilities = new ImmutableCapabilities("cheese", "peas");
-    URI uri = new URI("http://exmaple.com");
+    URI uri = new URI("https://example.com");
 
-    AtomicReference<Availability> isUp = new AtomicReference<>(UP);
-
-    Node node = LocalNode.builder(tracer, bus, uri, uri, registrationSecret)
-      .add(capabilities, new TestSessionFactory((id, caps) -> new Session(id, uri, new ImmutableCapabilities(), caps, Instant.now())))
-      .advanced()
-      .healthCheck(() -> new HealthCheck.Result(isUp.get(), "TL;DR"))
-      .build();
+    Node node = getNode(capabilities, uri, new AtomicReference<>(UP));
     distributor.add(node);
 
     waitUntilReady(router, Duration.ofSeconds(5));
   }
 
   @Test
-  public void shouldListAllNodesTheDistributorIsAwareOf() throws URISyntaxException, IOException {
+  public void shouldListAllNodesTheDistributorIsAwareOf() throws URISyntaxException {
     Capabilities chromeCapabilities = new ImmutableCapabilities("browser", "chrome");
     Capabilities firefoxCapabilities = new ImmutableCapabilities("browser", "firefox");
-    URI firstNodeUri = new URI("http://example1.com");
-    URI secondNodeUri = new URI("http://example2.com");
+    URI firstNodeUri = new URI("https://example1.com");
+    URI secondNodeUri = new URI("https://example2.com");
 
     AtomicReference<Availability> isUp = new AtomicReference<>(UP);
 
     Node firstNode = LocalNode.builder(tracer, bus, firstNodeUri, firstNodeUri, registrationSecret)
-      .add(chromeCapabilities, new TestSessionFactory((id, caps) -> new Session(id, firstNodeUri, new ImmutableCapabilities(), caps, Instant.now())))
+      .add(chromeCapabilities, new TestSessionFactory(
+        (id, caps) -> new Session(id, firstNodeUri, new ImmutableCapabilities(), caps,
+                                  Instant.now())))
       .advanced()
       .healthCheck(() -> new HealthCheck.Result(isUp.get(), "TL;DR"))
       .build();
 
-    Node secondNode = LocalNode.builder(tracer, bus, secondNodeUri, secondNodeUri, registrationSecret)
-      .add(firefoxCapabilities, new TestSessionFactory((id, caps) -> new Session(id, secondNodeUri, new ImmutableCapabilities(), caps, Instant.now())))
-      .advanced()
-      .healthCheck(() -> new HealthCheck.Result(isUp.get(), "TL;DR"))
-      .build();
+    Node
+      secondNode =
+      LocalNode.builder(tracer, bus, secondNodeUri, secondNodeUri, registrationSecret)
+        .add(firefoxCapabilities, new TestSessionFactory(
+          (id, caps) -> new Session(id, secondNodeUri, new ImmutableCapabilities(), caps,
+                                    Instant.now())))
+        .advanced()
+        .healthCheck(() -> new HealthCheck.Result(isUp.get(), "TL;DR"))
+        .build();
 
     distributor.add(firstNode);
     distributor.add(secondNode);
@@ -255,22 +191,23 @@ public class RouterTest {
     waitUntilReady(router, Duration.ofSeconds(5));
 
     Map<String, Object> status = getStatus(router);
-    List<Map<String,Object>> nodes = (List<Map<String, Object>>) status.get("nodes");
+    @SuppressWarnings("unchecked")
+    List<Map<String, Object>> nodes = (List<Map<String, Object>>) status.get("nodes");
 
     assertEquals(2, nodes.size());
 
     String firstNodeId = (String) nodes.get(0).get("id");
     String secondNodeId = (String) nodes.get(1).get("id");
 
-    assertFalse(firstNodeId.equals(secondNodeId));
+    assertNotEquals(firstNodeId, secondNodeId);
   }
 
   @Test
-  public void ifNodesHaveSpareSlotsButAlreadyHaveMaxSessionsGridIsReady()
-    throws URISyntaxException, IOException {
+  public void ifNodesHaveSpareSlotsButAlreadyHaveMaxSessionsGridIsNotReady()
+    throws URISyntaxException {
     Capabilities chromeCapabilities = new ImmutableCapabilities("browser", "chrome");
     Capabilities firefoxCapabilities = new ImmutableCapabilities("browser", "firefox");
-    URI uri = new URI("http://example.com");
+    URI uri = new URI("https://example.com");
 
     AtomicReference<Availability> isUp = new AtomicReference<>(UP);
 
@@ -301,35 +238,43 @@ public class RouterTest {
     Either<SessionNotCreatedException, CreateSessionResponse> response =
       distributor.newSession(sessionRequest);
 
-    if (response.isRight()) {
-      Session session = response.right().getSession();
-      assertThat(session).isNotNull();
-      assertTrue(status.toString(), (Boolean) status.get("ready"));
-    } else {
-      fail("Session creation failed", response.left());
-    }
+    assertTrue(response.isRight());
+    Session session = response.right().getSession();
+    assertThat(session).isNotNull();
   }
 
-  private Map<String, Object> getStatus(Router router) throws IOException {
-    HttpResponse response = router.execute(new HttpRequest(GET, "/status"));
-    Map<String, Object> status = null;
-    try (Reader reader = reader(response);
-         JsonInput input = JSON.newInput(reader)) {
-      input.beginObject();
+  private Node getNode(Capabilities capabilities, URI uri,
+                       AtomicReference<Availability> availability) {
+    return LocalNode.builder(tracer, bus, uri, uri, registrationSecret)
+      .add(capabilities, new TestSessionFactory(
+        (id, caps) -> new Session(id, uri, new ImmutableCapabilities(), caps, Instant.now())))
+      .advanced()
+      .healthCheck(() -> new HealthCheck.Result(availability.get(), "TL;DR"))
+      .build();
+  }
 
-      while (input.hasNext()) {
-        if ("value".equals(input.nextName())) {
-          status = input.read(MAP_TYPE);
-        } else {
-          input.skipValue();
-        }
-      }
-    }
+  private static Map<String, Object> getStatus(Router router) {
+    HttpResponse response = router.execute(new HttpRequest(GET, "/status"));
+    Map<String, Object> status = Values.get(response, MAP_TYPE);
     assertNotNull(status);
     return status;
   }
 
-  private HttpResponse getStatusHttpResponse(Router router) {
-    return router.execute(new HttpRequest(GET, "/status"));
+  private static void waitUntilReady(Router router, Duration duration) {
+    waitUntilStatus(router, duration, Boolean.TRUE);
+  }
+
+  private static void waitUntilNotReady(Router router, Duration duration) {
+    waitUntilStatus(router, duration, Boolean.FALSE);
+  }
+
+  private static void waitUntilStatus(Router router, Duration duration, Boolean ready) {
+    new FluentWait<>(router)
+      .withTimeout(duration)
+      .pollingEvery(Duration.ofMillis(100))
+      .until(r -> {
+        Map<String, Object> status = getStatus(router);
+        return ready.equals(status.get("ready"));
+      });
   }
 }
