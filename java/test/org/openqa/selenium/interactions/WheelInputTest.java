@@ -69,8 +69,9 @@ public class WheelInputTest {
     WheelInput wheelInput = new WheelInput("test-wheel");
     Map<String, Object> encodedResult = wheelInput.encode();
 
-    assertThat(encodedResult).containsEntry("id", "test-wheel");
-    assertThat(encodedResult).containsEntry("type", "wheel");
+    assertThat(encodedResult)
+      .containsEntry("id", "test-wheel")
+      .containsEntry("type", "wheel");
   }
 
   @Test
@@ -86,13 +87,14 @@ public class WheelInputTest {
       Origin.viewport());
 
     Map<String, Object> encodedResult = interaction.encode();
-    assertThat(encodedResult).containsEntry("type", "scroll");
-    assertThat(encodedResult).containsEntry("x", 25);
-    assertThat(encodedResult).containsEntry("y", 50);
-    assertThat(encodedResult).containsEntry("deltaX", 30);
-    assertThat(encodedResult).containsEntry("deltaY", 60);
-    assertThat(encodedResult).containsEntry("duration", 1000L);
-    assertThat(encodedResult).containsEntry("origin", "viewport");
+    assertThat(encodedResult)
+      .containsEntry("type", "scroll")
+      .containsEntry("x", 25)
+      .containsEntry("y", 50)
+      .containsEntry("deltaX", 30)
+      .containsEntry("deltaY", 60)
+      .containsEntry("duration", 1000L)
+      .containsEntry("origin", "viewport");
   }
 
   @Test
@@ -111,13 +113,14 @@ public class WheelInputTest {
       Origin.fromElement(innerElement));
 
     Map<String, Object> encodedResult = interaction.encode();
-    assertThat(encodedResult).containsEntry("type", "scroll");
-    assertThat(encodedResult).containsEntry("x", 25);
-    assertThat(encodedResult).containsEntry("y", 50);
-    assertThat(encodedResult).containsEntry("deltaX", 30);
-    assertThat(encodedResult).containsEntry("deltaY", 60);
-    assertThat(encodedResult).containsEntry("duration", 1000L);
-    assertThat(encodedResult).containsEntry("origin", innerElement);
+    assertThat(encodedResult)
+      .containsEntry("type", "scroll")
+      .containsEntry("x", 25)
+      .containsEntry("y", 50)
+      .containsEntry("deltaX", 30)
+      .containsEntry("deltaY", 60)
+      .containsEntry("duration", 1000L)
+      .containsEntry("origin", innerElement);
   }
 
   @Test(expected = IllegalArgumentException.class)
