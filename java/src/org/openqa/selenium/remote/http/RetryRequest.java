@@ -17,19 +17,18 @@
 
 package org.openqa.selenium.remote.http;
 
-import static com.google.common.net.HttpHeaders.CONTENT_LENGTH;
-import static java.net.HttpURLConnection.HTTP_INTERNAL_ERROR;
-import static java.net.HttpURLConnection.HTTP_UNAVAILABLE;
-import static org.openqa.selenium.internal.Debug.getDebugLogLevel;
+import org.openqa.selenium.TimeoutException;
 
 import dev.failsafe.Failsafe;
 import dev.failsafe.RetryPolicy;
 
-import org.openqa.selenium.TimeoutException;
-
 import java.net.ConnectException;
-import java.time.temporal.ChronoUnit;
 import java.util.logging.Logger;
+
+import static com.google.common.net.HttpHeaders.CONTENT_LENGTH;
+import static java.net.HttpURLConnection.HTTP_INTERNAL_ERROR;
+import static java.net.HttpURLConnection.HTTP_UNAVAILABLE;
+import static org.openqa.selenium.internal.Debug.getDebugLogLevel;
 
 public class RetryRequest implements Filter {
 
@@ -39,7 +38,6 @@ public class RetryRequest implements Filter {
   private static final RetryPolicy<Object> connectionFailurePolicy =
     RetryPolicy.builder()
       .handleIf(failure -> failure.getCause() instanceof ConnectException)
-      .withBackoff(1, 4, ChronoUnit.SECONDS)
       .withMaxRetries(3)
       .onRetry(e -> LOG.log(
         getDebugLogLevel(),
@@ -51,7 +49,6 @@ public class RetryRequest implements Filter {
   private static final RetryPolicy<Object> readTimeoutPolicy =
     RetryPolicy.builder()
       .handle(TimeoutException.class)
-      .withBackoff(1, 4, ChronoUnit.SECONDS)
       .withMaxRetries(3)
       .onRetry(e -> LOG.log(
         getDebugLogLevel(),
@@ -65,7 +62,6 @@ public class RetryRequest implements Filter {
       .handleResultIf(response -> ((HttpResponse)response).getStatus() == HTTP_INTERNAL_ERROR &&
                                   Integer.parseInt(((HttpResponse)response).getHeader(CONTENT_LENGTH)) == 0)
       .handleResultIf(response -> ((HttpResponse)response).getStatus() == HTTP_UNAVAILABLE)
-      .withBackoff(1, 2, ChronoUnit.SECONDS)
       .withMaxRetries(2)
       .onRetry(e -> LOG.log(
         getDebugLogLevel(),

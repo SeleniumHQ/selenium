@@ -18,6 +18,7 @@
 package org.openqa.selenium.remote.http;
 
 import com.google.common.collect.ImmutableMap;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.environment.webserver.AppServer;
@@ -45,6 +46,7 @@ public class RetryRequestTest {
   public void setUp() throws MalformedURLException {
     ClientConfig config = ClientConfig.defaultConfig()
       .baseUrl(URI.create("http://localhost:2345").toURL())
+      .withRetries()
       .readTimeout(Duration.ofSeconds(1));
     client = new NettyClient.Factory().createClient(config);
   }
