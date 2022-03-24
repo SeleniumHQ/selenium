@@ -17,16 +17,6 @@
 
 package org.openqa.selenium.grid.node.remote;
 
-import static java.net.HttpURLConnection.HTTP_OK;
-import static org.openqa.selenium.grid.data.Availability.DOWN;
-import static org.openqa.selenium.grid.data.Availability.DRAINING;
-import static org.openqa.selenium.grid.data.Availability.UP;
-import static org.openqa.selenium.remote.http.Contents.asJson;
-import static org.openqa.selenium.remote.http.Contents.reader;
-import static org.openqa.selenium.remote.http.HttpMethod.DELETE;
-import static org.openqa.selenium.remote.http.HttpMethod.GET;
-import static org.openqa.selenium.remote.http.HttpMethod.POST;
-
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 
@@ -50,8 +40,6 @@ import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.json.JsonInput;
 import org.openqa.selenium.remote.SessionId;
-import org.openqa.selenium.remote.http.AddSeleniumUserAgent;
-import org.openqa.selenium.remote.http.ClientConfig;
 import org.openqa.selenium.remote.http.Filter;
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpHandler;
@@ -69,6 +57,17 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
+
+import static java.net.HttpURLConnection.HTTP_OK;
+import static org.openqa.selenium.grid.data.Availability.DOWN;
+import static org.openqa.selenium.grid.data.Availability.DRAINING;
+import static org.openqa.selenium.grid.data.Availability.UP;
+import static org.openqa.selenium.net.Urls.fromUri;
+import static org.openqa.selenium.remote.http.Contents.asJson;
+import static org.openqa.selenium.remote.http.Contents.reader;
+import static org.openqa.selenium.remote.http.HttpMethod.DELETE;
+import static org.openqa.selenium.remote.http.HttpMethod.GET;
+import static org.openqa.selenium.remote.http.HttpMethod.POST;
 
 public class RemoteNode extends Node {
 
@@ -90,14 +89,8 @@ public class RemoteNode extends Node {
     this.externalUri = Require.nonNull("External URI", externalUri);
     this.capabilities = ImmutableSet.copyOf(capabilities);
 
-    HttpClient.Factory httpClientFactory = Require.nonNull("HTTP client factory", clientFactory);
-    // A client config without RetryRequest(), not needed to monitor the Nodes because the
-    // health checks implicitly do the retries.
-    ClientConfig config = ClientConfig
-      .defaultConfig()
-      .baseUri(externalUri)
-      .filter(new AddSeleniumUserAgent());
-    this.client = httpClientFactory.createClient(config);
+    this.client = Require.nonNull("HTTP client factory", clientFactory)
+      .createClient(fromUri(externalUri));
 
     this.healthCheck = new RemoteCheck();
 
@@ -260,11 +253,12 @@ public class RemoteNode extends Node {
     }
   }
 
+  @SuppressWarnings("unused")
   private Map<String, Object> toJson() {
     return ImmutableMap.of(
-        "id", getId(),
-        "uri", externalUri,
-        "capabilities", capabilities);
+      "id", getId(),
+      "uri", externalUri,
+      "capabilities", capabilities);
   }
 
   private class RemoteCheck implements HealthCheck {
