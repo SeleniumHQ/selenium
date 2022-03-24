@@ -22,8 +22,8 @@ import static java.net.HttpURLConnection.HTTP_INTERNAL_ERROR;
 import static java.net.HttpURLConnection.HTTP_UNAVAILABLE;
 import static org.openqa.selenium.internal.Debug.getDebugLogLevel;
 
-import net.jodah.failsafe.Failsafe;
-import net.jodah.failsafe.RetryPolicy;
+import dev.failsafe.Failsafe;
+import dev.failsafe.RetryPolicy;
 
 import org.openqa.selenium.TimeoutException;
 
@@ -36,39 +36,42 @@ public class RetryRequest implements Filter {
   private static final Logger LOG = Logger.getLogger(RetryRequest.class.getName());
 
   // Retry on connection error.
-  private static final RetryPolicy<HttpResponse> connectionFailurePolicy =
-    new RetryPolicy<HttpResponse>()
+  private static final RetryPolicy<Object> connectionFailurePolicy =
+    RetryPolicy.builder()
       .handleIf(failure -> failure.getCause() instanceof ConnectException)
       .withBackoff(1, 4, ChronoUnit.SECONDS)
       .withMaxRetries(3)
       .onRetry(e -> LOG.log(
         getDebugLogLevel(),
         "Connection failure #{0}. Retrying.",
-        e.getAttemptCount()));
+        e.getAttemptCount()))
+      .build();
 
   // Retry on read timeout.
-  private static final RetryPolicy<HttpResponse> readTimeoutPolicy =
-    new RetryPolicy<HttpResponse>()
+  private static final RetryPolicy<Object> readTimeoutPolicy =
+    RetryPolicy.builder()
       .handle(TimeoutException.class)
       .withBackoff(1, 4, ChronoUnit.SECONDS)
       .withMaxRetries(3)
       .onRetry(e -> LOG.log(
         getDebugLogLevel(),
         "Read timeout #{0}. Retrying.",
-        e.getAttemptCount()));
+        e.getAttemptCount()))
+      .build();
 
   // Retry if server is unavailable or an internal server error occurs without response body.
-  private static final RetryPolicy<HttpResponse> serverErrorPolicy =
-    new RetryPolicy<HttpResponse>()
-      .handleResultIf(response -> response.getStatus() == HTTP_INTERNAL_ERROR &&
-                                  Integer.parseInt(response.getHeader(CONTENT_LENGTH)) == 0)
-      .handleResultIf(response -> response.getStatus() == HTTP_UNAVAILABLE)
+  private static final RetryPolicy<Object> serverErrorPolicy =
+    RetryPolicy.builder()
+      .handleResultIf(response -> ((HttpResponse)response).getStatus() == HTTP_INTERNAL_ERROR &&
+                                  Integer.parseInt(((HttpResponse)response).getHeader(CONTENT_LENGTH)) == 0)
+      .handleResultIf(response -> ((HttpResponse)response).getStatus() == HTTP_UNAVAILABLE)
       .withBackoff(1, 2, ChronoUnit.SECONDS)
       .withMaxRetries(2)
       .onRetry(e -> LOG.log(
         getDebugLogLevel(),
         "Failure due to server error #{0}. Retrying.",
-        e.getAttemptCount()));
+        e.getAttemptCount()))
+      .build();
 
   @Override
   public HttpHandler apply(HttpHandler next) {

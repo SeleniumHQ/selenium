@@ -21,8 +21,8 @@ import com.google.auto.service.AutoService;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.net.MediaType;
 
-import net.jodah.failsafe.Failsafe;
-import net.jodah.failsafe.RetryPolicy;
+import dev.failsafe.Failsafe;
+import dev.failsafe.RetryPolicy;
 
 import org.openqa.selenium.BuildInfo;
 import org.openqa.selenium.cli.CliCommand;
@@ -192,11 +192,12 @@ public class NodeServer extends TemplateGridServerCommand {
 
         // Unlimited attempts, every X seconds, we assume a Node should not need more than Y minutes to register
         // X defaults to 10s and Y to 120 seconds, but the user can overwrite that.
-        RetryPolicy<Object> registrationPolicy = new RetryPolicy<>()
+        RetryPolicy<Object> registrationPolicy = RetryPolicy.builder()
           .withMaxAttempts(-1)
           .withMaxDuration(nodeOptions.getRegisterPeriod())
           .withDelay(nodeOptions.getRegisterCycle())
-          .handleResultIf(result -> true);
+          .handleResultIf(result -> true)
+          .build();
 
         LOG.info("Starting registration process for Node " + node.getUri());
         Executors.newSingleThreadExecutor().submit(() -> {
