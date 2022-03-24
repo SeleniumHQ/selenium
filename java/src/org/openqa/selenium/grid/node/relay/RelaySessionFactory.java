@@ -17,18 +17,6 @@
 
 package org.openqa.selenium.grid.node.relay;
 
-import static org.openqa.selenium.remote.RemoteTags.CAPABILITIES;
-import static org.openqa.selenium.remote.RemoteTags.CAPABILITIES_EVENT;
-import static org.openqa.selenium.remote.tracing.AttributeKey.DOWNSTREAM_DIALECT;
-import static org.openqa.selenium.remote.tracing.AttributeKey.DRIVER_RESPONSE;
-import static org.openqa.selenium.remote.tracing.AttributeKey.DRIVER_URL;
-import static org.openqa.selenium.remote.tracing.AttributeKey.EXCEPTION_EVENT;
-import static org.openqa.selenium.remote.tracing.AttributeKey.EXCEPTION_MESSAGE;
-import static org.openqa.selenium.remote.tracing.AttributeKey.LOGGER_CLASS;
-import static org.openqa.selenium.remote.tracing.AttributeKey.UPSTREAM_DIALECT;
-import static org.openqa.selenium.remote.tracing.EventAttribute.setValue;
-import static org.openqa.selenium.remote.tracing.Tags.EXCEPTION;
-
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.SessionNotCreatedException;
@@ -46,8 +34,6 @@ import org.openqa.selenium.remote.DriverCommand;
 import org.openqa.selenium.remote.ProtocolHandshake;
 import org.openqa.selenium.remote.Response;
 import org.openqa.selenium.remote.SessionId;
-import org.openqa.selenium.remote.http.AddSeleniumUserAgent;
-import org.openqa.selenium.remote.http.ClientConfig;
 import org.openqa.selenium.remote.http.Contents;
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpMethod;
@@ -68,6 +54,18 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import static org.openqa.selenium.remote.RemoteTags.CAPABILITIES;
+import static org.openqa.selenium.remote.RemoteTags.CAPABILITIES_EVENT;
+import static org.openqa.selenium.remote.tracing.AttributeKey.DOWNSTREAM_DIALECT;
+import static org.openqa.selenium.remote.tracing.AttributeKey.DRIVER_RESPONSE;
+import static org.openqa.selenium.remote.tracing.AttributeKey.DRIVER_URL;
+import static org.openqa.selenium.remote.tracing.AttributeKey.EXCEPTION_EVENT;
+import static org.openqa.selenium.remote.tracing.AttributeKey.EXCEPTION_MESSAGE;
+import static org.openqa.selenium.remote.tracing.AttributeKey.LOGGER_CLASS;
+import static org.openqa.selenium.remote.tracing.AttributeKey.UPSTREAM_DIALECT;
+import static org.openqa.selenium.remote.tracing.EventAttribute.setValue;
+import static org.openqa.selenium.remote.tracing.Tags.EXCEPTION;
 
 public class RelaySessionFactory implements SessionFactory {
 
@@ -201,10 +199,7 @@ public class RelaySessionFactory implements SessionFactory {
       return true;
     }
     try {
-      ClientConfig config = ClientConfig.defaultConfig()
-        .baseUri(serviceStatusUrl.toURI())
-        .filter(new AddSeleniumUserAgent());
-      HttpClient client = clientFactory.createClient(config);
+      HttpClient client = clientFactory.createClient(serviceStatusUrl);
       HttpResponse response = client
         .execute(new HttpRequest(HttpMethod.GET, serviceStatusUrl.toString()));
       LOG.log(Debug.getDebugLogLevel(), Contents.string(response));
