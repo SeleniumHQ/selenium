@@ -26,6 +26,8 @@ import org.openqa.selenium.remote.http.Routable;
 import org.openqa.selenium.remote.http.UrlPath;
 
 import java.io.UncheckedIOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -67,9 +69,16 @@ public class ResourceHandler implements Routable {
     Optional<Resource> result = resource.get(req.getUri());
 
     if (!result.isPresent()) {
+      String errorMessage;
+      try {
+        new URL(req.getUri());
+        errorMessage = "Unable to find " + req.getUri();
+      } catch (MalformedURLException ignore) {
+        errorMessage = "Unable to find resource, invalid path in url.";
+      }
       return new HttpResponse()
         .setStatus(HTTP_NOT_FOUND)
-        .setContent(utf8String("Unable to find " + req.getUri()));
+        .setContent(utf8String(errorMessage));
     }
 
     Resource resource = result.get();
