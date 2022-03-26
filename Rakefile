@@ -83,7 +83,7 @@ CrazyFun::Mappings::RakeMappings.new.add_all(crazy_fun)
 # FIXME: the rules for the targets were removed and build files won't load
 # crazy_fun.create_tasks(Dir['**/build.desc'])
 
-#  If it looks like a bazel target, build it with bazel
+# If it looks like a bazel target, build it with bazel
 rule /\/\/.*/ do |task|
   task.out = Bazel.execute('build', %w[--workspace_status_command scripts/build-info.py], task.name)
 end
@@ -96,7 +96,6 @@ task '//java/test/org/openqa/selenium/environment/webserver:webserver:uber' => [
 # Java targets required for release. These should all be java_export targets.
 # Generated from: bazel query 'kind(maven_publish, set(//java/... //third_party/...))' | sort
 JAVA_RELEASE_TARGETS = %w[
-  //java/src/com/thoughtworks/selenium/webdriven:webdriven.publish
   //java/src/org/openqa/selenium/chrome:chrome.publish
   //java/src/org/openqa/selenium/chromium:chromium.publish
   //java/src/org/openqa/selenium/devtools/v85:v85.publish
