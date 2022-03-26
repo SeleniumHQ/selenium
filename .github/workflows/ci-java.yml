@@ -16,7 +16,7 @@ on:
       - trunk
 
 env:
-  NODE_VERSION: '13.x'
+  NODE_VERSION: '16.x'
 
 jobs:
   check_workflow:
