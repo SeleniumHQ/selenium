@@ -110,7 +110,7 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v2
         with:
-          node-version: '15.x'
+          node-version: '16.x'
       - name: NPM install
         run: cd javascript/grid-ui && npm install
       - name: Run unit tests
