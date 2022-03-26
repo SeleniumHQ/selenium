@@ -1,12 +1,12 @@
 {
   "devDependencies": {
-    "@babel/preset-react": "^7.16.0",
+    "@babel/preset-react": "^7.16.7",
     "@bazel/buildifier": "^4.0.0",
     "@bazel/ibazel": "^0.15.10",
     "@bazel/jasmine": "^4.6.1",
     "@bazel/typescript": "^4.6.1",
-    "@testing-library/jest-dom": "^5.14.1",
-    "@testing-library/react": "^11.2.7",
+    "@testing-library/jest-dom": "^5.16.3",
+    "@testing-library/react": "^12.1.4",
     "@testing-library/user-event": "^13.1.9",
     "@types/enzyme": "^3.10.8",
     "@types/jest": "^26.0.0",
@@ -28,7 +28,7 @@
     "serve-index": "^1.9.1",
     "sinon": "^7.5.0",
     "ts-jest": "^26.5.4",
-    "typescript": "^3.9.7",
+    "typescript": "^3.9.10",
     "xml2js": "^0.4.23"
   },
   "repository": {
@@ -36,26 +36,27 @@
     "url": "https://github.com/SeleniumHQ/selenium.git"
   },
   "dependencies": {
-    "@apollo/client": "^3.3.20",
+    "@apollo/client": "^3.5.10",
     "@material-ui/core": "^4.11.4",
     "@material-ui/icons": "^4.11.2",
     "@novnc/novnc": "^1.2.0",
-    "@types/react": "^17.0.11",
-    "@types/react-dom": "^17.0.7",
+    "@types/react": "^17.0.43",
+    "@types/react-dom": "^17.0.14",
     "@types/react-modal": "^3.12.0",
-    "@types/react-router-dom": "^5.1.7",
+    "@types/react-router-dom": "^5.3.3",
     "clsx": "^1.1.1",
-    "graphql": "^15.5.0",
+    "graphql": "^16.3.0",
     "graphql.macro": "^1.4.2",
     "jszip": "^3.7.1",
     "pretty-ms": "^7.0.1",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
     "react-modal": "^3.14.3",
-    "react-router-dom": "^5.2.0",
+    "react-router-dom": "^5.3.0",
     "rimraf": "^2.7.1",
     "source-map-explorer": "^2.5.2",
     "tmp": "^0.2.1",
+    "ts-standard": "^11.0.0",
     "ws": "^8.4.0"
   }
 }
