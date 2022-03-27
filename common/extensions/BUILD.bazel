@@ -5,16 +5,17 @@ filegroup(
         "**/*",
     ]),
     visibility = [
-        "//javascript/node/selenium-webdriver:__pkg__",
         "//java/test/org/openqa/selenium/chrome:__pkg__",
         "//java/test/org/openqa/selenium/edge:__pkg__",
-        "//java/test/org/openqa/selenium/firefox:__pkg__",
         "//java/test/org/openqa/selenium/environment:__pkg__",
+        "//java/test/org/openqa/selenium/firefox:__pkg__",
+        "//javascript/node/selenium-webdriver:__pkg__",
     ],
 )
+
 exports_files(
     [
-       "webextensions-selenium-example.xpi"
+        "webextensions-selenium-example.xpi",
     ],
     visibility = [
         "//java/test/org/openqa/selenium/firefox:__pkg__",

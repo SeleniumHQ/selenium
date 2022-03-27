@@ -6,7 +6,7 @@ BROWSER_VERSIONS = [
     "v85",
     "v97",
     "v98",
-    "v99"
+    "v99",
 ]
 
 SRC_FILES = [

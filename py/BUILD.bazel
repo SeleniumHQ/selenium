@@ -11,7 +11,7 @@ BROWSER_VERSIONS = [
     "v85",
     "v97",
     "v98",
-    "v99"
+    "v99",
 ]
 
 TEST_DEPS = [
@@ -84,7 +84,7 @@ py_library(
         ":get-attribute",
         ":is-displayed",
         ":mutation-listener",
-        ":favourite_color"
+        ":favourite_color",
     ] + [":create-cdp-srcs-" + n for n in BROWSER_VERSIONS],
     imports = ["."],
     visibility = ["//visibility:public"],
@@ -344,11 +344,11 @@ py_test_suite(
         "--instafail",
         "--driver=firefox",
     ],
+    data = [
+        "//third_party/firebug:favourite_colour-1.1-an+fx.xpi",
+    ],
     tags = [
         "no-sandbox",
-    ],
-    data = [
-      "//third_party/firebug:favourite_colour-1.1-an+fx.xpi",
     ],
     deps = [
         ":init-tree",
