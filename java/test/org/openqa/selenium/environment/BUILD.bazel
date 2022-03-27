@@ -27,8 +27,8 @@ java_library(
     ),
     data = [
         "webserver/keystore",
-        "//common/src/web",
         "//common/extensions",
+        "//common/src/web",
         "//javascript/atoms",
         "//javascript/atoms:deps",
         "//third_party/closure/goog",

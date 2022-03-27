@@ -76,10 +76,10 @@ java_selenium_test_suite(
         "firefox",
     ],
     data = [
-        "//common/extensions"
+        "//common/extensions",
     ],
     resources = [
-        "//common/extensions"
+        "//common/extensions",
     ],
     tags = [
         "selenium-remote",

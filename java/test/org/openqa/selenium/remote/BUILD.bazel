@@ -39,10 +39,10 @@ java_test_suite(
 java_selenium_test_suite(
     name = "large-tests",
     size = "large",
+    srcs = REMOTE_TESTS,
     tags = [
         "selenium-remote",
     ],
-    srcs = REMOTE_TESTS,
     deps = [
         "//java/src/org/openqa/selenium/remote",
         "//java/test/org/openqa/selenium/testing:annotations",
