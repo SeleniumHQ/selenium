@@ -13,8 +13,7 @@
 <!--[if IE]>
 <script type="text/javascript" src="../../../../jquery/jszip-utils/dist/jszip-utils-ie.min.js"></script>
 <![endif]-->
-<script type="text/javascript" src="../../../../jquery/jquery-3.3.1.js"></script>
-<script type="text/javascript" src="../../../../jquery/jquery-migrate-3.0.1.js"></script>
+<script type="text/javascript" src="../../../../jquery/jquery-3.5.1.js"></script>
 <script type="text/javascript" src="../../../../jquery/jquery-ui.js"></script>
 </head>
 <body>
@@ -27,8 +26,8 @@
     catch(err) {
     }
 //-->
-var data = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":42};
-var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"],32:["t6","Deprecated Methods"]};
+var data = {"i0":10,"i1":10,"i2":10,"i3":10};
+var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
 var tableTab = "tableTab";
@@ -183,7 +182,7 @@ extends <a href="../remote/service/DriverService.Builder.html" title="class in o
 </a>
 <h3>Method Summary</h3>
 <table class="memberSummary">
-<caption><span id="t0" class="activeTableTab"><span>All Methods</span><span class="tabEnd">&nbsp;</span></span><span id="t2" class="tableTab"><span><a href="javascript:show(2);">Instance Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t4" class="tableTab"><span><a href="javascript:show(8);">Concrete Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t6" class="tableTab"><span><a href="javascript:show(32);">Deprecated Methods</a></span><span class="tabEnd">&nbsp;</span></span></caption>
+<caption><span id="t0" class="activeTableTab"><span>All Methods</span><span class="tabEnd">&nbsp;</span></span><span id="t2" class="tableTab"><span><a href="javascript:show(2);">Instance Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t4" class="tableTab"><span><a href="javascript:show(8);">Concrete Methods</a></span><span class="tabEnd">&nbsp;</span></span></caption>
 <tr>
 <th class="colFirst" scope="col">Modifier and Type</th>
 <th class="colSecond" scope="col">Method</th>
@@ -214,15 +213,6 @@ extends <a href="../remote/service/DriverService.Builder.html" title="class in o
 <td class="colLast">
 <div class="block">Provides a measure of how strongly this <a href="../remote/service/DriverService.html" title="class in org.openqa.selenium.remote.service"><code>DriverService</code></a> supports the given
  <code>capabilities</code>.</div>
-</td>
-</tr>
-<tr id="i4" class="altColor">
-<td class="colFirst"><code><a href="SafariDriverService.Builder.html" title="class in org.openqa.selenium.safari">SafariDriverService.Builder</a></code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#usingTechnologyPreview(boolean)">usingTechnologyPreview</a></span>&#8203;(boolean&nbsp;useTechnologyPreview)</code></th>
-<td class="colLast">
-<div class="block"><span class="deprecatedLabel">Deprecated.</span>
-<div class="deprecationComment">Directly use <a href="SafariTechPreviewDriverService.html" title="class in org.openqa.selenium.safari"><code>SafariTechPreviewDriverService</code></a></div>
-</div>
 </td>
 </tr>
 </table>
@@ -293,19 +283,6 @@ extends <a href="../remote/service/DriverService.Builder.html" title="class in o
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
 <dd><code><a href="../remote/service/DriverService.Builder.html#score(org.openqa.selenium.Capabilities)">score</a></code>&nbsp;in class&nbsp;<code><a href="../remote/service/DriverService.Builder.html" title="class in org.openqa.selenium.remote.service">DriverService.Builder</a>&lt;<a href="SafariDriverService.html" title="class in org.openqa.selenium.safari">SafariDriverService</a>,&#8203;<a href="SafariDriverService.Builder.html" title="class in org.openqa.selenium.safari">SafariDriverService.Builder</a>&gt;</code></dd>
 </dl>
-</li>
-</ul>
-<a id="usingTechnologyPreview(boolean)">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>usingTechnologyPreview</h4>
-<pre class="methodSignature">@Deprecated
-public&nbsp;<a href="SafariDriverService.Builder.html" title="class in org.openqa.selenium.safari">SafariDriverService.Builder</a>&nbsp;usingTechnologyPreview&#8203;(boolean&nbsp;useTechnologyPreview)</pre>
-<div class="deprecationBlock"><span class="deprecatedLabel">Deprecated.</span>
-<div class="deprecationComment">Directly use <a href="SafariTechPreviewDriverService.html" title="class in org.openqa.selenium.safari"><code>SafariTechPreviewDriverService</code></a></div>
-</div>
 </li>
 </ul>
 <a id="findDefaultExecutable()">

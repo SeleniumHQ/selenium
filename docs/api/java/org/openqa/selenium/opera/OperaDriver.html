@@ -13,8 +13,7 @@
 <!--[if IE]>
 <script type="text/javascript" src="../../../../jquery/jszip-utils/dist/jszip-utils-ie.min.js"></script>
 <![endif]-->
-<script type="text/javascript" src="../../../../jquery/jquery-3.3.1.js"></script>
-<script type="text/javascript" src="../../../../jquery/jquery-migrate-3.0.1.js"></script>
+<script type="text/javascript" src="../../../../jquery/jquery-3.5.1.js"></script>
 <script type="text/javascript" src="../../../../jquery/jquery-ui.js"></script>
 </head>
 <body>
@@ -27,8 +26,8 @@
     catch(err) {
     }
 //-->
-var data = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10};
-var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
+var data = {"i0":42,"i1":42,"i2":42,"i3":42,"i4":42};
+var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"],32:["t6","Deprecated Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
 var tableTab = "tableTab";
@@ -145,14 +144,37 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dd><code><a href="../HasCapabilities.html" title="interface in org.openqa.selenium">HasCapabilities</a></code>, <code><a href="../html5/LocationContext.html" title="interface in org.openqa.selenium.html5">LocationContext</a></code>, <code><a href="../html5/WebStorage.html" title="interface in org.openqa.selenium.html5">WebStorage</a></code>, <code><a href="../interactions/HasInputDevices.html" title="interface in org.openqa.selenium.interactions">HasInputDevices</a></code>, <code><a href="../interactions/Interactive.html" title="interface in org.openqa.selenium.interactions">Interactive</a></code>, <code><a href="../JavascriptExecutor.html" title="interface in org.openqa.selenium">JavascriptExecutor</a></code>, <code><a href="../PrintsPage.html" title="interface in org.openqa.selenium">PrintsPage</a></code>, <code><a href="../SearchContext.html" title="interface in org.openqa.selenium">SearchContext</a></code>, <code><a href="../TakesScreenshot.html" title="interface in org.openqa.selenium">TakesScreenshot</a></code>, <code><a href="../virtualauthenticator/HasVirtualAuthenticator.html" title="interface in org.openqa.selenium.virtualauthenticator">HasVirtualAuthenticator</a></code>, <code><a href="../WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a></code></dd>
 </dl>
 <hr>
-<pre>public class <span class="typeNameLabel">OperaDriver</span>
+<pre>@Deprecated
+public class <span class="typeNameLabel">OperaDriver</span>
 extends <a href="../remote/RemoteWebDriver.html" title="class in org.openqa.selenium.remote">RemoteWebDriver</a>
 implements <a href="../html5/LocationContext.html" title="interface in org.openqa.selenium.html5">LocationContext</a>, <a href="../html5/WebStorage.html" title="interface in org.openqa.selenium.html5">WebStorage</a></pre>
+<div class="deprecationBlock"><span class="deprecatedLabel">Deprecated.</span>
+<div class="deprecationComment">Use <a href="../chrome/ChromeDriver.html" title="class in org.openqa.selenium.chrome"><code>ChromeDriver</code></a> with
+ <a href="../chromium/ChromiumOptions.html#setBinary(java.io.File)"><code>ChromiumOptions.setBinary(File)</code></a> or <a href="../chromium/ChromiumOptions.html#setBinary(java.lang.String)"><code>ChromiumOptions.setBinary(String)</code></a>
+ to set the path to the Opera browser.
+
+ <p>Example usage:
+ <pre><code>
+ ChromeOptions options = new ChromeOptions()
+ options.setBinary(new File("/path/to/opera"));
+
+ // For using Opera browser with ChromeDriver:
+ ChromeDriver driver = new ChromeDriver(options);
+
+ // For use with RemoteWebDriver:
+ ChromeOptions options = new ChromeOptions();
+ options.setBinary(new File("/path/to/opera"));
+ RemoteWebDriver driver = new RemoteWebDriver(
+     new URL("http://localhost:4444/"), options);
+ </code></pre></div>
+</div>
 <div class="block">A <a href="../WebDriver.html" title="interface in org.openqa.selenium"><code>WebDriver</code></a> implementation that controls a Blink-based Opera browser running on the local
  machine. It requires an <code>operadriver</code> executable to be available in PATH.</div>
 <dl>
 <dt><span class="seeLabel">See Also:</span></dt>
-<dd><a href="https://github.com/operasoftware/operachromiumdriver">operadriver</a></dd>
+<dd><a href="https://github.com/operasoftware/operachromiumdriver">operadriver</a>
+ 
+ Since operadriver does not support w3c, Selenium will remove the support in the next version.</dd>
 </dl>
 </li>
 </ul>
@@ -200,6 +222,7 @@ implements <a href="../html5/LocationContext.html" title="interface in org.openq
 <tr class="altColor">
 <th class="colConstructorName" scope="row"><code><span class="memberNameLink"><a href="#%3Cinit%3E()">OperaDriver</a></span>()</code></th>
 <td class="colLast">
+<div class="block"><span class="deprecatedLabel">Deprecated.</span></div>
 <div class="block">Creates a new OperaDriver using the <a href="OperaDriverService.html#createDefaultService()"><code>default</code></a>
  server configuration.</div>
 </td>
@@ -215,6 +238,7 @@ implements <a href="../html5/LocationContext.html" title="interface in org.openq
 <tr class="altColor">
 <th class="colConstructorName" scope="row"><code><span class="memberNameLink"><a href="#%3Cinit%3E(org.openqa.selenium.opera.OperaDriverService)">OperaDriver</a></span>&#8203;(<a href="OperaDriverService.html" title="class in org.openqa.selenium.opera">OperaDriverService</a>&nbsp;service)</code></th>
 <td class="colLast">
+<div class="block"><span class="deprecatedLabel">Deprecated.</span></div>
 <div class="block">Creates a new OperaDriver instance.</div>
 </td>
 </tr>
@@ -231,12 +255,14 @@ implements <a href="../html5/LocationContext.html" title="interface in org.openq
 <th class="colConstructorName" scope="row"><code><span class="memberNameLink"><a href="#%3Cinit%3E(org.openqa.selenium.opera.OperaDriverService,org.openqa.selenium.opera.OperaOptions)">OperaDriver</a></span>&#8203;(<a href="OperaDriverService.html" title="class in org.openqa.selenium.opera">OperaDriverService</a>&nbsp;service,
            <a href="OperaOptions.html" title="class in org.openqa.selenium.opera">OperaOptions</a>&nbsp;options)</code></th>
 <td class="colLast">
+<div class="block"><span class="deprecatedLabel">Deprecated.</span></div>
 <div class="block">Creates a new OperaDriver instance with the specified options.</div>
 </td>
 </tr>
 <tr class="rowColor">
 <th class="colConstructorName" scope="row"><code><span class="memberNameLink"><a href="#%3Cinit%3E(org.openqa.selenium.opera.OperaOptions)">OperaDriver</a></span>&#8203;(<a href="OperaOptions.html" title="class in org.openqa.selenium.opera">OperaOptions</a>&nbsp;options)</code></th>
 <td class="colLast">
+<div class="block"><span class="deprecatedLabel">Deprecated.</span></div>
 <div class="block">Creates a new OperaDriver instance with the specified options.</div>
 </td>
 </tr>
@@ -252,7 +278,7 @@ implements <a href="../html5/LocationContext.html" title="interface in org.openq
 </a>
 <h3>Method Summary</h3>
 <table class="memberSummary">
-<caption><span id="t0" class="activeTableTab"><span>All Methods</span><span class="tabEnd">&nbsp;</span></span><span id="t2" class="tableTab"><span><a href="javascript:show(2);">Instance Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t4" class="tableTab"><span><a href="javascript:show(8);">Concrete Methods</a></span><span class="tabEnd">&nbsp;</span></span></caption>
+<caption><span id="t0" class="activeTableTab"><span>All Methods</span><span class="tabEnd">&nbsp;</span></span><span id="t2" class="tableTab"><span><a href="javascript:show(2);">Instance Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t4" class="tableTab"><span><a href="javascript:show(8);">Concrete Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t6" class="tableTab"><span><a href="javascript:show(32);">Deprecated Methods</a></span><span class="tabEnd">&nbsp;</span></span></caption>
 <tr>
 <th class="colFirst" scope="col">Modifier and Type</th>
 <th class="colSecond" scope="col">Method</th>
@@ -261,17 +287,22 @@ implements <a href="../html5/LocationContext.html" title="interface in org.openq
 <tr id="i0" class="altColor">
 <td class="colFirst"><code><a href="../html5/LocalStorage.html" title="interface in org.openqa.selenium.html5">LocalStorage</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getLocalStorage()">getLocalStorage</a></span>()</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block"><span class="deprecatedLabel">Deprecated.</span></div>
+&nbsp;</td>
 </tr>
 <tr id="i1" class="rowColor">
 <td class="colFirst"><code><a href="../html5/SessionStorage.html" title="interface in org.openqa.selenium.html5">SessionStorage</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getSessionStorage()">getSessionStorage</a></span>()</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block"><span class="deprecatedLabel">Deprecated.</span></div>
+&nbsp;</td>
 </tr>
 <tr id="i2" class="altColor">
 <td class="colFirst"><code><a href="../html5/Location.html" title="class in org.openqa.selenium.html5">Location</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#location()">location</a></span>()</code></th>
 <td class="colLast">
+<div class="block"><span class="deprecatedLabel">Deprecated.</span></div>
 <div class="block">Gets the physical location of the browser.</div>
 </td>
 </tr>
@@ -279,6 +310,7 @@ implements <a href="../html5/LocationContext.html" title="interface in org.openq
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setFileDetector(org.openqa.selenium.remote.FileDetector)">setFileDetector</a></span>&#8203;(<a href="../remote/FileDetector.html" title="interface in org.openqa.selenium.remote">FileDetector</a>&nbsp;detector)</code></th>
 <td class="colLast">
+<div class="block"><span class="deprecatedLabel">Deprecated.</span></div>
 <div class="block">Set the file detector to be used when sending keyboard input.</div>
 </td>
 </tr>
@@ -286,6 +318,7 @@ implements <a href="../html5/LocationContext.html" title="interface in org.openq
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setLocation(org.openqa.selenium.html5.Location)">setLocation</a></span>&#8203;(<a href="../html5/Location.html" title="class in org.openqa.selenium.html5">Location</a>&nbsp;location)</code></th>
 <td class="colLast">
+<div class="block"><span class="deprecatedLabel">Deprecated.</span></div>
 <div class="block">Sets the physical location.</div>
 </td>
 </tr>
@@ -334,6 +367,7 @@ implements <a href="../html5/LocationContext.html" title="interface in org.openq
 <li class="blockList">
 <h4>OperaDriver</h4>
 <pre>public&nbsp;OperaDriver()</pre>
+<div class="deprecationBlock"><span class="deprecatedLabel">Deprecated.</span></div>
 <div class="block">Creates a new OperaDriver using the <a href="OperaDriverService.html#createDefaultService()"><code>default</code></a>
  server configuration.</div>
 <dl>
@@ -349,6 +383,7 @@ implements <a href="../html5/LocationContext.html" title="interface in org.openq
 <li class="blockList">
 <h4>OperaDriver</h4>
 <pre>public&nbsp;OperaDriver&#8203;(<a href="OperaDriverService.html" title="class in org.openqa.selenium.opera">OperaDriverService</a>&nbsp;service)</pre>
+<div class="deprecationBlock"><span class="deprecatedLabel">Deprecated.</span></div>
 <div class="block">Creates a new OperaDriver instance. The <code>service</code> will be started along with the driver,
  and shutdown upon calling <a href="../remote/RemoteWebDriver.html#quit()"><code>RemoteWebDriver.quit()</code></a>.</div>
 <dl>
@@ -387,6 +422,7 @@ public&nbsp;OperaDriver&#8203;(<a href="../Capabilities.html" title="interface i
 <li class="blockList">
 <h4>OperaDriver</h4>
 <pre>public&nbsp;OperaDriver&#8203;(<a href="OperaOptions.html" title="class in org.openqa.selenium.opera">OperaOptions</a>&nbsp;options)</pre>
+<div class="deprecationBlock"><span class="deprecatedLabel">Deprecated.</span></div>
 <div class="block">Creates a new OperaDriver instance with the specified options.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
@@ -404,6 +440,7 @@ public&nbsp;OperaDriver&#8203;(<a href="../Capabilities.html" title="interface i
 <h4>OperaDriver</h4>
 <pre>public&nbsp;OperaDriver&#8203;(<a href="OperaDriverService.html" title="class in org.openqa.selenium.opera">OperaDriverService</a>&nbsp;service,
                    <a href="OperaOptions.html" title="class in org.openqa.selenium.opera">OperaOptions</a>&nbsp;options)</pre>
+<div class="deprecationBlock"><span class="deprecatedLabel">Deprecated.</span></div>
 <div class="block">Creates a new OperaDriver instance with the specified options. The <code>service</code> will be
  started along with the driver, and shutdown upon calling <a href="../remote/RemoteWebDriver.html#quit()"><code>RemoteWebDriver.quit()</code></a>.</div>
 <dl>
@@ -451,6 +488,7 @@ public&nbsp;OperaDriver&#8203;(<a href="OperaDriverService.html" title="class in
 <li class="blockList">
 <h4>setFileDetector</h4>
 <pre class="methodSignature">public&nbsp;void&nbsp;setFileDetector&#8203;(<a href="../remote/FileDetector.html" title="interface in org.openqa.selenium.remote">FileDetector</a>&nbsp;detector)</pre>
+<div class="deprecationBlock"><span class="deprecatedLabel">Deprecated.</span></div>
 <div class="block"><span class="descfrmTypeLabel">Description copied from class:&nbsp;<code><a href="../remote/RemoteWebDriver.html#setFileDetector(org.openqa.selenium.remote.FileDetector)">RemoteWebDriver</a></code></span></div>
 <div class="block">Set the file detector to be used when sending keyboard input. By default, this is set to a file
  detector that does nothing.</div>
@@ -473,6 +511,7 @@ public&nbsp;OperaDriver&#8203;(<a href="OperaDriverService.html" title="class in
 <li class="blockList">
 <h4>getLocalStorage</h4>
 <pre class="methodSignature">public&nbsp;<a href="../html5/LocalStorage.html" title="interface in org.openqa.selenium.html5">LocalStorage</a>&nbsp;getLocalStorage()</pre>
+<div class="deprecationBlock"><span class="deprecatedLabel">Deprecated.</span></div>
 <dl>
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
 <dd><code><a href="../html5/WebStorage.html#getLocalStorage()">getLocalStorage</a></code>&nbsp;in interface&nbsp;<code><a href="../html5/WebStorage.html" title="interface in org.openqa.selenium.html5">WebStorage</a></code></dd>
@@ -486,6 +525,7 @@ public&nbsp;OperaDriver&#8203;(<a href="OperaDriverService.html" title="class in
 <li class="blockList">
 <h4>getSessionStorage</h4>
 <pre class="methodSignature">public&nbsp;<a href="../html5/SessionStorage.html" title="interface in org.openqa.selenium.html5">SessionStorage</a>&nbsp;getSessionStorage()</pre>
+<div class="deprecationBlock"><span class="deprecatedLabel">Deprecated.</span></div>
 <dl>
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
 <dd><code><a href="../html5/WebStorage.html#getSessionStorage()">getSessionStorage</a></code>&nbsp;in interface&nbsp;<code><a href="../html5/WebStorage.html" title="interface in org.openqa.selenium.html5">WebStorage</a></code></dd>
@@ -499,6 +539,7 @@ public&nbsp;OperaDriver&#8203;(<a href="OperaDriverService.html" title="class in
 <li class="blockList">
 <h4>location</h4>
 <pre class="methodSignature">public&nbsp;<a href="../html5/Location.html" title="class in org.openqa.selenium.html5">Location</a>&nbsp;location()</pre>
+<div class="deprecationBlock"><span class="deprecatedLabel">Deprecated.</span></div>
 <div class="block"><span class="descfrmTypeLabel">Description copied from interface:&nbsp;<code><a href="../html5/LocationContext.html#location()">LocationContext</a></code></span></div>
 <div class="block">Gets the physical location of the browser.</div>
 <dl>
@@ -517,6 +558,7 @@ public&nbsp;OperaDriver&#8203;(<a href="OperaDriverService.html" title="class in
 <li class="blockList">
 <h4>setLocation</h4>
 <pre class="methodSignature">public&nbsp;void&nbsp;setLocation&#8203;(<a href="../html5/Location.html" title="class in org.openqa.selenium.html5">Location</a>&nbsp;location)</pre>
+<div class="deprecationBlock"><span class="deprecatedLabel">Deprecated.</span></div>
 <div class="block"><span class="descfrmTypeLabel">Description copied from interface:&nbsp;<code><a href="../html5/LocationContext.html#setLocation(org.openqa.selenium.html5.Location)">LocationContext</a></code></span></div>
 <div class="block">Sets the physical location.</div>
 <dl>

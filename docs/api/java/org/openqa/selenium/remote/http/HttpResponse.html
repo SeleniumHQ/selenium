@@ -13,8 +13,7 @@
 <!--[if IE]>
 <script type="text/javascript" src="../../../../../jquery/jszip-utils/dist/jszip-utils-ie.min.js"></script>
 <![endif]-->
-<script type="text/javascript" src="../../../../../jquery/jquery-3.3.1.js"></script>
-<script type="text/javascript" src="../../../../../jquery/jquery-migrate-3.0.1.js"></script>
+<script type="text/javascript" src="../../../../../jquery/jquery-3.5.1.js"></script>
 <script type="text/javascript" src="../../../../../jquery/jquery-ui.js"></script>
 </head>
 <body>
@@ -27,8 +26,8 @@
     catch(err) {
     }
 //-->
-var data = {"i0":10,"i1":42,"i2":10,"i3":10,"i4":10,"i5":10,"i6":42,"i7":42,"i8":42,"i9":10,"i10":10,"i11":10,"i12":10,"i13":10,"i14":10,"i15":10,"i16":10,"i17":10,"i18":42,"i19":42,"i20":10,"i21":10,"i22":10,"i23":10,"i24":10};
-var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"],32:["t6","Deprecated Methods"]};
+var data = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10,"i9":10,"i10":10,"i11":10,"i12":10,"i13":10,"i14":10,"i15":10,"i16":10,"i17":10,"i18":10};
+var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
 var tableTab = "tableTab";
@@ -196,7 +195,7 @@ extends java.lang.Object</pre>
 </a>
 <h3>Method Summary</h3>
 <table class="memberSummary">
-<caption><span id="t0" class="activeTableTab"><span>All Methods</span><span class="tabEnd">&nbsp;</span></span><span id="t2" class="tableTab"><span><a href="javascript:show(2);">Instance Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t4" class="tableTab"><span><a href="javascript:show(8);">Concrete Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t6" class="tableTab"><span><a href="javascript:show(32);">Deprecated Methods</a></span><span class="tabEnd">&nbsp;</span></span></caption>
+<caption><span id="t0" class="activeTableTab"><span>All Methods</span><span class="tabEnd">&nbsp;</span></span><span id="t2" class="tableTab"><span><a href="javascript:show(2);">Instance Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t4" class="tableTab"><span><a href="javascript:show(8);">Concrete Methods</a></span><span class="tabEnd">&nbsp;</span></span></caption>
 <tr>
 <th class="colFirst" scope="col">Modifier and Type</th>
 <th class="colSecond" scope="col">Method</th>
@@ -209,153 +208,99 @@ extends java.lang.Object</pre>
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr id="i1" class="rowColor">
-<td class="colFirst"><code>java.io.InputStream</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#consumeContentStream()">consumeContentStream</a></span>()</code></th>
-<td class="colLast">
-<div class="block"><span class="deprecatedLabel">Deprecated.</span>
-<div class="deprecationComment">No direct replacement.</div>
-</div>
-</td>
-</tr>
-<tr id="i2" class="altColor">
 <td class="colFirst"><code>java.lang.Object</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getAttribute(java.lang.String)">getAttribute</a></span>&#8203;(java.lang.String&nbsp;key)</code></th>
 <td class="colLast">
 <div class="block">Retrieves a user-defined attribute of this message.</div>
 </td>
 </tr>
-<tr id="i3" class="rowColor">
+<tr id="i2" class="altColor">
 <td class="colFirst"><code>java.lang.Iterable&lt;java.lang.String&gt;</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getAttributeNames()">getAttributeNames</a></span>()</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i4" class="altColor">
+<tr id="i3" class="rowColor">
 <td class="colFirst"><code>java.util.function.Supplier&lt;java.io.InputStream&gt;</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getContent()">getContent</a></span>()</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i5" class="rowColor">
+<tr id="i4" class="altColor">
 <td class="colFirst"><code>java.nio.charset.Charset</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getContentEncoding()">getContentEncoding</a></span>()</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i6" class="altColor">
-<td class="colFirst"><code>java.io.Reader</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getContentReader()">getContentReader</a></span>()</code></th>
-<td class="colLast">
-<div class="block"><span class="deprecatedLabel">Deprecated.</span>
-<div class="deprecationComment">Use <a href="Contents.html#reader(org.openqa.selenium.remote.http.HttpMessage)"><code>Contents.reader(HttpMessage)</code></a> instead.</div>
-</div>
-</td>
-</tr>
-<tr id="i7" class="rowColor">
-<td class="colFirst"><code>java.io.InputStream</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getContentStream()">getContentStream</a></span>()</code></th>
-<td class="colLast">
-<div class="block"><span class="deprecatedLabel">Deprecated.</span>
-<div class="deprecationComment">Use <a href="#getContent()"><code>getContent()</code></a> and call <code>Supplier.get()</code>.</div>
-</div>
-</td>
-</tr>
-<tr id="i8" class="altColor">
-<td class="colFirst"><code>java.lang.String</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getContentString()">getContentString</a></span>()</code></th>
-<td class="colLast">
-<div class="block"><span class="deprecatedLabel">Deprecated.</span>
-<div class="deprecationComment">Use <a href="Contents.html#string(org.openqa.selenium.remote.http.HttpMessage)"><code>Contents.string(HttpMessage)</code></a> instead.</div>
-</div>
-</td>
-</tr>
-<tr id="i9" class="rowColor">
+<tr id="i5" class="rowColor">
 <td class="colFirst"><code>java.lang.String</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getHeader(java.lang.String)">getHeader</a></span>&#8203;(java.lang.String&nbsp;name)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i10" class="altColor">
+<tr id="i6" class="altColor">
 <td class="colFirst"><code>java.lang.Iterable&lt;java.lang.String&gt;</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getHeaderNames()">getHeaderNames</a></span>()</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i11" class="rowColor">
+<tr id="i7" class="rowColor">
 <td class="colFirst"><code>java.lang.Iterable&lt;java.lang.String&gt;</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getHeaders(java.lang.String)">getHeaders</a></span>&#8203;(java.lang.String&nbsp;name)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i12" class="altColor">
+<tr id="i8" class="altColor">
 <td class="colFirst"><code>int</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getStatus()">getStatus</a></span>()</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i13" class="rowColor">
+<tr id="i9" class="rowColor">
 <td class="colFirst"><code>java.lang.String</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getTargetHost()">getTargetHost</a></span>()</code></th>
 <td class="colLast">
 <div class="block">Returns the host this response was received from, or null if it was not set.</div>
 </td>
 </tr>
-<tr id="i14" class="altColor">
+<tr id="i10" class="altColor">
 <td class="colFirst"><code>boolean</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#isSuccessful()">isSuccessful</a></span>()</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i15" class="rowColor">
+<tr id="i11" class="rowColor">
 <td class="colFirst"><code>M</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#removeAttribute(java.lang.String)">removeAttribute</a></span>&#8203;(java.lang.String&nbsp;key)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i16" class="altColor">
+<tr id="i12" class="altColor">
 <td class="colFirst"><code>M</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#removeHeader(java.lang.String)">removeHeader</a></span>&#8203;(java.lang.String&nbsp;name)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i17" class="rowColor">
+<tr id="i13" class="rowColor">
 <td class="colFirst"><code>M</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setAttribute(java.lang.String,java.lang.Object)">setAttribute</a></span>&#8203;(java.lang.String&nbsp;key,
             java.lang.Object&nbsp;value)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i18" class="altColor">
-<td class="colFirst"><code>void</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setContent(byte%5B%5D)">setContent</a></span>&#8203;(byte[]&nbsp;data)</code></th>
-<td class="colLast">
-<div class="block"><span class="deprecatedLabel">Deprecated.</span>
-<div class="deprecationComment">Pass <a href="Contents.html#bytes(byte%5B%5D)"><code>Contents.bytes(byte[])</code></a> to <a href="#setContent(java.util.function.Supplier)"><code>setContent(Supplier)</code></a>.</div>
-</div>
-</td>
-</tr>
-<tr id="i19" class="rowColor">
-<td class="colFirst"><code>void</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setContent(java.io.InputStream)">setContent</a></span>&#8203;(java.io.InputStream&nbsp;toStreamFrom)</code></th>
-<td class="colLast">
-<div class="block"><span class="deprecatedLabel">Deprecated.</span>
-<div class="deprecationComment">Pass <code>() -&gt; toStreamFrom</code> to <a href="#setContent(java.util.function.Supplier)"><code>setContent(Supplier)</code></a>.</div>
-</div>
-</td>
-</tr>
-<tr id="i20" class="altColor">
+<tr id="i14" class="altColor">
 <td class="colFirst"><code>M</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setContent(java.util.function.Supplier)">setContent</a></span>&#8203;(java.util.function.Supplier&lt;java.io.InputStream&gt;&nbsp;supplier)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i21" class="rowColor">
+<tr id="i15" class="rowColor">
 <td class="colFirst"><code>M</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setHeader(java.lang.String,java.lang.String)">setHeader</a></span>&#8203;(java.lang.String&nbsp;name,
          java.lang.String&nbsp;value)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i22" class="altColor">
+<tr id="i16" class="altColor">
 <td class="colFirst"><code><a href="HttpResponse.html" title="class in org.openqa.selenium.remote.http">HttpResponse</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setStatus(int)">setStatus</a></span>&#8203;(int&nbsp;status)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i23" class="rowColor">
+<tr id="i17" class="rowColor">
 <td class="colFirst"><code><a href="HttpResponse.html" title="class in org.openqa.selenium.remote.http">HttpResponse</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setTargetHost(java.lang.String)">setTargetHost</a></span>&#8203;(java.lang.String&nbsp;host)</code></th>
 <td class="colLast">
 <div class="block">Sets the host this response was received from.</div>
 </td>
 </tr>
-<tr id="i24" class="altColor">
+<tr id="i18" class="altColor">
 <td class="colFirst"><code>java.lang.String</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#toString()">toString</a></span>()</code></th>
 <td class="colLast">&nbsp;</td>
@@ -604,32 +549,6 @@ extends java.lang.Object</pre>
 <pre class="methodSignature">public&nbsp;java.nio.charset.Charset&nbsp;getContentEncoding()</pre>
 </li>
 </ul>
-<a id="setContent(byte[])">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>setContent</h4>
-<pre class="methodSignature">@Deprecated
-public&nbsp;void&nbsp;setContent&#8203;(byte[]&nbsp;data)</pre>
-<div class="deprecationBlock"><span class="deprecatedLabel">Deprecated.</span>
-<div class="deprecationComment">Pass <a href="Contents.html#bytes(byte%5B%5D)"><code>Contents.bytes(byte[])</code></a> to <a href="#setContent(java.util.function.Supplier)"><code>setContent(Supplier)</code></a>.</div>
-</div>
-</li>
-</ul>
-<a id="setContent(java.io.InputStream)">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>setContent</h4>
-<pre class="methodSignature">@Deprecated
-public&nbsp;void&nbsp;setContent&#8203;(java.io.InputStream&nbsp;toStreamFrom)</pre>
-<div class="deprecationBlock"><span class="deprecatedLabel">Deprecated.</span>
-<div class="deprecationComment">Pass <code>() -&gt; toStreamFrom</code> to <a href="#setContent(java.util.function.Supplier)"><code>setContent(Supplier)</code></a>.</div>
-</div>
-</li>
-</ul>
 <a id="setContent(java.util.function.Supplier)">
 <!--   -->
 </a>
@@ -642,64 +561,10 @@ public&nbsp;void&nbsp;setContent&#8203;(java.io.InputStream&nbsp;toStreamFrom)</
 <a id="getContent()">
 <!--   -->
 </a>
-<ul class="blockList">
+<ul class="blockListLast">
 <li class="blockList">
 <h4>getContent</h4>
 <pre class="methodSignature">public&nbsp;java.util.function.Supplier&lt;java.io.InputStream&gt;&nbsp;getContent()</pre>
-</li>
-</ul>
-<a id="getContentString()">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>getContentString</h4>
-<pre class="methodSignature">@Deprecated
-public&nbsp;java.lang.String&nbsp;getContentString()</pre>
-<div class="deprecationBlock"><span class="deprecatedLabel">Deprecated.</span>
-<div class="deprecationComment">Use <a href="Contents.html#string(org.openqa.selenium.remote.http.HttpMessage)"><code>Contents.string(HttpMessage)</code></a> instead.</div>
-</div>
-</li>
-</ul>
-<a id="getContentReader()">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>getContentReader</h4>
-<pre class="methodSignature">@Deprecated
-public&nbsp;java.io.Reader&nbsp;getContentReader()</pre>
-<div class="deprecationBlock"><span class="deprecatedLabel">Deprecated.</span>
-<div class="deprecationComment">Use <a href="Contents.html#reader(org.openqa.selenium.remote.http.HttpMessage)"><code>Contents.reader(HttpMessage)</code></a> instead.</div>
-</div>
-</li>
-</ul>
-<a id="getContentStream()">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>getContentStream</h4>
-<pre class="methodSignature">@Deprecated
-public&nbsp;java.io.InputStream&nbsp;getContentStream()</pre>
-<div class="deprecationBlock"><span class="deprecatedLabel">Deprecated.</span>
-<div class="deprecationComment">Use <a href="#getContent()"><code>getContent()</code></a> and call <code>Supplier.get()</code>.</div>
-</div>
-</li>
-</ul>
-<a id="consumeContentStream()">
-<!--   -->
-</a>
-<ul class="blockListLast">
-<li class="blockList">
-<h4>consumeContentStream</h4>
-<pre class="methodSignature">@Deprecated
-public&nbsp;java.io.InputStream&nbsp;consumeContentStream()</pre>
-<div class="deprecationBlock"><span class="deprecatedLabel">Deprecated.</span>
-<div class="deprecationComment">No direct replacement. Use <a href="#getContent()"><code>getContent()</code></a> and call <code>Supplier.get()</code>.</div>
-</div>
-<div class="block">Get the underlying content stream, bypassing the caching mechanisms that allow it to be read
- again.</div>
 </li>
 </ul>
 </li>

@@ -13,8 +13,7 @@
 <!--[if IE]>
 <script type="text/javascript" src="../../../../jquery/jszip-utils/dist/jszip-utils-ie.min.js"></script>
 <![endif]-->
-<script type="text/javascript" src="../../../../jquery/jquery-3.3.1.js"></script>
-<script type="text/javascript" src="../../../../jquery/jquery-migrate-3.0.1.js"></script>
+<script type="text/javascript" src="../../../../jquery/jquery-3.5.1.js"></script>
 <script type="text/javascript" src="../../../../jquery/jquery-ui.js"></script>
 </head>
 <body>
@@ -27,8 +26,8 @@
     catch(err) {
     }
 //-->
-var data = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10,"i9":10,"i10":10,"i11":10,"i12":10};
-var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
+var data = {"i0":42,"i1":42,"i2":42,"i3":42,"i4":42,"i5":42,"i6":42,"i7":42,"i8":42,"i9":42,"i10":42,"i11":42,"i12":42};
+var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"],32:["t6","Deprecated Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
 var tableTab = "tableTab";
@@ -150,8 +149,29 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dd><code>java.io.Serializable</code>, <code><a href="../Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a></code></dd>
 </dl>
 <hr>
-<pre>public class <span class="typeNameLabel">OperaOptions</span>
+<pre>@Deprecated
+public class <span class="typeNameLabel">OperaOptions</span>
 extends <a href="../remote/AbstractDriverOptions.html" title="class in org.openqa.selenium.remote">AbstractDriverOptions</a>&lt;<a href="OperaOptions.html" title="class in org.openqa.selenium.opera">OperaOptions</a>&gt;</pre>
+<div class="deprecationBlock"><span class="deprecatedLabel">Deprecated.</span>
+<div class="deprecationComment">Use <a href="../chrome/ChromeDriver.html" title="class in org.openqa.selenium.chrome"><code>ChromeDriver</code></a> with
+  <a href="../chromium/ChromiumOptions.html#setBinary(java.io.File)"><code>ChromiumOptions.setBinary(File)</code></a> or <a href="../chromium/ChromiumOptions.html#setBinary(java.lang.String)"><code>ChromiumOptions.setBinary(String)</code></a>
+  to set the path to the Opera browser.
+
+ <p>Example usage:
+ <pre><code>
+ ChromeOptions options = new ChromeOptions()
+ options.setBinary(new File("/path/to/opera"));
+
+ // For using Opera browser with ChromeDriver:
+ ChromeDriver driver = new ChromeDriver(options);
+
+ // For use with RemoteWebDriver:
+ ChromeOptions options = new ChromeOptions();
+ options.setBinary(new File("/path/to/opera"));
+ RemoteWebDriver driver = new RemoteWebDriver(
+     new URL("http://localhost:4444/"), options);
+ </code></pre></div>
+</div>
 <div class="block">Class to manage options specific to <a href="OperaDriver.html" title="class in org.openqa.selenium.opera"><code>OperaDriver</code></a>.
 
  <p>Example usage:
@@ -167,7 +187,9 @@ extends <a href="../remote/AbstractDriverOptions.html" title="class in org.openq
  OperaOptions options = new OperaOptions();
  RemoteWebDriver driver = new RemoteWebDriver(
      new URL("http://localhost:4444/"), options);
- </code></pre></div>
+ </code></pre>
+
+ Since operadriver does not support w3c, Selenium will remove the support in the next version.</div>
 <dl>
 <dt><span class="seeLabel">See Also:</span></dt>
 <dd><a href="../../../../serialized-form.html#org.openqa.selenium.opera.OperaOptions">Serialized Form</a></dd>
@@ -196,6 +218,7 @@ extends <a href="../remote/AbstractDriverOptions.html" title="class in org.openq
 <td class="colFirst"><code>static java.lang.String</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#CAPABILITY">CAPABILITY</a></span></code></th>
 <td class="colLast">
+<div class="block"><span class="deprecatedLabel">Deprecated.</span></div>
 <div class="block">Key used to store a set of OperaOptions in a <a href="../Capabilities.html" title="interface in org.openqa.selenium"><code>Capabilities</code></a>
  object.</div>
 </td>
@@ -219,7 +242,9 @@ extends <a href="../remote/AbstractDriverOptions.html" title="class in org.openq
 </tr>
 <tr class="altColor">
 <th class="colConstructorName" scope="row"><code><span class="memberNameLink"><a href="#%3Cinit%3E()">OperaOptions</a></span>()</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block"><span class="deprecatedLabel">Deprecated.</span></div>
+&nbsp;</td>
 </tr>
 </table>
 </li>
@@ -233,7 +258,7 @@ extends <a href="../remote/AbstractDriverOptions.html" title="class in org.openq
 </a>
 <h3>Method Summary</h3>
 <table class="memberSummary">
-<caption><span id="t0" class="activeTableTab"><span>All Methods</span><span class="tabEnd">&nbsp;</span></span><span id="t2" class="tableTab"><span><a href="javascript:show(2);">Instance Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t4" class="tableTab"><span><a href="javascript:show(8);">Concrete Methods</a></span><span class="tabEnd">&nbsp;</span></span></caption>
+<caption><span id="t0" class="activeTableTab"><span>All Methods</span><span class="tabEnd">&nbsp;</span></span><span id="t2" class="tableTab"><span><a href="javascript:show(2);">Instance Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t4" class="tableTab"><span><a href="javascript:show(8);">Concrete Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t6" class="tableTab"><span><a href="javascript:show(32);">Deprecated Methods</a></span><span class="tabEnd">&nbsp;</span></span></caption>
 <tr>
 <th class="colFirst" scope="col">Modifier and Type</th>
 <th class="colSecond" scope="col">Method</th>
@@ -242,36 +267,45 @@ extends <a href="../remote/AbstractDriverOptions.html" title="class in org.openq
 <tr id="i0" class="altColor">
 <td class="colFirst"><code><a href="OperaOptions.html" title="class in org.openqa.selenium.opera">OperaOptions</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#addArguments(java.lang.String...)">addArguments</a></span>&#8203;(java.lang.String...&nbsp;arguments)</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block"><span class="deprecatedLabel">Deprecated.</span></div>
+&nbsp;</td>
 </tr>
 <tr id="i1" class="rowColor">
 <td class="colFirst"><code><a href="OperaOptions.html" title="class in org.openqa.selenium.opera">OperaOptions</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#addArguments(java.util.List)">addArguments</a></span>&#8203;(java.util.List&lt;java.lang.String&gt;&nbsp;arguments)</code></th>
 <td class="colLast">
+<div class="block"><span class="deprecatedLabel">Deprecated.</span></div>
 <div class="block">Adds additional command line arguments to be used when starting Opera.</div>
 </td>
 </tr>
 <tr id="i2" class="altColor">
 <td class="colFirst"><code><a href="OperaOptions.html" title="class in org.openqa.selenium.opera">OperaOptions</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#addEncodedExtensions(java.lang.String...)">addEncodedExtensions</a></span>&#8203;(java.lang.String...&nbsp;encoded)</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block"><span class="deprecatedLabel">Deprecated.</span></div>
+&nbsp;</td>
 </tr>
 <tr id="i3" class="rowColor">
 <td class="colFirst"><code><a href="OperaOptions.html" title="class in org.openqa.selenium.opera">OperaOptions</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#addEncodedExtensions(java.util.List)">addEncodedExtensions</a></span>&#8203;(java.util.List&lt;java.lang.String&gt;&nbsp;encoded)</code></th>
 <td class="colLast">
+<div class="block"><span class="deprecatedLabel">Deprecated.</span></div>
 <div class="block">Adds a new Opera extension to install on browser startup.</div>
 </td>
 </tr>
 <tr id="i4" class="altColor">
 <td class="colFirst"><code><a href="OperaOptions.html" title="class in org.openqa.selenium.opera">OperaOptions</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#addExtensions(java.io.File...)">addExtensions</a></span>&#8203;(java.io.File...&nbsp;paths)</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block"><span class="deprecatedLabel">Deprecated.</span></div>
+&nbsp;</td>
 </tr>
 <tr id="i5" class="rowColor">
 <td class="colFirst"><code><a href="OperaOptions.html" title="class in org.openqa.selenium.opera">OperaOptions</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#addExtensions(java.util.List)">addExtensions</a></span>&#8203;(java.util.List&lt;java.io.File&gt;&nbsp;paths)</code></th>
 <td class="colLast">
+<div class="block"><span class="deprecatedLabel">Deprecated.</span></div>
 <div class="block">Adds a new Opera extension to install on browser startup.</div>
 </td>
 </tr>
@@ -279,23 +313,29 @@ extends <a href="../remote/AbstractDriverOptions.html" title="class in org.openq
 <td class="colFirst"><code>java.lang.Object</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getExperimentalOption(java.lang.String)">getExperimentalOption</a></span>&#8203;(java.lang.String&nbsp;name)</code></th>
 <td class="colLast">
+<div class="block"><span class="deprecatedLabel">Deprecated.</span></div>
 <div class="block">Returns the value of an experimental option.</div>
 </td>
 </tr>
 <tr id="i7" class="rowColor">
 <td class="colFirst"><code>protected java.lang.Object</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getExtraCapability(java.lang.String)">getExtraCapability</a></span>&#8203;(java.lang.String&nbsp;capabilityName)</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block"><span class="deprecatedLabel">Deprecated.</span></div>
+&nbsp;</td>
 </tr>
 <tr id="i8" class="altColor">
 <td class="colFirst"><code>protected java.util.Set&lt;java.lang.String&gt;</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getExtraCapabilityNames()">getExtraCapabilityNames</a></span>()</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block"><span class="deprecatedLabel">Deprecated.</span></div>
+&nbsp;</td>
 </tr>
 <tr id="i9" class="rowColor">
 <td class="colFirst"><code><a href="OperaOptions.html" title="class in org.openqa.selenium.opera">OperaOptions</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#merge(org.openqa.selenium.Capabilities)">merge</a></span>&#8203;(<a href="../Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&nbsp;extraCapabilities)</code></th>
 <td class="colLast">
+<div class="block"><span class="deprecatedLabel">Deprecated.</span></div>
 <div class="block">Merge two <a href="../Capabilities.html" title="interface in org.openqa.selenium"><code>Capabilities</code></a> together and return the union of the two as a new
  <a href="../Capabilities.html" title="interface in org.openqa.selenium"><code>Capabilities</code></a> instance.</div>
 </td>
@@ -304,6 +344,7 @@ extends <a href="../remote/AbstractDriverOptions.html" title="class in org.openq
 <td class="colFirst"><code><a href="OperaOptions.html" title="class in org.openqa.selenium.opera">OperaOptions</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setBinary(java.io.File)">setBinary</a></span>&#8203;(java.io.File&nbsp;path)</code></th>
 <td class="colLast">
+<div class="block"><span class="deprecatedLabel">Deprecated.</span></div>
 <div class="block">Sets the path to the Opera executable.</div>
 </td>
 </tr>
@@ -311,6 +352,7 @@ extends <a href="../remote/AbstractDriverOptions.html" title="class in org.openq
 <td class="colFirst"><code><a href="OperaOptions.html" title="class in org.openqa.selenium.opera">OperaOptions</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setBinary(java.lang.String)">setBinary</a></span>&#8203;(java.lang.String&nbsp;path)</code></th>
 <td class="colLast">
+<div class="block"><span class="deprecatedLabel">Deprecated.</span></div>
 <div class="block">Sets the path to the Opera executable.</div>
 </td>
 </tr>
@@ -319,6 +361,7 @@ extends <a href="../remote/AbstractDriverOptions.html" title="class in org.openq
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setExperimentalOption(java.lang.String,java.lang.Object)">setExperimentalOption</a></span>&#8203;(java.lang.String&nbsp;name,
                      java.lang.Object&nbsp;value)</code></th>
 <td class="colLast">
+<div class="block"><span class="deprecatedLabel">Deprecated.</span></div>
 <div class="block">Sets an experimental option.</div>
 </td>
 </tr>
@@ -374,6 +417,7 @@ extends <a href="../remote/AbstractDriverOptions.html" title="class in org.openq
 <li class="blockList">
 <h4>CAPABILITY</h4>
 <pre>public static final&nbsp;java.lang.String CAPABILITY</pre>
+<div class="deprecationBlock"><span class="deprecatedLabel">Deprecated.</span></div>
 <div class="block">Key used to store a set of OperaOptions in a <a href="../Capabilities.html" title="interface in org.openqa.selenium"><code>Capabilities</code></a>
  object.</div>
 <dl>
@@ -399,6 +443,7 @@ extends <a href="../remote/AbstractDriverOptions.html" title="class in org.openq
 <li class="blockList">
 <h4>OperaOptions</h4>
 <pre>public&nbsp;OperaOptions()</pre>
+<div class="deprecationBlock"><span class="deprecatedLabel">Deprecated.</span></div>
 </li>
 </ul>
 </li>
@@ -418,6 +463,7 @@ extends <a href="../remote/AbstractDriverOptions.html" title="class in org.openq
 <li class="blockList">
 <h4>merge</h4>
 <pre class="methodSignature">public&nbsp;<a href="OperaOptions.html" title="class in org.openqa.selenium.opera">OperaOptions</a>&nbsp;merge&#8203;(<a href="../Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&nbsp;extraCapabilities)</pre>
+<div class="deprecationBlock"><span class="deprecatedLabel">Deprecated.</span></div>
 <div class="block"><span class="descfrmTypeLabel">Description copied from class:&nbsp;<code><a href="../MutableCapabilities.html#merge(org.openqa.selenium.Capabilities)">MutableCapabilities</a></code></span></div>
 <div class="block">Merge two <a href="../Capabilities.html" title="interface in org.openqa.selenium"><code>Capabilities</code></a> together and return the union of the two as a new
  <a href="../Capabilities.html" title="interface in org.openqa.selenium"><code>Capabilities</code></a> instance. Capabilities from <code>other</code> will override those in
@@ -437,6 +483,7 @@ extends <a href="../remote/AbstractDriverOptions.html" title="class in org.openq
 <li class="blockList">
 <h4>setBinary</h4>
 <pre class="methodSignature">public&nbsp;<a href="OperaOptions.html" title="class in org.openqa.selenium.opera">OperaOptions</a>&nbsp;setBinary&#8203;(java.io.File&nbsp;path)</pre>
+<div class="deprecationBlock"><span class="deprecatedLabel">Deprecated.</span></div>
 <div class="block">Sets the path to the Opera executable. This path should exist on the
  machine which will launch Opera. The path should either be absolute or
  relative to the location of running OperaDriver server.</div>
@@ -453,6 +500,7 @@ extends <a href="../remote/AbstractDriverOptions.html" title="class in org.openq
 <li class="blockList">
 <h4>setBinary</h4>
 <pre class="methodSignature">public&nbsp;<a href="OperaOptions.html" title="class in org.openqa.selenium.opera">OperaOptions</a>&nbsp;setBinary&#8203;(java.lang.String&nbsp;path)</pre>
+<div class="deprecationBlock"><span class="deprecatedLabel">Deprecated.</span></div>
 <div class="block">Sets the path to the Opera executable. This path should exist on the
  machine which will launch Opera. The path should either be absolute or
  relative to the location of running OperaDriver server.</div>
@@ -469,6 +517,7 @@ extends <a href="../remote/AbstractDriverOptions.html" title="class in org.openq
 <li class="blockList">
 <h4>addArguments</h4>
 <pre class="methodSignature">public&nbsp;<a href="OperaOptions.html" title="class in org.openqa.selenium.opera">OperaOptions</a>&nbsp;addArguments&#8203;(java.lang.String...&nbsp;arguments)</pre>
+<div class="deprecationBlock"><span class="deprecatedLabel">Deprecated.</span></div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>arguments</code> - The arguments to use when starting Opera.</dd>
@@ -484,6 +533,7 @@ extends <a href="../remote/AbstractDriverOptions.html" title="class in org.openq
 <li class="blockList">
 <h4>addArguments</h4>
 <pre class="methodSignature">public&nbsp;<a href="OperaOptions.html" title="class in org.openqa.selenium.opera">OperaOptions</a>&nbsp;addArguments&#8203;(java.util.List&lt;java.lang.String&gt;&nbsp;arguments)</pre>
+<div class="deprecationBlock"><span class="deprecatedLabel">Deprecated.</span></div>
 <div class="block">Adds additional command line arguments to be used when starting Opera.
  <p>For example:
  <pre><code>
@@ -508,6 +558,7 @@ extends <a href="../remote/AbstractDriverOptions.html" title="class in org.openq
 <li class="blockList">
 <h4>addExtensions</h4>
 <pre class="methodSignature">public&nbsp;<a href="OperaOptions.html" title="class in org.openqa.selenium.opera">OperaOptions</a>&nbsp;addExtensions&#8203;(java.io.File...&nbsp;paths)</pre>
+<div class="deprecationBlock"><span class="deprecatedLabel">Deprecated.</span></div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>paths</code> - Paths to the extensions to install.</dd>
@@ -523,6 +574,7 @@ extends <a href="../remote/AbstractDriverOptions.html" title="class in org.openq
 <li class="blockList">
 <h4>addExtensions</h4>
 <pre class="methodSignature">public&nbsp;<a href="OperaOptions.html" title="class in org.openqa.selenium.opera">OperaOptions</a>&nbsp;addExtensions&#8203;(java.util.List&lt;java.io.File&gt;&nbsp;paths)</pre>
+<div class="deprecationBlock"><span class="deprecatedLabel">Deprecated.</span></div>
 <div class="block">Adds a new Opera extension to install on browser startup. Each path should
  specify a packed Opera extension (CRX file).</div>
 <dl>
@@ -538,6 +590,7 @@ extends <a href="../remote/AbstractDriverOptions.html" title="class in org.openq
 <li class="blockList">
 <h4>addEncodedExtensions</h4>
 <pre class="methodSignature">public&nbsp;<a href="OperaOptions.html" title="class in org.openqa.selenium.opera">OperaOptions</a>&nbsp;addEncodedExtensions&#8203;(java.lang.String...&nbsp;encoded)</pre>
+<div class="deprecationBlock"><span class="deprecatedLabel">Deprecated.</span></div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>encoded</code> - Base64 encoded data of the extensions to install.</dd>
@@ -553,6 +606,7 @@ extends <a href="../remote/AbstractDriverOptions.html" title="class in org.openq
 <li class="blockList">
 <h4>addEncodedExtensions</h4>
 <pre class="methodSignature">public&nbsp;<a href="OperaOptions.html" title="class in org.openqa.selenium.opera">OperaOptions</a>&nbsp;addEncodedExtensions&#8203;(java.util.List&lt;java.lang.String&gt;&nbsp;encoded)</pre>
+<div class="deprecationBlock"><span class="deprecatedLabel">Deprecated.</span></div>
 <div class="block">Adds a new Opera extension to install on browser startup. Each string data should
  specify a Base64 encoded string of packed Opera extension (CRX file).</div>
 <dl>
@@ -569,6 +623,7 @@ extends <a href="../remote/AbstractDriverOptions.html" title="class in org.openq
 <h4>setExperimentalOption</h4>
 <pre class="methodSignature">public&nbsp;<a href="OperaOptions.html" title="class in org.openqa.selenium.opera">OperaOptions</a>&nbsp;setExperimentalOption&#8203;(java.lang.String&nbsp;name,
                                           java.lang.Object&nbsp;value)</pre>
+<div class="deprecationBlock"><span class="deprecatedLabel">Deprecated.</span></div>
 <div class="block">Sets an experimental option.  Useful for new OperaDriver options not yet
  exposed through the <a href="OperaOptions.html" title="class in org.openqa.selenium.opera"><code>OperaOptions</code></a> API.</div>
 <dl>
@@ -586,6 +641,7 @@ extends <a href="../remote/AbstractDriverOptions.html" title="class in org.openq
 <li class="blockList">
 <h4>getExperimentalOption</h4>
 <pre class="methodSignature">public&nbsp;java.lang.Object&nbsp;getExperimentalOption&#8203;(java.lang.String&nbsp;name)</pre>
+<div class="deprecationBlock"><span class="deprecatedLabel">Deprecated.</span></div>
 <div class="block">Returns the value of an experimental option.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
@@ -602,6 +658,7 @@ extends <a href="../remote/AbstractDriverOptions.html" title="class in org.openq
 <li class="blockList">
 <h4>getExtraCapabilityNames</h4>
 <pre class="methodSignature">protected&nbsp;java.util.Set&lt;java.lang.String&gt;&nbsp;getExtraCapabilityNames()</pre>
+<div class="deprecationBlock"><span class="deprecatedLabel">Deprecated.</span></div>
 <dl>
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
 <dd><code><a href="../remote/AbstractDriverOptions.html#getExtraCapabilityNames()">getExtraCapabilityNames</a></code>&nbsp;in class&nbsp;<code><a href="../remote/AbstractDriverOptions.html" title="class in org.openqa.selenium.remote">AbstractDriverOptions</a>&lt;<a href="OperaOptions.html" title="class in org.openqa.selenium.opera">OperaOptions</a>&gt;</code></dd>
@@ -615,6 +672,7 @@ extends <a href="../remote/AbstractDriverOptions.html" title="class in org.openq
 <li class="blockList">
 <h4>getExtraCapability</h4>
 <pre class="methodSignature">protected&nbsp;java.lang.Object&nbsp;getExtraCapability&#8203;(java.lang.String&nbsp;capabilityName)</pre>
+<div class="deprecationBlock"><span class="deprecatedLabel">Deprecated.</span></div>
 <dl>
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
 <dd><code><a href="../remote/AbstractDriverOptions.html#getExtraCapability(java.lang.String)">getExtraCapability</a></code>&nbsp;in class&nbsp;<code><a href="../remote/AbstractDriverOptions.html" title="class in org.openqa.selenium.remote">AbstractDriverOptions</a>&lt;<a href="OperaOptions.html" title="class in org.openqa.selenium.opera">OperaOptions</a>&gt;</code></dd>

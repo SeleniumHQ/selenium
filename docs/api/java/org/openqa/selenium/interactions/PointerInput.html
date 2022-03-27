@@ -13,8 +13,7 @@
 <!--[if IE]>
 <script type="text/javascript" src="../../../../jquery/jszip-utils/dist/jszip-utils-ie.min.js"></script>
 <![endif]-->
-<script type="text/javascript" src="../../../../jquery/jquery-3.3.1.js"></script>
-<script type="text/javascript" src="../../../../jquery/jquery-migrate-3.0.1.js"></script>
+<script type="text/javascript" src="../../../../jquery/jquery-3.5.1.js"></script>
 <script type="text/javascript" src="../../../../jquery/jquery-ui.js"></script>
 </head>
 <body>
@@ -27,8 +26,8 @@
     catch(err) {
     }
 //-->
-var data = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10};
-var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
+var data = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":9,"i8":10,"i9":10};
+var tabs = {65535:["t0","All Methods"],1:["t1","Static Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
 var tableTab = "tableTab";
@@ -180,6 +179,11 @@ implements <a href="InputSource.html" title="interface in org.openqa.selenium.in
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="PointerInput.Origin.html" title="class in org.openqa.selenium.interactions">PointerInput.Origin</a></span></code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
+<tr class="rowColor">
+<td class="colFirst"><code>static class&nbsp;</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="PointerInput.PointerEventProperties.html" title="class in org.openqa.selenium.interactions">PointerInput.PointerEventProperties</a></span></code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
 </table>
 </li>
 </ul>
@@ -214,7 +218,7 @@ implements <a href="InputSource.html" title="interface in org.openqa.selenium.in
 </a>
 <h3>Method Summary</h3>
 <table class="memberSummary">
-<caption><span id="t0" class="activeTableTab"><span>All Methods</span><span class="tabEnd">&nbsp;</span></span><span id="t2" class="tableTab"><span><a href="javascript:show(2);">Instance Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t4" class="tableTab"><span><a href="javascript:show(8);">Concrete Methods</a></span><span class="tabEnd">&nbsp;</span></span></caption>
+<caption><span id="t0" class="activeTableTab"><span>All Methods</span><span class="tabEnd">&nbsp;</span></span><span id="t1" class="tableTab"><span><a href="javascript:show(1);">Static Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t2" class="tableTab"><span><a href="javascript:show(2);">Instance Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t4" class="tableTab"><span><a href="javascript:show(8);">Concrete Methods</a></span><span class="tabEnd">&nbsp;</span></span></caption>
 <tr>
 <th class="colFirst" scope="col">Modifier and Type</th>
 <th class="colSecond" scope="col">Method</th>
@@ -227,28 +231,52 @@ implements <a href="InputSource.html" title="interface in org.openqa.selenium.in
 </tr>
 <tr id="i1" class="rowColor">
 <td class="colFirst"><code><a href="Interaction.html" title="class in org.openqa.selenium.interactions">Interaction</a></code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#createPointerDown(org.openqa.selenium.interactions.PointerInput.PointerEventProperties)">createPointerDown</a></span>&#8203;(<a href="PointerInput.PointerEventProperties.html" title="class in org.openqa.selenium.interactions">PointerInput.PointerEventProperties</a>&nbsp;eventProperties)</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr id="i2" class="altColor">
+<td class="colFirst"><code><a href="Interaction.html" title="class in org.openqa.selenium.interactions">Interaction</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#createPointerMove(java.time.Duration,org.openqa.selenium.interactions.PointerInput.Origin,int,int)">createPointerMove</a></span>&#8203;(java.time.Duration&nbsp;duration,
                  <a href="PointerInput.Origin.html" title="class in org.openqa.selenium.interactions">PointerInput.Origin</a>&nbsp;origin,
                  int&nbsp;x,
                  int&nbsp;y)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i2" class="altColor">
+<tr id="i3" class="rowColor">
+<td class="colFirst"><code><a href="Interaction.html" title="class in org.openqa.selenium.interactions">Interaction</a></code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#createPointerMove(java.time.Duration,org.openqa.selenium.interactions.PointerInput.Origin,int,int,org.openqa.selenium.interactions.PointerInput.PointerEventProperties)">createPointerMove</a></span>&#8203;(java.time.Duration&nbsp;duration,
+                 <a href="PointerInput.Origin.html" title="class in org.openqa.selenium.interactions">PointerInput.Origin</a>&nbsp;origin,
+                 int&nbsp;x,
+                 int&nbsp;y,
+                 <a href="PointerInput.PointerEventProperties.html" title="class in org.openqa.selenium.interactions">PointerInput.PointerEventProperties</a>&nbsp;eventProperties)</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr id="i4" class="altColor">
 <td class="colFirst"><code><a href="Interaction.html" title="class in org.openqa.selenium.interactions">Interaction</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#createPointerUp(int)">createPointerUp</a></span>&#8203;(int&nbsp;button)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i3" class="rowColor">
+<tr id="i5" class="rowColor">
+<td class="colFirst"><code><a href="Interaction.html" title="class in org.openqa.selenium.interactions">Interaction</a></code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#createPointerUp(org.openqa.selenium.interactions.PointerInput.PointerEventProperties)">createPointerUp</a></span>&#8203;(<a href="PointerInput.PointerEventProperties.html" title="class in org.openqa.selenium.interactions">PointerInput.PointerEventProperties</a>&nbsp;eventProperties)</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr id="i6" class="altColor">
 <td class="colFirst"><code>java.util.Map&lt;java.lang.String,&#8203;java.lang.Object&gt;</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#encode()">encode</a></span>()</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i4" class="altColor">
+<tr id="i7" class="rowColor">
+<td class="colFirst"><code>static <a href="PointerInput.PointerEventProperties.html" title="class in org.openqa.selenium.interactions">PointerInput.PointerEventProperties</a></code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#eventProperties()">eventProperties</a></span>()</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr id="i8" class="altColor">
 <td class="colFirst"><code><a href="SourceType.html" title="enum in org.openqa.selenium.interactions">SourceType</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getInputType()">getInputType</a></span>()</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i5" class="rowColor">
+<tr id="i9" class="rowColor">
 <td class="colFirst"><code>java.lang.String</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getName()">getName</a></span>()</code></th>
 <td class="colLast">&nbsp;</td>
@@ -348,6 +376,19 @@ implements <a href="InputSource.html" title="interface in org.openqa.selenium.in
                                      int&nbsp;y)</pre>
 </li>
 </ul>
+<a id="createPointerMove(java.time.Duration,org.openqa.selenium.interactions.PointerInput.Origin,int,int,org.openqa.selenium.interactions.PointerInput.PointerEventProperties)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>createPointerMove</h4>
+<pre class="methodSignature">public&nbsp;<a href="Interaction.html" title="class in org.openqa.selenium.interactions">Interaction</a>&nbsp;createPointerMove&#8203;(java.time.Duration&nbsp;duration,
+                                     <a href="PointerInput.Origin.html" title="class in org.openqa.selenium.interactions">PointerInput.Origin</a>&nbsp;origin,
+                                     int&nbsp;x,
+                                     int&nbsp;y,
+                                     <a href="PointerInput.PointerEventProperties.html" title="class in org.openqa.selenium.interactions">PointerInput.PointerEventProperties</a>&nbsp;eventProperties)</pre>
+</li>
+</ul>
 <a id="createPointerDown(int)">
 <!--   -->
 </a>
@@ -357,13 +398,40 @@ implements <a href="InputSource.html" title="interface in org.openqa.selenium.in
 <pre class="methodSignature">public&nbsp;<a href="Interaction.html" title="class in org.openqa.selenium.interactions">Interaction</a>&nbsp;createPointerDown&#8203;(int&nbsp;button)</pre>
 </li>
 </ul>
+<a id="createPointerDown(org.openqa.selenium.interactions.PointerInput.PointerEventProperties)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>createPointerDown</h4>
+<pre class="methodSignature">public&nbsp;<a href="Interaction.html" title="class in org.openqa.selenium.interactions">Interaction</a>&nbsp;createPointerDown&#8203;(<a href="PointerInput.PointerEventProperties.html" title="class in org.openqa.selenium.interactions">PointerInput.PointerEventProperties</a>&nbsp;eventProperties)</pre>
+</li>
+</ul>
 <a id="createPointerUp(int)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>createPointerUp</h4>
+<pre class="methodSignature">public&nbsp;<a href="Interaction.html" title="class in org.openqa.selenium.interactions">Interaction</a>&nbsp;createPointerUp&#8203;(int&nbsp;button)</pre>
+</li>
+</ul>
+<a id="createPointerUp(org.openqa.selenium.interactions.PointerInput.PointerEventProperties)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>createPointerUp</h4>
+<pre class="methodSignature">public&nbsp;<a href="Interaction.html" title="class in org.openqa.selenium.interactions">Interaction</a>&nbsp;createPointerUp&#8203;(<a href="PointerInput.PointerEventProperties.html" title="class in org.openqa.selenium.interactions">PointerInput.PointerEventProperties</a>&nbsp;eventProperties)</pre>
+</li>
+</ul>
+<a id="eventProperties()">
 <!--   -->
 </a>
 <ul class="blockListLast">
 <li class="blockList">
-<h4>createPointerUp</h4>
-<pre class="methodSignature">public&nbsp;<a href="Interaction.html" title="class in org.openqa.selenium.interactions">Interaction</a>&nbsp;createPointerUp&#8203;(int&nbsp;button)</pre>
+<h4>eventProperties</h4>
+<pre class="methodSignature">public static&nbsp;<a href="PointerInput.PointerEventProperties.html" title="class in org.openqa.selenium.interactions">PointerInput.PointerEventProperties</a>&nbsp;eventProperties()</pre>
 </li>
 </ul>
 </li>

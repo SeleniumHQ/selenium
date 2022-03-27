@@ -13,8 +13,7 @@
 <!--[if IE]>
 <script type="text/javascript" src="jquery/jszip-utils/dist/jszip-utils-ie.min.js"></script>
 <![endif]-->
-<script type="text/javascript" src="jquery/jquery-3.3.1.js"></script>
-<script type="text/javascript" src="jquery/jquery-migrate-3.0.1.js"></script>
+<script type="text/javascript" src="jquery/jquery-3.5.1.js"></script>
 <script type="text/javascript" src="jquery/jquery-ui.js"></script>
 </head>
 <body>
@@ -234,8 +233,6 @@
 <li><a href="org/openqa/selenium/support/pagefactory/ElementLocator.html" title="interface in org.openqa.selenium.support.pagefactory"><span class="interfaceName">ElementLocator</span></a></li>
 <li><a href="org/openqa/selenium/support/pagefactory/ElementLocatorFactory.html" title="interface in org.openqa.selenium.support.pagefactory"><span class="interfaceName">ElementLocatorFactory</span></a></li>
 <li><a href="org/openqa/selenium/ElementNotInteractableException.html" title="class in org.openqa.selenium">ElementNotInteractableException</a></li>
-<li><a href="org/openqa/selenium/ElementNotSelectableException.html" title="class in org.openqa.selenium">ElementNotSelectableException</a></li>
-<li><a href="org/openqa/selenium/ElementNotVisibleException.html" title="class in org.openqa.selenium">ElementNotVisibleException</a></li>
 <li><a href="org/openqa/selenium/ie/ElementScrollBehavior.html" title="enum in org.openqa.selenium.ie">ElementScrollBehavior</a></li>
 <li><a href="org/openqa/selenium/interactions/Encodable.html" title="interface in org.openqa.selenium.interactions"><span class="interfaceName">Encodable</span></a></li>
 <li><a href="org/openqa/selenium/grid/web/EnsureSpecCompliantHeaders.html" title="class in org.openqa.selenium.grid.web">EnsureSpecCompliantHeaders</a></li>
@@ -308,6 +305,7 @@
 <li><a href="org/openqa/selenium/grid/graphql/GridData.html" title="class in org.openqa.selenium.grid.graphql">GridData</a></li>
 <li><a href="org/openqa/selenium/grid/distributor/GridModel.html" title="class in org.openqa.selenium.grid.distributor">GridModel</a></li>
 <li><a href="org/openqa/selenium/grid/web/GridUiRoute.html" title="class in org.openqa.selenium.grid.web">GridUiRoute</a></li>
+<li><a href="org/openqa/selenium/concurrent/GuardedRunnable.html" title="class in org.openqa.selenium.concurrent">GuardedRunnable</a></li>
 <li><a href="org/openqa/selenium/events/local/GuavaEventBus.html" title="class in org.openqa.selenium.events.local">GuavaEventBus</a></li>
 <li><a href="org/openqa/selenium/grid/web/HandlerNotFoundException.html" title="class in org.openqa.selenium.grid.web">HandlerNotFoundException</a></li>
 <li><a href="org/openqa/selenium/HasAuthentication.html" title="interface in org.openqa.selenium"><span class="interfaceName">HasAuthentication</span></a></li>
@@ -369,7 +367,6 @@
 <li><a href="org/openqa/selenium/ie/InternetExplorerOptions.html" title="class in org.openqa.selenium.ie">InternetExplorerOptions</a></li>
 <li><a href="org/openqa/selenium/InvalidArgumentException.html" title="class in org.openqa.selenium">InvalidArgumentException</a></li>
 <li><a href="org/openqa/selenium/InvalidCookieDomainException.html" title="class in org.openqa.selenium">InvalidCookieDomainException</a></li>
-<li><a href="org/openqa/selenium/interactions/InvalidCoordinatesException.html" title="class in org.openqa.selenium.interactions">InvalidCoordinatesException</a></li>
 <li><a href="org/openqa/selenium/InvalidElementStateException.html" title="class in org.openqa.selenium">InvalidElementStateException</a></li>
 <li><a href="org/openqa/selenium/InvalidSelectorException.html" title="class in org.openqa.selenium">InvalidSelectorException</a></li>
 <li><a href="org/openqa/selenium/support/ui/ISelect.html" title="interface in org.openqa.selenium.support.ui"><span class="interfaceName">ISelect</span></a></li>
@@ -528,6 +525,7 @@
 <li><a href="org/openqa/selenium/interactions/PointerInput.Kind.html" title="enum in org.openqa.selenium.interactions">PointerInput.Kind</a></li>
 <li><a href="org/openqa/selenium/interactions/PointerInput.MouseButton.html" title="enum in org.openqa.selenium.interactions">PointerInput.MouseButton</a></li>
 <li><a href="org/openqa/selenium/interactions/PointerInput.Origin.html" title="class in org.openqa.selenium.interactions">PointerInput.Origin</a></li>
+<li><a href="org/openqa/selenium/interactions/PointerInput.PointerEventProperties.html" title="class in org.openqa.selenium.interactions">PointerInput.PointerEventProperties</a></li>
 <li><a href="org/openqa/selenium/docker/Port.html" title="class in org.openqa.selenium.docker">Port</a></li>
 <li><a href="org/openqa/selenium/net/PortProber.html" title="class in org.openqa.selenium.net">PortProber</a></li>
 <li><a href="org/openqa/selenium/print/PrintOptions.html" title="class in org.openqa.selenium.print">PrintOptions</a></li>
@@ -550,7 +548,6 @@
 <li><a href="org/openqa/selenium/support/ui/Quotes.html" title="class in org.openqa.selenium.support.ui">Quotes</a></li>
 <li><a href="org/openqa/selenium/Rectangle.html" title="class in org.openqa.selenium">Rectangle</a></li>
 <li><a href="org/openqa/selenium/docker/internal/Reference.html" title="class in org.openqa.selenium.docker.internal">Reference</a></li>
-<li><a href="org/openqa/selenium/concurrent/Regularly.html" title="class in org.openqa.selenium.concurrent">Regularly</a></li>
 <li><a href="org/openqa/selenium/support/locators/RelativeLocator.html" title="class in org.openqa.selenium.support.locators">RelativeLocator</a></li>
 <li><a href="org/openqa/selenium/support/locators/RelativeLocator.RelativeBy.html" title="class in org.openqa.selenium.support.locators">RelativeLocator.RelativeBy</a></li>
 <li><a href="org/openqa/selenium/support/locators/RelativeLocatorServerSide.html" title="class in org.openqa.selenium.support.locators">RelativeLocatorServerSide</a></li>
@@ -759,9 +756,6 @@
 <li><a href="org/openqa/selenium/cli/WrappedPrintWriter.html" title="class in org.openqa.selenium.cli">WrappedPrintWriter</a></li>
 <li><a href="org/openqa/selenium/WrapsDriver.html" title="interface in org.openqa.selenium"><span class="interfaceName">WrapsDriver</span></a></li>
 <li><a href="org/openqa/selenium/WrapsElement.html" title="interface in org.openqa.selenium"><span class="interfaceName">WrapsElement</span></a></li>
-<li><a href="org/openqa/selenium/firefox/xpi/XpiDriverInfo.html" title="class in org.openqa.selenium.firefox.xpi">XpiDriverInfo</a></li>
-<li><a href="org/openqa/selenium/firefox/xpi/XpiDriverService.html" title="class in org.openqa.selenium.firefox.xpi">XpiDriverService</a></li>
-<li><a href="org/openqa/selenium/firefox/xpi/XpiDriverService.Builder.html" title="class in org.openqa.selenium.firefox.xpi">XpiDriverService.Builder</a></li>
 <li><a href="org/openqa/selenium/events/zeromq/ZeroMqEventBus.html" title="class in org.openqa.selenium.events.zeromq">ZeroMqEventBus</a></li>
 <li><a href="org/openqa/selenium/events/zeromq/ZeroMqEventBus.RejectedEvent.html" title="class in org.openqa.selenium.events.zeromq">ZeroMqEventBus.RejectedEvent</a></li>
 <li><a href="org/openqa/selenium/io/Zip.html" title="class in org.openqa.selenium.io">Zip</a></li>

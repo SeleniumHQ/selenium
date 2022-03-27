@@ -21,7 +21,6 @@ org.openqa.selenium.events
 org.openqa.selenium.events.local
 org.openqa.selenium.events.zeromq
 org.openqa.selenium.firefox
-org.openqa.selenium.firefox.xpi
 org.openqa.selenium.grid
 org.openqa.selenium.grid.commands
 org.openqa.selenium.grid.component

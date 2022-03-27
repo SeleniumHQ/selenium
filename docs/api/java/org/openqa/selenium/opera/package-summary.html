@@ -13,8 +13,7 @@
 <!--[if IE]>
 <script type="text/javascript" src="../../../../jquery/jszip-utils/dist/jszip-utils-ie.min.js"></script>
 <![endif]-->
-<script type="text/javascript" src="../../../../jquery/jquery-3.3.1.js"></script>
-<script type="text/javascript" src="../../../../jquery/jquery-migrate-3.0.1.js"></script>
+<script type="text/javascript" src="../../../../jquery/jquery-3.5.1.js"></script>
 <script type="text/javascript" src="../../../../jquery/jquery-ui.js"></script>
 </head>
 <body>
@@ -112,9 +111,10 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <tbody>
 <tr class="altColor">
 <th class="colFirst" scope="row"><a href="OperaDriver.html" title="class in org.openqa.selenium.opera">OperaDriver</a></th>
-<td class="colLast">
-<div class="block">A <a href="../WebDriver.html" title="interface in org.openqa.selenium"><code>WebDriver</code></a> implementation that controls a Blink-based Opera browser running on the local
- machine.</div>
+<td class="colLast">Deprecated.
+<div class="deprecationComment">Use <a href="../chrome/ChromeDriver.html" title="class in org.openqa.selenium.chrome"><code>ChromeDriver</code></a> with
+ <a href="../chromium/ChromiumOptions.html#setBinary(java.io.File)"><code>ChromiumOptions.setBinary(File)</code></a> or <a href="../chromium/ChromiumOptions.html#setBinary(java.lang.String)"><code>ChromiumOptions.setBinary(String)</code></a>
+ to set the path to the Opera browser.</div>
 </td>
 </tr>
 <tr class="rowColor">
@@ -135,8 +135,10 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 </tr>
 <tr class="altColor">
 <th class="colFirst" scope="row"><a href="OperaOptions.html" title="class in org.openqa.selenium.opera">OperaOptions</a></th>
-<td class="colLast">
-<div class="block">Class to manage options specific to <a href="OperaDriver.html" title="class in org.openqa.selenium.opera"><code>OperaDriver</code></a>.</div>
+<td class="colLast">Deprecated.
+<div class="deprecationComment">Use <a href="../chrome/ChromeDriver.html" title="class in org.openqa.selenium.chrome"><code>ChromeDriver</code></a> with
+  <a href="../chromium/ChromiumOptions.html#setBinary(java.io.File)"><code>ChromiumOptions.setBinary(File)</code></a> or <a href="../chromium/ChromiumOptions.html#setBinary(java.lang.String)"><code>ChromiumOptions.setBinary(String)</code></a>
+  to set the path to the Opera browser.</div>
 </td>
 </tr>
 </tbody>

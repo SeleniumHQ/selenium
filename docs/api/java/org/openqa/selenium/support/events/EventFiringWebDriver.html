@@ -13,8 +13,7 @@
 <!--[if IE]>
 <script type="text/javascript" src="../../../../../jquery/jszip-utils/dist/jszip-utils-ie.min.js"></script>
 <![endif]-->
-<script type="text/javascript" src="../../../../../jquery/jquery-3.3.1.js"></script>
-<script type="text/javascript" src="../../../../../jquery/jquery-migrate-3.0.1.js"></script>
+<script type="text/javascript" src="../../../../../jquery/jquery-3.5.1.js"></script>
 <script type="text/javascript" src="../../../../../jquery/jquery-ui.js"></script>
 </head>
 <body>
@@ -841,7 +840,7 @@ implements <a href="../../WebDriver.html" title="interface in org.openqa.seleniu
    ((JavascriptExecutor) driver).executeAsyncScript(
        "window.setTimeout(arguments[arguments.length - 1], 500);");
    System.out.println(
-       "Elapsed time: " + System.currentTimeMillis() - start);
+       "Elapsed time: " + (System.currentTimeMillis() - start));
  </code></pre>
 
  <p>

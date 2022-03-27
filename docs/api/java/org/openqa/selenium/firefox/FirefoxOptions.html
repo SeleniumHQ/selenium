@@ -13,8 +13,7 @@
 <!--[if IE]>
 <script type="text/javascript" src="../../../../jquery/jszip-utils/dist/jszip-utils-ie.min.js"></script>
 <![endif]-->
-<script type="text/javascript" src="../../../../jquery/jquery-3.3.1.js"></script>
-<script type="text/javascript" src="../../../../jquery/jquery-migrate-3.0.1.js"></script>
+<script type="text/javascript" src="../../../../jquery/jquery-3.5.1.js"></script>
 <script type="text/javascript" src="../../../../jquery/jquery-ui.js"></script>
 </head>
 <body>
@@ -27,8 +26,8 @@
     catch(err) {
     }
 //-->
-var data = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10,"i9":42,"i10":10,"i11":10,"i12":10,"i13":10,"i14":10,"i15":10,"i16":10,"i17":10,"i18":10,"i19":10,"i20":10,"i21":42,"i22":10,"i23":10};
-var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"],32:["t6","Deprecated Methods"]};
+var data = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10,"i9":10,"i10":10,"i11":10,"i12":10,"i13":10,"i14":10,"i15":10,"i16":10,"i17":10,"i18":10,"i19":10,"i20":10,"i21":10};
+var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
 var tableTab = "tableTab";
@@ -227,7 +226,7 @@ extends <a href="../remote/AbstractDriverOptions.html" title="class in org.openq
 </a>
 <h3>Method Summary</h3>
 <table class="memberSummary">
-<caption><span id="t0" class="activeTableTab"><span>All Methods</span><span class="tabEnd">&nbsp;</span></span><span id="t2" class="tableTab"><span><a href="javascript:show(2);">Instance Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t4" class="tableTab"><span><a href="javascript:show(8);">Concrete Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t6" class="tableTab"><span><a href="javascript:show(32);">Deprecated Methods</a></span><span class="tabEnd">&nbsp;</span></span></caption>
+<caption><span id="t0" class="activeTableTab"><span>All Methods</span><span class="tabEnd">&nbsp;</span></span><span id="t2" class="tableTab"><span><a href="javascript:show(2);">Instance Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t4" class="tableTab"><span><a href="javascript:show(8);">Concrete Methods</a></span><span class="tabEnd">&nbsp;</span></span></caption>
 <tr>
 <th class="colFirst" scope="col">Modifier and Type</th>
 <th class="colSecond" scope="col">Method</th>
@@ -292,15 +291,6 @@ extends <a href="../remote/AbstractDriverOptions.html" title="class in org.openq
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr id="i9" class="rowColor">
-<td class="colFirst"><code>boolean</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#isLegacy()">isLegacy</a></span>()</code></th>
-<td class="colLast">
-<div class="block"><span class="deprecatedLabel">Deprecated.</span>
-<div class="deprecationComment">This method will be deleted and will not be replaced.</div>
-</div>
-</td>
-</tr>
-<tr id="i10" class="altColor">
 <td class="colFirst"><code><a href="FirefoxOptions.html" title="class in org.openqa.selenium.firefox">FirefoxOptions</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#merge(org.openqa.selenium.Capabilities)">merge</a></span>&#8203;(<a href="../Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&nbsp;capabilities)</code></th>
 <td class="colLast">
@@ -308,72 +298,63 @@ extends <a href="../remote/AbstractDriverOptions.html" title="class in org.openq
  <a href="../Capabilities.html" title="interface in org.openqa.selenium"><code>Capabilities</code></a> instance.</div>
 </td>
 </tr>
-<tr id="i11" class="rowColor">
+<tr id="i10" class="altColor">
 <td class="colFirst"><code><a href="FirefoxOptions.html" title="class in org.openqa.selenium.firefox">FirefoxOptions</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setAndroidActivity(java.lang.String)">setAndroidActivity</a></span>&#8203;(java.lang.String&nbsp;activity)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i12" class="altColor">
+<tr id="i11" class="rowColor">
 <td class="colFirst"><code><a href="FirefoxOptions.html" title="class in org.openqa.selenium.firefox">FirefoxOptions</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setAndroidDeviceSerialNumber(java.lang.String)">setAndroidDeviceSerialNumber</a></span>&#8203;(java.lang.String&nbsp;serial)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i13" class="rowColor">
+<tr id="i12" class="altColor">
 <td class="colFirst"><code><a href="FirefoxOptions.html" title="class in org.openqa.selenium.firefox">FirefoxOptions</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setAndroidIntentArguments(java.lang.String%5B%5D)">setAndroidIntentArguments</a></span>&#8203;(java.lang.String[]&nbsp;args)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i14" class="altColor">
+<tr id="i13" class="rowColor">
 <td class="colFirst"><code><a href="FirefoxOptions.html" title="class in org.openqa.selenium.firefox">FirefoxOptions</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setAndroidIntentArguments(java.util.List)">setAndroidIntentArguments</a></span>&#8203;(java.util.List&lt;java.lang.String&gt;&nbsp;args)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i15" class="rowColor">
+<tr id="i14" class="altColor">
 <td class="colFirst"><code><a href="FirefoxOptions.html" title="class in org.openqa.selenium.firefox">FirefoxOptions</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setAndroidPackage(java.lang.String)">setAndroidPackage</a></span>&#8203;(java.lang.String&nbsp;androidPackage)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i16" class="altColor">
+<tr id="i15" class="rowColor">
 <td class="colFirst"><code><a href="FirefoxOptions.html" title="class in org.openqa.selenium.firefox">FirefoxOptions</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setBinary(java.lang.String)">setBinary</a></span>&#8203;(java.lang.String&nbsp;path)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i17" class="rowColor">
+<tr id="i16" class="altColor">
 <td class="colFirst"><code><a href="FirefoxOptions.html" title="class in org.openqa.selenium.firefox">FirefoxOptions</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setBinary(java.nio.file.Path)">setBinary</a></span>&#8203;(java.nio.file.Path&nbsp;path)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i18" class="altColor">
+<tr id="i17" class="rowColor">
 <td class="colFirst"><code><a href="FirefoxOptions.html" title="class in org.openqa.selenium.firefox">FirefoxOptions</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setBinary(org.openqa.selenium.firefox.FirefoxBinary)">setBinary</a></span>&#8203;(<a href="FirefoxBinary.html" title="class in org.openqa.selenium.firefox">FirefoxBinary</a>&nbsp;binary)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i19" class="rowColor">
+<tr id="i18" class="altColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setCapability(java.lang.String,java.lang.Object)">setCapability</a></span>&#8203;(java.lang.String&nbsp;key,
              java.lang.Object&nbsp;value)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i20" class="altColor">
+<tr id="i19" class="rowColor">
 <td class="colFirst"><code><a href="FirefoxOptions.html" title="class in org.openqa.selenium.firefox">FirefoxOptions</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setHeadless(boolean)">setHeadless</a></span>&#8203;(boolean&nbsp;headless)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i21" class="rowColor">
-<td class="colFirst"><code><a href="FirefoxOptions.html" title="class in org.openqa.selenium.firefox">FirefoxOptions</a></code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setLegacy(boolean)">setLegacy</a></span>&#8203;(boolean&nbsp;legacy)</code></th>
-<td class="colLast">
-<div class="block"><span class="deprecatedLabel">Deprecated.</span>
-<div class="deprecationComment">This method will be deleted and will not be replaced.</div>
-</div>
-</td>
-</tr>
-<tr id="i22" class="altColor">
+<tr id="i20" class="altColor">
 <td class="colFirst"><code><a href="FirefoxOptions.html" title="class in org.openqa.selenium.firefox">FirefoxOptions</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setLogLevel(org.openqa.selenium.firefox.FirefoxDriverLogLevel)">setLogLevel</a></span>&#8203;(<a href="FirefoxDriverLogLevel.html" title="enum in org.openqa.selenium.firefox">FirefoxDriverLogLevel</a>&nbsp;logLevel)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i23" class="rowColor">
+<tr id="i21" class="rowColor">
 <td class="colFirst"><code><a href="FirefoxOptions.html" title="class in org.openqa.selenium.firefox">FirefoxOptions</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setProfile(org.openqa.selenium.firefox.FirefoxProfile)">setProfile</a></span>&#8203;(<a href="FirefoxProfile.html" title="class in org.openqa.selenium.firefox">FirefoxProfile</a>&nbsp;profile)</code></th>
 <td class="colLast">&nbsp;</td>
@@ -491,30 +472,15 @@ extends <a href="../remote/AbstractDriverOptions.html" title="class in org.openq
  </dl></div>
 </li>
 </ul>
-<a id="setLegacy(boolean)">
+<a id="getBinary()">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
-<h4>setLegacy</h4>
-<pre class="methodSignature">@Deprecated
-public&nbsp;<a href="FirefoxOptions.html" title="class in org.openqa.selenium.firefox">FirefoxOptions</a>&nbsp;setLegacy&#8203;(boolean&nbsp;legacy)</pre>
-<div class="deprecationBlock"><span class="deprecatedLabel">Deprecated.</span>
-<div class="deprecationComment">This method will be deleted and will not be replaced.</div>
-</div>
-</li>
-</ul>
-<a id="isLegacy()">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>isLegacy</h4>
-<pre class="methodSignature">@Deprecated
-public&nbsp;boolean&nbsp;isLegacy()</pre>
-<div class="deprecationBlock"><span class="deprecatedLabel">Deprecated.</span>
-<div class="deprecationComment">This method will be deleted and will not be replaced.</div>
-</div>
+<h4>getBinary</h4>
+<pre class="methodSignature">public&nbsp;<a href="FirefoxBinary.html" title="class in org.openqa.selenium.firefox">FirefoxBinary</a>&nbsp;getBinary()</pre>
+<div class="block">Constructs a <a href="FirefoxBinary.html" title="class in org.openqa.selenium.firefox"><code>FirefoxBinary</code></a> and returns that to be used, and because of this is only
+ useful when actually starting firefox.</div>
 </li>
 </ul>
 <a id="setBinary(org.openqa.selenium.firefox.FirefoxBinary)">
@@ -544,17 +510,6 @@ public&nbsp;boolean&nbsp;isLegacy()</pre>
 <pre class="methodSignature">public&nbsp;<a href="FirefoxOptions.html" title="class in org.openqa.selenium.firefox">FirefoxOptions</a>&nbsp;setBinary&#8203;(java.lang.String&nbsp;path)</pre>
 </li>
 </ul>
-<a id="getBinary()">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>getBinary</h4>
-<pre class="methodSignature">public&nbsp;<a href="FirefoxBinary.html" title="class in org.openqa.selenium.firefox">FirefoxBinary</a>&nbsp;getBinary()</pre>
-<div class="block">Constructs a <a href="FirefoxBinary.html" title="class in org.openqa.selenium.firefox"><code>FirefoxBinary</code></a> and returns that to be used, and because of this is only
- useful when actually starting firefox.</div>
-</li>
-</ul>
 <a id="getBinaryOrNull()">
 <!--   -->
 </a>
@@ -564,15 +519,6 @@ public&nbsp;boolean&nbsp;isLegacy()</pre>
 <pre class="methodSignature">public&nbsp;java.util.Optional&lt;<a href="FirefoxBinary.html" title="class in org.openqa.selenium.firefox">FirefoxBinary</a>&gt;&nbsp;getBinaryOrNull()</pre>
 </li>
 </ul>
-<a id="setProfile(org.openqa.selenium.firefox.FirefoxProfile)">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>setProfile</h4>
-<pre class="methodSignature">public&nbsp;<a href="FirefoxOptions.html" title="class in org.openqa.selenium.firefox">FirefoxOptions</a>&nbsp;setProfile&#8203;(<a href="FirefoxProfile.html" title="class in org.openqa.selenium.firefox">FirefoxProfile</a>&nbsp;profile)</pre>
-</li>
-</ul>
 <a id="getProfile()">
 <!--   -->
 </a>
@@ -580,6 +526,15 @@ public&nbsp;boolean&nbsp;isLegacy()</pre>
 <li class="blockList">
 <h4>getProfile</h4>
 <pre class="methodSignature">public&nbsp;<a href="FirefoxProfile.html" title="class in org.openqa.selenium.firefox">FirefoxProfile</a>&nbsp;getProfile()</pre>
+</li>
+</ul>
+<a id="setProfile(org.openqa.selenium.firefox.FirefoxProfile)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>setProfile</h4>
+<pre class="methodSignature">public&nbsp;<a href="FirefoxOptions.html" title="class in org.openqa.selenium.firefox">FirefoxOptions</a>&nbsp;setProfile&#8203;(<a href="FirefoxProfile.html" title="class in org.openqa.selenium.firefox">FirefoxProfile</a>&nbsp;profile)</pre>
 </li>
 </ul>
 <a id="addArguments(java.lang.String...)">

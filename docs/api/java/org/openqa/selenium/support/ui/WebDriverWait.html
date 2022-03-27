@@ -13,8 +13,7 @@
 <!--[if IE]>
 <script type="text/javascript" src="../../../../../jquery/jszip-utils/dist/jszip-utils-ie.min.js"></script>
 <![endif]-->
-<script type="text/javascript" src="../../../../../jquery/jquery-3.3.1.js"></script>
-<script type="text/javascript" src="../../../../../jquery/jquery-migrate-3.0.1.js"></script>
+<script type="text/javascript" src="../../../../../jquery/jquery-3.5.1.js"></script>
 <script type="text/javascript" src="../../../../../jquery/jquery-ui.js"></script>
 </head>
 <body>
@@ -185,38 +184,6 @@ extends <a href="FluentWait.html" title="class in org.openqa.selenium.support.ui
 <th class="colLast" scope="col">Description</th>
 </tr>
 <tr class="altColor">
-<th class="colConstructorName" scope="row"><code><span class="memberNameLink"><a href="#%3Cinit%3E(org.openqa.selenium.WebDriver,long)">WebDriverWait</a></span>&#8203;(<a href="../../WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&nbsp;driver,
-             long&nbsp;timeoutInSeconds)</code></th>
-<td class="colLast">
-<div class="block"><span class="deprecatedLabel">Deprecated.</span>
-<div class="deprecationComment">Instead, use <a href="#%3Cinit%3E(org.openqa.selenium.WebDriver,java.time.Duration)"><code>WebDriverWait(WebDriver, Duration)</code></a>.</div>
-</div>
-</td>
-</tr>
-<tr class="rowColor">
-<th class="colConstructorName" scope="row"><code><span class="memberNameLink"><a href="#%3Cinit%3E(org.openqa.selenium.WebDriver,long,long)">WebDriverWait</a></span>&#8203;(<a href="../../WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&nbsp;driver,
-             long&nbsp;timeoutInSeconds,
-             long&nbsp;sleepInMillis)</code></th>
-<td class="colLast">
-<div class="block"><span class="deprecatedLabel">Deprecated.</span>
-<div class="deprecationComment">Instead, use <a href="#%3Cinit%3E(org.openqa.selenium.WebDriver,java.time.Duration,java.time.Duration)"><code>WebDriverWait(WebDriver, Duration, Duration)</code></a>.</div>
-</div>
-</td>
-</tr>
-<tr class="altColor">
-<th class="colConstructorName" scope="row"><code><span class="memberNameLink"><a href="#%3Cinit%3E(org.openqa.selenium.WebDriver,java.time.Clock,org.openqa.selenium.support.ui.Sleeper,long,long)">WebDriverWait</a></span>&#8203;(<a href="../../WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&nbsp;driver,
-             java.time.Clock&nbsp;clock,
-             <a href="Sleeper.html" title="interface in org.openqa.selenium.support.ui">Sleeper</a>&nbsp;sleeper,
-             long&nbsp;timeoutInSeconds,
-             long&nbsp;sleepInMillis)</code></th>
-<td class="colLast">
-<div class="block"><span class="deprecatedLabel">Deprecated.</span>
-<div class="deprecationComment">Instead, use <a href="#%3Cinit%3E(org.openqa.selenium.WebDriver,java.time.Duration,java.time.Duration,java.time.Clock,org.openqa.selenium.support.ui.Sleeper)"><code>WebDriverWait(WebDriver, Duration, Duration,
-     Clock, Sleeper)</code></a>.</div>
-</div>
-</td>
-</tr>
-<tr class="rowColor">
 <th class="colConstructorName" scope="row"><code><span class="memberNameLink"><a href="#%3Cinit%3E(org.openqa.selenium.WebDriver,java.time.Duration)">WebDriverWait</a></span>&#8203;(<a href="../../WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&nbsp;driver,
              java.time.Duration&nbsp;timeout)</code></th>
 <td class="colLast">
@@ -224,7 +191,7 @@ extends <a href="FluentWait.html" title="class in org.openqa.selenium.support.ui
  the 'until' condition, and immediately propagate all others.</div>
 </td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <th class="colConstructorName" scope="row"><code><span class="memberNameLink"><a href="#%3Cinit%3E(org.openqa.selenium.WebDriver,java.time.Duration,java.time.Duration)">WebDriverWait</a></span>&#8203;(<a href="../../WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&nbsp;driver,
              java.time.Duration&nbsp;timeout,
              java.time.Duration&nbsp;sleep)</code></th>
@@ -233,7 +200,7 @@ extends <a href="FluentWait.html" title="class in org.openqa.selenium.support.ui
  the 'until' condition, and immediately propagate all others.</div>
 </td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <th class="colConstructorName" scope="row"><code><span class="memberNameLink"><a href="#%3Cinit%3E(org.openqa.selenium.WebDriver,java.time.Duration,java.time.Duration,java.time.Clock,org.openqa.selenium.support.ui.Sleeper)">WebDriverWait</a></span>&#8203;(<a href="../../WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&nbsp;driver,
              java.time.Duration&nbsp;timeout,
              java.time.Duration&nbsp;sleep,
@@ -298,30 +265,6 @@ extends <a href="FluentWait.html" title="class in org.openqa.selenium.support.ui
 <!--   -->
 </a>
 <h3>Constructor Detail</h3>
-<a id="&lt;init&gt;(org.openqa.selenium.WebDriver,long)">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>WebDriverWait</h4>
-<pre>@Deprecated
-public&nbsp;WebDriverWait&#8203;(<a href="../../WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&nbsp;driver,
-                     long&nbsp;timeoutInSeconds)</pre>
-<div class="deprecationBlock"><span class="deprecatedLabel">Deprecated.</span>
-<div class="deprecationComment">Instead, use <a href="#%3Cinit%3E(org.openqa.selenium.WebDriver,java.time.Duration)"><code>WebDriverWait(WebDriver, Duration)</code></a>.</div>
-</div>
-<div class="block">Wait will ignore instances of NotFoundException that are encountered (thrown) by default in
- the 'until' condition, and immediately propagate all others.  You can add more to the ignore
- list by calling ignoring(exceptions to add).</div>
-<dl>
-<dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>driver</code> - The WebDriver instance to pass to the expected conditions</dd>
-<dd><code>timeoutInSeconds</code> - The timeout in seconds when an expectation is called</dd>
-<dt><span class="seeLabel">See Also:</span></dt>
-<dd><a href="FluentWait.html#ignoring(java.lang.Class)"><code>FluentWait.ignoring(java.lang.Class)</code></a></dd>
-</dl>
-</li>
-</ul>
 <a id="&lt;init&gt;(org.openqa.selenium.WebDriver,java.time.Duration)">
 <!--   -->
 </a>
@@ -337,32 +280,6 @@ public&nbsp;WebDriverWait&#8203;(<a href="../../WebDriver.html" title="interface
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>driver</code> - The WebDriver instance to pass to the expected conditions</dd>
 <dd><code>timeout</code> - The timeout when an expectation is called</dd>
-<dt><span class="seeLabel">See Also:</span></dt>
-<dd><a href="FluentWait.html#ignoring(java.lang.Class)"><code>FluentWait.ignoring(java.lang.Class)</code></a></dd>
-</dl>
-</li>
-</ul>
-<a id="&lt;init&gt;(org.openqa.selenium.WebDriver,long,long)">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>WebDriverWait</h4>
-<pre>@Deprecated
-public&nbsp;WebDriverWait&#8203;(<a href="../../WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&nbsp;driver,
-                     long&nbsp;timeoutInSeconds,
-                     long&nbsp;sleepInMillis)</pre>
-<div class="deprecationBlock"><span class="deprecatedLabel">Deprecated.</span>
-<div class="deprecationComment">Instead, use <a href="#%3Cinit%3E(org.openqa.selenium.WebDriver,java.time.Duration,java.time.Duration)"><code>WebDriverWait(WebDriver, Duration, Duration)</code></a>.</div>
-</div>
-<div class="block">Wait will ignore instances of NotFoundException that are encountered (thrown) by default in
- the 'until' condition, and immediately propagate all others.  You can add more to the ignore
- list by calling ignoring(exceptions to add).</div>
-<dl>
-<dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>driver</code> - The WebDriver instance to pass to the expected conditions</dd>
-<dd><code>timeoutInSeconds</code> - The timeout in seconds when an expectation is called</dd>
-<dd><code>sleepInMillis</code> - The duration in milliseconds to sleep between polls.</dd>
 <dt><span class="seeLabel">See Also:</span></dt>
 <dd><a href="FluentWait.html#ignoring(java.lang.Class)"><code>FluentWait.ignoring(java.lang.Class)</code></a></dd>
 </dl>
@@ -387,32 +304,6 @@ public&nbsp;WebDriverWait&#8203;(<a href="../../WebDriver.html" title="interface
 <dd><code>sleep</code> - The duration in milliseconds to sleep between polls.</dd>
 <dt><span class="seeLabel">See Also:</span></dt>
 <dd><a href="FluentWait.html#ignoring(java.lang.Class)"><code>FluentWait.ignoring(java.lang.Class)</code></a></dd>
-</dl>
-</li>
-</ul>
-<a id="&lt;init&gt;(org.openqa.selenium.WebDriver,java.time.Clock,org.openqa.selenium.support.ui.Sleeper,long,long)">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>WebDriverWait</h4>
-<pre>@Deprecated
-public&nbsp;WebDriverWait&#8203;(<a href="../../WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&nbsp;driver,
-                     java.time.Clock&nbsp;clock,
-                     <a href="Sleeper.html" title="interface in org.openqa.selenium.support.ui">Sleeper</a>&nbsp;sleeper,
-                     long&nbsp;timeoutInSeconds,
-                     long&nbsp;sleepInMillis)</pre>
-<div class="deprecationBlock"><span class="deprecatedLabel">Deprecated.</span>
-<div class="deprecationComment">Instead, use <a href="#%3Cinit%3E(org.openqa.selenium.WebDriver,java.time.Duration,java.time.Duration,java.time.Clock,org.openqa.selenium.support.ui.Sleeper)"><code>WebDriverWait(WebDriver, Duration, Duration,
-     Clock, Sleeper)</code></a>.</div>
-</div>
-<dl>
-<dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>driver</code> - the WebDriver instance to pass to the expected conditions</dd>
-<dd><code>clock</code> - used when measuring the timeout</dd>
-<dd><code>sleeper</code> - used to make the current thread go to sleep</dd>
-<dd><code>timeoutInSeconds</code> - the timeout in seconds when an expectation is called</dd>
-<dd><code>sleepInMillis</code> - the timeout in millis used whilst sleeping</dd>
 </dl>
 </li>
 </ul>

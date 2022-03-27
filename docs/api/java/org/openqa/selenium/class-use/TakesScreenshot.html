@@ -13,8 +13,7 @@
 <!--[if IE]>
 <script type="text/javascript" src="../../../../jquery/jszip-utils/dist/jszip-utils-ie.min.js"></script>
 <![endif]-->
-<script type="text/javascript" src="../../../../jquery/jquery-3.3.1.js"></script>
-<script type="text/javascript" src="../../../../jquery/jquery-migrate-3.0.1.js"></script>
+<script type="text/javascript" src="../../../../jquery/jquery-3.5.1.js"></script>
 <script type="text/javascript" src="../../../../jquery/jquery-ui.js"></script>
 </head>
 <body>
@@ -314,8 +313,11 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <td class="colFirst"><code>class&nbsp;</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="../opera/OperaDriver.html" title="class in org.openqa.selenium.opera">OperaDriver</a></span></code></th>
 <td class="colLast">
-<div class="block">A <a href="../WebDriver.html" title="interface in org.openqa.selenium"><code>WebDriver</code></a> implementation that controls a Blink-based Opera browser running on the local
- machine.</div>
+<div class="block"><span class="deprecatedLabel">Deprecated.</span>
+<div class="deprecationComment">Use <a href="../chrome/ChromeDriver.html" title="class in org.openqa.selenium.chrome"><code>ChromeDriver</code></a> with
+ <a href="../chromium/ChromiumOptions.html#setBinary(java.io.File)"><code>ChromiumOptions.setBinary(File)</code></a> or <a href="../chromium/ChromiumOptions.html#setBinary(java.lang.String)"><code>ChromiumOptions.setBinary(String)</code></a>
+ to set the path to the Opera browser.</div>
+</div>
 </td>
 </tr>
 </tbody>

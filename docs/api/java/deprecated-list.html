@@ -13,8 +13,7 @@
 <!--[if IE]>
 <script type="text/javascript" src="jquery/jszip-utils/dist/jszip-utils-ie.min.js"></script>
 <![endif]-->
-<script type="text/javascript" src="jquery/jquery-3.3.1.js"></script>
-<script type="text/javascript" src="jquery/jquery-migrate-3.0.1.js"></script>
+<script type="text/javascript" src="jquery/jquery-3.5.1.js"></script>
 <script type="text/javascript" src="jquery/jquery-ui.js"></script>
 </head>
 <body>
@@ -175,16 +174,6 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 </tr>
 <tbody>
 <tr class="altColor">
-<th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/firefox/xpi/XpiDriverInfo.html" title="class in org.openqa.selenium.firefox.xpi">org.openqa.selenium.firefox.xpi.XpiDriverInfo</a></th>
-<td class="colLast"></td>
-</tr>
-<tr class="rowColor">
-<th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/firefox/xpi/XpiDriverService.html" title="class in org.openqa.selenium.firefox.xpi">org.openqa.selenium.firefox.xpi.XpiDriverService</a></th>
-<td class="colLast">
-<div class="deprecationComment">This class will not be replaced.</div>
-</td>
-</tr>
-<tr class="altColor">
 <th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/interactions/ButtonReleaseAction.html" title="class in org.openqa.selenium.interactions">org.openqa.selenium.interactions.ButtonReleaseAction</a></th>
 <td class="colLast">
 <div class="deprecationComment">Use <a href="org/openqa/selenium/interactions/Actions.html#release()"><code>Actions.release()</code></a></div>
@@ -307,6 +296,52 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <td class="colLast"></td>
 </tr>
 <tr class="rowColor">
+<th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/opera/OperaDriver.html" title="class in org.openqa.selenium.opera">org.openqa.selenium.opera.OperaDriver</a></th>
+<td class="colLast">
+<div class="deprecationComment">Use <a href="org/openqa/selenium/chrome/ChromeDriver.html" title="class in org.openqa.selenium.chrome"><code>ChromeDriver</code></a> with
+ <a href="org/openqa/selenium/chromium/ChromiumOptions.html#setBinary(java.io.File)"><code>ChromiumOptions.setBinary(File)</code></a> or <a href="org/openqa/selenium/chromium/ChromiumOptions.html#setBinary(java.lang.String)"><code>ChromiumOptions.setBinary(String)</code></a>
+ to set the path to the Opera browser.
+
+ <p>Example usage:
+ <pre><code>
+ ChromeOptions options = new ChromeOptions()
+ options.setBinary(new File("/path/to/opera"));
+
+ // For using Opera browser with ChromeDriver:
+ ChromeDriver driver = new ChromeDriver(options);
+
+ // For use with RemoteWebDriver:
+ ChromeOptions options = new ChromeOptions();
+ options.setBinary(new File("/path/to/opera"));
+ RemoteWebDriver driver = new RemoteWebDriver(
+     new URL("http://localhost:4444/"), options);
+ </code></pre></div>
+</td>
+</tr>
+<tr class="altColor">
+<th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/opera/OperaOptions.html" title="class in org.openqa.selenium.opera">org.openqa.selenium.opera.OperaOptions</a></th>
+<td class="colLast">
+<div class="deprecationComment">Use <a href="org/openqa/selenium/chrome/ChromeDriver.html" title="class in org.openqa.selenium.chrome"><code>ChromeDriver</code></a> with
+  <a href="org/openqa/selenium/chromium/ChromiumOptions.html#setBinary(java.io.File)"><code>ChromiumOptions.setBinary(File)</code></a> or <a href="org/openqa/selenium/chromium/ChromiumOptions.html#setBinary(java.lang.String)"><code>ChromiumOptions.setBinary(String)</code></a>
+  to set the path to the Opera browser.
+
+ <p>Example usage:
+ <pre><code>
+ ChromeOptions options = new ChromeOptions()
+ options.setBinary(new File("/path/to/opera"));
+
+ // For using Opera browser with ChromeDriver:
+ ChromeDriver driver = new ChromeDriver(options);
+
+ // For use with RemoteWebDriver:
+ ChromeOptions options = new ChromeOptions();
+ options.setBinary(new File("/path/to/opera"));
+ RemoteWebDriver driver = new RemoteWebDriver(
+     new URL("http://localhost:4444/"), options);
+ </code></pre></div>
+</td>
+</tr>
+<tr class="rowColor">
 <th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/support/events/AbstractWebDriverEventListener.html" title="class in org.openqa.selenium.support.events">org.openqa.selenium.support.events.AbstractWebDriverEventListener</a></th>
 <td class="colLast"></td>
 </tr>
@@ -333,36 +368,18 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 </tr>
 <tbody>
 <tr class="altColor">
-<th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/firefox/FirefoxDriver.html#BINARY">org.openqa.selenium.firefox.FirefoxDriver.BINARY</a></th>
-<td class="colLast">
-<div class="deprecationComment">Use <a href="org/openqa/selenium/firefox/FirefoxDriver.Capability.html#BINARY"><code>FirefoxDriver.Capability.BINARY</code></a></div>
-</td>
-</tr>
-<tr class="rowColor">
-<th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/firefox/FirefoxDriver.html#MARIONETTE">org.openqa.selenium.firefox.FirefoxDriver.MARIONETTE</a></th>
-<td class="colLast">
-<div class="deprecationComment">Use <a href="org/openqa/selenium/firefox/FirefoxDriver.Capability.html#MARIONETTE"><code>FirefoxDriver.Capability.MARIONETTE</code></a></div>
-</td>
-</tr>
-<tr class="altColor">
-<th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/firefox/FirefoxDriver.html#PROFILE">org.openqa.selenium.firefox.FirefoxDriver.PROFILE</a></th>
-<td class="colLast">
-<div class="deprecationComment">Use <a href="org/openqa/selenium/firefox/FirefoxDriver.Capability.html#PROFILE"><code>FirefoxDriver.Capability.PROFILE</code></a></div>
-</td>
-</tr>
-<tr class="rowColor">
 <th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/ie/InternetExplorerDriver.html#IE_USE_PRE_PROCESS_PROXY">org.openqa.selenium.ie.InternetExplorerDriver.IE_USE_PRE_PROCESS_PROXY</a></th>
 <td class="colLast">
 <div class="deprecationComment">Use <a href="org/openqa/selenium/ie/InternetExplorerDriver.html#IE_USE_PER_PROCESS_PROXY"><code>InternetExplorerDriver.IE_USE_PER_PROCESS_PROXY</code></a> (the one without the typo);</div>
 </td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/remote/CapabilityType.html#PLATFORM">org.openqa.selenium.remote.CapabilityType.PLATFORM</a></th>
 <td class="colLast">
 <div class="deprecationComment">Use <a href="org/openqa/selenium/remote/CapabilityType.html#PLATFORM_NAME"><code>CapabilityType.PLATFORM_NAME</code></a></div>
 </td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/remote/CapabilityType.html#VERSION">org.openqa.selenium.remote.CapabilityType.VERSION</a></th>
 <td class="colLast">
 <div class="deprecationComment">Use <a href="org/openqa/selenium/remote/CapabilityType.html#BROWSER_VERSION"><code>CapabilityType.BROWSER_VERSION</code></a></div>
@@ -397,50 +414,40 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 </td>
 </tr>
 <tr class="altColor">
-<th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/firefox/FirefoxOptions.html#isLegacy()">org.openqa.selenium.firefox.FirefoxOptions.isLegacy()</a></th>
+<th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/firefox/FirefoxProfile.html#checkForChangesInFrozenPreferences()">org.openqa.selenium.firefox.FirefoxProfile.checkForChangesInFrozenPreferences()</a></th>
 <td class="colLast">
-<div class="deprecationComment">This method will be deleted and will not be replaced.</div>
+<div class="deprecationComment">This method will not be replaced as no default preferences are loaded anymore.</div>
 </td>
 </tr>
 <tr class="rowColor">
-<th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/firefox/FirefoxOptions.html#setLegacy(boolean)">org.openqa.selenium.firefox.FirefoxOptions.setLegacy&#8203;(boolean)</a></th>
-<td class="colLast">
-<div class="deprecationComment">This method will be deleted and will not be replaced.</div>
-</td>
-</tr>
-<tr class="altColor">
 <th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/Point.html#move(int,int)">org.openqa.selenium.Point.move&#8203;(int, int)</a></th>
 <td class="colLast">
 <div class="deprecationComment">Use {<a href="org/openqa/selenium/Point.html#moveBy(int,int)"><code>Point.moveBy(int, int)</code></a> instead}</div>
 </td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/Rectangle.html#setHeight(int)">org.openqa.selenium.Rectangle.setHeight&#8203;(int)</a></th>
 <td class="colLast">
 <div class="deprecationComment">Rectangle objects are supposed to be immutable, all setters will be removed soon</div>
 </td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/Rectangle.html#setWidth(int)">org.openqa.selenium.Rectangle.setWidth&#8203;(int)</a></th>
 <td class="colLast">
 <div class="deprecationComment">Rectangle objects are supposed to be immutable, all setters will be removed soon</div>
 </td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/Rectangle.html#setX(int)">org.openqa.selenium.Rectangle.setX&#8203;(int)</a></th>
 <td class="colLast">
 <div class="deprecationComment">Rectangle objects are supposed to be immutable, all setters will be removed soon</div>
 </td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/Rectangle.html#setY(int)">org.openqa.selenium.Rectangle.setY&#8203;(int)</a></th>
 <td class="colLast">
 <div class="deprecationComment">Rectangle objects are supposed to be immutable, all setters will be removed soon</div>
 </td>
-</tr>
-<tr class="rowColor">
-<th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/remote/DesiredCapabilities.html#htmlUnit()">org.openqa.selenium.remote.DesiredCapabilities.htmlUnit()</a></th>
-<td class="colLast"></td>
 </tr>
 <tr class="altColor">
 <th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/remote/DriverCommand.html#SET_IMPLICIT_WAIT_TIMEOUT(long,java.util.concurrent.TimeUnit)">org.openqa.selenium.remote.DriverCommand.SET_IMPLICIT_WAIT_TIMEOUT&#8203;(long, TimeUnit)</a></th>
@@ -491,12 +498,6 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 </td>
 </tr>
 <tr class="altColor">
-<th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/safari/SafariDriverService.Builder.html#usingTechnologyPreview(boolean)">org.openqa.selenium.safari.SafariDriverService.Builder.usingTechnologyPreview&#8203;(boolean)</a></th>
-<td class="colLast">
-<div class="deprecationComment">Directly use <a href="org/openqa/selenium/safari/SafariTechPreviewDriverService.html" title="class in org.openqa.selenium.safari"><code>SafariTechPreviewDriverService</code></a></div>
-</td>
-</tr>
-<tr class="rowColor">
 <th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/WebDriver.Timeouts.html#implicitlyWait(long,java.util.concurrent.TimeUnit)">org.openqa.selenium.WebDriver.Timeouts.implicitlyWait&#8203;(long, TimeUnit)</a></th>
 <td class="colLast">
 <div class="deprecationComment">Use <a href="org/openqa/selenium/WebDriver.Timeouts.html#implicitlyWait(java.time.Duration)"><code>WebDriver.Timeouts.implicitlyWait(Duration)</code></a>
@@ -516,7 +517,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
  argument will be returned.</div>
 </td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/WebDriver.Timeouts.html#pageLoadTimeout(long,java.util.concurrent.TimeUnit)">org.openqa.selenium.WebDriver.Timeouts.pageLoadTimeout&#8203;(long, TimeUnit)</a></th>
 <td class="colLast">
 <div class="deprecationComment">Use <a href="org/openqa/selenium/WebDriver.Timeouts.html#pageLoadTimeout(java.time.Duration)"><code>WebDriver.Timeouts.pageLoadTimeout(Duration)</code></a>
@@ -526,7 +527,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
  invalid argument will be returned.</div>
 </td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/WebDriver.Timeouts.html#setScriptTimeout(long,java.util.concurrent.TimeUnit)">org.openqa.selenium.WebDriver.Timeouts.setScriptTimeout&#8203;(long, TimeUnit)</a></th>
 <td class="colLast">
 <div class="deprecationComment">Use <a href="org/openqa/selenium/WebDriver.Timeouts.html#setScriptTimeout(java.time.Duration)"><code>WebDriver.Timeouts.setScriptTimeout(Duration)</code></a>
@@ -581,21 +582,9 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 </td>
 </tr>
 <tr class="rowColor">
-<th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/os/CommandLine.html#%3Cinit%3E(java.lang.String%5B%5D)">org.openqa.selenium.os.CommandLine&#8203;(String[])</a></th>
-<td class="colLast">
-<div class="deprecationComment">Use <a href="org/openqa/selenium/os/CommandLine.html#%3Cinit%3E(java.lang.String,java.lang.String...)"><code>CommandLine(String, String...)</code></a></div>
-</td>
-</tr>
-<tr class="altColor">
 <th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/safari/SafariDriver.html#%3Cinit%3E(org.openqa.selenium.Capabilities)">org.openqa.selenium.safari.SafariDriver&#8203;(Capabilities)</a></th>
 <td class="colLast">
 <div class="deprecationComment">Use <a href="org/openqa/selenium/safari/SafariDriver.html#%3Cinit%3E(org.openqa.selenium.safari.SafariOptions)"><code>SafariDriver(org.openqa.selenium.safari.SafariOptions)</code></a> instead.</div>
-</td>
-</tr>
-<tr class="rowColor">
-<th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/support/ui/WebDriverWait.html#%3Cinit%3E(org.openqa.selenium.WebDriver,long)">org.openqa.selenium.support.ui.WebDriverWait&#8203;(WebDriver, long)</a></th>
-<td class="colLast">
-<div class="deprecationComment">Instead, use <a href="org/openqa/selenium/support/ui/WebDriverWait.html#%3Cinit%3E(org.openqa.selenium.WebDriver,java.time.Duration)"><code>WebDriverWait(WebDriver, Duration)</code></a>.</div>
 </td>
 </tr>
 </tbody>

@@ -13,8 +13,7 @@
 <!--[if IE]>
 <script type="text/javascript" src="../../../../jquery/jszip-utils/dist/jszip-utils-ie.min.js"></script>
 <![endif]-->
-<script type="text/javascript" src="../../../../jquery/jquery-3.3.1.js"></script>
-<script type="text/javascript" src="../../../../jquery/jquery-migrate-3.0.1.js"></script>
+<script type="text/javascript" src="../../../../jquery/jquery-3.5.1.js"></script>
 <script type="text/javascript" src="../../../../jquery/jquery-ui.js"></script>
 </head>
 <body>
@@ -27,7 +26,7 @@
     catch(err) {
     }
 //-->
-var data = {"i0":9,"i1":9};
+var data = {"i0":9,"i1":9,"i2":9};
 var tabs = {65535:["t0","All Methods"],1:["t1","Static Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -191,6 +190,11 @@ extends java.lang.Object</pre>
               <a href="../Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&nbsp;caps)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
+<tr id="i2" class="altColor">
+<td class="colFirst"><code>static java.util.Optional&lt;java.net.URI&gt;</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getReportedUri(org.openqa.selenium.Capabilities)">getReportedUri</a></span>&#8203;(<a href="../Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&nbsp;caps)</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
 </table>
 <ul class="blockList">
 <li class="blockList"><a id="methods.inherited.from.class.java.lang.Object">
@@ -242,6 +246,15 @@ extends java.lang.Object</pre>
 <h4>getCdpEndPoint</h4>
 <pre class="methodSignature">public static&nbsp;java.util.Optional&lt;java.net.URI&gt;&nbsp;getCdpEndPoint&#8203;(<a href="../remote/http/HttpClient.Factory.html" title="interface in org.openqa.selenium.remote.http">HttpClient.Factory</a>&nbsp;clientFactory,
                                                               java.net.URI&nbsp;reportedUri)</pre>
+</li>
+</ul>
+<a id="getReportedUri(org.openqa.selenium.Capabilities)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getReportedUri</h4>
+<pre class="methodSignature">public static&nbsp;java.util.Optional&lt;java.net.URI&gt;&nbsp;getReportedUri&#8203;(<a href="../Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&nbsp;caps)</pre>
 </li>
 </ul>
 <a id="getReportedUri(java.lang.String,org.openqa.selenium.Capabilities)">
