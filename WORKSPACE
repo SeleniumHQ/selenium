@@ -80,6 +80,7 @@ rules_proto_dependencies()
 rules_proto_toolchains()
 
 RULES_JVM_EXTERNAL_TAG = "4.2"
+
 RULES_JVM_EXTERNAL_SHA = "cd1a77b7b02e8e008439ca76fd34f5b07aecb8c752961f9640dea15e9e5ba1ca"
 
 http_archive(
@@ -281,6 +282,7 @@ load(
 )
 
 rules_ruby_dependencies()
+
 rules_ruby_select_sdk(version = "host")
 
 load("@bazelruby_rules_ruby//ruby:defs.bzl", "ruby_bundle")
