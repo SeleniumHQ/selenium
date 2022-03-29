@@ -111,7 +111,7 @@ def test_clearing_an_element_should_cause_the_on_change_handler_to_fire(driver, 
     assert result.text == "Cleared"
 
 # TODO Currently Failing and needs fixing
-# def testSendingKeysToAnotherElementShouldCauseTheBlurEventToFire(driver, pages):
+# def test_sending_keys_to_another_element_should_cause_the_blur_event_to_fire(driver, pages):
 #    pages.load("javascriptPage.html")
 #    element = driver.find_element(By.ID, "theworks")
 #    element.send_keys("foo")
@@ -120,7 +120,7 @@ def test_clearing_an_element_should_cause_the_on_change_handler_to_fire(driver, 
 #    _assertEventFired(driver, "blur")
 
 # TODO Currently Failing and needs fixing
-# def testSendingKeysToAnElementShouldCauseTheFocusEventToFire(driver, pages):
+# def test_sending_keys_to_an_element_should_cause_the_focus_event_to_fire(driver, pages):
 #    pages.load("javascriptPage.html")
 #    element = driver.find_element(By.ID, "theworks")
 #    element.send_keys("foo")

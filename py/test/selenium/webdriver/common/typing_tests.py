@@ -256,7 +256,7 @@ def test_arrow_keys_and_page_up_and_down(driver, pages):
     assert element.get_attribute("value") == "ba1"
 
 
-# def_test_home_and_end_and_page_up_and_page_down_keys(driver, pages):
+# def test_home_and_end_and_page_up_and_page_down_keys(driver, pages):
 #  // FIXME: macs don't have HOME keys, would PGUP work?
 #  if (Platform.getCurrent().is(Platform.MAC)) {
 #    return

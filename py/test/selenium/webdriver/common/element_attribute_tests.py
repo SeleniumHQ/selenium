@@ -166,7 +166,7 @@ def test_should_return_value_of_class_attribute_of_an_element(driver, pages):
     assert "header" == classname
 
 # Disabled due to issues with Frames
-# def testShouldReturnValueOfClassAttributeOfAnElementAfterSwitchingIFrame(driver, pages):
+# def test_should_return_value_of_class_attribute_of_an_element_after_switching_iframe(driver, pages):
 #    pages.load("iframes.html")
 #    driver.switch_to.frame("iframe1")
 #
