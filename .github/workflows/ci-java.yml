@@ -121,13 +121,12 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        browser: [ chrome, firefox ]
-        version: [ latest ]
         include:
-          - browser: 'firefox'
-            version: 'latest-devedition'
-          - browser: 'firefox'
-            version: 'latest-beta'
+          - { "browser": "firefox", "version": "latest" }
+          - { "browser": "firefox", "version": "latest-beta" }
+          - { "browser": "firefox", "version": "latest-devedition" }
+          - { "browser": "chrome", "version": "stable" }
+          - { "browser": "chrome", "version": "beta" }
     steps:
       - name: Checkout source tree
         uses: actions/checkout@v2
@@ -147,18 +146,16 @@ jobs:
         uses: actions/setup-java@v1
         with:
           java-version: '11'
-      - name: Setup Firefox
-        uses: browser-actions/setup-firefox@latest
-        if: |
-          matrix.browser == 'firefox'
+      - name: Setup Firefox and GeckoDriver
+        uses: ./.github/actions/setup-firefox
         with:
-          firefox-version: ${{ matrix.version }}
-      - name: Setup GeckoDriver
-        uses: browser-actions/setup-geckodriver@latest
+          version: ${{ matrix.version }}
         if: |
           matrix.browser == 'firefox'
       - name: Setup Chrome and ChromeDriver
         uses: ./.github/actions/setup-chrome
+        with:
+          version: ${{ matrix.version }}
         if: |
           matrix.browser == 'chrome'
       - name: Start XVFB
@@ -178,13 +175,12 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        browser: [ chrome, firefox ]
-        version: [ latest ]
         include:
-          - browser: 'firefox'
-            version: 'latest-devedition'
-          - browser: 'firefox'
-            version: 'latest-beta'
+          - { "browser": "firefox", "version": "latest" }
+          - { "browser": "firefox", "version": "latest-beta" }
+          - { "browser": "firefox", "version": "latest-devedition" }
+          - { "browser": "chrome", "version": "stable" }
+          - { "browser": "chrome", "version": "beta" }
     steps:
       - name: Checkout source tree
         uses: actions/checkout@v2
@@ -205,18 +201,16 @@ jobs:
         uses: actions/setup-java@v1
         with:
           java-version: '11'
-      - name: Setup Firefox
-        uses: browser-actions/setup-firefox@latest
-        if: |
-          matrix.browser == 'firefox'
+      - name: Setup Firefox and GeckoDriver
+        uses: ./.github/actions/setup-firefox
         with:
-          firefox-version: ${{ matrix.version }}
-      - name: Setup GeckoDriver
-        uses: browser-actions/setup-geckodriver@latest
+          version: ${{ matrix.version }}
         if: |
           matrix.browser == 'firefox'
       - name: Setup Chrome and ChromeDriver
         uses: ./.github/actions/setup-chrome
+        with:
+          version: ${{ matrix.version }}
         if: |
           matrix.browser == 'chrome'
       - name: Start XVFB
@@ -252,10 +246,10 @@ jobs:
         uses: actions/setup-java@v1
         with:
           java-version: '11'
-      - name: Setup Firefox
-        uses: browser-actions/setup-firefox@latest
-      - name: Setup GeckoDriver
-        uses: browser-actions/setup-geckodriver@latest
+      - name: Setup Firefox and GeckoDriver
+        uses: ./.github/actions/setup-firefox
+        with:
+          version: latest
       - name: Start XVFB
         run: Xvfb :99 &
       - name: Run browser tests in Firefox
