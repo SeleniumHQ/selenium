@@ -35,10 +35,12 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.openqa.selenium.Keys;
+import org.openqa.selenium.UnsupportedCommandException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.testing.UnitTests;
 
+import java.time.Duration;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -218,6 +220,17 @@ public class ActionsTest {
 
     assertThat(keyboardActions.get(3)).as("Keyboard releases key")
         .containsEntry("type", "keyUp").containsEntry("value", CONTROL.toString());
+  }
+
+  @Test
+  public void throwsExceptionIfJWPSessionUsesScrollWheel() {
+    assertThatExceptionOfType(UnsupportedCommandException.class)
+      .isThrownBy(() -> new Actions(driver).scroll(10,
+                                                   10,
+                                                   0,
+                                                   200,
+                                                   Duration.ofMillis(250),
+                                                   PointerInput.Origin.viewport()).perform());
   }
 
 
