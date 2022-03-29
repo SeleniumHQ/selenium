@@ -126,7 +126,6 @@ jobs:
           - { "browser": "firefox", "version": "latest-beta" }
           - { "browser": "firefox", "version": "latest-devedition" }
           - { "browser": "chrome", "version": "stable" }
-          - { "browser": "chrome", "version": "beta" }
     steps:
       - name: Checkout source tree
         uses: actions/checkout@v3
@@ -180,7 +179,6 @@ jobs:
           - { "browser": "firefox", "version": "latest-beta" }
           - { "browser": "firefox", "version": "latest-devedition" }
           - { "browser": "chrome", "version": "stable" }
-          - { "browser": "chrome", "version": "beta" }
     steps:
       - name: Checkout source tree
         uses: actions/checkout@v3
