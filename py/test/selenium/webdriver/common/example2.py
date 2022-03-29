@@ -18,7 +18,7 @@
 from google_one_box import GoogleOneBox
 
 
-def testSearch(driver):
+def test_search(driver):
     """This example shows how to use the page object pattern.
 
     For more information about this pattern, see:

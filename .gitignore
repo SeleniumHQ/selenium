@@ -107,6 +107,7 @@ Gemfile.lock
 .idea/inspectionProfiles/Project_Default.xml
 .idea/misc.xml
 third_party/py/googlestorage/client_secrets.json
+.venv
 venv
 venv3
 py/.idea
