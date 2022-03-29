@@ -345,13 +345,10 @@ py_test_suite(
         "--driver=firefox",
     ],
     data = [
-        "//third_party/firebug:favourite_colour-1.1-an+fx.xpi",
+        "//common/extensions",
     ],
     tags = [
         "no-sandbox",
-    ],
-    data = [
-      "//common/extensions",
     ],
     deps = [
         ":init-tree",
