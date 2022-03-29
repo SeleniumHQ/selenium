@@ -38,6 +38,7 @@ public class Pages {
   public String droppableItems;
   public String dynamicallyModifiedPage;
   public String dynamicPage;
+  public String echoPage;
   public String errorsPage;
   public String formPage;
   public String formSelectionPage;
@@ -98,6 +99,7 @@ public class Pages {
     documentWrite = appServer.whereIs("document_write_in_onload.html");
     dynamicallyModifiedPage = appServer.whereIs("dynamicallyModifiedPage.html");
     dynamicPage = appServer.whereIs("dynamic.html");
+    echoPage = appServer.whereIs("echo");
     errorsPage = appServer.whereIs("errors.html");
     xhtmlFormPage = appServer.whereIs("xhtmlFormPage.xhtml");
     formPage = appServer.whereIs("formPage.html");

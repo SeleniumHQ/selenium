@@ -21,8 +21,8 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 
 import com.google.common.collect.EvictingQueue;
 
-import net.jodah.failsafe.Failsafe;
-import net.jodah.failsafe.RetryPolicy;
+import dev.failsafe.Failsafe;
+import dev.failsafe.RetryPolicy;
 
 import org.openqa.selenium.events.Event;
 import org.openqa.selenium.events.EventBus;
@@ -110,12 +110,13 @@ class UnboundZmqEventBus implements EventBus {
     String connectionMessage = String.format("Connecting to %s and %s", publishConnection, subscribeConnection);
     LOG.info(connectionMessage);
 
-    RetryPolicy<Object> retryPolicy = new RetryPolicy<>()
+    RetryPolicy<Object> retryPolicy = RetryPolicy.builder()
       .withMaxAttempts(5)
       .withDelay(5, 10, ChronoUnit.SECONDS)
       .onFailedAttempt(e -> LOG.log(Level.WARNING, String.format("%s failed", connectionMessage)))
       .onRetry(e -> LOG.log(Level.WARNING, String.format("Failure #%s. Retrying.", e.getAttemptCount())))
-      .onRetriesExceeded(e -> LOG.log(Level.WARNING, "Connection aborted."));
+      .onRetriesExceeded(e -> LOG.log(Level.WARNING, "Connection aborted."))
+      .build();
 
     // Access to the zmq socket is safe here: no threads.
     Failsafe.with(retryPolicy).run(
@@ -209,7 +210,7 @@ class UnboundZmqEventBus implements EventBus {
   }
 
   private class PollingRunnable implements Runnable {
-    private Secret secret;
+    private final Secret secret;
 
     public PollingRunnable(Secret secret) {
       this.secret = secret;
@@ -234,11 +235,25 @@ class UnboundZmqEventBus implements EventBus {
               try {
                 eventSecret = JSON.toType(receivedEventSecret, Secret.class);
               } catch (JsonException e) {
-                rejectEvent(eventName, receivedEventSecret);
+                rejectEvent(
+                  eventName,
+                  receivedEventSecret,
+                  "Could not parse event secret, rejecting event. " + e.getMessage());
                 return;
               }
 
-              UUID id = UUID.fromString(new String(socket.recv(), UTF_8));
+              UUID id;
+              String eventId = new String(socket.recv(), UTF_8);
+              try {
+                id = UUID.fromString(eventId);
+              } catch (IllegalArgumentException e) {
+                rejectEvent(
+                  eventName,
+                  receivedEventSecret,
+                  "Could not parse event id, rejecting event. " + e.getMessage());
+                return;
+              }
+
               String data = new String(socket.recv(), UTF_8);
 
               // Don't bother doing more work if we've seen this message.
@@ -252,7 +267,7 @@ class UnboundZmqEventBus implements EventBus {
               recentMessages.add(id);
 
               if (!Secret.matches(secret, eventSecret)) {
-                rejectEvent(eventName, data);
+                rejectEvent(eventName, data, "Rejecting message without a valid secret");
                 return;
               }
 
@@ -260,9 +275,7 @@ class UnboundZmqEventBus implements EventBus {
             }
           }
         } catch (Exception e) {
-          if (e.getCause() instanceof AssertionError) {
-            // Do nothing.
-          } else {
+          if (!(e.getCause() instanceof AssertionError)) {
             LOG.log(Level.WARNING, e,
                     () -> "Caught exception while polling for event bus messages: " +
                           e.getMessage());
@@ -271,12 +284,10 @@ class UnboundZmqEventBus implements EventBus {
       }
     }
 
-    private void rejectEvent(EventName eventName, String data) {
+    private void rejectEvent(EventName eventName, String data, String message) {
       Event rejectedEvent = new Event(REJECTED_EVENT,
                                       new ZeroMqEventBus.RejectedEvent(eventName, data));
-      LOG.log(Level.SEVERE,
-              "Received message without a valid secret. Rejecting. {0} -> {1}",
-              new Object[]{rejectedEvent, data}); // String formatting only applied if needed
+      LOG.log(Level.SEVERE, "{0}. {1}", new Object[]{message, rejectedEvent});
 
       notifyListeners(REJECTED_EVENT, rejectedEvent);
     }

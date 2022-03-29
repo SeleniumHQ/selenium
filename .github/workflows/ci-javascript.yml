@@ -1,31 +1,29 @@
-name: JavaScript workflow
+# Configuration for JavaScript CI
+# To force the execution of this workflow, add [run javascript] to your commit message
+name: 'CI - JavaScript'
 
 on:
   workflow_dispatch:
+
+  schedule:
+    - cron: '45 9,21 * * *'
+
   push:
     branches:
       - trunk
-    paths:
-      - .bazel*
-      - .github/actions/**
-      - .github/workflows/javascript.yml
-      - javascript/**
-      - common/**
-      - package.json
-      - package-lock.json
   pull_request:
     branches:
       - trunk
-    paths:
-      - .bazel*
-      - .github/actions/**
-      - .github/workflows/javascript.yml
-      - javascript/**
-      - common/**
-      - package.json
-      - package-lock.json
+
 jobs:
+  check_workflow:
+    uses: ./.github/workflows/should-workflow-run.yml
+    with:
+      bazel-target-prefix: '//javascript'
+
   node_tests:
+    if: ${{ needs.check_workflow.outputs.result == 'true' || github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' || contains(toJson(github.event.commits), '[run javascript]') == true }}
+    needs: check_workflow
     runs-on: ubuntu-latest
     steps:
       - name: Checkout source tree
@@ -50,8 +48,10 @@ jobs:
           java-version: 11
       - name: Setup bazelisk
         uses: ./.github/actions/setup-bazelisk
-      - name: Setup Firefox and geckodriver
-        uses: ./.github/actions/setup-firefox
+      - name: Setup Firefox
+        uses: browser-actions/setup-firefox@latest
+      - name: Setup GeckoDriver
+        uses: browser-actions/setup-geckodriver@latest
       - name: Start XVFB
         run: Xvfb :99 &
       - name: Run JavaScript tests on Firefox
@@ -63,6 +63,8 @@ jobs:
           SELENIUM_BROWSER: firefox
 
   firefox_atom_tests:
+    if: ${{ needs.check_workflow.outputs.result == 'true' || github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' || contains(toJson(github.event.commits), '[run javascript]') == true }}
+    needs: check_workflow
     runs-on: ubuntu-latest
     steps:
       - name: Checkout source tree
@@ -82,8 +84,10 @@ jobs:
           java-version: 11
       - name: Setup bazelisk
         uses: ./.github/actions/setup-bazelisk
-      - name: Setup Firefox and geckodriver
-        uses: ./.github/actions/setup-firefox
+      - name: Setup Firefox
+        uses: browser-actions/setup-firefox@latest
+      - name: Setup GeckoDriver
+        uses: browser-actions/setup-geckodriver@latest
       - name: Start XVFB
         run: Xvfb :99 &
       - name: Run atom tests on Firefox
@@ -97,6 +101,8 @@ jobs:
   # As soon as this gets merged https://github.com/facebook/jest/pull/9351, we should upgrade Jest and
   # run bazel test javascript/grid-ui:test for these tests
   grid_ui_unit_tests:
+    if: ${{ needs.check_workflow.outputs.result == 'true' || github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' || contains(toJson(github.event.commits), '[run javascript]') == true }}
+    needs: check_workflow
     runs-on: ubuntu-latest
     steps:
       - name: Checkout source tree
@@ -104,7 +110,7 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v2
         with:
-          node-version: '15.x'
+          node-version: '16.x'
       - name: NPM install
         run: cd javascript/grid-ui && npm install
       - name: Run unit tests

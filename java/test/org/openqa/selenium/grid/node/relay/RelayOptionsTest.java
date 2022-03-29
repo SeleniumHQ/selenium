@@ -49,8 +49,9 @@ public class RelayOptionsTest {
     NetworkOptions networkOptions = new NetworkOptions(config);
     Tracer tracer = DefaultTestTracer.createTracer();
     HttpClient.Factory httpClientFactory = networkOptions.getHttpClientFactory(tracer);
+    RelayOptions relayOptions = new RelayOptions(config);
     Map<Capabilities, Collection<SessionFactory>>
-      sessionFactories = new RelayOptions(config).getSessionFactories(tracer, httpClientFactory);
+      sessionFactories = relayOptions.getSessionFactories(tracer, httpClientFactory);
 
     Capabilities chrome = sessionFactories
       .keySet()
@@ -60,13 +61,7 @@ public class RelayOptionsTest {
       .orElseThrow(() -> new AssertionError("No value returned"));
 
     assertThat(sessionFactories.get(chrome).size()).isEqualTo(2);
-
-    RelaySessionFactory relaySessionFactory = (RelaySessionFactory) sessionFactories.get(chrome)
-      .stream()
-      .findFirst()
-      .orElseThrow(() -> new AssertionError("No value returned"));
-
-    assertThat(relaySessionFactory.getServiceUrl().toString()).isEqualTo("http://localhost:9999");
+    assertThat(relayOptions.getServiceUri().toString()).isEqualTo("http://localhost:9999");
   }
 
   @Test
@@ -78,27 +73,24 @@ public class RelayOptionsTest {
       "configs = [\"5\", '{\"browserName\": \"firefox\"}']",
       };
     Config config = new TomlConfig(new StringReader(String.join("\n", rawConfig)));
-    NetworkOptions networkOptions = new NetworkOptions(config);
-    Tracer tracer = DefaultTestTracer.createTracer();
-    HttpClient.Factory httpClientFactory = networkOptions.getHttpClientFactory(tracer);
-    Map<Capabilities, Collection<SessionFactory>>
-      sessionFactories = new RelayOptions(config).getSessionFactories(tracer, httpClientFactory);
+    RelayOptions relayOptions = new RelayOptions(config);
+    assertThat(relayOptions.getServiceUri().toString()).isEqualTo("http://127.0.0.1:9999");
+  }
 
-    Capabilities firefox = sessionFactories
-      .keySet()
-      .stream()
-      .filter(capabilities -> "firefox".equals(capabilities.getBrowserName()))
-      .findFirst()
-      .orElseThrow(() -> new AssertionError("No value returned"));
-
-    assertThat(sessionFactories.get(firefox).size()).isEqualTo(5);
-
-    RelaySessionFactory relaySessionFactory = (RelaySessionFactory) sessionFactories.get(firefox)
-      .stream()
-      .findFirst()
-      .orElseThrow(() -> new AssertionError("No value returned"));
-
-    assertThat(relaySessionFactory.getServiceUrl().toString()).isEqualTo("http://127.0.0.1:9999");
+  @Test
+  public void statusUrlIsParsedSuccessfully() {
+    String[] rawConfig = new String[]{
+      "[relay]",
+      "host = '127.0.0.1'",
+      "port = '8888'",
+      "status-endpoint = '/statusEndpoint'",
+      "configs = [\"5\", '{\"browserName\": \"firefox\"}']",
+      };
+    Config config = new TomlConfig(new StringReader(String.join("\n", rawConfig)));
+    RelayOptions relayOptions = new RelayOptions(config);
+    assertThat(relayOptions.getServiceUri().toString()).isEqualTo("http://127.0.0.1:8888");
+    assertThat(relayOptions.getServiceStatusUri().toString())
+      .isEqualTo("http://127.0.0.1:8888/statusEndpoint");
   }
 
   @Test

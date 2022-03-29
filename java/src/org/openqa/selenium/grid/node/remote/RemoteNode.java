@@ -17,17 +17,6 @@
 
 package org.openqa.selenium.grid.node.remote;
 
-import static java.net.HttpURLConnection.HTTP_OK;
-import static org.openqa.selenium.grid.data.Availability.DOWN;
-import static org.openqa.selenium.grid.data.Availability.DRAINING;
-import static org.openqa.selenium.grid.data.Availability.UP;
-import static org.openqa.selenium.net.Urls.fromUri;
-import static org.openqa.selenium.remote.http.Contents.asJson;
-import static org.openqa.selenium.remote.http.Contents.reader;
-import static org.openqa.selenium.remote.http.HttpMethod.DELETE;
-import static org.openqa.selenium.remote.http.HttpMethod.GET;
-import static org.openqa.selenium.remote.http.HttpMethod.POST;
-
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 
@@ -69,6 +58,17 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 
+import static java.net.HttpURLConnection.HTTP_OK;
+import static org.openqa.selenium.grid.data.Availability.DOWN;
+import static org.openqa.selenium.grid.data.Availability.DRAINING;
+import static org.openqa.selenium.grid.data.Availability.UP;
+import static org.openqa.selenium.net.Urls.fromUri;
+import static org.openqa.selenium.remote.http.Contents.asJson;
+import static org.openqa.selenium.remote.http.Contents.reader;
+import static org.openqa.selenium.remote.http.HttpMethod.DELETE;
+import static org.openqa.selenium.remote.http.HttpMethod.GET;
+import static org.openqa.selenium.remote.http.HttpMethod.POST;
+
 public class RemoteNode extends Node {
 
   public static final Json JSON = new Json();
@@ -89,7 +89,8 @@ public class RemoteNode extends Node {
     this.externalUri = Require.nonNull("External URI", externalUri);
     this.capabilities = ImmutableSet.copyOf(capabilities);
 
-    this.client = Require.nonNull("HTTP client factory", clientFactory).createClient(fromUri(externalUri));
+    this.client = Require.nonNull("HTTP client factory", clientFactory)
+      .createClient(fromUri(externalUri));
 
     this.healthCheck = new RemoteCheck();
 
@@ -252,11 +253,12 @@ public class RemoteNode extends Node {
     }
   }
 
+  @SuppressWarnings("unused")
   private Map<String, Object> toJson() {
     return ImmutableMap.of(
-        "id", getId(),
-        "uri", externalUri,
-        "capabilities", capabilities);
+      "id", getId(),
+      "uri", externalUri,
+      "capabilities", capabilities);
   }
 
   private class RemoteCheck implements HealthCheck {

@@ -25,6 +25,8 @@ import org.openqa.selenium.Platform;
 import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.devtools.DevTools;
+import org.openqa.selenium.devtools.HasDevTools;
 import org.openqa.selenium.firefox.FirefoxOptions;
 import org.openqa.selenium.ie.InternetExplorerOptions;
 import org.openqa.selenium.json.Json;
@@ -381,6 +383,70 @@ public class RemoteWebDriverBuilderTest {
 
     assertThat(driver).isInstanceOf(AugmenterTest.HasMagicNumbers.class);
     assertThat(number).isEqualTo(1);
+  }
+
+  @Test
+  public void shouldAugmentDriverWhenUsingDriverService() throws IOException {
+    URI uri = URI.create("http://localhost:9898");
+    URL url = uri.toURL();
+
+    DriverService service = new FakeDriverService() {
+      @Override
+      public URL getUrl() {
+        return url;
+      }
+    };
+
+    HttpResponse response = new HttpResponse()
+      .setContent(Contents.asJson(ImmutableMap.of(
+        "value", ImmutableMap.of(
+          "sessionId", SESSION_ID,
+          "capabilities", new ImmutableCapabilities("firefox", "caps")))));
+
+    Augmenter augmenter = new Augmenter().addDriverAugmentation("firefox",
+                                                                AugmenterTest.HasMagicNumbers.class,
+                                                                (c, exe) -> () -> 1);
+    WebDriver driver = RemoteWebDriver.builder()
+      .oneOf(new FirefoxOptions())
+      .withDriverService(service)
+      .augmentUsing(augmenter)
+      .connectingWith(config -> req -> response)
+      .build();
+
+    int number = ((AugmenterTest.HasMagicNumbers) driver).getMagicNumber();
+
+    assertThat(driver).isInstanceOf(AugmenterTest.HasMagicNumbers.class);
+    assertThat(number).isEqualTo(1);
+  }
+
+  @Test
+  public void shouldAugmentWithDevToolsWhenUsingDriverService() throws IOException {
+    URI uri = URI.create("http://localhost:9898");
+    URL url = uri.toURL();
+
+    DriverService service = new FakeDriverService() {
+      @Override
+      public URL getUrl() {
+        return url;
+      }
+    };
+
+    HttpResponse response = new HttpResponse()
+      .setContent(Contents.asJson(ImmutableMap.of(
+        "value", ImmutableMap.of(
+          "sessionId", SESSION_ID,
+          "capabilities", new ImmutableCapabilities("firefox", "caps",
+                                                    "browserName", "firefox",
+                                                    "moz:debuggerAddress", uri.toString())))));
+
+    WebDriver driver = RemoteWebDriver.builder()
+      .oneOf(new FirefoxOptions())
+      .withDriverService(service)
+      .augmentUsing(new Augmenter())
+      .connectingWith(config -> req -> response)
+      .build();
+
+    assertThat(driver).isInstanceOf(HasDevTools.class);
   }
 
   @SuppressWarnings("unchecked")

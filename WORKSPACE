@@ -80,6 +80,7 @@ rules_proto_dependencies()
 rules_proto_toolchains()
 
 RULES_JVM_EXTERNAL_TAG = "4.2"
+
 RULES_JVM_EXTERNAL_SHA = "cd1a77b7b02e8e008439ca76fd34f5b07aecb8c752961f9640dea15e9e5ba1ca"
 
 http_archive(
@@ -127,14 +128,14 @@ selenium_register_dotnet()
 
 http_archive(
     name = "build_bazel_rules_nodejs",
-    sha256 = "d63ecec7192394f5cc4ad95a115f8a6c9de55c60d56c1f08da79c306355e4654",
-    urls = ["https://github.com/bazelbuild/rules_nodejs/releases/download/4.6.1/rules_nodejs-4.6.1.tar.gz"],
+    sha256 = "ad3e5afa52ef9aac4da426f61e339c054ecbc0e6665cec2109f8846b4c8339e3",
+    urls = ["https://github.com/bazelbuild/rules_nodejs/releases/download/4.6.3/rules_nodejs-4.6.3.tar.gz"],
 )
 
 load("@build_bazel_rules_nodejs//:index.bzl", "node_repositories", "npm_install")
 
 node_repositories(
-    node_version = "16.4.1",
+    node_version = "16.4.2",
     package_json = [
         "//:package.json",
         "//javascript/grid-ui:package.json",
@@ -149,6 +150,12 @@ npm_install(
 
 http_archive(
     name = "io_bazel_rules_closure",
+    patch_args = [
+        "-p1",
+    ],
+    patches = [
+        "//javascript:rules_closure_shell.patch",
+    ],
     sha256 = "d66deed38a0bb20581c15664f0ab62270af5940786855c7adc3087b27168b529",
     strip_prefix = "rules_closure-0.11.0",
     urls = [
@@ -275,6 +282,7 @@ load(
 )
 
 rules_ruby_dependencies()
+
 rules_ruby_select_sdk(version = "host")
 
 load("@bazelruby_rules_ruby//ruby:defs.bzl", "ruby_bundle")

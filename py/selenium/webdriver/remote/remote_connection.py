@@ -128,6 +128,19 @@ class RemoteConnection(object):
         elif self._url.startswith('http://'):
             return os.environ.get('http_proxy', os.environ.get('HTTP_PROXY'))
 
+    def _identify_http_proxy_auth(self):
+        url = self._proxy_url
+        url = url[url.find(":") + 3:]
+        return True if "@" in url and len(url[:url.find('@')]) > 0 else False
+
+    def _seperate_http_proxy_auth(self):
+        url = self._proxy_url
+        protocol = url[:url.find(":") + 3]
+        no_protocol = url[len(protocol):]
+        auth = no_protocol[:no_protocol.find('@')]
+        proxy_without_auth = protocol + no_protocol[len(auth) + 1:]
+        return proxy_without_auth, auth
+
     def _get_connection_manager(self):
         pool_manager_init_args = {
             'timeout': self._timeout
@@ -140,6 +153,10 @@ class RemoteConnection(object):
             if self._proxy_url.lower().startswith('sock'):
                 from urllib3.contrib.socks import SOCKSProxyManager
                 return SOCKSProxyManager(self._proxy_url, **pool_manager_init_args)
+            elif self._identify_http_proxy_auth():
+                self._proxy_url, self._basic_proxy_auth = self._seperate_http_proxy_auth()
+                pool_manager_init_args['proxy_headers'] = urllib3.make_headers(
+                    proxy_basic_auth=self._basic_proxy_auth)
             return urllib3.ProxyManager(self._proxy_url, **pool_manager_init_args)
 
         return urllib3.PoolManager(**pool_manager_init_args)

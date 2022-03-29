@@ -48,7 +48,28 @@ import static org.openqa.selenium.remote.CapabilityType.BROWSER_NAME;
  * RemoteWebDriver driver = new RemoteWebDriver(
  *     new URL("http://localhost:4444/"), options);
  * </code></pre>
+ *
+ * Since operadriver does not support w3c, Selenium will remove the support in the next version.
+ *  @deprecated Use {@link org.openqa.selenium.chrome.ChromeDriver} with
+ *  {@link org.openqa.selenium.chrome.ChromeOptions#setBinary(File)} or {@link org.openqa.selenium.chrome.ChromeOptions#setBinary(String)}
+ *  to set the path to the Opera browser.
+ *
+ * <p>Example usage:
+ * <pre><code>
+ * ChromeOptions options = new ChromeOptions()
+ * options.setBinary(new File("/path/to/opera"));
+ *
+ * // For using Opera browser with ChromeDriver:
+ * ChromeDriver driver = new ChromeDriver(options);
+ *
+ * // For use with RemoteWebDriver:
+ * ChromeOptions options = new ChromeOptions();
+ * options.setBinary(new File("/path/to/opera"));
+ * RemoteWebDriver driver = new RemoteWebDriver(
+ *     new URL("http://localhost:4444/"), options);
+ * </code></pre>
  */
+@Deprecated
 public class OperaOptions extends AbstractDriverOptions<OperaOptions> {
 
   /**

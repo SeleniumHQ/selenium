@@ -1,6 +1,5 @@
 load("//common:defs.bzl", "copy_file")
 load("//rb:defs.bzl", "ruby_gem")
-
 load(
     "@bazelruby_rules_ruby//ruby:defs.bzl",
     "ruby_binary",
@@ -12,9 +11,9 @@ package(default_visibility = ["//:__subpackages__"])
 
 CDP_VERSIONS = [
     "v85",
-    "v96",
     "v97",
-    "v98"
+    "v98",
+    "v99",
 ]
 
 copy_file(

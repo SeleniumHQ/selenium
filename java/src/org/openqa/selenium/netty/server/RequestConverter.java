@@ -61,10 +61,10 @@ class RequestConverter extends SimpleChannelInboundHandler<HttpObject> {
   protected void channelRead0(
     ChannelHandlerContext ctx,
     HttpObject msg) throws Exception {
-    LOG.fine("Incoming message: " + msg);
+    LOG.log(Debug.getDebugLogLevel(), "Incoming message: " + msg);
 
     if (msg instanceof io.netty.handler.codec.http.HttpRequest) {
-      LOG.fine("Start of http request: " + msg);
+      LOG.log(Debug.getDebugLogLevel(), "Start of http request: " + msg);
 
       io.netty.handler.codec.http.HttpRequest nettyRequest =
         (io.netty.handler.codec.http.HttpRequest) msg;
@@ -113,7 +113,7 @@ class RequestConverter extends SimpleChannelInboundHandler<HttpObject> {
     }
 
     if (msg instanceof LastHttpContent) {
-      LOG.fine("Closing input pipe.");
+      LOG.log(Debug.getDebugLogLevel(), "Closing input pipe.");
       EXECUTOR.submit(() -> {
         try {
           out.close();

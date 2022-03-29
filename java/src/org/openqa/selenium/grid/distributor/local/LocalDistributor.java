@@ -20,6 +20,7 @@ package org.openqa.selenium.grid.distributor.local;
 import static com.google.common.collect.ImmutableSet.toImmutableSet;
 import static org.openqa.selenium.grid.data.Availability.DOWN;
 import static org.openqa.selenium.grid.data.Availability.DRAINING;
+import static org.openqa.selenium.grid.data.Availability.UP;
 import static org.openqa.selenium.internal.Debug.getDebugLogLevel;
 import static org.openqa.selenium.remote.RemoteTags.CAPABILITIES;
 import static org.openqa.selenium.remote.RemoteTags.CAPABILITIES_EVENT;
@@ -31,8 +32,8 @@ import static org.openqa.selenium.remote.tracing.Tags.EXCEPTION;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 
-import net.jodah.failsafe.Failsafe;
-import net.jodah.failsafe.RetryPolicy;
+import dev.failsafe.Failsafe;
+import dev.failsafe.RetryPolicy;
 
 import org.openqa.selenium.Beta;
 import org.openqa.selenium.Capabilities;
@@ -44,6 +45,7 @@ import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.concurrent.GuardedRunnable;
 import org.openqa.selenium.events.EventBus;
 import org.openqa.selenium.grid.config.Config;
+import org.openqa.selenium.grid.data.Availability;
 import org.openqa.selenium.grid.data.CreateSessionRequest;
 import org.openqa.selenium.grid.data.CreateSessionResponse;
 import org.openqa.selenium.grid.data.DistributorStatus;
@@ -91,6 +93,7 @@ import org.openqa.selenium.status.HasReadyState;
 
 import java.io.Closeable;
 import java.io.UncheckedIOException;
+import java.net.URI;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -297,29 +300,24 @@ public class LocalDistributor extends Distributor implements Closeable {
 
     // An exception occurs if Node heartbeat has started but the server is not ready.
     // Unhandled exception blocks the event-bus thread from processing any event henceforth.
+    NodeStatus initialNodeStatus;
     try {
-      model.add(node.getStatus());
+      initialNodeStatus = node.getStatus();
+      model.add(initialNodeStatus);
       nodes.put(node.getId(), node);
     } catch (Exception e) {
+      LOG.log(
+        Debug.getDebugLogLevel(),
+        String.format("Exception while adding Node %s", node.getUri()),
+        e);
       return this;
     }
 
     // Extract the health check
-    Runnable runnableHealthCheck = asRunnableHealthCheck(node);
-    allChecks.put(node.getId(), runnableHealthCheck);
+    Runnable healthCheck = asRunnableHealthCheck(node);
+    allChecks.put(node.getId(), healthCheck);
 
-    // Running the health check right after the Node registers itself. We retry the
-    // execution because the Node might on a complex network topology. For example,
-    // Kubernetes pods with IPs that take a while before they are reachable.
-    RetryPolicy<Object> initialHealthCheckPolicy = new RetryPolicy<>()
-      .withMaxAttempts(-1)
-      .withMaxDuration(Duration.ofSeconds(90))
-      .withDelay(Duration.ofSeconds(15))
-      .abortIf(result -> true);
-
-    LOG.log(getDebugLogLevel(), "Running initial health check for Node " + node.getId());
-    Executors.newSingleThreadExecutor().submit(
-      () -> Failsafe.with(initialHealthCheckPolicy).run(runnableHealthCheck::run));
+    updateNodeStatus(initialNodeStatus, healthCheck);
 
     LOG.info(String.format(
       "Added node %s at %s. Health check every %ss",
@@ -330,6 +328,28 @@ public class LocalDistributor extends Distributor implements Closeable {
     bus.fire(new NodeAddedEvent(node.getId()));
 
     return this;
+  }
+
+  private void updateNodeStatus(NodeStatus status, Runnable healthCheck) {
+    // Setting the Node as available if the initial call to status was successful.
+    // Otherwise, retry to have it available as soon as possible.
+    if (status.getAvailability() == UP) {
+      updateNodeAvailability(status.getExternalUri(), status.getNodeId(), status.getAvailability());
+    } else {
+      // Running the health check right after the Node registers itself. We retry the
+      // execution because the Node might on a complex network topology. For example,
+      // Kubernetes pods with IPs that take a while before they are reachable.
+      RetryPolicy<Object> initialHealthCheckPolicy =  RetryPolicy.builder()
+        .withMaxAttempts(-1)
+        .withMaxDuration(Duration.ofSeconds(90))
+        .withDelay(Duration.ofSeconds(15))
+        .abortIf(result -> true)
+        .build();
+
+      LOG.log(getDebugLogLevel(), "Running health check for Node " + status.getExternalUri());
+      Executors.newSingleThreadExecutor().submit(
+        () -> Failsafe.with(initialHealthCheckPolicy).run(healthCheck::run));
+    }
   }
 
   private Runnable runNodeHealthChecks() {
@@ -347,7 +367,7 @@ public class LocalDistributor extends Distributor implements Closeable {
     return () -> {
       boolean checkFailed = false;
       Exception failedCheckException = null;
-      LOG.log(getDebugLogLevel(), "Running health check for " + node.getId());
+      LOG.log(getDebugLogLevel(), "Running health check for " + node.getUri());
 
       HealthCheck.Result result;
       try {
@@ -359,24 +379,25 @@ public class LocalDistributor extends Distributor implements Closeable {
         failedCheckException = e;
       }
 
-      Lock writeLock = lock.writeLock();
-      writeLock.lock();
-      try {
-        LOG.log(
-          getDebugLogLevel(),
-          String.format(
-            "Health check result for %s was %s",
-            node.getId(),
-            result.getAvailability()));
-        model.setAvailability(id, result.getAvailability());
-        model.updateHealthCheckCount(id, result.getAvailability());
-      } finally {
-        writeLock.unlock();
-      }
+      updateNodeAvailability(node.getUri(), id, result.getAvailability());
       if (checkFailed) {
         throw new HealthCheckFailedException("Node " + id, failedCheckException);
       }
     };
+  }
+
+  private void updateNodeAvailability(URI nodeUri, NodeId id, Availability availability) {
+    Lock writeLock = lock.writeLock();
+    writeLock.lock();
+    try {
+      LOG.log(
+        getDebugLogLevel(),
+        String.format("Health check result for %s was %s", nodeUri, availability));
+      model.setAvailability(id, availability);
+      model.updateHealthCheckCount(id, availability);
+    } finally {
+      writeLock.unlock();
+    }
   }
 
   @Override

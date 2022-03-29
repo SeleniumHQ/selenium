@@ -37,19 +37,6 @@ public class CommandLine {
   }
 
   /**
-   * @deprecated Use {@link #CommandLine(String, String...)}
-   */
-  @Deprecated
-  public CommandLine(String[] cmdarray) {
-    String executable = cmdarray[0];
-    int length = cmdarray.length - 1;
-    String[] args = new String[length];
-    System.arraycopy(cmdarray, 1, args, 0, length);
-
-    process = new OsProcess(executable, args);
-  }
-
-  /**
    * Adds the specified environment variables.
    *
    * @param environment the variables to add

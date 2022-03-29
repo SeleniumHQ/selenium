@@ -24,8 +24,8 @@ import static org.openqa.selenium.remote.http.Contents.string;
 
 import com.google.common.collect.ImmutableMap;
 
-import net.jodah.failsafe.Failsafe;
-import net.jodah.failsafe.RetryPolicy;
+import dev.failsafe.Failsafe;
+import dev.failsafe.RetryPolicy;
 
 import org.openqa.selenium.grid.config.CompoundConfig;
 import org.openqa.selenium.grid.config.Config;
@@ -61,7 +61,7 @@ public class NettyAppServer implements AppServer {
   private static final Logger LOG = Logger.getLogger(NettyAppServer.class.getName());
   private Server<?> server;
   private Server<?> secure;
-  private final RetryPolicy<Object> retryPolicy = new RetryPolicy<>()
+  private final RetryPolicy<Object> retryPolicy = RetryPolicy.builder()
     .withMaxAttempts(5)
     .withDelay(100, 1000, ChronoUnit.MILLIS)
     .handle(ServerBindException.class)
@@ -69,7 +69,8 @@ public class NettyAppServer implements AppServer {
       LOG.log(Level.WARNING, String.format("NettyAppServer retry #%s. ", e.getAttemptCount()));
       initValues();
     })
-    .onRetriesExceeded(e -> LOG.log(Level.WARNING, "NettyAppServer start aborted."));
+    .onRetriesExceeded(e -> LOG.log(Level.WARNING, "NettyAppServer start aborted."))
+    .build();
 
   public NettyAppServer() {
     initValues();

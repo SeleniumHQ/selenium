@@ -55,7 +55,7 @@ def release_version
 end
 
 def version
-  "#{release_version}.2"
+  "#{release_version}.3"
 end
 
 # The build system used by webdriver is layered on top of rake, and we call it
@@ -83,7 +83,7 @@ CrazyFun::Mappings::RakeMappings.new.add_all(crazy_fun)
 # FIXME: the rules for the targets were removed and build files won't load
 # crazy_fun.create_tasks(Dir['**/build.desc'])
 
-#  If it looks like a bazel target, build it with bazel
+# If it looks like a bazel target, build it with bazel
 rule /\/\/.*/ do |task|
   task.out = Bazel.execute('build', %w[--workspace_status_command scripts/build-info.py], task.name)
 end
@@ -96,13 +96,12 @@ task '//java/test/org/openqa/selenium/environment/webserver:webserver:uber' => [
 # Java targets required for release. These should all be java_export targets.
 # Generated from: bazel query 'kind(maven_publish, set(//java/... //third_party/...))' | sort
 JAVA_RELEASE_TARGETS = %w[
-  //java/src/com/thoughtworks/selenium/webdriven:webdriven.publish
   //java/src/org/openqa/selenium/chrome:chrome.publish
   //java/src/org/openqa/selenium/chromium:chromium.publish
   //java/src/org/openqa/selenium/devtools/v85:v85.publish
-  //java/src/org/openqa/selenium/devtools/v96:v96.publish
   //java/src/org/openqa/selenium/devtools/v97:v97.publish
-  //java/src/org/openqa/selenium/devtools/v98:v97\8.publish
+  //java/src/org/openqa/selenium/devtools/v98:v98.publish
+  //java/src/org/openqa/selenium/devtools/v99:v99.publish
   //java/src/org/openqa/selenium/edge:edge.publish
   //java/src/org/openqa/selenium/firefox:firefox.publish
   //java/src/org/openqa/selenium/grid/sessionmap/jdbc:jdbc.publish
@@ -261,8 +260,7 @@ task test_rb_remote: [
   '//rb:remote-firefox-test',
   ('//rb:remote-firefox-nightly-test' if ENV['FIREFOX_NIGHTLY_BINARY']),
   ('//rb:remote-safari-test' if SeleniumRake::Checks.mac?),
-  # BUG - https://github.com/SeleniumHQ/selenium/issues/6791
-  # ('//rb:remote-safari-preview-test' if SeleniumRake::Checks.mac?),
+  ('//rb:remote-safari-preview-test' if SeleniumRake::Checks.mac?),
   ('//rb:remote-ie-test' if SeleniumRake::Checks.windows?),
   ('//rb:remote-edge-test' unless SeleniumRake::Checks.linux?)
 ].compact

@@ -15,18 +15,15 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.interactions;
+package org.openqa.selenium.devtools.v99;
 
-import org.openqa.selenium.WebDriverException;
+import com.google.auto.service.AutoService;
+import org.openqa.selenium.devtools.CdpInfo;
 
-/**
- * Indicates that the coordinates provided to an interactions operation are invalid. This, most
- * likely, means that a move operation was provided with invalid coordinates or that an action that
- * depends on mouse position (like click) was not preceded by a move operation.
- */
-public class InvalidCoordinatesException extends WebDriverException {
+@AutoService(CdpInfo.class)
+public class V99CdpInfo extends CdpInfo {
 
-  public InvalidCoordinatesException(String message) {
-    super(message);
+  public V99CdpInfo() {
+    super(99, V99Domains::new);
   }
 }

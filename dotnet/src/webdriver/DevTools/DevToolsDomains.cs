@@ -37,9 +37,9 @@ namespace OpenQA.Selenium.DevTools
         // added to this dictionary.
         private static readonly Dictionary<int, Type> SupportedDevToolsVersions = new Dictionary<int, Type>()
         {
+            { 99, typeof(V99.V99Domains) },
             { 98, typeof(V98.V98Domains) },
             { 97, typeof(V97.V97Domains) },
-            { 96, typeof(V96.V96Domains) },
             { 85, typeof(V85.V85Domains) }
         };
 
