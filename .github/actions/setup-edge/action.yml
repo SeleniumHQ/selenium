@@ -1,0 +1,25 @@
+name: 'Setup Edge and EdgeDriver'
+description: 'Setup Edge and EdgeDriver'
+inputs:
+  version:
+    description: 'Edge version'
+    required: false
+    default: 'stable'
+runs:
+  using: "composite"
+  steps:
+    - run: |
+        wget -q -O - https://packages.microsoft.com/keys/microsoft.asc | sudo apt-key add -
+        echo "deb https://packages.microsoft.com/repos/edge stable main" | sudo tee -a /etc/apt/sources.list.d/microsoft-edge.list
+        sudo apt-get update -qqy
+        sudo apt-get -qqy install microsoft-edge-stable
+        EDGE_VERSION=$(microsoft-edge-stable --version)
+        EDGE_FULL_VERSION=${EDGE_VERSION%%.*}
+        EDGE_MAJOR_VERSION=${EDGE_FULL_VERSION//[!0-9]}
+        sudo rm /etc/apt/sources.list.d/microsoft-edge.list
+        
+        export EDGE_DRIVER_VERSION=$(wget --no-verbose -O - "https://msedgedriver.azureedge.net/LATEST_RELEASE_${EDGE_MAJOR_VERSION}_LINUX" | tr -cd "\11\12\15\40-\176" | tr -d "\r")
+        wget --no-verbose https://msedgedriver.azureedge.net/${EDGE_DRIVER_VERSION}/edgedriver_linux64.zip
+        unzip edgedriver_linux64.zip && chmod +x msedgedriver && sudo mv msedgedriver /usr/local/bin
+        msedgedriver --version
+      shell: bash
