@@ -22,7 +22,7 @@ def selenium_java_deps():
             "com.google.auto:auto-common:1.2.1",
             "com.google.auto.service:auto-service:1.0.1",
             "com.google.auto.service:auto-service-annotations:1.0.1",
-            "com.graphql-java:graphql-java:17.3",
+            "com.graphql-java:graphql-java:18.0",
             "com.graphql-java:java-dataloader:3.1.1",
             "io.grpc:grpc-context:1.45.0",
             "io.lettuce:lettuce-core:6.1.8.RELEASE",

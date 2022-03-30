@@ -1,4 +1,10 @@
-name: 'Setup Chrome and chromedriver'
+name: 'Setup Chrome and ChromeDriver'
+description: 'Setup Chrome and ChromeDriver'
+inputs:
+  version:
+    description: 'Chrome version'
+    required: false
+    default: 'stable'
 runs:
   using: "composite"
   steps:
