@@ -398,6 +398,7 @@ ruby_test(
         "requires-network",
     ],
     deps = [
+        ":bidi",
         ":chrome",
         ":edge",
         ":firefox",
