@@ -126,7 +126,6 @@ jobs:
           - { "browser": "firefox", "version": "latest-beta" }
           - { "browser": "firefox", "version": "latest-devedition" }
           - { "browser": "chrome", "version": "stable" }
-          - { "browser": "edge", "version": "stable" }
     steps:
       - name: Checkout source tree
         uses: actions/checkout@v3
@@ -158,10 +157,6 @@ jobs:
           version: ${{ matrix.version }}
         if: |
           matrix.browser == 'chrome'
-      - name: Setup EdgeDriver
-        uses: ./.github/actions/setup-edge
-        if: |
-          matrix.browser == 'edge'
       - name: Start XVFB
         run: Xvfb :99 &
       - name: Run browser tests in ${{ matrix.browser }}
@@ -184,7 +179,6 @@ jobs:
           - { "browser": "firefox", "version": "latest-beta" }
           - { "browser": "firefox", "version": "latest-devedition" }
           - { "browser": "chrome", "version": "stable" }
-          - { "browser": "edge", "version": "stable" }
     steps:
       - name: Checkout source tree
         uses: actions/checkout@v3
@@ -217,10 +211,6 @@ jobs:
           version: ${{ matrix.version }}
         if: |
           matrix.browser == 'chrome'
-      - name: Setup EdgeDriver
-        uses: ./.github/actions/setup-edge
-        if: |
-          matrix.browser == 'edge'
       - name: Start XVFB
         run: Xvfb :99 &
       - name: Run server tests
