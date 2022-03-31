@@ -48,6 +48,7 @@ experimental domain Accessibility
   # Enum of possible native property sources (as a subtype of a particular AXValueSourceType).
   type AXValueNativeSourceType extends string
     enum
+      description
       figcaption
       label
       labelfor
@@ -175,10 +176,14 @@ experimental domain Accessibility
       optional AXValue value
       # All other properties
       optional array of AXProperty properties
+      # ID for this node's parent.
+      optional AXNodeId parentId
       # IDs for each of this node's child nodes.
       optional array of AXNodeId childIds
       # The backend ID for the associated DOM node, if any.
       optional DOM.BackendNodeId backendDOMNodeId
+      # The frame ID for the frame associated with this nodes document.
+      optional Page.FrameId frameId
 
   # Disables the accessibility domain.
   command disable
@@ -217,6 +222,29 @@ experimental domain Accessibility
     returns
       array of AXNode nodes
 
+  # Fetches the root node.
+  # Requires `enable()` to have been called previously.
+  experimental command getRootAXNode
+    parameters
+      # The frame in whose document the node resides.
+      # If omitted, the root frame is used.
+      optional Page.FrameId frameId
+    returns
+      AXNode node
+
+  # Fetches a node and all ancestors up to and including the root.
+  # Requires `enable()` to have been called previously.
+  experimental command getAXNodeAndAncestors
+    parameters
+      # Identifier of the node to get.
+      optional DOM.NodeId nodeId
+      # Identifier of the backend node to get.
+      optional DOM.BackendNodeId backendNodeId
+      # JavaScript object id of the node wrapper to get.
+      optional Runtime.RemoteObjectId objectId
+    returns
+      array of AXNode nodes
+
   # Fetches a particular accessibility node by AXNodeId.
   # Requires `enable()` to have been called previously.
   experimental command getChildAXNodes
@@ -248,6 +276,19 @@ experimental domain Accessibility
     returns
       # A list of `Accessibility.AXNode` matching the specified attributes,
       # including nodes that are ignored for accessibility.
+      array of AXNode nodes
+
+  # The loadComplete event mirrors the load complete event sent by the browser to assistive
+  # technology when the web page has finished loading.
+  experimental event loadComplete
+    parameters
+      # New document root node.
+      AXNode root
+
+  # The nodesUpdated event is sent every time a previously requested node has changed the in tree.
+  experimental event nodesUpdated
+    parameters
+      # Updated node data.
       array of AXNode nodes
 
 experimental domain Animation
@@ -485,6 +526,7 @@ experimental domain Audits
 
   type MixedContentResourceType extends string
     enum
+      AttributionSrc
       Audio
       Beacon
       CSPReport
@@ -578,6 +620,7 @@ experimental domain Audits
       kURLViolation
       kTrustedTypesSinkViolation
       kTrustedTypesPolicyViolation
+      kWasmEvalViolation
 
   type SourceCodeLocation extends object
     properties
@@ -661,6 +704,11 @@ experimental domain Audits
       AttributionUntrustworthyOrigin
       AttributionTriggerDataTooLarge
       AttributionEventSourceTriggerDataTooLarge
+      InvalidAttributionSourceExpiry
+      InvalidAttributionSourcePriority
+      InvalidEventSourceTriggerData
+      InvalidTriggerPriority
+      InvalidTriggerDedupKey
 
   # Details for issues around "Attribution Reporting API" usage.
   # Explainer: https://github.com/WICG/conversion-measurement-api
@@ -689,13 +737,6 @@ experimental domain Audits
       string url
       optional SourceCodeLocation location
 
-  type WasmCrossOriginModuleSharingIssueDetails extends object
-    properties
-      string wasmModuleUrl
-      string sourceOrigin
-      string targetOrigin
-      boolean isWarning
-
   type GenericIssueErrorType extends string
     enum
       CrossOriginPortalPostMessageError
@@ -706,6 +747,69 @@ experimental domain Audits
       # Issues with the same errorType are aggregated in the frontend.
       GenericIssueErrorType errorType
       optional Page.FrameId frameId
+
+  # This issue tracks information needed to print a deprecation message.
+  # The formatting is inherited from the old console.log version, see more at:
+  # https://source.chromium.org/chromium/chromium/src/+/main:third_party/blink/renderer/core/frame/deprecation.cc
+  # TODO(crbug.com/1264960): Re-work format to add i18n support per:
+  # https://source.chromium.org/chromium/chromium/src/+/main:third_party/blink/public/devtools_protocol/README.md
+  type DeprecationIssueDetails extends object
+    properties
+      optional AffectedFrame affectedFrame
+      SourceCodeLocation sourceCodeLocation
+      # The content of the deprecation issue (this won't be translated),
+      # e.g. "window.inefficientLegacyStorageMethod will be removed in M97,
+      # around January 2022. Please use Web Storage or Indexed Database
+      # instead. This standard was abandoned in January, 1970. See
+      # https://www.chromestatus.com/feature/5684870116278272 for more details."
+      deprecated optional string message
+      string deprecationType
+
+  type ClientHintIssueReason extends string
+    enum
+      # Items in the accept-ch meta tag allow list must be valid origins.
+      # No special values (e.g. self, none, and *) are permitted.
+      MetaTagAllowListInvalidOrigin
+      # Only accept-ch meta tags in the original HTML sent from the server
+      # are respected. Any injected via javascript (or other means) are ignored.
+      MetaTagModifiedHTML
+
+  type FederatedAuthRequestIssueDetails extends object
+    properties
+      FederatedAuthRequestIssueReason federatedAuthRequestIssueReason
+
+  # Represents the failure reason when a federated authentication reason fails.
+  # Should be updated alongside RequestIdTokenStatus in
+  # third_party/blink/public/mojom/devtools/inspector_issue.mojom to include
+  # all cases except for success.
+  type FederatedAuthRequestIssueReason extends string
+    enum
+      ApprovalDeclined
+      TooManyRequests
+      ManifestHttpNotFound
+      ManifestNoResponse
+      ManifestInvalidResponse
+      ClientMetadataHttpNotFound
+      ClientMetadataNoResponse
+      ClientMetadataInvalidResponse
+      ErrorFetchingSignin
+      InvalidSigninResponse
+      AccountsHttpNotFound
+      AccountsNoResponse
+      AccountsInvalidResponse
+      IdTokenHttpNotFound
+      IdTokenNoResponse
+      IdTokenInvalidResponse
+      IdTokenInvalidRequest
+      ErrorIdToken
+      Canceled
+
+  # This issue tracks client hints related issues. It's used to deprecate old
+  # features, encourage the use of new ones, and provide general guidance.
+  type ClientHintIssueDetails extends object
+    properties
+      SourceCodeLocation sourceCodeLocation
+      ClientHintIssueReason clientHintIssueReason
 
   # A unique identifier for the type of issue. Each type may use one of the
   # optional fields in InspectorIssueDetails to convey more specific
@@ -724,8 +828,10 @@ experimental domain Audits
       AttributionReportingIssue
       QuirksModeIssue
       NavigatorUserAgentIssue
-      WasmCrossOriginModuleSharingIssue
       GenericIssue
+      DeprecationIssue
+      ClientHintIssue
+      FederatedAuthRequestIssue
 
   # This struct holds a list of optional fields with additional information
   # specific to the kind of issue. When adding a new issue code, please also
@@ -744,8 +850,10 @@ experimental domain Audits
       optional AttributionReportingIssueDetails attributionReportingIssueDetails
       optional QuirksModeIssueDetails quirksModeIssueDetails
       optional NavigatorUserAgentIssueDetails navigatorUserAgentIssueDetails
-      optional WasmCrossOriginModuleSharingIssueDetails wasmCrossOriginModuleSharingIssue
       optional GenericIssueDetails genericIssueDetails
+      optional DeprecationIssueDetails deprecationIssueDetails
+      optional ClientHintIssueDetails clientHintIssueDetails
+      optional FederatedAuthRequestIssueDetails federatedAuthRequestIssueDetails
 
   # A unique id for a DevTools inspector issue. Allows other entities (e.g.
   # exceptions, CDP message, console messages, etc.) to reference an issue.
@@ -1279,6 +1387,9 @@ experimental domain CSS
       # Container query list array (for rules involving container queries).
       # The array enumerates container queries starting with the innermost one, going outwards.
       experimental optional array of CSSContainerQuery containerQueries
+      # @supports CSS at-rule array.
+      # The array enumerates @supports at-rules starting with the innermost one, going outwards.
+      experimental optional array of CSSSupports supports
 
   # CSS coverage information.
   type RuleUsage extends object
@@ -1414,6 +1525,17 @@ experimental domain CSS
       optional StyleSheetId styleSheetId
       # Optional name for the container.
       optional string name
+
+  # CSS Supports at-rule descriptor.
+  experimental type CSSSupports extends object
+    properties
+      # Supports rule text.
+      string text
+      # The associated rule header range in the enclosing stylesheet (if
+      # available).
+      optional SourceRange range
+      # Identifier of the stylesheet containing this object (if exists).
+      optional StyleSheetId styleSheetId
 
   # Information about amount of glyphs that were rendered with given font.
   type PlatformFontUsage extends object
@@ -1671,6 +1793,16 @@ experimental domain CSS
       # The resulting CSS container query rule after modification.
       CSSContainerQuery containerQuery
 
+  # Modifies the expression of a supports at-rule.
+  experimental command setSupportsText
+    parameters
+      StyleSheetId styleSheetId
+      SourceRange range
+      string text
+    returns
+      # The resulting CSS Supports rule after modification.
+      CSSSupports supports
+
   # Modifies the rule selector.
   command setRuleSelector
     parameters
@@ -1889,6 +2021,11 @@ experimental domain Cast
     parameters
       string sinkName
 
+  # Starts mirroring the desktop to the sink.
+  command startDesktopMirroring
+    parameters
+      string sinkName
+
   # Starts mirroring the tab to the sink.
   command startTabMirroring
     parameters
@@ -1961,6 +2098,10 @@ domain DOM
       scrollbar-corner
       resizer
       input-list-button
+      transition
+      transition-container
+      transition-old-content
+      transition-new-content
 
   # Shadow root type.
   type ShadowRootType extends string
@@ -2175,6 +2316,13 @@ domain DOM
 
   # Enables DOM agent for the given page.
   command enable
+    parameters
+      # Whether to include whitespaces in the children array of returned Nodes.
+      experimental optional enum includeWhitespace
+        # Strip whitespaces from child arrays (default).
+        none
+        # Return all children including block-level whitespace nodes.
+        all
 
   # Focuses the given element.
   command focus
@@ -2822,6 +2970,23 @@ domain DOMDebugger
       # Resource URL substring. All XHRs having this substring in the URL will get stopped upon.
       string url
 
+# EventBreakpoints permits setting breakpoints on particular operations and
+# events in targets that run JavaScript but do not have a DOM.
+# JavaScript execution will stop on these operations as if there was a regular
+# breakpoint set.
+experimental domain EventBreakpoints
+  # Sets breakpoint on particular native event.
+  command setInstrumentationBreakpoint
+    parameters
+      # Instrumentation name to stop on.
+      string eventName
+
+  # Removes breakpoint on particular native event.
+  command removeInstrumentationBreakpoint
+    parameters
+      # Instrumentation name to stop on.
+      string eventName
+
 # This domain facilitates obtaining document snapshots with DOM, layout, and style information.
 experimental domain DOMSnapshot
   depends on CSS
@@ -3319,7 +3484,8 @@ domain Emulation
   experimental type UserAgentMetadata extends object
     properties
       optional array of UserAgentBrandVersion brands
-      optional string fullVersion
+      optional array of UserAgentBrandVersion fullVersionList
+      deprecated optional string fullVersion
       string platform
       string platformVersion
       string architecture
@@ -3501,9 +3667,6 @@ domain Emulation
       # If set this specifies the maximum number of tasks that can be run before virtual is forced
       # forwards to prevent deadlock.
       optional integer maxVirtualTimeTaskStarvationCount
-      # If set the virtual time policy change should be deferred until any frame starts navigating.
-      # Note any previous deferred policy change is superseded.
-      optional boolean waitForNavigation
       # If set, base::Time::Now will be overridden to initially return this value.
       optional Network.TimeSinceEpoch initialVirtualTime
     returns
@@ -3972,7 +4135,7 @@ domain Input
       optional integer location
       # Editing commands to send with the key event (e.g., 'selectAll') (default: []).
       # These are related to but not equal the command names used in `document.execCommand` and NSStandardKeyBindingResponding.
-      # See https://source.chromium.org/chromium/chromium/src/+/master:third_party/blink/renderer/core/editing/commands/editor_command_names.h for valid command names.
+      # See https://source.chromium.org/chromium/chromium/src/+/main:third_party/blink/renderer/core/editing/commands/editor_command_names.h for valid command names.
       experimental optional array of string commands
 
   # This method emulates inserting text that doesn't come from a key press,
@@ -4747,8 +4910,9 @@ domain Network
       string logDescription
       # Log ID.
       string logId
-      # Issuance date.
-      TimeSinceEpoch timestamp
+      # Issuance date. Unlike TimeSinceEpoch, this contains the number of
+      # milliseconds since January 1, 1970, UTC, not the number of seconds.
+      number timestamp
       # Hash algorithm.
       string hashAlgorithm
       # Signature algorithm.
@@ -4829,8 +4993,14 @@ domain Network
       PreflightInvalidAllowOriginValue
       PreflightAllowOriginMismatch
       PreflightInvalidAllowCredentials
+      # TODO(https://crbug.com/1263483): Remove this once frontend code does
+      # not reference it anymore.
       PreflightMissingAllowExternal
+      # TODO(https://crbug.com/1263483): Remove this once frontend code does
+      # not reference it anymore.
       PreflightInvalidAllowExternal
+      PreflightMissingAllowPrivateNetwork
+      PreflightInvalidAllowPrivateNetwork
       InvalidAllowMethodsPreflightResponse
       InvalidAllowHeadersPreflightResponse
       MethodDisallowedByPreflightResponse
@@ -5038,6 +5208,11 @@ domain Network
       # An unspecified port value allows protocol clients to emulate legacy cookie scope for the port.
       # This is a temporary ability and it will be removed in the future.
       experimental integer sourcePort
+      # Cookie partition key. The site of the top-level URL the browser was visiting at the start
+      # of the request to the endpoint that set the cookie.
+      experimental optional string partitionKey
+      # True if cookie partition key is opaque.
+      experimental optional boolean partitionKeyOpaque
 
   # Types of reasons why a cookie may not be stored from a response.
   experimental type SetCookieBlockedReason extends string
@@ -5196,6 +5371,10 @@ domain Network
       # An unspecified port value allows protocol clients to emulate legacy cookie scope for the port.
       # This is a temporary ability and it will be removed in the future.
       experimental optional integer sourcePort
+      # Cookie partition key. The site of the top-level URL the browser was visiting at the start
+      # of the request to the endpoint that set the cookie.
+      # If not set, the cookie will be set as not partitioned.
+      experimental optional string partitionKey
 
   # Authorization challenge for HTTP status code 401 or 407.
   experimental type AuthChallenge extends object
@@ -5566,6 +5745,10 @@ domain Network
       # An unspecified port value allows protocol clients to emulate legacy cookie scope for the port.
       # This is a temporary ability and it will be removed in the future.
       experimental optional integer sourcePort
+      # Cookie partition key. The site of the top-level URL the browser was visiting at the start
+      # of the request to the endpoint that set the cookie.
+      # If not set, the cookie will be set as not partitioned.
+      experimental optional string partitionKey
     returns
       # Always set to true. If an error occurs, the response indicates protocol error.
       deprecated boolean success
@@ -5727,6 +5910,10 @@ domain Network
       TimeSinceEpoch wallTime
       # Request initiator.
       Initiator initiator
+      # In the case that redirectResponse is populated, this flag indicates whether
+      # requestWillBeSentExtraInfo and responseReceivedExtraInfo events will be or were emitted
+      # for the request which was just redirected.
+      experimental boolean redirectHasExtraInfo
       # Redirect response data.
       optional Response redirectResponse
       # Type of this resource.
@@ -5767,6 +5954,9 @@ domain Network
       ResourceType type
       # Response data.
       Response response
+      # Indicates whether requestWillBeSentExtraInfo and responseReceivedExtraInfo events will be
+      # or were emitted for this request.
+      experimental boolean hasExtraInfo
       # Frame identifier.
       optional Page.FrameId frameId
 
@@ -6018,6 +6208,7 @@ domain Network
       SameOriginAllowPopups
       UnsafeNone
       SameOriginPlusCoep
+      SameOriginAllowPopupsPlusCoep
 
   experimental type CrossOriginOpenerPolicyStatus extends object
     properties
@@ -6104,6 +6295,19 @@ domain Network
   experimental event reportingApiReportUpdated
     parameters
       ReportingApiReport report
+
+  experimental type ReportingApiEndpoint extends object
+    properties
+      # The URL of the endpoint to which reports may be delivered.
+      string url
+      # Name of the endpoint group.
+      string groupName
+
+  experimental event reportingApiEndpointsChangedForOrigin
+    parameters
+      # Origin of the document(s) which configured the endpoints.
+      string origin
+      array of ReportingApiEndpoint endpoints
 
   # An object providing the result of a network resource load.
   experimental type LoadNetworkResourcePageResult extends object
@@ -6562,8 +6766,8 @@ experimental domain Overlay
       # True for showing scroll bottleneck rects
       boolean show
 
-  # Requests that backend shows hit-test borders on layers
-  command setShowHitTestBorders
+  # Deprecated, no longer has any effect.
+  deprecated command setShowHitTestBorders
     parameters
       # True for showing hit-test borders
       boolean show
@@ -6694,12 +6898,16 @@ domain Page
       ch-ua-platform
       ch-ua-model
       ch-ua-mobile
+      ch-ua-full
       ch-ua-full-version
+      ch-ua-full-version-list
       ch-ua-platform-version
       ch-ua-reduced
+      ch-ua-wow64
       ch-viewport-height
       ch-viewport-width
       ch-width
+      ch-partitioned-cookies
       clipboard-read
       clipboard-write
       cross-origin-isolated
@@ -6717,7 +6925,8 @@ domain Page
       gyroscope
       hid
       idle-detection
-      interest-cohort
+      join-ad-interest-group
+      keyboard-map
       magnetometer
       microphone
       midi
@@ -6725,6 +6934,7 @@ domain Page
       payment
       picture-in-picture
       publickey-credentials-get
+      run-ad-auction
       screen-wake-lock
       serial
       shared-autofill
@@ -6744,6 +6954,8 @@ domain Page
       Header
       # Declaration in iframe attribute.
       IframeAttribute
+      # Inside fenced frame.
+      InFencedFrameTree
 
   experimental type PermissionsPolicyBlockLocator extends object
     properties
@@ -7021,6 +7233,14 @@ domain Page
       optional string fantasy
       # The pictograph font-family.
       optional string pictograph
+
+  # Font families collection for a script.
+  experimental type ScriptFontFamilies extends object
+    properties
+      # Name of the script which these font families are defined for.
+      string script
+      # Generic font families collection for the script.
+      FontFamilies fontFamilies
 
   # Default font sizes.
   experimental type FontSizes extends object
@@ -7482,6 +7702,8 @@ domain Page
     parameters
       # Specifies font families to set. If a font family is not specified, it won't be changed.
       FontFamilies fontFamilies
+      # Specifies font families to set for individual scripts.
+      optional array of ScriptFontFamilies forScripts
 
   # Set default font sizes.
   experimental command setFontSizes
@@ -7578,18 +7800,9 @@ domain Page
   # Stops sending each frame in the `screencastFrame`.
   experimental command stopScreencast
 
-  # Forces compilation cache to be generated for every subresource script.
-  # See also: `Page.produceCompilationCache`.
-  experimental command setProduceCompilationCache
-    parameters
-      boolean enabled
-
   # Requests backend to produce compilation cache for the specified scripts.
-  # Unlike setProduceCompilationCache, this allows client to only produce cache
-  # for specific scripts. `scripts` are appeneded to the list of scripts
-  # for which the cache for would produced. Disabling compilation cache with
-  # `setProduceCompilationCache` would reset all pending cache requests.
-  # The list may also be reset during page navigation.
+  # `scripts` are appeneded to the list of scripts for which the cache
+  # would be produced. The list may be reset during page navigation.
   # When script with a matching URL is encountered, the cache is optionally
   # produced upon backend discretion, based on internal heuristics.
   # See also: `Page.compilationCacheProduced`.
@@ -7607,6 +7820,15 @@ domain Page
 
   # Clears seeded compilation cache.
   experimental command clearCompilationCache
+
+  # Sets the Secure Payment Confirmation transaction mode.
+  # https://w3c.github.io/secure-payment-confirmation/#sctn-automation-set-spc-transaction-mode
+  experimental command setSPCTransactionMode
+    parameters
+      enum mode
+        none
+        autoaccept
+        autoreject
 
   # Generates a report for testing.
   experimental command generateTestReport
@@ -7803,7 +8025,7 @@ domain Page
   # List of not restored reasons for back-forward cache.
   experimental type BackForwardCacheNotRestoredReason extends string
     enum
-      NotMainFrame
+      NotPrimaryMainFrame
       BackForwardCacheDisabled
       RelatedActiveContentsExist
       HTTPStatusNotOK
@@ -7913,7 +8135,7 @@ domain Page
       ContentWebUSB
       ContentMediaSession
       ContentMediaSessionService
-      ContentMediaPlay
+      ContentScreenReader
 
       # See components/back_forward_cache/back_forward_cache_disable.h for explanations.
       EmbedderPopupBlockerTabHelper
@@ -7946,6 +8168,15 @@ domain Page
       # Not restored reason
       BackForwardCacheNotRestoredReason reason
 
+  experimental type BackForwardCacheNotRestoredExplanationTree extends object
+    properties
+      # URL of each frame
+      string url
+      # Not restored reasons of each frame
+      array of BackForwardCacheNotRestoredExplanation explanations
+      # Array of children frame
+      array of BackForwardCacheNotRestoredExplanationTree children
+
   # Fired for failed bfcache history navigations if BackForwardCache feature is enabled. Do
   # not assume any ordering with the Page.frameNavigated event. This event is fired only for
   # main-frame history navigation where the document changes (non-same-document navigations),
@@ -7958,6 +8189,8 @@ domain Page
       FrameId frameId
       # Array of reasons why the page could not be cached. This must not be empty.
       array of BackForwardCacheNotRestoredExplanation notRestoredExplanations
+      # Tree structure of reasons why the page could not be cached for each frame.
+      optional BackForwardCacheNotRestoredExplanationTree notRestoredExplanationsTree
 
   event loadEventFired
     parameters
@@ -8300,20 +8533,20 @@ domain Security
       # Security state information about the page.
       VisibleSecurityState visibleSecurityState
 
-  # The security state of the page changed.
-  event securityStateChanged
+  # The security state of the page changed. No longer being sent.
+  deprecated event securityStateChanged
     parameters
       # Security state.
       SecurityState securityState
       # True if the page was loaded over cryptographic transport such as HTTPS.
       deprecated boolean schemeIsCryptographic
-      # List of explanations for the security state. If the overall security state is `insecure` or
-      # `warning`, at least one corresponding explanation should be included.
-      array of SecurityStateExplanation explanations
+      # Previously a list of explanations for the security state. Now always
+      # empty.
+      deprecated array of SecurityStateExplanation explanations
       # Information about insecure content on the page.
       deprecated InsecureContentStatus insecureContentStatus
-      # Overrides user-visible description of the state.
-      optional string summary
+      # Overrides user-visible description of the state. Always omitted.
+      deprecated optional string summary
 
 experimental domain ServiceWorker
   depends on Target
@@ -8450,6 +8683,7 @@ experimental domain Storage
       websql
       service_workers
       cache_storage
+      interest_groups
       all
       other
 
@@ -8467,6 +8701,37 @@ experimental domain Storage
     properties
       string issuerOrigin
       number count
+
+  # Enum of interest group access types.
+  type InterestGroupAccessType extends string
+    enum
+      join
+      leave
+      update
+      bid
+      win
+
+  # Ad advertising element inside an interest group.
+  type InterestGroupAd extends object
+    properties
+      string renderUrl
+      optional string metadata
+
+  # The full details of an interest group.
+  type InterestGroupDetails extends object
+    properties
+      string ownerOrigin
+      string name
+      Network.TimeSinceEpoch expirationTime
+      string joiningOrigin
+      optional string biddingUrl
+      optional string biddingWasmHelperUrl
+      optional string updateUrl
+      optional string trustedBiddingSignalsUrl
+      array of string trustedBiddingSignalsKeys
+      optional string userBiddingSignals
+      array of InterestGroupAd ads
+      array of InterestGroupAd adComponents
 
   # Clears storage for origin.
   command clearDataForOrigin
@@ -8567,6 +8832,19 @@ experimental domain Storage
       # True if any tokens were deleted, false otherwise.
       boolean didDeleteTokens
 
+  # Gets details for a named interest group.
+  experimental command getInterestGroupDetails
+    parameters
+      string ownerOrigin
+      string name
+    returns
+      InterestGroupDetails details
+
+  # Enables/Disables issuing of interestGroupAccessed events.
+  experimental command setInterestGroupTracking
+    parameters
+      boolean enable
+
   # A cache's contents have been modified.
   event cacheStorageContentUpdated
     parameters
@@ -8596,6 +8874,14 @@ experimental domain Storage
     parameters
       # Origin to update.
       string origin
+
+  # One of the interest groups was accessed by the associated page.
+  event interestGroupAccessed
+    parameters
+      Network.TimeSinceEpoch accessTime
+      InterestGroupAccessType type
+      string ownerOrigin
+      string name
 
 # The SystemInfo domain defines methods and events for querying low-level system information.
 experimental domain SystemInfo
@@ -8814,6 +9100,9 @@ domain Target
       optional string proxyServer
       # Proxy bypass list, similar to the one passed to --proxy-bypass-list
       optional string proxyBypassList
+      # An optional list of origins to grant unlimited cross-origin access to.
+      # Parts of the URL other than those constituting origin are ignored.
+      optional array of string originsWithUniversalNetworkAccess
 
     returns
       # The id of the context created.
@@ -8835,7 +9124,7 @@ domain Target
       # Frame height in DIP (headless chrome only).
       optional integer height
       # The browser context to create the page in.
-      optional Browser.BrowserContextID browserContextId
+      experimental optional Browser.BrowserContextID browserContextId
       # Whether BeginFrames for this target will be controlled via DevTools (headless chrome only,
       # not supported on MacOS yet, false by default).
       experimental optional boolean enableBeginFrameControl
@@ -9627,6 +9916,10 @@ experimental domain WebAuthn
       # https://fidoalliance.org/specs/fido-v2.1-rd-20201208/fido-client-to-authenticator-protocol-v2.1-rd-20201208.html#sctn-credBlob-extension
       # Defaults to false.
       optional boolean hasCredBlob
+      # If set to true, the authenticator will support the minPinLength extension.
+      # https://fidoalliance.org/specs/fido-v2.1-ps-20210615/fido-client-to-authenticator-protocol-v2.1-ps-20210615.html#sctn-minpinlength-extension
+      # Defaults to false.
+      optional boolean hasMinPinLength
       # If set to true, tests of user presence will succeed immediately.
       # Otherwise, they will not be resolved. Defaults to true.
       optional boolean automaticPresenceSimulation
