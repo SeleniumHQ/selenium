@@ -77,11 +77,33 @@ namespace OpenQA.Selenium.Remote
         }
 
         /// <summary>
+        /// Initializes a new instance of the <see cref="RemoteWebDriver"/> class using the specified desired capabilities, and command timeout.
+        /// This constructor defaults proxy to http://127.0.0.1:4444/wd/hub
+        /// </summary>
+        /// <param name="options">An <see cref="DriverOptions"/> object containing the desired capabilities of the browser.</param>
+        /// <param name="commandTimeout">The maximum amount of time to wait for each command.</param>
+        public RemoteWebDriver(DriverOptions options, TimeSpan commandTimeout)
+            : this(ConvertOptionsToCapabilities(options), commandTimeout)
+        {
+        }
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="RemoteWebDriver"/> class. This constructor defaults proxy to http://127.0.0.1:4444/wd/hub
         /// </summary>
         /// <param name="desiredCapabilities">An <see cref="ICapabilities"/> object containing the desired capabilities of the browser.</param>
         public RemoteWebDriver(ICapabilities desiredCapabilities)
             : this(new Uri(DefaultRemoteServerUrl), desiredCapabilities)
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="RemoteWebDriver"/> class using the specified desired capabilities, and command timeout.
+        /// This constructor defaults proxy to http://127.0.0.1:4444/wd/hub
+        /// </summary>
+        /// <param name="desiredCapabilities">An <see cref="ICapabilities"/> object containing the desired capabilities of the browser.</param>
+        /// <param name="commandTimeout">The maximum amount of time to wait for each command.</param>
+        public RemoteWebDriver(ICapabilities desiredCapabilities, TimeSpan commandTimeout)
+            : this(new Uri(DefaultRemoteServerUrl), desiredCapabilities, commandTimeout)
         {
         }
 
@@ -92,6 +114,18 @@ namespace OpenQA.Selenium.Remote
         /// <param name="options">An <see cref="DriverOptions"/> object containing the desired capabilities of the browser.</param>
         public RemoteWebDriver(Uri remoteAddress, DriverOptions options)
             : this(remoteAddress, ConvertOptionsToCapabilities(options))
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="RemoteWebDriver"/> class using the specified remote address, desired capabilities, and command timeout.
+        /// This constructor defaults proxy to http://127.0.0.1:4444/wd/hub
+        /// </summary>
+        /// <param name="remoteAddress">URI containing the address of the WebDriver remote server (e.g. http://127.0.0.1:4444/wd/hub).</param>
+        /// <param name="options">An <see cref="DriverOptions"/> object containing the desired capabilities of the browser.</param>
+        /// <param name="commandTimeout">The maximum amount of time to wait for each command.</param>
+        public RemoteWebDriver(Uri remoteAddress, DriverOptions options, TimeSpan commandTimeout)
+            : this(remoteAddress, ConvertOptionsToCapabilities(options), commandTimeout)
         {
         }
 
