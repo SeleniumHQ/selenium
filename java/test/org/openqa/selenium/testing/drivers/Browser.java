@@ -17,8 +17,6 @@
 
 package org.openqa.selenium.testing.drivers;
 
-import static org.openqa.selenium.remote.CapabilityType.BROWSER_NAME;
-
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.chrome.ChromeDriverInfo;
@@ -38,6 +36,8 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Logger;
+
+import static org.openqa.selenium.remote.CapabilityType.BROWSER_NAME;
 
 public enum Browser {
   ALL(new ImmutableCapabilities(), "any", false),
@@ -84,7 +84,12 @@ public enum Browser {
         options.setHeadless(true);
       }
 
-      options.addArguments("disable-extensions", "disable-infobars", "disable-breakpad");
+      options.addArguments(
+        "disable-extensions",
+        "disable-infobars",
+        "disable-breakpad",
+        "disable-dev-shm-usage",
+        "no-sandbox");
 
       Map<String, Object> prefs = new HashMap<>();
       prefs.put("exit_type", "None");
