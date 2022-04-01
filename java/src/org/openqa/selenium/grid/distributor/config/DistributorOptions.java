@@ -31,6 +31,7 @@ import java.util.Optional;
 public class DistributorOptions {
 
   public static final int DEFAULT_HEALTHCHECK_INTERVAL = 120;
+  public static final boolean DEFAULT_ONE_SHOT_NODES = false;
   public static final String DISTRIBUTOR_SECTION = "distributor";
   static final String DEFAULT_DISTRIBUTOR_IMPLEMENTATION =
     "org.openqa.selenium.grid.distributor.local.LocalDistributor";
@@ -117,6 +118,11 @@ public class DistributorOptions {
       "slot-selector",
       SlotSelector.class,
       DEFAULT_SLOT_SELECTOR_IMPLEMENTATION);
+  }
+
+  public boolean oneShotNodes() {
+    return config.getBool(DISTRIBUTOR_SECTION,
+      "one-shot-nodes").orElse(DEFAULT_ONE_SHOT_NODES);
   }
 
   public boolean shouldRejectUnsupportedCaps() {

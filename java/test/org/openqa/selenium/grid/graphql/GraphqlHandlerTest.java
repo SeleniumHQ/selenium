@@ -137,6 +137,7 @@ public class GraphqlHandlerTest {
       registrationSecret,
       Duration.ofMinutes(5),
       false,
+      false,
       Duration.ofSeconds(5));
   }
 
@@ -306,6 +307,7 @@ public class GraphqlHandlerTest {
       registrationSecret,
       Duration.ofMinutes(5),
       false,
+      false,
       Duration.ofSeconds(5));
 
     distributor.add(node);
@@ -352,6 +354,7 @@ public class GraphqlHandlerTest {
       new DefaultSlotSelector(),
       registrationSecret,
       Duration.ofMinutes(5),
+      false,
       false,
       Duration.ofSeconds(5));
 
@@ -420,6 +423,7 @@ public class GraphqlHandlerTest {
       registrationSecret,
       Duration.ofMinutes(5),
       false,
+      false,
       Duration.ofSeconds(5));
 
     distributor.add(node);
@@ -484,6 +488,7 @@ public class GraphqlHandlerTest {
       new DefaultSlotSelector(),
       registrationSecret,
       Duration.ofMinutes(5),
+      false,
       false,
       Duration.ofSeconds(5));
 
@@ -555,6 +560,7 @@ public class GraphqlHandlerTest {
       new DefaultSlotSelector(),
       registrationSecret,
       Duration.ofMinutes(5),
+      false,
       false,
       Duration.ofSeconds(5));
 

@@ -32,6 +32,7 @@ import static org.openqa.selenium.grid.config.StandardGridRoles.DISTRIBUTOR_ROLE
 import static org.openqa.selenium.grid.distributor.config.DistributorOptions.DEFAULT_DISTRIBUTOR_IMPLEMENTATION;
 import static org.openqa.selenium.grid.distributor.config.DistributorOptions.DEFAULT_GRID_MODEL_IMPLEMENTATION;
 import static org.openqa.selenium.grid.distributor.config.DistributorOptions.DEFAULT_HEALTHCHECK_INTERVAL;
+import static org.openqa.selenium.grid.distributor.config.DistributorOptions.DEFAULT_ONE_SHOT_NODES;
 import static org.openqa.selenium.grid.distributor.config.DistributorOptions.DEFAULT_REJECT_UNSUPPORTED_CAPS;
 import static org.openqa.selenium.grid.distributor.config.DistributorOptions.DEFAULT_SLOT_MATCHER;
 import static org.openqa.selenium.grid.distributor.config.DistributorOptions.DEFAULT_SLOT_SELECTOR_IMPLEMENTATION;
@@ -90,6 +91,13 @@ public class DistributorFlags implements HasRoles {
       "This ensures the server can ping all the Nodes successfully.")
   @ConfigValue(section = DISTRIBUTOR_SECTION, name = "healthcheck-interval", example = "60")
   public int healthcheckInterval =  DEFAULT_HEALTHCHECK_INTERVAL;
+
+  @Parameter(
+    names = {"--one-shot-nodes"},
+    description = "Make the distributor drain a node after the first session has been started on it. This useful " +
+      "in certain deployment scenarios, especially to Kubernetes clusters.")
+  @ConfigValue(section = DISTRIBUTOR_SECTION, name = "one-shot-nodes", example = "true")
+  public boolean oneShotNodes = DEFAULT_ONE_SHOT_NODES;
 
   @Parameter(description = "Allow the Distributor to reject a request immediately if the Grid does not support the requested capability." +
     "Rejecting requests immediately is suitable for Grid set up that does not spin up Nodes on demand.",

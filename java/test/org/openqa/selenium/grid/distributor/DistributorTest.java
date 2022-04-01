@@ -164,6 +164,7 @@ public class DistributorTest {
       registrationSecret,
       Duration.ofMinutes(5),
       false,
+      false,
       Duration.ofSeconds(5));
     Either<SessionNotCreatedException, CreateSessionResponse> result = local.newSession(createRequest(caps));
     assertThatEither(result).isLeft();
@@ -227,6 +228,7 @@ public class DistributorTest {
       registrationSecret,
       Duration.ofMinutes(5),
       false,
+      false,
       Duration.ofSeconds(5));
     distributor.add(node);
     waitToHaveCapacity(distributor);
@@ -268,6 +270,7 @@ public class DistributorTest {
       new DefaultSlotSelector(),
       registrationSecret,
       Duration.ofMinutes(5),
+      false,
       false,
       Duration.ofSeconds(5));
     distributor.add(node);
@@ -312,6 +315,7 @@ public class DistributorTest {
       registrationSecret,
       Duration.ofMinutes(5),
       false,
+      false,
       Duration.ofSeconds(5));
     Distributor distributor = new RemoteDistributor(
       tracer,
@@ -352,6 +356,7 @@ public class DistributorTest {
       registrationSecret,
       Duration.ofMinutes(5),
       false,
+      false,
       Duration.ofSeconds(5));
     distributor.add(node);
     distributor.drain(node.getId());
@@ -359,6 +364,44 @@ public class DistributorTest {
     assertTrue(node.isDraining());
 
     Either<SessionNotCreatedException, CreateSessionResponse> result = distributor.newSession(createRequest(caps));
+    assertThatEither(result).isLeft();
+  }
+
+    @Test
+  public void testOneShotNodeDoesNotAcceptNewSessions() {
+    SessionMap sessions = new LocalSessionMap(tracer, bus);
+    NewSessionQueue queue = new LocalNewSessionQueue(
+      tracer,
+      bus,
+      new DefaultSlotMatcher(),
+      Duration.ofSeconds(2),
+      Duration.ofSeconds(2),
+      registrationSecret);
+    LocalNode node = LocalNode.builder(tracer, bus, routableUri, routableUri, registrationSecret)
+      .add(
+        caps,
+        new TestSessionFactory((id, c) -> new Session(id, nodeUri, stereotype, c, Instant.now())))
+      .build();
+
+    Distributor distributor = new LocalDistributor(
+      tracer,
+      bus,
+      new PassthroughHttpClient.Factory(node),
+      sessions,
+      queue,
+      new DefaultSlotSelector(),
+      registrationSecret,
+      Duration.ofMinutes(5),
+      true,
+      false,
+      Duration.ofSeconds(5));
+    distributor.add(node);
+    Either<SessionNotCreatedException, CreateSessionResponse> result = distributor.newSession(createRequest(caps));
+    assertThatEither(result).isRight();
+
+    assertTrue(node.isDraining());
+
+    result = distributor.newSession(createRequest(caps));
     assertThatEither(result).isLeft();
   }
 
@@ -390,6 +433,7 @@ public class DistributorTest {
       new DefaultSlotSelector(),
       registrationSecret,
       Duration.ofMinutes(5),
+      false,
       false,
       Duration.ofSeconds(5));
     distributor.add(node);
@@ -436,6 +480,7 @@ public class DistributorTest {
       new DefaultSlotSelector(),
       registrationSecret,
       Duration.ofMinutes(5),
+      false,
       false,
       Duration.ofSeconds(5));
     distributor.add(node);
@@ -486,6 +531,7 @@ public class DistributorTest {
       registrationSecret,
       Duration.ofMinutes(5),
       false,
+      false,
       Duration.ofSeconds(5));
     distributor.add(node);
     waitToHaveCapacity(distributor);
@@ -528,6 +574,7 @@ public class DistributorTest {
       new DefaultSlotSelector(),
       registrationSecret,
       Duration.ofMinutes(5),
+      false,
       false,
       Duration.ofSeconds(5));
 
@@ -574,6 +621,7 @@ public class DistributorTest {
       registrationSecret,
       Duration.ofMinutes(5),
       false,
+      false,
       Duration.ofSeconds(5))
       .add(heavy)
       .add(medium)
@@ -617,6 +665,7 @@ public class DistributorTest {
       new DefaultSlotSelector(),
       registrationSecret,
       Duration.ofMinutes(5),
+      false,
       false,
       Duration.ofSeconds(5))
       .add(leastRecent);
@@ -703,6 +752,7 @@ public class DistributorTest {
       registrationSecret,
       Duration.ofSeconds(1),
       false,
+      false,
       Duration.ofSeconds(5));
     handler.addHandler(distributor);
     distributor.add(alwaysDown);
@@ -753,7 +803,7 @@ public class DistributorTest {
       new DefaultSlotSelector(),
       registrationSecret,
       Duration.ofMinutes(5),
-      false,
+      false, false,
       Duration.ofSeconds(5));
 
     distributor.add(node);
@@ -794,6 +844,7 @@ public class DistributorTest {
       new DefaultSlotSelector(),
       registrationSecret,
       Duration.ofMinutes(5),
+      false,
       false,
       Duration.ofSeconds(5));
     distributor.add(node);
@@ -851,6 +902,7 @@ public class DistributorTest {
       registrationSecret,
       Duration.ofMinutes(5),
       false,
+      false,
       Duration.ofSeconds(5));
     handler.addHandler(distributor);
 
@@ -891,6 +943,7 @@ public class DistributorTest {
       new DefaultSlotSelector(),
       registrationSecret,
       Duration.ofMinutes(5),
+      false,
       false,
       Duration.ofSeconds(5));
     distributor.add(node);
@@ -937,6 +990,7 @@ public class DistributorTest {
       new DefaultSlotSelector(),
       registrationSecret,
       Duration.ofSeconds(1),
+      false,
       false,
       Duration.ofSeconds(5));
     handler.addHandler(distributor);
@@ -1003,6 +1057,7 @@ public class DistributorTest {
       registrationSecret,
       Duration.ofSeconds(1),
       false,
+      false,
       Duration.ofSeconds(5));
     handler.addHandler(distributor);
     distributor.add(node);
@@ -1062,6 +1117,7 @@ public class DistributorTest {
       new DefaultSlotSelector(),
       registrationSecret,
       Duration.ofMinutes(5),
+      false,
       false,
       Duration.ofSeconds(5));
 
@@ -1177,6 +1233,7 @@ public class DistributorTest {
       registrationSecret,
       Duration.ofMinutes(5),
       false,
+      false,
       Duration.ofSeconds(5));
 
     local.add(node);
@@ -1210,6 +1267,7 @@ public class DistributorTest {
       registrationSecret,
       Duration.ofMinutes(5),
       false,
+      false,
       Duration.ofSeconds(5));
 
     local.add(node);
@@ -1237,6 +1295,7 @@ public class DistributorTest {
       new DefaultSlotSelector(),
       registrationSecret,
       Duration.ofMinutes(5),
+      false,
       false,
       Duration.ofSeconds(5));
 
@@ -1280,6 +1339,7 @@ public class DistributorTest {
       new DefaultSlotSelector(),
       registrationSecret,
       Duration.ofMinutes(5),
+      false,
       false,
       Duration.ofSeconds(5));
     local.add(brokenNode);

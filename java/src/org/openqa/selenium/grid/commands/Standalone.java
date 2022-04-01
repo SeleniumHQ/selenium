@@ -161,6 +161,7 @@ public class Standalone extends TemplateGridServerCommand {
       distributorOptions.getSlotSelector(),
       registrationSecret,
       distributorOptions.getHealthCheckInterval(),
+      distributorOptions.oneShotNodes(),
       distributorOptions.shouldRejectUnsupportedCaps(),
       newSessionRequestOptions.getSessionRequestRetryInterval());
     combinedHandler.addHandler(distributor);

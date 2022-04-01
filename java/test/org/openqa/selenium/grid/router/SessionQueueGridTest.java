@@ -140,6 +140,7 @@ public class SessionQueueGridTest {
       registrationSecret,
       Duration.ofMinutes(5),
       false,
+      false,
       Duration.ofSeconds(5));
     handler.addHandler(distributor);
 

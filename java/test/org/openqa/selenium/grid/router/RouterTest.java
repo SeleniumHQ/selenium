@@ -118,6 +118,7 @@ public class RouterTest {
       registrationSecret,
       Duration.ofSeconds(1),
       false,
+      false,
       Duration.ofSeconds(5));
     handler.addHandler(distributor);
 

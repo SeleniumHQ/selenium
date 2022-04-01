@@ -15,7 +15,6 @@ genrule(
     executable = True,
     visibility = [
         "//:__pkg__",
-        "//deploys/docker:__pkg__",
     ],
 )
 

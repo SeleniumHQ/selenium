@@ -159,6 +159,7 @@ public class SessionCleanUpTest {
       registrationSecret,
       Duration.ofSeconds(1),
       false,
+      false,
       Duration.ofSeconds(5));
     handler.addHandler(distributor);
 
@@ -278,6 +279,7 @@ public class SessionCleanUpTest {
       new DefaultSlotSelector(),
       registrationSecret,
       Duration.ofSeconds(1),
+      false,
       false,
       Duration.ofSeconds(5));
     handler.addHandler(distributor);

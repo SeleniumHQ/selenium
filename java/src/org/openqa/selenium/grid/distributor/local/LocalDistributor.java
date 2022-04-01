@@ -126,6 +126,7 @@ public class LocalDistributor extends Distributor implements Closeable {
   private final Secret registrationSecret;
   private final Map<NodeId, Runnable> allChecks = new HashMap<>();
   private final Duration healthcheckInterval;
+  private final boolean oneShotNodes;
 
   private final ReadWriteLock lock = new ReentrantReadWriteLock(/* fair */ true);
   private final GridModel model;
@@ -180,6 +181,7 @@ public class LocalDistributor extends Distributor implements Closeable {
     SlotSelector slotSelector,
     Secret registrationSecret,
     Duration healthcheckInterval,
+    boolean oneShotNodes,
     boolean rejectUnsupportedCaps,
     Duration sessionRequestRetryInterval) {
     super(tracer, clientFactory, registrationSecret);
@@ -192,6 +194,7 @@ public class LocalDistributor extends Distributor implements Closeable {
     this.registrationSecret = Require.nonNull("Registration secret", registrationSecret);
     this.healthcheckInterval = Require.nonNull("Health check interval", healthcheckInterval);
     this.model = new GridModel(bus);
+    this.oneShotNodes = oneShotNodes;
     this.nodes = new ConcurrentHashMap<>();
     this.rejectUnsupportedCaps = rejectUnsupportedCaps;
     Require.nonNull("Session request interval", sessionRequestRetryInterval);
@@ -249,6 +252,7 @@ public class LocalDistributor extends Distributor implements Closeable {
       distributorOptions.getSlotSelector(),
       secretOptions.getRegistrationSecret(),
       distributorOptions.getHealthCheckInterval(),
+      distributorOptions.oneShotNodes(),
       distributorOptions.shouldRejectUnsupportedCaps(),
       newSessionQueueOptions.getSessionRequestRetryInterval());
   }
@@ -544,7 +548,9 @@ public class LocalDistributor extends Distributor implements Closeable {
           String sessionCreatedMessage = "Session created by the distributor";
           span.addEvent(sessionCreatedMessage, attributeMap);
           LOG.info(String.format("%s. Id: %s, Caps: %s", sessionCreatedMessage, sessionId, sessionCaps));
-
+          if (oneShotNodes) {
+            drain(selectedSlot.getOwningNodeId());
+          }
           return Either.right(response);
         } catch (SessionNotCreatedException e) {
           model.setSession(selectedSlot, null);

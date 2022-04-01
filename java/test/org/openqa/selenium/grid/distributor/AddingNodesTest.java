@@ -139,6 +139,7 @@ public class AddingNodesTest {
       registrationSecret,
       Duration.ofMinutes(5),
       false,
+      false,
       Duration.ofSeconds(5));
 
     distributor = new RemoteDistributor(tracer, new PassthroughHttpClient.Factory(local), externalUrl, registrationSecret);
@@ -170,6 +171,7 @@ public class AddingNodesTest {
       new DefaultSlotSelector(),
       registrationSecret,
       Duration.ofMinutes(5),
+      false,
       false,
       Duration.ofSeconds(5));
 
@@ -203,6 +205,7 @@ public class AddingNodesTest {
       new DefaultSlotSelector(),
       registrationSecret,
       Duration.ofMinutes(5),
+      false,
       false,
       Duration.ofSeconds(5));
 
@@ -247,6 +250,7 @@ public class AddingNodesTest {
       registrationSecret,
       Duration.ofMinutes(5),
       false,
+      false,
       Duration.ofSeconds(5));
 
     distributor = new RemoteDistributor(tracer, new PassthroughHttpClient.Factory(local), externalUrl, registrationSecret);
@@ -282,6 +286,7 @@ public class AddingNodesTest {
       new DefaultSlotSelector(),
       registrationSecret,
       Duration.ofMinutes(5),
+      false,
       false,
       Duration.ofSeconds(5));
 

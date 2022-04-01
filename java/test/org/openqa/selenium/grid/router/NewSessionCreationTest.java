@@ -113,6 +113,7 @@ public class NewSessionCreationTest {
       registrationSecret,
       Duration.ofMinutes(5),
       false,
+      false,
       Duration.ofSeconds(5));
 
     Routable router = new Router(tracer, clientFactory, sessions, queue, distributor)
@@ -213,6 +214,7 @@ public class NewSessionCreationTest {
       registrationSecret,
       Duration.ofMinutes(5),
       false,
+      false,
       Duration.ofSeconds(5));
     handler.addHandler(distributor);
 
@@ -280,6 +282,7 @@ public class NewSessionCreationTest {
       new DefaultSlotSelector(),
       registrationSecret,
       Duration.ofMinutes(5),
+      false,
       true,
       Duration.ofSeconds(5));
     handler.addHandler(distributor);
