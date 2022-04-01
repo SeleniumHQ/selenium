@@ -29,6 +29,7 @@ import org.openqa.selenium.grid.data.CreateSessionRequest;
 import org.openqa.selenium.grid.node.ActiveSession;
 import org.openqa.selenium.internal.Either;
 import org.openqa.selenium.remote.Dialect;
+import org.openqa.selenium.remote.http.ClientConfig;
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
@@ -147,9 +148,9 @@ public class DriverServiceSessionFactoryTest {
   public void shouldInstantiateSessionIfEverythingIsOK() throws IOException {
     HttpClient httpClient = mock(HttpClient.class);
     when(httpClient.execute(any(HttpRequest.class))).thenReturn(
-        new HttpResponse().setStatus(200).setContent(() -> new ByteArrayInputStream(
-            "{ \"value\": { \"sessionId\": \"1\", \"capabilities\": {} } }".getBytes())));
-    when(clientFactory.createClient(any(URL.class))).thenReturn(httpClient);
+      new HttpResponse().setStatus(200).setContent(() -> new ByteArrayInputStream(
+        "{ \"value\": { \"sessionId\": \"1\", \"capabilities\": {} } }".getBytes())));
+    when(clientFactory.createClient(any(ClientConfig.class))).thenReturn(httpClient);
 
     DriverServiceSessionFactory factory = factoryFor("chrome", builder);
 
