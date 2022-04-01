@@ -17,10 +17,6 @@
 
 package org.openqa.selenium.mobile;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.openqa.selenium.testing.drivers.Browser.CHROME;
-import static org.openqa.selenium.testing.drivers.Browser.EDGE;
-
 import org.junit.Assume;
 import org.junit.Before;
 import org.junit.Test;
@@ -28,6 +24,10 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.remote.Augmenter;
 import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.NotYetImplemented;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.openqa.selenium.testing.drivers.Browser.CHROME;
+import static org.openqa.selenium.testing.drivers.Browser.EDGE;
 
 public class NetworkConnectionTest extends JUnit4TestBase {
 
@@ -45,7 +45,7 @@ public class NetworkConnectionTest extends JUnit4TestBase {
   @NotYetImplemented(EDGE)
   public void testToggleAirplaneMode() {
     NetworkConnection.ConnectionType current = networkConnectionDriver.getNetworkConnection();
-    NetworkConnection.ConnectionType modified = null;
+    NetworkConnection.ConnectionType modified;
     if (current.isAirplaneMode()) {
       modified = networkConnectionDriver.setNetworkConnection(NetworkConnection.ConnectionType.ALL);
     } else {
