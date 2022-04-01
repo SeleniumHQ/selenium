@@ -55,6 +55,15 @@ http_archive(
     url = "https://github.com/bazelbuild/rules_python/archive/refs/tags/0.8.0.tar.gz",
 )
 
+load("@rules_python//python:repositories.bzl", "python_register_toolchains")
+
+python_register_toolchains(
+    name = "python3_9",
+    python_version = "3.9",
+)
+
+load("@python3_9//:defs.bzl", "interpreter")
+
 # This one is only needed if you're using the packaging rules.
 load("@rules_python//python:pip.bzl", "pip_install")
 
