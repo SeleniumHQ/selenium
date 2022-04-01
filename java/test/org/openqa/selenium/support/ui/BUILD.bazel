@@ -35,8 +35,8 @@ java_test_suite(
 )
 
 java_selenium_test_suite(
-    name = "MediumTests",
-    size = "medium",
+    name = "LargeTests",
+    size = "large",
     srcs = LARGE_TESTS,
     browsers = [
         "firefox",
