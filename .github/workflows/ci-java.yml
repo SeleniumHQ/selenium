@@ -111,10 +111,11 @@ jobs:
         uses: actions/setup-java@v1
         with:
           java-version: '11'
-      - name: Run small tests
+      - name: Run medium tests
         uses: ./.github/actions/bazel-test
         with:
           query: attr(size, medium, tests(//java/...)) except attr(tags, lint, tests(//java/...))
+          attempts: 3
 
   lint:
     if: ${{ needs.check_workflow.outputs.result == 'true' || github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' || contains(toJson(github.event.commits), '[run java]') == true }}
