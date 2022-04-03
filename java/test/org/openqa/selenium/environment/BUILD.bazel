@@ -102,12 +102,15 @@ java_library(
 firefox = BROWSERS["firefox"]
 
 java_test_suite(
-    name = "MediumTests",
-    size = "medium",
+    name = "LargeTests",
+    size = "large",
     srcs = glob(["**/*Test.java"]),
     data = firefox["data"],
     jvm_flags = firefox["jvm_flags"],
-    tags = firefox["tags"],
+    tags = [
+        "selenium-remote",
+        "firefox",
+    ] + firefox["tags"],
     deps = [
         ":environment",
         ":test-base",

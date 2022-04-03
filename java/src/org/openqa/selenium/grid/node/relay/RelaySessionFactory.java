@@ -34,6 +34,7 @@ import org.openqa.selenium.remote.DriverCommand;
 import org.openqa.selenium.remote.ProtocolHandshake;
 import org.openqa.selenium.remote.Response;
 import org.openqa.selenium.remote.SessionId;
+import org.openqa.selenium.remote.http.ClientConfig;
 import org.openqa.selenium.remote.http.Contents;
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpMethod;
@@ -47,6 +48,7 @@ import org.openqa.selenium.remote.tracing.Tracer;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
+import java.time.Duration;
 import java.time.Instant;
 import java.util.HashMap;
 import java.util.Map;
@@ -73,6 +75,7 @@ public class RelaySessionFactory implements SessionFactory {
 
   private final Tracer tracer;
   private final HttpClient.Factory clientFactory;
+  private final Duration sessionTimeout;
   private final URL serviceUrl;
   private final URL serviceStatusUrl;
   private final Capabilities stereotype;
@@ -80,11 +83,13 @@ public class RelaySessionFactory implements SessionFactory {
   public RelaySessionFactory(
     Tracer tracer,
     HttpClient.Factory clientFactory,
+    Duration sessionTimeout,
     URI serviceUri,
     URI serviceStatusUri,
     Capabilities stereotype) {
     this.tracer = Require.nonNull("Tracer", tracer);
     this.clientFactory = Require.nonNull("HTTP client", clientFactory);
+    this.sessionTimeout = Require.nonNull("Session timeout", sessionTimeout);
     this.serviceUrl = createUrlFromUri(Require.nonNull("Service URL", serviceUri));
     this.serviceStatusUrl = createUrlFromUri(serviceStatusUri);
     this.stereotype = ImmutableCapabilities
@@ -141,7 +146,11 @@ public class RelaySessionFactory implements SessionFactory {
       attributeMap.put(LOGGER_CLASS.getKey(), setValue(this.getClass().getName()));
       attributeMap.put(DRIVER_URL.getKey(), setValue(serviceUrl.toString()));
 
-      HttpClient client = clientFactory.createClient(serviceUrl);
+      ClientConfig clientConfig = ClientConfig
+        .defaultConfig()
+        .readTimeout(sessionTimeout)
+        .baseUrl(serviceUrl);
+      HttpClient client = clientFactory.createClient(clientConfig);
 
       Command command = new Command(null, DriverCommand.NEW_SESSION(capabilities));
       try {
