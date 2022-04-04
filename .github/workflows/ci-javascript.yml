@@ -68,10 +68,11 @@ jobs:
           matrix.browser == 'chrome'
       - name: Start XVFB
         run: Xvfb :99 &
-      - name: Run JavaScript tests on Firefox
-        uses: ./.github/actions/bazel
+      - name: Run JavaScript tests
+        uses: ./.github/actions/bazel-test
         with:
-          command: test //javascript/node/selenium-webdriver:tests
+          query: //javascript/node/selenium-webdriver:tests
+          attempts: 3
         env:
           DISPLAY: :99
           SELENIUM_BROWSER: ${{ matrix.browser }}
