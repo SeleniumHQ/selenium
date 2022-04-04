@@ -25,6 +25,12 @@ jobs:
     if: ${{ needs.check_workflow.outputs.result == 'true' || github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' || contains(toJson(github.event.commits), '[run javascript]') == true }}
     needs: check_workflow
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - { "browser": "firefox", "version": "latest" }
+          - { "browser": "chrome", "version": "stable" }
     steps:
       - name: Checkout source tree
         uses: actions/checkout@v2
@@ -48,10 +54,18 @@ jobs:
           java-version: 11
       - name: Setup bazelisk
         uses: ./.github/actions/setup-bazelisk
-      - name: Setup Firefox
-        uses: browser-actions/setup-firefox@latest
-      - name: Setup GeckoDriver
-        uses: browser-actions/setup-geckodriver@latest
+      - name: Setup Firefox and GeckoDriver
+        uses: ./.github/actions/setup-firefox
+        with:
+          version: ${{ matrix.version }}
+        if: |
+          matrix.browser == 'firefox'
+      - name: Setup Chrome and ChromeDriver
+        uses: ./.github/actions/setup-chrome
+        with:
+          version: ${{ matrix.version }}
+        if: |
+          matrix.browser == 'chrome'
       - name: Start XVFB
         run: Xvfb :99 &
       - name: Run JavaScript tests on Firefox
@@ -60,7 +74,7 @@ jobs:
           command: test //javascript/node/selenium-webdriver:tests
         env:
           DISPLAY: :99
-          SELENIUM_BROWSER: firefox
+          SELENIUM_BROWSER: ${{ matrix.browser }}
 
   firefox_atom_tests:
     if: ${{ needs.check_workflow.outputs.result == 'true' || github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' || contains(toJson(github.event.commits), '[run javascript]') == true }}
@@ -84,10 +98,10 @@ jobs:
           java-version: 11
       - name: Setup bazelisk
         uses: ./.github/actions/setup-bazelisk
-      - name: Setup Firefox
-        uses: browser-actions/setup-firefox@latest
-      - name: Setup GeckoDriver
-        uses: browser-actions/setup-geckodriver@latest
+      - name: Setup Firefox and GeckoDriver
+        uses: ./.github/actions/setup-firefox
+        with:
+          version: ${{ matrix.version }}
       - name: Start XVFB
         run: Xvfb :99 &
       - name: Run atom tests on Firefox
