@@ -1,3 +1,5 @@
+load("@rules_pkg//pkg:mappings.bzl", "pkg_files", "strip_prefix")
+load("@rules_pkg//pkg:pkg.bzl", "pkg_tar")
 load("@rules_python//python:defs.bzl", "py_binary", "py_library")
 load("@rules_python//python:packaging.bzl", "py_package", "py_wheel")
 load("@dev_requirements//:requirements.bzl", "requirement")
@@ -112,6 +114,27 @@ py_package(
         "py.selenium.webdriver.safari",
     ],
     deps = [":selenium"],
+)
+
+pkg_files(
+    name = "selenium-sdist-pkg",
+    srcs = [
+        "CHANGES",
+        "setup.py",
+        "MANIFEST.in",
+        "README.rst",
+        ":selenium-pkg",
+    ],
+    strip_prefix = strip_prefix.from_pkg(),
+)
+
+
+pkg_tar(
+    name = "selenium-sdist",
+    srcs = [":selenium-sdist-pkg"],
+    package_file_name = "selenium-%s.tar.gz" % SE_VERSION,
+    extension = "tar.gz",
+    mode = "0644"
 )
 
 py_wheel(
