@@ -113,7 +113,7 @@ public class PrintOptions {
   }
 
   public Map<String, Object> toMap() {
-    final Map<String, Object> options = new HashMap<String, Object>(7);
+    final Map<String, Object> options = new HashMap<>(7);
     options.put("page", getPageSize());
     options.put("orientation", getOrientation().toString());
     options.put("scale", getScale());
@@ -121,7 +121,7 @@ public class PrintOptions {
     options.put("background", getBackground());
     options.put("pageRanges", getPageRanges());
     options.put("margin", getPageMargin());
-    
+
    return options;
   }
 }
