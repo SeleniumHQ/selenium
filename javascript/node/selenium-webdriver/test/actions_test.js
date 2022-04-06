@@ -23,6 +23,7 @@ const fileServer = require('../lib/test/fileserver')
 const { ignore, Pages, suite } = require('../lib/test')
 const { Key, Origin } = require('../lib/input')
 const { Browser, By, until } = require('..')
+const io = require('../io')
 
 suite(function (env) {
   describe('WebDriver.actions()', function () {
@@ -98,6 +99,8 @@ suite(function (env) {
         assert.strictEqual(await box.getAttribute('class'), '')
 
         await driver.actions().doubleClick(box).perform()
+        await driver.wait(
+          async () => await box.getAttribute('class') === 'blue', 5000)
         assert.strictEqual(await box.getAttribute('class'), 'blue')
       })
 
