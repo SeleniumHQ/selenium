@@ -146,7 +146,7 @@ class RemoteConnection(object):
             'timeout': self._timeout
         }
         if self._ca_certs:
-            pool_manager_init_args['cert_reqs'] = 'CERT_REQUIRED'
+            pool_manager_init_args['cert_reqs'] = 'CERT_NONE'
             pool_manager_init_args['ca_certs'] = self._ca_certs
 
         if self._proxy_url:
