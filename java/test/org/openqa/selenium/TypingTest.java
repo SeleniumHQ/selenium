@@ -17,6 +17,13 @@
 
 package org.openqa.selenium;
 
+import org.junit.Test;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.testing.Ignore;
+import org.openqa.selenium.testing.JUnit4TestBase;
+import org.openqa.selenium.testing.NotYetImplemented;
+import org.openqa.selenium.testing.drivers.Browser;
+
 import static com.google.common.base.Joiner.on;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
@@ -26,13 +33,6 @@ import static org.openqa.selenium.testing.TestUtilities.getEffectivePlatform;
 import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
 import static org.openqa.selenium.testing.drivers.Browser.IE;
 import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
-
-import org.junit.Test;
-import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.testing.Ignore;
-import org.openqa.selenium.testing.JUnit4TestBase;
-import org.openqa.selenium.testing.NotYetImplemented;
-import org.openqa.selenium.testing.drivers.Browser;
 
 public class TypingTest extends JUnit4TestBase {
 
@@ -414,7 +414,6 @@ public class TypingTest extends JUnit4TestBase {
   }
 
   @Test
-  @NotYetImplemented(value = FIREFOX)
   public void testSpecialSpaceKeys() {
     driver.get(pages.javascriptPage);
 
@@ -425,7 +424,6 @@ public class TypingTest extends JUnit4TestBase {
   }
 
   @Test
-  @NotYetImplemented(value = FIREFOX)
   @NotYetImplemented(value = SAFARI, reason = "Enters dot instead of comma")
   public void testNumberPadKeys() {
     driver.get(pages.javascriptPage);
