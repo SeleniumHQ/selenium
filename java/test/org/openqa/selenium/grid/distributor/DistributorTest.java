@@ -17,21 +17,12 @@
 
 package org.openqa.selenium.grid.distributor;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.fail;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.openqa.selenium.grid.data.Availability.DOWN;
-import static org.openqa.selenium.grid.data.Availability.UP;
-import static org.openqa.selenium.remote.Dialect.W3C;
-
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
@@ -102,6 +93,12 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertTrue;
+import static org.openqa.selenium.grid.data.Availability.DOWN;
+import static org.openqa.selenium.grid.data.Availability.UP;
+import static org.openqa.selenium.remote.Dialect.W3C;
 
 public class DistributorTest {
 
@@ -581,8 +578,8 @@ public class DistributorTest {
       .add(massive);
 
     wait.until(obj -> distributor.getStatus().getNodes().size() == 4);
-    wait.until(ignored -> distributor.getStatus().getNodes().stream().allMatch(
-      node -> node.getAvailability() == UP && node.hasCapacity()));
+    wait.until(ignored -> distributor.getStatus().getNodes().stream()
+      .allMatch(node -> node.getAvailability() == UP && node.hasCapacity()));
     wait.until(obj -> distributor.getStatus().hasCapacity());
 
     Either<SessionNotCreatedException, CreateSessionResponse> result =
@@ -1125,6 +1122,7 @@ public class DistributorTest {
     for (int i = 0; i < count; i++) {
       builder.add(stereotype, new TestSessionFactory((id, caps) -> new HandledSession(uri, caps)));
     }
+    builder.maximumConcurrentSessions(12);
 
     LocalNode node = builder.build();
     for (int i = 0; i < currentLoad; i++) {
@@ -1145,77 +1143,6 @@ public class DistributorTest {
         stereotype,
         new TestSessionFactory(stereotype, (id, caps) -> {throw new SessionNotCreatedException("Surprise!");}))
       .build();
-  }
-
-  @Test
-  @Ignore
-  public void shouldCorrectlySetSessionCountsWhenStartedAfterNodeWithSession() {
-    fail("write me!");
-  }
-
-  @Test
-  public void statusShouldIndicateThatDistributorIsNotAvailableIfNodesAreDown()
-    throws URISyntaxException {
-    Capabilities capabilities = new ImmutableCapabilities("cheese", "peas");
-    URI uri = new URI("http://example.com");
-
-    Node node = LocalNode.builder(tracer, bus, uri, uri, registrationSecret)
-      .add(
-        capabilities,
-        new TestSessionFactory((id, caps) -> new Session(id, uri, stereotype, caps, Instant.now())))
-      .advanced()
-      .healthCheck(() -> new HealthCheck.Result(DOWN, "TL;DR"))
-      .build();
-
-    local = new LocalDistributor(
-      tracer,
-      bus,
-      new PassthroughHttpClient.Factory(node),
-      sessions,
-      queue,
-      new DefaultSlotSelector(),
-      registrationSecret,
-      Duration.ofMinutes(5),
-      false,
-      Duration.ofSeconds(5));
-
-    local.add(node);
-
-    DistributorStatus status = local.getStatus();
-    assertFalse(status.hasCapacity());
-  }
-
-  @Test
-  public void disabledNodeShouldNotAcceptNewRequests()
-    throws URISyntaxException
-  {
-    Capabilities capabilities = new ImmutableCapabilities("cheese", "peas");
-
-    URI uri = new URI("http://example.com");
-    Node node = LocalNode.builder(tracer, bus, uri, uri, registrationSecret)
-      .add(
-        capabilities,
-        new TestSessionFactory((id, caps) -> new Session(id, uri, stereotype, caps, Instant.now())))
-      .advanced()
-      .healthCheck(() -> new HealthCheck.Result(DOWN, "TL;DR"))
-      .build();
-
-    local = new LocalDistributor(
-      tracer,
-      bus,
-      new PassthroughHttpClient.Factory(node),
-      sessions,
-      queue,
-      new DefaultSlotSelector(),
-      registrationSecret,
-      Duration.ofMinutes(5),
-      false,
-      Duration.ofSeconds(5));
-
-    local.add(node);
-
-    DistributorStatus status = local.getStatus();
-    assertFalse(status.hasCapacity());
   }
 
   @Test

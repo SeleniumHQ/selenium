@@ -35,7 +35,7 @@ module Selenium
             id: id,
             url: params.dig('request', 'url'),
             method: params.dig('request', 'method'),
-            headers: params.dig('request', 'headers'),
+            headers: params.dig('request', 'headers').dup,
             post_data: params.dig('request', 'postData')
           )
         end

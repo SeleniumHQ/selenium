@@ -138,23 +138,27 @@ test.suite(
     })
 
     describe('Basic Auth Injection', function () {
-      it('denies entry if username and password do not match', async function () {
-        const pageCdpConnection = await driver.createCDPConnection('page')
+      it('denies entry if username and password do not match',
+        async function () {
+          const pageCdpConnection = await driver.createCDPConnection('page')
 
-        await driver.register('random', 'random', pageCdpConnection)
-        await driver.get(fileServer.Pages.basicAuth)
-        let source = await driver.getPageSource()
-        assert.strictEqual(source.includes('Access granted!'), false)
-      })
+          await driver.register('random', 'random', pageCdpConnection)
+          await driver.get(fileServer.Pages.basicAuth)
+          let source = await driver.getPageSource()
+          assert.strictEqual(source.includes('Access granted!'), false, source)
+        })
+    })
 
-      it('grants access if username and password are a match', async function () {
-        const pageCdpConnection = await driver.createCDPConnection('page')
+    describe('Basic Auth Injection', function () {
+      it('grants access if username and password are a match',
+        async function () {
+          const pageCdpConnection = await driver.createCDPConnection('page')
 
-        await driver.register('genie', 'bottle', pageCdpConnection)
-        await driver.get(fileServer.Pages.basicAuth)
-        let source = await driver.getPageSource()
-        assert.strictEqual(source.includes('Access granted!'), true)
-      })
+          await driver.register('genie', 'bottle', pageCdpConnection)
+          await driver.get(fileServer.Pages.basicAuth)
+          let source = await driver.getPageSource()
+          assert.strictEqual(source.includes('Access granted!'), true)
+        })
     })
 
     describe('setDownloadPath', function () {

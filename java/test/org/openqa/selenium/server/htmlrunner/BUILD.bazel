@@ -5,8 +5,8 @@ load("//java/private:selenium_test.bzl", "BROWSERS")
 firefox = BROWSERS["firefox"]
 
 java_test_suite(
-    name = "MediumTests",
-    size = "medium",
+    name = "LargeTests",
+    size = "large",
     srcs = glob(["*.java"]),
     data = firefox["data"],
     jvm_flags = firefox["jvm_flags"] + [

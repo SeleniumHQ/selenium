@@ -30,7 +30,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout source tree
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       - name: Cache Bazel artifacts
         uses: actions/cache@v2
         with:
@@ -57,7 +57,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout source tree
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           fetch-depth: 0
       - name: Cache Bazel artifacts
@@ -86,13 +86,44 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
+  medium_tests:
+    if: ${{ needs.check_workflow.outputs.result == 'true' || github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' || contains(toJson(github.event.commits), '[run java]') == true }}
+    needs: [ check_workflow, small_tests ]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout source tree
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: Cache Bazel artifacts
+        uses: actions/cache@v2
+        with:
+          path: |
+            ~/.cache/bazel-disk
+            ~/.cache/bazel-repo
+          key: ${{ runner.os }}-bazel-medium-tests-${{ hashFiles('**/BUILD.bazel') }}
+          restore-keys: |
+            ${{ runner.os }}-bazel-medium-tests-
+            ${{ runner.os }}-bazel-build-
+      - name: Setup bazelisk
+        uses: ./.github/actions/setup-bazelisk
+      - name: Setup Java
+        uses: actions/setup-java@v1
+        with:
+          java-version: '11'
+      - name: Run medium tests
+        uses: ./.github/actions/bazel-test
+        with:
+          query: attr(size, medium, tests(//java/...)) except attr(tags, lint, tests(//java/...))
+          attempts: 3
+
   lint:
     if: ${{ needs.check_workflow.outputs.result == 'true' || github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' || contains(toJson(github.event.commits), '[run java]') == true }}
     needs: [ check_workflow, build ]
     runs-on: ubuntu-latest
     steps:
       - name: Checkout source tree
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       - name: Cache Bazel artifacts
         uses: actions/cache@v2
         with:
@@ -121,16 +152,14 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        browser: [ chrome, firefox ]
-        version: [ latest ]
         include:
-          - browser: 'firefox'
-            version: 'latest-devedition'
-          - browser: 'firefox'
-            version: 'latest-beta'
+          - { "browser": "firefox", "version": "latest" }
+          - { "browser": "firefox", "version": "latest-beta" }
+          - { "browser": "firefox", "version": "latest-devedition" }
+          - { "browser": "chrome", "version": "stable" }
     steps:
       - name: Checkout source tree
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       - name: Cache Bazel artifacts
         uses: actions/cache@v2
         with:
@@ -147,18 +176,16 @@ jobs:
         uses: actions/setup-java@v1
         with:
           java-version: '11'
-      - name: Setup Firefox
-        uses: browser-actions/setup-firefox@latest
-        if: |
-          matrix.browser == 'firefox'
+      - name: Setup Firefox and GeckoDriver
+        uses: ./.github/actions/setup-firefox
         with:
-          firefox-version: ${{ matrix.version }}
-      - name: Setup GeckoDriver
-        uses: browser-actions/setup-geckodriver@latest
+          version: ${{ matrix.version }}
         if: |
           matrix.browser == 'firefox'
       - name: Setup Chrome and ChromeDriver
         uses: ./.github/actions/setup-chrome
+        with:
+          version: ${{ matrix.version }}
         if: |
           matrix.browser == 'chrome'
       - name: Start XVFB
@@ -178,16 +205,14 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        browser: [ chrome, firefox ]
-        version: [ latest ]
         include:
-          - browser: 'firefox'
-            version: 'latest-devedition'
-          - browser: 'firefox'
-            version: 'latest-beta'
+          - { "browser": "firefox", "version": "latest" }
+          - { "browser": "firefox", "version": "latest-beta" }
+          - { "browser": "firefox", "version": "latest-devedition" }
+          - { "browser": "chrome", "version": "stable" }
     steps:
       - name: Checkout source tree
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       - name: Cache Bazel artifacts
         uses: actions/cache@v2
         with:
@@ -205,18 +230,16 @@ jobs:
         uses: actions/setup-java@v1
         with:
           java-version: '11'
-      - name: Setup Firefox
-        uses: browser-actions/setup-firefox@latest
-        if: |
-          matrix.browser == 'firefox'
+      - name: Setup Firefox and GeckoDriver
+        uses: ./.github/actions/setup-firefox
         with:
-          firefox-version: ${{ matrix.version }}
-      - name: Setup GeckoDriver
-        uses: browser-actions/setup-geckodriver@latest
+          version: ${{ matrix.version }}
         if: |
           matrix.browser == 'firefox'
       - name: Setup Chrome and ChromeDriver
         uses: ./.github/actions/setup-chrome
+        with:
+          version: ${{ matrix.version }}
         if: |
           matrix.browser == 'chrome'
       - name: Start XVFB
@@ -235,7 +258,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout source tree
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       - name: Cache Bazel artifacts
         uses: actions/cache@v2
         with:
@@ -252,10 +275,10 @@ jobs:
         uses: actions/setup-java@v1
         with:
           java-version: '11'
-      - name: Setup Firefox
-        uses: browser-actions/setup-firefox@latest
-      - name: Setup GeckoDriver
-        uses: browser-actions/setup-geckodriver@latest
+      - name: Setup Firefox and GeckoDriver
+        uses: ./.github/actions/setup-firefox
+        with:
+          version: latest
       - name: Start XVFB
         run: Xvfb :99 &
       - name: Run browser tests in Firefox
@@ -272,7 +295,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout source tree
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       - name: Cache Bazel artifacts
         uses: actions/cache@v2
         with:

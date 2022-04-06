@@ -17,8 +17,23 @@
 # specific language governing permissions and limitations
 # under the License.
 
+require File.expand_path('../spec_helper', __dir__)
+
 module Selenium
-  module DevTools
-    VERSION = '0.100.0'
-  end # DevTools
+  module WebDriver
+    class DevTools
+      describe Request do
+        describe '.from' do
+          it 'duplicates headers for immutability' do
+            params = {'request' => {'headers' => {}}}
+            a = Request.from(1, params)
+            b = Request.from(1, params)
+
+            b.headers['foo'] = 'bar'
+            expect(a).not_to eq(b)
+          end
+        end
+      end # Request
+    end # DevTools
+  end # WebDriver
 end # Selenium

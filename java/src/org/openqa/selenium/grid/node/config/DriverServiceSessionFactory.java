@@ -50,6 +50,7 @@ import org.openqa.selenium.remote.tracing.Tracer;
 
 import java.net.URI;
 import java.net.URL;
+import java.time.Duration;
 import java.time.Instant;
 import java.util.HashMap;
 import java.util.Map;
@@ -67,19 +68,22 @@ public class DriverServiceSessionFactory implements SessionFactory {
 
   private final Tracer tracer;
   private final HttpClient.Factory clientFactory;
+  private final Duration sessionTimeout;
   private final Predicate<Capabilities> predicate;
   private final DriverService.Builder<?, ?> builder;
   private final Capabilities stereotype;
   private final SessionCapabilitiesMutator sessionCapabilitiesMutator;
 
   public DriverServiceSessionFactory(
-      Tracer tracer,
-      HttpClient.Factory clientFactory,
-      Capabilities stereotype,
-      Predicate<Capabilities> predicate,
-      DriverService.Builder<?, ?> builder) {
+    Tracer tracer,
+    HttpClient.Factory clientFactory,
+    Duration sessionTimeout,
+    Capabilities stereotype,
+    Predicate<Capabilities> predicate,
+    DriverService.Builder<?, ?> builder) {
     this.tracer = Require.nonNull("Tracer", tracer);
     this.clientFactory = Require.nonNull("HTTP client factory", clientFactory);
+    this.sessionTimeout = Require.nonNull("Session timeout", sessionTimeout);
     this.stereotype = ImmutableCapabilities.copyOf(Require.nonNull("Stereotype", stereotype));
     this.predicate = Require.nonNull("Accepted capabilities predicate", predicate);
     this.builder = Require.nonNull("Driver service builder", builder);
@@ -125,7 +129,11 @@ public class DriverServiceSessionFactory implements SessionFactory {
         URL serviceURL = service.getUrl();
         attributeMap.put(AttributeKey.DRIVER_URL.getKey(),
                          EventAttribute.setValue(serviceURL.toString()));
-        ClientConfig clientConfig = ClientConfig.defaultConfig().baseUrl(serviceURL).withRetries();
+
+        ClientConfig clientConfig = ClientConfig
+          .defaultConfig()
+          .readTimeout(sessionTimeout)
+          .baseUrl(serviceURL);
         HttpClient client = clientFactory.createClient(clientConfig);
 
         Command command = new Command(null, DriverCommand.NEW_SESSION(capabilities));

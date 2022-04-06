@@ -2525,7 +2525,7 @@ class WebElement {
       if (type === 'number') {
         key = String(key)
       } else if (type !== 'string') {
-        throw TypeError('each key must be a number of string; got ' + type)
+        throw TypeError('each key must be a number or string; got ' + type)
       }
 
       // The W3C protocol requires keys to be specified as an array where

@@ -17,9 +17,6 @@
 
 package org.openqa.selenium.grid.node.relay;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-
 import org.junit.Test;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.grid.config.Config;
@@ -32,8 +29,12 @@ import org.openqa.selenium.remote.tracing.DefaultTestTracer;
 import org.openqa.selenium.remote.tracing.Tracer;
 
 import java.io.StringReader;
+import java.time.Duration;
 import java.util.Collection;
 import java.util.Map;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 @SuppressWarnings("DuplicatedCode")
 public class RelayOptionsTest {
@@ -51,7 +52,10 @@ public class RelayOptionsTest {
     HttpClient.Factory httpClientFactory = networkOptions.getHttpClientFactory(tracer);
     RelayOptions relayOptions = new RelayOptions(config);
     Map<Capabilities, Collection<SessionFactory>>
-      sessionFactories = relayOptions.getSessionFactories(tracer, httpClientFactory);
+      sessionFactories = relayOptions.getSessionFactories(
+      tracer,
+      httpClientFactory,
+      Duration.ofSeconds(300));
 
     Capabilities chrome = sessionFactories
       .keySet()
@@ -105,7 +109,8 @@ public class RelayOptionsTest {
     Tracer tracer = DefaultTestTracer.createTracer();
     HttpClient.Factory httpClientFactory = networkOptions.getHttpClientFactory(tracer);
     assertThatExceptionOfType(ConfigException.class)
-      .isThrownBy(() -> new RelayOptions(config).getSessionFactories(tracer, httpClientFactory));
+      .isThrownBy(() -> new RelayOptions(config)
+        .getSessionFactories(tracer, httpClientFactory, Duration.ofSeconds(300)));
   }
 
   @Test
@@ -121,7 +126,8 @@ public class RelayOptionsTest {
     Tracer tracer = DefaultTestTracer.createTracer();
     HttpClient.Factory httpClientFactory = networkOptions.getHttpClientFactory(tracer);
     assertThatExceptionOfType(ConfigException.class)
-      .isThrownBy(() -> new RelayOptions(config).getSessionFactories(tracer, httpClientFactory));
+      .isThrownBy(() -> new RelayOptions(config)
+        .getSessionFactories(tracer, httpClientFactory, Duration.ofSeconds(300)));
   }
 
 }
