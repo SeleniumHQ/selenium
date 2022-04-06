@@ -180,7 +180,106 @@ Use `git rebase` (not `git merge`) to sync your work from time to time.
 ### Step 5: Test
 
 Bug fixes and features **should have tests**. Look at other tests to
-see how they should be structured.
+see how they should be structured. Verify that new and existing tests are 
+passing locally before pushing code.
+
+#### Running tests locally
+
+Build your code for the latest changes and run tests locally.
+
+##### Python
+<details>
+  <summary>
+    Click to see How to run Python Tests.
+  </summary>
+  
+  It's not mandatory to run tests sequentially but running Unit tests
+  before browser testing is recommended.
+  
+  Unit Tests
+  ```shell
+  % bazel test //py:unit
+  ```
+  
+  Remote Tests
+  ```shell
+  % bazel test --jobs 1 //py:test-remote
+  ```
+  
+  Browser Tests
+  ```shell
+  % bazel test //py:test-<browsername> #eg test-chrome, test-firefox
+  ```
+</details>
+
+##### Javascript
+<details>
+  <summary>
+    Click to see How to run JavaScript Tests.
+  </summary>
+  
+  Node Tests
+  ```shell
+  % bazel test //javascript/node/selenium-webdriver:tests
+  ```
+  
+  Firefox Atom Tests
+  ```shell
+  % bazel test --test_tag_filters=firefox //javascript/atoms/... //javascript/selenium-atoms/... //javascript/webdriver/...
+  ```
+  
+  Grid UI Unit Tests
+  ```shell
+  % cd javascript/grid-ui && npm install && npm test
+  ```
+</details>
+
+##### Java
+<details>
+  <summary>
+    Click to see How to run Java Tests.
+  </summary>
+  
+  Small Tests
+  ```shell
+  % bazel test --cache_test_results=no --test_size_filters=small grid java/test/...
+  ```
+  
+  Large Tests
+  ```shell
+  % bazel test --cache_test_results=no java/test/org/openqa/selenium/grid/router:large-tests
+  ```
+  
+  Browser Tests
+  ```shell
+  bazel test --test_size_filters=small,medium --cache_test_results=no --test_tag_filters=-browser-test //java/...
+  ```
+</details>
+
+##### Ruby
+<details>
+  <summary>
+    Click to see How to run Ruby Tests.
+  </summary>
+  
+  It's not mandatory to run tests sequentially but running Unit tests
+  before browser testing is recommended.
+  
+  Unit Tests
+  ```shell
+  % bazel test rb:unit-test
+  ```
+
+  Chrome Tests
+  ```shell
+  bazel test rb:chrome-test
+  ```
+
+  Remote Tests
+  ```shell
+  % bazel test --test_output=all --test_arg="-tfocus" --test_arg="--fail-fast" rb:remote-chrome-test
+  ```
+</details>
 
 ### Step 6: Push
 
