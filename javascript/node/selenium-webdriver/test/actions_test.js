@@ -58,7 +58,11 @@ suite(function (env) {
       assert.strictEqual(await box.getAttribute('class'), '')
 
       await driver.actions().click(box).perform()
-      assert.strictEqual(await box.getAttribute('class'), 'green')
+      await driver.wait(
+        async () => {
+          assert.strictEqual(await box.getAttribute('class'), 'green')
+          return true
+        }, 10000)
     })
 
     it('click(element) clicks in center of element', async function () {
@@ -70,8 +74,12 @@ suite(function (env) {
 
       await driver.actions().click(div).perform()
 
-      const clicks = await driver.executeScript('return clicks')
-      assert.deepStrictEqual(clicks, [[250, 250]])
+      await driver.wait(
+        async () => {
+          const clicks = await driver.executeScript('return clicks')
+          assert.deepStrictEqual(clicks, [[250, 250]])
+          return true
+        }, 10000)
     })
 
     it('can move relative to element center', async function () {
@@ -87,8 +95,12 @@ suite(function (env) {
         .click()
         .perform()
 
-      const clicks = await driver.executeScript('return clicks')
-      assert.deepStrictEqual(clicks, [[260, 260]])
+      await driver.wait(
+        async () => {
+          const clicks = await driver.executeScript('return clicks')
+          assert.deepStrictEqual(clicks, [[260, 260]])
+          return true
+        }, 10000)
     })
 
     ignore(env.browsers(Browser.SAFARI))
@@ -100,8 +112,10 @@ suite(function (env) {
 
         await driver.actions().doubleClick(box).perform()
         await driver.wait(
-          async () => await box.getAttribute('class') === 'blue', 5000)
-        assert.strictEqual(await box.getAttribute('class'), 'blue')
+          async () => {
+            assert.strictEqual(await box.getAttribute('class'), 'blue')
+            return true
+          }, 10000)
       })
 
     // For some reason for Chrome 75 we need to wrap this test in an extra
@@ -143,10 +157,13 @@ suite(function (env) {
         .move({ x: 100, y: 100, origin: Origin.POINTER })
         .release()
         .perform()
+
       await driver.wait(
-        async () => await slide.getCssValue('left') === '101px', 5000)
-      assert.strictEqual(await slide.getCssValue('left'), '101px')
-      assert.strictEqual(await slide.getCssValue('top'), '101px')
+        async () => {
+          assert.strictEqual(await slide.getCssValue('left'), '101px')
+          assert.strictEqual(await slide.getCssValue('left'), '101px')
+          return true
+        }, 10000)
     })
 
     it('can move to and click element in an iframe', async function () {
@@ -160,7 +177,7 @@ suite(function (env) {
 
       await driver.actions().click(link).perform()
       await driver.switchTo().defaultContent()
-      return driver.wait(until.titleIs('Submitted Successfully!'), 5000)
+      return driver.wait(until.titleIs('Submitted Successfully!'), 10000)
     })
 
     it('can send keys to focused element', async function () {
@@ -174,8 +191,10 @@ suite(function (env) {
       await driver.actions().sendKeys('foobar').perform()
 
       await driver.wait(
-        async () => await el.getAttribute('value') === 'foobar', 5000)
-      assert.strictEqual(await el.getAttribute('value'), 'foobar')
+        async () => {
+          assert.strictEqual(await el.getAttribute('value'), 'foobar')
+          return true
+        }, 10000)
     })
 
     it('can get the property of element', async function () {
@@ -188,7 +207,11 @@ suite(function (env) {
 
       await driver.actions().sendKeys('foobar').perform()
 
-      assert.strictEqual(await el.getProperty('value'), 'foobar')
+      await driver.wait(
+        async () => {
+          assert.strictEqual(await el.getProperty('value'), 'foobar')
+          return true
+        }, 10000)
     })
 
     it('can send keys to focused element (with modifiers)', async function () {
@@ -208,7 +231,11 @@ suite(function (env) {
         .sendKeys('ar')
         .perform()
 
-      assert.strictEqual(await el.getAttribute('value'), 'foOBar')
+      await driver.wait(
+        async () => {
+          assert.strictEqual(await el.getAttribute('value'), 'foOBar')
+          return true
+        }, 10000)
     })
 
     it('can interact with simple form elements', async function () {
@@ -219,7 +246,11 @@ suite(function (env) {
 
       await driver.actions().click(el).sendKeys('foobar').perform()
 
-      assert.strictEqual(await el.getAttribute('value'), 'foobar')
+      await driver.wait(
+        async () => {
+          assert.strictEqual(await el.getAttribute('value'), 'foobar')
+          return true
+        }, 10000)
     })
 
     ignore(env.browsers(Browser.FIREFOX, Browser.SAFARI))
@@ -237,7 +268,12 @@ suite(function (env) {
       })
 
     async function _getEvents(driver) {
-      return await driver.executeScript("return allEvents.events;") || []
+      await driver.wait(
+        async () => {
+          const events = await driver.executeScript('return allEvents.events;')
+          return events.length > 0
+        }, 5000)
+      return await driver.executeScript('return allEvents.events;') || []
     }
   })
 })
