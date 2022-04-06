@@ -67,6 +67,7 @@ import org.openqa.selenium.logging.Logs;
 import org.openqa.selenium.logging.NeedsLocalLogs;
 import org.openqa.selenium.print.PrintOptions;
 import org.openqa.selenium.remote.http.ClientConfig;
+import org.openqa.selenium.remote.http.ConnectionFailedException;
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.internal.WebElementToJsonConverter;
 import org.openqa.selenium.remote.tracing.TracedHttpClient;
@@ -95,6 +96,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
+import static java.util.logging.Level.SEVERE;
 
 @Augmentable
 public class RemoteWebDriver implements WebDriver,
@@ -131,11 +134,21 @@ public class RemoteWebDriver implements WebDriver,
 
   public RemoteWebDriver(Capabilities capabilities) {
     this(getDefaultServerURL(),
-         Require.nonNull("Capabilities", capabilities));
+         Require.nonNull("Capabilities", capabilities), true);
+  }
+
+  public RemoteWebDriver(Capabilities capabilities, boolean enableTracing) {
+    this(getDefaultServerURL(),
+         Require.nonNull("Capabilities", capabilities), enableTracing);
   }
 
   public RemoteWebDriver(URL remoteAddress, Capabilities capabilities) {
-    this(createTracedExecutorWithTracedHttpClient(Require.nonNull("Server URL", remoteAddress)),
+    this(createExecutor(Require.nonNull("Server URL", remoteAddress), true),
+         Require.nonNull("Capabilities", capabilities));
+  }
+
+  public RemoteWebDriver(URL remoteAddress, Capabilities capabilities, boolean enableTracing) {
+    this(createExecutor(Require.nonNull("Server URL", remoteAddress), enableTracing),
          Require.nonNull("Capabilities", capabilities));
   }
 
@@ -168,13 +181,18 @@ public class RemoteWebDriver implements WebDriver,
     }
   }
 
-  private static CommandExecutor createTracedExecutorWithTracedHttpClient(URL remoteAddress) {
-    Tracer tracer = OpenTelemetryTracer.getInstance();
-    CommandExecutor executor = new HttpCommandExecutor(
-      Collections.emptyMap(),
-      ClientConfig.defaultConfig().baseUrl(remoteAddress),
-      new TracedHttpClient.Factory(tracer, HttpClient.Factory.createDefault()));
-    return new TracedCommandExecutor(executor, tracer);
+  private static CommandExecutor createExecutor(URL remoteAddress, boolean enableTracing) {
+    ClientConfig config = ClientConfig.defaultConfig().baseUrl(remoteAddress);
+    if (enableTracing) {
+      Tracer tracer = OpenTelemetryTracer.getInstance();
+      CommandExecutor executor = new HttpCommandExecutor(
+        Collections.emptyMap(),
+        config,
+        new TracedHttpClient.Factory(tracer, HttpClient.Factory.createDefault()));
+      return new TracedCommandExecutor(executor, tracer);
+    } else {
+      return new HttpCommandExecutor(config);
+    }
   }
 
   @Beta
@@ -422,7 +440,13 @@ public class RemoteWebDriver implements WebDriver,
       // first browser window is closed, the next CDP command will hang
       // indefinitely. To prevent that from happening, we close the current
       // connection. The next CDP command _should_ make us reconnect
-      ((HasDevTools) this).maybeGetDevTools().ifPresent(DevTools::disconnectSession);
+
+      try {
+        ((HasDevTools) this).maybeGetDevTools().ifPresent(DevTools::disconnectSession);
+      }
+      catch (ConnectionFailedException unableToEstablishWebsocketConnection) {
+        logger.log(SEVERE, "Failed to disconnect DevTools session", unableToEstablishWebsocketConnection);
+      }
     }
 
     execute(DriverCommand.CLOSE);

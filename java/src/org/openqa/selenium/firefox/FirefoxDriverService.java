@@ -47,7 +47,6 @@ public abstract class FirefoxDriverService extends DriverService {
   public static abstract class Builder<DS extends FirefoxDriverService, B extends FirefoxDriverService.Builder<?, ?>>
       extends DriverService.Builder<DS, B> {
 
-    protected abstract boolean isLegacy();
     protected abstract Builder withOptions(FirefoxOptions options);
   }
 }

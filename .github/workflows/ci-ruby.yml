@@ -1,0 +1,190 @@
+# Configuration for Ruby CI
+# To force the execution of this workflow, add [run ruby] to your commit message
+name: 'CI - Ruby'
+
+on:
+  workflow_dispatch:
+
+  schedule:
+    - cron: '35 9,21 * * *'
+
+  push:
+    branches:
+      - trunk
+  pull_request:
+    branches:
+      - trunk
+
+jobs:
+  check_workflow:
+    uses: ./.github/workflows/should-workflow-run.yml
+    with:
+      bazel-target-prefix: '//rb'
+
+  build:
+    if: ${{ needs.check_workflow.outputs.result == 'true' || github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' || contains(toJson(github.event.commits), '[run ruby]') == true }}
+    needs: check_workflow
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        target: [ 'selenium-devtools', 'selenium-webdriver' ]
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-java@v1
+        with:
+          java-version: 11
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: 2.6
+      - uses: actions/cache@v2
+        with:
+          path: |
+            ~/.cache/bazel-disk
+            ~/.cache/bazel-repo
+          key: ${{ runner.os }}-bazel-ruby-build-gem-${{ matrix.target }}-${{ hashFiles('**/BUILD.bazel') }}
+          restore-keys: |
+            ${{ runner.os }}-bazel-ruby-build-gem-${{ matrix.target }}-
+      - uses: ./.github/actions/setup-bazelisk
+      - uses: ./.github/actions/bazel
+        with:
+          command: build //rb:${{ matrix.target }}
+
+  chrome-test:
+    if: ${{ needs.check_workflow.outputs.result == 'true' || github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' || contains(toJson(github.event.commits), '[run ruby]') == true }}
+    needs: check_workflow
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        target: [ 'chrome-test', 'remote-chrome-test' ]
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-java@v1
+        with:
+          java-version: 11
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: 2.6
+      - uses: actions/cache@v2
+        with:
+          path: |
+            ~/.cache/bazel-disk
+            ~/.cache/bazel-repo
+          key: ${{ runner.os }}-bazel-ruby-${{ matrix.target }}-${{ hashFiles('**/BUILD.bazel') }}
+          restore-keys: |
+            ${{ runner.os }}-bazel-ruby-${{ matrix.target }}-
+      - uses: ./.github/actions/setup-bazelisk
+      - uses: ./.github/actions/setup-chrome
+      - run: Xvfb :99 &
+      - uses: ./.github/actions/bazel
+        with:
+          command: test --test_output=all //rb:${{ matrix.target }}
+        env:
+          DISPLAY: :99
+
+  firefox-test:
+    if: ${{ needs.check_workflow.outputs.result == 'true' || github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' || contains(toJson(github.event.commits), '[run ruby]') == true }}
+    needs: check_workflow
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        target: [ 'firefox-test', 'remote-firefox-test' ]
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-java@v1
+        with:
+          java-version: 11
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: 2.6
+      - uses: actions/cache@v2
+        with:
+          path: |
+            ~/.cache/bazel-disk
+            ~/.cache/bazel-repo
+          key: ${{ runner.os }}-bazel-ruby-${{ matrix.target }}-${{ hashFiles('**/BUILD.bazel') }}
+          restore-keys: |
+            ${{ runner.os }}-bazel-ruby-${{ matrix.target }}-
+      - uses: ./.github/actions/setup-bazelisk
+      - name: Setup Firefox
+        uses: browser-actions/setup-firefox@latest
+      - name: Setup GeckoDriver
+        uses: browser-actions/setup-geckodriver@latest
+      - run: Xvfb :99 &
+      - uses: ./.github/actions/bazel
+        with:
+          command: test --test_output=all //rb:${{ matrix.target }}
+        env:
+          DISPLAY: :99
+
+  docs:
+    if: ${{ needs.check_workflow.outputs.result == 'true' || github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' || contains(toJson(github.event.commits), '[run ruby]') == true }}
+    needs: check_workflow
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: 2.6
+      - uses: actions/cache@v2
+        with:
+          path: |
+            ~/.cache/bazel-disk
+            ~/.cache/bazel-repo
+          key: ${{ runner.os }}-bazel-ruby-docs-${{ hashFiles('**/BUILD.bazel') }}
+          restore-keys: |
+            ${{ runner.os }}-bazel-ruby-${{ matrix.target }}-
+      - uses: ./.github/actions/setup-bazelisk
+      - uses: ./.github/actions/bazel
+        with:
+          command: run //rb:docs
+
+  lint:
+    if: ${{ needs.check_workflow.outputs.result == 'true' || github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' || contains(toJson(github.event.commits), '[run ruby]') == true }}
+    needs: check_workflow
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: 2.6
+      - uses: actions/cache@v2
+        with:
+          path: |
+            ~/.cache/bazel-disk
+            ~/.cache/bazel-repo
+          key: ${{ runner.os }}-bazel-ruby-lint-${{ hashFiles('**/BUILD.bazel') }}
+          restore-keys: |
+            ${{ runner.os }}-bazel-ruby-lint-
+      - uses: ./.github/actions/setup-bazelisk
+      - uses: ./.github/actions/bazel
+        with:
+          command: run //rb:lint
+
+  unit-test:
+    if: ${{ needs.check_workflow.outputs.result == 'true' || github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' || contains(toJson(github.event.commits), '[run ruby]') == true }}
+    needs: check_workflow
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        ruby: [ '2.6', 'jruby-9.3.0.0' ]
+    steps:
+      - uses: actions/checkout@v2
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: ${{ matrix.ruby }}
+      - uses: actions/cache@v2
+        with:
+          path: |
+            ~/.cache/bazel-disk
+            ~/.cache/bazel-repo
+          key: ${{ runner.os }}-bazel-ruby-unit-test-${{ matrix.ruby }}-${{ hashFiles('**/BUILD.bazel') }}
+          restore-keys: |
+            ${{ runner.os }}-bazel-ruby-unit-test-${{ matrix.ruby }}-
+      - uses: ./.github/actions/setup-bazelisk
+      - uses: ./.github/actions/bazel
+        with:
+          command: test --test_output=all //rb:unit-test

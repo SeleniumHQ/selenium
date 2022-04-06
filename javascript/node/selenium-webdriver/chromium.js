@@ -92,6 +92,7 @@ const Command = {
   LAUNCH_APP: 'launchApp',
   GET_NETWORK_CONDITIONS: 'getNetworkConditions',
   SET_NETWORK_CONDITIONS: 'setNetworkConditions',
+  DELETE_NETWORK_CONDITIONS: 'deleteNetworkConditions',
   SEND_DEVTOOLS_COMMAND: 'sendDevToolsCommand',
   SEND_AND_GET_DEVTOOLS_COMMAND: 'sendAndGetDevToolsCommand',
   SET_PERMISSION: 'setPermission',
@@ -135,6 +136,11 @@ function configureExecutor(executor, vendorPrefix) {
   executor.defineCommand(
     Command.SET_NETWORK_CONDITIONS,
     'POST',
+    '/session/:sessionId/chromium/network_conditions'
+  )
+  executor.defineCommand(
+    Command.DELETE_NETWORK_CONDITIONS,
+    'DELETE',
     '/session/:sessionId/chromium/network_conditions'
   )
   executor.defineCommand(
@@ -655,14 +661,12 @@ class Driver extends webdriver.WebDriver {
    */
   static createSession(caps, opt_serviceExecutor) {
     let executor
-    let onQuit
     if (opt_serviceExecutor instanceof http.Executor) {
       executor = opt_serviceExecutor
       configureExecutor(executor, this.VENDOR_COMMAND_PREFIX)
     } else {
       let service = opt_serviceExecutor || this.getDefaultService()
       executor = createExecutor(service.start(), this.VENDOR_COMMAND_PREFIX)
-      onQuit = () => service.kill()
     }
 
     // W3C spec requires noProxy value to be an array of strings, but Chromium
@@ -675,7 +679,7 @@ class Driver extends webdriver.WebDriver {
       }
     }
 
-    return /** @type {!Driver} */ (super.createSession(executor, caps, onQuit))
+    return /** @type {!Driver} */ (super.createSession(executor, caps))
   }
 
   /**
@@ -704,6 +708,15 @@ class Driver extends webdriver.WebDriver {
    */
   getNetworkConditions() {
     return this.execute(new command.Command(Command.GET_NETWORK_CONDITIONS))
+  }
+
+  /**
+   * Schedules a command to delete Chromium network emulation settings.
+   * @return {!Promise} A promise that will be resolved when network
+   *     emulation settings have been deleted.
+   */
+  deleteNetworkConditions() {
+    return this.execute(new command.Command(Command.DELETE_NETWORK_CONDITIONS))
   }
 
   /**

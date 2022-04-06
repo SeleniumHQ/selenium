@@ -17,7 +17,12 @@
 
 package org.openqa.selenium.safari;
 
+import static java.util.concurrent.TimeUnit.MILLISECONDS;
+import static org.openqa.selenium.Platform.MAC;
+import static org.openqa.selenium.remote.Browser.SAFARI;
+
 import com.google.auto.service.AutoService;
+
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.WebDriverException;
@@ -31,10 +36,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
-import static java.util.concurrent.TimeUnit.MILLISECONDS;
-import static org.openqa.selenium.Platform.MAC;
-import static org.openqa.selenium.remote.Browser.SAFARI;
-
 public class SafariDriverService extends DriverService {
 
   /**
@@ -44,14 +45,6 @@ public class SafariDriverService extends DriverService {
   public static final String SAFARI_DRIVER_EXE_PROPERTY = "webdriver.safari.driver";
 
   private static final File SAFARI_DRIVER_EXECUTABLE = new File("/usr/bin/safaridriver");
-
-  /**
-   * @deprecated Directly use {@link SafariTechPreviewDriverService}
-   * Remove after deprecation policy is fulfilled
-   */
-  @Deprecated
-  private static final File TP_SAFARI_DRIVER_EXECUTABLE =
-    new File("/Applications/Safari Technology Preview.app/Contents/MacOS/safaridriver");
 
   public SafariDriverService(
     File executable,
@@ -71,11 +64,7 @@ public class SafariDriverService extends DriverService {
   }
 
   public static SafariDriverService createDefaultService() {
-    return createDefaultService(new SafariOptions());
-  }
-
-  static SafariDriverService createDefaultService(SafariOptions options) {
-    return new Builder().usingTechnologyPreview(options.getUseTechnologyPreview()).build();
+    return new Builder().build();
   }
 
   @Override
@@ -91,8 +80,6 @@ public class SafariDriverService extends DriverService {
   public static class Builder extends DriverService.Builder<
       SafariDriverService, SafariDriverService.Builder> {
 
-    private boolean useTechnologyPreview = false;
-
     @Override
     public int score(Capabilities capabilities) {
       int score = 0;
@@ -106,22 +93,11 @@ public class SafariDriverService extends DriverService {
       return score;
     }
 
-    /**
-     * @deprecated Directly use {@link SafariTechPreviewDriverService}
-     */
-    @Deprecated
-    public SafariDriverService.Builder usingTechnologyPreview(boolean useTechnologyPreview) {
-      this.useTechnologyPreview = useTechnologyPreview;
-      return this;
-    }
-
     @Override
     protected File findDefaultExecutable() {
       File exe;
       if (System.getProperty(SAFARI_DRIVER_EXE_PROPERTY) != null) {
         exe = new File(System.getProperty(SAFARI_DRIVER_EXE_PROPERTY));
-      } else if (useTechnologyPreview) {
-        exe = TP_SAFARI_DRIVER_EXECUTABLE;
       } else {
         exe = SAFARI_DRIVER_EXECUTABLE;
       }

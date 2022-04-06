@@ -93,6 +93,7 @@ class WebDriver(RemoteWebDriver):
         RemoteWebDriver.__init__(
             self,
             command_executor=executor,
+            options=options,
             desired_capabilities=desired_capabilities)
 
         self._is_remote = False

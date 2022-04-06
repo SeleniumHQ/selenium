@@ -17,16 +17,10 @@
 
 package org.openqa.selenium.remote;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-
 import com.google.common.collect.ImmutableMap;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
-import org.openqa.selenium.ElementNotSelectableException;
-import org.openqa.selenium.ElementNotVisibleException;
 import org.openqa.selenium.ImeActivationFailedException;
 import org.openqa.selenium.ImeNotAvailableException;
 import org.openqa.selenium.InvalidCookieDomainException;
@@ -46,7 +40,6 @@ import org.openqa.selenium.UnableToSetCookieException;
 import org.openqa.selenium.UnhandledAlertException;
 import org.openqa.selenium.UnsupportedCommandException;
 import org.openqa.selenium.WebDriverException;
-import org.openqa.selenium.interactions.InvalidCoordinatesException;
 import org.openqa.selenium.interactions.MoveTargetOutOfBoundsException;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.testing.UnitTests;
@@ -54,6 +47,9 @@ import org.openqa.selenium.testing.UnitTests;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 @Category(UnitTests.class)
 public class ErrorHandlerTest {
@@ -83,13 +79,9 @@ public class ErrorHandlerTest {
     assertThrowsCorrectExceptionType(
         ErrorCodes.STALE_ELEMENT_REFERENCE, StaleElementReferenceException.class);
     assertThrowsCorrectExceptionType(
-        ErrorCodes.ELEMENT_NOT_VISIBLE, ElementNotVisibleException.class);
-    assertThrowsCorrectExceptionType(
         ErrorCodes.INVALID_ELEMENT_STATE, InvalidElementStateException.class);
     assertThrowsCorrectExceptionType(
         ErrorCodes.XPATH_LOOKUP_ERROR, InvalidSelectorException.class);
-    assertThrowsCorrectExceptionType(ErrorCodes.INVALID_ELEMENT_COORDINATES,
-        InvalidCoordinatesException.class);
   }
 
   private void assertThrowsCorrectExceptionType(int status, Class<? extends RuntimeException> type) {
@@ -394,10 +386,8 @@ public class ErrorHandlerTest {
     exceptions.put(ErrorCodes.NO_SUCH_FRAME, NoSuchFrameException.class);
     exceptions.put(ErrorCodes.UNKNOWN_COMMAND, UnsupportedCommandException.class);
     exceptions.put(ErrorCodes.STALE_ELEMENT_REFERENCE, StaleElementReferenceException.class);
-    exceptions.put(ErrorCodes.ELEMENT_NOT_VISIBLE, ElementNotVisibleException.class);
     exceptions.put(ErrorCodes.INVALID_ELEMENT_STATE, InvalidElementStateException.class);
     exceptions.put(ErrorCodes.UNHANDLED_ERROR, WebDriverException.class);
-    exceptions.put(ErrorCodes.ELEMENT_NOT_SELECTABLE, ElementNotSelectableException.class);
     exceptions.put(ErrorCodes.JAVASCRIPT_ERROR, JavascriptException.class);
     exceptions.put(ErrorCodes.XPATH_LOOKUP_ERROR, InvalidSelectorException.class);
     exceptions.put(ErrorCodes.TIMEOUT, TimeoutException.class);
@@ -407,7 +397,6 @@ public class ErrorHandlerTest {
     exceptions.put(ErrorCodes.UNEXPECTED_ALERT_PRESENT, UnhandledAlertException.class);
     exceptions.put(ErrorCodes.NO_ALERT_PRESENT, NoAlertPresentException.class);
     exceptions.put(ErrorCodes.ASYNC_SCRIPT_TIMEOUT, ScriptTimeoutException.class);
-    exceptions.put(ErrorCodes.INVALID_ELEMENT_COORDINATES, InvalidCoordinatesException.class);
     exceptions.put(ErrorCodes.IME_NOT_AVAILABLE, ImeNotAvailableException.class);
     exceptions.put(ErrorCodes.IME_ENGINE_ACTIVATION_FAILED, ImeActivationFailedException.class);
     exceptions.put(ErrorCodes.INVALID_SELECTOR_ERROR, InvalidSelectorException.class);

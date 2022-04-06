@@ -20,6 +20,7 @@ package org.openqa.selenium.grid.distributor.local;
 import static com.google.common.collect.ImmutableSet.toImmutableSet;
 import static org.openqa.selenium.grid.data.Availability.DOWN;
 import static org.openqa.selenium.grid.data.Availability.DRAINING;
+import static org.openqa.selenium.grid.data.Availability.UP;
 import static org.openqa.selenium.internal.Debug.getDebugLogLevel;
 import static org.openqa.selenium.remote.RemoteTags.CAPABILITIES;
 import static org.openqa.selenium.remote.RemoteTags.CAPABILITIES_EVENT;
@@ -28,17 +29,23 @@ import static org.openqa.selenium.remote.RemoteTags.SESSION_ID_EVENT;
 import static org.openqa.selenium.remote.tracing.AttributeKey.SESSION_URI;
 import static org.openqa.selenium.remote.tracing.Tags.EXCEPTION;
 
+import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
+
+import dev.failsafe.Failsafe;
+import dev.failsafe.RetryPolicy;
 
 import org.openqa.selenium.Beta;
 import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.HealthCheckFailedException;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.RetrySessionRequestException;
 import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.WebDriverException;
-import org.openqa.selenium.concurrent.Regularly;
+import org.openqa.selenium.concurrent.GuardedRunnable;
 import org.openqa.selenium.events.EventBus;
 import org.openqa.selenium.grid.config.Config;
+import org.openqa.selenium.grid.data.Availability;
 import org.openqa.selenium.grid.data.CreateSessionRequest;
 import org.openqa.selenium.grid.data.CreateSessionResponse;
 import org.openqa.selenium.grid.data.DistributorStatus;
@@ -71,6 +78,7 @@ import org.openqa.selenium.grid.sessionmap.SessionMap;
 import org.openqa.selenium.grid.sessionmap.config.SessionMapOptions;
 import org.openqa.selenium.grid.sessionqueue.NewSessionQueue;
 import org.openqa.selenium.grid.sessionqueue.config.NewSessionQueueOptions;
+import org.openqa.selenium.internal.Debug;
 import org.openqa.selenium.internal.Either;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.SessionId;
@@ -85,6 +93,7 @@ import org.openqa.selenium.status.HasReadyState;
 
 import java.io.Closeable;
 import java.io.UncheckedIOException;
+import java.net.URI;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -96,6 +105,8 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
@@ -113,8 +124,6 @@ public class LocalDistributor extends Distributor implements Closeable {
   private final SessionMap sessions;
   private final SlotSelector slotSelector;
   private final Secret registrationSecret;
-  private final Regularly hostChecker = new Regularly("distributor host checker");
-  private final Regularly purgeDeadNodes = new Regularly("Purge deadNodes");
   private final Map<NodeId, Runnable> allChecks = new HashMap<>();
   private final Duration healthcheckInterval;
 
@@ -122,17 +131,43 @@ public class LocalDistributor extends Distributor implements Closeable {
   private final GridModel model;
   private final Map<NodeId, Node> nodes;
 
+  private final ScheduledExecutorService newSessionService =
+    Executors.newSingleThreadScheduledExecutor(
+      r -> {
+        Thread thread = new Thread(r);
+        thread.setDaemon(true);
+        thread.setName("Local Distributor - New Session Queue");
+        return thread;
+      });
+
+  private final ScheduledExecutorService purgeDeadNodesService =
+    Executors.newSingleThreadScheduledExecutor(
+      r -> {
+        Thread thread = new Thread(r);
+        thread.setDaemon(true);
+        thread.setName("Local Distributor - Purge Dead Nodes");
+        return thread;
+      });
+
+  private final ScheduledExecutorService nodeHealthCheckService =
+    Executors.newSingleThreadScheduledExecutor(
+      r -> {
+        Thread thread = new Thread(r);
+        thread.setDaemon(true);
+        thread.setName("Local Distributor - Node Health Check");
+        return thread;
+      });
+
   private final Executor sessionCreatorExecutor = Executors.newFixedThreadPool(
     Runtime.getRuntime().availableProcessors(),
     r -> {
       Thread thread = new Thread(r);
-      thread.setName("Local Distributor session creation");
+      thread.setName("Local Distributor - Session Creation");
       thread.setDaemon(true);
       return thread;
     }
   );
   private final NewSessionQueue sessionQueue;
-  private final Regularly createNewSession;
 
   private final boolean rejectUnsupportedCaps;
 
@@ -172,21 +207,27 @@ public class LocalDistributor extends Distributor implements Closeable {
       }
     }));
 
-    createNewSession = new Regularly(
-      Executors.newSingleThreadScheduledExecutor(
-        r -> {
-          Thread thread = new Thread(r);
-          thread.setName("Local Distributor new session queue");
-          thread.setDaemon(true);
-          return thread;
-        }));
-
     NewSessionRunnable newSessionRunnable = new NewSessionRunnable();
     bus.addListener(NodeDrainComplete.listener(this::remove));
 
-    purgeDeadNodes.submit(model::purgeDeadNodes, Duration.ofSeconds(30), Duration.ofSeconds(30));
-    createNewSession
-      .submit(newSessionRunnable, sessionRequestRetryInterval, sessionRequestRetryInterval);
+    purgeDeadNodesService.scheduleAtFixedRate(
+      GuardedRunnable.guard(model::purgeDeadNodes), 30, 30, TimeUnit.SECONDS);
+
+    nodeHealthCheckService.scheduleAtFixedRate(
+      runNodeHealthChecks(),
+      this.healthcheckInterval.toMillis(),
+      this.healthcheckInterval.toMillis(),
+      TimeUnit.MILLISECONDS);
+
+    // if sessionRequestRetryInterval is 0, we will schedule session creation every 10 millis
+    long period = sessionRequestRetryInterval.isZero() ?
+                  10 : sessionRequestRetryInterval.toMillis();
+    newSessionService.scheduleAtFixedRate(
+      GuardedRunnable.guard(newSessionRunnable),
+      sessionRequestRetryInterval.toMillis(),
+      period,
+      TimeUnit.MILLISECONDS
+    );
   }
 
   public static Distributor create(Config config) {
@@ -259,17 +300,24 @@ public class LocalDistributor extends Distributor implements Closeable {
 
     // An exception occurs if Node heartbeat has started but the server is not ready.
     // Unhandled exception blocks the event-bus thread from processing any event henceforth.
+    NodeStatus initialNodeStatus;
     try {
-      model.add(node.getStatus());
+      initialNodeStatus = node.getStatus();
+      model.add(initialNodeStatus);
       nodes.put(node.getId(), node);
-    } catch (Exception e){
+    } catch (Exception e) {
+      LOG.log(
+        Debug.getDebugLogLevel(),
+        String.format("Exception while adding Node %s", node.getUri()),
+        e);
       return this;
     }
 
     // Extract the health check
-    Runnable runnableHealthCheck = asRunnableHealthCheck(node);
-    allChecks.put(node.getId(), runnableHealthCheck);
-    hostChecker.submit(runnableHealthCheck, healthcheckInterval, Duration.ofSeconds(30));
+    Runnable healthCheck = asRunnableHealthCheck(node);
+    allChecks.put(node.getId(), healthCheck);
+
+    updateNodeStatus(initialNodeStatus, healthCheck);
 
     LOG.info(String.format(
       "Added node %s at %s. Health check every %ss",
@@ -282,11 +330,44 @@ public class LocalDistributor extends Distributor implements Closeable {
     return this;
   }
 
+  private void updateNodeStatus(NodeStatus status, Runnable healthCheck) {
+    // Setting the Node as available if the initial call to status was successful.
+    // Otherwise, retry to have it available as soon as possible.
+    if (status.getAvailability() == UP) {
+      updateNodeAvailability(status.getExternalUri(), status.getNodeId(), status.getAvailability());
+    } else {
+      // Running the health check right after the Node registers itself. We retry the
+      // execution because the Node might on a complex network topology. For example,
+      // Kubernetes pods with IPs that take a while before they are reachable.
+      RetryPolicy<Object> initialHealthCheckPolicy =  RetryPolicy.builder()
+        .withMaxAttempts(-1)
+        .withMaxDuration(Duration.ofSeconds(90))
+        .withDelay(Duration.ofSeconds(15))
+        .abortIf(result -> true)
+        .build();
+
+      LOG.log(getDebugLogLevel(), "Running health check for Node " + status.getExternalUri());
+      Executors.newSingleThreadExecutor().submit(
+        () -> Failsafe.with(initialHealthCheckPolicy).run(healthCheck::run));
+    }
+  }
+
+  private Runnable runNodeHealthChecks() {
+    return () -> {
+      ImmutableMap<NodeId, Runnable> nodeHealthChecks = ImmutableMap.copyOf(allChecks);
+      for (Runnable nodeHealthCheck : nodeHealthChecks.values()) {
+        GuardedRunnable.guard(nodeHealthCheck).run();
+      }
+    };
+  }
+
   private Runnable asRunnableHealthCheck(Node node) {
     HealthCheck healthCheck = node.getHealthCheck();
     NodeId id = node.getId();
     return () -> {
-      LOG.log(getDebugLogLevel(), "Running health check for " + node.getId());
+      boolean checkFailed = false;
+      Exception failedCheckException = null;
+      LOG.log(getDebugLogLevel(), "Running health check for " + node.getUri());
 
       HealthCheck.Result result;
       try {
@@ -294,20 +375,29 @@ public class LocalDistributor extends Distributor implements Closeable {
       } catch (Exception e) {
         LOG.log(Level.WARNING, "Unable to process node " + id, e);
         result = new HealthCheck.Result(DOWN, "Unable to run healthcheck. Assuming down");
+        checkFailed = true;
+        failedCheckException = e;
       }
 
-      Lock writeLock = lock.writeLock();
-      writeLock.lock();
-      try {
-        LOG.log(
-          getDebugLogLevel(),
-          String.format("Health check result for %s was %s", node.getId(), result.getAvailability()));
-        model.setAvailability(id, result.getAvailability());
-        model.updateHealthCheckCount(id, result.getAvailability());
-      } finally {
-        writeLock.unlock();
+      updateNodeAvailability(node.getUri(), id, result.getAvailability());
+      if (checkFailed) {
+        throw new HealthCheckFailedException("Node " + id, failedCheckException);
       }
     };
+  }
+
+  private void updateNodeAvailability(URI nodeUri, NodeId id, Availability availability) {
+    Lock writeLock = lock.writeLock();
+    writeLock.lock();
+    try {
+      LOG.log(
+        getDebugLogLevel(),
+        String.format("Health check result for %s was %s", nodeUri, availability));
+      model.setAvailability(id, availability);
+      model.updateHealthCheckCount(id, availability);
+    } finally {
+      writeLock.unlock();
+    }
   }
 
   @Override
@@ -336,10 +426,7 @@ public class LocalDistributor extends Distributor implements Closeable {
     try {
       nodes.remove(nodeId);
       model.remove(nodeId);
-      Runnable runnable = allChecks.remove(nodeId);
-      if (runnable != null) {
-        hostChecker.remove(runnable);
-      }
+      allChecks.remove(nodeId);
     } finally {
       writeLock.unlock();
     }
@@ -414,7 +501,7 @@ public class LocalDistributor extends Distributor implements Closeable {
       boolean retry = false;
       SessionNotCreatedException lastFailure = new SessionNotCreatedException("Unable to create new session");
       for (Capabilities caps : request.getDesiredCapabilities()) {
-        if (!isSupported(caps)) {
+        if (isNotSupported(caps)) {
           continue;
         }
 
@@ -426,7 +513,10 @@ public class LocalDistributor extends Distributor implements Closeable {
         // in this next block of code.
         SlotId selectedSlot = reserveSlot(request.getRequestId(), caps);
         if (selectedSlot == null) {
-          LOG.info(String.format("Unable to find slot for request %s. May retry: %s ", request.getRequestId(), caps));
+          LOG.info(
+            String.format("Unable to find a free slot for request %s. %s ",
+                          request.getRequestId(),
+                          caps));
           retry = true;
           continue;
         }
@@ -551,8 +641,8 @@ public class LocalDistributor extends Distributor implements Closeable {
     }
   }
 
-  private boolean isSupported(Capabilities caps) {
-    return getAvailableNodes().stream().anyMatch(node -> node.hasCapability(caps));
+  private boolean isNotSupported(Capabilities caps) {
+    return getAvailableNodes().stream().noneMatch(node -> node.hasCapability(caps));
   }
 
   private boolean reserve(SlotId id) {
@@ -576,51 +666,53 @@ public class LocalDistributor extends Distributor implements Closeable {
   @Override
   public void close() {
     LOG.info("Shutting down Distributor executor service");
-    purgeDeadNodes.shutdown();
-    hostChecker.shutdown();
-    createNewSession.shutdown();
+    purgeDeadNodesService.shutdown();
+    nodeHealthCheckService.shutdown();
+    newSessionService.shutdown();
   }
 
   private class NewSessionRunnable implements Runnable {
 
     @Override
     public void run() {
-      List<SessionRequestCapability> queueContents = sessionQueue.getQueueContents();
-      if (rejectUnsupportedCaps) {
-        checkMatchingSlot(queueContents);
-      }
-      int initialSize = queueContents.size();
-      boolean retry = initialSize != 0;
-
-      while (retry) {
+      boolean loop = true;
+      while (loop) {
         // We deliberately run this outside of a lock: if we're unsuccessful
         // starting the session, we just put the request back on the queue.
         // This does mean, however, that under high contention, we might end
         // up starving a session request.
         Set<Capabilities> stereotypes =
-            getAvailableNodes().stream()
-                .filter(NodeStatus::hasCapacity)
-                .map(
-                    node ->
-                        node.getSlots().stream()
-                            .map(Slot::getStereotype)
-                            .collect(Collectors.toSet()))
-                .flatMap(Collection::stream)
-                .collect(Collectors.toSet());
+          getAvailableNodes()
+            .stream()
+            .filter(NodeStatus::hasCapacity)
+            .map(
+              node ->
+                node
+                  .getSlots()
+                  .stream()
+                  .map(Slot::getStereotype)
+                  .collect(Collectors.toSet()))
+            .flatMap(Collection::stream)
+            .collect(Collectors.toSet());
 
-        Optional<SessionRequest> maybeRequest = sessionQueue.getNextAvailable(stereotypes);
-        maybeRequest.ifPresent(req -> sessionCreatorExecutor.execute(() -> handleNewSessionRequest(req)));
-
-        int currentSize = sessionQueue.getQueueContents().size();
-        retry = currentSize != 0 && currentSize != initialSize;
-        initialSize = currentSize;
+        if (!stereotypes.isEmpty()) {
+          Optional<SessionRequest> maybeRequest = sessionQueue.getNextAvailable(stereotypes);
+          maybeRequest.ifPresent(
+            req -> sessionCreatorExecutor.execute(() -> handleNewSessionRequest(req)));
+          loop = maybeRequest.isPresent();
+        } else {
+          loop = false;
+        }
+      }
+      if (rejectUnsupportedCaps) {
+        checkMatchingSlot(sessionQueue.getQueueContents());
       }
     }
 
     private void checkMatchingSlot(List<SessionRequestCapability> sessionRequests) {
       for(SessionRequestCapability request : sessionRequests) {
         long unmatchableCount = request.getDesiredCapabilities().stream()
-          .filter(caps -> !isSupported(caps))
+          .filter(LocalDistributor.this::isNotSupported)
           .count();
 
         if (unmatchableCount == request.getDesiredCapabilities().size()) {
@@ -649,7 +741,8 @@ public class LocalDistributor extends Distributor implements Closeable {
 
         if (response.isLeft() && response.left() instanceof RetrySessionRequestException) {
           try(Span childSpan = span.createSpan("distributor.retry")) {
-            LOG.info("Retrying");
+            LOG.log(Debug.getDebugLogLevel(),
+                    String.format("Retrying %s", sessionRequest.getDesiredCapabilities()));
             boolean retried = sessionQueue.retryAddToQueue(sessionRequest);
 
             attributeMap.put("request.retry_add", EventAttribute.setValue(retried));

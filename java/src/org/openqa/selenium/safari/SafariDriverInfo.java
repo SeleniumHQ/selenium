@@ -82,6 +82,6 @@ public class SafariDriverInfo implements WebDriverInfo {
       return Optional.empty();
     }
 
-    return Optional.of(new SafariDriver(capabilities));
+    return Optional.of(new SafariDriver(new SafariOptions().merge(capabilities)));
   }
 }

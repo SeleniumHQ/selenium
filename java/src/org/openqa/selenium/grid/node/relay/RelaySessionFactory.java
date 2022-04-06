@@ -17,6 +17,46 @@
 
 package org.openqa.selenium.grid.node.relay;
 
+import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.ImmutableCapabilities;
+import org.openqa.selenium.SessionNotCreatedException;
+import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.grid.data.CreateSessionRequest;
+import org.openqa.selenium.grid.node.ActiveSession;
+import org.openqa.selenium.grid.node.ProtocolConvertingSession;
+import org.openqa.selenium.grid.node.SessionFactory;
+import org.openqa.selenium.internal.Debug;
+import org.openqa.selenium.internal.Either;
+import org.openqa.selenium.internal.Require;
+import org.openqa.selenium.remote.Command;
+import org.openqa.selenium.remote.Dialect;
+import org.openqa.selenium.remote.DriverCommand;
+import org.openqa.selenium.remote.ProtocolHandshake;
+import org.openqa.selenium.remote.Response;
+import org.openqa.selenium.remote.SessionId;
+import org.openqa.selenium.remote.http.ClientConfig;
+import org.openqa.selenium.remote.http.Contents;
+import org.openqa.selenium.remote.http.HttpClient;
+import org.openqa.selenium.remote.http.HttpMethod;
+import org.openqa.selenium.remote.http.HttpRequest;
+import org.openqa.selenium.remote.http.HttpResponse;
+import org.openqa.selenium.remote.tracing.EventAttributeValue;
+import org.openqa.selenium.remote.tracing.Span;
+import org.openqa.selenium.remote.tracing.Status;
+import org.openqa.selenium.remote.tracing.Tracer;
+
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URL;
+import java.time.Duration;
+import java.time.Instant;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import static org.openqa.selenium.remote.RemoteTags.CAPABILITIES;
 import static org.openqa.selenium.remote.RemoteTags.CAPABILITIES_EVENT;
 import static org.openqa.selenium.remote.tracing.AttributeKey.DOWNSTREAM_DIALECT;
@@ -29,57 +69,29 @@ import static org.openqa.selenium.remote.tracing.AttributeKey.UPSTREAM_DIALECT;
 import static org.openqa.selenium.remote.tracing.EventAttribute.setValue;
 import static org.openqa.selenium.remote.tracing.Tags.EXCEPTION;
 
-import com.google.common.annotations.VisibleForTesting;
-
-import org.openqa.selenium.Capabilities;
-import org.openqa.selenium.ImmutableCapabilities;
-import org.openqa.selenium.SessionNotCreatedException;
-import org.openqa.selenium.WebDriverException;
-import org.openqa.selenium.grid.data.CreateSessionRequest;
-import org.openqa.selenium.grid.node.ActiveSession;
-import org.openqa.selenium.grid.node.ProtocolConvertingSession;
-import org.openqa.selenium.grid.node.SessionFactory;
-import org.openqa.selenium.internal.Either;
-import org.openqa.selenium.internal.Require;
-import org.openqa.selenium.remote.Command;
-import org.openqa.selenium.remote.Dialect;
-import org.openqa.selenium.remote.DriverCommand;
-import org.openqa.selenium.remote.ProtocolHandshake;
-import org.openqa.selenium.remote.Response;
-import org.openqa.selenium.remote.SessionId;
-import org.openqa.selenium.remote.http.HttpClient;
-import org.openqa.selenium.remote.tracing.EventAttributeValue;
-import org.openqa.selenium.remote.tracing.Span;
-import org.openqa.selenium.remote.tracing.Status;
-import org.openqa.selenium.remote.tracing.Tracer;
-
-import java.net.MalformedURLException;
-import java.net.URI;
-import java.net.URL;
-import java.time.Instant;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
-import java.util.logging.Logger;
-
 public class RelaySessionFactory implements SessionFactory {
 
   private static final Logger LOG = Logger.getLogger(RelaySessionFactory.class.getName());
 
   private final Tracer tracer;
   private final HttpClient.Factory clientFactory;
+  private final Duration sessionTimeout;
   private final URL serviceUrl;
+  private final URL serviceStatusUrl;
   private final Capabilities stereotype;
 
   public RelaySessionFactory(
     Tracer tracer,
     HttpClient.Factory clientFactory,
+    Duration sessionTimeout,
     URI serviceUri,
+    URI serviceStatusUri,
     Capabilities stereotype) {
     this.tracer = Require.nonNull("Tracer", tracer);
     this.clientFactory = Require.nonNull("HTTP client", clientFactory);
-    this.serviceUrl = createServiceUrl(Require.nonNull("Service URL", serviceUri));
+    this.sessionTimeout = Require.nonNull("Session timeout", sessionTimeout);
+    this.serviceUrl = createUrlFromUri(Require.nonNull("Service URL", serviceUri));
+    this.serviceStatusUrl = createUrlFromUri(serviceStatusUri);
     this.stereotype = ImmutableCapabilities
       .copyOf(Require.nonNull("Stereotype", stereotype));
   }
@@ -134,7 +146,11 @@ public class RelaySessionFactory implements SessionFactory {
       attributeMap.put(LOGGER_CLASS.getKey(), setValue(this.getClass().getName()));
       attributeMap.put(DRIVER_URL.getKey(), setValue(serviceUrl.toString()));
 
-      HttpClient client = clientFactory.createClient(serviceUrl);
+      ClientConfig clientConfig = ClientConfig
+        .defaultConfig()
+        .readTimeout(sessionTimeout)
+        .baseUrl(serviceUrl);
+      HttpClient client = clientFactory.createClient(clientConfig);
 
       Command command = new Command(null, DriverCommand.NEW_SESSION(capabilities));
       try {
@@ -186,14 +202,29 @@ public class RelaySessionFactory implements SessionFactory {
     }
   }
 
-  @VisibleForTesting
-  URL getServiceUrl() {
-    return serviceUrl;
+  public boolean isServiceUp() {
+    if (serviceStatusUrl == null) {
+      // If no status endpoint was configured, we assume the server is up.
+      return true;
+    }
+    try {
+      HttpClient client = clientFactory.createClient(serviceStatusUrl);
+      HttpResponse response = client
+        .execute(new HttpRequest(HttpMethod.GET, serviceStatusUrl.toString()));
+      LOG.log(Debug.getDebugLogLevel(), Contents.string(response));
+      return response.getStatus() == 200;
+    } catch (Exception e) {
+      LOG.log(Level.WARNING, "Error checking service status " + serviceStatusUrl, e);
+    }
+    return false;
   }
 
-  private URL createServiceUrl(URI serviceUri) {
+  private URL createUrlFromUri(URI uri) {
+    if (uri == null) {
+      return null;
+    }
     try {
-      return serviceUri.toURL();
+      return uri.toURL();
     } catch (MalformedURLException e) {
       throw new RuntimeException(e.getMessage(), e);
     }

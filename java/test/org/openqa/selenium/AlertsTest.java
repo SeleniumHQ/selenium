@@ -28,7 +28,6 @@ import static org.openqa.selenium.testing.drivers.Browser.EDGE;
 import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
 import static org.openqa.selenium.testing.drivers.Browser.HTMLUNIT;
 import static org.openqa.selenium.testing.drivers.Browser.IE;
-import static org.openqa.selenium.testing.drivers.Browser.LEGACY_FIREFOX_XPI;
 import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
 
 import org.junit.After;
@@ -397,7 +396,6 @@ public class AlertsTest extends JUnit4TestBase {
   @Test
   @Ignore(value = CHROME, reason = "Hangs")
   @Ignore(value = EDGE, reason = "Hangs")
-  @Ignore(LEGACY_FIREFOX_XPI)
   @Ignore(value = IE, reason = "Fails in versions 6 and 7")
   @Ignore(SAFARI)
   @NoDriverAfterTest
@@ -418,7 +416,6 @@ public class AlertsTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(value = LEGACY_FIREFOX_XPI, reason = "Non W3C conformant")
   @Ignore(value = HTMLUNIT, reason = "Non W3C conformant")
   @Ignore(value = CHROME, reason = "Non W3C conformant")
   @Ignore(value = EDGE, reason = "Non W3C conformant")

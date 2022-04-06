@@ -41,12 +41,12 @@ java_selenium_test_suite(
         "firefox",
         "edge",
     ],
-    tags = [
-        "selenium-remote",
-    ],
     javacopts = [
         "--release",
         "11",
+    ],
+    tags = [
+        "selenium-remote",
     ],
     deps = [
         ":support",

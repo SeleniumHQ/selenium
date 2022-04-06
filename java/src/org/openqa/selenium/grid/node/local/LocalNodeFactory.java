@@ -39,6 +39,7 @@ import org.openqa.selenium.remote.service.DriverService;
 import org.openqa.selenium.remote.tracing.Tracer;
 
 import java.io.File;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
@@ -58,14 +59,15 @@ public class LocalNodeFactory {
     Tracer tracer = loggingOptions.getTracer();
     HttpClient.Factory clientFactory = networkOptions.getHttpClientFactory(tracer);
 
+    Duration sessionTimeout = nodeOptions.getSessionTimeout();
     LocalNode.Builder builder = LocalNode.builder(
-      tracer,
-      eventOptions.getEventBus(),
-      serverOptions.getExternalUri(),
-      nodeOptions.getPublicGridUri().orElseGet(serverOptions::getExternalUri),
-      secretOptions.getRegistrationSecret())
+        tracer,
+        eventOptions.getEventBus(),
+        serverOptions.getExternalUri(),
+        nodeOptions.getPublicGridUri().orElseGet(serverOptions::getExternalUri),
+        secretOptions.getRegistrationSecret())
       .maximumConcurrentSessions(nodeOptions.getMaxSessions())
-      .sessionTimeout(nodeOptions.getSessionTimeout())
+      .sessionTimeout(sessionTimeout)
       .heartbeatPeriod(nodeOptions.getHeartbeatPeriod());
 
 
@@ -73,16 +75,17 @@ public class LocalNodeFactory {
     ServiceLoader.load(DriverService.Builder.class).forEach(builders::add);
 
     nodeOptions
-      .getSessionFactories(caps -> createSessionFactory(tracer, clientFactory, builders, caps))
+      .getSessionFactories(
+        caps -> createSessionFactory(tracer, clientFactory, sessionTimeout, builders, caps))
       .forEach((caps, factories) -> factories.forEach(factory -> builder.add(caps, factory)));
 
     if (config.getAll("docker", "configs").isPresent()) {
-      new DockerOptions(config).getDockerSessionFactories(tracer, clientFactory)
+      new DockerOptions(config).getDockerSessionFactories(tracer, clientFactory, sessionTimeout)
         .forEach((caps, factories) -> factories.forEach(factory -> builder.add(caps, factory)));
     }
 
     if (config.getAll("relay", "configs").isPresent()) {
-      new RelayOptions(config).getSessionFactories(tracer, clientFactory)
+      new RelayOptions(config).getSessionFactories(tracer, clientFactory, sessionTimeout)
         .forEach((caps, factories) -> factories.forEach(factory -> builder.add(caps, factory)));
     }
 
@@ -92,6 +95,7 @@ public class LocalNodeFactory {
   private static Collection<SessionFactory> createSessionFactory(
     Tracer tracer,
     HttpClient.Factory clientFactory,
+    Duration sessionTimeout,
     List<DriverService.Builder<?, ?>> builders,
     Capabilities stereotype) {
     ImmutableList.Builder<SessionFactory> toReturn = ImmutableList.builder();
@@ -122,6 +126,7 @@ public class LocalNodeFactory {
         toReturn.add(new DriverServiceSessionFactory(
           tracer,
           clientFactory,
+          sessionTimeout,
           stereotype,
           capabilities -> slotMatcher.matches(stereotype, capabilities),
           driverServiceBuilder));

@@ -202,7 +202,10 @@ module Selenium
 
         def create_firefox_nightly_driver(opt = {})
           ENV['FIREFOX_BINARY'] = ENV['FIREFOX_NIGHTLY_BINARY']
-          opt[:capabilities] = WebDriver::Firefox::Options.new(debugger_address: true)
+          opt[:capabilities] = [
+            WebDriver::Firefox::Options.new(debugger_address: true),
+            WebDriver::Remote::Capabilities.firefox(web_socket_url: true)
+          ]
           create_firefox_driver(opt)
         end
 

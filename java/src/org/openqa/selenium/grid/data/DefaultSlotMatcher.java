@@ -56,6 +56,10 @@ public class DefaultSlotMatcher implements SlotMatcher, Serializable {
   @Override
   public boolean matches(Capabilities stereotype, Capabilities capabilities) {
 
+    if (capabilities.asMap().isEmpty()) {
+      return false;
+    }
+
     if (!initialMatch(stereotype, capabilities)) {
       return false;
     }
@@ -87,7 +91,7 @@ public class DefaultSlotMatcher implements SlotMatcher, Serializable {
     return stereotype.getCapabilityNames().stream()
       // Matching of extension capabilities is implementation independent. Skip them
       .filter(name -> !name.contains(":"))
-      // Platform matching is special, we do later
+      // Platform matching is special, we do it later
       .filter(name -> !"platform".equalsIgnoreCase(name) && !"platformName".equalsIgnoreCase(name))
       .map(name -> {
         if (capabilities.getCapability(name) instanceof String) {

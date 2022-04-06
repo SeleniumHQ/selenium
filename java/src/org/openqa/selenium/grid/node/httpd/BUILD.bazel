@@ -23,6 +23,6 @@ java_library(
         "//java/src/org/openqa/selenium/netty/server",
         "//java/src/org/openqa/selenium/remote",
         artifact("com.google.guava:guava"),
-        artifact("net.jodah:failsafe"),
+        artifact("dev.failsafe:failsafe"),
     ],
 )

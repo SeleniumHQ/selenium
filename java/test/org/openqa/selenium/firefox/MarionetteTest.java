@@ -25,24 +25,21 @@ import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.openqa.selenium.remote.CapabilityType.ACCEPT_INSECURE_CERTS;
 import static org.openqa.selenium.remote.CapabilityType.PAGE_LOAD_STRATEGY;
-import static org.openqa.selenium.testing.drivers.Browser.LEGACY_FIREFOX_XPI;
 
 import org.junit.After;
 import org.junit.Test;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.PageLoadStrategy;
-import org.openqa.selenium.remote.CapabilityType;
-import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.build.InProject;
+import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.testing.JUnit4TestBase;
 
 import java.nio.file.Path;
 
-@Ignore(LEGACY_FIREFOX_XPI)
 public class MarionetteTest extends JUnit4TestBase {
 
-  private static final String MOOLTIPASS_PATH = "third_party/firebug/mooltipass-1.1.87.xpi";
+  private static final String EXT_PATH = "common/extensions/webextensions-selenium-example.xpi";
 
   private FirefoxDriver localDriver;
 
@@ -236,8 +233,9 @@ public class MarionetteTest extends JUnit4TestBase {
   public void canInstallAndUninstallExtensionsOnTheFly() {
     assumeTrue(driver instanceof FirefoxDriver);
     FirefoxDriver localDriver = (FirefoxDriver) driver;
-    Path extension = InProject.locate(MOOLTIPASS_PATH);
+    Path extension = InProject.locate(EXT_PATH);
     String extId = localDriver.installExtension(extension);
+    assertThat(extId).isEqualTo("webextensions-selenium-example@example.com");
     localDriver.uninstallExtension(extId);
   }
 

@@ -17,6 +17,11 @@
 
 package org.openqa.selenium.firefox;
 
+import static java.util.stream.Collectors.toMap;
+import static org.openqa.selenium.firefox.FirefoxDriver.Capability.BINARY;
+import static org.openqa.selenium.firefox.FirefoxDriver.Capability.PROFILE;
+import static org.openqa.selenium.remote.Browser.FIREFOX;
+
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.internal.Require;
@@ -27,13 +32,17 @@ import java.io.File;
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.nio.file.Path;
-import java.util.*;
-
-import static java.util.stream.Collectors.toMap;
-import static org.openqa.selenium.firefox.FirefoxDriver.Capability.BINARY;
-import static org.openqa.selenium.firefox.FirefoxDriver.Capability.MARIONETTE;
-import static org.openqa.selenium.firefox.FirefoxDriver.Capability.PROFILE;
-import static org.openqa.selenium.remote.Browser.FIREFOX;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
+import java.util.TreeMap;
+import java.util.TreeSet;
 
 /**
  * Manage firefox specific settings in a way that geckodriver can understand.
@@ -51,7 +60,6 @@ public class FirefoxOptions extends AbstractDriverOptions<FirefoxOptions> {
   public static final String FIREFOX_OPTIONS = "moz:firefoxOptions";
 
   private Map<String, Object> firefoxOptions = Collections.unmodifiableMap(new TreeMap<>());
-  private boolean legacy;
 
   public FirefoxOptions() {
     setCapability(CapabilityType.BROWSER_NAME, FIREFOX.browserName());
@@ -89,10 +97,6 @@ public class FirefoxOptions extends AbstractDriverOptions<FirefoxOptions> {
 
         this.firefoxOptions = Collections.unmodifiableMap(options);
       }
-
-      if (source.getCapability(MARIONETTE) == Boolean.FALSE) {
-        this.legacy = true;
-      }
     }
   }
 
@@ -107,7 +111,6 @@ public class FirefoxOptions extends AbstractDriverOptions<FirefoxOptions> {
     }
 
     this.firefoxOptions = Collections.unmodifiableMap(newOptions);
-    this.legacy = that.legacy;
   }
 
   /**
@@ -140,29 +143,15 @@ public class FirefoxOptions extends AbstractDriverOptions<FirefoxOptions> {
       setProfile(profile);
     }
 
-    String forceMarionette = System.getProperty(FirefoxDriver.SystemProperty.DRIVER_USE_MARIONETTE);
-    if (forceMarionette != null && !Boolean.getBoolean(FirefoxDriver.SystemProperty.DRIVER_USE_MARIONETTE)) {
-      setLegacy(true);
-    }
-
     return this;
   }
 
   /**
-   * @deprecated This method will be deleted and will not be replaced.
+   * Constructs a {@link FirefoxBinary} and returns that to be used, and because of this is only
+   * useful when actually starting firefox.
    */
-  @Deprecated
-  public FirefoxOptions setLegacy(boolean legacy) {
-    setCapability(MARIONETTE, !legacy);
-    return this;
-  }
-
-  /**
-   * @deprecated This method will be deleted and will not be replaced.
-   */
-  @Deprecated
-  public boolean isLegacy() {
-    return legacy;
+  public FirefoxBinary getBinary() {
+    return getBinaryOrNull().orElseGet(FirefoxBinary::new);
   }
 
   public FirefoxOptions setBinary(FirefoxBinary binary) {
@@ -179,14 +168,6 @@ public class FirefoxOptions extends AbstractDriverOptions<FirefoxOptions> {
   public FirefoxOptions setBinary(String path) {
     Require.nonNull("Binary", path);
     return setFirefoxOption(Keys.BINARY, path);
-  }
-
-  /**
-   * Constructs a {@link FirefoxBinary} and returns that to be used, and because of this is only
-   * useful when actually starting firefox.
-   */
-  public FirefoxBinary getBinary() {
-    return getBinaryOrNull().orElseGet(FirefoxBinary::new);
   }
 
   public Optional<FirefoxBinary> getBinaryOrNull() {
@@ -207,16 +188,6 @@ public class FirefoxOptions extends AbstractDriverOptions<FirefoxOptions> {
     return Optional.of(toReturn);
   }
 
-  public FirefoxOptions setProfile(FirefoxProfile profile) {
-    Require.nonNull("Profile", profile);
-
-    try {
-      return setFirefoxOption(Keys.PROFILE, profile.toJson());
-    } catch (IOException e) {
-      throw new UncheckedIOException(e);
-    }
-  }
-
   public FirefoxProfile getProfile() {
     Object rawProfile = firefoxOptions.get(Keys.PROFILE.key());
     if (rawProfile == null) {
@@ -229,6 +200,16 @@ public class FirefoxOptions extends AbstractDriverOptions<FirefoxOptions> {
 
     try {
       return FirefoxProfile.fromJson((String) rawProfile);
+    } catch (IOException e) {
+      throw new UncheckedIOException(e);
+    }
+  }
+
+  public FirefoxOptions setProfile(FirefoxProfile profile) {
+    Require.nonNull("Profile", profile);
+
+    try {
+      return setFirefoxOption(Keys.PROFILE, profile.toJson());
     } catch (IOException e) {
       throw new UncheckedIOException(e);
     }
@@ -332,12 +313,6 @@ public class FirefoxOptions extends AbstractDriverOptions<FirefoxOptions> {
         }
         break;
 
-      case MARIONETTE:
-        if (value instanceof Boolean) {
-          legacy = !(Boolean) value;
-        }
-        break;
-
       case PROFILE:
         if (value instanceof FirefoxProfile) {
           setProfile((FirefoxProfile) value);
@@ -378,9 +353,6 @@ public class FirefoxOptions extends AbstractDriverOptions<FirefoxOptions> {
     Set<String> names = new TreeSet<>();
 
     names.add(FIREFOX_OPTIONS);
-    if (legacy) {
-      names.add(MARIONETTE);
-    }
 
     return Collections.unmodifiableSet(names);
   }
@@ -389,16 +361,10 @@ public class FirefoxOptions extends AbstractDriverOptions<FirefoxOptions> {
   protected Object getExtraCapability(String capabilityName) {
     Require.nonNull("Capability name", capabilityName);
 
-    switch (capabilityName) {
-      case FIREFOX_OPTIONS:
-        return Collections.unmodifiableMap(firefoxOptions);
-
-      case MARIONETTE:
-        return !legacy;
-
-      default:
-        return null;
+    if (FIREFOX_OPTIONS.equals(capabilityName)) {
+      return Collections.unmodifiableMap(firefoxOptions);
     }
+    return null;
   }
 
   @Override

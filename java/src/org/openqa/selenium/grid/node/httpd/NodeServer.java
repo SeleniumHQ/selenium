@@ -17,20 +17,12 @@
 
 package org.openqa.selenium.grid.node.httpd;
 
-import static java.net.HttpURLConnection.HTTP_INTERNAL_ERROR;
-import static java.net.HttpURLConnection.HTTP_NO_CONTENT;
-import static org.openqa.selenium.grid.config.StandardGridRoles.EVENT_BUS_ROLE;
-import static org.openqa.selenium.grid.config.StandardGridRoles.HTTPD_ROLE;
-import static org.openqa.selenium.grid.config.StandardGridRoles.NODE_ROLE;
-import static org.openqa.selenium.grid.data.Availability.DOWN;
-import static org.openqa.selenium.remote.http.Route.get;
-
 import com.google.auto.service.AutoService;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.net.MediaType;
 
-import net.jodah.failsafe.Failsafe;
-import net.jodah.failsafe.RetryPolicy;
+import dev.failsafe.Failsafe;
+import dev.failsafe.RetryPolicy;
 
 import org.openqa.selenium.BuildInfo;
 import org.openqa.selenium.cli.CliCommand;
@@ -67,6 +59,14 @@ import java.util.Set;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Logger;
+
+import static java.net.HttpURLConnection.HTTP_NO_CONTENT;
+import static java.net.HttpURLConnection.HTTP_UNAVAILABLE;
+import static org.openqa.selenium.grid.config.StandardGridRoles.EVENT_BUS_ROLE;
+import static org.openqa.selenium.grid.config.StandardGridRoles.HTTPD_ROLE;
+import static org.openqa.selenium.grid.config.StandardGridRoles.NODE_ROLE;
+import static org.openqa.selenium.grid.data.Availability.DOWN;
+import static org.openqa.selenium.remote.http.Route.get;
 
 @AutoService(CliCommand.class)
 public class NodeServer extends TemplateGridServerCommand {
@@ -133,7 +133,7 @@ public class NodeServer extends TemplateGridServerCommand {
       }
 
       return new HttpResponse()
-        .setStatus(HTTP_INTERNAL_ERROR)
+        .setStatus(HTTP_UNAVAILABLE)
         .setHeader("Content-Type", MediaType.PLAIN_TEXT_UTF_8.toString())
         .setContent(Contents.utf8String("No capacity available"));
     };
@@ -192,13 +192,14 @@ public class NodeServer extends TemplateGridServerCommand {
 
         // Unlimited attempts, every X seconds, we assume a Node should not need more than Y minutes to register
         // X defaults to 10s and Y to 120 seconds, but the user can overwrite that.
-        RetryPolicy<Object> registrationPolicy = new RetryPolicy<>()
+        RetryPolicy<Object> registrationPolicy = RetryPolicy.builder()
           .withMaxAttempts(-1)
           .withMaxDuration(nodeOptions.getRegisterPeriod())
           .withDelay(nodeOptions.getRegisterCycle())
-          .handleResultIf(result -> true);
+          .handleResultIf(result -> true)
+          .build();
 
-        LOG.info("Starting registration process for node id " + node.getId());
+        LOG.info("Starting registration process for Node " + node.getUri());
         Executors.newSingleThreadExecutor().submit(() -> {
           Failsafe.with(registrationPolicy).run(
             () -> {

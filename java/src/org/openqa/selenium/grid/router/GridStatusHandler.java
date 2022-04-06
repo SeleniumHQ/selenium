@@ -123,7 +123,8 @@ class GridStatusHandler implements HttpHandler {
 
       boolean ready = status.getNodes()
         .stream()
-        .anyMatch(nodeStatus -> UP.equals(nodeStatus.getAvailability()));
+        .anyMatch(
+          nodeStatus -> UP.equals(nodeStatus.getAvailability()) && nodeStatus.hasCapacity());
 
       List<Map<String, Object>> nodeResults = status.getNodes().stream()
         .map(node -> new ImmutableMap.Builder<String, Object>()

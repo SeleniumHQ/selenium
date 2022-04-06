@@ -30,13 +30,15 @@ import org.openqa.selenium.ScreenOrientation;
 import org.openqa.selenium.SearchContext;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.devtools.HasDevTools;
 import org.openqa.selenium.firefox.FirefoxOptions;
 import org.openqa.selenium.html5.LocationContext;
 import org.openqa.selenium.html5.WebStorage;
 import org.openqa.selenium.internal.Require;
+import org.openqa.selenium.support.decorators.Decorated;
+import org.openqa.selenium.support.decorators.WebDriverDecorator;
 import org.openqa.selenium.testing.UnitTests;
 
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -225,6 +227,55 @@ public class AugmenterTest {
     assertThat(number).isEqualTo(42);
   }
 
+  @Test
+  public void shouldAugmentWebDriverDecorator() {
+    final Capabilities caps = new ImmutableCapabilities(CapabilityType.SUPPORTS_LOCATION_CONTEXT, true);
+    WebDriver driver = new RemoteWebDriver(new StubExecutor(caps), caps);
+
+    WebDriver decorated = new ModifyTitleWebDriverDecorator().decorate(driver);
+
+    assertThat(decorated).isNotSameAs(driver);
+
+    WebDriver returned = getAugmenter().augment(decorated);
+
+    assertThat(returned).isNotSameAs(driver);
+    assertThat(returned).isNotSameAs(decorated);
+    assertThat(returned).isInstanceOf(LocationContext.class);
+
+    String title =  returned.getTitle();
+
+    assertThat(title).isEqualTo("title");
+  }
+
+  @Test
+  public void shouldDecorateAugmentedWebDriver() {
+    final Capabilities caps = new ImmutableCapabilities("magic.numbers", true,
+                                                        "numbers", true);
+    WebDriver driver = new RemoteWebDriver(new StubExecutor(caps), caps);
+
+    WebDriver augmented = getAugmenter()
+      .addDriverAugmentation("magic.numbers", HasMagicNumbers.class, (c, exe) -> () -> 42)
+      .addDriverAugmentation("numbers", HasNumbers.class, (c, exe) ->  webDriver -> {
+        Require.precondition(webDriver instanceof HasMagicNumbers, "Driver must implement HasMagicNumbers");
+        return ((HasMagicNumbers)webDriver).getMagicNumber();
+      })
+      .augment(driver);
+
+    WebDriver decorated = new ModifyTitleWebDriverDecorator().decorate(augmented);
+
+    assertThat(decorated).isNotSameAs(driver);
+
+    assertThat(augmented).isNotSameAs(decorated);
+    assertThat(decorated).isInstanceOf(HasNumbers.class);
+
+    String title = decorated.getTitle();
+
+    assertThat(title).isEqualTo("title");
+
+    int number = ((HasNumbers)decorated).getNumbers(decorated);
+    assertThat(number).isEqualTo(42);
+  }
+
   private static class ByMagic extends By {
     private final String magicWord;
 
@@ -375,6 +426,22 @@ public class AugmenterTest {
     @Override
     public Capabilities getCapabilities() {
       return new ImmutableCapabilities();
+    }
+  }
+
+  private static class ModifyTitleWebDriverDecorator extends WebDriverDecorator {
+
+    @Override
+    public Object call(Decorated<?> target, Method method, Object[] args) throws Throwable {
+      if (method.getDeclaringClass().equals(HasCapabilities.class)) {
+        return new ImmutableCapabilities(CapabilityType.SUPPORTS_LOCATION_CONTEXT, true);
+      }
+
+      if (method.getName().equals("getTitle")) {
+        return "title";
+      }
+
+      return super.call(target, method, args);
     }
   }
 }
