@@ -143,6 +143,8 @@ suite(function (env) {
         .move({ x: 100, y: 100, origin: Origin.POINTER })
         .release()
         .perform()
+      await driver.wait(
+        async () => await slide.getCssValue('left') === '101px', 5000)
       assert.strictEqual(await slide.getCssValue('left'), '101px')
       assert.strictEqual(await slide.getCssValue('top'), '101px')
     })
@@ -171,6 +173,8 @@ suite(function (env) {
 
       await driver.actions().sendKeys('foobar').perform()
 
+      await driver.wait(
+        async () => await el.getAttribute('value') === 'foobar', 5000)
       assert.strictEqual(await el.getAttribute('value'), 'foobar')
     })
 
