@@ -32,13 +32,13 @@ test.suite(
   function (env) {
     let driver
 
-    before(async function () {
+    beforeEach(async function () {
       driver = await env
         .builder()
         .setChromeOptions(new chrome.Options().headless())
         .build()
     })
-    after(async () => await driver.quit())
+    afterEach(async () => await driver.quit())
 
     it('can send commands to devtools', async function () {
       await driver.get(test.Pages.ajaxyPage)
