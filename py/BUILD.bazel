@@ -11,7 +11,7 @@ BROWSER_VERSIONS = [
     "v85",
     "v98",
     "v99",
-    "v100"
+    "v100",
 ]
 
 TEST_DEPS = [
@@ -369,8 +369,8 @@ py_test_suite(
         "--driver=remote",
     ],
     data = [
-        "//java/src/org/openqa/selenium/grid:selenium_server_deploy.jar",
         "//common/extensions",
+        "//java/src/org/openqa/selenium/grid:selenium_server_deploy.jar",
     ],
     tags = [
         "no-sandbox",
