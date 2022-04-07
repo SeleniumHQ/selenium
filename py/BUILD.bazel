@@ -11,7 +11,7 @@ BROWSER_VERSIONS = [
     "v85",
     "v98",
     "v99",
-    "v100"
+    "v100",
 ]
 
 TEST_DEPS = [
@@ -67,8 +67,8 @@ copy_file(
 
 copy_file(
     name = "favourite_color",
-    src = "//third_party/firebug:favourite_colour-1.1-an+fx.xpi",
-    out = "test/selenium/webdriver/firefox/favourite_colour-1.1-an+fx.xpi",
+    src = "//common/extensions:webextensions-selenium-example.xpi",
+    out = "test/selenium/webdriver/firefox/webextensions-selenium-example.xpi",
 )
 
 py_library(
@@ -345,7 +345,7 @@ py_test_suite(
         "--driver=firefox",
     ],
     data = [
-        "//third_party/firebug:favourite_colour-1.1-an+fx.xpi",
+        "//common/extensions",
     ],
     tags = [
         "no-sandbox",
@@ -369,8 +369,8 @@ py_test_suite(
         "--driver=remote",
     ],
     data = [
+        "//common/extensions",
         "//java/src/org/openqa/selenium/grid:selenium_server_deploy.jar",
-        "//third_party/firebug:favourite_colour-1.1-an+fx.xpi",
     ],
     tags = [
         "no-sandbox",

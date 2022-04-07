@@ -17,19 +17,6 @@
 
 package org.openqa.selenium.grid.node.config;
 
-import static org.openqa.selenium.grid.config.StandardGridRoles.NODE_ROLE;
-import static org.openqa.selenium.grid.node.config.NodeOptions.DEFAULT_DETECT_DRIVERS;
-import static org.openqa.selenium.grid.node.config.NodeOptions.DEFAULT_HEARTBEAT_PERIOD;
-import static org.openqa.selenium.grid.node.config.NodeOptions.DEFAULT_MAX_SESSIONS;
-import static org.openqa.selenium.grid.node.config.NodeOptions.DEFAULT_NODE_IMPLEMENTATION;
-import static org.openqa.selenium.grid.node.config.NodeOptions.DEFAULT_NO_VNC_PORT;
-import static org.openqa.selenium.grid.node.config.NodeOptions.DEFAULT_REGISTER_CYCLE;
-import static org.openqa.selenium.grid.node.config.NodeOptions.DEFAULT_REGISTER_PERIOD;
-import static org.openqa.selenium.grid.node.config.NodeOptions.DEFAULT_SESSION_TIMEOUT;
-import static org.openqa.selenium.grid.node.config.NodeOptions.DEFAULT_VNC_ENV_VAR;
-import static org.openqa.selenium.grid.node.config.NodeOptions.NODE_SECTION;
-import static org.openqa.selenium.grid.node.config.NodeOptions.OVERRIDE_MAX_SESSIONS;
-
 import com.google.auto.service.AutoService;
 
 import com.beust.jcommander.Parameter;
@@ -43,6 +30,20 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
+import static org.openqa.selenium.grid.config.StandardGridRoles.NODE_ROLE;
+import static org.openqa.selenium.grid.node.config.NodeOptions.DEFAULT_DETECT_DRIVERS;
+import static org.openqa.selenium.grid.node.config.NodeOptions.DEFAULT_DRAIN_AFTER_SESSION_COUNT;
+import static org.openqa.selenium.grid.node.config.NodeOptions.DEFAULT_HEARTBEAT_PERIOD;
+import static org.openqa.selenium.grid.node.config.NodeOptions.DEFAULT_MAX_SESSIONS;
+import static org.openqa.selenium.grid.node.config.NodeOptions.DEFAULT_NODE_IMPLEMENTATION;
+import static org.openqa.selenium.grid.node.config.NodeOptions.DEFAULT_NO_VNC_PORT;
+import static org.openqa.selenium.grid.node.config.NodeOptions.DEFAULT_REGISTER_CYCLE;
+import static org.openqa.selenium.grid.node.config.NodeOptions.DEFAULT_REGISTER_PERIOD;
+import static org.openqa.selenium.grid.node.config.NodeOptions.DEFAULT_SESSION_TIMEOUT;
+import static org.openqa.selenium.grid.node.config.NodeOptions.DEFAULT_VNC_ENV_VAR;
+import static org.openqa.selenium.grid.node.config.NodeOptions.NODE_SECTION;
+import static org.openqa.selenium.grid.node.config.NodeOptions.OVERRIDE_MAX_SESSIONS;
 
 @SuppressWarnings({"unused", "FieldMayBeFinal"})
 @AutoService(HasRoles.class)
@@ -186,6 +187,13 @@ public class NodeFlags implements HasRoles {
     description = "If VNC is available, sets the port where the local noVNC stream can be obtained")
   @ConfigValue(section = NODE_SECTION, name = "no-vnc-port", example = "7900")
   public int noVncPort = DEFAULT_NO_VNC_PORT;
+
+  @Parameter(
+    names = "--drain-after-session-count",
+    description = "Drain and shutdown the Node after X sessions have been executed. Useful for " +
+                  "environments like Kubernetes. A value higher than zero enables this feature.")
+  @ConfigValue(section = NODE_SECTION, name = "drain-after-session-count", example = "1")
+  public int drainAfterSessionCount = DEFAULT_DRAIN_AFTER_SESSION_COUNT;
 
   @Parameter(
     names = {"--node-implementation"},

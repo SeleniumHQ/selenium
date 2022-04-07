@@ -10,6 +10,7 @@ filegroup(
         "//java/test/org/openqa/selenium/environment:__pkg__",
         "//java/test/org/openqa/selenium/firefox:__pkg__",
         "//javascript/node/selenium-webdriver:__pkg__",
+        "//py:__pkg__",
     ],
 )
 
@@ -19,5 +20,6 @@ exports_files(
     ],
     visibility = [
         "//java/test/org/openqa/selenium/firefox:__pkg__",
+        "//py:__pkg__",
     ],
 )
