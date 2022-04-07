@@ -17,23 +17,8 @@
 
 package org.openqa.selenium.grid.distributor.local;
 
-import static com.google.common.collect.ImmutableSet.toImmutableSet;
-import static org.openqa.selenium.grid.data.Availability.DOWN;
-import static org.openqa.selenium.grid.data.Availability.DRAINING;
-import static org.openqa.selenium.grid.data.Availability.UP;
-import static org.openqa.selenium.internal.Debug.getDebugLogLevel;
-import static org.openqa.selenium.remote.RemoteTags.CAPABILITIES;
-import static org.openqa.selenium.remote.RemoteTags.CAPABILITIES_EVENT;
-import static org.openqa.selenium.remote.RemoteTags.SESSION_ID;
-import static org.openqa.selenium.remote.RemoteTags.SESSION_ID_EVENT;
-import static org.openqa.selenium.remote.tracing.AttributeKey.SESSION_URI;
-import static org.openqa.selenium.remote.tracing.Tags.EXCEPTION;
-
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
-
-import dev.failsafe.Failsafe;
-import dev.failsafe.RetryPolicy;
 
 import org.openqa.selenium.Beta;
 import org.openqa.selenium.Capabilities;
@@ -91,6 +76,9 @@ import org.openqa.selenium.remote.tracing.Status;
 import org.openqa.selenium.remote.tracing.Tracer;
 import org.openqa.selenium.status.HasReadyState;
 
+import dev.failsafe.Failsafe;
+import dev.failsafe.RetryPolicy;
+
 import java.io.Closeable;
 import java.io.UncheckedIOException;
 import java.net.URI;
@@ -113,6 +101,18 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
+
+import static com.google.common.collect.ImmutableSet.toImmutableSet;
+import static org.openqa.selenium.grid.data.Availability.DOWN;
+import static org.openqa.selenium.grid.data.Availability.DRAINING;
+import static org.openqa.selenium.grid.data.Availability.UP;
+import static org.openqa.selenium.internal.Debug.getDebugLogLevel;
+import static org.openqa.selenium.remote.RemoteTags.CAPABILITIES;
+import static org.openqa.selenium.remote.RemoteTags.CAPABILITIES_EVENT;
+import static org.openqa.selenium.remote.RemoteTags.SESSION_ID;
+import static org.openqa.selenium.remote.RemoteTags.SESSION_ID_EVENT;
+import static org.openqa.selenium.remote.tracing.AttributeKey.SESSION_URI;
+import static org.openqa.selenium.remote.tracing.Tags.EXCEPTION;
 
 public class LocalDistributor extends Distributor implements Closeable {
 
@@ -303,6 +303,11 @@ public class LocalDistributor extends Distributor implements Closeable {
     NodeStatus initialNodeStatus;
     try {
       initialNodeStatus = node.getStatus();
+      if (initialNodeStatus.getAvailability() == DRAINING) {
+        // A Node might be draining but the heartbeat is still running.
+        // We do not need to add this Node again.
+        return this;
+      }
       model.add(initialNodeStatus);
       nodes.put(node.getId(), node);
     } catch (Exception e) {
