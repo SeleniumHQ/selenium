@@ -53,6 +53,6 @@ def get_lan_ip():
             try:
                 ip = get_interface_ip(ifname)
                 break
-            except IOError:
+            except OSError:
                 pass
     return ip

@@ -59,10 +59,10 @@ class WebDriver(ChromiumDriver):
         if not service:
             service = Service(executable_path, port, service_args, service_log_path)
 
-        super(WebDriver, self).__init__(DesiredCapabilities.EDGE['browserName'], "ms",
-                                        port, options,
-                                        service_args, capabilities,
-                                        service_log_path, service, keep_alive)
+        super().__init__(DesiredCapabilities.EDGE['browserName'], "ms",
+                         port, options,
+                         service_args, capabilities,
+                         service_log_path, service, keep_alive)
 
     def create_options(self) -> Options:
         return Options()

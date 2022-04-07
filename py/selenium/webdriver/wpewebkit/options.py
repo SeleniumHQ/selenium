@@ -23,7 +23,7 @@ class Options(ArgOptions):
     KEY = 'wpe:browserOptions'
 
     def __init__(self):
-        super(Options, self).__init__()
+        super().__init__()
         self._binary_location = ''
         self._caps = DesiredCapabilities.WPEWEBKIT.copy()
 

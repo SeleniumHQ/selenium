@@ -57,7 +57,7 @@ def test_works_as_context_manager(mocker):
 
 @pytest.mark.parametrize('browser_name', ['firefox', 'chrome', 'ie', 'opera'])
 def test_accepts_firefox_options_to_remote_driver(mocker, browser_name):
-    options = import_module('selenium.webdriver.{}.options'.format(browser_name))
+    options = import_module(f'selenium.webdriver.{browser_name}.options')
     caps_name = browser_name.upper() if browser_name != 'ie' else 'INTERNETEXPLORER'
     mock = mocker.patch('selenium.webdriver.remote.webdriver.WebDriver.start_session')
 

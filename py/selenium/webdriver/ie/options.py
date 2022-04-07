@@ -49,7 +49,7 @@ class Options(ArgOptions):
     EDGE_EXECUTABLE_PATH = 'ie.edgepath'
 
     def __init__(self):
-        super(Options, self).__init__()
+        super().__init__()
         self._options = {}
         self._additional = {}
 

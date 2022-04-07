@@ -305,7 +305,7 @@ def testUnexpectedAlertPresentExceptionContainsAlertText(driver, pages):
     with pytest.raises(UnexpectedAlertPresentException) as e:
         pages.load("simpleTest.html")
     assert value == e.value.alert_text
-    assert "Alert Text: {}".format(value) in str(e)
+    assert f"Alert Text: {value}" in str(e)
 
 
 def _waitForAlert(driver):

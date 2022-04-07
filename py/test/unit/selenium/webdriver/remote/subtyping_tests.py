@@ -41,9 +41,9 @@ def test_web_element_not_subclassed():
 
 def test_webdriver_not_subclassed():
     """A registered subtype of WebDriver should work with isinstance checks."""
-    class MyWebDriver(object):
+    class MyWebDriver:
         def __init__(self, *args, **kwargs):
-            super(MyWebDriver, self).__init__(*args, **kwargs)
+            super().__init__(*args, **kwargs)
 
     # Test that non registered class instance is not instance of Remote WebDriver
     my_driver = MyWebDriver()

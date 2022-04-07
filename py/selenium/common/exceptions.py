@@ -138,11 +138,11 @@ class UnexpectedAlertPresentException(WebDriverException):
     """
 
     def __init__(self, msg: Optional[str] = None, screen: Optional[str] = None, stacktrace: Optional[Sequence[str]] = None, alert_text: Optional[str] = None) -> None:
-        super(UnexpectedAlertPresentException, self).__init__(msg, screen, stacktrace)
+        super().__init__(msg, screen, stacktrace)
         self.alert_text = alert_text
 
     def __str__(self) -> str:
-        return "Alert Text: %s\n%s" % (self.alert_text, super(UnexpectedAlertPresentException, self).__str__())
+        return f"Alert Text: {self.alert_text}\n{super().__str__()}"
 
 
 class NoAlertPresentException(WebDriverException):

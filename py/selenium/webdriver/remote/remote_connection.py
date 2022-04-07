@@ -35,7 +35,7 @@ from . import utils
 LOGGER = logging.getLogger(__name__)
 
 
-class RemoteConnection(object):
+class RemoteConnection:
     """A connection with the Remote WebDriver server.
 
     Communicates with the server using the WebDriver wire protocol:
@@ -106,13 +106,13 @@ class RemoteConnection(object):
         headers = {
             'Accept': 'application/json',
             'Content-Type': 'application/json;charset=UTF-8',
-            'User-Agent': 'selenium/{} (python {})'.format(__version__, system)
+            'User-Agent': f'selenium/{__version__} (python {system})'
         }
 
         if parsed_url.username:
             base64string = b64encode('{0.username}:{0.password}'.format(parsed_url).encode())
             headers.update({
-                'Authorization': 'Basic {}'.format(base64string.decode())
+                'Authorization': f'Basic {base64string.decode()}'
             })
 
         if keep_alive:

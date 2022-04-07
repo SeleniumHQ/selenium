@@ -29,7 +29,7 @@ from selenium.webdriver.common import utils
 _HAS_NATIVE_DEVNULL = True
 
 
-class Service(object):
+class Service:
 
     def __init__(self, executable, port=0, log_file=DEVNULL, env=None, start_error_message=""):
         self.path = executable
@@ -79,12 +79,12 @@ class Service(object):
         except OSError as err:
             if err.errno == errno.ENOENT:
                 raise WebDriverException(
-                    "'%s' executable needs to be in PATH. %s" % (
+                    "'{}' executable needs to be in PATH. {}".format(
                         os.path.basename(self.path), self.start_error_message)
                 )
             elif err.errno == errno.EACCES:
                 raise WebDriverException(
-                    "'%s' executable may have wrong permissions. %s" % (
+                    "'{}' executable may have wrong permissions. {}".format(
                         os.path.basename(self.path), self.start_error_message)
                 )
             else:
