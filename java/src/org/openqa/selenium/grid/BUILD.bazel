@@ -179,6 +179,7 @@ java_dist_zip(
 
 javadoc(
     name = "all-javadocs",
+    javadocopts = ["--no-module-directories"],
     third_party_prefixes = [
         "@maven//",
         "//third_party",
