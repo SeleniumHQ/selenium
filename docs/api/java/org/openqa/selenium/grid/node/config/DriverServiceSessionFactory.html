@@ -33,7 +33,7 @@ var rowColor = "rowColor";
 var tableTab = "tableTab";
 var activeTableTab = "activeTableTab";
 var pathtoroot = "../../../../../../";
-var useModuleDirectories = true;
+var useModuleDirectories = false;
 loadScripts(document, 'script');</script>
 <noscript>
 <div>JavaScript is disabled on your browser.</div>
@@ -162,8 +162,9 @@ implements <a href="../SessionFactory.html" title="interface in org.openqa.selen
 <th class="colLast" scope="col">Description</th>
 </tr>
 <tr class="altColor">
-<th class="colConstructorName" scope="row"><code><span class="memberNameLink"><a href="#%3Cinit%3E(org.openqa.selenium.remote.tracing.Tracer,org.openqa.selenium.remote.http.HttpClient.Factory,org.openqa.selenium.Capabilities,java.util.function.Predicate,org.openqa.selenium.remote.service.DriverService.Builder)">DriverServiceSessionFactory</a></span>&#8203;(<a href="../../../remote/tracing/Tracer.html" title="interface in org.openqa.selenium.remote.tracing">Tracer</a>&nbsp;tracer,
+<th class="colConstructorName" scope="row"><code><span class="memberNameLink"><a href="#%3Cinit%3E(org.openqa.selenium.remote.tracing.Tracer,org.openqa.selenium.remote.http.HttpClient.Factory,java.time.Duration,org.openqa.selenium.Capabilities,java.util.function.Predicate,org.openqa.selenium.remote.service.DriverService.Builder)">DriverServiceSessionFactory</a></span>&#8203;(<a href="../../../remote/tracing/Tracer.html" title="interface in org.openqa.selenium.remote.tracing">Tracer</a>&nbsp;tracer,
                            <a href="../../../remote/http/HttpClient.Factory.html" title="interface in org.openqa.selenium.remote.http">HttpClient.Factory</a>&nbsp;clientFactory,
+                           java.time.Duration&nbsp;sessionTimeout,
                            <a href="../../../Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&nbsp;stereotype,
                            java.util.function.Predicate&lt;<a href="../../../Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&gt;&nbsp;predicate,
                            <a href="../../../remote/service/DriverService.Builder.html" title="class in org.openqa.selenium.remote.service">DriverService.Builder</a>&lt;?,&#8203;?&gt;&nbsp;builder)</code></th>
@@ -235,7 +236,7 @@ implements <a href="../SessionFactory.html" title="interface in org.openqa.selen
 <!--   -->
 </a>
 <h3>Constructor Detail</h3>
-<a id="&lt;init&gt;(org.openqa.selenium.remote.tracing.Tracer,org.openqa.selenium.remote.http.HttpClient.Factory,org.openqa.selenium.Capabilities,java.util.function.Predicate,org.openqa.selenium.remote.service.DriverService.Builder)">
+<a id="&lt;init&gt;(org.openqa.selenium.remote.tracing.Tracer,org.openqa.selenium.remote.http.HttpClient.Factory,java.time.Duration,org.openqa.selenium.Capabilities,java.util.function.Predicate,org.openqa.selenium.remote.service.DriverService.Builder)">
 <!--   -->
 </a>
 <ul class="blockListLast">
@@ -243,6 +244,7 @@ implements <a href="../SessionFactory.html" title="interface in org.openqa.selen
 <h4>DriverServiceSessionFactory</h4>
 <pre>public&nbsp;DriverServiceSessionFactory&#8203;(<a href="../../../remote/tracing/Tracer.html" title="interface in org.openqa.selenium.remote.tracing">Tracer</a>&nbsp;tracer,
                                    <a href="../../../remote/http/HttpClient.Factory.html" title="interface in org.openqa.selenium.remote.http">HttpClient.Factory</a>&nbsp;clientFactory,
+                                   java.time.Duration&nbsp;sessionTimeout,
                                    <a href="../../../Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&nbsp;stereotype,
                                    java.util.function.Predicate&lt;<a href="../../../Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&gt;&nbsp;predicate,
                                    <a href="../../../remote/service/DriverService.Builder.html" title="class in org.openqa.selenium.remote.service">DriverService.Builder</a>&lt;?,&#8203;?&gt;&nbsp;builder)</pre>

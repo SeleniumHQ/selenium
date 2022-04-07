@@ -33,7 +33,7 @@ var rowColor = "rowColor";
 var tableTab = "tableTab";
 var activeTableTab = "activeTableTab";
 var pathtoroot = "../../../../../../";
-var useModuleDirectories = true;
+var useModuleDirectories = false;
 loadScripts(document, 'script');</script>
 <noscript>
 <div>JavaScript is disabled on your browser.</div>
@@ -162,8 +162,9 @@ implements <a href="../SessionFactory.html" title="interface in org.openqa.selen
 <th class="colLast" scope="col">Description</th>
 </tr>
 <tr class="altColor">
-<th class="colConstructorName" scope="row"><code><span class="memberNameLink"><a href="#%3Cinit%3E(org.openqa.selenium.remote.tracing.Tracer,org.openqa.selenium.remote.http.HttpClient.Factory,java.net.URI,java.net.URI,org.openqa.selenium.Capabilities)">RelaySessionFactory</a></span>&#8203;(<a href="../../../remote/tracing/Tracer.html" title="interface in org.openqa.selenium.remote.tracing">Tracer</a>&nbsp;tracer,
+<th class="colConstructorName" scope="row"><code><span class="memberNameLink"><a href="#%3Cinit%3E(org.openqa.selenium.remote.tracing.Tracer,org.openqa.selenium.remote.http.HttpClient.Factory,java.time.Duration,java.net.URI,java.net.URI,org.openqa.selenium.Capabilities)">RelaySessionFactory</a></span>&#8203;(<a href="../../../remote/tracing/Tracer.html" title="interface in org.openqa.selenium.remote.tracing">Tracer</a>&nbsp;tracer,
                    <a href="../../../remote/http/HttpClient.Factory.html" title="interface in org.openqa.selenium.remote.http">HttpClient.Factory</a>&nbsp;clientFactory,
+                   java.time.Duration&nbsp;sessionTimeout,
                    java.net.URI&nbsp;serviceUri,
                    java.net.URI&nbsp;serviceStatusUri,
                    <a href="../../../Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&nbsp;stereotype)</code></th>
@@ -240,7 +241,7 @@ implements <a href="../SessionFactory.html" title="interface in org.openqa.selen
 <!--   -->
 </a>
 <h3>Constructor Detail</h3>
-<a id="&lt;init&gt;(org.openqa.selenium.remote.tracing.Tracer,org.openqa.selenium.remote.http.HttpClient.Factory,java.net.URI,java.net.URI,org.openqa.selenium.Capabilities)">
+<a id="&lt;init&gt;(org.openqa.selenium.remote.tracing.Tracer,org.openqa.selenium.remote.http.HttpClient.Factory,java.time.Duration,java.net.URI,java.net.URI,org.openqa.selenium.Capabilities)">
 <!--   -->
 </a>
 <ul class="blockListLast">
@@ -248,6 +249,7 @@ implements <a href="../SessionFactory.html" title="interface in org.openqa.selen
 <h4>RelaySessionFactory</h4>
 <pre>public&nbsp;RelaySessionFactory&#8203;(<a href="../../../remote/tracing/Tracer.html" title="interface in org.openqa.selenium.remote.tracing">Tracer</a>&nbsp;tracer,
                            <a href="../../../remote/http/HttpClient.Factory.html" title="interface in org.openqa.selenium.remote.http">HttpClient.Factory</a>&nbsp;clientFactory,
+                           java.time.Duration&nbsp;sessionTimeout,
                            java.net.URI&nbsp;serviceUri,
                            java.net.URI&nbsp;serviceStatusUri,
                            <a href="../../../Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&nbsp;stereotype)</pre>

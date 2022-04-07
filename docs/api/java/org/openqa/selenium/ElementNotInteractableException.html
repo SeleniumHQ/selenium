@@ -27,7 +27,7 @@
     }
 //-->
 var pathtoroot = "../../../";
-var useModuleDirectories = true;
+var useModuleDirectories = false;
 loadScripts(document, 'script');</script>
 <noscript>
 <div>JavaScript is disabled on your browser.</div>
@@ -164,8 +164,9 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <hr>
 <pre>public class <span class="typeNameLabel">ElementNotInteractableException</span>
 extends <a href="InvalidElementStateException.html" title="class in org.openqa.selenium">InvalidElementStateException</a></pre>
-<div class="block">Thrown to indicate that although an element is present on the DOM, it is not in a state that can
- be interacted with.</div>
+<div class="block">Thrown to indicate that although a <a href="WebElement.html" title="interface in org.openqa.selenium"><code>WebElement</code></a> is present on the DOM, it is not in a state that can
+ be interacted with. This includes an element that is not displayed or whose center point
+ can not be scrolled into the viewport.</div>
 <dl>
 <dt><span class="seeLabel">See Also:</span></dt>
 <dd><a href="../../../serialized-form.html#org.openqa.selenium.ElementNotInteractableException">Serialized Form</a></dd>
