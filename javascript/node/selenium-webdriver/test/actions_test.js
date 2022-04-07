@@ -23,7 +23,6 @@ const fileServer = require('../lib/test/fileserver')
 const { ignore, Pages, suite } = require('../lib/test')
 const { Key, Origin } = require('../lib/input')
 const { Browser, By, until } = require('..')
-const io = require('../io')
 
 suite(function (env) {
   describe('WebDriver.actions()', function () {
@@ -77,9 +76,12 @@ suite(function (env) {
       await driver.wait(
         async () => {
           const clicks = await driver.executeScript('return clicks')
-          assert.deepStrictEqual(clicks, [[250, 250]])
-          return true
-        }, 10000)
+          return clicks.length > 0
+        },
+        10000,
+        'No clicks returned')
+      const clicks = await driver.executeScript('return clicks')
+      assert.deepStrictEqual(clicks, [[250, 250]])
     })
 
     it('can move relative to element center', async function () {
@@ -98,9 +100,12 @@ suite(function (env) {
       await driver.wait(
         async () => {
           const clicks = await driver.executeScript('return clicks')
-          assert.deepStrictEqual(clicks, [[260, 260]])
-          return true
-        }, 10000)
+          return clicks.length > 0
+        },
+        10000,
+        'No clicks returned')
+      const clicks = await driver.executeScript('return clicks')
+      assert.deepStrictEqual(clicks, [[260, 260]])
     })
 
     ignore(env.browsers(Browser.SAFARI))
@@ -112,10 +117,8 @@ suite(function (env) {
 
         await driver.actions().doubleClick(box).perform()
         await driver.wait(
-          async () => {
-            assert.strictEqual(await box.getAttribute('class'), 'blue')
-            return true
-          }, 10000)
+          async () => await box.getAttribute('class') === 'blue', 10000)
+        assert.strictEqual(await box.getAttribute('class'), 'blue')
       })
 
     // For some reason for Chrome 75 we need to wrap this test in an extra
@@ -159,11 +162,9 @@ suite(function (env) {
         .perform()
 
       await driver.wait(
-        async () => {
-          assert.strictEqual(await slide.getCssValue('left'), '101px')
-          assert.strictEqual(await slide.getCssValue('left'), '101px')
-          return true
-        }, 10000)
+        async () => await slide.getCssValue('left') === '101px', 10000)
+      assert.strictEqual(await slide.getCssValue('left'), '101px')
+      assert.strictEqual(await slide.getCssValue('left'), '101px')
     })
 
     it('can move to and click element in an iframe', async function () {
@@ -191,10 +192,8 @@ suite(function (env) {
       await driver.actions().sendKeys('foobar').perform()
 
       await driver.wait(
-        async () => {
-          assert.strictEqual(await el.getAttribute('value'), 'foobar')
-          return true
-        }, 10000)
+        async () => await el.getAttribute('value') === 'foobar', 10000)
+      assert.strictEqual(await el.getAttribute('value'), 'foobar')
     })
 
     it('can get the property of element', async function () {
@@ -208,10 +207,8 @@ suite(function (env) {
       await driver.actions().sendKeys('foobar').perform()
 
       await driver.wait(
-        async () => {
-          assert.strictEqual(await el.getProperty('value'), 'foobar')
-          return true
-        }, 10000)
+        async () => await el.getProperty('value') === 'foobar', 10000)
+      assert.strictEqual(await el.getProperty('value'), 'foobar')
     })
 
     it('can send keys to focused element (with modifiers)', async function () {
@@ -232,10 +229,8 @@ suite(function (env) {
         .perform()
 
       await driver.wait(
-        async () => {
-          assert.strictEqual(await el.getAttribute('value'), 'foOBar')
-          return true
-        }, 10000)
+        async () => await el.getAttribute('value') === 'foOBar', 10000)
+      assert.strictEqual(await el.getAttribute('value'), 'foOBar')
     })
 
     it('can interact with simple form elements', async function () {
@@ -247,10 +242,8 @@ suite(function (env) {
       await driver.actions().click(el).sendKeys('foobar').perform()
 
       await driver.wait(
-        async () => {
-          assert.strictEqual(await el.getAttribute('value'), 'foobar')
-          return true
-        }, 10000)
+        async () => await el.getAttribute('value') === 'foobar', 10000)
+      assert.strictEqual(await el.getAttribute('value'), 'foobar')
     })
 
     ignore(env.browsers(Browser.FIREFOX, Browser.SAFARI))
