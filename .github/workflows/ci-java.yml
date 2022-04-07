@@ -20,6 +20,8 @@ env:
 
 jobs:
   check_workflow:
+    permissions:
+      contents: none
     uses: ./.github/workflows/should-workflow-run.yml
     with:
       bazel-target-prefix: '//java'
