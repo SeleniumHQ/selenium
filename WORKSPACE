@@ -62,8 +62,6 @@ python_register_toolchains(
     python_version = "3.9",
 )
 
-load("@python3_9//:defs.bzl", "interpreter")
-
 # This one is only needed if you're using the packaging rules.
 load("@rules_python//python:pip.bzl", "pip_install")
 
@@ -180,11 +178,11 @@ rules_closure_toolchains()
 
 http_archive(
     name = "rules_pkg",
+    sha256 = "62eeb544ff1ef41d786e329e1536c1d541bb9bcad27ae984d57f18f314018e66",
     urls = [
         "https://mirror.bazel.build/github.com/bazelbuild/rules_pkg/releases/download/0.6.0/rules_pkg-0.6.0.tar.gz",
         "https://github.com/bazelbuild/rules_pkg/releases/download/0.6.0/rules_pkg-0.6.0.tar.gz",
     ],
-    sha256 = "62eeb544ff1ef41d786e329e1536c1d541bb9bcad27ae984d57f18f314018e66",
 )
 
 load("@rules_pkg//:deps.bzl", "rules_pkg_dependencies")
