@@ -42,7 +42,6 @@ import org.openqa.selenium.grid.data.NodeHeartBeatEvent;
 import org.openqa.selenium.grid.data.NodeId;
 import org.openqa.selenium.grid.data.NodeStatus;
 import org.openqa.selenium.grid.data.Session;
-import org.openqa.selenium.grid.data.SessionClosedEvent;
 import org.openqa.selenium.grid.data.Slot;
 import org.openqa.selenium.grid.data.SlotId;
 import org.openqa.selenium.grid.jmx.JMXHelper;
@@ -216,18 +215,6 @@ public class LocalNode extends Node {
       heartbeatPeriod.getSeconds(),
       heartbeatPeriod.getSeconds(),
       TimeUnit.SECONDS);
-
-    bus.addListener(SessionClosedEvent.listener(id -> {
-      // Shouldn't we check that the session actually belongs to this Node?
-      // Listen to session terminated events, so we know when to fire the NodeDrainComplete event
-      if (this.isDraining()) {
-        int done = pendingSessions.decrementAndGet();
-        if (done <= 0) {
-          LOG.info("Firing node drain complete message");
-          bus.fire(new NodeDrainComplete(this.getId()));
-        }
-      }
-    }));
 
     Runtime.getRuntime().addShutdownHook(new Thread(this::stopAllSessions));
     new JMXHelper().register(this);
@@ -487,6 +474,15 @@ public class LocalNode extends Node {
 
     currentSessions.invalidate(id);
     tempFileSystems.invalidate(id);
+
+    // Decrement pending sessions if Node is draining
+    if (this.isDraining()) {
+      int done = pendingSessions.decrementAndGet();
+      if (done <= 0) {
+        LOG.info("Node draining complete!");
+        bus.fire(new NodeDrainComplete(this.getId()));
+      }
+    }
   }
 
   private void stopAllSessions() {
