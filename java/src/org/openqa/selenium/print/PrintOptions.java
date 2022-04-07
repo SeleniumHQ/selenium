@@ -119,9 +119,9 @@ public class PrintOptions {
     options.put("scale", getScale());
     options.put("shrinkToFit", getShrinkToFit());
     options.put("background", getBackground());
-    final String[] pageRanges = getPageRanges();
-    if (pageRanges != null) {
-      options.put("pageRanges", pageRanges);
+    final String[] effectivePageRanges = getPageRanges();
+    if (effectivePageRanges != null) {
+      options.put("effectivePageRanges", effectivePageRanges);
     }
     options.put("margin", getPageMargin());
 
