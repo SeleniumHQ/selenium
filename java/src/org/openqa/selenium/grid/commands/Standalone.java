@@ -27,6 +27,7 @@ import org.openqa.selenium.events.EventBus;
 import org.openqa.selenium.grid.TemplateGridServerCommand;
 import org.openqa.selenium.grid.config.Config;
 import org.openqa.selenium.grid.config.Role;
+import org.openqa.selenium.grid.data.NodeDrainComplete;
 import org.openqa.selenium.grid.distributor.Distributor;
 import org.openqa.selenium.grid.distributor.config.DistributorOptions;
 import org.openqa.selenium.grid.distributor.local.LocalDistributor;
@@ -203,6 +204,27 @@ public class Standalone extends TemplateGridServerCommand {
     Node node = new NodeOptions(config).getNode();
     combinedHandler.addHandler(node);
     distributor.add(node);
+
+    bus.addListener(NodeDrainComplete.listener(nodeId -> {
+      if (!node.getId().equals(nodeId)) {
+        return;
+      }
+
+      // Wait a beat before shutting down so the final response from the
+      // node can escape.
+      new Thread(
+        () -> {
+          try {
+            Thread.sleep(1000);
+          } catch (InterruptedException e) {
+            // Swallow, the next thing we're doing is shutting down
+          }
+          LOG.info("Shutting down");
+          System.exit(0);
+        },
+        "Standalone shutdown: " + nodeId)
+        .start();
+    }));
 
     return new Handlers(httpHandler, new ProxyNodeWebsockets(clientFactory, node));
   }
