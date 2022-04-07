@@ -68,8 +68,8 @@ public class LocalNodeFactory {
         secretOptions.getRegistrationSecret())
       .maximumConcurrentSessions(nodeOptions.getMaxSessions())
       .sessionTimeout(sessionTimeout)
+      .drainAfterSessionCount(nodeOptions.getDrainAfterSessionCount())
       .heartbeatPeriod(nodeOptions.getHeartbeatPeriod());
-
 
     List<DriverService.Builder<?, ?>> builders = new ArrayList<>();
     ServiceLoader.load(DriverService.Builder.class).forEach(builders::add);
