@@ -24,11 +24,10 @@ const path = require('path')
 const io = require('../../io')
 const zip = require('../../io/zip')
 const { InvalidArgumentError } = require('../../lib/error')
+const { locate } = require('../../lib/test/resources')
 
-const XPI_PATH = path.join(
-  __dirname,
-  '../../lib/test/data/firefox/webextension.xpi'
-)
+const XPI_PATH = locate(
+  'common/extensions/webextensions-selenium-example.xpi')
 
 describe('io/zip', function () {
   describe('unzip', function () {

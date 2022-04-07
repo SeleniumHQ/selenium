@@ -49,6 +49,7 @@ public class LoggingOptions {
   private static final Logger LOG = Logger.getLogger(LoggingOptions.class.getName());
   private final Config config;
   private Level level = Level.INFO;
+  public static final String DEFAULT_LOG_TIMESTAMP_FORMAT = "HH:mm:ss.SSS";
 
   public LoggingOptions(Config config) {
     this.config = Require.nonNull("Config", config);
@@ -119,7 +120,7 @@ public class LoggingOptions {
 
     if (isUsingPlainLogs()) {
       Handler handler = new FlushingHandler(out);
-      handler.setFormatter(new TerseFormatter());
+      handler.setFormatter(new TerseFormatter(getLogTimestampFormat()));
       handler.setLevel(level);
       configureLogEncoding(logger, encoding, handler);
     }
@@ -159,5 +160,9 @@ public class LoggingOptions {
         }
       })
       .orElse(System.out);
+  }
+
+  public String getLogTimestampFormat() {
+      return config.get(LOGGING_SECTION, "log-timestamp-format").orElse(DEFAULT_LOG_TIMESTAMP_FORMAT);
   }
 }

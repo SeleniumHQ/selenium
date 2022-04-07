@@ -20,17 +20,25 @@ import os
 from selenium.common.exceptions import WebDriverException
 
 
-def test_install_addon(driver):
-    extension = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
-                             '../../../../third_party/firebug/favourite_colour-1.1-an+fx.xpi')
+def test_install_addon_temporary(driver):
+    extension = os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                             'webextensions-selenium-example.xpi')
 
-    id = driver.install_addon(extension)
-    assert id == 'favourite-colour-examples@mozilla.org'
+    id = driver.install_addon(extension, True)
+    assert id == 'webextensions-selenium-example@example.com'
+
+
+def test_install_addon(driver):
+    extension = os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                             'webextensions-selenium-example.xpi')
+
+    id = driver.install_addon(extension, False)
+    assert id == 'webextensions-selenium-example@example.com'
 
 
 def test_uninstall_addon(driver):
-    extension = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
-                             '../../../../third_party/firebug/favourite_colour-1.1-an+fx.xpi')
+    extension = os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                             'webextensions-selenium-example.xpi')
 
     id = driver.install_addon(extension)
     try:

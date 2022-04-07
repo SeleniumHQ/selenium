@@ -17,6 +17,11 @@
 
 package org.openqa.selenium.support.decorators;
 
+import net.bytebuddy.ByteBuddy;
+import net.bytebuddy.dynamic.loading.ClassLoadingStrategy;
+import net.bytebuddy.implementation.InvocationHandlerAdapter;
+import net.bytebuddy.matcher.ElementMatchers;
+
 import org.openqa.selenium.Alert;
 import org.openqa.selenium.Beta;
 import org.openqa.selenium.WebDriver;
@@ -29,7 +34,6 @@ import org.openqa.selenium.virtualauthenticator.VirtualAuthenticator;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.lang.reflect.Proxy;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -183,7 +187,7 @@ public class WebDriverDecorator {
     Require.nonNull("WebDriver", original);
 
     decorated = createDecorated(original);
-    return createProxy(decorated);
+    return createProxy(decorated, WebDriver.class);
   }
 
   public Decorated<WebDriver> getDecoratedDriver() {
@@ -244,31 +248,31 @@ public class WebDriverDecorator {
 
   private Object decorateResult(Object toDecorate) {
     if (toDecorate instanceof WebDriver) {
-      return createProxy(getDecoratedDriver());
+      return createProxy(getDecoratedDriver(), WebDriver.class);
     }
     if (toDecorate instanceof WebElement) {
-      return createProxy(createDecorated((WebElement) toDecorate));
+      return createProxy(createDecorated((WebElement) toDecorate), WebElement.class);
     }
     if (toDecorate instanceof Alert) {
-      return createProxy(createDecorated((Alert) toDecorate));
+      return createProxy(createDecorated((Alert) toDecorate), Alert.class);
     }
     if (toDecorate instanceof VirtualAuthenticator) {
-      return createProxy(createDecorated((VirtualAuthenticator) toDecorate));
+      return createProxy(createDecorated((VirtualAuthenticator) toDecorate), VirtualAuthenticator.class);
     }
     if (toDecorate instanceof WebDriver.Navigation) {
-      return createProxy(createDecorated((WebDriver.Navigation) toDecorate));
+      return createProxy(createDecorated((WebDriver.Navigation) toDecorate), WebDriver.Navigation.class);
     }
     if (toDecorate instanceof WebDriver.Options) {
-      return createProxy(createDecorated((WebDriver.Options) toDecorate));
+      return createProxy(createDecorated((WebDriver.Options) toDecorate), WebDriver.Options.class);
     }
     if (toDecorate instanceof WebDriver.TargetLocator) {
-      return createProxy(createDecorated((WebDriver.TargetLocator) toDecorate));
+      return createProxy(createDecorated((WebDriver.TargetLocator) toDecorate), WebDriver.TargetLocator.class);
     }
     if (toDecorate instanceof WebDriver.Timeouts) {
-      return createProxy(createDecorated((WebDriver.Timeouts) toDecorate));
+      return createProxy(createDecorated((WebDriver.Timeouts) toDecorate), WebDriver.Timeouts.class);
     }
     if (toDecorate instanceof WebDriver.Window) {
-      return createProxy(createDecorated((WebDriver.Window) toDecorate));
+      return createProxy(createDecorated((WebDriver.Window) toDecorate), WebDriver.Window.class);
     }
     if (toDecorate instanceof List) {
       return ((List<?>) toDecorate).stream()
@@ -278,7 +282,7 @@ public class WebDriverDecorator {
     return toDecorate;
   }
 
-  protected final <Z> Z createProxy(final Decorated<Z> decorated) {
+  protected final <Z> Z createProxy(final Decorated<Z> decorated, Class<Z> clazz) {
     Set<Class<?>> decoratedInterfaces = extractInterfaces(decorated);
     Set<Class<?>> originalInterfaces = extractInterfaces(decorated.getOriginal());
     Map<Class<?>, InvocationHandler> derivedInterfaces = deriveAdditionalInterfaces(decorated.getOriginal());
@@ -311,8 +315,21 @@ public class WebDriverDecorator {
     allInterfaces.addAll(derivedInterfaces.keySet());
     Class<?>[] allInterfacesArray = allInterfaces.toArray(new Class<?>[0]);
 
-    return (Z) Proxy.newProxyInstance(
-      this.getClass().getClassLoader(), allInterfacesArray, handler);
+    Class<? extends Z> proxy = new ByteBuddy()
+      .subclass(Object.class)
+      .implement(allInterfacesArray)
+      .method(ElementMatchers.any())
+      .intercept(InvocationHandlerAdapter.of(handler))
+      .make()
+      .load(clazz.getClassLoader(), ClassLoadingStrategy.Default.WRAPPER)
+      .getLoaded()
+      .asSubclass(clazz);
+
+    try {
+      return proxy.newInstance();
+    } catch (ReflectiveOperationException e) {
+      throw new IllegalStateException("Unable to create new proxy", e);
+    }
   }
 
   static Set<Class<?>> extractInterfaces(final Object object) {
@@ -381,7 +398,7 @@ public class WebDriverDecorator {
   }
 
   @FunctionalInterface
-  interface JsonSerializer {
+  protected interface JsonSerializer {
     Object toJson();
   }
 }

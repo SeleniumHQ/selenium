@@ -23,6 +23,7 @@ import org.openqa.selenium.devtools.noop.NoOpCdpInfo;
 import org.openqa.selenium.remote.AugmenterProvider;
 import org.openqa.selenium.remote.ExecuteMethod;
 
+import java.net.URI;
 import java.util.Optional;
 import java.util.function.Predicate;
 
@@ -52,10 +53,12 @@ public class DevToolsProvider implements AugmenterProvider<HasDevTools> {
 
   private String getCdpUrl(Capabilities caps) {
     Object cdp = caps.getCapability("se:cdp");
-    if (!(cdp instanceof String)) {
-      return null;
+    if (cdp instanceof String) {
+      return (String) cdp;
     }
 
-    return (String) cdp;
+    Optional<URI> reportedUri = CdpEndpointFinder.getReportedUri(caps);
+
+    return reportedUri.map(URI::toString).orElse(null);
   }
 }

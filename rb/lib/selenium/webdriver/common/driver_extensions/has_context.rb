@@ -27,8 +27,7 @@ module Selenium
         #         a `with` statement. The state of the context on the server is
         #         saved before entering the block, and restored upon exiting it.
         #
-        # @param [String] name which permission to set
-        # @param [String] value what to set the permission to
+        # @param [String] value which context gets set (either 'chrome' or 'content')
         #
 
         def context=(value)

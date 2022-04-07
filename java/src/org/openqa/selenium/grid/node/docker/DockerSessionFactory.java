@@ -17,13 +17,6 @@
 
 package org.openqa.selenium.grid.node.docker;
 
-import static java.util.Optional.ofNullable;
-import static org.openqa.selenium.docker.ContainerConfig.image;
-import static org.openqa.selenium.remote.Dialect.W3C;
-import static org.openqa.selenium.remote.http.Contents.string;
-import static org.openqa.selenium.remote.http.HttpMethod.GET;
-import static org.openqa.selenium.remote.tracing.Tags.EXCEPTION;
-
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.ImmutableCapabilities;
@@ -39,6 +32,8 @@ import org.openqa.selenium.docker.Docker;
 import org.openqa.selenium.docker.Image;
 import org.openqa.selenium.docker.Port;
 import org.openqa.selenium.grid.data.CreateSessionRequest;
+import org.openqa.selenium.grid.data.DefaultSlotMatcher;
+import org.openqa.selenium.grid.data.SlotMatcher;
 import org.openqa.selenium.grid.node.ActiveSession;
 import org.openqa.selenium.grid.node.SessionFactory;
 import org.openqa.selenium.internal.Either;
@@ -51,6 +46,7 @@ import org.openqa.selenium.remote.DriverCommand;
 import org.openqa.selenium.remote.ProtocolHandshake;
 import org.openqa.selenium.remote.Response;
 import org.openqa.selenium.remote.SessionId;
+import org.openqa.selenium.remote.http.ClientConfig;
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
@@ -77,11 +73,17 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.TimeZone;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import static java.util.Optional.ofNullable;
+import static org.openqa.selenium.docker.ContainerConfig.image;
+import static org.openqa.selenium.remote.Dialect.W3C;
+import static org.openqa.selenium.remote.http.Contents.string;
+import static org.openqa.selenium.remote.http.HttpMethod.GET;
+import static org.openqa.selenium.remote.tracing.Tags.EXCEPTION;
 
 public class DockerSessionFactory implements SessionFactory {
 
@@ -89,6 +91,7 @@ public class DockerSessionFactory implements SessionFactory {
 
   private final Tracer tracer;
   private final HttpClient.Factory clientFactory;
+  private final Duration sessionTimeout;
   private final Docker docker;
   private final URI dockerUri;
   private final Image browserImage;
@@ -97,10 +100,12 @@ public class DockerSessionFactory implements SessionFactory {
   private final DockerAssetsPath assetsPath;
   private final String networkName;
   private final boolean runningInDocker;
+  private final SlotMatcher slotMatcher;
 
   public DockerSessionFactory(
     Tracer tracer,
     HttpClient.Factory clientFactory,
+    Duration sessionTimeout,
     Docker docker,
     URI dockerUri,
     Image browserImage,
@@ -111,6 +116,7 @@ public class DockerSessionFactory implements SessionFactory {
     boolean runningInDocker) {
     this.tracer = Require.nonNull("Tracer", tracer);
     this.clientFactory = Require.nonNull("HTTP client", clientFactory);
+    this.sessionTimeout = Require.nonNull("Session timeout", sessionTimeout);
     this.docker = Require.nonNull("Docker command", docker);
     this.dockerUri = Require.nonNull("Docker URI", dockerUri);
     this.browserImage = Require.nonNull("Docker browser image", browserImage);
@@ -120,16 +126,12 @@ public class DockerSessionFactory implements SessionFactory {
     this.videoImage = videoImage;
     this.assetsPath = assetsPath;
     this.runningInDocker = runningInDocker;
+    this.slotMatcher = new DefaultSlotMatcher();
   }
 
   @Override
   public boolean test(Capabilities capabilities) {
-    return stereotype.getCapabilityNames().stream()
-        .map(
-          name ->
-            Objects.equals(stereotype.getCapability(name), capabilities.getCapability(name)))
-        .reduce(Boolean::logicalAnd)
-        .orElse(false);
+    return slotMatcher.matches(stereotype, capabilities);
   }
 
   @Override
@@ -150,7 +152,11 @@ public class DockerSessionFactory implements SessionFactory {
 
       String containerIp = containerInfo.getIp();
       URL remoteAddress = getUrl(port, containerIp);
-      HttpClient client = clientFactory.createClient(remoteAddress);
+      ClientConfig clientConfig = ClientConfig
+        .defaultConfig()
+        .baseUrl(remoteAddress)
+        .readTimeout(sessionTimeout);
+      HttpClient client = clientFactory.createClient(clientConfig);
 
       attributeMap.put("docker.browser.image", EventAttribute.setValue(browserImage.toString()));
       attributeMap.put("container.port", EventAttribute.setValue(port));

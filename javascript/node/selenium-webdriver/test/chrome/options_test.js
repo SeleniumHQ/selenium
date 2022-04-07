@@ -24,11 +24,10 @@ const path = require('path')
 const chrome = require('../../chrome')
 const symbols = require('../../lib/symbols')
 const test = require('../../lib/test')
+const { locate } = require('../../lib/test/resources')
 
-const WEBEXTENSION_CRX = path.join(
-  __dirname,
-  '../../lib/test/data/chrome/webextension.crx'
-)
+const WEBEXTENSION_CRX = locate(
+  'common/extensions/webextensions-selenium-example.crx')
 
 describe('chrome.Options', function () {
   describe('addArguments', function () {
@@ -155,6 +154,24 @@ test.suite(
           'return window.navigator.userAgent'
         )
         assert.strictEqual(userAgent, 'foo;bar')
+      })
+
+      it('can start chromium with network conditions set', async function () {
+        driver = await env.builder().build()
+        await driver.get(test.Pages.ajaxyPage)
+        await driver.setNetworkConditions({
+          offline: true,
+          latency: 0,
+          download_throughput: 0,
+          upload_throughput: 0,
+        })
+        assert.deepStrictEqual(await driver.getNetworkConditions(), {
+          download_throughput: 0,
+          latency: 0,
+          offline: true,
+          upload_throughput: 0,
+        })
+        await driver.deleteNetworkConditions()
       })
 
       it('can install an extension from path', async function () {

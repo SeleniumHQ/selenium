@@ -1,5 +1,4 @@
 load("@rules_jvm_external//:defs.bzl", "artifact")
-load("//common:defs.bzl", "copy_file")
 load("//java:defs.bzl", "java_export")
 load("//java:version.bzl", "SE_VERSION")
 
@@ -8,7 +7,6 @@ java_export(
     srcs = glob(["*.java"]),
     maven_coordinates = "org.seleniumhq.selenium:selenium-firefox-driver:%s" % SE_VERSION,
     pom_template = "//java/src/org/openqa/selenium:template-pom",
-    resources = [":prefs"],
     visibility = ["//visibility:public"],
     deps = [
         "//java:auto-service",
@@ -17,10 +15,4 @@ java_export(
         "//java/src/org/openqa/selenium/remote",
         artifact("com.google.guava:guava"),
     ],
-)
-
-copy_file(
-    name = "prefs",
-    src = "//third_party/js/selenium:webdriver_json",
-    out = "webdriver_prefs.json",
 )

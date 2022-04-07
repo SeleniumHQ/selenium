@@ -19,11 +19,11 @@ java_selenium_test_suite(
         "selenium-remote",
     ],
     deps = [
-        "//java/test/org/openqa/selenium:helpers",
-        "//java/src/org/openqa/selenium/json:json",
         "//java/src/org/openqa/selenium/chrome",
+        "//java/src/org/openqa/selenium/json",
         "//java/src/org/openqa/selenium/remote",
         "//java/src/org/openqa/selenium/support",
+        "//java/test/org/openqa/selenium:helpers",
         "//java/test/org/openqa/selenium/build",
         "//java/test/org/openqa/selenium/testing:annotations",
         "//java/test/org/openqa/selenium/testing:test-base",

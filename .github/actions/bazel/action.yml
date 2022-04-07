@@ -1,6 +1,8 @@
 name: 'Run bazel'
+description: 'Simple action to run bazel commands'
 inputs:
   command:  # id of input
+    description: 'Bazel command to run'
     required: true
 runs:
   using: "composite"

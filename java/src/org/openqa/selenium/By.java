@@ -301,7 +301,7 @@ public abstract class By {
 
     public ByClassName(String className) {
       super(
-        "class",
+        "class name",
         Require.argument("Class name", className)
           .nonNull("Cannot find elements when the class name expression is null."),
       ".%s");

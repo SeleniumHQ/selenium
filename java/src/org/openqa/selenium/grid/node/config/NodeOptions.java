@@ -73,12 +73,13 @@ public class NodeOptions {
   static final boolean DEFAULT_DETECT_DRIVERS = true;
   static final boolean OVERRIDE_MAX_SESSIONS = false;
   static final String DEFAULT_VNC_ENV_VAR = "START_XVFB";
+  static final int DEFAULT_NO_VNC_PORT = 7900;
   static final int DEFAULT_REGISTER_CYCLE = 10;
   static final int DEFAULT_REGISTER_PERIOD = 120;
-
+  static final String DEFAULT_NODE_IMPLEMENTATION =
+    "org.openqa.selenium.grid.node.local.LocalNodeFactory";
   private static final Logger LOG = Logger.getLogger(NodeOptions.class.getName());
   private static final Json JSON = new Json();
-  private static final String DEFAULT_IMPL = "org.openqa.selenium.grid.node.local.LocalNodeFactory";
   private static final Platform CURRENT_PLATFORM = Platform.getCurrent();
   private static final ImmutableSet<String>
     SINGLE_SESSION_DRIVERS = ImmutableSet.of("safari", "safari technology preview");
@@ -145,7 +146,7 @@ public class NodeOptions {
   }
 
   public Node getNode() {
-    return config.getClass(NODE_SECTION, "implementation", Node.class, DEFAULT_IMPL);
+    return config.getClass(NODE_SECTION, "implementation", Node.class, DEFAULT_NODE_IMPLEMENTATION);
   }
 
   public Duration getRegisterCycle() {
@@ -238,6 +239,11 @@ public class NodeOptions {
       vncEnabled.set(Boolean.parseBoolean(System.getenv(vncEnvVar)));
     }
     return vncEnabled.get();
+  }
+
+  @VisibleForTesting
+  int noVncPort() {
+    return config.getInt(NODE_SECTION, "no-vnc-port").orElse(DEFAULT_NO_VNC_PORT);
   }
 
   private void addDriverFactoriesFromConfig(ImmutableMultimap.Builder<Capabilities,
@@ -572,7 +578,8 @@ public class NodeOptions {
     }
     if (isVncEnabled()) {
       capabilities = new PersistentCapabilities(capabilities)
-        .setCapability("se:vncEnabled", true);
+        .setCapability("se:vncEnabled", true)
+        .setCapability("se:noVncPort", noVncPort());
     }
     return capabilities;
   }

@@ -1,11 +1,11 @@
 diff --git a/private/rules/javadoc.bzl b/private/rules/javadoc.bzl
-index 8f02bcc..1dbeee8 100644
+index 9b90570..c9b6f09 100644
 --- a/private/rules/javadoc.bzl
 +++ b/private/rules/javadoc.bzl
-@@ -11,10 +11,43 @@ def generate_javadoc(ctx, javadoc, source_jars, classpath, output):
+@@ -12,10 +12,43 @@ def generate_javadoc(ctx, javadoc, source_jars, classpath, javadocopts, output):
          arguments = [args],
      )
- 
+
 +def _get_prefix_strings(third_party_prefixes):
 +    path_prefixes = []
 +    for prefix in third_party_prefixes:
@@ -44,12 +44,12 @@ index 8f02bcc..1dbeee8 100644
 +        for jar in dep_srcs:
 +            if not _path_match(jar, path_prefixes):
 +                sources.append(jar)
- 
+
      jar_file = ctx.actions.declare_file("%s.jar" % ctx.attr.name)
- 
-@@ -34,13 +67,23 @@ javadoc = rule(
+
+@@ -41,13 +74,23 @@ javadoc = rule(
              doc = """The java libraries to generate javadocs for.
- 
+
            The source jars of each dep will be used to generate the javadocs.
 -          Currently docs for transitive dependencies are not generated.
 +          By default docs for transitive dependencies are not generated.
@@ -69,6 +69,6 @@ index 8f02bcc..1dbeee8 100644
 +            including any javadocs for third party packages the code may depend on.""",
 +            default = ["@maven//"],
 +        ),
-         "_javadoc": attr.label(
-             default = "//private/tools/java/rules/jvm/external/javadoc",
-             cfg = "host",
+         "javadocopts": attr.string_list(
+             doc = """javadoc options.
+             Note sources and classpath are derived from the deps. Any additional

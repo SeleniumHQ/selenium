@@ -76,6 +76,6 @@ public class InternetExplorerDriverInfo implements WebDriverInfo {
       return Optional.empty();
     }
 
-    return Optional.of(new InternetExplorerDriver(capabilities));
+    return Optional.of(new InternetExplorerDriver(new InternetExplorerOptions().merge(capabilities)));
   }
 }

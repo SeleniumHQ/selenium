@@ -21,6 +21,8 @@ import static org.openqa.selenium.grid.config.StandardGridRoles.NODE_ROLE;
 import static org.openqa.selenium.grid.node.config.NodeOptions.DEFAULT_DETECT_DRIVERS;
 import static org.openqa.selenium.grid.node.config.NodeOptions.DEFAULT_HEARTBEAT_PERIOD;
 import static org.openqa.selenium.grid.node.config.NodeOptions.DEFAULT_MAX_SESSIONS;
+import static org.openqa.selenium.grid.node.config.NodeOptions.DEFAULT_NODE_IMPLEMENTATION;
+import static org.openqa.selenium.grid.node.config.NodeOptions.DEFAULT_NO_VNC_PORT;
 import static org.openqa.selenium.grid.node.config.NodeOptions.DEFAULT_REGISTER_CYCLE;
 import static org.openqa.selenium.grid.node.config.NodeOptions.DEFAULT_REGISTER_PERIOD;
 import static org.openqa.selenium.grid.node.config.NodeOptions.DEFAULT_SESSION_TIMEOUT;
@@ -42,7 +44,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-@SuppressWarnings("unused")
+@SuppressWarnings({"unused", "FieldMayBeFinal"})
 @AutoService(HasRoles.class)
 public class NodeFlags implements HasRoles {
 
@@ -145,9 +147,9 @@ public class NodeFlags implements HasRoles {
               "display-name = \"Firefox Nightly\"\n" +
               "webdriver-executable = \"/usr/local/bin/geckodriver\"\n" +
               "max-sessions = 2\n" +
-              "stereotype = \"{\"browserName\": \"firefox\", \"browserVersion\": \"86\", " +
-              "\"moz:firefoxOptions\": " +
-              "{\"binary\":\"/Applications/Firefox Nightly.app/Contents/MacOS/firefox-bin\"}}\"")
+              "stereotype = \"{\\\"browserName\\\": \\\"firefox\\\", \\\"browserVersion\\\": \\\"86\\\", " +
+              "\\\"moz:firefoxOptions\\\": " +
+              "{\\\"binary\\\":\\\"/Applications/Firefox Nightly.app/Contents/MacOS/firefox-bin\\\"}}\"")
   public List<String> driverConfiguration;
 
   @Parameter(
@@ -174,11 +176,24 @@ public class NodeFlags implements HasRoles {
 
   @Parameter(
     names = "--vnc-env-var",
-    hidden = true,
     description = "Environment variable to check in order to determine if a vnc stream is " +
                   "available or not.")
   @ConfigValue(section = NODE_SECTION, name = "vnc-env-var", example = "START_XVFB")
   public String vncEnvVar = DEFAULT_VNC_ENV_VAR;
+
+  @Parameter(
+    names = "--no-vnc-port",
+    description = "If VNC is available, sets the port where the local noVNC stream can be obtained")
+  @ConfigValue(section = NODE_SECTION, name = "no-vnc-port", example = "7900")
+  public int noVncPort = DEFAULT_NO_VNC_PORT;
+
+  @Parameter(
+    names = {"--node-implementation"},
+    description = "Full classname of non-default Node implementation. This is used to manage "
+                  + "a session's lifecycle.")
+  @ConfigValue(section = NODE_SECTION, name = "implementation",
+    example = DEFAULT_NODE_IMPLEMENTATION)
+  private String nodeImplementation = DEFAULT_NODE_IMPLEMENTATION;
 
   @Override
   public Set<Role> getRoles() {

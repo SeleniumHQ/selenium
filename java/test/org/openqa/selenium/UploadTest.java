@@ -24,7 +24,6 @@ import static org.openqa.selenium.Platform.ANDROID;
 import static org.openqa.selenium.WaitingConditions.elementTextToEqual;
 import static org.openqa.selenium.support.ui.ExpectedConditions.not;
 import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOf;
-import static org.openqa.selenium.testing.drivers.Browser.LEGACY_FIREFOX_XPI;
 import static org.openqa.selenium.testing.drivers.Browser.HTMLUNIT;
 import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
 
@@ -168,7 +167,6 @@ public class UploadTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(LEGACY_FIREFOX_XPI)
   @Ignore(HTMLUNIT)
   @NoDriverBeforeTest
   @NoDriverAfterTest

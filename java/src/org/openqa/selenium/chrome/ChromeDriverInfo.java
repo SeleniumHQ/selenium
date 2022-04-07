@@ -73,7 +73,7 @@ public class ChromeDriverInfo extends ChromiumDriverInfo {
       return Optional.empty();
     }
 
-    WebDriver driver = new ChromeDriver(capabilities);
+    WebDriver driver = new ChromeDriver(new ChromeOptions().merge(capabilities));
 
     return Optional.of(driver);
   }

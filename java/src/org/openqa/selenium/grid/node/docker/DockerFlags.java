@@ -40,7 +40,7 @@ public class DockerFlags implements HasRoles {
     names = {"--docker-url"},
     description = "URL for connecting to the docker daemon"
   )
-  @ConfigValue(section = DockerOptions.DOCKER_SECTION, name = "url", example = DockerOptions.DEFAULT_DOCKER_URL)
+  @ConfigValue(section = DockerOptions.DOCKER_SECTION, name = "url", example = "\"" + DockerOptions.DEFAULT_DOCKER_URL + "\"")
   private String dockerUrl;
 
   @Parameter(
@@ -59,8 +59,8 @@ public class DockerFlags implements HasRoles {
 
   @Parameter(
     names = {"--docker", "-D"},
-    description = "Docker configs which map image name to stereotype capabilities (example " +
-                  "`-D selenium/standalone-firefox:latest '{\"browserName\": \"firefox\"}'`)",
+    description = "Docker configs which map image name to stereotype capabilities (example: " +
+                  "-D selenium/standalone-firefox:latest '{\"browserName\": \"firefox\"}')",
     arity = 2,
     variableArity = true,
     splitter = NonSplittingSplitter.class)
@@ -81,7 +81,7 @@ public class DockerFlags implements HasRoles {
     names = {"--docker-assets-path"},
     description = "Absolute path where assets will be stored"
   )
-  @ConfigValue(section = DockerOptions.DOCKER_SECTION, name = "assets-path", example = DockerOptions.DEFAULT_ASSETS_PATH)
+  @ConfigValue(section = DockerOptions.DOCKER_SECTION, name = "assets-path", example = "\"" + DockerOptions.DEFAULT_ASSETS_PATH + "\"")
   private String assetsPath;
 
   @Override

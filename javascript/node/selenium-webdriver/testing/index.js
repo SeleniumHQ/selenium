@@ -89,7 +89,7 @@ function warn(msg) {
  * Extracts the browsers for a test suite to target from the `SELENIUM_BROWSER`
  * environment variable.
  *
- * @return {!Array<!TargetBrowser>} the browsers to target.
+ * @return {{name: string, version: string, platform: string}[]} the browsers to target.
  */
 function getBrowsersToTestFromEnv() {
   let browsers = process.env['SELENIUM_BROWSER']
@@ -272,7 +272,7 @@ class Environment {
    * @return {function(): boolean} a new predicate function.
    */
   browsers(...browsersToIgnore) {
-    return () => browsersToIgnore.indexOf(this.browser.name) != -1
+    return () => browsersToIgnore.indexOf(this.browser.name) !== -1
   }
 
   /**
@@ -286,12 +286,19 @@ class Environment {
     const builder = new Builder()
     builder.disableEnvironmentOverrides()
 
+
+
     const realBuild = builder.build
     builder.build = function () {
-      builder.withCapabilities(Capabilities[browser.name].apply(Capabilities))
+      builder.forBrowser(browser.name, browser.version, browser.platform);
+
 
       if (browser.capabilities) {
-        builder.getCapabilities().merge(browser.capabilities)
+        builder.getCapabilities().merge(browser.capabilities);
+      }
+
+      if(browser.name === 'firefox') {
+        builder.setCapability('moz:debuggerAddress', true);
       }
 
       if (typeof urlOrServer === 'string') {

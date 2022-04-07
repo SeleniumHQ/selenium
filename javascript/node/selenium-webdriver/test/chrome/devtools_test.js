@@ -32,13 +32,13 @@ test.suite(
   function (env) {
     let driver
 
-    before(async function () {
+    beforeEach(async function () {
       driver = await env
         .builder()
         .setChromeOptions(new chrome.Options().headless())
         .build()
     })
-    after(async () => await driver.quit())
+    afterEach(async () => await driver.quit())
 
     it('can send commands to devtools', async function () {
       await driver.get(test.Pages.ajaxyPage)
@@ -138,23 +138,27 @@ test.suite(
     })
 
     describe('Basic Auth Injection', function () {
-      it('denies entry if username and password do not match', async function () {
-        const pageCdpConnection = await driver.createCDPConnection('page')
+      it('denies entry if username and password do not match',
+        async function () {
+          const pageCdpConnection = await driver.createCDPConnection('page')
 
-        await driver.register('random', 'random', pageCdpConnection)
-        await driver.get(fileServer.Pages.basicAuth)
-        let source = await driver.getPageSource()
-        assert.strictEqual(source.includes('Access granted!'), false)
-      })
+          await driver.register('random', 'random', pageCdpConnection)
+          await driver.get(fileServer.Pages.basicAuth)
+          let source = await driver.getPageSource()
+          assert.strictEqual(source.includes('Access granted!'), false, source)
+        })
+    })
 
-      it('grants access if username and password are a match', async function () {
-        const pageCdpConnection = await driver.createCDPConnection('page')
+    describe('Basic Auth Injection', function () {
+      it('grants access if username and password are a match',
+        async function () {
+          const pageCdpConnection = await driver.createCDPConnection('page')
 
-        await driver.register('genie', 'bottle', pageCdpConnection)
-        await driver.get(fileServer.Pages.basicAuth)
-        let source = await driver.getPageSource()
-        assert.strictEqual(source.includes('Access granted!'), true)
-      })
+          await driver.register('genie', 'bottle', pageCdpConnection)
+          await driver.get(fileServer.Pages.basicAuth)
+          let source = await driver.getPageSource()
+          assert.strictEqual(source.includes('Access granted!'), true)
+        })
     })
 
     describe('setDownloadPath', function () {
@@ -162,18 +166,18 @@ test.suite(
         const dir = await io.tmpDir()
         await driver.setDownloadPath(dir)
 
-        const url = fileServer.whereIs('/data/firefox/webextension.xpi')
+        const url = fileServer.whereIs('/data/chrome/download.bin')
         await driver.get(`data:text/html,<!DOCTYPE html>
   <div><a download="" href="${url}">Go!</a></div>`)
 
         await driver.findElement({ css: 'a' }).click()
 
-        const downloadPath = path.join(dir, 'webextension.xpi')
+        const downloadPath = path.join(dir, 'download.bin')
         await driver.wait(() => io.exists(downloadPath), 5000)
 
         const goldenPath = path.join(
           __dirname,
-          '../../lib/test/data/firefox/webextension.xpi'
+          '../../lib/test/data/chrome/download.bin'
         )
         assert.strictEqual(
           fs.readFileSync(downloadPath, 'binary'),
