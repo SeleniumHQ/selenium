@@ -20,13 +20,13 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.wait import WebDriverWait
 
 
-def testShouldImplementReprForWebDriver(driver):
+def test_should_implement_repr_for_web_driver(driver):
     driver_repr = repr(driver)
     assert type(driver).__name__ in driver_repr
     assert driver.session_id in driver_repr
 
 
-def testShouldImplementReprForWebElement(driver, pages):
+def test_should_implement_repr_for_web_element(driver, pages):
     pages.load('simpleTest.html')
     elem = driver.find_element(By.ID, "validImgTag")
     elem_repr = repr(elem)
@@ -35,7 +35,7 @@ def testShouldImplementReprForWebElement(driver, pages):
     assert elem._id in elem_repr
 
 
-def testShouldImplementReprForWait(driver):
+def test_should_implement_repr_for_wait(driver):
     wait = WebDriverWait(driver, 30)
     wait_repr = repr(wait)
     assert type(wait).__name__ in wait_repr
