@@ -19,6 +19,7 @@ package org.openqa.selenium.grid.node.local;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.Capabilities;
@@ -51,6 +52,7 @@ import java.net.URISyntaxException;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.Callable;
 import java.util.concurrent.Executors;
@@ -160,15 +162,15 @@ public class LocalNodeTest {
   public void canReturnStatusInfo() {
     NodeStatus status = node.getStatus();
     assertThat(status.getSlots().stream()
-      .filter(slot -> slot.getSession()!=null)
-      .map(Slot::getSession)
+                 .map(Slot::getSession)
+                 .filter(Objects::nonNull)
       .filter(s -> s.getId().equals(session.getId()))).isNotEmpty();
 
     node.stop(session.getId());
     status = node.getStatus();
     assertThat(status.getSlots().stream()
-      .filter(slot -> slot.getSession()!=null)
-      .map(Slot::getSession)
+                 .map(Slot::getSession)
+                 .filter(Objects::nonNull)
       .filter(s -> s.getId().equals(session.getId()))).isEmpty();
   }
 
@@ -176,14 +178,14 @@ public class LocalNodeTest {
   public void nodeStatusInfoIsImmutable() {
     NodeStatus status = node.getStatus();
     assertThat(status.getSlots().stream()
-      .filter(slot -> slot.getSession()!=null)
-      .map(slot -> slot.getSession())
+                 .map(Slot::getSession)
+                 .filter(Objects::nonNull)
       .filter(s -> s.getId().equals(session.getId()))).isNotEmpty();
 
     node.stop(session.getId());
     assertThat(status.getSlots().stream()
-      .filter(slot -> slot.getSession()!=null)
-      .map(slot -> slot.getSession())
+                 .map(Slot::getSession)
+                 .filter(Objects::nonNull)
       .filter(s -> s.getId().equals(session.getId()))).isNotEmpty();
   }
 
@@ -241,5 +243,35 @@ public class LocalNodeTest {
       HttpResponse res = node.execute(new HttpRequest(GET, String.format("/session/%s/url", id)));
       assertThat(res.isSuccessful()).isTrue();
     }
+  }
+
+  @Test
+  public void nodeDrainsAfterSessionCountIsReached() throws URISyntaxException {
+    Tracer tracer = DefaultTestTracer.createTracer();
+    EventBus bus = new GuavaEventBus();
+    URI uri = new URI("http://localhost:5678");
+    Capabilities stereotype = new ImmutableCapabilities("browserName", "bread");
+
+    LocalNode.Builder builder = LocalNode.builder(tracer, bus, uri, uri, registrationSecret)
+      .maximumConcurrentSessions(10)
+      .drainAfterSessionCount(5);
+    for (int i = 0; i < 5; i++) {
+      builder.add(stereotype, new TestSessionFactory(
+        (id, caps) -> new Session(id, uri, stereotype, caps, Instant.now())));
+    }
+    LocalNode localNode = builder.build();
+
+    assertThat(localNode.isDraining()).isFalse();
+
+    for (int i = 0; i < 5; i++) {
+      Either<WebDriverException, CreateSessionResponse> response = localNode.newSession(
+        new CreateSessionRequest(
+          ImmutableSet.of(W3C),
+          stereotype,
+          ImmutableMap.of()));
+      assertThat(response.isRight()).isTrue();
+    }
+
+    assertThat(localNode.isDraining()).isTrue();
   }
 }

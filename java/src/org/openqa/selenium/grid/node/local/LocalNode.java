@@ -42,7 +42,6 @@ import org.openqa.selenium.grid.data.NodeHeartBeatEvent;
 import org.openqa.selenium.grid.data.NodeId;
 import org.openqa.selenium.grid.data.NodeStatus;
 import org.openqa.selenium.grid.data.Session;
-import org.openqa.selenium.grid.data.SessionClosedEvent;
 import org.openqa.selenium.grid.data.Slot;
 import org.openqa.selenium.grid.data.SlotId;
 import org.openqa.selenium.grid.jmx.JMXHelper;
@@ -89,6 +88,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
@@ -117,10 +117,13 @@ public class LocalNode extends Node {
   private final Duration heartbeatPeriod;
   private final HealthCheck healthCheck;
   private final int maxSessionCount;
+  private final int configuredSessionCount;
+  private final AtomicBoolean drainAfterSessions = new AtomicBoolean();
   private final List<SessionSlot> factories;
   private final Cache<SessionId, SessionSlot> currentSessions;
   private final Cache<SessionId, TemporaryFilesystem> tempFileSystems;
   private final AtomicInteger pendingSessions = new AtomicInteger();
+  private final AtomicInteger sessionCount = new AtomicInteger();
 
   private LocalNode(
     Tracer tracer,
@@ -129,6 +132,7 @@ public class LocalNode extends Node {
     URI gridUri,
     HealthCheck healthCheck,
     int maxSessionCount,
+    int drainAfterSessionCount,
     Ticker ticker,
     Duration sessionTimeout,
     Duration heartbeatPeriod,
@@ -140,10 +144,14 @@ public class LocalNode extends Node {
 
     this.externalUri = Require.nonNull("Remote node URI", uri);
     this.gridUri = Require.nonNull("Grid URI", gridUri);
-    this.maxSessionCount = Math.min(Require.positive("Max session count", maxSessionCount), factories.size());
+    this.maxSessionCount = Math.min(
+      Require.positive("Max session count", maxSessionCount), factories.size());
     this.heartbeatPeriod = heartbeatPeriod;
     this.factories = ImmutableList.copyOf(factories);
     Require.nonNull("Registration secret", registrationSecret);
+    this.configuredSessionCount = drainAfterSessionCount;
+    this.drainAfterSessions.set(this.configuredSessionCount > 0);
+    this.sessionCount.set(drainAfterSessionCount);
 
     this.healthCheck = healthCheck == null ?
                        () -> {
@@ -216,18 +224,6 @@ public class LocalNode extends Node {
       heartbeatPeriod.getSeconds(),
       heartbeatPeriod.getSeconds(),
       TimeUnit.SECONDS);
-
-    bus.addListener(SessionClosedEvent.listener(id -> {
-      // Shouldn't we check that the session actually belongs to this Node?
-      // Listen to session terminated events, so we know when to fire the NodeDrainComplete event
-      if (this.isDraining()) {
-        int done = pendingSessions.decrementAndGet();
-        if (done <= 0) {
-          LOG.info("Firing node drain complete message");
-          bus.fire(new NodeDrainComplete(this.getId()));
-        }
-      }
-    }));
 
     Runtime.getRuntime().addShutdownHook(new Thread(this::stopAllSessions));
     new JMXHelper().register(this);
@@ -358,6 +354,8 @@ public class LocalNode extends Node {
         ActiveSession session = possibleSession.right();
         currentSessions.put(session.getId(), slotToUse);
 
+        checkSessionCount();
+
         SessionId sessionId = session.getId();
         Capabilities caps = session.getCapabilities();
         SESSION_ID.accept(span, sessionId);
@@ -487,6 +485,15 @@ public class LocalNode extends Node {
 
     currentSessions.invalidate(id);
     tempFileSystems.invalidate(id);
+
+    // Decrement pending sessions if Node is draining
+    if (this.isDraining()) {
+      int done = pendingSessions.decrementAndGet();
+      if (done <= 0) {
+        LOG.info("Node draining complete!");
+        bus.fire(new NodeDrainComplete(this.getId()));
+      }
+    }
   }
 
   private void stopAllSessions() {
@@ -601,6 +608,20 @@ public class LocalNode extends Node {
     }
   }
 
+  private void checkSessionCount() {
+    if (this.drainAfterSessions.get()) {
+      int remainingSessions = this.sessionCount.decrementAndGet();
+      LOG.log(
+        Debug.getDebugLogLevel(),
+        String.format("%s remaining sessions before draining Node", remainingSessions));
+      if (remainingSessions <= 0) {
+        LOG.info(String.format("Draining Node, configured sessions value (%s) has been reached.",
+                               this.configuredSessionCount));
+        drain();
+      }
+    }
+  }
+
   private Map<String, Object> toJson() {
     return ImmutableMap.of(
       "id", getId(),
@@ -620,7 +641,8 @@ public class LocalNode extends Node {
     private final URI gridUri;
     private final Secret registrationSecret;
     private final ImmutableList.Builder<SessionSlot> factories;
-    private int maxCount = NodeOptions.DEFAULT_MAX_SESSIONS;
+    private int maxSessions = NodeOptions.DEFAULT_MAX_SESSIONS;
+    private int drainAfterSessionCount = NodeOptions.DEFAULT_DRAIN_AFTER_SESSION_COUNT;
     private Ticker ticker = Ticker.systemTicker();
     private Duration sessionTimeout = Duration.ofSeconds(NodeOptions.DEFAULT_SESSION_TIMEOUT);
     private HealthCheck healthCheck;
@@ -650,7 +672,12 @@ public class LocalNode extends Node {
     }
 
     public Builder maximumConcurrentSessions(int maxCount) {
-      this.maxCount = Require.positive("Max session count", maxCount);
+      this.maxSessions = Require.positive("Max session count", maxCount);
+      return this;
+    }
+
+    public Builder drainAfterSessionCount(int sessionCount) {
+      this.drainAfterSessionCount = sessionCount;
       return this;
     }
 
@@ -671,7 +698,8 @@ public class LocalNode extends Node {
         uri,
         gridUri,
         healthCheck,
-        maxCount,
+        maxSessions,
+        drainAfterSessionCount,
         ticker,
         sessionTimeout,
         heartbeatPeriod,

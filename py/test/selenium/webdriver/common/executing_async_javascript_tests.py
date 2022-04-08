@@ -30,14 +30,14 @@ def reset_timeouts(driver):
     driver.set_script_timeout(30)
 
 
-def testShouldNotTimeoutIfCallbackInvokedImmediately(driver, pages):
+def test_should_not_timeout_if_callback_invoked_immediately(driver, pages):
     pages.load("ajaxy_page.html")
     result = driver.execute_async_script("arguments[arguments.length - 1](123);")
     assert type(result) == int
     assert 123 == result
 
 
-def testShouldBeAbleToReturnJavascriptPrimitivesFromAsyncScripts_NeitherNoneNorUndefined(driver, pages):
+def test_should_be_able_to_return_javascript_primitives_from_async_scripts_neither_none_nor_undefined(driver, pages):
     pages.load("ajaxy_page.html")
     assert 123 == driver.execute_async_script("arguments[arguments.length - 1](123);")
     assert "abc" == driver.execute_async_script("arguments[arguments.length - 1]('abc');")
@@ -45,13 +45,13 @@ def testShouldBeAbleToReturnJavascriptPrimitivesFromAsyncScripts_NeitherNoneNorU
     assert bool(driver.execute_async_script("arguments[arguments.length - 1](true);"))
 
 
-def testShouldBeAbleToReturnJavascriptPrimitivesFromAsyncScripts_NullAndUndefined(driver, pages):
+def test_should_be_able_to_return_javascript_primitives_from_async_scripts_null_and_undefined(driver, pages):
     pages.load("ajaxy_page.html")
     assert driver.execute_async_script("arguments[arguments.length - 1](null)") is None
     assert driver.execute_async_script("arguments[arguments.length - 1]()") is None
 
 
-def testShouldBeAbleToReturnAnArrayLiteralFromAnAsyncScript(driver, pages):
+def test_should_be_able_to_return_an_array_literal_from_an_async_script(driver, pages):
     pages.load("ajaxy_page.html")
     result = driver.execute_async_script("arguments[arguments.length - 1]([]);")
     assert "Expected not to be null!", result is not None
@@ -59,7 +59,7 @@ def testShouldBeAbleToReturnAnArrayLiteralFromAnAsyncScript(driver, pages):
     assert len(result) == 0
 
 
-def testShouldBeAbleToReturnAnArrayObjectFromAnAsyncScript(driver, pages):
+def test_should_be_able_to_return_an_array_object_from_an_async_script(driver, pages):
     pages.load("ajaxy_page.html")
     result = driver.execute_async_script("arguments[arguments.length - 1](new Array());")
     assert "Expected not to be null!", result is not None
@@ -67,7 +67,7 @@ def testShouldBeAbleToReturnAnArrayObjectFromAnAsyncScript(driver, pages):
     assert len(result) == 0
 
 
-def testShouldBeAbleToReturnArraysOfPrimitivesFromAsyncScripts(driver, pages):
+def test_should_be_able_to_return_arrays_of_primitives_from_async_scripts(driver, pages):
     pages.load("ajaxy_page.html")
 
     result = driver.execute_async_script(
@@ -83,7 +83,7 @@ def testShouldBeAbleToReturnArraysOfPrimitivesFromAsyncScripts(driver, pages):
     assert len(result) == 0
 
 
-def testShouldBeAbleToReturnWebElementsFromAsyncScripts(driver, pages):
+def test_should_be_able_to_return_web_elements_from_async_scripts(driver, pages):
     pages.load("ajaxy_page.html")
 
     result = driver.execute_async_script("arguments[arguments.length - 1](document.body);")
@@ -92,7 +92,7 @@ def testShouldBeAbleToReturnWebElementsFromAsyncScripts(driver, pages):
 
 
 @pytest.mark.xfail_safari
-def testShouldBeAbleToReturnArraysOfWebElementsFromAsyncScripts(driver, pages):
+def test_should_be_able_to_return_arrays_of_web_elements_from_async_scripts(driver, pages):
     pages.load("ajaxy_page.html")
 
     result = driver.execute_async_script(
@@ -108,27 +108,27 @@ def testShouldBeAbleToReturnArraysOfWebElementsFromAsyncScripts(driver, pages):
     # assert list_[0] == list_[1]
 
 
-def testShouldTimeoutIfScriptDoesNotInvokeCallback(driver, pages):
+def test_should_timeout_if_script_does_not_invoke_callback(driver, pages):
     pages.load("ajaxy_page.html")
     with pytest.raises(TimeoutException):
         # Script is expected to be async and explicitly callback, so this should timeout.
         driver.execute_async_script("return 1 + 2;")
 
 
-def testShouldTimeoutIfScriptDoesNotInvokeCallbackWithAZeroTimeout(driver, pages):
+def test_should_timeout_if_script_does_not_invoke_callback_with_azero_timeout(driver, pages):
     pages.load("ajaxy_page.html")
     with pytest.raises(TimeoutException):
         driver.execute_async_script("window.setTimeout(function() {}, 0);")
 
 
-def testShouldNotTimeoutIfScriptCallsbackInsideAZeroTimeout(driver, pages):
+def test_should_not_timeout_if_script_callsback_inside_azero_timeout(driver, pages):
     pages.load("ajaxy_page.html")
     driver.execute_async_script(
         """var callback = arguments[arguments.length - 1];
         window.setTimeout(function() { callback(123); }, 0)""")
 
 
-def testShouldTimeoutIfScriptDoesNotInvokeCallbackWithLongTimeout(driver, pages):
+def test_should_timeout_if_script_does_not_invoke_callback_with_long_timeout(driver, pages):
     driver.set_script_timeout(0.5)
     pages.load("ajaxy_page.html")
     with pytest.raises(TimeoutException):
@@ -137,7 +137,7 @@ def testShouldTimeoutIfScriptDoesNotInvokeCallbackWithLongTimeout(driver, pages)
             window.setTimeout(callback, 1500);""")
 
 
-def testShouldDetectPageLoadsWhileWaitingOnAnAsyncScriptAndReturnAnError(driver, pages):
+def test_should_detect_page_loads_while_waiting_on_an_async_script_and_return_an_error(driver, pages):
     pages.load("ajaxy_page.html")
     driver.set_script_timeout(0.1)
     with pytest.raises(WebDriverException):
@@ -145,13 +145,13 @@ def testShouldDetectPageLoadsWhileWaitingOnAnAsyncScriptAndReturnAnError(driver,
         driver.execute_async_script("window.location = '{0}';".format(url))
 
 
-def testShouldCatchErrorsWhenExecutingInitialScript(driver, pages):
+def test_should_catch_errors_when_executing_initial_script(driver, pages):
     pages.load("ajaxy_page.html")
     with pytest.raises(WebDriverException):
         driver.execute_async_script("throw Error('you should catch this!');")
 
 
-def testShouldBeAbleToExecuteAsynchronousScripts(driver, pages):
+def test_should_be_able_to_execute_asynchronous_scripts(driver, pages):
     pages.load("ajaxy_page.html")
 
     typer = driver.find_element(by=By.NAME, value="typer")
@@ -174,14 +174,14 @@ def testShouldBeAbleToExecuteAsynchronousScripts(driver, pages):
         "There should be 1 DIV (for the butter message) + 1 DIV (for the new label)"
 
 
-def testShouldBeAbleToPassMultipleArgumentsToAsyncScripts(driver, pages):
+def test_should_be_able_to_pass_multiple_arguments_to_async_scripts(driver, pages):
     pages.load("ajaxy_page.html")
     result = driver.execute_async_script("""
         arguments[arguments.length - 1](arguments[0] + arguments[1]);""", 1, 2)
     assert 3 == result
 
 # TODO DavidBurns Disabled till Java WebServer is used
-# def testShouldBeAbleToMakeXMLHttpRequestsAndWaitForTheResponse(driver, pages):
+# def test_should_be_able_to_make_xmlhttp_requests_and_wait_for_the_response(driver, pages):
 #    script = """
 #        var url = arguments[0];
 #        var callback = arguments[arguments.length - 1];
