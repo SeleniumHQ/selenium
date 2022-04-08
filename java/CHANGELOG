@@ -1,3 +1,38 @@
+v4.1.3
+======
+
+* Supported CDP versions: 85, 97, 98, 99
+* [grid] Using DefaultSlotMatcher in DockerSessionFactory
+* Removing XpiDriverService and XpiDriverInfo
+* Implement event support for pointer device actions (#10198)
+* Removing STP from SafariDriverService
+* Fix modifier keys scope on Java Actions (#10333)
+* Guarding runnables when scheduleAtFixedRate is used
+* Acknowledging proxy config set in ClientConfig
+* Make driver.close() tolerant to CDP failures (#10346)
+* Fix issue "Incompatible types for '-' operation" in the Javascript executor example
+* [grid] Refactoring rejectEvent and guarding UUID parsing
+* [grid] Querying Node status only once at registration
+* Add deprecated warnings to OperaDriver and OperaOptions
+* Remove references to invalid errors (#10209)
+* Removing deprecated methods from WebDriverWait, HttpMessage, CommandLine and DesiredCapabilities
+* Avoid using ServiceLoader while creating FirefoxDriver instance
+* [grid] Matching webview2 browser name with EdgeDriverService
+* [grid] Pinging relay service to update health-check
+* [grid] Adding a configuration flag to set a noVNC port.
+* switch ByClassName locator from to "class name" (#10355)
+* Ensure DevTools is augmented when using DriverService
+* Fixed reading the data from the stream and fixed the size of chunks (#10409)
+* [grid] Do not match empty capabilities
+* [grid] Node capacity is given by available slots and usage below maxSessions.
+* [grid] Grid is ready when Nodes are up and have availability.
+* [grid] Improving /readyz return http code.
+* Retry filter not used by default
+* Add exponential backoff policy to the Retry request filter
+* [grid] Preventing XSS attack.
+
+
+
 v4.1.2
 ======
 

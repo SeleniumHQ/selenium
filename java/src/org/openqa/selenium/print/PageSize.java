@@ -28,6 +28,11 @@ public class PageSize {
     this.height = 21.59;
     this.width = 27.94;
   }
+
+  public PageSize(double height, double width) {
+    this.height = height;
+    this.width = width;
+  }
   public double getHeight() {
     return height;
   }

@@ -114,7 +114,7 @@ Selenium WebDriver is often used as a basis for testing web applications.  Here 
             self.browser = webdriver.Firefox()
             self.addCleanup(self.browser.quit)
 
-        def testPageTitle(self):
+        def test_page_title(self):
             self.browser.get('http://www.google.com')
             self.assertIn('Google', self.browser.title)
 

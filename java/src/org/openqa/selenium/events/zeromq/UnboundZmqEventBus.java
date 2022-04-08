@@ -21,8 +21,8 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 
 import com.google.common.collect.EvictingQueue;
 
-import net.jodah.failsafe.Failsafe;
-import net.jodah.failsafe.RetryPolicy;
+import dev.failsafe.Failsafe;
+import dev.failsafe.RetryPolicy;
 
 import org.openqa.selenium.events.Event;
 import org.openqa.selenium.events.EventBus;
@@ -110,12 +110,13 @@ class UnboundZmqEventBus implements EventBus {
     String connectionMessage = String.format("Connecting to %s and %s", publishConnection, subscribeConnection);
     LOG.info(connectionMessage);
 
-    RetryPolicy<Object> retryPolicy = new RetryPolicy<>()
+    RetryPolicy<Object> retryPolicy = RetryPolicy.builder()
       .withMaxAttempts(5)
       .withDelay(5, 10, ChronoUnit.SECONDS)
       .onFailedAttempt(e -> LOG.log(Level.WARNING, String.format("%s failed", connectionMessage)))
       .onRetry(e -> LOG.log(Level.WARNING, String.format("Failure #%s. Retrying.", e.getAttemptCount())))
-      .onRetriesExceeded(e -> LOG.log(Level.WARNING, "Connection aborted."));
+      .onRetriesExceeded(e -> LOG.log(Level.WARNING, "Connection aborted."))
+      .build();
 
     // Access to the zmq socket is safe here: no threads.
     Failsafe.with(retryPolicy).run(

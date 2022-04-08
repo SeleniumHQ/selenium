@@ -17,15 +17,6 @@
 
 package org.openqa.selenium.grid.router;
 
-import static org.openqa.selenium.remote.HttpSessionId.getSessionId;
-import static org.openqa.selenium.remote.RemoteTags.SESSION_ID;
-import static org.openqa.selenium.remote.RemoteTags.SESSION_ID_EVENT;
-import static org.openqa.selenium.remote.http.Contents.asJson;
-import static org.openqa.selenium.remote.tracing.Tags.EXCEPTION;
-import static org.openqa.selenium.remote.tracing.Tags.HTTP_REQUEST;
-import static org.openqa.selenium.remote.tracing.Tags.HTTP_REQUEST_EVENT;
-import static org.openqa.selenium.remote.tracing.Tags.HTTP_RESPONSE;
-
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.RemovalListener;
@@ -39,6 +30,7 @@ import org.openqa.selenium.grid.web.ReverseProxyHandler;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.net.Urls;
 import org.openqa.selenium.remote.SessionId;
+import org.openqa.selenium.remote.http.ClientConfig;
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpRequest;
@@ -59,6 +51,15 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+
+import static org.openqa.selenium.remote.HttpSessionId.getSessionId;
+import static org.openqa.selenium.remote.RemoteTags.SESSION_ID;
+import static org.openqa.selenium.remote.RemoteTags.SESSION_ID_EVENT;
+import static org.openqa.selenium.remote.http.Contents.asJson;
+import static org.openqa.selenium.remote.tracing.Tags.EXCEPTION;
+import static org.openqa.selenium.remote.tracing.Tags.HTTP_REQUEST;
+import static org.openqa.selenium.remote.tracing.Tags.HTTP_REQUEST_EVENT;
+import static org.openqa.selenium.remote.tracing.Tags.HTTP_RESPONSE;
 
 class HandleSession implements HttpHandler {
 
@@ -157,7 +158,10 @@ class HandleSession implements HttpHandler {
       () -> {
         Session session = sessions.get(id);
         URL url = Urls.fromUri(session.getUri());
-        HttpClient client = httpClients.get(url, () -> httpClientFactory.createClient(url));
+        ClientConfig config = ClientConfig.defaultConfig()
+          .baseUrl(url)
+          .withRetries();
+        HttpClient client = httpClients.get(url, () -> httpClientFactory.createClient(config));
         return new ReverseProxyHandler(tracer, client);
       }
     );
