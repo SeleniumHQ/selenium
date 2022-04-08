@@ -118,9 +118,27 @@ def edge():
     )
     """ % (edge, sha, v)
 
-    driver = "https://msedgedriver.azureedge.net/%s/edgedriver_mac64.zip" % v
-    sha = calculate_hash(driver)
+    return content
 
+def edgedriver():
+    r = http.request('GET', 'https://msedgedriver.azureedge.net/LATEST_STABLE')
+    v = r.data.decode('utf-16').strip()
+
+    content = ""
+
+    linux = "https://msedgedriver.azureedge.net/%s/edgedriver_linux64.zip" % v
+    sha = calculate_hash(linux)
+    content = content + """
+    http_archive(
+        name = "linux_edgedriver",
+        url = "%s",
+        sha256 = "%s",
+        build_file_content = "exports_files([\\"msedgedriver\\"])",
+    )
+    """ % (linux, sha)
+
+    mac = "https://msedgedriver.azureedge.net/%s/edgedriver_mac64.zip" % v
+    sha = calculate_hash(mac)
     content = content + """
     http_archive(
         name = "mac_edgedriver",
@@ -128,8 +146,7 @@ def edge():
         sha256 = "%s",
         build_file_content = "exports_files([\\"msedgedriver\\"])",
     )
-    """ % (driver, sha)
-
+    """ % (mac, sha)
     return content
 
 def geckodriver():
@@ -209,6 +226,7 @@ def pin_browsers():
     content = content + firefox()
     content = content + geckodriver()
     content = content + edge()
+    content = content + edgedriver()
     content = content + chrome()
     content = content + chromedriver()
 
