@@ -15,7 +15,6 @@
 # specific language governing permissions and limitations
 # under the License.
 
-from typing import NoReturn
 import warnings
 
 from selenium.webdriver.remote.webdriver import WebDriver as RemoteWebDriver
@@ -115,7 +114,7 @@ class WebDriver(RemoteWebDriver):
             keep_alive=keep_alive)
         self._is_remote = False
 
-    def quit(self) -> NoReturn:
+    def quit(self) -> None:
         RemoteWebDriver.quit(self)
         self.iedriver.stop()
 
