@@ -28,25 +28,11 @@ suite(function (env) {
   describe('WebDriver.actions()', function () {
     let driver
 
-    before(async function () {
+    beforeEach(async function () {
       driver = await env.builder().build()
     })
 
-    afterEach(async function () {
-      try {
-        await driver.actions().clear()
-      } catch (e) {
-        if (
-          e instanceof error.UnsupportedOperationError ||
-          e instanceof error.UnknownCommandError
-        ) {
-          return
-        }
-        throw e
-      }
-    })
-
-    after(function () {
+    afterEach(function () {
       return driver.quit()
     })
 
