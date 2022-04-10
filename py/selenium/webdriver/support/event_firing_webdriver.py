@@ -360,5 +360,6 @@ class EventFiringWebElement(object):
             self._listener.on_exception(e, self._driver)
             raise
 
+
 # Register a virtual subclass.
 WebElement.register(EventFiringWebElement)
