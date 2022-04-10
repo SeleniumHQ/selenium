@@ -782,4 +782,4 @@ class WebElement(BaseWebElement):
             elif '{"status":405,"value":["GET","HEAD","DELETE"]}' in e.__str__():
                 return filename
             else:
-                raise e
+                raise
