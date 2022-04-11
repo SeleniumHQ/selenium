@@ -2530,7 +2530,7 @@ class WebElement {
 
       // The W3C protocol requires keys to be specified as an array where
       // each element is a single key.
-      keys.push(...key.split(''))
+      keys.push(...key)
     })
 
     if (!this.driver_.fileDetector_) {
