@@ -18,7 +18,6 @@
 'use strict'
 
 const assert = require('assert')
-const error = require('../lib/error')
 const fileServer = require('../lib/test/fileserver')
 const { ignore, Pages, suite } = require('../lib/test')
 const { Key, Origin } = require('../lib/input')
@@ -28,25 +27,11 @@ suite(function (env) {
   describe('WebDriver.actions()', function () {
     let driver
 
-    before(async function () {
+    beforeEach(async function () {
       driver = await env.builder().build()
     })
 
-    afterEach(async function () {
-      try {
-        await driver.actions().clear()
-      } catch (e) {
-        if (
-          e instanceof error.UnsupportedOperationError ||
-          e instanceof error.UnknownCommandError
-        ) {
-          return
-        }
-        throw e
-      }
-    })
-
-    after(function () {
+    afterEach(function () {
       return driver.quit()
     })
 
@@ -121,12 +106,6 @@ suite(function (env) {
         assert.strictEqual(await box.getAttribute('class'), 'blue')
       })
 
-    // For some reason for Chrome 75 we need to wrap this test in an extra
-    // describe for the afterEach hook above to properly clear action sequences.
-    // This appears to be a quirk of the timing around mocha tests and not
-    // necessarily a bug in the chromedriver.
-    // TODO(jleyba): dig into this more so we can remove this hack.
-    // describe('dragAndDrop()', function () {
     it('dragAndDrop()', async function () {
       await driver.get(fileServer.whereIs('/data/actions/drag.html'))
 
@@ -144,7 +123,6 @@ suite(function (env) {
       assert.strictEqual(await slide.getCssValue('left'), '206px')
       assert.strictEqual(await slide.getCssValue('top'), '1px')
     })
-    //  })
 
     it('move()', async function () {
       await driver.get(fileServer.whereIs('/data/actions/drag.html'))

@@ -15,41 +15,24 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.print;
+package org.openqa.selenium.html5;
 
-public class PageMargin {
-  private final double top;
-  private final double bottom;
-  private final double left;
-  private final double right;
+import java.util.Set;
 
-  public PageMargin() {
-    this.top = 1.0;
-    this.bottom = 1.0;
-    this.left = 1.0;
-    this.right = 1.0;
-  }
+/**
+ * Represents common operations available for all web storage types (session or local).
+ */
+public interface Storage {
 
-  public PageMargin(double top, double bottom, double left, double right) {
-    this.top = top;
-    this.bottom = bottom;
-    this.left = left;
-    this.right = right;
-  }
+  String getItem(String key);
 
-  public double getTop() {
-    return top;
-  }
+  Set<String> keySet();
 
-  public double getBottom() {
-    return bottom;
-  }
+  void setItem(String key, String value);
 
-  public double getLeft() {
-    return left;
-  }
+  String removeItem(String key);
 
-  public double getRight() {
-    return right;
-  }
+  void clear();
+
+  int size();
 }
