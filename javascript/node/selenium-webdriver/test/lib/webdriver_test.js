@@ -257,8 +257,9 @@ describe('WebDriver', function () {
         .andReturnError(new StubError())
         .end()
 
-      const driver = WebDriver.createSession(executor,
-        { browserName: 'firefox' })
+      const driver = WebDriver.createSession(executor, {
+        browserName: 'firefox',
+      })
       return driver.getSession().then(fail, assertIsStubError)
     })
 
@@ -334,7 +335,7 @@ describe('WebDriver', function () {
     let verifyError = expectedError(
       error.NoSuchSessionError,
       'This driver instance does not have a valid session ID ' +
-      '(did you call WebDriver.quit()?) and may no longer be used.'
+        '(did you call WebDriver.quit()?) and may no longer be used.'
     )
 
     let driver = executor.createDriver()
@@ -522,14 +523,14 @@ describe('WebDriver', function () {
       let executor = new FakeExecutor()
         .expect(CName.EXECUTE_SCRIPT)
         .withParameters({
-          script: 'return (' + function () { } + ').apply(null, arguments);',
+          script: 'return (' + function () {} + ').apply(null, arguments);',
           args: [],
         })
         .andReturnSuccess(null)
         .end()
 
       const driver = executor.createDriver()
-      return driver.executeScript(function () { })
+      return driver.executeScript(function () {})
     })
 
     it('simpleArgumentConversion', function () {
@@ -629,11 +630,11 @@ describe('WebDriver', function () {
       let executor = new FakeExecutor()
 
       const arg = Promise.reject(new StubError())
-      arg.catch(function () { }) // Suppress default handler.
+      arg.catch(function () {}) // Suppress default handler.
 
       const driver = executor.createDriver()
       return driver
-        .executeScript(function () { }, arg)
+        .executeScript(function () {}, arg)
         .then(fail, assertIsStubError)
     })
   })
@@ -641,11 +642,11 @@ describe('WebDriver', function () {
   describe('executeAsyncScript', function () {
     it('failsIfArgumentIsARejectedPromise', function () {
       const arg = Promise.reject(new StubError())
-      arg.catch(function () { }) // Suppress default handler.
+      arg.catch(function () {}) // Suppress default handler.
 
       const driver = new FakeExecutor().createDriver()
       return driver
-        .executeAsyncScript(function () { }, arg)
+        .executeAsyncScript(function () {}, arg)
         .then(fail, assertIsStubError)
     })
   })
@@ -937,6 +938,21 @@ describe('WebDriver', function () {
       const driver = executor.createDriver()
       const element = new WebElement(driver, 'one')
       return element.sendKeys(1, 2, 'abc', 3)
+    })
+
+    it('sendKeysWithEmojiRepresentedByPairOfCodePoints', function () {
+      let executor = new FakeExecutor()
+        .expect(CName.SEND_KEYS_TO_ELEMENT, {
+          id: WebElement.buildId('one'),
+          text: '\uD83D\uDE00',
+          value: ['\uD83D\uDE00'],
+        })
+        .andReturnSuccess()
+        .end()
+
+      const driver = executor.createDriver()
+      const element = new WebElement(driver, 'one')
+      return element.sendKeys('\uD83D\uDE00')
     })
 
     it('convertsVarArgsIntoStrings_promisedArgs', function () {
@@ -1927,7 +1943,7 @@ describe('WebDriver', function () {
       })
 
       it('passes through function properties', function () {
-        function bar() { }
+        function bar() {}
         return runDeserializeTest(
           [{ foo: { bar: 123 }, func: bar }],
           [{ foo: { bar: 123 }, func: bar }]
