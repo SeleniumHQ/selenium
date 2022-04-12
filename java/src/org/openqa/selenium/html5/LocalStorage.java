@@ -17,23 +17,9 @@
 
 package org.openqa.selenium.html5;
 
-import java.util.Set;
-
 /**
  * Represents the local storage for the site currently opened in the browser. Each site has its own
  * separate storage area.
  */
-public interface LocalStorage {
-
-  String getItem(String key);
-
-  Set<String> keySet();
-
-  void setItem(String key, String value);
-
-  String removeItem(String key);
-
-  void clear();
-
-  int size();
+public interface LocalStorage extends Storage {
 }

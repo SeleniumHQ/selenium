@@ -85,6 +85,13 @@ public enum Platform {
     }
   },
 
+  WIN11("windows 11", "win11") {
+    @Override
+    public Platform family() {
+      return WINDOWS;
+    }
+  },
+
   MAC("mac", "darwin", "macOS", "mac os x", "os x") {
     @Override
     public Platform family() {

@@ -15,29 +15,24 @@
 // specific language governing permissions and limitations
 // under the License.
 
+package org.openqa.selenium.html5;
+
+import java.util.Set;
+
 /**
- * @fileoverview Initializes the remote client UI.
+ * Represents common operations available for all web storage types (session or local).
  */
+public interface Storage {
 
-goog.require('remote.ui.Client');
-goog.require('webdriver.http.Executor');
-goog.require('webdriver.http.XhrClient');
+  String getItem(String key);
 
+  Set<String> keySet();
 
-goog.exportSymbol('init', function() {
-  // On the java Selenium server, this script and other files in the UI
-  // are served by org.openqa.selenium.remote.server.DriverServlet under
-  // the /static/resource path.  We need to drop this so commands are
-  // relative to the DriverServlet's root.
-  var loc = window.location;
-  var href = [
-    loc.protocol, '//', loc.host,
-    loc.pathname.replace(/\/static\/resource(?:\/[^\/]*)?$/, '')
-  ].join('');
+  void setItem(String key, String value);
 
-  var executor = new webdriver.http.Executor(
-      new webdriver.http.XhrClient(href));
+  String removeItem(String key);
 
-  var client = new remote.ui.Client(href, executor);
-  client.init();
-});
+  void clear();
+
+  int size();
+}

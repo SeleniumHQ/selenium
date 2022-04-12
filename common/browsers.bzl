@@ -18,7 +18,7 @@ chrome_data = select({
 })
 
 edge_data = select({
-    "@selenium//common:use_pinned_macos_chrome": [
+    "@selenium//common:use_pinned_macos_edge": [
         "@mac_edgedriver//:msedgedriver",
         "@mac_edge//:Edge.app",
     ],

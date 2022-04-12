@@ -40,7 +40,7 @@ AUTODETECT_PROXY = {
 }
 
 
-def testCanAddManualProxyToDesiredCapabilities():
+def test_can_add_manual_proxy_to_desired_capabilities():
     proxy = Proxy()
     proxy.http_proxy = MANUAL_PROXY['httpProxy']
     proxy.ftp_proxy = MANUAL_PROXY['ftpProxy']
@@ -60,7 +60,7 @@ def testCanAddManualProxyToDesiredCapabilities():
     assert expected_capabilities == desired_capabilities
 
 
-def testCanAddAutodetectProxyToDesiredCapabilities():
+def test_can_add_autodetect_proxy_to_desired_capabilities():
     proxy = Proxy()
     proxy.auto_detect = AUTODETECT_PROXY['autodetect']
 
@@ -73,7 +73,7 @@ def testCanAddAutodetectProxyToDesiredCapabilities():
     assert expected_capabilities == desired_capabilities
 
 
-def testCanAddPACProxyToDesiredCapabilities():
+def test_can_add_pacproxy_to_desired_capabilities():
     proxy = Proxy()
     proxy.proxy_autoconfig_url = PAC_PROXY['proxyAutoconfigUrl']
 
@@ -86,7 +86,7 @@ def testCanAddPACProxyToDesiredCapabilities():
     assert expected_capabilities == desired_capabilities
 
 
-def testCanNotChangeInitializedProxyType():
+def test_can_not_change_initialized_proxy_type():
     proxy = Proxy(raw={'proxyType': 'direct'})
     with pytest.raises(Exception):
         proxy.proxy_type = ProxyType.SYSTEM
@@ -96,7 +96,7 @@ def testCanNotChangeInitializedProxyType():
         proxy.proxy_type = ProxyType.SYSTEM
 
 
-def testCanInitManualProxy():
+def test_can_init_manual_proxy():
     proxy = Proxy(raw=MANUAL_PROXY)
 
     assert ProxyType.MANUAL == proxy.proxy_type
@@ -110,19 +110,19 @@ def testCanInitManualProxy():
     assert MANUAL_PROXY['socksVersion'] == proxy.socksVersion
 
 
-def testCanInitAutodetectProxy():
+def test_can_init_autodetect_proxy():
     proxy = Proxy(raw=AUTODETECT_PROXY)
     assert ProxyType.AUTODETECT == proxy.proxy_type
     assert AUTODETECT_PROXY['autodetect'] == proxy.auto_detect
 
 
-def testCanInitPACProxy():
+def test_can_init_pacproxy():
     proxy = Proxy(raw=PAC_PROXY)
     assert ProxyType.PAC == proxy.proxy_type
     assert PAC_PROXY['proxyAutoconfigUrl'] == proxy.proxy_autoconfig_url
 
 
-def testCanInitEmptyProxy():
+def test_can_init_empty_proxy():
     proxy = Proxy()
     assert ProxyType.UNSPECIFIED == proxy.proxy_type
     assert '' == proxy.http_proxy
