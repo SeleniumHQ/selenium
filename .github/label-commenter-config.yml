@@ -70,7 +70,7 @@ labels:
 
           You can see if the feature is passing in the [Web Platform Tests](https://wpt.fyi/results/webdriver/tests).
 
-          If it is something new, please [Create an Issue](https://github.com/mozilla/geckodriver/issues/new) with the GeckoDriver team.
+          If it is something new, please [create an Issue](https://github.com/mozilla/geckodriver/issues/new) with the GeckoDriver team.
 
           Feel free to comment the issues that you raise back in this issue. Thank you.
         action: close
@@ -83,7 +83,7 @@ labels:
 
           You can see if the feature is passing in the [Web Platform Tests](https://wpt.fyi/results/webdriver/tests).
 
-          If it is something new, please [Create an Issue](https://github.com/MicrosoftEdge/EdgeWebDriver/issues/new) with the MSEdgeDriver team.
+          If it is something new, please [create an Issue](https://github.com/MicrosoftEdge/EdgeWebDriver/issues/new) with the MSEdgeDriver team.
 
           Feel free to comment the issues that you raise back in this issue. Thank you.
         action: close
