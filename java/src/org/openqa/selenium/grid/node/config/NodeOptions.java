@@ -69,6 +69,7 @@ public class NodeOptions {
   public static final int DEFAULT_MAX_SESSIONS = Runtime.getRuntime().availableProcessors();
   public static final int DEFAULT_HEARTBEAT_PERIOD = 60;
   public static final int DEFAULT_SESSION_TIMEOUT = 300;
+  public static final int DEFAULT_DRAIN_AFTER_SESSION_COUNT = 0;
   static final String NODE_SECTION = "node";
   static final boolean DEFAULT_DETECT_DRIVERS = true;
   static final boolean OVERRIDE_MAX_SESSIONS = false;
@@ -230,6 +231,13 @@ public class NodeOptions {
       config.getInt(NODE_SECTION, "session-timeout").orElse(DEFAULT_SESSION_TIMEOUT),
       10);
     return Duration.ofSeconds(seconds);
+  }
+
+  public int getDrainAfterSessionCount() {
+    return Math.max(
+      config.getInt(NODE_SECTION, "drain-after-session-count")
+        .orElse(DEFAULT_DRAIN_AFTER_SESSION_COUNT),
+      DEFAULT_DRAIN_AFTER_SESSION_COUNT);
   }
 
   @VisibleForTesting

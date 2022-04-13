@@ -76,7 +76,7 @@ def pages(request, driver, pages):
     driver.delete_all_cookies()
 
 
-def testAddCookie(cookie, driver):
+def test_add_cookie(cookie, driver):
     driver.add_cookie(cookie)
     returned = driver.execute_script('return document.cookie')
     assert cookie['name'] in returned
@@ -85,7 +85,7 @@ def testAddCookie(cookie, driver):
 @pytest.mark.xfail_firefox(reason='sameSite cookie attribute not implemented')
 @pytest.mark.xfail_remote(reason='sameSite cookie attribute not implemented')
 @pytest.mark.xfail_safari
-def testAddCookieSameSiteStrict(same_site_cookie_strict, driver):
+def test_add_cookie_same_site_strict(same_site_cookie_strict, driver):
     driver.add_cookie(same_site_cookie_strict)
     returned = driver.get_cookie('foo')
     assert 'sameSite' in returned and returned['sameSite'] == 'Strict'
@@ -94,7 +94,7 @@ def testAddCookieSameSiteStrict(same_site_cookie_strict, driver):
 @pytest.mark.xfail_firefox(reason='sameSite cookie attribute not implemented')
 @pytest.mark.xfail_remote(reason='sameSite cookie attribute not implemented')
 @pytest.mark.xfail_safari
-def testAddCookieSameSiteLax(same_site_cookie_lax, driver):
+def test_add_cookie_same_site_lax(same_site_cookie_lax, driver):
     driver.add_cookie(same_site_cookie_lax)
     returned = driver.get_cookie('foo')
     assert 'sameSite' in returned and returned['sameSite'] == 'Lax'
@@ -103,7 +103,7 @@ def testAddCookieSameSiteLax(same_site_cookie_lax, driver):
 @pytest.mark.xfail_firefox(reason='sameSite cookie attribute not implemented')
 @pytest.mark.xfail_remote(reason='sameSite cookie attribute not implemented')
 @pytest.mark.xfail_safari
-def testAddCookieSameSiteNone(same_site_cookie_none, driver):
+def test_add_cookie_same_site_none(same_site_cookie_none, driver):
     driver.add_cookie(same_site_cookie_none)
     # Note that insecure sites (http:) can't set cookies with the Secure directive.
     # driver.get_cookie would return None
@@ -111,39 +111,39 @@ def testAddCookieSameSiteNone(same_site_cookie_none, driver):
 
 @pytest.mark.xfail_ie
 @pytest.mark.xfail_safari
-def testAddingACookieThatExpiredInThePast(cookie, driver):
+def test_adding_acookie_that_expired_in_the_past(cookie, driver):
     expired = cookie.copy()
     expired['expiry'] = calendar.timegm(time.gmtime()) - 1
     driver.add_cookie(expired)
     assert 0 == len(driver.get_cookies())
 
 
-def testDeleteAllCookie(cookie, driver):
+def test_delete_all_cookie(cookie, driver):
     driver.add_cookie(cookie)
     driver.delete_all_cookies()
     assert not driver.get_cookies()
 
 
-def testDeleteCookie(cookie, driver):
+def test_delete_cookie(cookie, driver):
     driver.add_cookie(cookie)
     driver.delete_cookie('foo')
     assert not driver.get_cookies()
 
 
-def testShouldGetCookieByName(driver):
+def test_should_get_cookie_by_name(driver):
     key = 'key_{}'.format(int(random.random() * 10000000))
     driver.execute_script("document.cookie = arguments[0] + '=set';", key)
     cookie = driver.get_cookie(key)
     assert 'set' == cookie['value']
 
 
-def testShouldReturnNoneWhenCookieDoesNotExist(driver):
+def test_should_return_none_when_cookie_does_not_exist(driver):
     key = 'key_{}'.format(int(random.random() * 10000000))
     cookie = driver.get_cookie(key)
     assert cookie is None
 
 
-def testGetAllCookies(cookie, driver, pages, webserver):
+def test_get_all_cookies(cookie, driver, pages, webserver):
     cookies = driver.get_cookies()
     count = len(cookies)
 
@@ -155,7 +155,7 @@ def testGetAllCookies(cookie, driver, pages, webserver):
     assert count + 2 == len(driver.get_cookies())
 
 
-def testShouldNotDeleteCookiesWithASimilarName(cookie, driver, webserver):
+def test_should_not_delete_cookies_with_asimilar_name(cookie, driver, webserver):
     cookie2 = cookie.copy()
     cookie2['name'] = '{}x'.format(cookie['name'])
     driver.add_cookie(cookie)

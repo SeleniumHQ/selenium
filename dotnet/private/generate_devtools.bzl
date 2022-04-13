@@ -55,7 +55,7 @@ generate_devtools = rule(
             allow_single_file = True,
         ),
         "templates": attr.label_list(
-            allow_files = True
+            allow_files = True,
         ),
         "out": attr.string(
             doc = "File name, without extension, of the built assembly.",

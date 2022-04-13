@@ -43,7 +43,7 @@ def close_windows(driver):
     driver.switch_to.window(main_windows_handle)
 
 
-def testShouldSwitchFocusToANewWindowWhenItIsOpenedAndNotStopFutureOperations(driver, pages):
+def test_should_switch_focus_to_anew_window_when_it_is_opened_and_not_stop_future_operations(driver, pages):
     pages.load("xhtmlTest.html")
     current = driver.current_window_handle
 
@@ -61,7 +61,7 @@ def testShouldSwitchFocusToANewWindowWhenItIsOpenedAndNotStopFutureOperations(dr
     assert driver.current_window_handle == handle
 
 
-def testCanSwitchToWindowByName(driver, pages):
+def test_can_switch_to_window_by_name(driver, pages):
     pages.load("xhtmlTest.html")
     handles = driver.window_handles
     driver.find_element(By.LINK_TEXT, "Open new window").click()
@@ -70,14 +70,14 @@ def testCanSwitchToWindowByName(driver, pages):
     assert driver.title == "We Arrive Here"
 
 
-def testShouldThrowNoSuchWindowException(driver, pages):
+def test_should_throw_no_such_window_exception(driver, pages):
     pages.load("xhtmlTest.html")
     with pytest.raises(NoSuchWindowException):
         driver.switch_to.window("invalid name")
 
 
 @pytest.mark.xfail_safari
-def testShouldThrowNoSuchWindowExceptionOnAnAttemptToGetItsHandle(driver, pages):
+def test_should_throw_no_such_window_exception_on_an_attempt_to_get_its_handle(driver, pages):
     pages.load("xhtmlTest.html")
     current = driver.current_window_handle
     handles = driver.window_handles
@@ -93,7 +93,7 @@ def testShouldThrowNoSuchWindowExceptionOnAnAttemptToGetItsHandle(driver, pages)
 
 
 @pytest.mark.xfail_ie
-def testShouldThrowNoSuchWindowExceptionOnAnyOperationIfAWindowIsClosed(driver, pages):
+def test_should_throw_no_such_window_exception_on_any_operation_if_awindow_is_closed(driver, pages):
     pages.load("xhtmlTest.html")
     current = driver.current_window_handle
     handles = driver.window_handles
@@ -113,7 +113,7 @@ def testShouldThrowNoSuchWindowExceptionOnAnyOperationIfAWindowIsClosed(driver, 
 
 @pytest.mark.xfail_ie
 @pytest.mark.xfail_safari
-def testShouldThrowNoSuchWindowExceptionOnAnyElementOperationIfAWindowIsClosed(driver, pages):
+def test_should_throw_no_such_window_exception_on_any_element_operation_if_awindow_is_closed(driver, pages):
     pages.load("xhtmlTest.html")
     current = driver.current_window_handle
     handles = driver.window_handles
@@ -129,7 +129,7 @@ def testShouldThrowNoSuchWindowExceptionOnAnyElementOperationIfAWindowIsClosed(d
         element.text
 
 
-def testClickingOnAButtonThatClosesAnOpenWindowDoesNotCauseTheBrowserToHang(driver, pages):
+def test_clicking_on_abutton_that_closes_an_open_window_does_not_cause_the_browser_to_hang(driver, pages):
     pages.load("xhtmlTest.html")
     current = driver.current_window_handle
     handles = driver.window_handles
@@ -144,7 +144,7 @@ def testClickingOnAButtonThatClosesAnOpenWindowDoesNotCauseTheBrowserToHang(driv
 
 
 @pytest.mark.xfail_safari
-def testCanCallGetWindowHandlesAfterClosingAWindow(driver, pages):
+def test_can_call_get_window_handles_after_closing_awindow(driver, pages):
     pages.load("xhtmlTest.html")
     current = driver.current_window_handle
     handles = driver.window_handles
@@ -158,13 +158,13 @@ def testCanCallGetWindowHandlesAfterClosingAWindow(driver, pages):
     WebDriverWait(driver, 3).until(EC.number_of_windows_to_be(1))
 
 
-def testCanObtainAWindowHandle(driver, pages):
+def test_can_obtain_awindow_handle(driver, pages):
     pages.load("xhtmlTest.html")
     currentHandle = driver.current_window_handle
     assert currentHandle is not None
 
 
-def testFailingToSwitchToAWindowLeavesTheCurrentWindowAsIs(driver, pages):
+def test_failing_to_switch_to_awindow_leaves_the_current_window_as_is(driver, pages):
     pages.load("xhtmlTest.html")
     current = driver.current_window_handle
     with pytest.raises(NoSuchWindowException):
@@ -174,7 +174,7 @@ def testFailingToSwitchToAWindowLeavesTheCurrentWindowAsIs(driver, pages):
 
 
 @pytest.mark.xfail_safari
-def testThatAccessingFindingAnElementAfterWindowIsClosedAndHaventswitchedDoesntCrash(driver, pages):
+def test_that_accessing_finding_an_element_after_window_is_closed_and_haventswitched_doesnt_crash(driver, pages):
     pages.load("xhtmlTest.html")
     current = driver.current_window_handle
     handles = driver.window_handles
@@ -193,7 +193,7 @@ def testThatAccessingFindingAnElementAfterWindowIsClosedAndHaventswitchedDoesntC
 
 
 @pytest.mark.xfail_ie
-def testShouldBeAbleToCreateANewWindow(driver, pages):
+def test_should_be_able_to_create_anew_window(driver, pages):
     original_handle = driver.current_window_handle
 
     driver.switch_to.new_window(WindowTypes.TAB)

@@ -661,14 +661,12 @@ class Driver extends webdriver.WebDriver {
    */
   static createSession(caps, opt_serviceExecutor) {
     let executor
-    let onQuit
     if (opt_serviceExecutor instanceof http.Executor) {
       executor = opt_serviceExecutor
       configureExecutor(executor, this.VENDOR_COMMAND_PREFIX)
     } else {
       let service = opt_serviceExecutor || this.getDefaultService()
       executor = createExecutor(service.start(), this.VENDOR_COMMAND_PREFIX)
-      onQuit = () => service.kill()
     }
 
     // W3C spec requires noProxy value to be an array of strings, but Chromium
@@ -681,7 +679,7 @@ class Driver extends webdriver.WebDriver {
       }
     }
 
-    return /** @type {!Driver} */ (super.createSession(executor, caps, onQuit))
+    return /** @type {!Driver} */ (super.createSession(executor, caps))
   }
 
   /**

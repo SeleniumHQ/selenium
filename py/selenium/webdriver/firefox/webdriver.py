@@ -20,7 +20,6 @@ import os
 from shutil import rmtree
 import warnings
 from contextlib import contextmanager
-from typing import NoReturn
 import zipfile
 
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
@@ -186,7 +185,7 @@ class WebDriver(RemoteWebDriver):
 
         self._is_remote = False
 
-    def quit(self) -> NoReturn:
+    def quit(self) -> None:
         """Quits the driver and close every associated window."""
         try:
             RemoteWebDriver.quit(self)
@@ -210,7 +209,7 @@ class WebDriver(RemoteWebDriver):
 
     # Extension commands:
 
-    def set_context(self, context) -> NoReturn:
+    def set_context(self, context) -> None:
         self.execute("SET_CONTEXT", {"context": context})
 
     @contextmanager
@@ -266,7 +265,7 @@ class WebDriver(RemoteWebDriver):
         payload = {"addon": addon, "temporary": temporary}
         return self.execute("INSTALL_ADDON", payload)["value"]
 
-    def uninstall_addon(self, identifier) -> NoReturn:
+    def uninstall_addon(self, identifier) -> None:
         """
         Uninstalls Firefox addon using its identifier.
 

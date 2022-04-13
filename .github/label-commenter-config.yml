@@ -24,7 +24,7 @@ labels:
                 If the issue is valid but there is no time to troubleshoot it, consider adding the <code>help wanted</code> label.
               </p>
               <p>
-                If the issue requires changes or fixes from an external project (e.g., ChromeDriver, GeckoDriver, W3C),
+                If the issue requires changes or fixes from an external project (e.g., ChromeDriver, GeckoDriver, MSEdgeDriver, W3C),
                add the applicable <code>G-*</code> label, and it will provide the correct link and auto-close the
                issue.
               </p>
@@ -71,6 +71,19 @@ labels:
           You can see if the feature is passing in the [Web Platform Tests](https://wpt.fyi/results/webdriver/tests).
 
           If it is something new, please [Create an Issue](https://github.com/mozilla/geckodriver/issues/new) with the GeckoDriver team.
+
+          Feel free to comment the issues that you raise back in this issue. Thank you.
+        action: close
+  - name: G-msedgedriver
+    labeled:
+      issue:
+        body: |
+          Hi, @{{ issue.user.login }}.
+          This issue has been determined to require fixes in [MSEdgeDriver](https://developer.microsoft.com/en-us/microsoft-edge/tools/webdriver/).
+
+          You can see if the feature is passing in the [Web Platform Tests](https://wpt.fyi/results/webdriver/tests).
+
+          If it is something new, please [Create an Issue](https://github.com/MicrosoftEdge/EdgeWebDriver/issues/new) with the MSEdgeDriver team.
 
           Feel free to comment the issues that you raise back in this issue. Thank you.
         action: close

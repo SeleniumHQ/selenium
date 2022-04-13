@@ -18,7 +18,7 @@
 import base64
 import os
 import warnings
-from typing import List, NoReturn, Union
+from typing import List, Union
 
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 from selenium.webdriver.common.options import ArgOptions
@@ -43,7 +43,7 @@ class ChromiumOptions(ArgOptions):
         return self._binary_location
 
     @binary_location.setter
-    def binary_location(self, value: str) -> NoReturn:
+    def binary_location(self, value: str) -> None:
         """
         Allows you to set where the chromium binary lives
         :Args:
@@ -59,7 +59,7 @@ class ChromiumOptions(ArgOptions):
         return self._debugger_address
 
     @debugger_address.setter
-    def debugger_address(self, value: str) -> NoReturn:
+    def debugger_address(self, value: str) -> None:
         """
         Allows you to set the address of the remote devtools instance
         that the ChromeDriver instance will try to connect to during an
@@ -85,7 +85,7 @@ class ChromiumOptions(ArgOptions):
             file_.close()
         return encoded_extensions + self._extensions
 
-    def add_extension(self, extension: str) -> NoReturn:
+    def add_extension(self, extension: str) -> None:
         """
         Adds the path to the extension to a list that will be used to extract it
         to the ChromeDriver
@@ -102,7 +102,7 @@ class ChromiumOptions(ArgOptions):
         else:
             raise ValueError("argument can not be null")
 
-    def add_encoded_extension(self, extension: str) -> NoReturn:
+    def add_encoded_extension(self, extension: str) -> None:
         """
         Adds Base64 encoded string with extension data to a list that will be used to extract it
         to the ChromeDriver
@@ -122,7 +122,7 @@ class ChromiumOptions(ArgOptions):
         """
         return self._experimental_options
 
-    def add_experimental_option(self, name: str, value: Union[str, int, dict, List[str]]) -> NoReturn:
+    def add_experimental_option(self, name: str, value: Union[str, int, dict, List[str]]) -> None:
         """
         Adds an experimental option which is passed to chromium.
 
@@ -142,7 +142,7 @@ class ChromiumOptions(ArgOptions):
         return '--headless' in self._arguments
 
     @headless.setter
-    def headless(self, value: bool) -> NoReturn:
+    def headless(self, value: bool) -> None:
         """
         Sets the headless argument
         :Args:

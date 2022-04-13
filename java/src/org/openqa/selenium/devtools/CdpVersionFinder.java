@@ -41,7 +41,7 @@ public class CdpVersionFinder {
   public CdpVersionFinder() {
     this(
       5,
-      StreamSupport.stream(ServiceLoader.load(CdpInfo.class).spliterator(), false).collect(Collectors.toSet()));
+      StreamSupport.stream(ServiceLoader.load(CdpInfo.class, CdpVersionFinder.class.getClassLoader()).spliterator(), false).collect(Collectors.toSet()));
   }
 
   public CdpVersionFinder(int versionFudgeFactor, Collection<CdpInfo> infos) {

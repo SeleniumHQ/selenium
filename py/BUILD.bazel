@@ -9,9 +9,9 @@ SE_VERSION = "4.1.3"
 
 BROWSER_VERSIONS = [
     "v85",
-    "v97",
     "v98",
-    "v99"
+    "v99",
+    "v100",
 ]
 
 TEST_DEPS = [
@@ -67,8 +67,8 @@ copy_file(
 
 copy_file(
     name = "favourite_color",
-    src = "//third_party/firebug:favourite_colour-1.1-an+fx.xpi",
-    out = "test/selenium/webdriver/firefox/favourite_colour-1.1-an+fx.xpi",
+    src = "//common/extensions:webextensions-selenium-example.xpi",
+    out = "test/selenium/webdriver/firefox/webextensions-selenium-example.xpi",
 )
 
 py_library(
@@ -84,7 +84,7 @@ py_library(
         ":get-attribute",
         ":is-displayed",
         ":mutation-listener",
-        ":favourite_color"
+        ":favourite_color",
     ] + [":create-cdp-srcs-" + n for n in BROWSER_VERSIONS],
     imports = ["."],
     visibility = ["//visibility:public"],
@@ -344,11 +344,11 @@ py_test_suite(
         "--instafail",
         "--driver=firefox",
     ],
+    data = [
+        "//common/extensions",
+    ],
     tags = [
         "no-sandbox",
-    ],
-    data = [
-      "//third_party/firebug:favourite_colour-1.1-an+fx.xpi",
     ],
     deps = [
         ":init-tree",
@@ -369,8 +369,8 @@ py_test_suite(
         "--driver=remote",
     ],
     data = [
+        "//common/extensions",
         "//java/src/org/openqa/selenium/grid:selenium_server_deploy.jar",
-        "//third_party/firebug:favourite_colour-1.1-an+fx.xpi",
     ],
     tags = [
         "no-sandbox",

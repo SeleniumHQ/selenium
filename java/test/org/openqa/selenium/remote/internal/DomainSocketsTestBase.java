@@ -18,6 +18,17 @@
 package org.openqa.selenium.remote.internal;
 
 import com.google.common.net.MediaType;
+
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import org.openqa.selenium.remote.http.ClientConfig;
+import org.openqa.selenium.remote.http.Contents;
+import org.openqa.selenium.remote.http.HttpClient;
+import org.openqa.selenium.remote.http.HttpRequest;
+import org.openqa.selenium.remote.http.HttpResponse;
+import org.openqa.selenium.testing.Safely;
+
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.PooledByteBufAllocator;
@@ -45,15 +56,6 @@ import io.netty.handler.codec.http.HttpResponseStatus;
 import io.netty.handler.codec.http.HttpServerCodec;
 import io.netty.handler.codec.http.HttpServerKeepAliveHandler;
 import io.netty.handler.codec.http.HttpVersion;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.openqa.selenium.remote.http.ClientConfig;
-import org.openqa.selenium.remote.http.Contents;
-import org.openqa.selenium.remote.http.HttpClient;
-import org.openqa.selenium.remote.http.HttpRequest;
-import org.openqa.selenium.remote.http.HttpResponse;
-import org.openqa.selenium.testing.Safely;
 
 import java.io.IOException;
 import java.net.SocketAddress;
@@ -61,6 +63,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.concurrent.atomic.AtomicReference;
 
 import static io.netty.handler.codec.http.HttpHeaderNames.CONTENT_LENGTH;
@@ -111,7 +114,9 @@ public abstract class DomainSocketsTestBase {
               protected void channelRead0(ChannelHandlerContext ctx, FullHttpRequest req) {
                 byte[] bytes = responseText.get().getBytes(UTF_8);
                 ByteBuf text = Unpooled.wrappedBuffer(bytes);
-                FullHttpResponse res = new DefaultFullHttpResponse(HttpVersion.HTTP_1_1, HttpResponseStatus.OK, text);
+                FullHttpResponse
+                  res =
+                  new DefaultFullHttpResponse(HttpVersion.HTTP_1_1, HttpResponseStatus.OK, text);
                 res.headers().set(CONTENT_TYPE, MediaType.PLAIN_TEXT_UTF_8.toString());
                 res.headers().set(CONTENT_LENGTH, bytes.length);
 
@@ -121,13 +126,13 @@ public abstract class DomainSocketsTestBase {
         }
       });
 
-    Path temp = Files.createTempFile("domain-socket-test", "socket");
+    Path temp = Files.createTempFile(Paths.get("/tmp"), "domain-socket-test", "socket");
     Files.deleteIfExists(temp);
 
     SocketAddress address = new DomainSocketAddress(temp.toFile());
     future = bootstrap.bind(address);
 
-    socket = new URI("unix", null, null, 0, temp.toString(), null, null);
+    this.socket = new URI("unix", null, null, 0, temp.toString(), null, null);
   }
 
   @After

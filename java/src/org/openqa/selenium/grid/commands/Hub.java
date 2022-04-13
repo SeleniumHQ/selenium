@@ -17,15 +17,6 @@
 
 package org.openqa.selenium.grid.commands;
 
-import static java.net.HttpURLConnection.HTTP_INTERNAL_ERROR;
-import static java.net.HttpURLConnection.HTTP_OK;
-import static org.openqa.selenium.grid.config.StandardGridRoles.DISTRIBUTOR_ROLE;
-import static org.openqa.selenium.grid.config.StandardGridRoles.EVENT_BUS_ROLE;
-import static org.openqa.selenium.grid.config.StandardGridRoles.HTTPD_ROLE;
-import static org.openqa.selenium.grid.config.StandardGridRoles.ROUTER_ROLE;
-import static org.openqa.selenium.grid.config.StandardGridRoles.SESSION_QUEUE_ROLE;
-import static org.openqa.selenium.remote.http.Route.combine;
-
 import com.google.auto.service.AutoService;
 import com.google.common.collect.ImmutableSet;
 
@@ -72,6 +63,15 @@ import java.net.URL;
 import java.util.Collections;
 import java.util.Set;
 import java.util.logging.Logger;
+
+import static java.net.HttpURLConnection.HTTP_OK;
+import static java.net.HttpURLConnection.HTTP_UNAVAILABLE;
+import static org.openqa.selenium.grid.config.StandardGridRoles.DISTRIBUTOR_ROLE;
+import static org.openqa.selenium.grid.config.StandardGridRoles.EVENT_BUS_ROLE;
+import static org.openqa.selenium.grid.config.StandardGridRoles.HTTPD_ROLE;
+import static org.openqa.selenium.grid.config.StandardGridRoles.ROUTER_ROLE;
+import static org.openqa.selenium.grid.config.StandardGridRoles.SESSION_QUEUE_ROLE;
+import static org.openqa.selenium.remote.http.Route.combine;
 
 @AutoService(CliCommand.class)
 public class Hub extends TemplateGridServerCommand {
@@ -174,10 +174,11 @@ public class Hub extends TemplateGridServerCommand {
       queue,
       serverOptions.getExternalUri(),
       getServerVersion());
+
     HttpHandler readinessCheck = req -> {
       boolean ready = router.isReady() && bus.isReady();
       return new HttpResponse()
-        .setStatus(ready ? HTTP_OK : HTTP_INTERNAL_ERROR)
+        .setStatus(ready ? HTTP_OK : HTTP_UNAVAILABLE)
         .setContent(Contents.utf8String("Router is " + ready));
     };
 

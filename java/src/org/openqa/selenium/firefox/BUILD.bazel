@@ -1,5 +1,4 @@
 load("@rules_jvm_external//:defs.bzl", "artifact")
-load("//common:defs.bzl", "copy_file")
 load("//java:defs.bzl", "java_export")
 load("//java:version.bzl", "SE_VERSION")
 
@@ -17,4 +16,3 @@ java_export(
         artifact("com.google.guava:guava"),
     ],
 )
-
