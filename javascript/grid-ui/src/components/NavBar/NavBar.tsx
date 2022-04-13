@@ -35,8 +35,7 @@ import {
   Typography,
   withStyles
 } from '@material-ui/core'
-import { withRouter } from 'react-router'
-import { RouteComponentProps } from 'react-router-dom'
+import { useLocation } from 'react-router-dom'
 import OverallConcurrency from './OverallConcurrency'
 import { StyleRules } from '@material-ui/core/styles'
 
@@ -84,10 +83,48 @@ const useStyles = (theme: Theme): StyleRules => createStyles(
   })
 
 function ListItemLink (props): JSX.Element {
-  return <ListItem button component='a' {...props} />
+  return <ListItem button component="a" {...props} />
 }
 
-interface NavBarProps extends RouteComponentProps {
+function NavBarBottom (props): JSX.Element {
+  const {
+    classes,
+    sessionQueueSize,
+    sessionCount,
+    maxSession,
+    nodeCount
+  } = props
+  const location = useLocation()
+  // Not showing the overall status when the user is on the Overview
+  // page and there is only one node, because polling is not happening
+  // at the same time, and it could be confusing for the user. So,
+  // displaying it when there is more than one node, or when the user is
+  // on a different page and there is at least one node registered.
+  const showOverallConcurrency =
+    nodeCount > 1 || (location.pathname !== '/' && nodeCount > 0)
+
+  return (
+    <div>
+      <Box p={3} m={1} className={classes.queueBackground}>
+        <Typography
+          align="center"
+          gutterBottom
+          variant="h4"
+        >
+          Queue size: {sessionQueueSize}
+        </Typography>
+      </Box>
+      {showOverallConcurrency && (
+        <OverallConcurrency
+          sessionCount={sessionCount}
+          maxSession={maxSession}
+        />
+      )}
+    </div>
+  )
+}
+
+interface NavBarProps {
   open: boolean
   maxSession: number
   sessionCount: number
@@ -108,14 +145,8 @@ class NavBar extends React.Component<NavBarProps, {}> {
       sessionCount,
       nodeCount,
       sessionQueueSize,
-      classes,
-      location
+      classes
     } = this.props
-
-    // Not showing the overall status when the user is on the Overview page and there is only one node, because polling
-    // is not happening at the same time and it could be confusing for the user. So, displaying it when there is more
-    // than one node, or when the user is on a different page and there is at least one node registered.
-    const showOverallConcurrency = nodeCount > 1 || (location.pathname !== '/' && nodeCount > 0)
 
     return (
       <Drawer
@@ -155,20 +186,12 @@ class NavBar extends React.Component<NavBarProps, {}> {
         </List>
         <Box flexGrow={1}/>
         {open && (
-          <Box p={3} m={1} className={classes.queueBackground}>
-            <Typography
-              align='center'
-              gutterBottom
-              variant='h4'
-            >
-              Queue size: {sessionQueueSize}
-            </Typography>
-          </Box>
-        )}
-        {showOverallConcurrency && open && (
-          <OverallConcurrency
+          <NavBarBottom
+            classes={classes}
+            sessionQueueSize={sessionQueueSize}
             sessionCount={sessionCount}
             maxSession={maxSession}
+            nodeCount={nodeCount}
           />
         )}
       </Drawer>
@@ -176,4 +199,4 @@ class NavBar extends React.Component<NavBarProps, {}> {
   }
 }
 
-export default (withStyles(useStyles))(withRouter(NavBar))
+export default (withStyles(useStyles))(NavBar)
