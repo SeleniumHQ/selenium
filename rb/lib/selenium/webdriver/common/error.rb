@@ -29,7 +29,7 @@ module Selenium
       def self.for_error(error)
         return if error.nil?
 
-        klass_name = error.split(' ').map(&:capitalize).join.sub(/Error$/, '')
+        klass_name = error.split.map(&:capitalize).join.sub(/Error$/, '')
         const_get("#{klass_name}Error", false)
       rescue NameError
         WebDriverError

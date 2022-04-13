@@ -28,7 +28,7 @@ module Selenium
         let(:valid_response) do
           {status: 200,
            body: {value: {sessionId: 0, capabilities: Remote::Capabilities.edge}}.to_json,
-           headers: {"content_type": "application/json"}}
+           headers: {content_type: "application/json"}}
         end
 
         def expect_request(body: nil, endpoint: nil)
@@ -113,7 +113,7 @@ module Selenium
 
         it 'accepts provided Options as sole parameter' do
           opts = {invalid: 'foobar', args: ['-f']}
-          expect_request(body: {capabilities: {alwaysMatch: {"browserName": "MicrosoftEdge", "ms:edgeOptions": opts}}})
+          expect_request(body: {capabilities: {alwaysMatch: {browserName: "MicrosoftEdge", 'ms:edgeOptions': opts}}})
 
           expect {
             expect { Driver.new(options: Options.new(**opts)) }.to have_deprecated(:browser_options)
@@ -123,9 +123,9 @@ module Selenium
         it 'accepts combination of Options and Capabilities' do
           caps = Remote::Capabilities.edge(invalid: 'foobar')
           browser_opts = {args: ['-f']}
-          expect_request(body: {capabilities: {alwaysMatch: {"browserName": "MicrosoftEdge",
-                                                             "invalid": "foobar",
-                                                             "ms:edgeOptions": browser_opts}}})
+          expect_request(body: {capabilities: {alwaysMatch: {browserName: "MicrosoftEdge",
+                                                             invalid: "foobar",
+                                                             'ms:edgeOptions': browser_opts}}})
 
           expect {
             expect {
@@ -203,7 +203,7 @@ module Selenium
             it 'with Options instance' do
               options = Options.new(args: ['-f'])
               expect_request(body: {capabilities: {alwaysMatch: {browserName: "MicrosoftEdge",
-                                                                 'ms:edgeOptions': {'args': ['-f']}}}})
+                                                                 'ms:edgeOptions': {args: ['-f']}}}})
 
               expect { Driver.new(capabilities: [options]) }.not_to raise_exception
             end
@@ -214,7 +214,7 @@ module Selenium
               options = Options.new(profile: profile)
               expect_request(body: {capabilities:
                                       {alwaysMatch: {browserName: "MicrosoftEdge",
-                                                     'ms:edgeOptions': {"args": ["--user-data-dir=PROF_DIR"]}}}})
+                                                     'ms:edgeOptions': {args: ["--user-data-dir=PROF_DIR"]}}}})
 
               expect { Driver.new(capabilities: [options]) }.not_to raise_exception
             end
@@ -237,7 +237,7 @@ module Selenium
               capabilities = Remote::Capabilities.new(browser_name: 'MicrosoftEdge', invalid: 'foobar')
               options = Options.new(args: ['-f'])
               expect_request(body: {capabilities: {alwaysMatch: {browserName: "MicrosoftEdge", invalid: 'foobar',
-                                                                 'ms:edgeOptions': {'args': ['-f']},
+                                                                 'ms:edgeOptions': {args: ['-f']},
                                                                  'company:key': 'value'}}})
 
               expect { Driver.new(capabilities: [capabilities, options, as_json_object.new]) }.not_to raise_exception

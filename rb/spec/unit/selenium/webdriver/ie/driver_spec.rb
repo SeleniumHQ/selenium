@@ -28,7 +28,7 @@ module Selenium
         let(:valid_response) do
           {status: 200,
            body: {value: {sessionId: 0, capabilities: Remote::Capabilities.ie}}.to_json,
-           headers: {"content_type": "application/json"}}
+           headers: {content_type: "application/json"}}
         end
 
         def expect_request(body: nil, endpoint: nil)
@@ -122,10 +122,10 @@ module Selenium
 
         it 'accepts provided Options as sole parameter' do
           opts = {invalid: 'foobar', args: ['-f']}
-          expect_request(body: {capabilities: {alwaysMatch: {"browserName": "internet explorer",
-                                                             "se:ieOptions": {"invalid": "foobar",
-                                                                              "nativeEvents": true,
-                                                                              "ie.browserCommandLineSwitches": "-f"}}}})
+          expect_request(body: {capabilities: {alwaysMatch: {browserName: "internet explorer",
+                                                             'se:ieOptions': {invalid: "foobar",
+                                                                              nativeEvents: true,
+                                                                              'ie.browserCommandLineSwitches': "-f"}}}})
 
           expect {
             expect { Driver.new(options: Options.new(**opts)) }.to have_deprecated(:browser_options)
@@ -135,11 +135,11 @@ module Selenium
         it 'accepts combination of Options and Capabilities' do
           caps = Remote::Capabilities.ie(invalid: 'foobar')
           browser_opts = {args: ['-f']}
-          expect_request(body: {capabilities: {alwaysMatch: {"browserName": "internet explorer",
-                                                             "platformName": "windows",
-                                                             "invalid": "foobar",
-                                                             "se:ieOptions": {"nativeEvents": true,
-                                                                              "ie.browserCommandLineSwitches": "-f"}}}})
+          expect_request(body: {capabilities: {alwaysMatch: {browserName: "internet explorer",
+                                                             platformName: "windows",
+                                                             invalid: "foobar",
+                                                             'se:ieOptions': {nativeEvents: true,
+                                                                              'ie.browserCommandLineSwitches': "-f"}}}})
 
           expect {
             expect {
@@ -220,8 +220,8 @@ module Selenium
             it 'with Options instance' do
               browser_opts = {start_page: 'http://selenium.dev'}
               expect_request(body: {capabilities: {alwaysMatch: {browserName: "internet explorer",
-                                                                 'se:ieOptions': {"startPage": 'http://selenium.dev',
-                                                                                  'nativeEvents': true}}}})
+                                                                 'se:ieOptions': {startPage: 'http://selenium.dev',
+                                                                                  nativeEvents: true}}}})
 
               expect { Driver.new(capabilities: [Options.new(**browser_opts)]) }.not_to raise_exception
             end
@@ -235,7 +235,7 @@ module Selenium
 
             it 'with Options instance and an instance of a custom object responding to #as_json' do
               expect_request(body: {capabilities: {alwaysMatch: {browserName: "internet explorer",
-                                                                 'se:ieOptions': {"nativeEvents": true},
+                                                                 'se:ieOptions': {nativeEvents: true},
                                                                  'company:key': 'value'}}})
 
               expect { Driver.new(capabilities: [Options.new, as_json_object.new]) }.not_to raise_exception
@@ -246,8 +246,8 @@ module Selenium
               options = Options.new(start_page: 'http://selenium.dev')
               expect_request(body: {capabilities: {alwaysMatch: {browserName: "internet explorer",
                                                                  invalid: 'foobar',
-                                                                 'se:ieOptions': {"startPage": 'http://selenium.dev',
-                                                                                  'nativeEvents': true},
+                                                                 'se:ieOptions': {startPage: 'http://selenium.dev',
+                                                                                  nativeEvents: true},
                                                                  'company:key': 'value'}}})
 
               expect { Driver.new(capabilities: [capabilities, options, as_json_object.new]) }.not_to raise_exception
