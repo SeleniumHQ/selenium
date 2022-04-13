@@ -17,7 +17,11 @@
 
 package org.openqa.selenium.netty.server;
 
+import static io.netty.handler.codec.http.HttpMethod.DELETE;
+import static io.netty.handler.codec.http.HttpMethod.GET;
 import static io.netty.handler.codec.http.HttpMethod.HEAD;
+import static io.netty.handler.codec.http.HttpMethod.OPTIONS;
+import static io.netty.handler.codec.http.HttpMethod.POST;
 import static org.openqa.selenium.remote.http.Contents.memoize;
 
 import com.google.common.io.ByteStreams;
@@ -47,6 +51,8 @@ import java.io.InputStream;
 import java.io.PipedInputStream;
 import java.io.PipedOutputStream;
 import java.io.UncheckedIOException;
+import java.util.Arrays;
+import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.logging.Logger;
@@ -56,6 +62,8 @@ class RequestConverter extends SimpleChannelInboundHandler<HttpObject> {
   private static final Logger LOG = Logger.getLogger(RequestConverter.class.getName());
   private static final ExecutorService EXECUTOR = Executors.newSingleThreadExecutor();
   private volatile PipedOutputStream out;
+  private static final List<io.netty.handler.codec.http.HttpMethod> supportedMethods =
+    Arrays.asList(DELETE, GET, POST, OPTIONS);
 
   @Override
   protected void channelRead0(
@@ -132,7 +140,7 @@ class RequestConverter extends SimpleChannelInboundHandler<HttpObject> {
     HttpMethod method;
     if (nettyRequest.method().equals(HEAD)) {
       method = HttpMethod.GET;
-    } else {
+    } else if (supportedMethods.contains(nettyRequest.method())) {
       try {
         method = HttpMethod.valueOf(nettyRequest.method().name());
       } catch (IllegalArgumentException e) {
@@ -140,6 +148,10 @@ class RequestConverter extends SimpleChannelInboundHandler<HttpObject> {
           new DefaultFullHttpResponse(HttpVersion.HTTP_1_1, HttpResponseStatus.METHOD_NOT_ALLOWED));
         return null;
       }
+    } else {
+      ctx.writeAndFlush(
+        new DefaultFullHttpResponse(HttpVersion.HTTP_1_1, HttpResponseStatus.METHOD_NOT_ALLOWED));
+      return null;
     }
 
     // Attempt to decode parameters
