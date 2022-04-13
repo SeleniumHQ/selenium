@@ -17,8 +17,6 @@
 
 package org.openqa.selenium.remote.http.netty;
 
-import static org.openqa.selenium.remote.http.netty.NettyClient.toClampedInt;
-
 import org.asynchttpclient.AsyncHttpClient;
 import org.asynchttpclient.ListenableFuture;
 import org.asynchttpclient.Request;
@@ -126,14 +124,7 @@ class NettyWebSocket implements WebSocket {
 
     return (req, listener) -> {
       HttpRequest filtered = filterRequest.apply(req);
-
-      Request nettyReq = NettyMessages.toNettyRequest(
-        config.baseUri(),
-        toClampedInt(config.readTimeout().toMillis()),
-        toClampedInt(config.readTimeout().toMillis()),
-        config.credentials(),
-        filtered);
-
+      Request nettyReq = NettyMessages.toNettyRequest(config, filtered);
       return new NettyWebSocket(client, nettyReq, listener);
     };
   }
