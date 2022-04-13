@@ -31,8 +31,7 @@ import java.time.Duration;
 public class ClientConfig {
 
   private static final Filter RETRY_FILTER = new RetryRequest();
-  private static final Filter SELENIUM_USER_AGENT_FILTER = new AddSeleniumUserAgent();
-  private static final Filter DEFAULT_FILTERS = SELENIUM_USER_AGENT_FILTER.andThen(RETRY_FILTER);
+  private static final Filter DEFAULT_FILTER = new AddSeleniumUserAgent();
   private final URI baseUri;
   private final Duration connectionTimeout;
   private final Duration readTimeout;
@@ -60,7 +59,7 @@ public class ClientConfig {
       null,
       Duration.ofSeconds(10),
       Duration.ofMinutes(3),
-      DEFAULT_FILTERS,
+      DEFAULT_FILTER,
       null,
       null);
   }
@@ -113,23 +112,23 @@ public class ClientConfig {
     return readTimeout;
   }
 
-  public ClientConfig filter(Filter filter) {
-    return new ClientConfig(
-      baseUri,
-      connectionTimeout,
-      readTimeout,
-      Require.nonNull("Filter", filter),
-      proxy,
-      credentials);
-  }
-
   public ClientConfig withFilter(Filter filter) {
     Require.nonNull("Filter", filter);
     return new ClientConfig(
       baseUri,
       connectionTimeout,
       readTimeout,
-      filter.andThen(DEFAULT_FILTERS),
+      filter.andThen(DEFAULT_FILTER),
+      proxy,
+      credentials);
+  }
+
+  public ClientConfig withRetries() {
+    return new ClientConfig(
+      baseUri,
+      connectionTimeout,
+      readTimeout,
+      filters.andThen(RETRY_FILTER),
       proxy,
       credentials);
   }

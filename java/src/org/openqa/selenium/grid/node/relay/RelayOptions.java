@@ -17,9 +17,6 @@
 
 package org.openqa.selenium.grid.node.relay;
 
-import static org.openqa.selenium.remote.http.Contents.string;
-import static org.openqa.selenium.remote.http.HttpMethod.GET;
-
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.Multimap;
@@ -38,11 +35,15 @@ import org.openqa.selenium.remote.tracing.Tracer;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.time.Duration;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.logging.Logger;
+
+import static org.openqa.selenium.remote.http.Contents.string;
+import static org.openqa.selenium.remote.http.HttpMethod.GET;
 
 public class RelayOptions {
 
@@ -121,7 +122,8 @@ public class RelayOptions {
 
   public Map<Capabilities, Collection<SessionFactory>> getSessionFactories(
     Tracer tracer,
-    HttpClient.Factory clientFactory) {
+    HttpClient.Factory clientFactory,
+    Duration sessionTimeout) {
 
     HttpClient client = clientFactory
       .createClient(ClientConfig.defaultConfig().baseUri(getServiceUri()));
@@ -160,6 +162,7 @@ public class RelayOptions {
           new RelaySessionFactory(
             tracer,
             clientFactory,
+            sessionTimeout,
             getServiceUri(),
             getServiceStatusUri(),
             stereotype));

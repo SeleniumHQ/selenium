@@ -32,8 +32,7 @@ def test_converts_oss_capabilities_to_w3c(mocker):
     oss_caps = {'platform': 'WINDOWS', 'version': '11', 'acceptSslCerts': True}
     w3c_caps = {'platformName': 'windows', 'browserVersion': '11', 'acceptInsecureCerts': True}
     WebDriver(desired_capabilities=deepcopy(oss_caps))
-    expected_params = {'capabilities': {'firstMatch': [{}], 'alwaysMatch': w3c_caps},
-                       'desiredCapabilities': oss_caps}
+    expected_params = {'capabilities': {'firstMatch': [{}], 'alwaysMatch': w3c_caps}}
     mock.assert_called_with(Command.NEW_SESSION, expected_params)
 
 
@@ -42,8 +41,7 @@ def test_converts_proxy_type_value_to_lowercase_for_w3c(mocker):
     oss_caps = {'proxy': {'proxyType': 'MANUAL', 'httpProxy': 'foo'}}
     w3c_caps = {'proxy': {'proxyType': 'manual', 'httpProxy': 'foo'}}
     WebDriver(desired_capabilities=deepcopy(oss_caps))
-    expected_params = {'capabilities': {'firstMatch': [{}], 'alwaysMatch': w3c_caps},
-                       'desiredCapabilities': oss_caps}
+    expected_params = {'capabilities': {'firstMatch': [{}], 'alwaysMatch': w3c_caps}}
     mock.assert_called_with(Command.NEW_SESSION, expected_params)
 
 

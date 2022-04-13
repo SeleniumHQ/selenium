@@ -17,8 +17,6 @@
 
 package org.openqa.selenium.grid.node.docker;
 
-import static org.openqa.selenium.Platform.WINDOWS;
-
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.Multimap;
@@ -42,6 +40,7 @@ import org.openqa.selenium.remote.tracing.Tracer;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.time.Duration;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
@@ -50,6 +49,8 @@ import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.logging.Logger;
+
+import static org.openqa.selenium.Platform.WINDOWS;
 
 public class DockerOptions {
 
@@ -116,9 +117,11 @@ public class DockerOptions {
 
   public Map<Capabilities, Collection<SessionFactory>> getDockerSessionFactories(
     Tracer tracer,
-    HttpClient.Factory clientFactory) {
+    HttpClient.Factory clientFactory,
+    Duration sessionTimeout) {
 
-    HttpClient client = clientFactory.createClient(ClientConfig.defaultConfig().baseUri(getDockerUri()));
+    HttpClient client = clientFactory.createClient(
+      ClientConfig.defaultConfig().baseUri(getDockerUri()));
     Docker docker = new Docker(client);
 
     if (!isEnabled(docker)) {
@@ -126,7 +129,7 @@ public class DockerOptions {
     }
 
     List<String> allConfigs = config.getAll(DOCKER_SECTION, "configs")
-        .orElseThrow(() -> new DockerException("Unable to find docker configs"));
+      .orElseThrow(() -> new DockerException("Unable to find docker configs"));
 
     Multimap<String, Capabilities> kinds = HashMultimap.create();
     for (int i = 0; i < allConfigs.size(); i++) {
@@ -165,6 +168,7 @@ public class DockerOptions {
           new DockerSessionFactory(
             tracer,
             clientFactory,
+            sessionTimeout,
             docker,
             getDockerUri(),
             image,

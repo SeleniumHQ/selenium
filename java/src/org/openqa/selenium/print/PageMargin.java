@@ -30,6 +30,13 @@ public class PageMargin {
     this.right = 1.0;
   }
 
+  public PageMargin(double top, double bottom, double left, double right) {
+    this.top = top;
+    this.bottom = bottom;
+    this.left = left;
+    this.right = right;
+  }
+
   public double getTop() {
     return top;
   }

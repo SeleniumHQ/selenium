@@ -36,7 +36,7 @@ def test_should_be_able_to_get_pointer_and_keyboard_inputs(driver, pages):
 
 @pytest.mark.xfail_safari
 @pytest.mark.xfail_remote
-def testSendingKeysToActiveElementWithModifier(driver, pages):
+def test_sending_keys_to_active_element_with_modifier(driver, pages):
     pages.load("formPage.html")
     e = driver.find_element(By.ID, "working")
     e.click()
@@ -109,14 +109,14 @@ def test_move_and_click(driver, pages):
     assert "Clicked" == toClick.get_attribute('value')
 
 
-def testDragAndDrop(driver, pages):
+def test_drag_and_drop(driver, pages):
     """Copied from org.openqa.selenium.interactions.TestBasicMouseInterface."""
     element_available_timeout = 15
     wait = WebDriverWait(driver, element_available_timeout)
     pages.load("droppableItems.html")
-    wait.until(lambda dr: _isElementAvailable(driver, "draggable"))
+    wait.until(lambda dr: _is_element_available(driver, "draggable"))
 
-    if not _isElementAvailable(driver, "draggable"):
+    if not _is_element_available(driver, "draggable"):
         raise AssertionError("Could not find draggable element after 15 seconds.")
 
     toDrag = driver.find_element(By.ID, "draggable")
@@ -166,13 +166,13 @@ def test_double_click(driver, pages):
 
 
 def test_dragging_element_with_mouse_moves_it_to_another_list(driver, pages):
-    _performDragAndDropWithMouse(driver, pages)
+    _perform_drag_and_drop_with_mouse(driver, pages)
     dragInto = driver.find_element(By.ID, "sortable1")
     assert 6 == len(dragInto.find_elements(By.TAG_NAME, "li"))
 
 
 def test_dragging_element_with_mouse_fires_events(driver, pages):
-    _performDragAndDropWithMouse(driver, pages)
+    _perform_drag_and_drop_with_mouse(driver, pages)
     dragReporter = driver.find_element(By.ID, "dragging_reports")
     assert "Nothing happened. DragOut DropIn RightItem 3" == dragReporter.text
 
@@ -259,7 +259,7 @@ def test_touch_pointer_properties(driver, pages):
     assert events[3]["twist"] == 345
 
 
-def _performDragAndDropWithMouse(driver, pages):
+def _perform_drag_and_drop_with_mouse(driver, pages):
     """Copied from org.openqa.selenium.interactions.TestBasicMouseInterface."""
     pages.load("draggableLists.html")
     dragReporter = driver.find_element(By.ID, "dragging_reports")
@@ -279,7 +279,7 @@ def _performDragAndDropWithMouse(driver, pages):
     assert "Nothing happened. DragOut" in dragReporter.text
 
 
-def _isElementAvailable(driver, id):
+def _is_element_available(driver, id):
     """Copied from org.openqa.selenium.interactions.TestBasicMouseInterface."""
     try:
         driver.find_element(By.ID, id)

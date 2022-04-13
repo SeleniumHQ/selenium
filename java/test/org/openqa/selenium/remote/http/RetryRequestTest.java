@@ -18,18 +18,19 @@
 package org.openqa.selenium.remote.http;
 
 import com.google.common.collect.ImmutableMap;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.environment.webserver.AppServer;
 import org.openqa.selenium.environment.webserver.NettyAppServer;
 import org.openqa.selenium.remote.http.netty.NettyClient;
 
-import java.io.UncheckedIOException;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.time.Duration;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import static java.net.HttpURLConnection.HTTP_CLIENT_TIMEOUT;
 import static java.net.HttpURLConnection.HTTP_INTERNAL_ERROR;
 import static java.net.HttpURLConnection.HTTP_OK;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -45,6 +46,7 @@ public class RetryRequestTest {
   public void setUp() throws MalformedURLException {
     ClientConfig config = ClientConfig.defaultConfig()
       .baseUrl(URI.create("http://localhost:2345").toURL())
+      .withRetries()
       .readTimeout(Duration.ofSeconds(1));
     client = new NettyClient.Factory().createClient(config);
   }
@@ -172,7 +174,7 @@ public class RetryRequestTest {
     server.stop();
   }
 
-  @Test(expected = UncheckedIOException.class)
+  @Test
   public void shouldBeAbleToRetryARequestOnConnectionFailure() {
     AppServer server = new NettyAppServer(req -> new HttpResponse());
 
@@ -181,6 +183,7 @@ public class RetryRequestTest {
       GET,
       String.format(REQUEST_PATH, uri.getHost(), uri.getPort()));
 
-    client.execute(request);
+    HttpResponse response = client.execute(request);
+    assertThat(response).extracting(HttpResponse::getStatus).isEqualTo(HTTP_CLIENT_TIMEOUT);
   }
 }

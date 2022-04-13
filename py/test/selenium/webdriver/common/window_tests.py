@@ -25,7 +25,7 @@ from selenium.webdriver.support.wait import WebDriverWait
 # @pytest.mark.xfail_chromiumedge(reason="Fails on Travis")
 # @pytest.mark.xfail_firefox(reason="Fails on Travis")
 # @pytest.mark.xfail_remote(reason="Fails on Travis")
-# def testShouldMaximizeTheWindow(driver):
+# def test_should_maximize_the_window(driver):
 #     resize_timeout = 5
 #     wait = WebDriverWait(driver, resize_timeout)
 #     old_size = driver.get_window_size()
