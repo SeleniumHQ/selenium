@@ -38,7 +38,7 @@ jobs:
           java-version: 11
       - uses: ruby/setup-ruby@v1
         with:
-          ruby-version: 2.6
+          ruby-version: 2.7
       - uses: actions/cache@v2
         with:
           path: |
@@ -67,7 +67,7 @@ jobs:
           java-version: 11
       - uses: ruby/setup-ruby@v1
         with:
-          ruby-version: 2.6
+          ruby-version: 2.7
       - uses: actions/cache@v2
         with:
           path: |
@@ -100,7 +100,7 @@ jobs:
           java-version: 11
       - uses: ruby/setup-ruby@v1
         with:
-          ruby-version: 2.6
+          ruby-version: 2.7
       - uses: actions/cache@v2
         with:
           path: |
@@ -129,7 +129,7 @@ jobs:
       - uses: actions/checkout@v2
       - uses: ruby/setup-ruby@v1
         with:
-          ruby-version: 2.6
+          ruby-version: 2.7
       - uses: actions/cache@v2
         with:
           path: |
@@ -151,7 +151,7 @@ jobs:
       - uses: actions/checkout@v2
       - uses: ruby/setup-ruby@v1
         with:
-          ruby-version: 2.6
+          ruby-version: 2.7
       - uses: actions/cache@v2
         with:
           path: |
@@ -172,7 +172,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        ruby: [ '2.6', 'jruby-9.3.0.0' ]
+        ruby: [ '2.7', '3.1' ]
     steps:
       - uses: actions/checkout@v2
       - uses: ruby/setup-ruby@v1

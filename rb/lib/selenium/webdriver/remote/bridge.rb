@@ -118,7 +118,7 @@ module Selenium
         end
 
         def alert=(keys)
-          execute :send_alert_text, {}, {value: keys.split(//), text: keys}
+          execute :send_alert_text, {}, {value: keys.chars, text: keys}
         end
 
         def alert_text
@@ -407,8 +407,8 @@ module Selenium
           end
 
           # Keep .split(//) for backward compatibility for now
-          text = keys.join('')
-          execute :element_send_keys, {id: element}, {value: text.split(//), text: text}
+          text = keys.join
+          execute :element_send_keys, {id: element}, {value: text.chars, text: text}
         end
 
         def upload(local_file)
@@ -427,8 +427,8 @@ module Selenium
         def submit_element(element)
           form = find_element_by('xpath', "./ancestor-or-self::form", [:element, element])
           execute_script("var e = arguments[0].ownerDocument.createEvent('Event');" \
-                            "e.initEvent('submit', true, true);" \
-                            'if (arguments[0].dispatchEvent(e)) { arguments[0].submit() }', form.as_json)
+                         "e.initEvent('submit', true, true);" \
+                         'if (arguments[0].dispatchEvent(e)) { arguments[0].submit() }', form.as_json)
         end
 
         #

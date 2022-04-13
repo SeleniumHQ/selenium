@@ -104,7 +104,7 @@ module Selenium
       end
 
       def cygwin?
-        RUBY_PLATFORM =~ /cygwin/
+        RUBY_PLATFORM.include?('cygwin')
         !Regexp.last_match.nil?
       end
 

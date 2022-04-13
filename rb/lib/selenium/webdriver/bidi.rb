@@ -39,7 +39,7 @@ module Selenium
       end
 
       def send_cmd(method, **params)
-        data = {method: method, params: params.reject { |_, v| v.nil? }}
+        data = {method: method, params: params.compact}
         message = @ws.send_cmd(**data)
         raise Error::WebDriverError, error_message(message) if message['error']
 
