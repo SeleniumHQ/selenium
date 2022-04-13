@@ -77,6 +77,37 @@ public class NetworkInterceptorRestTest {
   }
 
   @Test
+  public void shouldInterceptPatchRequest() throws MalformedURLException {
+    AtomicBoolean seen = new AtomicBoolean(false);
+    interceptor = new NetworkInterceptor(
+      driver,
+      Route.matching(req -> (req.getMethod() == HttpMethod.PATCH))
+        .to(() -> req -> {
+          seen.set(true);
+          return new HttpResponse()
+            .setStatus(200)
+            .addHeader("Access-Control-Allow-Origin", "*")
+            .setContent(utf8String("Received response for PATCH"));
+        }));
+
+    JavascriptExecutor js = (JavascriptExecutor) driver;
+    Object response = js.executeAsyncScript(
+      "var url = arguments[0];" +
+      "var callback = arguments[arguments.length - 1];" +
+      "var xhr = new XMLHttpRequest();" +
+      "xhr.open('PATCH', url, true);" +
+      "xhr.onload = function() {" +
+      "  if (xhr.readyState == 4) {" +
+      "    callback(xhr.responseText);" +
+      "  }" +
+      "};" +
+      "xhr.send('Hey');", new URL(appServer.whereIs("/")).toString());
+
+    assertThat(seen.get()).isTrue();
+    assertThat(response.toString()).contains("Received response for PATCH");
+  }
+
+  @Test
   public void shouldInterceptPutRequest() throws MalformedURLException {
     AtomicBoolean seen = new AtomicBoolean(false);
     interceptor = new NetworkInterceptor(
