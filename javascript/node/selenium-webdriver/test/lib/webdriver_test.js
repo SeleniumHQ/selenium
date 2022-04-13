@@ -762,7 +762,7 @@ describe('WebDriver', function () {
 
     it('customLocator', function () {
       let executor = new FakeExecutor()
-        .expect(CName.FIND_ELEMENTS, { using: 'css selector', value: 'a' })
+        .expect(CName.FIND_ELEMENTS, { using: 'css selector', value: '.a' })
         .andReturnSuccess([
           WebElement.buildId('foo'),
           WebElement.buildId('bar'),
@@ -774,7 +774,7 @@ describe('WebDriver', function () {
       const driver = executor.createDriver()
       const element = driver.findElement(function (d) {
         assert.strictEqual(driver, d)
-        return d.findElements(By.tagName('a'))
+        return d.findElements(By.className('a'))
       })
       return element.click()
     })
@@ -797,13 +797,13 @@ describe('WebDriver', function () {
     it('returnsMultipleElements', function () {
       const ids = ['foo', 'bar', 'baz']
       let executor = new FakeExecutor()
-        .expect(CName.FIND_ELEMENTS, { using: 'css selector', value: 'a' })
+        .expect(CName.FIND_ELEMENTS, { using: 'css selector', value: '.a' })
         .andReturnSuccess(ids.map(WebElement.buildId))
         .end()
 
       const driver = executor.createDriver()
       return driver
-        .findElements(By.tagName('a'))
+        .findElements(By.className('a'))
         .then(function (elements) {
           return Promise.all(
             elements.map(function (e) {
