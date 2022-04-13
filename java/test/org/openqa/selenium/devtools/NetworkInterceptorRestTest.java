@@ -61,7 +61,7 @@ public class NetworkInterceptorRestTest {
 
     Route route = Route.matching(req -> req.getMethod() == HttpMethod.OPTIONS)
         .to(() -> req -> new HttpResponse()
-          .addHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE")
+          .addHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, PATCH")
           .addHeader("Access-Control-Allow-Origin", "*"));
 
     appServer = new NettyAppServer(route);
