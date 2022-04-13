@@ -634,8 +634,6 @@ module Selenium
           when 'name'
             how = 'css selector'
             what = "*[name='#{escape_css(what.to_s)}']"
-          when 'tag name'
-            how = 'css selector'
           end
 
           if what.is_a?(Hash)
