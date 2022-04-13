@@ -110,6 +110,8 @@ module Selenium
       end
 
       def stop_process
+        return if process_exited?
+
         @process.stop STOP_TIMEOUT
         @process.io.stdout.close if Platform.jruby? && !WebDriver.logger.debug?
       end
