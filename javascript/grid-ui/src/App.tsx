@@ -160,9 +160,15 @@ class App extends React.Component<AppProps, AppState> {
           <main className={classes.content}>
             <Container maxWidth={false} className={classes.container}>
               <Switch>
-                <Route exact path='/sessions' component={Sessions} {...this.props} />
-                <Route exact path='/help' component={Help} {...this.props} />
-                <Route exact path='/' component={Overview} {...this.props} />
+                <Route exact path="/sessions">
+                  <Sessions {...this.props}/>
+                </Route>
+                <Route exact path="/help">
+                  <Help {...this.props}/>
+                </Route>
+                <Route exact path="/">
+                  <Overview {...this.props}/>
+                </Route>
                 <Route component={Help} {...this.props} />
               </Switch>
             </Container>
