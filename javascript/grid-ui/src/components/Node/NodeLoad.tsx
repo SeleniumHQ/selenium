@@ -47,7 +47,7 @@ class NodeLoad extends React.Component<{ node: NodeInfo }, {}> {
       <Grid item xs={12}>
         <Grid
           container
-          justifyContent="space-between"
+          justifyContent='space-between'
           spacing={2}
         >
           <Grid item xs={3}>

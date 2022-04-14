@@ -122,7 +122,8 @@ class Sessions extends React.Component<SessionsProps, SessionsState> {
           origin={window.location.origin}
         />
         <QueuedSessions
-          sessionQueueRequests={data.sessionsInfo.sessionQueueRequests}/>
+          sessionQueueRequests={data.sessionsInfo.sessionQueueRequests}
+        />
       </Grid>
     )
   }

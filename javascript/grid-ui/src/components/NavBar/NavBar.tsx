@@ -83,7 +83,7 @@ const useStyles = (theme: Theme): StyleRules => createStyles(
   })
 
 function ListItemLink (props): JSX.Element {
-  return <ListItem button component="a" {...props} />
+  return <ListItem button component='a' {...props} />
 }
 
 function NavBarBottom (props): JSX.Element {
@@ -107,9 +107,9 @@ function NavBarBottom (props): JSX.Element {
     <div>
       <Box p={3} m={1} className={classes.queueBackground}>
         <Typography
-          align="center"
+          align='center'
           gutterBottom
-          variant="h4"
+          variant='h4'
         >
           Queue size: {sessionQueueSize}
         </Typography>
@@ -164,27 +164,27 @@ class NavBar extends React.Component<NavBarProps, {}> {
         <Divider />
         <List>
           <div>
-            <ListItemLink href="#">
+            <ListItemLink href='#'>
               <ListItemIcon>
-                <DashboardIcon/>
+                <DashboardIcon />
               </ListItemIcon>
-              <ListItemText primary="Overview"/>
+              <ListItemText primary='Overview' />
             </ListItemLink>
-            <ListItemLink href="#/sessions">
+            <ListItemLink href='#/sessions'>
               <ListItemIcon>
-                <AssessmentIcon/>
+                <AssessmentIcon />
               </ListItemIcon>
-              <ListItemText primary="Sessions"/>
+              <ListItemText primary='Sessions' />
             </ListItemLink>
-            <ListItemLink href="#/help">
+            <ListItemLink href='#/help'>
               <ListItemIcon>
-                <HelpIcon/>
+                <HelpIcon />
               </ListItemIcon>
-              <ListItemText primary="Help"/>
+              <ListItemText primary='Help' />
             </ListItemLink>
           </div>
         </List>
-        <Box flexGrow={1}/>
+        <Box flexGrow={1} />
         {open && (
           <NavBarBottom
             classes={classes}

@@ -129,7 +129,8 @@ class App extends React.Component<AppProps, AppState> {
     const maxSession = error !== undefined ? 0 : data?.grid?.maxSession ?? 0
     const sessionCount = error !== undefined ? 0 : data?.grid?.sessionCount ?? 0
     const nodeCount = error !== undefined ? 0 : data?.grid?.nodeCount ?? 0
-    const sessionQueueSize = error !== undefined ? 0
+    const sessionQueueSize = error !== undefined
+      ? 0
       : data?.grid?.sessionQueueSize ?? 0
 
     const topBarSubheader = error ?? data?.grid?.version
@@ -155,13 +156,13 @@ class App extends React.Component<AppProps, AppState> {
           <main className={classes.content}>
             <Container maxWidth={false} className={classes.container}>
               <Routes>
-                <Route path="/sessions" element={<Sessions {...this.props}/>}/>
-                <Route path="/help" element={<Help {...this.props}/>}/>
-                <Route path="/" element={<Overview {...this.props}/>}/>
-                <Route path="*" element={<Help {...this.props}/>}/>
+                <Route path='/sessions' element={<Sessions {...this.props} />} />
+                <Route path='/help' element={<Help {...this.props} />} />
+                <Route path='/' element={<Overview {...this.props} />} />
+                <Route path='*' element={<Help {...this.props} />} />
               </Routes>
             </Container>
-            <Footer/>
+            <Footer />
           </main>
         </div>
       </ApolloProvider>

@@ -25,11 +25,13 @@ it('renders menu options names', () => {
   const history = createMemoryHistory()
   render(
     <HistoryRouter history={history}>
-      <NavBar open={true}
-              maxSession={10}
-              sessionCount={0}
-              nodeCount={1}
-              sessionQueueSize={0}/>
+      <NavBar
+        open
+        maxSession={10}
+        sessionCount={0}
+        nodeCount={1}
+        sessionQueueSize={0}
+      />
     </HistoryRouter>
   )
   expect(screen.getByText('Sessions')).toBeInTheDocument()
@@ -43,11 +45,13 @@ it('overall concurrency is not rendered on root path with a single node',
     history.push('/')
     render(
       <HistoryRouter history={history}>
-        <NavBar open={true}
-                maxSession={0}
-                sessionCount={0}
-                nodeCount={1}
-                sessionQueueSize={0}/>
+        <NavBar
+          open
+          maxSession={0}
+          sessionCount={0}
+          nodeCount={1}
+          sessionQueueSize={0}
+        />
       </HistoryRouter>
     )
     expect(screen.queryByTestId('overall-concurrency')).not.toBeInTheDocument()
@@ -59,11 +63,13 @@ it('overall concurrency is rendered on root path with more than one node',
     history.push('/')
     render(
       <HistoryRouter history={history}>
-        <NavBar open={true}
-                maxSession={0}
-                sessionCount={0}
-                nodeCount={2}
-                sessionQueueSize={0}/>
+        <NavBar
+          open
+          maxSession={0}
+          sessionCount={0}
+          nodeCount={2}
+          sessionQueueSize={0}
+        />
       </HistoryRouter>
     )
     expect(screen.getByTestId('overall-concurrency')).toBeInTheDocument()
@@ -75,11 +81,13 @@ it('overall concurrency is rendered on root path with more than one node',
     history.push('/')
     render(
       <HistoryRouter history={history}>
-        <NavBar open={true}
-                maxSession={0}
-                sessionCount={0}
-                nodeCount={2}
-                sessionQueueSize={0}/>
+        <NavBar
+          open
+          maxSession={0}
+          sessionCount={0}
+          nodeCount={2}
+          sessionQueueSize={0}
+        />
       </HistoryRouter>
     )
     expect(screen.getByTestId('overall-concurrency')).toBeInTheDocument()
@@ -91,11 +99,13 @@ it('overall concurrency is rendered on a path different than and one node',
     history.push('/sessions')
     render(
       <HistoryRouter history={history}>
-        <NavBar open={true}
-                maxSession={0}
-                sessionCount={0}
-                nodeCount={1}
-                sessionQueueSize={0}/>
+        <NavBar
+          open
+          maxSession={0}
+          sessionCount={0}
+          nodeCount={1}
+          sessionQueueSize={0}
+        />
       </HistoryRouter>
     )
     expect(screen.getByTestId('overall-concurrency')).toBeInTheDocument()

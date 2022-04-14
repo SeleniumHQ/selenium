@@ -19,8 +19,8 @@ const osLogo = (os: string): string => {
   if (osLowerCase.includes('mac') || osLowerCase.includes('ios')) {
     return macLogo
   }
-  if (osLowerCase.includes('nix') || osLowerCase.includes('nux')
-      || osLowerCase.includes('aix')) {
+  if (osLowerCase.includes('nix') || osLowerCase.includes('nux') ||
+      osLowerCase.includes('aix')) {
     return linuxLogo
   }
   return unknownOsLogo

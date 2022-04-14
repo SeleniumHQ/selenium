@@ -27,7 +27,8 @@
     "analyze": "source-map-explorer 'build/static/js/*.js'",
     "test": "react-scripts test --watchAll=false --transformIgnorePatterns 'node_modules/(?!(@novnc)/)'",
     "eject": "react-scripts eject",
-    "lint": "ts-standard && eslint --ext '.js,.ts,.tsx' src"
+    "lint": "ts-standard && eslint --ext '.js,.ts,.tsx' src",
+    "lint-fix": "ts-standard --fix && eslint --ext '.js,.ts,.tsx' src"
   },
   "eslintConfig": {
     "extends": "react-app"
