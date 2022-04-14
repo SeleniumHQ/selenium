@@ -129,7 +129,7 @@ class Overview extends React.Component<OverviewProps, OverviewState> {
       const message = 'There has been an error while loading the Nodes from the Grid.'
       return (
         <Grid container spacing={3}>
-          <Error message={message} errorMessage={error}/>
+          <Error message={message} errorMessage={error} />
         </Grid>
       )
     }
@@ -142,17 +142,17 @@ class Overview extends React.Component<OverviewProps, OverviewState> {
       }
 
       interface StereoTypeData {
-        stereotype: Capabilities;
+        stereotype: Capabilities
         slots: number
       }
 
-      const slotStereotypes = (JSON.parse(node.stereotypes) as Array<StereoTypeData>).map((item) => {
+      const slotStereotypes = (JSON.parse(node.stereotypes) as StereoTypeData[]).map((item) => {
         const slotStereotype: StereotypeInfo = {
           browserName: item.stereotype.browserName ?? '',
           browserVersion: browserVersion(
             item.stereotype.browserVersion ?? item.stereotype.version),
-          platformName: (item.stereotype.platformName
-                        ?? item.stereotype.platform) ?? '',
+          platformName: (item.stereotype.platformName ??
+                        item.stereotype.platform) ?? '',
           slotCount: item.slots,
           rawData: item
         }

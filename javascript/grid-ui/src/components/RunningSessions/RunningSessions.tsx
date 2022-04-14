@@ -65,9 +65,9 @@ interface SessionData {
   nodeId: string
   nodeUri: string
   sessionDurationMillis: number
-  slot: any,
-  vnc: string,
-  name: string,
+  slot: any
+  vnc: string
+  name: string
 }
 
 function createSessionData (
@@ -91,7 +91,7 @@ function createSessionData (
       const url = new URL(origin)
       const vncUrl = new URL(vnc)
       url.pathname = vncUrl.pathname
-      url.protocol = 'https:' === url.protocol ? 'wss:' : 'ws:'
+      url.protocol = url.protocol === 'https:' ? 'wss:' : 'ws:'
       vnc = url.href
     } catch (error) {
       console.log(error)
@@ -182,8 +182,8 @@ function EnhancedTableHead (props: EnhancedTableProps): JSX.Element {
         {headCells.map((headCell) => (
           <TableCell
             key={headCell.id}
-            align="left"
-            padding="normal"
+            align='left'
+            padding='normal'
             sortDirection={orderBy === headCell.id ? order : false}
           >
             <TableSortLabel
@@ -194,11 +194,13 @@ function EnhancedTableHead (props: EnhancedTableProps): JSX.Element {
               <Box fontWeight='fontWeightBold' mr={1} display='inline'>
                 {headCell.label}
               </Box>
-              {orderBy === headCell.id ? (
-                <span className={classes.visuallyHidden}>
-                  {order === 'desc' ? 'sorted descending' : 'sorted ascending'}
-                </span>
-              ) : null}
+              {orderBy === headCell.id
+                ? (
+                  <span className={classes.visuallyHidden}>
+                    {order === 'desc' ? 'sorted descending' : 'sorted ascending'}
+                  </span>
+                  )
+                : null}
             </TableSortLabel>
           </TableCell>
         ))}
@@ -271,9 +273,9 @@ interface RunningSessionsState {
 
 const Transition = React.forwardRef(function Transition (
   props: TransitionProps & { children?: React.ReactElement },
-  ref: React.Ref<unknown>,
+  ref: React.Ref<unknown>
 ) {
-  return <Slide direction="up" ref={ref} {...props} />
+  return <Slide direction='up' ref={ref} {...props} />
 })
 
 class RunningSessions extends React.Component<RunningSessionsProps, RunningSessionsState> {
@@ -354,9 +356,11 @@ class RunningSessions extends React.Component<RunningSessionsProps, RunningSessi
     }
     const { classes } = this.props
     return (
-      <IconButton className={classes.buttonMargin}
-                  onClick={handleInfoIconClick}>
-        <InfoIcon/>
+      <IconButton
+        className={classes.buttonMargin}
+        onClick={handleInfoIconClick}
+      >
+        <InfoIcon />
       </IconButton>
     )
   }
@@ -367,9 +371,11 @@ class RunningSessions extends React.Component<RunningSessionsProps, RunningSessi
     }
     const { classes } = this.props
     return (
-      <IconButton className={classes.buttonMargin}
-                  onClick={handleLiveViewIconClick}>
-        <VideocamIcon/>
+      <IconButton
+        className={classes.buttonMargin}
+        onClick={handleLiveViewIconClick}
+      >
+        <VideocamIcon />
       </IconButton>
     )
   }
@@ -452,82 +458,95 @@ class RunningSessions extends React.Component<RunningSessionsProps, RunningSessi
                               {row.name}
                               {
                                 (row.vnc as string).length > 0 &&
-                                <Dialog
-                                  onClose={this.handleLiveViewClose}
-                                  aria-labelledby="live-view-dialog"
-                                  open={rowLiveViewOpen === row.id}
-                                  fullWidth={true}
-                                  maxWidth={'xl'}
-                                  fullScreen
-                                  TransitionComponent={Transition}
-                                >
-                                  <DialogTitle id='live-view-dialog'>
-                                    <Typography gutterBottom component="span"
-                                                className={classes.textPadding}
-                                    >
-                                      <Box fontWeight="fontWeightBold"
-                                           mr={1}
-                                           display="inline">
-                                        Session
-                                      </Box>
-                                      {row.name} - {row.id}
-                                    </Typography>
-                                    <OsLogo
-                                      osName={row.platformName as string}/>
-                                    <BrowserLogo
-                                      browserName={row.browserName as string}/>
-                                    {browserVersion(
-                                      row.browserVersion as string)}
-                                  </DialogTitle>
-                                  <DialogContent
-                                    dividers
-                                    className={classes.dialogContent}
+                                  <Dialog
+                                    onClose={this.handleLiveViewClose}
+                                    aria-labelledby='live-view-dialog'
+                                    open={rowLiveViewOpen === row.id}
+                                    fullWidth
+                                    maxWidth='xl'
+                                    fullScreen
+                                    TransitionComponent={Transition}
                                   >
-                                    <LiveView
-                                      url={row.vnc as string}
-                                      scaleViewport={true}
-                                      onClose={this.handleLiveViewClose}
-                                    />
-                                  </DialogContent>
-                                  <DialogActions>
-                                    <Button
-                                      onClick={this.handleLiveViewClose}
-                                      color='primary'
-                                      variant='contained'>
-                                      Close
-                                    </Button>
-                                  </DialogActions>
-                                </Dialog>
+                                    <DialogTitle id='live-view-dialog'>
+                                      <Typography
+                                        gutterBottom component='span'
+                                        className={classes.textPadding}
+                                      >
+                                        <Box
+                                          fontWeight='fontWeightBold'
+                                          mr={1}
+                                          display='inline'
+                                        >
+                                          Session
+                                        </Box>
+                                        {row.name} - {row.id}
+                                      </Typography>
+                                      <OsLogo
+                                        osName={row.platformName as string}
+                                      />
+                                      <BrowserLogo
+                                        browserName={row.browserName as string}
+                                      />
+                                      {browserVersion(
+                                        row.browserVersion as string)}
+                                    </DialogTitle>
+                                    <DialogContent
+                                      dividers
+                                      className={classes.dialogContent}
+                                    >
+                                      <LiveView
+                                        url={row.vnc as string}
+                                        scaleViewport
+                                        onClose={this.handleLiveViewClose}
+                                      />
+                                    </DialogContent>
+                                    <DialogActions>
+                                      <Button
+                                        onClick={this.handleLiveViewClose}
+                                        color='primary'
+                                        variant='contained'
+                                      >
+                                        Close
+                                      </Button>
+                                    </DialogActions>
+                                  </Dialog>
                               }
                             </TableCell>
                             <TableCell align='left'>
                               {this.displaySessionInfo(row.id as string)}
-                              <OsLogo osName={row.platformName as string}
-                                      size={Size.S}/>
+                              <OsLogo
+                                osName={row.platformName as string}
+                                size={Size.S}
+                              />
                               <BrowserLogo
-                                browserName={row.browserName as string}/>
+                                browserName={row.browserName as string}
+                              />
                               {browserVersion(row.browserVersion as string)}
                               <Dialog
                                 onClose={this.handleDialogClose}
                                 aria-labelledby='session-info-dialog'
                                 open={rowOpen === row.id}
-                                fullWidth={true}
-                                maxWidth={'md'}
+                                fullWidth
+                                maxWidth='md'
                               >
                                 <DialogTitle id='session-info-dialog'>
-                                  <Typography gutterBottom component="span"
-                                              className={classes.textPadding}
+                                  <Typography
+                                    gutterBottom component='span'
+                                    className={classes.textPadding}
                                   >
-                                    <Box fontWeight="fontWeightBold"
-                                         mr={1}
-                                         display="inline">
+                                    <Box
+                                      fontWeight='fontWeightBold'
+                                      mr={1}
+                                      display='inline'
+                                    >
                                       Session
                                     </Box>
                                     {row.name} - {row.id}
                                   </Typography>
-                                  <OsLogo osName={row.platformName as string}/>
+                                  <OsLogo osName={row.platformName as string} />
                                   <BrowserLogo
-                                    browserName={row.browserName as string}/>
+                                    browserName={row.browserName as string}
+                                  />
                                   {browserVersion(row.browserVersion as string)}
                                 </DialogTitle>
                                 <DialogContent dividers>
@@ -547,7 +566,8 @@ class RunningSessions extends React.Component<RunningSessionsProps, RunningSessi
                                   <Button
                                     onClick={this.handleDialogClose}
                                     color='primary'
-                                    variant='contained'>
+                                    variant='contained'
+                                  >
                                     Close
                                   </Button>
                                 </DialogActions>
@@ -576,7 +596,7 @@ class RunningSessions extends React.Component<RunningSessionsProps, RunningSessi
               </TableContainer>
               <TablePagination
                 rowsPerPageOptions={[5, 10, 15]}
-                component="div"
+                component='div'
                 count={rows.length}
                 rowsPerPage={rowsPerPage}
                 page={page}

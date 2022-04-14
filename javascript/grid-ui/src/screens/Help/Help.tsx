@@ -46,13 +46,13 @@ const useStyles = (theme: Theme): StyleRules => createStyles(
 function HelpContainer (): JSX.Element {
   const location = useLocation()
   return (
-    <Container maxWidth="md">
+    <Container maxWidth='md'>
       {location.pathname !== '/help' && (
         <Box mt={2}>
           <Typography
-            align="center"
-            color="textPrimary"
-            variant="h2"
+            align='center'
+            color='textPrimary'
+            variant='h2'
           >
             Whoops! The URL specified routes to this help page.
           </Typography>
@@ -60,14 +60,14 @@ function HelpContainer (): JSX.Element {
       )}
       <Box mt={6}>
         <Typography
-          align="center"
-          color="textPrimary"
-          variant="h3"
+          align='center'
+          color='textPrimary'
+          variant='h3'
         >
           More information about Selenium Grid can be found at the{' '}
           <Link
-            href="https://www.selenium.dev/documentation/grid/"
-            target="_blank" rel="noreferrer"
+            href='https://www.selenium.dev/documentation/grid/'
+            target='_blank' rel='noreferrer'
           >
             documentation
           </Link>.
@@ -75,14 +75,14 @@ function HelpContainer (): JSX.Element {
       </Box>
       <Box mt={6}>
         <Typography
-          align="center"
-          color="textPrimary"
-          variant="h3"
+          align='center'
+          color='textPrimary'
+          variant='h3'
         >
           Please report bugs and issues to the Selenium{' '}
           <Link
-            href="https://github.com/SeleniumHQ/selenium/issues/new/choose"
-            target="_blank" rel="noreferrer"
+            href='https://github.com/SeleniumHQ/selenium/issues/new/choose'
+            target='_blank' rel='noreferrer'
           >
             issue tracker
           </Link>.
@@ -90,15 +90,15 @@ function HelpContainer (): JSX.Element {
       </Box>
       <Box mt={6}>
         <Typography
-          align="center"
-          color="textPrimary"
-          variant="h3"
+          align='center'
+          color='textPrimary'
+          variant='h3'
         >
           For questions and help, check the different support channels on
           our{' '}
           <Link
-            href="https://www.selenium.dev/support/"
-            target="_blank" rel="noreferrer"
+            href='https://www.selenium.dev/support/'
+            target='_blank' rel='noreferrer'
           >
             website
           </Link>.
@@ -106,21 +106,23 @@ function HelpContainer (): JSX.Element {
       </Box>
       <Box m={10}>
         <Typography
-          align="center"
-          color="textPrimary"
-          variant="h4"
+          align='center'
+          color='textPrimary'
+          variant='h4'
         >
           Selenium is made possible through the efforts of our open source
           community, contributions from these{' '}
           <Link
-            href="https://www.selenium.dev/documentation/about/copyright_and_attributions/"
-            target="_blank" rel="noreferrer"
+            href='https://www.selenium.dev/documentation/about/copyright_and_attributions/'
+            target='_blank' rel='noreferrer'
           >
             people
           </Link>
           , and our{' '}
-          <Link href="https://www.selenium.dev/sponsors/" target="_blank"
-                rel="noreferrer">
+          <Link
+            href='https://www.selenium.dev/sponsors/' target='_blank'
+            rel='noreferrer'
+          >
             sponsors
           </Link>.
         </Typography>
@@ -146,7 +148,7 @@ class Help extends React.Component<HelpProps, {}> {
           height='100%'
           justifyContent='center'
         >
-          <HelpContainer/>
+          <HelpContainer />
         </Box>
       </div>
     )
