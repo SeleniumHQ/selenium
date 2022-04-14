@@ -21,12 +21,7 @@ import {
   InMemoryCache,
   NormalizedCacheObject
 } from '@apollo/client'
-import {
-  Route,
-  RouteComponentProps,
-  Switch,
-  withRouter
-} from 'react-router-dom'
+import { Route, Switch } from 'react-router-dom'
 import React, { ReactNode } from 'react'
 import ReactModal from 'react-modal'
 import { GridConfig } from './config'
@@ -51,7 +46,7 @@ export const client: ApolloClient<NormalizedCacheObject> = new ApolloClient(
     uri: GridConfig.serverUri
   })
 
-interface AppProps extends RouteComponentProps {
+interface AppProps {
   classes: any
 }
 
@@ -160,10 +155,18 @@ class App extends React.Component<AppProps, AppState> {
           <main className={classes.content}>
             <Container maxWidth={false} className={classes.container}>
               <Switch>
-                <Route exact path='/sessions' component={Sessions} {...this.props} />
-                <Route exact path='/help' component={Help} {...this.props} />
-                <Route exact path='/' component={Overview} {...this.props} />
-                <Route component={Help} {...this.props} />
+                <Route exact path="/sessions">
+                  <Sessions {...this.props}/>
+                </Route>
+                <Route exact path="/help">
+                  <Help {...this.props}/>
+                </Route>
+                <Route exact path="/">
+                  <Overview {...this.props}/>
+                </Route>
+                <Route>
+                  <Help {...this.props}/>
+                </Route>
               </Switch>
             </Container>
             <Footer />
@@ -174,4 +177,4 @@ class App extends React.Component<AppProps, AppState> {
   }
 }
 
-export default withStyles(useStyles)(withRouter(App))
+export default withStyles(useStyles)(App)
