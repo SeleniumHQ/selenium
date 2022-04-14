@@ -21,7 +21,7 @@ import {
   InMemoryCache,
   NormalizedCacheObject
 } from '@apollo/client'
-import { Route, Switch } from 'react-router-dom'
+import { Route, Routes } from 'react-router-dom'
 import React, { ReactNode } from 'react'
 import ReactModal from 'react-modal'
 import { GridConfig } from './config'
@@ -154,22 +154,14 @@ class App extends React.Component<AppProps, AppState> {
           )}
           <main className={classes.content}>
             <Container maxWidth={false} className={classes.container}>
-              <Switch>
-                <Route exact path="/sessions">
-                  <Sessions {...this.props}/>
-                </Route>
-                <Route exact path="/help">
-                  <Help {...this.props}/>
-                </Route>
-                <Route exact path="/">
-                  <Overview {...this.props}/>
-                </Route>
-                <Route>
-                  <Help {...this.props}/>
-                </Route>
-              </Switch>
+              <Routes>
+                <Route path="/sessions" element={<Sessions {...this.props}/>}/>
+                <Route path="/help" element={<Help {...this.props}/>}/>
+                <Route path="/" element={<Overview {...this.props}/>}/>
+                <Route path="*" element={<Help {...this.props}/>}/>
+              </Routes>
             </Container>
-            <Footer />
+            <Footer/>
           </main>
         </div>
       </ApolloProvider>

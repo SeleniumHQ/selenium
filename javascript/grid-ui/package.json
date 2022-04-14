@@ -18,7 +18,7 @@
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
     "react-modal": "^3.14.3",
-    "react-router-dom": "^5.3.0",
+    "react-router-dom": "^6.3.0",
     "source-map-explorer": "^2.5.2"
   },
   "scripts": {
