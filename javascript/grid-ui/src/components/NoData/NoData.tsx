@@ -16,16 +16,10 @@
 // under the License.
 
 import React, { ReactNode } from 'react'
-import {
-  Box,
-  Container,
-  createStyles,
-  Link,
-  Theme,
-  Typography,
-  withStyles
-} from '@material-ui/core'
-import { StyleRules } from '@material-ui/core/styles'
+import { Box, Container, Link, Theme, Typography } from '@mui/material'
+import createStyles from '@mui/styles/createStyles'
+import withStyles from '@mui/styles/withStyles'
+import { StyleRules } from '@mui/styles'
 
 const useStyles = (theme: Theme): StyleRules => createStyles({
   root: {
@@ -69,7 +63,7 @@ class NoData extends React.Component<NoDataProps, {}> {
               variant='h4'
             >
               More information about Selenium Grid can be found at the{' '}
-              <Link href='#/help'>
+              <Link href='#/help' underline='hover'>
                 Help
               </Link>
               {' '}section.

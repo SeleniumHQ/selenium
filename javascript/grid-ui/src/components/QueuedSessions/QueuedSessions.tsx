@@ -16,8 +16,11 @@
 // under the License.
 
 import * as React from 'react'
-import { createStyles, StyleRules, Theme } from '@material-ui/core/styles'
-import { List, ListItem, withStyles } from '@material-ui/core'
+import { Theme } from '@mui/material/styles'
+import { StyleRules } from '@mui/styles'
+import createStyles from '@mui/styles/createStyles'
+import { List, ListItem } from '@mui/material'
+import withStyles from '@mui/styles/withStyles'
 import EnhancedTableToolbar from '../EnhancedTableToolbar'
 import { ReactNode } from 'react'
 

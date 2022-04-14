@@ -16,16 +16,10 @@
 // under the License.
 
 import React, { ReactNode } from 'react'
-import {
-  Box,
-  CircularProgress,
-  CircularProgressProps,
-  createStyles,
-  Theme,
-  Typography,
-  withStyles
-} from '@material-ui/core'
-import { StyleRules } from '@material-ui/core/styles'
+import { Box, CircularProgress, CircularProgressProps, Theme, Typography } from '@mui/material'
+import createStyles from '@mui/styles/createStyles'
+import withStyles from '@mui/styles/withStyles'
+import { StyleRules } from '@mui/styles'
 
 const useStyles = (theme: Theme): StyleRules => createStyles(
   {

@@ -15,29 +15,25 @@
 // specific language governing permissions and limitations
 // under the License.
 
-import Divider from '@material-ui/core/Divider'
-import Drawer from '@material-ui/core/Drawer'
-import IconButton from '@material-ui/core/IconButton'
-import List from '@material-ui/core/List'
-import ListItem from '@material-ui/core/ListItem'
-import ListItemIcon from '@material-ui/core/ListItemIcon'
-import ListItemText from '@material-ui/core/ListItemText'
-import ChevronLeftIcon from '@material-ui/icons/ChevronLeft'
-import DashboardIcon from '@material-ui/icons/Dashboard'
-import AssessmentIcon from '@material-ui/icons/Assessment'
-import HelpIcon from '@material-ui/icons/Help'
+import Divider from '@mui/material/Divider'
+import Drawer from '@mui/material/Drawer'
+import IconButton from '@mui/material/IconButton'
+import List from '@mui/material/List'
+import ListItem from '@mui/material/ListItem'
+import ListItemIcon from '@mui/material/ListItemIcon'
+import ListItemText from '@mui/material/ListItemText'
+import ChevronLeftIcon from '@mui/icons-material/ChevronLeft'
+import DashboardIcon from '@mui/icons-material/Dashboard'
+import AssessmentIcon from '@mui/icons-material/Assessment'
+import HelpIcon from '@mui/icons-material/Help'
 import clsx from 'clsx'
 import React, { ReactNode } from 'react'
-import {
-  Box,
-  createStyles,
-  Theme,
-  Typography,
-  withStyles
-} from '@material-ui/core'
+import { Box, Theme, Typography } from '@mui/material'
+import createStyles from '@mui/styles/createStyles'
+import withStyles from '@mui/styles/withStyles'
 import { useLocation } from 'react-router-dom'
 import OverallConcurrency from './OverallConcurrency'
-import { StyleRules } from '@material-ui/core/styles'
+import { StyleRules } from '@mui/styles'
 
 const drawerWidth = 240
 
@@ -157,7 +153,7 @@ class NavBar extends React.Component<NavBarProps, {}> {
         open={open}
       >
         <div className={classes.toolbarIcon}>
-          <IconButton color='secondary'>
+          <IconButton color='secondary' size='large'>
             <ChevronLeftIcon />
           </IconButton>
         </div>

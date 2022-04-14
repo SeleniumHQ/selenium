@@ -16,7 +16,8 @@
 // under the License.
 
 import React, { ReactNode } from 'react'
-import { StyleRules, withStyles } from '@material-ui/core/styles'
+import { StyleRules } from '@mui/styles'
+import withStyles from '@mui/styles/withStyles'
 import { Size } from '../../models/size'
 import osLogo from '../../util/os-logo'
 import clsx from 'clsx'

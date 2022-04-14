@@ -16,7 +16,7 @@
 // under the License.
 
 import React, { ReactNode } from 'react'
-import { Box, Link, Typography } from '@material-ui/core'
+import { Box, Link, Typography } from '@mui/material'
 
 class Footer extends React.Component<{}, {}> {
   render (): ReactNode {
@@ -24,11 +24,16 @@ class Footer extends React.Component<{}, {}> {
     return (
       <Box pt={4}>
         <Typography variant='body2' color='textSecondary' align='center'>
-          <Link href='#/help'>
+          <Link href='#/help' underline='hover'>
             Help
           </Link>
           {' - All rights reserved - '}
-          <Link href='https://sfconservancy.org/' target='_blank' rel='noreferrer'>
+          <Link
+            href='https://sfconservancy.org/'
+            target='_blank'
+            rel='noreferrer'
+            underline='hover'
+          >
             Software Freedom Conservancy
           </Link>{' '}
           {new Date().getFullYear()}.

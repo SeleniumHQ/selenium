@@ -15,19 +15,13 @@
 // specific language governing permissions and limitations
 // under the License.
 
-import {
-  Badge,
-  Box,
-  createStyles,
-  Grid,
-  Tooltip,
-  Typography,
-  withStyles
-} from '@material-ui/core'
+import { Badge, Box, Grid, Tooltip, Typography } from '@mui/material'
+import createStyles from '@mui/styles/createStyles'
+import withStyles from '@mui/styles/withStyles'
 import React, { ReactNode } from 'react'
 import StereotypeInfo from '../../models/stereotype-info'
 import BrowserLogo from '../common/BrowserLogo'
-import { StyleRules } from '@material-ui/core/styles'
+import { StyleRules } from '@mui/styles'
 import OsLogo from '../common/OsLogo'
 import { Size } from '../../models/size'
 

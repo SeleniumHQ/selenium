@@ -15,14 +15,12 @@
 // specific language governing permissions and limitations
 // under the License.
 
-import Grid from '@material-ui/core/Grid'
-import Paper from '@material-ui/core/Paper'
-import {
-  createStyles,
-  StyleRules,
-  Theme,
-  withStyles
-} from '@material-ui/core/styles'
+import Grid from '@mui/material/Grid'
+import Paper from '@mui/material/Paper'
+import { Theme } from '@mui/material/styles'
+import { StyleRules } from '@mui/styles'
+import createStyles from '@mui/styles/createStyles'
+import withStyles from '@mui/styles/withStyles'
 import clsx from 'clsx'
 import { loader } from 'graphql.macro'
 import React, { ReactNode } from 'react'

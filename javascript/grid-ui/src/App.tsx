@@ -28,15 +28,13 @@ import { GridConfig } from './config'
 import TopBar from './components/TopBar/TopBar'
 import Overview from './screens/Overview/Overview'
 import Footer from './components/Footer/Footer'
-import Container from '@material-ui/core/Container'
+import Container from '@mui/material/Container'
 import Sessions from './screens/Sessions/Sessions'
 import Help from './screens/Help/Help'
-import {
-  createStyles,
-  StyleRules,
-  Theme,
-  withStyles
-} from '@material-ui/core/styles'
+import { Theme } from '@mui/material/styles'
+import { StyleRules } from '@mui/styles'
+import createStyles from '@mui/styles/createStyles'
+import withStyles from '@mui/styles/withStyles'
 import { loader } from 'graphql.macro'
 import NavBar from './components/NavBar/NavBar'
 
