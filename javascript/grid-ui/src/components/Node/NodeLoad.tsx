@@ -15,10 +15,10 @@
 // specific language governing permissions and limitations
 // under the License.
 
-import { Box, Grid, Typography } from '@material-ui/core'
+import { Box, Grid, Typography } from '@mui/material'
 import React, { ReactNode } from 'react'
 import NodeInfo from '../../models/node-info'
-import LinearProgress, { LinearProgressProps } from '@material-ui/core/LinearProgress'
+import LinearProgress, { LinearProgressProps } from '@mui/material/LinearProgress'
 
 function LinearProgressWithLabel (props: LinearProgressProps & { value: number }): JSX.Element {
   return (

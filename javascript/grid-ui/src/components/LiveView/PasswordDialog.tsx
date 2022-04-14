@@ -26,13 +26,14 @@ import {
   FormControl,
   Input,
   InputAdornment,
-  InputLabel,
-  makeStyles
-} from '@material-ui/core'
+  InputLabel
+} from '@mui/material'
+import makeStyles from '@mui/styles/makeStyles'
 import clsx from 'clsx'
-import { createStyles, Theme } from '@material-ui/core/styles'
-import IconButton from '@material-ui/core/IconButton'
-import { Visibility, VisibilityOff } from '@material-ui/icons'
+import { Theme } from '@mui/material/styles'
+import createStyles from '@mui/styles/createStyles'
+import IconButton from '@mui/material/IconButton'
+import { Visibility, VisibilityOff } from '@mui/icons-material'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -91,7 +92,10 @@ const PasswordDialog = (props) => {
         <DialogContentText>
           {children}
         </DialogContentText>
-        <FormControl className={clsx(classes.margin, classes.textField)}>
+        <FormControl
+          className={clsx(classes.margin, classes.textField)}
+          variant='standard'
+        >
           <InputLabel
             htmlFor='standard-adornment-password'
           >
@@ -111,6 +115,7 @@ const PasswordDialog = (props) => {
                   aria-label='toggle password visibility'
                   onClick={handleClickShowPassword}
                   onMouseDown={handleMouseDownPassword}
+                  size='large'
                 >
                   {values.showPassword ? <Visibility /> : <VisibilityOff />}
                 </IconButton>

@@ -18,20 +18,20 @@
 import {
   Box,
   Button,
-  createStyles,
   Dialog,
   DialogActions,
   DialogContent,
   DialogTitle,
   IconButton,
-  Typography,
-  withStyles
-} from '@material-ui/core'
+  Typography
+} from '@mui/material'
+import createStyles from '@mui/styles/createStyles'
+import withStyles from '@mui/styles/withStyles'
 import React, { ReactNode } from 'react'
 import NodeInfo from '../../models/node-info'
-import InfoIcon from '@material-ui/icons/Info'
+import InfoIcon from '@mui/icons-material/Info'
 import OsLogo from '../common/OsLogo'
-import { StyleRules } from '@material-ui/core/styles'
+import { StyleRules } from '@mui/styles'
 
 const useStyles = (): StyleRules => createStyles(
   {
@@ -76,6 +76,7 @@ class NodeDetailsDialog extends React.Component<NodeDetailsDialogProps, NodeDeta
           className={classes.buttonMargin}
           onClick={this.handleDialogOpen}
           data-testid={`node-info-${nodeInfo.id}`}
+          size='large'
         >
           <InfoIcon />
         </IconButton>

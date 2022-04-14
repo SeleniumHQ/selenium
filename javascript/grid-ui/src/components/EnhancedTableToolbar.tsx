@@ -16,9 +16,11 @@
 // under the License.
 
 import React, { ReactNode } from 'react'
-import { StyleRules, Theme, withStyles } from '@material-ui/core/styles'
-import Toolbar from '@material-ui/core/Toolbar'
-import Typography from '@material-ui/core/Typography'
+import { Theme } from '@mui/material/styles'
+import { StyleRules } from '@mui/styles'
+import withStyles from '@mui/styles/withStyles'
+import Toolbar from '@mui/material/Toolbar'
+import Typography from '@mui/material/Typography'
 
 const useStyles = (theme: Theme): StyleRules => (
   {

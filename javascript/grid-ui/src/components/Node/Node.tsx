@@ -15,16 +15,9 @@
 // specific language governing permissions and limitations
 // under the License.
 
-import {
-  Box,
-  Card,
-  CardContent,
-  createStyles,
-  Grid,
-  Theme,
-  Typography,
-  withStyles
-} from '@material-ui/core'
+import { Box, Card, CardContent, Grid, Theme, Typography } from '@mui/material'
+import createStyles from '@mui/styles/createStyles'
+import withStyles from '@mui/styles/withStyles'
 import React, { ReactNode } from 'react'
 import NodeInfo from '../../models/node-info'
 import NodeDetailsDialog from './NodeDetailsDialog'
@@ -32,7 +25,7 @@ import NodeLoad from './NodeLoad'
 import Stereotypes from './Stereotypes'
 import clsx from 'clsx'
 import OsLogo from '../common/OsLogo'
-import { StyleRules } from '@material-ui/core/styles'
+import { StyleRules } from '@mui/styles'
 
 const useStyles = (theme: Theme): StyleRules => createStyles(
   {

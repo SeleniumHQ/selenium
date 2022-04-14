@@ -37,8 +37,11 @@
   },
   "dependencies": {
     "@apollo/client": "^3.5.10",
-    "@material-ui/core": "^4.11.4",
-    "@material-ui/icons": "^4.11.2",
+    "@emotion/react": "^11.9.0",
+    "@emotion/styled": "^11.8.1",
+    "@mui/icons-material": "^5.6.1",
+    "@mui/material": "^5.6.1",
+    "@mui/styles": "^5.6.1",
     "@novnc/novnc": "^1.2.0",
     "@types/react": "^17.0.43",
     "@types/react-dom": "^17.0.14",

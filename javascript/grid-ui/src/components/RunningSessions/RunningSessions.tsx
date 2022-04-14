@@ -16,35 +16,35 @@
 // under the License.
 
 import React, { ReactNode } from 'react'
-import Table from '@material-ui/core/Table'
-import TableBody from '@material-ui/core/TableBody'
-import TableCell from '@material-ui/core/TableCell'
-import TableContainer from '@material-ui/core/TableContainer'
-import TableHead from '@material-ui/core/TableHead'
-import TablePagination from '@material-ui/core/TablePagination'
-import TableRow from '@material-ui/core/TableRow'
-import TableSortLabel from '@material-ui/core/TableSortLabel'
-import Typography from '@material-ui/core/Typography'
-import Paper from '@material-ui/core/Paper'
-import FormControlLabel from '@material-ui/core/FormControlLabel'
-import Switch from '@material-ui/core/Switch'
+import Table from '@mui/material/Table'
+import TableBody from '@mui/material/TableBody'
+import TableCell from '@mui/material/TableCell'
+import TableContainer from '@mui/material/TableContainer'
+import TableHead from '@mui/material/TableHead'
+import TablePagination from '@mui/material/TablePagination'
+import TableRow from '@mui/material/TableRow'
+import TableSortLabel from '@mui/material/TableSortLabel'
+import Typography from '@mui/material/Typography'
+import Paper from '@mui/material/Paper'
+import FormControlLabel from '@mui/material/FormControlLabel'
+import Switch from '@mui/material/Switch'
 import {
   Box,
   Button,
-  createStyles,
   Dialog,
   DialogActions,
   DialogContent,
   DialogTitle,
   IconButton,
-  Theme,
-  withStyles
-} from '@material-ui/core'
-import InfoIcon from '@material-ui/icons/Info'
-import VideocamIcon from '@material-ui/icons/Videocam'
-import Slide from '@material-ui/core/Slide'
-import { StyleRules } from '@material-ui/core/styles'
-import { TransitionProps } from '@material-ui/core/transitions'
+  Theme
+} from '@mui/material'
+import createStyles from '@mui/styles/createStyles'
+import withStyles from '@mui/styles/withStyles'
+import InfoIcon from '@mui/icons-material/Info'
+import VideocamIcon from '@mui/icons-material/Videocam'
+import Slide from '@mui/material/Slide'
+import { StyleRules } from '@mui/styles'
+import { TransitionProps } from '@mui/material/transitions'
 import browserVersion from '../../util/browser-version'
 import EnhancedTableToolbar from '../EnhancedTableToolbar'
 import prettyMilliseconds from 'pretty-ms'
@@ -272,7 +272,7 @@ interface RunningSessionsState {
 }
 
 const Transition = React.forwardRef(function Transition (
-  props: TransitionProps & { children?: React.ReactElement },
+  props: TransitionProps & { children: React.ReactElement },
   ref: React.Ref<unknown>
 ) {
   return <Slide direction='up' ref={ref} {...props} />
@@ -359,6 +359,7 @@ class RunningSessions extends React.Component<RunningSessionsProps, RunningSessi
       <IconButton
         className={classes.buttonMargin}
         onClick={handleInfoIconClick}
+        size='large'
       >
         <InfoIcon />
       </IconButton>
@@ -374,6 +375,7 @@ class RunningSessions extends React.Component<RunningSessionsProps, RunningSessi
       <IconButton
         className={classes.buttonMargin}
         onClick={handleLiveViewIconClick}
+        size='large'
       >
         <VideocamIcon />
       </IconButton>
