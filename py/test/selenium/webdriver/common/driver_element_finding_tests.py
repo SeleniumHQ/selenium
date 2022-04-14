@@ -258,13 +258,13 @@ def test_should_not_find_element_by_class_when_the_name_queried_is_shorter_than_
 
 def test_finding_asingle_element_by_empty_class_name_should_throw(driver, pages):
     pages.load("xhtmlTest.html")
-    with pytest.raises(NoSuchElementException):
+    with pytest.raises(InvalidSelectorException):
         driver.find_element(By.CLASS_NAME, "")
 
 
 def test_finding_multiple_elements_by_empty_class_name_should_throw(driver, pages):
     pages.load("xhtmlTest.html")
-    with pytest.raises(NoSuchElementException):
+    with pytest.raises(InvalidSelectorException):
         driver.find_elements(By.CLASS_NAME, "")
 
 
@@ -276,13 +276,13 @@ def test_finding_asingle_element_by_compound_class_name_should_throw(driver, pag
 
 def test_finding_asingle_element_by_invalid_class_name_should_throw(driver, pages):
     pages.load("xhtmlTest.html")
-    with pytest.raises(NoSuchElementException):
+    with pytest.raises(InvalidSelectorException):
         driver.find_element(By.CLASS_NAME, "!@#$%^&*")
 
 
 def test_finding_multiple_elements_by_invalid_class_name_should_throw(driver, pages):
     pages.load("xhtmlTest.html")
-    with pytest.raises(NoSuchElementException):
+    with pytest.raises(InvalidSelectorException):
         driver.find_elements(By.CLASS_NAME, "!@#$%^&*")
 
 # By.xpath positive
@@ -477,25 +477,25 @@ def test_should_not_find_elements_by_css_selector_when_there_is_no_such_element(
 
 def test_finding_asingle_element_by_empty_css_selector_should_throw(driver, pages):
     pages.load("xhtmlTest.html")
-    with pytest.raises(NoSuchElementException):
+    with pytest.raises(InvalidSelectorException):
         driver.find_element(By.CSS_SELECTOR, "")
 
 
 def test_finding_multiple_elements_by_empty_css_selector_should_throw(driver, pages):
     pages.load("xhtmlTest.html")
-    with pytest.raises(NoSuchElementException):
+    with pytest.raises(InvalidSelectorException):
         driver.find_elements(By.CSS_SELECTOR, "")
 
 
 def test_finding_asingle_element_by_invalid_css_selector_should_throw(driver, pages):
     pages.load("xhtmlTest.html")
-    with pytest.raises(NoSuchElementException):
+    with pytest.raises(InvalidSelectorException):
         driver.find_element(By.CSS_SELECTOR, "//a/b/c[@id='1']")
 
 
 def test_finding_multiple_elements_by_invalid_css_selector_should_throw(driver, pages):
     pages.load("xhtmlTest.html")
-    with pytest.raises(NoSuchElementException):
+    with pytest.raises(InvalidSelectorException):
         driver.find_elements(By.CSS_SELECTOR, "//a/b/c[@id='1']")
 
 # By.link_Text positive
