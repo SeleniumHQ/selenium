@@ -30,9 +30,6 @@
     "lint": "ts-standard && eslint --ext '.js,.ts,.tsx' src",
     "lint-fix": "ts-standard --fix && eslint --ext '.js,.ts,.tsx' src"
   },
-  "eslintConfig": {
-    "extends": "react-app"
-  },
   "homepage": "/ui",
   "browserslist": {
     "production": [
