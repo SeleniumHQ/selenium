@@ -179,12 +179,16 @@ def test_should_not_be_able_to_locate_by_tag_name_multiple_elements_that_do_not_
     assert len(elements) == 0
 
 
+@pytest.mark.xfail_firefox(reason='https://github.com/mozilla/geckodriver/issues/2007')
+@pytest.mark.xfail_remote(reason='https://github.com/mozilla/geckodriver/issues/2007')
 def test_finding_asingle_element_by_empty_tag_name_should_throw(driver, pages):
     pages.load("formPage.html")
     with pytest.raises(InvalidSelectorException):
         driver.find_element(By.TAG_NAME, "")
 
 
+@pytest.mark.xfail_firefox(reason='https://github.com/mozilla/geckodriver/issues/2007')
+@pytest.mark.xfail_remote(reason='https://github.com/mozilla/geckodriver/issues/2007')
 def test_finding_multiple_elements_by_empty_tag_name_should_throw(driver, pages):
     pages.load("formPage.html")
     with pytest.raises(InvalidSelectorException):
