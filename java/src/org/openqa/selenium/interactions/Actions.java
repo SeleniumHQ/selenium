@@ -272,9 +272,6 @@ public class Actions {
   }
 
   public Actions scroll( int x, int y, int deltaX, int deltaY, Duration duration, Origin origin) {
-    if (isBuildingActions()) {
-      throw new UnsupportedCommandException("Scroll action not supported for a JSON Wire Protocol session");
-    }
     return tick(getActiveWheel().createScroll(x, y, deltaX, deltaY, duration, origin));
   }
 
