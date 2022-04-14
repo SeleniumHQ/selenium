@@ -164,23 +164,23 @@ class NavBar extends React.Component<NavBarProps, {}> {
         <Divider />
         <List>
           <div>
-            <ListItemLink href='#'>
+            <ListItemLink href="#">
               <ListItemIcon>
-                <DashboardIcon />
+                <DashboardIcon/>
               </ListItemIcon>
-              <ListItemText primary='Overview' />
+              <ListItemText primary="Overview"/>
             </ListItemLink>
-            <ListItemLink href='#sessions'>
+            <ListItemLink href="#/sessions">
               <ListItemIcon>
                 <AssessmentIcon/>
               </ListItemIcon>
-              <ListItemText primary='Sessions'/>
+              <ListItemText primary="Sessions"/>
             </ListItemLink>
-            <ListItemLink href='#help'>
+            <ListItemLink href="#/help">
               <ListItemIcon>
                 <HelpIcon/>
               </ListItemIcon>
-              <ListItemText primary='Help'/>
+              <ListItemText primary="Help"/>
             </ListItemLink>
           </div>
         </List>
