@@ -30,9 +30,6 @@
     "lint": "ts-standard && eslint --ext '.js,.ts,.tsx' src",
     "lint-fix": "ts-standard --fix && eslint --ext '.js,.ts,.tsx' src"
   },
-  "eslintConfig": {
-    "extends": "react-app"
-  },
   "homepage": "/ui",
   "browserslist": {
     "production": [
@@ -51,7 +48,7 @@
     "@testing-library/jest-dom": "^5.16.3",
     "@testing-library/react": "^12.1.4",
     "@testing-library/user-event": "^13.5.0",
-    "react-scripts": "^5.0.0",
+    "react-scripts": "5.0.0",
     "ts-standard": "^11.0.0",
     "typescript": "^3.9.10"
   },
