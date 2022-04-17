@@ -49,6 +49,10 @@ public enum Platform {
     public Platform family() {
       return WINDOWS;
     }
+    @Override
+    public String toString() {
+      return "Windows XP";
+    }
   },
 
   /**
@@ -58,6 +62,10 @@ public enum Platform {
     @Override
     public Platform family() {
       return WINDOWS;
+    }
+    @Override
+    public String toString() {
+      return "Windows Vista";
     }
   },
 
@@ -69,12 +77,20 @@ public enum Platform {
     public Platform family() {
       return WINDOWS;
     }
+    @Override
+    public String toString() {
+      return "Windows 8";
+    }
   },
 
   WIN8_1("windows 8.1", "win8.1") {
     @Override
     public Platform family() {
       return WINDOWS;
+    }
+    @Override
+    public String toString() {
+      return "Windows 8.1";
     }
   },
 
@@ -83,12 +99,20 @@ public enum Platform {
     public Platform family() {
       return WINDOWS;
     }
+    @Override
+    public String toString() {
+      return "Windows 10";
+    }
   },
 
   WIN11("windows 11", "win11") {
     @Override
     public Platform family() {
       return WINDOWS;
+    }
+    @Override
+    public String toString() {
+      return "Windows 11";
     }
   },
 
