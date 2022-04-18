@@ -15,32 +15,29 @@
 // specific language governing permissions and limitations
 // under the License.
 
-import React, { ReactNode } from 'react'
+import React from 'react'
 import { Box, Link, Typography } from '@mui/material'
 
-class Footer extends React.Component<{}, {}> {
-  render (): ReactNode {
-    // noinspection HtmlUnknownAnchorTarget
-    return (
-      <Box pt={4}>
-        <Typography variant='body2' color='textSecondary' align='center'>
-          <Link href='#/help' underline='hover'>
-            Help
-          </Link>
-          {' - All rights reserved - '}
-          <Link
-            href='https://sfconservancy.org/'
-            target='_blank'
-            rel='noreferrer'
-            underline='hover'
-          >
-            Software Freedom Conservancy
-          </Link>{' '}
-          {new Date().getFullYear()}.
-        </Typography>
-      </Box>
-    )
-  }
+function Footer (): JSX.Element {
+  return (
+    <Box pt={4}>
+      <Typography variant="body2" color="textSecondary" align="center">
+        <Link href="#/help" underline="hover">
+          Help
+        </Link>
+        {' - All rights reserved - '}
+        <Link
+          href="https://sfconservancy.org/"
+          target="_blank"
+          rel="noreferrer"
+          underline="hover"
+        >
+          Software Freedom Conservancy
+        </Link>{' '}
+        {new Date().getFullYear()}.
+      </Typography>
+    </Box>
+  )
 }
 
 export default Footer

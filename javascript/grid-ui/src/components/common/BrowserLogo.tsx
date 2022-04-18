@@ -15,68 +15,25 @@
 // specific language governing permissions and limitations
 // under the License.
 
-import React, { ReactNode } from 'react'
-import { StyleRules } from '@mui/styles'
-import withStyles from '@mui/styles/withStyles'
+import React from 'react'
 import browserLogo from '../../util/browser-logo'
 import { Size } from '../../models/size'
-import clsx from 'clsx'
+import { Box } from '@mui/material'
 
-const useStyles = (): StyleRules => (
-  {
-    logo: {
-      marginRight: 0,
-      marginLeft: 0
-    },
-    small: {
-      width: 24,
-      height: 24
-    },
-    medium: {
-      width: 32,
-      height: 32
-    },
-    large: {
-      width: 48,
-      height: 48
-    }
-  })
-
-interface BrowserLogoProps {
-  browserName: string
-  size: Size
-  classes: any
+function BrowserLogo (props) {
+  const { browserName, size } = props
+  const browserLogoSize = size ?? Size.S
+  console.log(browserLogoSize)
+  return (
+    <Box
+      component="img"
+      src={browserLogo(browserName)}
+      marginX={0}
+      width={browserLogoSize}
+      height={browserLogoSize}
+      alt="Browser Logo"
+    />
+  )
 }
 
-class BrowserLogo extends React.Component<BrowserLogoProps, {}> {
-  static defaultProps = {
-    size: Size.S
-  }
-
-  render (): ReactNode {
-    const { browserName, size, classes } = this.props
-
-    function sizeMap (size): string {
-      if (size === Size.S) {
-        return classes.small
-      }
-      if (size === Size.M) {
-        return classes.medium
-      }
-      if (size === Size.L) {
-        return classes.large
-      }
-      return classes.small
-    }
-
-    return (
-      <img
-        src={browserLogo(browserName)}
-        className={clsx(classes.logo, sizeMap(size))}
-        alt='Browser Logo'
-      />
-    )
-  }
-}
-
-export default withStyles(useStyles)(BrowserLogo)
+export default BrowserLogo
