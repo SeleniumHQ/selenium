@@ -15,46 +15,31 @@
 // specific language governing permissions and limitations
 // under the License.
 
-import React, { ReactNode } from 'react'
+import React from 'react'
 import LinearProgress from '@mui/material/LinearProgress'
-import { Box, Theme, Typography } from '@mui/material'
-import createStyles from '@mui/styles/createStyles'
-import withStyles from '@mui/styles/withStyles'
-import { StyleRules } from '@mui/styles'
+import { Box, Typography } from '@mui/material'
 
-const useStyles = (theme: Theme): StyleRules => createStyles(
-  {
-    root: {
-      backgroundColor: theme.palette.secondary.main,
-      height: '100%',
-      paddingTop: theme.spacing(1),
-      width: '100%',
-      justifyContent: 'center'
-    }
-  })
-
-interface LoadingProps {
-  classes: any
+function Loading () {
+  return (
+    <Box
+      sx={{ bgcolor: 'secondary.main' }}
+      height="100%"
+      width="100%"
+      paddingY={1}
+      justifyContent="center"
+    >
+      <Box mb={2}>
+        <Typography
+          align="center"
+          color="textPrimary"
+          variant="h3"
+        >
+          Loading...
+        </Typography>
+      </Box>
+      <LinearProgress/>
+    </Box>
+  )
 }
 
-class Loading extends React.Component<LoadingProps, {}> {
-  render (): ReactNode {
-    const { classes } = this.props
-    return (
-      <div className={classes.root}>
-        <Box mb={2}>
-          <Typography
-            align='center'
-            color='textPrimary'
-            variant='h3'
-          >
-            Loading...
-          </Typography>
-        </Box>
-        <LinearProgress />
-      </div>
-    )
-  }
-}
-
-export default withStyles(useStyles)(Loading)
+export default Loading

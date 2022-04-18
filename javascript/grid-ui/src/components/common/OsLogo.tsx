@@ -15,75 +15,26 @@
 // specific language governing permissions and limitations
 // under the License.
 
-import React, { ReactNode } from 'react'
-import { StyleRules } from '@mui/styles'
-import withStyles from '@mui/styles/withStyles'
-import { Size } from '../../models/size'
+import React from 'react'
 import osLogo from '../../util/os-logo'
-import clsx from 'clsx'
+import { Box } from '@mui/material'
+import { Size } from '../../models/size'
 
-const useStyles = (): StyleRules => (
-  {
-    logo: {
-      marginRight: 0,
-      marginLeft: 0
-    },
-    xs: {
-      width: 16,
-      height: 16
-    },
-    small: {
-      width: 24,
-      height: 24
-    },
-    medium: {
-      width: 32,
-      height: 32
-    },
-    large: {
-      width: 48,
-      height: 48
-    }
-  })
+function OsLogo (props) {
+  const { osName, size } = props
+  const name = osName ?? ''
+  const osLogoSize = size ?? Size.S
+  return (
+    <Box
+      component="img"
+      marginX={0}
+      src={osLogo(name)}
+      width={osLogoSize}
+      height={osLogoSize}
+      alt="OS Logo"
+    />
+  )
 
-interface OsLogoProps {
-  osName: string
-  size: Size
-  classes: any
 }
 
-class OsLogo extends React.Component<OsLogoProps, {}> {
-  static defaultProps = {
-    size: Size.S
-  }
-
-  render (): ReactNode {
-    const { osName, size, classes } = this.props ?? { osName: '' }
-
-    function sizeMap (size): string {
-      if (size === Size.XS) {
-        return classes.xs
-      }
-      if (size === Size.S) {
-        return classes.small
-      }
-      if (size === Size.M) {
-        return classes.medium
-      }
-      if (size === Size.L) {
-        return classes.large
-      }
-      return classes.small
-    }
-
-    return (
-      <img
-        src={osLogo(osName)}
-        className={clsx(classes.logo, sizeMap(size))}
-        alt='OS Logo'
-      />
-    )
-  }
-}
-
-export default withStyles(useStyles)(OsLogo)
+export default OsLogo
