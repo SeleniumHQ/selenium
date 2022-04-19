@@ -123,18 +123,16 @@ module Selenium
       end
 
       def socket
-        @socket ||= begin
-          if URI(@url).scheme == 'wss'
-            socket = TCPSocket.new(ws.host, ws.port)
-            socket = OpenSSL::SSL::SSLSocket.new(socket, OpenSSL::SSL::SSLContext.new)
-            socket.sync_close = true
-            socket.connect
+        @socket ||= if URI(@url).scheme == 'wss'
+                      socket = TCPSocket.new(ws.host, ws.port)
+                      socket = OpenSSL::SSL::SSLSocket.new(socket, OpenSSL::SSL::SSLContext.new)
+                      socket.sync_close = true
+                      socket.connect
 
-            socket
-          else
-            TCPSocket.new(ws.host, ws.port)
-          end
-        end
+                      socket
+                    else
+                      TCPSocket.new(ws.host, ws.port)
+                    end
       end
 
       def ws

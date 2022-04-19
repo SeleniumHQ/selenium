@@ -111,8 +111,8 @@ module Selenium
 
           builder.move_to(element, right_by, down_by)
           expect(mouse).to have_received(:create_pointer_move).with(duration: duration,
-                                                                    x: right_by - dimension / 2,
-                                                                    y: down_by - dimension / 2,
+                                                                    x: right_by - (dimension / 2),
+                                                                    y: down_by - (dimension / 2),
                                                                     origin: element)
         end
 

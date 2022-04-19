@@ -723,8 +723,6 @@ class WebElement(BaseWebElement):
         if by == By.ID:
             by = By.CSS_SELECTOR
             value = '[id="%s"]' % value
-        elif by == By.TAG_NAME:
-            by = By.CSS_SELECTOR
         elif by == By.CLASS_NAME:
             by = By.CSS_SELECTOR
             value = ".%s" % value
@@ -749,8 +747,6 @@ class WebElement(BaseWebElement):
         if by == By.ID:
             by = By.CSS_SELECTOR
             value = '[id="%s"]' % value
-        elif by == By.TAG_NAME:
-            by = By.CSS_SELECTOR
         elif by == By.CLASS_NAME:
             by = By.CSS_SELECTOR
             value = ".%s" % value

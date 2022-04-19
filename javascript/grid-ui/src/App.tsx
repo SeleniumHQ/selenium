@@ -21,22 +21,20 @@ import {
   InMemoryCache,
   NormalizedCacheObject
 } from '@apollo/client'
-import { Route, Switch } from 'react-router-dom'
+import { Route, Routes } from 'react-router-dom'
 import React, { ReactNode } from 'react'
 import ReactModal from 'react-modal'
 import { GridConfig } from './config'
 import TopBar from './components/TopBar/TopBar'
 import Overview from './screens/Overview/Overview'
 import Footer from './components/Footer/Footer'
-import Container from '@material-ui/core/Container'
+import Container from '@mui/material/Container'
 import Sessions from './screens/Sessions/Sessions'
 import Help from './screens/Help/Help'
-import {
-  createStyles,
-  StyleRules,
-  Theme,
-  withStyles
-} from '@material-ui/core/styles'
+import { Theme } from '@mui/material/styles'
+import { StyleRules } from '@mui/styles'
+import createStyles from '@mui/styles/createStyles'
+import withStyles from '@mui/styles/withStyles'
 import { loader } from 'graphql.macro'
 import NavBar from './components/NavBar/NavBar'
 
@@ -129,7 +127,8 @@ class App extends React.Component<AppProps, AppState> {
     const maxSession = error !== undefined ? 0 : data?.grid?.maxSession ?? 0
     const sessionCount = error !== undefined ? 0 : data?.grid?.sessionCount ?? 0
     const nodeCount = error !== undefined ? 0 : data?.grid?.nodeCount ?? 0
-    const sessionQueueSize = error !== undefined ? 0
+    const sessionQueueSize = error !== undefined
+      ? 0
       : data?.grid?.sessionQueueSize ?? 0
 
     const topBarSubheader = error ?? data?.grid?.version
@@ -154,20 +153,12 @@ class App extends React.Component<AppProps, AppState> {
           )}
           <main className={classes.content}>
             <Container maxWidth={false} className={classes.container}>
-              <Switch>
-                <Route exact path="/sessions">
-                  <Sessions {...this.props}/>
-                </Route>
-                <Route exact path="/help">
-                  <Help {...this.props}/>
-                </Route>
-                <Route exact path="/">
-                  <Overview {...this.props}/>
-                </Route>
-                <Route>
-                  <Help {...this.props}/>
-                </Route>
-              </Switch>
+              <Routes>
+                <Route path='/sessions' element={<Sessions {...this.props} />} />
+                <Route path='/help' element={<Help {...this.props} />} />
+                <Route path='/' element={<Overview {...this.props} />} />
+                <Route path='*' element={<Help {...this.props} />} />
+              </Routes>
             </Container>
             <Footer />
           </main>

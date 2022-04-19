@@ -1,17 +1,19 @@
-import AppBar from '@material-ui/core/AppBar'
-import Box from '@material-ui/core/Box'
-import CssBaseline from '@material-ui/core/CssBaseline'
-import IconButton from '@material-ui/core/IconButton'
-import { createStyles, StyleRules, Theme } from '@material-ui/core/styles'
-import Toolbar from '@material-ui/core/Toolbar'
-import Typography from '@material-ui/core/Typography'
-import ChevronLeftIcon from '@material-ui/icons/ChevronLeft'
-import MenuIcon from '@material-ui/icons/Menu'
-import HelpIcon from '@material-ui/icons/Help'
+import AppBar from '@mui/material/AppBar'
+import Box from '@mui/material/Box'
+import CssBaseline from '@mui/material/CssBaseline'
+import IconButton from '@mui/material/IconButton'
+import { Theme } from '@mui/material/styles'
+import { StyleRules } from '@mui/styles'
+import createStyles from '@mui/styles/createStyles'
+import Toolbar from '@mui/material/Toolbar'
+import Typography from '@mui/material/Typography'
+import ChevronLeftIcon from '@mui/icons-material/ChevronLeft'
+import MenuIcon from '@mui/icons-material/Menu'
+import HelpIcon from '@mui/icons-material/Help'
 import clsx from 'clsx'
 import React, { ReactNode } from 'react'
 import seleniumGridLogo from '../../assets/selenium-grid-logo.svg'
-import { withStyles } from '@material-ui/core'
+import withStyles from '@mui/styles/withStyles'
 import { ApolloClient } from '@apollo/client'
 
 const useStyles = (theme: Theme): StyleRules => createStyles(
@@ -89,6 +91,7 @@ class TopBar extends React.Component<TopBarProps, {}> {
                 aria-label={drawerOpen ? 'close drawer' : 'open drawer'}
                 onClick={toggleDrawer}
                 className={classes.menuButton}
+                size='large'
               >
                 {drawerOpen ? (<ChevronLeftIcon />) : (<MenuIcon />)}
               </IconButton>
@@ -100,6 +103,7 @@ class TopBar extends React.Component<TopBarProps, {}> {
               href='#help'
               className={clsx(classes.menuButton,
                 !error && classes.menuButtonHidden)}
+              size='large'
             >
               <HelpIcon />
             </IconButton>

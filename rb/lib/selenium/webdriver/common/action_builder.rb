@@ -234,7 +234,7 @@ module Selenium
       #
 
       def perform
-        @bridge.send_actions @devices.map(&:encode).compact
+        @bridge.send_actions @devices.filter_map(&:encode)
         clear_all_actions
         nil
       end
