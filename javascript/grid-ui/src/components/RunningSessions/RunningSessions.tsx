@@ -241,16 +241,6 @@ const useStyles = (theme: Theme): StyleRules => createStyles(
     },
     dialogContent: {
       height: 600
-    },
-    queueList: {
-      minWidth: 750,
-      backgroundColor: theme.palette.background.paper,
-      marginBottom: 20
-    },
-    queueListItem: {
-      borderBottomWidth: 1,
-      borderBottomStyle: 'solid',
-      borderBottomColor: '#e0e0e0'
     }
   })
 

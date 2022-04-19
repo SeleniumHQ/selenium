@@ -23,15 +23,14 @@ import { Box } from '@mui/material'
 function BrowserLogo (props) {
   const { browserName, size } = props
   const browserLogoSize = size ?? Size.S
-  console.log(browserLogoSize)
   return (
     <Box
-      component="img"
+      component='img'
       src={browserLogo(browserName)}
       marginX={0}
       width={browserLogoSize}
       height={browserLogoSize}
-      alt="Browser Logo"
+      alt='Browser Logo'
     />
   )
 }

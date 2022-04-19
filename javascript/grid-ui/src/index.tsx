@@ -20,10 +20,9 @@ ReactDOM.render(
   <React.StrictMode>
     <StyledEngineProvider injectFirst>
       <ThemeProvider theme={theme}>
-        {/* CssBaseline kick-start an elegant, consistent, and simple baseline to build upon. */}
-        <CssBaseline/>
+        <CssBaseline />
         <Router>
-          <App/>
+          <App />
         </Router>
       </ThemeProvider>
     </StyledEngineProvider>

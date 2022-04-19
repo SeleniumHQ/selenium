@@ -15,90 +15,63 @@
 // specific language governing permissions and limitations
 // under the License.
 
-import { Box, Card, CardContent, Grid, Theme, Typography } from '@mui/material'
-import createStyles from '@mui/styles/createStyles'
-import withStyles from '@mui/styles/withStyles'
-import React, { ReactNode } from 'react'
-import NodeInfo from '../../models/node-info'
+import { Box, Card, CardContent, Grid, Typography } from '@mui/material'
+import React from 'react'
 import NodeDetailsDialog from './NodeDetailsDialog'
 import NodeLoad from './NodeLoad'
 import Stereotypes from './Stereotypes'
-import clsx from 'clsx'
 import OsLogo from '../common/OsLogo'
-import { StyleRules } from '@mui/styles'
 
-const useStyles = (theme: Theme): StyleRules => createStyles(
-  {
-    root: {
-      height: '100%',
-      flexGrow: 1
-    },
-    paddingContent: {
-      paddingRight: 10,
-      paddingLeft: 10
-    },
-    osLogo: {
-      width: 32,
-      height: 32,
-      marginRight: 5
-    },
-    up: {},
-    down: {
-      backgroundColor: theme.palette.grey.A100
-    }
-  })
+function Node (props) {
+  const { node } = props
+  const nodeStatusDown = node.status === 'DOWN'
 
-interface NodeProps {
-  node: NodeInfo
-  classes: any
-}
-
-class Node extends React.Component<NodeProps, {}> {
-  render (): ReactNode {
-    const { node, classes } = this.props
-    const nodeStatusClass = node.status === 'UP' ? classes.up : classes.down
-
-    return (
-      <Card className={clsx(classes.root, nodeStatusClass)}>
-        <CardContent className={classes.paddingContent}>
-          <Grid
-            container
-            justifyContent='space-between'
-            spacing={1}
-          >
-            <Grid item xs={10}>
-              <Typography
-                color='textPrimary'
-                gutterBottom
-                variant='h6'
-              >
-                <Box fontWeight='fontWeightBold' mr={1} display='inline'>
-                  URI:
-                </Box>
-                {node.uri}
-              </Typography>
-            </Grid>
-            <Grid item xs={2}>
-              <Typography
-                color='textPrimary'
-                gutterBottom
-                variant='h6'
-              >
-                <OsLogo osName={node.osInfo.name} />
-                <NodeDetailsDialog node={node} />
-              </Typography>
-            </Grid>
-            <Grid item xs={12}>
-              <Stereotypes stereotypes={node.slotStereotypes} />
-            </Grid>
-            <Grid item xs={12}>
-              <NodeLoad node={node} />
-            </Grid>
+  return (
+    <Card
+      sx={{
+        height: '100%',
+        flexGrow: 1,
+        bgcolor: nodeStatusDown ? 'grey.A100' : ''
+      }}
+    >
+      <CardContent sx={{ pl: 2, pr: 0 }}>
+        <Grid
+          container
+          justifyContent='space-between'
+          spacing={1}
+        >
+          <Grid item xs={10}>
+            <Typography
+              color='textPrimary'
+              gutterBottom
+              variant='h6'
+            >
+              <Box fontWeight='fontWeightBold' mr={1} display='inline'>
+                URI:
+              </Box>
+              {node.uri}
+            </Typography>
           </Grid>
-        </CardContent>
-      </Card>
-    )
-  }
+          <Grid item xs={2}>
+            <Typography
+              color='textPrimary'
+              gutterBottom
+              variant='h6'
+            >
+              <OsLogo osName={node.osInfo.name} />
+              <NodeDetailsDialog node={node} />
+            </Typography>
+          </Grid>
+          <Grid item xs={12}>
+            <Stereotypes stereotypes={node.slotStereotypes} />
+          </Grid>
+          <Grid item xs={12}>
+            <NodeLoad node={node} />
+          </Grid>
+        </Grid>
+      </CardContent>
+    </Card>
+  )
 }
 
-export default withStyles(useStyles)(Node)
+export default Node

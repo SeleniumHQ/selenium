@@ -16,7 +16,7 @@
 // under the License.
 
 import Divider from '@mui/material/Divider'
-import Drawer from '@mui/material/Drawer'
+import MuiDrawer from '@mui/material/Drawer'
 import IconButton from '@mui/material/IconButton'
 import List from '@mui/material/List'
 import ListItem from '@mui/material/ListItem'
@@ -26,65 +26,59 @@ import ChevronLeftIcon from '@mui/icons-material/ChevronLeft'
 import DashboardIcon from '@mui/icons-material/Dashboard'
 import AssessmentIcon from '@mui/icons-material/Assessment'
 import HelpIcon from '@mui/icons-material/Help'
-import clsx from 'clsx'
-import React, { ReactNode } from 'react'
-import { Box, Theme, Typography } from '@mui/material'
-import createStyles from '@mui/styles/createStyles'
-import withStyles from '@mui/styles/withStyles'
+import React from 'react'
+import { Box, Typography } from '@mui/material'
 import { useLocation } from 'react-router-dom'
 import OverallConcurrency from './OverallConcurrency'
-import { StyleRules } from '@mui/styles'
+import { CSSObject, styled, Theme } from '@mui/material/styles'
 
 const drawerWidth = 240
-
-const useStyles = (theme: Theme): StyleRules => createStyles(
-  {
-    root: {
-      display: 'flex'
-    },
-    toolbarIcon: {
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'flex-end',
-      padding: '0 8px',
-      ...theme.mixins.toolbar,
-      backgroundColor: theme.palette.primary.main
-    },
-    drawerPaper: {
-      position: 'relative',
-      whiteSpace: 'nowrap',
-      width: drawerWidth,
-      minHeight: '100vh',
-      transition: theme.transitions.create('width', {
-        easing: theme.transitions.easing.sharp,
-        duration: theme.transitions.duration.enteringScreen
-      })
-    },
-    drawerPaperClose: {
-      overflowX: 'hidden',
-      minHeight: '100vh',
-      transition: theme.transitions.create('width', {
-        easing: theme.transitions.easing.sharp,
-        duration: theme.transitions.duration.leavingScreen
-      }),
-      width: theme.spacing(7),
-      [theme.breakpoints.up('sm')]: {
-        width: theme.spacing(9)
-      }
-    },
-    queueBackground: {
-      backgroundColor: theme.palette.secondary.main
-    }
-
-  })
 
 function ListItemLink (props): JSX.Element {
   return <ListItem button component='a' {...props} />
 }
 
+const openedMixin = (theme: Theme): CSSObject => ({
+  width: drawerWidth,
+  transition: theme.transitions.create('width', {
+    easing: theme.transitions.easing.sharp,
+    duration: theme.transitions.duration.enteringScreen
+  }),
+  overflowX: 'hidden'
+})
+
+const closedMixin = (theme: Theme): CSSObject => ({
+  transition: theme.transitions.create('width', {
+    easing: theme.transitions.easing.sharp,
+    duration: theme.transitions.duration.leavingScreen
+  }),
+  overflowX: 'hidden',
+  width: `calc(${theme.spacing(7)} + 1px)`,
+  [theme.breakpoints.up('sm')]: {
+    width: `calc(${theme.spacing(8)} + 1px)`
+  }
+})
+
+const Drawer = styled(MuiDrawer,
+  { shouldForwardProp: (prop) => prop !== 'open' })(
+  ({ theme, open }) => ({
+    width: drawerWidth,
+    flexShrink: 0,
+    whiteSpace: 'nowrap',
+    boxSizing: 'border-box',
+    ...(open && {
+      ...openedMixin(theme),
+      '& .MuiDrawer-paper': openedMixin(theme)
+    }),
+    ...(!open && {
+      ...closedMixin(theme),
+      '& .MuiDrawer-paper': closedMixin(theme)
+    })
+  })
+)
+
 function NavBarBottom (props): JSX.Element {
   const {
-    classes,
     sessionQueueSize,
     sessionCount,
     maxSession,
@@ -101,7 +95,7 @@ function NavBarBottom (props): JSX.Element {
 
   return (
     <div>
-      <Box p={3} m={1} className={classes.queueBackground}>
+      <Box p={3} m={1} sx={{ bgcolor: 'secondary.main' }}>
         <Typography
           align='center'
           gutterBottom
@@ -120,79 +114,65 @@ function NavBarBottom (props): JSX.Element {
   )
 }
 
-interface NavBarProps {
-  open: boolean
-  maxSession: number
-  sessionCount: number
-  nodeCount: number
-  sessionQueueSize: number
-  classes: any
-}
+function NavBar (props) {
+  const {
+    open,
+    maxSession,
+    sessionCount,
+    nodeCount,
+    sessionQueueSize
+  } = props
 
-class NavBar extends React.Component<NavBarProps, {}> {
-  static defaultProps = {
-    open: false
-  }
-
-  render (): ReactNode {
-    const {
-      open,
-      maxSession,
-      sessionCount,
-      nodeCount,
-      sessionQueueSize,
-      classes
-    } = this.props
-
-    return (
-      <Drawer
-        variant='permanent'
-        classes={{
-          paper: clsx(classes.drawerPaper, !open && classes.drawerPaperClose)
-        }}
-        open={open}
+  return (
+    <Drawer
+      variant='permanent'
+      open={open}
+    >
+      <Box
+        display='flex'
+        alignItems='center'
+        justifyContent='flex-end'
+        sx={{ bgcolor: 'primary.main' }}
+        marginTop={2}
       >
-        <div className={classes.toolbarIcon}>
-          <IconButton color='secondary' size='large'>
-            <ChevronLeftIcon />
-          </IconButton>
+        <IconButton color='secondary' size='large'>
+          <ChevronLeftIcon />
+        </IconButton>
+      </Box>
+      <Divider />
+      <List>
+        <div>
+          <ListItemLink href='#'>
+            <ListItemIcon>
+              <DashboardIcon />
+            </ListItemIcon>
+            <ListItemText primary='Overview' />
+          </ListItemLink>
+          <ListItemLink href='#/sessions'>
+            <ListItemIcon>
+              <AssessmentIcon />
+            </ListItemIcon>
+            <ListItemText primary='Sessions' />
+          </ListItemLink>
+          <ListItemLink href='#/help'>
+            <ListItemIcon>
+              <HelpIcon />
+            </ListItemIcon>
+            <ListItemText primary='Help' />
+          </ListItemLink>
         </div>
-        <Divider />
-        <List>
-          <div>
-            <ListItemLink href='#'>
-              <ListItemIcon>
-                <DashboardIcon />
-              </ListItemIcon>
-              <ListItemText primary='Overview' />
-            </ListItemLink>
-            <ListItemLink href='#/sessions'>
-              <ListItemIcon>
-                <AssessmentIcon />
-              </ListItemIcon>
-              <ListItemText primary='Sessions' />
-            </ListItemLink>
-            <ListItemLink href='#/help'>
-              <ListItemIcon>
-                <HelpIcon />
-              </ListItemIcon>
-              <ListItemText primary='Help' />
-            </ListItemLink>
-          </div>
-        </List>
-        <Box flexGrow={1} />
-        {open && (
-          <NavBarBottom
-            classes={classes}
-            sessionQueueSize={sessionQueueSize}
-            sessionCount={sessionCount}
-            maxSession={maxSession}
-            nodeCount={nodeCount}
-          />
-        )}
-      </Drawer>
-    )
-  }
+      </List>
+      <Box flexGrow={1} />
+      {open && (
+        <NavBarBottom
+          sessionQueueSize={sessionQueueSize}
+          sessionCount={sessionCount}
+          maxSession={maxSession}
+          nodeCount={nodeCount}
+        />
+      )}
+    </Drawer>
+  )
 }
 
-export default (withStyles(useStyles))(NavBar)
+export default NavBar
