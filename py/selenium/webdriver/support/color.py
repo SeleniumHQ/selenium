@@ -174,7 +174,7 @@ class Color:
 
     def __repr__(self) -> str:
         return "Color(red=%d, green=%d, blue=%d, alpha=%s)" % (
-        self.red, self.green, self.blue, self.alpha)
+            self.red, self.green, self.blue, self.alpha)
 
     def __str__(self) -> str:
         return "Color: %s" % self.rgba
