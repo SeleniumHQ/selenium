@@ -16,35 +16,35 @@
 // under the License.
 
 import React, { ReactNode } from 'react'
-import Table from '@material-ui/core/Table'
-import TableBody from '@material-ui/core/TableBody'
-import TableCell from '@material-ui/core/TableCell'
-import TableContainer from '@material-ui/core/TableContainer'
-import TableHead from '@material-ui/core/TableHead'
-import TablePagination from '@material-ui/core/TablePagination'
-import TableRow from '@material-ui/core/TableRow'
-import TableSortLabel from '@material-ui/core/TableSortLabel'
-import Typography from '@material-ui/core/Typography'
-import Paper from '@material-ui/core/Paper'
-import FormControlLabel from '@material-ui/core/FormControlLabel'
-import Switch from '@material-ui/core/Switch'
+import Table from '@mui/material/Table'
+import TableBody from '@mui/material/TableBody'
+import TableCell from '@mui/material/TableCell'
+import TableContainer from '@mui/material/TableContainer'
+import TableHead from '@mui/material/TableHead'
+import TablePagination from '@mui/material/TablePagination'
+import TableRow from '@mui/material/TableRow'
+import TableSortLabel from '@mui/material/TableSortLabel'
+import Typography from '@mui/material/Typography'
+import Paper from '@mui/material/Paper'
+import FormControlLabel from '@mui/material/FormControlLabel'
+import Switch from '@mui/material/Switch'
 import {
   Box,
   Button,
-  createStyles,
   Dialog,
   DialogActions,
   DialogContent,
   DialogTitle,
   IconButton,
-  Theme,
-  withStyles
-} from '@material-ui/core'
-import InfoIcon from '@material-ui/icons/Info'
-import VideocamIcon from '@material-ui/icons/Videocam'
-import Slide from '@material-ui/core/Slide'
-import { StyleRules } from '@material-ui/core/styles'
-import { TransitionProps } from '@material-ui/core/transitions'
+  Theme
+} from '@mui/material'
+import createStyles from '@mui/styles/createStyles'
+import withStyles from '@mui/styles/withStyles'
+import InfoIcon from '@mui/icons-material/Info'
+import VideocamIcon from '@mui/icons-material/Videocam'
+import Slide from '@mui/material/Slide'
+import { StyleRules } from '@mui/styles'
+import { TransitionProps } from '@mui/material/transitions'
 import browserVersion from '../../util/browser-version'
 import EnhancedTableToolbar from '../EnhancedTableToolbar'
 import prettyMilliseconds from 'pretty-ms'
@@ -65,9 +65,9 @@ interface SessionData {
   nodeId: string
   nodeUri: string
   sessionDurationMillis: number
-  slot: any,
-  vnc: string,
-  name: string,
+  slot: any
+  vnc: string
+  name: string
 }
 
 function createSessionData (
@@ -91,7 +91,7 @@ function createSessionData (
       const url = new URL(origin)
       const vncUrl = new URL(vnc)
       url.pathname = vncUrl.pathname
-      url.protocol = 'https:' === url.protocol ? 'wss:' : 'ws:'
+      url.protocol = url.protocol === 'https:' ? 'wss:' : 'ws:'
       vnc = url.href
     } catch (error) {
       console.log(error)
@@ -182,8 +182,8 @@ function EnhancedTableHead (props: EnhancedTableProps): JSX.Element {
         {headCells.map((headCell) => (
           <TableCell
             key={headCell.id}
-            align="left"
-            padding="normal"
+            align='left'
+            padding='normal'
             sortDirection={orderBy === headCell.id ? order : false}
           >
             <TableSortLabel
@@ -194,11 +194,13 @@ function EnhancedTableHead (props: EnhancedTableProps): JSX.Element {
               <Box fontWeight='fontWeightBold' mr={1} display='inline'>
                 {headCell.label}
               </Box>
-              {orderBy === headCell.id ? (
-                <span className={classes.visuallyHidden}>
-                  {order === 'desc' ? 'sorted descending' : 'sorted ascending'}
-                </span>
-              ) : null}
+              {orderBy === headCell.id
+                ? (
+                  <span className={classes.visuallyHidden}>
+                    {order === 'desc' ? 'sorted descending' : 'sorted ascending'}
+                  </span>
+                  )
+                : null}
             </TableSortLabel>
           </TableCell>
         ))}
@@ -239,16 +241,6 @@ const useStyles = (theme: Theme): StyleRules => createStyles(
     },
     dialogContent: {
       height: 600
-    },
-    queueList: {
-      minWidth: 750,
-      backgroundColor: theme.palette.background.paper,
-      marginBottom: 20
-    },
-    queueListItem: {
-      borderBottomWidth: 1,
-      borderBottomStyle: 'solid',
-      borderBottomColor: '#e0e0e0'
     }
   })
 
@@ -270,10 +262,10 @@ interface RunningSessionsState {
 }
 
 const Transition = React.forwardRef(function Transition (
-  props: TransitionProps & { children?: React.ReactElement },
-  ref: React.Ref<unknown>,
+  props: TransitionProps & { children: React.ReactElement },
+  ref: React.Ref<unknown>
 ) {
-  return <Slide direction="up" ref={ref} {...props} />
+  return <Slide direction='up' ref={ref} {...props} />
 })
 
 class RunningSessions extends React.Component<RunningSessionsProps, RunningSessionsState> {
@@ -354,9 +346,12 @@ class RunningSessions extends React.Component<RunningSessionsProps, RunningSessi
     }
     const { classes } = this.props
     return (
-      <IconButton className={classes.buttonMargin}
-                  onClick={handleInfoIconClick}>
-        <InfoIcon/>
+      <IconButton
+        className={classes.buttonMargin}
+        onClick={handleInfoIconClick}
+        size='large'
+      >
+        <InfoIcon />
       </IconButton>
     )
   }
@@ -367,9 +362,12 @@ class RunningSessions extends React.Component<RunningSessionsProps, RunningSessi
     }
     const { classes } = this.props
     return (
-      <IconButton className={classes.buttonMargin}
-                  onClick={handleLiveViewIconClick}>
-        <VideocamIcon/>
+      <IconButton
+        className={classes.buttonMargin}
+        onClick={handleLiveViewIconClick}
+        size='large'
+      >
+        <VideocamIcon />
       </IconButton>
     )
   }
@@ -452,82 +450,95 @@ class RunningSessions extends React.Component<RunningSessionsProps, RunningSessi
                               {row.name}
                               {
                                 (row.vnc as string).length > 0 &&
-                                <Dialog
-                                  onClose={this.handleLiveViewClose}
-                                  aria-labelledby="live-view-dialog"
-                                  open={rowLiveViewOpen === row.id}
-                                  fullWidth={true}
-                                  maxWidth={'xl'}
-                                  fullScreen
-                                  TransitionComponent={Transition}
-                                >
-                                  <DialogTitle id='live-view-dialog'>
-                                    <Typography gutterBottom component="span"
-                                                className={classes.textPadding}
-                                    >
-                                      <Box fontWeight="fontWeightBold"
-                                           mr={1}
-                                           display="inline">
-                                        Session
-                                      </Box>
-                                      {row.name} - {row.id}
-                                    </Typography>
-                                    <OsLogo
-                                      osName={row.platformName as string}/>
-                                    <BrowserLogo
-                                      browserName={row.browserName as string}/>
-                                    {browserVersion(
-                                      row.browserVersion as string)}
-                                  </DialogTitle>
-                                  <DialogContent
-                                    dividers
-                                    className={classes.dialogContent}
+                                  <Dialog
+                                    onClose={this.handleLiveViewClose}
+                                    aria-labelledby='live-view-dialog'
+                                    open={rowLiveViewOpen === row.id}
+                                    fullWidth
+                                    maxWidth='xl'
+                                    fullScreen
+                                    TransitionComponent={Transition}
                                   >
-                                    <LiveView
-                                      url={row.vnc as string}
-                                      scaleViewport={true}
-                                      onClose={this.handleLiveViewClose}
-                                    />
-                                  </DialogContent>
-                                  <DialogActions>
-                                    <Button
-                                      onClick={this.handleLiveViewClose}
-                                      color='primary'
-                                      variant='contained'>
-                                      Close
-                                    </Button>
-                                  </DialogActions>
-                                </Dialog>
+                                    <DialogTitle id='live-view-dialog'>
+                                      <Typography
+                                        gutterBottom component='span'
+                                        className={classes.textPadding}
+                                      >
+                                        <Box
+                                          fontWeight='fontWeightBold'
+                                          mr={1}
+                                          display='inline'
+                                        >
+                                          Session
+                                        </Box>
+                                        {row.name} - {row.id}
+                                      </Typography>
+                                      <OsLogo
+                                        osName={row.platformName as string}
+                                      />
+                                      <BrowserLogo
+                                        browserName={row.browserName as string}
+                                      />
+                                      {browserVersion(
+                                        row.browserVersion as string)}
+                                    </DialogTitle>
+                                    <DialogContent
+                                      dividers
+                                      className={classes.dialogContent}
+                                    >
+                                      <LiveView
+                                        url={row.vnc as string}
+                                        scaleViewport
+                                        onClose={this.handleLiveViewClose}
+                                      />
+                                    </DialogContent>
+                                    <DialogActions>
+                                      <Button
+                                        onClick={this.handleLiveViewClose}
+                                        color='primary'
+                                        variant='contained'
+                                      >
+                                        Close
+                                      </Button>
+                                    </DialogActions>
+                                  </Dialog>
                               }
                             </TableCell>
                             <TableCell align='left'>
                               {this.displaySessionInfo(row.id as string)}
-                              <OsLogo osName={row.platformName as string}
-                                      size={Size.S}/>
+                              <OsLogo
+                                osName={row.platformName as string}
+                                size={Size.S}
+                              />
                               <BrowserLogo
-                                browserName={row.browserName as string}/>
+                                browserName={row.browserName as string}
+                              />
                               {browserVersion(row.browserVersion as string)}
                               <Dialog
                                 onClose={this.handleDialogClose}
                                 aria-labelledby='session-info-dialog'
                                 open={rowOpen === row.id}
-                                fullWidth={true}
-                                maxWidth={'md'}
+                                fullWidth
+                                maxWidth='md'
                               >
                                 <DialogTitle id='session-info-dialog'>
-                                  <Typography gutterBottom component="span"
-                                              className={classes.textPadding}
+                                  <Typography
+                                    gutterBottom component='span'
+                                    className={classes.textPadding}
                                   >
-                                    <Box fontWeight="fontWeightBold"
-                                         mr={1}
-                                         display="inline">
+                                    <Box
+                                      fontWeight='fontWeightBold'
+                                      mr={1}
+                                      display='inline'
+                                    >
                                       Session
                                     </Box>
                                     {row.name} - {row.id}
                                   </Typography>
-                                  <OsLogo osName={row.platformName as string}/>
+                                  <OsLogo osName={row.platformName as string} />
                                   <BrowserLogo
-                                    browserName={row.browserName as string}/>
+                                    browserName={row.browserName as string}
+                                  />
                                   {browserVersion(row.browserVersion as string)}
                                 </DialogTitle>
                                 <DialogContent dividers>
@@ -547,7 +558,8 @@ class RunningSessions extends React.Component<RunningSessionsProps, RunningSessi
                                   <Button
                                     onClick={this.handleDialogClose}
                                     color='primary'
-                                    variant='contained'>
+                                    variant='contained'
+                                  >
                                     Close
                                   </Button>
                                 </DialogActions>
@@ -576,7 +588,7 @@ class RunningSessions extends React.Component<RunningSessionsProps, RunningSessi
               </TableContainer>
               <TablePagination
                 rowsPerPageOptions={[5, 10, 15]}
-                component="div"
+                component='div'
                 count={rows.length}
                 rowsPerPage={rowsPerPage}
                 page={page}

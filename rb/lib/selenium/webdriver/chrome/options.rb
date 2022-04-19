@@ -87,7 +87,7 @@ module Selenium
           @logging_prefs = options.delete(:logging_prefs) || {}
           @encoded_extensions = @options.delete(:encoded_extensions) || []
           @extensions = []
-          (@options.delete(:extensions)).each(&method(:validate_extension))
+          @options.delete(:extensions).each { |ext| validate_extension(ext) }
         end
 
         #
@@ -116,7 +116,7 @@ module Selenium
         #
 
         def extensions=(extensions)
-          extensions.each(&method(:validate_extension))
+          extensions.each { |ext| validate_extension(ext) }
         end
 
         #
@@ -234,7 +234,7 @@ module Selenium
 
           return if (@encoded_extensions + @extensions).empty?
 
-          options['extensions'] = @encoded_extensions + @extensions.map(&method(:encode_extension))
+          options['extensions'] = @encoded_extensions + @extensions.map { |ext| encode_extension(ext) }
         end
 
         def binary_path

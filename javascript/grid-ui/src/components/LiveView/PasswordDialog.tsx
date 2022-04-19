@@ -26,38 +26,39 @@ import {
   FormControl,
   Input,
   InputAdornment,
-  InputLabel,
-  makeStyles
-} from '@material-ui/core'
+  InputLabel
+} from '@mui/material'
+import makeStyles from '@mui/styles/makeStyles'
 import clsx from 'clsx'
-import { createStyles, Theme } from '@material-ui/core/styles'
-import IconButton from '@material-ui/core/IconButton'
-import { Visibility, VisibilityOff } from '@material-ui/icons'
+import { Theme } from '@mui/material/styles'
+import createStyles from '@mui/styles/createStyles'
+import IconButton from '@mui/material/IconButton'
+import { Visibility, VisibilityOff } from '@mui/icons-material'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
       display: 'flex',
-      flexWrap: 'wrap',
+      flexWrap: 'wrap'
     },
     margin: {
-      margin: theme.spacing(1),
+      margin: theme.spacing(1)
     },
     withoutLabel: {
-      marginTop: theme.spacing(3),
+      marginTop: theme.spacing(3)
     },
     textField: {
-      width: '25ch',
-    },
-  }),
+      width: '25ch'
+    }
+  })
 )
 
 interface State {
-  amount: string;
-  password: string;
-  weight: string;
-  weightRange: string;
-  showPassword: boolean;
+  amount: string
+  password: string
+  weight: string
+  weightRange: string
+  showPassword: boolean
 }
 
 const PasswordDialog = (props) => {
@@ -68,7 +69,7 @@ const PasswordDialog = (props) => {
     password: '',
     weight: '',
     weightRange: '',
-    showPassword: false,
+    showPassword: false
   })
   const handleChange = (prop: keyof State) => (event: React.ChangeEvent<HTMLInputElement>) => {
     setValues({ ...values, [prop]: event.target.value })
@@ -81,36 +82,42 @@ const PasswordDialog = (props) => {
     event.preventDefault()
   }
   return (
-    <Dialog open={open}
-            onClose={() => setOpen(false)}
-            aria-labelledby={'password-dialog'}
+    <Dialog
+      open={open}
+      onClose={() => setOpen(false)}
+      aria-labelledby='password-dialog'
     >
-      <DialogTitle id={'password-dialog'}>{title}</DialogTitle>
+      <DialogTitle id='password-dialog'>{title}</DialogTitle>
       <DialogContent>
         <DialogContentText>
           {children}
         </DialogContentText>
-        <FormControl className={clsx(classes.margin, classes.textField)}>
+        <FormControl
+          className={clsx(classes.margin, classes.textField)}
+          variant='standard'
+        >
           <InputLabel
-            htmlFor="standard-adornment-password">
+            htmlFor='standard-adornment-password'
+          >
             Password
           </InputLabel>
           <Input
-            id="standard-adornment-password"
+            id='standard-adornment-password'
             autoFocus
-            margin="dense"
+            margin='dense'
             type={values.showPassword ? 'text' : 'password'}
             value={values.password}
             fullWidth
             onChange={handleChange('password')}
             endAdornment={
-              <InputAdornment position="end">
+              <InputAdornment position='end'>
                 <IconButton
-                  aria-label="toggle password visibility"
+                  aria-label='toggle password visibility'
                   onClick={handleClickShowPassword}
                   onMouseDown={handleMouseDownPassword}
+                  size='large'
                 >
-                  {values.showPassword ? <Visibility/> : <VisibilityOff/>}
+                  {values.showPassword ? <Visibility /> : <VisibilityOff />}
                 </IconButton>
               </InputAdornment>
             }
@@ -118,20 +125,23 @@ const PasswordDialog = (props) => {
         </FormControl>
       </DialogContent>
       <DialogActions>
-        <Button variant={'contained'}
-                onClick={() => {
-                  setOpen(false)
-                  onCancel()
-                }}
-                color={'secondary'}>
+        <Button
+          variant='contained'
+          onClick={() => {
+            setOpen(false)
+            onCancel()
+          }}
+          color='secondary'
+        >
           Cancel
         </Button>
-        <Button variant={'contained'}
-                onClick={() => {
-                  setOpen(false)
-                  onConfirm(values.password)
-                }}
-                color={'primary'}
+        <Button
+          variant='contained'
+          onClick={() => {
+            setOpen(false)
+            onConfirm(values.password)
+          }}
+          color='primary'
         >
           Accept
         </Button>

@@ -15,7 +15,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
-const typogpaphy = {
+const typography = {
   h1: {
     fontWeight: 500,
     fontSize: 35,
@@ -55,4 +55,4 @@ const typogpaphy = {
   ].join(',')
 }
 
-export default typogpaphy
+export default typography

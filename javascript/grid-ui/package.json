@@ -5,8 +5,11 @@
   "type": "module",
   "dependencies": {
     "@apollo/client": "^3.5.10",
-    "@material-ui/core": "^4.11.4",
-    "@material-ui/icons": "^4.11.2",
+    "@emotion/react": "^11.9.0",
+    "@emotion/styled": "^11.8.1",
+    "@mui/icons-material": "^5.6.1",
+    "@mui/material": "^5.6.1",
+    "@mui/styles": "^5.6.1",
     "@novnc/novnc": "^1.2.0",
     "@types/react": "^17.0.43",
     "@types/react-dom": "^17.0.14",
@@ -18,7 +21,7 @@
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
     "react-modal": "^3.14.3",
-    "react-router-dom": "^5.3.0",
+    "react-router-dom": "^6.3.0",
     "source-map-explorer": "^2.5.2"
   },
   "scripts": {
@@ -27,10 +30,8 @@
     "analyze": "source-map-explorer 'build/static/js/*.js'",
     "test": "react-scripts test --watchAll=false --transformIgnorePatterns 'node_modules/(?!(@novnc)/)'",
     "eject": "react-scripts eject",
-    "lint": "ts-standard && eslint --ext '.js,.ts,.tsx' src"
-  },
-  "eslintConfig": {
-    "extends": "react-app"
+    "lint": "ts-standard && eslint --ext '.js,.ts,.tsx' src",
+    "lint-fix": "ts-standard --fix && eslint --ext '.js,.ts,.tsx' src"
   },
   "homepage": "/ui",
   "browserslist": {
@@ -50,7 +51,7 @@
     "@testing-library/jest-dom": "^5.16.3",
     "@testing-library/react": "^12.1.4",
     "@testing-library/user-event": "^13.5.0",
-    "react-scripts": "^5.0.0",
+    "react-scripts": "5.0.1",
     "ts-standard": "^11.0.0",
     "typescript": "^3.9.10"
   },

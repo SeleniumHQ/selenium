@@ -16,14 +16,12 @@
 // under the License.
 
 import React, { ReactNode } from 'react'
-import { Box, Container, Link, Typography } from '@material-ui/core'
-import {
-  createStyles,
-  StyleRules,
-  Theme,
-  withStyles
-} from '@material-ui/core/styles'
-import { RouteComponentProps, withRouter } from 'react-router-dom'
+import { Box, Container, Link, Typography } from '@mui/material'
+import { Theme } from '@mui/material/styles'
+import { StyleRules } from '@mui/styles'
+import createStyles from '@mui/styles/createStyles'
+import withStyles from '@mui/styles/withStyles'
+import { useLocation } from 'react-router-dom'
 
 const useStyles = (theme: Theme): StyleRules => createStyles(
   {
@@ -43,14 +41,112 @@ const useStyles = (theme: Theme): StyleRules => createStyles(
     }
   })
 
-interface HelpProps extends RouteComponentProps {
+function HelpContainer (): JSX.Element {
+  const location = useLocation()
+  return (
+    <Container maxWidth='md'>
+      {location.pathname !== '/help' && (
+        <Box mt={2}>
+          <Typography
+            align='center'
+            color='textPrimary'
+            variant='h2'
+          >
+            Whoops! The URL specified routes to this help page.
+          </Typography>
+        </Box>
+      )}
+      <Box mt={6}>
+        <Typography
+          align='center'
+          color='textPrimary'
+          variant='h3'
+        >
+          More information about Selenium Grid can be found at the{' '}
+          <Link
+            href='https://www.selenium.dev/documentation/grid/'
+            target='_blank'
+            rel='noreferrer'
+            underline='hover'
+          >
+            documentation
+          </Link>.
+        </Typography>
+      </Box>
+      <Box mt={6}>
+        <Typography
+          align='center'
+          color='textPrimary'
+          variant='h3'
+        >
+          Please report bugs and issues to the Selenium{' '}
+          <Link
+            href='https://github.com/SeleniumHQ/selenium/issues/new/choose'
+            target='_blank'
+            rel='noreferrer'
+            underline='hover'
+          >
+            issue tracker
+          </Link>.
+        </Typography>
+      </Box>
+      <Box mt={6}>
+        <Typography
+          align='center'
+          color='textPrimary'
+          variant='h3'
+        >
+          For questions and help, check the different support channels on
+          our{' '}
+          <Link
+            href='https://www.selenium.dev/support/'
+            target='_blank'
+            rel='noreferrer'
+            underline='hover'
+          >
+            website
+          </Link>.
+        </Typography>
+      </Box>
+      <Box m={10}>
+        <Typography
+          align='center'
+          color='textPrimary'
+          variant='h4'
+        >
+          Selenium is made possible through the efforts of our open source
+          community, contributions from these{' '}
+          <Link
+            href='https://www.selenium.dev/documentation/about/copyright_and_attributions/'
+            target='_blank'
+            rel='noreferrer'
+            underline='hover'
+          >
+            people
+          </Link>
+          , and our{' '}
+          <Link
+            href='https://www.selenium.dev/sponsors/'
+            target='_blank'
+            rel='noreferrer'
+            underline='hover'
+          >
+            sponsors
+          </Link>.
+        </Typography>
+      </Box>
+    </Container>
+  )
+}
+
+interface HelpProps {
   classes: any
 }
 
 class Help extends React.Component<HelpProps, {}> {
   // noinspection HtmlUnknownAnchorTarget
   render (): ReactNode {
-    const { classes, location } = this.props
+    const { classes } = this.props
 
     return (
       <div className={classes.root}>
@@ -60,89 +156,11 @@ class Help extends React.Component<HelpProps, {}> {
           height='100%'
           justifyContent='center'
         >
-          <Container maxWidth='md'>
-            {location.pathname !== '/help' && (
-              <Box mt={2}>
-                <Typography
-                  align='center'
-                  color='textPrimary'
-                  variant='h2'
-                >
-                  Whoops! The URL specified routes to this help page.
-                </Typography>
-              </Box>
-            )}
-            <Box mt={6}>
-              <Typography
-                align='center'
-                color='textPrimary'
-                variant='h3'
-              >
-                More information about Selenium Grid can be found at the{' '}
-                <Link
-                  href="https://www.selenium.dev/documentation/grid/"
-                  target="_blank" rel="noreferrer"
-                >
-                  documentation
-                </Link>.
-              </Typography>
-            </Box>
-            <Box mt={6}>
-              <Typography
-                align='center'
-                color='textPrimary'
-                variant='h3'
-              >
-                Please report bugs and issues to the Selenium{' '}
-                <Link
-                  href='https://github.com/SeleniumHQ/selenium/issues/new/choose'
-                  target='_blank' rel='noreferrer'
-                >
-                  issue tracker
-                </Link>.
-              </Typography>
-            </Box>
-            <Box mt={6}>
-              <Typography
-                align='center'
-                color='textPrimary'
-                variant='h3'
-              >
-                For questions and help, check the different support channels on
-                our{' '}
-                <Link
-                  href='https://www.selenium.dev/support/'
-                  target='_blank' rel='noreferrer'
-                >
-                  website
-                </Link>.
-              </Typography>
-            </Box>
-            <Box m={10}>
-              <Typography
-                align='center'
-                color='textPrimary'
-                variant='h4'
-              >
-                Selenium is made possible through the efforts of our open source
-                community, contributions from these{' '}
-                <Link
-                  href="https://www.selenium.dev/documentation/about/copyright_and_attributions/"
-                  target="_blank" rel='noreferrer'
-                >
-                  people
-                </Link>
-                , and our{' '}
-                <Link href='https://www.selenium.dev/sponsors/' target='_blank' rel='noreferrer'>
-                  sponsors
-                </Link>.
-              </Typography>
-            </Box>
-          </Container>
+          <HelpContainer />
         </Box>
       </div>
     )
   }
 }
 
-export default withStyles(useStyles)(withRouter(Help))
+export default withStyles(useStyles)(Help)

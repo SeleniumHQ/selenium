@@ -79,12 +79,7 @@ module Selenium
 
             pointer.create_pointer_down(:left)
 
-            if Platform.jruby?
-              expect(PointerPress).to have_received(:new).with(pointer, :down, :left)
-            else
-              expect(PointerPress).to have_received(:new).with(pointer, :down, :left, {})
-            end
-
+            expect(PointerPress).to have_received(:new).with(pointer, :down, :left)
             expect(pointer).to have_received(:add_action).with(interaction)
           end
         end
@@ -96,11 +91,7 @@ module Selenium
 
             pointer.create_pointer_up(:left)
 
-            if Platform.jruby?
-              expect(PointerPress).to have_received(:new).with(pointer, :up, :left)
-            else
-              expect(PointerPress).to have_received(:new).with(pointer, :up, :left, {})
-            end
+            expect(PointerPress).to have_received(:new).with(pointer, :up, :left)
             expect(pointer).to have_received(:add_action).with(interaction)
           end
         end

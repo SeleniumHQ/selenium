@@ -63,7 +63,7 @@ module Selenium
             expect(opts.prefs[:foo]).to eq('bar')
             expect(opts.binary).to eq('/foo/bar')
             expect(opts.extensions).to eq(['foo.crx', 'bar.crx'])
-            expect(opts.instance_variable_get('@options')[:foo]).to eq('bar')
+            expect(opts.instance_variable_get(:@options)[:foo]).to eq('bar')
             expect(opts.emulation[:device_name]).to eq(:bar)
             expect(opts.local_state[:foo]).to eq('bar')
             expect(opts.detach).to eq(true)
@@ -115,7 +115,7 @@ module Selenium
         describe '#add_encoded_extension' do
           it 'adds an encoded extension' do
             options.add_encoded_extension('foo')
-            expect(options.instance_variable_get('@encoded_extensions')).to include('foo')
+            expect(options.instance_variable_get(:@encoded_extensions)).to include('foo')
           end
         end
 
@@ -143,12 +143,12 @@ module Selenium
         describe '#add_option' do
           it 'adds an option with ordered pairs' do
             options.add_option(:foo, 'bar')
-            expect(options.instance_variable_get('@options')[:foo]).to eq('bar')
+            expect(options.instance_variable_get(:@options)[:foo]).to eq('bar')
           end
 
           it 'adds an option with Hash' do
             options.add_option(foo: 'bar')
-            expect(options.instance_variable_get('@options')[:foo]).to eq('bar')
+            expect(options.instance_variable_get(:@options)[:foo]).to eq('bar')
           end
         end
 
@@ -239,7 +239,7 @@ module Selenium
                                debugger_address: '127.0.0.1:8181',
                                exclude_switches: %w[foobar barfoo],
                                minidump_path: 'linux/only',
-                               perf_logging_prefs: {'enable_network': true},
+                               perf_logging_prefs: {enable_network: true},
                                window_types: %w[normal devtools],
                                android_package: 'package',
                                android_activity: 'activity',

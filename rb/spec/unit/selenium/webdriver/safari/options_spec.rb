@@ -62,12 +62,12 @@ module Selenium
           context 'when namespaced' do
             it 'adds an option with ordered pairs' do
               options.add_option('safari:foo', 'bar')
-              expect(options.instance_variable_get('@options')['safari:foo']).to eq('bar')
+              expect(options.instance_variable_get(:@options)['safari:foo']).to eq('bar')
             end
 
             it 'adds an option with Hash' do
               options.add_option('safari:foo': 'bar')
-              expect(options.instance_variable_get('@options')[:'safari:foo']).to eq('bar')
+              expect(options.instance_variable_get(:@options)[:'safari:foo']).to eq('bar')
             end
           end
 

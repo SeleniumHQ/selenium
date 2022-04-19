@@ -75,21 +75,15 @@ module Selenium
             begin
               request = new_request_for(verb, url, headers, payload)
               response = response_for(request)
-            rescue Errno::ECONNABORTED, Errno::ECONNRESET, Errno::EADDRINUSE
-              # a retry is sometimes needed on Windows XP where we may quickly
-              # run out of ephemeral ports
+            rescue Errno::ECONNABORTED, Errno::ECONNRESET, Errno::EADDRINUSE, Errno::EADDRNOTAVAIL
+              # a retry is sometimes needed:
+              #   on Windows XP where we may quickly run out of ephemeral ports
+              #   when the port becomes temporarily unavailable
               #
               # A more robust solution is bumping the MaxUserPort setting
               # as described here:
               #
               # http://msdn.microsoft.com/en-us/library/aa560610%28v=bts.20%29.aspx
-              raise if retries >= MAX_RETRIES
-
-              retries += 1
-              sleep 2
-              retry
-            rescue Errno::EADDRNOTAVAIL => e
-              # a retry is sometimes needed when the port becomes temporarily unavailable
               raise if retries >= MAX_RETRIES
 
               retries += 1

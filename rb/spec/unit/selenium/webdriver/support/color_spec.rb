@@ -113,7 +113,6 @@ module Selenium
           rgba  = 'rgba(30, 30, 30, 0.2)'
           other = 'rgba(30, 30, 30, 1)'
 
-          expect(Color.from_string(rgba)).to eq(Color.from_string(rgba))
           expect(Color.from_string(rgba)).not_to eq(Color.from_string(other))
         end
 

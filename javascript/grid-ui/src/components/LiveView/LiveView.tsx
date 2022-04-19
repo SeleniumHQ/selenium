@@ -16,8 +16,10 @@
 // under the License.
 
 import React, { ReactNode } from 'react'
-import { createStyles, Theme, withStyles } from '@material-ui/core'
-import { StyleRules } from '@material-ui/core/styles'
+import { Theme } from '@mui/material'
+import createStyles from '@mui/styles/createStyles'
+import withStyles from '@mui/styles/withStyles'
+import { StyleRules } from '@mui/styles'
 import RFB from '@novnc/novnc/core/rfb'
 import PasswordDialog from './PasswordDialog'
 
@@ -37,18 +39,18 @@ interface LiveViewProps {
    * The URL for which to create a remote VNC connection.
    * Should include the protocol, host, port, and path.
    */
-  url?: string,
+  url?: string
   /**
    * Customize the CSS styles of the canvas element with an object.
    */
-  style?: object,
+  style?: object
   /**
    * Specify if the remote session should be scaled locally so it fits its
    * container.  When disabled it will be centered if the remote session is
    * smaller than its container, or handled according to `clipViewport` if it
    * is larger.  Default is false.
    */
-  scaleViewport?: boolean,
+  scaleViewport?: boolean
   /**
    * Callback to close the Live View when the PasswordDialog is prompted and
    * the user clicks 'Cancel'
@@ -57,7 +59,7 @@ interface LiveViewProps {
 }
 
 interface PasswordDialogState {
-  open: boolean,
+  open: boolean
   message: string
 }
 
@@ -175,11 +177,12 @@ class LiveView extends React.Component<LiveViewProps, PasswordDialogState> {
         onMouseEnter={this.handleMouseEnter}
         onMouseLeave={this.handleMouseLeave}
       >
-        <PasswordDialog title={'LiveView (VNC) Password'}
-                        open={open}
-                        setOpen={this.handlePasswordDialog}
-                        onConfirm={this.handleCredentialsEntered}
-                        onCancel={this.handlePasswordDialogClose}
+        <PasswordDialog
+          title='LiveView (VNC) Password'
+          open={open}
+          setOpen={this.handlePasswordDialog}
+          onConfirm={this.handleCredentialsEntered}
+          onCancel={this.handlePasswordDialogClose}
         >
           {message}
         </PasswordDialog>
