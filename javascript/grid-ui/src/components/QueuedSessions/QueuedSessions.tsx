@@ -16,64 +16,47 @@
 // under the License.
 
 import * as React from 'react'
-import { Theme } from '@mui/material/styles'
-import { StyleRules } from '@mui/styles'
-import createStyles from '@mui/styles/createStyles'
-import { List, ListItem } from '@mui/material'
-import withStyles from '@mui/styles/withStyles'
+import { Box, List, ListItem } from '@mui/material'
 import EnhancedTableToolbar from '../EnhancedTableToolbar'
-import { ReactNode } from 'react'
 
-const useStyles = (theme: Theme): StyleRules => createStyles(
-  {
-    root: {
-      width: '100%',
-      paddingTop: 30
-    },
-    queueList: {
-      minWidth: 750,
-      backgroundColor: theme.palette.background.paper,
-      marginBottom: 20
-    },
-    queueListItem: {
-      borderBottomWidth: 1,
-      borderBottomStyle: 'solid',
-      borderBottomColor: '#e0e0e0'
-    }
+function QueuedSessions (props) {
+  const { sessionQueueRequests } = props
+  const queue = sessionQueueRequests.map((queuedSession) => {
+    return JSON.stringify(JSON.parse(queuedSession) as object)
   })
-
-interface QueuedSessionsProps {
-  sessionQueueRequests: string[]
-  classes: any
+  return (
+    <Box
+      paddingTop='30px'
+      width='100%'
+      bgcolor='background.paper'
+      marginTop='30px'
+      marginBottom='20px'
+    >
+      {queue.length > 0 && (
+        <Box minWidth='750px'>
+          <EnhancedTableToolbar title={`Queue (${queue.length})`} />
+          <List>
+            {queue.map((queueItem, index) => {
+              return (
+                <ListItem
+                  key={index}
+                  sx={{
+                    borderBottomWidth: 1,
+                    borderBottomStyle: 'solid',
+                    borderBottomColor: '#e0e0e0'
+                  }}
+                >
+                  <pre>
+                    {queueItem}
+                  </pre>
+                </ListItem>
+              )
+            })}
+          </List>
+        </Box>
+      )}
+    </Box>
+  )
 }
 
-class QueuedSessions extends React.Component<QueuedSessionsProps, {}> {
-  render (): ReactNode {
-    const { sessionQueueRequests, classes } = this.props
-    const queue = sessionQueueRequests.map((queuedSession) => {
-      return JSON.stringify(JSON.parse(queuedSession) as object)
-    })
-    return (
-      <div className={classes.root}>
-        {queue.length > 0 && (
-          <div className={classes.queueList}>
-            <EnhancedTableToolbar title={`Queue (${queue.length})`} />
-            <List>
-              {queue.map((queueItem, index) => {
-                return (
-                  <ListItem className={classes.queueListItem} key={index}>
-                    <pre>
-                      {queueItem}
-                    </pre>
-                  </ListItem>
-                )
-              })}
-            </List>
-          </div>
-        )}
-      </div>
-    )
-  }
-}
-
-export default withStyles(useStyles)(QueuedSessions)
+export default QueuedSessions

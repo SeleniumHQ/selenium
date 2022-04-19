@@ -25,98 +25,69 @@ import {
   IconButton,
   Typography
 } from '@mui/material'
-import createStyles from '@mui/styles/createStyles'
-import withStyles from '@mui/styles/withStyles'
-import React, { ReactNode } from 'react'
-import NodeInfo from '../../models/node-info'
+import React, { useState } from 'react'
 import InfoIcon from '@mui/icons-material/Info'
 import OsLogo from '../common/OsLogo'
-import { StyleRules } from '@mui/styles'
+import NodeInfo from '../../models/node-info'
 
-const useStyles = (): StyleRules => createStyles(
-  {
-    buttonMargin: {
-      padding: 1
-    }
-  })
+function NodeDetailsDialog (props) {
+  const [open, setOpen] = useState(false)
+  const { node } = props
+  const nodeInfo: NodeInfo = node
 
-interface NodeDetailsDialogProps {
-  node: NodeInfo
-  classes: any
+  return (
+    <Box component='span'>
+      <IconButton
+        sx={{ bm: 1 }}
+        onClick={() => setOpen(true)}
+        data-testid={`node-info-${nodeInfo.id}`}
+        size='large'
+      >
+        <InfoIcon />
+      </IconButton>
+      <Dialog
+        onClose={() => setOpen(false)}
+        aria-labelledby='node-info-dialog' open={open}
+      >
+        <DialogTitle id='node-info-dialog'>
+          <OsLogo osName={nodeInfo.osInfo.name} />
+          <Box fontWeight='fontWeightBold' mr={1} display='inline'>
+            URI:
+          </Box>
+          {nodeInfo.uri}
+        </DialogTitle>
+        <DialogContent dividers>
+          <Typography gutterBottom>
+            Node Id: {nodeInfo.id}
+          </Typography>
+          <Typography gutterBottom>
+            OS Arch: {nodeInfo.osInfo.arch}
+          </Typography>
+          <Typography gutterBottom>
+            OS Name: {nodeInfo.osInfo.name}
+          </Typography>
+          <Typography gutterBottom>
+            OS Version: {nodeInfo.osInfo.version}
+          </Typography>
+          <Typography gutterBottom>
+            Total slots: {nodeInfo.slotCount}
+          </Typography>
+          <Typography gutterBottom>
+            Grid version: {nodeInfo.version}
+          </Typography>
+        </DialogContent>
+        <DialogActions>
+          <Button
+            onClick={() => setOpen(false)}
+            color='primary'
+            variant='contained'
+          >
+            Close
+          </Button>
+        </DialogActions>
+      </Dialog>
+    </Box>
+  )
 }
 
-interface NodeDetailsDialogState {
-  open: boolean
-}
-
-class NodeDetailsDialog extends React.Component<NodeDetailsDialogProps, NodeDetailsDialogState> {
-  constructor (props) {
-    super(props)
-    this.state = {
-      open: false
-    }
-  }
-
-  handleDialogOpen = (): void => {
-    this.setState({ open: true })
-  }
-
-  handleDialogClose = (): void => {
-    this.setState({ open: false })
-  }
-
-  render (): ReactNode {
-    const { node, classes } = this.props
-    const { open } = this.state
-    const nodeInfo = node
-
-    return (
-      <Box component='span'>
-        <IconButton
-          className={classes.buttonMargin}
-          onClick={this.handleDialogOpen}
-          data-testid={`node-info-${nodeInfo.id}`}
-          size='large'
-        >
-          <InfoIcon />
-        </IconButton>
-        <Dialog onClose={this.handleDialogClose} aria-labelledby='node-info-dialog' open={open}>
-          <DialogTitle id='node-info-dialog'>
-            <OsLogo osName={nodeInfo.osInfo.name} />
-            <Box fontWeight='fontWeightBold' mr={1} display='inline'>
-              URI:
-            </Box>
-            {nodeInfo.uri}
-          </DialogTitle>
-          <DialogContent dividers>
-            <Typography gutterBottom>
-              Node Id: {nodeInfo.id}
-            </Typography>
-            <Typography gutterBottom>
-              OS Arch: {nodeInfo.osInfo.arch}
-            </Typography>
-            <Typography gutterBottom>
-              OS Name: {nodeInfo.osInfo.name}
-            </Typography>
-            <Typography gutterBottom>
-              OS Version: {nodeInfo.osInfo.version}
-            </Typography>
-            <Typography gutterBottom>
-              Total slots: {nodeInfo.slotCount}
-            </Typography>
-            <Typography gutterBottom>
-              Grid version: {nodeInfo.version}
-            </Typography>
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={this.handleDialogClose} color='primary' variant='contained'>
-              Close
-            </Button>
-          </DialogActions>
-        </Dialog>
-      </Box>
-    )
-  }
-}
-
-export default withStyles(useStyles)(NodeDetailsDialog)
+export default NodeDetailsDialog

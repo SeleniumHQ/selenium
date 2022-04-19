@@ -15,18 +15,13 @@
 // specific language governing permissions and limitations
 // under the License.
 
-import React, { ReactNode } from 'react'
-import { Box, CircularProgress, CircularProgressProps, Theme, Typography } from '@mui/material'
-import createStyles from '@mui/styles/createStyles'
-import withStyles from '@mui/styles/withStyles'
-import { StyleRules } from '@mui/styles'
-
-const useStyles = (theme: Theme): StyleRules => createStyles(
-  {
-    concurrencyBackground: {
-      backgroundColor: theme.palette.secondary.main
-    }
-  })
+import React from 'react'
+import {
+  Box,
+  CircularProgress,
+  CircularProgressProps,
+  Typography
+} from '@mui/material'
 
 function CircularProgressWithLabel (props: CircularProgressProps & { value: number }): JSX.Element {
   return (
@@ -50,56 +45,48 @@ function CircularProgressWithLabel (props: CircularProgressProps & { value: numb
   )
 }
 
-interface OverallConcurrencyProps {
-  sessionCount: number
-  maxSession: number
-  classes: any
-}
+function OverallConcurrency (props) {
+  const { maxSession, sessionCount } = props
+  const currentLoad = Math.min(
+    ((sessionCount / (maxSession === 0 ? 1 : maxSession)) * 100), 100)
 
-class OverallConcurrency extends React.Component<OverallConcurrencyProps, {}> {
-  render (): ReactNode {
-    const { maxSession, sessionCount, classes } = this.props
-    const currentLoad = Math.min(
-      ((sessionCount / (maxSession === 0 ? 1 : maxSession)) * 100), 100)
-
-    return (
-      <Box
-        p={2}
-        m={2}
-        className={classes.concurrencyBackground}
-        data-testid='overall-concurrency'
+  return (
+    <Box
+      p={2}
+      m={2}
+      sx={{ bgcolor: 'secondary.main' }}
+      data-testid='overall-concurrency'
+    >
+      <Typography
+        align='center'
+        gutterBottom
+        variant='h4'
       >
-        <Typography
-          align='center'
-          gutterBottom
-          variant='h4'
-        >
-          Concurrency
-        </Typography>
-        <Box
-          display='flex'
-          justifyContent='center'
-          mt={2}
-          mb={2}
-          data-testid='concurrency-usage'
-        >
-          <CircularProgressWithLabel value={currentLoad} />
-        </Box>
-        <Typography
-          align='center'
-          variant='h4'
-        >
-          <Box display='inline' data-testid='session-count'>
-            {sessionCount}
-          </Box>
-          {' / '}
-          <Box display='inline' data-testid='max-session'>
-            {maxSession}
-          </Box>
-        </Typography>
+        Concurrency
+      </Typography>
+      <Box
+        display='flex'
+        justifyContent='center'
+        mt={2}
+        mb={2}
+        data-testid='concurrency-usage'
+      >
+        <CircularProgressWithLabel value={currentLoad} />
       </Box>
-    )
-  }
+      <Typography
+        align='center'
+        variant='h4'
+      >
+        <Box display='inline' data-testid='session-count'>
+          {sessionCount}
+        </Box>
+        {' / '}
+        <Box display='inline' data-testid='max-session'>
+          {maxSession}
+        </Box>
+      </Typography>
+    </Box>
+  )
 }
 
-export default (withStyles(useStyles))(OverallConcurrency)
+export default OverallConcurrency

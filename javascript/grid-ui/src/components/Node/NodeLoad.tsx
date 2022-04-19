@@ -16,9 +16,10 @@
 // under the License.
 
 import { Box, Grid, Typography } from '@mui/material'
-import React, { ReactNode } from 'react'
-import NodeInfo from '../../models/node-info'
-import LinearProgress, { LinearProgressProps } from '@mui/material/LinearProgress'
+import React from 'react'
+import LinearProgress, {
+  LinearProgressProps
+} from '@mui/material/LinearProgress'
 
 function LinearProgressWithLabel (props: LinearProgressProps & { value: number }): JSX.Element {
   return (
@@ -35,48 +36,46 @@ function LinearProgressWithLabel (props: LinearProgressProps & { value: number }
   )
 }
 
-class NodeLoad extends React.Component<{ node: NodeInfo }, {}> {
-  render (): ReactNode {
-    const { node } = this.props
-    const sessionCount = node.sessionCount ?? 0
-    const currentLoad = sessionCount === 0
-      ? 0
-      : Math.min(((sessionCount / node.maxSession) * 100), 100).toFixed(2)
+function NodeLoad (props) {
+  const { node } = props
+  const sessionCount = node.sessionCount ?? 0
+  const currentLoad = sessionCount === 0
+    ? 0
+    : Math.min(((sessionCount / node.maxSession) * 100), 100).toFixed(2)
 
-    return (
-      <Grid item xs={12}>
-        <Grid
-          container
-          justifyContent='space-between'
-          spacing={2}
-        >
-          <Grid item xs={3}>
-            <Box pt={1} mt={2}>
-              <Typography
-                variant='body2'
-                gutterBottom
-              >
-                Sessions: {sessionCount}
-              </Typography>
-            </Box>
-          </Grid>
-          <Grid item xs={9}>
-            <Box pt={1} mt={2}>
-              <Typography
-                variant='body2'
-                gutterBottom
-              >
-                Max. Concurrency: {node.maxSession}
-              </Typography>
-            </Box>
-          </Grid>
-          <Grid item xs={12}>
-            <LinearProgressWithLabel value={Number(currentLoad)} />
-          </Grid>
+  return (
+    <Grid item xs={12}>
+      <Grid
+        container
+        justifyContent='space-between'
+        spacing={2}
+      >
+        <Grid item xs={3}>
+          <Box pt={1} mt={2}>
+            <Typography
+              variant='body2'
+              gutterBottom
+            >
+              Sessions: {sessionCount}
+            </Typography>
+          </Box>
+        </Grid>
+        <Grid item xs={9}>
+          <Box pt={1} mt={2}>
+            <Typography
+              variant='body2'
+              gutterBottom
+            >
+              Max. Concurrency: {node.maxSession}
+            </Typography>
+          </Box>
+        </Grid>
+        <Grid item xs={12}>
+          <LinearProgressWithLabel value={Number(currentLoad)} />
         </Grid>
       </Grid>
-    )
-  }
+    </Grid>
+  )
 }
 
 export default NodeLoad

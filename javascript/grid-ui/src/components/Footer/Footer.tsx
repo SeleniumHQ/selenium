@@ -19,18 +19,19 @@ import React from 'react'
 import { Box, Link, Typography } from '@mui/material'
 
 function Footer (): JSX.Element {
+  // noinspection HtmlUnknownAnchorTarget
   return (
     <Box pt={4}>
-      <Typography variant="body2" color="textSecondary" align="center">
-        <Link href="#/help" underline="hover">
+      <Typography variant='body2' color='textSecondary' align='center'>
+        <Link href='#/help' underline='hover'>
           Help
         </Link>
         {' - All rights reserved - '}
         <Link
-          href="https://sfconservancy.org/"
-          target="_blank"
-          rel="noreferrer"
-          underline="hover"
+          href='https://sfconservancy.org/'
+          target='_blank'
+          rel='noreferrer'
+          underline='hover'
         >
           Software Freedom Conservancy
         </Link>{' '}
