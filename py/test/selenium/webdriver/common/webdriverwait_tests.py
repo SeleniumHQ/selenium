@@ -35,7 +35,7 @@ def throw_sere(driver):
 def test_should_fail_with_invalid_selector_exception(driver, pages):
     pages.load("dynamic.html")
     with pytest.raises(InvalidSelectorException):
-        WebDriverWait(driver, 3).until(EC.presence_of_element_located((By.XPATH, "//*[contains(@id,'something'")))
+        WebDriverWait(driver, 0.7).until(EC.presence_of_element_located((By.XPATH, "//*[contains(@id,'something'")))
 
 
 def test_should_explicitly_wait_for_a_single_element(driver, pages):
