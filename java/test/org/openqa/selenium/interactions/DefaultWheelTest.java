@@ -50,7 +50,6 @@ public class DefaultWheelTest extends JUnit4TestBase {
       0,
       0,
       0,
-      Duration.ofMillis(250),
       PointerInput.Origin.fromElement(iframe)).perform();
 
     assertTrue(inViewport(iframe));
@@ -66,7 +65,6 @@ public class DefaultWheelTest extends JUnit4TestBase {
       0,
       0,
       200,
-      Duration.ofMillis(250),
       PointerInput.Origin.fromElement(iframe)).perform();
 
     driver.switchTo().frame(iframe);
@@ -85,7 +83,6 @@ public class DefaultWheelTest extends JUnit4TestBase {
       -50,
       0,
       200,
-      Duration.ofMillis(250),
       PointerInput.Origin.fromElement(footer)).perform();
 
     driver.switchTo().frame(driver.findElement(By.tagName("iframe")));
@@ -104,7 +101,6 @@ public class DefaultWheelTest extends JUnit4TestBase {
       50,
       0,
       200,
-      Duration.ofMillis(250),
       PointerInput.Origin.fromElement(footer)).perform();
   }
 
@@ -120,7 +116,6 @@ public class DefaultWheelTest extends JUnit4TestBase {
       0,
       0,
       y,
-      Duration.ofMillis(250),
       PointerInput.Origin.viewport()).perform();
 
     assertTrue(inViewport(footer));
@@ -137,7 +132,6 @@ public class DefaultWheelTest extends JUnit4TestBase {
       10,
       0,
       200,
-      Duration.ofMillis(250),
       PointerInput.Origin.viewport()).perform();
 
     driver.switchTo().frame(iframe);
@@ -155,7 +149,6 @@ public class DefaultWheelTest extends JUnit4TestBase {
       -10,
       0,
       200,
-      Duration.ofMillis(250),
       PointerInput.Origin.viewport()).perform();
   }
 

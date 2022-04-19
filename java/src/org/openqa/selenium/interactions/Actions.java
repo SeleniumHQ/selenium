@@ -271,8 +271,8 @@ public class Actions {
     return moveInTicks(target, 0, 0).tick(getActivePointer().createPointerUp(LEFT.asArg()));
   }
 
-  public Actions scroll( int x, int y, int deltaX, int deltaY, Duration duration, Origin origin) {
-    return tick(getActiveWheel().createScroll(x, y, deltaX, deltaY, duration, origin));
+  public Actions scroll( int x, int y, int deltaX, int deltaY, Origin origin) {
+    return tick(getActiveWheel().createScroll(x, y, deltaX, deltaY, Duration.ofMillis(250), origin));
   }
 
   /**
