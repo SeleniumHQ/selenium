@@ -27,9 +27,14 @@ class Service(service.ChromiumService):
     Object that manages the starting and stopping of the ChromeDriver
     """
 
-    def __init__(self, executable_path: str = DEFAULT_EXECUTABLE_PATH,
-                 port: int = 0, service_args: List[str] = None,
-                 log_path: str = None, env: dict = None):
+    def __init__(
+        self,
+        executable_path: str = DEFAULT_EXECUTABLE_PATH,
+        port: int = 0,
+        service_args: List[str] = None,
+        log_path: str = None,
+        env: dict = None,
+    ):
         """
         Creates a new instance of the Service
 
@@ -45,4 +50,5 @@ class Service(service.ChromiumService):
             service_args,
             log_path,
             env,
-            "Please see https://chromedriver.chromium.org/home")
+            "Please see https://chromedriver.chromium.org/home",
+        )

@@ -27,7 +27,9 @@ from .wheel_actions import WheelActions
 
 
 class ActionBuilder(object):
-    def __init__(self, driver, mouse=None, wheel=None, keyboard=None, duration=250) -> None:
+    def __init__(
+        self, driver, mouse=None, wheel=None, keyboard=None, duration=250
+    ) -> None:
         if not mouse:
             mouse = PointerInput(interaction.POINTER_MOUSE, "mouse")
         if not keyboard:
@@ -82,14 +84,14 @@ class ActionBuilder(object):
         enc = {"actions": []}
         for device in self.devices:
             encoded = device.encode()
-            if encoded['actions']:
+            if encoded["actions"]:
                 enc["actions"].append(encoded)
                 device.actions = []
         self.driver.execute(Command.W3C_ACTIONS, enc)
 
     def clear_actions(self) -> None:
         """
-            Clears actions that are already stored on the remote end
+        Clears actions that are already stored on the remote end
         """
         self.driver.execute(Command.W3C_CLEAR_ACTIONS)
 

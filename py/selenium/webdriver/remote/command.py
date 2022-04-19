@@ -85,7 +85,7 @@ class Command(object):
     GET_AVAILABLE_LOG_TYPES = "getAvailableLogTypes"
     FULLSCREEN_WINDOW = "fullscreenWindow"
     MINIMIZE_WINDOW = "minimizeWindow"
-    PRINT_PAGE = 'printPage'
+    PRINT_PAGE = "printPage"
 
     # Alerts
     W3C_DISMISS_ALERT = "w3cDismissAlert"

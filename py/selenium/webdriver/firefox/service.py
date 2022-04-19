@@ -17,7 +17,7 @@
 
 from typing import List
 
-from selenium.webdriver.common import (service, utils)
+from selenium.webdriver.common import service, utils
 
 DEFAULT_EXECUTABLE_PATH = "geckodriver"
 
@@ -26,9 +26,14 @@ class Service(service.Service):
     """Object that manages the starting and stopping of the
     GeckoDriver."""
 
-    def __init__(self, executable_path: str = DEFAULT_EXECUTABLE_PATH,
-                 port: int = 0, service_args: List[str] = None,
-                 log_path: str = "geckodriver.log", env: dict = None):
+    def __init__(
+        self,
+        executable_path: str = DEFAULT_EXECUTABLE_PATH,
+        port: int = 0,
+        service_args: List[str] = None,
+        log_path: str = "geckodriver.log",
+        env: dict = None,
+    ):
         """Creates a new instance of the GeckoDriver remote service proxy.
 
         GeckoDriver provides a HTTP interface speaking the W3C WebDriver
@@ -49,10 +54,11 @@ class Service(service.Service):
         log_file = open(log_path, "a+") if log_path else None
 
         service.Service.__init__(
-            self, executable_path, port=port, log_file=log_file, env=env)
+            self, executable_path, port=port, log_file=log_file, env=env
+        )
         self.service_args = service_args or []
         # Set a port for CDP
-        if '--connect-existing' not in self.service_args:
+        if "--connect-existing" not in self.service_args:
             self.service_args.append("--websocket-port")
         self.service_args.append("%d" % utils.free_port())
         # Set the webdriver port

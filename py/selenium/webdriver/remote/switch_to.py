@@ -17,9 +17,11 @@
 
 from .command import Command
 
-from selenium.common.exceptions import (NoSuchElementException,
-                                        NoSuchFrameException,
-                                        NoSuchWindowException)
+from selenium.common.exceptions import (
+    NoSuchElementException,
+    NoSuchFrameException,
+    NoSuchWindowException,
+)
 from selenium.webdriver.common.alert import Alert
 from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webelement import WebElement
@@ -28,6 +30,7 @@ from selenium.webdriver.remote.webelement import WebElement
 class SwitchTo:
     def __init__(self, driver):
         import weakref
+
         self._driver = weakref.proxy(driver)
 
     @property
@@ -40,7 +43,7 @@ class SwitchTo:
 
                 element = driver.switch_to.active_element
         """
-        return self._driver.execute(Command.W3C_GET_ACTIVE_ELEMENT)['value']
+        return self._driver.execute(Command.W3C_GET_ACTIVE_ELEMENT)["value"]
 
     @property
     def alert(self) -> Alert:
@@ -65,7 +68,7 @@ class SwitchTo:
 
                 driver.switch_to.default_content()
         """
-        self._driver.execute(Command.SWITCH_TO_FRAME, {'id': None})
+        self._driver.execute(Command.SWITCH_TO_FRAME, {"id": None})
 
     def frame(self, frame_reference) -> None:
         """
@@ -87,11 +90,13 @@ class SwitchTo:
                 frame_reference = self._driver.find_element(By.ID, frame_reference)
             except NoSuchElementException:
                 try:
-                    frame_reference = self._driver.find_element(By.NAME, frame_reference)
+                    frame_reference = self._driver.find_element(
+                        By.NAME, frame_reference
+                    )
                 except NoSuchElementException:
                     raise NoSuchFrameException(frame_reference)
 
-        self._driver.execute(Command.SWITCH_TO_FRAME, {'id': frame_reference})
+        self._driver.execute(Command.SWITCH_TO_FRAME, {"id": frame_reference})
 
     def new_window(self, type_hint=None) -> None:
         """Switches to a new top-level browsing context.
@@ -104,8 +109,8 @@ class SwitchTo:
 
                 driver.switch_to.new_window('tab')
         """
-        value = self._driver.execute(Command.NEW_WINDOW, {'type': type_hint})['value']
-        self._w3c_window(value['handle'])
+        value = self._driver.execute(Command.NEW_WINDOW, {"type": type_hint})["value"]
+        self._w3c_window(value["handle"])
 
     def parent_frame(self) -> None:
         """
@@ -136,7 +141,7 @@ class SwitchTo:
 
     def _w3c_window(self, window_name):
         def send_handle(h):
-            self._driver.execute(Command.SWITCH_TO_WINDOW, {'handle': h})
+            self._driver.execute(Command.SWITCH_TO_WINDOW, {"handle": h})
 
         try:
             # Try using it as a handle first.
@@ -147,7 +152,7 @@ class SwitchTo:
             handles = self._driver.window_handles
             for handle in handles:
                 send_handle(handle)
-                current_name = self._driver.execute_script('return window.name')
+                current_name = self._driver.execute_script("return window.name")
                 if window_name == current_name:
                     return
             send_handle(original_handle)

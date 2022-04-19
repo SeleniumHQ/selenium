@@ -20,27 +20,31 @@ from selenium.common.exceptions import NoSuchElementException, InvalidSelectorEx
 from selenium.common.exceptions import TimeoutException
 
 POLL_FREQUENCY = 0.5  # How long to sleep in between calls to the method
-IGNORED_EXCEPTIONS = (NoSuchElementException,)  # exceptions ignored during calls to the method
+IGNORED_EXCEPTIONS = (
+    NoSuchElementException,
+)  # exceptions ignored during calls to the method
 
 
 class WebDriverWait(object):
-    def __init__(self, driver, timeout, poll_frequency=POLL_FREQUENCY, ignored_exceptions=None):
+    def __init__(
+        self, driver, timeout, poll_frequency=POLL_FREQUENCY, ignored_exceptions=None
+    ):
         """Constructor, takes a WebDriver instance and timeout in seconds.
 
-           :Args:
-            - driver - Instance of WebDriver (Ie, Firefox, Chrome or Remote)
-            - timeout - Number of seconds before timing out
-            - poll_frequency - sleep interval between calls
-              By default, it is 0.5 second.
-            - ignored_exceptions - iterable structure of exception classes ignored during calls.
-              By default, it contains NoSuchElementException only.
+        :Args:
+         - driver - Instance of WebDriver (Ie, Firefox, Chrome or Remote)
+         - timeout - Number of seconds before timing out
+         - poll_frequency - sleep interval between calls
+           By default, it is 0.5 second.
+         - ignored_exceptions - iterable structure of exception classes ignored during calls.
+           By default, it contains NoSuchElementException only.
 
-           Example::
+        Example::
 
-            from selenium.webdriver.support.wait import WebDriverWait \n
-            element = WebDriverWait(driver, 10).until(lambda x: x.find_element(By.ID, "someId")) \n
-            is_disappeared = WebDriverWait(driver, 30, 1, (ElementNotVisibleException)).\\ \n
-                        until_not(lambda x: x.find_element(By.ID, "someId").is_displayed())
+         from selenium.webdriver.support.wait import WebDriverWait \n
+         element = WebDriverWait(driver, 10).until(lambda x: x.find_element(By.ID, "someId")) \n
+         is_disappeared = WebDriverWait(driver, 30, 1, (ElementNotVisibleException)).\\ \n
+                     until_not(lambda x: x.find_element(By.ID, "someId").is_displayed())
         """
         self._driver = driver
         self._timeout = float(timeout)
@@ -58,9 +62,10 @@ class WebDriverWait(object):
 
     def __repr__(self):
         return '<{0.__module__}.{0.__name__} (session="{1}")>'.format(
-            type(self), self._driver.session_id)
+            type(self), self._driver.session_id
+        )
 
-    def until(self, method, message=''):
+    def until(self, method, message=""):
         """Calls the method provided with the driver as an argument until the \
         return value does not evaluate to ``False``.
 
@@ -81,14 +86,14 @@ class WebDriverWait(object):
             except InvalidSelectorException as e:
                 raise e
             except self._ignored_exceptions as exc:
-                screen = getattr(exc, 'screen', None)
-                stacktrace = getattr(exc, 'stacktrace', None)
+                screen = getattr(exc, "screen", None)
+                stacktrace = getattr(exc, "stacktrace", None)
             time.sleep(self._poll)
             if time.time() > end_time:
                 break
         raise TimeoutException(message, screen, stacktrace)
 
-    def until_not(self, method, message=''):
+    def until_not(self, method, message=""):
         """Calls the method provided with the driver as an argument until the \
         return value evaluates to ``False``.
 

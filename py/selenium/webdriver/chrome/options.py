@@ -21,14 +21,14 @@ from typing import Optional
 
 
 class Options(ChromiumOptions):
-
     @property
     def default_capabilities(self) -> dict:
         return DesiredCapabilities.CHROME.copy()
 
-    def enable_mobile(self,
-                      android_package: str = "com.android.chrome",
-                      android_activity: Optional[str] = None,
-                      device_serial: Optional[str] = None
-                      ) -> None:
+    def enable_mobile(
+        self,
+        android_package: str = "com.android.chrome",
+        android_activity: Optional[str] = None,
+        device_serial: Optional[str] = None,
+    ) -> None:
         super().enable_mobile(android_package, android_activity, device_serial)

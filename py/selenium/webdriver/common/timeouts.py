@@ -21,6 +21,7 @@ from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     import sys
+
     if sys.version_info >= (3, 8):
         from typing import TypedDict
     else:
@@ -33,12 +34,14 @@ if TYPE_CHECKING:
 
 else:
     from typing import Dict
+
     JSONTimeouts = Dict[str, int]
 
 
 class Timeouts(object):
-
-    def __init__(self, implicit_wait: float = 0, page_load: float = 0, script: float = 0) -> None:
+    def __init__(
+        self, implicit_wait: float = 0, page_load: float = 0, script: float = 0
+    ) -> None:
         """
         Create a new Timeout object.
 

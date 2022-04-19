@@ -20,7 +20,6 @@ from ..utils import keys_to_typing
 
 
 class KeyActions(Interaction):
-
     def __init__(self, source=None):
         if not source:
             source = KeyInput(KEY)

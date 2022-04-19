@@ -24,9 +24,9 @@ class Options(ChromeOptions):
 
     def __init__(self):
         ChromeOptions.__init__(self)
-        self._android_package_name = ''
-        self._android_device_socket = ''
-        self._android_command_line_file = ''
+        self._android_package_name = ""
+        self._android_device_socket = ""
+        self._android_command_line_file = ""
 
     @property
     def android_package_name(self):
@@ -93,8 +93,7 @@ class Options(ChromeOptions):
         if self.android_device_socket:
             opera_options["androidDeviceSocket"] = self.android_device_socket
         if self.android_command_line_file:
-            opera_options["androidCommandLineFile"] = \
-                self.android_command_line_file
+            opera_options["androidCommandLineFile"] = self.android_command_line_file
         return capabilities
 
     @property
@@ -103,7 +102,6 @@ class Options(ChromeOptions):
 
 
 class AndroidOptions(Options):
-
     def __init__(self):
         Options.__init__(self)
-        self.android_package_name = 'com.opera.browser'
+        self.android_package_name = "com.opera.browser"

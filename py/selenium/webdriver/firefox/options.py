@@ -67,7 +67,7 @@ class Options(ArgOptions):
 
     @binary_location.setter  # noqa
     def binary_location(self, value: str):
-        """ Sets the location of the browser binary by string """
+        """Sets the location of the browser binary by string"""
         self.binary = value
 
     @property
@@ -88,7 +88,7 @@ class Options(ArgOptions):
             warnings.warn(
                 "Getting a profile has been deprecated.",
                 DeprecationWarning,
-                stacklevel=2
+                stacklevel=2,
             )
         return self._profile
 
@@ -101,7 +101,7 @@ class Options(ArgOptions):
         warnings.warn(
             "Setting a profile has been deprecated. Please use the set_preference and install_addons methods",
             DeprecationWarning,
-            stacklevel=2
+            stacklevel=2,
         )
         if not isinstance(new_profile, FirefoxProfile):
             new_profile = FirefoxProfile(new_profile)
@@ -112,7 +112,7 @@ class Options(ArgOptions):
         """
         :Returns: True if the headless argument is set, else False
         """
-        return '-headless' in self._arguments
+        return "-headless" in self._arguments
 
     @headless.setter
     def headless(self, value: bool):
@@ -123,11 +123,16 @@ class Options(ArgOptions):
           value: boolean value indicating to set the headless option
         """
         if value:
-            self._arguments.append('-headless')
-        elif '-headless' in self._arguments:
-            self._arguments.remove('-headless')
+            self._arguments.append("-headless")
+        elif "-headless" in self._arguments:
+            self._arguments.remove("-headless")
 
-    def enable_mobile(self, android_package: str = "org.mozilla.firefox", android_activity=None, device_serial=None):
+    def enable_mobile(
+        self,
+        android_package: str = "org.mozilla.firefox",
+        android_activity=None,
+        device_serial=None,
+    ):
         super().enable_mobile(android_package, android_activity, device_serial)
 
     def to_capabilities(self) -> dict:

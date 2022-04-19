@@ -34,14 +34,16 @@ def free_port() -> int:
     Determines a free port using sockets.
     """
     free_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    free_socket.bind(('127.0.0.1', 0))
+    free_socket.bind(("127.0.0.1", 0))
     free_socket.listen(5)
     port: int = free_socket.getsockname()[1]
     free_socket.close()
     return port
 
 
-def find_connectable_ip(host: Union[str, bytes, bytearray, None], port: Optional[int] = None) -> Optional[str]:
+def find_connectable_ip(
+    host: Union[str, bytes, bytearray, None], port: Optional[int] = None
+) -> Optional[str]:
     """Resolve a hostname to an IP, preferring IPv4 addresses.
 
     We prefer IPv4 so that we don't change behavior from previous IPv4-only
@@ -90,9 +92,9 @@ def join_host_port(host: str, port: int) -> str:
         - port - An integer port.
 
     """
-    if ':' in host and not host.startswith('['):
-        return '[%s]:%d' % (host, port)
-    return '%s:%d' % (host, port)
+    if ":" in host and not host.startswith("["):
+        return "[%s]:%d" % (host, port)
+    return "%s:%d" % (host, port)
 
 
 def is_connectable(port: int, host: Optional[str] = "localhost") -> bool:

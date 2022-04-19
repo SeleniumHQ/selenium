@@ -26,8 +26,9 @@ class Service(service.Service):
     Object that manages the starting and stopping of the WPEWebKitDriver
     """
 
-    def __init__(self, executable_path: str = DEFAULT_EXECUTABLE_PATH,
-                 port=0, log_path=None):
+    def __init__(
+        self, executable_path: str = DEFAULT_EXECUTABLE_PATH, port=0, log_path=None
+    ):
         """
         Creates a new instance of the Service
 

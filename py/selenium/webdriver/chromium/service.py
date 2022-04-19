@@ -24,8 +24,15 @@ class ChromiumService(service.Service):
     Object that manages the starting and stopping the WebDriver instance of the ChromiumDriver
     """
 
-    def __init__(self, executable_path: str, port: int = 0, service_args: List[str] = None,
-                 log_path: str = None, env: dict = None, start_error_message: str = None):
+    def __init__(
+        self,
+        executable_path: str,
+        port: int = 0,
+        service_args: List[str] = None,
+        log_path: str = None,
+        env: dict = None,
+        start_error_message: str = None,
+    ):
         """
         Creates a new instance of the Service
 
@@ -37,12 +44,18 @@ class ChromiumService(service.Service):
 
         self.service_args = service_args or []
         if log_path:
-            self.service_args.append('--log-path=%s' % log_path)
+            self.service_args.append("--log-path=%s" % log_path)
 
         if not start_error_message:
             raise AttributeError("start_error_message should not be empty")
 
-        service.Service.__init__(self, executable_path, port=port, env=env, start_error_message=start_error_message)
+        service.Service.__init__(
+            self,
+            executable_path,
+            port=port,
+            env=env,
+            start_error_message=start_error_message,
+        )
 
     def command_line_args(self) -> List[str]:
         return ["--port=%d" % self.port] + self.service_args

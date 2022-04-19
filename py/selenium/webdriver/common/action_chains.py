@@ -261,15 +261,13 @@ class ActionChains(object):
          - yoffset: Y offset to move to.
         """
 
-        self.w3c_actions.pointer_action.move_to(to_element,
-                                                int(xoffset),
-                                                int(yoffset))
+        self.w3c_actions.pointer_action.move_to(to_element, int(xoffset), int(yoffset))
         self.w3c_actions.key_action.pause()
 
         return self
 
     def pause(self, seconds):
-        """ Pause all inputs for the specified duration in seconds """
+        """Pause all inputs for the specified duration in seconds"""
 
         self.w3c_actions.pointer_action.pause(seconds)
         self.w3c_actions.key_action.pause(seconds)
@@ -321,7 +319,15 @@ class ActionChains(object):
         self.send_keys(*keys_to_send)
         return self
 
-    def scroll(self, x: int, y: int, delta_x: int, delta_y: int, duration: int = 0, origin: str = "viewport"):
+    def scroll(
+        self,
+        x: int,
+        y: int,
+        delta_x: int,
+        delta_y: int,
+        duration: int = 0,
+        origin: str = "viewport",
+    ):
         """
         Sends wheel scroll information to the browser to be processed.
 
@@ -331,8 +337,9 @@ class ActionChains(object):
          - delta_x: the distance the mouse will scroll on the x axis
          - delta_y: the distance the mouse will scroll on the y axis
         """
-        self.w3c_actions.wheel_action.scroll(x=x, y=y, delta_x=delta_x, delta_y=delta_y,
-                                             duration=duration, origin=origin)
+        self.w3c_actions.wheel_action.scroll(
+            x=x, y=y, delta_x=delta_x, delta_y=delta_y, duration=duration, origin=origin
+        )
         return self
 
     # Context manager so ActionChains can be used in a 'with .. as' statements.

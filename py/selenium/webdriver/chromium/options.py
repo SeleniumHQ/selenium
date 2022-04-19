@@ -29,7 +29,7 @@ class ChromiumOptions(ArgOptions):
 
     def __init__(self) -> None:
         super(ChromiumOptions, self).__init__()
-        self._binary_location = ''
+        self._binary_location = ""
         self._extension_files = []
         self._extensions = []
         self._experimental_options = {}
@@ -76,11 +76,11 @@ class ChromiumOptions(ArgOptions):
         """
         encoded_extensions = []
         for ext in self._extension_files:
-            file_ = open(ext, 'rb')
+            file_ = open(ext, "rb")
             # Should not use base64.encodestring() which inserts newlines every
             # 76 characters (per RFC 1521).  Chromedriver has to remove those
             # unnecessary newlines before decoding, causing performance hit.
-            encoded_extensions.append(base64.b64encode(file_.read()).decode('UTF-8'))
+            encoded_extensions.append(base64.b64encode(file_.read()).decode("UTF-8"))
 
             file_.close()
         return encoded_extensions + self._extensions
@@ -122,7 +122,9 @@ class ChromiumOptions(ArgOptions):
         """
         return self._experimental_options
 
-    def add_experimental_option(self, name: str, value: Union[str, int, dict, List[str]]) -> None:
+    def add_experimental_option(
+        self, name: str, value: Union[str, int, dict, List[str]]
+    ) -> None:
         """
         Adds an experimental option which is passed to chromium.
 
@@ -131,7 +133,11 @@ class ChromiumOptions(ArgOptions):
           value: The option value.
         """
         if name.lower() == "w3c" and (value == "false" or value is False):
-            warnings.warn(UserWarning("Manipulating `w3c` setting can have unintended consequences."))
+            warnings.warn(
+                UserWarning(
+                    "Manipulating `w3c` setting can have unintended consequences."
+                )
+            )
         self._experimental_options[name] = value
 
     @property
@@ -139,7 +145,7 @@ class ChromiumOptions(ArgOptions):
         """
         :Returns: True if the headless argument is set, else False
         """
-        return '--headless' in self._arguments
+        return "--headless" in self._arguments
 
     @headless.setter
     def headless(self, value: bool) -> None:
@@ -148,7 +154,7 @@ class ChromiumOptions(ArgOptions):
         :Args:
           value: boolean value indicating to set the headless option
         """
-        args = {'--headless'}
+        args = {"--headless"}
         if value is True:
             self._arguments.extend(args)
         else:
