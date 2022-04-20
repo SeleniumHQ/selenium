@@ -18,15 +18,24 @@
 import React, { useEffect, useState } from 'react'
 import RFB from '@novnc/novnc/core/rfb'
 import PasswordDialog from './PasswordDialog'
+import MuiAlert, { AlertProps } from '@mui/material/Alert'
+import Snackbar from '@mui/material/Snackbar'
+
+const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert (
+  props,
+  ref,
+) {
+  return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />
+})
 
 function LiveView (props) {
-  // let rfb: RFB = null
   let canvas: any = null
 
   const [open, setOpen] = useState(false)
   const [message, setMessage] = useState('')
   const [rfb, setRfb] = useState<RFB>(null)
-  // const [canvas, setCanvas] = useState(null)
+  const [openErrorAlert, setOpenErrorAlert] = useState(false)
+  const [openSuccessAlert, setOpenSuccessAlert] = useState(false)
 
   const handlePasswordDialog = (state: boolean): void => {
     setOpen(state)
@@ -38,7 +47,6 @@ function LiveView (props) {
     }
     rfb.disconnect()
     setRfb(null)
-    // rfb = null
   }
 
   const connect = () => {
@@ -48,23 +56,16 @@ function LiveView (props) {
       return
     }
 
-    // rfb = new RFB(canvas, props.url, {})
-    // rfb = new RFB(canvas, props.url, { credentials: { password: 'secret' } })
-    // rfb.scaleViewport = props.scaleViewport
-    // rfb.background = 'rgb(247,248,248)'
-    // rfb.addEventListener('credentialsrequired', handleCredentials)
-    // rfb.addEventListener('securityfailure', securityFailed)
     const newRfb = new RFB(canvas, props.url, {})
     newRfb.scaleViewport = props.scaleViewport
     newRfb.background = 'rgb(247,248,248)'
     newRfb.addEventListener('credentialsrequired', handleCredentials)
     newRfb.addEventListener('securityfailure', securityFailed)
-    // newRfb.addEventListener('connect', connectedToServer)
+    newRfb.addEventListener('connect', connectedToServer)
     setRfb(newRfb)
   }
 
   const registerChild = ref => {
-    // setCanvas(ref)
     canvas = ref
   }
 
@@ -90,20 +91,20 @@ function LiveView (props) {
       errorMessage = 'New connection has been rejected'
     }
     setMessage(errorMessage)
-    connect()
+    setOpenErrorAlert(true)
   }
 
   const handleCredentials = () => {
     handlePasswordDialog(true)
   }
 
-  // const connectedToServer = () => {
-  //   console.log('connectedToServer')
-  //   setOpen(false)
-  // }
+  const connectedToServer = () => {
+    setOpenSuccessAlert(true)
+  }
 
   const handleCredentialsEntered = (password: string) => {
     rfb.sendCredentials({ username: '', password: password })
+    setOpen(false)
   }
 
   const handlePasswordDialogClose = () => {
@@ -124,6 +125,15 @@ function LiveView (props) {
     rfb.blur()
   }
 
+  const handleClose = (event?: React.SyntheticEvent | Event,
+    reason?: string) => {
+    if (reason === 'clickaway') {
+      return
+    }
+    setOpenErrorAlert(false)
+    props.onClose()
+  }
+
   return (
     <div
       style={
@@ -139,12 +149,30 @@ function LiveView (props) {
       <PasswordDialog
         title="LiveView (VNC) Password"
         open={open}
-        setOpen={handlePasswordDialog}
+        openDialog={handlePasswordDialog}
         onConfirm={handleCredentialsEntered}
         onCancel={handlePasswordDialogClose}
+      />
+      <Snackbar
+        open={openErrorAlert}
+        anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+        autoHideDuration={6000}
+        onClose={handleClose}
       >
-        {message}
-      </PasswordDialog>
+        <Alert severity="error" sx={{ width: '100%' }}>
+          {message}
+        </Alert>
+      </Snackbar>
+      <Snackbar
+        open={openSuccessAlert}
+        anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+        autoHideDuration={4000}
+        onClose={() => setOpenSuccessAlert(false)}
+      >
+        <Alert severity="success" sx={{ width: '100%' }}>
+          Connected successfully!
+        </Alert>
+      </Snackbar>
     </div>
   )
 }
