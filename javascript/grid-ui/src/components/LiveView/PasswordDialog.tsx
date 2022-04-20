@@ -40,7 +40,7 @@ interface State {
 }
 
 const PasswordDialog = (props) => {
-  const { title, children, open, setOpen, onConfirm, onCancel } = props
+  const { title, children, open, openDialog, onConfirm, onCancel } = props
   const [values, setValues] = useState<State>({
     amount: '',
     password: '',
@@ -63,8 +63,8 @@ const PasswordDialog = (props) => {
   return (
     <Dialog
       open={open}
-      onClose={() => setOpen(false)}
-      aria-labelledby='password-dialog'
+      onClose={() => openDialog(false)}
+      aria-labelledby="password-dialog"
     >
       <DialogTitle id='password-dialog'>{title}</DialogTitle>
       <DialogContent>
@@ -105,22 +105,22 @@ const PasswordDialog = (props) => {
       </DialogContent>
       <DialogActions>
         <Button
-          variant='contained'
+          variant="contained"
           onClick={() => {
-            setOpen(false)
+            openDialog(false)
             onCancel()
           }}
-          color='secondary'
+          color="secondary"
         >
           Cancel
         </Button>
         <Button
-          variant='contained'
+          variant="contained"
           onClick={() => {
-            setOpen(false)
+            // setOpen(false)
             onConfirm(values.password)
           }}
-          color='primary'
+          color="primary"
         >
           Accept
         </Button>

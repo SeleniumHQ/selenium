@@ -57,7 +57,6 @@ export function createSessionData (
       const vncUrl = new URL(vnc)
       url.pathname = vncUrl.pathname
       url.protocol = url.protocol === 'https:' ? 'wss:' : 'ws:'
-      url.port = '4444'
       vnc = url.href
     } catch (error) {
       console.log(error)
