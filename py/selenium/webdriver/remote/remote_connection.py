@@ -366,7 +366,7 @@ class RemoteConnection(object):
                 elif hasattr(response.headers, 'get'):
                     response.getheader = lambda x: response.headers.get(x)
         data = response.data.decode('UTF-8')
-        LOGGER.debug(f"Remote response: {response.status=} | {data=} | {response.headers}")
+        LOGGER.debug(f"Remote response: status={response.status} | data={data} | headers={response.headers}")
         try:
             if 300 <= statuscode < 304:
                 return self._request('GET', response.getheader('location'))
