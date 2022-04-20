@@ -107,11 +107,20 @@ function Overview () {
     }
 
     return (
-      <Grid container spacing={3}>
+      <Grid container>
         {/* Nodes */}
         {nodes.map((node, index) => {
           return (
-            <Grid item lg={6} sm={12} xl={4} xs={12} key={index}>
+            <Grid
+              item
+              lg={6}
+              sm={12}
+              xl={4}
+              xs={12}
+              key={index}
+              paddingX={1}
+              paddingY={1}
+            >
               <Paper
                 sx={{
                   display: 'flex',

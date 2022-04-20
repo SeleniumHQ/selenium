@@ -39,7 +39,7 @@ function Sessions () {
                     + 'queued Sessions from the Grid.'
     const errorMessage = error?.networkError?.message
     return (
-      <Grid container spacing={3}>
+      <Grid container>
         <Error message={message} errorMessage={errorMessage}/>
       </Grid>
     )
@@ -47,7 +47,7 @@ function Sessions () {
 
   if (loading) {
     return (
-      <Grid container spacing={3}>
+      <Grid container>
         <Loading/>
       </Grid>
     )
@@ -57,14 +57,14 @@ function Sessions () {
       && data.sessionsInfo.sessions.length === 0) {
     const shortMessage = 'No running or queued sessions at the moment.'
     return (
-      <Grid container spacing={3}>
+      <Grid container>
         <NoData message={shortMessage}/>
       </Grid>
     )
   }
 
   return (
-    <Grid container spacing={3}>
+    <Grid container>
       <RunningSessions
         sessions={data.sessionsInfo.sessions}
         origin={window.location.origin}
