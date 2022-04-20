@@ -74,6 +74,7 @@ function LiveView (props) {
     return () => {
       disconnect()
     }
+  // eslint-disable-next-line
   }, [])
 
   useEffect(() => {

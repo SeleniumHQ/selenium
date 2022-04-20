@@ -22,7 +22,6 @@ import { Box, Typography } from '@mui/material'
 function Loading () {
   return (
     <Box
-      sx={{ bgcolor: 'secondary.main' }}
       height='100%'
       width='100%'
       paddingY={1}

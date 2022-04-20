@@ -26,7 +26,6 @@ function NoData (props) {
       height='100%'
       width='100%'
       paddingY={3}
-      sx={{ bgcolor: 'secondary.main' }}
     >
       <Box
         display='flex'

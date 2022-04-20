@@ -95,11 +95,11 @@ function NavBarBottom (props): JSX.Element {
 
   return (
     <div>
-      <Box p={3} m={1} sx={{ bgcolor: 'secondary.main' }}>
+      <Box p={3} m={1}>
         <Typography
-          align='center'
+          align="center"
           gutterBottom
-          variant='h4'
+          variant="h4"
         >
           Queue size: {sessionQueueSize}
         </Typography>
