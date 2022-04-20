@@ -23,21 +23,21 @@ function Loading () {
   return (
     <Box
       sx={{ bgcolor: 'secondary.main' }}
-      height="100%"
-      width="100%"
+      height='100%'
+      width='100%'
       paddingY={1}
-      justifyContent="center"
+      justifyContent='center'
     >
       <Box mb={2}>
         <Typography
-          align="center"
-          color="textPrimary"
-          variant="h3"
+          align='center'
+          color='textPrimary'
+          variant='h3'
         >
           Loading...
         </Typography>
       </Box>
-      <LinearProgress/>
+      <LinearProgress />
     </Box>
   )
 }
