@@ -54,7 +54,6 @@ function OverallConcurrency (props) {
     <Box
       p={2}
       m={2}
-      sx={{ bgcolor: 'secondary.main' }}
       data-testid='overall-concurrency'
     >
       <Typography
