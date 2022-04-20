@@ -24,6 +24,7 @@ function EnhancedTableToolbar (props) {
   return (
     <Toolbar sx={{ paddingLeft: 2, paddingRight: 1 }}>
       <Typography
+        textAlign={'center'}
         sx={{ flex: '1 1 100%' }}
         variant="h3"
         id="tableTitle"
