@@ -20,8 +20,11 @@ import RunningSessions from '../../components/RunningSessions/RunningSessions'
 import SessionInfo from '../../models/session-info'
 import { render, screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
+import { createSessionData } from '../../models/session-data'
 
-const sessions: SessionInfo[] = [
+const origin = 'http://localhost:4444'
+
+const sessionsInfo: SessionInfo[] = [
   {
     id: 'aee43d1c1d10e85d359029719c20b146',
     capabilities: '{ "browserName": "chrome", "browserVersion": "88.0.4324.182", "platformName": "windows" }',
@@ -38,8 +41,22 @@ const sessions: SessionInfo[] = [
   }
 ]
 
+const sessions = sessionsInfo.map((session) => {
+  return createSessionData(
+    session.id,
+    session.capabilities,
+    session.startTime,
+    session.uri,
+    session.nodeId,
+    session.nodeUri,
+    (session.sessionDurationMillis as unknown) as number,
+    session.slot,
+    origin
+  )
+})
+
 it('renders basic session information', () => {
-  render(<RunningSessions sessions={sessions} />)
+  render(<RunningSessions sessions={sessions} origin={origin}/>)
   const session = sessions[0]
   expect(screen.getByText(session.id)).toBeInTheDocument()
   expect(screen.getByText(session.startTime)).toBeInTheDocument()
@@ -47,7 +64,7 @@ it('renders basic session information', () => {
 })
 
 it('renders detailed session information', () => {
-  render(<RunningSessions sessions={sessions} />)
+  render(<RunningSessions sessions={sessions} origin={origin}/>)
   const session = sessions[0]
   const sessionRow = screen.getByText(session.id).closest('tr')
   const leftClick = { button: 0 }
