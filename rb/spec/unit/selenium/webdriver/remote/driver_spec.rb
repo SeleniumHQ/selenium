@@ -26,7 +26,7 @@ module Selenium
         let(:valid_response) do
           {status: 200,
            body: {value: {sessionId: 0, capabilities: Remote::Capabilities.chrome}}.to_json,
-           headers: {"content_type": "application/json"}}
+           headers: {content_type: "application/json"}}
         end
 
         def expect_request(body: nil, endpoint: nil)
@@ -129,7 +129,7 @@ module Selenium
 
         it 'accepts Options as sole parameter' do
           opts = {args: ['-f']}
-          expect_request(body: {capabilities: {alwaysMatch: {browserName: 'chrome', "goog:chromeOptions": opts}}})
+          expect_request(body: {capabilities: {alwaysMatch: {browserName: 'chrome', 'goog:chromeOptions': opts}}})
 
           expect {
             expect { Driver.new(options: Chrome::Options.new(**opts)) }.to have_deprecated(:browser_options)
@@ -138,7 +138,7 @@ module Selenium
 
         it 'accepts combination of Options and Capabilities' do
           opts = {args: ['-f']}
-          expect_request(body: {capabilities: {alwaysMatch: {browserName: "chrome", "goog:chromeOptions": opts}}})
+          expect_request(body: {capabilities: {alwaysMatch: {browserName: "chrome", 'goog:chromeOptions': opts}}})
 
           expect {
             expect {
@@ -216,7 +216,7 @@ module Selenium
             it 'with Options instance' do
               options = Chrome::Options.new(args: ['-f'])
               expect_request(body: {capabilities: {alwaysMatch: {browserName: "chrome",
-                                                                 'goog:chromeOptions': {'args': ['-f']}}}})
+                                                                 'goog:chromeOptions': {args: ['-f']}}}})
 
               expect { Driver.new(capabilities: [options]) }.not_to raise_exception
             end
@@ -239,7 +239,7 @@ module Selenium
               capabilities = Remote::Capabilities.new(browser_name: 'chrome', invalid: 'foobar')
               options = Chrome::Options.new(args: ['-f'])
               expect_request(body: {capabilities: {alwaysMatch: {browserName: "chrome", invalid: 'foobar',
-                                                                 'goog:chromeOptions': {'args': ['-f']},
+                                                                 'goog:chromeOptions': {args: ['-f']},
                                                                  'company:key': 'value'}}})
 
               expect { Driver.new(capabilities: [capabilities, options, as_json_object.new]) }.not_to raise_exception

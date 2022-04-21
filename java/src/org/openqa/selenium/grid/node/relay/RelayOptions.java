@@ -17,9 +17,6 @@
 
 package org.openqa.selenium.grid.node.relay;
 
-import static org.openqa.selenium.remote.http.Contents.string;
-import static org.openqa.selenium.remote.http.HttpMethod.GET;
-
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.Multimap;
@@ -38,11 +35,15 @@ import org.openqa.selenium.remote.tracing.Tracer;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.time.Duration;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.logging.Logger;
+
+import static org.openqa.selenium.remote.http.Contents.string;
+import static org.openqa.selenium.remote.http.HttpMethod.GET;
 
 public class RelayOptions {
 
@@ -55,7 +56,7 @@ public class RelayOptions {
     this.config = Require.nonNull("Config", config);
   }
 
-  private URI getServiceUri() {
+  public URI getServiceUri() {
     try {
       Optional<String> possibleUri = config.get(RELAY_SECTION, "url");
       if (possibleUri.isPresent()) {
@@ -88,17 +89,30 @@ public class RelayOptions {
     }
   }
 
-  private boolean isServerUp(HttpClient client) {
-    if (!config.get(RELAY_SECTION, "status-endpoint").isPresent()) {
+  public URI getServiceStatusUri() {
+    try {
+      if (!config.get(RELAY_SECTION, "status-endpoint").isPresent()) {
+        return null;
+      }
+      String statusEndpoint = config.get(RELAY_SECTION, "status-endpoint").orElse("/status");
+      if (!statusEndpoint.startsWith("/")) {
+        statusEndpoint = "/" + statusEndpoint;
+      }
+      URI serviceUri = getServiceUri();
+      return new URI(serviceUri.toString() + statusEndpoint);
+    } catch (URISyntaxException e) {
+      throw new ConfigException("Unable to determine the service status url", e);
+    }
+  }
+
+  private boolean isServiceUp(HttpClient client) {
+    URI serviceStatusUri = getServiceStatusUri();
+    if (serviceStatusUri == null) {
       // If no status endpoint was configured, we assume the server is up.
       return true;
     }
-    String statusEndpoint = config.get(RELAY_SECTION, "status-endpoint").orElse("/status");
-    if (!statusEndpoint.startsWith("/")) {
-      statusEndpoint = "/" + statusEndpoint;
-    }
     try {
-      HttpResponse response = client.execute(new HttpRequest(GET, statusEndpoint));
+      HttpResponse response = client.execute(new HttpRequest(GET, serviceStatusUri.toString()));
       LOG.fine(string(response));
       return 200 == response.getStatus();
     } catch (Exception e) {
@@ -108,12 +122,13 @@ public class RelayOptions {
 
   public Map<Capabilities, Collection<SessionFactory>> getSessionFactories(
     Tracer tracer,
-    HttpClient.Factory clientFactory) {
+    HttpClient.Factory clientFactory,
+    Duration sessionTimeout) {
 
     HttpClient client = clientFactory
       .createClient(ClientConfig.defaultConfig().baseUri(getServiceUri()));
 
-    if (!isServerUp(client)) {
+    if (!isServiceUp(client)) {
       throw new ConfigException("Unable to reach the service at " + getServiceUri());
     }
 
@@ -147,7 +162,9 @@ public class RelayOptions {
           new RelaySessionFactory(
             tracer,
             clientFactory,
+            sessionTimeout,
             getServiceUri(),
+            getServiceStatusUri(),
             stereotype));
       }
       LOG.info(String.format("Mapping %s, %d times", stereotype, maxSessions));

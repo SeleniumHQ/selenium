@@ -18,7 +18,7 @@ The `selenium` package is used to automate web browser interaction from Python.
 +-----------+--------------------------------------------------------------------------------------+
 | **PyPI**: | https://pypi.org/project/selenium/                                                   |
 +-----------+--------------------------------------------------------------------------------------+
-| **IRC**:  | **#selenium** channel on freenode                                                    |
+| **IRC**:  | **#selenium** channel on LiberaChat                                                  |
 +-----------+--------------------------------------------------------------------------------------+
 
 Several browsers/drivers are supported (Firefox, Chrome, Internet Explorer), as well as the Remote protocol.
@@ -35,7 +35,7 @@ If you have `pip <https://pip.pypa.io/>`_ on your system, you can simply install
 
     pip install -U selenium
 
-Alternately, you can download the source distribution from `PyPI <https://pypi.org/project/selenium/#files>`_ (e.g. selenium-4.1.0.tar.gz), unarchive it, and run::
+Alternately, you can download the source distribution from `PyPI <https://pypi.org/project/selenium/#files>`_ (e.g. selenium-4.1.3.tar.gz), unarchive it, and run::
 
     python setup.py install
 
@@ -114,7 +114,7 @@ Selenium WebDriver is often used as a basis for testing web applications.  Here 
             self.browser = webdriver.Firefox()
             self.addCleanup(self.browser.quit)
 
-        def testPageTitle(self):
+        def test_page_title(self):
             self.browser.get('http://www.google.com')
             self.assertIn('Google', self.browser.title)
 

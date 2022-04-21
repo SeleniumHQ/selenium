@@ -21,7 +21,7 @@ require_relative 'spec_helper'
 
 module Selenium
   module WebDriver
-    describe ShadowRoot, only: {browser: :chrome} do
+    describe ShadowRoot, only: {browser: %i[chrome firefox edge]} do
       before { driver.navigate.to url_for('webComponents.html') }
 
       let(:custom_element) { driver.find_element(css: 'custom-checkbox-element') }
@@ -37,30 +37,109 @@ module Selenium
         expect { div.shadow_root }.to raise_error(Error::NoSuchShadowRootError)
       end
 
-      it 'gets shadow root from execute script' do
+      it 'gets shadow root from script', except: {browser: :firefox,
+                                                  reason: 'https://github.com/mozilla/geckodriver/issues/2006'} do
         shadow_root = custom_element.shadow_root
         execute_shadow_root = driver.execute_script('return arguments[0].shadowRoot;', custom_element)
         expect(execute_shadow_root).to eq shadow_root
       end
 
-      it 'finds element from shadow root' do
-        shadow_root = custom_element.shadow_root
-        element = shadow_root.find_element(css: 'input')
+      describe '#find_element', except: {browser: :firefox,
+                                         reason: 'https://github.com/mozilla/geckodriver/issues/2005'} do
+        it 'by css' do
+          shadow_root = custom_element.shadow_root
+          element = shadow_root.find_element(css: 'input')
 
-        expect(element).to be_a Element
+          expect(element).to be_a Element
+        end
+
+        it 'by xpath', except: {browser: %i[chrome edge],
+                                reason: 'https://bugs.chromium.org/p/chromedriver/issues/detail?id=4097'} do
+          shadow_root = custom_element.shadow_root
+          element = shadow_root.find_element(xpath: "//input[type='checkbox']")
+
+          expect(element).to be_a Element
+        end
+
+        it 'by link text' do
+          shadow_root = custom_element.shadow_root
+          element = shadow_root.find_element(link_text: 'Example Link')
+
+          expect(element).to be_a Element
+        end
+
+        it 'by partial link text' do
+          shadow_root = custom_element.shadow_root
+          element = shadow_root.find_element(partial_link_text: 'Link')
+
+          expect(element).to be_a Element
+        end
+
+        it 'by tag name', except: {browser: %i[chrome edge],
+                                   reason: 'https://bugs.chromium.org/p/chromedriver/issues/detail?id=4097'} do
+          shadow_root = custom_element.shadow_root
+          element = shadow_root.find_element(tag_name: 'input')
+
+          expect(element).to be_a Element
+        end
+
+        it 'raises error if not found' do
+          shadow_root = custom_element.shadow_root
+
+          expect { shadow_root.find_element(css: 'no') }.to raise_error(Error::NoSuchElementError)
+        end
       end
 
-      it 'finds elements from shadow root' do
-        shadow_root = custom_element.shadow_root
-        elements = shadow_root.find_elements(css: 'input')
+      describe '#find_elements', except: {browser: :firefox,
+                                          reason: 'https://github.com/mozilla/geckodriver/issues/2005'} do
+        it 'by css' do
+          shadow_root = custom_element.shadow_root
+          elements = shadow_root.find_elements(css: 'input')
 
-        expect(elements.size).to eq 1
-      end
+          expect(elements.size).to eq 1
+          expect(elements.first).to be_a Element
+        end
 
-      it 'raises error if no element in shadow root' do
-        shadow_root = custom_element.shadow_root
+        it 'by xpath', except: {browser: %i[chrome edge],
+                                reason: 'https://bugs.chromium.org/p/chromedriver/issues/detail?id=4097'} do
+          shadow_root = custom_element.shadow_root
+          elements = shadow_root.find_elements(xpath: "//input[type='checkbox']")
 
-        expect { shadow_root.find_element(css: 'no') }.to raise_error(Error::NoSuchElementError)
+          expect(elements.size).to eq 1
+          expect(elements.first).to be_a Element
+        end
+
+        it 'by link text' do
+          shadow_root = custom_element.shadow_root
+          elements = shadow_root.find_elements(link_text: 'Example Link')
+
+          expect(elements.size).to eq 1
+          expect(elements.first).to be_a Element
+        end
+
+        it 'by partial link text' do
+          shadow_root = custom_element.shadow_root
+          elements = shadow_root.find_elements(partial_link_text: 'Link')
+
+          expect(elements.size).to eq 1
+          expect(elements.first).to be_a Element
+        end
+
+        it 'by tag name', except: {browser: %i[chrome edge],
+                                   reason: 'https://bugs.chromium.org/p/chromedriver/issues/detail?id=4097'} do
+          shadow_root = custom_element.shadow_root
+          elements = shadow_root.find_elements(tag_name: 'input')
+
+          expect(elements.size).to eq 1
+          expect(elements.first).to be_a Element
+        end
+
+        it 'is empty when not found' do
+          shadow_root = custom_element.shadow_root
+
+          elements = shadow_root.find_elements(css: 'no')
+          expect(elements.size).to eq 0
+        end
       end
     end
   end # WebDriver

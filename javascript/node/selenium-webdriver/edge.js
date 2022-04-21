@@ -94,7 +94,7 @@ let defaultService = null
 
 /**
  * Creates {@link selenium-webdriver/remote.DriverService} instances that manage
- * a [ChromeDriver](https://chromedriver.chromium.org/)
+ * a [MSEdgeDriver](https://developer.microsoft.com/en-us/microsoft-edge/tools/webdriver/)
  * server in a child process.
  */
 class ServiceBuilder extends chromium.ServiceBuilder {
@@ -130,7 +130,7 @@ class Options extends chromium.Options {
    * The binary path be absolute or relative to the msedgedriver server
    * executable, but it must exist on the machine that will launch edge chromium.
    *
-   * @param {string} path The path to the edgedriver binary to use.
+   * @param {string} path The path to the msedgedriver binary to use.
    * @return {!Options} A self reference.
    */
   setEdgeChromiumBinaryPath(path) {

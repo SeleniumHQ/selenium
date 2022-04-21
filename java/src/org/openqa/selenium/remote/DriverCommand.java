@@ -275,7 +275,7 @@ public interface DriverCommand {
 
   String PRINT_PAGE = "printPage";
   static CommandPayload PRINT_PAGE(PrintOptions options) {
-    return new CommandPayload(PRINT_PAGE, ImmutableMap.of("options", options));
+    return new CommandPayload(PRINT_PAGE, options.toMap());
   }
 
   @Deprecated

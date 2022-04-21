@@ -17,16 +17,6 @@
 
 package org.openqa.selenium.grid.router.httpd;
 
-import static java.net.HttpURLConnection.HTTP_NO_CONTENT;
-import static org.openqa.selenium.grid.config.StandardGridRoles.DISTRIBUTOR_ROLE;
-import static org.openqa.selenium.grid.config.StandardGridRoles.HTTPD_ROLE;
-import static org.openqa.selenium.grid.config.StandardGridRoles.ROUTER_ROLE;
-import static org.openqa.selenium.grid.config.StandardGridRoles.SESSION_MAP_ROLE;
-import static org.openqa.selenium.grid.config.StandardGridRoles.SESSION_QUEUE_ROLE;
-import static org.openqa.selenium.net.Urls.fromUri;
-import static org.openqa.selenium.remote.http.Route.combine;
-import static org.openqa.selenium.remote.http.Route.get;
-
 import com.google.auto.service.AutoService;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
@@ -59,7 +49,9 @@ import org.openqa.selenium.grid.sessionqueue.remote.RemoteNewSessionQueue;
 import org.openqa.selenium.grid.web.GridUiRoute;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.http.ClientConfig;
+import org.openqa.selenium.remote.http.Contents;
 import org.openqa.selenium.remote.http.HttpClient;
+import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.remote.http.Routable;
 import org.openqa.selenium.remote.http.Route;
@@ -70,6 +62,17 @@ import java.time.Duration;
 import java.util.Collections;
 import java.util.Set;
 import java.util.logging.Logger;
+
+import static java.net.HttpURLConnection.HTTP_OK;
+import static java.net.HttpURLConnection.HTTP_UNAVAILABLE;
+import static org.openqa.selenium.grid.config.StandardGridRoles.DISTRIBUTOR_ROLE;
+import static org.openqa.selenium.grid.config.StandardGridRoles.HTTPD_ROLE;
+import static org.openqa.selenium.grid.config.StandardGridRoles.ROUTER_ROLE;
+import static org.openqa.selenium.grid.config.StandardGridRoles.SESSION_MAP_ROLE;
+import static org.openqa.selenium.grid.config.StandardGridRoles.SESSION_QUEUE_ROLE;
+import static org.openqa.selenium.net.Urls.fromUri;
+import static org.openqa.selenium.remote.http.Route.combine;
+import static org.openqa.selenium.remote.http.Route.get;
 
 @AutoService(CliCommand.class)
 public class RouterServer extends TemplateGridServerCommand {
@@ -154,8 +157,8 @@ public class RouterServer extends TemplateGridServerCommand {
       getServerVersion());
 
     Routable ui = new GridUiRoute();
-    Routable routerWithSpecChecks = new Router(tracer, clientFactory, sessions, queue, distributor)
-      .with(networkOptions.getSpecComplianceChecks());
+    Router router = new Router(tracer, clientFactory, sessions, queue, distributor);
+    Routable routerWithSpecChecks = router.with(networkOptions.getSpecComplianceChecks());
 
     Routable route = Route.combine(
       ui,
@@ -170,10 +173,17 @@ public class RouterServer extends TemplateGridServerCommand {
       route = route.with(new BasicAuthenticationFilter(uap.username(), uap.password()));
     }
 
+    HttpHandler readinessCheck = req -> {
+      boolean ready = router.isReady();
+      return new HttpResponse()
+        .setStatus(ready ? HTTP_OK : HTTP_UNAVAILABLE)
+        .setContent(Contents.utf8String("Router is " + ready));
+    };
+
     // Since k8s doesn't make it easy to do an authenticated liveness probe, allow unauthenticated access to it.
     Routable routeWithLiveness = Route.combine(
       route,
-      get("/readyz").to(() -> req -> new HttpResponse().setStatus(HTTP_NO_CONTENT)));
+      get("/readyz").to(() -> readinessCheck));
 
     return new Handlers(routeWithLiveness, new ProxyWebsocketsIntoGrid(clientFactory, sessions));
   }

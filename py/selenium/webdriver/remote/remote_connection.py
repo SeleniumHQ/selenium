@@ -128,6 +128,19 @@ class RemoteConnection(object):
         elif self._url.startswith('http://'):
             return os.environ.get('http_proxy', os.environ.get('HTTP_PROXY'))
 
+    def _identify_http_proxy_auth(self):
+        url = self._proxy_url
+        url = url[url.find(":") + 3:]
+        return True if "@" in url and len(url[:url.find('@')]) > 0 else False
+
+    def _seperate_http_proxy_auth(self):
+        url = self._proxy_url
+        protocol = url[:url.find(":") + 3]
+        no_protocol = url[len(protocol):]
+        auth = no_protocol[:no_protocol.find('@')]
+        proxy_without_auth = protocol + no_protocol[len(auth) + 1:]
+        return proxy_without_auth, auth
+
     def _get_connection_manager(self):
         pool_manager_init_args = {
             'timeout': self._timeout
@@ -140,6 +153,10 @@ class RemoteConnection(object):
             if self._proxy_url.lower().startswith('sock'):
                 from urllib3.contrib.socks import SOCKSProxyManager
                 return SOCKSProxyManager(self._proxy_url, **pool_manager_init_args)
+            elif self._identify_http_proxy_auth():
+                self._proxy_url, self._basic_proxy_auth = self._seperate_http_proxy_auth()
+                pool_manager_init_args['proxy_headers'] = urllib3.make_headers(
+                    proxy_basic_auth=self._basic_proxy_auth)
             return urllib3.ProxyManager(self._proxy_url, **pool_manager_init_args)
 
         return urllib3.PoolManager(**pool_manager_init_args)
@@ -330,34 +347,34 @@ class RemoteConnection(object):
         LOGGER.debug(f"{method} {url} {body}")
         parsed_url = parse.urlparse(url)
         headers = self.get_remote_connection_headers(parsed_url, self.keep_alive)
-        resp = None
-        if body and method != 'POST' and method != 'PUT':
+        response = None
+        if body and method not in ("POST", "PUT"):
             body = None
 
         if self.keep_alive:
-            resp = self._conn.request(method, url, body=body, headers=headers)
-            statuscode = resp.status
+            response = self._conn.request(method, url, body=body, headers=headers)
+            statuscode = response.status
         else:
             conn = self._get_connection_manager()
             with conn as http:
-                resp = http.request(method, url, body=body, headers=headers)
+                response = http.request(method, url, body=body, headers=headers)
 
-            statuscode = resp.status
-            if not hasattr(resp, 'getheader'):
-                if hasattr(resp.headers, 'getheader'):
-                    resp.getheader = lambda x: resp.headers.getheader(x)
-                elif hasattr(resp.headers, 'get'):
-                    resp.getheader = lambda x: resp.headers.get(x)
-
-        data = resp.data.decode('UTF-8')
+            statuscode = response.status
+            if not hasattr(response, 'getheader'):
+                if hasattr(response.headers, 'getheader'):
+                    response.getheader = lambda x: response.headers.getheader(x)
+                elif hasattr(response.headers, 'get'):
+                    response.getheader = lambda x: response.headers.get(x)
+        data = response.data.decode('UTF-8')
+        LOGGER.debug(f"Remote response: status={response.status} | data={data} | headers={response.headers}")
         try:
             if 300 <= statuscode < 304:
-                return self._request('GET', resp.getheader('location'))
+                return self._request('GET', response.getheader('location'))
             if 399 < statuscode <= 500:
                 return {'status': statuscode, 'value': data}
             content_type = []
-            if resp.getheader('Content-Type'):
-                content_type = resp.getheader('Content-Type').split(';')
+            if response.getheader('Content-Type'):
+                content_type = response.getheader('Content-Type').split(';')
             if not any([x.startswith('image/png') for x in content_type]):
 
                 try:
@@ -369,7 +386,7 @@ class RemoteConnection(object):
                         status = ErrorCode.UNKNOWN_ERROR
                     return {'status': status, 'value': data.strip()}
 
-                # Some of the drivers incorrectly return a response
+                # Some drivers incorrectly return a response
                 # with no 'value' field when they should return null.
                 if 'value' not in data:
                     data['value'] = None
@@ -379,7 +396,7 @@ class RemoteConnection(object):
                 return data
         finally:
             LOGGER.debug("Finished Request")
-            resp.close()
+            response.close()
 
     def close(self):
         """

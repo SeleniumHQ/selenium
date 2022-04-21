@@ -21,41 +21,41 @@ from selenium.common.exceptions import WebDriverException
 from selenium.webdriver.common.by import By
 
 
-def testShouldReturnNullWhenGettingTheValueOfAnAttributeThatIsNotListed(driver, pages):
+def test_should_return_null_when_getting_the_value_of_an_attribute_that_is_not_listed(driver, pages):
     pages.load("simpleTest.html")
     head = driver.find_element(By.XPATH, "/html")
     attribute = head.get_attribute("cheese")
     assert attribute is None
 
 
-def testShouldReturnNullWhenGettingSrcAttributeOfInvalidImgTag(driver, pages):
+def test_should_return_null_when_getting_src_attribute_of_invalid_img_tag(driver, pages):
     pages.load("simpleTest.html")
     img = driver.find_element(By.ID, "invalidImgTag")
     img_attr = img.get_attribute("src")
     assert img_attr is None
 
 
-def testShouldReturnAnAbsoluteUrlWhenGettingSrcAttributeOfAValidImgTag(driver, pages):
+def test_should_return_an_absolute_url_when_getting_src_attribute_of_avalid_img_tag(driver, pages):
     pages.load("simpleTest.html")
     img = driver.find_element(By.ID, "validImgTag")
     img_attr = img.get_attribute("src")
     assert "icon.gif" in img_attr
 
 
-def testShouldReturnAnAbsoluteUrlWhenGettingHrefAttributeOfAValidAnchorTag(driver, pages):
+def test_should_return_an_absolute_url_when_getting_href_attribute_of_avalid_anchor_tag(driver, pages):
     pages.load("simpleTest.html")
     img = driver.find_element(By.ID, "validAnchorTag")
     img_attr = img.get_attribute("href")
     assert "icon.gif" in img_attr
 
 
-def testShouldReturnEmptyAttributeValuesWhenPresentAndTheValueIsActuallyEmpty(driver, pages):
+def test_should_return_empty_attribute_values_when_present_and_the_value_is_actually_empty(driver, pages):
     pages.load("simpleTest.html")
     body = driver.find_element(By.XPATH, "//body")
     assert "" == body.get_attribute("style")
 
 
-def testShouldReturnTheValueOfTheDisabledAttributeAsFalseIfNotSet(driver, pages):
+def test_should_return_the_value_of_the_disabled_attribute_as_false_if_not_set(driver, pages):
     pages.load("formPage.html")
     inputElement = driver.find_element(By.XPATH, "//input[@id='working']")
     assert inputElement.get_attribute("disabled") is None
@@ -66,14 +66,14 @@ def testShouldReturnTheValueOfTheDisabledAttributeAsFalseIfNotSet(driver, pages)
     assert pElement.is_enabled()
 
 
-def testShouldReturnTheValueOfTheIndexAttributeEvenIfItIsMissing(driver, pages):
+def test_should_return_the_value_of_the_index_attribute_even_if_it_is_missing(driver, pages):
     pages.load("formPage.html")
     multiSelect = driver.find_element(By.ID, "multi")
     options = multiSelect.find_elements(By.TAG_NAME, "option")
     assert "1" == options[1].get_attribute("index")
 
 
-def testShouldIndicateTheElementsThatAreDisabledAreNotIs_enabled(driver, pages):
+def test_should_indicate_the_elements_that_are_disabled_are_not_is_enabled(driver, pages):
     pages.load("formPage.html")
     inputElement = driver.find_element(By.XPATH, "//input[@id='notWorking']")
     assert not inputElement.is_enabled()
@@ -82,7 +82,7 @@ def testShouldIndicateTheElementsThatAreDisabledAreNotIs_enabled(driver, pages):
     assert inputElement.is_enabled()
 
 
-def testElementsShouldBeDisabledIfTheyAreDisabledUsingRandomDisabledStrings(driver, pages):
+def test_elements_should_be_disabled_if_they_are_disabled_using_random_disabled_strings(driver, pages):
     pages.load("formPage.html")
     disabledTextElement1 = driver.find_element(By.ID, "disabledTextElement1")
     assert not disabledTextElement1.is_enabled()
@@ -94,14 +94,14 @@ def testElementsShouldBeDisabledIfTheyAreDisabledUsingRandomDisabledStrings(driv
     assert not disabledSubmitElement.is_enabled()
 
 
-def testShouldIndicateWhenATextAreaIsDisabled(driver, pages):
+def test_should_indicate_when_atext_area_is_disabled(driver, pages):
     pages.load("formPage.html")
     textArea = driver.find_element(By.XPATH, "//textarea[@id='notWorkingArea']")
     assert not textArea.is_enabled()
 
 
 @pytest.mark.xfail_safari
-def testShouldThrowExceptionIfSendingKeysToElementDisabledUsingRandomDisabledStrings(driver, pages):
+def test_should_throw_exception_if_sending_keys_to_element_disabled_using_random_disabled_strings(driver, pages):
     pages.load("formPage.html")
     disabledTextElement1 = driver.find_element(By.ID, "disabledTextElement1")
     with pytest.raises(WebDriverException):
@@ -114,7 +114,7 @@ def testShouldThrowExceptionIfSendingKeysToElementDisabledUsingRandomDisabledStr
     assert "" == disabledTextElement2.text
 
 
-def testShouldIndicateWhenASelectIsDisabled(driver, pages):
+def test_should_indicate_when_aselect_is_disabled(driver, pages):
     pages.load("formPage.html")
     enabled = driver.find_element(By.NAME, "selectomatic")
     disabled = driver.find_element(By.NAME, "no-select")
@@ -123,7 +123,7 @@ def testShouldIndicateWhenASelectIsDisabled(driver, pages):
     assert not disabled.is_enabled()
 
 
-def testShouldReturnTheValueOfCheckedForACheckboxEvenIfItLacksThatAttribute(driver, pages):
+def test_should_return_the_value_of_checked_for_acheckbox_even_if_it_lacks_that_attribute(driver, pages):
     pages.load("formPage.html")
     checkbox = driver.find_element(By.XPATH, "//input[@id='checky']")
     assert checkbox.get_attribute("checked") is None
@@ -131,7 +131,7 @@ def testShouldReturnTheValueOfCheckedForACheckboxEvenIfItLacksThatAttribute(driv
     assert "true" == checkbox.get_attribute("checked")
 
 
-def testShouldReturnTheValueOfSelectedForRadioButtonsEvenIfTheyLackThatAttribute(driver, pages):
+def test_should_return_the_value_of_selected_for_radio_buttons_even_if_they_lack_that_attribute(driver, pages):
     pages.load("formPage.html")
     neverSelected = driver.find_element(By.ID, "cheese")
     initiallyNotSelected = driver.find_element(By.ID, "peas")
@@ -147,7 +147,7 @@ def testShouldReturnTheValueOfSelectedForRadioButtonsEvenIfTheyLackThatAttribute
     assert initiallySelected.get_attribute("checked") is None
 
 
-def testShouldReturnTheValueOfSelectedForOptionsInSelectsEvenIfTheyLackThatAttribute(driver, pages):
+def test_should_return_the_value_of_selected_for_options_in_selects_even_if_they_lack_that_attribute(driver, pages):
     pages.load("formPage.html")
     selectBox = driver.find_element(By.XPATH, "//select[@name='selectomatic']")
     options = selectBox.find_elements(By.TAG_NAME, "option")
@@ -159,14 +159,14 @@ def testShouldReturnTheValueOfSelectedForOptionsInSelectsEvenIfTheyLackThatAttri
     assert two.get_attribute("selected") is None
 
 
-def testShouldReturnValueOfClassAttributeOfAnElement(driver, pages):
+def test_should_return_value_of_class_attribute_of_an_element(driver, pages):
     pages.load("xhtmlTest.html")
     heading = driver.find_element(By.XPATH, "//h1")
     classname = heading.get_attribute("class")
     assert "header" == classname
 
 # Disabled due to issues with Frames
-# def testShouldReturnValueOfClassAttributeOfAnElementAfterSwitchingIFrame(driver, pages):
+# def test_should_return_value_of_class_attribute_of_an_element_after_switching_iframe(driver, pages):
 #    pages.load("iframes.html")
 #    driver.switch_to.frame("iframe1")
 #
@@ -175,13 +175,13 @@ def testShouldReturnValueOfClassAttributeOfAnElement(driver, pages):
 #    assert "gromit" == classname
 
 
-def testShouldReturnTheContentsOfATextAreaAsItsValue(driver, pages):
+def test_should_return_the_contents_of_atext_area_as_its_value(driver, pages):
     pages.load("formPage.html")
     value = driver.find_element(By.ID, "withText").get_attribute("value")
     assert "Example text" == value
 
 
-def testShouldReturnTheContentsOfATextAreaAsItsValueWhenSetToNonNorminalTrue(driver, pages):
+def test_should_return_the_contents_of_atext_area_as_its_value_when_set_to_non_norminal_true(driver, pages):
     pages.load("formPage.html")
     e = driver.find_element(By.ID, "withText")
     driver.execute_script("arguments[0].value = 'tRuE'", e)
@@ -189,7 +189,7 @@ def testShouldReturnTheContentsOfATextAreaAsItsValueWhenSetToNonNorminalTrue(dri
     assert "tRuE" == value
 
 
-def testShouldTreatReadonlyAsAValue(driver, pages):
+def test_should_treat_readonly_as_avalue(driver, pages):
     pages.load("formPage.html")
     element = driver.find_element(By.NAME, "readonly")
     readOnlyAttribute = element.get_attribute("readonly")
@@ -200,19 +200,19 @@ def testShouldTreatReadonlyAsAValue(driver, pages):
     assert readOnlyAttribute != notReadOnly
 
 
-def testShouldGetNumericAttribute(driver, pages):
+def test_should_get_numeric_attribute(driver, pages):
     pages.load("formPage.html")
     element = driver.find_element(By.ID, "withText")
     assert "5" == element.get_attribute("rows")
 
 
-def testCanReturnATextApproximationOfTheStyleAttribute(driver, pages):
+def test_can_return_atext_approximation_of_the_style_attribute(driver, pages):
     pages.load("javascriptPage.html")
     style = driver.find_element(By.ID, "red-item").get_attribute("style")
     assert "background-color" in style.lower()
 
 
-def testShouldCorrectlyReportValueOfColspan(driver, pages):
+def test_should_correctly_report_value_of_colspan(driver, pages):
     pages.load("tables.html")
 
     th1 = driver.find_element(By.ID, "th1")
@@ -225,7 +225,7 @@ def testShouldCorrectlyReportValueOfColspan(driver, pages):
     assert "2" == td2.get_attribute("colspan")
 
 
-def testCanRetrieveTheCurrentValueOfATextFormField_textInput(driver, pages):
+def test_can_retrieve_the_current_value_of_atext_form_field_text_input(driver, pages):
     pages.load("formPage.html")
     element = driver.find_element(By.ID, "working")
     assert "" == element.get_attribute("value")
@@ -233,7 +233,7 @@ def testCanRetrieveTheCurrentValueOfATextFormField_textInput(driver, pages):
     assert "hello world" == element.get_attribute("value")
 
 
-def testCanRetrieveTheCurrentValueOfATextFormField_emailInput(driver, pages):
+def test_can_retrieve_the_current_value_of_atext_form_field_email_input(driver, pages):
     pages.load("formPage.html")
     element = driver.find_element(By.ID, "email")
     assert "" == element.get_attribute("value")
@@ -241,7 +241,7 @@ def testCanRetrieveTheCurrentValueOfATextFormField_emailInput(driver, pages):
     assert "hello@example.com" == element.get_attribute("value")
 
 
-def testCanRetrieveTheCurrentValueOfATextFormField_textArea(driver, pages):
+def test_can_retrieve_the_current_value_of_atext_form_field_text_area(driver, pages):
     pages.load("formPage.html")
     element = driver.find_element(By.ID, "emptyTextArea")
     assert "" == element.get_attribute("value")
@@ -249,14 +249,14 @@ def testCanRetrieveTheCurrentValueOfATextFormField_textArea(driver, pages):
     assert "hello world" == element.get_attribute("value")
 
 
-def testShouldReturnNullForNonPresentBooleanAttributes(driver, pages):
+def test_should_return_null_for_non_present_boolean_attributes(driver, pages):
     pages.load("booleanAttributes.html")
     element1 = driver.find_element(By.ID, "working")
     assert element1.get_attribute("required") is None
 
 
 @pytest.mark.xfail_ie
-def testShouldReturnTrueForPresentBooleanAttributes(driver, pages):
+def test_should_return_true_for_present_boolean_attributes(driver, pages):
     pages.load("booleanAttributes.html")
     element1 = driver.find_element(By.ID, "emailRequired")
     assert "true" == element1.get_attribute("required")
@@ -272,7 +272,7 @@ def testShouldReturnTrueForPresentBooleanAttributes(driver, pages):
 @pytest.mark.xfail_firefox
 @pytest.mark.xfail_safari
 @pytest.mark.xfail_remote
-def testShouldGetUnicodeCharsFromAttribute(driver, pages):
+def test_should_get_unicode_chars_from_attribute(driver, pages):
     pages.load("formPage.html")
     title = driver.find_element(By.ID, "vsearchGadget").get_attribute("title")
     assert 'Hvad s\xf8ger du?' == title
@@ -282,7 +282,7 @@ def testShouldGetUnicodeCharsFromAttribute(driver, pages):
 @pytest.mark.xfail_firefox
 @pytest.mark.xfail_safari
 @pytest.mark.xfail_remote
-def testShouldGetValuesAndNotMissItems(driver, pages):
+def test_should_get_values_and_not_miss_items(driver, pages):
     pages.load("attributes.html")
     expected = "4b273a33fbbd29013nN93dy4F1A~"
     result = driver.find_element(By.CSS_SELECTOR, "li").get_attribute("value")

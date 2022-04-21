@@ -225,7 +225,7 @@ class By {
    * @return {!By} The new locator.
    */
   static tagName(name) {
-    return By.css(name)
+    return new By('tag name', name)
   }
 
   /**

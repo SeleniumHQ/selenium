@@ -39,9 +39,9 @@ public class RemoteFirefoxDriverTest extends JUnit4TestBase {
   @Test
   @NoDriverAfterTest
   public void shouldAllowRemoteWebDriverBuilderToUseHasExtensions() {
-    Path extension = InProject.locate("third_party/firebug/favourite_colour-1.1-an+fx.xpi");
+    Path extension = InProject.locate("common/extensions/webextensions-selenium-example.xpi");
     String id = ((HasExtensions) driver).installExtension(extension);
-    assertThat(id).isEqualTo("favourite-colour-examples@mozilla.org");
+    assertThat(id).isEqualTo("webextensions-selenium-example@example.com");
 
     try {
       ((HasExtensions) driver).uninstallExtension(id);

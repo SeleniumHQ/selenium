@@ -355,8 +355,7 @@ class WebDriver(BaseWebDriver):
             else:
                 capabilities.update({'firefox_profile': browser_profile.encoded})
         w3c_caps = _make_w3c_caps(capabilities)
-        parameters = {"capabilities": w3c_caps,
-                      "desiredCapabilities": capabilities}
+        parameters = {"capabilities": w3c_caps}
         response = self.execute(Command.NEW_SESSION, parameters)
         if 'sessionId' not in response:
             response = response['value']
@@ -1236,8 +1235,6 @@ class WebDriver(BaseWebDriver):
         if by == By.ID:
             by = By.CSS_SELECTOR
             value = '[id="%s"]' % value
-        elif by == By.TAG_NAME:
-            by = By.CSS_SELECTOR
         elif by == By.CLASS_NAME:
             by = By.CSS_SELECTOR
             value = ".%s" % value
@@ -1269,8 +1266,6 @@ class WebDriver(BaseWebDriver):
         if by == By.ID:
             by = By.CSS_SELECTOR
             value = '[id="%s"]' % value
-        elif by == By.TAG_NAME:
-            by = By.CSS_SELECTOR
         elif by == By.CLASS_NAME:
             by = By.CSS_SELECTOR
             value = ".%s" % value

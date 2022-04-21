@@ -23,7 +23,7 @@ rb)
   echo ""
   echo "./generate_api_docs.sh java|rb|py"
   echo -e "\t Example:"
-  echo -e "\t Genrating API docs for the Ruby bindings"
+  echo -e "\t Generating API docs for the Ruby bindings"
   echo -e "\t ./generate_api_docs.sh rb"
   exit 1
   ;;

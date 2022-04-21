@@ -99,7 +99,7 @@ module Selenium
       end
 
       def socket_writable?(sock)
-        IO.select(nil, [sock], nil, CONNECT_TIMEOUT)
+        sock.wait_writable(CONNECT_TIMEOUT)
       end
 
       def conn_completed?(sock)
