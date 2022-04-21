@@ -167,8 +167,6 @@ public class LocalNode extends Node {
       .removalListener((RemovalListener<SessionId, SessionSlot>) notification -> {
         if (notification.getKey() != null && notification.getValue() != null) {
           // Attempt to stop the session
-          LOG.log(Debug.getDebugLogLevel(), "Stopping session {0}",
-                  notification.getKey().toString());
           SessionSlot slot = notification.getValue();
           if (!slot.isAvailable()) {
             slot.stop();
@@ -374,6 +372,10 @@ public class LocalNode extends Node {
           externalUri,
           slotToUse.isSupportingCdp(),
           sessionRequest.getDesiredCapabilities());
+
+        String sessionCreatedMessage = "Session created by the Node";
+        LOG.info(String.format("%s. Id: %s, Caps: %s", sessionCreatedMessage, sessionId, caps));
+
         return Either.right(new CreateSessionResponse(
           externalSession,
           getEncoder(session.getDownstreamDialect()).apply(externalSession)));
