@@ -17,7 +17,6 @@
 
 package org.openqa.selenium.grid.security;
 
-import org.openqa.selenium.internal.Debug;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.http.Filter;
 import org.openqa.selenium.remote.http.HttpHandler;
@@ -43,8 +42,11 @@ public class BasicAuthenticationFilter implements Filter {
     return req -> {
       Require.nonNull("Request", req);
 
-      if (!isAuthorized(req.getHeader("Authorization"))) {
-        LOG.log(Debug.getDebugLogLevel(), "Unauthorized request to " + req);
+      String auth = req.getHeader("Authorization");
+      if (!isAuthorized(auth)) {
+        if (auth != null) {
+          LOG.info("Unauthorized request to " + req);
+        }
         return new HttpResponse()
           .setStatus(HttpURLConnection.HTTP_UNAUTHORIZED)
           .addHeader("WWW-Authenticate", "Basic realm=\"selenium-server\"");
