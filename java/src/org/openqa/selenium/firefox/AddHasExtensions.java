@@ -30,7 +30,11 @@ import org.openqa.selenium.remote.http.HttpMethod;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.nio.file.*;
+import java.nio.file.FileVisitResult;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.Base64;
 import java.util.Map;
@@ -80,7 +84,7 @@ public class AddHasExtensions implements AugmenterProvider<HasExtensions>, Addit
 
         String encoded;
         try {
-          if (Files.isDirectory(path)){
+          if (Files.isDirectory(path)) {
             Path extZip = Paths.get(path.getFileName().toString()+".zip");
             ZipOutputStream zos = new ZipOutputStream(new FileOutputStream(extZip.toFile()));
             Files.walkFileTree(path, new SimpleFileVisitor<Path>() {

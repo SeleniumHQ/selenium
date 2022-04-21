@@ -545,6 +545,20 @@ public class FirefoxDriverTest extends JUnit4TestBase {
 
   @Test
   public void canAddRemoveTempExtensions() {
+    Path extension = InProject.locate(EXT_PATH);
+
+    String id = ((HasExtensions) driver).installExtension(extension, true);
+    assertThat(id).isEqualTo("webextensions-selenium-example@example.com");
+
+    try {
+      ((HasExtensions) driver).uninstallExtension(id);
+    } catch (WebDriverException ex) {
+      fail(ex.getMessage());
+    }
+  }
+
+  @Test
+  public void canAddRemoveTempExtensionsDirectory() {
     Path extension = InProject.locate(EXT_PATH_DIR);
 
     String id = ((HasExtensions) driver).installExtension(extension, true);
