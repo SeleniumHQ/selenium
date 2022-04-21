@@ -3,9 +3,10 @@ require:
   - rubocop-rspec
 
 AllCops:
-  TargetRubyVersion: 2.6
+  TargetRubyVersion: 2.7
   Exclude:
     - 'lib/selenium/devtools/**/*'
+  NewCops: enable
 
 Layout/EmptyLinesAroundAttributeAccessor:
   Enabled: true
@@ -186,3 +187,6 @@ Style/StringLiterals:
 Style/SignalException:
   Exclude:
     - 'spec/integration/selenium/webdriver/guard_spec.rb'
+
+RSpec/BeEq:
+  Enabled: false

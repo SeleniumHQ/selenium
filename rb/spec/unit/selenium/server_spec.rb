@@ -26,15 +26,15 @@ module Selenium
     let(:mock_poller) { instance_double('SocketPoller', connected?: true, closed?: true) }
     let(:repo) { 'https://api.github.com/repos/seleniumhq/selenium/releases' }
     let(:example_json) do
-      [{"url": "#{repo}/41272273",
-        "assets": {
-          "name": 'selenium-server-3.141.59.jar',
-          "browser_download_url": "#{repo}/selenium-3.141.59/selenium-server-standalone-3.141.59.jar"
+      [{url: "#{repo}/41272273",
+        assets: {
+          name: 'selenium-server-3.141.59.jar',
+          browser_download_url: "#{repo}/selenium-3.141.59/selenium-server-standalone-3.141.59.jar"
         }},
-       {"url": "#{repo}/51272273",
-        "assets": {
-          "name": 'selenium-server-10.0.1.jar',
-          "browser_download_url": "#{repo}/selenium-10.0.1/selenium-server-10.0.1.jar"
+       {url: "#{repo}/51272273",
+        assets: {
+          name: 'selenium-server-10.0.1.jar',
+          browser_download_url: "#{repo}/selenium-10.0.1/selenium-server-10.0.1.jar"
         }}].to_json
     end
 

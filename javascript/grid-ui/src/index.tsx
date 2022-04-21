@@ -1,9 +1,5 @@
 import { CssBaseline } from '@mui/material'
-import {
-  StyledEngineProvider,
-  Theme,
-  ThemeProvider
-} from '@mui/material/styles'
+import { StyledEngineProvider, ThemeProvider } from '@mui/material/styles'
 import React from 'react'
 import ReactDOM from 'react-dom'
 import { HashRouter as Router } from 'react-router-dom'
@@ -12,18 +8,13 @@ import * as serviceWorker from './serviceWorker'
 import theme from './theme/theme'
 import './index.css'
 
-declare module '@mui/styles/defaultTheme' {
-  interface DefaultTheme extends Theme {}
-}
-
 ReactDOM.render(
   <React.StrictMode>
     <StyledEngineProvider injectFirst>
       <ThemeProvider theme={theme}>
-        {/* CssBaseline kick-start an elegant, consistent, and simple baseline to build upon. */}
-        <CssBaseline/>
+        <CssBaseline />
         <Router>
-          <App/>
+          <App />
         </Router>
       </ThemeProvider>
     </StyledEngineProvider>

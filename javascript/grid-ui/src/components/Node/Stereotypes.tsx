@@ -16,94 +16,74 @@
 // under the License.
 
 import { Badge, Box, Grid, Tooltip, Typography } from '@mui/material'
-import createStyles from '@mui/styles/createStyles'
-import withStyles from '@mui/styles/withStyles'
-import React, { ReactNode } from 'react'
+import React from 'react'
 import StereotypeInfo from '../../models/stereotype-info'
 import BrowserLogo from '../common/BrowserLogo'
-import { StyleRules } from '@mui/styles'
 import OsLogo from '../common/OsLogo'
 import { Size } from '../../models/size'
 
-const useStyles = (): StyleRules => createStyles(
-  {
-    boxStyle: {
-      marginBottom: 5,
-      marginTop: 20,
-      marginRight: 35
-    },
-    browserVersion: {
-      marginBottom: 5,
-      marginRight: 7
-    }
-  })
-
-interface StereotypesProps {
-  stereotypes: StereotypeInfo[]
-  classes: any
-}
-
-class Stereotypes extends React.Component<StereotypesProps, {}> {
-  render (): ReactNode {
-    const { stereotypes, classes } = this.props
-
-    function CreateStereotypeGridItem (slotStereotype: StereotypeInfo, index: any): JSX.Element {
-      return (
-        <Grid item key={index}>
-          <Grid container alignItems='center' spacing={1}>
-            <Tooltip
-              title={JSON.stringify(slotStereotype.rawData.stereotype) ?? ''}
-            >
-              <Badge
-                badgeContent={slotStereotype.slotCount} color='primary'
-                className={classes.boxStyle}
-              >
-                <Grid item className={classes.browserVersion}>
-                  <OsLogo osName={slotStereotype.platformName} size={Size.XS} />
-                  <BrowserLogo browserName={slotStereotype.browserName} />
-                  <Typography variant='caption'>
-                    {slotStereotype.browserVersion}
-                  </Typography>
-                </Grid>
-              </Badge>
-            </Tooltip>
-          </Grid>
-        </Grid>
-      )
-    }
-
-    return (
-      <Grid item xs={12}>
-        <Typography
-          color='textPrimary'
-          gutterBottom
-          variant='h6'
+function CreateStereotypeGridItem (slotStereotype: StereotypeInfo,
+  index: any): JSX.Element {
+  return (
+    <Grid item key={index}>
+      <Grid container alignItems='center' spacing={1}>
+        <Tooltip
+          title={JSON.stringify(slotStereotype.rawData.stereotype) ?? ''}
         >
-          <Box fontWeight='fontWeightBold' mr={1} display='inline'>
-            Stereotypes
-          </Box>
-        </Typography>
-        <Grid container direction='row'>
-          {
-            stereotypes
-              .sort((a, b) => {
-                const browserNameComparison = a.browserName.localeCompare(b.browserName)
-                if (browserNameComparison !== 0) {
-                  return browserNameComparison
-                } else {
-                  return a.browserVersion.localeCompare(b.browserVersion)
-                }
-              })
-              .map((slotStereotype: any, idx) => {
-                return (
-                  CreateStereotypeGridItem(slotStereotype, idx)
-                )
-              })
-          }
-        </Grid>
+          <Badge
+            badgeContent={slotStereotype.slotCount} color='primary'
+            sx={{ mb: '5px', mt: '20px', mr: '30px' }}
+            // className={classes.boxStyle}
+          >
+            <Grid item marginBottom={0} marginRight={1}>
+              <OsLogo osName={slotStereotype.platformName} size={Size.XS} />
+              <BrowserLogo browserName={slotStereotype.browserName} />
+              <Typography variant='caption'>
+                {slotStereotype.browserVersion}
+              </Typography>
+            </Grid>
+          </Badge>
+        </Tooltip>
       </Grid>
-    )
-  }
+    </Grid>
+  )
 }
 
-export default withStyles(useStyles)(Stereotypes)
+function Stereotypes (props) {
+  const { stereotypes } = props
+
+  return (
+    <Grid item xs={12}>
+      <Typography
+        color='textPrimary'
+        gutterBottom
+        variant='h6'
+      >
+        <Box fontWeight='fontWeightBold' mr={1} display='inline'>
+          Stereotypes
+        </Box>
+      </Typography>
+      <Grid container direction='row' marginLeft={1}>
+        {
+          stereotypes
+            .sort((a, b) => {
+              const browserNameComparison = a.browserName.localeCompare(
+                b.browserName)
+              if (browserNameComparison !== 0) {
+                return browserNameComparison
+              } else {
+                return a.browserVersion.localeCompare(b.browserVersion)
+              }
+            })
+            .map((slotStereotype: any, idx) => {
+              return (
+                CreateStereotypeGridItem(slotStereotype, idx)
+              )
+            })
+        }
+      </Grid>
+    </Grid>
+  )
+}
+
+export default Stereotypes
