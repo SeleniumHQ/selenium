@@ -85,20 +85,9 @@ public class AddHasExtensions implements AugmenterProvider<HasExtensions>, Addit
         String encoded;
         try {
           if (Files.isDirectory(path)) {
-            Path extZip = Paths.get(path.getFileName().toString()+".zip");
-            ZipOutputStream zos = new ZipOutputStream(new FileOutputStream(extZip.toFile()));
-            Files.walkFileTree(path, new SimpleFileVisitor<Path>() {
-              public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
-                zos.putNextEntry(new ZipEntry(path.relativize(file).toString()));
-                Files.copy(file, zos);
-                zos.closeEntry();
-                return FileVisitResult.CONTINUE;
-              }
-            });
-            zos.close();
-            encoded = Base64.getEncoder().encodeToString(Files.readAllBytes(extZip));
+            encoded = Base64.getEncoder().encodeToString(Files.readAllBytes(zipDirectory(path)));
           }
-          else{
+          else {
             encoded = Base64.getEncoder().encodeToString(Files.readAllBytes(path));
           }
         } catch (IOException e) {
@@ -108,6 +97,22 @@ public class AddHasExtensions implements AugmenterProvider<HasExtensions>, Addit
         return (String) executeMethod.execute(
           INSTALL_EXTENSION,
           ImmutableMap.of("addon", encoded, "temporary", temporary));
+      }
+
+      private Path zipDirectory(Path path) throws IOException {
+        Path extZip = Paths.get(path.getFileName().toString()+".zip");
+        try (ZipOutputStream zos = new ZipOutputStream(new FileOutputStream(extZip.toFile()))) {
+          Files.walkFileTree(path, new SimpleFileVisitor<Path>() {
+            @Override
+            public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
+              zos.putNextEntry(new ZipEntry(path.relativize(file).toString()));
+              Files.copy(file, zos);
+              zos.closeEntry();
+              return FileVisitResult.CONTINUE;
+            }
+          });
+        }
+        return extZip;
       }
 
       @Override
