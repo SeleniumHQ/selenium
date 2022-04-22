@@ -67,7 +67,7 @@ public class LocalSessionMap extends SessionMap {
         SESSION_ID.accept(span, id);
         SESSION_ID_EVENT.accept(attributeMap, id);
         knownSessions.remove(id);
-        String sessionDeletedMessage = "Deleted session from local session map";
+        String sessionDeletedMessage = "Deleted session from local Session Map";
         span.addEvent(sessionDeletedMessage, attributeMap);
         LOG.info(String.format("%s, Id: %s", sessionDeletedMessage, id));
       }
