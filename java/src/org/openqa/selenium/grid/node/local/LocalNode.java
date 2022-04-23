@@ -214,7 +214,7 @@ public class LocalNode extends Node {
         r -> {
           Thread thread = new Thread(r);
           thread.setDaemon(true);
-          thread.setName("TempFile Cleanup Node " + externalUri);
+          thread.setName("HeartBeat Node " + externalUri);
           return thread;
         });
     heartbeatNodeService.scheduleAtFixedRate(
