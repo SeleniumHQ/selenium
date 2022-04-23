@@ -17,12 +17,7 @@
 
 package org.openqa.selenium.events.zeromq;
 
-import static java.nio.charset.StandardCharsets.UTF_8;
-
 import com.google.common.collect.EvictingQueue;
-
-import dev.failsafe.Failsafe;
-import dev.failsafe.RetryPolicy;
 
 import org.openqa.selenium.events.Event;
 import org.openqa.selenium.events.EventBus;
@@ -36,6 +31,9 @@ import org.openqa.selenium.json.JsonOutput;
 import org.zeromq.SocketType;
 import org.zeromq.ZContext;
 import org.zeromq.ZMQ;
+
+import dev.failsafe.Failsafe;
+import dev.failsafe.RetryPolicy;
 
 import java.net.Inet6Address;
 import java.net.InetAddress;
@@ -57,6 +55,8 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Consumer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import static java.nio.charset.StandardCharsets.UTF_8;
 
 class UnboundZmqEventBus implements EventBus {
 
@@ -229,36 +229,41 @@ class UnboundZmqEventBus implements EventBus {
               ZMQ.Socket socket = poller.getSocket(i);
 
               EventName eventName = new EventName(new String(socket.recv(), UTF_8));
+              // Processing only events we are listening to
+              if (!listeners.containsKey(eventName)) {
+//                LOG.log(Level.SEVERE, "Ignoring {0}", eventName);
+                continue;
+              }
 
               Secret eventSecret;
               String receivedEventSecret = new String(socket.recv(), UTF_8);
               try {
                 eventSecret = JSON.toType(receivedEventSecret, Secret.class);
-              } catch (JsonException e) {
+              } catch (JsonException ignore) {
                 rejectEvent(
                   eventName,
                   receivedEventSecret,
-                  "Could not parse event secret, rejecting event. " + e.getMessage());
-                return;
+                  "Could not parse event secret, rejecting event.");
+                continue;
               }
 
               UUID id;
               String eventId = new String(socket.recv(), UTF_8);
               try {
                 id = UUID.fromString(eventId);
-              } catch (IllegalArgumentException e) {
+              } catch (IllegalArgumentException ignore) {
                 rejectEvent(
                   eventName,
-                  receivedEventSecret,
-                  "Could not parse event id, rejecting event. " + e.getMessage());
-                return;
+                  eventId,
+                  "Could not parse event id, rejecting event.");
+                continue;
               }
 
               String data = new String(socket.recv(), UTF_8);
 
               // Don't bother doing more work if we've seen this message.
               if (recentMessages.contains(id)) {
-                return;
+                continue;
               }
 
               Object converted = JSON.toType(data, Object.class);
@@ -268,7 +273,7 @@ class UnboundZmqEventBus implements EventBus {
 
               if (!Secret.matches(secret, eventSecret)) {
                 rejectEvent(eventName, data, "Rejecting message without a valid secret");
-                return;
+                continue;
               }
 
               notifyListeners(eventName, event);

@@ -17,13 +17,6 @@
 
 package org.openqa.selenium.netty.server;
 
-import static io.netty.handler.codec.http.HttpMethod.DELETE;
-import static io.netty.handler.codec.http.HttpMethod.GET;
-import static io.netty.handler.codec.http.HttpMethod.HEAD;
-import static io.netty.handler.codec.http.HttpMethod.OPTIONS;
-import static io.netty.handler.codec.http.HttpMethod.POST;
-import static org.openqa.selenium.remote.http.Contents.memoize;
-
 import com.google.common.io.ByteStreams;
 
 import org.openqa.selenium.internal.Debug;
@@ -57,19 +50,26 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.logging.Logger;
 
+import static io.netty.handler.codec.http.HttpMethod.DELETE;
+import static io.netty.handler.codec.http.HttpMethod.GET;
+import static io.netty.handler.codec.http.HttpMethod.HEAD;
+import static io.netty.handler.codec.http.HttpMethod.OPTIONS;
+import static io.netty.handler.codec.http.HttpMethod.POST;
+import static org.openqa.selenium.remote.http.Contents.memoize;
+
 class RequestConverter extends SimpleChannelInboundHandler<HttpObject> {
 
   private static final Logger LOG = Logger.getLogger(RequestConverter.class.getName());
   private static final ExecutorService EXECUTOR = Executors.newSingleThreadExecutor();
-  private volatile PipedOutputStream out;
   private static final List<io.netty.handler.codec.http.HttpMethod> supportedMethods =
     Arrays.asList(DELETE, GET, POST, OPTIONS);
+  private volatile PipedOutputStream out;
 
   @Override
   protected void channelRead0(
     ChannelHandlerContext ctx,
     HttpObject msg) throws Exception {
-    LOG.log(Debug.getDebugLogLevel(), "Incoming message: " + msg);
+    LOG.fine("Incoming message: " + msg);
 
     if (msg instanceof io.netty.handler.codec.http.HttpRequest) {
       LOG.log(Debug.getDebugLogLevel(), "Start of http request: " + msg);
@@ -121,7 +121,7 @@ class RequestConverter extends SimpleChannelInboundHandler<HttpObject> {
     }
 
     if (msg instanceof LastHttpContent) {
-      LOG.log(Debug.getDebugLogLevel(), "Closing input pipe.");
+      LOG.fine("Closing input pipe.");
       EXECUTOR.submit(() -> {
         try {
           out.close();
@@ -169,10 +169,11 @@ class RequestConverter extends SimpleChannelInboundHandler<HttpObject> {
         .filter(entry -> entry.getKey() != null)
         .forEach(entry -> req.addHeader(entry.getKey(), entry.getValue()));
       return req;
-    } catch (Exception e) {
+    } catch (Exception ignore) {
       ctx.writeAndFlush(
         new DefaultFullHttpResponse(HttpVersion.HTTP_1_1, HttpResponseStatus.BAD_REQUEST));
-      LOG.log(Debug.getDebugLogLevel(), "Not possible to decode parameters.", e);
+      LOG.log(Debug.getDebugLogLevel(), "Not possible to decode parameters. {0}",
+              nettyRequest.uri());
       return null;
     }
   }
