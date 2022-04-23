@@ -17,10 +17,6 @@
 
 package org.openqa.selenium.grid.distributor;
 
-import static org.openqa.selenium.grid.data.Availability.DOWN;
-import static org.openqa.selenium.grid.data.Availability.DRAINING;
-import static org.openqa.selenium.grid.data.Availability.UP;
-
 import com.google.common.collect.ImmutableSet;
 
 import org.openqa.selenium.events.EventBus;
@@ -53,6 +49,10 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.logging.Logger;
+
+import static org.openqa.selenium.grid.data.Availability.DOWN;
+import static org.openqa.selenium.grid.data.Availability.DRAINING;
+import static org.openqa.selenium.grid.data.Availability.UP;
 
 public class GridModel {
 
@@ -244,7 +244,7 @@ public class GridModel {
     }
   }
 
-  public Availability setAvailability(NodeId id, Availability availability) {
+  public void setAvailability(NodeId id, Availability availability) {
     Require.nonNull("Node ID", id);
     Require.nonNull("Availability", availability);
 
@@ -254,29 +254,26 @@ public class GridModel {
       NodeStatus node = getNode(id);
 
       if (node == null) {
-        return DOWN;
+        return;
       }
 
       if (availability.equals(node.getAvailability())) {
         if (node.getAvailability() == UP) {
           nodePurgeTimes.put(node.getNodeId(), Instant.now());
         }
-        return availability;
+      } else {
+        LOG.info(String.format(
+          "Switching Node %s (uri: %s) from %s to %s",
+          id,
+          node.getExternalUri(),
+          node.getAvailability(),
+          availability));
+
+        NodeStatus refreshed = rewrite(node, availability);
+        nodes.remove(node);
+        nodes.add(refreshed);
+        nodePurgeTimes.put(node.getNodeId(), Instant.now());
       }
-
-      LOG.info(String.format(
-        "Switching node %s (uri: %s) from %s to %s",
-        id,
-        node.getExternalUri(),
-        node.getAvailability(),
-        availability));
-
-      Availability previous = node.getAvailability();
-      NodeStatus refreshed = rewrite(node, availability);
-      nodes.remove(node);
-      nodes.add(refreshed);
-      nodePurgeTimes.put(node.getNodeId(), Instant.now());
-      return previous;
     } finally {
       writeLock.unlock();
     }
@@ -361,12 +358,13 @@ public class GridModel {
       return;
     }
 
+    LOG.info("Releasing slot for session id " + id);
     Lock writeLock = lock.writeLock();
     writeLock.lock();
     try {
       for (NodeStatus node : nodes) {
         for (Slot slot : node.getSlots()) {
-          if (slot.getSession()==null) {
+          if (slot.getSession() == null) {
             continue;
           }
 
