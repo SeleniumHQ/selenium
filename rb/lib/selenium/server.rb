@@ -122,7 +122,7 @@ module Selenium
       end
 
       def net_http_start(address, &block)
-        http_proxy = ENV['http_proxy'] || ENV['HTTP_PROXY']
+        http_proxy = ENV.fetch('http_proxy', nil) || ENV.fetch('HTTP_PROXY', nil)
         if http_proxy
           http_proxy = "http://#{http_proxy}" unless http_proxy.start_with?('http://')
           uri = URI.parse(http_proxy)

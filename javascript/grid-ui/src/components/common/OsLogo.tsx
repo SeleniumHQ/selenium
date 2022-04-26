@@ -26,15 +26,14 @@ function OsLogo (props) {
   const osLogoSize = size ?? Size.S
   return (
     <Box
-      component="img"
+      component='img'
       marginX={0}
       src={osLogo(name)}
       width={osLogoSize}
       height={osLogoSize}
-      alt="OS Logo"
+      alt='OS Logo'
     />
   )
-
 }
 
 export default OsLogo

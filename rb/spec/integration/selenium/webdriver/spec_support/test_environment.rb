@@ -29,7 +29,7 @@ module Selenium
 
           extract_browser_from_bazel_target_name
 
-          @driver = (ENV['WD_SPEC_DRIVER'] || :chrome).to_sym
+          @driver = ENV.fetch('WD_SPEC_DRIVER', 'chrome').to_sym
           @driver_instance = nil
         end
 
@@ -47,7 +47,7 @@ module Selenium
         end
 
         def browser
-          driver == :remote ? (ENV['WD_REMOTE_BROWSER'] || :chrome).to_sym : driver
+          driver == :remote ? ENV.fetch('WD_REMOTE_BROWSER', 'chrome').to_sym : driver
         end
 
         def driver_instance
@@ -189,19 +189,19 @@ module Selenium
           options = opt.delete(:capabilities)
           opt[:capabilities] = [WebDriver::Remote::Capabilities.send(browser)]
           opt[:capabilities] << options if options
-          opt[:url] = ENV['WD_REMOTE_URL'] || remote_server.webdriver_url
+          opt[:url] = ENV.fetch('WD_REMOTE_URL', remote_server.webdriver_url)
           opt[:http_client] ||= WebDriver::Remote::Http::Default.new
 
           WebDriver::Driver.for(:remote, opt)
         end
 
         def create_firefox_driver(opt = {})
-          WebDriver::Firefox.path = ENV['FIREFOX_BINARY'] if ENV['FIREFOX_BINARY']
+          WebDriver::Firefox.path = ENV.fetch('FIREFOX_BINARY', nil) if ENV.key?('FIREFOX_BINARY')
           WebDriver::Driver.for :firefox, opt
         end
 
         def create_firefox_nightly_driver(opt = {})
-          ENV['FIREFOX_BINARY'] = ENV['FIREFOX_NIGHTLY_BINARY']
+          ENV['FIREFOX_BINARY'] = ENV.fetch('FIREFOX_NIGHTLY_BINARY', nil)
           opt[:capabilities] = [
             WebDriver::Firefox::Options.new(debugger_address: true),
             WebDriver::Remote::Capabilities.firefox(web_socket_url: true)
@@ -215,7 +215,7 @@ module Selenium
         end
 
         def create_chrome_driver(opt = {})
-          WebDriver::Chrome.path = ENV['CHROME_BINARY'] if ENV['CHROME_BINARY']
+          WebDriver::Chrome.path = ENV.fetch('CHROME_BINARY', nil) if ENV.key?('CHROME_BINARY')
           WebDriver::Driver.for :chrome, opt
         end
 
@@ -225,12 +225,12 @@ module Selenium
         end
 
         def create_edge_driver(opt = {})
-          WebDriver::Edge.path = ENV['EDGE_BINARY'] if ENV['EDGE_BINARY']
+          WebDriver::Edge.path = ENV.fetch('EDGE_BINARY', nil) if ENV.key?('EDGE_BINARY')
           WebDriver::Driver.for :edge, opt
         end
 
         def extract_browser_from_bazel_target_name
-          name = ENV['TEST_TARGET']
+          name = ENV.fetch('TEST_TARGET', nil)
           return unless name
 
           case name

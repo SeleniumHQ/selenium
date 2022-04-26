@@ -23,7 +23,7 @@ module Selenium
   module WebDriver
     describe KeyActions do
       let(:keyboard) { Interactions::KeyInput.new('key_input') }
-      let(:bridge) { instance_double('Bridge').as_null_object }
+      let(:bridge) { instance_double(Remote::Bridge).as_null_object }
       let(:builder) { Selenium::WebDriver::ActionBuilder.new(bridge, devices: [keyboard]) }
       let(:element) { Selenium::WebDriver::Element.new(bridge, 'element') }
       let(:key) { 'a' }
