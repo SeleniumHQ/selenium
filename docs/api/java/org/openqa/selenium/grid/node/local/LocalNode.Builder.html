@@ -26,7 +26,7 @@
     catch(err) {
     }
 //-->
-var data = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10};
+var data = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10};
 var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -202,15 +202,20 @@ extends java.lang.Object</pre>
 </tr>
 <tr id="i3" class="rowColor">
 <td class="colFirst"><code><a href="LocalNode.Builder.html" title="class in org.openqa.selenium.grid.node.local">LocalNode.Builder</a></code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#heartbeatPeriod(java.time.Duration)">heartbeatPeriod</a></span>&#8203;(java.time.Duration&nbsp;heartbeatPeriod)</code></th>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#drainAfterSessionCount(int)">drainAfterSessionCount</a></span>&#8203;(int&nbsp;sessionCount)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr id="i4" class="altColor">
 <td class="colFirst"><code><a href="LocalNode.Builder.html" title="class in org.openqa.selenium.grid.node.local">LocalNode.Builder</a></code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#maximumConcurrentSessions(int)">maximumConcurrentSessions</a></span>&#8203;(int&nbsp;maxCount)</code></th>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#heartbeatPeriod(java.time.Duration)">heartbeatPeriod</a></span>&#8203;(java.time.Duration&nbsp;heartbeatPeriod)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr id="i5" class="rowColor">
+<td class="colFirst"><code><a href="LocalNode.Builder.html" title="class in org.openqa.selenium.grid.node.local">LocalNode.Builder</a></code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#maximumConcurrentSessions(int)">maximumConcurrentSessions</a></span>&#8203;(int&nbsp;maxCount)</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr id="i6" class="altColor">
 <td class="colFirst"><code><a href="LocalNode.Builder.html" title="class in org.openqa.selenium.grid.node.local">LocalNode.Builder</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#sessionTimeout(java.time.Duration)">sessionTimeout</a></span>&#8203;(java.time.Duration&nbsp;timeout)</code></th>
 <td class="colLast">&nbsp;</td>
@@ -256,6 +261,15 @@ extends java.lang.Object</pre>
 <li class="blockList">
 <h4>maximumConcurrentSessions</h4>
 <pre class="methodSignature">public&nbsp;<a href="LocalNode.Builder.html" title="class in org.openqa.selenium.grid.node.local">LocalNode.Builder</a>&nbsp;maximumConcurrentSessions&#8203;(int&nbsp;maxCount)</pre>
+</li>
+</ul>
+<a id="drainAfterSessionCount(int)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>drainAfterSessionCount</h4>
+<pre class="methodSignature">public&nbsp;<a href="LocalNode.Builder.html" title="class in org.openqa.selenium.grid.node.local">LocalNode.Builder</a>&nbsp;drainAfterSessionCount&#8203;(int&nbsp;sessionCount)</pre>
 </li>
 </ul>
 <a id="sessionTimeout(java.time.Duration)">

@@ -26,12 +26,6 @@
     catch(err) {
     }
 //-->
-var data = {"i0":6,"i1":6,"i2":6,"i3":6,"i4":6,"i5":6};
-var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],4:["t3","Abstract Methods"]};
-var altColor = "altColor";
-var rowColor = "rowColor";
-var tableTab = "tableTab";
-var activeTableTab = "activeTableTab";
 var pathtoroot = "../../../../";
 var useModuleDirectories = false;
 loadScripts(document, 'script');</script>
@@ -101,7 +95,7 @@ loadScripts(document, 'script');</script>
 <li>Detail:&nbsp;</li>
 <li>Field&nbsp;|&nbsp;</li>
 <li>Constr&nbsp;|&nbsp;</li>
-<li><a href="#method.detail">Method</a></li>
+<li>Method</li>
 </ul>
 </div>
 <a id="skip.navbar.top">
@@ -127,11 +121,16 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <ul class="blockList">
 <li class="blockList">
 <dl>
+<dt>All Superinterfaces:</dt>
+<dd><code><a href="Storage.html" title="interface in org.openqa.selenium.html5">Storage</a></code></dd>
+</dl>
+<dl>
 <dt>All Known Implementing Classes:</dt>
 <dd><code><a href="../remote/html5/RemoteSessionStorage.html" title="class in org.openqa.selenium.remote.html5">RemoteSessionStorage</a></code></dd>
 </dl>
 <hr>
-<pre>public interface <span class="typeNameLabel">SessionStorage</span></pre>
+<pre>public interface <span class="typeNameLabel">SessionStorage</span>
+extends <a href="Storage.html" title="interface in org.openqa.selenium.html5">Storage</a></pre>
 <div class="block">Represents the session storage in the browser for the site currently opened in the browser. The
  session storage areas is specific to the current top level browsing context. Each context has a
  unique set of session storage, one for each origin. Sites can add data to the session storage and
@@ -149,115 +148,12 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <!--   -->
 </a>
 <h3>Method Summary</h3>
-<table class="memberSummary">
-<caption><span id="t0" class="activeTableTab"><span>All Methods</span><span class="tabEnd">&nbsp;</span></span><span id="t2" class="tableTab"><span><a href="javascript:show(2);">Instance Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t3" class="tableTab"><span><a href="javascript:show(4);">Abstract Methods</a></span><span class="tabEnd">&nbsp;</span></span></caption>
-<tr>
-<th class="colFirst" scope="col">Modifier and Type</th>
-<th class="colSecond" scope="col">Method</th>
-<th class="colLast" scope="col">Description</th>
-</tr>
-<tr id="i0" class="altColor">
-<td class="colFirst"><code>void</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#clear()">clear</a></span>()</code></th>
-<td class="colLast">&nbsp;</td>
-</tr>
-<tr id="i1" class="rowColor">
-<td class="colFirst"><code>java.lang.String</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getItem(java.lang.String)">getItem</a></span>&#8203;(java.lang.String&nbsp;key)</code></th>
-<td class="colLast">&nbsp;</td>
-</tr>
-<tr id="i2" class="altColor">
-<td class="colFirst"><code>java.util.Set&lt;java.lang.String&gt;</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#keySet()">keySet</a></span>()</code></th>
-<td class="colLast">&nbsp;</td>
-</tr>
-<tr id="i3" class="rowColor">
-<td class="colFirst"><code>java.lang.String</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#removeItem(java.lang.String)">removeItem</a></span>&#8203;(java.lang.String&nbsp;key)</code></th>
-<td class="colLast">&nbsp;</td>
-</tr>
-<tr id="i4" class="altColor">
-<td class="colFirst"><code>void</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setItem(java.lang.String,java.lang.String)">setItem</a></span>&#8203;(java.lang.String&nbsp;key,
-       java.lang.String&nbsp;value)</code></th>
-<td class="colLast">&nbsp;</td>
-</tr>
-<tr id="i5" class="rowColor">
-<td class="colFirst"><code>int</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#size()">size</a></span>()</code></th>
-<td class="colLast">&nbsp;</td>
-</tr>
-</table>
-</li>
-</ul>
-</section>
-</li>
-</ul>
-</div>
-<div class="details">
 <ul class="blockList">
-<li class="blockList">
-<!-- ============ METHOD DETAIL ========== -->
-<section role="region">
-<ul class="blockList">
-<li class="blockList"><a id="method.detail">
+<li class="blockList"><a id="methods.inherited.from.class.org.openqa.selenium.html5.Storage">
 <!--   -->
 </a>
-<h3>Method Detail</h3>
-<a id="getItem(java.lang.String)">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>getItem</h4>
-<pre class="methodSignature">java.lang.String&nbsp;getItem&#8203;(java.lang.String&nbsp;key)</pre>
-</li>
-</ul>
-<a id="keySet()">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>keySet</h4>
-<pre class="methodSignature">java.util.Set&lt;java.lang.String&gt;&nbsp;keySet()</pre>
-</li>
-</ul>
-<a id="setItem(java.lang.String,java.lang.String)">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>setItem</h4>
-<pre class="methodSignature">void&nbsp;setItem&#8203;(java.lang.String&nbsp;key,
-             java.lang.String&nbsp;value)</pre>
-</li>
-</ul>
-<a id="removeItem(java.lang.String)">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>removeItem</h4>
-<pre class="methodSignature">java.lang.String&nbsp;removeItem&#8203;(java.lang.String&nbsp;key)</pre>
-</li>
-</ul>
-<a id="clear()">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>clear</h4>
-<pre class="methodSignature">void&nbsp;clear()</pre>
-</li>
-</ul>
-<a id="size()">
-<!--   -->
-</a>
-<ul class="blockListLast">
-<li class="blockList">
-<h4>size</h4>
-<pre class="methodSignature">int&nbsp;size()</pre>
-</li>
+<h3>Methods inherited from interface&nbsp;org.openqa.selenium.html5.<a href="Storage.html" title="interface in org.openqa.selenium.html5">Storage</a></h3>
+<code><a href="Storage.html#clear()">clear</a>, <a href="Storage.html#getItem(java.lang.String)">getItem</a>, <a href="Storage.html#keySet()">keySet</a>, <a href="Storage.html#removeItem(java.lang.String)">removeItem</a>, <a href="Storage.html#setItem(java.lang.String,java.lang.String)">setItem</a>, <a href="Storage.html#size()">size</a></code></li>
 </ul>
 </li>
 </ul>
@@ -324,7 +220,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <li>Detail:&nbsp;</li>
 <li>Field&nbsp;|&nbsp;</li>
 <li>Constr&nbsp;|&nbsp;</li>
-<li><a href="#method.detail">Method</a></li>
+<li>Method</li>
 </ul>
 </div>
 <a id="skip.navbar.bottom">
