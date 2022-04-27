@@ -15,6 +15,7 @@
 # specific language governing permissions and limitations
 # under the License.
 
+from typing import Tuple
 import pytest
 from base64 import urlsafe_b64decode, urlsafe_b64encode
 from selenium.webdriver.chrome.virtual_authenticator import Credential
@@ -41,9 +42,10 @@ zJOGpf9x2RSWzQJ+dq8+6fACgfFZOVpN644+sAHfNPAI/gnNKU5OfUv+eav8fBnzlf1A3y3GIkyMyzFN
 BYGpI8g==
 '''
 
+
 @pytest.fixture()
-def data():
-    _id = bytearray({1,2,3,4})
+def data() -> Tuple:
+    _id = bytearray({1, 2, 3, 4})
     rp_id = "localhost"
     user_handle = bytearray({1})
     privatekey = urlsafe_b64decode(BASE64__ENCODED_PK)
@@ -56,26 +58,31 @@ def test_rk_enabled_credential(data):
     _id, rp_id, user_handle, privatekey, sign_count = data
 
     credential = Credential.create_resident_credential(_id, rp_id, user_handle, privatekey, sign_count)
-    assert credential.id == urlsafe_b64encode(bytearray({1,2,3,4})).decode()
-    assert credential.is_resident_credential == True
+    assert credential.id == urlsafe_b64encode(bytearray({1, 2, 3, 4})).decode()
+    if credential.is_resident_credential is True:
+        assert True
     assert credential.rp_id == "localhost"
     assert credential.user_handle == urlsafe_b64encode(bytearray({1})).decode()
     assert credential.private_key == urlsafe_b64encode(privatekey).decode()
     assert credential.sign_count == 0
 
 
-
 def test_rk_disabled_credentials(data):
     _id, rp_id, user_handle, privatekey, sign_count = data
     credential = Credential.create_non_resident_credential(_id, rp_id, privatekey, sign_count)
 
-
-    assert credential.id == urlsafe_b64encode(bytearray({1,2,3,4})).decode()
-    assert credential.is_resident_credential == False
-    assert credential.rp_id == "localhost"
-    assert credential.user_handle == None
+    assert credential.id == urlsafe_b64encode(bytearray({1, 2, 3, 4})).decode()
     assert credential.private_key == urlsafe_b64encode(privatekey).decode()
     assert credential.sign_count == 0
+    assert credential.rp_id == "localhost"
+    if credential.is_resident_credential is False:
+        assert True
+    else:
+        assert False
+    if credential.user_handle is None:
+        assert True
+    else:
+        assert False
 
 
 def test_to_dict(data):
@@ -83,18 +90,20 @@ def test_to_dict(data):
     credential = Credential.create_resident_credential(_id, rp_id, user_handle, privatekey, sign_count)
 
     credential_dict = credential.to_dict()
-    assert credential_dict["credentialId"] == urlsafe_b64encode(bytearray({1,2,3,4})).decode()
-    assert credential_dict["isResidentCredential"] == True
+    assert credential_dict["credentialId"] == urlsafe_b64encode(bytearray({1, 2, 3, 4})).decode()
+    if credential_dict["isResidentCredential"] is True:
+        assert True
+    else:
+        assert False
     assert credential_dict["rpId"] == "localhost"
     assert credential_dict["userHandle"] == urlsafe_b64encode(bytearray({1})).decode()
     assert credential_dict["privateKey"] == urlsafe_b64encode(privatekey).decode()
     assert credential_dict["signCount"] == 0
 
 
-
 def test_from_dict():
     data = {
-        "credentialId": urlsafe_b64encode(bytearray({1,2,3,4})).decode(),
+        "credentialId": urlsafe_b64encode(bytearray({1, 2, 3, 4})).decode(),
         "isResidentCredential": True,
         "rpId": "localhost",
         "userHandle": urlsafe_b64encode(bytearray({1})).decode(),
@@ -106,8 +115,11 @@ def test_from_dict():
 
     key = urlsafe_b64decode(BASE64__ENCODED_PK)
 
-    assert credential.id == urlsafe_b64encode(bytearray({1,2,3,4})).decode()
-    assert credential.is_resident_credential == True
+    assert credential.id == urlsafe_b64encode(bytearray({1, 2, 3, 4})).decode()
+    if credential.is_resident_credential is True:
+        assert True
+    else:
+        assert False
     assert credential.rp_id == "localhost"
     assert credential.user_handle == urlsafe_b64encode(bytearray({1})).decode()
     assert credential.private_key == urlsafe_b64encode(key).decode()

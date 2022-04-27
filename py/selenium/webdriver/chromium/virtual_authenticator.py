@@ -150,7 +150,7 @@ class Credential:
         return urlsafe_b64encode(self._id).decode()
 
     @property
-    def is_resident_credential(self):
+    def is_resident_credential(self) -> bool:
         return self._is_resident_credential
 
     @property
