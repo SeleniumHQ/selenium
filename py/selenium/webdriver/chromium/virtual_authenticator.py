@@ -17,6 +17,7 @@
 
 from base64 import urlsafe_b64encode, urlsafe_b64decode
 from enum import Enum
+from typing import Literal
 
 
 class Protocol(Enum):
@@ -54,18 +55,14 @@ class VirtualAuthenticatorOptions:
             - isUserVerified: False
         """
 
-        self._protocol: str = Protocol.CTAP2
-        self._transport: str = Transport.USB
+        self._protocol: Literal = Protocol.CTAP2
+        self._transport: Literal = Transport.USB
         self._has_resident_key: bool = False
         self._has_user_verification: bool = False
         self._is_user_consenting: bool = True
         self._is_user_verified: bool = False
 
     @property
-    def protocol(self) -> Protocol:
-        return self._protocol
-
-    @protocol.getter
     def protocol(self) -> str:
         return self._protocol.value
 
@@ -74,15 +71,11 @@ class VirtualAuthenticatorOptions:
         self._protocol = protocol
 
     @property
-    def transport(self) -> Transport:
-        return self._transport
-
-    @transport.getter
     def transport(self) -> str:
         return self._transport.value
 
     @transport.setter
-    def transport(self, transport: Transport):
+    def transport(self, transport: Transport) -> None:
         self._transport = transport
 
     @property
@@ -94,7 +87,7 @@ class VirtualAuthenticatorOptions:
         self._has_resident_key = value
 
     @property
-    def has_user_verification(self):
+    def has_user_verification(self) -> None:
         return self._has_user_verification
 
     @has_user_verification.setter
@@ -102,7 +95,7 @@ class VirtualAuthenticatorOptions:
         self._has_user_verification = value
 
     @property
-    def is_user_consenting(self):
+    def is_user_consenting(self) -> None:
         return self._is_user_consenting
 
     @is_user_consenting.setter
@@ -110,7 +103,7 @@ class VirtualAuthenticatorOptions:
         self._is_user_consenting = value
 
     @property
-    def is_user_verified(self):
+    def is_user_verified(self) -> None:
         return self._is_user_verified
 
     @is_user_verified.setter
@@ -141,7 +134,7 @@ class Credential:
             private_key (bytes): Base64 encoded PKCS#8 private key.
             sign_count (int): intital value for a signature counter.
         """
-        self._id= credential_id
+        self._id = credential_id
         self._is_resident_credential = is_resident_credential
         self._rp_id = rp_id
         self._user_handle = user_handle
@@ -186,8 +179,8 @@ class Credential:
     def sign_count(self):
         return self._sign_count
 
-    @staticmethod
-    def create_non_resident_credential(id: bytes,  rp_id: str, private_key: bytes, sign_count: int) -> 'Credential':
+    @classmethod
+    def create_non_resident_credential(cls, id: bytes, rp_id: str, private_key: bytes, sign_count: int) -> 'Credential':
         """Creates a non-resident (i.e. stateless) credential.
 
               :Args:
@@ -199,10 +192,10 @@ class Credential:
               :Returns:
                 - Credential: A non-resident credential.
         """
-        return Credential(id, False, rp_id, None, private_key, sign_count)
+        return cls(id, False, rp_id, None, private_key, sign_count)
 
-    @staticmethod
-    def create_resident_credential(id: bytes, rp_id: str, user_handle: bytes, private_key: bytes, sign_count: int) -> 'Credential':
+    @classmethod
+    def create_resident_credential(cls, id: bytes, rp_id: str, user_handle: bytes, private_key: bytes, sign_count: int) -> 'Credential':
         """Creates a resident (i.e. stateful) credential.
 
               :Args:
@@ -215,7 +208,7 @@ class Credential:
               :returns:
                 - Credential: A resident credential.
         """
-        return Credential(id, True, rp_id, user_handle, private_key, sign_count)
+        return cls(id, True, rp_id, user_handle, private_key, sign_count)
 
     def to_dict(self):
         credential_data = {
@@ -231,9 +224,9 @@ class Credential:
 
         return credential_data
 
-    @staticmethod
-    def from_dict(data):
-        _id =  urlsafe_b64decode(data['credentialId'])
+    @classmethod
+    def from_dict(cls, data):
+        _id = urlsafe_b64decode(data['credentialId'])
         is_resident_credential = bool(data['isResidentCredential'])
         rp_id = str(data['rpId'])
         private_key = urlsafe_b64decode(data['privateKey'])
@@ -241,7 +234,7 @@ class Credential:
         user_handle = urlsafe_b64decode(data['userHandle']) \
             if data.get('userHandle', None) else None
 
-        return Credential(_id, is_resident_credential, rp_id, user_handle, private_key, sign_count)
+        return cls(_id, is_resident_credential, rp_id, user_handle, private_key, sign_count)
 
     def __str__(self) -> str:
         return f"Credential(id={self.id}, is_resident_credential={self.is_resident_credential}, rp_id={self.rp_id},\
