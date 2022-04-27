@@ -18,7 +18,7 @@
 import pytest
 
 
-from selenium.webdriver.chrome.virtual_authenticator import (
+from selenium.webdriver.common.virtual_authenticator import (
     VirtualAuthenticatorOptions,
 )
 

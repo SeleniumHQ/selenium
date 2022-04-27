@@ -15,11 +15,11 @@
 # specific language governing permissions and limitations
 # under the License.
 
-
+import pytest
 from base64 import b64decode
 
-from selenium.webdriver.chrome.webdriver import WebDriver
-from selenium.webdriver.chrome.virtual_authenticator import (
+from selenium.webdriver.remote.webdriver import WebDriver
+from selenium.webdriver.common.virtual_authenticator import (
     Credential,
     VirtualAuthenticatorOptions,
 )
@@ -90,23 +90,26 @@ def create_rk_disabled_authenticator(driver) -> WebDriver:
 
 # ---------------- TESTS ------------------------------------
 # TODO: add JS verfication code for tests as in JAVA
+@pytest.mark.xfail_firefox
 def test_add_and_remove_virtual_authenticator(driver, pages):
     driver = create_rk_disabled_authenticator(driver)
 
     pages.load("virtual-authenticator.html")
 
-    assert driver.get_virtual_authenticator_id() is not None
+    assert driver.virtual_authenticator_id is not None
 
     driver.remove_virtual_authenticator()
-    assert driver.get_virtual_authenticator_id() is None
+    assert driver.virtual_authenticator_id is None
 
 
+@pytest.mark.xfail_firefox
+@pytest.mark.xfail_safari
 def test_add_and_remove_non_resident_credentials(driver, pages):
     driver = create_rk_disabled_authenticator(driver)
 
     pages.load("virtual-authenticator.html")
 
-    assert driver.get_virtual_authenticator_id() is not None
+    assert driver.virtual_authenticator_id is not None
 
     credential = Credential.create_non_resident_credential(
         bytearray({1, 2, 3, 4}),
@@ -122,7 +125,6 @@ def test_add_and_remove_non_resident_credentials(driver, pages):
         1,
     )
 
-    print(credential.to_dict())
     driver.add_credential(credential)
     assert len(driver.get_credentials()) == 1
 
@@ -133,14 +135,16 @@ def test_add_and_remove_non_resident_credentials(driver, pages):
     assert len(driver.get_credentials()) == 1
 
     driver.remove_virtual_authenticator()
-    assert driver.get_virtual_authenticator_id() is None
+    assert driver.virtual_authenticator_id is None
 
 
+@pytest.mark.xfail_firefox
+@pytest.mark.xfail_safari
 def test_add_and_remove_resident_credentials(driver, pages):
     driver = create_rk_enabled_authenticator(driver)
 
     pages.load("virtual-authenticator.html")
-    assert driver.get_virtual_authenticator_id() is not None
+    assert driver.virtual_authenticator_id is not None
 
     credential = Credential.create_non_resident_credential(
         bytearray({1, 2, 3, 4}),
@@ -169,13 +173,14 @@ def test_add_and_remove_resident_credentials(driver, pages):
     driver.remove_virtual_authenticator()
 
 
-def test_remove_all_credentials():
+@pytest.mark.xfail_firefox
+@pytest.mark.xfail_safari
+def test_remove_all_credentials(driver):
     options = VirtualAuthenticatorOptions()
     options.has_resident_key = True
 
-    driver = WebDriver()
     driver.add_virtual_authenticator(options)
-    assert driver.get_virtual_authenticator_id() is not None
+    assert driver.virtual_authenticator_id is not None
 
     credential = Credential.create_non_resident_credential(
         bytearray({1, 2, 3, 4}),
@@ -204,14 +209,15 @@ def test_remove_all_credentials():
     driver.remove_virtual_authenticator()
 
 
-def test_full_virtual_authenticator():
+@pytest.mark.xfail_firefox
+@pytest.mark.xfail_safari
+def test_full_virtual_authenticator(driver):
 
     options = VirtualAuthenticatorOptions()
     options.is_user_consenting = True
     options.protocol = VirtualAuthenticatorOptions.Protocol.U2F
     options.transport = VirtualAuthenticatorOptions.Transport.USB
 
-    driver = WebDriver()
     driver.add_virtual_authenticator(options)
 
     driver.get("https://webauthn.io/")

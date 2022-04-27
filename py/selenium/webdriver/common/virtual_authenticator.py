@@ -15,6 +15,8 @@
 # specific language governing permissions and limitations
 # under the License.
 
+import functools
+
 from base64 import urlsafe_b64encode, urlsafe_b64decode
 from enum import Enum
 from typing import Literal
@@ -239,3 +241,29 @@ class Credential:
     def __str__(self) -> str:
         return f"Credential(id={self.id}, is_resident_credential={self.is_resident_credential}, rp_id={self.rp_id},\
             user_handle={self.user_handle}, private_key={self.private_key}, sign_count={self.sign_count})"
+
+
+def required_chromium_based_browser(func):
+    """
+    A decorator to ensure that the client used is a chromium based browser.
+    """
+    @functools.wraps(func)
+    def wrapper(self, *args, **kwargs):
+        assert self.caps["browserName"].lower() not in ["firefox", "safari"], "This only currently works in Chromium based browsers"
+        return func(self, *args, **kwargs)
+    return wrapper
+
+
+def required_virtual_authenticator(func):
+    """
+    A decorator to ensure that the function is called with a virtual authenticator.
+    """
+    @functools.wraps(func)
+    @required_chromium_based_browser
+    def wrapper(self, *args, **kwargs):
+        if not self.virtual_authenticator:
+            raise ValueError(
+                "This function requires a virtual authenticator to be set."
+            )
+        return func(self, *args, **kwargs)
+    return wrapper

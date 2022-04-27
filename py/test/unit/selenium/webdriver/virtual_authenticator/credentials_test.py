@@ -15,10 +15,11 @@
 # specific language governing permissions and limitations
 # under the License.
 
-from typing import Tuple
 import pytest
+
+from typing import Tuple
 from base64 import urlsafe_b64decode, urlsafe_b64encode
-from selenium.webdriver.chrome.virtual_authenticator import Credential
+from selenium.webdriver.common.virtual_authenticator import Credential
 
 
 BASE64__ENCODED_PK = '''

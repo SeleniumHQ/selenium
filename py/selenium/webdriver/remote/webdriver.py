@@ -53,6 +53,11 @@ from selenium.webdriver.common.print_page_options import PrintOptions
 from selenium.webdriver.common.timeouts import Timeouts
 from selenium.webdriver.common.html5.application_cache import ApplicationCache
 from selenium.webdriver.support.relative_locator import RelativeBy
+from selenium.webdriver.common.virtual_authenticator import (
+    Credential,
+    VirtualAuthenticatorOptions,
+    required_virtual_authenticator
+)
 
 
 _W3C_CAPABILITY_NAMES = frozenset([
@@ -265,6 +270,7 @@ class WebDriver(BaseWebDriver):
         self._switch_to = SwitchTo(self)
         self._mobile = Mobile(self)
         self.file_detector = file_detector or LocalFileDetector()
+        self._authenticator_id = None
         self.start_client()
         self.start_session(capabilities, browser_profile)
 
@@ -1604,3 +1610,73 @@ class WebDriver(BaseWebDriver):
             version = re.search(r".*/(\d+)\.", browser_version).group(1)
 
         return version, websocket_url
+
+    # Virtual Authenticator Methods
+    def add_virtual_authenticator(self, options: VirtualAuthenticatorOptions):
+        """
+        Adds a virtual authenticator with the given options.
+        """
+        self._authenticator_id = self.execute(Command.ADD_VIRTUAL_AUTHENTICATOR, options.to_dict())['value']
+
+    @property
+    def virtual_authenticator_id(self):
+        """
+        Returns the id of the virtual authenticator.
+        """
+        return self._authenticator_id
+
+    @required_virtual_authenticator
+    def remove_virtual_authenticator(self):
+        """
+        Removes a previously added virtual authenticator. The authenticator is no
+        longer valid after removal, so no methods may be called.
+        """
+        self.execute(Command.REMOVE_VIRTUAL_AUTHENTICATOR, {'authenticatorId': self._authenticator_id})
+        self._authenticator_id = None
+
+    @required_virtual_authenticator
+    def add_credential(self, credential: Credential):
+        """
+        Injects a credential into the authenticator.
+        """
+        self.execute(
+            Command.ADD_CREDENTIAL,
+            {**credential.to_dict(), 'authenticatorId': self._authenticator_id}
+        )
+
+    @required_virtual_authenticator
+    def get_credentials(self):
+        """
+        Returns the list of credentials owned by the authenticator.
+        """
+        credential_data = self.execute(Command.GET_CREDENTIALS, {'authenticatorId': self._authenticator_id})
+        print("Get_Credential from authenticator", credential_data)
+        return credential_data['value']
+
+    @required_virtual_authenticator
+    def remove_credential(self, credential_id: str):
+        """
+        Removes a credential from the authenticator.
+        """
+        self.execute(
+            Command.REMOVE_CREDENTIAL,
+            {'credentialId': credential_id, 'authenticatorId': self._authenticator_id}
+        )
+
+    @required_virtual_authenticator
+    def remove_all_credentials(self):
+        """
+        Removes all credentials from the authenticator.
+        """
+        self.execute(Command.REMOVE_ALL_CREDENTIALS, {'authenticatorId': self._authenticator_id})
+
+    @required_virtual_authenticator
+    def set_user_verified(self, verified: bool):
+        """
+        Sets whether the authenticator will simulate success or fail on user verification.
+        verified: True if the authenticator will pass user verification, False otherwise.
+        """
+        self.execute(
+            Command.SET_USER_VERIFIED,
+            {'authenticatorId': self._authenticator_id, 'isUserVerified': verified}
+        )
