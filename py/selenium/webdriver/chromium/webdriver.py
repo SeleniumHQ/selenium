@@ -45,7 +45,7 @@ def required_virtual_authenticator(func):
             raise ValueError(
                 "This function requires a virtual authenticator to be set."
             )
-        func(self, *args, **kwargs)
+        return func(self, *args, **kwargs)
     return wrapper
 
 
@@ -303,9 +303,11 @@ class ChromiumDriver(RemoteWebDriver):
     @required_virtual_authenticator
     def get_credentials(self):
         """
-        Rreturns the list of credentials owned by the authenticator.
+        Returns the list of credentials owned by the authenticator.
         """
-        return self.execute(Command.GET_CREDENTIALS, {'authenticatorId': self._authenticator_id})['value']
+        credential_data = self.execute(Command.GET_CREDENTIALS, {'authenticatorId': self._authenticator_id})
+        print("Get_Credential from authenticator", credential_data)
+        return credential_data['value']
 
     @required_virtual_authenticator
     def remove_credential(self, credential_id: str):
