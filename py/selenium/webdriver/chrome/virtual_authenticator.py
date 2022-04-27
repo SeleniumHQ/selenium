@@ -20,6 +20,7 @@ from selenium.webdriver.chromium.virtual_authenticator import (
     VirtualAuthenticatorOptions as ChromiumVirtualAuthenticatorOptions,
 )
 
+
 class Credential(ChromiumCredential):
     """
     A credential for a virtual authenticator.

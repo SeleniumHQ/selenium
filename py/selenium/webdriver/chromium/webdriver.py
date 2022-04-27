@@ -34,6 +34,7 @@ DEFAULT_PORT = 0
 DEFAULT_SERVICE_LOG_PATH = None
 DEFAULT_KEEP_ALIVE = None
 
+
 def required_virtual_authenticator(func):
     """
     A decorator to ensure that the function is called with a virtual authenticator.
@@ -46,6 +47,7 @@ def required_virtual_authenticator(func):
             )
         func(self, *args, **kwargs)
     return wrapper
+
 
 class ChromiumDriver(RemoteWebDriver):
     """
@@ -267,7 +269,7 @@ class ChromiumDriver(RemoteWebDriver):
         else:
             return ChromeOptions()
 
-    def add_virtual_authenticator(self, options: VirtualAuthenticatorOptions ):
+    def add_virtual_authenticator(self, options: VirtualAuthenticatorOptions):
         """
         Adds a virtual authenticator with the given options.
         """

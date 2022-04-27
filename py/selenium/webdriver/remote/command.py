@@ -105,7 +105,6 @@ class Command(object):
     SWITCH_TO_CONTEXT = "switchToContext"
     GET_ACTIVE_ELEMENT = "getActiveElement"
 
-
     EXECUTE_SCRIPT = "executeScript"
     IS_ELEMENT_DISPLAYED = "isElementDisplayed"
     GET_ELEMENT_LOCATION = "getElementLocation"
@@ -170,7 +169,6 @@ class Command(object):
     IME_DEACTIVATE = "imeDeactivate"
     IME_ACTIVATE_ENGINE = "imeActivateEngine"
 
-
     # Advanced touch API
     TOUCH_SINGLE_TAP = "touchSingleTap"
     TOUCH_DOWN = "touchDown"
@@ -191,7 +189,6 @@ class Command(object):
     MAXIMIZE_CURRENT_WINDOW = "maximizeCurrentWindow"
     MINIMIZE_CURRENT_WINDOW = "minimizeCurrentWindow"
     FULLSCREEN_CURRENT_WINDOW = "fullscreenCurrentWindow"
-
 
     # Alerts
     W3C_DISMISS_ALERT = "w3cDismissAlert"

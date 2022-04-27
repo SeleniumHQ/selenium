@@ -66,6 +66,7 @@ def create_rk_disabled_u2f_authenticator(driver) -> WebDriver:
     driver.add_virtual_authenticator(options)
     return driver
 
+
 def create_rk_enabled_authenticator(driver) -> WebDriver:
     options = VirtualAuthenticatorOptions()
     options.protocol = VirtualAuthenticatorOptions.Protocol.CTAP2
@@ -74,6 +75,7 @@ def create_rk_enabled_authenticator(driver) -> WebDriver:
     options.is_user_verified = True
     driver.add_virtual_authenticator(options)
     return driver
+
 
 def create_rk_disabled_authenticator(driver) -> WebDriver:
     options = VirtualAuthenticatorOptions()
@@ -84,6 +86,7 @@ def create_rk_disabled_authenticator(driver) -> WebDriver:
     options.is_user_verified = True
     driver.add_virtual_authenticator(options)
     return driver
+
 
 # ---------------- TESTS ------------------------------------
 # TODO: add JS verfication code for tests as in JAVA
@@ -98,7 +101,6 @@ def test_add_and_remove_virtual_authenticator(driver, pages):
     assert driver.get_virtual_authenticator_id() is None
 
 
-
 def test_add_and_remove_non_resident_credentials(driver, pages):
     driver = create_rk_disabled_authenticator(driver)
 
@@ -107,14 +109,14 @@ def test_add_and_remove_non_resident_credentials(driver, pages):
     assert driver.get_virtual_authenticator_id() is not None
 
     credential = Credential.create_non_resident_credential(
-        bytearray({1,2,3,4}),
+        bytearray({1, 2, 3, 4}),
         "localhost",
         b64decode(BASE64__ENCODED_PK),
         0,
     )
 
     credential2 = Credential.create_non_resident_credential(
-        bytearray({1,2,3,4,5}),
+        bytearray({1, 2, 3, 4, 5}),
         "localhost",
         b64decode(BASE64__ENCODED_PK),
         1,
@@ -141,14 +143,14 @@ def test_add_and_remove_resident_credentials(driver, pages):
     assert driver.get_virtual_authenticator_id() is not None
 
     credential = Credential.create_non_resident_credential(
-        bytearray({1,2,3,4}),
+        bytearray({1, 2, 3, 4}),
         "localhost",
         b64decode(BASE64__ENCODED_PK),
         0,
     )
 
     credential2 = Credential.create_resident_credential(
-        bytearray({1,2,3,4,5}),
+        bytearray({1, 2, 3, 4, 5}),
         "localhost",
         bytearray({1}),
         b64decode(BASE64__ENCODED_PK),
@@ -176,14 +178,14 @@ def test_remove_all_credentials():
     assert driver.get_virtual_authenticator_id() is not None
 
     credential = Credential.create_non_resident_credential(
-        bytearray({1,2,3,4}),
+        bytearray({1, 2, 3, 4}),
         "localhost",
         b64decode(BASE64__ENCODED_PK),
         0,
     )
 
     credential2 = Credential.create_resident_credential(
-        bytearray({1,2,3,4,5}),
+        bytearray({1, 2, 3, 4, 5}),
         "localhost",
         bytearray({1}),
         b64decode(BASE64__ENCODED_PK),
@@ -227,7 +229,6 @@ def test_full_virtual_authenticator():
     login = driver.find_element(By.ID, "login-button")
     WebDriverWait(driver, 50).until(lambda x: x.find_element(By.ID, "login-button").is_displayed())
     login.click()
-
 
     WebDriverWait(driver, 40).until(lambda x: x.find_element(By.CLASS_NAME, "col-lg-12").is_displayed())
 
