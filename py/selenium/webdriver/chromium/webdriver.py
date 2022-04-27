@@ -100,11 +100,6 @@ class ChromiumDriver(RemoteWebDriver):
             self.quit()
             raise
         self._is_remote = False
-        self._authenticator_id = None
-
-    @property
-    def virtual_authenticator(self):
-        return self._authenticator_id
 
     def launch_app(self, id):
         """Launches Chromium app specified by id."""
