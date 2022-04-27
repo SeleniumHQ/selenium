@@ -15,6 +15,7 @@
 # specific language governing permissions and limitations
 # under the License.
 
+import functools
 from selenium.webdriver.common.options import BaseOptions
 from selenium.webdriver.common.service import Service
 from selenium.webdriver.edge.options import Options as EdgeOptions
@@ -37,12 +38,13 @@ def required_virtual_authenticator(func):
     """
     A decorator to ensure that the function is called with a virtual authenticator.
     """
+    @functools.wraps(func)
     def wrapper(self, *args, **kwargs):
         if not self.virtual_authenticator:
             raise ValueError(
                 "This function requires a virtual authenticator to be set."
             )
-        return func(self, *args, **kwargs)
+        func(self, *args, **kwargs)
     return wrapper
 
 class ChromiumDriver(RemoteWebDriver):
