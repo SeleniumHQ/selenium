@@ -61,6 +61,7 @@ class RequestConverter extends SimpleChannelInboundHandler<HttpObject> {
 
   private static final Logger LOG = Logger.getLogger(RequestConverter.class.getName());
   private static final ExecutorService EXECUTOR = Executors.newSingleThreadExecutor();
+  private static final ExecutorService SHUTDOWN_EXECUTOR = Executors.newSingleThreadExecutor();
   private static final List<io.netty.handler.codec.http.HttpMethod> supportedMethods =
     Arrays.asList(DELETE, GET, POST, OPTIONS);
   private volatile PipedOutputStream out;
@@ -130,6 +131,19 @@ class RequestConverter extends SimpleChannelInboundHandler<HttpObject> {
         }
       });
     }
+  }
+
+  @Override
+  public void channelInactive(ChannelHandlerContext ctx) throws Exception {
+    LOG.fine("Closing input pipe, channel became inactive.");
+    SHUTDOWN_EXECUTOR.submit(() -> {
+      try {
+        out.close();
+      } catch (IOException e) {
+        throw new UncheckedIOException(e);
+      }
+    });
+    super.channelInactive(ctx);
   }
 
   private HttpRequest createRequest(
