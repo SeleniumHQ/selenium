@@ -17,7 +17,6 @@
 
 package org.openqa.selenium.interactions;
 
-import static org.openqa.selenium.interactions.PointerInput.Kind.MOUSE;
 import static org.openqa.selenium.interactions.PointerInput.MouseButton.LEFT;
 import static org.openqa.selenium.interactions.PointerInput.MouseButton.RIGHT;
 
@@ -58,6 +57,7 @@ public class Actions {
   private final Map<InputSource, Sequence> sequences = new HashMap<>();
   private PointerInput activePointer;
   private KeyInput activeKeyboard;
+  private WheelInput activeWheel;
 
   // JSON-wire protocol
   private final Keyboard jsonKeyboard;
@@ -269,6 +269,10 @@ public class Actions {
     }
 
     return moveInTicks(target, 0, 0).tick(getActivePointer().createPointerUp(LEFT.asArg()));
+  }
+
+  public Actions scroll( int x, int y, int deltaX, int deltaY, Origin origin) {
+    return tick(getActiveWheel().createScroll(x, y, deltaX, deltaY, Duration.ofMillis(250), origin));
   }
 
   /**
@@ -574,6 +578,22 @@ public class Actions {
     return this;
   }
 
+  public Actions setActiveWheel(String name) {
+    InputSource inputSource = sequences.keySet()
+      .stream()
+      .filter(input -> Objects.equals(input.getName(), name))
+      .findFirst()
+      .orElse(null);
+
+    if (inputSource == null) {
+      this.activeWheel = new WheelInput(name);
+    } else {
+      this.activeWheel = (WheelInput) inputSource;
+    }
+
+    return this;
+  }
+
   public KeyInput getActiveKeyboard() {
     if (this.activeKeyboard == null) {
       setActiveKeyboard("default keyboard");
@@ -586,6 +606,13 @@ public class Actions {
       setActivePointer(PointerInput.Kind.MOUSE, "default mouse");
     }
     return this.activePointer;
+  }
+
+  public WheelInput getActiveWheel() {
+    if (this.activeWheel == null) {
+      setActiveWheel("default wheel");
+    }
+    return this.activeWheel;
   }
 
   /**
