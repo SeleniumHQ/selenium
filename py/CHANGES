@@ -1,3 +1,17 @@
+Selenium 4.1.4
+
+* Hook options class in safari driver (#10433)
+* Remove universal wheel, python 2 is unsupported (#10438)
+* Fix `tox -e docs` by pinning `Jinja2` (#10492)
+* Add support Chrome 100 and remove for Chrome 97
+* Removed desired capabilities from handshake code (#10494)
+* Invalid selector exceptions are is not a no such element exception
+* Do not convert tag name to css selector
+* Add debug logging for urllib response data (#10568)
+* Use monotonic clock for waits, fixes #10544 (#10550)
+* Adding Chrome DevTools 101 and removing 98
+* Add the ability to create sdist package of the python bindings
+
 Selenium 4.1.3
 
 * fix generated wheel asset (#10022)
