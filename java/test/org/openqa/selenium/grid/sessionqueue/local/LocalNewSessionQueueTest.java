@@ -28,8 +28,6 @@ import org.junit.runners.Parameterized;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.SessionNotCreatedException;
-import org.openqa.selenium.events.EventBus;
-import org.openqa.selenium.events.local.GuavaEventBus;
 import org.openqa.selenium.grid.data.CreateSessionResponse;
 import org.openqa.selenium.grid.data.DefaultSlotMatcher;
 import org.openqa.selenium.grid.data.RequestId;
@@ -128,10 +126,8 @@ public class LocalNewSessionQueueTest {
     // failures to happen.
 
     toReturn.add(() -> {
-      EventBus bus = new GuavaEventBus();
       LocalNewSessionQueue local = new LocalNewSessionQueue(
         tracer,
-        bus,
         new DefaultSlotMatcher(),
         Duration.ofSeconds(1),
         Duration.ofSeconds(Debug.isDebugging() ? 9999 : 5),
@@ -140,10 +136,8 @@ public class LocalNewSessionQueueTest {
     });
 
     toReturn.add(() -> {
-      EventBus bus = new GuavaEventBus();
       LocalNewSessionQueue local = new LocalNewSessionQueue(
         tracer,
-        bus,
         new DefaultSlotMatcher(),
         Duration.ofSeconds(1),
         Duration.ofSeconds(Debug.isDebugging() ? 9999 : 5),

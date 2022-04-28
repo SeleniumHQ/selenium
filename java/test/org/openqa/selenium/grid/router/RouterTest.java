@@ -86,6 +86,31 @@ public class RouterTest {
   private Router router;
   private Secret registrationSecret;
 
+  private static Map<String, Object> getStatus(Router router) {
+    HttpResponse response = router.execute(new HttpRequest(GET, "/status"));
+    Map<String, Object> status = Values.get(response, MAP_TYPE);
+    assertNotNull(status);
+    return status;
+  }
+
+  private static void waitUntilReady(Router router, Duration duration) {
+    waitUntilStatus(router, duration, Boolean.TRUE);
+  }
+
+  private static void waitUntilNotReady(Router router, Duration duration) {
+    waitUntilStatus(router, duration, Boolean.FALSE);
+  }
+
+  private static void waitUntilStatus(Router router, Duration duration, Boolean ready) {
+    new FluentWait<>(router)
+      .withTimeout(duration)
+      .pollingEvery(Duration.ofMillis(100))
+      .until(r -> {
+        Map<String, Object> status = getStatus(router);
+        return ready.equals(status.get("ready"));
+      });
+  }
+
   @Before
   public void setUp() {
     tracer = DefaultTestTracer.createTracer();
@@ -101,7 +126,6 @@ public class RouterTest {
 
     NewSessionQueue queue = new LocalNewSessionQueue(
       tracer,
-      bus,
       new DefaultSlotMatcher(),
       Duration.ofSeconds(2),
       Duration.ofSeconds(2),
@@ -253,30 +277,5 @@ public class RouterTest {
       .advanced()
       .healthCheck(() -> new HealthCheck.Result(availability.get(), "TL;DR"))
       .build();
-  }
-
-  private static Map<String, Object> getStatus(Router router) {
-    HttpResponse response = router.execute(new HttpRequest(GET, "/status"));
-    Map<String, Object> status = Values.get(response, MAP_TYPE);
-    assertNotNull(status);
-    return status;
-  }
-
-  private static void waitUntilReady(Router router, Duration duration) {
-    waitUntilStatus(router, duration, Boolean.TRUE);
-  }
-
-  private static void waitUntilNotReady(Router router, Duration duration) {
-    waitUntilStatus(router, duration, Boolean.FALSE);
-  }
-
-  private static void waitUntilStatus(Router router, Duration duration, Boolean ready) {
-    new FluentWait<>(router)
-      .withTimeout(duration)
-      .pollingEvery(Duration.ofMillis(100))
-      .until(r -> {
-        Map<String, Object> status = getStatus(router);
-        return ready.equals(status.get("ready"));
-      });
   }
 }

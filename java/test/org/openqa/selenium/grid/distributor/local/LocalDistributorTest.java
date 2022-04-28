@@ -17,14 +17,6 @@
 
 package org.openqa.selenium.grid.distributor.local;
 
-import static java.util.Collections.newSetFromMap;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.fail;
-import static org.openqa.selenium.grid.data.Availability.DRAINING;
-import static org.openqa.selenium.grid.data.Availability.UP;
-import static org.openqa.selenium.remote.Dialect.W3C;
-import static org.openqa.selenium.remote.http.HttpMethod.GET;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.Capabilities;
@@ -80,6 +72,14 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
+import static java.util.Collections.newSetFromMap;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
+import static org.openqa.selenium.grid.data.Availability.DRAINING;
+import static org.openqa.selenium.grid.data.Availability.UP;
+import static org.openqa.selenium.remote.Dialect.W3C;
+import static org.openqa.selenium.remote.http.HttpMethod.GET;
+
 public class LocalDistributorTest {
 
   private final Secret registrationSecret = new Secret("bavarian smoked");
@@ -109,7 +109,6 @@ public class LocalDistributorTest {
   public void testAddNodeToDistributor() {
     NewSessionQueue queue  = new LocalNewSessionQueue(
       tracer,
-      bus,
       new DefaultSlotMatcher(),
       Duration.ofSeconds(2),
       Duration.ofSeconds(2),
@@ -142,7 +141,6 @@ public class LocalDistributorTest {
   public void testRemoveNodeFromDistributor() {
     NewSessionQueue queue  = new LocalNewSessionQueue(
       tracer,
-      bus,
       new DefaultSlotMatcher(),
       Duration.ofSeconds(2),
       Duration.ofSeconds(2),
@@ -176,7 +174,6 @@ public class LocalDistributorTest {
   public void testAddSameNodeTwice() {
     NewSessionQueue queue  = new LocalNewSessionQueue(
       tracer,
-      bus,
       new DefaultSlotMatcher(),
       Duration.ofSeconds(2),
       Duration.ofSeconds(2),
@@ -205,7 +202,6 @@ public class LocalDistributorTest {
   public void shouldBeAbleToAddMultipleSessionsConcurrently() throws Exception {
     NewSessionQueue queue  = new LocalNewSessionQueue(
       tracer,
-      bus,
       new DefaultSlotMatcher(),
       Duration.ofSeconds(2),
       Duration.ofSeconds(2),
@@ -294,7 +290,6 @@ public class LocalDistributorTest {
   public void testDrainNodeFromDistributor() {
     NewSessionQueue queue  = new LocalNewSessionQueue(
       tracer,
-      bus,
       new DefaultSlotMatcher(),
       Duration.ofSeconds(2),
       Duration.ofSeconds(2),
@@ -335,7 +330,6 @@ public class LocalDistributorTest {
 
     NewSessionQueue queue  = new LocalNewSessionQueue(
       tracer,
-      bus,
       new DefaultSlotMatcher(),
       Duration.ofSeconds(2),
       Duration.ofSeconds(2),
@@ -361,7 +355,6 @@ public class LocalDistributorTest {
   public void slowStartingNodesShouldNotCauseReservationsToBeSerialized() {
     NewSessionQueue queue  = new LocalNewSessionQueue(
       tracer,
-      bus,
       new DefaultSlotMatcher(),
       Duration.ofSeconds(2),
       Duration.ofSeconds(2),
