@@ -57,7 +57,7 @@ module Selenium
             expect(opts.binary).to eq('/foo/bar')
             expect(opts.prefs[:foo]).to eq('bar')
             expect(opts.env['FOO']).to eq('bar')
-            expect(opts.instance_variable_get('@options')[:foo]).to eq('bar')
+            expect(opts.instance_variable_get(:@options)[:foo]).to eq('bar')
             expect(opts.profile).to eq(profile)
             expect(opts.log_level).to eq(:debug)
             expect(opts.browser_name).to eq('firefox')
@@ -142,12 +142,12 @@ module Selenium
         describe '#add_option' do
           it 'adds an option with ordered pairs' do
             options.add_option(:foo, 'bar')
-            expect(options.instance_variable_get('@options')[:foo]).to eq('bar')
+            expect(options.instance_variable_get(:@options)[:foo]).to eq('bar')
           end
 
           it 'adds an option with Hash' do
             options.add_option(foo: 'bar')
-            expect(options.instance_variable_get('@options')[:foo]).to eq('bar')
+            expect(options.instance_variable_get(:@options)[:foo]).to eq('bar')
           end
         end
 

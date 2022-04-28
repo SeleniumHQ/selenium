@@ -15,112 +15,75 @@
 // specific language governing permissions and limitations
 // under the License.
 
-import React, { ReactNode } from 'react'
-import { createStyles, Theme, withStyles } from '@material-ui/core'
-import { StyleRules } from '@material-ui/core/styles'
+import React, { useEffect, useState } from 'react'
 import RFB from '@novnc/novnc/core/rfb'
 import PasswordDialog from './PasswordDialog'
+import MuiAlert, { AlertProps } from '@mui/material/Alert'
+import Snackbar from '@mui/material/Snackbar'
 
-const useStyles = (theme: Theme): StyleRules => createStyles(
-  {
-    root: {
-      backgroundColor: theme.palette.secondary.main,
-      height: '100%',
-      paddingTop: theme.spacing(1),
-      width: '100%',
-      justifyContent: 'center'
+const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert (
+  props,
+  ref
+) {
+  return <MuiAlert elevation={6} ref={ref} variant='filled' {...props} />
+})
+
+function LiveView (props) {
+  let canvas: any = null
+
+  const [open, setOpen] = useState(false)
+  const [message, setMessage] = useState('')
+  const [rfb, setRfb] = useState<RFB>(null)
+  const [openErrorAlert, setOpenErrorAlert] = useState(false)
+  const [openSuccessAlert, setOpenSuccessAlert] = useState(false)
+
+  const handlePasswordDialog = (state: boolean): void => {
+    setOpen(state)
+  }
+
+  const disconnect = () => {
+    if (!rfb) {
+      return
+    }
+    rfb.disconnect()
+    setRfb(null)
+  }
+
+  const connect = () => {
+    disconnect()
+
+    if (!canvas) {
+      return
+    }
+
+    const newRfb = new RFB(canvas, props.url, {})
+    newRfb.scaleViewport = props.scaleViewport
+    newRfb.background = 'rgb(247,248,248)'
+    newRfb.addEventListener('credentialsrequired', handleCredentials)
+    newRfb.addEventListener('securityfailure', securityFailed)
+    newRfb.addEventListener('connect', connectedToServer)
+    setRfb(newRfb)
+  }
+
+  const registerChild = ref => {
+    canvas = ref
+  }
+
+  useEffect(() => {
+    connect()
+    return () => {
+      disconnect()
+    }
+  // eslint-disable-next-line
+  }, [])
+
+  useEffect(() => {
+    if (rfb) {
+      rfb.scaleViewport = props.scaleViewport
     }
   })
 
-interface LiveViewProps {
-  /**
-   * The URL for which to create a remote VNC connection.
-   * Should include the protocol, host, port, and path.
-   */
-  url?: string,
-  /**
-   * Customize the CSS styles of the canvas element with an object.
-   */
-  style?: object,
-  /**
-   * Specify if the remote session should be scaled locally so it fits its
-   * container.  When disabled it will be centered if the remote session is
-   * smaller than its container, or handled according to `clipViewport` if it
-   * is larger.  Default is false.
-   */
-  scaleViewport?: boolean,
-  /**
-   * Callback to close the Live View when the PasswordDialog is prompted and
-   * the user clicks 'Cancel'
-   */
-  onClose: () => void
-}
-
-interface PasswordDialogState {
-  open: boolean,
-  message: string
-}
-
-class LiveView extends React.Component<LiveViewProps, PasswordDialogState> {
-  rfb: any = null
-  canvas: any = null
-
-  constructor (props) {
-    super(props)
-    this.state = {
-      open: false,
-      message: ''
-    }
-  }
-
-  handlePasswordDialog = (state: boolean): void => {
-    this.setState({ open: state })
-  }
-
-  disconnect = () => {
-    if (!this.rfb) {
-      return
-    }
-
-    this.rfb.disconnect()
-    this.rfb = null
-  }
-
-  connect = () => {
-    this.disconnect()
-
-    if (!this.canvas) {
-      return
-    }
-
-    this.rfb = new RFB(this.canvas, this.props.url, {})
-    this.rfb.scaleViewport = this.props.scaleViewport
-    this.rfb.background = 'rgb(247,248,248)'
-    this.rfb.addEventListener('credentialsrequired', this.handleCredentials)
-    this.rfb.addEventListener('securityfailure', this.securityFailed)
-  }
-
-  registerChild = ref => {
-    this.canvas = ref
-  }
-
-  componentDidMount () {
-    this.connect()
-  }
-
-  componentWillUnmount () {
-    this.disconnect()
-  }
-
-  componentDidUpdate (prevProps) {
-    if (!this.rfb) {
-      return
-    }
-
-    this.rfb.scaleViewport = this.props.scaleViewport
-  }
-
-  securityFailed = (event: any) => {
+  const securityFailed = (event: any) => {
     let errorMessage
     if ('reason' in event.detail) {
       errorMessage =
@@ -128,64 +91,91 @@ class LiveView extends React.Component<LiveViewProps, PasswordDialogState> {
     } else {
       errorMessage = 'New connection has been rejected'
     }
-    this.setState({ message: errorMessage })
-    this.connect()
+    setMessage(errorMessage)
+    setOpenErrorAlert(true)
   }
 
-  handleCredentials = () => {
-    this.handlePasswordDialog(true)
+  const handleCredentials = () => {
+    handlePasswordDialog(true)
   }
 
-  handleCredentialsEntered = (password: string) => {
-    this.rfb.sendCredentials({ username: '', password: password })
+  const connectedToServer = () => {
+    setOpenSuccessAlert(true)
   }
 
-  handlePasswordDialogClose = () => {
-    this.props.onClose()
+  const handleCredentialsEntered = (password: string) => {
+    rfb.sendCredentials({ username: '', password: password })
+    setOpen(false)
   }
 
-  handleMouseEnter = () => {
-    if (!this.rfb) {
+  const handlePasswordDialogClose = () => {
+    props.onClose()
+  }
+
+  const handleMouseEnter = () => {
+    if (!rfb) {
       return
     }
-
-    this.rfb.focus()
+    rfb.focus()
   }
 
-  handleMouseLeave = () => {
-    if (!this.rfb) {
+  const handleMouseLeave = () => {
+    if (!rfb) {
       return
     }
-
-    this.rfb.blur()
+    rfb.blur()
   }
 
-  render (): ReactNode {
-    const { open, message } = this.state
+  const handleClose = (event?: React.SyntheticEvent | Event,
+    reason?: string) => {
+    if (reason === 'clickaway') {
+      return
+    }
+    setOpenErrorAlert(false)
+    props.onClose()
+  }
 
-    return (
-      <div
-        style={
-          {
-            width: '100%',
-            height: '100%'
-          }
+  return (
+    <div
+      style={
+        {
+          width: '100%',
+          height: '100%'
         }
-        ref={this.registerChild}
-        onMouseEnter={this.handleMouseEnter}
-        onMouseLeave={this.handleMouseLeave}
+      }
+      ref={registerChild}
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
+    >
+      <PasswordDialog
+        title='LiveView (VNC) Password'
+        open={open}
+        openDialog={handlePasswordDialog}
+        onConfirm={handleCredentialsEntered}
+        onCancel={handlePasswordDialogClose}
+      />
+      <Snackbar
+        open={openErrorAlert}
+        anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+        autoHideDuration={6000}
+        onClose={handleClose}
       >
-        <PasswordDialog title={'LiveView (VNC) Password'}
-                        open={open}
-                        setOpen={this.handlePasswordDialog}
-                        onConfirm={this.handleCredentialsEntered}
-                        onCancel={this.handlePasswordDialogClose}
-        >
+        <Alert severity='error' sx={{ width: '100%' }}>
           {message}
-        </PasswordDialog>
-      </div>
-    )
-  }
+        </Alert>
+      </Snackbar>
+      <Snackbar
+        open={openSuccessAlert}
+        anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+        autoHideDuration={4000}
+        onClose={() => setOpenSuccessAlert(false)}
+      >
+        <Alert severity='success' sx={{ width: '100%' }}>
+          Connected successfully!
+        </Alert>
+      </Snackbar>
+    </div>
+  )
 }
 
-export default withStyles(useStyles)(LiveView)
+export default LiveView

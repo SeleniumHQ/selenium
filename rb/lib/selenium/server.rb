@@ -113,18 +113,16 @@ module Selenium
       # @api private
 
       def available_assets
-        @available_assets ||= begin
-          net_http_start('api.github.com') do |http|
-            json = http.get('/repos/seleniumhq/selenium/releases').body
-            all_assets = JSON.parse(json).map { |release| release['assets'] }.flatten
-            server_assets = all_assets.select { |asset| asset['name'].match(/selenium-server-(\d+\.\d+\.\d+)\.jar/) }
-            server_assets.each_with_object({}) { |asset, hash| hash[asset.delete('name')] = asset }
-          end
+        @available_assets ||= net_http_start('api.github.com') do |http|
+          json = http.get('/repos/seleniumhq/selenium/releases').body
+          all_assets = JSON.parse(json).map { |release| release['assets'] }.flatten
+          server_assets = all_assets.select { |asset| asset['name'].match(/selenium-server-(\d+\.\d+\.\d+)\.jar/) }
+          server_assets.each_with_object({}) { |asset, hash| hash[asset.delete('name')] = asset }
         end
       end
 
       def net_http_start(address, &block)
-        http_proxy = ENV['http_proxy'] || ENV['HTTP_PROXY']
+        http_proxy = ENV.fetch('http_proxy', nil) || ENV.fetch('HTTP_PROXY', nil)
         if http_proxy
           http_proxy = "http://#{http_proxy}" unless http_proxy.start_with?('http://')
           uri = URI.parse(http_proxy)

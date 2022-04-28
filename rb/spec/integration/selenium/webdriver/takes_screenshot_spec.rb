@@ -82,12 +82,12 @@ module Selenium
 
         it 'takes viewport screenshot by default' do
           screenshot = driver.save_screenshot path
-          expect(IO.read(screenshot)[0x10..0x18].unpack('NN').last).to be < 2600
+          expect(File.read(screenshot)[0x10..0x18].unpack('NN').last).to be < 2600
         end
 
         it 'takes full page screenshot', exclusive: {browser: :firefox} do
           screenshot = driver.save_screenshot path, full_page: true
-          expect(IO.read(screenshot)[0x10..0x18].unpack('NN').last).to be > 2600
+          expect(File.read(screenshot)[0x10..0x18].unpack('NN').last).to be > 2600
         end
 
         it 'does not take full page screenshot', exclude: {browser: :firefox} do

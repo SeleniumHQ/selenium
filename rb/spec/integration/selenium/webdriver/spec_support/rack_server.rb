@@ -30,7 +30,7 @@ module Selenium
           @path = path
           @app  = TestApp.new(path)
 
-          @host = ENV['localhost'] || 'localhost'
+          @host = ENV.fetch('localhost', 'localhost')
           @port = Integer(port || PortProber.above(8180))
         end
 

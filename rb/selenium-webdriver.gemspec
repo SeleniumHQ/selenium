@@ -24,11 +24,12 @@ Gem::Specification.new do |s|
   s.homepage = 'https://selenium.dev'
   s.metadata = {
     'changelog_uri' => 'https://github.com/SeleniumHQ/selenium/blob/trunk/rb/CHANGES',
-    'source_code_uri' => 'https://github.com/SeleniumHQ/selenium/tree/trunk/rb'
+    'source_code_uri' => 'https://github.com/SeleniumHQ/selenium/tree/trunk/rb',
+    'rubygems_mfa_required' => 'true'
   }
 
   s.required_rubygems_version = Gem::Requirement.new('> 1.3.1') if s.respond_to? :required_rubygems_version=
-  s.required_ruby_version = Gem::Requirement.new('>= 2.6')
+  s.required_ruby_version = Gem::Requirement.new('>= 2.7')
 
   s.files = [
     'CHANGES',
@@ -54,8 +55,9 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'rack', ['~> 2.0']
   s.add_development_dependency 'rake'
   s.add_development_dependency 'rspec', ['~> 3.0']
-  s.add_development_dependency 'rubocop', ['~> 1.8.0']
+  s.add_development_dependency 'rubocop', ['~> 1.22']
   s.add_development_dependency 'rubocop-performance'
+  s.add_development_dependency 'rubocop-rake'
   s.add_development_dependency 'rubocop-rspec'
   s.add_development_dependency 'webmock', ['~> 3.5']
   s.add_development_dependency 'webrick', ['~> 1.7']

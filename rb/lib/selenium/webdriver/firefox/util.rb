@@ -27,7 +27,7 @@ module Selenium
         def app_data_path
           case Platform.os
           when :windows
-            "#{ENV['APPDATA']}\\Mozilla\\Firefox"
+            "#{ENV.fetch('APPDATA')}\\Mozilla\\Firefox"
           when :macosx
             "#{Platform.home}/Library/Application Support/Firefox"
           when :unix, :linux

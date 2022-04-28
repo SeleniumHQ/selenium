@@ -48,7 +48,7 @@ module Selenium
         def disposition
           if !skipping_guard.nil?
             [:skip, skipping_guard.message]
-          elsif !pending_guard.nil? && ENV['SKIP_PENDING']
+          elsif !pending_guard.nil? && ENV.fetch('SKIP_PENDING', nil)
             [:skip, pending_guard.message]
           elsif !pending_guard.nil?
             [:pending, pending_guard.message]

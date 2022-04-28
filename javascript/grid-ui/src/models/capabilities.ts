@@ -16,11 +16,11 @@
 // under the License.
 
 interface Capabilities {
-  browserName: string;
-  browserVersion: string;
-  platform: string;
-  platformName: string;
-  version: string;
+  browserName: string
+  browserVersion: string
+  platform: string
+  platformName: string
+  version: string
 }
 
 export default Capabilities

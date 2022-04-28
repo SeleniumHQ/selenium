@@ -44,7 +44,7 @@ public class GridUiRoute implements Routable {
       ResourceHandler uiHandler = new ResourceHandler(new ClassPathResource(uiRoot, GRID_RESOURCE));
       HttpResponse uiRedirect = new HttpResponse()
         .setStatus(HTTP_MOVED_TEMP)
-        .addHeader("Location", "/ui/index.html");
+        .addHeader("Location", "/ui");
       routes = Route.combine(
         get("/").to(() -> req -> uiRedirect),
         get("/grid/console").to(() -> req -> uiRedirect),

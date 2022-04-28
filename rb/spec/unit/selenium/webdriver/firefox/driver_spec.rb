@@ -28,7 +28,7 @@ module Selenium
         let(:valid_response) do
           {status: 200,
            body: {value: {sessionId: 0, capabilities: Remote::Capabilities.firefox}}.to_json,
-           headers: {"content_type": "application/json"}}
+           headers: {content_type: "application/json"}}
         end
 
         def expect_request(body: nil, endpoint: nil)
@@ -113,7 +113,7 @@ module Selenium
 
         it 'accepts provided Options as sole parameter' do
           opts = {invalid: 'foobar', args: ['-f']}
-          expect_request(body: {capabilities: {alwaysMatch: {"browserName": "firefox", "moz:firefoxOptions": opts}}})
+          expect_request(body: {capabilities: {alwaysMatch: {browserName: "firefox", 'moz:firefoxOptions': opts}}})
 
           expect {
             expect { Driver.new(options: Options.new(**opts)) }.to have_deprecated(:browser_options)
@@ -123,9 +123,9 @@ module Selenium
         it 'accepts combination of Options and Capabilities' do
           caps = Remote::Capabilities.firefox(invalid: 'foobar')
           browser_opts = {args: ['-f']}
-          expect_request(body: {capabilities: {alwaysMatch: {"browserName": "firefox",
-                                                             "invalid": "foobar",
-                                                             "moz:firefoxOptions": browser_opts}}})
+          expect_request(body: {capabilities: {alwaysMatch: {browserName: "firefox",
+                                                             invalid: "foobar",
+                                                             'moz:firefoxOptions': browser_opts}}})
 
           expect {
             expect {
@@ -203,7 +203,7 @@ module Selenium
             it 'with Options instance' do
               options = Options.new(args: ['-f'])
               expect_request(body: {capabilities: {alwaysMatch: {browserName: "firefox",
-                                                                 'moz:firefoxOptions': {'args': ['-f']}}}})
+                                                                 'moz:firefoxOptions': {args: ['-f']}}}})
 
               expect { Driver.new(capabilities: [options]) }.not_to raise_exception
             end
@@ -226,7 +226,7 @@ module Selenium
               capabilities = Remote::Capabilities.new(browser_name: 'firefox', invalid: 'foobar')
               options = Options.new(args: ['-f'])
               expect_request(body: {capabilities: {alwaysMatch: {browserName: "firefox", invalid: 'foobar',
-                                                                 'moz:firefoxOptions': {'args': ['-f']},
+                                                                 'moz:firefoxOptions': {args: ['-f']},
                                                                  'company:key': 'value'}}})
 
               expect { Driver.new(capabilities: [capabilities, options, as_json_object.new]) }.not_to raise_exception

@@ -44,8 +44,8 @@ module Selenium
 
           FileUtils.mkdir_p(@output_dir)
 
-          browser_protocol[:domains].each(&method(:process_domain))
-          js_protocol[:domains].each(&method(:process_domain))
+          browser_protocol[:domains].each { |domain| process_domain(domain) }
+          js_protocol[:domains].each { |domain| process_domain(domain) }
           require_file
         end
 
@@ -79,7 +79,7 @@ module Selenium
         end
 
         def remove_empty_lines(string)
-          string.split("\n").reject { |l| l =~ /^\s+$/ }.join("\n")
+          string.split("\n").grep_v(/^\s+$/).join("\n")
         end
 
         def require_file
@@ -88,7 +88,7 @@ module Selenium
           # rubocop:enable Lint/InterpolationCheck
 
           require_all = "Dir.glob(\"#{dynamic_location}/#{@version}/*\", &method(:require))"
-          File.open(@loader_path, 'w') { |file| file.write(require_all) }
+          File.write(@loader_path, require_all)
         end
       end
     end

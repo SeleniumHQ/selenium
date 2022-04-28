@@ -28,7 +28,7 @@ module Selenium
         let(:valid_response) do
           {status: 200,
            body: {value: {sessionId: 0, capabilities: Remote::Capabilities.safari}}.to_json,
-           headers: {"content_type": "application/json"}}
+           headers: {content_type: "application/json"}}
         end
 
         def expect_request(body: nil, endpoint: nil)
@@ -120,7 +120,7 @@ module Selenium
         it 'accepts provided Options as sole parameter' do
           opts = {automatic_inspection: true}
           expect_request(body: {capabilities: {alwaysMatch: {browserName: "safari",
-                                                             "safari:automaticInspection": true}}})
+                                                             'safari:automaticInspection': true}}})
 
           expect {
             expect { Driver.new(options: Options.new(**opts)) }.to have_deprecated(:browser_options)
@@ -132,7 +132,7 @@ module Selenium
           browser_opts = {automatic_inspection: true}
           expect_request(body: {capabilities: {alwaysMatch: {browserName: "safari",
                                                              invalid: "foobar",
-                                                             "safari:automaticInspection": true}}})
+                                                             'safari:automaticInspection': true}}})
 
           expect {
             expect {
