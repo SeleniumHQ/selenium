@@ -10,8 +10,6 @@ import org.openqa.selenium.concurrent.GuardedRunnable;
 import org.openqa.selenium.events.EventBus;
 import org.openqa.selenium.grid.config.Config;
 import org.openqa.selenium.grid.data.CreateSessionResponse;
-import org.openqa.selenium.grid.data.NewSessionErrorResponse;
-import org.openqa.selenium.grid.data.NewSessionRejectedEvent;
 import org.openqa.selenium.grid.data.RequestId;
 import org.openqa.selenium.grid.data.SessionRequest;
 import org.openqa.selenium.grid.data.SessionRequestCapability;
@@ -68,10 +66,8 @@ import static org.openqa.selenium.concurrent.ExecutorServices.shutdownGracefully
  *   <li>User adds an item on to the queue using {@link #addToQueue(SessionRequest)}. This
  *       will block until the request completes in some way.
  *   <li>If the session request is completed, then {@link #complete(RequestId, Either)} must
- *       be called. This will not only ensure that {@link #addToQueue(SessionRequest)}
- *       returns, but will also fire a {@link NewSessionRejectedEvent} if the session was
- *       rejected. Positive completions of events are assumed to be notified on the event bus
- *       by other listeners.
+ *       be called. This will ensure that {@link #addToQueue(SessionRequest)}
+ *       returns.
  *   <li>If the request cannot be handled right now, call
  *       {@link #retryAddToQueue(SessionRequest)} to return the session request to the front
  *       of the queue.
@@ -86,7 +82,6 @@ import static org.openqa.selenium.concurrent.ExecutorServices.shutdownGracefully
 public class LocalNewSessionQueue extends NewSessionQueue implements Closeable {
 
   private static final String NAME = "Local New Session Queue";
-  private final EventBus bus;
   private final SlotMatcher slotMatcher;
   private final Duration requestTimeout;
   private final Map<RequestId, Data> requests;
@@ -110,7 +105,7 @@ public class LocalNewSessionQueue extends NewSessionQueue implements Closeable {
     super(tracer, registrationSecret);
 
     this.slotMatcher = Require.nonNull("Slot matcher", slotMatcher);
-    this.bus = Require.nonNull("Event bus", bus);
+    Require.nonNull("Event bus", bus);
     Require.nonNegative("Retry period", retryPeriod);
 
     this.requestTimeout = Require.positive("Request timeout", requestTimeout);
@@ -342,9 +337,6 @@ public class LocalNewSessionQueue extends NewSessionQueue implements Closeable {
         writeLock.unlock();
       }
 
-      if (result.isLeft()) {
-        bus.fire(new NewSessionRejectedEvent(new NewSessionErrorResponse(reqId, result.left().getMessage())));
-      }
       data.setResult(result);
     }
   }
@@ -357,11 +349,9 @@ public class LocalNewSessionQueue extends NewSessionQueue implements Closeable {
     try {
       int size = queue.size();
       queue.clear();
-      requests.forEach((reqId, data) -> {
-        data.setResult(Either.left(new SessionNotCreatedException("Request queue was cleared")));
-        bus.fire(new NewSessionRejectedEvent(
-          new NewSessionErrorResponse(reqId, "New session queue was forcibly cleared")));
-      });
+      requests.forEach(
+        (reqId, data) ->
+          data.setResult(Either.left(new SessionNotCreatedException("Request queue was cleared"))));
       requests.clear();
       return size;
     } finally {

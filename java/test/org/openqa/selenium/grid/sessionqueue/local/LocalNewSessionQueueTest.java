@@ -32,7 +32,6 @@ import org.openqa.selenium.events.EventBus;
 import org.openqa.selenium.events.local.GuavaEventBus;
 import org.openqa.selenium.grid.data.CreateSessionResponse;
 import org.openqa.selenium.grid.data.DefaultSlotMatcher;
-import org.openqa.selenium.grid.data.NewSessionRejectedEvent;
 import org.openqa.selenium.grid.data.RequestId;
 import org.openqa.selenium.grid.data.Session;
 import org.openqa.selenium.grid.data.SessionRequest;
@@ -64,7 +63,6 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.Callable;
-import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -72,7 +70,6 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
@@ -103,12 +100,10 @@ public class LocalNewSessionQueueTest {
   public static Timeout classTimeout = new Timeout(60, SECONDS);
   private final NewSessionQueue queue;
   private final LocalNewSessionQueue localQueue;
-  private final EventBus bus;
   private final SessionRequest sessionRequest;
 
   public LocalNewSessionQueueTest(Supplier<TestData> supplier) {
     TestData testData = supplier.get();
-    this.bus = testData.bus;
     this.queue = testData.queue;
     this.localQueue = testData.localQueue;
 
@@ -141,7 +136,7 @@ public class LocalNewSessionQueueTest {
         Duration.ofSeconds(1),
         Duration.ofSeconds(Debug.isDebugging() ? 9999 : 5),
         REGISTRATION_SECRET);
-      return new TestData(bus, local, local);
+      return new TestData(local, local);
     });
 
     toReturn.add(() -> {
@@ -155,7 +150,7 @@ public class LocalNewSessionQueueTest {
         REGISTRATION_SECRET);
 
       HttpClient client = new PassthroughHttpClient(local);
-      return new TestData(bus, local, new RemoteNewSessionQueue(tracer, client, REGISTRATION_SECRET));
+      return new TestData(local, new RemoteNewSessionQueue(tracer, client, REGISTRATION_SECRET));
     });
 
     return toReturn;
@@ -257,18 +252,8 @@ public class LocalNewSessionQueueTest {
   }
 
   @Test
-  public void shouldBeClearQueueAndFireRejectedEvent() throws InterruptedException {
-    AtomicBoolean result = new AtomicBoolean(false);
-
+  public void queueCountShouldBeReturnedWhenQueueIsCleared() {
     RequestId requestId = sessionRequest.getRequestId();
-    CountDownLatch latch = new CountDownLatch(1);
-    bus.addListener(
-        NewSessionRejectedEvent.listener(
-            response -> {
-              result.set(response.getRequestId().equals(requestId));
-              latch.countDown();
-            }));
-
     localQueue.injectIntoQueue(sessionRequest);
     queue.remove(requestId);
 
@@ -276,8 +261,6 @@ public class LocalNewSessionQueueTest {
 
     int count = queue.clearQueue();
 
-    assertThat(latch.await(2, SECONDS)).isTrue();
-    assertThat(result.get()).isTrue();
     assertEquals(count, 1);
     assertFalse(queue.remove(requestId).isPresent());
   }
@@ -443,42 +426,9 @@ public class LocalNewSessionQueueTest {
       Map.of(),
       Map.of());
 
-    AtomicInteger count = new AtomicInteger();
-
-    bus.addListener(NewSessionRejectedEvent.listener(reqId -> {
-      count.incrementAndGet();
-    }));
-
     HttpResponse httpResponse = queue.addToQueue(request);
 
-    assertEquals(1, count.get());
     assertEquals(HTTP_INTERNAL_ERROR, httpResponse.getStatus());
-  }
-
-  @Test(timeout = 10000)
-  public void shouldBeAbleToTimeoutARequestOnRemove() throws InterruptedException {
-    AtomicReference<RequestId> isPresent = new AtomicReference<>();
-    CountDownLatch latch = new CountDownLatch(1);
-    bus.addListener(
-        NewSessionRejectedEvent.listener(
-            response -> {
-              isPresent.set(response.getRequestId());
-              latch.countDown();
-            }));
-
-    SessionRequest sessionRequest = new SessionRequest(
-      new RequestId(UUID.randomUUID()),
-      LONG_AGO,
-      Set.of(W3C),
-      Set.of(CAPS),
-      Map.of(),
-      Map.of());
-    localQueue.injectIntoQueue(sessionRequest);
-
-    queue.remove(sessionRequest.getRequestId());
-
-    assertThat(latch.await(4, SECONDS)).isTrue();
-    assertThat(isPresent.get()).isEqualTo(sessionRequest.getRequestId());
   }
 
   @Test(timeout = 5000)
@@ -574,12 +524,10 @@ public class LocalNewSessionQueueTest {
 
   static class TestData {
 
-    public final EventBus bus;
     public final LocalNewSessionQueue localQueue;
     public final NewSessionQueue queue;
 
-    public TestData(EventBus bus, LocalNewSessionQueue localQueue, NewSessionQueue queue) {
-      this.bus = bus;
+    public TestData(LocalNewSessionQueue localQueue, NewSessionQueue queue) {
       this.localQueue = localQueue;
       this.queue = queue;
     }
