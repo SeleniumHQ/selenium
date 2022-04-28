@@ -90,7 +90,7 @@ public class GraphqlHandlerTest {
   private Distributor distributor;
   private NewSessionQueue queue;
   private Tracer tracer;
-  private EventBus events;
+  private EventBus bus;
   private ImmutableCapabilities caps;
   private ImmutableCapabilities stereotype;
   private SessionRequest sessionRequest;
@@ -102,10 +102,10 @@ public class GraphqlHandlerTest {
   @Before
   public void setupGrid() {
     tracer = DefaultTestTracer.createTracer();
-    events = new GuavaEventBus();
+    bus = new GuavaEventBus();
     HttpClient.Factory clientFactory = HttpClient.Factory.createDefault();
 
-    sessions = new LocalSessionMap(tracer, events);
+    sessions = new LocalSessionMap(tracer, bus);
     stereotype = new ImmutableCapabilities("browserName", "cheese");
     caps = new ImmutableCapabilities("browserName", "cheese");
     sessionRequest = new SessionRequest(
@@ -118,7 +118,6 @@ public class GraphqlHandlerTest {
 
     queue = new LocalNewSessionQueue(
       tracer,
-      events,
       new DefaultSlotMatcher(),
       Duration.ofSeconds(2),
       Duration.ofSeconds(2),
@@ -126,7 +125,7 @@ public class GraphqlHandlerTest {
 
     distributor = new LocalDistributor(
       tracer,
-      events,
+      bus,
       clientFactory,
       sessions,
       queue,
@@ -251,7 +250,7 @@ public class GraphqlHandlerTest {
   public void shouldBeAbleToGetUrlsOfAllNodes() throws URISyntaxException {
     Capabilities stereotype = new ImmutableCapabilities("cheese", "stilton");
     String nodeUri = "http://localhost:5556";
-    Node node = LocalNode.builder(tracer, events, new URI(nodeUri), publicUri, registrationSecret)
+    Node node = LocalNode.builder(tracer, bus, new URI(nodeUri), publicUri, registrationSecret)
       .add(stereotype, new SessionFactory() {
         @Override
         public Either<WebDriverException, ActiveSession> apply(
@@ -283,7 +282,7 @@ public class GraphqlHandlerTest {
     String nodeUrl = "http://localhost:5556";
     URI nodeUri = new URI(nodeUrl);
 
-    Node node = LocalNode.builder(tracer, events, nodeUri, publicUri, registrationSecret)
+    Node node = LocalNode.builder(tracer, bus, nodeUri, publicUri, registrationSecret)
       .add(caps, new TestSessionFactory((id, caps) -> new org.openqa.selenium.grid.data.Session(
         id,
         nodeUri,
@@ -293,7 +292,7 @@ public class GraphqlHandlerTest {
 
     distributor = new LocalDistributor(
       tracer,
-      events,
+      bus,
       new PassthroughHttpClient.Factory(node),
       sessions,
       queue,
@@ -330,7 +329,7 @@ public class GraphqlHandlerTest {
     String nodeUrl = "http://localhost:5556";
     URI nodeUri = new URI(nodeUrl);
 
-    Node node = LocalNode.builder(tracer, events, nodeUri, publicUri, registrationSecret)
+    Node node = LocalNode.builder(tracer, bus, nodeUri, publicUri, registrationSecret)
       .add(caps, new TestSessionFactory((id, caps) -> new org.openqa.selenium.grid.data.Session(
         id,
         nodeUri,
@@ -340,7 +339,7 @@ public class GraphqlHandlerTest {
 
     distributor = new LocalDistributor(
       tracer,
-      events,
+      bus,
       new PassthroughHttpClient.Factory(node),
       sessions,
       queue,
@@ -397,7 +396,7 @@ public class GraphqlHandlerTest {
     String nodeUrl = "http://localhost:5556";
     URI nodeUri = new URI(nodeUrl);
 
-    Node node = LocalNode.builder(tracer, events, nodeUri, publicUri, registrationSecret)
+    Node node = LocalNode.builder(tracer, bus, nodeUri, publicUri, registrationSecret)
       .add(caps, new TestSessionFactory((id, caps) -> new org.openqa.selenium.grid.data.Session(
         id,
         nodeUri,
@@ -407,7 +406,7 @@ public class GraphqlHandlerTest {
 
     distributor = new LocalDistributor(
       tracer,
-      events,
+      bus,
       new PassthroughHttpClient.Factory(node),
       sessions,
       queue,
@@ -462,7 +461,7 @@ public class GraphqlHandlerTest {
     String nodeUrl = "http://localhost:5556";
     URI nodeUri = new URI(nodeUrl);
 
-    Node node = LocalNode.builder(tracer, events, nodeUri, publicUri, registrationSecret)
+    Node node = LocalNode.builder(tracer, bus, nodeUri, publicUri, registrationSecret)
       .add(caps, new TestSessionFactory((id, caps) -> new org.openqa.selenium.grid.data.Session(
         id,
         nodeUri,
@@ -472,7 +471,7 @@ public class GraphqlHandlerTest {
 
     distributor = new LocalDistributor(
       tracer,
-      events,
+      bus,
       new PassthroughHttpClient.Factory(node),
       sessions,
       queue,
@@ -533,7 +532,7 @@ public class GraphqlHandlerTest {
     String nodeUrl = "http://localhost:5556";
     URI nodeUri = new URI(nodeUrl);
 
-    Node node = LocalNode.builder(tracer, events, nodeUri, publicUri, registrationSecret)
+    Node node = LocalNode.builder(tracer, bus, nodeUri, publicUri, registrationSecret)
       .add(caps, new TestSessionFactory((id, caps) -> new org.openqa.selenium.grid.data.Session(
         id,
         nodeUri,
@@ -543,7 +542,7 @@ public class GraphqlHandlerTest {
 
     distributor = new LocalDistributor(
       tracer,
-      events,
+      bus,
       new PassthroughHttpClient.Factory(node),
       sessions,
       queue,
@@ -583,7 +582,7 @@ public class GraphqlHandlerTest {
     String nodeUrl = "http://localhost:5556";
     URI nodeUri = new URI(nodeUrl);
 
-    Node node = LocalNode.builder(tracer, events, nodeUri, publicUri, registrationSecret)
+    Node node = LocalNode.builder(tracer, bus, nodeUri, publicUri, registrationSecret)
       .add(caps, new TestSessionFactory((id, caps) -> new org.openqa.selenium.grid.data.Session(
         id,
         nodeUri,
@@ -613,7 +612,7 @@ public class GraphqlHandlerTest {
     String nodeUrl = "http://localhost:5556";
     URI nodeUri = new URI(nodeUrl);
 
-    Node node = LocalNode.builder(tracer, events, nodeUri, publicUri, registrationSecret)
+    Node node = LocalNode.builder(tracer, bus, nodeUri, publicUri, registrationSecret)
       .add(caps, new TestSessionFactory((id, caps) -> new org.openqa.selenium.grid.data.Session(
         id,
         nodeUri,

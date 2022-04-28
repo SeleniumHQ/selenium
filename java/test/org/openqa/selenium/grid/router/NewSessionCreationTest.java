@@ -17,12 +17,6 @@
 
 package org.openqa.selenium.grid.router;
 
-import static java.net.HttpURLConnection.HTTP_INTERNAL_ERROR;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.openqa.selenium.json.Json.JSON_UTF_8;
-import static org.openqa.selenium.remote.http.Contents.asJson;
-import static org.openqa.selenium.remote.http.HttpMethod.POST;
-
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
@@ -71,10 +65,16 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import static java.net.HttpURLConnection.HTTP_INTERNAL_ERROR;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.openqa.selenium.json.Json.JSON_UTF_8;
+import static org.openqa.selenium.remote.http.Contents.asJson;
+import static org.openqa.selenium.remote.http.HttpMethod.POST;
+
 public class NewSessionCreationTest {
 
   private Tracer tracer;
-  private EventBus events;
+  private EventBus bus;
   private HttpClient.Factory clientFactory;
   private Secret registrationSecret;
   private Server<?> server;
@@ -82,7 +82,7 @@ public class NewSessionCreationTest {
   @Before
   public void setup() {
     tracer = DefaultTestTracer.createTracer();
-    events = new GuavaEventBus();
+    bus = new GuavaEventBus();
     clientFactory = HttpClient.Factory.createDefault();
     registrationSecret = new Secret("hereford hop");
   }
@@ -94,10 +94,9 @@ public class NewSessionCreationTest {
 
   @Test
   public void ensureJsCannotCreateANewSession() throws URISyntaxException {
-    SessionMap sessions = new LocalSessionMap(tracer, events);
+    SessionMap sessions = new LocalSessionMap(tracer, bus);
     NewSessionQueue queue = new LocalNewSessionQueue(
       tracer,
-      events,
       new DefaultSlotMatcher(),
       Duration.ofSeconds(2),
       Duration.ofSeconds(60),
@@ -105,7 +104,7 @@ public class NewSessionCreationTest {
 
     Distributor distributor = new LocalDistributor(
       tracer,
-      events,
+      bus,
       clientFactory,
       sessions,
       queue,
@@ -126,11 +125,11 @@ public class NewSessionCreationTest {
 
     URI uri = server.getUrl().toURI();
     Node node = LocalNode.builder(
-      tracer,
-      events,
-      uri,
-      uri,
-      registrationSecret)
+        tracer,
+        bus,
+        uri,
+        uri,
+        registrationSecret)
       .add(
         Browser.detect().getCapabilities(),
         new TestSessionFactory(
@@ -170,11 +169,10 @@ public class NewSessionCreationTest {
     URI nodeUri = new URI("http://localhost:" + nodePort);
     CombinedHandler handler = new CombinedHandler();
 
-    SessionMap sessions = new LocalSessionMap(tracer, events);
+    SessionMap sessions = new LocalSessionMap(tracer, bus);
     handler.addHandler(sessions);
     NewSessionQueue queue = new LocalNewSessionQueue(
       tracer,
-      events,
       new DefaultSlotMatcher(),
       Duration.ofSeconds(2),
       Duration.ofSeconds(10),
@@ -199,13 +197,13 @@ public class NewSessionCreationTest {
       }
     });
 
-    LocalNode localNode = LocalNode.builder(tracer, events, nodeUri, nodeUri, registrationSecret)
+    LocalNode localNode = LocalNode.builder(tracer, bus, nodeUri, nodeUri, registrationSecret)
       .add(capabilities, sessionFactory).build();
     handler.addHandler(localNode);
 
     Distributor distributor = new LocalDistributor(
       tracer,
-      events,
+      bus,
       new PassthroughHttpClient.Factory(handler),
       sessions,
       queue,
@@ -247,11 +245,10 @@ public class NewSessionCreationTest {
     URI nodeUri = new URI("http://localhost:" + nodePort);
     CombinedHandler handler = new CombinedHandler();
 
-    SessionMap sessions = new LocalSessionMap(tracer, events);
+    SessionMap sessions = new LocalSessionMap(tracer, bus);
     handler.addHandler(sessions);
     NewSessionQueue queue = new LocalNewSessionQueue(
       tracer,
-      events,
       new DefaultSlotMatcher(),
       Duration.ofSeconds(5),
       Duration.ofSeconds(60),
@@ -267,13 +264,13 @@ public class NewSessionCreationTest {
         Instant.now())
     );
 
-    LocalNode localNode = LocalNode.builder(tracer, events, nodeUri, nodeUri, registrationSecret)
+    LocalNode localNode = LocalNode.builder(tracer, bus, nodeUri, nodeUri, registrationSecret)
       .add(capabilities, sessionFactory).build();
     handler.addHandler(localNode);
 
     Distributor distributor = new LocalDistributor(
       tracer,
-      events,
+      bus,
       new PassthroughHttpClient.Factory(handler),
       sessions,
       queue,

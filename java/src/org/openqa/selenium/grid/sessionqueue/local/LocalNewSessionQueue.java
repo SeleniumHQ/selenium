@@ -7,7 +7,6 @@ import com.google.common.collect.ImmutableSet;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.concurrent.GuardedRunnable;
-import org.openqa.selenium.events.EventBus;
 import org.openqa.selenium.grid.config.Config;
 import org.openqa.selenium.grid.data.CreateSessionResponse;
 import org.openqa.selenium.grid.data.RequestId;
@@ -22,7 +21,6 @@ import org.openqa.selenium.grid.jmx.ManagedService;
 import org.openqa.selenium.grid.log.LoggingOptions;
 import org.openqa.selenium.grid.security.Secret;
 import org.openqa.selenium.grid.security.SecretOptions;
-import org.openqa.selenium.grid.server.EventBusOptions;
 import org.openqa.selenium.grid.sessionqueue.NewSessionQueue;
 import org.openqa.selenium.grid.sessionqueue.config.NewSessionQueueOptions;
 import org.openqa.selenium.internal.Either;
@@ -97,7 +95,6 @@ public class LocalNewSessionQueue extends NewSessionQueue implements Closeable {
 
   public LocalNewSessionQueue(
     Tracer tracer,
-    EventBus bus,
     SlotMatcher slotMatcher,
     Duration retryPeriod,
     Duration requestTimeout,
@@ -105,7 +102,6 @@ public class LocalNewSessionQueue extends NewSessionQueue implements Closeable {
     super(tracer, registrationSecret);
 
     this.slotMatcher = Require.nonNull("Slot matcher", slotMatcher);
-    Require.nonNull("Event bus", bus);
     Require.nonNegative("Retry period", retryPeriod);
 
     this.requestTimeout = Require.positive("Request timeout", requestTimeout);
@@ -129,14 +125,12 @@ public class LocalNewSessionQueue extends NewSessionQueue implements Closeable {
     LoggingOptions loggingOptions = new LoggingOptions(config);
     Tracer tracer = loggingOptions.getTracer();
 
-    EventBusOptions eventBusOptions = new EventBusOptions(config);
     NewSessionQueueOptions newSessionQueueOptions = new NewSessionQueueOptions(config);
     SecretOptions secretOptions = new SecretOptions(config);
     SlotMatcher slotMatcher = new DistributorOptions(config).getSlotMatcher();
 
     return new LocalNewSessionQueue(
       tracer,
-      eventBusOptions.getEventBus(),
       slotMatcher,
       newSessionQueueOptions.getSessionRequestRetryInterval(),
       newSessionQueueOptions.getSessionRequestTimeout(),
