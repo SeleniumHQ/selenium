@@ -9,7 +9,7 @@ import safariTechnologyPreviewLogo
 import unknownBrowserLogo from '../assets/browsers/unknown.svg'
 
 const browserLogo = (browser: string): string => {
-  if (!browser) {
+  if (browser.length === 0) {
     return unknownBrowserLogo
   }
 

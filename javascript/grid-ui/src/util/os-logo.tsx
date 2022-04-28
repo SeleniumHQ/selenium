@@ -5,7 +5,7 @@ import linuxLogo from '../assets/operating-systems/linux.svg'
 import unknownOsLogo from '../assets/operating-systems/unknown.svg'
 
 const osLogo = (os: string): string => {
-  if (!os) {
+  if (os.length === 0) {
     return unknownOsLogo
   }
 

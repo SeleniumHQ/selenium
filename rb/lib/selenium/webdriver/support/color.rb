@@ -125,7 +125,7 @@ module Selenium
         alias_method :eql?, :==
 
         def hash
-          [red, green, blue, alpha].hash ^ self.class.hash
+          [red, green, blue, alpha, self.class].hash
         end
 
         def rgb

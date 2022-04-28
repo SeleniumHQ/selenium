@@ -95,7 +95,7 @@ function NavBarBottom (props): JSX.Element {
 
   return (
     <div>
-      <Box p={3} m={1} sx={{ bgcolor: 'secondary.main' }}>
+      <Box p={3} m={1}>
         <Typography
           align='center'
           gutterBottom

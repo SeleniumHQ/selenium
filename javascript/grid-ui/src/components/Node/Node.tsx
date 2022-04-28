@@ -34,7 +34,7 @@ function Node (props) {
         bgcolor: nodeStatusDown ? 'grey.A100' : ''
       }}
     >
-      <CardContent sx={{ pl: 2, pr: 0 }}>
+      <CardContent sx={{ pl: 2, pr: 1 }}>
         <Grid
           container
           justifyContent='space-between'

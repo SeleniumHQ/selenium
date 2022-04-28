@@ -72,7 +72,7 @@ class WebDriverWait(object):
         screen = None
         stacktrace = None
 
-        end_time = time.time() + self._timeout
+        end_time = time.monotonic() + self._timeout
         while True:
             try:
                 value = method(self._driver)
@@ -84,7 +84,7 @@ class WebDriverWait(object):
                 screen = getattr(exc, 'screen', None)
                 stacktrace = getattr(exc, 'stacktrace', None)
             time.sleep(self._poll)
-            if time.time() > end_time:
+            if time.monotonic() > end_time:
                 break
         raise TimeoutException(message, screen, stacktrace)
 
@@ -98,7 +98,7 @@ class WebDriverWait(object):
                   ``True`` if `method` has raised one of the ignored exceptions
         :raises: :exc:`selenium.common.exceptions.TimeoutException` if timeout occurs
         """
-        end_time = time.time() + self._timeout
+        end_time = time.monotonic() + self._timeout
         while True:
             try:
                 value = method(self._driver)
@@ -109,6 +109,6 @@ class WebDriverWait(object):
             except self._ignored_exceptions:
                 return True
             time.sleep(self._poll)
-            if time.time() > end_time:
+            if time.monotonic() > end_time:
                 break
         raise TimeoutException(message)

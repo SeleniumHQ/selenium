@@ -136,8 +136,8 @@ module Selenium
 
           def proxy
             @proxy ||= begin
-              proxy = ENV['http_proxy'] || ENV['HTTP_PROXY']
-              no_proxy = ENV['no_proxy'] || ENV['NO_PROXY']
+              proxy = ENV.fetch('http_proxy', nil) || ENV.fetch('HTTP_PROXY', nil)
+              no_proxy = ENV.fetch('no_proxy', nil) || ENV.fetch('NO_PROXY', nil)
 
               if proxy
                 proxy = "http://#{proxy}" unless proxy.start_with?('http://')

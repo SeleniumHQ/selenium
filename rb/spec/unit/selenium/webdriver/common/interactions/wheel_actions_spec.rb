@@ -23,7 +23,7 @@ module Selenium
   module WebDriver
     describe WheelActions do
       let(:wheel) { Interactions.wheel('wheel') }
-      let(:bridge) { instance_double('Bridge').as_null_object }
+      let(:bridge) { instance_double(Remote::Bridge).as_null_object }
       let(:builder) { ActionBuilder.new(bridge, devices: [wheel]) }
       let(:duration) { builder.default_move_duration }
       let(:element) { Element.new(bridge, 'element') }

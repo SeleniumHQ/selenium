@@ -1,3 +1,24 @@
+v4.1.4
+======
+
+* Supported CDP versions: 85, 99, 100, 101
+* [grid] Setting session-timeout as read timeout for http client (#10404)
+* Add Windows 11 support to platform enum
+* Enabling request retries for session handling (#9528)
+* Use class' class loader when looking up `HttpClient` factory. (#10509)
+* Fixing search in Java docs (#10415)
+* Added fix to intercept PUT request
+* [grid] Standalone should also shutdown when it has been drained
+* [grid] Draining a Node after X sessions have been created (#9845)
+* Fixing options handling for print command
+* Fix links in JavaDocs (#10529)
+* Introduce common interface for all web storage types (#10528)
+* Added PATCH request
+* Honoring proxy in ClientConfig (#10531)
+* Return friendly names for Windows platforms like Mac does
+* Support for sending firefox addon directory as temporary in remote sessions
+* [grid] Closing input pipeline when client disconnects
+
 v4.1.3
 ======
 

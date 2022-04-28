@@ -39,7 +39,7 @@ module Selenium
 
           profile.add_extension(ext_path)
 
-          ext_file = instance_double('file')
+          ext_file = instance_double(File)
           allow(File).to receive(:open).with(ext_path, 'rb').and_yield ext_file
           allow(ext_file).to receive(:read).and_return 'test'
 
