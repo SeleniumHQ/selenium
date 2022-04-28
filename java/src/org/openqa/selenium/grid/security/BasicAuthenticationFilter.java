@@ -42,8 +42,11 @@ public class BasicAuthenticationFilter implements Filter {
     return req -> {
       Require.nonNull("Request", req);
 
-      if (!isAuthorized(req.getHeader("Authorization"))) {
-        LOG.info("Unauthorized request to " + req);
+      String auth = req.getHeader("Authorization");
+      if (!isAuthorized(auth)) {
+        if (auth != null) {
+          LOG.info("Unauthorized request to " + req);
+        }
         return new HttpResponse()
           .setStatus(HttpURLConnection.HTTP_UNAUTHORIZED)
           .addHeader("WWW-Authenticate", "Basic realm=\"selenium-server\"");

@@ -15,7 +15,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
-import React from 'react'
+import React, { useState } from 'react'
 import {
   Button,
   Dialog,
@@ -28,30 +28,8 @@ import {
   InputAdornment,
   InputLabel
 } from '@mui/material'
-import makeStyles from '@mui/styles/makeStyles'
-import clsx from 'clsx'
-import { Theme } from '@mui/material/styles'
-import createStyles from '@mui/styles/createStyles'
 import IconButton from '@mui/material/IconButton'
 import { Visibility, VisibilityOff } from '@mui/icons-material'
-
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    root: {
-      display: 'flex',
-      flexWrap: 'wrap'
-    },
-    margin: {
-      margin: theme.spacing(1)
-    },
-    withoutLabel: {
-      marginTop: theme.spacing(3)
-    },
-    textField: {
-      width: '25ch'
-    }
-  })
-)
 
 interface State {
   amount: string
@@ -62,15 +40,15 @@ interface State {
 }
 
 const PasswordDialog = (props) => {
-  const { title, children, open, setOpen, onConfirm, onCancel } = props
-  const classes = useStyles()
-  const [values, setValues] = React.useState<State>({
+  const { title, children, open, openDialog, onConfirm, onCancel } = props
+  const [values, setValues] = useState<State>({
     amount: '',
     password: '',
     weight: '',
     weightRange: '',
     showPassword: false
   })
+
   const handleChange = (prop: keyof State) => (event: React.ChangeEvent<HTMLInputElement>) => {
     setValues({ ...values, [prop]: event.target.value })
   }
@@ -81,10 +59,11 @@ const PasswordDialog = (props) => {
   const handleMouseDownPassword = (event: React.MouseEvent<HTMLButtonElement>) => {
     event.preventDefault()
   }
+
   return (
     <Dialog
       open={open}
-      onClose={() => setOpen(false)}
+      onClose={() => openDialog(false)}
       aria-labelledby='password-dialog'
     >
       <DialogTitle id='password-dialog'>{title}</DialogTitle>
@@ -93,7 +72,7 @@ const PasswordDialog = (props) => {
           {children}
         </DialogContentText>
         <FormControl
-          className={clsx(classes.margin, classes.textField)}
+          sx={{ margin: 1, width: '25ch' }}
           variant='standard'
         >
           <InputLabel
@@ -128,7 +107,7 @@ const PasswordDialog = (props) => {
         <Button
           variant='contained'
           onClick={() => {
-            setOpen(false)
+            openDialog(false)
             onCancel()
           }}
           color='secondary'
@@ -138,7 +117,7 @@ const PasswordDialog = (props) => {
         <Button
           variant='contained'
           onClick={() => {
-            setOpen(false)
+            // setOpen(false)
             onConfirm(values.password)
           }}
           color='primary'

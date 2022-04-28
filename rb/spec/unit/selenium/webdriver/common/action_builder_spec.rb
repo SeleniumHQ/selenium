@@ -24,7 +24,7 @@ module Selenium
     describe ActionBuilder do
       let(:keyboard) { Interactions.key('key') }
       let(:mouse) { Interactions.pointer(:mouse, name: 'mouse') }
-      let(:bridge) { instance_double('Bridge').as_null_object }
+      let(:bridge) { instance_double(Remote::Bridge).as_null_object }
       let(:builder) { ActionBuilder.new(bridge, devices: [mouse, keyboard]) }
       let(:async_builder) { ActionBuilder.new(bridge, devices: [mouse, keyboard], async: true) }
 

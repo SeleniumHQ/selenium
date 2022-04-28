@@ -17,8 +17,6 @@
 
 package org.openqa.selenium.remote;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 import com.google.common.collect.ImmutableMap;
 
 import org.junit.Test;
@@ -33,6 +31,8 @@ import org.openqa.selenium.testing.UnitTests;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 @Category(UnitTests.class)
 public class DesiredCapabilitiesTest {
@@ -97,7 +97,7 @@ public class DesiredCapabilitiesTest {
     DesiredCapabilities caps = new DesiredCapabilities();
     caps.setCapability(CapabilityType.PLATFORM, "windows 7");
     assertThat(caps.getCapability(CapabilityType.PLATFORM)).isEqualTo(Platform.VISTA);
-    caps.setCapability(CapabilityType.PLATFORM, "WIN8_1");
+    caps.setCapability(CapabilityType.PLATFORM, "win8.1");
     assertThat(caps.getCapability(CapabilityType.PLATFORM)).isEqualTo(Platform.WIN8_1);
   }
 

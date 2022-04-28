@@ -26,7 +26,6 @@ function NoData (props) {
       height='100%'
       width='100%'
       paddingY={3}
-      sx={{ bgcolor: 'secondary.main' }}
     >
       <Box
         display='flex'
@@ -39,6 +38,7 @@ function NoData (props) {
             align='center'
             color='textPrimary'
             variant='h1'
+            paddingBottom={1}
           >
             {message}
           </Typography>

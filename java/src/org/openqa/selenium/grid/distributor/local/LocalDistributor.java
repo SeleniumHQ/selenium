@@ -487,7 +487,7 @@ public class LocalDistributor extends Distributor implements Closeable {
         EventAttribute.setValue(getClass().getName()));
 
       attributeMap.put("request.payload", EventAttribute.setValue(request.getDesiredCapabilities().toString()));
-      String sessionReceivedMessage = "Session request received by the distributor";
+      String sessionReceivedMessage = "Session request received by the Distributor";
       span.addEvent(sessionReceivedMessage, attributeMap);
       LOG.info(String.format("%s: \n %s", sessionReceivedMessage, request.getDesiredCapabilities()));
 
@@ -519,7 +519,7 @@ public class LocalDistributor extends Distributor implements Closeable {
         SlotId selectedSlot = reserveSlot(request.getRequestId(), caps);
         if (selectedSlot == null) {
           LOG.info(
-            String.format("Unable to find a free slot for request %s. %s ",
+            String.format("Unable to find a free slot for request %s. \n %s ",
                           request.getRequestId(),
                           caps));
           retry = true;
@@ -546,9 +546,10 @@ public class LocalDistributor extends Distributor implements Closeable {
           span.setAttribute(SESSION_URI.getKey(), sessionUri);
           attributeMap.put(SESSION_URI.getKey(), EventAttribute.setValue(sessionUri));
 
-          String sessionCreatedMessage = "Session created by the distributor";
+          String sessionCreatedMessage = "Session created by the Distributor";
           span.addEvent(sessionCreatedMessage, attributeMap);
-          LOG.info(String.format("%s. Id: %s, Caps: %s", sessionCreatedMessage, sessionId, sessionCaps));
+          LOG.info(
+            String.format("%s. Id: %s \n Caps: %s", sessionCreatedMessage, sessionId, sessionCaps));
 
           return Either.right(response);
         } catch (SessionNotCreatedException e) {

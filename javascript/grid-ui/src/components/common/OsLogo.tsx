@@ -20,21 +20,20 @@ import osLogo from '../../util/os-logo'
 import { Box } from '@mui/material'
 import { Size } from '../../models/size'
 
-function OsLogo (props) {
+function OsLogo (props): JSX.Element {
   const { osName, size } = props
   const name = osName ?? ''
   const osLogoSize = size ?? Size.S
   return (
     <Box
-      component="img"
+      component='img'
       marginX={0}
       src={osLogo(name)}
       width={osLogoSize}
       height={osLogoSize}
-      alt="OS Logo"
+      alt='OS Logo'
     />
   )
-
 }
 
 export default OsLogo
