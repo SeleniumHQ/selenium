@@ -22,31 +22,31 @@ function Error (props) {
   const { message, errorMessage } = props
   return (
     <Box
-      height="100%"
-      width="100%"
+      height='100%'
+      width='100%'
       paddingY={3}
     >
       <Box
-        display="flex"
-        flexDirection="column"
-        height="100%"
-        justifyContent="center"
+        display='flex'
+        flexDirection='column'
+        height='100%'
+        justifyContent='center'
       >
-        <Container maxWidth="md">
+        <Container maxWidth='md'>
           <Box mb={3}>
             <Typography
-              align="center"
-              color="textPrimary"
-              variant="h3"
+              align='center'
+              color='textPrimary'
+              variant='h3'
             >
               {message}
             </Typography>
           </Box>
           <Typography
-            align="center"
-            color="textPrimary"
-            variant="h4"
-            component="span"
+            align='center'
+            color='textPrimary'
+            variant='h4'
+            component='span'
           >
             <pre>
               {errorMessage}

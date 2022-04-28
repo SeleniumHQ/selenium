@@ -37,7 +37,7 @@ function NoData (props) {
           <Typography
             align='center'
             color='textPrimary'
-            variant="h1"
+            variant='h1'
             paddingBottom={1}
           >
             {message}

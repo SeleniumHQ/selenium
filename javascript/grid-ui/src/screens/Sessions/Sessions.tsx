@@ -28,19 +28,19 @@ import { GridConfig } from '../../config'
 
 const GRID_SESSIONS_QUERY = loader('../../graphql/sessions.gql')
 
-function Sessions () {
+function Sessions (): JSX.Element {
   const { loading, error, data } = useQuery(GRID_SESSIONS_QUERY, {
     pollInterval: GridConfig.status.xhrPollingIntervalMillis,
     fetchPolicy: 'network-only'
   })
 
   if (error !== undefined) {
-    const message = 'There has been an error while loading running and '
-                    + 'queued Sessions from the Grid.'
+    const message = 'There has been an error while loading running and ' +
+                    'queued Sessions from the Grid.'
     const errorMessage = error?.networkError?.message
     return (
       <Grid container>
-        <Error message={message} errorMessage={errorMessage}/>
+        <Error message={message} errorMessage={errorMessage} />
       </Grid>
     )
   }
@@ -48,17 +48,17 @@ function Sessions () {
   if (loading) {
     return (
       <Grid container>
-        <Loading/>
+        <Loading />
       </Grid>
     )
   }
 
-  if (data.sessionsInfo.sessionQueueRequests.length === 0
-      && data.sessionsInfo.sessions.length === 0) {
+  if (data.sessionsInfo.sessionQueueRequests.length === 0 &&
+      data.sessionsInfo.sessions.length === 0) {
     const shortMessage = 'No running or queued sessions at the moment.'
     return (
       <Grid container>
-        <NoData message={shortMessage}/>
+        <NoData message={shortMessage} />
       </Grid>
     )
   }
