@@ -1,9 +1,5 @@
 package org.openqa.selenium.grid.sessionqueue.local;
 
-import static java.net.HttpURLConnection.HTTP_INTERNAL_ERROR;
-import static java.util.concurrent.TimeUnit.MILLISECONDS;
-import static org.openqa.selenium.concurrent.ExecutorServices.shutdownGracefully;
-
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
@@ -16,7 +12,6 @@ import org.openqa.selenium.grid.config.Config;
 import org.openqa.selenium.grid.data.CreateSessionResponse;
 import org.openqa.selenium.grid.data.NewSessionErrorResponse;
 import org.openqa.selenium.grid.data.NewSessionRejectedEvent;
-import org.openqa.selenium.grid.data.NewSessionRequestEvent;
 import org.openqa.selenium.grid.data.RequestId;
 import org.openqa.selenium.grid.data.SessionRequest;
 import org.openqa.selenium.grid.data.SessionRequestCapability;
@@ -61,6 +56,10 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
+import static java.net.HttpURLConnection.HTTP_INTERNAL_ERROR;
+import static java.util.concurrent.TimeUnit.MILLISECONDS;
+import static org.openqa.selenium.concurrent.ExecutorServices.shutdownGracefully;
+
 /**
  * An in-memory implementation of the list of new session requests.
  * <p>
@@ -68,8 +67,6 @@ import java.util.stream.Collectors;
  * <ol>
  *   <li>User adds an item on to the queue using {@link #addToQueue(SessionRequest)}. This
  *       will block until the request completes in some way.
- *   <li>After being added, a {@link NewSessionRequestEvent} is fired. Listeners should use
- *       this as an indication to call {@link #remove(RequestId)} to get the session request.
  *   <li>If the session request is completed, then {@link #complete(RequestId, Either)} must
  *       be called. This will not only ensure that {@link #addToQueue(SessionRequest)}
  *       returns, but will also fire a {@link NewSessionRejectedEvent} if the session was
@@ -240,8 +237,6 @@ public class LocalNewSessionQueue extends NewSessionQueue implements Closeable {
       writeLock.unlock();
     }
 
-    bus.fire(new NewSessionRequestEvent(request.getRequestId()));
-
     return data;
   }
 
@@ -269,9 +264,6 @@ public class LocalNewSessionQueue extends NewSessionQueue implements Closeable {
         writeLock.unlock();
       }
 
-      if (added) {
-        bus.fire(new NewSessionRequestEvent(request.getRequestId()));
-      }
       return added;
     }
   }

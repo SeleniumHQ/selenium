@@ -17,18 +17,6 @@
 
 package org.openqa.selenium.grid.graphql;
 
-import static java.util.Collections.singletonList;
-import static java.util.Collections.singletonMap;
-import static java.util.concurrent.TimeUnit.SECONDS;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.fail;
-import static org.assertj.core.api.InstanceOfAssertFactories.LIST;
-import static org.assertj.core.api.InstanceOfAssertFactories.MAP;
-import static org.openqa.selenium.json.Json.MAP_TYPE;
-import static org.openqa.selenium.remote.Dialect.OSS;
-import static org.openqa.selenium.remote.Dialect.W3C;
-import static org.openqa.selenium.remote.http.HttpMethod.GET;
-
 import com.google.common.collect.ImmutableMap;
 
 import org.junit.Before;
@@ -42,7 +30,6 @@ import org.openqa.selenium.events.local.GuavaEventBus;
 import org.openqa.selenium.grid.data.CreateSessionRequest;
 import org.openqa.selenium.grid.data.CreateSessionResponse;
 import org.openqa.selenium.grid.data.DefaultSlotMatcher;
-import org.openqa.selenium.grid.data.NewSessionRequestEvent;
 import org.openqa.selenium.grid.data.RequestId;
 import org.openqa.selenium.grid.data.Session;
 import org.openqa.selenium.grid.data.SessionRequest;
@@ -81,7 +68,17 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
-import java.util.concurrent.CountDownLatch;
+
+import static java.util.Collections.singletonList;
+import static java.util.Collections.singletonMap;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
+import static org.assertj.core.api.InstanceOfAssertFactories.LIST;
+import static org.assertj.core.api.InstanceOfAssertFactories.MAP;
+import static org.openqa.selenium.json.Json.MAP_TYPE;
+import static org.openqa.selenium.remote.Dialect.OSS;
+import static org.openqa.selenium.remote.Dialect.W3C;
+import static org.openqa.selenium.remote.http.HttpMethod.GET;
 
 public class GraphqlHandlerTest {
 
@@ -168,15 +165,13 @@ public class GraphqlHandlerTest {
 
   private void continueOnceAddedToQueue(SessionRequest request) {
     // Add to the queue in the background
-    CountDownLatch latch = new CountDownLatch(1);
-    events.addListener(NewSessionRequestEvent.listener(id -> latch.countDown()));
     new Thread(() -> queue.addToQueue(request)).start();
-    try {
-      assertThat(latch.await(5, SECONDS)).isTrue();
-    } catch (InterruptedException e) {
-      Thread.currentThread().interrupt();
-      throw new RuntimeException(e);
-    }
+    new FluentWait<>(request)
+      .withTimeout(Duration.ofSeconds(5))
+      .until(
+        r -> queue.getQueueContents().stream()
+          .anyMatch(sessionRequestCapability ->
+                      sessionRequestCapability.getRequestId().equals(r.getRequestId())));
   }
 
   @Test
