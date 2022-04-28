@@ -113,6 +113,7 @@ public class SessionSlot implements
     currentSession = null;
     release();
     bus.fire(new SessionClosedEvent(id));
+    LOG.info(String.format("Stopping session %s", id));
   }
 
   @Override

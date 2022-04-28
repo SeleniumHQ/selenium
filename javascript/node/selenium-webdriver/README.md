@@ -33,10 +33,10 @@ The sample below and others are included in the `example` directory. You may
 also find the tests for selenium-webdriver informative.
 
 ```javascript
-const {Builder, By, Key, until} = require('selenium-webdriver');
+const {Builder, Browser, By, Key, until} = require('selenium-webdriver');
 
 (async function example() {
-  let driver = await new Builder().forBrowser('firefox').build();
+  let driver = await new Builder().forBrowser(Browser.FIREFOX).build();
   try {
     await driver.get('http://www.google.com/ncr');
     await driver.findElement(By.name('q')).sendKeys('webdriver', Key.RETURN);
@@ -60,7 +60,7 @@ const chrome = require('selenium-webdriver/chrome');
 const firefox = require('selenium-webdriver/firefox');
 
 let driver = new webdriver.Builder()
-    .forBrowser('firefox')
+    .forBrowser(webdriver.Browser.FIREFOX)
     .setChromeOptions(/* ... */)
     .setFirefoxOptions(/* ... */)
     .build();
@@ -99,7 +99,7 @@ API:
 
 ```javascript
 let driver = new webdriver.Builder()
-    .forBrowser('firefox')
+    .forBrowser(webdriver.Browser.FIREFOX)
     .usingServer('http://localhost:4444/wd/hub')
     .build();
 ```

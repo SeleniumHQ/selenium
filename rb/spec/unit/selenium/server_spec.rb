@@ -23,7 +23,7 @@ require 'selenium/server'
 module Selenium
   describe Server do
     let(:mock_process) { instance_double(ChildProcess::AbstractProcess).as_null_object }
-    let(:mock_poller) { instance_double('SocketPoller', connected?: true, closed?: true) }
+    let(:mock_poller) { instance_double(WebDriver::SocketPoller, connected?: true, closed?: true) }
     let(:repo) { 'https://api.github.com/repos/seleniumhq/selenium/releases' }
     let(:example_json) do
       [{url: "#{repo}/41272273",
@@ -191,7 +191,7 @@ module Selenium
     it 'raises Selenium::Server::Error if the server is not launched within the timeout' do
       allow(File).to receive(:exist?).with('selenium_server_deploy.jar').and_return(true)
 
-      poller = instance_double('SocketPoller')
+      poller = instance_double(WebDriver::SocketPoller)
       allow(poller).to receive(:connected?).and_return(false)
 
       server = Selenium::Server.new('selenium_server_deploy.jar', background: true)
