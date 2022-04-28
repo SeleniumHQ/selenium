@@ -18,6 +18,7 @@
 package org.openqa.selenium.grid.sessionqueue.local;
 
 import com.google.common.collect.ImmutableMap;
+
 import org.junit.After;
 import org.junit.ClassRule;
 import org.junit.Test;
@@ -32,13 +33,12 @@ import org.openqa.selenium.events.local.GuavaEventBus;
 import org.openqa.selenium.grid.data.CreateSessionResponse;
 import org.openqa.selenium.grid.data.DefaultSlotMatcher;
 import org.openqa.selenium.grid.data.NewSessionRejectedEvent;
-import org.openqa.selenium.grid.data.NewSessionRequestEvent;
 import org.openqa.selenium.grid.data.RequestId;
 import org.openqa.selenium.grid.data.Session;
+import org.openqa.selenium.grid.data.SessionRequest;
 import org.openqa.selenium.grid.data.SessionRequestCapability;
 import org.openqa.selenium.grid.security.Secret;
 import org.openqa.selenium.grid.sessionqueue.NewSessionQueue;
-import org.openqa.selenium.grid.data.SessionRequest;
 import org.openqa.selenium.grid.sessionqueue.remote.RemoteNewSessionQueue;
 import org.openqa.selenium.grid.testing.PassthroughHttpClient;
 import org.openqa.selenium.internal.Debug;
@@ -50,6 +50,7 @@ import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.remote.tracing.DefaultTestTracer;
 import org.openqa.selenium.remote.tracing.Tracer;
+import org.openqa.selenium.support.ui.FluentWait;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -91,30 +92,19 @@ import static org.openqa.selenium.testing.Safely.safelyCall;
 @RunWith(Parameterized.class)
 public class LocalNewSessionQueueTest {
 
-  @ClassRule
-  public static Timeout classTimeout = new Timeout(60, SECONDS);
-
   private static final Json JSON = new Json();
   private static final Capabilities CAPS = new ImmutableCapabilities("browserName", "cheese");
   private static final Secret REGISTRATION_SECRET = new Secret("secret");
-  private static final Instant LONG_AGO = Instant.parse("2007-01-03T21:49:10.00Z"); // Go check the git log
-
+  private static final Instant
+    LONG_AGO =
+    Instant.parse("2007-01-03T21:49:10.00Z");
+  // Go check the git log
+  @ClassRule
+  public static Timeout classTimeout = new Timeout(60, SECONDS);
   private final NewSessionQueue queue;
   private final LocalNewSessionQueue localQueue;
   private final EventBus bus;
   private final SessionRequest sessionRequest;
-
-  static class TestData {
-    public final EventBus bus;
-    public final LocalNewSessionQueue localQueue;
-    public final NewSessionQueue queue;
-
-    public TestData(EventBus bus, LocalNewSessionQueue localQueue, NewSessionQueue queue) {
-      this.bus = bus;
-      this.localQueue = localQueue;
-      this.queue = queue;
-    }
-  }
 
   public LocalNewSessionQueueTest(Supplier<TestData> supplier) {
     TestData testData = supplier.get();
@@ -176,33 +166,44 @@ public class LocalNewSessionQueueTest {
     safelyCall(localQueue::close);
   }
 
+  private void waitUntilAddedToQueue(SessionRequest request) {
+    new FluentWait<>(request)
+      .withTimeout(Duration.ofSeconds(5))
+      .until(
+        r -> queue.getQueueContents().stream()
+          .anyMatch(sessionRequestCapability ->
+                      sessionRequestCapability.getRequestId().equals(r.getRequestId())));
+
+  }
+
   @Test
   public void shouldBeAbleToAddToQueueAndGetValidResponse() {
     AtomicBoolean isPresent = new AtomicBoolean(false);
 
-    bus.addListener(NewSessionRequestEvent.listener(reqId -> {
+    new Thread(() -> {
+      waitUntilAddedToQueue(sessionRequest);
       isPresent.set(true);
 
       Capabilities capabilities = new ImmutableCapabilities("browserName", "chrome");
       SessionId sessionId = new SessionId("123");
       Session session =
-          new Session(
-              sessionId,
-              URI.create("http://example.com"),
-              CAPS,
-              capabilities,
-              Instant.now());
+        new Session(
+          sessionId,
+          URI.create("https://example.com"),
+          CAPS,
+          capabilities,
+          Instant.now());
       CreateSessionResponse sessionResponse = new CreateSessionResponse(
-          session,
-          JSON.toJson(
-              ImmutableMap.of(
-                  "value", ImmutableMap.of(
-                      "sessionId", sessionId,
-                      "capabilities", capabilities)))
-              .getBytes(UTF_8));
+        session,
+        JSON.toJson(
+            ImmutableMap.of(
+              "value", ImmutableMap.of(
+                "sessionId", sessionId,
+                "capabilities", capabilities)))
+          .getBytes(UTF_8));
 
-      queue.complete(reqId, Either.right(sessionResponse));
-    }));
+      queue.complete(sessionRequest.getRequestId(), Either.right(sessionResponse));
+    }).start();
 
     HttpResponse httpResponse = queue.addToQueue(sessionRequest);
 
@@ -212,8 +213,11 @@ public class LocalNewSessionQueueTest {
 
   @Test
   public void shouldBeAbleToAddToQueueAndGetErrorResponse() {
-    bus.addListener(NewSessionRequestEvent.listener(reqId ->
-      queue.complete(reqId, Either.left(new SessionNotCreatedException("Error")))));
+    new Thread(() -> {
+      waitUntilAddedToQueue(sessionRequest);
+      queue.complete(sessionRequest.getRequestId(),
+                     Either.left(new SessionNotCreatedException("Error")));
+    }).start();
 
     HttpResponse httpResponse = queue.addToQueue(sessionRequest);
 
@@ -304,47 +308,51 @@ public class LocalNewSessionQueueTest {
 
     AtomicInteger count = new AtomicInteger(0);
 
-    bus.addListener(
-        NewSessionRequestEvent.listener(
-            reqId -> {
-              // Keep a count of event fired
-              count.incrementAndGet();
-              Optional<SessionRequest> sessionRequest = this.queue.remove(reqId);
-              isPresent.set(sessionRequest.isPresent());
+    new Thread(() -> {
+      while (count.get() <= 2) {
+        waitUntilAddedToQueue(sessionRequest);
 
-              if (count.get() == 1) {
-                retrySuccess.set(queue.retryAddToQueue(sessionRequest.get()));
-              }
+        count.incrementAndGet();
+        Optional<SessionRequest> requestOptional = this.queue.remove(sessionRequest.getRequestId());
+        isPresent.set(requestOptional.isPresent());
 
-              // Only if it was retried after an interval, the count is 2
-              if (count.get() == 2) {
-                ImmutableCapabilities capabilities =
-                    new ImmutableCapabilities("browserName", "edam");
-                try {
-                  SessionId sessionId = new SessionId("123");
-                  Session session =
-                      new Session(
-                          sessionId,
-                          new URI("http://example.com"),
-                          CAPS,
-                          capabilities,
-                          Instant.now());
-                  CreateSessionResponse sessionResponse =
-                      new CreateSessionResponse(
-                          session,
-                          JSON.toJson(
-                                  ImmutableMap.of(
-                                      "value",
-                                      ImmutableMap.of(
-                                          "sessionId", sessionId,
-                                          "capabilities", capabilities)))
-                              .getBytes(UTF_8));
-                  queue.complete(reqId, Either.right(sessionResponse));
-                } catch (URISyntaxException e) {
-                  throw new RuntimeException(e);
-                }
-              }
-            }));
+        if (count.get() == 1 && requestOptional.isPresent()) {
+          retrySuccess.set(queue.retryAddToQueue(requestOptional.get()));
+          continue;
+        }
+
+        // Only if it was retried after an interval, the count is 2
+        if (count.get() == 2) {
+          ImmutableCapabilities capabilities =
+            new ImmutableCapabilities("browserName", "edam");
+          try {
+            SessionId sessionId = new SessionId("123");
+            Session session =
+              new Session(
+                sessionId,
+                new URI("http://example.com"),
+                CAPS,
+                capabilities,
+                Instant.now());
+            CreateSessionResponse sessionResponse =
+              new CreateSessionResponse(
+                session,
+                JSON.toJson(
+                    ImmutableMap.of(
+                      "value",
+                      ImmutableMap.of(
+                        "sessionId", sessionId,
+                        "capabilities", capabilities)))
+                  .getBytes(UTF_8));
+            queue.complete(sessionRequest.getRequestId(), Either.right(sessionResponse));
+          } catch (URISyntaxException e) {
+            throw new RuntimeException(e);
+          }
+        }
+
+      }
+
+    }).start();
 
     HttpResponse httpResponse = queue.addToQueue(sessionRequest);
 
@@ -355,31 +363,39 @@ public class LocalNewSessionQueueTest {
 
   @Test(timeout = 5000)
   public void shouldBeAbleToHandleMultipleSessionRequestsAtTheSameTime() {
-    bus.addListener(NewSessionRequestEvent.listener(reqId -> {
-      queue.remove(reqId);
-      ImmutableCapabilities capabilities = new ImmutableCapabilities("browserName", "chrome");
-      try {
-        SessionId sessionId = new SessionId(UUID.randomUUID());
-        Session session =
-            new Session(
+    AtomicBoolean processQueue = new AtomicBoolean(true);
+    // Processing the queue in a thread
+    new Thread(() -> {
+      while (processQueue.get()) {
+        Optional<SessionRequestCapability> first = queue.getQueueContents().stream().findFirst();
+        if (first.isPresent()) {
+          RequestId reqId = first.get().getRequestId();
+          queue.remove(reqId);
+          ImmutableCapabilities capabilities = new ImmutableCapabilities("browserName", "chrome");
+          try {
+            SessionId sessionId = new SessionId(UUID.randomUUID());
+            Session session =
+              new Session(
                 sessionId,
-                new URI("http://example.com"),
+                new URI("https://example.com"),
                 CAPS,
                 capabilities,
                 Instant.now());
-        CreateSessionResponse sessionResponse = new CreateSessionResponse(
-            session,
-            JSON.toJson(
-                ImmutableMap.of(
+            CreateSessionResponse sessionResponse = new CreateSessionResponse(
+              session,
+              JSON.toJson(
+                  ImmutableMap.of(
                     "value", ImmutableMap.of(
-                        "sessionId", sessionId,
-                        "capabilities", capabilities)))
+                      "sessionId", sessionId,
+                      "capabilities", capabilities)))
                 .getBytes(UTF_8));
-        queue.complete(reqId, Either.right(sessionResponse));
-      } catch (URISyntaxException e) {
-        queue.complete(reqId, Either.left(new SessionNotCreatedException(e.getMessage())));
+            queue.complete(reqId, Either.right(sessionResponse));
+          } catch (URISyntaxException e) {
+            queue.complete(reqId, Either.left(new SessionNotCreatedException(e.getMessage())));
+          }
+        }
       }
-    }));
+    }).start();
 
     ExecutorService executor = Executors.newFixedThreadPool(2);
 
@@ -414,6 +430,7 @@ public class LocalNewSessionQueueTest {
     }
 
     executor.shutdown();
+    processQueue.set(false);
   }
 
   @Test(timeout = 5000)
@@ -553,5 +570,18 @@ public class LocalNewSessionQueueTest {
       Set.of(new ImmutableCapabilities("browserName", "cheese")));
 
     assertThat(returned).isEqualTo(Optional.of(expected));
+  }
+
+  static class TestData {
+
+    public final EventBus bus;
+    public final LocalNewSessionQueue localQueue;
+    public final NewSessionQueue queue;
+
+    public TestData(EventBus bus, LocalNewSessionQueue localQueue, NewSessionQueue queue) {
+      this.bus = bus;
+      this.localQueue = localQueue;
+      this.queue = queue;
+    }
   }
 }

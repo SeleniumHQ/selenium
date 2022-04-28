@@ -31,6 +31,8 @@ import java.util.concurrent.TimeUnit;
 
 public class PortProber {
 
+  public static final int HIGHEST_PORT = 65535;
+  public static final int START_OF_USER_PORTS = 1024;
   private static final Random random = new Random();
   private static final EphemeralPortRangeDetector ephemeralRangeDetector;
 
@@ -45,9 +47,6 @@ public class PortProber {
        ephemeralRangeDetector = new FixedIANAPortRange();
     }
   }
-
-  public static final int HIGHEST_PORT = 65535;
-  public static final int START_OF_USER_PORTS = 1024;
 
   private PortProber() {
     // Utility class
@@ -101,7 +100,7 @@ public class PortProber {
       socket.bind(new InetSocketAddress("localhost", port));
       return socket.getLocalPort();
     } catch (IOException e) {
-      return -1;
+      return port;
     }
   }
 
