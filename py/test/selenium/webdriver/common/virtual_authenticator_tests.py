@@ -92,6 +92,7 @@ def create_rk_disabled_authenticator(driver) -> WebDriver:
 # TODO: add JS verfication code for tests as in JAVA
 @pytest.mark.xfail_firefox
 @pytest.mark.xfail_safari
+@pytest.mark.xfail_remote
 def test_add_and_remove_virtual_authenticator(driver, pages):
     driver = create_rk_disabled_authenticator(driver)
 
@@ -105,6 +106,7 @@ def test_add_and_remove_virtual_authenticator(driver, pages):
 
 @pytest.mark.xfail_firefox
 @pytest.mark.xfail_safari
+@pytest.mark.xfail_remote
 def test_add_and_remove_non_resident_credentials(driver, pages):
     driver = create_rk_disabled_authenticator(driver)
 
@@ -141,6 +143,7 @@ def test_add_and_remove_non_resident_credentials(driver, pages):
 
 @pytest.mark.xfail_firefox
 @pytest.mark.xfail_safari
+@pytest.mark.xfail_remote
 def test_add_and_remove_resident_credentials(driver, pages):
     driver = create_rk_enabled_authenticator(driver)
 
@@ -176,6 +179,7 @@ def test_add_and_remove_resident_credentials(driver, pages):
 
 @pytest.mark.xfail_firefox
 @pytest.mark.xfail_safari
+@pytest.mark.xfail_remote
 def test_remove_all_credentials(driver):
     options = VirtualAuthenticatorOptions()
     options.has_resident_key = True
@@ -212,6 +216,7 @@ def test_remove_all_credentials(driver):
 
 @pytest.mark.xfail_firefox
 @pytest.mark.xfail_safari
+@pytest.mark.xfail_remote
 def test_full_virtual_authenticator(driver):
 
     options = VirtualAuthenticatorOptions()

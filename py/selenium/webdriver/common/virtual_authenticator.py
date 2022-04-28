@@ -145,10 +145,6 @@ class Credential:
 
     @property
     def id(self):
-        return self._id
-
-    @id.getter
-    def id(self):
         return urlsafe_b64encode(self._id).decode()
 
     @property
@@ -161,19 +157,11 @@ class Credential:
 
     @property
     def user_handle(self):
-        return self._user_handle
-
-    @user_handle.getter
-    def user_handle(self):
         if self._user_handle:
             return urlsafe_b64encode(self._user_handle).decode()
         return None
 
     @property
-    def private_key(self):
-        return self._private_key
-
-    @private_key.getter
     def private_key(self):
         return urlsafe_b64encode(self._private_key).decode()
 
