@@ -270,7 +270,7 @@ class WebElement(BaseWebElement):
 
                 element = element.find_element_by_link_text('Sign In')
         """
-        warnings.warn("find_element_by_link_text is deprecated. Please use find_element(by=By.LINK_TEXT, value=link_text) instead", 
+        warnings.warn("find_element_by_link_text is deprecated. Please use find_element(by=By.LINK_TEXT, value=link_text) instead",
                       DeprecationWarning,
                       stacklevel=2)
         return self.find_element(by=By.LINK_TEXT, value=link_text)
