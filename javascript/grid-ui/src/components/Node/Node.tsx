@@ -37,14 +37,14 @@ function Node (props) {
       <CardContent sx={{ pl: 2, pr: 1 }}>
         <Grid
           container
-          justifyContent="space-between"
+          justifyContent='space-between'
           spacing={1}
         >
           <Grid item xs={10}>
             <Typography
-              color="textPrimary"
+              color='textPrimary'
               gutterBottom
-              variant="h6"
+              variant='h6'
             >
               <Box fontWeight='fontWeightBold' mr={1} display='inline'>
                 URI:

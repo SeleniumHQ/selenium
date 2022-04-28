@@ -33,7 +33,7 @@ import { GridConfig } from '../../config'
 
 const NODES_QUERY = loader('../../graphql/nodes.gql')
 
-function Overview () {
+function Overview (): JSX.Element {
   const { loading, error, data } = useQuery(NODES_QUERY, {
     pollInterval: GridConfig.status.xhrPollingIntervalMillis,
     fetchPolicy: 'network-only'
@@ -44,7 +44,7 @@ function Overview () {
     const errorMessage = error?.networkError?.message
     return (
       <Grid container spacing={3}>
-        <Error message={message} errorMessage={errorMessage}/>
+        <Error message={message} errorMessage={errorMessage} />
       </Grid>
     )
   }
@@ -52,7 +52,7 @@ function Overview () {
   if (loading) {
     return (
       <Grid container spacing={3}>
-        <Loading/>
+        <Loading />
       </Grid>
     )
   }
@@ -96,45 +96,45 @@ function Overview () {
     return newNode
   })
 
-    const nodes = unSortedNodes.sort((a, b) => (a.id < b.id ? -1 : 1))
-    if (nodes.length === 0) {
-      const shortMessage = 'The Grid has no registered Nodes yet.'
-      return (
-        <Grid container spacing={3}>
-          <NoData message={shortMessage} />
-        </Grid>
-      )
-    }
-
+  const nodes = unSortedNodes.sort((a, b) => (a.id < b.id ? -1 : 1))
+  if (nodes.length === 0) {
+    const shortMessage = 'The Grid has no registered Nodes yet.'
     return (
-      <Grid container>
-        {/* Nodes */}
-        {nodes.map((node, index) => {
-          return (
-            <Grid
-              item
-              lg={6}
-              sm={12}
-              xl={4}
-              xs={12}
-              key={index}
-              paddingX={1}
-              paddingY={1}
-            >
-              <Paper
-                sx={{
-                  display: 'flex',
-                  overflow: 'auto',
-                  flexDirection: 'column'
-                }}
-              >
-                <Node node={node}/>
-              </Paper>
-            </Grid>
-          )
-        })}
+      <Grid container spacing={3}>
+        <NoData message={shortMessage} />
       </Grid>
     )
+  }
+
+  return (
+    <Grid container>
+      {/* Nodes */}
+      {nodes.map((node, index) => {
+        return (
+          <Grid
+            item
+            lg={6}
+            sm={12}
+            xl={4}
+            xs={12}
+            key={index}
+            paddingX={1}
+            paddingY={1}
+          >
+            <Paper
+              sx={{
+                display: 'flex',
+                overflow: 'auto',
+                flexDirection: 'column'
+              }}
+            >
+              <Node node={node} />
+            </Paper>
+          </Grid>
+        )
+      })}
+    </Grid>
+  )
 }
 
 export default Overview

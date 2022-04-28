@@ -125,13 +125,13 @@ function EnhancedTableHead (props: EnhancedTableProps): JSX.Element {
               direction={orderBy === headCell.id ? order : 'asc'}
               onClick={createSortHandler(headCell.id)}
             >
-              <Box fontWeight="fontWeightBold" mr={1} display="inline">
+              <Box fontWeight='fontWeightBold' mr={1} display='inline'>
                 {headCell.label}
               </Box>
               {orderBy === headCell.id
                 ? (
                   <Box
-                    component="span"
+                    component='span'
                     sx={{
                       border: 0,
                       clip: 'rect(0 0 0 0)',
@@ -144,10 +144,11 @@ function EnhancedTableHead (props: EnhancedTableProps): JSX.Element {
                       width: 1
                     }}
                   >
-                    {order === 'desc' ? 'sorted descending'
+                    {order === 'desc'
+                      ? 'sorted descending'
                       : 'sorted ascending'}
                   </Box>
-                )
+                  )
                 : null}
             </TableSortLabel>
           </TableCell>
@@ -194,7 +195,7 @@ function RunningSessions (props) {
     } else if (selectedIndex > 0) {
       newSelected = newSelected.concat(
         selected.slice(0, selectedIndex),
-        selected.slice(selectedIndex + 1),
+        selected.slice(selectedIndex + 1)
       )
     }
     setSelected(newSelected)
@@ -223,9 +224,9 @@ function RunningSessions (props) {
       <IconButton
         sx={{ padding: '1px' }}
         onClick={handleInfoIconClick}
-        size="large"
+        size='large'
       >
-        <InfoIcon/>
+        <InfoIcon />
       </IconButton>
     )
   }
@@ -238,234 +239,236 @@ function RunningSessions (props) {
       <IconButton
         sx={{ padding: '1px' }}
         onClick={handleLiveViewIconClick}
-        size="large"
+        size='large'
       >
-        <VideocamIcon/>
+        <VideocamIcon />
       </IconButton>
     )
   }
 
   const { sessions, origin } = props
 
-    const rows = sessions.map((session) => {
-      return createSessionData(
-        session.id,
-        session.capabilities,
-        session.startTime,
-        session.uri,
-        session.nodeId,
-        session.nodeUri,
-        session.sessionDurationMillis,
-        session.slot,
-        origin
-      )
-    })
-    const emptyRows = rowsPerPage - Math.min(rowsPerPage, rows.length - page * rowsPerPage)
+  const rows = sessions.map((session) => {
+    return createSessionData(
+      session.id,
+      session.capabilities,
+      session.startTime,
+      session.uri,
+      session.nodeId,
+      session.nodeUri,
+      session.sessionDurationMillis,
+      session.slot,
+      origin
+    )
+  })
+  const emptyRows = rowsPerPage - Math.min(rowsPerPage, rows.length - page * rowsPerPage)
 
-    return (
-      <Box width="100%">
-        {rows.length > 0 && (
-          <div>
-            <Paper sx={{ width: '100%', marginBottom: 2 }}>
-              <EnhancedTableToolbar title="Running"/>
-              <TableContainer>
-                <Table
-                  sx={{ minWidth: '750px' }}
-                  aria-labelledby="tableTitle"
-                  size={dense ? 'small' : 'medium'}
-                  aria-label="enhanced table"
-                >
-                  <EnhancedTableHead
-                    order={order}
-                    orderBy={orderBy}
-                    onRequestSort={handleRequestSort}
-                  />
-                  <TableBody>
-                    {stableSort(rows, getComparator(order, orderBy))
-                      .slice(page * rowsPerPage,
-                        page * rowsPerPage + rowsPerPage)
-                      .map((row, index) => {
-                        const isItemSelected = isSelected(row.id as string)
-                        const labelId = `enhanced-table-checkbox-${index}`
-                        return (
-                          <TableRow
-                            hover
-                            onClick={(event) =>
-                              handleClick(event, row.id as string)}
-                            role='checkbox'
-                            aria-checked={isItemSelected}
-                            tabIndex={-1}
-                            key={row.id}
-                            selected={isItemSelected}
+  return (
+    <Box width='100%'>
+      {rows.length > 0 && (
+        <div>
+          <Paper sx={{ width: '100%', marginBottom: 2 }}>
+            <EnhancedTableToolbar title='Running' />
+            <TableContainer>
+              <Table
+                sx={{ minWidth: '750px' }}
+                aria-labelledby='tableTitle'
+                size={dense ? 'small' : 'medium'}
+                aria-label='enhanced table'
+              >
+                <EnhancedTableHead
+                  order={order}
+                  orderBy={orderBy}
+                  onRequestSort={handleRequestSort}
+                />
+                <TableBody>
+                  {stableSort(rows, getComparator(order, orderBy))
+                    .slice(page * rowsPerPage,
+                      page * rowsPerPage + rowsPerPage)
+                    .map((row, index) => {
+                      const isItemSelected = isSelected(row.id as string)
+                      const labelId = `enhanced-table-checkbox-${index}`
+                      return (
+                        <TableRow
+                          hover
+                          onClick={(event) =>
+                            handleClick(event, row.id as string)}
+                          role='checkbox'
+                          aria-checked={isItemSelected}
+                          tabIndex={-1}
+                          key={row.id}
+                          selected={isItemSelected}
+                        >
+                          <TableCell
+                            component='th'
+                            id={labelId}
+                            scope='row'
+                            align='left'
                           >
-                            <TableCell
-                              component='th'
-                              id={labelId}
-                              scope='row'
-                              align='left'
-                            >
-                              {
+                            {
                                 (row.vnc as string).length > 0 &&
                                 displayLiveView(row.id as string)
                               }
-                              {row.name}
-                              {
+                            {row.name}
+                            {
                                 (row.vnc as string).length > 0 &&
-                                <Dialog
-                                  onClose={() => setRowLiveViewOpen('')}
-                                  aria-labelledby="live-view-dialog"
-                                  open={rowLiveViewOpen === row.id}
-                                  fullWidth
-                                  maxWidth="xl"
-                                  fullScreen
-                                  TransitionComponent={Transition}
-                                >
-                                  <DialogTitle id="live-view-dialog">
-                                    <Typography
-                                      gutterBottom component="span"
-                                      sx={{ paddingX: '10px' }}
-                                    >
-                                      <Box
-                                        fontWeight="fontWeightBold"
-                                        mr={1}
-                                        display="inline"
+                                  <Dialog
+                                    onClose={() => setRowLiveViewOpen('')}
+                                    aria-labelledby='live-view-dialog'
+                                    open={rowLiveViewOpen === row.id}
+                                    fullWidth
+                                    maxWidth='xl'
+                                    fullScreen
+                                    TransitionComponent={Transition}
+                                  >
+                                    <DialogTitle id='live-view-dialog'>
+                                      <Typography
+                                        gutterBottom component='span'
+                                        sx={{ paddingX: '10px' }}
                                       >
-                                        Session
-                                      </Box>
-                                      {row.name}
-                                    </Typography>
-                                    <OsLogo
-                                      osName={row.platformName as string}
-                                    />
-                                    <BrowserLogo
-                                      browserName={row.browserName as string}
-                                    />
-                                    {browserVersion(
-                                      row.browserVersion as string)}
-                                  </DialogTitle>
-                                  <DialogContent
-                                    dividers
-                                    sx={{ height: '600px' }}
-                                  >
-                                    <LiveView
-                                      url={row.vnc as string}
-                                      scaleViewport
-                                      onClose={() => setRowLiveViewOpen('')}
-                                    />
-                                  </DialogContent>
-                                  <DialogActions>
-                                    <Button
-                                      onClick={() => setRowLiveViewOpen('')}
-                                      color="primary"
-                                      variant="contained"
+                                        <Box
+                                          fontWeight='fontWeightBold'
+                                          mr={1}
+                                          display='inline'
+                                        >
+                                          Session
+                                        </Box>
+                                        {row.name}
+                                      </Typography>
+                                      <OsLogo
+                                        osName={row.platformName as string}
+                                      />
+                                      <BrowserLogo
+                                        browserName={row.browserName as string}
+                                      />
+                                      {browserVersion(
+                                        row.browserVersion as string)}
+                                    </DialogTitle>
+                                    <DialogContent
+                                      dividers
+                                      sx={{ height: '600px' }}
                                     >
-                                      Close
-                                    </Button>
-                                  </DialogActions>
-                                </Dialog>
+                                      <LiveView
+                                        url={row.vnc as string}
+                                        scaleViewport
+                                        onClose={() => setRowLiveViewOpen('')}
+                                      />
+                                    </DialogContent>
+                                    <DialogActions>
+                                      <Button
+                                        onClick={() => setRowLiveViewOpen('')}
+                                        color='primary'
+                                        variant='contained'
+                                      >
+                                        Close
+                                      </Button>
+                                    </DialogActions>
+                                  </Dialog>
                               }
-                            </TableCell>
-                            <TableCell align='left'>
-                              {displaySessionInfo(row.id as string)}
-                              <OsLogo
-                                osName={row.platformName as string}
-                                size={Size.S}
-                              />
-                              <BrowserLogo
-                                browserName={row.browserName as string}
-                              />
-                              {browserVersion(row.browserVersion as string)}
-                              <Dialog
-                                onClose={() => setRowOpen('')}
-                                aria-labelledby="session-info-dialog"
-                                open={rowOpen === row.id}
-                                fullWidth
-                                maxWidth="md"
-                              >
-                                <DialogTitle id="session-info-dialog">
-                                  <Typography
-                                    gutterBottom component="span"
-                                    sx={{ paddingX: '10px' }}
+                          </TableCell>
+                          <TableCell align='left'>
+                            {displaySessionInfo(row.id as string)}
+                            <OsLogo
+                              osName={row.platformName as string}
+                              size={Size.S}
+                            />
+                            <BrowserLogo
+                              browserName={row.browserName as string}
+                            />
+                            {browserVersion(row.browserVersion as string)}
+                            <Dialog
+                              onClose={() => setRowOpen('')}
+                              aria-labelledby='session-info-dialog'
+                              open={rowOpen === row.id}
+                              fullWidth
+                              maxWidth='md'
+                            >
+                              <DialogTitle id='session-info-dialog'>
+                                <Typography
+                                  gutterBottom component='span'
+                                  sx={{ paddingX: '10px' }}
+                                >
+                                  <Box
+                                    fontWeight='fontWeightBold'
+                                    mr={1}
+                                    display='inline'
                                   >
-                                    <Box
-                                      fontWeight="fontWeightBold"
-                                      mr={1}
-                                      display="inline"
-                                    >
-                                      Session
-                                    </Box>
-                                    {row.name}
-                                  </Typography>
-                                  <OsLogo osName={row.platformName as string} />
-                                  <BrowserLogo
-                                    browserName={row.browserName as string}
-                                  />
-                                  {browserVersion(row.browserVersion as string)}
-                                </DialogTitle>
-                                <DialogContent dividers>
-                                  <Typography gutterBottom>
-                                    Capabilities:
-                                  </Typography>
-                                  <Typography gutterBottom component='span'>
-                                    <pre>
-                                      {JSON.stringify(
-                                        JSON.parse(
-                                          row.capabilities as string) as object,
-                                        null, 2)}
-                                    </pre>
-                                  </Typography>
-                                </DialogContent>
-                                <DialogActions>
-                                  <Button
-                                    onClick={() => setRowOpen('')}
-                                    color="primary"
-                                    variant="contained"
-                                  >
-                                    Close
-                                  </Button>
-                                </DialogActions>
-                              </Dialog>
-                            </TableCell>
-                            <TableCell align='left'>
-                              {row.startTime}
-                            </TableCell>
-                            <TableCell align='left'>
-                              {prettyMilliseconds(
-                                Number(row.sessionDurationMillis))}
-                            </TableCell>
-                            <TableCell align='left'>
-                              {row.nodeUri}
-                            </TableCell>
-                          </TableRow>
-                        )
-                      })}
-                    {emptyRows > 0 && (
-                      <TableRow style={{ height: (dense ? 33 : 53) * emptyRows }}>
-                        <TableCell colSpan={6} />
-                      </TableRow>
-                    )}
-                  </TableBody>
-                </Table>
-              </TableContainer>
-              <TablePagination
-                rowsPerPageOptions={[5, 10, 15]}
-                component="div"
-                count={rows.length}
-                rowsPerPage={rowsPerPage}
-                page={page}
-                onPageChange={handleChangePage}
-                onRowsPerPageChange={handleChangeRowsPerPage}
-              />
-            </Paper>
-            <FormControlLabel
-              control={<Switch checked={dense}
-                               onChange={handleChangeDense}/>}
-              label="Dense padding"
+                                    Session
+                                  </Box>
+                                  {row.name}
+                                </Typography>
+                                <OsLogo osName={row.platformName as string} />
+                                <BrowserLogo
+                                  browserName={row.browserName as string}
+                                />
+                                {browserVersion(row.browserVersion as string)}
+                              </DialogTitle>
+                              <DialogContent dividers>
+                                <Typography gutterBottom>
+                                  Capabilities:
+                                </Typography>
+                                <Typography gutterBottom component='span'>
+                                  <pre>
+                                    {JSON.stringify(
+                                      JSON.parse(
+                                        row.capabilities as string) as object,
+                                      null, 2)}
+                                  </pre>
+                                </Typography>
+                              </DialogContent>
+                              <DialogActions>
+                                <Button
+                                  onClick={() => setRowOpen('')}
+                                  color='primary'
+                                  variant='contained'
+                                >
+                                  Close
+                                </Button>
+                              </DialogActions>
+                            </Dialog>
+                          </TableCell>
+                          <TableCell align='left'>
+                            {row.startTime}
+                          </TableCell>
+                          <TableCell align='left'>
+                            {prettyMilliseconds(
+                              Number(row.sessionDurationMillis))}
+                          </TableCell>
+                          <TableCell align='left'>
+                            {row.nodeUri}
+                          </TableCell>
+                        </TableRow>
+                      )
+                    })}
+                  {emptyRows > 0 && (
+                    <TableRow style={{ height: (dense ? 33 : 53) * emptyRows }}>
+                      <TableCell colSpan={6} />
+                    </TableRow>
+                  )}
+                </TableBody>
+              </Table>
+            </TableContainer>
+            <TablePagination
+              rowsPerPageOptions={[5, 10, 15]}
+              component='div'
+              count={rows.length}
+              rowsPerPage={rowsPerPage}
+              page={page}
+              onPageChange={handleChangePage}
+              onRowsPerPageChange={handleChangeRowsPerPage}
             />
-          </div>
-        )}
-      </Box>
-    )
+          </Paper>
+          <FormControlLabel
+            control={<Switch
+              checked={dense}
+              onChange={handleChangeDense}
+                     />}
+            label='Dense padding'
+          />
+        </div>
+      )}
+    </Box>
+  )
 }
 
 export default RunningSessions

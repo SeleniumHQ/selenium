@@ -231,7 +231,6 @@ class UnboundZmqEventBus implements EventBus {
               EventName eventName = new EventName(new String(socket.recv(), UTF_8));
               // Processing only events we are listening to
               if (!listeners.containsKey(eventName)) {
-//                LOG.log(Level.SEVERE, "Ignoring {0}", eventName);
                 continue;
               }
 

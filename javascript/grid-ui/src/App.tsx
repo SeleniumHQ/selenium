@@ -74,7 +74,7 @@ function App () {
 
   return (
     <ApolloProvider client={client}>
-      <Box display="flex">
+      <Box display='flex'>
         <TopBar
           subheader={topBarSubheader}
           error={error !== undefined}
@@ -91,7 +91,7 @@ function App () {
           />
         )}
         <Box
-          component="main"
+          component='main'
           sx={{
             flexGrow: 1,
             height: '100vh',
@@ -101,13 +101,13 @@ function App () {
         >
           <Container maxWidth={false} sx={{ paddingY: 4 }}>
             <Routes>
-              <Route path="/sessions" element={<Sessions/>}/>
-              <Route path="/help" element={<Help/>}/>
-              <Route path="/" element={<Overview/>}/>
-              <Route path="*" element={<Help/>}/>
+              <Route path='/sessions' element={<Sessions />} />
+              <Route path='/help' element={<Help />} />
+              <Route path='/' element={<Overview />} />
+              <Route path='*' element={<Help />} />
             </Routes>
           </Container>
-          <Footer/>
+          <Footer />
         </Box>
       </Box>
     </ApolloProvider>

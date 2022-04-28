@@ -61,7 +61,8 @@ class RequestConverter extends SimpleChannelInboundHandler<HttpObject> {
 
   private static final Logger LOG = Logger.getLogger(RequestConverter.class.getName());
   private static final ExecutorService EXECUTOR = Executors.newSingleThreadExecutor();
-  private static final List<io.netty.handler.codec.http.HttpMethod> supportedMethods =
+  private static final ExecutorService SHUTDOWN_EXECUTOR = Executors.newSingleThreadExecutor();
+  private static final List<io.netty.handler.codec.http.HttpMethod> SUPPORTED_METHODS =
     Arrays.asList(DELETE, GET, POST, OPTIONS);
   private volatile PipedOutputStream out;
 
@@ -132,6 +133,19 @@ class RequestConverter extends SimpleChannelInboundHandler<HttpObject> {
     }
   }
 
+  @Override
+  public void channelInactive(ChannelHandlerContext ctx) throws Exception {
+    LOG.fine("Closing input pipe, channel became inactive.");
+    SHUTDOWN_EXECUTOR.submit(() -> {
+      try {
+        out.close();
+      } catch (IOException e) {
+        throw new UncheckedIOException(e);
+      }
+    });
+    super.channelInactive(ctx);
+  }
+
   private HttpRequest createRequest(
     ChannelHandlerContext ctx,
     io.netty.handler.codec.http.HttpRequest nettyRequest) {
@@ -140,7 +154,7 @@ class RequestConverter extends SimpleChannelInboundHandler<HttpObject> {
     HttpMethod method;
     if (nettyRequest.method().equals(HEAD)) {
       method = HttpMethod.GET;
-    } else if (supportedMethods.contains(nettyRequest.method())) {
+    } else if (SUPPORTED_METHODS.contains(nettyRequest.method())) {
       try {
         method = HttpMethod.valueOf(nettyRequest.method().name());
       } catch (IllegalArgumentException e) {
