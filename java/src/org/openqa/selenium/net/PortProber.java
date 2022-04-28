@@ -100,7 +100,7 @@ public class PortProber {
       socket.bind(new InetSocketAddress("localhost", port));
       return socket.getLocalPort();
     } catch (IOException e) {
-      return port;
+      return -1;
     }
   }
 
