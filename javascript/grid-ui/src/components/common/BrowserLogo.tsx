@@ -20,7 +20,7 @@ import browserLogo from '../../util/browser-logo'
 import { Size } from '../../models/size'
 import { Box } from '@mui/material'
 
-function BrowserLogo (props) {
+function BrowserLogo (props): JSX.Element {
   const { browserName, size } = props
   const browserLogoSize = size ?? Size.S
   return (

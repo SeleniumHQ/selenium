@@ -95,10 +95,10 @@ function HelpContainer (): JSX.Element {
           Selenium is made possible through the efforts of our open source
           community, contributions from these{' '}
           <Link
-            href="https://www.selenium.dev/documentation/about/copyright/"
-            target="_blank"
-            rel="noreferrer"
-            underline="hover"
+            href='https://www.selenium.dev/documentation/about/copyright/'
+            target='_blank'
+            rel='noreferrer'
+            underline='hover'
           >
             people
           </Link>
@@ -117,15 +117,15 @@ function HelpContainer (): JSX.Element {
   )
 }
 
-function Help () {
+function Help (): JSX.Element {
   return (
     <Box
-      display="flex"
-      flexDirection="column"
-      height="100%"
-      justifyContent="center"
+      display='flex'
+      flexDirection='column'
+      height='100%'
+      justifyContent='center'
     >
-      <HelpContainer/>
+      <HelpContainer />
     </Box>
   )
 }
