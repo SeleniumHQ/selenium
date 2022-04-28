@@ -19,8 +19,7 @@ const AppBar = styled(MuiAppBar)(({ theme }) => ({
   })
 }))
 
-function TopBar (props) {
-
+function TopBar (props): JSX.Element {
   const { subheader, error, drawerOpen, toggleDrawer } = props
 
   return (

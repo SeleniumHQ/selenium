@@ -64,7 +64,7 @@ const PasswordDialog = (props) => {
     <Dialog
       open={open}
       onClose={() => openDialog(false)}
-      aria-labelledby="password-dialog"
+      aria-labelledby='password-dialog'
     >
       <DialogTitle id='password-dialog'>{title}</DialogTitle>
       <DialogContent>
@@ -73,17 +73,17 @@ const PasswordDialog = (props) => {
         </DialogContentText>
         <FormControl
           sx={{ margin: 1, width: '25ch' }}
-          variant="standard"
+          variant='standard'
         >
           <InputLabel
-            htmlFor="standard-adornment-password"
+            htmlFor='standard-adornment-password'
           >
             Password
           </InputLabel>
           <Input
-            id="standard-adornment-password"
+            id='standard-adornment-password'
             autoFocus
-            margin="dense"
+            margin='dense'
             type={values.showPassword ? 'text' : 'password'}
             value={values.password}
             fullWidth
@@ -105,22 +105,22 @@ const PasswordDialog = (props) => {
       </DialogContent>
       <DialogActions>
         <Button
-          variant="contained"
+          variant='contained'
           onClick={() => {
             openDialog(false)
             onCancel()
           }}
-          color="secondary"
+          color='secondary'
         >
           Cancel
         </Button>
         <Button
-          variant="contained"
+          variant='contained'
           onClick={() => {
             // setOpen(false)
             onConfirm(values.password)
           }}
-          color="primary"
+          color='primary'
         >
           Accept
         </Button>

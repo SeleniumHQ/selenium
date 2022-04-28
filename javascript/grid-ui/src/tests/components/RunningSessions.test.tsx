@@ -56,7 +56,7 @@ const sessions = sessionsInfo.map((session) => {
 })
 
 it('renders basic session information', () => {
-  render(<RunningSessions sessions={sessions} origin={origin}/>)
+  render(<RunningSessions sessions={sessions} origin={origin} />)
   const session = sessions[0]
   expect(screen.getByText(session.id)).toBeInTheDocument()
   expect(screen.getByText(session.startTime)).toBeInTheDocument()
@@ -64,7 +64,7 @@ it('renders basic session information', () => {
 })
 
 it('renders detailed session information', () => {
-  render(<RunningSessions sessions={sessions} origin={origin}/>)
+  render(<RunningSessions sessions={sessions} origin={origin} />)
   const session = sessions[0]
   const sessionRow = screen.getByText(session.id).closest('tr')
   const leftClick = { button: 0 }

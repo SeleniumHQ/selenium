@@ -23,9 +23,9 @@ import Snackbar from '@mui/material/Snackbar'
 
 const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert (
   props,
-  ref,
+  ref
 ) {
-  return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />
+  return <MuiAlert elevation={6} ref={ref} variant='filled' {...props} />
 })
 
 function LiveView (props) {
@@ -148,7 +148,7 @@ function LiveView (props) {
       onMouseLeave={handleMouseLeave}
     >
       <PasswordDialog
-        title="LiveView (VNC) Password"
+        title='LiveView (VNC) Password'
         open={open}
         openDialog={handlePasswordDialog}
         onConfirm={handleCredentialsEntered}
@@ -160,7 +160,7 @@ function LiveView (props) {
         autoHideDuration={6000}
         onClose={handleClose}
       >
-        <Alert severity="error" sx={{ width: '100%' }}>
+        <Alert severity='error' sx={{ width: '100%' }}>
           {message}
         </Alert>
       </Snackbar>
@@ -170,7 +170,7 @@ function LiveView (props) {
         autoHideDuration={4000}
         onClose={() => setOpenSuccessAlert(false)}
       >
-        <Alert severity="success" sx={{ width: '100%' }}>
+        <Alert severity='success' sx={{ width: '100%' }}>
           Connected successfully!
         </Alert>
       </Snackbar>
