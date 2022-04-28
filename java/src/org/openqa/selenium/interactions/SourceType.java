@@ -23,7 +23,8 @@ package org.openqa.selenium.interactions;
 public enum SourceType {
   KEY("key"),
   NONE(null),
-  POINTER("pointer");
+  POINTER("pointer"),
+  WHEEL("wheel");
 
   private final String type;
 
