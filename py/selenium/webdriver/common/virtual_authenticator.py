@@ -261,7 +261,7 @@ def required_virtual_authenticator(func):
     @functools.wraps(func)
     @required_chromium_based_browser
     def wrapper(self, *args, **kwargs):
-        if not self.virtual_authenticator:
+        if not self.virtual_authenticator_id:
             raise ValueError(
                 "This function requires a virtual authenticator to be set."
             )

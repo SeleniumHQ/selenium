@@ -91,6 +91,7 @@ def create_rk_disabled_authenticator(driver) -> WebDriver:
 # ---------------- TESTS ------------------------------------
 # TODO: add JS verfication code for tests as in JAVA
 @pytest.mark.xfail_firefox
+@pytest.mark.xfail_safari
 def test_add_and_remove_virtual_authenticator(driver, pages):
     driver = create_rk_disabled_authenticator(driver)
 
