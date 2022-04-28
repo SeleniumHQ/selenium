@@ -23,5 +23,5 @@ The WindowTypes implementation.
 class WindowTypes(object):
     """Set of supported window types."""
 
-    TAB = u'tab'
-    WINDOW = u'window'
+    TAB = 'tab'
+    WINDOW = 'window'
