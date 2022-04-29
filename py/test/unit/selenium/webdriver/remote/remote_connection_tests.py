@@ -15,13 +15,10 @@
 # specific language governing permissions and limitations
 # under the License.
 
-
-import urllib3
-import pytest
-
-
 from urllib import parse
 
+import pytest
+import urllib3
 
 from selenium import __version__
 from selenium.webdriver.remote.remote_connection import (
@@ -96,13 +93,19 @@ def test_get_connection_manager_without_proxy(mock_proxy_settings_missing):
     assert type(conn) == urllib3.PoolManager
 
 
-def test_get_connection_manager_for_certs_and_timeout():
+def test_get_connection_manager_for_certs_and_timeout(monkeypatch):
+    monkeypatch.setattr(RemoteConnection, "get_timeout", lambda _: 10)  # Class state; leaks into subsequent tests.
     remote_connection = RemoteConnection('http://remote', keep_alive=False)
-    remote_connection.set_timeout(10)
     conn = remote_connection._get_connection_manager()
     assert conn.connection_pool_kw['timeout'] == 10
     assert conn.connection_pool_kw['cert_reqs'] == 'CERT_REQUIRED'
     assert 'certifi/cacert.pem' in conn.connection_pool_kw['ca_certs']
+
+
+def test_default_socket_timeout_is_correct():
+    remote_connection = RemoteConnection("http://remote", keep_alive=True)
+    conn = remote_connection._get_connection_manager()
+    assert conn.connection_pool_kw['timeout'] is None
 
 
 def test_get_connection_manager_with_proxy(mock_proxy_settings):

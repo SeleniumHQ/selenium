@@ -143,7 +143,7 @@ class RemoteConnection(object):
 
     def _get_connection_manager(self):
         pool_manager_init_args = {
-            'timeout': self._timeout
+            'timeout': self.get_timeout()
         }
         if self._ca_certs:
             pool_manager_init_args['cert_reqs'] = 'CERT_REQUIRED'
