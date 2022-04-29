@@ -50,9 +50,9 @@ bazel_skylib_workspace()
 
 http_archive(
     name = "rules_python",
-    sha256 = "9fcf91dbcc31fde6d1edb15f117246d912c33c36f44cf681976bd886538deba6",
-    strip_prefix = "rules_python-0.8.0",
-    url = "https://github.com/bazelbuild/rules_python/archive/refs/tags/0.8.0.tar.gz",
+    sha256 = "cdf6b84084aad8f10bf20b46b77cb48d83c319ebe6458a18e9d2cebf57807cdd",
+    strip_prefix = "rules_python-0.8.1",
+    url = "https://github.com/bazelbuild/rules_python/archive/refs/tags/0.8.1.tar.gz",
 )
 
 load("@rules_python//python:repositories.bzl", "python_register_toolchains")
