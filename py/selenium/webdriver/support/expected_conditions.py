@@ -254,6 +254,20 @@ def text_to_be_present_in_element_attribute(locator, attribute_, text_):
     return _predicate
 
 
+def text_to_be_present_in_element_non_empty(locator):
+    """
+    An expectation for checking if non-empty text is present in element.
+    locator
+    """
+    def _predicate(driver):
+        try:
+            element_text = driver.find_element(*locator).text.strip()
+            return element_text != ""
+        except StaleElementReferenceException:
+            return False
+    return _predicate
+
+
 def frame_to_be_available_and_switch_to_it(locator):
     """ An expectation for checking whether the given frame is available to
     switch to.  If the frame is available it switches the given driver to the

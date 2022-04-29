@@ -93,3 +93,13 @@ def test_clickable_element_false(driver, pages):
         target = (By.ID, "hiddenline")  # text, should not be clickable
         element = driver.find_element(*target)  # grab element at locator
         WebDriverWait(driver, 0.1).until(EC.element_to_be_clickable(element))
+
+
+def test_text_not_empty(driver, pages):
+    pages.load("simpleTest.html")
+    empty_target = (By.XPATH, "//*[contains(@id, 'collapsingtext')]/span[1]")
+    with pytest.raises(TimeoutException):
+        result = WebDriverWait(driver, 0.1).until(EC.all_of(
+            EC.text_to_be_present_in_element_non_empty(empty_target),
+            EC.text_to_be_present_in_element_non_empty((By.ID, "oneline"))))
+    assert result == (False, True)
