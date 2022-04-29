@@ -133,7 +133,6 @@ public class DistributorTest {
     sessions = new LocalSessionMap(tracer, bus);
     queue = new LocalNewSessionQueue(
       tracer,
-      bus,
       new DefaultSlotMatcher(),
       Duration.ofSeconds(2),
       Duration.ofSeconds(2),
@@ -203,7 +202,6 @@ public class DistributorTest {
     LocalSessionMap sessions = new LocalSessionMap(tracer, bus);
     NewSessionQueue queue = new LocalNewSessionQueue(
       tracer,
-      bus,
       new DefaultSlotMatcher(),
       Duration.ofSeconds(2),
       Duration.ofSeconds(2),
@@ -244,7 +242,6 @@ public class DistributorTest {
     LocalSessionMap sessions = new LocalSessionMap(tracer, bus);
     NewSessionQueue queue = new LocalNewSessionQueue(
       tracer,
-      bus,
       new DefaultSlotMatcher(),
       Duration.ofSeconds(2),
       Duration.ofSeconds(2),
@@ -287,7 +284,6 @@ public class DistributorTest {
     LocalSessionMap sessions = new LocalSessionMap(tracer, bus);
     NewSessionQueue queue = new LocalNewSessionQueue(
       tracer,
-      bus,
       new DefaultSlotMatcher(),
       Duration.ofSeconds(2),
       Duration.ofSeconds(2),
@@ -328,7 +324,6 @@ public class DistributorTest {
     SessionMap sessions = new LocalSessionMap(tracer, bus);
     NewSessionQueue queue = new LocalNewSessionQueue(
       tracer,
-      bus,
       new DefaultSlotMatcher(),
       Duration.ofSeconds(2),
       Duration.ofSeconds(2),
@@ -364,7 +359,6 @@ public class DistributorTest {
     SessionMap sessions = new LocalSessionMap(tracer, bus);
     NewSessionQueue queue = new LocalNewSessionQueue(
       tracer,
-      bus,
       new DefaultSlotMatcher(),
       Duration.ofSeconds(2),
       Duration.ofSeconds(2),
@@ -410,7 +404,6 @@ public class DistributorTest {
     SessionMap sessions = new LocalSessionMap(tracer, bus);
     NewSessionQueue queue = new LocalNewSessionQueue(
       tracer,
-      bus,
       new DefaultSlotMatcher(),
       Duration.ofSeconds(2),
       Duration.ofSeconds(2),
@@ -456,7 +449,6 @@ public class DistributorTest {
     SessionMap sessions = new LocalSessionMap(tracer, bus);
     NewSessionQueue queue = new LocalNewSessionQueue(
       tracer,
-      bus,
       new DefaultSlotMatcher(),
       Duration.ofSeconds(2),
       Duration.ofSeconds(2),
@@ -545,7 +537,6 @@ public class DistributorTest {
     SessionMap sessions = new LocalSessionMap(tracer, bus);
     NewSessionQueue queue = new LocalNewSessionQueue(
       tracer,
-      bus,
       new DefaultSlotMatcher(),
       Duration.ofSeconds(2),
       Duration.ofSeconds(2),
@@ -594,7 +585,6 @@ public class DistributorTest {
     SessionMap sessions = new LocalSessionMap(tracer, bus);
     NewSessionQueue queue = new LocalNewSessionQueue(
       tracer,
-      bus,
       new DefaultSlotMatcher(),
       Duration.ofSeconds(2),
       Duration.ofSeconds(2),
@@ -673,7 +663,6 @@ public class DistributorTest {
     SessionMap sessions = new LocalSessionMap(tracer, bus);
     NewSessionQueue queue = new LocalNewSessionQueue(
       tracer,
-      bus,
       new DefaultSlotMatcher(),
       Duration.ofSeconds(2),
       Duration.ofSeconds(2),
@@ -731,7 +720,6 @@ public class DistributorTest {
     SessionMap sessions = new LocalSessionMap(tracer, bus);
     NewSessionQueue queue = new LocalNewSessionQueue(
       tracer,
-      bus,
       new DefaultSlotMatcher(),
       Duration.ofSeconds(2),
       Duration.ofSeconds(2),
@@ -771,7 +759,6 @@ public class DistributorTest {
     SessionMap sessions = new LocalSessionMap(tracer, bus);
     NewSessionQueue queue = new LocalNewSessionQueue(
       tracer,
-      bus,
       new DefaultSlotMatcher(),
       Duration.ofSeconds(2),
       Duration.ofSeconds(2),
@@ -831,7 +818,6 @@ public class DistributorTest {
     LocalSessionMap sessions = new LocalSessionMap(tracer, bus);
     NewSessionQueue queue = new LocalNewSessionQueue(
       tracer,
-      bus,
       new DefaultSlotMatcher(),
       Duration.ofSeconds(2),
       Duration.ofSeconds(2),
@@ -867,7 +853,6 @@ public class DistributorTest {
     SessionMap sessions = new LocalSessionMap(tracer, bus);
     NewSessionQueue queue = new LocalNewSessionQueue(
       tracer,
-      bus,
       new DefaultSlotMatcher(),
       Duration.ofSeconds(2),
       Duration.ofSeconds(2),
@@ -909,7 +894,6 @@ public class DistributorTest {
     AtomicReference<Availability> isUp = new AtomicReference<>(DOWN);
     NewSessionQueue queue = new LocalNewSessionQueue(
       tracer,
-      bus,
       new DefaultSlotMatcher(),
       Duration.ofSeconds(2),
       Duration.ofSeconds(2),
@@ -967,7 +951,6 @@ public class DistributorTest {
     handler.addHandler(sessions);
     NewSessionQueue queue = new LocalNewSessionQueue(
       tracer,
-      bus,
       new DefaultSlotMatcher(),
       Duration.ofSeconds(2),
       Duration.ofSeconds(2),
@@ -1044,7 +1027,6 @@ public class DistributorTest {
 
     NewSessionQueue queue = new LocalNewSessionQueue(
       tracer,
-      bus,
       new DefaultSlotMatcher(),
       Duration.ofSeconds(2),
       Duration.ofSeconds(2),

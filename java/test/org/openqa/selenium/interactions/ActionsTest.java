@@ -39,6 +39,7 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.testing.UnitTests;
 
+import java.time.Duration;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -219,7 +220,6 @@ public class ActionsTest {
     assertThat(keyboardActions.get(3)).as("Keyboard releases key")
         .containsEntry("type", "keyUp").containsEntry("value", CONTROL.toString());
   }
-
 
   private WebElement mockLocatableElementWithCoordinates(Coordinates coordinates) {
     WebElement element = mock(WebElement.class,
