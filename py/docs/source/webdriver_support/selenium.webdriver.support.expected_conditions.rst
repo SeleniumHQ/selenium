@@ -34,6 +34,7 @@
       text_to_be_present_in_element
       text_to_be_present_in_element_attribute
       text_to_be_present_in_element_value
+      text-to_be_present_in_element_non_empty
       title_contains
       title_is
       url_changes
