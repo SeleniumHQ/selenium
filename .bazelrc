@@ -4,7 +4,7 @@ build --flag_alias=pin_browsers=//common:pin_browsers
 build --flag_alias=headless=//common:headless
 
 # Set the default java toolchain
-build --java_runtime_version=remotejdk_11
+build --java_runtime_version=remotejdk_11ewd332ewdfr23erfd2re3fd2re3fd2e3rf
 build --tool_java_language_version=11
 
 # We target java 8 by default
