@@ -7,7 +7,7 @@ load("//common:defs.bzl", "copy_file")
 load("//py:defs.bzl", "py_test_suite")
 load("//py/private:browsers.bzl", "BROWSERS")
 
-SE_VERSION = "4.1.3"
+SE_VERSION = "4.1.4"
 
 BROWSER_VERSIONS = [
     "v85",
@@ -120,21 +120,20 @@ pkg_files(
     name = "selenium-sdist-pkg",
     srcs = [
         "CHANGES",
-        "setup.py",
         "MANIFEST.in",
         "README.rst",
+        "setup.py",
         ":selenium-pkg",
     ],
     strip_prefix = strip_prefix.from_pkg(),
 )
 
-
 pkg_tar(
     name = "selenium-sdist",
     srcs = [":selenium-sdist-pkg"],
-    package_file_name = "selenium-%s.tar.gz" % SE_VERSION,
     extension = "tar.gz",
-    mode = "0644"
+    mode = "0644",
+    package_file_name = "selenium-%s.tar.gz" % SE_VERSION,
 )
 
 py_wheel(
