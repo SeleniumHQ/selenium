@@ -11,6 +11,10 @@ Selenium 4.1.4
 * Use monotonic clock for waits, fixes #10544 (#10550)
 * Adding Chrome DevTools 101 and removing 98
 * Add the ability to create sdist package of the python bindings
+* Remove unicode prefix for strings (#10562)
+* Use `get_timeout()` for urllib pool manager timeouts in remote connection (#10563)
+* Fixing "--connect-existing" #10598
+* Added DeprecationWarning to the warnings.warn methods inside the find_element_by_x methods (#10575)
 
 Selenium 4.1.3
 
