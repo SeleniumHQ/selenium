@@ -15,7 +15,11 @@ load("@rules_python//python:defs.bzl", "py_runtime_pair")
 
 py_runtime(
     name = "py3_runtime",
-    interpreter_path = "/usr/bin/python3",
+    interpreter_path = select({
+        "@platforms//os:macos": "/usr/bin/python3",
+        "@platforms//os:linux": "/usr/bin/python",
+        "@platforms//os:windows": "python",
+    }),
     python_version = "PY3",
     stub_shebang = "#!/usr/bin/python3",
 )
