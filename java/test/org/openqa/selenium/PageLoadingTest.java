@@ -246,8 +246,6 @@ public class PageLoadingTest extends JUnit4TestBase {
   @Test
   @NotYetImplemented(value = HTMLUNIT,
     reason = "HtmlUnit: can't execute JavaScript before a page is loaded")
-  @NotYetImplemented(value = CHROME,
-    reason = "https://bugs.chromium.org/p/chromedriver/issues/detail?id=4085")
   @Ignore(value = SAFARI, reason = "Hanging")
   public void testShouldDoNothingIfThereIsNothingToGoBackTo() {
     Set<String> currentWindowHandles = driver.getWindowHandles();
