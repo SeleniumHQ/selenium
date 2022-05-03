@@ -57,11 +57,14 @@ namespace OpenQA.Selenium.DevTools
         private CancellationTokenSource receiveCancellationToken;
         private Task receiveTask;
 
+        private readonly bool waitForDebuggerOnStart;
+
         /// <summary>
         /// Initializes a new instance of the DevToolsSession class, using the specified WebSocket endpoint.
         /// </summary>
         /// <param name="endpointAddress"></param>
-        public DevToolsSession(string endpointAddress)
+        /// <param name="waitForDebuggerOnStart">When enabled new targets will be waiting until runtime.runIfWaitingForDebugger is invoked.</param>
+        public DevToolsSession(string endpointAddress, bool waitForDebuggerOnStart)
         {
             if (string.IsNullOrWhiteSpace(endpointAddress))
             {
@@ -74,6 +77,8 @@ namespace OpenQA.Selenium.DevTools
             {
                 this.websocketAddress = endpointAddress;
             }
+
+            this.waitForDebuggerOnStart = waitForDebuggerOnStart;
         }
 
         /// <summary>
@@ -716,7 +721,7 @@ namespace OpenQA.Selenium.DevTools
             var jobject = new JObject();
             jobject["CommandName"] = "Target.setAutoAttach";
             jobject["autoAttach"] = true;
-            jobject["waitForDebuggerOnStart"] = true;
+            jobject["waitForDebuggerOnStart"] = waitForDebuggerOnStart;
             jobject["flatten"] = true;
             return jobject;
         }

@@ -272,9 +272,9 @@ namespace OpenQA.Selenium.Chromium
         /// </summary>
         /// <param name="devToolsProtocolVersion">The version of the Chromium Developer Tools protocol to use. Defaults to autodetect the protocol version.</param>
         /// <returns>The active session to use to communicate with the Chromium Developer Tools debugging protocol.</returns>
-        public DevToolsSession GetDevToolsSession()
+        public DevToolsSession GetDevToolsSession(bool waitForDebuggerOnStart = false)
         {
-            return GetDevToolsSession(DevToolsSession.AutoDetectDevToolsProtocolVersion);
+            return GetDevToolsSession(DevToolsSession.AutoDetectDevToolsProtocolVersion, waitForDebuggerOnStart);
         }
 
         /// <summary>
@@ -282,7 +282,7 @@ namespace OpenQA.Selenium.Chromium
         /// </summary>
         /// <param name="devToolsProtocolVersion">The version of the Chromium Developer Tools protocol to use. Defaults to autodetect the protocol version.</param>
         /// <returns>The active session to use to communicate with the Chromium Developer Tools debugging protocol.</returns>
-        public DevToolsSession GetDevToolsSession(int devToolsProtocolVersion)
+        public DevToolsSession GetDevToolsSession(int devToolsProtocolVersion, bool waitForDebuggerOnStart = false)
         {
             if (this.devToolsSession == null)
             {
@@ -305,7 +305,7 @@ namespace OpenQA.Selenium.Chromium
                 string debuggerAddress = options["debuggerAddress"].ToString();
                 try
                 {
-                    DevToolsSession session = new DevToolsSession(debuggerAddress);
+                    DevToolsSession session = new DevToolsSession(debuggerAddress, waitForDebuggerOnStart);
                     session.StartSession(devToolsProtocolVersion).ConfigureAwait(false).GetAwaiter().GetResult();
                     this.devToolsSession = session;
                 }
