@@ -18,7 +18,7 @@ py_runtime(
     interpreter_path = select({
         "@platforms//os:macos": "/usr/bin/python3",
         "@platforms//os:linux": "/usr/bin/python",
-        "@platforms//os:windows": "python",
+        "@platforms//os:windows": "C:\\Python310\\python",
     }),
     python_version = "PY3",
     stub_shebang = "#!/usr/bin/python3",
