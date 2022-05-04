@@ -38,7 +38,6 @@ const safari = require('./safari')
 const session = require('./lib/session')
 const until = require('./lib/until')
 const webdriver = require('./lib/webdriver')
-const opera = require('./opera')
 
 const Browser = capabilities.Browser
 const Capabilities = capabilities.Capabilities
@@ -232,12 +231,6 @@ class Builder {
 
     /** @private {http.Agent} */
     this.agent_ = null
-
-    /** @private {opera.Options} */
-    this.operaOptions_ = null
-
-    /** @private {remote.DriverService.Builder} */
-    this.operaService_ = null
   }
 
   /**
@@ -433,20 +426,6 @@ class Builder {
   }
 
   /**
-   * Sets Opera specific {@linkplain opera.Options options} for drivers
-   * created by this builder. Any logging or proxy settings defined on the given
-   * options will take precedence over those set through
-   * {@link #setLoggingPrefs} and {@link #setProxy}, respectively.
-   *
-   * @param {!opera.Options} options The OperaDriver options to use.
-   * @return {!Builder} A self reference.
-   */
-  setOperaOptions(options) {
-    this.operaOptions_ = options
-    return this
-  }
-
-  /**
    * @return {chrome.Options} the Chrome specific options currently configured
    *     for this builder.
    */
@@ -561,21 +540,6 @@ class Builder {
   }
 
   /**
-   * Sets the {@link opera.ServiceBuilder} to use to manage the
-   * operaDriver child process when creating sessions locally.
-   *
-   * @param {opera.ServiceBuilder} service the service to use.
-   * @return {!Builder} a self reference.
-   */
-  setOperaService(service) {
-    if (service && !(service instanceof opera.ServiceBuilder)) {
-      throw TypeError('not a opera.ServiceBuilder object')
-    }
-    this.operaService_ = service
-    return this
-  }
-
-  /**
    * Sets Safari specific {@linkplain safari.Options options} for drivers
    * created by this builder. Any logging settings defined on the given options
    * will take precedence over those set through {@link #setLoggingPrefs}.
@@ -648,8 +612,6 @@ class Builder {
       capabilities.merge(this.safariOptions_)
     } else if (browser === Browser.EDGE && this.edgeOptions_) {
       capabilities.merge(this.edgeOptions_)
-    } else if (browser === Browser.OPERA && this.operaOptions_) {
-      capabilities.merge(this.operaOptions_)
     }
 
     checkOptions(
@@ -734,14 +696,6 @@ class Builder {
           service = this.edgeService_.build()
         }
         return createDriver(edge.Driver, capabilities, service)
-      }
-
-      case Browser.OPERA: {
-        let service = null
-        if (this.operaService_) {
-          service = this.operaService_.build()
-        }
-        return createDriver(opera.Driver, capabilities, service)
       }
 
       case Browser.SAFARI:
