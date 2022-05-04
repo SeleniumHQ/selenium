@@ -34,7 +34,6 @@ const Browser = {
   FIREFOX: 'firefox',
   INTERNET_EXPLORER: 'internet explorer',
   SAFARI: 'safari',
-  OPERA: 'opera',
 }
 
 /**
@@ -280,13 +279,6 @@ class Capabilities {
    */
   static safari() {
     return new Capabilities().setBrowserName(Browser.SAFARI)
-  }
-
-  /**
-   * @return {!Capabilities} A basic set of capabilities for Opera
-   */
-  static opera() {
-    return new Capabilities().setBrowserName(Browser.OPERA)
   }
 
   /**
