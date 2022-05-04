@@ -39,7 +39,6 @@ const firefox = require('../firefox')
 const ie = require('../ie')
 const remote = require('../remote')
 const safari = require('../safari')
-const opera = require('../opera')
 const { Browser, Capabilities } = require('../lib/capabilities')
 const { Builder } = require('../index')
 
@@ -123,7 +122,6 @@ function getAvailableBrowsers() {
     [firefox.locateSynchronously, Browser.FIREFOX],
     [ie.locateSynchronously, Browser.INTERNET_EXPLORER],
     [safari.locateSynchronously, Browser.SAFARI],
-    [opera.locateSynchronously, Browser.OPERA],
   ]
 
   let availableBrowsers = []
