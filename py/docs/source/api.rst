@@ -30,6 +30,19 @@ Webdriver.common
    selenium.webdriver.common.proxy
    selenium.webdriver.common.utils
    selenium.webdriver.common.service
+   selenium.webdriver.common.options
+   selenium.webdriver.common.timeouts
+   selenium.webdriver.common.window
+   selenium.webdriver.common.actions.actions_builder
+   selenium.webdriver.common.actions.input_device
+   selenium.webdriver.common.actions.interaction
+   selenium.webdriver.common.actions.key_actios
+   selenium.webdriver.common.actions.key_input
+   selenium.webdriver.common.actions.mouse_button
+   selenium.webdriver.common.actions.pointer_input
+   selenium.webdriver.common.actions.pointer_actions
+   selenium.webdriver.common.actions.wheel_input
+   selenium.webdriver.common.actions.wheel_actions
    selenium.webdriver.common.html5.application_cache
 
 Webdriver.support
@@ -43,6 +56,7 @@ Webdriver.support
    selenium.webdriver.support.color
    selenium.webdriver.support.event_firing_webdriver
    selenium.webdriver.support.expected_conditions
+   selenium.webdriver.support.realtive_locator
    selenium.webdriver.support.select
    selenium.webdriver.support.wait
 
@@ -87,10 +101,12 @@ Webdriver.firefox
    :toctree: webdriver_firefox
 
    selenium.webdriver.firefox.extension_connection
+   selenium.webdriver.firefox.remote_connection
    selenium.webdriver.firefox.firefox_binary
    selenium.webdriver.firefox.options
    selenium.webdriver.firefox.firefox_profile
    selenium.webdriver.firefox.webdriver
+   selenium.webdriver.firefox.service
 
 Webdriver.ie
 ------------
@@ -99,6 +115,8 @@ Webdriver.ie
 .. autosummary::
    :toctree: webdriver_ie
 
+   selenium.webdriver.ie.service
+   selenium.webdriver.ie.options
    selenium.webdriver.ie.webdriver
 
 Webdriver.opera
@@ -109,6 +127,7 @@ Webdriver.opera
    :toctree: webdriver_opera
 
    selenium.webdriver.opera.webdriver
+   selenium.webdriver.opera.options
 
 Webdriver.remote
 ----------------
@@ -118,6 +137,7 @@ Webdriver.remote
    :toctree: webdriver_remote
 
    selenium.webdriver.remote.command
+   selenium.webdriver.remote.bidi_connection
    selenium.webdriver.remote.errorhandler
    selenium.webdriver.remote.mobile
    selenium.webdriver.remote.remote_connection
@@ -125,6 +145,9 @@ Webdriver.remote
    selenium.webdriver.remote.utils
    selenium.webdriver.remote.webdriver
    selenium.webdriver.remote.webelement
+   selenium.webdriver.remote.file_detector
+   selenium.webdriver.remote.script_key
+   selenium.webdriver.remote.switch_to
 
 Webdriver.safari
 ----------------
@@ -133,6 +156,9 @@ Webdriver.safari
 .. autosummary::
   :toctree: webdriver_safari
 
+  selenium.webdriver.safari.options
+  selenium.webdriver.safari.permissions
+  selenium.webdriver.safari.remote_connection
   selenium.webdriver.safari.service
   selenium.webdriver.safari.webdriver
 
