@@ -308,7 +308,21 @@ class RemoteConnection(object):
             Command.MINIMIZE_WINDOW:
                 ('POST', '/session/$sessionId/window/minimize'),
             Command.PRINT_PAGE:
-                ('POST', '/session/$sessionId/print')
+                ('POST', '/session/$sessionId/print'),
+            Command.ADD_VIRTUAL_AUTHENTICATOR:
+                ('POST', '/session/$sessionId/webauthn/authenticator'),
+            Command.REMOVE_VIRTUAL_AUTHENTICATOR:
+                ('DELETE', '/session/$sessionId/webauthn/authenticator/$authenticatorId'),
+            Command.ADD_CREDENTIAL:
+                ('POST', '/session/$sessionId/webauthn/authenticator/$authenticatorId/credential'),
+            Command.GET_CREDENTIALS:
+                ('GET', '/session/$sessionId/webauthn/authenticator/$authenticatorId/credentials'),
+            Command.REMOVE_CREDENTIAL:
+                ('DELETE', '/session/$sessionId/webauthn/authenticator/$authenticatorId/credentials/$credentialId'),
+            Command.REMOVE_ALL_CREDENTIALS:
+                ('DELETE', '/session/$sessionId/webauthn/authenticator/$authenticatorId/credentials'),
+            Command.SET_USER_VERIFIED:
+                ('POST', '/session/$sessionId/webauthn/authenticator/$authenticatorId/uv'),
         }
 
     def execute(self, command, params):
