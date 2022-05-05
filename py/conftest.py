@@ -74,7 +74,7 @@ def driver(request):
     kwargs = {}
 
     try:
-        driver_class = request.param.capitalize()
+        driver_class = "Chrome" #request.param.capitalize()
     except AttributeError:
         raise Exception('This test requires a --driver to be specified.')
 
