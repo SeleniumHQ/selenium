@@ -19,7 +19,14 @@ import functools
 
 from base64 import urlsafe_b64encode, urlsafe_b64decode
 from enum import Enum
-from typing import Literal
+import typing
+import sys
+
+if typing.TYPE_CHECKING:
+    if sys.version_info >= (3, 8):
+        from typing import Literal
+    else:
+        from typing_extensions import Literal
 
 
 class Protocol(Enum):
