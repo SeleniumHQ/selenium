@@ -112,3 +112,12 @@ class Command(object):
     GET_SHADOW_ROOT = "getShadowRoot"
     FIND_ELEMENT_FROM_SHADOW_ROOT = "findElementFromShadowRoot"
     FIND_ELEMENTS_FROM_SHADOW_ROOT = "findElementsFromShadowRoot"
+
+    # Virtual Authenticator
+    ADD_VIRTUAL_AUTHENTICATOR = "addVirtualAuthenticator"
+    REMOVE_VIRTUAL_AUTHENTICATOR = "removeVirtualAuthenticator"
+    ADD_CREDENTIAL = "addCredential"
+    GET_CREDENTIALS = "getCredentials"
+    REMOVE_CREDENTIAL = "removeCredential"
+    REMOVE_ALL_CREDENTIALS = "removeAllCredentials"
+    SET_USER_VERIFIED = "setUserVerified"

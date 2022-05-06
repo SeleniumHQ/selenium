@@ -63,13 +63,12 @@ it('renders basic session information', () => {
   expect(screen.getByText(session.nodeUri)).toBeInTheDocument()
 })
 
-it('renders detailed session information', () => {
-  render(<RunningSessions sessions={sessions} origin={origin} />)
+it('renders detailed session information', async () => {
+  render(<RunningSessions sessions={sessions} origin={origin}/>)
   const session = sessions[0]
   const sessionRow = screen.getByText(session.id).closest('tr')
-  const leftClick = { button: 0 }
-  /** @ts-expect-error: sessionRow can be null */
-  userEvent.click(within(sessionRow).getByRole('button'), leftClick)
+  const user = userEvent.setup()
+  await user.click(within(sessionRow as HTMLElement).getByRole('button'))
   const dialogPane = screen.getByText('Capabilities:').closest('div')
   expect(dialogPane).toHaveTextContent('Capabilities:' + session.capabilities)
 })
