@@ -4,6 +4,7 @@ namespace OpenQA.Selenium.DevToolsGenerator.CodeGen
     using System;
     using System.Collections.Generic;
     using System.Text.RegularExpressions;
+    using System.Runtime.InteropServices;
 
     /// <summary>
     /// Contains various utility methods.
@@ -24,6 +25,7 @@ namespace OpenQA.Selenium.DevToolsGenerator.CodeGen
             path = path.Replace("{{rootNamespace}}", settings.RootNamespace);
             path = path.Replace("{{templatePath}}", settings.TemplatesPath);
             path = path.Replace("{{domainName}}", context.Domain.Name);
+            path = path.Replace('\\', System.IO.Path.DirectorySeparatorChar);
             return path;
         }
 
