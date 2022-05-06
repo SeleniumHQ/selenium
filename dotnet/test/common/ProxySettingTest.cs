@@ -46,6 +46,7 @@ namespace OpenQA.Selenium
         }
 
         [Test]
+        [IgnoreBrowser(Browser.Chrome, "ChromeDriver is hanging")]
         [IgnoreBrowser(Browser.Safari, "SafariDriver does not support setting proxy")]
         [IgnoreBrowser(Browser.EdgeLegacy, "EdgeDriver does not support setting proxy")]
         public void CanConfigureManualHttpProxy()
@@ -59,6 +60,7 @@ namespace OpenQA.Selenium
         }
 
         [Test]
+        [IgnoreBrowser(Browser.Chrome, "ChromeDriver is hanging")]
         [IgnoreBrowser(Browser.Safari, "SafariDriver does not support setting proxy")]
         [IgnoreBrowser(Browser.EdgeLegacy, "EdgeDriver does not support setting proxy")]
         public void CanConfigureNoProxy()
@@ -66,7 +68,7 @@ namespace OpenQA.Selenium
             proxyServer.EnableLogResourcesOnResponse();
             Proxy proxyToUse = proxyServer.AsProxy();
             proxyToUse.AddBypassAddresses(EnvironmentManager.Instance.UrlBuilder.HostName);
-            
+
             if (TestUtilities.IsInternetExplorer(driver))
             {
                 proxyToUse.AddBypassAddress("<-localhost>");
@@ -82,6 +84,7 @@ namespace OpenQA.Selenium
         }
 
         [Test]
+        [IgnoreBrowser(Browser.Chrome, "ChromeDriver is hanging")]
         [IgnoreBrowser(Browser.Safari, "SafariDriver does not support setting proxy")]
         [IgnoreBrowser(Browser.EdgeLegacy, "EdgeDriver does not support setting proxy")]
         public void CanConfigureProxyThroughAutoConfigFile()
@@ -104,6 +107,7 @@ namespace OpenQA.Selenium
         }
 
         [Test]
+        [IgnoreBrowser(Browser.Chrome, "ChromeDriver is hanging")]
         [IgnoreBrowser(Browser.Safari, "SafariDriver does not support setting proxy")]
         [IgnoreBrowser(Browser.EdgeLegacy, "EdgeDriver does not support setting proxy")]
         public void CanUseAutoConfigFileThatOnlyProxiesCertainHosts()
@@ -373,7 +377,7 @@ namespace OpenQA.Selenium
                 responseHeader.EntityHeaders.ContentEncoding = "utf-8";
                 responseHeader.EntityHeaders.ContentLength = responseStream.Length;
                 new HttpResponseWriter(context.ClientStream).Write(responseHeader, responseStream, responseStream.Length);
-            }           
+            }
         }
     }
 }
