@@ -37,6 +37,8 @@ const { Capabilities } = require('./capabilities')
 const path = require('path')
 const { NoSuchElementError } = require('./error')
 const cdpTargets = ['page', 'browser']
+const Credential =
+  require('./virtual_authenticator').Credential
 
 // Capability names that are defined in the W3C spec.
 const W3C_CAPABILITY_NAMES = new Set([
@@ -679,6 +681,9 @@ class WebDriver {
 
     /** @private @const {(function(this: void): ?|undefined)} */
     this.onQuit_ = onQuit
+
+    /** @private {./virtual_authenticator}*/
+    this.authenticatorId_ = null
   }
 
   /**
@@ -730,6 +735,7 @@ class WebDriver {
   /** @override */
   async execute(command) {
     command.setParameter('sessionId', this.session_)
+
     let parameters = await toWireValue(command.getParameters())
     command.setParameters(parameters)
     let value = await this.executor_.execute(command)
@@ -1514,6 +1520,113 @@ class WebDriver {
         callback(event)
       }
     })
+  }
+
+  /**
+   * 
+   * @returns The value of authenticator ID added
+   */
+  virtualAuthenticatorId() {
+    return this.authenticatorId_
+  }
+
+  /**
+   * Adds a virtual authenticator with the given options.
+   * @param options VirtualAuthenticatorOptions object to set authenticator optons.
+   */
+  async addVirtualAuthenticator(options) {
+    this.authenticatorId_ = await this.execute(
+      new command.Command(command.Name.ADD_VIRTUAL_AUTHENTICATOR).setParameters(
+        options.toDict()
+      )
+    )
+  }
+
+  /**
+   * Removes a previously added virtual authenticator. The authenticator is no
+   * longer valid after removal, so no methods may be called.
+   */
+  async removeVirtualAuthenticator() {
+    await this.execute(
+      new command.Command(
+        command.Name.REMOVE_VIRTUAL_AUTHENTICATOR
+      ).setParameter('authenticatorId', this.authenticatorId_)
+    )
+    this.authenticatorId_ = null
+  }
+
+  /**
+   * Injects a credential into the authenticator.
+   * @param credential Credential to be added
+   */
+  async addCredential(credential) {
+    credential = credential.toDict()
+    credential['authenticatorId'] = this.authenticatorId_
+    await this.execute(
+      new command.Command(command.Name.ADD_CREDENTIAL).setParameters(credential)
+    )
+  }
+
+  /**
+   * 
+   * @returns The list of credentials owned by the authenticator.
+   */
+  async getCredentials() {
+    let credential_data = await this.execute(
+      new command.Command(command.Name.GET_CREDENTIALS).setParameter(
+        'authenticatorId',
+        this.virtualAuthenticatorId()
+      )
+    )
+    var credential_list = []
+    for(var i = 0; i < credential_data.length; i++) {
+      credential_list.push(new Credential().fromDict(credential_data[i]))
+    }
+    return credential_list
+  }
+
+  /**
+   * Removes a credential from the authenticator.
+   * @param credential_id The ID of the credential to be removed.
+   */
+  async removeCredential(credential_id) {
+
+    // If credential_id is not a base64url, then convert it to base64url.
+    if (Array.isArray(credential_id)) {
+      credential_id = Buffer.from(credential_id).toString('base64url')
+    }
+
+    await this.execute(
+      new command.Command(command.Name.REMOVE_CREDENTIAL)
+        .setParameter('credentialId', credential_id)
+        .setParameter('authenticatorId', this.authenticatorId_)
+    )
+  }
+
+  /**
+   * Removes all the credentials from the authenticator.
+   */
+  async removeAllCredentials() {
+    await this.execute(
+      new command.Command(command.Name.REMOVE_ALL_CREDENTIALS).setParameter(
+        'authenticatorId',
+        this.authenticatorId_
+      )
+    )
+  }
+
+  /**
+   * Sets whether the authenticator will simulate success or fail on user verification.
+   * @param verified true if the authenticator will pass user verification, false otherwise.
+   */
+  async setUserVerified(verified) {
+    await this.execute(
+      new command.Command(command.Name.SET_USER_VERIFIED)
+      .setParameter(
+        'authenticatorId',
+        this.authenticatorId_
+      ).setParameter('isUserVerified', verified)
+    )
   }
 }
 

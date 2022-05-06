@@ -106,6 +106,7 @@ const Pages = (function () {
   addPage('webComponents', 'webComponents.html')
   addPage('xhtmlTestPage', 'xhtmlTest.html')
   addPage('uploadInvisibleTestPage', 'upload_invisible.html')
+  addPage('virtualAuthenticator', 'virtualAuthenticator.html')
 
   return pages
 })()
