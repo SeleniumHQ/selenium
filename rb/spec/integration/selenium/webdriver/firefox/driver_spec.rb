@@ -45,9 +45,20 @@ module Selenium
           end
 
           it 'should print full page' do
+            viewport_width = driver.execute_script("return window.innerWidth;")
+            viewport_height = driver.execute_script("return window.innerHeight;")
+
             path = "#{Dir.tmpdir}/test#{SecureRandom.urlsafe_base64}.png"
             screenshot = driver.save_full_page_screenshot(path)
-            expect(File.read(screenshot)[0x10..0x18].unpack('NN').last).to be > 2600
+
+            if Platform.linux?
+              expect(File.read(screenshot)[0x10..0x18].unpack('NN')).first.to be >= viewport_width
+              expect(File.read(screenshot)[0x10..0x18].unpack('NN')).last.to be > viewport_height
+            else
+              expect((File.read(screenshot)[0x10..0x18].unpack('NN')).first/2).to be >= viewport_width
+              expect((File.read(screenshot)[0x10..0x18].unpack('NN')).last/2).to be > viewport_height
+            end
+
           ensure
             File.delete(path) if File.exist?(path)
           end
