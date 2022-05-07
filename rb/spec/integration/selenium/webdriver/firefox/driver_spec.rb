@@ -52,11 +52,11 @@ module Selenium
             screenshot = driver.save_full_page_screenshot(path)
 
             if Platform.linux?
-              expect(File.read(screenshot)[0x10..0x18].unpack('NN')).first.to be >= viewport_width
-              expect(File.read(screenshot)[0x10..0x18].unpack('NN')).last.to be > viewport_height
+              expect(File.read(screenshot)[0x10..0x18].unpack1('NN')).to be >= viewport_width
+              expect(File.read(screenshot)[0x10..0x18].unpack('NN').last).to be > viewport_height
             else
-              expect((File.read(screenshot)[0x10..0x18].unpack('NN')).first/2).to be >= viewport_width
-              expect((File.read(screenshot)[0x10..0x18].unpack('NN')).last/2).to be > viewport_height
+              expect(File.read(screenshot)[0x10..0x18].unpack1('NN') / 2).to be >= viewport_width
+              expect(File.read(screenshot)[0x10..0x18].unpack('NN').last / 2).to be > viewport_height
             end
 
           ensure
