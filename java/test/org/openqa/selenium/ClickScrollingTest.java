@@ -93,6 +93,7 @@ public class ClickScrollingTest extends JUnit4TestBase {
   }
 
   @Test
+  @Ignore(value = FIREFOX, issue = "https://github.com/mozilla/geckodriver/issues/2013")
   public void testShouldBeAbleToClickOnAnElementHiddenByDoubleOverflow() {
     driver.get(appServer.whereIs("scrolling_tests/page_with_double_overflow_auto.html"));
 
@@ -110,6 +111,7 @@ public class ClickScrollingTest extends JUnit4TestBase {
 
   @Test
   @Ignore(value = IE, issue = "716")
+  @Ignore(value = FIREFOX, issue = "https://github.com/mozilla/geckodriver/issues/2013")
   public void testShouldBeAbleToClickOnAnElementPartiallyHiddenByOverflow() {
     driver.get(appServer.whereIs("scrolling_tests/page_with_partially_hidden_element.html"));
 
@@ -129,6 +131,7 @@ public class ClickScrollingTest extends JUnit4TestBase {
   }
 
   @Test
+  @Ignore(value = FIREFOX, issue = "https://github.com/mozilla/geckodriver/issues/2013")
   @NotYetImplemented(IE)
   public void testShouldNotScrollIfAlreadyScrolledAndElementIsInView() {
     driver.get(appServer.whereIs("scroll3.html"));
