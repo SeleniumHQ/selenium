@@ -28,7 +28,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Opera, "Not tested")]
         public void CanClickOnALinkThatOverflowsAndFollowIt()
         {
             driver.FindElement(By.Id("overflowLink")).Click();
@@ -88,7 +87,7 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        
+
         public void CanClickOnAnElementWithTopSetToANegativeNumber()
         {
             driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("styledPage.html");
@@ -101,7 +100,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Opera)]
         public void ShouldSetRelatedTargetForMouseOver()
         {
             driver.Url = javascriptPage;
@@ -133,7 +131,6 @@ namespace OpenQA.Selenium
 
         [Test]
         [NeedsFreshDriver(IsCreatedAfterTest = true)]
-        [IgnoreBrowser(Browser.Opera, "Doesn't support multiple windows")]
         public void ShouldOnlyFollowHrefOnce()
         {
             driver.Url = clicksPage;
@@ -221,7 +218,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Opera, "Map click fails")]
         public void CanClickAnImageMapArea()
         {
             driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("click_tests/google_map.html");
@@ -251,7 +247,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Opera, "Not Tested")]
         public void ShouldBeAbleToClickOnAnElementInFrameGreaterThanTwoViewports()
         {
             string url = EnvironmentManager.Instance.UrlBuilder.WhereIs("click_too_big_in_frame.html");
@@ -340,7 +335,6 @@ namespace OpenQA.Selenium
         [IgnoreBrowser(Browser.IE, "Element is properly seen as obscured.")]
         [IgnoreBrowser(Browser.Chrome, "Element is properly seen as obscured.")]
         [IgnoreBrowser(Browser.Edge, "Element is properly seen as obscured.")]
-        [IgnoreBrowser(Browser.EdgeLegacy, "Element is properly seen as obscured.")]
         [IgnoreBrowser(Browser.Firefox, "Element is properly seen as obscured.")]
         [IgnoreBrowser(Browser.Safari, "Element is properly seen as obscured.")]
         public void ShouldBeAbleToClickOnAPartiallyOverlappedLinkThatWrapsToTheNextLine()

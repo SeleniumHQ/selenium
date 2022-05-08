@@ -15,8 +15,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebDriver.Chrome.Tests", "t
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebDriver.Edge.Tests", "test\edge\WebDriver.Edge.Tests.csproj", "{EF99FB04-94C3-4AA0-8809-B514B253DF51}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebDriver.Opera.Tests", "test\opera\WebDriver.Opera.Tests.csproj", "{C6CD9D25-75D2-4C7A-966A-EA2D26091DD1}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebDriver.IE.Tests", "test\ie\WebDriver.IE.Tests.csproj", "{E54A6F7B-3939-4DE5-85CC-28158615A967}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebDriver.Firefox.Tests", "test\firefox\WebDriver.Firefox.Tests.csproj", "{F912F647-04A0-4081-91B4-985EE0E9097C}"
@@ -59,10 +57,6 @@ Global
 		{EF99FB04-94C3-4AA0-8809-B514B253DF51}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EF99FB04-94C3-4AA0-8809-B514B253DF51}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EF99FB04-94C3-4AA0-8809-B514B253DF51}.Release|Any CPU.Build.0 = Release|Any CPU
-		{C6CD9D25-75D2-4C7A-966A-EA2D26091DD1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{C6CD9D25-75D2-4C7A-966A-EA2D26091DD1}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{C6CD9D25-75D2-4C7A-966A-EA2D26091DD1}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{C6CD9D25-75D2-4C7A-966A-EA2D26091DD1}.Release|Any CPU.Build.0 = Release|Any CPU
 		{E54A6F7B-3939-4DE5-85CC-28158615A967}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{E54A6F7B-3939-4DE5-85CC-28158615A967}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E54A6F7B-3939-4DE5-85CC-28158615A967}.Release|Any CPU.ActiveCfg = Release|Any CPU

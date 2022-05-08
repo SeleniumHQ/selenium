@@ -38,22 +38,18 @@ namespace OpenQA.Selenium.Environment
         private void PopulateOptionsTypes()
         {
             this.optionsTypes[Browser.Chrome] = typeof(ChromeOptions);
-            this.optionsTypes[Browser.EdgeLegacy] = typeof(EdgeOptions);
             this.optionsTypes[Browser.Edge] = typeof(EdgeOptions);
             this.optionsTypes[Browser.Firefox] = typeof(FirefoxOptions);
             this.optionsTypes[Browser.IE] = typeof(InternetExplorerOptions);
-            this.optionsTypes[Browser.Opera] = typeof(OperaOptions);
             this.optionsTypes[Browser.Safari] = typeof(SafariOptions);
         }
 
         private void PopulateServiceTypes()
         {
             this.serviceTypes[Browser.Chrome] = typeof(ChromeDriverService);
-            this.serviceTypes[Browser.EdgeLegacy] = typeof(EdgeDriverService);
             this.serviceTypes[Browser.Edge] = typeof(EdgeDriverService);
             this.serviceTypes[Browser.Firefox] = typeof(FirefoxDriverService);
             this.serviceTypes[Browser.IE] = typeof(InternetExplorerDriverService);
-            this.serviceTypes[Browser.Opera] = typeof(OperaDriverService);
             this.serviceTypes[Browser.Safari] = typeof(SafariDriverService);
         }
 
@@ -88,12 +84,6 @@ namespace OpenQA.Selenium.Environment
                 browser = Browser.IE;
                 options = GetDriverOptions<InternetExplorerOptions>(driverType, driverOptions);
                 service = CreateService<InternetExplorerDriverService>(driverType);
-            }
-            else if (typeof(EdgeDriver).IsAssignableFrom(driverType))
-            {
-                browser = Browser.EdgeLegacy;
-                options = GetDriverOptions<EdgeOptions>(driverType, driverOptions);
-                service = CreateService<EdgeDriverService>(driverType);
             }
             else if (typeof(FirefoxDriver).IsAssignableFrom(driverType))
             {

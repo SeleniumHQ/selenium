@@ -145,7 +145,6 @@ namespace OpenQA.Selenium.Interactions
         [Test]
         [IgnoreBrowser(Browser.Chrome, "Drivers correctly click at current mouse position without another move, preserving mouse position.")]
         [IgnoreBrowser(Browser.Edge, "Drivers correctly click at current mouse position without another move, preserving mouse position.")]
-        [IgnoreBrowser(Browser.EdgeLegacy, "Drivers correctly click at current mouse position without another move, preserving mouse position.")]
         [IgnoreBrowser(Browser.Firefox, "Drivers correctly click at current mouse position without another move, preserving mouse position.")]
         [IgnoreBrowser(Browser.IE, "Drivers correctly click at current mouse position without another move, preserving mouse position.")]
         [IgnoreBrowser(Browser.Safari, "Drivers correctly click at current mouse position without another move, preserving mouse position.")]
@@ -182,7 +181,6 @@ namespace OpenQA.Selenium.Interactions
         [Test]
         [IgnoreBrowser(Browser.Chrome, "Moving outside of view port throws exception in spec-compliant driver")]
         [IgnoreBrowser(Browser.Edge, "Moving outside of view port throws exception in spec-compliant driver")]
-        [IgnoreBrowser(Browser.EdgeLegacy, "Moving outside of view port throws exception in spec-compliant driver")]
         [IgnoreBrowser(Browser.Firefox, "Moving outside of view port throws exception in spec-compliant driver")]
         [IgnoreBrowser(Browser.IE, "Moving outside of view port throws exception in spec-compliant driver")]
         [IgnoreBrowser(Browser.Safari, "Moving outside of view port throws exception in spec-compliant driver")]
@@ -214,7 +212,6 @@ namespace OpenQA.Selenium.Interactions
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Opera, "API not implemented in driver")]
         public void ShouldClickElementInIFrame()
         {
             driver.Url = clicksPage;
@@ -233,7 +230,6 @@ namespace OpenQA.Selenium.Interactions
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Opera)]
         public void ShouldAllowUsersToHoverOverElements()
         {
             driver.Url = javascriptPage;

@@ -26,7 +26,7 @@ namespace OpenQA.Selenium
             long yOffset = (long)((IJavaScriptExecutor)driver).ExecuteScript(scrollScript);
 
             //Focusing on to click, but not actually following,
-            //the link will scroll it in to view, which is a few pixels further than 0 
+            //the link will scroll it in to view, which is a few pixels further than 0
             Assert.That(yOffset, Is.GreaterThan(300), "Did not scroll");
         }
 
@@ -78,7 +78,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Opera)]
         public void ShouldNotScrollOverflowElementsWhichAreVisible()
         {
             driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("scroll2.html");
@@ -118,7 +117,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Opera, "Opera fails.")]
         public void ShouldBeAbleToClickElementInAFrameThatIsOutOfView()
         {
             try
@@ -136,7 +134,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Opera, "Opera fails.")]
         public void ShouldBeAbleToClickElementThatIsOutOfViewInAFrame()
         {
             try
@@ -171,7 +168,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Opera, "Opera fails.")]
         public void ShouldBeAbleToClickElementThatIsOutOfViewInAFrameThatIsOutOfView()
         {
             try
@@ -189,7 +185,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Opera, "Opera fails.")]
         public void ShouldBeAbleToClickElementThatIsOutOfViewInANestedFrame()
         {
             try
@@ -208,7 +203,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Opera, "Opera fails.")]
         public void ShouldBeAbleToClickElementThatIsOutOfViewInANestedFrameThatIsOutOfView()
         {
             try

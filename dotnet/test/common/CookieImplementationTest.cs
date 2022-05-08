@@ -196,7 +196,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Opera)]
         public void CannotGetCookiesWithPathDifferingOnlyInCase()
         {
             if (!CheckIsOnValidHostNameForCookieTests())
@@ -405,7 +404,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Opera)]
         public void CookieEqualityAfterSetAndGet()
         {
             if (!CheckIsOnValidHostNameForCookieTests())
@@ -440,7 +438,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Opera)]
         public void ShouldRetainCookieExpiry()
         {
             if (!CheckIsOnValidHostNameForCookieTests())
@@ -469,7 +466,6 @@ namespace OpenQA.Selenium
 
         [Test]
         [IgnoreBrowser(Browser.IE, "Browser does not handle untrusted SSL certificates.")]
-        [IgnoreBrowser(Browser.EdgeLegacy, "Browser does not handle untrusted SSL certificates.")]
         public void CanHandleSecureCookie()
         {
             driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIsSecure("animals");
@@ -485,7 +481,6 @@ namespace OpenQA.Selenium
 
         [Test]
         [IgnoreBrowser(Browser.IE, "Browser does not handle untrusted SSL certificates.")]
-        [IgnoreBrowser(Browser.EdgeLegacy, "Browser does not handle untrusted SSL certificates.")]
         public void ShouldRetainCookieSecure()
         {
             driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIsSecure("animals");

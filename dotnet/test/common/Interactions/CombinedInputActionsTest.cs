@@ -286,7 +286,6 @@ namespace OpenQA.Selenium.Interactions
 
         [Test]
         [NeedsFreshDriver(IsCreatedBeforeTest = true)]
-        [IgnoreBrowser(Browser.Opera)]
         public void CombiningShiftAndClickResultsInANewWindow()
         {
             driver.Url = linkedImage;
@@ -317,7 +316,6 @@ namespace OpenQA.Selenium.Interactions
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Opera)]
         public void HoldingDownShiftKeyWhileClicking()
         {
             driver.Url = clickEventPage;
