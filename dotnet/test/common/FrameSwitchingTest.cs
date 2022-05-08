@@ -216,7 +216,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Opera, "Browser does not support parent frame navigation")]
         public void ShouldBeAbleToSwitchToParentFrame()
         {
             driver.Url = framesetPage;
@@ -225,7 +224,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Opera, "Browser does not support parent frame navigation")]
         public void ShouldBeAbleToSwitchToParentFrameFromASecondLevelFrame()
         {
             driver.Url = framesetPage;
@@ -235,7 +233,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Opera, "Browser does not support parent frame navigation")]
         public void SwitchingToParentFrameFromDefaultContextIsNoOp()
         {
             driver.Url = xhtmlTestPage;
@@ -244,7 +241,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Opera, "Browser does not support parent frame navigation")]
         public void ShouldBeAbleToSwitchToParentFromAnIframe()
         {
             driver.Url = iframePage;

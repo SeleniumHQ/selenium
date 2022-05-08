@@ -8,7 +8,6 @@ namespace OpenQA.Selenium
     public class SvgElementTest : DriverTestFixture
     {
         [Test]
-        [IgnoreBrowser(Browser.Opera, "Not tested")]
         public void ShouldClickOnGraphVisualElements()
         {
             if (TestUtilities.IsOldIE(driver))
@@ -34,7 +33,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Opera, "Not tested")]
         public void ShouldClickOnGraphTextElements()
         {
             if (TestUtilities.IsOldIE(driver))

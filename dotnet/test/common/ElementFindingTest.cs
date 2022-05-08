@@ -323,7 +323,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Opera, "Throws WebDriverException")]
         public void FindingMultipleElementsByEmptyClassNameShouldThrow()
         {
             driver.Url = xhtmlTestPage;
@@ -331,7 +330,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Opera, "Throws WebDriverException")]
         public void FindingASingleElementByCompoundClassNameShouldThrow()
         {
             driver.Url = xhtmlTestPage;
@@ -339,7 +337,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Opera, "Throws WebDriverException")]
         public void FindingMultipleElementsByCompoundClassNameShouldThrow()
         {
             driver.Url = xhtmlTestPage;
@@ -347,7 +344,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Opera, "Throws WebDriverException")]
         public void FindingASingleElementByInvalidClassNameShouldThrow()
         {
             driver.Url = xhtmlTestPage;
@@ -357,11 +353,9 @@ namespace OpenQA.Selenium
         [Test]
         [IgnoreBrowser(Browser.IE, "Class name is perfectly legal when using CSS selector, if properly escaped.")]
         [IgnoreBrowser(Browser.Firefox, "Class name is perfectly legal when using CSS selector, if properly escaped.")]
-        [IgnoreBrowser(Browser.EdgeLegacy, "Class name is perfectly legal when using CSS selector, if properly escaped.")]
         [IgnoreBrowser(Browser.Safari, "Class name is perfectly legal when using CSS selector, if properly escaped.")]
         [IgnoreBrowser(Browser.Chrome, "Class name is perfectly legal when using CSS selector, if properly escaped.")]
         [IgnoreBrowser(Browser.Edge, "Class name is perfectly legal when using CSS selector, if properly escaped.")]
-        [IgnoreBrowser(Browser.Opera, "Throws WebDriverException")]
         public void FindingMultipleElementsByInvalidClassNameShouldThrow()
         {
             driver.Url = xhtmlTestPage;
@@ -434,7 +428,6 @@ namespace OpenQA.Selenium
         [Test]
         [IgnoreBrowser(Browser.IE, "Driver does not support XML namespaces in XPath")]
         [IgnoreBrowser(Browser.Firefox, "Driver does not support XML namespaces in XPath")]
-        [IgnoreBrowser(Browser.EdgeLegacy, "Driver does not support XML namespaces in XPath")]
         [IgnoreBrowser(Browser.Safari, "Not yet implemented")]
         public void ShouldBeAbleToFindElementByXPathWithNamespace()
         {
@@ -447,7 +440,6 @@ namespace OpenQA.Selenium
         [IgnoreBrowser(Browser.IE, "Driver does not support finding elements on XML documents.")]
         [IgnoreBrowser(Browser.Chrome, "Driver does not support finding elements on XML documents.")]
         [IgnoreBrowser(Browser.Edge, "Driver does not support finding elements on XML documents.")]
-        [IgnoreBrowser(Browser.EdgeLegacy, "Driver does not support finding elements on XML documents.")]
         [IgnoreBrowser(Browser.Safari, "Not yet implemented")]
         public void ShouldBeAbleToFindElementByXPathInXmlDocument()
         {
@@ -466,7 +458,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Opera)]
         public void ShouldThrowInvalidSelectorExceptionWhenXPathIsSyntacticallyInvalidInDriverFindElement()
         {
             driver.Url = formsPage;
@@ -474,7 +465,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Opera)]
         public void ShouldThrowInvalidSelectorExceptionWhenXPathIsSyntacticallyInvalidInDriverFindElements()
         {
             if (TestUtilities.IsIE6(driver))
@@ -488,7 +478,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Opera)]
         public void ShouldThrowInvalidSelectorExceptionWhenXPathIsSyntacticallyInvalidInElementFindElement()
         {
             driver.Url = formsPage;
@@ -497,7 +486,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Opera)]
         public void ShouldThrowInvalidSelectorExceptionWhenXPathIsSyntacticallyInvalidInElementFindElements()
         {
             driver.Url = formsPage;
@@ -506,7 +494,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Opera)]
         public void ShouldThrowInvalidSelectorExceptionWhenXPathReturnsWrongTypeInDriverFindElement()
         {
             driver.Url = formsPage;
@@ -514,7 +501,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Opera)]
         public void ShouldThrowInvalidSelectorExceptionWhenXPathReturnsWrongTypeInDriverFindElements()
         {
             if (TestUtilities.IsIE6(driver))
@@ -528,7 +514,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Opera)]
         public void ShouldThrowInvalidSelectorExceptionWhenXPathReturnsWrongTypeInElementFindElement()
         {
             driver.Url = formsPage;
@@ -538,7 +523,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Opera)]
         public void ShouldThrowInvalidSelectorExceptionWhenXPathReturnsWrongTypeInElementFindElements()
         {
             if (TestUtilities.IsIE6(driver))
@@ -639,7 +623,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Opera, "Throws WebDriverException")]
         public void FindingMultipleElementsByEmptyCssSelectorShouldThrow()
         {
             driver.Url = xhtmlTestPage;
@@ -654,7 +637,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Opera, "Throws InvalidElementStateException")]
         public void FindingMultipleElementsByInvalidCssSelectorShouldThrow()
         {
             driver.Url = xhtmlTestPage;
@@ -697,7 +679,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Opera)]
         public void FindsByLinkTextOnXhtmlPage()
         {
             if (TestUtilities.IsOldIE(driver))
@@ -838,7 +819,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Opera, "Just not working")]
         public void AnElementFoundInADifferentFrameIsStale()
         {
             driver.Url = missedJsReferencePage;
@@ -849,7 +829,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Opera)]
         public void AnElementFoundInADifferentFrameViaJsCanBeUsed()
         {
             driver.Url = missedJsReferencePage;

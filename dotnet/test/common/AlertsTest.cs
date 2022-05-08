@@ -450,7 +450,6 @@ namespace OpenQA.Selenium
         [IgnoreBrowser(Browser.Firefox, "After version 27, Firefox does not trigger alerts on unload.")]
         [IgnoreBrowser(Browser.Chrome, "Chrome does not trigger alerts on unload.")]
         [IgnoreBrowser(Browser.Edge, "Edge does not trigger alerts on unload.")]
-        [IgnoreBrowser(Browser.EdgeLegacy, "Edge does not trigger alerts on unload.")]
         [IgnoreBrowser(Browser.Safari, "Safari does not trigger alerts on unload.")]
         public void ShouldHandleAlertOnPageUnload()
         {
@@ -476,7 +475,6 @@ namespace OpenQA.Selenium
         [Test]
         [IgnoreBrowser(Browser.Chrome, "Chrome does not implicitly handle onBeforeUnload alert")]
         [IgnoreBrowser(Browser.Edge, "Edge does not implicitly handle onBeforeUnload alert")]
-        [IgnoreBrowser(Browser.EdgeLegacy, "Edge driver does not implicitly (or otherwise) handle onBeforeUnload alerts")]
         public void ShouldImplicitlyHandleAlertOnPageBeforeUnload()
         {
             string blank = EnvironmentManager.Instance.UrlBuilder.CreateInlinePage(new InlinePage().WithTitle("Success"));
@@ -496,7 +494,6 @@ namespace OpenQA.Selenium
         [IgnoreBrowser(Browser.Chrome, "Test as written does not trigger alert")]
         [IgnoreBrowser(Browser.Edge, "Test as written does not trigger alert")]
         [IgnoreBrowser(Browser.Firefox, "After version 27, Firefox does not trigger alerts on unload.")]
-        [IgnoreBrowser(Browser.EdgeLegacy, "Edge does not trigger alerts on unload.")]
         [IgnoreBrowser(Browser.Safari, "Safari does not trigger alerts on unload.")]
         public void ShouldHandleAlertOnWindowClose()
         {
@@ -530,9 +527,7 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.EdgeLegacy, "Driver chooses not to return text from unhandled alert")]
         [IgnoreBrowser(Browser.Firefox, "Driver chooses not to return text from unhandled alert")]
-        [IgnoreBrowser(Browser.Opera)]
         public void IncludesAlertTextInUnhandledAlertException()
         {
             driver.Url = CreateAlertPage("cheese");
@@ -552,7 +547,6 @@ namespace OpenQA.Selenium
 
         [Test]
         [NeedsFreshDriver(IsCreatedAfterTest = true)]
-        [IgnoreBrowser(Browser.Opera)]
         public void CanQuitWhenAnAlertIsPresent()
         {
             driver.Url = CreateAlertPage("cheese");
@@ -621,10 +615,8 @@ namespace OpenQA.Selenium
         // [Test]
         [IgnoreBrowser(Browser.Chrome)]
         [IgnoreBrowser(Browser.Edge)]
-        [IgnoreBrowser(Browser.EdgeLegacy)]
         [IgnoreBrowser(Browser.Firefox)]
         [IgnoreBrowser(Browser.IE)]
-        [IgnoreBrowser(Browser.Opera)]
         [IgnoreBrowser(Browser.Remote)]
         [IgnoreBrowser(Browser.Safari)]
         public void ShouldBeAbleToHandleAuthenticationDialog()
@@ -640,10 +632,8 @@ namespace OpenQA.Selenium
         // [Test]
         [IgnoreBrowser(Browser.Chrome)]
         [IgnoreBrowser(Browser.Edge)]
-        [IgnoreBrowser(Browser.EdgeLegacy)]
         [IgnoreBrowser(Browser.Firefox)]
         [IgnoreBrowser(Browser.IE)]
-        [IgnoreBrowser(Browser.Opera)]
         [IgnoreBrowser(Browser.Remote)]
         [IgnoreBrowser(Browser.Safari)]
         public void ShouldBeAbleToDismissAuthenticationDialog()
@@ -657,9 +647,7 @@ namespace OpenQA.Selenium
         // [Test]
         [IgnoreBrowser(Browser.Chrome)]
         [IgnoreBrowser(Browser.Edge)]
-        [IgnoreBrowser(Browser.EdgeLegacy)]
         [IgnoreBrowser(Browser.Firefox)]
-        [IgnoreBrowser(Browser.Opera)]
         [IgnoreBrowser(Browser.Remote)]
         [IgnoreBrowser(Browser.Safari)]
         public void ShouldThrowAuthenticatingOnStandardAlert()

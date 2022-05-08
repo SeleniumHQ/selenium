@@ -10,7 +10,6 @@ namespace OpenQA.Selenium
     public class ElementPropertyTest : DriverTestFixture
     {
         [Test]
-        [IgnoreBrowser(Browser.Opera)]
         [IgnoreBrowser(Browser.Remote)]
         public void ShouldReturnNullWhenGettingTheValueOfAPropertyThatIsNotListed()
         {
@@ -21,7 +20,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Opera)]
         [IgnoreBrowser(Browser.Remote)]
         public void CanRetrieveTheCurrentValueOfAProperty()
         {
