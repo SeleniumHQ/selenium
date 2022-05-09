@@ -52,7 +52,7 @@ _KT = TypeVar("_KT")
 _VT = TypeVar("_VT")
 
 
-class ErrorCode(object):
+class ErrorCode:
     """
     Error codes defined in the WebDriver wire protocol.
     """
@@ -98,7 +98,7 @@ class ErrorCode(object):
     METHOD_NOT_ALLOWED = [405, 'unsupported operation']
 
 
-class ErrorHandler(object):
+class ErrorHandler:
     """
     Handles errors returned by the WebDriver server.
     """

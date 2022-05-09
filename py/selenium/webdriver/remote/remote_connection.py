@@ -35,7 +35,7 @@ from . import utils
 LOGGER = logging.getLogger(__name__)
 
 
-class RemoteConnection(object):
+class RemoteConnection:
     """A connection with the Remote WebDriver server.
 
     Communicates with the server using the WebDriver wire protocol:
