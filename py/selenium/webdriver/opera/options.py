@@ -14,16 +14,19 @@
 # KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
 # under the License.
+import warnings
 
 from selenium.webdriver.chrome.options import Options as ChromeOptions
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 
 
+# Todo: gh-10379 (Remove for 4.3)
 class Options(ChromeOptions):
     KEY = "operaOptions"
 
     def __init__(self):
-        ChromeOptions.__init__(self)
+        warnings.warn(f"{self.__class__} is deprecated and will be removed in 4.3", DeprecationWarning, stacklevel=2)
+        super().__init__()
         self._android_package_name = ''
         self._android_device_socket = ''
         self._android_command_line_file = ''
@@ -105,5 +108,5 @@ class Options(ChromeOptions):
 class AndroidOptions(Options):
 
     def __init__(self):
-        Options.__init__(self)
+        super().__init__()
         self.android_package_name = 'com.opera.browser'

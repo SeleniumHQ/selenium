@@ -61,7 +61,7 @@ setup_args = {
                  'selenium.webdriver.firefox',
                  'selenium.webdriver.ie',
                  'selenium.webdriver.edge',
-                 'selenium.webdriver.opera',
+                 'selenium.webdriver.opera',  # Todo: gh-10379 (Remove for 4.3)
                  'selenium.webdriver.remote',
                  'selenium.webdriver.support', ],
     'include_package_data': True,
