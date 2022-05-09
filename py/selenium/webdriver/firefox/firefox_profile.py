@@ -40,7 +40,7 @@ class AddonFormatError(Exception):
     """Exception for not well-formed add-on manifest files"""
 
 
-class FirefoxProfile(object):
+class FirefoxProfile:
     ANONYMOUS_PROFILE_NAME = "WEBDRIVER_ANONYMOUS_PROFILE"
     DEFAULT_PREFERENCES = None
 

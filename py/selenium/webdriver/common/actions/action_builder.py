@@ -26,7 +26,7 @@ from .wheel_input import WheelInput
 from .wheel_actions import WheelActions
 
 
-class ActionBuilder(object):
+class ActionBuilder:
     def __init__(self, driver, mouse=None, wheel=None, keyboard=None, duration=250) -> None:
         if not mouse:
             mouse = PointerInput(interaction.POINTER_MOUSE, "mouse")

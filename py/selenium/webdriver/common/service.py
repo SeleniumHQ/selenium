@@ -29,7 +29,7 @@ from selenium.webdriver.common import utils
 _HAS_NATIVE_DEVNULL = True
 
 
-class Service(object):
+class Service:
 
     def __init__(self, executable, port=0, log_file=DEVNULL, env=None, start_error_message=""):
         self.path = executable

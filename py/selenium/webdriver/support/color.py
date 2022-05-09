@@ -63,7 +63,7 @@ class Color:
     def from_string(cls, str_: str) -> Color:
         import re
 
-        class Matcher(object):
+        class Matcher:
             match_obj: Optional[Match[str]]
 
             def __init__(self) -> None:
