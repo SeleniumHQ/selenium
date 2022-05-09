@@ -19,7 +19,8 @@
 Exceptions that may happen in all the webdriver code.
 """
 
-from typing import Optional, Sequence
+from typing import Optional
+from typing import Sequence
 
 
 class WebDriverException(Exception):
@@ -27,7 +28,12 @@ class WebDriverException(Exception):
     Base webdriver exception.
     """
 
-    def __init__(self, msg: Optional[str] = None, screen: Optional[str] = None, stacktrace: Optional[Sequence[str]] = None) -> None:
+    def __init__(
+        self,
+        msg: Optional[str] = None,
+        screen: Optional[str] = None,
+        stacktrace: Optional[Sequence[str]] = None,
+    ) -> None:
         self.msg = msg
         self.screen = screen
         self.stacktrace = stacktrace
@@ -46,6 +52,7 @@ class InvalidSwitchToTargetException(WebDriverException):
     """
     Thrown when frame or window target to be switched doesn't exist.
     """
+
     pass
 
 
@@ -53,6 +60,7 @@ class NoSuchFrameException(InvalidSwitchToTargetException):
     """
     Thrown when frame target to be switched doesn't exist.
     """
+
     pass
 
 
@@ -66,6 +74,7 @@ class NoSuchWindowException(InvalidSwitchToTargetException):
         print driver.window_handles
 
     """
+
     pass
 
 
@@ -79,6 +88,7 @@ class NoSuchElementException(WebDriverException):
           (webpage is still loading) see selenium.webdriver.support.wait.WebDriverWait()
           for how to write a wait wrapper to wait for an element to appear.
     """
+
     pass
 
 
@@ -90,6 +100,7 @@ class NoSuchAttributeException(WebDriverException):
     testing against.  Some browsers may have different property names for the same
     property.  (IE8's .innerText vs. Firefox .textContent)
     """
+
     pass
 
 
@@ -98,6 +109,7 @@ class NoSuchShadowRootException(WebDriverException):
     Thrown when trying to access the shadow root of an element when it does not
     have a shadow root attached.
     """
+
     pass
 
 
@@ -117,6 +129,7 @@ class StaleElementReferenceException(WebDriverException):
           node is rebuilt.
         * Element may have been inside an iframe or another context which was refreshed.
     """
+
     pass
 
 
@@ -126,6 +139,7 @@ class InvalidElementStateException(WebDriverException):
 
     This can be caused by attempting to clear an element that isn't both editable and resettable.
     """
+
     pass
 
 
@@ -137,12 +151,21 @@ class UnexpectedAlertPresentException(WebDriverException):
     commands.
     """
 
-    def __init__(self, msg: Optional[str] = None, screen: Optional[str] = None, stacktrace: Optional[Sequence[str]] = None, alert_text: Optional[str] = None) -> None:
+    def __init__(
+        self,
+        msg: Optional[str] = None,
+        screen: Optional[str] = None,
+        stacktrace: Optional[Sequence[str]] = None,
+        alert_text: Optional[str] = None,
+    ) -> None:
         super(UnexpectedAlertPresentException, self).__init__(msg, screen, stacktrace)
         self.alert_text = alert_text
 
     def __str__(self) -> str:
-        return "Alert Text: %s\n%s" % (self.alert_text, super(UnexpectedAlertPresentException, self).__str__())
+        return "Alert Text: %s\n%s" % (
+            self.alert_text,
+            super(UnexpectedAlertPresentException, self).__str__(),
+        )
 
 
 class NoAlertPresentException(WebDriverException):
@@ -152,6 +175,7 @@ class NoAlertPresentException(WebDriverException):
     This can be caused by calling an operation on the Alert() class when an alert is
     not yet on the screen.
     """
+
     pass
 
 
@@ -163,6 +187,7 @@ class ElementNotVisibleException(InvalidElementStateException):
     Most commonly encountered when trying to click or read text
     of an element that is hidden from view.
     """
+
     pass
 
 
@@ -171,6 +196,7 @@ class ElementNotInteractableException(InvalidElementStateException):
     Thrown when an element is present in the DOM but interactions
     with that element will hit another element due to paint order
     """
+
     pass
 
 
@@ -180,6 +206,7 @@ class ElementNotSelectableException(InvalidElementStateException):
 
     For example, selecting a 'script' element.
     """
+
     pass
 
 
@@ -188,6 +215,7 @@ class InvalidCookieDomainException(WebDriverException):
     Thrown when attempting to add a cookie under a different domain
     than the current URL.
     """
+
     pass
 
 
@@ -195,12 +223,13 @@ class UnableToSetCookieException(WebDriverException):
     """
     Thrown when a driver fails to set a cookie.
     """
+
     pass
 
 
 class RemoteDriverServerException(WebDriverException):
-    """
-    """
+    """ """
+
     pass
 
 
@@ -208,6 +237,7 @@ class TimeoutException(WebDriverException):
     """
     Thrown when a command does not complete in enough time.
     """
+
     pass
 
 
@@ -216,6 +246,7 @@ class MoveTargetOutOfBoundsException(WebDriverException):
     Thrown when the target provided to the `ActionsChains` move()
     method is invalid, i.e. out of document.
     """
+
     pass
 
 
@@ -223,6 +254,7 @@ class UnexpectedTagNameException(WebDriverException):
     """
     Thrown when a support class did not get an expected web element.
     """
+
     pass
 
 
@@ -234,6 +266,7 @@ class InvalidSelectorException(WebDriverException):
     xpath expression) or the expression does not select WebElements
     (e.g. "count(//input)").
     """
+
     pass
 
 
@@ -242,6 +275,7 @@ class ImeNotAvailableException(WebDriverException):
     Thrown when IME support is not available. This exception is thrown for every IME-related
     method call if IME support is not available on the machine.
     """
+
     pass
 
 
@@ -249,6 +283,7 @@ class ImeActivationFailedException(WebDriverException):
     """
     Thrown when activating an IME engine has failed.
     """
+
     pass
 
 
@@ -256,6 +291,7 @@ class InvalidArgumentException(WebDriverException):
     """
     The arguments passed to a command are either invalid or malformed.
     """
+
     pass
 
 
@@ -263,6 +299,7 @@ class JavascriptException(WebDriverException):
     """
     An error occurred while executing JavaScript supplied by the user.
     """
+
     pass
 
 
@@ -271,6 +308,7 @@ class NoSuchCookieException(WebDriverException):
     No cookie matching the given path name was found amongst the associated cookies of the
     current browsing context's active document.
     """
+
     pass
 
 
@@ -278,6 +316,7 @@ class ScreenshotException(WebDriverException):
     """
     A screen capture was made impossible.
     """
+
     pass
 
 
@@ -286,6 +325,7 @@ class ElementClickInterceptedException(WebDriverException):
     The Element Click command could not be completed because the element receiving the events
     is obscuring the element that was requested to be clicked.
     """
+
     pass
 
 
@@ -294,6 +334,7 @@ class InsecureCertificateException(WebDriverException):
     Navigation caused the user agent to hit a certificate warning, which is usually the result
     of an expired or invalid TLS certificate.
     """
+
     pass
 
 
@@ -301,6 +342,7 @@ class InvalidCoordinatesException(WebDriverException):
     """
     The coordinates provided to an interaction's operation are invalid.
     """
+
     pass
 
 
@@ -309,6 +351,7 @@ class InvalidSessionIdException(WebDriverException):
     Occurs if the given session id is not in the list of active sessions, meaning the session
     either does not exist or that it's not active.
     """
+
     pass
 
 
@@ -316,6 +359,7 @@ class SessionNotCreatedException(WebDriverException):
     """
     A new session could not be created.
     """
+
     pass
 
 
@@ -323,4 +367,5 @@ class UnknownMethodException(WebDriverException):
     """
     The requested command matched a known URL but did not match any methods for that URL.
     """
+
     pass

@@ -15,12 +15,12 @@
 # specific language governing permissions and limitations
 # under the License.
 import base64
-from io import BytesIO
 import os
-from shutil import rmtree
 import warnings
-from contextlib import contextmanager
 import zipfile
+from contextlib import contextmanager
+from io import BytesIO
+from shutil import rmtree
 
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 from selenium.webdriver.remote.webdriver import WebDriver as RemoteWebDriver
@@ -29,8 +29,8 @@ from .firefox_binary import FirefoxBinary
 from .firefox_profile import FirefoxProfile
 from .options import Options
 from .remote_connection import FirefoxRemoteConnection
-from .service import DEFAULT_EXECUTABLE_PATH, Service
-
+from .service import DEFAULT_EXECUTABLE_PATH
+from .service import Service
 
 # Default for log_path variable. To be deleted when deprecations for arguments are removed.
 DEFAULT_LOG_PATH = None
@@ -42,12 +42,21 @@ class WebDriver(RemoteWebDriver):
     CONTEXT_CHROME = "chrome"
     CONTEXT_CONTENT = "content"
 
-    def __init__(self, firefox_profile=None, firefox_binary=None,
-                 capabilities=None, proxy=None,
-                 executable_path=DEFAULT_EXECUTABLE_PATH, options=None,
-                 service_log_path=DEFAULT_SERVICE_LOG_PATH,
-                 service_args=None, service=None, desired_capabilities=None,
-                 log_path=DEFAULT_LOG_PATH, keep_alive=True):
+    def __init__(
+        self,
+        firefox_profile=None,
+        firefox_binary=None,
+        capabilities=None,
+        proxy=None,
+        executable_path=DEFAULT_EXECUTABLE_PATH,
+        options=None,
+        service_log_path=DEFAULT_SERVICE_LOG_PATH,
+        service_args=None,
+        service=None,
+        desired_capabilities=None,
+        log_path=DEFAULT_LOG_PATH,
+        keep_alive=True,
+    ):
         """Starts a new local session of Firefox.
 
         Based on the combination and specificity of the various keyword
@@ -98,31 +107,52 @@ class WebDriver(RemoteWebDriver):
         """
 
         if executable_path != DEFAULT_EXECUTABLE_PATH:
-            warnings.warn('executable_path has been deprecated, please pass in a Service object',
-                          DeprecationWarning, stacklevel=2)
+            warnings.warn(
+                "executable_path has been deprecated, please pass in a Service object",
+                DeprecationWarning,
+                stacklevel=2,
+            )
         if capabilities or desired_capabilities:
-            warnings.warn('capabilities and desired_capabilities have been deprecated, please pass in a Service object',
-                          DeprecationWarning, stacklevel=2)
+            warnings.warn(
+                "capabilities and desired_capabilities have been deprecated, please pass in a Service object",
+                DeprecationWarning,
+                stacklevel=2,
+            )
         if firefox_binary:
-            warnings.warn('firefox_binary has been deprecated, please pass in a Service object',
-                          DeprecationWarning, stacklevel=2)
+            warnings.warn(
+                "firefox_binary has been deprecated, please pass in a Service object",
+                DeprecationWarning,
+                stacklevel=2,
+            )
         self.binary = None
         if firefox_profile:
-            warnings.warn('firefox_profile has been deprecated, please pass in an Options object',
-                          DeprecationWarning, stacklevel=2)
+            warnings.warn(
+                "firefox_profile has been deprecated, please pass in an Options object",
+                DeprecationWarning,
+                stacklevel=2,
+            )
         self.profile = None
 
         if log_path != DEFAULT_LOG_PATH:
-            warnings.warn('log_path has been deprecated, please pass in a Service object',
-                          DeprecationWarning, stacklevel=2)
+            warnings.warn(
+                "log_path has been deprecated, please pass in a Service object",
+                DeprecationWarning,
+                stacklevel=2,
+            )
 
         # Service Arguments being deprecated.
         if service_log_path != DEFAULT_SERVICE_LOG_PATH:
-            warnings.warn('service_log_path has been deprecated, please pass in a Service object',
-                          DeprecationWarning, stacklevel=2)
+            warnings.warn(
+                "service_log_path has been deprecated, please pass in a Service object",
+                DeprecationWarning,
+                stacklevel=2,
+            )
         if service_args:
-            warnings.warn('service_args has been deprecated, please pass in a Service object',
-                          DeprecationWarning, stacklevel=2)
+            warnings.warn(
+                "service_args has been deprecated, please pass in a Service object",
+                DeprecationWarning,
+                stacklevel=2,
+            )
 
         self.service = service
 
@@ -161,24 +191,25 @@ class WebDriver(RemoteWebDriver):
             self.profile = firefox_profile
             options.profile = firefox_profile
 
-        if not capabilities.get("acceptInsecureCerts") or not options.accept_insecure_certs:
+        if (
+            not capabilities.get("acceptInsecureCerts")
+            or not options.accept_insecure_certs
+        ):
             options.accept_insecure_certs = False
 
         if not self.service:
             self.service = Service(
-                executable_path,
-                service_args=service_args,
-                log_path=service_log_path)
+                executable_path, service_args=service_args, log_path=service_log_path
+            )
         self.service.start()
 
         executor = FirefoxRemoteConnection(
             remote_server_addr=self.service.service_url,
-            ignore_proxy=options._ignore_local_proxy)
+            ignore_proxy=options._ignore_local_proxy,
+        )
         RemoteWebDriver.__init__(
-            self,
-            command_executor=executor,
-            options=options,
-            keep_alive=True)
+            self, command_executor=executor, options=options, keep_alive=True
+        )
 
         self._is_remote = False
 
@@ -224,7 +255,7 @@ class WebDriver(RemoteWebDriver):
                 # chrome scope
                 ... do stuff ...
         """
-        initial_context = self.execute('GET_CONTEXT').pop('value')
+        initial_context = self.execute("GET_CONTEXT").pop("value")
         self.set_context(context)
         try:
             yield
@@ -246,18 +277,18 @@ class WebDriver(RemoteWebDriver):
                 driver.install_addon('/path/to/firebug.xpi')
         """
 
-        if(os.path.isdir(path)):
+        if os.path.isdir(path):
             fp = BytesIO()
             path_root = len(path) + 1  # account for trailing slash
-            with zipfile.ZipFile(fp, 'w', zipfile.ZIP_DEFLATED) as zipped:
+            with zipfile.ZipFile(fp, "w", zipfile.ZIP_DEFLATED) as zipped:
                 for base, dirs, files in os.walk(path):
                     for fyle in files:
                         filename = os.path.join(base, fyle)
                         zipped.write(filename, filename[path_root:])
-            addon = base64.b64encode(fp.getvalue()).decode('UTF-8')
+            addon = base64.b64encode(fp.getvalue()).decode("UTF-8")
         else:
-            with open(path, 'rb') as file:
-                addon = (base64.b64encode(file.read()).decode('UTF-8'))
+            with open(path, "rb") as file:
+                addon = base64.b64encode(file.read()).decode("UTF-8")
 
         payload = {"addon": addon, "temporary": temporary}
         return self.execute("INSTALL_ADDON", payload)["value"]
@@ -288,12 +319,15 @@ class WebDriver(RemoteWebDriver):
 
                 driver.get_full_page_screenshot_as_file('/Screenshots/foo.png')
         """
-        if not filename.lower().endswith('.png'):
-            warnings.warn("name used for saved screenshot does not match file "
-                          "type. It should end with a `.png` extension", UserWarning)
+        if not filename.lower().endswith(".png"):
+            warnings.warn(
+                "name used for saved screenshot does not match file "
+                "type. It should end with a `.png` extension",
+                UserWarning,
+            )
         png = self.get_full_page_screenshot_as_png()
         try:
-            with open(filename, 'wb') as f:
+            with open(filename, "wb") as f:
                 f.write(png)
         except IOError:
             return False
@@ -327,7 +361,9 @@ class WebDriver(RemoteWebDriver):
 
                 driver.get_full_page_screenshot_as_png()
         """
-        return base64.b64decode(self.get_full_page_screenshot_as_base64().encode('ascii'))
+        return base64.b64decode(
+            self.get_full_page_screenshot_as_base64().encode("ascii")
+        )
 
     def get_full_page_screenshot_as_base64(self) -> str:
         """
@@ -339,4 +375,4 @@ class WebDriver(RemoteWebDriver):
 
                 driver.get_full_page_screenshot_as_base64()
         """
-        return self.execute("FULL_PAGE_SCREENSHOT")['value']
+        return self.execute("FULL_PAGE_SCREENSHOT")["value"]

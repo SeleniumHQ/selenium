@@ -30,6 +30,7 @@ def close_windows(driver):
     main_windows_handle = driver.current_window_handle
     yield
     from urllib import request as url_request
+
     URLError = url_request.URLError
 
     try:
@@ -43,7 +44,9 @@ def close_windows(driver):
     driver.switch_to.window(main_windows_handle)
 
 
-def test_should_switch_focus_to_anew_window_when_it_is_opened_and_not_stop_future_operations(driver, pages):
+def test_should_switch_focus_to_anew_window_when_it_is_opened_and_not_stop_future_operations(
+    driver, pages
+):
     pages.load("xhtmlTest.html")
     current = driver.current_window_handle
 
@@ -77,7 +80,9 @@ def test_should_throw_no_such_window_exception(driver, pages):
 
 
 @pytest.mark.xfail_safari
-def test_should_throw_no_such_window_exception_on_an_attempt_to_get_its_handle(driver, pages):
+def test_should_throw_no_such_window_exception_on_an_attempt_to_get_its_handle(
+    driver, pages
+):
     pages.load("xhtmlTest.html")
     current = driver.current_window_handle
     handles = driver.window_handles
@@ -93,7 +98,9 @@ def test_should_throw_no_such_window_exception_on_an_attempt_to_get_its_handle(d
 
 
 @pytest.mark.xfail_ie
-def test_should_throw_no_such_window_exception_on_any_operation_if_awindow_is_closed(driver, pages):
+def test_should_throw_no_such_window_exception_on_any_operation_if_awindow_is_closed(
+    driver, pages
+):
     pages.load("xhtmlTest.html")
     current = driver.current_window_handle
     handles = driver.window_handles
@@ -113,7 +120,9 @@ def test_should_throw_no_such_window_exception_on_any_operation_if_awindow_is_cl
 
 @pytest.mark.xfail_ie
 @pytest.mark.xfail_safari
-def test_should_throw_no_such_window_exception_on_any_element_operation_if_awindow_is_closed(driver, pages):
+def test_should_throw_no_such_window_exception_on_any_element_operation_if_awindow_is_closed(
+    driver, pages
+):
     pages.load("xhtmlTest.html")
     current = driver.current_window_handle
     handles = driver.window_handles
@@ -129,7 +138,9 @@ def test_should_throw_no_such_window_exception_on_any_element_operation_if_awind
         element.text
 
 
-def test_clicking_on_abutton_that_closes_an_open_window_does_not_cause_the_browser_to_hang(driver, pages):
+def test_clicking_on_abutton_that_closes_an_open_window_does_not_cause_the_browser_to_hang(
+    driver, pages
+):
     pages.load("xhtmlTest.html")
     current = driver.current_window_handle
     handles = driver.window_handles
@@ -174,7 +185,9 @@ def test_failing_to_switch_to_awindow_leaves_the_current_window_as_is(driver, pa
 
 
 @pytest.mark.xfail_safari
-def test_that_accessing_finding_an_element_after_window_is_closed_and_haventswitched_doesnt_crash(driver, pages):
+def test_that_accessing_finding_an_element_after_window_is_closed_and_haventswitched_doesnt_crash(
+    driver, pages
+):
     pages.load("xhtmlTest.html")
     current = driver.current_window_handle
     handles = driver.window_handles

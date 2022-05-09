@@ -15,20 +15,19 @@
 # specific language governing permissions and limitations
 # under the License.
 
-import pytest
 from base64 import b64decode
 
-from selenium.webdriver.remote.webdriver import WebDriver
-from selenium.webdriver.common.virtual_authenticator import (
-    Credential,
-    VirtualAuthenticatorOptions,
-)
-from selenium.webdriver.support.ui import Select, WebDriverWait
-from selenium.webdriver.common.by import By
+import pytest
 
+from selenium.webdriver.common.by import By
+from selenium.webdriver.common.virtual_authenticator import Credential
+from selenium.webdriver.common.virtual_authenticator import VirtualAuthenticatorOptions
+from selenium.webdriver.remote.webdriver import WebDriver
+from selenium.webdriver.support.ui import Select
+from selenium.webdriver.support.ui import WebDriverWait
 
 # working Key
-BASE64__ENCODED_PK = '''
+BASE64__ENCODED_PK = """
 MIIEvAIBADANBgkqhkiG9w0BAQEFAASCBKYwggSiAgEAAoIBAQDbBOu5Lhs4vpowbCnmCyLUpIE7JM9sm9QXzye2G+jr+Kr
 MsinWohEce47BFPJlTaDzHSvOW2eeunBO89ZcvvVc8RLz4qyQ8rO98xS1jtgqi1NcBPETDrtzthODu/gd0sjB2Tk3TLuBGV
 oPXt54a+Oo4JbBJ6h3s0+5eAfGplCbSNq6hN3Jh9YOTw5ZA6GCEy5l8zBaOgjXytd2v2OdSVoEDNiNQRkjJd2rmS2oi9AyQ
@@ -47,7 +46,7 @@ lUhAsyjJiQ/0bK1yX87ulqFVgO0Knmh+wNajrb9wiONAJTMICG7tiWJOm7fW5cfTJwWkBwYADmkfTRmH
 9QulbC3C/qgGFNrcWgcT9kCgYAZTa1P9bFCDU7hJc2mHwJwAW7/FQKEJg8SL33KINpLwcR8fqaYOdAHWWz636osVEqosRrH
 zJOGpf9x2RSWzQJ+dq8+6fACgfFZOVpN644+sAHfNPAI/gnNKU5OfUv+eav8fBnzlf1A3y3GIkyMyzFN3DE7e0n/lyqxE4H
 BYGpI8g==
-'''
+"""
 
 
 def create_rk_enabled_u2f_authenticator(driver) -> WebDriver:
@@ -239,10 +238,14 @@ def test_full_virtual_authenticator(driver):
     driver.find_element(By.ID, "register-button").click()
 
     login = driver.find_element(By.ID, "login-button")
-    WebDriverWait(driver, 50).until(lambda x: x.find_element(By.ID, "login-button").is_displayed())
+    WebDriverWait(driver, 50).until(
+        lambda x: x.find_element(By.ID, "login-button").is_displayed()
+    )
     login.click()
 
-    WebDriverWait(driver, 40).until(lambda x: x.find_element(By.CLASS_NAME, "col-lg-12").is_displayed())
+    WebDriverWait(driver, 40).until(
+        lambda x: x.find_element(By.CLASS_NAME, "col-lg-12").is_displayed()
+    )
 
     source: str = driver.page_source
 

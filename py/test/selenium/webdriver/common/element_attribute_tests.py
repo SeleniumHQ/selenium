@@ -21,41 +21,53 @@ from selenium.common.exceptions import WebDriverException
 from selenium.webdriver.common.by import By
 
 
-def test_should_return_null_when_getting_the_value_of_an_attribute_that_is_not_listed(driver, pages):
+def test_should_return_null_when_getting_the_value_of_an_attribute_that_is_not_listed(
+    driver, pages
+):
     pages.load("simpleTest.html")
     head = driver.find_element(By.XPATH, "/html")
     attribute = head.get_attribute("cheese")
     assert attribute is None
 
 
-def test_should_return_null_when_getting_src_attribute_of_invalid_img_tag(driver, pages):
+def test_should_return_null_when_getting_src_attribute_of_invalid_img_tag(
+    driver, pages
+):
     pages.load("simpleTest.html")
     img = driver.find_element(By.ID, "invalidImgTag")
     img_attr = img.get_attribute("src")
     assert img_attr is None
 
 
-def test_should_return_an_absolute_url_when_getting_src_attribute_of_avalid_img_tag(driver, pages):
+def test_should_return_an_absolute_url_when_getting_src_attribute_of_avalid_img_tag(
+    driver, pages
+):
     pages.load("simpleTest.html")
     img = driver.find_element(By.ID, "validImgTag")
     img_attr = img.get_attribute("src")
     assert "icon.gif" in img_attr
 
 
-def test_should_return_an_absolute_url_when_getting_href_attribute_of_avalid_anchor_tag(driver, pages):
+def test_should_return_an_absolute_url_when_getting_href_attribute_of_avalid_anchor_tag(
+    driver, pages
+):
     pages.load("simpleTest.html")
     img = driver.find_element(By.ID, "validAnchorTag")
     img_attr = img.get_attribute("href")
     assert "icon.gif" in img_attr
 
 
-def test_should_return_empty_attribute_values_when_present_and_the_value_is_actually_empty(driver, pages):
+def test_should_return_empty_attribute_values_when_present_and_the_value_is_actually_empty(
+    driver, pages
+):
     pages.load("simpleTest.html")
     body = driver.find_element(By.XPATH, "//body")
     assert "" == body.get_attribute("style")
 
 
-def test_should_return_the_value_of_the_disabled_attribute_as_false_if_not_set(driver, pages):
+def test_should_return_the_value_of_the_disabled_attribute_as_false_if_not_set(
+    driver, pages
+):
     pages.load("formPage.html")
     inputElement = driver.find_element(By.XPATH, "//input[@id='working']")
     assert inputElement.get_attribute("disabled") is None
@@ -66,14 +78,18 @@ def test_should_return_the_value_of_the_disabled_attribute_as_false_if_not_set(d
     assert pElement.is_enabled()
 
 
-def test_should_return_the_value_of_the_index_attribute_even_if_it_is_missing(driver, pages):
+def test_should_return_the_value_of_the_index_attribute_even_if_it_is_missing(
+    driver, pages
+):
     pages.load("formPage.html")
     multiSelect = driver.find_element(By.ID, "multi")
     options = multiSelect.find_elements(By.TAG_NAME, "option")
     assert "1" == options[1].get_attribute("index")
 
 
-def test_should_indicate_the_elements_that_are_disabled_are_not_is_enabled(driver, pages):
+def test_should_indicate_the_elements_that_are_disabled_are_not_is_enabled(
+    driver, pages
+):
     pages.load("formPage.html")
     inputElement = driver.find_element(By.XPATH, "//input[@id='notWorking']")
     assert not inputElement.is_enabled()
@@ -82,7 +98,9 @@ def test_should_indicate_the_elements_that_are_disabled_are_not_is_enabled(drive
     assert inputElement.is_enabled()
 
 
-def test_elements_should_be_disabled_if_they_are_disabled_using_random_disabled_strings(driver, pages):
+def test_elements_should_be_disabled_if_they_are_disabled_using_random_disabled_strings(
+    driver, pages
+):
     pages.load("formPage.html")
     disabledTextElement1 = driver.find_element(By.ID, "disabledTextElement1")
     assert not disabledTextElement1.is_enabled()
@@ -101,7 +119,9 @@ def test_should_indicate_when_atext_area_is_disabled(driver, pages):
 
 
 @pytest.mark.xfail_safari
-def test_should_throw_exception_if_sending_keys_to_element_disabled_using_random_disabled_strings(driver, pages):
+def test_should_throw_exception_if_sending_keys_to_element_disabled_using_random_disabled_strings(
+    driver, pages
+):
     pages.load("formPage.html")
     disabledTextElement1 = driver.find_element(By.ID, "disabledTextElement1")
     with pytest.raises(WebDriverException):
@@ -123,7 +143,9 @@ def test_should_indicate_when_aselect_is_disabled(driver, pages):
     assert not disabled.is_enabled()
 
 
-def test_should_return_the_value_of_checked_for_acheckbox_even_if_it_lacks_that_attribute(driver, pages):
+def test_should_return_the_value_of_checked_for_acheckbox_even_if_it_lacks_that_attribute(
+    driver, pages
+):
     pages.load("formPage.html")
     checkbox = driver.find_element(By.XPATH, "//input[@id='checky']")
     assert checkbox.get_attribute("checked") is None
@@ -131,7 +153,9 @@ def test_should_return_the_value_of_checked_for_acheckbox_even_if_it_lacks_that_
     assert "true" == checkbox.get_attribute("checked")
 
 
-def test_should_return_the_value_of_selected_for_radio_buttons_even_if_they_lack_that_attribute(driver, pages):
+def test_should_return_the_value_of_selected_for_radio_buttons_even_if_they_lack_that_attribute(
+    driver, pages
+):
     pages.load("formPage.html")
     neverSelected = driver.find_element(By.ID, "cheese")
     initiallyNotSelected = driver.find_element(By.ID, "peas")
@@ -147,7 +171,9 @@ def test_should_return_the_value_of_selected_for_radio_buttons_even_if_they_lack
     assert initiallySelected.get_attribute("checked") is None
 
 
-def test_should_return_the_value_of_selected_for_options_in_selects_even_if_they_lack_that_attribute(driver, pages):
+def test_should_return_the_value_of_selected_for_options_in_selects_even_if_they_lack_that_attribute(
+    driver, pages
+):
     pages.load("formPage.html")
     selectBox = driver.find_element(By.XPATH, "//select[@name='selectomatic']")
     options = selectBox.find_elements(By.TAG_NAME, "option")
@@ -165,6 +191,7 @@ def test_should_return_value_of_class_attribute_of_an_element(driver, pages):
     classname = heading.get_attribute("class")
     assert "header" == classname
 
+
 # Disabled due to issues with Frames
 # def test_should_return_value_of_class_attribute_of_an_element_after_switching_iframe(driver, pages):
 #    pages.load("iframes.html")
@@ -181,7 +208,9 @@ def test_should_return_the_contents_of_atext_area_as_its_value(driver, pages):
     assert "Example text" == value
 
 
-def test_should_return_the_contents_of_atext_area_as_its_value_when_set_to_non_norminal_true(driver, pages):
+def test_should_return_the_contents_of_atext_area_as_its_value_when_set_to_non_norminal_true(
+    driver, pages
+):
     pages.load("formPage.html")
     e = driver.find_element(By.ID, "withText")
     driver.execute_script("arguments[0].value = 'tRuE'", e)
@@ -275,7 +304,7 @@ def test_should_return_true_for_present_boolean_attributes(driver, pages):
 def test_should_get_unicode_chars_from_attribute(driver, pages):
     pages.load("formPage.html")
     title = driver.find_element(By.ID, "vsearchGadget").get_attribute("title")
-    assert 'Hvad s\xf8ger du?' == title
+    assert "Hvad s\xf8ger du?" == title
 
 
 @pytest.mark.xfail_chrome

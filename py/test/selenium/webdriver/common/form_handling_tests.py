@@ -47,13 +47,17 @@ def test_should_be_able_to_submit_forms(driver, pages):
     WebDriverWait(driver, 3).until(EC.title_is("We Arrive Here"))
 
 
-def test_should_submit_aform_when_any_input_element_within_that_form_is_submitted(driver, pages):
+def test_should_submit_aform_when_any_input_element_within_that_form_is_submitted(
+    driver, pages
+):
     pages.load("formPage.html")
     driver.find_element(By.ID, "checky").submit()
     WebDriverWait(driver, 3).until(EC.title_is("We Arrive Here"))
 
 
-def test_should_submit_aform_when_any_element_within_that_form_is_submitted(driver, pages):
+def test_should_submit_aform_when_any_element_within_that_form_is_submitted(
+    driver, pages
+):
     pages.load("formPage.html")
     driver.find_element(By.XPATH, "//form/p").submit()
     WebDriverWait(driver, 5).until(EC.title_is("We Arrive Here"))
@@ -65,7 +69,9 @@ def test_should_not_be_able_to_submit_aform_that_does_not_exist(driver, pages):
         driver.find_element(By.NAME, "there is no spoon").submit()
 
 
-def test_should_be_able_to_enter_text_into_atext_area_by_setting_its_value(driver, pages):
+def test_should_be_able_to_enter_text_into_atext_area_by_setting_its_value(
+    driver, pages
+):
     pages.load("javascriptPage.html")
     textarea = driver.find_element(By.ID, "keyUpArea")
     cheesey = "Brie and cheddar"
@@ -75,14 +81,18 @@ def test_should_be_able_to_enter_text_into_atext_area_by_setting_its_value(drive
 
 def test_should_enter_data_into_form_fields(driver, pages):
     pages.load("xhtmlTest.html")
-    element = driver.find_element(By.XPATH, "//form[@name='someForm']/input[@id='username']")
+    element = driver.find_element(
+        By.XPATH, "//form[@name='someForm']/input[@id='username']"
+    )
     originalValue = element.get_attribute("value")
     assert originalValue == "change"
 
     element.clear()
     element.send_keys("some text")
 
-    element = driver.find_element(By.XPATH, "//form[@name='someForm']/input[@id='username']")
+    element = driver.find_element(
+        By.XPATH, "//form[@name='someForm']/input[@id='username']"
+    )
     newFormValue = element.get_attribute("value")
     assert newFormValue == "some text"
 
@@ -156,7 +166,9 @@ def test_toggling_an_option_should_toggle_options_in_amulti_select(driver, pages
     assert selected == option.is_selected()
 
 
-def test_should_throw_an_exception_when_selecting_an_unselectable_element(driver, pages):
+def test_should_throw_an_exception_when_selecting_an_unselectable_element(
+    driver, pages
+):
     pages.load("formPage.html")
     element = driver.find_element(By.XPATH, "//title")
     with pytest.raises(WebDriverException):

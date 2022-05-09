@@ -17,7 +17,10 @@
 from __future__ import annotations
 
 import sys
-from typing import Any, Optional, Sequence, TYPE_CHECKING
+from typing import TYPE_CHECKING
+from typing import Any
+from typing import Optional
+from typing import Sequence
 
 if sys.version_info >= (3, 9):
     from re import Match
@@ -25,7 +28,10 @@ else:
     from typing import Match
 
 if TYPE_CHECKING:
-    from typing import SupportsInt, SupportsFloat, Union
+    from typing import SupportsFloat
+    from typing import SupportsInt
+    from typing import Union
+
     from typing_extensions import SupportsIndex
 
     ParseableFloat = Union[SupportsFloat, SupportsIndex, str, bytes, bytearray]
@@ -88,7 +94,8 @@ class Color:
             return cls(*m.groups)
         elif m.match(RGBA_PCT_PATTERN, str_):
             rgba = tuple(
-                [float(each) / 100 * 255 for each in m.groups[:3]] + [m.groups[3]])  # type: ignore
+                [float(each) / 100 * 255 for each in m.groups[:3]] + [m.groups[3]]
+            )  # type: ignore
             return cls(*rgba)
         elif m.match(HEX_PATTERN, str_):
             rgb = tuple([int(each, 16) for each in m.groups])
@@ -104,8 +111,13 @@ class Color:
             raise ValueError("Could not convert %s into color" % str_)
 
     @classmethod
-    def _from_hsl(cls, h: ParseableFloat, s: ParseableFloat, light: ParseableFloat,
-                  a: ParseableFloat = 1) -> Color:
+    def _from_hsl(
+        cls,
+        h: ParseableFloat,
+        s: ParseableFloat,
+        light: ParseableFloat,
+        a: ParseableFloat = 1,
+    ) -> Color:
         h = float(h) / 360
         s = float(s) / 100
         _l = float(light) / 100
@@ -125,7 +137,7 @@ class Color:
                     hue -= 1
 
                 if hue < 1.0 / 6.0:
-                    return (lum1 + (lum2 - lum1) * 6.0 * hue)
+                    return lum1 + (lum2 - lum1) * 6.0 * hue
                 elif hue < 1.0 / 2.0:
                     return lum2
                 elif hue < 2.0 / 3.0:
@@ -139,8 +151,13 @@ class Color:
 
         return cls(round(r * 255), round(g * 255), round(b * 255), a)
 
-    def __init__(self, red: ParseableInt, green: ParseableInt, blue: ParseableInt,
-                 alpha: ParseableFloat = 1) -> None:
+    def __init__(
+        self,
+        red: ParseableInt,
+        green: ParseableInt,
+        blue: ParseableInt,
+        alpha: ParseableFloat = 1,
+    ) -> None:
         self.red = int(red)
         self.green = int(green)
         self.blue = int(blue)
@@ -174,7 +191,11 @@ class Color:
 
     def __repr__(self) -> str:
         return "Color(red=%d, green=%d, blue=%d, alpha=%s)" % (
-            self.red, self.green, self.blue, self.alpha)
+            self.red,
+            self.green,
+            self.blue,
+            self.alpha,
+        )
 
     def __str__(self) -> str:
         return "Color: %s" % self.rgba
@@ -331,5 +352,5 @@ Colors = {
     "WHITE": Color(255, 255, 255),
     "WHITESMOKE": Color(245, 245, 245),
     "YELLOW": Color(255, 255, 0),
-    "YELLOWGREEN": Color(154, 205, 50)
+    "YELLOWGREEN": Color(154, 205, 50),
 }

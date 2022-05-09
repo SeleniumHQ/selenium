@@ -34,7 +34,9 @@ def test_different_elements_are_not_equal(driver, pages):
     assert body != div
 
 
-def test_same_elements_found_different_ways_should_not_be_duplicated_in_aset(driver, pages):
+def test_same_elements_found_different_ways_should_not_be_duplicated_in_aset(
+    driver, pages
+):
     pages.load("simpleTest.html")
     body = driver.find_element(By.TAG_NAME, "body")
     xbody = driver.find_elements(By.XPATH, "//body")

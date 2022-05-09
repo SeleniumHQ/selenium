@@ -16,11 +16,11 @@
 # under the License.
 
 import functools
-
-from base64 import urlsafe_b64encode, urlsafe_b64decode
-from enum import Enum
-import typing
 import sys
+import typing
+from base64 import urlsafe_b64decode
+from base64 import urlsafe_b64encode
+from enum import Enum
 
 if typing.TYPE_CHECKING:
     if sys.version_info >= (3, 8):
@@ -33,6 +33,7 @@ class Protocol(Enum):
     """
     Protocol to communicate with the authenticator.
     """
+
     CTAP2 = "ctap2"
     U2F = "ctap1/u2f"
 
@@ -41,6 +42,7 @@ class Transport(Enum):
     """
     Transport method to communicate with the authenticator.
     """
+
     BLE = "ble"
     USB = "usb"
     NFC = "nfc"
@@ -55,13 +57,13 @@ class VirtualAuthenticatorOptions:
     def __init__(self) -> None:
         """Constructor. Initialize VirtualAuthenticatorOptions object.
 
-          :default:
-            - protocol: Protocol.CTAP2
-            - transport: Transport.USB
-            - hasResidentKey: False
-            - hasUserVerification: False
-            - isUserConsenting: True
-            - isUserVerified: False
+        :default:
+          - protocol: Protocol.CTAP2
+          - transport: Transport.USB
+          - hasResidentKey: False
+          - hasUserVerification: False
+          - isUserConsenting: True
+          - isUserVerified: False
         """
 
         self._protocol: Literal = Protocol.CTAP2
@@ -126,12 +128,20 @@ class VirtualAuthenticatorOptions:
             "hasResidentKey": self.has_resident_key,
             "hasUserVerification": self.has_user_verification,
             "isUserConsenting": self.is_user_consenting,
-            "isUserVerified": self.is_user_verified
+            "isUserVerified": self.is_user_verified,
         }
 
 
 class Credential:
-    def __init__(self, credential_id: bytes, is_resident_credential: bool, rp_id: str, user_handle: bytes, private_key: bytes, sign_count: int):
+    def __init__(
+        self,
+        credential_id: bytes,
+        is_resident_credential: bool,
+        rp_id: str,
+        user_handle: bytes,
+        private_key: bytes,
+        sign_count: int,
+    ):
         """Constructor. A credential stored in a virtual authenticator.
         https://w3c.github.io/webauthn/#credential-parameters
 
@@ -177,61 +187,75 @@ class Credential:
         return self._sign_count
 
     @classmethod
-    def create_non_resident_credential(cls, id: bytes, rp_id: str, private_key: bytes, sign_count: int) -> 'Credential':
+    def create_non_resident_credential(
+        cls, id: bytes, rp_id: str, private_key: bytes, sign_count: int
+    ) -> "Credential":
         """Creates a non-resident (i.e. stateless) credential.
 
-              :Args:
-                - id (bytes): Unique base64 encoded string.
-                - rp_id (str): Relying party identifier.
-                - private_key (bytes): Base64 encoded PKCS
-                - sign_count (int): intital value for a signature counter.
+        :Args:
+          - id (bytes): Unique base64 encoded string.
+          - rp_id (str): Relying party identifier.
+          - private_key (bytes): Base64 encoded PKCS
+          - sign_count (int): intital value for a signature counter.
 
-              :Returns:
-                - Credential: A non-resident credential.
+        :Returns:
+          - Credential: A non-resident credential.
         """
         return cls(id, False, rp_id, None, private_key, sign_count)
 
     @classmethod
-    def create_resident_credential(cls, id: bytes, rp_id: str, user_handle: bytes, private_key: bytes, sign_count: int) -> 'Credential':
+    def create_resident_credential(
+        cls,
+        id: bytes,
+        rp_id: str,
+        user_handle: bytes,
+        private_key: bytes,
+        sign_count: int,
+    ) -> "Credential":
         """Creates a resident (i.e. stateful) credential.
 
-              :Args:
-                - id (bytes): Unique base64 encoded string.
-                - rp_id (str): Relying party identifier.
-                - user_handle (bytes): userHandle associated to the credential. Must be Base64 encoded string.
-                - private_key (bytes): Base64 encoded PKCS
-                - sign_count (int): intital value for a signature counter.
+        :Args:
+          - id (bytes): Unique base64 encoded string.
+          - rp_id (str): Relying party identifier.
+          - user_handle (bytes): userHandle associated to the credential. Must be Base64 encoded string.
+          - private_key (bytes): Base64 encoded PKCS
+          - sign_count (int): intital value for a signature counter.
 
-              :returns:
-                - Credential: A resident credential.
+        :returns:
+          - Credential: A resident credential.
         """
         return cls(id, True, rp_id, user_handle, private_key, sign_count)
 
     def to_dict(self):
         credential_data = {
-            'credentialId': self.id,
-            'isResidentCredential': self._is_resident_credential,
-            'rpId': self.rp_id,
-            'privateKey': self.private_key,
-            'signCount': self.sign_count,
+            "credentialId": self.id,
+            "isResidentCredential": self._is_resident_credential,
+            "rpId": self.rp_id,
+            "privateKey": self.private_key,
+            "signCount": self.sign_count,
         }
 
         if self.user_handle:
-            credential_data['userHandle'] = self.user_handle
+            credential_data["userHandle"] = self.user_handle
 
         return credential_data
 
     @classmethod
     def from_dict(cls, data):
-        _id = urlsafe_b64decode(data['credentialId'])
-        is_resident_credential = bool(data['isResidentCredential'])
-        rp_id = str(data['rpId'])
-        private_key = urlsafe_b64decode(data['privateKey'])
-        sign_count = int(data['signCount'])
-        user_handle = urlsafe_b64decode(data['userHandle']) \
-            if data.get('userHandle', None) else None
+        _id = urlsafe_b64decode(data["credentialId"])
+        is_resident_credential = bool(data["isResidentCredential"])
+        rp_id = str(data["rpId"])
+        private_key = urlsafe_b64decode(data["privateKey"])
+        sign_count = int(data["signCount"])
+        user_handle = (
+            urlsafe_b64decode(data["userHandle"])
+            if data.get("userHandle", None)
+            else None
+        )
 
-        return cls(_id, is_resident_credential, rp_id, user_handle, private_key, sign_count)
+        return cls(
+            _id, is_resident_credential, rp_id, user_handle, private_key, sign_count
+        )
 
     def __str__(self) -> str:
         return f"Credential(id={self.id}, is_resident_credential={self.is_resident_credential}, rp_id={self.rp_id},\
@@ -242,10 +266,15 @@ def required_chromium_based_browser(func):
     """
     A decorator to ensure that the client used is a chromium based browser.
     """
+
     @functools.wraps(func)
     def wrapper(self, *args, **kwargs):
-        assert self.caps["browserName"].lower() not in ["firefox", "safari"], "This only currently works in Chromium based browsers"
+        assert self.caps["browserName"].lower() not in [
+            "firefox",
+            "safari",
+        ], "This only currently works in Chromium based browsers"
         return func(self, *args, **kwargs)
+
     return wrapper
 
 
@@ -253,6 +282,7 @@ def required_virtual_authenticator(func):
     """
     A decorator to ensure that the function is called with a virtual authenticator.
     """
+
     @functools.wraps(func)
     @required_chromium_based_browser
     def wrapper(self, *args, **kwargs):
@@ -261,4 +291,5 @@ def required_virtual_authenticator(func):
                 "This function requires a virtual authenticator to be set."
             )
         return func(self, *args, **kwargs)
+
     return wrapper

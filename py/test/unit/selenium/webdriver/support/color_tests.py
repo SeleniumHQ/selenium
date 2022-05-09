@@ -21,6 +21,7 @@ from selenium.webdriver.support.color import Color
 def test_color_can_be_subclassed():
     class MyColor(Color):
         ...
+
     assert type(MyColor.from_string("rgb(1, 2, 3)")) == MyColor
 
 
@@ -112,7 +113,9 @@ def test_named_color():
 
 def test_equals():
     assert Color.from_string("#f00") == Color.from_string("rgb(255, 0, 0)")
-    assert Color.from_string("rgba(30, 30, 30, 0.2)") != Color.from_string("rgba(30, 30, 30, 1)")
+    assert Color.from_string("rgba(30, 30, 30, 0.2)") != Color.from_string(
+        "rgba(30, 30, 30, 1)"
+    )
 
 
 def test_hash():
