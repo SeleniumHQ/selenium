@@ -28,7 +28,6 @@ import static org.openqa.selenium.testing.drivers.Browser.CHROME;
 import static org.openqa.selenium.testing.drivers.Browser.EDGE;
 import static org.openqa.selenium.testing.drivers.Browser.HTMLUNIT;
 import static org.openqa.selenium.testing.drivers.Browser.IE;
-import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
 import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
 
 import org.junit.After;
@@ -277,14 +276,10 @@ public class FrameSwitchingTest extends JUnit4TestBase {
     checkbox.click();
     checkbox.submit();
 
-    // TODO(simon): this should not be needed, and is only here because IE's submit returns too
-    // soon.
-
     wait.until(textToBe(By.xpath("//p"), "Success!"));
   }
 
   @Test
-  @Ignore(value = FIREFOX, issue = "https://github.com/mozilla/geckodriver/issues/614")
   @NotYetImplemented(SAFARI)
   public void testShouldFocusOnTheReplacementWhenAFrameFollowsALinkToA_TopTargetedPage() {
     driver.get(pages.framesetPage);
@@ -295,7 +290,6 @@ public class FrameSwitchingTest extends JUnit4TestBase {
     String expectedTitle = "XHTML Test Page";
 
     wait.until(titleIs(expectedTitle));
-    wait.until(presenceOfElementLocated(By.id("only-exists-on-xhtmltest")));
   }
 
   @Test
@@ -455,7 +449,6 @@ public class FrameSwitchingTest extends JUnit4TestBase {
   @NotYetImplemented(value = CHROME, reason = "Throws NoSuchElementException")
   @NotYetImplemented(value = EDGE, reason = "Throws NoSuchElementException")
   @Ignore(IE)
-  @Ignore(value = FIREFOX, issue = "https://github.com/mozilla/geckodriver/issues/614")
   @NotYetImplemented(HTMLUNIT)
   @Ignore(SAFARI)
   public void testShouldNotBeAbleToDoAnythingTheFrameIsDeletedFromUnderUs() {
@@ -464,7 +457,7 @@ public class FrameSwitchingTest extends JUnit4TestBase {
     driver.switchTo().frame("iframe1");
     driver.findElement(By.id("killIframe")).click();
 
-    assertThatExceptionOfType(NoSuchFrameException.class)
+    assertThatExceptionOfType(NoSuchWindowException.class)
         .isThrownBy(() -> driver.findElement(By.id("killIframe")));
   }
 
