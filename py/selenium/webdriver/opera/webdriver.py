@@ -44,7 +44,9 @@ class OperaDriver(ChromiumDriver):
          - service_log_path - Where to log information from the driver.
            capabilities only, such as "proxy" or "loggingPref".
         """
-        warnings.warn(f"{self.__class__} is deprecated and will be removed in 4.3", DeprecationWarning, stacklevel=2)
+        warnings.warn(f"{self.__class__} is deprecated and will be removed in 4.3; "
+                      f"see: https://www.selenium.dev/documentation/webdriver/getting_started/open_browser/#opera",
+                      DeprecationWarning, stacklevel=2)
         executable_path = (executable_path if executable_path else "operadriver")
         ChromiumDriver.__init__(self,
                                 executable_path=executable_path,

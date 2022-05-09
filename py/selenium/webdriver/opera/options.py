@@ -24,7 +24,9 @@ class Options(ChromeOptions):
     KEY = "operaOptions"
 
     def __init__(self):
-        warnings.warn(f"{self.__class__} is deprecated and will be removed in 4.3", DeprecationWarning, stacklevel=2)
+        warnings.warn(f"{self.__class__} is deprecated and will be removed in 4.3; "
+                      f"see: https://www.selenium.dev/documentation/webdriver/getting_started/open_browser/#opera",
+                      DeprecationWarning, stacklevel=2)
         super().__init__()
         self._android_package_name = ''
         self._android_device_socket = ''
