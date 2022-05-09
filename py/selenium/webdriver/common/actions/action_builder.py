@@ -73,8 +73,8 @@ class ActionBuilder(object):
         self._add_input(new_input)
         return new_input
 
-    def add_wheel_input(self, kind, name) -> WheelInput:
-        new_input = WheelInput(kind, name)
+    def add_wheel_input(self, name) -> WheelInput:
+        new_input = WheelInput(name)
         self._add_input(new_input)
         return new_input
 
