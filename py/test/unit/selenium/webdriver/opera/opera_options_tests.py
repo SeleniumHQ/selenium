@@ -20,9 +20,6 @@ import pytest
 from selenium.webdriver.opera.options import Options
 
 
-# Todo: gh-10379 (Remove for 4.3)
-
-
 @pytest.fixture
 def options():
     return Options()

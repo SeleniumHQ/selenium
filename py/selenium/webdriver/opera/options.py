@@ -20,7 +20,6 @@ from selenium.webdriver.chrome.options import Options as ChromeOptions
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 
 
-# Todo: gh-10379 (Remove for 4.3)
 class Options(ChromeOptions):
     KEY = "operaOptions"
 

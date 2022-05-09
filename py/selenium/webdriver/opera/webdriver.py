@@ -20,7 +20,6 @@ from selenium.webdriver.chrome.webdriver import WebDriver as ChromiumDriver
 from .options import Options
 
 
-# Todo: gh-10379 (Remove for 4.3)
 class OperaDriver(ChromiumDriver):
     """Controls the new OperaDriver and allows you
     to drive the Opera browser based on Chromium."""
