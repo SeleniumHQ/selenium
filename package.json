@@ -3,11 +3,11 @@
     "@babel/preset-react": "^7.16.0",
     "@bazel/buildifier": "^4.2.5",
     "@bazel/ibazel": "^0.15.10",
+    "@bazel/jasmine": "5.4.1",
+    "@bazel/typescript": "5.4.1",
     "@testing-library/jest-dom": "^5.16.3",
     "@testing-library/react": "^13.1.1",
     "@testing-library/user-event": "^14.1.1",
-    "@bazel/jasmine": "5.4.1",
-    "@bazel/typescript": "5.4.1",
     "@types/enzyme": "^3.10.8",
     "@types/jest": "^26.0.0",
     "@types/node": "^14.14.7",
@@ -36,7 +36,7 @@
     "url": "https://github.com/SeleniumHQ/selenium.git"
   },
   "dependencies": {
-    "@apollo/client": "^3.6.2",
+    "@apollo/client": "^3.6.3",
     "@emotion/react": "^11.9.0",
     "@emotion/styled": "^11.8.1",
     "@mui/icons-material": "^5.6.2",
