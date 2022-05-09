@@ -14,6 +14,7 @@
 # KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
 # under the License.
+from __future__ import annotations
 
 import sys
 from typing import Any, Optional, Sequence, TYPE_CHECKING
@@ -33,7 +34,6 @@ else:
     ParseableFloat = Any
     ParseableInt = Any
 
-
 RGB_PATTERN = r"^\s*rgb\(\s*(\d{1,3})\s*,\s*(\d{1,3})\s*,\s*(\d{1,3})\s*\)\s*$"
 RGB_PCT_PATTERN = r"^\s*rgb\(\s*(\d{1,3}|\d{1,2}\.\d+)%\s*,\s*(\d{1,3}|\d{1,2}\.\d+)%\s*,\s*(\d{1,3}|\d{1,2}\.\d+)%\s*\)\s*$"
 RGBA_PATTERN = r"^\s*rgba\(\s*(\d{1,3})\s*,\s*(\d{1,3})\s*,\s*(\d{1,3})\s*,\s*(0|1|0\.\d+)\s*\)\s*$"
@@ -44,7 +44,7 @@ HSL_PATTERN = r"^\s*hsl\(\s*(\d{1,3})\s*,\s*(\d{1,3})%\s*,\s*(\d{1,3})%\s*\)\s*$
 HSLA_PATTERN = r"^\s*hsla\(\s*(\d{1,3})\s*,\s*(\d{1,3})%\s*,\s*(\d{1,3})%\s*,\s*(0|1|0\.\d+)\s*\)\s*$"
 
 
-class Color(object):
+class Color:
     """
     Color conversion support class
 
@@ -59,8 +59,8 @@ class Color(object):
         print(Color.from_string('blue').rgba)
     """
 
-    @staticmethod
-    def from_string(str_: str) -> "Color":
+    @classmethod
+    def from_string(cls, str_: str) -> Color:
         import re
 
         class Matcher(object):
@@ -80,30 +80,32 @@ class Color(object):
         m = Matcher()
 
         if m.match(RGB_PATTERN, str_):
-            return Color(*m.groups)
+            return cls(*m.groups)
         elif m.match(RGB_PCT_PATTERN, str_):
             rgb = tuple([float(each) / 100 * 255 for each in m.groups])
-            return Color(*rgb)
+            return cls(*rgb)
         elif m.match(RGBA_PATTERN, str_):
-            return Color(*m.groups)
+            return cls(*m.groups)
         elif m.match(RGBA_PCT_PATTERN, str_):
-            rgba = tuple([float(each) / 100 * 255 for each in m.groups[:3]] + [m.groups[3]])  # type: ignore
-            return Color(*rgba)
+            rgba = tuple(
+                [float(each) / 100 * 255 for each in m.groups[:3]] + [m.groups[3]])  # type: ignore
+            return cls(*rgba)
         elif m.match(HEX_PATTERN, str_):
             rgb = tuple([int(each, 16) for each in m.groups])
-            return Color(*rgb)
+            return cls(*rgb)
         elif m.match(HEX3_PATTERN, str_):
             rgb = tuple([int(each * 2, 16) for each in m.groups])
-            return Color(*rgb)
+            return cls(*rgb)
         elif m.match(HSL_PATTERN, str_) or m.match(HSLA_PATTERN, str_):
-            return Color._from_hsl(*m.groups)
+            return cls._from_hsl(*m.groups)
         elif str_.upper() in Colors.keys():
             return Colors[str_.upper()]
         else:
             raise ValueError("Could not convert %s into color" % str_)
 
-    @staticmethod
-    def _from_hsl(h: ParseableFloat, s: ParseableFloat, light: ParseableFloat, a: ParseableFloat = 1) -> "Color":
+    @classmethod
+    def _from_hsl(cls, h: ParseableFloat, s: ParseableFloat, light: ParseableFloat,
+                  a: ParseableFloat = 1) -> Color:
         h = float(h) / 360
         s = float(s) / 100
         _l = float(light) / 100
@@ -135,9 +137,10 @@ class Color(object):
             g = hue_to_rgb(luminocity1, luminocity2, h)
             b = hue_to_rgb(luminocity1, luminocity2, h - 1.0 / 3.0)
 
-        return Color(round(r * 255), round(g * 255), round(b * 255), a)
+        return cls(round(r * 255), round(g * 255), round(b * 255), a)
 
-    def __init__(self, red: ParseableInt, green: ParseableInt, blue: ParseableInt, alpha: ParseableFloat = 1) -> None:
+    def __init__(self, red: ParseableInt, green: ParseableInt, blue: ParseableInt,
+                 alpha: ParseableFloat = 1) -> None:
         self.red = int(red)
         self.green = int(green)
         self.blue = int(blue)
@@ -170,7 +173,8 @@ class Color(object):
         return hash((self.red, self.green, self.blue, self.alpha))
 
     def __repr__(self) -> str:
-        return "Color(red=%d, green=%d, blue=%d, alpha=%s)" % (self.red, self.green, self.blue, self.alpha)
+        return "Color(red=%d, green=%d, blue=%d, alpha=%s)" % (
+            self.red, self.green, self.blue, self.alpha)
 
     def __str__(self) -> str:
         return "Color: %s" % self.rgba
