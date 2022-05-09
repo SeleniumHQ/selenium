@@ -36,7 +36,7 @@ Webdriver.common
    selenium.webdriver.common.actions.actions_builder
    selenium.webdriver.common.actions.input_device
    selenium.webdriver.common.actions.interaction
-   selenium.webdriver.common.actions.key_actios
+   selenium.webdriver.common.actions.key_actions
    selenium.webdriver.common.actions.key_input
    selenium.webdriver.common.actions.mouse_button
    selenium.webdriver.common.actions.pointer_input
@@ -56,7 +56,7 @@ Webdriver.support
    selenium.webdriver.support.color
    selenium.webdriver.support.event_firing_webdriver
    selenium.webdriver.support.expected_conditions
-   selenium.webdriver.support.realtive_locator
+   selenium.webdriver.support.relative_locator
    selenium.webdriver.support.select
    selenium.webdriver.support.wait
 
