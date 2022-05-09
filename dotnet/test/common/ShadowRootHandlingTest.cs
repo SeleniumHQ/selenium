@@ -19,6 +19,7 @@ namespace OpenQA.Selenium
         }
 
         [Test]
+        [IgnoreBrowser(Browser.Firefox, "Firefox does not support finding Shadow DOM elements")]
         public void ShouldFindElementUnderShadowRoot()
         {
             driver.Url = shadowRootPage;
@@ -37,6 +38,7 @@ namespace OpenQA.Selenium
         }
 
         [Test]
+        [IgnoreBrowser(Browser.Firefox, "Firefox does not support finding Shadow DOM elements")]
         public void ShouldGetShadowRootReferenceFromJavaScript()
         {
             driver.Url = shadowRootPage;

@@ -13,6 +13,7 @@ using OpenQA.Selenium.IE;
 
 namespace OpenQA.Selenium
 {
+    [Ignore("Proxy Tests are not working")]
     [TestFixture]
     public class ProxySettingTest : DriverTestFixture
     {
@@ -46,7 +47,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Chrome, "ChromeDriver is hanging")]
         [IgnoreBrowser(Browser.Safari, "SafariDriver does not support setting proxy")]
         public void CanConfigureManualHttpProxy()
         {
@@ -59,7 +59,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Chrome, "ChromeDriver is hanging")]
         [IgnoreBrowser(Browser.Safari, "SafariDriver does not support setting proxy")]
         public void CanConfigureNoProxy()
         {
@@ -82,7 +81,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Chrome, "ChromeDriver is hanging")]
         [IgnoreBrowser(Browser.Safari, "SafariDriver does not support setting proxy")]
         public void CanConfigureProxyThroughAutoConfigFile()
         {

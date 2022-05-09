@@ -8,7 +8,7 @@ namespace OpenQA.Selenium
     [TestFixture]
     public class TextHandlingTest : DriverTestFixture
     {
-        private readonly string NewLine = "\r\n";
+        private readonly string NewLine = System.Environment.NewLine;
 
         [Test]
         public void ShouldReturnTheTextContentOfASingleElementWithNoChildren()
@@ -99,7 +99,7 @@ namespace OpenQA.Selenium
             driver.Url = simpleTestPage;
             IWebElement element = driver.FindElement(By.Id("multilinenbsp"));
             string text = element.Text;
-            string expectedStart = "These lines  " + System.Environment.NewLine;
+            string expectedStart = "These lines  " + NewLine;
             Assert.That(text, Does.StartWith(expectedStart));
         }
 
@@ -109,7 +109,7 @@ namespace OpenQA.Selenium
             driver.Url = simpleTestPage;
             IWebElement element = driver.FindElement(By.Id("multilinenbsp"));
             string text = element.Text;
-            string expectedContent = System.Environment.NewLine + "  have";
+            string expectedContent = NewLine + "  have";
             Assert.That(text, Does.Contain(expectedContent));
         }
 
@@ -146,9 +146,9 @@ namespace OpenQA.Selenium
             driver.Url = simpleTestPage;
             string text = driver.FindElement(By.Id("preformatted")).Text;
 
-            Assert.That(text, Is.EqualTo("   This section has a preformatted" +System.Environment.NewLine +
-                "    text block    " + System.Environment.NewLine +
-                "  split in four lines" + System.Environment.NewLine +
+            Assert.That(text, Is.EqualTo("   This section has a preformatted" +NewLine +
+                "    text block    " + NewLine +
+                "  split in four lines" + NewLine +
                 "         "));
         }
 
@@ -157,15 +157,16 @@ namespace OpenQA.Selenium
         {
             driver.Url = simpleTestPage;
             string text = driver.FindElement(By.Id("div-with-pre")).Text;
-            Assert.That(text, Is.EqualTo("before pre" + System.Environment.NewLine +
-                "   This section has a preformatted" + System.Environment.NewLine +
-                "    text block    " + System.Environment.NewLine +
-                "  split in four lines" + System.Environment.NewLine +
-                "         " + System.Environment.NewLine +
+            Assert.That(text, Is.EqualTo("before pre" + NewLine +
+                "   This section has a preformatted" + NewLine +
+                "    text block    " + NewLine +
+                "  split in four lines" + NewLine +
+                "         " + NewLine +
                 "after pre"));
         }
 
         [Test]
+        [IgnoreBrowser(Browser.Firefox, "Firefox is doubling the new lines")]
         public void ShouldBeAbleToSetMoreThanOneLineOfTextInATextArea()
         {
             driver.Url = formsPage;
@@ -175,7 +176,7 @@ namespace OpenQA.Selenium
             textarea.SendKeys(expectedText);
 
             string seenText = textarea.GetAttribute("value");
-            Assert.AreEqual(seenText, expectedText);
+            Assert.AreEqual(expectedText ,seenText);
         }
 
         [Test]
@@ -233,7 +234,7 @@ namespace OpenQA.Selenium
 
             string text = driver.FindElement(By.Id("twoblocks")).Text;
 
-            Assert.AreEqual(text, "Some text" + NewLine + "Some more text");
+            Assert.AreEqual("Some text" + NewLine + "Some more text", text);
         }
 
         [Test]
