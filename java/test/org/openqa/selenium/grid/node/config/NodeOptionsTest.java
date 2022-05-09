@@ -61,6 +61,7 @@ import java.util.Optional;
 @SuppressWarnings("DuplicatedCode")
 public class NodeOptionsTest {
 
+  @SuppressWarnings("ReturnValueIgnored")
   @Test
   public void canConfigureNodeWithDriverDetection() {
     assumeFalse("We don't have driver servers in PATH when we run unit tests",
@@ -155,7 +156,9 @@ public class NodeOptionsTest {
     });
 
     assertThat(reported)
-      .filteredOn(capabilities -> capabilities.getCapability("se:vncEnabled") != null)
+      .filteredOn(capabilities ->
+                    capabilities.getCapability("se:vncEnabled") != null &&
+                    capabilities.getCapability("se:noVncPort") != null)
       .hasSize(reported.size());
   }
 
@@ -173,7 +176,9 @@ public class NodeOptionsTest {
     });
 
     assertThat(reported)
-      .filteredOn(capabilities -> capabilities.getCapability("se:vncEnabled") == null)
+      .filteredOn(capabilities ->
+                    capabilities.getCapability("se:vncEnabled") == null &&
+                    capabilities.getCapability("se:noVncPort") == null)
       .hasSize(reported.size());
   }
 

@@ -152,7 +152,7 @@ namespace OpenQA.Selenium.Interactions
             {
                 Dictionary<string, object> toReturn = new Dictionary<string, object>();
 
-                toReturn["type"] = "pointerMove";
+                toReturn["type"] = "scroll";
                 if (this.duration != TimeSpan.MinValue)
                 {
                     toReturn["duration"] = Convert.ToInt64(this.duration.TotalMilliseconds);

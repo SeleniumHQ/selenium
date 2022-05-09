@@ -64,7 +64,7 @@ public class EventBusFlags implements HasRoles {
   @ConfigValue(
     section = EVENTS_SECTION,
     name = "implementation",
-    example = "org.openqa.selenium.events.zeromq.ZeroMqEventBus")
+    example = "\"org.openqa.selenium.events.zeromq.ZeroMqEventBus\"")
   private String implementation;
 
   @Override

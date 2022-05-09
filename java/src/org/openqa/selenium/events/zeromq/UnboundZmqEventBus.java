@@ -17,12 +17,7 @@
 
 package org.openqa.selenium.events.zeromq;
 
-import static java.nio.charset.StandardCharsets.UTF_8;
-
 import com.google.common.collect.EvictingQueue;
-
-import net.jodah.failsafe.Failsafe;
-import net.jodah.failsafe.RetryPolicy;
 
 import org.openqa.selenium.events.Event;
 import org.openqa.selenium.events.EventBus;
@@ -36,6 +31,9 @@ import org.openqa.selenium.json.JsonOutput;
 import org.zeromq.SocketType;
 import org.zeromq.ZContext;
 import org.zeromq.ZMQ;
+
+import dev.failsafe.Failsafe;
+import dev.failsafe.RetryPolicy;
 
 import java.net.Inet6Address;
 import java.net.InetAddress;
@@ -57,6 +55,8 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Consumer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import static java.nio.charset.StandardCharsets.UTF_8;
 
 class UnboundZmqEventBus implements EventBus {
 
@@ -110,12 +110,13 @@ class UnboundZmqEventBus implements EventBus {
     String connectionMessage = String.format("Connecting to %s and %s", publishConnection, subscribeConnection);
     LOG.info(connectionMessage);
 
-    RetryPolicy<Object> retryPolicy = new RetryPolicy<>()
+    RetryPolicy<Object> retryPolicy = RetryPolicy.builder()
       .withMaxAttempts(5)
       .withDelay(5, 10, ChronoUnit.SECONDS)
       .onFailedAttempt(e -> LOG.log(Level.WARNING, String.format("%s failed", connectionMessage)))
       .onRetry(e -> LOG.log(Level.WARNING, String.format("Failure #%s. Retrying.", e.getAttemptCount())))
-      .onRetriesExceeded(e -> LOG.log(Level.WARNING, "Connection aborted."));
+      .onRetriesExceeded(e -> LOG.log(Level.WARNING, "Connection aborted."))
+      .build();
 
     // Access to the zmq socket is safe here: no threads.
     Failsafe.with(retryPolicy).run(
@@ -209,7 +210,7 @@ class UnboundZmqEventBus implements EventBus {
   }
 
   private class PollingRunnable implements Runnable {
-    private Secret secret;
+    private final Secret secret;
 
     public PollingRunnable(Secret secret) {
       this.secret = secret;
@@ -228,22 +229,40 @@ class UnboundZmqEventBus implements EventBus {
               ZMQ.Socket socket = poller.getSocket(i);
 
               EventName eventName = new EventName(new String(socket.recv(), UTF_8));
+              // Processing only events we are listening to
+              if (!listeners.containsKey(eventName)) {
+                continue;
+              }
 
               Secret eventSecret;
               String receivedEventSecret = new String(socket.recv(), UTF_8);
               try {
                 eventSecret = JSON.toType(receivedEventSecret, Secret.class);
-              } catch (JsonException e) {
-                rejectEvent(eventName, receivedEventSecret);
-                return;
+              } catch (JsonException ignore) {
+                rejectEvent(
+                  eventName,
+                  receivedEventSecret,
+                  "Could not parse event secret, rejecting event.");
+                continue;
               }
 
-              UUID id = UUID.fromString(new String(socket.recv(), UTF_8));
+              UUID id;
+              String eventId = new String(socket.recv(), UTF_8);
+              try {
+                id = UUID.fromString(eventId);
+              } catch (IllegalArgumentException ignore) {
+                rejectEvent(
+                  eventName,
+                  eventId,
+                  "Could not parse event id, rejecting event.");
+                continue;
+              }
+
               String data = new String(socket.recv(), UTF_8);
 
               // Don't bother doing more work if we've seen this message.
               if (recentMessages.contains(id)) {
-                return;
+                continue;
               }
 
               Object converted = JSON.toType(data, Object.class);
@@ -252,17 +271,15 @@ class UnboundZmqEventBus implements EventBus {
               recentMessages.add(id);
 
               if (!Secret.matches(secret, eventSecret)) {
-                rejectEvent(eventName, data);
-                return;
+                rejectEvent(eventName, data, "Rejecting message without a valid secret");
+                continue;
               }
 
               notifyListeners(eventName, event);
             }
           }
         } catch (Exception e) {
-          if (e.getCause() instanceof AssertionError) {
-            // Do nothing.
-          } else {
+          if (!(e.getCause() instanceof AssertionError)) {
             LOG.log(Level.WARNING, e,
                     () -> "Caught exception while polling for event bus messages: " +
                           e.getMessage());
@@ -271,12 +288,10 @@ class UnboundZmqEventBus implements EventBus {
       }
     }
 
-    private void rejectEvent(EventName eventName, String data) {
+    private void rejectEvent(EventName eventName, String data, String message) {
       Event rejectedEvent = new Event(REJECTED_EVENT,
                                       new ZeroMqEventBus.RejectedEvent(eventName, data));
-      LOG.log(Level.SEVERE,
-              "Received message without a valid secret. Rejecting. {0} -> {1}",
-              new Object[]{rejectedEvent, data}); // String formatting only applied if needed
+      LOG.log(Level.SEVERE, "{0}. {1}", new Object[]{message, rejectedEvent});
 
       notifyListeners(REJECTED_EVENT, rejectedEvent);
     }

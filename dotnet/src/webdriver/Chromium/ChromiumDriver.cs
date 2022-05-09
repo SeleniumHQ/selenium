@@ -55,6 +55,11 @@ namespace OpenQA.Selenium.Chromium
         public static readonly string StartCastTabMirroringCommand = "startCastTabMirroring";
 
         /// <summary>
+        /// Command for starting cast desktop mirroring in a driver for a Chromium-based browser.
+        /// </summary>
+        public static readonly string StartCastDesktopMirroringCommand = "startCastDesktopMirroring";
+
+        /// <summary>
         /// Command for getting a cast issued message in a driver for a Chromium-based browser.
         /// </summary>
         public static readonly string GetCastIssueMessageCommand = "getCastIssueMessage";
@@ -391,6 +396,22 @@ namespace OpenQA.Selenium.Chromium
             Dictionary<string, object> parameters = new Dictionary<string, object>();
             parameters["sinkName"] = deviceName;
             this.Execute(StartCastTabMirroringCommand, parameters);
+        }
+
+        /// <summary>
+        /// Initiates mirroring of the desktop on the specified device.
+        /// </summary>
+        /// <param name="deviceName">Name of the target sink (device).</param>
+        public void StartDesktopMirroring(string deviceName)
+        {
+            if (deviceName == null)
+            {
+                throw new ArgumentNullException(nameof(deviceName), "deviceName must not be null");
+            }
+
+            Dictionary<string, object> parameters = new Dictionary<string, object>();
+            parameters["sinkName"] = deviceName;
+            this.Execute(StartCastDesktopMirroringCommand, parameters);
         }
 
         /// <summary>

@@ -15,7 +15,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
-import React from 'react'
+import React, { useState } from 'react'
 import {
   Button,
   Dialog,
@@ -26,50 +26,29 @@ import {
   FormControl,
   Input,
   InputAdornment,
-  InputLabel,
-  makeStyles
-} from '@material-ui/core'
-import clsx from 'clsx'
-import { createStyles, Theme } from '@material-ui/core/styles'
-import IconButton from '@material-ui/core/IconButton'
-import { Visibility, VisibilityOff } from '@material-ui/icons'
-
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    root: {
-      display: 'flex',
-      flexWrap: 'wrap',
-    },
-    margin: {
-      margin: theme.spacing(1),
-    },
-    withoutLabel: {
-      marginTop: theme.spacing(3),
-    },
-    textField: {
-      width: '25ch',
-    },
-  }),
-)
+  InputLabel
+} from '@mui/material'
+import IconButton from '@mui/material/IconButton'
+import { Visibility, VisibilityOff } from '@mui/icons-material'
 
 interface State {
-  amount: string;
-  password: string;
-  weight: string;
-  weightRange: string;
-  showPassword: boolean;
+  amount: string
+  password: string
+  weight: string
+  weightRange: string
+  showPassword: boolean
 }
 
 const PasswordDialog = (props) => {
-  const { title, children, open, setOpen, onConfirm, onCancel } = props
-  const classes = useStyles()
-  const [values, setValues] = React.useState<State>({
+  const { title, children, open, openDialog, onConfirm, onCancel } = props
+  const [values, setValues] = useState<State>({
     amount: '',
     password: '',
     weight: '',
     weightRange: '',
-    showPassword: false,
+    showPassword: false
   })
+
   const handleChange = (prop: keyof State) => (event: React.ChangeEvent<HTMLInputElement>) => {
     setValues({ ...values, [prop]: event.target.value })
   }
@@ -80,37 +59,44 @@ const PasswordDialog = (props) => {
   const handleMouseDownPassword = (event: React.MouseEvent<HTMLButtonElement>) => {
     event.preventDefault()
   }
+
   return (
-    <Dialog open={open}
-            onClose={() => setOpen(false)}
-            aria-labelledby={'password-dialog'}
+    <Dialog
+      open={open}
+      onClose={() => openDialog(false)}
+      aria-labelledby='password-dialog'
     >
-      <DialogTitle id={'password-dialog'}>{title}</DialogTitle>
+      <DialogTitle id='password-dialog'>{title}</DialogTitle>
       <DialogContent>
         <DialogContentText>
           {children}
         </DialogContentText>
-        <FormControl className={clsx(classes.margin, classes.textField)}>
+        <FormControl
+          sx={{ margin: 1, width: '25ch' }}
+          variant='standard'
+        >
           <InputLabel
-            htmlFor="standard-adornment-password">
+            htmlFor='standard-adornment-password'
+          >
             Password
           </InputLabel>
           <Input
-            id="standard-adornment-password"
+            id='standard-adornment-password'
             autoFocus
-            margin="dense"
+            margin='dense'
             type={values.showPassword ? 'text' : 'password'}
             value={values.password}
             fullWidth
             onChange={handleChange('password')}
             endAdornment={
-              <InputAdornment position="end">
+              <InputAdornment position='end'>
                 <IconButton
-                  aria-label="toggle password visibility"
+                  aria-label='toggle password visibility'
                   onClick={handleClickShowPassword}
                   onMouseDown={handleMouseDownPassword}
+                  size='large'
                 >
-                  {values.showPassword ? <Visibility/> : <VisibilityOff/>}
+                  {values.showPassword ? <Visibility /> : <VisibilityOff />}
                 </IconButton>
               </InputAdornment>
             }
@@ -118,20 +104,23 @@ const PasswordDialog = (props) => {
         </FormControl>
       </DialogContent>
       <DialogActions>
-        <Button variant={'contained'}
-                onClick={() => {
-                  setOpen(false)
-                  onCancel()
-                }}
-                color={'secondary'}>
+        <Button
+          variant='contained'
+          onClick={() => {
+            openDialog(false)
+            onCancel()
+          }}
+          color='secondary'
+        >
           Cancel
         </Button>
-        <Button variant={'contained'}
-                onClick={() => {
-                  setOpen(false)
-                  onConfirm(values.password)
-                }}
-                color={'primary'}
+        <Button
+          variant='contained'
+          onClick={() => {
+            // setOpen(false)
+            onConfirm(values.password)
+          }}
+          color='primary'
         >
           Accept
         </Button>

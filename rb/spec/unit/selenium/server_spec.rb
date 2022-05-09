@@ -23,18 +23,18 @@ require 'selenium/server'
 module Selenium
   describe Server do
     let(:mock_process) { instance_double(ChildProcess::AbstractProcess).as_null_object }
-    let(:mock_poller) { instance_double('SocketPoller', connected?: true, closed?: true) }
+    let(:mock_poller) { instance_double(WebDriver::SocketPoller, connected?: true, closed?: true) }
     let(:repo) { 'https://api.github.com/repos/seleniumhq/selenium/releases' }
     let(:example_json) do
-      [{"url": "#{repo}/41272273",
-        "assets": {
-          "name": 'selenium-server-3.141.59.jar',
-          "browser_download_url": "#{repo}/selenium-3.141.59/selenium-server-standalone-3.141.59.jar"
+      [{url: "#{repo}/41272273",
+        assets: {
+          name: 'selenium-server-3.141.59.jar',
+          browser_download_url: "#{repo}/selenium-3.141.59/selenium-server-standalone-3.141.59.jar"
         }},
-       {"url": "#{repo}/51272273",
-        "assets": {
-          "name": 'selenium-server-10.0.1.jar',
-          "browser_download_url": "#{repo}/selenium-10.0.1/selenium-server-10.0.1.jar"
+       {url: "#{repo}/51272273",
+        assets: {
+          name: 'selenium-server-10.0.1.jar',
+          browser_download_url: "#{repo}/selenium-10.0.1/selenium-server-10.0.1.jar"
         }}].to_json
     end
 
@@ -191,7 +191,7 @@ module Selenium
     it 'raises Selenium::Server::Error if the server is not launched within the timeout' do
       allow(File).to receive(:exist?).with('selenium_server_deploy.jar').and_return(true)
 
-      poller = instance_double('SocketPoller')
+      poller = instance_double(WebDriver::SocketPoller)
       allow(poller).to receive(:connected?).and_return(false)
 
       server = Selenium::Server.new('selenium_server_deploy.jar', background: true)

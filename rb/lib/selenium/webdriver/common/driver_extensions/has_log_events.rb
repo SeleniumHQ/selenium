@@ -114,7 +114,7 @@ module Selenium
           execute_script(mutation_listener)
           devtools.page.add_script_to_evaluate_on_new_document(source: mutation_listener)
 
-          devtools.runtime.on(:binding_called, &method(:log_mutation_event))
+          devtools.runtime.on(:binding_called) { |event| log_mutation_event(event) }
         end
 
         def log_mutation_event(params)

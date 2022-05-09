@@ -35,9 +35,9 @@ import org.openqa.selenium.remote.http.WebSocket;
 import java.io.Closeable;
 import java.io.StringReader;
 import java.time.Duration;
-import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
@@ -66,7 +66,7 @@ public class Connection implements Closeable {
   });
   private static final AtomicLong NEXT_ID = new AtomicLong(1L);
   private final WebSocket socket;
-  private final Map<Long, Consumer<Either<Throwable, JsonInput>>> methodCallbacks = new LinkedHashMap<>();
+  private final Map<Long, Consumer<Either<Throwable, JsonInput>>> methodCallbacks = new ConcurrentHashMap<>();
   private final ReadWriteLock callbacksLock = new ReentrantReadWriteLock(true);
   private final Multimap<Event<?>, Consumer<?>> eventCallbacks = HashMultimap.create();
 

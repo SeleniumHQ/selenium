@@ -47,5 +47,10 @@ namespace OpenQA.Selenium
         /// Profiling logs.
         /// </summary>
         public static readonly string Profiler = "profiler";
+
+        /// <summary>
+        /// Performance logs.
+        /// </summary>
+        public static readonly string Performance = "performance";
     }
 }

@@ -23,7 +23,6 @@ import static org.openqa.selenium.WaitingConditions.elementTextToEqual;
 import static org.openqa.selenium.remote.CapabilityType.UNEXPECTED_ALERT_BEHAVIOUR;
 import static org.openqa.selenium.testing.drivers.Browser.CHROME;
 import static org.openqa.selenium.testing.drivers.Browser.EDGE;
-import static org.openqa.selenium.testing.drivers.Browser.LEGACY_FIREFOX_XPI;
 import static org.openqa.selenium.testing.drivers.Browser.HTMLUNIT;
 import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
 
@@ -40,7 +39,6 @@ import java.time.Duration;
 public class UnexpectedAlertBehaviorTest extends JUnit4TestBase {
 
   @Test
-  @Ignore(value = LEGACY_FIREFOX_XPI, reason = "Legacy behaviour, not W3C conformant")
   @Ignore(value = CHROME, reason = "Legacy behaviour, not W3C conformant")
   @Ignore(value = EDGE, reason = "Legacy behaviour, not W3C conformant")
   @Ignore(value = HTMLUNIT, reason = "Legacy behaviour, not W3C conformant")
@@ -50,7 +48,6 @@ public class UnexpectedAlertBehaviorTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(value = LEGACY_FIREFOX_XPI, reason = "Legacy behaviour, not W3C conformant")
   @Ignore(value = CHROME, reason = "Legacy behaviour, not W3C conformant")
   @Ignore(value = EDGE, reason = "Legacy behaviour, not W3C conformant")
   @Ignore(value = HTMLUNIT, reason = "Legacy behaviour, not W3C conformant")
@@ -69,7 +66,6 @@ public class UnexpectedAlertBehaviorTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(value = LEGACY_FIREFOX_XPI, reason = "Legacy behaviour, not W3C conformant")
   @Ignore(value = CHROME, reason = "Legacy behaviour, not W3C conformant")
   @Ignore(value = EDGE, reason = "Legacy behaviour, not W3C conformant")
   @Ignore(value = HTMLUNIT, reason = "Legacy behaviour, not W3C conformant")

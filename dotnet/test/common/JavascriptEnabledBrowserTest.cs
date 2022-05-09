@@ -187,7 +187,6 @@ namespace OpenQA.Selenium
 
         [Test]
         [NeedsFreshDriver(IsCreatedAfterTest = true)]
-        [IgnoreBrowser(Browser.Opera)]
         public void ShouldBeAbleToClickALinkThatClosesAWindow()
         {
             driver.Url = javascriptPage;

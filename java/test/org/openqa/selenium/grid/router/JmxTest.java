@@ -17,9 +17,6 @@
 
 package org.openqa.selenium.grid.router;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.fail;
-
 import com.google.common.collect.ImmutableMap;
 
 import org.junit.Test;
@@ -59,6 +56,9 @@ import javax.management.MalformedObjectNameException;
 import javax.management.ObjectName;
 import javax.management.ReflectionException;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.fail;
+
 public class JmxTest {
 
   private final Capabilities CAPS = new ImmutableCapabilities("browserName", "cheese");
@@ -96,7 +96,7 @@ public class JmxTest {
   @Test
   public void shouldBeAbleToRegisterNode() throws URISyntaxException {
     try {
-      URI nodeUri = new URI("http://example.com:1234");
+      URI nodeUri = new URI("https://example.com:1234");
       ObjectName name = new ObjectName("org.seleniumhq.grid:type=Node,name=LocalNode");
       new JMXHelper().unregister(name);
 
@@ -196,11 +196,9 @@ public class JmxTest {
       new JMXHelper().unregister(name);
 
       Tracer tracer = DefaultTestTracer.createTracer();
-      EventBus bus = new GuavaEventBus();
 
       NewSessionQueue sessionQueue = new LocalNewSessionQueue(
         tracer,
-        bus,
         new DefaultSlotMatcher(),
         Duration.ofSeconds(2),
         Duration.ofSeconds(2),

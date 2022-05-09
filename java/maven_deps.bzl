@@ -2,30 +2,30 @@ load("@rules_jvm_external//:defs.bzl", "maven_install")
 load("@rules_jvm_external//:specs.bzl", "maven")
 
 def selenium_java_deps():
-    netty_version = "4.1.70.Final"
-    opentelemetry_version = "1.9.1"
+    netty_version = "4.1.76.Final"
+    opentelemetry_version = "1.13.0"
 
     maven_install(
         artifacts = [
-            "com.beust:jcommander:1.81",
-            "com.github.javaparser:javaparser-core:3.23.1",
+            "com.beust:jcommander:1.82",
+            "com.github.javaparser:javaparser-core:3.24.2",
             maven.artifact(
                 group = "com.github.spotbugs",
                 artifact = "spotbugs",
-                version = "4.5.0",
+                version = "4.6.0",
                 exclusions = [
                     "org.slf4j:slf4j-api",
                 ],
             ),
-            "com.google.code.gson:gson:2.8.9",
-            "com.google.guava:guava:31.0.1-jre",
+            "com.google.code.gson:gson:2.9.0",
+            "com.google.guava:guava:31.1-jre",
             "com.google.auto:auto-common:1.2.1",
             "com.google.auto.service:auto-service:1.0.1",
             "com.google.auto.service:auto-service-annotations:1.0.1",
-            "com.graphql-java:graphql-java:17.3",
-            "com.graphql-java:java-dataloader:3.1.1",
-            "io.grpc:grpc-context:1.42.1",
-            "io.lettuce:lettuce-core:6.1.5.RELEASE",
+            "com.graphql-java:graphql-java:18.0",
+            "com.graphql-java:java-dataloader:3.1.2",
+            "io.grpc:grpc-context:1.46.0",
+            "io.lettuce:lettuce-core:6.1.8.RELEASE",
             "io.netty:netty-buffer:%s" % netty_version,
             "io.netty:netty-codec-haproxy:%s" % netty_version,
             "io.netty:netty-codec-http:%s" % netty_version,
@@ -36,6 +36,12 @@ def selenium_java_deps():
             "io.netty:netty-transport:%s" % netty_version,
             "io.netty:netty-transport-classes-epoll:%s" % netty_version,
             "io.netty:netty-transport-classes-kqueue:%s" % netty_version,
+            # Start - Needed to support unix domain sockets
+            "io.netty:netty-transport-native-epoll:%s" % netty_version,
+            "io.netty:netty-transport-native-epoll:jar:linux-x86_64:%s" % netty_version,
+            "io.netty:netty-transport-native-kqueue:%s" % netty_version,
+            "io.netty:netty-transport-native-kqueue:jar:osx-x86_64:%s" % netty_version,
+            # End - Needed to support unix domain sockets
             "io.netty:netty-transport-native-unix-common:%s" % netty_version,
             "io.opentelemetry:opentelemetry-api:%s" % opentelemetry_version,
             "io.opentelemetry:opentelemetry-context:%s" % opentelemetry_version,
@@ -60,23 +66,23 @@ def selenium_java_deps():
                     "org.hamcrest:hamcrest-library",
                 ],
             ),
-            "net.bytebuddy:byte-buddy:1.12.2",
-            "net.jodah:failsafe:2.4.4",
-            "net.sourceforge.htmlunit:htmlunit-core-js:2.55.0",
+            "net.bytebuddy:byte-buddy:1.12.9",
+            "dev.failsafe:failsafe:3.2.3",
+            "net.sourceforge.htmlunit:htmlunit-core-js:2.61.1",
             "org.apache.commons:commons-exec:1.3",
-            "org.assertj:assertj-core:3.21.0",
+            "org.assertj:assertj-core:3.22.0",
             "org.asynchttpclient:async-http-client:2.12.3",
             "org.eclipse.mylyn.github:org.eclipse.egit.github.core:2.1.5",
             "org.hamcrest:hamcrest:2.2",
             "org.hsqldb:hsqldb:2.6.1",
-            "org.mockito:mockito-core:4.1.0",
-            "org.slf4j:slf4j-api:1.7.32",
-            "org.slf4j:slf4j-jdk14:1.7.32",
-            "org.testng:testng:7.4.0",
+            "org.mockito:mockito-core:4.5.1",
+            "org.slf4j:slf4j-api:1.7.36",
+            "org.slf4j:slf4j-jdk14:1.7.36",
+            "org.testng:testng:7.5",
             "org.zeromq:jeromq:0.5.2",
-            "xyz.rogfam:littleproxy:2.0.5",
-            "org.seleniumhq.selenium:htmlunit-driver:3.55.0",
-            "org.redisson:redisson:3.16.4",
+            "xyz.rogfam:littleproxy:2.0.7",
+            "org.seleniumhq.selenium:htmlunit-driver:3.61.0",
+            "org.redisson:redisson:3.17.1",
             "com.github.stephenc.jcip:jcip-annotations:1.0-1",
         ],
         excluded_artifacts = [

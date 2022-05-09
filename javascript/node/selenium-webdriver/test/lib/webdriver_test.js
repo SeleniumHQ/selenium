@@ -257,8 +257,9 @@ describe('WebDriver', function () {
         .andReturnError(new StubError())
         .end()
 
-      const driver = WebDriver.createSession(executor,
-        { browserName: 'firefox' })
+      const driver = WebDriver.createSession(executor, {
+        browserName: 'firefox',
+      })
       return driver.getSession().then(fail, assertIsStubError)
     })
 
@@ -761,7 +762,7 @@ describe('WebDriver', function () {
 
     it('customLocator', function () {
       let executor = new FakeExecutor()
-        .expect(CName.FIND_ELEMENTS, { using: 'css selector', value: 'a' })
+        .expect(CName.FIND_ELEMENTS, { using: 'css selector', value: '.a' })
         .andReturnSuccess([
           WebElement.buildId('foo'),
           WebElement.buildId('bar'),
@@ -773,7 +774,7 @@ describe('WebDriver', function () {
       const driver = executor.createDriver()
       const element = driver.findElement(function (d) {
         assert.strictEqual(driver, d)
-        return d.findElements(By.tagName('a'))
+        return d.findElements(By.className('a'))
       })
       return element.click()
     })
@@ -796,13 +797,13 @@ describe('WebDriver', function () {
     it('returnsMultipleElements', function () {
       const ids = ['foo', 'bar', 'baz']
       let executor = new FakeExecutor()
-        .expect(CName.FIND_ELEMENTS, { using: 'css selector', value: 'a' })
+        .expect(CName.FIND_ELEMENTS, { using: 'css selector', value: '.a' })
         .andReturnSuccess(ids.map(WebElement.buildId))
         .end()
 
       const driver = executor.createDriver()
       return driver
-        .findElements(By.tagName('a'))
+        .findElements(By.className('a'))
         .then(function (elements) {
           return Promise.all(
             elements.map(function (e) {
@@ -937,6 +938,21 @@ describe('WebDriver', function () {
       const driver = executor.createDriver()
       const element = new WebElement(driver, 'one')
       return element.sendKeys(1, 2, 'abc', 3)
+    })
+
+    it('sendKeysWithEmojiRepresentedByPairOfCodePoints', function () {
+      let executor = new FakeExecutor()
+        .expect(CName.SEND_KEYS_TO_ELEMENT, {
+          id: WebElement.buildId('one'),
+          text: '\uD83D\uDE00',
+          value: ['\uD83D\uDE00'],
+        })
+        .andReturnSuccess()
+        .end()
+
+      const driver = executor.createDriver()
+      const element = new WebElement(driver, 'one')
+      return element.sendKeys('\uD83D\uDE00')
     })
 
     it('convertsVarArgsIntoStrings_promisedArgs', function () {
@@ -1563,6 +1579,15 @@ describe('WebDriver', function () {
                     type: 'pointerMove',
                     x: 0,
                     y: 125,
+                    altitudeAngle: 0,
+                    azimuthAngle: 0,
+                    width: 0,
+                    height: 0,
+                    pressure: 0,
+                    tangentialPressure: 0,
+                    tiltX: 0,
+                    tiltY: 0,
+                    twist: 0,
                   },
                 ],
               },
@@ -1597,6 +1622,15 @@ describe('WebDriver', function () {
                     type: 'pointerMove',
                     x: 0,
                     y: 125,
+                    altitudeAngle: 0,
+                    azimuthAngle: 0,
+                    width: 0,
+                    height: 0,
+                    pressure: 0,
+                    tangentialPressure: 0,
+                    tiltX: 0,
+                    tiltY: 0,
+                    twist: 0,
                   },
                 ],
               },

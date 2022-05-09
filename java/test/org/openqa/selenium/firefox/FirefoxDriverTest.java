@@ -39,8 +39,10 @@ import org.openqa.selenium.remote.Command;
 import org.openqa.selenium.remote.CommandExecutor;
 import org.openqa.selenium.remote.DriverCommand;
 import org.openqa.selenium.remote.RemoteWebDriver;
+import org.openqa.selenium.remote.RemoteWebDriverBuilder;
 import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.remote.UnreachableBrowserException;
+import org.openqa.selenium.remote.http.ClientConfig;
 import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.openqa.selenium.testing.Ignore;
@@ -60,6 +62,7 @@ import java.util.List;
 import java.util.Random;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.junit.Assert.fail;
 import static org.junit.Assume.assumeNotNull;
 import static org.mockito.Mockito.atLeastOnce;
@@ -74,6 +77,8 @@ import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
 
 public class FirefoxDriverTest extends JUnit4TestBase {
 
+  private static final String EXT_PATH = "common/extensions/webextensions-selenium-example.xpi";
+  private static final String EXT_PATH_DIR = "common/extensions/webextensions-selenium-example";
   private static char[] CHARS =
       "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890!\"§$%&/()+*~#',.-_:;\\"
           .toCharArray();
@@ -94,6 +99,32 @@ public class FirefoxDriverTest extends JUnit4TestBase {
     if (localDriver != null) {
       localDriver.quit();
     }
+  }
+
+  @Test
+  public void builderGeneratesDefaultChromeOptions() {
+    WebDriver driver = FirefoxDriver.builder().build();
+    driver.quit();
+  }
+
+  @Test
+  public void builderOverridesDefaultChromeOptions() {
+    FirefoxOptions options = new FirefoxOptions();
+    options.setImplicitWaitTimeout(Duration.ofMillis(1));
+    WebDriver driver = FirefoxDriver.builder().oneOf(options).build();
+    assertThat(driver.manage().timeouts().getImplicitWaitTimeout()).isEqualTo(Duration.ofMillis(1));
+
+    driver.quit();
+  }
+
+  @Test
+  public void builderWithClientConfigthrowsException() {
+    ClientConfig clientConfig = ClientConfig.defaultConfig().readTimeout(Duration.ofMinutes(1));
+    RemoteWebDriverBuilder builder = FirefoxDriver.builder().config(clientConfig);
+
+    assertThatExceptionOfType(IllegalArgumentException.class)
+      .isThrownBy(builder::build)
+      .withMessage("ClientConfig instances do not work for Local Drivers");
   }
 
   @Test
@@ -500,10 +531,10 @@ public class FirefoxDriverTest extends JUnit4TestBase {
 
   @Test
   public void canAddRemoveExtensions() {
-    Path extension = InProject.locate("third_party/firebug/favourite_colour-1.1-an+fx.xpi");
+    Path extension = InProject.locate(EXT_PATH);
 
     String id = ((HasExtensions) driver).installExtension(extension);
-    assertThat(id).isEqualTo("favourite-colour-examples@mozilla.org");
+    assertThat(id).isEqualTo("webextensions-selenium-example@example.com");
 
     try {
       ((HasExtensions) driver).uninstallExtension(id);
@@ -514,10 +545,24 @@ public class FirefoxDriverTest extends JUnit4TestBase {
 
   @Test
   public void canAddRemoveTempExtensions() {
-    Path extension = InProject.locate("third_party/firebug/favourite_colour-1.1-an+fx.xpi");
+    Path extension = InProject.locate(EXT_PATH);
 
     String id = ((HasExtensions) driver).installExtension(extension, true);
-    assertThat(id).isEqualTo("favourite-colour-examples@mozilla.org");
+    assertThat(id).isEqualTo("webextensions-selenium-example@example.com");
+
+    try {
+      ((HasExtensions) driver).uninstallExtension(id);
+    } catch (WebDriverException ex) {
+      fail(ex.getMessage());
+    }
+  }
+
+  @Test
+  public void canAddRemoveTempExtensionsDirectory() {
+    Path extension = InProject.locate(EXT_PATH_DIR);
+
+    String id = ((HasExtensions) driver).installExtension(extension, true);
+    assertThat(id).isEqualTo("webextensions-selenium-example@example.com");
 
     try {
       ((HasExtensions) driver).uninstallExtension(id);

@@ -27,7 +27,6 @@ import static org.openqa.selenium.testing.drivers.Browser.CHROME;
 import static org.openqa.selenium.testing.drivers.Browser.EDGE;
 import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
 import static org.openqa.selenium.testing.drivers.Browser.IE;
-import static org.openqa.selenium.testing.drivers.Browser.LEGACY_FIREFOX_XPI;
 import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
 
 import com.google.common.collect.Sets;
@@ -140,7 +139,6 @@ public class TakesScreenshotTest extends JUnit4TestBase {
     compareColors(expectedColors, actualColors);
   }
 
-  @Ignore(LEGACY_FIREFOX_XPI)
   @Ignore(value = CHROME, gitHubActions = true)
   @Test
   public void testShouldCaptureScreenshotOfAnElement() throws Exception {
@@ -159,124 +157,6 @@ public class TakesScreenshotTest extends JUnit4TestBase {
                                (raster.getSample(1, 1, 1)),
                                (raster.getSample(1, 1, 2)));
     assertThat(hex).isEqualTo("#0f12f7");
-  }
-
-  @Test
-  @Ignore(value = CHROME, reason = "takes only visible viewport")
-  @Ignore(value = EDGE, reason = "takes only visible viewport")
-  @Ignore(FIREFOX)
-  @Ignore(value = IE, reason = "takes only visible viewport")
-  @NotYetImplemented(SAFARI)
-  public void testShouldCaptureScreenshotOfPageWithLongX() {
-    driver.get(appServer.whereIs("screen/screen_x_long.html"));
-
-    BufferedImage screenshot = getImage();
-
-    Set<String> actualColors = scanActualColors(screenshot,
-                                               /* stepX in pixels */ 50,
-                                               /* stepY in pixels */ 5);
-
-    Set<String> expectedColors = generateExpectedColors( /* initial color */ 0x0F0F0F,
-                                                    /* color step*/ 1000,
-                                                    /* grid X size */ 6,
-                                                    /* grid Y size */ 6);
-
-    compareColors(expectedColors, actualColors);
-  }
-
-  @Test
-  @Ignore(value = CHROME, reason = "takes only visible viewport")
-  @Ignore(value = EDGE, reason = "takes only visible viewport")
-  @Ignore(FIREFOX)
-  @Ignore(value = IE, reason = "takes only visible viewport")
-  @NotYetImplemented(SAFARI)
-  public void testShouldCaptureScreenshotOfPageWithLongY() {
-    driver.get(appServer.whereIs("screen/screen_y_long.html"));
-
-    BufferedImage screenshot = getImage();
-
-    Set<String> actualColors = scanActualColors(screenshot,
-                                               /* stepX in pixels */ 5,
-                                               /* stepY in pixels */ 50);
-
-    Set<String> expectedColors = generateExpectedColors( /* initial color */ 0x0F0F0F,
-                                                    /* color step*/ 1000,
-                                                    /* grid X size */ 6,
-                                                    /* grid Y size */ 6);
-
-    compareColors(expectedColors, actualColors);
-  }
-
-  @Test
-  @Ignore(value = IE, reason = "cuts captured image at driver level")
-  @Ignore(value = LEGACY_FIREFOX_XPI, reason = "captured image is cut at driver level")
-  @Ignore(value = CHROME, reason = "takes only visible viewport")
-  @Ignore(value = EDGE, reason = "takes only visible viewport")
-  @Ignore(FIREFOX)
-  @NotYetImplemented(SAFARI)
-  public void testShouldCaptureScreenshotOfPageWithTooLongX() {
-    driver.get(appServer.whereIs("screen/screen_x_too_long.html"));
-
-    BufferedImage screenshot = getImage();
-
-    Set<String> actualColors = scanActualColors(screenshot,
-                                               /* stepX in pixels */ 100,
-                                               /* stepY in pixels */ 5);
-
-    Set<String> expectedColors = generateExpectedColors( /* initial color */ 0x0F0F0F,
-                                                    /* color step*/ 1000,
-                                                    /* grid X size */ 6,
-                                                    /* grid Y size */ 6);
-
-    compareColors(expectedColors, actualColors);
-  }
-
-  @Test
-  @Ignore(value = IE, reason = "cuts captured image at driver level")
-  @Ignore(value = LEGACY_FIREFOX_XPI, reason = "captured image is cut at driver level")
-  @Ignore(value = CHROME, reason = "takes only visible viewport")
-  @Ignore(value = EDGE, reason = "takes only visible viewport")
-  @Ignore(FIREFOX)
-  @NotYetImplemented(SAFARI)
-  public void testShouldCaptureScreenshotOfPageWithTooLongY() {
-    driver.get(appServer.whereIs("screen/screen_y_too_long.html"));
-
-    BufferedImage screenshot = getImage();
-
-    Set<String> actualColors = scanActualColors(screenshot,
-                                               /* stepX in pixels */ 5,
-                                               /* stepY in pixels */ 100);
-
-    Set<String> expectedColors = generateExpectedColors( /* initial color */ 0x0F0F0F,
-                                                    /* color step*/ 1000,
-                                                    /* grid X size */ 6,
-                                                    /* grid Y size */ 6);
-
-    compareColors(expectedColors, actualColors);
-  }
-
-  @Test
-  @Ignore(value = IE, reason = "returns null")
-  @Ignore(value = LEGACY_FIREFOX_XPI, reason = "failed due NS_ERROR_FAILURE at context.drawWindow")
-  @NotYetImplemented(value = SAFARI, reason = "An unknown server-side error")
-  @Ignore(value = CHROME, reason = "takes only visible viewport")
-  @Ignore(value = EDGE, reason = "takes only visible viewport")
-  @Ignore(FIREFOX)
-  public void testShouldCaptureScreenshotOfPageWithTooLongXandY() {
-    driver.get(appServer.whereIs("screen/screen_too_long.html"));
-
-    BufferedImage screenshot = getImage();
-
-    Set<String> actualColors = scanActualColors(screenshot,
-                                               /* stepX in pixels */ 100,
-                                               /* stepY in pixels */ 100);
-
-    Set<String> expectedColors = generateExpectedColors( /* initial color */ 0x0F0F0F,
-                                                    /* color step*/ 1000,
-                                                    /* grid X size */ 6,
-                                                    /* grid Y size */ 6);
-
-    compareColors(expectedColors, actualColors);
   }
 
   @Test

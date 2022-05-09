@@ -22,8 +22,8 @@ import org.junit.runners.Suite;
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
     ActionsTest.class,
-    BasicKeyboardInterfaceTest.class,
-    BasicMouseInterfaceTest.class,
+    DefaultKeyboardTest.class,
+    DefaultMouseTest.class,
     CombinedInputActionsTest.class,
     CompositeActionTest.class,
     DragAndDropTest.class,

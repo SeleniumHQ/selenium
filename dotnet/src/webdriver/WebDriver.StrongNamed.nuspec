@@ -47,6 +47,7 @@
   <files>
     <file src="**/WebDriver.dll" target="lib" />
     <file src="**/WebDriver.pdb" target="lib" />
+    <file src="**/WebDriver.xml" target="lib" />
     <file src="../icon.png" target="images\" />
   </files>
 </package>

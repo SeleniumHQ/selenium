@@ -46,7 +46,7 @@ module Selenium
       alias_method :eql?, :==
 
       def hash
-        @id.hash ^ @bridge.hash
+        [@id, @bridge].hash
       end
 
       #

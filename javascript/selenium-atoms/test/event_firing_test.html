@@ -31,15 +31,6 @@
             !goog.userAgent.product.CHROME && !goog.userAgent.product.FIREFOX;
 
         function expectedEventCoordinate(elementTopLeftCorner, offset) {
-          // TODO: Delete next 'if' statement when Selenium stops supporting Firefox 24 ESR.
-          if (goog.userAgent.product.FIREFOX &&
-              bot.userAgent.isProductVersion(24) &&
-              !bot.userAgent.isProductVersion(25)) {
-            // Firefox 24 ESR events have coordinates of the offset
-            // (relative to top-left corner of the element; not of the viewport).
-            return offset;
-          }
-
           if (SUBPIXEL_PRECISION_SUPPORTED) {
             return elementTopLeftCorner + offset;
           } else {

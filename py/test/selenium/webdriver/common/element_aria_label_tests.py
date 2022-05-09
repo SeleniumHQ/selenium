@@ -23,7 +23,7 @@ import pytest
 @pytest.mark.xfail_firefox
 @pytest.mark.xfail_safari
 @pytest.mark.xfail_remote
-def test_shouldReturnAccessibleName(driver):
+def test_should_return_accessible_name(driver):
     driver.get("data:text/html,<h1>Level 1 Header</h1>")
     header1 = driver.find_element(By.CSS_SELECTOR, "h1")
     assert header1.accessible_name == "Level 1 Header"

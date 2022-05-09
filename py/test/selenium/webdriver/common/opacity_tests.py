@@ -21,7 +21,7 @@ from selenium.webdriver.common.by import By
 
 
 @pytest.mark.xfail_ie
-def testShouldBeAbleToClickOnElementsWithOpacityZero(driver, pages):
+def test_should_be_able_to_click_on_elements_with_opacity_zero(driver, pages):
     pages.load("click_jacker.html")
     element = driver.find_element(By.ID, "clickJacker")
     assert '0' == element.value_of_css_property("opacity"), \
@@ -32,7 +32,7 @@ def testShouldBeAbleToClickOnElementsWithOpacityZero(driver, pages):
 
 
 @pytest.mark.xfail_ie
-def testShouldBeAbleToSelectOptionsFromAnInvisibleSelect(driver, pages):
+def test_should_be_able_to_select_options_from_an_invisible_select(driver, pages):
     pages.load("formPage.html")
     select = driver.find_element(By.ID, "invisi_select")
     options = select.find_elements(By.TAG_NAME, "option")

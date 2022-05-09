@@ -49,6 +49,10 @@ public enum Platform {
     public Platform family() {
       return WINDOWS;
     }
+    @Override
+    public String toString() {
+      return "Windows XP";
+    }
   },
 
   /**
@@ -58,6 +62,10 @@ public enum Platform {
     @Override
     public Platform family() {
       return WINDOWS;
+    }
+    @Override
+    public String toString() {
+      return "Windows Vista";
     }
   },
 
@@ -69,6 +77,10 @@ public enum Platform {
     public Platform family() {
       return WINDOWS;
     }
+    @Override
+    public String toString() {
+      return "Windows 8";
+    }
   },
 
   WIN8_1("windows 8.1", "win8.1") {
@@ -76,12 +88,31 @@ public enum Platform {
     public Platform family() {
       return WINDOWS;
     }
+    @Override
+    public String toString() {
+      return "Windows 8.1";
+    }
   },
 
   WIN10("windows 10", "win10") {
     @Override
     public Platform family() {
       return WINDOWS;
+    }
+    @Override
+    public String toString() {
+      return "Windows 10";
+    }
+  },
+
+  WIN11("windows 11", "win11") {
+    @Override
+    public Platform family() {
+      return WINDOWS;
+    }
+    @Override
+    public String toString() {
+      return "Windows 11";
     }
   },
 
@@ -203,7 +234,7 @@ public enum Platform {
     }
   },
 
-  MONTERREY("monterrey", "os x 12.0", "macos 12.0") {
+  MONTEREY("monterey", "os x 12.0", "macos 12.0") {
     @Override
     public Platform family() {
       return MAC;

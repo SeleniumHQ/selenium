@@ -15,13 +15,10 @@
 # specific language governing permissions and limitations
 # under the License.
 
-
-import urllib3
-import pytest
-
-
 from urllib import parse
 
+import pytest
+import urllib3
 
 from selenium import __version__
 from selenium.webdriver.remote.remote_connection import (
@@ -72,19 +69,43 @@ def test_get_proxy_url_none(mock_proxy_settings_missing):
     assert proxy_url is None
 
 
+def test_get_proxy_url_http_auth(mock_proxy_auth_settings):
+    remote_connection = RemoteConnection('http://remote', keep_alive=False)
+    proxy_url = remote_connection._get_proxy_url()
+    raw_proxy_url, basic_auth_string = remote_connection._seperate_http_proxy_auth()
+    assert proxy_url == "http://user:password@http_proxy.com:8080"
+    assert raw_proxy_url == "http://http_proxy.com:8080"
+    assert basic_auth_string == "user:password"
+
+
+def test_get_proxy_url_https_auth(mock_proxy_auth_settings):
+    remote_connection = RemoteConnection('https://remote', keep_alive=False)
+    proxy_url = remote_connection._get_proxy_url()
+    raw_proxy_url, basic_auth_string = remote_connection._seperate_http_proxy_auth()
+    assert proxy_url == "https://user:password@https_proxy.com:8080"
+    assert raw_proxy_url == "https://https_proxy.com:8080"
+    assert basic_auth_string == "user:password"
+
+
 def test_get_connection_manager_without_proxy(mock_proxy_settings_missing):
     remote_connection = RemoteConnection('http://remote', keep_alive=False)
     conn = remote_connection._get_connection_manager()
     assert type(conn) == urllib3.PoolManager
 
 
-def test_get_connection_manager_for_certs_and_timeout():
+def test_get_connection_manager_for_certs_and_timeout(monkeypatch):
+    monkeypatch.setattr(RemoteConnection, "get_timeout", lambda _: 10)  # Class state; leaks into subsequent tests.
     remote_connection = RemoteConnection('http://remote', keep_alive=False)
-    remote_connection.set_timeout(10)
     conn = remote_connection._get_connection_manager()
     assert conn.connection_pool_kw['timeout'] == 10
     assert conn.connection_pool_kw['cert_reqs'] == 'CERT_REQUIRED'
     assert 'certifi/cacert.pem' in conn.connection_pool_kw['ca_certs']
+
+
+def test_default_socket_timeout_is_correct():
+    remote_connection = RemoteConnection("http://remote", keep_alive=True)
+    conn = remote_connection._get_connection_manager()
+    assert conn.connection_pool_kw['timeout'] is None
 
 
 def test_get_connection_manager_with_proxy(mock_proxy_settings):
@@ -100,6 +121,26 @@ def test_get_connection_manager_with_proxy(mock_proxy_settings):
     assert conn.proxy.scheme == 'http'
     assert conn.proxy.host == 'https_proxy.com'
     assert conn.proxy.port == 8080
+
+
+def test_get_connection_manager_with_auth_proxy(mock_proxy_auth_settings):
+    proxy_auth_header = urllib3.make_headers(
+        proxy_basic_auth="user:password"
+    )
+    remote_connection = RemoteConnection('http://remote', keep_alive=False)
+    conn = remote_connection._get_connection_manager()
+    assert type(conn) == urllib3.ProxyManager
+    assert conn.proxy.scheme == 'http'
+    assert conn.proxy.host == 'http_proxy.com'
+    assert conn.proxy.port == 8080
+    assert conn.proxy_headers == proxy_auth_header
+    remote_connection_https = RemoteConnection('https://remote', keep_alive=False)
+    conn = remote_connection_https._get_connection_manager()
+    assert type(conn) == urllib3.ProxyManager
+    assert conn.proxy.scheme == 'https'
+    assert conn.proxy.host == 'https_proxy.com'
+    assert conn.proxy.port == 8080
+    assert conn.proxy_headers == proxy_auth_header
 
 
 @pytest.mark.parametrize("url",
@@ -161,6 +202,16 @@ def mock_socks_proxy_settings(monkeypatch):
 def mock_proxy_settings(monkeypatch):
     http_proxy = 'http://http_proxy.com:8080'
     https_proxy = 'http://https_proxy.com:8080'
+    monkeypatch.setenv("HTTPS_PROXY", https_proxy)
+    monkeypatch.setenv("HTTP_PROXY", http_proxy)
+    monkeypatch.setenv("https_proxy", https_proxy)
+    monkeypatch.setenv("http_proxy", http_proxy)
+
+
+@pytest.fixture(scope="function")
+def mock_proxy_auth_settings(monkeypatch):
+    http_proxy = 'http://user:password@http_proxy.com:8080'
+    https_proxy = 'https://user:password@https_proxy.com:8080'
     monkeypatch.setenv("HTTPS_PROXY", https_proxy)
     monkeypatch.setenv("HTTP_PROXY", http_proxy)
     monkeypatch.setenv("https_proxy", https_proxy)

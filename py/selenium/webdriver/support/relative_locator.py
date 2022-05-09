@@ -55,7 +55,7 @@ def locate_with(by: By, using: str) -> "RelativeBy":
     return RelativeBy({by: using})
 
 
-class RelativeBy(object):
+class RelativeBy:
     """
         Gives the opportunity to find elements based on their relative location
         on the page from a root elelemt. It is recommended that you use the helper

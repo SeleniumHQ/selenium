@@ -52,7 +52,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Opera)]
         public void ShouldThrowNoSuchWindowExceptionOnAnAttemptToGetItsHandle()
         {
             driver.Url = (xhtmlTestPage);
@@ -84,7 +83,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Opera)]
         public void ShouldThrowNoSuchWindowExceptionOnAnyOperationIfAWindowIsClosed()
         {
             driver.Url = (xhtmlTestPage);
@@ -129,7 +127,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Opera)]
         public void ShouldThrowNoSuchWindowExceptionOnAnyElementOperationIfAWindowIsClosed()
         {
             driver.Url = (xhtmlTestPage);
@@ -413,7 +410,7 @@ namespace OpenQA.Selenium
 
             driver.SwitchTo().Window("result");
             handle2 = driver.CurrentWindowHandle;
-           
+
             driver.Close();
 
             SleepBecauseWindowsTakeTimeToOpen();
@@ -425,7 +422,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.EdgeLegacy, "Driver does not yet support new window command")]
         public void ShouldBeAbleToCreateANewWindow()
         {
             driver.Url = xhtmlTestPage;

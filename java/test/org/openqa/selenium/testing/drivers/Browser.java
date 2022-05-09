@@ -25,7 +25,6 @@ import org.openqa.selenium.edge.EdgeDriverInfo;
 import org.openqa.selenium.edge.EdgeOptions;
 import org.openqa.selenium.firefox.FirefoxOptions;
 import org.openqa.selenium.firefox.GeckoDriverInfo;
-import org.openqa.selenium.firefox.xpi.XpiDriverInfo;
 import org.openqa.selenium.ie.InternetExplorerDriverInfo;
 import org.openqa.selenium.ie.InternetExplorerOptions;
 import org.openqa.selenium.opera.OperaDriverInfo;
@@ -85,7 +84,12 @@ public enum Browser {
         options.setHeadless(true);
       }
 
-      options.addArguments("disable-extensions", "disable-infobars", "disable-breakpad");
+      options.addArguments(
+        "disable-extensions",
+        "disable-infobars",
+        "disable-breakpad",
+        "disable-dev-shm-usage",
+        "no-sandbox");
 
       Map<String, Object> prefs = new HashMap<>();
       prefs.put("exit_type", "None");
@@ -97,7 +101,6 @@ public enum Browser {
   },
   HTMLUNIT(
     new ImmutableCapabilities(BROWSER_NAME, org.openqa.selenium.remote.Browser.HTMLUNIT.browserName()), "HtmlUnit", false),
-  LEGACY_FIREFOX_XPI(new FirefoxOptions().setLegacy(true), new XpiDriverInfo().getDisplayName(), false),
   IE(new InternetExplorerOptions(), new InternetExplorerDriverInfo().getDisplayName(), false) {
     @Override
     public Capabilities getCapabilities() {
@@ -165,12 +168,7 @@ public enum Browser {
     }
 
     if ("ff".equalsIgnoreCase(browserName) || "firefox".equalsIgnoreCase(browserName)) {
-      if (System.getProperty("webdriver.firefox.marionette") == null ||
-          Boolean.getBoolean("webdriver.firefox.marionette")) {
-        return FIREFOX;
-      } else {
-        return LEGACY_FIREFOX_XPI;
-      }
+      return FIREFOX;
     }
 
     if ("edge".equalsIgnoreCase(browserName)) {

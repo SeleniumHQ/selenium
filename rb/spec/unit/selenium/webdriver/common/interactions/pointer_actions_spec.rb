@@ -23,7 +23,7 @@ module Selenium
   module WebDriver
     describe PointerActions do
       let(:mouse) { Interactions::PointerInput.new(:mouse, name: 'pointer') }
-      let(:bridge) { instance_double('Bridge').as_null_object }
+      let(:bridge) { instance_double(Remote::Bridge) }
       let(:builder) { ActionBuilder.new(bridge, devices: [mouse]) }
       let(:element) { Element.new(bridge, 'element') }
       let(:element2) { Element.new(bridge, 'element2') }
@@ -96,6 +96,7 @@ module Selenium
       describe '#move_to' do
         it 'gets pointer_input' do
           allow(builder).to receive(:pointer_input).and_call_original
+          allow(bridge).to receive(:element_size).and_return(height: 768, width: 1024)
 
           builder.move_to element, 5, 5, device: mouse.name
 
@@ -111,8 +112,8 @@ module Selenium
 
           builder.move_to(element, right_by, down_by)
           expect(mouse).to have_received(:create_pointer_move).with(duration: duration,
-                                                                    x: right_by - dimension / 2,
-                                                                    y: down_by - dimension / 2,
+                                                                    x: right_by - (dimension / 2),
+                                                                    y: down_by - (dimension / 2),
                                                                     origin: element)
         end
 

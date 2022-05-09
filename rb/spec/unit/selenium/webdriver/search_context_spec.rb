@@ -35,7 +35,7 @@ module Selenium
       end
 
       let(:element)        { instance_double(Element) }
-      let(:bridge)         { instance_double('Bridge').as_null_object }
+      let(:bridge)         { instance_double(Remote::Bridge).as_null_object }
       let(:search_context) { test_search_context.new(bridge) }
 
       context 'finding a single element' do

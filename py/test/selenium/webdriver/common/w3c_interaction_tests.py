@@ -36,7 +36,7 @@ def test_should_be_able_to_get_pointer_and_keyboard_inputs(driver, pages):
 
 @pytest.mark.xfail_safari
 @pytest.mark.xfail_remote
-def testSendingKeysToActiveElementWithModifier(driver, pages):
+def test_sending_keys_to_active_element_with_modifier(driver, pages):
     pages.load("formPage.html")
     e = driver.find_element(By.ID, "working")
     e.click()
@@ -109,14 +109,14 @@ def test_move_and_click(driver, pages):
     assert "Clicked" == toClick.get_attribute('value')
 
 
-def testDragAndDrop(driver, pages):
+def test_drag_and_drop(driver, pages):
     """Copied from org.openqa.selenium.interactions.TestBasicMouseInterface."""
     element_available_timeout = 15
     wait = WebDriverWait(driver, element_available_timeout)
     pages.load("droppableItems.html")
-    wait.until(lambda dr: _isElementAvailable(driver, "draggable"))
+    wait.until(lambda dr: _is_element_available(driver, "draggable"))
 
-    if not _isElementAvailable(driver, "draggable"):
+    if not _is_element_available(driver, "draggable"):
         raise AssertionError("Could not find draggable element after 15 seconds.")
 
     toDrag = driver.find_element(By.ID, "draggable")
@@ -166,13 +166,13 @@ def test_double_click(driver, pages):
 
 
 def test_dragging_element_with_mouse_moves_it_to_another_list(driver, pages):
-    _performDragAndDropWithMouse(driver, pages)
+    _perform_drag_and_drop_with_mouse(driver, pages)
     dragInto = driver.find_element(By.ID, "sortable1")
     assert 6 == len(dragInto.find_elements(By.TAG_NAME, "li"))
 
 
 def test_dragging_element_with_mouse_fires_events(driver, pages):
-    _performDragAndDropWithMouse(driver, pages)
+    _perform_drag_and_drop_with_mouse(driver, pages)
     dragReporter = driver.find_element(By.ID, "dragging_reports")
     assert "Nothing happened. DragOut DropIn RightItem 3" == dragReporter.text
 
@@ -216,7 +216,50 @@ def test_pen_pointer_properties(driver, pages):
     assert events[6]["twist"] == 0
 
 
-def _performDragAndDropWithMouse(driver, pages):
+@pytest.mark.xfail_firefox
+@pytest.mark.xfail_remote
+def test_touch_pointer_properties(driver, pages):
+    pages.load("pointerActionsPage.html")
+    pointerArea = driver.find_element(By.CSS_SELECTOR, "#pointerArea")
+    center = _get_inview_center(pointerArea.rect, _get_viewport_rect(driver))
+    touch_input = PointerInput(interaction.POINTER_TOUCH, "touch")
+    touch_chain = ActionBuilder(driver, mouse=touch_input)
+    touch_chain.pointer_action.move_to(pointerArea, x=50, y=25) \
+        .pointer_down(width=23, height=31, pressure=0.78, tilt_x=21, tilt_y=-8, twist=355) \
+        .move_to(pointerArea, x=60, y=35, width=39, height=35, pressure=0.91, tilt_x=-19, tilt_y=62, twist=345) \
+        .pointer_up() \
+        .move_to(pointerArea, x=80, y=50)
+    touch_chain.perform()
+    events = _get_events(driver)
+    assert len(events) == 7
+    event_types = [e["type"] for e in events]
+    assert ["pointerover", "pointerenter", "pointerdown", "pointermove",
+            "pointerup", "pointerout", "pointerleave"] == event_types
+    assert events[2]["type"] == "pointerdown"
+    assert events[2]["pageX"] == pytest.approx(center["x"], abs=1.0)
+    assert events[2]["pageY"] == pytest.approx(center["y"], abs=1.0)
+    assert events[2]["target"] == "pointerArea"
+    assert events[2]["pointerType"] == "touch"
+    assert round(events[2]["width"], 2) == 23
+    assert round(events[2]["height"], 2) == 31
+    assert round(events[2]["pressure"], 2) == 0.78
+    assert events[2]["tiltX"] == 21
+    assert events[2]["tiltY"] == -8
+    assert events[2]["twist"] == 355
+    assert events[3]["type"] == "pointermove"
+    assert events[3]["pageX"] == pytest.approx(center["x"] + 10, abs=1.0)
+    assert events[3]["pageY"] == pytest.approx(center["y"] + 10, abs=1.0)
+    assert events[3]["target"] == "pointerArea"
+    assert events[3]["pointerType"] == "touch"
+    assert round(events[3]["width"], 2) == 39
+    assert round(events[3]["height"], 2) == 35
+    assert round(events[3]["pressure"], 2) == 0.91
+    assert events[3]["tiltX"] == -19
+    assert events[3]["tiltY"] == 62
+    assert events[3]["twist"] == 345
+
+
+def _perform_drag_and_drop_with_mouse(driver, pages):
     """Copied from org.openqa.selenium.interactions.TestBasicMouseInterface."""
     pages.load("draggableLists.html")
     dragReporter = driver.find_element(By.ID, "dragging_reports")
@@ -236,7 +279,7 @@ def _performDragAndDropWithMouse(driver, pages):
     assert "Nothing happened. DragOut" in dragReporter.text
 
 
-def _isElementAvailable(driver, id):
+def _is_element_available(driver, id):
     """Copied from org.openqa.selenium.interactions.TestBasicMouseInterface."""
     try:
         driver.find_element(By.ID, id)

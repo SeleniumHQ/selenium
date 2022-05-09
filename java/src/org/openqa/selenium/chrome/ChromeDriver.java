@@ -18,12 +18,14 @@
 package org.openqa.selenium.chrome;
 
 import com.google.common.collect.ImmutableMap;
+import org.openqa.selenium.Beta;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chromium.ChromiumDriver;
 import org.openqa.selenium.chromium.ChromiumDriverCommandExecutor;
 import org.openqa.selenium.remote.CommandInfo;
 import org.openqa.selenium.remote.RemoteWebDriver;
+import org.openqa.selenium.remote.RemoteWebDriverBuilder;
 import org.openqa.selenium.remote.service.DriverService;
 
 import java.util.Map;
@@ -63,7 +65,7 @@ public class ChromeDriver extends ChromiumDriver {
    *
    * @param capabilities The capabilities required from the ChromeDriver.
    * @see #ChromeDriver(ChromeDriverService, Capabilities)
-   * @deprecated Use {@link ChromeDriver(ChromeOptions)} instead.
+   * @deprecated Use {@link #ChromeDriver(ChromeOptions)} instead.
    */
   @Deprecated
   public ChromeDriver(Capabilities capabilities) {
@@ -97,13 +99,18 @@ public class ChromeDriver extends ChromiumDriver {
    *
    * @param service      The service to use.
    * @param capabilities The capabilities required from the ChromeDriver.
-   * @deprecated Use {@link ChromeDriver(ChromeDriverService, ChromeOptions)} instead.
+   * @deprecated Use {@link #ChromeDriver(ChromeDriverService, ChromeOptions)} instead.
    */
   @Deprecated
   public ChromeDriver(ChromeDriverService service, Capabilities capabilities) {
     super(new ChromeDriverCommandExecutor(service), capabilities, ChromeOptions.CAPABILITY);
     casting = new AddHasCasting().getImplementation(getCapabilities(), getExecuteMethod());
     cdp = new AddHasCdp().getImplementation(getCapabilities(), getExecuteMethod());
+  }
+
+  @Beta
+  public static RemoteWebDriverBuilder builder() {
+    return RemoteWebDriver.builder().oneOf(new ChromeOptions());
   }
 
   private static class ChromeDriverCommandExecutor extends ChromiumDriverCommandExecutor {

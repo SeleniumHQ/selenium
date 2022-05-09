@@ -154,7 +154,7 @@ module Selenium
 
         def get_permission(name)
           driver.execute_async_script("callback = arguments[arguments.length - 1];" \
-          "callback(navigator.permissions.query({name: arguments[0]}));", name)['state']
+                                      "callback(navigator.permissions.query({name: arguments[0]}));", name)['state']
         end
 
         it 'can set single permissions' do

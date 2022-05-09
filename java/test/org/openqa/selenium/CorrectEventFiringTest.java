@@ -27,10 +27,9 @@ import static org.openqa.selenium.WaitingConditions.elementValueToEqual;
 import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOfElementLocated;
 import static org.openqa.selenium.testing.drivers.Browser.CHROME;
 import static org.openqa.selenium.testing.drivers.Browser.EDGE;
-import static org.openqa.selenium.testing.drivers.Browser.LEGACY_FIREFOX_XPI;
+import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
 import static org.openqa.selenium.testing.drivers.Browser.HTMLUNIT;
 import static org.openqa.selenium.testing.drivers.Browser.IE;
-import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
 import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
 
 import org.junit.Test;
@@ -49,6 +48,48 @@ import java.util.List;
 
 public class CorrectEventFiringTest extends JUnit4TestBase {
 
+  private static void clickOnElementWhichRecordsEvents(WebDriver driver) {
+    driver.findElement(By.id("plainButton")).click();
+  }
+
+  private static void assertEventFired(String eventName, WebDriver driver) {
+    WebElement result = driver.findElement(By.id("result"));
+
+    String text = new WebDriverWait(driver, Duration.ofSeconds(10))
+      .until(elementTextToContain(result, eventName));
+    boolean conditionMet = text.contains(eventName);
+
+    assertThat(conditionMet).as("%s fired with text %s", eventName, text).isTrue();
+  }
+
+  private static void assertEventNotFired(String eventName, WebDriver driver) {
+    WebElement result = driver.findElement(By.id("result"));
+    String text = result.getText();
+    assertThat(text).as("%s fired with text %s").doesNotContain(eventName);
+  }
+
+  private static boolean browserNeedsFocusOnThisOs(WebDriver driver) {
+    // No browser yet demands focus on windows
+    if (TestUtilities.getEffectivePlatform(driver).is(Platform.WINDOWS)) {
+      return false;
+    }
+
+    if (Boolean.getBoolean("webdriver.focus.override")) {
+      return false;
+    }
+
+    String browserName = getBrowserName(driver);
+    return browserName.toLowerCase().contains("firefox");
+  }
+
+  private static String getBrowserName(WebDriver driver) {
+    if (driver instanceof HasCapabilities) {
+      return ((HasCapabilities) driver).getCapabilities().getBrowserName();
+    }
+
+    return driver.getClass().getName();
+  }
+
   @Test
   @NotYetImplemented(SAFARI)
   public void testShouldFireFocusEventWhenClicking() {
@@ -60,7 +101,6 @@ public class CorrectEventFiringTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(LEGACY_FIREFOX_XPI)
   @NotYetImplemented(SAFARI)
   public void testShouldFireFocusEventInNonTopmostWindow() {
     WebDriver driver2 = new WebDriverBuilder().get();
@@ -478,51 +518,6 @@ public class CorrectEventFiringTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(CHROME)
-  @Ignore(EDGE)
-  @Ignore(IE)
-  @Ignore(FIREFOX)
-  @NotYetImplemented(SAFARI)
-  @Ignore(HTMLUNIT)
-  public void testClickPartiallyOverlappingElements() {
-    for (int i = 1; i < 6; i++) {
-      driver.get(appServer.whereIs("click_tests/partially_overlapping_elements.html"));
-      WebElement over = driver.findElement(By.id("over" + i));
-      ((JavascriptExecutor) driver).executeScript("arguments[0].style.display = 'none'", over);
-      driver.findElement(By.id("under")).click();
-      assertThat(driver.findElement(By.id("log")).getText())
-          .isEqualTo("Log:\n"
-                   + "mousedown in under (handled by under)\n"
-                   + "mousedown in under (handled by body)\n"
-                   + "mouseup in under (handled by under)\n"
-                   + "mouseup in under (handled by body)\n"
-                   + "click in under (handled by under)\n"
-                   + "click in under (handled by body)");
-    }
-  }
-
-  @Test
-  @Ignore(CHROME)
-  @Ignore(EDGE)
-  @Ignore(LEGACY_FIREFOX_XPI)
-  @Ignore(SAFARI)
-  @Ignore(HTMLUNIT)
-  @Ignore(value = FIREFOX, reason = "Checks overlapping by default")
-  @Ignore(value = IE, reason = "Checks overlapping by default")
-  public void testNativelyClickOverlappingElements() {
-    driver.get(appServer.whereIs("click_tests/overlapping_elements.html"));
-    driver.findElement(By.id("under")).click();
-    assertThat(driver.findElement(By.id("log")).getText())
-        .isEqualTo("Log:\n"
-                 + "mousedown in over (handled by over)\n"
-                 + "mousedown in over (handled by body)\n"
-                 + "mouseup in over (handled by over)\n"
-                 + "mouseup in over (handled by body)\n"
-                 + "click in over (handled by over)\n"
-                 + "click in over (handled by body)");
-  }
-
-  @Test
   @Ignore(HTMLUNIT)
   @NotYetImplemented(SAFARI)
   public void testClickAnElementThatDisappear() {
@@ -534,46 +529,5 @@ public class CorrectEventFiringTest extends JUnit4TestBase {
                   + "mousedown in over (handled by body)\n"
                   + "mouseup in under (handled by under)\n"
                   + "mouseup in under (handled by body)");
-  }
-
-  private static void clickOnElementWhichRecordsEvents(WebDriver driver) {
-    driver.findElement(By.id("plainButton")).click();
-  }
-
-  private static void assertEventFired(String eventName, WebDriver driver) {
-    WebElement result = driver.findElement(By.id("result"));
-
-    String text = new WebDriverWait(driver, Duration.ofSeconds(10))
-        .until(elementTextToContain(result, eventName));
-    boolean conditionMet = text.contains(eventName);
-
-    assertThat(conditionMet).as("%s fired with text %s", eventName, text).isTrue();
-  }
-
-  private static void assertEventNotFired(String eventName, WebDriver driver) {
-    WebElement result = driver.findElement(By.id("result"));
-    String text = result.getText();
-    assertThat(text).as("%s fired with text %s").doesNotContain(eventName);
-  }
-
-  private static boolean browserNeedsFocusOnThisOs(WebDriver driver) {
-    // No browser yet demands focus on windows
-    if (TestUtilities.getEffectivePlatform(driver).is(Platform.WINDOWS))
-      return false;
-
-    if (Boolean.getBoolean("webdriver.focus.override")) {
-      return false;
-    }
-
-    String browserName = getBrowserName(driver);
-    return browserName.toLowerCase().contains("firefox");
-  }
-
-  private static String getBrowserName(WebDriver driver) {
-    if (driver instanceof HasCapabilities) {
-      return ((HasCapabilities) driver).getCapabilities().getBrowserName();
-    }
-
-    return driver.getClass().getName();
   }
 }

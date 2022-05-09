@@ -16,7 +16,7 @@
 # under the License.
 
 
-class AbstractEventListener(object):
+class AbstractEventListener:
     """
     Event listener must subclass and implement this fully or partially
     """

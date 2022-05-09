@@ -368,4 +368,17 @@ public class DefaultSlotMatcherTest {
     );
     assertThat(slotMatcher.matches(stereotype, capabilities)).isTrue();
   }
+
+  @Test
+  public void emptyCapabilitiesDoNotMatch() {
+    Capabilities stereotype = new ImmutableCapabilities(
+      CapabilityType.BROWSER_NAME, "firefox",
+      CapabilityType.BROWSER_VERSION, "98",
+      CapabilityType.PLATFORM_NAME, Platform.MAC
+    );
+
+    Capabilities capabilities = new ImmutableCapabilities();
+    assertThat(slotMatcher.matches(stereotype, capabilities)).isFalse();
+  }
+
 }

@@ -18,9 +18,9 @@
 from .command import Command
 
 
-class Mobile(object):
+class Mobile:
 
-    class ConnectionType(object):
+    class ConnectionType:
 
         def __init__(self, mask):
             self.mask = mask

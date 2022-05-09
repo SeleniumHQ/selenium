@@ -20,7 +20,7 @@ from typing import Any, Dict
 import uuid
 
 
-class InputDevice(object):
+class InputDevice:
     """
         Describes the input device being used for the action.
     """

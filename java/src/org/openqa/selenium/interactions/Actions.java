@@ -17,7 +17,6 @@
 
 package org.openqa.selenium.interactions;
 
-import static org.openqa.selenium.interactions.PointerInput.Kind.MOUSE;
 import static org.openqa.selenium.interactions.PointerInput.MouseButton.LEFT;
 import static org.openqa.selenium.interactions.PointerInput.MouseButton.RIGHT;
 
@@ -35,6 +34,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.function.IntConsumer;
 import java.util.logging.Logger;
@@ -55,8 +55,9 @@ public class Actions {
 
   // W3C
   private final Map<InputSource, Sequence> sequences = new HashMap<>();
-  private final PointerInput defaultMouse = new PointerInput(MOUSE, "default mouse");
-  private final KeyInput defaultKeyboard = new KeyInput("default keyboard");
+  private PointerInput activePointer;
+  private KeyInput activeKeyboard;
+  private WheelInput activeWheel;
 
   // JSON-wire protocol
   private final Keyboard jsonKeyboard;
@@ -82,7 +83,7 @@ public class Actions {
    * Note that the modifier key is <b>never</b> released implicitly - either
    * <i>keyUp(theKey)</i> or <i>sendKeys(Keys.NULL)</i>
    * must be called to release the modifier.
-   * @param key Either {@link Keys#SHIFT}, {@link Keys#ALT} or {@link Keys#CONTROL}. If the
+   * @param key Either {@link Keys#META}, {@link Keys#COMMAND}, {@link Keys#SHIFT}, {@link Keys#ALT} or {@link Keys#CONTROL}. If the
    * provided key is none of those, {@link IllegalArgumentException} is thrown.
    * @return A self reference.
    */
@@ -90,7 +91,7 @@ public class Actions {
     if (isBuildingActions()) {
       action.addAction(new KeyDownAction(jsonKeyboard, jsonMouse, asKeys(key)));
     }
-    return addKeyAction(key, codePoint -> tick(defaultKeyboard.createKeyDown(codePoint)));
+    return addKeyAction(key, codePoint -> tick(getActiveKeyboard().createKeyDown(codePoint)));
   }
 
   /**
@@ -98,7 +99,7 @@ public class Actions {
    * <i>Actions.click(element).sendKeys(theKey);</i>
    * @see #keyDown(CharSequence)
    *
-   * @param key Either {@link Keys#SHIFT}, {@link Keys#ALT} or {@link Keys#CONTROL}. If the
+   * @param key Either {@link Keys#META}, {@link Keys#COMMAND}, {@link Keys#SHIFT}, {@link Keys#ALT} or {@link Keys#CONTROL}. If the
    * provided key is none of those, {@link IllegalArgumentException} is thrown.
    * @param target WebElement to perform the action
    * @return A self reference.
@@ -108,14 +109,14 @@ public class Actions {
       action.addAction(new KeyDownAction(jsonKeyboard, jsonMouse, (Locatable) target, asKeys(key)));
     }
     return focusInTicks(target)
-        .addKeyAction(key, codepoint -> tick(defaultKeyboard.createKeyDown(codepoint)));
+        .addKeyAction(key, codepoint -> tick(getActiveKeyboard().createKeyDown(codepoint)));
   }
 
   /**
    * Performs a modifier key release. Releasing a non-depressed modifier key will yield undefined
    * behaviour.
    *
-   * @param key Either {@link Keys#SHIFT}, {@link Keys#ALT} or {@link Keys#CONTROL}.
+   * @param key Either {@link Keys#META}, {@link Keys#COMMAND}, {@link Keys#SHIFT}, {@link Keys#ALT} or {@link Keys#CONTROL}.
    * @return A self reference.
    */
   public Actions keyUp(CharSequence key) {
@@ -123,7 +124,7 @@ public class Actions {
       action.addAction(new KeyUpAction(jsonKeyboard, jsonMouse, asKeys(key)));
     }
 
-    return addKeyAction(key, codePoint -> tick(defaultKeyboard.createKeyUp(codePoint)));
+    return addKeyAction(key, codePoint -> tick(getActiveKeyboard().createKeyUp(codePoint)));
   }
 
   /**
@@ -131,7 +132,7 @@ public class Actions {
    * <i>Actions.click(element).sendKeys(theKey);</i>
    * @see #keyUp(CharSequence) on behaviour regarding non-depressed modifier keys.
    *
-   * @param key Either {@link Keys#SHIFT}, {@link Keys#ALT} or {@link Keys#CONTROL}.
+   * @param key Either {@link Keys#META}, {@link Keys#COMMAND}, {@link Keys#SHIFT}, {@link Keys#ALT} or {@link Keys#CONTROL}.
    * @param target WebElement to perform the action on
    * @return A self reference.
    */
@@ -141,7 +142,7 @@ public class Actions {
     }
 
     return focusInTicks(target)
-        .addKeyAction(key, codePoint -> tick(defaultKeyboard.createKeyUp(codePoint)));
+        .addKeyAction(key, codePoint -> tick(getActiveKeyboard().createKeyUp(codePoint)));
   }
 
   /**
@@ -205,8 +206,8 @@ public class Actions {
     }
     for (CharSequence key : keys) {
       key.codePoints().forEach(codePoint -> {
-        tick(defaultKeyboard.createKeyDown(codePoint));
-        tick(defaultKeyboard.createKeyUp(codePoint));
+        tick(getActiveKeyboard().createKeyDown(codePoint));
+        tick(getActiveKeyboard().createKeyUp(codePoint));
       });
     }
     return this;
@@ -236,7 +237,7 @@ public class Actions {
       action.addAction(new ClickAndHoldAction(jsonMouse, (Locatable) target));
     }
     return moveInTicks(target, 0, 0)
-        .tick(defaultMouse.createPointerDown(LEFT.asArg()));
+        .tick(getActivePointer().createPointerDown(LEFT.asArg()));
   }
 
   /**
@@ -248,7 +249,7 @@ public class Actions {
       action.addAction(new ClickAndHoldAction(jsonMouse, null));
     }
 
-    return tick(defaultMouse.createPointerDown(LEFT.asArg()));
+    return tick(getActivePointer().createPointerDown(LEFT.asArg()));
   }
 
   /**
@@ -267,7 +268,11 @@ public class Actions {
       action.addAction(new ButtonReleaseAction(jsonMouse, (Locatable) target));
     }
 
-    return moveInTicks(target, 0, 0).tick(defaultMouse.createPointerUp(LEFT.asArg()));
+    return moveInTicks(target, 0, 0).tick(getActivePointer().createPointerUp(LEFT.asArg()));
+  }
+
+  public Actions scroll( int x, int y, int deltaX, int deltaY, Origin origin) {
+    return tick(getActiveWheel().createScroll(x, y, deltaX, deltaY, Duration.ofMillis(250), origin));
   }
 
   /**
@@ -280,7 +285,7 @@ public class Actions {
       action.addAction(new ButtonReleaseAction(jsonMouse, null));
     }
 
-    return tick(defaultMouse.createPointerUp(Button.LEFT.asArg()));
+    return tick(getActivePointer().createPointerUp(Button.LEFT.asArg()));
   }
 
   /**
@@ -313,8 +318,8 @@ public class Actions {
   }
 
   private Actions clickInTicks(PointerInput.MouseButton button) {
-    tick(defaultMouse.createPointerDown(button.asArg()));
-    tick(defaultMouse.createPointerUp(button.asArg()));
+    tick(getActivePointer().createPointerDown(button.asArg()));
+    tick(getActivePointer().createPointerUp(button.asArg()));
     return this;
   }
 
@@ -386,7 +391,7 @@ public class Actions {
   }
 
   private Actions moveInTicks(WebElement target, int xOffset, int yOffset) {
-    return tick(defaultMouse.createPointerMove(
+    return tick(getActivePointer().createPointerMove(
         Duration.ofMillis(100),
         Origin.fromElement(target),
         xOffset,
@@ -409,7 +414,7 @@ public class Actions {
     }
 
     return tick(
-        defaultMouse.createPointerMove(Duration.ofMillis(200), Origin.pointer(), xOffset, yOffset));
+        getActivePointer().createPointerMove(Duration.ofMillis(200), Origin.pointer(), xOffset, yOffset));
   }
 
   /**
@@ -454,9 +459,9 @@ public class Actions {
     }
 
     return moveInTicks(source, 0, 0)
-        .tick(defaultMouse.createPointerDown(LEFT.asArg()))
+        .tick(getActivePointer().createPointerDown(LEFT.asArg()))
         .moveInTicks(target, 0, 0)
-        .tick(defaultMouse.createPointerUp(LEFT.asArg()));
+        .tick(getActivePointer().createPointerUp(LEFT.asArg()));
   }
 
   /**
@@ -476,9 +481,9 @@ public class Actions {
     }
 
     return moveInTicks(source, 0, 0)
-        .tick(defaultMouse.createPointerDown(LEFT.asArg()))
-        .tick(defaultMouse.createPointerMove(Duration.ofMillis(250), Origin.pointer(), xOffset, yOffset))
-        .tick(defaultMouse.createPointerUp(LEFT.asArg()));
+        .tick(getActivePointer().createPointerDown(LEFT.asArg()))
+        .tick(getActivePointer().createPointerMove(Duration.ofMillis(250), Origin.pointer(), xOffset, yOffset))
+        .tick(getActivePointer().createPointerUp(LEFT.asArg()));
   }
 
   /**
@@ -492,7 +497,7 @@ public class Actions {
       action.addAction(new PauseAction(pause));
     }
 
-    return tick(new Pause(defaultMouse, Duration.ofMillis(pause)));
+    return tick(new Pause(getActivePointer(), Duration.ofMillis(pause)));
   }
 
   public Actions pause(Duration duration) {
@@ -501,7 +506,7 @@ public class Actions {
       action.addAction(new PauseAction(duration.toMillis()));
     }
 
-    return tick(new Pause(defaultMouse, duration));
+    return tick(new Pause(getActivePointer(), duration));
   }
 
   public Actions tick(Interaction... actions) {
@@ -538,7 +543,7 @@ public class Actions {
     }
 
     for (Interaction interaction :
-        ((IsInteraction) action).asInteractions(defaultMouse, defaultKeyboard)) {
+      ((IsInteraction) action).asInteractions(getActivePointer(), getActiveKeyboard())) {
       tick(interaction);
     }
 
@@ -547,6 +552,67 @@ public class Actions {
     }
 
     return this;
+  }
+
+  public Actions setActiveKeyboard(String name) {
+    InputSource inputSource = sequences.keySet().stream().filter(input -> Objects.equals(input.getName(), name)).findFirst().orElse(null);
+
+    if (inputSource == null) {
+      this.activeKeyboard = new KeyInput(name);
+    } else {
+      this.activeKeyboard = (KeyInput) inputSource;
+    }
+
+    return this;
+  }
+
+  public Actions setActivePointer(PointerInput.Kind kind, String name) {
+    InputSource inputSource = sequences.keySet().stream().filter(input -> Objects.equals(input.getName(), name)).findFirst().orElse(null);
+
+    if (inputSource == null) {
+      this.activePointer = new PointerInput(kind, name);
+    } else {
+      this.activePointer = (PointerInput) inputSource;
+    }
+
+    return this;
+  }
+
+  public Actions setActiveWheel(String name) {
+    InputSource inputSource = sequences.keySet()
+      .stream()
+      .filter(input -> Objects.equals(input.getName(), name))
+      .findFirst()
+      .orElse(null);
+
+    if (inputSource == null) {
+      this.activeWheel = new WheelInput(name);
+    } else {
+      this.activeWheel = (WheelInput) inputSource;
+    }
+
+    return this;
+  }
+
+  public KeyInput getActiveKeyboard() {
+    if (this.activeKeyboard == null) {
+      setActiveKeyboard("default keyboard");
+    }
+    return this.activeKeyboard;
+  }
+
+  public PointerInput getActivePointer() {
+    if (this.activePointer == null) {
+      setActivePointer(PointerInput.Kind.MOUSE, "default mouse");
+    }
+    return this.activePointer;
+  }
+
+  public WheelInput getActiveWheel() {
+    if (this.activeWheel == null) {
+      setActiveWheel("default wheel");
+    }
+    return this.activeWheel;
   }
 
   /**

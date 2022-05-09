@@ -62,7 +62,7 @@ module Selenium
         #
         # Unpins script making it undefined for the subsequent calls.
         #
-        # @param [DevTools::PinnedScript]
+        # @param [DevTools::PinnedScript] script
         #
 
         def unpin_script(script)

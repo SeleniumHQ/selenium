@@ -28,7 +28,6 @@ import static org.openqa.selenium.testing.drivers.Browser.EDGE;
 import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
 import static org.openqa.selenium.testing.drivers.Browser.HTMLUNIT;
 import static org.openqa.selenium.testing.drivers.Browser.IE;
-import static org.openqa.selenium.testing.drivers.Browser.LEGACY_FIREFOX_XPI;
 import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
 
 import org.junit.After;
@@ -38,7 +37,6 @@ import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.NoDriverAfterTest;
-import org.openqa.selenium.testing.NotYetImplemented;
 import org.openqa.selenium.testing.SwitchToTopAfterTest;
 
 import java.util.Set;
@@ -132,21 +130,6 @@ public class AlertsTest extends JUnit4TestBase {
   }
 
   @Test
-  public void testShouldGetTextOfAlertOpenedInSetTimeout() {
-    driver.get(appServer.create(new Page()
-        .withTitle("Testing Alerts")
-        .withScripts(
-            "function slowAlert() { window.setTimeout(function(){ alert('Slow'); }, 200); }")
-        .withBody(
-            "<a href='#' id='slow-alert' onclick='slowAlert();'>click me</a>")));
-
-    driver.findElement(By.id("slow-alert")).click();
-    Alert alert = wait.until(alertIsPresent());
-
-    assertThat(alert.getText()).isEqualTo("Slow");
-  }
-
-  @Test
   public void testShouldAllowUsersToDismissAnAlertManually() {
     driver.get(alertPage("cheese"));
 
@@ -183,7 +166,6 @@ public class AlertsTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(value = FIREFOX, reason = "Hangs")
   public void testShouldAllowAUserToSetTheValueOfAPrompt() {
     driver.get(promptPage(null));
 
@@ -196,7 +178,6 @@ public class AlertsTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(value = FIREFOX, reason = "Firefox is incorrectly returning an UnsupportedOperationException")
   public void testSettingTheValueOfAnAlertThrows() {
     driver.get(alertPage("cheese"));
 
@@ -363,7 +344,6 @@ public class AlertsTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(value = FIREFOX, reason = "Hangs")
   public void testShouldHandleAlertOnPageLoad() {
     String pageWithOnLoad = appServer.create(new Page()
         .withOnLoad("javascript:alert(\"onload\")")
@@ -397,8 +377,6 @@ public class AlertsTest extends JUnit4TestBase {
   @Test
   @Ignore(value = CHROME, reason = "Hangs")
   @Ignore(value = EDGE, reason = "Hangs")
-  @Ignore(LEGACY_FIREFOX_XPI)
-  @Ignore(value = IE, reason = "Fails in versions 6 and 7")
   @Ignore(SAFARI)
   @NoDriverAfterTest
   public void testShouldNotHandleAlertInAnotherWindow() {
@@ -418,27 +396,8 @@ public class AlertsTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(value = LEGACY_FIREFOX_XPI, reason = "Non W3C conformant")
-  @Ignore(value = HTMLUNIT, reason = "Non W3C conformant")
-  @Ignore(value = CHROME, reason = "Non W3C conformant")
-  @Ignore(value = EDGE, reason = "Non W3C conformant")
-  public void testShouldImplicitlyHandleAlertOnPageBeforeUnload() {
-    String blank = appServer.create(new Page().withTitle("Success"));
-    driver.get(appServer.create(new Page()
-        .withTitle("Page with onbeforeunload handler")
-        .withBody(String.format(
-            "<a id='link' href='%s'>Click here to navigate to another page.</a>", blank))));
-
-    setSimpleOnBeforeUnload("onbeforeunload message");
-
-    driver.findElement(By.id("link")).click();
-    wait.until(titleIs("Success"));
-  }
-
-  @Test
   @Ignore(value = HTMLUNIT, reason = "https://github.com/SeleniumHQ/htmlunit-driver/issues/57")
-  @NotYetImplemented(value = FIREFOX,
-      reason = "https://bugzilla.mozilla.org/show_bug.cgi?id=1279211")
+  @Ignore(value = FIREFOX, reason = "Per spec, an error data dictionary with text value is optional")
   public void testIncludesAlertTextInUnhandledAlertException() {
     driver.get(alertPage("cheese"));
 
@@ -477,11 +436,4 @@ public class AlertsTest extends JUnit4TestBase {
     assertThat(value).isEqualTo("Tasty cheese");
     assertThat(driver.getTitle()).isEqualTo("Testing Alerts");
   }
-
-  private void setSimpleOnBeforeUnload(Object returnText) {
-    ((JavascriptExecutor) driver).executeScript(
-        "var returnText = arguments[0]; window.onbeforeunload = function() { return returnText; }",
-        returnText);
-  }
-
 }

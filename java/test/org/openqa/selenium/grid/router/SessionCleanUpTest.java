@@ -17,15 +17,6 @@
 
 package org.openqa.selenium.grid.router;
 
-import static java.net.HttpURLConnection.HTTP_OK;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.fail;
-import static org.openqa.selenium.grid.data.Availability.DOWN;
-import static org.openqa.selenium.grid.data.Availability.UP;
-import static org.openqa.selenium.remote.Dialect.W3C;
-import static org.openqa.selenium.remote.http.Contents.asJson;
-import static org.openqa.selenium.remote.http.HttpMethod.POST;
-
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 
@@ -96,13 +87,22 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicReference;
 
+import static java.net.HttpURLConnection.HTTP_OK;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
+import static org.openqa.selenium.grid.data.Availability.DOWN;
+import static org.openqa.selenium.grid.data.Availability.UP;
+import static org.openqa.selenium.remote.Dialect.W3C;
+import static org.openqa.selenium.remote.http.Contents.asJson;
+import static org.openqa.selenium.remote.http.HttpMethod.POST;
+
 public class SessionCleanUpTest {
 
   public static final Json JSON = new Json();
   int publish;
   int subscribe;
   private Tracer tracer;
-  private EventBus events;
+  private EventBus bus;
   private HttpClient.Factory clientFactory;
   private Secret registrationSecret;
   private Server<?> server;
@@ -113,7 +113,7 @@ public class SessionCleanUpTest {
     registrationSecret = new Secret("hereford hop");
     publish = PortProber.findFreePort();
     subscribe = PortProber.findFreePort();
-    events = ZeroMqEventBus.create(
+    bus = ZeroMqEventBus.create(
       new ZContext(),
       "tcp://localhost:" + publish,
       "tcp://localhost:" + subscribe,
@@ -128,8 +128,8 @@ public class SessionCleanUpTest {
       server.stop();
     }
 
-    if (events != null) {
-      events.close();
+    if (bus != null) {
+      bus.close();
     }
   }
 
@@ -138,11 +138,10 @@ public class SessionCleanUpTest {
     Capabilities capabilities = new ImmutableCapabilities("browserName", "cheese");
     CombinedHandler handler = new CombinedHandler();
 
-    SessionMap sessions = new LocalSessionMap(tracer, events);
+    SessionMap sessions = new LocalSessionMap(tracer, bus);
     handler.addHandler(sessions);
     NewSessionQueue queue = new LocalNewSessionQueue(
       tracer,
-      events,
       new DefaultSlotMatcher(),
       Duration.ofSeconds(2),
       Duration.ofSeconds(10),
@@ -151,7 +150,7 @@ public class SessionCleanUpTest {
 
     LocalDistributor distributor = new LocalDistributor(
       tracer,
-      events,
+      bus,
       clientFactory,
       sessions,
       queue,
@@ -247,18 +246,17 @@ public class SessionCleanUpTest {
 
     AtomicReference<Availability> availability = new AtomicReference<>(UP);
 
-    SessionMap sessions = new LocalSessionMap(tracer, events);
+    SessionMap sessions = new LocalSessionMap(tracer, bus);
     handler.addHandler(sessions);
     NewSessionQueue queue = new LocalNewSessionQueue(
       tracer,
-      events,
       new DefaultSlotMatcher(),
       Duration.ofSeconds(2),
       Duration.ofSeconds(2),
       registrationSecret);
 
     URI uri = new URI("http://localhost:" + PortProber.findFreePort());
-    Node node = LocalNode.builder(tracer, events, uri, uri, registrationSecret)
+    Node node = LocalNode.builder(tracer, bus, uri, uri, registrationSecret)
       .add(
         capabilities,
         new TestSessionFactory(
@@ -271,7 +269,7 @@ public class SessionCleanUpTest {
 
     LocalDistributor distributor = new LocalDistributor(
       tracer,
-      events,
+      bus,
       new PassthroughHttpClient.Factory(handler),
       sessions,
       queue,

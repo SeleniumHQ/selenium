@@ -51,22 +51,25 @@ public class SeleniumCdpConnection extends Connection {
     Require.nonNull("HTTP client factory", clientFactory);
     Require.nonNull("Capabilities", capabilities);
 
-    return getCdpUri(capabilities).map(uri -> new SeleniumCdpConnection(
+    return getCdpUri(clientFactory, capabilities).map(uri -> new SeleniumCdpConnection(
       clientFactory.createClient(ClientConfig.defaultConfig().baseUri(uri)),
       uri.toString()));
   }
 
-  public static Optional<URI> getCdpUri(Capabilities capabilities) {
+  public static Optional<URI> getCdpUri(HttpClient.Factory clientFactory,
+                                        Capabilities capabilities) {
     Object cdp = capabilities.getCapability("se:cdp");
 
-    if (!(cdp instanceof String)) {
-      return Optional.empty();
+    if (cdp instanceof String) {
+      try {
+        return Optional.of(new URI((String) cdp));
+      } catch (URISyntaxException e) {
+        return Optional.empty();
+      }
     }
 
-    try {
-      return Optional.of(new URI((String) cdp));
-    } catch (URISyntaxException e) {
-      return Optional.empty();
-    }
+    Optional<URI> reportedUri = CdpEndpointFinder.getReportedUri(capabilities);
+
+    return reportedUri.flatMap(uri -> CdpEndpointFinder.getCdpEndPoint(clientFactory, uri));
   }
 }

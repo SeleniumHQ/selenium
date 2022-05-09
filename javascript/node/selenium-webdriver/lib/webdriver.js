@@ -1197,14 +1197,25 @@ class WebDriver {
    * @return {!Promise<resolved>} A new CDP instance.
    */
   async createCDPConnection(target) {
+    let debuggerUrl = null
+
     const caps = await this.getCapabilities()
-    const seCdp = caps['map_'].get('se:cdp')
-    const vendorInfo =
-      caps['map_'].get(this.VENDOR_COMMAND_PREFIX + ':chromeOptions') ||
-      caps['map_'].get(this.VENDOR_CAPABILITY_PREFIX + ':edgeOptions') ||
-      caps['map_'].get('moz:debuggerAddress') ||
-      new Map()
-    const debuggerUrl = seCdp || vendorInfo['debuggerAddress'] || vendorInfo
+
+    if (process.env.SELENIUM_REMOTE_URL) {
+      const host = new URL(process.env.SELENIUM_REMOTE_URL).host
+      const sessionId = await this.getSession().then((session) =>
+        session.getId()
+      )
+      debuggerUrl = `ws://${host}/session/${sessionId}/se/cdp`
+    } else {
+      const seCdp = caps['map_'].get('se:cdp')
+      const vendorInfo =
+        caps['map_'].get(this.VENDOR_COMMAND_PREFIX + ':chromeOptions') ||
+        caps['map_'].get(this.VENDOR_CAPABILITY_PREFIX + ':edgeOptions') ||
+        caps['map_'].get('moz:debuggerAddress') ||
+        new Map()
+      debuggerUrl = seCdp || vendorInfo['debuggerAddress'] || vendorInfo
+    }
     this._wsUrl = await this.getWsUrl(debuggerUrl, target, caps)
     return new Promise((resolve, reject) => {
       try {
@@ -1945,14 +1956,10 @@ class Window {
    * @return {!Promise<{x: number, y: number, width: number, height: number}>}
    *     A promise that will resolve to the window rect of the current window.
    */
-  async getRect() {
-    try {
-      return await this.driver_.execute(
-        new command.Command(command.Name.GET_WINDOW_RECT)
-      )
-    } catch (ex) {
-      throw ex
-    }
+  getRect() {
+    return this.driver_.execute(
+      new command.Command(command.Name.GET_WINDOW_RECT)
+    )
   }
 
   /**
@@ -1969,19 +1976,15 @@ class Window {
    *     A promise that will resolve to the current window's updated window
    *     rect.
    */
-  async setRect({ x, y, width, height }) {
-    try {
-      return await this.driver_.execute(
-        new command.Command(command.Name.SET_WINDOW_RECT).setParameters({
-          x,
-          y,
-          width,
-          height,
-        })
-      )
-    } catch (ex) {
-      throw ex
-    }
+  setRect({ x, y, width, height }) {
+    return this.driver_.execute(
+      new command.Command(command.Name.SET_WINDOW_RECT).setParameters({
+        x,
+        y,
+        width,
+        height,
+      })
+    )
   }
 
   /**
@@ -2522,12 +2525,12 @@ class WebElement {
       if (type === 'number') {
         key = String(key)
       } else if (type !== 'string') {
-        throw TypeError('each key must be a number of string; got ' + type)
+        throw TypeError('each key must be a number or string; got ' + type)
       }
 
       // The W3C protocol requires keys to be specified as an array where
       // each element is a single key.
-      keys.push(...key.split(''))
+      keys.push(...key)
     })
 
     if (!this.driver_.fileDetector_) {
@@ -2544,7 +2547,10 @@ class WebElement {
         keys.join('')
       )
     } catch (ex) {
-      console.log('Error trying parse string as a file with file detector; sending keys instead' + ex)
+      console.log(
+        'Error trying parse string as a file with file detector; sending keys instead' +
+          ex
+      )
     }
 
     return this.execute_(
@@ -2715,14 +2721,8 @@ class WebElement {
    * @return {!Promise<{width: number, height: number, x: number, y: number}>}
    *     A promise that will resolve with the element's rect.
    */
-  async getRect() {
-    try {
-      return await this.execute_(
-        new command.Command(command.Name.GET_ELEMENT_RECT)
-      )
-    } catch (err) {
-        throw err;
-    }
+  getRect() {
+    return this.execute_(new command.Command(command.Name.GET_ELEMENT_RECT))
   }
 
   /**

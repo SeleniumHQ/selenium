@@ -52,22 +52,22 @@ module Selenium
         #   options = Selenium::WebDriver::Chrome::Options.new(args: ['start-maximized', 'user-data-dir=/tmp/temp_profile'])
         #   driver = Selenium::WebDriver.for(:chrome, capabilities: options)
         #
-        # @param [Profile] :profile An instance of a Chrome::Profile Class
-        # @param [Array] :encoded_extensions List of extensions that do not need to be Base64 encoded
+        # @param [Profile] profile An instance of a Chrome::Profile Class
         # @param [Hash] opts the pre-defined options to create the Chrome::Options with
-        # @option opts [Array<String>] :args List of command-line arguments to use when starting Chrome
-        # @option opts [String] :binary Path to the Chrome executable to use
-        # @option opts [Hash] :prefs A hash with each entry consisting of the name of the preference and its value
-        # @option opts [Array<String>] :extensions A list of paths to (.crx) Chrome extensions to install on startup
-        # @option opts [Hash] :options A hash for raw options
-        # @option opts [Hash] :emulation A hash for raw emulation options
-        # @option opts [Hash] :local_state A hash for the Local State file in the user data folder
-        # @option opts [Boolean] :detach whether browser is closed when the driver is sent the quit command
-        # @option opts [String] :debugger_address address of a Chrome debugger server to connect to
-        # @option opts [Array<String>] :exclude_switches command line switches to exclude
-        # @option opts [String] :minidump_path Directory to store Chrome minidumps (linux only)
-        # @option opts [Hash] :perf_logging_prefs A hash for performance logging preferences
-        # @option opts [Array<String>] :window_types A list of window types to appear in the list of window handles
+        # @option opts [Array] encoded_extensions List of extensions that do not need to be Base64 encoded
+        # @option opts [Array<String>] args List of command-line arguments to use when starting Chrome
+        # @option opts [String] binary Path to the Chrome executable to use
+        # @option opts [Hash] prefs A hash with each entry consisting of the name of the preference and its value
+        # @option opts [Array<String>] extensions A list of paths to (.crx) Chrome extensions to install on startup
+        # @option opts [Hash] options A hash for raw options
+        # @option opts [Hash] emulation A hash for raw emulation options
+        # @option opts [Hash] local_state A hash for the Local State file in the user data folder
+        # @option opts [Boolean] detach whether browser is closed when the driver is sent the quit command
+        # @option opts [String] debugger_address address of a Chrome debugger server to connect to
+        # @option opts [Array<String>] exclude_switches command line switches to exclude
+        # @option opts [String] minidump_path Directory to store Chrome minidumps (linux only)
+        # @option opts [Hash] perf_logging_prefs A hash for performance logging preferences
+        # @option opts [Array<String>] window_types A list of window types to appear in the list of window handles
         #
 
         def initialize(profile: nil, **opts)
@@ -87,7 +87,7 @@ module Selenium
           @logging_prefs = options.delete(:logging_prefs) || {}
           @encoded_extensions = @options.delete(:encoded_extensions) || []
           @extensions = []
-          (@options.delete(:extensions)).each(&method(:validate_extension))
+          @options.delete(:extensions).each { |ext| validate_extension(ext) }
         end
 
         #
@@ -112,11 +112,11 @@ module Selenium
         #   options = Selenium::WebDriver::Chrome::Options.new
         #   options.extensions = extensions
         #
-        # @param [Array<String>] :extensions A list of paths to (.crx) Chrome extensions to install on startup
+        # @param [Array<String>] extensions A list of paths to (.crx) Chrome extensions to install on startup
         #
 
         def extensions=(extensions)
-          extensions.each(&method(:validate_extension))
+          extensions.each { |ext| validate_extension(ext) }
         end
 
         #
@@ -234,7 +234,7 @@ module Selenium
 
           return if (@encoded_extensions + @extensions).empty?
 
-          options['extensions'] = @encoded_extensions + @extensions.map(&method(:encode_extension))
+          options['extensions'] = @encoded_extensions + @extensions.map { |ext| encode_extension(ext) }
         end
 
         def binary_path

@@ -19,6 +19,7 @@ package org.openqa.selenium.firefox;
 
 import com.google.auto.service.AutoService;
 import com.google.common.io.ByteStreams;
+
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.internal.Require;
@@ -137,11 +138,6 @@ public class GeckoDriverService extends FirefoxDriverService {
     }
 
     @Override
-    protected boolean isLegacy() {
-      return false;
-    }
-
-    @Override
     public int score(Capabilities capabilities) {
       if (capabilities.getCapability(FirefoxDriver.Capability.MARIONETTE) != null
           && ! capabilities.is(FirefoxDriver.Capability.MARIONETTE)) {
@@ -191,15 +187,18 @@ public class GeckoDriverService extends FirefoxDriverService {
     @Override
     protected List<String> createArgs() {
       List<String> args = new ArrayList<>();
+      int wsPort = PortProber.findFreePort();
       args.add(String.format("--port=%d", getPort()));
-      args.add(String.format("--websocket-port=%d", PortProber.findFreePort()));
+      args.add(String.format("--websocket-port=%d", wsPort));
+      args.add(String.format("--allow-origins=http://localhost:%d", wsPort));
       if (firefoxBinary != null) {
         args.add("-b");
         args.add(firefoxBinary.getPath());
       } else {
         // Read system property for Firefox binary and use those if they are set
-        Optional<Executable> executable = Optional.ofNullable(FirefoxBinary.locateFirefoxBinaryFromSystemProperty());
-        executable.ifPresent( e -> {
+        Optional<Executable> executable =
+          Optional.ofNullable(FirefoxBinary.locateFirefoxBinaryFromSystemProperty());
+        executable.ifPresent(e -> {
           args.add("-b");
           args.add(e.getPath());
         });
