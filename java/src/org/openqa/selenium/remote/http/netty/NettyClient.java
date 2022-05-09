@@ -87,7 +87,8 @@ public class NettyClient implements HttpClient {
         .setReadTimeout(toClampedInt(config.readTimeout().toMillis()))
         .setFollowRedirect(true)
         .setUseProxyProperties(true)
-        .setUseProxySelector(true);
+        .setUseProxySelector(true)
+        .setMaxRequestRetry(0);
 
     return Dsl.asyncHttpClient(builder);
   }
