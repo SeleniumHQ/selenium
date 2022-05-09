@@ -18,15 +18,16 @@
 import time
 import typing
 
+from selenium.types import WaitExcTypes
 from selenium.common.exceptions import NoSuchElementException, InvalidSelectorException
 from selenium.common.exceptions import TimeoutException
 
 POLL_FREQUENCY: float = 0.5  # How long to sleep in between calls to the method
-IGNORED_EXCEPTIONS: typing.Iterable[typing.Type[Exception]] = (NoSuchElementException,)  # default to be ignored.
+IGNORED_EXCEPTIONS: typing.Tuple[typing.Type[Exception]] = (NoSuchElementException,)  # default to be ignored.
 
 
 class WebDriverWait:
-    def __init__(self, driver, timeout: float, poll_frequency: float = POLL_FREQUENCY, ignored_exceptions=None):
+    def __init__(self, driver, timeout: float, poll_frequency: float = POLL_FREQUENCY, ignored_exceptions: typing.Optional[WaitExcTypes] = None):
         """Constructor, takes a WebDriver instance and timeout in seconds.
 
            :Args:
