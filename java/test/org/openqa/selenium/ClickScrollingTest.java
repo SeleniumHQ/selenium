@@ -93,12 +93,14 @@ public class ClickScrollingTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(value = FIREFOX, issue = "https://github.com/mozilla/geckodriver/issues/2013")
+  @Ignore(value = FIREFOX,
+    reason = "horizontal scroll bar gets in the way",
+    issue = "https://github.com/mozilla/geckodriver/issues/2013")
   public void testShouldBeAbleToClickOnAnElementHiddenByDoubleOverflow() {
     driver.get(appServer.whereIs("scrolling_tests/page_with_double_overflow_auto.html"));
 
     driver.findElement(By.id("link")).click();
-    onlyPassIfNotOnMac(662, () -> wait.until(titleIs("Clicked Successfully!")));
+    wait.until(titleIs("Clicked Successfully!"));
   }
 
   @Test
@@ -111,7 +113,9 @@ public class ClickScrollingTest extends JUnit4TestBase {
 
   @Test
   @Ignore(value = IE, issue = "716")
-  @Ignore(value = FIREFOX, issue = "https://github.com/mozilla/geckodriver/issues/2013")
+  @Ignore(value = FIREFOX,
+    reason = "horizontal scroll bar gets in the way",
+    issue = "https://github.com/mozilla/geckodriver/issues/2013")
   public void testShouldBeAbleToClickOnAnElementPartiallyHiddenByOverflow() {
     driver.get(appServer.whereIs("scrolling_tests/page_with_partially_hidden_element.html"));
 
@@ -131,7 +135,9 @@ public class ClickScrollingTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(value = FIREFOX, issue = "https://github.com/mozilla/geckodriver/issues/2013")
+  @Ignore(value = FIREFOX,
+    reason = "horizontal scroll bar gets in the way",
+    issue = "https://github.com/mozilla/geckodriver/issues/2013")
   @NotYetImplemented(IE)
   public void testShouldNotScrollIfAlreadyScrolledAndElementIsInView() {
     driver.get(appServer.whereIs("scroll3.html"));
@@ -160,7 +166,9 @@ public class ClickScrollingTest extends JUnit4TestBase {
   @SwitchToTopAfterTest
   @Test
   @NotYetImplemented(SAFARI)
-  @NotYetImplemented(value = FIREFOX, reason = "https://bugzilla.mozilla.org/show_bug.cgi?id=1314462")
+  @Ignore(value = FIREFOX,
+    reason ="frame not scrolled into view",
+    issue = "https://bugzilla.mozilla.org/show_bug.cgi?id=1314462")
   public void testShouldBeAbleToClickElementInAFrameThatIsOutOfView() {
     driver.get(appServer.whereIs("scrolling_tests/page_with_frame_out_of_view.html"));
     driver.switchTo().frame("frame");
@@ -181,16 +189,6 @@ public class ClickScrollingTest extends JUnit4TestBase {
 
   @SwitchToTopAfterTest
   @Test
-  @Ignore(value = ALL, reason = "All tested browsers scroll non-scrollable frames")
-  public void testShouldNotBeAbleToClickElementThatIsOutOfViewInANonScrollableFrame() {
-    driver.get(appServer.whereIs("scrolling_tests/page_with_non_scrolling_frame.html"));
-    driver.switchTo().frame("scrolling_frame");
-    WebElement element = driver.findElement(By.name("scroll_checkbox"));
-    assertThatExceptionOfType(MoveTargetOutOfBoundsException.class).isThrownBy(element::click);
-  }
-
-  @SwitchToTopAfterTest
-  @Test
   @NotYetImplemented(SAFARI)
   public void testShouldBeAbleToClickElementThatIsOutOfViewInAFrameThatIsOutOfView() {
     driver.get(appServer.whereIs("scrolling_tests/page_with_scrolling_frame_out_of_view.html"));
@@ -202,19 +200,23 @@ public class ClickScrollingTest extends JUnit4TestBase {
 
   @SwitchToTopAfterTest
   @Test
-  @Ignore(value = FIREFOX, issue = "https://github.com/mozilla/geckodriver/issues/2013")
+  @Ignore(value = FIREFOX,
+    reason = "horizontal scroll bar gets in the way",
+    issue = "https://github.com/mozilla/geckodriver/issues/2013")
   public void testShouldBeAbleToClickElementThatIsOutOfViewInANestedFrame() {
     driver.get(appServer.whereIs("scrolling_tests/page_with_nested_scrolling_frames.html"));
     driver.switchTo().frame("scrolling_frame");
     driver.switchTo().frame("nested_scrolling_frame");
     WebElement element = driver.findElement(By.name("scroll_checkbox"));
     element.click();
-    onlyPassIfNotOnMac(651, () -> assertThat(element.isSelected()).isTrue());
+    assertThat(element.isSelected()).isTrue();
   }
 
   @SwitchToTopAfterTest
   @Test
-  @Ignore(value = FIREFOX, issue = "https://github.com/mozilla/geckodriver/issues/2013")
+  @Ignore(value = FIREFOX,
+    reason = "horizontal scroll bar gets in the way",
+    issue = "https://github.com/mozilla/geckodriver/issues/2013")
   @NotYetImplemented(SAFARI)
   public void testShouldBeAbleToClickElementThatIsOutOfViewInANestedFrameThatIsOutOfView() {
     driver.get(appServer.whereIs("scrolling_tests/page_with_nested_scrolling_frames_out_of_view.html"));
@@ -223,21 +225,7 @@ public class ClickScrollingTest extends JUnit4TestBase {
     WebElement element = driver.findElement(By.name("scroll_checkbox"));
     element.click();
 
-    onlyPassIfNotOnMac(651, () -> assertThat(element.isSelected()).isTrue());
-  }
-
-  private void onlyPassIfNotOnMac(int mozIssue, Runnable toCheck) {
-    try {
-      toCheck.run();
-      assumeFalse(
-          "It appears https://github.com/mozilla/geckodriver/issues/" + mozIssue + " is fixed",
-          Platform.getCurrent() == Platform.MAC && Browser.detect() == FIREFOX);
-    } catch (Throwable e) {
-      // Swallow the exception, as this is expected for Firefox on OS X
-      if (!(Platform.getCurrent() == Platform.MAC && Browser.detect() == FIREFOX)) {
-        throw e;
-      }
-    }
+    assertThat(element.isSelected()).isTrue();
   }
 
   @Test
@@ -256,7 +244,9 @@ public class ClickScrollingTest extends JUnit4TestBase {
   @SwitchToTopAfterTest
   @Test
   @NotYetImplemented(SAFARI)
-  @NotYetImplemented(value = FIREFOX, reason = "https://bugzilla.mozilla.org/show_bug.cgi?id=1314462")
+  @Ignore(value = FIREFOX,
+    reason ="frame not scrolled into view",
+    issue = "https://bugzilla.mozilla.org/show_bug.cgi?id=1314462")
   public void testShouldBeAbleToClickElementInATallFrame() {
     driver.get(appServer.whereIs("scrolling_tests/page_with_tall_frame.html"));
     driver.switchTo().frame("tall_frame");

@@ -164,12 +164,6 @@ public class ClickTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(ALL)
-  public void testShouldSetRelatedTargetForMouseOut() {
-    fail("Must. Write. Meaningful. Test (but we don't fire mouse outs synthetically");
-  }
-
-  @Test
   @NotYetImplemented(SAFARI)
   public void testClickingLabelShouldSetCheckbox() {
     driver.get(pages.formPage);
@@ -203,7 +197,9 @@ public class ClickTest extends JUnit4TestBase {
   }
 
   @Test
-  @NotYetImplemented(value = FIREFOX, reason = "https://github.com/mozilla/geckodriver/issues/653")
+  @Ignore(value = FIREFOX,
+    reason = "block can't be scrolled into view",
+    issue = "https://github.com/mozilla/geckodriver/issues/653")
   @NotYetImplemented(SAFARI)
   public void testCanClickOnALinkThatContainsEmbeddedBlockElements() {
     driver.findElement(By.id("embeddedBlock")).click();
@@ -217,7 +213,6 @@ public class ClickTest extends JUnit4TestBase {
     wait.until(titleIs("XHTML Test Page"));
   }
 
-  // See https://github.com/SeleniumHQ/selenium-google-code-issue-archive/issues/2700
   @Test
   public void testShouldBeAbleToClickOnAnElementInTheViewport() {
     String url = appServer.whereIs("click_out_of_bounds.html");
@@ -237,7 +232,9 @@ public class ClickTest extends JUnit4TestBase {
 
   @Test
   @Ignore(IE)
-  @NotYetImplemented(value = FIREFOX, reason = "https://bugzilla.mozilla.org/show_bug.cgi?id=1502636")
+  @Ignore(value = FIREFOX,
+    reason = "imagemap can't be scrolled into view",
+    issue = "https://bugzilla.mozilla.org/show_bug.cgi?id=1502636")
   @NotYetImplemented(SAFARI)
   public void testCanClickAnImageMapArea() {
     driver.get(appServer.whereIs("click_tests/google_map.html"));
@@ -254,7 +251,9 @@ public class ClickTest extends JUnit4TestBase {
   }
 
   @Test
-  @NotYetImplemented(value = FIREFOX, reason = "https://bugzilla.mozilla.org/show_bug.cgi?id=1422272")
+  @Ignore(value = FIREFOX,
+    reason = "Large element can't be scrolled into view",
+    issue = "https://bugzilla.mozilla.org/show_bug.cgi?id=1422272")
   @NotYetImplemented(SAFARI)
   public void testShouldBeAbleToClickOnAnElementGreaterThanTwoViewports() {
     String url = appServer.whereIs("click_too_big.html");
@@ -340,20 +339,6 @@ public class ClickTest extends JUnit4TestBase {
     driver.get(appServer.whereIs("click_tests/span_that_wraps.html"));
 
     driver.findElement(By.id("span")).click();
-
-    wait.until(titleIs("Submitted Successfully!"));
-  }
-
-  @Test
-  @Ignore(CHROME)
-  @Ignore(EDGE)
-  @Ignore(IE)
-  @Ignore(FIREFOX)
-  @NotYetImplemented(SAFARI)
-  public void testShouldBeAbleToClickOnAPartiallyOverlappedLinkThatWrapsToTheNextLine() {
-    driver.get(appServer.whereIs("click_tests/wrapped_overlapping_elements.html"));
-
-    driver.findElement(By.id("link")).click();
 
     wait.until(titleIs("Submitted Successfully!"));
   }
