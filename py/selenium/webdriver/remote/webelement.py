@@ -660,7 +660,7 @@ class WebElement(BaseWebElement):
         return self._execute(Command.ELEMENT_SCREENSHOT)['value']
 
     @property
-    def screenshot_as_png(self) -> str:
+    def screenshot_as_png(self) -> bytes:
         """
         Gets the screenshot of the current element as a binary data.
 
