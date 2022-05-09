@@ -60,17 +60,24 @@ http_archive(
 load("@rules_python//python:repositories.bzl", "python_register_toolchains")
 
 python_register_toolchains(
-    name = "python3_9",
+    name = "python_toolchain",
     python_version = "3.9",
 )
 
-# This one is only needed if you're using the packaging rules.
-load("@rules_python//python:pip.bzl", "pip_install")
+load("@python_toolchain//:defs.bzl", "interpreter")
 
-pip_install(
-    name = "dev_requirements",
-    requirements = "//py:requirements.txt",
+# This one is only needed if you're using the packaging rules.
+load("@rules_python//python:pip.bzl", "pip_parse")
+
+pip_parse(
+    name = "py_dev_requirements",
+    requirements_lock = "//py:requirements_lock.txt",
+    python_interpreter_target = interpreter,
 )
+
+load("@py_dev_requirements//:requirements.bzl", "install_deps")
+
+install_deps()
 
 http_archive(
     name = "rules_proto",
