@@ -222,14 +222,16 @@ namespace OpenQA.Selenium
         public void FindingASingleElementByEmptyTagNameShouldThrow()
         {
             driver.Url = formsPage;
-            Assert.That(() => driver.FindElement(By.TagName("")), Throws.InstanceOf<InvalidSelectorException>());
+            Assert.That(() => driver.FindElement(By.TagName("")), Throws.InstanceOf<NoSuchElementException>());
         }
 
         [Test]
-        public void FindingMultipleElementsByEmptyTagNameShouldThrow()
+        [IgnoreBrowser(Browser.Chrome, "Throwing invalid selector error")]
+        public void FindingMultipleElementsByEmptyTagNameShouldReturnEmptyList()
         {
             driver.Url = formsPage;
-            Assert.That(() => driver.FindElements(By.TagName("")), Throws.InstanceOf<InvalidSelectorException>());
+            ReadOnlyCollection<IWebElement> elements = driver.FindElements(By.TagName(""));
+            Assert.AreEqual(0, elements.Count);
         }
 
         [Test]
@@ -344,22 +346,22 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        public void FindingASingleElementByInvalidClassNameShouldThrow()
+        public void FindingASingleElementByAWeirdLookingClassName()
         {
             driver.Url = xhtmlTestPage;
-            Assert.That(() => driver.FindElement(By.ClassName("!@#$%^&*")), Throws.InstanceOf<NoSuchElementException>());
+            String weird = "cls-!@#$%^&*";
+            IWebElement element = driver.FindElement(By.ClassName(weird));
+            Assert.AreEqual(weird, element.GetAttribute("class"));
         }
 
         [Test]
-        [IgnoreBrowser(Browser.IE, "Class name is perfectly legal when using CSS selector, if properly escaped.")]
-        [IgnoreBrowser(Browser.Firefox, "Class name is perfectly legal when using CSS selector, if properly escaped.")]
-        [IgnoreBrowser(Browser.Safari, "Class name is perfectly legal when using CSS selector, if properly escaped.")]
-        [IgnoreBrowser(Browser.Chrome, "Class name is perfectly legal when using CSS selector, if properly escaped.")]
-        [IgnoreBrowser(Browser.Edge, "Class name is perfectly legal when using CSS selector, if properly escaped.")]
-        public void FindingMultipleElementsByInvalidClassNameShouldThrow()
+        public void FindingMultipleElementsByAWeirdLookingClassName()
         {
             driver.Url = xhtmlTestPage;
-            Assert.That(() => driver.FindElements(By.ClassName("!@#$%^&*")), Throws.InstanceOf<NoSuchElementException>());
+            String weird = "cls-!@#$%^&*";
+            ReadOnlyCollection<IWebElement> elements = driver.FindElements(By.ClassName(weird));
+            Assert.AreEqual(1, elements.Count);
+            Assert.AreEqual(weird, elements[0].GetAttribute("class"));
         }
 
         // By.XPath positive
@@ -819,13 +821,15 @@ namespace OpenQA.Selenium
         }
 
         [Test]
+        [IgnoreBrowser(Browser.Chrome, "https://bugs.chromium.org/p/chromedriver/issues/detail?id=3742")]
+        [IgnoreBrowser(Browser.Edge, "https://bugs.chromium.org/p/chromedriver/issues/detail?id=3742")]
         public void AnElementFoundInADifferentFrameIsStale()
         {
             driver.Url = missedJsReferencePage;
             driver.SwitchTo().Frame("inner");
             IWebElement element = driver.FindElement(By.Id("oneline"));
             driver.SwitchTo().DefaultContent();
-            Assert.That(() => { string foo = element.Text; }, Throws.InstanceOf<StaleElementReferenceException>());
+            Assert.That(() => { string foo = element.Text; }, Throws.InstanceOf<NoSuchElementException>());
         }
 
         [Test]

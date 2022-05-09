@@ -65,38 +65,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Chrome, "This is the correct behavior, for the SwitchTo call to throw if it happens before the setTimeout call occurs in the browser and the alert is displayed.")]
-        [IgnoreBrowser(Browser.Edge, "This is the correct behavior, for the SwitchTo call to throw if it happens before the setTimeout call occurs in the browser and the alert is displayed.")]
-        [IgnoreBrowser(Browser.EdgeLegacy, "This is the correct behavior, for the SwitchTo call to throw if it happens before the setTimeout call occurs in the browser and the alert is displayed.")]
-        [IgnoreBrowser(Browser.IE, "This is the correct behavior, for the SwitchTo call to throw if it happens before the setTimeout call occurs in the browser and the alert is displayed.")]
-        [IgnoreBrowser(Browser.Firefox, "This is the correct behavior, for the SwitchTo call to throw if it happens before the setTimeout call occurs in the browser and the alert is displayed.")]
-        [IgnoreBrowser(Browser.Safari, "This is the correct behavior, for the SwitchTo call to throw if it happens before the setTimeout call occurs in the browser and the alert is displayed.")]
-        public void ShouldGetTextOfAlertOpenedInSetTimeout()
-        {
-            driver.Url = EnvironmentManager.Instance.UrlBuilder.CreateInlinePage(new InlinePage()
-                .WithTitle("Testing Alerts")
-                .WithScripts(
-                    "function slowAlert() { window.setTimeout(function(){ alert('Slow'); }, 200); }")
-                .WithBody(
-                    "<a href='#' id='slow-alert' onclick='slowAlert();'>click me</a>"));
-
-            driver.FindElement(By.Id("slow-alert")).Click();
-
-            // DO NOT WAIT OR SLEEP HERE.
-            // This is a regression test for a bug where only the first switchTo call would throw,
-            // and only if it happens before the alert actually loads.
-            IAlert alert = driver.SwitchTo().Alert();
-            try
-            {
-                Assert.AreEqual("Slow", alert.Text);
-            }
-            finally
-            {
-                alert.Accept();
-            }
-        }
-
-        [Test]
         public void ShouldAllowUsersToDismissAnAlertManually()
         {
             driver.Url = CreateAlertPage("cheese");
@@ -447,86 +415,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Firefox, "After version 27, Firefox does not trigger alerts on unload.")]
-        [IgnoreBrowser(Browser.Chrome, "Chrome does not trigger alerts on unload.")]
-        [IgnoreBrowser(Browser.Edge, "Edge does not trigger alerts on unload.")]
-        [IgnoreBrowser(Browser.Safari, "Safari does not trigger alerts on unload.")]
-        public void ShouldHandleAlertOnPageUnload()
-        {
-            string pageWithOnBeforeUnload = EnvironmentManager.Instance.UrlBuilder.CreateInlinePage(new InlinePage()
-                .WithOnBeforeUnload("return \"onunload\";")
-                .WithBody("<p>Page with onbeforeunload event handler</p>"));
-            driver.Url = EnvironmentManager.Instance.UrlBuilder.CreateInlinePage(new InlinePage()
-                .WithBody(string.Format("<a id='open-page-with-onunload-alert' href='{0}'>open new page</a>", pageWithOnBeforeUnload)));
-
-            IWebElement element = WaitFor<IWebElement>(ElementToBePresent(By.Id("open-page-with-onunload-alert")), "Could not find element with id 'open-page-with-onunload-alert'");
-            element.Click();
-            driver.Navigate().Back();
-
-            IAlert alert = WaitFor<IAlert>(AlertToBePresent, "No alert found");
-            string value = alert.Text;
-            alert.Accept();
-
-            Assert.AreEqual("onunload", value);
-            element = WaitFor<IWebElement>(ElementToBePresent(By.Id("open-page-with-onunload-alert")), "Could not find element with id 'open-page-with-onunload-alert'");
-            WaitFor(ElementTextToEqual(element, "open new page"), "Element text was not 'open new page'");
-        }
-
-        [Test]
-        [IgnoreBrowser(Browser.Chrome, "Chrome does not implicitly handle onBeforeUnload alert")]
-        [IgnoreBrowser(Browser.Edge, "Edge does not implicitly handle onBeforeUnload alert")]
-        public void ShouldImplicitlyHandleAlertOnPageBeforeUnload()
-        {
-            string blank = EnvironmentManager.Instance.UrlBuilder.CreateInlinePage(new InlinePage().WithTitle("Success"));
-            driver.Url = EnvironmentManager.Instance.UrlBuilder.CreateInlinePage(new InlinePage()
-                .WithTitle("Page with onbeforeunload handler")
-                .WithBody(String.Format(
-                    "<a id='link' href='{0}'>Click here to navigate to another page.</a>", blank)));
-
-            SetSimpleOnBeforeUnload("onbeforeunload message");
-
-            driver.FindElement(By.Id("link")).Click();
-            WaitFor(() => driver.Title == "Success", "Title was not 'Success'");
-        }
-
-        [Test]
-        [IgnoreBrowser(Browser.IE, "Test as written does not trigger alert; also onbeforeunload alert on close will hang browser")]
-        [IgnoreBrowser(Browser.Chrome, "Test as written does not trigger alert")]
-        [IgnoreBrowser(Browser.Edge, "Test as written does not trigger alert")]
-        [IgnoreBrowser(Browser.Firefox, "After version 27, Firefox does not trigger alerts on unload.")]
-        [IgnoreBrowser(Browser.Safari, "Safari does not trigger alerts on unload.")]
-        public void ShouldHandleAlertOnWindowClose()
-        {
-            string pageWithOnBeforeUnload = EnvironmentManager.Instance.UrlBuilder.CreateInlinePage(new InlinePage()
-                .WithOnBeforeUnload("javascript:alert(\"onbeforeunload\")")
-                .WithBody("<p>Page with onbeforeunload event handler</p>"));
-            driver.Url = EnvironmentManager.Instance.UrlBuilder.CreateInlinePage(new InlinePage()
-                .WithBody(string.Format(
-                    "<a id='open-new-window' href='{0}' target='newwindow'>open new window</a>", pageWithOnBeforeUnload)));
-
-            string mainWindow = driver.CurrentWindowHandle;
-            try
-            {
-                driver.FindElement(By.Id("open-new-window")).Click();
-                WaitFor(WindowHandleCountToBe(2), "Window count was not 2");
-                WaitFor(WindowWithName("newwindow"), "Could not find window with name 'newwindow'");
-                driver.Close();
-
-                IAlert alert = WaitFor<IAlert>(AlertToBePresent, "No alert found");
-                string value = alert.Text;
-                alert.Accept();
-
-                Assert.AreEqual("onbeforeunload", value);
-
-            }
-            finally
-            {
-                driver.SwitchTo().Window(mainWindow);
-                WaitFor(ElementTextToEqual(driver.FindElement(By.Id("open-new-window")), "open new window"), "Could not find element with text equal to 'open new window'");
-            }
-        }
-
-        [Test]
         [IgnoreBrowser(Browser.Firefox, "Driver chooses not to return text from unhandled alert")]
         public void IncludesAlertTextInUnhandledAlertException()
         {
@@ -566,49 +454,12 @@ namespace OpenQA.Selenium
 
             IWebElement element = driver.FindElement(By.Id("theForm"));
             element.Submit();
-            IAlert alert = driver.SwitchTo().Alert();
+            IAlert alert = WaitFor<IAlert>(AlertToBePresent, "No alert found");
             string text = alert.Text;
             alert.Accept();
 
             Assert.AreEqual("Tasty cheese", text);
             Assert.AreEqual("Testing Alerts", driver.Title);
-        }
-
-        //------------------------------------------------------------------
-        // Tests below here are not included in the Java test suite
-        //------------------------------------------------------------------
-        [Test]
-        [IgnoreBrowser(Browser.Safari, "Safari does not display onBeforeUnload dialogs")]
-        public void ShouldHandleAlertOnPageBeforeUnload()
-        {
-            driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("pageWithOnBeforeUnloadMessage.html");
-            IWebElement element = driver.FindElement(By.Id("navigate"));
-            element.Click();
-            IAlert alert = WaitFor<IAlert>(AlertToBePresent, "No alert found");
-            alert.Dismiss();
-            Assert.That(driver.Url, Does.Contain("pageWithOnBeforeUnloadMessage.html"));
-
-            // Can't move forward or even quit the driver
-            // until the alert is accepted.
-            element.Click();
-            alert = WaitFor<IAlert>(AlertToBePresent, "No alert found");
-            alert.Accept();
-            WaitFor(() => { return driver.Url.Contains(alertsPage); }, "Browser URL does not contain " + alertsPage);
-            Assert.That(driver.Url, Does.Contain(alertsPage));
-        }
-
-        [Test]
-        [NeedsFreshDriver(IsCreatedAfterTest = true)]
-        [IgnoreBrowser(Browser.Safari, "Safari does not display onBeforeUnload dialogs")]
-        public void ShouldHandleAlertOnPageBeforeUnloadAlertAtQuit()
-        {
-            driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("pageWithOnBeforeUnloadMessage.html");
-            IWebElement element = driver.FindElement(By.Id("navigate"));
-            element.Click();
-            IAlert alert = WaitFor<IAlert>(AlertToBePresent, "No alert found");
-
-            // CloserCurrentDriver() contains a call to driver.Quit()
-            EnvironmentManager.Instance.CloseCurrentDriver();
         }
 
         // Disabling test for all browsers. Authentication API is not supported by any driver yet.

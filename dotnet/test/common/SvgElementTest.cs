@@ -8,6 +8,7 @@ namespace OpenQA.Selenium
     public class SvgElementTest : DriverTestFixture
     {
         [Test]
+        [IgnoreBrowser(Browser.Firefox, "wontfix: https://bugzilla.mozilla.org/show_bug.cgi?id=1428780")]
         public void ShouldClickOnGraphVisualElements()
         {
             if (TestUtilities.IsOldIE(driver))

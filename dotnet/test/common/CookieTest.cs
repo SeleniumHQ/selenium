@@ -38,12 +38,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        public void ShouldThrowAnExceptionWhenSameSiteIsNoneButNotSecure()
-        {
-            Assert.That(() => new ReturnedCookie("name", "value", "", "/", DateTime.Now, false, true, "None"), Throws.InstanceOf<ArgumentException>());
-        }
-
-        [Test]
         public void CookiesShouldAllowOptionalParametersToBeSet()
         {
             DateTime expiry = DateTime.Now;

@@ -173,6 +173,7 @@ namespace OpenQA.Selenium
         }
 
         [Test]
+        [IgnoreBrowser(Browser.Firefox)]
         public void ShouldEmitOnChangeEventsWhenSelectingElements()
         {
             driver.Url = javascriptPage;
@@ -456,65 +457,6 @@ namespace OpenQA.Selenium
 
             driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("click_tests/overlapping_elements.html");
             Assert.That(() => driver.FindElement(By.Id("under")).Click(), Throws.InstanceOf<ElementClickInterceptedException>().Or.InstanceOf<WebDriverException>().With.Message.Contains("Other element would receive the click"));
-        }
-
-        [Test]
-        [IgnoreBrowser(Browser.Chrome, "Driver checks for overlapping elements")]
-        [IgnoreBrowser(Browser.Edge, "Driver checks for overlapping elements")]
-        [IgnoreBrowser(Browser.Firefox, "Driver checks for overlapping elements")]
-        [IgnoreBrowser(Browser.IE, "Driver checks for overlapping elements")]
-        [IgnoreBrowser(Browser.Safari, "Driver checks for overlapping elements")]
-        public void ClickPartiallyOverlappingElements()
-        {
-            if (TestUtilities.IsOldIE(driver))
-            {
-                Assert.Ignore("Not supported on IE < 9");
-            }
-
-            StringBuilder expectedLogBuilder = new StringBuilder();
-            expectedLogBuilder.AppendLine("Log:");
-            expectedLogBuilder.AppendLine("mousedown in under (handled by under)");
-            expectedLogBuilder.AppendLine("mousedown in under (handled by body)");
-            expectedLogBuilder.AppendLine("mouseup in under (handled by under)");
-            expectedLogBuilder.AppendLine("mouseup in under (handled by body)");
-            expectedLogBuilder.AppendLine("click in under (handled by under)");
-            expectedLogBuilder.Append("click in under (handled by body)");
-
-            for (int i = 1; i < 6; i++)
-            {
-                driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("click_tests/partially_overlapping_elements.html");
-                IWebElement over = driver.FindElement(By.Id("over" + i));
-                ((IJavaScriptExecutor)driver).ExecuteScript("arguments[0].style.display = 'none'", over);
-                driver.FindElement(By.Id("under")).Click();
-                Assert.AreEqual(expectedLogBuilder.ToString(), driver.FindElement(By.Id("log")).Text);
-            }
-        }
-
-        [Test]
-        [IgnoreBrowser(Browser.Chrome, "Driver checks for overlapping elements")]
-        [IgnoreBrowser(Browser.Edge, "Driver checks for overlapping elements")]
-        [IgnoreBrowser(Browser.Firefox, "Driver checks for overlapping elements")]
-        [IgnoreBrowser(Browser.IE, "Driver checks for overlapping elements")]
-        [IgnoreBrowser(Browser.Safari, "Driver checks for overlapping elements")]
-        public void NativelyClickOverlappingElements()
-        {
-            if (TestUtilities.IsOldIE(driver))
-            {
-                Assert.Ignore("Not supported on IE < 9");
-            }
-
-            StringBuilder expectedLogBuilder = new StringBuilder();
-            expectedLogBuilder.AppendLine("Log:");
-            expectedLogBuilder.AppendLine("mousedown in over (handled by over)");
-            expectedLogBuilder.AppendLine("mousedown in over (handled by body)");
-            expectedLogBuilder.AppendLine("mouseup in over (handled by over)");
-            expectedLogBuilder.AppendLine("mouseup in over (handled by body)");
-            expectedLogBuilder.AppendLine("click in over (handled by over)");
-            expectedLogBuilder.Append("click in over (handled by body)");
-
-            driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("click_tests/overlapping_elements.html");
-            driver.FindElement(By.Id("under")).Click();
-            Assert.AreEqual(expectedLogBuilder.ToString(), driver.FindElement(By.Id("log")).Text);
         }
 
         [Test]

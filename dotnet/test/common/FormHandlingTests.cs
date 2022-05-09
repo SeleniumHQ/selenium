@@ -87,6 +87,7 @@ namespace OpenQA.Selenium
         }
 
         [Test]
+        [IgnoreBrowser(Browser.Firefox)]
         public void ShouldSubmitAFormUsingTheNewlineLiteral()
         {
             driver.Url = formsPage;

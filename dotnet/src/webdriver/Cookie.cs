@@ -112,13 +112,12 @@ namespace OpenQA.Selenium
         /// <param name="domain">The domain of the cookie.</param>
         /// <param name="path">The path of the cookie.</param>
         /// <param name="expiry">The expiration date of the cookie.</param>
-        /// <param name="isSecure"><see langword="true"/> if the cookie is secure; otherwise <see langword="false"/></param>
+        /// <param name="secure"><see langword="true"/> if the cookie is secure; otherwise <see langword="false"/></param>
         /// <param name="isHttpOnly"><see langword="true"/> if the cookie is an HTTP-only cookie; otherwise <see langword="false"/></param>
         /// <param name="sameSite">The SameSite value of cookie.</param>
         /// <exception cref="ArgumentException">If the name and value are both an empty string,
-        /// or if the name contains a semi-colon.</exception>
+        /// if the name contains a semi-colon, or if same site value is not valid.</exception>
         /// <exception cref="ArgumentNullException">If the name, value or currentUrl is <see langword="null"/>.</exception>
-        /// <exception cref="ArgumentNullException">If the same site value is not valid or same site value is "None" but secure is set to false.</exception>
         public Cookie(string name, string value, string domain, string path, DateTime? expiry, bool secure, bool isHttpOnly, string sameSite)
         {
             if (name == null)
