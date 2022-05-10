@@ -1358,7 +1358,7 @@ class WebDriver(BaseWebDriver):
         """
         return self.execute(Command.SCREENSHOT)['value']
 
-    def set_window_size(self, width, height, windowHandle: str ='current') -> None:
+    def set_window_size(self, width, height, windowHandle: str = 'current') -> None:
         """
         Sets the width and height of the current window. (window.resizeTo)
 
@@ -1375,7 +1375,7 @@ class WebDriver(BaseWebDriver):
             warnings.warn("Only 'current' window is supported for W3C compatible browsers.")
         self.set_window_rect(width=int(width), height=int(height))
 
-    def get_window_size(self, windowHandle: str ='current') -> dict:
+    def get_window_size(self, windowHandle: str = 'current') -> dict:
         """
         Gets the width and height of the current window.
 
@@ -1394,7 +1394,7 @@ class WebDriver(BaseWebDriver):
 
         return {k: size[k] for k in ('width', 'height')}
 
-    def set_window_position(self, x, y, windowHandle: str ='current') -> dict:
+    def set_window_position(self, x, y, windowHandle: str = 'current') -> dict:
         """
         Sets the x,y position of the current window. (window.moveTo)
 
