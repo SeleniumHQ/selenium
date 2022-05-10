@@ -2,10 +2,19 @@ load("@rules_pkg//pkg:mappings.bzl", "pkg_files", "strip_prefix")
 load("@rules_pkg//pkg:pkg.bzl", "pkg_tar")
 load("@rules_python//python:defs.bzl", "py_binary", "py_library")
 load("@rules_python//python:packaging.bzl", "py_package", "py_wheel")
-load("@dev_requirements//:requirements.bzl", "requirement")
+load("@py_dev_requirements//:requirements.bzl", "requirement")
 load("//common:defs.bzl", "copy_file")
 load("//py:defs.bzl", "py_test_suite")
 load("//py/private:browsers.bzl", "BROWSERS")
+
+load("@rules_python//python:pip.bzl", "compile_pip_requirements")
+
+compile_pip_requirements(
+    # base name for generated targets, typically "requirements"
+    name = "requirements",
+    requirements_in = ":requirements.txt",
+    requirements_txt = ":requirements_lock.txt",
+)
 
 SE_VERSION = "4.1.5"
 
