@@ -67,7 +67,7 @@ py/selenium/webdriver/firefox/amd64/
 py/selenium/webdriver/firefox/webdriver.xpi
 py/selenium/webdriver/firefox/webdriver_prefs.json
 py/selenium/webdriver/firefox/x86/
-# Removed theses files from gitignore due to documentation
+# Removed these files from gitignore due to documentation
 # py/selenium/webdriver/remote/findElements.js
 # py/selenium/webdriver/remote/getAttribute.js
 # py/selenium/webdriver/remote/isDisplayed.js
