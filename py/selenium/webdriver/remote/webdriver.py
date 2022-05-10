@@ -18,33 +18,21 @@
 """The WebDriver implementation."""
 import contextlib
 import copy
-import pkgutil
-import sys
 import types
 import typing
+from importlib import import_module
+
+import pkgutil
+
+import sys
+from typing import Dict, List, Optional, Union
+
 import warnings
+
 from abc import ABCMeta
 from base64 import b64decode
 from contextlib import asynccontextmanager, contextmanager
-from importlib import import_module
-from typing import Dict, List, Optional, Union
 
-from selenium.common.exceptions import (InvalidArgumentException,
-                                        JavascriptException,
-                                        WebDriverException,
-                                        NoSuchCookieException,
-                                        NoSuchElementException)
-from selenium.webdriver.common.by import By
-from selenium.webdriver.common.html5.application_cache import ApplicationCache
-from selenium.webdriver.common.options import BaseOptions
-from selenium.webdriver.common.print_page_options import PrintOptions
-from selenium.webdriver.common.timeouts import Timeouts
-from selenium.webdriver.common.virtual_authenticator import (
-    Credential,
-    VirtualAuthenticatorOptions,
-    required_virtual_authenticator
-)
-from selenium.webdriver.support.relative_locator import RelativeBy
 from .bidi_connection import BidiConnection
 from .command import Command
 from .errorhandler import ErrorHandler
@@ -55,6 +43,24 @@ from .script_key import ScriptKey
 from .shadowroot import ShadowRoot
 from .switch_to import SwitchTo
 from .webelement import WebElement
+
+from selenium.common.exceptions import (InvalidArgumentException,
+                                        JavascriptException,
+                                        WebDriverException,
+                                        NoSuchCookieException,
+                                        NoSuchElementException)
+from selenium.webdriver.common.by import By
+from selenium.webdriver.common.options import BaseOptions
+from selenium.webdriver.common.print_page_options import PrintOptions
+from selenium.webdriver.common.timeouts import Timeouts
+from selenium.webdriver.common.html5.application_cache import ApplicationCache
+from selenium.webdriver.support.relative_locator import RelativeBy
+from selenium.webdriver.common.virtual_authenticator import (
+    Credential,
+    VirtualAuthenticatorOptions,
+    required_virtual_authenticator
+)
+
 
 _W3C_CAPABILITY_NAMES = frozenset([
     'acceptInsecureCerts',
@@ -280,7 +286,7 @@ class WebDriver(BaseWebDriver):
     def __exit__(self,
                  exc_type: typing.Optional[typing.Type[BaseException]],
                  exc: typing.Optional[BaseException],
-                 traceback: typing.Optional[types.TracebackType] = None):
+                 traceback: typing.Optional[types.TracebackType]):
         self.quit()
 
     @contextmanager
@@ -325,10 +331,10 @@ class WebDriver(BaseWebDriver):
 
                 name = driver.name
         """
-        browser_name = self.caps.get("browserName")
-        if browser_name is None:
-            raise KeyError("browserName not specified in session capabilities")
-        return browser_name
+        if 'browserName' in self.caps:
+            return self.caps['browserName']
+        else:
+            raise KeyError('browserName not specified in session capabilities')
 
     def start_client(self):
         """
@@ -834,8 +840,8 @@ class WebDriver(BaseWebDriver):
         )
         return self.find_elements(by=By.CSS_SELECTOR, value=css_selector)
 
-    def pin_script(self, script, script_key: typing.Optional[ScriptKey] = None) -> ScriptKey:
-        _script_key = ScriptKey(script_key)  # None is ok; default anyway.
+    def pin_script(self, script, script_key=None) -> ScriptKey:
+        _script_key = ScriptKey(script_key)
         self.pinned_scripts[_script_key.id] = script
         return _script_key
 
@@ -1352,7 +1358,7 @@ class WebDriver(BaseWebDriver):
         """
         return self.execute(Command.SCREENSHOT)['value']
 
-    def set_window_size(self, width, height, windowHandle='current') -> None:
+    def set_window_size(self, width, height, windowHandle: str ='current') -> None:
         """
         Sets the width and height of the current window. (window.resizeTo)
 
@@ -1369,7 +1375,7 @@ class WebDriver(BaseWebDriver):
             warnings.warn("Only 'current' window is supported for W3C compatible browsers.")
         self.set_window_rect(width=int(width), height=int(height))
 
-    def get_window_size(self, windowHandle='current') -> dict:
+    def get_window_size(self, windowHandle: str ='current') -> dict:
         """
         Gets the width and height of the current window.
 
@@ -1388,7 +1394,7 @@ class WebDriver(BaseWebDriver):
 
         return {k: size[k] for k in ('width', 'height')}
 
-    def set_window_position(self, x, y, windowHandle='current') -> dict:
+    def set_window_position(self, x, y, windowHandle: str ='current') -> dict:
         """
         Sets the x,y position of the current window. (window.moveTo)
 
@@ -1456,7 +1462,7 @@ class WebDriver(BaseWebDriver):
                                                       "height": height})['value']
 
     @property
-    def file_detector(self):
+    def file_detector(self) -> FileDetector:
         return self._file_detector
 
     @file_detector.setter
@@ -1633,6 +1639,7 @@ class WebDriver(BaseWebDriver):
         Returns the list of credentials owned by the authenticator.
         """
         credential_data = self.execute(Command.GET_CREDENTIALS, {'authenticatorId': self._authenticator_id})
+        print("Get_Credential from authenticator", credential_data)
         return credential_data['value']
 
     @required_virtual_authenticator
