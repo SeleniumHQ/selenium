@@ -264,7 +264,9 @@ pysocks==1.7.1 \
     --hash=sha256:08e69f092cc6dbe92a0fdd16eeb9b9ffbc13cadfe5ca4c7bd92ffb078b293299 \
     --hash=sha256:2725bd0a9925919b9b51739eea5f9e2bae91e83288108a9ad338b2e3a4435ee5 \
     --hash=sha256:3f8804571ebe159c380ac6de37643bb4685970655d3bba243530d6558b799aa0
-    # via -r py/requirements.txt
+    # via
+    #   -r py/requirements.txt
+    #   urllib3
 pytest-instafail==0.4.2 \
     --hash=sha256:19273fdf3f0f9a1cb4b7a0bc8aa1bdaaf6b0f62a681b693d5eca4626abc99782 \
     --hash=sha256:1ec440a177be89a9ed2759dade8e1f7a2b95bac74ae81dc91318d309bf4ebd4f
@@ -313,7 +315,7 @@ trio==0.20.0 \
     #   -r py/requirements.txt
     #   pytest-trio
     #   trio-websocket
-urllib3==1.26.9 \
+urllib3[socks]==1.26.9 \
     --hash=sha256:44ece4d53fb1706f667c9bd1c648f5469a2ec925fcf3a776667042d645472c14 \
     --hash=sha256:aabaf16477806a5e1dd19aa41f8c2b7950dd3c746362d7e3223dbe6de6ac448e
     # via -r py/requirements.txt
