@@ -33,7 +33,7 @@ Webdriver.common
    selenium.webdriver.common.options
    selenium.webdriver.common.timeouts
    selenium.webdriver.common.window
-   selenium.webdriver.common.actions.actions_builder
+   selenium.webdriver.common.actions.action_builder
    selenium.webdriver.common.actions.input_device
    selenium.webdriver.common.actions.interaction
    selenium.webdriver.common.actions.key_actions
@@ -44,6 +44,7 @@ Webdriver.common
    selenium.webdriver.common.actions.wheel_input
    selenium.webdriver.common.actions.wheel_actions
    selenium.webdriver.common.html5.application_cache
+   selenium.webdriver.common.virtual_authenticator
 
 Webdriver.support
 -----------------
@@ -80,6 +81,7 @@ Webdriver.chromium
 
    selenium.webdriver.chromium.options
    selenium.webdriver.chromium.service
+   selenium.webdriver.chromium.remote_connection
    selenium.webdriver.chromium.webdriver
 
 Webdriver.edge

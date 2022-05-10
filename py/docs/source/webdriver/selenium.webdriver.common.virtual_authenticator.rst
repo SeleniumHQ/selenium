@@ -3,35 +3,37 @@
 
 .. automodule:: selenium.webdriver.common.virtual_authenticator
 
+   
+   
+   
 
-
-
-
-
-
-   .. rubric:: Class
-
-   .. autosummary::
-
-      Protocol
-      Transport
-      VirtualAuthenticatorOptions
-      Credential
-
+   
+   
    .. rubric:: Functions
 
    .. autosummary::
+   
+      required_chromium_based_browser
+      required_virtual_authenticator
+   
+   
 
-     required_chromium_based_browser
-     required_virtual_authenticator
+   
+   
+   .. rubric:: Classes
 
+   .. autosummary::
+   
+      Credential
+      Protocol
+      Transport
+      VirtualAuthenticatorOptions
+   
+   
 
-
-
-
-
-
-
+   
+   
+   
 
 
 
