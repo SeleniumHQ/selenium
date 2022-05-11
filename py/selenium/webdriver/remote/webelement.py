@@ -14,6 +14,7 @@
 # KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
 # under the License.
+from __future__ import annotations
 
 import os
 from base64 import b64decode, encodebytes
@@ -23,6 +24,7 @@ import warnings
 import zipfile
 from abc import ABCMeta
 from io import BytesIO
+from typing import Union
 
 from selenium.common.exceptions import WebDriverException
 from selenium.webdriver.common.by import By
@@ -99,7 +101,7 @@ class WebElement(BaseWebElement):
         """Clears the text if it's a text entry element."""
         self._execute(Command.CLEAR_ELEMENT)
 
-    def get_property(self, name) -> str:
+    def get_property(self, name) -> Union[str, bool, WebElement, dict]:
         """
         Gets the given property of the element.
 
