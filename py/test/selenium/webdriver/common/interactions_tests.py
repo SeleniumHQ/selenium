@@ -17,6 +17,7 @@
 
 """Tests for advanced user interactions."""
 import pytest
+from selenium.common.exceptions import MoveTargetOutOfBoundsException
 
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
@@ -262,6 +263,93 @@ def test_can_pause(driver, pages):
 
 @pytest.mark.xfail_firefox
 @pytest.mark.xfail_remote
+def test_can_scroll_to_element(driver, pages):
+    pages.load("scrolling_tests/frame_with_nested_scrolling_frame_out_of_view.html")
+    iframe = driver.find_element(By.TAG_NAME, "iframe")
+
+    assert not _in_viewport(driver, iframe)
+
+    ActionChains(driver).scroll(0, 0, 0, 0, origin=iframe).perform()
+
+    assert _in_viewport(driver, iframe)
+
+
+@pytest.mark.xfail_firefox
+@pytest.mark.xfail_remote
+def test_can_scroll_from_element_by_amount(driver, pages):
+    pages.load("scrolling_tests/frame_with_nested_scrolling_frame_out_of_view.html")
+    iframe = driver.find_element(By.TAG_NAME, "iframe")
+
+    ActionChains(driver).scroll(0, 0, 0, 200, origin=iframe).pause(0.2).perform()
+
+    driver.switch_to.frame(iframe)
+    checkbox = driver.find_element(By.NAME, "scroll_checkbox")
+
+    assert _in_viewport(driver, checkbox)
+
+
+@pytest.mark.xfail_firefox
+@pytest.mark.xfail_remote
+def test_can_scroll_from_element_with_offset_by_amount(driver, pages):
+    pages.load("scrolling_tests/frame_with_nested_scrolling_frame_out_of_view.html")
+    footer = driver.find_element(By.TAG_NAME, "footer")
+
+    ActionChains(driver).scroll(0, -50, 0, 200, origin=footer).pause(0.2).perform()
+
+    iframe = driver.find_element(By.TAG_NAME, "iframe")
+    driver.switch_to.frame(iframe)
+    checkbox = driver.find_element(By.NAME, "scroll_checkbox")
+
+    assert _in_viewport(driver, checkbox)
+
+
+@pytest.mark.xfail_firefox
+@pytest.mark.xfail_remote
+def test_errors_when_element_offset_not_in_viewport(driver, pages):
+    pages.load("scrolling_tests/frame_with_nested_scrolling_frame_out_of_view.html")
+    footer = driver.find_element(By.TAG_NAME, "footer")
+
+    with pytest.raises(MoveTargetOutOfBoundsException):
+        ActionChains(driver).scroll(0, 50, 0, 200, origin=footer).perform()
+
+
+@pytest.mark.xfail_firefox
+@pytest.mark.xfail_remote
+def test_can_scroll_from_viewport_by_amount(driver, pages):
+    pages.load("scrolling_tests/frame_with_nested_scrolling_frame_out_of_view.html")
+    footer = driver.find_element(By.TAG_NAME, "footer")
+    y = footer.rect['y']
+
+    ActionChains(driver).scroll(0, 0, 0, y, origin="viewport").pause(0.2).perform()
+
+    assert _in_viewport(driver, footer)
+
+
+@pytest.mark.xfail_firefox
+@pytest.mark.xfail_remote
+def test_can_scroll_from_viewport_with_offset_by_amount(driver, pages):
+    pages.load("scrolling_tests/frame_with_nested_scrolling_frame.html")
+    iframe = driver.find_element(By.TAG_NAME, "iframe")
+
+    ActionChains(driver).scroll(10, 10, 0, 200, origin="viewport").pause(0.2).perform()
+
+    driver.switch_to.frame(iframe)
+    checkbox = driver.find_element(By.NAME, "scroll_checkbox")
+
+    assert _in_viewport(driver, checkbox)
+
+
+@pytest.mark.xfail_firefox
+@pytest.mark.xfail_remote
+def test_errors_when_origin_offset_not_in_viewport(driver, pages):
+    pages.load("scrolling_tests/frame_with_nested_scrolling_frame_out_of_view.html")
+
+    with pytest.raises(MoveTargetOutOfBoundsException):
+        ActionChains(driver).scroll(-10, -10, 0, 200, origin="viewport").perform()
+
+
+@pytest.mark.xfail_firefox
+@pytest.mark.xfail_remote
 def test_can_scroll_mouse_wheel(driver, pages):
     pages.load("scrollingPage.html")
     driver.execute_script("document.scrollingElement.scrollTop = 0")
@@ -294,3 +382,13 @@ def _get_events(driver):
         if "code" in e and e["code"] == "Unidentified":
             e["code"] = ""
     return events
+
+
+def _in_viewport(driver, element):
+    script = (
+        "for(var e=arguments[0],f=e.offsetTop,t=e.offsetLeft,o=e.offsetWidth,n=e.offsetHeight;\n"
+        "e.offsetParent;)f+=(e=e.offsetParent).offsetTop,t+=e.offsetLeft;\n"
+        "return f<window.pageYOffset+window.innerHeight&&t<window.pageXOffset+window.innerWidth&&f+n>\n"
+        "window.pageYOffset&&t+o>window.pageXOffset"
+    )
+    return driver.execute_script(script, element)
