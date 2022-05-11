@@ -33,6 +33,8 @@ from .shadowroot import ShadowRoot
 
 # TODO: When moving to supporting python 3.9 as the minimum version we can
 # use built in importlib_resources.files.
+from .utils import try_convert_to_css_strategy
+
 _pkg = '.'.join(__name__.split('.')[:-1])
 getAttribute_js = pkgutil.get_data(_pkg, 'getAttribute.js').decode('utf8')
 isDisplayed_js = pkgutil.get_data(_pkg, 'isDisplayed.js').decode('utf8')
@@ -750,16 +752,7 @@ class WebElement(BaseWebElement):
 
         :rtype: WebElement
         """
-        if by == By.ID:
-            by = By.CSS_SELECTOR
-            value = '[id="%s"]' % value
-        elif by == By.CLASS_NAME:
-            by = By.CSS_SELECTOR
-            value = ".%s" % value
-        elif by == By.NAME:
-            by = By.CSS_SELECTOR
-            value = '[name="%s"]' % value
-
+        by, value = try_convert_to_css_strategy(by, value)
         return self._execute(Command.FIND_CHILD_ELEMENT,
                              {"using": by, "value": value})['value']
 
@@ -774,16 +767,7 @@ class WebElement(BaseWebElement):
 
         :rtype: list of WebElement
         """
-        if by == By.ID:
-            by = By.CSS_SELECTOR
-            value = '[id="%s"]' % value
-        elif by == By.CLASS_NAME:
-            by = By.CSS_SELECTOR
-            value = ".%s" % value
-        elif by == By.NAME:
-            by = By.CSS_SELECTOR
-            value = '[name="%s"]' % value
-
+        by, value = try_convert_to_css_strategy(by, value)
         return self._execute(Command.FIND_CHILD_ELEMENTS,
                              {"using": by, "value": value})['value']
 

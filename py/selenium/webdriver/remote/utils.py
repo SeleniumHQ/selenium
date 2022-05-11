@@ -18,6 +18,10 @@
 import json
 from typing import Any, Union
 
+import typing
+
+from selenium.webdriver.common.by import By
+
 
 def dump_json(json_struct: Any) -> str:
     return json.dumps(json_struct)
@@ -25,3 +29,21 @@ def dump_json(json_struct: Any) -> str:
 
 def load_json(s: Union[str, bytes]) -> Any:
     return json.loads(s)
+
+
+def try_convert_to_css_strategy(by: By, value: str) -> typing.Tuple[By, str]:
+    """If applicable, converts the by and value into a suitable CSS selector.
+    If the by is not able to be transformed, both by and value are returned as-is.
+
+    Args:
+        by (By): The by strategy to potentially convert.
+        value (str): The locator value to be potentially convert.
+
+    Returns:
+        A css selector strategy and converted value if applicable, else the original by and value.
+    """
+    transformable = {By.ID: '[id="{}"]', By.CLASS_NAME: '.{}', By.NAME: '[name="{}"]'}
+    lookup = transformable.get(by)
+    if lookup is None:
+        return by, value
+    return By.CSS_SELECTOR, lookup.format(value)

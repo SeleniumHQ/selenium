@@ -18,6 +18,8 @@
 """The WebDriver implementation."""
 
 import copy
+import types
+import typing
 from importlib import import_module
 
 import pkgutil
@@ -40,6 +42,7 @@ from .remote_connection import RemoteConnection
 from .script_key import ScriptKey
 from .shadowroot import ShadowRoot
 from .switch_to import SwitchTo
+from .utils import try_convert_to_css_strategy
 from .webelement import WebElement
 
 from selenium.common.exceptions import (InvalidArgumentException,
@@ -81,7 +84,7 @@ _OSS_W3C_CONVERSION = {
 }
 
 
-cdp = None
+cdp: typing.Optional[types.ModuleType] = None
 
 
 def import_cdp():
@@ -157,9 +160,7 @@ def create_matches(options: List[BaseOptions]) -> Dict:
                     if opts[min_index][kys] == opts[i + 1][kys]:
                         samesies.update({kys: opts[min_index][kys]})
 
-    always = {}
-    for k, v in samesies.items():
-        always[k] = v
+    always = samesies.copy()
 
     for i in opts:
         for k in always.keys():
@@ -1237,16 +1238,7 @@ class WebDriver(BaseWebDriver):
             if not elements:
                 raise NoSuchElementException(f"Cannot locate relative element with: {by.root}")
             return elements[0]
-
-        if by == By.ID:
-            by = By.CSS_SELECTOR
-            value = '[id="%s"]' % value
-        elif by == By.CLASS_NAME:
-            by = By.CSS_SELECTOR
-            value = ".%s" % value
-        elif by == By.NAME:
-            by = By.CSS_SELECTOR
-            value = '[name="%s"]' % value
+        by, value = try_convert_to_css_strategy(by, value)
 
         return self.execute(Command.FIND_ELEMENT, {
             'using': by,
@@ -1269,15 +1261,7 @@ class WebDriver(BaseWebDriver):
             find_element_js = "return ({}).apply(null, arguments);".format(raw_function)
             return self.execute_script(find_element_js, by.to_dict())
 
-        if by == By.ID:
-            by = By.CSS_SELECTOR
-            value = '[id="%s"]' % value
-        elif by == By.CLASS_NAME:
-            by = By.CSS_SELECTOR
-            value = ".%s" % value
-        elif by == By.NAME:
-            by = By.CSS_SELECTOR
-            value = '[name="%s"]' % value
+        by, value = try_convert_to_css_strategy(by, value)
 
         # Return empty list if driver returns null
         # See https://github.com/SeleniumHQ/selenium/issues/4555
