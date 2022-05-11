@@ -1,0 +1,392 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>selenium.webdriver.common.virtual_authenticator &#8212; Selenium 4.1 documentation</title>
+    <link rel="stylesheet" href="../_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Selenium 4.1 documentation</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="module-selenium.webdriver.common.virtual_authenticator">
+<span id="selenium-webdriver-common-virtual-authenticator"></span><h1>selenium.webdriver.common.virtual_authenticator<a class="headerlink" href="#module-selenium.webdriver.common.virtual_authenticator" title="Permalink to this headline">¶</a></h1>
+<p class="rubric">Functions</p>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="#selenium.webdriver.common.virtual_authenticator.required_chromium_based_browser" title="selenium.webdriver.common.virtual_authenticator.required_chromium_based_browser"><code class="xref py py-obj docutils literal notranslate"><span class="pre">required_chromium_based_browser</span></code></a>(func)</td>
+<td>A decorator to ensure that the client used is a chromium based browser.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#selenium.webdriver.common.virtual_authenticator.required_virtual_authenticator" title="selenium.webdriver.common.virtual_authenticator.required_virtual_authenticator"><code class="xref py py-obj docutils literal notranslate"><span class="pre">required_virtual_authenticator</span></code></a>(func)</td>
+<td>A decorator to ensure that the function is called with a virtual authenticator.</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Classes</p>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="#selenium.webdriver.common.virtual_authenticator.Credential" title="selenium.webdriver.common.virtual_authenticator.Credential"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Credential</span></code></a>(credential_id,&nbsp;…)</td>
+<td>Constructor.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#selenium.webdriver.common.virtual_authenticator.Protocol" title="selenium.webdriver.common.virtual_authenticator.Protocol"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Protocol</span></code></a></td>
+<td>Protocol to communicate with the authenticator.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#selenium.webdriver.common.virtual_authenticator.Transport" title="selenium.webdriver.common.virtual_authenticator.Transport"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Transport</span></code></a></td>
+<td>Transport method to communicate with the authenticator.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions" title="selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions"><code class="xref py py-obj docutils literal notranslate"><span class="pre">VirtualAuthenticatorOptions</span></code></a>()</td>
+<td>Constructor.</td>
+</tr>
+</tbody>
+</table>
+<dl class="class">
+<dt id="selenium.webdriver.common.virtual_authenticator.Credential">
+<em class="property">class </em><code class="descclassname">selenium.webdriver.common.virtual_authenticator.</code><code class="descname">Credential</code><span class="sig-paren">(</span><em>credential_id: bytes</em>, <em>is_resident_credential: bool</em>, <em>rp_id: str</em>, <em>user_handle: bytes</em>, <em>private_key: bytes</em>, <em>sign_count: int</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/webdriver/common/virtual_authenticator.html#Credential"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.common.virtual_authenticator.Credential" title="Permalink to this definition">¶</a></dt>
+<dd><p>Constructor. A credential stored in a virtual authenticator.
+<a class="reference external" href="https://w3c.github.io/webauthn/#credential-parameters">https://w3c.github.io/webauthn/#credential-parameters</a></p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Args:</th><td class="field-body"><ul class="first simple">
+<li>credential_id (bytes): Unique base64 encoded string.</li>
+</ul>
+<p class="last">is_resident_credential (bool): Whether the credential is client-side discoverable.
+rp_id (str): Relying party identifier.
+user_handle (bytes): userHandle associated to the credential. Must be Base64 encoded string. Can be None.
+private_key (bytes): Base64 encoded PKCS#8 private key.
+sign_count (int): intital value for a signature counter.</p>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="classmethod">
+<dt id="selenium.webdriver.common.virtual_authenticator.Credential.create_non_resident_credential">
+<em class="property">classmethod </em><code class="descname">create_non_resident_credential</code><span class="sig-paren">(</span><em>id: bytes</em>, <em>rp_id: str</em>, <em>private_key: bytes</em>, <em>sign_count: int</em><span class="sig-paren">)</span> &#x2192; selenium.webdriver.common.virtual_authenticator.Credential<a class="reference internal" href="../_modules/selenium/webdriver/common/virtual_authenticator.html#Credential.create_non_resident_credential"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.common.virtual_authenticator.Credential.create_non_resident_credential" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates a non-resident (i.e. stateless) credential.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Args:</th><td class="field-body"><ul class="first simple">
+<li>id (bytes): Unique base64 encoded string.</li>
+<li>rp_id (str): Relying party identifier.</li>
+<li>private_key (bytes): Base64 encoded PKCS</li>
+<li>sign_count (int): intital value for a signature counter.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><ul class="first last simple">
+<li>Credential: A non-resident credential.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="selenium.webdriver.common.virtual_authenticator.Credential.create_resident_credential">
+<em class="property">classmethod </em><code class="descname">create_resident_credential</code><span class="sig-paren">(</span><em>id: bytes</em>, <em>rp_id: str</em>, <em>user_handle: bytes</em>, <em>private_key: bytes</em>, <em>sign_count: int</em><span class="sig-paren">)</span> &#x2192; selenium.webdriver.common.virtual_authenticator.Credential<a class="reference internal" href="../_modules/selenium/webdriver/common/virtual_authenticator.html#Credential.create_resident_credential"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.common.virtual_authenticator.Credential.create_resident_credential" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates a resident (i.e. stateful) credential.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Args:</th><td class="field-body"><ul class="first simple">
+<li>id (bytes): Unique base64 encoded string.</li>
+<li>rp_id (str): Relying party identifier.</li>
+<li>user_handle (bytes): userHandle associated to the credential. Must be Base64 encoded string.</li>
+<li>private_key (bytes): Base64 encoded PKCS</li>
+<li>sign_count (int): intital value for a signature counter.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><ul class="simple">
+<li>Credential: A resident credential.</li>
+</ul>
+</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="selenium.webdriver.common.virtual_authenticator.Credential.from_dict">
+<em class="property">classmethod </em><code class="descname">from_dict</code><span class="sig-paren">(</span><em>data</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/webdriver/common/virtual_authenticator.html#Credential.from_dict"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.common.virtual_authenticator.Credential.from_dict" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="selenium.webdriver.common.virtual_authenticator.Credential.id">
+<code class="descname">id</code><a class="headerlink" href="#selenium.webdriver.common.virtual_authenticator.Credential.id" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="selenium.webdriver.common.virtual_authenticator.Credential.is_resident_credential">
+<code class="descname">is_resident_credential</code><a class="headerlink" href="#selenium.webdriver.common.virtual_authenticator.Credential.is_resident_credential" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="selenium.webdriver.common.virtual_authenticator.Credential.private_key">
+<code class="descname">private_key</code><a class="headerlink" href="#selenium.webdriver.common.virtual_authenticator.Credential.private_key" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="selenium.webdriver.common.virtual_authenticator.Credential.rp_id">
+<code class="descname">rp_id</code><a class="headerlink" href="#selenium.webdriver.common.virtual_authenticator.Credential.rp_id" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="selenium.webdriver.common.virtual_authenticator.Credential.sign_count">
+<code class="descname">sign_count</code><a class="headerlink" href="#selenium.webdriver.common.virtual_authenticator.Credential.sign_count" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.common.virtual_authenticator.Credential.to_dict">
+<code class="descname">to_dict</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/webdriver/common/virtual_authenticator.html#Credential.to_dict"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.common.virtual_authenticator.Credential.to_dict" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="selenium.webdriver.common.virtual_authenticator.Credential.user_handle">
+<code class="descname">user_handle</code><a class="headerlink" href="#selenium.webdriver.common.virtual_authenticator.Credential.user_handle" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="selenium.webdriver.common.virtual_authenticator.Protocol">
+<em class="property">class </em><code class="descclassname">selenium.webdriver.common.virtual_authenticator.</code><code class="descname">Protocol</code><a class="reference internal" href="../_modules/selenium/webdriver/common/virtual_authenticator.html#Protocol"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.common.virtual_authenticator.Protocol" title="Permalink to this definition">¶</a></dt>
+<dd><p>Protocol to communicate with the authenticator.</p>
+<dl class="attribute">
+<dt id="selenium.webdriver.common.virtual_authenticator.Protocol.CTAP2">
+<code class="descname">CTAP2</code><em class="property"> = 'ctap2'</em><a class="headerlink" href="#selenium.webdriver.common.virtual_authenticator.Protocol.CTAP2" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="selenium.webdriver.common.virtual_authenticator.Protocol.U2F">
+<code class="descname">U2F</code><em class="property"> = 'ctap1/u2f'</em><a class="headerlink" href="#selenium.webdriver.common.virtual_authenticator.Protocol.U2F" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="selenium.webdriver.common.virtual_authenticator.Transport">
+<em class="property">class </em><code class="descclassname">selenium.webdriver.common.virtual_authenticator.</code><code class="descname">Transport</code><a class="reference internal" href="../_modules/selenium/webdriver/common/virtual_authenticator.html#Transport"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.common.virtual_authenticator.Transport" title="Permalink to this definition">¶</a></dt>
+<dd><p>Transport method to communicate with the authenticator.</p>
+<dl class="attribute">
+<dt id="selenium.webdriver.common.virtual_authenticator.Transport.BLE">
+<code class="descname">BLE</code><em class="property"> = 'ble'</em><a class="headerlink" href="#selenium.webdriver.common.virtual_authenticator.Transport.BLE" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="selenium.webdriver.common.virtual_authenticator.Transport.INTERNAL">
+<code class="descname">INTERNAL</code><em class="property"> = 'internal'</em><a class="headerlink" href="#selenium.webdriver.common.virtual_authenticator.Transport.INTERNAL" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="selenium.webdriver.common.virtual_authenticator.Transport.NFC">
+<code class="descname">NFC</code><em class="property"> = 'nfc'</em><a class="headerlink" href="#selenium.webdriver.common.virtual_authenticator.Transport.NFC" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="selenium.webdriver.common.virtual_authenticator.Transport.USB">
+<code class="descname">USB</code><em class="property"> = 'usb'</em><a class="headerlink" href="#selenium.webdriver.common.virtual_authenticator.Transport.USB" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions">
+<em class="property">class </em><code class="descclassname">selenium.webdriver.common.virtual_authenticator.</code><code class="descname">VirtualAuthenticatorOptions</code><a class="reference internal" href="../_modules/selenium/webdriver/common/virtual_authenticator.html#VirtualAuthenticatorOptions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions" title="Permalink to this definition">¶</a></dt>
+<dd><p>Constructor. Initialize VirtualAuthenticatorOptions object.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Default:</th><td class="field-body"><ul class="first last simple">
+<li>protocol: Protocol.CTAP2</li>
+<li>transport: Transport.USB</li>
+<li>hasResidentKey: False</li>
+<li>hasUserVerification: False</li>
+<li>isUserConsenting: True</li>
+<li>isUserVerified: False</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="class">
+<dt id="selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Protocol">
+<em class="property">class </em><code class="descname">Protocol</code><a class="headerlink" href="#selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Protocol" title="Permalink to this definition">¶</a></dt>
+<dd><p>Protocol to communicate with the authenticator.</p>
+<dl class="attribute">
+<dt id="selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Protocol.CTAP2">
+<code class="descname">CTAP2</code><em class="property"> = 'ctap2'</em><a class="headerlink" href="#selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Protocol.CTAP2" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Protocol.U2F">
+<code class="descname">U2F</code><em class="property"> = 'ctap1/u2f'</em><a class="headerlink" href="#selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Protocol.U2F" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Transport">
+<em class="property">class </em><code class="descname">Transport</code><a class="headerlink" href="#selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Transport" title="Permalink to this definition">¶</a></dt>
+<dd><p>Transport method to communicate with the authenticator.</p>
+<dl class="attribute">
+<dt id="selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Transport.BLE">
+<code class="descname">BLE</code><em class="property"> = 'ble'</em><a class="headerlink" href="#selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Transport.BLE" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Transport.INTERNAL">
+<code class="descname">INTERNAL</code><em class="property"> = 'internal'</em><a class="headerlink" href="#selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Transport.INTERNAL" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Transport.NFC">
+<code class="descname">NFC</code><em class="property"> = 'nfc'</em><a class="headerlink" href="#selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Transport.NFC" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Transport.USB">
+<code class="descname">USB</code><em class="property"> = 'usb'</em><a class="headerlink" href="#selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.Transport.USB" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="attribute">
+<dt id="selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.has_resident_key">
+<code class="descname">has_resident_key</code><a class="headerlink" href="#selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.has_resident_key" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.has_user_verification">
+<code class="descname">has_user_verification</code><a class="headerlink" href="#selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.has_user_verification" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.is_user_consenting">
+<code class="descname">is_user_consenting</code><a class="headerlink" href="#selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.is_user_consenting" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.is_user_verified">
+<code class="descname">is_user_verified</code><a class="headerlink" href="#selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.is_user_verified" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.protocol">
+<code class="descname">protocol</code><a class="headerlink" href="#selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.protocol" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.to_dict">
+<code class="descname">to_dict</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; dict<a class="reference internal" href="../_modules/selenium/webdriver/common/virtual_authenticator.html#VirtualAuthenticatorOptions.to_dict"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.to_dict" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.transport">
+<code class="descname">transport</code><a class="headerlink" href="#selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.transport" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="selenium.webdriver.common.virtual_authenticator.required_chromium_based_browser">
+<code class="descclassname">selenium.webdriver.common.virtual_authenticator.</code><code class="descname">required_chromium_based_browser</code><span class="sig-paren">(</span><em>func</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/webdriver/common/virtual_authenticator.html#required_chromium_based_browser"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.common.virtual_authenticator.required_chromium_based_browser" title="Permalink to this definition">¶</a></dt>
+<dd><p>A decorator to ensure that the client used is a chromium based browser.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="selenium.webdriver.common.virtual_authenticator.required_virtual_authenticator">
+<code class="descclassname">selenium.webdriver.common.virtual_authenticator.</code><code class="descname">required_virtual_authenticator</code><span class="sig-paren">(</span><em>func</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/webdriver/common/virtual_authenticator.html#required_virtual_authenticator"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.common.virtual_authenticator.required_virtual_authenticator" title="Permalink to this definition">¶</a></dt>
+<dd><p>A decorator to ensure that the function is called with a virtual authenticator.</p>
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/webdriver/selenium.webdriver.common.virtual_authenticator.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Selenium 4.1 documentation</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2011, plightbo, simon.m.stewart, hbchai, jrhuggins, et al..
+    </div>
+  </body>
+</html>

@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>selenium.webdriver.support.wait &#8212; Selenium 4.1.0 documentation</title>
+    <title>selenium.webdriver.support.wait &#8212; Selenium 4.1 documentation</title>
     <link rel="stylesheet" href="../../../../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
     
@@ -27,7 +27,7 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../../index.html">Selenium 4.1.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">Selenium 4.1 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../../index.html" accesskey="U">Module code</a> &#187;</li> 
       </ul>
     </div>  
@@ -63,7 +63,7 @@
 <span class="n">IGNORED_EXCEPTIONS</span> <span class="o">=</span> <span class="p">(</span><span class="n">NoSuchElementException</span><span class="p">,)</span>  <span class="c1"># exceptions ignored during calls to the method</span>
 
 
-<div class="viewcode-block" id="WebDriverWait"><a class="viewcode-back" href="../../../../webdriver_support/selenium.webdriver.support.wait.html#selenium.webdriver.support.wait.WebDriverWait">[docs]</a><span class="k">class</span> <span class="nc">WebDriverWait</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<div class="viewcode-block" id="WebDriverWait"><a class="viewcode-back" href="../../../../webdriver_support/selenium.webdriver.support.wait.html#selenium.webdriver.support.wait.WebDriverWait">[docs]</a><span class="k">class</span> <span class="nc">WebDriverWait</span><span class="p">:</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">driver</span><span class="p">,</span> <span class="n">timeout</span><span class="p">,</span> <span class="n">poll_frequency</span><span class="o">=</span><span class="n">POLL_FREQUENCY</span><span class="p">,</span> <span class="n">ignored_exceptions</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Constructor, takes a WebDriver instance and timeout in seconds.</span>
 
@@ -112,7 +112,7 @@
         <span class="n">screen</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="n">stacktrace</span> <span class="o">=</span> <span class="kc">None</span>
 
-        <span class="n">end_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_timeout</span>
+        <span class="n">end_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">monotonic</span><span class="p">()</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_timeout</span>
         <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
             <span class="k">try</span><span class="p">:</span>
                 <span class="n">value</span> <span class="o">=</span> <span class="n">method</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_driver</span><span class="p">)</span>
@@ -124,7 +124,7 @@
                 <span class="n">screen</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">exc</span><span class="p">,</span> <span class="s1">&#39;screen&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
                 <span class="n">stacktrace</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">exc</span><span class="p">,</span> <span class="s1">&#39;stacktrace&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
             <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_poll</span><span class="p">)</span>
-            <span class="k">if</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">&gt;</span> <span class="n">end_time</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">time</span><span class="o">.</span><span class="n">monotonic</span><span class="p">()</span> <span class="o">&gt;</span> <span class="n">end_time</span><span class="p">:</span>
                 <span class="k">break</span>
         <span class="k">raise</span> <span class="n">TimeoutException</span><span class="p">(</span><span class="n">message</span><span class="p">,</span> <span class="n">screen</span><span class="p">,</span> <span class="n">stacktrace</span><span class="p">)</span></div>
 
@@ -138,7 +138,7 @@
 <span class="sd">                  ``True`` if `method` has raised one of the ignored exceptions</span>
 <span class="sd">        :raises: :exc:`selenium.common.exceptions.TimeoutException` if timeout occurs</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">end_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_timeout</span>
+        <span class="n">end_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">monotonic</span><span class="p">()</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_timeout</span>
         <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
             <span class="k">try</span><span class="p">:</span>
                 <span class="n">value</span> <span class="o">=</span> <span class="n">method</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_driver</span><span class="p">)</span>
@@ -149,7 +149,7 @@
             <span class="k">except</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ignored_exceptions</span><span class="p">:</span>
                 <span class="k">return</span> <span class="kc">True</span>
             <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_poll</span><span class="p">)</span>
-            <span class="k">if</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">&gt;</span> <span class="n">end_time</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">time</span><span class="o">.</span><span class="n">monotonic</span><span class="p">()</span> <span class="o">&gt;</span> <span class="n">end_time</span><span class="p">:</span>
                 <span class="k">break</span>
         <span class="k">raise</span> <span class="n">TimeoutException</span><span class="p">(</span><span class="n">message</span><span class="p">)</span></div></div>
 </pre></div>
@@ -184,7 +184,7 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../../index.html">Selenium 4.1.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">Selenium 4.1 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../../index.html" >Module code</a> &#187;</li> 
       </ul>
     </div>

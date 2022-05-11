@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>selenium.webdriver.chrome.options &#8212; Selenium 4.1.0 documentation</title>
+    <title>selenium.webdriver.chrome.options &#8212; Selenium 4.1 documentation</title>
     <link rel="stylesheet" href="../../../../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
     
@@ -27,7 +27,7 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../../index.html">Selenium 4.1.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">Selenium 4.1 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../../index.html" accesskey="U">Module code</a> &#187;</li> 
       </ul>
     </div>  
@@ -57,6 +57,7 @@
 
 <span class="kn">from</span> <span class="nn">selenium.webdriver.chromium.options</span> <span class="kn">import</span> <span class="n">ChromiumOptions</span>
 <span class="kn">from</span> <span class="nn">selenium.webdriver.common.desired_capabilities</span> <span class="kn">import</span> <span class="n">DesiredCapabilities</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span>
 
 
 <div class="viewcode-block" id="Options"><a class="viewcode-back" href="../../../../webdriver_chrome/selenium.webdriver.chrome.options.html#selenium.webdriver.chrome.options.Options">[docs]</a><span class="k">class</span> <span class="nc">Options</span><span class="p">(</span><span class="n">ChromiumOptions</span><span class="p">):</span>
@@ -65,7 +66,11 @@
     <span class="k">def</span> <span class="nf">default_capabilities</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">DesiredCapabilities</span><span class="o">.</span><span class="n">CHROME</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
 
-<div class="viewcode-block" id="Options.enable_mobile"><a class="viewcode-back" href="../../../../webdriver_chrome/selenium.webdriver.chrome.options.html#selenium.webdriver.chrome.options.Options.enable_mobile">[docs]</a>    <span class="k">def</span> <span class="nf">enable_mobile</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">android_package</span><span class="o">=</span><span class="s2">&quot;com.android.chrome&quot;</span><span class="p">,</span> <span class="n">android_activity</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">device_serial</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="Options.enable_mobile"><a class="viewcode-back" href="../../../../webdriver_chrome/selenium.webdriver.chrome.options.html#selenium.webdriver.chrome.options.Options.enable_mobile">[docs]</a>    <span class="k">def</span> <span class="nf">enable_mobile</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                      <span class="n">android_package</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;com.android.chrome&quot;</span><span class="p">,</span>
+                      <span class="n">android_activity</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                      <span class="n">device_serial</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+                      <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">enable_mobile</span><span class="p">(</span><span class="n">android_package</span><span class="p">,</span> <span class="n">android_activity</span><span class="p">,</span> <span class="n">device_serial</span><span class="p">)</span></div></div>
 </pre></div>
 
@@ -99,7 +104,7 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../../index.html">Selenium 4.1.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">Selenium 4.1 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../../index.html" >Module code</a> &#187;</li> 
       </ul>
     </div>

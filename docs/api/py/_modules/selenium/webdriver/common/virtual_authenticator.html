@@ -1,0 +1,345 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>selenium.webdriver.common.virtual_authenticator &#8212; Selenium 4.1 documentation</title>
+    <link rel="stylesheet" href="../../../../_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript" id="documentation_options" data-url_root="../../../../" src="../../../../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../../_static/doctools.js"></script>
+    
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">Selenium 4.1 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../../index.html" accesskey="U">Module code</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for selenium.webdriver.common.virtual_authenticator</h1><div class="highlight"><pre>
+<span></span><span class="c1"># Licensed to the Software Freedom Conservancy (SFC) under one</span>
+<span class="c1"># or more contributor license agreements.  See the NOTICE file</span>
+<span class="c1"># distributed with this work for additional information</span>
+<span class="c1"># regarding copyright ownership.  The SFC licenses this file</span>
+<span class="c1"># to you under the Apache License, Version 2.0 (the</span>
+<span class="c1"># &quot;License&quot;); you may not use this file except in compliance</span>
+<span class="c1"># with the License.  You may obtain a copy of the License at</span>
+<span class="c1">#</span>
+<span class="c1">#   http://www.apache.org/licenses/LICENSE-2.0</span>
+<span class="c1">#</span>
+<span class="c1"># Unless required by applicable law or agreed to in writing,</span>
+<span class="c1"># software distributed under the License is distributed on an</span>
+<span class="c1"># &quot;AS IS&quot; BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY</span>
+<span class="c1"># KIND, either express or implied.  See the License for the</span>
+<span class="c1"># specific language governing permissions and limitations</span>
+<span class="c1"># under the License.</span>
+
+<span class="kn">import</span> <span class="nn">functools</span>
+
+<span class="kn">from</span> <span class="nn">base64</span> <span class="kn">import</span> <span class="n">urlsafe_b64encode</span><span class="p">,</span> <span class="n">urlsafe_b64decode</span>
+<span class="kn">from</span> <span class="nn">enum</span> <span class="kn">import</span> <span class="n">Enum</span>
+<span class="kn">import</span> <span class="nn">typing</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+
+<span class="k">if</span> <span class="n">typing</span><span class="o">.</span><span class="n">TYPE_CHECKING</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">sys</span><span class="o">.</span><span class="n">version_info</span> <span class="o">&gt;=</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">8</span><span class="p">):</span>
+        <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Literal</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="kn">from</span> <span class="nn">typing_extensions</span> <span class="kn">import</span> <span class="n">Literal</span>
+
+
+<div class="viewcode-block" id="Protocol"><a class="viewcode-back" href="../../../../webdriver/selenium.webdriver.common.virtual_authenticator.html#selenium.webdriver.common.virtual_authenticator.Protocol">[docs]</a><span class="k">class</span> <span class="nc">Protocol</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Protocol to communicate with the authenticator.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">CTAP2</span> <span class="o">=</span> <span class="s2">&quot;ctap2&quot;</span>
+    <span class="n">U2F</span> <span class="o">=</span> <span class="s2">&quot;ctap1/u2f&quot;</span></div>
+
+
+<div class="viewcode-block" id="Transport"><a class="viewcode-back" href="../../../../webdriver/selenium.webdriver.common.virtual_authenticator.html#selenium.webdriver.common.virtual_authenticator.Transport">[docs]</a><span class="k">class</span> <span class="nc">Transport</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Transport method to communicate with the authenticator.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">BLE</span> <span class="o">=</span> <span class="s2">&quot;ble&quot;</span>
+    <span class="n">USB</span> <span class="o">=</span> <span class="s2">&quot;usb&quot;</span>
+    <span class="n">NFC</span> <span class="o">=</span> <span class="s2">&quot;nfc&quot;</span>
+    <span class="n">INTERNAL</span> <span class="o">=</span> <span class="s2">&quot;internal&quot;</span></div>
+
+
+<div class="viewcode-block" id="VirtualAuthenticatorOptions"><a class="viewcode-back" href="../../../../webdriver/selenium.webdriver.common.virtual_authenticator.html#selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions">[docs]</a><span class="k">class</span> <span class="nc">VirtualAuthenticatorOptions</span><span class="p">:</span>
+
+    <span class="n">Protocol</span> <span class="o">=</span> <span class="n">Protocol</span>
+    <span class="n">Transport</span> <span class="o">=</span> <span class="n">Transport</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Constructor. Initialize VirtualAuthenticatorOptions object.</span>
+
+<span class="sd">          :default:</span>
+<span class="sd">            - protocol: Protocol.CTAP2</span>
+<span class="sd">            - transport: Transport.USB</span>
+<span class="sd">            - hasResidentKey: False</span>
+<span class="sd">            - hasUserVerification: False</span>
+<span class="sd">            - isUserConsenting: True</span>
+<span class="sd">            - isUserVerified: False</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_protocol</span><span class="p">:</span> <span class="n">Literal</span> <span class="o">=</span> <span class="n">Protocol</span><span class="o">.</span><span class="n">CTAP2</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_transport</span><span class="p">:</span> <span class="n">Literal</span> <span class="o">=</span> <span class="n">Transport</span><span class="o">.</span><span class="n">USB</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_has_resident_key</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_has_user_verification</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_is_user_consenting</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_is_user_verified</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">protocol</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_protocol</span><span class="o">.</span><span class="n">value</span>
+
+    <span class="nd">@protocol</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">protocol</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">protocol</span><span class="p">:</span> <span class="n">Protocol</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_protocol</span> <span class="o">=</span> <span class="n">protocol</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">transport</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_transport</span><span class="o">.</span><span class="n">value</span>
+
+    <span class="nd">@transport</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">transport</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">transport</span><span class="p">:</span> <span class="n">Transport</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_transport</span> <span class="o">=</span> <span class="n">transport</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">has_resident_key</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_has_resident_key</span>
+
+    <span class="nd">@has_resident_key</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">has_resident_key</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_has_resident_key</span> <span class="o">=</span> <span class="n">value</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">has_user_verification</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_has_user_verification</span>
+
+    <span class="nd">@has_user_verification</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">has_user_verification</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_has_user_verification</span> <span class="o">=</span> <span class="n">value</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">is_user_consenting</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_user_consenting</span>
+
+    <span class="nd">@is_user_consenting</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">is_user_consenting</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_is_user_consenting</span> <span class="o">=</span> <span class="n">value</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">is_user_verified</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_user_verified</span>
+
+    <span class="nd">@is_user_verified</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">is_user_verified</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_is_user_verified</span> <span class="o">=</span> <span class="n">value</span>
+
+<div class="viewcode-block" id="VirtualAuthenticatorOptions.to_dict"><a class="viewcode-back" href="../../../../webdriver/selenium.webdriver.common.virtual_authenticator.html#selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.to_dict">[docs]</a>    <span class="k">def</span> <span class="nf">to_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">{</span>
+            <span class="s2">&quot;protocol&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">protocol</span><span class="p">,</span>
+            <span class="s2">&quot;transport&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">transport</span><span class="p">,</span>
+            <span class="s2">&quot;hasResidentKey&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">has_resident_key</span><span class="p">,</span>
+            <span class="s2">&quot;hasUserVerification&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">has_user_verification</span><span class="p">,</span>
+            <span class="s2">&quot;isUserConsenting&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_user_consenting</span><span class="p">,</span>
+            <span class="s2">&quot;isUserVerified&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_user_verified</span>
+        <span class="p">}</span></div></div>
+
+
+<div class="viewcode-block" id="Credential"><a class="viewcode-back" href="../../../../webdriver/selenium.webdriver.common.virtual_authenticator.html#selenium.webdriver.common.virtual_authenticator.Credential">[docs]</a><span class="k">class</span> <span class="nc">Credential</span><span class="p">:</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">credential_id</span><span class="p">:</span> <span class="nb">bytes</span><span class="p">,</span> <span class="n">is_resident_credential</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span> <span class="n">rp_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">user_handle</span><span class="p">:</span> <span class="nb">bytes</span><span class="p">,</span> <span class="n">private_key</span><span class="p">:</span> <span class="nb">bytes</span><span class="p">,</span> <span class="n">sign_count</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Constructor. A credential stored in a virtual authenticator.</span>
+<span class="sd">        https://w3c.github.io/webauthn/#credential-parameters</span>
+
+<span class="sd">        :Args:</span>
+<span class="sd">            - credential_id (bytes): Unique base64 encoded string.</span>
+<span class="sd">            is_resident_credential (bool): Whether the credential is client-side discoverable.</span>
+<span class="sd">            rp_id (str): Relying party identifier.</span>
+<span class="sd">            user_handle (bytes): userHandle associated to the credential. Must be Base64 encoded string. Can be None.</span>
+<span class="sd">            private_key (bytes): Base64 encoded PKCS#8 private key.</span>
+<span class="sd">            sign_count (int): intital value for a signature counter.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_id</span> <span class="o">=</span> <span class="n">credential_id</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_is_resident_credential</span> <span class="o">=</span> <span class="n">is_resident_credential</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_rp_id</span> <span class="o">=</span> <span class="n">rp_id</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_user_handle</span> <span class="o">=</span> <span class="n">user_handle</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_private_key</span> <span class="o">=</span> <span class="n">private_key</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_sign_count</span> <span class="o">=</span> <span class="n">sign_count</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">id</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">urlsafe_b64encode</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_id</span><span class="p">)</span><span class="o">.</span><span class="n">decode</span><span class="p">()</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">is_resident_credential</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_resident_credential</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">rp_id</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rp_id</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">user_handle</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_user_handle</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">urlsafe_b64encode</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_user_handle</span><span class="p">)</span><span class="o">.</span><span class="n">decode</span><span class="p">()</span>
+        <span class="k">return</span> <span class="kc">None</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">private_key</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">urlsafe_b64encode</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_private_key</span><span class="p">)</span><span class="o">.</span><span class="n">decode</span><span class="p">()</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">sign_count</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sign_count</span>
+
+<div class="viewcode-block" id="Credential.create_non_resident_credential"><a class="viewcode-back" href="../../../../webdriver/selenium.webdriver.common.virtual_authenticator.html#selenium.webdriver.common.virtual_authenticator.Credential.create_non_resident_credential">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">create_non_resident_credential</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="nb">id</span><span class="p">:</span> <span class="nb">bytes</span><span class="p">,</span> <span class="n">rp_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">private_key</span><span class="p">:</span> <span class="nb">bytes</span><span class="p">,</span> <span class="n">sign_count</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;Credential&#39;</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Creates a non-resident (i.e. stateless) credential.</span>
+
+<span class="sd">              :Args:</span>
+<span class="sd">                - id (bytes): Unique base64 encoded string.</span>
+<span class="sd">                - rp_id (str): Relying party identifier.</span>
+<span class="sd">                - private_key (bytes): Base64 encoded PKCS</span>
+<span class="sd">                - sign_count (int): intital value for a signature counter.</span>
+
+<span class="sd">              :Returns:</span>
+<span class="sd">                - Credential: A non-resident credential.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="nb">id</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="n">rp_id</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="n">private_key</span><span class="p">,</span> <span class="n">sign_count</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Credential.create_resident_credential"><a class="viewcode-back" href="../../../../webdriver/selenium.webdriver.common.virtual_authenticator.html#selenium.webdriver.common.virtual_authenticator.Credential.create_resident_credential">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">create_resident_credential</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="nb">id</span><span class="p">:</span> <span class="nb">bytes</span><span class="p">,</span> <span class="n">rp_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">user_handle</span><span class="p">:</span> <span class="nb">bytes</span><span class="p">,</span> <span class="n">private_key</span><span class="p">:</span> <span class="nb">bytes</span><span class="p">,</span> <span class="n">sign_count</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;Credential&#39;</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Creates a resident (i.e. stateful) credential.</span>
+
+<span class="sd">              :Args:</span>
+<span class="sd">                - id (bytes): Unique base64 encoded string.</span>
+<span class="sd">                - rp_id (str): Relying party identifier.</span>
+<span class="sd">                - user_handle (bytes): userHandle associated to the credential. Must be Base64 encoded string.</span>
+<span class="sd">                - private_key (bytes): Base64 encoded PKCS</span>
+<span class="sd">                - sign_count (int): intital value for a signature counter.</span>
+
+<span class="sd">              :returns:</span>
+<span class="sd">                - Credential: A resident credential.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="nb">id</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="n">rp_id</span><span class="p">,</span> <span class="n">user_handle</span><span class="p">,</span> <span class="n">private_key</span><span class="p">,</span> <span class="n">sign_count</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Credential.to_dict"><a class="viewcode-back" href="../../../../webdriver/selenium.webdriver.common.virtual_authenticator.html#selenium.webdriver.common.virtual_authenticator.Credential.to_dict">[docs]</a>    <span class="k">def</span> <span class="nf">to_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">credential_data</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s1">&#39;credentialId&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="p">,</span>
+            <span class="s1">&#39;isResidentCredential&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_resident_credential</span><span class="p">,</span>
+            <span class="s1">&#39;rpId&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">rp_id</span><span class="p">,</span>
+            <span class="s1">&#39;privateKey&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">private_key</span><span class="p">,</span>
+            <span class="s1">&#39;signCount&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">sign_count</span><span class="p">,</span>
+        <span class="p">}</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">user_handle</span><span class="p">:</span>
+            <span class="n">credential_data</span><span class="p">[</span><span class="s1">&#39;userHandle&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">user_handle</span>
+
+        <span class="k">return</span> <span class="n">credential_data</span></div>
+
+<div class="viewcode-block" id="Credential.from_dict"><a class="viewcode-back" href="../../../../webdriver/selenium.webdriver.common.virtual_authenticator.html#selenium.webdriver.common.virtual_authenticator.Credential.from_dict">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">from_dict</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+        <span class="n">_id</span> <span class="o">=</span> <span class="n">urlsafe_b64decode</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;credentialId&#39;</span><span class="p">])</span>
+        <span class="n">is_resident_credential</span> <span class="o">=</span> <span class="nb">bool</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;isResidentCredential&#39;</span><span class="p">])</span>
+        <span class="n">rp_id</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;rpId&#39;</span><span class="p">])</span>
+        <span class="n">private_key</span> <span class="o">=</span> <span class="n">urlsafe_b64decode</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;privateKey&#39;</span><span class="p">])</span>
+        <span class="n">sign_count</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;signCount&#39;</span><span class="p">])</span>
+        <span class="n">user_handle</span> <span class="o">=</span> <span class="n">urlsafe_b64decode</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;userHandle&#39;</span><span class="p">])</span> \
+            <span class="k">if</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;userHandle&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span> <span class="k">else</span> <span class="kc">None</span>
+
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">_id</span><span class="p">,</span> <span class="n">is_resident_credential</span><span class="p">,</span> <span class="n">rp_id</span><span class="p">,</span> <span class="n">user_handle</span><span class="p">,</span> <span class="n">private_key</span><span class="p">,</span> <span class="n">sign_count</span><span class="p">)</span></div>
+
+    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;Credential(id=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="si">}</span><span class="s2">, is_resident_credential=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">is_resident_credential</span><span class="si">}</span><span class="s2">, rp_id=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">rp_id</span><span class="si">}</span><span class="s2">,</span><span class="se">\</span>
+<span class="s2">            user_handle=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">user_handle</span><span class="si">}</span><span class="s2">, private_key=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">private_key</span><span class="si">}</span><span class="s2">, sign_count=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">sign_count</span><span class="si">}</span><span class="s2">)&quot;</span></div>
+
+
+<div class="viewcode-block" id="required_chromium_based_browser"><a class="viewcode-back" href="../../../../webdriver/selenium.webdriver.common.virtual_authenticator.html#selenium.webdriver.common.virtual_authenticator.required_chromium_based_browser">[docs]</a><span class="k">def</span> <span class="nf">required_chromium_based_browser</span><span class="p">(</span><span class="n">func</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    A decorator to ensure that the client used is a chromium based browser.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="nd">@functools</span><span class="o">.</span><span class="n">wraps</span><span class="p">(</span><span class="n">func</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">wrapper</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">caps</span><span class="p">[</span><span class="s2">&quot;browserName&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;firefox&quot;</span><span class="p">,</span> <span class="s2">&quot;safari&quot;</span><span class="p">],</span> <span class="s2">&quot;This only currently works in Chromium based browsers&quot;</span>
+        <span class="k">return</span> <span class="n">func</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">wrapper</span></div>
+
+
+<div class="viewcode-block" id="required_virtual_authenticator"><a class="viewcode-back" href="../../../../webdriver/selenium.webdriver.common.virtual_authenticator.html#selenium.webdriver.common.virtual_authenticator.required_virtual_authenticator">[docs]</a><span class="k">def</span> <span class="nf">required_virtual_authenticator</span><span class="p">(</span><span class="n">func</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    A decorator to ensure that the function is called with a virtual authenticator.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="nd">@functools</span><span class="o">.</span><span class="n">wraps</span><span class="p">(</span><span class="n">func</span><span class="p">)</span>
+    <span class="nd">@required_chromium_based_browser</span>
+    <span class="k">def</span> <span class="nf">wrapper</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">virtual_authenticator_id</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">&quot;This function requires a virtual authenticator to be set.&quot;</span>
+            <span class="p">)</span>
+        <span class="k">return</span> <span class="n">func</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">wrapper</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">Selenium 4.1 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../../index.html" >Module code</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2011, plightbo, simon.m.stewart, hbchai, jrhuggins, et al..
+    </div>
+  </body>
+</html>

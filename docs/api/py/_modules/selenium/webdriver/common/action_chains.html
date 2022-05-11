@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>selenium.webdriver.common.action_chains &#8212; Selenium 4.1.0 documentation</title>
+    <title>selenium.webdriver.common.action_chains &#8212; Selenium 4.1 documentation</title>
     <link rel="stylesheet" href="../../../../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
     
@@ -27,7 +27,7 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../../index.html">Selenium 4.1.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">Selenium 4.1 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../../index.html" accesskey="U">Module code</a> &#187;</li> 
       </ul>
     </div>  
@@ -63,7 +63,7 @@
 <span class="kn">from</span> <span class="nn">.actions.action_builder</span> <span class="kn">import</span> <span class="n">ActionBuilder</span>
 
 
-<div class="viewcode-block" id="ActionChains"><a class="viewcode-back" href="../../../../webdriver/selenium.webdriver.common.action_chains.html#selenium.webdriver.common.action_chains.ActionChains">[docs]</a><span class="k">class</span> <span class="nc">ActionChains</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<div class="viewcode-block" id="ActionChains"><a class="viewcode-back" href="../../../../webdriver/selenium.webdriver.common.action_chains.html#selenium.webdriver.common.action_chains.ActionChains">[docs]</a><span class="k">class</span> <span class="nc">ActionChains</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    ActionChains are a way to automate low level interactions such as</span>
 <span class="sd">    mouse movements, mouse button actions, key press, and context menu interactions.</span>
@@ -361,7 +361,22 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">send_keys</span><span class="p">(</span><span class="o">*</span><span class="n">keys_to_send</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span></div>
 
+<div class="viewcode-block" id="ActionChains.scroll"><a class="viewcode-back" href="../../../../webdriver/selenium.webdriver.common.action_chains.html#selenium.webdriver.common.action_chains.ActionChains.scroll">[docs]</a>    <span class="k">def</span> <span class="nf">scroll</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">delta_x</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">delta_y</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">duration</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">origin</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;viewport&quot;</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Sends wheel scroll information to the browser to be processed.</span>
+
+<span class="sd">        :Args:</span>
+<span class="sd">         - x: starting X coordinate</span>
+<span class="sd">         - y: starting Y coordinate</span>
+<span class="sd">         - delta_x: the distance the mouse will scroll on the x axis</span>
+<span class="sd">         - delta_y: the distance the mouse will scroll on the y axis</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">w3c_actions</span><span class="o">.</span><span class="n">wheel_action</span><span class="o">.</span><span class="n">scroll</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="n">y</span><span class="p">,</span> <span class="n">delta_x</span><span class="o">=</span><span class="n">delta_x</span><span class="p">,</span> <span class="n">delta_y</span><span class="o">=</span><span class="n">delta_y</span><span class="p">,</span>
+                                             <span class="n">duration</span><span class="o">=</span><span class="n">duration</span><span class="p">,</span> <span class="n">origin</span><span class="o">=</span><span class="n">origin</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span></div>
+
     <span class="c1"># Context manager so ActionChains can be used in a &#39;with .. as&#39; statements.</span>
+
     <span class="k">def</span> <span class="fm">__enter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span>  <span class="c1"># Return created instance of self.</span>
 
@@ -399,7 +414,7 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../../index.html">Selenium 4.1.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">Selenium 4.1 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../../index.html" >Module code</a> &#187;</li> 
       </ul>
     </div>

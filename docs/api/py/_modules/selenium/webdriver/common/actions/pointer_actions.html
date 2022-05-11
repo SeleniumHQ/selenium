@@ -1,0 +1,205 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>selenium.webdriver.common.actions.pointer_actions &#8212; Selenium 4.1 documentation</title>
+    <link rel="stylesheet" href="../../../../../_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../../../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript" id="documentation_options" data-url_root="../../../../../" src="../../../../../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../../../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../../../_static/doctools.js"></script>
+    
+    <link rel="index" title="Index" href="../../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../../../index.html">Selenium 4.1 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../../../index.html" accesskey="U">Module code</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for selenium.webdriver.common.actions.pointer_actions</h1><div class="highlight"><pre>
+<span></span><span class="c1"># Licensed to the Software Freedom Conservancy (SFC) under one</span>
+<span class="c1"># or more contributor license agreements.  See the NOTICE file</span>
+<span class="c1"># distributed with this work for additional information</span>
+<span class="c1"># regarding copyright ownership.  The SFC licenses this file</span>
+<span class="c1"># to you under the Apache License, Version 2.0 (the</span>
+<span class="c1"># &quot;License&quot;); you may not use this file except in compliance</span>
+<span class="c1"># with the License.  You may obtain a copy of the License at</span>
+<span class="c1">#</span>
+<span class="c1">#   http://www.apache.org/licenses/LICENSE-2.0</span>
+<span class="c1">#</span>
+<span class="c1"># Unless required by applicable law or agreed to in writing,</span>
+<span class="c1"># software distributed under the License is distributed on an</span>
+<span class="c1"># &quot;AS IS&quot; BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY</span>
+<span class="c1"># KIND, either express or implied.  See the License for the</span>
+<span class="c1"># specific language governing permissions and limitations</span>
+<span class="c1"># under the License.</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">interaction</span>
+
+<span class="kn">from</span> <span class="nn">.interaction</span> <span class="kn">import</span> <span class="n">Interaction</span>
+<span class="kn">from</span> <span class="nn">.mouse_button</span> <span class="kn">import</span> <span class="n">MouseButton</span>
+<span class="kn">from</span> <span class="nn">.pointer_input</span> <span class="kn">import</span> <span class="n">PointerInput</span>
+
+<span class="kn">from</span> <span class="nn">selenium.webdriver.remote.webelement</span> <span class="kn">import</span> <span class="n">WebElement</span>
+
+
+<div class="viewcode-block" id="PointerActions"><a class="viewcode-back" href="../../../../../webdriver/selenium.webdriver.common.actions.pointer_actions.html#selenium.webdriver.common.actions.pointer_actions.PointerActions">[docs]</a><span class="k">class</span> <span class="nc">PointerActions</span><span class="p">(</span><span class="n">Interaction</span><span class="p">):</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">source</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">duration</span><span class="o">=</span><span class="mi">250</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Args:</span>
+<span class="sd">        - source: PointerInput instance</span>
+<span class="sd">        - duration: override the default 250 msecs of DEFAULT_MOVE_DURATION in source</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">source</span><span class="p">:</span>
+            <span class="n">source</span> <span class="o">=</span> <span class="n">PointerInput</span><span class="p">(</span><span class="n">interaction</span><span class="o">.</span><span class="n">POINTER_MOUSE</span><span class="p">,</span> <span class="s2">&quot;mouse&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">source</span> <span class="o">=</span> <span class="n">source</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_duration</span> <span class="o">=</span> <span class="n">duration</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">PointerActions</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">source</span><span class="p">)</span>
+
+<div class="viewcode-block" id="PointerActions.pointer_down"><a class="viewcode-back" href="../../../../../webdriver/selenium.webdriver.common.actions.pointer_actions.html#selenium.webdriver.common.actions.pointer_actions.PointerActions.pointer_down">[docs]</a>    <span class="k">def</span> <span class="nf">pointer_down</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">button</span><span class="o">=</span><span class="n">MouseButton</span><span class="o">.</span><span class="n">LEFT</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">pressure</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                     <span class="n">tangential_pressure</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">tilt_x</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">tilt_y</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">twist</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                     <span class="n">altitude_angle</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">azimuth_angle</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_button_action</span><span class="p">(</span><span class="s2">&quot;create_pointer_down&quot;</span><span class="p">,</span> <span class="n">button</span><span class="o">=</span><span class="n">button</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="n">height</span><span class="p">,</span>
+                            <span class="n">pressure</span><span class="o">=</span><span class="n">pressure</span><span class="p">,</span> <span class="n">tangential_pressure</span><span class="o">=</span><span class="n">tangential_pressure</span><span class="p">,</span>
+                            <span class="n">tilt_x</span><span class="o">=</span><span class="n">tilt_x</span><span class="p">,</span> <span class="n">tilt_y</span><span class="o">=</span><span class="n">tilt_y</span><span class="p">,</span> <span class="n">twist</span><span class="o">=</span><span class="n">twist</span><span class="p">,</span>
+                            <span class="n">altitude_angle</span><span class="o">=</span><span class="n">altitude_angle</span><span class="p">,</span> <span class="n">azimuth_angle</span><span class="o">=</span><span class="n">azimuth_angle</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span></div>
+
+<div class="viewcode-block" id="PointerActions.pointer_up"><a class="viewcode-back" href="../../../../../webdriver/selenium.webdriver.common.actions.pointer_actions.html#selenium.webdriver.common.actions.pointer_actions.PointerActions.pointer_up">[docs]</a>    <span class="k">def</span> <span class="nf">pointer_up</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">button</span><span class="o">=</span><span class="n">MouseButton</span><span class="o">.</span><span class="n">LEFT</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_button_action</span><span class="p">(</span><span class="s2">&quot;create_pointer_up&quot;</span><span class="p">,</span> <span class="n">button</span><span class="o">=</span><span class="n">button</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span></div>
+
+<div class="viewcode-block" id="PointerActions.move_to"><a class="viewcode-back" href="../../../../../webdriver/selenium.webdriver.common.actions.pointer_actions.html#selenium.webdriver.common.actions.pointer_actions.PointerActions.move_to">[docs]</a>    <span class="k">def</span> <span class="nf">move_to</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">element</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">pressure</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                <span class="n">tangential_pressure</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">tilt_x</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">tilt_y</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">twist</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                <span class="n">altitude_angle</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">azimuth_angle</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">element</span><span class="p">,</span> <span class="n">WebElement</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="s2">&quot;move_to requires a WebElement&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">x</span> <span class="ow">or</span> <span class="n">y</span><span class="p">:</span>
+            <span class="n">el_rect</span> <span class="o">=</span> <span class="n">element</span><span class="o">.</span><span class="n">rect</span>
+            <span class="n">left_offset</span> <span class="o">=</span> <span class="n">el_rect</span><span class="p">[</span><span class="s1">&#39;width&#39;</span><span class="p">]</span> <span class="o">/</span> <span class="mi">2</span>
+            <span class="n">top_offset</span> <span class="o">=</span> <span class="n">el_rect</span><span class="p">[</span><span class="s1">&#39;height&#39;</span><span class="p">]</span> <span class="o">/</span> <span class="mi">2</span>
+            <span class="n">left</span> <span class="o">=</span> <span class="o">-</span><span class="n">left_offset</span> <span class="o">+</span> <span class="p">(</span><span class="n">x</span> <span class="ow">or</span> <span class="mi">0</span><span class="p">)</span>
+            <span class="n">top</span> <span class="o">=</span> <span class="o">-</span><span class="n">top_offset</span> <span class="o">+</span> <span class="p">(</span><span class="n">y</span> <span class="ow">or</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">left</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="n">top</span> <span class="o">=</span> <span class="mi">0</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">source</span><span class="o">.</span><span class="n">create_pointer_move</span><span class="p">(</span><span class="n">origin</span><span class="o">=</span><span class="n">element</span><span class="p">,</span> <span class="n">duration</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_duration</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">left</span><span class="p">),</span> <span class="n">y</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">top</span><span class="p">),</span>
+                                        <span class="n">width</span><span class="o">=</span><span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="n">height</span><span class="p">,</span> <span class="n">pressure</span><span class="o">=</span><span class="n">pressure</span><span class="p">,</span>
+                                        <span class="n">tangential_pressure</span><span class="o">=</span><span class="n">tangential_pressure</span><span class="p">,</span>
+                                        <span class="n">tilt_x</span><span class="o">=</span><span class="n">tilt_x</span><span class="p">,</span> <span class="n">tilt_y</span><span class="o">=</span><span class="n">tilt_y</span><span class="p">,</span> <span class="n">twist</span><span class="o">=</span><span class="n">twist</span><span class="p">,</span>
+                                        <span class="n">altitude_angle</span><span class="o">=</span><span class="n">altitude_angle</span><span class="p">,</span> <span class="n">azimuth_angle</span><span class="o">=</span><span class="n">azimuth_angle</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span></div>
+
+<div class="viewcode-block" id="PointerActions.move_by"><a class="viewcode-back" href="../../../../../webdriver/selenium.webdriver.common.actions.pointer_actions.html#selenium.webdriver.common.actions.pointer_actions.PointerActions.move_by">[docs]</a>    <span class="k">def</span> <span class="nf">move_by</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">source</span><span class="o">.</span><span class="n">create_pointer_move</span><span class="p">(</span><span class="n">origin</span><span class="o">=</span><span class="n">interaction</span><span class="o">.</span><span class="n">POINTER</span><span class="p">,</span> <span class="n">duration</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_duration</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="n">y</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">y</span><span class="p">))</span>
+        <span class="k">return</span> <span class="bp">self</span></div>
+
+<div class="viewcode-block" id="PointerActions.move_to_location"><a class="viewcode-back" href="../../../../../webdriver/selenium.webdriver.common.actions.pointer_actions.html#selenium.webdriver.common.actions.pointer_actions.PointerActions.move_to_location">[docs]</a>    <span class="k">def</span> <span class="nf">move_to_location</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">source</span><span class="o">.</span><span class="n">create_pointer_move</span><span class="p">(</span><span class="n">origin</span><span class="o">=</span><span class="s1">&#39;viewport&#39;</span><span class="p">,</span> <span class="n">duration</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_duration</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="n">y</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">y</span><span class="p">))</span>
+        <span class="k">return</span> <span class="bp">self</span></div>
+
+<div class="viewcode-block" id="PointerActions.click"><a class="viewcode-back" href="../../../../../webdriver/selenium.webdriver.common.actions.pointer_actions.html#selenium.webdriver.common.actions.pointer_actions.PointerActions.click">[docs]</a>    <span class="k">def</span> <span class="nf">click</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">element</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">element</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">move_to</span><span class="p">(</span><span class="n">element</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pointer_down</span><span class="p">(</span><span class="n">MouseButton</span><span class="o">.</span><span class="n">LEFT</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pointer_up</span><span class="p">(</span><span class="n">MouseButton</span><span class="o">.</span><span class="n">LEFT</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span></div>
+
+<div class="viewcode-block" id="PointerActions.context_click"><a class="viewcode-back" href="../../../../../webdriver/selenium.webdriver.common.actions.pointer_actions.html#selenium.webdriver.common.actions.pointer_actions.PointerActions.context_click">[docs]</a>    <span class="k">def</span> <span class="nf">context_click</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">element</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">element</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">move_to</span><span class="p">(</span><span class="n">element</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pointer_down</span><span class="p">(</span><span class="n">MouseButton</span><span class="o">.</span><span class="n">RIGHT</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pointer_up</span><span class="p">(</span><span class="n">MouseButton</span><span class="o">.</span><span class="n">RIGHT</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span></div>
+
+<div class="viewcode-block" id="PointerActions.click_and_hold"><a class="viewcode-back" href="../../../../../webdriver/selenium.webdriver.common.actions.pointer_actions.html#selenium.webdriver.common.actions.pointer_actions.PointerActions.click_and_hold">[docs]</a>    <span class="k">def</span> <span class="nf">click_and_hold</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">element</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">element</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">move_to</span><span class="p">(</span><span class="n">element</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pointer_down</span><span class="p">()</span>
+        <span class="k">return</span> <span class="bp">self</span></div>
+
+<div class="viewcode-block" id="PointerActions.release"><a class="viewcode-back" href="../../../../../webdriver/selenium.webdriver.common.actions.pointer_actions.html#selenium.webdriver.common.actions.pointer_actions.PointerActions.release">[docs]</a>    <span class="k">def</span> <span class="nf">release</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pointer_up</span><span class="p">()</span>
+        <span class="k">return</span> <span class="bp">self</span></div>
+
+<div class="viewcode-block" id="PointerActions.double_click"><a class="viewcode-back" href="../../../../../webdriver/selenium.webdriver.common.actions.pointer_actions.html#selenium.webdriver.common.actions.pointer_actions.PointerActions.double_click">[docs]</a>    <span class="k">def</span> <span class="nf">double_click</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">element</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">element</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">move_to</span><span class="p">(</span><span class="n">element</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pointer_down</span><span class="p">(</span><span class="n">MouseButton</span><span class="o">.</span><span class="n">LEFT</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pointer_up</span><span class="p">(</span><span class="n">MouseButton</span><span class="o">.</span><span class="n">LEFT</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pointer_down</span><span class="p">(</span><span class="n">MouseButton</span><span class="o">.</span><span class="n">LEFT</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pointer_up</span><span class="p">(</span><span class="n">MouseButton</span><span class="o">.</span><span class="n">LEFT</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span></div>
+
+<div class="viewcode-block" id="PointerActions.pause"><a class="viewcode-back" href="../../../../../webdriver/selenium.webdriver.common.actions.pointer_actions.html#selenium.webdriver.common.actions.pointer_actions.PointerActions.pause">[docs]</a>    <span class="k">def</span> <span class="nf">pause</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">duration</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">source</span><span class="o">.</span><span class="n">create_pause</span><span class="p">(</span><span class="n">duration</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span></div>
+
+    <span class="k">def</span> <span class="nf">_button_action</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">action</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="n">meth</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">source</span><span class="p">,</span> <span class="n">action</span><span class="p">)</span>
+        <span class="n">meth</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../../../index.html">Selenium 4.1 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../../../index.html" >Module code</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2011, plightbo, simon.m.stewart, hbchai, jrhuggins, et al..
+    </div>
+  </body>
+</html>

@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>selenium.common.exceptions &#8212; Selenium 4.1.0 documentation</title>
+    <title>selenium.common.exceptions &#8212; Selenium 4.1 documentation</title>
     <link rel="stylesheet" href="../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     
@@ -27,7 +27,7 @@
         <li class="right" >
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">Selenium 4.1.0 documentation</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="../index.html">Selenium 4.1 documentation</a> &#187;</li> 
       </ul>
     </div>  
 
@@ -109,37 +109,40 @@
 <tr class="row-odd"><td><a class="reference internal" href="#selenium.common.exceptions.NoSuchFrameException" title="selenium.common.exceptions.NoSuchFrameException"><code class="xref py py-obj docutils literal notranslate"><span class="pre">NoSuchFrameException</span></code></a>(msg,&nbsp;screen,&nbsp;stacktrace)</td>
 <td>Thrown when frame target to be switched doesn’t exist.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#selenium.common.exceptions.NoSuchWindowException" title="selenium.common.exceptions.NoSuchWindowException"><code class="xref py py-obj docutils literal notranslate"><span class="pre">NoSuchWindowException</span></code></a>(msg,&nbsp;screen,&nbsp;stacktrace)</td>
+<tr class="row-even"><td><a class="reference internal" href="#selenium.common.exceptions.NoSuchShadowRootException" title="selenium.common.exceptions.NoSuchShadowRootException"><code class="xref py py-obj docutils literal notranslate"><span class="pre">NoSuchShadowRootException</span></code></a>(msg,&nbsp;screen,&nbsp;…)</td>
+<td>Thrown when trying to access the shadow root of an element when it does not have a shadow root attached.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#selenium.common.exceptions.NoSuchWindowException" title="selenium.common.exceptions.NoSuchWindowException"><code class="xref py py-obj docutils literal notranslate"><span class="pre">NoSuchWindowException</span></code></a>(msg,&nbsp;screen,&nbsp;stacktrace)</td>
 <td>Thrown when window target to be switched doesn’t exist.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#selenium.common.exceptions.RemoteDriverServerException" title="selenium.common.exceptions.RemoteDriverServerException"><code class="xref py py-obj docutils literal notranslate"><span class="pre">RemoteDriverServerException</span></code></a>(msg,&nbsp;screen,&nbsp;…)</td>
+<tr class="row-even"><td><a class="reference internal" href="#selenium.common.exceptions.RemoteDriverServerException" title="selenium.common.exceptions.RemoteDriverServerException"><code class="xref py py-obj docutils literal notranslate"><span class="pre">RemoteDriverServerException</span></code></a>(msg,&nbsp;screen,&nbsp;…)</td>
 <td></td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#selenium.common.exceptions.ScreenshotException" title="selenium.common.exceptions.ScreenshotException"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ScreenshotException</span></code></a>(msg,&nbsp;screen,&nbsp;stacktrace)</td>
+<tr class="row-odd"><td><a class="reference internal" href="#selenium.common.exceptions.ScreenshotException" title="selenium.common.exceptions.ScreenshotException"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ScreenshotException</span></code></a>(msg,&nbsp;screen,&nbsp;stacktrace)</td>
 <td>A screen capture was made impossible.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#selenium.common.exceptions.SessionNotCreatedException" title="selenium.common.exceptions.SessionNotCreatedException"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SessionNotCreatedException</span></code></a>(msg,&nbsp;screen,&nbsp;…)</td>
+<tr class="row-even"><td><a class="reference internal" href="#selenium.common.exceptions.SessionNotCreatedException" title="selenium.common.exceptions.SessionNotCreatedException"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SessionNotCreatedException</span></code></a>(msg,&nbsp;screen,&nbsp;…)</td>
 <td>A new session could not be created.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#selenium.common.exceptions.StaleElementReferenceException" title="selenium.common.exceptions.StaleElementReferenceException"><code class="xref py py-obj docutils literal notranslate"><span class="pre">StaleElementReferenceException</span></code></a>(msg,&nbsp;screen,&nbsp;…)</td>
+<tr class="row-odd"><td><a class="reference internal" href="#selenium.common.exceptions.StaleElementReferenceException" title="selenium.common.exceptions.StaleElementReferenceException"><code class="xref py py-obj docutils literal notranslate"><span class="pre">StaleElementReferenceException</span></code></a>(msg,&nbsp;screen,&nbsp;…)</td>
 <td>Thrown when a reference to an element is now “stale”.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#selenium.common.exceptions.TimeoutException" title="selenium.common.exceptions.TimeoutException"><code class="xref py py-obj docutils literal notranslate"><span class="pre">TimeoutException</span></code></a>(msg,&nbsp;screen,&nbsp;stacktrace)</td>
+<tr class="row-even"><td><a class="reference internal" href="#selenium.common.exceptions.TimeoutException" title="selenium.common.exceptions.TimeoutException"><code class="xref py py-obj docutils literal notranslate"><span class="pre">TimeoutException</span></code></a>(msg,&nbsp;screen,&nbsp;stacktrace)</td>
 <td>Thrown when a command does not complete in enough time.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#selenium.common.exceptions.UnableToSetCookieException" title="selenium.common.exceptions.UnableToSetCookieException"><code class="xref py py-obj docutils literal notranslate"><span class="pre">UnableToSetCookieException</span></code></a>(msg,&nbsp;screen,&nbsp;…)</td>
+<tr class="row-odd"><td><a class="reference internal" href="#selenium.common.exceptions.UnableToSetCookieException" title="selenium.common.exceptions.UnableToSetCookieException"><code class="xref py py-obj docutils literal notranslate"><span class="pre">UnableToSetCookieException</span></code></a>(msg,&nbsp;screen,&nbsp;…)</td>
 <td>Thrown when a driver fails to set a cookie.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#selenium.common.exceptions.UnexpectedAlertPresentException" title="selenium.common.exceptions.UnexpectedAlertPresentException"><code class="xref py py-obj docutils literal notranslate"><span class="pre">UnexpectedAlertPresentException</span></code></a>(msg,&nbsp;screen,&nbsp;…)</td>
+<tr class="row-even"><td><a class="reference internal" href="#selenium.common.exceptions.UnexpectedAlertPresentException" title="selenium.common.exceptions.UnexpectedAlertPresentException"><code class="xref py py-obj docutils literal notranslate"><span class="pre">UnexpectedAlertPresentException</span></code></a>(msg,&nbsp;screen,&nbsp;…)</td>
 <td>Thrown when an unexpected alert has appeared.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#selenium.common.exceptions.UnexpectedTagNameException" title="selenium.common.exceptions.UnexpectedTagNameException"><code class="xref py py-obj docutils literal notranslate"><span class="pre">UnexpectedTagNameException</span></code></a>(msg,&nbsp;screen,&nbsp;…)</td>
+<tr class="row-odd"><td><a class="reference internal" href="#selenium.common.exceptions.UnexpectedTagNameException" title="selenium.common.exceptions.UnexpectedTagNameException"><code class="xref py py-obj docutils literal notranslate"><span class="pre">UnexpectedTagNameException</span></code></a>(msg,&nbsp;screen,&nbsp;…)</td>
 <td>Thrown when a support class did not get an expected web element.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#selenium.common.exceptions.UnknownMethodException" title="selenium.common.exceptions.UnknownMethodException"><code class="xref py py-obj docutils literal notranslate"><span class="pre">UnknownMethodException</span></code></a>(msg,&nbsp;screen,&nbsp;stacktrace)</td>
+<tr class="row-even"><td><a class="reference internal" href="#selenium.common.exceptions.UnknownMethodException" title="selenium.common.exceptions.UnknownMethodException"><code class="xref py py-obj docutils literal notranslate"><span class="pre">UnknownMethodException</span></code></a>(msg,&nbsp;screen,&nbsp;stacktrace)</td>
 <td>The requested command matched a known URL but did not match any methods for that URL.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#selenium.common.exceptions.WebDriverException" title="selenium.common.exceptions.WebDriverException"><code class="xref py py-obj docutils literal notranslate"><span class="pre">WebDriverException</span></code></a>(msg,&nbsp;screen,&nbsp;stacktrace)</td>
+<tr class="row-odd"><td><a class="reference internal" href="#selenium.common.exceptions.WebDriverException" title="selenium.common.exceptions.WebDriverException"><code class="xref py py-obj docutils literal notranslate"><span class="pre">WebDriverException</span></code></a>(msg,&nbsp;screen,&nbsp;stacktrace)</td>
 <td>Base webdriver exception.</td>
 </tr>
 </tbody>
@@ -435,7 +438,7 @@ commands.</p>
         <li class="right" >
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">Selenium 4.1.0 documentation</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="../index.html">Selenium 4.1 documentation</a> &#187;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">

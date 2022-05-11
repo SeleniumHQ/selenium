@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>selenium.webdriver.remote.webdriver &#8212; Selenium 4.1.0 documentation</title>
+    <title>selenium.webdriver.remote.webdriver &#8212; Selenium 4.1 documentation</title>
     <link rel="stylesheet" href="../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     
@@ -27,7 +27,7 @@
         <li class="right" >
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">Selenium 4.1.0 documentation</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="../index.html">Selenium 4.1 documentation</a> &#187;</li> 
       </ul>
     </div>  
 
@@ -158,7 +158,7 @@ as defined at
 <tr class="field-odd field"><th class="field-name">Args:</th><td class="field-body"><ul class="first last simple">
 <li><dl class="first docutils">
 <dt>cookie_dict: A dictionary object, with required keys - “name” and “value”;</dt>
-<dd>optional keys - “path”, “domain”, “secure”, “expiry”, “sameSite”</dd>
+<dd>optional keys - “path”, “domain”, “secure”, “httpOnly”, “expiry”, “sameSite”</dd>
 </dl>
 </li>
 </ul>
@@ -173,6 +173,18 @@ driver.add_cookie({‘name’ : ‘foo’, ‘value’ : ‘bar’, ‘path’ :
 driver.add_cookie({‘name’ : ‘foo’, ‘value’ : ‘bar’, ‘path’ : ‘/’, ‘secure’:True})
 driver.add_cookie({‘name’: ‘foo’, ‘value’: ‘bar’, ‘sameSite’: ‘Strict’})</dd>
 </dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.remote.webdriver.WebDriver.add_credential">
+<code class="descname">add_credential</code><span class="sig-paren">(</span><em>credential: selenium.webdriver.common.virtual_authenticator.Credential</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/webdriver/remote/webdriver.html#WebDriver.add_credential"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.remote.webdriver.WebDriver.add_credential" title="Permalink to this definition">¶</a></dt>
+<dd><p>Injects a credential into the authenticator.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.remote.webdriver.WebDriver.add_virtual_authenticator">
+<code class="descname">add_virtual_authenticator</code><span class="sig-paren">(</span><em>options: selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/webdriver/remote/webdriver.html#WebDriver.add_virtual_authenticator"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.remote.webdriver.WebDriver.add_virtual_authenticator" title="Permalink to this definition">¶</a></dt>
+<dd><p>Adds a virtual authenticator with the given options.</p>
 </dd></dl>
 
 <dl class="attribute">
@@ -712,7 +724,7 @@ and used as a file detector during the duration of the context manager.</dd>
 
 <dl class="method">
 <dt id="selenium.webdriver.remote.webdriver.WebDriver.find_elements_by_class_name">
-<code class="descname">find_elements_by_class_name</code><span class="sig-paren">(</span><em>name</em><span class="sig-paren">)</span> &#x2192; selenium.webdriver.remote.webelement.WebElement<a class="reference internal" href="../_modules/selenium/webdriver/remote/webdriver.html#WebDriver.find_elements_by_class_name"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.remote.webdriver.WebDriver.find_elements_by_class_name" title="Permalink to this definition">¶</a></dt>
+<code class="descname">find_elements_by_class_name</code><span class="sig-paren">(</span><em>name</em><span class="sig-paren">)</span> &#x2192; List[selenium.webdriver.remote.webelement.WebElement]<a class="reference internal" href="../_modules/selenium/webdriver/remote/webdriver.html#WebDriver.find_elements_by_class_name"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.remote.webdriver.WebDriver.find_elements_by_class_name" title="Permalink to this definition">¶</a></dt>
 <dd><p>Finds elements by class name.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -740,7 +752,7 @@ empty list if not</li>
 
 <dl class="method">
 <dt id="selenium.webdriver.remote.webdriver.WebDriver.find_elements_by_css_selector">
-<code class="descname">find_elements_by_css_selector</code><span class="sig-paren">(</span><em>css_selector</em><span class="sig-paren">)</span> &#x2192; selenium.webdriver.remote.webelement.WebElement<a class="reference internal" href="../_modules/selenium/webdriver/remote/webdriver.html#WebDriver.find_elements_by_css_selector"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.remote.webdriver.WebDriver.find_elements_by_css_selector" title="Permalink to this definition">¶</a></dt>
+<code class="descname">find_elements_by_css_selector</code><span class="sig-paren">(</span><em>css_selector</em><span class="sig-paren">)</span> &#x2192; List[selenium.webdriver.remote.webelement.WebElement]<a class="reference internal" href="../_modules/selenium/webdriver/remote/webdriver.html#WebDriver.find_elements_by_css_selector"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.remote.webdriver.WebDriver.find_elements_by_css_selector" title="Permalink to this definition">¶</a></dt>
 <dd><p>Finds elements by css selector.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -768,7 +780,7 @@ empty list if not</li>
 
 <dl class="method">
 <dt id="selenium.webdriver.remote.webdriver.WebDriver.find_elements_by_id">
-<code class="descname">find_elements_by_id</code><span class="sig-paren">(</span><em>id_</em><span class="sig-paren">)</span> &#x2192; selenium.webdriver.remote.webelement.WebElement<a class="reference internal" href="../_modules/selenium/webdriver/remote/webdriver.html#WebDriver.find_elements_by_id"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.remote.webdriver.WebDriver.find_elements_by_id" title="Permalink to this definition">¶</a></dt>
+<code class="descname">find_elements_by_id</code><span class="sig-paren">(</span><em>id_</em><span class="sig-paren">)</span> &#x2192; List[selenium.webdriver.remote.webelement.WebElement]<a class="reference internal" href="../_modules/selenium/webdriver/remote/webdriver.html#WebDriver.find_elements_by_id"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.remote.webdriver.WebDriver.find_elements_by_id" title="Permalink to this definition">¶</a></dt>
 <dd><p>Finds multiple elements by id.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -796,7 +808,7 @@ empty list if not</li>
 
 <dl class="method">
 <dt id="selenium.webdriver.remote.webdriver.WebDriver.find_elements_by_link_text">
-<code class="descname">find_elements_by_link_text</code><span class="sig-paren">(</span><em>text</em><span class="sig-paren">)</span> &#x2192; selenium.webdriver.remote.webelement.WebElement<a class="reference internal" href="../_modules/selenium/webdriver/remote/webdriver.html#WebDriver.find_elements_by_link_text"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.remote.webdriver.WebDriver.find_elements_by_link_text" title="Permalink to this definition">¶</a></dt>
+<code class="descname">find_elements_by_link_text</code><span class="sig-paren">(</span><em>text</em><span class="sig-paren">)</span> &#x2192; List[selenium.webdriver.remote.webelement.WebElement]<a class="reference internal" href="../_modules/selenium/webdriver/remote/webdriver.html#WebDriver.find_elements_by_link_text"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.remote.webdriver.WebDriver.find_elements_by_link_text" title="Permalink to this definition">¶</a></dt>
 <dd><p>Finds elements by link text.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -824,7 +836,7 @@ empty list if not</li>
 
 <dl class="method">
 <dt id="selenium.webdriver.remote.webdriver.WebDriver.find_elements_by_name">
-<code class="descname">find_elements_by_name</code><span class="sig-paren">(</span><em>name</em><span class="sig-paren">)</span> &#x2192; selenium.webdriver.remote.webelement.WebElement<a class="reference internal" href="../_modules/selenium/webdriver/remote/webdriver.html#WebDriver.find_elements_by_name"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.remote.webdriver.WebDriver.find_elements_by_name" title="Permalink to this definition">¶</a></dt>
+<code class="descname">find_elements_by_name</code><span class="sig-paren">(</span><em>name</em><span class="sig-paren">)</span> &#x2192; List[selenium.webdriver.remote.webelement.WebElement]<a class="reference internal" href="../_modules/selenium/webdriver/remote/webdriver.html#WebDriver.find_elements_by_name"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.remote.webdriver.WebDriver.find_elements_by_name" title="Permalink to this definition">¶</a></dt>
 <dd><p>Finds elements by name.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -852,7 +864,7 @@ empty list if not</li>
 
 <dl class="method">
 <dt id="selenium.webdriver.remote.webdriver.WebDriver.find_elements_by_partial_link_text">
-<code class="descname">find_elements_by_partial_link_text</code><span class="sig-paren">(</span><em>link_text</em><span class="sig-paren">)</span> &#x2192; selenium.webdriver.remote.webelement.WebElement<a class="reference internal" href="../_modules/selenium/webdriver/remote/webdriver.html#WebDriver.find_elements_by_partial_link_text"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.remote.webdriver.WebDriver.find_elements_by_partial_link_text" title="Permalink to this definition">¶</a></dt>
+<code class="descname">find_elements_by_partial_link_text</code><span class="sig-paren">(</span><em>link_text</em><span class="sig-paren">)</span> &#x2192; List[selenium.webdriver.remote.webelement.WebElement]<a class="reference internal" href="../_modules/selenium/webdriver/remote/webdriver.html#WebDriver.find_elements_by_partial_link_text"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.remote.webdriver.WebDriver.find_elements_by_partial_link_text" title="Permalink to this definition">¶</a></dt>
 <dd><p>Finds elements by a partial match of their link text.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -880,7 +892,7 @@ empty list if not</li>
 
 <dl class="method">
 <dt id="selenium.webdriver.remote.webdriver.WebDriver.find_elements_by_tag_name">
-<code class="descname">find_elements_by_tag_name</code><span class="sig-paren">(</span><em>name</em><span class="sig-paren">)</span> &#x2192; selenium.webdriver.remote.webelement.WebElement<a class="reference internal" href="../_modules/selenium/webdriver/remote/webdriver.html#WebDriver.find_elements_by_tag_name"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.remote.webdriver.WebDriver.find_elements_by_tag_name" title="Permalink to this definition">¶</a></dt>
+<code class="descname">find_elements_by_tag_name</code><span class="sig-paren">(</span><em>name</em><span class="sig-paren">)</span> &#x2192; List[selenium.webdriver.remote.webelement.WebElement]<a class="reference internal" href="../_modules/selenium/webdriver/remote/webdriver.html#WebDriver.find_elements_by_tag_name"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.remote.webdriver.WebDriver.find_elements_by_tag_name" title="Permalink to this definition">¶</a></dt>
 <dd><p>Finds elements by tag name.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -908,7 +920,7 @@ empty list if not</li>
 
 <dl class="method">
 <dt id="selenium.webdriver.remote.webdriver.WebDriver.find_elements_by_xpath">
-<code class="descname">find_elements_by_xpath</code><span class="sig-paren">(</span><em>xpath</em><span class="sig-paren">)</span> &#x2192; selenium.webdriver.remote.webelement.WebElement<a class="reference internal" href="../_modules/selenium/webdriver/remote/webdriver.html#WebDriver.find_elements_by_xpath"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.remote.webdriver.WebDriver.find_elements_by_xpath" title="Permalink to this definition">¶</a></dt>
+<code class="descname">find_elements_by_xpath</code><span class="sig-paren">(</span><em>xpath</em><span class="sig-paren">)</span> &#x2192; List[selenium.webdriver.remote.webelement.WebElement]<a class="reference internal" href="../_modules/selenium/webdriver/remote/webdriver.html#WebDriver.find_elements_by_xpath"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.remote.webdriver.WebDriver.find_elements_by_xpath" title="Permalink to this definition">¶</a></dt>
 <dd><p>Finds multiple elements by xpath.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -995,6 +1007,12 @@ empty list if not</li>
 </tr>
 </tbody>
 </table>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.remote.webdriver.WebDriver.get_credentials">
+<code class="descname">get_credentials</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/webdriver/remote/webdriver.html#WebDriver.get_credentials"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.remote.webdriver.WebDriver.get_credentials" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the list of credentials owned by the authenticator.</p>
 </dd></dl>
 
 <dl class="method">
@@ -1302,6 +1320,25 @@ The driver makes a best effort to return a PDF based on the provided parameters.
 </dd></dl>
 
 <dl class="method">
+<dt id="selenium.webdriver.remote.webdriver.WebDriver.remove_all_credentials">
+<code class="descname">remove_all_credentials</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/webdriver/remote/webdriver.html#WebDriver.remove_all_credentials"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.remote.webdriver.WebDriver.remove_all_credentials" title="Permalink to this definition">¶</a></dt>
+<dd><p>Removes all credentials from the authenticator.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.remote.webdriver.WebDriver.remove_credential">
+<code class="descname">remove_credential</code><span class="sig-paren">(</span><em>credential_id: str</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/webdriver/remote/webdriver.html#WebDriver.remove_credential"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.remote.webdriver.WebDriver.remove_credential" title="Permalink to this definition">¶</a></dt>
+<dd><p>Removes a credential from the authenticator.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.remote.webdriver.WebDriver.remove_virtual_authenticator">
+<code class="descname">remove_virtual_authenticator</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/webdriver/remote/webdriver.html#WebDriver.remove_virtual_authenticator"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.remote.webdriver.WebDriver.remove_virtual_authenticator" title="Permalink to this definition">¶</a></dt>
+<dd><p>Removes a previously added virtual authenticator. The authenticator is no
+longer valid after removal, so no methods may be called.</p>
+</dd></dl>
+
+<dl class="method">
 <dt id="selenium.webdriver.remote.webdriver.WebDriver.save_screenshot">
 <code class="descname">save_screenshot</code><span class="sig-paren">(</span><em>filename</em><span class="sig-paren">)</span> &#x2192; bool<a class="reference internal" href="../_modules/selenium/webdriver/remote/webdriver.html#WebDriver.save_screenshot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.remote.webdriver.WebDriver.save_screenshot" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="docutils">
@@ -1376,6 +1413,13 @@ should end with a <cite>.png</cite> extension.</li>
 </tr>
 </tbody>
 </table>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.remote.webdriver.WebDriver.set_user_verified">
+<code class="descname">set_user_verified</code><span class="sig-paren">(</span><em>verified: bool</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/webdriver/remote/webdriver.html#WebDriver.set_user_verified"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.remote.webdriver.WebDriver.set_user_verified" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets whether the authenticator will simulate success or fail on user verification.
+verified: True if the authenticator will pass user verification, False otherwise.</p>
 </dd></dl>
 
 <dl class="method">
@@ -1551,6 +1595,12 @@ to define custom shutdown behavior.</p>
 <dd></dd></dl>
 
 <dl class="attribute">
+<dt id="selenium.webdriver.remote.webdriver.WebDriver.virtual_authenticator_id">
+<code class="descname">virtual_authenticator_id</code><a class="headerlink" href="#selenium.webdriver.remote.webdriver.WebDriver.virtual_authenticator_id" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the id of the virtual authenticator.</p>
+</dd></dl>
+
+<dl class="attribute">
 <dt id="selenium.webdriver.remote.webdriver.WebDriver.window_handles">
 <code class="descname">window_handles</code><a class="headerlink" href="#selenium.webdriver.remote.webdriver.WebDriver.window_handles" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the handles of all windows within the current session.</p>
@@ -1624,7 +1674,7 @@ to define custom shutdown behavior.</p>
         <li class="right" >
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">Selenium 4.1.0 documentation</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="../index.html">Selenium 4.1 documentation</a> &#187;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">

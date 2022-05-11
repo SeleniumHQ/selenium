@@ -1,0 +1,263 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>selenium.webdriver.support.relative_locator &#8212; Selenium 4.1 documentation</title>
+    <link rel="stylesheet" href="../_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Selenium 4.1 documentation</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="module-selenium.webdriver.support.relative_locator">
+<span id="selenium-webdriver-support-relative-locator"></span><h1>selenium.webdriver.support.relative_locator<a class="headerlink" href="#module-selenium.webdriver.support.relative_locator" title="Permalink to this headline">¶</a></h1>
+<p class="rubric">Functions</p>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="#selenium.webdriver.support.relative_locator.locate_with" title="selenium.webdriver.support.relative_locator.locate_with"><code class="xref py py-obj docutils literal notranslate"><span class="pre">locate_with</span></code></a>(by,&nbsp;using)</td>
+<td>Start searching for relative objects your search criteria with By.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#selenium.webdriver.support.relative_locator.with_tag_name" title="selenium.webdriver.support.relative_locator.with_tag_name"><code class="xref py py-obj docutils literal notranslate"><span class="pre">with_tag_name</span></code></a>(tag_name)</td>
+<td>Start searching for relative objects using a tag name.</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Classes</p>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="#selenium.webdriver.support.relative_locator.RelativeBy" title="selenium.webdriver.support.relative_locator.RelativeBy"><code class="xref py py-obj docutils literal notranslate"><span class="pre">RelativeBy</span></code></a>(root,&nbsp;str]&nbsp;=&nbsp;None,&nbsp;filters)</td>
+<td>Gives the opportunity to find elements based on their relative location on the page from a root elelemt.</td>
+</tr>
+</tbody>
+</table>
+<dl class="class">
+<dt id="selenium.webdriver.support.relative_locator.RelativeBy">
+<em class="property">class </em><code class="descclassname">selenium.webdriver.support.relative_locator.</code><code class="descname">RelativeBy</code><span class="sig-paren">(</span><em>root: Dict[selenium.webdriver.common.by.By</em>, <em>str] = None</em>, <em>filters: List = None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/webdriver/support/relative_locator.html#RelativeBy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.support.relative_locator.RelativeBy" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gives the opportunity to find elements based on their relative location
+on the page from a root elelemt. It is recommended that you use the helper
+function to create it.</p>
+<dl class="docutils">
+<dt>Example:</dt>
+<dd><p class="first">lowest = driver.find_element(By.ID, “below”)</p>
+<p>elements = driver.find_elements(locate_with(By.CSS_SELECTOR, “p”).above(lowest))</p>
+<p class="last">ids = [el.get_attribute(‘id’) for el in elements]
+assert “above” in ids
+assert “mid” in ids</p>
+</dd>
+</dl>
+<p>Creates a new RelativeBy object. It is preferred if you use the
+<cite>locate_with</cite> method as this signature could change.
+:Args:</p>
+<blockquote>
+<div><p>root - A dict with <cite>By</cite> enum as the key and the search query as the value
+filters - A list of the filters that will be searched. If none are passed</p>
+<blockquote>
+<div>in please use the fluent API on the object to create the filters</div></blockquote>
+</div></blockquote>
+<dl class="method">
+<dt id="selenium.webdriver.support.relative_locator.RelativeBy.above">
+<code class="descname">above</code><span class="sig-paren">(</span><em>element_or_locator: Union[selenium.webdriver.remote.webelement.WebElement</em>, <em>Dict] = None</em><span class="sig-paren">)</span> &#x2192; selenium.webdriver.support.relative_locator.RelativeBy<a class="reference internal" href="../_modules/selenium/webdriver/support/relative_locator.html#RelativeBy.above"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.support.relative_locator.RelativeBy.above" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add a filter to look for elements above.
+:Args:</p>
+<blockquote>
+<div><ul class="simple">
+<li>element_or_locator: Element to look above</li>
+</ul>
+</div></blockquote>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.support.relative_locator.RelativeBy.below">
+<code class="descname">below</code><span class="sig-paren">(</span><em>element_or_locator: Union[selenium.webdriver.remote.webelement.WebElement</em>, <em>Dict] = None</em><span class="sig-paren">)</span> &#x2192; selenium.webdriver.support.relative_locator.RelativeBy<a class="reference internal" href="../_modules/selenium/webdriver/support/relative_locator.html#RelativeBy.below"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.support.relative_locator.RelativeBy.below" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add a filter to look for elements below.
+:Args:</p>
+<blockquote>
+<div><ul class="simple">
+<li>element_or_locator: Element to look below</li>
+</ul>
+</div></blockquote>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.support.relative_locator.RelativeBy.near">
+<code class="descname">near</code><span class="sig-paren">(</span><em>element_or_locator_distance: Union[selenium.webdriver.remote.webelement.WebElement</em>, <em>Dict</em>, <em>int] = None</em><span class="sig-paren">)</span> &#x2192; selenium.webdriver.support.relative_locator.RelativeBy<a class="reference internal" href="../_modules/selenium/webdriver/support/relative_locator.html#RelativeBy.near"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.support.relative_locator.RelativeBy.near" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add a filter to look for elements near.
+:Args:</p>
+<blockquote>
+<div><ul class="simple">
+<li>element_or_locator_distance: Element to look near by the element or within a distance</li>
+</ul>
+</div></blockquote>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.support.relative_locator.RelativeBy.to_dict">
+<code class="descname">to_dict</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; Dict<a class="reference internal" href="../_modules/selenium/webdriver/support/relative_locator.html#RelativeBy.to_dict"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.support.relative_locator.RelativeBy.to_dict" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a dict that will be passed to the driver to start searching for the element</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.support.relative_locator.RelativeBy.to_left_of">
+<code class="descname">to_left_of</code><span class="sig-paren">(</span><em>element_or_locator: Union[selenium.webdriver.remote.webelement.WebElement</em>, <em>Dict] = None</em><span class="sig-paren">)</span> &#x2192; selenium.webdriver.support.relative_locator.RelativeBy<a class="reference internal" href="../_modules/selenium/webdriver/support/relative_locator.html#RelativeBy.to_left_of"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.support.relative_locator.RelativeBy.to_left_of" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add a filter to look for elements to the left of.
+:Args:</p>
+<blockquote>
+<div><ul class="simple">
+<li>element_or_locator: Element to look to the left of</li>
+</ul>
+</div></blockquote>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.support.relative_locator.RelativeBy.to_right_of">
+<code class="descname">to_right_of</code><span class="sig-paren">(</span><em>element_or_locator: Union[selenium.webdriver.remote.webelement.WebElement</em>, <em>Dict] = None</em><span class="sig-paren">)</span> &#x2192; selenium.webdriver.support.relative_locator.RelativeBy<a class="reference internal" href="../_modules/selenium/webdriver/support/relative_locator.html#RelativeBy.to_right_of"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.support.relative_locator.RelativeBy.to_right_of" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add a filter to look for elements right of.
+:Args:</p>
+<blockquote>
+<div><ul class="simple">
+<li>element_or_locator: Element to look right of</li>
+</ul>
+</div></blockquote>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="selenium.webdriver.support.relative_locator.locate_with">
+<code class="descclassname">selenium.webdriver.support.relative_locator.</code><code class="descname">locate_with</code><span class="sig-paren">(</span><em>by: selenium.webdriver.common.by.By</em>, <em>using: str</em><span class="sig-paren">)</span> &#x2192; selenium.webdriver.support.relative_locator.RelativeBy<a class="reference internal" href="../_modules/selenium/webdriver/support/relative_locator.html#locate_with"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.support.relative_locator.locate_with" title="Permalink to this definition">¶</a></dt>
+<dd><p>Start searching for relative objects your search criteria with By.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Args:</th><td class="field-body"><ul class="first simple">
+<li>by: The value from <cite>By</cite> passed in.</li>
+<li>using: search term to find the element with.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><ul class="first last simple">
+<li><dl class="first docutils">
+<dt>RelativeBy - use this object to create filters within a</dt>
+<dd><cite>find_elements</cite> call.</dd>
+</dl>
+</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="selenium.webdriver.support.relative_locator.with_tag_name">
+<code class="descclassname">selenium.webdriver.support.relative_locator.</code><code class="descname">with_tag_name</code><span class="sig-paren">(</span><em>tag_name: str</em><span class="sig-paren">)</span> &#x2192; selenium.webdriver.support.relative_locator.RelativeBy<a class="reference internal" href="../_modules/selenium/webdriver/support/relative_locator.html#with_tag_name"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.support.relative_locator.with_tag_name" title="Permalink to this definition">¶</a></dt>
+<dd><p>Start searching for relative objects using a tag name.</p>
+<p>Note: This method may be removed in future versions, please use
+<cite>locate_with</cite> instead.
+:Args:</p>
+<blockquote>
+<div><ul class="simple">
+<li>tag_name: the DOM tag of element to start searching.</li>
+</ul>
+</div></blockquote>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><ul class="first last simple">
+<li><dl class="first docutils">
+<dt>RelativeBy - use this object to create filters within a</dt>
+<dd><cite>find_elements</cite> call.</dd>
+</dl>
+</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/webdriver_support/selenium.webdriver.support.relative_locator.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Selenium 4.1 documentation</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2011, plightbo, simon.m.stewart, hbchai, jrhuggins, et al..
+    </div>
+  </body>
+</html>

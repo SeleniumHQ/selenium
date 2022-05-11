@@ -1,0 +1,316 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>selenium.webdriver.common.options &#8212; Selenium 4.1 documentation</title>
+    <link rel="stylesheet" href="../_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Selenium 4.1 documentation</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="module-selenium.webdriver.common.options">
+<span id="selenium-webdriver-common-options"></span><h1>selenium.webdriver.common.options<a class="headerlink" href="#module-selenium.webdriver.common.options" title="Permalink to this headline">¶</a></h1>
+<p class="rubric">Classes</p>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="#selenium.webdriver.common.options.ArgOptions" title="selenium.webdriver.common.options.ArgOptions"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ArgOptions</span></code></a>()</td>
+<td></td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#selenium.webdriver.common.options.BaseOptions" title="selenium.webdriver.common.options.BaseOptions"><code class="xref py py-obj docutils literal notranslate"><span class="pre">BaseOptions</span></code></a>()</td>
+<td>Base class for individual browser options</td>
+</tr>
+</tbody>
+</table>
+<dl class="class">
+<dt id="selenium.webdriver.common.options.ArgOptions">
+<em class="property">class </em><code class="descclassname">selenium.webdriver.common.options.</code><code class="descname">ArgOptions</code><a class="reference internal" href="../_modules/selenium/webdriver/common/options.html#ArgOptions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.common.options.ArgOptions" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="method">
+<dt id="selenium.webdriver.common.options.ArgOptions.add_argument">
+<code class="descname">add_argument</code><span class="sig-paren">(</span><em>argument</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/webdriver/common/options.html#ArgOptions.add_argument"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.common.options.ArgOptions.add_argument" title="Permalink to this definition">¶</a></dt>
+<dd><p>Adds an argument to the list</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Args:</th><td class="field-body"><ul class="first last simple">
+<li>Sets the arguments</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="selenium.webdriver.common.options.ArgOptions.arguments">
+<code class="descname">arguments</code><a class="headerlink" href="#selenium.webdriver.common.options.ArgOptions.arguments" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">A list of arguments needed for the browser</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="selenium.webdriver.common.options.ArgOptions.default_capabilities">
+<code class="descname">default_capabilities</code><a class="headerlink" href="#selenium.webdriver.common.options.ArgOptions.default_capabilities" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return minimal capabilities necessary as a dictionary.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.common.options.ArgOptions.ignore_local_proxy_environment_variables">
+<code class="descname">ignore_local_proxy_environment_variables</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/webdriver/common/options.html#ArgOptions.ignore_local_proxy_environment_variables"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.common.options.ArgOptions.ignore_local_proxy_environment_variables" title="Permalink to this definition">¶</a></dt>
+<dd><p>By calling this you will ignore HTTP_PROXY and HTTPS_PROXY from being picked up and used.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.common.options.ArgOptions.to_capabilities">
+<code class="descname">to_capabilities</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/webdriver/common/options.html#ArgOptions.to_capabilities"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.common.options.ArgOptions.to_capabilities" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert options into capabilities dictionary.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="selenium.webdriver.common.options.BaseOptions">
+<em class="property">class </em><code class="descclassname">selenium.webdriver.common.options.</code><code class="descname">BaseOptions</code><a class="reference internal" href="../_modules/selenium/webdriver/common/options.html#BaseOptions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.common.options.BaseOptions" title="Permalink to this definition">¶</a></dt>
+<dd><p>Base class for individual browser options</p>
+<dl class="attribute">
+<dt id="selenium.webdriver.common.options.BaseOptions.accept_insecure_certs">
+<code class="descname">accept_insecure_certs</code><a class="headerlink" href="#selenium.webdriver.common.options.BaseOptions.accept_insecure_certs" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">whether the session accepts insecure certificates</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="selenium.webdriver.common.options.BaseOptions.browser_version">
+<code class="descname">browser_version</code><a class="headerlink" href="#selenium.webdriver.common.options.BaseOptions.browser_version" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">the version of the browser if set, otherwise None.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="selenium.webdriver.common.options.BaseOptions.capabilities">
+<code class="descname">capabilities</code><a class="headerlink" href="#selenium.webdriver.common.options.BaseOptions.capabilities" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="selenium.webdriver.common.options.BaseOptions.default_capabilities">
+<code class="descname">default_capabilities</code><a class="headerlink" href="#selenium.webdriver.common.options.BaseOptions.default_capabilities" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return minimal capabilities necessary as a dictionary.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.common.options.BaseOptions.enable_mobile">
+<code class="descname">enable_mobile</code><span class="sig-paren">(</span><em>android_package: str = None</em>, <em>android_activity: str = None</em>, <em>device_serial: str = None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/webdriver/common/options.html#BaseOptions.enable_mobile"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.common.options.BaseOptions.enable_mobile" title="Permalink to this definition">¶</a></dt>
+<dd><p>Enables mobile browser use for browsers that support it</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Args:</th><td class="field-body">android_activity: The name of the android package to start</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="selenium.webdriver.common.options.BaseOptions.page_load_strategy">
+<code class="descname">page_load_strategy</code><a class="headerlink" href="#selenium.webdriver.common.options.BaseOptions.page_load_strategy" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">page load strategy if set, the default is “normal”</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="selenium.webdriver.common.options.BaseOptions.platform_name">
+<code class="descname">platform_name</code><a class="headerlink" href="#selenium.webdriver.common.options.BaseOptions.platform_name" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">The name of the platform</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="selenium.webdriver.common.options.BaseOptions.proxy">
+<code class="descname">proxy</code><a class="headerlink" href="#selenium.webdriver.common.options.BaseOptions.proxy" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">Proxy if set, otherwise None.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.common.options.BaseOptions.set_capability">
+<code class="descname">set_capability</code><span class="sig-paren">(</span><em>name</em>, <em>value</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/webdriver/common/options.html#BaseOptions.set_capability"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.common.options.BaseOptions.set_capability" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets a capability</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="selenium.webdriver.common.options.BaseOptions.set_window_rect">
+<code class="descname">set_window_rect</code><a class="headerlink" href="#selenium.webdriver.common.options.BaseOptions.set_window_rect" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">whether the remote end supports setting window size and position</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="selenium.webdriver.common.options.BaseOptions.strict_file_interactability">
+<code class="descname">strict_file_interactability</code><a class="headerlink" href="#selenium.webdriver.common.options.BaseOptions.strict_file_interactability" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">whether session is strict about file interactability</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="selenium.webdriver.common.options.BaseOptions.timeouts">
+<code class="descname">timeouts</code><a class="headerlink" href="#selenium.webdriver.common.options.BaseOptions.timeouts" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">Values for implicit timeout, pageLoad timeout and script timeout if set (in milliseconds)</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.common.options.BaseOptions.to_capabilities">
+<code class="descname">to_capabilities</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/webdriver/common/options.html#BaseOptions.to_capabilities"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.common.options.BaseOptions.to_capabilities" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert options into capabilities dictionary.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="selenium.webdriver.common.options.BaseOptions.unhandled_prompt_behavior">
+<code class="descname">unhandled_prompt_behavior</code><a class="headerlink" href="#selenium.webdriver.common.options.BaseOptions.unhandled_prompt_behavior" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">unhandled prompt behavior if set, the default is “dismiss and notify”</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/webdriver/selenium.webdriver.common.options.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Selenium 4.1 documentation</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2011, plightbo, simon.m.stewart, hbchai, jrhuggins, et al..
+    </div>
+  </body>
+</html>

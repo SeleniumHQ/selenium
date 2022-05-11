@@ -1,0 +1,455 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>selenium.webdriver.ie.options &#8212; Selenium 4.1 documentation</title>
+    <link rel="stylesheet" href="../../../../_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript" id="documentation_options" data-url_root="../../../../" src="../../../../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../../_static/doctools.js"></script>
+    
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">Selenium 4.1 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../../index.html" accesskey="U">Module code</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for selenium.webdriver.ie.options</h1><div class="highlight"><pre>
+<span></span><span class="c1"># Licensed to the Software Freedom Conservancy (SFC) under one</span>
+<span class="c1"># or more contributor license agreements.  See the NOTICE file</span>
+<span class="c1"># distributed with this work for additional information</span>
+<span class="c1"># regarding copyright ownership.  The SFC licenses this file</span>
+<span class="c1"># to you under the Apache License, Version 2.0 (the</span>
+<span class="c1"># &quot;License&quot;); you may not use this file except in compliance</span>
+<span class="c1"># with the License.  You may obtain a copy of the License at</span>
+<span class="c1">#</span>
+<span class="c1">#   http://www.apache.org/licenses/LICENSE-2.0</span>
+<span class="c1">#</span>
+<span class="c1"># Unless required by applicable law or agreed to in writing,</span>
+<span class="c1"># software distributed under the License is distributed on an</span>
+<span class="c1"># &quot;AS IS&quot; BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY</span>
+<span class="c1"># KIND, either express or implied.  See the License for the</span>
+<span class="c1"># specific language governing permissions and limitations</span>
+<span class="c1"># under the License.</span>
+<span class="kn">from</span> <span class="nn">enum</span> <span class="kn">import</span> <span class="n">Enum</span>
+
+<span class="kn">from</span> <span class="nn">selenium.webdriver.common.desired_capabilities</span> <span class="kn">import</span> <span class="n">DesiredCapabilities</span>
+<span class="kn">from</span> <span class="nn">selenium.webdriver.common.options</span> <span class="kn">import</span> <span class="n">ArgOptions</span>
+
+
+<div class="viewcode-block" id="ElementScrollBehavior"><a class="viewcode-back" href="../../../../webdriver_ie/selenium.webdriver.ie.options.html#selenium.webdriver.ie.options.ElementScrollBehavior">[docs]</a><span class="k">class</span> <span class="nc">ElementScrollBehavior</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
+    <span class="n">TOP</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">BOTTOM</span> <span class="o">=</span> <span class="mi">1</span></div>
+
+
+<div class="viewcode-block" id="Options"><a class="viewcode-back" href="../../../../webdriver_ie/selenium.webdriver.ie.options.html#selenium.webdriver.ie.options.Options">[docs]</a><span class="k">class</span> <span class="nc">Options</span><span class="p">(</span><span class="n">ArgOptions</span><span class="p">):</span>
+
+    <span class="n">KEY</span> <span class="o">=</span> <span class="s1">&#39;se:ieOptions&#39;</span>
+    <span class="n">SWITCHES</span> <span class="o">=</span> <span class="s1">&#39;ie.browserCommandLineSwitches&#39;</span>
+
+    <span class="n">BROWSER_ATTACH_TIMEOUT</span> <span class="o">=</span> <span class="s1">&#39;browserAttachTimeout&#39;</span>
+    <span class="n">ELEMENT_SCROLL_BEHAVIOR</span> <span class="o">=</span> <span class="s1">&#39;elementScrollBehavior&#39;</span>
+    <span class="n">ENSURE_CLEAN_SESSION</span> <span class="o">=</span> <span class="s1">&#39;ie.ensureCleanSession&#39;</span>
+    <span class="n">FILE_UPLOAD_DIALOG_TIMEOUT</span> <span class="o">=</span> <span class="s1">&#39;ie.fileUploadDialogTimeout&#39;</span>
+    <span class="n">FORCE_CREATE_PROCESS_API</span> <span class="o">=</span> <span class="s1">&#39;ie.forceCreateProcessApi&#39;</span>
+    <span class="n">FORCE_SHELL_WINDOWS_API</span> <span class="o">=</span> <span class="s1">&#39;ie.forceShellWindowsApi&#39;</span>
+    <span class="n">FULL_PAGE_SCREENSHOT</span> <span class="o">=</span> <span class="s1">&#39;ie.enableFullPageScreenshot&#39;</span>
+    <span class="n">IGNORE_PROTECTED_MODE_SETTINGS</span> <span class="o">=</span> <span class="s1">&#39;ignoreProtectedModeSettings&#39;</span>
+    <span class="n">IGNORE_ZOOM_LEVEL</span> <span class="o">=</span> <span class="s1">&#39;ignoreZoomSetting&#39;</span>
+    <span class="n">INITIAL_BROWSER_URL</span> <span class="o">=</span> <span class="s1">&#39;initialBrowserUrl&#39;</span>
+    <span class="n">NATIVE_EVENTS</span> <span class="o">=</span> <span class="s1">&#39;nativeEvents&#39;</span>
+    <span class="n">PERSISTENT_HOVER</span> <span class="o">=</span> <span class="s1">&#39;enablePersistentHover&#39;</span>
+    <span class="n">REQUIRE_WINDOW_FOCUS</span> <span class="o">=</span> <span class="s1">&#39;requireWindowFocus&#39;</span>
+    <span class="n">USE_PER_PROCESS_PROXY</span> <span class="o">=</span> <span class="s1">&#39;ie.usePerProcessProxy&#39;</span>
+    <span class="n">USE_LEGACY_FILE_UPLOAD_DIALOG_HANDLING</span> <span class="o">=</span> <span class="s1">&#39;ie.useLegacyFileUploadDialogHandling&#39;</span>
+    <span class="n">ATTACH_TO_EDGE_CHROME</span> <span class="o">=</span> <span class="s1">&#39;ie.edgechromium&#39;</span>
+    <span class="n">EDGE_EXECUTABLE_PATH</span> <span class="o">=</span> <span class="s1">&#39;ie.edgepath&#39;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">Options</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_options</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_additional</span> <span class="o">=</span> <span class="p">{}</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">options</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;:Returns: A dictionary of browser options &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_options</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">browser_attach_timeout</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        :Returns: The options Browser Attach Timeout in milliseconds</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_options</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">BROWSER_ATTACH_TIMEOUT</span><span class="p">)</span>
+
+    <span class="nd">@browser_attach_timeout</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">browser_attach_timeout</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Sets the options Browser Attach Timeout</span>
+
+<span class="sd">        :Args:</span>
+<span class="sd">         - value: Timeout in milliseconds</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Browser Attach Timeout must be an integer.&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_options</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">BROWSER_ATTACH_TIMEOUT</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">element_scroll_behavior</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ElementScrollBehavior</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;:Returns: The options Element Scroll Behavior value &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_options</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ELEMENT_SCROLL_BEHAVIOR</span><span class="p">)</span>
+
+    <span class="nd">@element_scroll_behavior</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">element_scroll_behavior</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">ElementScrollBehavior</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Sets the options Element Scroll Behavior</span>
+
+<span class="sd">        :Args:</span>
+<span class="sd">         - value: 0 - Top, 1 - Bottom</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">value</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="n">ElementScrollBehavior</span><span class="o">.</span><span class="n">TOP</span><span class="p">,</span> <span class="n">ElementScrollBehavior</span><span class="o">.</span><span class="n">BOTTOM</span><span class="p">]:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Element Scroll Behavior out of range.&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_options</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">ELEMENT_SCROLL_BEHAVIOR</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">ensure_clean_session</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;:Returns: The options Ensure Clean Session value &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_options</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ENSURE_CLEAN_SESSION</span><span class="p">)</span>
+
+    <span class="nd">@ensure_clean_session</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">ensure_clean_session</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">bool</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Sets the options Ensure Clean Session value</span>
+
+<span class="sd">        :Args:</span>
+<span class="sd">         - value: boolean value</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_options</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">ENSURE_CLEAN_SESSION</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">file_upload_dialog_timeout</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;:Returns: The options File Upload Dialog Timeout in milliseconds &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_options</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">FILE_UPLOAD_DIALOG_TIMEOUT</span><span class="p">)</span>
+
+    <span class="nd">@file_upload_dialog_timeout</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">file_upload_dialog_timeout</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Sets the options File Upload Dialog Timeout value</span>
+
+<span class="sd">        :Args:</span>
+<span class="sd">         - value: Timeout in milliseconds</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;File Upload Dialog Timeout must be an integer.&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_options</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">FILE_UPLOAD_DIALOG_TIMEOUT</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">force_create_process_api</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;:Returns: The options Force Create Process Api value &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_options</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">FORCE_CREATE_PROCESS_API</span><span class="p">)</span>
+
+    <span class="nd">@force_create_process_api</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">force_create_process_api</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">bool</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Sets the options Force Create Process Api value</span>
+
+<span class="sd">        :Args:</span>
+<span class="sd">         - value: boolean value</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_options</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">FORCE_CREATE_PROCESS_API</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">force_shell_windows_api</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;:Returns: The options Force Shell Windows Api value &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_options</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">FORCE_SHELL_WINDOWS_API</span><span class="p">)</span>
+
+    <span class="nd">@force_shell_windows_api</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">force_shell_windows_api</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">bool</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Sets the options Force Shell Windows Api value</span>
+
+<span class="sd">        :Args:</span>
+<span class="sd">         - value: boolean value</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_options</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">FORCE_SHELL_WINDOWS_API</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">full_page_screenshot</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;:Returns: The options Full Page Screenshot value &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_options</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">FULL_PAGE_SCREENSHOT</span><span class="p">)</span>
+
+    <span class="nd">@full_page_screenshot</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">full_page_screenshot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">bool</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Sets the options Full Page Screenshot value</span>
+
+<span class="sd">        :Args:</span>
+<span class="sd">         - value: boolean value</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_options</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">FULL_PAGE_SCREENSHOT</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">ignore_protected_mode_settings</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;:Returns: The options Ignore Protected Mode Settings value &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_options</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">IGNORE_PROTECTED_MODE_SETTINGS</span><span class="p">)</span>
+
+    <span class="nd">@ignore_protected_mode_settings</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">ignore_protected_mode_settings</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">bool</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Sets the options Ignore Protected Mode Settings value</span>
+
+<span class="sd">        :Args:</span>
+<span class="sd">         - value: boolean value</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_options</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">IGNORE_PROTECTED_MODE_SETTINGS</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">ignore_zoom_level</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;:Returns: The options Ignore Zoom Level value &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_options</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">IGNORE_ZOOM_LEVEL</span><span class="p">)</span>
+
+    <span class="nd">@ignore_zoom_level</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">ignore_zoom_level</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">bool</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Sets the options Ignore Zoom Level value</span>
+
+<span class="sd">        :Args:</span>
+<span class="sd">         - value: boolean value</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_options</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">IGNORE_ZOOM_LEVEL</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">initial_browser_url</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;:Returns: The options Initial Browser Url value &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_options</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">INITIAL_BROWSER_URL</span><span class="p">)</span>
+
+    <span class="nd">@initial_browser_url</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">initial_browser_url</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Sets the options Initial Browser Url value</span>
+
+<span class="sd">        :Args:</span>
+<span class="sd">         - value: URL string</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_options</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">INITIAL_BROWSER_URL</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">native_events</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;:Returns: The options Native Events value &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_options</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">NATIVE_EVENTS</span><span class="p">)</span>
+
+    <span class="nd">@native_events</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">native_events</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">bool</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Sets the options Native Events value</span>
+
+<span class="sd">        :Args:</span>
+<span class="sd">         - value: boolean value</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_options</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">NATIVE_EVENTS</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">persistent_hover</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;:Returns: The options Persistent Hover value &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_options</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">PERSISTENT_HOVER</span><span class="p">)</span>
+
+    <span class="nd">@persistent_hover</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">persistent_hover</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">bool</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Sets the options Persistent Hover value</span>
+
+<span class="sd">        :Args:</span>
+<span class="sd">         - value: boolean value</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_options</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">PERSISTENT_HOVER</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">require_window_focus</span><span class="p">(</span><span class="bp">self</span><span class="p">:</span> <span class="nb">bool</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;:Returns: The options Require Window Focus value &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_options</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">REQUIRE_WINDOW_FOCUS</span><span class="p">)</span>
+
+    <span class="nd">@require_window_focus</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">require_window_focus</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">bool</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Sets the options Require Window Focus value</span>
+
+<span class="sd">        :Args:</span>
+<span class="sd">         - value: boolean value</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_options</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">REQUIRE_WINDOW_FOCUS</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">use_per_process_proxy</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;:Returns: The options User Per Process Proxy value &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_options</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">USE_PER_PROCESS_PROXY</span><span class="p">)</span>
+
+    <span class="nd">@use_per_process_proxy</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">use_per_process_proxy</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">bool</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Sets the options User Per Process Proxy value</span>
+
+<span class="sd">        :Args:</span>
+<span class="sd">         - value: boolean value</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_options</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">USE_PER_PROCESS_PROXY</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">use_legacy_file_upload_dialog_handling</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;:Returns: The options Use Legacy File Upload Dialog Handling value &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_options</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">USE_LEGACY_FILE_UPLOAD_DIALOG_HANDLING</span><span class="p">)</span>
+
+    <span class="nd">@use_legacy_file_upload_dialog_handling</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">use_legacy_file_upload_dialog_handling</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">bool</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Sets the options Use Legacy File Upload Dialog Handling value</span>
+
+<span class="sd">        :Args:</span>
+<span class="sd">         - value: boolean value</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_options</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">USE_LEGACY_FILE_UPLOAD_DIALOG_HANDLING</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">attach_to_edge_chrome</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;:Returns: The options Attach to Edge Chrome value &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_options</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ATTACH_TO_EDGE_CHROME</span><span class="p">)</span>
+
+    <span class="nd">@attach_to_edge_chrome</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">attach_to_edge_chrome</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">bool</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Sets the options Attach to Edge Chrome value</span>
+
+<span class="sd">        :Args:</span>
+<span class="sd">         - value: boolean value</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_options</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">ATTACH_TO_EDGE_CHROME</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">edge_executable_path</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;:Returns: The options Edge Executable Path value &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_options</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">EDGE_EXECUTABLE_PATH</span><span class="p">)</span>
+
+    <span class="nd">@edge_executable_path</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">edge_executable_path</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Sets the options Initial Browser Url value</span>
+
+<span class="sd">        :Args:</span>
+<span class="sd">         - value: Path string</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_options</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">EDGE_EXECUTABLE_PATH</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">additional_options</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;:Returns: The additional options &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_additional</span>
+
+<div class="viewcode-block" id="Options.add_additional_option"><a class="viewcode-back" href="../../../../webdriver_ie/selenium.webdriver.ie.options.html#selenium.webdriver.ie.options.Options.add_additional_option">[docs]</a>    <span class="k">def</span> <span class="nf">add_additional_option</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Adds an additional option not yet added as a safe option for IE</span>
+
+<span class="sd">        :Args:</span>
+<span class="sd">         - name: name of the option to add</span>
+<span class="sd">         - value: value of the option to add</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_additional</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span></div>
+
+<div class="viewcode-block" id="Options.to_capabilities"><a class="viewcode-back" href="../../../../webdriver_ie/selenium.webdriver.ie.options.html#selenium.webdriver.ie.options.Options.to_capabilities">[docs]</a>    <span class="k">def</span> <span class="nf">to_capabilities</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Marshals the IE options to the correct object.&quot;&quot;&quot;</span>
+        <span class="n">caps</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_caps</span>
+
+        <span class="n">opts</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_options</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_arguments</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">opts</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">SWITCHES</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_arguments</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_additional</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">opts</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_additional</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">opts</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">caps</span><span class="p">[</span><span class="n">Options</span><span class="o">.</span><span class="n">KEY</span><span class="p">]</span> <span class="o">=</span> <span class="n">opts</span>
+        <span class="k">return</span> <span class="n">caps</span></div>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">default_capabilities</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">DesiredCapabilities</span><span class="o">.</span><span class="n">INTERNETEXPLORER</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">Selenium 4.1 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../../index.html" >Module code</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2011, plightbo, simon.m.stewart, hbchai, jrhuggins, et al..
+    </div>
+  </body>
+</html>

@@ -1,0 +1,140 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>selenium.webdriver.firefox.service &#8212; Selenium 4.1 documentation</title>
+    <link rel="stylesheet" href="../_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Selenium 4.1 documentation</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="module-selenium.webdriver.firefox.service">
+<span id="selenium-webdriver-firefox-service"></span><h1>selenium.webdriver.firefox.service<a class="headerlink" href="#module-selenium.webdriver.firefox.service" title="Permalink to this headline">¶</a></h1>
+<p class="rubric">Classes</p>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="#selenium.webdriver.firefox.service.Service" title="selenium.webdriver.firefox.service.Service"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Service</span></code></a>(executable_path,&nbsp;port,&nbsp;service_args,&nbsp;…)</td>
+<td>Object that manages the starting and stopping of the GeckoDriver.</td>
+</tr>
+</tbody>
+</table>
+<dl class="class">
+<dt id="selenium.webdriver.firefox.service.Service">
+<em class="property">class </em><code class="descclassname">selenium.webdriver.firefox.service.</code><code class="descname">Service</code><span class="sig-paren">(</span><em>executable_path: str = 'geckodriver'</em>, <em>port: int = 0</em>, <em>service_args: List[str] = None</em>, <em>log_path: str = 'geckodriver.log'</em>, <em>env: dict = None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/webdriver/firefox/service.html#Service"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.firefox.service.Service" title="Permalink to this definition">¶</a></dt>
+<dd><p>Object that manages the starting and stopping of the
+GeckoDriver.</p>
+<p>Creates a new instance of the GeckoDriver remote service proxy.</p>
+<p>GeckoDriver provides a HTTP interface speaking the W3C WebDriver
+protocol to Marionette.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>executable_path</strong> – Path to the GeckoDriver binary.</li>
+<li><strong>port</strong> – Run the remote service on a specified port.
+Defaults to 0, which binds to a random open port of the
+system’s choosing.</li>
+<li><strong>service_args</strong> – Optional list of arguments to pass to the
+GeckoDriver binary.</li>
+<li><strong>log_path</strong> – Optional path for the GeckoDriver to log to.
+Defaults to _geckodriver.log_ in the current working directory.</li>
+<li><strong>env</strong> – Optional dictionary of output variables to expose
+in the services’ environment.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="selenium.webdriver.firefox.service.Service.command_line_args">
+<code class="descname">command_line_args</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; List[str]<a class="reference internal" href="../_modules/selenium/webdriver/firefox/service.html#Service.command_line_args"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.firefox.service.Service.command_line_args" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.firefox.service.Service.send_remote_shutdown_command">
+<code class="descname">send_remote_shutdown_command</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/webdriver/firefox/service.html#Service.send_remote_shutdown_command"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.firefox.service.Service.send_remote_shutdown_command" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/webdriver_firefox/selenium.webdriver.firefox.service.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Selenium 4.1 documentation</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2011, plightbo, simon.m.stewart, hbchai, jrhuggins, et al..
+    </div>
+  </body>
+</html>
