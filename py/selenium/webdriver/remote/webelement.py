@@ -33,9 +33,16 @@ from .shadowroot import ShadowRoot
 
 # TODO: When moving to supporting python 3.9 as the minimum version we can
 # use built in importlib_resources.files.
-_pkg = '.'.join(__name__.split('.')[:-1])
-getAttribute_js = pkgutil.get_data(_pkg, 'getAttribute.js').decode('utf8')
-isDisplayed_js = pkgutil.get_data(_pkg, 'isDisplayed.js').decode('utf8')
+getAttribute_js = None
+isDisplayed_js = None
+
+
+def _load_js():
+    global getAttribute_js
+    global isDisplayed_js
+    _pkg = '.'.join(__name__.split('.')[:-1])
+    getAttribute_js = pkgutil.get_data(_pkg, 'getAttribute.js').decode('utf8')
+    isDisplayed_js = pkgutil.get_data(_pkg, 'isDisplayed.js').decode('utf8')
 
 
 class BaseWebElement(metaclass=ABCMeta):
@@ -151,7 +158,8 @@ class WebElement(BaseWebElement):
             is_active = "active" in target_element.get_attribute("class")
 
         """
-
+        if getAttribute_js is None:
+            _load_js()
         attribute_value = self.parent.execute_script(
             "return (%s).apply(null, arguments);" % getAttribute_js,
             self, name)
@@ -591,6 +599,8 @@ class WebElement(BaseWebElement):
     def is_displayed(self) -> bool:
         """Whether the element is visible to a user."""
         # Only go into this conditional for browsers that don't use the atom themselves
+        if isDisplayed_js is None:
+            _load_js()
         return self.parent.execute_script(
             "return (%s).apply(null, arguments);" % isDisplayed_js,
             self)
