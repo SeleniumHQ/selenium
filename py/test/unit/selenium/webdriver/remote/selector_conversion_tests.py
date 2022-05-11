@@ -28,7 +28,8 @@ from selenium.webdriver.remote.utils import try_convert_to_css_strategy
                           (By.XPATH, "//*", (By.XPATH, '//*')),
                           (By.LINK_TEXT, "link", (By.LINK_TEXT, "link")),
                           (By.PARTIAL_LINK_TEXT, "plink", (By.PARTIAL_LINK_TEXT, "plink")),
-                          (By.TAG_NAME, "tag", (By.TAG_NAME, "tag"))
+                          (By.TAG_NAME, "tag", (By.TAG_NAME, "tag")),
+                          (By.CSS_SELECTOR, "css", (By.CSS_SELECTOR, "css"))
                           ])
 def test_successful_by_to_css_converts(by, value, expected):
     assert try_convert_to_css_strategy(by, value) == expected
