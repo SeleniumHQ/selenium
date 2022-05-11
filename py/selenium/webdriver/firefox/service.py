@@ -51,10 +51,12 @@ class Service(service.Service):
         service.Service.__init__(
             self, executable_path, port=port, log_file=log_file, env=env)
         self.service_args = service_args or []
+
         # Set a port for CDP
         if '--connect-existing' not in self.service_args:
             self.service_args.append("--websocket-port")
-        self.service_args.append("%d" % utils.free_port())
+            self.service_args.append("%d" % utils.free_port())
+
         # Set the webdriver port
         self.service_args.append("--port")
         self.service_args.append("%d" % self.port)

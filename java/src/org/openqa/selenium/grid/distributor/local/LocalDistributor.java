@@ -17,23 +17,8 @@
 
 package org.openqa.selenium.grid.distributor.local;
 
-import static com.google.common.collect.ImmutableSet.toImmutableSet;
-import static org.openqa.selenium.grid.data.Availability.DOWN;
-import static org.openqa.selenium.grid.data.Availability.DRAINING;
-import static org.openqa.selenium.grid.data.Availability.UP;
-import static org.openqa.selenium.internal.Debug.getDebugLogLevel;
-import static org.openqa.selenium.remote.RemoteTags.CAPABILITIES;
-import static org.openqa.selenium.remote.RemoteTags.CAPABILITIES_EVENT;
-import static org.openqa.selenium.remote.RemoteTags.SESSION_ID;
-import static org.openqa.selenium.remote.RemoteTags.SESSION_ID_EVENT;
-import static org.openqa.selenium.remote.tracing.AttributeKey.SESSION_URI;
-import static org.openqa.selenium.remote.tracing.Tags.EXCEPTION;
-
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
-
-import net.jodah.failsafe.Failsafe;
-import net.jodah.failsafe.RetryPolicy;
 
 import org.openqa.selenium.Beta;
 import org.openqa.selenium.Capabilities;
@@ -91,6 +76,9 @@ import org.openqa.selenium.remote.tracing.Status;
 import org.openqa.selenium.remote.tracing.Tracer;
 import org.openqa.selenium.status.HasReadyState;
 
+import dev.failsafe.Failsafe;
+import dev.failsafe.RetryPolicy;
+
 import java.io.Closeable;
 import java.io.UncheckedIOException;
 import java.net.URI;
@@ -113,6 +101,18 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
+
+import static com.google.common.collect.ImmutableSet.toImmutableSet;
+import static org.openqa.selenium.grid.data.Availability.DOWN;
+import static org.openqa.selenium.grid.data.Availability.DRAINING;
+import static org.openqa.selenium.grid.data.Availability.UP;
+import static org.openqa.selenium.internal.Debug.getDebugLogLevel;
+import static org.openqa.selenium.remote.RemoteTags.CAPABILITIES;
+import static org.openqa.selenium.remote.RemoteTags.CAPABILITIES_EVENT;
+import static org.openqa.selenium.remote.RemoteTags.SESSION_ID;
+import static org.openqa.selenium.remote.RemoteTags.SESSION_ID_EVENT;
+import static org.openqa.selenium.remote.tracing.AttributeKey.SESSION_URI;
+import static org.openqa.selenium.remote.tracing.Tags.EXCEPTION;
 
 public class LocalDistributor extends Distributor implements Closeable {
 
@@ -303,6 +303,11 @@ public class LocalDistributor extends Distributor implements Closeable {
     NodeStatus initialNodeStatus;
     try {
       initialNodeStatus = node.getStatus();
+      if (initialNodeStatus.getAvailability() == DRAINING) {
+        // A Node might be draining but the heartbeat is still running.
+        // We do not need to add this Node again.
+        return this;
+      }
       model.add(initialNodeStatus);
       nodes.put(node.getId(), node);
     } catch (Exception e) {
@@ -339,11 +344,12 @@ public class LocalDistributor extends Distributor implements Closeable {
       // Running the health check right after the Node registers itself. We retry the
       // execution because the Node might on a complex network topology. For example,
       // Kubernetes pods with IPs that take a while before they are reachable.
-      RetryPolicy<Object> initialHealthCheckPolicy = new RetryPolicy<>()
+      RetryPolicy<Object> initialHealthCheckPolicy =  RetryPolicy.builder()
         .withMaxAttempts(-1)
         .withMaxDuration(Duration.ofSeconds(90))
         .withDelay(Duration.ofSeconds(15))
-        .abortIf(result -> true);
+        .abortIf(result -> true)
+        .build();
 
       LOG.log(getDebugLogLevel(), "Running health check for Node " + status.getExternalUri());
       Executors.newSingleThreadExecutor().submit(
@@ -481,7 +487,7 @@ public class LocalDistributor extends Distributor implements Closeable {
         EventAttribute.setValue(getClass().getName()));
 
       attributeMap.put("request.payload", EventAttribute.setValue(request.getDesiredCapabilities().toString()));
-      String sessionReceivedMessage = "Session request received by the distributor";
+      String sessionReceivedMessage = "Session request received by the Distributor";
       span.addEvent(sessionReceivedMessage, attributeMap);
       LOG.info(String.format("%s: \n %s", sessionReceivedMessage, request.getDesiredCapabilities()));
 
@@ -513,7 +519,7 @@ public class LocalDistributor extends Distributor implements Closeable {
         SlotId selectedSlot = reserveSlot(request.getRequestId(), caps);
         if (selectedSlot == null) {
           LOG.info(
-            String.format("Unable to find a free slot for request %s. %s ",
+            String.format("Unable to find a free slot for request %s. \n %s ",
                           request.getRequestId(),
                           caps));
           retry = true;
@@ -540,9 +546,10 @@ public class LocalDistributor extends Distributor implements Closeable {
           span.setAttribute(SESSION_URI.getKey(), sessionUri);
           attributeMap.put(SESSION_URI.getKey(), EventAttribute.setValue(sessionUri));
 
-          String sessionCreatedMessage = "Session created by the distributor";
+          String sessionCreatedMessage = "Session created by the Distributor";
           span.addEvent(sessionCreatedMessage, attributeMap);
-          LOG.info(String.format("%s. Id: %s, Caps: %s", sessionCreatedMessage, sessionId, sessionCaps));
+          LOG.info(
+            String.format("%s. Id: %s \n Caps: %s", sessionCreatedMessage, sessionId, sessionCaps));
 
           return Either.right(response);
         } catch (SessionNotCreatedException e) {

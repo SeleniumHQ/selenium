@@ -13,18 +13,17 @@ namespace OpenQA.Selenium.DevTools
     public class DevToolsLogTest : DevToolsTestFixture
     {
         [Test]
-        [IgnoreBrowser(Selenium.Browser.EdgeLegacy, "Legacy Edge does not support Chrome DevTools Protocol")]
         [IgnoreBrowser(Selenium.Browser.IE, "IE does not support Chrome DevTools Protocol")]
         [IgnoreBrowser(Selenium.Browser.Firefox, "Firefox does not support Chrome DevTools Protocol")]
         [IgnoreBrowser(Selenium.Browser.Safari, "Safari does not support Chrome DevTools Protocol")]
         public async Task VerifyEntryAddedAndClearLog()
         {
-            var domains = session.GetVersionSpecificDomains<V96.DevToolsSessionDomains>();
+            var domains = session.GetVersionSpecificDomains<V101.DevToolsSessionDomains>();
             ManualResetEventSlim sync = new ManualResetEventSlim(false);
-            EventHandler<V96.Log.EntryAddedEventArgs> entryAddedHandler = (sender, e) =>
+            EventHandler<V101.Log.EntryAddedEventArgs> entryAddedHandler = (sender, e) =>
             {
                 Assert.That(e.Entry.Text.Contains("404"));
-                Assert.That(e.Entry.Level == V96.Log.LogEntryLevelValues.Error);
+                Assert.That(e.Entry.Level == V101.Log.LogEntryLevelValues.Error);
                 sync.Set();
             };
 

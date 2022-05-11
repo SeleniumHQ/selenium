@@ -35,7 +35,7 @@ module Selenium
             id: id,
             code: params['responseStatusCode'],
             body: (Base64.strict_decode64(encoded_body) if encoded_body),
-            headers: params['responseHeaders'].each_with_object({}) do |header, hash|
+            headers: params.fetch('responseHeaders', []).each_with_object({}) do |header, hash|
               hash[header['name']] = header['value']
             end
           )

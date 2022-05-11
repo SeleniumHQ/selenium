@@ -104,7 +104,7 @@ module Selenium
       end
 
       def cygwin?
-        RUBY_PLATFORM =~ /cygwin/
+        RUBY_PLATFORM.include?('cygwin')
         !Regexp.last_match.nil?
       end
 
@@ -177,9 +177,9 @@ module Selenium
 
       def find_in_program_files(*binary_names)
         paths = [
-          ENV['PROGRAMFILES'] || '\\Program Files',
-          ENV['ProgramFiles(x86)'] || '\\Program Files (x86)',
-          ENV['ProgramW6432'] || '\\Program Files'
+          ENV.fetch('PROGRAMFILES', '\\Program Files'),
+          ENV.fetch('ProgramFiles(x86)', '\\Program Files (x86)'),
+          ENV.fetch('ProgramW6432', '\\Program Files')
         ]
 
         paths.each do |root|

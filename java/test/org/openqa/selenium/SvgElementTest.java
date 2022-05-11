@@ -34,7 +34,7 @@ public class SvgElementTest extends JUnit4TestBase {
 
   @Test
   @Ignore(value = HTMLUNIT, reason="test should enable JavaScript")
-  @NotYetImplemented(value = FIREFOX, reason = "https://bugzilla.mozilla.org/show_bug.cgi?id=1415068")
+  @NotYetImplemented(value = FIREFOX, reason = "https://bugzilla.mozilla.org/show_bug.cgi?id=1428780")
   @NotYetImplemented(SAFARI)
   public void testShouldClickOnGraphVisualElements() {
     driver.get(pages.svgPage);

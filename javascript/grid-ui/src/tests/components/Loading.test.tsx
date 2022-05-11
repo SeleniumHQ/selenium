@@ -16,10 +16,12 @@
 // under the License.
 
 import * as React from 'react'
-import * as ReactDOM from 'react-dom'
+import * as ReactDOM from 'react-dom/client'
 import Loading from '../../components/Loading/Loading'
 
 it('renders without crashing', () => {
-  const div = document.createElement('div')
-  ReactDOM.render(<Loading />, div)
+  const div = ReactDOM.createRoot(
+    document.createElement('root') as HTMLElement
+  )
+  div.render(<Loading/>)
 })

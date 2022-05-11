@@ -18,7 +18,7 @@ from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 from selenium.webdriver.common.options import ArgOptions
 
 
-class Log(object):
+class Log:
     def __init__(self):
         self.level = None
 

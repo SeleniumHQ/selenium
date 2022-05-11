@@ -16,8 +16,8 @@
 // under the License.
 
 export enum Size {
-  XS,
-  S,
-  M,
-  L,
+  XS = 16,
+  S = 24,
+  M = 32,
+  L = 48,
 }

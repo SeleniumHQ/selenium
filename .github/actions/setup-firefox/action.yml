@@ -1,0 +1,20 @@
+name: 'Setup Firefox and GeckoDriver'
+description: 'Setup Firefox and GeckoDriver via browser-actions'
+inputs:
+  version:
+    description: 'Firefox version'
+    required: false
+    default: 'latest'
+runs:
+  using: "composite"
+  steps:
+    - name: Setup Firefox
+      uses: browser-actions/setup-firefox@latest
+      with:
+        firefox-version: ${{ inputs.version }}
+    - name: Check GeckoDriver
+      run: geckodriver --version
+      shell: bash
+# Deactivating until https://github.com/mozilla/geckodriver/issues/2009 gets fixed
+#    - name: Setup GeckoDriver
+#      uses: browser-actions/setup-geckodriver@latest

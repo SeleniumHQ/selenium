@@ -5,7 +5,7 @@ import linuxLogo from '../assets/operating-systems/linux.svg'
 import unknownOsLogo from '../assets/operating-systems/unknown.svg'
 
 const osLogo = (os: string): string => {
-  if (!os) {
+  if (os.length === 0) {
     return unknownOsLogo
   }
 
@@ -19,8 +19,8 @@ const osLogo = (os: string): string => {
   if (osLowerCase.includes('mac') || osLowerCase.includes('ios')) {
     return macLogo
   }
-  if (osLowerCase.includes('nix') || osLowerCase.includes('nux')
-      || osLowerCase.includes('aix')) {
+  if (osLowerCase.includes('nix') || osLowerCase.includes('nux') ||
+      osLowerCase.includes('aix')) {
     return linuxLogo
   }
   return unknownOsLogo

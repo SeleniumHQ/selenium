@@ -130,7 +130,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Opera)]
         public void ShouldHandleNonIntegerPositionAndSize()
         {
             driver.Url = rectanglesPage;

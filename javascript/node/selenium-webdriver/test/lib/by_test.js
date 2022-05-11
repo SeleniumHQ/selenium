@@ -93,7 +93,7 @@ describe('by', function () {
 
       let expected = {
         relative: {
-          root: { 'css selector': 'p' },
+          root: { 'tag name': 'p' },
           filters: [
             { kind: 'above', args: [{ 'css selector': '*[name="foobar"]' }] },
           ],
@@ -163,7 +163,7 @@ describe('by', function () {
 
     it('accepts tagName', function () {
       let locator = by.checkedLocator({ tagName: 'div' })
-      assert.strictEqual('css selector', locator.using)
+      assert.strictEqual('tag name', locator.using)
       assert.strictEqual('div', locator.value)
     })
 

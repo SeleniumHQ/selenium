@@ -4,9 +4,9 @@ load("//common:defs.bzl", "copy_file")
 
 BROWSER_VERSIONS = [
     "v85",
-    "v97",
-    "v98",
-    "v99"
+    "v99",
+    "v100",
+    "v101",
 ]
 
 SRC_FILES = [
@@ -63,7 +63,7 @@ nodejs_binary(
         "//javascript/node/selenium-webdriver/lib/atoms:find-elements",
         "//javascript/node/selenium-webdriver/lib/atoms:mutation-listener",
     ],
-    entry_point = "lib/test/fileserver.ts",
+    entry_point = "lib/test/fileserver.js",
 )
 
 jasmine_node_test(

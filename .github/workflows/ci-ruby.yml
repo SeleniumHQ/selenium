@@ -9,14 +9,13 @@ on:
     - cron: '35 9,21 * * *'
 
   push:
-    branches:
-      - trunk
+
   pull_request:
-    branches:
-      - trunk
 
 jobs:
   check_workflow:
+    permissions:
+      contents: none
     uses: ./.github/workflows/should-workflow-run.yml
     with:
       bazel-target-prefix: '//rb'
@@ -36,7 +35,7 @@ jobs:
           java-version: 11
       - uses: ruby/setup-ruby@v1
         with:
-          ruby-version: 2.6
+          ruby-version: 2.7
       - uses: actions/cache@v2
         with:
           path: |
@@ -65,7 +64,7 @@ jobs:
           java-version: 11
       - uses: ruby/setup-ruby@v1
         with:
-          ruby-version: 2.6
+          ruby-version: 2.7
       - uses: actions/cache@v2
         with:
           path: |
@@ -98,7 +97,7 @@ jobs:
           java-version: 11
       - uses: ruby/setup-ruby@v1
         with:
-          ruby-version: 2.6
+          ruby-version: 2.7
       - uses: actions/cache@v2
         with:
           path: |
@@ -127,7 +126,7 @@ jobs:
       - uses: actions/checkout@v2
       - uses: ruby/setup-ruby@v1
         with:
-          ruby-version: 2.6
+          ruby-version: 2.7
       - uses: actions/cache@v2
         with:
           path: |
@@ -149,7 +148,7 @@ jobs:
       - uses: actions/checkout@v2
       - uses: ruby/setup-ruby@v1
         with:
-          ruby-version: 2.6
+          ruby-version: 2.7
       - uses: actions/cache@v2
         with:
           path: |
@@ -170,7 +169,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        ruby: [ '2.6', 'jruby-9.3.0.0' ]
+        ruby: [ '2.7', '3.1' ]
     steps:
       - uses: actions/checkout@v2
       - uses: ruby/setup-ruby@v1

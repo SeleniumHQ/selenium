@@ -21,5 +21,7 @@ public enum HttpMethod {
   DELETE,
   GET,
   POST,
-  OPTIONS
+  PUT,
+  OPTIONS,
+  PATCH
 }

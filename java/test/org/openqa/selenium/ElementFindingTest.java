@@ -17,15 +17,6 @@
 
 package org.openqa.selenium;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.openqa.selenium.testing.drivers.Browser.CHROME;
-import static org.openqa.selenium.testing.drivers.Browser.EDGE;
-import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
-import static org.openqa.selenium.testing.drivers.Browser.HTMLUNIT;
-import static org.openqa.selenium.testing.drivers.Browser.IE;
-import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
-
 import org.junit.Test;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
@@ -34,6 +25,15 @@ import org.openqa.selenium.testing.NotYetImplemented;
 import org.openqa.selenium.testing.SwitchToTopAfterTest;
 
 import java.util.List;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.openqa.selenium.testing.drivers.Browser.CHROME;
+import static org.openqa.selenium.testing.drivers.Browser.EDGE;
+import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
+import static org.openqa.selenium.testing.drivers.Browser.HTMLUNIT;
+import static org.openqa.selenium.testing.drivers.Browser.IE;
+import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
 
 public class ElementFindingTest extends JUnit4TestBase {
 
@@ -766,23 +766,10 @@ public class ElementFindingTest extends JUnit4TestBase {
 
   @SwitchToTopAfterTest
   @Test
-  @Ignore(FIREFOX)
-  public void testAnElementFoundInADifferentFrameIsStale() {
-    driver.get(pages.missedJsReferencePage);
-    driver.switchTo().frame("inner");
-    WebElement element = driver.findElement(By.id("oneline"));
-    driver.switchTo().defaultContent();
-    assertThatExceptionOfType(StaleElementReferenceException.class)
-        .isThrownBy(element::getText);
-  }
-
-  @SwitchToTopAfterTest
-  @Test
-  @Ignore(CHROME)
-  @Ignore(EDGE)
-  @Ignore(IE)
-  @Ignore(SAFARI)
-  public void testAnElementInAFrameCannotBeAccessedFromAnotherFrame() {
+  @Ignore(value = CHROME,
+    reason = "Element in different browsing context can not evaluate stale",
+    issue = "https://bugs.chromium.org/p/chromedriver/issues/detail?id=3742")
+  public void testAnElementFoundInADifferentFrameIsNotFound() {
     driver.get(pages.missedJsReferencePage);
     driver.switchTo().frame("inner");
     WebElement element = driver.findElement(By.id("oneline"));

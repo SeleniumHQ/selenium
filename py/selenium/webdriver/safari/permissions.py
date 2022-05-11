@@ -20,7 +20,7 @@ The Permission implementation.
 """
 
 
-class Permission(object):
+class Permission:
     """
     Set of supported permissions.
     """

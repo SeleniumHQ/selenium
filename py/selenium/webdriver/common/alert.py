@@ -23,7 +23,7 @@ from selenium.webdriver.common.utils import keys_to_typing
 from selenium.webdriver.remote.command import Command
 
 
-class Alert(object):
+class Alert:
     """
     Allows to work with alerts.
 

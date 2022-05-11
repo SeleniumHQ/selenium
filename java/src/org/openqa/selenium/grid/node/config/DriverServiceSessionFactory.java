@@ -17,10 +17,6 @@
 
 package org.openqa.selenium.grid.node.config;
 
-import static org.openqa.selenium.remote.RemoteTags.CAPABILITIES;
-import static org.openqa.selenium.remote.RemoteTags.CAPABILITIES_EVENT;
-import static org.openqa.selenium.remote.tracing.Tags.EXCEPTION;
-
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.PersistentCapabilities;
@@ -42,6 +38,7 @@ import org.openqa.selenium.remote.DriverCommand;
 import org.openqa.selenium.remote.ProtocolHandshake;
 import org.openqa.selenium.remote.Response;
 import org.openqa.selenium.remote.SessionId;
+import org.openqa.selenium.remote.http.ClientConfig;
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.service.DriverService;
 import org.openqa.selenium.remote.tracing.AttributeKey;
@@ -53,6 +50,7 @@ import org.openqa.selenium.remote.tracing.Tracer;
 
 import java.net.URI;
 import java.net.URL;
+import java.time.Duration;
 import java.time.Instant;
 import java.util.HashMap;
 import java.util.Map;
@@ -62,23 +60,30 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
+import static org.openqa.selenium.remote.RemoteTags.CAPABILITIES;
+import static org.openqa.selenium.remote.RemoteTags.CAPABILITIES_EVENT;
+import static org.openqa.selenium.remote.tracing.Tags.EXCEPTION;
+
 public class DriverServiceSessionFactory implements SessionFactory {
 
   private final Tracer tracer;
   private final HttpClient.Factory clientFactory;
+  private final Duration sessionTimeout;
   private final Predicate<Capabilities> predicate;
   private final DriverService.Builder<?, ?> builder;
   private final Capabilities stereotype;
   private final SessionCapabilitiesMutator sessionCapabilitiesMutator;
 
   public DriverServiceSessionFactory(
-      Tracer tracer,
-      HttpClient.Factory clientFactory,
-      Capabilities stereotype,
-      Predicate<Capabilities> predicate,
-      DriverService.Builder<?, ?> builder) {
+    Tracer tracer,
+    HttpClient.Factory clientFactory,
+    Duration sessionTimeout,
+    Capabilities stereotype,
+    Predicate<Capabilities> predicate,
+    DriverService.Builder<?, ?> builder) {
     this.tracer = Require.nonNull("Tracer", tracer);
     this.clientFactory = Require.nonNull("HTTP client factory", clientFactory);
+    this.sessionTimeout = Require.nonNull("Session timeout", sessionTimeout);
     this.stereotype = ImmutableCapabilities.copyOf(Require.nonNull("Stereotype", stereotype));
     this.predicate = Require.nonNull("Accepted capabilities predicate", predicate);
     this.builder = Require.nonNull("Driver service builder", builder);
@@ -124,7 +129,12 @@ public class DriverServiceSessionFactory implements SessionFactory {
         URL serviceURL = service.getUrl();
         attributeMap.put(AttributeKey.DRIVER_URL.getKey(),
                          EventAttribute.setValue(serviceURL.toString()));
-        HttpClient client = clientFactory.createClient(serviceURL);
+
+        ClientConfig clientConfig = ClientConfig
+          .defaultConfig()
+          .readTimeout(sessionTimeout)
+          .baseUrl(serviceURL);
+        HttpClient client = clientFactory.createClient(clientConfig);
 
         Command command = new Command(null, DriverCommand.NEW_SESSION(capabilities));
 

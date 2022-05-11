@@ -59,18 +59,20 @@ public class SessionRequest {
 
   public SessionRequest(RequestId requestId, HttpRequest request, Instant enqueued) {
     this.requestId = Require.nonNull("Request ID", requestId);
-    this.enqueued = Require.nonNull("Enqueud time", enqueued);
+    this.enqueued = Require.nonNull("Enqueued time", enqueued);
     Require.nonNull("Request", request);
 
     try (NewSessionPayload payload = NewSessionPayload.create(Contents.reader(request))) {
-      desiredCapabilities = payload.stream().collect(Collectors.toSet());
+      desiredCapabilities = payload.stream()
+        .filter(capabilities -> !capabilities.asMap().isEmpty())
+        .collect(Collectors.toSet());
       downstreamDialects = payload.getDownstreamDialects();
       metadata = payload.getMetadata();
     }
 
     Map<String, String> headers = new HashMap<>();
-    Optional<String> traceparentValue = Optional.ofNullable(request.getHeader("traceparent"));
-    traceparentValue.ifPresent(value -> headers.put("traceparent", value));
+    Optional<String> traceParentValue = Optional.ofNullable(request.getHeader("traceparent"));
+    traceParentValue.ifPresent(value -> headers.put("traceparent", value));
     this.traceHeaders = Collections.unmodifiableMap(headers);
   }
 

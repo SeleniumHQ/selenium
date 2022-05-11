@@ -518,50 +518,6 @@ public class CorrectEventFiringTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(CHROME)
-  @Ignore(EDGE)
-  @Ignore(IE)
-  @Ignore(FIREFOX)
-  @NotYetImplemented(SAFARI)
-  @Ignore(HTMLUNIT)
-  public void testClickPartiallyOverlappingElements() {
-    for (int i = 1; i < 6; i++) {
-      driver.get(appServer.whereIs("click_tests/partially_overlapping_elements.html"));
-      WebElement over = driver.findElement(By.id("over" + i));
-      ((JavascriptExecutor) driver).executeScript("arguments[0].style.display = 'none'", over);
-      driver.findElement(By.id("under")).click();
-      assertThat(driver.findElement(By.id("log")).getText())
-          .isEqualTo("Log:\n"
-                   + "mousedown in under (handled by under)\n"
-                   + "mousedown in under (handled by body)\n"
-                   + "mouseup in under (handled by under)\n"
-                   + "mouseup in under (handled by body)\n"
-                   + "click in under (handled by under)\n"
-                   + "click in under (handled by body)");
-    }
-  }
-
-  @Test
-  @Ignore(CHROME)
-  @Ignore(EDGE)
-  @Ignore(SAFARI)
-  @Ignore(HTMLUNIT)
-  @Ignore(value = FIREFOX, reason = "Checks overlapping by default")
-  @Ignore(value = IE, reason = "Checks overlapping by default")
-  public void testNativelyClickOverlappingElements() {
-    driver.get(appServer.whereIs("click_tests/overlapping_elements.html"));
-    driver.findElement(By.id("under")).click();
-    assertThat(driver.findElement(By.id("log")).getText())
-        .isEqualTo("Log:\n"
-                 + "mousedown in over (handled by over)\n"
-                 + "mousedown in over (handled by body)\n"
-                 + "mouseup in over (handled by over)\n"
-                 + "mouseup in over (handled by body)\n"
-                 + "click in over (handled by over)\n"
-                 + "click in over (handled by body)");
-  }
-
-  @Test
   @Ignore(HTMLUNIT)
   @NotYetImplemented(SAFARI)
   public void testClickAnElementThatDisappear() {

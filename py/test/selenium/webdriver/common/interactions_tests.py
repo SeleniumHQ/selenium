@@ -25,7 +25,7 @@ from selenium.webdriver.common.actions import interaction
 from selenium.webdriver.support.ui import WebDriverWait
 
 
-def performDragAndDropWithMouse(driver, pages):
+def perform_drag_and_drop_with_mouse(driver, pages):
     """Copied from org.openqa.selenium.interactions.TestBasicMouseInterface."""
     pages.load("draggableLists.html")
     dragReporter = driver.find_element(By.ID, "dragging_reports")
@@ -48,22 +48,22 @@ def performDragAndDropWithMouse(driver, pages):
 
 
 @pytest.mark.xfail_safari
-def testDraggingElementWithMouseMovesItToAnotherList(driver, pages):
+def test_dragging_element_with_mouse_moves_it_to_another_list(driver, pages):
     """Copied from org.openqa.selenium.interactions.TestBasicMouseInterface."""
-    performDragAndDropWithMouse(driver, pages)
+    perform_drag_and_drop_with_mouse(driver, pages)
     dragInto = driver.find_element(By.ID, "sortable1")
     assert 6 == len(dragInto.find_elements(By.TAG_NAME, "li"))
 
 
 @pytest.mark.xfail_safari
-def testDraggingElementWithMouseFiresEvents(driver, pages):
+def test_dragging_element_with_mouse_fires_events(driver, pages):
     """Copied from org.openqa.selenium.interactions.TestBasicMouseInterface."""
-    performDragAndDropWithMouse(driver, pages)
+    perform_drag_and_drop_with_mouse(driver, pages)
     dragReporter = driver.find_element(By.ID, "dragging_reports")
     assert "Nothing happened. DragOut DropIn RightItem 3" == dragReporter.text
 
 
-def _isElementAvailable(driver, id):
+def _is_element_available(driver, id):
     """Copied from org.openqa.selenium.interactions.TestBasicMouseInterface."""
     try:
         driver.find_element(By.ID, id)
@@ -73,14 +73,14 @@ def _isElementAvailable(driver, id):
 
 
 @pytest.mark.xfail_safari
-def testDragAndDrop(driver, pages):
+def test_drag_and_drop(driver, pages):
     """Copied from org.openqa.selenium.interactions.TestBasicMouseInterface."""
     element_available_timeout = 15
     wait = WebDriverWait(driver, element_available_timeout)
     pages.load("droppableItems.html")
-    wait.until(lambda dr: _isElementAvailable(driver, "draggable"))
+    wait.until(lambda dr: _is_element_available(driver, "draggable"))
 
-    if not _isElementAvailable(driver, "draggable"):
+    if not _is_element_available(driver, "draggable"):
         raise AssertionError("Could not find draggable element after 15 seconds.")
 
     toDrag = driver.find_element(By.ID, "draggable")
@@ -102,7 +102,7 @@ def testDragAndDrop(driver, pages):
 
 
 @pytest.mark.xfail_safari
-def testDoubleClick(driver, pages):
+def test_double_click(driver, pages):
     """Copied from org.openqa.selenium.interactions.TestBasicMouseInterface."""
     pages.load("javascriptPage.html")
     toDoubleClick = driver.find_element(By.ID, "doubleClickField")
@@ -114,7 +114,7 @@ def testDoubleClick(driver, pages):
     assert "DoubleClicked" == toDoubleClick.get_attribute('value')
 
 
-def testContextClick(driver, pages):
+def test_context_click(driver, pages):
     """Copied from org.openqa.selenium.interactions.TestBasicMouseInterface."""
     pages.load("javascriptPage.html")
     toContextClick = driver.find_element(By.ID, "doubleClickField")
@@ -126,7 +126,7 @@ def testContextClick(driver, pages):
     assert "ContextClicked" == toContextClick.get_attribute('value')
 
 
-def testMoveAndClick(driver, pages):
+def test_move_and_click(driver, pages):
     """Copied from org.openqa.selenium.interactions.TestBasicMouseInterface."""
     pages.load("javascriptPage.html")
     toClick = driver.find_element(By.ID, "clickField")
@@ -139,7 +139,7 @@ def testMoveAndClick(driver, pages):
     assert "Clicked" == toClick.get_attribute('value')
 
 
-def testCannotMoveToANullLocator(driver, pages):
+def test_cannot_move_to_anull_locator(driver, pages):
     """Copied from org.openqa.selenium.interactions.TestBasicMouseInterface."""
     pages.load("javascriptPage.html")
 
@@ -150,7 +150,7 @@ def testCannotMoveToANullLocator(driver, pages):
 
 
 @pytest.mark.xfail_safari
-def testClickingOnFormElements(driver, pages):
+def test_clicking_on_form_elements(driver, pages):
     """Copied from org.openqa.selenium.interactions.CombinedInputActionsTest."""
     pages.load("formSelectionPage.html")
     options = driver.find_elements(By.TAG_NAME, "option")
@@ -170,7 +170,7 @@ def testClickingOnFormElements(driver, pages):
 
 @pytest.mark.xfail_firefox
 @pytest.mark.xfail_safari
-def testSelectingMultipleItems(driver, pages):
+def test_selecting_multiple_items(driver, pages):
     """Copied from org.openqa.selenium.interactions.CombinedInputActionsTest."""
     pages.load("selectableItems.html")
     reportingElement = driver.find_element(By.ID, "infodiv")
@@ -194,7 +194,7 @@ def testSelectingMultipleItems(driver, pages):
 
 
 @pytest.mark.xfail_safari
-def testSendingKeysToActiveElementWithModifier(driver, pages):
+def test_sending_keys_to_active_element_with_modifier(driver, pages):
     pages.load("formPage.html")
     e = driver.find_element(By.ID, "working")
     e.click()
@@ -208,7 +208,7 @@ def testSendingKeysToActiveElementWithModifier(driver, pages):
     assert "ABC" == e.get_attribute('value')
 
 
-def testSendingKeysToElement(driver, pages):
+def test_sending_keys_to_element(driver, pages):
     pages.load("formPage.html")
     e = driver.find_element(By.ID, "working")
 
@@ -217,7 +217,7 @@ def testSendingKeysToElement(driver, pages):
     assert "abc" == e.get_attribute('value')
 
 
-def testCanSendKeysBetweenClicks(driver, pages):
+def test_can_send_keys_between_clicks(driver, pages):
     """
     For W3C, ensures that the correct number of pauses are given to the other
     input device.
@@ -230,7 +230,7 @@ def testCanSendKeysBetweenClicks(driver, pages):
     assert 'foobar' == keyup.get_attribute('value')
 
 
-def test_can_reset_interactions(driver, pages):
+def test_can_reset_interactions(driver):
     actions = ActionChains(driver)
     actions.click()
     actions.key_down('A')

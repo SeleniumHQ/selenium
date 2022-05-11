@@ -86,7 +86,7 @@ public class ChromeDriver extends ChromiumDriver {
    *
    * @param service      The service to use.
    * @param capabilities The capabilities required from the ChromeDriver.
-   * @deprecated Use {@link ChromeDriver(ChromeDriverService, ChromeOptions)} instead.
+   * @deprecated Use {@link #ChromeDriver(ChromeDriverService, ChromeOptions)} instead.
    */
   @Deprecated
   public ChromeDriver(ChromeDriverService service, Capabilities capabilities) {

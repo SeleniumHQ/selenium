@@ -20,7 +20,6 @@ import os
 from shutil import rmtree
 import warnings
 from contextlib import contextmanager
-from typing import NoReturn
 import zipfile
 
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
@@ -162,11 +161,8 @@ class WebDriver(RemoteWebDriver):
             self.profile = firefox_profile
             options.profile = firefox_profile
 
-        # TODO: Remove when we remove capabilities code. Firefox
-        # is being strict here, like it should. When we can remove capabilities
-        # for options this will be good to be deleted.
-        if capabilities.get("acceptInsecureCerts"):
-            options.accept_insecure_certs = capabilities.get("acceptInsecureCerts")
+        if not capabilities.get("acceptInsecureCerts") or not options.accept_insecure_certs:
+            options.accept_insecure_certs = False
 
         if not self.service:
             self.service = Service(
@@ -186,7 +182,7 @@ class WebDriver(RemoteWebDriver):
 
         self._is_remote = False
 
-    def quit(self) -> NoReturn:
+    def quit(self) -> None:
         """Quits the driver and close every associated window."""
         try:
             RemoteWebDriver.quit(self)
@@ -210,7 +206,7 @@ class WebDriver(RemoteWebDriver):
 
     # Extension commands:
 
-    def set_context(self, context) -> NoReturn:
+    def set_context(self, context) -> None:
         self.execute("SET_CONTEXT", {"context": context})
 
     @contextmanager
@@ -266,7 +262,7 @@ class WebDriver(RemoteWebDriver):
         payload = {"addon": addon, "temporary": temporary}
         return self.execute("INSTALL_ADDON", payload)["value"]
 
-    def uninstall_addon(self, identifier) -> NoReturn:
+    def uninstall_addon(self, identifier) -> None:
         """
         Uninstalls Firefox addon using its identifier.
 

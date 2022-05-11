@@ -81,13 +81,32 @@ module Selenium
         end
 
         it 'takes viewport screenshot by default' do
+          viewport_width = driver.execute_script("return window.innerWidth;")
+          viewport_height = driver.execute_script("return window.innerHeight;")
+
           screenshot = driver.save_screenshot path
-          expect(IO.read(screenshot)[0x10..0x18].unpack('NN').last).to be < 2600
+
+          if Platform.linux?
+            expect(File.read(screenshot)[0x10..0x18].unpack1('NN')).to be <= viewport_width
+            expect(File.read(screenshot)[0x10..0x18].unpack('NN').last).to be <= viewport_height
+          else
+            expect(File.read(screenshot)[0x10..0x18].unpack1('NN') / 2).to be <= viewport_width
+            expect(File.read(screenshot)[0x10..0x18].unpack('NN').last / 2).to be <= viewport_height
+          end
         end
 
         it 'takes full page screenshot', exclusive: {browser: :firefox} do
+          viewport_width = driver.execute_script("return window.innerWidth;")
+          viewport_height = driver.execute_script("return window.innerHeight;")
+
           screenshot = driver.save_screenshot path, full_page: true
-          expect(IO.read(screenshot)[0x10..0x18].unpack('NN').last).to be > 2600
+          if Platform.linux?
+            expect(File.read(screenshot)[0x10..0x18].unpack1('NN')).to be >= viewport_width
+            expect(File.read(screenshot)[0x10..0x18].unpack('NN').last).to be > viewport_height
+          else
+            expect(File.read(screenshot)[0x10..0x18].unpack1('NN') / 2).to be >= viewport_width
+            expect(File.read(screenshot)[0x10..0x18].unpack('NN').last / 2).to be > viewport_height
+          end
         end
 
         it 'does not take full page screenshot', exclude: {browser: :firefox} do

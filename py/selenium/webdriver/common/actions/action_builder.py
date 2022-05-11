@@ -26,7 +26,7 @@ from .wheel_input import WheelInput
 from .wheel_actions import WheelActions
 
 
-class ActionBuilder(object):
+class ActionBuilder:
     def __init__(self, driver, mouse=None, wheel=None, keyboard=None, duration=250) -> None:
         if not mouse:
             mouse = PointerInput(interaction.POINTER_MOUSE, "mouse")
@@ -73,8 +73,8 @@ class ActionBuilder(object):
         self._add_input(new_input)
         return new_input
 
-    def add_wheel_input(self, kind, name) -> WheelInput:
-        new_input = WheelInput(kind, name)
+    def add_wheel_input(self, name) -> WheelInput:
+        new_input = WheelInput(name)
         self._add_input(new_input)
         return new_input
 

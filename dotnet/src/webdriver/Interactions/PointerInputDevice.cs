@@ -91,7 +91,22 @@ namespace OpenQA.Selenium.Interactions
         /// <summary>
         /// The button used is the secondary button.
         /// </summary>
-        Right = 2
+        Right = 2,
+
+        /// <summary>
+        /// The X1 button used for navigating back.
+        /// </summary>
+        Back = 3,
+
+        /// <summary>
+        /// The X2 button used for navigating forward.
+        /// </summary>
+        Forward = 4,
+
+        /// <summary>
+        /// The button used by Pen pointers to erase.
+        /// </summary>
+        Eraser = 5
     }
 
     /// <summary>
@@ -162,7 +177,21 @@ namespace OpenQA.Selenium.Interactions
         /// <returns>The action representing the pointer down gesture.</returns>
         public Interaction CreatePointerDown(MouseButton button)
         {
-            return new PointerDownInteraction(this, button);
+            return new PointerDownInteraction(this, button, new PointerEventProperties());
+        }
+
+        /// <summary>
+        /// Creates a pointer down action.
+        /// </summary>
+        /// <remarks>
+        /// MouseButton value applies to Pen types for primary, secondary and erase functionality (0, 2, and 5 respectively)
+        /// </remarks>
+        /// <param name="button">The button of the pointer that should be pressed.</param>
+        /// <param name="properties">The specifications for the pointer event interaction</param>
+        /// <returns>The action representing the pointer down gesture.</returns>
+        public Interaction CreatePointerDown(MouseButton button, PointerEventProperties properties)
+        {
+            return new PointerDownInteraction(this, button, properties);
         }
 
         /// <summary>
@@ -172,7 +201,21 @@ namespace OpenQA.Selenium.Interactions
         /// <returns>The action representing the pointer up gesture.</returns>
         public Interaction CreatePointerUp(MouseButton button)
         {
-            return new PointerUpInteraction(this, button);
+            return new PointerUpInteraction(this, button, new PointerEventProperties());
+        }
+
+        /// <summary>
+        /// Creates a pointer down action.
+        /// </summary>
+        /// <remarks>
+        /// MouseButton value applies to Pen types for primary, secondary and erase functionality (0, 2, and 5 respectively)
+        /// </remarks>
+        /// <param name="button">The button of the pointer that should be pressed.</param>
+        /// <param name="properties">The specifications for the pointer event interaction</param>
+        /// <returns>The action representing the pointer down gesture.</returns>
+        public Interaction CreatePointerUp(MouseButton button, PointerEventProperties properties)
+        {
+            return new PointerUpInteraction(this, button, properties);
         }
 
         /// <summary>
@@ -185,7 +228,21 @@ namespace OpenQA.Selenium.Interactions
         /// <returns>The action representing the pointer move gesture.</returns>
         public Interaction CreatePointerMove(IWebElement target, int xOffset, int yOffset, TimeSpan duration)
         {
-            return new PointerMoveInteraction(this, target, CoordinateOrigin.Element, xOffset, yOffset, duration);
+            return new PointerMoveInteraction(this, target, CoordinateOrigin.Element, xOffset, yOffset, duration, new PointerEventProperties());
+        }
+
+        /// <summary>
+        /// Creates a pointer move action to a specific element.
+        /// </summary>
+        /// <param name="target">The <see cref="IWebElement"/> used as the target for the move.</param>
+        /// <param name="xOffset">The horizontal offset from the origin of the move.</param>
+        /// <param name="yOffset">The vertical offset from the origin of the move.</param>
+        /// <param name="duration">The length of time the move gesture takes to complete.</param>
+        /// <param name="properties">The specifications for the pointer event interaction</param>
+        /// <returns>The action representing the pointer move gesture.</returns>
+        public Interaction CreatePointerMove(IWebElement target, int xOffset, int yOffset, TimeSpan duration, PointerEventProperties properties)
+        {
+            return new PointerMoveInteraction(this, target, CoordinateOrigin.Element, xOffset, yOffset, duration, properties);
         }
 
         /// <summary>
@@ -206,7 +263,28 @@ namespace OpenQA.Selenium.Interactions
                 throw new ArgumentException("Using a value of CoordinateOrigin.Element without an element is not supported.", nameof(origin));
             }
 
-            return new PointerMoveInteraction(this, null, origin, xOffset, yOffset, duration);
+            return new PointerMoveInteraction(this, null, origin, xOffset, yOffset, duration, new PointerEventProperties());
+        }
+
+        /// <summary>
+        /// Creates a pointer move action to an absolute coordinate.
+        /// </summary>
+        /// <param name="origin">The origin of coordinates for the move. Values can be relative to
+        /// the view port origin, or the most recent pointer position.</param>
+        /// <param name="xOffset">The horizontal offset from the origin of the move.</param>
+        /// <param name="yOffset">The vertical offset from the origin of the move.</param>
+        /// <param name="duration">The length of time the move gesture takes to complete.</param>
+        /// <returns>The action representing the pointer move gesture.</returns>
+        /// <exception cref="ArgumentException">Thrown when passing CoordinateOrigin.Element into origin.
+        /// Users should us the other CreatePointerMove overload to move to a specific element.</exception>
+        public Interaction CreatePointerMove(CoordinateOrigin origin, int xOffset, int yOffset, TimeSpan duration, PointerEventProperties properties)
+        {
+            if (origin == CoordinateOrigin.Element)
+            {
+                throw new ArgumentException("Using a value of CoordinateOrigin.Element without an element is not supported.", nameof(origin));
+            }
+
+            return new PointerMoveInteraction(this, null, origin, xOffset, yOffset, duration, properties);
         }
 
         /// <summary>
@@ -218,9 +296,8 @@ namespace OpenQA.Selenium.Interactions
             return new PointerCancelInteraction(this);
         }
 
-        private class PointerDownInteraction : Interaction
+        public class PointerEventProperties
         {
-            private MouseButton button;
             private double? width;
             private double? height;
             private double? pressure;
@@ -231,62 +308,185 @@ namespace OpenQA.Selenium.Interactions
             private double? altitudeAngle;
             private double? azimuthAngle;
 
-            public PointerDownInteraction(InputDevice sourceDevice, MouseButton button)
-                : base(sourceDevice)
+            /// <summary>
+            /// Gets or sets the width (magnitude on x-axis) in pixels of the contact geometry of the pointer.
+            /// </summary>
+            public double? Width
             {
-                this.button = button;
+                get { return this.width; }
+                set { this.width = value; }
             }
 
-            public override Dictionary<string, object> ToDictionary()
+            /// <summary>
+            /// Gets or sets the height (magnitude on y-axis) in pixels of the contact geometry of the pointer.
+            /// </summary>
+            public double? Height
+            {
+                get { return this.height; }
+                set { this.height = value; }
+            }
+            /// <summary>
+            /// Gets or sets the normalized pressure of the pointer input.
+            /// </summary>
+            /// <remarks>
+            /// 0 and 1 represent the minimum and maximum pressure the hardware is capable of detecting, respectively.
+            /// </remarks>
+            public double? Pressure
+            {
+                get { return this.pressure; }
+                set { this.pressure = value; }
+            }
+            /// <summary>
+            /// Gets or sets the normalized tangential pressure (also known as barrel pressure) of the pointer input.
+            /// </summary>
+            /// <remarks>
+            /// Valid values are between -1 and 1 with 0 being the neutral position of the control.
+            /// Some hardware may only support positive values between 0 and 1.
+            /// </remarks>
+            public double? TangentialPressure
+            {
+                get { return this.tangentialPressure; }
+                set { this.tangentialPressure = value; }
+            }
+            /// <summary>
+            /// Gets or sets the plane angle in degrees between the Y-Z plane and the plane containing
+            /// both the transducer (e.g. pen stylus) axis and the Y axis..
+            /// </summary>
+            /// <remarks>
+            /// Valid values are between -90 and 90. A positive value is to the right.
+            /// </remarks>
+            public int? TiltX
+            {
+                get { return this.tiltX; }
+                set { this.tiltX = value; }
+            }
+            /// <summary>
+            /// Gets or sets the plane angle in degrees between the X-Z plane and the plane containing
+            /// both the transducer (e.g. pen stylus) axis and the X axis..
+            /// </summary>
+            /// <remarks>
+            /// Valid values are between -90 and 90. A positive value is toward the user.
+            /// </remarks>
+            public int? TiltY
+            {
+                get { return this.tiltY; }
+                set { this.tiltY = value; }
+            }
+            /// <summary>
+            /// Gets or sets the clockwise rotation in degrees of a transducer (e.g. stylus) around its own major axis
+            /// </summary>
+            /// <remarks>
+            /// Valid values are between 0 and 359.
+            /// </remarks>
+            public int? Twist
+            {
+                get { return this.twist; }
+                set { this.twist = value; }
+            }
+            /// <summary>
+            /// Gets or sets the altitude in radians of the transducer (e.g. pen/stylus)
+            /// </summary>
+            /// <remarks>
+            /// Valid values are between 0 and π/2, where 0 is parallel to the surface (X-Y plane),
+            /// and π/2 is perpendicular to the surface.
+            /// </remarks>
+            public double? AltitudeAngle
+            {
+                get { return this.altitudeAngle; }
+                set { this.altitudeAngle = value; }
+            }
+            /// <summary>
+            /// Gets or sets the azimuth angle (in radians) of the transducer (e.g. pen/stylus)
+            /// </summary>
+            /// <remarks>
+            /// Valid values are between 0 and 2π,
+            /// where 0 represents a transducer whose cap is pointing in the direction of increasing X values,
+            /// and the values progressively increase when going clockwise.
+            /// </remarks>
+            public double? AzimuthAngle
+            {
+                get { return this.azimuthAngle; }
+                set { this.azimuthAngle = value; }
+            }
+
+            public Dictionary<string, object> ToDictionary()
             {
                 Dictionary<string, object> toReturn = new Dictionary<string, object>();
-                toReturn["type"] = "pointerDown";
-                toReturn["button"] = Convert.ToInt32(this.button, CultureInfo.InvariantCulture);
 
-                if (this.width.HasValue)
+                if (this.Width.HasValue)
                 {
-                    toReturn["width"] = this.width.Value;
+                    toReturn["width"] = this.Width.Value;
                 }
 
                 if (this.height.HasValue)
                 {
-                    toReturn["height"] = this.width.Value;
+                    toReturn["height"] = this.height.Value;
                 }
 
                 if (this.pressure.HasValue)
                 {
-                    toReturn["pressure"] = this.width.Value;
+                    toReturn["pressure"] = this.pressure.Value;
                 }
 
                 if (this.tangentialPressure.HasValue)
                 {
-                    toReturn["tangentialPressure"] = this.width.Value;
+                    toReturn["tangentialPressure"] = this.tangentialPressure.Value;
                 }
 
                 if (this.tiltX.HasValue)
                 {
-                    toReturn["tiltX"] = this.width.Value;
+                    toReturn["tiltX"] = this.tiltX.Value;
                 }
 
                 if (this.tiltY.HasValue)
                 {
-                    toReturn["tiltY"] = this.width.Value;
+                    toReturn["tiltY"] = this.tiltY.Value;
                 }
 
                 if (this.twist.HasValue)
                 {
-                    toReturn["twist"] = this.width.Value;
+                    toReturn["twist"] = this.twist.Value;
                 }
 
                 if (this.altitudeAngle.HasValue)
                 {
-                    toReturn["altitudeAngle"] = this.width.Value;
+                    toReturn["altitudeAngle"] = this.altitudeAngle.Value;
                 }
 
                 if (this.azimuthAngle.HasValue)
                 {
-                    toReturn["azimuthAngle"] = this.width.Value;
+                    toReturn["azimuthAngle"] = this.azimuthAngle.Value;
                 }
+
+                return toReturn;
+            }
+        }
+
+        private class PointerDownInteraction : Interaction
+        {
+            private MouseButton button;
+            private PointerEventProperties eventProperties;
+
+            public PointerDownInteraction(InputDevice sourceDevice, MouseButton button, PointerEventProperties properties)
+                : base(sourceDevice)
+            {
+                this.button = button;
+                this.eventProperties = properties;
+            }
+
+            public override Dictionary<string, object> ToDictionary()
+            {
+                Dictionary<string, object> toReturn;
+                if (eventProperties == null)
+                {
+                    toReturn = new Dictionary<string, object>();
+                }
+                else
+                {
+                    toReturn = eventProperties.ToDictionary();
+                }
+                toReturn["type"] = "pointerDown";
+                toReturn["button"] = Convert.ToInt32(this.button, CultureInfo.InvariantCulture);
 
                 return toReturn;
             }
@@ -300,17 +500,9 @@ namespace OpenQA.Selenium.Interactions
         private class PointerUpInteraction : Interaction
         {
             private MouseButton button;
-            private double? width;
-            private double? height;
-            private double? pressure;
-            private double? tangentialPressure;
-            private int? tiltX;
-            private int? tiltY;
-            private int? twist;
-            private double? altitudeAngle;
-            private double? azimuthAngle;
+            private PointerEventProperties eventProperties;
 
-            public PointerUpInteraction(InputDevice sourceDevice, MouseButton button)
+            public PointerUpInteraction(InputDevice sourceDevice, MouseButton button, PointerEventProperties properties)
                 : base(sourceDevice)
             {
                 this.button = button;
@@ -318,54 +510,18 @@ namespace OpenQA.Selenium.Interactions
 
             public override Dictionary<string, object> ToDictionary()
             {
-                Dictionary<string, object> toReturn = new Dictionary<string, object>();
+                Dictionary<string, object> toReturn;
+                if (eventProperties == null)
+                {
+                    toReturn = new Dictionary<string, object>();
+                }
+                else
+                {
+                    toReturn = eventProperties.ToDictionary();
+                }
+
                 toReturn["type"] = "pointerUp";
                 toReturn["button"] = Convert.ToInt32(this.button, CultureInfo.InvariantCulture);
-
-                if (this.width.HasValue)
-                {
-                    toReturn["width"] = this.width.Value;
-                }
-
-                if (this.height.HasValue)
-                {
-                    toReturn["height"] = this.width.Value;
-                }
-
-                if (this.pressure.HasValue)
-                {
-                    toReturn["pressure"] = this.width.Value;
-                }
-
-                if (this.tangentialPressure.HasValue)
-                {
-                    toReturn["tangentialPressure"] = this.width.Value;
-                }
-
-                if (this.tiltX.HasValue)
-                {
-                    toReturn["tiltX"] = this.width.Value;
-                }
-
-                if (this.tiltY.HasValue)
-                {
-                    toReturn["tiltY"] = this.width.Value;
-                }
-
-                if (this.twist.HasValue)
-                {
-                    toReturn["twist"] = this.width.Value;
-                }
-
-                if (this.altitudeAngle.HasValue)
-                {
-                    toReturn["altitudeAngle"] = this.width.Value;
-                }
-
-                if (this.azimuthAngle.HasValue)
-                {
-                    toReturn["azimuthAngle"] = this.width.Value;
-                }
 
                 return toReturn;
             }
@@ -403,17 +559,9 @@ namespace OpenQA.Selenium.Interactions
             private int y = 0;
             private TimeSpan duration = TimeSpan.MinValue;
             private CoordinateOrigin origin = CoordinateOrigin.Pointer;
-            private double? width;
-            private double? height;
-            private double? pressure;
-            private double? tangentialPressure;
-            private int? tiltX;
-            private int? tiltY;
-            private int? twist;
-            private double? altitudeAngle;
-            private double? azimuthAngle;
+            private PointerEventProperties eventProperties;
 
-            public PointerMoveInteraction(InputDevice sourceDevice, IWebElement target, CoordinateOrigin origin, int x, int y, TimeSpan duration)
+            public PointerMoveInteraction(InputDevice sourceDevice, IWebElement target, CoordinateOrigin origin, int x, int y, TimeSpan duration, PointerEventProperties properties)
                 : base(sourceDevice)
             {
                 if (target != null)
@@ -436,11 +584,20 @@ namespace OpenQA.Selenium.Interactions
 
                 this.x = x;
                 this.y = y;
+                this.eventProperties = properties;
             }
 
             public override Dictionary<string, object> ToDictionary()
             {
-                Dictionary<string, object> toReturn = new Dictionary<string, object>();
+                Dictionary<string, object> toReturn;
+                if (eventProperties == null)
+                {
+                    toReturn = new Dictionary<string, object>();
+                }
+                else
+                {
+                    toReturn = eventProperties.ToDictionary();
+                }
 
                 toReturn["type"] = "pointerMove";
                 if (this.duration != TimeSpan.MinValue)
@@ -459,51 +616,6 @@ namespace OpenQA.Selenium.Interactions
 
                 toReturn["x"] = this.x;
                 toReturn["y"] = this.y;
-
-                if (this.width.HasValue)
-                {
-                    toReturn["width"] = this.width.Value;
-                }
-
-                if (this.height.HasValue)
-                {
-                    toReturn["height"] = this.width.Value;
-                }
-
-                if (this.pressure.HasValue)
-                {
-                    toReturn["pressure"] = this.width.Value;
-                }
-
-                if (this.tangentialPressure.HasValue)
-                {
-                    toReturn["tangentialPressure"] = this.width.Value;
-                }
-
-                if (this.tiltX.HasValue)
-                {
-                    toReturn["tiltX"] = this.width.Value;
-                }
-
-                if (this.tiltY.HasValue)
-                {
-                    toReturn["tiltY"] = this.width.Value;
-                }
-
-                if (this.twist.HasValue)
-                {
-                    toReturn["twist"] = this.width.Value;
-                }
-
-                if (this.altitudeAngle.HasValue)
-                {
-                    toReturn["altitudeAngle"] = this.width.Value;
-                }
-
-                if (this.azimuthAngle.HasValue)
-                {
-                    toReturn["azimuthAngle"] = this.width.Value;
-                }
 
                 return toReturn;
             }

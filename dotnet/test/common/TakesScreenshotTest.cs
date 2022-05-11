@@ -68,6 +68,10 @@ namespace OpenQA.Selenium
         [Test]
         public void ShouldCaptureScreenshotOfCurrentViewport()
         {
+#if NETCOREAPP3_1 || NETSTANDARD2_1 || NET5_0
+            Assert.Ignore("Skipping test: this framework can not process colors.");
+#endif
+
             ITakesScreenshot screenshotCapableDriver = driver as ITakesScreenshot;
             if (screenshotCapableDriver == null)
             {
@@ -92,6 +96,10 @@ namespace OpenQA.Selenium
         [Test]
         public void ShouldTakeScreenshotsOfAnElement()
         {
+#if NETCOREAPP3_1 || NETSTANDARD2_1 || NET5_0
+            Assert.Ignore("Skipping test: this framework can not process colors.");
+#endif
+
             driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("screen/screen.html");
             IWebElement element = driver.FindElement(By.Id("cell11"));
 
@@ -112,159 +120,12 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Chrome, "Chrome driver only captures visible viewport.")]
-        [IgnoreBrowser(Browser.Edge, "Edge driver only captures visible viewport.")]
-        [IgnoreBrowser(Browser.Firefox, "Firfox driver only captures visible viewport.")]
-        [IgnoreBrowser(Browser.IE, "IE driver only captures visible viewport.")]
-        [IgnoreBrowser(Browser.EdgeLegacy, "Edge driver only captures visible viewport.")]
-        [IgnoreBrowser(Browser.Safari, "Safari driver only captures visible viewport.")]
-        public void ShouldCaptureScreenshotOfPageWithLongX()
-        {
-            ITakesScreenshot screenshotCapableDriver = driver as ITakesScreenshot;
-            if (screenshotCapableDriver == null)
-            {
-                return;
-            }
-
-            driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("screen/screen_x_long.html");
-            Screenshot screenshot = screenshotCapableDriver.GetScreenshot();
-
-
-            HashSet<string> actualColors = ScanActualColors(screenshot,
-                                                       /* stepX in pixels */ 50,
-                                                       /* stepY in pixels */ 5);
-
-            HashSet<string> expectedColors = GenerateExpectedColors( /* initial color */ 0x0F0F0F,
-                                                            /* color step*/ 1000,
-                                                            /* grid X size */ 6,
-                                                            /* grid Y size */ 6);
-
-            CompareColors(expectedColors, actualColors);
-        }
-
-        [Test]
-        [IgnoreBrowser(Browser.Chrome, "Chrome driver only captures visible viewport.")]
-        [IgnoreBrowser(Browser.Edge, "Edge driver only captures visible viewport.")]
-        [IgnoreBrowser(Browser.Firefox, "Firfox driver only captures visible viewport.")]
-        [IgnoreBrowser(Browser.IE, "IE driver only captures visible viewport.")]
-        [IgnoreBrowser(Browser.EdgeLegacy, "Edge driver only captures visible viewport.")]
-        [IgnoreBrowser(Browser.Safari, "Safari driver only captures visible viewport.")]
-        public void ShouldCaptureScreenshotOfPageWithLongY()
-        {
-            ITakesScreenshot screenshotCapableDriver = driver as ITakesScreenshot;
-            if (screenshotCapableDriver == null)
-            {
-                return;
-            }
-
-            driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("screen/screen_y_long.html");
-            Screenshot screenshot = screenshotCapableDriver.GetScreenshot();
-
-            HashSet<string> actualColors = ScanActualColors(screenshot,
-                                                       /* stepX in pixels */ 5,
-                                                       /* stepY in pixels */ 50);
-
-            HashSet<string> expectedColors = GenerateExpectedColors( /* initial color */ 0x0F0F0F,
-                                                            /* color step*/ 1000,
-                                                            /* grid X size */ 6,
-                                                            /* grid Y size */ 6);
-
-            CompareColors(expectedColors, actualColors);
-        }
-
-        [Test]
-        [IgnoreBrowser(Browser.Chrome, "Chrome driver only captures visible viewport.")]
-        [IgnoreBrowser(Browser.Edge, "Edge driver only captures visible viewport.")]
-        [IgnoreBrowser(Browser.Firefox, "Firfox driver only captures visible viewport.")]
-        [IgnoreBrowser(Browser.IE, "IE driver only captures visible viewport.")]
-        [IgnoreBrowser(Browser.EdgeLegacy, "Edge driver only captures visible viewport.")]
-        [IgnoreBrowser(Browser.Safari, "Safari driver only captures visible viewport.")]
-        public void ShouldCaptureScreenshotOfPageWithTooLongX()
-        {
-            ITakesScreenshot screenshotCapableDriver = driver as ITakesScreenshot;
-            if (screenshotCapableDriver == null)
-            {
-                return;
-            }
-
-            driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("screen/screen_x_too_long.html");
-            Screenshot screenshot = screenshotCapableDriver.GetScreenshot();
-
-            HashSet<string> actualColors = ScanActualColors(screenshot,
-                                                       /* stepX in pixels */ 100,
-                                                       /* stepY in pixels */ 5);
-
-            HashSet<string> expectedColors = GenerateExpectedColors( /* initial color */ 0x0F0F0F,
-                                                            /* color step*/ 1000,
-                                                            /* grid X size */ 6,
-                                                            /* grid Y size */ 6);
-
-            CompareColors(expectedColors, actualColors);
-        }
-
-        [Test]
-        [IgnoreBrowser(Browser.Chrome, "Chrome driver only captures visible viewport.")]
-        [IgnoreBrowser(Browser.Edge, "Edge driver only captures visible viewport.")]
-        [IgnoreBrowser(Browser.Firefox, "Firfox driver only captures visible viewport.")]
-        [IgnoreBrowser(Browser.IE, "IE driver only captures visible viewport.")]
-        [IgnoreBrowser(Browser.EdgeLegacy, "Edge driver only captures visible viewport.")]
-        [IgnoreBrowser(Browser.Safari, "Safari driver only captures visible viewport.")]
-        public void ShouldCaptureScreenshotOfPageWithTooLongY()
-        {
-            ITakesScreenshot screenshotCapableDriver = driver as ITakesScreenshot;
-            if (screenshotCapableDriver == null)
-            {
-                return;
-            }
-
-            driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("screen/screen_y_too_long.html");
-            Screenshot screenshot = screenshotCapableDriver.GetScreenshot();
-
-            HashSet<string> actualColors = ScanActualColors(screenshot,
-                                                       /* stepX in pixels */ 5,
-                                                       /* stepY in pixels */ 100);
-
-            HashSet<string> expectedColors = GenerateExpectedColors( /* initial color */ 0x0F0F0F,
-                                                            /* color step*/ 1000,
-                                                            /* grid X size */ 6,
-                                                            /* grid Y size */ 6);
-
-            CompareColors(expectedColors, actualColors);
-        }
-
-        [Test]
-        [IgnoreBrowser(Browser.Chrome, "Chrome driver only captures visible viewport.")]
-        [IgnoreBrowser(Browser.Edge, "Edge driver only captures visible viewport.")]
-        [IgnoreBrowser(Browser.Firefox, "Firfox driver only captures visible viewport.")]
-        [IgnoreBrowser(Browser.IE, "IE driver only captures visible viewport.")]
-        [IgnoreBrowser(Browser.EdgeLegacy, "Edge driver only captures visible viewport.")]
-        [IgnoreBrowser(Browser.Safari, "Safari driver only captures visible viewport.")]
-        public void ShouldCaptureScreenshotOfPageWithTooLongXandY()
-        {
-            ITakesScreenshot screenshotCapableDriver = driver as ITakesScreenshot;
-            if (screenshotCapableDriver == null)
-            {
-                return;
-            }
-
-            driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("screen/screen_too_long.html");
-            Screenshot screenshot = screenshotCapableDriver.GetScreenshot();
-
-            HashSet<string> actualColors = ScanActualColors(screenshot,
-                                                       /* stepX in pixels */ 100,
-                                                       /* stepY in pixels */ 100);
-
-            HashSet<string> expectedColors = GenerateExpectedColors( /* initial color */ 0x0F0F0F,
-                                                            /* color step*/ 1000,
-                                                            /* grid X size */ 6,
-                                                            /* grid Y size */ 6);
-
-            CompareColors(expectedColors, actualColors);
-        }
-
-        [Test]
         public void ShouldCaptureScreenshotAtFramePage()
         {
+#if NETCOREAPP3_1 || NETSTANDARD2_1 || NET5_0
+            Assert.Ignore("Skipping test: this framework can not process colors.");
+#endif
+
             ITakesScreenshot screenshotCapableDriver = driver as ITakesScreenshot;
             if (screenshotCapableDriver == null)
             {
@@ -303,6 +164,10 @@ namespace OpenQA.Selenium
         [Test]
         public void ShouldCaptureScreenshotAtIFramePage()
         {
+#if NETCOREAPP3_1 || NETSTANDARD2_1 || NET5_0
+            Assert.Ignore("Skipping test: this framework can not process colors.");
+#endif
+
             ITakesScreenshot screenshotCapableDriver = driver as ITakesScreenshot;
             if (screenshotCapableDriver == null)
             {
@@ -339,6 +204,10 @@ namespace OpenQA.Selenium
         [IgnoreBrowser(Browser.Firefox, "Color comparisons fail on Firefox")]
         public void ShouldCaptureScreenshotAtFramePageAfterSwitching()
         {
+#if NETCOREAPP3_1 || NETSTANDARD2_1 || NET5_0
+            Assert.Ignore("Skipping test: this framework can not process colors.");
+#endif
+
             ITakesScreenshot screenshotCapableDriver = driver as ITakesScreenshot;
             if (screenshotCapableDriver == null)
             {
@@ -373,6 +242,10 @@ namespace OpenQA.Selenium
         [IgnoreBrowser(Browser.Firefox, "Color comparisons fail on Firefox")]
         public void ShouldCaptureScreenshotAtIFramePageAfterSwitching()
         {
+#if NETCOREAPP3_1 || NETSTANDARD2_1 || NET5_0
+            Assert.Ignore("Skipping test: this framework can not process colors.");
+#endif
+
             ITakesScreenshot screenshotCapableDriver = driver as ITakesScreenshot;
             if (screenshotCapableDriver == null)
             {

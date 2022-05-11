@@ -133,6 +133,7 @@ namespace OpenQA.Selenium
         }
 
         [Test]
+        [IgnoreBrowser(Browser.All, "Server not properly redirecting")]
         public void ShouldFollowRedirectsSentInTheHttpResponseHeaders()
         {
             driver.Url = redirectPage;
@@ -157,23 +158,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        public void ShouldReturnWhenGettingAUrlThatDoesNotResolve()
-        {
-            try
-            {
-                // Of course, we're up the creek if this ever does get registered
-                driver.Url = "http://www.thisurldoesnotexist.comx/";
-            }
-            catch (Exception e)
-            {
-                if (!IsIeDriverTimedOutException(e))
-                {
-                    throw e;
-                }
-            }
-        }
-
-        [Test]
         [NeedsFreshDriver(IsCreatedBeforeTest = true)]
         public void ShouldThrowIfUrlIsMalformed()
         {
@@ -185,13 +169,6 @@ namespace OpenQA.Selenium
         public void ShouldThrowIfUrlIsMalformedInPortPart()
         {
             Assert.That(() => driver.Url = "http://localhost:30001bla", Throws.InstanceOf<WebDriverException>());
-        }
-
-        [Test]
-        public void ShouldReturnWhenGettingAUrlThatDoesNotConnect()
-        {
-            // Here's hoping that there's nothing here. There shouldn't be
-            driver.Url = "http://localhost:3001";
         }
 
         [Test]
@@ -281,9 +258,9 @@ namespace OpenQA.Selenium
         }
 
         [Test]
+        [Ignore("Unable to open secure url")]
         [IgnoreBrowser(Browser.IE, "Browser does not support using insecure SSL certs")]
         [IgnoreBrowser(Browser.Safari, "Browser does not support using insecure SSL certs")]
-        [IgnoreBrowser(Browser.EdgeLegacy, "Browser does not support using insecure SSL certs")]
         public void ShouldBeAbleToAccessPagesWithAnInsecureSslCertificate()
         {
             String url = EnvironmentManager.Instance.UrlBuilder.WhereIsSecure("simpleTest.html");
@@ -338,7 +315,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Opera, "Not implemented for browser")]
         [NeedsFreshDriver(IsCreatedAfterTest = true)]
         public void ShouldTimeoutIfAPageTakesTooLongToLoad()
         {
@@ -357,8 +333,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Opera, "Not implemented for browser")]
-        [IgnoreBrowser(Browser.EdgeLegacy, "Not implemented for browser")]
         [NeedsFreshDriver(IsCreatedAfterTest = true)]
         public void ShouldTimeoutIfAPageTakesTooLongToLoadAfterClick()
         {
@@ -382,7 +356,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Opera, "Not implemented for browser")]
         [NeedsFreshDriver(IsCreatedAfterTest = true)]
         public void ShouldTimeoutIfAPageTakesTooLongToRefresh()
         {
@@ -409,10 +382,8 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.EdgeLegacy, "Test hangs browser.")]
         [IgnoreBrowser(Browser.Chrome, "Chrome driver does, in fact, stop loading page after a timeout.")]
         [IgnoreBrowser(Browser.Edge, "Edge driver does, in fact, stop loading page after a timeout.")]
-        [IgnoreBrowser(Browser.Opera, "Not implemented for browser")]
         [NeedsFreshDriver(IsCreatedAfterTest = true)]
         public void ShouldNotStopLoadingPageAfterTimeout()
         {

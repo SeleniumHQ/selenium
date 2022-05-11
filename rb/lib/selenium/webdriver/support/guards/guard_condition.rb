@@ -32,7 +32,7 @@ module Selenium
 
           def initialize(name, condition = nil, &blk)
             @name = name
-            @execution = if block_given?
+            @execution = if blk
                            proc(&blk)
                          else
                            proc { |guarded| guarded.include?(condition) }

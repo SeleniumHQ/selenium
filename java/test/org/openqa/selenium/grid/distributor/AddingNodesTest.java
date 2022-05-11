@@ -17,11 +17,6 @@
 
 package org.openqa.selenium.grid.distributor;
 
-import static com.google.common.collect.Iterables.getOnlyElement;
-import static org.junit.Assert.assertEquals;
-import static org.openqa.selenium.grid.data.Availability.UP;
-import static org.openqa.selenium.remote.Dialect.W3C;
-
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 
@@ -80,6 +75,11 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.function.Function;
 
+import static com.google.common.collect.Iterables.getOnlyElement;
+import static org.junit.Assert.assertEquals;
+import static org.openqa.selenium.grid.data.Availability.UP;
+import static org.openqa.selenium.remote.Dialect.W3C;
+
 public class AddingNodesTest {
 
   private static final Capabilities CAPS = new ImmutableCapabilities("cheese", "gouda");
@@ -106,7 +106,6 @@ public class AddingNodesTest {
     sessions = new LocalSessionMap(tracer, bus);
     queue = new LocalNewSessionQueue(
       tracer,
-      bus,
       new DefaultSlotMatcher(),
       Duration.ofSeconds(2),
       Duration.ofSeconds(2),

@@ -15,65 +15,47 @@
 // specific language governing permissions and limitations
 // under the License.
 
-import React, { ReactNode } from 'react'
-import { Box, Container, createStyles, Typography, Theme, withStyles } from '@material-ui/core'
-import { StyleRules } from '@material-ui/core/styles'
+import React from 'react'
+import { Box, Container, Typography } from '@mui/material'
 
-const useStyles = (theme: Theme): StyleRules => createStyles(
-  {
-    root: {
-      backgroundColor: theme.palette.secondary.main,
-      height: '100%',
-      paddingBottom: theme.spacing(3),
-      paddingTop: theme.spacing(3),
-      width: '100%',
-      justifyContent: 'center'
-    }
-  })
-
-interface ErrorProps {
-  message: string
-  errorMessage: string
-  classes: any
-}
-
-class Error extends React.Component<ErrorProps, {}> {
-  render (): ReactNode {
-    const { message, errorMessage, classes } = this.props
-    // noinspection HtmlUnknownAnchorTarget
-    return (
-      <div className={classes.root}>
-        <Box
-          display='flex'
-          flexDirection='column'
-          height='100%'
-          justifyContent='center'
-        >
-          <Container maxWidth='md'>
-            <Box mb={3}>
-              <Typography
-                align='center'
-                color='textPrimary'
-                variant='h3'
-              >
-                {message}
-              </Typography>
-            </Box>
+function Error (props) {
+  const { message, errorMessage } = props
+  return (
+    <Box
+      height='100%'
+      width='100%'
+      paddingY={3}
+    >
+      <Box
+        display='flex'
+        flexDirection='column'
+        height='100%'
+        justifyContent='center'
+      >
+        <Container maxWidth='md'>
+          <Box mb={3}>
             <Typography
               align='center'
               color='textPrimary'
-              variant='h4'
-              component='span'
+              variant='h3'
             >
-              <pre>
-                {errorMessage}
-              </pre>
+              {message}
             </Typography>
-          </Container>
-        </Box>
-      </div>
-    )
-  }
+          </Box>
+          <Typography
+            align='center'
+            color='textPrimary'
+            variant='h4'
+            component='span'
+          >
+            <pre>
+              {errorMessage}
+            </pre>
+          </Typography>
+        </Container>
+      </Box>
+    </Box>
+  )
 }
 
-export default withStyles(useStyles)(Error)
+export default Error

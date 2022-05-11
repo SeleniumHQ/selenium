@@ -31,13 +31,13 @@ def driver_kwargs(driver_kwargs):
     return driver_kwargs
 
 
-class TestIntegration(object):
+class TestIntegration:
     def test_we_can_pass_options(self, driver, pages):
         pages.load("formPage.html")
         driver.find_element(By.ID, "cheese")
 
 
-class TestUnit(object):
+class TestUnit:
     def test_ctor(self):
         opts = Options()
         assert opts._binary is None
