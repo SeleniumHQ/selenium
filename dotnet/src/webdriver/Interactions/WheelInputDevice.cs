@@ -19,9 +19,6 @@
 using OpenQA.Selenium.Internal;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace OpenQA.Selenium.Interactions
 {
@@ -75,7 +72,7 @@ namespace OpenQA.Selenium.Interactions
         /// <param name="deltaX">The distance along the X axis to scroll using the wheel.</param>
         /// <param name="deltaY">The distance along the Y axis to scroll using the wheel.</param>
         /// <param name="duration">The duration of the scroll action.</param>
-        /// <returns></returns>
+        /// <returns>The <see cref="Interaction"/> representing the wheel scroll.</returns>
         public Interaction CreateWheelScroll(int deltaX, int deltaY, TimeSpan duration)
         {
             return new WheelScrollInteraction(this, null, CoordinateOrigin.Viewport, 0, 0, deltaX, deltaY, duration);
@@ -90,7 +87,7 @@ namespace OpenQA.Selenium.Interactions
         /// <param name="deltaX">The distance along the X axis to scroll using the wheel.</param>
         /// <param name="deltaY">The distance along the Y axis to scroll using the wheel.</param>
         /// <param name="duration">The duration of the scroll action.</param>
-        /// <returns></returns>
+        /// <returns>The <see cref="Interaction"/> representing the wheel scroll.</returns>
         public Interaction CreateWheelScroll(IWebElement target, int xOffset, int yOffset, int deltaX, int deltaY, TimeSpan duration)
         {
             return new WheelScrollInteraction(this, target, CoordinateOrigin.Element, xOffset, yOffset, deltaX, deltaY, duration);
@@ -105,10 +102,28 @@ namespace OpenQA.Selenium.Interactions
         /// <param name="deltaX">The distance along the X axis to scroll using the wheel.</param>
         /// <param name="deltaY">The distance along the Y axis to scroll using the wheel.</param>
         /// <param name="duration">The duration of the scroll action.</param>
-        /// <returns></returns>
+        /// <returns>The <see cref="Interaction"/> representing the wheel scroll.</returns>
         public Interaction CreateWheelScroll(CoordinateOrigin origin, int xOffset, int yOffset, int deltaX, int deltaY, TimeSpan duration)
         {
             return new WheelScrollInteraction(this, null, origin, xOffset, yOffset, deltaX, deltaY, duration);
+        }
+
+        public class ScrollOrigin
+        {
+            private IWebElement element;
+            private bool viewport;
+
+            public IWebElement Element
+            {
+                get { return this.element; }
+                set { this.element = value; }
+            }
+
+            public bool Viewport
+            {
+                get { return this.viewport; }
+                set { this.viewport = value; }
+            }
         }
 
         private class WheelScrollInteraction : Interaction
