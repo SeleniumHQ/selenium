@@ -20,7 +20,10 @@ package org.openqa.selenium;
 /**
  * Indicates that IME support is not available. This exception is thrown for every IME-related
  * method call if IME support is not available on the machine.
+ *
+ * @deprecated Will be removed. IME is not part of W3C WebDriver and does not work on browsers.
  */
+
 public class ImeNotAvailableException extends WebDriverException {
   public ImeNotAvailableException(String message) {
     super(message);
