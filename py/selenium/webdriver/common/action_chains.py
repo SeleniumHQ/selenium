@@ -321,7 +321,7 @@ class ActionChains:
         self.send_keys(*keys_to_send)
         return self
 
-    def scroll(self, x: int, y: int, delta_x: int, delta_y: int, duration: int = 0, origin: str = "viewport"):
+    def scroll(self, x: int, y: int, delta_x: int, delta_y: int, duration: int = 0, origin= "viewport"):
         """
         Sends wheel scroll information to the browser to be processed.
 
@@ -330,6 +330,7 @@ class ActionChains:
          - y: starting Y coordinate
          - delta_x: the distance the mouse will scroll on the x axis
          - delta_y: the distance the mouse will scroll on the y axis
+         - origin: element whose center is the origination point of the scroll; the default is upper left of viewport.
         """
         self.w3c_actions.wheel_action.scroll(x=x, y=y, delta_x=delta_x, delta_y=delta_y,
                                              duration=duration, origin=origin)

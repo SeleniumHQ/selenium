@@ -355,3 +355,5 @@ RSpec/FactoryBot/SyntaxMethods: # new in 2.7
   Enabled: true
 RSpec/Rails/AvoidSetupHook: # new in 2.4
   Enabled: true
+Style/EnvHome: # new in 1.29
+  Enabled: true
