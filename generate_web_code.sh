@@ -1,8 +1,7 @@
 #!/usr/bin/env bash
 
 # copy website to build
-mkdir build/web
-cp -R common/src/web build/web
+cp -R common/src/web build
 
 # switch to gh-pages and copy the files
 git checkout gh-pages || exit
