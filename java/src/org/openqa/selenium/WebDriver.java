@@ -279,6 +279,7 @@ public interface WebDriver extends SearchContext {
      * @return the interface for controlling IME engines to generate complex-script input.
      * @deprecated Will be removed. IME is not part of W3C WebDriver and does not work on browsers.
      */
+    @Deprecated
     ImeHandler ime();
 
     /**
@@ -637,6 +638,7 @@ public interface WebDriver extends SearchContext {
    * @deprecated Will be removed. IME is not part of W3C WebDriver and does not work on browsers.
    * An interface for managing input methods.
    */
+  @Deprecated
   interface ImeHandler {
     /**
      * All available engines on the machine. To use an engine, it has to be activated.
