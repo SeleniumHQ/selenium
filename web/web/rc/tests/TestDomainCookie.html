@@ -1,0 +1,133 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!--
+Copyright 2011 Software Freedom Conservancy
+
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+<html>
+<head>
+    <meta content="text/html; charset=ISO-8859-1"
+          http-equiv="content-type">
+    <title>Test Cookie</title>
+</head>
+<body>
+    
+    <p>WARNING 1: You can only run this test off of a "real" webserver (i.e. over http); you can't run this test directly off of the file system.</p>
+    <p>WARNING 2: This test requires your domain name to contain two dots.  (Not really... just define blah.mydomain.org to be 127.0.0.1 in your hosts file.)  For this reason, the test can't be run as part of a nightly suite.</p>
+<table cellpadding="1" cellspacing="1" border="1">
+    <tbody>
+        <tr>
+            <td rowspan="1" colspan="3">Test Cookie<br>
+            </td>
+        </tr>
+        <tr>
+            <td>storeEval</td>
+            <td>parseUrl(canonicalize(absolutify("html", selenium.browserbot.baseUrl))).host;</td>
+            <td>host</td>
+        </tr>
+        <tr>
+            <td>echo</td>
+            <td>${host}</td>
+            <td>&nbsp;</td>
+        </tr>
+        <tr>
+            <td>assertExpression</td>
+            <td>${host}</td>
+            <td>*.*.*</td>
+        </tr>
+        <tr>
+            <td>storeEval</td>
+            <td>var host = parseUrl(canonicalize(absolutify("html", selenium.browserbot.baseUrl))).host;  host.replace(/^[^\.]*/, "");</td>
+            <td>domain</td>
+        </tr>
+        <tr>
+            <td>echo</td>
+            <td>${domain}</td>
+            <td>&nbsp;</td>
+        </tr>
+        <tr>
+            <td>storeEval</td>
+            <td>parseUrl(canonicalize(absolutify("html", selenium.browserbot.baseUrl))).pathname;</td>
+            <td>base</td>
+        </tr>
+        
+        <tr>
+            <td>echo</td>
+            <td>${base}</td>
+            <td>&nbsp;</td>
+        </tr>
+        <tr>
+            <td>open</td>
+            <td>${base}/path1/cookie1.html</td>
+            <td>&nbsp;</td>
+        </tr>
+        <tr>
+            <td>deleteCookie</td>
+            <td> testCookieWithSameName</td>
+            <td>path=/</td>
+        </tr>
+        <tr>
+            <td>deleteCookie</td>
+            <td> addedCookieForPath1</td>
+            <td>path=${base}/path1/</td>
+        </tr>
+        <tr>
+            <td>deleteCookie</td>
+            <td>domainCookie</td>
+            <td>domain=${domain}; path=/</td>
+        </tr>
+        <tr>
+            <td>assertCookie</td>
+            <td></td>
+            <td>&nbsp;</td>
+        </tr>
+    </tbody>
+</table>
+
+<table cellpadding="1" cellspacing="1" border="1">
+    <tbody>
+        <tr>
+            <td>open</td>
+            <td>${base}/path1/cookie1.html</td>
+            <td>&nbsp;</td>
+        </tr>
+        <tr>
+            <td>createCookie</td>
+            <td>domainCookie=domain value</td>
+            <td>domain=${domain}; path=/</td>
+        </tr>
+        <tr>
+            <td>assertCookieByName</td>
+            <td>domainCookie</td>
+            <td>domain value</td>
+        </tr>
+        <tr>
+            <td>deleteCookie</td>
+            <td>domainCookie</td>
+            <td>domain=${domain}; path=/</td>
+        </tr>
+        <tr>
+            <td>assertCookieNotPresent</td>
+            <td>domainCookie</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>assertCookie</td>
+            <td></td>
+            <td>&nbsp;</td>
+        </tr>
+    </tbody>
+</table>
+
+</body>
+</html>
