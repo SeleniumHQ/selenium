@@ -660,6 +660,9 @@ public class EventFiringWebDriver implements
       return new EventFiringTimeouts(options.timeouts());
     }
 
+    /**
+     * @deprecated Will be removed. IME is not part of W3C WebDriver and does not work on browsers.
+     */
     @Override
     public ImeHandler ime() {
       return options.ime();

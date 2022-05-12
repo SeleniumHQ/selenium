@@ -17,13 +17,6 @@
 
 package org.openqa.selenium.remote;
 
-import static java.util.Collections.singleton;
-import static java.util.concurrent.TimeUnit.SECONDS;
-import static org.openqa.selenium.remote.CapabilityType.LOGGING_PREFS;
-import static org.openqa.selenium.remote.CapabilityType.PLATFORM;
-import static org.openqa.selenium.remote.CapabilityType.PLATFORM_NAME;
-import static org.openqa.selenium.remote.CapabilityType.SUPPORTS_JAVASCRIPT;
-
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 
@@ -97,7 +90,13 @@ import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static java.util.Collections.singleton;
+import static java.util.concurrent.TimeUnit.SECONDS;
 import static java.util.logging.Level.SEVERE;
+import static org.openqa.selenium.remote.CapabilityType.LOGGING_PREFS;
+import static org.openqa.selenium.remote.CapabilityType.PLATFORM;
+import static org.openqa.selenium.remote.CapabilityType.PLATFORM_NAME;
+import static org.openqa.selenium.remote.CapabilityType.SUPPORTS_JAVASCRIPT;
 
 @Augmentable
 public class RemoteWebDriver implements WebDriver,
@@ -837,6 +836,9 @@ public class RemoteWebDriver implements WebDriver,
       return new RemoteTimeouts();
     }
 
+    /**
+     * @deprecated Will be removed. IME is not part of W3C WebDriver and does not work on browsers.
+     */
     @Override
     public ImeHandler ime() {
       return new RemoteInputMethodManager();
@@ -848,6 +850,9 @@ public class RemoteWebDriver implements WebDriver,
       return new RemoteWindow();
     }
 
+    /**
+     * @deprecated Will be removed. IME is not part of W3C WebDriver and does not work on browsers.
+     */
     protected class RemoteInputMethodManager implements WebDriver.ImeHandler {
 
       @Override
