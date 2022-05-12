@@ -853,6 +853,7 @@ public class RemoteWebDriver implements WebDriver,
     /**
      * @deprecated Will be removed. IME is not part of W3C WebDriver and does not work on browsers.
      */
+    @Deprecated
     protected class RemoteInputMethodManager implements WebDriver.ImeHandler {
 
       @Override
