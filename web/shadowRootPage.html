@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Shadow Root Page</title>
+</head>
+<body>
+    <style>
+        custom-checkbox-element {
+            display:block; width:20px; height:20px;
+        }
+    </style>
+    <div><input id="noShadowRoot" /></div>
+    <div><custom-checkbox-element></custom-checkbox-element></div>
+    <script>
+        customElements.define('custom-checkbox-element',
+            class extends HTMLElement {
+                constructor() {
+                    super();
+                    this.attachShadow({mode: 'open'}).innerHTML = '<div><input type="checkbox"/></div>';
+                }
+            }
+        );
+    </script>
+</body>
+</html>

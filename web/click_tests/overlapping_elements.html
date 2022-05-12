@@ -1,0 +1,70 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <title>An element that disappears on click</title>
+  <style>
+#under {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  width: 100px;
+  height: 100px;
+  background-color: white;
+}
+
+#partially_under {
+  position: absolute;
+  top: 20px;
+  left: 10px;
+  width: 100px;
+  height: 100px;
+  background-color: blue;
+  opacity: 0.5;
+}
+
+#over {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  width: 100px;
+  height: 100px;
+  background-color: red;
+  opacity: 0.5;
+}
+
+#log {
+  position: absolute;
+  top: 120px;
+}
+  </style>
+</head>
+<body id="body">
+  <div id="under"><p id="contents">Hello</p></div>
+  <div id="partially_under"><p id="other_contents">Hello</p></div>
+  <div id="over"></div>
+  <div id="log">
+    <p>Log:<p>
+  </div>
+<script>
+var byId = document.getElementById.bind(document);
+
+var log = byId("log");
+
+function handler(ev) {
+  log.innerHTML += "<p></p>";
+  log.lastElementChild.textContent = ev.type + " in " + ev.target.id + " (handled by " + ev.currentTarget.id + ")\n";
+}
+
+var under = byId("under");
+var over = byId("over");
+var body = document.body;
+
+var types = ["click", "mousedown", "mouseup"];
+for (var i = 0, type; (type = types[i]); ++i) {
+  under.addEventListener(type, handler);
+  over.addEventListener(type, handler);
+  body.addEventListener(type, handler);
+}
+</script>
+</body>
+</html>

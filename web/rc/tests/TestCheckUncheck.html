@@ -1,0 +1,133 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!--
+Copyright 2011 Software Freedom Conservancy
+
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+<html>
+<head>
+  <meta content="text/html; charset=ISO-8859-1"
+ http-equiv="content-type">
+  <title>Test check/uncheck of toggle-buttons</title>
+</head>
+<body>
+<table cellpadding="1" cellspacing="1" border="1">
+  <tbody>
+    <tr>
+      <th colspan="3">Test check/uncheck of toggle-buttons</th>
+    </tr>
+    <tr>
+      <td colspan="3"><em>"toggle buttons" == check-boxes and radio-buttons</em></td>
+    </tr>
+    <tr>
+      <td>open</td>
+      <td>../tests/html/test_check_uncheck.html</td>
+      <td>&nbsp;</td>
+    </tr>
+
+    <tr>
+      <td colspan="3"><em>check initial state</em></td>
+    </tr>
+    <tr>
+      <td>verifyChecked</td>
+      <td>base-spud</td>
+      <td>&nbsp;</td>
+    </tr>
+    <tr>
+      <td>verifyNotChecked</td>
+      <td>base-rice</td>
+      <td>&nbsp;</td>
+    </tr>
+    <tr>
+      <td>verifyChecked</td>
+      <td>option-cheese</td>
+      <td>&nbsp;</td>
+    </tr>
+    <tr>
+      <td>verifyNotChecked</td>
+      <td>option-onions</td>
+      <td>&nbsp;</td>
+    </tr>
+
+    <tr>
+      <td colspan="3"><em>okay, now start pushing buttons</em></td>
+    </tr>
+    <tr>
+      <td>check</td>
+      <td>base-rice</td>
+      <td>&nbsp;</td>
+    </tr>
+    <tr>
+      <td>verifyNotChecked</td>
+      <td>base-spud</td>
+      <td>&nbsp;</td>
+    </tr>
+    <tr>
+      <td>verifyChecked</td>
+      <td>base-rice</td>
+      <td>&nbsp;</td>
+    </tr>
+    <tr>
+      <td>uncheck</td>
+      <td>option-cheese</td>
+      <td>&nbsp;</td>
+    </tr>
+    <tr>
+      <td>verifyNotChecked</td>
+      <td>option-cheese</td>
+      <td>&nbsp;</td>
+    </tr>
+    <tr>
+      <td>check</td>
+      <td>option-onions</td>
+      <td>&nbsp;</td>
+    </tr>
+    <tr>
+      <td>verifyChecked</td>
+      <td>option-onions</td>
+      <td>&nbsp;</td>
+    </tr>
+
+    <tr>
+      <td colspan="3"><em>address elements by name+value</em></td>
+    </tr>
+    <tr>
+      <td>verifyNotChecked</td>
+      <td>option-chilli</td>
+      <td>&nbsp;</td>
+    </tr>
+    <tr>
+      <td>check</td>
+      <td>option chilli</td>
+      <td>&nbsp;</td>
+    </tr>
+    <tr>
+      <td>verifyChecked</td>
+      <td>option-chilli</td>
+      <td>&nbsp;</td>
+    </tr>
+    <tr>
+      <td>uncheck</td>
+      <td>option index=3</td>
+      <td>&nbsp;</td>
+    </tr>
+    <tr>
+      <td>verifyNotChecked</td>
+      <td>option-chilli</td>
+      <td>&nbsp;</td>
+    </tr>
+    
+  </tbody>
+</table>
+</body>
+</html>

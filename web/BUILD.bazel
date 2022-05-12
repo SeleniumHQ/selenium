@@ -1,0 +1,13 @@
+filegroup(
+    name = "web",
+    srcs = glob([
+        "*",
+        "**/*",
+    ]),
+    visibility = [
+        "//dotnet/test:__subpackages__",
+        "//java/test/org/openqa/selenium/environment:__pkg__",
+        "//javascript/node/selenium-webdriver:__pkg__",
+        "//py:__pkg__",
+    ],
+)
