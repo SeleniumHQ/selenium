@@ -25,7 +25,8 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
-import org.openqa.selenium.interactions.PointerInput.Origin;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.WrapsElement;
 import org.openqa.selenium.internal.Require;
 
 /**
@@ -89,8 +90,6 @@ public class WheelInput implements InputSource, Encodable {
       this.deltaY = deltaY;
       this.duration = nonNegative(duration);
       this.origin = Require.nonNull("Origin of scroll", origin);
-      Require.precondition(!origin.asArg().equals("pointer"),
-                           "Wheel input only accepts viewport or element origin." );
     }
 
     @Override
@@ -106,6 +105,30 @@ public class WheelInput implements InputSource, Encodable {
       toReturn.put("origin", origin.asArg());
 
       return toReturn;
+    }
+  }
+
+  public static final class Origin {
+    private final Object originObject;
+
+    public Object asArg() {
+      Object arg = originObject;
+      while (arg instanceof WrapsElement) {
+        arg = ((WrapsElement) arg).getWrappedElement();
+      }
+      return arg;
+    }
+
+    private Origin(Object originObject) {
+      this.originObject = originObject;
+    }
+
+    public static WheelInput.Origin viewport() {
+      return new WheelInput.Origin("viewport");
+    }
+
+    public static WheelInput.Origin fromElement(WebElement element) {
+      return new WheelInput.Origin(Require.nonNull("Element", element));
     }
   }
 }
