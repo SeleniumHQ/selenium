@@ -123,8 +123,8 @@ module Selenium
       # @see ActionBuilder
       #
 
-      def action
-        bridge.action
+      def action(**opts)
+        bridge.action(**opts)
       end
 
       def mouse
