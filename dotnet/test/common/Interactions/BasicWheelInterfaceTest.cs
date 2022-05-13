@@ -26,12 +26,7 @@ namespace OpenQA.Selenium.Interactions
 
             Assert.IsFalse(IsInViewport(iframe));
 
-            var scrollOrigin = new WheelInputDevice.ScrollOrigin
-            {
-                Element = iframe
-            };
-
-            new Actions(driver).Scroll(0, 0, 0, 0, scrollOrigin).Build().Perform();
+            new Actions(driver).ScrollToElement(iframe).Build().Perform();
 
             Assert.IsTrue(IsInViewport(iframe));
         }
@@ -46,7 +41,7 @@ namespace OpenQA.Selenium.Interactions
                 Element = iframe
             };
 
-            new Actions(driver).Scroll(0, 0, 0, 200, scrollOrigin).Build().Perform();
+            new Actions(driver).ScrollFromOrigin(scrollOrigin, 0, 200).Build().Perform();
 
             driver.SwitchTo().Frame(iframe);
             IWebElement checkbox = driver.FindElement(By.Name("scroll_checkbox"));
@@ -60,10 +55,12 @@ namespace OpenQA.Selenium.Interactions
             IWebElement footer = driver.FindElement(By.TagName("footer"));
             var scrollOrigin = new WheelInputDevice.ScrollOrigin
             {
-                Element = footer
+                Element = footer,
+                XOffset = 0,
+                YOffset = -50
             };
 
-            new Actions(driver).Scroll(0, -50, 0, 200, scrollOrigin).Build().Perform();
+            new Actions(driver).ScrollFromOrigin(scrollOrigin, 0, 200).Build().Perform();
 
             IWebElement iframe = driver.FindElement(By.TagName("iframe"));
             driver.SwitchTo().Frame(iframe);
@@ -78,10 +75,12 @@ namespace OpenQA.Selenium.Interactions
             IWebElement footer = driver.FindElement(By.TagName("footer"));
             var scrollOrigin = new WheelInputDevice.ScrollOrigin
             {
-                Element = footer
+                Element = footer,
+                XOffset = 0,
+                YOffset = 50
             };
 
-            Assert.That(() => new Actions(driver).Scroll(0, 50, 0, 0, scrollOrigin).Build().Perform(),
+            Assert.That(() => new Actions(driver).ScrollFromOrigin(scrollOrigin, 0, 200).Build().Perform(),
                 Throws.InstanceOf<MoveTargetOutOfBoundsException>());
         }
 
@@ -91,12 +90,8 @@ namespace OpenQA.Selenium.Interactions
             driver.Url = scrollFrameOutOfViewport;
             IWebElement footer = driver.FindElement(By.TagName("footer"));
             int deltaY = footer.Location.Y;
-            var scrollOrigin = new WheelInputDevice.ScrollOrigin
-            {
-                Viewport = true
-            };
 
-            new Actions(driver).Scroll(0, 0, 0, deltaY, scrollOrigin).Build().Perform();
+            new Actions(driver).ScrollByAmount(0, deltaY).Build().Perform();
 
             Assert.IsTrue(IsInViewport(footer));
         }
@@ -107,10 +102,12 @@ namespace OpenQA.Selenium.Interactions
             driver.Url = scrollFrameInViewport;
             var scrollOrigin = new WheelInputDevice.ScrollOrigin
             {
-                Viewport = true
+                Viewport = true,
+                XOffset = 10,
+                YOffset = 10
             };
 
-            new Actions(driver).Scroll(10, 10, 0, 200, scrollOrigin).Build().Perform();
+            new Actions(driver).ScrollFromOrigin(scrollOrigin, 0, 200).Build().Perform();
 
             IWebElement iframe = driver.FindElement(By.TagName("iframe"));
             driver.SwitchTo().Frame(iframe);
@@ -124,10 +121,12 @@ namespace OpenQA.Selenium.Interactions
             driver.Url = scrollFrameInViewport;
             var scrollOrigin = new WheelInputDevice.ScrollOrigin
             {
-                Viewport = true
+                Viewport = true,
+                XOffset = -10,
+                YOffset = -10
             };
 
-            Assert.That(() => new Actions(driver).Scroll(-10, -10, 0, 200, scrollOrigin).Build().Perform(),
+            Assert.That(() => new Actions(driver).ScrollFromOrigin(scrollOrigin, 0, 200).Build().Perform(),
                 Throws.InstanceOf<MoveTargetOutOfBoundsException>());
         }
 
