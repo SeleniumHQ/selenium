@@ -271,6 +271,15 @@ public class Actions {
     return moveInTicks(target, 0, 0).tick(getActivePointer().createPointerUp(LEFT.asArg()));
   }
 
+  /**
+   *
+   * @param x The horizontal offset from the origin from which to start the scroll.
+   * @param y The vertical offset from the origin from which to start the scroll.
+   * @param deltaX The distance along X axis to scroll using the wheel. A negative value scrolls left.
+   * @param deltaY The distance along Y axis to scroll using the wheel. A negative value scrolls up.
+   * @param origin Where scroll originates, either the viewport or the center of an element.
+   * @return A self reference.
+   */
   public Actions scroll( int x, int y, int deltaX, int deltaY, WheelInput.Origin origin) {
     return tick(getActiveWheel().createScroll(x, y, deltaX, deltaY, Duration.ofMillis(250), origin));
   }
