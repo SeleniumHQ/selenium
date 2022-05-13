@@ -18,7 +18,7 @@
 """
 The ActionChains implementation,
 """
-from typing import Union
+from .actions.wheel_input import ScrollOrigin
 
 from .utils import keys_to_typing
 from .actions.action_builder import ActionBuilder
@@ -323,25 +323,54 @@ class ActionChains:
         self.send_keys(*keys_to_send)
         return self
 
-    def scroll(self, x: int, y: int, delta_x: int, delta_y: int, duration: int = 0, origin: Union[str, WebElement] = "viewport"):
+    def scroll_to_element(self, element: WebElement):
         """
-        Scrolls by the provided amount from a designated origination point.
+        If the element is outside the viewport, scrolls the bottom of the element to the bottom of the viewport.
+
+        :Args:
+         - element: Which element to scroll into the viewport.
+        """
+
+        self.w3c_actions.wheel_action.scroll(origin=element)
+        return self
+
+    def scroll_by_amount(self, delta_x: int, delta_y: int):
+        """
+        Scrolls by provided amounts with the origin in the top left corner of the viewport.
+
+        :Args:
+         - delta_x: Distance along X axis to scroll using the wheel. A negative value scrolls left.
+         - delta_y: Distance along Y axis to scroll using the wheel. A negative value scrolls up.
+        """
+
+        self.w3c_actions.wheel_action.scroll(delta_x=delta_x, delta_y=delta_y)
+        return self
+
+    def scroll_from_origin(self, scroll_origin: ScrollOrigin, delta_x: int, delta_y: int):
+        """
+        Scrolls by provided amount based on a provided origin.
         The scroll origin is either the center of an element or the upper left of the viewport plus any offsets.
         If the origin is an element, and the element is not in the viewport, the bottom of the element will first
         be scrolled to the bottom of the viewport.
 
         :Args:
-         - x: The horizontal offset from the origin from which to start the scroll.
-         - y: The vertical offset from the origin from which to start the scroll.
+         - origin: Where scroll originates (viewport or element center) plus provided offsets.
          - delta_x: Distance along X axis to scroll using the wheel. A negative value scrolls left.
          - delta_y: Distance along Y axis to scroll using the wheel. A negative value scrolls up.
-         - origin: Where scroll originates (viewport or element center). The default is upper left of viewport.
 
          :Raises: If the origin with offset is outside the viewport.
           - MoveTargetOutOfBoundsException - If the origin with offset is outside the viewport.
         """
-        self.w3c_actions.wheel_action.scroll(x=x, y=y, delta_x=delta_x, delta_y=delta_y,
-                                             duration=duration, origin=origin)
+
+        if not isinstance(scroll_origin, ScrollOrigin):
+            raise TypeError('Expected object of type ScrollOrigin, got: '
+                            '{}'.format(type(scroll_origin)))
+
+        self.w3c_actions.wheel_action.scroll(origin=scroll_origin.origin,
+                                             x=scroll_origin.x_offset,
+                                             y=scroll_origin.y_offset,
+                                             delta_x=delta_x,
+                                             delta_y=delta_y)
         return self
 
     # Context manager so ActionChains can be used in a 'with .. as' statements.
