@@ -25,40 +25,70 @@ module Selenium
       end
 
       #
-      # Scrolls by the provided amount from a designated origination point.
-      #
-      # The scroll origin is either the center of an element or the upper left of the viewport plus offsets.
-      # If the origin is an element, and the element is not in the viewport, the bottom of the element will first
-      #   be scrolled to the bottom of the viewport.
+      # If the element is outside the viewport, scrolls the bottom of the element to the bottom of the viewport.
       #
       # @example Scroll to element
       #    el = driver.find_element(id: "some_id")
-      #    driver.action.scroll(origin: element).perform
+      #    driver.action.scroll_to(element).perform
       #
-      # @example Scroll from element by a specified amount
-      #    el = driver.find_element(id: "some_id")
-      #    driver.action.scroll(delta_x: 100, delta_y: 200, origin: element).perform
+      # @param [Object] Which element to scroll into the viewport.
+      # @return [Selenium::WebDriver::WheelActions] A self reference.
+      def scroll_to(element, device: nil)
+        scroll(origin: element, device: device)
+      end
+
       #
-      # @example Scroll from element by a specified amount with an offset
-      #    el = driver.find_element(id: "some_id")
-      #    driver.action.scroll(x: 10, y: 10, delta_x: 100, delta_y: 200, origin: element).perform
+      # Scrolls by provided amounts with the origin in the top left corner of the viewport.
       #
       # @example Scroll viewport by a specified amount
       #    el = driver.find_element(id: "some_id")
-      #    driver.action.scroll(delta_x: 100, delta_y: 200).perform
+      #    driver.action.scroll_by(100, 200).perform
+      #
+      # @param [Integer] delta_x Distance along X axis to scroll using the wheel. A negative value scrolls left.
+      # @param [Integer] delta_y Distance along Y axis to scroll using the wheel. A negative value scrolls up.
+      # @return [Selenium::WebDriver::WheelActions] A self reference.
+      def scroll_by(delta_x, delta_y, device: nil)
+        scroll(delta_x: delta_x, delta_y: delta_y, device: device)
+      end
+
+      #
+      # Scrolls by provided amount based on a provided origin.
+      #
+      # The scroll origin is either the center of an element or the upper left of the viewport plus any offsets.
+      # If the origin is an element, and the element is not in the viewport, the bottom of the element will first
+      #   be scrolled to the bottom of the viewport.
+      #
+      # @example Scroll from element by a specified amount
+      #    el = driver.find_element(id: "some_id")
+      #    origin = WheelActions::ScrollOrigin.element(el)
+      #    driver.action.scroll_from(origin, 0, 200).perform
+      #
+      # @example Scroll from element by a specified amount with an offset
+      #    el = driver.find_element(id: "some_id")
+      #    origin = WheelActions::ScrollOrigin.element(el, 10, 10)
+      #    driver.action.scroll_from(origin, 100, 200).perform
       #
       # @example Scroll viewport by a specified amount with an offset
-      #    el = driver.find_element(id: "some_id")
-      #    driver.action.scroll(x: 10, y: 10, delta_x: 100, delta_y: 200).perform
+      #    origin = WheelActions::ScrollOrigin.viewport(10, 10)
+      #    driver.action.scroll_from(origin, 0, 200).perform
       #
-      # @option opts [Integer] x The horizontal offset from the origin from which to start the scroll.
-      # @option opts [Integer] y The vertical offset from the origin from which to start the scroll.
-      # @option opts [Integer] delta_x Distance along X axis to scroll using the wheel. A negative value scrolls left.
-      # @option opts [Integer] delta_y Distance along Y axis to scroll using the wheel. A negative value scrolls up.
-      # @option opts [String, Element] origin The origin of the scroll, either the viewport or the center of an element.
+      # @param [ScrollOrigin] scroll_origin Where scroll originates (viewport or element center) plus provided offsets.
+      # @param [Integer] delta_x Distance along X axis to scroll using the wheel. A negative value scrolls left.
+      # @param [Integer] delta_y Distance along Y axis to scroll using the wheel. A negative value scrolls up.
       # @return [Selenium::WebDriver::WheelActions] A self reference.
       # @raise [Error::MoveTargetOutOfBoundsError] If the origin with offset is outside the viewport.
-      #
+      def scroll_from(scroll_origin, delta_x, delta_y, device: nil)
+        raise TypeError, "#{scroll_origin.inspect} isn't a valid ScrollOrigin" unless scroll_origin.is_a?(ScrollOrigin)
+
+        scroll(x: scroll_origin.x_offset,
+               y: scroll_origin.y_offset,
+               delta_x: delta_x,
+               delta_y: delta_y,
+               origin: scroll_origin.origin,
+               device: device)
+      end
+
+      private
 
       def scroll(**opts)
         opts[:duration] = default_scroll_duration
@@ -67,8 +97,6 @@ module Selenium
         tick(wheel)
         self
       end
-
-      private
 
       def wheel_input(name = nil)
         device(name: name, type: Interactions::WHEEL) || add_wheel_input('wheel')
