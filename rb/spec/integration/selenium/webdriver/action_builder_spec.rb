@@ -296,7 +296,7 @@ module Selenium
           driver.navigate.to url_for('scrolling_tests/frame_with_nested_scrolling_frame_out_of_view.html')
 
           footer = driver.find_element(tag_name: 'footer')
-          driver.action.scroll(x: 0, y: -50, delta_y: 200, origin: footer).perform
+          driver.action.scroll(y: -50, delta_y: 200, origin: footer).perform
 
           driver.switch_to.frame(driver.find_element(tag_name: 'iframe'))
           checkbox = driver.find_element(name: 'scroll_checkbox')
@@ -312,7 +312,7 @@ module Selenium
           }.to raise_error(Error::MoveTargetOutOfBoundsError)
         end
 
-        it 'scrolls from element by given amount with' do
+        it 'scrolls by given amount' do
           driver.navigate.to url_for('scrolling_tests/frame_with_nested_scrolling_frame_out_of_view.html')
           footer = driver.find_element(tag_name: 'footer')
 
@@ -321,7 +321,7 @@ module Selenium
           expect(in_viewport?(footer)).to eq true
         end
 
-        it 'scrolls by amount provided' do
+        it 'scrolls by given amount with offset' do
           driver.navigate.to url_for('scrolling_tests/frame_with_nested_scrolling_frame.html')
 
           driver.action.scroll(x: 10, y: 10, delta_y: 200).perform
