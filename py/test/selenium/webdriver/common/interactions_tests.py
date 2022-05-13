@@ -18,6 +18,7 @@
 """Tests for advanced user interactions."""
 import pytest
 from selenium.common.exceptions import MoveTargetOutOfBoundsException
+from selenium.webdriver.common.actions.wheel_input import ScrollOrigin
 
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
@@ -269,7 +270,7 @@ def test_can_scroll_to_element(driver, pages):
 
     assert not _in_viewport(driver, iframe)
 
-    ActionChains(driver).scroll(0, 0, 0, 0, origin=iframe).perform()
+    ActionChains(driver).scroll_to_element(iframe).perform()
 
     assert _in_viewport(driver, iframe)
 
@@ -279,8 +280,9 @@ def test_can_scroll_to_element(driver, pages):
 def test_can_scroll_from_element_by_amount(driver, pages):
     pages.load("scrolling_tests/frame_with_nested_scrolling_frame_out_of_view.html")
     iframe = driver.find_element(By.TAG_NAME, "iframe")
+    scroll_origin = ScrollOrigin.from_element(iframe)
 
-    ActionChains(driver).scroll(0, 0, 0, 200, origin=iframe).pause(0.2).perform()
+    ActionChains(driver).scroll_from_origin(scroll_origin, 0, 200).pause(0.2).perform()
 
     driver.switch_to.frame(iframe)
     checkbox = driver.find_element(By.NAME, "scroll_checkbox")
@@ -292,8 +294,9 @@ def test_can_scroll_from_element_by_amount(driver, pages):
 def test_can_scroll_from_element_with_offset_by_amount(driver, pages):
     pages.load("scrolling_tests/frame_with_nested_scrolling_frame_out_of_view.html")
     footer = driver.find_element(By.TAG_NAME, "footer")
+    scroll_origin = ScrollOrigin.from_element(footer, 0, -50)
 
-    ActionChains(driver).scroll(0, -50, 0, 200, origin=footer).pause(0.2).perform()
+    ActionChains(driver).scroll_from_origin(scroll_origin, 0, 200).pause(0.2).perform()
 
     iframe = driver.find_element(By.TAG_NAME, "iframe")
     driver.switch_to.frame(iframe)
@@ -306,9 +309,10 @@ def test_can_scroll_from_element_with_offset_by_amount(driver, pages):
 def test_errors_when_element_offset_not_in_viewport(driver, pages):
     pages.load("scrolling_tests/frame_with_nested_scrolling_frame_out_of_view.html")
     footer = driver.find_element(By.TAG_NAME, "footer")
+    scroll_origin = ScrollOrigin.from_element(footer, 0, 50)
 
     with pytest.raises(MoveTargetOutOfBoundsException):
-        ActionChains(driver).scroll(0, 50, 0, 200, origin=footer).perform()
+        ActionChains(driver).scroll_from_origin(scroll_origin, 0, 200).pause(0.2).perform()
 
 
 @pytest.mark.xfail_firefox
@@ -318,7 +322,7 @@ def test_can_scroll_from_viewport_by_amount(driver, pages):
     footer = driver.find_element(By.TAG_NAME, "footer")
     delta_y = footer.rect['y']
 
-    ActionChains(driver).scroll(0, 0, 0, delta_y).pause(0.2).perform()
+    ActionChains(driver).scroll_by_amount(0, delta_y).pause(0.2).perform()
 
     assert _in_viewport(driver, footer)
 
@@ -327,8 +331,9 @@ def test_can_scroll_from_viewport_by_amount(driver, pages):
 @pytest.mark.xfail_remote
 def test_can_scroll_from_viewport_with_offset_by_amount(driver, pages):
     pages.load("scrolling_tests/frame_with_nested_scrolling_frame.html")
+    scroll_origin = ScrollOrigin.from_viewport(10, 10)
 
-    ActionChains(driver).scroll(10, 10, 0, 200).pause(0.2).perform()
+    ActionChains(driver).scroll_from_origin(scroll_origin, 0, 200).pause(0.2).perform()
 
     iframe = driver.find_element(By.TAG_NAME, "iframe")
     driver.switch_to.frame(iframe)
@@ -340,9 +345,10 @@ def test_can_scroll_from_viewport_with_offset_by_amount(driver, pages):
 @pytest.mark.xfail_remote
 def test_errors_when_origin_offset_not_in_viewport(driver, pages):
     pages.load("scrolling_tests/frame_with_nested_scrolling_frame.html")
+    scroll_origin = ScrollOrigin.from_viewport(-10, -10)
 
     with pytest.raises(MoveTargetOutOfBoundsException):
-        ActionChains(driver).scroll(-10, -10, 0, 200).perform()
+        ActionChains(driver).scroll_from_origin(scroll_origin, 0, 200).pause(0.2).perform()
 
 
 def _get_events(driver):
