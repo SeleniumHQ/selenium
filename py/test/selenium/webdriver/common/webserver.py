@@ -50,7 +50,8 @@ if not os.path.isdir(HTML_ROOT):
     LOGGER.error(message)
     assert 0, message
 
-DEFAULT_HOST = "127.0.0.1"
+DEFAULT_HOST = "localhost"
+DEFAULT_HOST_IP = "127.0.0.1"
 DEFAULT_PORT = 8000
 
 
@@ -132,7 +133,7 @@ class SimpleWebServer:
 
     def __init__(self, host=DEFAULT_HOST, port=DEFAULT_PORT):
         self.stop_serving = False
-        host = host
+        host = DEFAULT_HOST if host == DEFAULT_HOST_IP else host
         port = port
         while True:
             try:

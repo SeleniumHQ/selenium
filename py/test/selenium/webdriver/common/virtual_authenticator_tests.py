@@ -15,16 +15,16 @@
 # specific language governing permissions and limitations
 # under the License.
 
+from typing import List
 import pytest
-from base64 import b64decode
+from base64 import b64decode, urlsafe_b64decode, urlsafe_b64encode
 
+from selenium.common.exceptions import InvalidArgumentException
 from selenium.webdriver.remote.webdriver import WebDriver
 from selenium.webdriver.common.virtual_authenticator import (
     Credential,
     VirtualAuthenticatorOptions,
 )
-from selenium.webdriver.support.ui import Select, WebDriverWait
-from selenium.webdriver.common.by import By
 
 
 # working Key
@@ -67,7 +67,7 @@ def create_rk_disabled_u2f_authenticator(driver) -> WebDriver:
     return driver
 
 
-def create_rk_enabled_authenticator(driver) -> WebDriver:
+def create_rk_enabled_ctap2_authenticator(driver) -> WebDriver:
     options = VirtualAuthenticatorOptions()
     options.protocol = VirtualAuthenticatorOptions.Protocol.CTAP2
     options.has_resident_key = True
@@ -77,7 +77,7 @@ def create_rk_enabled_authenticator(driver) -> WebDriver:
     return driver
 
 
-def create_rk_disabled_authenticator(driver) -> WebDriver:
+def create_rk_disabled_ctap2_authenticator(driver) -> WebDriver:
     options = VirtualAuthenticatorOptions()
     options.protocol = VirtualAuthenticatorOptions.Protocol.CTAP2
     options.transport = VirtualAuthenticatorOptions.Transport.USB
@@ -88,15 +88,31 @@ def create_rk_disabled_authenticator(driver) -> WebDriver:
     return driver
 
 
+def get_assertion_for(webdriver: WebDriver, credential_id: List[int]):
+    return webdriver.execute_async_script('''
+        getCredential([{
+            "type": "public-key",
+            "id": Int8Array.from(arguments[0]),
+        }]).then(arguments[arguments.length - 1]);
+    ''', credential_id)
+
+
+def extract_id(response):
+    return response.get("credential", {}).get("id", "")
+
+
 # ---------------- TESTS ------------------------------------
-# TODO: add JS verfication code for tests as in JAVA
 @pytest.mark.xfail_firefox
 @pytest.mark.xfail_safari
 @pytest.mark.xfail_remote
 def test_add_and_remove_virtual_authenticator(driver, pages):
-    driver = create_rk_disabled_authenticator(driver)
+    driver = create_rk_disabled_ctap2_authenticator(driver)
+    driver.get(pages.url("virtual-authenticator.html"))
 
-    pages.load("virtual-authenticator.html")
+    result = driver.execute_async_script("registerCredential().then(arguments[arguments.length - 1]);")
+    assert result.get('status', '') == 'OK'
+
+    assert get_assertion_for(driver, result["credential"]["rawId"]).get('status', '') == 'OK'
 
     assert driver.virtual_authenticator_id is not None
 
@@ -108,9 +124,9 @@ def test_add_and_remove_virtual_authenticator(driver, pages):
 @pytest.mark.xfail_safari
 @pytest.mark.xfail_remote
 def test_add_and_remove_non_resident_credentials(driver, pages):
-    driver = create_rk_disabled_authenticator(driver)
+    driver = create_rk_disabled_ctap2_authenticator(driver)
 
-    pages.load("virtual-authenticator.html")
+    driver.get(pages.url("virtual-authenticator.html"))
 
     assert driver.virtual_authenticator_id is not None
 
@@ -121,21 +137,8 @@ def test_add_and_remove_non_resident_credentials(driver, pages):
         0,
     )
 
-    credential2 = Credential.create_non_resident_credential(
-        bytearray({1, 2, 3, 4, 5}),
-        "localhost",
-        b64decode(BASE64__ENCODED_PK),
-        1,
-    )
-
     driver.add_credential(credential)
-    assert len(driver.get_credentials()) == 1
-
-    driver.add_credential(credential2)
-    assert len(driver.get_credentials()) == 2
-
-    driver.remove_credential(credential.id)
-    assert len(driver.get_credentials()) == 1
+    assert get_assertion_for(driver, [1, 2, 3, 4]).get('status', '') == 'OK'
 
     driver.remove_virtual_authenticator()
     assert driver.virtual_authenticator_id is None
@@ -144,35 +147,24 @@ def test_add_and_remove_non_resident_credentials(driver, pages):
 @pytest.mark.xfail_firefox
 @pytest.mark.xfail_safari
 @pytest.mark.xfail_remote
-def test_add_and_remove_resident_credentials(driver, pages):
-    driver = create_rk_enabled_authenticator(driver)
+def test_add_non_resident_credential_when_authenticator_uses_u2f_protocol(driver, pages):
+    driver = create_rk_disabled_u2f_authenticator(driver)
+    driver.get(pages.url("virtual-authenticator.html"))
 
-    pages.load("virtual-authenticator.html")
-    assert driver.virtual_authenticator_id is not None
+    base64_pk = '''
+    MIGHAgEAMBMGByqGSM49AgEGCCqGSM49AwEHBG0wawIBAQQg8_zMDQDYAxlU-Q
+    hk1Dwkf0v18GZca1DMF3SaJ9HPdmShRANCAASNYX5lyVCOZLzFZzrIKmeZ2jwU
+    RmgsJYxGP__fWN_S-j5sN4tT15XEpN_7QZnt14YvI6uvAgO0uJEboFaZlOEB
+    '''
 
     credential = Credential.create_non_resident_credential(
         bytearray({1, 2, 3, 4}),
         "localhost",
-        b64decode(BASE64__ENCODED_PK),
+        urlsafe_b64decode(base64_pk),
         0,
     )
-
-    credential2 = Credential.create_resident_credential(
-        bytearray({1, 2, 3, 4, 5}),
-        "localhost",
-        bytearray({1}),
-        b64decode(BASE64__ENCODED_PK),
-        1,
-    )
-
     driver.add_credential(credential)
-    assert len(driver.get_credentials()) == 1
-
-    driver.add_credential(credential2)
-    assert len(driver.get_credentials()) == 2
-
-    driver.remove_credential(credential.id)
-    assert len(driver.get_credentials()) == 1
+    assert get_assertion_for(driver, [1, 2, 3, 4]).get('status', '') == 'OK'
 
     driver.remove_virtual_authenticator()
 
@@ -180,73 +172,169 @@ def test_add_and_remove_resident_credentials(driver, pages):
 @pytest.mark.xfail_firefox
 @pytest.mark.xfail_safari
 @pytest.mark.xfail_remote
-def test_remove_all_credentials(driver):
-    options = VirtualAuthenticatorOptions()
-    options.has_resident_key = True
+def test_add_resident_credential_not_supported_when_authenticator_uses_u2f_protocol(driver, pages):
+    driver = create_rk_enabled_u2f_authenticator(driver)
+    driver.get(pages.url("virtual-authenticator.html"))
 
-    driver.add_virtual_authenticator(options)
-    assert driver.virtual_authenticator_id is not None
+    base64_pk = '''
+    MIGHAgEAMBMGByqGSM49AgEGCCqGSM49AwEHBG0wawIBAQQg8_zMDQDYAxlU-Q
+    hk1Dwkf0v18GZca1DMF3SaJ9HPdmShRANCAASNYX5lyVCOZLzFZzrIKmeZ2jwU
+    RmgsJYxGP__fWN_S-j5sN4tT15XEpN_7QZnt14YvI6uvAgO0uJEboFaZlOEB
+    '''
 
-    credential = Credential.create_non_resident_credential(
+    credential = Credential.create_resident_credential(
         bytearray({1, 2, 3, 4}),
         "localhost",
-        b64decode(BASE64__ENCODED_PK),
+        bytearray({1}),
+        urlsafe_b64decode(base64_pk),
         0,
     )
+    try:
+        driver.add_credential(credential)
+    except InvalidArgumentException:
+        assert True
+    except Exception:
+        assert False
 
-    credential2 = Credential.create_resident_credential(
-        bytearray({1, 2, 3, 4, 5}),
-        "localhost",
-        bytearray({1}),
-        b64decode(BASE64__ENCODED_PK),
-        1,
+    driver.remove_virtual_authenticator()
+
+
+@pytest.mark.xfail_firefox
+@pytest.mark.xfail_safari
+@pytest.mark.xfail_remote
+def test_get_credentials(driver, pages):
+    driver = create_rk_enabled_ctap2_authenticator(driver)
+    driver.get(pages.url("virtual-authenticator.html"))
+
+    # Register a Resident Credential
+    response1 = driver.execute_async_script('''
+    registerCredential({authenticatorSelection: {requireResidentKey: true}})
+    .then(arguments[arguments.length - 1]);
+    ''')
+    assert response1.get('status', '') == 'OK'
+
+    # Register a Non-Resident Credential
+    response2 = driver.execute_async_script("registerCredential().then(arguments[arguments.length - 1]);")
+    assert response2.get('status', '') == 'OK'
+
+    assert extract_id(response1) != extract_id(response2)
+
+    # Retrieve the two credentials
+    credentials = driver.get_credentials()
+    assert len(credentials) == 2
+
+    credential1, credential2 = None, None
+
+    for credential in credentials:
+        # Using startswith because there can be padding difference '==' or '=' in the end
+        if credential.id.startswith(extract_id(response1)):
+            credential1: Credential = credential
+        elif credential.id.startswith(extract_id(response2)):
+            credential2: Credential = credential
+        else:
+            assert False, "Unknown credential"
+
+    if credential1.is_resident_credential:
+        assert True
+    if credential1.private_key is not None:
+        assert True
+    assert credential1.rp_id == "localhost"
+    assert credential1.user_handle == urlsafe_b64encode(bytearray({1})).decode()
+    assert credential1.sign_count == 1
+
+    if credential2.is_resident_credential is False:
+        assert True
+    if credential2.private_key is not None:
+        assert True
+    # Non-resident credentials don't save RP ID
+    if credential2.rp_id is None:
+        assert True
+    if credential2.user_handle is None:
+        assert True
+    assert credential2.sign_count == 1
+
+    driver.remove_virtual_authenticator()
+
+
+@pytest.mark.xfail_firefox
+@pytest.mark.xfail_safari
+@pytest.mark.xfail_remote
+def test_remove_all_credentials(driver, pages):
+    driver = create_rk_disabled_u2f_authenticator(driver)
+
+    driver.get(pages.url("virtual-authenticator.html"))
+
+    # Register 2 credentials
+    response1 = driver.execute_async_script(
+        "registerCredential().then(arguments[arguments.length - 1]);"
     )
-
-    driver.add_credential(credential)
-    assert len(driver.get_credentials()) == 1
-
-    driver.add_credential(credential2)
-    assert len(driver.get_credentials()) == 2
+    raw_id1 = response1["credential"]["rawId"]
+    response2 = driver.execute_async_script(
+        "registerCredential().then(arguments[arguments.length - 1]);"
+    )
+    raw_id2 = response2["credential"]["rawId"]
 
     driver.remove_all_credentials()
-    assert len(driver.get_credentials()) == 0
 
+    response = driver.execute_async_script(
+        '''
+        getCredential([{
+            "type": "public-key",
+            "id": Int8Array.from(arguments[0]),
+        }, {
+            "type": "public-key",
+            "id": Int8Array.from(arguments[1]),
+        }]).then(arguments[arguments.length - 1]);
+        ''',
+        raw_id1,
+        raw_id2,
+    )
+    print(response)
+    if response.get("status", "").startswith("NotAllowedError"):
+        assert True
+    else:
+        assert False, "Should have thrown a NotAllowedError"
     driver.remove_virtual_authenticator()
 
 
 @pytest.mark.xfail_firefox
 @pytest.mark.xfail_safari
 @pytest.mark.xfail_remote
-def test_full_virtual_authenticator(driver):
+def test_set_user_verified(driver, pages):
+    driver = create_rk_enabled_ctap2_authenticator(driver)
+    driver.get(pages.url("virtual-authenticator.html"))
 
-    options = VirtualAuthenticatorOptions()
-    options.is_user_consenting = True
-    options.protocol = VirtualAuthenticatorOptions.Protocol.U2F
-    options.transport = VirtualAuthenticatorOptions.Transport.USB
+    # Register a credential requiring UV.
 
-    driver.add_virtual_authenticator(options)
+    response = driver.execute_async_script(
+        "registerCredential({authenticatorSelection: {userVerification: 'required'}}).then(arguments[arguments.length - 1]);"
+    )
+    assert response.get('status', '') == 'OK'
+    raw_id = response["credential"]["rawId"]
 
-    driver.get("https://webauthn.io/")
-    username = driver.find_element(By.ID, "input-email")
-    username.send_keys("username")
+    # Getting an assertion requiring user verification should succeed.
+    response = driver.execute_async_script(
+        '''
+        getCredential([{
+            "type": "public-key",
+            "id": Int8Array.from(arguments[0]),
+        }]).then(arguments[arguments.length - 1]);
+        ''', raw_id
+    )
+    assert response.get('status', '') == 'OK'
 
-    selectAttestation = Select(driver.find_element(By.ID, "select-attestation"))
-    selectAttestation.select_by_visible_text("Direct")
+    # Disable user verified.
+    driver.set_user_verified(False)
 
-    selectAuthenticator = Select(driver.find_element(By.ID, "select-authenticator"))
-    selectAuthenticator.select_by_value("cross-platform")
+    # Getting an assertion requiring user verification should fail.
+    response = driver.execute_async_script(
+        '''
+        getCredential([{
+            "type": "public-key",
+            "id": Int8Array.from(arguments[0]),
+        }]).then(arguments[arguments.length - 1]);
+        ''', raw_id
+    )
 
-    driver.find_element(By.ID, "register-button").click()
-
-    login = driver.find_element(By.ID, "login-button")
-    WebDriverWait(driver, 50).until(lambda x: x.find_element(By.ID, "login-button").is_displayed())
-    login.click()
-
-    WebDriverWait(driver, 40).until(lambda x: x.find_element(By.CLASS_NAME, "col-lg-12").is_displayed())
-
-    source: str = driver.page_source
-
-    if "You're logged in!" in source:
+    if response.get('status', '').startswith("NotAllowedError"):
         assert True
-    else:
-        assert False
