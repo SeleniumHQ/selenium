@@ -21,10 +21,15 @@ import com.google.common.collect.HashMultimap;
 import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.Multimap;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.docker.ContainerId;
 import org.openqa.selenium.docker.ContainerInfo;
+import org.openqa.selenium.docker.Device;
 import org.openqa.selenium.docker.Docker;
 import org.openqa.selenium.docker.DockerException;
 import org.openqa.selenium.docker.Image;
@@ -51,6 +56,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.logging.Logger;
 
 import static org.openqa.selenium.Platform.WINDOWS;
+import static org.openqa.selenium.docker.Device.device;
 
 public class DockerOptions {
 
@@ -143,6 +149,23 @@ public class DockerOptions {
       kinds.put(imageName, stereotype);
     }
 
+    Pattern deviceMappingPattern = Pattern.compile("([\\/\\w-]*)\\:{1}([\\/\\w]+):?(\\w+)?");
+
+    List<String> devices = config.getAll(DOCKER_SECTION, "devices")
+      .orElseGet(Collections::emptyList);
+
+    List<Device> deviceMapping = new ArrayList<>();
+    for (int i = 0; i < devices.size(); i++) {
+      Matcher matcher = deviceMappingPattern.matcher(devices.get(i));
+      if(matcher.matches()){
+        deviceMapping.add(device(matcher.group(1), matcher.group(2), matcher.group(3)));
+      } else {
+        //Ignore the provided device mapping that doesn't match to device mapping pattern
+        LOG.warning(String.format("'%s' device file mapping doesn't "
+          + "match the regex '%s'. Ignoring it...", devices.get(i), deviceMappingPattern.pattern()));
+      }
+    }
+
     // If Selenium Server is running inside a Docker container, we can inspect that container
     // to get the information from it.
     // Since Docker 1.12, the env var HOSTNAME has the container id (unless the user overwrites it)
@@ -173,6 +196,7 @@ public class DockerOptions {
             getDockerUri(),
             image,
             caps,
+            deviceMapping,
             videoImage,
             assetsPath,
             networkName,
