@@ -17,7 +17,7 @@
 from __future__ import annotations
 
 import sys
-from typing import Any, Optional, Sequence, TYPE_CHECKING
+from typing import Any, Sequence, TYPE_CHECKING
 
 if sys.version_info >= (3, 9):
     from re import Match

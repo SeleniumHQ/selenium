@@ -24,7 +24,6 @@ import warnings
 import zipfile
 from abc import ABCMeta
 from io import BytesIO
-from typing import Union
 
 from selenium.common.exceptions import WebDriverException
 from selenium.webdriver.common.by import By
