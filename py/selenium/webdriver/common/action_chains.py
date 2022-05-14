@@ -321,7 +321,7 @@ class ActionChains:
         self.send_keys(*keys_to_send)
         return self
 
-    def scroll(self, x: int, y: int, delta_x: int, delta_y: int, duration: int = 0, origin= "viewport"):
+    def scroll(self, x: int, y: int, delta_x: int, delta_y: int, duration: int = 0, origin="viewport"):
         """
         Sends wheel scroll information to the browser to be processed.
 
