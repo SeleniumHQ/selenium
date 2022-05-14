@@ -59,7 +59,7 @@ class ProxyType:
         raise Exception(f"No proxy type is found for {value}")
 
 
-class Proxy(object):
+class Proxy:
     """
     Proxy contains information about proxy type and necessary proxy settings.
     """

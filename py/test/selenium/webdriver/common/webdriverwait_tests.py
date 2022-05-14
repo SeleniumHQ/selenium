@@ -77,7 +77,7 @@ def test_should_wait_until_at_least_one_visible_elements_is_found_when_searching
     add_visible.click()
     add_hidden.click()
 
-    class wait_for_two_elements(object):
+    class wait_for_two_elements:
 
         def __init__(self, locator):
             self.locator = locator

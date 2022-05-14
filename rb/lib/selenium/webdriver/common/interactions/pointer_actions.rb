@@ -67,16 +67,16 @@ module Selenium
       end
 
       #
-      # Moves the mouse to the middle of the given element. The element is scrolled into
-      # view and its location is calculated using getBoundingClientRect.  Then the
-      # mouse is moved to optional offset coordinates from the element.
+      # Moves the pointer to the middle of the given element.
+      # its location is calculated using getBoundingClientRect.
+      # Then the pointer is moved to optional offset coordinates from the element.
       #
-      # This is adapted to be backward compatible from non- actions.  calculates offset from the center point
-      # of the element
+      # The element is not scrolled into view.
+      # MoveTargetOutOfBoundsError will be raised if element with offset is outside the viewport
       #
-      # Note that when using offsets, both coordinates need to be passed.
+      # When using offsets, both coordinates need to be passed.
       #
-      # @example Scroll element into view and move the mouse to it
+      # @example Move the pointer to element
       #
       #   el = driver.find_element(id: "some_id")
       #   driver.action.move_to(el).perform
@@ -97,7 +97,6 @@ module Selenium
 
       def move_to(element, right_by = nil, down_by = nil, device: nil, **opts)
         pointer = pointer_input(device)
-        # New actions offset is from center of element
         if right_by || down_by
           size = element.size
           left_offset = (size[:width] / 2).to_i
@@ -118,17 +117,17 @@ module Selenium
       end
 
       #
-      # Moves the mouse from its current position by the given offset.
-      # If the coordinates provided are outside the viewport (the mouse will
-      # end up outside the browser window) then the viewport is scrolled to
-      # match.
+      # Moves the pointer from its current position by the given offset.
       #
-      # @example Move the mouse to a certain offset from its current position
+      # The viewport is not scrolled if the coordinates provided are outside the viewport.
+      # MoveTargetOutOfBoundsError will be raised if the offsets are outside the viewport
+      #
+      # @example Move the pointer to a certain offset from its current position
       #
       #    driver.action.move_by(100, 100).perform
       #
-      # @param [Integer] right_by horizontal offset. A negative value means moving the mouse left.
-      # @param [Integer] down_by vertical offset. A negative value means moving the mouse up.
+      # @param [Integer] right_by horizontal offset. A negative value means moving the pointer left.
+      # @param [Integer] down_by vertical offset. A negative value means moving the pointer up.
       # @param [Symbol || String] device optional name of the PointerInput device to move
       # @return [ActionBuilder] A self reference.
       # @raise [MoveTargetOutOfBoundsError] if the provided offset is outside the document's boundaries.
@@ -145,12 +144,12 @@ module Selenium
       end
 
       #
-      # Moves the mouse to a given location in the viewport.
-      # If the coordinates provided are outside the viewport (the mouse will
-      # end up outside the browser window) then the viewport is scrolled to
-      # match.
+      # Moves the pointer to a given location in the viewport.
       #
-      # @example Move the mouse to a certain position in the viewport
+      # The viewport is not scrolled if the coordinates provided are outside the viewport.
+      # MoveTargetOutOfBoundsError will be raised if the offsets are outside the viewport
+      #
+      # @example Move the pointer to a certain position in the viewport
       #
       #    driver.action.move_to_location(100, 100).perform
       #

@@ -61,6 +61,7 @@ import java.util.Optional;
 @SuppressWarnings("DuplicatedCode")
 public class NodeOptionsTest {
 
+  @SuppressWarnings("ReturnValueIgnored")
   @Test
   public void canConfigureNodeWithDriverDetection() {
     assumeFalse("We don't have driver servers in PATH when we run unit tests",

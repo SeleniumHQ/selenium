@@ -9,11 +9,8 @@ on:
     - cron: '15 9,21 * * *'
 
   push:
-    branches:
-      - trunk
+
   pull_request:
-    branches:
-      - trunk
 
 env:
   NODE_VERSION: '16.x'

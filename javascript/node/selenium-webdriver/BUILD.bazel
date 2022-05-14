@@ -63,7 +63,7 @@ nodejs_binary(
         "//javascript/node/selenium-webdriver/lib/atoms:find-elements",
         "//javascript/node/selenium-webdriver/lib/atoms:mutation-listener",
     ],
-    entry_point = "lib/test/fileserver.ts",
+    entry_point = "lib/test/fileserver.js",
 )
 
 jasmine_node_test(

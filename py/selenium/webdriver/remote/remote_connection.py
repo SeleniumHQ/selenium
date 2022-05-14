@@ -35,7 +35,7 @@ from . import utils
 LOGGER = logging.getLogger(__name__)
 
 
-class RemoteConnection(object):
+class RemoteConnection:
     """A connection with the Remote WebDriver server.
 
     Communicates with the server using the WebDriver wire protocol:
@@ -143,7 +143,7 @@ class RemoteConnection(object):
 
     def _get_connection_manager(self):
         pool_manager_init_args = {
-            'timeout': self._timeout
+            'timeout': self.get_timeout()
         }
         if self._ca_certs:
             pool_manager_init_args['cert_reqs'] = 'CERT_REQUIRED'
@@ -308,7 +308,21 @@ class RemoteConnection(object):
             Command.MINIMIZE_WINDOW:
                 ('POST', '/session/$sessionId/window/minimize'),
             Command.PRINT_PAGE:
-                ('POST', '/session/$sessionId/print')
+                ('POST', '/session/$sessionId/print'),
+            Command.ADD_VIRTUAL_AUTHENTICATOR:
+                ('POST', '/session/$sessionId/webauthn/authenticator'),
+            Command.REMOVE_VIRTUAL_AUTHENTICATOR:
+                ('DELETE', '/session/$sessionId/webauthn/authenticator/$authenticatorId'),
+            Command.ADD_CREDENTIAL:
+                ('POST', '/session/$sessionId/webauthn/authenticator/$authenticatorId/credential'),
+            Command.GET_CREDENTIALS:
+                ('GET', '/session/$sessionId/webauthn/authenticator/$authenticatorId/credentials'),
+            Command.REMOVE_CREDENTIAL:
+                ('DELETE', '/session/$sessionId/webauthn/authenticator/$authenticatorId/credentials/$credentialId'),
+            Command.REMOVE_ALL_CREDENTIALS:
+                ('DELETE', '/session/$sessionId/webauthn/authenticator/$authenticatorId/credentials'),
+            Command.SET_USER_VERIFIED:
+                ('POST', '/session/$sessionId/webauthn/authenticator/$authenticatorId/uv'),
         }
 
     def execute(self, command, params):

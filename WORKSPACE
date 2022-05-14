@@ -6,6 +6,16 @@ workspace(
     },
 )
 
+load("//common/private:env.bzl", "env")
+env(
+    name = "python_version",
+    env_var=["PYTHON_VERSION"]
+)
+load("@python_version//:defs.bzl", "PYTHON_VERSION")
+
+
+register_toolchains(":py_toolchain")
+
 load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
 
 http_archive(
@@ -50,25 +60,32 @@ bazel_skylib_workspace()
 
 http_archive(
     name = "rules_python",
-    sha256 = "9fcf91dbcc31fde6d1edb15f117246d912c33c36f44cf681976bd886538deba6",
-    strip_prefix = "rules_python-0.8.0",
-    url = "https://github.com/bazelbuild/rules_python/archive/refs/tags/0.8.0.tar.gz",
+    sha256 = "cdf6b84084aad8f10bf20b46b77cb48d83c319ebe6458a18e9d2cebf57807cdd",
+    strip_prefix = "rules_python-0.8.1",
+    url = "https://github.com/bazelbuild/rules_python/archive/refs/tags/0.8.1.tar.gz",
 )
 
 load("@rules_python//python:repositories.bzl", "python_register_toolchains")
 
 python_register_toolchains(
-    name = "python3_9",
-    python_version = "3.9",
+    name = "python_toolchain",
+    python_version = PYTHON_VERSION,
 )
+
+load("@python_toolchain//:defs.bzl", "interpreter")
 
 # This one is only needed if you're using the packaging rules.
-load("@rules_python//python:pip.bzl", "pip_install")
+load("@rules_python//python:pip.bzl", "pip_parse")
 
-pip_install(
-    name = "dev_requirements",
-    requirements = "//py:requirements.txt",
+pip_parse(
+    name = "py_dev_requirements",
+    requirements_lock = "//py:requirements_lock.txt",
+    python_interpreter_target = interpreter,
 )
+
+load("@py_dev_requirements//:requirements.bzl", "install_deps")
+
+install_deps()
 
 http_archive(
     name = "rules_proto",
@@ -135,18 +152,17 @@ selenium_register_dotnet()
 
 http_archive(
     name = "build_bazel_rules_nodejs",
-    sha256 = "ad3e5afa52ef9aac4da426f61e339c054ecbc0e6665cec2109f8846b4c8339e3",
-    urls = ["https://github.com/bazelbuild/rules_nodejs/releases/download/4.6.3/rules_nodejs-4.6.3.tar.gz"],
+    sha256 = "e328cb2c9401be495fa7d79c306f5ee3040e8a03b2ebb79b022e15ca03770096",
+    urls = ["https://github.com/bazelbuild/rules_nodejs/releases/download/5.4.2/rules_nodejs-5.4.2.tar.gz"],
 )
+load("@build_bazel_rules_nodejs//:repositories.bzl", "build_bazel_rules_nodejs_dependencies")
+
+build_bazel_rules_nodejs_dependencies()
 
 load("@build_bazel_rules_nodejs//:index.bzl", "node_repositories", "npm_install")
 
 node_repositories(
     node_version = "16.4.2",
-    package_json = [
-        "//:package.json",
-        "//javascript/grid-ui:package.json",
-    ],
 )
 
 npm_install(

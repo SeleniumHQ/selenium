@@ -186,7 +186,7 @@ def pytest_exception_interact(node, call, report):
 
 @pytest.fixture
 def pages(driver, webserver):
-    class Pages(object):
+    class Pages:
         def url(self, name):
             return webserver.where_is(name)
 

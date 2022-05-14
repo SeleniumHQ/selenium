@@ -17,20 +17,24 @@
 # specific language governing permissions and limitations
 # under the License.
 
+require File.expand_path('../spec_helper', __dir__)
+
 module Selenium
   module WebDriver
-    module WheelActions
-      module ScrollOrigin
-        class << self
-          def element(element, x = 0, y = 0)
-            {origin: element, x: x, y: y}
+    class DevTools
+      describe Response do
+        describe '.from' do
+          it 'should set the headers correctly' do
+            params = {'responseHeaders' => [{'name' => 'Connection', 'value' => 'Keep-Alive'}]}
+            response = Response.from(1, nil, params)
+            expect(response.headers).to eq({'Connection' => 'Keep-Alive'})
           end
 
-          def viewport(x, y)
-            {origin: :viewport, x: x, y: y}
+          it 'should not raise error on empty responseHeaders' do
+            expect { Response.from(1, nil, {}) }.not_to raise_error
           end
         end
-      end
-    end # WheelActions
+      end # Response
+    end # DevTools
   end # WebDriver
 end # Selenium

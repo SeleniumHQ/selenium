@@ -17,10 +17,6 @@
 
 package org.openqa.selenium.firefox;
 
-import static java.util.Collections.unmodifiableList;
-import static java.util.concurrent.TimeUnit.MILLISECONDS;
-import static org.openqa.selenium.remote.Browser.FIREFOX;
-
 import com.google.auto.service.AutoService;
 import com.google.common.io.ByteStreams;
 
@@ -38,6 +34,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+
+import static java.util.Collections.unmodifiableList;
+import static java.util.concurrent.TimeUnit.MILLISECONDS;
+import static org.openqa.selenium.remote.Browser.FIREFOX;
 
 /**
  * Manages the life and death of an GeckoDriver aka 'wires'.
@@ -187,15 +187,18 @@ public class GeckoDriverService extends FirefoxDriverService {
     @Override
     protected List<String> createArgs() {
       List<String> args = new ArrayList<>();
+      int wsPort = PortProber.findFreePort();
       args.add(String.format("--port=%d", getPort()));
-      args.add(String.format("--websocket-port=%d", PortProber.findFreePort()));
+      args.add(String.format("--websocket-port=%d", wsPort));
+      args.add(String.format("--allow-origins=http://localhost:%d", wsPort));
       if (firefoxBinary != null) {
         args.add("-b");
         args.add(firefoxBinary.getPath());
       } else {
         // Read system property for Firefox binary and use those if they are set
-        Optional<Executable> executable = Optional.ofNullable(FirefoxBinary.locateFirefoxBinaryFromSystemProperty());
-        executable.ifPresent( e -> {
+        Optional<Executable> executable =
+          Optional.ofNullable(FirefoxBinary.locateFirefoxBinaryFromSystemProperty());
+        executable.ifPresent(e -> {
           args.add("-b");
           args.add(e.getPath());
         });

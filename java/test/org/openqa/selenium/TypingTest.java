@@ -22,12 +22,10 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.NotYetImplemented;
-import org.openqa.selenium.testing.drivers.Browser;
 
 import static com.google.common.base.Joiner.on;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.junit.Assume.assumeFalse;
 import static org.openqa.selenium.WaitingConditions.elementValueToEqual;
 import static org.openqa.selenium.testing.TestUtilities.getEffectivePlatform;
 import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
@@ -45,6 +43,18 @@ public class TypingTest extends JUnit4TestBase {
   private static String getValueText(WebElement el) {
     // Standardize on \n and strip any trailing whitespace.
     return el.getAttribute("value").replace("\r\n", "\n").trim();
+  }
+
+  private Keys primaryModifier() {
+    return (getEffectivePlatform(driver).is(Platform.MAC)) ? Keys.COMMAND : Keys.CONTROL;
+  }
+
+  private Keys homeKey() {
+    return (getEffectivePlatform(driver).is(Platform.MAC)) ? Keys.UP : Keys.HOME;
+  }
+
+  private Keys endKey() {
+    return (getEffectivePlatform(driver).is(Platform.MAC)) ? Keys.DOWN : Keys.END;
   }
 
   @Test
@@ -250,9 +260,6 @@ public class TypingTest extends JUnit4TestBase {
 
   @Test
   public void testShouldReportKeyCodeOfArrowKeys() {
-    assumeFalse(Browser.detect() == Browser.LEGACY_OPERA &&
-                getEffectivePlatform(driver).is(Platform.WINDOWS));
-
     driver.get(pages.javascriptPage);
 
     WebElement result = driver.findElement(By.id("result"));
@@ -276,9 +283,6 @@ public class TypingTest extends JUnit4TestBase {
 
   @Test
   public void testShouldReportKeyCodeOfArrowKeysUpDownEvents() {
-    assumeFalse(Browser.detect() == Browser.LEGACY_OPERA &&
-                getEffectivePlatform(driver).is(Platform.WINDOWS));
-
     driver.get(pages.javascriptPage);
 
     WebElement result = driver.findElement(By.id("result"));
@@ -313,7 +317,9 @@ public class TypingTest extends JUnit4TestBase {
   }
 
   @Test
-  @NotYetImplemented(value = FIREFOX, reason = "https://github.com/mozilla/geckodriver/issues/646")
+  @Ignore(value = FIREFOX,
+    reason = "Final assertion isn't 16 since keyUp not sent from shift",
+    issue = "https://github.com/mozilla/geckodriver/issues/646")
   public void testNumericShiftKeys() {
     driver.get(pages.javascriptPage);
 
@@ -340,7 +346,9 @@ public class TypingTest extends JUnit4TestBase {
   }
 
   @Test
-  @NotYetImplemented(value = FIREFOX, reason = "https://github.com/mozilla/geckodriver/issues/646")
+  @Ignore(value = FIREFOX,
+    reason = "Final assertion isn't 16 since keyUp not sent from shift",
+    issue = "https://github.com/mozilla/geckodriver/issues/646")
   public void testUppercaseAlphaKeys() {
     driver.get(pages.javascriptPage);
 
@@ -355,7 +363,9 @@ public class TypingTest extends JUnit4TestBase {
   }
 
   @Test
-  @NotYetImplemented(value = FIREFOX, reason = "https://github.com/mozilla/geckodriver/issues/646")
+  @Ignore(value = FIREFOX,
+    reason = "Final assertion isn't 16 since keyUp not sent from shift",
+    issue = "https://github.com/mozilla/geckodriver/issues/646")
   public void testAllPrintableKeys() {
     driver.get(pages.javascriptPage);
 
@@ -383,17 +393,17 @@ public class TypingTest extends JUnit4TestBase {
   }
 
   @Test
+  @Ignore(value = FIREFOX,
+    reason = "Firefox can't type at beginning of field",
+    issue = "https://github.com/mozilla/geckodriver/issues/2015")
   public void testHomeAndEndAndPageUpAndPageDownKeys() {
-    assumeFalse("FIXME: macs don't have HOME keys, would PGUP work?",
-                getEffectivePlatform(driver).is(Platform.MAC));
-
     driver.get(pages.javascriptPage);
 
     WebElement element = driver.findElement(By.id("keyReporter"));
 
-    element.sendKeys("abc" + Keys.HOME + "0" + Keys.LEFT + Keys.RIGHT +
-                     Keys.PAGE_UP + Keys.PAGE_DOWN + Keys.END + "1" + Keys.HOME +
-                     "0" + Keys.PAGE_UP + Keys.END + "111" + Keys.HOME + "00");
+    element.sendKeys("abc" + homeKey() + "0" + Keys.LEFT + Keys.RIGHT +
+                     Keys.PAGE_UP + Keys.PAGE_DOWN + endKey() + "1" + homeKey() +
+                     "0" + Keys.PAGE_UP + endKey() + "111" + homeKey() + "00");
     assertThat(element.getAttribute("value")).isEqualTo("0000abc1111");
   }
 
@@ -465,47 +475,41 @@ public class TypingTest extends JUnit4TestBase {
   }
 
   @Test
-  @NotYetImplemented(value = FIREFOX, reason = "https://github.com/mozilla/geckodriver/issues/646")
   public void testChordControlHomeShiftEndDelete() {
-    assumeFalse("FIXME: macs don't have HOME keys, would PGUP work?",
-                getEffectivePlatform(driver).is(Platform.MAC));
 
     driver.get(pages.javascriptPage);
 
-    WebElement result = driver.findElement(By.id("result"));
     WebElement element = driver.findElement(By.id("keyReporter"));
 
     element.sendKeys("!\"#$%&'()*+,-./0123456789:;<=>?@ ABCDEFG");
 
-    element.sendKeys(Keys.HOME);
-    element.sendKeys("" + Keys.SHIFT + Keys.END);
-    assertThat(result.getText()).contains(" up: 16");
+    element.sendKeys(endKey());
+    element.sendKeys("" + Keys.SHIFT + homeKey());
 
     element.sendKeys(Keys.DELETE);
     assertThat(element.getAttribute("value")).isEqualTo("");
   }
 
   @Test
-  @NotYetImplemented(value = FIREFOX, reason = "https://github.com/mozilla/geckodriver/issues/646")
-  public void testChordReveseShiftHomeSelectionDeletes() {
-    assumeFalse("FIXME: macs don't have HOME keys, would PGUP work?",
-                getEffectivePlatform(driver).is(Platform.MAC));
-
+  @Ignore(value = FIREFOX,
+    reason = "Firefox can't type at beginning of field",
+    issue = "https://github.com/mozilla/geckodriver/issues/2015")
+  public void testChordReverseShiftHomeSelectionDeletes() {
     driver.get(pages.javascriptPage);
 
     WebElement result = driver.findElement(By.id("result"));
     WebElement element = driver.findElement(By.id("keyReporter"));
 
-    element.sendKeys("done" + Keys.HOME);
+    element.sendKeys("done" + homeKey());
     assertThat(element.getAttribute("value")).isEqualTo("done");
 
-    element.sendKeys(Keys.SHIFT + "ALL " + Keys.HOME);
+    element.sendKeys(Keys.SHIFT + "all " + homeKey());
     assertThat(element.getAttribute("value")).isEqualTo("ALL done");
 
     element.sendKeys(Keys.DELETE);
     assertThat(element.getAttribute("value")).isEqualTo("done");
 
-    element.sendKeys("" + Keys.END + Keys.SHIFT + Keys.HOME);
+    element.sendKeys("" + endKey() + Keys.SHIFT + homeKey());
     assertThat(element.getAttribute("value")).isEqualTo("done");
     assertThat(result.getText().trim()).contains(" up: 16");
 
@@ -513,52 +517,45 @@ public class TypingTest extends JUnit4TestBase {
     assertThat(element.getAttribute("value")).isEqualTo("");
   }
 
-  // control-x control-v here for cut & paste tests, these work on windows
-  // and linux, but not on the MAC.
   @Test
-  @NotYetImplemented(value = FIREFOX, reason = "https://github.com/mozilla/geckodriver/issues/646")
+  @Ignore(value = FIREFOX,
+    reason = "Firefox can't type at beginning of field",
+    issue = "https://github.com/mozilla/geckodriver/issues/2015")
   public void testChordControlCutAndPaste() {
-    assumeFalse("FIXME: macs don't have HOME keys, would PGUP work?",
-                getEffectivePlatform(driver).is(Platform.MAC));
-
     driver.get(pages.javascriptPage);
 
     WebElement element = driver.findElement(By.id("keyReporter"));
-    WebElement result = driver.findElement(By.id("result"));
 
     String paste = "!\"#$%&'()*+,-./0123456789:;<=>?@ ABCDEFG";
     element.sendKeys(paste);
     assertThat(element.getAttribute("value")).isEqualTo(paste);
 
-    element.sendKeys(Keys.HOME);
-    element.sendKeys("" + Keys.SHIFT + Keys.END);
-    assertThat(result.getText().trim()).contains(" up: 16");
+    element.sendKeys(homeKey());
+    element.sendKeys("" + homeKey() + Keys.SHIFT + endKey());
 
-    element.sendKeys(Keys.CONTROL, "x");
+    element.sendKeys(primaryModifier(), "x");
     assertThat(element.getAttribute("value")).isEqualTo("");
 
-    element.sendKeys(Keys.CONTROL, "v");
+    element.sendKeys(primaryModifier(), "v");
     wait.until(elementValueToEqual(element, paste));
 
     // Cut the last 3 letters.
-    element.sendKeys("" + Keys.LEFT + Keys.LEFT + Keys.LEFT +
-                     Keys.SHIFT + Keys.END);
+    element.sendKeys("" + Keys.LEFT + Keys.LEFT + Keys.LEFT + Keys.SHIFT + endKey());
 
-    element.sendKeys(Keys.CONTROL, "x");
+    element.sendKeys(primaryModifier(), "x");
     assertThat(element.getAttribute("value")).isEqualTo(paste.substring(0, paste.length() - 3));
 
     // Paste the last 3 letters.
-    element.sendKeys(Keys.CONTROL, "v");
+    element.sendKeys(primaryModifier(), "v");
     assertThat(element.getAttribute("value")).isEqualTo(paste);
 
-    element.sendKeys(Keys.HOME);
-    element.sendKeys(Keys.CONTROL, "v");
-    element.sendKeys(Keys.CONTROL, "v" + "v");
-    element.sendKeys(Keys.CONTROL, "v" + "v" + "v");
+    element.sendKeys(homeKey());
+    element.sendKeys(primaryModifier(), "v");
+    element.sendKeys(primaryModifier(), "v" + "v");
+    element.sendKeys(primaryModifier(), "v" + "v" + "v");
     assertThat(element.getAttribute("value")).isEqualTo("EFGEFGEFGEFGEFGEFG" + paste);
 
-    element.sendKeys("" + Keys.END + Keys.SHIFT + Keys.HOME +
-                     Keys.NULL + Keys.DELETE);
+    element.sendKeys("" + Keys.END + Keys.SHIFT + homeKey() + Keys.NULL + Keys.DELETE);
     assertThat(element.getAttribute("value")).isEqualTo("");
   }
 

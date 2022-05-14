@@ -50,7 +50,7 @@ public class DefaultWheelTest extends JUnit4TestBase {
       0,
       0,
       0,
-      PointerInput.Origin.fromElement(iframe)).perform();
+      WheelInput.Origin.fromElement(iframe)).perform();
 
     assertTrue(inViewport(iframe));
   }
@@ -65,7 +65,7 @@ public class DefaultWheelTest extends JUnit4TestBase {
       0,
       0,
       200,
-      PointerInput.Origin.fromElement(iframe)).perform();
+      WheelInput.Origin.fromElement(iframe)).perform();
 
     driver.switchTo().frame(iframe);
 
@@ -83,7 +83,7 @@ public class DefaultWheelTest extends JUnit4TestBase {
       -50,
       0,
       200,
-      PointerInput.Origin.fromElement(footer)).perform();
+      WheelInput.Origin.fromElement(footer)).perform();
 
     driver.switchTo().frame(driver.findElement(By.tagName("iframe")));
 
@@ -101,7 +101,7 @@ public class DefaultWheelTest extends JUnit4TestBase {
       50,
       0,
       200,
-      PointerInput.Origin.fromElement(footer)).perform();
+      WheelInput.Origin.fromElement(footer)).perform();
   }
 
   @Test
@@ -116,7 +116,7 @@ public class DefaultWheelTest extends JUnit4TestBase {
       0,
       0,
       y,
-      PointerInput.Origin.viewport()).perform();
+      WheelInput.Origin.viewport()).perform();
 
     assertTrue(inViewport(footer));
   }
@@ -132,7 +132,7 @@ public class DefaultWheelTest extends JUnit4TestBase {
       10,
       0,
       200,
-      PointerInput.Origin.viewport()).perform();
+      WheelInput.Origin.viewport()).perform();
 
     driver.switchTo().frame(iframe);
 
@@ -149,7 +149,7 @@ public class DefaultWheelTest extends JUnit4TestBase {
       -10,
       0,
       200,
-      PointerInput.Origin.viewport()).perform();
+      WheelInput.Origin.viewport()).perform();
   }
 
   private boolean inViewport(WebElement element) {

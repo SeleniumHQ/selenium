@@ -50,7 +50,7 @@ public class WheelInputTest {
       0,
       0,
       Duration.ofMillis(100),
-      Origin.fromElement(element));
+      WheelInput.Origin.fromElement(element));
     Sequence sequence = new Sequence(wheelInput, 0).addAction(scroll);
 
     String rawJson = new Json().toJson(sequence);
@@ -84,7 +84,7 @@ public class WheelInputTest {
       30,
       60,
       Duration.ofSeconds(1),
-      Origin.viewport());
+      WheelInput.Origin.viewport());
 
     Map<String, Object> encodedResult = interaction.encode();
     assertThat(encodedResult)
@@ -110,7 +110,7 @@ public class WheelInputTest {
       30,
       60,
       Duration.ofSeconds(1),
-      Origin.fromElement(innerElement));
+      WheelInput.Origin.fromElement(innerElement));
 
     Map<String, Object> encodedResult = interaction.encode();
     assertThat(encodedResult)
@@ -121,20 +121,6 @@ public class WheelInputTest {
       .containsEntry("deltaY", 60)
       .containsEntry("duration", 1000L)
       .containsEntry("origin", innerElement);
-  }
-
-  @Test(expected = IllegalArgumentException.class)
-  public void shouldNotAllowPointerOrigin() {
-
-    WheelInput wheelInput = new WheelInput("test-wheel");
-    WheelInput.ScrollInteraction interaction = new WheelInput.ScrollInteraction(
-      wheelInput,
-      25,
-      50,
-      30,
-      60,
-      Duration.ofSeconds(1),
-      Origin.pointer());
   }
 
   private static class ActionSequenceJson {

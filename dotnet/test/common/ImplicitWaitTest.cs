@@ -85,6 +85,7 @@ namespace OpenQA.Selenium
 
         [Test]
         [IgnoreBrowser(Browser.IE, "Driver does not implement waiting for element visible for interaction")]
+        [IgnoreBrowser(Browser.Firefox, "Driver does not implement waiting for element visible for interaction")]
         [IgnoreBrowser(Browser.Safari, "Driver does not implement waiting for element visible for interaction")]
         public void ShouldImplicitlyWaitForAnElementToBeVisibleBeforeInteracting()
         {
@@ -102,7 +103,7 @@ namespace OpenQA.Selenium
                 revealed.SendKeys("hello world");
                 // This is what we want
             }
-            catch (ElementNotVisibleException)
+            catch (ElementNotInteractableException)
             {
                 Assert.Fail("Element should have been visible");
             }

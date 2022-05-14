@@ -20,42 +20,44 @@ import TopBar from '../../components/TopBar/TopBar'
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 
-const leftClick = { button: 0 }
+const user = userEvent.setup()
 
 it('renders basic information', () => {
   const subheaderText = 'Hello, world!'
   const handleClick = jest.fn()
-  render(<TopBar subheader={subheaderText} drawerOpen toggleDrawer={handleClick} />)
+  render(<TopBar subheader={subheaderText} drawerOpen
+                 toggleDrawer={handleClick}/>)
   expect(screen.getByText('Selenium Grid')).toBeInTheDocument()
   expect(screen.getByRole('img')).toHaveAttribute('alt', 'Selenium Grid Logo')
   expect(screen.getByText(subheaderText)).toBeInTheDocument()
 })
 
-it('can toggle drawer if error flag is not set and the drawer is open', () => {
-  const handleClick = jest.fn()
-  render(<TopBar subheader='4.0.0' drawerOpen toggleDrawer={handleClick} />)
-  const button = screen.getByRole('button')
-  expect(button.getAttribute('aria-label')).toBe('close drawer')
-  userEvent.click(button, leftClick)
-  expect(handleClick).toHaveBeenCalledTimes(1)
-})
-
-it('can toggle drawer if error flag is not set and the drawer is closed',
-  () => {
+it('can toggle drawer if error flag is not set and the drawer is open',
+  async () => {
     const handleClick = jest.fn()
-    render(<TopBar subheader='4.0.0' toggleDrawer={handleClick} />)
+    render(<TopBar subheader="4.0.0" drawerOpen toggleDrawer={handleClick}/>)
     const button = screen.getByRole('button')
-    expect(button.getAttribute('aria-label')).toBe('open drawer')
-    userEvent.click(button, leftClick)
+    expect(button.getAttribute('aria-label')).toBe('close drawer')
+    await user.click(button)
     expect(handleClick).toHaveBeenCalledTimes(1)
   })
 
-it('should not toggle drawer if error flag is set', () => {
+it('can toggle drawer if error flag is not set and the drawer is closed',
+  async () => {
+    const handleClick = jest.fn()
+    render(<TopBar subheader="4.0.0" toggleDrawer={handleClick}/>)
+    const button = screen.getByRole('button')
+    expect(button.getAttribute('aria-label')).toBe('open drawer')
+    await user.click(button)
+    expect(handleClick).toHaveBeenCalledTimes(1)
+  })
+
+it('should not toggle drawer if error flag is set', async () => {
   const handleClick = jest.fn()
-  render(<TopBar subheader='4.0.0' error toggleDrawer={handleClick} />)
+  render(<TopBar subheader="4.0.0" error toggleDrawer={handleClick}/>)
   expect(screen.queryByRole('button')).not.toBeInTheDocument()
   const link = screen.getByRole('link')
   expect(link.getAttribute('href')).toBe('#help')
-  userEvent.click(link, leftClick)
+  await user.click(link)
   expect(handleClick).toHaveBeenCalledTimes(0)
 })

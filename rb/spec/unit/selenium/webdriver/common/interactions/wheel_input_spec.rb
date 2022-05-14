@@ -24,13 +24,15 @@ module Selenium
     module Interactions
       describe WheelInput do
         let(:wheel) { WheelInput.new(name: :name) }
-        let(:origin) { Scroll::VIEWPORT }
+        let(:origin) { :viewport }
         let(:duration) { 0.5 }
         let(:x) { 25 }
         let(:y) { 50 }
         let(:delta_x) { 30 }
         let(:delta_y) { 60 }
-        let(:scroll) { Scroll.new(wheel, duration, delta_x, delta_y, origin: origin, x: x, y: y) }
+        let(:scroll) do
+          Scroll.new(source: wheel, duration: duration, delta_x: delta_x, delta_y: delta_y, origin: origin, x: x, y: y)
+        end
 
         describe '#type' do
           it 'returns :wheel' do
@@ -40,7 +42,13 @@ module Selenium
 
         describe '#create_scroll' do
           it 'executes #add_action with created interaction' do
-            allow(Scroll).to receive(:new).with(wheel, duration, delta_x, delta_y, origin: origin, x: x, y: y)
+            allow(Scroll).to receive(:new).with(source: wheel,
+                                                duration: duration,
+                                                delta_x: delta_x,
+                                                delta_y: delta_y,
+                                                origin: origin,
+                                                x: x,
+                                                y: y)
                                           .and_return(scroll)
             allow(wheel).to receive(:add_action).and_call_original
 
