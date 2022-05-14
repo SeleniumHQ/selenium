@@ -228,7 +228,7 @@ class ErrorHandler:
                         line = self._value_or_default(frame, 'lineNumber', '')
                         file = self._value_or_default(frame, 'fileName', '<anonymous>')
                         if line:
-                            file = "{}:{}".format(file, line)
+                            file = f"{file}:{line}"
                         meth = self._value_or_default(frame, 'methodName', '<anonymous>')
                         if 'className' in frame:
                             meth = "{}.{}".format(frame['className'], meth)

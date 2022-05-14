@@ -142,7 +142,7 @@ class UnexpectedAlertPresentException(WebDriverException):
         self.alert_text = alert_text
 
     def __str__(self) -> str:
-        return "Alert Text: {}\n{}".format(self.alert_text, super().__str__())
+        return f"Alert Text: {self.alert_text}\n{super().__str__()}"
 
 
 class NoAlertPresentException(WebDriverException):

@@ -165,7 +165,7 @@ def parse(data, file_name, map_binary_to_string=False):
             enumliterals.append(trimLine)
             continue
 
-        print('Error in {}:{}, illegal token: \t{}'.format(file_name, i, line))
+        print(f'Error in {file_name}:{i}, illegal token: \t{line}')
         sys.exit(1)
     return protocol
 

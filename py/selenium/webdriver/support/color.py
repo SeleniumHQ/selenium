@@ -156,7 +156,7 @@ class Color:
 
     @property
     def hex(self) -> str:
-        return "#{:02x}{:02x}{:02x}".format(self.red, self.green, self.blue)
+        return f"#{self.red:02x}{self.green:02x}{self.blue:02x}"
 
     def __eq__(self, other: object) -> bool:
         if isinstance(other, Color):

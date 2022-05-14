@@ -47,7 +47,7 @@ def write_atom_literal(out, name, contents, lang, utf8):
     if "cc" == lang or "hh" == lang:
         string_type = "std::string" if utf8 else "std::wstring"
         char_type = "char" if utf8 else "wchar_t"
-        out.write("const {}* const {}[] = {{\n".format(char_type, name))
+        out.write(f"const {char_type}* const {name}[] = {{\n")
     elif "java" == lang:
         out.write("  %s(new StringBuilder()\n" % name)
     else:
@@ -93,7 +93,7 @@ namespace atoms {
     
     for (name, file) in js_map.items():
         if just_declare:
-            out.write("extern const {}* const {}[];\n".format(char_type, name.upper()))
+            out.write(f"extern const {char_type}* const {name.upper()}[];\n")
         else:
             contents = open(file).read()
             write_atom_literal(out, name, contents, "hh", utf8)
