@@ -18,9 +18,11 @@
 """
 The ActionChains implementation,
 """
+from typing import Union
 
 from .utils import keys_to_typing
 from .actions.action_builder import ActionBuilder
+from selenium.webdriver.remote.webelement import WebElement
 
 
 class ActionChains:
@@ -321,16 +323,22 @@ class ActionChains:
         self.send_keys(*keys_to_send)
         return self
 
-    def scroll(self, x: int, y: int, delta_x: int, delta_y: int, duration: int = 0, origin= "viewport"):
+    def scroll(self, x: int, y: int, delta_x: int, delta_y: int, duration: int = 0, origin: Union[str,WebElement] = "viewport"):
         """
-        Sends wheel scroll information to the browser to be processed.
+        Scrolls by the provided amount from a designated origination point.
+        The scroll origin is either the center of an element or the upper left of the viewport plus any offsets.
+        If the origin is an element, and the element is not in the viewport, the bottom of the element will first
+        be scrolled to the bottom of the viewport.
 
         :Args:
-         - x: starting X coordinate
-         - y: starting Y coordinate
-         - delta_x: the distance the mouse will scroll on the x axis
-         - delta_y: the distance the mouse will scroll on the y axis
-         - origin: element whose center is the origination point of the scroll; the default is upper left of viewport.
+         - x: The horizontal offset from the origin from which to start the scroll.
+         - y: The vertical offset from the origin from which to start the scroll.
+         - delta_x: Distance along X axis to scroll using the wheel. A negative value scrolls left.
+         - delta_y: Distance along Y axis to scroll using the wheel. A negative value scrolls up.
+         - origin: Where scroll originates (viewport or element center). The default is upper left of viewport.
+
+         :Raises: If the origin with offset is outside the viewport.
+          - MoveTargetOutOfBoundsException - If the origin with offset is outside the viewport.
         """
         self.w3c_actions.wheel_action.scroll(x=x, y=y, delta_x=delta_x, delta_y=delta_y,
                                              duration=duration, origin=origin)

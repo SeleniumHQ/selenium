@@ -17,6 +17,7 @@
 
 import pytest
 
+from selenium.webdriver.common.actions.wheel_input import WheelInput
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.actions.action_builder import ActionBuilder
 from selenium.webdriver.common.actions.pointer_input import PointerInput
@@ -257,6 +258,25 @@ def test_touch_pointer_properties(driver, pages):
     assert events[3]["tiltX"] == -19
     assert events[3]["tiltY"] == 62
     assert events[3]["twist"] == 345
+
+
+def test_can_scroll_mouse_wheel(driver, pages):
+    pages.load("scrollingPage.html")
+    driver.execute_script("document.scrollingElement.scrollTop = 0")
+    scrollable = driver.find_element(By.CSS_SELECTOR, "#scrollable")
+
+    wheel_input = WheelInput("wheel")
+    actions = ActionBuilder(driver, wheel=wheel_input)
+    actions.wheel_action.scroll(0, 0, 5, 10, 0, scrollable)
+
+    actions.perform()
+    events = _get_events(driver)
+    assert len(events) == 1
+    assert events[0]["type"] == "wheel"
+    assert events[0]["deltaX"] >= 5
+    assert events[0]["deltaY"] >= 10
+    assert events[0]["deltaZ"] == 0
+    assert events[0]["target"] == "scrollContent"
 
 
 def _perform_drag_and_drop_with_mouse(driver, pages):
