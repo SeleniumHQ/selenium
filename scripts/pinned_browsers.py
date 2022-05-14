@@ -187,7 +187,7 @@ def firefox():
 
     content = ""
 
-    linux = f"https://ftp.mozilla.org/pub/firefox/releases/{v}/linux-x86_64/en-US/firefox-{v}.tar.bz2"
+    linux = "https://ftp.mozilla.org/pub/firefox/releases/%s/linux-x86_64/en-US/firefox-%s.tar.bz2" % (v, v)
     sha = calculate_hash(linux)
     content = content + """
     http_archive(
@@ -198,7 +198,7 @@ def firefox():
     )
     """ % (linux, sha)
 
-    mac = f"https://ftp.mozilla.org/pub/firefox/releases/{v}/mac/en-US/Firefox%20{v}.dmg"
+    mac = "https://ftp.mozilla.org/pub/firefox/releases/%s/mac/en-US/Firefox%%20%s.dmg" % (v, v)
     sha = calculate_hash(mac)
     content = content + """
     dmg_archive(

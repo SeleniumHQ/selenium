@@ -9,4 +9,4 @@ if __name__ == '__main__':
     if len(dirty_out) > 1:
         dirty = "*"
 
-    print(f"STABLE_GIT_REVISION {revision}{dirty}\n")
+    print("STABLE_GIT_REVISION %s%s\n" % (revision, dirty))
