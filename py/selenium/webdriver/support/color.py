@@ -64,12 +64,12 @@ class Color:
         import re
 
         class Matcher:
-            match_obj: Optional[Match[str]]
+            match_obj: Match[str] | None
 
             def __init__(self) -> None:
                 self.match_obj = None
 
-            def match(self, pattern: str, str_: str) -> Optional[Match[str]]:
+            def match(self, pattern: str, str_: str) -> Match[str] | None:
                 self.match_obj = re.match(pattern, str_)
                 return self.match_obj
 
@@ -82,7 +82,7 @@ class Color:
         if m.match(RGB_PATTERN, str_):
             return cls(*m.groups)
         elif m.match(RGB_PCT_PATTERN, str_):
-            rgb = tuple([float(each) / 100 * 255 for each in m.groups])
+            rgb = tuple(float(each) / 100 * 255 for each in m.groups)
             return cls(*rgb)
         elif m.match(RGBA_PATTERN, str_):
             return cls(*m.groups)
@@ -91,10 +91,10 @@ class Color:
                 [float(each) / 100 * 255 for each in m.groups[:3]] + [m.groups[3]])  # type: ignore
             return cls(*rgba)
         elif m.match(HEX_PATTERN, str_):
-            rgb = tuple([int(each, 16) for each in m.groups])
+            rgb = tuple(int(each, 16) for each in m.groups)
             return cls(*rgb)
         elif m.match(HEX3_PATTERN, str_):
-            rgb = tuple([int(each * 2, 16) for each in m.groups])
+            rgb = tuple(int(each * 2, 16) for each in m.groups)
             return cls(*rgb)
         elif m.match(HSL_PATTERN, str_) or m.match(HSLA_PATTERN, str_):
             return cls._from_hsl(*m.groups)
@@ -156,7 +156,7 @@ class Color:
 
     @property
     def hex(self) -> str:
-        return "#%02x%02x%02x" % (self.red, self.green, self.blue)
+        return "#{:02x}{:02x}{:02x}".format(self.red, self.green, self.blue)
 
     def __eq__(self, other: object) -> bool:
         if isinstance(other, Color):

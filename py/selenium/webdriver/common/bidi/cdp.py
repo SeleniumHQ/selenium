@@ -52,7 +52,7 @@ def import_devtools(ver):
     global devtools
     global version
     version = ver
-    devtools = importlib.import_module("selenium.webdriver.common.devtools.v{}".format(version))
+    devtools = importlib.import_module(f"selenium.webdriver.common.devtools.v{version}")
 
 
 _connection_context: contextvars.ContextVar = contextvars.ContextVar('connection_context')
@@ -151,7 +151,7 @@ class CdpConnectionClosed(WsConnectionClosed):
 
     def __repr__(self):
         ''' Return representation. '''
-        return '{}<{}>'.format(self.__class__.__name__, self.reason)
+        return f'{self.__class__.__name__}<{self.reason}>'
 
 
 class InternalError(Exception):

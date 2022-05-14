@@ -21,7 +21,7 @@ def main(argv):
     parser.add_argument("json_file", help="The .json output file write.")
     args = parser.parse_args(argv)
     file_name = os.path.normpath(args.pdl_file)
-    input_file = open(file_name, "r")
+    input_file = open(file_name)
     pdl_string = input_file.read()
     protocol = pdl.loads(pdl_string, file_name, args.map_binary_to_string)
     input_file.close()

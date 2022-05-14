@@ -1266,7 +1266,7 @@ class WebDriver(BaseWebDriver):
         if isinstance(by, RelativeBy):
             _pkg = '.'.join(__name__.split('.')[:-1])
             raw_function = pkgutil.get_data(_pkg, 'findElements.js').decode('utf8')
-            find_element_js = "return ({}).apply(null, arguments);".format(raw_function)
+            find_element_js = f"return ({raw_function}).apply(null, arguments);"
             return self.execute_script(find_element_js, by.to_dict())
 
         if by == By.ID:
@@ -1323,7 +1323,7 @@ class WebDriver(BaseWebDriver):
         try:
             with open(filename, 'wb') as f:
                 f.write(png)
-        except IOError:
+        except OSError:
             return False
         finally:
             del png
@@ -1577,7 +1577,7 @@ class WebDriver(BaseWebDriver):
 
         cdp.import_devtools(version)
 
-        devtools = import_module("selenium.webdriver.common.devtools.v{}".format(version))
+        devtools = import_module(f"selenium.webdriver.common.devtools.v{version}")
         async with cdp.open_cdp(ws_url) as conn:
             targets = await conn.execute(devtools.target.get_targets())
             target_id = targets[0].target_id

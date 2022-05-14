@@ -28,7 +28,7 @@ class ChromiumOptions(ArgOptions):
     KEY = "goog:chromeOptions"
 
     def __init__(self) -> None:
-        super(ChromiumOptions, self).__init__()
+        super().__init__()
         self._binary_location = ''
         self._extension_files = []
         self._extensions = []
@@ -98,7 +98,7 @@ class ChromiumOptions(ArgOptions):
             if os.path.exists(extension_to_add):
                 self._extension_files.append(extension_to_add)
             else:
-                raise IOError("Path to the extension doesn't exist")
+                raise OSError("Path to the extension doesn't exist")
         else:
             raise ValueError("argument can not be null")
 

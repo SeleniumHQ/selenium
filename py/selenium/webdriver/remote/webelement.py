@@ -101,7 +101,7 @@ class WebElement(BaseWebElement):
         """Clears the text if it's a text entry element."""
         self._execute(Command.CLEAR_ELEMENT)
 
-    def get_property(self, name) -> Union[str, bool, WebElement, dict]:
+    def get_property(self, name) -> str | bool | WebElement | dict:
         """
         Gets the given property of the element.
 
@@ -705,7 +705,7 @@ class WebElement(BaseWebElement):
         try:
             with open(filename, 'wb') as f:
                 f.write(png)
-        except IOError:
+        except OSError:
             return False
         finally:
             del png

@@ -79,12 +79,12 @@ class Service:
         except OSError as err:
             if err.errno == errno.ENOENT:
                 raise WebDriverException(
-                    "'%s' executable needs to be in PATH. %s" % (
+                    "'{}' executable needs to be in PATH. {}".format(
                         os.path.basename(self.path), self.start_error_message)
                 )
             elif err.errno == errno.EACCES:
                 raise WebDriverException(
-                    "'%s' executable may have wrong permissions. %s" % (
+                    "'{}' executable may have wrong permissions. {}".format(
                         os.path.basename(self.path), self.start_error_message)
                 )
             else:
