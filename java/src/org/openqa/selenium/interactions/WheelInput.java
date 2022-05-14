@@ -50,8 +50,7 @@ public class WheelInput implements InputSource, Encodable {
     return SourceType.WHEEL;
   }
 
-  public Interaction createScroll(
-    int x, int y, int deltaX, int deltaY, Duration duration, Origin origin) {
+  public Interaction createScroll(int x, int y, int deltaX, int deltaY, Duration duration, ScrollOrigin origin) {
     return new ScrollInteraction(this, x, y, deltaX, deltaY, duration, origin);
   }
 
@@ -72,7 +71,7 @@ public class WheelInput implements InputSource, Encodable {
     private final int deltaX;
     private final int deltaY;
     private final Duration duration;
-    private final Origin origin;
+    private final ScrollOrigin origin;
 
     protected ScrollInteraction(
       InputSource source,
@@ -81,7 +80,7 @@ public class WheelInput implements InputSource, Encodable {
       int deltaX,
       int deltaY,
       Duration duration,
-      Origin origin) {
+      ScrollOrigin origin) {
       super(source);
 
       this.x = x;
@@ -108,7 +107,7 @@ public class WheelInput implements InputSource, Encodable {
     }
   }
 
-  public static final class Origin {
+  public static final class ScrollOrigin {
     private final Object originObject;
 
     public Object asArg() {
@@ -119,16 +118,16 @@ public class WheelInput implements InputSource, Encodable {
       return arg;
     }
 
-    private Origin(Object originObject) {
+    private ScrollOrigin(Object originObject) {
       this.originObject = originObject;
     }
 
-    public static WheelInput.Origin viewport() {
-      return new WheelInput.Origin("viewport");
+    public static ScrollOrigin fromViewport() {
+      return new ScrollOrigin("viewport");
     }
 
-    public static WheelInput.Origin fromElement(WebElement element) {
-      return new WheelInput.Origin(Require.nonNull("Element", element));
+    public static ScrollOrigin fromElement(WebElement element) {
+      return new ScrollOrigin(Require.nonNull("Element", element));
     }
   }
 }
