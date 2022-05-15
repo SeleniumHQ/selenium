@@ -323,7 +323,7 @@ class ActionChains:
         self.send_keys(*keys_to_send)
         return self
 
-    def scroll(self, x: int, y: int, delta_x: int, delta_y: int, duration: int = 0, origin: Union[str,WebElement] = "viewport"):
+    def scroll(self, x: int, y: int, delta_x: int, delta_y: int, duration: int = 0, origin: Union[str, WebElement] = "viewport"):
         """
         Scrolls by the provided amount from a designated origination point.
         The scroll origin is either the center of an element or the upper left of the viewport plus any offsets.
