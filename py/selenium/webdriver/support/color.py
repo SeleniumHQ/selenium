@@ -44,7 +44,7 @@ HSL_PATTERN = r"^\s*hsl\(\s*(\d{1,3})\s*,\s*(\d{1,3})%\s*,\s*(\d{1,3})%\s*\)\s*$
 HSLA_PATTERN = r"^\s*hsla\(\s*(\d{1,3})\s*,\s*(\d{1,3})%\s*,\s*(\d{1,3})%\s*,\s*(0|1|0\.\d+)\s*\)\s*$"
 
 
-class Color(object):
+class Color:
     """
     Color conversion support class
 
@@ -63,7 +63,7 @@ class Color(object):
     def from_string(str_: str) -> "Color":
         import re
 
-        class Matcher(object):
+        class Matcher:
             match_obj: Optional[Match[str]]
 
             def __init__(self) -> None:
@@ -82,7 +82,7 @@ class Color(object):
         if m.match(RGB_PATTERN, str_):
             return Color(*m.groups)
         elif m.match(RGB_PCT_PATTERN, str_):
-            rgb = tuple([float(each) / 100 * 255 for each in m.groups])
+            rgb = tuple(float(each) / 100 * 255 for each in m.groups)
             return Color(*rgb)
         elif m.match(RGBA_PATTERN, str_):
             return Color(*m.groups)
@@ -90,10 +90,10 @@ class Color(object):
             rgba = tuple([float(each) / 100 * 255 for each in m.groups[:3]] + [m.groups[3]])  # type: ignore
             return Color(*rgba)
         elif m.match(HEX_PATTERN, str_):
-            rgb = tuple([int(each, 16) for each in m.groups])
+            rgb = tuple(int(each, 16) for each in m.groups)
             return Color(*rgb)
         elif m.match(HEX3_PATTERN, str_):
-            rgb = tuple([int(each * 2, 16) for each in m.groups])
+            rgb = tuple(int(each * 2, 16) for each in m.groups)
             return Color(*rgb)
         elif m.match(HSL_PATTERN, str_) or m.match(HSLA_PATTERN, str_):
             return Color._from_hsl(*m.groups)
@@ -153,7 +153,7 @@ class Color(object):
 
     @property
     def hex(self) -> str:
-        return "#%02x%02x%02x" % (self.red, self.green, self.blue)
+        return f"#{self.red:02x}{self.green:02x}{self.blue:02x}"
 
     def __eq__(self, other: object) -> bool:
         if isinstance(other, Color):

@@ -77,7 +77,7 @@ def testShouldWaitUntilAtLeastOneVisibleElementsIsFoundWhenSearchingForMany(driv
     add_visible.click()
     add_hidden.click()
 
-    class wait_for_two_elements(object):
+    class wait_for_two_elements:
 
         def __init__(self, locator):
             self.locator = locator

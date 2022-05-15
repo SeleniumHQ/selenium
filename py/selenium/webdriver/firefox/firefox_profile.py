@@ -40,7 +40,7 @@ class AddonFormatError(Exception):
     """Exception for not well-formed add-on manifest files"""
 
 
-class FirefoxProfile(object):
+class FirefoxProfile:
     ANONYMOUS_PROFILE_NAME = "WEBDRIVER_ANONYMOUS_PROFILE"
     DEFAULT_PREFERENCES = None
 
@@ -182,7 +182,7 @@ class FirefoxProfile(object):
         """
         with open(self.userPrefs, "w") as f:
             for key, value in user_prefs.items():
-                f.write('user_pref("%s", %s);\n' % (key, json.dumps(value)))
+                f.write(f'user_pref("{key}", {json.dumps(value)});\n')
 
     def _read_existing_userjs(self, userjs):
         import warnings
@@ -304,7 +304,7 @@ class FirefoxProfile(object):
             }
 
         if not os.path.exists(addon_path):
-            raise IOError('Add-on path does not exist: %s' % addon_path)
+            raise OSError('Add-on path does not exist: %s' % addon_path)
 
         try:
             if zipfile.is_zipfile(addon_path):
@@ -322,14 +322,14 @@ class FirefoxProfile(object):
             elif os.path.isdir(addon_path):
                 manifest_json_filename = os.path.join(addon_path, 'manifest.json')
                 if os.path.exists(manifest_json_filename):
-                    with open(manifest_json_filename, 'r') as f:
+                    with open(manifest_json_filename) as f:
                         return parse_manifest_json(f.read())
 
-                with open(os.path.join(addon_path, 'install.rdf'), 'r') as f:
+                with open(os.path.join(addon_path, 'install.rdf')) as f:
                     manifest = f.read()
             else:
-                raise IOError('Add-on path is neither an XPI nor a directory: %s' % addon_path)
-        except (IOError, KeyError) as e:
+                raise OSError('Add-on path is neither an XPI nor a directory: %s' % addon_path)
+        except (OSError, KeyError) as e:
             raise AddonFormatError(str(e), sys.exc_info()[2])
 
         try:

@@ -38,7 +38,7 @@ def _wrap_elements(result, ef_driver):
         return result
 
 
-class EventFiringWebDriver(object):
+class EventFiringWebDriver:
     """
     A wrapper around an arbitrary WebDriver instance which supports firing events
     """
@@ -188,7 +188,7 @@ class EventFiringWebDriver(object):
         if isinstance(args, EventFiringWebElement):
             return args.wrapped_element
         elif isinstance(args, tuple):
-            return tuple([self._unwrap_element_args(item) for item in args])
+            return tuple(self._unwrap_element_args(item) for item in args)
         elif isinstance(args, list):
             return [self._unwrap_element_args(item) for item in args]
         else:
@@ -226,7 +226,7 @@ class EventFiringWebDriver(object):
             raise
 
 
-class EventFiringWebElement(object):
+class EventFiringWebElement:
     """"
     A wrapper around WebElement instance which supports firing events
     """
