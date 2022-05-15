@@ -284,7 +284,6 @@ def test_can_scroll_from_element_by_amount(driver, pages):
 
     driver.switch_to.frame(iframe)
     checkbox = driver.find_element(By.NAME, "scroll_checkbox")
-
     assert _in_viewport(driver, checkbox)
 
 
@@ -299,7 +298,6 @@ def test_can_scroll_from_element_with_offset_by_amount(driver, pages):
     iframe = driver.find_element(By.TAG_NAME, "iframe")
     driver.switch_to.frame(iframe)
     checkbox = driver.find_element(By.NAME, "scroll_checkbox")
-
     assert _in_viewport(driver, checkbox)
 
 
@@ -318,9 +316,9 @@ def test_errors_when_element_offset_not_in_viewport(driver, pages):
 def test_can_scroll_from_viewport_by_amount(driver, pages):
     pages.load("scrolling_tests/frame_with_nested_scrolling_frame_out_of_view.html")
     footer = driver.find_element(By.TAG_NAME, "footer")
-    y = footer.rect['y']
+    delta_y = footer.rect['y']
 
-    ActionChains(driver).scroll(0, 0, 0, y).pause(0.2).perform()
+    ActionChains(driver).scroll(0, 0, 0, delta_y).pause(0.2).perform()
 
     assert _in_viewport(driver, footer)
 
@@ -329,40 +327,22 @@ def test_can_scroll_from_viewport_by_amount(driver, pages):
 @pytest.mark.xfail_remote
 def test_can_scroll_from_viewport_with_offset_by_amount(driver, pages):
     pages.load("scrolling_tests/frame_with_nested_scrolling_frame.html")
-    iframe = driver.find_element(By.TAG_NAME, "iframe")
 
     ActionChains(driver).scroll(10, 10, 0, 200).pause(0.2).perform()
 
+    iframe = driver.find_element(By.TAG_NAME, "iframe")
     driver.switch_to.frame(iframe)
     checkbox = driver.find_element(By.NAME, "scroll_checkbox")
-
     assert _in_viewport(driver, checkbox)
 
 
 @pytest.mark.xfail_firefox
 @pytest.mark.xfail_remote
 def test_errors_when_origin_offset_not_in_viewport(driver, pages):
-    pages.load("scrolling_tests/frame_with_nested_scrolling_frame_out_of_view.html")
+    pages.load("scrolling_tests/frame_with_nested_scrolling_frame.html")
 
     with pytest.raises(MoveTargetOutOfBoundsException):
         ActionChains(driver).scroll(-10, -10, 0, 200).perform()
-
-
-@pytest.mark.xfail_firefox
-@pytest.mark.xfail_remote
-def test_can_scroll_mouse_wheel(driver, pages):
-    pages.load("scrollingPage.html")
-    driver.execute_script("document.scrollingElement.scrollTop = 0")
-
-    scrollable = driver.find_element(By.CSS_SELECTOR, "#scrollable")
-    ActionChains(driver).scroll(0, 0, 5, 10, origin=scrollable).perform()
-    events = _get_events(driver)
-    assert len(events) == 1
-    assert events[0]["type"] == "wheel"
-    assert events[0]["deltaX"] >= 5
-    assert events[0]["deltaY"] >= 10
-    assert events[0]["deltaZ"] == 0
-    assert events[0]["target"] == "scrollContent"
 
 
 def _get_events(driver):

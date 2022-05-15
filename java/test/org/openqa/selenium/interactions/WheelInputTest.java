@@ -24,7 +24,6 @@ import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.WrappedWebElement;
-import org.openqa.selenium.interactions.PointerInput.Origin;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.json.PropertySetting;
 import org.openqa.selenium.remote.RemoteWebElement;
@@ -50,7 +49,7 @@ public class WheelInputTest {
       0,
       0,
       Duration.ofMillis(100),
-      WheelInput.Origin.fromElement(element));
+      WheelInput.ScrollOrigin.fromElement(element));
     Sequence sequence = new Sequence(wheelInput, 0).addAction(scroll);
 
     String rawJson = new Json().toJson(sequence);
@@ -84,7 +83,7 @@ public class WheelInputTest {
       30,
       60,
       Duration.ofSeconds(1),
-      WheelInput.Origin.viewport());
+      WheelInput.ScrollOrigin.fromViewport());
 
     Map<String, Object> encodedResult = interaction.encode();
     assertThat(encodedResult)
@@ -110,7 +109,7 @@ public class WheelInputTest {
       30,
       60,
       Duration.ofSeconds(1),
-      WheelInput.Origin.fromElement(innerElement));
+      WheelInput.ScrollOrigin.fromElement(innerElement));
 
     Map<String, Object> encodedResult = interaction.encode();
     assertThat(encodedResult)
