@@ -2162,13 +2162,21 @@ class TargetLocator {
    * If the specified frame can not be found, the returned promise will be
    * rejected with a {@linkplain error.NoSuchFrameError}.
    *
-   * @param {(number|WebElement|null)} id The frame locator.
+   * @param {(number|string|WebElement|null)} id The frame locator.
    * @return {!Promise<void>} A promise that will be resolved
    *     when the driver has changed focus to the specified frame.
    */
   frame(id) {
+    let frameReference = id;
+
+    if (typeof id === "string") {
+      frameReference = this.driver_.findElement({
+        id: id
+      });
+    }
+
     return this.driver_.execute(
-      new command.Command(command.Name.SWITCH_TO_FRAME).setParameter('id', id)
+      new command.Command(command.Name.SWITCH_TO_FRAME).setParameter('id', frameReference)
     )
   }
 
