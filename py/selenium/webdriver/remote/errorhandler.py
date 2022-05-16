@@ -95,7 +95,7 @@ class ErrorCode:
     ELEMENT_CLICK_INTERCEPTED: Tuple[int, str] = (64, 'element click intercepted')
     UNKNOWN_METHOD: Tuple[str] = ('unknown method exception',)
 
-    METHOD_NOT_ALLOWED: Tuple[int, str] =  (405, 'unsupported operation')
+    METHOD_NOT_ALLOWED: Tuple[int, str] = (405, 'unsupported operation')
 
 
 class ErrorHandler:
