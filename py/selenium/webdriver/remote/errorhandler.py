@@ -15,7 +15,7 @@
 # specific language governing permissions and limitations
 # under the License.
 
-from typing import Any, Dict, Mapping, Type, TypeVar
+from typing import Any, Dict, Mapping, Type, TypeVar, Tuple
 
 from selenium.common.exceptions import (ElementClickInterceptedException,
                                         ElementNotInteractableException,
@@ -57,45 +57,45 @@ class ErrorCode:
     Error codes defined in the WebDriver wire protocol.
     """
     # Keep in sync with org.openqa.selenium.remote.ErrorCodes and errorcodes.h
-    SUCCESS = 0
-    NO_SUCH_ELEMENT = [7, 'no such element']
-    NO_SUCH_FRAME = [8, 'no such frame']
-    NO_SUCH_SHADOW_ROOT = ["no such shadow root"]
-    UNKNOWN_COMMAND = [9, 'unknown command']
-    STALE_ELEMENT_REFERENCE = [10, 'stale element reference']
-    ELEMENT_NOT_VISIBLE = [11, 'element not visible']
-    INVALID_ELEMENT_STATE = [12, 'invalid element state']
-    UNKNOWN_ERROR = [13, 'unknown error']
-    ELEMENT_IS_NOT_SELECTABLE = [15, 'element not selectable']
-    JAVASCRIPT_ERROR = [17, 'javascript error']
-    XPATH_LOOKUP_ERROR = [19, 'invalid selector']
-    TIMEOUT = [21, 'timeout']
-    NO_SUCH_WINDOW = [23, 'no such window']
-    INVALID_COOKIE_DOMAIN = [24, 'invalid cookie domain']
-    UNABLE_TO_SET_COOKIE = [25, 'unable to set cookie']
-    UNEXPECTED_ALERT_OPEN = [26, 'unexpected alert open']
-    NO_ALERT_OPEN = [27, 'no such alert']
-    SCRIPT_TIMEOUT = [28, 'script timeout']
-    INVALID_ELEMENT_COORDINATES = [29, 'invalid element coordinates']
-    IME_NOT_AVAILABLE = [30, 'ime not available']
-    IME_ENGINE_ACTIVATION_FAILED = [31, 'ime engine activation failed']
-    INVALID_SELECTOR = [32, 'invalid selector']
-    SESSION_NOT_CREATED = [33, 'session not created']
-    MOVE_TARGET_OUT_OF_BOUNDS = [34, 'move target out of bounds']
-    INVALID_XPATH_SELECTOR = [51, 'invalid selector']
-    INVALID_XPATH_SELECTOR_RETURN_TYPER = [52, 'invalid selector']
+    SUCCESS: int = 0
+    NO_SUCH_ELEMENT: Tuple[int, str] = (7, 'no such element')
+    NO_SUCH_FRAME: Tuple[int, str] = (8, 'no such frame')
+    NO_SUCH_SHADOW_ROOT: Tuple[str] = ("no such shadow root",)
+    UNKNOWN_COMMAND: Tuple[int, str] = (9, 'unknown command')
+    STALE_ELEMENT_REFERENCE: Tuple[int, str] = (10, 'stale element reference')
+    ELEMENT_NOT_VISIBLE: Tuple[int, str] = (11, 'element not visible')
+    INVALID_ELEMENT_STATE: Tuple[int, str] = (12, 'invalid element state')
+    UNKNOWN_ERROR: Tuple[int, str] = (13, 'unknown error')
+    ELEMENT_IS_NOT_SELECTABLE: Tuple[int, str] = (15, 'element not selectable')
+    JAVASCRIPT_ERROR: Tuple[int, str] = (17, 'javascript error')
+    XPATH_LOOKUP_ERROR: Tuple[int, str] = (19, 'invalid selector')
+    TIMEOUT: Tuple[int, str] = (21, 'timeout')
+    NO_SUCH_WINDOW: Tuple[int, str] = (23, 'no such window')
+    INVALID_COOKIE_DOMAIN: Tuple[int, str] = (24, 'invalid cookie domain')
+    UNABLE_TO_SET_COOKIE: Tuple[int, str] = (25, 'unable to set cookie')
+    UNEXPECTED_ALERT_OPEN: Tuple[int, str] = (26, 'unexpected alert open')
+    NO_ALERT_OPEN: Tuple[int, str] = (27, 'no such alert')
+    SCRIPT_TIMEOUT: Tuple[int, str] = (28, 'script timeout')
+    INVALID_ELEMENT_COORDINATES: Tuple[int, str] = (29, 'invalid element coordinates')
+    IME_NOT_AVAILABLE: Tuple[int, str] = (30, 'ime not available')
+    IME_ENGINE_ACTIVATION_FAILED: Tuple[int, str] = (31, 'ime engine activation failed')
+    INVALID_SELECTOR: Tuple[int, str] = (32, 'invalid selector')
+    SESSION_NOT_CREATED: Tuple[int, str] = (33, 'session not created')
+    MOVE_TARGET_OUT_OF_BOUNDS: Tuple[int, str] = (34, 'move target out of bounds')
+    INVALID_XPATH_SELECTOR: Tuple[int, str] = (51, 'invalid selector')
+    INVALID_XPATH_SELECTOR_RETURN_TYPER: Tuple[int, str] = (52, 'invalid selector')
 
-    ELEMENT_NOT_INTERACTABLE = [60, 'element not interactable']
-    INSECURE_CERTIFICATE = ['insecure certificate']
-    INVALID_ARGUMENT = [61, 'invalid argument']
-    INVALID_COORDINATES = ['invalid coordinates']
-    INVALID_SESSION_ID = ['invalid session id']
-    NO_SUCH_COOKIE = [62, 'no such cookie']
-    UNABLE_TO_CAPTURE_SCREEN = [63, 'unable to capture screen']
-    ELEMENT_CLICK_INTERCEPTED = [64, 'element click intercepted']
-    UNKNOWN_METHOD = ['unknown method exception']
+    ELEMENT_NOT_INTERACTABLE: Tuple[int, str] = (60, 'element not interactable')
+    INSECURE_CERTIFICATE: Tuple[str] = ('insecure certificate',)
+    INVALID_ARGUMENT: Tuple[int, str] = (61, 'invalid argument')
+    INVALID_COORDINATES: Tuple[str] = ('invalid coordinates',)
+    INVALID_SESSION_ID: Tuple[str] = ('invalid session id',)
+    NO_SUCH_COOKIE: Tuple[int, str] = (62, 'no such cookie')
+    UNABLE_TO_CAPTURE_SCREEN: Tuple[int, str] = (63, 'unable to capture screen')
+    ELEMENT_CLICK_INTERCEPTED: Tuple[int, str] = (64, 'element click intercepted')
+    UNKNOWN_METHOD: Tuple[str] = ('unknown method exception',)
 
-    METHOD_NOT_ALLOWED = [405, 'unsupported operation']
+    METHOD_NOT_ALLOWED: Tuple[int, str] =  (405, 'unsupported operation')
 
 
 class ErrorHandler:
@@ -118,8 +118,6 @@ class ErrorHandler:
             return
         value = None
         message = response.get("message", "")
-        screen: str = response.get("screen", "")
-        stacktrace = None
         if isinstance(status, int):
             value_json = response.get('value', None)
             if value_json and isinstance(value_json, str):
