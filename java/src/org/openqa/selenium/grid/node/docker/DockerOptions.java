@@ -149,22 +149,7 @@ public class DockerOptions {
       kinds.put(imageName, stereotype);
     }
 
-    Pattern deviceMappingPattern = Pattern.compile("([\\/\\w-]*)\\:{1}([\\/\\w]+):?(\\w+)?");
-
-    List<String> devices = config.getAll(DOCKER_SECTION, "devices")
-      .orElseGet(Collections::emptyList);
-
-    List<Device> deviceMapping = new ArrayList<>();
-    for (int i = 0; i < devices.size(); i++) {
-      Matcher matcher = deviceMappingPattern.matcher(devices.get(i));
-      if(matcher.matches()){
-        deviceMapping.add(device(matcher.group(1), matcher.group(2), matcher.group(3)));
-      } else {
-        //Ignore the provided device mapping that doesn't match to device mapping pattern
-        LOG.warning(String.format("'%s' device file mapping doesn't "
-          + "match the regex '%s'. Ignoring it...", devices.get(i), deviceMappingPattern.pattern()));
-      }
-    }
+    List<Device> devicesMapping = getDevicesMapping();
 
     // If Selenium Server is running inside a Docker container, we can inspect that container
     // to get the information from it.
@@ -196,7 +181,7 @@ public class DockerOptions {
             getDockerUri(),
             image,
             caps,
-            deviceMapping,
+            devicesMapping,
             videoImage,
             assetsPath,
             networkName,
@@ -209,6 +194,26 @@ public class DockerOptions {
         maxContainerCount));
     });
     return factories.build().asMap();
+  }
+
+  protected List<Device> getDevicesMapping() {
+    Pattern linuxDeviceMappingPattern = Pattern.compile("([\\/\\w-]*)\\:{1}([\\/\\w]+):?(\\w+)?");
+
+    List<String> devices = config.getAll(DOCKER_SECTION, "devices")
+      .orElseGet(Collections::emptyList);
+
+    List<Device> deviceMapping = new ArrayList<>();
+    for (int i = 0; i < devices.size(); i++) {
+      Matcher matcher = linuxDeviceMappingPattern.matcher(devices.get(i));
+      if(matcher.matches()) {
+        deviceMapping.add(device(matcher.group(1), matcher.group(2), matcher.group(3)));
+      } else {
+        //Ignore the provided device mapping that doesn't match to device mapping pattern
+        LOG.warning(String.format("'%s' device file mapping doesn't "
+          + "match the regex '%s'. Ignoring it...", devices.get(i), linuxDeviceMappingPattern.pattern()));
+      }
+    }
+    return deviceMapping;
   }
 
   private Image getVideoImage(Docker docker) {

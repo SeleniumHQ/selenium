@@ -52,4 +52,32 @@ public class Device {
   public String getCgroupPermissions() {
     return cgroupPermissions;
   }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
+    }
+    if (o == null || getClass() != o.getClass()) {
+      return false;
+    }
+    Device device = (Device) o;
+    return Objects.equals(pathOnHost, device.pathOnHost) && Objects.equals(
+      pathInContainer, device.pathInContainer) && Objects.equals(cgroupPermissions,
+      device.cgroupPermissions);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(pathOnHost, pathInContainer, cgroupPermissions);
+  }
+
+  @Override
+  public String toString() {
+    return "Device{" +
+      "pathOnHost='" + pathOnHost + '\'' +
+      ", pathInContainer='" + pathInContainer + '\'' +
+      ", cgroupPermissions='" + cgroupPermissions + '\'' +
+      '}';
+  }
 }
