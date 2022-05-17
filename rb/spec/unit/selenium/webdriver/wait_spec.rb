@@ -51,8 +51,30 @@ module Selenium
         expect(wait.until(&block)).to be true
       end
 
+      it 'should silently capture StaleElementReferenceErrors' do
+        called = false
+        block = lambda do
+          if called
+            true
+          else
+            called = true
+            raise Error::StaleElementReferenceError
+          end
+        end
+
+        expect(wait.until(&block)).to be true
+      end
+
       it 'will use the message from any NoSuchElementError raised while waiting' do
         block = -> { raise Error::NoSuchElementError, 'foo' }
+
+        expect {
+          wait(timeout: 0.5).until(&block)
+        }.to raise_error(Error::TimeoutError, /foo/)
+      end
+
+      it 'will use the message from any StaleElementReferenceError raised while waiting' do
+        block = -> { raise Error::StaleElementReferenceError, 'foo' }
 
         expect {
           wait(timeout: 0.5).until(&block)
