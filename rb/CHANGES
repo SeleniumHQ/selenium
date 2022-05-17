@@ -1,3 +1,9 @@
+trunk (TBD)
+=========================
+
+Ruby:
+  * Fix Wait class tripping up during poll when a StaleElementReference would occur (#10659)
+
 4.1.0 (2021-11-22)
 =========================
 
