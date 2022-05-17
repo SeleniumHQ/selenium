@@ -17,6 +17,7 @@
 from __future__ import annotations
 
 import os
+import typing
 from base64 import b64decode, encodebytes
 from hashlib import md5 as md5_hash
 import pkgutil
@@ -751,7 +752,7 @@ class WebElement(BaseWebElement):
         params['id'] = self._id
         return self._parent.execute(command, params)
 
-    def find_element(self, by=By.ID, value=None):
+    def find_element(self, by=By.ID, value=None) -> WebElement:
         """
         Find an element given a By strategy and locator.
 
@@ -775,7 +776,7 @@ class WebElement(BaseWebElement):
         return self._execute(Command.FIND_CHILD_ELEMENT,
                              {"using": by, "value": value})['value']
 
-    def find_elements(self, by=By.ID, value=None):
+    def find_elements(self, by=By.ID, value=None) -> typing.List[WebElement]:
         """
         Find elements given a By strategy and locator.
 

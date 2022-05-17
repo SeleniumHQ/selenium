@@ -14,8 +14,7 @@
 # KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
 # under the License.
-
-
+import typing
 import warnings
 
 from selenium.common.exceptions import WebDriverException
@@ -104,10 +103,10 @@ class EventFiringWebDriver:
     def quit(self):
         self._dispatch("quit", (self._driver,), "quit", ())
 
-    def find_element(self, by=By.ID, value=None):
+    def find_element(self, by=By.ID, value=None) -> WebElement:
         return self._dispatch("find", (by, value, self._driver), "find_element", (by, value))
 
-    def find_elements(self, by=By.ID, value=None):
+    def find_elements(self, by=By.ID, value=None) -> typing.List[WebElement]:
         return self._dispatch("find", (by, value, self._driver), "find_elements", (by, value))
 
     def find_element_by_id(self, id_):
@@ -254,10 +253,10 @@ class EventFiringWebElement:
     def send_keys(self, *value):
         self._dispatch("change_value_of", (self._webelement, self._driver), "send_keys", value)
 
-    def find_element(self, by=By.ID, value=None):
+    def find_element(self, by=By.ID, value=None) -> WebElement:
         return self._dispatch("find", (by, value, self._driver), "find_element", (by, value))
 
-    def find_elements(self, by=By.ID, value=None):
+    def find_elements(self, by=By.ID, value=None) -> typing.List[WebElement]:
         return self._dispatch("find", (by, value, self._driver), "find_elements", (by, value))
 
     def find_element_by_id(self, id_):
