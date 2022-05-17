@@ -38,7 +38,7 @@ module Selenium
         @timeout  = opts.fetch(:timeout, DEFAULT_TIMEOUT)
         @interval = opts.fetch(:interval, DEFAULT_INTERVAL)
         @message  = opts[:message]
-        @ignored  = Array(opts[:ignore]) || DEFAULT_ERRORS_TO_IGNORE
+        @ignored  = Array(opts[:ignore] || DEFAULT_ERRORS_TO_IGNORE)
       end
 
       #
