@@ -22,6 +22,7 @@ module Selenium
     class Wait
       DEFAULT_TIMEOUT  = 5
       DEFAULT_INTERVAL = 0.2
+      DEFAULT_ERRORS_TO_IGNORE = [Error::NoSuchElementError, Error::StaleElementReferenceError]
 
       #
       # Create a new Wait instance
@@ -37,7 +38,7 @@ module Selenium
         @timeout  = opts.fetch(:timeout, DEFAULT_TIMEOUT)
         @interval = opts.fetch(:interval, DEFAULT_INTERVAL)
         @message  = opts[:message]
-        @ignored  = Array(opts[:ignore] || Error::NoSuchElementError)
+        @ignored  = Array(opts[:ignore]) || DEFAULT_ERRORS_TO_IGNORE
       end
 
       #
