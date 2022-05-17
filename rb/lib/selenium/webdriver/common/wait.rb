@@ -22,7 +22,7 @@ module Selenium
     class Wait
       DEFAULT_TIMEOUT  = 5
       DEFAULT_INTERVAL = 0.2
-      DEFAULT_ERRORS_TO_IGNORE = [Error::NoSuchElementError, Error::StaleElementReferenceError]
+      DEFAULT_ERRORS_TO_IGNORE = [Error::NoSuchElementError, Error::StaleElementReferenceError].freeze
 
       #
       # Create a new Wait instance
