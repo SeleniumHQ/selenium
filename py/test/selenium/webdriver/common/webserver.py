@@ -133,7 +133,7 @@ class SimpleWebServer:
 
     def __init__(self, host=DEFAULT_HOST, port=DEFAULT_PORT):
         self.stop_serving = False
-        host = DEFAULT_HOST if host == DEFAULT_HOST_IP else host
+        host = host
         port = port
         while True:
             try:
@@ -162,10 +162,10 @@ class SimpleWebServer:
         """Stops the server."""
         self.stop_serving = True
         with contextlib.suppress(IOError):
-            _ = urllib_request.urlopen(f"http://{self.host}:{self.port}")
+            _ = urllib_request.urlopen(f"http://{DEFAULT_HOST}:{self.port}")
 
     def where_is(self, path) -> str:
-        return f"http://{self.host}:{self.port}/{path}"
+        return f"http://{DEFAULT_HOST}:{self.port}/{path}"
 
 
 def main(argv=None):
