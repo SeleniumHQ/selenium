@@ -59,6 +59,7 @@ import java.net.URISyntaxException;
 import java.nio.file.Path;
 import java.util.Map;
 import java.util.Optional;
+import java.util.logging.Logger;
 
 /**
  * An implementation of the {#link WebDriver} interface that drives Firefox.
@@ -78,6 +79,7 @@ import java.util.Optional;
 public class FirefoxDriver extends RemoteWebDriver
   implements WebStorage, HasExtensions, HasFullPageScreenshot, HasContext, HasDevTools, HasBiDi {
 
+  private static final Logger LOG = Logger.getLogger(FirefoxDriver.class.getName());
   private final Capabilities capabilities;
   private final RemoteWebStorage webStorage;
   private final HasExtensions extensions;
@@ -138,7 +140,7 @@ public class FirefoxDriver extends RemoteWebDriver
       try {
         return new URI(uri);
       } catch (URISyntaxException e) {
-        e.printStackTrace();
+        LOG.warning(e.getMessage());
       }
       return null;
     });
