@@ -162,10 +162,13 @@ class SimpleWebServer:
         """Stops the server."""
         self.stop_serving = True
         with contextlib.suppress(IOError):
-            _ = urllib_request.urlopen(f"http://{DEFAULT_HOST}:{self.port}")
+            _ = urllib_request.urlopen(f"http://{self.host}:{self.port}")
 
-    def where_is(self, path) -> str:
-        return f"http://{DEFAULT_HOST}:{self.port}/{path}"
+    def where_is(self, path, localhost=False) -> str:
+        # True force serve the page from localhost
+        if localhost:
+            return f"http://localhost:{self.port}/{path}"
+        return f"http://{self.host}:{self.port}/{path}"
 
 
 def main(argv=None):

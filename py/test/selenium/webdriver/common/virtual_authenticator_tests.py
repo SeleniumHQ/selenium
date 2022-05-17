@@ -111,7 +111,7 @@ def extract_raw_id(response):
 @pytest.mark.xfail_remote
 def test_add_and_remove_virtual_authenticator(driver, pages):
     driver = create_rk_disabled_ctap2_authenticator(driver)
-    driver.get(pages.url("virtual-authenticator.html"))
+    driver.get(pages.url("virtual-authenticator.html", localhost=True))
 
     result = driver.execute_async_script("registerCredential().then(arguments[arguments.length - 1]);")
     assert result.get('status', '') == 'OK'
@@ -130,7 +130,7 @@ def test_add_and_remove_virtual_authenticator(driver, pages):
 def test_add_and_remove_non_resident_credentials(driver, pages):
     driver = create_rk_disabled_ctap2_authenticator(driver)
 
-    driver.get(pages.url("virtual-authenticator.html"))
+    driver.get(pages.url("virtual-authenticator.html", localhost=True))
 
     assert driver.virtual_authenticator_id is not None
 
@@ -153,7 +153,7 @@ def test_add_and_remove_non_resident_credentials(driver, pages):
 @pytest.mark.xfail_remote
 def test_add_non_resident_credential_when_authenticator_uses_u2f_protocol(driver, pages):
     driver = create_rk_disabled_u2f_authenticator(driver)
-    driver.get(pages.url("virtual-authenticator.html"))
+    driver.get(pages.url("virtual-authenticator.html", localhost=True))
 
     base64_pk = '''
     MIGHAgEAMBMGByqGSM49AgEGCCqGSM49AwEHBG0wawIBAQQg8_zMDQDYAxlU-Q
@@ -178,7 +178,7 @@ def test_add_non_resident_credential_when_authenticator_uses_u2f_protocol(driver
 @pytest.mark.xfail_remote
 def test_add_resident_credential_not_supported_when_authenticator_uses_u2f_protocol(driver, pages):
     driver = create_rk_enabled_u2f_authenticator(driver)
-    driver.get(pages.url("virtual-authenticator.html"))
+    driver.get(pages.url("virtual-authenticator.html", localhost=True))
 
     base64_pk = '''
     MIGHAgEAMBMGByqGSM49AgEGCCqGSM49AwEHBG0wawIBAQQg8_zMDQDYAxlU-Q
@@ -208,7 +208,7 @@ def test_add_resident_credential_not_supported_when_authenticator_uses_u2f_proto
 @pytest.mark.xfail_remote
 def test_get_credentials(driver, pages):
     driver = create_rk_enabled_ctap2_authenticator(driver)
-    driver.get(pages.url("virtual-authenticator.html"))
+    driver.get(pages.url("virtual-authenticator.html", localhost=True))
 
     # Register a Resident Credential
     response1 = driver.execute_async_script('''
@@ -265,7 +265,7 @@ def test_get_credentials(driver, pages):
 @pytest.mark.xfail_remote
 def test_remove_credential_by_raw_Id(driver, pages):
     driver = create_rk_disabled_u2f_authenticator(driver)
-    driver.get(pages.url("virtual-authenticator.html"))
+    driver.get(pages.url("virtual-authenticator.html", localhost=True))
 
     # register a credential
     response = driver.execute_async_script(
@@ -291,7 +291,7 @@ def test_remove_credential_by_raw_Id(driver, pages):
 @pytest.mark.xfail_remote
 def test_remove_credential_by_b64_urlId(driver, pages):
     driver = create_rk_disabled_u2f_authenticator(driver)
-    driver.get(pages.url("virtual-authenticator.html"))
+    driver.get(pages.url("virtual-authenticator.html", localhost=True))
 
     # register a credential
     response = driver.execute_async_script(
@@ -319,7 +319,7 @@ def test_remove_credential_by_b64_urlId(driver, pages):
 def test_remove_all_credentials(driver, pages):
     driver = create_rk_disabled_u2f_authenticator(driver)
 
-    driver.get(pages.url("virtual-authenticator.html"))
+    driver.get(pages.url("virtual-authenticator.html", localhost=True))
 
     # Register 2 credentials
     response1 = driver.execute_async_script(
@@ -358,7 +358,7 @@ def test_remove_all_credentials(driver, pages):
 @pytest.mark.xfail_remote
 def test_set_user_verified(driver, pages):
     driver = create_rk_enabled_ctap2_authenticator(driver)
-    driver.get(pages.url("virtual-authenticator.html"))
+    driver.get(pages.url("virtual-authenticator.html", localhost=True))
 
     # Register a credential requiring UV.
 
