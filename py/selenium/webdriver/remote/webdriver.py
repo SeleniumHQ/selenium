@@ -28,7 +28,7 @@ from typing import Dict, List, Optional, Union
 import warnings
 
 from abc import ABCMeta
-from base64 import b64decode
+from base64 import b64decode, urlsafe_b64encode
 from contextlib import asynccontextmanager, contextmanager
 
 from .bidi_connection import BidiConnection
@@ -1653,10 +1653,14 @@ class WebDriver(BaseWebDriver):
         return [Credential.from_dict(credential) for credential in credential_data['value']]
 
     @required_virtual_authenticator
-    def remove_credential(self, credential_id: str) -> None:
+    def remove_credential(self, credential_id: Union[str, bytearray]) -> None:
         """
         Removes a credential from the authenticator.
         """
+        # Check if the credential is bytearray converted to b64 string
+        if type(credential_id) is bytearray:
+            credential_id = urlsafe_b64encode(credential_id).decode()
+
         self.execute(
             Command.REMOVE_CREDENTIAL,
             {'credentialId': credential_id, 'authenticatorId': self._authenticator_id}

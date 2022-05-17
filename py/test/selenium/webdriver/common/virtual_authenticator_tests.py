@@ -101,6 +101,10 @@ def extract_id(response):
     return response.get("credential", {}).get("id", "")
 
 
+def extract_raw_id(response):
+    return response.get("credential", {}).get("rawId", "")
+
+
 # ---------------- TESTS ------------------------------------
 @pytest.mark.xfail_firefox
 @pytest.mark.xfail_safari
@@ -259,6 +263,59 @@ def test_get_credentials(driver, pages):
 @pytest.mark.xfail_firefox
 @pytest.mark.xfail_safari
 @pytest.mark.xfail_remote
+def test_remove_credential_by_raw_Id(driver, pages):
+    driver = create_rk_disabled_u2f_authenticator(driver)
+    driver.get(pages.url("virtual-authenticator.html"))
+
+    # register a credential
+    response = driver.execute_async_script(
+        "registerCredential().then(arguments[arguments.length - 1]);"
+    )
+    assert response.get('status', '') == 'OK'
+
+    # remove the credential using array of bytes: rawId
+    raw_id = extract_raw_id(response)
+    driver.remove_credential(bytearray(raw_id))
+
+    # Trying to get the assertion should fail
+    response = get_assertion_for(driver, raw_id)
+    if response.get("status", "").startswith("NotAllowedError"):
+        assert True
+    else:
+        assert False, "Should have thrown a NotAllowedError"
+    driver.remove_virtual_authenticator()
+
+
+@pytest.mark.xfail_firefox
+@pytest.mark.xfail_safari
+@pytest.mark.xfail_remote
+def test_remove_credential_by_b64_urlId(driver, pages):
+    driver = create_rk_disabled_u2f_authenticator(driver)
+    driver.get(pages.url("virtual-authenticator.html"))
+
+    # register a credential
+    response = driver.execute_async_script(
+        "registerCredential().then(arguments[arguments.length - 1]);"
+    )
+    assert response.get('status', '') == 'OK'
+
+    # remove the credential using array of bytes: rawId
+    raw_id = extract_raw_id(response)
+    credential_id = extract_id(response)
+    driver.remove_credential(credential_id)
+
+    # Trying to get the assertion should fail
+    response = get_assertion_for(driver, raw_id)
+    if response.get("status", "").startswith("NotAllowedError"):
+        assert True
+    else:
+        assert False, "Should have thrown a NotAllowedError"
+    driver.remove_virtual_authenticator()
+
+
+@pytest.mark.xfail_firefox
+@pytest.mark.xfail_safari
+@pytest.mark.xfail_remote
 def test_remove_all_credentials(driver, pages):
     driver = create_rk_disabled_u2f_authenticator(driver)
 
@@ -289,7 +346,6 @@ def test_remove_all_credentials(driver, pages):
         raw_id1,
         raw_id2,
     )
-    print(response)
     if response.get("status", "").startswith("NotAllowedError"):
         assert True
     else:
