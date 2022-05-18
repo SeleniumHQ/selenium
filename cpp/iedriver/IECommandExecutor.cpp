@@ -305,6 +305,8 @@ LRESULT IECommandExecutor::OnAfterNewWindow(UINT uMsg,
       // sleep 0.5s then get current window handles
       clock_t end = clock() + (DEFAULT_BROWSER_REATTACH_TIMEOUT_IN_MILLISECONDS / 1000 * CLOCKS_PER_SEC);
       std::vector<HWND> diff;
+      int loopCount = 0;
+      bool isProcessWM = false;
       while (diff.size() == 0 && clock() < end) {
         std::vector<HWND> edge_window_handles;
         ::EnumWindows(&BrowserFactory::FindEdgeBrowserHandles,
@@ -330,8 +332,16 @@ LRESULT IECommandExecutor::OnAfterNewWindow(UINT uMsg,
         }
 
         if (diff.size() == 0) {
+          MSG msg;
+          if (loopCount >= 2 && !isProcessWM &&::PeekMessage(&msg, NULL, WM_USER, WM_USER, PM_REMOVE)) {
+              ::TranslateMessage(&msg);
+              ::DispatchMessage(&msg);
+              isProcessWM = true;
+              LOG(TRACE) << "process WM_USER";
+          }
           ::Sleep(500);
         }
+        loopCount++;
       }
 
       if (diff.size() == 0) {
