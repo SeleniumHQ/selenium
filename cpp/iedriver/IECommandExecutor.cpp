@@ -349,29 +349,35 @@ LRESULT IECommandExecutor::OnAfterNewWindow(UINT uMsg,
       } else {
         HWND new_window_window = diff[0];
 
-        DWORD process_id;
+        DWORD process_id = 0;
         ::GetWindowThreadProcessId(new_window_window, &process_id);
-        clock_t end = clock() + (DEFAULT_BROWSER_REATTACH_TIMEOUT_IN_MILLISECONDS / 1000 * CLOCKS_PER_SEC);
-        bool is_ready = this->factory_->IsBrowserProcessInitialized(process_id);
-        while (!is_ready && clock() < end) {
-          ::Sleep(100);
-          is_ready = this->factory_->IsBrowserProcessInitialized(process_id);
+        if (process_id) {
+          clock_t end = clock() + (DEFAULT_BROWSER_REATTACH_TIMEOUT_IN_MILLISECONDS / 1000 * CLOCKS_PER_SEC);
+          bool is_ready = this->factory_->IsBrowserProcessInitialized(process_id);
+          while (!is_ready && clock() < end) {
+            ::Sleep(100);
+            is_ready = this->factory_->IsBrowserProcessInitialized(process_id);
+          }
+
+          ProcessWindowInfo info;
+          info.dwProcessId = process_id;
+          info.hwndBrowser = new_window_window;
+          info.pBrowser = NULL;
+          std::string error_message = "";
+          bool attachFlag = this->factory_->AttachToBrowser(&info, &error_message);
+          if (attachFlag) {
+            BrowserHandle new_window_wrapper(new Browser(info.pBrowser,
+              NULL,
+              this->m_hWnd,
+              this->is_edge_chromium_));
+
+            // Force a wait cycle to make sure the browser is finished initializing.
+            new_window_wrapper->Wait(NORMAL_PAGE_LOAD_STRATEGY);
+            this->AddManagedBrowser(new_window_wrapper);
+          }
+        } else {
+          LOG(WARN) << "invalid window " << new_window_window;
         }
-
-        ProcessWindowInfo info;
-        info.dwProcessId = process_id;
-        info.hwndBrowser = new_window_window;
-        info.pBrowser = NULL;
-        std::string error_message = "";
-        this->factory_->AttachToBrowser(&info, &error_message);
-        BrowserHandle new_window_wrapper(new Browser(info.pBrowser,
-                                                     NULL,
-                                                     this->m_hWnd,
-                                                     this->is_edge_chromium_));
-
-        // Force a wait cycle to make sure the browser is finished initializing.
-        new_window_wrapper->Wait(NORMAL_PAGE_LOAD_STRATEGY);
-        this->AddManagedBrowser(new_window_wrapper);
       }
     }
   } else {
