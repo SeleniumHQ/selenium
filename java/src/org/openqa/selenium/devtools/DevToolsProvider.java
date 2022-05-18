@@ -22,6 +22,7 @@ import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.devtools.noop.NoOpCdpInfo;
 import org.openqa.selenium.remote.AugmenterProvider;
 import org.openqa.selenium.remote.ExecuteMethod;
+import org.openqa.selenium.remote.http.ConnectionFailedException;
 
 import java.net.URI;
 import java.util.Optional;
@@ -46,12 +47,20 @@ public class DevToolsProvider implements AugmenterProvider<HasDevTools> {
     String version = cdpVersion instanceof String ? (String) cdpVersion : caps.getBrowserVersion();
 
     CdpInfo info = new CdpVersionFinder().match(version).orElseGet(NoOpCdpInfo::new);
-    Optional<DevTools> devTools = SeleniumCdpConnection.create(caps).map(conn -> new DevTools(info::getDomains, conn));
-
-    return () -> devTools;
+    try {
+      Optional<DevTools> devTools = SeleniumCdpConnection.create(caps).map(conn -> new DevTools(info::getDomains, conn));
+      return () -> devTools;
+    } catch (ConnectionFailedException ignored) {
+      return Optional::empty;
+    }
   }
 
   private String getCdpUrl(Capabilities caps) {
+    Object enabled = caps.getCapability("se:cdpEnabled");
+    if (enabled.equals(false)) {
+      return null;
+    }
+
     Object cdp = caps.getCapability("se:cdp");
     if (cdp instanceof String) {
       return (String) cdp;

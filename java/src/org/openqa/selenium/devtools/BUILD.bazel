@@ -47,6 +47,7 @@ java_library(
         "//java:auto-service",
         "//java/src/org/openqa/selenium:core",
         "//java/src/org/openqa/selenium/remote:api",
+        "//java/src/org/openqa/selenium/remote/http",
     ],
 )
 
