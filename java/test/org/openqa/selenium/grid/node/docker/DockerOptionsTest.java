@@ -56,6 +56,10 @@ public class DockerOptionsTest {
       {
         configuredDeviceMapping(asList("/dev/kvm:/dev/kvm", "/dev/bus/usb:/dev/bus/usb:r")),
         asList(device("/dev/kvm", "/dev/kvm"), device("/dev/bus/usb", "/dev/bus/usb", "r"))
+      },
+      {
+        configuredDeviceMapping(asList(" /dev/kvm:/dev/kvm ")),
+        asList(device("/dev/kvm", "/dev/kvm"))
       }
     });
   }

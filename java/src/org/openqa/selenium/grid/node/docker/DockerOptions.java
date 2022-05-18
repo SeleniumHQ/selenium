@@ -197,20 +197,28 @@ public class DockerOptions {
   }
 
   protected List<Device> getDevicesMapping() {
-    Pattern linuxDeviceMappingPattern = Pattern.compile("([\\/\\w-]*)\\:{1}([\\/\\w]+):?(\\w+)?");
+    Pattern linuxDeviceMappingWithDefaultPermissionsPattern = Pattern.compile("^([\\w\\/-]+):([\\w\\/-]+)$");
+    Pattern linuxDeviceMappingWithPermissionsPattern = Pattern.compile("^([\\w\\/-]+):([\\w\\/-]+):([\\w]+)$");
 
     List<String> devices = config.getAll(DOCKER_SECTION, "devices")
       .orElseGet(Collections::emptyList);
 
     List<Device> deviceMapping = new ArrayList<>();
     for (int i = 0; i < devices.size(); i++) {
-      Matcher matcher = linuxDeviceMappingPattern.matcher(devices.get(i));
-      if(matcher.matches()) {
+      String deviceMappingDefined = devices.get(i).trim();
+      Matcher matcher = linuxDeviceMappingWithDefaultPermissionsPattern.matcher(deviceMappingDefined);
+
+      if (matcher.matches()) {
+        deviceMapping.add(device(matcher.group(1), matcher.group(2), null));
+      } else if ((matcher = linuxDeviceMappingWithPermissionsPattern.matcher(
+        deviceMappingDefined)).matches()) {
         deviceMapping.add(device(matcher.group(1), matcher.group(2), matcher.group(3)));
       } else {
-        //Ignore the provided device mapping that doesn't match to device mapping pattern
+        //Ignore provided device mapping which does not match any device mapping pattern
         LOG.warning(String.format("'%s' device file mapping doesn't "
-          + "match the regex '%s'. Ignoring it...", devices.get(i), linuxDeviceMappingPattern.pattern()));
+            + "match both regex '%s' and '%s'. Ignoring it...", deviceMappingDefined,
+          linuxDeviceMappingWithDefaultPermissionsPattern.pattern(),
+          linuxDeviceMappingWithPermissionsPattern.pattern()));
       }
     }
     return deviceMapping;
