@@ -213,12 +213,6 @@ public class DockerOptions {
       } else if ((matcher = linuxDeviceMappingWithPermissionsPattern.matcher(
         deviceMappingDefined)).matches()) {
         deviceMapping.add(device(matcher.group(1), matcher.group(2), matcher.group(3)));
-      } else {
-        //Ignore provided device mapping which does not match any device mapping pattern
-        LOG.warning(String.format("'%s' device file mapping doesn't "
-            + "match both regex '%s' and '%s'. Ignoring it...", deviceMappingDefined,
-          linuxDeviceMappingWithDefaultPermissionsPattern.pattern(),
-          linuxDeviceMappingWithPermissionsPattern.pattern()));
       }
     }
     return deviceMapping;

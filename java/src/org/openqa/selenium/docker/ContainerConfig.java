@@ -138,7 +138,7 @@ public class ContainerConfig {
       .map(key -> String.format("%s:%s", key, this.volumeBinds.get(key)))
       .collect(Collectors.toList());
 
-    List<Map<String, String>> devices = this.devices.stream()
+    List<Map<String, String>> devicesMapping = this.devices.stream()
       .map(device -> ImmutableMap.of(
         "PathOnHost", device.getPathOnHost(),
         "PathInContainer", device.getPathInContainer(),
@@ -152,7 +152,7 @@ public class ContainerConfig {
       "NetworkMode", networkName,
       "ShmSize", shmSize,
       "Binds", volumeBinds,
-      "Devices", devices);
+      "Devices", devicesMapping);
 
     return ImmutableMap.of(
       "Image", image.getId(),
