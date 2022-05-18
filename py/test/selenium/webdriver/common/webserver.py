@@ -131,7 +131,7 @@ class ThreadedHTTPServer(ThreadingMixIn, HTTPServer):
 class SimpleWebServer:
     """A very basic web server."""
 
-    def __init__(self, host=DEFAULT_HOST, port=DEFAULT_PORT):
+    def __init__(self, host=DEFAULT_HOST_IP, port=DEFAULT_PORT):
         self.stop_serving = False
         host = host
         port = port
@@ -167,7 +167,7 @@ class SimpleWebServer:
     def where_is(self, path, localhost=False) -> str:
         # True force serve the page from localhost
         if localhost:
-            return f"http://localhost:{self.port}/{path}"
+            return f"http://{DEFAULT_HOST}:{self.port}/{path}"
         return f"http://{self.host}:{self.port}/{path}"
 
 
