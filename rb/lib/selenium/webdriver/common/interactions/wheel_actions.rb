@@ -25,12 +25,11 @@ module Selenium
       end
 
       #
-      # This method uses a Scroll Wheel Input to determine where and by how much to scroll
+      # Scrolls by the provided amount from a designated origination point.
       #
-      # The scroll happens from an origin plus an offset.
-      # The amount to scroll is represented by delta_x and delta_y
-      # The origin is either the center of a provided element or the upper left of the current viewport
-      # The offset from the origin is represented by x and y
+      # The scroll origin is either the center of an element or the upper left of the viewport plus offsets.
+      # If the origin is an element, and the element is not in the viewport, the bottom of the element will first
+      #   be scrolled to the bottom of the viewport.
       #
       # @example Scroll to element
       #    el = driver.find_element(id: "some_id")
@@ -57,8 +56,8 @@ module Selenium
       # @option opts [Integer] delta_x Distance along X axis to scroll using the wheel. A negative value scrolls left.
       # @option opts [Integer] delta_y Distance along Y axis to scroll using the wheel. A negative value scrolls up.
       # @option opts [String, Element] origin The origin of the scroll, either the viewport or the center of an element.
-      # @return [ActionBuilder] A self reference.
-      # @raise [MoveTargetOutOfBoundsError] if the origin plus offset is located outside the viewport.
+      # @return [Selenium::WebDriver::WheelActions] A self reference.
+      # @raise [Error::MoveTargetOutOfBoundsError] If the origin with offset is outside the viewport.
       #
 
       def scroll(**opts)

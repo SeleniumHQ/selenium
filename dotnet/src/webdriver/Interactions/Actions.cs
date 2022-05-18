@@ -19,7 +19,6 @@
 using System;
 using System.Collections.Generic;
 using System.Drawing;
-using OpenQA.Selenium.Internal;
 
 namespace OpenQA.Selenium.Interactions
 {
@@ -35,7 +34,7 @@ namespace OpenQA.Selenium.Interactions
         TopLeft,
 
         /// <summary>
-        /// Offsets are calcuated from the center of the element.
+        /// Offsets are calculated from the center of the element.
         /// </summary>
         Center
     }
@@ -45,6 +44,7 @@ namespace OpenQA.Selenium.Interactions
     /// </summary>
     public class Actions : IAction
     {
+        private readonly TimeSpan DefaultScrollDuration = TimeSpan.FromMilliseconds(250);
         private readonly TimeSpan DefaultMouseMoveDuration = TimeSpan.FromMilliseconds(250);
         private ActionBuilder actionBuilder = new ActionBuilder();
         private PointerInputDevice defaultMouse = new PointerInputDevice(PointerKind.Mouse, "default mouse");
@@ -402,6 +402,44 @@ namespace OpenQA.Selenium.Interactions
         public Actions DragAndDropToOffset(IWebElement source, int offsetX, int offsetY)
         {
             this.ClickAndHold(source).MoveByOffset(offsetX, offsetY).Release();
+            return this;
+        }
+
+        /// <summary>
+        /// Scrolls by the provided amount from a designated origination point.
+        /// </summary>
+        /// <remarks>
+        /// The scroll origin is either the center of an element or the upper left of the viewport plus any offsets.
+        /// If the origin is an element, and the element is not in the viewport, the bottom of the element will first
+        /// be scrolled to the bottom of the viewport.
+        /// </remarks>
+        /// <param name="xOffset">The horizontal offset from the origin from which to start the scroll.</param>
+        /// <param name="yOffset">The vertical offset from the origin from which to start the scroll.</param>
+        /// <param name="deltaX">Distance along X axis to scroll using the wheel. A negative value scrolls left.</param>
+        /// <param name="deltaY">Distance along Y axis to scroll using the wheel. A negative value scrolls up.</param>
+        /// <param name="scrollOrigin">Where scroll originates (viewport or element center).</param>
+        /// <returns>A self-reference to this <see cref="Actions"/>.</returns>
+        /// <exception cref="MoveTargetOutOfBoundsException">If origin plus offsets is outside viewport.</exception>
+        public Actions Scroll(int xOffset, int yOffset, int deltaX, int deltaY, WheelInputDevice.ScrollOrigin scrollOrigin)
+        {
+            WheelInputDevice wheel = new WheelInputDevice();
+
+            if (scrollOrigin.Viewport && scrollOrigin.Element != null)
+            {
+                throw new ArgumentException("viewport can not be true if an element is defined.", nameof(scrollOrigin));
+            }
+
+            if (scrollOrigin.Viewport)
+            {
+                this.actionBuilder.AddAction(wheel.CreateWheelScroll(CoordinateOrigin.Viewport,
+                    xOffset, yOffset, deltaX, deltaY, DefaultScrollDuration));
+            }
+            else
+            {
+                this.actionBuilder.AddAction(wheel.CreateWheelScroll(scrollOrigin.Element,
+                    xOffset, yOffset, deltaX, deltaY, DefaultScrollDuration));
+            }
+
             return this;
         }
 

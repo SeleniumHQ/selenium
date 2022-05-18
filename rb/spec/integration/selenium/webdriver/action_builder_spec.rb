@@ -274,6 +274,7 @@ module Selenium
         it 'scrolls to element' do
           driver.navigate.to url_for('scrolling_tests/frame_with_nested_scrolling_frame_out_of_view.html')
           iframe = driver.find_element(tag_name: 'iframe')
+
           expect(in_viewport?(iframe)).to eq false
 
           driver.action.scroll(origin: iframe).perform
@@ -283,8 +284,8 @@ module Selenium
 
         it 'scrolls from element by given amount' do
           driver.navigate.to url_for('scrolling_tests/frame_with_nested_scrolling_frame_out_of_view.html')
-
           iframe = driver.find_element(tag_name: 'iframe')
+
           driver.action.scroll(delta_y: 200, origin: iframe).perform
 
           driver.switch_to.frame(iframe)
@@ -294,11 +295,12 @@ module Selenium
 
         it 'scrolls from element by given amount with offset' do
           driver.navigate.to url_for('scrolling_tests/frame_with_nested_scrolling_frame_out_of_view.html')
-
           footer = driver.find_element(tag_name: 'footer')
+
           driver.action.scroll(y: -50, delta_y: 200, origin: footer).perform
 
-          driver.switch_to.frame(driver.find_element(tag_name: 'iframe'))
+          iframe = driver.find_element(tag_name: 'iframe')
+          driver.switch_to.frame(iframe)
           checkbox = driver.find_element(name: 'scroll_checkbox')
           expect(in_viewport?(checkbox)).to eq true
         end
@@ -315,8 +317,9 @@ module Selenium
         it 'scrolls by given amount' do
           driver.navigate.to url_for('scrolling_tests/frame_with_nested_scrolling_frame_out_of_view.html')
           footer = driver.find_element(tag_name: 'footer')
+          delta_y = footer.rect.y
 
-          driver.action.scroll(delta_y: footer.rect.y).perform
+          driver.action.scroll(delta_y: delta_y).perform
 
           expect(in_viewport?(footer)).to eq true
         end
@@ -333,7 +336,7 @@ module Selenium
         end
 
         it 'raises MoveTargetOutOfBoundsError when origin offset is out of viewport' do
-          driver.navigate.to url_for('scrolling_tests/frame_with_nested_scrolling_frame_out_of_view.html')
+          driver.navigate.to url_for('scrolling_tests/frame_with_nested_scrolling_frame.html')
 
           expect {
             driver.action.scroll(x: -10, y: -10, delta_y: 200).perform
