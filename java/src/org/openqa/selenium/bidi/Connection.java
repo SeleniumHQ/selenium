@@ -110,7 +110,7 @@ public class Connection implements Closeable {
         try {
           X value = command.getMapper().apply(inputOrException.right());
           result.complete(value);
-        } catch (Throwable e) {
+        } catch (Exception e) {
           LOG.log(Level.WARNING, String.format("Unable to map result for %s", command.getMethod()),
                   e);
           result.completeExceptionally(e);
@@ -188,9 +188,8 @@ public class Connection implements Closeable {
       EXECUTOR.execute(() -> {
         try {
           handle(data);
-        } catch (Throwable t) {
-          LOG.log(Level.WARNING, "Unable to process: " + data, t);
-          throw new BiDiException(t);
+        } catch (Exception e) {
+          throw new BiDiException("Unable to process: " + data, e);
         }
       });
     }
@@ -211,7 +210,7 @@ public class Connection implements Closeable {
     } else if (raw.get("method") instanceof String && raw.get("params") instanceof Map) {
       handleEventResponse(asString, raw);
     } else {
-      LOG.warning("Unhandled type: " + data);
+      LOG.warning(() -> "Unhandled type:" + data);
     }
   }
 
@@ -246,16 +245,19 @@ public class Connection implements Closeable {
   private void handleEventResponse(String rawDataString, Map<String, Object> rawDataMap) {
     LOG.log(
       getDebugLogLevel(),
-      String.format("Method %s called with %d callbacks available", rawDataMap.get("method"), eventCallbacks.keySet().size()));
+      () -> "Method" + rawDataMap.get("method") + "called with" + eventCallbacks.keySet().size()
+            + "callbacks available");
     Lock lock = callbacksLock.readLock();
     lock.lock();
     try {
       // TODO: Also only decode once.
       eventCallbacks.keySet().stream()
-        .peek(event -> LOG.log(
-          getDebugLogLevel(),
-          String.format("Matching %s with %s", rawDataMap.get("method"), event.getMethod())))
-        .filter(event -> rawDataMap.get("method").equals(event.getMethod()))
+        .filter(event -> {
+          LOG.log(
+            getDebugLogLevel(),
+            String.format("Matching %s with %s", rawDataMap.get("method"), event.getMethod()));
+          return rawDataMap.get("method").equals(event.getMethod());
+        })
         .forEach(event -> {
           try (StringReader reader = new StringReader(rawDataString);
                JsonInput input = JSON.newInput(reader)) {
