@@ -1,6 +1,6 @@
 {
   "devDependencies": {
-    "@babel/preset-react": "^7.16.0",
+    "@babel/preset-react": "^7.17.12",
     "@bazel/buildifier": "^4.2.5",
     "@bazel/ibazel": "^0.15.10",
     "@bazel/jasmine": "5.4.1",
@@ -36,11 +36,11 @@
     "url": "https://github.com/SeleniumHQ/selenium.git"
   },
   "dependencies": {
-    "@apollo/client": "^3.6.3",
+    "@apollo/client": "^3.6.4",
     "@emotion/react": "^11.9.0",
     "@emotion/styled": "^11.8.1",
-    "@mui/icons-material": "^5.6.2",
-    "@mui/material": "^5.7.0",
+    "@mui/icons-material": "^5.8.0",
+    "@mui/material": "^5.8.0",
     "@novnc/novnc": "^1.2.0",
     "@types/react": "^18.0.9",
     "@types/react-dom": "^18.0.4",
