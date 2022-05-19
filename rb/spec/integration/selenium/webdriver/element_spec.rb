@@ -40,11 +40,46 @@ module Selenium
         expect { driver.find_element(id: 'other_contents').click }.to raise_error(Error::ElementClickInterceptedError)
       end
 
-      it 'should submit' do
-        driver.navigate.to url_for('formPage.html')
-        wait_for_element(id: 'submitButton')
-        expect { driver.find_element(id: 'submitButton').submit }.not_to raise_error
-        reset_driver!
+      describe '#submit' do
+        it 'valid submit button' do
+          driver.navigate.to url_for('formPage.html')
+          driver.find_element(id: 'submitButton').submit
+
+          expect(driver.title).to eq('We Arrive Here')
+        end
+
+        it 'any input element in form' do
+          driver.navigate.to url_for('formPage.html')
+          driver.find_element(id: 'checky').submit
+
+          expect(driver.title).to eq('We Arrive Here')
+        end
+
+        it 'any element in form' do
+          driver.navigate.to url_for('formPage.html')
+          driver.find_element(id: 'form > p').submit
+
+          expect(driver.title).to eq('We Arrive Here')
+        end
+
+        it 'button with id submit' do
+          driver.navigate.to url_for('formPage.html')
+          driver.find_element(id: 'submit').submit
+
+          expect(driver.title).to eq('We Arrive Here')
+        end
+
+        it 'button with name submit' do
+          driver.navigate.to url_for('formPage.html')
+          driver.find_element(name: 'submit').submit
+
+          expect(driver.title).to eq('We Arrive Here')
+        end
+
+        it 'errors with button outside form' do
+          driver.navigate.to url_for('formPage.html')
+          expect { driver.find_element(name: 'SearchableText').submit }.to raise_error(Error::UnsupportedOperationError)
+        end
       end
 
       it 'should send string keys' do
