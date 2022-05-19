@@ -273,11 +273,13 @@ public class JmxTest {
     MBeanInfo info = beanServer.getMBeanInfo(name);
     assertThat(info).isNotNull();
 
-    String nodeCount = (String) beanServer.getAttribute(name, "NodeCount");
+    String nodeUpCount = (String) beanServer.getAttribute(name, "NodeUpCount");
+    LOG.info("Node up count=" + nodeUpCount);
+    assertThat(Integer.parseInt(nodeUpCount)).isEqualTo(1);
 
-    LOG.log(Debug.getDebugLogLevel(), "Node count=" + nodeCount);
-
-    assertThat(Integer.parseInt(nodeCount)).isEqualTo(1);
+    String nodeDownCount = (String) beanServer.getAttribute(name, "NodeDownCount");
+    LOG.info("Node down count=" + nodeDownCount);
+    assertThat(Integer.parseInt(nodeDownCount)).isZero();
   }
 }
 

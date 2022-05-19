@@ -677,10 +677,18 @@ public class LocalDistributor extends Distributor implements Closeable {
   }
 
   @VisibleForTesting
-  @ManagedAttribute(name = "NodeCount")
-  public long getNodeCount() {
+  @ManagedAttribute(name = "NodeUpCount")
+  public long getUpNodeCount() {
     return model.getSnapshot().stream()
       .filter(nodeStatus -> nodeStatus.getAvailability().equals(UP))
+      .count();
+  }
+
+  @VisibleForTesting
+  @ManagedAttribute(name = "NodeDownCount")
+  public long getDownNodeCount() {
+    return model.getSnapshot().stream()
+      .filter(nodeStatus -> !nodeStatus.getAvailability().equals(UP))
       .count();
   }
 
