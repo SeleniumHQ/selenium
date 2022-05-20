@@ -157,9 +157,7 @@ def create_matches(options: List[BaseOptions]) -> Dict:
                     if opts[min_index][kys] == opts[i + 1][kys]:
                         samesies.update({kys: opts[min_index][kys]})
 
-    always = {}
-    for k, v in samesies.items():
-        always[k] = v
+    always = samesies.copy()
 
     for i in opts:
         for k in always.keys():
