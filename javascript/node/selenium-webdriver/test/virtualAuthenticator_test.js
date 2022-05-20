@@ -27,6 +27,12 @@ const { Browser } = require('../lib/capabilities')
 const fileserver = require('../lib/test/fileserver')
 const invalidArgumentError = require('../lib/error').InvalidArgumentError
 
+const REGISTER_CREDENTIAL = 'registerCredential().then(arguments[arguments.length - 1]);'
+const GET_CREDENTIAL = `getCredential([{
+                          "type": "public-key",
+                          "id": Int8Array.from(arguments[0]),
+                        }]).then(arguments[arguments.length - 1]);`
+
 async function createRkEnabledU2fAuthenticator(driver) {
   let options
   options = new virtualAuthenticatorOptions()
@@ -68,13 +74,15 @@ async function createRkDisabledCTAP2Authenticator(driver) {
 }
 
 async function getAssertionFor(driver, credentialId) {
-  return await driver.executeAsyncScript(
-    'getCredential([{' +
-      '  "type": "public-key",' +
-      '  "id": Uint8Array.from(arguments[0]),' +
-      '}]).then(arguments[arguments.length - 1]);',
-    credentialId
-  )
+  return await driver.executeAsyncScript(GET_CREDENTIAL, credentialId)
+}
+
+function extractRawIdFrom (response) {
+  return response.credential.rawId
+}
+
+function extractIdFrom (response) {
+  return response.credential.id
 }
 
 /**
@@ -102,42 +110,38 @@ suite(function (env) {
   /**
    * A pkcs#8 encoded encrypted RSA private key as a base64url string.
    */
-  const BASE64_ENCODED_PK =
-    'MIIEvAIBADANBgkqhkiG9w0BAQEFAASCBKYwggSiAgEAAoIBAQDbBOu5Lhs4vpowbCnmCyLUpIE7JM9sm9QXzye2G+jr+Kr' +
-    'MsinWohEce47BFPJlTaDzHSvOW2eeunBO89ZcvvVc8RLz4qyQ8rO98xS1jtgqi1NcBPETDrtzthODu/gd0sjB2Tk3TLuBGV' +
-    'oPXt54a+Oo4JbBJ6h3s0+5eAfGplCbSNq6hN3Jh9YOTw5ZA6GCEy5l8zBaOgjXytd2v2OdSVoEDNiNQRkjJd2rmS2oi9AyQ' +
-    'FR3B7BrPSiDlCcITZFOWgLF5C31Wp/PSHwQhlnh7/6YhnE2y9tzsUvzx0wJXrBADW13+oMxrneDK3WGbxTNYgIi1PvSqXlq' +
-    'GjHtCK+R2QkXAgMBAAECggEAVc6bu7VAnP6v0gDOeX4razv4FX/adCao9ZsHZ+WPX8PQxtmWYqykH5CY4TSfsuizAgyPuQ0' +
-    '+j4Vjssr9VODLqFoanspT6YXsvaKanncUYbasNgUJnfnLnw3an2XpU2XdmXTNYckCPRX9nsAAURWT3/n9ljc/XYY22ecYxM' +
-    '8sDWnHu2uKZ1B7M3X60bQYL5T/lVXkKdD6xgSNLeP4AkRx0H4egaop68hoW8FIwmDPVWYVAvo8etzWCtibRXz5FcNld9MgD' +
-    '/Ai7ycKy4Q1KhX5GBFI79MVVaHkSQfxPHpr7/XcmpQOEAr+BMPon4s4vnKqAGdGB3j/E3d/+4F2swykoQKBgQD8hCsp6FIQ' +
-    '5umJlk9/j/nGsMl85LgLaNVYpWlPRKPc54YNumtvj5vx1BG+zMbT7qIE3nmUPTCHP7qb5ERZG4CdMCS6S64/qzZEqijLCqe' +
-    'pwj6j4fV5SyPWEcpxf6ehNdmcfgzVB3Wolfwh1ydhx/96L1jHJcTKchdJJzlfTvq8wwKBgQDeCnKws1t5GapfE1rmC/h4ol' +
-    'L2qZTth9oQmbrXYohVnoqNFslDa43ePZwL9Jmd9kYb0axOTNMmyrP0NTj41uCfgDS0cJnNTc63ojKjegxHIyYDKRZNVUR/d' +
-    'xAYB/vPfBYZUS7M89pO6LLsHhzS3qpu3/hppo/Uc/AM/r8PSflNHQKBgDnWgBh6OQncChPUlOLv9FMZPR1ZOfqLCYrjYEqi' +
-    'uzGm6iKM13zXFO4AGAxu1P/IAd5BovFcTpg79Z8tWqZaUUwvscnl+cRlj+mMXAmdqCeO8VASOmqM1ml667axeZDIR867ZG8' +
-    'K5V029Wg+4qtX5uFypNAAi6GfHkxIKrD04yOHAoGACdh4wXESi0oiDdkz3KOHPwIjn6BhZC7z8mx+pnJODU3cYukxv3WTct' +
-    'lUhAsyjJiQ/0bK1yX87ulqFVgO0Knmh+wNajrb9wiONAJTMICG7tiWJOm7fW5cfTJwWkBwYADmkfTRmHDvqzQSSvoC2S7aa' +
-    '9QulbC3C/qgGFNrcWgcT9kCgYAZTa1P9bFCDU7hJc2mHwJwAW7/FQKEJg8SL33KINpLwcR8fqaYOdAHWWz636osVEqosRrH' +
-    'zJOGpf9x2RSWzQJ+dq8+6fACgfFZOVpN644+sAHfNPAI/gnNKU5OfUv+eav8fBnzlf1A3y3GIkyMyzFN3DE7e0n/lyqxE4H' +
-    'BYGpI8g=='
+  const BASE64_ENCODED_PK = `MIIEvAIBADANBgkqhkiG9w0BAQEFAASCBKYwggSiAgEAAoIBAQDbBOu5Lhs4vpowbCnmCyLUpIE7JM9sm9QXzye2G+jr+Kr
+    MsinWohEce47BFPJlTaDzHSvOW2eeunBO89ZcvvVc8RLz4qyQ8rO98xS1jtgqi1NcBPETDrtzthODu/gd0sjB2Tk3TLuBGV
+    oPXt54a+Oo4JbBJ6h3s0+5eAfGplCbSNq6hN3Jh9YOTw5ZA6GCEy5l8zBaOgjXytd2v2OdSVoEDNiNQRkjJd2rmS2oi9AyQ
+    FR3B7BrPSiDlCcITZFOWgLF5C31Wp/PSHwQhlnh7/6YhnE2y9tzsUvzx0wJXrBADW13+oMxrneDK3WGbxTNYgIi1PvSqXlq
+    GjHtCK+R2QkXAgMBAAECggEAVc6bu7VAnP6v0gDOeX4razv4FX/adCao9ZsHZ+WPX8PQxtmWYqykH5CY4TSfsuizAgyPuQ0
+    +j4Vjssr9VODLqFoanspT6YXsvaKanncUYbasNgUJnfnLnw3an2XpU2XdmXTNYckCPRX9nsAAURWT3/n9ljc/XYY22ecYxM
+    8sDWnHu2uKZ1B7M3X60bQYL5T/lVXkKdD6xgSNLeP4AkRx0H4egaop68hoW8FIwmDPVWYVAvo8etzWCtibRXz5FcNld9MgD
+    /Ai7ycKy4Q1KhX5GBFI79MVVaHkSQfxPHpr7/XcmpQOEAr+BMPon4s4vnKqAGdGB3j/E3d/+4F2swykoQKBgQD8hCsp6FIQ
+    5umJlk9/j/nGsMl85LgLaNVYpWlPRKPc54YNumtvj5vx1BG+zMbT7qIE3nmUPTCHP7qb5ERZG4CdMCS6S64/qzZEqijLCqe
+    pwj6j4fV5SyPWEcpxf6ehNdmcfgzVB3Wolfwh1ydhx/96L1jHJcTKchdJJzlfTvq8wwKBgQDeCnKws1t5GapfE1rmC/h4ol
+    L2qZTth9oQmbrXYohVnoqNFslDa43ePZwL9Jmd9kYb0axOTNMmyrP0NTj41uCfgDS0cJnNTc63ojKjegxHIyYDKRZNVUR/d
+    xAYB/vPfBYZUS7M89pO6LLsHhzS3qpu3/hppo/Uc/AM/r8PSflNHQKBgDnWgBh6OQncChPUlOLv9FMZPR1ZOfqLCYrjYEqi
+    uzGm6iKM13zXFO4AGAxu1P/IAd5BovFcTpg79Z8tWqZaUUwvscnl+cRlj+mMXAmdqCeO8VASOmqM1ml667axeZDIR867ZG8
+    K5V029Wg+4qtX5uFypNAAi6GfHkxIKrD04yOHAoGACdh4wXESi0oiDdkz3KOHPwIjn6BhZC7z8mx+pnJODU3cYukxv3WTct
+    lUhAsyjJiQ/0bK1yX87ulqFVgO0Knmh+wNajrb9wiONAJTMICG7tiWJOm7fW5cfTJwWkBwYADmkfTRmHDvqzQSSvoC2S7aa
+    9QulbC3C/qgGFNrcWgcT9kCgYAZTa1P9bFCDU7hJc2mHwJwAW7/FQKEJg8SL33KINpLwcR8fqaYOdAHWWz636osVEqosRrH
+    zJOGpf9x2RSWzQJ+dq8+6fACgfFZOVpN644+sAHfNPAI/gnNKU5OfUv+eav8fBnzlf1A3y3GIkyMyzFN3DE7e0n/lyqxE4H
+    BYGpI8g==`
 
   const browsers = (...args) => env.browsers(...args)
   let driver
 
   beforeEach(async function () {
-    driver = await env
-      .builder()
-      .build()
+    driver = await env.builder().build()
     await driver.get(fileserver.Pages.virtualAuthenticator)
     assert.strictEqual(await driver.getTitle(), 'Virtual Authenticator Tests')
   })
 
   afterEach(async function () {
-    // if (driver.virtualAuthenticatorId() != null) {
-    //   await driver.removeVirtualAuthenticator()
-    // }
-    return driver.quit()
+    if (driver.virtualAuthenticatorId() != null) {
+      await driver.removeVirtualAuthenticator()
+    }
   })
 
   describe('VirtualAuthenticator Test Suit 2', function () {
@@ -150,15 +154,13 @@ suite(function (env) {
         driver = await createRkDisabledU2fAuthenticator(driver)
         assert((await driver.virtualAuthenticatorId()) != null)
 
-        let response = await driver.executeAsyncScript(
-          'registerCredential().then(arguments[arguments.length - 1]);'
-        )
+        let response = await driver.executeAsyncScript(REGISTER_CREDENTIAL)
         assert(response['status'] === 'OK')
 
         /**
          * Attempt to use the credential to get an assertion.
          */
-        response = await getAssertionFor(driver, response.credential.rawId)
+        response = await getAssertionFor(driver, extractRawIdFrom(response))
         assert(response['status'] === 'OK')
       }
     )
@@ -322,15 +324,13 @@ suite(function (env) {
         /**
          * Register a non resident credential.
          */
-        let response2 = await driver.executeAsyncScript(
-          'registerCredential().then(arguments[arguments.length - 1]);'
-        )
+        let response2 = await driver.executeAsyncScript(REGISTER_CREDENTIAL)
         assert(response2['status'] === 'OK')
 
-        let credential1Id = response1.credential.rawId
-        let credential2Id = response2.credential.rawId
+        let credential1Id = extractRawIdFrom(response1)
+        let credential2Id = extractRawIdFrom(response2)
 
-        assert.equal(arraysEqual(credential1Id, credential2Id), false)
+        assert.notDeepStrictEqual(credential1Id.sort(), credential2Id.sort())
 
         /**
          * Retrieve the two credentials.
@@ -347,17 +347,14 @@ suite(function (env) {
           } else if (arraysEqual(credential.id(), credential2Id)) {
             credential2 = credential
           } else {
-            done(new Error('Unrecognized credential id'))
+            assert.fail(new Error('Unrecognized credential id'))
           }
         })
 
         assert.equal(credential1.isResidentCredential(), true)
         assert.notEqual(credential1.privateKey(), null)
         assert.equal(credential1.rpId(), 'localhost')
-        assert.equal(
-          arraysEqual(credential1.userHandle(), new Uint8Array([1])),
-          true
-        )
+        assert.deepStrictEqual(credential1.userHandle().sort(), new Uint8Array([1]).sort())
         assert.equal(credential1.signCount(), 1)
 
         assert.equal(credential2.isResidentCredential(), false)
@@ -379,15 +376,13 @@ suite(function (env) {
         /**
          * Register credential.
          */
-        let response = await driver.executeAsyncScript(
-          'registerCredential().then(arguments[arguments.length - 1]);'
-        )
+        let response = await driver.executeAsyncScript(REGISTER_CREDENTIAL)
         assert(response['status'] === 'OK')
 
         /**
          * Remove a credential by its ID as an array of bytes.
          */
-        let rawId = response.credential.rawId
+        let rawId = extractRawIdFrom(response)
         await driver.removeCredential(rawId)
 
         /**
@@ -406,13 +401,11 @@ suite(function (env) {
         /**
          * Register credential.
          */
-        let response = await driver.executeAsyncScript(
-          'registerCredential().then(arguments[arguments.length - 1]);'
-        )
+        let response = await driver.executeAsyncScript(REGISTER_CREDENTIAL)
         assert(response['status'] === 'OK')
 
-        let rawId = response.credential.rawId
-        let credentialId = response.credential.id
+        let rawId = extractRawIdFrom(response)
+        let credentialId = extractIdFrom(response)
 
         /**
          * Remove a credential by its base64url ID.
@@ -435,17 +428,13 @@ suite(function (env) {
         /**
          * Register two credentials.
          */
-        let response1 = await driver.executeAsyncScript(
-          'registerCredential().then(arguments[arguments.length - 1]);'
-        )
+        let response1 = await driver.executeAsyncScript(REGISTER_CREDENTIAL)
         assert(response1['status'] === 'OK')
-        let rawId1 = response1.credential.rawId
+        let rawId1 = extractRawIdFrom(response1)
 
-        let response2 = await driver.executeAsyncScript(
-          'registerCredential().then(arguments[arguments.length - 1]);'
-        )
+        let response2 = await driver.executeAsyncScript(REGISTER_CREDENTIAL)
         assert(response2['status'] === 'OK')
-        let rawId2 = response2.credential.rawId
+        let rawId2 = extractRawIdFrom(response2)
 
         /**
          * Remove all credentials.
@@ -483,18 +472,12 @@ suite(function (env) {
             '  .then(arguments[arguments.length - 1]);'
         )
         assert(response['status'] === 'OK')
-        let rawId = response.credential.rawId
+        let rawId = extractRawIdFrom(response)
 
         /**
          * Getting an assertion requiring user verification should succeed.
          */
-        response = await driver.executeAsyncScript(
-          'getCredential([{' +
-            '  "type": "public-key",' +
-            '  "id": Int8Array.from(arguments[0]),' +
-            "}], {userVerification: 'required'}).then(arguments[arguments.length - 1]);",
-          rawId
-        )
+        response = await driver.executeAsyncScript(GET_CREDENTIAL, rawId)
         assert(response['status'] === 'OK')
 
         /**
@@ -505,13 +488,7 @@ suite(function (env) {
         /**
          * Getting an assertion requiring user verification should fail.
          */
-        response = await driver.executeAsyncScript(
-          'getCredential([{' +
-            '  "type": "public-key",' +
-            '  "id": Int8Array.from(arguments[0]),' +
-            "}], {userVerification: 'required'}).then(arguments[arguments.length - 1]);",
-          rawId
-        )
+        response = await driver.executeAsyncScript(GET_CREDENTIAL, rawId)
         assert(response['status'].startsWith('NotAllowedError'))
       }
     )

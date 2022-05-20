@@ -37,8 +37,7 @@ const { Capabilities } = require('./capabilities')
 const path = require('path')
 const { NoSuchElementError } = require('./error')
 const cdpTargets = ['page', 'browser']
-const Credential =
-  require('./virtual_authenticator').Credential
+const Credential = require('./virtual_authenticator').Credential
 
 // Capability names that are defined in the W3C spec.
 const W3C_CAPABILITY_NAMES = new Set([
@@ -1568,7 +1567,7 @@ class WebDriver {
   }
 
   /**
-   * 
+   *
    * @returns The list of credentials owned by the authenticator.
    */
   async getCredentials() {
@@ -1579,7 +1578,7 @@ class WebDriver {
       )
     )
     var credential_list = []
-    for(var i = 0; i < credential_data.length; i++) {
+    for (var i = 0; i < credential_data.length; i++) {
       credential_list.push(new Credential().fromDict(credential_data[i]))
     }
     return credential_list
@@ -1590,7 +1589,6 @@ class WebDriver {
    * @param credential_id The ID of the credential to be removed.
    */
   async removeCredential(credential_id) {
-
     // If credential_id is not a base64url, then convert it to base64url.
     if (Array.isArray(credential_id)) {
       credential_id = Buffer.from(credential_id).toString('base64url')
@@ -1622,10 +1620,8 @@ class WebDriver {
   async setUserVerified(verified) {
     await this.execute(
       new command.Command(command.Name.SET_USER_VERIFIED)
-      .setParameter(
-        'authenticatorId',
-        this.authenticatorId_
-      ).setParameter('isUserVerified', verified)
+        .setParameter('authenticatorId', this.authenticatorId_)
+        .setParameter('isUserVerified', verified)
     )
   }
 }
