@@ -41,28 +41,40 @@ def test_should_be_able_to_click_image_buttons(driver, pages):
     WebDriverWait(driver, 3).until(EC.title_is("We Arrive Here"))
 
 
-def test_should_be_able_to_submit_forms(driver, pages):
+def test_should_submit_input_in_form(driver, pages):
     pages.load("formPage.html")
     driver.find_element(By.NAME, "login").submit()
     WebDriverWait(driver, 3).until(EC.title_is("We Arrive Here"))
 
 
-def test_should_submit_aform_when_any_input_element_within_that_form_is_submitted(driver, pages):
+def test_should_submit_any_input_element_within_form(driver, pages):
     pages.load("formPage.html")
     driver.find_element(By.ID, "checky").submit()
     WebDriverWait(driver, 3).until(EC.title_is("We Arrive Here"))
 
 
-def test_should_submit_aform_when_any_element_within_that_form_is_submitted(driver, pages):
+def test_should_submit_any_element_within_form(driver, pages):
     pages.load("formPage.html")
     driver.find_element(By.XPATH, "//form/p").submit()
     WebDriverWait(driver, 5).until(EC.title_is("We Arrive Here"))
 
 
-def test_should_not_be_able_to_submit_aform_that_does_not_exist(driver, pages):
+def test_should_submit_element_with_id_submit(driver, pages):
     pages.load("formPage.html")
-    with pytest.raises(NoSuchElementException):
-        driver.find_element(By.NAME, "there is no spoon").submit()
+    driver.find_element(By.ID, "submit").submit()
+    WebDriverWait(driver, 5).until(EC.title_is("We Arrive Here"))
+
+
+def test_should_submit_element_with_name_submit(driver, pages):
+    pages.load("formPage.html")
+    driver.find_element(By.NAME, "submit").submit()
+    WebDriverWait(driver, 5).until(EC.title_is("We Arrive Here"))
+
+
+def test_should_not_submit_button_outside_form(driver, pages):
+    pages.load("formPage.html")
+    with pytest.raises(WebDriverException):
+        driver.find_element(By.NAME, "SearchableText").submit()
 
 
 def test_should_be_able_to_enter_text_into_atext_area_by_setting_its_value(driver, pages):
