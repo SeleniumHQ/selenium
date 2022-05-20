@@ -21,6 +21,7 @@ import com.google.common.collect.ImmutableMap;
 import org.openqa.selenium.Beta;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Dimension;
+import org.openqa.selenium.JavascriptException;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.Point;
 import org.openqa.selenium.Rectangle;
@@ -79,7 +80,12 @@ public class RemoteWebElement implements WebElement, Locatable, TakesScreenshot,
 
   @Override
   public void submit() {
-    execute(DriverCommand.SUBMIT_ELEMENT(id));
+    try {
+      execute(DriverCommand.SUBMIT_ELEMENT(id));
+    } catch (JavascriptException ex) {
+      String message = "To submit an element, it must be nested inside a form element";
+      throw new UnsupportedOperationException(message);
+    }
   }
 
   @Override
