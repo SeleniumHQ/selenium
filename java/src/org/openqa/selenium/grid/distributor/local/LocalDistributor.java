@@ -123,6 +123,8 @@ public class LocalDistributor extends Distributor implements Closeable {
 
   private static final Logger LOG = Logger.getLogger(LocalDistributor.class.getName());
 
+  private static final SessionId RESERVED = new SessionId("reserved");
+
   private final Tracer tracer;
   private final EventBus bus;
   private final HttpClient.Factory clientFactory;
@@ -690,6 +692,26 @@ public class LocalDistributor extends Distributor implements Closeable {
     return model.getSnapshot().stream()
       .filter(nodeStatus -> !nodeStatus.getAvailability().equals(UP))
       .count();
+  }
+
+  @VisibleForTesting
+  @ManagedAttribute(name = "ActiveSlots")
+  public int getActiveSlots() {
+    return model.getSnapshot().stream()
+      .map(NodeStatus::getSlots)
+      .flatMap(Collection::stream)
+      .filter(slot -> slot.getSession() != null)
+      .filter(slot -> !slot.getSession().getId().equals(RESERVED))
+      .mapToInt(slot -> 1)
+      .sum();
+  }
+
+  @VisibleForTesting
+  @ManagedAttribute(name = "IdleSlots")
+  public int getIdleSlots() {
+    return (int) (model.getSnapshot().stream()
+          .map(NodeStatus::getSlots)
+          .count() - getActiveSlots());
   }
 
   @Override

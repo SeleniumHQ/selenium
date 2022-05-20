@@ -39,7 +39,6 @@ import org.openqa.selenium.grid.sessionqueue.config.NewSessionQueueOptions;
 import org.openqa.selenium.grid.sessionqueue.local.LocalNewSessionQueue;
 import org.openqa.selenium.grid.testing.PassthroughHttpClient;
 import org.openqa.selenium.grid.testing.TestSessionFactory;
-import org.openqa.selenium.internal.Debug;
 import org.openqa.selenium.net.PortProber;
 import org.openqa.selenium.remote.tracing.DefaultTestTracer;
 import org.openqa.selenium.remote.tracing.Tracer;
@@ -280,6 +279,15 @@ public class JmxTest {
     String nodeDownCount = (String) beanServer.getAttribute(name, "NodeDownCount");
     LOG.info("Node down count=" + nodeDownCount);
     assertThat(Integer.parseInt(nodeDownCount)).isZero();
+
+    String activeSlots = (String) beanServer.getAttribute(name, "ActiveSlots");
+    LOG.info("Active slots count=" + activeSlots);
+    assertThat(Integer.parseInt(activeSlots)).isZero();
+
+    String idleSlots = (String) beanServer.getAttribute(name, "IdleSlots");
+    LOG.info("Idle slots count=" + idleSlots);
+    assertThat(Integer.parseInt(idleSlots)).isEqualTo(1);
   }
+
 }
 
