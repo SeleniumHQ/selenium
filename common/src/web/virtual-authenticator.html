@@ -19,7 +19,6 @@
       options=Object.assign({
         authenticatorSelection: {
           requireResidentKey: false,
-          userVerification: 'preferred'
         },
         rp: {
           id: "localhost",
@@ -41,7 +40,7 @@
           status: "OK",
           credential: {
             id: credential.id,
-            rawId: Array.from(new Int8Array(credential.rawId)),
+            rawId: Array.from(new Uint8Array(credential.rawId)),
             transports: credential.response.getTransports(),
           }
         };
@@ -62,7 +61,7 @@
         return {
           status: "OK",
           attestation: {
-            userHandle: new Int8Array(attestation.response.userHandle),
+            userHandle: new Uint8Array(attestation.response.userHandle),
           },
         };
       } catch(error) {
