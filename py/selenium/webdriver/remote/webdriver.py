@@ -139,9 +139,7 @@ def get_remote_connection(capabilities, command_executor, keep_alive, ignore_loc
 
 def create_matches(options: List[BaseOptions]) -> Dict:
     capabilities = {"capabilities": {}}
-    opts = []
-    for opt in options:
-        opts.append(opt.to_capabilities())
+    opts = [opt.to_capabilities() for opt in options]
     opts_size = len(opts)
     samesies = {}
 
