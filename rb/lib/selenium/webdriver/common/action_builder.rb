@@ -63,7 +63,7 @@ module Selenium
           add_input(deprecated_mouse)
           add_input(deprecated_keyboard)
         else
-          devices.each { |device| add_input(device) }
+          Array(devices).each { |device| add_input(device) }
         end
       end
 

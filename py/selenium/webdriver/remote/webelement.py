@@ -14,6 +14,7 @@
 # KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
 # under the License.
+from __future__ import annotations
 
 import os
 from base64 import b64decode, encodebytes
@@ -23,6 +24,7 @@ import warnings
 import zipfile
 from abc import ABCMeta
 from io import BytesIO
+from typing import Union
 
 from selenium.common.exceptions import WebDriverException
 from selenium.webdriver.common.by import By
@@ -33,9 +35,16 @@ from .shadowroot import ShadowRoot
 
 # TODO: When moving to supporting python 3.9 as the minimum version we can
 # use built in importlib_resources.files.
-_pkg = '.'.join(__name__.split('.')[:-1])
-getAttribute_js = pkgutil.get_data(_pkg, 'getAttribute.js').decode('utf8')
-isDisplayed_js = pkgutil.get_data(_pkg, 'isDisplayed.js').decode('utf8')
+getAttribute_js = None
+isDisplayed_js = None
+
+
+def _load_js():
+    global getAttribute_js
+    global isDisplayed_js
+    _pkg = '.'.join(__name__.split('.')[:-1])
+    getAttribute_js = pkgutil.get_data(_pkg, 'getAttribute.js').decode('utf8')
+    isDisplayed_js = pkgutil.get_data(_pkg, 'isDisplayed.js').decode('utf8')
 
 
 class BaseWebElement(metaclass=ABCMeta):
@@ -92,7 +101,7 @@ class WebElement(BaseWebElement):
         """Clears the text if it's a text entry element."""
         self._execute(Command.CLEAR_ELEMENT)
 
-    def get_property(self, name) -> str:
+    def get_property(self, name) -> Union[str, bool, WebElement, dict]:
         """
         Gets the given property of the element.
 
@@ -151,7 +160,8 @@ class WebElement(BaseWebElement):
             is_active = "active" in target_element.get_attribute("class")
 
         """
-
+        if getAttribute_js is None:
+            _load_js()
         attribute_value = self.parent.execute_script(
             "return (%s).apply(null, arguments);" % getAttribute_js,
             self, name)
@@ -591,6 +601,8 @@ class WebElement(BaseWebElement):
     def is_displayed(self) -> bool:
         """Whether the element is visible to a user."""
         # Only go into this conditional for browsers that don't use the atom themselves
+        if isDisplayed_js is None:
+            _load_js()
         return self.parent.execute_script(
             "return (%s).apply(null, arguments);" % isDisplayed_js,
             self)
@@ -808,4 +820,4 @@ class WebElement(BaseWebElement):
             elif '{"status":405,"value":["GET","HEAD","DELETE"]}' in e.__str__():
                 return filename
             else:
-                raise e
+                raise
