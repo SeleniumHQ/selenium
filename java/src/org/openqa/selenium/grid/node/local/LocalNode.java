@@ -161,22 +161,6 @@ public class LocalNode extends Node {
                            String.format("%s is %s", uri, status.getAvailability()));
                        } : healthCheck;
 
-    this.currentSessions = CacheBuilder.newBuilder()
-      .expireAfterAccess(sessionTimeout)
-      .ticker(ticker)
-      .removalListener((RemovalListener<SessionId, SessionSlot>) notification -> {
-        if (notification.getKey() != null && notification.getValue() != null) {
-          // Attempt to stop the session
-          SessionSlot slot = notification.getValue();
-          if (!slot.isAvailable()) {
-            slot.stop();
-          }
-        } else {
-          LOG.log(Debug.getDebugLogLevel(), "Received stop session notification with null values");
-        }
-      })
-      .build();
-
     this.tempFileSystems = CacheBuilder.newBuilder()
       .expireAfterAccess(sessionTimeout)
       .ticker(ticker)
@@ -184,6 +168,31 @@ public class LocalNode extends Node {
         TemporaryFilesystem tempFS = notification.getValue();
         tempFS.deleteTemporaryFiles();
         tempFS.deleteBaseDir();
+      })
+      .build();
+
+    this.currentSessions = CacheBuilder.newBuilder()
+      .expireAfterAccess(sessionTimeout)
+      .ticker(ticker)
+      .removalListener((RemovalListener<SessionId, SessionSlot>) notification -> {
+        if (notification.getKey() != null && notification.getValue() != null) {
+          // Attempt to stop the session
+          SessionSlot slot = notification.getValue();
+          SessionId sessionId = notification.getKey();
+          slot.stop();
+          // Invalidate temp file system
+          this.tempFileSystems.invalidate(sessionId);
+          // Decrement pending sessions if Node is draining
+          if (this.isDraining()) {
+            int done = pendingSessions.decrementAndGet();
+            if (done <= 0) {
+              LOG.info("Node draining complete!");
+              bus.fire(new NodeDrainComplete(this.getId()));
+            }
+          }
+        } else {
+          LOG.log(Debug.getDebugLogLevel(), "Received stop session notification with null values");
+        }
       })
       .build();
 
@@ -486,16 +495,6 @@ public class LocalNode extends Node {
     }
 
     currentSessions.invalidate(id);
-    tempFileSystems.invalidate(id);
-
-    // Decrement pending sessions if Node is draining
-    if (this.isDraining()) {
-      int done = pendingSessions.decrementAndGet();
-      if (done <= 0) {
-        LOG.info("Node draining complete!");
-        bus.fire(new NodeDrainComplete(this.getId()));
-      }
-    }
   }
 
   private void stopAllSessions() {
