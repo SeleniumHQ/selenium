@@ -131,7 +131,7 @@ class RemoteConnection:
     def _identify_http_proxy_auth(self):
         url = self._proxy_url
         url = url[url.find(":") + 3:]
-        return True if "@" in url and len(url[:url.find('@')]) > 0 else False
+        return "@" in url and len(url[:url.find('@')]) > 0
 
     def _seperate_http_proxy_auth(self):
         url = self._proxy_url
