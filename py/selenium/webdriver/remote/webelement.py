@@ -24,6 +24,7 @@ import warnings
 import zipfile
 from abc import ABCMeta
 from io import BytesIO
+from typing import Optional
 
 from selenium.common.exceptions import WebDriverException, JavascriptException
 from selenium.webdriver.common.by import By
@@ -108,7 +109,7 @@ class WebElement(BaseWebElement):
         """Clears the text if it's a text entry element."""
         self._execute(Command.CLEAR_ELEMENT)
 
-    def get_property(self, name) -> str | bool | WebElement | dict:
+    def get_property(self, name) -> Optional[str | int | bool | WebElement | dict | list]:
         """
         Gets the given property of the element.
 
