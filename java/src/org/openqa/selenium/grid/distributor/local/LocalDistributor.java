@@ -17,9 +17,11 @@
 
 package org.openqa.selenium.grid.distributor.local;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
-
+import dev.failsafe.Failsafe;
+import dev.failsafe.RetryPolicy;
 import org.openqa.selenium.Beta;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.HealthCheckFailedException;
@@ -51,6 +53,9 @@ import org.openqa.selenium.grid.distributor.Distributor;
 import org.openqa.selenium.grid.distributor.GridModel;
 import org.openqa.selenium.grid.distributor.config.DistributorOptions;
 import org.openqa.selenium.grid.distributor.selector.SlotSelector;
+import org.openqa.selenium.grid.jmx.JMXHelper;
+import org.openqa.selenium.grid.jmx.ManagedAttribute;
+import org.openqa.selenium.grid.jmx.ManagedService;
 import org.openqa.selenium.grid.log.LoggingOptions;
 import org.openqa.selenium.grid.node.HealthCheck;
 import org.openqa.selenium.grid.node.Node;
@@ -75,9 +80,6 @@ import org.openqa.selenium.remote.tracing.Span;
 import org.openqa.selenium.remote.tracing.Status;
 import org.openqa.selenium.remote.tracing.Tracer;
 import org.openqa.selenium.status.HasReadyState;
-
-import dev.failsafe.Failsafe;
-import dev.failsafe.RetryPolicy;
 
 import java.io.Closeable;
 import java.io.UncheckedIOException;
@@ -114,9 +116,14 @@ import static org.openqa.selenium.remote.RemoteTags.SESSION_ID_EVENT;
 import static org.openqa.selenium.remote.tracing.AttributeKey.SESSION_URI;
 import static org.openqa.selenium.remote.tracing.Tags.EXCEPTION;
 
+
+@ManagedService(objectName = "org.seleniumhq.grid:type=Distributor,name=LocalDistributor",
+  description = "Grid 4 node distributor")
 public class LocalDistributor extends Distributor implements Closeable {
 
   private static final Logger LOG = Logger.getLogger(LocalDistributor.class.getName());
+
+  private static final SessionId RESERVED = new SessionId("reserved");
 
   private final Tracer tracer;
   private final EventBus bus;
@@ -228,6 +235,8 @@ public class LocalDistributor extends Distributor implements Closeable {
       period,
       TimeUnit.MILLISECONDS
     );
+
+    new JMXHelper().register(this);
   }
 
   public static Distributor create(Config config) {
@@ -667,6 +676,42 @@ public class LocalDistributor extends Distributor implements Closeable {
     } finally {
       writeLock.unlock();
     }
+  }
+
+  @VisibleForTesting
+  @ManagedAttribute(name = "NodeUpCount")
+  public long getUpNodeCount() {
+    return model.getSnapshot().stream()
+      .filter(nodeStatus -> nodeStatus.getAvailability().equals(UP))
+      .count();
+  }
+
+  @VisibleForTesting
+  @ManagedAttribute(name = "NodeDownCount")
+  public long getDownNodeCount() {
+    return model.getSnapshot().stream()
+      .filter(nodeStatus -> !nodeStatus.getAvailability().equals(UP))
+      .count();
+  }
+
+  @VisibleForTesting
+  @ManagedAttribute(name = "ActiveSlots")
+  public int getActiveSlots() {
+    return model.getSnapshot().stream()
+      .map(NodeStatus::getSlots)
+      .flatMap(Collection::stream)
+      .filter(slot -> slot.getSession() != null)
+      .filter(slot -> !slot.getSession().getId().equals(RESERVED))
+      .mapToInt(slot -> 1)
+      .sum();
+  }
+
+  @VisibleForTesting
+  @ManagedAttribute(name = "IdleSlots")
+  public int getIdleSlots() {
+    return (int) (model.getSnapshot().stream()
+          .map(NodeStatus::getSlots)
+          .count() - getActiveSlots());
   }
 
   @Override

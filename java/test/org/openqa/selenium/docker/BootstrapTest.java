@@ -61,7 +61,7 @@ public class BootstrapTest {
   }
 
   @Test
-  public void shouldReportDockerIsUnsupportIfRequestCausesAnIoException() {
+  public void shouldReportDockerIsUnsupportedIfRequestCausesAnIoException() {
     HttpHandler client = req -> { throw new UncheckedIOException(new IOException("Eeek!")); };
 
     boolean isSupported = new Docker(client).isSupported();

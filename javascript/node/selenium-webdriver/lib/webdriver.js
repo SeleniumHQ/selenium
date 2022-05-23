@@ -2167,16 +2167,18 @@ class TargetLocator {
    *     when the driver has changed focus to the specified frame.
    */
   frame(id) {
-    let frameReference = id;
-
-    if (typeof id === "string") {
-      frameReference = this.driver_.findElement({
-        id: id
-      });
+    let frameReference = id
+    if (typeof id === 'string') {
+      frameReference = this.driver_
+        .findElement({ id })
+        .catch((_) => this.driver_.findElement({ name: id }))
     }
 
     return this.driver_.execute(
-      new command.Command(command.Name.SWITCH_TO_FRAME).setParameter('id', frameReference)
+      new command.Command(command.Name.SWITCH_TO_FRAME).setParameter(
+        'id',
+        frameReference
+      )
     )
   }
 
