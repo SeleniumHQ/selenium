@@ -10,6 +10,7 @@ java_export(
     visibility = ["//visibility:public"],
     deps = [
         "//java:auto-service",
+        "//java/src/org/openqa/selenium/bidi",
         "//java/src/org/openqa/selenium/devtools/v85",
         "//java/src/org/openqa/selenium/json",
         "//java/src/org/openqa/selenium/remote",
