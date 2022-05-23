@@ -18,7 +18,6 @@
 package org.openqa.selenium.grid.router;
 
 import com.google.common.collect.ImmutableMap;
-
 import org.junit.Test;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
@@ -27,23 +26,22 @@ import org.openqa.selenium.events.local.GuavaEventBus;
 import org.openqa.selenium.grid.config.MapConfig;
 import org.openqa.selenium.grid.data.DefaultSlotMatcher;
 import org.openqa.selenium.grid.data.Session;
+import org.openqa.selenium.grid.distributor.Distributor;
+import org.openqa.selenium.grid.distributor.local.LocalDistributor;
+import org.openqa.selenium.grid.distributor.selector.DefaultSlotSelector;
 import org.openqa.selenium.grid.jmx.JMXHelper;
 import org.openqa.selenium.grid.node.local.LocalNode;
 import org.openqa.selenium.grid.security.Secret;
 import org.openqa.selenium.grid.server.BaseServerOptions;
+import org.openqa.selenium.grid.sessionmap.local.LocalSessionMap;
 import org.openqa.selenium.grid.sessionqueue.NewSessionQueue;
 import org.openqa.selenium.grid.sessionqueue.config.NewSessionQueueOptions;
 import org.openqa.selenium.grid.sessionqueue.local.LocalNewSessionQueue;
+import org.openqa.selenium.grid.testing.PassthroughHttpClient;
 import org.openqa.selenium.grid.testing.TestSessionFactory;
 import org.openqa.selenium.net.PortProber;
 import org.openqa.selenium.remote.tracing.DefaultTestTracer;
 import org.openqa.selenium.remote.tracing.Tracer;
-
-import java.lang.management.ManagementFactory;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.time.Duration;
-import java.time.Instant;
 
 import javax.management.AttributeNotFoundException;
 import javax.management.InstanceNotFoundException;
@@ -55,11 +53,19 @@ import javax.management.MBeanServer;
 import javax.management.MalformedObjectNameException;
 import javax.management.ObjectName;
 import javax.management.ReflectionException;
+import java.lang.management.ManagementFactory;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.time.Duration;
+import java.time.Instant;
+import java.util.logging.Logger;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.fail;
 
 public class JmxTest {
+
+  private static final Logger LOG = Logger.getLogger(LocalNode.class.getName());
 
   private final Capabilities CAPS = new ImmutableCapabilities("browserName", "cheese");
   private final MBeanServer beanServer = ManagementFactory.getPlatformMBeanServer();
@@ -222,5 +228,66 @@ public class JmxTest {
       fail("Could not find the registered MBean's attribute");
     }
   }
+
+  @Test
+  public void shouldBeAbleToMonitorHub() throws Exception {
+    ObjectName name = new ObjectName("org.seleniumhq.grid:type=Distributor,name=LocalDistributor");
+
+    new JMXHelper().unregister(name);
+
+    Tracer tracer = DefaultTestTracer.createTracer();
+    EventBus bus = new GuavaEventBus();
+    Secret secret = new Secret("cheese");
+    URI nodeUri = new URI("https://example.com:1234");
+
+    LocalNode localNode = LocalNode.builder(tracer, bus, nodeUri, nodeUri, secret)
+      .add(CAPS, new TestSessionFactory((id, caps) -> new Session(
+        id,
+        nodeUri,
+        new ImmutableCapabilities(),
+        caps,
+        Instant.now()))).build();
+
+    NewSessionQueue sessionQueue = new LocalNewSessionQueue(
+      tracer,
+      new DefaultSlotMatcher(),
+      Duration.ofSeconds(2),
+      Duration.ofSeconds(2),
+      secret);
+
+    Distributor distributor = new LocalDistributor(
+      tracer,
+      bus,
+      new PassthroughHttpClient.Factory(localNode),
+      new LocalSessionMap(tracer, bus),
+      sessionQueue,
+      new DefaultSlotSelector(),
+      secret,
+      Duration.ofMinutes(5),
+      false,
+      Duration.ofSeconds(5));
+
+    distributor.add(localNode);
+
+    MBeanInfo info = beanServer.getMBeanInfo(name);
+    assertThat(info).isNotNull();
+
+    String nodeUpCount = (String) beanServer.getAttribute(name, "NodeUpCount");
+    LOG.info("Node up count=" + nodeUpCount);
+    assertThat(Integer.parseInt(nodeUpCount)).isEqualTo(1);
+
+    String nodeDownCount = (String) beanServer.getAttribute(name, "NodeDownCount");
+    LOG.info("Node down count=" + nodeDownCount);
+    assertThat(Integer.parseInt(nodeDownCount)).isZero();
+
+    String activeSlots = (String) beanServer.getAttribute(name, "ActiveSlots");
+    LOG.info("Active slots count=" + activeSlots);
+    assertThat(Integer.parseInt(activeSlots)).isZero();
+
+    String idleSlots = (String) beanServer.getAttribute(name, "IdleSlots");
+    LOG.info("Idle slots count=" + idleSlots);
+    assertThat(Integer.parseInt(idleSlots)).isEqualTo(1);
+  }
+
 }
 
