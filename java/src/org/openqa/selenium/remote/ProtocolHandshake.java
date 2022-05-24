@@ -41,12 +41,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.function.Function;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static com.google.common.net.HttpHeaders.CONTENT_LENGTH;
 import static com.google.common.net.HttpHeaders.CONTENT_TYPE;
+import static com.google.common.net.HttpHeaders.WARNING;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.openqa.selenium.json.Json.JSON_UTF_8;
 import static org.openqa.selenium.remote.CapabilityType.PROXY;
@@ -73,10 +75,11 @@ public class ProtocolHandshake {
           .collect(Collectors.toList());
 
         if (!invalid.isEmpty()) {
-          LOG.warning(String.format("Support for Legacy Capabilities is deprecated; " +
-              "You are sending the following invalid capabilities: %s; " +
-              "Please update to W3C Syntax: https://www.selenium.dev/blog/2022/legacy-protocol-support/",
-            invalid));
+          LOG.log(Level.WARNING,
+                  () -> String.format("Support for Legacy Capabilities is deprecated; " +
+                                      "You are sending the following invalid capabilities: %s; " +
+                                      "Please update to W3C Syntax: https://www.selenium.dev/blog/2022/legacy-protocol-support/",
+                                      invalid));
         }
         return toReturn;
       } else {
