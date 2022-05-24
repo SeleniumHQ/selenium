@@ -23,11 +23,12 @@ module Selenium
       attr_writer :default_move_duration
 
       #
-      # The overridable duration for movement used by methods in this module
+      # By default this is set to 250ms in the ActionBuilder constructor
+      # It can be overridden with default_move_duration=
       #
 
       def default_move_duration
-        @default_move_duration ||= 0.25 # 250 milliseconds
+        @default_move_duration ||= @duration / 1000 # convert ms to seconds
       end
 
       #

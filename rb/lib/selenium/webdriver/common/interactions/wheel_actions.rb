@@ -20,8 +20,15 @@
 module Selenium
   module WebDriver
     module WheelActions
+      attr_writer :default_scroll_duration
+
+      #
+      # By default this is set to 250ms in the ActionBuilder constructor
+      # It can be overridden with default_scroll_duration=
+      #
+
       def default_scroll_duration
-        @default_scroll_duration ||= 0.25 # 250 milliseconds
+        @default_scroll_duration ||= @duration / 1000 # convert ms to seconds
       end
 
       #
