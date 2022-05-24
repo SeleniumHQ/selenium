@@ -36,14 +36,14 @@
     "url": "https://github.com/SeleniumHQ/selenium.git"
   },
   "dependencies": {
-    "@apollo/client": "^3.6.4",
+    "@apollo/client": "^3.6.5",
     "@emotion/react": "^11.9.0",
     "@emotion/styled": "^11.8.1",
     "@mui/icons-material": "^5.8.0",
-    "@mui/material": "^5.8.0",
+    "@mui/material": "^5.8.1",
     "@novnc/novnc": "^1.2.0",
     "@types/react": "^18.0.9",
-    "@types/react-dom": "^18.0.4",
+    "@types/react-dom": "^18.0.5",
     "@types/react-modal": "^3.12.0",
     "@types/react-router-dom": "^5.3.3",
     "graphql": "^16.5.0",
