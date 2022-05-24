@@ -69,6 +69,7 @@ public class LocalNodeFactory {
       .maximumConcurrentSessions(nodeOptions.getMaxSessions())
       .sessionTimeout(sessionTimeout)
       .drainAfterSessionCount(nodeOptions.getDrainAfterSessionCount())
+      .enableCdp(nodeOptions.isCdpEnabled())
       .heartbeatPeriod(nodeOptions.getHeartbeatPeriod());
 
     List<DriverService.Builder<?, ?>> builders = new ArrayList<>();

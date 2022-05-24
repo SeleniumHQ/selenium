@@ -27,6 +27,7 @@ import com.google.common.collect.ImmutableMap;
 
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
+import org.openqa.selenium.MutableCapabilities;
 import org.openqa.selenium.NoSuchSessionException;
 import org.openqa.selenium.PersistentCapabilities;
 import org.openqa.selenium.RetrySessionRequestException;
@@ -118,6 +119,7 @@ public class LocalNode extends Node {
   private final HealthCheck healthCheck;
   private final int maxSessionCount;
   private final int configuredSessionCount;
+  private final boolean cdpEnabled;
   private final AtomicBoolean drainAfterSessions = new AtomicBoolean();
   private final List<SessionSlot> factories;
   private final Cache<SessionId, SessionSlot> currentSessions;
@@ -133,6 +135,7 @@ public class LocalNode extends Node {
     HealthCheck healthCheck,
     int maxSessionCount,
     int drainAfterSessionCount,
+    boolean cdpEnabled,
     Ticker ticker,
     Duration sessionTimeout,
     Duration heartbeatPeriod,
@@ -152,6 +155,7 @@ public class LocalNode extends Node {
     this.configuredSessionCount = drainAfterSessionCount;
     this.drainAfterSessions.set(this.configuredSessionCount > 0);
     this.sessionCount.set(drainAfterSessionCount);
+    this.cdpEnabled = cdpEnabled;
 
     this.healthCheck = healthCheck == null ?
                        () -> {
@@ -512,9 +516,18 @@ public class LocalNode extends Node {
       .copyOf(requestCapabilities.merge(other.getCapabilities()));
 
     // Add se:cdp if necessary to send the cdp url back
-    if (isSupportingCdp || toUse.getCapability("se:cdp") != null) {
+    if ((isSupportingCdp || toUse.getCapability("se:cdp") != null) && cdpEnabled) {
       String cdpPath = String.format("/session/%s/se/cdp", other.getId());
       toUse = new PersistentCapabilities(toUse).setCapability("se:cdp", rewrite(cdpPath));
+    } else {
+      // Remove any se:cdp* from the response, CDP is not supported nor enabled
+      MutableCapabilities cdpFiltered = new MutableCapabilities();
+      toUse.asMap().forEach((key, value) -> {
+        if (!key.startsWith("se:cdp")) {
+          cdpFiltered.setCapability(key, value);
+        }
+      });
+      toUse = new PersistentCapabilities(cdpFiltered).setCapability("se:cdpEnabled", false);
     }
 
     // If enabled, set the VNC endpoint for live view
@@ -644,6 +657,7 @@ public class LocalNode extends Node {
     private final ImmutableList.Builder<SessionSlot> factories;
     private int maxSessions = NodeOptions.DEFAULT_MAX_SESSIONS;
     private int drainAfterSessionCount = NodeOptions.DEFAULT_DRAIN_AFTER_SESSION_COUNT;
+    private boolean cdpEnabled = NodeOptions.DEFAULT_ENABLE_CDP;
     private Ticker ticker = Ticker.systemTicker();
     private Duration sessionTimeout = Duration.ofSeconds(NodeOptions.DEFAULT_SESSION_TIMEOUT);
     private HealthCheck healthCheck;
@@ -682,6 +696,11 @@ public class LocalNode extends Node {
       return this;
     }
 
+    public Builder enableCdp(boolean cdpEnabled) {
+      this.cdpEnabled = cdpEnabled;
+      return this;
+    }
+
     public Builder sessionTimeout(Duration timeout) {
       sessionTimeout = timeout;
       return this;
@@ -701,6 +720,7 @@ public class LocalNode extends Node {
         healthCheck,
         maxSessions,
         drainAfterSessionCount,
+        cdpEnabled,
         ticker,
         sessionTimeout,
         heartbeatPeriod,
