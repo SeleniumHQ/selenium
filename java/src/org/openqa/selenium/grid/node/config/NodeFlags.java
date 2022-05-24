@@ -34,6 +34,7 @@ import java.util.Set;
 import static org.openqa.selenium.grid.config.StandardGridRoles.NODE_ROLE;
 import static org.openqa.selenium.grid.node.config.NodeOptions.DEFAULT_DETECT_DRIVERS;
 import static org.openqa.selenium.grid.node.config.NodeOptions.DEFAULT_DRAIN_AFTER_SESSION_COUNT;
+import static org.openqa.selenium.grid.node.config.NodeOptions.DEFAULT_ENABLE_CDP;
 import static org.openqa.selenium.grid.node.config.NodeOptions.DEFAULT_HEARTBEAT_PERIOD;
 import static org.openqa.selenium.grid.node.config.NodeOptions.DEFAULT_MAX_SESSIONS;
 import static org.openqa.selenium.grid.node.config.NodeOptions.DEFAULT_NODE_IMPLEMENTATION;
@@ -194,6 +195,14 @@ public class NodeFlags implements HasRoles {
                   "environments like Kubernetes. A value higher than zero enables this feature.")
   @ConfigValue(section = NODE_SECTION, name = "drain-after-session-count", example = "1")
   public int drainAfterSessionCount = DEFAULT_DRAIN_AFTER_SESSION_COUNT;
+
+  @Parameter(
+    names = {"--enable-cdp"},
+    arity = 1,
+    description = "Enable CDP proxying in Grid. A Grid admin can disable CDP if the network does "
+                  + "not allow websockets. True by default")
+  @ConfigValue(section = NODE_SECTION, name = "enable-cdp", example = "true")
+  public Boolean enableCdp = DEFAULT_ENABLE_CDP;
 
   @Parameter(
     names = {"--node-implementation"},
