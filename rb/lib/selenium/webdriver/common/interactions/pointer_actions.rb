@@ -46,7 +46,7 @@ module Selenium
       # @return [ActionBuilder] A self reference.
       #
 
-      def pointer_down(button, device: nil, **opts)
+      def pointer_down(button = :left, device: nil, **opts)
         button_action(button, :create_pointer_down, device: device, **opts)
       end
 
@@ -63,7 +63,7 @@ module Selenium
       # @return [ActionBuilder] A self reference.
       #
 
-      def pointer_up(button, device: nil, **opts)
+      def pointer_up(button = :left, device: nil, **opts)
         button_action(button, :create_pointer_up, device: device, **opts)
       end
 
@@ -96,7 +96,7 @@ module Selenium
       # @return [ActionBuilder] A self reference.
       #
 
-      def move_to(element, right_by = nil, down_by = nil, device: nil, **opts)
+      def move_to(element, right_by = nil, down_by = nil, device: nil, duration: default_move_duration, **opts)
         pointer = pointer_input(device)
         if right_by || down_by
           size = element.size
@@ -108,7 +108,7 @@ module Selenium
           left = 0
           top = 0
         end
-        pointer.create_pointer_move(duration: default_move_duration,
+        pointer.create_pointer_move(duration: duration,
                                     x: left,
                                     y: top,
                                     origin: element,
@@ -134,9 +134,9 @@ module Selenium
       # @raise [MoveTargetOutOfBoundsError] if the provided offset is outside the document's boundaries.
       #
 
-      def move_by(right_by, down_by, device: nil)
+      def move_by(right_by, down_by, device: nil, duration: default_move_duration)
         pointer = pointer_input(device)
-        pointer.create_pointer_move(duration: default_move_duration,
+        pointer.create_pointer_move(duration: duration,
                                     x: Integer(right_by),
                                     y: Integer(down_by),
                                     origin: Interactions::PointerMove::POINTER)
@@ -161,9 +161,9 @@ module Selenium
       # @raise [MoveTargetOutOfBoundsError] if the provided x or y value is outside the document's boundaries.
       #
 
-      def move_to_location(x, y, device: nil)
+      def move_to_location(x, y, device: nil, duration: default_move_duration)
         pointer = pointer_input(device)
-        pointer.create_pointer_move(duration: default_move_duration,
+        pointer.create_pointer_move(duration: duration,
                                     x: Integer(x),
                                     y: Integer(y),
                                     origin: Interactions::PointerMove::VIEWPORT)

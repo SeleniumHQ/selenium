@@ -29,7 +29,17 @@ module Selenium
       class PointerPress < Interaction
         include PointerEventProperties
 
-        BUTTONS = {left: 0, middle: 1, right: 2}.freeze
+        BUTTONS = {left: 0,
+                   touch: 0,
+                   pen_contact: 0,
+                   middle: 1,
+                   right: 2,
+                   pen_barrel: 2,
+                   x1: 3,
+                   back: 3,
+                   x2: 4,
+                   forward: 4,
+                   erase: 5}.freeze
         DIRECTIONS = {down: :pointerDown, up: :pointerUp}.freeze
 
         def initialize(source, direction, button, **opts)

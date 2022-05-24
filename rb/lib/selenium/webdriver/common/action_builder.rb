@@ -275,6 +275,8 @@ module Selenium
       #
 
       def add_input(device)
+        device = Interactions.send(device) if device.is_a?(Symbol) && Interactions.respond_to?(device)
+
         raise TypeError, "#{device.inspect} is not a valid InputDevice" unless device.is_a?(Interactions::InputDevice)
 
         unless @async
