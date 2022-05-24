@@ -56,11 +56,6 @@ public class DevToolsProvider implements AugmenterProvider<HasDevTools> {
   }
 
   private String getCdpUrl(Capabilities caps) {
-    Object enabled = caps.getCapability("se:cdpEnabled");
-    if (enabled.equals(false)) {
-      return null;
-    }
-
     Object cdp = caps.getCapability("se:cdp");
     if (cdp instanceof String) {
       return (String) cdp;
