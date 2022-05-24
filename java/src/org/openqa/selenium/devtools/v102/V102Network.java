@@ -15,7 +15,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.devtools.v99;
+package org.openqa.selenium.devtools.v102;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.io.ByteStreams;
@@ -25,14 +25,14 @@ import org.openqa.selenium.devtools.DevTools;
 import org.openqa.selenium.devtools.DevToolsException;
 import org.openqa.selenium.devtools.Event;
 import org.openqa.selenium.devtools.idealized.Network;
-import org.openqa.selenium.devtools.v99.fetch.Fetch;
-import org.openqa.selenium.devtools.v99.fetch.model.AuthChallengeResponse;
-import org.openqa.selenium.devtools.v99.fetch.model.AuthRequired;
-import org.openqa.selenium.devtools.v99.fetch.model.HeaderEntry;
-import org.openqa.selenium.devtools.v99.fetch.model.RequestPattern;
-import org.openqa.selenium.devtools.v99.fetch.model.RequestPaused;
-import org.openqa.selenium.devtools.v99.fetch.model.RequestStage;
-import org.openqa.selenium.devtools.v99.network.model.Request;
+import org.openqa.selenium.devtools.v102.fetch.Fetch;
+import org.openqa.selenium.devtools.v102.fetch.model.AuthChallengeResponse;
+import org.openqa.selenium.devtools.v102.fetch.model.AuthRequired;
+import org.openqa.selenium.devtools.v102.fetch.model.HeaderEntry;
+import org.openqa.selenium.devtools.v102.fetch.model.RequestPattern;
+import org.openqa.selenium.devtools.v102.fetch.model.RequestPaused;
+import org.openqa.selenium.devtools.v102.fetch.model.RequestStage;
+import org.openqa.selenium.devtools.v102.network.model.Request;
 import org.openqa.selenium.internal.Either;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
@@ -50,28 +50,28 @@ import java.util.logging.Logger;
 
 import static java.net.HttpURLConnection.HTTP_OK;
 
-public class V99Network extends Network<AuthRequired, RequestPaused> {
+public class V102Network extends Network<AuthRequired, RequestPaused> {
 
-  private static final Logger LOG = Logger.getLogger(V99Network.class.getName());
+  private static final Logger LOG = Logger.getLogger(V102Network.class.getName());
 
-  public V99Network(DevTools devTools) {
+  public V102Network(DevTools devTools) {
     super(devTools);
   }
 
   @Override
   protected Command<Void> setUserAgentOverride(UserAgent userAgent) {
-    return org.openqa.selenium.devtools.v99.network.Network.setUserAgentOverride(
+    return org.openqa.selenium.devtools.v102.network.Network.setUserAgentOverride(
       userAgent.userAgent(), userAgent.acceptLanguage(), userAgent.platform(), Optional.empty());
   }
 
   @Override
   protected Command<Void> enableNetworkCaching() {
-    return org.openqa.selenium.devtools.v99.network.Network.setCacheDisabled(false);
+    return org.openqa.selenium.devtools.v102.network.Network.setCacheDisabled(false);
   }
 
   @Override
   protected Command<Void> disableNetworkCaching() {
-    return org.openqa.selenium.devtools.v99.network.Network.setCacheDisabled(true);
+    return org.openqa.selenium.devtools.v102.network.Network.setCacheDisabled(true);
   }
 
   @Override
@@ -79,7 +79,8 @@ public class V99Network extends Network<AuthRequired, RequestPaused> {
     return Fetch.enable(
       Optional.of(ImmutableList.of(
         new RequestPattern(Optional.of("*"), Optional.empty(), Optional.of(RequestStage.REQUEST)),
-        new RequestPattern(Optional.of("*"), Optional.empty(), Optional.of(RequestStage.RESPONSE)))),
+        new RequestPattern(Optional.of("*"), Optional.empty(),
+                           Optional.of(RequestStage.RESPONSE)))),
       Optional.of(true));
   }
 
@@ -99,7 +100,8 @@ public class V99Network extends Network<AuthRequired, RequestPaused> {
   }
 
   @Override
-  protected Command<Void> continueWithAuth(AuthRequired authRequired, UsernameAndPassword credentials) {
+  protected Command<Void> continueWithAuth(AuthRequired authRequired,
+                                           UsernameAndPassword credentials) {
     return Fetch.continueWithAuth(
       authRequired.getRequestId(),
       new AuthChallengeResponse(
@@ -112,7 +114,8 @@ public class V99Network extends Network<AuthRequired, RequestPaused> {
   protected Command<Void> cancelAuth(AuthRequired authRequired) {
     return Fetch.continueWithAuth(
       authRequired.getRequestId(),
-      new AuthChallengeResponse(AuthChallengeResponse.Response.CANCELAUTH, Optional.empty(), Optional.empty()));
+      new AuthChallengeResponse(AuthChallengeResponse.Response.CANCELAUTH, Optional.empty(),
+                                Optional.empty()));
   }
 
   @Override
@@ -122,14 +125,18 @@ public class V99Network extends Network<AuthRequired, RequestPaused> {
 
   @Override
   public Either<HttpRequest, HttpResponse> createSeMessages(RequestPaused pausedReq) {
-    if (pausedReq.getResponseStatusCode().isPresent() || pausedReq.getResponseErrorReason().isPresent()) {
+    if (pausedReq.getResponseStatusCode().isPresent() || pausedReq.getResponseErrorReason()
+      .isPresent()) {
       String body;
       boolean bodyIsBase64Encoded;
 
       try {
-        Fetch.GetResponseBodyResponse base64Body = devTools.send(Fetch.getResponseBody(pausedReq.getRequestId()));
+        Fetch.GetResponseBodyResponse
+          base64Body =
+          devTools.send(Fetch.getResponseBody(pausedReq.getRequestId()));
         body = base64Body.getBody();
-        bodyIsBase64Encoded = base64Body.getBase64Encoded() != null && base64Body.getBase64Encoded();
+        bodyIsBase64Encoded =
+          base64Body.getBase64Encoded() != null && base64Body.getBase64Encoded();
       } catch (DevToolsException e) {
         // Redirects don't seem to have bodies
         int code = pausedReq.getResponseStatusCode().orElse(HTTP_OK);
@@ -143,7 +150,9 @@ public class V99Network extends Network<AuthRequired, RequestPaused> {
 
       List<Map.Entry<String, String>> headers = new LinkedList<>();
       pausedReq.getResponseHeaders().ifPresent(resHeaders ->
-        resHeaders.forEach(header -> headers.add(new AbstractMap.SimpleEntry<>(header.getName(), header.getValue()))));
+                                                 resHeaders.forEach(header -> headers.add(
+                                                   new AbstractMap.SimpleEntry<>(header.getName(),
+                                                                                 header.getValue()))));
 
       HttpResponse res = createHttpResponse(
         pausedReq.getResponseStatusCode(),
@@ -191,7 +200,8 @@ public class V99Network extends Network<AuthRequired, RequestPaused> {
     }
 
     List<HeaderEntry> headers = new LinkedList<>();
-    req.getHeaderNames().forEach(name -> req.getHeaders(name).forEach(value -> headers.add(new HeaderEntry(name, value))));
+    req.getHeaderNames().forEach(
+      name -> req.getHeaders(name).forEach(value -> headers.add(new HeaderEntry(name, value))));
 
     return Fetch.continueRequest(
       pausedReq.getRequestId(),
@@ -205,7 +215,8 @@ public class V99Network extends Network<AuthRequired, RequestPaused> {
   @Override
   protected Command<Void> fulfillRequest(RequestPaused pausedReq, HttpResponse res) {
     List<HeaderEntry> headers = new LinkedList<>();
-    res.getHeaderNames().forEach(name -> res.getHeaders(name).forEach(value -> headers.add(new HeaderEntry(name, value))));
+    res.getHeaderNames().forEach(
+      name -> res.getHeaders(name).forEach(value -> headers.add(new HeaderEntry(name, value))));
 
     ByteArrayOutputStream bos = new ByteArrayOutputStream();
     try (InputStream is = res.getContent().get()) {
