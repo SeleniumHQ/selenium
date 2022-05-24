@@ -136,22 +136,7 @@ module Selenium
           driver.action.release_actions
           expect(event_input.attribute(:value)).to eq('Clicked')
         end
-      end
-
-      describe '#release' do
-        it 'releases pressed buttons', except: [{browser: %i[safari safari_preview]},
-                                                {driver: :remote, browser: :ie}] do
-          driver.navigate.to url_for('javascriptPage.html')
-
-          event_input = driver.find_element(id: 'clickField')
-
-          driver.action.click_and_hold(event_input).perform
-          expect(event_input.attribute(:value)).to eq('Hello')
-
-          driver.action.release.perform
-          expect(event_input.attribute(:value)).to eq('Clicked')
-        end
-      end
+     end
 
       describe '#click' do
         it 'clicks provided element' do
@@ -160,13 +145,11 @@ module Selenium
           driver.action.click(element).perform
           expect(element.attribute(:value)).to eq('Clicked')
         end
-      end
 
-      describe 'pointer presses' do
-        it 'holds pointer down and releases' do
+        it 'executes with equivalent pointer methods' do
           driver.navigate.to url_for('javascriptPage.html')
           element = driver.find_element(id: 'clickField')
-          driver.action.move_to(element).pointer_down(:left).click.pointer_up(:left).perform
+          driver.action.move_to(element).pointer_down(:left).pointer_up(:left).perform
           expect(element.attribute(:value)).to eq('Clicked')
         end
       end
@@ -176,8 +159,18 @@ module Selenium
           driver.navigate.to url_for('javascriptPage.html')
           element = driver.find_element(id: 'doubleClickField')
 
-          sleep 0.5
           driver.action.double_click(element).perform
+          expect(element.attribute(:value)).to eq('DoubleClicked')
+        end
+
+        it 'executes with equivalent pointer methods' do
+          driver.navigate.to url_for('javascriptPage.html')
+          element = driver.find_element(id: 'doubleClickField')
+
+          driver.action.move_to(element)
+                .pointer_down(:left).pointer_up(:left)
+                .pointer_down(:left).pointer_up(:left)
+                .perform
           expect(element.attribute(:value)).to eq('DoubleClicked')
         end
       end
@@ -188,6 +181,14 @@ module Selenium
           element = driver.find_element(id: 'doubleClickField')
 
           driver.action.context_click(element).perform
+          expect(element.attribute(:value)).to eq('ContextClicked')
+        end
+
+        it 'executes with equivalent pointer methods' do
+          driver.navigate.to url_for('javascriptPage.html')
+          element = driver.find_element(id: 'doubleClickField')
+
+          driver.action.move_to(element).pointer_down(:right).pointer_up(:right).perform
           expect(element.attribute(:value)).to eq('ContextClicked')
         end
       end
@@ -259,15 +260,47 @@ module Selenium
         end
       end
 
-      def in_viewport?(element)
-        in_viewport = <<~IN_VIEWPORT
-          for(var e=arguments[0],f=e.offsetTop,t=e.offsetLeft,o=e.offsetWidth,n=e.offsetHeight;
-          e.offsetParent;)f+=(e=e.offsetParent).offsetTop,t+=e.offsetLeft;
-          return f<window.pageYOffset+window.innerHeight&&t<window.pageXOffset+window.innerWidth&&f+n>
-          window.pageYOffset&&t+o>window.pageXOffset
-        IN_VIEWPORT
+      describe 'pen stylus' do
+        it 'sets pointer event properties' do
+          driver.get 'https://titusfortner.com/examples/pointerActionsPage.html'
+          pointer_area = driver.find_element(id: 'pointerArea')
+          rect = pointer_area.rect
+          x_val = rect.x
+          y_val = rect.y
 
-        driver.execute_script(in_viewport, element)
+          pointer_options = {pressure: 0.8, tilt_x: -40, tilt_y: -10, twist: 177}
+          actions = driver.action(devices: :pen)
+                          .move_by(x_val + 5, y_val + 5)
+                          .pointer_down(**pointer_options)
+                          .move_by(2, 2, duration: 0.8)
+                          .pointer_up
+
+          start = Time.now
+          actions.perform
+          expect(Time.now - start).to be > 0.8
+
+          moves = driver.find_elements(class: 'pointermove')
+          move_to = properties(moves[0])
+          down = properties(driver.find_element(class: 'pointerdown'))
+          move_by = properties(moves[1])
+          up = properties(driver.find_element(class: 'pointerup'))
+
+          expect(move_to).to include("button" => "-1",
+                                     "pageX" => (x_val + 5).to_s,
+                                     "pageY" => (y_val + 5).floor.to_s)
+          expect(down).to include("button" => "0",
+                                  "pageX" => (x_val + 5).to_s,
+                                  "pageY" => (y_val + 5).floor.to_s,
+                                  "tiltX" => "-40",
+                                  "tiltY" => "-10",
+                                  "twist" => "177")
+          expect(move_by).to include("button" => "-1",
+                                     "pageX" => (x_val + 5 + 2).to_s,
+                                     "pageY" => (y_val + 5 + 2).floor.to_s)
+          expect(up).to include("button" => "0",
+                                "pageX" => (x_val + 5 + 2).to_s,
+                                "pageY" => (y_val + 5 + 2).floor.to_s)
+        end
       end
 
       describe '#scroll_to', only: {browser: %i[chrome edge]} do
@@ -351,6 +384,21 @@ module Selenium
             driver.action.scroll_from(scroll_origin, 0, 200).perform
           }.to raise_error(Error::MoveTargetOutOfBoundsError)
         end
+      end
+
+      def properties(element)
+        element.text.sub(/.*?\s/, '').split(',').map { |item| item.lstrip.split /\s*:\s*/ }.to_h
+      end
+
+      def in_viewport?(element)
+        in_viewport = <<~IN_VIEWPORT
+          for(var e=arguments[0],f=e.offsetTop,t=e.offsetLeft,o=e.offsetWidth,n=e.offsetHeight;
+          e.offsetParent;)f+=(e=e.offsetParent).offsetTop,t+=e.offsetLeft;
+          return f<window.pageYOffset+window.innerHeight&&t<window.pageXOffset+window.innerWidth&&f+n>
+          window.pageYOffset&&t+o>window.pageXOffset
+        IN_VIEWPORT
+
+        driver.execute_script(in_viewport, element)
       end
     end # ActionBuilder
   end # WebDriver
