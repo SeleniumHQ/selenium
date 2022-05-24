@@ -367,8 +367,8 @@ module Selenium
         # actions
         #
 
-        def action(deprecated_async = nil, async: false, devices: [])
-          ActionBuilder.new self, nil, nil, deprecated_async, async: async, devices: devices
+        def action(deprecated_async = nil, async: false, devices: [], duration: 250)
+          ActionBuilder.new self, nil, nil, deprecated_async, async: async, devices: devices, duration: duration
         end
         alias_method :actions, :action
 

@@ -43,8 +43,9 @@ module Selenium
       #
 
       def initialize(bridge, deprecated_mouse = nil, deprecated_keyboard = nil, deprecated_async = nil,
-                     devices: [], async: false)
+                     devices: [], async: false, duration: 250)
         @bridge = bridge
+        @duration = duration
 
         @async = if deprecated_async.nil?
                    async
