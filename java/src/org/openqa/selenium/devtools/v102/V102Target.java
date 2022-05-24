@@ -15,7 +15,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.devtools.v99;
+package org.openqa.selenium.devtools.v102;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
@@ -25,8 +25,8 @@ import org.openqa.selenium.devtools.Event;
 import org.openqa.selenium.devtools.idealized.browser.model.BrowserContextID;
 import org.openqa.selenium.devtools.idealized.target.model.SessionID;
 import org.openqa.selenium.devtools.idealized.target.model.TargetID;
-import org.openqa.selenium.devtools.v99.target.Target;
-import org.openqa.selenium.devtools.v99.target.model.TargetInfo;
+import org.openqa.selenium.devtools.v102.target.Target;
+import org.openqa.selenium.devtools.v102.target.model.TargetInfo;
 import org.openqa.selenium.json.JsonInput;
 import org.openqa.selenium.json.TypeToken;
 
@@ -34,19 +34,24 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
 
-public class V99Target implements org.openqa.selenium.devtools.idealized.target.Target {
+public class V102Target implements org.openqa.selenium.devtools.idealized.target.Target {
+
   @Override
-  public Command<Void> detachFromTarget(Optional<SessionID> sessionId, Optional<TargetID> targetId) {
+  public Command<Void> detachFromTarget(Optional<SessionID> sessionId,
+                                        Optional<TargetID> targetId) {
     return Target.detachFromTarget(
-      sessionId.map(id -> new org.openqa.selenium.devtools.v99.target.model.SessionID(id.toString())),
-      targetId.map(id -> new org.openqa.selenium.devtools.v99.target.model.TargetID(id.toString())));
+      sessionId.map(
+        id -> new org.openqa.selenium.devtools.v102.target.model.SessionID(id.toString())),
+      targetId.map(
+        id -> new org.openqa.selenium.devtools.v102.target.model.TargetID(id.toString())));
   }
 
   @Override
   public Command<List<org.openqa.selenium.devtools.idealized.target.model.TargetInfo>> getTargets() {
     Function<JsonInput, List<TargetInfo>> mapper = ConverterFunctions.map(
       "targetInfos",
-      new TypeToken<List<TargetInfo>>() {}.getType());
+      new TypeToken<List<TargetInfo>>() {
+      }.getType());
 
     return new Command<>(
       Target.getTargets().getMethod(),
@@ -69,16 +74,18 @@ public class V99Target implements org.openqa.selenium.devtools.idealized.target.
 
   @Override
   public Command<SessionID> attachToTarget(TargetID targetId) {
-    Function<JsonInput, org.openqa.selenium.devtools.v99.target.model.SessionID> mapper =
-      ConverterFunctions.map("sessionId", org.openqa.selenium.devtools.v99.target.model.SessionID.class);
+    Function<JsonInput, org.openqa.selenium.devtools.v102.target.model.SessionID> mapper =
+      ConverterFunctions.map("sessionId",
+                             org.openqa.selenium.devtools.v102.target.model.SessionID.class);
 
     return new Command<>(
       "Target.attachToTarget",
       ImmutableMap.of(
-        "targetId", new org.openqa.selenium.devtools.v99.target.model.TargetID(targetId.toString()),
+        "targetId",
+        new org.openqa.selenium.devtools.v102.target.model.TargetID(targetId.toString()),
         "flatten", true),
       input -> {
-        org.openqa.selenium.devtools.v99.target.model.SessionID id = mapper.apply(input);
+        org.openqa.selenium.devtools.v102.target.model.SessionID id = mapper.apply(input);
         return new SessionID(id.toString());
       });
   }
@@ -93,8 +100,9 @@ public class V99Target implements org.openqa.selenium.devtools.idealized.target.
     return new Event<>(
       "Target.detachedFromTarget",
       input -> {
-        Function<JsonInput, org.openqa.selenium.devtools.v99.target.model.TargetID> converter =
-          ConverterFunctions.map("targetId", org.openqa.selenium.devtools.v99.target.model.TargetID.class);
+        Function<JsonInput, org.openqa.selenium.devtools.v102.target.model.TargetID> converter =
+          ConverterFunctions.map("targetId",
+                                 org.openqa.selenium.devtools.v102.target.model.TargetID.class);
         return new TargetID(converter.apply(input).toString());
       }
     );
