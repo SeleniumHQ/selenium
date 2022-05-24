@@ -12,7 +12,7 @@ def selenium_java_deps():
             maven.artifact(
                 group = "com.github.spotbugs",
                 artifact = "spotbugs",
-                version = "4.6.0",
+                version = "4.7.0",
                 exclusions = [
                     "org.slf4j:slf4j-api",
                 ],
