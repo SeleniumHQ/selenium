@@ -125,7 +125,7 @@ class Color:
                     hue -= 1
 
                 if hue < 1.0 / 6.0:
-                    return (lum1 + (lum2 - lum1) * 6.0 * hue)
+                    return lum1 + (lum2 - lum1) * 6.0 * hue
                 elif hue < 1.0 / 2.0:
                     return lum2
                 elif hue < 2.0 / 3.0:

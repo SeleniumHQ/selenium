@@ -71,6 +71,20 @@ public class DockerFlags implements HasRoles {
   private List<String> images2Capabilities;
 
   @Parameter(
+    names = {"--docker-devices"},
+    description = "Exposes devices to a container. Each device mapping declaration must have " +
+      " at least the path of the device in both host and container separated by a colon like " +
+      "in this example: /device/path/in/host:/device/path/in/container",
+    arity = 1,
+    variableArity = true,
+    splitter = NonSplittingSplitter.class)
+  @ConfigValue(
+    section = DockerOptions.DOCKER_SECTION,
+    name = "devices",
+    example = "[\"/dev/kvm:/dev/kvm\"]")
+  private List<String> devices;
+
+  @Parameter(
     names = {"--docker-video-image"},
     description = "Docker image to be used when video recording is enabled"
   )
