@@ -19,6 +19,8 @@ package org.openqa.selenium;
 
 import org.openqa.selenium.internal.Require;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Map;
@@ -27,6 +29,7 @@ import java.util.TreeMap;
 
 public class MutableCapabilities implements Capabilities {
 
+  private static final Logger LOG = Logger.getLogger(MutableCapabilities.class.getName());
   private static final Set<String> OPTION_KEYS;
   static {
     HashSet<String> keys = new HashSet<>();
@@ -99,6 +102,15 @@ public class MutableCapabilities implements Capabilities {
     if (value == null) {
       caps.remove(key);
       return;
+    }
+
+    boolean w3cCompliant = new AcceptedW3CCapabilityKeys().test(key);
+    if (!w3cCompliant) {
+      LOG.log(Level.WARNING,
+        () -> String.format("Support for Legacy Capabilities is deprecated; " +
+            "You are sending \"%s\" which is an invalid capability" +
+            "Please update to W3C Syntax: https://www.selenium.dev/blog/2022/legacy-protocol-support/",
+          key));
     }
 
     SharedCapabilitiesMethods.setCapability(caps, key, value);

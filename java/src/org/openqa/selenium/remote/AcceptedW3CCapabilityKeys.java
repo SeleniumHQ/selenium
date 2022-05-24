@@ -17,31 +17,5 @@
 
 package org.openqa.selenium.remote;
 
-import java.util.function.Predicate;
-import java.util.regex.Pattern;
-import java.util.stream.Stream;
-
-public class AcceptedW3CCapabilityKeys implements Predicate<String> {
-
-  private static final Predicate<String> ACCEPTED_W3C_PATTERNS = Stream.of(
-      "^[\\w-]+:.*$",
-      "^acceptInsecureCerts$",
-      "^browserName$",
-      "^browserVersion$",
-      "^platformName$",
-      "^pageLoadStrategy$",
-      "^proxy$",
-      "^setWindowRect$",
-      "^strictFileInteractability$",
-      "^timeouts$",
-      "^unhandledPromptBehavior$",
-      "^webSocketUrl$")  // from webdriver-bidi
-      .map(Pattern::compile)
-      .map(Pattern::asPredicate)
-      .reduce(identity -> false, Predicate::or);
-
-  @Override
-  public boolean test(String capabilityName) {
-    return ACCEPTED_W3C_PATTERNS.test(capabilityName);
-  }
+public class AcceptedW3CCapabilityKeys extends org.openqa.selenium.AcceptedW3CCapabilityKeys {
 }
