@@ -323,7 +323,7 @@ module Selenium
           delta_y = footer.rect.y
 
           driver.action.scroll_by(0, delta_y).perform
-          sleep 0.2
+          sleep 0.5
 
           expect(in_viewport?(footer)).to eq true
         end
@@ -338,7 +338,7 @@ module Selenium
           driver.action.scroll_from(scroll_origin, 0, 200).perform
 
           driver.switch_to.frame(iframe)
-          sleep 0.2
+          sleep 0.5
           checkbox = driver.find_element(name: 'scroll_checkbox')
           expect(in_viewport?(checkbox)).to eq true
         end
@@ -349,7 +349,7 @@ module Selenium
           scroll_origin = WheelActions::ScrollOrigin.element(footer, 0, -50)
 
           driver.action.scroll_from(scroll_origin, 0, 200).perform
-          sleep 0.2
+          sleep 0.5
 
           iframe = driver.find_element(tag_name: 'iframe')
           driver.switch_to.frame(iframe)
