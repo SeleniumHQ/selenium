@@ -136,7 +136,7 @@ module Selenium
           driver.action.release_actions
           expect(event_input.attribute(:value)).to eq('Clicked')
         end
-     end
+      end
 
       describe '#click' do
         it 'clicks provided element' do
@@ -323,6 +323,7 @@ module Selenium
           delta_y = footer.rect.y
 
           driver.action.scroll_by(0, delta_y).perform
+          sleep 0.2
 
           expect(in_viewport?(footer)).to eq true
         end
@@ -337,6 +338,7 @@ module Selenium
           driver.action.scroll_from(scroll_origin, 0, 200).perform
 
           driver.switch_to.frame(iframe)
+          sleep 0.2
           checkbox = driver.find_element(name: 'scroll_checkbox')
           expect(in_viewport?(checkbox)).to eq true
         end
@@ -347,6 +349,7 @@ module Selenium
           scroll_origin = WheelActions::ScrollOrigin.element(footer, 0, -50)
 
           driver.action.scroll_from(scroll_origin, 0, 200).perform
+          sleep 0.2
 
           iframe = driver.find_element(tag_name: 'iframe')
           driver.switch_to.frame(iframe)
@@ -387,7 +390,7 @@ module Selenium
       end
 
       def properties(element)
-        element.text.sub(/.*?\s/, '').split(',').map { |item| item.lstrip.split /\s*:\s*/ }.to_h
+        element.text.sub(/.*?\s/, '').split(',').to_h { |item| item.lstrip.split(/\s*:\s*/) }
       end
 
       def in_viewport?(element)
