@@ -208,7 +208,7 @@ public class Connection implements Closeable {
         && (raw.get("result") != null || raw.get("error") != null)) {
       handleResponse(asString, raw);
     } else if (raw.get("method") instanceof String && raw.get("params") instanceof Map) {
-      handleEventResponse(asString, raw);
+      handleEventResponse(raw);
     } else {
       LOG.warning(() -> "Unhandled type:" + data);
     }
@@ -242,7 +242,7 @@ public class Connection implements Closeable {
     }
   }
 
-  private void handleEventResponse(String rawDataString, Map<String, Object> rawDataMap) {
+  private void handleEventResponse(Map<String, Object> rawDataMap) {
     LOG.log(
       getDebugLogLevel(),
       () -> "Method" + rawDataMap.get("method") + "called with" + eventCallbacks.keySet().size()
@@ -250,7 +250,6 @@ public class Connection implements Closeable {
     Lock lock = callbacksLock.readLock();
     lock.lock();
     try {
-      // TODO: Also only decode once.
       eventCallbacks.keySet().stream()
         .filter(event -> {
           LOG.log(
@@ -259,36 +258,24 @@ public class Connection implements Closeable {
           return rawDataMap.get("method").equals(event.getMethod());
         })
         .forEach(event -> {
-          try (StringReader reader = new StringReader(rawDataString);
-               JsonInput input = JSON.newInput(reader)) {
-            Object value = null;
-            input.beginObject();
-            while (input.hasNext()) {
-              switch (input.nextName()) {
-                case "params":
-                  value = event.getMapper().apply(input);
-                  break;
+          Map<String, Object> params = (Map<String, Object>) rawDataMap.get("params");
+          Object value = null;
+          if (params != null) {
+            value = event.getMapper().apply(params);
+          }
+          if (value == null) {
+            return;
+          }
 
-                default:
-                  input.skipValue();
-                  break;
-              }
-            }
-            input.endObject();
+          final Object finalValue = value;
 
-            if (value == null) {
-              return;
-            }
-
-            final Object finalValue = value;
-
-            for (Consumer<?> action : eventCallbacks.get(event)) {
-              @SuppressWarnings("unchecked") Consumer<Object> obj = (Consumer<Object>) action;
-              LOG.log(
-                getDebugLogLevel(),
-                String.format("Calling callback for %s using %s being passed %s", event, obj, finalValue));
-              obj.accept(finalValue);
-            }
+          for (Consumer<?> action : eventCallbacks.get(event)) {
+            @SuppressWarnings("unchecked") Consumer<Object> obj = (Consumer<Object>) action;
+            LOG.log(
+              getDebugLogLevel(),
+              String.format("Calling callback for %s using %s being passed %s", event, obj,
+                            finalValue));
+            obj.accept(finalValue);
           }
         });
     } finally {
