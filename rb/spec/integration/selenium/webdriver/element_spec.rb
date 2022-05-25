@@ -57,7 +57,7 @@ module Selenium
 
         it 'any element in form' do
           driver.navigate.to url_for('formPage.html')
-          driver.find_element(id: 'form > p').submit
+          driver.find_element(css: 'form > p').submit
 
           expect(driver.title).to eq('We Arrive Here')
         end
