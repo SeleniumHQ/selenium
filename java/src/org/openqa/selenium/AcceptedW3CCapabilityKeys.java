@@ -15,7 +15,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.remote;
+package org.openqa.selenium;
 
 import java.util.function.Predicate;
 import java.util.regex.Pattern;
@@ -36,9 +36,9 @@ public class AcceptedW3CCapabilityKeys implements Predicate<String> {
       "^timeouts$",
       "^unhandledPromptBehavior$",
       "^webSocketUrl$")  // from webdriver-bidi
-      .map(Pattern::compile)
-      .map(Pattern::asPredicate)
-      .reduce(identity -> false, Predicate::or);
+    .map(Pattern::compile)
+    .map(Pattern::asPredicate)
+    .reduce(identity -> false, Predicate::or);
 
   @Override
   public boolean test(String capabilityName) {
