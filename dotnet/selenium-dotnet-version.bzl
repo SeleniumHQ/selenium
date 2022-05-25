@@ -7,9 +7,9 @@ SUPPORTED_NET_STANDARD_VERSIONS = ["netstandard2.0", "netstandard2.1", "net5.0"]
 
 SUPPORTED_DEVTOOLS_VERSIONS = [
     "v85",
-    "v99",
     "v100",
     "v101",
+    "v102",
 ]
 
 ASSEMBLY_COMPANY = "Selenium Committers"
