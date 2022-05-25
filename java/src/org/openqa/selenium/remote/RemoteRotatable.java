@@ -18,6 +18,7 @@
 package org.openqa.selenium.remote;
 
 import com.google.common.collect.ImmutableMap;
+
 import org.openqa.selenium.DeviceRotation;
 import org.openqa.selenium.Rotatable;
 import org.openqa.selenium.ScreenOrientation;
@@ -25,6 +26,10 @@ import org.openqa.selenium.internal.Require;
 
 import java.util.Map;
 
+/**
+ * @deprecated As this is only available only for mobile which is handled by the Appium project
+ */
+@Deprecated
 class RemoteRotatable implements Rotatable {
 
   private final ExecuteMethod executeMethod;
