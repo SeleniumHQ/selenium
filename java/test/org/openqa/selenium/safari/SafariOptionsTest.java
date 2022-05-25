@@ -20,7 +20,7 @@ package org.openqa.selenium.safari;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.openqa.selenium.ImmutableCapabilities;
-import org.openqa.selenium.remote.AcceptedW3CCapabilityKeys;
+import org.openqa.selenium.AcceptedW3CCapabilityKeys;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.testing.UnitTests;
 
