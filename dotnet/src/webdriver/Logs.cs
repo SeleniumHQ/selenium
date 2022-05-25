@@ -16,6 +16,7 @@
 // limitations under the License.
 // </copyright>
 
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 
@@ -27,7 +28,6 @@ namespace OpenQA.Selenium
     public class Logs : ILogs
     {
         private WebDriver driver;
-        private bool isLogSupported = false;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="RemoteLogs"/> class.
@@ -36,7 +36,6 @@ namespace OpenQA.Selenium
         public Logs(WebDriver driver)
         {
             this.driver = driver;
-            this.isLogSupported = (this.driver as ISupportsLogs) != null;
         }
 
         /// <summary>
@@ -47,7 +46,7 @@ namespace OpenQA.Selenium
             get
             {
                 List<string> availableLogTypes = new List<string>();
-                if (this.isLogSupported)
+                try
                 {
                     Response commandResponse = this.driver.InternalExecute(DriverCommand.GetAvailableLogTypes, null);
                     object[] responseValue = commandResponse.Value as object[];
@@ -58,6 +57,10 @@ namespace OpenQA.Selenium
                             availableLogTypes.Add(logKind.ToString());
                         }
                     }
+                }
+                catch (NotImplementedException)
+                {
+                    // Swallow for backwards compatibility
                 }
 
                 return availableLogTypes.AsReadOnly();
@@ -73,7 +76,7 @@ namespace OpenQA.Selenium
         public ReadOnlyCollection<LogEntry> GetLog(string logKind)
         {
             List<LogEntry> entries = new List<LogEntry>();
-            if (this.isLogSupported)
+            try
             {
                 Dictionary<string, object> parameters = new Dictionary<string, object>();
                 parameters.Add("type", logKind);
@@ -91,6 +94,10 @@ namespace OpenQA.Selenium
                         }
                     }
                 }
+            }
+            catch (NotImplementedException)
+            {
+                // Swallow for backwards compatibility
             }
 
             return entries.AsReadOnly();
