@@ -18,7 +18,31 @@
 # under the License.
 
 module Selenium
-  module DevTools
-    VERSION = '0.102.0'
-  end # DevTools
+  module WebDriver
+    module WheelActions
+      class ScrollOrigin
+        class << self
+          def element(element, x_offset = 0, y_offset = 0)
+            new(element, x_offset, y_offset)
+          end
+
+          def viewport(x_offset = 0, y_offset = 0)
+            new(:viewport, x_offset, y_offset)
+          end
+        end
+
+        attr_reader :origin, :x_offset, :y_offset
+
+        #
+        # Use a static method to access
+        # @api private
+        #
+        def initialize(origin, x_offset, y_offset)
+          @origin = origin
+          @x_offset = x_offset
+          @y_offset = y_offset
+        end
+      end # ScrollOrigin
+    end # WheelActions
+  end # WebDriver
 end # Selenium

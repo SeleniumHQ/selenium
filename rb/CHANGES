@@ -1,3 +1,47 @@
+4.2.0 (unreleased)
+=========================
+
+BiDi:
+  * Released selenium-devtools 0.97.0 (supports CDP v85, v95, v96, v97)
+  * Released selenium-devtools 0.98.0 (supports CDP v85, v96, v97, v98)
+  * Released selenium-devtools 0.99.0 (supports CDP v85, v97, v98, v99)
+  * Released selenium-devtools 0.100.0 (supports CDP v85, v98, v99, v100)
+  * Released selenium-devtools 0.101.0 (supports CDP v85, v99, v100, v101)
+  * Released selenium-devtools 0.102.0 (supports CDP v85, v100, v101, v102)
+  * Implement simple BiDi connection
+  * Fix bug in initial BiDi implementation (thanks Boris Petrov!)
+  * Fix bug with mutating headers in request interception (#10574)
+  * Fix bug with empty response headers (thanks Viren Negi!)
+
+Firefox:
+  * Add support to Firefox Options for environment capability
+  * Use addon parameter instead of path parameter to avoid using file detector
+  * Restore #from_name method to Firefox profile (#10146)
+
+Chromium:
+  * Add support for casting desktop
+
+Ruby:
+  * Updated minimum required Ruby version to 2.7
+  * Fix bug by not attempting to stop service process when it's not started (#10015)
+  * Fix bug to not stop service process when it's not started (thanks Atsushi Tatsuma!)
+  * Use driver endpoint to get page source instead of JavaScript
+  * Add zenkaku_hankaku key support
+  * Fix download support of Selenium Server
+  * Do not convert Tag Name to CSS Selector
+
+ActionBuilder:
+  * Raise error if input device not found
+  * Move `TypingInteraction` from `Interactions::KeyInput` to `Interactions` module
+  * Throw better errors for `PointerInput` methods
+  * Allow each action interaction class to validate its own source
+  * Set all Interactions classes to private
+  * Allow device names to use a default id if one is not specified
+  * Deprecate default mouse and keyboard values in constructor, favoring devices parameter
+  * Add support for pointer event properties
+  * Implement scroll wheel support
+  * Deprecate ordered pair parameters for pause method in favor of keywords
+
 4.1.0 (2021-11-22)
 =========================
 

@@ -214,8 +214,6 @@ experimental domain Accessibility
       # The maximum depth at which descendants of the root node should be retrieved.
       # If omitted, the full tree is returned.
       optional integer depth
-      # Deprecated. This parameter has been renamed to `depth`. If depth is not provided, max_depth will be used.
-      deprecated optional integer max_depth
       # The frame for whose document the AX tree should be retrieved.
       # If omited, the root frame is used.
       optional Page.FrameId frameId
@@ -473,7 +471,7 @@ experimental domain Audits
     properties
       Page.FrameId frameId
 
-  type SameSiteCookieExclusionReason extends string
+  type CookieExclusionReason extends string
     enum
       ExcludeSameSiteUnspecifiedTreatedAsLax
       ExcludeSameSiteNoneInsecure
@@ -482,7 +480,7 @@ experimental domain Audits
       ExcludeInvalidSameParty
       ExcludeSamePartyCrossPartyContext
 
-  type SameSiteCookieWarningReason extends string
+  type CookieWarningReason extends string
     enum
       WarnSameSiteUnspecifiedCrossSiteContext
       WarnSameSiteNoneInsecure
@@ -492,8 +490,9 @@ experimental domain Audits
       WarnSameSiteStrictCrossDowngradeLax
       WarnSameSiteLaxCrossDowngradeStrict
       WarnSameSiteLaxCrossDowngradeLax
+      WarnAttributeValueExceedsMaxSize
 
-  type SameSiteCookieOperation extends string
+  type CookieOperation extends string
     enum
       SetCookie
       ReadCookie
@@ -501,7 +500,7 @@ experimental domain Audits
   # This information is currently necessary, as the front-end has a difficult
   # time finding a specific cookie. With this, we can convey specific error
   # information without the cookie.
-  type SameSiteCookieIssueDetails extends object
+  type CookieIssueDetails extends object
     properties
       # If AffectedCookie is not set then rawCookieLine contains the raw
       # Set-Cookie header string. This hints at a problem where the
@@ -509,11 +508,11 @@ experimental domain Audits
       # that no valid cookie could be created.
       optional AffectedCookie cookie
       optional string rawCookieLine
-      array of SameSiteCookieWarningReason cookieWarningReasons
-      array of SameSiteCookieExclusionReason cookieExclusionReasons
+      array of CookieWarningReason cookieWarningReasons
+      array of CookieExclusionReason cookieExclusionReasons
       # Optionally identifies the site-for-cookies and the cookie url, which
       # may be used by the front-end as additional context.
-      SameSiteCookieOperation operation
+      CookieOperation operation
       optional string siteForCookies
       optional string cookieUrl
       optional AffectedRequest request
@@ -526,6 +525,7 @@ experimental domain Audits
 
   type MixedContentResourceType extends string
     enum
+      AttributionSrc
       Audio
       Beacon
       CSPReport
@@ -698,16 +698,10 @@ experimental domain Audits
     enum
       PermissionPolicyDisabled
       InvalidAttributionSourceEventId
-      InvalidAttributionData
       AttributionSourceUntrustworthyOrigin
       AttributionUntrustworthyOrigin
-      AttributionTriggerDataTooLarge
-      AttributionEventSourceTriggerDataTooLarge
       InvalidAttributionSourceExpiry
       InvalidAttributionSourcePriority
-      InvalidEventSourceTriggerData
-      InvalidTriggerPriority
-      InvalidTriggerDedupKey
 
   # Details for issues around "Attribution Reporting API" usage.
   # Explainer: https://github.com/WICG/conversion-measurement-api
@@ -736,13 +730,6 @@ experimental domain Audits
       string url
       optional SourceCodeLocation location
 
-  type WasmCrossOriginModuleSharingIssueDetails extends object
-    properties
-      string wasmModuleUrl
-      string sourceOrigin
-      string targetOrigin
-      boolean isWarning
-
   type GenericIssueErrorType extends string
     enum
       CrossOriginPortalPostMessageError
@@ -754,6 +741,11 @@ experimental domain Audits
       GenericIssueErrorType errorType
       optional Page.FrameId frameId
 
+  type DeprecationIssueType extends string
+    enum
+      DeprecationExample
+      Untranslated
+
   # This issue tracks information needed to print a deprecation message.
   # The formatting is inherited from the old console.log version, see more at:
   # https://source.chromium.org/chromium/chromium/src/+/main:third_party/blink/renderer/core/frame/deprecation.cc
@@ -763,19 +755,75 @@ experimental domain Audits
     properties
       optional AffectedFrame affectedFrame
       SourceCodeLocation sourceCodeLocation
-      # The content of the deprecation issue (this won't be translated),
+      # The content of an untranslated deprecation issue,
       # e.g. "window.inefficientLegacyStorageMethod will be removed in M97,
       # around January 2022. Please use Web Storage or Indexed Database
       # instead. This standard was abandoned in January, 1970. See
       # https://www.chromestatus.com/feature/5684870116278272 for more details."
       deprecated optional string message
+      # The id of an untranslated deprecation issue e.g. PrefixedStorageInfo.
+      deprecated optional string deprecationType
+      DeprecationIssueType type
+
+  type ClientHintIssueReason extends string
+    enum
+      # Items in the accept-ch meta tag allow list must be valid origins.
+      # No special values (e.g. self, none, and *) are permitted.
+      MetaTagAllowListInvalidOrigin
+      # Only accept-ch meta tags in the original HTML sent from the server
+      # are respected. Any injected via javascript (or other means) are ignored.
+      MetaTagModifiedHTML
+
+  type FederatedAuthRequestIssueDetails extends object
+    properties
+      FederatedAuthRequestIssueReason federatedAuthRequestIssueReason
+
+  # Represents the failure reason when a federated authentication reason fails.
+  # Should be updated alongside RequestIdTokenStatus in
+  # third_party/blink/public/mojom/devtools/inspector_issue.mojom to include
+  # all cases except for success.
+  type FederatedAuthRequestIssueReason extends string
+    enum
+      ApprovalDeclined
+      TooManyRequests
+      ManifestListHttpNotFound
+      ManifestListNoResponse
+      ManifestListInvalidResponse
+      ManifestNotInManifestList
+      ManifestListTooBig
+      ManifestHttpNotFound
+      ManifestNoResponse
+      ManifestInvalidResponse
+      ClientMetadataHttpNotFound
+      ClientMetadataNoResponse
+      ClientMetadataInvalidResponse
+      ClientMetadataMissingPrivacyPolicyUrl
+      DisabledInSettings
+      ErrorFetchingSignin
+      InvalidSigninResponse
+      AccountsHttpNotFound
+      AccountsNoResponse
+      AccountsInvalidResponse
+      IdTokenHttpNotFound
+      IdTokenNoResponse
+      IdTokenInvalidResponse
+      IdTokenInvalidRequest
+      ErrorIdToken
+      Canceled
+
+  # This issue tracks client hints related issues. It's used to deprecate old
+  # features, encourage the use of new ones, and provide general guidance.
+  type ClientHintIssueDetails extends object
+    properties
+      SourceCodeLocation sourceCodeLocation
+      ClientHintIssueReason clientHintIssueReason
 
   # A unique identifier for the type of issue. Each type may use one of the
   # optional fields in InspectorIssueDetails to convey more specific
   # information about the kind of issue.
   type InspectorIssueCode extends string
     enum
-      SameSiteCookieIssue
+      CookieIssue
       MixedContentIssue
       BlockedByResponseIssue
       HeavyAdIssue
@@ -787,16 +835,17 @@ experimental domain Audits
       AttributionReportingIssue
       QuirksModeIssue
       NavigatorUserAgentIssue
-      WasmCrossOriginModuleSharingIssue
       GenericIssue
       DeprecationIssue
+      ClientHintIssue
+      FederatedAuthRequestIssue
 
   # This struct holds a list of optional fields with additional information
   # specific to the kind of issue. When adding a new issue code, please also
   # add a new optional field to this type.
   type InspectorIssueDetails extends object
     properties
-      optional SameSiteCookieIssueDetails sameSiteCookieIssueDetails
+      optional CookieIssueDetails cookieIssueDetails
       optional MixedContentIssueDetails mixedContentIssueDetails
       optional BlockedByResponseIssueDetails blockedByResponseIssueDetails
       optional HeavyAdIssueDetails heavyAdIssueDetails
@@ -808,9 +857,10 @@ experimental domain Audits
       optional AttributionReportingIssueDetails attributionReportingIssueDetails
       optional QuirksModeIssueDetails quirksModeIssueDetails
       optional NavigatorUserAgentIssueDetails navigatorUserAgentIssueDetails
-      optional WasmCrossOriginModuleSharingIssueDetails wasmCrossOriginModuleSharingIssue
       optional GenericIssueDetails genericIssueDetails
       optional DeprecationIssueDetails deprecationIssueDetails
+      optional ClientHintIssueDetails clientHintIssueDetails
+      optional FederatedAuthRequestIssueDetails federatedAuthRequestIssueDetails
 
   # A unique id for a DevTools inspector issue. Allows other entities (e.g.
   # exceptions, CDP message, console messages, etc.) to reference an issue.
@@ -1257,6 +1307,12 @@ experimental domain CSS
       # Matches of CSS rules matching the ancestor node in the style inheritance chain.
       array of RuleMatch matchedCSSRules
 
+  # Inherited pseudo element matches from pseudos of an ancestor node.
+  type InheritedPseudoElementMatches extends object
+    properties
+      # Matches of pseudo styles from the pseudos of an ancestor node.
+      array of PseudoElementMatches pseudoElements
+
   # Match data for a CSS rule.
   type RuleMatch extends object
     properties
@@ -1344,6 +1400,12 @@ experimental domain CSS
       # Container query list array (for rules involving container queries).
       # The array enumerates container queries starting with the innermost one, going outwards.
       experimental optional array of CSSContainerQuery containerQueries
+      # @supports CSS at-rule array.
+      # The array enumerates @supports at-rules starting with the innermost one, going outwards.
+      experimental optional array of CSSSupports supports
+      # Cascade layer array. Contains the layer hierarchy that this rule belongs to starting
+      # with the innermost layer and going outwards.
+      experimental optional array of CSSLayer layers
 
   # CSS coverage information.
   type RuleUsage extends object
@@ -1479,6 +1541,41 @@ experimental domain CSS
       optional StyleSheetId styleSheetId
       # Optional name for the container.
       optional string name
+
+  # CSS Supports at-rule descriptor.
+  experimental type CSSSupports extends object
+    properties
+      # Supports rule text.
+      string text
+      # Whether the supports condition is satisfied.
+      boolean active
+      # The associated rule header range in the enclosing stylesheet (if
+      # available).
+      optional SourceRange range
+      # Identifier of the stylesheet containing this object (if exists).
+      optional StyleSheetId styleSheetId
+
+  # CSS Layer at-rule descriptor.
+  experimental type CSSLayer extends object
+    properties
+      # Layer name.
+      string text
+      # The associated rule header range in the enclosing stylesheet (if
+      # available).
+      optional SourceRange range
+      # Identifier of the stylesheet containing this object (if exists).
+      optional StyleSheetId styleSheetId
+
+  # CSS Layer data.
+  experimental type CSSLayerData extends object
+    properties
+      # Layer name.
+      string name
+      # Direct sub-layers
+      optional array of CSSLayerData subLayers
+      # Layer order. The order determines the order of the layer in the cascade order.
+      # A higher number has higher priority in the cascade order.
+      number order
 
   # Information about amount of glyphs that were rendered with given font.
   type PlatformFontUsage extends object
@@ -1656,6 +1753,8 @@ experimental domain CSS
       optional array of PseudoElementMatches pseudoElements
       # A chain of inherited styles (from the immediate node parent up to the DOM tree root).
       optional array of InheritedStyleEntry inherited
+      # A chain of inherited pseudo element styles (from the immediate node parent up to the DOM tree root).
+      optional array of InheritedPseudoElementMatches inheritedPseudoElements
       # A list of CSS keyframed animations matching this node.
       optional array of CSSKeyframesRule cssKeyframesRules
 
@@ -1680,6 +1779,16 @@ experimental domain CSS
     returns
       # The stylesheet text.
       string text
+
+  # Returns all layers parsed by the rendering engine for the tree scope of a node.
+  # Given a DOM element identified by nodeId, getLayersForNode returns the root
+  # layer for the nearest ancestor document or shadow root. The layer root contains
+  # the full layer tree for the tree scope and their ordering.
+  experimental command getLayersForNode
+    parameters
+      DOM.NodeId nodeId
+    returns
+      CSSLayerData rootLayer
 
   # Starts tracking the given computed styles for updates. The specified array of properties
   # replaces the one previously specified. Pass empty array to disable tracking.
@@ -1735,6 +1844,16 @@ experimental domain CSS
     returns
       # The resulting CSS container query rule after modification.
       CSSContainerQuery containerQuery
+
+  # Modifies the expression of a supports at-rule.
+  experimental command setSupportsText
+    parameters
+      StyleSheetId styleSheetId
+      SourceRange range
+      string text
+    returns
+      # The resulting CSS Supports rule after modification.
+      CSSSupports supports
 
   # Modifies the rule selector.
   command setRuleSelector
@@ -2031,6 +2150,11 @@ domain DOM
       scrollbar-corner
       resizer
       input-list-button
+      page-transition
+      page-transition-container
+      page-transition-image-wrapper
+      page-transition-outgoing-image
+      page-transition-incoming-image
 
   # Shadow root type.
   type ShadowRootType extends string
@@ -2245,6 +2369,13 @@ domain DOM
 
   # Enables DOM agent for the given page.
   command enable
+    parameters
+      # Whether to include whitespaces in the children array of returned Nodes.
+      experimental optional enum includeWhitespace
+        # Strip whitespaces from child arrays (default).
+        none
+        # Return all children including block-level whitespace nodes.
+        all
 
   # Focuses the given element.
   command focus
@@ -3589,9 +3720,6 @@ domain Emulation
       # If set this specifies the maximum number of tasks that can be run before virtual is forced
       # forwards to prevent deadlock.
       optional integer maxVirtualTimeTaskStarvationCount
-      # If set the virtual time policy change should be deferred until any frame starts navigating.
-      # Note any previous deferred policy change is superseded.
-      optional boolean waitForNavigation
       # If set, base::Time::Now will be overridden to initially return this value.
       optional Network.TimeSinceEpoch initialVirtualTime
     returns
@@ -3648,6 +3776,12 @@ domain Emulation
       optional string platform
       # To be sent in Sec-CH-UA-* headers and returned in navigator.userAgentData
       experimental optional UserAgentMetadata userAgentMetadata
+
+  # Allows overriding the automation flag.
+  experimental command setAutomationOverride
+    parameters
+      # Whether the override should be enabled.
+      boolean enabled
 
 # This domain provides experimental commands only supported in headless mode.
 experimental domain HeadlessExperimental
@@ -4060,7 +4194,7 @@ domain Input
       optional integer location
       # Editing commands to send with the key event (e.g., 'selectAll') (default: []).
       # These are related to but not equal the command names used in `document.execCommand` and NSStandardKeyBindingResponding.
-      # See https://source.chromium.org/chromium/chromium/src/+/master:third_party/blink/renderer/core/editing/commands/editor_command_names.h for valid command names.
+      # See https://source.chromium.org/chromium/chromium/src/+/main:third_party/blink/renderer/core/editing/commands/editor_command_names.h for valid command names.
       experimental optional array of string commands
 
   # This method emulates inserting text that doesn't come from a key press,
@@ -6133,6 +6267,7 @@ domain Network
       SameOriginAllowPopups
       UnsafeNone
       SameOriginPlusCoep
+      SameOriginAllowPopupsPlusCoep
 
   experimental type CrossOriginOpenerPolicyStatus extends object
     properties
@@ -6424,6 +6559,7 @@ experimental domain Overlay
     enum
       rgb
       hsl
+      hwb
       hex
 
   # Configurations for Persistent Grid Highlight
@@ -6690,8 +6826,8 @@ experimental domain Overlay
       # True for showing scroll bottleneck rects
       boolean show
 
-  # Requests that backend shows hit-test borders on layers
-  command setShowHitTestBorders
+  # Deprecated, no longer has any effect.
+  deprecated command setShowHitTestBorders
     parameters
       # True for showing hit-test borders
       boolean show
@@ -6809,23 +6945,28 @@ domain Page
       ambient-light-sensor
       attribution-reporting
       autoplay
+      browsing-topics
       camera
       ch-dpr
       ch-device-memory
       ch-downlink
       ch-ect
+      ch-partitioned-cookies
       ch-prefers-color-scheme
       ch-rtt
+      ch-save-data
       ch-ua
       ch-ua-arch
       ch-ua-bitness
       ch-ua-platform
       ch-ua-model
       ch-ua-mobile
+      ch-ua-full
       ch-ua-full-version
       ch-ua-full-version-list
       ch-ua-platform-version
       ch-ua-reduced
+      ch-ua-wow64
       ch-viewport-height
       ch-viewport-width
       ch-width
@@ -6876,6 +7017,8 @@ domain Page
       Header
       # Declaration in iframe attribute.
       IframeAttribute
+      # Inside fenced frame.
+      InFencedFrameTree
 
   experimental type PermissionsPolicyBlockLocator extends object
     properties
@@ -7151,8 +7294,14 @@ domain Page
       optional string cursive
       # The fantasy font-family.
       optional string fantasy
-      # The pictograph font-family.
-      optional string pictograph
+
+  # Font families collection for a script.
+  experimental type ScriptFontFamilies extends object
+    properties
+      # Name of the script which these font families are defined for.
+      string script
+      # Generic font families collection for the script.
+      FontFamilies fontFamilies
 
   # Default font sizes.
   experimental type FontSizes extends object
@@ -7363,11 +7512,11 @@ domain Page
   # Returns metrics relating to the layouting of the page, such as viewport bounds/scale.
   command getLayoutMetrics
     returns
-      # Deprecated metrics relating to the layout viewport. Can be in DP or in CSS pixels depending on the `enable-use-zoom-for-dsf` flag. Use `cssLayoutViewport` instead.
+      # Deprecated metrics relating to the layout viewport. Is in device pixels. Use `cssLayoutViewport` instead.
       deprecated LayoutViewport layoutViewport
-      # Deprecated metrics relating to the visual viewport. Can be in DP or in CSS pixels depending on the `enable-use-zoom-for-dsf` flag. Use `cssVisualViewport` instead.
+      # Deprecated metrics relating to the visual viewport. Is in device pixels. Use `cssVisualViewport` instead.
       deprecated VisualViewport visualViewport
-      # Deprecated size of scrollable area. Can be in DP or in CSS pixels depending on the `enable-use-zoom-for-dsf` flag. Use `cssContentSize` instead.
+      # Deprecated size of scrollable area. Is in DP. Use `cssContentSize` instead.
       deprecated DOM.Rect contentSize
       # Metrics relating to the layout viewport in CSS pixels.
       LayoutViewport cssLayoutViewport
@@ -7614,6 +7763,8 @@ domain Page
     parameters
       # Specifies font families to set. If a font family is not specified, it won't be changed.
       FontFamilies fontFamilies
+      # Specifies font families to set for individual scripts.
+      optional array of ScriptFontFamilies forScripts
 
   # Set default font sizes.
   experimental command setFontSizes
@@ -7935,7 +8086,7 @@ domain Page
   # List of not restored reasons for back-forward cache.
   experimental type BackForwardCacheNotRestoredReason extends string
     enum
-      NotMainFrame
+      NotPrimaryMainFrame
       BackForwardCacheDisabled
       RelatedActiveContentsExist
       HTTPStatusNotOK
@@ -7988,6 +8139,8 @@ domain Page
       NoResponseHead
       Unknown
       ActivationNavigationsDisallowedForBug1234857
+      ErrorDocument
+      FencedFramesEmbedder
       #Blocklisted features
       WebSocket
       WebTransport
@@ -8077,6 +8230,20 @@ domain Page
       BackForwardCacheNotRestoredReasonType type
       # Not restored reason
       BackForwardCacheNotRestoredReason reason
+      # Context associated with the reason. The meaning of this context is
+      # dependent on the reason:
+      # - EmbedderExtensionSentMessageToCachedFrame: the extension ID.
+      #
+      optional string context
+
+  experimental type BackForwardCacheNotRestoredExplanationTree extends object
+    properties
+      # URL of each frame
+      string url
+      # Not restored reasons of each frame
+      array of BackForwardCacheNotRestoredExplanation explanations
+      # Array of children frame
+      array of BackForwardCacheNotRestoredExplanationTree children
 
   # Fired for failed bfcache history navigations if BackForwardCache feature is enabled. Do
   # not assume any ordering with the Page.frameNavigated event. This event is fired only for
@@ -8090,6 +8257,21 @@ domain Page
       FrameId frameId
       # Array of reasons why the page could not be cached. This must not be empty.
       array of BackForwardCacheNotRestoredExplanation notRestoredExplanations
+      # Tree structure of reasons why the page could not be cached for each frame.
+      optional BackForwardCacheNotRestoredExplanationTree notRestoredExplanationsTree
+
+  # List of FinalStatus reasons for Prerender2.
+  type PrerenderFinalStatus extends string
+    enum
+      Activated
+
+  # Fired when a prerender attempt is completed.
+  event prerenderAttemptCompleted
+    parameters
+      # The frame id of the frame initiating prerendering.
+      FrameId initiatingFrameId
+      string prerenderingUrl
+      PrerenderFinalStatus finalStatus
 
   event loadEventFired
     parameters
@@ -8582,6 +8764,7 @@ experimental domain Storage
       websql
       service_workers
       cache_storage
+      interest_groups
       all
       other
 
@@ -8599,6 +8782,37 @@ experimental domain Storage
     properties
       string issuerOrigin
       number count
+
+  # Enum of interest group access types.
+  type InterestGroupAccessType extends string
+    enum
+      join
+      leave
+      update
+      bid
+      win
+
+  # Ad advertising element inside an interest group.
+  type InterestGroupAd extends object
+    properties
+      string renderUrl
+      optional string metadata
+
+  # The full details of an interest group.
+  type InterestGroupDetails extends object
+    properties
+      string ownerOrigin
+      string name
+      Network.TimeSinceEpoch expirationTime
+      string joiningOrigin
+      optional string biddingUrl
+      optional string biddingWasmHelperUrl
+      optional string updateUrl
+      optional string trustedBiddingSignalsUrl
+      array of string trustedBiddingSignalsKeys
+      optional string userBiddingSignals
+      array of InterestGroupAd ads
+      array of InterestGroupAd adComponents
 
   # Clears storage for origin.
   command clearDataForOrigin
@@ -8699,6 +8913,19 @@ experimental domain Storage
       # True if any tokens were deleted, false otherwise.
       boolean didDeleteTokens
 
+  # Gets details for a named interest group.
+  experimental command getInterestGroupDetails
+    parameters
+      string ownerOrigin
+      string name
+    returns
+      InterestGroupDetails details
+
+  # Enables/Disables issuing of interestGroupAccessed events.
+  experimental command setInterestGroupTracking
+    parameters
+      boolean enable
+
   # A cache's contents have been modified.
   event cacheStorageContentUpdated
     parameters
@@ -8728,6 +8955,14 @@ experimental domain Storage
     parameters
       # Origin to update.
       string origin
+
+  # One of the interest groups was accessed by the associated page.
+  event interestGroupAccessed
+    parameters
+      Network.TimeSinceEpoch accessTime
+      InterestGroupAccessType type
+      string ownerOrigin
+      string name
 
 # The SystemInfo domain defines methods and events for querying low-level system information.
 experimental domain SystemInfo
@@ -9762,6 +9997,10 @@ experimental domain WebAuthn
       # https://fidoalliance.org/specs/fido-v2.1-rd-20201208/fido-client-to-authenticator-protocol-v2.1-rd-20201208.html#sctn-credBlob-extension
       # Defaults to false.
       optional boolean hasCredBlob
+      # If set to true, the authenticator will support the minPinLength extension.
+      # https://fidoalliance.org/specs/fido-v2.1-ps-20210615/fido-client-to-authenticator-protocol-v2.1-ps-20210615.html#sctn-minpinlength-extension
+      # Defaults to false.
+      optional boolean hasMinPinLength
       # If set to true, tests of user presence will succeed immediately.
       # Otherwise, they will not be resolved. Defaults to true.
       optional boolean automaticPresenceSimulation
@@ -9895,19 +10134,27 @@ experimental domain Media
       Timestamp timestamp
       string value
 
+  # Represents logged source line numbers reported in an error.
+  # NOTE: file and line are from chromium c++ implementation code, not js.
+  type PlayerErrorSourceLocation extends object
+    properties
+      string file
+      integer line
+
   # Corresponds to kMediaError
   type PlayerError extends object
     properties
-      enum type
-        # Compatability until we switch to media_error
-        pipeline_error
-        media_error
-      # When this switches to using media::Status instead of PipelineStatus
-      # we can remove "errorCode" and replace it with the fields from
-      # a Status instance. This also seems like a duplicate of the error
-      # level enum - there is a todo bug to have that level removed and
-      # use this instead. (crbug.com/1068454)
-      string errorCode
+      string errorType
+      # Code is the numeric enum entry for a specific set of error codes, such
+      # as PipelineStatusCodes in media/base/pipeline_status.h
+      integer code
+      # A trace of where this error was caused / where it passed through.
+      array of PlayerErrorSourceLocation stack
+      # Errors potentially have a root cause error, ie, a DecoderError might be
+      # caused by an WindowsError
+      array of PlayerError cause
+      # Extra data attached to an error, such as an HRESULT, Video Codec, etc.
+      object data
 
   # This can be called multiple times, and can be used to set / override /
   # remove player properties. A null propValue indicates removal.

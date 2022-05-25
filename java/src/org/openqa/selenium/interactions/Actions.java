@@ -272,19 +272,42 @@ public class Actions {
   }
 
   /**
-   * Scrolls by the provided amount from a designated origination point.
-   * The scroll origin is either the center of an element or the upper left of the viewport plus offsets.
-   * If the origin is an element, and the element is not in the viewport, the bottom of the element will first
-   *   be scrolled to the bottom of the viewport.
+   * If the element is outside the viewport, scrolls the bottom of the element to the bottom of the viewport.
    *
-   * @param x The horizontal offset from the origin from which to start the scroll.
-   * @param y The vertical offset from the origin from which to start the scroll.
-   * @param deltaX The distance along X axis to scroll using the wheel. A negative value scrolls left.
-   * @param deltaY The distance along Y axis to scroll using the wheel. A negative value scrolls up.
-   * @param scrollOrigin Where scroll originates, either the viewport or the center of an element.
+   * @param element Which element to scroll into the viewport.
    * @return A self reference.
    */
-  public Actions scroll( int x, int y, int deltaX, int deltaY, WheelInput.ScrollOrigin scrollOrigin) {
+  public Actions scrollToElement(WebElement element) {
+    WheelInput.ScrollOrigin scrollOrigin = WheelInput.ScrollOrigin.fromElement(element);
+    return tick(getActiveWheel().createScroll(0, 0, 0, 0, Duration.ofMillis(250), scrollOrigin));
+  }
+
+  /**
+   * Scrolls by provided amounts with the origin in the top left corner of the viewport.
+   *
+   * @param deltaX The distance along X axis to scroll using the wheel. A negative value scrolls left.
+   * @param deltaY The distance along Y axis to scroll using the wheel. A negative value scrolls up.
+   * @return A self reference.
+   */
+  public Actions scrollByAmount(int deltaX, int deltaY) {
+    WheelInput.ScrollOrigin scrollOrigin = WheelInput.ScrollOrigin.fromViewport();
+    return tick(getActiveWheel().createScroll(0, 0, deltaX, deltaY, Duration.ofMillis(250), scrollOrigin));
+  }
+
+  /**
+   * Scrolls by provided amount based on a provided origin.
+   * The scroll origin is either the center of an element or the upper left of the viewport plus any offsets.
+   * If the origin is an element, and the element is not in the viewport, the bottom of the element will first
+   *   be scrolled to the bottom of the viewport.
+   * @param scrollOrigin Where scroll originates (viewport or element center) plus provided offsets.
+   * @param deltaX The distance along X axis to scroll using the wheel. A negative value scrolls left.
+   * @param deltaY The distance along Y axis to scroll using the wheel. A negative value scrolls up.
+   * @return A self reference.
+   * @throws MoveTargetOutOfBoundsException If the origin with offset is outside the viewport.
+   */
+  public Actions scrollFromOrigin(WheelInput.ScrollOrigin scrollOrigin, int deltaX, int deltaY) {
+    int x = scrollOrigin.getxOffset();
+    int y = scrollOrigin.getyOffset();
     return tick(getActiveWheel().createScroll(x, y, deltaX, deltaY, Duration.ofMillis(250), scrollOrigin));
   }
 
