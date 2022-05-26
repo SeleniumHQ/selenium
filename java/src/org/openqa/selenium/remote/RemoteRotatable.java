@@ -51,7 +51,7 @@ class RemoteRotatable implements Rotatable {
 
   @Override
   public void rotate(DeviceRotation rotation) {
-    executeMethod.execute(DriverCommand.SET_SCREEN_ORIENTATION, rotation.parameters());
+    executeMethod.execute(DriverCommand.SET_SCREEN_ROTATION, rotation.parameters());
   }
 
   @Override
