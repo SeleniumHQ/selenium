@@ -22,6 +22,7 @@ import static org.openqa.selenium.testing.Safely.safelyCall;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.bidi.BiDi;
@@ -57,6 +58,7 @@ public class BiDiLogTest {
     server.start();
   }
 
+  @Ignore
   @Test
   public void canListenToConsoleLog()
     throws InterruptedException, ExecutionException, TimeoutException {
@@ -87,6 +89,7 @@ public class BiDiLogTest {
     assertThat(consoleLogEntry.getStackTrace()).isNull();
   }
 
+  @Ignore
   @Test
   public void canListenToJavascriptLog()
     throws InterruptedException, ExecutionException, TimeoutException {
@@ -114,6 +117,7 @@ public class BiDiLogTest {
     assertThat(javascriptLogEntry.getLevel()).isEqualTo(BaseLogEntry.LogLevel.ERROR);
   }
 
+  @Ignore
   @Test
   public void canRetrieveStacktraceForALog()
     throws InterruptedException, ExecutionException, TimeoutException {
