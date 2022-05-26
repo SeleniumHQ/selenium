@@ -406,21 +406,46 @@ namespace OpenQA.Selenium.Interactions
         }
 
         /// <summary>
-        /// Scrolls by the provided amount from a designated origination point.
+        /// If the element is outside the viewport, scrolls the bottom of the element to the bottom of the viewport.
+        /// </summary>
+        /// <param name="element">Which element to scroll into the viewport.</param>
+        /// <returns>A self-reference to this <see cref="Actions"/>.</returns>
+        public Actions ScrollToElement(IWebElement element)
+        {
+            WheelInputDevice wheel = new WheelInputDevice();
+            this.actionBuilder.AddAction(wheel.CreateWheelScroll(element, 0, 0, 0, 0, DefaultScrollDuration));
+
+            return this;
+        }
+
+        /// <summary>
+        /// Scrolls by provided amounts with the origin in the top left corner of the viewport.
+        /// </summary>
+        /// <param name="deltaX">Distance along X axis to scroll using the wheel. A negative value scrolls left.</param>
+        /// <param name="deltaY">Distance along Y axis to scroll using the wheel. A negative value scrolls up.</param>
+        /// <returns>A self-reference to this <see cref="Actions"/>.</returns>
+        public Actions ScrollByAmount(int deltaX, int deltaY)
+        {
+            WheelInputDevice wheel = new WheelInputDevice();
+            this.actionBuilder.AddAction(wheel.CreateWheelScroll(deltaX, deltaY, DefaultScrollDuration));
+
+            return this;
+        }
+
+        /// <summary>
+        /// Scrolls by provided amount based on a provided origin.
         /// </summary>
         /// <remarks>
         /// The scroll origin is either the center of an element or the upper left of the viewport plus any offsets.
         /// If the origin is an element, and the element is not in the viewport, the bottom of the element will first
         /// be scrolled to the bottom of the viewport.
         /// </remarks>
-        /// <param name="xOffset">The horizontal offset from the origin from which to start the scroll.</param>
-        /// <param name="yOffset">The vertical offset from the origin from which to start the scroll.</param>
+        /// <param name="scrollOrigin">Where scroll originates (viewport or element center) plus provided offsets.</param>
         /// <param name="deltaX">Distance along X axis to scroll using the wheel. A negative value scrolls left.</param>
         /// <param name="deltaY">Distance along Y axis to scroll using the wheel. A negative value scrolls up.</param>
-        /// <param name="scrollOrigin">Where scroll originates (viewport or element center).</param>
         /// <returns>A self-reference to this <see cref="Actions"/>.</returns>
-        /// <exception cref="MoveTargetOutOfBoundsException">If origin plus offsets is outside viewport.</exception>
-        public Actions Scroll(int xOffset, int yOffset, int deltaX, int deltaY, WheelInputDevice.ScrollOrigin scrollOrigin)
+        /// <exception cref="MoveTargetOutOfBoundsException">If the origin with offset is outside the viewport.</exception>
+        public Actions ScrollFromOrigin(WheelInputDevice.ScrollOrigin scrollOrigin, int deltaX, int deltaY)
         {
             WheelInputDevice wheel = new WheelInputDevice();
 
@@ -432,12 +457,12 @@ namespace OpenQA.Selenium.Interactions
             if (scrollOrigin.Viewport)
             {
                 this.actionBuilder.AddAction(wheel.CreateWheelScroll(CoordinateOrigin.Viewport,
-                    xOffset, yOffset, deltaX, deltaY, DefaultScrollDuration));
+                    scrollOrigin.XOffset, scrollOrigin.YOffset, deltaX, deltaY, DefaultScrollDuration));
             }
             else
             {
                 this.actionBuilder.AddAction(wheel.CreateWheelScroll(scrollOrigin.Element,
-                    xOffset, yOffset, deltaX, deltaY, DefaultScrollDuration));
+                    scrollOrigin.XOffset, scrollOrigin.YOffset, deltaX, deltaY, DefaultScrollDuration));
             }
 
             return this;

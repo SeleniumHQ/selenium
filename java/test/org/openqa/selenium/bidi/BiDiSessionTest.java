@@ -20,6 +20,7 @@ package org.openqa.selenium.bidi;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 import org.junit.After;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.openqa.selenium.firefox.FirefoxBinary;
 import org.openqa.selenium.firefox.FirefoxDriver;
@@ -31,6 +32,7 @@ public class BiDiSessionTest {
 
   private FirefoxDriver driver;
 
+  @Ignore
   @Test
   public void shouldBeAbleToCreateABiDiSession() {
     FirefoxOptions options = new FirefoxOptions();

@@ -28,6 +28,7 @@ import java.util.TreeMap;
 public class MutableCapabilities implements Capabilities {
 
   private static final Set<String> OPTION_KEYS;
+
   static {
     HashSet<String> keys = new HashSet<>();
     keys.add("chromeOptions");
@@ -86,6 +87,8 @@ public class MutableCapabilities implements Capabilities {
 
   public void setCapability(String key, Object value) {
     Require.nonNull("Capability name", key);
+
+    W3CCapabilityKeysValidator.validateCapability(key);
 
     // We have to special-case some keys and values because of the popular idiom of calling
     // something like "capabilities.setCapability(SafariOptions.CAPABILITY, new SafariOptions());"

@@ -233,7 +233,8 @@ public class DistributorTest {
       distributor.newSession(createRequest(sessionCaps));
     assertThatEither(result).isRight();
     Session session = result.right().getSession();
-    assertThat(session.getCapabilities()).isEqualTo(sessionCaps);
+    assertThat(session.getCapabilities().getCapability("sausages"))
+      .isEqualTo(sessionCaps.getCapability("sausages"));
     assertThat(session.getUri()).isEqualTo(routableUri);
   }
 
@@ -275,7 +276,8 @@ public class DistributorTest {
     assertThatEither(result).isRight();
     Session returned = result.right().getSession();
     Session session = sessions.get(returned.getId());
-    assertThat(session.getCapabilities()).isEqualTo(sessionCaps);
+    assertThat(session.getCapabilities().getCapability("sausages"))
+      .isEqualTo(sessionCaps.getCapability("sausages"));
     assertThat(session.getUri()).isEqualTo(routableUri);
   }
 

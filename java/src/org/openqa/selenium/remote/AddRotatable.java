@@ -24,6 +24,10 @@ import java.util.function.Predicate;
 
 import static org.openqa.selenium.remote.CapabilityType.ROTATABLE;
 
+/**
+ * @deprecated Uses a non W3C compliant capability and is not available in W3C WebDriver sessions
+ */
+@Deprecated
 public class AddRotatable implements AugmenterProvider<Rotatable> {
 
   @Override
