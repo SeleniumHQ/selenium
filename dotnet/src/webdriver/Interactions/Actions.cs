@@ -25,7 +25,10 @@ namespace OpenQA.Selenium.Interactions
     /// <summary>
     /// Provides values that indicate from where element offsets for MoveToElement
     /// are calculated.
+    /// Note: TopLeft only does the expected thing when the element is completely
+    /// inside the viewport.
     /// </summary>
+    [Obsolete("Starting in Selenium 4.3 only Center behavior will be supported")]
     public enum MoveToElementOffsetOrigin
     {
         /// <summary>
@@ -308,6 +311,7 @@ namespace OpenQA.Selenium.Interactions
 
         /// <summary>
         /// Moves the mouse to the specified offset of the top-left corner of the specified element.
+        /// In Selenium 4.3 the origin for the offset will be the in-view center point of the element.
         /// </summary>
         /// <param name="toElement">The element to which to move the mouse.</param>
         /// <param name="offsetX">The horizontal offset to which to move the mouse.</param>
@@ -326,6 +330,7 @@ namespace OpenQA.Selenium.Interactions
         /// <param name="offsetY">The vertical offset to which to move the mouse.</param>
         /// <param name="offsetOrigin">The <see cref="MoveToElementOffsetOrigin"/> value from which to calculate the offset.</param>
         /// <returns>A self-reference to this <see cref="Actions"/>.</returns>
+        [Obsolete("Starting in Selenium 4.3 only MoveToElementOffsetOrigin.Center will be supported")]
         public Actions MoveToElement(IWebElement toElement, int offsetX, int offsetY, MoveToElementOffsetOrigin offsetOrigin)
         {
             ILocatable target = GetLocatableFromElement(toElement);
