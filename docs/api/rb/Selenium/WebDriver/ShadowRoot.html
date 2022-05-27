@@ -6,7 +6,7 @@
 <title>
   Class: Selenium::WebDriver::ShadowRoot
   
-    &mdash; Documentation by YARD 0.9.26
+    &mdash; Documentation by YARD 0.9.27
   
 </title>
 
@@ -478,7 +478,7 @@
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/shadow_root.rb', line 47</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_hash'>hash</span>
-  <span class='ivar'>@id</span><span class='period'>.</span><span class='id identifier rubyid_hash'>hash</span> <span class='op'>^</span> <span class='ivar'>@bridge</span><span class='period'>.</span><span class='id identifier rubyid_hash'>hash</span>
+  <span class='lbracket'>[</span><span class='ivar'>@id</span><span class='comma'>,</span> <span class='ivar'>@bridge</span><span class='rbracket'>]</span><span class='period'>.</span><span class='id identifier rubyid_hash'>hash</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -622,9 +622,9 @@
 </div>
 
       <div id="footer">
-  Generated on Wed Oct 20 19:09:24 2021 by
+  Generated on Fri May 27 09:39:50 2022 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.26 (ruby-2.7.3).
+  0.9.27 (ruby-3.1.1).
 </div>
 
     </div>

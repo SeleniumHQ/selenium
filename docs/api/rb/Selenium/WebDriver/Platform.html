@@ -6,7 +6,7 @@
 <title>
   Module: Selenium::WebDriver::Platform
   
-    &mdash; Documentation by YARD 0.9.26
+    &mdash; Documentation by YARD 0.9.27
   
 </title>
 
@@ -984,7 +984,7 @@
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/platform.rb', line 106</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_cygwin?'>cygwin?</span>
-  <span class='const'>RUBY_PLATFORM</span> <span class='op'>=~</span> <span class='tstring'><span class='regexp_beg'>/</span><span class='tstring_content'>cygwin</span><span class='regexp_end'>/</span></span>
+  <span class='const'>RUBY_PLATFORM</span><span class='period'>.</span><span class='id identifier rubyid_include?'>include?</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>cygwin</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span>
   <span class='op'>!</span><span class='const'>Regexp</span><span class='period'>.</span><span class='id identifier rubyid_last_match'>last_match</span><span class='period'>.</span><span class='id identifier rubyid_nil?'>nil?</span>
 <span class='kw'>end</span></pre>
     </td>
@@ -1256,9 +1256,9 @@
 
 <span class='kw'>def</span> <span class='id identifier rubyid_find_in_program_files'>find_in_program_files</span><span class='lparen'>(</span><span class='op'>*</span><span class='id identifier rubyid_binary_names'>binary_names</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_paths'>paths</span> <span class='op'>=</span> <span class='lbracket'>[</span>
-    <span class='const'>ENV</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>PROGRAMFILES</span><span class='tstring_end'>&#39;</span></span><span class='rbracket'>]</span> <span class='op'>||</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>\\Program Files</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span>
-    <span class='const'>ENV</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>ProgramFiles(x86)</span><span class='tstring_end'>&#39;</span></span><span class='rbracket'>]</span> <span class='op'>||</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>\\Program Files (x86)</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span>
-    <span class='const'>ENV</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>ProgramW6432</span><span class='tstring_end'>&#39;</span></span><span class='rbracket'>]</span> <span class='op'>||</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>\\Program Files</span><span class='tstring_end'>&#39;</span></span>
+    <span class='const'>ENV</span><span class='period'>.</span><span class='id identifier rubyid_fetch'>fetch</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>PROGRAMFILES</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>\\Program Files</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span><span class='comma'>,</span>
+    <span class='const'>ENV</span><span class='period'>.</span><span class='id identifier rubyid_fetch'>fetch</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>ProgramFiles(x86)</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>\\Program Files (x86)</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span><span class='comma'>,</span>
+    <span class='const'>ENV</span><span class='period'>.</span><span class='id identifier rubyid_fetch'>fetch</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>ProgramW6432</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>\\Program Files</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span>
   <span class='rbracket'>]</span>
 
   <span class='id identifier rubyid_paths'>paths</span><span class='period'>.</span><span class='id identifier rubyid_each'>each</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_root'><span class='object_link'><a href="../../top-level-namespace.html" title="Top Level Namespace (root)">root</a></span></span><span class='op'>|</span>
@@ -2118,9 +2118,9 @@
 </div>
 
       <div id="footer">
-  Generated on Wed Oct 20 19:09:20 2021 by
+  Generated on Fri May 27 09:39:44 2022 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.26 (ruby-2.7.3).
+  0.9.27 (ruby-3.1.1).
 </div>
 
     </div>

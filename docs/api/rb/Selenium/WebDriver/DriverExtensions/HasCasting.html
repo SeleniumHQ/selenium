@@ -6,7 +6,7 @@
 <title>
   Module: Selenium::WebDriver::DriverExtensions::HasCasting
   
-    &mdash; Documentation by YARD 0.9.26
+    &mdash; Documentation by YARD 0.9.27
   
 </title>
 
@@ -173,6 +173,30 @@
         <li class="public ">
   <span class="summary_signature">
     
+      <a href="#start_cast_desktop_mirroring-instance_method" title="#start_cast_desktop_mirroring (instance method)">#<strong>start_cast_desktop_mirroring</strong>(name)  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'>
+<p>Starts a tab mirroring session on a specific receiver target.</p>
+</div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
       <a href="#start_cast_tab_mirroring-instance_method" title="#start_cast_tab_mirroring (instance method)">#<strong>start_cast_tab_mirroring</strong>(name)  &#x21d2; Object </a>
     
 
@@ -271,12 +295,12 @@
       <pre class="lines">
 
 
-61
-62
-63</pre>
+71
+72
+73</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/driver_extensions/has_casting.rb', line 61</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/driver_extensions/has_casting.rb', line 71</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_cast_issue_message'>cast_issue_message</span>
   <span class='ivar'>@bridge</span><span class='period'>.</span><span class='id identifier rubyid_cast_issue_message'>cast_issue_message</span>
@@ -407,6 +431,67 @@
 </div>
     
       <div class="method_details ">
+  <h3 class="signature " id="start_cast_desktop_mirroring-instance_method">
+  
+    #<strong>start_cast_desktop_mirroring</strong>(name)  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    
+<p>Starts a tab mirroring session on a specific receiver target.</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  <p class="tag_title">Parameters:</p>
+<ul class="param">
+  
+    <li>
+      
+        <span class='name'>name</span>
+      
+      
+        <span class='type'>(<tt>String</tt>)</span>
+      
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>the sink to use as the target</p>
+</div>
+      
+    </li>
+  
+</ul>
+
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+61
+62
+63</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/driver_extensions/has_casting.rb', line 61</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_start_cast_desktop_mirroring'>start_cast_desktop_mirroring</span><span class='lparen'>(</span><span class='id identifier rubyid_name'>name</span><span class='rparen'>)</span>
+  <span class='ivar'>@bridge</span><span class='period'>.</span><span class='id identifier rubyid_start_cast_desktop_mirroring'>start_cast_desktop_mirroring</span><span class='lparen'>(</span><span class='id identifier rubyid_name'>name</span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
   <h3 class="signature " id="start_cast_tab_mirroring-instance_method">
   
     #<strong>start_cast_tab_mirroring</strong>(name)  &#x21d2; <tt>Object</tt> 
@@ -513,12 +598,12 @@
       <pre class="lines">
 
 
-71
-72
-73</pre>
+81
+82
+83</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/driver_extensions/has_casting.rb', line 71</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/driver_extensions/has_casting.rb', line 81</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_stop_casting'>stop_casting</span><span class='lparen'>(</span><span class='id identifier rubyid_name'>name</span><span class='rparen'>)</span>
   <span class='ivar'>@bridge</span><span class='period'>.</span><span class='id identifier rubyid_stop_casting'>stop_casting</span><span class='lparen'>(</span><span class='id identifier rubyid_name'>name</span><span class='rparen'>)</span>
@@ -533,9 +618,9 @@
 </div>
 
       <div id="footer">
-  Generated on Wed Oct 20 19:09:21 2021 by
+  Generated on Fri May 27 09:39:44 2022 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.26 (ruby-2.7.3).
+  0.9.27 (ruby-3.1.1).
 </div>
 
     </div>

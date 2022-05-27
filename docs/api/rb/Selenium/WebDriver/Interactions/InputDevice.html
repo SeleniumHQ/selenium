@@ -6,7 +6,7 @@
 <title>
   Class: Selenium::WebDriver::Interactions::InputDevice
   
-    &mdash; Documentation by YARD 0.9.26
+    &mdash; Documentation by YARD 0.9.27
   
 </title>
 
@@ -62,7 +62,7 @@
       <div id="content"><h1>Class: Selenium::WebDriver::Interactions::InputDevice
   
   
-  
+  <span class="private note title">Private</span>
 </h1>
 <div class="box_info">
   
@@ -99,9 +99,24 @@
   
 </div>
 
-<div id="subclasses">
+<h2>Overview</h2><div class="docstring">
+  <div class="discussion">
+    <p class="note private">
+  <strong>This class is part of a private API.</strong>
+  You should avoid using this class if possible, as it may be removed or be changed in the future.
+</p>
+
+<p>Superclass for the input device sources Manages Array of Interaction instances for the device</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><div id="subclasses">
   <h2>Direct Known Subclasses</h2>
-  <p class="children"><span class='object_link'><a href="KeyInput.html" title="Selenium::WebDriver::Interactions::KeyInput (class)">KeyInput</a></span>, <span class='object_link'><a href="NoneInput.html" title="Selenium::WebDriver::Interactions::NoneInput (class)">NoneInput</a></span>, <span class='object_link'><a href="PointerInput.html" title="Selenium::WebDriver::Interactions::PointerInput (class)">PointerInput</a></span></p>
+  <p class="children"><span class='object_link'><a href="KeyInput.html" title="Selenium::WebDriver::Interactions::KeyInput (class)">KeyInput</a></span>, <span class='object_link'><a href="NoneInput.html" title="Selenium::WebDriver::Interactions::NoneInput (class)">NoneInput</a></span>, <span class='object_link'><a href="PointerInput.html" title="Selenium::WebDriver::Interactions::PointerInput (class)">PointerInput</a></span>, <span class='object_link'><a href="WheelInput.html" title="Selenium::WebDriver::Interactions::WheelInput (class)">WheelInput</a></span></p>
 </div>
 
 
@@ -129,12 +144,10 @@
   
   
   
-  
+  <span class="private note title">private</span>
 
   
-    <span class="summary_desc"><div class='inline'>
-<p>Returns the value of attribute actions.</p>
-</div></span>
+    <span class="summary_desc"><div class='inline'></div></span>
   
 </li>
 
@@ -158,12 +171,37 @@
   
   
   
-  
+  <span class="private note title">private</span>
 
   
-    <span class="summary_desc"><div class='inline'>
-<p>Returns the value of attribute name.</p>
-</div></span>
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+    
+      <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#type-instance_method" title="#type (instance method)">#<strong>type</strong>  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+    
+      <span class="note title readonly">readonly</span>
+    
+    
+  
+  
+  
+  
+  <span class="private note title">private</span>
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
   
 </li>
 
@@ -195,7 +233,7 @@
   
   
   
-  
+  <span class="private note title">private</span>
 
   
     <span class="summary_desc"><div class='inline'></div></span>
@@ -217,7 +255,7 @@
   
   
   
-  
+  <span class="private note title">private</span>
 
   
     <span class="summary_desc"><div class='inline'></div></span>
@@ -239,7 +277,29 @@
   
   
   
+  <span class="private note title">private</span>
+
   
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#encode-instance_method" title="#encode (instance method)">#<strong>encode</strong>  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  <span class="private note title">private</span>
 
   
     <span class="summary_desc"><div class='inline'></div></span>
@@ -263,35 +323,11 @@
   
   
   
-  
+  <span class="private note title">private</span>
 
   
     <span class="summary_desc"><div class='inline'>
 <p>A new instance of InputDevice.</p>
-</div></span>
-  
-</li>
-
-      
-        <li class="public ">
-  <span class="summary_signature">
-    
-      <a href="#no_actions%3F-instance_method" title="#no_actions? (instance method)">#<strong>no_actions?</strong>  &#x21d2; Boolean </a>
-    
-
-    
-  </span>
-  
-  
-  
-  
-  
-  
-  
-
-  
-    <span class="summary_desc"><div class='inline'>
-<p>Determine if only pauses are present.</p>
 </div></span>
   
 </li>
@@ -314,7 +350,11 @@
   
 </h3><div class="docstring">
   <div class="discussion">
-    
+    <p class="note private">
+  <strong>This method is part of a private API.</strong>
+  You should avoid using this method if possible, as it may be removed or be changed in the future.
+</p>
+
 <p>Returns a new instance of InputDevice.</p>
 
 
@@ -329,13 +369,13 @@
       <pre class="lines">
 
 
-28
-29
-30
-31</pre>
+35
+36
+37
+38</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/interactions/input_device.rb', line 28</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/interactions/input_device.rb', line 35</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_initialize'>initialize</span><span class='lparen'>(</span><span class='id identifier rubyid_name'>name</span> <span class='op'>=</span> <span class='kw'>nil</span><span class='rparen'>)</span>
   <span class='ivar'>@name</span> <span class='op'>=</span> <span class='id identifier rubyid_name'>name</span> <span class='op'>||</span> <span class='const'>SecureRandom</span><span class='period'>.</span><span class='id identifier rubyid_uuid'>uuid</span>
@@ -364,8 +404,10 @@
   
 </h3><div class="docstring">
   <div class="discussion">
-    
-<p>Returns the value of attribute actions.</p>
+    <p class="note private">
+  <strong>This method is part of a private API.</strong>
+  You should avoid using this method if possible, as it may be removed or be changed in the future.
+</p>
 
 
   </div>
@@ -379,12 +421,12 @@
       <pre class="lines">
 
 
-26
-27
-28</pre>
+33
+34
+35</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/interactions/input_device.rb', line 26</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/interactions/input_device.rb', line 33</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_actions'>actions</span>
   <span class='ivar'>@actions</span>
@@ -407,8 +449,10 @@
   
 </h3><div class="docstring">
   <div class="discussion">
-    
-<p>Returns the value of attribute name.</p>
+    <p class="note private">
+  <strong>This method is part of a private API.</strong>
+  You should avoid using this method if possible, as it may be removed or be changed in the future.
+</p>
 
 
   </div>
@@ -422,15 +466,60 @@
       <pre class="lines">
 
 
-26
-27
-28</pre>
+33
+34
+35</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/interactions/input_device.rb', line 26</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/interactions/input_device.rb', line 33</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_name'>name</span>
   <span class='ivar'>@name</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      
+      <span id=""></span>
+      <div class="method_details ">
+  <h3 class="signature " id="type-instance_method">
+  
+    #<strong>type</strong>  &#x21d2; <tt>Object</tt>  <span class="extras">(readonly)</span>
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    <p class="note private">
+  <strong>This method is part of a private API.</strong>
+  You should avoid using this method if possible, as it may be removed or be changed in the future.
+</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+33
+34
+35</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/interactions/input_device.rb', line 33</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_type'>type</span>
+  <span class='ivar'>@type</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -455,7 +544,11 @@
   
 </h3><div class="docstring">
   <div class="discussion">
-    
+    <p class="note private">
+  <strong>This method is part of a private API.</strong>
+  You should avoid using this method if possible, as it may be removed or be changed in the future.
+</p>
+
 
   </div>
 </div>
@@ -481,14 +574,14 @@
       <pre class="lines">
 
 
-33
-34
-35
-36
-37</pre>
+40
+41
+42
+43
+44</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/interactions/input_device.rb', line 33</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/interactions/input_device.rb', line 40</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_add_action'>add_action</span><span class='lparen'>(</span><span class='id identifier rubyid_action'>action</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_raise'>raise</span> <span class='const'>TypeError</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_action'>action</span><span class='period'>.</span><span class='id identifier rubyid_inspect'>inspect</span><span class='embexpr_end'>}</span><span class='tstring_content'> is not a valid action</span><span class='tstring_end'>&quot;</span></span> <span class='kw'>unless</span> <span class='id identifier rubyid_action'>action</span><span class='period'>.</span><span class='id identifier rubyid_class'>class</span> <span class='op'>&lt;</span> <span class='const'><span class='object_link'><a href="Interaction.html" title="Selenium::WebDriver::Interactions::Interaction (class)">Interaction</a></span></span>
@@ -509,18 +602,31 @@
   
 
   
-</h3><table class="source_code">
+</h3><div class="docstring">
+  <div class="discussion">
+    <p class="note private">
+  <strong>This method is part of a private API.</strong>
+  You should avoid using this method if possible, as it may be removed or be changed in the future.
+</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
   <tr>
     <td>
       <pre class="lines">
 
 
-39
-40
-41</pre>
+46
+47
+48</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/interactions/input_device.rb', line 39</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/interactions/input_device.rb', line 46</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_clear_actions'>clear_actions</span>
   <span class='ivar'>@actions</span><span class='period'>.</span><span class='id identifier rubyid_clear'>clear</span>
@@ -539,18 +645,31 @@
   
 
   
-</h3><table class="source_code">
+</h3><div class="docstring">
+  <div class="discussion">
+    <p class="note private">
+  <strong>This method is part of a private API.</strong>
+  You should avoid using this method if possible, as it may be removed or be changed in the future.
+</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
   <tr>
     <td>
       <pre class="lines">
 
 
-43
-44
-45</pre>
+50
+51
+52</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/interactions/input_device.rb', line 43</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/interactions/input_device.rb', line 50</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_create_pause'>create_pause</span><span class='lparen'>(</span><span class='id identifier rubyid_duration'>duration</span> <span class='op'>=</span> <span class='int'>0</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_add_action'>add_action</span><span class='lparen'>(</span><span class='const'><span class='object_link'><a href="Pause.html" title="Selenium::WebDriver::Interactions::Pause (class)">Pause</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="Pause.html#initialize-instance_method" title="Selenium::WebDriver::Interactions::Pause#initialize (method)">new</a></span></span><span class='lparen'>(</span><span class='kw'>self</span><span class='comma'>,</span> <span class='id identifier rubyid_duration'>duration</span><span class='rparen'>)</span><span class='rparen'>)</span>
@@ -561,9 +680,9 @@
 </div>
     
       <div class="method_details ">
-  <h3 class="signature " id="no_actions?-instance_method">
+  <h3 class="signature " id="encode-instance_method">
   
-    #<strong>no_actions?</strong>  &#x21d2; <tt>Boolean</tt> 
+    #<strong>encode</strong>  &#x21d2; <tt>Object</tt> 
   
 
   
@@ -571,27 +690,16 @@
   
 </h3><div class="docstring">
   <div class="discussion">
-    
-<p>Determine if only pauses are present</p>
+    <p class="note private">
+  <strong>This method is part of a private API.</strong>
+  You should avoid using this method if possible, as it may be removed or be changed in the future.
+</p>
 
 
   </div>
 </div>
 <div class="tags">
   
-<p class="tag_title">Returns:</p>
-<ul class="return">
-  
-    <li>
-      
-      
-        <span class='type'>(<tt>Boolean</tt>)</span>
-      
-      
-      
-    </li>
-  
-</ul>
 
 </div><table class="source_code">
   <tr>
@@ -599,17 +707,15 @@
       <pre class="lines">
 
 
-47
-48
-49
-50</pre>
+54
+55
+56</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/interactions/input_device.rb', line 47</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/interactions/input_device.rb', line 54</span>
 
-<span class='kw'>def</span> <span class='id identifier rubyid_no_actions?'>no_actions?</span> <span class='comment'># Determine if only pauses are present
-</span>  <span class='id identifier rubyid_actions'>actions</span> <span class='op'>=</span> <span class='ivar'>@actions</span><span class='period'>.</span><span class='id identifier rubyid_reject'>reject</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid_action'>action</span><span class='op'>|</span> <span class='id identifier rubyid_action'>action</span><span class='period'>.</span><span class='id identifier rubyid_type'>type</span> <span class='op'>==</span> <span class='const'><span class='object_link'><a href="Interaction.html" title="Selenium::WebDriver::Interactions::Interaction (class)">Interaction</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="Interaction.html#PAUSE-constant" title="Selenium::WebDriver::Interactions::Interaction::PAUSE (constant)">PAUSE</a></span></span> <span class='rbrace'>}</span>
-  <span class='id identifier rubyid_actions'>actions</span><span class='period'>.</span><span class='id identifier rubyid_empty?'>empty?</span>
+<span class='kw'>def</span> <span class='id identifier rubyid_encode'>encode</span>
+  <span class='lbrace'>{</span><span class='label'>type:</span> <span class='id identifier rubyid_type'>type</span><span class='comma'>,</span> <span class='label'>id:</span> <span class='id identifier rubyid_name'>name</span><span class='comma'>,</span> <span class='label'>actions:</span> <span class='ivar'>@actions</span><span class='period'>.</span><span class='id identifier rubyid_map'>map</span><span class='lparen'>(</span><span class='op'>&amp;</span><span class='symbol'>:encode</span><span class='rparen'>)</span><span class='rbrace'>}</span> <span class='kw'>unless</span> <span class='ivar'>@actions</span><span class='period'>.</span><span class='id identifier rubyid_empty?'>empty?</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -621,9 +727,9 @@
 </div>
 
       <div id="footer">
-  Generated on Wed Oct 20 19:09:25 2021 by
+  Generated on Fri May 27 09:39:52 2022 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.26 (ruby-2.7.3).
+  0.9.27 (ruby-3.1.1).
 </div>
 
     </div>

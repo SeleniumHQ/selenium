@@ -6,7 +6,7 @@
 <title>
   Module: Selenium::WebDriver::DriverExtensions::HasContext
   
-    &mdash; Documentation by YARD 0.9.26
+    &mdash; Documentation by YARD 0.9.27
   
 </title>
 
@@ -138,7 +138,7 @@
 
   
     <span class="summary_desc"><div class='inline'>
-<p>Sets the context that Selenium commands are running in using         a `with` statement.</p>
+<p>Sets the context that Selenium commands are running in using         a ‘with` statement.</p>
 </div></span>
   
 </li>
@@ -168,12 +168,12 @@
       <pre class="lines">
 
 
+37
 38
-39
-40</pre>
+39</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/driver_extensions/has_context.rb', line 38</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/driver_extensions/has_context.rb', line 37</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_context'>context</span>
   <span class='ivar'>@bridge</span><span class='period'>.</span><span class='id identifier rubyid_context'>context</span>
@@ -210,22 +210,6 @@ saved before entering the block, and restored upon exiting it.
   
     <li>
       
-        <span class='name'>name</span>
-      
-      
-        <span class='type'>(<tt>String</tt>)</span>
-      
-      
-      
-        &mdash;
-        <div class='inline'>
-<p>which permission to set</p>
-</div>
-      
-    </li>
-  
-    <li>
-      
         <span class='name'>value</span>
       
       
@@ -235,7 +219,7 @@ saved before entering the block, and restored upon exiting it.
       
         &mdash;
         <div class='inline'>
-<p>what to set the permission to</p>
+<p>which context gets set (either ‘chrome’ or ‘content’)</p>
 </div>
       
     </li>
@@ -249,12 +233,12 @@ saved before entering the block, and restored upon exiting it.
       <pre class="lines">
 
 
+33
 34
-35
-36</pre>
+35</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/driver_extensions/has_context.rb', line 34</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/driver_extensions/has_context.rb', line 33</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_context='>context=</span><span class='lparen'>(</span><span class='id identifier rubyid_value'>value</span><span class='rparen'>)</span>
   <span class='ivar'>@bridge</span><span class='period'>.</span><span class='id identifier rubyid_context'>context</span> <span class='op'>=</span> <span class='id identifier rubyid_value'>value</span>
@@ -269,9 +253,9 @@ saved before entering the block, and restored upon exiting it.
 </div>
 
       <div id="footer">
-  Generated on Wed Oct 20 19:09:21 2021 by
+  Generated on Fri May 27 09:39:44 2022 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.26 (ruby-2.7.3).
+  0.9.27 (ruby-3.1.1).
 </div>
 
     </div>

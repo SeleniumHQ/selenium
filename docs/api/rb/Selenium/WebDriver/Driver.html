@@ -6,7 +6,7 @@
 <title>
   Class: Selenium::WebDriver::Driver
   
-    &mdash; Documentation by YARD 0.9.26
+    &mdash; Documentation by YARD 0.9.27
   
 </title>
 
@@ -211,7 +211,7 @@
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#action-instance_method" title="#action (instance method)">#<strong>action</strong>  &#x21d2; ActionBuilder </a>
+      <a href="#action-instance_method" title="#action (instance method)">#<strong>action</strong>(**opts)  &#x21d2; ActionBuilder </a>
     
 
     
@@ -994,7 +994,7 @@
       <div class="method_details ">
   <h3 class="signature " id="action-instance_method">
   
-    #<strong>action</strong>  &#x21d2; <tt><span class='object_link'><a href="ActionBuilder.html" title="Selenium::WebDriver::ActionBuilder (class)">ActionBuilder</a></span></tt> 
+    #<strong>action</strong>(**opts)  &#x21d2; <tt><span class='object_link'><a href="ActionBuilder.html" title="Selenium::WebDriver::ActionBuilder (class)">ActionBuilder</a></span></tt> 
   
 
   
@@ -1042,8 +1042,8 @@
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/driver.rb', line 126</span>
 
-<span class='kw'>def</span> <span class='id identifier rubyid_action'>action</span>
-  <span class='id identifier rubyid_bridge'>bridge</span><span class='period'>.</span><span class='id identifier rubyid_action'>action</span>
+<span class='kw'>def</span> <span class='id identifier rubyid_action'>action</span><span class='lparen'>(</span><span class='op'>**</span><span class='id identifier rubyid_opts'>opts</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_bridge'>bridge</span><span class='period'>.</span><span class='id identifier rubyid_action'>action</span><span class='lparen'>(</span><span class='op'>**</span><span class='id identifier rubyid_opts'>opts</span><span class='rparen'>)</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -1347,7 +1347,7 @@
       
         &mdash;
         <div class='inline'>
-<p>Arguments will be available in the given script in the &#39;arguments&#39; pseudo-array.</p>
+<p>Arguments will be available in the given script in the ‘arguments’ pseudo-array.</p>
 </div>
       
     </li>
@@ -2083,9 +2083,9 @@
 </div>
 
       <div id="footer">
-  Generated on Wed Oct 20 19:09:22 2021 by
+  Generated on Fri May 27 09:39:48 2022 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.26 (ruby-2.7.3).
+  0.9.27 (ruby-3.1.1).
 </div>
 
     </div>

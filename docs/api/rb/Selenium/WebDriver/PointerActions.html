@@ -6,7 +6,7 @@
 <title>
   Module: Selenium::WebDriver::PointerActions
   
-    &mdash; Documentation by YARD 0.9.26
+    &mdash; Documentation by YARD 0.9.27
   
 </title>
 
@@ -116,7 +116,7 @@
 
   
     <span class="summary_desc"><div class='inline'>
-<p>The overridable duration for movement used by methods in this module.</p>
+<p>By default this is set to 250ms in the ActionBuilder constructor It can be overridden with default_move_duration=.</p>
 </div></span>
   
 </li>
@@ -282,7 +282,7 @@
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#move_by-instance_method" title="#move_by (instance method)">#<strong>move_by</strong>(right_by, down_by, device: nil)  &#x21d2; ActionBuilder </a>
+      <a href="#move_by-instance_method" title="#move_by (instance method)">#<strong>move_by</strong>(right_by, down_by, device: nil, duration: default_move_duration, **opts)  &#x21d2; ActionBuilder </a>
     
 
     
@@ -297,7 +297,7 @@
 
   
     <span class="summary_desc"><div class='inline'>
-<p>Moves the mouse from its current position by the given offset.</p>
+<p>Moves the pointer from its current position by the given offset.</p>
 </div></span>
   
 </li>
@@ -306,7 +306,7 @@
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#move_to-instance_method" title="#move_to (instance method)">#<strong>move_to</strong>(element, right_by = nil, down_by = nil, device: nil)  &#x21d2; ActionBuilder </a>
+      <a href="#move_to-instance_method" title="#move_to (instance method)">#<strong>move_to</strong>(element, right_by = nil, down_by = nil, device: nil, duration: default_move_duration, **opts)  &#x21d2; ActionBuilder </a>
     
 
     
@@ -321,7 +321,7 @@
 
   
     <span class="summary_desc"><div class='inline'>
-<p>Moves the mouse to the middle of the given element.</p>
+<p>Moves the pointer to the middle of the given element.</p>
 </div></span>
   
 </li>
@@ -330,7 +330,7 @@
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#move_to_location-instance_method" title="#move_to_location (instance method)">#<strong>move_to_location</strong>(x, y, device: nil)  &#x21d2; ActionBuilder </a>
+      <a href="#move_to_location-instance_method" title="#move_to_location (instance method)">#<strong>move_to_location</strong>(x, y, device: nil, duration: default_move_duration, **opts)  &#x21d2; ActionBuilder </a>
     
 
     
@@ -345,7 +345,7 @@
 
   
     <span class="summary_desc"><div class='inline'>
-<p>Moves the mouse to a given location in the viewport.</p>
+<p>Moves the pointer to a given location in the viewport.</p>
 </div></span>
   
 </li>
@@ -354,7 +354,7 @@
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#pointer_down-instance_method" title="#pointer_down (instance method)">#<strong>pointer_down</strong>(button, device: nil)  &#x21d2; ActionBuilder </a>
+      <a href="#pointer_down-instance_method" title="#pointer_down (instance method)">#<strong>pointer_down</strong>(button = :left, device: nil, **opts)  &#x21d2; ActionBuilder </a>
     
 
     
@@ -378,7 +378,7 @@
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#pointer_up-instance_method" title="#pointer_up (instance method)">#<strong>pointer_up</strong>(button, device: nil)  &#x21d2; ActionBuilder </a>
+      <a href="#pointer_up-instance_method" title="#pointer_up (instance method)">#<strong>pointer_up</strong>(button = :left, device: nil, **opts)  &#x21d2; ActionBuilder </a>
     
 
     
@@ -444,7 +444,7 @@
 </h3><div class="docstring">
   <div class="discussion">
     
-<p>The overridable duration for movement used by methods in this module</p>
+<p>By default this is set to 250ms in the ActionBuilder constructor It can be overridden with default_move_duration=</p>
 
 
   </div>
@@ -458,15 +458,15 @@
       <pre class="lines">
 
 
-29
 30
-31</pre>
+31
+32</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/interactions/pointer_actions.rb', line 29</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/interactions/pointer_actions.rb', line 30</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_default_move_duration'>default_move_duration</span>
-  <span class='ivar'>@default_move_duration</span> <span class='op'>||=</span> <span class='float'>0.25</span> <span class='comment'># 250 milliseconds
+  <span class='ivar'>@default_move_duration</span> <span class='op'>||=</span> <span class='ivar'>@duration</span> <span class='op'>/</span> <span class='int'>1000</span> <span class='comment'># convert ms to seconds
 </span><span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -591,15 +591,15 @@
       <pre class="lines">
 
 
-235
-236
-237
-238
-239
-240</pre>
+241
+242
+243
+244
+245
+246</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/interactions/pointer_actions.rb', line 235</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/interactions/pointer_actions.rb', line 241</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_click'>click</span><span class='lparen'>(</span><span class='id identifier rubyid_element'>element</span> <span class='op'>=</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='label'>device:</span> <span class='kw'>nil</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_move_to'>move_to</span><span class='lparen'>(</span><span class='id identifier rubyid_element'>element</span><span class='comma'>,</span> <span class='label'>device:</span> <span class='id identifier rubyid_device'>device</span><span class='rparen'>)</span> <span class='kw'>if</span> <span class='id identifier rubyid_element'>element</span>
@@ -713,14 +713,14 @@
       <pre class="lines">
 
 
-189
-190
-191
-192
-193</pre>
+195
+196
+197
+198
+199</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/interactions/pointer_actions.rb', line 189</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/interactions/pointer_actions.rb', line 195</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_click_and_hold'>click_and_hold</span><span class='lparen'>(</span><span class='id identifier rubyid_element'>element</span> <span class='op'>=</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='label'>device:</span> <span class='kw'>nil</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_move_to'>move_to</span><span class='lparen'>(</span><span class='id identifier rubyid_element'>element</span><span class='comma'>,</span> <span class='label'>device:</span> <span class='id identifier rubyid_device'>device</span><span class='rparen'>)</span> <span class='kw'>if</span> <span class='id identifier rubyid_element'>element</span>
@@ -840,15 +840,15 @@
       <pre class="lines">
 
 
-292
-293
-294
-295
-296
-297</pre>
+298
+299
+300
+301
+302
+303</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/interactions/pointer_actions.rb', line 292</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/interactions/pointer_actions.rb', line 298</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_context_click'>context_click</span><span class='lparen'>(</span><span class='id identifier rubyid_element'>element</span> <span class='op'>=</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='label'>device:</span> <span class='kw'>nil</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_move_to'>move_to</span><span class='lparen'>(</span><span class='id identifier rubyid_element'>element</span><span class='comma'>,</span> <span class='label'>device:</span> <span class='id identifier rubyid_device'>device</span><span class='rparen'>)</span> <span class='kw'>if</span> <span class='id identifier rubyid_element'>element</span>
@@ -972,15 +972,15 @@
       <pre class="lines">
 
 
-264
-265
-266
-267
-268
-269</pre>
+270
+271
+272
+273
+274
+275</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/interactions/pointer_actions.rb', line 264</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/interactions/pointer_actions.rb', line 270</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_double_click'>double_click</span><span class='lparen'>(</span><span class='id identifier rubyid_element'>element</span> <span class='op'>=</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='label'>device:</span> <span class='kw'>nil</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_move_to'>move_to</span><span class='lparen'>(</span><span class='id identifier rubyid_element'>element</span><span class='comma'>,</span> <span class='label'>device:</span> <span class='id identifier rubyid_device'>device</span><span class='rparen'>)</span> <span class='kw'>if</span> <span class='id identifier rubyid_element'>element</span>
@@ -1106,15 +1106,15 @@
       <pre class="lines">
 
 
-318
-319
-320
-321
-322
-323</pre>
+324
+325
+326
+327
+328
+329</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/interactions/pointer_actions.rb', line 318</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/interactions/pointer_actions.rb', line 324</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_drag_and_drop'>drag_and_drop</span><span class='lparen'>(</span><span class='id identifier rubyid_source'>source</span><span class='comma'>,</span> <span class='id identifier rubyid_target'>target</span><span class='comma'>,</span> <span class='label'>device:</span> <span class='kw'>nil</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_click_and_hold'>click_and_hold</span><span class='lparen'>(</span><span class='id identifier rubyid_source'>source</span><span class='comma'>,</span> <span class='label'>device:</span> <span class='id identifier rubyid_device'>device</span><span class='rparen'>)</span>
@@ -1255,15 +1255,15 @@
       <pre class="lines">
 
 
-342
-343
-344
-345
-346
-347</pre>
+348
+349
+350
+351
+352
+353</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/interactions/pointer_actions.rb', line 342</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/interactions/pointer_actions.rb', line 348</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_drag_and_drop_by'>drag_and_drop_by</span><span class='lparen'>(</span><span class='id identifier rubyid_source'>source</span><span class='comma'>,</span> <span class='id identifier rubyid_right_by'>right_by</span><span class='comma'>,</span> <span class='id identifier rubyid_down_by'>down_by</span><span class='comma'>,</span> <span class='label'>device:</span> <span class='kw'>nil</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_click_and_hold'>click_and_hold</span><span class='lparen'>(</span><span class='id identifier rubyid_source'>source</span><span class='comma'>,</span> <span class='label'>device:</span> <span class='id identifier rubyid_device'>device</span><span class='rparen'>)</span>
@@ -1279,7 +1279,7 @@
       <div class="method_details ">
   <h3 class="signature " id="move_by-instance_method">
   
-    #<strong>move_by</strong>(right_by, down_by, device: nil)  &#x21d2; <tt><span class='object_link'><a href="ActionBuilder.html" title="Selenium::WebDriver::ActionBuilder (class)">ActionBuilder</a></span></tt> 
+    #<strong>move_by</strong>(right_by, down_by, device: nil, duration: default_move_duration, **opts)  &#x21d2; <tt><span class='object_link'><a href="ActionBuilder.html" title="Selenium::WebDriver::ActionBuilder (class)">ActionBuilder</a></span></tt> 
   
 
   
@@ -1288,7 +1288,9 @@
 </h3><div class="docstring">
   <div class="discussion">
     
-<p>Moves the mouse from its current position by the given offset. If the coordinates provided are outside the viewport (the mouse will end up outside the browser window) then the viewport is scrolled to match.</p>
+<p>Moves the pointer from its current position by the given offset.</p>
+
+<p>The viewport is not scrolled if the coordinates provided are outside the viewport. MoveTargetOutOfBoundsError will be raised if the offsets are outside the viewport</p>
 
 
   </div>
@@ -1300,7 +1302,7 @@
     
       
         <p class="example_title"><div class='inline'>
-<p>Move the mouse to a certain offset from its current position</p>
+<p>Move the pointer to a certain offset from its current position</p>
 </div></p>
       
       <pre class="example code"><code>
@@ -1321,7 +1323,7 @@
       
         &mdash;
         <div class='inline'>
-<p>horizontal offset. A negative value means moving the mouse left.</p>
+<p>horizontal offset. A negative value means moving the pointer left.</p>
 </div>
       
     </li>
@@ -1337,7 +1339,7 @@
       
         &mdash;
         <div class='inline'>
-<p>vertical offset. A negative value means moving the mouse up.</p>
+<p>vertical offset. A negative value means moving the pointer up.</p>
 </div>
       
     </li>
@@ -1392,7 +1394,7 @@
       
         &mdash;
         <div class='inline'>
-<p>if the provided offset is outside the document&#39;s boundaries.</p>
+<p>if the provided offset is outside the document’s boundaries.</p>
 </div>
       
     </li>
@@ -1405,25 +1407,27 @@
       <pre class="lines">
 
 
-136
-137
-138
-139
 140
 141
 142
 143
-144</pre>
+144
+145
+146
+147
+148
+149</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/interactions/pointer_actions.rb', line 136</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/interactions/pointer_actions.rb', line 140</span>
 
-<span class='kw'>def</span> <span class='id identifier rubyid_move_by'>move_by</span><span class='lparen'>(</span><span class='id identifier rubyid_right_by'>right_by</span><span class='comma'>,</span> <span class='id identifier rubyid_down_by'>down_by</span><span class='comma'>,</span> <span class='label'>device:</span> <span class='kw'>nil</span><span class='rparen'>)</span>
-  <span class='id identifier rubyid_pointer'>pointer</span> <span class='op'>=</span> <span class='id identifier rubyid_get_pointer'>get_pointer</span><span class='lparen'>(</span><span class='id identifier rubyid_device'>device</span><span class='rparen'>)</span>
-  <span class='id identifier rubyid_pointer'>pointer</span><span class='period'>.</span><span class='id identifier rubyid_create_pointer_move'>create_pointer_move</span><span class='lparen'>(</span><span class='label'>duration:</span> <span class='id identifier rubyid_default_move_duration'>default_move_duration</span><span class='comma'>,</span>
+<span class='kw'>def</span> <span class='id identifier rubyid_move_by'>move_by</span><span class='lparen'>(</span><span class='id identifier rubyid_right_by'>right_by</span><span class='comma'>,</span> <span class='id identifier rubyid_down_by'>down_by</span><span class='comma'>,</span> <span class='label'>device:</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='label'>duration:</span> <span class='id identifier rubyid_default_move_duration'>default_move_duration</span><span class='comma'>,</span> <span class='op'>**</span><span class='id identifier rubyid_opts'>opts</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_pointer'>pointer</span> <span class='op'>=</span> <span class='id identifier rubyid_pointer_input'>pointer_input</span><span class='lparen'>(</span><span class='id identifier rubyid_device'>device</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_pointer'>pointer</span><span class='period'>.</span><span class='id identifier rubyid_create_pointer_move'>create_pointer_move</span><span class='lparen'>(</span><span class='label'>duration:</span> <span class='id identifier rubyid_duration'>duration</span><span class='comma'>,</span>
                               <span class='label'>x:</span> <span class='const'>Integer</span><span class='lparen'>(</span><span class='id identifier rubyid_right_by'>right_by</span><span class='rparen'>)</span><span class='comma'>,</span>
                               <span class='label'>y:</span> <span class='const'>Integer</span><span class='lparen'>(</span><span class='id identifier rubyid_down_by'>down_by</span><span class='rparen'>)</span><span class='comma'>,</span>
-                              <span class='label'>origin:</span> <span class='const'><span class='object_link'><a href="Interactions.html" title="Selenium::WebDriver::Interactions (module)">Interactions</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="Interactions/PointerMove.html" title="Selenium::WebDriver::Interactions::PointerMove (class)">PointerMove</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="Interactions/PointerMove.html#POINTER-constant" title="Selenium::WebDriver::Interactions::PointerMove::POINTER (constant)">POINTER</a></span></span><span class='rparen'>)</span>
+                              <span class='label'>origin:</span> <span class='const'><span class='object_link'><a href="Interactions.html" title="Selenium::WebDriver::Interactions (module)">Interactions</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="Interactions/PointerMove.html" title="Selenium::WebDriver::Interactions::PointerMove (class)">PointerMove</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="Interactions/PointerMove.html#POINTER-constant" title="Selenium::WebDriver::Interactions::PointerMove::POINTER (constant)">POINTER</a></span></span><span class='comma'>,</span>
+                              <span class='op'>**</span><span class='id identifier rubyid_opts'>opts</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_tick'>tick</span><span class='lparen'>(</span><span class='id identifier rubyid_pointer'>pointer</span><span class='rparen'>)</span>
   <span class='kw'>self</span>
 <span class='kw'>end</span></pre>
@@ -1435,7 +1439,7 @@
       <div class="method_details ">
   <h3 class="signature " id="move_to-instance_method">
   
-    #<strong>move_to</strong>(element, right_by = nil, down_by = nil, device: nil)  &#x21d2; <tt><span class='object_link'><a href="ActionBuilder.html" title="Selenium::WebDriver::ActionBuilder (class)">ActionBuilder</a></span></tt> 
+    #<strong>move_to</strong>(element, right_by = nil, down_by = nil, device: nil, duration: default_move_duration, **opts)  &#x21d2; <tt><span class='object_link'><a href="ActionBuilder.html" title="Selenium::WebDriver::ActionBuilder (class)">ActionBuilder</a></span></tt> 
   
 
   
@@ -1444,11 +1448,11 @@
 </h3><div class="docstring">
   <div class="discussion">
     
-<p>Moves the mouse to the middle of the given element. The element is scrolled into view and its location is calculated using getBoundingClientRect.  Then the mouse is moved to optional offset coordinates from the element.</p>
+<p>Moves the pointer to the middle of the given element. its location is calculated using getBoundingClientRect. Then the pointer is moved to optional offset coordinates from the element.</p>
 
-<p>This is adapted to be backward compatible from non- actions.  calculates offset from the center point of the element</p>
+<p>The element is not scrolled into view. MoveTargetOutOfBoundsError will be raised if element with offset is outside the viewport</p>
 
-<p>Note that when using offsets, both coordinates need to be passed.</p>
+<p>When using offsets, both coordinates need to be passed.</p>
 
 
   </div>
@@ -1460,7 +1464,7 @@
     
       
         <p class="example_title"><div class='inline'>
-<p>Scroll element into view and move the mouse to it</p>
+<p>Move the pointer to element</p>
 </div></p>
       
       <pre class="example code"><code>
@@ -1573,7 +1577,6 @@
       <pre class="lines">
 
 
-98
 99
 100
 101
@@ -1592,15 +1595,21 @@
 114
 115
 116
-117</pre>
+117
+118
+119
+120
+121</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/interactions/pointer_actions.rb', line 98</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/interactions/pointer_actions.rb', line 99</span>
 
-<span class='kw'>def</span> <span class='id identifier rubyid_move_to'>move_to</span><span class='lparen'>(</span><span class='id identifier rubyid_element'>element</span><span class='comma'>,</span> <span class='id identifier rubyid_right_by'>right_by</span> <span class='op'>=</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='id identifier rubyid_down_by'>down_by</span> <span class='op'>=</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='label'>device:</span> <span class='kw'>nil</span><span class='rparen'>)</span>
-  <span class='id identifier rubyid_pointer'>pointer</span> <span class='op'>=</span> <span class='id identifier rubyid_get_pointer'>get_pointer</span><span class='lparen'>(</span><span class='id identifier rubyid_device'>device</span><span class='rparen'>)</span>
-  <span class='comment'># New actions offset is from center of element
-</span>  <span class='kw'>if</span> <span class='id identifier rubyid_right_by'>right_by</span> <span class='op'>||</span> <span class='id identifier rubyid_down_by'>down_by</span>
+<span class='kw'>def</span> <span class='id identifier rubyid_move_to'>move_to</span><span class='lparen'>(</span><span class='id identifier rubyid_element'>element</span><span class='comma'>,</span> <span class='id identifier rubyid_right_by'>right_by</span> <span class='op'>=</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='id identifier rubyid_down_by'>down_by</span> <span class='op'>=</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='label'>device:</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='label'>duration:</span> <span class='id identifier rubyid_default_move_duration'>default_move_duration</span><span class='comma'>,</span> <span class='op'>**</span><span class='id identifier rubyid_opts'>opts</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_pointer'>pointer</span> <span class='op'>=</span> <span class='id identifier rubyid_pointer_input'>pointer_input</span><span class='lparen'>(</span><span class='id identifier rubyid_device'>device</span><span class='rparen'>)</span>
+  <span class='kw'>if</span> <span class='id identifier rubyid_right_by'>right_by</span> <span class='op'>||</span> <span class='id identifier rubyid_down_by'>down_by</span>
+    <span class='const'><span class='object_link'><a href="../WebDriver.html" title="Selenium::WebDriver (module)">WebDriver</a></span></span><span class='period'>.</span><span class='id identifier rubyid_logger'><span class='object_link'><a href="../WebDriver.html#logger-class_method" title="Selenium::WebDriver.logger (method)">logger</a></span></span><span class='period'>.</span><span class='id identifier rubyid_warn'><span class='object_link'><a href="Logger.html#warn-instance_method" title="Selenium::WebDriver::Logger#warn (method)">warn</a></span></span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>moving to an element with offset currently tries to use
+the top left corner of the element as the origin; in Selenium 4.3 it will use the in-view
+center point of the element as the origin.</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span>
     <span class='id identifier rubyid_size'>size</span> <span class='op'>=</span> <span class='id identifier rubyid_element'>element</span><span class='period'>.</span><span class='id identifier rubyid_size'>size</span>
     <span class='id identifier rubyid_left_offset'>left_offset</span> <span class='op'>=</span> <span class='lparen'>(</span><span class='id identifier rubyid_size'>size</span><span class='lbracket'>[</span><span class='symbol'>:width</span><span class='rbracket'>]</span> <span class='op'>/</span> <span class='int'>2</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_to_i'>to_i</span>
     <span class='id identifier rubyid_top_offset'>top_offset</span> <span class='op'>=</span> <span class='lparen'>(</span><span class='id identifier rubyid_size'>size</span><span class='lbracket'>[</span><span class='symbol'>:height</span><span class='rbracket'>]</span> <span class='op'>/</span> <span class='int'>2</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_to_i'>to_i</span>
@@ -1610,10 +1619,11 @@
     <span class='id identifier rubyid_left'>left</span> <span class='op'>=</span> <span class='int'>0</span>
     <span class='id identifier rubyid_top'>top</span> <span class='op'>=</span> <span class='int'>0</span>
   <span class='kw'>end</span>
-  <span class='id identifier rubyid_pointer'>pointer</span><span class='period'>.</span><span class='id identifier rubyid_create_pointer_move'>create_pointer_move</span><span class='lparen'>(</span><span class='label'>duration:</span> <span class='id identifier rubyid_default_move_duration'>default_move_duration</span><span class='comma'>,</span>
+  <span class='id identifier rubyid_pointer'>pointer</span><span class='period'>.</span><span class='id identifier rubyid_create_pointer_move'>create_pointer_move</span><span class='lparen'>(</span><span class='label'>duration:</span> <span class='id identifier rubyid_duration'>duration</span><span class='comma'>,</span>
                               <span class='label'>x:</span> <span class='id identifier rubyid_left'>left</span><span class='comma'>,</span>
                               <span class='label'>y:</span> <span class='id identifier rubyid_top'>top</span><span class='comma'>,</span>
-                              <span class='label'>element:</span> <span class='id identifier rubyid_element'>element</span><span class='rparen'>)</span>
+                              <span class='label'>origin:</span> <span class='id identifier rubyid_element'>element</span><span class='comma'>,</span>
+                              <span class='op'>**</span><span class='id identifier rubyid_opts'>opts</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_tick'>tick</span><span class='lparen'>(</span><span class='id identifier rubyid_pointer'>pointer</span><span class='rparen'>)</span>
   <span class='kw'>self</span>
 <span class='kw'>end</span></pre>
@@ -1625,7 +1635,7 @@
       <div class="method_details ">
   <h3 class="signature " id="move_to_location-instance_method">
   
-    #<strong>move_to_location</strong>(x, y, device: nil)  &#x21d2; <tt><span class='object_link'><a href="ActionBuilder.html" title="Selenium::WebDriver::ActionBuilder (class)">ActionBuilder</a></span></tt> 
+    #<strong>move_to_location</strong>(x, y, device: nil, duration: default_move_duration, **opts)  &#x21d2; <tt><span class='object_link'><a href="ActionBuilder.html" title="Selenium::WebDriver::ActionBuilder (class)">ActionBuilder</a></span></tt> 
   
 
   
@@ -1634,7 +1644,9 @@
 </h3><div class="docstring">
   <div class="discussion">
     
-<p>Moves the mouse to a given location in the viewport. If the coordinates provided are outside the viewport (the mouse will end up outside the browser window) then the viewport is scrolled to match.</p>
+<p>Moves the pointer to a given location in the viewport.</p>
+
+<p>The viewport is not scrolled if the coordinates provided are outside the viewport. MoveTargetOutOfBoundsError will be raised if the offsets are outside the viewport</p>
 
 
   </div>
@@ -1646,7 +1658,7 @@
     
       
         <p class="example_title"><div class='inline'>
-<p>Move the mouse to a certain position in the viewport</p>
+<p>Move the pointer to a certain position in the viewport</p>
 </div></p>
       
       <pre class="example code"><code>
@@ -1667,7 +1679,7 @@
       
         &mdash;
         <div class='inline'>
-<p>horizontal position. Equivalent to a css &#39;left&#39; value.</p>
+<p>horizontal position. Equivalent to a css ‘left’ value.</p>
 </div>
       
     </li>
@@ -1683,7 +1695,7 @@
       
         &mdash;
         <div class='inline'>
-<p>vertical position. Equivalent to a css &#39;top&#39; value.</p>
+<p>vertical position. Equivalent to a css ‘top’ value.</p>
 </div>
       
     </li>
@@ -1738,7 +1750,7 @@
       
         &mdash;
         <div class='inline'>
-<p>if the provided x or y value is outside the document&#39;s boundaries.</p>
+<p>if the provided x or y value is outside the document’s boundaries.</p>
 </div>
       
     </li>
@@ -1751,25 +1763,27 @@
       <pre class="lines">
 
 
-163
-164
-165
-166
-167
 168
 169
 170
-171</pre>
+171
+172
+173
+174
+175
+176
+177</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/interactions/pointer_actions.rb', line 163</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/interactions/pointer_actions.rb', line 168</span>
 
-<span class='kw'>def</span> <span class='id identifier rubyid_move_to_location'>move_to_location</span><span class='lparen'>(</span><span class='id identifier rubyid_x'>x</span><span class='comma'>,</span> <span class='id identifier rubyid_y'>y</span><span class='comma'>,</span> <span class='label'>device:</span> <span class='kw'>nil</span><span class='rparen'>)</span>
-  <span class='id identifier rubyid_pointer'>pointer</span> <span class='op'>=</span> <span class='id identifier rubyid_get_pointer'>get_pointer</span><span class='lparen'>(</span><span class='id identifier rubyid_device'>device</span><span class='rparen'>)</span>
-  <span class='id identifier rubyid_pointer'>pointer</span><span class='period'>.</span><span class='id identifier rubyid_create_pointer_move'>create_pointer_move</span><span class='lparen'>(</span><span class='label'>duration:</span> <span class='id identifier rubyid_default_move_duration'>default_move_duration</span><span class='comma'>,</span>
+<span class='kw'>def</span> <span class='id identifier rubyid_move_to_location'>move_to_location</span><span class='lparen'>(</span><span class='id identifier rubyid_x'>x</span><span class='comma'>,</span> <span class='id identifier rubyid_y'>y</span><span class='comma'>,</span> <span class='label'>device:</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='label'>duration:</span> <span class='id identifier rubyid_default_move_duration'>default_move_duration</span><span class='comma'>,</span> <span class='op'>**</span><span class='id identifier rubyid_opts'>opts</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_pointer'>pointer</span> <span class='op'>=</span> <span class='id identifier rubyid_pointer_input'>pointer_input</span><span class='lparen'>(</span><span class='id identifier rubyid_device'>device</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_pointer'>pointer</span><span class='period'>.</span><span class='id identifier rubyid_create_pointer_move'>create_pointer_move</span><span class='lparen'>(</span><span class='label'>duration:</span> <span class='id identifier rubyid_duration'>duration</span><span class='comma'>,</span>
                               <span class='label'>x:</span> <span class='const'>Integer</span><span class='lparen'>(</span><span class='id identifier rubyid_x'>x</span><span class='rparen'>)</span><span class='comma'>,</span>
                               <span class='label'>y:</span> <span class='const'>Integer</span><span class='lparen'>(</span><span class='id identifier rubyid_y'>y</span><span class='rparen'>)</span><span class='comma'>,</span>
-                              <span class='label'>origin:</span> <span class='const'><span class='object_link'><a href="Interactions.html" title="Selenium::WebDriver::Interactions (module)">Interactions</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="Interactions/PointerMove.html" title="Selenium::WebDriver::Interactions::PointerMove (class)">PointerMove</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="Interactions/PointerMove.html#VIEWPORT-constant" title="Selenium::WebDriver::Interactions::PointerMove::VIEWPORT (constant)">VIEWPORT</a></span></span><span class='rparen'>)</span>
+                              <span class='label'>origin:</span> <span class='const'><span class='object_link'><a href="Interactions.html" title="Selenium::WebDriver::Interactions (module)">Interactions</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="Interactions/PointerMove.html" title="Selenium::WebDriver::Interactions::PointerMove (class)">PointerMove</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="Interactions/PointerMove.html#VIEWPORT-constant" title="Selenium::WebDriver::Interactions::PointerMove::VIEWPORT (constant)">VIEWPORT</a></span></span><span class='comma'>,</span>
+                              <span class='op'>**</span><span class='id identifier rubyid_opts'>opts</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_tick'>tick</span><span class='lparen'>(</span><span class='id identifier rubyid_pointer'>pointer</span><span class='rparen'>)</span>
   <span class='kw'>self</span>
 <span class='kw'>end</span></pre>
@@ -1781,7 +1795,7 @@
       <div class="method_details ">
   <h3 class="signature " id="pointer_down-instance_method">
   
-    #<strong>pointer_down</strong>(button, device: nil)  &#x21d2; <tt><span class='object_link'><a href="ActionBuilder.html" title="Selenium::WebDriver::ActionBuilder (class)">ActionBuilder</a></span></tt> 
+    #<strong>pointer_down</strong>(button = :left, device: nil, **opts)  &#x21d2; <tt><span class='object_link'><a href="ActionBuilder.html" title="Selenium::WebDriver::ActionBuilder (class)">ActionBuilder</a></span></tt> 
   
 
   
@@ -1822,6 +1836,8 @@
       
         <span class='type'>(<tt><span class='object_link'><a href="Interactions/PointerPress.html#BUTTONS-constant" title="Selenium::WebDriver::Interactions::PointerPress::BUTTONS (constant)">Selenium::WebDriver::Interactions::PointerPress::BUTTONS</a></span></tt>)</span>
       
+      
+        <em class="default">(defaults to: <tt>:left</tt>)</em>
       
       
         &mdash;
@@ -1876,15 +1892,15 @@
       <pre class="lines">
 
 
-48
 49
-50</pre>
+50
+51</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/interactions/pointer_actions.rb', line 48</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/interactions/pointer_actions.rb', line 49</span>
 
-<span class='kw'>def</span> <span class='id identifier rubyid_pointer_down'>pointer_down</span><span class='lparen'>(</span><span class='id identifier rubyid_button'>button</span><span class='comma'>,</span> <span class='label'>device:</span> <span class='kw'>nil</span><span class='rparen'>)</span>
-  <span class='id identifier rubyid_button_action'>button_action</span><span class='lparen'>(</span><span class='id identifier rubyid_button'>button</span><span class='comma'>,</span> <span class='label'>action:</span> <span class='symbol'>:create_pointer_down</span><span class='comma'>,</span> <span class='label'>device:</span> <span class='id identifier rubyid_device'>device</span><span class='rparen'>)</span>
+<span class='kw'>def</span> <span class='id identifier rubyid_pointer_down'>pointer_down</span><span class='lparen'>(</span><span class='id identifier rubyid_button'>button</span> <span class='op'>=</span> <span class='symbol'>:left</span><span class='comma'>,</span> <span class='label'>device:</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='op'>**</span><span class='id identifier rubyid_opts'>opts</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_button_action'>button_action</span><span class='lparen'>(</span><span class='id identifier rubyid_button'>button</span><span class='comma'>,</span> <span class='symbol'>:create_pointer_down</span><span class='comma'>,</span> <span class='label'>device:</span> <span class='id identifier rubyid_device'>device</span><span class='comma'>,</span> <span class='op'>**</span><span class='id identifier rubyid_opts'>opts</span><span class='rparen'>)</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -1894,7 +1910,7 @@
       <div class="method_details ">
   <h3 class="signature " id="pointer_up-instance_method">
   
-    #<strong>pointer_up</strong>(button, device: nil)  &#x21d2; <tt><span class='object_link'><a href="ActionBuilder.html" title="Selenium::WebDriver::ActionBuilder (class)">ActionBuilder</a></span></tt> 
+    #<strong>pointer_up</strong>(button = :left, device: nil, **opts)  &#x21d2; <tt><span class='object_link'><a href="ActionBuilder.html" title="Selenium::WebDriver::ActionBuilder (class)">ActionBuilder</a></span></tt> 
   
 
   
@@ -1932,6 +1948,8 @@
       
         <span class='type'>(<tt><span class='object_link'><a href="Interactions/PointerPress.html#BUTTONS-constant" title="Selenium::WebDriver::Interactions::PointerPress::BUTTONS (constant)">Selenium::WebDriver::Interactions::PointerPress::BUTTONS</a></span></tt>)</span>
       
+      
+        <em class="default">(defaults to: <tt>:left</tt>)</em>
       
       
         &mdash;
@@ -1986,15 +2004,15 @@
       <pre class="lines">
 
 
-65
 66
-67</pre>
+67
+68</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/interactions/pointer_actions.rb', line 65</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/interactions/pointer_actions.rb', line 66</span>
 
-<span class='kw'>def</span> <span class='id identifier rubyid_pointer_up'>pointer_up</span><span class='lparen'>(</span><span class='id identifier rubyid_button'>button</span><span class='comma'>,</span> <span class='label'>device:</span> <span class='kw'>nil</span><span class='rparen'>)</span>
-  <span class='id identifier rubyid_button_action'>button_action</span><span class='lparen'>(</span><span class='id identifier rubyid_button'>button</span><span class='comma'>,</span> <span class='label'>action:</span> <span class='symbol'>:create_pointer_up</span><span class='comma'>,</span> <span class='label'>device:</span> <span class='id identifier rubyid_device'>device</span><span class='rparen'>)</span>
+<span class='kw'>def</span> <span class='id identifier rubyid_pointer_up'>pointer_up</span><span class='lparen'>(</span><span class='id identifier rubyid_button'>button</span> <span class='op'>=</span> <span class='symbol'>:left</span><span class='comma'>,</span> <span class='label'>device:</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='op'>**</span><span class='id identifier rubyid_opts'>opts</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_button_action'>button_action</span><span class='lparen'>(</span><span class='id identifier rubyid_button'>button</span><span class='comma'>,</span> <span class='symbol'>:create_pointer_up</span><span class='comma'>,</span> <span class='label'>device:</span> <span class='id identifier rubyid_device'>device</span><span class='comma'>,</span> <span class='op'>**</span><span class='id identifier rubyid_opts'>opts</span><span class='rparen'>)</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -2081,13 +2099,13 @@
       <pre class="lines">
 
 
-208
-209
-210
-211</pre>
+214
+215
+216
+217</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/interactions/pointer_actions.rb', line 208</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/interactions/pointer_actions.rb', line 214</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_release'>release</span><span class='lparen'>(</span><span class='label'>device:</span> <span class='kw'>nil</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_pointer_up'>pointer_up</span><span class='lparen'>(</span><span class='symbol'>:left</span><span class='comma'>,</span> <span class='label'>device:</span> <span class='id identifier rubyid_device'>device</span><span class='rparen'>)</span>
@@ -2103,9 +2121,9 @@
 </div>
 
       <div id="footer">
-  Generated on Wed Oct 20 19:09:21 2021 by
+  Generated on Fri May 27 09:39:44 2022 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.26 (ruby-2.7.3).
+  0.9.27 (ruby-3.1.1).
 </div>
 
     </div>

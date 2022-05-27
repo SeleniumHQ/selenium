@@ -6,7 +6,7 @@
 <title>
   Class: Selenium::WebDriver::Support::Guards::GuardCondition
   
-    &mdash; Documentation by YARD 0.9.26
+    &mdash; Documentation by YARD 0.9.27
   
 </title>
 
@@ -282,7 +282,7 @@
 
 <span class='kw'>def</span> <span class='id identifier rubyid_initialize'>initialize</span><span class='lparen'>(</span><span class='id identifier rubyid_name'>name</span><span class='comma'>,</span> <span class='id identifier rubyid_condition'>condition</span> <span class='op'>=</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='op'>&amp;</span><span class='id identifier rubyid_blk'>blk</span><span class='rparen'>)</span>
   <span class='ivar'>@name</span> <span class='op'>=</span> <span class='id identifier rubyid_name'>name</span>
-  <span class='ivar'>@execution</span> <span class='op'>=</span> <span class='kw'>if</span> <span class='id identifier rubyid_block_given?'>block_given?</span>
+  <span class='ivar'>@execution</span> <span class='op'>=</span> <span class='kw'>if</span> <span class='id identifier rubyid_blk'>blk</span>
                  <span class='id identifier rubyid_proc'>proc</span><span class='lparen'>(</span><span class='op'>&amp;</span><span class='id identifier rubyid_blk'>blk</span><span class='rparen'>)</span>
                <span class='kw'>else</span>
                  <span class='id identifier rubyid_proc'>proc</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid_guarded'>guarded</span><span class='op'>|</span> <span class='id identifier rubyid_guarded'>guarded</span><span class='period'>.</span><span class='id identifier rubyid_include?'>include?</span><span class='lparen'>(</span><span class='id identifier rubyid_condition'>condition</span><span class='rparen'>)</span> <span class='rbrace'>}</span>
@@ -460,9 +460,9 @@
 </div>
 
       <div id="footer">
-  Generated on Wed Oct 20 19:09:25 2021 by
+  Generated on Fri May 27 09:39:52 2022 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.26 (ruby-2.7.3).
+  0.9.27 (ruby-3.1.1).
 </div>
 
     </div>

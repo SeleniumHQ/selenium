@@ -6,7 +6,7 @@
 <title>
   Class: Selenium::WebDriver::Support::Color
   
-    &mdash; Documentation by YARD 0.9.26
+    &mdash; Documentation by YARD 0.9.27
   
 </title>
 
@@ -815,12 +815,12 @@
     <span class='id identifier rubyid_g'>g</span> <span class='op'>=</span> <span class='id identifier rubyid_r'>r</span>
     <span class='id identifier rubyid_b'>b</span> <span class='op'>=</span> <span class='id identifier rubyid_r'>r</span>
   <span class='kw'>else</span>
-    <span class='id identifier rubyid_luminocity2'>luminocity2</span> <span class='op'>=</span> <span class='id identifier rubyid_l'>l</span> <span class='op'>&lt;</span> <span class='float'>0.5</span> <span class='op'>?</span> <span class='id identifier rubyid_l'>l</span> <span class='op'>*</span> <span class='lparen'>(</span><span class='int'>1</span> <span class='op'>+</span> <span class='id identifier rubyid_s'>s</span><span class='rparen'>)</span> <span class='op'>:</span> <span class='id identifier rubyid_l'>l</span> <span class='op'>+</span> <span class='id identifier rubyid_s'>s</span> <span class='op'>-</span> <span class='id identifier rubyid_l'>l</span> <span class='op'>*</span> <span class='id identifier rubyid_s'>s</span>
-    <span class='id identifier rubyid_luminocity1'>luminocity1</span> <span class='op'>=</span> <span class='int'>2</span> <span class='op'>*</span> <span class='id identifier rubyid_l'>l</span> <span class='op'>-</span> <span class='id identifier rubyid_luminocity2'>luminocity2</span>
+    <span class='id identifier rubyid_luminocity2'>luminocity2</span> <span class='op'>=</span> <span class='id identifier rubyid_l'>l</span> <span class='op'>&lt;</span> <span class='float'>0.5</span> <span class='op'>?</span> <span class='id identifier rubyid_l'>l</span> <span class='op'>*</span> <span class='lparen'>(</span><span class='int'>1</span> <span class='op'>+</span> <span class='id identifier rubyid_s'>s</span><span class='rparen'>)</span> <span class='op'>:</span> <span class='id identifier rubyid_l'>l</span> <span class='op'>+</span> <span class='id identifier rubyid_s'>s</span> <span class='op'>-</span> <span class='lparen'>(</span><span class='id identifier rubyid_l'>l</span> <span class='op'>*</span> <span class='id identifier rubyid_s'>s</span><span class='rparen'>)</span>
+    <span class='id identifier rubyid_luminocity1'>luminocity1</span> <span class='op'>=</span> <span class='lparen'>(</span><span class='int'>2</span> <span class='op'>*</span> <span class='id identifier rubyid_l'>l</span><span class='rparen'>)</span> <span class='op'>-</span> <span class='id identifier rubyid_luminocity2'>luminocity2</span>
 
-    <span class='id identifier rubyid_r'>r</span> <span class='op'>=</span> <span class='id identifier rubyid_hue_to_rgb'>hue_to_rgb</span><span class='lparen'>(</span><span class='id identifier rubyid_luminocity1'>luminocity1</span><span class='comma'>,</span> <span class='id identifier rubyid_luminocity2'>luminocity2</span><span class='comma'>,</span> <span class='id identifier rubyid_h'>h</span> <span class='op'>+</span> <span class='float'>1.0</span> <span class='op'>/</span> <span class='float'>3.0</span><span class='rparen'>)</span>
+    <span class='id identifier rubyid_r'>r</span> <span class='op'>=</span> <span class='id identifier rubyid_hue_to_rgb'>hue_to_rgb</span><span class='lparen'>(</span><span class='id identifier rubyid_luminocity1'>luminocity1</span><span class='comma'>,</span> <span class='id identifier rubyid_luminocity2'>luminocity2</span><span class='comma'>,</span> <span class='id identifier rubyid_h'>h</span> <span class='op'>+</span> <span class='lparen'>(</span><span class='float'>1.0</span> <span class='op'>/</span> <span class='float'>3.0</span><span class='rparen'>)</span><span class='rparen'>)</span>
     <span class='id identifier rubyid_g'>g</span> <span class='op'>=</span> <span class='id identifier rubyid_hue_to_rgb'>hue_to_rgb</span><span class='lparen'>(</span><span class='id identifier rubyid_luminocity1'>luminocity1</span><span class='comma'>,</span> <span class='id identifier rubyid_luminocity2'>luminocity2</span><span class='comma'>,</span> <span class='id identifier rubyid_h'>h</span><span class='rparen'>)</span>
-    <span class='id identifier rubyid_b'>b</span> <span class='op'>=</span> <span class='id identifier rubyid_hue_to_rgb'>hue_to_rgb</span><span class='lparen'>(</span><span class='id identifier rubyid_luminocity1'>luminocity1</span><span class='comma'>,</span> <span class='id identifier rubyid_luminocity2'>luminocity2</span><span class='comma'>,</span> <span class='id identifier rubyid_h'>h</span> <span class='op'>-</span> <span class='float'>1.0</span> <span class='op'>/</span> <span class='float'>3.0</span><span class='rparen'>)</span>
+    <span class='id identifier rubyid_b'>b</span> <span class='op'>=</span> <span class='id identifier rubyid_hue_to_rgb'>hue_to_rgb</span><span class='lparen'>(</span><span class='id identifier rubyid_luminocity1'>luminocity1</span><span class='comma'>,</span> <span class='id identifier rubyid_luminocity2'>luminocity2</span><span class='comma'>,</span> <span class='id identifier rubyid_h'>h</span> <span class='op'>-</span> <span class='lparen'>(</span><span class='float'>1.0</span> <span class='op'>/</span> <span class='float'>3.0</span><span class='rparen'>)</span><span class='rparen'>)</span>
   <span class='kw'>end</span>
 
   <span class='id identifier rubyid_new'>new</span> <span class='lparen'>(</span><span class='id identifier rubyid_r'>r</span> <span class='op'>*</span> <span class='int'>255</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_round'>round</span><span class='comma'>,</span> <span class='lparen'>(</span><span class='id identifier rubyid_g'>g</span> <span class='op'>*</span> <span class='int'>255</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_round'>round</span><span class='comma'>,</span> <span class='lparen'>(</span><span class='id identifier rubyid_b'>b</span> <span class='op'>*</span> <span class='int'>255</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_round'>round</span><span class='comma'>,</span> <span class='id identifier rubyid_a'>a</span>
@@ -940,11 +940,11 @@
   <span class='id identifier rubyid_hue'>hue</span> <span class='op'>-=</span> <span class='int'>1</span> <span class='kw'>if</span> <span class='id identifier rubyid_hue'>hue</span> <span class='op'>&gt;</span> <span class='float'>1.0</span>
 
   <span class='kw'>if</span> <span class='id identifier rubyid_hue'>hue</span> <span class='op'>&lt;</span> <span class='float'>1.0</span> <span class='op'>/</span> <span class='float'>6.0</span>
-    <span class='lparen'>(</span><span class='id identifier rubyid_lum1'>lum1</span> <span class='op'>+</span> <span class='lparen'>(</span><span class='id identifier rubyid_lum2'>lum2</span> <span class='op'>-</span> <span class='id identifier rubyid_lum1'>lum1</span><span class='rparen'>)</span> <span class='op'>*</span> <span class='float'>6.0</span> <span class='op'>*</span> <span class='id identifier rubyid_hue'>hue</span><span class='rparen'>)</span>
+    <span class='lparen'>(</span><span class='id identifier rubyid_lum1'>lum1</span> <span class='op'>+</span> <span class='lparen'>(</span><span class='lparen'>(</span><span class='id identifier rubyid_lum2'>lum2</span> <span class='op'>-</span> <span class='id identifier rubyid_lum1'>lum1</span><span class='rparen'>)</span> <span class='op'>*</span> <span class='float'>6.0</span> <span class='op'>*</span> <span class='id identifier rubyid_hue'>hue</span><span class='rparen'>)</span><span class='rparen'>)</span>
   <span class='kw'>elsif</span> <span class='id identifier rubyid_hue'>hue</span> <span class='op'>&lt;</span> <span class='float'>1.0</span> <span class='op'>/</span> <span class='float'>2.0</span>
     <span class='id identifier rubyid_lum2'>lum2</span>
   <span class='kw'>elsif</span> <span class='id identifier rubyid_hue'>hue</span> <span class='op'>&lt;</span> <span class='float'>2.0</span> <span class='op'>/</span> <span class='float'>3.0</span>
-    <span class='id identifier rubyid_lum1'>lum1</span> <span class='op'>+</span> <span class='lparen'>(</span><span class='id identifier rubyid_lum2'>lum2</span> <span class='op'>-</span> <span class='id identifier rubyid_lum1'>lum1</span><span class='rparen'>)</span> <span class='op'>*</span> <span class='lparen'>(</span><span class='lparen'>(</span><span class='float'>2.0</span> <span class='op'>/</span> <span class='float'>3.0</span><span class='rparen'>)</span> <span class='op'>-</span> <span class='id identifier rubyid_hue'>hue</span><span class='rparen'>)</span> <span class='op'>*</span> <span class='float'>6.0</span>
+    <span class='id identifier rubyid_lum1'>lum1</span> <span class='op'>+</span> <span class='lparen'>(</span><span class='lparen'>(</span><span class='id identifier rubyid_lum2'>lum2</span> <span class='op'>-</span> <span class='id identifier rubyid_lum1'>lum1</span><span class='rparen'>)</span> <span class='op'>*</span> <span class='lparen'>(</span><span class='lparen'>(</span><span class='float'>2.0</span> <span class='op'>/</span> <span class='float'>3.0</span><span class='rparen'>)</span> <span class='op'>-</span> <span class='id identifier rubyid_hue'>hue</span><span class='rparen'>)</span> <span class='op'>*</span> <span class='float'>6.0</span><span class='rparen'>)</span>
   <span class='kw'>else</span>
     <span class='id identifier rubyid_lum1'>lum1</span>
   <span class='kw'>end</span>
@@ -1023,7 +1023,7 @@
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/support/color.rb', line 127</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_hash'>hash</span>
-  <span class='lbracket'>[</span><span class='id identifier rubyid_red'>red</span><span class='comma'>,</span> <span class='id identifier rubyid_green'>green</span><span class='comma'>,</span> <span class='id identifier rubyid_blue'>blue</span><span class='comma'>,</span> <span class='id identifier rubyid_alpha'>alpha</span><span class='rbracket'>]</span><span class='period'>.</span><span class='id identifier rubyid_hash'>hash</span> <span class='op'>^</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_class'>class</span><span class='period'>.</span><span class='id identifier rubyid_hash'>hash</span>
+  <span class='lbracket'>[</span><span class='id identifier rubyid_red'>red</span><span class='comma'>,</span> <span class='id identifier rubyid_green'>green</span><span class='comma'>,</span> <span class='id identifier rubyid_blue'>blue</span><span class='comma'>,</span> <span class='id identifier rubyid_alpha'>alpha</span><span class='comma'>,</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_class'>class</span><span class='rbracket'>]</span><span class='period'>.</span><span class='id identifier rubyid_hash'>hash</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -1127,9 +1127,9 @@
 </div>
 
       <div id="footer">
-  Generated on Wed Oct 20 19:09:23 2021 by
+  Generated on Fri May 27 09:39:48 2022 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.26 (ruby-2.7.3).
+  0.9.27 (ruby-3.1.1).
 </div>
 
     </div>

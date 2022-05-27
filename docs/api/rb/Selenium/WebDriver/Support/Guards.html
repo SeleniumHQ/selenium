@@ -6,7 +6,7 @@
 <title>
   Class: Selenium::WebDriver::Support::Guards
   
-    &mdash; Documentation by YARD 0.9.26
+    &mdash; Documentation by YARD 0.9.27
   
 </title>
 
@@ -561,7 +561,7 @@
 <span class='kw'>def</span> <span class='id identifier rubyid_disposition'>disposition</span>
   <span class='kw'>if</span> <span class='op'>!</span><span class='id identifier rubyid_skipping_guard'>skipping_guard</span><span class='period'>.</span><span class='id identifier rubyid_nil?'>nil?</span>
     <span class='lbracket'>[</span><span class='symbol'>:skip</span><span class='comma'>,</span> <span class='id identifier rubyid_skipping_guard'>skipping_guard</span><span class='period'>.</span><span class='id identifier rubyid_message'>message</span><span class='rbracket'>]</span>
-  <span class='kw'>elsif</span> <span class='op'>!</span><span class='id identifier rubyid_pending_guard'>pending_guard</span><span class='period'>.</span><span class='id identifier rubyid_nil?'>nil?</span> <span class='op'>&amp;&amp;</span> <span class='const'>ENV</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>SKIP_PENDING</span><span class='tstring_end'>&#39;</span></span><span class='rbracket'>]</span>
+  <span class='kw'>elsif</span> <span class='op'>!</span><span class='id identifier rubyid_pending_guard'>pending_guard</span><span class='period'>.</span><span class='id identifier rubyid_nil?'>nil?</span> <span class='op'>&amp;&amp;</span> <span class='const'>ENV</span><span class='period'>.</span><span class='id identifier rubyid_fetch'>fetch</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>SKIP_PENDING</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='kw'>nil</span><span class='rparen'>)</span>
     <span class='lbracket'>[</span><span class='symbol'>:skip</span><span class='comma'>,</span> <span class='id identifier rubyid_pending_guard'>pending_guard</span><span class='period'>.</span><span class='id identifier rubyid_message'>message</span><span class='rbracket'>]</span>
   <span class='kw'>elsif</span> <span class='op'>!</span><span class='id identifier rubyid_pending_guard'>pending_guard</span><span class='period'>.</span><span class='id identifier rubyid_nil?'>nil?</span>
     <span class='lbracket'>[</span><span class='symbol'>:pending</span><span class='comma'>,</span> <span class='id identifier rubyid_pending_guard'>pending_guard</span><span class='period'>.</span><span class='id identifier rubyid_message'>message</span><span class='rbracket'>]</span>
@@ -629,9 +629,9 @@
 </div>
 
       <div id="footer">
-  Generated on Wed Oct 20 19:09:24 2021 by
+  Generated on Fri May 27 09:39:49 2022 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.26 (ruby-2.7.3).
+  0.9.27 (ruby-3.1.1).
 </div>
 
     </div>

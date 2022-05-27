@@ -6,7 +6,7 @@
 <title>
   Class: Selenium::WebDriver::ServiceManager
   
-    &mdash; Documentation by YARD 0.9.26
+    &mdash; Documentation by YARD 0.9.27
   
 </title>
 
@@ -415,7 +415,7 @@
 <span class='kw'>def</span> <span class='id identifier rubyid_start'>start</span>
   <span class='id identifier rubyid_raise'>raise</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>already started: </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_uri'>uri</span><span class='period'>.</span><span class='id identifier rubyid_inspect'>inspect</span><span class='embexpr_end'>}</span><span class='tstring_content'> </span><span class='embexpr_beg'>#{</span><span class='ivar'>@executable_path</span><span class='period'>.</span><span class='id identifier rubyid_inspect'>inspect</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span> <span class='kw'>if</span> <span class='id identifier rubyid_process_running?'>process_running?</span>
 
-  <span class='const'><span class='object_link'><a href="Platform.html" title="Selenium::WebDriver::Platform (module)">Platform</a></span></span><span class='period'>.</span><span class='id identifier rubyid_exit_hook'><span class='object_link'><a href="Platform.html#exit_hook-class_method" title="Selenium::WebDriver::Platform.exit_hook (method)">exit_hook</a></span></span><span class='lparen'>(</span><span class='op'>&amp;</span><span class='id identifier rubyid_method'>method</span><span class='lparen'>(</span><span class='symbol'>:stop</span><span class='rparen'>)</span><span class='rparen'>)</span> <span class='comment'># make sure we don&#39;t leave the server running
+  <span class='const'><span class='object_link'><a href="Platform.html" title="Selenium::WebDriver::Platform (module)">Platform</a></span></span><span class='period'>.</span><span class='id identifier rubyid_exit_hook'><span class='object_link'><a href="Platform.html#exit_hook-class_method" title="Selenium::WebDriver::Platform.exit_hook (method)">exit_hook</a></span></span> <span class='lbrace'>{</span> <span class='id identifier rubyid_stop'>stop</span> <span class='rbrace'>}</span> <span class='comment'># make sure we don&#39;t leave the server running
 </span>
   <span class='id identifier rubyid_socket_lock'>socket_lock</span><span class='period'>.</span><span class='id identifier rubyid_locked'>locked</span> <span class='kw'>do</span>
     <span class='id identifier rubyid_find_free_port'>find_free_port</span>
@@ -465,13 +465,15 @@
 67
 68
 69
-70</pre>
+70
+71</pre>
     </td>
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/service_manager.rb', line 61</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_stop'>stop</span>
   <span class='kw'>return</span> <span class='kw'>unless</span> <span class='ivar'>@shutdown_supported</span>
+  <span class='kw'>return</span> <span class='kw'>if</span> <span class='id identifier rubyid_process_exited?'>process_exited?</span>
 
   <span class='id identifier rubyid_stop_server'>stop_server</span>
   <span class='ivar'>@process</span><span class='period'>.</span><span class='id identifier rubyid_poll_for_exit'>poll_for_exit</span> <span class='const'><span class='object_link'><a href="#STOP_TIMEOUT-constant" title="Selenium::WebDriver::ServiceManager::STOP_TIMEOUT (constant)">STOP_TIMEOUT</a></span></span>
@@ -513,12 +515,12 @@
       <pre class="lines">
 
 
-72
 73
-74</pre>
+74
+75</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/service_manager.rb', line 72</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/service_manager.rb', line 73</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_uri'>uri</span>
   <span class='ivar'>@uri</span> <span class='op'>||=</span> <span class='const'>URI</span><span class='period'>.</span><span class='id identifier rubyid_parse'>parse</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>http://</span><span class='embexpr_beg'>#{</span><span class='ivar'>@host</span><span class='embexpr_end'>}</span><span class='tstring_content'>:</span><span class='embexpr_beg'>#{</span><span class='ivar'>@port</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span>
@@ -533,9 +535,9 @@
 </div>
 
       <div id="footer">
-  Generated on Wed Oct 20 19:09:25 2021 by
+  Generated on Fri May 27 09:39:51 2022 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.26 (ruby-2.7.3).
+  0.9.27 (ruby-3.1.1).
 </div>
 
     </div>

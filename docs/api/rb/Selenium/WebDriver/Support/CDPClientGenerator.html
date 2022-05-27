@@ -6,7 +6,7 @@
 <title>
   Class: Selenium::WebDriver::Support::CDPClientGenerator
   
-    &mdash; Documentation by YARD 0.9.26
+    &mdash; Documentation by YARD 0.9.27
   
 </title>
 
@@ -338,8 +338,8 @@
 
   <span class='const'>FileUtils</span><span class='period'>.</span><span class='id identifier rubyid_mkdir_p'>mkdir_p</span><span class='lparen'>(</span><span class='ivar'>@output_dir</span><span class='rparen'>)</span>
 
-  <span class='id identifier rubyid_browser_protocol'>browser_protocol</span><span class='lbracket'>[</span><span class='symbol'>:domains</span><span class='rbracket'>]</span><span class='period'>.</span><span class='id identifier rubyid_each'>each</span><span class='lparen'>(</span><span class='op'>&amp;</span><span class='id identifier rubyid_method'>method</span><span class='lparen'>(</span><span class='symbol'>:process_domain</span><span class='rparen'>)</span><span class='rparen'>)</span>
-  <span class='id identifier rubyid_js_protocol'>js_protocol</span><span class='lbracket'>[</span><span class='symbol'>:domains</span><span class='rbracket'>]</span><span class='period'>.</span><span class='id identifier rubyid_each'>each</span><span class='lparen'>(</span><span class='op'>&amp;</span><span class='id identifier rubyid_method'>method</span><span class='lparen'>(</span><span class='symbol'>:process_domain</span><span class='rparen'>)</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_browser_protocol'>browser_protocol</span><span class='lbracket'>[</span><span class='symbol'>:domains</span><span class='rbracket'>]</span><span class='period'>.</span><span class='id identifier rubyid_each'>each</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid_domain'>domain</span><span class='op'>|</span> <span class='id identifier rubyid_process_domain'>process_domain</span><span class='lparen'>(</span><span class='id identifier rubyid_domain'>domain</span><span class='rparen'>)</span> <span class='rbrace'>}</span>
+  <span class='id identifier rubyid_js_protocol'>js_protocol</span><span class='lbracket'>[</span><span class='symbol'>:domains</span><span class='rbracket'>]</span><span class='period'>.</span><span class='id identifier rubyid_each'>each</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid_domain'>domain</span><span class='op'>|</span> <span class='id identifier rubyid_process_domain'>process_domain</span><span class='lparen'>(</span><span class='id identifier rubyid_domain'>domain</span><span class='rparen'>)</span> <span class='rbrace'>}</span>
   <span class='id identifier rubyid_require_file'>require_file</span>
 <span class='kw'>end</span></pre>
     </td>
@@ -448,7 +448,7 @@
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/support/cdp_client_generator.rb', line 81</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_remove_empty_lines'>remove_empty_lines</span><span class='lparen'>(</span><span class='id identifier rubyid_string'>string</span><span class='rparen'>)</span>
-  <span class='id identifier rubyid_string'>string</span><span class='period'>.</span><span class='id identifier rubyid_split'>split</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>\n</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_reject'>reject</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid_l'>l</span><span class='op'>|</span> <span class='id identifier rubyid_l'>l</span> <span class='op'>=~</span> <span class='tstring'><span class='regexp_beg'>/</span><span class='tstring_content'>^\s+$</span><span class='regexp_end'>/</span></span> <span class='rbrace'>}</span><span class='period'>.</span><span class='id identifier rubyid_join'>join</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>\n</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_string'>string</span><span class='period'>.</span><span class='id identifier rubyid_split'>split</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>\n</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_grep_v'>grep_v</span><span class='lparen'>(</span><span class='tstring'><span class='regexp_beg'>/</span><span class='tstring_content'>^\s+$</span><span class='regexp_end'>/</span></span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_join'>join</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>\n</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -488,7 +488,7 @@
   <span class='comment'># rubocop:enable Lint/InterpolationCheck
 </span>
   <span class='id identifier rubyid_require_all'>require_all</span> <span class='op'>=</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>Dir.glob(\&quot;</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_dynamic_location'>dynamic_location</span><span class='embexpr_end'>}</span><span class='tstring_content'>/</span><span class='embexpr_beg'>#{</span><span class='ivar'>@version</span><span class='embexpr_end'>}</span><span class='tstring_content'>/*\&quot;, &amp;method(:require))</span><span class='tstring_end'>&quot;</span></span>
-  <span class='const'>File</span><span class='period'>.</span><span class='id identifier rubyid_open'>open</span><span class='lparen'>(</span><span class='ivar'>@loader_path</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>w</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid_file'>file</span><span class='op'>|</span> <span class='id identifier rubyid_file'>file</span><span class='period'>.</span><span class='id identifier rubyid_write'>write</span><span class='lparen'>(</span><span class='id identifier rubyid_require_all'>require_all</span><span class='rparen'>)</span> <span class='rbrace'>}</span>
+  <span class='const'>File</span><span class='period'>.</span><span class='id identifier rubyid_write'>write</span><span class='lparen'>(</span><span class='ivar'>@loader_path</span><span class='comma'>,</span> <span class='id identifier rubyid_require_all'>require_all</span><span class='rparen'>)</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -546,9 +546,9 @@
 </div>
 
       <div id="footer">
-  Generated on Wed Oct 20 19:09:25 2021 by
+  Generated on Fri May 27 09:39:52 2022 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.26 (ruby-2.7.3).
+  0.9.27 (ruby-3.1.1).
 </div>
 
     </div>

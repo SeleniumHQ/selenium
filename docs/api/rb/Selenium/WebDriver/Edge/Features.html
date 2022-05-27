@@ -6,7 +6,7 @@
 <title>
   Module: Selenium::WebDriver::Edge::Features
   
-    &mdash; Documentation by YARD 0.9.26
+    &mdash; Documentation by YARD 0.9.27
   
 </title>
 
@@ -104,6 +104,7 @@
   <span class='label'>get_cast_sinks:</span> <span class='lbracket'>[</span><span class='symbol'>:get</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>session/:session_id/ms/cast/get_sinks</span><span class='tstring_end'>&#39;</span></span><span class='rbracket'>]</span><span class='comma'>,</span>
   <span class='label'>set_cast_sink_to_use:</span> <span class='lbracket'>[</span><span class='symbol'>:post</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>session/:session_id/ms/cast/set_sink_to_use</span><span class='tstring_end'>&#39;</span></span><span class='rbracket'>]</span><span class='comma'>,</span>
   <span class='label'>start_cast_tab_mirroring:</span> <span class='lbracket'>[</span><span class='symbol'>:post</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>session/:session_id/ms/cast/start_tab_mirroring</span><span class='tstring_end'>&#39;</span></span><span class='rbracket'>]</span><span class='comma'>,</span>
+  <span class='label'>start_cast_desktop_mirroring:</span> <span class='lbracket'>[</span><span class='symbol'>:post</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>session/:session_id/ms/cast/start_desktop_mirroring</span><span class='tstring_end'>&#39;</span></span><span class='rbracket'>]</span><span class='comma'>,</span>
   <span class='label'>get_cast_issue_message:</span> <span class='lbracket'>[</span><span class='symbol'>:get</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>session/:session_id/ms/cast/get_issue_message</span><span class='tstring_end'>&#39;</span></span><span class='rbracket'>]</span><span class='comma'>,</span>
   <span class='label'>stop_casting:</span> <span class='lbracket'>[</span><span class='symbol'>:post</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>session/:session_id/ms/cast/stop_casting</span><span class='tstring_end'>&#39;</span></span><span class='rbracket'>]</span><span class='comma'>,</span>
   <span class='label'>send_command:</span> <span class='lbracket'>[</span><span class='symbol'>:post</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>session/:session_id/ms/cdp/execute</span><span class='tstring_end'>&#39;</span></span><span class='rbracket'>]</span>
@@ -167,7 +168,7 @@
   
   
   <h3 class="inherited">Methods included from <span class='object_link'><a href="../Chrome/Features.html" title="Selenium::WebDriver::Chrome::Features (module)">Chrome::Features</a></span></h3>
-  <p class="inherited"><span class='object_link'><a href="../Chrome/Features.html#available_log_types-instance_method" title="Selenium::WebDriver::Chrome::Features#available_log_types (method)">#available_log_types</a></span>, <span class='object_link'><a href="../Chrome/Features.html#cast_issue_message-instance_method" title="Selenium::WebDriver::Chrome::Features#cast_issue_message (method)">#cast_issue_message</a></span>, <span class='object_link'><a href="../Chrome/Features.html#cast_sink_to_use=-instance_method" title="Selenium::WebDriver::Chrome::Features#cast_sink_to_use= (method)">#cast_sink_to_use=</a></span>, <span class='object_link'><a href="../Chrome/Features.html#cast_sinks-instance_method" title="Selenium::WebDriver::Chrome::Features#cast_sinks (method)">#cast_sinks</a></span>, <span class='object_link'><a href="../Chrome/Features.html#delete_network_conditions-instance_method" title="Selenium::WebDriver::Chrome::Features#delete_network_conditions (method)">#delete_network_conditions</a></span>, <span class='object_link'><a href="../Chrome/Features.html#launch_app-instance_method" title="Selenium::WebDriver::Chrome::Features#launch_app (method)">#launch_app</a></span>, <span class='object_link'><a href="../Chrome/Features.html#log-instance_method" title="Selenium::WebDriver::Chrome::Features#log (method)">#log</a></span>, <span class='object_link'><a href="../Chrome/Features.html#network_conditions-instance_method" title="Selenium::WebDriver::Chrome::Features#network_conditions (method)">#network_conditions</a></span>, <span class='object_link'><a href="../Chrome/Features.html#network_conditions=-instance_method" title="Selenium::WebDriver::Chrome::Features#network_conditions= (method)">#network_conditions=</a></span>, <span class='object_link'><a href="../Chrome/Features.html#send_command-instance_method" title="Selenium::WebDriver::Chrome::Features#send_command (method)">#send_command</a></span>, <span class='object_link'><a href="../Chrome/Features.html#set_permission-instance_method" title="Selenium::WebDriver::Chrome::Features#set_permission (method)">#set_permission</a></span>, <span class='object_link'><a href="../Chrome/Features.html#start_cast_tab_mirroring-instance_method" title="Selenium::WebDriver::Chrome::Features#start_cast_tab_mirroring (method)">#start_cast_tab_mirroring</a></span>, <span class='object_link'><a href="../Chrome/Features.html#stop_casting-instance_method" title="Selenium::WebDriver::Chrome::Features#stop_casting (method)">#stop_casting</a></span></p>
+  <p class="inherited"><span class='object_link'><a href="../Chrome/Features.html#available_log_types-instance_method" title="Selenium::WebDriver::Chrome::Features#available_log_types (method)">#available_log_types</a></span>, <span class='object_link'><a href="../Chrome/Features.html#cast_issue_message-instance_method" title="Selenium::WebDriver::Chrome::Features#cast_issue_message (method)">#cast_issue_message</a></span>, <span class='object_link'><a href="../Chrome/Features.html#cast_sink_to_use=-instance_method" title="Selenium::WebDriver::Chrome::Features#cast_sink_to_use= (method)">#cast_sink_to_use=</a></span>, <span class='object_link'><a href="../Chrome/Features.html#cast_sinks-instance_method" title="Selenium::WebDriver::Chrome::Features#cast_sinks (method)">#cast_sinks</a></span>, <span class='object_link'><a href="../Chrome/Features.html#delete_network_conditions-instance_method" title="Selenium::WebDriver::Chrome::Features#delete_network_conditions (method)">#delete_network_conditions</a></span>, <span class='object_link'><a href="../Chrome/Features.html#launch_app-instance_method" title="Selenium::WebDriver::Chrome::Features#launch_app (method)">#launch_app</a></span>, <span class='object_link'><a href="../Chrome/Features.html#log-instance_method" title="Selenium::WebDriver::Chrome::Features#log (method)">#log</a></span>, <span class='object_link'><a href="../Chrome/Features.html#network_conditions-instance_method" title="Selenium::WebDriver::Chrome::Features#network_conditions (method)">#network_conditions</a></span>, <span class='object_link'><a href="../Chrome/Features.html#network_conditions=-instance_method" title="Selenium::WebDriver::Chrome::Features#network_conditions= (method)">#network_conditions=</a></span>, <span class='object_link'><a href="../Chrome/Features.html#send_command-instance_method" title="Selenium::WebDriver::Chrome::Features#send_command (method)">#send_command</a></span>, <span class='object_link'><a href="../Chrome/Features.html#set_permission-instance_method" title="Selenium::WebDriver::Chrome::Features#set_permission (method)">#set_permission</a></span>, <span class='object_link'><a href="../Chrome/Features.html#start_cast_desktop_mirroring-instance_method" title="Selenium::WebDriver::Chrome::Features#start_cast_desktop_mirroring (method)">#start_cast_desktop_mirroring</a></span>, <span class='object_link'><a href="../Chrome/Features.html#start_cast_tab_mirroring-instance_method" title="Selenium::WebDriver::Chrome::Features#start_cast_tab_mirroring (method)">#start_cast_tab_mirroring</a></span>, <span class='object_link'><a href="../Chrome/Features.html#stop_casting-instance_method" title="Selenium::WebDriver::Chrome::Features#stop_casting (method)">#stop_casting</a></span></p>
 
 
   <div id="instance_method_details" class="method_details_list">
@@ -189,12 +190,12 @@
       <pre class="lines">
 
 
-38
 39
-40</pre>
+40
+41</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/edge/features.rb', line 38</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/edge/features.rb', line 39</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_commands'>commands</span><span class='lparen'>(</span><span class='id identifier rubyid_command'>command</span><span class='rparen'>)</span>
   <span class='const'><span class='object_link'><a href="#EDGE_COMMANDS-constant" title="Selenium::WebDriver::Edge::Features::EDGE_COMMANDS (constant)">EDGE_COMMANDS</a></span></span><span class='lbracket'>[</span><span class='id identifier rubyid_command'>command</span><span class='rbracket'>]</span> <span class='op'>||</span> <span class='const'><span class='object_link'><a href="../Chrome.html" title="Selenium::WebDriver::Chrome (module)">Chrome</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="../Chrome/Features.html" title="Selenium::WebDriver::Chrome::Features (module)">Features</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="../Chrome/Features.html#CHROME_COMMANDS-constant" title="Selenium::WebDriver::Chrome::Features::CHROME_COMMANDS (constant)">CHROME_COMMANDS</a></span></span><span class='lbracket'>[</span><span class='id identifier rubyid_command'>command</span><span class='rbracket'>]</span> <span class='op'>||</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_class'>class</span><span class='op'>::</span><span class='const'>COMMANDS</span><span class='lbracket'>[</span><span class='id identifier rubyid_command'>command</span><span class='rbracket'>]</span>
@@ -209,9 +210,9 @@
 </div>
 
       <div id="footer">
-  Generated on Wed Oct 20 19:09:20 2021 by
+  Generated on Fri May 27 09:39:44 2022 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.26 (ruby-2.7.3).
+  0.9.27 (ruby-3.1.1).
 </div>
 
     </div>
