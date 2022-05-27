@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>selenium.webdriver.remote.switch_to &#8212; Selenium 4.1 documentation</title>
+    <title>selenium.webdriver.remote.switch_to &#8212; Selenium 4.2 documentation</title>
     <link rel="stylesheet" href="../../../../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
     
@@ -27,7 +27,7 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../../index.html">Selenium 4.1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">Selenium 4.2 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../../index.html" accesskey="U">Module code</a> &#187;</li> 
       </ul>
     </div>  
@@ -93,7 +93,7 @@
 <span class="sd">                alert = driver.switch_to.alert</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">alert</span> <span class="o">=</span> <span class="n">Alert</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_driver</span><span class="p">)</span>
-        <span class="n">alert</span><span class="o">.</span><span class="n">text</span>
+        <span class="n">_</span> <span class="o">=</span> <span class="n">alert</span><span class="o">.</span><span class="n">text</span>
         <span class="k">return</span> <span class="n">alert</span>
 
 <div class="viewcode-block" id="SwitchTo.default_content"><a class="viewcode-back" href="../../../../webdriver_remote/selenium.webdriver.remote.switch_to.html#selenium.webdriver.remote.switch_to.SwitchTo.default_content">[docs]</a>    <span class="k">def</span> <span class="nf">default_content</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
@@ -181,7 +181,7 @@
         <span class="k">try</span><span class="p">:</span>
             <span class="c1"># Try using it as a handle first.</span>
             <span class="n">send_handle</span><span class="p">(</span><span class="n">window_name</span><span class="p">)</span>
-        <span class="k">except</span> <span class="n">NoSuchWindowException</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="k">except</span> <span class="n">NoSuchWindowException</span><span class="p">:</span>
             <span class="c1"># Check every window to try to find the given window name.</span>
             <span class="n">original_handle</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_driver</span><span class="o">.</span><span class="n">current_window_handle</span>
             <span class="n">handles</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_driver</span><span class="o">.</span><span class="n">window_handles</span>
@@ -191,7 +191,7 @@
                 <span class="k">if</span> <span class="n">window_name</span> <span class="o">==</span> <span class="n">current_name</span><span class="p">:</span>
                     <span class="k">return</span>
             <span class="n">send_handle</span><span class="p">(</span><span class="n">original_handle</span><span class="p">)</span>
-            <span class="k">raise</span> <span class="n">e</span></div>
+            <span class="k">raise</span></div>
 </pre></div>
 
           </div>
@@ -224,7 +224,7 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../../index.html">Selenium 4.1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">Selenium 4.2 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../../index.html" >Module code</a> &#187;</li> 
       </ul>
     </div>

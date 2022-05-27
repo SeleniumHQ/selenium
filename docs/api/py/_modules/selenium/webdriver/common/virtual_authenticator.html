@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>selenium.webdriver.common.virtual_authenticator &#8212; Selenium 4.1 documentation</title>
+    <title>selenium.webdriver.common.virtual_authenticator &#8212; Selenium 4.2 documentation</title>
     <link rel="stylesheet" href="../../../../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
     
@@ -27,7 +27,7 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../../index.html">Selenium 4.1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">Selenium 4.2 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../../index.html" accesskey="U">Module code</a> &#187;</li> 
       </ul>
     </div>  
@@ -263,12 +263,12 @@
 
 <div class="viewcode-block" id="Credential.from_dict"><a class="viewcode-back" href="../../../../webdriver/selenium.webdriver.common.virtual_authenticator.html#selenium.webdriver.common.virtual_authenticator.Credential.from_dict">[docs]</a>    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">from_dict</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
-        <span class="n">_id</span> <span class="o">=</span> <span class="n">urlsafe_b64decode</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;credentialId&#39;</span><span class="p">])</span>
+        <span class="n">_id</span> <span class="o">=</span> <span class="n">urlsafe_b64decode</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;credentialId&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">==&quot;</span><span class="p">)</span>
         <span class="n">is_resident_credential</span> <span class="o">=</span> <span class="nb">bool</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;isResidentCredential&#39;</span><span class="p">])</span>
-        <span class="n">rp_id</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;rpId&#39;</span><span class="p">])</span>
-        <span class="n">private_key</span> <span class="o">=</span> <span class="n">urlsafe_b64decode</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;privateKey&#39;</span><span class="p">])</span>
+        <span class="n">rp_id</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;rpId&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="n">private_key</span> <span class="o">=</span> <span class="n">urlsafe_b64decode</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;privateKey&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">==&quot;</span><span class="p">)</span>
         <span class="n">sign_count</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;signCount&#39;</span><span class="p">])</span>
-        <span class="n">user_handle</span> <span class="o">=</span> <span class="n">urlsafe_b64decode</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;userHandle&#39;</span><span class="p">])</span> \
+        <span class="n">user_handle</span> <span class="o">=</span> <span class="n">urlsafe_b64decode</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;userHandle&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">==&quot;</span><span class="p">)</span> \
             <span class="k">if</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;userHandle&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span> <span class="k">else</span> <span class="kc">None</span>
 
         <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">_id</span><span class="p">,</span> <span class="n">is_resident_credential</span><span class="p">,</span> <span class="n">rp_id</span><span class="p">,</span> <span class="n">user_handle</span><span class="p">,</span> <span class="n">private_key</span><span class="p">,</span> <span class="n">sign_count</span><span class="p">)</span></div>
@@ -334,7 +334,7 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../../index.html">Selenium 4.1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">Selenium 4.2 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../../index.html" >Module code</a> &#187;</li> 
       </ul>
     </div>

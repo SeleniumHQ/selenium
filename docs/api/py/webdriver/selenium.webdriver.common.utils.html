@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>selenium.webdriver.common.utils &#8212; Selenium 4.1 documentation</title>
+    <title>selenium.webdriver.common.utils &#8212; Selenium 4.2 documentation</title>
     <link rel="stylesheet" href="../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     
@@ -27,7 +27,7 @@
         <li class="right" >
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">Selenium 4.1 documentation</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="../index.html">Selenium 4.2 documentation</a> &#187;</li> 
       </ul>
     </div>  
 
@@ -52,7 +52,7 @@
 <tr class="row-even"><td><a class="reference internal" href="#selenium.webdriver.common.utils.free_port" title="selenium.webdriver.common.utils.free_port"><code class="xref py py-obj docutils literal notranslate"><span class="pre">free_port</span></code></a>()</td>
 <td>Determines a free port using sockets.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#selenium.webdriver.common.utils.is_connectable" title="selenium.webdriver.common.utils.is_connectable"><code class="xref py py-obj docutils literal notranslate"><span class="pre">is_connectable</span></code></a>(port,&nbsp;host)</td>
+<tr class="row-odd"><td><a class="reference internal" href="#selenium.webdriver.common.utils.is_connectable" title="selenium.webdriver.common.utils.is_connectable"><code class="xref py py-obj docutils literal notranslate"><span class="pre">is_connectable</span></code></a>(port,&nbsp;host,&nbsp;None]&nbsp;=)</td>
 <td>Tries to connect to the server at port to see if it is running.</td>
 </tr>
 <tr class="row-even"><td><a class="reference internal" href="#selenium.webdriver.common.utils.is_url_connectable" title="selenium.webdriver.common.utils.is_url_connectable"><code class="xref py py-obj docutils literal notranslate"><span class="pre">is_url_connectable</span></code></a>(port,&nbsp;str])</td>
@@ -68,7 +68,7 @@
 </table>
 <dl class="function">
 <dt id="selenium.webdriver.common.utils.find_connectable_ip">
-<code class="descclassname">selenium.webdriver.common.utils.</code><code class="descname">find_connectable_ip</code><span class="sig-paren">(</span><em>host: Union[str, bytes, bytearray, None], port: Optional[int] = None</em><span class="sig-paren">)</span> &#x2192; Optional[str]<a class="reference internal" href="../_modules/selenium/webdriver/common/utils.html#find_connectable_ip"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.common.utils.find_connectable_ip" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">selenium.webdriver.common.utils.</code><code class="descname">find_connectable_ip</code><span class="sig-paren">(</span><em>host: Union[str, bytes, bytearray, None], port: Optional[int, None] = None</em><span class="sig-paren">)</span> &#x2192; Optional[str, None]<a class="reference internal" href="../_modules/selenium/webdriver/common/utils.html#find_connectable_ip"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.common.utils.find_connectable_ip" title="Permalink to this definition">¶</a></dt>
 <dd><p>Resolve a hostname to an IP, preferring IPv4 addresses.</p>
 <p>We prefer IPv4 so that we don’t change behavior from previous IPv4-only
 implementations, and because some drivers (e.g., FirefoxDriver) do not
@@ -102,7 +102,7 @@ neither, then None is returned.</p>
 
 <dl class="function">
 <dt id="selenium.webdriver.common.utils.is_connectable">
-<code class="descclassname">selenium.webdriver.common.utils.</code><code class="descname">is_connectable</code><span class="sig-paren">(</span><em>port: int</em>, <em>host: Optional[str] = 'localhost'</em><span class="sig-paren">)</span> &#x2192; bool<a class="reference internal" href="../_modules/selenium/webdriver/common/utils.html#is_connectable"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.common.utils.is_connectable" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">selenium.webdriver.common.utils.</code><code class="descname">is_connectable</code><span class="sig-paren">(</span><em>port: int</em>, <em>host: Optional[str</em>, <em>None] = 'localhost'</em><span class="sig-paren">)</span> &#x2192; bool<a class="reference internal" href="../_modules/selenium/webdriver/common/utils.html#is_connectable"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.common.utils.is_connectable" title="Permalink to this definition">¶</a></dt>
 <dd><p>Tries to connect to the server at port to see if it is running.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -201,7 +201,7 @@ example, _join_host_port(‘::1’, 80) == ‘[::1]:80’.</p>
         <li class="right" >
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">Selenium 4.1 documentation</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="../index.html">Selenium 4.2 documentation</a> &#187;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">

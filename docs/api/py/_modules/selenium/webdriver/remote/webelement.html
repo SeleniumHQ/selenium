@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>selenium.webdriver.remote.webelement &#8212; Selenium 4.1 documentation</title>
+    <title>selenium.webdriver.remote.webelement &#8212; Selenium 4.2 documentation</title>
     <link rel="stylesheet" href="../../../../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
     
@@ -27,7 +27,7 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../../index.html">Selenium 4.1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">Selenium 4.2 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../../index.html" accesskey="U">Module code</a> &#187;</li> 
       </ul>
     </div>  
@@ -54,6 +54,7 @@
 <span class="c1"># KIND, either express or implied.  See the License for the</span>
 <span class="c1"># specific language governing permissions and limitations</span>
 <span class="c1"># under the License.</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
 
 <span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">from</span> <span class="nn">base64</span> <span class="kn">import</span> <span class="n">b64decode</span><span class="p">,</span> <span class="n">encodebytes</span>
@@ -63,13 +64,13 @@
 <span class="kn">import</span> <span class="nn">zipfile</span>
 <span class="kn">from</span> <span class="nn">abc</span> <span class="kn">import</span> <span class="n">ABCMeta</span>
 <span class="kn">from</span> <span class="nn">io</span> <span class="kn">import</span> <span class="n">BytesIO</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Union</span>
 
-<span class="kn">from</span> <span class="nn">selenium.common.exceptions</span> <span class="kn">import</span> <span class="n">WebDriverException</span>
+<span class="kn">from</span> <span class="nn">selenium.common.exceptions</span> <span class="kn">import</span> <span class="n">WebDriverException</span><span class="p">,</span> <span class="n">JavascriptException</span>
 <span class="kn">from</span> <span class="nn">selenium.webdriver.common.by</span> <span class="kn">import</span> <span class="n">By</span>
 <span class="kn">from</span> <span class="nn">selenium.webdriver.common.utils</span> <span class="kn">import</span> <span class="n">keys_to_typing</span>
 <span class="kn">from</span> <span class="nn">.command</span> <span class="kn">import</span> <span class="n">Command</span>
 <span class="kn">from</span> <span class="nn">.shadowroot</span> <span class="kn">import</span> <span class="n">ShadowRoot</span>
-
 
 <span class="c1"># TODO: When moving to supporting python 3.9 as the minimum version we can</span>
 <span class="c1"># use built in importlib_resources.files.</span>
@@ -129,17 +130,26 @@
 
 <div class="viewcode-block" id="WebElement.submit"><a class="viewcode-back" href="../../../../webdriver_remote/selenium.webdriver.remote.webelement.html#selenium.webdriver.remote.webelement.WebElement.submit">[docs]</a>    <span class="k">def</span> <span class="nf">submit</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Submits a form.&quot;&quot;&quot;</span>
-        <span class="n">form</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">find_element</span><span class="p">(</span><span class="n">By</span><span class="o">.</span><span class="n">XPATH</span><span class="p">,</span> <span class="s2">&quot;./ancestor-or-self::form&quot;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_parent</span><span class="o">.</span><span class="n">execute_script</span><span class="p">(</span>
-            <span class="s2">&quot;var e = arguments[0].ownerDocument.createEvent(&#39;Event&#39;);&quot;</span>
-            <span class="s2">&quot;e.initEvent(&#39;submit&#39;, true, true);&quot;</span>
-            <span class="s2">&quot;if (arguments[0].dispatchEvent(e)) { arguments[0].submit() }&quot;</span><span class="p">,</span> <span class="n">form</span><span class="p">)</span></div>
+        <span class="n">script</span> <span class="o">=</span> <span class="s2">&quot;var form = arguments[0];</span><span class="se">\n</span><span class="s2">&quot;</span> \
+                 <span class="s2">&quot;while (form.nodeName != </span><span class="se">\&quot;</span><span class="s2">FORM</span><span class="se">\&quot;</span><span class="s2"> &amp;&amp; form.parentNode) {</span><span class="se">\n</span><span class="s2">&quot;</span> \
+                 <span class="s2">&quot;  form = form.parentNode;</span><span class="se">\n</span><span class="s2">&quot;</span> \
+                 <span class="s2">&quot;}</span><span class="se">\n</span><span class="s2">&quot;</span> \
+                 <span class="s2">&quot;if (!form) { throw Error(&#39;Unable to find containing form element&#39;); }</span><span class="se">\n</span><span class="s2">&quot;</span> \
+                 <span class="s2">&quot;if (!form.ownerDocument) { throw Error(&#39;Unable to find owning document&#39;); }</span><span class="se">\n</span><span class="s2">&quot;</span> \
+                 <span class="s2">&quot;var e = form.ownerDocument.createEvent(&#39;Event&#39;);</span><span class="se">\n</span><span class="s2">&quot;</span> \
+                 <span class="s2">&quot;e.initEvent(&#39;submit&#39;, true, true);</span><span class="se">\n</span><span class="s2">&quot;</span> \
+                 <span class="s2">&quot;if (form.dispatchEvent(e)) { HTMLFormElement.prototype.submit.call(form) }</span><span class="se">\n</span><span class="s2">&quot;</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_parent</span><span class="o">.</span><span class="n">execute_script</span><span class="p">(</span><span class="n">script</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span>
+        <span class="k">except</span> <span class="n">JavascriptException</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">WebDriverException</span><span class="p">(</span><span class="s2">&quot;To submit an element, it must be nested inside a form element&quot;</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="WebElement.clear"><a class="viewcode-back" href="../../../../webdriver_remote/selenium.webdriver.remote.webelement.html#selenium.webdriver.remote.webelement.WebElement.clear">[docs]</a>    <span class="k">def</span> <span class="nf">clear</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Clears the text if it&#39;s a text entry element.&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_execute</span><span class="p">(</span><span class="n">Command</span><span class="o">.</span><span class="n">CLEAR_ELEMENT</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="WebElement.get_property"><a class="viewcode-back" href="../../../../webdriver_remote/selenium.webdriver.remote.webelement.html#selenium.webdriver.remote.webelement.WebElement.get_property">[docs]</a>    <span class="k">def</span> <span class="nf">get_property</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<div class="viewcode-block" id="WebElement.get_property"><a class="viewcode-back" href="../../../../webdriver_remote/selenium.webdriver.remote.webelement.html#selenium.webdriver.remote.webelement.WebElement.get_property">[docs]</a>    <span class="k">def</span> <span class="nf">get_property</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">bool</span><span class="p">,</span> <span class="n">WebElement</span><span class="p">,</span> <span class="nb">dict</span><span class="p">]:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Gets the given property of the element.</span>
 
@@ -318,9 +328,10 @@
 
 <span class="sd">                element = element.find_element_by_link_text(&#39;Sign In&#39;)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;find_element_by_link_text is deprecated. Please use find_element(by=By.LINK_TEXT, value=link_text) instead&quot;</span><span class="p">,</span>
-                      <span class="ne">DeprecationWarning</span><span class="p">,</span>
-                      <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+            <span class="s2">&quot;find_element_by_link_text is deprecated. Please use find_element(by=By.LINK_TEXT, value=link_text) instead&quot;</span><span class="p">,</span>
+            <span class="ne">DeprecationWarning</span><span class="p">,</span>
+            <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">find_element</span><span class="p">(</span><span class="n">by</span><span class="o">=</span><span class="n">By</span><span class="o">.</span><span class="n">LINK_TEXT</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="n">link_text</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="WebElement.find_elements_by_link_text"><a class="viewcode-back" href="../../../../webdriver_remote/selenium.webdriver.remote.webelement.html#selenium.webdriver.remote.webelement.WebElement.find_elements_by_link_text">[docs]</a>    <span class="k">def</span> <span class="nf">find_elements_by_link_text</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">link_text</span><span class="p">):</span>
@@ -338,9 +349,10 @@
 
 <span class="sd">                elements = element.find_elements_by_link_text(&#39;Sign In&#39;)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;find_elements_by_link_text is deprecated. Please use find_elements(by=By.LINK_TEXT, value=text) instead&quot;</span><span class="p">,</span>
-                      <span class="ne">DeprecationWarning</span><span class="p">,</span>
-                      <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+            <span class="s2">&quot;find_elements_by_link_text is deprecated. Please use find_elements(by=By.LINK_TEXT, value=text) instead&quot;</span><span class="p">,</span>
+            <span class="ne">DeprecationWarning</span><span class="p">,</span>
+            <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">find_elements</span><span class="p">(</span><span class="n">by</span><span class="o">=</span><span class="n">By</span><span class="o">.</span><span class="n">LINK_TEXT</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="n">link_text</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="WebElement.find_element_by_partial_link_text"><a class="viewcode-back" href="../../../../webdriver_remote/selenium.webdriver.remote.webelement.html#selenium.webdriver.remote.webelement.WebElement.find_element_by_partial_link_text">[docs]</a>    <span class="k">def</span> <span class="nf">find_element_by_partial_link_text</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">link_text</span><span class="p">):</span>
@@ -360,9 +372,10 @@
 
 <span class="sd">                element = element.find_element_by_partial_link_text(&#39;Sign&#39;)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;find_element_by_partial_link_text is deprecated. Please use find_element(by=By.PARTIAL_LINK_TEXT, value=link_text) instead&quot;</span><span class="p">,</span>
-                      <span class="ne">DeprecationWarning</span><span class="p">,</span>
-                      <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+            <span class="s2">&quot;find_element_by_partial_link_text is deprecated. Please use find_element(by=By.PARTIAL_LINK_TEXT, value=link_text) instead&quot;</span><span class="p">,</span>
+            <span class="ne">DeprecationWarning</span><span class="p">,</span>
+            <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">find_element</span><span class="p">(</span><span class="n">by</span><span class="o">=</span><span class="n">By</span><span class="o">.</span><span class="n">PARTIAL_LINK_TEXT</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="n">link_text</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="WebElement.find_elements_by_partial_link_text"><a class="viewcode-back" href="../../../../webdriver_remote/selenium.webdriver.remote.webelement.html#selenium.webdriver.remote.webelement.WebElement.find_elements_by_partial_link_text">[docs]</a>    <span class="k">def</span> <span class="nf">find_elements_by_partial_link_text</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">link_text</span><span class="p">):</span>
@@ -380,9 +393,10 @@
 
 <span class="sd">                elements = element.find_elements_by_partial_link_text(&#39;Sign&#39;)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;find_elements_by_partial_link_text is deprecated. Please use find_elements(by=By.PARTIAL_LINK_TEXT, value=link_text) instead&quot;</span><span class="p">,</span>
-                      <span class="ne">DeprecationWarning</span><span class="p">,</span>
-                      <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+            <span class="s2">&quot;find_elements_by_partial_link_text is deprecated. Please use find_elements(by=By.PARTIAL_LINK_TEXT, value=link_text) instead&quot;</span><span class="p">,</span>
+            <span class="ne">DeprecationWarning</span><span class="p">,</span>
+            <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">find_elements</span><span class="p">(</span><span class="n">by</span><span class="o">=</span><span class="n">By</span><span class="o">.</span><span class="n">PARTIAL_LINK_TEXT</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="n">link_text</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="WebElement.find_element_by_tag_name"><a class="viewcode-back" href="../../../../webdriver_remote/selenium.webdriver.remote.webelement.html#selenium.webdriver.remote.webelement.WebElement.find_element_by_tag_name">[docs]</a>    <span class="k">def</span> <span class="nf">find_element_by_tag_name</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
@@ -402,9 +416,10 @@
 
 <span class="sd">                element = element.find_element_by_tag_name(&#39;h1&#39;)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;find_element_by_tag_name is deprecated. Please use find_element(by=By.TAG_NAME, value=name) instead&quot;</span><span class="p">,</span>
-                      <span class="ne">DeprecationWarning</span><span class="p">,</span>
-                      <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+            <span class="s2">&quot;find_element_by_tag_name is deprecated. Please use find_element(by=By.TAG_NAME, value=name) instead&quot;</span><span class="p">,</span>
+            <span class="ne">DeprecationWarning</span><span class="p">,</span>
+            <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">find_element</span><span class="p">(</span><span class="n">by</span><span class="o">=</span><span class="n">By</span><span class="o">.</span><span class="n">TAG_NAME</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="n">name</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="WebElement.find_elements_by_tag_name"><a class="viewcode-back" href="../../../../webdriver_remote/selenium.webdriver.remote.webelement.html#selenium.webdriver.remote.webelement.WebElement.find_elements_by_tag_name">[docs]</a>    <span class="k">def</span> <span class="nf">find_elements_by_tag_name</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
@@ -422,9 +437,10 @@
 
 <span class="sd">                elements = element.find_elements_by_tag_name(&#39;h1&#39;)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;find_elements_by_tag_name is deprecated. Please use find_elements(by=By.TAG_NAME, value=name) instead&quot;</span><span class="p">,</span>
-                      <span class="ne">DeprecationWarning</span><span class="p">,</span>
-                      <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+            <span class="s2">&quot;find_elements_by_tag_name is deprecated. Please use find_elements(by=By.TAG_NAME, value=name) instead&quot;</span><span class="p">,</span>
+            <span class="ne">DeprecationWarning</span><span class="p">,</span>
+            <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">find_elements</span><span class="p">(</span><span class="n">by</span><span class="o">=</span><span class="n">By</span><span class="o">.</span><span class="n">TAG_NAME</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="n">name</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="WebElement.find_element_by_xpath"><a class="viewcode-back" href="../../../../webdriver_remote/selenium.webdriver.remote.webelement.html#selenium.webdriver.remote.webelement.WebElement.find_element_by_xpath">[docs]</a>    <span class="k">def</span> <span class="nf">find_element_by_xpath</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">xpath</span><span class="p">):</span>
@@ -493,9 +509,10 @@
 <span class="sd">                elements = element.find_elements_by_xpath(&quot;//div[contains(@class, &#39;foo&#39;)]&quot;)</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;find_elements_by_xpath is deprecated. Please use find_elements(by=By.XPATH, value=xpath) instead&quot;</span><span class="p">,</span>
-                      <span class="ne">DeprecationWarning</span><span class="p">,</span>
-                      <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+            <span class="s2">&quot;find_elements_by_xpath is deprecated. Please use find_elements(by=By.XPATH, value=xpath) instead&quot;</span><span class="p">,</span>
+            <span class="ne">DeprecationWarning</span><span class="p">,</span>
+            <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">find_elements</span><span class="p">(</span><span class="n">by</span><span class="o">=</span><span class="n">By</span><span class="o">.</span><span class="n">XPATH</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="n">xpath</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="WebElement.find_element_by_class_name"><a class="viewcode-back" href="../../../../webdriver_remote/selenium.webdriver.remote.webelement.html#selenium.webdriver.remote.webelement.WebElement.find_element_by_class_name">[docs]</a>    <span class="k">def</span> <span class="nf">find_element_by_class_name</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
@@ -515,9 +532,10 @@
 
 <span class="sd">                element = element.find_element_by_class_name(&#39;foo&#39;)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;find_element_by_class_name is deprecated. Please use find_element(by=By.CLASS_NAME, value=name) instead&quot;</span><span class="p">,</span>
-                      <span class="ne">DeprecationWarning</span><span class="p">,</span>
-                      <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+            <span class="s2">&quot;find_element_by_class_name is deprecated. Please use find_element(by=By.CLASS_NAME, value=name) instead&quot;</span><span class="p">,</span>
+            <span class="ne">DeprecationWarning</span><span class="p">,</span>
+            <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">find_element</span><span class="p">(</span><span class="n">by</span><span class="o">=</span><span class="n">By</span><span class="o">.</span><span class="n">CLASS_NAME</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="n">name</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="WebElement.find_elements_by_class_name"><a class="viewcode-back" href="../../../../webdriver_remote/selenium.webdriver.remote.webelement.html#selenium.webdriver.remote.webelement.WebElement.find_elements_by_class_name">[docs]</a>    <span class="k">def</span> <span class="nf">find_elements_by_class_name</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
@@ -535,7 +553,9 @@
 
 <span class="sd">                elements = element.find_elements_by_class_name(&#39;foo&#39;)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;find_elements_by_class_name is deprecated. Please use find_elements(by=By.CLASS_NAME, value=name) instead&quot;</span><span class="p">,</span> <span class="ne">DeprecationWarning</span><span class="p">)</span>
+        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+            <span class="s2">&quot;find_elements_by_class_name is deprecated. Please use find_elements(by=By.CLASS_NAME, value=name) instead&quot;</span><span class="p">,</span>
+            <span class="ne">DeprecationWarning</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">find_elements</span><span class="p">(</span><span class="n">by</span><span class="o">=</span><span class="n">By</span><span class="o">.</span><span class="n">CLASS_NAME</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="n">name</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="WebElement.find_element_by_css_selector"><a class="viewcode-back" href="../../../../webdriver_remote/selenium.webdriver.remote.webelement.html#selenium.webdriver.remote.webelement.WebElement.find_element_by_css_selector">[docs]</a>    <span class="k">def</span> <span class="nf">find_element_by_css_selector</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">css_selector</span><span class="p">):</span>
@@ -555,9 +575,10 @@
 
 <span class="sd">                element = element.find_element_by_css_selector(&#39;#foo&#39;)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;find_element_by_css_selector is deprecated. Please use find_element(by=By.CSS_SELECTOR, value=css_selector) instead&quot;</span><span class="p">,</span>
-                      <span class="ne">DeprecationWarning</span><span class="p">,</span>
-                      <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+            <span class="s2">&quot;find_element_by_css_selector is deprecated. Please use find_element(by=By.CSS_SELECTOR, value=css_selector) instead&quot;</span><span class="p">,</span>
+            <span class="ne">DeprecationWarning</span><span class="p">,</span>
+            <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">find_element</span><span class="p">(</span><span class="n">by</span><span class="o">=</span><span class="n">By</span><span class="o">.</span><span class="n">CSS_SELECTOR</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="n">css_selector</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="WebElement.find_elements_by_css_selector"><a class="viewcode-back" href="../../../../webdriver_remote/selenium.webdriver.remote.webelement.html#selenium.webdriver.remote.webelement.WebElement.find_elements_by_css_selector">[docs]</a>    <span class="k">def</span> <span class="nf">find_elements_by_css_selector</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">css_selector</span><span class="p">):</span>
@@ -575,9 +596,10 @@
 
 <span class="sd">                elements = element.find_elements_by_css_selector(&#39;.foo&#39;)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;find_elements_by_css_selector is deprecated. Please use find_elements(by=By.CSS_SELECTOR, value=css_selector) instead&quot;</span><span class="p">,</span>
-                      <span class="ne">DeprecationWarning</span><span class="p">,</span>
-                      <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+            <span class="s2">&quot;find_elements_by_css_selector is deprecated. Please use find_elements(by=By.CSS_SELECTOR, value=css_selector) instead&quot;</span><span class="p">,</span>
+            <span class="ne">DeprecationWarning</span><span class="p">,</span>
+            <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">find_elements</span><span class="p">(</span><span class="n">by</span><span class="o">=</span><span class="n">By</span><span class="o">.</span><span class="n">CSS_SELECTOR</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="n">css_selector</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="WebElement.send_keys"><a class="viewcode-back" href="../../../../webdriver_remote/selenium.webdriver.remote.webelement.html#selenium.webdriver.remote.webelement.WebElement.send_keys">[docs]</a>    <span class="k">def</span> <span class="nf">send_keys</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">value</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
@@ -631,7 +653,8 @@
 <span class="sd">              - NoSuchShadowRoot - if no shadow root was attached to element</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">browser_main_version</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_parent</span><span class="o">.</span><span class="n">caps</span><span class="p">[</span><span class="s2">&quot;browserVersion&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span>
-        <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parent</span><span class="o">.</span><span class="n">caps</span><span class="p">[</span><span class="s2">&quot;browserName&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;firefox&quot;</span><span class="p">,</span> <span class="s2">&quot;safari&quot;</span><span class="p">],</span> <span class="s2">&quot;This only currently works in Chromium based browsers&quot;</span>
+        <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parent</span><span class="o">.</span><span class="n">caps</span><span class="p">[</span><span class="s2">&quot;browserName&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;firefox&quot;</span><span class="p">,</span>
+                                                                <span class="s2">&quot;safari&quot;</span><span class="p">],</span> <span class="s2">&quot;This only currently works in Chromium based browsers&quot;</span>
         <span class="k">assert</span> <span class="ow">not</span> <span class="n">browser_main_version</span> <span class="o">&lt;=</span> <span class="mi">95</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;Please use Chromium based browsers with version 96 or later. Version used </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_parent</span><span class="o">.</span><span class="n">caps</span><span class="p">[</span><span class="s1">&#39;browserVersion&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_execute</span><span class="p">(</span><span class="n">Command</span><span class="o">.</span><span class="n">GET_SHADOW_ROOT</span><span class="p">)[</span><span class="s1">&#39;value&#39;</span><span class="p">]</span>
 
@@ -858,7 +881,7 @@
             <span class="k">elif</span> <span class="s1">&#39;{&quot;status&quot;:405,&quot;value&quot;:[&quot;GET&quot;,&quot;HEAD&quot;,&quot;DELETE&quot;]}&#39;</span> <span class="ow">in</span> <span class="n">e</span><span class="o">.</span><span class="fm">__str__</span><span class="p">():</span>
                 <span class="k">return</span> <span class="n">filename</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="n">e</span></div>
+                <span class="k">raise</span></div>
 </pre></div>
 
           </div>
@@ -891,7 +914,7 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../../index.html">Selenium 4.1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">Selenium 4.2 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../../index.html" >Module code</a> &#187;</li> 
       </ul>
     </div>

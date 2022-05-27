@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>selenium.webdriver.support.expected_conditions &#8212; Selenium 4.1 documentation</title>
+    <title>selenium.webdriver.support.expected_conditions &#8212; Selenium 4.2 documentation</title>
     <link rel="stylesheet" href="../../../../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
     
@@ -27,7 +27,7 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../../index.html">Selenium 4.1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">Selenium 4.2 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../../index.html" accesskey="U">Module code</a> &#187;</li> 
       </ul>
     </div>  
@@ -57,7 +57,7 @@
 
 <span class="kn">import</span> <span class="nn">re</span>
 
-<span class="kn">from</span> <span class="nn">selenium.common.exceptions</span> <span class="kn">import</span> <span class="n">NoSuchElementException</span><span class="p">,</span> <span class="n">InvalidSelectorException</span>
+<span class="kn">from</span> <span class="nn">selenium.common.exceptions</span> <span class="kn">import</span> <span class="n">NoSuchElementException</span>
 <span class="kn">from</span> <span class="nn">selenium.common.exceptions</span> <span class="kn">import</span> <span class="n">NoSuchFrameException</span>
 <span class="kn">from</span> <span class="nn">selenium.common.exceptions</span> <span class="kn">import</span> <span class="n">StaleElementReferenceException</span>
 <span class="kn">from</span> <span class="nn">selenium.common.exceptions</span> <span class="kn">import</span> <span class="n">WebDriverException</span>
@@ -163,8 +163,6 @@
     <span class="k">def</span> <span class="nf">_predicate</span><span class="p">(</span><span class="n">driver</span><span class="p">):</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">_element_if_visible</span><span class="p">(</span><span class="n">driver</span><span class="o">.</span><span class="n">find_element</span><span class="p">(</span><span class="o">*</span><span class="n">locator</span><span class="p">))</span>
-        <span class="k">except</span> <span class="n">InvalidSelectorException</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">e</span>
         <span class="k">except</span> <span class="n">StaleElementReferenceException</span><span class="p">:</span>
             <span class="k">return</span> <span class="kc">False</span>
 
@@ -230,8 +228,6 @@
                 <span class="k">if</span> <span class="n">_element_if_visible</span><span class="p">(</span><span class="n">element</span><span class="p">,</span> <span class="n">visibility</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
                     <span class="k">return</span> <span class="kc">False</span>
             <span class="k">return</span> <span class="n">elements</span>
-        <span class="k">except</span> <span class="n">InvalidSelectorException</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">e</span>
         <span class="k">except</span> <span class="n">StaleElementReferenceException</span><span class="p">:</span>
             <span class="k">return</span> <span class="kc">False</span>
 
@@ -248,8 +244,6 @@
         <span class="k">try</span><span class="p">:</span>
             <span class="n">element_text</span> <span class="o">=</span> <span class="n">driver</span><span class="o">.</span><span class="n">find_element</span><span class="p">(</span><span class="o">*</span><span class="n">locator</span><span class="p">)</span><span class="o">.</span><span class="n">text</span>
             <span class="k">return</span> <span class="n">text_</span> <span class="ow">in</span> <span class="n">element_text</span>
-        <span class="k">except</span> <span class="n">InvalidSelectorException</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">e</span>
         <span class="k">except</span> <span class="n">StaleElementReferenceException</span><span class="p">:</span>
             <span class="k">return</span> <span class="kc">False</span>
 
@@ -266,8 +260,6 @@
         <span class="k">try</span><span class="p">:</span>
             <span class="n">element_text</span> <span class="o">=</span> <span class="n">driver</span><span class="o">.</span><span class="n">find_element</span><span class="p">(</span><span class="o">*</span><span class="n">locator</span><span class="p">)</span><span class="o">.</span><span class="n">get_attribute</span><span class="p">(</span><span class="s2">&quot;value&quot;</span><span class="p">)</span>
             <span class="k">return</span> <span class="n">text_</span> <span class="ow">in</span> <span class="n">element_text</span>
-        <span class="k">except</span> <span class="n">InvalidSelectorException</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">e</span>
         <span class="k">except</span> <span class="n">StaleElementReferenceException</span><span class="p">:</span>
             <span class="k">return</span> <span class="kc">False</span>
 
@@ -286,8 +278,6 @@
                 <span class="k">return</span> <span class="kc">False</span>
             <span class="n">element_text</span> <span class="o">=</span> <span class="n">driver</span><span class="o">.</span><span class="n">find_element</span><span class="p">(</span><span class="o">*</span><span class="n">locator</span><span class="p">)</span><span class="o">.</span><span class="n">get_attribute</span><span class="p">(</span><span class="n">attribute_</span><span class="p">)</span>
             <span class="k">return</span> <span class="n">text_</span> <span class="ow">in</span> <span class="n">element_text</span>
-        <span class="k">except</span> <span class="n">InvalidSelectorException</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">e</span>
         <span class="k">except</span> <span class="n">StaleElementReferenceException</span><span class="p">:</span>
             <span class="k">return</span> <span class="kc">False</span>
 
@@ -307,8 +297,6 @@
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">driver</span><span class="o">.</span><span class="n">switch_to</span><span class="o">.</span><span class="n">frame</span><span class="p">(</span><span class="n">locator</span><span class="p">)</span>
             <span class="k">return</span> <span class="kc">True</span>
-        <span class="k">except</span> <span class="n">InvalidSelectorException</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">e</span>
         <span class="k">except</span> <span class="n">NoSuchFrameException</span><span class="p">:</span>
             <span class="k">return</span> <span class="kc">False</span>
 
@@ -328,8 +316,6 @@
             <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="n">WebElement</span><span class="p">):</span>
                 <span class="n">target</span> <span class="o">=</span> <span class="n">driver</span><span class="o">.</span><span class="n">find_element</span><span class="p">(</span><span class="o">*</span><span class="n">target</span><span class="p">)</span>
             <span class="k">return</span> <span class="n">_element_if_visible</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
-        <span class="k">except</span> <span class="n">InvalidSelectorException</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">e</span>
         <span class="k">except</span> <span class="p">(</span><span class="n">NoSuchElementException</span><span class="p">,</span> <span class="n">StaleElementReferenceException</span><span class="p">):</span>
             <span class="c1"># In the case of NoSuchElement, returns true because the element is</span>
             <span class="c1"># not present in DOM. The try block checks if the element is present</span>
@@ -384,8 +370,6 @@
             <span class="c1"># Calling any method forces a staleness check</span>
             <span class="n">element</span><span class="o">.</span><span class="n">is_enabled</span><span class="p">()</span>
             <span class="k">return</span> <span class="kc">False</span>
-        <span class="k">except</span> <span class="n">InvalidSelectorException</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">e</span>
         <span class="k">except</span> <span class="n">StaleElementReferenceException</span><span class="p">:</span>
             <span class="k">return</span> <span class="kc">True</span>
 
@@ -416,7 +400,7 @@
 <div class="viewcode-block" id="element_selection_state_to_be"><a class="viewcode-back" href="../../../../webdriver_support/selenium.webdriver.support.expected_conditions.html#selenium.webdriver.support.expected_conditions.element_selection_state_to_be">[docs]</a><span class="k">def</span> <span class="nf">element_selection_state_to_be</span><span class="p">(</span><span class="n">element</span><span class="p">,</span> <span class="n">is_selected</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot; An expectation for checking if the given element is selected.</span>
 <span class="sd">    element is WebElement object</span>
-<span class="sd">    is_selected is a Boolean.&quot;</span>
+<span class="sd">    is_selected is a Boolean.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="nf">_predicate</span><span class="p">(</span><span class="n">_</span><span class="p">):</span>
@@ -436,8 +420,6 @@
         <span class="k">try</span><span class="p">:</span>
             <span class="n">element</span> <span class="o">=</span> <span class="n">driver</span><span class="o">.</span><span class="n">find_element</span><span class="p">(</span><span class="o">*</span><span class="n">locator</span><span class="p">)</span>
             <span class="k">return</span> <span class="n">element</span><span class="o">.</span><span class="n">is_selected</span><span class="p">()</span> <span class="o">==</span> <span class="n">is_selected</span>
-        <span class="k">except</span> <span class="n">InvalidSelectorException</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">e</span>
         <span class="k">except</span> <span class="n">StaleElementReferenceException</span><span class="p">:</span>
             <span class="k">return</span> <span class="kc">False</span>
 
@@ -483,8 +465,6 @@
         <span class="k">try</span><span class="p">:</span>
             <span class="n">element_attribute</span> <span class="o">=</span> <span class="n">driver</span><span class="o">.</span><span class="n">find_element</span><span class="p">(</span><span class="o">*</span><span class="n">locator</span><span class="p">)</span><span class="o">.</span><span class="n">get_attribute</span><span class="p">(</span><span class="n">attribute_</span><span class="p">)</span>
             <span class="k">return</span> <span class="n">element_attribute</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
-        <span class="k">except</span> <span class="n">InvalidSelectorException</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">e</span>
         <span class="k">except</span> <span class="n">StaleElementReferenceException</span><span class="p">:</span>
             <span class="k">return</span> <span class="kc">False</span>
 
@@ -578,7 +558,7 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../../index.html">Selenium 4.1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">Selenium 4.2 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../../index.html" >Module code</a> &#187;</li> 
       </ul>
     </div>

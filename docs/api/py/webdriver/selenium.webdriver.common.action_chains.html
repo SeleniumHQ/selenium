@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>selenium.webdriver.common.action_chains &#8212; Selenium 4.1 documentation</title>
+    <title>selenium.webdriver.common.action_chains &#8212; Selenium 4.2 documentation</title>
     <link rel="stylesheet" href="../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     
@@ -27,7 +27,7 @@
         <li class="right" >
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">Selenium 4.1 documentation</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="../index.html">Selenium 4.2 documentation</a> &#187;</li> 
       </ul>
     </div>  
 
@@ -374,6 +374,72 @@ If None, releases on current mouse position.</li>
 </dd></dl>
 
 <dl class="method">
+<dt id="selenium.webdriver.common.action_chains.ActionChains.scroll_by_amount">
+<code class="descname">scroll_by_amount</code><span class="sig-paren">(</span><em>delta_x: int</em>, <em>delta_y: int</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/webdriver/common/action_chains.html#ActionChains.scroll_by_amount"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.common.action_chains.ActionChains.scroll_by_amount" title="Permalink to this definition">¶</a></dt>
+<dd><p>Scrolls by provided amounts with the origin in the top left corner of the viewport.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Args:</th><td class="field-body"><ul class="first last simple">
+<li>delta_x: Distance along X axis to scroll using the wheel. A negative value scrolls left.</li>
+<li>delta_y: Distance along Y axis to scroll using the wheel. A negative value scrolls up.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.common.action_chains.ActionChains.scroll_from_origin">
+<code class="descname">scroll_from_origin</code><span class="sig-paren">(</span><em>scroll_origin: selenium.webdriver.common.actions.wheel_input.ScrollOrigin</em>, <em>delta_x: int</em>, <em>delta_y: int</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/webdriver/common/action_chains.html#ActionChains.scroll_from_origin"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.common.action_chains.ActionChains.scroll_from_origin" title="Permalink to this definition">¶</a></dt>
+<dd><p>Scrolls by provided amount based on a provided origin.
+The scroll origin is either the center of an element or the upper left of the viewport plus any offsets.
+If the origin is an element, and the element is not in the viewport, the bottom of the element will first
+be scrolled to the bottom of the viewport.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Args:</th><td class="field-body"><ul class="first simple">
+<li>origin: Where scroll originates (viewport or element center) plus provided offsets.</li>
+<li>delta_x: Distance along X axis to scroll using the wheel. A negative value scrolls left.</li>
+<li>delta_y: Distance along Y axis to scroll using the wheel. A negative value scrolls up.</li>
+</ul>
+<table class="last docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Raises:</th><td class="field-body">If the origin with offset is outside the viewport.
+- MoveTargetOutOfBoundsException - If the origin with offset is outside the viewport.</td>
+</tr>
+</tbody>
+</table>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.common.action_chains.ActionChains.scroll_to_element">
+<code class="descname">scroll_to_element</code><span class="sig-paren">(</span><em>element: selenium.webdriver.remote.webelement.WebElement</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/webdriver/common/action_chains.html#ActionChains.scroll_to_element"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.common.action_chains.ActionChains.scroll_to_element" title="Permalink to this definition">¶</a></dt>
+<dd><p>If the element is outside the viewport, scrolls the bottom of the element to the bottom of the viewport.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Args:</th><td class="field-body"><ul class="first last simple">
+<li>element: Which element to scroll into the viewport.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
 <dt id="selenium.webdriver.common.action_chains.ActionChains.send_keys">
 <code class="descname">send_keys</code><span class="sig-paren">(</span><em>*keys_to_send</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/webdriver/common/action_chains.html#ActionChains.send_keys"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.common.action_chains.ActionChains.send_keys" title="Permalink to this definition">¶</a></dt>
 <dd><p>Sends keys to current focused element.</p>
@@ -452,7 +518,7 @@ If None, releases on current mouse position.</li>
         <li class="right" >
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">Selenium 4.1 documentation</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="../index.html">Selenium 4.2 documentation</a> &#187;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">

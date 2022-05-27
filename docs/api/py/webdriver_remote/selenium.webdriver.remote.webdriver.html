@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>selenium.webdriver.remote.webdriver &#8212; Selenium 4.1 documentation</title>
+    <title>selenium.webdriver.remote.webdriver &#8212; Selenium 4.2 documentation</title>
     <link rel="stylesheet" href="../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     
@@ -27,7 +27,7 @@
         <li class="right" >
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">Selenium 4.1 documentation</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="../index.html">Selenium 4.2 documentation</a> &#187;</li> 
       </ul>
     </div>  
 
@@ -177,13 +177,13 @@ driver.add_cookie({‘name’: ‘foo’, ‘value’: ‘bar’, ‘sameSite’
 
 <dl class="method">
 <dt id="selenium.webdriver.remote.webdriver.WebDriver.add_credential">
-<code class="descname">add_credential</code><span class="sig-paren">(</span><em>credential: selenium.webdriver.common.virtual_authenticator.Credential</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/webdriver/remote/webdriver.html#WebDriver.add_credential"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.remote.webdriver.WebDriver.add_credential" title="Permalink to this definition">¶</a></dt>
+<code class="descname">add_credential</code><span class="sig-paren">(</span><em>credential: selenium.webdriver.common.virtual_authenticator.Credential</em><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="../_modules/selenium/webdriver/remote/webdriver.html#WebDriver.add_credential"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.remote.webdriver.WebDriver.add_credential" title="Permalink to this definition">¶</a></dt>
 <dd><p>Injects a credential into the authenticator.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="selenium.webdriver.remote.webdriver.WebDriver.add_virtual_authenticator">
-<code class="descname">add_virtual_authenticator</code><span class="sig-paren">(</span><em>options: selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/webdriver/remote/webdriver.html#WebDriver.add_virtual_authenticator"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.remote.webdriver.WebDriver.add_virtual_authenticator" title="Permalink to this definition">¶</a></dt>
+<code class="descname">add_virtual_authenticator</code><span class="sig-paren">(</span><em>options: selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions</em><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="../_modules/selenium/webdriver/remote/webdriver.html#WebDriver.add_virtual_authenticator"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.remote.webdriver.WebDriver.add_virtual_authenticator" title="Permalink to this definition">¶</a></dt>
 <dd><p>Adds a virtual authenticator with the given options.</p>
 </dd></dl>
 
@@ -1011,7 +1011,7 @@ empty list if not</li>
 
 <dl class="method">
 <dt id="selenium.webdriver.remote.webdriver.WebDriver.get_credentials">
-<code class="descname">get_credentials</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/webdriver/remote/webdriver.html#WebDriver.get_credentials"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.remote.webdriver.WebDriver.get_credentials" title="Permalink to this definition">¶</a></dt>
+<code class="descname">get_credentials</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; List[selenium.webdriver.common.virtual_authenticator.Credential]<a class="reference internal" href="../_modules/selenium/webdriver/remote/webdriver.html#WebDriver.get_credentials"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.remote.webdriver.WebDriver.get_credentials" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the list of credentials owned by the authenticator.</p>
 </dd></dl>
 
@@ -1280,7 +1280,7 @@ execute_async_script, see set_script_timeout.</dd>
 
 <dl class="method">
 <dt id="selenium.webdriver.remote.webdriver.WebDriver.print_page">
-<code class="descname">print_page</code><span class="sig-paren">(</span><em>print_options: Optional[selenium.webdriver.common.print_page_options.PrintOptions] = None</em><span class="sig-paren">)</span> &#x2192; str<a class="reference internal" href="../_modules/selenium/webdriver/remote/webdriver.html#WebDriver.print_page"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.remote.webdriver.WebDriver.print_page" title="Permalink to this definition">¶</a></dt>
+<code class="descname">print_page</code><span class="sig-paren">(</span><em>print_options: Optional[selenium.webdriver.common.print_page_options.PrintOptions</em>, <em>None] = None</em><span class="sig-paren">)</span> &#x2192; str<a class="reference internal" href="../_modules/selenium/webdriver/remote/webdriver.html#WebDriver.print_page"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.remote.webdriver.WebDriver.print_page" title="Permalink to this definition">¶</a></dt>
 <dd><p>Takes PDF of the current page.
 The driver makes a best effort to return a PDF based on the provided parameters.</p>
 </dd></dl>
@@ -1321,19 +1321,19 @@ The driver makes a best effort to return a PDF based on the provided parameters.
 
 <dl class="method">
 <dt id="selenium.webdriver.remote.webdriver.WebDriver.remove_all_credentials">
-<code class="descname">remove_all_credentials</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/webdriver/remote/webdriver.html#WebDriver.remove_all_credentials"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.remote.webdriver.WebDriver.remove_all_credentials" title="Permalink to this definition">¶</a></dt>
+<code class="descname">remove_all_credentials</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="../_modules/selenium/webdriver/remote/webdriver.html#WebDriver.remove_all_credentials"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.remote.webdriver.WebDriver.remove_all_credentials" title="Permalink to this definition">¶</a></dt>
 <dd><p>Removes all credentials from the authenticator.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="selenium.webdriver.remote.webdriver.WebDriver.remove_credential">
-<code class="descname">remove_credential</code><span class="sig-paren">(</span><em>credential_id: str</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/webdriver/remote/webdriver.html#WebDriver.remove_credential"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.remote.webdriver.WebDriver.remove_credential" title="Permalink to this definition">¶</a></dt>
+<code class="descname">remove_credential</code><span class="sig-paren">(</span><em>credential_id: Union[str, bytearray]</em><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="../_modules/selenium/webdriver/remote/webdriver.html#WebDriver.remove_credential"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.remote.webdriver.WebDriver.remove_credential" title="Permalink to this definition">¶</a></dt>
 <dd><p>Removes a credential from the authenticator.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="selenium.webdriver.remote.webdriver.WebDriver.remove_virtual_authenticator">
-<code class="descname">remove_virtual_authenticator</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/webdriver/remote/webdriver.html#WebDriver.remove_virtual_authenticator"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.remote.webdriver.WebDriver.remove_virtual_authenticator" title="Permalink to this definition">¶</a></dt>
+<code class="descname">remove_virtual_authenticator</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="../_modules/selenium/webdriver/remote/webdriver.html#WebDriver.remove_virtual_authenticator"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.remote.webdriver.WebDriver.remove_virtual_authenticator" title="Permalink to this definition">¶</a></dt>
 <dd><p>Removes a previously added virtual authenticator. The authenticator is no
 longer valid after removal, so no methods may be called.</p>
 </dd></dl>
@@ -1417,7 +1417,7 @@ should end with a <cite>.png</cite> extension.</li>
 
 <dl class="method">
 <dt id="selenium.webdriver.remote.webdriver.WebDriver.set_user_verified">
-<code class="descname">set_user_verified</code><span class="sig-paren">(</span><em>verified: bool</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/webdriver/remote/webdriver.html#WebDriver.set_user_verified"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.remote.webdriver.WebDriver.set_user_verified" title="Permalink to this definition">¶</a></dt>
+<code class="descname">set_user_verified</code><span class="sig-paren">(</span><em>verified: bool</em><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="../_modules/selenium/webdriver/remote/webdriver.html#WebDriver.set_user_verified"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.remote.webdriver.WebDriver.set_user_verified" title="Permalink to this definition">¶</a></dt>
 <dd><p>Sets whether the authenticator will simulate success or fail on user verification.
 verified: True if the authenticator will pass user verification, False otherwise.</p>
 </dd></dl>
@@ -1674,7 +1674,7 @@ to define custom shutdown behavior.</p>
         <li class="right" >
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">Selenium 4.1 documentation</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="../index.html">Selenium 4.2 documentation</a> &#187;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">

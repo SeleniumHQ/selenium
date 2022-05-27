@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>selenium.webdriver.common.action_chains &#8212; Selenium 4.1 documentation</title>
+    <title>selenium.webdriver.common.action_chains &#8212; Selenium 4.2 documentation</title>
     <link rel="stylesheet" href="../../../../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
     
@@ -27,7 +27,7 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../../index.html">Selenium 4.1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">Selenium 4.2 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../../index.html" accesskey="U">Module code</a> &#187;</li> 
       </ul>
     </div>  
@@ -58,9 +58,13 @@
 <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">The ActionChains implementation,</span>
 <span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">warnings</span>
+
+<span class="kn">from</span> <span class="nn">.actions.wheel_input</span> <span class="kn">import</span> <span class="n">ScrollOrigin</span>
 
 <span class="kn">from</span> <span class="nn">.utils</span> <span class="kn">import</span> <span class="n">keys_to_typing</span>
 <span class="kn">from</span> <span class="nn">.actions.action_builder</span> <span class="kn">import</span> <span class="n">ActionBuilder</span>
+<span class="kn">from</span> <span class="nn">selenium.webdriver.remote.webelement</span> <span class="kn">import</span> <span class="n">WebElement</span>
 
 
 <div class="viewcode-block" id="ActionChains"><a class="viewcode-back" href="../../../../webdriver/selenium.webdriver.common.action_chains.html#selenium.webdriver.common.action_chains.ActionChains">[docs]</a><span class="k">class</span> <span class="nc">ActionChains</span><span class="p">:</span>
@@ -361,6 +365,56 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">send_keys</span><span class="p">(</span><span class="o">*</span><span class="n">keys_to_send</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span></div>
 
+<div class="viewcode-block" id="ActionChains.scroll_to_element"><a class="viewcode-back" href="../../../../webdriver/selenium.webdriver.common.action_chains.html#selenium.webdriver.common.action_chains.ActionChains.scroll_to_element">[docs]</a>    <span class="k">def</span> <span class="nf">scroll_to_element</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">element</span><span class="p">:</span> <span class="n">WebElement</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        If the element is outside the viewport, scrolls the bottom of the element to the bottom of the viewport.</span>
+
+<span class="sd">        :Args:</span>
+<span class="sd">         - element: Which element to scroll into the viewport.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">w3c_actions</span><span class="o">.</span><span class="n">wheel_action</span><span class="o">.</span><span class="n">scroll</span><span class="p">(</span><span class="n">origin</span><span class="o">=</span><span class="n">element</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span></div>
+
+<div class="viewcode-block" id="ActionChains.scroll_by_amount"><a class="viewcode-back" href="../../../../webdriver/selenium.webdriver.common.action_chains.html#selenium.webdriver.common.action_chains.ActionChains.scroll_by_amount">[docs]</a>    <span class="k">def</span> <span class="nf">scroll_by_amount</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">delta_x</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">delta_y</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Scrolls by provided amounts with the origin in the top left corner of the viewport.</span>
+
+<span class="sd">        :Args:</span>
+<span class="sd">         - delta_x: Distance along X axis to scroll using the wheel. A negative value scrolls left.</span>
+<span class="sd">         - delta_y: Distance along Y axis to scroll using the wheel. A negative value scrolls up.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">w3c_actions</span><span class="o">.</span><span class="n">wheel_action</span><span class="o">.</span><span class="n">scroll</span><span class="p">(</span><span class="n">delta_x</span><span class="o">=</span><span class="n">delta_x</span><span class="p">,</span> <span class="n">delta_y</span><span class="o">=</span><span class="n">delta_y</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span></div>
+
+<div class="viewcode-block" id="ActionChains.scroll_from_origin"><a class="viewcode-back" href="../../../../webdriver/selenium.webdriver.common.action_chains.html#selenium.webdriver.common.action_chains.ActionChains.scroll_from_origin">[docs]</a>    <span class="k">def</span> <span class="nf">scroll_from_origin</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">scroll_origin</span><span class="p">:</span> <span class="n">ScrollOrigin</span><span class="p">,</span> <span class="n">delta_x</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">delta_y</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Scrolls by provided amount based on a provided origin.</span>
+<span class="sd">        The scroll origin is either the center of an element or the upper left of the viewport plus any offsets.</span>
+<span class="sd">        If the origin is an element, and the element is not in the viewport, the bottom of the element will first</span>
+<span class="sd">        be scrolled to the bottom of the viewport.</span>
+
+<span class="sd">        :Args:</span>
+<span class="sd">         - origin: Where scroll originates (viewport or element center) plus provided offsets.</span>
+<span class="sd">         - delta_x: Distance along X axis to scroll using the wheel. A negative value scrolls left.</span>
+<span class="sd">         - delta_y: Distance along Y axis to scroll using the wheel. A negative value scrolls up.</span>
+
+<span class="sd">         :Raises: If the origin with offset is outside the viewport.</span>
+<span class="sd">          - MoveTargetOutOfBoundsException - If the origin with offset is outside the viewport.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">scroll_origin</span><span class="p">,</span> <span class="n">ScrollOrigin</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;Expected object of type ScrollOrigin, got: &#39;</span>
+                            <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">scroll_origin</span><span class="p">)))</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">w3c_actions</span><span class="o">.</span><span class="n">wheel_action</span><span class="o">.</span><span class="n">scroll</span><span class="p">(</span><span class="n">origin</span><span class="o">=</span><span class="n">scroll_origin</span><span class="o">.</span><span class="n">origin</span><span class="p">,</span>
+                                             <span class="n">x</span><span class="o">=</span><span class="n">scroll_origin</span><span class="o">.</span><span class="n">x_offset</span><span class="p">,</span>
+                                             <span class="n">y</span><span class="o">=</span><span class="n">scroll_origin</span><span class="o">.</span><span class="n">y_offset</span><span class="p">,</span>
+                                             <span class="n">delta_x</span><span class="o">=</span><span class="n">delta_x</span><span class="p">,</span>
+                                             <span class="n">delta_y</span><span class="o">=</span><span class="n">delta_y</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span></div>
+
 <div class="viewcode-block" id="ActionChains.scroll"><a class="viewcode-back" href="../../../../webdriver/selenium.webdriver.common.action_chains.html#selenium.webdriver.common.action_chains.ActionChains.scroll">[docs]</a>    <span class="k">def</span> <span class="nf">scroll</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">delta_x</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">delta_y</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">duration</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">origin</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;viewport&quot;</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Sends wheel scroll information to the browser to be processed.</span>
@@ -371,6 +425,12 @@
 <span class="sd">         - delta_x: the distance the mouse will scroll on the x axis</span>
 <span class="sd">         - delta_y: the distance the mouse will scroll on the y axis</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+            <span class="s2">&quot;scroll() has been deprecated, please use scroll_to_element(), scroll_by_amount() or scroll_from_origin().&quot;</span><span class="p">,</span>
+            <span class="ne">DeprecationWarning</span><span class="p">,</span>
+            <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span>
+        <span class="p">)</span>
+
         <span class="bp">self</span><span class="o">.</span><span class="n">w3c_actions</span><span class="o">.</span><span class="n">wheel_action</span><span class="o">.</span><span class="n">scroll</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="n">y</span><span class="p">,</span> <span class="n">delta_x</span><span class="o">=</span><span class="n">delta_x</span><span class="p">,</span> <span class="n">delta_y</span><span class="o">=</span><span class="n">delta_y</span><span class="p">,</span>
                                              <span class="n">duration</span><span class="o">=</span><span class="n">duration</span><span class="p">,</span> <span class="n">origin</span><span class="o">=</span><span class="n">origin</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span></div>
@@ -414,7 +474,7 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../../index.html">Selenium 4.1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">Selenium 4.2 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../../index.html" >Module code</a> &#187;</li> 
       </ul>
     </div>
