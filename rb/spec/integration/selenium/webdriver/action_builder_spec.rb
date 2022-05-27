@@ -260,7 +260,7 @@ module Selenium
         end
       end
 
-      describe 'pen stylus' do
+      describe 'pen stylus', except: {browser: :firefox, reason: 'Unknown pointerType'} do
         it 'sets pointer event properties' do
           driver.get 'https://titusfortner.com/examples/pointerActionsPage.html'
           pointer_area = driver.find_element(id: 'pointerArea')
@@ -374,6 +374,7 @@ module Selenium
           iframe = driver.find_element(tag_name: 'iframe')
           driver.switch_to.frame(iframe)
           checkbox = driver.find_element(name: 'scroll_checkbox')
+          sleep 0.5
           expect(in_viewport?(checkbox)).to eq true
         end
 

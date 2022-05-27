@@ -41,6 +41,7 @@ ActionBuilder:
   * Add support for pointer event properties
   * Implement scroll wheel support
   * Deprecate ordered pair parameters for pause method in favor of keywords
+  * Deprecate move to element with offset changing origin to top left of element
 
 4.1.0 (2021-11-22)
 =========================

@@ -23,4 +23,3 @@ class MouseButton:
     RIGHT = 2
     BACK = 3
     FORWARD = 4
-
