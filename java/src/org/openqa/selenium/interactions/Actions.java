@@ -20,7 +20,9 @@ package org.openqa.selenium.interactions;
 import static org.openqa.selenium.interactions.PointerInput.MouseButton.LEFT;
 import static org.openqa.selenium.interactions.PointerInput.MouseButton.RIGHT;
 
+import org.openqa.selenium.Dimension;
 import org.openqa.selenium.Keys;
+import org.openqa.selenium.Rectangle;
 import org.openqa.selenium.UnsupportedCommandException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -420,9 +422,6 @@ public class Actions {
       action.addAction(new MoveToOffsetAction(jsonMouse, (Locatable) target, xOffset, yOffset));
     }
 
-    // Of course, this is the offset from the centre of the element. We have no idea what the width
-    // and height are once we execute this method.
-    LOG.info("When using the W3C Action commands, offsets are from the element's in-view center point");
     return moveInTicks(target, xOffset, yOffset);
   }
 
