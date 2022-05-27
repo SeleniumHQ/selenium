@@ -333,6 +333,34 @@ skipping Selenium's own tests.
 
 The maven jars should now be in your local `~/.m2/repository`.
 
+## Updating Java dependencies
+
+The coordinates (_groupId_:_artifactId_:_version_) of the Java dependencies
+are defined in the file [maven_deps.bzl](https://github.com/SeleniumHQ/selenium/blob/trunk/java/maven_deps.bzl).
+The process to modify these dependencies is the following:
+
+1. (Optional) If we want to detect the dependencies which are not updated,
+   we can use the following command for automatic discovery:
+
+```sh
+bazel run @maven//:outdated
+```
+
+2. Modify [maven_deps.bzl](https://github.com/SeleniumHQ/selenium/blob/trunk/java/maven_deps.bzl).
+   For instance, we can bump the version of a given artifact detected in the step before.
+
+3. Repin dependencies. This process is required to update the file [maven_install.json](https://github.com/SeleniumHQ/selenium/blob/trunk/java/maven_install.json),
+   which is used to manage the Maven dependencies tree (see [rules_jvm_external](https://github.com/bazelbuild/rules_jvm_external) for further details). The command to carry out this step is the following:
+
+```sh
+REPIN=1 bazel run @unpinned_maven//:pin
+```
+
+4. (Optional) If we use IntelliJ with the Bazel plugin, we need to synchronize
+   our project. To that aim, we click on _Bazel_ &rarr; _Sync_ &rarr; _Sync Project
+   with BUILD Files_.
+
+
 ## Running browser tests on Linux
 
 In order to run Browser tests, you first need to install the browser-specific drivers,

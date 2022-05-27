@@ -23,11 +23,12 @@ module Selenium
       attr_writer :default_move_duration
 
       #
-      # The overridable duration for movement used by methods in this module
+      # By default this is set to 250ms in the ActionBuilder constructor
+      # It can be overridden with default_move_duration=
       #
 
       def default_move_duration
-        @default_move_duration ||= 0.25 # 250 milliseconds
+        @default_move_duration ||= @duration / 1000 # convert ms to seconds
       end
 
       #
@@ -45,7 +46,7 @@ module Selenium
       # @return [ActionBuilder] A self reference.
       #
 
-      def pointer_down(button, device: nil, **opts)
+      def pointer_down(button = :left, device: nil, **opts)
         button_action(button, :create_pointer_down, device: device, **opts)
       end
 
@@ -62,7 +63,7 @@ module Selenium
       # @return [ActionBuilder] A self reference.
       #
 
-      def pointer_up(button, device: nil, **opts)
+      def pointer_up(button = :left, device: nil, **opts)
         button_action(button, :create_pointer_up, device: device, **opts)
       end
 
@@ -95,9 +96,12 @@ module Selenium
       # @return [ActionBuilder] A self reference.
       #
 
-      def move_to(element, right_by = nil, down_by = nil, device: nil, **opts)
+      def move_to(element, right_by = nil, down_by = nil, device: nil, duration: default_move_duration, **opts)
         pointer = pointer_input(device)
         if right_by || down_by
+          WebDriver.logger.warn("moving to an element with offset currently tries to use
+the top left corner of the element as the origin; in Selenium 4.3 it will use the in-view
+center point of the element as the origin.")
           size = element.size
           left_offset = (size[:width] / 2).to_i
           top_offset = (size[:height] / 2).to_i
@@ -107,7 +111,7 @@ module Selenium
           left = 0
           top = 0
         end
-        pointer.create_pointer_move(duration: default_move_duration,
+        pointer.create_pointer_move(duration: duration,
                                     x: left,
                                     y: top,
                                     origin: element,
@@ -133,12 +137,13 @@ module Selenium
       # @raise [MoveTargetOutOfBoundsError] if the provided offset is outside the document's boundaries.
       #
 
-      def move_by(right_by, down_by, device: nil)
+      def move_by(right_by, down_by, device: nil, duration: default_move_duration, **opts)
         pointer = pointer_input(device)
-        pointer.create_pointer_move(duration: default_move_duration,
+        pointer.create_pointer_move(duration: duration,
                                     x: Integer(right_by),
                                     y: Integer(down_by),
-                                    origin: Interactions::PointerMove::POINTER)
+                                    origin: Interactions::PointerMove::POINTER,
+                                    **opts)
         tick(pointer)
         self
       end
@@ -160,12 +165,13 @@ module Selenium
       # @raise [MoveTargetOutOfBoundsError] if the provided x or y value is outside the document's boundaries.
       #
 
-      def move_to_location(x, y, device: nil)
+      def move_to_location(x, y, device: nil, duration: default_move_duration, **opts)
         pointer = pointer_input(device)
-        pointer.create_pointer_move(duration: default_move_duration,
+        pointer.create_pointer_move(duration: duration,
                                     x: Integer(x),
                                     y: Integer(y),
-                                    origin: Interactions::PointerMove::VIEWPORT)
+                                    origin: Interactions::PointerMove::VIEWPORT,
+                                    **opts)
         tick(pointer)
         self
       end

@@ -43,8 +43,7 @@ public class DefaultWheelTest extends JUnit4TestBase {
 
     assertFalse(inViewport(iframe));
 
-    WheelInput.ScrollOrigin scrollOrigin = WheelInput.ScrollOrigin.fromElement(iframe);
-    getBuilder(driver).scroll(0, 0, 0, 0, scrollOrigin).perform();
+    getBuilder(driver).scrollToElement(iframe).perform();
 
     assertTrue(inViewport(iframe));
   }
@@ -55,7 +54,7 @@ public class DefaultWheelTest extends JUnit4TestBase {
     WebElement iframe = driver.findElement(By.tagName("iframe"));
     WheelInput.ScrollOrigin scrollOrigin = WheelInput.ScrollOrigin.fromElement(iframe);
 
-    getBuilder(driver).scroll(0, 0, 0, 200, scrollOrigin).perform();
+    getBuilder(driver).scrollFromOrigin(scrollOrigin, 0, 200).perform();
 
     driver.switchTo().frame(iframe);
     WebElement checkbox = driver.findElement(By.name("scroll_checkbox"));
@@ -66,9 +65,9 @@ public class DefaultWheelTest extends JUnit4TestBase {
   public void shouldScrollFromElementByGivenAmountWithOffset() {
     driver.get(appServer.whereIs("scrolling_tests/frame_with_nested_scrolling_frame_out_of_view.html"));
     WebElement footer = driver.findElement(By.tagName("footer"));
-    WheelInput.ScrollOrigin scrollOrigin = WheelInput.ScrollOrigin.fromElement(footer);
+    WheelInput.ScrollOrigin scrollOrigin = WheelInput.ScrollOrigin.fromElement(footer, 0, -50);
 
-    getBuilder(driver).scroll(0, -50, 0, 200, scrollOrigin).perform();
+    getBuilder(driver).scrollFromOrigin(scrollOrigin,0, 200).perform();
 
     WebElement iframe = driver.findElement(By.tagName("iframe"));
     driver.switchTo().frame(iframe);
@@ -80,9 +79,9 @@ public class DefaultWheelTest extends JUnit4TestBase {
   public void throwErrorWhenElementOriginIsOutOfViewport() {
     driver.get(appServer.whereIs("scrolling_tests/frame_with_nested_scrolling_frame_out_of_view.html"));
     WebElement footer = driver.findElement(By.tagName("footer"));
-    WheelInput.ScrollOrigin scrollOrigin = WheelInput.ScrollOrigin.fromElement(footer);
+    WheelInput.ScrollOrigin scrollOrigin = WheelInput.ScrollOrigin.fromElement(footer, 0, 50);
 
-    getBuilder(driver).scroll(0, 50, 0, 200, scrollOrigin).perform();
+    getBuilder(driver).scrollFromOrigin(scrollOrigin, 0, 200).perform();
   }
 
   @Test
@@ -90,9 +89,8 @@ public class DefaultWheelTest extends JUnit4TestBase {
     driver.get(appServer.whereIs("scrolling_tests/frame_with_nested_scrolling_frame_out_of_view.html"));
     WebElement footer = driver.findElement(By.tagName("footer"));
     int deltaY = footer.getRect().y;
-    WheelInput.ScrollOrigin scrollOrigin = WheelInput.ScrollOrigin.fromViewport();
 
-    getBuilder(driver).scroll(0, 0, 0, deltaY, scrollOrigin).perform();
+    getBuilder(driver).scrollByAmount(0, deltaY).perform();
 
     assertTrue(inViewport(footer));
   }
@@ -100,9 +98,9 @@ public class DefaultWheelTest extends JUnit4TestBase {
   @Test
   public void shouldScrollFromViewportByGivenAmountFromOrigin() {
     driver.get(appServer.whereIs("scrolling_tests/frame_with_nested_scrolling_frame.html"));
-    WheelInput.ScrollOrigin scrollOrigin = WheelInput.ScrollOrigin.fromViewport();
+    WheelInput.ScrollOrigin scrollOrigin = WheelInput.ScrollOrigin.fromViewport(10, 10);
 
-    getBuilder(driver).scroll(10, 10, 0, 200, scrollOrigin).perform();
+    getBuilder(driver).scrollFromOrigin(scrollOrigin, 0, 200).perform();
 
     WebElement iframe = driver.findElement(By.tagName("iframe"));
     driver.switchTo().frame(iframe);
@@ -113,9 +111,9 @@ public class DefaultWheelTest extends JUnit4TestBase {
   @Test(expected = MoveTargetOutOfBoundsException.class)
   public void throwErrorWhenOriginOffsetIsOutOfViewport() {
     driver.get(appServer.whereIs("scrolling_tests/frame_with_nested_scrolling_frame.html"));
-    WheelInput.ScrollOrigin scrollOrigin = WheelInput.ScrollOrigin.fromViewport();
+    WheelInput.ScrollOrigin scrollOrigin = WheelInput.ScrollOrigin.fromViewport(-10, -10);
 
-    getBuilder(driver).scroll(-10, -10, 0, 200, scrollOrigin).perform();
+    getBuilder(driver).scrollFromOrigin(scrollOrigin, 0, 200).perform();
   }
 
   private boolean inViewport(WebElement element) {

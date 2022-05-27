@@ -19,9 +19,9 @@ package org.openqa.selenium.chrome;
 
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
+import org.openqa.selenium.AcceptedW3CCapabilityKeys;
 import org.openqa.selenium.PageLoadStrategy;
 import org.openqa.selenium.UnexpectedAlertBehaviour;
-import org.openqa.selenium.remote.AcceptedW3CCapabilityKeys;
 import org.openqa.selenium.testing.TestUtilities;
 import org.openqa.selenium.testing.UnitTests;
 

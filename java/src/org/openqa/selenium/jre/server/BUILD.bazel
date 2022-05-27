@@ -5,7 +5,6 @@ java_library(
     name = "server",
     srcs = glob(["*.java"]),
     visibility = [
-        "//java/src/org/openqa/selenium/server/htmlrunner:__pkg__",
         "//java/test/com/thoughtworks/selenium/webdriven:__pkg__",
         "//java/test/org/openqa/selenium:__subpackages__",
     ],

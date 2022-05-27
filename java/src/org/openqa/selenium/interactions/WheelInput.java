@@ -109,6 +109,8 @@ public class WheelInput implements InputSource, Encodable {
 
   public static final class ScrollOrigin {
     private final Object originObject;
+    private int xOffset = 0;
+    private int yOffset = 0;
 
     public Object asArg() {
       Object arg = originObject;
@@ -118,16 +120,38 @@ public class WheelInput implements InputSource, Encodable {
       return arg;
     }
 
-    private ScrollOrigin(Object originObject) {
+    private ScrollOrigin(Object originObject, int xOffset, int yOffset) {
       this.originObject = originObject;
+      this.xOffset = xOffset;
+      this.yOffset = yOffset;
     }
 
     public static ScrollOrigin fromViewport() {
-      return new ScrollOrigin("viewport");
+      return new ScrollOrigin("viewport", 0, 0);
+    }
+
+    public static ScrollOrigin fromViewport(int xOffset, int yOffset) {
+      return new ScrollOrigin("viewport",
+        Require.nonNull("xOffset", xOffset),
+        Require.nonNull("yOffset", yOffset));
     }
 
     public static ScrollOrigin fromElement(WebElement element) {
-      return new ScrollOrigin(Require.nonNull("Element", element));
+      return new ScrollOrigin(Require.nonNull("Element", element), 0, 0);
+    }
+
+    public static ScrollOrigin fromElement(WebElement element, int xOffset, int yOffset) {
+      return new ScrollOrigin(Require.nonNull("Element", element),
+        Require.nonNull("xOffset", xOffset),
+        Require.nonNull("yOffset", yOffset));
+    }
+
+    public int getxOffset() {
+      return xOffset;
+    }
+
+    public int getyOffset() {
+      return yOffset;
     }
   }
 }
