@@ -52,6 +52,7 @@ namespace OpenQA.Selenium.Interactions
         private ActionBuilder actionBuilder = new ActionBuilder();
         private PointerInputDevice defaultMouse = new PointerInputDevice(PointerKind.Mouse, "default mouse");
         private KeyInputDevice defaultKeyboard = new KeyInputDevice("default keyboard");
+        private WheelInputDevice defaultWheel = new WheelInputDevice("default wheel");
         private IActionExecutor actionExecutor;
 
         /// <summary>
@@ -417,8 +418,7 @@ namespace OpenQA.Selenium.Interactions
         /// <returns>A self-reference to this <see cref="Actions"/>.</returns>
         public Actions ScrollToElement(IWebElement element)
         {
-            WheelInputDevice wheel = new WheelInputDevice();
-            this.actionBuilder.AddAction(wheel.CreateWheelScroll(element, 0, 0, 0, 0, DefaultScrollDuration));
+            this.actionBuilder.AddAction(this.defaultWheel.CreateWheelScroll(element, 0, 0, 0, 0, DefaultScrollDuration));
 
             return this;
         }
@@ -431,8 +431,7 @@ namespace OpenQA.Selenium.Interactions
         /// <returns>A self-reference to this <see cref="Actions"/>.</returns>
         public Actions ScrollByAmount(int deltaX, int deltaY)
         {
-            WheelInputDevice wheel = new WheelInputDevice();
-            this.actionBuilder.AddAction(wheel.CreateWheelScroll(deltaX, deltaY, DefaultScrollDuration));
+            this.actionBuilder.AddAction(this.defaultWheel.CreateWheelScroll(deltaX, deltaY, DefaultScrollDuration));
 
             return this;
         }
@@ -452,8 +451,6 @@ namespace OpenQA.Selenium.Interactions
         /// <exception cref="MoveTargetOutOfBoundsException">If the origin with offset is outside the viewport.</exception>
         public Actions ScrollFromOrigin(WheelInputDevice.ScrollOrigin scrollOrigin, int deltaX, int deltaY)
         {
-            WheelInputDevice wheel = new WheelInputDevice();
-
             if (scrollOrigin.Viewport && scrollOrigin.Element != null)
             {
                 throw new ArgumentException("viewport can not be true if an element is defined.", nameof(scrollOrigin));
@@ -461,12 +458,12 @@ namespace OpenQA.Selenium.Interactions
 
             if (scrollOrigin.Viewport)
             {
-                this.actionBuilder.AddAction(wheel.CreateWheelScroll(CoordinateOrigin.Viewport,
+                this.actionBuilder.AddAction(this.defaultWheel.CreateWheelScroll(CoordinateOrigin.Viewport,
                     scrollOrigin.XOffset, scrollOrigin.YOffset, deltaX, deltaY, DefaultScrollDuration));
             }
             else
             {
-                this.actionBuilder.AddAction(wheel.CreateWheelScroll(scrollOrigin.Element,
+                this.actionBuilder.AddAction(this.defaultWheel.CreateWheelScroll(scrollOrigin.Element,
                     scrollOrigin.XOffset, scrollOrigin.YOffset, deltaX, deltaY, DefaultScrollDuration));
             }
 
