@@ -38,8 +38,7 @@ module Selenium
                    x1: 3,
                    back: 3,
                    x2: 4,
-                   forward: 4,
-                   erase: 5}.freeze
+                   forward: 4}.freeze
         DIRECTIONS = {down: :pointerDown, up: :pointerUp}.freeze
 
         def initialize(source, direction, button, **opts)
