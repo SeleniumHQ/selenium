@@ -471,6 +471,17 @@ namespace OpenQA.Selenium.Interactions
         }
 
         /// <summary>
+        /// Performs a Pause.
+        /// </summary>
+        /// <param name="duration">How long to pause the action chain.</param>
+        /// <returns>A self-reference to this <see cref="Actions"/>.</returns>
+        public Actions Pause(TimeSpan duration)
+        {
+            this.actionBuilder.AddAction(new PauseInteraction(this.defaultMouse, duration));
+            return this;
+        }
+
+        /// <summary>
         /// Builds the sequence of actions.
         /// </summary>
         /// <returns>A composite <see cref="IAction"/> which can be used to perform the actions.</returns>
