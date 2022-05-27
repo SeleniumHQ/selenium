@@ -1,4 +1,5 @@
 org.openqa.selenium
+org.openqa.selenium.bidi
 org.openqa.selenium.chrome
 org.openqa.selenium.chromium
 org.openqa.selenium.cli

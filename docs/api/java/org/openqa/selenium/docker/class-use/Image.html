@@ -174,10 +174,11 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 </tr>
 <tbody>
 <tr class="altColor">
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="../ContainerConfig.html#%3Cinit%3E(org.openqa.selenium.docker.Image,com.google.common.collect.Multimap,java.util.Map,java.util.Map,java.lang.String,long)">ContainerConfig</a></span>&#8203;(<a href="../Image.html" title="class in org.openqa.selenium.docker">Image</a>&nbsp;image,
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="../ContainerConfig.html#%3Cinit%3E(org.openqa.selenium.docker.Image,com.google.common.collect.Multimap,java.util.Map,java.util.Map,java.util.List,java.lang.String,long)">ContainerConfig</a></span>&#8203;(<a href="../Image.html" title="class in org.openqa.selenium.docker">Image</a>&nbsp;image,
                com.google.common.collect.Multimap&lt;java.lang.String,&#8203;java.util.Map&lt;java.lang.String,&#8203;java.lang.Object&gt;&gt;&nbsp;portBindings,
                java.util.Map&lt;java.lang.String,&#8203;java.lang.String&gt;&nbsp;envVars,
                java.util.Map&lt;java.lang.String,&#8203;java.lang.String&gt;&nbsp;volumeBinds,
+               java.util.List&lt;<a href="../Device.html" title="class in org.openqa.selenium.docker">Device</a>&gt;&nbsp;devices,
                java.lang.String&nbsp;networkName,
                long&nbsp;shmSize)</code></th>
 <td class="colLast">&nbsp;</td>
@@ -221,13 +222,14 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 </tr>
 <tbody>
 <tr class="altColor">
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="../../grid/node/docker/DockerSessionFactory.html#%3Cinit%3E(org.openqa.selenium.remote.tracing.Tracer,org.openqa.selenium.remote.http.HttpClient.Factory,java.time.Duration,org.openqa.selenium.docker.Docker,java.net.URI,org.openqa.selenium.docker.Image,org.openqa.selenium.Capabilities,org.openqa.selenium.docker.Image,org.openqa.selenium.grid.node.docker.DockerAssetsPath,java.lang.String,boolean)">DockerSessionFactory</a></span>&#8203;(<a href="../../remote/tracing/Tracer.html" title="interface in org.openqa.selenium.remote.tracing">Tracer</a>&nbsp;tracer,
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="../../grid/node/docker/DockerSessionFactory.html#%3Cinit%3E(org.openqa.selenium.remote.tracing.Tracer,org.openqa.selenium.remote.http.HttpClient.Factory,java.time.Duration,org.openqa.selenium.docker.Docker,java.net.URI,org.openqa.selenium.docker.Image,org.openqa.selenium.Capabilities,java.util.List,org.openqa.selenium.docker.Image,org.openqa.selenium.grid.node.docker.DockerAssetsPath,java.lang.String,boolean)">DockerSessionFactory</a></span>&#8203;(<a href="../../remote/tracing/Tracer.html" title="interface in org.openqa.selenium.remote.tracing">Tracer</a>&nbsp;tracer,
                     <a href="../../remote/http/HttpClient.Factory.html" title="interface in org.openqa.selenium.remote.http">HttpClient.Factory</a>&nbsp;clientFactory,
                     java.time.Duration&nbsp;sessionTimeout,
                     <a href="../Docker.html" title="class in org.openqa.selenium.docker">Docker</a>&nbsp;docker,
                     java.net.URI&nbsp;dockerUri,
                     <a href="../Image.html" title="class in org.openqa.selenium.docker">Image</a>&nbsp;browserImage,
                     <a href="../../Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&nbsp;stereotype,
+                    java.util.List&lt;<a href="../Device.html" title="class in org.openqa.selenium.docker">Device</a>&gt;&nbsp;devices,
                     <a href="../Image.html" title="class in org.openqa.selenium.docker">Image</a>&nbsp;videoImage,
                     <a href="../../grid/node/docker/DockerAssetsPath.html" title="class in org.openqa.selenium.grid.node.docker">DockerAssetsPath</a>&nbsp;assetsPath,
                     java.lang.String&nbsp;networkName,

@@ -153,13 +153,9 @@ implements java.io.Closeable</pre>
  <ol>
    <li>User adds an item on to the queue using <a href="#addToQueue(org.openqa.selenium.grid.data.SessionRequest)"><code>addToQueue(SessionRequest)</code></a>. This
        will block until the request completes in some way.
-   <li>After being added, a <a href="../../data/NewSessionRequestEvent.html" title="class in org.openqa.selenium.grid.data"><code>NewSessionRequestEvent</code></a> is fired. Listeners should use
-       this as an indication to call <a href="#remove(org.openqa.selenium.grid.data.RequestId)"><code>remove(RequestId)</code></a> to get the session request.
    <li>If the session request is completed, then <a href="#complete(org.openqa.selenium.grid.data.RequestId,org.openqa.selenium.internal.Either)"><code>complete(RequestId, Either)</code></a> must
-       be called. This will not only ensure that <a href="#addToQueue(org.openqa.selenium.grid.data.SessionRequest)"><code>addToQueue(SessionRequest)</code></a>
-       returns, but will also fire a <a href="../../data/NewSessionRejectedEvent.html" title="class in org.openqa.selenium.grid.data"><code>NewSessionRejectedEvent</code></a> if the session was
-       rejected. Positive completions of events are assumed to be notified on the event bus
-       by other listeners.
+       be called. This will ensure that <a href="#addToQueue(org.openqa.selenium.grid.data.SessionRequest)"><code>addToQueue(SessionRequest)</code></a>
+       returns.
    <li>If the request cannot be handled right now, call
        <a href="#retryAddToQueue(org.openqa.selenium.grid.data.SessionRequest)"><code>retryAddToQueue(SessionRequest)</code></a> to return the session request to the front
        of the queue.
@@ -205,8 +201,7 @@ implements java.io.Closeable</pre>
 <th class="colLast" scope="col">Description</th>
 </tr>
 <tr class="altColor">
-<th class="colConstructorName" scope="row"><code><span class="memberNameLink"><a href="#%3Cinit%3E(org.openqa.selenium.remote.tracing.Tracer,org.openqa.selenium.events.EventBus,org.openqa.selenium.grid.data.SlotMatcher,java.time.Duration,java.time.Duration,org.openqa.selenium.grid.security.Secret)">LocalNewSessionQueue</a></span>&#8203;(<a href="../../../remote/tracing/Tracer.html" title="interface in org.openqa.selenium.remote.tracing">Tracer</a>&nbsp;tracer,
-                    <a href="../../../events/EventBus.html" title="interface in org.openqa.selenium.events">EventBus</a>&nbsp;bus,
+<th class="colConstructorName" scope="row"><code><span class="memberNameLink"><a href="#%3Cinit%3E(org.openqa.selenium.remote.tracing.Tracer,org.openqa.selenium.grid.data.SlotMatcher,java.time.Duration,java.time.Duration,org.openqa.selenium.grid.security.Secret)">LocalNewSessionQueue</a></span>&#8203;(<a href="../../../remote/tracing/Tracer.html" title="interface in org.openqa.selenium.remote.tracing">Tracer</a>&nbsp;tracer,
                     <a href="../../data/SlotMatcher.html" title="interface in org.openqa.selenium.grid.data">SlotMatcher</a>&nbsp;slotMatcher,
                     java.time.Duration&nbsp;retryPeriod,
                     java.time.Duration&nbsp;requestTimeout,
@@ -325,14 +320,13 @@ implements java.io.Closeable</pre>
 <!--   -->
 </a>
 <h3>Constructor Detail</h3>
-<a id="&lt;init&gt;(org.openqa.selenium.remote.tracing.Tracer,org.openqa.selenium.events.EventBus,org.openqa.selenium.grid.data.SlotMatcher,java.time.Duration,java.time.Duration,org.openqa.selenium.grid.security.Secret)">
+<a id="&lt;init&gt;(org.openqa.selenium.remote.tracing.Tracer,org.openqa.selenium.grid.data.SlotMatcher,java.time.Duration,java.time.Duration,org.openqa.selenium.grid.security.Secret)">
 <!--   -->
 </a>
 <ul class="blockListLast">
 <li class="blockList">
 <h4>LocalNewSessionQueue</h4>
 <pre>public&nbsp;LocalNewSessionQueue&#8203;(<a href="../../../remote/tracing/Tracer.html" title="interface in org.openqa.selenium.remote.tracing">Tracer</a>&nbsp;tracer,
-                            <a href="../../../events/EventBus.html" title="interface in org.openqa.selenium.events">EventBus</a>&nbsp;bus,
                             <a href="../../data/SlotMatcher.html" title="interface in org.openqa.selenium.grid.data">SlotMatcher</a>&nbsp;slotMatcher,
                             java.time.Duration&nbsp;retryPeriod,
                             java.time.Duration&nbsp;requestTimeout,

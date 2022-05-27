@@ -26,8 +26,8 @@
     catch(err) {
     }
 //-->
-var data = {"i0":6,"i1":6,"i2":6,"i3":6};
-var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],4:["t3","Abstract Methods"]};
+var data = {"i0":38,"i1":38,"i2":38,"i3":38};
+var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],4:["t3","Abstract Methods"],32:["t6","Deprecated Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
 var tableTab = "tableTab";
@@ -127,11 +127,16 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <ul class="blockList">
 <li class="blockList">
 <hr>
-<pre>public interface <span class="typeNameLabel">Rotatable</span></pre>
-<div class="block">Represents rotation of the browser view for orientation-sensitive devices.
+<pre>@Deprecated
+public interface <span class="typeNameLabel">Rotatable</span></pre>
+<div class="deprecationBlock"><span class="deprecatedLabel">Deprecated.</span>
+<div class="deprecationComment">As this is only available only for mobile which is handled by the Appium project
+
+ Represents rotation of the browser view for orientation-sensitive devices.
 
  When using this with a real device, the device should not be moved so that the built-in sensors
  do not interfere.</div>
+</div>
 </li>
 </ul>
 </div>
@@ -146,7 +151,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 </a>
 <h3>Method Summary</h3>
 <table class="memberSummary">
-<caption><span id="t0" class="activeTableTab"><span>All Methods</span><span class="tabEnd">&nbsp;</span></span><span id="t2" class="tableTab"><span><a href="javascript:show(2);">Instance Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t3" class="tableTab"><span><a href="javascript:show(4);">Abstract Methods</a></span><span class="tabEnd">&nbsp;</span></span></caption>
+<caption><span id="t0" class="activeTableTab"><span>All Methods</span><span class="tabEnd">&nbsp;</span></span><span id="t2" class="tableTab"><span><a href="javascript:show(2);">Instance Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t3" class="tableTab"><span><a href="javascript:show(4);">Abstract Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t6" class="tableTab"><span><a href="javascript:show(32);">Deprecated Methods</a></span><span class="tabEnd">&nbsp;</span></span></caption>
 <tr>
 <th class="colFirst" scope="col">Modifier and Type</th>
 <th class="colSecond" scope="col">Method</th>
@@ -155,12 +160,15 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <tr id="i0" class="altColor">
 <td class="colFirst"><code><a href="ScreenOrientation.html" title="enum in org.openqa.selenium">ScreenOrientation</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getOrientation()">getOrientation</a></span>()</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block"><span class="deprecatedLabel">Deprecated.</span></div>
+&nbsp;</td>
 </tr>
 <tr id="i1" class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#rotate(org.openqa.selenium.DeviceRotation)">rotate</a></span>&#8203;(<a href="DeviceRotation.html" title="class in org.openqa.selenium">DeviceRotation</a>&nbsp;rotation)</code></th>
 <td class="colLast">
+<div class="block"><span class="deprecatedLabel">Deprecated.</span></div>
 <div class="block">Changes the rotation of the browser window.</div>
 </td>
 </tr>
@@ -168,13 +176,16 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#rotate(org.openqa.selenium.ScreenOrientation)">rotate</a></span>&#8203;(<a href="ScreenOrientation.html" title="enum in org.openqa.selenium">ScreenOrientation</a>&nbsp;orientation)</code></th>
 <td class="colLast">
+<div class="block"><span class="deprecatedLabel">Deprecated.</span></div>
 <div class="block">Changes the orientation of the browser window.</div>
 </td>
 </tr>
 <tr id="i3" class="rowColor">
 <td class="colFirst"><code><a href="DeviceRotation.html" title="class in org.openqa.selenium">DeviceRotation</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#rotation()">rotation</a></span>()</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block"><span class="deprecatedLabel">Deprecated.</span></div>
+&nbsp;</td>
 </tr>
 </table>
 </li>
@@ -200,6 +211,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <li class="blockList">
 <h4>rotate</h4>
 <pre class="methodSignature">void&nbsp;rotate&#8203;(<a href="ScreenOrientation.html" title="enum in org.openqa.selenium">ScreenOrientation</a>&nbsp;orientation)</pre>
+<div class="deprecationBlock"><span class="deprecatedLabel">Deprecated.</span></div>
 <div class="block">Changes the orientation of the browser window.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
@@ -214,6 +226,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <li class="blockList">
 <h4>getOrientation</h4>
 <pre class="methodSignature"><a href="ScreenOrientation.html" title="enum in org.openqa.selenium">ScreenOrientation</a>&nbsp;getOrientation()</pre>
+<div class="deprecationBlock"><span class="deprecatedLabel">Deprecated.</span></div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>the current screen orientation of the browser</dd>
@@ -227,6 +240,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <li class="blockList">
 <h4>rotate</h4>
 <pre class="methodSignature">void&nbsp;rotate&#8203;(<a href="DeviceRotation.html" title="class in org.openqa.selenium">DeviceRotation</a>&nbsp;rotation)</pre>
+<div class="deprecationBlock"><span class="deprecatedLabel">Deprecated.</span></div>
 <div class="block">Changes the rotation of the browser window.</div>
 </li>
 </ul>
@@ -237,6 +251,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <li class="blockList">
 <h4>rotation</h4>
 <pre class="methodSignature"><a href="DeviceRotation.html" title="class in org.openqa.selenium">DeviceRotation</a>&nbsp;rotation()</pre>
+<div class="deprecationBlock"><span class="deprecatedLabel">Deprecated.</span></div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>DeviceOrientation describing the current screen rotation of the browser window</dd>

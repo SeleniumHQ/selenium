@@ -26,8 +26,8 @@
     catch(err) {
     }
 //-->
-var data = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10,"i9":10};
-var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
+var data = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":42,"i7":10,"i8":10,"i9":10};
+var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"],32:["t6","Deprecated Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
 var tableTab = "tableTab";
@@ -169,7 +169,11 @@ implements <a href="../WebDriver.Options.html" title="interface in org.openqa.se
 <tr class="altColor">
 <td class="colFirst"><code>protected class&nbsp;</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="RemoteWebDriver.RemoteWebDriverOptions.RemoteInputMethodManager.html" title="class in org.openqa.selenium.remote">RemoteWebDriver.RemoteWebDriverOptions.RemoteInputMethodManager</a></span></code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block"><span class="deprecatedLabel">Deprecated.</span>
+<div class="deprecationComment">Will be removed.</div>
+</div>
+</td>
 </tr>
 <tr class="rowColor">
 <td class="colFirst"><code>protected class&nbsp;</code></td>
@@ -216,7 +220,7 @@ implements <a href="../WebDriver.Options.html" title="interface in org.openqa.se
 </a>
 <h3>Method Summary</h3>
 <table class="memberSummary">
-<caption><span id="t0" class="activeTableTab"><span>All Methods</span><span class="tabEnd">&nbsp;</span></span><span id="t2" class="tableTab"><span><a href="javascript:show(2);">Instance Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t4" class="tableTab"><span><a href="javascript:show(8);">Concrete Methods</a></span><span class="tabEnd">&nbsp;</span></span></caption>
+<caption><span id="t0" class="activeTableTab"><span>All Methods</span><span class="tabEnd">&nbsp;</span></span><span id="t2" class="tableTab"><span><a href="javascript:show(2);">Instance Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t4" class="tableTab"><span><a href="javascript:show(8);">Concrete Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t6" class="tableTab"><span><a href="javascript:show(32);">Deprecated Methods</a></span><span class="tabEnd">&nbsp;</span></span></caption>
 <tr>
 <th class="colFirst" scope="col">Modifier and Type</th>
 <th class="colSecond" scope="col">Method</th>
@@ -267,7 +271,11 @@ implements <a href="../WebDriver.Options.html" title="interface in org.openqa.se
 <tr id="i6" class="altColor">
 <td class="colFirst"><code><a href="../WebDriver.ImeHandler.html" title="interface in org.openqa.selenium">WebDriver.ImeHandler</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#ime()">ime</a></span>()</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block"><span class="deprecatedLabel">Deprecated.</span>
+<div class="deprecationComment">Will be removed.</div>
+</div>
+</td>
 </tr>
 <tr id="i7" class="rowColor">
 <td class="colFirst"><code><a href="../logging/Logs.html" title="interface in org.openqa.selenium.logging">Logs</a></code></td>
@@ -490,6 +498,9 @@ public&nbsp;<a href="../logging/Logs.html" title="interface in org.openqa.seleni
 <li class="blockList">
 <h4>ime</h4>
 <pre class="methodSignature">public&nbsp;<a href="../WebDriver.ImeHandler.html" title="interface in org.openqa.selenium">WebDriver.ImeHandler</a>&nbsp;ime()</pre>
+<div class="deprecationBlock"><span class="deprecatedLabel">Deprecated.</span>
+<div class="deprecationComment">Will be removed. IME is not part of W3C WebDriver and does not work on browsers.</div>
+</div>
 <dl>
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
 <dd><code><a href="../WebDriver.Options.html#ime()">ime</a></code>&nbsp;in interface&nbsp;<code><a href="../WebDriver.Options.html" title="interface in org.openqa.selenium">WebDriver.Options</a></code></dd>

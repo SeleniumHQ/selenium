@@ -26,8 +26,8 @@
     catch(err) {
     }
 //-->
-var data = {"i0":10,"i1":10,"i2":10};
-var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
+var data = {"i0":42,"i1":42,"i2":42};
+var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"],32:["t6","Deprecated Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
 var tableTab = "tableTab";
@@ -139,9 +139,13 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dd><code><a href="AugmenterProvider.html" title="interface in org.openqa.selenium.remote">AugmenterProvider</a>&lt;<a href="../Rotatable.html" title="interface in org.openqa.selenium">Rotatable</a>&gt;</code></dd>
 </dl>
 <hr>
-<pre>public class <span class="typeNameLabel">AddRotatable</span>
+<pre>@Deprecated
+public class <span class="typeNameLabel">AddRotatable</span>
 extends java.lang.Object
 implements <a href="AugmenterProvider.html" title="interface in org.openqa.selenium.remote">AugmenterProvider</a>&lt;<a href="../Rotatable.html" title="interface in org.openqa.selenium">Rotatable</a>&gt;</pre>
+<div class="deprecationBlock"><span class="deprecatedLabel">Deprecated.</span>
+<div class="deprecationComment">Uses a non W3C compliant capability and is not available in W3C WebDriver sessions</div>
+</div>
 </li>
 </ul>
 </div>
@@ -163,7 +167,9 @@ implements <a href="AugmenterProvider.html" title="interface in org.openqa.selen
 </tr>
 <tr class="altColor">
 <th class="colConstructorName" scope="row"><code><span class="memberNameLink"><a href="#%3Cinit%3E()">AddRotatable</a></span>()</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block"><span class="deprecatedLabel">Deprecated.</span></div>
+&nbsp;</td>
 </tr>
 </table>
 </li>
@@ -177,7 +183,7 @@ implements <a href="AugmenterProvider.html" title="interface in org.openqa.selen
 </a>
 <h3>Method Summary</h3>
 <table class="memberSummary">
-<caption><span id="t0" class="activeTableTab"><span>All Methods</span><span class="tabEnd">&nbsp;</span></span><span id="t2" class="tableTab"><span><a href="javascript:show(2);">Instance Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t4" class="tableTab"><span><a href="javascript:show(8);">Concrete Methods</a></span><span class="tabEnd">&nbsp;</span></span></caption>
+<caption><span id="t0" class="activeTableTab"><span>All Methods</span><span class="tabEnd">&nbsp;</span></span><span id="t2" class="tableTab"><span><a href="javascript:show(2);">Instance Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t4" class="tableTab"><span><a href="javascript:show(8);">Concrete Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t6" class="tableTab"><span><a href="javascript:show(32);">Deprecated Methods</a></span><span class="tabEnd">&nbsp;</span></span></caption>
 <tr>
 <th class="colFirst" scope="col">Modifier and Type</th>
 <th class="colSecond" scope="col">Method</th>
@@ -186,20 +192,25 @@ implements <a href="AugmenterProvider.html" title="interface in org.openqa.selen
 <tr id="i0" class="altColor">
 <td class="colFirst"><code>java.lang.Class&lt;<a href="../Rotatable.html" title="interface in org.openqa.selenium">Rotatable</a>&gt;</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getDescribedInterface()">getDescribedInterface</a></span>()</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block"><span class="deprecatedLabel">Deprecated.</span></div>
+&nbsp;</td>
 </tr>
 <tr id="i1" class="rowColor">
 <td class="colFirst"><code><a href="../Rotatable.html" title="interface in org.openqa.selenium">Rotatable</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getImplementation(org.openqa.selenium.Capabilities,org.openqa.selenium.remote.ExecuteMethod)">getImplementation</a></span>&#8203;(<a href="../Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&nbsp;capabilities,
                  <a href="ExecuteMethod.html" title="interface in org.openqa.selenium.remote">ExecuteMethod</a>&nbsp;executeMethod)</code></th>
 <td class="colLast">
+<div class="block"><span class="deprecatedLabel">Deprecated.</span></div>
 <div class="block">For the interface that this provider describes, return an implementation.</div>
 </td>
 </tr>
 <tr id="i2" class="altColor">
 <td class="colFirst"><code>java.util.function.Predicate&lt;<a href="../Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&gt;</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#isApplicable()">isApplicable</a></span>()</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block"><span class="deprecatedLabel">Deprecated.</span></div>
+&nbsp;</td>
 </tr>
 </table>
 <ul class="blockList">
@@ -232,6 +243,7 @@ implements <a href="AugmenterProvider.html" title="interface in org.openqa.selen
 <li class="blockList">
 <h4>AddRotatable</h4>
 <pre>public&nbsp;AddRotatable()</pre>
+<div class="deprecationBlock"><span class="deprecatedLabel">Deprecated.</span></div>
 </li>
 </ul>
 </li>
@@ -251,6 +263,7 @@ implements <a href="AugmenterProvider.html" title="interface in org.openqa.selen
 <li class="blockList">
 <h4>isApplicable</h4>
 <pre class="methodSignature">public&nbsp;java.util.function.Predicate&lt;<a href="../Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&gt;&nbsp;isApplicable()</pre>
+<div class="deprecationBlock"><span class="deprecatedLabel">Deprecated.</span></div>
 <dl>
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
 <dd><code><a href="AugmenterProvider.html#isApplicable()">isApplicable</a></code>&nbsp;in interface&nbsp;<code><a href="AugmenterProvider.html" title="interface in org.openqa.selenium.remote">AugmenterProvider</a>&lt;<a href="../Rotatable.html" title="interface in org.openqa.selenium">Rotatable</a>&gt;</code></dd>
@@ -266,6 +279,7 @@ implements <a href="AugmenterProvider.html" title="interface in org.openqa.selen
 <li class="blockList">
 <h4>getDescribedInterface</h4>
 <pre class="methodSignature">public&nbsp;java.lang.Class&lt;<a href="../Rotatable.html" title="interface in org.openqa.selenium">Rotatable</a>&gt;&nbsp;getDescribedInterface()</pre>
+<div class="deprecationBlock"><span class="deprecatedLabel">Deprecated.</span></div>
 <dl>
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
 <dd><code><a href="AugmenterProvider.html#getDescribedInterface()">getDescribedInterface</a></code>&nbsp;in interface&nbsp;<code><a href="AugmenterProvider.html" title="interface in org.openqa.selenium.remote">AugmenterProvider</a>&lt;<a href="../Rotatable.html" title="interface in org.openqa.selenium">Rotatable</a>&gt;</code></dd>
@@ -282,6 +296,7 @@ implements <a href="AugmenterProvider.html" title="interface in org.openqa.selen
 <h4>getImplementation</h4>
 <pre class="methodSignature">public&nbsp;<a href="../Rotatable.html" title="interface in org.openqa.selenium">Rotatable</a>&nbsp;getImplementation&#8203;(<a href="../Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&nbsp;capabilities,
                                    <a href="ExecuteMethod.html" title="interface in org.openqa.selenium.remote">ExecuteMethod</a>&nbsp;executeMethod)</pre>
+<div class="deprecationBlock"><span class="deprecatedLabel">Deprecated.</span></div>
 <div class="block"><span class="descfrmTypeLabel">Description copied from interface:&nbsp;<code><a href="AugmenterProvider.html#getImplementation(org.openqa.selenium.Capabilities,org.openqa.selenium.remote.ExecuteMethod)">AugmenterProvider</a></code></span></div>
 <div class="block">For the interface that this provider describes, return an implementation.</div>
 <dl>

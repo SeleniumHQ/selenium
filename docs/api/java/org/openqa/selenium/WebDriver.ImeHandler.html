@@ -26,8 +26,8 @@
     catch(err) {
     }
 //-->
-var data = {"i0":6,"i1":6,"i2":6,"i3":6,"i4":6};
-var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],4:["t3","Abstract Methods"]};
+var data = {"i0":38,"i1":38,"i2":38,"i3":38,"i4":38};
+var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],4:["t3","Abstract Methods"],32:["t6","Deprecated Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
 var tableTab = "tableTab";
@@ -135,8 +135,12 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dd><a href="WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a></dd>
 </dl>
 <hr>
-<pre>public static interface <span class="typeNameLabel">WebDriver.ImeHandler</span></pre>
-<div class="block">An interface for managing input methods.</div>
+<pre>@Deprecated
+public static interface <span class="typeNameLabel">WebDriver.ImeHandler</span></pre>
+<div class="deprecationBlock"><span class="deprecatedLabel">Deprecated.</span>
+<div class="deprecationComment">Will be removed. IME is not part of W3C WebDriver and does not work on browsers.
+ An interface for managing input methods.</div>
+</div>
 </li>
 </ul>
 </div>
@@ -151,7 +155,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 </a>
 <h3>Method Summary</h3>
 <table class="memberSummary">
-<caption><span id="t0" class="activeTableTab"><span>All Methods</span><span class="tabEnd">&nbsp;</span></span><span id="t2" class="tableTab"><span><a href="javascript:show(2);">Instance Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t3" class="tableTab"><span><a href="javascript:show(4);">Abstract Methods</a></span><span class="tabEnd">&nbsp;</span></span></caption>
+<caption><span id="t0" class="activeTableTab"><span>All Methods</span><span class="tabEnd">&nbsp;</span></span><span id="t2" class="tableTab"><span><a href="javascript:show(2);">Instance Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t3" class="tableTab"><span><a href="javascript:show(4);">Abstract Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t6" class="tableTab"><span><a href="javascript:show(32);">Deprecated Methods</a></span><span class="tabEnd">&nbsp;</span></span></caption>
 <tr>
 <th class="colFirst" scope="col">Modifier and Type</th>
 <th class="colSecond" scope="col">Method</th>
@@ -161,6 +165,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#activateEngine(java.lang.String)">activateEngine</a></span>&#8203;(java.lang.String&nbsp;engine)</code></th>
 <td class="colLast">
+<div class="block"><span class="deprecatedLabel">Deprecated.</span></div>
 <div class="block">Make an engines that is available (appears on the list returned by getAvailableEngines)
  active.</div>
 </td>
@@ -169,6 +174,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#deactivate()">deactivate</a></span>()</code></th>
 <td class="colLast">
+<div class="block"><span class="deprecatedLabel">Deprecated.</span></div>
 <div class="block">De-activate IME input (turns off the currently activated engine).</div>
 </td>
 </tr>
@@ -176,6 +182,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <td class="colFirst"><code>java.lang.String</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getActiveEngine()">getActiveEngine</a></span>()</code></th>
 <td class="colLast">
+<div class="block"><span class="deprecatedLabel">Deprecated.</span></div>
 <div class="block">Get the name of the active IME engine.</div>
 </td>
 </tr>
@@ -183,6 +190,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <td class="colFirst"><code>java.util.List&lt;java.lang.String&gt;</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getAvailableEngines()">getAvailableEngines</a></span>()</code></th>
 <td class="colLast">
+<div class="block"><span class="deprecatedLabel">Deprecated.</span></div>
 <div class="block">All available engines on the machine.</div>
 </td>
 </tr>
@@ -190,6 +198,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <td class="colFirst"><code>boolean</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#isActivated()">isActivated</a></span>()</code></th>
 <td class="colLast">
+<div class="block"><span class="deprecatedLabel">Deprecated.</span></div>
 <div class="block">Indicates whether IME input active at the moment (not if it's available).</div>
 </td>
 </tr>
@@ -217,6 +226,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <li class="blockList">
 <h4>getAvailableEngines</h4>
 <pre class="methodSignature">java.util.List&lt;java.lang.String&gt;&nbsp;getAvailableEngines()</pre>
+<div class="deprecationBlock"><span class="deprecatedLabel">Deprecated.</span></div>
 <div class="block">All available engines on the machine. To use an engine, it has to be activated.</div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
@@ -233,6 +243,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <li class="blockList">
 <h4>getActiveEngine</h4>
 <pre class="methodSignature">java.lang.String&nbsp;getActiveEngine()</pre>
+<div class="deprecationBlock"><span class="deprecatedLabel">Deprecated.</span></div>
 <div class="block">Get the name of the active IME engine. The name string is platform-specific.</div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
@@ -249,6 +260,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <li class="blockList">
 <h4>isActivated</h4>
 <pre class="methodSignature">boolean&nbsp;isActivated()</pre>
+<div class="deprecationBlock"><span class="deprecatedLabel">Deprecated.</span></div>
 <div class="block">Indicates whether IME input active at the moment (not if it's available).</div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
@@ -265,6 +277,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <li class="blockList">
 <h4>deactivate</h4>
 <pre class="methodSignature">void&nbsp;deactivate()</pre>
+<div class="deprecationBlock"><span class="deprecatedLabel">Deprecated.</span></div>
 <div class="block">De-activate IME input (turns off the currently activated engine). Note that getActiveEngine
  may still return the name of the engine but isActivated will return false.</div>
 <dl>
@@ -280,6 +293,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <li class="blockList">
 <h4>activateEngine</h4>
 <pre class="methodSignature">void&nbsp;activateEngine&#8203;(java.lang.String&nbsp;engine)</pre>
+<div class="deprecationBlock"><span class="deprecatedLabel">Deprecated.</span></div>
 <div class="block">Make an engines that is available (appears on the list returned by getAvailableEngines)
  active. After this call, the only loaded engine on the IME daemon will be this one and the
  input sent using sendKeys will be converted by the engine. Note that this is a

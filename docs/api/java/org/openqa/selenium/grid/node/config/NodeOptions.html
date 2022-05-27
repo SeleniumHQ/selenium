@@ -26,7 +26,7 @@
     catch(err) {
     }
 //-->
-var data = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10};
+var data = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10,"i9":10};
 var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -163,16 +163,21 @@ extends java.lang.Object</pre>
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr class="rowColor">
-<td class="colFirst"><code>static int</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#DEFAULT_HEARTBEAT_PERIOD">DEFAULT_HEARTBEAT_PERIOD</a></span></code></th>
+<td class="colFirst"><code>static boolean</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#DEFAULT_ENABLE_CDP">DEFAULT_ENABLE_CDP</a></span></code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr class="altColor">
 <td class="colFirst"><code>static int</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#DEFAULT_MAX_SESSIONS">DEFAULT_MAX_SESSIONS</a></span></code></th>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#DEFAULT_HEARTBEAT_PERIOD">DEFAULT_HEARTBEAT_PERIOD</a></span></code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr class="rowColor">
+<td class="colFirst"><code>static int</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#DEFAULT_MAX_SESSIONS">DEFAULT_MAX_SESSIONS</a></span></code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr class="altColor">
 <td class="colFirst"><code>static int</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#DEFAULT_SESSION_TIMEOUT">DEFAULT_SESSION_TIMEOUT</a></span></code></th>
 <td class="colLast">&nbsp;</td>
@@ -261,6 +266,11 @@ extends java.lang.Object</pre>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getSessionTimeout()">getSessionTimeout</a></span>()</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
+<tr id="i9" class="rowColor">
+<td class="colFirst"><code>boolean</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#isCdpEnabled()">isCdpEnabled</a></span>()</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
 </table>
 <ul class="blockList">
 <li class="blockList"><a id="methods.inherited.from.class.java.lang.Object">
@@ -323,13 +333,26 @@ extends java.lang.Object</pre>
 <a id="DEFAULT_DRAIN_AFTER_SESSION_COUNT">
 <!--   -->
 </a>
-<ul class="blockListLast">
+<ul class="blockList">
 <li class="blockList">
 <h4>DEFAULT_DRAIN_AFTER_SESSION_COUNT</h4>
 <pre>public static final&nbsp;int DEFAULT_DRAIN_AFTER_SESSION_COUNT</pre>
 <dl>
 <dt><span class="seeLabel">See Also:</span></dt>
 <dd><a href="../../../../../../constant-values.html#org.openqa.selenium.grid.node.config.NodeOptions.DEFAULT_DRAIN_AFTER_SESSION_COUNT">Constant Field Values</a></dd>
+</dl>
+</li>
+</ul>
+<a id="DEFAULT_ENABLE_CDP">
+<!--   -->
+</a>
+<ul class="blockListLast">
+<li class="blockList">
+<h4>DEFAULT_ENABLE_CDP</h4>
+<pre>public static final&nbsp;boolean DEFAULT_ENABLE_CDP</pre>
+<dl>
+<dt><span class="seeLabel">See Also:</span></dt>
+<dd><a href="../../../../../../constant-values.html#org.openqa.selenium.grid.node.config.NodeOptions.DEFAULT_ENABLE_CDP">Constant Field Values</a></dd>
 </dl>
 </li>
 </ul>
@@ -432,6 +455,15 @@ extends java.lang.Object</pre>
 <li class="blockList">
 <h4>getSessionTimeout</h4>
 <pre class="methodSignature">public&nbsp;java.time.Duration&nbsp;getSessionTimeout()</pre>
+</li>
+</ul>
+<a id="isCdpEnabled()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>isCdpEnabled</h4>
+<pre class="methodSignature">public&nbsp;boolean&nbsp;isCdpEnabled()</pre>
 </li>
 </ul>
 <a id="getDrainAfterSessionCount()">
