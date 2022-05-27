@@ -17,8 +17,8 @@ namespace OpenQA.Selenium.DevTools
         [IgnoreBrowser(Selenium.Browser.Safari, "Safari does not support Chrome DevTools Protocol")]
         public async Task EnableAndDisablePerformance()
         {
-            var domains = session.GetVersionSpecificDomains<V101.DevToolsSessionDomains>();
-            await domains.Performance.Enable(new V101.Performance.EnableCommandSettings());
+            var domains = session.GetVersionSpecificDomains<V102.DevToolsSessionDomains>();
+            await domains.Performance.Enable(new V102.Performance.EnableCommandSettings());
             driver.Url = simpleTestPage;
             await domains.Performance.Disable();
         }
@@ -29,7 +29,7 @@ namespace OpenQA.Selenium.DevTools
         [IgnoreBrowser(Selenium.Browser.Safari, "Safari does not support Chrome DevTools Protocol")]
         public async Task DisablePerformance()
         {
-            var domains = session.GetVersionSpecificDomains<V101.DevToolsSessionDomains>();
+            var domains = session.GetVersionSpecificDomains<V102.DevToolsSessionDomains>();
             await domains.Performance.Disable();
             driver.Url = simpleTestPage;
             await domains.Performance.Disable();
@@ -41,13 +41,13 @@ namespace OpenQA.Selenium.DevTools
         [IgnoreBrowser(Selenium.Browser.Safari, "Safari does not support Chrome DevTools Protocol")]
         public async Task SetTimeDomainTimeTickPerformance()
         {
-            var domains = session.GetVersionSpecificDomains<V101.DevToolsSessionDomains>();
+            var domains = session.GetVersionSpecificDomains<V102.DevToolsSessionDomains>();
             await domains.Performance.Disable();
-            await domains.Performance.SetTimeDomain(new V101.Performance.SetTimeDomainCommandSettings()
+            await domains.Performance.SetTimeDomain(new V102.Performance.SetTimeDomainCommandSettings()
             {
                 TimeDomain = "timeTicks"
             });
-            await domains.Performance.Enable(new V101.Performance.EnableCommandSettings());
+            await domains.Performance.Enable(new V102.Performance.EnableCommandSettings());
             driver.Url = simpleTestPage;
             await domains.Performance.Disable();
         }
@@ -58,13 +58,13 @@ namespace OpenQA.Selenium.DevTools
         [IgnoreBrowser(Selenium.Browser.Safari, "Safari does not support Chrome DevTools Protocol")]
         public async Task SetTimeDomainsThreadTicksPerformance()
         {
-            var domains = session.GetVersionSpecificDomains<V101.DevToolsSessionDomains>();
+            var domains = session.GetVersionSpecificDomains<V102.DevToolsSessionDomains>();
             await domains.Performance.Disable();
-            await domains.Performance.SetTimeDomain(new V101.Performance.SetTimeDomainCommandSettings()
+            await domains.Performance.SetTimeDomain(new V102.Performance.SetTimeDomainCommandSettings()
             {
                 TimeDomain = "threadTicks"
             });
-            await domains.Performance.Enable(new V101.Performance.EnableCommandSettings());
+            await domains.Performance.Enable(new V102.Performance.EnableCommandSettings());
             driver.Url = simpleTestPage;
             await domains.Performance.Disable();
         }
@@ -75,12 +75,12 @@ namespace OpenQA.Selenium.DevTools
         [IgnoreBrowser(Selenium.Browser.Safari, "Safari does not support Chrome DevTools Protocol")]
         public async Task GetMetricsByTimeTicks()
         {
-            var domains = session.GetVersionSpecificDomains<V101.DevToolsSessionDomains>();
-            await domains.Performance.SetTimeDomain(new V101.Performance.SetTimeDomainCommandSettings()
+            var domains = session.GetVersionSpecificDomains<V102.DevToolsSessionDomains>();
+            await domains.Performance.SetTimeDomain(new V102.Performance.SetTimeDomainCommandSettings()
             {
                 TimeDomain = "timeTicks"
             });
-            await domains.Performance.Enable(new V101.Performance.EnableCommandSettings());
+            await domains.Performance.Enable(new V102.Performance.EnableCommandSettings());
             driver.Url = simpleTestPage;
             var response = await domains.Performance.GetMetrics();
             var metrics = response.Metrics;
@@ -95,12 +95,12 @@ namespace OpenQA.Selenium.DevTools
         [IgnoreBrowser(Selenium.Browser.Safari, "Safari does not support Chrome DevTools Protocol")]
         public async Task GetMetricsByThreadTicks()
         {
-            var domains = session.GetVersionSpecificDomains<V101.DevToolsSessionDomains>();
-            await domains.Performance.SetTimeDomain(new V101.Performance.SetTimeDomainCommandSettings()
+            var domains = session.GetVersionSpecificDomains<V102.DevToolsSessionDomains>();
+            await domains.Performance.SetTimeDomain(new V102.Performance.SetTimeDomainCommandSettings()
             {
                 TimeDomain = "threadTicks"
             });
-            await domains.Performance.Enable(new V101.Performance.EnableCommandSettings());
+            await domains.Performance.Enable(new V102.Performance.EnableCommandSettings());
             driver.Url = simpleTestPage;
             var response = await domains.Performance.GetMetrics();
            var metrics = response.Metrics;

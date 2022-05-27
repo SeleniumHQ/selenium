@@ -38,6 +38,18 @@ module Selenium
           PointerInput.new(kind, name: name)
         end
 
+        def mouse(name: nil)
+          pointer(name: name)
+        end
+
+        def pen(name: nil)
+          pointer(:pen, name: name)
+        end
+
+        def touch(name: nil)
+          pointer(:touch, name: name)
+        end
+
         def none(name = nil)
           NoneInput.new(name)
         end

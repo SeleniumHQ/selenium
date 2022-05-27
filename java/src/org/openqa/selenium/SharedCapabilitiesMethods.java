@@ -46,6 +46,8 @@ class SharedCapabilitiesMethods {
   }
 
   static void setCapability(Map<String, Object> caps, String key, Object value) {
+    W3CCapabilityKeysValidator.validateCapability(key);
+
     if ("loggingPrefs".equals(key) && value instanceof Map) {
       LoggingPreferences prefs = new LoggingPreferences();
       @SuppressWarnings("unchecked") Map<String, String> prefsMap = (Map<String, String>) value;

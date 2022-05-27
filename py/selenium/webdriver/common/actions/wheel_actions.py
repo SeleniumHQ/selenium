@@ -29,6 +29,6 @@ class WheelActions(Interaction):
         self.source.create_pause(duration)
         return self
 
-    def scroll(self, x, y, delta_x, delta_y, duration, origin):
+    def scroll(self, x=0, y=0, delta_x=0, delta_y=0, duration=0, origin="viewport"):
         self.source.create_scroll(x, y, delta_x, delta_y, duration, origin)
         return self

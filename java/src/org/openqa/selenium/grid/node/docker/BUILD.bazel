@@ -8,6 +8,7 @@ java_library(
         "//java/src/org/openqa/selenium/grid/commands:__pkg__",
         "//java/src/org/openqa/selenium/grid/node/httpd:__pkg__",
         "//java/src/org/openqa/selenium/grid/node/local:__pkg__",
+        "//java/test/org/openqa/selenium/grid/node/docker:__pkg__",
     ],
     deps = [
         "//java:auto-service",

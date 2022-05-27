@@ -17,6 +17,7 @@
 
 package org.openqa.selenium.grid.node.docker;
 
+import java.util.List;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.ImmutableCapabilities;
@@ -28,6 +29,7 @@ import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.docker.Container;
 import org.openqa.selenium.docker.ContainerConfig;
 import org.openqa.selenium.docker.ContainerInfo;
+import org.openqa.selenium.docker.Device;
 import org.openqa.selenium.docker.Docker;
 import org.openqa.selenium.docker.Image;
 import org.openqa.selenium.docker.Port;
@@ -96,6 +98,7 @@ public class DockerSessionFactory implements SessionFactory {
   private final URI dockerUri;
   private final Image browserImage;
   private final Capabilities stereotype;
+  private final List<Device> devices;
   private final Image videoImage;
   private final DockerAssetsPath assetsPath;
   private final String networkName;
@@ -110,6 +113,7 @@ public class DockerSessionFactory implements SessionFactory {
     URI dockerUri,
     Image browserImage,
     Capabilities stereotype,
+    List<Device> devices,
     Image videoImage,
     DockerAssetsPath assetsPath,
     String networkName,
@@ -123,6 +127,7 @@ public class DockerSessionFactory implements SessionFactory {
     this.networkName = Require.nonNull("Docker network name", networkName);
     this.stereotype = ImmutableCapabilities.copyOf(
       Require.nonNull("Stereotype", stereotype));
+    this.devices = Require.nonNull("Container devices", devices);
     this.videoImage = videoImage;
     this.assetsPath = assetsPath;
     this.runningInDocker = runningInDocker;
@@ -287,7 +292,8 @@ public class DockerSessionFactory implements SessionFactory {
     ContainerConfig containerConfig = image(browserImage)
       .env(browserContainerEnvVars)
       .shmMemorySize(browserContainerShmMemorySize)
-      .network(networkName);
+      .network(networkName)
+      .devices(devices);
     if (!runningInDocker) {
       containerConfig = containerConfig.map(Port.tcp(4444), Port.tcp(port));
     }

@@ -28,7 +28,7 @@ from typing import Dict, List, Optional, Union
 import warnings
 
 from abc import ABCMeta
-from base64 import b64decode
+from base64 import b64decode, urlsafe_b64encode
 from contextlib import asynccontextmanager, contextmanager
 
 from .bidi_connection import BidiConnection
@@ -1612,21 +1612,21 @@ class WebDriver(BaseWebDriver):
         return version, websocket_url
 
     # Virtual Authenticator Methods
-    def add_virtual_authenticator(self, options: VirtualAuthenticatorOptions):
+    def add_virtual_authenticator(self, options: VirtualAuthenticatorOptions) -> None:
         """
         Adds a virtual authenticator with the given options.
         """
         self._authenticator_id = self.execute(Command.ADD_VIRTUAL_AUTHENTICATOR, options.to_dict())['value']
 
     @property
-    def virtual_authenticator_id(self):
+    def virtual_authenticator_id(self) -> str:
         """
         Returns the id of the virtual authenticator.
         """
         return self._authenticator_id
 
     @required_virtual_authenticator
-    def remove_virtual_authenticator(self):
+    def remove_virtual_authenticator(self) -> None:
         """
         Removes a previously added virtual authenticator. The authenticator is no
         longer valid after removal, so no methods may be called.
@@ -1635,7 +1635,7 @@ class WebDriver(BaseWebDriver):
         self._authenticator_id = None
 
     @required_virtual_authenticator
-    def add_credential(self, credential: Credential):
+    def add_credential(self, credential: Credential) -> None:
         """
         Injects a credential into the authenticator.
         """
@@ -1645,33 +1645,36 @@ class WebDriver(BaseWebDriver):
         )
 
     @required_virtual_authenticator
-    def get_credentials(self):
+    def get_credentials(self) -> List[Credential]:
         """
         Returns the list of credentials owned by the authenticator.
         """
         credential_data = self.execute(Command.GET_CREDENTIALS, {'authenticatorId': self._authenticator_id})
-        print("Get_Credential from authenticator", credential_data)
-        return credential_data['value']
+        return [Credential.from_dict(credential) for credential in credential_data['value']]
 
     @required_virtual_authenticator
-    def remove_credential(self, credential_id: str):
+    def remove_credential(self, credential_id: Union[str, bytearray]) -> None:
         """
         Removes a credential from the authenticator.
         """
+        # Check if the credential is bytearray converted to b64 string
+        if type(credential_id) is bytearray:
+            credential_id = urlsafe_b64encode(credential_id).decode()
+
         self.execute(
             Command.REMOVE_CREDENTIAL,
             {'credentialId': credential_id, 'authenticatorId': self._authenticator_id}
         )
 
     @required_virtual_authenticator
-    def remove_all_credentials(self):
+    def remove_all_credentials(self) -> None:
         """
         Removes all credentials from the authenticator.
         """
         self.execute(Command.REMOVE_ALL_CREDENTIALS, {'authenticatorId': self._authenticator_id})
 
     @required_virtual_authenticator
-    def set_user_verified(self, verified: bool):
+    def set_user_verified(self, verified: bool) -> None:
         """
         Sets whether the authenticator will simulate success or fail on user verification.
         verified: True if the authenticator will pass user verification, False otherwise.

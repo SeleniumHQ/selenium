@@ -54,9 +54,11 @@ public class Pages {
   public String mapVisibilityPage;
   public String metaRedirectPage;
   public String missedJsReferencePage;
+  public String mouseInteractionPage;
   public String mouseOverPage;
   public String mouseTrackerPage;
   public String nestedPage;
+  public String pointerActionsPage;
   public String printPage;
   public String readOnlyPage;
   public String rectanglesPage;
@@ -116,9 +118,11 @@ public class Pages {
     mapVisibilityPage = appServer.whereIs("map_visibility.html");
     metaRedirectPage = appServer.whereIs("meta-redirect.html");
     missedJsReferencePage = appServer.whereIs("missedJsReference.html");
+    mouseInteractionPage = appServer.whereIs("mouse_interaction.html");
     mouseOverPage = appServer.whereIs("mouseOver.html");
     mouseTrackerPage = appServer.whereIs("mousePositionTracker.html");
     nestedPage = appServer.whereIs("nestedElements.html");
+    pointerActionsPage = appServer.whereIs("pointerActionsPage.html");
     printPage = appServer.whereIs("printPage.html");
     readOnlyPage = appServer.whereIs("readOnlyPage.html");
     rectanglesPage = appServer.whereIs("rectangles.html");

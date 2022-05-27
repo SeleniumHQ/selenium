@@ -221,12 +221,13 @@ public class SessionCleanUpTest {
     Optional<Map<String, Object>> maybeResponse =
       Optional.ofNullable(Values.get(httpResponse, Map.class));
 
+    assertThat(maybeResponse.isPresent()).isTrue();
     String rawResponse = JSON.toJson(maybeResponse.get().get("sessionId"));
     SessionId id = JSON.toType(rawResponse, SessionId.class);
 
     Session session = sessions.get(id);
 
-    assertThat(session.getCapabilities()).isEqualTo(capabilities);
+    assertThat(session.getCapabilities().getBrowserName()).isEqualTo(capabilities.getBrowserName());
 
     nodeServer.stop();
 
@@ -296,7 +297,7 @@ public class SessionCleanUpTest {
     SessionId id = result.right().getSession().getId();
     Session session = sessions.get(id);
 
-    assertThat(session.getCapabilities()).isEqualTo(capabilities);
+    assertThat(session.getCapabilities().getBrowserName()).isEqualTo(capabilities.getBrowserName());
 
     availability.set(DOWN);
 
