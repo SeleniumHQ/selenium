@@ -19,8 +19,8 @@ package org.openqa.selenium.safari;
 
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
-import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.AcceptedW3CCapabilityKeys;
+import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.testing.UnitTests;
 
@@ -32,6 +32,7 @@ import static java.util.stream.Collectors.toSet;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.openqa.selenium.remote.Browser.SAFARI;
+import static org.openqa.selenium.remote.Browser.SAFARI_TECH_PREVIEW;
 
 @Category(UnitTests.class)
 public class SafariOptionsTest {
@@ -53,7 +54,7 @@ public class SafariOptionsTest {
     assertThat(options.getUseTechnologyPreview()).isFalse();
 
     options = new SafariOptions(
-      new ImmutableCapabilities(CapabilityType.BROWSER_NAME, SafariOptions.SAFARI_TECH_PREVIEW));
+      new ImmutableCapabilities(CapabilityType.BROWSER_NAME, SAFARI_TECH_PREVIEW.browserName()));
     assertThat(options.getUseTechnologyPreview()).isTrue();
 
     options = new SafariOptions(
@@ -79,7 +80,7 @@ public class SafariOptionsTest {
     assertThat(options.getBrowserName()).isEqualTo(SAFARI.browserName());
 
     options.setUseTechnologyPreview(true);
-    assertThat(options.getBrowserName()).isEqualTo(SafariOptions.SAFARI_TECH_PREVIEW);
+    assertThat(options.getBrowserName()).isEqualTo(SAFARI_TECH_PREVIEW.browserName());
 
     options.setUseTechnologyPreview(false);
     assertThat(options.getBrowserName()).isEqualTo(SAFARI.browserName());

@@ -27,6 +27,7 @@ v4.2.0
 * Fix screen rotate error (#10693)
 * Make the action movement methods specify the button number
 * Convert RemoteWebElement::getLocation and ::getSize from JWP Standard to W3C Standard (#10700)
+* Creating browser name for SAFARI_TECH_PREVIEW
 
 v4.1.4
 ======
