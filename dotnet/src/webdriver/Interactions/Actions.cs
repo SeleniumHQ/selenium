@@ -483,6 +483,7 @@ namespace OpenQA.Selenium.Interactions
         public void Perform()
         {
             this.actionExecutor.PerformActions(this.actionBuilder.ToActionSequenceList());
+            this.actionBuilder.ClearSequences();
         }
 
         /// <summary>
