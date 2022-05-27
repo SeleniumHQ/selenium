@@ -17,12 +17,14 @@
 
 package org.openqa.selenium.interactions;
 
+import org.assertj.core.api.Assertions;
 import org.junit.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.Point;
+import org.openqa.selenium.Rectangle;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.RemoteWebDriver;
@@ -36,7 +38,11 @@ import org.openqa.selenium.testing.NotYetImplemented;
 import org.openqa.selenium.testing.SwitchToTopAfterTest;
 
 import java.time.Duration;
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
@@ -369,6 +375,70 @@ public class PenPointerTest extends JUnit4TestBase {
       .perform();
 
     wait.until(attributeToBe(redbox, "background-color", Colors.GREEN.getColorValue().asRgba()));
+  }
+
+  @Test
+  @Ignore(value = FIREFOX, issue = "https://github.com/mozilla/geckodriver/issues/789")
+  public void setPointerEventProperties() {
+    driver.get(pages.pointerActionsPage);
+    long start = System.currentTimeMillis();
+
+    WebElement pointerArea = driver.findElement(By.id("pointerArea"));
+    PointerInput pen = new PointerInput(PointerInput.Kind.PEN, "default pen");
+    PointerInput.PointerEventProperties eventProperties = PointerInput.eventProperties()
+      .setTiltX(-72)
+      .setTiltY(9)
+      .setTwist(86);
+    PointerInput.Origin origin = PointerInput.Origin.fromElement(pointerArea);
+
+    Sequence actionListPen = new Sequence(pen, 0)
+      .addAction(pen.createPointerMove(Duration.ZERO, origin, 0, 0))
+      .addAction(pen.createPointerDown(0))
+      .addAction(pen.createPointerMove(Duration.ofMillis(800), origin, 2, 2, eventProperties))
+      .addAction(pen.createPointerUp(0));
+
+    ((RemoteWebDriver) driver).perform(List.of(actionListPen));
+
+    long duration = System.currentTimeMillis() - start;
+    Assertions.assertThat(duration).isGreaterThan(2);
+
+    List<WebElement> moves = driver.findElements(By.className("pointermove"));
+    Map<String, String> moveTo = properties(moves.get(0));
+    Map<String, String> down = properties(driver.findElement(By.className("pointerdown")));
+    Map<String, String> moveBy = properties(moves.get(1));
+    Map<String, String> up = properties(driver.findElement(By.className("pointerup")));
+
+    Rectangle rect = pointerArea.getRect();
+
+    int centerX = (int) Math.floor(rect.width / 2 + rect.getX());
+    int centerY = (int) Math.floor(rect.height / 2 + rect.getY());
+    Assertions.assertThat(moveTo.get("button")).isEqualTo("-1");
+    Assertions.assertThat(moveTo.get("pageX")).isEqualTo("" + centerX);
+    Assertions.assertThat(moveTo.get("pageY")).isEqualTo("" + centerY);
+    Assertions.assertThat(down.get("button")).isEqualTo("0");
+    Assertions.assertThat(down.get("pageX")).isEqualTo("" + centerX);
+    Assertions.assertThat(down.get("pageY")).isEqualTo("" + centerY);
+    Assertions.assertThat(moveBy.get("button")).isEqualTo("-1");
+    Assertions.assertThat(moveBy.get("pageX")).isEqualTo("" + (centerX + 2));
+    Assertions.assertThat(moveBy.get("pageY")).isEqualTo("" + (centerY + 2));
+    Assertions.assertThat(moveBy.get("tiltX")).isEqualTo("-72");
+    Assertions.assertThat(moveBy.get("tiltY")).isEqualTo("9");
+    Assertions.assertThat(moveBy.get("twist")).isEqualTo("86");
+    Assertions.assertThat(up.get("button")).isEqualTo("0");
+    Assertions.assertThat(up.get("pageX")).isEqualTo("" + (centerX + 2));
+    Assertions.assertThat(up.get("pageY")).isEqualTo("" + (centerY + 2));
+  }
+
+    private Map<String, String> properties(WebElement element) {
+    String text = element.getText();
+    text = text.substring(text.indexOf(' ') + 1);
+
+    return Arrays.stream(text.split(", "))
+      .map(s -> s.split(": "))
+      .collect(Collectors.toMap(
+        a -> a[0],  //key
+        a -> a[1]   //value
+      ));
   }
 
   private boolean fuzzyPositionMatching(int expectedX, int expectedY, String locationTuple) {
