@@ -375,6 +375,14 @@ namespace OpenQA.Selenium.Interactions
             WaitFor(() => { return result.Text.Contains("item 1"); }, "Result element does not contain text 'item 1'");
         }
 
+        [Test]
+        public void PerformsPause()
+        {
+            DateTime start = DateTime.Now;
+            new Actions(driver).Pause(TimeSpan.FromMilliseconds(1200)).Build().Perform();
+            Assert.IsTrue(DateTime.Now - start > TimeSpan.FromMilliseconds(1200));
+        }
+
         private bool FuzzyPositionMatching(int expectedX, int expectedY, string locationTuple)
         {
             string[] splitString = locationTuple.Split(',');
