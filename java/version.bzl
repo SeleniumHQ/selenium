@@ -1,1 +1,1 @@
-SE_VERSION = "4.1.4"
+SE_VERSION = "4.2.0"
