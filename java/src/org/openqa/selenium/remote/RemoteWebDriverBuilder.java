@@ -20,7 +20,6 @@ package org.openqa.selenium.remote;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableSet;
 
-import org.openqa.selenium.AcceptedW3CCapabilityKeys;
 import org.openqa.selenium.Beta;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.Credentials;
@@ -56,7 +55,6 @@ import java.util.ServiceLoader;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.function.Function;
-import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
@@ -95,7 +93,6 @@ import static org.openqa.selenium.remote.http.HttpMethod.DELETE;
 public class RemoteWebDriverBuilder {
 
   private static final Logger LOG = Logger.getLogger(RemoteWebDriverBuilder.class.getName());
-  private static final Predicate<String> ACCEPTED_W3C_PATTERNS = new AcceptedW3CCapabilityKeys();
   private static final Set<String> ILLEGAL_METADATA_KEYS = ImmutableSet.of(
     "alwaysMatch",
     "capabilities",
@@ -399,7 +396,7 @@ public class RemoteWebDriverBuilder {
         .andThen(new ErrorFilter())
         .andThen(new DumpHttpExchangeFilter()));
 
-    Either<SessionNotCreatedException, ProtocolHandshake.Result> result = null;
+    Either<SessionNotCreatedException, ProtocolHandshake.Result> result;
     try {
       result = new ProtocolHandshake().createSession(handler, getPayload());
     } catch (IOException e) {
