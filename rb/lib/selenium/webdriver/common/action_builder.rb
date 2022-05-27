@@ -198,7 +198,7 @@ module Selenium
         deprecate_method(deprecated_device, deprecated_duration)
 
         device ||= deprecated_device || pointer_input
-        device.create_pause(duration || deprecated_duration)
+        device.create_pause(deprecated_duration || duration)
         self
       end
 

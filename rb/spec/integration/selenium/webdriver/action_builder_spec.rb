@@ -271,8 +271,8 @@ module Selenium
           pointer_options = {pressure: 0.8, tilt_x: -40, tilt_y: -10, twist: 177}
           actions = driver.action(devices: :pen)
                           .move_by(x_val + 5, y_val + 5)
-                          .pointer_down(**pointer_options)
-                          .move_by(2, 2, duration: 0.8)
+                          .pointer_down
+                          .move_by(2, 2, duration: 0.8, **pointer_options)
                           .pointer_up
 
           start = Time.now
@@ -288,15 +288,13 @@ module Selenium
           expect(move_to).to include("button" => "-1",
                                      "pageX" => (x_val + 5).to_s,
                                      "pageY" => (y_val + 5).floor.to_s)
-          expect(down).to include("button" => "0",
-                                  "pageX" => (x_val + 5).to_s,
-                                  "pageY" => (y_val + 5).floor.to_s,
-                                  "tiltX" => "-40",
-                                  "tiltY" => "-10",
-                                  "twist" => "177")
+          expect(down).to include("button" => "0")
           expect(move_by).to include("button" => "-1",
                                      "pageX" => (x_val + 5 + 2).to_s,
-                                     "pageY" => (y_val + 5 + 2).floor.to_s)
+                                     "pageY" => (y_val + 5 + 2).floor.to_s,
+                                     "tiltX" => "-40",
+                                     "tiltY" => "-10",
+                                     "twist" => "177")
           expect(up).to include("button" => "0",
                                 "pageX" => (x_val + 5 + 2).to_s,
                                 "pageY" => (y_val + 5 + 2).floor.to_s)
