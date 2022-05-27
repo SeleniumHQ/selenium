@@ -99,6 +99,9 @@ module Selenium
       def move_to(element, right_by = nil, down_by = nil, device: nil, duration: default_move_duration, **opts)
         pointer = pointer_input(device)
         if right_by || down_by
+          WebDriver.logger.warn("moving to an element with offset currently tries to use
+the top left corner of the element as the origin; in Selenium 4.3 it will use the in-view
+center point of the element as the origin.")
           size = element.size
           left_offset = (size[:width] / 2).to_i
           top_offset = (size[:height] / 2).to_i
@@ -134,12 +137,13 @@ module Selenium
       # @raise [MoveTargetOutOfBoundsError] if the provided offset is outside the document's boundaries.
       #
 
-      def move_by(right_by, down_by, device: nil, duration: default_move_duration)
+      def move_by(right_by, down_by, device: nil, duration: default_move_duration, **opts)
         pointer = pointer_input(device)
         pointer.create_pointer_move(duration: duration,
                                     x: Integer(right_by),
                                     y: Integer(down_by),
-                                    origin: Interactions::PointerMove::POINTER)
+                                    origin: Interactions::PointerMove::POINTER,
+                                    **opts)
         tick(pointer)
         self
       end
@@ -161,12 +165,13 @@ module Selenium
       # @raise [MoveTargetOutOfBoundsError] if the provided x or y value is outside the document's boundaries.
       #
 
-      def move_to_location(x, y, device: nil, duration: default_move_duration)
+      def move_to_location(x, y, device: nil, duration: default_move_duration, **opts)
         pointer = pointer_input(device)
         pointer.create_pointer_move(duration: duration,
                                     x: Integer(x),
                                     y: Integer(y),
-                                    origin: Interactions::PointerMove::VIEWPORT)
+                                    origin: Interactions::PointerMove::VIEWPORT,
+                                    **opts)
         tick(pointer)
         self
       end
