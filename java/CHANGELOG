@@ -1,3 +1,33 @@
+v4.2.0
+======
+
+* Supported CDP versions: 85, 100, 101, 102
+* Add wheel input (#10445)
+* Adding `--allow-origins` when starting GeckoDriver
+* Deactivating automatic retries in the HTTPClient
+* Implement separate Origin class for WheelInput (#10636)
+* Deprecating IME
+* Add javadocs to scroll()
+* Add support to create a BiDi session
+* [grid] Include JMX monitoring feature in the Grid local distributor (#10674)
+* [grid] Fixing Node drain when session expires
+* [grid] Add docker device mapping configuration (#10645)
+* [grid] Flag to disable CDP if needed (#10661)
+* [cdp] Add support Chrome 102 and remove for Chrome 99
+* Improve error message for unsuccessfully submitting form
+* [grid] Add deprecation notices to Grid logs and Java stdout,
+  check https://www.selenium.dev/blog/2022/legacy-protocol-support/
+* Deprecating non W3C caps and Augmenters using them,
+  check https://www.selenium.dev/blog/2022/legacy-protocol-support/
+* Logging warnings when non-W3C caps are being used,
+  check https://www.selenium.dev/blog/2022/legacy-protocol-support/
+* Removing HTMLRunner, this was a server extracted from the old
+  Grid server which was used to run HTML test
+  suites exported from the old Selenium IDE
+* Fix screen rotate error (#10693)
+* Make the action movement methods specify the button number
+* Convert RemoteWebElement::getLocation and ::getSize from JWP Standard to W3C Standard (#10700)
+
 v4.1.4
 ======
 
