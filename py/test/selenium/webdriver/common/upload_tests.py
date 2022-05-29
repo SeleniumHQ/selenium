@@ -16,9 +16,7 @@
 # under the License.
 
 import os
-
 import pytest
-
 from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webelement import WebElement
 
@@ -37,8 +35,8 @@ def test_can_upload_file(driver, pages, get_local_path):
 
     pages.load("upload.html")
 
-    driver.find_element(By.ID, "upload").send_keys(get_local_path("test_file.txt"))
-    driver.find_element(By.ID, "go").click()
+    driver.find_element(By.ID, 'upload').send_keys(get_local_path("test_file.txt"))
+    driver.find_element(By.ID, 'go').click()
     driver.switch_to.frame(driver.find_element(By.ID, "upload_target"))
     body = driver.find_element(By.CSS_SELECTOR, "body").text
 
@@ -48,11 +46,9 @@ def test_can_upload_file(driver, pages, get_local_path):
 def test_can_upload_two_files(driver, pages, get_local_path):
 
     pages.load("upload.html")
-    two_file_paths = (
-        get_local_path("test_file.txt") + "\n" + get_local_path("test_file2.txt")
-    )
-    driver.find_element(By.ID, "upload").send_keys(two_file_paths)
-    driver.find_element(By.ID, "go").click()
+    two_file_paths = get_local_path("test_file.txt") + "\n" + get_local_path("test_file2.txt")
+    driver.find_element(By.ID, 'upload').send_keys(two_file_paths)
+    driver.find_element(By.ID, 'go').click()
     driver.switch_to.frame(driver.find_element(By.ID, "upload_target"))
     body = driver.find_element(By.CSS_SELECTOR, "body").text
 
@@ -75,10 +71,8 @@ def test_file_is_uploaded_to_remote_machine_on_select(driver, pages, get_local_p
     WebElement._upload = mocked_upload_func
     try:
         pages.load("upload.html")
-        two_file_paths = (
-            get_local_path("test_file.txt") + "\n" + get_local_path("test_file2.txt")
-        )
-        driver.find_element(By.ID, "upload").send_keys(two_file_paths)
+        two_file_paths = get_local_path("test_file.txt") + "\n" + get_local_path("test_file2.txt")
+        driver.find_element(By.ID, 'upload').send_keys(two_file_paths)
         assert len(uploaded_files) == 2
         assert uploaded_files[0] == get_local_path("test_file.txt")
         assert uploaded_files[1] == get_local_path("test_file2.txt")

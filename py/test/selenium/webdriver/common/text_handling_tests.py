@@ -19,12 +19,11 @@ import pytest
 
 from selenium.webdriver.common.by import By
 
+
 newLine = "\n"
 
 
-def test_should_return_the_text_content_of_asingle_element_with_no_children(
-    driver, pages
-):
+def test_should_return_the_text_content_of_asingle_element_with_no_children(driver, pages):
     pages.load("simpleTest.html")
     selectText = driver.find_element(by=By.ID, value="oneline").text
     assert selectText == "A single line of text"
@@ -64,9 +63,7 @@ def test_should_represent_ablock_level_element_as_anewline(driver, pages):
 
 
 @pytest.mark.xfail_safari
-def test_should_collapse_multiple_whitespace_characters_into_asingle_space(
-    driver, pages
-):
+def test_should_collapse_multiple_whitespace_characters_into_asingle_space(driver, pages):
     pages.load("simpleTest.html")
     text = driver.find_element(by=By.ID, value="lotsofspaces").text
 
@@ -91,9 +88,7 @@ def test_should_convert_anon_breaking_space_into_anormal_space_character(driver,
 
 
 @pytest.mark.xfail_safari
-def test_should_treat_anon_breaking_space_as_any_other_whitespace_character_when_collapsing_whitespace(
-    driver, pages
-):
+def test_should_treat_anon_breaking_space_as_any_other_whitespace_character_when_collapsing_whitespace(driver, pages):
     pages.load("simpleTest.html")
     element = driver.find_element(by=By.ID, value="nbspandspaces")
     text = element.text
@@ -106,10 +101,7 @@ def test_having_inline_elements_should_not_affect_how_text_is_returned(driver, p
     pages.load("simpleTest.html")
     text = driver.find_element(by=By.ID, value="inline").text
 
-    assert (
-        text
-        == "This line has text within elements that are meant to be displayed inline"
-    )
+    assert text == "This line has text within elements that are meant to be displayed inline"
 
 
 @pytest.mark.xfail_safari
@@ -133,9 +125,7 @@ def test_should_be_able_to_set_more_than_one_line_of_text_in_atext_area(driver, 
     assert seenText == expectedText
 
 
-def test_should_be_able_to_enter_dates_after_filling_in_other_values_first(
-    driver, pages
-):
+def test_should_be_able_to_enter_dates_after_filling_in_other_values_first(driver, pages):
     pages.load("formPage.html")
     input_ = driver.find_element(by=By.ID, value="working")
     expectedValue = "10/03/2007 to 30/07/1993"
@@ -216,7 +206,7 @@ def test_should_get_text_from_table_cells(driver, pages):
 def test_should_get_text_which_is_avalid_jsonobject(driver, pages):
     pages.load("simpleTest.html")
     element = driver.find_element(by=By.ID, value="simpleJsonText")
-    assert '{a="b", c=1, d=true}' == element.text
+    assert "{a=\"b\", c=1, d=true}" == element.text
     # assert "{a=\"b\", \"c\"=d, e=true, f=\\123\\\\g\\\\\"\"\"\\\'}", element.text)
 
 

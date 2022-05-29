@@ -17,8 +17,9 @@
 
 
 def test_context_sets_correct_context_and_returns(driver):
+
     def get_context():
-        return driver.execute("GET_CONTEXT").pop("value")
+        return driver.execute('GET_CONTEXT').pop('value')
 
     assert get_context() == driver.CONTEXT_CONTENT
     with driver.context(driver.CONTEXT_CHROME):

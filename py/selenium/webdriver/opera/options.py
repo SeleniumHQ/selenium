@@ -24,16 +24,13 @@ class Options(ChromeOptions):
     KEY = "operaOptions"
 
     def __init__(self):
-        warnings.warn(
-            f"{self.__class__} is deprecated and will be removed in 4.3; "
-            f"see: https://www.selenium.dev/documentation/webdriver/getting_started/open_browser/#opera",
-            DeprecationWarning,
-            stacklevel=2,
-        )
+        warnings.warn(f"{self.__class__} is deprecated and will be removed in 4.3; "
+                      f"see: https://www.selenium.dev/documentation/webdriver/getting_started/open_browser/#opera",
+                      DeprecationWarning, stacklevel=2)
         super().__init__()
-        self._android_package_name = ""
-        self._android_device_socket = ""
-        self._android_command_line_file = ""
+        self._android_package_name = ''
+        self._android_device_socket = ''
+        self._android_command_line_file = ''
 
     @property
     def android_package_name(self):
@@ -100,7 +97,8 @@ class Options(ChromeOptions):
         if self.android_device_socket:
             opera_options["androidDeviceSocket"] = self.android_device_socket
         if self.android_command_line_file:
-            opera_options["androidCommandLineFile"] = self.android_command_line_file
+            opera_options["androidCommandLineFile"] = \
+                self.android_command_line_file
         return capabilities
 
     @property
@@ -109,6 +107,7 @@ class Options(ChromeOptions):
 
 
 class AndroidOptions(Options):
+
     def __init__(self):
         super().__init__()
-        self.android_package_name = "com.opera.browser"
+        self.android_package_name = 'com.opera.browser'

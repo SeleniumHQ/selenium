@@ -17,8 +17,10 @@
 
 import pytest
 
-from selenium.common.exceptions import ElementNotInteractableException
-from selenium.common.exceptions import ElementNotVisibleException
+
+from selenium.common.exceptions import (
+    ElementNotVisibleException,
+    ElementNotInteractableException)
 from selenium.webdriver.common.by import By
 
 
@@ -27,10 +29,7 @@ def test_should_allow_the_user_to_tell_if_an_element_is_displayed_or_not(driver,
 
     assert driver.find_element(by=By.ID, value="displayed").is_displayed() is True
     assert driver.find_element(by=By.ID, value="none").is_displayed() is False
-    assert (
-        driver.find_element(by=By.ID, value="suppressedParagraph").is_displayed()
-        is False
-    )
+    assert driver.find_element(by=By.ID, value="suppressedParagraph").is_displayed() is False
     assert driver.find_element(by=By.ID, value="hidden").is_displayed() is False
 
 
@@ -109,46 +108,40 @@ def test_should_not_be_able_to_type_an_element_that_is_not_displayed(driver, pag
 
 
 def test_should_say_elements_with_negative_transform_are_not_displayed(driver, pages):
-    pages.load("cssTransform.html")
-    elementX = driver.find_element(By.ID, value="parentX")
+    pages.load('cssTransform.html')
+    elementX = driver.find_element(By.ID, value='parentX')
     assert elementX.is_displayed() is False
-    elementY = driver.find_element(By.ID, value="parentY")
+    elementY = driver.find_element(By.ID, value='parentY')
     assert elementY.is_displayed() is False
 
 
-def test_should_say_elements_with_parent_with_negative_transform_are_not_displayed(
-    driver, pages
-):
-    pages.load("cssTransform.html")
-    elementX = driver.find_element(By.ID, value="childX")
+def test_should_say_elements_with_parent_with_negative_transform_are_not_displayed(driver, pages):
+    pages.load('cssTransform.html')
+    elementX = driver.find_element(By.ID, value='childX')
     assert elementX.is_displayed() is False
-    elementY = driver.find_element(By.ID, value="childY")
+    elementY = driver.find_element(By.ID, value='childY')
     assert elementY.is_displayed() is False
 
 
 def test_should_say_element_with_zero_transform_is_visible(driver, pages):
-    pages.load("cssTransform.html")
-    zero_tranform = driver.find_element(By.ID, "zero-tranform")
+    pages.load('cssTransform.html')
+    zero_tranform = driver.find_element(By.ID, 'zero-tranform')
     assert zero_tranform.is_displayed() is True
 
 
-def test_should_say_element_is_visible_when_it_has_negative_transform_but_elementisnt_in_anegative_space(
-    driver, pages
-):
-    pages.load("cssTransform2.html")
-    zero_tranform = driver.find_element(By.ID, "negative-percentage-transformY")
+def test_should_say_element_is_visible_when_it_has_negative_transform_but_elementisnt_in_anegative_space(driver, pages):
+    pages.load('cssTransform2.html')
+    zero_tranform = driver.find_element(By.ID, 'negative-percentage-transformY')
     assert zero_tranform.is_displayed() is True
 
 
 def test_should_show_element_not_visible_with_hidden_attribute(driver, pages):
-    pages.load("hidden.html")
-    singleHidden = driver.find_element(By.ID, "singleHidden")
+    pages.load('hidden.html')
+    singleHidden = driver.find_element(By.ID, 'singleHidden')
     assert singleHidden.is_displayed() is False
 
 
-def test_should_show_element_not_visible_when_parent_element_has_hidden_attribute(
-    driver, pages
-):
-    pages.load("hidden.html")
-    child = driver.find_element(By.ID, "child")
+def test_should_show_element_not_visible_when_parent_element_has_hidden_attribute(driver, pages):
+    pages.load('hidden.html')
+    child = driver.find_element(By.ID, 'child')
     assert child.is_displayed() is False

@@ -15,9 +15,9 @@
 # specific language governing permissions and limitations
 # under the License
 
-import pytest
-
 from selenium.webdriver.common.by import By
+
+import pytest
 
 
 @pytest.mark.xfail_firefox

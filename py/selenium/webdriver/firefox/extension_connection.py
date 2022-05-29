@@ -18,11 +18,11 @@
 import logging
 import time
 
-from selenium.webdriver.common import utils
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
-from selenium.webdriver.firefox.firefox_binary import FirefoxBinary
+from selenium.webdriver.common import utils
 from selenium.webdriver.remote.command import Command
 from selenium.webdriver.remote.remote_connection import RemoteConnection
+from selenium.webdriver.firefox.firefox_binary import FirefoxBinary
 
 LOGGER = logging.getLogger(__name__)
 PORT = 0
@@ -51,24 +51,24 @@ class ExtensionConnection(RemoteConnection):
 
         self.binary.launch_browser(self.profile, timeout=timeout)
         _URL = "http://%s:%d/hub" % (HOST, PORT)
-        RemoteConnection.__init__(self, _URL, keep_alive=True)
+        RemoteConnection.__init__(
+            self, _URL, keep_alive=True)
 
     def quit(self, sessionId=None):
-        self.execute(Command.QUIT, {"sessionId": sessionId})
+        self.execute(Command.QUIT, {'sessionId': sessionId})
         while self.is_connectable():
             LOGGER.info("waiting to quit")
             time.sleep(1)
 
     def connect(self):
         """Connects to the extension and retrieves the session id."""
-        return self.execute(
-            Command.NEW_SESSION, {"desiredCapabilities": DesiredCapabilities.FIREFOX}
-        )
+        return self.execute(Command.NEW_SESSION,
+                            {'desiredCapabilities': DesiredCapabilities.FIREFOX})
 
     @classmethod
     def connect_and_quit(self):
         """Connects to an running browser and quit immediately."""
-        self._request("%s/extensions/firefox/quit" % _URL)
+        self._request('%s/extensions/firefox/quit' % _URL)
 
     @classmethod
     def is_connectable(self):
@@ -81,5 +81,4 @@ class ExtensionConnectionError(Exception):
 
     Might be caused by bad input or bugs in webdriver
     """
-
     pass

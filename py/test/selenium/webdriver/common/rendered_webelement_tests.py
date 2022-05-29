@@ -26,24 +26,18 @@ def test_should_pick_up_style_of_an_element(driver, pages):
     pages.load("javascriptPage.html")
 
     element = driver.find_element(by=By.ID, value="green-parent")
-    backgroundColour = Color.from_string(
-        element.value_of_css_property("background-color")
-    )
+    backgroundColour = Color.from_string(element.value_of_css_property("background-color"))
     assert Color.from_string("rgba(0, 128, 0, 1)") == backgroundColour
 
     element = driver.find_element(by=By.ID, value="red-item")
-    backgroundColour = Color.from_string(
-        element.value_of_css_property("background-color")
-    )
+    backgroundColour = Color.from_string(element.value_of_css_property("background-color"))
     assert Color.from_string("rgba(255, 0, 0, 1)") == backgroundColour
 
 
 def test_should_allow_inherited_styles_to_be_used(driver, pages):
     pages.load("javascriptPage.html")
     element = driver.find_element(by=By.ID, value="green-item")
-    backgroundColour = Color.from_string(
-        element.value_of_css_property("background-color")
-    )
+    backgroundColour = Color.from_string(element.value_of_css_property("background-color"))
     assert backgroundColour == Color.from_string("transparent")
 
 
@@ -57,8 +51,8 @@ def test_should_correctly_identify_that_an_element_has_width(driver, pages):
 
 
 @pytest.mark.xfail_safari(
-    reason="Get Element Rect command not implemented", raises=WebDriverException
-)
+    reason='Get Element Rect command not implemented',
+    raises=WebDriverException)
 def test_should_be_able_to_determine_the_rect_of_an_element(driver, pages):
     pages.load("xhtmlTest.html")
 

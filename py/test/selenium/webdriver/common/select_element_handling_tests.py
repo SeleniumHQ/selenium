@@ -18,9 +18,7 @@
 from selenium.webdriver.common.by import By
 
 
-def test_should_be_possible_to_deselect_asingle_option_from_aselect_which_allows_multiple_choice(
-    driver, pages
-):
+def test_should_be_possible_to_deselect_asingle_option_from_aselect_which_allows_multiple_choice(driver, pages):
     pages.load("formPage.html")
     multiSelect = driver.find_element(By.ID, "multi")
     options = multiSelect.find_elements(By.TAG_NAME, "option")
@@ -50,9 +48,7 @@ def test_should_be_able_to_change_the_selected_option_in_aselec(driver, pages):
     assert two.is_selected() is True
 
 
-def test_should_be_able_to_select_more_than_one_option_from_aselect_which_allows_multiple_choice(
-    driver, pages
-):
+def test_should_be_able_to_select_more_than_one_option_from_aselect_which_allows_multiple_choice(driver, pages):
     pages.load("formPage.html")
 
     multiSelect = driver.find_element(By.ID, "multi")
@@ -87,21 +83,15 @@ def test_can_select_elements_in_opt_group(driver, pages):
     assert element.is_selected() is True
 
 
-def test_can_get_value_from_option_via_attribute_when_attribute_doesnt_exist(
-    driver, pages
-):
+def test_can_get_value_from_option_via_attribute_when_attribute_doesnt_exist(driver, pages):
     pages.load("formPage.html")
-    element = driver.find_element(
-        By.CSS_SELECTOR, "select[name='select-default'] option"
-    )
+    element = driver.find_element(By.CSS_SELECTOR, "select[name='select-default'] option")
     assert element.get_attribute("value") == "One"
     element = driver.find_element(By.ID, "blankOption")
     assert element.get_attribute("value") == ""
 
 
-def test_can_get_value_from_option_via_attribute_when_attribute_is_empty_string(
-    driver, pages
-):
+def test_can_get_value_from_option_via_attribute_when_attribute_is_empty_string(driver, pages):
     pages.load("formPage.html")
     element = driver.find_element(By.ID, "optionEmptyValueSet")
     assert element.get_attribute("value") == ""

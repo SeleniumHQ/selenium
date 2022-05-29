@@ -17,8 +17,9 @@
 
 import pytest
 
-from selenium.common.exceptions import NoSuchElementException
-from selenium.common.exceptions import WebDriverException
+from selenium.common.exceptions import (
+    WebDriverException,
+    NoSuchElementException)
 from selenium.webdriver.common.by import By
 
 
@@ -36,9 +37,7 @@ def test_should_not_find_element_by_xpath(driver, pages):
         element.find_element(By.XPATH, "select/x")
 
 
-def test_finding_dot_slash_elements_on_element_by_xpath_should_find_not_top_level_elements(
-    driver, pages
-):
+def test_finding_dot_slash_elements_on_element_by_xpath_should_find_not_top_level_elements(driver, pages):
     pages.load("simpleTest.html")
     parent = driver.find_element(By.ID, "multiline")
     children = parent.find_elements(By.XPATH, "./p")
@@ -62,9 +61,7 @@ def test_should_not_find_elements_by_xpath(driver, pages):
     assert len(children) == 0
 
 
-def test_finding_elements_on_element_by_xpath_should_find_top_level_elements(
-    driver, pages
-):
+def test_finding_elements_on_element_by_xpath_should_find_top_level_elements(driver, pages):
     pages.load("simpleTest.html")
     parent = driver.find_element(By.ID, "multiline")
     all_para_elements = driver.find_elements(By.XPATH, "//p")
@@ -179,9 +176,7 @@ def test_should_throw_an_error_if_user_passes_in_invalid_by(driver, pages):
         element.find_element("foo", "bar")
 
 
-def test_should_throw_an_error_if_user_passes_in_invalid_by_when_find_elements(
-    driver, pages
-):
+def test_should_throw_an_error_if_user_passes_in_invalid_by_when_find_elements(driver, pages):
     pages.load("nestedElements.html")
     element = driver.find_element(By.NAME, "form2")
     with pytest.raises(WebDriverException):

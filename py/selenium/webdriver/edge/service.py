@@ -16,22 +16,17 @@
 # under the License.
 
 from typing import List
-
 from selenium.webdriver.chromium import service
 
-DEFAULT_EXECUTABLE_PATH = "msedgedriver"
+
+DEFAULT_EXECUTABLE_PATH = 'msedgedriver'
 
 
 class Service(service.ChromiumService):
-    def __init__(
-        self,
-        executable_path: str = DEFAULT_EXECUTABLE_PATH,
-        port: int = 0,
-        verbose: bool = False,
-        log_path: str = None,
-        service_args: List[str] = None,
-        env=None,
-    ):
+
+    def __init__(self, executable_path: str = DEFAULT_EXECUTABLE_PATH,
+                 port: int = 0, verbose: bool = False, log_path: str = None,
+                 service_args: List[str] = None, env=None):
         """
         Creates a new instance of the EdgeDriver service.
         EdgeDriver provides an interface for Microsoft WebDriver to use
@@ -57,5 +52,4 @@ class Service(service.ChromiumService):
             service_args,
             log_path,
             env,
-            "Please download from https://developer.microsoft.com/en-us/microsoft-edge/tools/webdriver/",
-        )
+            "Please download from https://developer.microsoft.com/en-us/microsoft-edge/tools/webdriver/")

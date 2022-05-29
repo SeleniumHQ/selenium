@@ -19,8 +19,8 @@ import pytest
 
 from selenium.common.exceptions import NoSuchShadowRootException
 from selenium.webdriver.common.by import By
-from selenium.webdriver.remote.shadowroot import ShadowRoot
 from selenium.webdriver.remote.webelement import WebElement
+from selenium.webdriver.remote.shadowroot import ShadowRoot
 
 
 @pytest.mark.xfail_safari
@@ -28,9 +28,7 @@ from selenium.webdriver.remote.webelement import WebElement
 @pytest.mark.xfail_remote
 def test_can_get_the_shadow_root_of_an_element(driver, pages):
     pages.load("webComponents.html")
-    shadow_root = driver.find_element(
-        By.CSS_SELECTOR, "custom-checkbox-element"
-    ).shadow_root
+    shadow_root = driver.find_element(By.CSS_SELECTOR, "custom-checkbox-element").shadow_root
     assert isinstance(shadow_root, ShadowRoot)
 
 
@@ -50,9 +48,7 @@ def test_returns_shadow_root_via_execute_script(driver, pages):
     pages.load("webComponents.html")
     custom_element = driver.find_element(By.CSS_SELECTOR, "custom-checkbox-element")
     shadow_root = custom_element.shadow_root
-    execute_shadow_root = driver.execute_script(
-        "return arguments[0].shadowRoot", custom_element
-    )
+    execute_shadow_root = driver.execute_script("return arguments[0].shadowRoot", custom_element)
     assert shadow_root == execute_shadow_root
 
 

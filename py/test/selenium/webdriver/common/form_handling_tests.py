@@ -76,9 +76,7 @@ def test_should_not_submit_button_outside_form(driver, pages):
         driver.find_element(By.NAME, "SearchableText").submit()
 
 
-def test_should_be_able_to_enter_text_into_atext_area_by_setting_its_value(
-    driver, pages
-):
+def test_should_be_able_to_enter_text_into_atext_area_by_setting_its_value(driver, pages):
     pages.load("javascriptPage.html")
     textarea = driver.find_element(By.ID, "keyUpArea")
     cheesey = "Brie and cheddar"
@@ -88,18 +86,14 @@ def test_should_be_able_to_enter_text_into_atext_area_by_setting_its_value(
 
 def test_should_enter_data_into_form_fields(driver, pages):
     pages.load("xhtmlTest.html")
-    element = driver.find_element(
-        By.XPATH, "//form[@name='someForm']/input[@id='username']"
-    )
+    element = driver.find_element(By.XPATH, "//form[@name='someForm']/input[@id='username']")
     originalValue = element.get_attribute("value")
     assert originalValue == "change"
 
     element.clear()
     element.send_keys("some text")
 
-    element = driver.find_element(
-        By.XPATH, "//form[@name='someForm']/input[@id='username']"
-    )
+    element = driver.find_element(By.XPATH, "//form[@name='someForm']/input[@id='username']")
     newFormValue = element.get_attribute("value")
     assert newFormValue == "some text"
 
@@ -173,9 +167,7 @@ def test_toggling_an_option_should_toggle_options_in_amulti_select(driver, pages
     assert selected == option.is_selected()
 
 
-def test_should_throw_an_exception_when_selecting_an_unselectable_element(
-    driver, pages
-):
+def test_should_throw_an_exception_when_selecting_an_unselectable_element(driver, pages):
     pages.load("formPage.html")
     element = driver.find_element(By.XPATH, "//title")
     with pytest.raises(WebDriverException):

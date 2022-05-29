@@ -19,35 +19,35 @@ from selenium.webdriver.common.print_page_options import PrintOptions
 
 START_INDEX = 0
 END_INDEX = 5
-PDF_MAGIC_NUMBER = "JVBER"
+PDF_MAGIC_NUMBER = 'JVBER'
 
 
 def test_pdf_with_2_pages(driver, pages):
     print_options = PrintOptions()
-    print_options.page_ranges = ["1-2"]
+    print_options.page_ranges = ['1-2']
 
     pages.load("printPage.html")
 
     base64code = driver.print_page(print_options)
 
-    assert base64code[START_INDEX:END_INDEX] == PDF_MAGIC_NUMBER
+    assert base64code[START_INDEX: END_INDEX] == PDF_MAGIC_NUMBER
 
 
 def test_pdf_with_all_pages(driver, pages):
     pages.load("printPage.html")
     base64code = driver.print_page()
 
-    assert base64code[START_INDEX:END_INDEX] == PDF_MAGIC_NUMBER
+    assert base64code[START_INDEX: END_INDEX] == PDF_MAGIC_NUMBER
 
 
 def test_valid_params(driver, pages):
     print_options = PrintOptions()
 
-    print_options.page_ranges = ["1-2"]
-    print_options.orientation = "landscape"
+    print_options.page_ranges = ['1-2']
+    print_options.orientation = 'landscape'
     print_options.width = 30
 
     pages.load("printPage.html")
     base64code = driver.print_page(print_options)
 
-    assert base64code[START_INDEX:END_INDEX] == PDF_MAGIC_NUMBER
+    assert base64code[START_INDEX: END_INDEX] == PDF_MAGIC_NUMBER

@@ -38,10 +38,14 @@ class Interaction:
 
 
 class Pause(Interaction):
+
     def __init__(self, source, duration=0):
         super(Interaction, self).__init__()
         self.source = source
         self.duration = duration
 
     def encode(self):
-        return {"type": self.PAUSE, "duration": int(self.duration * 1000)}
+        return {
+            "type": self.PAUSE,
+            "duration": int(self.duration * 1000)
+        }

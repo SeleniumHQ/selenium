@@ -19,4 +19,5 @@
 
 from typing import Union
 
+
 AnyKey = Union[str, int, float]

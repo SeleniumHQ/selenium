@@ -17,7 +17,6 @@
 import warnings
 
 from selenium.webdriver.chrome.webdriver import WebDriver as ChromiumDriver
-
 from .options import Options
 
 
@@ -25,17 +24,10 @@ class OperaDriver(ChromiumDriver):
     """Controls the new OperaDriver and allows you
     to drive the Opera browser based on Chromium."""
 
-    def __init__(
-        self,
-        executable_path=None,
-        port=0,
-        options=None,
-        service_args=None,
-        desired_capabilities=None,
-        service_log_path=None,
-        opera_options=None,
-        keep_alive=True,
-    ):
+    def __init__(self, executable_path=None, port=0,
+                 options=None, service_args=None,
+                 desired_capabilities=None, service_log_path=None,
+                 opera_options=None, keep_alive=True):
         """
         Creates a new instance of the operadriver.
 
@@ -52,23 +44,18 @@ class OperaDriver(ChromiumDriver):
          - service_log_path - Where to log information from the driver.
            capabilities only, such as "proxy" or "loggingPref".
         """
-        warnings.warn(
-            f"{self.__class__} is deprecated and will be removed in 4.3; "
-            f"see: https://www.selenium.dev/documentation/webdriver/getting_started/open_browser/#opera",
-            DeprecationWarning,
-            stacklevel=2,
-        )
-        executable_path = executable_path if executable_path else "operadriver"
-        ChromiumDriver.__init__(
-            self,
-            executable_path=executable_path,
-            port=port,
-            options=options,
-            service_args=service_args,
-            desired_capabilities=desired_capabilities,
-            service_log_path=service_log_path,
-            keep_alive=keep_alive,
-        )
+        warnings.warn(f"{self.__class__} is deprecated and will be removed in 4.3; "
+                      f"see: https://www.selenium.dev/documentation/webdriver/getting_started/open_browser/#opera",
+                      DeprecationWarning, stacklevel=2)
+        executable_path = (executable_path if executable_path else "operadriver")
+        ChromiumDriver.__init__(self,
+                                executable_path=executable_path,
+                                port=port,
+                                options=options,
+                                service_args=service_args,
+                                desired_capabilities=desired_capabilities,
+                                service_log_path=service_log_path,
+                                keep_alive=keep_alive)
 
     def create_options(self):
         return Options()
@@ -78,21 +65,15 @@ class WebDriver(OperaDriver):
     class ServiceType:
         CHROMIUM = 2
 
-    def __init__(
-        self,
-        desired_capabilities=None,
-        executable_path=None,
-        port=0,
-        service_log_path=None,
-        service_args=None,
-        options=None,
-    ):
-        OperaDriver.__init__(
-            self,
-            executable_path=executable_path,
-            port=port,
-            options=options,
-            service_args=service_args,
-            desired_capabilities=desired_capabilities,
-            service_log_path=service_log_path,
-        )
+    def __init__(self,
+                 desired_capabilities=None,
+                 executable_path=None,
+                 port=0,
+                 service_log_path=None,
+                 service_args=None,
+                 options=None):
+        OperaDriver.__init__(self, executable_path=executable_path,
+                             port=port, options=options,
+                             service_args=service_args,
+                             desired_capabilities=desired_capabilities,
+                             service_log_path=service_log_path)

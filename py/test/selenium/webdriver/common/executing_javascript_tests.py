@@ -36,9 +36,7 @@ def test_should_be_able_to_execute_simple_javascript_and_return_astring(driver, 
     assert "XHTML Test Page" == result
 
 
-def test_should_be_able_to_execute_simple_javascript_and_return_an_integer(
-    driver, pages
-):
+def test_should_be_able_to_execute_simple_javascript_and_return_an_integer(driver, pages):
     pages.load("nestedElements.html")
     result = driver.execute_script("return document.getElementsByName('checky').length")
 
@@ -46,9 +44,7 @@ def test_should_be_able_to_execute_simple_javascript_and_return_an_integer(
     assert int(result) > 1
 
 
-def test_should_be_able_to_execute_simple_javascript_and_return_aweb_element(
-    driver, pages
-):
+def test_should_be_able_to_execute_simple_javascript_and_return_aweb_element(driver, pages):
     pages.load("xhtmlTest.html")
 
     result = driver.execute_script("return document.getElementById('id1')")
@@ -58,24 +54,18 @@ def test_should_be_able_to_execute_simple_javascript_and_return_aweb_element(
     assert "a" == result.tag_name.lower()
 
 
-def test_should_be_able_to_execute_simple_javascript_and_return_alist_of_web_elements(
-    driver, pages
-):
+def test_should_be_able_to_execute_simple_javascript_and_return_alist_of_web_elements(driver, pages):
     pages.load("xhtmlTest.html")
 
-    result = driver.execute_script(
-        "return document.querySelectorAll('div.navigation a')"
-    )
+    result = driver.execute_script("return document.querySelectorAll('div.navigation a')")
 
     assert result is not None
     assert isinstance(result, list)
     assert all(isinstance(item, WebElement) for item in result)
-    assert all("a" == item.tag_name.lower() for item in result)
+    assert all('a' == item.tag_name.lower() for item in result)
 
 
-def test_should_be_able_to_execute_simple_javascript_and_return_web_elements_inside_alist(
-    driver, pages
-):
+def test_should_be_able_to_execute_simple_javascript_and_return_web_elements_inside_alist(driver, pages):
     pages.load("xhtmlTest.html")
 
     result = driver.execute_script("return [document.body]")
@@ -85,14 +75,10 @@ def test_should_be_able_to_execute_simple_javascript_and_return_web_elements_ins
     assert isinstance(result[0], WebElement)
 
 
-def test_should_be_able_to_execute_simple_javascript_and_return_web_elements_inside_anested_list(
-    driver, pages
-):
+def test_should_be_able_to_execute_simple_javascript_and_return_web_elements_inside_anested_list(driver, pages):
     pages.load("xhtmlTest.html")
 
-    result = driver.execute_script(
-        "return [document.body, [document.getElementById('id1')]]"
-    )
+    result = driver.execute_script("return [document.body, [document.getElementById('id1')]]")
 
     assert result is not None
     assert isinstance(result, list)
@@ -100,44 +86,37 @@ def test_should_be_able_to_execute_simple_javascript_and_return_web_elements_ins
     assert isinstance(result[1][0], WebElement)
 
 
-def test_should_be_able_to_execute_simple_javascript_and_return_web_elements_inside_adict(
-    driver, pages
-):
+def test_should_be_able_to_execute_simple_javascript_and_return_web_elements_inside_adict(driver, pages):
     pages.load("xhtmlTest.html")
 
     result = driver.execute_script("return {el1: document.body}")
 
     assert result is not None
     assert isinstance(result, dict)
-    assert isinstance(result.get("el1"), WebElement)
+    assert isinstance(result.get('el1'), WebElement)
 
 
-def test_should_be_able_to_execute_simple_javascript_and_return_web_elements_inside_anested_dict(
-    driver, pages
-):
+def test_should_be_able_to_execute_simple_javascript_and_return_web_elements_inside_anested_dict(driver, pages):
     pages.load("xhtmlTest.html")
 
-    result = driver.execute_script(
-        "return {el1: document.body, " "nested: {el2: document.getElementById('id1')}}"
-    )
+    result = driver.execute_script("return {el1: document.body, "
+                                   "nested: {el2: document.getElementById('id1')}}")
 
     assert result is not None
     assert isinstance(result, dict)
-    assert isinstance(result.get("el1"), WebElement)
-    assert isinstance(result.get("nested").get("el2"), WebElement)
+    assert isinstance(result.get('el1'), WebElement)
+    assert isinstance(result.get('nested').get('el2'), WebElement)
 
 
-def test_should_be_able_to_execute_simple_javascript_and_return_web_elements_inside_alist_inside_adict(
-    driver, pages
-):
+def test_should_be_able_to_execute_simple_javascript_and_return_web_elements_inside_alist_inside_adict(driver, pages):
     pages.load("xhtmlTest.html")
 
     result = driver.execute_script("return {el1: [document.body]}")
 
     assert result is not None
     assert isinstance(result, dict)
-    assert isinstance(result.get("el1"), list)
-    assert isinstance(result.get("el1")[0], WebElement)
+    assert isinstance(result.get('el1'), list)
+    assert isinstance(result.get('el1')[0], WebElement)
 
 
 def test_should_be_able_to_execute_simple_javascript_and_return_aboolean(driver, pages):
@@ -156,7 +135,8 @@ def test_should_be_able_to_execute_simple_javascript_and_astrings_array(driver, 
     expectedResult.append("zero")
     expectedResult.append("one")
     expectedResult.append("two")
-    result = driver.execute_script("return ['zero', 'one', 'two']")
+    result = driver.execute_script(
+        "return ['zero', 'one', 'two']")
 
     assert expectedResult == result
 
@@ -207,8 +187,7 @@ def test_should_be_able_to_call_functions_defined_on_the_page(driver, pages):
 def test_should_be_able_to_pass_astring_an_as_argument(driver, pages):
     pages.load("javascriptPage.html")
     value = driver.execute_script(
-        "return arguments[0] == 'fish' ? 'fish' : 'not fish'", "fish"
-    )
+        "return arguments[0] == 'fish' ? 'fish' : 'not fish'", "fish")
     assert "fish" == value
 
 
@@ -229,8 +208,7 @@ def test_should_be_able_to_pass_aweb_element_as_argument(driver, pages):
     button = driver.find_element(By.ID, "plainButton")
     value = driver.execute_script(
         "arguments[0]['flibble'] = arguments[0].getAttribute('id'); return arguments[0]['flibble']",
-        button,
-    )
+        button)
     assert "plainButton" == value
 
 

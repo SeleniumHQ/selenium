@@ -15,8 +15,8 @@
 # specific language governing permissions and limitations
 # under the License.
 
-
 class BidiConnection:
+
     def __init__(self, session, cdp, devtools_import) -> None:
         self.session = session
         self.cdp = cdp

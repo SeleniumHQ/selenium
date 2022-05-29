@@ -15,15 +15,14 @@
 # specific language governing permissions and limitations
 # under the License.
 
-from base64 import urlsafe_b64decode
-from base64 import urlsafe_b64encode
-from typing import Tuple
-
 import pytest
 
+from typing import Tuple
+from base64 import urlsafe_b64decode, urlsafe_b64encode
 from selenium.webdriver.common.virtual_authenticator import Credential
 
-BASE64__ENCODED_PK = """
+
+BASE64__ENCODED_PK = '''
 MIIEvAIBADANBgkqhkiG9w0BAQEFAASCBKYwggSiAgEAAoIBAQDbBOu5Lhs4vpowbCnmCyLUpIE7JM9sm9QXzye2G+jr+Kr
 MsinWohEce47BFPJlTaDzHSvOW2eeunBO89ZcvvVc8RLz4qyQ8rO98xS1jtgqi1NcBPETDrtzthODu/gd0sjB2Tk3TLuBGV
 oPXt54a+Oo4JbBJ6h3s0+5eAfGplCbSNq6hN3Jh9YOTw5ZA6GCEy5l8zBaOgjXytd2v2OdSVoEDNiNQRkjJd2rmS2oi9AyQ
@@ -42,7 +41,7 @@ lUhAsyjJiQ/0bK1yX87ulqFVgO0Knmh+wNajrb9wiONAJTMICG7tiWJOm7fW5cfTJwWkBwYADmkfTRmH
 9QulbC3C/qgGFNrcWgcT9kCgYAZTa1P9bFCDU7hJc2mHwJwAW7/FQKEJg8SL33KINpLwcR8fqaYOdAHWWz636osVEqosRrH
 zJOGpf9x2RSWzQJ+dq8+6fACgfFZOVpN644+sAHfNPAI/gnNKU5OfUv+eav8fBnzlf1A3y3GIkyMyzFN3DE7e0n/lyqxE4H
 BYGpI8g==
-"""
+'''
 
 
 @pytest.fixture()
@@ -59,9 +58,7 @@ def test_rk_enabled_credential(data):
 
     _id, rp_id, user_handle, privatekey, sign_count = data
 
-    credential = Credential.create_resident_credential(
-        _id, rp_id, user_handle, privatekey, sign_count
-    )
+    credential = Credential.create_resident_credential(_id, rp_id, user_handle, privatekey, sign_count)
     assert credential.id == urlsafe_b64encode(bytearray({1, 2, 3, 4})).decode()
     if credential.is_resident_credential is True:
         assert True
@@ -73,9 +70,7 @@ def test_rk_enabled_credential(data):
 
 def test_rk_disabled_credentials(data):
     _id, rp_id, user_handle, privatekey, sign_count = data
-    credential = Credential.create_non_resident_credential(
-        _id, rp_id, privatekey, sign_count
-    )
+    credential = Credential.create_non_resident_credential(_id, rp_id, privatekey, sign_count)
 
     assert credential.id == urlsafe_b64encode(bytearray({1, 2, 3, 4})).decode()
     assert credential.private_key == urlsafe_b64encode(privatekey).decode()
@@ -93,15 +88,10 @@ def test_rk_disabled_credentials(data):
 
 def test_to_dict(data):
     _id, rp_id, user_handle, privatekey, sign_count = data
-    credential = Credential.create_resident_credential(
-        _id, rp_id, user_handle, privatekey, sign_count
-    )
+    credential = Credential.create_resident_credential(_id, rp_id, user_handle, privatekey, sign_count)
 
     credential_dict = credential.to_dict()
-    assert (
-        credential_dict["credentialId"]
-        == urlsafe_b64encode(bytearray({1, 2, 3, 4})).decode()
-    )
+    assert credential_dict["credentialId"] == urlsafe_b64encode(bytearray({1, 2, 3, 4})).decode()
     if credential_dict["isResidentCredential"] is True:
         assert True
     else:

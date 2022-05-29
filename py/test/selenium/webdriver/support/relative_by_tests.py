@@ -14,12 +14,10 @@
 # KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
 # under the License.
-import pytest
-
 from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.common.by import By
-from selenium.webdriver.support.relative_locator import locate_with
-from selenium.webdriver.support.relative_locator import with_tag_name
+from selenium.webdriver.support.relative_locator import with_tag_name, locate_with
+import pytest
 
 
 def test_should_be_able_to_find_first_one(driver, pages):
@@ -28,7 +26,7 @@ def test_should_be_able_to_find_first_one(driver, pages):
 
     el = driver.find_element(with_tag_name("p").above(lowest))
 
-    assert el.get_attribute("id") == "mid"
+    assert el.get_attribute('id') == "mid"
 
 
 def test_should_be_able_to_find_elements_above_another(driver, pages):
@@ -37,7 +35,7 @@ def test_should_be_able_to_find_elements_above_another(driver, pages):
 
     elements = driver.find_elements(with_tag_name("p").above(lowest))
 
-    ids = [el.get_attribute("id") for el in elements]
+    ids = [el.get_attribute('id') for el in elements]
     assert "above" in ids
     assert "mid" in ids
 
@@ -45,39 +43,30 @@ def test_should_be_able_to_find_elements_above_another(driver, pages):
 def test_should_be_able_to_combine_filters(driver, pages):
     pages.load("relative_locators.html")
 
-    elements = driver.find_elements(
-        with_tag_name("td")
-        .above(driver.find_element(By.ID, "center"))
-        .to_right_of(driver.find_element(By.ID, "second"))
-    )
+    elements = driver.find_elements(with_tag_name("td").above(driver.find_element(By.ID, "center"))
+                                    .to_right_of(driver.find_element(By.ID, "second")))
 
-    ids = [el.get_attribute("id") for el in elements]
+    ids = [el.get_attribute('id') for el in elements]
     assert "third" in ids
 
 
 def test_should_be_able_to_use_css_selectors(driver, pages):
     pages.load("relative_locators.html")
 
-    elements = driver.find_elements(
-        locate_with(By.CSS_SELECTOR, "td")
-        .above(driver.find_element(By.ID, "center"))
-        .to_right_of(driver.find_element(By.ID, "second"))
-    )
+    elements = driver.find_elements(locate_with(By.CSS_SELECTOR, "td").above(driver.find_element(By.ID, "center"))
+                                    .to_right_of(driver.find_element(By.ID, "second")))
 
-    ids = [el.get_attribute("id") for el in elements]
+    ids = [el.get_attribute('id') for el in elements]
     assert "third" in ids
 
 
 def test_should_be_able_to_use_xpath(driver, pages):
     pages.load("relative_locators.html")
 
-    elements = driver.find_elements(
-        locate_with(By.XPATH, "//td[1]")
-        .below(driver.find_element(By.ID, "second"))
-        .above(driver.find_element(By.ID, "seventh"))
-    )
+    elements = driver.find_elements(locate_with(By.XPATH, "//td[1]").below(driver.find_element(By.ID, "second"))
+                                    .above(driver.find_element(By.ID, "seventh")))
 
-    ids = [el.get_attribute("id") for el in elements]
+    ids = [el.get_attribute('id') for el in elements]
     assert "fourth" in ids
 
 
@@ -86,6 +75,4 @@ def test_no_such_element_is_raised_rather_than_index_error(driver, pages):
     with pytest.raises(NoSuchElementException) as exc:
         anchor = driver.find_element(By.ID, "second")
         driver.find_element(locate_with(By.ID, "nonexistentid").above(anchor))
-    assert (
-        exc.value.msg == "Cannot locate relative element with: {'id': 'nonexistentid'}"
-    )
+    assert exc.value.msg == "Cannot locate relative element with: {'id': 'nonexistentid'}"
