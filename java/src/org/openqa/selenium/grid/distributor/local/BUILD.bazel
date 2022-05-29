@@ -29,6 +29,7 @@ java_library(
         "//java/src/org/openqa/selenium/grid/sessionqueue/remote",
         "//java/src/org/openqa/selenium/json",
         "//java/src/org/openqa/selenium/remote",
+        "//java/src/org/openqa/selenium/grid/jmx",
         artifact("com.google.guava:guava"),
         artifact("dev.failsafe:failsafe"),
     ],

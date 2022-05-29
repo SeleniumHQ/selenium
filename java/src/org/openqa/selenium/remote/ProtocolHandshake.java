@@ -19,6 +19,8 @@ package org.openqa.selenium.remote;
 
 import com.google.common.io.CountingOutputStream;
 import com.google.common.io.FileBackedOutputStream;
+
+import org.openqa.selenium.AcceptedW3CCapabilityKeys;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.Proxy;
@@ -37,10 +39,13 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.function.Function;
+import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static com.google.common.net.HttpHeaders.CONTENT_LENGTH;
@@ -63,7 +68,20 @@ public class ProtocolHandshake {
 
       if (result.isRight()) {
         Result toReturn = result.right();
-        LOG.info(String.format("Detected dialect: %s", toReturn.dialect));
+        LOG.info(String.format("Detected upstream dialect: %s", toReturn.dialect));
+
+        List<String> invalid = desired.asMap().keySet()
+          .stream()
+          .filter(key -> !(new AcceptedW3CCapabilityKeys().test(key)))
+          .collect(Collectors.toList());
+
+        if (!invalid.isEmpty()) {
+          LOG.log(Level.WARNING,
+                  () -> String.format("Support for Legacy Capabilities is deprecated; " +
+                                      "You are sending the following invalid capabilities: %s; " +
+                                      "Please update to W3C Syntax: https://www.selenium.dev/blog/2022/legacy-protocol-support/",
+                                      invalid));
+        }
         return toReturn;
       } else {
         throw result.left();

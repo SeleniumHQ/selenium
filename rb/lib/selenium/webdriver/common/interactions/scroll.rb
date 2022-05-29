@@ -27,10 +27,7 @@ module Selenium
       #
 
       class Scroll < Interaction
-        VIEWPORT = :viewport
-        POINTER = :pointer
-
-        def initialize(source, duration, delta_x, delta_y, origin: VIEWPORT, x: 0, y: 0)
+        def initialize(source:, x: 0, y: 0, delta_x: 0, delta_y: 0, origin: :viewport, duration: 0.25)
           super(source)
           @type = :scroll
           @duration = duration * 1000

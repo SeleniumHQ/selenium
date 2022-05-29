@@ -67,6 +67,14 @@ namespace OpenQA.Selenium.Interactions
         }
 
         /// <summary>
+        /// Resets the list of sequences.
+        /// </summary>
+        public void ClearSequences()
+        {
+            this.sequences = new Dictionary<InputDevice, ActionSequence>();
+        }
+
+        /// <summary>
         /// Returns a string that represents the current <see cref="ActionBuilder"/>.
         /// </summary>
         /// <returns>A string that represents the current <see cref="ActionBuilder"/>.</returns>

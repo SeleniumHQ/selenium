@@ -26,6 +26,8 @@ import com.google.common.collect.Sets;
 import com.google.common.io.CharSource;
 import com.google.common.io.CharStreams;
 import com.google.common.io.FileBackedOutputStream;
+
+import org.openqa.selenium.AcceptedW3CCapabilityKeys;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.internal.Require;
@@ -60,21 +62,6 @@ public class NewSessionPayload implements Closeable {
   private final Json json = new Json();
   private final FileBackedOutputStream backingStore;
   private final ImmutableSet<Dialect> dialects;
-
-  public static NewSessionPayload create(Capabilities caps) {
-    // We need to convert the capabilities into a new session payload. At this point we're dealing
-    // with references, so I'm Just Sure This Will Be Fine.
-    return create(ImmutableMap.of("desiredCapabilities", caps.asMap()));
-  }
-
-  public static NewSessionPayload create(Map<String, ?> source) {
-    String json = new Json().toJson(Require.nonNull("Payload", source));
-    return new NewSessionPayload(new StringReader(json));
-  }
-
-  public static NewSessionPayload create(Reader source) {
-    return new NewSessionPayload(source);
-  }
 
   private NewSessionPayload(Reader source) {
     // Dedicate up to 10% of all RAM or 20% of available RAM (whichever is smaller) to storing this
@@ -114,6 +101,21 @@ public class NewSessionPayload implements Closeable {
       // Ignore
     }
 
+  }
+
+  public static NewSessionPayload create(Capabilities caps) {
+    // We need to convert the capabilities into a new session payload. At this point we're dealing
+    // with references, so I'm Just Sure This Will Be Fine.
+    return create(ImmutableMap.of("desiredCapabilities", caps.asMap()));
+  }
+
+  public static NewSessionPayload create(Map<String, ?> source) {
+    String json = new Json().toJson(Require.nonNull("Payload", source));
+    return new NewSessionPayload(new StringReader(json));
+  }
+
+  public static NewSessionPayload create(Reader source) {
+    return new NewSessionPayload(source);
   }
 
   private void validate() throws IOException {

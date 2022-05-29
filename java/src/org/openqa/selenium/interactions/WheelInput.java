@@ -25,7 +25,8 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
-import org.openqa.selenium.interactions.PointerInput.Origin;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.WrapsElement;
 import org.openqa.selenium.internal.Require;
 
 /**
@@ -49,8 +50,7 @@ public class WheelInput implements InputSource, Encodable {
     return SourceType.WHEEL;
   }
 
-  public Interaction createScroll(
-    int x, int y, int deltaX, int deltaY, Duration duration, Origin origin) {
+  public Interaction createScroll(int x, int y, int deltaX, int deltaY, Duration duration, ScrollOrigin origin) {
     return new ScrollInteraction(this, x, y, deltaX, deltaY, duration, origin);
   }
 
@@ -71,7 +71,7 @@ public class WheelInput implements InputSource, Encodable {
     private final int deltaX;
     private final int deltaY;
     private final Duration duration;
-    private final Origin origin;
+    private final ScrollOrigin origin;
 
     protected ScrollInteraction(
       InputSource source,
@@ -80,7 +80,7 @@ public class WheelInput implements InputSource, Encodable {
       int deltaX,
       int deltaY,
       Duration duration,
-      Origin origin) {
+      ScrollOrigin origin) {
       super(source);
 
       this.x = x;
@@ -89,8 +89,6 @@ public class WheelInput implements InputSource, Encodable {
       this.deltaY = deltaY;
       this.duration = nonNegative(duration);
       this.origin = Require.nonNull("Origin of scroll", origin);
-      Require.precondition(!origin.asArg().equals("pointer"),
-                           "Wheel input only accepts viewport or element origin." );
     }
 
     @Override
@@ -106,6 +104,54 @@ public class WheelInput implements InputSource, Encodable {
       toReturn.put("origin", origin.asArg());
 
       return toReturn;
+    }
+  }
+
+  public static final class ScrollOrigin {
+    private final Object originObject;
+    private int xOffset = 0;
+    private int yOffset = 0;
+
+    public Object asArg() {
+      Object arg = originObject;
+      while (arg instanceof WrapsElement) {
+        arg = ((WrapsElement) arg).getWrappedElement();
+      }
+      return arg;
+    }
+
+    private ScrollOrigin(Object originObject, int xOffset, int yOffset) {
+      this.originObject = originObject;
+      this.xOffset = xOffset;
+      this.yOffset = yOffset;
+    }
+
+    public static ScrollOrigin fromViewport() {
+      return new ScrollOrigin("viewport", 0, 0);
+    }
+
+    public static ScrollOrigin fromViewport(int xOffset, int yOffset) {
+      return new ScrollOrigin("viewport",
+        Require.nonNull("xOffset", xOffset),
+        Require.nonNull("yOffset", yOffset));
+    }
+
+    public static ScrollOrigin fromElement(WebElement element) {
+      return new ScrollOrigin(Require.nonNull("Element", element), 0, 0);
+    }
+
+    public static ScrollOrigin fromElement(WebElement element, int xOffset, int yOffset) {
+      return new ScrollOrigin(Require.nonNull("Element", element),
+        Require.nonNull("xOffset", xOffset),
+        Require.nonNull("yOffset", yOffset));
+    }
+
+    public int getxOffset() {
+      return xOffset;
+    }
+
+    public int getyOffset() {
+      return yOffset;
     }
   }
 }

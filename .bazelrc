@@ -4,33 +4,42 @@ build --flag_alias=pin_browsers=//common:pin_browsers
 build --flag_alias=headless=//common:headless
 
 # Set the default java toolchain
+
 build --java_runtime_version=remotejdk_11
 build --tool_java_language_version=11
 
 # We target java 8 by default
+
 build --javacopt="--release 8"
 
 # Require java dependencies to be used and first-order
+
 build --experimental_strict_java_deps=strict
 build --explicit_java_test_deps
 
 # Ensure builds are unpolluted by the user env
+
 build --incompatible_strict_action_env
 
 # Except for the PATH environment variable
+
 build --action_env=PATH
 
 # For build stamping
+
 build --workspace_status_command=scripts/build-info.py
 
 # Make sure we get something helpful when tests fail
+
 build --verbose_failures
 build --test_output=errors
 
 # Tests need to be able to open sockets on localhost
+
 build --noexperimental_sandbox_default_allow_network
 
 # pass environment variables to the test environment
+
 build --test_env=CI
 build --test_env=DASHBOARD_URL
 build --test_env=DISPLAY
@@ -41,6 +50,7 @@ build --test_env=MOZ_HEADLESS
 build --test_env=PATH  # Remove once browser pinning works
 build --test_env=SELENIUM_BROWSER
 build --test_env=TRAVIS
+build --test_env=PYTHON_VERSION
 
 test --test_timeout=1800
 

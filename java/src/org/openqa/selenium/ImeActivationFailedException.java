@@ -19,7 +19,10 @@ package org.openqa.selenium;
 
 /**
  * Indicates that activating an IME engine has failed.
+ *
+ * @deprecated Will be removed. IME is not part of W3C WebDriver and does not work on browsers.
  */
+@Deprecated
 public class ImeActivationFailedException extends WebDriverException {
   public ImeActivationFailedException(String message) {
     super(message);
