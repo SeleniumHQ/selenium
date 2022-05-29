@@ -14,6 +14,7 @@
 # KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
 # under the License.
+from __future__ import annotations
 
 import os
 import pkgutil
@@ -24,7 +25,9 @@ from base64 import b64decode
 from base64 import encodebytes
 from hashlib import md5 as md5_hash
 from io import BytesIO
+from typing import Union
 
+from selenium.common.exceptions import JavascriptException
 from selenium.common.exceptions import WebDriverException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.utils import keys_to_typing
@@ -34,9 +37,16 @@ from .shadowroot import ShadowRoot
 
 # TODO: When moving to supporting python 3.9 as the minimum version we can
 # use built in importlib_resources.files.
-_pkg = ".".join(__name__.split(".")[:-1])
-getAttribute_js = pkgutil.get_data(_pkg, "getAttribute.js").decode("utf8")
-isDisplayed_js = pkgutil.get_data(_pkg, "isDisplayed.js").decode("utf8")
+getAttribute_js = None
+isDisplayed_js = None
+
+
+def _load_js():
+    global getAttribute_js
+    global isDisplayed_js
+    _pkg = ".".join(__name__.split(".")[:-1])
+    getAttribute_js = pkgutil.get_data(_pkg, "getAttribute.js").decode("utf8")
+    isDisplayed_js = pkgutil.get_data(_pkg, "isDisplayed.js").decode("utf8")
 
 
 class BaseWebElement(metaclass=ABCMeta):
@@ -85,19 +95,30 @@ class WebElement(BaseWebElement):
 
     def submit(self):
         """Submits a form."""
-        form = self.find_element(By.XPATH, "./ancestor-or-self::form")
-        self._parent.execute_script(
-            "var e = arguments[0].ownerDocument.createEvent('Event');"
-            "e.initEvent('submit', true, true);"
-            "if (arguments[0].dispatchEvent(e)) { arguments[0].submit() }",
-            form,
+        script = (
+            "var form = arguments[0];\n"
+            'while (form.nodeName != "FORM" && form.parentNode) {\n'
+            "  form = form.parentNode;\n"
+            "}\n"
+            "if (!form) { throw Error('Unable to find containing form element'); }\n"
+            "if (!form.ownerDocument) { throw Error('Unable to find owning document'); }\n"
+            "var e = form.ownerDocument.createEvent('Event');\n"
+            "e.initEvent('submit', true, true);\n"
+            "if (form.dispatchEvent(e)) { HTMLFormElement.prototype.submit.call(form) }\n"
         )
+
+        try:
+            self._parent.execute_script(script, self)
+        except JavascriptException:
+            raise WebDriverException(
+                "To submit an element, it must be nested inside a form element"
+            )
 
     def clear(self) -> None:
         """Clears the text if it's a text entry element."""
         self._execute(Command.CLEAR_ELEMENT)
 
-    def get_property(self, name) -> str:
+    def get_property(self, name) -> Union[str, bool, WebElement, dict]:
         """
         Gets the given property of the element.
 
@@ -158,7 +179,8 @@ class WebElement(BaseWebElement):
             is_active = "active" in target_element.get_attribute("class")
 
         """
-
+        if getAttribute_js is None:
+            _load_js()
         attribute_value = self.parent.execute_script(
             "return (%s).apply(null, arguments);" % getAttribute_js, self, name
         )
@@ -642,6 +664,8 @@ class WebElement(BaseWebElement):
     def is_displayed(self) -> bool:
         """Whether the element is visible to a user."""
         # Only go into this conditional for browsers that don't use the atom themselves
+        if isDisplayed_js is None:
+            _load_js()
         return self.parent.execute_script(
             "return (%s).apply(null, arguments);" % isDisplayed_js, self
         )
@@ -866,4 +890,4 @@ class WebElement(BaseWebElement):
             elif '{"status":405,"value":["GET","HEAD","DELETE"]}' in e.__str__():
                 return filename
             else:
-                raise e
+                raise

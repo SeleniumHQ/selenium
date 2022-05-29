@@ -18,8 +18,10 @@
 """Tests for advanced user interactions."""
 import pytest
 
+from selenium.common.exceptions import MoveTargetOutOfBoundsException
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.common.actions import interaction
+from selenium.webdriver.common.actions.wheel_input import ScrollOrigin
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.ui import WebDriverWait
@@ -265,19 +267,95 @@ def test_can_pause(driver, pages):
 
 @pytest.mark.xfail_firefox
 @pytest.mark.xfail_remote
-def test_can_scroll_mouse_wheel(driver, pages):
-    pages.load("scrollingPage.html")
-    driver.execute_script("document.scrollingElement.scrollTop = 0")
+def test_can_scroll_to_element(driver, pages):
+    pages.load("scrolling_tests/frame_with_nested_scrolling_frame_out_of_view.html")
+    iframe = driver.find_element(By.TAG_NAME, "iframe")
 
-    scrollable = driver.find_element(By.CSS_SELECTOR, "#scrollable")
-    ActionChains(driver).scroll(0, 0, 5, 10, origin=scrollable).perform()
-    events = _get_events(driver)
-    assert len(events) == 1
-    assert events[0]["type"] == "wheel"
-    assert events[0]["deltaX"] >= 5
-    assert events[0]["deltaY"] >= 10
-    assert events[0]["deltaZ"] == 0
-    assert events[0]["target"] == "scrollContent"
+    assert not _in_viewport(driver, iframe)
+
+    ActionChains(driver).scroll_to_element(iframe).perform()
+
+    assert _in_viewport(driver, iframe)
+
+
+@pytest.mark.xfail_firefox
+@pytest.mark.xfail_remote
+def test_can_scroll_from_element_by_amount(driver, pages):
+    pages.load("scrolling_tests/frame_with_nested_scrolling_frame_out_of_view.html")
+    iframe = driver.find_element(By.TAG_NAME, "iframe")
+    scroll_origin = ScrollOrigin.from_element(iframe)
+
+    ActionChains(driver).scroll_from_origin(scroll_origin, 0, 200).pause(0.2).perform()
+
+    driver.switch_to.frame(iframe)
+    checkbox = driver.find_element(By.NAME, "scroll_checkbox")
+    assert _in_viewport(driver, checkbox)
+
+
+@pytest.mark.xfail_firefox
+@pytest.mark.xfail_remote
+def test_can_scroll_from_element_with_offset_by_amount(driver, pages):
+    pages.load("scrolling_tests/frame_with_nested_scrolling_frame_out_of_view.html")
+    footer = driver.find_element(By.TAG_NAME, "footer")
+    scroll_origin = ScrollOrigin.from_element(footer, 0, -50)
+
+    ActionChains(driver).scroll_from_origin(scroll_origin, 0, 200).pause(0.2).perform()
+
+    iframe = driver.find_element(By.TAG_NAME, "iframe")
+    driver.switch_to.frame(iframe)
+    checkbox = driver.find_element(By.NAME, "scroll_checkbox")
+    assert _in_viewport(driver, checkbox)
+
+
+@pytest.mark.xfail_firefox
+@pytest.mark.xfail_remote
+def test_errors_when_element_offset_not_in_viewport(driver, pages):
+    pages.load("scrolling_tests/frame_with_nested_scrolling_frame_out_of_view.html")
+    footer = driver.find_element(By.TAG_NAME, "footer")
+    scroll_origin = ScrollOrigin.from_element(footer, 0, 50)
+
+    with pytest.raises(MoveTargetOutOfBoundsException):
+        ActionChains(driver).scroll_from_origin(scroll_origin, 0, 200).pause(
+            0.2
+        ).perform()
+
+
+@pytest.mark.xfail_firefox
+@pytest.mark.xfail_remote
+def test_can_scroll_from_viewport_by_amount(driver, pages):
+    pages.load("scrolling_tests/frame_with_nested_scrolling_frame_out_of_view.html")
+    footer = driver.find_element(By.TAG_NAME, "footer")
+    delta_y = footer.rect["y"]
+
+    ActionChains(driver).scroll_by_amount(0, delta_y).pause(0.2).perform()
+
+    assert _in_viewport(driver, footer)
+
+
+@pytest.mark.xfail_firefox
+@pytest.mark.xfail_remote
+def test_can_scroll_from_viewport_with_offset_by_amount(driver, pages):
+    pages.load("scrolling_tests/frame_with_nested_scrolling_frame.html")
+    scroll_origin = ScrollOrigin.from_viewport(10, 10)
+
+    ActionChains(driver).scroll_from_origin(scroll_origin, 0, 200).pause(0.2).perform()
+
+    iframe = driver.find_element(By.TAG_NAME, "iframe")
+    driver.switch_to.frame(iframe)
+    checkbox = driver.find_element(By.NAME, "scroll_checkbox")
+    assert _in_viewport(driver, checkbox)
+
+
+@pytest.mark.xfail_firefox
+@pytest.mark.xfail_remote
+def test_errors_when_origin_offset_not_in_viewport(driver, pages):
+    pages.load("scrolling_tests/frame_with_nested_scrolling_frame.html")
+    scroll_origin = ScrollOrigin.from_viewport(-10, -10)
+
+    with pytest.raises(MoveTargetOutOfBoundsException):
+        ActionChains(driver).scroll_from_origin(scroll_origin, 0, 200).pause(
+            0.2
+        ).perform()
 
 
 def _get_events(driver):
@@ -297,3 +375,13 @@ def _get_events(driver):
         if "code" in e and e["code"] == "Unidentified":
             e["code"] = ""
     return events
+
+
+def _in_viewport(driver, element):
+    script = (
+        "for(var e=arguments[0],f=e.offsetTop,t=e.offsetLeft,o=e.offsetWidth,n=e.offsetHeight;\n"
+        "e.offsetParent;)f+=(e=e.offsetParent).offsetTop,t+=e.offsetLeft;\n"
+        "return f<window.pageYOffset+window.innerHeight&&t<window.pageXOffset+window.innerWidth&&f+n>\n"
+        "window.pageYOffset&&t+o>window.pageXOffset"
+    )
+    return driver.execute_script(script, element)

@@ -41,7 +41,7 @@ def test_should_fail_with_invalid_selector_exception(driver, pages):
         )
 
 
-def test_should_explicitly_wait_for_asingle_element(driver, pages):
+def test_should_explicitly_wait_for_a_single_element(driver, pages):
     pages.load("dynamic.html")
     add = driver.find_element(By.ID, "adder")
     add.click()

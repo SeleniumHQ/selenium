@@ -242,13 +242,13 @@ class Credential:
 
     @classmethod
     def from_dict(cls, data):
-        _id = urlsafe_b64decode(data["credentialId"])
+        _id = urlsafe_b64decode(f"{data['credentialId']}==")
         is_resident_credential = bool(data["isResidentCredential"])
-        rp_id = str(data["rpId"])
-        private_key = urlsafe_b64decode(data["privateKey"])
+        rp_id = data.get("rpId", None)
+        private_key = urlsafe_b64decode(f"{data['privateKey']}==")
         sign_count = int(data["signCount"])
         user_handle = (
-            urlsafe_b64decode(data["userHandle"])
+            urlsafe_b64decode(f"{data['userHandle']}==")
             if data.get("userHandle", None)
             else None
         )

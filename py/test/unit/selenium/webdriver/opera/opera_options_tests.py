@@ -89,3 +89,13 @@ def test_is_a_baseoptions(options):
     from selenium.webdriver.common.options import BaseOptions
 
     assert isinstance(options, BaseOptions)
+
+
+def test_opera_options_is_deprecated(options):
+    with pytest.warns(DeprecationWarning) as captured:
+        Options()
+    expected = (
+        "<class 'selenium.webdriver.opera.options.Options'> is deprecated and will be removed in 4.3; "
+        "see: https://www.selenium.dev/documentation/webdriver/getting_started/open_browser/#opera"
+    )
+    assert captured[0].message.args[0] == expected

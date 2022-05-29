@@ -14,6 +14,8 @@
 # KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
 # under the License.
+import warnings
+
 from selenium.webdriver.remote.webelement import WebElement
 
 from . import interaction
@@ -86,6 +88,13 @@ class PointerActions(Interaction):
             raise AttributeError("move_to requires a WebElement")
 
         if x or y:
+            warnings.warn(
+                "move_to_element_with_offset() currently tries to use the top left corner "
+                "of the element as the origin; in Selenium 4.3 it will use the in-view "
+                "center point of the element as the origin.",
+                DeprecationWarning,
+                stacklevel=2,
+            )
             el_rect = element.rect
             left_offset = el_rect["width"] / 2
             top_offset = el_rect["height"] / 2
