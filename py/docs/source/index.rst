@@ -149,4 +149,11 @@ View source code online:
 Contributing
 =============
 
-# Todo: ...
+ - Create a branch for your work
+ - Ensure `tox` is installed (using a `virtualenv` is recommended)
+ - `python3.7 -m venv .venv && . .venv/bin/activate && pip install tox
+ - Make changes as normal
+ - Before committing your work, when files are staged execute: `tox -e linting`.
+ - If tox exits `0`, commit & push as normal; otherwise fix issues reporting by tox
+ - `black` and `isort` will automatically rewrite files that are violating our rules, these need manually staged again.
+ - `flake8` will require manual fixes.
