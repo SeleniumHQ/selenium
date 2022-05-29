@@ -77,7 +77,7 @@ Metrics/MethodLength:
 
 Metrics/ModuleLength:
   CountComments: false
-  Max: 101
+  Max: 110
   Exclude:
     - 'lib/selenium/webdriver/common/platform.rb'
     - 'spec/**/*'
@@ -354,4 +354,6 @@ RSpec/VerifiedDoubleReference: # new in 2.10.0
 RSpec/FactoryBot/SyntaxMethods: # new in 2.7
   Enabled: true
 RSpec/Rails/AvoidSetupHook: # new in 2.4
+  Enabled: true
+Style/EnvHome: # new in 1.29
   Enabled: true

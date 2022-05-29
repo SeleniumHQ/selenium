@@ -2162,13 +2162,23 @@ class TargetLocator {
    * If the specified frame can not be found, the returned promise will be
    * rejected with a {@linkplain error.NoSuchFrameError}.
    *
-   * @param {(number|WebElement|null)} id The frame locator.
+   * @param {(number|string|WebElement|null)} id The frame locator.
    * @return {!Promise<void>} A promise that will be resolved
    *     when the driver has changed focus to the specified frame.
    */
   frame(id) {
+    let frameReference = id
+    if (typeof id === 'string') {
+      frameReference = this.driver_
+        .findElement({ id })
+        .catch((_) => this.driver_.findElement({ name: id }))
+    }
+
     return this.driver_.execute(
-      new command.Command(command.Name.SWITCH_TO_FRAME).setParameter('id', id)
+      new command.Command(command.Name.SWITCH_TO_FRAME).setParameter(
+        'id',
+        frameReference
+      )
     )
   }
 
@@ -2755,13 +2765,17 @@ class WebElement {
    *     when the form has been submitted.
    */
   submit() {
-    const form = this.findElement({ xpath: './ancestor-or-self::form' })
-    this.driver_.executeScript(
-      "var e = arguments[0].ownerDocument.createEvent('Event');" +
-        "e.initEvent('submit', true, true);" +
-        'if (arguments[0].dispatchEvent(e)) { arguments[0].submit() }',
-      form
-    )
+    const script = "var form = arguments[0];\n" +
+      "while (form.nodeName != \"FORM\" && form.parentNode) {\n" +
+      "  form = form.parentNode;\n" +
+      "}\n" +
+      "if (!form) { throw Error('Unable to find containing form element'); }\n" +
+      "if (!form.ownerDocument) { throw Error('Unable to find owning document'); }\n" +
+      "var e = form.ownerDocument.createEvent('Event');\n" +
+      "e.initEvent('submit', true, true);\n" +
+      "if (form.dispatchEvent(e)) { HTMLFormElement.prototype.submit.call(form) }\n";
+
+    this.driver_.executeScript(script, this);
   }
 
   /**

@@ -367,8 +367,8 @@ module Selenium
         # actions
         #
 
-        def action(deprecated_async = nil, async: false, devices: [])
-          ActionBuilder.new self, nil, nil, deprecated_async, async: async, devices: devices
+        def action(deprecated_async = nil, async: false, devices: [], duration: 250)
+          ActionBuilder.new self, nil, nil, deprecated_async, async: async, devices: devices, duration: duration
         end
         alias_method :actions, :action
 
@@ -425,10 +425,19 @@ module Selenium
         end
 
         def submit_element(element)
-          form = find_element_by('xpath', "./ancestor-or-self::form", [:element, element])
-          execute_script("var e = arguments[0].ownerDocument.createEvent('Event');" \
-                         "e.initEvent('submit', true, true);" \
-                         'if (arguments[0].dispatchEvent(e)) { arguments[0].submit() }', form.as_json)
+          script = "var form = arguments[0];\n" \
+                   "while (form.nodeName != \"FORM\" && form.parentNode) {\n" \
+                   "  form = form.parentNode;\n" \
+                   "}\n" \
+                   "if (!form) { throw Error('Unable to find containing form element'); }\n" \
+                   "if (!form.ownerDocument) { throw Error('Unable to find owning document'); }\n" \
+                   "var e = form.ownerDocument.createEvent('Event');\n" \
+                   "e.initEvent('submit', true, true);\n" \
+                   "if (form.dispatchEvent(e)) { HTMLFormElement.prototype.submit.call(form) }\n"
+
+          execute_script(script, Element::ELEMENT_KEY => element)
+        rescue Error::JavascriptError
+          raise Error::UnsupportedOperationError, "To submit an element, it must be nested inside a form element"
         end
 
         #

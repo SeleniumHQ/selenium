@@ -11,9 +11,9 @@ package(default_visibility = ["//:__subpackages__"])
 
 CDP_VERSIONS = [
     "v85",
-    "v99",
     "v100",
     "v101",
+    "v102",
 ]
 
 copy_file(

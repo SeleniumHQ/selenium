@@ -22,53 +22,156 @@ package org.openqa.selenium.remote;
  */
 public interface CapabilityType {
 
-  String BROWSER_NAME = "browserName";
   /**
    * @deprecated Use {@link CapabilityType#PLATFORM_NAME}
    */
   @Deprecated
   String PLATFORM = "platform";
-  String PLATFORM_NAME = "platformName";
+  /**
+   * @deprecated Non W3C compliant
+   */
+  @Deprecated
   String SUPPORTS_JAVASCRIPT = "javascriptEnabled";
+  /**
+   * @deprecated Non W3C compliant
+   */
+  @Deprecated
   String TAKES_SCREENSHOT = "takesScreenshot";
   /**
    * @deprecated Use {@link CapabilityType#BROWSER_VERSION}
    */
   @Deprecated
   String VERSION = "version";
-  String BROWSER_VERSION = "browserVersion";
+  /**
+   * @deprecated Use {@link CapabilityType#UNHANDLED_PROMPT_BEHAVIOUR}
+   */
+  @Deprecated
   String SUPPORTS_ALERTS = "handlesAlerts";
+  /**
+   * @deprecated Non W3C compliant
+   */
+  @Deprecated
   String SUPPORTS_SQL_DATABASE = "databaseEnabled";
+  /**
+   * @deprecated Non W3C compliant
+   */
+  @Deprecated
   String SUPPORTS_LOCATION_CONTEXT = "locationContextEnabled";
+  /**
+   * @deprecated Non W3C compliant
+   */
+  @Deprecated
   String SUPPORTS_APPLICATION_CACHE = "applicationCacheEnabled";
+  /**
+   * @deprecated Non W3C compliant
+   */
+  @Deprecated
   String SUPPORTS_NETWORK_CONNECTION = "networkConnectionEnabled";
-  String PROXY = "proxy";
+  /**
+   * @deprecated Non W3C compliant
+   */
+  @Deprecated
   String SUPPORTS_WEB_STORAGE = "webStorageEnabled";
+  /**
+   * @deprecated Non W3C compliant
+   */
+  @Deprecated
   String ROTATABLE = "rotatable";
+  /**
+   * @deprecated Non W3C compliant
+   */
+  @Deprecated
   String APPLICATION_NAME = "applicationName";
-  // Enable this capability to accept all SSL certs by defaults.
+  /**
+   * @deprecated Use {@link CapabilityType#ACCEPT_INSECURE_CERTS}
+   */
+  @Deprecated
   String ACCEPT_SSL_CERTS = "acceptSslCerts";
-  String ACCEPT_INSECURE_CERTS = "acceptInsecureCerts";
+  /**
+   * @deprecated Non W3C compliant
+   */
+  @Deprecated
   String HAS_NATIVE_EVENTS = "nativeEvents";
+  /**
+   * @deprecated Use {@link CapabilityType#UNHANDLED_PROMPT_BEHAVIOUR}
+   */
+  @Deprecated
   String UNEXPECTED_ALERT_BEHAVIOUR = "unexpectedAlertBehaviour";
-  String UNHANDLED_PROMPT_BEHAVIOUR = "unhandledPromptBehavior";
+  /**
+   * @deprecated Non W3C compliant
+   */
+  @Deprecated
   String ELEMENT_SCROLL_BEHAVIOR = "elementScrollBehavior";
+  /**
+   * @deprecated Non W3C compliant
+   */
+  @Deprecated
   String HAS_TOUCHSCREEN = "hasTouchScreen";
+  /**
+   * @deprecated Non W3C compliant
+   */
+  @Deprecated
   String OVERLAPPING_CHECK_DISABLED = "overlappingCheckDisabled";
+  /**
+   * @deprecated Non W3C compliant
+   */
+  @Deprecated
   String STRICT_FILE_INTERACTABILITY = "strictFileInteractability";
-  String TIMEOUTS = "timeouts";
 
+  /**
+   * @deprecated Non W3C compliant
+   */
+  @Deprecated
   String LOGGING_PREFS = "loggingPrefs";
 
+  /**
+   * @deprecated Non W3C compliant
+   */
+  @Deprecated
   String ENABLE_PROFILING_CAPABILITY = "webdriver.logging.profiler.enabled";
 
-  String PAGE_LOAD_STRATEGY = "pageLoadStrategy";
 
+  String BROWSER_NAME = "browserName";
+  String PLATFORM_NAME = "platformName";
+  String BROWSER_VERSION = "browserVersion";
+  String ACCEPT_INSECURE_CERTS = "acceptInsecureCerts";
+  String PAGE_LOAD_STRATEGY = "pageLoadStrategy";
+  String PROXY = "proxy";
+  String SET_WINDOW_RECT = "setWindowRect";
+  String TIMEOUTS = "timeouts";
+  String UNHANDLED_PROMPT_BEHAVIOUR = "unhandledPromptBehavior";
+
+
+  /**
+   * @deprecated Non W3C compliant
+   */
+  @Deprecated
   interface ForSeleniumServer {
+
+    /**
+     * @deprecated Non W3C compliant
+     */
+    @Deprecated
     String AVOIDING_PROXY = "avoidProxy";
+    /**
+     * @deprecated Non W3C compliant
+     */
+    @Deprecated
     String ONLY_PROXYING_SELENIUM_TRAFFIC = "onlyProxySeleniumTraffic";
+    /**
+     * @deprecated Non W3C compliant
+     */
+    @Deprecated
     String PROXYING_EVERYTHING = "proxyEverything";
+    /**
+     * @deprecated Non W3C compliant
+     */
+    @Deprecated
     String PROXY_PAC = "proxy_pac";
+    /**
+     * @deprecated Non W3C compliant
+     */
+    @Deprecated
     String ENSURING_CLEAN_SESSION = "ensureCleanSession";
   }
 }

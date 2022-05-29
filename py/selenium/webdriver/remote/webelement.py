@@ -14,6 +14,7 @@
 # KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
 # under the License.
+from __future__ import annotations
 
 import os
 from base64 import b64decode, encodebytes
@@ -23,19 +24,26 @@ import warnings
 import zipfile
 from abc import ABCMeta
 from io import BytesIO
+from typing import Union
 
-from selenium.common.exceptions import WebDriverException
+from selenium.common.exceptions import WebDriverException, JavascriptException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.utils import keys_to_typing
 from .command import Command
 from .shadowroot import ShadowRoot
 
-
 # TODO: When moving to supporting python 3.9 as the minimum version we can
 # use built in importlib_resources.files.
-_pkg = '.'.join(__name__.split('.')[:-1])
-getAttribute_js = pkgutil.get_data(_pkg, 'getAttribute.js').decode('utf8')
-isDisplayed_js = pkgutil.get_data(_pkg, 'isDisplayed.js').decode('utf8')
+getAttribute_js = None
+isDisplayed_js = None
+
+
+def _load_js():
+    global getAttribute_js
+    global isDisplayed_js
+    _pkg = '.'.join(__name__.split('.')[:-1])
+    getAttribute_js = pkgutil.get_data(_pkg, 'getAttribute.js').decode('utf8')
+    isDisplayed_js = pkgutil.get_data(_pkg, 'isDisplayed.js').decode('utf8')
 
 
 class BaseWebElement(metaclass=ABCMeta):
@@ -82,17 +90,26 @@ class WebElement(BaseWebElement):
 
     def submit(self):
         """Submits a form."""
-        form = self.find_element(By.XPATH, "./ancestor-or-self::form")
-        self._parent.execute_script(
-            "var e = arguments[0].ownerDocument.createEvent('Event');"
-            "e.initEvent('submit', true, true);"
-            "if (arguments[0].dispatchEvent(e)) { arguments[0].submit() }", form)
+        script = "var form = arguments[0];\n" \
+                 "while (form.nodeName != \"FORM\" && form.parentNode) {\n" \
+                 "  form = form.parentNode;\n" \
+                 "}\n" \
+                 "if (!form) { throw Error('Unable to find containing form element'); }\n" \
+                 "if (!form.ownerDocument) { throw Error('Unable to find owning document'); }\n" \
+                 "var e = form.ownerDocument.createEvent('Event');\n" \
+                 "e.initEvent('submit', true, true);\n" \
+                 "if (form.dispatchEvent(e)) { HTMLFormElement.prototype.submit.call(form) }\n"
+
+        try:
+            self._parent.execute_script(script, self)
+        except JavascriptException:
+            raise WebDriverException("To submit an element, it must be nested inside a form element")
 
     def clear(self) -> None:
         """Clears the text if it's a text entry element."""
         self._execute(Command.CLEAR_ELEMENT)
 
-    def get_property(self, name) -> str:
+    def get_property(self, name) -> Union[str, bool, WebElement, dict]:
         """
         Gets the given property of the element.
 
@@ -151,7 +168,8 @@ class WebElement(BaseWebElement):
             is_active = "active" in target_element.get_attribute("class")
 
         """
-
+        if getAttribute_js is None:
+            _load_js()
         attribute_value = self.parent.execute_script(
             "return (%s).apply(null, arguments);" % getAttribute_js,
             self, name)
@@ -270,9 +288,10 @@ class WebElement(BaseWebElement):
 
                 element = element.find_element_by_link_text('Sign In')
         """
-        warnings.warn("find_element_by_link_text is deprecated. Please use find_element(by=By.LINK_TEXT, value=link_text) instead",
-                      DeprecationWarning,
-                      stacklevel=2)
+        warnings.warn(
+            "find_element_by_link_text is deprecated. Please use find_element(by=By.LINK_TEXT, value=link_text) instead",
+            DeprecationWarning,
+            stacklevel=2)
         return self.find_element(by=By.LINK_TEXT, value=link_text)
 
     def find_elements_by_link_text(self, link_text):
@@ -290,9 +309,10 @@ class WebElement(BaseWebElement):
 
                 elements = element.find_elements_by_link_text('Sign In')
         """
-        warnings.warn("find_elements_by_link_text is deprecated. Please use find_elements(by=By.LINK_TEXT, value=text) instead",
-                      DeprecationWarning,
-                      stacklevel=2)
+        warnings.warn(
+            "find_elements_by_link_text is deprecated. Please use find_elements(by=By.LINK_TEXT, value=text) instead",
+            DeprecationWarning,
+            stacklevel=2)
         return self.find_elements(by=By.LINK_TEXT, value=link_text)
 
     def find_element_by_partial_link_text(self, link_text):
@@ -312,9 +332,10 @@ class WebElement(BaseWebElement):
 
                 element = element.find_element_by_partial_link_text('Sign')
         """
-        warnings.warn("find_element_by_partial_link_text is deprecated. Please use find_element(by=By.PARTIAL_LINK_TEXT, value=link_text) instead",
-                      DeprecationWarning,
-                      stacklevel=2)
+        warnings.warn(
+            "find_element_by_partial_link_text is deprecated. Please use find_element(by=By.PARTIAL_LINK_TEXT, value=link_text) instead",
+            DeprecationWarning,
+            stacklevel=2)
         return self.find_element(by=By.PARTIAL_LINK_TEXT, value=link_text)
 
     def find_elements_by_partial_link_text(self, link_text):
@@ -332,9 +353,10 @@ class WebElement(BaseWebElement):
 
                 elements = element.find_elements_by_partial_link_text('Sign')
         """
-        warnings.warn("find_elements_by_partial_link_text is deprecated. Please use find_elements(by=By.PARTIAL_LINK_TEXT, value=link_text) instead",
-                      DeprecationWarning,
-                      stacklevel=2)
+        warnings.warn(
+            "find_elements_by_partial_link_text is deprecated. Please use find_elements(by=By.PARTIAL_LINK_TEXT, value=link_text) instead",
+            DeprecationWarning,
+            stacklevel=2)
         return self.find_elements(by=By.PARTIAL_LINK_TEXT, value=link_text)
 
     def find_element_by_tag_name(self, name):
@@ -354,9 +376,10 @@ class WebElement(BaseWebElement):
 
                 element = element.find_element_by_tag_name('h1')
         """
-        warnings.warn("find_element_by_tag_name is deprecated. Please use find_element(by=By.TAG_NAME, value=name) instead",
-                      DeprecationWarning,
-                      stacklevel=2)
+        warnings.warn(
+            "find_element_by_tag_name is deprecated. Please use find_element(by=By.TAG_NAME, value=name) instead",
+            DeprecationWarning,
+            stacklevel=2)
         return self.find_element(by=By.TAG_NAME, value=name)
 
     def find_elements_by_tag_name(self, name):
@@ -374,9 +397,10 @@ class WebElement(BaseWebElement):
 
                 elements = element.find_elements_by_tag_name('h1')
         """
-        warnings.warn("find_elements_by_tag_name is deprecated. Please use find_elements(by=By.TAG_NAME, value=name) instead",
-                      DeprecationWarning,
-                      stacklevel=2)
+        warnings.warn(
+            "find_elements_by_tag_name is deprecated. Please use find_elements(by=By.TAG_NAME, value=name) instead",
+            DeprecationWarning,
+            stacklevel=2)
         return self.find_elements(by=By.TAG_NAME, value=name)
 
     def find_element_by_xpath(self, xpath):
@@ -445,9 +469,10 @@ class WebElement(BaseWebElement):
                 elements = element.find_elements_by_xpath("//div[contains(@class, 'foo')]")
 
         """
-        warnings.warn("find_elements_by_xpath is deprecated. Please use find_elements(by=By.XPATH, value=xpath) instead",
-                      DeprecationWarning,
-                      stacklevel=2)
+        warnings.warn(
+            "find_elements_by_xpath is deprecated. Please use find_elements(by=By.XPATH, value=xpath) instead",
+            DeprecationWarning,
+            stacklevel=2)
         return self.find_elements(by=By.XPATH, value=xpath)
 
     def find_element_by_class_name(self, name):
@@ -467,9 +492,10 @@ class WebElement(BaseWebElement):
 
                 element = element.find_element_by_class_name('foo')
         """
-        warnings.warn("find_element_by_class_name is deprecated. Please use find_element(by=By.CLASS_NAME, value=name) instead",
-                      DeprecationWarning,
-                      stacklevel=2)
+        warnings.warn(
+            "find_element_by_class_name is deprecated. Please use find_element(by=By.CLASS_NAME, value=name) instead",
+            DeprecationWarning,
+            stacklevel=2)
         return self.find_element(by=By.CLASS_NAME, value=name)
 
     def find_elements_by_class_name(self, name):
@@ -487,7 +513,9 @@ class WebElement(BaseWebElement):
 
                 elements = element.find_elements_by_class_name('foo')
         """
-        warnings.warn("find_elements_by_class_name is deprecated. Please use find_elements(by=By.CLASS_NAME, value=name) instead", DeprecationWarning)
+        warnings.warn(
+            "find_elements_by_class_name is deprecated. Please use find_elements(by=By.CLASS_NAME, value=name) instead",
+            DeprecationWarning)
         return self.find_elements(by=By.CLASS_NAME, value=name)
 
     def find_element_by_css_selector(self, css_selector):
@@ -507,9 +535,10 @@ class WebElement(BaseWebElement):
 
                 element = element.find_element_by_css_selector('#foo')
         """
-        warnings.warn("find_element_by_css_selector is deprecated. Please use find_element(by=By.CSS_SELECTOR, value=css_selector) instead",
-                      DeprecationWarning,
-                      stacklevel=2)
+        warnings.warn(
+            "find_element_by_css_selector is deprecated. Please use find_element(by=By.CSS_SELECTOR, value=css_selector) instead",
+            DeprecationWarning,
+            stacklevel=2)
         return self.find_element(by=By.CSS_SELECTOR, value=css_selector)
 
     def find_elements_by_css_selector(self, css_selector):
@@ -527,9 +556,10 @@ class WebElement(BaseWebElement):
 
                 elements = element.find_elements_by_css_selector('.foo')
         """
-        warnings.warn("find_elements_by_css_selector is deprecated. Please use find_elements(by=By.CSS_SELECTOR, value=css_selector) instead",
-                      DeprecationWarning,
-                      stacklevel=2)
+        warnings.warn(
+            "find_elements_by_css_selector is deprecated. Please use find_elements(by=By.CSS_SELECTOR, value=css_selector) instead",
+            DeprecationWarning,
+            stacklevel=2)
         return self.find_elements(by=By.CSS_SELECTOR, value=css_selector)
 
     def send_keys(self, *value) -> None:
@@ -583,7 +613,8 @@ class WebElement(BaseWebElement):
               - NoSuchShadowRoot - if no shadow root was attached to element
         """
         browser_main_version = int(self._parent.caps["browserVersion"].split(".")[0])
-        assert self._parent.caps["browserName"].lower() not in ["firefox", "safari"], "This only currently works in Chromium based browsers"
+        assert self._parent.caps["browserName"].lower() not in ["firefox",
+                                                                "safari"], "This only currently works in Chromium based browsers"
         assert not browser_main_version <= 95, f"Please use Chromium based browsers with version 96 or later. Version used {self._parent.caps['browserVersion']}"
         return self._execute(Command.GET_SHADOW_ROOT)['value']
 
@@ -591,6 +622,8 @@ class WebElement(BaseWebElement):
     def is_displayed(self) -> bool:
         """Whether the element is visible to a user."""
         # Only go into this conditional for browsers that don't use the atom themselves
+        if isDisplayed_js is None:
+            _load_js()
         return self.parent.execute_script(
             "return (%s).apply(null, arguments);" % isDisplayed_js,
             self)
@@ -808,4 +841,4 @@ class WebElement(BaseWebElement):
             elif '{"status":405,"value":["GET","HEAD","DELETE"]}' in e.__str__():
                 return filename
             else:
-                raise e
+                raise

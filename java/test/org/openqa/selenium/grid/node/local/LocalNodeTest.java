@@ -274,4 +274,32 @@ public class LocalNodeTest {
 
     assertThat(localNode.isDraining()).isTrue();
   }
+
+  @Test
+  public void cdpIsDisabledAndResponseCapsShowThat() throws URISyntaxException {
+    Tracer tracer = DefaultTestTracer.createTracer();
+    EventBus bus = new GuavaEventBus();
+    URI uri = new URI("http://localhost:7890");
+    Capabilities stereotype = new ImmutableCapabilities("browserName", "cheese");
+
+    LocalNode.Builder builder = LocalNode.builder(tracer, bus, uri, uri, registrationSecret)
+      .enableCdp(false)
+      .add(stereotype,
+           new TestSessionFactory((id, caps)
+                                    -> new Session(id, uri, stereotype, caps, Instant.now())));
+    LocalNode localNode = builder.build();
+
+    Either<WebDriverException, CreateSessionResponse> response = localNode.newSession(
+      new CreateSessionRequest(
+        ImmutableSet.of(W3C),
+        stereotype,
+        ImmutableMap.of()));
+    assertThat(response.isRight()).isTrue();
+
+    CreateSessionResponse sessionResponse = response.right();
+    Capabilities capabilities = sessionResponse.getSession().getCapabilities();
+    Object cdpEnabled = capabilities.getCapability("se:cdpEnabled");
+    assertThat(cdpEnabled).isNotNull();
+    assertThat(Boolean.parseBoolean(cdpEnabled.toString())).isFalse();
+  }
 }
