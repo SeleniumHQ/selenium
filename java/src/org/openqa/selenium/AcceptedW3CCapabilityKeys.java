@@ -39,6 +39,9 @@ public class AcceptedW3CCapabilityKeys implements Predicate<String> {
       // TODO: Needs to be removed when ChromeDriver issue is resolved. Not a W3C capability
       // https://bugs.chromium.org/p/chromedriver/issues/detail?id=4129
       "^chrome$",
+      // TODO: Needs to be removed when MSEdgeDriver issue is resolved. Not a W3C capability
+      // https://github.com/MicrosoftEdge/EdgeWebDriver/issues/23
+      "^msedge$",
       // TODO: Needs to be removed when GeckoDriver issue is resolved. Not a W3C capability
       // https://github.com/mozilla/geckodriver/issues/2023
       "^platformVersion$",
