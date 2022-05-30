@@ -17,7 +17,6 @@
 
 package org.openqa.selenium.chromium;
 
-import com.google.common.collect.ImmutableList;
 import org.openqa.selenium.BuildInfo;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.Credentials;
@@ -44,7 +43,6 @@ import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.logging.EventType;
 import org.openqa.selenium.logging.HasLogEvents;
 import org.openqa.selenium.mobile.NetworkConnection;
-import org.openqa.selenium.remote.Browser;
 import org.openqa.selenium.remote.CommandExecutor;
 import org.openqa.selenium.remote.FileDetector;
 import org.openqa.selenium.remote.RemoteTouchScreen;
@@ -99,10 +97,10 @@ public class ChromiumDriver extends RemoteWebDriver implements
   private final HasNetworkConditions networkConditions;
   private final HasPermissions permissions;
   private final HasLaunchApp launch;
-  protected HasCasting casting;
-  protected HasCdp cdp;
   private final Optional<Connection> connection;
   private final Optional<DevTools> devTools;
+  protected HasCasting casting;
+  protected HasCdp cdp;
 
   protected ChromiumDriver(CommandExecutor commandExecutor, Capabilities capabilities, String capabilityKey) {
     super(commandExecutor, capabilities);
