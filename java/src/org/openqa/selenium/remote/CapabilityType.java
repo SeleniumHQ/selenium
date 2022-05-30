@@ -112,11 +112,6 @@ public interface CapabilityType {
    */
   @Deprecated
   String OVERLAPPING_CHECK_DISABLED = "overlappingCheckDisabled";
-  /**
-   * @deprecated Non W3C compliant
-   */
-  @Deprecated
-  String STRICT_FILE_INTERACTABILITY = "strictFileInteractability";
 
   /**
    * @deprecated Non W3C compliant
@@ -139,6 +134,7 @@ public interface CapabilityType {
   String PROXY = "proxy";
   String SET_WINDOW_RECT = "setWindowRect";
   String TIMEOUTS = "timeouts";
+  String STRICT_FILE_INTERACTABILITY = "strictFileInteractability";
   String UNHANDLED_PROMPT_BEHAVIOUR = "unhandledPromptBehavior";
 
 
