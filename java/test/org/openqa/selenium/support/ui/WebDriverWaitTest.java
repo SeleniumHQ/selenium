@@ -17,13 +17,6 @@
 
 package org.openqa.selenium.support.ui;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-import static org.mockito.Mockito.withSettings;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -48,6 +41,13 @@ import org.openqa.selenium.testing.UnitTests;
 
 import java.io.IOException;
 import java.time.Duration;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.withSettings;
 
 @Category(UnitTests.class)
 public class WebDriverWaitTest {
@@ -77,8 +77,8 @@ public class WebDriverWaitTest {
         new WebDriverWait(testDriver, Duration.ofSeconds(1), Duration.ofMillis(200), clock, clock);
 
     assertThatExceptionOfType(TimeoutException.class)
-        .isThrownBy(() -> wait.until(d -> false))
-        .withMessageContaining("Capabilities {javascriptEnabled: true, platform: ANY, platformName: ANY}")
+      .isThrownBy(() -> wait.until(d -> false))
+      .withMessageContaining("Capabilities {platformName: ANY}")
         .withMessageContaining("Session ID: foo");
   }
 
