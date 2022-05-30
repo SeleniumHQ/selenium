@@ -51,34 +51,34 @@ public class DesiredCapabilitiesTest {
   @Test
   public void testAugmentingCapabilitiesReturnsNewCapabilities() {
     DesiredCapabilities origCapabilities = new DesiredCapabilities();
-    origCapabilities.setCapability("Browser", "firefox");
+    origCapabilities.setCapability("BrowserName", "firefox");
 
     DesiredCapabilities extraCapabilities = new DesiredCapabilities();
-    extraCapabilities.setCapability("Platform", "any");
+    extraCapabilities.setCapability("PlatformName", "any");
 
     origCapabilities.merge(extraCapabilities);
-    assertThat(origCapabilities.getCapability("Browser")).isEqualTo("firefox");
-    assertThat(origCapabilities.getCapability("Platform")).isEqualTo("any");
+    assertThat(origCapabilities.getCapability("BrowserName")).isEqualTo("firefox");
+    assertThat(origCapabilities.getCapability("PlatformName")).isEqualTo("any");
   }
 
   @Test
   public void testCopyConstructorWithNullArgument() {
     DesiredCapabilities origCapabilities = new DesiredCapabilities((Capabilities) null);
 
-    origCapabilities.setCapability("Browser", "firefox");
-    assertThat(origCapabilities.getCapability("Browser")).isEqualTo("firefox");
+    origCapabilities.setCapability("BrowserName", "firefox");
+    assertThat(origCapabilities.getCapability("BrowserName")).isEqualTo("firefox");
   }
 
   @Test
   public void testCopyConstructorDoesNotAliasToArgument() {
     DesiredCapabilities origCapabilities = new DesiredCapabilities();
-    origCapabilities.setCapability("Browser", "firefox");
+    origCapabilities.setCapability("BrowserName", "firefox");
 
     DesiredCapabilities newCapabilities = new DesiredCapabilities(origCapabilities);
-    origCapabilities.setCapability("Browser", "ie");
+    origCapabilities.setCapability("BrowserName", "ie");
 
-    assertThat(origCapabilities.getCapability("Browser")).isEqualTo("ie");
-    assertThat(newCapabilities.getCapability("Browser")).isEqualTo("firefox");
+    assertThat(origCapabilities.getCapability("BrowserName")).isEqualTo("ie");
+    assertThat(newCapabilities.getCapability("BrowserName")).isEqualTo("firefox");
   }
 
   @Test
@@ -95,25 +95,25 @@ public class DesiredCapabilitiesTest {
   @Test
   public void shouldAutomaticallyConvertPlatformFromStringToEnum() {
     DesiredCapabilities caps = new DesiredCapabilities();
-    caps.setCapability(CapabilityType.PLATFORM, "windows 7");
-    assertThat(caps.getCapability(CapabilityType.PLATFORM)).isEqualTo(Platform.VISTA);
-    caps.setCapability(CapabilityType.PLATFORM, "win8.1");
-    assertThat(caps.getCapability(CapabilityType.PLATFORM)).isEqualTo(Platform.WIN8_1);
+    caps.setCapability(CapabilityType.PLATFORM_NAME, "windows 7");
+    assertThat(caps.getCapability(CapabilityType.PLATFORM_NAME)).isEqualTo(Platform.VISTA);
+    caps.setCapability(CapabilityType.PLATFORM_NAME, "win8.1");
+    assertThat(caps.getCapability(CapabilityType.PLATFORM_NAME)).isEqualTo(Platform.WIN8_1);
   }
 
   @Test
   public void shouldNotAutomaticallyConvertPlatformIfItNotConvertible() {
     DesiredCapabilities caps = new DesiredCapabilities();
-    caps.setCapability(CapabilityType.PLATFORM, "FreeBSD");
-    assertThat(caps.getCapability(CapabilityType.PLATFORM)).isEqualTo("FreeBSD");
+    caps.setCapability(CapabilityType.PLATFORM_NAME, "FreeBSD");
+    assertThat(caps.getCapability(CapabilityType.PLATFORM_NAME)).isEqualTo("FreeBSD");
   }
 
   @Test
   public void shouldNotAutomaticallyConvertPlatformIfItNotConvertibleInConstructor() {
-    Map<String, Object> capabilitiesMap = ImmutableMap.of(CapabilityType.PLATFORM, "FreeBSD");
+    Map<String, Object> capabilitiesMap = ImmutableMap.of(CapabilityType.PLATFORM_NAME, "FreeBSD");
 
     DesiredCapabilities caps = new DesiredCapabilities(capabilitiesMap);
-    assertThat(caps.getCapability(CapabilityType.PLATFORM)).isEqualTo("FreeBSD");
+    assertThat(caps.getCapability(CapabilityType.PLATFORM_NAME)).isEqualTo("FreeBSD");
   }
 
   @Test
