@@ -94,7 +94,6 @@ import static java.util.Collections.singleton;
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static java.util.logging.Level.SEVERE;
 import static org.openqa.selenium.remote.CapabilityType.LOGGING_PREFS;
-import static org.openqa.selenium.remote.CapabilityType.PLATFORM;
 import static org.openqa.selenium.remote.CapabilityType.PLATFORM_NAME;
 import static org.openqa.selenium.remote.CapabilityType.SUPPORTS_JAVASCRIPT;
 
@@ -256,20 +255,18 @@ public class RemoteWebDriver implements WebDriver,
     if (responseValue == null) {
       throw new SessionNotCreatedException(
         "The underlying command executor returned a response without payload: " +
-        response.toString());
+        response);
     }
 
     if (!(responseValue instanceof Map)) {
       throw new SessionNotCreatedException(
         "The underlying command executor returned a response with a non well formed payload: " +
-        response.toString());
+        response);
     }
 
     @SuppressWarnings("unchecked") Map<String, Object> rawCapabilities = (Map<String, Object>) responseValue;
     MutableCapabilities returnedCapabilities = new MutableCapabilities(rawCapabilities);
-    String platformString = (String) rawCapabilities.getOrDefault(
-      PLATFORM,
-      rawCapabilities.get(PLATFORM_NAME));
+    String platformString = (String) rawCapabilities.get(PLATFORM_NAME);
     Platform platform;
     try {
       if (platformString == null || "".equals(platformString)) {
@@ -282,19 +279,7 @@ public class RemoteWebDriver implements WebDriver,
       // system property. Try to recover and parse this.
       platform = Platform.extractFromSysProperty(platformString);
     }
-    returnedCapabilities.setCapability(PLATFORM, platform);
     returnedCapabilities.setCapability(PLATFORM_NAME, platform);
-
-    if (rawCapabilities.containsKey(SUPPORTS_JAVASCRIPT)) {
-      Object raw = rawCapabilities.get(SUPPORTS_JAVASCRIPT);
-      if (raw instanceof String) {
-        returnedCapabilities.setCapability(SUPPORTS_JAVASCRIPT, Boolean.parseBoolean((String) raw));
-      } else if (raw instanceof Boolean) {
-        returnedCapabilities.setCapability(SUPPORTS_JAVASCRIPT, ((Boolean) raw).booleanValue());
-      }
-    } else {
-      returnedCapabilities.setCapability(SUPPORTS_JAVASCRIPT, true);
-    }
 
     this.capabilities = returnedCapabilities;
     sessionId = new SessionId(response.getSessionId());
@@ -734,20 +719,16 @@ public class RemoteWebDriver implements WebDriver,
       return super.toString();
     }
 
-    // w3c name first
-    Object platform = caps.getCapability(PLATFORM_NAME);
-    if (!(platform instanceof String)) {
-      platform = caps.getCapability(PLATFORM);
-    }
-    if (platform == null) {
-      platform = "unknown";
+    Object platformName = caps.getCapability(PLATFORM_NAME);
+    if (platformName == null) {
+      platformName = "unknown";
     }
 
     return String.format(
       "%s: %s on %s (%s)",
       getClass().getSimpleName(),
       caps.getBrowserName(),
-      platform,
+      platformName,
       getSessionId());
   }
 
