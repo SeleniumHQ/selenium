@@ -115,6 +115,8 @@ public interface CapabilityType {
 
   /**
    * @deprecated Non W3C compliant
+   * Use {@link org.openqa.selenium.chrome.ChromeOptions#LOGGING_PREFS} or
+   * Use {@link org.openqa.selenium.edge.EdgeOptions#LOGGING_PREFS}
    */
   @Deprecated
   String LOGGING_PREFS = "loggingPrefs";
