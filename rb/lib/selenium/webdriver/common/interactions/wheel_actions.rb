@@ -28,7 +28,7 @@ module Selenium
       #
 
       def default_scroll_duration
-        @default_scroll_duration ||= @duration / 1000 # convert ms to seconds
+        @default_scroll_duration ||= @duration / 1000.0 # convert ms to seconds
       end
 
       #
