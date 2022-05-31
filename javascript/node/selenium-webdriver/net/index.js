@@ -73,7 +73,11 @@ function getAddress(family = 'IPv4') {
  * @return {(string|undefined)} The IP address or undefined if not available.
  */
 function getLoopbackAddress(family = 'IPv4') {
-  return getIPAddress(true, family)
+  let address = getIPAddress(true, family)
+  if (address === '127.0.0.1') {
+    address = 'localhost'
+  }
+  return address
 }
 
 /**
