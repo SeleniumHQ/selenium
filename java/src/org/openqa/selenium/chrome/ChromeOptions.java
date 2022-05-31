@@ -51,6 +51,7 @@ public class ChromeOptions extends ChromiumOptions<ChromeOptions> {
    * object.
    */
   public static final String CAPABILITY = "goog:chromeOptions";
+  public static final String LOGGING_PREFS = "goog:loggingPrefs";
   private ChromeDriverLogLevel logLevel;
 
   public ChromeOptions() {
