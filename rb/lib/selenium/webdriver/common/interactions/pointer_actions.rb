@@ -28,7 +28,7 @@ module Selenium
       #
 
       def default_move_duration
-        @default_move_duration ||= @duration / 1000 # convert ms to seconds
+        @default_move_duration ||= @duration / 1000.0 # convert ms to seconds
       end
 
       #
