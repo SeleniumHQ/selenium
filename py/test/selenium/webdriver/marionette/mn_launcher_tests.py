@@ -16,6 +16,7 @@
 # under the License.
 
 from selenium.webdriver import Firefox
+from selenium.webdriver.firefox import Service
 
 
 def test_launch_and_close_browser(driver):
@@ -32,10 +33,17 @@ def test_we_can_launch_multiple_firefox_instances(capabilities):
 
 
 def test_launch_firefox_with_none_service_log_path(capabilities):
-    driver = Firefox(capabilities=capabilities, service_log_path=None)
+    service = Service(log_path=None)
+    driver = Firefox(capabilities=capabilities, service=service)
     driver.quit()
 
 
 def test_launch_firefox_with_empty_string_service_log_path(capabilities):
-    driver = Firefox(capabilities=capabilities, service_log_path="")
+    service = Service(log_path="")
+    driver = Firefox(capabilities=capabilities, service=service)
+    driver.quit()
+
+def test_launch_firefox_with_empty_string_service_log_path(capabilities):
+    service = Service(log_path=("geckodriver.log", "w"))
+    driver = Firefox(capabilities=capabilities, service=service)
     driver.quit()
