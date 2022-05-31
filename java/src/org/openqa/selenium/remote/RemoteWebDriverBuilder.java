@@ -19,12 +19,14 @@ package org.openqa.selenium.remote;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableSet;
+
 import org.openqa.selenium.Beta;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.Credentials;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.UsernameAndPassword;
+import org.openqa.selenium.W3CCapabilityKeysValidator;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverInfo;
 import org.openqa.selenium.internal.Either;
@@ -89,6 +91,7 @@ import static org.openqa.selenium.remote.http.HttpMethod.DELETE;
  */
 @Beta
 public class RemoteWebDriverBuilder {
+
   private static final Logger LOG = Logger.getLogger(RemoteWebDriverBuilder.class.getName());
   private static final Set<String> ILLEGAL_METADATA_KEYS = ImmutableSet.of(
     "alwaysMatch",
@@ -198,11 +201,14 @@ public class RemoteWebDriverBuilder {
     Require.nonNull("Capability name", capabilityName);
     Require.nonNull("Capability value", value);
 
+    W3CCapabilityKeysValidator.validateCapability(capabilityName);
+
     Object previous = additionalCapabilities.put(capabilityName, value);
     if (previous != null) {
       LOG.log(
         getDebugLogLevel(),
-        String.format("Overwriting capability %s. Previous value %s, new value %s", capabilityName, previous, value));
+        String.format("Overwriting capability %s. Previous value %s, new value %s", capabilityName,
+                      previous, value));
     }
 
     return this;
@@ -390,7 +396,7 @@ public class RemoteWebDriverBuilder {
         .andThen(new ErrorFilter())
         .andThen(new DumpHttpExchangeFilter()));
 
-    Either<SessionNotCreatedException, ProtocolHandshake.Result> result = null;
+    Either<SessionNotCreatedException, ProtocolHandshake.Result> result;
     try {
       result = new ProtocolHandshake().createSession(handler, getPayload());
     } catch (IOException e) {

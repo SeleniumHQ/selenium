@@ -28,6 +28,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class PersistentCapabilities implements Capabilities {
+
   private final ImmutableCapabilities caps;
   private final ImmutableCapabilities overrides;
   private final int hashCode;
@@ -51,6 +52,8 @@ public class PersistentCapabilities implements Capabilities {
   public PersistentCapabilities setCapability(String name, Object value) {
     Require.nonNull("Name", name);
     Require.nonNull("Value", value);
+
+    W3CCapabilityKeysValidator.validateCapability(name);
 
     return new PersistentCapabilities(this, new ImmutableCapabilities(name, value));
   }
