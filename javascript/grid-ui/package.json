@@ -52,7 +52,7 @@
     "@testing-library/user-event": "^14.2.0",
     "react-scripts": "5.0.1",
     "ts-standard": "^11.0.0",
-    "typescript": "^3.9.10"
+    "typescript": "^4.7.2"
   },
   "jest": {
     "testMatch": [
