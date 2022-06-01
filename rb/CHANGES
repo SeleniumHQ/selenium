@@ -1,3 +1,9 @@
+4.2.1 (2022-05-31)
+=========================
+
+Ruby
+  * Fix bug in setting default duration in Actions constructor
+
 4.2.0 (2022-05-27)
 =========================
 
