@@ -57,7 +57,7 @@ class SharedCapabilitiesMethods {
       return;
     }
 
-    if ("platform".equals(key) && value instanceof String) {
+    if ("platformName".equals(key) && value instanceof String) {
       try {
         caps.put(key, Platform.fromString((String) value));
       } catch (WebDriverException e) {

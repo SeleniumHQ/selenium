@@ -262,7 +262,7 @@ module Selenium
 
       describe 'pen stylus', except: {browser: :firefox, reason: 'Unknown pointerType'} do
         it 'sets pointer event properties' do
-          driver.get 'https://titusfortner.com/examples/pointerActionsPage.html'
+          driver.navigate.to url_for('pointerActionsPage.html')
           pointer_area = driver.find_element(id: 'pointerArea')
           rect = pointer_area.rect
           x_val = rect.x

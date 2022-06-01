@@ -112,14 +112,11 @@ public interface CapabilityType {
    */
   @Deprecated
   String OVERLAPPING_CHECK_DISABLED = "overlappingCheckDisabled";
-  /**
-   * @deprecated Non W3C compliant
-   */
-  @Deprecated
-  String STRICT_FILE_INTERACTABILITY = "strictFileInteractability";
 
   /**
    * @deprecated Non W3C compliant
+   * Use {@link org.openqa.selenium.chrome.ChromeOptions#LOGGING_PREFS} or
+   * Use {@link org.openqa.selenium.edge.EdgeOptions#LOGGING_PREFS}
    */
   @Deprecated
   String LOGGING_PREFS = "loggingPrefs";
@@ -139,6 +136,7 @@ public interface CapabilityType {
   String PROXY = "proxy";
   String SET_WINDOW_RECT = "setWindowRect";
   String TIMEOUTS = "timeouts";
+  String STRICT_FILE_INTERACTABILITY = "strictFileInteractability";
   String UNHANDLED_PROMPT_BEHAVIOUR = "unhandledPromptBehavior";
 
 
