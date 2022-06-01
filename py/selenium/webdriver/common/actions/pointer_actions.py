@@ -16,13 +16,11 @@
 # under the License.
 import warnings
 
+from selenium.webdriver.remote.webelement import WebElement
 from . import interaction
-
 from .interaction import Interaction
 from .mouse_button import MouseButton
 from .pointer_input import PointerInput
-
-from selenium.webdriver.remote.webelement import WebElement
 
 
 class PointerActions(Interaction):
@@ -93,8 +91,8 @@ class PointerActions(Interaction):
         return self
 
     def move_to_location(self, x, y, width=None, height=None, pressure=None,
-                tangential_pressure=None, tilt_x=None, tilt_y=None, twist=None,
-                altitude_angle=None, azimuth_angle=None):
+                         tangential_pressure=None, tilt_x=None, tilt_y=None, twist=None,
+                         altitude_angle=None, azimuth_angle=None):
         self.source.create_pointer_move(origin='viewport', duration=self._duration, x=int(x), y=int(y),
                                         width=width, height=height, pressure=pressure,
                                         tangential_pressure=tangential_pressure,
