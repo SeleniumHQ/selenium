@@ -100,28 +100,24 @@ class PointerActions(Interaction):
                                         altitude_angle=altitude_angle, azimuth_angle=azimuth_angle)
         return self
 
-    def click(self, element=None):
+    def click(self, element=None, button=MouseButton.LEFT):
         if element:
             self.move_to(element)
-        self.pointer_down(MouseButton.LEFT)
-        self.pointer_up(MouseButton.LEFT)
+        self.pointer_down(button)
+        self.pointer_up(button)
         return self
 
     def context_click(self, element=None):
+        return self.click(element=element, button=MouseButton.RIGHT)
+
+    def click_and_hold(self, element=None, button=MouseButton.LEFT):
         if element:
             self.move_to(element)
-        self.pointer_down(MouseButton.RIGHT)
-        self.pointer_up(MouseButton.RIGHT)
+        self.pointer_down(button=button)
         return self
 
-    def click_and_hold(self, element=None):
-        if element:
-            self.move_to(element)
-        self.pointer_down()
-        return self
-
-    def release(self):
-        self.pointer_up()
+    def release(self, button=MouseButton.LEFT):
+        self.pointer_up(button=button)
         return self
 
     def double_click(self, element=None):
