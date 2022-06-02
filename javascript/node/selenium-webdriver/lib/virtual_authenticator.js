@@ -27,7 +27,7 @@ class VirtualAuthenticatorOptions {
     "CTAP2": 'ctap2',
     "U2F": 'ctap1/u2f',
   }
-  
+
   static Transport = {
     "BLE": 'ble',
     "USB": 'usb',
