@@ -15,7 +15,7 @@
 # specific language governing permissions and limitations
 # under the License.
 
-from typing import List, Tuple
+from typing import List, Tuple, Union
 
 from selenium.webdriver.common import (service, utils)
 

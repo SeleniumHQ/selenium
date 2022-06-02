@@ -16,7 +16,7 @@
 # under the License.
 
 from selenium.webdriver import Firefox
-from selenium.webdriver.firefox import Service
+from selenium.webdriver.firefox.service import Service
 
 
 def test_launch_and_close_browser(driver):
@@ -32,18 +32,8 @@ def test_we_can_launch_multiple_firefox_instances(capabilities):
     driver3.quit()
 
 
-def test_launch_firefox_with_none_service_log_path(capabilities):
-    service = Service(log_path=None)
-    driver = Firefox(capabilities=capabilities, service=service)
-    driver.quit()
-
-
-def test_launch_firefox_with_empty_string_service_log_path(capabilities):
-    service = Service(log_path="")
-    driver = Firefox(capabilities=capabilities, service=service)
-    driver.quit()
-
-def test_launch_firefox_with_empty_string_service_log_path(capabilities):
-    service = Service(log_path=("geckodriver.log", "w"))
+@pytest.mark.parametrize('log_path', [None, "", ("geckodriver.log", "w")])
+def test_launch_firefox_with_service_log_path(log_path):
+    service = Service(log_path=log_path)
     driver = Firefox(capabilities=capabilities, service=service)
     driver.quit()
