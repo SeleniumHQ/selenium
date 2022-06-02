@@ -19,15 +19,14 @@
 
 const assert = require('assert')
 const fs = require('fs')
-const path = require('path')
-
 const chrome = require('../../chrome')
 const symbols = require('../../lib/symbols')
 const test = require('../../lib/test')
 const { locate } = require('../../lib/test/resources')
 
 const WEBEXTENSION_CRX = locate(
-  'common/extensions/webextensions-selenium-example.crx')
+  'common/extensions/webextensions-selenium-example.crx'
+)
 
 describe('chrome.Options', function () {
   describe('addArguments', function () {
@@ -70,8 +69,7 @@ describe('chrome.Options', function () {
       assert.strictEqual(options.options_.extensions, undefined)
 
       options.addExtensions('a', 'b')
-      assert.deepStrictEqual(options.options_.extensions.extensions,
-                             ['a', 'b'])
+      assert.deepStrictEqual(options.options_.extensions.extensions, ['a', 'b'])
     })
 
     it('flattens input arrays', function () {
@@ -97,8 +95,8 @@ describe('chrome.Options', function () {
         .addExtensions(WEBEXTENSION_CRX)
         [symbols.serialize]()
 
-      let extensions = wire['goog:chromeOptions'].extensions
-        [symbols.serialize]()
+      let extensions =
+        wire['goog:chromeOptions'].extensions[symbols.serialize]()
       assert.strictEqual(extensions.length, 1)
       assert.strictEqual(await extensions[0], expected)
     })
@@ -177,19 +175,26 @@ test.suite(
       it('can install an extension from path', async function () {
         let options = new chrome.Options().addExtensions(WEBEXTENSION_CRX)
 
-        driver = await env.builder().forBrowser('chrome')
-          .setChromeOptions(options).build()
+        driver = await env
+          .builder()
+          .forBrowser('chrome')
+          .setChromeOptions(options)
+          .build()
 
         await driver.get(test.Pages.echoPage)
         await verifyWebExtensionWasInstalled()
       })
 
       it('can install an extension from Buffer', async function () {
-        let options = new chrome.Options()
-          .addExtensions(fs.readFileSync(WEBEXTENSION_CRX))
+        let options = new chrome.Options().addExtensions(
+          fs.readFileSync(WEBEXTENSION_CRX)
+        )
 
-        driver = await env.builder().forBrowser('chrome')
-          .setChromeOptions(options).build()
+        driver = await env
+          .builder()
+          .forBrowser('chrome')
+          .setChromeOptions(options)
+          .build()
 
         await driver.get(test.Pages.echoPage)
         await verifyWebExtensionWasInstalled()
