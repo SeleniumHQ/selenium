@@ -162,7 +162,7 @@ class Credential {
    * @param rpId Relying party identifier.
    * @param userHandle userHandle associated to the credential. Must be Base64 encoded string.
    * @param privateKey Base64 encoded PKCS
-   * @param signCount intital value for a signature counter.
+   * @param signCount initial value for a signature counter.
    * @returns A resident credential
    */
   createResidentCredential(id, rpId, userHandle, privateKey, signCount) {
@@ -170,11 +170,11 @@ class Credential {
   }
 
   /**
-   * Creates a non resident (i.e. stateless) credential.
+   * Creates a non-resident (i.e. stateless) credential.
    * @param id Unique base64 encoded string.
    * @param rpId Relying party identifier.
    * @param privateKey Base64 encoded PKCS
-   * @param signCount intital value for a signature counter.
+   * @param signCount initial value for a signature counter.
    * @returns A non-resident credential
    */
   createNonResidentCredential(id, rpId, privateKey, signCount) {
