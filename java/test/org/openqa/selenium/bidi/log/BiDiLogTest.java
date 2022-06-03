@@ -58,13 +58,10 @@ public class BiDiLogTest {
     server.start();
   }
 
-  @Ignore
   @Test
   public void canListenToConsoleLog()
     throws InterruptedException, ExecutionException, TimeoutException {
-    page = server.create(new Page()
-                           .withBody("<div id='button' onclick='helloWorld()'>click me</div>")
-                           .withScripts("function helloWorld() { console.log('Hello, world!') }"));
+    page = server.whereIs("/bidi/logEntryAdded.html");
 
     driver.get(page);
 
@@ -74,7 +71,7 @@ public class BiDiLogTest {
 
     biDi.addListener(Log.entryAdded(), future::complete);
 
-    driver.findElement(By.id("button")).click();
+    driver.findElement(By.id("consoleLog")).click();
     LogEntry logEntry = future.get(5, TimeUnit.SECONDS);
 
     assertThat(logEntry.getConsoleLogEntry().isPresent()).isTrue();
@@ -89,14 +86,10 @@ public class BiDiLogTest {
     assertThat(consoleLogEntry.getStackTrace()).isNull();
   }
 
-  @Ignore
   @Test
   public void canListenToJavascriptLog()
     throws InterruptedException, ExecutionException, TimeoutException {
-    page = server.create(new Page()
-                           .withBody("<div id='button' onclick='createError()'>click me</div>")
-                           .withScripts(
-                             "function createError() { throw new Error('Not working') }"));
+    page = server.whereIs("/bidi/logEntryAdded.html");
 
     driver.get(page);
 
@@ -106,7 +99,7 @@ public class BiDiLogTest {
 
     biDi.addListener(Log.entryAdded(), future::complete);
 
-    driver.findElement(By.id("button")).click();
+    driver.findElement(By.id("jsException")).click();
     LogEntry logEntry = future.get(5, TimeUnit.SECONDS);
 
     assertThat(logEntry.getJavascriptLogEntry().isPresent()).isTrue();
@@ -117,15 +110,10 @@ public class BiDiLogTest {
     assertThat(javascriptLogEntry.getLevel()).isEqualTo(BaseLogEntry.LogLevel.ERROR);
   }
 
-  @Ignore
   @Test
   public void canRetrieveStacktraceForALog()
     throws InterruptedException, ExecutionException, TimeoutException {
-    page = server.create(new Page()
-                           .withBody("<div id='button' onclick='bar()'>click me</div>")
-                           .withScripts(
-                             " function foo() { throw new Error('Not working'); } \n"
-                             + "function bar() { foo(); }"));
+    page = server.whereIs("/bidi/logEntryAdded.html");
 
     driver.get(page);
 
@@ -135,7 +123,7 @@ public class BiDiLogTest {
 
     biDi.addListener(Log.entryAdded(), future::complete);
 
-    driver.findElement(By.id("button")).click();
+    driver.findElement(By.id("logWithStacktrace")).click();
     LogEntry logEntry = future.get(5, TimeUnit.SECONDS);
 
     assertThat(logEntry.getJavascriptLogEntry().isPresent()).isTrue();
