@@ -18,6 +18,7 @@
 from selenium.webdriver import Firefox
 from selenium.webdriver.firefox.service import Service
 
+import pytest
 
 def test_launch_and_close_browser(driver):
     assert 'browserName' in driver.capabilities
