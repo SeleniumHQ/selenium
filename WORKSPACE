@@ -32,9 +32,7 @@ lint_deps()
 load("@apple_rules_lint//lint:setup.bzl", "lint_setup")
 
 # Add your linters here.
-lint_setup({
-    "java-spotbugs": "//java:spotbugs-config",
-})
+lint_setup()
 
 http_archive(
     name = "platforms",
@@ -128,6 +126,34 @@ rules_jvm_external_deps()
 load("@rules_jvm_external//:setup.bzl", "rules_jvm_external_setup")
 
 rules_jvm_external_setup()
+
+http_archive(
+    name = "bazel_gazelle",
+    sha256 = "5982e5463f171da99e3bdaeff8c0f48283a7a5f396ec5282910b9e8a49c0dd7e",
+    urls = [
+        "https://mirror.bazel.build/github.com/bazelbuild/bazel-gazelle/releases/download/v0.25.0/bazel-gazelle-v0.25.0.tar.gz",
+        "https://github.com/bazelbuild/bazel-gazelle/releases/download/v0.25.0/bazel-gazelle-v0.25.0.tar.gz",
+    ],
+)
+
+load("@bazel_gazelle//:deps.bzl", "gazelle_dependencies")
+
+gazelle_dependencies()
+
+http_archive(
+    name = "contrib_rules_jvm",
+    sha256 = "5d9d466a5756bc4540a03e41afddf8769ea02927ec5efb820cfc551da08ce515",
+    strip_prefix = "rules_jvm-0.2.0",
+    url = "https://github.com/bazel-contrib/rules_jvm/archive/v0.2.0.tar.gz",
+)
+
+load("@contrib_rules_jvm//:repositories.bzl", "contrib_rules_jvm_deps")
+
+contrib_rules_jvm_deps()
+
+load("@contrib_rules_jvm//:setup.bzl", "contrib_rules_jvm_setup")
+
+contrib_rules_jvm_setup()
 
 load("//java:maven_deps.bzl", "selenium_java_deps")
 
