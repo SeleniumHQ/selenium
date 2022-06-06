@@ -20,5 +20,5 @@ java_test_suite(
         artifact("com.google.guava:guava"),
         artifact("junit:junit"),
         artifact("org.assertj:assertj-core"),
-    ],
+    ] + JUNIT5_VINTAGE_DEPS,
 )
