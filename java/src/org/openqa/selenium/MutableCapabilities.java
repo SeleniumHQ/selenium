@@ -101,6 +101,22 @@ public class MutableCapabilities implements Capabilities {
     SharedCapabilitiesMethods.setCapability(caps, key, value);
   }
 
+  protected void setCapabilityWithoutValidation(String key, Object value) {
+    Require.nonNull("Capability name", key);
+
+    if (OPTION_KEYS.contains(key) && value instanceof Capabilities) {
+      ((Capabilities) value).asMap().forEach(this::setCapability);
+      return;
+    }
+
+    if (value == null) {
+      caps.remove(key);
+      return;
+    }
+
+    SharedCapabilitiesMethods.setCapabilityNoValidation(caps, key, value);
+  }
+
   @Override
   public Map<String, Object> asMap() {
     return Collections.unmodifiableMap(caps);

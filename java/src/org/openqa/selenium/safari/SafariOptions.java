@@ -80,9 +80,9 @@ public class SafariOptions extends AbstractDriverOptions<SafariOptions> {
 
     SafariOptions newInstance = new SafariOptions();
 
-    getCapabilityNames().forEach(name -> newInstance.setCapability(name, getCapability(name)));
+    getCapabilityNames().forEach(name -> newInstance.setCapabilityWithoutValidation(name, getCapability(name)));
     extraCapabilities.getCapabilityNames()
-      .forEach(name -> newInstance.setCapability(name, extraCapabilities.getCapability(name)));
+      .forEach(name -> newInstance.setCapabilityWithoutValidation(name, extraCapabilities.getCapability(name)));
 
     return newInstance;
   }

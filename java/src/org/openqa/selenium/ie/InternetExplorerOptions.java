@@ -237,18 +237,25 @@ public class InternetExplorerOptions extends AbstractDriverOptions<InternetExplo
 
   @Override
   public void setCapability(String key, Object value) {
-    super.setCapability(key, value);
-
-    if (IE_SWITCHES.equals(key)) {
-      if (value instanceof List) {
-        value = ((List<?>) value).stream().map(Object::toString).collect(Collectors.joining(" "));
-      }
-    }
-
+    // This puts IE specific values inside se:options map
     if (CAPABILITY_NAMES.contains(key)) {
+      // TODO - stop putting IE specific values at the top level of capabilities
+      // These should only be added to ieOptions to be w3c compliant
+      // Regardless, these are known valid for inside se:w3c so shouldn't throw warnings
+      super.setCapabilityWithoutValidation(key, value);
+
+      // Switches are a String for w3c instead of a List for jwp
+      if (IE_SWITCHES.equals(key)) {
+        if (value instanceof List) {
+          value = ((List<?>) value).stream().map(Object::toString).collect(Collectors.joining(" "));
+        }
+      }
       ieOptions.put(key, value);
+    } else {
+      super.setCapability(key, value);
     }
 
+    // This replaces se:options map with what is provided
     if (IE_OPTIONS.equals(key)) {
       ieOptions.clear();
       Map<String, Object> streamFrom;

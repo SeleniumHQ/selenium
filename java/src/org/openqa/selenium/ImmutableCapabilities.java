@@ -23,7 +23,7 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.TreeMap;
 
-import static org.openqa.selenium.SharedCapabilitiesMethods.setCapability;
+import static org.openqa.selenium.SharedCapabilitiesMethods.setCapabilityNoValidation;
 
 public class ImmutableCapabilities implements Capabilities {
 
@@ -40,7 +40,7 @@ public class ImmutableCapabilities implements Capabilities {
     Require.nonNull("Value", v);
 
     Map<String, Object> delegate = new TreeMap<>();
-    setCapability(delegate, k, v);
+    setCapabilityNoValidation(delegate, k, v);
 
     this.delegate = Collections.unmodifiableMap(delegate);
     this.hashCode = SharedCapabilitiesMethods.hashCode(this);
@@ -54,8 +54,8 @@ public class ImmutableCapabilities implements Capabilities {
 
     Map<String, Object> delegate = new TreeMap<>();
 
-    setCapability(delegate, k1, v1);
-    setCapability(delegate, k2, v2);
+    setCapabilityNoValidation(delegate, k1, v1);
+    setCapabilityNoValidation(delegate, k2, v2);
 
     this.delegate = Collections.unmodifiableMap(delegate);
     this.hashCode = SharedCapabilitiesMethods.hashCode(this);
@@ -71,9 +71,9 @@ public class ImmutableCapabilities implements Capabilities {
 
     Map<String, Object> delegate = new TreeMap<>();
 
-    setCapability(delegate, k1, v1);
-    setCapability(delegate, k2, v2);
-    setCapability(delegate, k3, v3);
+    setCapabilityNoValidation(delegate, k1, v1);
+    setCapabilityNoValidation(delegate, k2, v2);
+    setCapabilityNoValidation(delegate, k3, v3);
 
     this.delegate = Collections.unmodifiableMap(delegate);
     this.hashCode = SharedCapabilitiesMethods.hashCode(this);
@@ -95,10 +95,10 @@ public class ImmutableCapabilities implements Capabilities {
 
     Map<String, Object> delegate = new TreeMap<>();
 
-    setCapability(delegate, k1, v1);
-    setCapability(delegate, k2, v2);
-    setCapability(delegate, k3, v3);
-    setCapability(delegate, k4, v4);
+    setCapabilityNoValidation(delegate, k1, v1);
+    setCapabilityNoValidation(delegate, k2, v2);
+    setCapabilityNoValidation(delegate, k3, v3);
+    setCapabilityNoValidation(delegate, k4, v4);
 
     this.delegate = Collections.unmodifiableMap(delegate);
     this.hashCode = SharedCapabilitiesMethods.hashCode(this);
@@ -123,11 +123,11 @@ public class ImmutableCapabilities implements Capabilities {
 
     Map<String, Object> delegate = new TreeMap<>();
 
-    setCapability(delegate, k1, v1);
-    setCapability(delegate, k2, v2);
-    setCapability(delegate, k3, v3);
-    setCapability(delegate, k4, v4);
-    setCapability(delegate, k5, v5);
+    setCapabilityNoValidation(delegate, k1, v1);
+    setCapabilityNoValidation(delegate, k2, v2);
+    setCapabilityNoValidation(delegate, k3, v3);
+    setCapabilityNoValidation(delegate, k4, v4);
+    setCapabilityNoValidation(delegate, k5, v5);
 
     this.delegate = Collections.unmodifiableMap(delegate);
     this.hashCode = SharedCapabilitiesMethods.hashCode(this);
@@ -142,7 +142,7 @@ public class ImmutableCapabilities implements Capabilities {
       Object value = other.getCapability(name);
       Require.nonNull("Capability value", value);
 
-      setCapability(delegate, name, value);
+      setCapabilityNoValidation(delegate, name, value);
     });
 
     this.delegate = Collections.unmodifiableMap(delegate);
@@ -158,7 +158,7 @@ public class ImmutableCapabilities implements Capabilities {
       Object v = capabilities.get(key);
       Require.nonNull("Capability value", value);
 
-      setCapability(delegate, (String) key, v);
+      setCapabilityNoValidation(delegate, (String) key, v);
     });
 
     this.delegate = Collections.unmodifiableMap(delegate);

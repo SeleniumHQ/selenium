@@ -47,7 +47,14 @@ class SharedCapabilitiesMethods {
 
   static void setCapability(Map<String, Object> caps, String key, Object value) {
     W3CCapabilityKeysValidator.validateCapability(key);
+    setCapabilityNoValidation(caps, key, value);
+  }
 
+  /**
+   * This method is temporary and intended to be used privately by other Selenium classes that are known to be
+   * compliant and do not need to be validated.
+   */
+  static void setCapabilityNoValidation(Map<String, Object> caps, String key, Object value) {
     if ("loggingPrefs".equals(key) && value instanceof Map) {
       LoggingPreferences prefs = new LoggingPreferences();
       @SuppressWarnings("unchecked") Map<String, String> prefsMap = (Map<String, String>) value;
