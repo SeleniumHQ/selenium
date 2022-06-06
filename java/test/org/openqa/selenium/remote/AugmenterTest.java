@@ -398,10 +398,6 @@ public class AugmenterTest {
     }
   }
 
-  public interface HasMagicNumbers {
-    int getMagicNumber();
-  }
-
   public interface HasNumbers {
     int getNumbers(WebDriver driver);
   }
@@ -444,4 +440,5 @@ public class AugmenterTest {
       return super.call(target, method, args);
     }
   }
+
 }
