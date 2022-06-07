@@ -309,6 +309,8 @@ class RemoteConnection:
                 ('POST', '/session/$sessionId/window/minimize'),
             Command.PRINT_PAGE:
                 ('POST', '/session/$sessionId/print'),
+            Command.W3C_STATUS:
+                ('GET', '/status'),
             Command.ADD_VIRTUAL_AUTHENTICATOR:
                 ('POST', '/session/$sessionId/webauthn/authenticator'),
             Command.REMOVE_VIRTUAL_AUTHENTICATOR:
@@ -337,8 +339,9 @@ class RemoteConnection:
          - params - A dictionary of named parameters to send with the command as
            its JSON payload.
         """
-        command_info = self._commands[command]
-        assert command_info is not None, 'Unrecognised command %s' % command
+        command_info = self._commands.get(command)
+        if command_info is None:
+            raise ValueError(f"Command: {command} is not a valid webdriver command.")
         path = string.Template(command_info[1]).substitute(params)
         if isinstance(params, dict) and 'sessionId' in params:
             del params['sessionId']

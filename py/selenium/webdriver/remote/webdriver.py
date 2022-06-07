@@ -284,6 +284,19 @@ class WebDriver(BaseWebDriver):
     def __exit__(self, *args):
         self.quit()
 
+    @property
+    def status(self) -> Dict:
+        """
+        Retrieve status information about whether a remote end is in a state in which it can
+        create new sessions.  If the status `ready` is True, it does not guarantee that attempts
+        to create a new session would be successful.
+        """
+        response = self.execute(Command.W3C_STATUS).get("value")
+        if response is None:
+            # Todo: Should this raise? should it return something instead?
+            raise ValueError(f"Unable to retrieve /status information for the driver.")
+        return response
+
     @contextmanager
     def file_detector_context(self, file_detector_class, *args, **kwargs):
         """

@@ -86,6 +86,7 @@ class Command:
     FULLSCREEN_WINDOW = "fullscreenWindow"
     MINIMIZE_WINDOW = "minimizeWindow"
     PRINT_PAGE = 'printPage'
+    W3C_STATUS = "status"
 
     # Alerts
     W3C_DISMISS_ALERT = "w3cDismissAlert"
