@@ -17,7 +17,9 @@
 
 package org.openqa.selenium.chrome;
 
+import org.junit.After;
 import org.junit.Test;
+import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
@@ -45,21 +47,31 @@ public class ChromeDriverFunctionalTest extends JUnit4TestBase {
 
   private final String CLIPBOARD_READ = "clipboard-read";
   private final String CLIPBOARD_WRITE = "clipboard-write";
+  private WebDriver localDriver;
+
+  @After
+  public void quitDriver() {
+    if (localDriver != null) {
+      localDriver.quit();
+    }
+  }
 
   @Test
   public void builderGeneratesDefaultChromeOptions() {
-    WebDriver driver = ChromeDriver.builder().build();
-    driver.quit();
+    localDriver = ChromeDriver.builder().build();
+    ChromeDriver chromeDriver = (ChromeDriver) localDriver;
+    Capabilities capabilities = chromeDriver.getCapabilities();
+
+    assertThat(localDriver.manage().timeouts().getImplicitWaitTimeout()).isEqualTo(Duration.ZERO);
+    assertThat(capabilities.getCapability("browserName")).isEqualTo("chrome");
   }
 
   @Test
   public void builderOverridesDefaultChromeOptions() {
     ChromeOptions options = new ChromeOptions();
     options.setImplicitWaitTimeout(Duration.ofMillis(1));
-    WebDriver driver = ChromeDriver.builder().oneOf(options).build();
-    assertThat(driver.manage().timeouts().getImplicitWaitTimeout()).isEqualTo(Duration.ofMillis(1));
-
-    driver.quit();
+    localDriver = ChromeDriver.builder().oneOf(options).build();
+    assertThat(localDriver.manage().timeouts().getImplicitWaitTimeout()).isEqualTo(Duration.ofMillis(1));
   }
 
   @Test
@@ -93,22 +105,18 @@ public class ChromeDriverFunctionalTest extends JUnit4TestBase {
     options.setHeadless(true);
 
     //TestChromeDriver is not honoring headless request; using ChromeDriver instead
-    WebDriver driver = new WebDriverBuilder().get(options);
-    try {
-      HasPermissions permissions = (HasPermissions) driver;
+    localDriver = new WebDriverBuilder().get(options);
+    HasPermissions permissions = (HasPermissions) localDriver;
 
-      driver.get(pages.clicksPage);
-      assertThat(checkPermission(driver, CLIPBOARD_READ)).isEqualTo("prompt");
-      assertThat(checkPermission(driver, CLIPBOARD_WRITE)).isEqualTo("prompt");
+    localDriver.get(pages.clicksPage);
+    assertThat(checkPermission(localDriver, CLIPBOARD_READ)).isEqualTo("prompt");
+    assertThat(checkPermission(localDriver, CLIPBOARD_WRITE)).isEqualTo("prompt");
 
-      permissions.setPermission(CLIPBOARD_READ, "granted");
-      permissions.setPermission(CLIPBOARD_WRITE, "granted");
+    permissions.setPermission(CLIPBOARD_READ, "granted");
+    permissions.setPermission(CLIPBOARD_WRITE, "granted");
 
-      assertThat(checkPermission(driver, CLIPBOARD_READ)).isEqualTo("granted");
-      assertThat(checkPermission(driver, CLIPBOARD_WRITE)).isEqualTo("granted");
-    } finally {
-      driver.quit();
-    }
+    assertThat(checkPermission(localDriver, CLIPBOARD_READ)).isEqualTo("granted");
+    assertThat(checkPermission(localDriver, CLIPBOARD_WRITE)).isEqualTo("granted");
   }
 
   public String checkPermission(WebDriver driver, String permission){

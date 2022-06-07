@@ -54,7 +54,7 @@ public class EdgeOptionsFunctionalTest extends JUnit4TestBase {
   }
 
   @Test
-  public void canStartChromeWithCustomOptions() {
+  public void canStartEdgeWithCustomOptions() {
     EdgeOptions options = new EdgeOptions();
     options.addArguments("user-agent=foo;bar");
     edgeDriver = new WebDriverBuilder().get(options);

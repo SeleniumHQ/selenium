@@ -63,6 +63,7 @@ import java.util.Random;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.junit.Assume.assumeNotNull;
 import static org.mockito.Mockito.atLeastOnce;
@@ -102,19 +103,22 @@ public class FirefoxDriverTest extends JUnit4TestBase {
   }
 
   @Test
-  public void builderGeneratesDefaultChromeOptions() {
-    WebDriver driver = FirefoxDriver.builder().build();
-    driver.quit();
+  public void builderGeneratesDefaultFirefoxOptions() {
+    localDriver = FirefoxDriver.builder().build();
+    FirefoxDriver firefoxDriver = (FirefoxDriver) localDriver;
+    Capabilities capabilities = firefoxDriver.getCapabilities();
+
+    assertThat(driver.manage().timeouts().getImplicitWaitTimeout()).isEqualTo(Duration.ZERO);
+    assertTrue((Boolean) capabilities.getCapability("acceptInsecureCerts"));
+    assertThat(capabilities.getCapability("browserName")).isEqualTo("firefox");
   }
 
   @Test
-  public void builderOverridesDefaultChromeOptions() {
+  public void builderOverridesDefaultFirefoxOptions() {
     FirefoxOptions options = new FirefoxOptions();
     options.setImplicitWaitTimeout(Duration.ofMillis(1));
-    WebDriver driver = FirefoxDriver.builder().oneOf(options).build();
-    assertThat(driver.manage().timeouts().getImplicitWaitTimeout()).isEqualTo(Duration.ofMillis(1));
-
-    driver.quit();
+    localDriver = FirefoxDriver.builder().oneOf(options).build();
+    assertThat(localDriver.manage().timeouts().getImplicitWaitTimeout()).isEqualTo(Duration.ofMillis(1));
   }
 
   @Test
@@ -258,17 +262,13 @@ public class FirefoxDriverTest extends JUnit4TestBase {
 
   @Test
   public void shouldBeAbleToStartMoreThanOneInstanceOfTheFirefoxDriverSimultaneously() {
-    WebDriver secondDriver = new WebDriverBuilder().get();
+    localDriver = new WebDriverBuilder().get();
 
-    try {
-      driver.get(pages.xhtmlTestPage);
-      secondDriver.get(pages.formPage);
+    driver.get(pages.xhtmlTestPage);
+    localDriver.get(pages.formPage);
 
-      assertThat(driver.getTitle()).isEqualTo("XHTML Test Page");
-      assertThat(secondDriver.getTitle()).isEqualTo("We Leave From Here");
-    } finally {
-      secondDriver.quit();
-    }
+    assertThat(driver.getTitle()).isEqualTo("XHTML Test Page");
+    assertThat(localDriver.getTitle()).isEqualTo("We Leave From Here");
   }
 
   @Test
