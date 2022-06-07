@@ -18,7 +18,7 @@ load(
     _java_test_suite = "java_test_suite",
 )
 
-def java_test_suite(name, runner = "junit5", **kwargs):
+def java_test_suite(name, runner = "junit4", **kwargs):
     _java_test_suite(name = name, runner = runner, **kwargs)
 
 artifact = _artifact
