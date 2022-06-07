@@ -291,7 +291,7 @@ class WebDriver(BaseWebDriver):
         create new sessions.  If the status `ready` is True, it does not guarantee that attempts
         to create a new session would be successful.
         """
-        return self.execute(Command.W3C_STATUS).get("value")
+        return self.execute(Command.W3C_STATUS)["value"]
 
     @contextmanager
     def file_detector_context(self, file_detector_class, *args, **kwargs):
