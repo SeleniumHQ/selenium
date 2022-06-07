@@ -16,7 +16,7 @@
     "@types/react-router-dom": "^5.3.3",
     "graphql": "^16.5.0",
     "graphql.macro": "^1.4.2",
-    "pretty-ms": "^8.0.0",
+    "pretty-ms": "^7.0.1",
     "react": "^18.1.0",
     "react-dom": "^18.1.0",
     "react-modal": "^3.15.1",
