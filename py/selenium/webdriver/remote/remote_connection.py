@@ -31,6 +31,7 @@ from selenium import __version__
 from .command import Command
 from .errorhandler import ErrorCode
 from . import utils
+from .constants import HttpVerb
 
 LOGGER = logging.getLogger(__name__)
 
@@ -44,6 +45,138 @@ class RemoteConnection:
     browser_name = None
     _timeout = socket._GLOBAL_DEFAULT_TIMEOUT
     _ca_certs = certifi.where()
+
+    _COMMANDS = {
+        Command.NEW_SESSION: (HttpVerb.POST, '/session'),
+        Command.QUIT: (HttpVerb.DELETE, '/session/$sessionId'),
+        Command.W3C_GET_CURRENT_WINDOW_HANDLE:
+            (HttpVerb.GET, '/session/$sessionId/window'),
+        Command.W3C_GET_WINDOW_HANDLES:
+            (HttpVerb.GET, '/session/$sessionId/window/handles'),
+        Command.GET: (HttpVerb.POST, '/session/$sessionId/url'),
+        Command.GO_FORWARD: (HttpVerb.POST, '/session/$sessionId/forward'),
+        Command.GO_BACK: (HttpVerb.POST, '/session/$sessionId/back'),
+        Command.REFRESH: (HttpVerb.POST, '/session/$sessionId/refresh'),
+        Command.W3C_EXECUTE_SCRIPT:
+            (HttpVerb.POST, '/session/$sessionId/execute/sync'),
+        Command.W3C_EXECUTE_SCRIPT_ASYNC:
+            (HttpVerb.POST, '/session/$sessionId/execute/async'),
+        Command.GET_CURRENT_URL: (HttpVerb.GET, '/session/$sessionId/url'),
+        Command.GET_TITLE: (HttpVerb.GET, '/session/$sessionId/title'),
+        Command.GET_PAGE_SOURCE: (HttpVerb.GET, '/session/$sessionId/source'),
+        Command.SCREENSHOT: (HttpVerb.GET, '/session/$sessionId/screenshot'),
+        Command.ELEMENT_SCREENSHOT: (HttpVerb.GET, '/session/$sessionId/element/$id/screenshot'),
+        Command.FIND_ELEMENT: (HttpVerb.POST, '/session/$sessionId/element'),
+        Command.FIND_ELEMENTS: (HttpVerb.POST, '/session/$sessionId/elements'),
+        Command.W3C_GET_ACTIVE_ELEMENT: (HttpVerb.GET, '/session/$sessionId/element/active'),
+        Command.FIND_CHILD_ELEMENT:
+            (HttpVerb.POST, '/session/$sessionId/element/$id/element'),
+        Command.FIND_CHILD_ELEMENTS:
+            (HttpVerb.POST, '/session/$sessionId/element/$id/elements'),
+        Command.CLICK_ELEMENT: (HttpVerb.POST, '/session/$sessionId/element/$id/click'),
+        Command.CLEAR_ELEMENT: (HttpVerb.POST, '/session/$sessionId/element/$id/clear'),
+        Command.GET_ELEMENT_TEXT: (HttpVerb.GET, '/session/$sessionId/element/$id/text'),
+        Command.SEND_KEYS_TO_ELEMENT:
+            (HttpVerb.POST, '/session/$sessionId/element/$id/value'),
+        Command.UPLOAD_FILE: (HttpVerb.POST, "/session/$sessionId/se/file"),
+        Command.GET_ELEMENT_TAG_NAME:
+            (HttpVerb.GET, '/session/$sessionId/element/$id/name'),
+        Command.IS_ELEMENT_SELECTED:
+            (HttpVerb.GET, '/session/$sessionId/element/$id/selected'),
+        Command.IS_ELEMENT_ENABLED:
+            (HttpVerb.GET, '/session/$sessionId/element/$id/enabled'),
+        Command.GET_ELEMENT_RECT:
+            (HttpVerb.GET, '/session/$sessionId/element/$id/rect'),
+        Command.GET_ELEMENT_ATTRIBUTE:
+            (HttpVerb.GET, '/session/$sessionId/element/$id/attribute/$name'),
+        Command.GET_ELEMENT_PROPERTY:
+            (HttpVerb.GET, '/session/$sessionId/element/$id/property/$name'),
+        Command.GET_ELEMENT_ARIA_ROLE:
+            (HttpVerb.GET, '/session/$sessionId/element/$id/computedrole'),
+        Command.GET_ELEMENT_ARIA_LABEL:
+            (HttpVerb.GET, '/session/$sessionId/element/$id/computedlabel'),
+        Command.GET_SHADOW_ROOT:
+            (HttpVerb.GET, '/session/$sessionId/element/$id/shadow'),
+        Command.FIND_ELEMENT_FROM_SHADOW_ROOT:
+            (HttpVerb.POST, '/session/$sessionId/shadow/$shadowId/element'),
+        Command.FIND_ELEMENTS_FROM_SHADOW_ROOT:
+            (HttpVerb.POST, '/session/$sessionId/shadow/$shadowId/elements'),
+        Command.GET_ALL_COOKIES: (HttpVerb.GET, '/session/$sessionId/cookie'),
+        Command.ADD_COOKIE: (HttpVerb.POST, '/session/$sessionId/cookie'),
+        Command.GET_COOKIE: (HttpVerb.GET, '/session/$sessionId/cookie/$name'),
+        Command.DELETE_ALL_COOKIES:
+            (HttpVerb.DELETE, '/session/$sessionId/cookie'),
+        Command.DELETE_COOKIE:
+            (HttpVerb.DELETE, '/session/$sessionId/cookie/$name'),
+        Command.SWITCH_TO_FRAME: (HttpVerb.POST, '/session/$sessionId/frame'),
+        Command.SWITCH_TO_PARENT_FRAME: (HttpVerb.POST, '/session/$sessionId/frame/parent'),
+        Command.SWITCH_TO_WINDOW: (HttpVerb.POST, '/session/$sessionId/window'),
+        Command.NEW_WINDOW: (HttpVerb.POST, '/session/$sessionId/window/new'),
+        Command.CLOSE: (HttpVerb.DELETE, '/session/$sessionId/window'),
+        Command.GET_ELEMENT_VALUE_OF_CSS_PROPERTY:
+            (HttpVerb.GET, '/session/$sessionId/element/$id/css/$propertyName'),
+        Command.EXECUTE_ASYNC_SCRIPT: (HttpVerb.POST, '/session/$sessionId/execute_async'),
+        Command.SET_TIMEOUTS:
+            (HttpVerb.POST, '/session/$sessionId/timeouts'),
+        Command.GET_TIMEOUTS:
+            (HttpVerb.GET, '/session/$sessionId/timeouts'),
+        Command.W3C_DISMISS_ALERT:
+            (HttpVerb.POST, '/session/$sessionId/alert/dismiss'),
+        Command.W3C_ACCEPT_ALERT:
+            (HttpVerb.POST, '/session/$sessionId/alert/accept'),
+        Command.W3C_SET_ALERT_VALUE:
+            (HttpVerb.POST, '/session/$sessionId/alert/text'),
+        Command.W3C_GET_ALERT_TEXT:
+            (HttpVerb.GET, '/session/$sessionId/alert/text'),
+        Command.W3C_ACTIONS:
+            (HttpVerb.POST, '/session/$sessionId/actions'),
+        Command.W3C_CLEAR_ACTIONS:
+            (HttpVerb.DELETE, '/session/$sessionId/actions'),
+        Command.SET_WINDOW_RECT:
+            (HttpVerb.POST, '/session/$sessionId/window/rect'),
+        Command.GET_WINDOW_RECT:
+            (HttpVerb.GET, '/session/$sessionId/window/rect'),
+        Command.W3C_MAXIMIZE_WINDOW:
+            (HttpVerb.POST, '/session/$sessionId/window/maximize'),
+        Command.SET_SCREEN_ORIENTATION:
+            (HttpVerb.POST, '/session/$sessionId/orientation'),
+        Command.GET_SCREEN_ORIENTATION:
+            (HttpVerb.GET, '/session/$sessionId/orientation'),
+        Command.GET_NETWORK_CONNECTION:
+            (HttpVerb.GET, '/session/$sessionId/network_connection'),
+        Command.SET_NETWORK_CONNECTION:
+            (HttpVerb.POST, '/session/$sessionId/network_connection'),
+        Command.GET_LOG:
+            (HttpVerb.POST, '/session/$sessionId/se/log'),
+        Command.GET_AVAILABLE_LOG_TYPES:
+            (HttpVerb.GET, '/session/$sessionId/se/log/types'),
+        Command.CURRENT_CONTEXT_HANDLE:
+            (HttpVerb.GET, '/session/$sessionId/context'),
+        Command.CONTEXT_HANDLES:
+            (HttpVerb.GET, '/session/$sessionId/contexts'),
+        Command.SWITCH_TO_CONTEXT:
+            (HttpVerb.POST, '/session/$sessionId/context'),
+        Command.FULLSCREEN_WINDOW:
+            (HttpVerb.POST, '/session/$sessionId/window/fullscreen'),
+        Command.MINIMIZE_WINDOW:
+            (HttpVerb.POST, '/session/$sessionId/window/minimize'),
+        Command.PRINT_PAGE:
+            (HttpVerb.POST, '/session/$sessionId/print'),
+        Command.ADD_VIRTUAL_AUTHENTICATOR:
+            (HttpVerb.POST, '/session/$sessionId/webauthn/authenticator'),
+        Command.REMOVE_VIRTUAL_AUTHENTICATOR:
+            (HttpVerb.DELETE, '/session/$sessionId/webauthn/authenticator/$authenticatorId'),
+        Command.ADD_CREDENTIAL:
+            (HttpVerb.POST, '/session/$sessionId/webauthn/authenticator/$authenticatorId/credential'),
+        Command.GET_CREDENTIALS:
+            (HttpVerb.GET, '/session/$sessionId/webauthn/authenticator/$authenticatorId/credentials'),
+        Command.REMOVE_CREDENTIAL:
+            (HttpVerb.DELETE, '/session/$sessionId/webauthn/authenticator/$authenticatorId/credentials/$credentialId'),
+        Command.REMOVE_ALL_CREDENTIALS:
+            (HttpVerb.DELETE, '/session/$sessionId/webauthn/authenticator/$authenticatorId/credentials'),
+        Command.SET_USER_VERIFIED:
+            (HttpVerb.POST, '/session/$sessionId/webauthn/authenticator/$authenticatorId/uv'),
+    }
 
     @classmethod
     def get_timeout(cls):
@@ -193,138 +326,6 @@ class RemoteConnection:
         if keep_alive:
             self._conn = self._get_connection_manager()
 
-        self._commands = {
-            Command.NEW_SESSION: ('POST', '/session'),
-            Command.QUIT: ('DELETE', '/session/$sessionId'),
-            Command.W3C_GET_CURRENT_WINDOW_HANDLE:
-                ('GET', '/session/$sessionId/window'),
-            Command.W3C_GET_WINDOW_HANDLES:
-                ('GET', '/session/$sessionId/window/handles'),
-            Command.GET: ('POST', '/session/$sessionId/url'),
-            Command.GO_FORWARD: ('POST', '/session/$sessionId/forward'),
-            Command.GO_BACK: ('POST', '/session/$sessionId/back'),
-            Command.REFRESH: ('POST', '/session/$sessionId/refresh'),
-            Command.W3C_EXECUTE_SCRIPT:
-                ('POST', '/session/$sessionId/execute/sync'),
-            Command.W3C_EXECUTE_SCRIPT_ASYNC:
-                ('POST', '/session/$sessionId/execute/async'),
-            Command.GET_CURRENT_URL: ('GET', '/session/$sessionId/url'),
-            Command.GET_TITLE: ('GET', '/session/$sessionId/title'),
-            Command.GET_PAGE_SOURCE: ('GET', '/session/$sessionId/source'),
-            Command.SCREENSHOT: ('GET', '/session/$sessionId/screenshot'),
-            Command.ELEMENT_SCREENSHOT: ('GET', '/session/$sessionId/element/$id/screenshot'),
-            Command.FIND_ELEMENT: ('POST', '/session/$sessionId/element'),
-            Command.FIND_ELEMENTS: ('POST', '/session/$sessionId/elements'),
-            Command.W3C_GET_ACTIVE_ELEMENT: ('GET', '/session/$sessionId/element/active'),
-            Command.FIND_CHILD_ELEMENT:
-                ('POST', '/session/$sessionId/element/$id/element'),
-            Command.FIND_CHILD_ELEMENTS:
-                ('POST', '/session/$sessionId/element/$id/elements'),
-            Command.CLICK_ELEMENT: ('POST', '/session/$sessionId/element/$id/click'),
-            Command.CLEAR_ELEMENT: ('POST', '/session/$sessionId/element/$id/clear'),
-            Command.GET_ELEMENT_TEXT: ('GET', '/session/$sessionId/element/$id/text'),
-            Command.SEND_KEYS_TO_ELEMENT:
-                ('POST', '/session/$sessionId/element/$id/value'),
-            Command.UPLOAD_FILE: ('POST', "/session/$sessionId/se/file"),
-            Command.GET_ELEMENT_TAG_NAME:
-                ('GET', '/session/$sessionId/element/$id/name'),
-            Command.IS_ELEMENT_SELECTED:
-                ('GET', '/session/$sessionId/element/$id/selected'),
-            Command.IS_ELEMENT_ENABLED:
-                ('GET', '/session/$sessionId/element/$id/enabled'),
-            Command.GET_ELEMENT_RECT:
-                ('GET', '/session/$sessionId/element/$id/rect'),
-            Command.GET_ELEMENT_ATTRIBUTE:
-                ('GET', '/session/$sessionId/element/$id/attribute/$name'),
-            Command.GET_ELEMENT_PROPERTY:
-                ('GET', '/session/$sessionId/element/$id/property/$name'),
-            Command.GET_ELEMENT_ARIA_ROLE:
-                ('GET', '/session/$sessionId/element/$id/computedrole'),
-            Command.GET_ELEMENT_ARIA_LABEL:
-                ('GET', '/session/$sessionId/element/$id/computedlabel'),
-            Command.GET_SHADOW_ROOT:
-                ('GET', '/session/$sessionId/element/$id/shadow'),
-            Command.FIND_ELEMENT_FROM_SHADOW_ROOT:
-                ('POST', '/session/$sessionId/shadow/$shadowId/element'),
-            Command.FIND_ELEMENTS_FROM_SHADOW_ROOT:
-                ('POST', '/session/$sessionId/shadow/$shadowId/elements'),
-            Command.GET_ALL_COOKIES: ('GET', '/session/$sessionId/cookie'),
-            Command.ADD_COOKIE: ('POST', '/session/$sessionId/cookie'),
-            Command.GET_COOKIE: ('GET', '/session/$sessionId/cookie/$name'),
-            Command.DELETE_ALL_COOKIES:
-                ('DELETE', '/session/$sessionId/cookie'),
-            Command.DELETE_COOKIE:
-                ('DELETE', '/session/$sessionId/cookie/$name'),
-            Command.SWITCH_TO_FRAME: ('POST', '/session/$sessionId/frame'),
-            Command.SWITCH_TO_PARENT_FRAME: ('POST', '/session/$sessionId/frame/parent'),
-            Command.SWITCH_TO_WINDOW: ('POST', '/session/$sessionId/window'),
-            Command.NEW_WINDOW: ('POST', '/session/$sessionId/window/new'),
-            Command.CLOSE: ('DELETE', '/session/$sessionId/window'),
-            Command.GET_ELEMENT_VALUE_OF_CSS_PROPERTY:
-                ('GET', '/session/$sessionId/element/$id/css/$propertyName'),
-            Command.EXECUTE_ASYNC_SCRIPT: ('POST', '/session/$sessionId/execute_async'),
-            Command.SET_TIMEOUTS:
-                ('POST', '/session/$sessionId/timeouts'),
-            Command.GET_TIMEOUTS:
-                ('GET', '/session/$sessionId/timeouts'),
-            Command.W3C_DISMISS_ALERT:
-                ('POST', '/session/$sessionId/alert/dismiss'),
-            Command.W3C_ACCEPT_ALERT:
-                ('POST', '/session/$sessionId/alert/accept'),
-            Command.W3C_SET_ALERT_VALUE:
-                ('POST', '/session/$sessionId/alert/text'),
-            Command.W3C_GET_ALERT_TEXT:
-                ('GET', '/session/$sessionId/alert/text'),
-            Command.W3C_ACTIONS:
-                ('POST', '/session/$sessionId/actions'),
-            Command.W3C_CLEAR_ACTIONS:
-                ('DELETE', '/session/$sessionId/actions'),
-            Command.SET_WINDOW_RECT:
-                ('POST', '/session/$sessionId/window/rect'),
-            Command.GET_WINDOW_RECT:
-                ('GET', '/session/$sessionId/window/rect'),
-            Command.W3C_MAXIMIZE_WINDOW:
-                ('POST', '/session/$sessionId/window/maximize'),
-            Command.SET_SCREEN_ORIENTATION:
-                ('POST', '/session/$sessionId/orientation'),
-            Command.GET_SCREEN_ORIENTATION:
-                ('GET', '/session/$sessionId/orientation'),
-            Command.GET_NETWORK_CONNECTION:
-                ('GET', '/session/$sessionId/network_connection'),
-            Command.SET_NETWORK_CONNECTION:
-                ('POST', '/session/$sessionId/network_connection'),
-            Command.GET_LOG:
-                ('POST', '/session/$sessionId/se/log'),
-            Command.GET_AVAILABLE_LOG_TYPES:
-                ('GET', '/session/$sessionId/se/log/types'),
-            Command.CURRENT_CONTEXT_HANDLE:
-                ('GET', '/session/$sessionId/context'),
-            Command.CONTEXT_HANDLES:
-                ('GET', '/session/$sessionId/contexts'),
-            Command.SWITCH_TO_CONTEXT:
-                ('POST', '/session/$sessionId/context'),
-            Command.FULLSCREEN_WINDOW:
-                ('POST', '/session/$sessionId/window/fullscreen'),
-            Command.MINIMIZE_WINDOW:
-                ('POST', '/session/$sessionId/window/minimize'),
-            Command.PRINT_PAGE:
-                ('POST', '/session/$sessionId/print'),
-            Command.ADD_VIRTUAL_AUTHENTICATOR:
-                ('POST', '/session/$sessionId/webauthn/authenticator'),
-            Command.REMOVE_VIRTUAL_AUTHENTICATOR:
-                ('DELETE', '/session/$sessionId/webauthn/authenticator/$authenticatorId'),
-            Command.ADD_CREDENTIAL:
-                ('POST', '/session/$sessionId/webauthn/authenticator/$authenticatorId/credential'),
-            Command.GET_CREDENTIALS:
-                ('GET', '/session/$sessionId/webauthn/authenticator/$authenticatorId/credentials'),
-            Command.REMOVE_CREDENTIAL:
-                ('DELETE', '/session/$sessionId/webauthn/authenticator/$authenticatorId/credentials/$credentialId'),
-            Command.REMOVE_ALL_CREDENTIALS:
-                ('DELETE', '/session/$sessionId/webauthn/authenticator/$authenticatorId/credentials'),
-            Command.SET_USER_VERIFIED:
-                ('POST', '/session/$sessionId/webauthn/authenticator/$authenticatorId/uv'),
-        }
-
     def execute(self, command, params):
         """
         Send a command to the remote server.
@@ -337,14 +338,13 @@ class RemoteConnection:
          - params - A dictionary of named parameters to send with the command as
            its JSON payload.
         """
-        command_info = self._commands[command]
-        assert command_info is not None, 'Unrecognised command %s' % command
-        path = string.Template(command_info[1]).substitute(params)
+        http_verb, uri_template = self._COMMANDS[command]
+        path = string.Template(uri_template).substitute(params)
         if isinstance(params, dict) and 'sessionId' in params:
             del params['sessionId']
         data = utils.dump_json(params)
         url = f"{self._url}{path}"
-        return self._request(command_info[0], url, body=data)
+        return self._request(http_verb, url, body=data)
 
     def _request(self, method, url, body=None):
         """
@@ -362,7 +362,7 @@ class RemoteConnection:
         parsed_url = parse.urlparse(url)
         headers = self.get_remote_connection_headers(parsed_url, self.keep_alive)
         response = None
-        if body and method not in ("POST", "PUT"):
+        if body and method not in (HttpVerb.POST, HttpVerb.PUT):
             body = None
 
         if self.keep_alive:
