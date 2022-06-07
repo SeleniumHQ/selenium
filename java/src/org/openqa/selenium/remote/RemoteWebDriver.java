@@ -20,6 +20,7 @@ package org.openqa.selenium.remote;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 
+import org.openqa.selenium.AcceptedW3CCapabilityKeys;
 import org.openqa.selenium.Alert;
 import org.openqa.selenium.Beta;
 import org.openqa.selenium.By;
@@ -243,6 +244,20 @@ public class RemoteWebDriver implements WebDriver,
   }
 
   protected void startSession(Capabilities capabilities) {
+    // Throwing warnings for non-W3C WebDriver compliant capabilities
+    List<String> invalid = capabilities.asMap().keySet()
+      .stream()
+      .filter(key -> !(new AcceptedW3CCapabilityKeys().test(key)))
+      .collect(Collectors.toList());
+
+    if (!invalid.isEmpty()) {
+      logger.log(Level.WARNING,
+                 () -> String.format("Support for Legacy Capabilities is deprecated; " +
+                                     "You are sending the following invalid capabilities: %s; " +
+                                     "Please update to W3C Syntax: https://www.selenium.dev/blog/2022/legacy-protocol-support/",
+                                     invalid));
+    }
+
     Response response = execute(DriverCommand.NEW_SESSION(singleton(capabilities)));
 
     if (response == null) {
