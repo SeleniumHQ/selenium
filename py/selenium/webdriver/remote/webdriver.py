@@ -139,9 +139,7 @@ def get_remote_connection(capabilities, command_executor, keep_alive, ignore_loc
 
 def create_matches(options: List[BaseOptions]) -> Dict:
     capabilities = {"capabilities": {}}
-    opts = []
-    for opt in options:
-        opts.append(opt.to_capabilities())
+    opts = [opt.to_capabilities() for opt in options]
     opts_size = len(opts)
     samesies = {}
 
@@ -157,9 +155,7 @@ def create_matches(options: List[BaseOptions]) -> Dict:
                     if opts[min_index][kys] == opts[i + 1][kys]:
                         samesies.update({kys: opts[min_index][kys]})
 
-    always = {}
-    for k, v in samesies.items():
-        always[k] = v
+    always = samesies.copy()
 
     for i in opts:
         for k in always.keys():
