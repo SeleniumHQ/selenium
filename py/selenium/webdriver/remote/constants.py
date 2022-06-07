@@ -10,4 +10,3 @@ class HttpVerb:
     POST: str = "post"
     DELETE: str = "delete"
     PUT: str = "put"
-
