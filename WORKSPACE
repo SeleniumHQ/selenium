@@ -128,23 +128,10 @@ load("@rules_jvm_external//:setup.bzl", "rules_jvm_external_setup")
 rules_jvm_external_setup()
 
 http_archive(
-    name = "bazel_gazelle",
-    sha256 = "5982e5463f171da99e3bdaeff8c0f48283a7a5f396ec5282910b9e8a49c0dd7e",
-    urls = [
-        "https://mirror.bazel.build/github.com/bazelbuild/bazel-gazelle/releases/download/v0.25.0/bazel-gazelle-v0.25.0.tar.gz",
-        "https://github.com/bazelbuild/bazel-gazelle/releases/download/v0.25.0/bazel-gazelle-v0.25.0.tar.gz",
-    ],
-)
-
-load("@bazel_gazelle//:deps.bzl", "gazelle_dependencies")
-
-gazelle_dependencies()
-
-http_archive(
     name = "contrib_rules_jvm",
-    sha256 = "5d9d466a5756bc4540a03e41afddf8769ea02927ec5efb820cfc551da08ce515",
-    strip_prefix = "rules_jvm-0.2.0",
-    url = "https://github.com/bazel-contrib/rules_jvm/archive/v0.2.0.tar.gz",
+    sha256 = "79773625951a7a6dc0fc1636ef2388253b69a1e8109b34198c191953280648ab",
+    strip_prefix = "rules_jvm-0.3.0",
+    url = "https://github.com/bazel-contrib/rules_jvm/archive/v0.3.0.tar.gz",
 )
 
 load("@contrib_rules_jvm//:repositories.bzl", "contrib_rules_jvm_deps")
