@@ -53,8 +53,6 @@ public class PersistentCapabilities implements Capabilities {
     Require.nonNull("Name", name);
     Require.nonNull("Value", value);
 
-    W3CCapabilityKeysValidator.validateCapability(name);
-
     return new PersistentCapabilities(this, new ImmutableCapabilities(name, value));
   }
 
