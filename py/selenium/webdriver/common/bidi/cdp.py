@@ -67,7 +67,8 @@ def import_devtools(ver):
         devtools_path = pathlib.Path(__file__).parents[1].joinpath("devtools")
         versions = tuple(f.name for f in devtools_path.iterdir() if f.is_dir())
         latest = max((int(x[1:]) for x in versions))
-        logger.debug(f"Falling back to loading `devtools`: v{latest}")
+        selenium_logger = logging.getLogger(__name__)
+        selenium_logger.debug(f"Falling back to loading `devtools`: v{latest}")
         devtools = importlib.import_module(f"{base}{latest}")
         return devtools
 
