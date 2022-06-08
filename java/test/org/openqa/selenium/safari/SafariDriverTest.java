@@ -17,13 +17,11 @@
 
 package org.openqa.selenium.safari;
 
-import org.junit.After;
 import org.junit.Test;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.net.PortProber;
 import org.openqa.selenium.remote.RemoteWebDriverBuilder;
 import org.openqa.selenium.remote.http.ClientConfig;
-import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.NoDriverBeforeTest;
 import org.openqa.selenium.testing.drivers.WebDriverBuilder;
@@ -40,13 +38,13 @@ import static org.junit.Assume.assumeTrue;
 
 public class SafariDriverTest extends JUnit4TestBase {
 
+  private SafariDriverService service;
+
   private boolean technologyPreviewInstalled() {
     Path driverShim =
       Paths.get("/Applications/Safari Technology Preview.app/Contents/MacOS/safaridriver");
     return Files.exists(driverShim);
   }
-
-  private SafariDriverService service;
 
   @Test
   @NoDriverBeforeTest
@@ -90,7 +88,6 @@ public class SafariDriverTest extends JUnit4TestBase {
 
   @Test
   @NoDriverBeforeTest
-  @Ignore
   public void canStartTechnologyPreview() {
     assumeTrue(technologyPreviewInstalled());
 
