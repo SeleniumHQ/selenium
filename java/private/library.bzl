@@ -1,7 +1,7 @@
 load("@apple_rules_lint//lint:defs.bzl", "get_lint_config")
-load(":spotbugs.bzl", "spotbugs_test")
 load(
     "@contrib_rules_jvm//java:defs.bzl",
+    "spotbugs_test",
     _java_library = "java_library",
     _java_test = "java_test",
 )
