@@ -79,11 +79,25 @@ labels:
       issue:
         body: |
           Hi, @{{ issue.user.login }}.
-          This issue has been determined to require fixes in [MSEdgeDriver](https://developer.microsoft.com/en-us/microsoft-edge/tools/webdriver/).
+          This issue has been determined to require fixes in [MSEdgeDriver](https://developer.microsoft.com/en-us/microsoft-edge/tools/webdriver/)
+          or in the IE Mode in Edge.
 
           You can see if the feature is passing in the [Web Platform Tests](https://wpt.fyi/results/webdriver/tests).
 
           If it is something new, please [create an Issue](https://github.com/MicrosoftEdge/EdgeWebDriver/issues/new) with the MSEdgeDriver team.
+
+          Feel free to comment the issues that you raise back in this issue. Thank you.
+        action: close
+  - name: G-safaridriver
+    labeled:
+      issue:
+        body: |
+          Hi, @{{ issue.user.login }}.
+          This issue has been determined to require fixes in [SafariDriver](https://developer.apple.com/documentation/webkit/about_webdriver_for_safari).
+
+          You can see if the feature is passing in the [Web Platform Tests](https://wpt.fyi/results/webdriver/tests).
+
+          If it is something new, please [create an Issue](https://developer.apple.com/bug-reporting/) with the Safari team.
 
           Feel free to comment the issues that you raise back in this issue. Thank you.
         action: close

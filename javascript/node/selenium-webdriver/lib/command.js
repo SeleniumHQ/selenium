@@ -165,13 +165,13 @@ const Name = {
   FIND_ELEMENTS_FROM_SHADOWROOT: 'findElementsFromShadowRoot',
 
   // Virtual Authenticator Commands
-  ADD_VIRTUAL_AUTHENTICATOR : 'addVirtualAuthenticator',
-  REMOVE_VIRTUAL_AUTHENTICATOR : 'removeVirtualAuthenticator',
-  ADD_CREDENTIAL : 'addCredential',
-  GET_CREDENTIALS : 'getCredentials',
-  REMOVE_CREDENTIAL : 'removeCredential',
-  REMOVE_ALL_CREDENTIALS : 'removeAllCredentials',
-  SET_USER_VERIFIED : 'setUserVerified',
+  ADD_VIRTUAL_AUTHENTICATOR: 'addVirtualAuthenticator',
+  REMOVE_VIRTUAL_AUTHENTICATOR: 'removeVirtualAuthenticator',
+  ADD_CREDENTIAL: 'addCredential',
+  GET_CREDENTIALS: 'getCredentials',
+  REMOVE_CREDENTIAL: 'removeCredential',
+  REMOVE_ALL_CREDENTIALS: 'removeAllCredentials',
+  SET_USER_VERIFIED: 'setUserVerified',
 
   GET_AVAILABLE_LOG_TYPES: 'getAvailableLogTypes',
   GET_LOG: 'getLog',
