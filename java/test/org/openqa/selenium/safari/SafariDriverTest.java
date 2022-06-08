@@ -19,11 +19,13 @@ package org.openqa.selenium.safari;
 
 import org.junit.After;
 import org.junit.Test;
-import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.net.PortProber;
 import org.openqa.selenium.remote.RemoteWebDriverBuilder;
 import org.openqa.selenium.remote.http.ClientConfig;
+import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
+import org.openqa.selenium.testing.NoDriverBeforeTest;
 import org.openqa.selenium.testing.drivers.WebDriverBuilder;
 
 import java.io.IOException;
@@ -45,36 +47,28 @@ public class SafariDriverTest extends JUnit4TestBase {
   }
 
   private SafariDriverService service;
-  private WebDriver driver2;
 
-  @After
-  public void stopAll() {
-    if (driver2 != null) {
-      driver2.quit();
-    }
-    if (service != null) {
-      service.stop();
-    }
+  @Test
+  @NoDriverBeforeTest
+  public void builderGeneratesDefaultSafariOptions() {
+    localDriver = SafariDriver.builder().build();
+    Capabilities capabilities = ((SafariDriver) localDriver).getCapabilities();
+    assertThat(localDriver.manage().timeouts().getImplicitWaitTimeout()).isEqualTo(Duration.ZERO);
+    assertThat(capabilities.getCapability("browserName")).isEqualTo("Safari");
   }
 
   @Test
-  public void builderGeneratesDefaultChromeOptions() {
-    WebDriver driver = SafariDriver.builder().build();
-    driver.quit();
-  }
-
-  @Test
-  public void builderOverridesDefaultChromeOptions() {
+  @NoDriverBeforeTest
+  public void builderOverridesDefaultSafariOptions() {
     SafariOptions options = new SafariOptions();
     options.setImplicitWaitTimeout(Duration.ofMillis(1));
-    WebDriver driver = SafariDriver.builder().oneOf(options).build();
-    assertThat(driver.manage().timeouts().getImplicitWaitTimeout()).isEqualTo(Duration.ofMillis(1));
-
-    driver.quit();
+    localDriver = SafariDriver.builder().oneOf(options).build();
+    assertThat(localDriver.manage().timeouts().getImplicitWaitTimeout()).isEqualTo(Duration.ofMillis(1));
   }
 
   @Test
-  public void builderWithClientConfigthrowsException() {
+  @NoDriverBeforeTest
+  public void builderWithClientConfigThrowsException() {
     ClientConfig clientConfig = ClientConfig.defaultConfig().readTimeout(Duration.ofMinutes(1));
     RemoteWebDriverBuilder builder = SafariDriver.builder().config(clientConfig);
 
@@ -84,25 +78,27 @@ public class SafariDriverTest extends JUnit4TestBase {
   }
 
   @Test
+  @NoDriverBeforeTest
   public void canStartADriverUsingAService() throws IOException {
-    removeDriver();
     int port = PortProber.findFreePort();
     service = new SafariDriverService.Builder().usingPort(port).build();
     service.start();
-    driver2 = new SafariDriver(service);
-    driver2.get(pages.xhtmlTestPage);
-    assertThat(driver2.getTitle()).isEqualTo("XHTML Test Page");
+    localDriver = new SafariDriver(service);
+    localDriver.get(pages.xhtmlTestPage);
+    assertThat(localDriver.getTitle()).isEqualTo("XHTML Test Page");
   }
 
   @Test
+  @NoDriverBeforeTest
+  @Ignore
   public void canStartTechnologyPreview() {
     assumeTrue(technologyPreviewInstalled());
-    removeDriver();
+
     SafariOptions options = new SafariOptions();
     options.setUseTechnologyPreview(true);
-    driver2 = new SafariDriver(options);
-    driver2.get(pages.xhtmlTestPage);
-    assertThat(driver2.getTitle()).isEqualTo("XHTML Test Page");
+    localDriver = new SafariDriver(options);
+    localDriver.get(pages.xhtmlTestPage);
+    assertThat(localDriver.getTitle()).isEqualTo("XHTML Test Page");
   }
 
   @Test
@@ -117,14 +113,9 @@ public class SafariDriverTest extends JUnit4TestBase {
   }
 
   @Test
+  @NoDriverBeforeTest
   public void canAttachDebugger() {
-    // Need to close driver after opening the inspector
-    WebDriver driver = new WebDriverBuilder().get(new SafariOptions());
-
-    try {
-      ((HasDebugger) driver).attachDebugger();
-    } finally {
-      driver.quit();
-    }
+    localDriver = new WebDriverBuilder().get(new SafariOptions());
+    ((HasDebugger) localDriver).attachDebugger();
   }
 }
