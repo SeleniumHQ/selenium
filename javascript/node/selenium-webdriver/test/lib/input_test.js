@@ -155,10 +155,10 @@ describe('input.Actions', function () {
                 actions: [
                   {
                     duration: 3,
-                    type: 'pause'
-                  }
+                    type: 'pause',
+                  },
                 ],
-              }
+              },
             ],
           },
         },

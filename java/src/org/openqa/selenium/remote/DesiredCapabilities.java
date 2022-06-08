@@ -25,16 +25,16 @@ import java.util.Map;
 
 import static org.openqa.selenium.remote.CapabilityType.ACCEPT_INSECURE_CERTS;
 import static org.openqa.selenium.remote.CapabilityType.BROWSER_NAME;
-import static org.openqa.selenium.remote.CapabilityType.PLATFORM;
+import static org.openqa.selenium.remote.CapabilityType.BROWSER_VERSION;
+import static org.openqa.selenium.remote.CapabilityType.PLATFORM_NAME;
 import static org.openqa.selenium.remote.CapabilityType.SUPPORTS_JAVASCRIPT;
-import static org.openqa.selenium.remote.CapabilityType.VERSION;
 
 public class DesiredCapabilities extends MutableCapabilities {
 
   public DesiredCapabilities(String browser, String version, Platform platform) {
     setCapability(BROWSER_NAME, browser);
-    setCapability(VERSION, version);
-    setCapability(PLATFORM, platform);
+    setCapability(BROWSER_VERSION, version);
+    setCapability(PLATFORM_NAME, platform);
   }
 
   public DesiredCapabilities() {
@@ -64,11 +64,11 @@ public class DesiredCapabilities extends MutableCapabilities {
   }
 
   public void setVersion(String version) {
-    setCapability(VERSION, version);
+    setCapability(BROWSER_VERSION, version);
   }
 
   public void setPlatform(Platform platform) {
-    setCapability(PLATFORM, platform);
+    setCapability(PLATFORM_NAME, platform);
   }
 
   /**
