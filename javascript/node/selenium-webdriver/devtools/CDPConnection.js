@@ -19,7 +19,7 @@ class CDPConnection {
   constructor(wsConnection) {
     this._wsConnection = wsConnection
     this.cmd_id = 0
-    this.targetID = null;
+    this.targetID = null
     this.sessionId = null
   }
 

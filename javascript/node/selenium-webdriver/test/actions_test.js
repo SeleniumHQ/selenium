@@ -42,11 +42,10 @@ suite(function (env) {
       assert.strictEqual(await box.getAttribute('class'), '')
 
       await driver.actions().click(box).perform()
-      await driver.wait(
-        async () => {
-          assert.strictEqual(await box.getAttribute('class'), 'green')
-          return true
-        }, 10000)
+      await driver.wait(async () => {
+        assert.strictEqual(await box.getAttribute('class'), 'green')
+        return true
+      }, 10000)
     })
 
     it('click(element) clicks in center of element', async function () {
@@ -64,7 +63,8 @@ suite(function (env) {
           return clicks.length > 0
         },
         10000,
-        'No clicks returned')
+        'No clicks returned'
+      )
       const clicks = await driver.executeScript('return clicks')
       assert.deepStrictEqual(clicks, [[250, 250]])
     })
@@ -88,13 +88,15 @@ suite(function (env) {
           return clicks.length > 0
         },
         10000,
-        'No clicks returned')
+        'No clicks returned'
+      )
       const clicks = await driver.executeScript('return clicks')
       assert.deepStrictEqual(clicks, [[260, 260]])
     })
 
-    ignore(env.browsers(Browser.SAFARI))
-      .it('doubleClick(element)', async function () {
+    ignore(env.browsers(Browser.SAFARI)).it(
+      'doubleClick(element)',
+      async function () {
         await driver.get(fileServer.whereIs('/data/actions/click.html'))
 
         let box = await driver.findElement(By.id('box'))
@@ -102,9 +104,12 @@ suite(function (env) {
 
         await driver.actions().doubleClick(box).perform()
         await driver.wait(
-          async () => await box.getAttribute('class') === 'blue', 10000)
+          async () => (await box.getAttribute('class')) === 'blue',
+          10000
+        )
         assert.strictEqual(await box.getAttribute('class'), 'blue')
-      })
+      }
+    )
 
     it('dragAndDrop()', async function () {
       await driver.get(fileServer.whereIs('/data/actions/drag.html'))
@@ -140,7 +145,9 @@ suite(function (env) {
         .perform()
 
       await driver.wait(
-        async () => await slide.getCssValue('left') === '101px', 10000)
+        async () => (await slide.getCssValue('left')) === '101px',
+        10000
+      )
       assert.strictEqual(await slide.getCssValue('left'), '101px')
       assert.strictEqual(await slide.getCssValue('left'), '101px')
     })
@@ -170,7 +177,9 @@ suite(function (env) {
       await driver.actions().sendKeys('foobar').perform()
 
       await driver.wait(
-        async () => await el.getAttribute('value') === 'foobar', 10000)
+        async () => (await el.getAttribute('value')) === 'foobar',
+        10000
+      )
       assert.strictEqual(await el.getAttribute('value'), 'foobar')
     })
 
@@ -185,7 +194,9 @@ suite(function (env) {
       await driver.actions().sendKeys('foobar').perform()
 
       await driver.wait(
-        async () => await el.getProperty('value') === 'foobar', 10000)
+        async () => (await el.getProperty('value')) === 'foobar',
+        10000
+      )
       assert.strictEqual(await el.getProperty('value'), 'foobar')
     })
 
@@ -207,7 +218,9 @@ suite(function (env) {
         .perform()
 
       await driver.wait(
-        async () => await el.getAttribute('value') === 'foOBar', 10000)
+        async () => (await el.getAttribute('value')) === 'foOBar',
+        10000
+      )
       assert.strictEqual(await el.getAttribute('value'), 'foOBar')
     })
 
@@ -220,31 +233,34 @@ suite(function (env) {
       await driver.actions().click(el).sendKeys('foobar').perform()
 
       await driver.wait(
-        async () => await el.getAttribute('value') === 'foobar', 10000)
+        async () => (await el.getAttribute('value')) === 'foobar',
+        10000
+      )
       assert.strictEqual(await el.getAttribute('value'), 'foobar')
     })
 
-    ignore(env.browsers(Browser.FIREFOX, Browser.SAFARI))
-      .it('can scroll with the wheel input', async function () {
+    ignore(env.browsers(Browser.FIREFOX, Browser.SAFARI)).it(
+      'can scroll with the wheel input',
+      async function () {
         await driver.get(Pages.scrollingPage)
-        let scrollable = await driver.findElement(By.id("scrollable"))
+        let scrollable = await driver.findElement(By.id('scrollable'))
 
         await driver.actions().scroll(0, 0, 5, 10, scrollable).perform()
         let events = await _getEvents(driver)
-        assert.strictEqual(events[0].type, "wheel")
+        assert.strictEqual(events[0].type, 'wheel')
         assert.ok(events[0].deltaX >= 5)
         assert.ok(events[0].deltaY >= 10)
         assert.strictEqual(events[0].deltaZ, 0)
-        assert.strictEqual(events[0].target, "scrollContent")
-      })
+        assert.strictEqual(events[0].target, 'scrollContent')
+      }
+    )
 
     async function _getEvents(driver) {
-      await driver.wait(
-        async () => {
-          const events = await driver.executeScript('return allEvents.events;')
-          return events.length > 0
-        }, 5000)
-      return await driver.executeScript('return allEvents.events;') || []
+      await driver.wait(async () => {
+        const events = await driver.executeScript('return allEvents.events;')
+        return events.length > 0
+      }, 5000)
+      return (await driver.executeScript('return allEvents.events;')) || []
     }
   })
 })

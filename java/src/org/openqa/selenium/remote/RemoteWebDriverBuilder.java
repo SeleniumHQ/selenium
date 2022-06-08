@@ -26,7 +26,6 @@ import org.openqa.selenium.Credentials;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.UsernameAndPassword;
-import org.openqa.selenium.W3CCapabilityKeysValidator;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverInfo;
 import org.openqa.selenium.internal.Either;
@@ -201,14 +200,12 @@ public class RemoteWebDriverBuilder {
     Require.nonNull("Capability name", capabilityName);
     Require.nonNull("Capability value", value);
 
-    W3CCapabilityKeysValidator.validateCapability(capabilityName);
-
     Object previous = additionalCapabilities.put(capabilityName, value);
     if (previous != null) {
       LOG.log(
         getDebugLogLevel(),
-        String.format("Overwriting capability %s. Previous value %s, new value %s", capabilityName,
-                      previous, value));
+        () -> String.format("Overwriting capability %s. Previous value %s, new value %s",
+                            capabilityName, previous, value));
     }
 
     return this;

@@ -349,13 +349,42 @@ const W3C_COMMAND_MAP = new Map([
   [cmd.Name.UPLOAD_FILE, post('/session/:sessionId/se/file')],
 
   // Virtual Authenticator
-  [cmd.Name.ADD_VIRTUAL_AUTHENTICATOR, post('/session/:sessionId/webauthn/authenticator')],
-  [cmd.Name.REMOVE_VIRTUAL_AUTHENTICATOR, del('/session/:sessionId/webauthn/authenticator/:authenticatorId')],
-  [cmd.Name.ADD_CREDENTIAL, post('/session/:sessionId/webauthn/authenticator/:authenticatorId/credential')],
-  [cmd.Name.GET_CREDENTIALS, get('/session/:sessionId/webauthn/authenticator/:authenticatorId/credentials')],
-  [cmd.Name.REMOVE_CREDENTIAL, del('/session/:sessionId/webauthn/authenticator/:authenticatorId/credentials/:credentialId')],
-  [cmd.Name.REMOVE_ALL_CREDENTIALS, del('/session/:sessionId/webauthn/authenticator/:authenticatorId/credentials')],
-  [cmd.Name.SET_USER_VERIFIED, post('/session/:sessionId/webauthn/authenticator/:authenticatorId/uv')],
+  [
+    cmd.Name.ADD_VIRTUAL_AUTHENTICATOR,
+    post('/session/:sessionId/webauthn/authenticator'),
+  ],
+  [
+    cmd.Name.REMOVE_VIRTUAL_AUTHENTICATOR,
+    del('/session/:sessionId/webauthn/authenticator/:authenticatorId'),
+  ],
+  [
+    cmd.Name.ADD_CREDENTIAL,
+    post(
+      '/session/:sessionId/webauthn/authenticator/:authenticatorId/credential'
+    ),
+  ],
+  [
+    cmd.Name.GET_CREDENTIALS,
+    get(
+      '/session/:sessionId/webauthn/authenticator/:authenticatorId/credentials'
+    ),
+  ],
+  [
+    cmd.Name.REMOVE_CREDENTIAL,
+    del(
+      '/session/:sessionId/webauthn/authenticator/:authenticatorId/credentials/:credentialId'
+    ),
+  ],
+  [
+    cmd.Name.REMOVE_ALL_CREDENTIALS,
+    del(
+      '/session/:sessionId/webauthn/authenticator/:authenticatorId/credentials'
+    ),
+  ],
+  [
+    cmd.Name.SET_USER_VERIFIED,
+    post('/session/:sessionId/webauthn/authenticator/:authenticatorId/uv'),
+  ],
 ])
 
 /**

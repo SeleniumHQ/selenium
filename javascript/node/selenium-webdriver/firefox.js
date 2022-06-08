@@ -672,7 +672,7 @@ class Driver extends webdriver.WebDriver {
    */
   async installAddon(path, temporary = false) {
     let stats = fs.statSync(path)
-    let buf;
+    let buf
     if (stats.isDirectory()) {
       let zip = new Zip()
       await zip.addDir(path)

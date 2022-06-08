@@ -18,65 +18,80 @@
 'use strict'
 
 const assert = require('assert')
-const { By, error, ShadowRoot } = require('..')
+const { By, error } = require('..')
 const test = require('../lib/test')
 const Pages = test.Pages
 
-test.suite(function (env) {
+test.suite(
+  function (env) {
     describe('ShadowRoot', function () {
-        let driver
+      let driver
 
-        before(async function () {
-            driver = await env.builder().build()
-        })
+      before(async function () {
+        driver = await env.builder().build()
+      })
 
-        after(function () {
-            return driver.quit()
-        })
+      after(function () {
+        return driver.quit()
+      })
 
-        it("can get Shadow Root", async function () {
-            await driver.get(Pages.webComponents)
-            let element = await driver.findElement(By.css("custom-checkbox-element"))
-            await element.getShadowRoot()
-            // If an error is not thrown then test passes
-        })
+      it('can get Shadow Root', async function () {
+        await driver.get(Pages.webComponents)
+        let element = await driver.findElement(
+          By.css('custom-checkbox-element')
+        )
+        await element.getShadowRoot()
+        // If an error is not thrown then test passes
+      })
 
-        it("Throws NoSuchShadowRoot when one is not attached", async function () {
-            await driver.get(Pages.simpleTestPage)
-            let element = await driver.findElement(By.css("input"))
+      it('Throws NoSuchShadowRoot when one is not attached', async function () {
+        await driver.get(Pages.simpleTestPage)
+        let element = await driver.findElement(By.css('input'))
 
-            try {
-                await element.getShadowRoot()
-                assert.fail("Error should have been thrown")
-            } catch (e) {
-                assert.ok(e instanceof error.NoSuchShadowRootError, `The error is ${typeof e}`)
-            }
-        })
+        try {
+          await element.getShadowRoot()
+          assert.fail('Error should have been thrown')
+        } catch (e) {
+          assert.ok(
+            e instanceof error.NoSuchShadowRootError,
+            `The error is ${typeof e}`
+          )
+        }
+      })
 
-        it("can find element below a shadow root", async function () {
-            await driver.get(Pages.webComponents)
-            let element = await driver.findElement(By.css("custom-checkbox-element"))
-            let shadowRoot = await element.getShadowRoot()
-            await shadowRoot.findElement(By.css("input"))
-            // test passes if no error throw
-        })
+      it('can find element below a shadow root', async function () {
+        await driver.get(Pages.webComponents)
+        let element = await driver.findElement(
+          By.css('custom-checkbox-element')
+        )
+        let shadowRoot = await element.getShadowRoot()
+        await shadowRoot.findElement(By.css('input'))
+        // test passes if no error throw
+      })
 
-        it("can find elements below a shadow root", async function () {
-            await driver.get(Pages.webComponents)
-            let element = await driver.findElement(By.css("custom-checkbox-element"))
-            let shadowRoot = await element.getShadowRoot()
-            let actual = await shadowRoot.findElements(By.css("input"))
-            assert.strictEqual(actual.length, 1)
-        })
+      it('can find elements below a shadow root', async function () {
+        await driver.get(Pages.webComponents)
+        let element = await driver.findElement(
+          By.css('custom-checkbox-element')
+        )
+        let shadowRoot = await element.getShadowRoot()
+        let actual = await shadowRoot.findElements(By.css('input'))
+        assert.strictEqual(actual.length, 1)
+      })
 
-        it("can return a shadowRoot from executeScript", async function () {
-            await driver.get(Pages.webComponents)
-            let element = await driver.findElement(By.css("custom-checkbox-element"))
-            let shadowRoot = await element.getShadowRoot()
-            let executeShadow = await driver.executeScript("return arguments[0].shadowRoot", element)
-            assert.strictEqual(executeShadow.getId(), shadowRoot.getId())
-        })
+      it('can return a shadowRoot from executeScript', async function () {
+        await driver.get(Pages.webComponents)
+        let element = await driver.findElement(
+          By.css('custom-checkbox-element')
+        )
+        let shadowRoot = await element.getShadowRoot()
+        let executeShadow = await driver.executeScript(
+          'return arguments[0].shadowRoot',
+          element
+        )
+        assert.strictEqual(executeShadow.getId(), shadowRoot.getId())
+      })
     })
-},
-    { browsers: ['chrome'] }
+  },
+  { browsers: ['chrome'] }
 )
