@@ -627,7 +627,7 @@ def test_should_be_able_to_find_ahidden_elements_by_name(driver, pages):
     assert element.get_attribute("name") == "hidden"
 
 
-def test_should_not_be_able_to_find_an_element_on_ablank_page(driver, pages):
+def test_should_not_be_able_to_find_an_element_on_a_blank_page(driver, pages):
     driver.get("about:blank")
     with pytest.raises(NoSuchElementException):
         driver.find_element(By.TAG_NAME, "a")
