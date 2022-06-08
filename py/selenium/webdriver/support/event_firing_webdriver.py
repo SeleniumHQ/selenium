@@ -179,7 +179,7 @@ class EventFiringWebDriver:
             result = getattr(self._driver, d_call)(*d_args)
         except Exception as e:
             self._listener.on_exception(e, self._driver)
-            raise e
+            raise
         getattr(self._listener, "after_%s" % l_call)(*l_args)
         return _wrap_elements(result, self)
 
@@ -206,7 +206,7 @@ class EventFiringWebDriver:
                 object.__setattr__(self._driver, item, value)
             except Exception as e:
                 self._listener.on_exception(e, self._driver)
-                raise e
+                raise
 
     def __getattr__(self, name):
         def _wrap(*args, **kwargs):
@@ -329,7 +329,7 @@ class EventFiringWebElement:
             result = getattr(self._webelement, d_call)(*d_args)
         except Exception as e:
             self._listener.on_exception(e, self._driver)
-            raise e
+            raise
         getattr(self._listener, "after_%s" % l_call)(*l_args)
         return _wrap_elements(result, self._ef_driver)
 
@@ -341,7 +341,7 @@ class EventFiringWebElement:
                 object.__setattr__(self._webelement, item, value)
             except Exception as e:
                 self._listener.on_exception(e, self._driver)
-                raise e
+                raise
 
     def __getattr__(self, name):
         def _wrap(*args, **kwargs):
@@ -360,4 +360,5 @@ class EventFiringWebElement:
             raise
 
 
+# Register a virtual subclass.
 WebElement.register(EventFiringWebElement)

@@ -860,7 +860,7 @@ class Driver extends webdriver.WebDriver {
    * @return {!promise.Thenable<void>} A promise that will be resolved
    *     when the mirror command has been issued to the device.
    */
-   startDesktopMirroring(deviceName) {
+  startDesktopMirroring(deviceName) {
     return this.schedule(
       new command.Command(Command.START_CAST_DESKTOP_MIRRORING).setParameter(
         'sinkName',

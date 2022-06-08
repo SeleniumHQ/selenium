@@ -25,17 +25,6 @@ import org.openqa.selenium.internal.Require;
  */
 public interface Browser {
 
-  String browserName();
-
-  default boolean is(String browserName) {
-    return browserName().equals(browserName);
-  }
-
-  default boolean is(Capabilities caps) {
-    Require.nonNull("Capabilities", caps);
-    return is(caps.getBrowserName());
-  }
-
   Browser CHROME = () -> "chrome";
   Browser EDGE = new Browser() {
     @Override
@@ -72,6 +61,27 @@ public interface Browser {
       return browserName().equals(browserName) || "Safari".equals(browserName);
     }
   };
+  Browser SAFARI_TECH_PREVIEW = new Browser() {
+    @Override
+    public String browserName() {
+      return "Safari Technology Preview";
+    }
+
+    public boolean is(String browserName) {
+      return browserName().equals(browserName);
+    }
+  };
+
+  String browserName();
+
+  default boolean is(String browserName) {
+    return browserName().equals(browserName);
+  }
+
+  default boolean is(Capabilities caps) {
+    Require.nonNull("Capabilities", caps);
+    return is(caps.getBrowserName());
+  }
 
   default String toJson() {
     return browserName();

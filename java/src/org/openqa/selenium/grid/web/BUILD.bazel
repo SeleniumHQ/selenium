@@ -8,7 +8,6 @@ java_library(
         "//java/src/org/openqa/selenium/grid:__subpackages__",
         "//java/src/org/openqa/selenium/netty/server:__pkg__",
         "//java/src/org/openqa/selenium/remote/server:__subpackages__",
-        "//java/src/org/openqa/selenium/server/htmlrunner:__pkg__",
         "//java/test/org/openqa/selenium:__subpackages__",
     ],
     deps = [

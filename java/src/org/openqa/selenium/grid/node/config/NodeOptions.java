@@ -70,6 +70,7 @@ public class NodeOptions {
   public static final int DEFAULT_HEARTBEAT_PERIOD = 60;
   public static final int DEFAULT_SESSION_TIMEOUT = 300;
   public static final int DEFAULT_DRAIN_AFTER_SESSION_COUNT = 0;
+  public static final boolean DEFAULT_ENABLE_CDP = true;
   static final String NODE_SECTION = "node";
   static final boolean DEFAULT_DETECT_DRIVERS = true;
   static final boolean OVERRIDE_MAX_SESSIONS = false;
@@ -231,6 +232,10 @@ public class NodeOptions {
       config.getInt(NODE_SECTION, "session-timeout").orElse(DEFAULT_SESSION_TIMEOUT),
       10);
     return Duration.ofSeconds(seconds);
+  }
+
+  public boolean isCdpEnabled() {
+    return config.getBool(NODE_SECTION, "enable-cdp").orElse(DEFAULT_ENABLE_CDP);
   }
 
   public int getDrainAfterSessionCount() {

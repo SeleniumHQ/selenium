@@ -21,10 +21,15 @@ import com.google.common.collect.HashMultimap;
 import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.Multimap;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.docker.ContainerId;
 import org.openqa.selenium.docker.ContainerInfo;
+import org.openqa.selenium.docker.Device;
 import org.openqa.selenium.docker.Docker;
 import org.openqa.selenium.docker.DockerException;
 import org.openqa.selenium.docker.Image;
@@ -51,6 +56,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.logging.Logger;
 
 import static org.openqa.selenium.Platform.WINDOWS;
+import static org.openqa.selenium.docker.Device.device;
 
 public class DockerOptions {
 
@@ -143,6 +149,8 @@ public class DockerOptions {
       kinds.put(imageName, stereotype);
     }
 
+    List<Device> devicesMapping = getDevicesMapping();
+
     // If Selenium Server is running inside a Docker container, we can inspect that container
     // to get the information from it.
     // Since Docker 1.12, the env var HOSTNAME has the container id (unless the user overwrites it)
@@ -173,6 +181,7 @@ public class DockerOptions {
             getDockerUri(),
             image,
             caps,
+            devicesMapping,
             videoImage,
             assetsPath,
             networkName,
@@ -185,6 +194,28 @@ public class DockerOptions {
         maxContainerCount));
     });
     return factories.build().asMap();
+  }
+
+  protected List<Device> getDevicesMapping() {
+    Pattern linuxDeviceMappingWithDefaultPermissionsPattern = Pattern.compile("^([\\w\\/-]+):([\\w\\/-]+)$");
+    Pattern linuxDeviceMappingWithPermissionsPattern = Pattern.compile("^([\\w\\/-]+):([\\w\\/-]+):([\\w]+)$");
+
+    List<String> devices = config.getAll(DOCKER_SECTION, "devices")
+      .orElseGet(Collections::emptyList);
+
+    List<Device> deviceMapping = new ArrayList<>();
+    for (int i = 0; i < devices.size(); i++) {
+      String deviceMappingDefined = devices.get(i).trim();
+      Matcher matcher = linuxDeviceMappingWithDefaultPermissionsPattern.matcher(deviceMappingDefined);
+
+      if (matcher.matches()) {
+        deviceMapping.add(device(matcher.group(1), matcher.group(2), null));
+      } else if ((matcher = linuxDeviceMappingWithPermissionsPattern.matcher(
+        deviceMappingDefined)).matches()) {
+        deviceMapping.add(device(matcher.group(1), matcher.group(2), matcher.group(3)));
+      }
+    }
+    return deviceMapping;
   }
 
   private Image getVideoImage(Docker docker) {

@@ -17,24 +17,24 @@
 
 package org.openqa.selenium.remote;
 
-import static org.openqa.selenium.remote.CapabilityType.ACCEPT_INSECURE_CERTS;
-import static org.openqa.selenium.remote.CapabilityType.BROWSER_NAME;
-import static org.openqa.selenium.remote.CapabilityType.PLATFORM;
-import static org.openqa.selenium.remote.CapabilityType.SUPPORTS_JAVASCRIPT;
-import static org.openqa.selenium.remote.CapabilityType.VERSION;
-
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.MutableCapabilities;
 import org.openqa.selenium.Platform;
 
 import java.util.Map;
 
+import static org.openqa.selenium.remote.CapabilityType.ACCEPT_INSECURE_CERTS;
+import static org.openqa.selenium.remote.CapabilityType.BROWSER_NAME;
+import static org.openqa.selenium.remote.CapabilityType.BROWSER_VERSION;
+import static org.openqa.selenium.remote.CapabilityType.PLATFORM_NAME;
+import static org.openqa.selenium.remote.CapabilityType.SUPPORTS_JAVASCRIPT;
+
 public class DesiredCapabilities extends MutableCapabilities {
 
   public DesiredCapabilities(String browser, String version, Platform platform) {
     setCapability(BROWSER_NAME, browser);
-    setCapability(VERSION, version);
-    setCapability(PLATFORM, platform);
+    setCapability(BROWSER_VERSION, version);
+    setCapability(PLATFORM_NAME, platform);
   }
 
   public DesiredCapabilities() {
@@ -64,13 +64,17 @@ public class DesiredCapabilities extends MutableCapabilities {
   }
 
   public void setVersion(String version) {
-    setCapability(VERSION, version);
+    setCapability(BROWSER_VERSION, version);
   }
 
   public void setPlatform(Platform platform) {
-    setCapability(PLATFORM, platform);
+    setCapability(PLATFORM_NAME, platform);
   }
 
+  /**
+   * @deprecated This setting has no effect in W3C sessions, and JWP support is going away soon.
+   */
+  @Deprecated
   public void setJavascriptEnabled(boolean javascriptEnabled) {
     setCapability(SUPPORTS_JAVASCRIPT, javascriptEnabled);
   }

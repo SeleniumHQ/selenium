@@ -20,6 +20,7 @@ package org.openqa.selenium.remote;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 
+import org.openqa.selenium.AcceptedW3CCapabilityKeys;
 import org.openqa.selenium.Alert;
 import org.openqa.selenium.Beta;
 import org.openqa.selenium.By;
@@ -74,6 +75,7 @@ import org.openqa.selenium.virtualauthenticator.VirtualAuthenticatorOptions;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.time.Duration;
+import java.util.Arrays;
 import java.util.Base64;
 import java.util.Collection;
 import java.util.Collections;
@@ -94,7 +96,6 @@ import static java.util.Collections.singleton;
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static java.util.logging.Level.SEVERE;
 import static org.openqa.selenium.remote.CapabilityType.LOGGING_PREFS;
-import static org.openqa.selenium.remote.CapabilityType.PLATFORM;
 import static org.openqa.selenium.remote.CapabilityType.PLATFORM_NAME;
 import static org.openqa.selenium.remote.CapabilityType.SUPPORTS_JAVASCRIPT;
 
@@ -107,6 +108,26 @@ public class RemoteWebDriver implements WebDriver,
   Interactive,
   PrintsPage,
   TakesScreenshot {
+
+  private static final List<String> IE_CAPABILITY_NAMES = Arrays.asList(
+    "browserAttachTimeout",
+    "elementScrollBehavior",
+    "enablePersistentHover",
+    "ie.enableFullPageScreenshot",
+    "ie.forceCreateProcessApi",
+    "ie.forceShellWindowsApi",
+    "ie.ensureCleanSession",
+    "ie.browserCommandLineSwitches",
+    "ie.usePerProcessProxy",
+    "ignoreZoomSetting",
+    "initialBrowserUrl",
+    "ignoreProtectedModeSettings",
+    "requireWindowFocus",
+    "ie.fileUploadDialogTimeout",
+    "nativeEvents",
+    "ie.useLegacyFileUploadDialogHandling",
+    "ie.edgechromium",
+    "ie.edgepath");
 
   // TODO: This static logger should be unified with the per-instance localLogs
   private static final Logger logger = Logger.getLogger(RemoteWebDriver.class.getName());
@@ -244,6 +265,21 @@ public class RemoteWebDriver implements WebDriver,
   }
 
   protected void startSession(Capabilities capabilities) {
+    // Throwing warnings for non-W3C WebDriver compliant capabilities
+    List<String> invalid = capabilities.asMap().keySet()
+      .stream()
+      .filter(key -> !(new AcceptedW3CCapabilityKeys().test(key)))
+      .filter(key -> !IE_CAPABILITY_NAMES.contains(key))
+      .collect(Collectors.toList());
+
+    if (!invalid.isEmpty()) {
+      logger.log(Level.WARNING,
+                 () -> String.format("Support for Legacy Capabilities is deprecated; " +
+                                     "You are sending the following invalid capabilities: %s; " +
+                                     "Please update to W3C Syntax: https://www.selenium.dev/blog/2022/legacy-protocol-support/",
+                                     invalid));
+    }
+
     Response response = execute(DriverCommand.NEW_SESSION(singleton(capabilities)));
 
     if (response == null) {
@@ -256,20 +292,18 @@ public class RemoteWebDriver implements WebDriver,
     if (responseValue == null) {
       throw new SessionNotCreatedException(
         "The underlying command executor returned a response without payload: " +
-        response.toString());
+        response);
     }
 
     if (!(responseValue instanceof Map)) {
       throw new SessionNotCreatedException(
         "The underlying command executor returned a response with a non well formed payload: " +
-        response.toString());
+        response);
     }
 
     @SuppressWarnings("unchecked") Map<String, Object> rawCapabilities = (Map<String, Object>) responseValue;
     MutableCapabilities returnedCapabilities = new MutableCapabilities(rawCapabilities);
-    String platformString = (String) rawCapabilities.getOrDefault(
-      PLATFORM,
-      rawCapabilities.get(PLATFORM_NAME));
+    String platformString = (String) rawCapabilities.get(PLATFORM_NAME);
     Platform platform;
     try {
       if (platformString == null || "".equals(platformString)) {
@@ -282,19 +316,7 @@ public class RemoteWebDriver implements WebDriver,
       // system property. Try to recover and parse this.
       platform = Platform.extractFromSysProperty(platformString);
     }
-    returnedCapabilities.setCapability(PLATFORM, platform);
     returnedCapabilities.setCapability(PLATFORM_NAME, platform);
-
-    if (rawCapabilities.containsKey(SUPPORTS_JAVASCRIPT)) {
-      Object raw = rawCapabilities.get(SUPPORTS_JAVASCRIPT);
-      if (raw instanceof String) {
-        returnedCapabilities.setCapability(SUPPORTS_JAVASCRIPT, Boolean.parseBoolean((String) raw));
-      } else if (raw instanceof Boolean) {
-        returnedCapabilities.setCapability(SUPPORTS_JAVASCRIPT, ((Boolean) raw).booleanValue());
-      }
-    } else {
-      returnedCapabilities.setCapability(SUPPORTS_JAVASCRIPT, true);
-    }
 
     this.capabilities = returnedCapabilities;
     sessionId = new SessionId(response.getSessionId());
@@ -734,20 +756,16 @@ public class RemoteWebDriver implements WebDriver,
       return super.toString();
     }
 
-    // w3c name first
-    Object platform = caps.getCapability(PLATFORM_NAME);
-    if (!(platform instanceof String)) {
-      platform = caps.getCapability(PLATFORM);
-    }
-    if (platform == null) {
-      platform = "unknown";
+    Object platformName = caps.getCapability(PLATFORM_NAME);
+    if (platformName == null) {
+      platformName = "unknown";
     }
 
     return String.format(
       "%s: %s on %s (%s)",
       getClass().getSimpleName(),
       caps.getBrowserName(),
-      platform,
+      platformName,
       getSessionId());
   }
 
