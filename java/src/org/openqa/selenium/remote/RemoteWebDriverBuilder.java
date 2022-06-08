@@ -204,8 +204,8 @@ public class RemoteWebDriverBuilder {
     if (previous != null) {
       LOG.log(
         getDebugLogLevel(),
-        String.format("Overwriting capability %s. Previous value %s, new value %s", capabilityName,
-                      previous, value));
+        () -> String.format("Overwriting capability %s. Previous value %s, new value %s",
+                            capabilityName, previous, value));
     }
 
     return this;
