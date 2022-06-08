@@ -25,7 +25,7 @@ let options
 
 describe('VirtualAuthenticatorOptions', function () {
   beforeEach(function () {
-      options = new virtualAuthenticatorOptions()
+    options = new virtualAuthenticatorOptions()
   })
 
   it('can testSetTransport', function () {

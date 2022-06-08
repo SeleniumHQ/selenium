@@ -41,13 +41,13 @@ import static org.openqa.selenium.ie.InternetExplorerDriver.ENABLE_PERSISTENT_HO
 public class InternetExplorerDriverTest extends JUnit4TestBase {
 
   @Test
-  public void builderGeneratesDefaultChromeOptions() {
+  public void builderGeneratesDefaultIEOptions() {
     WebDriver driver = InternetExplorerDriver.builder().build();
     driver.quit();
   }
 
   @Test
-  public void builderOverridesDefaultChromeOptions() {
+  public void builderOverridesDefaultIEOptions() {
     InternetExplorerOptions options = new InternetExplorerOptions();
     options.setImplicitWaitTimeout(Duration.ofMillis(1));
     WebDriver driver = InternetExplorerDriver.builder().oneOf(options).build();
@@ -57,7 +57,7 @@ public class InternetExplorerDriverTest extends JUnit4TestBase {
   }
 
   @Test
-  public void builderWithClientConfigthrowsException() {
+  public void builderWithClientConfigThrowsException() {
     ClientConfig clientConfig = ClientConfig.defaultConfig().readTimeout(Duration.ofMinutes(1));
     RemoteWebDriverBuilder builder = InternetExplorerDriver.builder().config(clientConfig);
 

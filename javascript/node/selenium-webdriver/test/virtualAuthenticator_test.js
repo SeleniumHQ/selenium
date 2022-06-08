@@ -24,10 +24,11 @@ const virtualAuthenticatorOptions =
   require('../lib/virtual_authenticator').VirtualAuthenticatorOptions
 const { ignore, suite } = require('../lib/test')
 const { Browser } = require('../lib/capabilities')
-const fileserver = require('../lib/test/fileserver')
+const fileServer = require('../lib/test/fileserver')
 const invalidArgumentError = require('../lib/error').InvalidArgumentError
 
-const REGISTER_CREDENTIAL = 'registerCredential().then(arguments[arguments.length - 1]);'
+const REGISTER_CREDENTIAL =
+  'registerCredential().then(arguments[arguments.length - 1]);'
 const GET_CREDENTIAL = `getCredential([{
                           "type": "public-key",
                           "id": Int8Array.from(arguments[0]),
@@ -77,11 +78,11 @@ async function getAssertionFor(driver, credentialId) {
   return await driver.executeAsyncScript(GET_CREDENTIAL, credentialId)
 }
 
-function extractRawIdFrom (response) {
+function extractRawIdFrom(response) {
   return response.credential.rawId
 }
 
-function extractIdFrom (response) {
+function extractIdFrom(response) {
   return response.credential.id
 }
 
@@ -134,7 +135,7 @@ suite(function (env) {
 
   beforeEach(async function () {
     driver = await env.builder().build()
-    await driver.get(fileserver.Pages.virtualAuthenticator)
+    await driver.get(fileServer.Pages.virtualAuthenticator)
     assert.strictEqual(await driver.getTitle(), 'Virtual Authenticator Tests')
   })
 
@@ -354,13 +355,16 @@ suite(function (env) {
         assert.equal(credential1.isResidentCredential(), true)
         assert.notEqual(credential1.privateKey(), null)
         assert.equal(credential1.rpId(), 'localhost')
-        assert.deepStrictEqual(credential1.userHandle().sort(), new Uint8Array([1]).sort())
+        assert.deepStrictEqual(
+          credential1.userHandle().sort(),
+          new Uint8Array([1]).sort()
+        )
         assert.equal(credential1.signCount(), 1)
 
         assert.equal(credential2.isResidentCredential(), false)
         assert.notEqual(credential2.privateKey(), null)
         /**
-         * Non resident keys do not store raw RP IDs or user handles.
+         * Non-resident keys do not store raw RP IDs or user handles.
          */
         assert.equal(credential2.rpId(), null)
         assert.equal(credential2.userHandle(), null)
