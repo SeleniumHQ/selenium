@@ -33,7 +33,9 @@ lint_deps()
 load("@apple_rules_lint//lint:setup.bzl", "lint_setup")
 
 # Add your linters here.
-lint_setup()
+lint_setup({
+    "java-spotbugs": "//java:spotbugs-config",
+})
 
 http_archive(
     name = "platforms",
