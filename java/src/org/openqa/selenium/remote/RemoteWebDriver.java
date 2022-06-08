@@ -75,6 +75,7 @@ import org.openqa.selenium.virtualauthenticator.VirtualAuthenticatorOptions;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.time.Duration;
+import java.util.Arrays;
 import java.util.Base64;
 import java.util.Collection;
 import java.util.Collections;
@@ -107,6 +108,26 @@ public class RemoteWebDriver implements WebDriver,
   Interactive,
   PrintsPage,
   TakesScreenshot {
+
+  private static final List<String> IE_CAPABILITY_NAMES = Arrays.asList(
+    "browserAttachTimeout",
+    "elementScrollBehavior",
+    "enablePersistentHover",
+    "ie.enableFullPageScreenshot",
+    "ie.forceCreateProcessApi",
+    "ie.forceShellWindowsApi",
+    "ie.ensureCleanSession",
+    "ie.browserCommandLineSwitches",
+    "ie.usePerProcessProxy",
+    "ignoreZoomSetting",
+    "initialBrowserUrl",
+    "ignoreProtectedModeSettings",
+    "requireWindowFocus",
+    "ie.fileUploadDialogTimeout",
+    "nativeEvents",
+    "ie.useLegacyFileUploadDialogHandling",
+    "ie.edgechromium",
+    "ie.edgepath");
 
   // TODO: This static logger should be unified with the per-instance localLogs
   private static final Logger logger = Logger.getLogger(RemoteWebDriver.class.getName());
@@ -248,6 +269,7 @@ public class RemoteWebDriver implements WebDriver,
     List<String> invalid = capabilities.asMap().keySet()
       .stream()
       .filter(key -> !(new AcceptedW3CCapabilityKeys().test(key)))
+      .filter(key -> !IE_CAPABILITY_NAMES.contains(key))
       .collect(Collectors.toList());
 
     if (!invalid.isEmpty()) {
