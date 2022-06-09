@@ -55,6 +55,8 @@ public class FirefoxFilter implements CapabilitiesFilter {
     Map<String, Object> options = (Map<String, Object>) unmodifiedCaps.getOrDefault(
       "moz:firefoxOptions",
       new TreeMap<>());
+    options = new TreeMap<>(options);
+
     if (unmodifiedCaps.containsKey("firefox_binary") && !options.containsKey("binary")) {
       // Here's hoping that the binary is just a string. It should be as FirefoxBinary.toJson just
       // encodes the path.

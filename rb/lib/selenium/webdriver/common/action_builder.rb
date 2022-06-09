@@ -43,8 +43,9 @@ module Selenium
       #
 
       def initialize(bridge, deprecated_mouse = nil, deprecated_keyboard = nil, deprecated_async = nil,
-                     devices: [], async: false)
+                     devices: [], async: false, duration: 250)
         @bridge = bridge
+        @duration = duration
 
         @async = if deprecated_async.nil?
                    async
@@ -197,7 +198,7 @@ module Selenium
         deprecate_method(deprecated_device, deprecated_duration)
 
         device ||= deprecated_device || pointer_input
-        device.create_pause(duration || deprecated_duration)
+        device.create_pause(deprecated_duration || duration)
         self
       end
 
@@ -274,6 +275,8 @@ module Selenium
       #
 
       def add_input(device)
+        device = Interactions.send(device) if device.is_a?(Symbol) && Interactions.respond_to?(device)
+
         raise TypeError, "#{device.inspect} is not a valid InputDevice" unless device.is_a?(Interactions::InputDevice)
 
         unless @async

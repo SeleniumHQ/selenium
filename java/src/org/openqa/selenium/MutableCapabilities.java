@@ -28,15 +28,12 @@ import java.util.TreeMap;
 public class MutableCapabilities implements Capabilities {
 
   private static final Set<String> OPTION_KEYS;
+
   static {
     HashSet<String> keys = new HashSet<>();
-    keys.add("chromeOptions");
-    keys.add("edgeOptions");
     keys.add("goog:chromeOptions");
     keys.add("moz:firefoxOptions");
-    keys.add("operaOptions");
     keys.add("se:ieOptions");
-    keys.add("safari.options");
     OPTION_KEYS = Collections.unmodifiableSet(keys);
   }
 

@@ -81,6 +81,14 @@ module Selenium
           wait.until { driver.find_element(locator) }
         end
 
+        def wait_for_new_url(old_url)
+          wait = Wait.new(timeout: 5)
+          wait.until do
+            url = driver.current_url
+            !(url.empty? || url.include?(old_url))
+          end
+        end
+
         def wait(timeout = 10)
           Wait.new(timeout: timeout)
         end

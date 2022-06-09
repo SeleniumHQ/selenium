@@ -9,6 +9,10 @@ available via the project downloads page. Changes in "revision" field indicate
 private releases checked into the prebuilts directory of the source tree, but
 not made generally available on the downloads page.
 
+v4.2.0.0
+========
+* Check process ID when searching for Edge window handle
+
 v4.0.0.0
 ========
  * (on behalf of Gavin Xu) Updated atoms to allow IE driver to find elements.

@@ -1,6 +1,7 @@
 load("//common:browsers.bzl", "chrome_data", "firefox_data")
 load("//java:browsers.bzl", "chrome_jvm_flags", "firefox_jvm_flags")
 load("//java:defs.bzl", "artifact")
+load("@rules_python//python:defs.bzl", "py_runtime_pair")
 
 filegroup(
     name = "license",
@@ -10,8 +11,6 @@ filegroup(
     ],
     visibility = ["//visibility:public"],
 )
-
-load("@rules_python//python:defs.bzl", "py_runtime_pair")
 
 py_runtime(
     name = "py3_runtime",

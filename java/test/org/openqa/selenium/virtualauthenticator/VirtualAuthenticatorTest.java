@@ -30,7 +30,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.InvalidArgumentException;
 import org.openqa.selenium.JavascriptExecutor;
-import org.openqa.selenium.environment.webserver.Page;
 import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.virtualauthenticator.VirtualAuthenticatorOptions.Protocol;
 
@@ -66,63 +65,6 @@ public class VirtualAuthenticatorTest extends JUnit4TestBase {
   private final static PKCS8EncodedKeySpec privateKey =
     new PKCS8EncodedKeySpec(Base64.getMimeDecoder().decode(base64EncodedPK));
 
-  private final static String script =
-    "async function registerCredential(options = {}) {"
-    + "  options = Object.assign({"
-    + "    authenticatorSelection: {"
-    + "      requireResidentKey: false,"
-    + "    },"
-    + "    rp: {"
-    + "      id: \"localhost\","
-    + "      name: \"Selenium WebDriver Test\","
-    + "    },"
-    + "    challenge: Int8Array.from(\"challenge\"),"
-    + "    pubKeyCredParams: ["
-    + "      {type: \"public-key\", alg: -7},"
-    + "    ],"
-    + "    user: {"
-    + "      name: \"name\","
-    + "      displayName: \"displayName\","
-    + "      id: Int8Array.from([1]),"
-    + "    },"
-    + "  }, options);"
-
-    + "  try {"
-    + "    const credential = await navigator.credentials.create({publicKey: options});"
-    + "    return {"
-    + "      status: \"OK\","
-    + "      credential: {"
-    + "        id: credential.id,"
-    + "        rawId: Array.from(new Int8Array(credential.rawId)),"
-    + "        transports: credential.response.getTransports(),"
-    + "      }"
-    + "    };"
-    + "  } catch (error) {"
-    + "    return {status: error.toString()};"
-    + "  }"
-    + "}"
-
-    + "async function getCredential(credentials, options = {}) {"
-    + "  options = Object.assign({"
-    + "    challenge: Int8Array.from(\"Winter is Coming\"),"
-    + "    rpId: \"localhost\","
-    + "    allowCredentials: credentials,"
-    + "    userVerification: \"preferred\","
-    + "  }, options);"
-
-    + "  try {"
-    + "    const attestation = await navigator.credentials.get({publicKey: options});"
-    + "    return {"
-    + "      status: \"OK\","
-    + "      attestation: {"
-    + "        userHandle: new Int8Array(attestation.response.userHandle),"
-    + "      },"
-    + "    };"
-    + "  } catch (error) {"
-    + "    return {status: error.toString()};"
-    + "  }"
-    + "}";
-
   private JavascriptExecutor jsAwareDriver;
   private VirtualAuthenticator authenticator;
 
@@ -130,9 +72,7 @@ public class VirtualAuthenticatorTest extends JUnit4TestBase {
   public void setup() {
     assumeThat(driver).isInstanceOf(HasVirtualAuthenticator.class);
     jsAwareDriver = (JavascriptExecutor) driver;
-    driver.get(appServer.create(new Page()
-                                  .withTitle("Virtual Authenticator Test")
-                                  .withScripts(script)));
+    driver.get(appServer.whereIs("virtual-authenticator.html"));
   }
 
   private void createRKEnabledU2FAuthenticator() {

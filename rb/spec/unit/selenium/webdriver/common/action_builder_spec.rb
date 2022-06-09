@@ -60,6 +60,11 @@ module Selenium
           expect(action_builder.devices).to eq([mouse, keyboard, none, touch])
         end
 
+        it 'accepts duration' do
+          action_builder = ActionBuilder.new(bridge, duration: 2200)
+          expect(action_builder.default_move_duration).to eq(2.2)
+        end
+
         it 'does not accept additional devices if deprecated parameters are used' do
           none = Interactions.none('none')
           touch = Interactions.pointer(:touch, name: 'touch')

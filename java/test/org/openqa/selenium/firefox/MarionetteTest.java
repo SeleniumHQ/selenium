@@ -31,38 +31,37 @@ import org.junit.Test;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.PageLoadStrategy;
+import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.build.InProject;
 import org.openqa.selenium.remote.CapabilityType;
+import org.openqa.selenium.support.ui.Wait;
+import org.openqa.selenium.support.ui.WebDriverWait;
 import org.openqa.selenium.testing.JUnit4TestBase;
+import org.openqa.selenium.testing.NoDriverBeforeTest;
 
 import java.nio.file.Path;
+import java.time.Duration;
 
 public class MarionetteTest extends JUnit4TestBase {
 
   private static final String EXT_PATH = "common/extensions/webextensions-selenium-example.xpi";
 
-  private FirefoxDriver localDriver;
-
-  @After
-  public void quitDriver() {
-    if (localDriver != null) {
-      localDriver.quit();
-    }
-  }
-
   @Test
+  @NoDriverBeforeTest
   public void canStartDriverWithEmptyOptions() {
     localDriver = new FirefoxDriver(new FirefoxOptions());
     verifyItIsMarionette(localDriver);
   }
 
   @Test
+  @NoDriverBeforeTest
   public void canStartDriverWithNoParameters() {
     localDriver = new FirefoxDriver();
     verifyItIsMarionette(localDriver);
   }
 
   @Test
+  @NoDriverBeforeTest
   public void canStartDriverWithSpecifiedBinary() {
     FirefoxBinary binary = spy(new FirefoxBinary());
 
@@ -73,18 +72,20 @@ public class MarionetteTest extends JUnit4TestBase {
   }
 
   @Test
+  @NoDriverBeforeTest
   public void canStartDriverWithSpecifiedProfile() {
     FirefoxProfile profile = new FirefoxProfile();
     profile.setPreference("browser.startup.page", 1);
     profile.setPreference("browser.startup.homepage", pages.xhtmlTestPage);
 
     localDriver = new FirefoxDriver(new FirefoxOptions().setProfile(profile));
-    wait.until($ -> "XHTML Test Page".equals(localDriver.getTitle()));
+    wait(localDriver).until($ -> "XHTML Test Page".equals(localDriver.getTitle()));
 
     verifyItIsMarionette(localDriver);
   }
 
   @Test
+  @NoDriverBeforeTest
   public void canStartDriverWithSpecifiedBinaryAndProfile() {
     FirefoxBinary binary = spy(new FirefoxBinary());
 
@@ -93,35 +94,38 @@ public class MarionetteTest extends JUnit4TestBase {
     profile.setPreference("browser.startup.homepage", pages.xhtmlTestPage);
 
     localDriver = new FirefoxDriver(new FirefoxOptions().setBinary(binary).setProfile(profile));
-    wait.until($ -> "XHTML Test Page".equals(localDriver.getTitle()));
+    wait(localDriver).until($ -> "XHTML Test Page".equals(localDriver.getTitle()));
 
     verifyItIsMarionette(localDriver);
     verify(binary, atLeastOnce()).getPath();
   }
 
   @Test
+  @NoDriverBeforeTest
   public void canPassCapabilities() {
     Capabilities caps = new ImmutableCapabilities(CapabilityType.PAGE_LOAD_STRATEGY, "none");
 
     localDriver = new FirefoxDriver(caps);
 
     verifyItIsMarionette(localDriver);
-    assertThat(localDriver.getCapabilities().getCapability(PAGE_LOAD_STRATEGY)).isEqualTo("none");
+    assertThat(((FirefoxDriver) localDriver).getCapabilities().getCapability(PAGE_LOAD_STRATEGY)).isEqualTo("none");
   }
 
   @Test
+  @NoDriverBeforeTest
   public void canSetPreferencesInFirefoxOptions() {
     FirefoxOptions options = new FirefoxOptions()
       .addPreference("browser.startup.page", 1)
       .addPreference("browser.startup.homepage", pages.xhtmlTestPage);
 
     localDriver = new FirefoxDriver(options);
-    wait.until($ -> "XHTML Test Page".equals(localDriver.getTitle()));
+    wait(localDriver).until($ -> "XHTML Test Page".equals(localDriver.getTitle()));
 
     verifyItIsMarionette(localDriver);
   }
 
   @Test
+  @NoDriverBeforeTest
   public void canSetProfileInFirefoxOptions() {
     FirefoxProfile profile = new FirefoxProfile();
     profile.setPreference("browser.startup.page", 1);
@@ -130,12 +134,13 @@ public class MarionetteTest extends JUnit4TestBase {
     FirefoxOptions options = new FirefoxOptions().setProfile(profile);
 
     localDriver = new FirefoxDriver(options);
-    wait.until($ -> "XHTML Test Page".equals(localDriver.getTitle()));
+    wait(localDriver).until($ -> "XHTML Test Page".equals(localDriver.getTitle()));
 
     verifyItIsMarionette(localDriver);
   }
 
   @Test
+  @NoDriverBeforeTest
   public void canSetProfileInCapabilities() {
     FirefoxProfile profile = new FirefoxProfile();
     profile.setPreference("browser.startup.page", 1);
@@ -144,12 +149,13 @@ public class MarionetteTest extends JUnit4TestBase {
     Capabilities caps = new ImmutableCapabilities(FirefoxDriver.Capability.PROFILE, profile);
 
     localDriver = new FirefoxDriver(caps);
-    wait.until($ -> "XHTML Test Page".equals(localDriver.getTitle()));
+    wait(localDriver).until($ -> "XHTML Test Page".equals(localDriver.getTitle()));
 
     verifyItIsMarionette(localDriver);
   }
 
   @Test
+  @NoDriverBeforeTest
   public void canUseSameProfileInCapabilitiesAndDirectly() {
     FirefoxProfile profile = new FirefoxProfile();
     profile.setPreference("browser.startup.page", 1);
@@ -161,12 +167,13 @@ public class MarionetteTest extends JUnit4TestBase {
         new FirefoxOptions()
             .setProfile(profile)
             .merge(caps));
-    wait.until($ -> "XHTML Test Page".equals(localDriver.getTitle()));
+    wait(localDriver).until($ -> "XHTML Test Page".equals(localDriver.getTitle()));
 
     verifyItIsMarionette(localDriver);
   }
 
   @Test
+  @NoDriverBeforeTest
   public void canPassCapabilitiesBinaryAndProfileSeparately() {
     FirefoxBinary binary = spy(new FirefoxBinary());
 
@@ -181,14 +188,15 @@ public class MarionetteTest extends JUnit4TestBase {
           .setBinary(binary)
           .setProfile(profile)
           .merge(caps));
-    wait.until($ -> "XHTML Test Page".equals(localDriver.getTitle()));
+    wait(localDriver).until($ -> "XHTML Test Page".equals(localDriver.getTitle()));
 
     verifyItIsMarionette(localDriver);
     verify(binary, atLeastOnce()).getPath();
-    assertThat(localDriver.getCapabilities().getCapability(PAGE_LOAD_STRATEGY)).isEqualTo("none");
+    assertThat(((FirefoxDriver) localDriver).getCapabilities().getCapability(PAGE_LOAD_STRATEGY)).isEqualTo("none");
   }
 
   @Test
+  @NoDriverBeforeTest
   public void canSetPreferencesAndProfileInFirefoxOptions() {
     FirefoxProfile profile = new FirefoxProfile();
     profile.setPreference("browser.startup.page", 1);
@@ -199,37 +207,41 @@ public class MarionetteTest extends JUnit4TestBase {
         .addPreference("browser.startup.homepage", pages.javascriptPage);
 
     localDriver = new FirefoxDriver(options);
-    wait.until($ -> "Testing Javascript".equals(localDriver.getTitle()));
+    wait(localDriver).until($ -> "Testing Javascript".equals(localDriver.getTitle()));
 
     verifyItIsMarionette(localDriver);
   }
 
   @Test
+  @NoDriverBeforeTest
   public void canSetPageLoadStrategyViaOptions() {
     localDriver = new FirefoxDriver(
         new FirefoxOptions().setPageLoadStrategy(PageLoadStrategy.NONE));
 
     verifyItIsMarionette(localDriver);
-    assertThat(localDriver.getCapabilities().getCapability(PAGE_LOAD_STRATEGY)).isEqualTo("none");
+    assertThat(((FirefoxDriver) localDriver).getCapabilities().getCapability(PAGE_LOAD_STRATEGY)).isEqualTo("none");
   }
 
   @Test
+  @NoDriverBeforeTest
   public void canSetInsecureCertSupportViaOptions() {
     localDriver = new FirefoxDriver(new FirefoxOptions().setAcceptInsecureCerts(true));
 
     verifyItIsMarionette(localDriver);
-    assertThat(localDriver.getCapabilities().getCapability(ACCEPT_INSECURE_CERTS)).isEqualTo(true);
+    assertThat(((FirefoxDriver) localDriver).getCapabilities().getCapability(ACCEPT_INSECURE_CERTS)).isEqualTo(true);
   }
 
   @Test
+  @NoDriverBeforeTest
   public void canStartHeadless() {
     localDriver = new FirefoxDriver(new FirefoxOptions().setHeadless(true));
 
     verifyItIsMarionette(localDriver);
-    assertThat(localDriver.getCapabilities().getCapability("moz:headless")).isEqualTo(true);
+    assertThat(((FirefoxDriver) localDriver).getCapabilities().getCapability("moz:headless")).isEqualTo(true);
   }
 
   @Test
+  @NoDriverBeforeTest
   public void canInstallAndUninstallExtensionsOnTheFly() {
     assumeTrue(driver instanceof FirefoxDriver);
     FirefoxDriver localDriver = (FirefoxDriver) driver;
@@ -239,8 +251,9 @@ public class MarionetteTest extends JUnit4TestBase {
     localDriver.uninstallExtension(extId);
   }
 
-  private void verifyItIsMarionette(FirefoxDriver driver) {
-    assertThat(ofNullable(driver.getCapabilities().getCapability("moz:processID"))
-                   .orElse(driver.getCapabilities().getCapability("processId"))).isNotNull();
+  private void verifyItIsMarionette(WebDriver driver) {
+    FirefoxDriver firefoxDriver = (FirefoxDriver) driver;
+    assertThat(ofNullable(firefoxDriver.getCapabilities().getCapability("moz:processID"))
+                   .orElse(firefoxDriver.getCapabilities().getCapability("processId"))).isNotNull();
   }
 }

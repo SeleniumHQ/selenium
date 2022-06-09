@@ -112,6 +112,8 @@ namespace OpenQA.Selenium.Interactions
         {
             private IWebElement element;
             private bool viewport;
+            private int xOffset = 0;
+            private int yOffset = 0;
 
             public IWebElement Element
             {
@@ -124,6 +126,19 @@ namespace OpenQA.Selenium.Interactions
                 get { return this.viewport; }
                 set { this.viewport = value; }
             }
+
+            public int XOffset
+            {
+                get { return this.xOffset; }
+                set { this.xOffset = value; }
+            }
+
+            public int YOffset
+            {
+                get { return this.yOffset; }
+                set { this.yOffset = value; }
+            }
+
         }
 
         private class WheelScrollInteraction : Interaction
