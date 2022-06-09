@@ -17,7 +17,8 @@
 
 """Selenium type definitions."""
 
-from typing import Union
+import typing
 
 
-AnyKey = Union[str, int, float]
+AnyKey = typing.Union[str, int, float]
+WaitExcTypes = typing.Iterable[typing.Type[Exception]]
