@@ -19,7 +19,7 @@ import time
 import typing
 
 from selenium.types import WaitExcTypes
-from selenium.common.exceptions import NoSuchElementException, InvalidSelectorException
+from selenium.common.exceptions import NoSuchElementException
 from selenium.common.exceptions import TimeoutException
 
 POLL_FREQUENCY: float = 0.5  # How long to sleep in between calls to the method
