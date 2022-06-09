@@ -130,6 +130,21 @@ load("@rules_jvm_external//:setup.bzl", "rules_jvm_external_setup")
 
 rules_jvm_external_setup()
 
+http_archive(
+    name = "contrib_rules_jvm",
+    sha256 = "79773625951a7a6dc0fc1636ef2388253b69a1e8109b34198c191953280648ab",
+    strip_prefix = "rules_jvm-0.3.0",
+    url = "https://github.com/bazel-contrib/rules_jvm/archive/v0.3.0.tar.gz",
+)
+
+load("@contrib_rules_jvm//:repositories.bzl", "contrib_rules_jvm_deps")
+
+contrib_rules_jvm_deps()
+
+load("@contrib_rules_jvm//:setup.bzl", "contrib_rules_jvm_setup")
+
+contrib_rules_jvm_setup()
+
 load("//java:maven_deps.bzl", "selenium_java_deps")
 
 selenium_java_deps()

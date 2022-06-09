@@ -1,11 +1,11 @@
 load("@apple_rules_lint//lint:defs.bzl", "get_lint_config")
 load(
-    "@rules_java//java:defs.bzl",
+    "@contrib_rules_jvm//java:defs.bzl",
+    "spotbugs_test",
     _java_library = "java_library",
     _java_test = "java_test",
 )
 load(":export.bzl", _java_export = "java_export")
-load(":spotbugs.bzl", "spotbugs_test")
 
 def add_lint_tests(name, **kwargs):
     srcs = kwargs.get("srcs", [])
@@ -29,14 +29,6 @@ def add_lint_tests(name, **kwargs):
             timeout = "moderate",
         )
 
-def java_export(name, **kwargs):
-    add_lint_tests(name, **kwargs)
-    _java_export(name = name, **kwargs)
-
-def java_library(name, **kwargs):
-    add_lint_tests(name, **kwargs)
-    _java_library(name = name, **kwargs)
-
-def java_test(name, **kwargs):
-    add_lint_tests(name, **kwargs)
-    _java_test(name = name, **kwargs)
+java_export = _java_export
+java_library = _java_library
+java_test = _java_test

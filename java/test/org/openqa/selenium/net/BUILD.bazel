@@ -1,5 +1,5 @@
 load("@rules_jvm_external//:defs.bzl", "artifact")
-load("//java:defs.bzl", "java_library", "java_test_suite")
+load("//java:defs.bzl", "JUNIT5_VINTAGE_DEPS", "java_library", "java_test_suite")
 
 java_library(
     name = "net",
@@ -26,5 +26,5 @@ java_test_suite(
         "//java/test/org/openqa/selenium/testing:test-base",
         artifact("junit:junit"),
         artifact("org.assertj:assertj-core"),
-    ],
+    ] + JUNIT5_VINTAGE_DEPS,
 )

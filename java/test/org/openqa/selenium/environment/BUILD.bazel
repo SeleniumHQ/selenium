@@ -1,6 +1,6 @@
 load("@rules_jvm_external//:defs.bzl", "artifact")
 load("//java/private:selenium_test.bzl", "BROWSERS")
-load("//java:defs.bzl", "java_binary", "java_library", "java_test_suite")
+load("//java:defs.bzl", "JUNIT5_VINTAGE_DEPS", "java_binary", "java_library", "java_test_suite")
 
 filegroup(
     name = "keystore",
@@ -96,7 +96,7 @@ java_library(
         "//java/src/org/openqa/selenium/support",
         "//java/test/org/openqa/selenium/testing/drivers",
         artifact("junit:junit"),
-    ],
+    ] + JUNIT5_VINTAGE_DEPS,
 )
 
 firefox = BROWSERS["firefox"]
@@ -115,5 +115,5 @@ java_test_suite(
         ":environment",
         ":test-base",
         artifact("junit:junit"),
-    ] + firefox["deps"],
+    ] + firefox["deps"] + JUNIT5_VINTAGE_DEPS,
 )

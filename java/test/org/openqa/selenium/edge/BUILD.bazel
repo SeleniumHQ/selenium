@@ -1,5 +1,5 @@
 load("@rules_jvm_external//:defs.bzl", "artifact")
-load("//java:defs.bzl", "java_selenium_test_suite")
+load("//java:defs.bzl", "JUNIT5_VINTAGE_DEPS", "java_selenium_test_suite")
 
 java_selenium_test_suite(
     name = "large-tests",
@@ -30,5 +30,5 @@ java_selenium_test_suite(
         artifact("junit:junit"),
         artifact("org.assertj:assertj-core"),
         artifact("org.mockito:mockito-core"),
-    ],
+    ] + JUNIT5_VINTAGE_DEPS,
 )
