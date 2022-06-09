@@ -28,40 +28,32 @@ import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
+import org.openqa.selenium.testing.NoDriverAfterTest;
+import org.openqa.selenium.testing.NoDriverBeforeTest;
 
 public class CleanSessionTest extends JUnit4TestBase {
 
   private static final Cookie COOKIE = new Cookie("foo", "bar");
 
-  private WebDriver driver2;
-
-  @After
-  public void quitDriver() {
-    if (driver2 != null) {
-      driver2.quit();
-    }
-  }
-
-  private void createCleanSession() {
-    removeDriver();
-    quitDriver();
-    SafariOptions safariOptions = new SafariOptions();
-    driver2 = new SafariDriver(safariOptions);
-    driver2.get(pages.alertsPage);
-  }
-
   @Test
+  @NoDriverBeforeTest
   public void shouldClearCookiesWhenStartingWithACleanSession() {
-    createCleanSession();
-    assertNoCookies();
-    driver2.manage().addCookie(COOKIE);
-    assertHasCookie(COOKIE);
+    SafariDriver firstDriver = new SafariDriver();
+    firstDriver.get(pages.alertsPage);
 
-    createCleanSession();
-    assertNoCookies();
+    assertThat(firstDriver.manage().getCookies()).isEmpty();
+
+    firstDriver.manage().addCookie(COOKIE);
+    assertThat(firstDriver.manage().getCookies()).contains(COOKIE);
+    firstDriver.quit();
+
+    localDriver = new SafariDriver();
+    localDriver.get(pages.alertsPage);
+    assertThat(localDriver.manage().getCookies()).isEmpty();
   }
 
   @Test
+  @NoDriverAfterTest
   public void isResilientToPagesRedefiningDependentDomFunctions() {
     runFunctionRedefinitionTest("window.dispatchEvent = function() {};");
     runFunctionRedefinitionTest("window.postMessage = function() {};");
@@ -81,6 +73,7 @@ public class CleanSessionTest extends JUnit4TestBase {
   }
 
   @Test
+  @NoDriverAfterTest
   @Ignore(SAFARI)
   public void executeAsyncScriptIsResilientToPagesRedefiningSetTimeout() {
     driver.get(appServer.whereIs("messages.html"));
@@ -116,13 +109,5 @@ public class CleanSessionTest extends JUnit4TestBase {
 
     ((JavascriptExecutor) driver).executeScript("return location.href;");
     assertThat(driver.findElements(By.tagName("iframe"))).hasSize(0);
-  }
-
-  private void assertHasCookie(Cookie cookie) {
-    assertThat(driver2.manage().getCookies()).contains(cookie);
-  }
-
-  private void assertNoCookies() {
-    assertThat(driver2.manage().getCookies()).isEmpty();
   }
 }

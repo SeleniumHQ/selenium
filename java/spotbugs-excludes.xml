@@ -155,11 +155,6 @@
   </Match>
 
   <Match>
-    <Class name="org.openqa.selenium.server.htmlrunner.ReflectivelyDiscoveredSteps"/>
-    <Bug pattern="SF_SWITCH_FALLTHROUGH"/>
-  </Match>
-
-  <Match>
     <Class name="org.openqa.selenium.testing.Pages"/>
     <Bug pattern="URF_UNREAD_PUBLIC_OR_PROTECTED_FIELD"/>
   </Match>

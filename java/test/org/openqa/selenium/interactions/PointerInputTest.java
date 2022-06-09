@@ -63,7 +63,7 @@ public class PointerInputTest {
   @Test
   public void acceptsPointerEventProperties() {
     PointerInput pen = new PointerInput(PointerInput.Kind.PEN, "my pen");
-    Interaction pointerDown = pen.createPointerDown(PointerInput.eventProperties().setHeight(12).setTiltX(30));
+    Interaction pointerDown = pen.createPointerDown(0, PointerInput.eventProperties().setHeight(12).setTiltX(30));
 
     Map<String, Object> encode = ((Encodable) pointerDown).encode();
 

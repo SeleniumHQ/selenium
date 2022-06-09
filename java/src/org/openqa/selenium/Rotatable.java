@@ -18,11 +18,14 @@
 package org.openqa.selenium;
 
 /**
+ * @deprecated As this is only available only for mobile which is handled by the Appium project
+ *
  * Represents rotation of the browser view for orientation-sensitive devices.
  *
  * When using this with a real device, the device should not be moved so that the built-in sensors
  * do not interfere.
  */
+@Deprecated
 public interface Rotatable {
 
   /**
@@ -36,15 +39,15 @@ public interface Rotatable {
    * @return the current screen orientation of the browser
    */
   ScreenOrientation getOrientation();
-  
+
   /**
    * Changes the rotation of the browser window.
    */
   void rotate(DeviceRotation rotation);
-  
+
   /**
    * @return DeviceOrientation describing the current screen rotation of the browser window
    */
   DeviceRotation rotation();
-  
+
 }

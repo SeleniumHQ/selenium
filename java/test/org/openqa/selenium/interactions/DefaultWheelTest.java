@@ -27,8 +27,6 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.testing.JUnit4TestBase;
 
-import java.time.Duration;
-
 /**
  * Tests operations that involve scroll wheel.
  */
@@ -45,12 +43,7 @@ public class DefaultWheelTest extends JUnit4TestBase {
 
     assertFalse(inViewport(iframe));
 
-    getBuilder(driver).scroll(
-      0,
-      0,
-      0,
-      0,
-      PointerInput.Origin.fromElement(iframe)).perform();
+    getBuilder(driver).scrollToElement(iframe).perform();
 
     assertTrue(inViewport(iframe));
   }
@@ -59,16 +52,11 @@ public class DefaultWheelTest extends JUnit4TestBase {
   public void shouldScrollFromElementByGivenAmount() {
     driver.get(appServer.whereIs("scrolling_tests/frame_with_nested_scrolling_frame_out_of_view.html"));
     WebElement iframe = driver.findElement(By.tagName("iframe"));
+    WheelInput.ScrollOrigin scrollOrigin = WheelInput.ScrollOrigin.fromElement(iframe);
 
-    getBuilder(driver).scroll(
-      0,
-      0,
-      0,
-      200,
-      PointerInput.Origin.fromElement(iframe)).perform();
+    getBuilder(driver).scrollFromOrigin(scrollOrigin, 0, 200).perform();
 
     driver.switchTo().frame(iframe);
-
     WebElement checkbox = driver.findElement(By.name("scroll_checkbox"));
     assertTrue(inViewport(checkbox));
   }
@@ -77,16 +65,12 @@ public class DefaultWheelTest extends JUnit4TestBase {
   public void shouldScrollFromElementByGivenAmountWithOffset() {
     driver.get(appServer.whereIs("scrolling_tests/frame_with_nested_scrolling_frame_out_of_view.html"));
     WebElement footer = driver.findElement(By.tagName("footer"));
+    WheelInput.ScrollOrigin scrollOrigin = WheelInput.ScrollOrigin.fromElement(footer, 0, -50);
 
-    getBuilder(driver).scroll(
-      0,
-      -50,
-      0,
-      200,
-      PointerInput.Origin.fromElement(footer)).perform();
+    getBuilder(driver).scrollFromOrigin(scrollOrigin,0, 200).perform();
 
-    driver.switchTo().frame(driver.findElement(By.tagName("iframe")));
-
+    WebElement iframe = driver.findElement(By.tagName("iframe"));
+    driver.switchTo().frame(iframe);
     WebElement checkbox = driver.findElement(By.name("scroll_checkbox"));
     assertTrue(inViewport(checkbox));
   }
@@ -95,28 +79,18 @@ public class DefaultWheelTest extends JUnit4TestBase {
   public void throwErrorWhenElementOriginIsOutOfViewport() {
     driver.get(appServer.whereIs("scrolling_tests/frame_with_nested_scrolling_frame_out_of_view.html"));
     WebElement footer = driver.findElement(By.tagName("footer"));
+    WheelInput.ScrollOrigin scrollOrigin = WheelInput.ScrollOrigin.fromElement(footer, 0, 50);
 
-    getBuilder(driver).scroll(
-      0,
-      50,
-      0,
-      200,
-      PointerInput.Origin.fromElement(footer)).perform();
+    getBuilder(driver).scrollFromOrigin(scrollOrigin, 0, 200).perform();
   }
 
   @Test
   public void shouldScrollFromViewportByGivenAmount() {
     driver.get(appServer.whereIs("scrolling_tests/frame_with_nested_scrolling_frame_out_of_view.html"));
     WebElement footer = driver.findElement(By.tagName("footer"));
+    int deltaY = footer.getRect().y;
 
-    int y = footer.getRect().y;
-
-    getBuilder(driver).scroll(
-      0,
-      0,
-      0,
-      y,
-      PointerInput.Origin.viewport()).perform();
+    getBuilder(driver).scrollByAmount(0, deltaY).perform();
 
     assertTrue(inViewport(footer));
   }
@@ -124,18 +98,12 @@ public class DefaultWheelTest extends JUnit4TestBase {
   @Test
   public void shouldScrollFromViewportByGivenAmountFromOrigin() {
     driver.get(appServer.whereIs("scrolling_tests/frame_with_nested_scrolling_frame.html"));
+    WheelInput.ScrollOrigin scrollOrigin = WheelInput.ScrollOrigin.fromViewport(10, 10);
+
+    getBuilder(driver).scrollFromOrigin(scrollOrigin, 0, 200).perform();
 
     WebElement iframe = driver.findElement(By.tagName("iframe"));
-
-    getBuilder(driver).scroll(
-      10,
-      10,
-      0,
-      200,
-      PointerInput.Origin.viewport()).perform();
-
     driver.switchTo().frame(iframe);
-
     WebElement checkbox = driver.findElement(By.name("scroll_checkbox"));
     assertTrue(inViewport(checkbox));
   }
@@ -143,13 +111,9 @@ public class DefaultWheelTest extends JUnit4TestBase {
   @Test(expected = MoveTargetOutOfBoundsException.class)
   public void throwErrorWhenOriginOffsetIsOutOfViewport() {
     driver.get(appServer.whereIs("scrolling_tests/frame_with_nested_scrolling_frame.html"));
+    WheelInput.ScrollOrigin scrollOrigin = WheelInput.ScrollOrigin.fromViewport(-10, -10);
 
-    getBuilder(driver).scroll(
-      -10,
-      -10,
-      0,
-      200,
-      PointerInput.Origin.viewport()).perform();
+    getBuilder(driver).scrollFromOrigin(scrollOrigin, 0, 200).perform();
   }
 
   private boolean inViewport(WebElement element) {

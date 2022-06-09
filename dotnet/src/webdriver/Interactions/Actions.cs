@@ -19,14 +19,16 @@
 using System;
 using System.Collections.Generic;
 using System.Drawing;
-using OpenQA.Selenium.Internal;
 
 namespace OpenQA.Selenium.Interactions
 {
     /// <summary>
     /// Provides values that indicate from where element offsets for MoveToElement
     /// are calculated.
+    /// Note: TopLeft only does the expected thing when the element is completely
+    /// inside the viewport.
     /// </summary>
+    [Obsolete("Starting in Selenium 4.3 only Center behavior will be supported")]
     public enum MoveToElementOffsetOrigin
     {
         /// <summary>
@@ -35,7 +37,7 @@ namespace OpenQA.Selenium.Interactions
         TopLeft,
 
         /// <summary>
-        /// Offsets are calcuated from the center of the element.
+        /// Offsets are calculated from the center of the element.
         /// </summary>
         Center
     }
@@ -45,10 +47,12 @@ namespace OpenQA.Selenium.Interactions
     /// </summary>
     public class Actions : IAction
     {
+        private readonly TimeSpan DefaultScrollDuration = TimeSpan.FromMilliseconds(250);
         private readonly TimeSpan DefaultMouseMoveDuration = TimeSpan.FromMilliseconds(250);
         private ActionBuilder actionBuilder = new ActionBuilder();
         private PointerInputDevice defaultMouse = new PointerInputDevice(PointerKind.Mouse, "default mouse");
         private KeyInputDevice defaultKeyboard = new KeyInputDevice("default keyboard");
+        private WheelInputDevice defaultWheel = new WheelInputDevice("default wheel");
         private IActionExecutor actionExecutor;
 
         /// <summary>
@@ -308,6 +312,7 @@ namespace OpenQA.Selenium.Interactions
 
         /// <summary>
         /// Moves the mouse to the specified offset of the top-left corner of the specified element.
+        /// In Selenium 4.3 the origin for the offset will be the in-view center point of the element.
         /// </summary>
         /// <param name="toElement">The element to which to move the mouse.</param>
         /// <param name="offsetX">The horizontal offset to which to move the mouse.</param>
@@ -326,6 +331,7 @@ namespace OpenQA.Selenium.Interactions
         /// <param name="offsetY">The vertical offset to which to move the mouse.</param>
         /// <param name="offsetOrigin">The <see cref="MoveToElementOffsetOrigin"/> value from which to calculate the offset.</param>
         /// <returns>A self-reference to this <see cref="Actions"/>.</returns>
+        [Obsolete("Starting in Selenium 4.3 only MoveToElementOffsetOrigin.Center will be supported")]
         public Actions MoveToElement(IWebElement toElement, int offsetX, int offsetY, MoveToElementOffsetOrigin offsetOrigin)
         {
             ILocatable target = GetLocatableFromElement(toElement);
@@ -406,6 +412,76 @@ namespace OpenQA.Selenium.Interactions
         }
 
         /// <summary>
+        /// If the element is outside the viewport, scrolls the bottom of the element to the bottom of the viewport.
+        /// </summary>
+        /// <param name="element">Which element to scroll into the viewport.</param>
+        /// <returns>A self-reference to this <see cref="Actions"/>.</returns>
+        public Actions ScrollToElement(IWebElement element)
+        {
+            this.actionBuilder.AddAction(this.defaultWheel.CreateWheelScroll(element, 0, 0, 0, 0, DefaultScrollDuration));
+
+            return this;
+        }
+
+        /// <summary>
+        /// Scrolls by provided amounts with the origin in the top left corner of the viewport.
+        /// </summary>
+        /// <param name="deltaX">Distance along X axis to scroll using the wheel. A negative value scrolls left.</param>
+        /// <param name="deltaY">Distance along Y axis to scroll using the wheel. A negative value scrolls up.</param>
+        /// <returns>A self-reference to this <see cref="Actions"/>.</returns>
+        public Actions ScrollByAmount(int deltaX, int deltaY)
+        {
+            this.actionBuilder.AddAction(this.defaultWheel.CreateWheelScroll(deltaX, deltaY, DefaultScrollDuration));
+
+            return this;
+        }
+
+        /// <summary>
+        /// Scrolls by provided amount based on a provided origin.
+        /// </summary>
+        /// <remarks>
+        /// The scroll origin is either the center of an element or the upper left of the viewport plus any offsets.
+        /// If the origin is an element, and the element is not in the viewport, the bottom of the element will first
+        /// be scrolled to the bottom of the viewport.
+        /// </remarks>
+        /// <param name="scrollOrigin">Where scroll originates (viewport or element center) plus provided offsets.</param>
+        /// <param name="deltaX">Distance along X axis to scroll using the wheel. A negative value scrolls left.</param>
+        /// <param name="deltaY">Distance along Y axis to scroll using the wheel. A negative value scrolls up.</param>
+        /// <returns>A self-reference to this <see cref="Actions"/>.</returns>
+        /// <exception cref="MoveTargetOutOfBoundsException">If the origin with offset is outside the viewport.</exception>
+        public Actions ScrollFromOrigin(WheelInputDevice.ScrollOrigin scrollOrigin, int deltaX, int deltaY)
+        {
+            if (scrollOrigin.Viewport && scrollOrigin.Element != null)
+            {
+                throw new ArgumentException("viewport can not be true if an element is defined.", nameof(scrollOrigin));
+            }
+
+            if (scrollOrigin.Viewport)
+            {
+                this.actionBuilder.AddAction(this.defaultWheel.CreateWheelScroll(CoordinateOrigin.Viewport,
+                    scrollOrigin.XOffset, scrollOrigin.YOffset, deltaX, deltaY, DefaultScrollDuration));
+            }
+            else
+            {
+                this.actionBuilder.AddAction(this.defaultWheel.CreateWheelScroll(scrollOrigin.Element,
+                    scrollOrigin.XOffset, scrollOrigin.YOffset, deltaX, deltaY, DefaultScrollDuration));
+            }
+
+            return this;
+        }
+
+        /// <summary>
+        /// Performs a Pause.
+        /// </summary>
+        /// <param name="duration">How long to pause the action chain.</param>
+        /// <returns>A self-reference to this <see cref="Actions"/>.</returns>
+        public Actions Pause(TimeSpan duration)
+        {
+            this.actionBuilder.AddAction(new PauseInteraction(this.defaultMouse, duration));
+            return this;
+        }
+
+        /// <summary>
         /// Builds the sequence of actions.
         /// </summary>
         /// <returns>A composite <see cref="IAction"/> which can be used to perform the actions.</returns>
@@ -420,6 +496,7 @@ namespace OpenQA.Selenium.Interactions
         public void Perform()
         {
             this.actionExecutor.PerformActions(this.actionBuilder.ToActionSequenceList());
+            this.actionBuilder.ClearSequences();
         }
 
         /// <summary>

@@ -32,8 +32,9 @@ module Selenium
           @type = Interactions::WHEEL
         end
 
-        def create_scroll(duration: 0, x: 0, y: 0, delta_x: 0, delta_y: 0, origin: nil)
-          add_action(Scroll.new(self, duration, delta_x, delta_y, origin: origin, x: x, y: y))
+        def create_scroll(**opts)
+          opts[:source] = self
+          add_action(Scroll.new(**opts))
         end
       end # PointerInput
     end # Interactions

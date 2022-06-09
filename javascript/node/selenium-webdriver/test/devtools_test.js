@@ -70,7 +70,7 @@ suite(
         await driver.onLogException(cdpConnection, function (event) {
           assert.strictEqual(
             event['exceptionDetails']['stackTrace']['callFrames'][0][
-            'functionName'
+              'functionName'
             ],
             'onmouseover'
           )
@@ -100,8 +100,9 @@ suite(
     })
 
     describe('Basic Auth Injection', function () {
-      ignore(browsers(Browser.SAFARI, Browser.FIREFOX)).
-        it('denies entry if username and password do not match', async function () {
+      ignore(browsers(Browser.SAFARI, Browser.FIREFOX)).it(
+        'denies entry if username and password do not match',
+        async function () {
           const pageCdpConnection = await driver.createCDPConnection('page')
 
           await driver.register('random', 'random', pageCdpConnection)
@@ -111,33 +112,42 @@ suite(
             !source.includes('Access granted!'),
             `The Source is \n ${source}`
           )
-        })
+        }
+      )
 
-      ignore(browsers(Browser.SAFARI, Browser.FIREFOX)).
-        it('grants access if username and password are a match', async function () {
+      ignore(browsers(Browser.SAFARI, Browser.FIREFOX)).it(
+        'grants access if username and password are a match',
+        async function () {
           const pageCdpConnection = await driver.createCDPConnection('page')
 
           await driver.register('genie', 'bottle', pageCdpConnection)
           await driver.get(fileServer.Pages.basicAuth)
           let source = await driver.getPageSource()
           assert.strictEqual(source.includes('Access granted!'), true)
-        })
+        }
+      )
     })
 
-    describe("Network Interception", function () {
-      ignore(browsers(Browser.SAFARI, Browser.FIREFOX)).
-        it('Allows network requests to be captured and mocked', async function () {
+    describe('Network Interception', function () {
+      ignore(browsers(Browser.SAFARI, Browser.FIREFOX)).it(
+        'Allows network requests to be captured and mocked',
+        async function () {
           const connection = await driver.createCDPConnection('page')
-          let url = fileServer.whereIs("/cheese")
+          let url = fileServer.whereIs('/cheese')
           let httpResponse = new HttpResponse(url)
-          httpResponse.addHeaders("Content-Type", "UTF-8")
-          httpResponse.body = "sausages"
+          httpResponse.addHeaders('Content-Type', 'UTF-8')
+          httpResponse.body = 'sausages'
           await driver.onIntercept(connection, httpResponse, async function () {
             let body = await driver.getPageSource()
-            assert.strictEqual(body.includes("sausages"), true, `Body contains: ${body}`)
+            assert.strictEqual(
+              body.includes('sausages'),
+              true,
+              `Body contains: ${body}`
+            )
           })
           driver.get(url)
-        })
+        }
+      )
     })
   },
   { browsers: ['firefox'] }

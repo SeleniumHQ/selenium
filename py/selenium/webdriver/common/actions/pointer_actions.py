@@ -14,13 +14,13 @@
 # KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
 # under the License.
-from . import interaction
+import warnings
 
+from selenium.webdriver.remote.webelement import WebElement
+from . import interaction
 from .interaction import Interaction
 from .mouse_button import MouseButton
 from .pointer_input import PointerInput
-
-from selenium.webdriver.remote.webelement import WebElement
 
 
 class PointerActions(Interaction):
@@ -57,6 +57,13 @@ class PointerActions(Interaction):
             raise AttributeError("move_to requires a WebElement")
 
         if x or y:
+            warnings.warn(
+                "move_to_element_with_offset() currently tries to use the top left corner "
+                "of the element as the origin; in Selenium 4.3 it will use the in-view "
+                "center point of the element as the origin.",
+                DeprecationWarning,
+                stacklevel=2
+            )
             el_rect = element.rect
             left_offset = el_rect['width'] / 2
             top_offset = el_rect['height'] / 2
@@ -73,36 +80,44 @@ class PointerActions(Interaction):
                                         altitude_angle=altitude_angle, azimuth_angle=azimuth_angle)
         return self
 
-    def move_by(self, x, y):
-        self.source.create_pointer_move(origin=interaction.POINTER, duration=self._duration, x=int(x), y=int(y))
+    def move_by(self, x, y, width=None, height=None, pressure=None,
+                tangential_pressure=None, tilt_x=None, tilt_y=None, twist=None,
+                altitude_angle=None, azimuth_angle=None):
+        self.source.create_pointer_move(origin=interaction.POINTER, duration=self._duration, x=int(x), y=int(y),
+                                        width=width, height=height, pressure=pressure,
+                                        tangential_pressure=tangential_pressure,
+                                        tilt_x=tilt_x, tilt_y=tilt_y, twist=twist,
+                                        altitude_angle=altitude_angle, azimuth_angle=azimuth_angle)
         return self
 
-    def move_to_location(self, x, y):
-        self.source.create_pointer_move(origin='viewport', duration=self._duration, x=int(x), y=int(y))
+    def move_to_location(self, x, y, width=None, height=None, pressure=None,
+                         tangential_pressure=None, tilt_x=None, tilt_y=None, twist=None,
+                         altitude_angle=None, azimuth_angle=None):
+        self.source.create_pointer_move(origin='viewport', duration=self._duration, x=int(x), y=int(y),
+                                        width=width, height=height, pressure=pressure,
+                                        tangential_pressure=tangential_pressure,
+                                        tilt_x=tilt_x, tilt_y=tilt_y, twist=twist,
+                                        altitude_angle=altitude_angle, azimuth_angle=azimuth_angle)
         return self
 
-    def click(self, element=None):
+    def click(self, element=None, button=MouseButton.LEFT):
         if element:
             self.move_to(element)
-        self.pointer_down(MouseButton.LEFT)
-        self.pointer_up(MouseButton.LEFT)
+        self.pointer_down(button)
+        self.pointer_up(button)
         return self
 
     def context_click(self, element=None):
+        return self.click(element=element, button=MouseButton.RIGHT)
+
+    def click_and_hold(self, element=None, button=MouseButton.LEFT):
         if element:
             self.move_to(element)
-        self.pointer_down(MouseButton.RIGHT)
-        self.pointer_up(MouseButton.RIGHT)
+        self.pointer_down(button=button)
         return self
 
-    def click_and_hold(self, element=None):
-        if element:
-            self.move_to(element)
-        self.pointer_down()
-        return self
-
-    def release(self):
-        self.pointer_up()
+    def release(self, button=MouseButton.LEFT):
+        self.pointer_up(button=button)
         return self
 
     def double_click(self, element=None):

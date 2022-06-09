@@ -7,12 +7,13 @@ workspace(
 )
 
 load("//common/private:env.bzl", "env")
+
 env(
     name = "python_version",
-    env_var=["PYTHON_VERSION"]
+    env_var = ["PYTHON_VERSION"],
 )
-load("@python_version//:defs.bzl", "PYTHON_VERSION")
 
+load("@python_version//:defs.bzl", "PYTHON_VERSION")
 
 register_toolchains(":py_toolchain")
 
@@ -79,8 +80,8 @@ load("@rules_python//python:pip.bzl", "pip_parse")
 
 pip_parse(
     name = "py_dev_requirements",
-    requirements_lock = "//py:requirements_lock.txt",
     python_interpreter_target = interpreter,
+    requirements_lock = "//py:requirements_lock.txt",
 )
 
 load("@py_dev_requirements//:requirements.bzl", "install_deps")
@@ -152,9 +153,10 @@ selenium_register_dotnet()
 
 http_archive(
     name = "build_bazel_rules_nodejs",
-    sha256 = "e328cb2c9401be495fa7d79c306f5ee3040e8a03b2ebb79b022e15ca03770096",
-    urls = ["https://github.com/bazelbuild/rules_nodejs/releases/download/5.4.2/rules_nodejs-5.4.2.tar.gz"],
+    sha256 = "0fad45a9bda7dc1990c47b002fd64f55041ea751fafc00cd34efb96107675778",
+    urls = ["https://github.com/bazelbuild/rules_nodejs/releases/download/5.5.0/rules_nodejs-5.5.0.tar.gz"],
 )
+
 load("@build_bazel_rules_nodejs//:repositories.bzl", "build_bazel_rules_nodejs_dependencies")
 
 build_bazel_rules_nodejs_dependencies()

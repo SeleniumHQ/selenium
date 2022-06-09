@@ -37,7 +37,7 @@ const dataDirectory = path.join(__dirname, 'data')
 const jsDirectory = resources.locate('javascript')
 
 const Pages = (function () {
-  var pages = {}
+  let pages = {}
   function addPage(page, path) {
     pages.__defineGetter__(page, function () {
       return exports.whereIs(path)
@@ -106,6 +106,7 @@ const Pages = (function () {
   addPage('webComponents', 'webComponents.html')
   addPage('xhtmlTestPage', 'xhtmlTest.html')
   addPage('uploadInvisibleTestPage', 'upload_invisible.html')
+  addPage('virtualAuthenticator', 'virtual-authenticator.html')
 
   return pages
 })()
