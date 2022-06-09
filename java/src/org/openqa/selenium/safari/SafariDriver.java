@@ -20,7 +20,6 @@ package org.openqa.selenium.safari;
 import com.google.common.collect.ImmutableMap;
 
 import org.openqa.selenium.Beta;
-import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.CommandInfo;
@@ -48,19 +47,6 @@ public class SafariDriver extends RemoteWebDriver implements HasPermissions, Has
    */
   public SafariDriver() {
     this(new SafariOptions());
-  }
-
-  /**
-   * Converts the specified {@link Capabilities} to a {@link SafariOptions}
-   * instance and initializes a new SafariDriver using these options.
-   * @see SafariOptions#fromCapabilities(Capabilities)
-   *
-   * @param desiredCapabilities capabilities requested of the driver
-   * @deprecated Use {@link SafariDriver(SafariOptions)} instead.
-   */
-  @Deprecated
-  public SafariDriver(Capabilities desiredCapabilities) {
-    this(SafariOptions.fromCapabilities(desiredCapabilities));
   }
 
   /**

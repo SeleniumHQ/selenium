@@ -18,6 +18,7 @@
 package org.openqa.selenium.chrome;
 
 import com.google.common.collect.ImmutableMap;
+
 import org.openqa.selenium.Beta;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriver;
@@ -60,19 +61,6 @@ public class ChromeDriver extends ChromiumDriver {
   }
 
   /**
-   * Creates a new ChromeDriver instance. The {@code capabilities} will be passed to the
-   * ChromeDriver service.
-   *
-   * @param capabilities The capabilities required from the ChromeDriver.
-   * @see #ChromeDriver(ChromeDriverService, Capabilities)
-   * @deprecated Use {@link #ChromeDriver(ChromeOptions)} instead.
-   */
-  @Deprecated
-  public ChromeDriver(Capabilities capabilities) {
-    this(ChromeDriverService.createDefaultService(), capabilities);
-  }
-
-  /**
    * Creates a new ChromeDriver instance with the specified options.
    *
    * @param options The options to use.
@@ -87,23 +75,10 @@ public class ChromeDriver extends ChromiumDriver {
    * started along with the driver, and shutdown upon calling {@link #quit()}.
    *
    * @param service The service to use.
-   * @param options The options to use.
+   * @param options The options required from ChromeDriver.
    */
   public ChromeDriver(ChromeDriverService service, ChromeOptions options) {
-    this(service, (Capabilities) options);
-  }
-
-  /**
-   * Creates a new ChromeDriver instance. The {@code service} will be started along with the
-   * driver, and shutdown upon calling {@link #quit()}.
-   *
-   * @param service      The service to use.
-   * @param capabilities The capabilities required from the ChromeDriver.
-   * @deprecated Use {@link #ChromeDriver(ChromeDriverService, ChromeOptions)} instead.
-   */
-  @Deprecated
-  public ChromeDriver(ChromeDriverService service, Capabilities capabilities) {
-    super(new ChromeDriverCommandExecutor(service), capabilities, ChromeOptions.CAPABILITY);
+    super(new ChromeDriverCommandExecutor(service), options, ChromeOptions.CAPABILITY);
     casting = new AddHasCasting().getImplementation(getCapabilities(), getExecuteMethod());
     cdp = new AddHasCdp().getImplementation(getCapabilities(), getExecuteMethod());
   }
