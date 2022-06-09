@@ -32,11 +32,8 @@ class ShadowRoot:
     def __eq__(self, other_shadowroot):
         return self._id == other_shadowroot._id
 
-    def __hash__(self):
+    def __hash__(self) -> int:
         return int(md5_hash(self._id.encode("utf-8")).hexdigest(), 16)
-
-    def __ne__(self, other_shadowroot):
-        return not self.__eq__(other_shadowroot)
 
     def __repr__(self):
         return '<{0.__module__}.{0.__name__} (session="{1}", element="{2}")>'.format(
