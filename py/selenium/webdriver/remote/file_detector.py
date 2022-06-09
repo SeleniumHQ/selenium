@@ -30,7 +30,7 @@ class FileDetector(metaclass=ABCMeta):
 
     @abstractmethod
     def is_local_file(self, *keys: AnyKey) -> Optional[str]:
-        return None
+        raise NotImplementedError
 
 
 class UselessFileDetector(FileDetector):
