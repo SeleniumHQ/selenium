@@ -16,7 +16,7 @@
 # under the License.
 
 import time
-from selenium.common.exceptions import NoSuchElementException, InvalidSelectorException
+from selenium.common.exceptions import NoSuchElementException
 from selenium.common.exceptions import TimeoutException
 
 POLL_FREQUENCY = 0.5  # How long to sleep in between calls to the method
@@ -78,8 +78,6 @@ class WebDriverWait:
                 value = method(self._driver)
                 if value:
                     return value
-            except InvalidSelectorException as e:
-                raise e
             except self._ignored_exceptions as exc:
                 screen = getattr(exc, 'screen', None)
                 stacktrace = getattr(exc, 'stacktrace', None)
@@ -104,8 +102,6 @@ class WebDriverWait:
                 value = method(self._driver)
                 if not value:
                     return value
-            except InvalidSelectorException as e:
-                raise e
             except self._ignored_exceptions:
                 return True
             time.sleep(self._poll)

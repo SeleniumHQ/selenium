@@ -1,3 +1,22 @@
+v4.2.0
+======
+* Implement setting pointer event properties
+* Add CDP support for v102, and remove v99
+* Add performance to LogType
+* Removed Opera classes
+* Implemented Action Wheel Input and scrolling methods
+* Allow RemoteWebDriver to access Selenium logs
+* Fix bug where Actions class did not reset sequences after calling perform
+* Add Pause action to Actions class
+
+v4.1.1
+======
+* Add Zenkaku/Hankaku key
+* Allow Cookie name to be empty String when value not empty
+* Only add websocket-port if connectToRunningBrowser is not set
+* Add support for Chromium to cast desktop
+* Add CDP support for v99, v100, v101 and remove v94, v95, v96
+
 v4.1.0
 ======
 * add CDP support for v96 and remove v93

@@ -34,10 +34,6 @@ build --workspace_status_command=scripts/build-info.py
 build --verbose_failures
 build --test_output=errors
 
-# Tests need to be able to open sockets on localhost
-
-build --noexperimental_sandbox_default_allow_network
-
 # pass environment variables to the test environment
 
 build --test_env=CI

@@ -102,11 +102,6 @@ namespace OpenQA.Selenium.Interactions
         /// The X2 button used for navigating forward.
         /// </summary>
         Forward = 4,
-
-        /// <summary>
-        /// The button used by Pen pointers to erase.
-        /// </summary>
-        Eraser = 5
     }
 
     /// <summary>
@@ -177,7 +172,7 @@ namespace OpenQA.Selenium.Interactions
         /// <returns>The action representing the pointer down gesture.</returns>
         public Interaction CreatePointerDown(MouseButton button)
         {
-            return new PointerDownInteraction(this, button, new PointerEventProperties());
+            return CreatePointerDown(button, new PointerEventProperties());
         }
 
         /// <summary>
@@ -201,7 +196,7 @@ namespace OpenQA.Selenium.Interactions
         /// <returns>The action representing the pointer up gesture.</returns>
         public Interaction CreatePointerUp(MouseButton button)
         {
-            return new PointerUpInteraction(this, button, new PointerEventProperties());
+            return CreatePointerUp(button, new PointerEventProperties());
         }
 
         /// <summary>
@@ -228,7 +223,7 @@ namespace OpenQA.Selenium.Interactions
         /// <returns>The action representing the pointer move gesture.</returns>
         public Interaction CreatePointerMove(IWebElement target, int xOffset, int yOffset, TimeSpan duration)
         {
-            return new PointerMoveInteraction(this, target, CoordinateOrigin.Element, xOffset, yOffset, duration, new PointerEventProperties());
+            return CreatePointerMove(target, xOffset, yOffset, duration, new PointerEventProperties());
         }
 
         /// <summary>
@@ -258,12 +253,7 @@ namespace OpenQA.Selenium.Interactions
         /// Users should us the other CreatePointerMove overload to move to a specific element.</exception>
         public Interaction CreatePointerMove(CoordinateOrigin origin, int xOffset, int yOffset, TimeSpan duration)
         {
-            if (origin == CoordinateOrigin.Element)
-            {
-                throw new ArgumentException("Using a value of CoordinateOrigin.Element without an element is not supported.", nameof(origin));
-            }
-
-            return new PointerMoveInteraction(this, null, origin, xOffset, yOffset, duration, new PointerEventProperties());
+            return CreatePointerMove(origin, xOffset, yOffset, duration, new PointerEventProperties());
         }
 
         /// <summary>
