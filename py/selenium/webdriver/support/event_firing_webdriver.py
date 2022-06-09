@@ -15,7 +15,6 @@
 # specific language governing permissions and limitations
 # under the License.
 import typing
-import warnings
 
 from selenium.common.exceptions import WebDriverException
 from selenium.webdriver.common.by import By
