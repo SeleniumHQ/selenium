@@ -17,6 +17,18 @@
 
 package org.openqa.selenium.firefox;
 
+import org.junit.Test;
+import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.ImmutableCapabilities;
+import org.openqa.selenium.PageLoadStrategy;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.build.InProject;
+import org.openqa.selenium.remote.CapabilityType;
+import org.openqa.selenium.testing.JUnit4TestBase;
+import org.openqa.selenium.testing.NoDriverBeforeTest;
+
+import java.nio.file.Path;
+
 import static java.util.Optional.ofNullable;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assume.assumeTrue;
@@ -25,22 +37,6 @@ import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.openqa.selenium.remote.CapabilityType.ACCEPT_INSECURE_CERTS;
 import static org.openqa.selenium.remote.CapabilityType.PAGE_LOAD_STRATEGY;
-
-import org.junit.After;
-import org.junit.Test;
-import org.openqa.selenium.Capabilities;
-import org.openqa.selenium.ImmutableCapabilities;
-import org.openqa.selenium.PageLoadStrategy;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.build.InProject;
-import org.openqa.selenium.remote.CapabilityType;
-import org.openqa.selenium.support.ui.Wait;
-import org.openqa.selenium.support.ui.WebDriverWait;
-import org.openqa.selenium.testing.JUnit4TestBase;
-import org.openqa.selenium.testing.NoDriverBeforeTest;
-
-import java.nio.file.Path;
-import java.time.Duration;
 
 public class MarionetteTest extends JUnit4TestBase {
 
@@ -149,7 +145,7 @@ public class MarionetteTest extends JUnit4TestBase {
     Capabilities caps = new ImmutableCapabilities(FirefoxDriver.Capability.PROFILE, profile);
 
     localDriver = new FirefoxDriver(new FirefoxOptions().merge(caps));
-    wait.until($ -> "XHTML Test Page".equals(localDriver.getTitle()));
+    wait(localDriver).until($ -> "XHTML Test Page".equals(localDriver.getTitle()));
 
     verifyItIsMarionette(localDriver);
   }
