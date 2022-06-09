@@ -1,3 +1,11 @@
+v4.2.2
+======
+
+* Supported CDP versions: 85, 100, 101, 102
+* Throwing warnings for non-W3C before creating session (#10741)
+* Update ExpectedCondition to extend java util Function (#10695)
+* Fixing SafariTechPreview
+
 v4.2.1
 ======
 

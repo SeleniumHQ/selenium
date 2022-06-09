@@ -35,7 +35,6 @@ import java.util.Map;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static org.openqa.selenium.Platform.MAC;
 import static org.openqa.selenium.remote.Browser.SAFARI;
-import static org.openqa.selenium.remote.Browser.SAFARI_TECH_PREVIEW;
 
 public class SafariDriverService extends DriverService {
 
@@ -86,8 +85,6 @@ public class SafariDriverService extends DriverService {
       int score = 0;
 
       if (SAFARI.is(capabilities)) {
-        score++;
-      } else if (SAFARI_TECH_PREVIEW.browserName().equals(capabilities.getBrowserName())) {
         score++;
       }
 

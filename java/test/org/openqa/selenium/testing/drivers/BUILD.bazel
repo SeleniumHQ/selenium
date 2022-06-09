@@ -1,5 +1,5 @@
 load("@rules_jvm_external//:defs.bzl", "artifact")
-load("//java:defs.bzl", "java_library")
+load("//java:defs.bzl", "JUNIT5_VINTAGE_DEPS", "java_library")
 load("//java/src/org/openqa/selenium/devtools:versions.bzl", "CDP_DEPS")
 
 java_library(
@@ -57,5 +57,5 @@ java_library(
         artifact("com.google.guava:guava"),
         artifact("junit:junit"),
         artifact("org.seleniumhq.selenium:htmlunit-driver"),
-    ],
+    ] + JUNIT5_VINTAGE_DEPS,
 )
