@@ -20,7 +20,6 @@ package org.openqa.selenium.safari;
 import com.google.common.collect.ImmutableMap;
 
 import org.openqa.selenium.Beta;
-import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.CommandInfo;

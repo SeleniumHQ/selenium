@@ -17,8 +17,8 @@
 package org.openqa.selenium.edge;
 
 import com.google.common.collect.ImmutableMap;
+
 import org.openqa.selenium.Beta;
-import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chromium.ChromiumDriver;
 import org.openqa.selenium.chromium.ChromiumDriverCommandExecutor;
@@ -38,7 +38,9 @@ import java.util.Map;
  */
 public class EdgeDriver extends ChromiumDriver {
 
-  public EdgeDriver() { this(new EdgeOptions()); }
+  public EdgeDriver() {
+    this(new EdgeOptions());
+  }
 
   public EdgeDriver(EdgeOptions options) {
     this(new EdgeDriverService.Builder().build(), options);
