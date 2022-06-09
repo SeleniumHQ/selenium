@@ -144,14 +144,6 @@ public class InternetExplorerDriver extends RemoteWebDriver {
     this(null, null);
   }
 
-  /**
-   * @deprecated Use {@link #InternetExplorerDriver(InternetExplorerOptions)}
-   */
-  @Deprecated
-  public InternetExplorerDriver(Capabilities capabilities) {
-    this(null, capabilities);
-  }
-
   public InternetExplorerDriver(InternetExplorerOptions options) {
     this(null, options);
   }
@@ -161,16 +153,15 @@ public class InternetExplorerDriver extends RemoteWebDriver {
   }
 
   /**
-   * @deprecated Use {@link #InternetExplorerDriver(InternetExplorerDriverService, InternetExplorerOptions)}
+   * Creates a new InternetExplorerDriver instance with the specified options.
+   * The {@code service} will be started along with the driver, and shutdown upon
+   * calling {@link #quit()}.
+   *
+   * @param service The service to use.
+   * @param options The options required from InternetExplorerDriver.
    */
-  @Deprecated
-  public InternetExplorerDriver(InternetExplorerDriverService service, Capabilities capabilities) {
-    this(service, new InternetExplorerOptions(capabilities));
-  }
-
-  public InternetExplorerDriver(
-      InternetExplorerDriverService service,
-      InternetExplorerOptions options) {
+  public InternetExplorerDriver(InternetExplorerDriverService service,
+                                InternetExplorerOptions options) {
     if (options == null) {
       options = new InternetExplorerOptions();
     }
@@ -178,6 +169,11 @@ public class InternetExplorerDriver extends RemoteWebDriver {
       service = setupService(options);
     }
     run(service, options);
+  }
+
+  @Beta
+  public static RemoteWebDriverBuilder builder() {
+    return RemoteWebDriver.builder().oneOf(new InternetExplorerOptions());
   }
 
   private void run(InternetExplorerDriverService service, Capabilities capabilities) {
@@ -193,11 +189,6 @@ public class InternetExplorerDriver extends RemoteWebDriver {
     throw new WebDriverException(
         "Setting the file detector only works on remote webdriver instances obtained " +
         "via RemoteWebDriver");
-  }
-
-  @Beta
-  public static RemoteWebDriverBuilder builder() {
-    return RemoteWebDriver.builder().oneOf(new InternetExplorerOptions());
   }
 
   protected void assertOnWindows() {
