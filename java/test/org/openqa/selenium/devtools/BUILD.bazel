@@ -1,5 +1,5 @@
 load("@rules_jvm_external//:defs.bzl", "artifact")
-load("//java:defs.bzl", "java_library", "java_selenium_test_suite")
+load("//java:defs.bzl", "JUNIT5_VINTAGE_DEPS", "java_library", "java_selenium_test_suite")
 
 java_selenium_test_suite(
     name = "large-tests",
@@ -26,7 +26,7 @@ java_selenium_test_suite(
         artifact("com.google.guava:guava"),
         artifact("junit:junit"),
         artifact("org.assertj:assertj-core"),
-    ],
+    ] + JUNIT5_VINTAGE_DEPS,
 )
 
 java_library(
@@ -48,5 +48,5 @@ java_library(
         artifact("junit:junit"),
         artifact("org.assertj:assertj-core"),
         artifact("org.hamcrest:hamcrest"),
-    ],
+    ] + JUNIT5_VINTAGE_DEPS,
 )
