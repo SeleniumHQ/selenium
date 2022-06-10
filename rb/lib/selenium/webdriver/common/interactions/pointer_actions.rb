@@ -192,9 +192,9 @@ center point of the element as the origin.")
       # @return [ActionBuilder] A self reference.
       #
 
-      def click_and_hold(element = nil, device: nil)
+      def click_and_hold(element = nil, button: nil, device: nil)
         move_to(element, device: device) if element
-        pointer_down(:left, device: device)
+        pointer_down(button || :left, device: device)
         self
       end
 
@@ -211,8 +211,8 @@ center point of the element as the origin.")
       # @return [ActionBuilder] A self reference.
       #
 
-      def release(device: nil)
-        pointer_up(:left, device: device)
+      def release(button: nil, device: nil)
+        pointer_up(button || :left, device: device)
         self
       end
 
@@ -238,10 +238,10 @@ center point of the element as the origin.")
       # @return [ActionBuilder] A self reference.
       #
 
-      def click(element = nil, device: nil)
+      def click(element = nil, button: nil, device: nil)
         move_to(element, device: device) if element
-        pointer_down(:left, device: device)
-        pointer_up(:left, device: device)
+        pointer_down(button || :left, device: device)
+        pointer_up(button || :left, device: device)
         self
       end
 
@@ -296,10 +296,7 @@ center point of the element as the origin.")
       #
 
       def context_click(element = nil, device: nil)
-        move_to(element, device: device) if element
-        pointer_down(:right, device: device)
-        pointer_up(:right, device: device)
-        self
+        click(element, button: :right, device: device)
       end
 
       #

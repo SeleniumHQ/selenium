@@ -1,5 +1,5 @@
 load("@rules_jvm_external//:defs.bzl", "artifact")
-load("//java:defs.bzl", "java_library")
+load("//java:defs.bzl", "JUNIT5_VINTAGE_DEPS", "java_library")
 
 java_library(
     name = "api",
@@ -40,7 +40,7 @@ java_library(
         "//java/src/org/openqa/selenium:core",
         artifact("junit:junit"),
         artifact("org.testng:testng"),
-    ],
+    ] + JUNIT5_VINTAGE_DEPS,
 )
 
 java_library(

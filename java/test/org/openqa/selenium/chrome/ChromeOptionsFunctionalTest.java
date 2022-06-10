@@ -23,9 +23,12 @@ import static org.openqa.selenium.remote.CapabilityType.ACCEPT_INSECURE_CERTS;
 import org.junit.After;
 import org.junit.Test;
 import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.build.InProject;
+import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.testing.JUnit4TestBase;
+import org.openqa.selenium.testing.NoDriverBeforeTest;
 import org.openqa.selenium.testing.TestUtilities;
 
 import java.io.IOException;
@@ -36,26 +39,18 @@ public class ChromeOptionsFunctionalTest extends JUnit4TestBase {
 
   private static final String EXT_PATH = "common/extensions/webextensions-selenium-example.crx";
 
-  private ChromeDriver driver = null;
-
-  @After
-  public void tearDown() {
-    if (driver != null) {
-      driver.quit();
-    }
-  }
-
   @Test
+  @NoDriverBeforeTest
   public void canStartChromeWithCustomOptions() {
     ChromeOptions options = new ChromeOptions();
     if (TestUtilities.isOnTravis()) {
       options.setHeadless(true);
     }
     options.addArguments("user-agent=foo;bar");
-    driver = new ChromeDriver(options);
+    localDriver = new ChromeDriver(options);
 
-    driver.get(pages.clickJacker);
-    Object userAgent = driver.executeScript("return window.navigator.userAgent");
+    localDriver.get(pages.clickJacker);
+    Object userAgent = ((ChromeDriver) localDriver).executeScript("return window.navigator.userAgent");
     assertThat(userAgent).isEqualTo("foo;bar");
   }
 
@@ -69,35 +64,38 @@ public class ChromeOptionsFunctionalTest extends JUnit4TestBase {
   }
 
   @Test
+  @NoDriverBeforeTest
   public void canSetAcceptInsecureCerts() {
     ChromeOptions options = new ChromeOptions();
     if (TestUtilities.isOnTravis()) {
       options.setHeadless(true);
     }
     options.setAcceptInsecureCerts(true);
-    driver = new ChromeDriver(options);
+    localDriver = new ChromeDriver(options);
 
-    assertThat(driver.getCapabilities().getCapability(ACCEPT_INSECURE_CERTS)).isEqualTo(true);
+    assertThat(((ChromeDriver) localDriver).getCapabilities().getCapability(ACCEPT_INSECURE_CERTS)).isEqualTo(true);
   }
 
   @Test
+  @NoDriverBeforeTest
   public void canAddExtensionFromFile() {
     ChromeOptions options = new ChromeOptions();
     if (TestUtilities.isOnTravis()) {
       options.setHeadless(true);
     }
     options.addExtensions(InProject.locate(EXT_PATH).toFile());
-    driver = new ChromeDriver(options);
+    localDriver = new ChromeDriver(options);
 
-    driver.get(pages.echoPage);
+    localDriver.get(pages.echoPage);
 
-    WebElement footerElement = driver.findElement(By.id("webextensions-selenium-example"));
+    WebElement footerElement = localDriver.findElement(By.id("webextensions-selenium-example"));
 
     String footText = footerElement.getText();
     assertThat(footText).isEqualTo("Content injected by webextensions-selenium-example");
   }
 
   @Test
+  @NoDriverBeforeTest
   public void canAddExtensionFromStringEncodedInBase64() throws IOException {
     ChromeOptions options = new ChromeOptions();
     if (TestUtilities.isOnTravis()) {
@@ -105,14 +103,13 @@ public class ChromeOptionsFunctionalTest extends JUnit4TestBase {
     }
     options.addEncodedExtensions(Base64.getEncoder().encodeToString(
       Files.readAllBytes(InProject.locate(EXT_PATH))));
-    driver = new ChromeDriver(options);
+    localDriver = new ChromeDriver(options);
 
-    driver.get(pages.echoPage);
+    localDriver.get(pages.echoPage);
 
-    WebElement footerElement = driver.findElement(By.id("webextensions-selenium-example"));
+    WebElement footerElement = localDriver.findElement(By.id("webextensions-selenium-example"));
 
     String footText = footerElement.getText();
     assertThat(footText).isEqualTo("Content injected by webextensions-selenium-example");
   }
-
 }

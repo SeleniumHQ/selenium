@@ -1,4 +1,4 @@
-load("//java:defs.bzl", "artifact", "java_test_suite")
+load("//java:defs.bzl", "JUNIT5_VINTAGE_DEPS", "artifact", "java_test_suite")
 
 java_test_suite(
     name = "small-tests",
@@ -9,5 +9,5 @@ java_test_suite(
         "//java/src/org/openqa/selenium/remote/http",
         artifact("junit:junit"),
         artifact("org.assertj:assertj-core"),
-    ],
+    ] + JUNIT5_VINTAGE_DEPS,
 )

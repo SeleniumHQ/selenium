@@ -20,6 +20,7 @@ package org.openqa.selenium.remote;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 
+import org.openqa.selenium.AcceptedW3CCapabilityKeys;
 import org.openqa.selenium.Alert;
 import org.openqa.selenium.Beta;
 import org.openqa.selenium.By;
@@ -46,10 +47,7 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.WindowType;
 import org.openqa.selenium.devtools.DevTools;
 import org.openqa.selenium.devtools.HasDevTools;
-import org.openqa.selenium.interactions.HasInputDevices;
 import org.openqa.selenium.interactions.Interactive;
-import org.openqa.selenium.interactions.Keyboard;
-import org.openqa.selenium.interactions.Mouse;
 import org.openqa.selenium.interactions.Sequence;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.logging.LocalLogs;
@@ -74,6 +72,7 @@ import org.openqa.selenium.virtualauthenticator.VirtualAuthenticatorOptions;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.time.Duration;
+import java.util.Arrays;
 import java.util.Base64;
 import java.util.Collection;
 import java.util.Collections;
@@ -100,12 +99,32 @@ import static org.openqa.selenium.remote.CapabilityType.SUPPORTS_JAVASCRIPT;
 @Augmentable
 public class RemoteWebDriver implements WebDriver,
   JavascriptExecutor,
-  HasInputDevices,
   HasCapabilities,
   HasVirtualAuthenticator,
   Interactive,
   PrintsPage,
   TakesScreenshot {
+
+  // TODO: Remove in 4.4 when all IE caps go inside se:ieOptions
+  private static final List<String> IE_CAPABILITY_NAMES = Arrays.asList(
+    "browserAttachTimeout",
+    "elementScrollBehavior",
+    "enablePersistentHover",
+    "ie.enableFullPageScreenshot",
+    "ie.forceCreateProcessApi",
+    "ie.forceShellWindowsApi",
+    "ie.ensureCleanSession",
+    "ie.browserCommandLineSwitches",
+    "ie.usePerProcessProxy",
+    "ignoreZoomSetting",
+    "initialBrowserUrl",
+    "ignoreProtectedModeSettings",
+    "requireWindowFocus",
+    "ie.fileUploadDialogTimeout",
+    "nativeEvents",
+    "ie.useLegacyFileUploadDialogHandling",
+    "ie.edgechromium",
+    "ie.edgepath");
 
   // TODO: This static logger should be unified with the per-instance localLogs
   private static final Logger logger = Logger.getLogger(RemoteWebDriver.class.getName());
@@ -120,8 +139,6 @@ public class RemoteWebDriver implements WebDriver,
 
   private JsonToWebElementConverter converter;
 
-  private RemoteKeyboard keyboard;
-  private RemoteMouse mouse;
   private Logs remoteLogs;
   private LocalLogs localLogs;
 
@@ -205,8 +222,6 @@ public class RemoteWebDriver implements WebDriver,
 
     converter = new JsonToWebElementConverter(this);
     executeMethod = new RemoteExecuteMethod(this);
-    keyboard = new RemoteKeyboard(executeMethod);
-    mouse = new RemoteMouse(executeMethod);
 
     ImmutableSet.Builder<String> builder = new ImmutableSet.Builder<>();
 
@@ -243,6 +258,21 @@ public class RemoteWebDriver implements WebDriver,
   }
 
   protected void startSession(Capabilities capabilities) {
+    // Throwing warnings for non-W3C WebDriver compliant capabilities
+    List<String> invalid = capabilities.asMap().keySet()
+      .stream()
+      .filter(key -> !(new AcceptedW3CCapabilityKeys().test(key)))
+      .filter(key -> !IE_CAPABILITY_NAMES.contains(key))
+      .collect(Collectors.toList());
+
+    if (!invalid.isEmpty()) {
+      logger.log(Level.WARNING,
+                 () -> String.format("Support for Legacy Capabilities is deprecated; " +
+                                     "You are sending the following invalid capabilities: %s; " +
+                                     "Please update to W3C Syntax: https://www.selenium.dev/blog/2022/legacy-protocol-support/",
+                                     invalid));
+    }
+
     Response response = execute(DriverCommand.NEW_SESSION(singleton(capabilities)));
 
     if (response == null) {
@@ -622,16 +652,6 @@ public class RemoteWebDriver implements WebDriver,
   @Override
   public void resetInputState() {
     execute(DriverCommand.CLEAR_ACTIONS_STATE);
-  }
-
-  @Override
-  public Keyboard getKeyboard() {
-    return keyboard;
-  }
-
-  @Override
-  public Mouse getMouse() {
-    return mouse;
   }
 
   @Override

@@ -21,14 +21,11 @@ import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
-    ActionsTest.class,
     DefaultKeyboardTest.class,
     DefaultMouseTest.class,
     CombinedInputActionsTest.class,
     CompositeActionTest.class,
     DragAndDropTest.class,
-    IndividualKeyboardActionsTest.class,
-    IndividualMouseActionsTest.class,
 })
 public class InteractionTests {
 }

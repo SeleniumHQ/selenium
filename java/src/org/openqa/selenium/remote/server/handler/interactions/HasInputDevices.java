@@ -15,30 +15,16 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.interactions.touch;
+package org.openqa.selenium.remote.server.handler.interactions;
 
-import org.openqa.selenium.interactions.Action;
-import org.openqa.selenium.interactions.TouchScreen;
-import org.openqa.selenium.interactions.internal.TouchAction;
 
 /**
- * Creates an up gesture.
+ * Interface implemented by each driver that allows access to the raw input devices.
  */
 @Deprecated
-public class UpAction extends TouchAction implements Action {
+public interface HasInputDevices {
 
-  private final int x;
-  private final int y;
+  Keyboard getKeyboard();
 
-  public UpAction(TouchScreen touchScreen, int x, int y) {
-    super(touchScreen, null);
-    this.x = x;
-    this.y = y;
-  }
-
-  @Override
-  public void perform() {
-    touchScreen.up(x, y);
-  }
-
+  Mouse getMouse();
 }
