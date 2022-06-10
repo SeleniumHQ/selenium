@@ -24,7 +24,7 @@ import static org.mockito.Mockito.when;
 
 import com.google.common.collect.ImmutableMap;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.openqa.selenium.remote.DriverCommand;
 import org.openqa.selenium.remote.ExecuteMethod;
 import org.openqa.selenium.remote.RemoteLogs;

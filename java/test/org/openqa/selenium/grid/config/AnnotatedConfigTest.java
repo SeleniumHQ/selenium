@@ -17,21 +17,20 @@
 
 package org.openqa.selenium.grid.config;
 
+import com.beust.jcommander.Parameter;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
-
-import com.beust.jcommander.Parameter;
-
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class AnnotatedConfigTest {
 
@@ -82,15 +81,17 @@ public class AnnotatedConfigTest {
     assertTrue(values.contains("gouda"));
   }
 
-  @Test(expected = ConfigException.class)
+  @Test
   public void shouldNotAllowMapTypeFieldsToBeAnnotated() {
-    class WithBadAnnotation {
+    assertThrows(ConfigException.class, () -> {
+      class WithBadAnnotation {
 
-      @ConfigValue(section = "bad", name = "map", example = "")
-      private final Map<String, String> cheeses = ImmutableMap.of("peas", "sausage");
-    }
+        @ConfigValue(section = "bad", name = "map", example = "")
+        private final Map<String, String> cheeses = ImmutableMap.of("peas", "sausage");
+      }
 
-    new AnnotatedConfig(new WithBadAnnotation());
+      new AnnotatedConfig(new WithBadAnnotation());
+    });
   }
 
   @Test

@@ -17,22 +17,22 @@
 
 package org.openqa.selenium;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.openqa.selenium.interactions.Locatable;
 import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.testing.JUnit4TestBase;
+import org.openqa.selenium.testing.JupiterTestBase;
 import org.openqa.selenium.testing.NoDriverAfterTest;
 import org.openqa.selenium.testing.NotYetImplemented;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assume.assumeTrue;
+import static org.junit.jupiter.api.Assumptions.assumeTrue;
 import static org.openqa.selenium.WaitingConditions.elementTextToEqual;
 import static org.openqa.selenium.WaitingConditions.elementValueToEqual;
 import static org.openqa.selenium.WaitingConditions.windowToBeSwitchedToWithName;
 import static org.openqa.selenium.support.ui.ExpectedConditions.titleIs;
 import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
 
-public class JavascriptEnabledDriverTest extends JUnit4TestBase {
+public class JavascriptEnabledDriverTest extends JupiterTestBase {
 
   @Test
   public void testDocumentShouldReflectLatestTitle() {

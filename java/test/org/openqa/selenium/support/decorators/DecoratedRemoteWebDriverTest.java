@@ -17,8 +17,8 @@
 
 package org.openqa.selenium.support.decorators;
 
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Tag;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -29,7 +29,6 @@ import org.openqa.selenium.remote.Dialect;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.remote.RemoteWebElement;
 import org.openqa.selenium.remote.SessionId;
-import org.openqa.selenium.testing.UnitTests;
 
 import java.util.Map;
 import java.util.UUID;
@@ -40,7 +39,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.openqa.selenium.json.Json.MAP_TYPE;
 
-@Category(UnitTests.class)
+@Tag("UnitTests")
 public class DecoratedRemoteWebDriverTest {
 
   @Test

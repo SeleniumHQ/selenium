@@ -26,18 +26,17 @@ import static org.openqa.selenium.ie.InternetExplorerDriver.INITIAL_BROWSER_URL;
 import static org.openqa.selenium.ie.InternetExplorerDriver.INTRODUCE_FLAKINESS_BY_IGNORING_SECURITY_DOMAINS;
 import static org.openqa.selenium.ie.InternetExplorerOptions.IE_OPTIONS;
 
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Tag;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.remote.DesiredCapabilities;
-import org.openqa.selenium.testing.UnitTests;
 
 import java.util.Map;
 
-@Category(UnitTests.class)
+@Tag("UnitTests")
 public class InternetExplorerOptionsTest {
 
   @Test

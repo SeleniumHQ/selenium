@@ -17,16 +17,15 @@
 
 package com.thoughtworks.selenium.webdriven;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
+import org.junit.platform.suite.api.SelectClasses;
+import org.junit.platform.suite.api.Suite;
 
-@RunWith(Suite.class)
-@Suite.SuiteClasses({
-    CompoundMutatorTest.class,
-    FastWebDriverBackedSeleniumTest.class,
-    TimerTest.class,
-    VariableDeclarationTest.class,
-    WebDriverCommandProcessorTest.class
-})
+@SelectClasses({
+  CompoundMutatorTest.class,
+  FastWebDriverBackedSeleniumTest.class,
+  TimerTest.class,
+  VariableDeclarationTest.class,
+  WebDriverCommandProcessorTest.class})
+@Suite
 public class SmallTests {
 }

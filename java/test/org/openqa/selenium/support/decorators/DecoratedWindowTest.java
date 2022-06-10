@@ -24,17 +24,16 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Tag;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.Point;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.testing.UnitTests;
 
 import java.util.function.Consumer;
 import java.util.function.Function;
 
-@Category(UnitTests.class)
+@Tag("UnitTests")
 public class DecoratedWindowTest {
 
   private static class Fixture {

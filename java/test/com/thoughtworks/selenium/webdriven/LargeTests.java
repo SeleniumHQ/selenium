@@ -17,13 +17,13 @@
 
 package com.thoughtworks.selenium.webdriven;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
+import org.junit.platform.suite.api.SelectClasses;
+import org.junit.platform.suite.api.Suite;
 
-@RunWith(Suite.class)
-@Suite.SuiteClasses({
-    ScriptMutatorTest.class,
-    WebDriverBackedSeleniumLargeTest.class
+@SelectClasses({
+  ScriptMutatorTest.class,
+  WebDriverBackedSeleniumLargeTest.class
 })
+@Suite
 public class LargeTests {
 }

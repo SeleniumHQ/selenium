@@ -17,8 +17,9 @@
 
 package org.openqa.selenium.bidi;
 
-import org.junit.After;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxOptions;
 
@@ -30,6 +31,7 @@ public class BiDiSessionTest {
 
   private FirefoxDriver driver;
 
+  @Disabled
   @Test
   public void shouldBeAbleToCreateABiDiSession() {
     FirefoxOptions options = new FirefoxOptions();
@@ -45,7 +47,7 @@ public class BiDiSessionTest {
     assertThat(status.getMessage()).isEqualTo("Session already started");
   }
 
-  @After
+  @AfterEach
   public void quitDriver() {
     if (driver != null) {
       driver.quit();

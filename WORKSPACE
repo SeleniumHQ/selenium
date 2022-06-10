@@ -132,9 +132,9 @@ rules_jvm_external_setup()
 
 http_archive(
     name = "contrib_rules_jvm",
-    sha256 = "79773625951a7a6dc0fc1636ef2388253b69a1e8109b34198c191953280648ab",
-    strip_prefix = "rules_jvm-0.3.0",
-    url = "https://github.com/bazel-contrib/rules_jvm/archive/v0.3.0.tar.gz",
+    sha256 = None,
+    strip_prefix = "rules_jvm-35d89231aed8527b49dd2caba966e9cb097b4da6",
+    url = "https://github.com/bazel-contrib/rules_jvm/archive/35d89231aed8527b49dd2caba966e9cb097b4da6.zip",
 )
 
 load("@contrib_rules_jvm//:repositories.bzl", "contrib_rules_jvm_deps")

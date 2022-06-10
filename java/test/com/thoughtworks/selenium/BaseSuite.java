@@ -17,10 +17,8 @@
 
 package com.thoughtworks.selenium;
 
-import org.junit.ClassRule;
-import org.junit.rules.ExternalResource;
-import org.junit.rules.RuleChain;
-import org.junit.rules.TestRule;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
 import org.openqa.selenium.environment.GlobalTestEnvironment;
 import org.openqa.selenium.environment.InProcessTestEnvironment;
 
@@ -30,35 +28,30 @@ public class BaseSuite {
 
   private static final Logger log = Logger.getLogger(BaseSuite.class.getName());
 
-  public static ExternalResource testEnvironment = new ExternalResource() {
-    @Override
-    protected void before() {
-      log.info("Preparing test environment");
-      GlobalTestEnvironment.getOrCreate(InProcessTestEnvironment::new);
-      System.setProperty("webdriver.remote.shorten_log_messages", "true");
+  @BeforeAll
+  public static void setup() {
+    // testEnvironment
+    log.info("Preparing test environment");
+    GlobalTestEnvironment.getOrCreate(InProcessTestEnvironment::new);
+    System.setProperty("webdriver.remote.shorten_log_messages", "true");
+
+
+  }
+
+  @AfterAll
+  public static void teardown() {
+    // browser
+    log.info("Stopping browser");
+    try {
+      InternalSelenseTestBase.destroyDriver();
+    } catch (SeleniumException ignored) {
+      // Nothing sane to do
     }
 
-    @Override
-    protected void after() {
-      log.info("Cleaning test environment");
-      GlobalTestEnvironment.stop();
-    }
-  };
+    // testEnvironment
+    log.info("Cleaning test environment");
+    GlobalTestEnvironment.stop();
 
-  public static ExternalResource browser = new ExternalResource() {
-    @Override
-    protected void after() {
-      log.info("Stopping browser");
-      try {
-        InternalSelenseTestBase.destroyDriver();
-      } catch (SeleniumException ignored) {
-        // Nothing sane to do
-      }
-    }
-  };
-
-  @ClassRule
-  public static TestRule chain =
-      RuleChain.outerRule(testEnvironment).around(browser);
+  }
 
 }

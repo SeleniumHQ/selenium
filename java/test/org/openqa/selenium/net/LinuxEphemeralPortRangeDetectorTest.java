@@ -19,13 +19,12 @@ package org.openqa.selenium.net;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
-import org.openqa.selenium.testing.UnitTests;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Tag;
 
 import java.io.StringReader;
 
-@Category(UnitTests.class)
+@Tag("UnitTests")
 public class LinuxEphemeralPortRangeDetectorTest {
 
   @Test

@@ -19,7 +19,7 @@ package org.openqa.selenium.devtools;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.devtools.events.ConsoleEvent;
 import org.openqa.selenium.environment.webserver.Page;

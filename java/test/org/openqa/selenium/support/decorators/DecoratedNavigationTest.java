@@ -23,16 +23,15 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Tag;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.testing.UnitTests;
 
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.function.Consumer;
 
-@Category(UnitTests.class)
+@Tag("UnitTests")
 public class DecoratedNavigationTest {
 
   private static class Fixture {

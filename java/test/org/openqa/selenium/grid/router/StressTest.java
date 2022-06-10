@@ -17,9 +17,9 @@
 
 package org.openqa.selenium.grid.router;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.grid.config.MapConfig;
@@ -58,7 +58,7 @@ public class StressTest {
   private Browser browser;
   private Server<?> appServer;
 
-  @Before
+  @BeforeEach
   public void setupServers() {
     browser = Objects.requireNonNull(Browser.detect());
 
@@ -87,7 +87,7 @@ public class StressTest {
     appServer.start();
   }
 
-  @After
+  @AfterEach
   public void tearDown() {
     tearDowns.parallelStream().forEach(Safely::safelyCall);
     executor.shutdownNow();

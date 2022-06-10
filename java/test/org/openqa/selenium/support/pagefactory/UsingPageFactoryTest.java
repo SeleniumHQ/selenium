@@ -21,7 +21,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -31,11 +31,11 @@ import org.openqa.selenium.support.ByIdOrName;
 import org.openqa.selenium.support.CacheLookup;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
-import org.openqa.selenium.testing.JUnit4TestBase;
+import org.openqa.selenium.testing.JupiterTestBase;
 
 import java.util.List;
 
-public class UsingPageFactoryTest extends JUnit4TestBase {
+public class UsingPageFactoryTest extends JupiterTestBase {
 
   @Test
   public void canExecuteJsUsingDecoratedElements() {

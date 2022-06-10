@@ -16,16 +16,14 @@
 // under the License.
 package org.openqa.selenium.interactions;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
+import org.junit.platform.suite.api.SelectClasses;
+import org.junit.platform.suite.api.Suite;
 
-@RunWith(Suite.class)
-@Suite.SuiteClasses({
-    DefaultKeyboardTest.class,
-    DefaultMouseTest.class,
-    CombinedInputActionsTest.class,
-    CompositeActionTest.class,
-    DragAndDropTest.class,
-})
+@SelectClasses({DefaultKeyboardTest.class,
+  DefaultMouseTest.class,
+  CombinedInputActionsTest.class,
+  CompositeActionTest.class,
+  DragAndDropTest.class})
+@Suite
 public class InteractionTests {
 }

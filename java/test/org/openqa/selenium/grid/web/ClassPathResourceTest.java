@@ -18,7 +18,7 @@
 package org.openqa.selenium.grid.web;
 
 import com.google.common.collect.ImmutableSet;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.net.URL;
 import java.util.Optional;

@@ -17,8 +17,8 @@
 
 package org.openqa.selenium.grid.distributor.local;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.SessionNotCreatedException;
@@ -89,7 +89,7 @@ public class LocalDistributorTest {
   private Node localNode;
   private Wait<Object> wait;
 
-  @Before
+  @BeforeEach
   public void setUp() throws URISyntaxException {
     tracer = DefaultTestTracer.createTracer();
     bus = new GuavaEventBus();

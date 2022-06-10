@@ -17,11 +17,11 @@
 
 package com.thoughtworks.selenium;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.openqa.selenium.WrapsDriver;
 
-import static org.junit.Assume.assumeFalse;
+import static org.junit.jupiter.api.Assumptions.assumeFalse;
 
 /**
  * Regression test suite for stability problems discovered in Selenium Remote Control
@@ -31,7 +31,7 @@ import static org.junit.Assume.assumeFalse;
  */
 public class StabilityTest extends InternalSelenseTestBase {
 
-  @Before
+  @BeforeEach
   public void assumeSeCoreImplementation() {
     assumeFalse(selenium instanceof WrapsDriver);
   }

@@ -16,7 +16,7 @@
 // under the License.
 package org.openqa.selenium.build;
 
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.fail;
 import static org.openqa.selenium.Platform.WINDOWS;
 import static org.openqa.selenium.build.DevMode.isInDevMode;
 

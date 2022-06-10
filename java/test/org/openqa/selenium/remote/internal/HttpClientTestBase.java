@@ -20,9 +20,9 @@ package org.openqa.selenium.remote.internal;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 import org.openqa.selenium.BuildInfo;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.TimeoutException;
@@ -61,13 +61,13 @@ abstract public class HttpClientTestBase {
   static HttpHandler delegate;
   static AppServer server;
 
-  @BeforeClass
+  @BeforeAll
   public static void setUp() {
     server = new NettyAppServer(req -> delegate.execute(req));
     server.start();
   }
 
-  @AfterClass
+  @AfterAll
   public static void tearDown() {
     server.stop();
   }

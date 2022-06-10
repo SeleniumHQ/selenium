@@ -17,24 +17,22 @@
 
 package org.openqa.selenium.lift;
 
-import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertThat;
-import static org.mockito.Mockito.mock;
-
 import org.hamcrest.Matcher;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.InOrder;
 import org.mockito.Mockito;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.lift.find.Finder;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.mock;
+
 /**
  * Unit test for {@link HamcrestWebDriverTestCase}.
  *
  * @author rchatley (Robert Chatley)
- *
  */
 @SuppressWarnings("unchecked")
 public class HamcrestWebdriverTestCaseTest {
@@ -46,7 +44,7 @@ public class HamcrestWebdriverTestCaseTest {
 
   HamcrestWebDriverTestCase testcase;
 
-  @Before
+  @BeforeEach
   public void createMocks() {
     testcase = createTestCase();
 
@@ -77,9 +75,8 @@ public class HamcrestWebdriverTestCaseTest {
 
   @Test
   public void providesSyntacticSugarMethodNamedInto() {
-
     Finder<WebElement, WebDriver> result = testcase.into(something);
-    assertThat(result, is(something));
+    assertThat(result).isEqualTo(something);
   }
 
   private HamcrestWebDriverTestCase createTestCase() {

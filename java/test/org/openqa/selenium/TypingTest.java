@@ -17,10 +17,10 @@
 
 package org.openqa.selenium;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.testing.Ignore;
-import org.openqa.selenium.testing.JUnit4TestBase;
+import org.openqa.selenium.testing.JupiterTestBase;
 import org.openqa.selenium.testing.NotYetImplemented;
 
 import static com.google.common.base.Joiner.on;
@@ -32,7 +32,7 @@ import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
 import static org.openqa.selenium.testing.drivers.Browser.IE;
 import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
 
-public class TypingTest extends JUnit4TestBase {
+public class TypingTest extends JupiterTestBase {
 
   private static void checkRecordedKeySequence(WebElement element, int expectedKeyCode) {
     assertThat(element.getText().trim()).contains(

@@ -17,19 +17,19 @@
 
 package com.thoughtworks.selenium;
 
-import org.junit.Assert;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
 import java.awt.event.KeyEvent;
 
-@Ignore("Focus does not focus")
+@Disabled("Focus does not focus")
 public class TestNativeKeys extends InternalSelenseTestBase {
   @Test
   public void testKeyPressNative() {
     selenium.open("test_type_page1.html");
     selenium.focus("username");
     selenium.keyPressNative(Integer.toString(KeyEvent.VK_H));
-    Assert.assertEquals(selenium.getValue("username"), "h");
+    Assertions.assertEquals(selenium.getValue("username"), "h");
   }
 }

@@ -17,13 +17,19 @@
 
 package org.openqa.selenium.testing;
 
-import org.junit.runner.Description;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.extension.ExtensionContext;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.testing.drivers.Browser;
 
+import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
+
+import static org.junit.platform.commons.util.AnnotationUtils.findAnnotation;
+import static org.junit.platform.commons.util.AnnotationUtils.findRepeatableAnnotations;
 
 /**
  * Class that decides whether a test class or method should be ignored.
@@ -38,7 +44,7 @@ public class TestIgnorance {
 
   public TestIgnorance(Browser driver) {
     ignoreComparator.addDriver(Require.argument("Driver", driver).nonNull(
-        "Browser to use must be set. Do this by setting the 'selenium.browser' system property"));
+      "Browser to use must be set. Do this by setting the 'selenium.browser' system property"));
 
     String onlyRun = System.getProperty("only_run");
     if (onlyRun != null) {
@@ -61,32 +67,36 @@ public class TestIgnorance {
     }
   }
 
-  public boolean isIgnored(Description method) {
-    boolean ignored = ignoreComparator.shouldIgnore(method.getTestClass().getAnnotation(IgnoreList.class)) ||
-                      ignoreComparator.shouldIgnore(method.getTestClass().getAnnotation(Ignore.class)) ||
-                      ignoreComparator.shouldIgnore(method.getAnnotation(IgnoreList.class)) ||
-                      ignoreComparator.shouldIgnore(method.getAnnotation(Ignore.class));
+  public boolean isIgnored(ExtensionContext extensionContext) {
+    Optional<Class<?>> testClass = extensionContext.getTestClass();
+    Optional<Method> testMethod = extensionContext.getTestMethod();
 
-    ignored |= isIgnoredBecauseOfJUnit4Ignore(method.getTestClass().getAnnotation(org.junit.Ignore.class));
-    ignored |= isIgnoredBecauseOfJUnit4Ignore(method.getAnnotation(org.junit.Ignore.class));
+    // Ignored because of Selenium's custom extensions
+    boolean ignored = findAnnotation(testClass, IgnoreList.class).isPresent() ||
+      !findRepeatableAnnotations(testClass, Ignore.class).isEmpty() ||
+      findAnnotation(testMethod, IgnoreList.class).isPresent() ||
+      !findRepeatableAnnotations(testMethod, Ignore.class).isEmpty();
+
+    // Ignored because of Jupiter's @Disabled
+    ignored |= findAnnotation(testClass, Disabled.class).isPresent();
+    ignored |= findAnnotation(testMethod, Disabled.class).isPresent();
+
+    // Ignored because of environment variables
     if (Boolean.getBoolean("ignored_only")) {
       ignored = !ignored;
     }
-
-    ignored |= isIgnoredDueToEnvironmentVariables(method);
+    if (testClass.isPresent() && testMethod.isPresent()) {
+      ignored |= isIgnoredDueToEnvironmentVariables(testClass.get(), testMethod.get());
+    }
 
     return ignored;
   }
 
-  private boolean isIgnoredBecauseOfJUnit4Ignore(org.junit.Ignore annotation) {
-    return annotation != null;
-  }
-
-  private boolean isIgnoredDueToEnvironmentVariables(Description method) {
-    return (!only.isEmpty() && !only.contains(method.getTestClass().getSimpleName())) ||
-           (!methods.isEmpty() && !methods.contains(method.getMethodName())) ||
-           ignoreClasses.contains(method.getTestClass().getSimpleName()) ||
-           ignoreMethods.contains(method.getMethodName());
+  private boolean isIgnoredDueToEnvironmentVariables(Class<?> testClass, Method testMethod) {
+    return (!only.isEmpty() && !only.contains(testClass.getSimpleName())) ||
+      (!methods.isEmpty() && !methods.contains(testMethod.getName())) ||
+      ignoreClasses.contains(testClass.getSimpleName()) ||
+      ignoreMethods.contains(testMethod.getName());
   }
 
 }
