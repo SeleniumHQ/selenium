@@ -20,8 +20,7 @@ package org.openqa.selenium.grid.distributor.local;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
-import dev.failsafe.Failsafe;
-import dev.failsafe.RetryPolicy;
+
 import org.openqa.selenium.Beta;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.HealthCheckFailedException;
@@ -80,6 +79,9 @@ import org.openqa.selenium.remote.tracing.Span;
 import org.openqa.selenium.remote.tracing.Status;
 import org.openqa.selenium.remote.tracing.Tracer;
 import org.openqa.selenium.status.HasReadyState;
+
+import dev.failsafe.Failsafe;
+import dev.failsafe.RetryPolicy;
 
 import java.io.Closeable;
 import java.io.UncheckedIOException;
@@ -493,12 +495,15 @@ public class LocalDistributor extends Distributor implements Closeable {
     Map<String, EventAttributeValue> attributeMap = new HashMap<>();
     try {
       attributeMap.put(AttributeKey.LOGGER_CLASS.getKey(),
-        EventAttribute.setValue(getClass().getName()));
+                       EventAttribute.setValue(getClass().getName()));
 
-      attributeMap.put("request.payload", EventAttribute.setValue(request.getDesiredCapabilities().toString()));
+      attributeMap.put("request.payload",
+                       EventAttribute.setValue(request.getDesiredCapabilities().toString()));
       String sessionReceivedMessage = "Session request received by the Distributor";
       span.addEvent(sessionReceivedMessage, attributeMap);
-      LOG.info(String.format("%s: \n %s", sessionReceivedMessage, request.getDesiredCapabilities()));
+      LOG.info(String.format("%s: %n %s",
+                             sessionReceivedMessage,
+                             request.getDesiredCapabilities()));
 
       // If there are no capabilities at all, something is horribly wrong
       if (request.getDesiredCapabilities().isEmpty()) {
@@ -506,8 +511,9 @@ public class LocalDistributor extends Distributor implements Closeable {
           new SessionNotCreatedException("No capabilities found in session request payload");
         EXCEPTION.accept(attributeMap, exception);
         attributeMap.put(AttributeKey.EXCEPTION_MESSAGE.getKey(),
-          EventAttribute.setValue("Unable to create session. No capabilities found: " +
-            exception.getMessage()));
+                         EventAttribute.setValue(
+                           "Unable to create session. No capabilities found: " +
+                           exception.getMessage()));
         span.addEvent(AttributeKey.EXCEPTION_EVENT.getKey(), attributeMap);
         return Either.left(exception);
       }
@@ -528,7 +534,7 @@ public class LocalDistributor extends Distributor implements Closeable {
         SlotId selectedSlot = reserveSlot(request.getRequestId(), caps);
         if (selectedSlot == null) {
           LOG.info(
-            String.format("Unable to find a free slot for request %s. \n %s ",
+            String.format("Unable to find a free slot for request %s. %n %s ",
                           request.getRequestId(),
                           caps));
           retry = true;
@@ -558,7 +564,7 @@ public class LocalDistributor extends Distributor implements Closeable {
           String sessionCreatedMessage = "Session created by the Distributor";
           span.addEvent(sessionCreatedMessage, attributeMap);
           LOG.info(
-            String.format("%s. Id: %s \n Caps: %s", sessionCreatedMessage, sessionId, sessionCaps));
+            String.format("%s. Id: %s %n Caps: %s", sessionCreatedMessage, sessionId, sessionCaps));
 
           return Either.right(response);
         } catch (SessionNotCreatedException e) {
