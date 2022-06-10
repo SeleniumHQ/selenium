@@ -15,30 +15,35 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.interactions.touch;
+package org.openqa.selenium.remote.server.handler.interactions;
 
-import org.openqa.selenium.interactions.Action;
-import org.openqa.selenium.interactions.TouchScreen;
-import org.openqa.selenium.interactions.internal.TouchAction;
+import org.openqa.selenium.interactions.Actions;
+import org.openqa.selenium.interactions.Coordinates;
+import org.openqa.selenium.interactions.PointerInput;
 
 /**
- * Creates a move gesture.
+ * Interface representing basic mouse operations.
+ *
+ * @deprecated Use {@link Actions} and the {@link PointerInput} instead.
  */
 @Deprecated
-public class MoveAction extends TouchAction implements Action {
+public interface Mouse {
 
-  private final int x;
-  private final int y;
+  void click(Coordinates where);
 
-  public MoveAction(TouchScreen touchScreen, int x, int y) {
-    super(touchScreen, null);
-    this.x = x;
-    this.y = y;
-  }
+  void doubleClick(Coordinates where);
 
-  @Override
-  public void perform() {
-    touchScreen.move(x, y);
-  }
+  void mouseDown(Coordinates where);
 
+  void mouseUp(Coordinates where);
+
+  void mouseMove(Coordinates where);
+
+  /* Offset from the current location of the mouse pointer. */
+  void mouseMove(Coordinates where, long xOffset, long yOffset);
+
+  // Right-clicks an element.
+  void contextClick(Coordinates where);
+
+  // TODO: Scroll wheel support
 }
