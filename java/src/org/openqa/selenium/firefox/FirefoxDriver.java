@@ -93,22 +93,6 @@ public class FirefoxDriver extends RemoteWebDriver
   public FirefoxDriver() {
     this(new FirefoxOptions());
   }
-  /**
-   * @deprecated Use {@link #FirefoxDriver(FirefoxOptions)}.
-   */
-  @Deprecated
-  public FirefoxDriver(Capabilities desiredCapabilities) {
-    this(new FirefoxOptions(Require.nonNull("Capabilities", desiredCapabilities)));
-  }
-  /**
-   * @deprecated Use {@link #FirefoxDriver(FirefoxDriverService, FirefoxOptions)}.
-   */
-  @Deprecated
-  public FirefoxDriver(FirefoxDriverService service, Capabilities desiredCapabilities) {
-    this(
-        Require.nonNull("Driver service", service),
-        new FirefoxOptions(desiredCapabilities));
-  }
 
   public FirefoxDriver(FirefoxOptions options) {
     this(new FirefoxDriverCommandExecutor(GeckoDriverService.createDefaultService()), options);

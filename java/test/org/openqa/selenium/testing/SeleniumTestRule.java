@@ -44,6 +44,7 @@ public class SeleniumTestRule implements TestRule {
   private final Duration regularWait;
   private final Duration shortWait;
   private final RuleChain chain;
+  private boolean nullDriver = false;
 
   public SeleniumTestRule() {
     this(Duration.ofSeconds(10), Duration.ofSeconds(5));
@@ -77,6 +78,10 @@ public class SeleniumTestRule implements TestRule {
 
 
   public WebDriver getDriver() {
+    if (nullDriver) {
+      return null;
+    }
+
     LOG.info("CREATING DRIVER");
     WebDriver driver = actuallyCreateDriver();
     LOG.info("CREATED " + driver);
@@ -100,6 +105,7 @@ public class SeleniumTestRule implements TestRule {
         (current.driver instanceof RemoteWebDriver && ((RemoteWebDriver) current.driver).getSessionId() == null)) {
       StaticResources.ensureAvailable();
       WebDriver driver = new WebDriverBuilder().get(capabilities);
+      nullDriver = false;
       instances.set(new Instances(driver, regularWait, shortWait));
     }
     return instances.get().driver;
@@ -148,6 +154,7 @@ public class SeleniumTestRule implements TestRule {
       if (killSharedDriver != null && current.matches(killSharedDriver.value())) {
         LOG.info("Destroying driver before test " + description);
         removeDriver();
+        nullDriver = true;
         return;
       }
       NeedsFreshDriver annotation = description.getAnnotation(NeedsFreshDriver.class);

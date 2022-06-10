@@ -19,48 +19,35 @@ package org.openqa.selenium.edge;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.openqa.selenium.remote.CapabilityType.ACCEPT_INSECURE_CERTS;
-import static org.openqa.selenium.support.ui.ExpectedConditions.titleIs;
 
-import org.junit.After;
 import org.junit.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.HasCapabilities;
 import org.openqa.selenium.JavascriptExecutor;
-import org.openqa.selenium.Keys;
-import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.build.InProject;
-import org.openqa.selenium.support.ui.WebDriverWait;
 import org.openqa.selenium.testing.JUnit4TestBase;
+import org.openqa.selenium.testing.NoDriverBeforeTest;
 import org.openqa.selenium.testing.NotYetImplemented;
 import org.openqa.selenium.testing.drivers.WebDriverBuilder;
 
 import java.io.IOException;
 import java.nio.file.Files;
-import java.time.Duration;
 import java.util.Base64;
 
 public class EdgeOptionsFunctionalTest extends JUnit4TestBase {
 
   private static final String EXT_PATH = "common/extensions/webextensions-selenium-example.crx";
 
-  private WebDriver edgeDriver = null;
-
-  @After
-  public void tearDown() {
-    if (edgeDriver != null) {
-      edgeDriver.quit();
-    }
-  }
-
   @Test
-  public void canStartChromeWithCustomOptions() {
+  @NoDriverBeforeTest
+  public void canStartEdgeWithCustomOptions() {
     EdgeOptions options = new EdgeOptions();
     options.addArguments("user-agent=foo;bar");
-    edgeDriver = new WebDriverBuilder().get(options);
+    localDriver = new WebDriverBuilder().get(options);
 
-    edgeDriver.get(pages.clickJacker);
-    Object userAgent = ((JavascriptExecutor) edgeDriver).executeScript("return window.navigator.userAgent");
+    localDriver.get(pages.clickJacker);
+    Object userAgent = ((JavascriptExecutor) localDriver).executeScript("return window.navigator.userAgent");
     assertThat(userAgent).isEqualTo("foo;bar");
   }
 
@@ -74,45 +61,46 @@ public class EdgeOptionsFunctionalTest extends JUnit4TestBase {
   }
 
   @Test
+  @NoDriverBeforeTest
   public void canSetAcceptInsecureCerts() {
     EdgeOptions options = new EdgeOptions();
     options.setAcceptInsecureCerts(true);
-    edgeDriver = new WebDriverBuilder().get(options);
-    System.out.println(((HasCapabilities) edgeDriver).getCapabilities());
+    localDriver = new WebDriverBuilder().get(options);
+    System.out.println(((HasCapabilities) localDriver).getCapabilities());
 
-    assertThat(((HasCapabilities) edgeDriver).getCapabilities().getCapability(ACCEPT_INSECURE_CERTS)).isEqualTo(true);
+    assertThat(((HasCapabilities) localDriver).getCapabilities().getCapability(ACCEPT_INSECURE_CERTS)).isEqualTo(true);
   }
 
   @Test
   @NotYetImplemented
+  @NoDriverBeforeTest
   public void canAddExtensionFromFile() {
     EdgeOptions options = new EdgeOptions();
     options.addExtensions(InProject.locate(EXT_PATH).toFile());
-    edgeDriver = new WebDriverBuilder().get(options);
+    localDriver = new WebDriverBuilder().get(options);
 
-    edgeDriver.get(pages.echoPage);
+    localDriver.get(pages.echoPage);
 
-    WebElement footerElement = driver.findElement(By.id("webextensions-selenium-example"));
+    WebElement footerElement = localDriver.findElement(By.id("webextensions-selenium-example"));
 
     String footText = footerElement.getText();
     assertThat(footText).isEqualTo("Content injected by webextensions-selenium-example");
-
   }
 
   @Test
   @NotYetImplemented
+  @NoDriverBeforeTest
   public void canAddExtensionFromStringEncodedInBase64() throws IOException {
     EdgeOptions options = new EdgeOptions();
     options.addEncodedExtensions(Base64.getEncoder().encodeToString(
         Files.readAllBytes(InProject.locate(EXT_PATH))));
-    edgeDriver = new WebDriverBuilder().get(options);
+    localDriver = new WebDriverBuilder().get(options);
 
-    edgeDriver.get(pages.echoPage);
+    localDriver.get(pages.echoPage);
 
-    WebElement footerElement = driver.findElement(By.id("webextensions-selenium-example"));
+    WebElement footerElement = localDriver.findElement(By.id("webextensions-selenium-example"));
 
     String footText = footerElement.getText();
     assertThat(footText).isEqualTo("Content injected by webextensions-selenium-example");
   }
-
 }

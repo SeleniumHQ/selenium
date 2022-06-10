@@ -1,5 +1,5 @@
 load("@rules_jvm_external//:defs.bzl", "artifact")
-load("//java:defs.bzl", "spotbugs_config")
+load("@contrib_rules_jvm//java:defs.bzl", "spotbugs_config")
 
 exports_files(
     srcs = [
@@ -41,7 +41,7 @@ spotbugs_config(
     name = "spotbugs-config",
     effort = "default",
     exclude_filter = "spotbugs-excludes.xml",
-    fail_on_warning = True,
+    fail_on_warning = False,
     visibility = [
         "//visibility:public",
     ],

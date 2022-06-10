@@ -6,7 +6,6 @@ load("@py_dev_requirements//:requirements.bzl", "requirement")
 load("//common:defs.bzl", "copy_file")
 load("//py:defs.bzl", "py_test_suite")
 load("//py/private:browsers.bzl", "BROWSERS")
-
 load("@rules_python//python:pip.bzl", "compile_pip_requirements")
 
 compile_pip_requirements(
