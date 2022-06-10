@@ -24,7 +24,7 @@ const virtualAuthenticatorOptions =
   require('../lib/virtual_authenticator').VirtualAuthenticatorOptions
 const { ignore, suite } = require('../lib/test')
 const { Browser } = require('../lib/capabilities')
-const fileserver = require('../lib/test/fileserver')
+const fileServer = require('../lib/test/fileserver')
 const invalidArgumentError = require('../lib/error').InvalidArgumentError
 
 const REGISTER_CREDENTIAL =
@@ -135,7 +135,7 @@ suite(function (env) {
 
   beforeEach(async function () {
     driver = await env.builder().build()
-    await driver.get(fileserver.Pages.virtualAuthenticator)
+    await driver.get(fileServer.Pages.virtualAuthenticator)
     assert.strictEqual(await driver.getTitle(), 'Virtual Authenticator Tests')
   })
 
@@ -364,7 +364,7 @@ suite(function (env) {
         assert.equal(credential2.isResidentCredential(), false)
         assert.notEqual(credential2.privateKey(), null)
         /**
-         * Non resident keys do not store raw RP IDs or user handles.
+         * Non-resident keys do not store raw RP IDs or user handles.
          */
         assert.equal(credential2.rpId(), null)
         assert.equal(credential2.userHandle(), null)

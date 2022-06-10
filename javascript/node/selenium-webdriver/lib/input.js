@@ -346,6 +346,15 @@ class Pointer extends Device {
 
   /**
    * @param {!Button=} button The button to press.
+   * @param width
+   * @param height
+   * @param pressure
+   * @param tangentialPressure
+   * @param tiltX
+   * @param tiltY
+   * @param twist
+   * @param altitudeAngle
+   * @param azimuthAngle
    * @return {!Action} An action to press the specified button with this device.
    * @package
    */
@@ -448,10 +457,9 @@ Pointer.Type = {
 
 class Wheel extends Device {
   /**
-   * @param {string} id the device ID.
-   * @param {Pointer.Type} type the pointer type.
+   * @param {string} id the device ID..
    */
-  constructor(id, type) {
+  constructor(id) {
     super(Device.Type.WHEEL, id)
   }
 
@@ -461,6 +469,7 @@ class Wheel extends Device {
    * @param {number} y starting y coordinate
    * @param {number} deltaX Delta X to scroll to target
    * @param {number} deltaY Delta Y to scroll to target
+   * @param {WebElement} origin element origin
    * @param {number} duration duration ratio be the ratio of time delta and duration
    * @returns {!Action} An action to scroll with this device.
    */
@@ -836,7 +845,7 @@ class Actions {
    * @param {number} deltax delta x to scroll to target
    * @param {number} deltay delta y to scroll to target
    * @param {number} duration duration ratio be the ratio of time delta and duration
-   * @returns {!Action} An action to scroll with this device.
+   * @returns {!Actions} An action to scroll with this device.
    */
   scroll(x, y, targetDeltaX, targetDeltaY, origin, duration) {
     return this.insert(
