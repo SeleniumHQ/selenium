@@ -15,26 +15,13 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.interactions.touch;
-
-import org.openqa.selenium.interactions.Action;
-import org.openqa.selenium.interactions.Locatable;
-import org.openqa.selenium.interactions.TouchScreen;
-import org.openqa.selenium.interactions.internal.TouchAction;
+package org.openqa.selenium.remote.server.handler.interactions;
 
 /**
- * Creates a single tap gesture on a touch screen
+ * Interface implemented by each driver that allows access to touch screen capabilities.
  */
 @Deprecated
-public class SingleTapAction extends TouchAction implements Action {
+public interface HasTouchScreen {
 
-  public SingleTapAction(TouchScreen touchScreen, Locatable locationProvider) {
-    super(touchScreen, locationProvider);
-  }
-
-  @Override
-  public void perform() {
-    touchScreen.singleTap(getActionLocation());
-  }
-
+  TouchScreen getTouch();
 }

@@ -17,28 +17,19 @@
 
 package org.openqa.selenium.support.pagefactory;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
-import java.util.List;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
-import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.WrapsElement;
-import org.openqa.selenium.interactions.Actions;
-import org.openqa.selenium.interactions.Coordinates;
-import org.openqa.selenium.interactions.HasInputDevices;
-import org.openqa.selenium.interactions.Mouse;
 import org.openqa.selenium.support.FindAll;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.FindBys;
-import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.testing.UnitTests;
+
+import java.util.List;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 @Category(UnitTests.class)
 public class DefaultFieldDecoratorTest {
@@ -145,37 +136,18 @@ public class DefaultFieldDecoratorTest {
                                   getClass().getDeclaredField("num"))).isNull();
   }
 
-  @Test
-  public void testDecoratingProxyImplementsRequiredInterfaces() {
-    final AllDriver driver = mock(AllDriver.class);
-    final AllElement element = mock(AllElement.class);
-    final Mouse mouse = mock(Mouse.class);
-
-    when(driver.getMouse()).thenReturn(mouse);
-    when(element.getCoordinates()).thenReturn(mock(Coordinates.class));
-    when(driver.findElement(By.id("foo"))).thenReturn(element);
-
-    Page page = new Page();
-    PageFactory.initElements(driver, page);
-    new Actions(driver).moveToElement(page.foo).build().perform();
-
-    verify(driver).getKeyboard();
-    verify(driver).getMouse();
-    verify(element).getCoordinates();
-    verify(mouse).mouseMove(any(Coordinates.class));
-  }
-
-  private static class Page {
-    @FindBy(id = "foo")
-    public WebElement foo;
-  }
-
-  private interface AllDriver extends WebDriver, HasInputDevices {
+  private interface AllDriver extends WebDriver {
     // Place holder
   }
 
   private interface AllElement extends WebElement, WrapsElement,
-                                       org.openqa.selenium.interactions.Locatable {
+    org.openqa.selenium.interactions.Locatable {
     // Place holder
+  }
+
+  private static class Page {
+
+    @FindBy(id = "foo")
+    public WebElement foo;
   }
 }
