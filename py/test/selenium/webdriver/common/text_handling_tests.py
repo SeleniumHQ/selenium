@@ -206,7 +206,7 @@ def test_should_get_text_from_table_cells(driver, pages):
 def test_should_get_text_which_is_avalid_jsonobject(driver, pages):
     pages.load("simpleTest.html")
     element = driver.find_element(by=By.ID, value="simpleJsonText")
-    assert "{a=\"b\", c=1, d=true}" == element.text
+    assert '{a="b", c=1, d=true}' == element.text
     # assert "{a=\"b\", \"c\"=d, e=true, f=\\123\\\\g\\\\\"\"\"\\\'}", element.text)
 
 

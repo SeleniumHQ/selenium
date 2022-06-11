@@ -22,6 +22,6 @@ from selenium import webdriver
 
 def test_command_executor_ssl_certificate_is_verified():
     with pytest.raises(urllib3.exceptions.MaxRetryError) as excinfo:
-        webdriver.Remote(command_executor='https://wrong.host.badssl.com/')
+        webdriver.Remote(command_executor="https://wrong.host.badssl.com/")
     assert isinstance(excinfo.value.reason, urllib3.exceptions.SSLError)
     assert "doesn't match" in str(excinfo.value)

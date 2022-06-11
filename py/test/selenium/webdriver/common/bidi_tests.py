@@ -29,6 +29,7 @@ async def test_check_console_messages(driver, pages):
         log = Log(driver, session)
         pages.load("javascriptPage.html")
         from selenium.webdriver.common.bidi.console import Console
+
         async with log.add_listener(Console.ALL) as messages:
             driver.execute_script("console.log('I love cheese')")
         assert messages["message"] == "I love cheese"
@@ -40,8 +41,9 @@ async def test_check_error_console_messages(driver, pages):
         log = Log(driver, session)
         pages.load("javascriptPage.html")
         from selenium.webdriver.common.bidi.console import Console
+
         async with log.add_listener(Console.ERROR) as messages:
-            driver.execute_script("console.error(\"I don't cheese\")")
+            driver.execute_script('console.error("I don\'t cheese")')
             driver.execute_script("console.log('I love cheese')")
         assert messages["message"] == "I don't cheese"
 
@@ -68,8 +70,9 @@ async def test_collect_log_mutations(driver, pages):
         async with log.mutation_events() as event:
             pages.load("dynamic.html")
             driver.find_element(By.ID, "reveal").click()
-            WebDriverWait(driver, 5, ignored_exceptions=InvalidSelectorException)\
-                .until(EC.visibility_of(driver.find_element(By.ID, "revealed")))
+            WebDriverWait(driver, 5, ignored_exceptions=InvalidSelectorException).until(
+                EC.visibility_of(driver.find_element(By.ID, "revealed"))
+            )
 
     assert event["attribute_name"] == "style"
     assert event["current_value"] == ""
